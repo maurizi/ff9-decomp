@@ -2198,7 +2198,7 @@ s32 wm_getRightStickY(s32 *arg0) {
 void wm_autoPilotOn(void) {
     g_worldAutoPilot = 2;
     g_worldAutoPilotDist = 10000;
-    g_worldAutoPilotDest = g_evtGlobalVars.b[0x67] - 1;
+    g_worldAutoPilotDest = g_evtGlobalVars.b[EVT_GB_NAVI_PLACE] - 1;
     g_worldAutoPilotSavedAutoTurn = g_worldCameraFlags->autoTurnOff;
 }
 

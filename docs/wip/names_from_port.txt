@@ -10947,3 +10947,7 @@ FieldEvtCtx FieldObjSlot
 Unk80047B90 Unk8004AFF0
 # CONSTANTS FLD_EXIT_ENDING 4, FLD_NEXT_ENDING 0x3E80 (ovl_0a.h; fld_main sends a field change to 16000 to GS_MODE_ENDING)
 # CONSTANTS WM_BLOCK_NONE 0, WM_BLOCK_SET 2 (ovl_0c.h WmBlockNode.state)
+
+# ===== R32b (3DS requests 2) =====
+g_evtGlobalVars.b[0x67] g_evtGlobalVars.b[EVT_GB_NAVI_PLACE]
+# new: EVT_GB_NAVI_KNOWN 0x5C (h[0x2E..0x31])

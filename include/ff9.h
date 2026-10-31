@@ -1682,6 +1682,8 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_ATE_BITS 0xEC            /* u16 (h[0x76]): available-ATE bits, copied to EVT_GB_ATE_CHOICE_MASK */
 #define EVT_GB_ATE_AVAILABLE 0xEE       /* s8: 1 = an ATE can be viewed (the field script opens the ATE window on Select) */
 #define EVT_GB_ATE_CHOICE_MASK 0xF1     /* s16 (unaligned): enabled choices of the ATE window (EVT_OP_MSG_CHOICE_MASK) */
+#define EVT_GB_NAVI_PLACE 0x67  /* u8: navi map place under the cursor + 1, 0 = none (wm_naviUpdate; the world script names it, wm autopilot reads it) */
+#define EVT_GB_NAVI_KNOWN 0x5C  /* u16[4] (h[0x2E..0x31]): navi map places known, bit i&15 of h[0x2E + i/16] (wm_naviDraw) */
 
 void config_applySound(void);
 void config_applyPadMapping(void);

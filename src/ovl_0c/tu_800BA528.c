@@ -1593,7 +1593,7 @@ void wm_naviUpdate(void) {
                 }
             }
             if (pad & (BTN_L1 | BTN_R1)) {
-                if (g_evtGlobalVars.b[0x67] == 0) {
+                if (g_evtGlobalVars.b[EVT_GB_NAVI_PLACE] == 0) {
                     best = 0x7FFFFFFF;
                     bi = -1;
                     for (i = 0; i < 64; i++) {
@@ -1614,7 +1614,7 @@ void wm_naviUpdate(void) {
                         g_worldNaviCursorY = g_worldNaviPlaces[g_worldNaviPage][g_worldNaviPlace].mapY << 12;
                     }
                 }
-                if (g_evtGlobalVars.b[0x67] != 0 && dir != 0) {
+                if (g_evtGlobalVars.b[EVT_GB_NAVI_PLACE] != 0 && dir != 0) {
                     if (pad & BTN_L1) {
                         dir = 1;
                     }
@@ -1653,9 +1653,9 @@ void wm_naviUpdate(void) {
             }
             if (g_worldNaviPlaceCycled == 1) {
                 g_worldNaviPlaceCycled = 0;
-                g_evtGlobalVars.b[0x67] = 0;
+                g_evtGlobalVars.b[EVT_GB_NAVI_PLACE] = 0;
             } else {
-                g_evtGlobalVars.b[0x67] = last + 1;
+                g_evtGlobalVars.b[EVT_GB_NAVI_PLACE] = last + 1;
             }
         }
     }
