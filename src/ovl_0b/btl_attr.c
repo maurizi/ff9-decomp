@@ -11,7 +11,7 @@ void btl_hideMeshes(BtlUnit *arg0, u16 arg1) {
 
 void btl_showMeshes(BtlUnit *arg0, u16 arg1) {
     s32 i;
-    if (!(arg0->flags & 1)) {
+    if (!(arg0->flags & BTL_UNIT_PARTY)) {
         arg0->model->flags &= ~0x20;
     }
     for (i = 0; i < 16; i++) {
@@ -65,7 +65,7 @@ void btl_spreadTroubleDamage(BtlUnit *arg0) {
     s32 d;
     s32 v;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
-        if ((u->flags & 1) == (arg0->flags & 1) && u != arg0 && ((u->flags >> 28) & 1)) {
+        if ((u->flags & BTL_UNIT_PARTY) == (arg0->flags & BTL_UNIT_PARTY) && u != arg0 && ((u->flags >> BTL_UNIT_TARGETABLE_BIT) & 1)) {
             u->popupFlags = 1;
             d = arg0->hpChange >> 1;
             if (u->status & BTL_STATUS_KO) {
@@ -74,7 +74,7 @@ void btl_spreadTroubleDamage(BtlUnit *arg0) {
                 u->hpChange = 0;
             } else {
                 if (u != g_gameState->gameData->ctx.battle->curCmd->caster) {
-                    v = (u->flags & 1) << 11;
+                    v = (u->flags & BTL_UNIT_PARTY) << 11;
                     u->obj->rotY = v;
                     u->rot[1] = v;
                 }
@@ -129,8 +129,8 @@ void btl_updateHpStatus(BtlUnit *arg0) {
         }
     clamp:
         arg0->mp = arg0->max->maxMp < arg0->mp ? arg0->max->maxMp : arg0->mp;
-        if (arg0->flags & 1) {
-            arg0->flags = (arg0->flags & ~0x40000) | ((btl_hasStatus(arg0, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
+        if (arg0->flags & BTL_UNIT_PARTY) {
+            arg0->flags = (arg0->flags & ~BTL_UNIT_WEAK_STANCE) | ((btl_hasStatus(arg0, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << BTL_UNIT_WEAK_STANCE_BIT);
         }
     }
 }
@@ -140,16 +140,16 @@ void btl_toggleRow(BtlUnit *arg0) {
     u32 f;
     u32 v;
     u32 m;
-    if ((arg0->flags >> 8) & 3) {
+    if (BTL_UNIT_ROW(arg0->flags)) {
         d = 0xFE700000;
     }
     arg0->pos[2] = arg0->home->pos[2] + d;
     arg0->home->pos[2] += d;
     f = arg0->flags;
-    m = f & ~0x300;
-    v = (f >> 8) & 3;
+    m = f & ~BTL_UNIT_ROW_MASK;
+    v = BTL_UNIT_ROW(f);
     v = v == 0;
-    arg0->flags = m | (v << 8);
+    arg0->flags = m | (v << BTL_UNIT_ROW_SHIFT);
 }
 
 void btl_orElements(u8 *arg0, u8 *arg1) {
@@ -170,7 +170,7 @@ void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
         return;
     }
     if (arg0 != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        v = (arg0->flags & 1) << 11;
+        v = (arg0->flags & BTL_UNIT_PARTY) << 11;
         arg0->obj->rotY = v;
         arg0->rot[1] = v;
     }
@@ -303,10 +303,10 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r = arg0->max->maxAtb;
         break;
     case BTL_ATTR_LEVEL:
-        if (arg0->flags & 1) {
-            r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->level;
+        if (arg0->flags & BTL_UNIT_PARTY) {
+            r = (g_gameState->gameData->characters + BTL_UNIT_INDEX(arg0->flags))->level;
         } else {
-            r = g_gameState->gameData->ctx.battle->enemies[(arg0->flags >> 1) & 0xF].type->level;
+            r = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg0->flags)].type->level;
         }
         break;
     case BTL_ATTR_IMMUNE_HI:
@@ -340,11 +340,11 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r = arg0->elemWeak;
         break;
     case BTL_ATTR_TARGETABLE:
-        r = arg0->flags >> 28;
+        r = arg0->flags >> BTL_UNIT_TARGETABLE_BIT;
         r &= 1;
         break;
     case BTL_ATTR_HIDDEN:
-        r = arg0->flags >> 22;
+        r = arg0->flags >> BTL_UNIT_HIDDEN_BIT;
         r &= 1;
         break;
     case BTL_ATTR_MODEL:
@@ -354,7 +354,7 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r = arg0->hiddenMeshes;
         break;
     case 0x40:
-        r = arg0->flags >> 8;
+        r = arg0->flags >> BTL_UNIT_ROW_SHIFT;
         r &= 3;
         break;
     case 0x41:
@@ -362,21 +362,21 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r >>= 5;
         break;
     case 0x42:
-        r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->info.w >> 4;
+        r = (g_gameState->gameData->characters + BTL_UNIT_INDEX(arg0->flags))->info.w >> 4;
         r &= 0x1F;
         break;
     case 0x43:
-        r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->classFlags;
+        r = (g_gameState->gameData->characters + BTL_UNIT_INDEX(arg0->flags))->classFlags;
         break;
     case 0x44:
-        r = g_gameState->gameData->ctx.battle->enemies[(arg0->flags >> 1) & 0xF].type->category;
+        r = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg0->flags)].type->category;
         break;
     case 0x45:
-        r = arg0->flags >> 18;
+        r = arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT;
         r &= 1;
         break;
     case 0x46:
-        r = arg0->flags >> 1;
+        r = arg0->flags >> BTL_UNIT_INDEX_SHIFT;
         r &= 0xF;
         break;
     case BTL_ATTR_STRENGTH:
@@ -450,15 +450,15 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
     case BTL_ATTR_TARGETABLE:
         if (g_gameState->gameData->ctx.battle->phase == BTL_PHASE_INTRO) {
             arg0->targetableReq = 0;
-            arg0->flags &= ~0x10000000;
-            arg0->flags &= ~0x10000;
-            arg0->flags &= ~0x20000000;
+            arg0->flags &= ~BTL_UNIT_TARGETABLE;
+            arg0->flags &= ~BTL_UNIT_ATB_ACTIVE;
+            arg0->flags &= ~BTL_UNIT_TARGETED;
         } else {
             arg0->targetableReq = arg2 + 2;
         }
         break;
     case BTL_ATTR_HIDDEN:
-        arg0->flags = (arg0->flags & ~0x400000) | ((arg2 & 1) << 22);
+        arg0->flags = (arg0->flags & ~BTL_UNIT_HIDDEN) | ((arg2 & 1) << BTL_UNIT_HIDDEN_BIT);
         if (arg2 != 0 && g_gameState->gameData->ctx.battle->phase == BTL_PHASE_INTRO) {
             btl_applyBgLight(arg0->model);
             k = btl_getModelSlot(arg0);
@@ -466,7 +466,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         }
         break;
     case BTL_ATTR_SHADOW:
-        arg0->flags = (arg0->flags & ~0x1000000) | ((arg2 & 1) << 24);
+        arg0->flags = (arg0->flags & ~BTL_UNIT_SHADOW) | ((arg2 & 1) << BTL_UNIT_SHADOW_BIT);
         break;
     case BTL_ATTR_SCALE:
         arg0->model->flags |= 2;
@@ -510,10 +510,10 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->lastFrame = 0x1000;
         break;
     case 0x45:
-        arg0->flags = (arg0->flags & ~0x40000) | ((arg2 & 1) << 18);
+        arg0->flags = (arg0->flags & ~BTL_UNIT_WEAK_STANCE) | ((arg2 & 1) << BTL_UNIT_WEAK_STANCE_BIT);
         break;
     case BTL_ATTR_ADD_REWARDS:
-        btl_addEnemyRewards(g_gameState->gameData->ctx.battle->enemies[(arg0->flags >> 1) & 0xF].type);
+        btl_addEnemyRewards(g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg0->flags)].type);
         break;
     case BTL_ATTR_STRENGTH:
         arg0->strength = arg2;
@@ -593,8 +593,8 @@ s32 btl_getBattleVar(s32 arg0) {
     case 42:
         r = 0;
         for (u = b->unitList; u != NULL; u = u->next) {
-            if (u->flags & 1) {
-                k = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind;
+            if (u->flags & BTL_UNIT_PARTY) {
+                k = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind;
             } else {
                 k = 0x13;
             }
@@ -622,7 +622,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         b->cmdFlags &= ~1;
         btl_clearCmdQueue(b);
         for (u = b->unitList; u != NULL; u = u->next) {
-            u->flags &= ~0x80000;
+            u->flags &= ~BTL_UNIT_CMD_WAITING;
         }
         break;
     case BTL_SETVAR_END:

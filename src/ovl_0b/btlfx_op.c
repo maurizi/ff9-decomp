@@ -1257,7 +1257,7 @@ BtlUnit *btl_getUnit(s32 arg0) {
 }
 
 s32 btl_isModelPart(BtlUnit *arg0) {
-    return (arg0->flags & 0x800001) == 0x800000;
+    return (arg0->flags & (BTL_UNIT_PARTY | BTL_UNIT_MODEL_PART)) == BTL_UNIT_MODEL_PART;
 }
 
 void btlfx_clearTargets(void) {
@@ -1276,10 +1276,10 @@ s32 btlfx_getUnitRadius(s32 arg0) {
     }
     u = btl_getUnit(arg0);
     f = u->flags;
-    if ((f & 1) || flag != 0) {
+    if ((f & BTL_UNIT_PARTY) || flag != 0) {
         return u->model->header->radius;
     }
-    return g_gameState->gameData->ctx.battle->enemies[(f >> 1) & 0xF].type->radius;
+    return g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(f)].type->radius;
 }
 
 s32 btl_getUnitHeight(BtlUnit *arg0) {
@@ -1311,7 +1311,7 @@ void btlfx_getUnitHomePos(s32 arg0, s16 *arg1) {
 }
 
 void btl_getUnitPos(BtlUnit *arg0, s16 *arg1) {
-    if (btl_isModelPart(arg0) != 0 || !(arg0->flags & 1)) {
+    if (btl_isModelPart(arg0) != 0 || !(arg0->flags & BTL_UNIT_PARTY)) {
         btl_getBaseBonePos(arg0, (u16 *)arg1);
         arg1[1] = 0;
     } else {
@@ -1332,7 +1332,7 @@ void btl_getUnitBodyPos(BtlUnit *arg0, s32 arg1, s16 *arg2) {
         return;
     }
     btl_getUnitPos(arg0, arg2);
-    if (arg0->flags & 1) {
+    if (arg0->flags & BTL_UNIT_PARTY) {
         h = btl_getUnitHeight(arg0);
         if (arg1 == 0) {
             h >>= 1;
@@ -1344,7 +1344,7 @@ void btl_getUnitBodyPos(BtlUnit *arg0, s32 arg1, s16 *arg2) {
     } else {
         btl_getBaseBonePos(arg0, (u16 *)arg2);
         if (arg1 == 1) {
-            arg2[1] = arg0->model->bones[g_gameState->gameData->ctx.battle->enemies[(arg0->flags >> 1) & 0xF].type->bones[2]].ty;
+            arg2[1] = arg0->model->bones[g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg0->flags)].type->bones[2]].ty;
         }
     }
 }
@@ -1400,7 +1400,7 @@ void btlfx_setUnitRot(s32 arg0, s16 *arg1) {
 }
 
 s32 btlfx_isEnemyUnit(s32 arg0) {
-    return (btl_getUnit(arg0)->flags & 1) ^ 1;
+    return (btl_getUnit(arg0)->flags & BTL_UNIT_PARTY) ^ 1;
 }
 
 void btlfx_turnUnitToward(s32 arg0, s16 *arg1, s16 *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
@@ -1507,7 +1507,7 @@ s32 btlfx_addRadiusSixth(s32 arg0, s32 arg1) {
 }
 
 u32 btlfx_getUnitSlot(s32 arg0) {
-    return (u8)btl_getUnit(arg0)->flags >> 5;
+    return (u8)btl_getUnit(arg0)->flags >> BTL_UNIT_SLOT_SHIFT;
 }
 
 void btlfx_getWeaponPos(s32 arg0, s32 arg1, s16 *arg2) {
@@ -1518,7 +1518,7 @@ void btlfx_getWeaponPos(s32 arg0, s32 arg1, s16 *arg2) {
     SVECTOR v;
 
     u = btl_getUnit(arg0);
-    bone = (g_gameState->gameData->characters + ((u->flags >> 1) & 0xF))->weaponBone;
+    bone = (g_gameState->gameData->characters + BTL_UNIT_INDEX(u->flags))->weaponBone;
     if (arg1 == 0) {
         btlfx_getUnitBonePos(arg0, bone, (u16 *)arg2);
     } else {
@@ -1546,7 +1546,7 @@ void btlfx_setUnitBrightness(BtlUnit *arg0, s32 arg1) {
     } else {
         f = 1;
     }
-    if ((arg0->flags & 1) && arg0->weaponModel != NULL && f && (*(u32 *)arg0->weaponModel & 0x30) == 0x20) {
+    if ((arg0->flags & BTL_UNIT_PARTY) && arg0->weaponModel != NULL && f && (*(u32 *)arg0->weaponModel & 0x30) == 0x20) {
         v = arg1 - 0x80;
         btl_setModelRgb(arg0->weaponModel, v, v, v);
         if (arg1 < 0x46) {
@@ -1565,13 +1565,13 @@ void btlfx_setUnitBrightness(BtlUnit *arg0, s32 arg1) {
 void btlfx_fadeUnit(BtlUnit *arg0, s32 arg1) {
     if (btl_isModelPart(arg0) == 0) {
         if (arg1 < 8) {
-            if (!((arg0->flags >> 22) & 1)) {
-                arg0->flags |= 0x400000;
+            if (!((arg0->flags >> BTL_UNIT_HIDDEN_BIT) & 1)) {
+                arg0->flags |= BTL_UNIT_HIDDEN;
                 btlfx_setUnitBrightness(arg0, arg1);
             }
-        } else if ((arg0->flags >> 22) & 1) {
+        } else if ((arg0->flags >> BTL_UNIT_HIDDEN_BIT) & 1) {
             if (!(arg0->status & BTL_STATUS_JUMP)) {
-                arg0->flags &= ~0x400000;
+                arg0->flags &= ~BTL_UNIT_HIDDEN;
             }
         } else {
             btlfx_setUnitBrightness(arg0, arg1);
@@ -1609,13 +1609,13 @@ s32 btlfx_fadeUnitGroup(u32 type, s32 arg1) {
     for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
         switch (type) {
         case 0:
-            if (u->flags & 1) {
+            if (u->flags & BTL_UNIT_PARTY) {
                 btlfx_fadeUnit(u, arg1);
                 n++;
             }
             break;
         case 1:
-            if (!(u->flags & 1)) {
+            if (!(u->flags & BTL_UNIT_PARTY)) {
                 btlfx_fadeUnit(u, arg1);
                 n++;
             }
@@ -1632,11 +1632,11 @@ s32 btlfx_fadeUnitGroup(u32 type, s32 arg1) {
             break;
         case 8:
             if (btlfx_isEnemyUnit(0x10)) {
-                if (!(u->flags & 1)) {
+                if (!(u->flags & BTL_UNIT_PARTY)) {
                     btlfx_fadeUnit(u, arg1);
                     n++;
                 }
-            } else if (u != btl_getUnit(0x10) && (u->flags & 1)) {
+            } else if (u != btl_getUnit(0x10) && (u->flags & BTL_UNIT_PARTY)) {
                 btlfx_fadeUnit(u, arg1);
                 n++;
             }
@@ -1667,14 +1667,14 @@ s32 btlfx_nextUnitPos(s32 id, s16 *arg1, BtlUnit **iter, s32 *out) {
         u = *iter;
     }
     btl_getUnitBodyPos(u, 0, arg1);
-    if (((u8)btl_hasStatus(u, BTL_STATUS_KO) && u != btl_getUnit(id)) || !((u->flags >> 28) & 1)) {
+    if (((u8)btl_hasStatus(u, BTL_STATUS_KO) && u != btl_getUnit(id)) || !((u->flags >> BTL_UNIT_TARGETABLE_BIT) & 1)) {
         *iter = u->next;
         return -1;
     }
     if (u == btl_getUnit(id)) {
         r = 1;
     }
-    *out = u->flags & 1;
+    *out = u->flags & BTL_UNIT_PARTY;
     *iter = u->next;
     return r;
 }
@@ -1718,12 +1718,12 @@ s32 btlfx_resetIdleMotion(s32 arg0, s32 arg1) {
     if (arg0 == 0) {
         if ((u8)btl_hasStatus(u, BTL_STATUS_KO)) {
             u->model->motion = (BtlUnit9CC *)u->motions[4];
-        } else if ((u->flags >> 19) & 1) {
+        } else if ((u->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
             u->model->motion = (BtlUnit9CC *)u->motions[9];
         } else {
-            u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
+            u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         }
-    } else if ((u8)btl_hasStatus(u, BTL_STATUS_KO) || ((u->flags >> 1) & 0xF) == 4) {
+    } else if ((u8)btl_hasStatus(u, BTL_STATUS_KO) || BTL_UNIT_INDEX(u->flags) == 4) {
         btlfx_resetIdleMotion(0, 0x10);
         r = 1;
     } else {
@@ -1735,7 +1735,7 @@ s32 btlfx_resetIdleMotion(s32 arg0, s32 arg1) {
 s32 btlfx_isUnitKind(s32 arg0, s32 arg1) {
     u32 f = btl_getUnit(arg0)->flags;
     u8 k = g_btlfxUnitKinds[arg1];
-    return ((f & 1) ? g_gameState->gameData->characters[(f >> 1) & 0xF].info.b.kind : 0x13) == k;
+    return ((f & BTL_UNIT_PARTY) ? g_gameState->gameData->characters[BTL_UNIT_INDEX(f)].info.b.kind : 0x13) == k;
 }
 
 void btlfx_copyWords(s32 *arg0, s32 *arg1, u32 arg2) {
@@ -1796,7 +1796,7 @@ void btlfx_setPartnerByArg(s32 arg0) {
 void btlfx_restorePartyLooks(void) {
     BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     while (u != NULL) {
-        if (u->flags & 1) {
+        if (u->flags & BTL_UNIT_PARTY) {
             btl_reapplyStatusLook(u);
             btlfx_reapplyMini(u);
             btlfx_reapplyVanish(u);
@@ -1810,7 +1810,7 @@ void btlfx_restorePartyLooks(void) {
 
 void btlfx_restoreUnitLook(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
-    if (u->flags & 1) {
+    if (u->flags & BTL_UNIT_PARTY) {
         btl_reapplyStatusLook(u);
         btlfx_reapplyMini(u);
         btlfx_reapplyVanish(u);
@@ -1821,7 +1821,7 @@ s32 btlfx_countVisibleParty(void) {
     BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     s32 n = 0;
     while (u != NULL) {
-        n += (u->flags & 0x400001) == 1;
+        n += (u->flags & (BTL_UNIT_PARTY | BTL_UNIT_HIDDEN)) == BTL_UNIT_PARTY;
         u = u->next;
     }
     return n;
@@ -1988,7 +1988,7 @@ void btlfx_updateCameraEnable(void) {
         if (f == 1 || (u8)btl_hasStatus(a, BTL_STATUS_MINI) || (u8)btl_hasStatus(a, BTL_STATUS_VANISH)) {
             r = 0;
         } else {
-            if (b->flags & 1) {
+            if (b->flags & BTL_UNIT_PARTY) {
                 v = g_gameState->gameData->ctx.battle->scene.flags >> 11;
             } else {
                 v = g_gameState->gameData->ctx.battle->scene.flags >> 12;
@@ -2020,26 +2020,26 @@ void btlfx_playCmdCamera(s32 arg0) {
     t = btlfx_getFirstTarget();
     if (g_btlfxEnv->targets->kind & 4) {
         msg = btlfx_getCommonData(g_btlfxCmdCameras[4]);
-    } else if (u->flags & 1) {
+    } else if (u->flags & BTL_UNIT_PARTY) {
         if ((u8)btl_hasStatus(u, BTL_STATUS_TRANCE) == 0) {
             if ((hi >> 4) == 1 || (hi >> 4) == 7) {
-                if (((u->flags >> 1) & 0xF) == CHR_DAGGER) {
+                if (BTL_UNIT_INDEX(u->flags) == CHR_DAGGER) {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[2]);
                 } else {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[3]);
                 }
-            } else if (t->flags & 1) {
+            } else if (t->flags & BTL_UNIT_PARTY) {
                 msg = btl_getSceneData(3);
             } else {
                 msg = btl_getSceneData(4);
             }
-        } else if (t->flags & 1) {
+        } else if (t->flags & BTL_UNIT_PARTY) {
             msg = btlfx_getCommonData(g_btlfxCmdCameras[0]);
         } else {
             msg = btlfx_getCommonData(g_btlfxCmdCameras[1]);
         }
     } else {
-        msg = g_gameState->gameData->ctx.battle->enemies[(u->flags >> 1) & 0xF].type->camera;
+        msg = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->camera;
     }
     if (msg != 0) {
         btlcam_play(msg);
@@ -2049,7 +2049,7 @@ void btlfx_playCmdCamera(s32 arg0) {
 void btlfx_playBounceCamera(void) {
     u8 v;
     if (g_btlfxCameraOn != 0 && g_btlfxEnv->targets->bounceCount != 0) {
-        if (btl_getUnit(8)->flags & 1) {
+        if (btl_getUnit(8)->flags & BTL_UNIT_PARTY) {
             v = g_btlfxBounceCameraParty;
         } else {
             v = g_btlfxBounceCameraEnemy;

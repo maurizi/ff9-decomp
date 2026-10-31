@@ -41,7 +41,7 @@ void btlseq_init(void) {
 void btl_startEnemySeq(BtlCmd *arg0) {
     if (g_gameState->gameData->ctx.battle->seq.seqs[arg0->subNo] != 0 && btlseq_start(arg0) != NULL) {
         BtlUnit *u = arg0->caster;
-        if (!(u->flags & 1)) {
+        if (!(u->flags & BTL_UNIT_PARTY)) {
             u->rot[1] = 0;
         }
     }
@@ -179,7 +179,7 @@ void btlseq_update(void) {
 s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
     if (!((arg0->flags >> 2) & 1) && arg0->frame != 0 && arg1->obj->frame >= m->motion->frameCount) {
-        m->motion = (BtlUnit9CC *)arg1->motions[(arg1->flags >> 18) & 1];
+        m->motion = (BtlUnit9CC *)arg1->motions[(arg1->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         arg1->obj->frame = 0;
         arg0->flags |= 4;
     }
@@ -363,7 +363,7 @@ s32 btlseq_opPlayAnim(BtlScript *arg0, BtlUnit *arg1) {
     s32 idx;
     if (p[1] == 0xFF) {
         f = arg1->flags;
-        arg1->model->motion = g_gameState->gameData->ctx.battle->enemies[(f >> 1) & 0xF].type->motions[(f >> 18) & 1];
+        arg1->model->motion = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(f)].type->motions[(f >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
     } else {
         idx = arg0->seqFlags + p[1];
         arg1->model->motion = g_gameState->gameData->ctx.battle->seq.anims[idx];
@@ -462,7 +462,7 @@ s32 btlseq_opShowName(BtlScript *arg0, BtlUnit *arg1) {
     if (idx & 0x80) {
         btl_setBannerAt((s32)(txt + arg0->cmd->ability->nameOfs), 1);
     } else {
-        idx += b->enemies[(arg1->flags >> 1) & 0xF].type->firstAbility;
+        idx += b->enemies[BTL_UNIT_INDEX(arg1->flags)].type->firstAbility;
         ofs = ((u16 *)txt)[idx * 2 + 2] + 4;
         if (pc[0] == 0x21) {
             btl_setBannerAt((s32)(txt + ofs), 3);
@@ -475,7 +475,7 @@ s32 btlseq_opShowName(BtlScript *arg0, BtlUnit *arg1) {
 }
 
 s32 btlseq_opSetStance(BtlScript *arg0, BtlUnit *arg1) {
-    arg1->flags = (arg1->flags & ~0x40000) | ((arg0->pc[1] & 1) << 18);
+    arg1->flags = (arg1->flags & ~BTL_UNIT_WEAK_STANCE) | ((arg0->pc[1] & 1) << BTL_UNIT_WEAK_STANCE_BIT);
     arg0->pc += 2;
     return 1;
 }
@@ -519,7 +519,7 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
     s->camCaster = arg1;
     s->camTarget = (s32)btlseq_findUnit(arg0->cmd->targets);
     g_gameState->gameData->ctx.battle->cameraNo = arg0->pc[1];
-    btlcam_playSeq(g_gameState->gameData->ctx.battle->enemies[(arg1->flags >> 1) & 0xF].type->camera);
+    btlcam_playSeq(g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg1->flags)].type->camera);
 end:
     arg0->pc += 2;
     return 1;
@@ -660,7 +660,7 @@ s32 btlseq_opFadeOut(BtlScript *arg0, BtlUnit *arg1) {
 }
 
 s32 btlseq_opShowShadow(BtlScript *arg0, BtlUnit *arg1) {
-    arg1->flags = (arg1->flags & ~0x1000000) | ((arg0->pc[1] & 1) << 24);
+    arg1->flags = (arg1->flags & ~BTL_UNIT_SHADOW) | ((arg0->pc[1] & 1) << BTL_UNIT_SHADOW_BIT);
     arg0->pc += 2;
     return 1;
 }

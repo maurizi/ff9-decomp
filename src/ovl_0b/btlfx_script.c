@@ -1133,7 +1133,7 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
 void btlfx_playSwingSound(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
     if (btlfx_isPartyUnit(arg0) != 0) {
-        btl_soundCmd(SND_SE_PLAY, btl_getWeaponSound((u8)u->flags >> 5, 0), 0, btl_soundPan(arg0), SND_VOL_MAX);
+        btl_soundCmd(SND_SE_PLAY, btl_getWeaponSound((u8)u->flags >> BTL_UNIT_SLOT_SHIFT, 0), 0, btl_soundPan(arg0), SND_VOL_MAX);
     }
 }
 
@@ -1148,20 +1148,20 @@ void btlfx_playHitSound(s32 arg0, s32 arg1, s32 arg2) {
 u32 btlfx_holdMotion(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
     u32 f = u->flags;
-    u->flags = f | 0x200000;
-    return (f >> 21) & 1;
+    u->flags = f | BTL_UNIT_MOTION_HELD;
+    return (f >> BTL_UNIT_MOTION_HELD_BIT) & 1;
 }
 
 void btlfx_setMotionHeld(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
-    u->flags = (u->flags & ~0x200000) | ((arg1 & 1) << 21);
+    u->flags = (u->flags & ~BTL_UNIT_MOTION_HELD) | ((arg1 & 1) << BTL_UNIT_MOTION_HELD_BIT);
 }
 
 s32 btlfx_isPartyUnit(s32 arg0) {
     if (arg0 == 0xFF) {
         arg0 = 0;
     }
-    return btl_getUnit(arg0)->flags & 1;
+    return btl_getUnit(arg0)->flags & BTL_UNIT_PARTY;
 }
 
 s32 btlfx_isSameSide(s32 arg0, s32 arg1) {
@@ -1178,21 +1178,21 @@ s32 btlfx_isSameUnit(s32 arg0, s32 arg1) {
 }
 
 s32 btlfx_getUnitKind(s32 arg0) {
-    s32 idx = (btl_getUnit(arg0)->flags >> 1) & 0xF;
+    s32 idx = BTL_UNIT_INDEX(btl_getUnit(arg0)->flags);
     return g_gameState->gameData->characters[idx].info.b.kind;
 }
 
 s32 btlfx_getUnitWeapon(s32 arg0) {
-    s32 idx = (btl_getUnit(arg0)->flags >> 1) & 0xF;
+    s32 idx = BTL_UNIT_INDEX(btl_getUnit(arg0)->flags);
     return g_gameState->gameData->characters[idx].equip[0];
 }
 
 void btlfx_setUnitVisible(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     if (arg1 != 0) {
-        u->flags &= ~0x400000;
+        u->flags &= ~BTL_UNIT_HIDDEN;
     } else {
-        u->flags |= 0x400000;
+        u->flags |= BTL_UNIT_HIDDEN;
     }
 }
 

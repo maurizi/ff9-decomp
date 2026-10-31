@@ -467,7 +467,7 @@ typedef struct BtlUnit {
     s16 dotTimers[3]; /* Venom/Poison/Regen tick timers (btl_initDotTimer) */
     s16 statusTimers[16]; /* per timed status bit 16-31 (btl_tickStatusTimers) */
     s16 countdownStep; /* timer units per number of the Doom/petrify countdown (btl_initDoomCount, btl_drawStatusCountdown) */
-    u32 flags; /* bit 0 party, 1-4 slot, 5-7 id, 8-9 row, 16 ATB fills, 18 weak stance, 21 motion held, 22 hidden, 23 model part, 24 shadow shown (btlseq_opShowShadow), 28 targetable, 29 targeted */
+    u32 flags; /* BTL_UNIT_* below */
     u8 defense; /* Character.defense (btl_initPartyUnit) */
     u8 evade;
     u8 magicDef;
@@ -515,6 +515,48 @@ typedef struct BtlUnit {
     u8 tickFlags; /* 1 regen, 2 poison, 4 venom, 8 regen hurts */
     u8 inMenuQueue; /* waiting for its command menu (btlui_queueMenuUnit) */
 } BtlUnit; /* 0xD0 */
+
+/* BtlUnit.flags (bitfields in Square's source: single bits are read as (flags >> NAME_BIT) & 1). Evidence: [code] */
+#define BTL_UNIT_PARTY             (1 << 0) /* party member, else enemy: the side (btl_initPartyUnit sets it, btl_initEnemies clears it) */
+#define BTL_UNIT_INDEX_SHIFT       1 /* bits 1-4: character id (CHR_*, GameData.characters) or Battle.enemies index */
+#define BTL_UNIT_INDEX_MASK        (0xF << BTL_UNIT_INDEX_SHIFT)
+#define BTL_UNIT_INDEX(f)          (((f) >> BTL_UNIT_INDEX_SHIFT) & 0xF)
+#define BTL_UNIT_SLOT_SHIFT        5 /* bits 5-7: unit slot, party 0-3 and enemies 4-7 (btl_getUnitBySlot, expMask bit, command slots) */
+#define BTL_UNIT_SLOT_MASK         (7 << BTL_UNIT_SLOT_SHIFT)
+#define BTL_UNIT_SLOT(f)           (((f) >> BTL_UNIT_SLOT_SHIFT) & 7)
+#define BTL_UNIT_ROW_SHIFT         8 /* bits 8-9: row, Character battleRow for the party (btl_toggleRow, btl_applyRowMod), 2 for enemies */
+#define BTL_UNIT_ROW_MASK          (3 << BTL_UNIT_ROW_SHIFT)
+#define BTL_UNIT_ROW(f)            (((f) >> BTL_UNIT_ROW_SHIFT) & 3)
+#define BTL_UNIT_ATB_ACTIVE_BIT    16 /* the ATB gauge fills and status timers tick (btl_updateAtb, btl_updateUnitStatus); cleared by KO, Petrify, Stop, Jump and cancelled commands */
+#define BTL_UNIT_ATB_ACTIVE        (1 << BTL_UNIT_ATB_ACTIVE_BIT)
+#define BTL_UNIT_HIT_MOTION_BIT    17 /* hit reaction playing (btl_startHitMotion .. btl_end*HitMotion); btl_setIdleMotion leaves the unit alone */
+#define BTL_UNIT_HIT_MOTION        (1 << BTL_UNIT_HIT_MOTION_BIT)
+#define BTL_UNIT_WEAK_STANCE_BIT   18 /* idle motion 1 instead of 0: Venom, Low HP, Poison or Sleep (btl_updateHpStatus, btlseq_opSetStance) */
+#define BTL_UNIT_WEAK_STANCE       (1 << BTL_UNIT_WEAK_STANCE_BIT)
+#define BTL_UNIT_CMD_WAITING_BIT   19 /* a command is queued and the unit holds its ready motion (btl_setCmd, btl_setEnemyCmd; cleared when it leaves the queue) */
+#define BTL_UNIT_CMD_WAITING       (1 << BTL_UNIT_CMD_WAITING_BIT)
+#define BTL_UNIT_KILLED_BIT        20 /* hp set to 0 outright (btl_killUnit, btl_setTargetHp, btl_checkFrozenShatter): the KO skips the dying steps */
+#define BTL_UNIT_KILLED            (1 << BTL_UNIT_KILLED_BIT)
+#define BTL_UNIT_MOTION_HELD_BIT   21 /* motion frame not advanced (btl_updateUnitModel; btlfx_setMotionHeld, btlfx_holdMotion) */
+#define BTL_UNIT_MOTION_HELD       (1 << BTL_UNIT_MOTION_HELD_BIT)
+#define BTL_UNIT_HIDDEN_BIT        22 /* not drawn, no popups or status icons (BTL_ATTR_HIDDEN, btlfx_setUnitVisible, btl_setUnitFade) */
+#define BTL_UNIT_HIDDEN            (1 << BTL_UNIT_HIDDEN_BIT)
+#define BTL_UNIT_MODEL_PART_BIT    23 /* enemy without a model of its own, a part of another unit's (BtlEnemy flag 0x200; btl_isModelPart, btl_findBodyUnit) */
+#define BTL_UNIT_MODEL_PART        (1 << BTL_UNIT_MODEL_PART_BIT)
+#define BTL_UNIT_SHADOW_BIT        24 /* shadow drawn (BTL_ATTR_SHADOW, btlseq_opShowShadow, btl_updateUnitModel) */
+#define BTL_UNIT_SHADOW            (1 << BTL_UNIT_SHADOW_BIT)
+#define BTL_UNIT_COVERING_BIT      25 /* stepped in front of the target with Cover / Protect Girls (btl_findCover); the attack can't be dodged (btl_rollHit) */
+#define BTL_UNIT_COVERING          (1 << BTL_UNIT_COVERING_BIT)
+#define BTL_UNIT_DODGED_BIT        26 /* dodged the current command and stepped back (btl_applyCalcResult; btl_finishCmd moves it home) */
+#define BTL_UNIT_DODGED            (1 << BTL_UNIT_DODGED_BIT)
+#define BTL_UNIT_DEATH_CRY_BIT     27 /* death cry played once (btl_playDeathCry) */
+#define BTL_UNIT_DEATH_CRY         (1 << BTL_UNIT_DEATH_CRY_BIT)
+#define BTL_UNIT_TARGETABLE_BIT    28 /* can be targeted (BTL_ATTR_TARGETABLE, btlui_applyTargetable) */
+#define BTL_UNIT_TARGETABLE        (1 << BTL_UNIT_TARGETABLE_BIT)
+#define BTL_UNIT_TARGETED_BIT      29 /* under the target cursor (btlui_setDefaultTargets, btlui_cycleTarget, btlui_clearTargeted) */
+#define BTL_UNIT_TARGETED          (1 << BTL_UNIT_TARGETED_BIT)
+#define BTL_UNIT_TRANCE_ENABLED_BIT 30 /* the trance gauge fills (btl_gainTrance) and shows (btlui_updatePanel); party only, off before the story allows it */
+#define BTL_UNIT_TRANCE_ENABLED    (1 << BTL_UNIT_TRANCE_ENABLED_BIT)
 
 /* ability/command calculation context */
 /* BtlCmd seen by the formulas (btl_calcCmd's sub = the BtlCmd; flags = BtlCmd.info.w) */
@@ -3429,7 +3471,7 @@ BtlUnit *btlui_findKoUnit(u8);
 static inline BtlUnit *find_target(void) {
     BtlUnit *u;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if ((u->flags & 0x30000000) == 0x30000000) {
+        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
             return u;
         }
     }
@@ -3561,7 +3603,7 @@ s32 chr_getDefaultSet(Character *);
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
     for (p = g_gameState->gameData->ctx.battle->unitList; p != NULL; p = p->next) {
-        if ((p->flags & 0x30000000) == 0x30000000) {
+        if ((p->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
             return p;
         }
     }
@@ -3577,7 +3619,7 @@ static inline s32 btlui_getTargeting_inline(void) {
     }
     n = 0;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
-        if ((u->flags & 0x30000000) == 0x30000000) {
+        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
             n++;
         }
     }
@@ -3592,7 +3634,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
     if (u->hp == 0 || (u8)btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) != 0) {
         return 0;
     }
-    if ((g_btlRewards.expMask >> ((u8)u->flags >> 5)) & 1) {
+    if ((g_btlRewards.expMask >> ((u8)u->flags >> BTL_UNIT_SLOT_SHIFT)) & 1) {
         return 1;
     }
     return 0;

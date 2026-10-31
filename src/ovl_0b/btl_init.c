@@ -30,13 +30,13 @@ void btl_initParty(Battle *arg0) {
     k = arg0->scene.flags & 3;
     if (k == 0) {
         for (u = arg0->unitList; u != NULL; u = u->next) {
-            if (u->flags & 1) {
+            if (u->flags & BTL_UNIT_PARTY) {
                 u->atb = 0;
             }
         }
     } else if (k == 1) {
         for (u = arg0->unitList; u != NULL; u = u->next) {
-            if (!(u->flags & 1)) {
+            if (!(u->flags & BTL_UNIT_PARTY)) {
                 u->atb = 0;
             }
         }
@@ -67,16 +67,16 @@ void btl_initEnemies(Battle *arg0) {
         }
         k = i;
         u->unitBit = 0x10 << k;
-        u->flags &= ~1;
-        u->flags = (u->flags & ~0x1E) | ((k & 0xF) << 1);
-        u->flags = (u->flags & ~0xE0) | (((k + 4) & 7) << 5);
-        u->flags &= ~0x40000000;
-        u->flags = (u->flags & ~0x800000) | (((e->flags >> 9) & 1) << 23);
+        u->flags &= ~BTL_UNIT_PARTY;
+        u->flags = (u->flags & ~BTL_UNIT_INDEX_MASK) | ((k & 0xF) << BTL_UNIT_INDEX_SHIFT);
+        u->flags = (u->flags & ~BTL_UNIT_SLOT_MASK) | (((k + 4) & 7) << BTL_UNIT_SLOT_SHIFT);
+        u->flags &= ~BTL_UNIT_TRANCE_ENABLED;
+        u->flags = (u->flags & ~BTL_UNIT_MODEL_PART) | (((e->flags >> 9) & 1) << BTL_UNIT_MODEL_PART_BIT);
         btl_resetUnit(u, &g_gameState->gameData->npcModels[k]);
         u->home = (struct BtlUnit98 *)&e->home;
         u->weaponModel = NULL;
         u->support = (u32 *)g_btlEnemySupport;
-        u->flags &= ~0x40000;
+        u->flags &= ~BTL_UNIT_WEAK_STANCE;
         if (prev != NULL) {
             prev->next = u;
         }
@@ -99,17 +99,17 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
 
     u->unitBit = 1 << n;
     g_btlRewards.expMask |= 1 << (s = slot);
-    u->flags |= 1;
-    u->flags = (u->flags & ~0x1E) | ((c->info.w & 0xF) << 1);
-    u->flags |= 0x10000000;
-    u->flags = (u->flags & ~0xE0) | ((s & 7) << 5);
-    u->flags &= ~0x800000;
+    u->flags |= BTL_UNIT_PARTY;
+    u->flags = (u->flags & ~BTL_UNIT_INDEX_MASK) | ((c->info.w & 0xF) << BTL_UNIT_INDEX_SHIFT);
+    u->flags |= BTL_UNIT_TARGETABLE;
+    u->flags = (u->flags & ~BTL_UNIT_SLOT_MASK) | ((s & 7) << BTL_UNIT_SLOT_SHIFT);
+    u->flags &= ~BTL_UNIT_MODEL_PART;
     if (g_evtGlobalVars.b[0x10] == 0 || (c->classFlags & 0x10) ||
-        (((u->flags >> 1) & 0xF) == CHR_DAGGER && g_evtGlobalVars.b[0x11] != 0)) {
+        (BTL_UNIT_INDEX(u->flags) == CHR_DAGGER && g_evtGlobalVars.b[0x11] != 0)) {
         u->trance = 0;
-        u->flags &= ~0x40000000;
+        u->flags &= ~BTL_UNIT_TRANCE_ENABLED;
     } else {
-        u->flags |= 0x40000000;
+        u->flags |= BTL_UNIT_TRANCE_ENABLED;
         u->trance = c->trance;
     }
     u->baseBone = 0;
@@ -165,8 +165,8 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         btl_setKoMotion(u);
         return;
     }
-    u->flags = (u->flags & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
-    u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
+    u->flags = (u->flags & ~BTL_UNIT_WEAK_STANCE) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << BTL_UNIT_WEAK_STANCE_BIT);
+    u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
     u->obj->frame = 0;
 }
 
@@ -197,7 +197,7 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
             u->weapon = NULL;
             btl_initDoomCount((Unk800C09D8 *)u);
             btl_hideMeshes(u, u->hiddenMeshes);
-            if ((u->flags >> 23) & 1) {
+            if ((u->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
                 u->atb = 0;
                 u->atbSpeed = 0;
                 memset(&r, 0, 8);
@@ -253,19 +253,19 @@ void btl_resetUnit(BtlUnit *arg0, ModelSlot *arg1) {
     arg0->tickMpDamage = 0;
     arg0->koState = 0;
     f = arg0->flags;
-    f &= ~0x20000;
-    f &= ~0x80000;
-    f &= ~0x100000;
-    f &= ~0x200000;
-    f &= ~0x400000;
-    f |= 0x1000000;
-    f &= ~0x2000000;
-    f &= ~0x4000000;
-    f &= ~0x8000000;
-    f &= ~0x20000000;
+    f &= ~BTL_UNIT_HIT_MOTION;
+    f &= ~BTL_UNIT_CMD_WAITING;
+    f &= ~BTL_UNIT_KILLED;
+    f &= ~BTL_UNIT_MOTION_HELD;
+    f &= ~BTL_UNIT_HIDDEN;
+    f |= BTL_UNIT_SHADOW;
+    f &= ~BTL_UNIT_COVERING;
+    f &= ~BTL_UNIT_DODGED;
+    f &= ~BTL_UNIT_DEATH_CRY;
+    f &= ~BTL_UNIT_TARGETED;
     arg0->flags = f;
     arg1->unit = arg0;
-    if ((arg0->flags >> 23) & 1) {
+    if ((arg0->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
         arg0->model = g_gameState->gameData->npcModels->model;
         arg0->obj = g_gameState->gameData->npcModels->actor;
     } else {
@@ -293,8 +293,8 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
     s32 id;
     arg1->weapon = (u8 *)&g_weaponTable[arg0->equip[0]];
     id = ((Unk8006E0E8 *)arg1->weapon)->modelId | DB_MODEL;
-    arg1->weaponModel->header = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->flags >> 5);
-    btl_getWeaponTexInfo(id, (u8)arg1->flags >> 5, &a, &b, &c);
+    arg1->weaponModel->header = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->flags >> BTL_UNIT_SLOT_SHIFT);
+    btl_getWeaponTexInfo(id, (u8)arg1->flags >> BTL_UNIT_SLOT_SHIFT, &a, &b, &c);
     btl_applyModelTextures(arg1->weaponModel, (s16 *)a, (s16 *)b);
     btl_applyBgLight(arg1->weaponModel);
     arg1->weaponModel->motion = 0;
