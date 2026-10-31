@@ -232,7 +232,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
         w->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x88), 1);
         w->model90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x9B), 1);
         w->model94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x91), 1);
-        ex->Hi_SetSummonMotion(((Fx17d5Summon *)env->loader)->unk54->unk1A4, ((Fx17d5Summon *)env->loader)->unk60);
+        ex->Hi_SetSummonMotion(((Fx17d5Summon *)env->loader)->unk54->motion1A4, ((Fx17d5Summon *)env->loader)->unk60);
         ex->Hi_SetSummonMotFrame(((Fx17d5Summon *)env->loader)->unk60, 3);
         w->unk64.vx = 0;
         w->unk64.vy = -0x400;

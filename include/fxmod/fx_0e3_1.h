@@ -104,8 +104,8 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x198];
-    BtlUnit9CC *unk198;
-    BtlUnit9CC *unk19C;
+    BtlUnit9CC *motion198;
+    BtlUnit9CC *motion19C;
 } Fx0e31SummonData;
 
 typedef struct {

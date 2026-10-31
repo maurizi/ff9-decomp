@@ -198,7 +198,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0x30:
         work->unk160 = 1;
         work->unk164 = 0;
-        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->unk54->unk180[work->unk160],
+        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->unk54->motion180[work->unk160],
                                ((Fx114Summon80 *)env->loader)->unk60);
         break;
     case 0x61:
@@ -209,7 +209,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0x62:
         work->unk160 = 2;
         work->unk164 = 0;
-        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->unk54->unk180[work->unk160],
+        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->unk54->motion180[work->unk160],
                                ((Fx114Summon80 *)env->loader)->unk60);
         break;
     case 0x7A:
@@ -220,7 +220,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0x7B:
         work->unk160 = 3;
         work->unk164 = 0;
-        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->unk54->unk180[work->unk160],
+        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->unk54->motion180[work->unk160],
                                ((Fx114Summon80 *)env->loader)->unk60);
         break;
     case 0xA7:

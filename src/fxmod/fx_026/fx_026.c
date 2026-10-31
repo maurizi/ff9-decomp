@@ -207,7 +207,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 40) {
             work->unk0 = 1;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(((Fx026Summon *)env->loader)->unk54->unk180, ((Fx026Summon *)env->loader)->unk60);
+            ex->Hi_SetSummonMotion(((Fx026Summon *)env->loader)->unk54->motion180, ((Fx026Summon *)env->loader)->unk60);
             ex->Hi_SetSummonMotFrame(((Fx026Summon *)env->loader)->unk60, 0);
             ex->Hi_StartSummonTexAnim(((Fx026Summon *)env->loader)->unk60, 0, 0);
         }

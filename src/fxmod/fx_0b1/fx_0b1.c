@@ -172,7 +172,7 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             D_801E8D3C[5] = 0x10;
             break;
         case 9:
-            ex->Hi_SetSummonMotion(SUMMON0B1(env)->unk54->unk180, SUMMON0B1(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON0B1(env)->unk54->motion180, SUMMON0B1(env)->unk60);
             D_801E8D3C[0] = 1;
             D_801E8D5C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&D_801E8D64);
             break;

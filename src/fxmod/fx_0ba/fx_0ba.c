@@ -122,7 +122,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x20) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->unk180, ((Fx0baSummon *)env->loader)->unk60);
+                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->motion180, ((Fx0baSummon *)env->loader)->unk60);
                 ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->unk60, 0);
             }
             break;
@@ -167,7 +167,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ShowSummonModelMesh(((Fx0baSummon *)env->loader)->unk60, 2);
             }
             if (frame == 0x3B) {
-                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->unk184, ((Fx0baSummon *)env->loader)->unk60);
+                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->motion184, ((Fx0baSummon *)env->loader)->unk60);
                 ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->unk60, 0);
             }
             if (frame >= 0x3C) {
@@ -228,7 +228,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 D_801ECAB8.vz = 0;
                 D_801ECAB8.vy = 0;
                 D_801ECAB8.vx = 0;
-                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->unk188, ((Fx0baSummon *)env->loader)->unk60);
+                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->motion188, ((Fx0baSummon *)env->loader)->unk60);
                 ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->unk60, 0);
                 work->unk18.vx = work->unk48.vx;
                 work->unk18.vy = work->unk48.vy;

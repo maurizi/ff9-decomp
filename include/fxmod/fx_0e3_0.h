@@ -71,12 +71,12 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *unk180;
-        BtlUnit9CC *unk184;
-        BtlUnit9CC *unk188;
-        BtlUnit9CC *unk18C;
-        BtlUnit9CC *unk190;
-        BtlUnit9CC *unk194;
+        BtlUnit9CC *motion180;
+        BtlUnit9CC *motion184;
+        BtlUnit9CC *motion188;
+        BtlUnit9CC *motion18C;
+        BtlUnit9CC *motion190;
+        BtlUnit9CC *motion194;
     } *unk54;
     u8 pad58[8];
     s32 unk60; /* summon model */

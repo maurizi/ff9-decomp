@@ -451,7 +451,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk10.vz = work->unk8.vz;
         work->unk10.vy -= 0x3000;
         work->unk10.vz -= 0x2000;
-        ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk198, SUMMON(env)->unk60);
+        ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion198, SUMMON(env)->unk60);
         ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0);
         work->unk94.vz = work->unk94.vy = work->unk94.vx = 0x1000;
         work->rot80.vx = -0x400;
@@ -582,7 +582,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk0 = 2;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk19C, SUMMON(env)->unk60);
+                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion19C, SUMMON(env)->unk60);
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0, 0xFF, 0xFF);
             }

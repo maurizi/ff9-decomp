@@ -49,10 +49,10 @@ extern BtlModel fx_0b3_effModels[];
 
 typedef struct {
     u8 pad0[0x184];
-    BtlUnit9CC *unk184;
-    BtlUnit9CC *unk188;
-    BtlUnit9CC *unk18C;
-    BtlUnit9CC *unk190;
+    BtlUnit9CC *motion184;
+    BtlUnit9CC *motion188;
+    BtlUnit9CC *motion18C;
+    BtlUnit9CC *motion190;
 } Fx0b3Unit;
 
 typedef struct {

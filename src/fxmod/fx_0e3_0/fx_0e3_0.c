@@ -281,7 +281,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (frame >= 0x18) {
             if (frame == 0x18) {
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk180, SUMMON(env)->unk60);
+                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion180, SUMMON(env)->unk60);
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0);
             }
             r = frame - 0x18;
@@ -392,7 +392,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame >= 0x45) {
             work->unk0 = 10;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk184, SUMMON(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion184, SUMMON(env)->unk60);
             ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0);
             work->unk30.vx = 0;
             work->unk30.vy = 0;
@@ -465,7 +465,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame >= 0x18) {
             work->unk0 = 1;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk180, SUMMON(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion180, SUMMON(env)->unk60);
             work->unk1C.vx = -0x3000;
             work->rot28.vz = 0;
             work->rot28.vy = 0;
@@ -560,7 +560,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk10.vz = D_801EA7E8.vz + 0x5000;
             work->unk50 = 1;
             work->unk10.vy -= 0x2000;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk188, SUMMON(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion188, SUMMON(env)->unk60);
             ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0);
             work->unk1C.vx = 0x1000;
             work->unk1C.vy = 0x1000;
@@ -608,7 +608,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk0 = 4;
             entry->frame = -1;
             work->unk48 = 0;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk18C, SUMMON(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion18C, SUMMON(env)->unk60);
             ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0xA);
             work->unk30.vy = -0x4966;
             work->unk30.vx = 0;
@@ -663,7 +663,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame >= 0x1E) {
             work->unk0 = 5;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk194, SUMMON(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion194, SUMMON(env)->unk60);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&work->pos40);
             work->emit4C = NULL;
             work->pos40.vy -= 0x80;

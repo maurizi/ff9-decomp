@@ -171,7 +171,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[2].vx = b.vx;
             env->camera->points[2].vy = b.vy;
             env->camera->points[2].vz = b.vz;
-            ex->Hi_SetSummonMotion(((Fx09aSummon *)env->loader)->unk54->unk180, ((Fx09aSummon *)env->loader)->unk60);
+            ex->Hi_SetSummonMotion(((Fx09aSummon *)env->loader)->unk54->motion180, ((Fx09aSummon *)env->loader)->unk60);
             ex->Hi_SetSummonMotFrame(((Fx09aSummon *)env->loader)->unk60, 6);
             work->unk3C[2] = 0x1000;
             work->unk3C[1] = 0x1000;

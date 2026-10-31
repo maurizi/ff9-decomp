@@ -496,7 +496,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x20) {
                 work->unk0 = 2;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotion(((Fx0e10Summon *)env->loader)->unk54->unk180,
+                ex->Hi_SetSummonMotion(((Fx0e10Summon *)env->loader)->unk54->motion180,
                                        ((Fx0e10Summon *)env->loader)->unk60);
                 ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->unk60, 0);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);

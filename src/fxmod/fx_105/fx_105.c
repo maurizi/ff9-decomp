@@ -371,7 +371,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk30 = 0x78;
             break;
         case 0xF:
-            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->unk180[0], SUMMON105(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->motion180[0], SUMMON105(env)->unk60);
             work->unk0 = 1;
             break;
         case 0x1E:
@@ -395,10 +395,10 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk24 = 0x30;
             break;
         case 0x55:
-            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->unk180[1], SUMMON105(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->motion180[1], SUMMON105(env)->unk60);
             break;
         case 0x7F:
-            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->unk180[2], SUMMON105(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->motion180[2], SUMMON105(env)->unk60);
             break;
         case 0x93:
             ex->btlfx_stopEmitter(work->emit48);
@@ -409,7 +409,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk24 = 0;
             work->unk30 = 0;
             work->unk0 = 0;
-            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->unk180[3], SUMMON105(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->motion180[3], SUMMON105(env)->unk60);
             break;
         case 0x9C ... 0xA6:
             ex->Hi_SetSummonMotFrame(SUMMON105(env)->unk60, 0);
@@ -431,13 +431,13 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk28 = 8;
             break;
         case 0xE7:
-            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->unk180[4], SUMMON105(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->motion180[4], SUMMON105(env)->unk60);
             break;
         case 0xEC:
             work->unk1C = 0x10;
             break;
         case 0xFC:
-            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->unk180[5], SUMMON105(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->motion180[5], SUMMON105(env)->unk60);
             for (i = 0; i < env->targets->targetCount; i++) {
                 work->unk1B8[i] = ex->btlfx_holdMotion(i);
             }
@@ -457,7 +457,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x138:
-            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->unk180[6], SUMMON105(env)->unk60);
+            ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->motion180[6], SUMMON105(env)->unk60);
             ex->btlfx_stopEmitter(work->emitA8);
             ex->btlfx_stopEmitter(work->emitAC);
             ex->btlfx_stopEmitter(work->emitB0);

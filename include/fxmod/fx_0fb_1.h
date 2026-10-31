@@ -116,7 +116,7 @@ typedef struct {
     u8 pad3C[0x54 - 0x3C];
     struct {
         u8 pad0[0x18C];
-        BtlUnit9CC *unk18C;
+        BtlUnit9CC *motion18C;
     } *unk54;
     u8 pad58[8];
     s32 unk60;

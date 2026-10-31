@@ -62,8 +62,8 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x19C];
-        BtlUnit9CC *unk19C;
-        BtlUnit9CC *unk1A0;
+        BtlUnit9CC *motion19C;
+        BtlUnit9CC *motion1A0;
     } *unk54;
     u8 pad58[8];
     s32 unk60; /* summon model */

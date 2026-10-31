@@ -110,9 +110,9 @@ s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 typedef struct {
     u8 pad0[0x180];
-    BtlUnit9CC *unk180;
-    BtlUnit9CC *unk184;
-    BtlUnit9CC *unk188;
+    BtlUnit9CC *motion180;
+    BtlUnit9CC *motion184;
+    BtlUnit9CC *motion188;
 } Fx0baUnit;
 typedef struct {
     u8 pad0[0x54];

@@ -539,13 +539,13 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0x2E:
             work->unk128 = 0;
             work->unk12C = 0;
-            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->unk54->unk180[0], ((Fx0e2Summon *)env->loader)->unk60);
+            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->unk54->motion180[0], ((Fx0e2Summon *)env->loader)->unk60);
             break;
         case 0x97:
             work->rot3C.vx = 0x181;
             work->unk128 = 1;
             work->unk12C = 0;
-            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->unk54->unk180[1], ((Fx0e2Summon *)env->loader)->unk60);
+            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->unk54->motion180[1], ((Fx0e2Summon *)env->loader)->unk60);
             break;
         }
         switch (frame) {

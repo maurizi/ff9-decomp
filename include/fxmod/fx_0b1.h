@@ -31,7 +31,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 typedef struct {
     u8 pad0[0x180];
-    BtlUnit9CC *unk180;
+    BtlUnit9CC *motion180;
 } Fx0b1SummonData;
 
 typedef struct {

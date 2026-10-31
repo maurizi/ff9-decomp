@@ -219,7 +219,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x84), 1);
         work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 0);
         work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x86), 1);
-        ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk19C, SUMMON(env)->unk60);
+        ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion19C, SUMMON(env)->unk60);
         work->unk48.vx = 0;
         work->unk48.vy = -0x400;
         work->unk48.vz = 0;
@@ -271,7 +271,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk0 = 1;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk1A0, SUMMON(env)->unk60);
+                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1A0, SUMMON(env)->unk60);
                 work->rot34.vx = 0;
                 work->rot34.vy = 0;
                 work->rot34.vz = 0;
@@ -347,7 +347,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x14) {
                 work->unk0 = 3;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk1A0, SUMMON(env)->unk60);
+                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1A0, SUMMON(env)->unk60);
                 ex->btlfx_initParticleSystem();
                 work->unk3C.vx = work->unk3C.vz = 0x1800;
                 work->rot34.vx = 0;
