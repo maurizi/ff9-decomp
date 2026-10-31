@@ -1179,9 +1179,9 @@ FieldLight *fld_findGlobalLights(Unk800B3254 *arg0, FieldLight **arg1, FieldLigh
     }
     p = &arg0->lights[arg0->lightCount - 1];
     do {
-        if (p->type == 1) {
+        if (p->type == FLD_LIGHT_DEFAULT) {
             *arg1 = p;
-        } else if (p->type == 2) {
+        } else if (p->type == FLD_LIGHT_DIR) {
             *arg2 = p;
         }
         p--;
@@ -1203,7 +1203,7 @@ FieldLight *fld_findFloorLight(Unk800B3254 *arg0, FieldEvtCtx *arg1, s16 *arg2) 
         }
         p = &arg0->lights[arg0->lightCount - 1];
         do {
-            if (p->type == 0) {
+            if (p->type == FLD_LIGHT_FLOOR) {
                 v = p->floors;
                 for (n = 3; n >= 0; n--) {
                     if ((v & 0xFF) == *arg2) {

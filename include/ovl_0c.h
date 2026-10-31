@@ -508,6 +508,10 @@ typedef struct {
     u8 pad5[3];
     WinDef panels[6];
 } MenuMain;
+/* MenuMain.state (menuMain_selectCommand) */
+#define MENUMAIN_COMMAND 0 /* picking a command */
+#define MENUMAIN_MEMBER 1 /* picking the party member for it (menuScreen_needsMember) */
+#define MENUMAIN_ORDER 2 /* Order: swapping party members */
 
 /* map cell (4 bytes) */
 typedef struct {

@@ -272,6 +272,11 @@ typedef struct {
     s16 areaId;
     s32 savedFlags[2]; /* saved g_padPortMask */
 } FieldDiscChange;
+/* FieldDiscChange.mode: index into g_fieldDiscChangeModes (fld_discChangeSetMode) */
+#define FLD_DISC_PROMPT 1 /* fld_discPrompt*: the two-choice prompt, entered by fld_discChangeEnter */
+#define FLD_DISC_SAVE 2 /* prompt choice 0: menu 4 (save, ovl_39), back to the prompt on close */
+#define FLD_DISC_SWAP 3 /* prompt choice 1: menu 8 ("Change to DISC", ovl_3e), then FLD_DISC_DONE */
+#define FLD_DISC_DONE 4 /* ends fld_runDiscChange */
 
 typedef struct {
     void (*enter)(void); /* enter */
@@ -485,6 +490,9 @@ typedef struct BgEntry {
     s32 dataOffset;
     s32 dataSize;
 } BgEntry; /* 0xC */
+/* BgEntry.type (0x40 also exists: fldbg_draw's dead switch) */
+#define BGENT_OVERLAY_ANIM 0x10 /* fldbg_initEffectList: one per FLDBG_OVL_ANIMATED overlay */
+#define BGENT_CLUT_FADE 0x80 /* fldbg_startClutFade */
 
 typedef struct {
     u8 *bufIndex; /* -> draw buffer index */
@@ -505,13 +513,17 @@ typedef struct {
 
 /* field light (12 bytes) */
 typedef struct {
-    s8 type; /* type: 1, 2 */
+    s8 type; /* FLD_LIGHT_* */
     u8 pad1;
     s8 shadowShade; /* sprite colour offsets */
     s8 shadowSize;
     u32 color; /* colour */
-    s32 floors; /* 4 floor ids (type 0) */
+    s32 floors; /* 4 floor ids (FLD_LIGHT_FLOOR) */
 } FieldLight;
+/* FieldLight.type (fld_findGlobalLights, fld_findFloorLight, fld_applyLights) */
+#define FLD_LIGHT_FLOOR 0 /* applies to objects standing on one of its floors */
+#define FLD_LIGHT_DEFAULT 1 /* fallback colour/shadow when no floor light matches */
+#define FLD_LIGHT_DIR 2 /* used instead for objects with FLD_OBJ_DIR_LIGHT */
 
 /* 8-byte entries following Unk800B3254.unkC[unk6] */
 typedef struct {
@@ -683,6 +695,10 @@ typedef struct {
     u8 pad5[3];
     WinDef panels[6];
 } MenuMain;
+/* MenuMain.state (menuMain_selectCommand) */
+#define MENUMAIN_COMMAND 0 /* picking a command */
+#define MENUMAIN_MEMBER 1 /* picking the party member for it (menuScreen_needsMember) */
+#define MENUMAIN_ORDER 2 /* Order: swapping party members */
 
 /* file 0x12xxxx lookup table (fld_getModelAnimId) */
 typedef struct {

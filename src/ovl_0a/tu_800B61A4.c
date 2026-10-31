@@ -2576,7 +2576,7 @@ s32 fldbg_initEffectList(void) {
     g_fieldBgCtx.entries = (BgEntry *)g_fieldBgCtx.work;
     for (; i < n; i++) {
         if (trk[i].flags & FLDBG_OVL_ANIMATED) {
-            g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].type = 0x10;
+            g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].type = BGENT_OVERLAY_ANIM;
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].overlay = i;
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].dataOffset = 0;
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].dataSize = 0;
@@ -2796,7 +2796,7 @@ s32 fldbg_updateFollowOverlays(void) {
         f = g_fieldBgFollowOverlays;
         for (i = 0; i < g_fieldBgFollowOverlayCount; i++, f++) {
             o = (BgOverlay *)((u16)f->overlay * sizeof(BgOverlay) + (u32)objs);
-            if ((o->flags & 2) && o->cameraId == st->cameraId) {
+            if ((o->flags & FLDBG_OVL_VISIBLE) && o->cameraId == st->cameraId) {
                 x = st->scroll.x + (sx - bg->posX - (f->offsetX + 0xA0));
                 y = f->offsetY;
                 o->x = x;
@@ -3573,7 +3573,7 @@ s32 fldbg_draw(void) {
     do {
         for (i = 0; i < g_fieldBgCtx.entryCount; i++) {
             switch (g_fieldBgCtx.entries[i].type) {
-            case 0x10:
+            case BGENT_OVERLAY_ANIM:
                 j = 1;
                 break;
             case 0x40:
@@ -3593,7 +3593,7 @@ s32 fldbg_draw(void) {
     h->screenY = h->posY - (s16)(c->scroll.y - 0x70);
     o = (BgOverlay *)((u8 *)h + h->overlayOffset);
     for (j = 0; j < h->overlayCount; j++) {
-        if ((o[j].flags & 2) && o[j].cameraId == c->cameraId) {
+        if ((o[j].flags & FLDBG_OVL_VISIBLE) && o[j].cameraId == c->cameraId) {
             fldbg_drawOverlay(&o[j], g_fieldBgCtx.overlayRgb + j * 3);
         }
     }
@@ -3790,7 +3790,7 @@ s32 fldbg_startClutFade(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5,
     n = (u8)arg4 - t;
     size = n * 4 + 0x2C;
     e = &g_fieldBgCtx.entries[arg0];
-    e->type = 0x80;
+    e->type = BGENT_CLUT_FADE;
     e->dataSize = size;
     h = g_fieldBgCtx.data;
     q = (u8 *)h + h->overlayOffset;
@@ -4438,7 +4438,7 @@ s32 fldbg_scanEntries(void) {
     ret = 1;
     for (i = 0; i < g_fieldBgCtx.entryCount; i++) {
         type = g_fieldBgCtx.entries[i].type;
-        if (type == 0x10) {
+        if (type == BGENT_OVERLAY_ANIM) {
             type = 0;
         } else if (type == 0x40) {
             type = ret;
