@@ -32,7 +32,7 @@ void menuCard_init(void) {
     menuCard_initFlip();
     while (cd_getState()) {
     }
-    s_menuCard.imageFile = file_find(1, CARD_IMAGE_FILE);
+    s_menuCard.imageFile = file_find(DIR_COMMON, FILE_CARD_IMAGES);
     for (i = 0; i < 4; i++) {
         id = s_menuCardRepeatIds[i];
         s_menuCard.saved[i].repeatDelay = pad_getRepeatDelay(0, id);
@@ -237,7 +237,7 @@ void menuCard_drawCardStack(s32 id) {
             ui_drawSprite(r->x + 0x5E, r->y + 0x41, 0x14, b, 0);
         }
         i = 0;
-        menuCard_drawSprite(r->x + 0x10, r->y + 0x50, 0x14, CARD_SPR_NAME_ICON, 0x64808080);
+        menuCard_drawSprite(r->x + 0x10, r->y + 0x50, 0x14, CARD_SPR_NAME_ICON, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
         text_drawBlock(r->x + 0x20, r->y + 0x50, 0x14, name, 0);
 
         while (i < n) {
@@ -379,7 +379,7 @@ void menuCard_drawFace(s32 x, s32 y, s32 z, s32 dim) {
 
     setlen(g_primPtr, 4);
     c = 0x80 - dim * 0x16;
-    rgbc = c | (c << 8) | (c << 16) | 0x64000000;
+    rgbc = c | (c << 8) | (c << 16) | GPU_CODE(GPU_SPRT);
     p = (SprtWords *)g_primPtr;
     p->rgbc = rgbc;
     p->wh = 0x2F0026;
@@ -644,7 +644,7 @@ void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
         return;
     }
     c = 0x80 - dim * 0x16;
-    menuCard_drawSprite(x, y, 0x14, CARD_SPR_BACK, c | (c << 8) | (c << 16) | 0x64000000);
+    menuCard_drawSprite(x, y, 0x14, CARD_SPR_BACK, c | (c << 8) | (c << 16) | GPU_CODE(GPU_SPRT));
 }
 
 void menuCard_drawCell(s32 x, s32 y, s32 z, s32 id) {
@@ -662,17 +662,17 @@ void menuCard_drawCell(s32 x, s32 y, s32 z, s32 id) {
         icon = card_getRarity(id) + CARD_SPR_CELL_STACK;
         d = n % 10;
         q = n / 10;
-        menuCard_drawSprite(x + 9, y + 7, 0x14, d + CARD_SPR_DIGIT, 0x64808080);
+        menuCard_drawSprite(x + 9, y + 7, 0x14, d + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
         if (n >= 10) {
             d = q % 10;
-            menuCard_drawSprite(x + 5, y + 7, 0x14, d + CARD_SPR_DIGIT, 0x64808080);
+            menuCard_drawSprite(x + 5, y + 7, 0x14, d + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
         }
         if (n >= 100) {
             d = n / 100;
-            menuCard_drawSprite(x + 1, y + 7, 0x14, d + CARD_SPR_DIGIT, 0x64808080);
+            menuCard_drawSprite(x + 1, y + 7, 0x14, d + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
         }
     }
-    menuCard_drawSprite(x, y, 0x14, icon, 0x64808080);
+    menuCard_drawSprite(x, y, 0x14, icon, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
 }
 
 void menuCard_drawArrows(s32 x, s32 y, s32 otz, CardEntry *card) {
@@ -883,7 +883,7 @@ s32 menuCard_decodeRle(u8 *src, u8 *dst) {
 }
 
 u32 menuCard_getStatsColor(void) {
-    return 0x64808080;
+    return GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
 }
 
 INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", s_menuCardImage1);

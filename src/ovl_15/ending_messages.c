@@ -131,7 +131,7 @@ s32 ending_messagesInit(void) {
 
 void ending_messagesClearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], OT_LEN);
     g_messagesPrim = g_messagesPrims[g_gameState->gameData->drawBuf];
 }
 
@@ -145,7 +145,7 @@ void ending_messagesSwap(void) {
     PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
     i = ctx->drawBuf;
-    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    DrawOTagEnv(ctx->ot[i] + OT_LAST, &g_gameState->drawEnv[i]);
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);
     g_messagesUnused = 0;
@@ -208,7 +208,7 @@ void *ending_drawGlyph(s32 x, s32 y, u32 *ot, u32 a, s32 *out, SprtWords *p) {
     u32 n;
 
     setlen(p, 4);
-    p->rgbc = 0x64808080;
+    p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = ((x + ((a >> 20) & 3)) & 0xFFFF) | (y << 16);
     p->uvclut = (a & 0x40FFFF) + 0x38270000;
     p->wh = ((a >> 16) & 0xF) | 0xD0000;

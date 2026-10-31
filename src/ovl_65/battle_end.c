@@ -8,7 +8,7 @@ void battleEnd_main(void) {
     s = g_gameState->gameData->ctx.ovl65->work;
     battleEnd_init();
     do {
-        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
         pad_update();
         switch (battleEnd_update()) {
         case 1:
@@ -28,7 +28,7 @@ void battleEnd_main(void) {
         PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
         ctx = g_gameState->gameData;
         i = ctx->drawBuf;
-        DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+        DrawOTagEnv(ctx->ot[i] + OT_LAST, &g_gameState->drawEnv[i]);
         g_gameState->gameData->drawBuf ^= 1;
         gfx_setBuffer(g_gameState->gameData->drawBuf);
     } while (g_gameState->mode == 8);
@@ -52,7 +52,7 @@ void battleEnd_init(void) {
         }
     }
     if (g_gameState->gameData->battleFlags & 1) {
-        e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | 0x50000);
+        e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | DB_FIELD);
         if (e != NULL) {
             g_gameState->gameData->fieldAreaId = e->unkC;
             g_gameState->gameData->sceneSector[1] = e->sector;
@@ -97,13 +97,13 @@ s32 battleEnd_loadDb(void) {
     FileEntry *e;
     PreloadEntry *f;
 
-    if (preload_isReady(0x2713)) {
-        f = preload_find(0x2713);
+    if (preload_isReady(FILE_BTL_END_DB)) {
+        f = preload_find(FILE_BTL_END_DB);
         file_copyViaVram(g_modeHeap, f->dest, f->loaded, 0);
-        preload_remove(0x2713);
+        preload_remove(FILE_BTL_END_DB);
         DrawSync(0);
     } else {
-        e = file_find(1, 0x2713);
+        e = file_find(DIR_COMMON, FILE_BTL_END_DB);
         cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead)) {
         }
@@ -139,23 +139,23 @@ void battleEnd_preloadScene(void) {
     if (g_gameState->gameData->battleResult == 6) {
         return;
     }
-    id = 0x1000C;
+    id = OVL_KEY(OVL_WORLD);
     if (b->unk6 == 1) {
-        id = 0x1000A;
+        id = OVL_KEY(OVL_FIELD);
     }
-    f = file_find(0, id);
+    f = file_find(DIR_OVERLAYS, id);
     dst = b->unk1C;
     size = (f->unkC - f->sector) << 11;
     preload_setEntry(preload_add(), 0, id, (s32)dst, size, size, f->sector, size);
     dst += size;
     if (b->unk6 == 1) {
-        id = 0x2714;
+        id = FILE_FLD_COMMON;
     } else if (g_evtGlobalVars.h[0] >= 0x2B52) {
-        id = 0x2716;
+        id = FILE_WM_DATA_LATE;
     } else {
-        id = 0x2712;
+        id = FILE_WM_DATA;
     }
-    f = file_find(1, id);
+    f = file_find(DIR_COMMON, id);
     k = -0x146F00;
     size = (f->unkC - f->sector) << 11;
     at = g_loadAreaEnd - (dst + k);
@@ -166,14 +166,14 @@ void battleEnd_preloadScene(void) {
         return;
     }
     sector = g_gameState->gameData->sceneSector[0];
-    id = g_gameState->gameData->fieldAreaId | 0x60000;
+    id = g_gameState->gameData->fieldAreaId | DB_AREA;
     size = g_gameState->gameData->sceneSectors[0] << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     dst += size;
     sector = g_gameState->gameData->sceneSector[1];
-    id = g_gameState->gameData->fieldId | 0x50000;
+    id = g_gameState->gameData->fieldId | DB_FIELD;
     size = g_gameState->gameData->sceneSectors[1] << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
@@ -181,7 +181,7 @@ void battleEnd_preloadScene(void) {
     g = g_gameState->gameData;
     if ((s16)g->fieldId == g->savedMusicField && g->savedMusicFileSector != -1) {
         sector = g->savedMusicFileSector;
-        id = g->savedMusicId | 0x70000;
+        id = g->savedMusicId | DB_MUSIC;
         preload_setEntry(preload_add(), 1, id, 0, 0, 0, sector, -1);
     }
 }
@@ -332,7 +332,7 @@ void rewards_drawPanelShade(RECT *r) {
     u8 *p = s_rewards.prim;
 
     setlen(p, 3);
-    ((TileWords *)p)->rgbc = 0x62202020;
+    ((TileWords *)p)->rgbc = GPU_RGBC(GPU_TILE | GPU_ABE, 0x202020);
     ((TileWords *)p)->xy = ((r->x + 2) & 0xFFFF) | ((r->y + 2) << 16);
     ((TileWords *)p)->wh = (r->w - 4) | ((r->h - 4) << 16);
     addPrim(g_ot + 11, p);
@@ -974,7 +974,7 @@ void rewards_drawLearnWin(Window *w) {
     text_drawBlock(v->x + 0x16, v->y + 6, w->otz, name, 0);
     setlen(g_primPtr, 3);
     t = (TileWords *)g_primPtr;
-    t->rgbc = 0x62101010;
+    t->rgbc = GPU_RGBC(GPU_TILE | GPU_ABE, 0x101010);
     t->xy = (v->x + 4) | ((v->y + 4) << 16);
     t->wh = (v->w - 4) | ((v->h - 4) << 16);
     addPrim(&g_ot[w->otz], t);
@@ -1054,7 +1054,7 @@ void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
         xy = (x & 0xFFFF) | (y << 16);
         pkt = g_primPtr;
         s = (SprtWords *)pkt;
-        s->rgbc = 0x64808080;
+        s->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         s->xy = xy;
         s->uvclut = clut | 0xB000;
         s->wh = 0x14004C;
@@ -1066,7 +1066,7 @@ void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
         g_primPtr += sizeof(DR_TPAGE);
         setlen(g_primPtr, 4);
         s = (SprtWords *)g_primPtr;
-        s->rgbc = 0x66808080;
+        s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL);
         s->xy = xy;
         s->uvclut = clut | 0xC400;
         s->wh = 0x14004C;

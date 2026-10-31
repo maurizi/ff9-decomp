@@ -246,7 +246,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 if (frame < 0x20) {
                     a = ex->math_cos(frame << 5);
-                    ex->btlfx_drawScreenTint((u32 *)env->ot + 0xFFF, 0xFF,
+                    ex->btlfx_drawScreenTint((u32 *)env->ot + OT_LAST, 0xFF,
                                              ((a / 2 + 0x800) * (ex->btlfx_rand() % 50 + 7)) >> 12, 0, 0);
                 }
                 y = frame * 16;

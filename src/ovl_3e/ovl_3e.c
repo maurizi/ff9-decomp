@@ -37,7 +37,7 @@ void discChange_drawBackground(void) {
     for (i = 0; i < 2; i++) {
         setlen(g_primPtr, 4);
         p = (SprtWords *)g_primPtr;
-        p->rgbc = 0x64808080;
+        p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         p->xy = i * DISC_PICTURE_W;
         p->uvclut = (i * DISC_PICTURE_W) & 0x3F;
         p->wh = 0xE000A0;
@@ -55,7 +55,7 @@ void discChange_drawPanel(void) {
 
     setlen(g_primPtr, 4);
     p = (SprtWords *)g_primPtr;
-    p->rgbc = 0x64808080;
+    p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = 0x1C004E;
     p->uvclut = clut;
     p->wh = 0xA800C2;
@@ -194,7 +194,7 @@ void discChange_loadPicture(void) {
     s32 i;
     s32 sector;
 
-    sector = g_gameState->imgSector + file_find(1, s_discChangePictureFiles[s_discChange.disc & 3])->sector;
+    sector = g_gameState->imgSector + file_find(DIR_COMMON, s_discChangePictureFiles[s_discChange.disc & 3])->sector;
     size = DISC_PICTURE_HALF_BYTES;
     for (i = 0; i < 2; i++) {
         cd_readSync(sector, size, buf);

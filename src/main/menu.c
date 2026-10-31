@@ -182,8 +182,8 @@ void menu_readOverlay(void) {
     if (cd_getState() == 0) {
         g_menu.state = 2;
         g_menu.reading = 1;
-        f = file_find(0, g_menuTypeOvl[g_menu.type]);
-        cd_readAsync(f->sector + g_gameState->imgSector, (f->unkC - f->sector) << 11, PSX_RAM(void *, 0x801EDF00), menu_onOverlayRead);
+        f = file_find(DIR_OVERLAYS, g_menuTypeOvl[g_menu.type]);
+        cd_readAsync(f->sector + g_gameState->imgSector, (f->unkC - f->sector) << 11, RAM_SUB_OVL(void *), menu_onOverlayRead);
 
     }
 }
@@ -197,8 +197,8 @@ void menu_readPortraits(void) {
             g_menu.state = 2;
         } else if (busy == 0 || g_gameState->mode != 3) {
             g_menu.reading = 1;
-            f = file_find(1, 30);
-            if (cd_readAsync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, PSX_RAM(void *, 0x801EDF00),
+            f = file_find(DIR_COMMON, FILE_MENU_PORTRAITS);
+            if (cd_readAsync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, RAM_SUB_OVL(void *),
                               menu_onPortraitsRead)) {
                 g_menu.state = 2;
             }
@@ -276,7 +276,7 @@ void menu_start(void) {
     ExitCriticalSection();
     g_menu.state = 3;
     if (g_menu.type == 0 && party_hasChanged()) {
-        ui_loadPartyPortraits(PSX_RAM(u8 *, 0x801EDF00));
+        ui_loadPartyPortraits(RAM_SUB_OVL(u8 *));
         party_setChanged(0);
     }
     fade_in(0x10);

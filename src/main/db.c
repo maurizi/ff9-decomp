@@ -169,7 +169,7 @@ void game_initState(void) {
     game_allocState();
     gs = g_gameState;
     game_resetState();
-    game_setScreenHeight(0xE0);
+    game_setScreenHeight(SCREEN_H);
     file_initImg();
     file_loadDirTables();
     config_init();
@@ -202,7 +202,7 @@ void game_resetState(void) {
     gs->imgSector = -1;
     gs->gameData = NULL;
     game_setClearColor(0, 0, 0);
-    game_setScreenHeight(0xE0);
+    game_setScreenHeight(SCREEN_H);
     gs->vsyncMode = 0;
     for (i = 14; i >= 0; i--) {
         gs->dirs[i].type = i;
@@ -263,14 +263,14 @@ void game_setScreenHeight(s32 h) {
         ClearImage(&r, col.unk0[0], col.unk0[1], col.unk0[2]);
         DrawSync(0);
     }
-    SetDefDispEnv(&g_gameState->dispEnv[0], 0x140, 0, 0x140, h);
-    SetDefDispEnv(&g_gameState->dispEnv[1], 0, 0, 0x140, h);
+    SetDefDispEnv(&g_gameState->dispEnv[0], SCREEN_W, 0, SCREEN_W, h);
+    SetDefDispEnv(&g_gameState->dispEnv[1], 0, 0, SCREEN_W, h);
     g_gameState->dispEnv[0].isinter = g_gameState->dispEnv[1].isinter = 0;
     g_gameState->dispEnv[0].screen.x = g_gameState->dispEnv[1].screen.x = 0;
-    g_gameState->dispEnv[0].screen.y = g_gameState->dispEnv[1].screen.y = (0xF0 - h) / 2;
+    g_gameState->dispEnv[0].screen.y = g_gameState->dispEnv[1].screen.y = (SCREEN_H_NTSC - h) / 2;
     g_gameState->dispEnv[0].screen.h = g_gameState->dispEnv[1].screen.h = h;
-    SetDefDrawEnv(&g_gameState->drawEnv[0], 0, 0, 0x140, h);
-    SetDefDrawEnv(&g_gameState->drawEnv[1], 0x140, 0, 0x140, h);
+    SetDefDrawEnv(&g_gameState->drawEnv[0], 0, 0, SCREEN_W, h);
+    SetDefDrawEnv(&g_gameState->drawEnv[1], SCREEN_W, 0, SCREEN_W, h);
     draw = g_gameState->drawEnv;
     draw[1].dfe = 1;
     draw[0].dfe = 1;

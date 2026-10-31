@@ -870,9 +870,9 @@ void func_801E9F28(s32 c) {
         gte_ldv3c(v);
         gte_rtpt();
         if (abr == 0xFF) {
-            p->code = 0x2C;
+            p->code = GPU_POLY_FT4;
         } else {
-            p->code = 0x2E;
+            p->code = GPU_POLY_FT4 | GPU_ABE;
         }
         p->r0 = p->g0 = p->b0 = (c * 0x70) >> 12;
         gte_stsxy3(&p->x0, &p->x1, &p->x2);
@@ -966,7 +966,7 @@ void func_801EA298(s16 *data, s32 c, s32 h, s32 n) {
             prim->b0 = c;
             prim->g0 = c;
             prim->r0 = c;
-            prim->code = 0x2E;
+            prim->code = GPU_POLY_FT4 | GPU_ABE;
             prim->x0 = D_801EC2E8[i].xy0.vx;
             prim->y0 = D_801EC2E8[i].xy0.vy;
             prim->x1 = D_801EC2E8[i].xy1.vx;
@@ -1042,7 +1042,7 @@ void func_801EA6D4(s16 *data, s32 c, s32 c2, s32 n) {
             prim->b0 = c;
             prim->g0 = c;
             prim->r0 = c;
-            prim->code = 0x2E;
+            prim->code = GPU_POLY_FT4 | GPU_ABE;
             prim->x0 = cur->xy0.vx;
             prim->y0 = cur->xy0.vy;
             prim->x1 = cur->xy1.vx;

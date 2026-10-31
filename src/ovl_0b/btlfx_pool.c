@@ -112,7 +112,7 @@ s32 btlfx_getFileData(s32 arg0, s32 arg1) {
     if (arg1 < 0x40) {
         base = g_btlfxEnv->loader->data[arg0];
     } else if (arg1 < 0x80) {
-        base = PSX_RAM(s32 *, 0x801F1700);
+        base = RAM_BTLFX_RING(s32 *);
         arg1 -= 0x40;
     } else if (arg1 < 0xC0) {
         arg1 -= 0x80;
@@ -151,7 +151,7 @@ s32 btlfx_loadFile(s32 arg0) {
     if (g_btlfxLoader.state != 0) {
         return -1;
     }
-    ofs = ((FileEntry16 *)file_find(0xD, arg0))->unk0;
+    ofs = ((FileEntry16 *)file_find(DIR_BTL_EFFECTS, arg0))->unk0;
     base = g_gameState->gameData->ctx.battle->dataSector;
     g_btlfxLoader.slotBlock.w = -1;
     g_btlfxLoader.effectId = arg0;
@@ -348,9 +348,9 @@ p = d->cmd; cont = 1; d->blockType = p[0]; d->cmdsLeft = p[1]; d->cmd += 2; d->s
                         }
                     }
                 }
-                dst = PSX_RAM(u8 *, 0x801E7700);
+                dst = RAM_BTLFX_MODULE(u8 *);
                 if (d->blockType == 1 && d->slot != 0) {
-                    dst = PSX_RAM(u8 *, 0x801EC700);
+                    dst = RAM_BTLFX_MODULE_HI(u8 *);
                 }
                 rd = p[1] << 11;
                 p += 2;
@@ -359,7 +359,7 @@ p = d->cmd; cont = 1; d->blockType = p[0]; d->cmdsLeft = p[1]; d->cmd += 2; d->s
                     sz = rd;
                     d->stage = 1;
                     if (d->cmdArg != 0) {
-x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_RAM(u8 *, 0x801F1700);
+x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX_RING(u8 *);
                         d->ringSize = 0xC800 - x;
                         d->data[d->slot] = d->ringCursor = d->ringBase;
                     } else {
@@ -450,9 +450,9 @@ x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_
                     }
                     break;
                 case 0:
-                    dst = PSX_RAM(u8 *, 0x801E7700);
+                    dst = RAM_BTLFX_MODULE(u8 *);
                     if (d->blockType == 1 && d->slot != 0) {
-                        dst = PSX_RAM(u8 *, 0x801EC700);
+                        dst = RAM_BTLFX_MODULE_HI(u8 *);
                     }
                     hdr = (s32 *)dst;
                     q = (u16 *)(dst + hdr[1]);
@@ -480,9 +480,9 @@ x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_
                     btlfx_uploadTextures(&r.r, d->texData, (Unk800DA790 *)d);
                     break;
                 case 3:
-                    dst = PSX_RAM(u8 *, 0x801E7700);
+                    dst = RAM_BTLFX_MODULE(u8 *);
                     if (d->blockType == 1 && d->slot != 0) {
-                        dst = PSX_RAM(u8 *, 0x801EC700);
+                        dst = RAM_BTLFX_MODULE_HI(u8 *);
                     }
                     fh = *(u8 **)dst;
                     g_btlfxModuleOps[d->slot] = (EffFn *)(fh + 8);

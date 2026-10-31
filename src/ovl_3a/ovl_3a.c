@@ -150,7 +150,7 @@ void menuName_drawPortrait(void) {
 
     setlen(g_primPtr, 4);
     p = (SprtWords *)g_primPtr;
-    p->rgbc = 0x64808080;
+    p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = (s_menuNamePortraitWin->x + 2) | ((s_menuNamePortraitWin->y + 2) << 16);
     p->uvclut = clut;
     p->wh = 0x2E0020;

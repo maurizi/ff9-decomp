@@ -2514,7 +2514,7 @@ static inline void evt_updateLookAt_ahead(EvtObject *o, s32 a, VECTOR *out) {
     MATRIX m;
 
     m.m[0][2] = math_sin(a);
-    m.m[1][1] = 0x1000;
+    m.m[1][1] = ONE;
     m.m[2][2] = math_cos(a);
     m.m[0][0] = m.m[0][1] = m.m[1][0] = m.m[1][2] = m.m[2][0] = m.m[2][1] = 0;
     m.t[0] = o->pos.vx;

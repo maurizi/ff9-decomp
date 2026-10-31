@@ -284,7 +284,7 @@ void tm_mainLoop(void) {
 }
 
 void tm_clearOt(void) {
-    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
 }
 
 void tm_endFrame(TmState *s) {
@@ -305,7 +305,7 @@ void tm_endFrame(TmState *s) {
     PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
-    DrawOTag(ctx->ot[ctx->drawBuf] + 0xFFF);
+    DrawOTag(ctx->ot[ctx->drawBuf] + OT_LAST);
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);
 }
@@ -433,7 +433,7 @@ void tm_debugPrint(TmState *s, char *msg) {
 }
 
 void tm_loadImageFile(void) {
-    FileEntry *f = file_find(1, 0x44C);
+    FileEntry *f = file_find(DIR_COMMON, FILE_TM_IMAGES);
     if (f == NULL) {
         SystemError(0x46, 0x3E6);
     }
@@ -471,7 +471,7 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *p, TmState *s) {
                     }
                 }
                 setlen(p, 3);
-                p->code = 0x7C;
+                p->code = GPU_SPRT_16;
                 p->x0 = x * 16;
                 p->y0 = y * 16;
                 p->v0 = y * 16;
@@ -479,14 +479,14 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *p, TmState *s) {
                 p->g0 = c;
                 p->b0 = c;
                 p->u0 = x * 16;
-                p->clut = 0x3800;
+                p->clut = getClut(0, 0xE0);
                 AddPrim(ot + 0xFFE, p);
                 p++;
             }
         }
     }
     setlen((DR_TPAGE *)p, 1);
-    ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x280, 0) & 0x9FF) | 0xE1000000;
+    ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x280, 0));
     AddPrim(ot + 0xFFE, p);
     do {
         p = (SPRT_16 *)((DR_TPAGE *)p + 1);
@@ -502,7 +502,7 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *p, TmState *s) {
                     }
                 }
                 setlen(p, 3);
-                p->code = 0x7C;
+                p->code = GPU_SPRT_16;
                 p->x0 = x * 16 + 0x100;
                 p->y0 = y * 16;
                 p->v0 = y * 16;
@@ -510,14 +510,14 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *p, TmState *s) {
                 p->g0 = c;
                 p->b0 = c;
                 p->u0 = x * 16;
-                p->clut = 0x3800;
+                p->clut = getClut(0, 0xE0);
                 AddPrim(ot + 0xFFE, p);
                 p++;
             }
         }
     }
     setlen((DR_TPAGE *)p, 1);
-    ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0) & 0x9FF) | 0xE1000000;
+    ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x300, 0));
     AddPrim(ot + 0xFFE, p);
     return (DR_TPAGE *)p + 1;
 }
@@ -535,9 +535,9 @@ void *tm_drawBoard(u32 *ot, SPRT_16 *p, TmState *s) {
     for (x = 0; x < 14; x++) {
         for (y = 0; y < 15; y++) {
             setlen(p, 3);
-            p->code = 0x7C;
+            p->code = GPU_SPRT_16;
             if (s->task == TM_TASK_FIELD_FADE) {
-                p->code = 0x7E;
+                p->code = GPU_SPRT_16 | GPU_ABE;
             }
             p->x0 = x * 16 + 0x30;
             p->y0 = y * 16;
@@ -546,14 +546,14 @@ void *tm_drawBoard(u32 *ot, SPRT_16 *p, TmState *s) {
             p->g0 = c;
             p->b0 = c;
             p->u0 = x * 16;
-            p->clut = 0x39C0;
+            p->clut = getClut(0, 0xE7);
             AddPrim(ot + 0xFFA, p);
             p++;
         }
     }
     tp = (DR_TPAGE *)p;
     setlen(tp, 1);
-    tp->code[0] = (GetTPage(1, 1, 0x340, 0) & 0x9FF) | 0xE1000000;
+    tp->code[0] = get_mode(0, 0, GetTPage(1, 1, 0x340, 0));
     AddPrim(ot + 0xFFA, tp);
     tp++;
     if (s->task == TM_TASK_FIELD_FADE && s->timer >= 0x20) {
@@ -634,7 +634,7 @@ void *tm_drawScore(u32 *ot, SPRT *p, TmState *s) {
             w = 0x10;
         }
         setlen(p, 4);
-        p->code = 0x64;
+        p->code = GPU_SPRT;
         p->x0 = x;
         p->y0 = y;
         p->r0 = c;
@@ -642,14 +642,14 @@ void *tm_drawScore(u32 *ot, SPRT *p, TmState *s) {
         p->b0 = c;
         p->u0 = u;
         p->v0 = v;
-        p->clut = 0x3A80;
+        p->clut = getClut(0, 0xEA);
         p->w = w;
         p->h = 0x20;
         AddPrim(ot + 0xFF0, p);
         p++;
     }
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     p->x0 = 0x10;
     p->y0 = 0xAA;
     p->r0 = c;
@@ -657,13 +657,13 @@ void *tm_drawScore(u32 *ot, SPRT *p, TmState *s) {
     p->b0 = c;
     p->u0 = 0xC0;
     p->v0 = 0;
-    p->clut = 0x3A80;
+    p->clut = getClut(0, 0xEA);
     p->w = 0x30;
     p->h = 0x20;
     AddPrim(ot + 0xFF0, p);
     p++;
     setlen((DR_TPAGE *)p, 1);
-    ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+    ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x300, 0x100));
     AddPrim(ot + 0xFF0, p);
     return (DR_TPAGE *)p + 1;
 }
@@ -714,13 +714,13 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
             g_menuHelp.text = text_get(TM_HELP_SELECT);
             text_drawBlock(0x12, 9, 0xFFA, text_get(TM_TEXT_ICON_R1), 0);
             setlen(sp, 4);
-            sp->code = 0x64;
+            sp->code = GPU_SPRT;
             sp->x0 = 0x1F;
             sp->y0 = 0xC;
             sp->v0 = 0xD0;
             sp->w = 0x1C;
             sp->h = 8;
-            sp->clut = 0x3AC0;
+            sp->clut = getClut(0, 0xEB);
             sp->u0 = 0x64;
             sp->r0 = 0x80;
             sp->g0 = 0x80;
@@ -728,7 +728,7 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
             AddPrim(ot + 0x28, sp);
             sp++;
             setlen((DR_TPAGE *)sp, 1);
-            ((DR_TPAGE *)sp)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+            ((DR_TPAGE *)sp)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x300, 0x100));
             AddPrim(ot + 0x28, sp);
             p = (DR_TPAGE *)sp + 1;
             if (pad & PAD_UP) {
@@ -1669,7 +1669,7 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
             h = 0x28;
         }
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x;
         p->y0 = y;
         p->r0 = c;
@@ -1680,11 +1680,11 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
         p->u0 = (((s->timer - 0x23) & 0xF) >> 2) * 40;
         p->v0 = ((s->timer - 0x23) / 16) * 40;
         o = ot + 30;
-        p->clut = 0x3B00;
+        p->clut = getClut(0, 0xEC);
         AddPrim(o, p);
         p++;
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x200, 0x100) & 0x9FF) | 0xE1000000;
+        ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 1, 0x200, 0x100));
         AddPrim(o, p);
         s->atkShown = pos.atk;
         p = (SPRT *)((DR_TPAGE *)p + 1);
@@ -1891,7 +1891,7 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
             }
             if (s->flashMode == TM_FLIP_CHANGE) {
                 setlen(p, 3);
-                p->code = 0x62;
+                p->code = GPU_TILE | GPU_ABE;
                 setXY0(p, e[i].x * TM_SQUARE_W + TM_BOARD_X, e[i].y * TM_SQUARE_H + TM_BOARD_Y);
                 setWH(p, TM_CARD_W, TM_CARD_H);
                 setRGB0(p, c, c, c);
@@ -1927,7 +1927,7 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
                         y -= 4;
                     }
                     setlen(p, 3);
-                    p->code = 0x62;
+                    p->code = GPU_TILE | GPU_ABE;
                     setXY0(p, x, y);
                     setWH(p, w, h);
                     setRGB0(p, c, c, c);
@@ -1955,7 +1955,7 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
                     break;
                 }
                 setlen(p, 3);
-                p->code = 0x62;
+                p->code = GPU_TILE | GPU_ABE;
                 setXY0(p, x, y);
                 setWH(p, w, h);
                 setRGB0(p, c, c, c);
@@ -1964,7 +1964,7 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
             }
             if (s->flashMode == TM_FLIP_BATTLE) {
                 setlen(p, 3);
-                p->code = 0x62;
+                p->code = GPU_TILE | GPU_ABE;
                 setXY0(p, e[i].x * TM_SQUARE_W + TM_BOARD_X, e[i].y * TM_SQUARE_H + TM_BOARD_Y);
                 setWH(p, TM_CARD_W, TM_CARD_H);
                 if (s->timer & 4) {
@@ -2020,7 +2020,7 @@ void *tm_drawFlash2(u32 *ot, TILE *p, TmState *s) {
                 card->owner = e[i].arg;
             }
             setlen(p, 3);
-            p->code = 0x62;
+            p->code = GPU_TILE | GPU_ABE;
             p->x0 = card->x;
             p->y0 = card->y;
             p->w = 0x2A;
@@ -2208,21 +2208,21 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
         if (s->task == TM_TASK_BATTLE_SELECT && a != b) {
             o = ot + z;
             setlen((SPRT *)p, 4);
-            ((SPRT *)p)->code = 0x64;
+            ((SPRT *)p)->code = GPU_SPRT;
             ((SPRT *)p)->x0 = c->x + 5;
             ((SPRT *)p)->y0 = c->y + 0x15;
             ((SPRT *)p)->v0 = 0xF0;
             ((SPRT *)p)->w = 0x20;
             ((SPRT *)p)->h = 0x10;
             ((SPRT *)p)->u0 = 0x80;
-            ((SPRT *)p)->clut = 0x3B40;
+            ((SPRT *)p)->clut = getClut(0, 0xED);
             ((SPRT *)p)->r0 = 0x80;
             ((SPRT *)p)->g0 = 0x80;
             ((SPRT *)p)->b0 = 0x80;
             AddPrim(o, p);
             p = (SPRT *)p + 1;
             setlen((DR_TPAGE *)p, 1);
-            ((DR_TPAGE *)p)->code[0] = (GetTPage(0, 0, 0x340, 0x1E0) & 0x9FF) | 0xE1000000;
+            ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(0, 0, 0x340, 0x1E0));
             AddPrim(o, p);
             p = (DR_TPAGE *)p + 1;
         }
@@ -2245,7 +2245,7 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
         }
         if (c->small == 0) {
             setlen((SPRT *)p, 4);
-            ((SPRT *)p)->code = 0x64;
+            ((SPRT *)p)->code = GPU_SPRT;
             ((SPRT *)p)->x0 = c->x;
             ((SPRT *)p)->y0 = cards[i].y;
             ((SPRT *)p)->w = 0x2A;
@@ -2263,7 +2263,7 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
                 ((SPRT *)p)->u0 = 0xC8;
                 ((SPRT *)p)->v0 = 0x40;
             }
-            ((SPRT *)p)->clut = 0x3A80;
+            ((SPRT *)p)->clut = getClut(0, 0xEA);
             AddPrim(ot + z, p);
             p = (SPRT *)p + 1;
         } else {
@@ -2288,12 +2288,12 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
             ((POLY_FT4 *)p)->r0 = a;
             ((POLY_FT4 *)p)->g0 = a;
             ((POLY_FT4 *)p)->b0 = a;
-            ((POLY_FT4 *)p)->clut = 0x3A80;
+            ((POLY_FT4 *)p)->clut = getClut(0, 0xEA);
             AddPrim(ot + z, p);
             p = (POLY_FT4 *)p + 1;
         }
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+        ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x300, 0x100));
         AddPrim(ot + z, p);
         p = (DR_TPAGE *)p + 1;
     }
@@ -2597,7 +2597,7 @@ void *tm_drawTradeBadge(u32 *ot, SPRT *p, TmState *s) {
     b = s->brightness;
     if (g_tmTradeBadge != 0) {
         setlen(p, 4);
-        p->code = 0x64;
+        p->code = GPU_SPRT;
         p->x0 = 0xA3;
         p->y0 = 0x45;
         if (s->result == TM_RESULT_WIN) {
@@ -2609,7 +2609,7 @@ void *tm_drawTradeBadge(u32 *ot, SPRT *p, TmState *s) {
         }
         p->w = 0x38;
         p->h = 0x18;
-        p->clut = 0x3AC0;
+        p->clut = getClut(0, 0xEB);
         p->r0 = b;
         p->g0 = b;
         p->b0 = b;
@@ -2617,7 +2617,7 @@ void *tm_drawTradeBadge(u32 *ot, SPRT *p, TmState *s) {
         p++;
         tp = (DR_TPAGE *)p;
         setlen(tp, 1);
-        tp->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+        tp->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x300, 0x100));
         AddPrim(ot + 30, tp);
         p = (SPRT *)(tp + 1);
     }
@@ -3296,16 +3296,16 @@ void *tm_drawCardStats(u32 *ot, SPRT *p, TmState *s, TmCard *card, u8 c) {
     p = tm_drawStatGlyph(ot, p, (s32)s, x + 0x15, y + 0x28, card->pdef >> 4, c);
     p = tm_drawStatGlyph(ot, p, (s32)s, x + 0x1B, y + 0x28, card->mdef >> 4, c);
     setlen((DR_TPAGE *)p, 1);
-    ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+    ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x300, 0x100));
     AddPrim(ot, p);
     return (DR_TPAGE *)p + 1;
 }
 
 SPRT *tm_drawStatGlyph(void *ot, SPRT *p, s32 unused, s32 x, s32 y, s32 n, s32 c) {
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     p->v0 = 0xC0;
-    p->clut = 0x3AC0;
+    p->clut = getClut(0, 0xEB);
     p->x0 = x;
     p->w = 8;
     p->h = 8;
@@ -3376,7 +3376,7 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
     case 0:
         if (tm_countOnBoard(s, TM_PLAYER) == 10) {
             setlen(p, 4);
-            p->code = 0x66;
+            p->code = GPU_SPRT | GPU_ABE;
             p->x0 = 0x4A;
             p->y0 = 0x58;
             p->w = 0xA8;
@@ -3386,15 +3386,15 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
             p->b0 = c;
             p->u0 = 0;
             p->v0 = 0x50;
-            p->clut = 0x3A40;
+            p->clut = getClut(0, 0xE9);
             AddPrim(ot + 1, p);
             p++;
             setlen((DR_TPAGE *)p, 1);
-            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+            ((DR_TPAGE *)p)->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
             AddPrim(ot + 1, p);
             p = (SPRT *)((DR_TPAGE *)p + 1);
             setlen(p, 4);
-            p->code = 0x66;
+            p->code = GPU_SPRT | GPU_ABE;
             p->x0 = 0x4A;
             p->y0 = 0x58;
             p->w = 0xB0;
@@ -3404,16 +3404,16 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
             p->b0 = c;
             p->u0 = 0;
             p->v0 = 0x78;
-            p->clut = 0x3A40;
+            p->clut = getClut(0, 0xE9);
             AddPrim(ot + 1, p);
             p++;
             setlen((DR_TPAGE *)p, 1);
-            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+            ((DR_TPAGE *)p)->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
             AddPrim(ot + 1, p);
             p = (SPRT *)((DR_TPAGE *)p + 1);
         } else {
             setlen(p, 4);
-            p->code = 0x66;
+            p->code = GPU_SPRT | GPU_ABE;
             p->x0 = 0x6C;
             p->y0 = 0x58;
             p->w = 0x68;
@@ -3423,15 +3423,15 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
             p->r0 = c;
             p->g0 = c;
             p->b0 = c;
-            p->clut = 0x3A40;
+            p->clut = getClut(0, 0xE9);
             AddPrim(ot + 1, p);
             p++;
             setlen((DR_TPAGE *)p, 1);
-            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+            ((DR_TPAGE *)p)->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
             AddPrim(ot + 1, p);
             p = (SPRT *)((DR_TPAGE *)p + 1);
             setlen(p, 4);
-            p->code = 0x66;
+            p->code = GPU_SPRT | GPU_ABE;
             p->x0 = 0x6C;
             p->y0 = 0x58;
             p->w = 0x70;
@@ -3441,18 +3441,18 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
             p->b0 = c;
             p->u0 = 0x68;
             p->v0 = 0;
-            p->clut = 0x3A40;
+            p->clut = getClut(0, 0xE9);
             AddPrim(ot + 1, p);
             p++;
             setlen((DR_TPAGE *)p, 1);
-            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+            ((DR_TPAGE *)p)->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
             AddPrim(ot + 1, p);
             p = (SPRT *)((DR_TPAGE *)p + 1);
         }
         break;
     case 1:
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = 0x6A;
         p->y0 = 0x58;
         p->w = 0x68;
@@ -3462,15 +3462,15 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
         p->b0 = c;
         p->u0 = 0;
         p->v0 = 0x28;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 1, p);
         p++;
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        ((DR_TPAGE *)p)->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
         AddPrim(ot + 1, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = 0x6A;
         p->y0 = 0x58;
         p->w = 0x70;
@@ -3480,17 +3480,17 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
         p->b0 = c;
         p->u0 = 0x68;
         p->v0 = 0x28;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 1, p);
         p++;
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        ((DR_TPAGE *)p)->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
         AddPrim(ot + 1, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
         break;
     default:
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = 0x5C;
         p->y0 = 0x58;
         p->w = 0x88;
@@ -3500,15 +3500,15 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
         p->b0 = c;
         p->u0 = 0;
         p->v0 = 0xA0;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 1, p);
         p++;
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        ((DR_TPAGE *)p)->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
         AddPrim(ot + 1, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = 0x5C;
         p->y0 = 0x58;
         p->w = 0x90;
@@ -3518,11 +3518,11 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
         p->b0 = c;
         p->u0 = 0;
         p->v0 = 0xC8;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 1, p);
         p++;
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        ((DR_TPAGE *)p)->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
         AddPrim(ot + 1, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
         break;
@@ -3610,14 +3610,14 @@ void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
             ((POLY_FT4 *)p)->g0 = c;
             ((POLY_FT4 *)p)->b0 = c;
             ((POLY_FT4 *)p)->tpage = 0x9C;
-            ((POLY_FT4 *)p)->clut = 0x3A80;
+            ((POLY_FT4 *)p)->clut = getClut(0, 0xEA);
             AddPrim(ot + 99, p);
             p = (POLY_FT4 *)p + 1;
         } else {
             setlen((SPRT *)p, 4);
-            ((SPRT *)p)->code = 0x64;
+            ((SPRT *)p)->code = GPU_SPRT;
             if (s->task == TM_TASK_FIELD_FADE) {
-                ((SPRT *)p)->code = 0x66;
+                ((SPRT *)p)->code = GPU_SPRT | GPU_ABE;
             }
             ((SPRT *)p)->x0 = e[i].x;
             ((SPRT *)p)->y0 = e[i].y;
@@ -3631,13 +3631,13 @@ void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
                 ((SPRT *)p)->u0 = 0x98;
                 ((SPRT *)p)->v0 = 0x40;
             }
-            ((SPRT *)p)->clut = 0x3A80;
+            ((SPRT *)p)->clut = getClut(0, 0xEA);
             ((SPRT *)p)->w = 0x2A;
             ((SPRT *)p)->h = 0x33;
             AddPrim(ot + 100, p);
             p = (SPRT *)p + 1;
             setlen((DR_TPAGE *)p, 1);
-            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+            ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 1, 0x300, 0x100));
             AddPrim(ot + 100, p);
             p = (DR_TPAGE *)p + 1;
         }
@@ -4015,7 +4015,7 @@ void *tm_drawArrows(u32 *ot, SPRT_16 *p, TmState *s, s32 x, s32 y, u8 mask, s32 
     for (i = 0; i < 8; i++) {
         if (mask & 1) {
             setlen(p, 3);
-            p->code = 0x74;
+            p->code = GPU_SPRT_8;
             if (flip == 0) {
                 p->x0 = tbl.v[i].x + x;
                 p->y0 = tbl.v[i].y + y;
@@ -4035,11 +4035,11 @@ void *tm_drawArrows(u32 *ot, SPRT_16 *p, TmState *s, s32 x, s32 y, u8 mask, s32 
             p->b0 = col;
             p->u0 = tbl.v[i].u;
             p->v0 = tbl.v[i].v;
-            p->clut = 0x3A80;
+            p->clut = getClut(0, 0xEA);
             AddPrim(ot, p);
             p++;
             setlen((DR_TPAGE *)p, 1);
-            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+            ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x300, 0x100));
             AddPrim(ot, p);
             p = (SPRT_16 *)((DR_TPAGE *)p + 1);
         }
@@ -4063,9 +4063,9 @@ void *tm_drawCursor(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
         }
         c = s->brightness;
         setlen((SPRT *)p, 4);
-        ((SPRT *)p)->code = 0x64;
+        ((SPRT *)p)->code = GPU_SPRT;
         if (mode != 0) {
-            ((SPRT *)p)->code = 0x66;
+            ((SPRT *)p)->code = GPU_SPRT | GPU_ABE;
         }
         ((SPRT *)p)->x0 = x;
         ((SPRT *)p)->y0 = y;
@@ -4079,12 +4079,12 @@ void *tm_drawCursor(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
         o = ot + z;
         ((SPRT *)p)->u0 = u;
         ((SPRT *)p)->v0 = 0x80;
-        ((SPRT *)p)->clut = 0x3AC0;
+        ((SPRT *)p)->clut = getClut(0, 0xEB);
         ((SPRT *)p)->w = 0x18;
         ((SPRT *)p)->h = 0x10;
         AddPrim(o, p);
         p = (SPRT *)p + 1;
-        ((SPRT *)p)->code = 0x66;
+        ((SPRT *)p)->code = GPU_SPRT | GPU_ABE;
         setlen((SPRT *)p, 4);
         ((SPRT *)p)->x0 = x + 4;
         ((SPRT *)p)->y0 = y + 4;
@@ -4093,13 +4093,13 @@ void *tm_drawCursor(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
         ((SPRT *)p)->b0 = 0;
         ((SPRT *)p)->u0 = u;
         ((SPRT *)p)->v0 = 0x80;
-        ((SPRT *)p)->clut = 0x3AC0;
+        ((SPRT *)p)->clut = getClut(0, 0xEB);
         ((SPRT *)p)->w = 0x18;
         ((SPRT *)p)->h = 0x10;
         AddPrim(o, p);
         p = (SPRT *)p + 1;
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+        ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x300, 0x100));
         AddPrim(o, p);
         p = (DR_TPAGE *)p + 1;
     } else {
@@ -4108,7 +4108,7 @@ void *tm_drawCursor(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
         setXY4((POLY_FT4 *)p, x, y, x + 0x18, y, x, y + 0x10, x + 0x18, y + 0x10);
         u2 = u + 0x17;
         setUV4((POLY_FT4 *)p, u2, 0x80, u, 0x80, u2, 0x90, u, 0x90);
-        ((POLY_FT4 *)p)->clut = 0x3AC0;
+        ((POLY_FT4 *)p)->clut = getClut(0, 0xEB);
         setRGB0((POLY_FT4 *)p, 0x80, 0x80, 0x80);
         ((POLY_FT4 *)p)->tpage = 0x9C;
         AddPrim(ot + 3, p);
@@ -4116,7 +4116,7 @@ void *tm_drawCursor(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
         SetPolyFT4((POLY_FT4 *)p);
         setXY4((POLY_FT4 *)p, x + 4, y + 4, x + 0x1C, y + 4, x + 4, y + 0x14, x + 0x1C, y + 0x14);
         setUV4((POLY_FT4 *)p, u2, 0x80, u, 0x80, u2, 0x90, u, 0x90);
-        ((POLY_FT4 *)p)->clut = 0x3AC0;
+        ((POLY_FT4 *)p)->clut = getClut(0, 0xEB);
         setRGB0((POLY_FT4 *)p, 0, 0, 0);
         ((POLY_FT4 *)p)->tpage = 0x9C;
         setSemiTrans((POLY_FT4 *)p, 1);
@@ -4181,7 +4181,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         p->r0 = 0x80;
         p->g0 = 0x80;
         p->b0 = 0x80;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 0xFFA, p);
         p++;
         SetSprt(p);
@@ -4194,7 +4194,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         p->r0 = 0x80;
         p->g0 = 0x80;
         p->b0 = 0x80;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 0xFFA, p);
     } else {
         SetSprt(p);
@@ -4207,7 +4207,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         p->r0 = 0x80;
         p->g0 = 0x80;
         p->b0 = 0x80;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 0xFFA, p);
         p++;
         SetSprt(p);
@@ -4226,7 +4226,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             p->g0 = 0x40;
             p->b0 = 0x40;
         }
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 0xFFA, p);
         p++;
         SetSprt(p);
@@ -4245,12 +4245,12 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             p->g0 = 0x40;
             p->b0 = 0x40;
         }
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 0xFFA, p);
     }
     p++;
     setlen((DR_TPAGE *)p, 1);
-    ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x280, 0x100) & 0x9FF) | 0xE1000000;
+    ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x280, 0x100));
     AddPrim(ot + 0xFFA, p);
     p = (SPRT *)((DR_TPAGE *)p + 1);
 
@@ -4263,7 +4263,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
                 p->r0 = 0x80;
                 p->g0 = 0x80;
                 p->b0 = 0x80;
-                p->clut = 0x3B40;
+                p->clut = getClut(0, 0xED);
                 p->w = 4;
                 p->h = 5;
                 p->u0 = (c % 5) * 4;
@@ -4284,7 +4284,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
                 p->r0 = 0x80;
                 p->g0 = 0x80;
                 p->b0 = 0x80;
-                p->clut = 0x3B40;
+                p->clut = getClut(0, 0xED);
                 p->u0 = (c % 5) * 4;
                 p->v0 = (c / 5) * 8 - 0x10;
                 p->x0 = (i / 10) * 15 + 0x17;
@@ -4302,7 +4302,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
                     p->r0 = 0x80;
                     p->g0 = 0x80;
                     p->b0 = 0x80;
-                    p->clut = 0x3B40;
+                    p->clut = getClut(0, 0xED);
                     AddPrim(ot + 11, p);
                     p++;
                 }
@@ -4326,14 +4326,14 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             ((SPRT_16 *)p)->r0 = 0x80;
             ((SPRT_16 *)p)->g0 = 0x80;
             ((SPRT_16 *)p)->b0 = 0x80;
-            ((SPRT_16 *)p)->clut = 0x3B40;
+            ((SPRT_16 *)p)->clut = getClut(0, 0xED);
             AddPrim(ot + 11, p);
         } while (0);
         p = (SPRT *)((SPRT_16 *)p + 1);
     }
 
     setlen((DR_TPAGE *)p, 1);
-    ((DR_TPAGE *)p)->code[0] = (GetTPage(0, 0, 0x340, 0x1E0) & 0x9FF) | 0xE1000000;
+    ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(0, 0, 0x340, 0x1E0));
     AddPrim(ot + 11, p);
     p = (SPRT *)((DR_TPAGE *)p + 1);
     SetSprt(p);
@@ -4346,7 +4346,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     p->r0 = 0x80;
     p->g0 = 0x80;
     p->b0 = 0x80;
-    p->clut = 0x3B80;
+    p->clut = getClut(0, 0xEE);
     AddPrim(ot + 11, p);
     p++;
     SetSprt(p);
@@ -4359,7 +4359,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     p->r0 = 0x80;
     p->g0 = 0x80;
     p->b0 = 0x80;
-    p->clut = 0x3B80;
+    p->clut = getClut(0, 0xEE);
     AddPrim(ot + 11, p);
     p++;
     SetSprt(p);
@@ -4372,7 +4372,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     p->r0 = 0x80;
     p->g0 = 0x80;
     p->b0 = 0x80;
-    p->clut = 0x3B80;
+    p->clut = getClut(0, 0xEE);
     AddPrim(ot + 11, p);
     p++;
     SetSprt(p);
@@ -4385,15 +4385,15 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     p->r0 = 0x80;
     p->g0 = 0x80;
     p->b0 = 0x80;
-    p->clut = 0x3B80;
+    p->clut = getClut(0, 0xEE);
     AddPrim(ot + 11, p);
     p++;
     setlen((DR_TPAGE *)p, 1);
-    ((DR_TPAGE *)p)->code[0] = (GetTPage(0, 0, 0x300, 0) & 0x9FF) | 0xE1000000;
+    ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(0, 0, 0x300, 0));
     AddPrim(ot + 11, p);
     p = (SPRT *)((DR_TPAGE *)p + 1);
     setlen((TILE *)p, 3);
-    ((TILE *)p)->code = 0x60;
+    ((TILE *)p)->code = GPU_TILE;
     ((TILE *)p)->x0 = 0x12;
     ((TILE *)p)->y0 = 0x2D;
     ((TILE *)p)->w = 0x95;
@@ -4404,7 +4404,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     AddPrim(ot + 11, p);
     p = (SPRT *)((TILE *)p + 1);
     setlen((DR_TPAGE *)p, 1);
-    ((DR_TPAGE *)p)->code[0] = (GetTPage(0, 2, 0, 0) & 0x9FF) | 0xE1000000;
+    ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(0, 2, 0, 0));
     AddPrim(ot + 11, p);
     p = (SPRT *)((DR_TPAGE *)p + 1);
 
@@ -4428,7 +4428,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         ui_drawSmallDigits(0xDC, 0x56, 0xFFA, buf, 0);
 
         setlen(p, 3);
-        ((SPRT_8 *)p)->code = 0x74;
+        ((SPRT_8 *)p)->code = GPU_SPRT_8;
         ((SPRT_8 *)p)->x0 = 0xB5;
         ((SPRT_8 *)p)->y0 = 0x3D;
         ((SPRT_8 *)p)->r0 = 0x80;
@@ -4436,11 +4436,11 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         ((SPRT_8 *)p)->b0 = 0x80;
         ((SPRT_8 *)p)->u0 = 0x38;
         ((SPRT_8 *)p)->v0 = 0xF0;
-        ((SPRT_8 *)p)->clut = 0x3B80;
+        ((SPRT_8 *)p)->clut = getClut(0, 0xEE);
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((SPRT_8 *)p + 1);
         setlen(p, 3);
-        ((SPRT_8 *)p)->code = 0x74;
+        ((SPRT_8 *)p)->code = GPU_SPRT_8;
         ((SPRT_8 *)p)->x0 = 0xF6;
         ((SPRT_8 *)p)->y0 = 0x3D;
         ((SPRT_8 *)p)->r0 = 0x80;
@@ -4448,11 +4448,11 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         ((SPRT_8 *)p)->b0 = 0x80;
         ((SPRT_8 *)p)->u0 = 0x48;
         ((SPRT_8 *)p)->v0 = 0xF0;
-        ((SPRT_8 *)p)->clut = 0x3B80;
+        ((SPRT_8 *)p)->clut = getClut(0, 0xEE);
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((SPRT_8 *)p + 1);
         setlen(p, 3);
-        ((SPRT_8 *)p)->code = 0x74;
+        ((SPRT_8 *)p)->code = GPU_SPRT_8;
         ((SPRT_8 *)p)->x0 = 0xB5;
         ((SPRT_8 *)p)->y0 = 0x5A;
         ((SPRT_8 *)p)->r0 = 0x80;
@@ -4460,11 +4460,11 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         ((SPRT_8 *)p)->b0 = 0x80;
         ((SPRT_8 *)p)->u0 = 0x38;
         ((SPRT_8 *)p)->v0 = 0xF8;
-        ((SPRT_8 *)p)->clut = 0x3B80;
+        ((SPRT_8 *)p)->clut = getClut(0, 0xEE);
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((SPRT_8 *)p + 1);
         setlen(p, 3);
-        ((SPRT_8 *)p)->code = 0x74;
+        ((SPRT_8 *)p)->code = GPU_SPRT_8;
         ((SPRT_8 *)p)->x0 = 0xF6;
         ((SPRT_8 *)p)->y0 = 0x5A;
         ((SPRT_8 *)p)->r0 = 0x80;
@@ -4472,12 +4472,12 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         ((SPRT_8 *)p)->b0 = 0x80;
         ((SPRT_8 *)p)->u0 = 0x48;
         ((SPRT_8 *)p)->v0 = 0xF8;
-        ((SPRT_8 *)p)->clut = 0x3B80;
+        ((SPRT_8 *)p)->clut = getClut(0, 0xEE);
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((SPRT_8 *)p + 1);
         for (i = 0; i < 8; i++) {
             setlen(p, 3);
-            ((SPRT_8 *)p)->code = 0x74;
+            ((SPRT_8 *)p)->code = GPU_SPRT_8;
             ((SPRT_8 *)p)->y0 = 0x3D;
             ((SPRT_8 *)p)->x0 = i * 8 + 0xB9;
             ((SPRT_8 *)p)->r0 = 0x80;
@@ -4485,11 +4485,11 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             ((SPRT_8 *)p)->b0 = 0x80;
             ((SPRT_8 *)p)->u0 = 0x40;
             ((SPRT_8 *)p)->v0 = 0xF0;
-            ((SPRT_8 *)p)->clut = 0x3B80;
+            ((SPRT_8 *)p)->clut = getClut(0, 0xEE);
             AddPrim(ot + 0xFFA, p);
             p = (SPRT *)((SPRT_8 *)p + 1);
             setlen(p, 3);
-            ((SPRT_8 *)p)->code = 0x74;
+            ((SPRT_8 *)p)->code = GPU_SPRT_8;
             ((SPRT_8 *)p)->y0 = 0x5A;
             ((SPRT_8 *)p)->x0 = i * 8 + 0xB9;
             ((SPRT_8 *)p)->r0 = 0x80;
@@ -4497,13 +4497,13 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             ((SPRT_8 *)p)->b0 = 0x80;
             ((SPRT_8 *)p)->u0 = 0x40;
             ((SPRT_8 *)p)->v0 = 0xF8;
-            ((SPRT_8 *)p)->clut = 0x3B80;
+            ((SPRT_8 *)p)->clut = getClut(0, 0xEE);
             AddPrim(ot + 0xFFA, p);
             p = (SPRT *)((SPRT_8 *)p + 1);
         }
         for (i = 0; i < 3; i++) {
             setlen(p, 3);
-            ((SPRT_8 *)p)->code = 0x74;
+            ((SPRT_8 *)p)->code = GPU_SPRT_8;
             ((SPRT_8 *)p)->x0 = 0xB5;
             ((SPRT_8 *)p)->y0 = i * 8 + 0x43;
             ((SPRT_8 *)p)->r0 = 0x80;
@@ -4511,11 +4511,11 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             ((SPRT_8 *)p)->b0 = 0x80;
             ((SPRT_8 *)p)->u0 = 0x50;
             ((SPRT_8 *)p)->v0 = 0xF8;
-            ((SPRT_8 *)p)->clut = 0x3B80;
+            ((SPRT_8 *)p)->clut = getClut(0, 0xEE);
             AddPrim(ot + 0xFFA, p);
             p = (SPRT *)((SPRT_8 *)p + 1);
             setlen(p, 3);
-            ((SPRT_8 *)p)->code = 0x74;
+            ((SPRT_8 *)p)->code = GPU_SPRT_8;
             ((SPRT_8 *)p)->x0 = 0xF6;
             ((SPRT_8 *)p)->y0 = i * 8 + 0x43;
             ((SPRT_8 *)p)->r0 = 0x80;
@@ -4523,12 +4523,12 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             ((SPRT_8 *)p)->b0 = 0x80;
             ((SPRT_8 *)p)->u0 = 0x50;
             ((SPRT_8 *)p)->v0 = 0xF0;
-            ((SPRT_8 *)p)->clut = 0x3B80;
+            ((SPRT_8 *)p)->clut = getClut(0, 0xEE);
             AddPrim(ot + 0xFFA, p);
             p = (SPRT *)((SPRT_8 *)p + 1);
         }
         setlen((TILE *)p, 3);
-        ((TILE *)p)->code = 0x60;
+        ((TILE *)p)->code = GPU_TILE;
         ((TILE *)p)->x0 = 0xB8;
         ((TILE *)p)->y0 = 0x41;
         ((TILE *)p)->w = 0x46;
@@ -4539,7 +4539,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((TILE *)p + 1);
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(0, 0, 0x300, 0) & 0x9FF) | 0xE1000000;
+        ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(0, 0, 0x300, 0));
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
     }
@@ -4590,7 +4590,7 @@ void *tm_drawCardFace(u32 *ot, void *prim, TmState *s, TmCard *card, u8 c, s32 f
     v = (n / 6) * 51;
     if (flip == 0) {
         setlen((SPRT *)prim, 4);
-        ((SPRT *)prim)->code = 0x64;
+        ((SPRT *)prim)->code = GPU_SPRT;
         ((SPRT *)prim)->x0 = card->x;
         ((SPRT *)prim)->y0 = card->y;
         ((SPRT *)prim)->w = 0x2A;
@@ -4604,7 +4604,7 @@ void *tm_drawCardFace(u32 *ot, void *prim, TmState *s, TmCard *card, u8 c, s32 f
         AddPrim(ot, prim);
         prim = (SPRT *)prim + 1;
         setlen((DR_TPAGE *)prim, 1);
-        ((DR_TPAGE *)prim)->code[0] = (GetTPage(1, 0, page << 7, 0x100) & 0x9FF) | 0xE1000400;
+        ((DR_TPAGE *)prim)->code[0] = get_mode(1, 0, GetTPage(1, 0, page << 7, 0x100));
         AddPrim(ot, prim);
         prim = (DR_TPAGE *)prim + 1;
     } else {
@@ -4709,11 +4709,11 @@ void *tm_taskCoin(u32 *ot, SPRT *p, TmState *s) {
         p->g0 = c;
         p->b0 = c;
     }
-    p->clut = 0x3AC0;
+    p->clut = getClut(0, 0xEB);
     AddPrim(ot + 10, p);
     p++;
     setlen((DR_TPAGE *)p, 1);
-    ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+    ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 1, 0x300, 0x100));
     AddPrim(ot + 10, p);
     return (DR_TPAGE *)p + 1;
 }
@@ -4736,7 +4736,7 @@ void *tm_drawCombo(u32 *ot, SPRT *p, TmState *s) {
         p->r0 = c;
         p->g0 = c;
         p->b0 = c;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 10, p);
         p++;
         SetSprt(p);
@@ -4749,7 +4749,7 @@ void *tm_drawCombo(u32 *ot, SPRT *p, TmState *s) {
         p->r0 = 0;
         p->g0 = 0;
         p->b0 = 0;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 10, p);
         p++;
         SetSprt(p);
@@ -4762,7 +4762,7 @@ void *tm_drawCombo(u32 *ot, SPRT *p, TmState *s) {
         p->r0 = c;
         p->g0 = c;
         p->b0 = c;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 10, p);
         p++;
         SetSprt(p);
@@ -4775,11 +4775,11 @@ void *tm_drawCombo(u32 *ot, SPRT *p, TmState *s) {
         p->r0 = 0;
         p->g0 = 0;
         p->b0 = 0;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         AddPrim(ot + 10, p);
         p++;
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x280, 0x100) & 0x9FF) | 0xE1000000;
+        ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(1, 0, 0x280, 0x100));
         AddPrim(ot + 10, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
         s->comboTimer--;
@@ -4829,7 +4829,7 @@ void *tm_drawBattleValues(u32 *ot, void *vp, TmState *s) {
             p = tm_drawBigDigit(ot, p, x, y, n);
         }
         setlen((DR_TPAGE *)p, 1);
-        ((DR_TPAGE *)p)->code[0] = (GetTPage(0, 0, 0x340, 0x1E0) & 0x9FF) | 0xE1000000;
+        ((DR_TPAGE *)p)->code[0] = get_mode(0, 0, GetTPage(0, 0, 0x340, 0x1E0));
         AddPrim(ot + 11, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
         s->valuesTimer--;
@@ -4851,7 +4851,7 @@ void *tm_drawBigDigit(u32 *ot, SPRT *p, s32 x, s32 y, s32 n) {
     p->g0 = 0x80;
     p->b0 = 0x80;
     p->u0 = u;
-    p->clut = 0x3B40;
+    p->clut = getClut(0, 0xED);
     AddPrim(ot + 11, p);
     return p + 1;
 }

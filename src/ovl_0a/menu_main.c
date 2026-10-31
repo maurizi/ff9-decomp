@@ -211,7 +211,7 @@ void menuMain_drawPortraitShade(RECT *r, s32 otz) {
 
     setlen(g_primPtr, 3);
     p = (TileWords *)g_primPtr;
-    p->rgbc = 0x62000000;
+    p->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     p->xy = ((r->x + 8) & 0xFFFF) | (r->y << 16);
     p->wh = 0x30002E;
     g_primPtr = (u8 *)(p + 1);

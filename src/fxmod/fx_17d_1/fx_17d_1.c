@@ -94,7 +94,7 @@ void func_801EC944(u32 *ot, s32 tpage, s32 x, s32 r, s32 g, s32 b) {
     D_801ED420->prim = (u8 *)(prim + 4);
     for (i = 0; i < 4; i++) {
         setlen(p, 8);
-        p->code = 0x3A;
+        p->code = GPU_POLY_G4 | GPU_ABE;
         p->x1 = x + (s16)(i * 16 + 0x80);
         p->r0 = p->r2 = r;
         p->g0 = p->g2 = g;

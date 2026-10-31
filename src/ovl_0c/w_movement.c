@@ -865,7 +865,7 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
     m->worldMatrix.t[1] = arg1->vy;
     m->worldMatrix.t[2] = arg1->vz;
     wm_applyScale(m);
-    m->anim = h = db_lookupRegistered(4, s->actor->anim | DB_ANIM, 0);
+    m->anim = h = db_lookupRegistered(DB_GET_ADDR, s->actor->anim | DB_ANIM, 0);
     if (h != NULL) {
         if (IS_OFFSET(h->rotKeys)) {
             t = h->rotKeysLo;

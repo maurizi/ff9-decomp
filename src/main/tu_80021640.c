@@ -22,7 +22,7 @@ s32 evt_getAnimFrameCount(a, b)
     s32 a;
     u16 b;
 {
-    return ((u16 *)db_lookupRegistered(4, b | DB_ANIM, 0))[1];
+    return ((u16 *)db_lookupRegistered(DB_GET_ADDR, b | DB_ANIM, 0))[1];
 }
 
 s32 evt_updateActorWalkmesh(EvtObject *p) {

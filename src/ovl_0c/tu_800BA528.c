@@ -37,25 +37,25 @@ void wm_setupWorldData(void) {
     while (cd_getState() != 0) {
     }
     if (g_worldDataSet == WM_DATASET_DISC1) {
-        g_worldTexAnimPack = db_lookupRegistered(4, 0x411, 0);
-        g_worldDataPack = db_lookupRegistered(4, 0x41B, 0);
-        g_worldChunkTable = db_lookupRegistered(4, 0x425, 0);
-        g_worldChunkTableT = db_lookupRegistered(4, 0x42F, 0);
-        f[4] = db_lookupRegistered(4, 0x439, 0);
-        f[5] = db_lookupRegistered(4, 0x443, 0);
+        g_worldTexAnimPack = db_lookupRegistered(DB_GET_ADDR, 0x411, 0);
+        g_worldDataPack = db_lookupRegistered(DB_GET_ADDR, 0x41B, 0);
+        g_worldChunkTable = db_lookupRegistered(DB_GET_ADDR, 0x425, 0);
+        g_worldChunkTableT = db_lookupRegistered(DB_GET_ADDR, 0x42F, 0);
+        f[4] = db_lookupRegistered(DB_GET_ADDR, 0x439, 0);
+        f[5] = db_lookupRegistered(DB_GET_ADDR, 0x443, 0);
     } else {
-        g_worldTexAnimPack = db_lookupRegistered(4, 0x414, 0);
-        g_worldDataPack = db_lookupRegistered(4, 0x41E, 0);
-        g_worldChunkTable = db_lookupRegistered(4, 0x428, 0);
-        g_worldChunkTableT = db_lookupRegistered(4, 0x432, 0);
-        f[4] = db_lookupRegistered(4, 0x43C, 0);
-        f[5] = db_lookupRegistered(4, 0x446, 0);
+        g_worldTexAnimPack = db_lookupRegistered(DB_GET_ADDR, 0x414, 0);
+        g_worldDataPack = db_lookupRegistered(DB_GET_ADDR, 0x41E, 0);
+        g_worldChunkTable = db_lookupRegistered(DB_GET_ADDR, 0x428, 0);
+        g_worldChunkTableT = db_lookupRegistered(DB_GET_ADDR, 0x432, 0);
+        f[4] = db_lookupRegistered(DB_GET_ADDR, 0x43C, 0);
+        f[5] = db_lookupRegistered(DB_GET_ADDR, 0x446, 0);
     }
-    f[0] = db_lookupRegistered(4, 0x5DC, 0);
-    f[1] = db_lookupRegistered(4, 0x5DD, 0);
-    f[2] = db_lookupRegistered(4, 0x5DE, 0);
-    f[3] = db_lookupRegistered(4, 0x5DF, 0);
-    f[6] = db_lookupRegistered(4, 0x5E0, 0);
+    f[0] = db_lookupRegistered(DB_GET_ADDR, 0x5DC, 0);
+    f[1] = db_lookupRegistered(DB_GET_ADDR, 0x5DD, 0);
+    f[2] = db_lookupRegistered(DB_GET_ADDR, 0x5DE, 0);
+    f[3] = db_lookupRegistered(DB_GET_ADDR, 0x5DF, 0);
+    f[6] = db_lookupRegistered(DB_GET_ADDR, 0x5E0, 0);
     w = g_worldChunkTable->width;
     h = g_worldChunkTable->height;
     g_worldChunksW = w;
@@ -1068,7 +1068,7 @@ void wm_drawBlocks(void) {
                 xy3 = sxy[3];
                 setlen(f4, 5);
                 setRGB0(f4, 0, 0, 0);
-                f4->code = 0x28;
+                f4->code = GPU_POLY_F4;
                 *(s32 *)&f4->x3 = xy3;
                 addPrim(&ot[0xFFA], f4);
                 f4++;
@@ -1362,9 +1362,9 @@ s32 wm_getCellBlock(s16 arg0, u8 *arg1) {
 }
 
 void wm_initBlockMatrix(void) {
-    g_worldBlockMatrix.m[2][2] = 0x1000;
-    g_worldBlockMatrix.m[1][1] = 0x1000;
-    g_worldBlockMatrix.m[0][0] = 0x1000;
+    g_worldBlockMatrix.m[2][2] = ONE;
+    g_worldBlockMatrix.m[1][1] = ONE;
+    g_worldBlockMatrix.m[0][0] = ONE;
     g_worldBlockMatrix.t[2] = 0;
     g_worldBlockMatrix.t[1] = 0;
     g_worldBlockMatrix.t[0] = 0;

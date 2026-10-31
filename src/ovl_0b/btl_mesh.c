@@ -140,7 +140,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pFT4->x0 = xy0;
         *(s32 *)&pFT4->x1 = xy1;
         *(s32 *)&pFT4->x2 = xy2;
-        setcode(pFT4, 0x2C);
+        setcode(pFT4, GPU_POLY_FT4);
         *(s32 *)&pFT4->x3 = g_vtxScreenXY[i3];
         otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
         i0 = *(u32 *)&sFT4->uv[0];
@@ -191,7 +191,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pFT3->x0 = xy0;
         *(s32 *)&pFT3->x1 = xy1;
         *(s32 *)&pFT3->x2 = xy2;
-        setcode(pFT3, 0x24);
+        setcode(pFT3, GPU_POLY_FT3);
         gte_ldsz3(g_vtxScreenZ[i0], g_vtxScreenZ[i1], g_vtxScreenZ[i2]);
         t = tex[sFT3->tex];
         hi = t & 0xFFFF0000;
@@ -260,7 +260,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         cp = (u32 *)col[i3];
         *(u32 *)&pGT4->r3 = *cp;
         setlen(pGT4, 12);
-        setcode(pGT4, 0x3C);
+        setcode(pGT4, GPU_POLY_GT4);
         i0 = *(u32 *)&sGT4->uv[0];
         i2 = *(u32 *)&sGT4->uv[2];
         i1 = i0 >> 16;
@@ -322,7 +322,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         cp = (u32 *)col[i2];
         *(u32 *)&pGT3->r2 = *cp;
         setlen(pGT3, 9);
-        setcode(pGT3, 0x34);
+        setcode(pGT3, GPU_POLY_GT3);
         i1 = *(u32 *)&sGT3->uv[1];
         i0 = sGT3->uv[0];
         i2 = i1 >> 16;
@@ -381,7 +381,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         cp = (u32 *)col[i3];
         *(u32 *)&pG4->r3 = *cp;
         setlen(pG4, 8);
-        setcode(pG4, 0x38);
+        setcode(pG4, GPU_POLY_G4);
         otz >>= 6;
         addPrim(&ot[otz], pG4);
         prim += sizeof(POLY_G4);
@@ -426,7 +426,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pG3->r2 = *cp;
         gte_stotz(&otz);
         setlen(pG3, 6);
-        setcode(pG3, 0x30);
+        setcode(pG3, GPU_POLY_G3);
         otz >>= 2;
         addPrim(&ot[otz], pG3);
         prim += sizeof(POLY_G3);
@@ -460,7 +460,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pF4->x0 = xy0;
         *(s32 *)&pF4->x1 = xy1;
         *(s32 *)&pF4->x2 = xy2;
-        setcode(pF4, 0x28);
+        setcode(pF4, GPU_POLY_F4);
         *(s32 *)&pF4->x3 = g_vtxScreenXY[i3];
         otz >>= 6;
         addPrim(&ot[otz], pF4);
@@ -496,7 +496,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pF3->x2 = xy2;
         gte_stotz(&otz);
         setlen(pF3, 4);
-        setcode(pF3, 0x20);
+        setcode(pF3, GPU_POLY_F3);
         otz >>= 2;
         addPrim(&ot[otz], pF3);
         prim += sizeof(POLY_F3);

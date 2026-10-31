@@ -669,7 +669,7 @@ void w_frameSystemDestructor(void) {
 }
 
 s32 wm_getModelCacheBottom(void) {
-    return (s32)PSX_RAM(u8 *, 0x801EDF00);
+    return (s32)RAM_SUB_OVL(u8 *);
 }
 
 s32 wm_getChunkBuffer(void) {
@@ -789,37 +789,37 @@ void wm_postDraw(void) {
 }
 
 s32 func_800B8568(void) {
-    return (s32)PSX_RAM(u8 *, 0x801EDF00);
+    return (s32)RAM_SUB_OVL(u8 *);
 }
 
 void wm_initLighting(void) {
     g_worldMapLightMatrix.m[0][0] = 0;
     g_worldMapLightMatrix.m[0][1] = -0x1000;
     g_worldMapLightMatrix.m[0][2] = 0;
-    g_worldMapLightMatrix.m[1][0] = 0x1000;
+    g_worldMapLightMatrix.m[1][0] = ONE;
     g_worldMapLightMatrix.m[1][1] = 0;
     g_worldMapLightMatrix.m[1][2] = 0;
     g_worldMapLightMatrix.m[2][0] = 0;
     g_worldMapLightMatrix.m[2][1] = -0x400;
-    g_worldMapLightMatrix.m[2][2] = 0x1000;
+    g_worldMapLightMatrix.m[2][2] = ONE;
     g_worldBackdropLightMatrix.m[0][0] = 0;
-    g_worldBackdropLightMatrix.m[0][1] = 0x1000;
+    g_worldBackdropLightMatrix.m[0][1] = ONE;
     g_worldBackdropLightMatrix.m[0][2] = 0;
-    g_worldBackdropLightMatrix.m[1][0] = 0x1000;
+    g_worldBackdropLightMatrix.m[1][0] = ONE;
     g_worldBackdropLightMatrix.m[1][1] = 0;
     g_worldBackdropLightMatrix.m[1][2] = 0;
     g_worldBackdropLightMatrix.m[2][0] = 0;
     g_worldBackdropLightMatrix.m[2][1] = 0;
-    g_worldBackdropLightMatrix.m[2][2] = 0x1000;
+    g_worldBackdropLightMatrix.m[2][2] = ONE;
     g_worldBlockFxLightMatrix.m[0][0] = 0;
-    g_worldBlockFxLightMatrix.m[0][1] = 0x1000;
+    g_worldBlockFxLightMatrix.m[0][1] = ONE;
     g_worldBlockFxLightMatrix.m[0][2] = 0;
-    g_worldBlockFxLightMatrix.m[1][0] = 0x1000;
+    g_worldBlockFxLightMatrix.m[1][0] = ONE;
     g_worldBlockFxLightMatrix.m[1][1] = 0;
     g_worldBlockFxLightMatrix.m[1][2] = 0;
     g_worldBlockFxLightMatrix.m[2][0] = 0;
     g_worldBlockFxLightMatrix.m[2][1] = 0;
-    g_worldBlockFxLightMatrix.m[2][2] = 0x1000;
+    g_worldBlockFxLightMatrix.m[2][2] = ONE;
     SetBackColor(0, 0, 0);
     SetFarColor(0, 0, 0);
     SetFogNearFar(5000, 30000, g_gameState->gameData->projDist);
@@ -869,17 +869,17 @@ void wm_initDiscImage(void) {
             g_worldImageNames[i] = g_worldImageNamesDisc1[i];
         }
         printf("Read CD Image [Disc-1]\n");
-        g_worldImageSectors[0] = file_find(0xC, 0x3F3)->sector + g_gameState->imgSector;
-        g_worldImageSectors[3] = file_find(0xC, 0x3FD)->sector + g_gameState->imgSector;
-        g_worldImageSectors[4] = file_find(0xC, 0x407)->sector + g_gameState->imgSector;
+        g_worldImageSectors[0] = file_find(DIR_WORLD_IMAGES, 0x3F3)->sector + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(DIR_WORLD_IMAGES, 0x3FD)->sector + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(DIR_WORLD_IMAGES, 0x407)->sector + g_gameState->imgSector;
     } else {
         for (i = 0; i < 5; i++) {
             g_worldImageNames[i] = g_worldImageNamesDisc4[i];
         }
         printf("Read CD Image [Disc-4]\n");
-        g_worldImageSectors[0] = file_find(0xC, 0x3F6)->sector + g_gameState->imgSector;
-        g_worldImageSectors[3] = file_find(0xC, 0x400)->sector + g_gameState->imgSector;
-        g_worldImageSectors[4] = file_find(0xC, 0x40A)->sector + g_gameState->imgSector;
+        g_worldImageSectors[0] = file_find(DIR_WORLD_IMAGES, 0x3F6)->sector + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(DIR_WORLD_IMAGES, 0x400)->sector + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(DIR_WORLD_IMAGES, 0x40A)->sector + g_gameState->imgSector;
     }
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf(s_wmStrImageTopSector, g_worldImageSectors[0]);

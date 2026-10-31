@@ -209,8 +209,8 @@ void menuScreen_loadOverlay(void) {
     if (id != 0xFF && id != g_menuScreenSwitch.loadedOverlay) {
         g_menuScreenSwitch.overlayRetry = 1;
         g_menuScreenSwitch.loadedOverlay = id;
-        f = file_find(0, id);
-        if (cd_readAsync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, PSX_RAM(void *, 0x801EDF00), menuScreen_onOverlayRead)) {
+        f = file_find(DIR_OVERLAYS, id);
+        if (cd_readAsync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, RAM_SUB_OVL(void *), menuScreen_onOverlayRead)) {
             g_menuScreenSwitch.overlayLoading = 1;
             g_menuScreenSwitch.overlayRetry = 0;
         }

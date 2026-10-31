@@ -55,14 +55,14 @@ void game_main(void) {
 
 void game_loadModeOverlay(s32 mode) {
     u32 loaded = 0;
-    u8 files[10] = { 20, 10, 11, 12, 21, 0xFF, 0xFF, 101, 101, 13 };
+    u8 files[10] = { OVL_OPENING, OVL_FIELD, OVL_BATTLE, OVL_WORLD, OVL_ENDING, 0xFF, 0xFF, OVL_BATTLE_END, OVL_BATTLE_END, OVL_TETRA_MASTER };
     LoadAddrs addrs = g_modeOverlayAddrs;
     s32 id;
     PreloadEntry *e;
     FileEntry *f;
 
     game_freezeScreen();
-    id = files[mode] | 0x10000;
+    id = OVL_KEY(files[mode]);
     while (cd_getState()) {
     }
     if (preload_isReady(id)) {
@@ -76,7 +76,7 @@ void game_loadModeOverlay(s32 mode) {
         preload_remove(id);
         DrawSync(0);
     }
-    f = file_find(0, id);
+    f = file_find(DIR_OVERLAYS, id);
     if (loaded < f->unkC - f->sector) {
         cd_readSync(g_gameState->imgSector + f->sector + loaded, (f->unkC - (f->sector + loaded)) << 11,
                       (u8 *)addrs.unk0[mode] + (loaded << 11));

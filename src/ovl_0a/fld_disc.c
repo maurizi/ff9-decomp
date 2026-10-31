@@ -71,7 +71,7 @@ void fld_discChangeLeave(void) {
 void fld_discChangeBeginFrame(void) {
     GameData *gd = g_gameState->gameData;
 
-    ClearOTagR(gd->ot[gd->drawBuf], 0x1000);
+    ClearOTagR(gd->ot[gd->drawBuf], OT_LEN);
     pad_update();
 }
 
@@ -90,7 +90,7 @@ void fld_discChangeEndFrame(void) {
     VSync(0);
     ResetGraph(1);
     PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
-    DrawOTagEnv(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
+    DrawOTagEnv(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);
 }

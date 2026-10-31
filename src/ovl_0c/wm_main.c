@@ -128,8 +128,8 @@ s32 wm_loadSoundBanks(void) {
 
     for (i = 1; i >= 0; i--) {
         id = ids[i] | DB_SOUND_BANK;
-        addr = db_lookupRegistered(4, id, 0);
-        size = (u32)db_lookupRegistered(5, id, 0);
+        addr = db_lookupRegistered(DB_GET_ADDR, id, 0);
+        size = (u32)db_lookupRegistered(DB_GET_SIZE, id, 0);
         if (ids[i] == 0x17B) {
             r = &g_worldParkedSoundRects[g_worldParkedSoundRectIdx];
             r->x = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.x;
@@ -148,15 +148,15 @@ s32 wm_loadSoundBanks(void) {
 }
 
 s32 wm_loadResidentMusic(void) {
-    s32 addr = (s32)db_lookupRegistered(4, 0x70064, 0);
+    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, 0x70064, 0);
 
-    wm_copyViaVram(g_gameState->gameData->musicSeq2, addr, (s32)db_lookupRegistered(5, 0x70064, 0));
+    wm_copyViaVram(g_gameState->gameData->musicSeq2, addr, (s32)db_lookupRegistered(DB_GET_SIZE, 0x70064, 0));
     DrawSync(0);
     return 0;
 }
 
 s32 wm_loadShadowTexture(void) {
-    s32 addr = (s32)db_lookupRegistered(4, 0x42774, 0);
+    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, DB_SHADOW_TIM, 0);
 
     file_setTimPos(addr, 0x280, 0xDE, 0x330, 0xB0);
     file_loadTim(addr);
@@ -171,7 +171,7 @@ s32 wm_loadWorldData(void) {
     PreloadEntry *e;
 
     id = wm_getWorldDataFileId();
-    f = file_find(1, id);
+    f = file_find(DIR_COMMON, id);
     buf = g_loadAreaEnd + 0x34000;
     if (preload_isReady(id) != 0) {
         e = preload_find(id);
@@ -220,9 +220,9 @@ s32 wm_afterLoadShadowTexture(void) {
 }
 
 s32 wm_getWorldDataFileId(void) {
-    s32 v = 0x2712;
+    s32 v = FILE_WM_DATA;
     if (g_evtGlobalVars.h[0] >= 0x2B52) {
-        v = 0x2716;
+        v = FILE_WM_DATA_LATE;
     }
     return v;
 }
@@ -375,7 +375,7 @@ s32 wm_findAreaData(arg0, arg1)
     WorldMapObj *arg0;
     u16 arg1;
 {
-    arg0->areaData = db_lookupRegistered(4, arg1 | DB_AREA, 0);
+    arg0->areaData = db_lookupRegistered(DB_GET_ADDR, arg1 | DB_AREA, 0);
     return 0;
 }
 
@@ -383,7 +383,7 @@ s32 wm_findMapScript(arg0, arg1)
     WorldMapObj *arg0;
     u16 arg1;
 {
-    arg0->mapScript = db_lookupRegistered(4, arg1 | DB_FIELD, 0);
+    arg0->mapScript = db_lookupRegistered(DB_GET_ADDR, arg1 | DB_FIELD, 0);
     return 0;
 }
 
@@ -434,11 +434,11 @@ s32 wm_loadFile(WorldMapObj *arg0, s32 unused) { /* its caller passes this, unus
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     buf = arg0->loadPtr;
-    a = db_lookup((s32)buf, 4, DB_PACK, 0);
-    b = db_lookup((s32)buf, 4, (DB_PACK | 1), 0);
-    g_gameState->gameData->depTable = (struct FileTable *)db_lookup((s32)buf, 4, DB_DEP_TABLE, 0);
-    for (i = db_lookup(a, 1, DB_TIM, 0) - 1; i >= 0; i--) {
-        p = db_lookup(a, 2, (i & 0xFFFF) | DB_TIM, 0);
+    a = db_lookup((s32)buf, DB_GET_ADDR, DB_PACK, 0);
+    b = db_lookup((s32)buf, DB_GET_ADDR, (DB_PACK | 1), 0);
+    g_gameState->gameData->depTable = (struct FileTable *)db_lookup((s32)buf, DB_GET_ADDR, DB_DEP_TABLE, 0);
+    for (i = db_lookup(a, DB_GET_COUNT, DB_TIM, 0) - 1; i >= 0; i--) {
+        p = db_lookup(a, DB_GET_AT, (i & 0xFFFF) | DB_TIM, 0);
         if (p != -1) {
             file_loadTim(p);
         }
@@ -449,7 +449,7 @@ s32 wm_loadFile(WorldMapObj *arg0, s32 unused) { /* its caller passes this, unus
     b = a;
     arg0->files[1] = (void *)b;
     db_register(b, 0);
-    q = (u8 *)db_lookup(b, 4, 0x1D0000, 0);
+    q = (u8 *)db_lookup(b, DB_GET_ADDR, 0x1D0000, 0);
     arg0->palAnimCount = *q;
     q += 4;
     arg0->palAnims = (WmPalAnim *)q;
@@ -577,8 +577,8 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
         g_gameState->gameData->npcModelSlots++;
     }
     o->modelId = arg0;
-    o->obj->model = db_lookupRegistered(4, arg0, 0);
-    if ((o->obj->anim = db_lookupRegistered(4, wm_findDefaultAnim(o->modelId), 0)) != NULL) {
+    o->obj->model = db_lookupRegistered(DB_GET_ADDR, arg0, 0);
+    if ((o->obj->anim = db_lookupRegistered(DB_GET_ADDR, wm_findDefaultAnim(o->modelId), 0)) != NULL) {
         h = o->obj->anim;
         if (IS_OFFSET(h->rotKeys)) {
             t = h->rotKeysLo;
@@ -608,7 +608,7 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
 }
 
 s32 wm_findDefaultAnim(s32 arg0) {
-    WmAnimTable *t = db_lookupRegistered(8, arg0, DB_MODEL_INFO);
+    WmAnimTable *t = db_lookupRegistered(DB_GET_AT_IN, arg0, DB_MODEL_INFO);
     s32 i;
     WmAnimTableEntry *e;
 
@@ -945,7 +945,7 @@ s32 wm_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | DB_SE;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)db_lookupRegistered(4, id, 0);
+            h = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
         }
         /* the original jump tables are 8-aligned within their object */
         __asm__(".rdata\n\t.word 0\n\t.text");
@@ -1194,7 +1194,7 @@ s32 *arg1;
         }
         return e->sector;
     } else {
-        f = file_find(0xB, arg0);
+        f = file_find(DIR_SOUND_BANKS, arg0);
         if (arg1 != NULL) {
             *arg1 = (f->unkC - f->sector) << 11;
         }
@@ -1216,9 +1216,9 @@ s32 wm_depGetLink(s32 arg0) {
 }
 
 s32 wm_unpackMusic(s32 arg0) {
-    s32 t = db_lookup(arg0, 3, DB_MUSIC, 0);
+    s32 t = db_lookup(arg0, DB_GET_KEY_AT, DB_MUSIC, 0);
 
-    memcpy((u8 *)arg0, (u8 *)db_lookup(arg0, 4, t, 0), db_lookup(arg0, 5, t, 0));
+    memcpy((u8 *)arg0, (u8 *)db_lookup(arg0, DB_GET_ADDR, t, 0), db_lookup(arg0, DB_GET_SIZE, t, 0));
     return 0;
 }
 
@@ -1233,13 +1233,13 @@ void wm_streamSoundChunk(WmStreamReq *arg0) {
     id = g_gameState->gameData->soundLoadBank | DB_SOUND_BANK;
     if (arg0->offset == 0) {
         b = a;
-        t = db_lookup(a, 2, DB_PACK, 0);
+        t = db_lookup(a, DB_GET_AT, DB_PACK, 0);
         if (t == -1) {
-            a = db_lookup(a, 4, id, 0);
+            a = db_lookup(a, DB_GET_ADDR, id, 0);
             g_gameState->gameData->soundBankSize = db_getSize(b);
         } else {
-            a = db_lookup(t, 4, id, 0);
-            g_gameState->gameData->soundBankSize = db_lookup(b, 2, (DB_PACK | 1), 0) - g_gameState->gameData->soundLoadDest;
+            a = db_lookup(t, DB_GET_ADDR, id, 0);
+            g_gameState->gameData->soundBankSize = db_lookup(b, DB_GET_AT, (DB_PACK | 1), 0) - g_gameState->gameData->soundLoadDest;
         }
     }
     n = g_gameState->gameData->soundBankSize - arg0->offset;
@@ -1253,7 +1253,7 @@ void wm_streamSoundChunk(WmStreamReq *arg0) {
 void wm_clearOT(void) {
     GameData *gd = g_gameState->gameData;
 
-    ClearOTagR(gd->ot[gd->drawBuf] - 8, 0x1010);
+    ClearOTagR(gd->ot[gd->drawBuf] - OT_PAD, OT_LEN + 2 * OT_PAD);
 }
 
 void wm_endFrame(void) {
@@ -1280,7 +1280,7 @@ void wm_endFrame(void) {
     gd = g_gameState->gameData;
     if (!(gd->flags & GD_PAUSED)) {
         if (gd->ctx.world->flags & WM_MAP_NO_TRANSITION) {
-            DrawOTagEnv(gd->ot[gd->drawBuf] + 0xFFF, &g_gameState->drawEnv[gd->drawBuf]);
+            DrawOTagEnv(gd->ot[gd->drawBuf] + OT_LAST, &g_gameState->drawEnv[gd->drawBuf]);
         } else {
             DrawOTag(gd->ot[gd->drawBuf]);
         }
@@ -1366,12 +1366,12 @@ void wm_updateBattleTransition(void) {
             wm_soundCommand(SND_MUSIC_LOAD, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
             g_gameState->gameData->ctx.world->obj->battleStep = -1;
         } else {
-            cd_seekAsync(g_gameState->imgSector + file_find(0, 0x1000B)->sector, 0);
+            cd_seekAsync(g_gameState->imgSector + file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE))->sector, 0);
             g_gameState->gameData->ctx.world->obj->battleStep = -2;
         }
     } else if (o->battleStep == -1) {
         if (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) == 0) {
-            cd_seekAsync(g_gameState->imgSector + file_find(0, 0x1000B)->sector, 0);
+            cd_seekAsync(g_gameState->imgSector + file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE))->sector, 0);
             wm_soundCommand(SND_MUSIC_PLAY, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
             akao_setMusicVolume(0, 0x7F);
             g_gameState->gameData->ctx.world->obj->battleStep = -2;
@@ -1420,7 +1420,7 @@ void wm_togglePause(void) {
         ClearOTag(&g_worldPauseOT, 1);
         ui_buildSprite((320 - g_uiSprites[235].w) / 2, (218 - g_uiSprites[235].h) / 2, &g_worldPauseOT, 0xEB, 0, buf, g_worldPauseSprite);
         setlen(&g_worldPauseTile, 3);
-        g_worldPauseTile.code = 0x62;
+        g_worldPauseTile.code = GPU_TILE | GPU_ABE;
         setRGB0(&g_worldPauseTile, 0x60, 0x60, 0x60);
         setXY0(&g_worldPauseTile, 0, 0);
         setWH(&g_worldPauseTile, 320, 218);

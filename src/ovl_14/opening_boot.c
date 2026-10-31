@@ -17,7 +17,7 @@ void opening_bootScreen(void) {
             game_startFade(1, 1, 0x3C, 0xFFFFFF);
         }
         setlen(&g_bootScreenSprite[g_gameState->gameData->drawBuf], 4);
-        g_bootScreenSprite[g_gameState->gameData->drawBuf].code = 0x64;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].code = GPU_SPRT;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].r0 = 0x80;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].g0 = 0x80;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].b0 = 0x80;
@@ -44,15 +44,15 @@ void opening_bootScreenLoad(void) {
 
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    e = file_find(1, 0x2718);
+    e = file_find(DIR_COMMON, FILE_BOOT_SCREEN);
     cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     buf = g_loadAreaEnd + 0x10000;
     g_bootScreenData = buf;
     db_register((s32)buf, 0);
-    g_bootScreenImage = (s32)db_lookupRegistered(4, 0x44FB0, 0);
-    file_setTimPos(g_bootScreenImage, 0, 0xE0, 0x280, 0);
+    g_bootScreenImage = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44FB0, 0);
+    file_setTimPos(g_bootScreenImage, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
     file_loadTim(g_bootScreenImage);
     game_startFade(1, 1, 0, 0xFFFFFF);
     g_padPortMask[0] = 0;
@@ -65,7 +65,7 @@ void opening_bootScreenFree(void) {
 
 void opening_bootClearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], OT_LEN);
 }
 
 void opening_bootSwap(void) {
@@ -79,7 +79,7 @@ void opening_bootSwap(void) {
     PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
     i = ctx->drawBuf;
-    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    DrawOTagEnv(ctx->ot[i] + OT_LAST, &g_gameState->drawEnv[i]);
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);
 }

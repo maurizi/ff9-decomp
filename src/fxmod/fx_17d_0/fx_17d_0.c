@@ -12,7 +12,7 @@ void func_801E7704(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b) {
     D_801E9470->prim = (u8 *)(p + 4);
     for (i = 0; i < 4; i++, p++) {
         setlen(p, 8);
-        setcode(p, 0x3A);
+        setcode(p, GPU_POLY_G4 | GPU_ABE);
         if (!(i & 1)) {
             p->r0 = p->r1 = 0;
             p->g0 = p->g1 = 0;

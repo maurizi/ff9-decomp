@@ -685,11 +685,11 @@ void fldmdl_applyScale(ModelObj *arg0) {
     MATRIX m;
 
     if (arg0->flags & MDL_SCALED) {
-        *(s32 *)&m.m[0][0] = 0x1000;
+        *(s32 *)&m.m[0][0] = ONE;
         *(s32 *)&m.m[0][2] = 0;
-        *(s32 *)&m.m[1][1] = 0x1000;
+        *(s32 *)&m.m[1][1] = ONE;
         *(s32 *)&m.m[2][0] = 0;
-        *(s32 *)&m.m[2][2] = 0x1000;
+        *(s32 *)&m.m[2][2] = ONE;
         m.m[0][0] = arg0->scaleX;
         gte_SetRotMatrix(&arg0->worldMatrix);
         gte_ldclmv(&m);
@@ -1644,11 +1644,11 @@ loop:
         m->m[2][1] = r2.vz;
         m->m[2][2] = r1.vz;
         if (arg0->flags & MDL_SCALED) {
-            *(s32 *)&s.m[0][0] = 0x1000;
+            *(s32 *)&s.m[0][0] = ONE;
             *(s32 *)&s.m[0][2] = 0;
-            *(s32 *)&s.m[1][1] = 0x1000;
+            *(s32 *)&s.m[1][1] = ONE;
             *(s32 *)&s.m[2][0] = 0;
-            *(s32 *)&s.m[2][2] = 0x1000;
+            *(s32 *)&s.m[2][2] = ONE;
             s.m[0][0] = arg0->scaleX;
             gte_SetRotMatrix(m);
             gte_ldclmv(&s);
@@ -2180,9 +2180,9 @@ void fldmdl_reflectModel(ModelObj *arg0) {
         nz = arg0->mirrorNormal.v.vz;
         d = (arg0->mirrorPoint.v.vx * nx + arg0->mirrorPoint.v.vy * ny + arg0->mirrorPoint.v.vz * nz) >> 11;
         m = (MATRIX *)0x1F800000;
-        m->m[0][0] = 0x1000 - ((nx * nx) >> 11);
-        m->m[1][1] = 0x1000 - ((ny * ny) >> 11);
-        m->m[2][2] = 0x1000 - ((nz * nz) >> 11);
+        m->m[0][0] = ONE - ((nx * nx) >> 11);
+        m->m[1][1] = ONE - ((ny * ny) >> 11);
+        m->m[2][2] = ONE - ((nz * nz) >> 11);
         m->m[0][1] = m->m[1][0] = (nx * ny) >> 11;
         m->m[0][2] = m->m[2][0] = (nx * nz) >> 11;
         m->m[1][2] = m->m[2][1] = (ny * nz) >> 11;
@@ -2697,14 +2697,14 @@ s32 fldbg_drawFollowMask(BgFile *bg, BgOverlay *o, FieldBgState *st, BgFollowOve
         if (u < 0) {
             u = 0;
         }
-        setXY4(p, 0, u, x, u, 0, 0xE0, x, 0xE0);
+        setXY4(p, 0, u, x, u, 0, SCREEN_H, x, SCREEN_H);
         addPrim(&ot[7], p);
     }
     if (y > 0) {
         u = x + o->width;
         p = &f->quads[*g_fieldBgCtx.bufIndex][1];
-        if (u > 0x140) {
-            u = 0x140;
+        if (u > SCREEN_W) {
+            u = SCREEN_W;
         }
         v = y;
         if (v < 0) {
@@ -2713,18 +2713,18 @@ s32 fldbg_drawFollowMask(BgFile *bg, BgOverlay *o, FieldBgState *st, BgFollowOve
         setXY4(p, 0, 0, u, 0, 0, v, u, v);
         addPrim(&ot[7], p);
     }
-    if (x + o->width < 0x140) {
+    if (x + o->width < SCREEN_W) {
         u = x + o->width;
         v = y + o->height;
         p = &f->quads[*g_fieldBgCtx.bufIndex][2];
-        w = 0x140 - u;
-        if (v > 0xE0) {
-            v = 0xE0;
+        w = SCREEN_W - u;
+        if (v > SCREEN_H) {
+            v = SCREEN_H;
         }
         setXYWH(p, u, 0, w, v);
         addPrim(&ot[7], p);
     }
-    if (y + o->height < 0xE0) {
+    if (y + o->height < SCREEN_H) {
         p = &f->quads[*g_fieldBgCtx.bufIndex][3];
         v = x;
         if (v < 0) {
@@ -2734,7 +2734,7 @@ s32 fldbg_drawFollowMask(BgFile *bg, BgOverlay *o, FieldBgState *st, BgFollowOve
         if (u < 0) {
             u = 0;
         }
-        setXY4(p, v, u, 0x140, u, v, 0xE0, 0x140, 0xE0);
+        setXY4(p, v, u, SCREEN_W, u, v, SCREEN_H, SCREEN_W, SCREEN_H);
         addPrim(&ot[7], p);
     }
     if (f->abr < 4) {

@@ -156,7 +156,7 @@ void func_801E7E18(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
     for (i = 0; i < n - 1; i++, p++, e++) {
         p->tpage = tp;
         p->clut = cl;
-        p->code = 0x3E;
+        p->code = GPU_POLY_GT4 | GPU_ABE;
         p->x0 = e[0].unk0.vx;
         p->y0 = e[0].unk0.vy;
         p->x1 = e[0].unk4.vx;
@@ -799,7 +799,7 @@ void func_801E9C58(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
         r.w = m;
         r.h = h;
         ex->SetDrawMove(p, &r, dx + n, dy);
-        addPrim(env->ot + 0xFFF, p);
+        addPrim(env->ot + OT_LAST, p);
     }
     p += 6;
     if (n != 0) {
@@ -808,7 +808,7 @@ void func_801E9C58(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
         r2.w = n;
         r2.h = h;
         ex->SetDrawMove(p, &r2, dx, dy);
-        addPrim(env->ot + 0xFFF, p);
+        addPrim(env->ot + OT_LAST, p);
     }
 }
 

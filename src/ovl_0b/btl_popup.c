@@ -307,7 +307,7 @@ void btl_drawPopupDigits(Unk800CCD00 *arg0, u32 arg1) {
     xy.vy = arg0->xy.s.y;
     for (; i != -1; i--) {
         arg0->prim[0] = 0x04000000;
-        arg0->prim[1] = arg0->rgb | 0x64000000;
+        arg0->prim[1] = arg0->rgb | GPU_CODE(GPU_SPRT);
         arg0->prim[2] = *(s32 *)&xy;
         g = &D_80068BF0[arg1 & 0xF];
         arg0->prim[3] = g->uvclut + (arg0->clut << 16);
@@ -321,7 +321,7 @@ void btl_drawPopupDigits(Unk800CCD00 *arg0, u32 arg1) {
 
 void btl_drawPopupGlyph(Unk800CCD00 *arg0, SpriteDef *arg1) {
     arg0->prim[0] = 0x04000000;
-    arg0->prim[1] = arg0->rgb | 0x64000000;
+    arg0->prim[1] = arg0->rgb | GPU_CODE(GPU_SPRT);
     arg0->prim[2] = arg0->xy.w;
     arg0->prim[3] = arg1->uvclut + (arg0->clut << 16);
     arg0->prim[4] = (arg1->h << 16) | arg1->w;

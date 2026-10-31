@@ -62,6 +62,8 @@ int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 #define GPU_TGE 0x01
 #define GPU_CODE(c) ((c) << 24)
 #define GPU_RGBC(c, rgb) (GPU_CODE(c) | (rgb)) /* code byte + 0xBBGGRR */
+#define ONE 4096 /* libgte fixed-point 1.0 (matrix elements, rsin/rcos results) */
+#define GPU_RGB_NEUTRAL 0x808080 /* 0x80 per channel: textures drawn with their own colours */
 /* libgpu.h primitive-word helpers */
 #define get_mode(dfe, dtd, tpage) \
     ((0xE1000000) | ((dtd) ? 0x0200 : 0) | ((dfe) ? 0x0400 : 0) | ((tpage) & 0x9FF))

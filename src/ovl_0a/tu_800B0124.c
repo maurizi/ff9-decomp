@@ -223,7 +223,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                         akao_stopSe(SFXH(slot), arg2);
                         g_gameState->gameData->flags ^= mask | mask2;
                     }
-                    memcpy((void *)SFXH(slot), db_lookupRegistered(4, id, 0), (s32)db_lookupRegistered(5, id, 0));
+                    memcpy((void *)SFXH(slot), db_lookupRegistered(DB_GET_ADDR, id, 0), (s32)db_lookupRegistered(DB_GET_SIZE, id, 0));
                     g_gameState->gameData->sfxSlotId[slot] = arg1;
                     g_gameState->gameData->sfxSlotVolume[slot] = 0x7F;
                     g_gameState->gameData->sfxSlotPan[slot] = 0x80;
@@ -231,7 +231,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 }
                 h = SFXH(slot);
             } else {
-                h = (s32)db_lookupRegistered(4, id, 0);
+                h = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
             }
         }
         switch (kind) {
@@ -362,7 +362,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x180000;
         switch (kind) {
         case 0:
-            slot = (s32)db_lookupRegistered(4, id, 0);
+            slot = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
             if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
@@ -620,8 +620,8 @@ void fld_stopSceneSfx(FieldScene *arg0, s16 arg1) {
     s32 t = (s32)arg0->fieldFile;
     s32 i;
 
-    for (i = db_lookup(t, 1, DB_SE, 0) - 1; i >= 0; i--) {
-        akao_stopSe(db_lookup(t, 2, (i & 0xFFFF) | DB_SE, 0), 0);
+    for (i = db_lookup(t, DB_GET_COUNT, DB_SE, 0) - 1; i >= 0; i--) {
+        akao_stopSe(db_lookup(t, DB_GET_AT, (i & 0xFFFF) | DB_SE, 0), 0);
     }
     akao_sendCmdE2();
 }
@@ -955,13 +955,13 @@ s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
     id = g_gameState->gameData->soundLoadBank | DB_SOUND_BANK;
     if (arg0->offset == 0) {
         b = a;
-        t = db_lookup(a, 2, DB_PACK, 0);
+        t = db_lookup(a, DB_GET_AT, DB_PACK, 0);
         if (t == -1) {
-            a = db_lookup(a, 4, id, 0);
+            a = db_lookup(a, DB_GET_ADDR, id, 0);
             g_gameState->gameData->soundBankSize = db_getSize(b);
         } else {
-            a = db_lookup(t, 4, id, 0);
-            g_gameState->gameData->soundBankSize = db_lookup(b, 2, (DB_PACK | 1), 0) - g_gameState->gameData->soundLoadDest;
+            a = db_lookup(t, DB_GET_ADDR, id, 0);
+            g_gameState->gameData->soundBankSize = db_lookup(b, DB_GET_AT, (DB_PACK | 1), 0) - g_gameState->gameData->soundLoadDest;
             fld_dropSoundBankCache(g_gameState->gameData->soundBankSize - arg0->offset);
         }
     }
@@ -984,9 +984,9 @@ s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
 }
 
 s32 fld_unpackMusicSeq(s32 arg0) {
-    s32 t = db_lookup(arg0, 3, DB_MUSIC, 0);
+    s32 t = db_lookup(arg0, DB_GET_KEY_AT, DB_MUSIC, 0);
 
-    memcpy((u8 *)arg0, (u8 *)db_lookup(arg0, 4, t, 0), db_lookup(arg0, 5, t, 0));
+    memcpy((u8 *)arg0, (u8 *)db_lookup(arg0, DB_GET_ADDR, t, 0), db_lookup(arg0, DB_GET_SIZE, t, 0));
     return 0;
 }
 
@@ -1282,20 +1282,20 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
     default:
         return -1;
     case 0x11:
-        k = 0x1000B;
-        if (flag && fld_findPreloadExclude(0x1000B)) {
+        k = OVL_KEY(OVL_BATTLE);
+        if (flag && fld_findPreloadExclude(OVL_KEY(OVL_BATTLE))) {
             return -1;
         }
-        if (fld_findPreloadRequest(0x1000B)) {
+        if (fld_findPreloadRequest(OVL_KEY(OVL_BATTLE))) {
             return -1;
         }
-        if (preload_find(0x1000B)) {
+        if (preload_find(OVL_KEY(OVL_BATTLE))) {
             return -1;
         }
         if (flag) {
-            fld_addPreloadExclude(0x1000B);
+            fld_addPreloadExclude(OVL_KEY(OVL_BATTLE));
         } else {
-            fld_addPreloadRequest(0x1000B);
+            fld_addPreloadRequest(OVL_KEY(OVL_BATTLE));
         }
         if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_PRELOADS_QUEUED)) {
             goto done;
@@ -1339,7 +1339,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
             x = id;
         } else {
             fld_addPreloadRequest(id);
-            x = 0x1000B;
+            x = OVL_KEY(OVL_BATTLE);
         }
         fld_addPreloadExclude(x);
         if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_PRELOADS_QUEUED)) {
@@ -1389,11 +1389,11 @@ void fld_setPreloadCursor(s32 arg0) {
 }
 
 s32 fld_isEncounterPreloadRequested(void) {
-    return fld_findPreloadRequest(0x1000B) != 0;
+    return fld_findPreloadRequest(OVL_KEY(OVL_BATTLE)) != 0;
 }
 
 s32 fld_isEncounterPreloadExcluded(void) {
-    return fld_findPreloadExclude(0x1000B) != 0;
+    return fld_findPreloadExclude(OVL_KEY(OVL_BATTLE)) != 0;
 }
 
 /* is any active entry of category 5? */
@@ -1551,11 +1551,11 @@ void fld_queueFieldPreloads(void) {
             }
         }
         if (cnt != 0) {
-            g = file_find(0, 0x1000B);
-            fld_preloadFile(0x1000B, 0, g->sector, (g->unkC - g->sector) << 11);
+            g = file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE));
+            fld_preloadFile(OVL_KEY(OVL_BATTLE), 0, g->sector, (g->unkC - g->sector) << 11);
             key = fld_isEncounterPreloadRequested();
             if (key != 0) {
-                fld_removePreloadRequest(0x1000B);
+                fld_removePreloadRequest(OVL_KEY(OVL_BATTLE));
             }
         }
     }
@@ -1725,7 +1725,7 @@ void fld_showSplashImage(void) {
     s32 n;
     u32 state;
 
-    tim = (s32)db_lookupRegistered(4, 0x44E20, 0);
+    tim = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44E20, 0);
     file_getTimRects((void *)tim, &clut, &img);
     setRECT(img, 0, 0x100, img->w, img->h);
     setRECT(clut, 0x100, 0xE0, clut->w, clut->h);
@@ -1762,7 +1762,7 @@ void fld_showSplashImage(void) {
     preload_reset();
     game_setClearColor(0, 0, 0);
     do {
-        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
         switch (state) {
         case 0:
             n = 0x3C;
@@ -1806,7 +1806,7 @@ void fld_showSplashImage(void) {
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
         PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
-        DrawOTagEnv(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + 0xFFF, &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
+        DrawOTagEnv(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + OT_LAST, &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
         g_gameState->gameData->drawBuf ^= 1;
     } while (state < 4);
 }

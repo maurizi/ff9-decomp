@@ -868,7 +868,7 @@ void func_801EA424(s32 ot) {
 
     env->prim = (u8 *)(p + 1);
     ex = BTLFX_EXPORTS(env);
-    p->code = 0x38;
+    p->code = GPU_POLY_G4;
     p->r0 = p->r1 = 0xE6;
     p->g0 = p->g1 = 0xCD;
     p->b0 = p->b1 = 0x96;

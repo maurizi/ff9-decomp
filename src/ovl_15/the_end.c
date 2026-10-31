@@ -24,7 +24,7 @@ s32 ending_theEnd(void) {
                 game_startFade(1, 1, 0xB4, 0);
             } else if (timer != 0) {
                 setlen(&g_theEndSprites[g_gameState->gameData->drawBuf][0], 4);
-                g_theEndSprites[g_gameState->gameData->drawBuf][0].code = 0x64;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].code = GPU_SPRT;
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].r0 = 0x80;
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].g0 = 0x80;
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].b0 = 0x80;
@@ -39,7 +39,7 @@ s32 ending_theEnd(void) {
                 setDrawTPage(&g_theEndTpages[g_gameState->gameData->drawBuf][0], 1, 1, 0x10A);
                 addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndTpages[g_gameState->gameData->drawBuf][0]);
                 setlen((g_theEndSprites[g_gameState->gameData->drawBuf] + 1), 4);
-                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->code = 0x64;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->code = GPU_SPRT;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->b0 = 0x80;
@@ -57,7 +57,7 @@ s32 ending_theEnd(void) {
             break;
         case THEEND_ST_FADE:
             setlen(&g_theEndSprites[g_gameState->gameData->drawBuf][0], 4);
-            g_theEndSprites[g_gameState->gameData->drawBuf][0].code = 0x64;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].code = GPU_SPRT;
             g_theEndSprites[g_gameState->gameData->drawBuf][0].r0 = 0x80;
             g_theEndSprites[g_gameState->gameData->drawBuf][0].g0 = 0x80;
             g_theEndSprites[g_gameState->gameData->drawBuf][0].b0 = 0x80;
@@ -72,7 +72,7 @@ s32 ending_theEnd(void) {
             setDrawTPage(&g_theEndTpages[g_gameState->gameData->drawBuf][0], 1, 1, 0x10A);
             addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndTpages[g_gameState->gameData->drawBuf][0]);
             setlen((g_theEndSprites[g_gameState->gameData->drawBuf] + 1), 4);
-            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->code = 0x64;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->code = GPU_SPRT;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->b0 = 0x80;
@@ -121,9 +121,9 @@ s32 ending_theEnd(void) {
 }
 
 s32 ending_theEndInit(void) {
-    s32 p = (s32)db_lookupRegistered(4, g_endingImage | 0x40000, 0);
+    s32 p = (s32)db_lookupRegistered(DB_GET_ADDR, g_endingImage | DB_TIM, 0);
 
-    file_setTimPos(p, 0, 0xE0, 0x280, 0);
+    file_setTimPos(p, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
     file_loadTim(p);
     akao_stopMusic(0);
     ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
@@ -141,7 +141,7 @@ s32 ending_theEndExit(void) {
 
 void ending_theEndClearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], OT_LEN);
 }
 
 void ending_theEndSwap(void) {
@@ -155,7 +155,7 @@ void ending_theEndSwap(void) {
     PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
     i = ctx->drawBuf;
-    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    DrawOTagEnv(ctx->ot[i] + OT_LAST, &g_gameState->drawEnv[i]);
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);
 }
@@ -169,7 +169,7 @@ s32 ending_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     kind = (arg0 >> 8) & 0xF;
     switch ((arg0 >> 12) & 3) {
     case 0:
-        id = (arg1 & 0xFFFF) | 0x70000;
+        id = (arg1 & 0xFFFF) | DB_MUSIC;
         switch (kind) {
         case 0:
             if (g_gameState->gameData->soundLoadState != 0) {
@@ -240,10 +240,10 @@ s32 ending_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         return -1;
     case 1:
-        id = (arg1 & 0xFFFF) | 0x80000;
+        id = (arg1 & 0xFFFF) | DB_SE;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)db_lookupRegistered(4, id, 0);
+            h = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
         }
         switch (kind) {
         case 0:
@@ -344,10 +344,10 @@ void ending_loadMusic(void) {
     s32 b;
 
     akao_stopMusic(0);
-    a = (s32)db_lookupRegistered(4, ENDING_MUSIC, 0);
-    memmove(g_gameState->gameData->musicSeq, (void *)a, (s32)db_lookupRegistered(5, ENDING_MUSIC, 0));
-    a = (s32)db_lookupRegistered(4, ENDING_MUSIC_BANK, 0);
-    b = (s32)db_lookupRegistered(5, ENDING_MUSIC_BANK, 0);
+    a = (s32)db_lookupRegistered(DB_GET_ADDR, ENDING_MUSIC, 0);
+    memmove(g_gameState->gameData->musicSeq, (void *)a, (s32)db_lookupRegistered(DB_GET_SIZE, ENDING_MUSIC, 0));
+    a = (s32)db_lookupRegistered(DB_GET_ADDR, ENDING_MUSIC_BANK, 0);
+    b = (s32)db_lookupRegistered(DB_GET_SIZE, ENDING_MUSIC_BANK, 0);
     akao_beginBankUpload();
     akao_uploadBank(a, b, 1);
 }
@@ -357,7 +357,7 @@ void ending_loadData(void) {
     FileEntry *e;
 
     buf = g_loadAreaEnd + 0x10000;
-    e = file_find(1, 0x2F44);
+    e = file_find(DIR_COMMON, FILE_ENDING_DATA);
     cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, buf, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
