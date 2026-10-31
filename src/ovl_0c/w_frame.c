@@ -519,7 +519,7 @@ s32 w_frameGetParameter(s32 arg0) {
     case WM_PARAM_TOPOGRAPHY:
         return WM_ATTR_TOPOGRAPHY(v);
     case 0xC2:
-        if (g_worldMoveMode == 6) {
+        if (g_worldMoveMode == WM_MOVE_CHOCOBO_FLY) {
             return g_worldActorTypeInfo[g_worldPlayer->actorType].floorY + 400;
         }
         return g_worldActorTypeInfo[g_worldPlayer->actorType].floorY + g_worldActorTypeInfo[g_worldPlayer->actorType].rideOffset;
@@ -684,7 +684,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFramePackGetPtrRange
 
 s32 wm_canCallChocobo(void) {
     s32 n = g_worldPlayer->actorType;
-    if (n < 3 && n != 0) {
+    if (n < WM_ACTOR_CHOCOBO0 && n != 0) {
         switch ((u8)g_worldActorTypeInfo[n].cellAttr >> 2) {
         case 3:
         case 18:

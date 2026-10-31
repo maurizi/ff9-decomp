@@ -248,6 +248,17 @@ typedef struct {
     s16 rideOffset;
     s16 floorY;
 } WmActorType; /* 0x10 */
+/* EvtObject.actorType on the world map, index into g_worldActorTypeInfo (wm_findVehicles; world scripts set it
+ * with op 0x3B before the model, docs/runtime-findings.md R30b) */
+#define WM_ACTOR_WALKER 1 /* party leader on foot (model 310), g_worldWalkerActor */
+#define WM_ACTOR_WALKER_ALT 2 /* also g_worldWalkerActor (model 309, only in world file 2) */
+#define WM_ACTOR_CHOCOBO0 3 /* 3-7: g_worldMountActor; wm_setMountPalette picks palette 0-4 by type; */
+#define WM_ACTOR_CHOCOBO1 4 /* move modes 1-6 play WM_SONG_CHOCOBO, and only walkers can call one */
+#define WM_ACTOR_CHOCOBO2 5 /* (wm_canCallChocobo) */
+#define WM_ACTOR_CHOCOBO3 6
+#define WM_ACTOR_CHOCOBO4 7 /* WmActorType.flying while g_worldMoveMode is 6 (wm_updateActors) */
+#define WM_ACTOR_MOOGLE 11 /* g_worldMoogleActor (model 307), comes when called with Square */
+#define WM_ACTOR_NO_MODEL 14 /* wm_drawActorModel and wm_drawActorShadow draw nothing for it */
 
 /* camera preset, blended by wm_updateCameraPreset / wm_calcCameraPreset */
 typedef struct {
@@ -279,6 +290,15 @@ typedef struct {
     u8 pad12[2];
     u32 allowedCells[2]; /* allowed cell types (bit mask) */
 } WmMoveMode; /* 0x1C */
+/* g_worldMoveMode (event var b[0xBE], w_movementChange): index into g_worldMoveModes, whose entries give
+ * control type, music and loop SE */
+#define WM_MOVE_WALK 0 /* WM_CTRL_WALK, counts steps */
+#define WM_MOVE_CHOCOBO 1 /* 1-6: WM_SONG_CHOCOBO, riding g_worldMountActor */
+#define WM_MOVE_CHOCOBO_FLY 6 /* last chocobo mode: WM_CTRL_FLY, airborne; WM_ACTOR_CHOCOBO4 flies */
+#define WM_MOVE_STEER 7 /* WM_CTRL_STEER, loop SE 24 */
+#define WM_MOVE_AIRSHIP 8 /* 8, 9: WM_CTRL_FLY with WM_SONG_AIRSHIP and a loop SE */
+#define WM_MOVE_AIRSHIP2 9
+#define WM_MOVE_FAST_WALK 10 /* wm_movePlayer while g_worldFastWalk: 4x speed */
 
 /* doubly linked node (wm_frmbufInit) */
 typedef struct WmFrmbufSlot {
