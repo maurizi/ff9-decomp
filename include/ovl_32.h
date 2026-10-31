@@ -6,16 +6,6 @@
  * so they live here, not in ff9.h. */
 #include "ff9.h"
 
-/* main exe: candidates for ff9.h */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67  /* cursor move / pick */
-#define SE_BUZZER 0x66  /* refused action */
-#define SE_CANCEL 0x65  /* Circle backs out */
-#endif
-#ifndef SE_CONFIRM
-#define SE_CONFIRM 0x6B /* a choice takes effect (chocograph set or cleared, equipment changed) */
-#endif
-
 /* ---- overlay ---- */
 
 /* ChocographMenu.mode: index into s_menuChocographInputFuncs */

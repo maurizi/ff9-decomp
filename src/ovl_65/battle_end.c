@@ -76,7 +76,7 @@ void battleEnd_exit(void) {
     }
     g_gameState->gameData->depTable = (FileTable *)-1;
     if (g_gameState->mode == 0) {
-        btl_soundCmd(0x8601, 0, 0x1E, 0, 0);
+        btl_soundCmd(SND_MUSIC_VOL_INTPL, 0, 0x1E, 0, 0);
         for (i = 29; i >= 0; i--) {
             VSync(0);
         }
@@ -1419,7 +1419,7 @@ u8 rewards_tryAddItems(void) {
 
     if (s_rewardsFullShown != 1) {
         if (!rewards_addItems()) {
-            snd_playSe(SE_ITEMS_FULL);
+            snd_playSe(SE_MESSAGE);
             s_rewardsFullShown = 1;
         } else {
             ret = 1;

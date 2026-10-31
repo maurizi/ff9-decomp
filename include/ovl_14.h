@@ -29,14 +29,6 @@ typedef struct {
 } SceneDirEntry;
 
 /* main exe: candidates for ff9.h */
-/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
- * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused. */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67
-#define SE_BUZZER 0x66
-#define SE_CANCEL 0x65
-#endif
-#define SE_GAME_START 0xC18 /* New Game on the title, and the ending's secret code */
 /* g_gameState->disc: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
  * The opening plays its movie only with disc 1 in (bit 0), the ending only with disc 4 (bit 3), and New Game
  * sets it to disc 1 before scene_checkDisc asks for the disc that was in before. */

@@ -13,9 +13,6 @@ void func_800F4E68(void);
 
 /* main exe: candidates for ff9.h */
 void timer_enable(u8);
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67
-#endif
 #ifndef ITEM_NONE
 #define ITEM_NONE 0xFF
 #endif
@@ -35,7 +32,6 @@ void timer_enable(u8);
 #define SE_ITEMS      0x6C  /* items or a card received */
 #define SE_LEARN      0x413 /* an ability learned window opens */
 #define SE_LEVEL_UP   0x2AB /* level-up label */
-#define SE_ITEMS_FULL 0x416 /* "You cannot carry more than 99 units" */
 
 /* g_rewardsText ids */
 #define REWARDS_TEXT_EXP           0

@@ -918,13 +918,13 @@ u8 btlui_isHelpOpen(void) {
 void btlui_toggleHelp(u8 arg0) {
     if (arg0) {
         if (g_btluiHelp.open == 0) {
-            snd_playSe(0x2AA);
+            snd_playSe(SE_HELP_OPEN);
             g_btluiHelp.open = 1;
             g_btluiHelp.opening = 1;
             g_btluiHelp.frame = 0;
         }
     } else if (g_btluiHelp.open != 0 && g_btluiHelp.closeReq == 0) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         g_btluiHelp.closeReq = 1;
     }
 }
@@ -1135,7 +1135,7 @@ void btlui_openCmdMenu(void) {
     win_setDrawOverlay(g_btlUi->windows[3], btlui_drawCmdOverlay);
     win_setOnOpened(g_btlUi->windows[3], btlui_onCmdMenuOpened);
     btlui_buildCmdList();
-    snd_playSe(0x414);
+    snd_playSe(SE_WINDOW_OPEN);
 }
 
 void btlui_drawCmdList(Window *arg0) {
@@ -1231,19 +1231,19 @@ void btlui_confirmCmd(void) {
     if (g_btlCmdMenu.sideCmd.side == 0) {
         if (g_btlCmdMenu.enabled[g_btlCmdMenu.cursor] != 0) {
             do {
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 btlui_saveCursor(&g_btlCmdMenu.unit->menu->cursor, 0, g_btlCmdMenu.cursor, 0);
                 f = g_btluiCmdConfirmFns[e->kind];
             } while (0);
         } else {
-            snd_playSe(0x66);
+            snd_playSe(SE_BUZZER);
             return;
         }
     } else {
         if (g_btlCmdMenu.sideCmd.ready == 0) {
             return;
         }
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         btlui_saveCursor(&g_btlCmdMenu.unit->menu->cursor, 0, g_btlCmdMenu.cursor, 0);
         f = g_btluiSideCmdConfirmFn;
     }
@@ -1544,7 +1544,7 @@ void btlui_onCmdMenuOpened(void) {
 void btlui_cmdCursorUp(void) {
     if (g_btlCmdMenu.sideCmd.side == 0) {
         do {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             g_btlCmdMenu.cursor = g_btlCmdMenu.cursor != 0 ? g_btlCmdMenu.cursor - 1 : 3;
         } while (g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor] == 0);
     }
@@ -1553,7 +1553,7 @@ void btlui_cmdCursorUp(void) {
 void btlui_cmdCursorDown(void) {
     if (g_btlCmdMenu.sideCmd.side == 0) {
         do {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             g_btlCmdMenu.cursor = g_btlCmdMenu.cursor < 3 ? g_btlCmdMenu.cursor + 1 : 0;
         } while (g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor] == 0);
     }
@@ -1655,7 +1655,7 @@ void btlui_slideLeft(void) {
                 g_btlSideCmd.slide = 0;
             }
         } else if (g_btlSideCmd.slide == 2 && (g_padRepeat & PAD_LEFT)) {
-            snd_playSe(0x417);
+            snd_playSe(SE_PAGE);
             g_btlSideCmd.slide = 1;
             g_btlSideCmd.side = 2;
             g_btlSideCmd.ready = 0;
@@ -1663,7 +1663,7 @@ void btlui_slideLeft(void) {
         }
     } else if (g_btlSideCmd.side == 0) {
         if (g_padRepeat & PAD_LEFT) {
-            snd_playSe(0x417);
+            snd_playSe(SE_PAGE);
             g_btlSideCmd.slide = 1;
             g_btlSideCmd.side = 2;
             g_btlSideCmd.ready = 0;
@@ -1682,7 +1682,7 @@ void btlui_slideRight(void) {
                 g_btlSideCmd.slide = 0;
             }
         } else if (g_btlSideCmd.slide == 2 && (g_padRepeat & PAD_RIGHT)) {
-            snd_playSe(0x417);
+            snd_playSe(SE_PAGE);
             g_btlSideCmd.slide = 1;
             g_btlSideCmd.side = 1;
             g_btlSideCmd.ready = 0;
@@ -1690,7 +1690,7 @@ void btlui_slideRight(void) {
         }
     } else if (g_btlSideCmd.side == 0) {
         if (g_padRepeat & PAD_RIGHT) {
-            snd_playSe(0x417);
+            snd_playSe(SE_PAGE);
             g_btlSideCmd.slide = 1;
             g_btlSideCmd.side = 1;
             g_btlSideCmd.ready = 0;
@@ -1753,7 +1753,7 @@ void btlui_listInput(void) {
     Window *w;
     if (l->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
             w = g_btlUi->windows[2];
             btlui_saveCursor(&g_btluiList.unit->menu->cursor, 1, w->list.top, w->list.cursor);
             if (g_btluiList.doubleCast == 0) {
@@ -1902,12 +1902,12 @@ void btlui_updateList(void) {
     if (g_btluiList.cmdNo == BTL_CMD_SWD_MAG) {
         if (g_btlUi->swdMagPartner == 0 || g_btlUi->swdMagBlocked.h != 0) {
             btlui_closeList();
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
         }
     }
     if (g_btluiList.trance == 0 && (u8)btl_hasStatus(g_btluiList.unit, BTL_STATUS_TRANCE)) {
         btlui_closeList();
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
     }
 }
 
@@ -1927,11 +1927,11 @@ s32 btlui_getListHelpText(void) {
 void btlui_listConfirm(void) {
     Window *w;
     if ((u8)g_btluiListConfirmFns[g_btluiList.cmd->kind]()) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         w = g_btlUi->windows[2];
         btlui_saveCursor(&g_btluiList.unit->menu->cursor, 1, w->list.top, w->list.cursor);
     } else {
-        snd_playSe(0x66);
+        snd_playSe(SE_BUZZER);
     }
 }
 
@@ -2326,7 +2326,7 @@ void btlui_toggleTargetAll(void) {
             }
         }
         if (old != g_btlTarget.targetAll) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
         }
     }
 }
@@ -2421,7 +2421,7 @@ void btlui_confirmTarget(void) {
         }
         btlui_closeWindows();
     }
-    snd_playSe(0x67);
+    snd_playSe(SE_CURSOR);
 }
 
 s32 btlui_confirmDoubleCast(s32 arg0) {
@@ -2678,7 +2678,7 @@ void btlui_onUnitUntargetable(BtlUnit *arg0) {
 void btlui_targetInput(void) {
     u32 v;
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         btlui_cancelTarget();
         return;
     }
@@ -2691,7 +2691,7 @@ void btlui_targetInput(void) {
         return;
     }
     if (g_padRepeat & BTN_L2) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         v = g_gameState->config;
         g_gameState->config = (v & ~0x80000) | ((((v >> 19) & 1) ^ 1) << 19);
         return;
@@ -2701,7 +2701,7 @@ void btlui_targetInput(void) {
 
 void btlui_updateTarget(void) {
     if (!(btlui_isCmdUsable() & 0xFF)) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         btlui_cancelTarget();
     } else if (btlui_refreshTargets() & 0xFF) {
         btlui_updateTargetWindow();
@@ -2794,25 +2794,25 @@ void btlui_targetMove(void) {
 
 void btlui_targetPrev(void) {
     if (btlui_cycleTarget(0) & 0xFF) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     }
 }
 
 void btlui_targetNext(void) {
     if (btlui_cycleTarget(1) & 0xFF) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     }
 }
 
 void btlui_targetEnemySide(void) {
     if (btlui_switchTargetSide(0) & 0xFF) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     }
 }
 
 void btlui_targetPartySide(void) {
     if (btlui_switchTargetSide(1) & 0xFF) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     }
 }
 

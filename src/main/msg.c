@@ -725,7 +725,7 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             if (w->waitFrames == 0xFF) {
                 w->waitFrames = 1;
                 if (g_msgChoiceLine >= 0) {
-                    g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+                    g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
                 }
                 return 1;
             }
@@ -745,19 +745,19 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             } else {
                 g_msgChoice = g_msgChoiceCount - 1;
             }
-            g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
         } else if (pad & 0x40) {
             if (g_msgChoice < g_msgChoiceCount - 1) {
                 g_msgChoice++;
             } else {
                 g_msgChoice = 0;
             }
-            g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
         } else if (!(pad & 0x10000) || g_msgChoiceCancel < 0) {
             return 0;
         } else {
             g_msgChoice = g_msgChoiceCancel;
-            g_gameState->gameData->soundHook(0xD000, 0x65, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CANCEL, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
         }
         return 1;
     }

@@ -205,14 +205,6 @@ u32 menuCard_getStatsColor(void);
 extern u8 s_menuCardPointsUnit[];
 extern const u8 g_cardMenuText[]; /* text bank for this menu */
 /* main exe: candidates for ff9.h */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67  /* cursor move / pick */
-#define SE_BUZZER 0x66  /* refused action */
-#define SE_CANCEL 0x65  /* Circle backs out */
-#endif
-#ifndef SE_PAGE
-#define SE_PAGE 0x417   /* menuList page / L1-R1 switch */
-#endif
 s32 card_getWins(void); /* collector points */
 s32 card_getLosses(void);
 s32 card_getDraws(void);

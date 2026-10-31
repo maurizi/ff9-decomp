@@ -222,17 +222,6 @@ extern u8 s_menuAbilityActionNames[];  /* item names */
 extern u8 s_menuAbilitySupportNames[];  /* ability names */
 extern u16 s_menuAbilityTabCursorX[][2]; /* cursor x per slot */
 /* main exe: candidates for ff9.h */
-/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
- * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused; SE_PAGE is menuList_pageUp/pageDown's
- * sound, also played on L1/R1 member switches. */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67
-#define SE_BUZZER 0x66
-#define SE_CANCEL 0x65
-#define SE_PAGE   0x417
-#endif
-#define SE_USE_ITEM 0x6A /* an ability was used (as ovl_37's item use) */
-#define SE_EQUIP    0x6B /* equipment or a support ability changed */
 #ifndef ITEM_NONE
 #define ITEM_NONE 0xFF /* empty item id / equipment slot */
 #endif

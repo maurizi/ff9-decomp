@@ -48,7 +48,7 @@ void menuChocograph_inputTabs(void) {
             snd_playSe(SE_BUZZER);
         } else {
             g_gameState->gameData->chocograph = 0;
-            snd_playSe(SE_CONFIRM);
+            snd_playSe(SE_SET);
         }
     } else {
         if (g_padRepeat & PAD_LEFT) {
@@ -92,7 +92,7 @@ void menuChocograph_inputList(void) {
             if (st->owned & (1 << idx)) {
                 n = st->ability;
                 if (menuChocograph_getRequiredAbility(idx) < n) {
-                    snd_playSe(SE_CONFIRM);
+                    snd_playSe(SE_SET);
                     g_gameState->gameData->chocograph = l->top + l->cursor + 1;
                     return;
                 }

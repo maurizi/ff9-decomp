@@ -586,7 +586,7 @@ void fld_stopResidentSfx(void) {
 
     for (i = 1; i >= 0; i--) {
         if (g_gameState->gameData->sfxSlotId[i] != 0xFFFF) {
-            fld_soundCommand(0x5180, g_gameState->gameData->sfxSlotId[i], 0, 0, 0);
+            fld_soundCommand(SND_SE_STOP | SND_RESIDENT, g_gameState->gameData->sfxSlotId[i], 0, 0, 0);
         }
     }
 }
@@ -675,9 +675,9 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
                     r = (v >> 4) - 8;
                 }
                 fld_getSoundPanVolume(ctx->obj->pos.vx, ctx->obj->pos.vy, ctx->obj->pos.vz, &vol, &pan);
-                fld_soundCommand(0xD000, snd, ch, vol, pan);
+                fld_soundCommand(SND_SE_PLAY, snd, ch, vol, pan);
                 if (r != 0) {
-                    fld_soundCommand(0x9203, snd, ch, r, 0);
+                    fld_soundCommand(SND_SE_PITCH, snd, ch, r, 0);
                 }
             }
         }
@@ -922,8 +922,8 @@ s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2) { /* its caller passes t
             break;
         }
         z = id[best];
-        fld_soundCommand(0x7700, z, z >> 24, slot[best], 0);
-        while (fld_soundCommand(0xC00, -1, 0, 0, 0) != 0) {
+        fld_soundCommand(SND_BANK_LOAD, z, z >> 24, slot[best], 0);
+        while (fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0) != 0) {
         }
         id[best] = -1;
         sz[best] = -1;

@@ -32,15 +32,15 @@ void menuMain_initPanels(void) {
 
 void menuMain_inputCommand(void) {
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         menuScreen_close();
     } else if (g_padRepeat & BTN_CROSS) {
         menuMain_selectCommand();
     } else if (g_padRepeat & PAD_UP) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         s_menuMain.cursor = s_menuMain.cursor != 0 ? s_menuMain.cursor - 1 : 6;
     } else if (g_padRepeat & PAD_DOWN) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         s_menuMain.cursor = s_menuMain.cursor < 6 ? s_menuMain.cursor + 1 : 0;
     }
 }
@@ -51,11 +51,11 @@ void menuMain_inputMember(void) {
     s32 new;
 
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         s_menuMain.state = 0;
         return;
     } else if (g_padRepeat & BTN_CROSS) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         menuScreen_open(s_menuMain.cursor + 1);
         return;
     } else if (g_padRepeat & PAD_UP) {
@@ -70,7 +70,7 @@ void menuMain_inputMember(void) {
         return;
     }
     if (old != new) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         old = new;
         m->member = old;
     }
@@ -78,21 +78,21 @@ void menuMain_inputMember(void) {
 
 void menuMain_inputOrder(void) {
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         if (s_menuMain.orderPicked == 0) {
             s_menuMain.state = 0;
         } else {
             s_menuMain.orderPicked = 0;
         }
     } else if (g_padRepeat & PAD_UP) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         if (s_menuMain.orderPicked == 0) {
             s_menuMain.orderCursor = s_menuMain.orderCursor != 0 ? s_menuMain.orderCursor - 1 : 3;
         } else {
             s_menuMain.orderTarget = s_menuMain.orderTarget != 0 ? s_menuMain.orderTarget - 1 : 3;
         }
     } else if (g_padRepeat & PAD_DOWN) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         if (s_menuMain.orderPicked == 0) {
             s_menuMain.orderCursor = s_menuMain.orderCursor < 3 ? s_menuMain.orderCursor + 1 : 0;
         } else {
@@ -100,11 +100,11 @@ void menuMain_inputOrder(void) {
         }
     } else if (g_padRepeat & BTN_CROSS) {
         if (s_menuMain.orderPicked == 0) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             s_menuMain.orderPicked = 1;
             s_menuMain.orderTarget = s_menuMain.orderCursor;
         } else {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             menuMain_reorder(s_menuMain.orderCursor, s_menuMain.orderTarget);
             s_menuMain.orderPicked = 0;
             s_menuMain.orderCursor = s_menuMain.orderTarget;
@@ -343,7 +343,7 @@ void menuMain_selectCommand(void) {
         s_menuMain.state = 2;
         s_menuMain.orderPicked = 0;
     }
-    snd_playSe(0x67);
+    snd_playSe(SE_CURSOR);
 }
 
 void menuMain_onSlideInDone(void) {

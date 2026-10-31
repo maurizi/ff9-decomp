@@ -70,4 +70,94 @@
 #define AKAO_CMD_STOP_MUSIC_NOW        0xF0 /* akao_cmdStopMusicNow */
 #define AKAO_CMD_STOP_ALL_SE           0xF1 /* akao_cmdStopAllSe */
 
+/* Sound command words for the mode's sound handler (GameData.soundHook: fld_soundCommand, wm_soundCommand,
+ * btl_soundCmd, and the mode-local opening_soundCmd / tm_soundCmd / ending_soundCmd, which decode them the same way).
+ * Bits 12-13 type (0 music, 1 SE, 2 stream, 3 bank), 8-11 kind, 0-5 sub-command, 7 resident SE slot, 6 slot index.
+ * The SE/state/volume words carry the world map's debug-print names (ovl_0c WM_SND_*). */
+#define SND_MUSIC_PLAY 0x0000
+#define SND_MUSIC_STOP 0x0100
+#define SND_MUSIC_LOAD 0x0700 /* load only */
+#define SND_MUSIC_SUSPEND 0x0800 /* save song/volume, then stop */
+#define SND_MUSIC_RESUME 0x0900 /* replay the saved song */
+#define SND_GET_STATE 0x0C00 /* "Waiting [ State : %d ]": non-zero while loading */
+#define SND_SE_PLAY 0xD000 /* "SE Play" (snd_playSe) */
+#define SND_SE_STOP 0x5100 /* "SE Stop" */
+#define SND_SE_VOL 0x9201 /* "SE Vol" */
+#define SND_SE_PITCH 0x9203
+#define SND_SE_VOL_INTPL 0xD301 /* "SE Vol Intpl" */
+#define SND_SONG_VOL_INTPL 0x8301 /* kind 3: akao_fadeMusicVolume on the mode's song handle */
+#define SND_SONG_VOL_FROM_INTPL 0xC401 /* kind 4: akao_fadeMusicVolumeFrom on the song handle */
+#define SND_MUSIC_VOL_INTPL 0x8601 /* "Music Vol Intpl", "Music Fade Force" */
+#define SND_SE_SUSPEND 0x1800
+#define SND_SE_RESUME 0x1900
+#define SND_STREAM_VOL 0x6201 /* type 2 (streamed sound, db 0x18xxxx) kind 2 sub 1: stream volume (akao_sendCmdE4) */
+#define SND_BANK_LOAD 0x7700
+#define SND_RESIDENT 0x80
+/* pan and volume arguments of SND_SE_PLAY (akao_playSe keeps pan & 0xFF and volume & 0x7F) */
+#define SND_PAN_CENTER 0x80
+#define SND_VOL_MAX 0x7F
+
+/* Sound-effect ids (SND_SE_PLAY / snd_playSe). Shared by several binaries; ids used by one screen only keep
+ * their name in that overlay's header. Runtime evidence: docs/runtime-findings.md "Sound ids". */
+#define SE_CANCEL 0x65 /* runtime: Circle backs out (menus, battle), help window closes */
+#define SE_BUZZER 0x66 /* runtime: refused action (unusable item, item on a full-HP member) */
+#define SE_CURSOR 0x67 /* runtime: cursor move (menuList_up/down) and a pick with Cross */
+#define SE_USE_ITEM 0x6A /* code: an item (ovl_37) or ability (ovl_33) was used */
+#define SE_SET 0x6B /* runtime: equipment changed (ovl_33); code: chocograph set or cleared (ovl_32) */
+#define SE_HELP_OPEN 0x2AA /* runtime: Select opens the help window (help_toggle, btlui_toggleHelp) */
+#define SE_WINDOW_OPEN 0x414 /* runtime: battle command menu opens; code: save file list fades in (ovl_39) */
+#define SE_MESSAGE 0x416 /* code: a message window opens (ovl_39 save, ovl_65 "cannot carry more") */
+#define SE_PAGE 0x417 /* runtime: menuList page, L1/R1 member switch, battle command side switch */
+#define SE_COMPLETE 0x4ED /* code: save/load finished (ovl_39), the right disc was found (ovl_3e) */
+#define SE_GAME_START 0xC18 /* code: New Game on the title (ovl_14), the ending's secret code (ovl_15) */
+#define SE_CHOCOBO_CALL 0x44A /* code: looped while the item menu's "CHOCOBO" / "Kweeeh!" window is up on the world map
+                               * (ovl_37 menuItem_onKwehOpened); world-map SE number 36 (w_musicGetID) */
+/* encounter: the three sounds played together when a random battle starts (field fld_movie, world map) */
+#define SE_ENCOUNTER_1 0x27C
+#define SE_ENCOUNTER_2 0x27B
+#define SE_ENCOUNTER_3 0x27A
+/* battle */
+#define SE_ENEMY_DEATH_1 0x79 /* btl_updateKo, as a defeated enemy starts to fade (then _2) */
+#define SE_ENEMY_DEATH_2 0x78
+#define SE_FLEE_1 0xB5A /* btl_victory: the party escapes (three sounds together) */
+#define SE_FLEE_2 0xB5B
+#define SE_FLEE_3 0xB5C
+
+/* Music ids (SND_MUSIC_PLAY / SND_MUSIC_LOAD), only where the code says which song */
+#define MUSIC_VICTORY 5 /* btl_playVictoryMusic after BTL_END_VICTORY */
+#define MUSIC_DEFEAT 6 /* btl_playVictoryMusic in BTL_PHASE_EXIT_DEFEAT (game over) */
+#define MUSIC_TETRA_MASTER 0x42 /* ovl_0d tm_init plays it as the card game starts */
+
+/* SPU registers (psx-spx names) */
+#define SPU_VOICE_REG(v, r) (*(u16 *)(SPU_VOICE_BASE + (r) + (v) * 16))
+#define SPU_VOICE_REG8(v, r) (*(u8 *)(SPU_VOICE_BASE + (r) + (v) * 16))
+#define SPU_REG16(a) (*(u16 *)(a))
+#define SPU_VOICE_BASE 0x1F801C00 /* 24 voices x 16 bytes (SpuVoiceReg) */
+/* voice register offsets (r of SPU_VOICE_REG; SpuVoiceReg fields) */
+#define SPU_VOICE_VOL_L 0x0
+#define SPU_VOICE_VOL_R 0x2
+#define SPU_VOICE_PITCH 0x4 /* sample rate, 0x1000 = 44.1 kHz */
+#define SPU_VOICE_START_ADDR 0x6 /* SPU RAM address / 8 */
+#define SPU_VOICE_ADSR1 0x8
+#define SPU_VOICE_ADSR2 0xA
+#define SPU_VOICE_ADSR_VOL 0xC
+#define SPU_VOICE_LOOP_ADDR 0xE /* repeat address / 8 */
+#define SPU_MAIN_VOL_L 0x1F801D80
+#define SPU_MAIN_VOL_R 0x1F801D82
+#define SPU_KEY_ON_LO 0x1F801D88
+#define SPU_KEY_ON_HI 0x1F801D8A
+#define SPU_KEY_OFF_LO 0x1F801D8C
+#define SPU_KEY_OFF_HI 0x1F801D8E
+#define SPU_PITCH_MOD_LO 0x1F801D90
+#define SPU_PITCH_MOD_HI 0x1F801D92
+#define SPU_NOISE_ON_LO 0x1F801D94
+#define SPU_NOISE_ON_HI 0x1F801D96
+#define SPU_REVERB_ON_LO 0x1F801D98
+#define SPU_REVERB_ON_HI 0x1F801D9A
+#define SPU_CTRL 0x1F801DAA
+#define SPU_CD_VOL_L 0x1F801DB0
+#define SPU_CD_VOL_R 0x1F801DB2
+#define SPU_MAIN_VOL_MAX 0x3FFF /* main volume in fixed mode: 0x3FFF is the top of the range */
+#define SPU_CD_VOL_MAX 0x7FFF
+
 #endif

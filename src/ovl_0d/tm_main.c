@@ -17,14 +17,14 @@ void tm_init(void) {
     tm_loadDataFile();
     tm_loadSoundBlocks();
     tm_loadMusic();
-    tm_soundCmd(0, 0x42, 0, 0, 0);
+    tm_soundCmd(SND_MUSIC_PLAY, MUSIC_TETRA_MASTER, 0, 0, 0);
     tm_copyDataFile();
     tm_freeDataFile();
 }
 
 void tm_exit(void) {
     tm_freeDataCopy();
-    tm_soundCmd(0x100, 0x42, 0, 0, 0);
+    tm_soundCmd(SND_MUSIC_STOP, MUSIC_TETRA_MASTER, 0, 0, 0);
     g_gameState->prevMode = 9;
     g_gameState->mode = 1;
 }

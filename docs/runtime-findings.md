@@ -2671,3 +2671,24 @@ Encounters entered with `tools/rt/enter_battle.py ENC --disc 1 --field 351 --bas
 - **TitleMenu.unk0 / unk10 (g_titleMenu 0x800AB320 / +0x10): CONFIRMED unused** from `title_screen` through Down, Up
   and Continue into the memory-card screen (ovl_39 loaded): no access. SceneMenu (ovl_15) and TmState (ovl_0d) not run
   (no state reaches the ending, blackjack or a card game).
+
+## Sound ids  (status: applied — SE_* in include/snd_ids.h)
+- binary: main (snd_playSe 0x8002F488) with ovl_0a, ovl_33, ovl_37, ovl_0b callers.
+- method: `tools/rt/act.py NAME STATE 'inputs' --nocov --trace 8002F488` (log breakpoint on snd_playSe, a0 = SE id).
+- `menu_main` (disc 1): Down → 0x67 (menuMain_inputCommand); Cross on Ability → 0x67 (menuMain_selectCommand);
+  Circle out of the member selection → 0x65 (menuMain_inputMember); Select → 0x2AA (help_toggle+0x50, help opens);
+  Select again → 0x65 (help_toggle+0x90, help closes); Circle on the command list → 0x65 (menuMain_inputCommand).
+  So 0x65 is the cancel/back sound. The older "Pad globals and snd_playSe" entry (0x65 "when Cross opens the
+  character selection") was a misreading: Cross plays 0x67.
+- `menu_items`: Cross on Potion → 0x67 (menuItem_openTarget); Cross on a full-HP Zidane → 0x66
+  (menuItem_useOnTarget); Circle → 0x65; Down x5 → 0x67 each (menuList_down); Cross on a greyed Leather Hat → 0x66
+  (menuItem_selectItem). 0x66 is the refusal buzzer.
+- `menu_equip`: Cross on the tab and slot → 0x67; Cross on a new weapon → 0x6B (menuEquip_equipSelected);
+  R1 → 0x417 (menuEquip_inputSlot, next member).
+- `disc3_malboro_lv99_calm` (Malboro ATB/HP pokes): Right / Left → 0x417 (btlui_slideRight/Left); Select → 0x2AA,
+  again → 0x65 (btlui_toggleHelp); Cross Attack → 0x67 (btlui_confirmCmd), Cross on the target → 0x67
+  (btlui_confirmTarget), 4 frames later the next member's menu → 0x414 (btlui_openCmdMenu+0x124).
+- names: SE_CANCEL 0x65, SE_BUZZER 0x66, SE_CURSOR 0x67, SE_SET 0x6B, SE_HELP_OPEN 0x2AA, SE_WINDOW_OPEN 0x414,
+  SE_PAGE 0x417. Code-only (no runtime check): SE_USE_ITEM 0x6A, SE_MESSAGE 0x416, SE_COMPLETE 0x4ED,
+  SE_GAME_START 0xC18, SE_CHOCOBO_CALL 0x44A, SE_ENCOUNTER_1-3, SE_ENEMY_DEATH_1/2, SE_FLEE_1-3.
+- confidence: high for the runtime ones.

@@ -2048,13 +2048,13 @@ s16 btl_loadWeaponSoundStep(s32 arg0, BtlStepTask *arg1) {
         e = l->events;
         for (i = l->count - 1; i >= 0; i--) {
             if (e[i].data.b.unk2 == 9) {
-                btl_soundCmd(0x7700, e[i].data.w, arg0 + 4, 0, 0);
+                btl_soundCmd(SND_BANK_LOAD, e[i].data.w, arg0 + 4, 0, 0);
                 break;
             }
         }
         return ++arg1->step;
     case 3:
-        if (btl_soundCmd(0xC00, 0, 0, 0, 0) == 0) {
+        if (btl_soundCmd(SND_GET_STATE, 0, 0, 0, 0) == 0) {
             arg1->step = 0;
         }
         return arg1->step;

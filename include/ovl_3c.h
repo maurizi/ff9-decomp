@@ -166,11 +166,6 @@ extern u8 s_shopImage[];
 
 extern u8 g_shopBuyText[];
 /* main exe: candidates for ff9.h */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67  /* cursor move / pick */
-#define SE_BUZZER 0x66  /* refused action */
-#define SE_CANCEL 0x65  /* Circle backs out */
-#endif
 #define SE_SHOP 0x415   /* Cross in a shop quantity window: buy / sell / synthesize */
 s32 item_getEquipSlot(s32); /* equip slot of an item, -1 = not equipment */
 s32 chr_getPortrait(s32); /* main.c defines it returning u8; used unmasked */

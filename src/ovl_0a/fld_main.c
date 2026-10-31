@@ -123,11 +123,11 @@ void fld_gameOver(void) {
     g_gameState->mode = 0;
     g_gameState->flags |= GS_RELOAD_FILE_TABLES;
     if ((g_gameState->gameData->flags & GD_MUSIC_PLAYING) && g_gameState->gameData->musicId[0] != 0xFFFF) {
-        fld_soundCommand(0x8301, g_gameState->gameData->musicId[0], 0x1E, 0, 0);
+        fld_soundCommand(SND_SONG_VOL_INTPL, g_gameState->gameData->musicId[0], 0x1E, 0, 0);
         for (i = 0x1D; i >= 0; i--) {
             VSync(0);
         }
-        fld_soundCommand(0x100, g_gameState->gameData->musicId[0], 0, 0, 0);
+        fld_soundCommand(SND_MUSIC_STOP, g_gameState->gameData->musicId[0], 0, 0, 0);
     }
     g_resetCount++;
 }
@@ -162,7 +162,7 @@ void fld_init(void) {
     fld_readSoundBank();
     game_initGfx();
     if (g_gameState->gameData->flags & 0x400000) {
-        fld_soundCommand(0x8601, 0, 0x78, 0, 0);
+        fld_soundCommand(SND_MUSIC_VOL_INTPL, 0, 0x78, 0, 0);
     }
     func_8002FC30();
     f->loadEnd = g_modeHeap;
@@ -378,12 +378,12 @@ void fld_load(s32 arg0) {
     fld_getShadowTexPos(&g_gameState->gameData->ctx.field->area->scene->shadowTexX, &g_gameState->gameData->ctx.field->area->scene->shadowTexY);
     fld_initPreload();
     fld_startAudio();
-    fld_soundCommand(0x900, -1, 0, 0, 0);
+    fld_soundCommand(SND_MUSIC_RESUME, -1, 0, 0, 0);
     evt_loadScripts(sc->eventScript);
     evt_init((u8 *)sc->eventScript);
     fld_compactModelCache();
     fld_loadModelBundlesInCdOrder();
-    while (fld_soundCommand(0xC00, -1, 0, 0, 0) != 0) {
+    while (fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0) != 0) {
     }
     msg_init();
     g_gameState->gameData->npcCount = evt_countNpcActors(0);
@@ -457,7 +457,7 @@ void fld_exit(void) {
         break;
     case FLD_EXIT_TETRA_MASTER:
         if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
-            fld_soundCommand(0x800, g_gameState->gameData->musicId[0], 0, 0, 0);
+            fld_soundCommand(SND_MUSIC_SUSPEND, g_gameState->gameData->musicId[0], 0, 0, 0);
         }
         fld_suspendResidentSfx();
         akao_sendCmdE2();
@@ -709,10 +709,10 @@ s32 fld_findLights(FieldScene *arg0, s32 unused) { /* its caller passes this, un
 }
 
 void fld_startAudio(void) {
-    while (fld_soundCommand(0xC00, -1, 0, 0, 0) != 0) {
+    while (fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0) != 0) {
     }
     if (g_gameState->gameData->flags & 0x400000) {
-        fld_soundCommand(0x100, g_gameState->gameData->musicId[0], 0, 0, 0);
+        fld_soundCommand(SND_MUSIC_STOP, g_gameState->gameData->musicId[0], 0, 0, 0);
         g_gameState->gameData->flags &= ~0x400000;
     }
     if (g_gameState->gameData->ctx.field->soundBankSize != -1) {

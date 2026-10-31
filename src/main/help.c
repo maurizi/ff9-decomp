@@ -173,7 +173,7 @@ void help_setCursorOnTop(u8 a) {
 void help_toggle(void) {
     if (g_menuHelp.opening == 0 && g_menuHelp.callback != NULL) {
         if (g_menuHelp.isOpen == 0) {
-            snd_playSe(0x2AA);
+            snd_playSe(SE_HELP_OPEN);
             g_menuHelp.isOpen = 1;
             g_menuHelp.opening = 1;
             g_menuHelp.textShown = 0;

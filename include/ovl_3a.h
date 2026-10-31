@@ -60,13 +60,6 @@ extern u8 g_nameMenuText[];
 extern u8 s_menuNamePortraits[][0x6C0];
 
 /* main exe: candidates for ff9.h */
-/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
- * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused. */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67
-#define SE_BUZZER 0x66
-#define SE_CANCEL 0x65
-#endif
 void SetLineF2(LINE_F2 *);
 extern s32 g_labelName;
 s32 text_drawChar(s32, s32, s32, u8, s32);

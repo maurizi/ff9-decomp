@@ -21,7 +21,7 @@ s32 evt_getSysVar(s32 op) {
         r = g_evtState->controlEnabled;
         break;
     case 3:
-        r = fld_soundCommand(0xC00, -1, 0, 0, 0);
+        r = fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0);
         break;
     case 4:
         r = g_evtTalkAngle;

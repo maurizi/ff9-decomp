@@ -678,7 +678,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         }
         break;
     case 40:
-        btl_soundCmd(0x8601, 0, 0x1E, 0, 0);
+        btl_soundCmd(SND_MUSIC_VOL_INTPL, 0, 0x1E, 0, 0);
         g_gameState->gameData->battleFlags |= 0x10;
         break;
     }

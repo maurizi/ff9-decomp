@@ -1184,7 +1184,7 @@ s32 btl_pickRandomUnit(s32 arg0) {
 s32 btl_playVictoryMusic(GameData *arg0, u32 arg1, s32 arg2) {
     Battle *b;
     if (!(arg0->battleFlags & 0x10)) {
-        btl_soundCmd(0x8601, 0, arg1, 0, 0);
+        btl_soundCmd(SND_MUSIC_VOL_INTPL, 0, arg1, 0, 0);
         arg0->battleFlags |= 0x10;
     }
     if (!(arg0->battleFlags & 2)) {
@@ -1193,14 +1193,14 @@ s32 btl_playVictoryMusic(GameData *arg0, u32 arg1, s32 arg2) {
         if ((u32)(s8)b->partyBrightness < arg1) {
             return 0;
         }
-        btl_soundCmd(0x700, arg2, 0, 0, 0);
+        btl_soundCmd(SND_MUSIC_LOAD, arg2, 0, 0, 0);
         arg0->battleFlags |= 2;
     }
-    if (btl_soundCmd(0xC00, 0, 0, 0, 0) != 0) {
+    if (btl_soundCmd(SND_GET_STATE, 0, 0, 0, 0) != 0) {
         return 0;
     }
     if (!(arg0->battleFlags & 0x20)) {
-        btl_soundCmd(0, arg2, 0, 0, 0);
+        btl_soundCmd(SND_MUSIC_PLAY, arg2, 0, 0, 0);
         arg0->battleFlags |= 0x20;
     }
     return 1;
@@ -1227,7 +1227,7 @@ void btl_playUnitSound(BtlUnit *arg0, u16 arg1, u8 arg2) {
         v.vx = arg0->pos[0] >> 16;
         v.vy = arg0->pos[1] >> 16;
         v.vz = arg0->pos[2] >> 16;
-        btl_soundCmd(0xD000, arg1, 0, btl_soundPan((s32)&v), arg2);
+        btl_soundCmd(SND_SE_PLAY, arg1, 0, btl_soundPan((s32)&v), arg2);
     }
 }
 

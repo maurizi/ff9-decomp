@@ -566,7 +566,7 @@ void menuAbility_toggleSupport(void) {
                 c->stones = ap + sup->unk1;
             }
             chr_updateStats(c);
-            snd_playSe(SE_EQUIP);
+            snd_playSe(SE_SET);
             return;
         }
     }

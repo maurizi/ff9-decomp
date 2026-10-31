@@ -7,14 +7,6 @@
 #include "ff9.h"
 
 /* main exe: candidates for ff9.h */
-/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
- * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused. */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67
-#define SE_BUZZER 0x66
-#define SE_CANCEL 0x65
-#endif
-#define SE_GAME_START 0xC18 /* the secret code accepted (ovl_14: New Game on the title) */
 /* g_gameState->disc: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
  * The ending plays its movie only with disc 4 in (see ovl_14.h). */
 #define DISC_NONE 0xFF

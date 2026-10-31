@@ -130,10 +130,10 @@ void akao_initState(void) {
     g_akaoMainSeq.beat = 0;
     g_akaoMainSeq.beatsPerMeasure = 0;
     g_akaoMainSeq.measure = 0;
-    SPU_REG16(SPU_MAIN_VOL_L) = 0x3FFF;
-    SPU_REG16(SPU_MAIN_VOL_R) = 0x3FFF;
-    SPU_REG16(SPU_CD_VOL_L) = 0x7FFF;
-    SPU_REG16(SPU_CD_VOL_R) = 0x7FFF;
+    SPU_REG16(SPU_MAIN_VOL_L) = SPU_MAIN_VOL_MAX;
+    SPU_REG16(SPU_MAIN_VOL_R) = SPU_MAIN_VOL_MAX;
+    SPU_REG16(SPU_CD_VOL_L) = SPU_CD_VOL_MAX;
+    SPU_REG16(SPU_CD_VOL_R) = SPU_CD_VOL_MAX;
     g_akaoSkipMeasures = 0;
     g_akaoMuteMask = 0;
     g_akaoPauseFlags = 0;

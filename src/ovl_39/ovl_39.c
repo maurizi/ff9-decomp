@@ -1096,7 +1096,7 @@ void menuSave_finishCheck(void) {
         s_menuSave.phase = SAVE_PH_WAIT;
         fade_outDefault();
         fade_setOnDone(menuSave_enterFileList);
-        snd_playSe(SE_SAVE_LIST);
+        snd_playSe(SE_WINDOW_OPEN);
     }
 }
 
@@ -1218,7 +1218,7 @@ void menuSave_openMessage(s32 id, s32 title) {
     s32 w, h;
 
     if (m->active == 0) {
-        snd_playSe(SE_SAVE_MESSAGE);
+        snd_playSe(SE_MESSAGE);
         s_menuSave.phase = SAVE_PH_WAIT;
         for (i = SAVE_FILES - 1; i >= 0; i--) {
             s_menuSave.files[i].state = SAVE_FILE_NONE;
@@ -1654,12 +1654,12 @@ void menuSave_onFileIoDone(void) {
     mode = s_menuSave.mode;
     if (mode != SAVE_MODE_LOAD) {
         menuSave_storeSavedFile(s_menuSave.file, &SAVE_BUF->hdr);
-        snd_playSe(SE_SAVE_DONE);
+        snd_playSe(SE_COMPLETE);
         return;
     }
     if (menuSave_applyLoaded()) {
         s_menuSave.loaded = mode;
-        snd_playSe(SE_SAVE_DONE);
+        snd_playSe(SE_COMPLETE);
         if (g_menu.type == 0) {
             menuScreen_open(0);
             return;
@@ -1714,7 +1714,7 @@ void menuSave_onFormatDone(void) {
 
     s_menuSave.showCursor = 1;
     if (r == CARD_RES_DONE) {
-        snd_playSe(SE_SAVE_LIST);
+        snd_playSe(SE_WINDOW_OPEN);
         s_menuSave.formatted = 1;
         s_menuSaveAccess.stage = ACCESS_STAGE_IO;
         s_menuSaveAccess.delay = ACCESS_TICKS; /* write on the next tick */
