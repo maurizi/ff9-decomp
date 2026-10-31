@@ -97,7 +97,7 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit20[i]->trailSlots = 8;
                     work->emit20[i]->trailStride = 0x70;
                     if (work->emit20[i] != NULL) {
-                        ((EffMotion *)work->emit20[i]->file)->update = D_801E85EC[i];
+                        ((EffMotion *)work->emit20[i]->file)->update = fx_1b4_op80ParticleMotions[i];
                     }
                 }
             }

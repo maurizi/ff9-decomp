@@ -37,8 +37,8 @@ extern s32 D_801E96A0[9][0x2C];
 extern s32 D_801E9CD0[];
 extern SVECTOR D_801EA5E0;
 
-extern s32 (*D_801E88B0[9])();
-extern s32 (*D_801E88D4[9])();
+extern s32 (*fx_1a7_op80ParticleMotions[9])();
+extern s32 (*fx_1a7_op81ParticleMotions[9])();
 extern Unk800F78A4 *fx_1a7_env;
 extern s16 D_801E8950[9]; /* angles */
 extern s16 D_801E8970[9];

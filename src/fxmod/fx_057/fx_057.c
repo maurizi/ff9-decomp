@@ -21,8 +21,8 @@ static void fx_057_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *e, SVECTOR *pos, s
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), (s32)pos, (s32 *)e->origin, t,
                       0x1C00 - (t << 12) / n, s, 1, buf, 1);
     if (pt->slot == 1) {
-        if (D_801EA704 != NULL) {
-            ex->btlfx_moveEmitterTo((s32)D_801EA704, (s32)pos);
+        if (fx_057_emitter0 != NULL) {
+            ex->btlfx_moveEmitterTo((s32)fx_057_emitter0, (s32)pos);
         }
         BTLFX_COPY_SVEC(&D_801EA6FC, pos);
         if (t < 0x1D) {
@@ -85,7 +85,7 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emit2C != NULL) {
             work->emit2C->elems->draw = (void (*)())fx_057_op80ElemDraw;
         }
-        D_801EA704 = work->emit30 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos24);
+        fx_057_emitter0 = work->emit30 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos24);
         if (work->emit30 != NULL) {
             work->emit30->otZ = 0x18;
         }
@@ -161,7 +161,7 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit30);
                 ex->btlfx_stopEmitter(work->emit34);
-                D_801EA704 = NULL;
+                fx_057_emitter0 = NULL;
             }
             break;
         case 2:
@@ -173,9 +173,9 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit2C->alpha = D_801EA708;
             }
             if (frame == 19) {
-                D_801EA70C = p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
-                if (D_801EA70C != NULL) {
-                    D_801EA70C->otZ = 0x80;
+                fx_057_emitter1 = p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
+                if (fx_057_emitter1 != NULL) {
+                    fx_057_emitter1->otZ = 0x80;
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
             }

@@ -7,12 +7,12 @@ static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 a
     D_801E8308.vx = pos->vx;
     D_801E8308.vy = 0;
     D_801E8308.vz = pos->vz;
-    if (D_801E8340 != NULL) {
-        if (D_801E8340->state == BTLFX_EMIT_DONE) {
-            D_801E8340 = NULL;
+    if (fx_127_emitter != NULL) {
+        if (fx_127_emitter->state == BTLFX_EMIT_DONE) {
+            fx_127_emitter = NULL;
         }
     }
-    ex->btlfx_moveEmitterTo((s32)D_801E8340, (s32)&D_801E8308);
+    ex->btlfx_moveEmitterTo((s32)fx_127_emitter, (s32)&D_801E8308);
     return ret;
 }
 
@@ -86,7 +86,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801E8300.vz = work->pos34.vz;
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E8328);
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&D_801E8330);
-            D_801E8340 = work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E8338);
+            fx_127_emitter = work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E8338);
             if (work->emit10 != NULL) {
                 work->emit10->trails = (s32)D_801E8350;
                 work->emit10->trailSlots = 0x112;

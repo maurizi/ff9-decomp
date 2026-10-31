@@ -19,7 +19,7 @@ typedef struct {
 } Fx040Work; /* 0x50 */
 
 extern u16 D_801E7E98[4]; /* file data indices */
-extern s32 D_801E7EA0[4]; /* particle callbacks */
+extern s32 fx_040_op80ParticleMotions[4]; /* particle callbacks */
 extern Unk800F78A4 *fx_040_env;
 extern SVECTOR D_801E7F00; /* particle origin */
 extern SVECTOR D_801E7F08; /* above the target */

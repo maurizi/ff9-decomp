@@ -30,29 +30,29 @@ extern VECTOR D_801E8A90; /* summon position */
 extern VECTOR D_801E8AA0; /* summon scale */
 extern SVECTOR D_801E8AB0;
 extern s32 D_801E8AC0[8]; /* timers */
-extern Pool6CEntry *D_801E8AE0;
+extern Pool6CEntry *fx_1ed_emitter0;
 extern SVECTOR D_801E8AE8;
-extern Pool6CEntry *D_801E8AF0;
+extern Pool6CEntry *fx_1ed_emitter1;
 extern SVECTOR D_801E8AF8;
-extern Pool6CEntry *D_801E8B00;
+extern Pool6CEntry *fx_1ed_emitter2;
 extern SVECTOR D_801E8B08;
 extern s32 D_801E8B10[];
-extern Pool6CEntry *D_801EA5F0;
+extern Pool6CEntry *fx_1ed_emitter3;
 extern SVECTOR D_801EA5F8;
 extern SVECTOR D_801EA600;
-extern Pool6CEntry *D_801EA608;
+extern Pool6CEntry *fx_1ed_emitter4;
 extern SVECTOR D_801EA610;
-extern Pool6CEntry *D_801EA618;
+extern Pool6CEntry *fx_1ed_emitter5;
 extern SVECTOR D_801EA620;
-extern Pool6CEntry *D_801EA628;
+extern Pool6CEntry *fx_1ed_emitter6;
 extern SVECTOR D_801EA630;
-extern Pool6CEntry *D_801EA638;
+extern Pool6CEntry *fx_1ed_emitter7;
 extern SVECTOR D_801EA640;
-extern Pool6CEntry *D_801EA648;
+extern Pool6CEntry *fx_1ed_emitter8;
 extern SVECTOR D_801EA650;
-extern Pool6CEntry *D_801EA658;
+extern Pool6CEntry *fx_1ed_emitter9;
 extern SVECTOR D_801EA660;
-extern Pool6CEntry *D_801EA668;
+extern Pool6CEntry *fx_1ed_emitter10;
 extern SVECTOR D_801EA670;
 extern Fx1edTrail D_801EA680[2];
 

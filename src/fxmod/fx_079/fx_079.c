@@ -45,7 +45,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0xA8;
     } else if (mode == 1) {
         fx_079_env = env;
-        D_801E8990 = NULL;
+        fx_079_emitter = NULL;
         ex->btlfx_initEffModels(fx_079_effModels, 3);
         for (i = 15; i >= 0; i--) {
             work->unk0[i] = 0;
@@ -99,7 +99,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[6] = 0x10;
             break;
         case 16:
-            D_801E8990 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E8994);
+            fx_079_emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E8994);
             break;
         case 24:
             work->unk0[8] = 4;
@@ -182,10 +182,10 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E899C.vx = D_801E8984.vx;
         D_801E899C.vy = D_801E8984.vy;
         D_801E899C.vz = D_801E8984.vz;
-        if (D_801E8990 != NULL && D_801E8990->state == BTLFX_EMIT_DONE) {
-            D_801E8990 = NULL;
+        if (fx_079_emitter != NULL && fx_079_emitter->state == BTLFX_EMIT_DONE) {
+            fx_079_emitter = NULL;
         }
-        ex->btlfx_moveEmitterTo((s32)D_801E8990, (s32)&D_801E899C);
+        ex->btlfx_moveEmitterTo((s32)fx_079_emitter, (s32)&D_801E899C);
         if (work->unk0[1] != 0) {
             work->pos94.vx = D_801E8984.vx;
             work->pos94.vy = D_801E8984.vy;

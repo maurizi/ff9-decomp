@@ -41,7 +41,7 @@ typedef struct {
 extern Fx1a0Bone D_801E7EF8[6];
 extern s16 D_801E7F10[6];
 extern s16 D_801E7F1C[6];
-extern s32 (*D_801E7F28[6])();
+extern s32 (*fx_1a0_op81ParticleMotions[6])();
 extern Unk800F78A4 *fx_1a0_env;
 extern s32 D_801E7F98[6][0x1C];
 extern Fx1a0Path D_801E8238[6];

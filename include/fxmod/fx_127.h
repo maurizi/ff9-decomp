@@ -58,7 +58,7 @@ extern Unk800F78A4 *fx_127_env;
 extern SVECTOR D_801E82F8; /* path start */
 extern SVECTOR D_801E8300; /* path end */
 extern SVECTOR D_801E8308;
-extern Pool6CEntry *D_801E8340;
+extern Pool6CEntry *fx_127_emitter;
 
 static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 static s32 fx_127_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);

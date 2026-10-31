@@ -16,7 +16,7 @@ typedef struct {
 } Fx1acWork; /* 0x60 */
 
 extern Unk800F78A4 *fx_1ac_env;
-extern Pool6CEntry *D_801E8304;
+extern Pool6CEntry *fx_1ac_emitter;
 extern s32 D_801E8310[];
 extern SVECTOR D_801E8580;
 extern SVECTOR D_801E8588;

@@ -7,10 +7,10 @@
 extern Unk800F78A4 *fx_081_env;
 extern SVECTOR D_801EA728;
 extern SVECTOR D_801EA730;
-extern Pool6CEntry *D_801EA738;
+extern Pool6CEntry *fx_081_emitter0;
 extern Unk80100C78Entry *fx_081_task;
 extern s32 D_801EA73C; /* glow level */
-extern Pool6CEntry *D_801EA740;
+extern Pool6CEntry *fx_081_emitter1;
 extern SVECTOR D_801EA748; /* caster body position */
 extern BtlModel fx_081_effModels[];
 extern u8 D_801E8EE8[];

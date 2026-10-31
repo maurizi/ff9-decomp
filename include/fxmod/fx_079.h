@@ -49,7 +49,7 @@ extern SVECTOR D_801E896C;
 extern VECTOR D_801E8974;
 extern SVECTOR D_801E8984;
 extern s32 D_801E898C;
-extern Pool6CEntry *D_801E8990;
+extern Pool6CEntry *fx_079_emitter;
 extern SVECTOR D_801E8994;
 extern SVECTOR D_801E899C;
 extern Fx079Strip D_801E89A4[5];

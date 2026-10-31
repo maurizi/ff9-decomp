@@ -147,7 +147,7 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[i]->trailStride = 0x60;
             }
             if (work->emit0[i] != NULL) {
-                ((EffMotion *)work->emit0[i]->file)->update = D_801E8504[i];
+                ((EffMotion *)work->emit0[i]->file)->update = fx_191_op80ParticleMotions[i];
             }
             D_801E857C[i].vx = work->pos18.vx;
             D_801E857C[i].vy = work->pos18.vy;

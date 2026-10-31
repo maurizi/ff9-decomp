@@ -24,7 +24,7 @@ typedef struct {
 } Fx09bWork;
 
 extern s32 D_801E80F4[5]; /* particle files */
-extern s32 (*D_801E8108[5])(); /* motion callbacks */
+extern s32 (*fx_09b_pinParticles[5])(); /* motion callbacks */
 extern BtlModel fx_09b_effModels[];
 extern s32 D_801E8564[5][0x10A];
 extern SVECTOR D_801E9A34[5]; /* particle positions */

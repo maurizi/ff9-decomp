@@ -22,8 +22,8 @@ static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, (s32 *)p->origin, frame,
                       0x1C00 - (frame << 12) / n, t, 1, (u8 *)r, 1);
     if (pt->slot == 1) {
-        if (D_801EA738 != 0) {
-            ex->btlfx_moveEmitterTo(D_801EA738, (s32)pos);
+        if (fx_081_emitter0 != 0) {
+            ex->btlfx_moveEmitterTo(fx_081_emitter0, (s32)pos);
         }
         BTLFX_COPY_SVEC(&D_801EA730, pos);
         if (frame < 0x1D) {
@@ -87,7 +87,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        D_801EA738 = work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos24);
+        fx_081_emitter0 = work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos24);
         if (work->emit30 != NULL) {
             work->emit30->otZ = 0x18;
         }
@@ -163,7 +163,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit30);
                 ex->btlfx_stopEmitter(work->emit34);
-                D_801EA738 = NULL;
+                fx_081_emitter0 = NULL;
             }
             break;
         case 2:
@@ -177,7 +177,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x13) {
-                D_801EA740 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos10);
+                fx_081_emitter1 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos10);
                 if (e != NULL) {
                     e->otZ = 0x80;
                 }
@@ -331,7 +331,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
                 work->unk0 = 2;
                 entry->frame = -1;
-                ex->btlfx_stopEmitter(D_801EA740);
+                ex->btlfx_stopEmitter(fx_081_emitter1);
                 BTLFX_COPY_SVEC(&work->posC, &env->targets->centerX);
                 work->posC.vy -= 0x200;
                 BTLFX_COPY_SVEC(&work->pos14, &work->posC);

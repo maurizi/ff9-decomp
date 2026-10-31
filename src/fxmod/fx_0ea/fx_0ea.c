@@ -105,7 +105,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(work->unk20, (s16 *)&work->pos18);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7DF4[work->unk20]), (s32)&D_801E7E84);
         if (work->emit0 != NULL) {
-            ((Fx0eaEffHdr *)work->emit0->file)->unk8 = D_801E7DFC[work->unk20];
+            ((Fx0eaEffHdr *)work->emit0->file)->unk8 = fx_0ea_op81ParticleMotions[work->unk20];
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }

@@ -169,7 +169,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E8488[i]), (s32)&D_801E8E70[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->tail->shape = -1;
-                    *(s32 *)&work->emit0[i]->tail->unk3C = D_801E84A0[i];
+                    *(s32 *)&work->emit0[i]->tail->unk3C = fx_138_op81SpawnPoints[i];
                     if (work->emit0[i] != NULL) {
                         work->emit0[i]->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                     }

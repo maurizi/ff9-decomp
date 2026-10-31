@@ -41,7 +41,7 @@ typedef struct {
 extern u16 D_801E85BC[8];
 extern u16 D_801E85CC[8];
 extern u16 D_801E85DC[8];
-extern s32 (*D_801E85EC[8])();
+extern s32 (*fx_1b4_op80ParticleMotions[8])();
 extern Unk800F78A4 *fx_1b4_env;
 extern Fx1b4Path D_801E8664[8];
 extern Fx1b4Path D_801E86A4[8];

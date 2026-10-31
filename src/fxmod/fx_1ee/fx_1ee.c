@@ -130,17 +130,17 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         for (i = 7; i >= 0; i--) {
             D_801E92B4[i] = 0;
         }
-        D_801E92D4 = NULL;
-        D_801E92E4 = NULL;
-        D_801E92F4 = NULL;
-        D_801EADE4 = NULL;
-        D_801EADFC = NULL;
-        D_801EAE0C = NULL;
-        D_801EAE1C = NULL;
-        D_801EAE2C = NULL;
-        D_801EAE3C = NULL;
-        D_801EAE5C = NULL;
-        D_801EAE4C = NULL;
+        fx_1ee_emitter0 = NULL;
+        fx_1ee_emitter1 = NULL;
+        fx_1ee_emitter2 = NULL;
+        fx_1ee_emitter3 = NULL;
+        fx_1ee_emitter4 = NULL;
+        fx_1ee_emitter5 = NULL;
+        fx_1ee_emitter6 = NULL;
+        fx_1ee_emitter7 = NULL;
+        fx_1ee_emitter8 = NULL;
+        fx_1ee_emitter10 = NULL;
+        fx_1ee_emitter9 = NULL;
         D_801EAE54.vx = 0;
         D_801EAE54.vy = 0;
         D_801EAE54.vz = -0x618;
@@ -174,14 +174,14 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         case 9:
             ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion180, SUMMON(env)->unk60);
             D_801E92B4[0] = 1;
-            D_801E92D4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2E), (s32)&D_801E92DC);
+            fx_1ee_emitter0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2E), (s32)&D_801E92DC);
             break;
         case 0x18:
-            D_801E92E4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2E), (s32)&D_801E92EC);
+            fx_1ee_emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2E), (s32)&D_801E92EC);
             break;
         case 0x40:
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x11, (u16 *)&D_801E92FC);
-            D_801E92F4 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x3B), (s32)&D_801E92FC);
+            fx_1ee_emitter2 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x3B), (s32)&D_801E92FC);
             if (e != NULL) {
                 e->trails = (s32)D_801E9304;
                 e->trailSlots = 0x28;
@@ -191,62 +191,62 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             break;
         case 0x48:
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x11, (u16 *)&D_801EADF4);
-            D_801EADE4 = e2 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x39), (s32)&D_801EADF4);
+            fx_1ee_emitter3 = e2 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x39), (s32)&D_801EADF4);
             if (e2 != NULL) {
                 e2->otZ = 0x40;
             }
             break;
         case 0x67:
-            ex->btlfx_stopEmitter(D_801EADE4);
+            ex->btlfx_stopEmitter(fx_1ee_emitter3);
             break;
         case 0x6C:
-            ex->btlfx_stopEmitter(D_801E92F4);
+            ex->btlfx_stopEmitter(fx_1ee_emitter2);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&D_801EAE04);
             D_801EAE04.vy -= 0x180;
-            D_801EADFC = e3 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x30), (s32)&D_801EAE04);
+            fx_1ee_emitter4 = e3 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x30), (s32)&D_801EAE04);
             if (e3 != NULL) {
                 e3->otZ = -0x80;
             }
             D_801E92B4[1] = 0x10;
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x11, (u16 *)&D_801EAE14);
-            D_801EAE0C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2B), (s32)&D_801EAE14);
+            fx_1ee_emitter5 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2B), (s32)&D_801EAE14);
             D_801E92B4[2] = 8;
             D_801E92B4[3] = 1;
             break;
         case 0x77:
             D_801E92B4[0] = 0;
-            ex->btlfx_stopEmitter(D_801E92D4);
-            ex->btlfx_stopEmitter(D_801E92E4);
+            ex->btlfx_stopEmitter(fx_1ee_emitter0);
+            ex->btlfx_stopEmitter(fx_1ee_emitter1);
             D_801EAE24.vy = D_801EAE14.vy - 0x1800;
             D_801EAE24.vx = D_801EAE14.vx;
             D_801EAE24.vz = D_801EAE14.vz;
-            D_801EAE1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x35), (s32)&D_801EAE24);
+            fx_1ee_emitter6 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x35), (s32)&D_801EAE24);
             break;
         case 0x97:
-            ex->btlfx_stopEmitter(D_801EADFC);
-            ex->btlfx_stopEmitter(D_801EAE0C);
-            ex->btlfx_stopEmitter(D_801EAE1C);
+            ex->btlfx_stopEmitter(fx_1ee_emitter4);
+            ex->btlfx_stopEmitter(fx_1ee_emitter5);
+            ex->btlfx_stopEmitter(fx_1ee_emitter6);
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xB0, 0xB0, 0xB0);
             D_801EAE34.vy = D_801EAE24.vy;
             D_801EAE34.vx = D_801EAE24.vx;
             D_801EAE34.vz = D_801EAE24.vz;
-            D_801EAE2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x31), (s32)&D_801EAE34);
+            fx_1ee_emitter7 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x31), (s32)&D_801EAE34);
             break;
         case 0x99:
             D_801E92B4[4] = 4;
             D_801EAE44.vx = D_801EAE64.vx = D_801EAE24.vx;
             D_801EAE44.vy = D_801EAE64.vy = D_801EAE24.vy;
             D_801EAE44.vz = D_801EAE64.vz = D_801EAE24.vz;
-            D_801EAE3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2C), (s32)&D_801EAE44);
+            fx_1ee_emitter8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2C), (s32)&D_801EAE44);
             break;
         case 0x9F:
-            D_801EAE5C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x36), (s32)&D_801EAE64);
+            fx_1ee_emitter10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x36), (s32)&D_801EAE64);
             break;
         case 0xAE:
-            D_801EAE4C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x32), (s32)&D_801EAE54);
+            fx_1ee_emitter9 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x32), (s32)&D_801EAE54);
             break;
         case 0xCA:
-            ex->btlfx_stopEmitter(D_801EAE5C);
+            ex->btlfx_stopEmitter(fx_1ee_emitter10);
             break;
         }
         if (D_801E92B4[0] != 0) {
@@ -259,24 +259,24 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                 ex->Hi_ModifySummonModelRGB(SUMMON(env)->unk60, -0x40, -0x40, -0x40);
             }
         }
-        if (D_801E92D4 != NULL) {
-            if (D_801E92D4->state == BTLFX_EMIT_DONE) {
-                D_801E92D4 = NULL;
+        if (fx_1ee_emitter0 != NULL) {
+            if (fx_1ee_emitter0->state == BTLFX_EMIT_DONE) {
+                fx_1ee_emitter0 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&D_801E92DC);
         }
-        if (D_801E92E4 != NULL) {
-            if (D_801E92E4->state == BTLFX_EMIT_DONE) {
-                D_801E92E4 = NULL;
+        if (fx_1ee_emitter1 != NULL) {
+            if (fx_1ee_emitter1->state == BTLFX_EMIT_DONE) {
+                fx_1ee_emitter1 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&D_801E92EC);
         }
-        if (D_801EADE4 != NULL) {
-            if (D_801EADE4->state == BTLFX_EMIT_DONE) {
-                D_801EADE4 = NULL;
+        if (fx_1ee_emitter3 != NULL) {
+            if (fx_1ee_emitter3->state == BTLFX_EMIT_DONE) {
+                fx_1ee_emitter3 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x11, (u16 *)&D_801EADEC);
-            ex->btlfx_moveEmitterTo((s32)D_801EADE4, (s32)&D_801EADEC);
+            ex->btlfx_moveEmitterTo((s32)fx_1ee_emitter3, (s32)&D_801EADEC);
         }
         if (D_801E92B4[3] != 0) {
             tr = D_801EAE74;

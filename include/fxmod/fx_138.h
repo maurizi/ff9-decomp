@@ -61,7 +61,7 @@ extern u16 D_801E8480[3];
 extern u16 D_801E8494[6];
 extern BtlModel fx_138_effModels[];
 extern u16 D_801E8488[6]; /* trail files */
-extern s32 D_801E84A0[6];
+extern s32 fx_138_op81SpawnPoints[6];
 extern Unk800F78A4 *fx_138_env;
 extern u8 D_801E8860[];
 extern SVECTOR D_801E8E70[6];

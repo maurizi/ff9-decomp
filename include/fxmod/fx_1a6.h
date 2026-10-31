@@ -25,7 +25,7 @@ typedef struct {
 } Fx1a6Work80; /* 0x4C */
 
 extern u16 D_801E823C[3]; /* files */
-extern s32 (*D_801E8244[3])();
+extern s32 (*fx_1a6_op80ParticleMotions[3])();
 extern Unk800F78A4 *fx_1a6_env;
 extern s32 D_801E82A8[3][0x5A];
 extern s32 D_801E86E8[3][0x1D0];

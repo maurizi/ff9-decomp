@@ -118,7 +118,7 @@ typedef struct {
 extern Fx123Shot D_801E8F7C[6];
 extern u16 D_801E9054[6];
 extern u16 D_801E9060[6];
-extern s32 D_801E906C[6];
+extern s32 fx_123_pinParticles[6];
 extern BtlModel fx_123_effModels[];
 extern Fx123Path_0b4 D_801E965C[6];
 extern u8 D_801E96BC[6][0xE0];

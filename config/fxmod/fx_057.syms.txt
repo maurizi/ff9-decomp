@@ -6,3 +6,5 @@ fx_057_op80ElemDraw = 0x801E7704; // type:func [code] element draw callback (Eff
 fx_057_env = 0x801E8EA4; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_057_effModels = 0x801EA724; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
 fx_057_task = 0x801EA97C; // [code] the running task entry (Unk80100C78Entry) an op handler keeps for its helpers
+fx_057_emitter0 = 0x801EA704; // [code] emitter handle (Pool6CEntry from btlfx_startEmitter) kept in module data
+fx_057_emitter1 = 0x801EA70C; // [code] emitter handle (Pool6CEntry from btlfx_startEmitter) kept in module data

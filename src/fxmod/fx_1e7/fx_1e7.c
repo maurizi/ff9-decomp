@@ -161,7 +161,7 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E826C[i]), (s32)&D_801E84F0[i]);
             if (work->emit4[i] != NULL) {
                 work->emit4[i]->tail->shape = -1;
-                ((EffTailSpawn *)work->emit4[i]->tail)->spawnFn = D_801E8284[i];
+                ((EffTailSpawn *)work->emit4[i]->tail)->spawnFn = fx_1e7_op81SpawnPoints[i];
             }
         }
         work->unk30 = 0;
