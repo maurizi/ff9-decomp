@@ -2839,3 +2839,134 @@ mode 8).
 - **ovl_0c g_worldMoveMode 8 / 9: 8 CONFIRMED (Hilda Garde 3), 9 inferred.** Mode 8 observed above. Modes 8 and 9
   share the flight parameters and differ in loop SE (23 / 22) and get-off distance (0x280 / 0x2D0). Proposed
   `WM_MOVE_HILDA_GARDE 8` (or keep WM_MOVE_AIRSHIP), `WM_MOVE_INVINCIBLE 9` (medium).
+
+## Round 31 runtime pass (2026-10-31): rows of docs/wip/round31_runtime_{main_overlays,ovl_0b,fxmod}.md  (status: proposed)
+Redux, LuaJIT off, the hang-safe runner `build/rt3/run3.py` copied to `build/r31rt/run3.py` (outputs there).
+`--patch CMD,AB,TGT` rewrites Zidane's first Attack. Disc 3 states `disc3_malboro_lv99_calm` (calm pokes) and
+`disc3_malboro_entry_1100`, disc 1 field states. VRAM was read with `PCSX.GPU.getVRAM()` (a 1 MB Slice, byte-indexable;
+`build/r31rt/vram.lua` `DumpVram(path)` writes it to a file in ~1 s, `vram2png.py` / `sheet.py` crop and tile it).
+No new save states.
+
+### Effect identity sweep (docs/effect-modules.md effect column filled, 379 of 380 modules)
+- **Effect id = dir-13 file id: CONFIRMED, with two remaps in btlfx_resolveFirstUse.** `btlfx_start(id)` stores
+  `btlfx_resolveFirstUse(id)` and phase 1 calls `btlfx_loadFile(effectId)`. Runtime: Fire on the Malboro
+  (`--patch 0x16,0x19,0x10`) gives btlfx_start(0) but btlfx_loadFile(0x46), because g_btlfxLargeTargetFx
+  (0x800F727C) swaps the one-target id for the all-targets one when unit 0's scaled radius is 0x385 or more. Its pairs
+  0x2A>0x7F, 0x19>0x7C, 0x60>0x61, 0x9E>0x9D, 0>0x46, 2>0x47, 7>0x48, 0x1A>0x4E, 6>0x3E, 4>0x4D, 0x97>0x98, 3>0x42,
+  5>0x49, 0x18>0x85, 0x15>0xCA, 0x5D>0x78 explain the old runtime list (Sleep 0x4E, Silence 0x7F, ... on the Malboro).
+  g_btlfxFirstUsePairs gives short>full summon ids (0x197>0x26 Shiva ... 0x1BF>0x17D Ark). Malboro AI Osmose
+  (`disc3_malboro_entry_1100`, natural) btlfx_start/loadFile 0x39, Bad Breath (btl_setEnemyCmd a3 forced to 0) 0x135,
+  both as the static sweep predicts.
+- **Static sweep** (`build/r31rt/label.py`, `encfx.py`, `sweep.py`): ovl_33 s_menuAbilityActionTable is the battle
+  ability table layout (BtlCmd8, effect bits 8-16, altEffect +0xC; it matches every runtime id above). Target type 3
+  abilities play `effect` for several targets and `altEffect` for one (btl_startCmdEffect), others play altEffect for
+  short summons and the Seiken commands. Items from g_usableItemTable.effect, fixed ids from btl_startCmdEffect
+  (Attack 0x64 + appearance kind, enemy Attack 0x77, Steal 0xC8/0x111/0x13/0x14, Throw 0x109-0x115 by weapon icon,
+  Trance 0x101/0x1E9). Enemy ids from every encounter bundle on all four discs (kind 0x10 header, enemy ability i ->
+  sequence i of the kind 0x11 bundle, btlseq ops 0x06 / 0x08 / 0x1A parsed with the op lengths of g_btlseqOps,
+  names from the kind 6 text block, enemy names then ability names). 0 parse errors.
+- Only fx_0fd has no reference. The table is in docs/effect-modules.md, and as a dict for `tools/effect_modules.py`
+  KNOWN (the catalogue regenerates the doc) in `build/r31rt/known_effects.py`.
+- Proposed module identity comments (headers of src/fxmod/fx_XXX): take the effect column. Examples the round asked
+  about, jagged strip = lightning bolt, fx_003 Thunder one target, fx_042 Thunder all, fx_005 Thundara one, fx_049
+  Thundara all, fx_018 Thundaga one, fx_085 Thundaga all, fx_0d7 / fx_0d8 / fx_0d9 Sword Magic Thunder / Thundara /
+  Thundaga. Texel grid = fire and ice (fx_007 Firaga one, fx_048 Firaga all, fx_097 / fx_098 Blizzaga one / all,
+  fx_0d6 Sword Magic Firaga, fx_0d3 Phoenix, fx_1fe Phoenix short, fx_0e1 Rebirth Flame, fx_1cc Black Waltz 1
+  "Sealion appears", fx_114 / fx_1bd Ifrit full / short). Ribbon trail = fx_05e Death, fx_09a LV5 Death, fx_0ed
+  Roulette, fx_0fb Madeen (and Terra Homing), fx_105 Odin, fx_1a2 Blank's Moonlight Slash. Streak field = fx_086
+  Meteor, fx_08f Meteor (alt), fx_17d Ark. fx_18b Gizamaluke's Silent Voice, fx_112 Mimic's Eat.
+- confidence: high (static data, two runtime spot checks per source kind).
+
+### ovl_0b
+- **BtlEnemyType.category bits: CONFIRMED (data).** btl_updateScan prints g_btlScanTexts[j] for each set bit j, and
+  those texts are 0 Humanoid, 1 Beast, 2 Demon, 3 Dragon, 4 Undead, 5 Stone, 6 Insect, 7 Aerial. The Killer supports
+  (`ff9text.py dump support`) 0xCD Bird Killer, 0xCE Bug, 0xCF Stone, 0xD0 Undead, 0xD1 Dragon, 0xD2 Devil, 0xD3 Beast,
+  0xD4 Man Eater are support bits 13-20, which btl_applyKillerBonus pairs with 0x80 .. 0x01, the same families.
+  Encounter records (+0x41) agree, Zuu 0x80, Hornet 0xC0, Gargoyle 0xA0, Skeleton 0x10, Grand Dragon 0x08, Hecteyes
+  0x14, Fang 0x02, Soldier 0x01, Malboro 0. Proposed `BTL_ENEMY_HUMANOID 0x01`, `BTL_ENEMY_BEAST 0x02`,
+  `BTL_ENEMY_DEMON 0x04`, `BTL_ENEMY_DRAGON 0x08`, `BTL_ENEMY_STONE 0x20`, `BTL_ENEMY_INSECT 0x40` (keep UNDEAD 0x10,
+  FLYING 0x80 or rename AERIAL), and `SA_BIRD_KILLER 0xCD` .. `SA_MAN_EATER 0xD4` in ff9_ids.h. high.
+- **Unk800D8124.unk2: CONFIRMED, party-target mode of op 0x72.** Its value comes from unit op 0x50 b (btlfx_opSetParamsA,
+  g_btlfxOpArgs.unk1). Throw dagger (0x110, op args frames 4, mode 1) at Vivi (`--patch 0x0F,0x01,0x02`)
+  btlfx_stepFaceHome runs once and snaps the rotation, at the Malboro (`--patch 0x0F,0x01,0x10`) it runs 4 frames.
+  Scripts (file scripts + common scripts dump) use mode 0 in items and some abilities, mode 1 in Throw, Sword Magic,
+  Sword Arts, Flair, Seiken, mode 2 only in the resident racket attacks 0x68 / 0x6A / 0x6F and 0x27. Proposed
+  `partyMode` with `BTLFX_FACE_ALWAYS 0` (turn back over the frames), `BTLFX_FACE_SNAP_PARTY 1` (party target snaps
+  back at once), `BTLFX_FACE_SKIP_PARTY 2` (party target, the op ends without turning). high.
+- **BTLFX_HDR_RESIDENT: CONFIRMED, the physical-hit effects.** The header table is a VRAM copy (0x300,0x140) at
+  0x801E7700 when btlfx_loadFile runs (dumped 0x400 bytes there, `build/r31rt/fxhdr.bin`). 118 ids carry 0x8000, all
+  with header 0x83FF and none has a dir-13 file. The party Attacks 0x64-0x76, enemy/Marcus Attack 0x77, Steal / Mug
+  0xC8 / 0x111 / 0x13 / 0x14, Jump 0x189, the enemy hits 0x139-0x178 and 0x1CD-0x1E5 (Tail, Strike, Claws, Fang, Head
+  Attack, Virus Tentacles ...), and 0x10 / 0x12 / 0x25 / 0x27. Others look like 0x3340 (Bad Breath), 0x320 (Osmose),
+  0x3320 (Fire all). Proposed comment on BTLFX_HDR_RESIDENT "weapon and physical-hit scripts (Attack, Steal, Jump,
+  enemy melee), header 0x83FF, no module file". high.
+- **Unk800AA08C.unk20: CONFIRMED, it is Battle11C0.encounter.** `disc3_malboro_lv99_calm`, RAM search for the kind
+  0x10 item of encounter 899 (07 01 01 08 = unk0, groupCount 1, typeCount 1, abilityCount 8) found it at 0x8010ED9C,
+  and the only pointer to it at 0x8010AECC, whose +4 points at the kind 0x11 item (0x8010E6F4, Battle11C0.bundle) and
+  -0xC at the kind 6 text item (0x8010E490, Battle11C0.texts). So Unk800AA08C is a second view of Battle11C0
+  (offset 0x14 `area` = texts, the DB_AREA key in a battle bundle is the name text block, 0x20 = encounter, 0x24
+  sceneBuf = bundle). Proposed: drop Unk800AA08C for Battle11C0 in btl_loadEncounterFile / btl_initEncounter, or name
+  unk20 `encounter` (Battle11C020 *). high.
+
+### fxmod
+- **VRAM_BTLFX_SCRATCH: CONFIRMED screen captures.** Slow (`vramfx.py slow 0x16 0x20 0x10`, file 0x7E) and Stop (0x95),
+  12 + 8 + 10 VRAM dumps 20-30 frames apart. Slow, (0x1C0,0x180) 128x128 holds the rendered screen around the target
+  (Malboro mouth and chains visible), refreshed every frame, and is drawn back as the swirling clock face. The clock
+  texture itself sits at about (0x260,0x140) (file data). Stop, a ~192x192 copy of the screen including the HUD
+  ("Zidane 9999") is written to (0x1C0,0x100) once and stays unchanged while the frozen grey image is shown. Proposed
+  `VRAM_BTLFX_SCRATCH_X 0x1C0`, `_Y 0x100` as named, comment "screen capture of the target area drawn back as a
+  texture (Slow per frame at y 0x180, Stop once)". fx_18b (Silent Voice) and fx_112 (Eat) not run. high.
+- **fxm_setSignal(env, 7, v): CONFIRMED, script signal 7 (control op 1 waits on it), not a unit-op flag.** Mighty Guard
+  (`--patch 0x18,0x54,0x0F`, 0x51), watch on 0x800FEC57. Writes from the module (0x801E7998, 8x), reads only from
+  btlfx_runScript+0x43C / +0x460 (control op 01 01 07, a3 = 7), 108 reads. The scripts of fx_01d, fx_024, fx_02b,
+  fx_045, fx_051 have `01 01 07` and fx_053 `01 01 04` / `01 01 05`. g_btlfxState.signals (0x10) is 4 bytes but op 1
+  indexes up to 7, so b[4]-b[7] are motionDone / moveDone / turnDone / waitDone. Proposed: make `signals` an 8-byte
+  `u8 b[8]` union covering those four, with `BTLFX_SIG_MOTION 4`, `BTLFX_SIG_MOVE 5`, `BTLFX_SIG_TURN 6`,
+  `BTLFX_SIG_WAIT 7`, and `fxm_setSignal` stays (its 7 = BTLFX_SIG_WAIT, set by the module). high.
+- **Motion slots 2 and 3: CONFIRMED hit and knock-down.** `disc3_malboro_lv99_calm`, Zidane's model->motion
+  (0x80093BC4) poked to motions[0] / [2] / [3] (motion table 0x80108808), screenshots 8 and 18 frames later
+  (`build/r31rt/mot_zoom.png`). [2] a short flinch, head back, [3] knocked off his feet backwards. Matches
+  btl_startHitMotion (party [3] for abilities with flags2 0x81, enemies [3] = death motion or weak-stance hit). The
+  module callers are enemy attacks on the party (motion 2 in fx_041 Whirl Slash, fx_09b Lava Gun, fx_100 Solution,
+  fx_1a6 Water-gun, fx_1b2 Tidal Wave, motion 3 in fx_180 / fx_1ec Ultima, fx_1e7 Ragtime Mouse "Wrong!!!"). No
+  module call was observed live (fx_0c2's copies are unused). Proposed `BTL_MOTION_HIT 2`, `BTL_MOTION_HIT_HEAVY 3`
+  (knock-down), `fxm_startHitMotionIfActive` / `fxm_startHeavyHitMotionIfActive`. high (party), medium (enemy wording).
+- **fxm_camChan* during Fenrir: CONFIRMED.** Fenrir full (`--patch 0x14,0x42,0x10`, support poke 0x8008B31B |= 8,
+  btlfx_start 0xD2), write watch on g_btlCamera 0x800FE3B8 +0x50. fx_0d2's fxm_camChanUpdate stores (0x801EA33C /
+  350 / 364 = vx/vy/vz) write SVECTOR slots 0-3 (points[0-3]) and 8, 9 (pointRots[2], pointRots[3]) from frame 9227 to
+  10111 (~150-1100 writes each), fx_0d2_op80 (0x801E82F8) writes slot 7 (pointRots[1]). So the key nibble n addresses
+  ((SVECTOR *)g_btlCamera)[n - 1] over points[6] + pointRots[4] (fx_0d2 uses 1-4, 9, 10). Proposed comment "key
+  destination = g_btlCamera point n-1 (points then pointRots)". high.
+- **Leviathan (fx_0b3) scroll textures: CONFIRMED, not a capture.** Full Leviathan (`--patch 0x10,0x3C,0x10` with the
+  support poke, btlfx_start 0xB3), 24 VRAM dumps 60 frames apart. (0x1C0,0x100) 32x128 halfwords is indexed texel data
+  that from frame ~400 on is a vertically wrapped copy of the (0x1E0,0x100) source rows (row 0 = source row 0, 104,
+  80, ...), the (0x1C0,0x180) half stayed equal to the source in this window. Proposed comment "scrolling water texture,
+  rows of the 0x1E0 source rotated into 0x1C0 each frame". high.
+
+### main and overlays
+- **CharBits.unkA (info bit 10): CONFIRMED victory pose.** All 9 characters have it in the disc-3 Lv 99 save. Malboro
+  HP poked to 1, Attack, victory (`vic_on` / `vic_off`): with the bit Zidane jumps into his victory pose, with it
+  cleared (0x8008B2C1 &= 0xFB, Zidane's info at GameData+0x3C+0x34) he stands in his idle stance on the same frames
+  (`build/r31rt/vic_sheet2.png`). Proposed `victoryPose` (`CHR_INFO_VICTORY_POSE 0x400`). Event op 0xDB not traced.
+  high.
+- **GameData.unk892: INCONCLUSIVE (mechanism confirmed).** `cpass_wm_hadris` (vehicles found), watch 30 frames, 8
+  writes each at wm_frameMain+0x38 (1) and +0x480 (0), reads 1 at the vsync pause and 0 with the menu open over the
+  world map. It is 1 exactly while a world frame runs. WM_EVT_FIELD reaches the clear, so a normal world > field >
+  world trip returns with 0 and resets the camera yaw. It stays 1 only when the frame doesn't finish, e.g. a save
+  written during a world frame (ovl_39 stores it). Proposed `inWorldFrame` (medium) with a comment on the camera
+  guard. A field entry from a vehicle was not tried.
+- **Character.classFlags 0x1 / 0x4 / 0x8: NOT REACHED.** No enemy ability (all encounters, all discs, record +4) or
+  party ability uses formula 0x62, only Lamia's Entice uses 0x61 (misses 0x2 female). Data only, 0x1 is on every
+  row without 0x2 (Quina included), 0x8 only on Zidane's row, 0x4 on every other row. Proposed `CHR_CLASS_MALE 0x1`
+  (medium), leave 0x4 / 0x8 literal (formula 0x62 is unused data).
+- **g_akaoPauseFlags 4: CONFIRMED never set.** Only writers are akao_cmdPauseMusic/ResumeMusic (1), PauseSe/ResumeSe
+  (2) and akao_init (= 0), no overlay asm references it. Write watch over a Fire cast (500 frames) 0 writes, value 0.
+  Proposed `AKAO_PAUSE_FORCE_TICK 4` (tested by both tempo loops, never set, a debug step), medium.
+- **AkaoStreamState.unk20 / unk30: NOT REACHED.** Read watches on 0x80083188 / 0x80083198 / 0x80083168 over 600 frames of
+  `movie_debug`, `movie_vlc_1792187258632121515`, `field_d1_502`, `field_opening_dark`, 0 hits (no stream ran).
+- **tailMode 0x20: NOT REACHED.** evt_getMsgLayout traced over 900 frames (Cross every 60) in 9 disc-1 states, 34 calls,
+  flags 0x00 / 0x10 / 0x80 only. msg_open's own flags tests are 4, 8, 0x40.
+- **FieldSpriteSet.unk0 / unk4: CONFIRMED write-only.** Set headers found by pattern (01 00 10 10, unk4 = header + 0x14)
+  at 0x801275B0 (`field_dali_inn`) and 0x800F4430 (`field_d1_456`), read watches on +0 (2), +4 (4) and the 0x20-byte
+  table, 600 frames each, 0 hits, while the same watch on +8 / +3 gets ~1000 hits from fld_drawSprites. Leave unnamed
+  or `unused0` / `unusedIds`.
