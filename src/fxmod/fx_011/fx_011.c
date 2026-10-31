@@ -16,7 +16,7 @@ s32 fx_011_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)work);
         if (p != NULL) {
-            p->trails = (s32)D_801E78FC;
+            p->trails = (s32)fx_011_trails;
             p->trailSlots = 0x19;
             p->trailStride = 0x34;
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);

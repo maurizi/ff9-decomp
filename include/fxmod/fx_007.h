@@ -37,17 +37,17 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
 typedef struct {
     SVECTOR pos0; /* target body position */
     SVECTOR pos8; /* target position */
-    s32 unk10; /* state */
+    s32 state10; /* state */
     s32 model14[4]; /* models */
     s32 model24;
     s32 model28;
     Pool6CEntry *emit2C;
     Pool6CEntry *emit30;
-    s32 unk34; /* frame */
+    s32 frame34; /* frame */
 } Fx007Work80; /* 0x38 */
 
 extern BtlModel fx_007_effModels[];
-extern u8 D_801E93A8[];
-extern u16 D_801E9638[];
+extern u8 fx_007_trails[];
+extern u16 fx_007_texels[];
 
 #endif

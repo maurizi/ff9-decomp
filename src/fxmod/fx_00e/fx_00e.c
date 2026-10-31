@@ -17,9 +17,9 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_00e_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
-        work->unk18[0] = work->pos8.vx;
-        work->unk18[1] = work->pos8.vy;
-        work->unk18[2] = work->pos8.vz;
+        work->pos18[0] = work->pos8.vx;
+        work->pos18[1] = work->pos8.vy;
+        work->pos18[2] = work->pos8.vz;
         ex->btlfx_initEffModels(fx_00e_effModels, 2);
         work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x138, 0xFFFF, 0, 0x80);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos8);
@@ -42,11 +42,11 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vx = s;
             scale.vy = (frame << 8) + 0x1000;
             scale.vz = s;
-            ex->Hi_DrawEffModel(&rot, (VECTOR *)work->unk18, (s32)&scale, work->model24);
+            ex->Hi_DrawEffModel(&rot, (VECTOR *)work->pos18, (s32)&scale, work->model24);
             ex->Hi_ModifyEffModelAbr(work->model24, 1);
             ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
             scale.vy >>= 1;
-            ex->Hi_DrawEffModel(&rot, (VECTOR *)work->unk18, (s32)&scale, work->model24);
+            ex->Hi_DrawEffModel(&rot, (VECTOR *)work->pos18, (s32)&scale, work->model24);
             ex->Hi_ModifyEffModelAbr(work->model24, 1);
             ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
             if (frame >= 0x20) {
@@ -54,8 +54,8 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 return 1;
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), work->unk4);
-        work->unk4++;
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), work->frame4);
+        work->frame4++;
     }
     return 0;
 }

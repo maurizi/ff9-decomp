@@ -15,15 +15,15 @@ typedef struct {
     SVECTOR pos24; /* bone 7 point */
     SVECTOR pos2C; /* bone 15 point */
     SVECTOR pos34; /* in front of the caster */
-    SVECTOR unk3C; /* angles from unk24 to unk34 */
-    SVECTOR unk44; /* angles from unk2C to unk34 */
-    s32 unk4C; /* screen tint */
+    SVECTOR aim3C; /* angles from pos24 to pos34 */
+    SVECTOR aim44; /* angles from pos2C to pos34 */
+    s32 tint4C; /* screen tint */
 } Fx01dWork80; /* 0x50 */
 
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* target position */
-    s32 unkC; /* target index */
+    s32 targetC; /* target index */
 } Fx01dWork81;
 
 extern Unk800F78A4 *fx_01d_env;
