@@ -212,8 +212,8 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        rect.x = 0x1C0;
-        rect.y = 0x100;
+        rect.x = VRAM_BTLFX_SCRATCH_X;
+        rect.y = VRAM_BTLFX_SCRATCH_Y;
         rect.w = 0x100;
         rect.h = 0x100;
         fxm_drawRadialScreenGrid(1, 0xA0, 0x68, 0x10, 0x10, 8, 0x88, 0x88, &rect, fx_18b_op80GridVertex);

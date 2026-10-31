@@ -350,8 +350,8 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = 0;
     } else {
         frame = entry->frame;
-        rect.x = 0x1C0;
-        rect.y = 0x100;
+        rect.x = VRAM_BTLFX_SCRATCH_X;
+        rect.y = VRAM_BTLFX_SCRATCH_Y;
         rect.w = 0xC0;
         rect.h = 0xC0;
         gte_SetRotMatrix(env->viewMatrix);

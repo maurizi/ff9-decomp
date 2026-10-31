@@ -362,8 +362,8 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 1:
-            r1.x = 0x1C0;
-            r1.y = 0x180;
+            r1.x = VRAM_BTLFX_SCRATCH_X;
+            r1.y = VRAM_BTLFX_SCRATCH_Y + 0x80;
             r1.w = 0x7A;
             r1.h = 0x7A;
             t = frame << 8;
@@ -379,8 +379,8 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 2:
-            r2.x = 0x1C0;
-            r2.y = 0x180;
+            r2.x = VRAM_BTLFX_SCRATCH_X;
+            r2.y = VRAM_BTLFX_SCRATCH_Y + 0x80;
             r2.w = 0x7A;
             r2.h = 0x7A;
             t = (frame << 12) / 12;

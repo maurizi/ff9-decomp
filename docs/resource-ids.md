@@ -30,9 +30,18 @@ Rules used when replacing literals:
 - Not named yet: db kinds 0x00, 0x10 (encounter `unk20`), 0x18, 0x1E; FF9.IMG dir 9; dir 1 files whose loader says
   nothing about their content (disc-change pictures, attract images come from tables).
 
-## Lead: battle effect VRAM scratch area at (0x1C0, 0x180)
-Not named yet. The ff9-ds port reports (2026-10-31) that some battle effects (the clock in battle d3_b0037) copy part
-of the displayed framebuffer to VRAM (448, 384) = (0x1C0, 0x180) and draw it back as a texture. The same coordinates
-recur in effect modules' calls to btlfx_drawScrollMove and module-local copy helpers (fx_0b3, fx_0b8, fx_0e2, fx_0f5,
-fx_1f1, fx_1fd). Before naming it (e.g. VRAM_BTLFX_SCRATCH_X/Y in res_ids.h), check each helper's parameter order
-(source vs destination rectangle) and confirm the copy at runtime.
+## Battle effect screen-capture area: VRAM_BTLFX_SCRATCH_X/Y (0x1C0, 0x100)
+Named in round 31 from the code ([code]; the ff9-ds port report of 2026-10-31 was the lead). Effects that distort or
+recolour the screen copy a rect of the draw/display buffer around a screen point into VRAM at x 0x1C0 and draw it
+back as a 16-bit texture (getTPage at the rect's x, y):
+- fxm_drawRadialScreenGrid (fx_07d, fx_07e, fx_0cb, fx_0d3, fx_0df, fx_18b): `src` is the destination; the source
+  is drawEnv.clip + (x - w/2, y - h/2), copied with SetDrawMove(move, src, src.x, src.y). Slow (fx_07e) passes
+  (0x1C0, 0x180) 0x7A x 0x7A, fx_18b (0x1C0, 0x100) 0x100 x 0x100.
+- Stop (fx_095 op81) MoveImages a 0xC0 x 0xC0 capture to (0x1C0, 0x100), then StoreImage/recolours it.
+- fx_112 (fxm_captureScreen) MoveImages a 0x80 x 0xC0 rect of dispEnv to (0x1C0, 0x100).
+So the area is the 256 x 256 block from (0x1C0, 0x100); Slow's (0x1C0, 0x180) is written
+`VRAM_BTLFX_SCRATCH_Y + 0x80`.
+Not the same thing: the btlfx_drawScrollMove / fxm_drawScrollMoveX calls with (0x1C0, 0x100 or 0x180) in fx_0b3,
+fx_0b8, fx_0e2, fx_0f5, fx_1f1, fx_1fd scroll a texture strip in place (source x 0x1E0 or 0x1C0 + n, destination
+0x1C0, 32 or 64 wide, scroll offset mod h). They use the same VRAM for effect textures, not a framebuffer copy, so
+their literals stay. Runtime confirmation (which effect plays what) is listed in docs/wip/round31_runtime_fxmod.md.

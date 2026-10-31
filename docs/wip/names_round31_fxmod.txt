@@ -852,3 +852,6 @@ Hi_DrawSummonModel -> rotXX (202), posXX, scaleXX (81); members passed as the or
 BtlUnit9CC * members -> motionXX (41). SVECTOR members passed only to btlfx_getUnitRot / btlfx_setUnitRot -> rotXX (46);
 SVECTOR/VECTOR members filled by the unit position getters (btlfx_getUnitPos/HomePos/BodyPos/StrikePos/WeaponPos/
 BonePos/ArgBonePos, Hi_GetSummonBonePos) or given to btlfx_setUnitPos -> posXX (216).
+
+## Batch 6: screen capture helper
+fxm_captureScreen  <-  fx_112:func_801E7718

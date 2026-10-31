@@ -1,6 +1,6 @@
 #include "fxmod/fx_112.h"
 
-void func_801E7718(s32 x, s32 y, s32 w, s32 h, s32 dx, s32 dy) {
+static void fxm_captureScreen(s32 x, s32 y, s32 w, s32 h, s32 dx, s32 dy) {
     Unk800F78A4 *env = fx_112_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     RECT r;
@@ -49,7 +49,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_setUnitScale(0, (s32 *)&u.s0.scale0);
         }
         if (frame == 3) {
-            func_801E7718(0xA0, 0x8C, 0x80, 0xC0, 0x1C0, 0x100);
+            fxm_captureScreen(0xA0, 0x8C, 0x80, 0xC0, VRAM_BTLFX_SCRATCH_X, VRAM_BTLFX_SCRATCH_Y);
         }
         if (frame == 4) {
             ex->btlfx_fadeUnitById(0, 0);
