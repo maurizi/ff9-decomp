@@ -1,7 +1,8 @@
 #ifndef FX_1E7_H
 #define FX_1E7_H
 
-/* Effect module fx_1e7 (dir 13 file 0x1e7). */
+/* Effect module fx_1e7 (dir 13 file 0x1e7): enemy Wrong!!! (False/Ragtime Mouse/True). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

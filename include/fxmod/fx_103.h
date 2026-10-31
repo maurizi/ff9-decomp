@@ -1,7 +1,8 @@
 #ifndef FX_103_H
 #define FX_103_H
 
-/* Effect module fx_103 (dir 13 file 0x103). */
+/* Effect module fx_103 (dir 13 file 0x103): enemy Mist (Mistodon). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

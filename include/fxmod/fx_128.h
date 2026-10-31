@@ -1,7 +1,8 @@
 #ifndef FX_128_H
 #define FX_128_H
 
-/* Effect module fx_128 (dir 13 file 0x128). */
+/* Effect module fx_128 (dir 13 file 0x128): Dragon Breath. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 /* particle as the path callbacks see it */

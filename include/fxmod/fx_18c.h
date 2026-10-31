@@ -1,7 +1,8 @@
 #ifndef FX_18C_H
 #define FX_18C_H
 
-/* Effect module fx_18c (dir 13 file 0x18c). */
+/* Effect module fx_18c (dir 13 file 0x18c): enemy Light (Jabberwock). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

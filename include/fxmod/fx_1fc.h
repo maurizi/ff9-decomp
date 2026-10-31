@@ -1,7 +1,8 @@
 #ifndef FX_1FC_H
 #define FX_1FC_H
 
-/* Effect module fx_1fc (dir 13 file 0x1fc). */
+/* Effect module fx_1fc (dir 13 file 0x1fc): Fenrir (short). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

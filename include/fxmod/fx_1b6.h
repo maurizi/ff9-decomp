@@ -1,7 +1,8 @@
 #ifndef FX_1B6_H
 #define FX_1B6_H
 
-/* Effect module fx_1b6 (dir 13 file 0x1b6). */
+/* Effect module fx_1b6 (dir 13 file 0x1b6): enemy Death (Silver Dragon). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

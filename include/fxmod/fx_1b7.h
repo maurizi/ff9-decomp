@@ -1,7 +1,8 @@
 #ifndef FX_1B7_H
 #define FX_1B7_H
 
-/* Effect module fx_1b7 (dir 13 file 0x1b7). */
+/* Effect module fx_1b7 (dir 13 file 0x1b7): enemy Death (Nova Dragon). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

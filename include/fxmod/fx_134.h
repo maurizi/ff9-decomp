@@ -1,7 +1,8 @@
 #ifndef FX_134_H
 #define FX_134_H
 
-/* Effect module fx_134 (dir 13 file 0x134). */
+/* Effect module fx_134 (dir 13 file 0x134): Doomsday; enemy Doomsday (Hades, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

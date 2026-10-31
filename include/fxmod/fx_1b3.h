@@ -1,7 +1,8 @@
 #ifndef FX_1B3_H
 #define FX_1B3_H
 
-/* Effect module fx_1b3 (dir 13 file 0x1b3). */
+/* Effect module fx_1b3 (dir 13 file 0x1b3): enemy Death1 (Dummy/Necron). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

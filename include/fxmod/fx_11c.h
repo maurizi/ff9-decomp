@@ -1,7 +1,8 @@
 #ifndef FX_11C_H
 #define FX_11C_H
 
-/* Effect module fx_11c (dir 13 file 0x11C). */
+/* Effect module fx_11c (dir 13 file 0x11C): enemy High Wind (Abadon). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

@@ -1,7 +1,8 @@
 #ifndef FX_127_H
 #define FX_127_H
 
-/* Effect module fx_127 (dir 13 file 0x127). */
+/* Effect module fx_127 (dir 13 file 0x127): enemy Wave (Garland). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

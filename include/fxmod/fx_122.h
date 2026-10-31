@@ -1,7 +1,8 @@
 #ifndef FX_122_H
 #define FX_122_H
 
-/* Effect module fx_122 (dir 13 file 0x122). */
+/* Effect module fx_122 (dir 13 file 0x122): item Tent. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

@@ -1,7 +1,8 @@
 #ifndef FX_113_H
 #define FX_113_H
 
-/* Effect module fx_113 (dir 13 file 0x113). */
+/* Effect module fx_113 (dir 13 file 0x113): enemy Virus Combo (Mover). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

@@ -1,7 +1,8 @@
 #ifndef FX_10D_H
 #define FX_10D_H
 
-/* Effect module fx_10d (dir 13 file 0x10D). */
+/* Effect module fx_10d (dir 13 file 0x10D): Throw claws. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

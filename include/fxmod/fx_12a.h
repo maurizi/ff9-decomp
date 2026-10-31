@@ -1,7 +1,8 @@
 #ifndef FX_12A_H
 #define FX_12A_H
 
-/* Effect module fx_12a (dir 13 file 0x12A). */
+/* Effect module fx_12a (dir 13 file 0x12A): enemy Jet Fire (Tiamat). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

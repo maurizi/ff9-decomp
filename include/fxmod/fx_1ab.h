@@ -1,7 +1,8 @@
 #ifndef FX_1AB_H
 #define FX_1AB_H
 
-/* Effect module fx_1ab (dir 13 file 0x1ab). */
+/* Effect module fx_1ab (dir 13 file 0x1ab): enemy Waterga (Kraken, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

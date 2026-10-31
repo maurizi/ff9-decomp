@@ -1,7 +1,8 @@
 #ifndef FX_186_H
 #define FX_186_H
 
-/* Effect module fx_186 (dir 13 file 0x186). */
+/* Effect module fx_186 (dir 13 file 0x186): Earth Shake; enemy Earth Shake (Adamantoise, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

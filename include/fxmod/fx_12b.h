@@ -1,7 +1,8 @@
 #ifndef FX_12B_H
 #define FX_12B_H
 
-/* Effect module fx_12b (dir 13 file 0x12B). */
+/* Effect module fx_12b (dir 13 file 0x12B): enemy Photon (Ark). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

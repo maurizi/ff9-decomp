@@ -1,7 +1,8 @@
 #ifndef FX_1EB_H
 #define FX_1EB_H
 
-/* Effect module fx_1eb (dir 13 file 0x1eb). */
+/* Effect module fx_1eb (dir 13 file 0x1eb): Six Dragons. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

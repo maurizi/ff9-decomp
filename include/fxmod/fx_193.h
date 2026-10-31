@@ -1,7 +1,8 @@
 #ifndef FX_193_H
 #define FX_193_H
 
-/* Effect module fx_193 (dir 13 file 0x193). */
+/* Effect module fx_193 (dir 13 file 0x193): enemy Counter Horn (Antlion). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

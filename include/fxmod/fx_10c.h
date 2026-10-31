@@ -1,7 +1,8 @@
 #ifndef FX_10C_H
 #define FX_10C_H
 
-/* Effect module fx_10c (dir 13 file 0x10C). */
+/* Effect module fx_10c (dir 13 file 0x10C): Throw spear. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

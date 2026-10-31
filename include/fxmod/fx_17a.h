@@ -1,7 +1,8 @@
 #ifndef FX_17A_H
 #define FX_17A_H
 
-/* Effect module fx_17a (dir 13 file 0x17A). */
+/* Effect module fx_17a (dir 13 file 0x17A): Madeen (short). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

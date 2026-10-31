@@ -1,7 +1,8 @@
 #ifndef FX_11E_H
 #define FX_11E_H
 
-/* Effect module fx_11e (dir 13 file 0x11E). */
+/* Effect module fx_11e (dir 13 file 0x11E): enemy Virus Fly (Abadon). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);

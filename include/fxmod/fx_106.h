@@ -1,7 +1,8 @@
 #ifndef FX_106_H
 #define FX_106_H
 
-/* Effect module fx_106 (dir 13 file 0x106). */
+/* Effect module fx_106 (dir 13 file 0x106): enemy Mucus (Anemone). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

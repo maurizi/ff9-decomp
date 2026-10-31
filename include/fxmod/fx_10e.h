@@ -1,7 +1,8 @@
 #ifndef FX_10E_H
 #define FX_10E_H
 
-/* Effect module fx_10e (dir 13 file 0x10E). */
+/* Effect module fx_10e (dir 13 file 0x10E): Throw rod/flute/staff. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

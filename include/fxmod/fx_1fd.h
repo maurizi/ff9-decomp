@@ -1,7 +1,8 @@
 #ifndef FX_1FD_H
 #define FX_1FD_H
 
-/* Effect module fx_1fd (dir 13 file 0x1fd). */
+/* Effect module fx_1fd (dir 13 file 0x1fd): Fenrir (2nd) (short). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

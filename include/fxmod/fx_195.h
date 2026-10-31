@@ -1,7 +1,8 @@
 #ifndef FX_195_H
 #define FX_195_H
 
-/* Effect module fx_195 (dir 13 file 0x195). */
+/* Effect module fx_195 (dir 13 file 0x195): Bahamut (short); Mega Flare. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

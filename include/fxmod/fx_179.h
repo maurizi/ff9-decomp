@@ -1,7 +1,8 @@
 #ifndef FX_179_H
 #define FX_179_H
 
-/* Effect module fx_179 (dir 13 file 0x179). */
+/* Effect module fx_179 (dir 13 file 0x179): Medeo. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

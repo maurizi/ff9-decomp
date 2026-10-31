@@ -1,7 +1,8 @@
 #ifndef FX_180_H
 #define FX_180_H
 
-/* Effect module fx_180 (dir 13 file 0x180). */
+/* Effect module fx_180 (dir 13 file 0x180): enemy Ultima (Trance Kuja). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

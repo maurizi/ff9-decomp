@@ -1,7 +1,8 @@
 #ifndef FX_130_H
 #define FX_130_H
 
-/* Effect module fx_130 (dir 13 file 0x130). */
+/* Effect module fx_130 (dir 13 file 0x130): enemy Propeller Wind (Ark). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);

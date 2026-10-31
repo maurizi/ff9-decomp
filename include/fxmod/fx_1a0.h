@@ -1,7 +1,8 @@
 #ifndef FX_1A0_H
 #define FX_1A0_H
 
-/* Effect module fx_1a0 (dir 13 file 0x1a0). */
+/* Effect module fx_1a0 (dir 13 file 0x1a0): enemy Flame Slash (Maliris). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

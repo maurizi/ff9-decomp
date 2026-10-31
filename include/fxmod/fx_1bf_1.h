@@ -1,7 +1,8 @@
 #ifndef FX_1BF_1_H
 #define FX_1BF_1_H
 
-/* Effect module fx_1bf_1 (dir 13 file 0x1bf). */
+/* Effect module fx_1bf_1 (dir 13 file 0x1bf): Ark (short); Eternal Darkness (load group 1). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

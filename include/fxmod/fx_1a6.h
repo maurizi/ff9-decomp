@@ -1,7 +1,8 @@
 #ifndef FX_1A6_H
 #define FX_1A6_H
 
-/* Effect module fx_1a6 (dir 13 file 0x1a6). */
+/* Effect module fx_1a6 (dir 13 file 0x1a6): enemy Water-gun (Kraken, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

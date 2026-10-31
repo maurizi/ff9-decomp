@@ -1,7 +1,8 @@
 #ifndef FX_11F_H
 #define FX_11F_H
 
-/* Effect module fx_11f (dir 13 file 0x11F). */
+/* Effect module fx_11f (dir 13 file 0x11F): item Dark Matter. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

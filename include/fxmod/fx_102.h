@@ -1,7 +1,8 @@
 #ifndef FX_102_H
 #define FX_102_H
 
-/* Effect module fx_102 (dir 13 file 0x102). */
+/* Effect module fx_102 (dir 13 file 0x102): enemy Rise (Agares/Gargoyle). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

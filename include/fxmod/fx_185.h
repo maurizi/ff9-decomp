@@ -1,7 +1,8 @@
 #ifndef FX_185_H
 #define FX_185_H
 
-/* Effect module fx_185 (dir 13 file 0x185). */
+/* Effect module fx_185 (dir 13 file 0x185): Spear (2nd). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

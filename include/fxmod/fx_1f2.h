@@ -1,7 +1,8 @@
 #ifndef FX_1F2_H
 #define FX_1F2_H
 
-/* Effect module fx_1f2 (dir 13 file 0x1f2). */
+/* Effect module fx_1f2 (dir 13 file 0x1f2): enemy Grand Cross (Dummy/Necron). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 /* copied */

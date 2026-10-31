@@ -1,7 +1,8 @@
 #ifndef FX_11D_H
 #define FX_11D_H
 
-/* Effect module fx_11d (dir 13 file 0x11D). */
+/* Effect module fx_11d (dir 13 file 0x11D): enemy Absorb (Garnet/Prison Cage). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

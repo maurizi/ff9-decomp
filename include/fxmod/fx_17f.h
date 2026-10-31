@@ -1,7 +1,8 @@
 #ifndef FX_17F_H
 #define FX_17F_H
 
-/* Effect module fx_17f (dir 13 file 0x17f). */
+/* Effect module fx_17f (dir 13 file 0x17f): enemy Melt (Zombie). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

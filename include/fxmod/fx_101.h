@@ -1,7 +1,8 @@
 #ifndef FX_101_H
 #define FX_101_H
 
-/* Effect module fx_101 (dir 13 file 0x101). */
+/* Effect module fx_101 (dir 13 file 0x101): Trance transformation. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

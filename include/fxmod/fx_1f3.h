@@ -1,7 +1,8 @@
 #ifndef FX_1F3_H
 #define FX_1F3_H
 
-/* Effect module fx_1f3 (dir 13 file 0x1f3). */
+/* Effect module fx_1f3 (dir 13 file 0x1f3): enemy Neutron Ring (Dummy/Necron). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 /* copied */

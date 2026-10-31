@@ -1,7 +1,8 @@
 #ifndef FX_17E_H
 #define FX_17E_H
 
-/* Effect module fx_17e (dir 13 file 0x17e). */
+/* Effect module fx_17e (dir 13 file 0x17e): enemy Chestnut (Mandragora). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

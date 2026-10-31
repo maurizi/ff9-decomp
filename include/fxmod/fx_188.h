@@ -1,7 +1,8 @@
 #ifndef FX_188_H
 #define FX_188_H
 
-/* Effect module fx_188 (dir 13 file 0x188). */
+/* Effect module fx_188 (dir 13 file 0x188): LV3 Def-less. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

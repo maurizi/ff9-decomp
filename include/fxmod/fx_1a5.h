@@ -1,7 +1,8 @@
 #ifndef FX_1A5_H
 #define FX_1A5_H
 
-/* Effect module fx_1a5 (dir 13 file 0x1a5). */
+/* Effect module fx_1a5 (dir 13 file 0x1a5): Revive (Elan). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

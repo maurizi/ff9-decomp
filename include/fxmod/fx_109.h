@@ -1,7 +1,8 @@
 #ifndef FX_109_H
 #define FX_109_H
 
-/* Effect module fx_109 (dir 13 file 0x109). */
+/* Effect module fx_109 (dir 13 file 0x109): Throw racket. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

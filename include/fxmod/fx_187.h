@@ -1,7 +1,8 @@
 #ifndef FX_187_H
 #define FX_187_H
 
-/* Effect module fx_187 (dir 13 file 0x187). */
+/* Effect module fx_187 (dir 13 file 0x187): enemy Fire Blades (Soulcage). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

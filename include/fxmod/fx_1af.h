@@ -1,7 +1,8 @@
 #ifndef FX_1AF_H
 #define FX_1AF_H
 
-/* Effect module fx_1af (dir 13 file 0x1af). */
+/* Effect module fx_1af (dir 13 file 0x1af): enemy Death (Valia Pira). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

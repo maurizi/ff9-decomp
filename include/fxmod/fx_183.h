@@ -1,7 +1,8 @@
 #ifndef FX_183_H
 #define FX_183_H
 
-/* Effect module fx_183 (dir 13 file 0x183). */
+/* Effect module fx_183 (dir 13 file 0x183): Cherry Blossom. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

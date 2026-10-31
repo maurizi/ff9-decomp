@@ -1,7 +1,8 @@
 #ifndef FX_12C_H
 #define FX_12C_H
 
-/* Effect module fx_12c (dir 13 file 0x12C). */
+/* Effect module fx_12c (dir 13 file 0x12C): enemy Earthquake, Power of the Land (Catoblepas, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

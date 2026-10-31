@@ -1,7 +1,8 @@
 #ifndef FX_10B_H
 #define FX_10B_H
 
-/* Effect module fx_10b (dir 13 file 0x10B). */
+/* Effect module fx_10b (dir 13 file 0x10B): Throw sword. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

@@ -1,7 +1,8 @@
 #ifndef FX_1EE_H
 #define FX_1EE_H
 
-/* Effect module fx_1ee (dir 13 file 0x1ee). */
+/* Effect module fx_1ee (dir 13 file 0x1ee): Carbuncle (2). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

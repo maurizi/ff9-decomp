@@ -1,7 +1,8 @@
 #ifndef FX_10F_H
 #define FX_10F_H
 
-/* Effect module fx_10f (dir 13 file 0x10F). */
+/* Effect module fx_10f (dir 13 file 0x10F): Throw fork. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

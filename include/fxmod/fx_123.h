@@ -1,7 +1,8 @@
 #ifndef FX_123_H
 #define FX_123_H
 
-/* Effect module fx_123 (dir 13 file 0x123). */
+/* Effect module fx_123 (dir 13 file 0x123): enemy Raining Swords (Maliris). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

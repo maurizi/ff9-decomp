@@ -1,7 +1,8 @@
 #ifndef FX_1EA_H
 #define FX_1EA_H
 
-/* Effect module fx_1ea (dir 13 file 0x1ea). */
+/* Effect module fx_1ea (dir 13 file 0x1ea): Dragon's Crest. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

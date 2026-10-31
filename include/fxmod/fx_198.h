@@ -1,7 +1,8 @@
 #ifndef FX_198_H
 #define FX_198_H
 
-/* Effect module fx_198 (dir 13 file 0x198). */
+/* Effect module fx_198 (dir 13 file 0x198): enemy Tsunami (Black Waltz 1/Sealion). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

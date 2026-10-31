@@ -1,7 +1,8 @@
 #ifndef FX_19E_H
 #define FX_19E_H
 
-/* Effect module fx_19e (dir 13 file 0x19e). */
+/* Effect module fx_19e (dir 13 file 0x19e): Stock Break (Seiken). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

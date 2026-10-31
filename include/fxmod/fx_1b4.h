@@ -1,7 +1,8 @@
 #ifndef FX_1B4_H
 #define FX_1B4_H
 
-/* Effect module fx_1b4 (dir 13 file 0x1b4). */
+/* Effect module fx_1b4 (dir 13 file 0x1b4): enemy Flare Star (Kuja/Trance Kuja, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

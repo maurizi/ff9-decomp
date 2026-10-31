@@ -1,7 +1,8 @@
 #ifndef FX_12D_H
 #define FX_12D_H
 
-/* Effect module fx_12d (dir 13 file 0x12D). */
+/* Effect module fx_12d (dir 13 file 0x12D): enemy Death (Antlion). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

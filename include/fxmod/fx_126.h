@@ -1,7 +1,8 @@
 #ifndef FX_126_H
 #define FX_126_H
 
-/* Effect module fx_126 (dir 13 file 0x126). */
+/* Effect module fx_126 (dir 13 file 0x126): enemy Boomerang (Ark). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

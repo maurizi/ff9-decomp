@@ -1,7 +1,8 @@
 #ifndef FX_1B2_H
 #define FX_1B2_H
 
-/* Effect module fx_1b2 (dir 13 file 0x1b2). */
+/* Effect module fx_1b2 (dir 13 file 0x1b2): enemy Tidal Wave (Nova Dragon). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

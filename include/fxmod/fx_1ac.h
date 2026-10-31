@@ -1,7 +1,8 @@
 #ifndef FX_1AC_H
 #define FX_1AC_H
 
-/* Effect module fx_1ac (dir 13 file 0x1ac). */
+/* Effect module fx_1ac (dir 13 file 0x1ac): enemy Virus Crunch (Chimera). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

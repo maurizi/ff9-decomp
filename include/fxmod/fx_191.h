@@ -1,7 +1,8 @@
 #ifndef FX_191_H
 #define FX_191_H
 
-/* Effect module fx_191 (dir 13 file 0x191). */
+/* Effect module fx_191 (dir 13 file 0x191): Lancer. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

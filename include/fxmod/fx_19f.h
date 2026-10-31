@@ -1,7 +1,8 @@
 #ifndef FX_19F_H
 #define FX_19F_H
 
-/* Effect module fx_19f (dir 13 file 0x19f). */
+/* Effect module fx_19f (dir 13 file 0x19f): Judgement Bolt; Ramuh (short). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

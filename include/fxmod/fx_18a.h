@@ -1,7 +1,8 @@
 #ifndef FX_18A_H
 #define FX_18A_H
 
-/* Effect module fx_18a (dir 13 file 0x18a). */
+/* Effect module fx_18a (dir 13 file 0x18a): enemy Transform (Kuja/Trance Kuja). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

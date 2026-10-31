@@ -1,7 +1,8 @@
 #ifndef FX_1A4_H
 #define FX_1A4_H
 
-/* Effect module fx_1a4 (dir 13 file 0x1a4). */
+/* Effect module fx_1a4 (dir 13 file 0x1a4): enemy Death0 (Deathguise). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

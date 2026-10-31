@@ -1,7 +1,8 @@
 #ifndef FX_1E9_H
 #define FX_1E9_H
 
-/* Effect module fx_1e9 (dir 13 file 0x1e9). */
+/* Effect module fx_1e9 (dir 13 file 0x1e9): Trance command (not in Trance). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
