@@ -3273,3 +3273,35 @@ says "code" or "static" and gives the evidence.
 - proposed: `EVT_OP_CALL_CALLER 0x16`, `EVT_OP_CALL_CALLER_WAIT_FREE 0x18`, `EVT_OP_CALL_CALLER_SYNC 0x1A`;
   `MENU_TYPE_MAIN 0 / NAME 1 / SHOP 2 / PARTY 3 / SAVE 4 / CHOCOGRAPH 5 / DISC 8` for `menu_open`'s first argument.
 - confidence: high for the call semantics and MENU encoding (C plus runtime); the 0x16-0x1A ops were not run.
+
+## R32d 3DS requests: Tetra Master phases, cursors, board and panels (status: proposed; answers in docs/r32/3ds-requests-4.md)
+- binary: ovl_0d (tm_mainLoop and its task handlers), main (`g_cards`, `card_*`, `evt_setCardOpponent`), ovl_36 (Card screen)
+- entry recipe: no save reaches a card game, so `build/3ds4/enter_tm.py OPP FRAMES` (scratch) forces one from a paused
+  field: field cleanup to main's dispatcher 0x80012834 (as `tools/rt/enter_battle.py`), then `GameData+0x8B2`
+  (cardOpponent) = OPP and `GameState.mode` = 9. From `field_dali_inn` (disc 1) with OPP 12 the "Card Selection" screen
+  comes up and the game later returns to the Dali inn (mode 1, prevMode 9). The real trigger is op `AE 00 lo hi` in an
+  NPC's Square function (tag 8); disc 1 has 41 of them, opponent ids 0-34 (`build/3ds4/cardscan.py`, scratch).
+- `TmState` (tm_mainLoop local) is at 0x801FF9E0: `trace tm_stockInput tm_drawStock --frames 2` gave a0/a2 =
+  0x801FF9E0, and `unk5C8` there is {50, 30, 200, 100} (tm_mainLoop's constants). Same in every task and in the second
+  game. Offsets of include/ovl_0d.h TmState agree with every field read (cursor, boardX/Y, stockRow 0x478, getCursor
+  0x5B0, targets 0x48C, numTargets 0x4AC, autoPlay 0x438, board 0x268).
+- cursor writes followed by one Cross: stockRow=3 → card id 3 picked; cursor=4 → PLAYER_SET with card 4; boardX/Y=1/0 →
+  card placed at (1,0); BATTLE_SELECT (numTargets 2, targets = cards 6 and 5) boardX/Y=0/1 → BATTLE dst (0,1);
+  getCursor=1 → second captured card traded ("Received Lizard Man"); cursor=1 in TRY_AGAIN → END_FADE.
+- task sequence seen: 18 CHOICE → 19 → 21 FIELD_FADE → 33 ENEMY_APPEAR → 28 COIN → 30/8 → 0 PLAYER_SELECT → 1 → 7/5/6 …
+  → 3 RESULT → 14 CARD_MOVE → 34 GET_SELECT → 15 → 13 → 16 TRADE → 17 → 22 AWAY_INFO (stock 101) → 23 → 24 → 11
+  TRY_AGAIN → 27 END_FADE.
+- GET SELECT runs after a win with 2+ (not all) enemy cards captured (here 2), not only after a perfect game: the
+  `tm_taskGetSelect` symbol comment ("after a perfect win") should be corrected (C: tm_taskCardMove's
+  `countOwned != 10 && countCaptured != 1`).
+- card pictures: VRAM dump during the match rendered with x = (id/30)*128 + (id%30%6)*21 halfwords, y = 0x100 +
+  (id%30/6)*51, 8-bit, CLUT (0x180, 0x19C+id) gave correct faces for ids 0, 1, 3, 5, 31, 99 (`build/3ds4/cardimg.py`).
+- data read: `g_tmArrowSprites` (8 x {x, y, smallX, smallY, u, v}), `g_tmOpponents` starts {0,0},{0,1},{0,2},{0,3},{1,0}…
+  (opponent 12 → deck 3, AI 0 = TmState.deck/aiLevel), `g_tmSeIds` = 1860, 1853, 1854, 1855, 1856, 1857, 1858, 1859,
+  1852, 1861, 1862, 1863, 1864, 2331, 2332, 2333.
+- states (disc 1): `3ds4_tm_card_select`, `3ds4_tm_confirm`, `3ds4_tm_player_select`, `3ds4_tm_turn2`,
+  `3ds4_tm_battle_select` (board poked), `3ds4_tm_result_lose`, `3ds4_tm_result_win` (cards poked), `3ds4_tm_get_select`,
+  `3ds4_tm_over100`, `3ds4_tm_rematch`.
+- proposed: fix the `tm_taskGetSelect` comment; `TM_SEL_YES 0` / `TM_SEL_NO 1`; note the TmState runtime address
+  0x801FF9E0 in include/ovl_0d.h's TmState comment.
+- confidence: high (C plus runtime for every cursor and confirm path listed; GAME_QUIT, EXTENSION and CARD_LESS5 were not run).
