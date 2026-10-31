@@ -2182,9 +2182,9 @@ void btl_preloadExit(void) {
     g_gameState->gameData->preloadRequest = NULL;
     f = file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE_END));
     size = (f->unkC - f->sector) << 11;
-    preload_setEntry(preload_add(), 0, OVL_KEY(OVL_BATTLE_END), (s32)RAM_SUB_OVL(u8 *), size, size, f->sector, size);
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, OVL_KEY(OVL_BATTLE_END), (s32)RAM_SUB_OVL(u8 *), size, size, f->sector, size);
     f = file_find(DIR_COMMON, FILE_BTL_END_DB);
     dst = b->loadBuf;
     size = (f->unkC - f->sector) << 11;
-    preload_setEntry(preload_add(), 0, FILE_BTL_END_DB, (s32)dst, size, size, f->sector, size);
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, FILE_BTL_END_DB, (s32)dst, size, size, f->sector, size);
 }

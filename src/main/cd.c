@@ -7,7 +7,7 @@ void cd_startRequest(CdRequest *r) {
     g_cdLoad.hasQueued = 0;
     g_cdLoad.error = 0;
     g_cdLoad.cur = *r;
-    g_cdLoad.state = 1;
+    g_cdLoad.state = CD_SETLOC;
     n = (u32)(r->size + 0x7FF) >> 11;
     g_cdLoad.chunkIndex = 0;
     g_cdLoad.chunkOfs = 0;
@@ -15,15 +15,15 @@ void cd_startRequest(CdRequest *r) {
     g_cdLoad.sectorsLeft = n;
     CdReadyCallback(NULL);
     CdSyncCallback(r->syncCallback);
-    if (r->flags & 1) {
-        g_cdLoad.state = 1;
+    if (r->flags & CDREQ_SEEK) {
+        g_cdLoad.state = CD_SETLOC;
         CdIntToPos(r->sector, &g_cdLoad.pos);
         cd_controlF(CdlSetloc, (u8 *)&g_cdLoad.pos);
-    } else if (st != 4) {
-        g_cdLoad.state = 4;
+    } else if (st != CD_PAUSING) {
+        g_cdLoad.state = CD_PAUSING;
         cd_controlF(CdlPause, NULL);
     } else {
-        g_cdLoad.state = 0;
+        g_cdLoad.state = CD_IDLE;
         if (g_cdLoad.cur.doneCallback != NULL) {
             g_cdLoad.cur.doneCallback(&g_cdLoad);
         }
@@ -57,7 +57,7 @@ void cd_onDataReady(u8 intr, u8 *result) {
             cd_onSectorReady();
             if (g_cdLoad.sectorsLeft == 0 || g_cdLoad.hasQueued != 0) {
                 CdReadyCallback(0);
-                g_cdLoad.state = 4;
+                g_cdLoad.state = CD_PAUSING;
                 cd_controlF(CdlPause, 0);
             }
         }
@@ -66,7 +66,7 @@ void cd_onDataReady(u8 intr, u8 *result) {
     }
     if (err != 0) {
         CdReadyCallback(0);
-        g_cdLoad.state = 4;
+        g_cdLoad.state = CD_PAUSING;
         g_cdLoad.error = 1;
         g_cdLoad.errorCount++;
         cd_controlF(CdlPause, 0);
@@ -145,7 +145,7 @@ s32 cd_cancel(void) {
         CdSyncCallback(0);
         g_cdLoad.hasQueued = 0;
         g_cdLoad.error = 0;
-        g_cdLoad.state = 0;
+        g_cdLoad.state = CD_IDLE;
         while (CdControlB(CdlPause, NULL, buf) == 0) {
         }
     }
@@ -156,7 +156,7 @@ void cd_abort(void) {
     CdFlush();
     CdSyncCallback(0);
     CdReadyCallback(NULL);
-    g_cdLoad.state = 0;
+    g_cdLoad.state = CD_IDLE;
 }
 
 void cd_stopMotor(void) {
@@ -167,7 +167,7 @@ void cd_stopMotor(void) {
 
 u8 cd_seekAsync(s32 a, void (*b)(u8 *)) {
     CdRequest r;
-    r.flags = 1;
+    r.flags = CDREQ_SEEK;
     r.syncCallback = cd_onSync;
     r.sector = a;
     r.size = 0;
@@ -178,7 +178,7 @@ u8 cd_seekAsync(s32 a, void (*b)(u8 *)) {
 }
 
 u8 cd_readAsync(s32 a, s32 b, void *c, void (*d)(u8 *)) {
-    g_cdReadRequest.flags = 3;
+    g_cdReadRequest.flags = CDREQ_SEEK | CDREQ_READ;
     g_cdReadRequest.chunks = (CdChunk *)-1;
     g_cdReadRequest.syncCallback = cd_onSync;
     g_cdReadRequest.sector = a;
@@ -198,7 +198,7 @@ u8 cd_readChunks(s32 sector, CdChunk *chunks, s32 n, void (*cb)(u8 *)) {
     for (i = 0; i < n; i++) {
         total += chunks[i].size;
     }
-    r.flags = 3;
+    r.flags = CDREQ_SEEK | CDREQ_READ;
     r.syncCallback = cd_onSync;
     r.sector = sector;
     r.size = total;
@@ -210,7 +210,7 @@ u8 cd_readChunks(s32 sector, CdChunk *chunks, s32 n, void (*cb)(u8 *)) {
 
 u8 cd_syncAsync(void (*a)(u8 *)) {
     CdRequest r;
-    r.flags = 4;
+    r.flags = CDREQ_PAUSE;
     r.doneCallback = a;
     r.sector = 0;
     r.size = 0;
@@ -222,7 +222,7 @@ u8 cd_syncAsync(void (*a)(u8 *)) {
 
 s32 cd_seekSync(s32 a) {
     CdRequest r;
-    r.flags = 1;
+    r.flags = CDREQ_SEEK;
     r.syncCallback = cd_onSync;
     r.sector = a;
     r.size = 0;
@@ -238,7 +238,7 @@ s32 cd_seekSync(s32 a) {
 }
 
 s32 cd_readSync(s32 a, s32 b, void *c) {
-    g_cdReadRequest.flags = 3;
+    g_cdReadRequest.flags = CDREQ_SEEK | CDREQ_READ;
     g_cdReadRequest.chunks = (CdChunk *)-1;
     g_cdReadRequest.syncCallback = cd_onSync;
     g_cdReadRequest.sector = a;
@@ -257,7 +257,7 @@ s32 cd_readSync(s32 a, s32 b, void *c) {
 
 s32 cd_sync(void) {
     CdRequest r;
-    r.flags = 4;
+    r.flags = CDREQ_PAUSE;
     r.sector = 0;
     r.size = 0;
     r.chunks = NULL;
@@ -274,7 +274,7 @@ s32 cd_sync(void) {
 
 u8 cd_seekStreamAsync(s32 a) {
     CdRequest r;
-    r.flags = 9;
+    r.flags = CDREQ_SEEK | CDREQ_STREAM;
     r.sector = a;
     r.size = 0;
     r.chunks = NULL;
@@ -286,7 +286,7 @@ u8 cd_seekStreamAsync(s32 a) {
 
 u8 cd_readStreamAsync(s32 a, void (*b)()) {
     CdRequest r;
-    r.flags = 0xB;
+    r.flags = CDREQ_SEEK | CDREQ_READ | CDREQ_STREAM;
     r.sector = a;
     r.size = 0;
     r.chunks = NULL;
@@ -297,10 +297,10 @@ u8 cd_readStreamAsync(s32 a, void (*b)()) {
 }
 
 s32 cd_restartAt(s32 a) {
-    if (g_cdLoad.state != 5) {
+    if (g_cdLoad.state != CD_RESTART) {
         CdReadyCallback(NULL);
         g_cdLoad.cur.sector = a;
-        g_cdLoad.state = 5;
+        g_cdLoad.state = CD_RESTART;
         cd_controlF(CdlPause, NULL);
     }
     return 1;
@@ -308,7 +308,7 @@ s32 cd_restartAt(s32 a) {
 
 u8 cd_pauseAsync(void (*a)(u8 *)) {
     CdRequest r;
-    r.flags = 4;
+    r.flags = CDREQ_PAUSE;
     r.doneCallback = a;
     r.sector = 0;
     r.size = 0;
@@ -319,13 +319,13 @@ u8 cd_pauseAsync(void (*a)(u8 *)) {
 }
 
 s32 cd_pause(void) {
-    if (g_cdLoad.state == 0) {
+    if (g_cdLoad.state == CD_IDLE) {
         return 1;
     }
     g_cdLoad.hasQueued = 0;
     g_cdLoad.error = 0;
     CdReadyCallback(NULL);
-    g_cdLoad.state = 4;
+    g_cdLoad.state = CD_PAUSING;
     cd_controlF(CdlPause, NULL);
     return 1;
 }
@@ -342,8 +342,8 @@ s32 cd_isShellOpen(void) {
 u8 cd_submit(CdRequest *r) {
     volatile s32 st = g_cdLoad.state;
     g_cdLoad.errorCount = 0;
-    if (st == 0) {
-        if (!(r->flags & 4)) {
+    if (st == CD_IDLE) {
+        if (!(r->flags & CDREQ_PAUSE)) {
             goto run;
         }
         if (r->doneCallback != NULL) {
@@ -354,7 +354,7 @@ u8 cd_submit(CdRequest *r) {
     if (g_cdLoad.hasQueued == 0) {
         g_cdLoad.queued = *r;
         g_cdLoad.hasQueued = 1;
-        if (g_cdLoad.state == 0) {
+        if (g_cdLoad.state == CD_IDLE) {
         run:
             cd_startRequest(r);
         }
@@ -387,21 +387,21 @@ void cd_onSync(u8 com, u8 *param) {
 
 void cd_onSyncQueued(u8 arg0) {
     if (arg0 == CdlDiskError || arg0 == CdlComplete) {
-        if (g_cdLoad.state != 3) {
+        if (g_cdLoad.state != CD_READING) {
             if (g_cdLoad.cur.doneCallback != NULL) {
                 g_cdLoad.cur.doneCallback(&g_cdLoad);
             }
             cd_startRequest(&g_cdLoad.queued);
-        } else if (!(g_cdLoad.cur.flags & 8)) {
+        } else if (!(g_cdLoad.cur.flags & CDREQ_STREAM)) {
             CdReadyCallback(NULL);
-            g_cdLoad.state = 4;
+            g_cdLoad.state = CD_PAUSING;
             cd_controlF(CdlPause, 0);
         }
     }
 }
 
 void cd_onDiskError(s32 unused) {
-    if (g_cdLoad.state != 3 || !(g_cdLoad.cur.flags & 8)) {
+    if (g_cdLoad.state != CD_READING || !(g_cdLoad.cur.flags & CDREQ_STREAM)) {
         g_cdLoad.error = 1;
         g_cdLoad.errorCount++;
         CdReadyCallback(NULL);
@@ -416,7 +416,7 @@ void cd_onSetloc(u8 a) {
 
     k = CdlModeSpeed | CdlModeSize1;
     if (CdMode() != k) {
-        st = 2;
+        st = CD_SETMODE;
         buf[0] = k;
         k = CdlSetmode;
         g_cdLoad.state = st;
@@ -429,10 +429,10 @@ void cd_onSetloc(u8 a) {
 s32 cd_startTransfer() {
     s32 arg;
 
-    if (g_cdLoad.cur.flags & 2) {
+    if (g_cdLoad.cur.flags & CDREQ_READ) {
         g_cdLoad.lastSector = 0;
-        g_cdLoad.state = 3;
-        if (g_cdLoad.cur.flags & 8) {
+        g_cdLoad.state = CD_READING;
+        if (g_cdLoad.cur.flags & CDREQ_STREAM) {
             CdReadyCallback((void (*)())cd_onStreamReady);
             arg = CdlReadS;
         } else {
@@ -440,9 +440,9 @@ s32 cd_startTransfer() {
             arg = CdlReadN;
         }
     } else {
-        g_cdLoad.state = 4;
+        g_cdLoad.state = CD_PAUSING;
         arg = CdlSeekL;
-        if (g_cdLoad.cur.flags & 8) {
+        if (g_cdLoad.cur.flags & CDREQ_STREAM) {
             arg = CdlSeekP;
         }
     }
@@ -453,7 +453,7 @@ void cd_onPaused(void) {
     CdReadyCallback(NULL);
     CdSyncCallback(0);
     if (g_cdLoad.error == 0) {
-        g_cdLoad.state = 0;
+        g_cdLoad.state = CD_IDLE;
         if (g_cdLoad.cur.doneCallback != NULL) {
             g_cdLoad.cur.doneCallback(&g_cdLoad);
         }
@@ -478,7 +478,7 @@ void cd_onStreamReady(u8 com, u8 *param) {
     }
     if (g_cdLoad.hasQueued != 0) {
         CdReadyCallback(NULL);
-        g_cdLoad.state = 4;
+        g_cdLoad.state = CD_PAUSING;
         cd_controlF(CdlPause, 0);
     } else {
         g_cdLoad.cur.readyCallback(com, param);

@@ -26,7 +26,7 @@ void preload_setVramRect(PreloadEntry *a, s16 b, s16 c, s16 d, s16 e) {
     a->vramX = b;
     a->vramY = c;
     a->vramW = d;
-    a->flags |= 0x20;
+    a->flags |= PRELOAD_IN_VRAM;
     a->vramH = e;
 }
 
@@ -39,19 +39,19 @@ s32 preload_isUsed(PreloadEntry *a) {
 }
 
 s32 preload_isBusy(PreloadEntry *a) {
-    return a->flags & 1;
+    return a->flags & PRELOAD_BUSY;
 }
 
 s32 preload_isDone(PreloadEntry *p) {
     u16 f;
-    if (p->kind == 0) {
+    if (p->kind == PRELOAD_KIND_READ) {
         return preload_isLoaded(p);
     }
-    if (p->kind != 1) {
+    if (p->kind != PRELOAD_KIND_SEEK) {
         return 0;
     }
     f = p->flags;
-    if ((f & 0x82) && !(f & 1)) {
+    if ((f & (PRELOAD_READ_OK | PRELOAD_READ_FAILED)) && !(f & PRELOAD_BUSY)) {
         return 1;
     }
     return 0;
@@ -59,7 +59,7 @@ s32 preload_isDone(PreloadEntry *p) {
 
 s32 preload_isLoaded(PreloadEntry *p) {
     u16 f = p->flags;
-    if ((f & 0x82) && !(f & 1) && p->kind == 0 && !(f & 0x20) && p->dest != 0) {
+    if ((f & (PRELOAD_READ_OK | PRELOAD_READ_FAILED)) && !(f & PRELOAD_BUSY) && p->kind == PRELOAD_KIND_READ && !(f & PRELOAD_IN_VRAM) && p->dest != 0) {
         return 1;
     }
     return 0;
@@ -67,8 +67,8 @@ s32 preload_isLoaded(PreloadEntry *p) {
 
 s32 preload_isInVram(PreloadEntry *p) {
     u16 f = p->flags;
-    if ((f & 0x82) && !(f & 1)) {
-        if ((f & 0x20) && p->vramW != 0 && p->vramH != 0) {
+    if ((f & (PRELOAD_READ_OK | PRELOAD_READ_FAILED)) && !(f & PRELOAD_BUSY)) {
+        if ((f & PRELOAD_IN_VRAM) && p->vramW != 0 && p->vramH != 0) {
             return 1;
         }
     }
@@ -105,7 +105,7 @@ PreloadEntry *preload_makeChunk(PreloadEntry *dst, PreloadEntry *src) {
 
 s32 preload_wait(PreloadEntry *e) {
     s32 r = 0;
-    if (e->flags & 1) {
+    if (e->flags & PRELOAD_BUSY) {
         while (cd_syncAsync(NULL) == 0) {
         }
         r = 1;
@@ -118,7 +118,7 @@ void preload_init() {
     PreloadQueue *p;
 
     p = g_gameState->gameData->preloadQueue;
-    p->state = 4;
+    p->state = PRELOAD_Q_NEXT_ENTRY;
     p->unk0 = 0;
     p->count = 0;
     p->cur = -1;
@@ -152,7 +152,7 @@ PreloadEntry *preload_next(void) {
         p->cur++;
         e = &p->entries[p->cur];
         if (e->fileId != -1) {
-            e->flags |= 0x40;
+            e->flags |= PRELOAD_STARTED;
             return e;
         }
     }
@@ -190,9 +190,9 @@ s32 preload_startRead(void) {
         if (!preload_isUsed(p)) {
             return -1;
         }
-        if (p->kind == 0) {
+        if (p->kind == PRELOAD_KIND_READ) {
             r = cd_readAsync(g_gameState->imgSector + e->sector, e->readSize, (void *)e->dest, preload_onReadDone);
-        } else if (p->kind == 1) {
+        } else if (p->kind == PRELOAD_KIND_SEEK) {
             r = cd_seekAsync(g_gameState->imgSector + e->sector, preload_onReadDone);
         } else {
             goto done;
@@ -201,7 +201,7 @@ s32 preload_startRead(void) {
             return -1;
         }
     done:
-        p->flags |= 1;
+        p->flags |= PRELOAD_BUSY;
         ret = 0;
     } while (0);
     return ret;
@@ -217,11 +217,11 @@ s32 preload_poll(void) {
     if (preload_isUsed(p) == 0) {
         return -1;
     }
-    if (p->flags & 1) {
-        if (p->flags & 0x80) {
+    if (p->flags & PRELOAD_BUSY) {
+        if (p->flags & PRELOAD_READ_FAILED) {
             return -1;
         }
-        t = p->flags & 2;
+        t = p->flags & PRELOAD_READ_OK;
         return t == 0;
     }
     return 0;
@@ -236,7 +236,7 @@ void preload_finishRead(void) {
 void preload_clearBusy(void) {
     PreloadEntry *e = preload_getCurrent();
     if (e != NULL) {
-        e->flags &= 0xFF7E;
+        e->flags &= (u16)~(PRELOAD_BUSY | PRELOAD_READ_FAILED);
     }
 }
 
@@ -285,7 +285,7 @@ s32 preload_overlaps(u32 addr, s32 size) {
     end = addr + size;
     for (i = c->count - 1; i >= 0; i--) {
         e = &c->entries[i];
-        if (e->fileId != -1 && e->kind == 0) {
+        if (e->fileId != -1 && e->kind == PRELOAD_KIND_READ) {
             if (e->readSize < e->bufSize) {
                 n = e->readSize;
             } else {
@@ -308,7 +308,7 @@ s32 preload_discardRange(u32 addr, s32 size) {
 
     for (i = q->count - 1; i >= 0; i--) {
         e = &q->entries[i];
-        if (e->fileId != -1 && (*(u32 *)&e->flags & 0x60) == 0x40 && e->dest != 0 && e->loaded != 0 &&
+        if (e->fileId != -1 && (*(u32 *)&e->flags & (PRELOAD_IN_VRAM | PRELOAD_STARTED)) == PRELOAD_STARTED && e->dest != 0 && e->loaded != 0 &&
             e->dest < end && addr < e->dest + e->loaded) {
             if (preload_wait(e)) {
                 ret = 1;
@@ -335,7 +335,7 @@ void preload_reset(void) {
         preload_wait(&p->entries[i]);
         preload_clearEntry(&p->entries[i]);
     }
-    p->state = 4;
+    p->state = PRELOAD_Q_NEXT_ENTRY;
     p->count = 0;
     p->cur = -1;
 }
@@ -349,43 +349,43 @@ s32 preload_update(void) {
     }
     for (;;) {
         switch (t->state) {
-        case 4:
+        case PRELOAD_Q_NEXT_ENTRY:
             if (preload_next() != NULL) {
-                t->state = 5;
+                t->state = PRELOAD_Q_NEXT_CHUNK;
             } else {
-                t->state = 0;
+                t->state = PRELOAD_Q_IDLE;
             }
             break;
-        case 5:
+        case PRELOAD_Q_NEXT_CHUNK:
             e = preload_getCurrent();
             if (preload_isUsed(e) == 0 || preload_isDone(e) != 0) {
-                t->state = 4;
+                t->state = PRELOAD_Q_NEXT_ENTRY;
                 break;
             }
             preload_makeChunk(&t->entries[6], e);
-            t->state = 8;
+            t->state = PRELOAD_Q_WAIT_CD;
             break;
-        case 8:
+        case PRELOAD_Q_WAIT_CD:
             if (cd_getState() != 0) {
                 return 0;
             }
-            t->state = 9;
+            t->state = PRELOAD_Q_START_READ;
             return 0;
-        case 9:
+        case PRELOAD_Q_START_READ:
             if (preload_startRead() == -1) {
-                t->state = 5;
+                t->state = PRELOAD_Q_NEXT_CHUNK;
                 return 0;
             }
-            t->state = 10;
+            t->state = PRELOAD_Q_READING;
             return 0;
-        case 10:
+        case PRELOAD_Q_READING:
             if (preload_poll() > 0) {
                 return 0;
             }
             preload_clearBusy();
-            t->state = 5;
+            t->state = PRELOAD_Q_NEXT_CHUNK;
             return 0;
-        case 0:
+        case PRELOAD_Q_IDLE:
         default:
             return 0;
         }
@@ -401,12 +401,12 @@ void preload_onReadDone(u8 *arg0) {
         if (e != NULL) {
             if (preload_isUsed(e) && *arg0 == 0) {
                 PreloadEntry *x = &p->entries[6];
-                if (e->kind == 0) {
+                if (e->kind == PRELOAD_KIND_READ) {
                     e->loaded += x->readSize;
                 }
-                e->flags |= 2;
+                e->flags |= PRELOAD_READ_OK;
             } else {
-                e->flags |= 0x80;
+                e->flags |= PRELOAD_READ_FAILED;
             }
         }
     }

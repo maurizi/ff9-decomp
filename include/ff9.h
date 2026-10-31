@@ -42,8 +42,8 @@
 /* ---- game state (g_gameState) ---- */
 
 typedef struct {
-    u16 flags; /* flags: 1 reading, 2 read done, 0x20 kept in VRAM (vramX-h), 0x40 started (preload_next), 0x80 read failed */
-    u16 kind; /* 0 read into dest, 1 seek only (preload_startRead) */
+    u16 flags; /* PRELOAD_* */
+    u16 kind; /* PRELOAD_KIND_* */
     s32 fileId; /* id, -1 = none */
     u32 dest; /* RAM address the file is read to */
     s32 loaded; /* bytes read so far */
@@ -56,6 +56,23 @@ typedef struct {
     s16 vramW;
     s16 vramH;
 } PreloadEntry; /* element passed to preload_clearEntry */
+
+/* PreloadEntry.flags */
+#define PRELOAD_BUSY 0x1 /* a read or seek was issued (preload_startRead); preload_clearBusy clears it */
+#define PRELOAD_READ_OK 0x2 /* a read completed (preload_onReadDone) */
+#define PRELOAD_IN_VRAM 0x20 /* the data was moved to the VRAM rect (preload_setVramRect) */
+#define PRELOAD_STARTED 0x40 /* picked by preload_next */
+#define PRELOAD_READ_FAILED 0x80 /* preload_onReadDone got an error status */
+/* PreloadEntry.kind (preload_setEntry's second argument) */
+#define PRELOAD_KIND_READ 0 /* read into dest */
+#define PRELOAD_KIND_SEEK 1 /* only seek to the sector */
+/* PreloadQueue.state (preload_update) */
+#define PRELOAD_Q_IDLE 0 /* nothing left to read */
+#define PRELOAD_Q_NEXT_ENTRY 4 /* pick the next entry (preload_next) */
+#define PRELOAD_Q_NEXT_CHUNK 5 /* entry done? else build the next chunk in entries[6] */
+#define PRELOAD_Q_WAIT_CD 8 /* wait until cd_getState is idle */
+#define PRELOAD_Q_START_READ 9 /* preload_startRead */
+#define PRELOAD_Q_READING 10 /* preload_poll until the chunk is done */
 
 typedef struct PreloadQueue {
     u8 unk0;
@@ -435,7 +452,7 @@ typedef struct {
 } CdChunk;
 
 typedef struct {
-    u8 flags; /* command; bit 2: run unk18 directly when idle */
+    u8 flags; /* CDREQ_* */
     u8 pad1[3];
     s32 sector; /* start sector; runtime: 0x5FA for ovl_39 */
     s32 size;   /* bytes; runtime: 0xE800 (29 sectors) for ovl_39 */
@@ -445,9 +462,14 @@ typedef struct {
     void (*doneCallback)(); /* callback */
     CdChunk chunk; /* single chunk */
 } CdRequest;
+/* CdRequest.flags (cd_startRequest, cd_startTransfer) */
+#define CDREQ_SEEK 0x1 /* CdlSetloc to sector first; without it the request only pauses the drive */
+#define CDREQ_READ 0x2 /* read after the seek (CdlReadN/ReadS); without it only seek (CdlSeekL/SeekP) */
+#define CDREQ_PAUSE 0x4 /* pause/sync request: when the drive is idle, cd_submit only calls doneCallback */
+#define CDREQ_STREAM 0x8 /* streaming: CdlReadS with cd_onStreamReady, CdlSeekP; a queued request doesn't pause it */
 
 typedef struct {
-    u8 state;
+    u8 state; /* CD_* */
     u8 errorCount; /* read errors of the request (cd_onDataReady / cd_onDiskError; reset by cd_submit) */
     u8 hasQueued;
     u8 error; /* 1 after a read error (wrong sector or disk error) */
@@ -462,6 +484,13 @@ typedef struct {
     CdRequest queued; /* passed to cd_startRequest */
 } CdLoadState;
 extern CdLoadState g_cdLoad;
+/* CdLoadState.state: index into g_cdStateHandlers, the handler run on CdlComplete */
+#define CD_IDLE 0
+#define CD_SETLOC 1 /* CdlSetloc sent (cd_onSetloc) */
+#define CD_SETMODE 2 /* CdlSetmode sent (cd_startTransfer) */
+#define CD_READING 3
+#define CD_PAUSING 4 /* CdlPause sent (cd_onPaused: done, or retry after an error) */
+#define CD_RESTART 5 /* CdlPause sent by cd_restartAt (cd_onRestart reissues the request) */
 
 /* ---- drawing ---- */
 
@@ -1380,7 +1409,7 @@ typedef struct {
 } VibData;
 
 typedef struct {
-    u16 flags; /* 1 initialised, 2 playing, 4/8 running/looping (cleared at the end unless 8), 0x10 bounce (vib_update) */
+    u16 flags; /* VIB_* */
     s16 start; /* first frame (pos is reset to it) */
     s16 end; /* last frame (longest track - 1, vib_init) */
     s16 rate; /* pos step per frame << 8 (vib_setRate; negated when bouncing) */
@@ -1388,6 +1417,13 @@ typedef struct {
     VibData *data; /* vibration data (vib_init) */
 } VibState;
 extern VibState g_vib;
+/* VibState.flags (vib_update) */
+#define VIB_INIT 0x1 /* vib_init ran; vib_update returns 3 without it */
+#define VIB_PLAYING 0x2 /* vib_play / vib_setPlaying(1) set it with VIB_RUNNING */
+#define VIB_RUNNING 0x4 /* cleared at the end of the range; vib_update runs while VIB_RUNNING or VIB_LOOP is set */
+#define VIB_LOOP 0x8 /* at the end, keep playing (VIB_PLAYING stays set) */
+#define VIB_BOUNCE 0x10 /* at the end, reverse the rate instead of jumping back to the start */
+#define VIB_LOOP_MODE (VIB_LOOP | VIB_BOUNCE) /* the bits vib_setLoopMode sets (event op) */
 u8 btlui_isSecondPortUsed(void); /* ovl_0b */
 
 typedef struct {

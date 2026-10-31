@@ -146,7 +146,7 @@ void battleEnd_preloadScene(void) {
     f = file_find(DIR_OVERLAYS, id);
     dst = b->unk1C;
     size = (f->unkC - f->sector) << 11;
-    preload_setEntry(preload_add(), 0, id, (s32)dst, size, size, f->sector, size);
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, size, size, f->sector, size);
     dst += size;
     if (b->unk6 == 1) {
         id = FILE_FLD_COMMON;
@@ -160,7 +160,7 @@ void battleEnd_preloadScene(void) {
     size = (f->unkC - f->sector) << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
-    preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, f->sector, size);
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, at, size, f->sector, size);
     dst += size;
     if (b->unk6 != 1) {
         return;
@@ -170,19 +170,19 @@ void battleEnd_preloadScene(void) {
     size = g_gameState->gameData->sceneSectors[0] << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
-    preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, at, size, sector, size);
     dst += size;
     sector = g_gameState->gameData->sceneSector[1];
     id = g_gameState->gameData->fieldId | DB_FIELD;
     size = g_gameState->gameData->sceneSectors[1] << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
-    preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, at, size, sector, size);
     g = g_gameState->gameData;
     if ((s16)g->fieldId == g->savedMusicField && g->savedMusicFileSector != -1) {
         sector = g->savedMusicFileSector;
         id = g->savedMusicId | DB_MUSIC;
-        preload_setEntry(preload_add(), 1, id, 0, 0, 0, sector, -1);
+        preload_setEntry(preload_add(), PRELOAD_KIND_SEEK, id, 0, 0, 0, sector, -1);
     }
 }
 

@@ -8,7 +8,7 @@ s32 vib_init(VibData *t) {
     s32 j;
     VibData *c;
 
-    g_vib.flags = 1;
+    g_vib.flags = VIB_INIT;
     g_vib.rate = 0x100;
     g_vib.pos = 0;
     g_vib.data = t;
@@ -43,14 +43,14 @@ s32 vib_update(void) {
     s32 b;
     u16 f;
 
-    if (!(g_vib.flags & 1)) {
+    if (!(g_vib.flags & VIB_INIT)) {
         return 3;
     }
     if (g_vib.data == NULL) {
         return 1;
     }
     t = g_vib.data;
-    if (!(g_vib.flags & 2) || !(g_vib.flags & 0xC)) {
+    if (!(g_vib.flags & VIB_PLAYING) || !(g_vib.flags & (VIB_RUNNING | VIB_LOOP))) {
         return 0;
     }
     b = 0;
@@ -82,37 +82,37 @@ s32 vib_update(void) {
     }
     g_vib.pos += g_vib.rate;
     if (g_vib.end < (g_vib.pos >> 8)) {
-        if (g_vib.flags & 0x10) {
+        if (g_vib.flags & VIB_BOUNCE) {
             g_vib.pos = g_vib.end << 8;
             vib_setRate(-g_vib.rate);
         } else {
             g_vib.pos = g_vib.start << 8;
         }
         f = g_vib.flags;
-        g_vib.flags = f & ~4;
-        if (!(f & 8)) {
+        g_vib.flags = f & ~VIB_RUNNING;
+        if (!(f & VIB_LOOP)) {
             g_padActuator[0].unk0 = 0;
             g_padActuator[0].unk1 = 0;
             g_padActuator[1].unk0 = 0;
             g_padActuator[1].unk1 = 0;
-            g_vib.flags = f & ~6;
+            g_vib.flags = f & ~(VIB_PLAYING | VIB_RUNNING);
         }
     }
     if ((g_vib.pos >> 8) < g_vib.start) {
-        if (g_vib.flags & 0x10) {
+        if (g_vib.flags & VIB_BOUNCE) {
             g_vib.pos = g_vib.start << 8;
             vib_setRate(-g_vib.rate);
         } else {
             g_vib.pos = g_vib.end << 8;
         }
         f = g_vib.flags;
-        g_vib.flags = f & ~4;
-        if (!(f & 8)) {
+        g_vib.flags = f & ~VIB_RUNNING;
+        if (!(f & VIB_LOOP)) {
             g_padActuator[0].unk0 = 0;
             g_padActuator[0].unk1 = 0;
             g_padActuator[1].unk0 = 0;
             g_padActuator[1].unk1 = 0;
-            g_vib.flags = f & ~6;
+            g_vib.flags = f & ~(VIB_PLAYING | VIB_RUNNING);
         }
     }
     return 0;
@@ -133,7 +133,7 @@ s32 vib_selectTrack(s32 row, s32 col, s32 sel) {
         g_padActuator[0].unk1 = 0;
         g_padActuator[1].unk0 = 0;
         g_padActuator[1].unk1 = 0;
-        g_vib.flags &= ~6;
+        g_vib.flags &= ~(VIB_PLAYING | VIB_RUNNING);
         g_vib.pos = g_vib.start << 8;
     } else {
         r->unk0[col] &= ~1;
@@ -156,14 +156,14 @@ s32 vib_clear(void) {
 s32 vib_play(s32 a) {
     g_vib.start = a;
     g_vib.pos = a << 8;
-    g_vib.flags |= 6;
+    g_vib.flags |= VIB_PLAYING | VIB_RUNNING;
     return 0;
 }
 
 s32 vib_setPlaying(s32 on) {
     s32 v;
     if (on) {
-        g_vib.flags |= 6;
+        g_vib.flags |= VIB_PLAYING | VIB_RUNNING;
         v = g_vib.pos >> 8;
         if (v < g_vib.start || g_vib.end < v) {
             g_vib.pos = g_vib.start << 8;
@@ -173,7 +173,7 @@ s32 vib_setPlaying(s32 on) {
         g_padActuator[0].unk1 = 0;
         g_padActuator[1].unk0 = 0;
         g_padActuator[1].unk1 = 0;
-        g_vib.flags &= ~6;
+        g_vib.flags &= ~(VIB_PLAYING | VIB_RUNNING);
     }
     return 0;
 }
@@ -196,7 +196,7 @@ s32 vib_setRate(s16 a) {
 }
 
 s32 vib_setLoopMode(s32 a) {
-    g_vib.flags = (g_vib.flags & ~0x18) | (a & 0x18);
+    g_vib.flags = (g_vib.flags & ~VIB_LOOP_MODE) | (a & VIB_LOOP_MODE);
     return 0;
 }
 

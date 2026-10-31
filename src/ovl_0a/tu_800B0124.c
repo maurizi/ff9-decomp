@@ -1327,7 +1327,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
             return -1;
         }
         e = preload_find(id);
-        if (e != NULL && e->kind == 0) {
+        if (e != NULL && e->kind == PRELOAD_KIND_READ) {
             if (preload_isBusy(e)) {
                 return -1;
             }
@@ -1350,7 +1350,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
             preload_wait(e);
         }
         q = preload_find(id);
-        if (!flag && (q == NULL || q->kind != 0)) {
+        if (!flag && (q == NULL || q->kind != PRELOAD_KIND_READ)) {
         clear:
             g_gameState->gameData->ctx.field->area->scene->flags &= ~FLD_SCN_PRELOADS_QUEUED;
         }
