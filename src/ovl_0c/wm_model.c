@@ -689,11 +689,11 @@ void wm_applyScale(ModelObj *arg0) {
     MATRIX m;
 
     if (arg0->flags & 2) {
-        *(s32 *)&m.m[0][0] = 0x1000;
+        *(s32 *)&m.m[0][0] = ONE;
         *(s32 *)&m.m[0][2] = 0;
-        *(s32 *)&m.m[1][1] = 0x1000;
+        *(s32 *)&m.m[1][1] = ONE;
         *(s32 *)&m.m[2][0] = 0;
-        *(s32 *)&m.m[2][2] = 0x1000;
+        *(s32 *)&m.m[2][2] = ONE;
         m.m[0][0] = arg0->scaleX;
         gte_SetRotMatrix(&arg0->worldMatrix);
         gte_ldclmv(&m);

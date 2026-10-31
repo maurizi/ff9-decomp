@@ -1362,9 +1362,9 @@ s32 wm_getCellBlock(s16 arg0, u8 *arg1) {
 }
 
 void wm_initBlockMatrix(void) {
-    g_worldBlockMatrix.m[2][2] = 0x1000;
-    g_worldBlockMatrix.m[1][1] = 0x1000;
-    g_worldBlockMatrix.m[0][0] = 0x1000;
+    g_worldBlockMatrix.m[2][2] = ONE;
+    g_worldBlockMatrix.m[1][1] = ONE;
+    g_worldBlockMatrix.m[0][0] = ONE;
     g_worldBlockMatrix.t[2] = 0;
     g_worldBlockMatrix.t[1] = 0;
     g_worldBlockMatrix.t[0] = 0;

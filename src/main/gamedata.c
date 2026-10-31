@@ -51,7 +51,7 @@ void game_resetData(void) {
     s32 i;
 
     gd->projDist = 0x200;
-    gd->viewMatrix.m[0][0] = gd->viewMatrix.m[1][1] = gd->viewMatrix.m[2][2] = 0x1000;
+    gd->viewMatrix.m[0][0] = gd->viewMatrix.m[1][1] = gd->viewMatrix.m[2][2] = ONE;
     gd->fieldAreaId = 1;
     gd->battleId = 0x235;
     gd->enemyGroup = -1;

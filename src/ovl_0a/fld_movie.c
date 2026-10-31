@@ -1064,7 +1064,7 @@ void fld_calcShadowMatrix(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
         arg2->m[1][0] = 0;
         arg2->m[2][0] = -sn * arg0->scaleX >> 12;
         arg2->m[0][1] = 0;
-        arg2->m[1][1] = 0x1000;
+        arg2->m[1][1] = ONE;
         arg2->m[2][1] = 0;
         arg2->m[0][2] = sn * arg0->scaleZ >> 12;
         arg2->m[1][2] = 0;

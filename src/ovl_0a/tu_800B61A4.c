@@ -685,11 +685,11 @@ void fldmdl_applyScale(ModelObj *arg0) {
     MATRIX m;
 
     if (arg0->flags & MDL_SCALED) {
-        *(s32 *)&m.m[0][0] = 0x1000;
+        *(s32 *)&m.m[0][0] = ONE;
         *(s32 *)&m.m[0][2] = 0;
-        *(s32 *)&m.m[1][1] = 0x1000;
+        *(s32 *)&m.m[1][1] = ONE;
         *(s32 *)&m.m[2][0] = 0;
-        *(s32 *)&m.m[2][2] = 0x1000;
+        *(s32 *)&m.m[2][2] = ONE;
         m.m[0][0] = arg0->scaleX;
         gte_SetRotMatrix(&arg0->worldMatrix);
         gte_ldclmv(&m);
@@ -1644,11 +1644,11 @@ loop:
         m->m[2][1] = r2.vz;
         m->m[2][2] = r1.vz;
         if (arg0->flags & MDL_SCALED) {
-            *(s32 *)&s.m[0][0] = 0x1000;
+            *(s32 *)&s.m[0][0] = ONE;
             *(s32 *)&s.m[0][2] = 0;
-            *(s32 *)&s.m[1][1] = 0x1000;
+            *(s32 *)&s.m[1][1] = ONE;
             *(s32 *)&s.m[2][0] = 0;
-            *(s32 *)&s.m[2][2] = 0x1000;
+            *(s32 *)&s.m[2][2] = ONE;
             s.m[0][0] = arg0->scaleX;
             gte_SetRotMatrix(m);
             gte_ldclmv(&s);
@@ -2180,9 +2180,9 @@ void fldmdl_reflectModel(ModelObj *arg0) {
         nz = arg0->mirrorNormal.v.vz;
         d = (arg0->mirrorPoint.v.vx * nx + arg0->mirrorPoint.v.vy * ny + arg0->mirrorPoint.v.vz * nz) >> 11;
         m = (MATRIX *)0x1F800000;
-        m->m[0][0] = 0x1000 - ((nx * nx) >> 11);
-        m->m[1][1] = 0x1000 - ((ny * ny) >> 11);
-        m->m[2][2] = 0x1000 - ((nz * nz) >> 11);
+        m->m[0][0] = ONE - ((nx * nx) >> 11);
+        m->m[1][1] = ONE - ((ny * ny) >> 11);
+        m->m[2][2] = ONE - ((nz * nz) >> 11);
         m->m[0][1] = m->m[1][0] = (nx * ny) >> 11;
         m->m[0][2] = m->m[2][0] = (nx * nz) >> 11;
         m->m[1][2] = m->m[2][1] = (ny * nz) >> 11;
