@@ -284,7 +284,7 @@ s32 wm_keepEntryMusic(void) {
     if (sc - 0x26A2U < 0x14) {
         return 1;
     }
-    return v - 8U < 2;
+    return (u32)(v - WM_MOVE_HILDA_GARDE) < 2;
 }
 
 void wm_musicInit(void) {

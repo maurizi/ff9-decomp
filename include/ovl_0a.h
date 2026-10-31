@@ -96,6 +96,8 @@ typedef struct {
 #define FLD_OBJ_NO_ANIM_SFX 0x40 /* fld_playAnimSfx skips the object */
 #define FLD_OBJ_LIT 0x100 /* light colour applied (fld_applyLights) */
 #define FLD_OBJ_COLOR_SET 0x400 /* fld_setSlotColor; fld_applyLights keeps it */
+#define FLD_OBJ_NO_IDLE_TEXANIM 0x1000 /* fld_drawModels doesn't restart texture animation 2 when no texture
+                                        * animation runs (probably the blink; runtime: stops the restarts) */
 #define FLD_OBJ_SEMITRANS 0x10000 /* fld_modelCommand 0, applied by fld_applyModelCommands */
 #define FLD_OBJ_SEMITRANS_AGAIN 0x20000 /* fld_applyModelCommands: repeat the semi-transparency write for the other buffer */
 #define FLD_OBJ_ABR_CHANGED 0x40000 /* fld_modelCommand 0 got a new abr; fld_applyModelCommands reapplies it and clears this */
@@ -218,6 +220,11 @@ typedef struct FieldMap {
 } FieldMap;
 /* FieldMap.flags (g_fieldFlagQueue.mapFlags queues changes one frame ahead) */
 #define FLD_MAP_NO_WINDOWS 0x1 /* fld_main skips func_80023A0C (win_updateAll/win_drawAll) */
+#define FLD_MAP_ACTIVE 0x4 /* the field is running normally: set by fld_load (every field, runtime), cleared by
+                            * fld_startEncounter when the encounter swirl starts. While clear, fld_main runs
+                            * fld_updateEncounter (the swirl / battle preload), fld_endFrame draws with DrawOTag
+                            * instead of DrawOTagEnv (the swirl reuses the last frame) and the sound loader keeps
+                            * 0x3000 bytes back for the swirl buffer; with GD_HIDE_ALL it selects vsyncMode 0 */
 #define FLD_MAP_NO_BGI_ANIM 0x8 /* fld_main skips bgi_updateAnims/bgi_updateFloorMoves */
 #define FLD_MAP_NO_VIBRATION 0x10 /* fld_main skips vib_update */
 #define FLD_MAP_NO_DISPENV 0x20 /* fld_endFrame skips PutDispEnv */

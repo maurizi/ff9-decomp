@@ -491,7 +491,7 @@ void fld_drawModels(void) {
     }
     for (i = 0; i < n; i++) {
         c = list[i];
-        if (c != NULL && !(c->flags & 0x1000)) {
+        if (c != NULL && !(c->flags & FLD_OBJ_NO_IDLE_TEXANIM)) {
             m = c->model;
             if (m->texAnims->count >= 2 && fld_isModelTexAnimActive(m) == 0) {
                 m->texAnims->anims[2].flags |= TEXANIM_ACTIVE;
@@ -1349,7 +1349,7 @@ void fld_endFrame(void) {
     }
     DrawSync(0);
     if (!(mbg_getStatus() & 2)) {
-        if ((g_gameState->gameData->flags & GD_HIDE_ALL) == GD_HIDE_ALL && (g_gameState->gameData->ctx.field->flags & 4)) {
+        if ((g_gameState->gameData->flags & GD_HIDE_ALL) == GD_HIDE_ALL && (g_gameState->gameData->ctx.field->flags & FLD_MAP_ACTIVE)) {
             g_gameState->vsyncMode = 0;
         } else {
             g_gameState->vsyncMode = 2;
@@ -1371,7 +1371,7 @@ void fld_endFrame(void) {
         if (!(f & FLD_MAP_NO_DRAW)) {
             if (f & FLD_MAP_CLEAR_ONLY) {
                 PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
-            } else if (f & 4) {
+            } else if (f & FLD_MAP_ACTIVE) {
                 DrawOTagEnv(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
             } else {
                 DrawOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf]);
@@ -1404,7 +1404,7 @@ void fld_endFrame(void) {
 
 void fld_startEncounter(void) {
     g_gameState->gameData->ctx.field->area->scene->encounterStep = 0;
-    g_fieldFlagQueue.mapFlags[1][3] = 4;
+    g_fieldFlagQueue.mapFlags[1][3] = FLD_MAP_ACTIVE;
     g_fieldFlagQueue.gameFlags[0][0] = 0x43;
     g_fieldFlagQueue.gameFlags[0][2] = 0x3C;
     g_fieldFlagQueue.mapFlags[0][2] = 0x1919;

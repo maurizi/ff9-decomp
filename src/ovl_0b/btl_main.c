@@ -310,13 +310,13 @@ void btl_cleanup(void) {
     btl_unregisterFiles(&g_gameState->gameData->ctx.battle->files->data[3], 0);
     btl_unregisterFiles(&g_gameState->gameData->ctx.battle->files->data[2], 0);
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->chrModels[i].flags & 1) {
-            g_gameState->gameData->chrModels[i].flags &= ~1;
+        if (g_gameState->gameData->chrModels[i].flags & MODEL_SLOT_LOADED) {
+            g_gameState->gameData->chrModels[i].flags &= ~MODEL_SLOT_LOADED;
         }
     }
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        if (g_gameState->gameData->chrModels[i].flags & 1) {
-            g_gameState->gameData->chrModels[i].flags &= ~1;
+        if (g_gameState->gameData->chrModels[i].flags & MODEL_SLOT_LOADED) {
+            g_gameState->gameData->chrModels[i].flags &= ~MODEL_SLOT_LOADED;
         }
     }
     switch (s->returnMode) {
@@ -1309,7 +1309,7 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
         e->model->texAnims = (BtlUnit9C50 *)db_lookupRegistered(DB_GET_ADDR, p, 0);
         btl_relocTexAnims(e->model->texAnims, pc);
     }
-    e->flags |= 1;
+    e->flags |= MODEL_SLOT_LOADED;
     return n;
 }
 
@@ -1534,7 +1534,7 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
 
     e = &arg0[arg1];
     o = (BtlObj *)game_getModel(arg1);
-    if (o->flags & 0x10) {
+    if (o->flags & MODEL_SLOT_NO_SHADOW) {
         return prim;
     }
     btl_calcShadowMatrix((Unk800AD4E4 *)e, o, &m, arg2, arg3 & 0xFF, (arg3 >> 8) & 0xFF);

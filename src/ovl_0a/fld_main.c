@@ -95,7 +95,7 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_FADE)) {
                 game_updateFade();
             }
-            if (!(g_gameState->gameData->ctx.field->flags & 4)) {
+            if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_ACTIVE)) {
                 fld_updateEncounter();
             }
             if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_TIMER)) {
@@ -356,7 +356,7 @@ void fld_load(s32 arg0) {
     game_freezeScreen();
     g_gameState->flags &= ~GS_EXIT_BITS;
     g_gameState->gameData->flags |= GD_NO_FLIP;
-    g_gameState->gameData->ctx.field->flags |= 4;
+    g_gameState->gameData->ctx.field->flags |= FLD_MAP_ACTIVE;
     game_setClearColor(0, 0, 0);
     g_padPortMask[0] &= 0xFFFF0006;
     for (i = 1; i >= 0; i--) {
@@ -426,13 +426,13 @@ void fld_exit(void) {
     fld_freeFieldFile(sc, g_gameState->gameData->fieldId);
     fld_freeModelBundles();
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->chrModels[i].flags & 1) {
-            g_gameState->gameData->chrModels[i].flags &= ~1;
+        if (g_gameState->gameData->chrModels[i].flags & MODEL_SLOT_LOADED) {
+            g_gameState->gameData->chrModels[i].flags &= ~MODEL_SLOT_LOADED;
         }
     }
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        if (g_gameState->gameData->npcModels[i].flags & 1) {
-            g_gameState->gameData->npcModels[i].flags &= ~1;
+        if (g_gameState->gameData->npcModels[i].flags & MODEL_SLOT_LOADED) {
+            g_gameState->gameData->npcModels[i].flags &= ~MODEL_SLOT_LOADED;
         }
     }
     for (i = 1; i >= 0; i--) {

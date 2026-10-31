@@ -50,7 +50,7 @@ void wm_updateCamera(void) {
     g_gameState->gameData->projDist = g_worldCameraParams.projDist;
     g_worldCamera->yaw &= 0xFFF;
     g_worldCameraTargetHeight = g_worldCameraParams.targetHeight;
-    if ((u8)g_worldMoveMode == WM_MOVE_AIRSHIP || (u8)g_worldMoveMode == WM_MOVE_AIRSHIP2) {
+    if ((u8)g_worldMoveMode == WM_MOVE_HILDA_GARDE || (u8)g_worldMoveMode == WM_MOVE_INVINCIBLE) {
         t = g_worldPlayer->pos.vy + 0x1518;
         g_worldCameraTargetHeight = g_worldCameraParams.targetHeight - (t > 0 ? t >> 3 : t / 6);
     }
@@ -592,10 +592,10 @@ void wm_initMovement(void) {
         g_worldActorTypeInfo[i].floorY = 0;
     }
     if (g_worldDataSet == WM_DATASET_DISC4) {
-        g_worldMoveModes[WM_MOVE_AIRSHIP2].music = WM_SONG_DISC4;
+        g_worldMoveModes[WM_MOVE_INVINCIBLE].music = WM_SONG_DISC4;
         g_worldMoveModes[WM_MOVE_WALK].music = WM_SONG_DISC4;
     } else {
-        g_worldMoveModes[WM_MOVE_AIRSHIP2].music = WM_SONG_AIRSHIP;
+        g_worldMoveModes[WM_MOVE_INVINCIBLE].music = WM_SONG_AIRSHIP;
         g_worldMoveModes[WM_MOVE_WALK].music = WM_SONG_NORMAL;
     }
 }
@@ -691,13 +691,13 @@ void wm_findVehicles(void) {
             case WM_ACTOR_CHOCOBO4:
                 g_worldMountActor = a;
                 break;
-            case 8:
+            case WM_ACTOR_BOAT:
                 g_worldVehicleActor = a;
                 break;
-            case 9:
+            case WM_ACTOR_AIRSHIP:
                 g_worldVehicleActor = a;
                 break;
-            case 10:
+            case WM_ACTOR_AIRSHIP2:
                 g_worldVehicleActor = a;
                 break;
             }
@@ -768,11 +768,11 @@ void wm_drawActors(void) {
                 s.vz = a.vz;
                 wm_setActorFog(act, b.vz >> 3);
                 wm_drawActorModel(act, &s, z);
-                if (act->actorType == 8) {
+                if (act->actorType == WM_ACTOR_BOAT) {
                     f = 0;
                 }
                 if (act->actorType == WM_ACTOR_WALKER || act->actorType == WM_ACTOR_WALKER_ALT) {
-                    if ((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO && (u8)g_worldMoveMode <= WM_MOVE_CHOCOBO_FLY) {
+                    if ((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO_FIELD && (u8)g_worldMoveMode <= WM_MOVE_CHOCOBO_FLY) {
                         f = 0;
                     }
                 }
@@ -1019,7 +1019,7 @@ void wm_updateActors(void) {
             } else {
                 cc = &g_worldActorTypeInfo[act->actorType];
                 wm_getGroundHeight((VECTOR *)&act->pos, &cc->cellAttr, &tmp, &g_worldPolyCache[cc->polyCache], (u16 *)&h);
-                if (act->actorType == 8) {
+                if (act->actorType == WM_ACTOR_BOAT) {
                     h = 0;
                 }
                 cc->floorY = h;
@@ -1040,7 +1040,7 @@ void wm_updateActors(void) {
         wm_cameraAutoTurnVehicle();
         break;
     }
-    if ((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO && (u8)g_worldMoveMode <= WM_MOVE_CHOCOBO_FLY) {
+    if ((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO_FIELD && (u8)g_worldMoveMode <= WM_MOVE_CHOCOBO_FLY) {
         g_worldActorTypeInfo[WM_ACTOR_WALKER].rideOffset = g_worldActorTypeInfo[g_worldPlayer->actorType].rideOffset;
     }
     if (g_worldMountActor != NULL) {
@@ -1113,7 +1113,7 @@ void wm_updateActorHeight(EvtObject *arg0) {
             h = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, &flat);
             if (c->flying == 0) {
                 if (c->terrainClass != 0) {
-                    if (c->unk4 == 7) {
+                    if (c->rideMode == WM_MOVE_BOAT) {
                         c->rideOffset = 0x118;
                     } else if (flat != 0 || h == 0) {
                         c->rideOffset = h;
@@ -1527,15 +1527,15 @@ void w_movementChange(void) {
     prev = g_worldMoveModeInfo;
     g_worldMoveMode = g_evtGlobalVars.b[0xBE];
     g_worldMoveModeInfo = p = &g_worldMoveModes[g_worldMoveMode];
-    if (old == WM_MOVE_STEER) {
+    if (old == WM_MOVE_BOAT) {
         wm_seStop(prev->loopSe);
     }
     if (p->loopSe != 0) {
         wm_sePlay(p->loopSe, 0);
-        if (g_worldMoveMode != WM_MOVE_STEER) {
+        if (g_worldMoveMode != WM_MOVE_BOAT) {
             wm_seFadeVolume(p->loopSe, 0x3C, 0x3F);
         }
-        if ((u8)(g_worldMoveMode - WM_MOVE_AIRSHIP) < 2) {
+        if ((u8)(g_worldMoveMode - WM_MOVE_HILDA_GARDE) < 2) {
             wm_sePlay(0x26, 0);
         }
         g_worldCamera->viewForceNormal = 1;
@@ -1543,10 +1543,10 @@ void w_movementChange(void) {
     if (prev == NULL || prev->music != p->music) {
         w_musicRequestSend(p->music);
     }
-    if (g_worldMoveMode == WM_MOVE_WALK && (u8)(old - WM_MOVE_CHOCOBO) < 6) {
+    if (g_worldMoveMode == WM_MOVE_WALK && (u8)(old - WM_MOVE_CHOCOBO_FIELD) < 6) {
         g_worldPlayerHeading = (g_worldMountActor->pos.rotY + 0x400) & 0xFFF;
     }
-    if ((u8)(g_worldMoveMode - WM_MOVE_CHOCOBO) < 6 && old == WM_MOVE_WALK) {
+    if ((u8)(g_worldMoveMode - WM_MOVE_CHOCOBO_FIELD) < 6 && old == WM_MOVE_WALK) {
         g_worldPlayerHeading = g_worldMountActor->pos.rotY & 0xFFF;
     }
     if (g_worldMoveModes[old].airborne == g_worldMoveModes[g_worldMoveMode].airborne) {
@@ -1801,10 +1801,10 @@ void wm_controlFly(void) {
         g_worldPlayerTurn *= 2;
         g_worldPlayerSpeed *= 2;
     }
-    if (g_worldMoveMode == WM_MOVE_AIRSHIP2) {
+    if (g_worldMoveMode == WM_MOVE_INVINCIBLE) {
         g_worldPlayerTurn = g_worldPlayerTurn * (600 - g_worldPlayerSpeed / 2) >> 8;
     }
-    if (g_worldMoveMode == WM_MOVE_AIRSHIP) {
+    if (g_worldMoveMode == WM_MOVE_HILDA_GARDE) {
         g_worldPlayerTurn = g_worldPlayerTurn * (580 - g_worldPlayerSpeed / 2) >> 8;
     }
     if (x != 0 || z < 0) {
@@ -1889,8 +1889,8 @@ void wm_controlFly(void) {
         t = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
         f = wm_testCellType_inline2(g_worldWaterCellTypes, t);
         switch (g_worldPlayer->actorType) {
-        case 9:
-        case 10:
+        case WM_ACTOR_AIRSHIP:
+        case WM_ACTOR_AIRSHIP2:
             if (f && abs(g_worldPlayerSpeed) > 60) {
                 h = g_worldPlayer->pos.vy;
                 if (h >= -0x800) {

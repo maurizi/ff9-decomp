@@ -162,12 +162,17 @@ typedef struct {
 
 /* GameData.npcModels entry */
 typedef struct ModelSlot {
-    s32 flags; /* flags: 1 cleared by fld_exit/btl_cleanup, 0x10 (event ops), others from op args */
+    s32 flags; /* MODEL_SLOT_*, others from event op args (the field's FLD_OBJ_* bits) */
     s32 modelKey; /* 0x20000 | model id (DB_MODEL), -1 after game_clearModelSlot (runtime) */
     struct BtlUnit9C *model; /* the model object (GameData.chrModelObjs / npcModelObjs entry; battle BtlUnit9C) */
     struct BtlUnitA0 *actor; /* the EvtObject using the slot (FieldMap.playerObj's actor) */
     struct BtlUnit *unit; /* battle unit (btl_resetUnit) */
 } ModelSlot;
+/* ModelSlot.flags. ModelSlot is the same record as ovl_0a's FieldEvtCtx / FieldObjSlot, ovl_0c's WmObjSlot and
+ * ovl_0b's BtlObj / Unk8E0Ld (runtime: one read breakpoint on a slot's flags hits fld_drawModels, fld_drawShadow,
+ * fld_applyLights...), so these are FLD_OBJ_LOADED / FLD_OBJ_NO_SHADOW and WM_SLOT_LOADED / WM_SLOT_NO_SHADOW. */
+#define MODEL_SLOT_LOADED    0x1  /* the slot has a model (set when it is built, cleared by fld_exit / btl_cleanup / wm exit) */
+#define MODEL_SLOT_NO_SHADOW 0x10 /* no shadow drawn (EVT_OP_JUMP sets it for the jump) */
 
 typedef struct {
     u8 pad0[4];
@@ -737,6 +742,17 @@ void win_updateAll(void);
 #define TEXT_Y_DOWN 0x49 /* + pixels */
 #define TEXT_Y_UP 0x4A /* + pixels */
 #define TEXT_SPRITE 0x4B /* + sprite id */
+/* button glyph escape bytes (text_buildCode / text_getCodeWidth draw these UI sprites; runtime pass) */
+#define TEXT_BTN_CIRCLE   0x30 /* UI_SPRITE_CIRCLE */
+#define TEXT_BTN_CROSS    0x31 /* UI_SPRITE_CROSS */
+#define TEXT_BTN_TRIANGLE 0x32 /* UI_SPRITE_TRIANGLE */
+#define TEXT_BTN_SQUARE   0x33 /* UI_SPRITE_SQUARE */
+#define TEXT_BTN_L1       0x34 /* UI_SPRITE_L1 */
+#define TEXT_BTN_R1       0x35 /* UI_SPRITE_R1 */
+#define TEXT_BTN_L2       0x36 /* UI_SPRITE_L2 */
+#define TEXT_BTN_R2       0x37 /* UI_SPRITE_R2 */
+#define TEXT_BTN_START    0x38 /* UI_SPRITE_START */
+#define TEXT_BTN_SELECT   0x39 /* UI_SPRITE_SELECT */
 #define TEXT_ITEM_ICON 0x4C /* + item id */
 #define TEXT_ARG_SPRITE 0x4D /* + arg index (g_textIconArgs) */
 #define TEXT_ARG_ITEM_ICON 0x4E /* + arg index (g_textIconArgs) */
@@ -2294,6 +2310,18 @@ typedef struct {
 #define UI_SPRITE_UNDERSCORE 0xDF
 #define UI_SPRITE_AP_GAUGE 3 /* gauge frame ui_buildApGauge sizes the bar by */
 #define UI_SPRITE_SMALL_DIGITS 0x22 /* '0'-'9', then '%' (10) and '/' (11) (ui_buildDigits) */
+/* button glyphs (runtime pass: menu sprites rewritten to each id; g_buttonSprites = CROSS, CIRCLE, TRIANGLE, SQUARE) */
+#define UI_SPRITE_CROSS    4
+#define UI_SPRITE_CIRCLE   5
+#define UI_SPRITE_SQUARE   6
+#define UI_SPRITE_TRIANGLE 7
+#define UI_SPRITE_L1       8
+#define UI_SPRITE_L2       9
+#define UI_SPRITE_R1       10
+#define UI_SPRITE_R2       11
+#define UI_SPRITE_DPAD     12 /* the d-pad; 13-16 are its small direction arrows (g_dpadArrowSprites) */
+#define UI_SPRITE_START    17
+#define UI_SPRITE_SELECT   18
 /* ui_drawLabel / ui_buildLabel mode */
 #define UI_LABEL_NORMAL 0 /* full brightness */
 #define UI_LABEL_MASK   1 /* glyphs black and semi-transparent, CLUT 0x40 rows down: only the gradient behind shows

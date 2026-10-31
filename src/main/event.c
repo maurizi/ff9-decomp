@@ -1237,7 +1237,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_ANIM_BACK:
-        ((ModelSlot *)game_getModel(actor->modelSlot))->flags &= ~0x10;
+        ((ModelSlot *)game_getModel(actor->modelSlot))->flags &= ~MODEL_SLOT_NO_SHADOW;
         actor->animEnd = 0xFF;
         actor->animFlags = 0;
         actor->animStart = actor->jumpAnimEnd + 1;
@@ -1255,7 +1255,7 @@ s32 evt_execInstr(void) {
             a = 8;
         }
         actor->moveFlags |= EVT_MOVE_JUMPING;
-        ((ModelSlot *)game_getModel(actor->modelSlot))->flags |= 0x10;
+        ((ModelSlot *)game_getModel(actor->modelSlot))->flags |= MODEL_SLOT_NO_SHADOW;
         actor->animStart = actor->jumpAnimStart;
         actor->animEnd = actor->jumpAnimEnd;
         evt_execInstr_anim(actor, actor->jumpAnim);

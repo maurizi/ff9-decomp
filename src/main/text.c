@@ -456,29 +456,29 @@ u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
         g_textColor = TEXT_PAL_HELP_RED;
         *w = 0;
         break;
-    case 0x30:
-        pkt = ui_buildSprite(x, y + 2, ot, 5, 0, w, pkt);
+    case TEXT_BTN_CIRCLE:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_CIRCLE, 0, w, pkt);
         break;
-    case 0x31:
-        pkt = ui_buildSprite(x, y + 2, ot, 4, 0, w, pkt);
+    case TEXT_BTN_CROSS:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_CROSS, 0, w, pkt);
         break;
-    case 0x32:
-        pkt = ui_buildSprite(x, y + 2, ot, 7, 0, w, pkt);
+    case TEXT_BTN_TRIANGLE:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_TRIANGLE, 0, w, pkt);
         break;
-    case 0x33:
-        pkt = ui_buildSprite(x, y + 2, ot, 6, 0, w, pkt);
+    case TEXT_BTN_SQUARE:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_SQUARE, 0, w, pkt);
         break;
-    case 0x34:
-        pkt = ui_buildSprite(x, y + 2, ot, 8, 0, w, pkt);
+    case TEXT_BTN_L1:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_L1, 0, w, pkt);
         break;
-    case 0x35:
-        pkt = ui_buildSprite(x, y + 2, ot, 10, 0, w, pkt);
+    case TEXT_BTN_R1:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_R1, 0, w, pkt);
         break;
-    case 0x36:
-        pkt = ui_buildSprite(x, y + 2, ot, 9, 0, w, pkt);
+    case TEXT_BTN_L2:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_L2, 0, w, pkt);
         break;
-    case 0x37:
-        pkt = ui_buildSprite(x, y + 2, ot, 11, 0, w, pkt);
+    case TEXT_BTN_R2:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_R2, 0, w, pkt);
         break;
     case 0x60:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(1), 0, w, pkt);
@@ -504,11 +504,11 @@ u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
     case 0x67:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(7), 0, w, pkt);
         break;
-    case 0x38:
-        pkt = ui_buildSprite(x, y + 2, ot, 0x11, 0, w, pkt);
+    case TEXT_BTN_START:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_START, 0, w, pkt);
         break;
-    case 0x39:
-        pkt = ui_buildSprite(x, y + 2, ot, 0x12, 0, w, pkt);
+    case TEXT_BTN_SELECT:
+        pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_SELECT, 0, w, pkt);
         break;
     case 0x3A:
         pkt = text_buildDpad(x, y + 2, ot, 1, 0, w, pkt);
@@ -580,29 +580,29 @@ s32 text_getCodeWidth(s32 c) {
     s32 r = 0;
 
     switch (c & 0xFF) {
-    case 0x30:
-        r = g_uiSprites[5].w;
+    case TEXT_BTN_CIRCLE:
+        r = g_uiSprites[UI_SPRITE_CIRCLE].w;
         break;
-    case 0x31:
-        r = g_uiSprites[4].w;
+    case TEXT_BTN_CROSS:
+        r = g_uiSprites[UI_SPRITE_CROSS].w;
         break;
-    case 0x32:
-        r = g_uiSprites[7].w;
+    case TEXT_BTN_TRIANGLE:
+        r = g_uiSprites[UI_SPRITE_TRIANGLE].w;
         break;
-    case 0x33:
-        r = g_uiSprites[6].w;
+    case TEXT_BTN_SQUARE:
+        r = g_uiSprites[UI_SPRITE_SQUARE].w;
         break;
-    case 0x34:
-        r = g_uiSprites[8].w;
+    case TEXT_BTN_L1:
+        r = g_uiSprites[UI_SPRITE_L1].w;
         break;
-    case 0x35:
-        r = g_uiSprites[10].w;
+    case TEXT_BTN_R1:
+        r = g_uiSprites[UI_SPRITE_R1].w;
         break;
-    case 0x36:
-        r = g_uiSprites[9].w;
+    case TEXT_BTN_L2:
+        r = g_uiSprites[UI_SPRITE_L2].w;
         break;
-    case 0x37:
-        r = g_uiSprites[11].w;
+    case TEXT_BTN_R2:
+        r = g_uiSprites[UI_SPRITE_R2].w;
         break;
     case 0x60:
         r = g_uiSprites[text_getButtonSprite(0)].w;
@@ -628,11 +628,11 @@ s32 text_getCodeWidth(s32 c) {
     case 0x67:
         r = g_uiSprites[text_getButtonSprite(7)].w;
         break;
-    case 0x38:
-        r = g_uiSprites[17].w;
+    case TEXT_BTN_START:
+        r = g_uiSprites[UI_SPRITE_START].w;
         break;
-    case 0x39:
-        r = g_uiSprites[18].w;
+    case TEXT_BTN_SELECT:
+        r = g_uiSprites[UI_SPRITE_SELECT].w;
         break;
     case 0x3A:
     case 0x3B:
@@ -640,7 +640,7 @@ s32 text_getCodeWidth(s32 c) {
     case 0x3D:
     case 0x3E:
     case 0x3F:
-        r = g_uiSprites[12].w;
+        r = g_uiSprites[UI_SPRITE_DPAD].w;
         break;
     case TEXT_CHAR_NAME + 0:
         r = text_measureWidth((s32)&g_gameState->gameData->characters[0]);
@@ -1037,7 +1037,7 @@ u8 *text_buildDpad(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
             pkt = ui_buildSprite(x + g_dpadArrowSprites[i].x, y + g_dpadArrowSprites[i].y, ot, g_dpadArrowSprites[i].sprite, b, tmp, pkt);
         }
     }
-    return ui_buildSprite(x, y, ot, 0xC, b, c, pkt);
+    return ui_buildSprite(x, y, ot, UI_SPRITE_DPAD, b, c, pkt);
 }
 
 s32 text_measureStyle(u8 *s, s32 idx) {

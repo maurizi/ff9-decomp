@@ -287,13 +287,13 @@ void wm_exit(void) {
     akao_stopSe(-1, 0);
     wm_freeFile(obj, g_gameState->gameData->worldId);
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->chrModels[i].flags & 1) {
-            g_gameState->gameData->chrModels[i].flags &= ~1;
+        if (g_gameState->gameData->chrModels[i].flags & MODEL_SLOT_LOADED) {
+            g_gameState->gameData->chrModels[i].flags &= ~MODEL_SLOT_LOADED;
         }
     }
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        if (g_gameState->gameData->npcModels[i].flags & 1) {
-            g_gameState->gameData->npcModels[i].flags &= ~1;
+        if (g_gameState->gameData->npcModels[i].flags & MODEL_SLOT_LOADED) {
+            g_gameState->gameData->npcModels[i].flags &= ~MODEL_SLOT_LOADED;
         }
     }
     for (i = 1; i >= 0; i--) {

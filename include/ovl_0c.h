@@ -248,7 +248,7 @@ typedef struct {
     u8 shadowWidth;
     u8 shadowDepth;
     u8 flying;
-    u8 unk4;
+    u8 rideMode; /* the g_worldMoveMode of riding this type (data, runtime pass: 3-7 -> 1-5, 8-10 -> 7-9) */
     u8 polyCache;
     u8 shadowJoint;
     u8 shadowOtBias;
@@ -258,13 +258,18 @@ typedef struct {
 } WmActorType; /* 0x10 */
 /* EvtObject.actorType on the world map, index into g_worldActorTypeInfo (wm_findVehicles; world scripts set it
  * with op 0x3B before the model, docs/runtime-findings.md R30b) */
+#define WM_ACTOR_NONE 0 /* not a world actor: every code-only (kind 2) object (runtime); wm_canCallChocobo excludes it */
 #define WM_ACTOR_WALKER 1 /* party leader on foot (model 310), g_worldWalkerActor */
 #define WM_ACTOR_WALKER_ALT 2 /* also g_worldWalkerActor (model 309, only in world file 2) */
 #define WM_ACTOR_CHOCOBO0 3 /* 3-7: g_worldMountActor; wm_setMountPalette picks palette 0-4 by type; */
 #define WM_ACTOR_CHOCOBO1 4 /* move modes 1-6 play WM_SONG_CHOCOBO, and only walkers can call one */
 #define WM_ACTOR_CHOCOBO2 5 /* (wm_canCallChocobo) */
 #define WM_ACTOR_CHOCOBO3 6
-#define WM_ACTOR_CHOCOBO4 7 /* WmActorType.flying while g_worldMoveMode is 6 (wm_updateActors) */
+#define WM_ACTOR_CHOCOBO4 7 /* WmActorType.flying while g_worldMoveMode is 6 (wm_updateActors); the gold chocobo (runtime) */
+/* 8-10: g_worldVehicleActor (wm_findVehicles); boarding is decided by the world script, not by the type */
+#define WM_ACTOR_BOAT 8 /* the Blue Narciss (from data: not flying, floorY forced 0, no shadow; rideMode WM_MOVE_BOAT) */
+#define WM_ACTOR_AIRSHIP 9 /* the Hilda Garde 3 (runtime, disc 3; rideMode WM_MOVE_HILDA_GARDE) */
+#define WM_ACTOR_AIRSHIP2 10 /* the Invincible (from data: flying, rideMode WM_MOVE_INVINCIBLE) */
 #define WM_ACTOR_MOOGLE 11 /* g_worldMoogleActor (model 307), comes when called with Square */
 #define WM_ACTOR_NO_MODEL 14 /* wm_drawActorModel and wm_drawActorShadow draw nothing for it */
 
@@ -301,11 +306,17 @@ typedef struct {
 /* g_worldMoveMode (event var b[0xBE], w_movementChange): index into g_worldMoveModes, whose entries give
  * control type, music and loop SE */
 #define WM_MOVE_WALK 0 /* WM_CTRL_WALK, counts steps */
-#define WM_MOVE_CHOCOBO 1 /* 1-6: WM_SONG_CHOCOBO, riding g_worldMountActor */
+/* 1-6: WM_SONG_CHOCOBO, riding g_worldMountActor. 1-5 = the chocobo's ability count (event byte b[0xBF], runtime),
+ * the allowed cells grow with it */
+#define WM_MOVE_CHOCOBO_FIELD 1 /* same cells as walking */
+#define WM_MOVE_CHOCOBO_REEF 2
+#define WM_MOVE_CHOCOBO_MOUNTAIN 3
+#define WM_MOVE_CHOCOBO_OCEAN 4
+#define WM_MOVE_CHOCOBO_SKY 5 /* the gold chocobo on the ground */
 #define WM_MOVE_CHOCOBO_FLY 6 /* last chocobo mode: WM_CTRL_FLY, airborne; WM_ACTOR_CHOCOBO4 flies */
-#define WM_MOVE_STEER 7 /* WM_CTRL_STEER, loop SE 24 */
-#define WM_MOVE_AIRSHIP 8 /* 8, 9: WM_CTRL_FLY with WM_SONG_AIRSHIP and a loop SE */
-#define WM_MOVE_AIRSHIP2 9
+#define WM_MOVE_BOAT 7 /* WM_CTRL_STEER, loop SE 24: the Blue Narciss (from data) */
+#define WM_MOVE_HILDA_GARDE 8 /* 8, 9: WM_CTRL_FLY with WM_SONG_AIRSHIP and a loop SE; 8 = Hilda Garde 3 (runtime) */
+#define WM_MOVE_INVINCIBLE 9 /* loop SE 22, longer get-off distance (from data) */
 #define WM_MOVE_FAST_WALK 10 /* wm_movePlayer while g_worldFastWalk: 4x speed */
 
 /* doubly linked node (wm_frmbufInit) */

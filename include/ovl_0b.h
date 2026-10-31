@@ -308,7 +308,7 @@ typedef struct BtlUnit9C {
 
 /* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's ModelSlot has pad4) */
 typedef struct {
-    s32 flags; /* flags (1 loaded) */
+    s32 flags; /* MODEL_SLOT_* */
     s32 modelId; /* model id */
     BtlUnit9C *model;
     s32 obj;
@@ -3583,7 +3583,7 @@ s32 btl_getModelTexInfo(u32, s32 **, s32 **, s32 **);
 u32 evt_getObjectChrIndex(void *);
 /* object slot returned by game_getModel in battle */
 typedef struct {
-    u32 flags; /* flags (0x10 off screen) */
+    u32 flags; /* MODEL_SLOT_* (0x10: btl_drawShadow skips it) */
     s32 modelId; /* model id */
     BtlUnit9C *model;
     s32 unkC;

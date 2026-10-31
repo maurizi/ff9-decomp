@@ -684,7 +684,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFramePackGetPtrRange
 
 s32 wm_canCallChocobo(void) {
     s32 n = g_worldPlayer->actorType;
-    if (n < WM_ACTOR_CHOCOBO0 && n != 0) {
+    if (n < WM_ACTOR_CHOCOBO0 && n != WM_ACTOR_NONE) {
         switch ((u8)g_worldActorTypeInfo[n].cellAttr >> 2) {
         case 3:
         case 18:

@@ -452,7 +452,7 @@ state:
         }
         g_gameState->gameData->soundLoadDest = SCENE->heapTop ? SCENE->heapTop : g_modeHeap;
         g_gameState->gameData->soundLoadChunk = 0x156F00 - (g_gameState->gameData->soundLoadDest - (s32)g_loadAreaEnd);
-        if (!(g_gameState->gameData->ctx.field->flags & 4)) {
+        if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_ACTIVE)) {
             g_gameState->gameData->soundLoadChunk -= 0x3000;
         }
         m = g_gameState->gameData->soundLoadChunk;
@@ -469,7 +469,7 @@ state:
             if (g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk < g_gameState->gameData->soundBankSize) {
                 g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->cdRead[0].dest;
                 d = 0x156F00 - ((s32)g_gameState->gameData->cdRead[0].dest - (s32)g_loadAreaEnd);
-                if (!(g_gameState->gameData->ctx.field->flags & 4)) {
+                if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_ACTIVE)) {
                     d -= 0x3000;
                 }
                 d = d / 2048 * 2048;

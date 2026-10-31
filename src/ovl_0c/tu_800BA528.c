@@ -608,7 +608,7 @@ void wm_updateChunks(void) {
     s32 b;
 
     if (g_worldMoveMode < WM_MOVE_FAST_WALK) {
-        if (g_worldMoveMode >= WM_MOVE_AIRSHIP) {
+        if (g_worldMoveMode >= WM_MOVE_HILDA_GARDE) {
             t = g_worldPlayerSpeed;
             if (t >= 0x200) {
                 t = 0x1FF;
@@ -1206,7 +1206,7 @@ void wm_updateVisibleBlocks(void) {
         }
     }
     lim = 16;
-    if (g_worldMoveMode == WM_MOVE_STEER) {
+    if (g_worldMoveMode == WM_MOVE_BOAT) {
         lim = 14;
     }
     if (g_worldFog == 0) {
@@ -1422,7 +1422,7 @@ s32 wm_getGroundHeight(VECTOR *arg0, u32 *arg1, s32 *arg2, WmPolyCache *arg3, u1
         rel.vz = pos.vz - o.vz;
         /* callers pass a 16-bit variable but a word is stored */
         *(s32 *)arg4 = wm_getBlockHeight(cell, (WmBlock *)r, &rel, arg1, arg2, arg3);
-        if ((u8)g_worldMoveMode - 2U < 2) {
+        if ((u32)((u8)g_worldMoveMode - WM_MOVE_CHOCOBO_REEF) < 2) {
             if (*arg1 - 0x38 < 2) {
                 *arg1 = 0x36;
             }
@@ -1482,14 +1482,14 @@ void wm_naviDraw(void) {
     switch (g_worldNaviMode) {
     case WM_NAVI_MINI:
         if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == EVT_STATE_RUNNING && (g_worldVehicleActor->flags & EVT_OBJ_ENABLED) &&
-            !((u8)g_worldMoveMode >= WM_MOVE_STEER && (u8)g_worldMoveMode < WM_MOVE_FAST_WALK)) {
+            !((u8)g_worldMoveMode >= WM_MOVE_BOAT && (u8)g_worldMoveMode < WM_MOVE_FAST_WALK)) {
             CVECTOR c0 = g_worldNaviVehicleColorA;
             CVECTOR c1 = g_worldNaviVehicleColorB;
             wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2);
             wm_naviDrawMarker(x, z, 1, 1, c0, c1, 0x40, 0xC8, 0x82, 1);
         }
         if (g_worldMountActor != NULL && g_worldMountActor->state == EVT_STATE_RUNNING && (g_worldMountActor->flags & EVT_OBJ_ENABLED) &&
-            !((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO && (u8)g_worldMoveMode < WM_MOVE_STEER)) {
+            !((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO_FIELD && (u8)g_worldMoveMode < WM_MOVE_BOAT)) {
             CVECTOR c0 = g_worldNaviMountColorA;
             CVECTOR c2 = g_worldNaviMountColorB;
             wm_naviWorldToMap(g_worldMountActor->pos.vx, g_worldMountActor->pos.vz, &x, &z, page * 2);
@@ -1503,14 +1503,14 @@ void wm_naviDraw(void) {
     case WM_NAVI_FULL:
         if (g_worldNaviVisible != 0) {
             if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == EVT_STATE_RUNNING && (g_worldVehicleActor->flags & EVT_OBJ_ENABLED) &&
-                !((u8)g_worldMoveMode >= WM_MOVE_STEER && (u8)g_worldMoveMode < WM_MOVE_FAST_WALK)) {
+                !((u8)g_worldMoveMode >= WM_MOVE_BOAT && (u8)g_worldMoveMode < WM_MOVE_FAST_WALK)) {
                 CVECTOR c0 = g_worldNaviVehicleColorA;
                 CVECTOR c3 = g_worldNaviVehicleColorB;
                 wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2 + 1);
                 wm_naviDrawMarker(x, z, 1, 1, c0, c3, 0x40, 0x28, 9, 1);
             }
             if (g_worldMountActor != NULL && g_worldMountActor->state == EVT_STATE_RUNNING && (g_worldMountActor->flags & EVT_OBJ_ENABLED) &&
-                !((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO && (u8)g_worldMoveMode < WM_MOVE_STEER)) {
+                !((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO_FIELD && (u8)g_worldMoveMode < WM_MOVE_BOAT)) {
                 CVECTOR c0 = g_worldNaviMountColorA;
                 CVECTOR c1 = g_worldNaviMountColorB;
                 wm_naviWorldToMap(g_worldMountActor->pos.vx, g_worldMountActor->pos.vz, &x, &z, page * 2 + 1);
