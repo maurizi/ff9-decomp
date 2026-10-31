@@ -536,7 +536,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
     case 0x4E:
         arg0->atb = arg0->max->maxAtb;
         arg0->cmdIssued = 1;
-        btl_setCmd(arg0->cmd, BTL_CMD_SUMMON2, BTL_ABIL_TERRA_HOMING, (u16)arg2, 8);
+        btl_setCmd(arg0->cmd, BTL_CMD_SUMMON2, ABIL_TERRA_HOMING, (u16)arg2, 8);
         btlui_enable(1);
         btlui_setAtbEnabled(1);
         break;

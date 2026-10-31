@@ -147,7 +147,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         return;
     case BTL_CMD_ITEM:
     case BTL_CMD_AUTO_POTION:
-        btl_playCmdEffect(cmd, g_usableItemTable[cmd->subNo - 0xE0].unk0_8, 0);
+        btl_playCmdEffect(cmd, g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].unk0_8, 0);
         break;
     case BTL_CMD_THROW:
         /* padded: the first jump table is 8-aligned in its object */
@@ -207,29 +207,29 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         break;
     case BTL_CMD_EIDOLON:
         switch (cmd->subNo) {
-        case 0x31:
-            g_gameState->gameData->ctx.battle->eidolonAbility = 0x99;
+        case ABIL_SHIVA:
+            g_gameState->gameData->ctx.battle->eidolonAbility = ABIL_DIAMOND_DUST;
             break;
-        case 0x33:
-            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9A;
+        case ABIL_IFRIT:
+            g_gameState->gameData->ctx.battle->eidolonAbility = ABIL_FLAMES_OF_HELL;
             break;
-        case 0x35:
-            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9B;
+        case ABIL_RAMUH:
+            g_gameState->gameData->ctx.battle->eidolonAbility = ABIL_JUDGEMENT_BOLT;
             break;
-        case 0x37:
-            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9C;
+        case ABIL_ATOMOS:
+            g_gameState->gameData->ctx.battle->eidolonAbility = ABIL_WORM_HOLE;
             break;
-        case 0x3A:
-            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9D;
+        case ABIL_ODIN:
+            g_gameState->gameData->ctx.battle->eidolonAbility = ABIL_ZANTETSUKEN;
             break;
-        case 0x3C:
-            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9E;
+        case ABIL_LEVIATHAN:
+            g_gameState->gameData->ctx.battle->eidolonAbility = ABIL_TSUNAMI;
             break;
-        case 0x3E:
-            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9F;
+        case ABIL_BAHAMUT:
+            g_gameState->gameData->ctx.battle->eidolonAbility = ABIL_MEGA_FLARE;
             break;
-        case 0x40:
-            g_gameState->gameData->ctx.battle->eidolonAbility = 0xA0;
+        case ABIL_ARK:
+            g_gameState->gameData->ctx.battle->eidolonAbility = ABIL_ETERNAL_DARKNESS;
             break;
         }
     default:

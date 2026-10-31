@@ -289,7 +289,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     arg0->gil = 0;
                 }
                 btl_showMessage(BTL_MSG_DROPPED_GIL, gil);
-            } else if ((u8)btl_partyHasSupport(1, 0x4000) != 0) {
+            } else if ((u8)btl_partyHasSupport(1, SA_BIT(SA_FLEE_GIL)) != 0) {
                 g_btlRewards.fleeGil = 1;
                 g_btlRewards.gil = gil / 10;
             }

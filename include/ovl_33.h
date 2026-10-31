@@ -31,9 +31,6 @@ extern u8 s_menuAbilityCharCmds[][2];
 #define MENU_SCREEN_EQUIP   3
 #define MENU_NO_SLOT        0xFF /* party slot before the first member is shown */
 
-#define ABILITY_MAX           0x30 /* entries in a character's g_abilityRows ability row */
-#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
-#define SUPPORT_COUNT         0x40
 #define EQUIP_SLOT_COUNT      5    /* Character.equip: weapon first (it can't be removed) */
 
 /* ability states (menuAbility_getActionState, menuAbility_getSupportState), index into s_menuAbilityStateColor */
@@ -233,10 +230,6 @@ extern u16 s_menuAbilityTabCursorX[][2]; /* cursor x per slot */
 #endif
 #define SE_USE_ITEM 0x6A /* an ability was used (as ovl_37's item use) */
 #define SE_EQUIP    0x6B /* equipment or a support ability changed */
-#ifndef ITEM_NONE
-#define ITEM_NONE 0xFF /* empty item id / equipment slot */
-#endif
-#define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 g_labelAbility;
 extern s32 g_labelTarget;

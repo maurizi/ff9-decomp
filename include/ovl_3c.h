@@ -20,7 +20,6 @@ enum { SHOP_MODE_INIT, SHOP_MODE_UPDATE, SHOP_MODE_EXIT }; /* s_shopModes[kind][
 /* ShopBuy/ShopSynth/ShopSell.state: index into their input tables */
 enum { SHOP_ST_NONE, SHOP_ST_LIST, SHOP_ST_QUANTITY };
 #define SHOP_QUANTITY_STEP 10 /* Up/Down in the quantity window */
-#define ITEM_NONE      0xFF
 #define ITEM_MAX_COUNT 99
 #define GIL_MAX        9999999
 

@@ -158,7 +158,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         return 0;
     }
     {
-        if (u == cmd->caster && (u32)(cmd->cmdNo - 0x37) >= 7) {
+        if (u == cmd->caster && (u32)(cmd->cmdNo - BTL_CMD_ENEMY_REACT) >= 7) {
             cur = (s32)u->model->motion;
             if (cur == u->motions[10] || cur == u->motions[11]) {
                 u->model->motion = (BtlUnit9CC *)u->motions[9];

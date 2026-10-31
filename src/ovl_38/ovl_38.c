@@ -261,12 +261,12 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     }
     cur = c->ap[i];
     icon = 0xBC;
-    if (id < STATUS_SUPPORT_FIRST) {
+    if (id < ABILITY_SUPPORT_FIRST) {
         a = &s_menuStatusActionAbilities[id];
         name = s_menuStatusActionNames + a->nameOffset;
         flag = !(a->flags & 2);
     } else {
-        sup = &g_supportAbilities[id - STATUS_SUPPORT_FIRST];
+        sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
         name = s_menuStatusSupportNames + sup->unk2;
         if (chr_testSupportBit(c->supportAbilities, id)) {
             icon = 0xBD;
@@ -315,7 +315,7 @@ void menuStatus_setMember(s32 slot, s32 dir) {
     s_menuStatus.pageCount = 0;
     s_menuStatus.abilityCount = 0;
     if ((s32)(c->info.b.row) < 0x10) {
-        for (i = 0; i < STATUS_ABILITY_MAX; i++) {
+        for (i = 0; i < ABILITY_MAX; i++) {
             if (g_abilityRows[c->info.b.row][i].id != 0) {
                 s_menuStatus.abilityCount++;
             }

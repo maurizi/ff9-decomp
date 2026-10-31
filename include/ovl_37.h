@@ -21,10 +21,6 @@ enum { ITEM_TAB_USE, ITEM_TAB_ARRANGE, ITEM_TAB_KEY }; /* ItemMenu.tab */
 
 enum { KEY_VIEW_NONE, KEY_VIEW_OPENING, KEY_VIEW_SHOWN, KEY_VIEW_CLOSING }; /* ItemMenu.keyViewPhase */
 
-#define ITEM_SLOT_COUNT   0x100 /* GameData.items slots */
-#define KEY_ITEM_COUNT    0x50  /* key item ids (keyItem_has) */
-#define ITEM_FIRST_USABLE 0xE0  /* items from here have a use entry in g_usableItemTable */
-
 /* g_itemMenuText ids */
 #define ITEM_TEXT_USE          0   /* "Use", "Arrange", "Key": the tabs, + ITEM_TAB_* */
 #define ITEM_TEXT_AUTO         3   /* "Auto", "Manual" */
@@ -89,9 +85,6 @@ extern RECT s_menuItemArrangeRect;
 #define SE_CANCEL 0x65
 #endif
 #define SE_USE_ITEM 0x6A /* an item was used (menuItem_useOnTarget) */
-#ifndef ITEM_NONE
-#define ITEM_NONE 0xFF /* empty item id */
-#endif
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 typedef struct {

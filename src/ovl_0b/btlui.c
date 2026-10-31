@@ -172,7 +172,7 @@ s32 btl_isTargetWindowOpen(void) {
 }
 
 u8 *btl_getAbilityName(s32 arg0) {
-    if (arg0 >= 0xC0) {
+    if (arg0 >= ABILITY_SUPPORT_FIRST) {
         return NULL;
     }
     return g_gameState->gameData->ctx.battle->abilities[arg0].nameOfs + g_btlAbilityNames;
@@ -404,10 +404,10 @@ void btlui_linkSwdMagAbilities(Unk80104F88Entry *arg0) {
     s32 e;
     ItemInfo *it;
 
-    if (arg0->chr->info.b.id == 3) {
+    if (arg0->chr->info.b.id == CHR_STEINER) {
         for (i = 0; i < m->count; i++) {
             slot = g_btlCmdAbilities[m->first + i];
-            v = chr_findAbilitySlot(1, g_btlSwdMagSourceAbilities[i]);
+            v = chr_findAbilitySlot(CHR_VIVI, g_btlSwdMagSourceAbilities[i]);
             if (v >= 0) {
                 arg0->apCounters[slot] = &c->ap[v];
                 arg0->apNeeded[slot] = ab[v].ap;
@@ -1731,7 +1731,7 @@ void btlui_openList(Unk800EE37C *arg0) {
     g_btluiList.trance = arg0->trance;
     g_btluiList.doubleCast = 0;
     g_btluiList.label2Width = (arg0->label2 != 0) ? ui_measureLabel((u8 *)arg0->label2) : 0;
-    g_btluiList.halfMp = chr_hasSupportAbility((g_btluiList.unit->flags >> 1) & 0xF, 0xE2);
+    g_btluiList.halfMp = chr_hasSupportAbility((g_btluiList.unit->flags >> 1) & 0xF, SA_HALF_MP);
     n = g_btluiList.cmd->count;
     menuList_init(&l, n, (n < 5) ? n : 4, 1, 0x44);
     f = (g_gameState->config >> 2) & 1;
@@ -2076,7 +2076,7 @@ s32 btlui_resolveAbility(s32 arg0) {
             break;
         }
     } else if (arg0 == 0x42) {
-        t = g_btluiList.unit->menu->chr->equip[4] == 0xDE;
+        t = g_btluiList.unit->menu->chr->equip[4] == ITEM_MAIDEN_PRAYER;
         arg0 = t + 0x42;
     }
     return arg0;
@@ -2154,7 +2154,7 @@ void btlui_startTargetSelect(Unk800EF80C *arg0) {
     g_btlTarget.doubleCast = arg0->doubleCast;
     g_btlTarget.targetAll = g_btluiTargetAllByType[g_btlTarget.targetType];
     g_btlTarget.windowOpen = 0;
-    g_btlTarget.halfMp = chr_hasSupportAbility((g_btlTarget.unit->flags >> 1) & 0xF, 0xE2);
+    g_btlTarget.halfMp = chr_hasSupportAbility((g_btlTarget.unit->flags >> 1) & 0xF, SA_HALF_MP);
     g_btlTarget.trance = arg0->trance;
     g_btlTarget.unk7 = (u32)(arg0->targetType - 6) < 3;
     g_btlTarget.canSwitchSide = arg0->targetType == 0 || arg0->targetType == 3 || arg0->targetType == 9 || arg0->targetType == 6;

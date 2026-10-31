@@ -692,7 +692,7 @@ void btl_showCmdName(BtlCmd *arg0) {
         s = g_gameState->gameData->ctx.battle->work->texts + arg0->ability->nameOfs;
         break;
     default:
-        if (arg0->subNo < 0xC0) {
+        if (arg0->subNo < ABILITY_SUPPORT_FIRST) {
             t = g_btlCmdNameMap[arg0->subNo];
             switch (t) {
             case 0:
