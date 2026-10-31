@@ -763,7 +763,7 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
                 k = s->nameSlide * 0xC - 0x78;
                 r.x -= k;
                 text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)card_getName(c->id), 0);
-                win_drawBox(&r, 5, 2);
+                win_drawBox(&r, 5, WIN_STYLE_BEVEL);
             }
             if (pad & BTN_CROSS) {
                 s->task = TM_TASK_PLAYER_SET;
@@ -882,7 +882,7 @@ void tm_taskResult(TmState *s) {
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x59;
                 r.h = 0x2B;
-                s->infoWin = win_openFree(&r, 5, 2);
+                s->infoWin = win_openFree(&r, 5, WIN_STYLE_BEVEL);
                 win_setDrawContent(s->infoWin, tm_drawDrawWin);
                 win_setShadow(s->infoWin, 1);
                 tm_waitWindow(s->infoWin);
@@ -955,7 +955,7 @@ void tm_taskTryAgain(TmState *s) {
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x5B;
                     r.h = 0x2B;
-                    s->less5Win = win_openFree(&r, 6, 2);
+                    s->less5Win = win_openFree(&r, 6, WIN_STYLE_BEVEL);
                     win_setDrawContent(s->less5Win, tm_drawLess5Win);
                     win_setShadow(s->less5Win, 1);
                     tm_waitWindow(s->less5Win);
@@ -1087,7 +1087,7 @@ void tm_stockInput(TmState *s) {
                 r.y = 0x54;
                 r.h = 0x38;
                 s->quitChoice = 1;
-                s->quitWin = win_openFree(&r, 5, 2);
+                s->quitWin = win_openFree(&r, 5, WIN_STYLE_BEVEL);
                 win_setDrawContent(s->quitWin, tm_drawQuitWin);
                 win_setShadow(s->quitWin, 1);
                 tm_waitWindow(s->quitWin);
@@ -1136,7 +1136,7 @@ void tm_stockInput(TmState *s) {
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x53;
                     r.h = 0x3A;
-                    s->msgWin = win_openFree(&r, 6, 2);
+                    s->msgWin = win_openFree(&r, 6, WIN_STYLE_BEVEL);
                     win_setDrawContent(s->msgWin, tm_drawConfirmWin);
                     win_setShadow(s->msgWin, 1);
                     tm_waitWindow(s->msgWin);
@@ -1152,7 +1152,7 @@ void tm_stockInput(TmState *s) {
         r.h = 0x38;
         r.y = 0x35;
         s->cursor = 1;
-        s->infoWin = win_openFree(&r, 5, 2);
+        s->infoWin = win_openFree(&r, 5, WIN_STYLE_BEVEL);
         win_setDrawContent(s->infoWin, tm_drawDiscardWin);
         win_setShadow(s->infoWin, 1);
         tm_waitWindow(s->infoWin);
@@ -1514,7 +1514,7 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
     r2.y = sel->y - 9;
     r2.h = 0x19;
     text_drawBlock(0x5A, r2.y + 6, 3, buf, 0);
-    win_drawBox(&r2, 3, 2);
+    win_drawBox(&r2, 3, WIN_STYLE_BEVEL);
     return p;
 }
 
@@ -2493,7 +2493,7 @@ void tm_nextTrade(TmState *s) {
             r.x = 0xA0 - r.w / 2;
             r.y = 0x5B;
             r.h = 0x2A;
-            s->infoWin = win_openFree(&r, 5, 2);
+            s->infoWin = win_openFree(&r, 5, WIN_STYLE_BEVEL);
             win_setDrawContent(s->infoWin, tm_drawOver100Win);
             win_setShadow(s->infoWin, 1);
             tm_waitWindow(s->infoWin);
@@ -2581,7 +2581,7 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
     r.y = 0x96;
     r.w = w;
     r.h = 0x1A;
-    s->msgWin = win_openFree(&r, 5, 2);
+    s->msgWin = win_openFree(&r, 5, WIN_STYLE_BEVEL);
     win_setDrawContent(s->msgWin, tm_drawTradeWin);
     win_setShadow(s->msgWin, 1);
     tm_waitWindow(s->msgWin);
@@ -4868,7 +4868,7 @@ void tm_askRematch(TmState *arg0) {
         r.x = 0xA0 - r.w / 2;
         r.y = 0x54;
         r.h = 0x39;
-        arg0->msgWin = win_openFree(&r, 5, 2);
+        arg0->msgWin = win_openFree(&r, 5, WIN_STYLE_BEVEL);
         win_setDrawContent(arg0->msgWin, tm_drawRematchWin);
         win_setShadow(arg0->msgWin, 1);
         tm_waitWindow(arg0->msgWin);

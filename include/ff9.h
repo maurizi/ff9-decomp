@@ -754,9 +754,9 @@ typedef struct Window {
     s16 stepW; /* per-frame width step of the open/close animation (win_setOpenAnim, win_stepOpen) */
     s16 stepH; /* per-frame height step */
     s16 otz; /* OT layer (win_init otz), passed to every draw call */
-    u8 style; /* 3 = balloon with tail (runtime: "Sure is dark..." balloon) */
+    u8 style; /* WIN_STYLE_* (runtime: the "Sure is dark..." balloon is WIN_STYLE_BALLOON) */
     u8 slot; /* index in g_windows */
-    u8 state; /* 3 open, 2 = fire callback */
+    u8 state; /* WIN_STATE_* */
     u8 translucent;
     u8 active; /* nonzero: draw the content, bright title (0 dims it: the battle command window while a list is open) */
     u8 shadow;
@@ -764,7 +764,7 @@ typedef struct Window {
     s8 titleY;
     u8 visible;
     s32 title;
-    u8 animMode; /* open/close animation, 2 = tail */
+    u8 animMode; /* open/close animation, WIN_ANIM_* */
     u8 tailMode; /* feeds the open steps */
     s16 tailX; /* tail x (runtime: poking it moves the tail) */
     s16 stepLeft; /* per-frame step of the left edge when the window opens around its tail (win_setTail) */
@@ -777,6 +777,24 @@ typedef struct Window {
     s32 userData; /* user data: msg_open stores its MsgWindow, battle_end the learn-window slot */
 } Window; /* 0x54 */
 extern Window g_windows[10];
+/* Window styles: Window.style, the style argument of win_open/win_openFree/win_drawBox/win_drawBoxEx, and the
+ * index of g_winClipInsets (win_setClip), g_winShadowFuncs (win_drawShadow) and g_winStyleOpenAnim */
+#define WIN_STYLE_LINE 0 /* line border (win_drawLineBorder); rect shadow; opens with WIN_ANIM_UNROLL */
+#define WIN_STYLE_LINE_RULE 1 /* line border under a rule along the top edge (ui_drawRule); rect shadow; WIN_ANIM_UNROLL */
+#define WIN_STYLE_BEVEL 2 /* bevelled border (win_drawBorder); slanted shadow; WIN_ANIM_ZOOM */
+#define WIN_STYLE_BALLOON 3 /* speech balloon border with a tail (win_drawBalloonBorder); shadow on by default; WIN_ANIM_ZOOM */
+#define WIN_STYLE_FRAMELESS 4 /* no frame, no shadow, no tail (win_drawAll, win_setTail); WIN_ANIM_NONE */
+/* Window.state (win_updateAll) */
+#define WIN_STATE_CLOSED 0 /* free slot */
+#define WIN_STATE_OPENING 1 /* win_stepOpen each frame */
+#define WIN_STATE_CLOSING 2 /* win_stepClose each frame; win_reapClosed frees it */
+#define WIN_STATE_OPEN 3
+/* Window.animMode: win_setOpenAnim / win_setCloseAnim modes */
+#define WIN_ANIM_ZOOM 0 /* grow from the centre in both directions */
+#define WIN_ANIM_UNROLL 1 /* grow downwards from the top edge */
+#define WIN_ANIM_TAIL 2 /* grow around the balloon tail (win_setTail) */
+#define WIN_ANIM_NONE 3 /* open (or close) at once */
+#define WIN_ANIM_ZOOM_X 4 /* grow from the centre horizontally only */
 
 void win_setOpenAnim(Window *, s32);
 void win_setCloseAnim(Window *, s32);
@@ -2183,8 +2201,8 @@ Window *win_init(RECT *, s32, s32, Window *);
 
 /* Inlined copy of win_close (close window). */
 static inline void win_close_inline(Window *w) {
-    if (w != NULL && w->state != 0 && w->state != 2) {
-        w->state = 2;
+    if (w != NULL && w->state != WIN_STATE_CLOSED && w->state != WIN_STATE_CLOSING) {
+        w->state = WIN_STATE_CLOSING;
         if (g_drawBufs.uiMode != 2) {
             win_setCloseAnim(w, w->animMode);
         }
@@ -3142,7 +3160,7 @@ typedef struct {
     s32 unk8;
 } Unk8006BD04;
 extern Unk8006BD04 g_fadeTypes[];
-extern u8 g_winStyleOpenAnim[]; /* window style -> colour */
+extern u8 g_winStyleOpenAnim[]; /* WIN_STYLE_* -> WIN_ANIM_* (win_init) */
 typedef struct {
     u8 unk0[8];
 } Bytes8;

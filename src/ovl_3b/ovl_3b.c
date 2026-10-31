@@ -96,8 +96,8 @@ void menuParty_drawParty(void) {
                           i >= s_menuParty.size ? 2 : 0);
         }
     }
-    win_drawBox(&s_menuPartyListRect, 7, 2);
-    win_drawShadow(&s_menuPartyListRect, 7, 2);
+    win_drawBox(&s_menuPartyListRect, 7, WIN_STYLE_BEVEL);
+    win_drawShadow(&s_menuPartyListRect, 7, WIN_STYLE_BEVEL);
 }
 
 void menuParty_drawInfo(void) {
@@ -108,8 +108,8 @@ void menuParty_drawInfo(void) {
 
     ui_drawLabel(s_menuPartyInfoRect.x + 0xC, s_menuPartyInfoRect.y - 3, 7, g_labelInfo, 0);
     ui_drawEtchedLine(s_menuPartyInfoRect.x + 4, s_menuPartyInfoRect.y + 0x35, 8, s_menuPartyInfoRect.w - 8);
-    win_drawBox(&s_menuPartyInfoRect, 8, 1);
-    win_drawShadow(&s_menuPartyInfoRect, 9, 1);
+    win_drawBox(&s_menuPartyInfoRect, 8, WIN_STYLE_LINE_RULE);
+    win_drawShadow(&s_menuPartyInfoRect, 9, WIN_STYLE_LINE_RULE);
     id = s_menuParty.slots[s_menuParty.cursor[s_menuParty.mode].row][s_menuParty.cursor[s_menuParty.mode].idx];
     if (id != PARTY_EMPTY) {
         menuParty_drawMember(s_menuPartyInfoRect.x + 0x10, s_menuPartyInfoRect.y + 6, 6, id);
@@ -220,15 +220,15 @@ void menuParty_draw(void) {
 }
 
 void menuParty_drawTitle(void) {
-    win_drawBox(&s_menuPartyTitleRect, 8, 2);
-    win_drawShadow(&s_menuPartyTitleRect, 8, 2);
+    win_drawBox(&s_menuPartyTitleRect, 8, WIN_STYLE_BEVEL);
+    win_drawShadow(&s_menuPartyTitleRect, 8, WIN_STYLE_BEVEL);
     text_drawBlock(s_menuPartyTitleRect.x + 9, s_menuPartyTitleRect.y + 6, 6, text_get(PARTY_TEXT_TITLE), 0);
 }
 
 void menuParty_drawHelp(void) {
     ui_drawLabel(s_menuPartyHelpRect.x + 0xC, s_menuPartyHelpRect.y - 3, 8, g_labelHelp, 0);
-    win_drawBox(&s_menuPartyHelpRect, 8, 1);
-    win_drawShadow(&s_menuPartyHelpRect, 9, 1);
+    win_drawBox(&s_menuPartyHelpRect, 8, WIN_STYLE_LINE_RULE);
+    win_drawShadow(&s_menuPartyHelpRect, 9, WIN_STYLE_LINE_RULE);
     text_drawBlock(s_menuPartyHelpRect.x + 0x12, s_menuPartyHelpRect.y + 6, 6, text_get(s_menuParty.size), 0);
 }
 

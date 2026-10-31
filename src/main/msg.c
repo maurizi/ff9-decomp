@@ -836,11 +836,11 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     r.y = w->y;
     r.w = w->w + 3;
     r.h = w->h + 3;
-    style = 4;
+    style = WIN_STYLE_FRAMELESS;
     if (!(l->tailMode & 0x10)) {
-        style = 3;
+        style = WIN_STYLE_BALLOON;
         if (l->tailOffset == 0 && !(flags & 4)) {
-            style = 2;
+            style = WIN_STYLE_BEVEL;
         }
     }
     w->window = win_open(&r, 2, style, id);
@@ -852,7 +852,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
             win_setTail(w->window, l->tailMode & 3, l->tailOffset);
         }
         if (g_msgLayoutAltOpen != 0) {
-            win_setOpenAnim(w->window, 3);
+            win_setOpenAnim(w->window, WIN_ANIM_NONE);
         }
         if (flags & 0x40) {
             win_setTitle(w->window, (s32)g_msgAteTitle);

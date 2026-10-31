@@ -214,12 +214,12 @@ void menuAbility_drawPlayer(void) {
     box.x = r->x + 0x72;
     box.y = r->y + 4;
     ui_drawStatusIcons(box.x + 3, box.y + 4, 0x1D, c->status, 0);
-    win_drawBox(&box, 0x1D, 0);
+    win_drawBox(&box, 0x1D, WIN_STYLE_LINE);
     if (s_menuAbility.tab == ABILITY_TAB_SUPPORT) {
         ui_drawStones(box.x + 0x19, box.y + 0x14, 0x1D, c->stones, c->maxStones);
     }
     ui_drawLabel(r->x + 6, r->y - 3, 0x1D, g_labelPlayer, 0);
-    win_drawBox(r, 0x1D, 1);
+    win_drawBox(r, 0x1D, WIN_STYLE_LINE_RULE);
 }
 
 void menuAbility_drawInfo(void) {
@@ -238,7 +238,7 @@ void menuAbility_drawInfo(void) {
     l = &s_menuAbility.lists[s_menuAbility.tab];
     n = (l->top + l->cursor) * 2 + l->col;
     ui_drawLabel(r->x + 6, r->y - 3, 0x1D, g_labelInfo, 0);
-    win_drawBox(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
     text_drawBlock(r->x + 8, r->y + 8, 0x1C, text_get(ABILITY_TEXT_AP), 0);
     text_drawBlock(r->x + 8, r->y + 0x16, 0x1C, text_get(ABILITY_TEXT_EQUIP), 0);
     if (s_menuAbility.state == ABILITY_STATE_TABS || s_menuAbility.state == ABILITY_STATE_SWITCH || s_menuAbility.state == ABILITY_STATE_BUSY || l->count == 0) {
@@ -289,7 +289,7 @@ void menuAbility_drawCommand(void) {
             }
         }
         ui_drawLabel(r->x + 6, r->y - 3, 0x1B, g_labelCommand, 0);
-        win_drawBox(r, 0x1B, 2);
+        win_drawBox(r, 0x1B, WIN_STYLE_BEVEL);
     }
 }
 
@@ -310,7 +310,7 @@ void menuAbility_drawList(void) {
     win_drawListBox(r, 0x1D, 1, l);
     if (l->count != 0) {
         menuList_getView(l, &view);
-        win_setClip(NULL, 0x1C, 1);
+        win_setClip(NULL, 0x1C, WIN_STYLE_LINE_RULE);
         idx = view.first * 2;
         for (row = 0; row < view.rows; row++) {
             for (col = 0; col < 2; col++) {
@@ -319,10 +319,10 @@ void menuAbility_drawList(void) {
         }
         if (l->scroll & 4) {
             menuList_getRowsRect(l, r, &sub);
-            win_setClip(&sub, 0x1C, 1);
+            win_setClip(&sub, 0x1C, WIN_STYLE_LINE_RULE);
             menuAbility_drawScrollRows();
         }
-        win_setClip(r, 0x1C, 1);
+        win_setClip(r, 0x1C, WIN_STYLE_LINE_RULE);
     }
 }
 
@@ -333,7 +333,7 @@ void menuAbility_drawTargetWindow(void) {
 
     if (m->targetWinOpen != 0) {
         ui_drawLabel(r->x + 8, r->y - 3, 0x14, g_labelTarget, 0);
-        win_drawBox(r, 0x14, 2);
+        win_drawBox(r, 0x14, WIN_STYLE_BEVEL);
         for (i = 0; i < 4; i++) {
             if (g_gameState->gameData->party[i] != NULL) {
                 ui_drawMemberSummary(r->x + 8, r->y + 6 + i * 0x2B, 0x13, i, s_menuAbility.targetMode);
@@ -740,7 +740,7 @@ void menuAbility_drawTabs(void) {
     s32 i;
 
     r = &s_menuAbility.tabRect;
-    win_drawBox(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
     for (i = 0; i < 2; i++) {
         text_drawBlock(r->x + s_menuAbilityTabX[i], r->y + 6, 0x1C, text_get(i), s_menuAbility.tabEnabled[i] == 0 ? 2 : 0);
     }

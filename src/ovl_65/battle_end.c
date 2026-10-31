@@ -190,8 +190,8 @@ void rewards_drawInfo(void) {
     RECT *r = &s_rewards.wins[0].rect;
     s32 x, y;
     ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelInfo, 0);
-    win_drawBox(r, 0xB, 1);
-    win_drawShadow(r, 0xC, 1);
+    win_drawBox(r, 0xB, WIN_STYLE_LINE_RULE);
+    win_drawShadow(r, 0xC, WIN_STYLE_LINE_RULE);
     x = r->x;
     y = r->y;
     s_rewards.prim = text_buildBlock(x + 0x13, y + 6, g_ot + 10,
@@ -240,8 +240,8 @@ void rewards_drawMembers(void) {
                 ui_drawSmallDigits(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
                 text_drawBlock(r->x + 0x29, r->y + 0x26, 0xB, text_get(REWARDS_TEXT_NEXT), col);
             }
-            win_drawBox(r, 0xB, 0);
-            win_drawShadow(r, 0xC, 0);
+            win_drawBox(r, 0xB, WIN_STYLE_LINE);
+            win_drawShadow(r, 0xC, WIN_STYLE_LINE);
         }
     }
 }
@@ -252,8 +252,8 @@ void rewards_drawExp(void) {
     s32 x, y;
 
     if (s_rewards.winShown[6] != 0) {
-        win_drawBox(r, 0xB, 2);
-        win_drawShadow(r, 0xC, 2);
+        win_drawBox(r, 0xB, WIN_STYLE_BEVEL);
+        win_drawShadow(r, 0xC, WIN_STYLE_BEVEL);
         text_formatNumber(s_rewards.rewards.expEach, buf, 6, 1);
         x = r->x;
         y = r->y;
@@ -270,8 +270,8 @@ void rewards_drawAp(void) {
     s32 x, y;
 
     if (s_rewards.winShown[7] != 0) {
-        win_drawBox(r, 0xB, 2);
-        win_drawShadow(r, 0xC, 2);
+        win_drawBox(r, 0xB, WIN_STYLE_BEVEL);
+        win_drawShadow(r, 0xC, WIN_STYLE_BEVEL);
         text_formatNumber(s_rewards.rewards.ap, buf, 3, 1);
         x = r->x;
         y = r->y;
@@ -292,8 +292,8 @@ void rewards_drawReceivedGil(void) {
         gil = 999999;
     }
     if (s_rewards.winShown[8] != 0) {
-        win_drawBox(r, 0xE, 2);
-        win_drawShadow(r, 0xF, 2);
+        win_drawBox(r, 0xE, WIN_STYLE_BEVEL);
+        win_drawShadow(r, 0xF, WIN_STYLE_BEVEL);
         text_formatNumber(gil, buf, 6, 1);
         strcat(buf, s_rewardsGilUnit);
         x = r->x;
@@ -315,8 +315,8 @@ void rewards_drawCurrentGil(void) {
         gil = GIL_MAX;
     }
     if (s_rewards.winShown[9] != 0) {
-        win_drawBox(r, 0xE, 2);
-        win_drawShadow(r, 0xF, 2);
+        win_drawBox(r, 0xE, WIN_STYLE_BEVEL);
+        win_drawShadow(r, 0xF, WIN_STYLE_BEVEL);
         text_formatNumber(gil, buf, 7, 1);
         strcat(buf, s_rewardsGilUnit2);
         x = r->x;
@@ -371,7 +371,7 @@ void rewards_moveMemberWins(void) {
     for (i = 0; i < 4; i++) {
         if (s_rewards.getsExp[i] != 0) {
             w = s_rewards.levelWins[i].win;
-            if (w != NULL && w->state != 0) {
+            if (w != NULL && w->state != WIN_STATE_CLOSED) {
                 tx = w->x - 0x26;
                 dx = s_rewards.wins[i + 2].rect.x - tx;
                 ty = w->y - 2;
@@ -678,8 +678,8 @@ void rewards_drawHelp(void) {
     s32 x, y;
     RECT *r = &s_rewards.wins[1].rect;
     ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelHelp, 0);
-    win_drawBox(r, 0xB, 1);
-    win_drawShadow(r, 0xC, 1);
+    win_drawBox(r, 0xB, WIN_STYLE_LINE_RULE);
+    win_drawShadow(r, 0xC, WIN_STYLE_LINE_RULE);
     x = r->x;
     y = r->y;
     s_rewards.prim = text_buildBlock(x + 0x13, y + 6, g_ot + 10,
@@ -844,17 +844,17 @@ void rewards_updateLearnWins(void) {
                         rr->y = r->y + 0x1B;
                         rr->w = 0x70;
                         rr->h = 0x19;
-                        w->win = win_openFree(rr, 6, 2);
+                        w->win = win_openFree(rr, 6, WIN_STYLE_BEVEL);
                         w->win->userData = i;
                         win_setTitle(w->win, (s32)s_rewardsLearnLabel);
                         win_setDrawContent(w->win, rewards_drawLearnWin);
                         win_setOnClosed(w->win, rewards_onLearnWinClosed);
-                        win_setOpenAnim(w->win, 0);
+                        win_setOpenAnim(w->win, WIN_ANIM_ZOOM);
                         snd_playSe(SE_LEARN);
                         w->queued--;
                     }
                 } else if (++w->timer >= 0x40) {
-                    win_setCloseAnim(w->win, 0);
+                    win_setCloseAnim(w->win, WIN_ANIM_ZOOM);
                     win_close(w->win);
                     w->delay = 4;
                     w->timer = 0;
@@ -1357,10 +1357,10 @@ u8 rewards_addItems(void) {
         rr.y = s_rewards.itemsWin->y + ((s_rewards.itemsWin->h - k - ts.h) >> 1);
         rr.w = ts.w + 0x10;
         rr.h = ts.h + 0xF;
-        ws->win = win_openFree(&rr, 6, 2);
+        ws->win = win_openFree(&rr, 6, WIN_STYLE_BEVEL);
         win_setDrawContent(ws->win, rewards_drawFullWarning);
         win_setOnClosed(ws->win, (void (*)(Window *))rewards_onFullWarningClosed);
-        win_setOpenAnim(ws->win, 0);
+        win_setOpenAnim(ws->win, WIN_ANIM_ZOOM);
         win_setShadow(ws->win, 1);
         win_setTitle(ws->win, g_labelWarning);
     }
@@ -1425,7 +1425,7 @@ u8 rewards_tryAddItems(void) {
             ret = 1;
         }
     } else {
-        win_setCloseAnim(s_rewards.fullWin.win, 0);
+        win_setCloseAnim(s_rewards.fullWin.win, WIN_ANIM_ZOOM);
         win_close(s_rewards.fullWin.win);
         ret = 1;
     }
@@ -1438,7 +1438,7 @@ u8 rewards_tryAddItems(void) {
 }
 
 void rewards_openItemsWin(void) {
-    s_rewards.itemsWin = win_openFree(&s_rewardsItemsRect, 0xE, 1);
+    s_rewards.itemsWin = win_openFree(&s_rewardsItemsRect, 0xE, WIN_STYLE_LINE_RULE);
     win_setDrawContent(s_rewards.itemsWin, rewards_drawItems);
     win_setDrawOverlay(s_rewards.itemsWin, rewards_drawItemsLabels);
     win_setShadow(s_rewards.itemsWin, 1);

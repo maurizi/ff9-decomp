@@ -160,16 +160,16 @@ void menuName_drawPortrait(void) {
     SetDrawTPage(g_primPtr, 0, 1, 0x9F);
     addPrim(&g_ot[4], g_primPtr);
     g_primPtr += 8;
-    win_drawBox(s_menuNamePortraitWin, 6, 0);
-    win_drawShadow(s_menuNamePortraitWin, 6, 0);
+    win_drawBox(s_menuNamePortraitWin, 6, WIN_STYLE_LINE);
+    win_drawShadow(s_menuNamePortraitWin, 6, WIN_STYLE_LINE);
 }
 
 void menuName_drawCommands(void) {
     s32 i;
 
     ui_drawEtchedLine(s_menuNameCommandWin->x + 4, s_menuNameCommandWin->y + 0x2A, 5, s_menuNameCommandWin->w - 9);
-    win_drawBox(s_menuNameCommandWin, 5, 2);
-    win_drawShadow(s_menuNameCommandWin, 5, 2);
+    win_drawBox(s_menuNameCommandWin, 5, WIN_STYLE_BEVEL);
+    win_drawShadow(s_menuNameCommandWin, 5, WIN_STYLE_BEVEL);
     for (i = 0; i < 2; i++) {
         text_drawBlock(s_menuNameCommandWin->x + 0xA, s_menuNameCommandWin->y + 9 + i * 0x10, 4, text_get(i + NAME_TEXT_ALPHABET),
                       s_menuName.charSet == i ? 4 : 0);
@@ -194,8 +194,8 @@ void menuName_drawNameWindow(void) {
     }
     ui_drawLabel(s_menuNameNameWin->x + 0x23, s_menuNameNameWin->y - 4, 5, g_labelName, 0);
     ui_drawEtchedLine(s_menuNameNameWin->x + 4, s_menuNameNameWin->y + 0x1A, 6, s_menuNameNameWin->w - 8);
-    win_drawBox(s_menuNameNameWin, 6, 1);
-    win_drawShadow(s_menuNameNameWin, 6, 1);
+    win_drawBox(s_menuNameNameWin, 6, WIN_STYLE_LINE_RULE);
+    win_drawShadow(s_menuNameNameWin, 6, WIN_STYLE_LINE_RULE);
     for (i = 0; i < 7; i++) {
         if (cursor != i || (g_menu.frame & 4)) {
             for (j = 0; j < 2; j++) {
@@ -301,14 +301,14 @@ void menuName_inputCommands(void) {
 }
 
 void menuName_drawTitle(void) {
-    win_drawBox(s_menuNameTitleWin, 6, 2);
-    win_drawShadow(s_menuNameTitleWin, 6, 2);
+    win_drawBox(s_menuNameTitleWin, 6, WIN_STYLE_BEVEL);
+    win_drawShadow(s_menuNameTitleWin, 6, WIN_STYLE_BEVEL);
     text_drawBlock(s_menuNameTitleWin->x + 0xA, s_menuNameTitleWin->y + 6, 5, text_get(NAME_TEXT_TITLE), 0);
 }
 
 void menuName_drawHelp(void) {
-    win_drawBox(s_menuNameHelpWin, 7, 1);
-    win_drawShadow(s_menuNameHelpWin, 7, 1);
+    win_drawBox(s_menuNameHelpWin, 7, WIN_STYLE_LINE_RULE);
+    win_drawShadow(s_menuNameHelpWin, 7, WIN_STYLE_LINE_RULE);
     text_drawBlock(s_menuNameHelpWin->x + 0x3E, s_menuNameHelpWin->y + 6, 6, text_get(NAME_TEXT_PROMPT), 0);
     ui_drawLabel(s_menuNameHelpWin->x + 0x23, s_menuNameHelpWin->y - 4, 6, g_labelHelp, 0);
 }

@@ -100,7 +100,7 @@ void menuCard_openDiscard(void) {
         snd_playSe(SE_CURSOR);
         s_menuCard.state = CARD_ST_NONE;
         s_menuCard.discardCursor = CARD_DISCARD_NO;
-        s_menuCard.discardWin = win_openFree(&s_menuCardDiscardRect, 10, 2);
+        s_menuCard.discardWin = win_openFree(&s_menuCardDiscardRect, 10, WIN_STYLE_BEVEL);
         win_setDrawContent(s_menuCard.discardWin, menuCard_drawDiscardWindow);
         win_setOnOpened(s_menuCard.discardWin, menuCard_onDiscardOpened);
         win_setOnClosed(s_menuCard.discardWin, menuCard_onDiscardClosed);
@@ -130,8 +130,8 @@ void menuCard_drawGrid(void) {
     a = card_countAll();
     b = card_countKinds();
     ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelCard, 0);
-    win_drawBox(r, 0x1E, 1);
-    win_drawShadow(r, 0x1E, 1);
+    win_drawBox(r, 0x1E, WIN_STYLE_LINE_RULE);
+    win_drawShadow(r, 0x1E, WIN_STYLE_LINE_RULE);
     s = text_get(CARD_TEXT_STOCK);
     w = text_measureWidth(s);
     text_formatNumber(a, buf, 3, 1);
@@ -177,8 +177,8 @@ void menuCard_drawInfo(void) {
     }
     rank = s_menuCard.rank;
     ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelInfo, 0);
-    win_drawBox(r, 0x1E, 2);
-    win_drawShadow(r, 0x1F, 2);
+    win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1F, WIN_STYLE_BEVEL);
     ui_drawEtchedLine(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
     text_formatNumber(s_menuCard.points[CARD_PTS_TOTAL], buf, 4, 1);
     text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(CARD_TEXT_COLLECTORS), 0);
@@ -257,8 +257,8 @@ void menuCard_drawCardStack(s32 id) {
 
         }
     }
-    win_drawBox(r, 0x1E, 2);
-    win_drawShadow(r, 0x1F, 2);
+    win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1F, WIN_STYLE_BEVEL);
 }
 
 void menuCard_drawCellHighlight(void) {
@@ -626,8 +626,8 @@ void menuCard_drawCardInfo(void) {
             } while (0);
         }
     }
-    win_drawBox(r, 0x1E, 2);
-    win_drawShadow(r, 0x1F, 2);
+    win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1F, WIN_STYLE_BEVEL);
 }
 
 void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {

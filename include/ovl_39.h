@@ -506,10 +506,6 @@ typedef union { s32 w; u16 h; } Crc16;
 #ifndef CFG_BIT_WINDOW_COLOR
 #define CFG_BIT_WINDOW_COLOR 18
 #endif
-/* Window.unk1C once win_stepOpen has fully opened the window */
-#ifndef WIN_OPEN
-#define WIN_OPEN 3
-#endif
 #ifndef SEEK_CUR
 #define SEEK_CUR 1
 #endif

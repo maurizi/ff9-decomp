@@ -43,7 +43,7 @@ void ui_drawMemberHeader(s32 x, s32 y, s32 otz, MemberSwitch *s) {
         r1.x = x;
         r1.y = y;
         r1.h = 0x2E;
-        win_setClip(NULL, otz, 4);
+        win_setClip(NULL, otz, WIN_STYLE_FRAMELESS);
         d = 11 - s->frame;
         if (s->dir == 1) {
             t = -(d * 3);
@@ -57,7 +57,7 @@ void ui_drawMemberHeader(s32 x, s32 y, s32 otz, MemberSwitch *s) {
         r2.h = 0x32;
         win_drawLineBorder(&r2, otz, 0, CONFIG_WINDOW_COLOR());
         ui_drawPartyPortrait(px, y, otz, s->nextMember, b->hp == 0);
-        win_setClip(&r1, otz, 4);
+        win_setClip(&r1, otz, WIN_STYLE_FRAMELESS);
         ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->gameData->party[s->nextMember]);
     } else {
         ui_drawCharStatus(x + 0x26, y + 3, otz, a);
@@ -877,7 +877,7 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
     r.y = y + 0x18;
     r.w = 0x60;
     r.h = 0x12;
-    win_drawBox(&r, otz, 0);
+    win_drawBox(&r, otz, WIN_STYLE_LINE);
 }
 
 u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {

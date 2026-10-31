@@ -34,7 +34,7 @@ void menuConfig_drawRows(void) {
     s32 i;
     MenuList *l = &s_menuConfig.list;
 
-    win_setClip(NULL, 0x17, 4);
+    win_setClip(NULL, 0x17, WIN_STYLE_FRAMELESS);
     menuConfig_getListView(l, &sp);
     i = 0;
     r.x = 8;
@@ -44,7 +44,7 @@ void menuConfig_drawRows(void) {
     for (; i < sp.rows; i++) {
         r.y = i * 0x14 + (s16)(sp.y + 0x2A);
         menuConfig_drawRow(&r, 0x17, sp.first + i);
-        win_drawBox(&r, 0x17, 0);
+        win_drawBox(&r, 0x17, WIN_STYLE_LINE);
     }
     if (l->scroll & 4) {
         a.x = 8;
@@ -52,12 +52,12 @@ void menuConfig_drawRows(void) {
         a.w = 0x12C;
         a.h = 0xA8C;
         menuConfig_getScrollClip(l, &a, &b);
-        win_setClip(&b, 0x17, 4);
+        win_setClip(&b, 0x17, WIN_STYLE_FRAMELESS);
         menuConfig_drawScrollRows();
     }
     r.y = 0x2A;
     r.h = 0xB4;
-    win_setClip(&r, 0x17, 4);
+    win_setClip(&r, 0x17, WIN_STYLE_FRAMELESS);
 }
 
 void menuConfig_inputList(void) {
@@ -574,7 +574,7 @@ void menuConfig_drawScrollRows(void) {
     for (; i < sp.rows; i++) {
         r.y = i * 0x14 + (s16)(sp.y + 0x2A);
         menuConfig_drawRow(&r, 0x17, sp.first + i);
-        win_drawBox(&r, 0x17, 0);
+        win_drawBox(&r, 0x17, WIN_STYLE_LINE);
     }
 }
 
@@ -663,8 +663,8 @@ void menuConfig_drawSubWindows(void) {
 
     i = s_menuConfig.list.top + s_menuConfig.list.cursor;
     if (s_menuConfig.editing != 0) {
-        win_drawBox(&s_menuConfig.wins[0].rect, 0x12, 2);
-        win_drawBox(&s_menuConfig.wins[1].rect, 0x12, 2);
+        win_drawBox(&s_menuConfig.wins[0].rect, 0x12, WIN_STYLE_BEVEL);
+        win_drawBox(&s_menuConfig.wins[1].rect, 0x12, WIN_STYLE_BEVEL);
         if (i == CONFIG_ROW_CONTROLLER) {
             menuConfig_drawPadMap();
             return;

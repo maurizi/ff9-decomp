@@ -168,9 +168,9 @@ void menuItem_drawList(void) {
     }
     menuList_getView(il->list, &view);
     win_drawListBox(s_menuItemListRect, 0x1D, 1, il->list);
-    win_drawShadow(s_menuItemListRect, 0x1D, 1);
+    win_drawShadow(s_menuItemListRect, 0x1D, WIN_STYLE_LINE_RULE);
     idx = view.first * 2;
-    win_setClip(NULL, 0x1C, 1);
+    win_setClip(NULL, 0x1C, WIN_STYLE_LINE_RULE);
     for (row = 0; row < view.rows; row++) {
         for (col = 0; col < 2; col++) {
             il->drawRow(col, row, idx++, &view);
@@ -178,10 +178,10 @@ void menuItem_drawList(void) {
     }
     if (il->list->scroll & 4) {
         menuList_getRowsRect(il->list, s_menuItemListRect, &s_menuItemScrollClip);
-        win_setClip(&s_menuItemScrollClip, 0x1C, 1);
+        win_setClip(&s_menuItemScrollClip, 0x1C, WIN_STYLE_LINE_RULE);
         menuItem_drawScrollRows();
     }
-    win_setClip(s_menuItemListRect, 0x1C, 1);
+    win_setClip(s_menuItemListRect, 0x1C, WIN_STYLE_LINE_RULE);
 }
 
 void menuItem_drawCursor(void) {
@@ -326,7 +326,7 @@ s32 menuItem_callChocobo(void) {
         if (wm_canCallChocobo()) {
             g_evtGlobalVars.b[0xB5] = 1;
             wm_callChocobo();
-            m->popup = win_openFree(&s_menuItemKwehRect, 0xF, 2);
+            m->popup = win_openFree(&s_menuItemKwehRect, 0xF, WIN_STYLE_BEVEL);
             win_setOnOpened(m->popup, menuItem_onKwehOpened);
             win_setDrawContent(m->popup, menuItem_drawKweh);
             win_setTitle(m->popup, (s32)s_menuItemChocoboTitle);
@@ -609,8 +609,8 @@ void menuItem_drawTabs(void) {
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + s_menuItemTabX[i], r->y + 6, 0x1C, text_get(s_menuItemTabText[i]), 0);
     }
-    win_drawBox(r, 0x1D, 2);
-    win_drawShadow(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1D, WIN_STYLE_BEVEL);
 }
 
 void menuItem_drawScrollRows(void) {
@@ -641,8 +641,8 @@ void menuItem_drawTargetWindow(void) {
                 ui_drawMemberSummary(r->x + 8, r->y + 6 + i * 0x2B, 0x14, i, s_menuItem.targetMode);
             }
         }
-        win_drawBox(r, 0x14, 2);
-        win_drawShadow(r, 0x14, 2);
+        win_drawBox(r, 0x14, WIN_STYLE_BEVEL);
+        win_drawShadow(r, 0x14, WIN_STYLE_BEVEL);
     }
 }
 
@@ -765,7 +765,7 @@ void menuItem_openArrange(void) {
     MenuList *l;
 
     l = s_menuItemTabs[1].list;
-    s_menuItem.popup = win_openFree(&s_menuItemArrangeRect, 0x14, 2);
+    s_menuItem.popup = win_openFree(&s_menuItemArrangeRect, 0x14, WIN_STYLE_BEVEL);
     win_setDrawContent(s_menuItem.popup, menuItem_drawArrangeWindow);
     win_setOnOpened(s_menuItem.popup, menuItem_onArrangeOpened);
     win_setOnClosed(s_menuItem.popup, menuItem_onArrangeClosed);

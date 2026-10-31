@@ -72,7 +72,7 @@ void menuStatus_drawHeader(void) {
     ui_drawStones(x + 0x19, y + 0x14, 0x1E, c->stones, c->maxStones);
     ui_drawMemberHeader(w->x + 8, w->y + 6, 0x1D, (MemberSwitch *)&s_menuStatus.header);
     ui_drawStatusIcons(r.x + 4, r.y + 4, 0x1D, c->status, 0);
-    win_drawBox(&r, 0x1D, 0);
+    win_drawBox(&r, 0x1D, WIN_STYLE_LINE);
 }
 
 void menuStatus_drawCommands(void) {
@@ -105,8 +105,8 @@ void menuStatus_drawCommands(void) {
         s_menuStatus.prim = text_buildBlock(r.x + 0xC, r.y + y, g_ot + 25, pool.s + k, 0, s_menuStatus.prim);
     }
     ui_drawLabel(r.x + 6, r.y - 3, 0x19, g_labelCommand, 0);
-    win_drawBox(&r, 0x19, 2);
-    win_drawShadow(&r, 0x19, 2);
+    win_drawBox(&r, 0x19, WIN_STYLE_BEVEL);
+    win_drawShadow(&r, 0x19, WIN_STYLE_BEVEL);
 }
 
 void menuStatus_drawStats(void) {
@@ -230,8 +230,8 @@ void menuStatus_drawAbilityPages(void) {
                 ui_drawLabel(r->x + 0x90, r->y - 3, z, g_winLabelStrings.labelNo, 0);
                 ui_drawLabel(r->x + 0x9A, r->y - 3, z, (s32)s_menuStatusPageLabel, 0);
             }
-            win_drawBox(r, z, 2);
-            win_drawShadow(r, z, 2);
+            win_drawBox(r, z, WIN_STYLE_BEVEL);
+            win_drawShadow(r, z, WIN_STYLE_BEVEL);
         }
         base += STATUS_PAGE_ROWS;
     }
@@ -391,8 +391,8 @@ void menuStatus_drawFrame(void) {
     ui_drawEtchedLine(r->x + 0x6D, r->y + 0x63, 0x1E, r->w - 0x71);
     ui_drawEtchedLine(r->x + 0x6B, r->y + 0x38, 0x1E, 0x3E - r->h);
     ui_drawEtchedLine(r->x + 4, r->y + 0x36, 0x1E, r->w - 9);
-    win_drawBox(r, 0x1E, 2);
-    win_drawShadow(r, 0x1E, 2);
+    win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1E, WIN_STYLE_BEVEL);
 }
 
 void menuStatus_drawStub(void) {

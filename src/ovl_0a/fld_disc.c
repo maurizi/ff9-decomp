@@ -171,7 +171,7 @@ void fld_discPromptDraw(void) {
         g_menuHelp.otz = 9;
         help_drawCursor();
     }
-    win_drawBox(&g_fieldDiscChangeRect, 0xA, 2);
+    win_drawBox(&g_fieldDiscChangeRect, 0xA, WIN_STYLE_BEVEL);
 }
 
 void fld_discPromptSelect(void) {

@@ -6,14 +6,14 @@ void win_drawAll(void) {
 
     w = g_windows;
     for (i = 0; i < 10; w++, i++) {
-        if (w->state != 0 && win_isVisible(w)) {
+        if (w->state != WIN_STATE_CLOSED && win_isVisible(w)) {
             if (w->title != 0) {
                 win_drawTitle(w);
             }
             if (w->drawOverlay != NULL) {
                 w->drawOverlay(w);
             }
-            if (w->state == 3 && w->list.visibleRows < w->list.rows) {
+            if (w->state == WIN_STATE_OPEN && w->list.visibleRows < w->list.rows) {
                 win_drawScrollArrows(&w->cur, w->otz, &w->list);
             }
             win_setClip(NULL, w->otz, w->style);
@@ -21,7 +21,7 @@ void win_drawAll(void) {
                 w->drawContent(w);
             }
             win_setClip(&w->cur, w->otz, w->style);
-            if (w->style != 4) {
+            if (w->style != WIN_STYLE_FRAMELESS) {
                 win_drawFrame(w);
             }
             if (w->shadow != 0) {
@@ -38,7 +38,7 @@ void win_drawFrame(Window *w) {
     abr = g_gameState->config >> CFG_BIT_WINDOW_COLOR;
     abr &= 1;
 
-    if (w->style == 2) {
+    if (w->style == WIN_STYLE_BEVEL) {
         win_drawBorder(&w->cur, w->otz, w->active, w->translucent, abr);
         if (w->active == 0) {
             return;
@@ -47,7 +47,7 @@ void win_drawFrame(Window *w) {
         t.y = w->cur.y + 4;
         t.w = w->cur.w - 8;
         t.h = w->cur.h - 8;
-    } else if (w->style == 3) {
+    } else if (w->style == WIN_STYLE_BALLOON) {
         if (w->tailMode != 4) {
             win_drawTail(w);
         }
@@ -60,7 +60,7 @@ void win_drawFrame(Window *w) {
         t.w = w->cur.w - 4;
         t.h = w->cur.h - 4;
     } else {
-        if (w->style == 1) {
+        if (w->style == WIN_STYLE_LINE_RULE) {
             t.x = w->cur.x;
             t.y = w->cur.y + 4;
             t.w = w->cur.w;
@@ -122,21 +122,21 @@ void win_setOpenAnim(Window *w, s32 mode) {
     s16 h;
 
     w->animMode = mode;
-    if (mode == 0) {
+    if (mode == WIN_ANIM_ZOOM) {
         w->stepW = ((w->w + w->openFrames - 0x11) / w->openFrames) & ~1;
         w->stepH = ((w->h + w->openFrames - 0x11) / w->openFrames) & ~1;
         w->cur.w = w->w - w->stepW * w->openFrames;
         w->cur.h = w->h - w->stepH * w->openFrames;
         w->cur.x = w->x + w->openFrames * (w->stepW >> 1);
         w->cur.y = w->y + w->openFrames * (w->stepH >> 1);
-    } else if (mode == 4) {
+    } else if (mode == WIN_ANIM_ZOOM_X) {
         w->stepW = ((w->w + w->openFrames - 0x11) / w->openFrames) & ~1;
         w->stepH = 0;
         w->cur.h = w->h;
         w->cur.y = w->y;
         w->cur.w = w->w - w->stepW * w->openFrames;
         w->cur.x = w->x + w->openFrames * (w->stepW >> 1);
-    } else if (mode == 1) {
+    } else if (mode == WIN_ANIM_UNROLL) {
         w->stepW = 0;
         w->list.fillV = 0;
         w->list.fillU = 0;
@@ -146,7 +146,7 @@ void win_setOpenAnim(Window *w, s32 mode) {
         w->cur.w = w->w;
         w->cur.h = h;
         w->stepH = (w->h - h + (w->openFrames - 1)) / w->openFrames;
-    } else if (mode == 3) {
+    } else if (mode == WIN_ANIM_NONE) {
         w->cur = *(RECT *)w;
         w->state = mode;
     }
@@ -154,26 +154,26 @@ void win_setOpenAnim(Window *w, s32 mode) {
 
 void win_setCloseAnim(Window *w, s32 mode) {
     w->animMode = mode;
-    if (mode == 0 || mode == 4) {
+    if (mode == WIN_ANIM_ZOOM || mode == WIN_ANIM_ZOOM_X) {
         w->stepW = (w->w + w->closeFrames - 0x11) / w->closeFrames;
         w->stepH = (w->h + w->closeFrames - 0x11) / w->closeFrames;
-    } else if (mode == 1) {
+    } else if (mode == WIN_ANIM_UNROLL) {
         w->stepW = 0;
         w->stepH = (w->cur.h + w->closeFrames - 1) / w->closeFrames;
-    } else if (mode == 2) {
+    } else if (mode == WIN_ANIM_TAIL) {
         w->stepLeft = (w->tailX + w->closeFrames - 9) / w->closeFrames;
         w->stepRight = (w->w - (w->tailX + 0x18) + w->closeFrames - 1) / w->closeFrames;
         w->stepH = (w->h + w->closeFrames - 0x11) / w->closeFrames;
-    } else if (mode == 3) {
-        w->state = 0;
+    } else if (mode == WIN_ANIM_NONE) {
+        w->state = WIN_STATE_CLOSED;
     }
 }
 
 void win_setTail(Window *w, s32 mode, s32 off) {
     RECT *r = (RECT *)w;
 
-    if (w->style != 4) {
-        w->animMode = 2;
+    if (w->style != WIN_STYLE_FRAMELESS) {
+        w->animMode = WIN_ANIM_TAIL;
         if (mode == 1 || mode == 3) {
             off -= 0x10;
         }
@@ -194,7 +194,7 @@ void win_setTail(Window *w, s32 mode, s32 off) {
 }
 
 void win_stepOpen(Window *w) {
-    if (w->animMode == 0 || w->animMode == 4) {
+    if (w->animMode == WIN_ANIM_ZOOM || w->animMode == WIN_ANIM_ZOOM_X) {
         w->cur.w += w->stepW;
         w->cur.h += w->stepH;
         w->cur.x -= w->stepW >> 1;
@@ -213,7 +213,7 @@ void win_stepOpen(Window *w) {
         }
         w->list.fillU = (w->cur.x - w->x) & 0x1F;
         w->list.fillV = (w->cur.y - w->y) & 0x1F;
-    } else if (w->animMode == 1) {
+    } else if (w->animMode == WIN_ANIM_UNROLL) {
         w->cur.w += w->stepW;
         w->cur.h += w->stepH;
         if (w->cur.w > w->w) {
@@ -223,7 +223,7 @@ void win_stepOpen(Window *w) {
             w->cur.h = w->h;
         }
         w->list.fillV = (w->h - w->cur.h) & 0x1F;
-    } else if (w->animMode == 2) {
+    } else if (w->animMode == WIN_ANIM_TAIL) {
         s16 a = w->stepLeft + w->stepRight;
         w->cur.w += a;
         w->cur.h += w->stepH;
@@ -247,7 +247,7 @@ void win_stepOpen(Window *w) {
         w->list.fillV = (w->cur.y - w->y) & 0x1F;
     }
     if (*(s32 *)&w->cur.w == *(s32 *)&w->w) {
-        w->state = 3;
+        w->state = WIN_STATE_OPEN;
         if (w->onOpened != NULL) {
             w->onOpened(w);
         }
@@ -255,18 +255,18 @@ void win_stepOpen(Window *w) {
 }
 
 void win_stepClose(Window *w) {
-    if (w->animMode == 0 || w->animMode == 4) {
+    if (w->animMode == WIN_ANIM_ZOOM || w->animMode == WIN_ANIM_ZOOM_X) {
         w->cur.w -= w->stepW;
         w->cur.h -= w->stepH;
         w->cur.x += w->stepW >> 1;
         w->cur.y += w->stepH >> 1;
         w->list.fillU = (w->cur.x - w->x) & 0x1F;
         w->list.fillV = (w->cur.y - w->y) & 0x1F;
-    } else if (w->animMode == 1) {
+    } else if (w->animMode == WIN_ANIM_UNROLL) {
         w->cur.h -= w->stepH;
         w->cur.w -= w->stepW;
         w->list.fillV = (w->h - w->cur.h) & 0x1F;
-    } else if (w->animMode == 2) {
+    } else if (w->animMode == WIN_ANIM_TAIL) {
         w->cur.w -= w->stepLeft + w->stepRight;
         w->cur.h -= w->stepH;
         w->cur.x += w->stepLeft;
@@ -283,7 +283,7 @@ void win_stepClose(Window *w) {
         w->cur.h = 0;
     }
     if (w->cur.w == 0 || w->cur.h == 0) {
-        w->state = 0;
+        w->state = WIN_STATE_CLOSED;
         if (w->onClosed != NULL) {
             w->onClosed(w);
         }
@@ -333,7 +333,7 @@ Window *win_openFree(RECT *r, s32 a, s32 b) {
     Window *w = g_windows;
     Window *res;
     for (i = 0; i < 10; i++, w++) {
-        if (w->state == 0) {
+        if (w->state == WIN_STATE_CLOSED) {
             break;
         }
     }
@@ -356,8 +356,8 @@ Window *win_open(RECT *r, s32 a, s32 b, u32 i) {
 }
 
 void win_close(Window *w) {
-    if (w != NULL && w->state != 0 && w->state != 2) {
-        w->state = 2;
+    if (w != NULL && w->state != WIN_STATE_CLOSED && w->state != WIN_STATE_CLOSING) {
+        w->state = WIN_STATE_CLOSING;
         if (g_drawBufs.uiMode != 2) {
             win_setCloseAnim(w, w->animMode);
         }
@@ -368,18 +368,18 @@ void win_closeAll(void) {
     s32 i;
     Window *w = g_windows;
     for (i = 0; i < 10; w++, i++) {
-        if (w->state != 0 && w->state != 2) {
+        if (w->state != WIN_STATE_CLOSED && w->state != WIN_STATE_CLOSING) {
             win_close_inline(w);
         }
     }
 }
 
 void win_closeNow(Window *w) {
-    if (w != NULL && w->state != 0) {
+    if (w != NULL && w->state != WIN_STATE_CLOSED) {
         if (w->onClosed != NULL) {
             w->onClosed(w);
         }
-        w->state = 0;
+        w->state = WIN_STATE_CLOSED;
     }
 }
 
@@ -387,11 +387,11 @@ void win_closeAllNow(void) {
     s32 i;
     Window *w = g_windows;
     for (i = 0; i < 10; w++, i++) {
-        if (w->state != 0 && w != NULL) {
+        if (w->state != WIN_STATE_CLOSED && w != NULL) {
             if (w->onClosed != NULL) {
                 w->onClosed(w);
             }
-            w->state = 0;
+            w->state = WIN_STATE_CLOSED;
         }
     }
 }
@@ -451,13 +451,13 @@ void win_updateAll(void) {
     Window *w = g_windows;
     for (i = 0; i < 10; w++, i++) {
         u8 st = w->state;
-        if (st == 3) {
+        if (st == WIN_STATE_OPEN) {
             if (w->list.visibleRows < w->list.rows && w->list.scroll != 0) {
                 menuList_update(&w->list);
             }
-        } else if (st == 1) {
+        } else if (st == WIN_STATE_OPENING) {
             win_stepOpen(w);
-        } else if (st == 2 && g_drawBufs.uiMode != 2) {
+        } else if (st == WIN_STATE_CLOSING && g_drawBufs.uiMode != 2) {
             win_stepClose(w);
         }
     }
@@ -467,8 +467,8 @@ void win_reapClosed(void) {
     s32 i;
     Window *p = g_windows;
     for (i = 0; i < 10; p++, i++) {
-        if (p->state == 2) {
-            p->state = 0;
+        if (p->state == WIN_STATE_CLOSING) {
+            p->state = WIN_STATE_CLOSED;
             if (p->onClosed != NULL) {
                 p->onClosed(p);
             }
@@ -512,7 +512,7 @@ void win_setVisible(Window *arg0, u8 arg1) {
 
 void win_setOpenFrames(Window *arg0, s16 arg1) {
     arg0->openFrames = arg1;
-    if (arg0->style != 3) {
+    if (arg0->style != WIN_STYLE_BALLOON) {
         win_setOpenAnim(arg0, arg0->animMode);
     } else {
         win_setTail(arg0, arg0->tailMode, arg0->tailX);
@@ -548,7 +548,7 @@ Window *win_get(s32 i) {
 void win_initAll(void) {
     s32 i;
     for (i = 0; i < 10; i++) {
-        g_windows[i].state = 0;
+        g_windows[i].state = WIN_STATE_CLOSED;
         g_windows[i].slot = i;
     }
 }
@@ -560,7 +560,7 @@ u8 win_isVisible(Window *w) {
     if (w->visible == 0) {
         return r;
     }
-    if (w->style == 2 || w->style == 3) {
+    if (w->style == WIN_STYLE_BEVEL || w->style == WIN_STYLE_BALLOON) {
         if (w->cur.w >= min.unk0[w->style] && w->cur.h >= 16) {
             r = 1;
         }
@@ -575,17 +575,17 @@ void win_drawTitle(Window *w) {
     if (w->title == 0) {
         return;
     }
-    if (w->state != 3) {
-        win_setClip(NULL, w->otz, 4);
+    if (w->state != WIN_STATE_OPEN) {
+        win_setClip(NULL, w->otz, WIN_STYLE_FRAMELESS);
     }
     ui_drawLabel(w->x + w->titleX, w->cur.y + w->titleY, w->otz, w->title, w->active ? 0 : 2);
-    if (w->state != 3) {
+    if (w->state != WIN_STATE_OPEN) {
         RECT *s = &w->cur;
         r.x = s->x;
         r.y = s->y - 3;
         r.w = s->w;
         r.h = 8;
-        win_setClip(&r, w->otz, 4);
+        win_setClip(&r, w->otz, WIN_STYLE_FRAMELESS);
     }
 }
 
@@ -668,7 +668,7 @@ void win_drawDivider(RECT *r, s32 otz, MenuList *m, s32 style) {
 Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     w->style = style;
     *(RECT *)w = *r;
-    w->state = 1;
+    w->state = WIN_STATE_OPENING;
     w->openFrames = 7;
     w->closeFrames = 5;
     w->visible = 1;
@@ -679,7 +679,7 @@ Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     w->drawContent = 0;
     w->onOpened = 0;
     win_setOpenAnim(w, g_winStyleOpenAnim[style]);
-    w->shadow = w->style == 3;
+    w->shadow = w->style == WIN_STYLE_BALLOON;
     menuList_init(&w->list, 0, 0, 0, r->h);
     w->tailMode = 4;
     w->active = 1;

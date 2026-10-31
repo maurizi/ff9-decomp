@@ -108,8 +108,8 @@ void menuChocograph_drawSelected(void) {
     RECT *r = &s_menuChocograph.selectedRect;
     s32 sel;
 
-    win_drawBox(r, 0x1D, 2);
-    win_drawShadow(r, 0x1E, 2);
+    win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1E, WIN_STYLE_BEVEL);
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, g_labelSelected, 0);
     sel = g_gameState->gameData->chocograph;
     if (sel != 0) {
@@ -130,18 +130,18 @@ void menuChocograph_drawList(void) {
     ui_drawLabel(r->x + 0x10, r->y - 3, 0x1C, g_labelChocograph, 0);
     list = &s_menuChocograph.list;
     win_drawListBox(r, 0x1D, 1, list);
-    win_drawShadow(r, 0x1D, 1);
+    win_drawShadow(r, 0x1D, WIN_STYLE_LINE_RULE);
     menuList_getView(list, &view);
-    win_setClip(NULL, 0x1C, 1);
+    win_setClip(NULL, 0x1C, WIN_STYLE_LINE_RULE);
     for (i = 0; i < view.rows; i++) {
         menuChocograph_drawRow(0, i, view.first + i, &view);
     }
     if (list->scroll & 4) {
         menuList_getRowsRect(list, r, &sub);
-        win_setClip(&sub, 0x1C, 1);
+        win_setClip(&sub, 0x1C, WIN_STYLE_LINE_RULE);
         menuChocograph_drawScrollRows();
     }
-    win_setClip(r, 0x1C, 1);
+    win_setClip(r, 0x1C, WIN_STYLE_LINE_RULE);
 }
 
 void menuChocograph_drawCounts(void) {
@@ -149,8 +149,8 @@ void menuChocograph_drawCounts(void) {
     RECT *r = &s_menuChocograph.countRect;
     ChocographMenu *st;
 
-    win_drawBox(r, 0x1D, 2);
-    win_drawShadow(r, 0x1E, 2);
+    win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1E, WIN_STYLE_BEVEL);
     text_drawBlock(r->x + 9, r->y + 3, 0x1C, text_get(CHOCO_TEXT_INVENTORY), 0);
     text_drawBlock(r->x + 9, r->y + 0xF, 0x1C, text_get(CHOCO_TEXT_FOUND), 0);
     st = &s_menuChocograph;
@@ -169,8 +169,8 @@ void menuChocograph_drawHint(void) {
 
     id = st->list.top + st->list.cursor;
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, g_labelHint, 0);
-    win_drawBox(r, 0x1D, 1);
-    win_drawShadow(r, 0x1E, 1);
+    win_drawBox(r, 0x1D, WIN_STYLE_LINE_RULE);
+    win_drawShadow(r, 0x1E, WIN_STYLE_LINE_RULE);
     if (st->mode == CHOCO_MODE_LIST && (st->owned & (1 << id))) {
         menuChocograph_getRequiredAbility(id);
         menuChocograph_drawPicture(r->x + 0xC, r->y + 0xC, 0x1C, id, 0);
@@ -447,8 +447,8 @@ void menuChocograph_updateList(void) {
 void menuChocograph_drawTitle(void) {
     RECT *r = &s_menuChocograph.titleRect;
 
-    win_drawBox(r, 0x1D, 2);
-    win_drawShadow(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1D, WIN_STYLE_BEVEL);
     text_drawBlock(r->x + 7, r->y + 6, 0x1C, text_get(CHOCO_TEXT_TITLE), 0);
 }
 
@@ -458,8 +458,8 @@ void menuChocograph_drawTabs(void) {
     s32 x;
     u8 none = g_gameState->gameData->chocograph == 0;
 
-    win_drawBox(r, 0x1D, 2);
-    win_drawShadow(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1D, WIN_STYLE_BEVEL);
     for (i = 0, x = 0x2C; i < 2; i++, x += 0x60) {
         text_drawBlock(r->x + x, r->y + 6, 0x1C, text_get(i + CHOCO_TEXT_SELECT), (s_menuChocographTabNeedsSel[i] != 0 && none) ? 2 : 0);
     }
@@ -471,8 +471,8 @@ void menuChocograph_drawAbilities(void) {
     RECT *r = &s_menuChocograph.abilityRect;
 
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, g_labelChocoboAbility, 0);
-    win_drawBox(r, 0x1D, 2);
-    win_drawShadow(r, 0x1E, 2);
+    win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1E, WIN_STYLE_BEVEL);
     for (i = 0; i < s_menuChocograph.ability; i++) {
         menuChocograph_drawIcon(r->x + 0xB + i * 0x13, r->y + 5, 0x1C, i, 0);
     }

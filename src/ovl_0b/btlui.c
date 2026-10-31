@@ -855,20 +855,20 @@ void btlui_drawHelpWindow(void) {
     s32 m;
     if (g_btluiHelp.open != 0 && g_btluiPrevAtbOn != 0) {
         btlui_getHelpRect(&g_btluiHelpRect, &r);
-        win_setClip(NULL, 2, 4);
+        win_setClip(NULL, 2, WIN_STYLE_FRAMELESS);
         if (g_btluiHelp.opening == 0) {
             ui_drawSprite(r.x + 8, r.y, 2, 0xB7, 0);
         }
         btlui_updateHelpText();
         if (g_btluiHelp.text != 0) {
-            win_setClip(NULL, 2, 3);
+            win_setClip(NULL, 2, WIN_STYLE_BALLOON);
             m = text_getColor();
             text_drawBlock(r.x + 6, r.y + 10, 2, g_btluiHelp.text, 8);
             text_setColor(m);
-            win_setClip(&r, 2, 3);
+            win_setClip(&r, 2, WIN_STYLE_BALLOON);
         }
         win_drawHelpFrame(&r, 2, 4, 0);
-        win_setClip(&r, 2, 4);
+        win_setClip(&r, 2, WIN_STYLE_FRAMELESS);
     }
 }
 
@@ -954,7 +954,7 @@ void btlui_getHelpRect(RECT *arg0, RECT *arg1) {
     s32 d;
     *arg1 = *arg0;
     w = btlui_getTargetWindow();
-    if (w != NULL && w->state != 0) {
+    if (w != NULL && w->state != WIN_STATE_CLOSED) {
         if (arg1->x < w->cur.x + w->cur.w - 4) {
             x = w->cur.x + w->cur.w - 4;
             arg1->x = x;
@@ -1129,7 +1129,7 @@ void btlui_openCmdMenu(void) {
     p->side = 0;
     p->slide = 0;
     btlui_setMenuState(BTLUI_MENU_CLOSING);
-    w = win_open(&g_btluiCmdWindowRect, 0xF, 2, 3);
+    w = win_open(&g_btluiCmdWindowRect, 0xF, WIN_STYLE_BEVEL, 3);
     g_btlUi->windows[3] = w;
     win_setDrawContent(w, btlui_drawCmdList);
     win_setDrawOverlay(g_btlUi->windows[3], btlui_drawCmdOverlay);
@@ -1169,13 +1169,13 @@ void btlui_drawCmdOverlay(Window *arg0) {
     RECT *r = &arg0->cur;
     s32 dy = 10;
     RECT rc;
-    if (arg0->state == 3) {
+    if (arg0->state == WIN_STATE_OPEN) {
         if (btlui_getMenuState() == BTLUI_MENU_CMD || (btlui_getMenuState() == st && btlui_getTargetReturnState() == BTLUI_MENU_CMD && !(btlui_isTargetWindowOpen() & 0xFF) && (g_btluiVsyncTick & 1))) {
             ui_drawHand(arg0->cur.x - 0xE, r->y + (g_btlCmdMenu.cursor * 15 + dy), arg0->otz - 1);
         }
     }
-    if (arg0->state != 3) {
-        win_setClip(NULL, arg0->otz, 4);
+    if (arg0->state != WIN_STATE_OPEN) {
+        win_setClip(NULL, arg0->otz, WIN_STYLE_FRAMELESS);
     }
     if (g_btlCmdMenu.unit != NULL && !(btl_hasStatus(g_btlCmdMenu.unit, BTL_STATUS_TRANCE) & 0xFF)) {
         ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, g_winLabelStrings.command, arg0->active ? 0 : 2);
@@ -1184,12 +1184,12 @@ void btlui_drawCmdOverlay(Window *arg0) {
     } else {
         ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, (s32)s_btluiTranceLabel, 2);
     }
-    if (arg0->state != 3) {
+    if (arg0->state != WIN_STATE_OPEN) {
         rc.x = r->x;
         rc.y = r->y - 3;
         rc.w = r->w;
         rc.h = 8;
-        win_setClip(&rc, arg0->otz, 4);
+        win_setClip(&rc, arg0->otz, WIN_STYLE_FRAMELESS);
     }
 }
 
@@ -1327,7 +1327,7 @@ void btlui_cacheCmdIcons(void) {
 
 void btlui_drawCachedCmdIcons(void) {
     s32 i;
-    if (g_btlUi->windows[3]->state == 2 || g_btlUi->windows[3]->state == 3) {
+    if (g_btlUi->windows[3]->state == WIN_STATE_CLOSING || g_btlUi->windows[3]->state == WIN_STATE_OPEN) {
         for (i = 0; i < 4; i++) {
             addPrim(&g_ot[18], &g_btluiPrims->cmdIcons[i][g_drawBufs.cur]);
         }
@@ -1740,7 +1740,7 @@ void btlui_openList(Unk800EE37C *arg0) {
         l.top = c->listTop[e->cursor.cmdRow];
         l.cursor = c->listCursor[e->cursor.cmdRow];
     }
-    g_btlUi->windows[2] = win_open(&g_btluiSelectListRect, 8, 1, 2);
+    g_btlUi->windows[2] = win_open(&g_btluiSelectListRect, 8, WIN_STYLE_LINE_RULE, 2);
     win_setList(g_btlUi->windows[2], &l);
     win_setDrawContent(g_btlUi->windows[2], btlui_drawListContent);
     win_setDrawOverlay(g_btlUi->windows[2], btlui_drawListOverlay);
@@ -1940,16 +1940,16 @@ void btlui_drawListContent(Window *arg0) {
     RECT *rc = &arg0->cur;
     s32 i;
     menuList_getView((MenuList *)&arg0->list, &v);
-    win_setClip(0, 7, 1);
+    win_setClip(0, 7, WIN_STYLE_LINE_RULE);
     for (i = 0; i < v.rows; i++) {
         btlui_drawListRow(0, i, v.first + i, &v);
     }
     if (((MenuList *)&arg0->list)->scroll & 4) {
         menuList_getRowsRect((MenuList *)&arg0->list, rc, &r);
-        win_setClip(&r, 7, 1);
+        win_setClip(&r, 7, WIN_STYLE_LINE_RULE);
         btlui_drawListScroll(arg0);
     }
-    win_setClip(rc, 7, 1);
+    win_setClip(rc, 7, WIN_STYLE_LINE_RULE);
 }
 
 void btlui_drawListScroll(Window *arg0) {
@@ -2496,8 +2496,8 @@ void btlui_updateTargetWindow(void) {
         if (g_btluiTargetWindow != 0) {
             if (g_btlTarget.windowOpen == 0) {
                 btlui_setMenuState(BTLUI_MENU_CLOSING);
-                g_btlUi->windows[0] = win_open(&g_btluiTargetWindowRect, 5, 2, 0);
-                win_setOpenAnim(g_btlUi->windows[0], 4);
+                g_btlUi->windows[0] = win_open(&g_btluiTargetWindowRect, 5, WIN_STYLE_BEVEL, 0);
+                win_setOpenAnim(g_btlUi->windows[0], WIN_ANIM_ZOOM_X);
                 win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
                 win_setDrawContent(g_btlUi->windows[0], btlui_drawTargetList);
                 win_setDrawOverlay(g_btlUi->windows[0], btlui_drawTargetListOverlay);
@@ -2560,19 +2560,19 @@ void btlui_drawTargetListOverlay(Window *arg0) {
             n++;
         }
     }
-    if (arg0->state != 3) {
-        win_setClip(NULL, arg0->otz, 4);
+    if (arg0->state != WIN_STATE_OPEN) {
+        win_setClip(NULL, arg0->otz, WIN_STYLE_FRAMELESS);
     }
     ui_drawLabel(w->x + 8, r->y - 3, arg0->otz, g_winLabelStrings.labelEnemy, 0);
     ui_drawLabel(w->x + 0x76, r->y - 3, arg0->otz, g_winLabelStrings.labelPlayer, 0);
-    if (arg0->state != 3) {
+    if (arg0->state != WIN_STATE_OPEN) {
         rc.x = r->x;
         rc.y = r->y - 3;
         rc.w = r->w;
         rc.h = 8;
-        win_setClip(&rc, arg0->otz, 4);
+        win_setClip(&rc, arg0->otz, WIN_STYLE_FRAMELESS);
     }
-    if (arg0->state == 3 && (n < 2 || !(g_btluiVsyncTick & 1))) {
+    if (arg0->state == WIN_STATE_OPEN && (n < 2 || !(g_btluiVsyncTick & 1))) {
         yl = r->y + 0xC;
         yr = yl;
         for (; u != NULL; u = u->next) {
@@ -2886,9 +2886,9 @@ BtlUnit *btlui_findKoUnit(u8 arg0) {
 void btlui_openTargetWindow(s8 arg0) {
     Window *w;
     btlui_setMenuState(BTLUI_MENU_CLOSING);
-    w = win_open(&g_btluiTargetWindowRect, 5, 2, 0);
+    w = win_open(&g_btluiTargetWindowRect, 5, WIN_STYLE_BEVEL, 0);
     g_btlUi->windows[0] = w;
-    win_setOpenAnim(w, 4);
+    win_setOpenAnim(w, WIN_ANIM_ZOOM_X);
     win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
     win_setDrawContent(g_btlUi->windows[0], btlui_drawTargetList);
     win_setDrawOverlay(g_btlUi->windows[0], btlui_drawTargetListOverlay);
@@ -2953,7 +2953,7 @@ void btlui_drawListCursors(Window *arg0) {
     SprtWords *p;
     DR_TPAGE *t;
 
-    if (b->partyCount == 0 || arg0->state != 3 || m->shown == 0) {
+    if (b->partyCount == 0 || arg0->state != WIN_STATE_OPEN || m->shown == 0) {
         return;
     }
     c = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
@@ -3147,7 +3147,7 @@ void btlui_openListWindow(s32 arg0) {
     Window *w;
     g_btluiListWindowRect.y = p->y;
     g_btluiListWindowRect.h = p->rowCount * 12 + 8;
-    w = win_open(&g_btluiListWindowRect, 0xA, 0, 1);
+    w = win_open(&g_btluiListWindowRect, 0xA, WIN_STYLE_LINE, 1);
     g_btlUi->windows[1] = w;
     win_setDrawContent(w, btlui_drawListWindow);
     win_setDrawOverlay(g_btlUi->windows[1], btlui_drawListCursors);
@@ -3177,9 +3177,9 @@ void btlui_resizeListWindow(void) {
         r->y = w->y = p->y;
         h = p->rowCount * 12 + 8;
         w->h = h;
-        if (w->state == 2 || w->state == 3) {
+        if (w->state == WIN_STATE_CLOSING || w->state == WIN_STATE_OPEN) {
             r->h = h;
-        } else if (w->state == 1) {
+        } else if (w->state == WIN_STATE_OPENING) {
             if (h < r->h) {
                 r->h = h;
             }
@@ -3402,7 +3402,7 @@ void btlui_drawPanelHeader(void) {
     r.y = g_btluiPanel->y - 3;
     r.w = g_gameState->dispEnv->disp.w - 0x8E;
     r.h = 7;
-    win_setClip(NULL, 7, 4);
+    win_setClip(NULL, 7, WIN_STYLE_FRAMELESS);
     e = g_btluiPanel->labels;
     for (i = 0; i < 5; e++, i++) {
         if (e->visible != 0) {
@@ -3410,7 +3410,7 @@ void btlui_drawPanelHeader(void) {
                           ((s32 *)&g_winLabelStrings)[e->text], 0);
         }
     }
-    win_setClip(&r, 7, 4);
+    win_setClip(&r, 7, WIN_STYLE_FRAMELESS);
 }
 
 void btlui_drawPanelHighlight(void) {

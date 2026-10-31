@@ -5,8 +5,8 @@ void shop_drawMessage(void) {
     if (s_shop.help != NULL) {
         text_drawBlock(s_shopMessageRect.x + 0xA, s_shopMessageRect.y + 6, s_shop.messageOtz, s_shop.help, 0);
     }
-    win_drawBox(&s_shopMessageRect, s_shop.messageOtz, 1);
-    win_drawShadow(&s_shopMessageRect, s_shop.messageOtz, 1);
+    win_drawBox(&s_shopMessageRect, s_shop.messageOtz, WIN_STYLE_LINE_RULE);
+    win_drawShadow(&s_shopMessageRect, s_shop.messageOtz, WIN_STYLE_LINE_RULE);
 }
 
 void shop_inputMenu(void) {
@@ -38,8 +38,8 @@ void shop_drawMenu(void) {
     s32 y;
 
     s_shopMenuRect.h = s_shop.entryCount * 0xF + 0xB;
-    win_drawBox(&s_shopMenuRect, 0x23, 2);
-    win_drawShadow(&s_shopMenuRect, 0x23, 2);
+    win_drawBox(&s_shopMenuRect, 0x23, WIN_STYLE_BEVEL);
+    win_drawShadow(&s_shopMenuRect, 0x23, WIN_STYLE_BEVEL);
     for (i = 0; i < s_shop.entryCount; i++) {
         text_drawBlock(s_shopMenuRect.x + 0xA, s_shopMenuRect.y + 6 + i * 0xF, 0x1E, text_get(s_shopMenuText[s_shop.kind] + i), 0);
     }
@@ -150,8 +150,8 @@ void shop_exit(void) {
 }
 
 void shop_drawTitle(void) {
-    win_drawBox(&s_shopTitleRect, 5, 2);
-    win_drawShadow(&s_shopTitleRect, 0x28, 2);
+    win_drawBox(&s_shopTitleRect, 5, WIN_STYLE_BEVEL);
+    win_drawShadow(&s_shopTitleRect, 0x28, WIN_STYLE_BEVEL);
     text_drawBlock(s_shopTitleRect.x + 0xA, s_shopTitleRect.y + 6, 4, (u8 *)text_getFrom(g_shopText, s_shop.kind + SHOP_TEXT_TITLE), 0);
 }
 
@@ -312,7 +312,7 @@ void shopBuy_drawInfo(void) {
     id = s_shopBuy.items[l->top + l->cursor];
     equip = (g_itemTable[id].slots & 0xF8) != 0;
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelInfo, 0);
-    win_drawBox(r, 0x23, 1);
+    win_drawBox(r, 0x23, WIN_STYLE_LINE_RULE);
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + 8, r->y + s_shopBuyInfoRowY[i] - 4, 0x1E, text_getFrom(g_shopText, s_shopBuyInfoRowText[i]),
                       (s_shopBuyInfoRowAlways[i] | equip) ? 0 : 2);
@@ -340,16 +340,16 @@ void shopBuy_drawList(void) {
     list = &s_shopBuy.list;
     win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
-    win_setClip(NULL, 0x1E, 1);
+    win_setClip(NULL, 0x1E, WIN_STYLE_LINE_RULE);
     for (i = 0; i < view.rows; i++) {
         shopBuy_drawRow(0, i, view.first + i, &view);
     }
     if (list->scroll & 4) {
         menuList_getRowsRect(list, r, &sub);
-        win_setClip(&sub, 0x1E, 1);
+        win_setClip(&sub, 0x1E, WIN_STYLE_LINE_RULE);
         shopBuy_drawScrollRows();
     }
-    win_setClip(r, 0x1E, 1);
+    win_setClip(r, 0x1E, WIN_STYLE_LINE_RULE);
 }
 
 void shopBuy_drawParty(void) {
@@ -374,7 +374,7 @@ void shopBuy_drawParty(void) {
     if (s_shopBuy.hasEquipment == 0) {
         return;
     }
-    win_drawBox(r, 0x23, 1);
+    win_drawBox(r, 0x23, WIN_STYLE_LINE_RULE);
     kind = item_getEquipSlot(id);
     if (kind < 0) {
         return;
@@ -478,7 +478,7 @@ void shopBuy_openQuantity(void) {
         }
         m2->maxQuantity = n;
         s_shopBuy.state = SHOP_ST_NONE;
-        m2->quantityWin = win_openFree(&m2->quantityRect, 0xA, 2);
+        m2->quantityWin = win_openFree(&m2->quantityRect, 0xA, WIN_STYLE_BEVEL);
         win_setDrawContent(s_shopBuy.quantityWin, shopBuy_drawQuantityWindow);
         win_setOnOpened(s_shopBuy.quantityWin, shopBuy_onQuantityOpened);
         win_setOnClosed(s_shopBuy.quantityWin, shopBuy_onQuantityClosed);
@@ -731,7 +731,7 @@ void shopSynth_drawInfo(void) {
     s = &s_shopSynth.recipes[l->top + l->cursor];
     equip = (g_itemTable[s->product].slots & 0xF8) != 0;
     ui_drawEtchedLine(r->x + 2, r->y + 0x36, 0x23, r->w - 5);
-    win_drawBox(r, 0x23, 1);
+    win_drawBox(r, 0x23, WIN_STYLE_LINE_RULE);
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelInfo, 0);
     for (i = 0; i < 4; i++) {
         text_drawBlock(r->x + 8, r->y + s_shopSynthInfoRowY[i] - 4, 0x1E, text_getFrom(g_shopText, s_shopSynthInfoRowText[i]),
@@ -773,16 +773,16 @@ void shopSynth_drawList(void) {
     list = &s_shopSynth.list;
     win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
-    win_setClip(NULL, 0x1E, 1);
+    win_setClip(NULL, 0x1E, WIN_STYLE_LINE_RULE);
     for (i = 0; i < view.rows; i++) {
         shopSynth_drawRow(0, i, view.first + i, &view);
     }
     if (list->scroll & 4) {
         menuList_getRowsRect(list, r, &sub);
-        win_setClip(&sub, 0x1E, 1);
+        win_setClip(&sub, 0x1E, WIN_STYLE_LINE_RULE);
         shopSynth_drawScrollRows();
     }
-    win_setClip(r, 0x1E, 1);
+    win_setClip(r, 0x1E, WIN_STYLE_LINE_RULE);
 }
 
 void shopSynth_drawParty(void) {
@@ -807,7 +807,7 @@ void shopSynth_drawParty(void) {
     if (s_shopSynth.hasEquipment == 0) {
         return;
     }
-    win_drawBox(r, 0x23, 1);
+    win_drawBox(r, 0x23, WIN_STYLE_LINE_RULE);
     kind = item_getEquipSlot(s->product);
     if (kind < 0) {
         return;
@@ -972,7 +972,7 @@ void shopSynth_openQuantity(void) {
         }
         m3 = &s_shopSynth;
         s_shopSynth.state = SHOP_ST_NONE;
-        m3->quantityWin = win_openFree(&m3->quantityRect, 0xA, 2);
+        m3->quantityWin = win_openFree(&m3->quantityRect, 0xA, WIN_STYLE_BEVEL);
         win_setDrawContent(m3->quantityWin, shopSynth_drawQuantityWindow);
         win_setOnOpened(m3->quantityWin, shopSynth_onQuantityOpened);
         win_setOnClosed(m3->quantityWin, shopSynth_onQuantityClosed);
@@ -1185,7 +1185,7 @@ void shopSell_drawList(void) {
     menuList_getView(list, &view);
     win_drawListBox(s_shopSellListRectPtr, 0x23, 1, list);
     idx = view.first * 2;
-    win_setClip(NULL, 0x1E, 1);
+    win_setClip(NULL, 0x1E, WIN_STYLE_LINE_RULE);
     for (row = 0; row < view.rows; row++) {
         for (col = 0; col < 2; col++) {
             shopSell_drawRow(col, row, idx++, &view);
@@ -1193,10 +1193,10 @@ void shopSell_drawList(void) {
     }
     if (list->scroll & 4) {
         menuList_getRowsRect(list, s_shopSellListRectPtr, &sub);
-        win_setClip(&sub, 0x1E, 1);
+        win_setClip(&sub, 0x1E, WIN_STYLE_LINE_RULE);
         shopSell_drawScrollRows();
     }
-    win_setClip(s_shopSellListRectPtr, 0x1E, 1);
+    win_setClip(s_shopSellListRectPtr, 0x1E, WIN_STYLE_LINE_RULE);
 }
 
 void shopSell_drawQuantityWindow(Window *w) {
@@ -1286,7 +1286,7 @@ void shopSell_openQuantity(void) {
             win_setDrawContent(s_shopSell.wins[i], s_shopSellWindows[i].draw);
             win_setOnOpened(s_shopSell.wins[i], shopSell_onQuantityOpened);
             win_setOnClosed(s_shopSell.wins[i], shopSell_onQuantityClosed);
-            win_setOpenAnim(s_shopSell.wins[i], 0);
+            win_setOpenAnim(s_shopSell.wins[i], WIN_ANIM_ZOOM);
             win_setShadow(s_shopSell.wins[i], 1);
             win_setTitle(s_shopSell.wins[i], g_winLabelStrings.unk0[s_shopSellWindows[i].label]);
         }

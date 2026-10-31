@@ -122,7 +122,7 @@ void menuEquip_drawInfo(void) {
     c = g_gameState->gameData->party[s_menuEquip.slot];
     ui_drawEtchedLine(r->x + 3, r->y + 0x3B, 0x1E, r->w - 6);
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelInfo, 0);
-    win_drawBox(r, 0x1E, 1);
+    win_drawBox(r, 0x1E, WIN_STYLE_LINE_RULE);
     ui_drawMemberHeader(r->x + 8, r->y + 9, 0x1D, (MemberSwitch *)&s_menuEquip.header);
     cur.stats[0] = c->speed;
     cur.stats[1] = c->strength;
@@ -174,8 +174,8 @@ void menuEquip_drawEquipment(void) {
         return;
     }
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelEquipment, 0);
-    win_drawBox(r, 0x1E, 2);
-    win_drawShadow(r, 0x1E, 2);
+    win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1E, WIN_STYLE_BEVEL);
     for (i = 0, grey = 2, y8 = 8, y12 = 12, y10 = 10; i < 5; i++) {
         sel = 0;
         if (s_menuEquip.tab == grey) {
@@ -214,7 +214,7 @@ void menuEquip_drawAbilities(void) {
     c = g_gameState->gameData->party[s_menuEquip.slot];
     ui_drawLabel(r->x + 6, r->y - 3, 0x13, g_labelAbility, 0);
     ui_drawEtchedLine(r->x + 3, r->y + 0x1A, 0x1E, r->w - 6);
-    win_drawBox(r, 0x1E, 1);
+    win_drawBox(r, 0x1E, WIN_STYLE_LINE_RULE);
     if (s_menuEquip.state < EQUIP_STATE_SLOT) {
         return;
     }
@@ -296,17 +296,17 @@ void menuEquip_drawList(void) {
         ui_drawLabel(wd->rect.x - (w - k), r->y - 3, 0x14, g_winLabelStrings.itemCount, 0);
         win_drawListBox(r, 0x14, 1, l);
         menuList_getView(l, &view);
-        win_setClip(NULL, 0x13, 1);
+        win_setClip(NULL, 0x13, WIN_STYLE_LINE_RULE);
         for (i = 0; i < view.rows; i++) {
             menuEquip_drawListRow(0, i, view.first + i, &view);
         }
         if (l->scroll & 4) {
             menuList_getRowsRect(l, r, &sub);
-            win_setClip(&sub, 0x13, 1);
+            win_setClip(&sub, 0x13, WIN_STYLE_LINE_RULE);
             menuEquip_drawScrollRows();
         }
         if (wd->anim == 0) {
-            win_setClip(r, 0x13, 1);
+            win_setClip(r, 0x13, WIN_STYLE_LINE_RULE);
         }
     }
 }
@@ -621,8 +621,8 @@ void menuEquip_drawTabs(void) {
     s32 i;
 
     r = &s_menuEquip.tabRect;
-    win_drawBox(r, 0x1E, 2);
-    win_drawShadow(r, 0x1E, 2);
+    win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 0x1E, WIN_STYLE_BEVEL);
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + s_menuEquipTabX[i], r->y + 6, 0x1D, text_get(i), 0);
     }

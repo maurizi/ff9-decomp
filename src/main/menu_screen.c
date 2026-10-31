@@ -33,7 +33,7 @@ void menuScreen_drawCommands(void) {
     if (g_menuScreenCur == 0 || (g_menuScreenSwitch.busy != 0 && (*(u32 *)&g_menuScreenSwitch & 0xFFFF00))) {
         all = 1;
     }
-    win_setClip(NULL, 2, 2);
+    win_setClip(NULL, 2, WIN_STYLE_BEVEL);
     if (g_menuScreenSwitch.target != 0) {
         sel = g_menuScreenSwitch.target - 1;
     } else {
@@ -46,9 +46,9 @@ void menuScreen_drawCommands(void) {
                           (u8 *)text_getFrom(g_menuScreenStrings, i), 0);
         }
     }
-    win_setClip(r, 2, 2);
-    win_drawBox(r, 2, 2);
-    win_drawShadow(r, 2, 2);
+    win_setClip(r, 2, WIN_STYLE_BEVEL);
+    win_drawBox(r, 2, WIN_STYLE_BEVEL);
+    win_drawShadow(r, 2, WIN_STYLE_BEVEL);
 }
 
 void menuScreen_updateOpen(void) {

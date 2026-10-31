@@ -233,15 +233,15 @@ void menuMain_drawTimeGil(void) {
     strcat(buf, s_menuMainGilSuffix);
     ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 0x16, 0x13, buf, 0);
     ui_drawLabel(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y - 3, 0x13, g_labelTimeAndGil, 0);
-    win_drawBox(s_menuMainTimeGilRect, 0x14, 2);
+    win_drawBox(s_menuMainTimeGilRect, 0x14, WIN_STYLE_BEVEL);
 }
 
 void menuMain_drawLocation(void) {
     GameData *gd;
 
     ui_drawLabel(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y - 3, 0x13, g_labelLocation, 0);
-    win_drawBox(s_menuMainLocationRect, 0x14, 2);
-    win_drawShadow(s_menuMainLocationRect, 0x14, 2);
+    win_drawBox(s_menuMainLocationRect, 0x14, WIN_STYLE_BEVEL);
+    win_drawShadow(s_menuMainLocationRect, 0x14, WIN_STYLE_BEVEL);
     gd = g_gameState->gameData;
     if (gd->locationName != NULL && *gd->locationName != 0xFF) {
         text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, gd->locationName, 0);
@@ -457,9 +457,9 @@ void menuMain_drawParty(void) {
             menuMain_drawMember(i);
         }
         menuMain_drawPortraitShade(p, 0x14);
-        win_drawBox(&r, 0x14, 0);
-        win_drawBox(p, 0x14, 0);
-        win_drawShadow(p, 0x15, 0);
+        win_drawBox(&r, 0x14, WIN_STYLE_LINE);
+        win_drawBox(p, 0x14, WIN_STYLE_LINE);
+        win_drawShadow(p, 0x15, WIN_STYLE_LINE);
         i++;
     } while (i < 4);
 }

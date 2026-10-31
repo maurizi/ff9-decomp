@@ -42,9 +42,9 @@ void menuSave_drawHelp(void) {
         text_drawBlock(s_menuSaveHelpRect.x + 0xA, s_menuSaveHelpRect.y + 6, 5, s_menuSave.help, 0);
     }
     ui_drawLabel(s_menuSaveHelpRect.x + 6, s_menuSaveHelpRect.y - 3, 5, g_labelHelp, 0);
-    win_drawBox(&s_menuSaveSlotNameRect, 5, 0);
-    win_drawBox(&s_menuSaveHelpRect, 5, 1);
-    win_drawShadow(&s_menuSaveHelpRect, 5, 1);
+    win_drawBox(&s_menuSaveSlotNameRect, 5, WIN_STYLE_LINE);
+    win_drawBox(&s_menuSaveHelpRect, 5, WIN_STYLE_LINE_RULE);
+    win_drawShadow(&s_menuSaveHelpRect, 5, WIN_STYLE_LINE_RULE);
 }
 
 void menuSave_inputSlot(void) {
@@ -76,8 +76,8 @@ void menuSave_drawSlotWindow(void) {
     u8 *str;
     u8 s;
 
-    win_drawBox(&s_menuSaveSlotWindowRect, 0x34, 2);
-    win_drawShadow(&s_menuSaveSlotWindowRect, 0x34, 2);
+    win_drawBox(&s_menuSaveSlotWindowRect, 0x34, WIN_STYLE_BEVEL);
+    win_drawShadow(&s_menuSaveSlotWindowRect, 0x34, WIN_STYLE_BEVEL);
     for (i = 0; i < 2; i++) {
         str = text_get(i + SAVE_TEXT_SLOT1);
         ok = 0;
@@ -104,7 +104,7 @@ void menuSave_drawFileList(void) {
     r.w = SAVE_LIST_W;
     r.h = SAVE_ROW_H;
     menuSave_getListView(l, &v);
-    win_setClip(NULL, 0x2D, 4);
+    win_setClip(NULL, 0x2D, WIN_STYLE_FRAMELESS);
     for (i = 0; i < v.rows; i++) {
         r.y = i * SAVE_ROW_H + (s16)(v.y + SAVE_LIST_Y);
         menuSave_drawFile(&r, 0x2D, v.first + i);
@@ -115,12 +115,12 @@ void menuSave_drawFileList(void) {
         a.w = SAVE_LIST_W;
         a.h = SAVE_LIST_H;
         menuSave_getScrollClip(l, &a, &b);
-        win_setClip(&b, 0x2D, 4);
+        win_setClip(&b, 0x2D, WIN_STYLE_FRAMELESS);
         menuSave_drawScrollRows();
     }
     r.y = SAVE_LIST_Y;
     r.h = SAVE_LIST_H;
-    win_setClip(&r, 0x2D, 4);
+    win_setClip(&r, 0x2D, WIN_STYLE_FRAMELESS);
 }
 
 void menuSave_drawFile(RECT *r, s32 otz, s32 file) {
@@ -142,7 +142,7 @@ void menuSave_drawFile(RECT *r, s32 otz, s32 file) {
         v = g_gameState->config >> CFG_BIT_WINDOW_COLOR;
         v &= 1;
     }
-    win_drawBoxEx(r, 0x2D, 0, v);
+    win_drawBoxEx(r, 0x2D, WIN_STYLE_LINE, v);
 }
 
 void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
@@ -183,7 +183,7 @@ void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
     rr.w = 0x9C;
     rr.h = 0x15;
     text_drawBlock(rr.x + 8, rr.y + 3, z, (u8 *)&s->location, 0);
-    win_drawBoxEx(&rr, z, 0, s->windowColor);
+    win_drawBoxEx(&rr, z, WIN_STYLE_LINE, s->windowColor);
 }
 
 void menuSave_drawCursor(void) {
@@ -358,8 +358,8 @@ void menuSave_close(void) {
 }
 
 void menuSave_drawTitle(void) {
-    win_drawBox(&s_menuSaveTitleRect, 5, 2);
-    win_drawShadow(&s_menuSaveTitleRect, 5, 2);
+    win_drawBox(&s_menuSaveTitleRect, 5, WIN_STYLE_BEVEL);
+    win_drawShadow(&s_menuSaveTitleRect, 5, WIN_STYLE_BEVEL);
     text_drawBlock(s_menuSaveTitleRect.x + 0xA, s_menuSaveTitleRect.y + 6, 4, (u8 *)text_getFrom(g_saveMenuText, s_menuSave.mode), 0);
 }
 
@@ -435,7 +435,7 @@ void menuSave_drawScrollRows(void) {
     for (i = 0; i < v.rows; i++) {
         r.y = i * SAVE_ROW_H + (s16)(v.y + SAVE_LIST_Y);
         menuSave_drawFile(&r, 0x2D, v.first + i);
-        win_drawBox(&r, 0x2D, 0);
+        win_drawBox(&r, 0x2D, WIN_STYLE_LINE);
     }
 }
 
@@ -637,7 +637,7 @@ void menuSave_openConfirm(s32 id, s32 yes, s32 no) {
     r.h = h;
     r.x = (g_gameState->dispEnv->disp.w - w) >> 1;
     r.y = (g_gameState->dispEnv->disp.h - h) >> 1;
-    s_menuSaveConfirm.win = win_openFree(&r, 0x19, 2);
+    s_menuSaveConfirm.win = win_openFree(&r, 0x19, WIN_STYLE_BEVEL);
     win_setOnOpened(s_menuSaveConfirm.win, menuSave_onConfirmOpened);
     win_setOnClosed(s_menuSaveConfirm.win, menuSave_onConfirmClosed);
     win_setDrawContent(s_menuSaveConfirm.win, menuSave_drawConfirm);
@@ -670,7 +670,7 @@ void menuSave_drawConfirmCursor(Window *w) {
     if (b < (a & 0xFFF)) {
         b = a & 0xFFF;
     }
-    if (w->state == WIN_OPEN) {
+    if (w->state == WIN_STATE_OPEN) {
         g_menuHelp.x = w->x + ((s32)(w->w - b) >> 1) - 0x1A;
         g_menuHelp.y = w->y + (s16)(w->h + (s16)(s_menuSaveConfirm.choice * 15 - 0x26)) + 3;
         z = w->otz;
@@ -684,7 +684,7 @@ void menuSave_initConfirm(void) {
 }
 
 void menuSave_inputConfirm(void) {
-    if (s_menuSaveConfirm.win->state == WIN_OPEN) {
+    if (s_menuSaveConfirm.win->state == WIN_STATE_OPEN) {
         if (g_padRepeat & BTN_CROSS) {
             snd_playSe(SE_CURSOR);
             win_close(s_menuSaveConfirm.win);
@@ -759,7 +759,7 @@ void menuSave_openCheck(void) {
     s_menuSave.newestCounter = 0;
     s_menuSaveCheck.step = CHECK_STEP_NONE;
     s_menuSaveCheck.active = 1;
-    s_menuSaveCheck.win = win_openFree(&s_menuSaveCheckRect, 0x1E, 2);
+    s_menuSaveCheck.win = win_openFree(&s_menuSaveCheckRect, 0x1E, WIN_STYLE_BEVEL);
     s_menuSaveCheck.fd = 0xFF;
     s_menuSaveCheck.tries = 0;
     s_menuSaveCheck.ff9Files = 0;
@@ -1163,7 +1163,7 @@ void menuSave_openSavedMsg(SaveMenu *m) {
         s_menuSave.phase = SAVE_PH_WAIT;
         s_menuSaveSavedMsg.timer = 0;
         s_menuSaveSavedMsgRect.y = s_menuSave.list.cursor * SAVE_ROW_H + 0x3F;
-        s_menuSaveSavedMsg.win = win_openFree(&s_menuSaveSavedMsgRect, 0x14, 2);
+        s_menuSaveSavedMsg.win = win_openFree(&s_menuSaveSavedMsgRect, 0x14, WIN_STYLE_BEVEL);
         win_setDrawContent(s_menuSaveSavedMsg.win, menuSave_drawSavedMsg);
         win_setOnOpened(s_menuSaveSavedMsg.win, menuSave_onSavedMsgOpened);
         win_setOnClosed(s_menuSaveSavedMsg.win, menuSave_onSavedMsgClosed);
@@ -1172,7 +1172,7 @@ void menuSave_openSavedMsg(SaveMenu *m) {
 }
 
 void menuSave_inputSavedMsg(void) {
-    if (s_menuSaveSavedMsg.win->state == WIN_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
+    if (s_menuSaveSavedMsg.win->state == WIN_STATE_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
         snd_playSe(SE_CANCEL);
         s_menuSave.phase = SAVE_PH_WAIT;
         win_close(s_menuSaveSavedMsg.win);
@@ -1233,7 +1233,7 @@ void menuSave_openMessage(s32 id, s32 title) {
         r.h = h;
         r.x = (g_gameState->dispEnv->disp.w - w) >> 1;
         r.y = (g_gameState->dispEnv->disp.h - h) >> 1;
-        m->win = win_openFree(&r, 0xF, 2);
+        m->win = win_openFree(&r, 0xF, WIN_STYLE_BEVEL);
         win_setDrawContent(m->win, menuSave_drawMessage);
         win_setOnOpened(m->win, menuSave_onMessageOpened);
         win_setOnClosed(m->win, menuSave_onMessageClosed);
@@ -1247,7 +1247,7 @@ void menuSave_initMessage(void) {
 }
 
 void menuSave_inputMessage(void) {
-    if (s_menuSaveMessage.win->state == WIN_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
+    if (s_menuSaveMessage.win->state == WIN_STATE_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
         snd_playSe(SE_CANCEL);
         s_menuSave.phase = SAVE_PH_WAIT;
         win_close(s_menuSaveMessage.win);
@@ -1345,7 +1345,7 @@ u8 menuSave_startAccess(s32 mode) {
     menuSave_resetBookAnim();
     menuSave_resetReadProgress();
     menuSave_resetWriteProgress();
-    s_menuSaveAccess.win = win_openFree(&s_menuSaveAccessRect, 0x1E, 2);
+    s_menuSaveAccess.win = win_openFree(&s_menuSaveAccessRect, 0x1E, WIN_STYLE_BEVEL);
     win_setDrawContent(s_menuSaveAccess.win, menuSave_drawAccess);
     win_setOnOpened(s_menuSaveAccess.win, menuSave_onAccessOpened);
     win_setOnClosed(s_menuSaveAccess.win, menuSave_onAccessClosed);
