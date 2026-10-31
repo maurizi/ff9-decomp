@@ -6,27 +6,27 @@
 
 typedef struct {
     u16 unk0;
-    u16 unk2; /* count */
-    s16 *unk4;
+    u16 count2; /* count */
+    s16 *keys4;
 } Fx0d2Keys;
 
 typedef struct {
-    s16 *unk0;
-    s16 unk4; /* start frame */
-    s16 unk6; /* frames left, -1 = free */
-    s16 unk8; /* channel */
-    u16 unkA; /* destination slots, 4 bits each: nibble n (1-10) = ((SVECTOR *)g_btlCamera)[n - 1], i.e. points[0-5]
+    s16 *data0;
+    s16 start4; /* start frame */
+    s16 left6; /* frames left, -1 = free */
+    s16 chan8; /* channel */
+    u16 dstA; /* destination slots, 4 bits each: nibble n (1-10) = ((SVECTOR *)g_btlCamera)[n - 1], i.e. points[0-5]
                * then pointRots[0-3]; 0 = none. Runtime (Fenrir, g_btlCamera write watch): keys 1-4 write points[0-3],
                * 9 / 10 pointRots[2] / [3]; fx_0d2_op80 writes slot 7 (pointRots[1]) itself */
-    u16 unkC;
-    u16 unkE;
+    u16 keyC;
+    u16 keyCountE;
 } Fx0d2Track; /* 0x10 */
 
 typedef struct {
     Pool6CEntry *emit0[8];
-    SVECTOR unk20[8]; /* unit positions */
-    SVECTOR unk60[8];
-    s16 unkA0[8]; /* done */
+    SVECTOR pos20[8]; /* unit positions */
+    SVECTOR emitPos60[8];
+    s16 doneA0[8]; /* done */
 } Fx0d2Work84; /* 0xB0 */
 
 typedef struct {
@@ -36,36 +36,36 @@ typedef struct {
 } Fx0d2Vec3;
 
 typedef struct {
-    SVECTOR unk0; /* rotation */
-    Fx0d2Vec3 unk8; /* position */
+    SVECTOR rot0; /* rotation */
+    Fx0d2Vec3 pos8; /* position */
     s32 pad14;
-    Fx0d2Vec3 unk18; /* scale */
+    Fx0d2Vec3 scale18; /* scale */
     s32 pad24;
 } Fx0d2Model; /* 0x28 */
 
 typedef struct {
-    u16 unk0; /* file id */
-    u16 unk2; /* start frame */
-    u16 unk4; /* released */
-    s16 unk6[3]; /* position */
+    u16 block0; /* file id */
+    u16 frame2; /* start frame */
+    u16 done4; /* released */
+    s16 pos6[3]; /* position */
     u16 unkC;
 } Fx0d2Spawn; /* 0xE */
 
 typedef struct {
     Pool6CEntry *emit0[7];
-    Fx0d2Model unk1C[4];
-    SVECTOR unkBC[7];
+    Fx0d2Model xform1C[4];
+    SVECTOR posBC[7];
     u16 modelF4[10]; /* models: 0 ring, 1-2 morph pair, 3-8 slices, 9 */
 } Fx0d2Work82; /* 0x108 */
 
-extern Fx0d2Keys D_801EF240;
-extern Fx0d2Keys D_801EF258;
-extern Fx0d2Keys D_801EF270[6];
-extern u16 D_801EA440[6];
-extern SVECTOR D_801EA474;
-extern Fx0d2Spawn D_801EA3DC[7];
-extern Fx0d2Track D_801F0060[64];
-extern s32 D_801F0460[4];
+extern Fx0d2Keys fx_0d2_ringPath;
+extern Fx0d2Keys fx_0d2_morphCurve;
+extern Fx0d2Keys fx_0d2_slicePaths[6];
+extern u16 fx_0d2_sliceBlocks[6];
+extern SVECTOR fx_0d2_spawnRot;
+extern Fx0d2Spawn fx_0d2_spawns[7];
+extern Fx0d2Track fx_0d2_camChans[64];
+extern s32 fx_0d2_camChanFrame[4];
 
 static void fxm_buildPathTrail(Fx0d2Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
 static s32 fxm_offsetTableEntry(u8 *base, u16 i);
@@ -81,24 +81,24 @@ typedef struct {
 } Fx0d2Point;
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx0d2Point *unk4;
+    u16 count2; /* count */
+    Fx0d2Point *points4;
 } Fx0d2Path;
 typedef struct {
-    s16 unk0[3]; /* position */
-    s16 unk6[3]; /* rotation */
+    s16 pos0[3]; /* position */
+    s16 rot6[3]; /* rotation */
 } Fx0d2Key; /* 0xC */
 typedef struct {
     s16 unk0;
-    u16 unk2; /* keys */
-    Fx0d2Key *unk4;
+    u16 count2; /* keys */
+    Fx0d2Key *keys4;
 } Fx0d2KeyPath;
 typedef struct {
     s16 x, y, z;
 } Fx0d2Key6;
 typedef struct {
-    u16 unk0; /* count */
-    Fx0d2Key6 *unk4;
+    u16 count0; /* count */
+    Fx0d2Key6 *keys4;
 } Fx0d2Track6;
 static void fxm_posPathInit(Fx0d2Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx0d2Path *path, s32 t, SVECTOR *out);
@@ -111,12 +111,12 @@ extern Unk800F78A4 *fx_0d2_env;
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 typedef struct {
     Fx0d2Keys keys;
-    s16 unk8; /* start */
-    s16 unkA; /* points */
+    s16 start8; /* start */
+    s16 lengthA; /* points */
     s16 unkC;
     s16 unkE;
-    s16 unk10;
-    s16 unk12;
+    s16 from10;
+    s16 to12;
 } Fx0d2Trail;
 
 typedef struct {
@@ -124,22 +124,22 @@ typedef struct {
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     SVECTOR rotC; /* slice rotation */
-    Fx0d2Vec3 unk14; /* slice position */
+    Fx0d2Vec3 pos14; /* slice position */
     s32 pad20;
-    Fx0d2Vec3 unk24; /* slice scale */
+    Fx0d2Vec3 scale24; /* slice scale */
     s32 pad30;
     SVECTOR pos34;
     SVECTOR pos3C;
     u16 model44[6]; /* slice models */
 } Fx0d2Work81; /* 0x50 */
 
-extern Fx0d2Trail D_801EF1F0;
-extern Fx0d2Trail D_801EF210;
-extern u32 D_801EF300[];
-extern u8 D_801EF700[9][0x90];
-extern u8 D_801EFC10[11][0x50];
-extern SVECTOR D_801EFF80[8];
-extern VECTOR D_801EFFC0[8];
+extern Fx0d2Trail fx_0d2_streak;
+extern Fx0d2Trail fx_0d2_streak2;
+extern u32 fx_0d2_bgBuf[];
+extern u8 fx_0d2_streakBufs[9][0x90];
+extern u8 fx_0d2_streakBufs2[11][0x50];
+extern SVECTOR fx_0d2_unitPos[8];
+extern VECTOR fx_0d2_unitScale[8];
 s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 typedef struct {
     Pool6CEntry *emit0;
@@ -148,23 +148,23 @@ typedef struct {
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
     SVECTOR rot14; /* summon rotation */
-    Fx0d2Vec3 unk1C; /* summon position */
+    Fx0d2Vec3 summonPos1C; /* summon position */
     s32 pad28;
-    Fx0d2Vec3 unk2C; /* summon scale */
+    Fx0d2Vec3 summonScale2C; /* summon scale */
     s32 pad38;
     SVECTOR rot3C; /* slice rotation */
-    Fx0d2Vec3 unk44; /* slice position */
+    Fx0d2Vec3 pos44; /* slice position */
     s32 pad50;
-    Fx0d2Vec3 unk54; /* slice scale */
+    Fx0d2Vec3 scale54; /* slice scale */
     u8 pad60[0x6C - 0x60];
-    SVECTOR unk6C;
+    SVECTOR pos6C;
     SVECTOR pos74;
     SVECTOR pos7C;
-    SVECTOR unk84;
-    SVECTOR unk8C;
+    SVECTOR pos84;
+    SVECTOR pos8C;
     s32 unk94;
     s32 unk98;
-    s32 unk9C; /* path step */
+    s32 pathFrame9C; /* path step */
     s32 padA0;
     u16 modelA4; /* slice model */
 } Fx0d2Work80; /* 0xA8 */
@@ -179,51 +179,51 @@ typedef struct {
         BtlUnit9CC *motion188;
     } *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx0d2Summon;
 
 extern BtlModel fx_0d2_effModels[];
-extern Fx0d2Keys D_801EF228;
-extern Fx0d2Keys D_801EF230;
-extern Fx0d2Keys D_801EF250;
-extern SVECTOR D_801F0040;
-extern SVECTOR D_801F0050[2];
+extern Fx0d2Keys fx_0d2_summonPath;
+extern Fx0d2Keys fx_0d2_slicePath;
+extern Fx0d2Keys fx_0d2_emitPath;
+extern SVECTOR fx_0d2_emitPos;
+extern SVECTOR fx_0d2_emitPos2[2];
 s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR rot8; /* slice rotation */
-    Fx0d2Vec3 unk10; /* slice position */
+    Fx0d2Vec3 pos10; /* slice position */
     s32 pad1C;
-    Fx0d2Vec3 unk20; /* slice scale */
+    Fx0d2Vec3 scale20; /* slice scale */
     s32 pad2C;
     SVECTOR rot30;
-    Fx0d2Vec3 unk38;
+    Fx0d2Vec3 pos38;
     s32 pad44;
-    Fx0d2Vec3 unk48;
+    Fx0d2Vec3 scale48;
     s32 pad54;
-    SVECTOR unk58[8]; /* unit positions */
-    VECTOR unk98[8]; /* unit scales */
+    SVECTOR unitPos58[8]; /* unit positions */
+    VECTOR unitScale98[8]; /* unit scales */
     SVECTOR pos118;
     SVECTOR pos120;
-    SVECTOR unk128;
-    s16 unk130; /* fade counters */
-    s16 unk132;
-    s16 unk134;
+    SVECTOR rot128;
+    s16 fadeOut130; /* fade counters */
+    s16 fadeIn132;
+    s16 white134;
     u16 model136[9]; /* models */
 } Fx0d2Work83; /* 0x148 */
 
-extern u16 D_801EA44C[3];
-extern s16 D_801EA454[];
-extern s16 D_801EA464[];
-extern u8 D_801EA47C[];
-extern Unk800E8F50 D_801EB138;
-extern Fx0d2Keys D_801EF238;
-extern Fx0d2Keys D_801EF248;
-extern Fx0d2Keys D_801EF260;
-extern Fx0d2Keys D_801EF2A0[10];
-extern Fx0d2Keys D_801EF2F0;
-extern Fx0d2Keys D_801EF2F8;
+extern u16 fx_0d2_morphBlocks[3];
+extern s16 fx_0d2_texPages[];
+extern s16 fx_0d2_uvOffsets[];
+extern u8 fx_0d2_pieceModels[];
+extern Unk800E8F50 fx_0d2_sliceModel;
+extern Fx0d2Keys fx_0d2_slicePath2;
+extern Fx0d2Keys fx_0d2_morphPath;
+extern Fx0d2Keys fx_0d2_morphCurve2;
+extern Fx0d2Keys fx_0d2_piecePaths[10];
+extern Fx0d2Keys fx_0d2_unitOffsetPath;
+extern Fx0d2Keys fx_0d2_unitScalePath;
 s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 #endif

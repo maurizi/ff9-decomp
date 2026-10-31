@@ -230,3 +230,51 @@ fx_0b8 Fx0b8Bolt unk4C=x4C unk70=y70 unk94=dx94 unkB8=dyB8 unkDC=timerDC
 fx_0b8 Fx0b8Unit unk0=rot0 unk8=scale8 unk14=pos14 unk1C=pitch1C unk1E=yaw1E unk24=rot24 unk2C=spinX2C unk2E=spinY2E unk30=spinZ30
 fx_0b8 Fx0b8Band unk0=y0 unk4=h4 unk8=x8 unkC=colorC unk10=color10 unk14=dx14 unk18=dy18
 fx_0b8 Fx0b8Summon unk60=model60
+
+## fx_0d2
+fx_0d2 D_801EF228 fx_0d2_summonPath  # [code] position path (fxm_posPathInit, file blocks 0x92 then 0x9F) of Fenrir's summon model in fx_0d2_op80 (Hi_DrawSummonModel)
+fx_0d2 D_801EF230 fx_0d2_slicePath  # [code] rotation/position path (file block 0xA7) of the slice model from frame 0xB6 of fx_0d2_op80 (Hi_DrawSliceEffModel)
+fx_0d2 D_801EF250 fx_0d2_emitPath  # [code] position path (file block 0x82) the two file block 0x83 emitters follow (one mirrored in x), fx_0d2_op80
+fx_0d2 D_801F0040 fx_0d2_emitPos  # [code] origin passed to btlfx_startEmitter for the file block 0xA4 emitter in fx_0d2_op80 (then moved to camera pointRots 2)
+fx_0d2 D_801F0050 fx_0d2_emitPos2  # [code] two origins passed to btlfx_startEmitter for the file block 0x83 emitters in fx_0d2_op80
+fx_0d2 D_801F0060 fx_0d2_camChans  # [code] 64 camera key tracks (Fx0d2Track) filled by fxm_camChanAdd, played by fxm_camChanUpdate into g_btlCamera points
+fx_0d2 D_801F0460 fx_0d2_camChanFrame  # [code] frame counter per camera channel (4), advanced by fxm_camChanUpdate and compared with each track start
+fx_0d2 D_801EF270 fx_0d2_slicePaths  # [code] rotation/position paths of the 6 slice models (offset table in file block 0x90 or 0x91), fx_0d2_op81 and fx_0d2_op82
+fx_0d2 D_801EA440 fx_0d2_sliceBlocks  # [code] effect file block of each of the 6 slice models (btlfx_registerEffectModel) in fx_0d2_op81 and fx_0d2_op82
+fx_0d2 D_801EF1F0 fx_0d2_streak  # [code] Fx0d2Trail state (path keys, length, from to) of the 9 file block 0x1B trails built by fxm_buildPathTrail in fx_0d2_op81
+fx_0d2 D_801EF700 fx_0d2_streakBufs  # [code] 9 0x90-byte trail buffers built by fxm_buildPathTrail and drawn with btlfx_drawTrail (file block 0x1B) in fx_0d2_op81
+fx_0d2 D_801EF210 fx_0d2_streak2  # [code] Fx0d2Trail state of the 11 file block 0x25 trails built by fxm_buildPathTrail in fx_0d2_op81
+fx_0d2 D_801EFC10 fx_0d2_streakBufs2  # [code] 11 0x50-byte trail buffers built by fxm_buildPathTrail and drawn with btlfx_drawTrail (file block 0x25) in fx_0d2_op81
+fx_0d2 D_801EF300 fx_0d2_bgBuf  # [code] pixel buffer passed to btlfx_drawBgOffscreen by fx_0d2_op81 at frame 0x41
+fx_0d2 D_801EFF80 fx_0d2_unitPos  # [code] target positions saved by fx_0d2_op81 (btlfx_getUnitPos), fx_0d2_op83 offsets the units from them
+fx_0d2 D_801EFFC0 fx_0d2_unitScale  # [code] target scales saved by fx_0d2_op81 (btlfx_getUnitScale), fx_0d2_op83 scales the units from them and restores them
+fx_0d2 D_801EF240 fx_0d2_ringPath  # [code] rotation/position path (file block 0x84) of the first fx_0d2_op82 slice model (modelF4 0)
+fx_0d2 D_801EF258 fx_0d2_morphCurve  # [code] value path (file block 0x8F) of the Hi_DrawMorphEffModel blend in fx_0d2_op82
+fx_0d2 D_801EA3DC fx_0d2_spawns  # [code] 7 Fx0d2Spawn (file block, start frame, done, position) emitters started by fx_0d2_op82
+fx_0d2 D_801EA474 fx_0d2_spawnRot  # [code] rotation given every frame to the fx_0d2_spawns emitters in fx_0d2_op82
+fx_0d2 D_801EF238 fx_0d2_slicePath2  # [code] rotation/position path (file block 0x28) of the fx_0d2_op83 slice model (model136 0)
+fx_0d2 D_801EB138 fx_0d2_sliceModel  # [code] model data in the module passed to btlfx_registerEffectModel for fx_0d2_op83 model136 0
+fx_0d2 D_801EF248 fx_0d2_morphPath  # [code] rotation/position path (file block 9) of the fx_0d2_op83 morph models
+fx_0d2 D_801EF260 fx_0d2_morphCurve2  # [code] value path (file blocks 0x19 then 0x1A) of the Hi_DrawMorphEffModel blend in fx_0d2_op83
+fx_0d2 D_801EA44C fx_0d2_morphBlocks  # [code] effect file block of each of the 3 Hi_RegisterTexPtrModel morph models in fx_0d2_op83
+fx_0d2 D_801EA454 fx_0d2_texPages  # [code] tpage clut pairs passed to Hi_RegisterTexPtrModel (btl_applyModelTextures arg1) in fx_0d2_op83
+fx_0d2 D_801EA464 fx_0d2_uvOffsets  # [code] uv offsets passed to Hi_RegisterTexPtrModel (btl_applyModelTextures arg2) in fx_0d2_op83
+fx_0d2 D_801EA47C fx_0d2_pieceModels  # [code] offset table of 5 model data blocks in the module (fxm_offsetTableEntry, btlfx_registerEffectModel) for fx_0d2_op83 model136 4-8
+fx_0d2 D_801EF2A0 fx_0d2_piecePaths  # [code] rotation/position paths (offset table in file block 8) of the 10 pieces drawn with fx_0d2_pieceModels in fx_0d2_op83
+fx_0d2 D_801EF2F0 fx_0d2_unitOffsetPath  # [code] position path (file block 0x14) added to fx_0d2_unitPos for every target in fx_0d2_op83
+fx_0d2 D_801EF2F8 fx_0d2_unitScalePath  # [code] vector path (file block 0x15) multiplied into fx_0d2_unitScale for every target in fx_0d2_op83
+fx_0d2 Fx0d2Keys unk2=count2 unk4=keys4
+fx_0d2 Fx0d2Track unk0=data0 unk4=start4 unk6=left6 unk8=chan8 unkA=dstA unkC=keyC unkE=keyCountE
+fx_0d2 Fx0d2Work84 unk20=pos20 unk60=emitPos60 unkA0=doneA0
+fx_0d2 Fx0d2Model unk0=rot0 unk8=pos8 unk18=scale18
+fx_0d2 Fx0d2Spawn unk0=block0 unk2=frame2 unk4=done4 unk6=pos6
+fx_0d2 Fx0d2Work82 unk1C=xform1C unkBC=posBC
+fx_0d2 Fx0d2Path unk2=count2 unk4=points4
+fx_0d2 Fx0d2Key unk0=pos0 unk6=rot6
+fx_0d2 Fx0d2KeyPath unk2=count2 unk4=keys4
+fx_0d2 Fx0d2Track6 unk0=count0 unk4=keys4
+fx_0d2 Fx0d2Trail unk8=start8 unkA=lengthA unk10=from10 unk12=to12
+fx_0d2 Fx0d2Work81 unk14=pos14 unk24=scale24
+fx_0d2 Fx0d2Work80 unk1C=summonPos1C unk2C=summonScale2C unk44=pos44 unk54=scale54 unk6C=pos6C unk84=pos84 unk8C=pos8C unk9C=pathFrame9C
+fx_0d2 Fx0d2Summon unk60=model60
+fx_0d2 Fx0d2Work83 unk10=pos10 unk20=scale20 unk38=pos38 unk48=scale48 unk58=unitPos58 unk98=unitScale98 unk128=rot128 unk130=fadeOut130 unk132=fadeIn132 unk134=white134
