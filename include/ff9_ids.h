@@ -202,9 +202,9 @@
 
 /* ---- status: BtlUnit.status bits (docs/runtime-findings.md "Battle STATUS bits"). BtlUnit.autoStatus uses the same
  * bits (btl_hasStatus tests both words). The low 7 bits are also Character.status, the statuses that last after
- * battle (btl_init copies them in): ui_drawStatusIcons draws icon k for bit k, and ovl_38's status help lists them
- * in that order, [text ovl_38 g_statusMenuText] "Petrified", "Venom", "Virus", "Silence", "Darkness", "Trouble",
- * "Zombie". */
+ * battle (btl_init copies them in). ui_drawStatusIcons draws g_statusIconSprites[k] for bit k; ovl_38's status
+ * help (g_statusMenuText 0) names its icon arguments 0-6, set to the same sprites (s_menuStatusHelpArgs):
+ * [text] "Petrified", "Venom", "Virus", "Silence", "Darkness", "Trouble", "Zombie". */
 #define BTL_STATUS_PETRIFY         0x00000001 /* runtime: Break; model CLUT turns to stone (btl_setStoneClut) */
 #define BTL_STATUS_VENOM           0x00000002 /* code: the tick drains HP and MP (btl_tickPoison, btl_tickVenomMp) */
 #define BTL_STATUS_VIRUS           0x00000004 /* text: status help line 2 (see above) */
