@@ -1292,8 +1292,7 @@ void btlui_initCachedCmdIcons(s32 arg0) {
     s32 y = 0x9A;
 
     for (i = 0; i < 4; i++) {
-        setlen(&g_btluiPrims->cmdIcons[i][arg0], 4);
-        setcode(&g_btluiPrims->cmdIcons[i][arg0], 0x64);
+        setSprt(&g_btluiPrims->cmdIcons[i][arg0]);
         setRGB0(&g_btluiPrims->cmdIcons[i][arg0], 0x80, 0x80, 0x80);
         g_btluiPrims->cmdIcons[i][arg0].x0 = 0;
         g_btluiPrims->cmdIcons[i][arg0].y0 = y;
@@ -1350,7 +1349,7 @@ void btlui_drawSideFrame(RECT *r, s32 otz) {
     d2 = &D_80068E78[2];
     setlen(g_primPtr, 4);
     d1 = &D_80068E78[1];
-    ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
+    ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     ((SprtWords *)g_primPtr)->xy = r->x | (r->y << 16);
     w = D_80068E78[0].u;
     w |= D_80068E78[0].v << 8;
@@ -1360,7 +1359,7 @@ void btlui_drawSideFrame(RECT *r, s32 otz) {
     g_primPtr += sizeof(SprtWords);
 
     setlen(g_primPtr, 4);
-    ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
+    ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     ((SprtWords *)g_primPtr)->xy = (r->x + r->w - d2->w) | (r->y << 16);
     ((SprtWords *)g_primPtr)->uvclut = D_80068E78[2].u | (d2->v << 8) | clut;
     ((SprtWords *)g_primPtr)->wh = d2->w | (d2->h << 16);
@@ -1376,7 +1375,7 @@ void btlui_drawSideFrame(RECT *r, s32 otz) {
     g_primPtr += 0xC;
 
     setlen(g_primPtr, 4);
-    ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
+    ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     ((SprtWords *)g_primPtr)->xy = (r->x + D_80068E78[0].w) | (r->y << 16);
     ((SprtWords *)g_primPtr)->uvclut = (d1->v << 8) | clut;
     ((SprtWords *)g_primPtr)->wh = (r->w - (D_80068E78[0].w + d2->w)) | (d1->h << 16);
@@ -1406,7 +1405,7 @@ void btlui_drawTranceLabel(s32 x, s32 y, s32 otz, char *str) {
     w = ui_measureLabel(g_btluiHighlightLabel);
     wh = w | 0x70000;
     setlen(g_primPtr, 3);
-    ((TileWords *)g_primPtr)->rgbc = 0x62000000;
+    ((TileWords *)g_primPtr)->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     xy = x | (y << 16);
     ((TileWords *)g_primPtr)->xy = xy;
     ((TileWords *)g_primPtr)->wh = wh;
@@ -1436,7 +1435,7 @@ void btlui_drawTranceLabel(s32 x, s32 y, s32 otz, char *str) {
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
     setlen(g_primPtr, 3);
-    ((TileWords *)g_primPtr)->rgbc = 0x62000000;
+    ((TileWords *)g_primPtr)->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     ((TileWords *)g_primPtr)->xy = xy;
     ((TileWords *)g_primPtr)->wh = wh;
     addPrim(&g_ot[otz], g_primPtr);
@@ -2596,14 +2595,14 @@ void btlui_drawTargetListOverlay(Window *arg0) {
 }
 
 void btlui_drawTargetCursors(void) {
-    u32 c = 0x64808080;
+    u32 c = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     Unk80105020 *b = &g_btluiCursors;
     u32 *clut = &D_800686D8;
     s32 i;
     SprtWords *p;
     DR_TPAGE *t;
     if (b->count >= 2 && !(g_btluiVsyncTick & 3)) {
-        c = 0x64404040;
+        c = GPU_RGBC(GPU_SPRT, 0x404040);
     }
     for (i = 0; i < b->count; i++) {
         setlen(g_primPtr, 4);
@@ -2957,9 +2956,9 @@ void btlui_drawListCursors(Window *arg0) {
     if (b->partyCount == 0 || arg0->state != 3 || m->shown == 0) {
         return;
     }
-    c = 0x64808080;
+    c = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     if (b->partyCount >= 2 && !(g_btluiVsyncTick & 3)) {
-        c = 0x64404040;
+        c = GPU_RGBC(GPU_SPRT, 0x404040);
     }
     y = w->y + 5;
     x = w->x - 0xE;
@@ -3123,8 +3122,7 @@ void btlui_drawCachedHeader(void) {
 }
 
 void btlui_initCachedHeader(s32 arg0) {
-    setlen(&g_btluiPrims->headerA[arg0], 4);
-    setcode(&g_btluiPrims->headerA[arg0], 0x64);
+    setSprt(&g_btluiPrims->headerA[arg0]);
     setRGB0(&g_btluiPrims->headerA[arg0], 0x80, 0x80, 0x80);
     g_btluiPrims->headerA[arg0].x0 = 0xD0;
     g_btluiPrims->headerA[arg0].u0 = 0;
@@ -3132,8 +3130,7 @@ void btlui_initCachedHeader(s32 arg0) {
     g_btluiPrims->headerA[arg0].clut = 0;
     g_btluiPrims->headerA[arg0].w = 0x40;
     g_btluiPrims->headerA[arg0].h = 4;
-    setlen(&g_btluiPrims->headerB[arg0], 4);
-    setcode(&g_btluiPrims->headerB[arg0], 0x64);
+    setSprt(&g_btluiPrims->headerB[arg0]);
     setRGB0(&g_btluiPrims->headerB[arg0], 0x80, 0x80, 0x80);
     g_btluiPrims->headerB[arg0].x0 = 0x110;
     g_btluiPrims->headerB[arg0].u0 = 0;
@@ -3269,8 +3266,7 @@ void btlui_initNamePrims(s32 arg0) {
     s32 i;
     SPRT *s;
     for (i = 0; i < 4; i++) {
-        setlen(&g_btluiPrims->names[i][arg0], 4);
-        setcode(&g_btluiPrims->names[i][arg0], 0x64);
+        setSprt(&g_btluiPrims->names[i][arg0]);
         setRGB0(&g_btluiPrims->names[i][arg0], 0x80, 0x80, 0x80);
         g_btluiPrims->names[i][arg0].x0 = 0x92;
         g_btluiPrims->names[i][arg0].h = 0xC;
@@ -3290,16 +3286,14 @@ void btlui_initCachedRows(s32 arg0) {
     s32 i;
     SPRT *s;
     for (i = 0; i < 4; i++) {
-        setlen(&g_btluiPrims->rowsA[i][arg0], 4);
-        setcode(&g_btluiPrims->rowsA[i][arg0], 0x64);
+        setSprt(&g_btluiPrims->rowsA[i][arg0]);
         setRGB0(&g_btluiPrims->rowsA[i][arg0], 0x80, 0x80, 0x80);
         g_btluiPrims->rowsA[i][arg0].x0 = 0xD0;
         g_btluiPrims->rowsA[i][arg0].u0 = 0;
         g_btluiPrims->rowsA[i][arg0].w = 0x1D;
         g_btluiPrims->rowsA[i][arg0].h = 0xA;
         g_btluiPrims->rowsA[i][arg0].clut = 0;
-        setlen(&g_btluiPrims->rowsB[i][arg0], 4);
-        setcode(&g_btluiPrims->rowsB[i][arg0], 0x64);
+        setSprt(&g_btluiPrims->rowsB[i][arg0]);
         setRGB0(&g_btluiPrims->rowsB[i][arg0], 0x80, 0x80, 0x80);
         g_btluiPrims->rowsB[i][arg0].x0 = 0xEF;
         g_btluiPrims->rowsB[i][arg0].u0 = 0x20;
@@ -3698,7 +3692,7 @@ void btlui_drawPortIcons(void) {
                 s = &D_80068EE0;
             }
             setlen(&g_btluiPortBlinkSprt, 4);
-            g_btluiPortBlinkSprt.rgbc = 0x64808080;
+            g_btluiPortBlinkSprt.rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
             g_btluiPortBlinkSprt.xy = 0x6012B;
             g_btluiPortBlinkSprt.uvclut = s->uvclut;
             g_btluiPortBlinkSprt.wh = s->w | (s->h << 16);
@@ -3710,7 +3704,7 @@ void btlui_drawPortIcons(void) {
             s = &D_80068ED0;
         }
         setlen(&g_btluiPortIconSprt, 4);
-        g_btluiPortIconSprt.rgbc = 0x64808080;
+        g_btluiPortIconSprt.rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         g_btluiPortIconSprt.xy = 0x60124;
         g_btluiPortIconSprt.uvclut = s->uvclut;
         g_btluiPortIconSprt.wh = s->w | (s->h << 16);

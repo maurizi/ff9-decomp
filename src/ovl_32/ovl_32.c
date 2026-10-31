@@ -311,7 +311,7 @@ void menuChocograph_drawPicture(s32 x, s32 y, s32 z, s32 id, u8 dim) {
 
     setlen(g_primPtr, 4);
     cl = clut;
-    ((SprtWords *)g_primPtr)->rgbc = dim ? 0x66808080 : 0x64808080;
+    ((SprtWords *)g_primPtr)->rgbc = dim ? GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p = (SprtWords *)g_primPtr;
     p->xy = x | (y << 16);
     p->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (cl << 16);
@@ -330,7 +330,7 @@ void menuChocograph_drawFrame(s32 x, s32 y, s32 otz, u8 dim) {
     clut = GetClut(0x3C0, 0x1FE);
     for (i = 0; i < 4; i++) {
         setlen(g_primPtr, 9);
-        ((Ft4W *)g_primPtr)->rgbc = dim ? 0x2E808080 : 0x2C808080;
+        ((Ft4W *)g_primPtr)->rgbc = dim ? GPU_RGBC(GPU_POLY_FT4 | GPU_ABE, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_POLY_FT4, GPU_RGB_NEUTRAL);
         if (i < 2) {
             ((Ft4W *)g_primPtr)->x0 = s_menuChocographFramePieces[i].x + x;
             ((Ft4W *)g_primPtr)->y0 = s_menuChocographFramePieces[i].y + y;
@@ -368,7 +368,7 @@ void menuChocograph_drawFrame(s32 x, s32 y, s32 otz, u8 dim) {
     for (i = 0; i < 2; i++) {
         s32 k = s_menuChocographFrameShadowPieces[i];
         setlen(g_primPtr, 9);
-        ((Ft4W *)g_primPtr)->rgbc = 0x2E101010;
+        ((Ft4W *)g_primPtr)->rgbc = GPU_RGBC(GPU_POLY_FT4 | GPU_ABE, 0x101010);
         if (k < 2) {
             ((Ft4W *)g_primPtr)->x0 = s_menuChocographFramePieces[k].x + x;
             ((Ft4W *)g_primPtr)->y0 = s_menuChocographFramePieces[k].y + y;

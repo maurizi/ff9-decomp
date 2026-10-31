@@ -156,7 +156,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
     case 0:
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x;
         p->y0 = y;
         p->u0 = 0;
@@ -174,7 +174,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x;
         p->y0 = y;
         setRGB0(p, c, c, c);
@@ -195,7 +195,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         x1 = x - 2;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x1;
         p->y0 = y;
         setRGB0(p, c, c, c);
@@ -213,7 +213,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x1;
         p->y0 = y;
         p->w = 0x70;
@@ -234,7 +234,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         x2 = x - 0x10;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x2;
         p->y0 = y;
         p->w = 0x88;
@@ -252,7 +252,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x2;
         p->y0 = y;
         setRGB0(p, c, c, c);
@@ -277,7 +277,7 @@ s32 bj_drawCardBack(s32 x, s32 y) {
     SPRT *p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
 
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     setRGB0(p, 0x80, 0x80, 0x80);
     p->x0 = x;
     p->u0 = 0;
@@ -300,7 +300,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
 
     p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     setRGB0(p, 0x80, 0x80, 0x80);
     p->x0 = x + 2;
     p->y0 = y + 1;
@@ -314,7 +314,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
 
     p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     setRGB0(p, 0x80, 0x80, 0x80);
     p->x0 = x + 0x2C;
     p->y0 = y + 0x38;
@@ -330,7 +330,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->x0 = x + 1;
     p->y0 = y + 0xF;
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     setRGB0(p, 0x80, 0x80, 0x80);
     p->u0 = suit * 12;
     p->v0 = 0xD5;
@@ -343,7 +343,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     p->x0 = x + 0x2B;
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     setRGB0(p, 0x80, 0x80, 0x80);
     p->u0 = suit * 12;
     p->v0 = 0xCA;
@@ -359,7 +359,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
         if (rank == 12) {
             p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
             setlen(p, 4);
-            p->code = 0x64;
+            p->code = GPU_SPRT;
             setRGB0(p, 0x80, 0x80, 0x80);
             p->u0 = suit * 12;
             p->v0 = 0xD5;
@@ -375,7 +375,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             p->x0 = x + 7;
             p->y0 = y + 0xA;
             setlen(p, 4);
-            p->code = 0x64;
+            p->code = GPU_SPRT;
             setRGB0(p, 0x80, 0x80, 0x80);
             if (f & 1) {
                 p->u0 = 0x2C;
@@ -399,7 +399,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             py = g_bjPips[rank][i].y;
             p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
             setlen(p, 4);
-            p->code = 0x64;
+            p->code = GPU_SPRT;
             setRGB0(p, 0x80, 0x80, 0x80);
             p->u0 = suit * 12;
             p->x0 = x + px;
@@ -419,7 +419,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
 
     p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     setRGB0(p, 0x80, 0x80, 0x80);
     p->u0 = 0;
     p->v0 = 0x80;

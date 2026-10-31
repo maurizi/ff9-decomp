@@ -434,7 +434,7 @@ void func_801E8A88(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
             }
             gte_ldv3c(p);
             gte_rtpt();
-            g4->code = 0x3A;
+            g4->code = GPU_POLY_G4 | GPU_ABE;
             gte_stsxy3(&g4->x0, &g4->x1, &g4->x2);
             gte_ldv0(&p[3]);
             gte_rtps();

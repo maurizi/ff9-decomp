@@ -402,7 +402,7 @@ void menuConfig_drawSlider(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     g_primPtr += 0xC;
     setlen(g_primPtr, 4);
     p = (SprtWords *)g_primPtr;
-    p->rgbc = 0x64808080;
+    p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = ((x + ic->w) & 0xFFFF) | (y << 16);
     p->uvclut = mid->uv << 16;
     p->wh = (width - (ic->w + ec->w)) | (mid->h << 16);

@@ -471,7 +471,7 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *p, TmState *s) {
                     }
                 }
                 setlen(p, 3);
-                p->code = 0x7C;
+                p->code = GPU_SPRT_16;
                 p->x0 = x * 16;
                 p->y0 = y * 16;
                 p->v0 = y * 16;
@@ -502,7 +502,7 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *p, TmState *s) {
                     }
                 }
                 setlen(p, 3);
-                p->code = 0x7C;
+                p->code = GPU_SPRT_16;
                 p->x0 = x * 16 + 0x100;
                 p->y0 = y * 16;
                 p->v0 = y * 16;
@@ -535,9 +535,9 @@ void *tm_drawBoard(u32 *ot, SPRT_16 *p, TmState *s) {
     for (x = 0; x < 14; x++) {
         for (y = 0; y < 15; y++) {
             setlen(p, 3);
-            p->code = 0x7C;
+            p->code = GPU_SPRT_16;
             if (s->task == TM_TASK_FIELD_FADE) {
-                p->code = 0x7E;
+                p->code = GPU_SPRT_16 | GPU_ABE;
             }
             p->x0 = x * 16 + 0x30;
             p->y0 = y * 16;
@@ -634,7 +634,7 @@ void *tm_drawScore(u32 *ot, SPRT *p, TmState *s) {
             w = 0x10;
         }
         setlen(p, 4);
-        p->code = 0x64;
+        p->code = GPU_SPRT;
         p->x0 = x;
         p->y0 = y;
         p->r0 = c;
@@ -649,7 +649,7 @@ void *tm_drawScore(u32 *ot, SPRT *p, TmState *s) {
         p++;
     }
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     p->x0 = 0x10;
     p->y0 = 0xAA;
     p->r0 = c;
@@ -714,7 +714,7 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
             g_menuHelp.text = text_get(TM_HELP_SELECT);
             text_drawBlock(0x12, 9, 0xFFA, text_get(TM_TEXT_ICON_R1), 0);
             setlen(sp, 4);
-            sp->code = 0x64;
+            sp->code = GPU_SPRT;
             sp->x0 = 0x1F;
             sp->y0 = 0xC;
             sp->v0 = 0xD0;
@@ -1669,7 +1669,7 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
             h = 0x28;
         }
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x;
         p->y0 = y;
         p->r0 = c;
@@ -1891,7 +1891,7 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
             }
             if (s->flashMode == TM_FLIP_CHANGE) {
                 setlen(p, 3);
-                p->code = 0x62;
+                p->code = GPU_TILE | GPU_ABE;
                 setXY0(p, e[i].x * TM_SQUARE_W + TM_BOARD_X, e[i].y * TM_SQUARE_H + TM_BOARD_Y);
                 setWH(p, TM_CARD_W, TM_CARD_H);
                 setRGB0(p, c, c, c);
@@ -1927,7 +1927,7 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
                         y -= 4;
                     }
                     setlen(p, 3);
-                    p->code = 0x62;
+                    p->code = GPU_TILE | GPU_ABE;
                     setXY0(p, x, y);
                     setWH(p, w, h);
                     setRGB0(p, c, c, c);
@@ -1955,7 +1955,7 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
                     break;
                 }
                 setlen(p, 3);
-                p->code = 0x62;
+                p->code = GPU_TILE | GPU_ABE;
                 setXY0(p, x, y);
                 setWH(p, w, h);
                 setRGB0(p, c, c, c);
@@ -1964,7 +1964,7 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
             }
             if (s->flashMode == TM_FLIP_BATTLE) {
                 setlen(p, 3);
-                p->code = 0x62;
+                p->code = GPU_TILE | GPU_ABE;
                 setXY0(p, e[i].x * TM_SQUARE_W + TM_BOARD_X, e[i].y * TM_SQUARE_H + TM_BOARD_Y);
                 setWH(p, TM_CARD_W, TM_CARD_H);
                 if (s->timer & 4) {
@@ -2020,7 +2020,7 @@ void *tm_drawFlash2(u32 *ot, TILE *p, TmState *s) {
                 card->owner = e[i].arg;
             }
             setlen(p, 3);
-            p->code = 0x62;
+            p->code = GPU_TILE | GPU_ABE;
             p->x0 = card->x;
             p->y0 = card->y;
             p->w = 0x2A;
@@ -2208,7 +2208,7 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
         if (s->task == TM_TASK_BATTLE_SELECT && a != b) {
             o = ot + z;
             setlen((SPRT *)p, 4);
-            ((SPRT *)p)->code = 0x64;
+            ((SPRT *)p)->code = GPU_SPRT;
             ((SPRT *)p)->x0 = c->x + 5;
             ((SPRT *)p)->y0 = c->y + 0x15;
             ((SPRT *)p)->v0 = 0xF0;
@@ -2245,7 +2245,7 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
         }
         if (c->small == 0) {
             setlen((SPRT *)p, 4);
-            ((SPRT *)p)->code = 0x64;
+            ((SPRT *)p)->code = GPU_SPRT;
             ((SPRT *)p)->x0 = c->x;
             ((SPRT *)p)->y0 = cards[i].y;
             ((SPRT *)p)->w = 0x2A;
@@ -2597,7 +2597,7 @@ void *tm_drawTradeBadge(u32 *ot, SPRT *p, TmState *s) {
     b = s->brightness;
     if (g_tmTradeBadge != 0) {
         setlen(p, 4);
-        p->code = 0x64;
+        p->code = GPU_SPRT;
         p->x0 = 0xA3;
         p->y0 = 0x45;
         if (s->result == TM_RESULT_WIN) {
@@ -3303,7 +3303,7 @@ void *tm_drawCardStats(u32 *ot, SPRT *p, TmState *s, TmCard *card, u8 c) {
 
 SPRT *tm_drawStatGlyph(void *ot, SPRT *p, s32 unused, s32 x, s32 y, s32 n, s32 c) {
     setlen(p, 4);
-    p->code = 0x64;
+    p->code = GPU_SPRT;
     p->v0 = 0xC0;
     p->clut = 0x3AC0;
     p->x0 = x;
@@ -3376,7 +3376,7 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
     case 0:
         if (tm_countOnBoard(s, TM_PLAYER) == 10) {
             setlen(p, 4);
-            p->code = 0x66;
+            p->code = GPU_SPRT | GPU_ABE;
             p->x0 = 0x4A;
             p->y0 = 0x58;
             p->w = 0xA8;
@@ -3394,7 +3394,7 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
             AddPrim(ot + 1, p);
             p = (SPRT *)((DR_TPAGE *)p + 1);
             setlen(p, 4);
-            p->code = 0x66;
+            p->code = GPU_SPRT | GPU_ABE;
             p->x0 = 0x4A;
             p->y0 = 0x58;
             p->w = 0xB0;
@@ -3413,7 +3413,7 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
             p = (SPRT *)((DR_TPAGE *)p + 1);
         } else {
             setlen(p, 4);
-            p->code = 0x66;
+            p->code = GPU_SPRT | GPU_ABE;
             p->x0 = 0x6C;
             p->y0 = 0x58;
             p->w = 0x68;
@@ -3431,7 +3431,7 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
             AddPrim(ot + 1, p);
             p = (SPRT *)((DR_TPAGE *)p + 1);
             setlen(p, 4);
-            p->code = 0x66;
+            p->code = GPU_SPRT | GPU_ABE;
             p->x0 = 0x6C;
             p->y0 = 0x58;
             p->w = 0x70;
@@ -3452,7 +3452,7 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
         break;
     case 1:
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = 0x6A;
         p->y0 = 0x58;
         p->w = 0x68;
@@ -3470,7 +3470,7 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
         AddPrim(ot + 1, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = 0x6A;
         p->y0 = 0x58;
         p->w = 0x70;
@@ -3490,7 +3490,7 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
         break;
     default:
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = 0x5C;
         p->y0 = 0x58;
         p->w = 0x88;
@@ -3508,7 +3508,7 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
         AddPrim(ot + 1, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
         setlen(p, 4);
-        p->code = 0x66;
+        p->code = GPU_SPRT | GPU_ABE;
         p->x0 = 0x5C;
         p->y0 = 0x58;
         p->w = 0x90;
@@ -3615,9 +3615,9 @@ void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
             p = (POLY_FT4 *)p + 1;
         } else {
             setlen((SPRT *)p, 4);
-            ((SPRT *)p)->code = 0x64;
+            ((SPRT *)p)->code = GPU_SPRT;
             if (s->task == TM_TASK_FIELD_FADE) {
-                ((SPRT *)p)->code = 0x66;
+                ((SPRT *)p)->code = GPU_SPRT | GPU_ABE;
             }
             ((SPRT *)p)->x0 = e[i].x;
             ((SPRT *)p)->y0 = e[i].y;
@@ -4015,7 +4015,7 @@ void *tm_drawArrows(u32 *ot, SPRT_16 *p, TmState *s, s32 x, s32 y, u8 mask, s32 
     for (i = 0; i < 8; i++) {
         if (mask & 1) {
             setlen(p, 3);
-            p->code = 0x74;
+            p->code = GPU_SPRT_8;
             if (flip == 0) {
                 p->x0 = tbl.v[i].x + x;
                 p->y0 = tbl.v[i].y + y;
@@ -4063,9 +4063,9 @@ void *tm_drawCursor(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
         }
         c = s->brightness;
         setlen((SPRT *)p, 4);
-        ((SPRT *)p)->code = 0x64;
+        ((SPRT *)p)->code = GPU_SPRT;
         if (mode != 0) {
-            ((SPRT *)p)->code = 0x66;
+            ((SPRT *)p)->code = GPU_SPRT | GPU_ABE;
         }
         ((SPRT *)p)->x0 = x;
         ((SPRT *)p)->y0 = y;
@@ -4084,7 +4084,7 @@ void *tm_drawCursor(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
         ((SPRT *)p)->h = 0x10;
         AddPrim(o, p);
         p = (SPRT *)p + 1;
-        ((SPRT *)p)->code = 0x66;
+        ((SPRT *)p)->code = GPU_SPRT | GPU_ABE;
         setlen((SPRT *)p, 4);
         ((SPRT *)p)->x0 = x + 4;
         ((SPRT *)p)->y0 = y + 4;
@@ -4393,7 +4393,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     AddPrim(ot + 11, p);
     p = (SPRT *)((DR_TPAGE *)p + 1);
     setlen((TILE *)p, 3);
-    ((TILE *)p)->code = 0x60;
+    ((TILE *)p)->code = GPU_TILE;
     ((TILE *)p)->x0 = 0x12;
     ((TILE *)p)->y0 = 0x2D;
     ((TILE *)p)->w = 0x95;
@@ -4428,7 +4428,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         ui_drawSmallDigits(0xDC, 0x56, 0xFFA, buf, 0);
 
         setlen(p, 3);
-        ((SPRT_8 *)p)->code = 0x74;
+        ((SPRT_8 *)p)->code = GPU_SPRT_8;
         ((SPRT_8 *)p)->x0 = 0xB5;
         ((SPRT_8 *)p)->y0 = 0x3D;
         ((SPRT_8 *)p)->r0 = 0x80;
@@ -4440,7 +4440,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((SPRT_8 *)p + 1);
         setlen(p, 3);
-        ((SPRT_8 *)p)->code = 0x74;
+        ((SPRT_8 *)p)->code = GPU_SPRT_8;
         ((SPRT_8 *)p)->x0 = 0xF6;
         ((SPRT_8 *)p)->y0 = 0x3D;
         ((SPRT_8 *)p)->r0 = 0x80;
@@ -4452,7 +4452,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((SPRT_8 *)p + 1);
         setlen(p, 3);
-        ((SPRT_8 *)p)->code = 0x74;
+        ((SPRT_8 *)p)->code = GPU_SPRT_8;
         ((SPRT_8 *)p)->x0 = 0xB5;
         ((SPRT_8 *)p)->y0 = 0x5A;
         ((SPRT_8 *)p)->r0 = 0x80;
@@ -4464,7 +4464,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((SPRT_8 *)p + 1);
         setlen(p, 3);
-        ((SPRT_8 *)p)->code = 0x74;
+        ((SPRT_8 *)p)->code = GPU_SPRT_8;
         ((SPRT_8 *)p)->x0 = 0xF6;
         ((SPRT_8 *)p)->y0 = 0x5A;
         ((SPRT_8 *)p)->r0 = 0x80;
@@ -4477,7 +4477,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         p = (SPRT *)((SPRT_8 *)p + 1);
         for (i = 0; i < 8; i++) {
             setlen(p, 3);
-            ((SPRT_8 *)p)->code = 0x74;
+            ((SPRT_8 *)p)->code = GPU_SPRT_8;
             ((SPRT_8 *)p)->y0 = 0x3D;
             ((SPRT_8 *)p)->x0 = i * 8 + 0xB9;
             ((SPRT_8 *)p)->r0 = 0x80;
@@ -4489,7 +4489,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             AddPrim(ot + 0xFFA, p);
             p = (SPRT *)((SPRT_8 *)p + 1);
             setlen(p, 3);
-            ((SPRT_8 *)p)->code = 0x74;
+            ((SPRT_8 *)p)->code = GPU_SPRT_8;
             ((SPRT_8 *)p)->y0 = 0x5A;
             ((SPRT_8 *)p)->x0 = i * 8 + 0xB9;
             ((SPRT_8 *)p)->r0 = 0x80;
@@ -4503,7 +4503,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         }
         for (i = 0; i < 3; i++) {
             setlen(p, 3);
-            ((SPRT_8 *)p)->code = 0x74;
+            ((SPRT_8 *)p)->code = GPU_SPRT_8;
             ((SPRT_8 *)p)->x0 = 0xB5;
             ((SPRT_8 *)p)->y0 = i * 8 + 0x43;
             ((SPRT_8 *)p)->r0 = 0x80;
@@ -4515,7 +4515,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             AddPrim(ot + 0xFFA, p);
             p = (SPRT *)((SPRT_8 *)p + 1);
             setlen(p, 3);
-            ((SPRT_8 *)p)->code = 0x74;
+            ((SPRT_8 *)p)->code = GPU_SPRT_8;
             ((SPRT_8 *)p)->x0 = 0xF6;
             ((SPRT_8 *)p)->y0 = i * 8 + 0x43;
             ((SPRT_8 *)p)->r0 = 0x80;
@@ -4528,7 +4528,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             p = (SPRT *)((SPRT_8 *)p + 1);
         }
         setlen((TILE *)p, 3);
-        ((TILE *)p)->code = 0x60;
+        ((TILE *)p)->code = GPU_TILE;
         ((TILE *)p)->x0 = 0xB8;
         ((TILE *)p)->y0 = 0x41;
         ((TILE *)p)->w = 0x46;
@@ -4590,7 +4590,7 @@ void *tm_drawCardFace(u32 *ot, void *prim, TmState *s, TmCard *card, u8 c, s32 f
     v = (n / 6) * 51;
     if (flip == 0) {
         setlen((SPRT *)prim, 4);
-        ((SPRT *)prim)->code = 0x64;
+        ((SPRT *)prim)->code = GPU_SPRT;
         ((SPRT *)prim)->x0 = card->x;
         ((SPRT *)prim)->y0 = card->y;
         ((SPRT *)prim)->w = 0x2A;

@@ -306,8 +306,8 @@ void func_801E7F48(s32 ot, s32 x, s32 y, s32 r, s32 c, RECT *rect) {
         *(s32 *)&ft3->u2 = uv[1].vx | (uv[1].vy << 8);
         *(s32 *)&ft3->r0 = *(s32 *)&col;
         *(s32 *)&f3->r0 = *(s32 *)&col2;
-        ft3->code = 0x26;
-        f3->code = 0x22;
+        ft3->code = GPU_POLY_FT3 | GPU_ABE;
+        f3->code = GPU_POLY_F3 | GPU_ABE;
         *(s32 *)&gt4->x0 = *(s32 *)&g4->x0 = *(s32 *)&v[0];
         *(s32 *)&gt4->x1 = *(s32 *)&g4->x1 = *(s32 *)&v[2];
         *(s32 *)&gt4->x2 = *(s32 *)&g4->x2 = *(s32 *)&v[1];
@@ -320,8 +320,8 @@ void func_801E7F48(s32 ot, s32 x, s32 y, s32 r, s32 c, RECT *rect) {
         *(s32 *)&g4->r0 = *(s32 *)&g4->r2 = *(s32 *)&col2;
         *(s32 *)&g4->r1 = *(s32 *)&g4->r3 = 0;
         *(s32 *)&gt4->r1 = *(s32 *)&gt4->r3 = 0;
-        gt4->code = 0x3E;
-        g4->code = 0x3A;
+        gt4->code = GPU_POLY_GT4 | GPU_ABE;
+        g4->code = GPU_POLY_G4 | GPU_ABE;
         if ((u32)ot < 0x1000) {
             addPrimLenIn(&env->ot[ot], gt4, 0x0C000000);
             addPrimLenIn(&env->ot[ot], ft3, 0x07000000);

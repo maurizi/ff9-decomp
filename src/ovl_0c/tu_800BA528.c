@@ -1068,7 +1068,7 @@ void wm_drawBlocks(void) {
                 xy3 = sxy[3];
                 setlen(f4, 5);
                 setRGB0(f4, 0, 0, 0);
-                f4->code = 0x28;
+                f4->code = GPU_POLY_F4;
                 *(s32 *)&f4->x3 = xy3;
                 addPrim(&ot[0xFFA], f4);
                 f4++;

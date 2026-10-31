@@ -72,7 +72,7 @@ void btl_updatePause(void) {
                 ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, g_btlPauseOt, 0xEB, 0, &w, g_btlPauseSprite);
             }
             setlen(&g_btlPauseDimTile, 3);
-            g_btlPauseDimTile.code = 0x62;
+            g_btlPauseDimTile.code = GPU_TILE | GPU_ABE;
             g_btlPauseDimTile.r0 = 0x60;
             g_btlPauseDimTile.g0 = 0x60;
             g_btlPauseDimTile.b0 = 0x60;

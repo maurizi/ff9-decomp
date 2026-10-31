@@ -283,7 +283,7 @@ void opening_titleDrawFading(s32 x, s32 y, s32 z, TitleImage *t, s32 arg4) {
 
     setlen(g_primPtr, 4);
     p = (SprtWords *)g_primPtr;
-    p->rgbc = (c << 1) | (c << 9) | (c << 17) | 0x66000000;
+    p->rgbc = (c << 1) | (c << 9) | (c << 17) | GPU_CODE(GPU_SPRT | GPU_ABE);
     p->xy = x | (y << 16);
     p->uvclut = t->uvClut.w;
     p->wh = t->w | (t->h << 16);

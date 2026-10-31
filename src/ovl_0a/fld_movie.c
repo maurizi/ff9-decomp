@@ -1575,7 +1575,7 @@ void fld_togglePause(void) {
             }
         }
         setlen(&g_fieldPauseDim, 3);
-        g_fieldPauseDim.code = 0x62;
+        g_fieldPauseDim.code = GPU_TILE | GPU_ABE;
         setRGB0(&g_fieldPauseDim, 0x60, 0x60, 0x60);
         setWH(&g_fieldPauseDim, SCREEN_W, SCREEN_H);
         setXY0(&g_fieldPauseDim, 0, 0);

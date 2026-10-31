@@ -208,7 +208,7 @@ void *ending_drawGlyph(s32 x, s32 y, u32 *ot, u32 a, s32 *out, SprtWords *p) {
     u32 n;
 
     setlen(p, 4);
-    p->rgbc = 0x64808080;
+    p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = ((x + ((a >> 20) & 3)) & 0xFFFF) | (y << 16);
     p->uvclut = (a & 0x40FFFF) + 0x38270000;
     p->wh = ((a >> 16) & 0xF) | 0xD0000;

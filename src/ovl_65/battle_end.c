@@ -332,7 +332,7 @@ void rewards_drawPanelShade(RECT *r) {
     u8 *p = s_rewards.prim;
 
     setlen(p, 3);
-    ((TileWords *)p)->rgbc = 0x62202020;
+    ((TileWords *)p)->rgbc = GPU_RGBC(GPU_TILE | GPU_ABE, 0x202020);
     ((TileWords *)p)->xy = ((r->x + 2) & 0xFFFF) | ((r->y + 2) << 16);
     ((TileWords *)p)->wh = (r->w - 4) | ((r->h - 4) << 16);
     addPrim(g_ot + 11, p);
@@ -974,7 +974,7 @@ void rewards_drawLearnWin(Window *w) {
     text_drawBlock(v->x + 0x16, v->y + 6, w->otz, name, 0);
     setlen(g_primPtr, 3);
     t = (TileWords *)g_primPtr;
-    t->rgbc = 0x62101010;
+    t->rgbc = GPU_RGBC(GPU_TILE | GPU_ABE, 0x101010);
     t->xy = (v->x + 4) | ((v->y + 4) << 16);
     t->wh = (v->w - 4) | ((v->h - 4) << 16);
     addPrim(&g_ot[w->otz], t);
@@ -1054,7 +1054,7 @@ void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
         xy = (x & 0xFFFF) | (y << 16);
         pkt = g_primPtr;
         s = (SprtWords *)pkt;
-        s->rgbc = 0x64808080;
+        s->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         s->xy = xy;
         s->uvclut = clut | 0xB000;
         s->wh = 0x14004C;
@@ -1066,7 +1066,7 @@ void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
         g_primPtr += sizeof(DR_TPAGE);
         setlen(g_primPtr, 4);
         s = (SprtWords *)g_primPtr;
-        s->rgbc = 0x66808080;
+        s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL);
         s->xy = xy;
         s->uvclut = clut | 0xC400;
         s->wh = 0x14004C;

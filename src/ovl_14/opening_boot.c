@@ -17,7 +17,7 @@ void opening_bootScreen(void) {
             game_startFade(1, 1, 0x3C, 0xFFFFFF);
         }
         setlen(&g_bootScreenSprite[g_gameState->gameData->drawBuf], 4);
-        g_bootScreenSprite[g_gameState->gameData->drawBuf].code = 0x64;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].code = GPU_SPRT;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].r0 = 0x80;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].g0 = 0x80;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].b0 = 0x80;

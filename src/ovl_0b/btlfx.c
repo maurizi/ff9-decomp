@@ -581,7 +581,7 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     }
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    c.color |= (arg5 == 0xFF) ? 0x2C000000 : 0x2E000000;
+    c.color |= (arg5 == 0xFF) ? GPU_CODE(GPU_POLY_FT4) : GPU_CODE(GPU_POLY_FT4 | GPU_ABE);
     c.abr = (arg5 & 3) << 5;
     c.x = arg7;
     c.y = arg8;
@@ -635,7 +635,7 @@ void btlfx_drawSprite(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     g_btlfxEnv->prim = prim + c.frame * 20;
     gte_stsxy(&sxy);
     gte_stszotz(&z);
-    c.color |= (arg3 == 0xFF) ? 0x64000000 : 0x66000000;
+    c.color |= (arg3 == 0xFF) ? GPU_CODE(GPU_SPRT) : GPU_CODE(GPU_SPRT | GPU_ABE);
     c.abr = (arg3 & 3) << 5;
     c.x = sxy.vx;
     c.y = sxy.vy;
@@ -687,7 +687,7 @@ void btlfx_drawSpriteAtOt(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 
     c.frame &= 0x3FFF;
     prim = g_btlfxEnv->prim;
     g_btlfxEnv->prim = prim + c.frame * 20;
-    c.color |= (arg5 == 0xFF) ? 0x64000000 : 0x66000000;
+    c.color |= (arg5 == 0xFF) ? GPU_CODE(GPU_SPRT) : GPU_CODE(GPU_SPRT | GPU_ABE);
     c.abr = (arg5 & 3) << 5;
     c.x = arg2;
     c.y = arg3;
@@ -976,7 +976,7 @@ void btlfx_drawRings(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4,
         d.dirs = (u16 *)d.sizes + cnt + 1;
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + w * cnt * 44;
-        d.code = (arg5 != 0xFF) ? 0x3A000000 : 0x38000000;
+        d.code = (arg5 != 0xFF) ? GPU_CODE(GPU_POLY_G4 | GPU_ABE) : GPU_CODE(GPU_POLY_G4);
         d.fade = arg6;
         d.count = cnt;
         d.abr = (arg5 & 3) << 5;
@@ -1057,7 +1057,7 @@ void btlfx_drawFan(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         c1.abr = (arg5 & 3) << 5;
         c1.count = t;
         c1.z = z;
-        c1.code = (arg5 != 0xFF) ? 0x2E000000 : 0x2C000000;
+        c1.code = (arg5 != 0xFF) ? GPU_CODE(GPU_POLY_FT4 | GPU_ABE) : GPU_CODE(GPU_POLY_FT4);
         c1.fade = arg6;
         c1.otZ = g_btlfxEnv->otZ;
         prim = g_btlfxEnv->prim;
@@ -1067,7 +1067,7 @@ void btlfx_drawFan(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         c2.tpage = (arg5 & 3) << 5;
         c2.count = t;
         c2.z = z;
-        c2.code = (arg5 != 0xFF) ? 0x32000000 : 0x30000000;
+        c2.code = (arg5 != 0xFF) ? GPU_CODE(GPU_POLY_G3 | GPU_ABE) : GPU_CODE(GPU_POLY_G3);
         c2.fade = arg6;
         c2.otZ = g_btlfxEnv->otZ;
         prim = g_btlfxEnv->prim;
@@ -1356,7 +1356,7 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
     t = (TILE *)g_btlfxEnv->prim;
     g_btlfxEnv->prim = (u8 *)(t + 1);
     *(s32 *)&t->r0 = 0;
-    t->code = 0x60;
+    t->code = GPU_TILE;
     t->y0 = 0;
     t->x0 = 0;
     t->w = w;

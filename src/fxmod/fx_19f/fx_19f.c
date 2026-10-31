@@ -12,7 +12,7 @@ void func_801E7704(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
     env->prim = (u8 *)(prim + 4);
     for (i = 0; i < 4; i++, prim++) {
         setlen(prim, 8);
-        prim->code = 0x3A;
+        prim->code = GPU_POLY_G4 | GPU_ABE;
         if (!(i & 1)) {
             prim->r0 = prim->r2 = 0;
             prim->g0 = prim->g2 = 0;
