@@ -179,27 +179,27 @@ s32 ending_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_endingSoundPending = kind;
             }
             if (g_gameState->gameData->musicId[0] != arg1) {
-                if (g_gameState->gameData->flags & 0x20000000) {
+                if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                     akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 }
-                g_gameState->gameData->flags &= 0xCFFFFFFF;
+                g_gameState->gameData->flags &= ~(GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
                 g_gameState->gameData->musicBank[0] = 0x1F3;
                 g_gameState->gameData->musicId[0] = arg1;
                 g_gameState->gameData->musicVolume[0] = 0x7F;
             }
             g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
             g = g_gameState->gameData;
-            if (!(g->flags & 0x20000000)) {
+            if (!(g->flags & GD_MUSIC_PLAYING)) {
                 akao_fadeMusicVolumeFrom(g->musicHandle[0], 0xA, 0, g->musicVolume[0]);
             }
             g_endingSoundPending = -1;
-            g_gameState->gameData->flags |= 0x30000000;
+            g_gameState->gameData->flags |= GD_MUSIC_LOADED | GD_MUSIC_PLAYING;
             return 0;
         case 1:
             if (g_gameState->gameData->musicId[0] == (u16)id) {
                 akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 g_gameState->gameData->musicVolume[0] = 0x7F;
-                g_gameState->gameData->flags &= 0xDFFFFFFF;
+                g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             }
             return 0;
         case 2:
@@ -328,7 +328,7 @@ void ending_exit(void) {
     s32 i;
 
     SetDispMask(0);
-    if (g_gameState->gameData->flags & 0x20000000) {
+    if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
         ending_soundCmd(SND_SONG_VOL_INTPL, ENDING_MUSIC, 0x5A, 0, 0);
         for (i = 0x59; i >= 0; i--) {
             VSync(0);

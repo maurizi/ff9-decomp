@@ -21,7 +21,7 @@ s32 opening_movieThenTitle(void) {
                 g_movieState = MOVIE_ST_OPEN;
                 fade_clear();
             } else {
-                if (!(g_gameState->gameData->flags & 0x20000000)) {
+                if (!(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
                     opening_soundCmd(SND_MUSIC_PLAY, TITLE_MUSIC, 0, 0, 0);
                     opening_soundCmd(SND_SONG_VOL_FROM_INTPL, TITLE_MUSIC, 0x5A, 0, 0x7F);
                 }
@@ -60,7 +60,7 @@ s32 opening_movieThenTitle(void) {
                     if (timer == 0) {
                         mbg_stop();
                         cd_pause();
-                        if (!(g_gameState->gameData->flags & 0x20000000)) {
+                        if (!(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
                             opening_soundCmd(SND_MUSIC_PLAY, TITLE_MUSIC, 0, 0, 0);
                             opening_soundCmd(SND_SONG_VOL_FROM_INTPL, TITLE_MUSIC, 0x5A, 0, 0x7F);
                         }

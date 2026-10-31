@@ -146,7 +146,7 @@ void mbg_mdecOutCallback(void) {
                 g_mbgDecode.frameRect[0].w = 0x1E0;
                 g_mbgDecode.frameRect[1].w = 0x1E0;
                 g_mbgDecode.slice.w = 0x18;
-                g_gameState->gameData->flags |= 0x14;
+                g_gameState->gameData->flags |= GD_HIDE_MODELS | GD_HIDE_SPRITES;
                 g_mbgRgb24 = 1;
                 if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
                     g_gameState->gameData->ctx.ovl65->unk0 |= 9;

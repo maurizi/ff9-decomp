@@ -78,9 +78,9 @@ void wm_init(void) {
     wm_systemInit();
     game_initGfx();
     if (wm_keepEntryMusic() == 0) {
-        g_gameState->gameData->flags |= 0x400000;
+        g_gameState->gameData->flags |= GD_MUSIC_LEFT_PLAYING;
     }
-    if (g_gameState->gameData->flags & 0x400000) {
+    if (g_gameState->gameData->flags & GD_MUSIC_LEFT_PLAYING) {
         wm_soundCommand(SND_MUSIC_VOL_INTPL, 0, 0x78, 0, 0);
     }
     wm->mapHeapBase = (u8 *)g_modeHeap;
@@ -856,7 +856,7 @@ s32 wm_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 if (g_gameState->gameData->musicId[0] != arg1 || (g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
                     g_gameState->gameData->flags &= ~GD_MUSIC_LOADED;
                 }
-                g_gameState->gameData->flags &= 0x5FFFFFFF;
+                g_gameState->gameData->flags &= ~(GD_MUSIC_PLAYING | GD_MUSIC2_PLAYING);
                 g_gameState->gameData->musicBank[0] = t;
                 g_gameState->gameData->musicId[0] = arg1;
                 if (!(g_gameState->gameData->flags & GD_MUSIC_LOADED)) {
@@ -895,7 +895,7 @@ s32 wm_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             } else if (g_gameState->gameData->musicId[1] == arg1) {
                 akao_stopMusic(g_gameState->gameData->musicHandle[1]);
                 g_gameState->gameData->musicVolume[0] = 0x7F;
-                g_gameState->gameData->flags &= 0x7FFFFFFF;
+                g_gameState->gameData->flags &= ~GD_MUSIC2_PLAYING;
             }
             return 0;
         case 2:

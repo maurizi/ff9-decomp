@@ -66,7 +66,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
     if (g_swirlFrame < 0x79) {
         if (g_swirlFrame == 0) {
             gs = g_gameState;
-            gs->gameData->flags &= ~0x20;
+            gs->gameData->flags &= ~GD_NO_FLIP;
             *(u32 *)&gs->drawEnv[0].isbg = *(u32 *)&gs->drawEnv[1].isbg = 1;
             g_swirlFlash = 0;
             g_swirlFade = g_swirlParams->fade;

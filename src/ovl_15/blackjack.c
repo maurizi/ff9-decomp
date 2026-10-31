@@ -1257,7 +1257,7 @@ s32 bj_init(void) {
     DrawSync(0);
     setlen(&g_bjTpage, 1);
     g_bjTpage.code = 0xE1000697;
-    if (!(g_gameState->gameData->flags & 0x20000000)) {
+    if (!(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
         ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
         ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, 0x7F);
     }

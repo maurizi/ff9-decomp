@@ -1883,7 +1883,9 @@ extern s32 g_padPortMask[];
 #define GD_HIDE_ALL (GD_HIDE_MODELS | GD_HIDE_BG | GD_HIDE_SPRITES) /* 0x1C: menu_onFadedOut sets it, menu_finish clears it */
 #define GD_NO_FLIP 0x20 /* fld/wm_endFrame keep the draw buffer (pause screens) */
 #define GD_PAUSED 0x100
+#define GD_SOUND_REINIT 0x100000 /* battleEnd_exit shut the sound down (snd_quit) before going back to the title; opening_setup runs snd_init and clears it */
 #define GD_MUSIC_STOP_PENDING 0x200000
+#define GD_MUSIC_LEFT_PLAYING 0x400000 /* the mode just left kept its music playing (wm_main, w_music, battleEnd_exit); the next one fades it (SND_MUSIC_VOL_INTPL) while loading and fld_startAudio stops it */
 #define GD_SFX0_LOADED 0x01000000 /* resident SE slot 0 copied (fld_soundCommand with SND_RESIDENT) */
 #define GD_SFX0_PLAYING 0x02000000
 #define GD_SFX1_LOADED 0x04000000

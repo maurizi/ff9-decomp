@@ -161,7 +161,7 @@ void fld_init(void) {
     fld_loadCommon();
     fld_readSoundBank();
     game_initGfx();
-    if (g_gameState->gameData->flags & 0x400000) {
+    if (g_gameState->gameData->flags & GD_MUSIC_LEFT_PLAYING) {
         fld_soundCommand(SND_MUSIC_VOL_INTPL, 0, 0x78, 0, 0);
     }
     func_8002FC30();
@@ -711,9 +711,9 @@ s32 fld_findLights(FieldScene *arg0, s32 unused) { /* its caller passes this, un
 void fld_startAudio(void) {
     while (fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0) != 0) {
     }
-    if (g_gameState->gameData->flags & 0x400000) {
+    if (g_gameState->gameData->flags & GD_MUSIC_LEFT_PLAYING) {
         fld_soundCommand(SND_MUSIC_STOP, g_gameState->gameData->musicId[0], 0, 0, 0);
-        g_gameState->gameData->flags &= ~0x400000;
+        g_gameState->gameData->flags &= ~GD_MUSIC_LEFT_PLAYING;
     }
     if (g_gameState->gameData->ctx.field->soundBankSize != -1) {
         akao_beginBankUpload();

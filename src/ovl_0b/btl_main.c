@@ -18,7 +18,7 @@ void btl_main(s32 arg0) {
             if (btlui_isPauseRequested() != 0) {
                 btl_updatePause();
             }
-            if (!(g_gameState->gameData->flags & 0x100)) {
+            if (!(g_gameState->gameData->flags & GD_PAUSED)) {
                 if (btl_update() == 1) {
                     g_gameState->gameData->ctx.battle->flags |= 0x1000;
                 }
@@ -50,8 +50,8 @@ void btl_updatePause(void) {
     s32 w;
 
     if (!(f & 0x1000)) {
-        if (!(gd->flags & 0x100) || (f & 0x20)) {
-            gd->flags |= 0x100;
+        if (!(gd->flags & GD_PAUSED) || (f & 0x20)) {
+            gd->flags |= GD_PAUSED;
             akao_pause(0);
             game_resumeClock(1);
             for (i = 1; i >= 0; i--) {
@@ -89,7 +89,7 @@ void btl_updatePause(void) {
             g_btlPauseStpOn.code[1] = 0;
             addPrim(g_btlPauseOt, &g_btlPauseStpOn);
             DrawOTag(g_btlPauseOt);
-            g_gameState->gameData->flags |= 0x20;
+            g_gameState->gameData->flags |= GD_NO_FLIP;
             btlui_setPauseRequest(0);
             return;
         }
@@ -100,9 +100,9 @@ void btl_updatePause(void) {
     akao_resume(0);
     g_padPortMask[0] &= ~8;
     btlui_resumeFromPause();
-    g_gameState->gameData->flags &= ~0x20;
+    g_gameState->gameData->flags &= ~GD_NO_FLIP;
     btlui_setPauseRequest(0);
-    g_gameState->gameData->flags &= ~0x100;
+    g_gameState->gameData->flags &= ~GD_PAUSED;
 }
 
 void btl_checkDiscCover(void) {
@@ -1750,10 +1750,10 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             r = btl_getDepLink(id);
             ga = g_gameState->gameData;
             if (ga->musicId[0] != arg1 || ga->musicBank[0] != (u16)r) {
-                if (ga->flags & 0x20000000) {
+                if (ga->flags & GD_MUSIC_PLAYING) {
                     akao_stopMusic(ga->musicHandle[0]);
                 }
-                g_gameState->gameData->flags &= 0xCFFFFFFF;
+                g_gameState->gameData->flags &= ~(GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
                 g_gameState->gameData->musicBank[0] = r;
                 g_gameState->gameData->musicId[0] = arg1;
                 if ((id & 0xFFFF) != 5) {
@@ -1767,23 +1767,23 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 }
                 memmove(g_gameState->gameData->musicSeq, (void *)g_gameState->gameData->musicSeq2, 0x2000);
                 g_gameState->gameData->musicVolume[0] = 0x7F;
-                g_gameState->gameData->flags |= 0x10000000;
+                g_gameState->gameData->flags |= GD_MUSIC_LOADED;
             }
         finish:
             if (g_btlSoundLoadKind != 7) {
                 g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
                 gb = g_gameState->gameData;
-                if (!(gb->flags & 0x20000000)) {
+                if (!(gb->flags & GD_MUSIC_PLAYING)) {
                     akao_fadeMusicVolumeFrom(gb->musicHandle[0], 0x1E, 0, gb->musicVolume[0]);
                 }
-                g_gameState->gameData->flags |= 0x30000000;
+                g_gameState->gameData->flags |= GD_MUSIC_LOADED | GD_MUSIC_PLAYING;
             }
             g_btlSoundLoadKind = -1;
             return 0;
         case 1:
             akao_stopMusic(g_gameState->gameData->musicHandle[0]);
             g_gameState->gameData->musicVolume[0] = 0x7F;
-            g_gameState->gameData->flags &= 0xDFFFFFFF;
+            g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             return 0;
         case 2:
             if ((arg0 & 0x3F) != 1) {
@@ -1973,7 +1973,7 @@ stream:
                 cdRead_init(gj->cdRead, g_btlSoundLoadSector, gj->cdRead[0].size, (void *)gj->soundLoadDest, k2, 0x6800 - k2, NULL);
             } else {
                 btl_unpackMusic((s32)gi->musicSeq);
-                g_gameState->gameData->flags |= 0x10000000;
+                g_gameState->gameData->flags |= GD_MUSIC_LOADED;
                 g_gameState->gameData->soundLoadState = 0;
                 if (g_btlSoundLoadKind == 0) {
                     goto finish;
@@ -2145,7 +2145,7 @@ void btl_beginFrame(void) {
 }
 
 void btl_endFrame(void) {
-    if (!(g_gameState->gameData->flags & 0x100) && ((g_padPortHeld[0] & 0xF09) == 0xF09 || (g_padPortHeld[1] & 0xF09) == 0xF09)) {
+    if (!(g_gameState->gameData->flags & GD_PAUSED) && ((g_padPortHeld[0] & 0xF09) == 0xF09 || (g_padPortHeld[1] & 0xF09) == 0xF09)) {
         g_gameState->flags |= 1;
     }
     btlui_waitFrame();
@@ -2158,11 +2158,11 @@ void btl_endFrame(void) {
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC)[2] = 0;
     addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC);
     btl_putDispEnvNoUi();
-    if (!(g_gameState->gameData->flags & 0x100) && !(g_gameState->gameData->ctx.ovl65->unk0 & 0x200)) {
+    if (!(g_gameState->gameData->flags & GD_PAUSED) && !(g_gameState->gameData->ctx.ovl65->unk0 & 0x200)) {
         btlui_drawOTagEnv(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
         DrawOTag(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST]);
     }
-    if (!(g_gameState->gameData->flags & 0x20)) {
+    if (!(g_gameState->gameData->flags & GD_NO_FLIP)) {
         g_gameState->gameData->drawBuf ^= 1;
     }
 }

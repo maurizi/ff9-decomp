@@ -636,7 +636,7 @@ void wm_debugAdjustScreen(void) {
 void wm_finishLoad(void) {
     RECT r = g_worldVramParkRect;
 
-    g_gameState->gameData->flags &= ~0x400000;
+    g_gameState->gameData->flags &= ~GD_MUSIC_LEFT_PLAYING;
     LoadImage(&r, (u32 *)g_worldClutBuf);
     DrawSync(0);
     w_movementChange();
