@@ -95,7 +95,7 @@ typedef struct {
 
 extern u16 fx_128_modelFileIds[];
 extern u16 fx_128_pathFileIds[];
-extern BtlModel fx_128_effModels[];
+extern BtlModelBuf fx_128_effModels[];
 extern Fx128Path_0b4 fx_128_rotPosPath0;
 extern Fx128Path_0b4 fx_128_rotPosPath1[];
 extern Fx128Path fx_128_posPath;

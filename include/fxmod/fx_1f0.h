@@ -34,7 +34,7 @@ typedef struct {
 extern s32 fx_1f0_unitDelays[];
 extern Unk800F78A4 *fx_1f0_env;
 extern Fx1f0Unit fx_1f0_units[4];
-extern BtlModel fx_1f0_effModels[];
+extern BtlModelBuf fx_1f0_effModels[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 

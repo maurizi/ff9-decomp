@@ -29,8 +29,8 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 
 /* Hi_RegisterTexListModel called with three arguments (a3 is left as it is) */
 #define REGTEX(id) \
-    ((s32(*)(BtlUnit9C8 *, BtlTexInfo *, s16 *))ex->Hi_RegisterTexListModel)( \
-        (BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, id), (BtlTexInfo *)v, ((BtlTexInfo *)w)->pages[0])
+    ((s32(*)(BtlModelHeader *, BtlTexInfo *, s16 *))ex->Hi_RegisterTexListModel)( \
+        (BtlModelHeader *)ex->btlfx_getFileData(entry->file, id), (BtlTexInfo *)v, ((BtlTexInfo *)w)->pages[0])
 
 #define SET_ROT(p, r)              \
     if ((p) != NULL) {             \

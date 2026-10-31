@@ -95,7 +95,7 @@ extern SVECTOR fx_1f2_unitPos[4]; /* unit positions */
 extern Fx1f2Trail fx_1f2_trails[16];
 extern Fx1f2Trail fx_1f2_unitTrails[16]; /* 0x1500 bytes up to fx_1f2_effModels, cleared as 16; only entries below
                                          * targetCount are drawn */
-extern BtlModel fx_1f2_effModels[];
+extern BtlModelBuf fx_1f2_effModels[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 

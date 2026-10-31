@@ -47,6 +47,6 @@ typedef struct {
 extern Fx083Pair fx_083_texAnimSrc1[];
 extern Fx083Pair fx_083_texAnimSrc2[];
 extern Unk800F78A4 *fx_083_env;
-extern BtlModel fx_083_effModels[];
+extern BtlModelBuf fx_083_effModels[];
 
 #endif

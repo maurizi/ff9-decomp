@@ -83,6 +83,6 @@ typedef struct {
     Pool6CEntry *emit20;
 } Fx085Work80; /* 0x24 */
 
-extern BtlModel fx_085_effModels[];
+extern BtlModelBuf fx_085_effModels[];
 extern s32 fx_085_ringRadius;
 #endif

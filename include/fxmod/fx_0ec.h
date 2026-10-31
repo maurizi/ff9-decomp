@@ -83,7 +83,7 @@ typedef struct {
 
 extern s32 fx_0ec_pointBlocks[2];
 extern u8 fx_0ec_splitBuf[];
-extern BtlModel fx_0ec_effModels[];
+extern BtlModelBuf fx_0ec_effModels[];
 
 s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 

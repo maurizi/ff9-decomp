@@ -114,9 +114,9 @@ s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 typedef struct {
     u8 pad0[0x180];
-    BtlUnit9CC *motion180;
-    BtlUnit9CC *motion184;
-    BtlUnit9CC *motion188;
+    BtlMotion *motion180;
+    BtlMotion *motion184;
+    BtlMotion *motion188;
 } Fx0baUnit;
 typedef struct {
     u8 pad0[0x54];
@@ -156,7 +156,7 @@ typedef struct {
     s16 unk9A;
     u8 pad9C[4];
 } Fx0baWork80; /* 0xA0 */
-extern BtlModel fx_0ba_effModels0[];
+extern BtlModelBuf fx_0ba_effModels0[];
 s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 typedef struct {
@@ -224,7 +224,7 @@ extern s32 fx_0ba_ribbonToBlocks[3];
 extern s32 fx_0ba_ribbon13FromBlocks[3];
 extern s32 fx_0ba_ribbon13ToBlocks[3];
 extern Fx0baPTrail fx_0ba_offsetTrail;
-extern BtlModel fx_0ba_effModels1[];
+extern BtlModelBuf fx_0ba_effModels1[];
 extern Fx0baPTrail17 fx_0ba_ribbons[6];
 extern Fx0baPTrail13 fx_0ba_ribbons13[3];
 

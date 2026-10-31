@@ -91,6 +91,6 @@ typedef struct {
     s32 pad20;
 } Fx0d9Work80; /* 0x24 */
 
-extern BtlModel fx_0d9_effModels[];
+extern BtlModelBuf fx_0d9_effModels[];
 extern s32 fx_0d9_ringRadius;
 #endif

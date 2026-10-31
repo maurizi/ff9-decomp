@@ -53,7 +53,7 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x1A4];
-        BtlUnit9CC *motion1A4;
+        BtlMotion *motion1A4;
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
@@ -61,7 +61,7 @@ typedef struct {
 
 extern SVECTOR fx_17d_5_targetPos; /* aim point */
 extern Unk800F78A4 *fx_17d_5_env;
-extern BtlModel fx_17d_5_effModels[];
+extern BtlModelBuf fx_17d_5_effModels[];
 extern u8 fx_17d_5_sparkTrails[][0xCC]; /* spark trails */
 
 static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,

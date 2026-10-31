@@ -176,15 +176,15 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180;
-        BtlUnit9CC *motion184;
-        BtlUnit9CC *motion188;
+        BtlMotion *motion180;
+        BtlMotion *motion184;
+        BtlMotion *motion188;
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
 } Fx0d2Summon;
 
-extern BtlModel fx_0d2_effModels[];
+extern BtlModelBuf fx_0d2_effModels[];
 extern Fx0d2Keys fx_0d2_summonPath;
 extern Fx0d2Keys fx_0d2_slicePath;
 extern Fx0d2Keys fx_0d2_emitPath;

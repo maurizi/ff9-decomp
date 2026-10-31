@@ -123,7 +123,7 @@ typedef struct {
     s32 modelA0;
 } Fx1bf1Work80; /* 0xA4 */
 
-extern BtlModel fx_1bf_1_effModels[];
+extern BtlModelBuf fx_1bf_1_effModels[];
 extern SVECTOR fx_1bf_1_origin;
 extern s16 fx_1bf_1_spawnOffsets[];
 static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot);

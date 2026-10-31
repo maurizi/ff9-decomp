@@ -43,7 +43,7 @@ typedef struct {
 
 extern u8 fx_078_modelBlocks[10];
 extern Unk800F78A4 *fx_078_env;
-extern BtlModel fx_078_effModels[];
+extern BtlModelBuf fx_078_effModels[];
 extern s32 fx_078_trails[];
 extern Fx078Track12 fx_078_rotPosKeys;
 extern Fx078Track6 fx_078_scaleKeys;

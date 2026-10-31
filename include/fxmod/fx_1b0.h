@@ -75,7 +75,7 @@ extern s32 fx_1b0_op80Trails0[];
 extern s32 fx_1b0_op80Trails1[];
 extern s32 fx_1b0_op80Trails2[];
 extern Unk80100C78Entry *fx_1b0_task;
-extern BtlModel fx_1b0_effModels[];
+extern BtlModelBuf fx_1b0_effModels[];
 
 /* copied */
 extern Unk800F78A4 *fx_1b0_env;

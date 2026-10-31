@@ -3,4 +3,4 @@ fx_0da_header = 0x801E81D8; // [code] module header (0, init, ops), btlfx_update
 fx_0da_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_0da_op84 = 0x801E7E98; // type:func [code] header op entry 4, effect script op 0x84 (btlfx_spawnTask)
 fx_0da_env = 0x801E8220; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
-fx_0da_effModels = 0x801E8230; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_0da_effModels = 0x801E8230; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)

@@ -1015,7 +1015,7 @@ g_btlCmdHelp = 0x800FD8CC; // [code] command help texts (g_btlCmdTable unk2 offs
 g_btlCmdAbilities = 0x800FDD10; // [code] ability ids of the command ability lists (g_btlCmdTable unk8 start, unk7 count)
 g_btlCharCmds = 0x800FDDD0; // [code] two commands per character (btlui_buildCmdList)
 g_btlCharTranceCmds = 0x800FDDF8; // [code] the trance commands per character, third byte = the disabled row (btlui_buildCmdList)
-g_btlCharModelIds = 0x800F5200; // [code] model id per character model kind, +0x13 the other model (btl_getPartyModelId, btl_initParty)
+g_btlCharModelIds = 0x800F5200; // [code] model id per character model kind (19 kinds, Character.info.b.kind), +0x13 the trance model (0 for the guests 14-18) (btl_getPartyModelId, btl_initParty). A non-party unit reads [0x13] leaving and [0x26] = 125 entering Trance (btl_checkCmdUsable BTL_CMD_TRANCE)
 g_btlClutRect = 0x800FDF50; // [code] RECT of the CLUT rows btl_makeGreyCluts and the save/grey functions move
 g_btlClutBuf = 0x800FDF60; // [code] CLUT rows read back by btl_makeGreyCluts
 g_btlSavedCluts = 0x800FE360; // [code] CLUT copy taken by btl_saveEnemyCluts / btl_savePartyCluts

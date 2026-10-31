@@ -79,7 +79,7 @@ extern s16 fx_134_orbSpeeds[4];
 extern CVECTOR fx_134_rippleColors1[];
 extern CVECTOR fx_134_rippleColors2[2];
 extern Fx134Bolt fx_134_bolts[];
-extern BtlModel fx_134_effModels[];
+extern BtlModelBuf fx_134_effModels[];
 extern u8 fx_134_op80Trails[];
 
 #endif

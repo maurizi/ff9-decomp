@@ -24,7 +24,7 @@ typedef struct {
 } Fx0e6Line;
 
 extern Unk800F78A4 *fx_0e6_env;
-extern BtlModel fx_0e6_effModels[];
+extern BtlModelBuf fx_0e6_effModels[];
 extern Fx0e6Line fx_0e6_strip;
 
 #endif

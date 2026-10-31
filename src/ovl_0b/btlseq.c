@@ -7,7 +7,7 @@ void btlseq_init(void) {
     Battle11C4 *t = &b->seq;
     u16 *p = h + 2;
     u32 *q;
-    BtlUnit9CC *m;
+    BtlMotion *m;
     u16 n = h[0];
     for (; i < n; i++) {
         t->seqs[i] = (s32)h + *p++;
@@ -16,7 +16,7 @@ void btlseq_init(void) {
         t->seqs[i] = 0;
     }
     q = (u32 *)p;
-    t->anims = (BtlUnit9CC **)q;
+    t->anims = (BtlMotion **)q;
     n = h[1];
     for (i = 0; i < n; i++, q++) {
         m = db_lookupRegistered(DB_GET_ADDR, (*q & 0xFFFF) | DB_ANIM, 0);
@@ -177,9 +177,9 @@ void btlseq_update(void) {
 }
 
 s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
-    BtlUnit9C *m = arg1->model;
+    BtlModel *m = arg1->model;
     if (!((arg0->flags >> BTLSEQ_F_END_MOTION_BIT) & 1) && arg0->frame != 0 && arg1->obj->frame >= m->motion->frameCount) {
-        m->motion = (BtlUnit9CC *)arg1->motions[(arg1->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+        m->motion = (BtlMotion *)arg1->motions[(arg1->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         arg1->obj->frame = 0;
         arg0->flags |= BTLSEQ_F_END_MOTION;
     }
@@ -401,7 +401,7 @@ s32 btlseq_opEffect(BtlScript *arg0) {
 }
 
 s32 btlseq_opWaitAnim(BtlScript *arg0, BtlUnit *arg1) {
-    BtlUnit9C *m = arg1->model;
+    BtlModel *m = arg1->model;
     BtlUnitA0 *a = arg1->obj;
     if (arg0->frame != 0 && (a->frame >= m->motion->frameCount || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
         g_btlfxEnv->camera->paused = 0;
@@ -632,7 +632,7 @@ s32 btlseq_opLoopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
 
 s32 btlseq_opStopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     u8 i = arg0->pc[1];
-    BtlUnit9C *m = arg1->model;
+    BtlModel *m = arg1->model;
     BtlUnit9C50 *e;
     (*(e = m->texAnims + i)).flags &= 0xFC;
     arg0->pc += 2;

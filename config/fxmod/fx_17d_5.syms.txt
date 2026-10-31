@@ -3,6 +3,6 @@ fx_17d_5_header = 0x801EE4E4; // [code] module header (0, init, ops), btlfx_upda
 fx_17d_5_op80 = 0x801ED218; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_17d_5_op80PoolTask = 0x801EC704; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_17d_5_op80
 fx_17d_5_env = 0x801EE52C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
-fx_17d_5_effModels = 0x801EE53C; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_17d_5_effModels = 0x801EE53C; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)
 fx_17d_5_targetPos = 0x801EE4DC; // [code] SVECTOR aimed at with btlfx_aimAngles, copied into work->unk14 (what the pool elements home on) and drawRings centre in fx_17d_5_op80 cases 1 to 3
 fx_17d_5_sparkTrails = 0x801EE860; // [code] 0xCC-byte btlfx_drawTrail state buffers, one per spawned Fx17d5Spark (unk18) in fx_17d_5_op80

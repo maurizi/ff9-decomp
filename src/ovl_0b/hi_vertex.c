@@ -8,7 +8,7 @@ s32 Hi_GetSplitMdlVertex(s32 arg0, s32 arg1) {
     return btlfx_getSplitVertexSize(btlfx_getEffModel(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->model, arg1);
 }
 
-void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
+void GeoSplitVertices(BtlModel *arg0, s32 arg1, s32 arg2) {
     s32 n;
     BtlMesh *m;
     s32 i;
@@ -26,8 +26,8 @@ void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-s32 btlfx_getSplitVertexSize(BtlUnit9C *arg0, s32 arg1) {
-    BtlUnit9C8 *m = arg0->header;
+s32 btlfx_getSplitVertexSize(BtlModel *arg0, s32 arg1) {
+    BtlModelHeader *m = arg0->header;
     s32 n = m->meshCount;
     s32 r = 0;
     s32 i;
@@ -53,7 +53,7 @@ void Hi_GetMdlVertexPtr(s32 arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
     btlfx_getMeshPrims(btlfx_getEffModel(arg0, s_hiGetMdlVertexPtrErr)->model, arg1, arg2, arg3, arg4);
 }
 
-u16 btlfx_getMeshPrims(BtlUnit9C *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
+u16 btlfx_getMeshPrims(BtlModel *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
     BtlMesh *m = &arg0->header->meshes[arg1];
     if (arg4 == 0) {
         *arg3 = arg2;
@@ -125,7 +125,7 @@ void func_800DF938(void) {
         p += (stride);                                              \
     }
 
-u32 btlfx_splitMeshVertices(BtlUnit9C *arg0, u16 arg1, s32 arg2) {
+u32 btlfx_splitMeshVertices(BtlModel *arg0, u16 arg1, s32 arg2) {
     u16 n;
     BtlMesh *g;
     u8 *p;

@@ -68,7 +68,7 @@ typedef struct {
     s32 model50;
 } Fx1a2Work80; /* 0x54 */
 
-extern BtlModel fx_1a2_effModels[];
+extern BtlModelBuf fx_1a2_effModels[];
 extern CVECTOR fx_1a2_colors0;
 extern CVECTOR fx_1a2_colors1;
 extern CVECTOR fx_1a2_colors2;

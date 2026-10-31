@@ -52,7 +52,7 @@ typedef struct {
     u16 model6E;
 } Fx1ecWork82; /* 0x70 */
 
-extern BtlModel fx_1ec_effModels[];
+extern BtlModelBuf fx_1ec_effModels[];
 extern s32 fx_1ec_op80Trails0[];
 extern s32 fx_1ec_op80Trails1[];
 extern s32 fx_1ec_op81Trails0[];

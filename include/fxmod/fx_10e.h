@@ -24,6 +24,6 @@ typedef struct {
 } Fx10eWork81;
 
 extern Unk800F78A4 *fx_10e_env;
-extern BtlModel fx_10e_effModels[];
+extern BtlModelBuf fx_10e_effModels[];
 
 #endif

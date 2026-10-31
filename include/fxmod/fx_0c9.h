@@ -27,7 +27,7 @@ typedef struct {
 } Fx0c9Work81;
 
 extern Unk800F78A4 *fx_0c9_env;
-extern BtlModel fx_0c9_effModels[];
+extern BtlModelBuf fx_0c9_effModels[];
 extern SVECTOR fx_0c9_particlePos; /* particle position */
 extern SVECTOR fx_0c9_emitPos;
 extern s32 fx_0c9_trails[];

@@ -16,6 +16,6 @@ typedef struct {
 } Fx07fWork;
 
 extern Unk800F78A4 *fx_07f_env;
-extern BtlModel fx_07f_effModels[];
+extern BtlModelBuf fx_07f_effModels[];
 
 #endif

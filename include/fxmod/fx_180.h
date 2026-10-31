@@ -66,7 +66,7 @@ typedef struct {
 } Fx180Work83; /* 0x3C */
 
 extern Unk800F78A4 *fx_180_env;
-extern BtlModel fx_180_effModels[];
+extern BtlModelBuf fx_180_effModels[];
 extern Fx180Path fx_180_posPath0[0x12];
 extern Fx180Path fx_180_posPath1[0x1E];
 extern s32 fx_180_op80Trails0[];

@@ -3,7 +3,7 @@ fx_101_header = 0x801E85B4; // [code] module header (0, init, ops), btlfx_update
 fx_101_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_101_op82 = 0x801E8458; // type:func [code] header op entry 2, effect script op 0x82 (btlfx_spawnTask)
 fx_101_env = 0x801E85FC; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
-fx_101_effModels = 0x801E860C; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_101_effModels = 0x801E860C; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)
 fx_101_stopBolts = 0x801E85B0; // [code] cleared in fx_101_op80 mode 1, set 1 when op80 ends (frame >= 0x2F), fx_101_op82 stops calling fx_101_spawnBolt and returns 1 while nonzero
 fx_101_bolts = 0x801E86DC; // [code] Fx101Bolt[8] ring buffer filled by fx_101_spawnBolt, indexed by fx_101_nextBolt
 fx_101_nextBolt = 0x801E89FC; // [code] index into fx_101_bolts used by fx_101_spawnBolt, incremented mod 8, reset by func_801E8188

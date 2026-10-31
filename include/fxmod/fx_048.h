@@ -19,7 +19,7 @@ typedef struct {
 } Fx048Work; /* 0x38 */
 
 extern Unk800F78A4 *fx_048_env;
-extern BtlModel fx_048_effModels[];
+extern BtlModelBuf fx_048_effModels[];
 extern s32 fx_048_trails[];
 extern u16 fx_048_texels[];
 

@@ -55,7 +55,7 @@ static void fxm_vecTrackInit(Fx0ddTrack6 *track, u16 *data);
 static s32 fxm_vecTrackGet(Fx0ddTrack6 *track, s32 t, VECTOR *out);
 
 extern u8 fx_0dd_morphBlocks[6];
-extern BtlModel fx_0dd_effModels[];
+extern BtlModelBuf fx_0dd_effModels[];
 extern s32 fx_0dd_trails[];
 extern Fx0ddTrack12 fx_0dd_rotPosKeys;
 extern Fx0ddTrack12 fx_0dd_rotPosKeys2;

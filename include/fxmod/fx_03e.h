@@ -16,7 +16,7 @@ typedef struct {
 } Fx03eWork; /* 0x28 */
 
 extern Unk800F78A4 *fx_03e_env;
-extern BtlModel fx_03e_effModels[];
+extern BtlModelBuf fx_03e_effModels[];
 extern s32 fx_03e_trails[];
 
 #endif

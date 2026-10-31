@@ -24,7 +24,7 @@ typedef struct {
 } Fx112Work;
 
 extern Unk800F78A4 *fx_112_env;
-extern BtlModel fx_112_effModels[];
+extern BtlModelBuf fx_112_effModels[];
 extern u8 fx_112_op80Trails[][0x2D0];
 
 static void fxm_captureScreen(s32 x, s32 y, s32 w, s32 h, s32 dx, s32 dy);

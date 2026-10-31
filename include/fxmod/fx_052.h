@@ -34,7 +34,7 @@ typedef struct {
 } Fx052Work82;
 
 extern Unk800F78A4 *fx_052_env;
-extern BtlModel fx_052_effModels[];
+extern BtlModelBuf fx_052_effModels[];
 extern s32 fx_052_trails[];
 extern s32 fx_052_trails2[];
 

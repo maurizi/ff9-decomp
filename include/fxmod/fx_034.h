@@ -27,7 +27,7 @@ typedef struct {
     u16 model70;
 } Fx034Work; /* 0x74 */
 
-extern BtlModel fx_034_effModels[];
+extern BtlModelBuf fx_034_effModels[];
 extern u8 fx_034_splitBuf[];
 extern u8 fx_034_trails[];
 extern Unk800F78A4 *fx_034_env;

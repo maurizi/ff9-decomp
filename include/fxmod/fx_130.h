@@ -26,7 +26,7 @@ typedef struct {
     VECTOR scale40; /* model scale */
 } Fx130Unit; /* 0x50 */
 
-extern BtlModel fx_130_effModels[];
+extern BtlModelBuf fx_130_effModels[];
 extern Fx130Unit fx_130_units[4];
 extern SVECTOR D_801E812C; /* fx_130_units[0].unk8 */
 

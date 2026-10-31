@@ -32,7 +32,7 @@ typedef struct {
 
 extern s16 fx_090_texAnimSrc[][2];
 extern Unk800F78A4 *fx_090_env;
-extern BtlModel fx_090_effModels[];
+extern BtlModelBuf fx_090_effModels[];
 extern s32 fx_090_trails[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);

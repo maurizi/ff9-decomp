@@ -26,7 +26,7 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos1C.vz = work->pos40.vz;
         work->model52 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
         work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
-        work->model56 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE));
+        work->model56 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE));
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos48);
         work->fadeIn50 = -1;
     } else {

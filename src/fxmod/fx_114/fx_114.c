@@ -132,7 +132,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scaleA0.vy = 0x1000;
         work->scaleA0.vz = 0x1000;
         fxm_vecTrackInit(&fx_114_vecTrack3, (u16 *)ex->btlfx_getFileData(entry->file, 0x84));
-        work->model17A = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85));
+        work->model17A = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x85));
         work->rotB4.vx = 0;
         work->rotB4.vy = 0;
         work->rotB4.vz = 0;
@@ -154,7 +154,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scaleF8.vy = 0x1000;
         work->scaleF8.vz = 0x1000;
         fxm_vecTrackInit(&fx_114_vecTrack1, (u16 *)ex->btlfx_getFileData(entry->file, 0x87));
-        work->model17E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), 0x9A, 0x3DC0, 0, 0);
+        work->model17E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x82), 0x9A, 0x3DC0, 0, 0);
         work->rot10C.vx = 0;
         work->rot10C.vy = 0;
         work->rot10C.vz = 0;
@@ -165,7 +165,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale124.vy = 0x1000;
         work->scale124.vz = 0x1000;
         fxm_vecTrackInit(&fx_114_vecTrack2, (u16 *)ex->btlfx_getFileData(entry->file, 0x88));
-        work->model180 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x83), 0x117, 0, 0, 0);
+        work->model180 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x83), 0x117, 0, 0, 0);
         work->color15C = 0;
         work->color15D = 0;
         work->color15E = 0;
@@ -511,7 +511,7 @@ s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale20.vz = 0x1000;
         fx_114_env = env;
         fxm_vecTrackInit(&fx_114_vecTrack3, (u16 *)ex->btlfx_getFileData(entry->file, 0x89));
-        work->model46 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85));
+        work->model46 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x85));
         work->timer44 = -1;
     } else {
         frame = entry->frame;
@@ -575,7 +575,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale1C.vy = 0x1000;
         work->scale1C.vz = 0x1000;
         fx_114_env = env;
-        work->model66 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x2A), 0x117, 0, 0, 0);
+        work->model66 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x2A), 0x117, 0, 0, 0);
         ex->Hi_SetEffModelOffset(work->model66, 0x6E);
         work->unk2C.vx = 0;
         work->unk2C.vy = 0;
@@ -586,7 +586,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk44.vx = 0x1000;
         work->unk44.vy = 0x1000;
         work->unk44.vz = 0x1000;
-        work->model68 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x20), 0x17, 0x3D00, 0x80, 0xE0);
+        work->model68 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x20), 0x17, 0x3D00, 0x80, 0xE0);
         fx_114_pathTrail.fadeFrom10 = 0x60;
         fx_114_pathTrail.start8 = 0;
         fx_114_pathTrail.countA = 0;
@@ -751,8 +751,8 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scaleE4.vx = 0x1000;
         work->scaleE4.vy = 0x1000;
         work->scaleE4.vz = 0x1000;
-        work->model14A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x27), 0x9A, 0x3DC0, 0, 0);
-        work->model14C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x22), 0x9A, 0x3DC0, 0, 0);
+        work->model14A = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x27), 0x9A, 0x3DC0, 0, 0);
+        work->model14C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x22), 0x9A, 0x3DC0, 0, 0);
         fxm_posTrackInit(&fx_114_posTrack2, (u16 *)ex->btlfx_getFileData(entry->file, 0x23));
         fxm_vecTrackInit(&fx_114_vecTrack4, (u16 *)ex->btlfx_getFileData(entry->file, 0x24));
         fxm_vecTrackInit(&fx_114_vecTrack5, (u16 *)ex->btlfx_getFileData(entry->file, 0x25));

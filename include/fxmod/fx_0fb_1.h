@@ -112,11 +112,11 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x38];
-    BtlModel *effModels38;
+    BtlModelBuf *effModels38;
     u8 pad3C[0x54 - 0x3C];
     struct {
         u8 pad0[0x18C];
-        BtlUnit9CC *motion18C;
+        BtlMotion *motion18C;
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 summonModel60;
@@ -127,6 +127,6 @@ extern u8 fx_0fb_1_gradient[];
 extern s16 fx_0fb_1_modelBlocks[2];
 extern s16 fx_0fb_1_rockOffsets[];
 extern Fx0fb1Ring fx_0fb_1_strips[2];
-extern BtlModel D_801F0D3C[];
+extern BtlModelBuf D_801F0D3C[];
 
 #endif

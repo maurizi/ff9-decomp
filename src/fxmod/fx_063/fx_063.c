@@ -67,7 +67,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitHomePos(i, (s16 *)&fx_063_unitBob[i].homeC);
             ex->btlfx_getUnitHomePos(i, (s16 *)&fx_063_unitBob[i].pos14);
         }
-        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x137,
+        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 8), 0x137,
                                                          0xFFFF, 0, 0x80);
         work->models40[0].rot4.vx = 0;
         work->models40[0].rot4.vy = 0;
@@ -75,21 +75,21 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->models40[0].scaleC.vx = 0;
         work->models40[0].scaleC.vy = 0;
         work->models40[0].scaleC.vz = 0;
-        work->models40[1].model0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB));
+        work->models40[1].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB));
         work->models40[1].rot4.vx = 0;
         work->models40[1].rot4.vy = 0;
         work->models40[1].rot4.vz = 0;
         work->models40[1].scaleC.vx = 0;
         work->models40[1].scaleC.vy = 0;
         work->models40[1].scaleC.vz = 0;
-        work->models40[2].model0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC));
+        work->models40[2].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xC));
         work->models40[2].rot4.vx = 0;
         work->models40[2].rot4.vy = 0;
         work->models40[2].rot4.vz = 0;
         work->models40[2].scaleC.vx = 0;
         work->models40[2].scaleC.vy = 0x100;
         work->models40[2].scaleC.vz = 0;
-        work->modelAC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x17A, 0xFFFF, 0,
+        work->modelAC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 9), 0x17A, 0xFFFF, 0,
                                                  0x80);
         work->rotB0.vx = 0;
         work->rotB0.vy = 0;

@@ -205,21 +205,21 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         fx_0dc_env = env;
         ex->btlfx_initEffModels(fx_0dc_effModels, 0x19);
         tp = 0x9A;
-        w->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x14), tp, 0x3DC0,
+        w->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x14), tp, 0x3DC0,
                                                   0x80, 0);
-        w->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x12), tp, 0x3DC0,
+        w->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x12), tp, 0x3DC0,
                                                   0x80, 0);
-        w->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13), tp, 0x3DC0,
+        w->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x13), tp, 0x3DC0,
                                                    0x80, 0);
-        w->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x11), 0xBA, 0x3D40,
+        w->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x11), 0xBA, 0x3D40,
                                                    0, 0x80);
-        w->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0xBA, 0x3D40,
+        w->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xF), 0xBA, 0x3D40,
                                                    0, 0x80);
-        w->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x10), 0xBA, 0x3D40,
+        w->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x10), 0xBA, 0x3D40,
                                                    0, 0x80);
         for (i = 0; i < 14; i++) {
             w->model20[i] = (s16)ex->Hi_RegisterTexEffModel(
-                (BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_0dc_shardModelBlocks[i]), tp, 0x3DC0, 0x80, 0);
+                (BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0dc_shardModelBlocks[i]), tp, 0x3DC0, 0x80, 0);
         }
         w->state0 = 2;
         w->frame4 = 0;

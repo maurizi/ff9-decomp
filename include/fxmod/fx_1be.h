@@ -48,7 +48,7 @@ typedef struct {
     s32 timer34; /* delay */
 } Fx1beUnit; /* 0x38 */
 
-extern BtlModel fx_1be_effModels[];
+extern BtlModelBuf fx_1be_effModels[];
 extern s32 D_801E95D0;
 extern s32 fx_1be_scrollPos;
 extern s32 fx_1be_scrollSpeed;

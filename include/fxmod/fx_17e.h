@@ -18,6 +18,6 @@ typedef struct {
 } Fx17eWork;
 
 extern Unk800F78A4 *fx_17e_env;
-extern BtlModel fx_17e_effModels[];
+extern BtlModelBuf fx_17e_effModels[];
 
 #endif

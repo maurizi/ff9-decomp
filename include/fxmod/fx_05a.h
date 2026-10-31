@@ -18,7 +18,7 @@ typedef struct {
 } Fx05aWork; /* 0x48 */
 
 extern Unk800F78A4 *fx_05a_env;
-extern BtlModel fx_05a_effModels[];
+extern BtlModelBuf fx_05a_effModels[];
 extern s32 fx_05a_trails[];
 
 #endif

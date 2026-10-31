@@ -57,7 +57,7 @@ typedef struct {
     Pool6CEntry *emit3C;
 } Fx07dWork80; /* 0x40 */
 
-extern BtlModel fx_07d_effModels[];
+extern BtlModelBuf fx_07d_effModels[];
 
 typedef struct {
     SVECTOR pos0; /* caster body position */

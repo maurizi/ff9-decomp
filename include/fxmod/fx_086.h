@@ -46,7 +46,7 @@ typedef struct {
     Pool6CEntry *emit44;
 } Fx086Work80; /* 0x48 */
 
-extern BtlModel fx_086_effModels[];
+extern BtlModelBuf fx_086_effModels[];
 extern SVECTOR fx_086_streakPts[];
 extern SVECTOR fx_086_spritePos[64];
 static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,

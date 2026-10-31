@@ -74,6 +74,6 @@ typedef struct {
 } Fx0dcWork80; /* 0x88 */
 
 extern s32 fx_0dc_shardModelBlocks[14];
-extern BtlModel fx_0dc_effModels[];
+extern BtlModelBuf fx_0dc_effModels[];
 
 #endif

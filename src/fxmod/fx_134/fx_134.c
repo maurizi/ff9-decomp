@@ -591,17 +591,17 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->frame4 = 0;
         fx_134_env = env;
         ex->btlfx_initEffModels(fx_134_effModels, 8);
-        work->model5C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x98, 0x3D80, 0, 0);
-        work->model60 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x118, 0xFFFF, 0x40,
+        work->model5C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 8), 0x98, 0x3D80, 0, 0);
+        work->model60 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x118, 0xFFFF, 0x40,
                                                  0);
-        work->model64 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x14), 0x118, 0xFFFF,
+        work->model64 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x14), 0x118, 0xFFFF,
                                                  0x40, 0);
-        work->model68 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x11), 0x37, 0x3D07, 0,
+        work->model68 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x11), 0x37, 0x3D07, 0,
                                                  0);
-        work->model6C = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13));
-        work->model70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x12), 0x37, 0x3D07, 0,
+        work->model6C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x13));
+        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x12), 0x37, 0x3D07, 0,
                                                  0);
-        work->model74 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x19), 0xBC, 0x3E00, 0x80,
+        work->model74 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x19), 0xBC, 0x3E00, 0x80,
                                                  0);
         work->pos8.vx = fx_134_origin.vx;
         work->pos8.vy = fx_134_origin.vy - 0x3000;

@@ -399,18 +399,18 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         fx_0fb_1_env = env;
         ex->btlfx_initEffModels(((Fx0fb1Summon *)env->loader)->effModels38, 0x1F);
         for (i = 0; i < 2; i++) {
-            work->model4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_0fb_1_modelBlocks[i]),
+            work->model4C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0fb_1_modelBlocks[i]),
                                                         0x9A, 0x3E00, 0, 0);
         }
-        work->modelA0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), 0x96, 0x3D40, 0, 0);
-        work->modelA4 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x87), 0x9A, 0x3E00, 0, 0);
-        work->modelA8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x90), 0xBD, 0x3E40, 0, 0);
-        work->modelAC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8F), 0xBD, 0x3E40, 0, 0);
-        work->modelB0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x89), 0xBD, 0x3E40, 0, 0);
-        work->modelB4 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13), 0xBD, 0x3EC0, 0, 0x80);
-        work->modelB8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x23), 0x3D, 0x3E81, 0, 0x80);
-        work->modelBC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
-        work->modelC0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8C), 0x3A, 0x3D0A, 0, 0x80);
+        work->modelA0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x82), 0x96, 0x3D40, 0, 0);
+        work->modelA4 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x87), 0x9A, 0x3E00, 0, 0);
+        work->modelA8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x90), 0xBD, 0x3E40, 0, 0);
+        work->modelAC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x8F), 0xBD, 0x3E40, 0, 0);
+        work->modelB0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x89), 0xBD, 0x3E40, 0, 0);
+        work->modelB4 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x13), 0xBD, 0x3EC0, 0, 0x80);
+        work->modelB8 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x23), 0x3D, 0x3E81, 0, 0x80);
+        work->modelBC = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
+        work->modelC0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x8C), 0x3A, 0x3D0A, 0, 0x80);
         work->centerC.vy = -0x1000;
         work->centerC.vx = 0;
         work->rot8C.vz = 0;

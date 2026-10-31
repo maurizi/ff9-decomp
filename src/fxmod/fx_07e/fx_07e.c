@@ -263,7 +263,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } while (0);
         work->ringRot14.vz = 0;
         ex->btlfx_initEffModels(fx_07e_effModels, 1);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0xBB, 0x3E40, 0,
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xC), 0xBB, 0x3E40, 0,
                                                  0x80);
     } else {
         frame = entry->frame;

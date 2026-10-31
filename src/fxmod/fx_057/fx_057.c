@@ -95,8 +95,8 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         ex->btlfx_initEffModels(fx_057_effModels, 3);
         work->model8 =
-            ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x19), 0x137, 0xFFFF, 0, 0x80);
-        work->modelC = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x28));
+            ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x19), 0x137, 0xFFFF, 0, 0x80);
+        work->modelC = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x28));
     } else {
         alpha = 0;
         frame = entry->frame;
@@ -298,7 +298,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->state0 = 1;
             entry->frame = -1;
             work->model28 =
-                ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x27), 0xB9, 0x3D80, 0x80, 0);
+                ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x27), 0xB9, 0x3D80, 0x80, 0);
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0xFF);
         }
         break;

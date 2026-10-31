@@ -100,7 +100,7 @@ typedef struct {
     Pool6CEntry *emit3C;
 } Fx0dfWork80; /* 0x40 */
 
-extern BtlModel fx_0df_effModels[];
+extern BtlModelBuf fx_0df_effModels[];
 static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));
 s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);

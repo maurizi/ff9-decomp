@@ -95,7 +95,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale1C.vy = 0x1000;
         work->scale1C.vz = 0x1000;
         fx_1bd_env = env;
-        work->model66 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x117, 0, 0, 0);
+        work->model66 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), 0x117, 0, 0, 0);
         ex->Hi_SetEffModelOffset(work->model66, 0x6E);
         work->unk2C.vx = 0;
         work->unk2C.vy = 0;
@@ -106,7 +106,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk44.vx = 0x1000;
         work->unk44.vy = 0x1000;
         work->unk44.vz = 0x1000;
-        work->model68 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x2B), 0x17, 0x3D00, 0x80, 0xE0);
+        work->model68 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x2B), 0x17, 0x3D00, 0x80, 0xE0);
         fx_1bd_pathTrail.alpha10 = 0x60;
         fx_1bd_pathTrail.start8 = 0;
         fx_1bd_pathTrail.countA = 0;
@@ -280,8 +280,8 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->xformCC.scale18.vx = 0x1000;
         work->xformCC.scale18.vy = 0x1000;
         work->xformCC.scale18.vz = 0x1000;
-        work->model14A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0x9A, 0x3DC0, 0, 0);
-        work->model14C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x9A, 0x3DC0, 0, 0);
+        work->model14A = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), 0x9A, 0x3DC0, 0, 0);
+        work->model14C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x9A, 0x3DC0, 0, 0);
         fxm_posTrackInit((Fx1bdTrack12 *)&fx_1bd_posTrack, (u16 *)ex->btlfx_getFileData(entry->file, 8));
         fxm_vecTrackInit((Fx1bdTrack12 *)&fx_1bd_vecTrack1, (u16 *)ex->btlfx_getFileData(entry->file, 9));
         fxm_vecTrackInit((Fx1bdTrack12 *)&fx_1bd_vecTrack2, (u16 *)ex->btlfx_getFileData(entry->file, 7));

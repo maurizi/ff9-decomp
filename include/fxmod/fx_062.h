@@ -50,7 +50,7 @@ typedef struct {
 } Fx062Work; /* 0xD0 (0xD4 allocated) */
 
 extern Unk800F78A4 *fx_062_env;
-extern BtlModel fx_062_effModels[];
+extern BtlModelBuf fx_062_effModels[];
 extern u32 fx_062_bgOt[];
 extern SVECTOR fx_062_targetBodyPos;
 extern SVECTOR fx_062_targetHome;

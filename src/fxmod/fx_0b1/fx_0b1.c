@@ -354,7 +354,7 @@ s32 fx_0b1_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_0b1_env = env;
         ex->btlfx_initEffModels(fx_0b1_effModels, 4);
         for (i = 0; i < env->targets->targetCount; i++) {
-            fx_0b1_models[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x23), 0x177,
+            fx_0b1_models[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x23), 0x177,
                                                        0xFFFF, 0, 0x80);
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_0b1_bodyPos[i]);
             fx_0b1_modelPos[i].vx = fx_0b1_bodyPos[i].vx;

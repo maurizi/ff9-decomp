@@ -170,10 +170,10 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_17a_env = env;
         ex->btlfx_initEffModels(fx_17a_effModels, 6);
-        work->model80 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0xBA, 0x3FC0, 0, 0);
-        work->model84 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0xBA, 0x3EC0, 0, 0x80);
-        work->model88 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x3A, 0x3E81, 0, 0x80);
-        work->model8C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x138, 0xFFFF, 0, 0x80);
+        work->model80 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA), 0xBA, 0x3FC0, 0, 0);
+        work->model84 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 7), 0xBA, 0x3EC0, 0, 0x80);
+        work->model88 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 8), 0x3A, 0x3E81, 0, 0x80);
+        work->model8C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 9), 0x138, 0xFFFF, 0, 0x80);
         BTLFX_COPY_SVEC(&work->posC, &fx_17a_centerPos);
         work->rot4C.vx = 0;
         work->rot4C.vy = 0;

@@ -25,7 +25,7 @@ typedef struct {
     Fx1fcPoint *keys4;
 } Fx1fcPath;
 
-extern BtlModel fx_1fc_effModels[];
+extern BtlModelBuf fx_1fc_effModels[];
 extern u32 fx_1fc_bgOt[];
 extern SVECTOR fx_1fc_unitPos[8]; /* unit positions */
 extern VECTOR fx_1fc_unitScale[8]; /* unit scales */

@@ -15,11 +15,11 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_03e_env = env;
         ex->btlfx_initEffModels(fx_03e_effModels, 4);
-        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0xBA, 0x3DC0, 0, 0);
-        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0xBA, 0x3DC0, 0, 0);
-        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x19), 0xBA, 0x3DC0, 0, 0);
+        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 3), 0xBA, 0x3DC0, 0, 0);
+        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0xBA, 0x3DC0, 0, 0);
+        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x19), 0xBA, 0x3DC0, 0, 0);
         work->model4 =
-            (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0xB8, 0x3D40, 0x80, 0x80);
+            (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 2), 0xB8, 0x3D40, 0x80, 0x80);
         work->state0 = 0;
         work->frame24 = 0;
         work->pos14.vx = env->targets->centerX;

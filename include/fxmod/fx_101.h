@@ -57,7 +57,7 @@ typedef struct {
 } Fx101Work82;
 
 extern s32 fx_101_stopBolts; /* bolts stop */
-extern BtlModel fx_101_effModels[];
+extern BtlModelBuf fx_101_effModels[];
 extern Unk800F78A4 *fx_101_env;
 extern Fx101Bolt fx_101_bolts[8];
 extern s32 fx_101_nextBolt; /* next bolt */

@@ -107,7 +107,7 @@ extern Fx1b3Split fx_1b3_splits2;
 extern Fx1b3Split fx_1b3_splits3[2];
 extern Fx1b3Split fx_1b3_splits4[3];
 extern SVECTOR fx_1b3_emitPos0;
-extern BtlModel fx_1b3_effModels[];
+extern BtlModelBuf fx_1b3_effModels[];
 
 void fx_1b3_splitModel(Fx1b3Split *sp);
 void fx_1b3_updateSplitPieces(Fx1b3Split *sp);

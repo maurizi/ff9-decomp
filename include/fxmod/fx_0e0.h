@@ -113,6 +113,6 @@ typedef union {
 extern SVECTOR fx_0e0_centerPos;
 extern CVECTOR fx_0e0_rippleColors[];
 extern Fx0e0Bolt fx_0e0_trailStrips[];
-extern BtlModel fx_0e0_effModels[];
+extern BtlModelBuf fx_0e0_effModels[];
 
 #endif

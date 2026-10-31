@@ -64,7 +64,7 @@ typedef struct {
 extern s16 fx_1b6_modelFileIds[7]; /* model files */
 extern Unk80100C78Entry *fx_1b6_task;
 extern s32 fx_1b6_op80Trails[];
-extern BtlModel fx_1b6_effModels[];
+extern BtlModelBuf fx_1b6_effModels[];
 
 #define FX1B6_SPAD_STACK(save) __asm__ volatile("sw $29, 0(%0)\n\tmove $29, %1" : : "r"(save), "r"(0x1F8003F8) : "memory")
 #define FX1B6_RESET_STACK(save) __asm__ volatile("lw $29, 0(%0)" : : "r"(save) : "memory")

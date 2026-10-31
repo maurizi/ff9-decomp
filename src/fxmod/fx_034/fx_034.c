@@ -170,8 +170,8 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale20.vy = 0x800;
         work->scale20.vz = 0x800;
         work->rgb30 = -0x20;
-        work->model6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x99, 0x3D80, 0, 0);
-        work->model70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x9A, 0x3DC0, 0, 0x80);
+        work->model6E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0x99, 0x3D80, 0, 0);
+        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA), 0x9A, 0x3DC0, 0, 0x80);
         work->scroll6C = 0;
     } else {
         frame = entry->frame;

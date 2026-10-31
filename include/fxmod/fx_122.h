@@ -28,7 +28,7 @@ typedef struct {
 
 extern Fx122Offset fx_122_offsets[0x11];
 extern Unk800F78A4 *fx_122_env;
-extern BtlModel fx_122_effModels[];
+extern BtlModelBuf fx_122_effModels[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

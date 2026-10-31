@@ -55,7 +55,7 @@ typedef struct {
 
 extern SVECTOR fx_1bf_2_basePos;
 extern Unk800F78A4 *fx_1bf_2_env;
-extern BtlModel fx_1bf_2_effModels[];
+extern BtlModelBuf fx_1bf_2_effModels[];
 
 s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 

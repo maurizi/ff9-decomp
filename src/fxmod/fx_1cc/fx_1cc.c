@@ -482,14 +482,14 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1cc_env = env;
         ex->btlfx_initEffModels(fx_1cc_effModels, 0x19);
         k = 0x9A;
-        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x29), k, 0x3DC0, 0x80, 0);
-        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x27), k, 0x3DC0, 0x80, 0);
-        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x28), k, 0x3DC0, 0x80, 0);
-        work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x20), 0xBA, 0x3D40, 0, 0x80);
-        work->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0xBA, 0x3D40, 0, 0x80);
-        work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1F), 0xBA, 0x3D40, 0, 0x80);
+        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x29), k, 0x3DC0, 0x80, 0);
+        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x27), k, 0x3DC0, 0x80, 0);
+        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x28), k, 0x3DC0, 0x80, 0);
+        work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x20), 0xBA, 0x3D40, 0, 0x80);
+        work->model18 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x1E), 0xBA, 0x3D40, 0, 0x80);
+        work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x1F), 0xBA, 0x3D40, 0, 0x80);
         for (i = 0; i < 14; i++) {
-            work->model20[i] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_1cc_pieceFileIds[i]), k, 0x3DC0, 0x80, 0);
+            work->model20[i] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_1cc_pieceFileIds[i]), k, 0x3DC0, 0x80, 0);
         }
         work->state0 = 0;
         work->frame4 = 0;

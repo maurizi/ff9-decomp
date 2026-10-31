@@ -31,7 +31,7 @@ typedef struct {
     u16 y2;
 } Fx016Pair;
 
-extern BtlModel fx_016_effModels[];
+extern BtlModelBuf fx_016_effModels[];
 extern Fx016Pair fx_016_scrollDst[];
 extern Unk800F78A4 *fx_016_env;
 extern s32 fx_016_radiusScale; /* jump scale */

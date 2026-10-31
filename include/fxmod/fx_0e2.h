@@ -98,13 +98,13 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180[8]; /* summon motions */
+        BtlMotion *motion180[8]; /* summon motions */
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 summonModel60; /* summon model */
 } Fx0e2Summon;
 
-typedef s32 (*Fx0e2RegTexList)(BtlUnit9C8 *, BtlTexInfo *, s16 *);
+typedef s32 (*Fx0e2RegTexList)(BtlModelHeader *, BtlTexInfo *, s16 *);
 
 typedef struct {
     Pool6CEntry *emit0;
@@ -192,7 +192,7 @@ extern u16 fx_0e2_emitBlocks0[5];
 extern u16 fx_0e2_emitBlocks1[5];
 extern BtlTexInfo fx_0e2_texPages[];
 extern s16 fx_0e2_texPos[];
-extern BtlModel fx_0e2_effModels[];
+extern BtlModelBuf fx_0e2_effModels[];
 extern Fx0e2Ribbon80 fx_0e2_stripBlend;
 extern Fx0e2Path fx_0e2_stripBlendPathB;
 extern s16 fx_0e2_stripBlendFade;

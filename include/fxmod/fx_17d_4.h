@@ -62,8 +62,8 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x19C];
-        BtlUnit9CC *motion19C;
-        BtlUnit9CC *motion1A0;
+        BtlMotion *motion19C;
+        BtlMotion *motion1A0;
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
@@ -74,7 +74,7 @@ typedef struct {
 extern SVECTOR fx_17d_4_centerPos;
 extern s32 fx_17d_4_op80Trails[];
 extern s8 fx_17d_4_unused; /* no reader in any fx_17d group, other module or ovl_0b */
-extern BtlModel fx_17d_4_effModels[];
+extern BtlModelBuf fx_17d_4_effModels[];
 void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
 void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot);
 

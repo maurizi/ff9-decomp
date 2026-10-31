@@ -13,7 +13,7 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180;
+        BtlMotion *motion180;
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[0x60 - 0x58];
     s32 model60; /* summon model */
@@ -44,7 +44,7 @@ typedef struct {
     s32 model78; /* model */
 } Fx17d1Work80; /* 0x7C */
 
-extern BtlModel fx_17d_1_effModels[];
+extern BtlModelBuf fx_17d_1_effModels[];
 extern s32 fx_17d_1_op80Trails[];
 
 s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);

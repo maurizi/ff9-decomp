@@ -85,7 +85,7 @@ extern SVECTOR fx_197_pieceOffsets[]; /* piece landing offsets */
 extern s32 fx_197_pieceModelFrames[]; /* model frame per animation frame */
 extern Fx197Shatter fx_197_shatterBuf6;
 extern Fx197Tri fx_197_shatterTris6[];
-extern BtlModel fx_197_effModels[];
+extern BtlModelBuf fx_197_effModels[];
 extern s32 fx_197_model0;
 extern s32 fx_197_model1;
 extern s32 fx_197_pieceModelFileIds[6][3];

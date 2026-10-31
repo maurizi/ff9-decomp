@@ -27,7 +27,7 @@ typedef struct {
 extern Unk800F78A4 *fx_03a_env;
 extern Fx03aModel fx_03a_models[10];
 extern s32 fx_03a_bouncePower; /* bounce power */
-extern BtlModel fx_03a_effModels[];
+extern BtlModelBuf fx_03a_effModels[];
 extern u32 fx_03a_bgOt[];
 
 #endif

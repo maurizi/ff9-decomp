@@ -75,7 +75,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos94.vx = fx_07a_centerPos.vx = env->targets->centerX;
         work->pos94.vy = fx_07a_centerPos.vz = env->targets->centerZ;
         work->pos94.vz = fx_07a_centerPos.vy = -0x500;
-        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x137,
+        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x137,
                                                          0xFFFF, 0, 0);
         work->models40[0].rot4.vx = 0x800;
         work->models40[0].rot4.vy = 0;
@@ -83,14 +83,14 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->models40[0].scaleC.vx = 0x5C;
         work->models40[0].scaleC.vy = 0x5C;
         work->models40[0].scaleC.vz = 0x5C;
-        work->models40[1].model0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD));
+        work->models40[1].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD));
         work->models40[1].rot4.vx = 0;
         work->models40[1].rot4.vy = 0;
         work->models40[1].rot4.vz = 0;
         work->models40[1].scaleC.vx = 0x50;
         work->models40[1].scaleC.vy = 0x50;
         work->models40[1].scaleC.vz = 0x50;
-        work->models40[2].model0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE));
+        work->models40[2].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE));
         work->models40[2].rot4.vx = 0;
         work->models40[2].rot4.vy = 0;
         work->models40[2].rot4.vz = 0;

@@ -436,10 +436,10 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale64.vz = 0x800;
         work->unk130 = 0;
         work->unk134 = 0;
-        work->model150[0] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x84), fx_0e2_texPages, fx_0e2_texPos);
-        work->model150[1] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85), fx_0e2_texPages, fx_0e2_texPos);
-        work->model150[2] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x83), fx_0e2_texPages, fx_0e2_texPos);
-        work->model150[3] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), fx_0e2_texPages, fx_0e2_texPos);
+        work->model150[0] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x84), fx_0e2_texPages, fx_0e2_texPos);
+        work->model150[1] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x85), fx_0e2_texPages, fx_0e2_texPos);
+        work->model150[2] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x83), fx_0e2_texPages, fx_0e2_texPos);
+        work->model150[3] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x82), fx_0e2_texPages, fx_0e2_texPos);
         work->morphStep138 = 0;
         work->morphStep13C = 0;
         work->fadeTimer140 = -1;

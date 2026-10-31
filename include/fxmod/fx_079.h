@@ -45,7 +45,7 @@ typedef struct {
 } Fx079Work; /* 0xA4 */
 
 extern Unk800F78A4 *fx_079_env;
-extern BtlModel fx_079_effModels[];
+extern BtlModelBuf fx_079_effModels[];
 extern SVECTOR fx_079_bonePos;
 extern SVECTOR fx_079_bodyPos;
 extern SVECTOR fx_079_homePos;

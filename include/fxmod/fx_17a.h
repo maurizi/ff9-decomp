@@ -59,7 +59,7 @@ typedef struct {
 extern SVECTOR fx_17a_centerPos;
 extern u8 fx_17a_cylColors[];
 extern Fx17aRing fx_17a_trails[2];
-extern BtlModel fx_17a_effModels[];
+extern BtlModelBuf fx_17a_effModels[];
 
 static s32 fx_17a_op80PoolTask(s32 mode, Fx17aPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 

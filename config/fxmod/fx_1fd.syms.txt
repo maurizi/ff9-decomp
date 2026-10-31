@@ -19,7 +19,7 @@ fxm_camChanAdd = 0x801E9A9C; // type:func [code] takes a free camera key slot (s
 fxm_camChanUpdate = 0x801E9AF8; // type:func [code] steps channel ch, slots whose start frame is reached copy keys into camera points (env camera, nibble = point + 1)
 fxm_moveUnitHome = 0x801E9984; // type:func [code] moves the unit from b to its home position (btlfx_getUnitHomePos) over n frames
 fx_1fd_env = 0x801E9E4C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
-fx_1fd_effModels = 0x801E9E5C; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_1fd_effModels = 0x801E9E5C; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)
 fx_1fd_posPath = 0x801EBB7C; // [code] key path state for fxm_posPathInit and fxm_posPathGet
 fx_1fd_op80Trails = 0x801EBBAC; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
 fx_1fd_op84Trails = 0x801EC50C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op84 handler

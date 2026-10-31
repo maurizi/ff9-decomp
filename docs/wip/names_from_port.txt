@@ -11049,3 +11049,16 @@ fx_1f2 fx_1f2_unitTrails[4] fx_1f2_unitTrails[16]  # declaration only
 
 # ===== R32e (Mognet) =====
 # new: EVT_GB_MOGNET_* (script-only variables); tools/evtscript/edis.py (infix disassembler)
+
+# ===== R35 (3DS requests 5, models) =====
+# types (whole-word, main/overlays/effect modules/src_equiv/config comments)
+BtlModel BtlModelBuf  # the old 0x98 wrapper (BtlModel + pad, stride of Battle.weaponModels and the effect model buffers)
+BtlUnit9C BtlModel
+BtlUnit9C8 BtlModelHeader
+BtlUnit9CC BtlMotion
+BtlUnit9C18 BtlTexWord
+Unk800AA504Pos ModelTexWord
+Unk800AA504Pos8 ModelTexPos
+Unk800B3254 FieldLightSet
+Unk800B3294 FieldModelLight
+Unk8006E0E8 WeaponEntry  # ovl_0b and ovl_38 views merged into main's WeaponEntry {flags, pad, u16 modelId, pad, attack, pad}

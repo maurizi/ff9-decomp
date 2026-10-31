@@ -154,10 +154,10 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_038_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         ex->btlfx_initEffModels(fx_038_effModels, 3);
-        work->model10 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x97, 0x3C80, 0, 0);
+        work->model10 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 2), 0x97, 0x3C80, 0, 0);
         work->model18 =
-            ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x137, 0xFFFF, -0x40, 0x80);
-        work->model14 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA));
+            ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x137, 0xFFFF, -0x40, 0x80);
+        work->model14 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA));
     } else {
         frame = entry->frame;
         if (work->stop0 == 0) {

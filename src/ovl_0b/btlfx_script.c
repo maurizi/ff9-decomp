@@ -1077,9 +1077,9 @@ void btlfx_resetUnitMotion(s32 arg0, u8 arg1) {
 void btlfx_setUnitMotion(s32 arg0, s32 arg1) {
     if (btlfx_isPartyUnit(arg0) != 0) {
         BtlUnit *u = btl_getUnit(arg0);
-        BtlUnit9C *m = u->model;
+        BtlModel *m = u->model;
         if (m != NULL) {
-            m->motion = (BtlUnit9CC *)arg1;
+            m->motion = (BtlMotion *)arg1;
             u->obj->frame = 0;
         }
     }

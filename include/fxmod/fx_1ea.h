@@ -98,7 +98,7 @@ extern u16 fx_1ea_sliceModelFileIds[];
 extern u16 fx_1ea_slicePathFileIds[];
 extern u16 fx_1ea_trailPathFileIds0[];
 extern u16 fx_1ea_trailPathFileIds1[];
-extern BtlModel fx_1ea_effModels[];
+extern BtlModelBuf fx_1ea_effModels[];
 extern Fx1eaRibbon fx_1ea_ribbon0;
 extern Fx1eaRibbon fx_1ea_ribbon1;
 extern Fx1eaPath_0b4 fx_1ea_rotPosPath0;

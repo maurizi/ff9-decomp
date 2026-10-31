@@ -536,13 +536,13 @@ typedef struct {
 #define FLD_LIGHT_DEFAULT 1 /* fallback colour/shadow when no floor light matches */
 #define FLD_LIGHT_DIR 2 /* used instead for objects with FLD_OBJ_DIR_LIGHT */
 
-/* 8-byte entries following Unk800B3254.unkC[unk6] */
+/* 8-byte entries following FieldLightSet.unkC[unk6] */
 typedef struct {
     u16 modelId; /* id */
     s8 shadowShade;
     s8 shadowSize;
     u32 color; /* colour; top byte: the shadow's OT bias (Unk800B3294Bias) */
-} Unk800B3294;
+} FieldModelLight;
 
 typedef struct {
     u8 pad0[6];
@@ -552,7 +552,7 @@ typedef struct {
     u8 colorCount;
     u8 padA[2];
     FieldLight lights[1];
-} Unk800B3254;
+} FieldLightSet;
 
 /* 6-byte vertex entries at g_fieldBgi.unkC */
 typedef struct BgiVertex {
@@ -1078,7 +1078,7 @@ typedef struct FieldObjPlace {
     void *prims[2][4]; /* shadow primitives, per draw buffer */
 } FieldObjPlace; /* 0x28 */
 
-/* Unk800B3294 seen bytewise: the top byte of the colour is a depth bias (fld_drawShadow) */
+/* FieldModelLight seen bytewise: the top byte of the colour is a depth bias (fld_drawShadow) */
 typedef struct {
     u8 pad0[7];
     s8 shadowOtBias; /* added to the shadow quads' OT index (fld_drawShadow) */
@@ -1122,11 +1122,11 @@ typedef struct {
 
 s32 fld_allocModelCache(s32, s32);
 
-FieldLight *fld_getLightColorTable(Unk800B3254 *);
+FieldLight *fld_getLightColorTable(FieldLightSet *);
 s32 bgi_getActorTriangle(s32, u16 *, u16 *);
 s32 bgi_linkFrameNeighbors(BgiHeader *, BgiAnim *, BgiKeyframe *);
-FieldLight *fld_findGlobalLights(Unk800B3254 *, FieldLight **, FieldLight **);
-FieldLight *fld_findFloorLight(Unk800B3254 *, FieldObjSlot *, s16 *);
+FieldLight *fld_findGlobalLights(FieldLightSet *, FieldLight **, FieldLight **);
+FieldLight *fld_findFloorLight(FieldLightSet *, FieldObjSlot *, s16 *);
 
 /* field directory entry (fld_refindSectors): the next entry's sector ends this one */
 typedef struct {
@@ -1292,7 +1292,7 @@ extern u8 s_menuMainStatusLabel[];
 extern u8 s_menuMainStatusNormal[];
 extern u8 s_menuMainStatusAbnormal[];
 
-/* 8-byte entries following Unk800B3254.unkC[unk6] */
+/* 8-byte entries following FieldLightSet.unkC[unk6] */
 
 
 /* 10 VRAM cache slots at 0x800C9CCC. splat puts the first word at the end of
@@ -1631,7 +1631,7 @@ void fld_exit(void);
 FieldAnimSfx *fld_findAnimSfx(); /* (FieldObjSlot *, u16, s16); unprototyped: callers pass the argument unconverted */
 s32 fld_findAreaItem(); /* (FieldMapObj *, u16); unprototyped: callers pass the argument unconverted */
 s32 fld_findEventScript(); /* (FieldScene *, u16); unprototyped: callers pass the argument unconverted */
-Unk800B3294 *fld_findLightColor(); /* (Unk800B3254 *, u16); unprototyped: callers pass the argument unconverted */
+FieldModelLight *fld_findLightColor(); /* (FieldLightSet *, u16); unprototyped: callers pass the argument unconverted */
 s32 fld_findLights(FieldScene *arg0, s32 unused);
 s32 fld_freeModelBundles(void);
 s32 fld_getBgKey(); /* (FieldScene *); unprototyped: some callers pass a second argument it ignores */

@@ -23,7 +23,7 @@ typedef struct {
 } Fx04fWork; /* 0x54 */
 
 extern Unk800F78A4 *fx_04f_env;
-extern BtlModel fx_04f_effModels[];
+extern BtlModelBuf fx_04f_effModels[];
 
 static s32 fx_04f_op80PoolTask(s32 mode, s32 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx04fWork *work);

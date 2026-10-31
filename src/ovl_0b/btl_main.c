@@ -281,12 +281,12 @@ void btl_load(s32 arg0) {
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
         game_clearModelSlot(&g_gameState->gameData->chrModels[i]);
-        g_gameState->gameData->chrModels[i].model = (struct BtlUnit9C *)&g_gameState->gameData->chrModelObjs[i];
+        g_gameState->gameData->chrModels[i].model = (struct BtlModel *)&g_gameState->gameData->chrModelObjs[i];
     }
     g_gameState->gameData->npcModelSlots = 0;
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
         game_clearModelSlot(&g_gameState->gameData->npcModels[i]);
-        g_gameState->gameData->npcModels[i].model = (struct BtlUnit9C *)&g_gameState->gameData->npcModelObjs[i];
+        g_gameState->gameData->npcModels[i].model = (struct BtlModel *)&g_gameState->gameData->npcModelObjs[i];
     }
     p->shadows = (struct BtlShadow *)g_modeHeap;
     g_modeHeap = btl_allocShadows(g_modeHeap, g_gameState->gameData->npcCount + 9);
@@ -452,7 +452,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
     s32 *pc;
     s32 p;
     s32 v;
-    BtlUnit9C *m;
+    BtlModel *m;
     u8 save;
 
     if (arg0 & 0x8000) {
@@ -527,21 +527,21 @@ s32 btl_reloadPartyStep(s32 arg0) {
             btl_loadPartyMotions(u, g_gameState->gameData->party[i]->info.b.kind, u - g_gameState->gameData->ctx.battle->units);
             if (u->status & BTL_STATUS_KO) {
                 if (u != g_gameState->gameData->ctx.battle->curCmd->caster) {
-                    u->model->motion = (BtlUnit9CC *)u->motions[4];
+                    u->model->motion = (BtlMotion *)u->motions[4];
                 } else {
                     goto use9;
                 }
             } else if (u == g_gameState->gameData->ctx.battle->curCmd->caster || ((u->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1)) {
             use9:
-                u->model->motion = (BtlUnit9CC *)u->motions[9];
+                u->model->motion = (BtlMotion *)u->motions[9];
             } else {
-                u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+                u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
             }
             e->actor->frame = 0;
             m = u->weaponModel;
             save = m->parentBone;
-            id2 = ((Unk8006E0E8 *)u->weapon)->modelId | DB_MODEL;
-            m->header = (BtlUnit9C8 *)btl_getWeaponModelHeader(i);
+            id2 = ((WeaponEntry *)u->weapon)->modelId | DB_MODEL;
+            m->header = (BtlModelHeader *)btl_getWeaponModelHeader(i);
             btl_getWeaponTexInfo(id2, i, &pa, &pb, &pc);
             btl_applyModelTextures(m, (s16 *)pa, (s16 *)pb);
             m->motion = 0;
@@ -699,10 +699,10 @@ s32 btl_loadEnemyModelsStep(s32 arg0, s32 arg1, Unk800AA504 *arg2) {
     s32 dst;
     Unk800AA504Tbl *tbl;
     Unk800AA504Ent *te;
-    Unk800AA504Pos *a;
-    Unk800AA504Pos8 *r;
+    ModelTexWord *a;
+    ModelTexPos *r;
     Unk800AA504Ent *tf;
-    Unk800AA504Pos *bb;
+    ModelTexWord *bb;
     s32 n;
     s32 h;
     s32 x;
@@ -795,9 +795,9 @@ loop:
         do {
             if (te->modelId == arg2->fileId) {
                 n = te->tex.b[3];
-                a = (Unk800AA504Pos *)((u8 *)te + (te->tex.w & 0xFFFFFF));
+                a = (ModelTexWord *)((u8 *)te + (te->tex.w & 0xFFFFFF));
                 bb = a + n;
-                r = (Unk800AA504Pos8 *)(bb + n);
+                r = (ModelTexPos *)(bb + n);
                 while (n > 0) {
                     n--;
                     x = db_lookup(dst, DB_GET_AT, (n & 0xFFFF) | DB_TIM, 0);
@@ -1088,9 +1088,9 @@ s32 btl_uploadModelTextures(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s
     Unk800AA504Tbl *tbl;
     Unk800AA504Ent *te;
     s32 n;
-    Unk800AA504Pos *a;
-    Unk800AA504Pos *b;
-    Unk800AA504Pos8 *r;
+    ModelTexWord *a;
+    ModelTexWord *b;
+    ModelTexPos *r;
     s32 x;
     s32 y;
     s32 yy;
@@ -1102,9 +1102,9 @@ s32 btl_uploadModelTextures(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s
     tbl = (Unk800AA504Tbl *)db_lookup(sp18, DB_GET_AT, DB_MODEL_INFO, 0);
     te = tbl->entries;
     n = te->tex.b[3];
-    a = (Unk800AA504Pos *)((u8 *)te + (te->tex.w & 0xFFFFFF));
+    a = (ModelTexWord *)((u8 *)te + (te->tex.w & 0xFFFFFF));
     b = a + n;
-    r = (Unk800AA504Pos8 *)(b + n);
+    r = (ModelTexPos *)(b + n);
     if (n > 0) {
         do {
             n--;
@@ -1265,7 +1265,7 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     s32 pc;
     u32 n;
     Unk8E0Ld *e;
-    BtlUnit9CC *c;
+    BtlMotion *c;
     s32 p;
     u32 i;
     u32 r;
@@ -1282,8 +1282,8 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     }
     e->modelId = arg0;
     e->obj = arg1;
-    e->model->header = (BtlUnit9C8 *)db_lookupRegistered(DB_GET_ADDR, e->modelId, 0);
-    e->model->motion = (BtlUnit9CC *)db_lookupRegistered(DB_GET_ADDR, btl_getAnimFileId(e->modelId), 0);
+    e->model->header = (BtlModelHeader *)db_lookupRegistered(DB_GET_ADDR, e->modelId, 0);
+    e->model->motion = (BtlMotion *)db_lookupRegistered(DB_GET_ADDR, btl_getAnimFileId(e->modelId), 0);
     c = e->model->motion;
     if (IS_OFFSET(c->rotKeys)) {
         c->rotKeys = (s32)c + c->rotKeys;
@@ -1293,8 +1293,8 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     }
     btl_getModelTexInfo((e->modelId & 0xFFFFFF) | (n << 24), (s32 **)&pa, (s32 **)&pb, (s32 **)&pc);
     /* c reused for the unk8 block (a second set keeps it a global pseudo, in v1 as in the original) */
-    c = (BtlUnit9CC *)e->model->header;
-    cnt = ((BtlUnit9C8 *)c)->meshCount;
+    c = (BtlMotion *)e->model->header;
+    cnt = ((BtlModelHeader *)c)->meshCount;
     i = 0;
     if (cnt) {
         /* Probably macro residue: a dead store (deleted by flow, no code). The block boundary it leaves
@@ -1480,9 +1480,9 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
             btl_loadPartyMotions(u, g_gameState->gameData->party[arg0]->info.b.kind,
                           u - g_gameState->gameData->ctx.battle->units);
             if (u->status & BTL_STATUS_KO) {
-                u->model->motion = (BtlUnit9CC *)u->motions[4];
+                u->model->motion = (BtlMotion *)u->motions[4];
             } else {
-                u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+                u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
             }
             ent->actor->frame = 0;
             u->weaponModel->parent = ent->model;

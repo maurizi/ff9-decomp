@@ -43,7 +43,7 @@ typedef struct {
 } Fx1bf0Work; /* 0x28 */
 
 extern SVECTOR fx_1bf_0_origin;
-extern BtlModel fx_1bf_0_effModels[];
+extern BtlModelBuf fx_1bf_0_effModels[];
 extern u8 D_801EA1FC[];
 s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

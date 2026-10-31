@@ -4,6 +4,6 @@ fx_0d6_op80 = 0x801E7CA0; // type:func [code] header op entry 0, effect script o
 fx_0d6_op84 = 0x801E8DDC; // type:func [code] header op entry 4, effect script op 0x84 (btlfx_spawnTask)
 fxm_drawTexelQuads = 0x801E7704; // type:func [code] 3D grid of POLY_G4 whose vertex colours are the 15-bit texels of colors, then StoreImage reads the next VRAM cell into colors
 fx_0d6_env = 0x801E9150; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
-fx_0d6_effModels = 0x801E9160; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_0d6_effModels = 0x801E9160; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)
 fx_0d6_trails = 0x801E9610; // [code] particle trail buffer of the file block 0xE emitter (0x12 slots of 0x24 bytes), fx_0d6_op80
 fx_0d6_texels = 0x801E98A0; // [code] 16-bit texel buffer of fxm_drawTexelQuads (vertex colours read from it, refilled by StoreImage each call), fx_0d6_op80

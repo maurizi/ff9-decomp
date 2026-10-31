@@ -28,7 +28,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         tex[5] = 0x80;
         tex[7] = 0;
         for (i = 0; i < 4; i++) {
-            work->model28[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xFA, 0x3DC0,
+            work->model28[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0xFA, 0x3DC0,
                                                         0x80, 0x80);
             work->ringRot38[i].vy = i << 10;
             work->ringRot38[i].vx = 0x100;
@@ -39,7 +39,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->ringScale98.vy = 0x333;
         work->ringScale98.vz = 0x333;
         for (i = 0; i < 5; i++) {
-            work->modelB0[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0xB8, 0x3D40,
+            work->modelB0[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0xB8, 0x3D40,
                                                         0xC0, 0);
             work->pillarOnC4[i] = 0;
             work->pillarFadeD8[i] = -1;

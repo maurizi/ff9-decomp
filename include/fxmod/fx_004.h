@@ -40,7 +40,7 @@ typedef struct {
 
 extern SVECTOR fx_004_pieceRots[];
 extern Unk800F78A4 *fx_004_env;
-extern BtlModel fx_004_effModels[];
+extern BtlModelBuf fx_004_effModels[];
 
 static s32 fx_004_op80PoolTask(s32 mode, Fx004Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx004Work *work);

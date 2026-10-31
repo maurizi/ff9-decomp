@@ -398,19 +398,19 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vz = sv.vz;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_initEffModels(fx_0ec_effModels, 9);
-        work->model38 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x97, 0x3D40,
+        work->model38 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0x97, 0x3D40,
                                                       0x80, 0x80);
-        work->model3C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x97, 0x3D40,
+        work->model3C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 3), 0x97, 0x3D40,
                                                       0x80, 0x80);
-        work->model40[0] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0xB7,
+        work->model40[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 4), 0xB7,
                                                          0x3DC0, 0, 0x80);
-        work->model4C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x97, 0x3DC0,
+        work->model4C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xF), 0x97, 0x3DC0,
                                                       0, 0x80);
-        work->model50 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x39, 0x3D01,
+        work->model50 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 7), 0x39, 0x3D01,
                                                       0, 0);
-        work->model54 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x10), 0x119,
+        work->model54 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x10), 0x119,
                                                       0xFFFF, 0, 0x90);
-        work->model58 = (s16)ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13));
+        work->model58 = (s16)ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x13));
         x = env->dispEnv->disp.x;
         if (x < 0x100) {
             x2 = x + 0x140;
@@ -419,9 +419,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         tp0 = getTPage(2, 0, x, env->dispEnv->disp.y);
         tp1 = getTPage(2, 0, x2, env->dispEnv->disp.y);
-        work->model40[1] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), tp0 | 0x20,
+        work->model40[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp0 | 0x20,
                                                          0xFFFF, 0x40, 0);
-        work->model40[2] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), tp1 | 0x20,
+        work->model40[2] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp1 | 0x20,
                                                          0xFFFF, 0x40, 0);
         fx_0ec_task = (Fx0ecWork *)entry; /* the shard callbacks spawn into entry->pool */
         k = (ex->btlfx_getUnitRadius(0) << 12) / 390;

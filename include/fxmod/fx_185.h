@@ -21,7 +21,7 @@ typedef struct {
 } Fx185Work81;
 
 extern Unk800F78A4 *fx_185_env;
-extern BtlModel fx_185_effModels[];
+extern BtlModelBuf fx_185_effModels[];
 extern SVECTOR fx_185_targetPos;
 
 #endif

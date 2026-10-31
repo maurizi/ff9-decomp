@@ -120,7 +120,7 @@ extern Fx123Shot fx_123_op81Shots[6];
 extern u16 fx_123_pathFileIds[6];
 extern u16 fx_123_emitFileIds[6];
 extern s32 fx_123_pinParticles[6];
-extern BtlModel fx_123_effModels[];
+extern BtlModelBuf fx_123_effModels[];
 extern Fx123Path_0b4 fx_123_rotPosPath[6];
 extern u8 fx_123_op81Trails[6][0xE0];
 extern SVECTOR fx_123_emitPos2[6];

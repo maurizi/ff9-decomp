@@ -20,7 +20,7 @@ typedef struct {
 } Fx1f6Work; /* 0xB4 */
 
 extern Unk800F78A4 *fx_1f6_env;
-extern BtlModel fx_1f6_effModels[];
+extern BtlModelBuf fx_1f6_effModels[];
 extern s32 fx_1f6_op80Trails0[];
 extern s32 fx_1f6_op80Trails1[];
 

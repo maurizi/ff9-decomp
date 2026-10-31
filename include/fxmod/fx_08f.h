@@ -36,7 +36,7 @@ typedef struct {
     Pool6CEntry *emit44;
 } Fx08fWork80; /* 0x48 */
 
-extern BtlModel fx_08f_effModels[];
+extern BtlModelBuf fx_08f_effModels[];
 extern SVECTOR fx_08f_streakPts[];
 extern u8 fx_08f_trail[];
 static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);

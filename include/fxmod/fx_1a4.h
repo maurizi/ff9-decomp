@@ -42,7 +42,7 @@ typedef struct {
 } Fx1a4Work81; /* 0x5C */
 
 extern Unk800F78A4 *fx_1a4_env;
-extern BtlModel fx_1a4_effModels[];
+extern BtlModelBuf fx_1a4_effModels[];
 extern SVECTOR fx_1a4_emitPos0;
 extern SVECTOR fx_1a4_emitPos1;
 

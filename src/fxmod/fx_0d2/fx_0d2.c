@@ -528,7 +528,7 @@ s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale20.vz = 0x1000;
         fxm_rotPosPathInit((Fx0d2Path *)&fx_0d2_morphPath, (u16 *)ex->btlfx_getFileData(entry->file, 9));
         for (i = 0; i < 3; i++) {
-            model = ex->Hi_RegisterTexPtrModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_0d2_morphBlocks[i]),
+            model = ex->Hi_RegisterTexPtrModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0d2_morphBlocks[i]),
                                                fx_0d2_texPages, fx_0d2_uvOffsets);
             work->model136[i + 1] = model;
         }

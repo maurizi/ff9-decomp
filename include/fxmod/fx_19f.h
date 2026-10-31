@@ -125,7 +125,7 @@ extern s32 fx_19f_stripToFileIds0[3];
 extern s32 fx_19f_stripFromFileIds1[3];
 extern s32 fx_19f_stripToFileIds1[3];
 extern Fx19fTrail fx_19f_offsetTrail;
-extern BtlModel fx_19f_effModels[];
+extern BtlModelBuf fx_19f_effModels[];
 extern Fx19fTrail17 fx_19f_stripTrails0[6];
 extern Fx19fTrail13 fx_19f_stripTrails1[3];
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,

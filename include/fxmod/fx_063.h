@@ -57,7 +57,7 @@ typedef struct {
 } Fx063Work; /* 0xDC */
 
 extern Unk800F78A4 *fx_063_env;
-extern BtlModel fx_063_effModels[];
+extern BtlModelBuf fx_063_effModels[];
 extern u32 fx_063_bgOt[];
 extern Fx063Strip fx_063_strips[10];
 extern Fx063Unit fx_063_unitBob[];

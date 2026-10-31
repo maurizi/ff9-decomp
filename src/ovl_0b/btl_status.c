@@ -111,7 +111,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
     case 17:
         if ((u->flags & BTL_UNIT_PARTY) && (s32)u->model->motion != u->motions[1] &&
             g_gameState->gameData->ctx.battle->curCmd->caster != u) {
-            u->model->motion = (BtlUnit9CC *)u->motions[1];
+            u->model->motion = (BtlMotion *)u->motions[1];
             u->obj->frame = 0;
         }
         break;
@@ -204,7 +204,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
 
 s32 btl_removeStatus(BtlUnit *u, u32 f) {
     BtlUnit34 *s = (BtlUnit34 *)&u->statusImmune;
-    BtlUnit9C *m;
+    BtlModel *m;
     s32 *a4;
     BtlCmd *c;
 
@@ -248,7 +248,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
             m->texAnims[2].flags |= BTL_TEXANIM_PLAY;
             u->model->texAnims[2].pos = 0;
             u->model->texAnims[2].lastFrame = 0x1000;
-            u->model->motion = (BtlUnit9CC *)u->motions[6];
+            u->model->motion = (BtlMotion *)u->motions[6];
             u->obj->frame = 0;
         }
         c = g_gameState->gameData->ctx.battle->curCmd;
@@ -277,7 +277,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
             u->pos[0] = u->home->pos[0];
             u->pos[1] = u->home->pos[1];
             u->pos[2] = u->home->pos[2];
-            u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+            u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
             u->obj->frame = 0;
         }
         btl_setCmd(u->tranceCmd, BTL_CMD_TRANCE, 0, u->unitBit, 0);
@@ -385,8 +385,8 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
         }
     }
     if ((arg0->status & BTL_STATUS_CONFUSE) && arg0 != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        if (arg0->model->motion == (BtlUnit9CC *)arg0->motions[0] || arg0->model->motion == (BtlUnit9CC *)arg0->motions[1] ||
-            ((arg0->flags & BTL_UNIT_PARTY) && arg0->model->motion == (BtlUnit9CC *)arg0->motions[9])) {
+        if (arg0->model->motion == (BtlMotion *)arg0->motions[0] || arg0->model->motion == (BtlMotion *)arg0->motions[1] ||
+            ((arg0->flags & BTL_UNIT_PARTY) && arg0->model->motion == (BtlMotion *)arg0->motions[9])) {
             arg0->rot[1] += 0x80;
         }
     }
@@ -1231,7 +1231,7 @@ void btl_playUnitSound(BtlUnit *arg0, u16 arg1, u8 arg2) {
     }
 }
 
-void btl_applyBgLight(BtlUnit9C *arg0) {
+void btl_applyBgLight(BtlModel *arg0) {
     s32 i;
     BtlBgHeader *p = btlbg_getHeader();
     for (i = 0; i < arg0->header->meshCount; i++) {

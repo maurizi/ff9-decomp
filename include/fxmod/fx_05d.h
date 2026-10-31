@@ -43,7 +43,7 @@ typedef struct {
 
 extern u8 fx_05d_morphBlocks[6];
 extern Unk800F78A4 *fx_05d_env;
-extern BtlModel fx_05d_effModels[];
+extern BtlModelBuf fx_05d_effModels[];
 extern s32 fx_05d_trails[];
 extern SVECTOR fx_05d_emitPos;
 extern Fx05dTrack12 fx_05d_rotPosKeys;

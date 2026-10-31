@@ -258,7 +258,7 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale38.vy = 0x4000;
         work->scale38.vz = 0x4000;
         work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
-        work->model6E = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE));
+        work->model6E = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE));
         work->timer64 = -1;
         work->timer68 = -1;
         work->flag6A = 0;

@@ -37,7 +37,7 @@ extern SVECTOR fx_057_targetPos;
 extern s32 fx_057_trails[];
 extern s32 fx_057_fade; /* fade */
 extern Pool6CEntry *fx_057_emitter1;
-extern BtlModel fx_057_effModels[];
+extern BtlModelBuf fx_057_effModels[];
 extern Unk800F78A4 *fx_057_env;
 extern SVECTOR fx_057_camRest; /* camera rest position */
 extern SVECTOR fx_057_headPos; /* particle head position */

@@ -1,6 +1,6 @@
 /* ovl_0b effect-model vertex projection: btlfx_projectSliceMesh (0x800DDF10) and btlfx_projectMorphMesh
  * (0x800DF15C), hand-written asm in the original. Both fill g_vtxScreenXY / g_vtxScreenZ for one mesh of a
- * model whose bone matrices btl_calcBoneMatrices has built (BtlUnit9C.unk20), for btl_drawMesh*.
+ * model whose bone matrices btl_calcBoneMatrices has built (BtlModel.unk20), for btl_drawMesh*.
  *
  * Register convention: standard C ABI. GTE: H (control 26) = the camera's projection distance
  * (GameData.unkA); RT/TR end as the last bone's camera-space matrix; V0-V2, IR, MAC and the RTPT outputs as
@@ -31,10 +31,10 @@ static void projLoadMatrix(u8 *mat) {
 }
 
 /* Slice: each vertex goes through its bone's matrix (MVMVA RT * V0 + TR); y is clamped to the model's slice
- * plane BtlUnit9C.unk5A (y >= unk5A becomes unk5A and the z word gets bit 28 as a clipped mark), then the
+ * plane BtlModel.unk5A (y >= unk5A becomes unk5A and the z word gets bit 28 as a clipped mark), then the
  * camera (GameData+0x18) projects the triples in place (SXY over the xy, SZ into the low halfword of the z
  * word, keeping the mark). */
-void btlfx_projectSliceMesh(BtlUnit9C *m, u8 meshIdx) {
+void btlfx_projectSliceMesh(BtlModel *m, u8 meshIdx) {
     u32 *xyTab = (u32 *)g_vtxScreenXY;
     u32 *zTab = (u32 *)g_vtxScreenZ;
     BtlMesh *mesh;
@@ -111,10 +111,10 @@ void btlfx_projectSliceMesh(BtlUnit9C *m, u8 meshIdx) {
 /* Morph: per bone, the camera matrix (GameData+0x18) times the bone matrix gives the camera-space matrix
  * (rotation columns through MVMVA RT * IR, translation through RT * V0 + TR; its padding halfword is whatever
  * the stack held). Each vertex is morph + (mesh - morph) * factor / 4096 (INTPL, IR0 = factor: the morph
- * target BtlUnit9C.unk5C's vertex in IR, the mesh's in FC), stored as xy and z words (the loop reads one
+ * target BtlModel.unk5C's vertex in IR, the mesh's in FC), stored as xy and z words (the loop reads one
  * vertex past the end of both arrays), then the triples are projected in place (SXY and whole SZ words) with
  * the next triple preloaded. */
-void btlfx_projectMorphMesh(BtlUnit9C *m, u8 meshIdx, u16 factor) {
+void btlfx_projectMorphMesh(BtlModel *m, u8 meshIdx, u16 factor) {
     u32 *xyTab = (u32 *)g_vtxScreenXY;
     u32 *zTab = (u32 *)g_vtxScreenZ;
     BtlMesh *mesh, *morph;

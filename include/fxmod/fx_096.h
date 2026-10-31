@@ -34,7 +34,7 @@ typedef struct {
 } Fx096Vec3;
 
 extern Unk800F78A4 *fx_096_env;
-extern BtlModel fx_096_effModels[];
+extern BtlModelBuf fx_096_effModels[];
 extern u16 fx_096_verts[0xA28]; /* model A vertices */
 extern u16 fx_096_restVerts[0xA28]; /* their rest positions */
 extern Fx096Vec3 fx_096_polyCenters[]; /* polygon centers */

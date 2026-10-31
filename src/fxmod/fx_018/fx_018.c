@@ -30,8 +30,8 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         ex->btlfx_initEffModels(fx_018_effModels, 2);
-        work->model14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x11), 0xB8, 0x3E40, 0, 0x80);
-        work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x10), 0x119, 0xFFFF, 0, 0x80);
+        work->model14 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x11), 0xB8, 0x3E40, 0, 0x80);
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x10), 0x119, 0xFFFF, 0, 0x80);
         work->state10 = 0;
     } else {
         frame = entry->frame;

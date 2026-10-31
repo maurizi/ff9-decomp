@@ -178,7 +178,7 @@ typedef struct {
 typedef struct ModelSlot {
     s32 flags; /* MODEL_SLOT_*, others from event op args (the field's FLD_OBJ_* bits) */
     s32 modelId; /* model item, 0x20000 | model id (DB_MODEL), -1 after game_clearModelSlot (runtime) */
-    struct BtlUnit9C *model; /* the model object (GameData.chrModelObjs / npcModelObjs entry; battle BtlUnit9C) */
+    struct BtlModel *model; /* the model object (GameData.chrModelObjs / npcModelObjs entry; battle BtlModel) */
     struct BtlUnitA0 *actor; /* the EvtObject using the slot (FieldMap.playerObj's actor) */
     struct BtlUnit *unit; /* battle unit (btl_resetUnit) */
 } ModelSlot;
@@ -580,15 +580,16 @@ extern ItemInfo g_itemTable[];
 extern u8 g_chrHpMpSupports[4]; /* max hp/mp support abilities */
 extern u8 g_chrStatCaps[4]; /* stat caps */
 extern u8 g_armorDefs[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
-/* weapon table entry (0xC bytes) */
+/* weapon table entry (0xC bytes), indexed by item id < 0x58 */
 typedef struct {
-    u8 pad0[5];
-    u8 attack; /* attack */
+    u8 flags; /* BTL_WEAPON_* (ovl_0b.h) */
+    u8 pad1;
+    u16 modelId; /* weapon model: FF9.IMG dir 8 file id (| 0x20000: db key; ovl_0b btl_initWeapon) */
+    u8 pad4;
+    u8 attack; /* attack power (chr_calcEquipStats; Throw: power x2) */
     u8 pad6[0xC - 6];
 } WeaponEntry;
-#if !defined(OVL_0B_H) && !defined(OVL_38_H) /* those headers declare their own view */
 extern WeaponEntry g_weaponTable[];
-#endif
 extern u8 g_equipSlotMasks[];
 extern u8 g_newGameItems[];
 
@@ -4262,7 +4263,7 @@ typedef struct {
 #define TEXANIM_ONESHOT 0x2 /* cleared with TEXANIM_ACTIVE at the end */
 #define TEXANIM_SCROLL 0x4 /* vertical scroll mode, frameCount 0 */
 
-/* model object (ModelSlot.unk8): main's view of ovl_0a ModelObj / ovl_0b BtlUnit9C (docs/field-models.md) */
+/* model object (ModelSlot.unk8): main's view of ovl_0a ModelObj / ovl_0b BtlModel (docs/field-models.md) */
 typedef struct Unk8004AFF0 {
     u16 flags; /* MDL_* */
     u8 pad2[4 - 2];

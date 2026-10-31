@@ -35,7 +35,7 @@ typedef struct {
     Fx1bdKey12 *keys4;
 } Fx1bdTrack12;
 
-extern BtlModel fx_1bd_effModels[];
+extern BtlModelBuf fx_1bd_effModels[];
 
 
 typedef struct {

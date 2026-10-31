@@ -28,7 +28,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_1e9_stopBolts = 0;
         ex->btlfx_initEffModels(fx_1e9_effModels, 1);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0xB7, 0x3D80, 0, 0);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 3), 0xB7, 0x3D80, 0, 0);
     } else {
     b = 0;
     frame = entry->frame;

@@ -86,7 +86,7 @@ void btlcam_loadScript(s32 arg) {
     s32 r;
     BtlUnit *u;
     BtlUnit *w;
-    BtlUnit9C8 *m;
+    BtlModelHeader *m;
 
     g_btlCamScript.frame = 1;
     f0 = flags = arg0[0];

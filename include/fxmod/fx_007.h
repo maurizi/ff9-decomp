@@ -46,7 +46,7 @@ typedef struct {
     s32 frame34; /* frame */
 } Fx007Work80; /* 0x38 */
 
-extern BtlModel fx_007_effModels[];
+extern BtlModelBuf fx_007_effModels[];
 extern u8 fx_007_trails[];
 extern u16 fx_007_texels[];
 

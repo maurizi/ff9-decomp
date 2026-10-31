@@ -59,7 +59,7 @@ typedef struct {
 extern u16 fx_183_modelFileIds[6]; /* model files */
 extern u16 fx_183_pathFileIds[6]; /* path files */
 extern Unk800F78A4 *fx_183_env;
-extern BtlModel fx_183_effModels[];
+extern BtlModelBuf fx_183_effModels[];
 extern Fx183Path fx_183_rotPosPath[6];
 extern s32 fx_183_op83Trails[][0xF0];
 

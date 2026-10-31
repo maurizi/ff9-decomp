@@ -51,7 +51,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->scale30.vy = 0x155;
             work->scale30.vz = 0x155;
         }
-        work->model44 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x117, 0, 0, 0xC0);
+        work->model44 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA), 0x117, 0, 0, 0xC0);
         work->rgb40 = -0x14;
         work->tint42 = 0xFF;
     } else {

@@ -28,7 +28,7 @@ typedef struct {
 
 extern Unk800F78A4 *fx_001_env;
 extern s16 fx_001_texAnimXY[][2];
-extern BtlModel fx_001_effModels[];
+extern BtlModelBuf fx_001_effModels[];
 extern s32 fx_001_trails[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);

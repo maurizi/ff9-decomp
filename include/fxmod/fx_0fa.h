@@ -29,7 +29,7 @@ typedef struct {
 extern Fx0faFlash fx_0fa_scrollSrc0[];
 extern Fx0faFlash fx_0fa_scrollSrc1[];
 extern Unk800F78A4 *fx_0fa_env;
-extern BtlModel fx_0fa_effModels[];
+extern BtlModelBuf fx_0fa_effModels[];
 
 s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

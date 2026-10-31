@@ -42,7 +42,7 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180;
+        BtlMotion *motion180;
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[0x60 - 0x58];
     s32 summonModel60; /* summon model */
@@ -60,6 +60,6 @@ extern Unk80100DC054 fx_0ed_summonModel;
 extern u8 fx_0ed_op80Trails1[];
 extern Fx0edSeg fx_0ed_ribbon0[17];
 extern Fx0edSeg fx_0ed_ribbon1[17];
-extern BtlModel fx_0ed_effModels[];
+extern BtlModelBuf fx_0ed_effModels[];
 
 #endif

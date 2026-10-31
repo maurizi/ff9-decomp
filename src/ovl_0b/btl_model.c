@@ -1,6 +1,6 @@
 #include "ovl_0b.h"
 
-void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void btl_addMeshRgb(BtlModel *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     BtlMesh *g = &arg0->header->meshes[arg1];
     u32 *p = g->prims;
     u32 i;
@@ -14,7 +14,7 @@ void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     }
 }
 
-void btl_setMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void btl_setMeshRgb(BtlModel *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     BtlMesh *g = &arg0->header->meshes[arg1];
     u32 *p = g->prims;
     u32 v = (arg4 << 16) | (arg3 << 8) | arg2;
@@ -52,7 +52,7 @@ u32 btl_addRgbClamped(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 
-void btl_setModelAbr(BtlUnit9C *arg0, s32 arg1) {
+void btl_setModelAbr(BtlModel *arg0, s32 arg1) {
     u8 *p;
     u32 i;
     u8 code;
@@ -426,7 +426,7 @@ void btl_placeParty(void) {
 
 void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
     s16 i;
-    BtlUnit9CC *h;
+    BtlMotion *h;
     arg1->radius = arg0->radius;
     arg1->category = arg0->category;
     arg1->level = arg0->level;

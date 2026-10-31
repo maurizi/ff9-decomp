@@ -7,7 +7,7 @@
 
 typedef struct {
     u8 pad0[0x180];
-    BtlUnit9CC *motion180;
+    BtlMotion *motion180;
 } Fx1eeSummonData;
 
 typedef struct {

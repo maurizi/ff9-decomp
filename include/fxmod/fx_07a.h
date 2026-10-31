@@ -54,7 +54,7 @@ typedef struct {
     s32 pad104;
 } Fx07aWork; /* 0x108 */
 
-extern BtlModel fx_07a_effModels[];
+extern BtlModelBuf fx_07a_effModels[];
 extern SVECTOR fx_07a_bonePos;
 extern SVECTOR fx_07a_centerPos;
 extern Fx07aStrip fx_07a_strips[5];

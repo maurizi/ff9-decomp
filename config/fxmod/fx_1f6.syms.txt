@@ -2,6 +2,6 @@ fx_1f6_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_1f6_header = 0x801E7D8C; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_1f6_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_1f6_env = 0x801E7DD4; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
-fx_1f6_effModels = 0x801E7DE4; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_1f6_effModels = 0x801E7DE4; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)
 fx_1f6_op80Trails0 = 0x801E8044; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
 fx_1f6_op80Trails1 = 0x801E92B4; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler

@@ -17,7 +17,7 @@ typedef struct {
 
 extern u16 fx_1ad_boneChains[6][9]; /* per row: count, bones */
 extern Unk800F78A4 *fx_1ad_env;
-extern BtlModel fx_1ad_effModels[];
+extern BtlModelBuf fx_1ad_effModels[];
 extern s32 fx_1ad_op80Trails0[];
 extern s32 fx_1ad_op80Trails1[];
 

@@ -20,14 +20,14 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, &work->pos4.vx);
         ex->btlfx_getUnitPos(0, &work->posC.vx);
         ex->btlfx_initEffModels(fx_0de_effModels, 8);
-        work->model14[0] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
-        work->model14[1] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
-        work->model14[2] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x39, 0x3D00, 0, 0x80);
-        work->model14[3] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x39, 0x3D00, 0, 0x80);
-        work->model14[4] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x39, 0x3D00, 0, 0x80);
-        work->model14[5] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x3B, 0x3D01, 0, 0x80);
-        work->model14[6] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 6), 0x3B, 0x3D01, 0, 0x80);
-        work->model14[7] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x39, 0x3D00, 0, 0x80);
+        work->model14[0] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
+        work->model14[1] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
+        work->model14[2] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 3), 0x39, 0x3D00, 0, 0x80);
+        work->model14[3] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 4), 0x39, 0x3D00, 0, 0x80);
+        work->model14[4] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), 0x39, 0x3D00, 0, 0x80);
+        work->model14[5] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 7), 0x3B, 0x3D01, 0, 0x80);
+        work->model14[6] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 6), 0x3B, 0x3D01, 0, 0x80);
+        work->model14[7] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 8), 0x39, 0x3D00, 0, 0x80);
         v = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (v < 0x400) {
             v = 0x6A4;

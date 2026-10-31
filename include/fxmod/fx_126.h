@@ -25,7 +25,7 @@ typedef struct {
 } Fx126Work; /* 0xAC */
 
 extern Unk800F78A4 *fx_126_env;
-extern BtlModel fx_126_effModels[];
+extern BtlModelBuf fx_126_effModels[];
 
 s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 void fx_126_quarticBezier(s32 len, s32 t, SVECTOR *p0, SVECTOR *p1, SVECTOR *p2, SVECTOR *p3, SVECTOR *p4, VECTOR *out);

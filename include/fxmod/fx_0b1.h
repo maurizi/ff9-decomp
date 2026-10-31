@@ -21,7 +21,7 @@ extern SVECTOR fx_0b1_modelRot; /* model rotation */
 extern VECTOR fx_0b1_modelScale; /* model scale */
 extern VECTOR fx_0b1_modelPos[4]; /* model positions */
 extern SVECTOR fx_0b1_bodyPos[4]; /* unit body positions */
-extern BtlModel fx_0b1_effModels[];
+extern BtlModelBuf fx_0b1_effModels[];
 
 static void fxm_camKeyReset(void);
 static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data);
@@ -31,7 +31,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 typedef struct {
     u8 pad0[0x180];
-    BtlUnit9CC *motion180;
+    BtlMotion *motion180;
 } Fx0b1SummonData;
 
 typedef struct {

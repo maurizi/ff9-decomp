@@ -1449,7 +1449,7 @@ void btlfx_turnUnitToward(s32 arg0, s16 *arg1, s16 *arg2, s32 arg3, s32 arg4, s3
 
 void btlfx_getUnitScale(s32 arg0, VECTOR *arg1) {
     BtlUnit *u = btl_getUnit(arg0);
-    BtlUnit9C *m = u->model;
+    BtlModel *m = u->model;
     if (!(m->flags & BTL_MODEL_SCALED)) {
         arg1->vz = 0x1000;
         arg1->vy = 0x1000;
@@ -1595,7 +1595,7 @@ void btlfx_fadeUnitById(s32 arg0, s32 arg1) {
 void btlfx_setUnitLight(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     if (btl_isModelPart(u) == 0) {
-        BtlUnit9C *m = u->model;
+        BtlModel *m = u->model;
         s16 v = arg1 - 0x80;
         if ((*(u32 *)m & 0x30) == 0x20) {
             btl_setModelRgb(m, v, v, v);
@@ -1717,11 +1717,11 @@ s32 btlfx_resetIdleMotion(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg1);
     if (arg0 == 0) {
         if ((u8)btl_hasStatus(u, BTL_STATUS_KO)) {
-            u->model->motion = (BtlUnit9CC *)u->motions[4];
+            u->model->motion = (BtlMotion *)u->motions[4];
         } else if ((u->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
-            u->model->motion = (BtlUnit9CC *)u->motions[9];
+            u->model->motion = (BtlMotion *)u->motions[9];
         } else {
-            u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+            u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         }
     } else if ((u8)btl_hasStatus(u, BTL_STATUS_KO) || BTL_UNIT_INDEX(u->flags) == 4) {
         btlfx_resetIdleMotion(0, 0x10);
@@ -1770,13 +1770,13 @@ void btlfx_moveSummonToHeap(s32 arg0) {
     g_btlfxLoader.summon->data[0] = g_gameState->gameData->ctx.battle->work->heapStart;
 }
 
-void btl_forEachModelVertex(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {
+void btl_forEachModelVertex(BtlModelHeader *arg0, void (*arg1)(SVECTOR *, s32)) {
     s32 i;
     s32 j;
     s32 k;
     s32 n;
     BtlMesh *m;
-    BtlUnit9C8 *g = arg0;
+    BtlModelHeader *g = arg0;
     for (i = 0; i < g->meshCount; i++) {
         m = &g->meshes[i];
         n = 0;

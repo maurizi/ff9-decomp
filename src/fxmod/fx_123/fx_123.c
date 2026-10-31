@@ -176,10 +176,10 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_rotPosPathInit((Fx123Path *)&fx_123_rotPosPath[n], (u16 *)ex->btlfx_getFileData(entry->file, fx_123_pathFileIds[n]));
             setVector(&work->rot6C[n], 0, 0, 0);
             setVector(&work->pos9C[n], 0, 0, 0);
-            work->model17A[n] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x97, 0x3D40, 0x80, 0);
+            work->model17A[n] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 7), 0x97, 0x3D40, 0x80, 0);
         }
         setVector(&work->scaleFC, 0x1000, 0x1000, 0x1000);
-        work->model186 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x97, 0x3D40, 0x80, 0);
+        work->model186 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0x97, 0x3D40, 0x80, 0);
         work->unk178 = -1;
     } else {
         frame = entry->frame;

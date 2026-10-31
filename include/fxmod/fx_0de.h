@@ -39,6 +39,6 @@ typedef struct {
     u16 srcY2;
 } Fx0deFlash;
 extern Fx0deFlash fx_0de_scrollSrc[];
-extern BtlModel fx_0de_effModels[];
+extern BtlModelBuf fx_0de_effModels[];
 
 #endif

@@ -124,8 +124,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot2C.vx = 0;
             work->rot2C.vy = 0;
             work->rot2C.vz = 0;
-            work->model54 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x89), 0xB6, 0x3D40, 0, 0);
-            work->model58 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x89), 0xB6, 0x3D40, 0, 0);
+            work->model54 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x89), 0xB6, 0x3D40, 0, 0);
+            work->model58 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x89), 0xB6, 0x3D40, 0, 0);
             work->rot5C.vx = -0x400;
             work->rot5C.vy = 0x500;
             work->rot64.vy = 0x300;
@@ -157,11 +157,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->scaleD8.vx = 0x1000;
             work->scaleD8.vy = 0x1000;
             work->scaleD8.vz = 0x1000;
-            work->model128 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x10), 0x17C, -1, 0x10, 0x80);
-            work->model12C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8E), 0x17C, -1, 0x10, 0x80);
-            work->model130 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8C), 0x17C, -1, 0x10, 0x80);
-            work->model134 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8D), 0x17C, -1, 0x10, 0x80);
-            work->model138 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8B), 0x17C, -1, 0x10, 0x80);
+            work->model128 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x10), 0x17C, -1, 0x10, 0x80);
+            work->model12C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x8E), 0x17C, -1, 0x10, 0x80);
+            work->model130 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x8C), 0x17C, -1, 0x10, 0x80);
+            work->model134 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x8D), 0x17C, -1, 0x10, 0x80);
+            work->model138 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x8B), 0x17C, -1, 0x10, 0x80);
             work->scale14C.vx = 0;
             work->scale14C.vy = 0;
             work->scale14C.vz = 0;
@@ -219,10 +219,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot5C.vx = 0x400;
             work->rot5C.vy = 0;
             work->rot5C.vz = 0;
-            work->model180 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85), 0x3A, 0x3D01, 0, 0);
-            work->model170 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x11));
-            work->model16C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x12), 0x3A, 0x3D01, 0, 0);
-            work->model17C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13), 0xBB, 0x3DC0, 0, 0);
+            work->model180 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x85), 0x3A, 0x3D01, 0, 0);
+            work->model170 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x11));
+            work->model16C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x12), 0x3A, 0x3D01, 0, 0);
+            work->model17C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x13), 0xBB, 0x3DC0, 0, 0);
             break;
         }
         switch (frame) {

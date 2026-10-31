@@ -37,7 +37,7 @@ extern s16 fx_12d_texInfo[6][2]; /* fx_12d_casterTexPages's entries in reverse o
 extern BtlTexInfo fx_12d_casterUvOffsets;
 extern s16 fx_12d_texPos[6][2]; /* fx_12d_casterUvOffsets's entries in reverse order */
 extern Unk800F78A4 *fx_12d_env;
-extern BtlModel fx_12d_effModels[];
+extern BtlModelBuf fx_12d_effModels[];
 extern SVECTOR fx_12d_casterPos;
 extern s32 fx_12d_op81Trails0[];
 extern s32 fx_12d_op81Trails1[];

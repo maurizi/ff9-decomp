@@ -89,11 +89,11 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x38];
-    BtlModel *effModels38;
+    BtlModelBuf *effModels38;
     u8 pad3C[0x18];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180[8]; /* summon motions */
+        BtlMotion *motion180[8]; /* summon motions */
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 summonModel60; /* summon model */

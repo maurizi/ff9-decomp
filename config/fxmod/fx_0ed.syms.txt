@@ -5,7 +5,7 @@ fx_0ed_op81 = 0x801E8860; // type:func [code] header op entry 1, effect script o
 fxm_getSummonBonePoint = 0x801E7B74; // type:func [code] transforms in by Hi_GetSummonBoneMatrix(model, bone) to out, restores the view matrix
 fxm_drawRibbonTrail = 0x801E7704; // type:func [code] pushes the a-b edge into a history of n edges and draws POLY_G4 between them, colours fading along it (n >= 1000 clears)
 fx_0ed_env = 0x801E9224; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
-fx_0ed_effModels = 0x801E93C4; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_0ed_effModels = 0x801E93C4; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)
 fx_0ed_facingBlocks = 0x801E8C10; // [code] two emitter blocks, chosen by whether the caster and the camera face the same way, started at frame 0x1F of fx_0ed_op80
 fx_0ed_ribbonRgb0 = 0x801E8C18; // [code] CVECTOR colour of ribbon edge point a (fxm_drawRibbonTrail)
 fx_0ed_ribbonRgb1 = 0x801E8C1C; // [code] CVECTOR colour of ribbon edge point b (fxm_drawRibbonTrail)

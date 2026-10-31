@@ -14,7 +14,7 @@ extern Unk80100C78Entry *fx_081_task;
 extern s32 fx_081_glow; /* glow level */
 extern Pool6CEntry *fx_081_emitter1;
 extern SVECTOR fx_081_bodyPos; /* caster body position */
-extern BtlModel fx_081_effModels[];
+extern BtlModelBuf fx_081_effModels[];
 extern u8 fx_081_trails[];
 
 typedef struct {

@@ -35,8 +35,8 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             p->otZ = -0x20;
         }
         ex->btlfx_initEffModels(fx_07f_effModels, 2);
-        work->model2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xB7, 0x3D40, 0, 0);
-        work->model30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x139, 0xFFFF, 0x40, 0x80);
+        work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0xB7, 0x3D40, 0, 0);
+        work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0x139, 0xFFFF, 0x40, 0x80);
     } else {
         frame = entry->frame;
         switch (work->state0) {

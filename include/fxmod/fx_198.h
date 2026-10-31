@@ -25,6 +25,6 @@ typedef struct {
 
 extern s16 fx_198_quadPathFileIds[0x11]; /* file ids */
 extern Unk800F78A4 *fx_198_env;
-extern BtlModel fx_198_effModels[];
+extern BtlModelBuf fx_198_effModels[];
 
 #endif

@@ -13,7 +13,7 @@ typedef struct {
 } Fx0daWork84;
 
 extern Unk800F78A4 *fx_0da_env;
-extern BtlModel fx_0da_effModels[];
+extern BtlModelBuf fx_0da_effModels[];
 
 typedef struct {
     s32 state0; /* state */

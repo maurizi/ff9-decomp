@@ -8,7 +8,7 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180[8]; /* summon motions */
+        BtlMotion *motion180[8]; /* summon motions */
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
@@ -36,7 +36,7 @@ typedef struct {
 } Fx17d3Work80; /* 0x80 */
 
 extern Unk800F78A4 *fx_17d_3_env;
-extern BtlModel fx_17d_3_effModels[];
+extern BtlModelBuf fx_17d_3_effModels[];
 extern u8 fx_17d_3_bones0[];
 extern u8 fx_17d_3_bones1[];
 extern u8 fx_17d_3_bones2[];

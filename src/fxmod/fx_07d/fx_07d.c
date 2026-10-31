@@ -349,13 +349,13 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0xFF, 0xFF);
                 ex->btlfx_initEffModels(fx_07d_effModels, 6);
-                work->model20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x139,
+                work->model20 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 2), 0x139,
                                                          0xFFFF, 0, 0x80);
-                work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x16), 0x38,
+                work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x16), 0x38,
                                                          0x3E83, 0, 0);
-                work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0x13C,
+                work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x1E), 0x13C,
                                                          0xFFFF, 0x10, 0x80);
-                work->model2C = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF));
+                work->model2C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xF));
             }
                 break;
         case 1:

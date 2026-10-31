@@ -13,6 +13,6 @@ extern SVECTOR fx_1f8_modelRot; /* model rotation */
 extern VECTOR fx_1f8_modelScale; /* model scale */
 extern VECTOR fx_1f8_modelPos[4]; /* model positions */
 extern SVECTOR fx_1f8_emitPos1[4]; /* unit body positions */
-extern BtlModel fx_1f8_effModels[];
+extern BtlModelBuf fx_1f8_effModels[];
 
 #endif

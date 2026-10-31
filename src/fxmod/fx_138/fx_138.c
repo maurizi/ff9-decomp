@@ -93,7 +93,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r->rot0.vx = fx_138_pathRot.vx;
             q->rot0.vy = fx_138_pathRot.vy;
             q->rot0.vz = fx_138_pathRot.vz;
-            work->model96[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_138_modelFileIds[i]), 0x99, 0x3D40, 0, 0);
+            work->model96[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_138_modelFileIds[i]), 0x99, 0x3D40, 0, 0);
         }
         work->rot48.vx = fx_138_pathRot.vx;
         work->rot48.vy = fx_138_pathRot.vy;
@@ -104,7 +104,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale60.vx = 0x800;
         work->scale60.vy = 0x800;
         work->scale60.vz = 0x800;
-        work->model9C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0x9A, 0x3E40, 0, 0x80);
+        work->model9C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x1B), 0x9A, 0x3E40, 0, 0x80);
         work->unk88 = 0;
         work->unk8A = sel[3];
         for (i = 0; i < 6; i++) {

@@ -21,7 +21,7 @@ typedef struct {
 } Fx1fdWork80; /* 0x3C */
 
 extern u16 fx_1fd_emitFileIds[5]; /* files */
-extern BtlModel fx_1fd_effModels[];
+extern BtlModelBuf fx_1fd_effModels[];
 extern Fx1fdPath fx_1fd_posPath[5];
 extern s32 fx_1fd_op80Trails[5][0x78];
 extern SVECTOR fx_1fd_emitPos[5];

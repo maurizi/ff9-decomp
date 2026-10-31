@@ -40,7 +40,7 @@ typedef struct {
 
 extern SVECTOR fx_1a8_targetPos;
 extern u32 fx_1a8_bgOt[];
-extern BtlModel fx_1a8_effModels[];
+extern BtlModelBuf fx_1a8_effModels[];
 extern u8 fx_1a8_trailPoints[];
 
 #endif

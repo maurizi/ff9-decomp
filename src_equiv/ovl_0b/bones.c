@@ -5,7 +5,7 @@
  * plus IR/MAC/V0.
  *
  * Builds a model's bone matrices (32 bytes each: MATRIX m[3][3], pad, t[3]) at `out`, records `out` at
- * BtlUnit9C.unk20 and returns the end:
+ * BtlModel.unk20 and returns the end:
  * - Without an animation (unkC == 0): one matrix, the parent model's bone unk4 matrix (unk1C->unk20) moved
  *   by RT * (attachX, attachY, attachZ), or else the model's own unk24 with the y and z columns negated.
  * - With one: per bone, a rotation decoded from the animation keys for `frame` (math_rotMatrixZYX_gte turns it into
@@ -51,7 +51,7 @@ static void boneRotColumn(u8 *col) {
 }
 
 /* Copies the parent model's bone matrix and moves it by RT * (attachX, attachY, attachZ) (IR, saturated s16). */
-static void boneFromParent(BtlUnit9C *m, u8 *mat) {
+static void boneFromParent(BtlModel *m, u8 *mat) {
     u8 *src = (u8 *)m->parent->bones + m->parentBone * 32;
     u32 a, b, c, d;
 
@@ -86,7 +86,7 @@ static void boneFromParent(BtlUnit9C *m, u8 *mat) {
 /* One rotation key: the u16 itself when the bone's flag bit is set, else the s8 at anim + key + index. */
 #define KEY(k, bit, index) ((flags & (bit)) ? (k) : (u32)(s32)(s8)anim[(k) + (index)])
 
-u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
+u8 *btl_calcBoneMatrices(BtlModel *m, s32 frame, u8 *out) {
     u8 *anim = (u8 *)m->motion;
     u8 *base, *mat, *end, *keys, *nib, *bone, *parent;
     u32 *rot = (u32 *)SCRATCHPAD;      /* SVECTOR for math_rotMatrixZYX_gte */
@@ -118,8 +118,8 @@ u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
     base = n < 31 ? SCRATCHPAD + 0x18 : out;
     ofs[0] = 0;
     ofs[1] = 0;
-    keys = (u8 *)((BtlUnit9CC *)anim)->rotKeys;
-    nib = (u8 *)((BtlUnit9CC *)anim)->rotKeysLo;
+    keys = (u8 *)((BtlMotion *)anim)->rotKeys;
+    nib = (u8 *)((BtlMotion *)anim)->rotKeysLo;
     aflags = H(anim, 0xA);
     W(base, 0x14) = (aflags & 1) ? (s32)(s16)H(anim, 4) : *(s16 *)(anim + H(anim, 4) + (frame & 0xFFFF) * 2);
     W(base, 0x18) = (aflags & 2) ? (s32)(s16)H(anim, 6) : *(s16 *)(anim + H(anim, 6) + (frame & 0xFFFF) * 2);

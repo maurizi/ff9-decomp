@@ -32,9 +32,9 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         BTLFX_COPY_SVEC(&work->pos8, &work->pos0);
         work->pos8.vy = 0;
         ex->btlfx_initEffModels(fx_085_effModels, 2);
-        work->model14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 6), 0xB8, 0x3E40, 0,
+        work->model14 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 6), 0xB8, 0x3E40, 0,
                                                  0x80);
-        work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x119, 0xFFFF,
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xF), 0x119, 0xFFFF,
                                                  0, 0x80);
         work->state10 = 0;
     } else {

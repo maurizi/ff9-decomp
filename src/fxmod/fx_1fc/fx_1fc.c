@@ -98,7 +98,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale20.vz = 0x1000;
         fxm_rotPosPathInit((Fx1fcPath *)&fx_1fc_rotPosPath1, (u16 *)ex->btlfx_getFileData(entry->file, 2));
         for (i = 0; i < 3; i++) {
-            model = ex->Hi_RegisterTexPtrModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_1fc_modelFileIds[i]),
+            model = ex->Hi_RegisterTexPtrModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_1fc_modelFileIds[i]),
                                                fx_1fc_texPages, fx_1fc_texUv);
             work->model136[i + 1] = model;
         }

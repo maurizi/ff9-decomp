@@ -36,7 +36,7 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180;
+        BtlMotion *motion180;
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
@@ -51,7 +51,7 @@ extern SVECTOR fx_05e_bonePt1;
 extern SVECTOR fx_05e_bonePt2;
 extern u8 fx_05e_trails[];
 extern Unk80100DC054 fx_05e_summon;
-extern BtlModel fx_05e_effModels[];
+extern BtlModelBuf fx_05e_effModels[];
 extern u8 fx_05e_trails2[];
 extern Fx05eSeg fx_05e_ribbonA[];
 extern Fx05eSeg fx_05e_ribbonB[];

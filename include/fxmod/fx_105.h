@@ -43,7 +43,7 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180[8]; /* summon motions */
+        BtlMotion *motion180[8]; /* summon motions */
     } *summon54;
     u8 pad58[8];
     s32 summonModel60; /* summon model */
@@ -139,7 +139,7 @@ extern Fx105Seg fx_105_ribbonSegs[];
 extern SVECTOR fx_105_modelRot;
 extern VECTOR fx_105_modelPos;
 extern VECTOR fx_105_modelScale;
-extern BtlModel fx_105_effModels[];
+extern BtlModelBuf fx_105_effModels[];
 extern Fx105Drop fx_105_stars[32];
 static void fxm_camKeyUpdate(void);
 

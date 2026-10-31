@@ -59,6 +59,6 @@ typedef struct {
 } Fx18aWork80; /* 0x28 */
 
 extern s32 fx_18a_op80Done; /* set at the end of op80, nothing reads it (runtime watch, round 33) */
-extern BtlModel fx_18a_effModels[];
+extern BtlModelBuf fx_18a_effModels[];
 
 #endif

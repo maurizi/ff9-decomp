@@ -28,7 +28,7 @@ typedef struct {
 
 extern s32 fx_09b_shotBlocks[5]; /* particle files */
 extern s32 (*fx_09b_pinParticles[5])(); /* motion callbacks */
-extern BtlModel fx_09b_effModels[];
+extern BtlModelBuf fx_09b_effModels[];
 extern s32 fx_09b_trails[5][0x10A];
 extern SVECTOR fx_09b_shotPos[5]; /* particle positions */
 extern SVECTOR fx_09b_emitStartPos[5];

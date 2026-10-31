@@ -101,7 +101,7 @@ void game_resetData(void) {
     gd->soundHook = NULL;
     for (i = 8; i >= 0; i--) {
         game_clearModelSlot(&gd->chrModels[i]);
-        gd->chrModels[i].model = (struct BtlUnit9C *)&gd->chrModelObjs[i];
+        gd->chrModels[i].model = (struct BtlModel *)&gd->chrModelObjs[i];
     }
     gd->npcModelObjs = NULL;
     gd->npcModels = NULL;

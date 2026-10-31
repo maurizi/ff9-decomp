@@ -79,7 +79,7 @@ extern SVECTOR fx_17d_0_basePos;
 extern s16 fx_17d_0_texModelFileIds[];
 extern s16 fx_17d_0_texSlots[];
 extern SVECTOR fx_17d_0_streakPoints[];
-extern BtlModel fx_17d_0_effModels[];
+extern BtlModelBuf fx_17d_0_effModels[];
 extern VECTOR fx_17d_0_modelScale;
 
 #endif

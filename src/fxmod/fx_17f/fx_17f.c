@@ -30,7 +30,7 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
             ex->btlfx_setPartnerByArg(0);
             ex->btlfx_fadeUnitById(0x10, -1);
-            work->model1C = (BtlUnit9C8 *)ex->btlfx_swapModelData(0xE, fx_17f_modelBackup);
+            work->model1C = (BtlModelHeader *)ex->btlfx_swapModelData(0xE, fx_17f_modelBackup);
             ex->btlfx_fadeUnitById(0x11, 0x1000);
             ex->btlfx_fadeUnitById(0x11, -2);
             ex->btlfx_setUnitRot(0x11, (s16 *)&work->rot14);

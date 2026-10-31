@@ -2,7 +2,7 @@
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh", btl_drawMesh);
 
-void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
+void btl_projectMesh(BtlModel *arg0, u8 arg1) {
     MATRIX m;
     BtlMesh *g;
     MATRIX *bone;
@@ -68,7 +68,7 @@ void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     }
 }
 
-u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
+u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
     s32 opz;
     s32 otz;
     BtlMesh *g;
@@ -505,8 +505,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     return prim + sizeof(P_TAG);
 }
 
-void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
-    BtlUnit9C8 *h;
+void btl_applyModelTextures(BtlModel *arg0, s16 *arg1, s16 *arg2) {
+    BtlModelHeader *h;
     BtlMesh *m;
     u32 i;
     u32 j;
@@ -525,7 +525,7 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
     arg0->scaleZ = 0x1000;
     arg0->flags |= BTL_MODEL_SCALED;
     h = arg0->header;
-    arg0->texPages = (BtlUnit9C18 *)arg1;
+    arg0->texPages = (BtlTexWord *)arg1;
     arg0->parent = NULL;
     arg0->unk60 = NULL;
     arg0->morph = NULL;
@@ -614,7 +614,7 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
     }
 }
 
-void btl_applyModelScale(BtlUnit9C *arg0) {
+void btl_applyModelScale(BtlModel *arg0) {
     union {
         MATRIX m;
         s32 w[8];
@@ -644,7 +644,7 @@ void btl_applyModelScale(BtlUnit9C *arg0) {
     }
 }
 
-void btl_updateModelVisibility(BtlUnit9C *arg0) {
+void btl_updateModelVisibility(BtlModel *arg0) {
     SVECTOR v;
     s32 z;
 
@@ -668,7 +668,7 @@ void btl_updateModelVisibility(BtlUnit9C *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh", btl_calcBoneMatrices);
 
-void btl_setModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
+void btl_setModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
     u32 i;
     BtlPrim *p;
     u8 code;
@@ -744,7 +744,7 @@ void btl_setModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     }
 }
 
-void btl_fillModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
+void btl_fillModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
     u32 i;
     BtlPrim *p;
     u32 col;

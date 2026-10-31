@@ -32,7 +32,7 @@ extern s32 fx_1f1_unitDelays[];
 extern Unk800F78A4 *fx_1f1_env;
 extern Fx1f1Unit fx_1f1_units[];
 extern Fx1f1Model fx_1f1_unitModels[];
-extern BtlModel fx_1f1_effModels[];
+extern BtlModelBuf fx_1f1_effModels[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 

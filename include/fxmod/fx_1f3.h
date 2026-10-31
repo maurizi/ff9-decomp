@@ -84,7 +84,7 @@ typedef struct {
 } Fx1f3Work80; /* 0x120 */
 
 extern Fx1f3RingDef fx_1f3_ringDefs[16];
-extern BtlModel fx_1f3_effModels[];
+extern BtlModelBuf fx_1f3_effModels[];
 extern s32 fx_1f3_op80Trails[];
 extern Fx1f3Rock fx_1f3_spinModels[8];
 extern Fx1f3Ring fx_1f3_rings[16];

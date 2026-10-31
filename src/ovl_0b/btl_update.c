@@ -85,8 +85,8 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
     BtlUnit *u = arg1->unitList;
     s32 r = 1;
     s32 sp = arg1->work->prims[arg0->drawBuf];
-    BtlUnit9C *m;
-    BtlUnit9C *n;
+    BtlModel *m;
+    BtlModel *n;
     u32 f;
     u32 g;
     for (; u != NULL; u = u->next) {
@@ -98,7 +98,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 u->flags = g;
                 if (u->obj->frame >= n->motion->frameCount) {
                     if (!(u->status & BTL_STATUS_KO)) {
-                        n->motion = (BtlUnit9CC *)u->motions[(g >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+                        n->motion = (BtlMotion *)u->motions[(g >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
                     }
                     u->obj->frame = 0;
                 }
@@ -112,7 +112,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 if ((f & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) && (g_gameState->gameData->characters + BTL_UNIT_INDEX(f))->info.b.victoryPose) {
                     m = u->model;
                     if (u->obj->frame >= m->motion->frameCount) {
-                        m->motion = (BtlUnit9CC *)u->motions[19];
+                        m->motion = (BtlMotion *)u->motions[19];
                         u->obj->frame = 0;
                     }
                 }
@@ -145,12 +145,12 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             switch (arg1->subPhase) {
             case BTL_END_VICTORY:
                 btl_updateHpStatus(u);
-                if ((!(u->flags & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) || ((u->flags & BTL_UNIT_PARTY) && (u->status & BTL_STATUS_KO) && u->model->motion != (BtlUnit9CC *)u->motions[4])) {
+                if ((!(u->flags & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) || ((u->flags & BTL_UNIT_PARTY) && (u->status & BTL_STATUS_KO) && u->model->motion != (BtlMotion *)u->motions[4])) {
                     done = 0;
                 }
                 break;
             case BTL_END_DEFEAT:
-                if ((u->flags & BTL_UNIT_PARTY) && u->model->motion != (BtlUnit9CC *)u->motions[4] && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) {
+                if ((u->flags & BTL_UNIT_PARTY) && u->model->motion != (BtlMotion *)u->motions[4] && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) {
                     done = 0;
                 }
                 break;
@@ -170,8 +170,8 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                         done = 0;
                     }
                 } else if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE))) {
-                    if (u->model->motion != (BtlUnit9CC *)u->motions[0] &&
-                        u->model->motion != (BtlUnit9CC *)u->motions[1]) {
+                    if (u->model->motion != (BtlMotion *)u->motions[0] &&
+                        u->model->motion != (BtlMotion *)u->motions[1]) {
                         done = 0;
                     }
                 }
@@ -181,7 +181,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     if (u->koState == BTL_KO_NONE) {
                         u->koState = BTL_KO_START;
                     }
-                    if (u->model->motion != (BtlUnit9CC *)u->motions[4]) {
+                    if (u->model->motion != (BtlMotion *)u->motions[4]) {
                         done = 0;
                     } else if (btl_isCmdQueued(u, BTL_CMD_AUTO_LIFE) != 0) {
                         done = 0;
@@ -230,9 +230,9 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                                 u->flags = (u->flags & ~BTL_UNIT_WEAK_STANCE) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << BTL_UNIT_WEAK_STANCE_BIT);
                                 u->flags &= ~BTL_UNIT_CMD_WAITING;
                                 if (((g_gameState->gameData->characters + BTL_UNIT_INDEX(u->flags))->info.w >> 10) & 1) {
-                                    u->model->motion = (BtlUnit9CC *)u->motions[0x12];
+                                    u->model->motion = (BtlMotion *)u->motions[0x12];
                                 } else {
-                                    u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+                                    u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
                                 }
                                 u->obj->frame = 0;
                             } else {

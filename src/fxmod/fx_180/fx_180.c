@@ -268,7 +268,7 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale38.vy = 0x4000;
         work->scale38.vz = 0x4000;
         work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x17), 1);
-        work->model6A = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1));
+        work->model6A = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1));
         work->timer64 = -1;
     } else {
         frame = entry->frame;

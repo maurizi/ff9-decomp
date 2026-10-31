@@ -33,7 +33,7 @@ typedef struct {
     s32 unk28;
 } Fx0cbWork; /* 0x2C */
 
-extern BtlModel fx_0cb_effModels[];
+extern BtlModelBuf fx_0cb_effModels[];
 
 extern Unk800F78A4 *fx_0cb_env;
 

@@ -63,7 +63,7 @@ typedef struct {
     Pool6CEntry *emit84; /* particle */
 } Fx098Work80; /* 0x88 */
 
-extern BtlModel fx_098_effModels[];
+extern BtlModelBuf fx_098_effModels[];
 extern s32 fx_098_pieceBlocks[14];
 s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 

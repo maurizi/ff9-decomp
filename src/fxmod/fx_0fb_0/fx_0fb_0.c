@@ -486,14 +486,14 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->state0 = 1;
                 entry->frame = -1;
                 for (i0 = 0; i0 < 27; i0++) {
-                    work->model6C[i0] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_0fb_0_rockBlocks[i0]),
+                    work->model6C[i0] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0fb_0_rockBlocks[i0]),
                                                                 0x9A, 0x3E00, 0, 0);
                 }
                 work->rockCount8 = 0;
-                work->model118 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), 0x96, 0x3D40, 0, 0);
-                work->model11C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x87), 0x9A, 0x3E00, 0, 0);
-                work->model120 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x84), 0x7C, 0x3D02, 0, 0);
-                work->model124 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x94), 0xBD, 0x3E40, 0, 0);
+                work->model118 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x82), 0x96, 0x3D40, 0, 0);
+                work->model11C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x87), 0x9A, 0x3E00, 0, 0);
+                work->model120 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x84), 0x7C, 0x3D02, 0, 0);
+                work->model124 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x94), 0xBD, 0x3E40, 0, 0);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos1C);
                 if (p != NULL) {
                     p->otZ = 0x180;

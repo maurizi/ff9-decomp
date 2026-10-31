@@ -48,14 +48,14 @@ typedef struct {
     s32 morphWeight74; /* morph weight */
 } Fx0b3Work80; /* 0x78 */
 
-extern BtlModel fx_0b3_effModels[];
+extern BtlModelBuf fx_0b3_effModels[];
 
 typedef struct {
     u8 pad0[0x184];
-    BtlUnit9CC *motion184;
-    BtlUnit9CC *motion188;
-    BtlUnit9CC *motion18C;
-    BtlUnit9CC *motion190;
+    BtlMotion *motion184;
+    BtlMotion *motion188;
+    BtlMotion *motion18C;
+    BtlMotion *motion190;
 } Fx0b3Unit;
 
 typedef struct {

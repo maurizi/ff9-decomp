@@ -247,7 +247,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos10.vz = env->targets->centerZ;
         fx_179_env = env;
         ex->btlfx_initEffModels(fx_179_effModels, 1);
-        work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x9A, 0x3D40, 0, 0);
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 2), 0x9A, 0x3D40, 0, 0);
     } else {
     frame = entry->frame;
     switch (work->state0) {

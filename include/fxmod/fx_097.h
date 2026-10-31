@@ -63,7 +63,7 @@ typedef struct {
     Pool6CEntry *emit84;
 } Fx097Work80; /* 0x88 */
 
-extern BtlModel fx_097_effModels[];
+extern BtlModelBuf fx_097_effModels[];
 extern s32 fx_097_pieceBlocks[14];
 
 /* propagated */

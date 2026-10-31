@@ -23,7 +23,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_drawTrailScreen)(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32); /* 0x00C */
     s32 (*btl_setVsyncMode)(s32); /* 0x010 */
     s32 (*math_rotMatrixYXZ)(void *, void *); /* 0x014 */
-    s32 (*Hi_RegisterGouEffModel)(BtlUnit9C8 *); /* 0x018 */
+    s32 (*Hi_RegisterGouEffModel)(BtlModelHeader *); /* 0x018 */
     s32 (*SetDrawMove)(void *, RECT *, int, int); /* 0x01C */
     MATRIX * (*ScaleMatrix)(MATRIX *, VECTOR *); /* 0x020 */
     MATRIX * (*CompMatrix)(MATRIX *, MATRIX *, MATRIX *); /* 0x024 */
@@ -36,17 +36,17 @@ typedef struct BtlfxExports {
     long (*ratan2)(long, long); /* 0x040 */
     s32 (*SquareRoot0)(void); /* 0x044 (main exe) */
     s32 (*LoadAverageShort12)(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *); /* 0x048 */
-    s32 (*Hi_RegisterTexListModel)(BtlUnit9C8 *, BtlTexInfo *, s16 *, s32); /* 0x04C */
+    s32 (*Hi_RegisterTexListModel)(BtlModelHeader *, BtlTexInfo *, s16 *, s32); /* 0x04C */
     s32 (*printf)(const char *, ...); /* 0x050 */
-    s32 (*Hi_RegisterSolidEffModel)(BtlUnit9C8 *); /* 0x054 */
-    s32 (*Hi_RegisterTexEffModel)(BtlUnit9C8 *, s32, s32, s32, s32); /* 0x058 */
+    s32 (*Hi_RegisterSolidEffModel)(BtlModelHeader *); /* 0x054 */
+    s32 (*Hi_RegisterTexEffModel)(BtlModelHeader *, s32, s32, s32, s32); /* 0x058 */
     s32 (*Hi_RegisterSummonModel)(struct Unk80100DC054 *, s16 *); /* 0x05C */
     s32 (*Hi_DrawEffModel)(SVECTOR *, VECTOR *, s32, s32); /* 0x060 */
     s32 (*Hi_DrawSummonModel)(SVECTOR *, VECTOR *, s32, s32, s32); /* 0x064 */
-    s32 (*Hi_SetSummonMotion)(BtlUnit9CC *, s32); /* 0x068 */
-    s32 (*btl_forEachModelVertex)(BtlUnit9C8 *, void (*)(SVECTOR *, s32)); /* 0x06C */
-    s32 (*btlfx_initEffModels)(BtlModel *, s32); /* 0x070 */
-    s32 (*btlfx_initSummonModels)(BtlModel *, s32); /* 0x074 */
+    s32 (*Hi_SetSummonMotion)(BtlMotion *, s32); /* 0x068 */
+    s32 (*btl_forEachModelVertex)(BtlModelHeader *, void (*)(SVECTOR *, s32)); /* 0x06C */
+    s32 (*btlfx_initEffModels)(BtlModelBuf *, s32); /* 0x070 */
+    s32 (*btlfx_initSummonModels)(BtlModelBuf *, s32); /* 0x074 */
     s32 (*btlfx_clearEffModels)(void); /* 0x078 */
     s32 (*btlfx_clearSummonModels)(void); /* 0x07C */
     s32 (*btlfx_getUnitBonePos)(s32, s32, u16 *); /* 0x080 */
@@ -189,7 +189,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_getUnitScale)(s32, VECTOR *); /* 0x2A0 */
     s32 (*btlfx_setUnitScale)(s32, s32 *); /* 0x2A4 */
     s32 (*btlfx_setUnitRot)(s32, s16 *); /* 0x2A8 */
-    s32 (*Hi_RegisterTexPtrModel)(BtlUnit9C8 *, s16 *, s16 *); /* 0x2AC */
+    s32 (*Hi_RegisterTexPtrModel)(BtlModelHeader *, s16 *, s16 *); /* 0x2AC */
     s32 (*btlfx_matrixPointAhead)(MATRIX *, s32, s32); /* 0x2B0 */
     s32 (*btlfx_matrixAngles)(MATRIX *, s16 *); /* 0x2B4 */
     s32 (*btlfx_getWeaponPos)(s32, s32, s16 *); /* 0x2B8 */

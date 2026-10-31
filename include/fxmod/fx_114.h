@@ -251,7 +251,7 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180[4]; /* summon motions */
+        BtlMotion *motion180[4]; /* summon motions */
     } *summon54;
     u8 pad58[8];
     s32 summonModel60; /* summon model */
@@ -329,7 +329,7 @@ typedef struct {
     u8 pad182[0x198 - 0x182];
 } Fx114Work80; /* 0x198 */
 
-extern BtlModel fx_114_effModels[];
+extern BtlModelBuf fx_114_effModels[];
 extern u8 fx_114_texInfo0[];
 extern u8 fx_114_texPos0[];
 extern Fx114Path fx_114_posPath0;

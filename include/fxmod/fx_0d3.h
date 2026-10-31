@@ -66,7 +66,7 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180;
+        BtlMotion *motion180;
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
@@ -75,7 +75,7 @@ typedef struct {
 extern SVECTOR fx_0d3_summonPos;
 extern s32 fx_0d3_sharedModel;
 extern u8 fx_0d3_trails[];
-extern BtlModel fx_0d3_effModels[];
+extern BtlModelBuf fx_0d3_effModels[];
 s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 typedef struct {
@@ -101,7 +101,7 @@ typedef struct {
     u8 pad0[0x54];
     struct {
         u8 pad0[0x180];
-        BtlUnit9CC *motion180[4];
+        BtlMotion *motion180[4];
     } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */

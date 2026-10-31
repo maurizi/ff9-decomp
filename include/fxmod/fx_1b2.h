@@ -65,7 +65,7 @@ typedef struct {
 } Fx1b2Work82; /* 0x38 */
 
 extern Unk800F78A4 *fx_1b2_env;
-extern BtlModel fx_1b2_effModels[];
+extern BtlModelBuf fx_1b2_effModels[];
 extern Fx1b2Path fx_1b2_vecPath;
 extern u32 fx_1b2_bgOt[];
 extern s32 fx_1b2_op80Trails0[][0x258];

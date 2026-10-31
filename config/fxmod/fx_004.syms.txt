@@ -3,5 +3,5 @@ fx_004_header = 0x801E85C4; // [code] module header (0, init, ops), btlfx_update
 fx_004_op80 = 0x801E7ED8; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_004_op80PoolTask = 0x801E7704; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_004_op80
 fx_004_env = 0x801E860C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
-fx_004_effModels = 0x801E861C; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_004_effModels = 0x801E861C; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)
 fx_004_pieceRots = 0x801E8574; // [code] rotation per pool item (pad = size), drawn by fx_004_op80PoolTask and aimed with btlfx_pointAhead in fx_004_op80

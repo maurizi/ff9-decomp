@@ -29,7 +29,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->posC.vy -= 0x100;
         work->pos1C.vy -= 0x400;
         ex->btlfx_initEffModels(fx_125_effModels, 3);
-        work->model24 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0xB3,
+        work->model24 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), 0xB3,
                                                       0x3D40, 0, 0);
         x = env->dispEnv->disp.x;
         if (x < 0x100) {
@@ -39,9 +39,9 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         tp1 = getTPage(2, 3, x, env->dispEnv->disp.y);
         tp2 = getTPage(2, 3, x2, env->dispEnv->disp.y);
-        work->model28[0] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), tp1,
+        work->model28[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), tp1,
                                                          0xFFFF, 0, 0);
-        work->model28[1] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), tp2,
+        work->model28[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), tp2,
                                                          0xFFFF, 0, 0);
         q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos4);
         if (q != NULL) {

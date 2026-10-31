@@ -60,7 +60,7 @@ extern Fx138Ring D_801E8408[3]; /* set up from a fx_138_randSets row, never read
 extern u16 fx_138_randSets[6][4];
 extern u16 fx_138_modelFileIds[3];
 extern u16 fx_138_pathFileIds[6];
-extern BtlModel fx_138_effModels[];
+extern BtlModelBuf fx_138_effModels[];
 extern u16 fx_138_emitFileIds[6]; /* trail files */
 extern s32 fx_138_op81SpawnPoints[6];
 extern Unk800F78A4 *fx_138_env;

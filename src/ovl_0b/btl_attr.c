@@ -36,7 +36,7 @@ void btl_showWeapon(BtlUnit *arg0) {
 }
 
 s32 btl_setKoMotion(BtlUnit *arg0) {
-    arg0->model->motion = (BtlUnit9CC *)arg0->motions[4];
+    arg0->model->motion = (BtlMotion *)arg0->motions[4];
     arg0->model->texAnims[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     arg0->model->texAnims[0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     arg0->model->texAnims[0].pos = 0;

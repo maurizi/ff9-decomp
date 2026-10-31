@@ -30,8 +30,8 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rot40.vy = 0x200;
         work->pos1C.vx = work->pos58.vx;
         work->pos1C.vz = work->pos58.vz;
-        work->model6C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x11A, 0, 0, 0x80);
-        work->model6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x11A, 0, 0, 0x80);
+        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA), 0x11A, 0, 0, 0x80);
+        work->model6E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x11A, 0, 0, 0x80);
         work->startPos60.vx = work->pos1C.vx;
         work->startPos60.vy = work->pos1C.vy;
         work->startPos60.vz = work->pos1C.vz;

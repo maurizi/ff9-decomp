@@ -6,7 +6,7 @@ fxm_camKeyAdd = 0x801E7BA8; // type:func [code] takes a free camera key slot (st
 fxm_camKeyUpdate = 0x801E7BF8; // type:func [code] copies keys into camera points or a module array (nibble 10+), optionally offset by a source point, counts frames
 fxm_drawRibbonTrail = 0x801E7704; // type:func [code] pushes the a-b edge into a history of n edges and draws POLY_G4 between them, colours fading along it (n >= 1000 clears)
 fx_105_env = 0x801EAB18; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
-fx_105_effModels = 0x801EADD8; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_105_effModels = 0x801EADD8; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)
 fx_105_drawScreenBand = 0x801E7D9C; // type:func [code] one full-width POLY_G4 (x 0..0x140, y y0..y1) with 4 corner colours plus a DR_MODE for tpage, added at z*4, used for the timed fades in fx_105_op80
 fx_105_initWindStreaks = 0x801E9E1C; // type:func [code] places the 32 fx_105_windStreaks at random offsets around camera point 2, called in fx_105_op80 mode 1, [runtime] sets up fx_105_windStreaks (round 33)
 fx_105_drawWindStreaks = 0x801E9F28; // type:func [code] draws the 32 fx_105_windStreaks as POLY_FT4 (0x400 by 0x600 around each point, grey level c*0x70>>12), moves them in z and wraps them, called while timer24 runs, [runtime] patched to jr ra it removes Odin's wind streaks, frames 627-768 (round 33)

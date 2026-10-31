@@ -28,8 +28,8 @@ s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos28.vy = work->pos5C.vy;
         work->pos28.vz = work->pos5C.vz;
         ex->btlfx_initEffModels(fx_001_effModels, 2);
-        work->model6C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0x1B, 0x3D09, 0, 0);
-        work->model6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x1B, 0x3D09, 0, 0);
+        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), 0x1B, 0x3D09, 0, 0);
+        work->model6E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xF), 0x1B, 0x3D09, 0, 0);
         work->fadeOut68 = work->fadeIn64 = -1;
     } else {
         frame = entry->frame;

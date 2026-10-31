@@ -16,7 +16,7 @@
  *   6     unkE   0x10    F4  0x18   v[4] rgb.w@8 flags@D
  *   7     unk10  0x0C    F3  0x14   v[3] rgb.w@8 flags@B
  * Vertices index g_vtxScreenXY/g_vtxScreenZ, uvs the mesh's u16 uv pairs (unk20), colors its words (unk24),
- * `tex` the model's texture words (BtlUnit9C.unk18: clut << 16 | tpage). Flags: bit 1 = double-sided (no NCLIP
+ * `tex` the model's texture words (BtlModel.unk18: clut << 16 | tpage). Flags: bit 1 = double-sided (no NCLIP
  * test), bit 0 = semi-transparent (textured and, in btl_drawMeshOffset, Gouraud types), bits 5-7 = blend mode
  * (btl_drawMesh ors them into the tpage; btl_drawMeshOffset puts them in an E1 draw-mode word instead, in front
  * of each Gouraud polygon, and uses the model's tpage as is).
@@ -26,7 +26,7 @@
  * becomes the packet address & 0xFFFFFF.
  * Delay-slot effects kept: a culled textured or flat triangle (types 1, 3, 7, and 5 in btl_drawMesh) still
  * writes its first vertex to out + 8 of the unused packet. After the lists a terminator byte 0xFF goes to
- * out + 7 and out + 8 is returned. A model with flag 0x10 emits only that. BtlUnit9C.unk10 records the first
+ * out + 7 and out + 8 is returned. A model with flag 0x10 emits only that. BtlModel.unk10 records the first
  * packet the first time.
  *
  * Checked with tools/equiv.py against the original (src_equiv/ovl_0b/check.py).
@@ -74,7 +74,7 @@ static void meshLinkMode(u8 *ot, u32 z, u8 *mode, u8 *p, u32 len) {
     *e = (u32)mode & 0xFFFFFF;
 }
 
-static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVariant) {
+static u8 *meshEmit(BtlModel *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVariant) {
     u32 *xyTab = (u32 *)g_vtxScreenXY;
     u32 *zTab = (u32 *)g_vtxScreenZ;
     u32 *tex = (u32 *)m->texPages;
@@ -399,11 +399,11 @@ end:
     return out + 8;
 }
 
-u8 *btl_drawMesh(BtlUnit9C *m, u8 meshIdx, u8 *out) {
+u8 *btl_drawMesh(BtlModel *m, u8 meshIdx, u8 *out) {
     return meshEmit(m, meshIdx, out, 0, 0);
 }
 
 /* btl_drawMesh with the OT moved by `otOfs` entries and E1 draw-mode words for the Gouraud types. */
-u8 *btl_drawMeshOffset(BtlUnit9C *m, u8 meshIdx, u8 *out, s32 otOfs) {
+u8 *btl_drawMeshOffset(BtlModel *m, u8 meshIdx, u8 *out, s32 otOfs) {
     return meshEmit(m, meshIdx, out, otOfs, 1);
 }

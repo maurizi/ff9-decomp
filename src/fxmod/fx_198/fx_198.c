@@ -27,7 +27,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
         ex->btlfx_initEffModels(fx_198_effModels, 5);
         key = (Fx198Key *)ex->btlfx_getFileData(entry->file, 0x15);
-        work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)key, 0x137, 0xFFFF, 0, 0x80);
+        work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)key, 0x137, 0xFFFF, 0, 0x80);
         work->unk14 = 0;
         work->unk16 = 0;
         work->unk18 = 0;

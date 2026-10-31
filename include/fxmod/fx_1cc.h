@@ -59,7 +59,7 @@ typedef struct {
     s32 scroll80;
 } Fx1ccWork80; /* 0x84 */
 
-extern BtlModel fx_1cc_effModels[];
+extern BtlModelBuf fx_1cc_effModels[];
 extern s32 fx_1cc_pieceFileIds[14];
 static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
                   Fx1ccInst *inst);

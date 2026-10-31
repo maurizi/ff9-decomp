@@ -26,7 +26,7 @@ typedef struct {
 } Fx058Work; /* 0x28 */
 
 extern Unk800F78A4 *fx_058_env;
-extern BtlModel fx_058_effModels[];
+extern BtlModelBuf fx_058_effModels[];
 extern u8 fx_058_trailBufs[][0x54];
 
 static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,

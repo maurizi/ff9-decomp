@@ -39,7 +39,7 @@ typedef struct {
 } Fx179Rgbc; /* primitive colour word */
 
 extern Unk800F78A4 *fx_179_env;
-extern BtlModel fx_179_effModels[];
+extern BtlModelBuf fx_179_effModels[];
 extern u8 fx_179_op80Trails[];
 extern Fx179Tri fx_179_shatterTris[160];
 extern Fx179Shard fx_179_shatterPieces[160];

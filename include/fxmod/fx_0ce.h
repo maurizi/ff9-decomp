@@ -18,7 +18,7 @@ typedef struct {
 } Fx0ceWork;
 
 extern Unk800F78A4 *fx_0ce_env;
-extern BtlModel fx_0ce_effModels[];
+extern BtlModelBuf fx_0ce_effModels[];
 extern s32 fx_0ce_trails[];
 
 #endif

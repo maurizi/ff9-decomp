@@ -166,7 +166,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         return;
     }
     u->flags = (u->flags & ~BTL_UNIT_WEAK_STANCE) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << BTL_UNIT_WEAK_STANCE_BIT);
-    u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+    u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
     u->obj->frame = 0;
 }
 
@@ -174,7 +174,7 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
     SVECTOR r2;
     SVECTOR r;
     BtlUnit *u;
-    BtlUnit9CC *cc;
+    BtlMotion *cc;
     s32 t;
     BtlUnitA0 *a0;
     s32 i;
@@ -292,8 +292,8 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
     s32 *c;
     s32 id;
     arg1->weapon = (u8 *)&g_weaponTable[arg0->equip[0]];
-    id = ((Unk8006E0E8 *)arg1->weapon)->modelId | DB_MODEL;
-    arg1->weaponModel->header = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->flags >> BTL_UNIT_SLOT_SHIFT);
+    id = ((WeaponEntry *)arg1->weapon)->modelId | DB_MODEL;
+    arg1->weaponModel->header = (BtlModelHeader *)btl_findWeaponModel(id, (u8)arg1->flags >> BTL_UNIT_SLOT_SHIFT);
     btl_getWeaponTexInfo(id, (u8)arg1->flags >> BTL_UNIT_SLOT_SHIFT, &a, &b, &c);
     btl_applyModelTextures(arg1->weaponModel, (s16 *)a, (s16 *)b);
     btl_applyBgLight(arg1->weaponModel);

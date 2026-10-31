@@ -63,7 +63,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale3C.vx = 0x1B;
         work->scale3C.vy = 0x1B;
         work->scale3C.vz = 0x1B;
-        work->model54 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x117, 0, 0, 0xC0);
+        work->model54 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0x117, 0, 0, 0xC0);
     } else {
         frame = entry->frame;
         switch (frame) {

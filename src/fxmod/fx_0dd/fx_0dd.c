@@ -28,7 +28,7 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale30.vy = 0x1000;
         work->scale30.vz = 0x1000;
         for (i = 0; i < 6; i++) {
-            work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_0dd_morphBlocks[i]), 0x97, 0x3D40, 0, 0);
+            work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_0dd_morphBlocks[i]), 0x97, 0x3D40, 0, 0);
         }
         fxm_rotPosTrackInit(&fx_0dd_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, 1));
         fxm_rotPosTrackInit(&fx_0dd_rotPosKeys2, (u16 *)ex->btlfx_getFileData(entry->file, 0x10));

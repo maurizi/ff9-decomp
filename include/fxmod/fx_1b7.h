@@ -59,7 +59,7 @@ typedef struct {
 
 extern s16 fx_1b7_modelFileIds[8]; /* model files */
 extern Unk80100C78Entry *fx_1b7_task;
-extern BtlModel fx_1b7_effModels[];
+extern BtlModelBuf fx_1b7_effModels[];
 extern s32 fx_1b7_op80Trails0[];
 extern s32 fx_1b7_op80Trails1[];
 

@@ -128,7 +128,7 @@ typedef struct {
     s32 modelA0;
 } Fx17d7Work80; /* 0xA4 */
 
-extern BtlModel fx_17d_7_effModels[];
+extern BtlModelBuf fx_17d_7_effModels[];
 extern SVECTOR fx_17d_7_basePos;
 extern s16 fx_17d_7_rockOffsetsX[];
 

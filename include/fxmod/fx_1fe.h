@@ -19,7 +19,7 @@ typedef struct {
     s32 model3C; /* model */
 } Fx1feWork81; /* 0x40 */
 
-extern BtlModel fx_1fe_effModels[];
+extern BtlModelBuf fx_1fe_effModels[];
 extern SVECTOR fx_1fe_basePos0;
 extern SVECTOR fx_1fe_basePos1;
 extern CVECTOR fx_1fe_rippleColor;

@@ -57,7 +57,7 @@ typedef struct {
     s32 kind18; /* kind: the three bolt stages 0, 1, 2 of one cast (op 0x83 byte a in the file 0x18 script) */
 } Fx018Work83; /* 0x1C */
 
-extern BtlModel fx_018_effModels[];
+extern BtlModelBuf fx_018_effModels[];
 extern SVECTOR fx_018_prevBoltEnd; /* previous bolt end */
 extern Unk80100C78Entry *fx_018_task;
 extern s32 fx_018_jitter[];

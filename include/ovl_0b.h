@@ -35,7 +35,7 @@ typedef struct {
     u16 nF3;
     u8 pad12;
     s8 otBias; /* ordering table entries the group's polygons are moved toward the front (btl_drawMesh) */
-    u16 *vertexCounts; /* per bone (BtlUnit9C8.boneCount): vertices bone b moves, consecutive from bone 0 (btl_projectMesh) */
+    u16 *vertexCounts; /* per bone (BtlModelHeader.boneCount): vertices bone b moves, consecutive from bone 0 (btl_projectMesh) */
     SVECTOR *vertices; /* sum of vertexCounts; polygon vertex indices index this (and g_vtxScreenXY/Z) */
     u32 *prims; /* primitive sources (WmSrc*), the eight lists back to back in the order of the counts */
     u8 (*uvs)[2]; /* indexed by the textured sources' uv indices */
@@ -47,7 +47,7 @@ typedef struct {
     u16 vtx[4]; /* vertex indices (BtlMesh.vertices) */
     u16 uv[4]; /* uv indices (BtlMesh.uvs) */
     u8 rgb[3]; /* colour (with the code byte: the packet's rgb word) */
-    u8 tex; /* texture: BtlUnit9C.texPages index, model info uv offsets */
+    u8 tex; /* texture: BtlModel.texPages index, model info uv offsets */
     u8 unk14;
     u8 flags; /* WMSRC_* */
     u8 pad16[2];
@@ -120,7 +120,7 @@ typedef struct {
     u8 flags; /* as WmSrcFT4 */
 } WmSrcF3; /* 0xC */
 
-/* skeleton bone of a model (BtlUnit9C8.bones, 4 bytes; ovl_0a WmBone): btl_calcBoneMatrices composes bone i's
+/* skeleton bone of a model (BtlModelHeader.bones, 4 bytes; ovl_0a WmBone): btl_calcBoneMatrices composes bone i's
  * matrix with its parent's (already built: parent < i) and a z offset of `length`; bone 0 is the root */
 typedef struct {
     s16 length; /* offset from the parent's origin along the parent's z axis */
@@ -130,10 +130,10 @@ typedef struct {
 
 /* model header (DB item 0x02xxxx: battle model files in FF9.IMG dir index 7, file id = model id; weapon and effect
  * models use the same format; ovl_0a WmModel). Layout and users: docs/battle-models.md */
-typedef struct BtlUnit9C8 {
+typedef struct BtlModelHeader {
     u16 flags; /* BTL_MODELHDR_* */
     u8 boneCount; /* bones: BtlMesh.vertexCounts entries, motion keys per frame (btl_projectMesh, btl_calcBoneMatrices) */
-    u8 meshCount; /* mesh groups (meshes); bit i of BtlUnit9C.hiddenMeshes hides group i */
+    u8 meshCount; /* mesh groups (meshes); bit i of BtlModel.hiddenMeshes hides group i */
     u16 packetSize; /* sum of the groups' BtlMesh.packetSize */
     u8 unk6; /* ovl_0a: look-at bone (WmModel.lookAtBone) */
     u8 pad7;
@@ -141,14 +141,14 @@ typedef struct BtlUnit9C8 {
     u16 radius; /* btlfx_getUnitRadius (party units) */
     s32 bones; /* BtlBoneDef[boneCount]: offset from the header, relocated on load (btl_applyModelTextures) */
     BtlMesh *meshes; /* meshCount groups: offset from the header, relocated on load */
-} BtlUnit9C8;
+} BtlModelHeader;
 
-/* BtlUnit9C8.flags. Evidence: [code] */
+/* BtlModelHeader.flags. Evidence: [code] */
 #define BTL_MODELHDR_RELOCATED 0x01 /* the offsets were turned into pointers (btl_applyModelTextures) */
 
 /* motion (DB item 0x03xxxx, in the model file next to the model header; btl_calcBoneMatrices; ovl_0a WmAnim).
- * One key per bone of the model it plays on (BtlUnit9C8.boneCount), in bone order */
-typedef struct BtlUnit9CC {
+ * One key per bone of the model it plays on (BtlModelHeader.boneCount), in bone order */
+typedef struct BtlMotion {
     u8 pad0[2];
     u16 frameCount; /* frames (btl_updateUnitModel wraps the unit's frame at it) */
     u16 rootX; /* root x: the value (constMask bit 0) or the offset of a per-frame s16 table */
@@ -157,10 +157,10 @@ typedef struct BtlUnit9CC {
     u16 constMask; /* bits 0-2: rootX/Y/Z is the value itself */
     s32 rotKeys; /* offset, relocated on load: per-bone keys {u16 x, y, z, constMask}: bits 4-11 of the angles (4096 = 360 deg), a constant or the offset of an s8 per-frame table */
     s32 rotKeysLo; /* offset, relocated on load: the same for bits 0-3 (per-frame tables: two frames per byte, even frame in the low nibble), or 0 */
-} BtlUnit9CC;
+} BtlMotion;
 
-/* bone matrix (BtlUnit9C.bones, built by btl_calcBoneMatrices), laid out as a MATRIX: model/world space of the bone
- * (BtlUnit9C.matrix applied), 4096 = 1.0. docs/battle-models.md "Motions" */
+/* bone matrix (BtlModel.bones, built by btl_calcBoneMatrices), laid out as a MATRIX: model/world space of the bone
+ * (BtlModel.matrix applied), 4096 = 1.0. docs/battle-models.md "Motions" */
 typedef struct {
     s32 rot[5]; /* rotation, s16 m[3][3] (row-major) + pad: parent rotation . Rz Ry Rx of the motion key */
     s32 tx; /* translation: parent's + parent rotation . (0, 0, BtlBoneDef.length); bone 0: the root translation */
@@ -187,7 +187,7 @@ typedef struct BtlUnit9C50 {
 typedef struct {
     s16 tpage;
     s16 clut;
-} BtlUnit9C18;
+} BtlTexWord;
 
 /* FileEntry viewed with its first word split (file_find type 0xD) */
 typedef struct {
@@ -274,24 +274,24 @@ static inline s32 rand8_inline(void) {
     return *g_randPtr++;
 }
 
-/* one primitive in a model's packed GPU packet buffer (BtlUnit9C.prims) */
+/* one primitive in a model's packed GPU packet buffer (BtlModel.prims) */
 typedef union {
     P_TAG tag;
     u32 w[13]; /* w[1], w[3]/w[4], ...: rgb + code words */
 } BtlPrim;
 
-typedef struct BtlUnit9C {
+typedef struct BtlModel {
     u16 flags; /* BTL_MODEL_* */
     u8 pad2[4 - 2];
     u8 parentBone; /* weapon models: the bone of the parent model they follow (Character.unk21, btl_initWeapon) */
     u8 abr; /* semi-transparency mode (btl_setModelAbr) */
     u8 pad6[8 - 6];
-    BtlUnit9C8 *header;
-    BtlUnit9CC *motion; /* playing motion (BtlUnit.motions entries) */
+    BtlModelHeader *header;
+    BtlMotion *motion; /* playing motion (BtlUnit.motions entries) */
     s32 prims; /* built primitive packets (btl_setModelAbr walks them) */
     u32 hiddenMeshes; /* mesh-group bits not drawn (btl_hideMeshes) */
-    BtlUnit9C18 *texPages;
-    struct BtlUnit9C *parent; /* parent model (weapon models: the unit model) */
+    BtlTexWord *texPages;
+    struct BtlModel *parent; /* parent model (weapon models: the unit model) */
     BtlBone *bones; /* bone matrices (btl_calcBoneMatrices) */
     MATRIX matrix; /* model matrix */
     s32 unk44; /* write-only (cleared by btl_applyModelTextures) */
@@ -301,15 +301,15 @@ typedef struct BtlUnit9C {
     s16 scaleY;
     s16 scaleZ;
     s16 sliceY; /* y limit of the slice effect (Hi_DrawSliceEffModel, btlfx_projectSliceMesh) */
-    BtlUnit9C8 *morph; /* morph target */
+    BtlModelHeader *morph; /* morph target */
     void *unk60; /* write-only (cleared by btl_applyModelTextures) */
     u8 pad64[0x74 - 0x64];
     s16 attachX; /* offset from the parent bone (btl_calcBoneMatrices; event op 0xD4 writes it through main's Unk8004AFF0) */
     s16 attachY;
     s16 attachZ;
-} BtlUnit9C;
+} BtlModel;
 
-/* BtlUnit9C.flags (unit and weapon models). Evidence: [code] */
+/* BtlModel.flags (unit and weapon models). Evidence: [code] */
 #define BTL_MODEL_SCALED    0x02 /* scaleX-Z apply (btl_applyModelScale; Mini, btlseq_opScale) */
 #define BTL_MODEL_OFFSCREEN 0x10 /* behind the camera (btl_updateModelVisibility; a child takes its parent's): not drawn, no popups */
 #define BTL_MODEL_DRAWN     0x20 /* a mesh group was drawn this frame (btl_updateUnitModel) */
@@ -318,7 +318,7 @@ typedef struct BtlUnit9C {
 typedef struct {
     s32 flags; /* MODEL_SLOT_* */
     s32 modelId; /* model id */
-    BtlUnit9C *model;
+    BtlModel *model;
     s32 obj;
 } Unk8E0Ld;
 
@@ -517,10 +517,10 @@ typedef struct BtlUnit {
     s16 rot[3]; /* rot[1] = facing */
     s32 pos[3]; /* position, 16.16 */
     struct BtlUnit98 *home; /* home position block */
-    BtlUnit9C *model;
+    BtlModel *model;
     BtlUnitA0 *obj; /* model object entry (GameData.unk8E0): start position/rotation, motion frame */
-    s32 *motions; /* motion table (BtlUnit9CC * per slot); model->motion is the playing one */
-    BtlUnit9C *weaponModel;
+    s32 *motions; /* motion table (BtlMotion * per slot); model->motion is the playing one */
+    BtlModel *weaponModel;
     u16 hiddenMeshes; /* BTL_ATTR_HIDE_MESHES / BTL_ATTR_SHOW_MESHES */
     u16 vanishMeshes; /* mesh groups Vanish hides */
     u16 unitBit; /* bit in target masks (BtlCmd.targets): party 0-3, enemies from 4 */
@@ -1125,7 +1125,7 @@ typedef struct {
     u8 level;
     BtlUnit24 max; /* max stats */
     u8 padA[0xC - 0xA];
-    BtlUnit9CC *motions[6]; /* motion table (BtlUnit.motions) */
+    BtlMotion *motions[6]; /* motion table (BtlUnit.motions) */
     u16 radius; /* btlfx_getUnitRadius */
     u8 confuseAbility; /* enemy ability used under Confuse/Berserk (btl_setEnemyCmd) */
     u8 eatAbility; /* Blue Magic learned by eating it (Eat formula 0x41) */
@@ -1207,7 +1207,7 @@ typedef struct {
 } Battle122C; /* 0x38 */
 
 typedef struct Battle11C4 {
-    BtlUnit9CC **anims; /* animations the sequences play (btlseq_init) */
+    BtlMotion **anims; /* animations the sequences play (btlseq_init) */
     u8 *seqFlags; /* one byte per sequence, copied to the slot (btlseq_start) */
     s32 seqs[24]; /* sequence code by enemy ability id, 0 = none (btlseq_init) */
     Battle122C slots[4]; /* the four running sequences (btlseq_update) */
@@ -1504,10 +1504,11 @@ typedef struct {
 #define BTL_SCENE_KEEP_MUSIC    (1 << BTL_SCENE_KEEP_MUSIC_BIT)
 /* bit 14: without VICTORY, a victory, stop or escape sets GameData.battleFlags 8 */
 
+/* a model object padded to the 0x98 stride of the weapon and effect model buffers */
 typedef struct {
-    BtlUnit9C model;
-    u8 pad7C[0x98 - sizeof(BtlUnit9C)];
-} BtlModel; /* 0x98 */
+    BtlModel model;
+    u8 pad7C[0x98 - sizeof(BtlModel)];
+} BtlModelBuf; /* 0x98 */
 
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
@@ -1515,7 +1516,7 @@ typedef struct Battle {
     u8 unk2[2]; /* write-only (cleared by btl_clearBattle; a write watch in round 31 saw no other writes) */
     s32 savedHeap; /* g_modeHeap after btl_initMode; btl_load allocates from here again */
     s32 partyMotions[4][0x22]; /* per party member: motion data addresses; BtlUnit.motions points here (btl_loadPartyMotions) */
-    BtlModel weaponModels[4]; /* per party member: weapon model (BtlUnit.weaponModel, btl_initPartyUnit) */
+    BtlModelBuf weaponModels[4]; /* per party member: weapon model (BtlUnit.weaponModel, btl_initPartyUnit) */
     BtlEnemy enemies[4];
     BtlEnemyType enemyTypes[3]; /* enemy type records (BtlEnemy.unk0 points here) */
     struct BtlCmd8 enemyAbilities[18]; /* enemy attacks: BtlCmd.ability of enemy commands (btl_setEnemyCmd) and Return Magic */
@@ -1916,7 +1917,7 @@ typedef struct {
 } BtlTexInfo; /* 0x18, passed to btl_applyModelTextures */
 
 typedef struct {
-    BtlUnit9C *model;
+    BtlModel *model;
     BtlTexInfo tex; /* texture tpage/clut pairs (btl_applyModelTextures) */
     u8 used; /* in use */
     u8 slice; /* drawn sliced (Hi_SetEffModelSlice) */
@@ -1935,7 +1936,7 @@ extern BtlObjSlot g_btlfxEffModels[32];
 
 
 typedef struct {
-    BtlUnit9C *model;
+    BtlModel *model;
     s16 tex[6][2]; /* texture tpage/clut pairs */
     s16 texPos[6][4]; /* texture positions (btl_relocTexAnims) */
     u8 used; /* in use */
@@ -2511,7 +2512,7 @@ typedef struct Unk80100DC054 {
     s32 workSize;
     s32 unk4C; /* write-only (cleared when the summon textures are loaded, btlfx_updateLoader) */
     s32 *data[16]; /* file data tables (btlfx_getFileData 0x80-0xBF) */
-    BtlModel model;
+    BtlModelBuf model;
     u8 pad128[0x180 - 0x128];
     s32 motions[1];
 } Unk80100DC054;
@@ -2779,18 +2780,9 @@ void pad_resetRepeats(s32);
 void win_close(Window *);
 Window *win_get(s32);
 ItemSlot *item_findSlot(s32);
-typedef struct {
-    u8 flags; /* BTL_WEAPON_* */
-    u8 pad1;
-    u16 modelId; /* weapon model (| 0x20000: db key; btl_initWeapon) */
-    u8 pad4;
-    u8 attack; /* attack power (Throw: power x2) */
-    u8 pad6[0xC - 6];
-} Unk8006E0E8; /* 0xC */
-/* Unk8006E0E8.flags. Evidence: [code] */
+/* WeaponEntry.flags (g_weaponTable, ff9.h). Evidence: [code] */
 #define BTL_WEAPON_THROWABLE 0x04 /* listed by Throw (btlui_buildThrowList, btlui_addItem, btlui_removeItem) */
 #define BTL_WEAPON_COUNT     0x58 /* item ids below this are weapons (g_weaponTable; g_armorDefs from here) */
-extern Unk8006E0E8 g_weaponTable[];
 void VSyncCallback(void (*)(void));
 void text_uploadPartyNames(s32);
 s32 akao_playSe(s32, s32, s32, s32);
@@ -2857,8 +2849,8 @@ void btlui_slideRight(void);
 void btlui_slideBack(void);
 s32 btl_setIdleMotion(BtlUnit *);
 u32 btl_addStatuses(BtlUnit *, u32);
-void btl_fillModelRgb(BtlUnit9C *, s32, s32, s32);
-void btl_setModelAbr(BtlUnit9C *, s32);
+void btl_fillModelRgb(BtlModel *, s32, s32, s32);
+void btl_setModelAbr(BtlModel *, s32);
 void btlfx_setUnitBrightness(BtlUnit *, s32);
 void btlui_copyTranceAbilities(Unk80104F88Entry *);
 void btlui_linkSwdMagAbilities(Unk80104F88Entry *);
@@ -2989,8 +2981,8 @@ void btl_unloadPartyModels(void);
 void btlui_exit(void);
 void btl_updateStatusColor(BtlUnit *);
 void btl_setStoneClut(BtlUnit *, s32);
-void btl_applyBgLight(BtlUnit9C *);
-void btl_setMeshRgb(BtlUnit9C *, u8, s16, s16, s16);
+void btl_applyBgLight(BtlModel *);
+void btl_setMeshRgb(BtlModel *, u8, s16, s16, s16);
 Battle122C *btlseq_start(BtlCmd *);
 struct BtlBgHeader *btlbg_getHeader(void);
 s32 btlfx_stepPlayMotionWait(struct Unk800D8EA4 *, s32, s32 *);
@@ -3013,7 +3005,7 @@ void btl_onCmdEffectDone(void);
 void btl_enqueueCmd(struct BtlCmd *);
 void btl_reapplyStatusLook(BtlUnit *);
 void btl_clearRewards(void);
-void btl_setModelRgb(BtlUnit9C *, s32, s32, s32);
+void btl_setModelRgb(BtlModel *, s32, s32, s32);
 void btl_showCmdName(BtlCmd *);
 s32 btlfx_stepUnitSound(u8 *, s32, s32);
 s32 btlfx_stepPlayMotion(u8 *, s32, s32);
@@ -3029,7 +3021,7 @@ s32 btl_hasStatus(BtlUnit *, u32);
 void btl_clearUnitStatus(BtlUnit *);
 s32 btl_removeStatuses(BtlUnit *, u32);
 s32 btlfx_getMotionLength(s32);
-u16 btlfx_getMeshPrims(BtlUnit9C *, u16, s32, s32 *, s32);
+u16 btlfx_getMeshPrims(BtlModel *, u16, s32, s32 *, s32);
 s32 btl_isModelPart(BtlUnit *);
 s32 btl_getUnitHeight(BtlUnit *);
 void btl_getUnitPos(BtlUnit *, s16 *);
@@ -3078,10 +3070,10 @@ s32 btlfx_getUnitKind(s32);
 s32 btlfx_getKindTiming(s32, s32);
 s32 btlfx_getFileData(s32, s32);
 void btlfx_halt(char *);
-void btl_getBonePos(BtlUnit9C *, s32, u16 *);
-void btl_getBoneMatrix(BtlUnit9C *, s32, BtlBone *);
+void btl_getBonePos(BtlModel *, s32, u16 *);
+void btl_getBoneMatrix(BtlModel *, s32, BtlBone *);
 BtlObjSlot *btlfx_getEffModel(s32, char *);
-u8 btl_getMeshCount(BtlUnit9C *);
+u8 btl_getMeshCount(BtlModel *);
 void btlfx_initParticles(s32, Pool30Entry *, Pool30 *);
 void btlfx_initEmitters(u32, Pool6C *);
 Pool6CEntry *btlfx_spawnEmitter(Pool30 *, Pool6C *, u8 *, s32);
@@ -3337,8 +3329,8 @@ s32 btl_getPartyModelId(s32, s32);
 s32 btlfx_stepJumpHome(Unk800D955C *arg0, s32 arg1, s32 *arg2);
 s32 btlfx_moveUnitLinear(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32 arg5);
 void btlfx_lerpVec(s16 *, s16 *, s32, s16 *);
-u16 Hi_RegisterTexListModel(BtlUnit9C8 *, BtlTexInfo *, s16 *, s32);
-u16 Hi_RegisterGouEffModel(BtlUnit9C8 *);
+u16 Hi_RegisterTexListModel(BtlModelHeader *, BtlTexInfo *, s16 *, s32);
+u16 Hi_RegisterGouEffModel(BtlModelHeader *);
 void btlfx_aimAngles(s16 *, s16 *, s16 *);
 void btlfx_pointAhead(s16 *, s16 *, s32, s16 *);
 
@@ -3463,8 +3455,8 @@ extern u32 g_btluiTargetMovePads[][4];
 extern void (*g_btluiTargetMoveFns[])(void);
 extern RECT g_btlBannerDefaultRect;
 u8 *btl_buildBannerFrame(u8 *, RECT *);
-void btl_applyModelScale(BtlUnit9C *);
-void btl_scaleModelMatrix(BtlUnit9C *, VECTOR *);
+void btl_applyModelScale(BtlModel *);
+void btl_scaleModelMatrix(BtlModel *, VECTOR *);
 void btlcam_getUnitAnchors(BtlUnit *, s16 *);
 s32 btlfx_rand(void);
 s32 btlfx_opJumpHome(s32, Unk800D955C *, s32, s32 *, s32 *);
@@ -3478,7 +3470,7 @@ extern u8 g_btlCharTranceCmds[][3];
 extern u8 g_btlCharCmds[][2];
 extern RECT s_btluiCmdIconsSrc;
 void btl_initUnitCmds(BtlUnit *);
-extern u16 g_btlCharModelIds[];
+extern u16 g_btlCharModelIds[]; /* [0x27]: battle body model (FF9.IMG dir 10 file id) per appearance kind (Character.info.b.kind, 19 kinds), trance model at kind + 0x13 (0 for the guests 14-18); a non-party unit reads [0x13] (581) leaving and [0x26] (125) entering Trance (btl_checkCmdUsable BTL_CMD_TRANCE) */
 void btl_initPartyUnit(Character *, BtlUnit *, u16, u16);
 void btl_insertUnit(BtlUnit *);
 void btl_placeParty(void);
@@ -3499,10 +3491,10 @@ s32 btlui_getTargetReturnState(void);
 extern u8 g_btlCmdNames[];
 void btlui_drawSideCmd(); /* (Window *); btlui_drawCmdList passes its own */
 s32 btlfx_isUnitKind(s32, s32);
-void btlfx_projectSliceMesh(BtlUnit9C *, u8);
-u8 *btlfx_drawSliceMesh(BtlUnit9C *, u8, u8 *);
-void btlfx_projectMorphMesh(BtlUnit9C *, u8, u16);
-u8 *btl_drawMeshOffset(BtlUnit9C *, u8, u8 *, s32);
+void btlfx_projectSliceMesh(BtlModel *, u8);
+u8 *btlfx_drawSliceMesh(BtlModel *, u8, u8 *);
+void btlfx_projectMorphMesh(BtlModel *, u8, u16);
+u8 *btl_drawMeshOffset(BtlModel *, u8, u8 *, s32);
 void *btl_getUnitName(BtlUnit *);
 extern u8 g_btlCmdNameMap[];
 extern u8 g_btlCmdNameTexts[];
@@ -3556,10 +3548,10 @@ typedef struct {
     u8 pad4[0xC - 4];
 } Unk8006A774;
 extern Unk8006A774 g_usableItemTableById[];
-u8 *btl_calcBoneMatrices(BtlUnit9C *, s32, u8 *);
-void btl_projectMesh(BtlUnit9C *, u8);
-u8 *btl_drawMesh(BtlUnit9C *, u8, u8 *);
-void btl_setModelTransform(BtlUnit9C *, SVECTOR *, VECTOR *, VECTOR *);
+u8 *btl_calcBoneMatrices(BtlModel *, s32, u8 *);
+void btl_projectMesh(BtlModel *, u8);
+u8 *btl_drawMesh(BtlModel *, u8, u8 *);
+void btl_setModelTransform(BtlModel *, SVECTOR *, VECTOR *, VECTOR *);
 void Hi_GetSummonBoneMatrix(s32, s32, BtlBone *);
 /* texture (VRAM) animations */
 typedef struct {
@@ -3680,7 +3672,7 @@ void btl_damageHp(BtlUnit *, s32, u8);
 void btl_healHp(BtlUnit *, s32);
 void btl_damageMp(BtlUnit *, s32);
 void btl_healMp(BtlUnit *, s32);
-void btl_updateModelVisibility(BtlUnit9C *);
+void btl_updateModelVisibility(BtlModel *);
 u8 *btl_drawShadow(BtlShadow *, s32, s32, s32, u8 *);
 void btl_checkEnemiesKO(); /* defined as (void); callers pass the unit */
 void btl_startEnemySeq(BtlCmd *);
@@ -3889,7 +3881,7 @@ u32 evt_getObjectChrIndex(void *);
 typedef struct {
     u32 flags; /* MODEL_SLOT_* (0x10: btl_drawShadow skips it) */
     s32 modelId; /* model id */
-    BtlUnit9C *model;
+    BtlModel *model;
     s32 unkC; /* not read */
 } BtlObj;
 /* placement data passed to btl_calcShadowMatrix */
@@ -4026,10 +4018,10 @@ void btlui_alignPanelLabel(Unk800F412C *);
 void btlui_resetGauges(s32);
 
 BtlObjSlot *btlfx_allocEffModel(void);
-void btl_applyModelTextures(BtlUnit9C *, s16 *, s16 *);
+void btl_applyModelTextures(BtlModel *, s16 *, s16 *);
 
-void GeoSplitVertices(BtlUnit9C *, s32, s32);
-s32 btlfx_getSplitVertexSize(BtlUnit9C *, s32);
+void GeoSplitVertices(BtlModel *, s32, s32);
+s32 btlfx_getSplitVertexSize(BtlModel *, s32);
 
 /* argument block of btlui_openList */
 typedef struct {
@@ -4075,7 +4067,7 @@ s32 btlfx_resolveFirstUse(s32);
 extern u8 g_btlfxLargeTargetFx[][2];  /* summon id upgrades */
 extern u16 g_btlfxFirstUsePairs[16][2];
 void btlcam_focusCaster(void);
-u32 btlfx_splitMeshVertices(BtlUnit9C *, u16, s32);
+u32 btlfx_splitMeshVertices(BtlModel *, u16, s32);
 extern Unk800F3F10 g_btluiListShowSlide;
 extern Unk800F3F10 g_btluiListShowTitleSlide;
 extern U16Pair g_btluiListTitles[];
@@ -4551,14 +4543,14 @@ typedef struct {
 typedef struct {
     s16 tpage; /* tpage */
     s16 clut; /* clut */
-} Unk800AA504Pos;
+} ModelTexWord;
 
 typedef struct {
     s16 x; /* x */
     s16 y; /* y (CLUT row; becomes h) */
     s16 w;
     s16 h;
-} Unk800AA504Pos8;
+} ModelTexPos;
 
 s32 btl_loadEnemyModelsStep(s32, s32, Unk800AA504 *);
 
@@ -4750,7 +4742,7 @@ void btlfx_retryOp(void);
 extern s32 g_btlfxVibData[];
 extern u8 g_btlfxFileScript[];
 extern const u8 s_btluiTranceLabel[]; /* "TRANCE" label */
-/* BtlUnit9C.texAnims seen as an array member: indexing it as an ARRAY_REF keeps `c ? 1 : 0` from folding into the address (btlfx_setUnitTexAnim) */
+/* BtlModel.texAnims seen as an array member: indexing it as an ARRAY_REF keeps `c ? 1 : 0` from folding into the address (btlfx_setUnitTexAnim) */
 typedef struct {
     BtlUnit9C50 e[3];
 } BtlUnit9C50Arr;
@@ -4772,7 +4764,7 @@ void btlui_drawPulseGradient(s32, s32, s32, s32, s32, CVECTOR *);
 extern u16 g_btlfxFileHeader[];
 extern s32 g_btlfxSummonTexPos[][2];
 s32 btlfx_countVisibleParty(void);
-void btlfx_initSummonModels(BtlModel *, s32);
+void btlfx_initSummonModels(BtlModelBuf *, s32);
 typedef void (*Unk800DA92CFn)(s32, Unk800F78A4 *, s32);
 /* main exe: candidates for ff9.h */
 s32 vib_init(void *);

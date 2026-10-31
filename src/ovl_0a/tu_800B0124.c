@@ -1013,16 +1013,16 @@ s32 fld_setObjectColor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 /* apply the field lights to the object colours */
 void fld_applyLights(FieldObjSlot **arg0, s32 arg1) {
     FieldScene *sc;
-    Unk800B3254 *lt;
+    FieldLightSet *lt;
     FieldLight *amb;
     FieldLight *dir;
     FieldActorInfo *infos;
-    Unk800B3294 *def;
+    FieldModelLight *def;
     s32 i;
     FieldObjSlot *c;
     s32 chg;
     FieldActorInfo *info;
-    Unk800B3294 *l;
+    FieldModelLight *l;
     u32 shade;
     FieldLight *fl;
     s16 floor;
@@ -1043,7 +1043,7 @@ void fld_applyLights(FieldObjSlot **arg0, s32 arg1) {
     amb = NULL;
     dir = NULL;
     infos = sc->actorInfo;
-    def = (Unk800B3294 *)fld_findLightColor(lt, -1);
+    def = (FieldModelLight *)fld_findLightColor(lt, -1);
     fld_findGlobalLights(lt, &amb, &dir);
     for (i = arg1 - 1; i >= 0; i--) {
         c = arg0[i];
@@ -1052,7 +1052,7 @@ void fld_applyLights(FieldObjSlot **arg0, s32 arg1) {
             continue;
         }
         info = &infos[c->actor->modelSlot];
-        l = (Unk800B3294 *)fld_findLightColor(lt, c->modelId);
+        l = (FieldModelLight *)fld_findLightColor(lt, c->modelId);
         shade = c->flags & FLD_OBJ_DIR_LIGHT;
         fl = fld_findFloorLight(lt, c, &floor);
         if ((u8)info->litFloor != (u8)floor || shade != (info->flags & FLD_INFO_DIR_LIGHT) || !(c->flags & FLD_OBJ_LIT)) {
@@ -1135,19 +1135,19 @@ s32 fld_setSlotColor(FieldObjSlot *arg0, s32 arg1, s32 arg2, s32 arg3) {
     return 0;
 }
 
-FieldLight *fld_getLightColorTable(Unk800B3254 *arg0) {
+FieldLight *fld_getLightColorTable(FieldLightSet *arg0) {
     if (arg0 != NULL && arg0->colorCount != 0) {
         return &arg0->lights[arg0->colorOffset];
     }
     return NULL;
 }
 
-Unk800B3294 *fld_findLightColor(arg0, arg1)
-    Unk800B3254 *arg0;
+FieldModelLight *fld_findLightColor(arg0, arg1)
+    FieldLightSet *arg0;
     u16 arg1;
 {
-    Unk800B3294 *base;
-    Unk800B3294 *p;
+    FieldModelLight *base;
+    FieldModelLight *p;
     s32 id;
     u32 v;
 
@@ -1156,7 +1156,7 @@ Unk800B3294 *fld_findLightColor(arg0, arg1)
         return NULL;
     }
     id = v & 0xFFFF;
-    base = (Unk800B3294 *)&arg0->lights[arg0->colorOffset];
+    base = (FieldModelLight *)&arg0->lights[arg0->colorOffset];
     p = &base[arg0->colorCount] - 1;
     do {
         if (p->modelId == id) {
@@ -1167,7 +1167,7 @@ Unk800B3294 *fld_findLightColor(arg0, arg1)
     return NULL;
 }
 
-FieldLight *fld_findGlobalLights(Unk800B3254 *arg0, FieldLight **arg1, FieldLight **arg2) {
+FieldLight *fld_findGlobalLights(FieldLightSet *arg0, FieldLight **arg1, FieldLight **arg2) {
     FieldLight *base;
     FieldLight *p;
 
@@ -1190,7 +1190,7 @@ FieldLight *fld_findGlobalLights(Unk800B3254 *arg0, FieldLight **arg1, FieldLigh
 }
 
 /* find the floor light covering the object's current floor */
-FieldLight *fld_findFloorLight(Unk800B3254 *arg0, FieldObjSlot *arg1, s16 *arg2) {
+FieldLight *fld_findFloorLight(FieldLightSet *arg0, FieldObjSlot *arg1, s16 *arg2) {
     u16 tri;
     FieldLight *p;
     s32 n;

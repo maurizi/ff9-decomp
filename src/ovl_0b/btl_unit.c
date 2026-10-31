@@ -28,7 +28,7 @@ void btl_getWeaponOffset(Unk800BC1E0 *arg0, s16 *arg1) {
 }
 
 void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
-    BtlUnit9C *m = u->model;
+    BtlModel *m = u->model;
     BtlUnitA0 *a = u->obj;
     BtlUnit *v;
     SVECTOR tmp;
@@ -36,9 +36,9 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     s32 i;
     s32 n;
     s32 t;
-    BtlUnit9CC *p;
+    BtlMotion *p;
     s32 id;
-    BtlUnit9C *w;
+    BtlModel *w;
 
     if ((u->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
         v = btl_findBodyUnit();
@@ -142,13 +142,13 @@ s32 btl_setIdleMotion(BtlUnit *u) {
     BtlCmd *cmd = b->curCmd;
     s32 cur;
     s32 *a;
-    BtlUnit9C *m;
+    BtlModel *m;
 
     if (u->status & BTL_STATUS_KO) {
         if ((u->flags & (BTL_UNIT_PARTY | BTL_UNIT_HIT_MOTION)) == BTL_UNIT_PARTY && u != cmd->caster && u->koState == BTL_KO_NONE) {
             cur = (s32)u->model->motion;
             if (cur != u->motions[4] && cur != u->motions[9]) {
-                u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+                u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
             }
         }
         return 0;
@@ -161,37 +161,37 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         if (u == cmd->caster && (u32)(cmd->cmdNo - BTL_CMD_ENEMY_REACT) >= 7) {
             cur = (s32)u->model->motion;
             if (cur == u->motions[10] || cur == u->motions[11]) {
-                u->model->motion = (BtlUnit9CC *)u->motions[9];
+                u->model->motion = (BtlMotion *)u->motions[9];
             }
             return 0;
         }
         if (u->flags & BTL_UNIT_PARTY) {
             if (!(u->flags & (BTL_UNIT_COVERING | BTL_UNIT_DODGED))) {
                 if ((b->escapeHeld != 0 || (b->cmdFlags & BTL_CMDF_ESCAPE)) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
-                    u->model->motion = (BtlUnit9CC *)u->motions[17];
+                    u->model->motion = (BtlMotion *)u->motions[17];
                 } else if (u->status & BTL_STATUS_DEFEND) {
-                    u->model->motion = (BtlUnit9CC *)u->motions[13];
+                    u->model->motion = (BtlMotion *)u->motions[13];
                 } else if ((u->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
                     if ((s32)u->model->motion == u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1]) {
-                        u->model->motion = (BtlUnit9CC *)u->motions[((u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) + 10];
+                        u->model->motion = (BtlMotion *)u->motions[((u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) + 10];
                     } else {
-                        u->model->motion = (BtlUnit9CC *)u->motions[9];
+                        u->model->motion = (BtlMotion *)u->motions[9];
                     }
                 } else {
                     m = u->model;
                     a = u->motions;
                     cur = (s32)m->motion;
                     if (cur == a[0] && (u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
-                        m->motion = (BtlUnit9CC *)a[7];
+                        m->motion = (BtlMotion *)a[7];
                     } else if ((cur == a[1] || cur == a[6]) && !(u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
-                        m->motion = (BtlUnit9CC *)a[5];
+                        m->motion = (BtlMotion *)a[5];
                     } else {
-                        u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+                        u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
                     }
                 }
             }
         } else {
-            u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+            u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         }
         u->obj->frame = 0;
         return 1;
@@ -206,25 +206,25 @@ void btl_startHitMotion(BtlUnit *arg0) {
     f = arg0->flags;
     if (f & BTL_UNIT_PARTY) {
         if ((g_gameState->gameData->ctx.battle->curCmd->ability->flags2 & 0x81) == 0x81) {
-            arg0->model->motion = (BtlUnit9CC *)arg0->motions[BTL_MOTION_HIT_HEAVY];
+            arg0->model->motion = (BtlMotion *)arg0->motions[BTL_MOTION_HIT_HEAVY];
         } else {
-            arg0->model->motion = (BtlUnit9CC *)arg0->motions[BTL_MOTION_HIT];
+            arg0->model->motion = (BtlMotion *)arg0->motions[BTL_MOTION_HIT];
         }
     } else if (arg0->hp == 0 && (u8)(g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(f))->flags >> BTL_ENEMYF_DEATH_MOTION_BIT) {
-        arg0->model->motion = (BtlUnit9CC *)arg0->motions[BTL_MOTION_HIT_HEAVY];
+        arg0->model->motion = (BtlMotion *)arg0->motions[BTL_MOTION_HIT_HEAVY];
         btl_playDeathCry(arg0, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg0->flags)].type->deathCry);
     } else {
         if ((arg0->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
             arg0 = btl_findBodyUnit();
         }
-        arg0->model->motion = (BtlUnit9CC *)arg0->motions[((arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) + BTL_MOTION_HIT];
+        arg0->model->motion = (BtlMotion *)arg0->motions[((arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) + BTL_MOTION_HIT];
     }
     arg0->flags |= BTL_UNIT_HIT_MOTION;
     arg0->obj->frame = 0;
 }
 
 void btl_endPartyHitMotion(BtlUnit *arg0) {
-    BtlUnit9C *m = arg0->model;
+    BtlModel *m = arg0->model;
     s32 *a = arg0->motions;
     s32 c = (s32)m->motion;
     if (c == a[2]) {
@@ -232,7 +232,7 @@ void btl_endPartyHitMotion(BtlUnit *arg0) {
             arg0->koState = BTL_KO_START;
             arg0->flags &= ~BTL_UNIT_HIT_MOTION;
         } else if ((arg0->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
-            m->motion = (BtlUnit9CC *)a[10];
+            m->motion = (BtlMotion *)a[10];
         } else {
             arg0->flags &= ~BTL_UNIT_HIT_MOTION;
         }
@@ -240,17 +240,17 @@ void btl_endPartyHitMotion(BtlUnit *arg0) {
         if (arg0->status & BTL_STATUS_KO) {
             arg0->koState = BTL_KO_PARTY_SET;
             arg0->flags &= ~BTL_UNIT_HIT_MOTION;
-            arg0->model->motion = (BtlUnit9CC *)arg0->motions[4];
+            arg0->model->motion = (BtlMotion *)arg0->motions[4];
         } else {
-            m->motion = (BtlUnit9CC *)a[6];
+            m->motion = (BtlMotion *)a[6];
         }
     } else if (c == a[6]) {
         if ((arg0->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
-            m->motion = (BtlUnit9CC *)a[11];
+            m->motion = (BtlMotion *)a[11];
         } else if (arg0->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) {
             arg0->flags &= ~BTL_UNIT_HIT_MOTION;
         } else {
-            m->motion = (BtlUnit9CC *)a[5];
+            m->motion = (BtlMotion *)a[5];
         }
     } else {
         arg0->flags &= ~BTL_UNIT_HIT_MOTION;
@@ -259,14 +259,14 @@ void btl_endPartyHitMotion(BtlUnit *arg0) {
 }
 
 void btl_endEnemyHitMotion(BtlUnit *arg0) {
-    BtlUnit9C *m;
+    BtlModel *m;
     s32 *a;
     arg0->flags &= ~BTL_UNIT_HIT_MOTION;
     if (arg0->status & BTL_STATUS_KO) {
         m = arg0->model;
         a = arg0->motions;
         if ((s32)m->motion == a[3] && ((u8)(g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(arg0->flags))->flags >> BTL_ENEMYF_DEATH_MOTION_BIT)) {
-            m->motion = (BtlUnit9CC *)a[4];
+            m->motion = (BtlMotion *)a[4];
             arg0->obj->frame--;
             arg0->koState = BTL_KO_ENEMY_SOUND;
             arg0->flags |= BTL_UNIT_MOTION_HELD;
@@ -276,13 +276,13 @@ void btl_endEnemyHitMotion(BtlUnit *arg0) {
             arg0->koState = BTL_KO_START;
             return;
         }
-        arg0->model->motion = (BtlUnit9CC *)arg0->motions[(arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+        arg0->model->motion = (BtlMotion *)arg0->motions[(arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
     }
 }
 
 void btl_updateKo(BtlUnit *u) {
     BtlEnemy *e;
-    BtlUnit9C *m;
+    BtlModel *m;
     u32 f;
 
     if (u->koState == BTL_KO_NONE) {
@@ -293,7 +293,7 @@ void btl_updateKo(BtlUnit *u) {
         switch (u->koState) {
         case BTL_KO_START:
             if (!((u->flags >> BTL_UNIT_MODEL_PART_BIT) & 1)) {
-                u->model->motion = (BtlUnit9CC *)u->motions[4 + ((u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1)];
+                u->model->motion = (BtlMotion *)u->motions[4 + ((u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1)];
                 u->obj->frame = 0;
                 u->koState++;
             } else {
@@ -343,7 +343,7 @@ void btl_updateKo(BtlUnit *u) {
         case BTL_KO_START:
             m = u->model;
             if ((s32)m->motion == u->motions[9]) {
-                m->motion = (BtlUnit9CC *)u->motions[32];
+                m->motion = (BtlMotion *)u->motions[32];
                 u->obj->frame = 0;
                 return;
             }
@@ -353,17 +353,17 @@ void btl_updateKo(BtlUnit *u) {
             u->koState = BTL_KO_PARTY_FALL;
         case BTL_KO_PARTY_FALL:
             if ((f = (u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) == 1) {
-                u->model->motion = (BtlUnit9CC *)u->motions[8];
+                u->model->motion = (BtlMotion *)u->motions[8];
                 u->koState = BTL_KO_PARTY_DOWN;
             } else {
-                u->model->motion = (BtlUnit9CC *)u->motions[7];
+                u->model->motion = (BtlMotion *)u->motions[7];
                 u->koState = BTL_KO_PARTY_COLLAPSE;
             }
             u->obj->frame = 0;
             return;
         case BTL_KO_PARTY_COLLAPSE:
             if (u->obj->frame >= u->model->motion->frameCount) {
-                u->model->motion = (BtlUnit9CC *)u->motions[8];
+                u->model->motion = (BtlMotion *)u->motions[8];
                 u->obj->frame = 0;
                 u->koState++;
             }

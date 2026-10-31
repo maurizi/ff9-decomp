@@ -75,7 +75,7 @@ typedef struct {
     s32 model94;
 } Fx195Work80; /* 0x98 */
 
-extern BtlModel fx_195_effModels[];
+extern BtlModelBuf fx_195_effModels[];
 extern SVECTOR fx_195_basePos;
 extern Fx195Trail fx_195_shortTrails[];
 extern Fx195Trail57 fx_195_longTrails[];

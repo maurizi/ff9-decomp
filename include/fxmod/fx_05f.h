@@ -30,7 +30,7 @@ typedef struct {
     u16 y2;
 } Fx05fPair;
 
-extern BtlModel fx_05f_effModels[];
+extern BtlModelBuf fx_05f_effModels[];
 extern Fx05fPair fx_05f_scrollDst[];
 extern Unk800F78A4 *fx_05f_env;
 

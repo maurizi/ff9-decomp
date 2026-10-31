@@ -49,7 +49,7 @@ typedef struct {
 
 extern s32 fx_1e9_stopBolts;
 extern Unk800F78A4 *fx_1e9_env;
-extern BtlModel fx_1e9_effModels[];
+extern BtlModelBuf fx_1e9_effModels[];
 extern Fx1e9Trail fx_1e9_bolts[8];
 extern s32 fx_1e9_nextBolt;
 
