@@ -1944,7 +1944,7 @@ void btlui_drawListContent(Window *arg0) {
     for (i = 0; i < v.rows; i++) {
         btlui_drawListRow(0, i, v.first + i, &v);
     }
-    if (((MenuList *)&arg0->list)->scroll & 4) {
+    if (((MenuList *)&arg0->list)->scroll & MENULIST_SCROLL_PAGE) {
         menuList_getRowsRect((MenuList *)&arg0->list, rc, &r);
         win_setClip(&r, 7, WIN_STYLE_LINE_RULE);
         btlui_drawListScroll(arg0);

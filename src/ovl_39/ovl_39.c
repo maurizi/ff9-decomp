@@ -109,7 +109,7 @@ void menuSave_drawFileList(void) {
         r.y = i * SAVE_ROW_H + (s16)(v.y + SAVE_LIST_Y);
         menuSave_drawFile(&r, 0x2D, v.first + i);
     }
-    if (l->scroll & 4) {
+    if (l->scroll & MENULIST_SCROLL_PAGE) {
         a.x = SAVE_LIST_X;
         a.y = SAVE_LIST_Y;
         a.w = SAVE_LIST_W;
@@ -216,8 +216,8 @@ void menuSave_updateFileList(void) {
         return;
     }
     if (l->scroll != 0) {
-        if (!(l->scroll & 4)) {
-            dec = l->scroll & 2;
+        if (!(l->scroll & MENULIST_SCROLL_PAGE)) {
+            dec = l->scroll & MENULIST_SCROLL_UP;
             l->scrollPos += 6;
             if (l->scrollPos >= SAVE_ROW_H) {
                 v = l->top;
@@ -1767,7 +1767,7 @@ MenuView *menuSave_getListView(MenuList *l, MenuView *v) {
 MenuView *menuSave_getScrollView(MenuList *l, MenuView *v) {
     s32 x;
 
-    if (l->scroll & 2) {
+    if (l->scroll & MENULIST_SCROLL_UP) {
         v->rows = (l->scrollPos + SAVE_ROW_H - 1) / SAVE_ROW_H;
         v->first = l->pageTop + (l->visibleRows - v->rows);
         v->y = l->scrollPos - v->rows * SAVE_ROW_H;
@@ -1783,7 +1783,7 @@ MenuView *menuSave_getScrollView(MenuList *l, MenuView *v) {
 void menuSave_getScrollClip(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
     dst->w = src->w;
-    if (m->scroll & 2) {
+    if (m->scroll & MENULIST_SCROLL_UP) {
         dst->y = src->y + m->scrollPos;
     } else {
         dst->y = src->y;
@@ -1798,7 +1798,7 @@ void menuSave_pageUp(MenuList *l, s32 btn) {
     if ((btn & BTN_L1) && !(g_padHeld & BTN_R1) && l->top != 0) {
         d = l->height;
         l->scrollPos = d >> 2;
-        l->scroll = 7;
+        l->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_UP | MENULIST_SCROLL_PAGE;
         l->pageStep = (d - l->scrollPos + 0xE) / 15;
         top = l->top - l->visibleRows;
         if (top < 0) {
@@ -1820,7 +1820,7 @@ void menuSave_pageDown(MenuList *l, s32 pad) {
         l->scrollPos = h >> 2;
         page = l->visibleRows;
         max = l->rows - page;
-        l->scroll = 5;
+        l->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_PAGE;
         top = l->top + page;
         l->pageStep = (h - l->scrollPos + 0xE) / 15;
         if (top < max) {

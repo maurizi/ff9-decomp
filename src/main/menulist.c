@@ -5,7 +5,7 @@ void menuList_update(MenuList *p) {
     if (p->scroll == 0) {
         return;
     }
-    if (p->scroll & 4) {
+    if (p->scroll & MENULIST_SCROLL_PAGE) {
         p->scrollPos += p->pageStep;
         if (p->scrollPos >= p->height - 6) {
             s32 t = (p->pageTop + p->cursor) * p->cols;
@@ -18,7 +18,7 @@ void menuList_update(MenuList *p) {
         }
         return;
     }
-    if (p->scroll & 2) {
+    if (p->scroll & MENULIST_SCROLL_UP) {
         d = -3;
     } else {
         d = 3;
@@ -28,13 +28,13 @@ void menuList_update(MenuList *p) {
     if (p->scrollPos < 15) {
         return;
     }
-    if (p->scroll & 8) {
-        p->col = (p->scroll & 2) ? p->cols - 1 : 0;
+    if (p->scroll & MENULIST_SCROLL_WRAP_COL) {
+        p->col = (p->scroll & MENULIST_SCROLL_UP) ? p->cols - 1 : 0;
     }
     {
         u8 c = p->top;
         s32 e;
-        if (p->scroll & 2) {
+        if (p->scroll & MENULIST_SCROLL_UP) {
             e = c - 1;
         } else {
             e = c + 1;
@@ -48,8 +48,8 @@ void menuList_update(MenuList *p) {
 MenuView *menuList_getView(MenuList *m, MenuView *v) {
     s32 d;
 
-    if (m->scroll & 4) {
-        if (m->scroll & 2) {
+    if (m->scroll & MENULIST_SCROLL_PAGE) {
+        if (m->scroll & MENULIST_SCROLL_UP) {
             d = m->height - m->scrollPos;
             v->rows = (d + 8) / 15;
             v->first = m->top + (m->visibleRows - v->rows);
@@ -60,11 +60,11 @@ MenuView *menuList_getView(MenuList *m, MenuView *v) {
             v->first = m->top;
             v->y = 6;
         }
-    } else if (m->scroll & 2) {
+    } else if (m->scroll & MENULIST_SCROLL_UP) {
         v->rows = m->visibleRows + 1;
         v->first = m->top - 1;
         v->y = m->scrollPos - 9;
-    } else if (m->scroll & 1) {
+    } else if (m->scroll & MENULIST_SCROLL_DOWN) {
         v->first = m->top;
         v->rows = m->visibleRows + 1;
         v->y = -m->scrollPos + 6;
@@ -113,7 +113,7 @@ void menuList_up(MenuList *m, u32 pad) {
         if (m->cursor == 0) {
             if (m->top != 0) {
                 snd_playSe(SE_CURSOR);
-                m->scroll = 2;
+                m->scroll = MENULIST_SCROLL_UP;
             }
         } else {
             m->cursor--;
@@ -127,7 +127,7 @@ void menuList_down(MenuList *m, u32 pad) {
         if ((m->top + m->cursor) * m->cols + m->col + m->cols < m->count) {
             if (m->cursor >= m->visibleRows - 1) {
                 if (m->top < m->rows - m->visibleRows) {
-                    m->scroll = 1;
+                    m->scroll = MENULIST_SCROLL_DOWN;
                     snd_playSe(SE_CURSOR);
                 }
             } else {
@@ -135,7 +135,7 @@ void menuList_down(MenuList *m, u32 pad) {
                 m->cursor++;
             }
         } else if (m->cursor >= m->visibleRows - 1 && m->top < m->rows - m->visibleRows) {
-            m->scroll = 9;
+            m->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_WRAP_COL;
             snd_playSe(SE_CURSOR);
         }
     }
@@ -153,7 +153,7 @@ void menuList_left(MenuList *arg0, s32 arg1) {
             }
             if (arg0->top != 0) {
                 snd_playSe(SE_CURSOR);
-                arg0->scroll = 0xA;
+                arg0->scroll = MENULIST_SCROLL_UP | MENULIST_SCROLL_WRAP_COL;
             }
         } else {
             snd_playSe(SE_CURSOR);
@@ -172,7 +172,7 @@ void menuList_right(MenuList *m, s32 pad) {
                     m->cursor++;
                 } else if (m->top < m->rows - m->visibleRows) {
                     snd_playSe(SE_CURSOR);
-                    m->scroll = 9;
+                    m->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_WRAP_COL;
                 }
             } else {
                 snd_playSe(SE_CURSOR);
@@ -190,7 +190,7 @@ void menuList_pageUp(MenuList *arg0, s32 arg1) {
         t = arg0->height - 6;
         arg0->scrollPos = t >> 2;
         t -= arg0->scrollPos;
-        arg0->scroll = 7;
+        arg0->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_UP | MENULIST_SCROLL_PAGE;
         c = arg0->top - arg0->visibleRows;
         arg0->pageStep = (t + 14) / 15;
         if (c < 0) {
@@ -213,7 +213,7 @@ void menuList_pageDown(MenuList *arg0, s32 arg1) {
         t -= arg0->scrollPos;
         u3 = arg0->visibleRows;
         a = arg0->rows - u3;
-        arg0->scroll = 5;
+        arg0->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_PAGE;
         c = arg0->top + u3;
         arg0->pageStep = (t + 14) / 15;
         if (c < a) {
@@ -226,7 +226,7 @@ void menuList_pageDown(MenuList *arg0, s32 arg1) {
 
 MenuView *menuList_getPageView(MenuList *m, MenuView *v) {
     s32 q;
-    if (m->scroll & 2) {
+    if (m->scroll & MENULIST_SCROLL_UP) {
         q = (m->scrollPos + 12) / 15;
         v->rows = q;
         v->first = m->pageTop + (m->visibleRows - v->rows);
@@ -243,7 +243,7 @@ MenuView *menuList_getPageView(MenuList *m, MenuView *v) {
 void menuList_getRowsRect(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
     dst->w = src->w;
-    if (m->scroll & 2) {
+    if (m->scroll & MENULIST_SCROLL_UP) {
         dst->y = m->scrollPos + src->y + 5;
         dst->h = src->h - (m->scrollPos + 4) - 1;
     } else {

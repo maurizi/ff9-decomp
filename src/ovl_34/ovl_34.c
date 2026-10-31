@@ -46,7 +46,7 @@ void menuConfig_drawRows(void) {
         menuConfig_drawRow(&r, 0x17, sp.first + i);
         win_drawBox(&r, 0x17, WIN_STYLE_LINE);
     }
-    if (l->scroll & 4) {
+    if (l->scroll & MENULIST_SCROLL_PAGE) {
         a.x = 8;
         a.y = 0x2A;
         a.w = 0x12C;
@@ -515,7 +515,7 @@ void menuConfig_pageUp(MenuList *l, u32 pad) {
     if ((pad & BTN_L1) && !(g_padHeld & BTN_R1) && l->top != 0) {
         h = l->height;
         l->scrollPos = h >> 2;
-        l->scroll = 7;
+        l->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_UP | MENULIST_SCROLL_PAGE;
         top = l->top - l->visibleRows;
         l->pageStep = (h - l->scrollPos + 0xE) / 15;
         if (top < 0) {
@@ -537,7 +537,7 @@ void menuConfig_pageDown(MenuList *l, u32 pad) {
         l->scrollPos = h >> 2;
         page = l->visibleRows;
         max = l->rows - page;
-        l->scroll = 5;
+        l->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_PAGE;
         top = l->top + page;
         l->pageStep = (h - l->scrollPos + 0xE) / 15;
         if (top < max) {
@@ -551,7 +551,7 @@ void menuConfig_pageDown(MenuList *l, u32 pad) {
 void menuConfig_getScrollClip(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
     dst->w = src->w;
-    if (m->scroll & 2) {
+    if (m->scroll & MENULIST_SCROLL_UP) {
         dst->y = src->y + m->scrollPos;
     } else {
         dst->y = src->y;
@@ -747,8 +747,8 @@ void menuConfig_stepScroll(void) {
     s32 dec;
 
     if (l->scroll != 0) {
-        if (!(l->scroll & 4)) {
-            dec = l->scroll & 2;
+        if (!(l->scroll & MENULIST_SCROLL_PAGE)) {
+            dec = l->scroll & MENULIST_SCROLL_UP;
             l->scrollPos += 4;
             if (l->scrollPos >= 0x14) {
                 v = l->top;
@@ -842,7 +842,7 @@ void menuConfig_setRumble(u8 on) {
 ScrollPos *menuConfig_getScrollView(MenuList *l, ScrollPos *p) {
     s32 v;
 
-    if (l->scroll & 2) {
+    if (l->scroll & MENULIST_SCROLL_UP) {
         p->rows = (l->scrollPos + 0x13) / 20;
         p->first = l->pageTop + (l->visibleRows - p->rows);
         p->y = l->scrollPos - p->rows * 0x14;

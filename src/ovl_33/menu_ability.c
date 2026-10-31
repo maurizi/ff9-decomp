@@ -317,7 +317,7 @@ void menuAbility_drawList(void) {
                 menuAbility_drawRow(col, row, idx++, &view);
             }
         }
-        if (l->scroll & 4) {
+        if (l->scroll & MENULIST_SCROLL_PAGE) {
             menuList_getRowsRect(l, r, &sub);
             win_setClip(&sub, 0x1C, WIN_STYLE_LINE_RULE);
             menuAbility_drawScrollRows();
@@ -935,11 +935,11 @@ s32 menuAbility_getSlot(MenuList *l) {
     s32 r, t;
     s32 step;
 
-    if (l->scroll & 8) {
+    if (l->scroll & MENULIST_SCROLL_WRAP_COL) {
         t = l->col ^ 1;
         step = 1;
         r = l->cursor;
-        if (l->scroll & 2) {
+        if (l->scroll & MENULIST_SCROLL_UP) {
             return (l->top + (r - step)) * 2 + t;
         }
         return (l->top + (r + step)) * 2 + t;

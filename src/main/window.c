@@ -74,7 +74,7 @@ void win_drawFrame(Window *w) {
         if (w->active == 0) {
             return;
         }
-        if (w->list.scroll & 4) {
+        if (w->list.scroll & MENULIST_SCROLL_PAGE) {
             win_drawSplitFill(&t, w->otz, &w->list, abr);
             return;
         }
@@ -439,7 +439,7 @@ void win_drawListBox(RECT *r, s32 otz, s32 mode, MenuList *m) {
         t = *r;
         win_drawLineBorder(&t, otz, 0, abr);
     }
-    if (m->scroll & 4) {
+    if (m->scroll & MENULIST_SCROLL_PAGE) {
         win_drawSplitFill(&t, otz, m, abr);
     } else {
         win_drawFill(&t, otz, 0, m->fillV, abr);
@@ -626,7 +626,7 @@ void win_drawSplitFill(RECT *r, s32 otz, MenuList *m, s32 abr) {
     win_drawDivider(r, otz, m, abr);
     t.x = r->x;
     t.w = r->w;
-    if (m->scroll & 2) {
+    if (m->scroll & MENULIST_SCROLL_UP) {
         t.y = r->y;
         t.h = m->scrollPos + 1;
         win_drawFill(&t, otz, 0, (m->fillV + (r->h - m->scrollPos)) & 0x1F, abr);
@@ -648,13 +648,13 @@ void win_drawDivider(RECT *r, s32 otz, MenuList *m, s32 style) {
     u32 c;
     s16 y;
 
-    c = g_winLineColors[style][(m->scroll & 2) ? 1 : 0];
+    c = g_winLineColors[style][(m->scroll & MENULIST_SCROLL_UP) ? 1 : 0];
     p = (LineF2Words *)g_primPtr;
     setlen(p, 3);
     ((LineF2Words *)g_primPtr)->rgbc = c;
     p->x0 = r->x + 2;
     p->x1 = r->x + r->w - 3;
-    if (m->scroll & 2) {
+    if (m->scroll & MENULIST_SCROLL_UP) {
         y = r->y + m->scrollPos + 4;
     } else {
         y = r->y + r->h - (m->scrollPos + 1) - 2;

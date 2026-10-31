@@ -176,7 +176,7 @@ void menuItem_drawList(void) {
             il->drawRow(col, row, idx++, &view);
         }
     }
-    if (il->list->scroll & 4) {
+    if (il->list->scroll & MENULIST_SCROLL_PAGE) {
         menuList_getRowsRect(il->list, s_menuItemListRect, &s_menuItemScrollClip);
         win_setClip(&s_menuItemScrollClip, 0x1C, WIN_STYLE_LINE_RULE);
         menuItem_drawScrollRows();
@@ -233,12 +233,12 @@ void menuItem_drawCursor(void) {
         help_drawCursor();
     }
     if (s_menuItem.state == ITEM_STATE_MANUAL) {
-        if (s_menuItem.swapPicked == 1 && blink && !(l->scroll & 4)) {
+        if (s_menuItem.swapPicked == 1 && blink && !(l->scroll & MENULIST_SCROLL_PAGE)) {
             a = l->top;
             if (s_menuItem.swapFrom >= a * 2 && s_menuItem.swapFrom < (a + 0xB) * 2) {
                 if (l->scroll != 0) {
                     off = l->scrollPos;
-                    if (!(l->scroll & 2)) {
+                    if (!(l->scroll & MENULIST_SCROLL_UP)) {
                         off = -off;
                     }
                 }
@@ -831,11 +831,11 @@ s32 menuItem_getSlot(MenuList *l) {
     s32 r, t;
     s32 step;
 
-    if (l->scroll & 8) {
+    if (l->scroll & MENULIST_SCROLL_WRAP_COL) {
         t = l->col ^ 1;
         step = 1;
         r = l->cursor;
-        if (l->scroll & 2) {
+        if (l->scroll & MENULIST_SCROLL_UP) {
             return (l->top + (r - step)) * 2 + t;
         }
         return (l->top + (r + step)) * 2 + t;

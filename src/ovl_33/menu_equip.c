@@ -300,7 +300,7 @@ void menuEquip_drawList(void) {
         for (i = 0; i < view.rows; i++) {
             menuEquip_drawListRow(0, i, view.first + i, &view);
         }
-        if (l->scroll & 4) {
+        if (l->scroll & MENULIST_SCROLL_PAGE) {
             menuList_getRowsRect(l, r, &sub);
             win_setClip(&sub, 0x13, WIN_STYLE_LINE_RULE);
             menuEquip_drawScrollRows();

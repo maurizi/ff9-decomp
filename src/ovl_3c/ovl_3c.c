@@ -344,7 +344,7 @@ void shopBuy_drawList(void) {
     for (i = 0; i < view.rows; i++) {
         shopBuy_drawRow(0, i, view.first + i, &view);
     }
-    if (list->scroll & 4) {
+    if (list->scroll & MENULIST_SCROLL_PAGE) {
         menuList_getRowsRect(list, r, &sub);
         win_setClip(&sub, 0x1E, WIN_STYLE_LINE_RULE);
         shopBuy_drawScrollRows();
@@ -777,7 +777,7 @@ void shopSynth_drawList(void) {
     for (i = 0; i < view.rows; i++) {
         shopSynth_drawRow(0, i, view.first + i, &view);
     }
-    if (list->scroll & 4) {
+    if (list->scroll & MENULIST_SCROLL_PAGE) {
         menuList_getRowsRect(list, r, &sub);
         win_setClip(&sub, 0x1E, WIN_STYLE_LINE_RULE);
         shopSynth_drawScrollRows();
@@ -1191,7 +1191,7 @@ void shopSell_drawList(void) {
             shopSell_drawRow(col, row, idx++, &view);
         }
     }
-    if (list->scroll & 4) {
+    if (list->scroll & MENULIST_SCROLL_PAGE) {
         menuList_getRowsRect(list, s_shopSellListRectPtr, &sub);
         win_setClip(&sub, 0x1E, WIN_STYLE_LINE_RULE);
         shopSell_drawScrollRows();

@@ -136,7 +136,7 @@ void menuChocograph_drawList(void) {
     for (i = 0; i < view.rows; i++) {
         menuChocograph_drawRow(0, i, view.first + i, &view);
     }
-    if (list->scroll & 4) {
+    if (list->scroll & MENULIST_SCROLL_PAGE) {
         menuList_getRowsRect(list, r, &sub);
         win_setClip(&sub, 0x1C, WIN_STYLE_LINE_RULE);
         menuChocograph_drawScrollRows();

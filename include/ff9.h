@@ -731,7 +731,7 @@ typedef struct {
     u8 top; /* first visible row */
     u8 cursor; /* row on screen; runtime: battle spell list 0..3 */
     u8 col;
-    u8 scroll; /* scroll animation flags: 1 down, 2 up, 4 page, 8 wrap column (menuList_update) */
+    u8 scroll; /* MENULIST_SCROLL_* animation in progress, 0 = none (menuList_update) */
     u8 scrollPos; /* pixels scrolled / page divider position */
     u8 fillU; /* fill texture u offset (win_drawFill), follows the open animation x */
     u8 fillV; /* fill texture v offset, moves with the scroll */
@@ -741,6 +741,11 @@ typedef struct {
     u8 padF;
 } MenuList;
 typedef MenuList Unk16; /* older name */
+/* MenuList.scroll */
+#define MENULIST_SCROLL_DOWN 0x1 /* one row down (menuList_down), or a page down with MENULIST_SCROLL_PAGE */
+#define MENULIST_SCROLL_UP 0x2 /* one row up (menuList_up); with MENULIST_SCROLL_PAGE a page up */
+#define MENULIST_SCROLL_PAGE 0x4 /* a page (menuList_pageUp sets 7, menuList_pageDown 5) */
+#define MENULIST_SCROLL_WRAP_COL 0x8 /* the cursor moved past the last/first column: col wraps when the row scroll ends */
 
 typedef struct {
     u8 unk0[4];
