@@ -3,6 +3,9 @@
 
 #include "common.h"
 #include "psyq.h"
+#include "ff9_ids.h"
+#include "snd_ids.h"
+#include "res_ids.h"
 
 /* An argument the original code never passed: the callee reads an argument register that still holds this
  * value (usually the caller's own parameter), which only works on MIPS. Empty here, so the call compiles as
