@@ -1244,7 +1244,7 @@ typedef struct EvtObject {
     u8 lookParam0; /* op 0x8B */
     u8 lookParam1; /* op 0x8B */
     u16 turnRate; /* rotation y step, 0x7FFF turns without a turn animation */
-    s16 talkTurnScript; /* 0xA7 turn toward the talker before the talk function (op 0x91), 4 don't; the script "A7 00 angle 50 04" (turn, EVT_OP_WAIT_TURN, EVT_OP_RETURN) starts here */
+    s16 talkTurnScript; /* EVT_OP_TURN_TO_ANGLE: turn toward the talker before the talk function (op 0x91), EVT_OP_RETURN: don't; the script "A7 00 angle 50 04" (EVT_OP_TURN_TO_ANGLE, EVT_OP_WAIT_TURN, EVT_OP_RETURN) starts here */
     u8 talkTurnAngle; /* its angle byte (evt_callTurnScript) */
     u8 talkTurnWaitOp; /* EVT_OP_WAIT_TURN, set at object creation */
     u8 talkTurnReturnOp; /* EVT_OP_RETURN */
@@ -3836,6 +3836,62 @@ typedef struct {
 #define EVT_OP_VIB_SET_PLAYING 0xF7 /* u8: vib_setPlaying */
 #define EVT_OP_VIB_TRACK 0xF8 /* 3 x u8: vib_selectTrack */
 #define EVT_OP_PARTY_JOIN 0xFE /* chr_join */
+/* more opcodes, named from their evt_execInstr handlers (code) */
+#define EVT_OP_SET_ACTOR_TYPE 0x3B /* u8: EvtObject.actorType */
+#define EVT_OP_REMOVE_ITEM 0x49 /* u16 id, u8 n: item_remove / keyItem_remove */
+#define EVT_OP_SET_BATTLE_VAR 0x4A /* u8 var, u16 value: btl_setBattleVar */
+#define EVT_OP_MSG_KEEP_WINDOWS 0x53 /* msg_keepWindowsOnInit */
+#define EVT_OP_BG_MOVE_ORIGIN 0x58 /* 3 x u16: fldbg_moveOrigin */
+#define EVT_OP_TIMER_SET 0x69 /* u16 seconds: timer_setSeconds */
+#define EVT_OP_BG_FOLLOW 0x71 /* 3 x u8: fldbg_setFollow */
+#define EVT_OP_BG_LIMITS_ON 0x73 /* fldbg_enableScrollLimits */
+#define EVT_OP_MSG_CHOICE_MASK 0x7C /* u16, u8: msg_setChoiceMask */
+#define EVT_OP_TIMER_RUN 0x7D /* u8: timer_setRunning */
+#define EVT_OP_BATTLE_EX 0x8C /* u8 swirl, u8 enemy group, u16 battle | 0x8000 dark: GameData.darkBattle, evt_setNextBattle; result 3 */
+#define EVT_OP_TIMER_ENABLE 0x8D /* u8: timer_enable */
+#define EVT_OP_MSG_CLEAR_OTZ 0x8E /* msg_clearWindowOtz */
+#define EVT_OP_RESTART_OBJ 0x97 /* obj: empty its call stack and start its entry 1 again (EVT_STATE_INIT, evt_returnFromFunc) */
+#define EVT_OP_SET_RUN_SPEED 0xA6 /* u8: EvtObject.runSpeed */
+#define EVT_OP_TURN_TO_ANGLE 0xA7 /* u8 angle >> 4: evt_turnObject at turnSpeed (the talk turn script runs it) */
+#define EVT_OP_DISC_CHANGE 0xAC /* u16 disc << 14 | location: fld_requestDiscChange */
+#define EVT_OP_CARD_GAME 0xAE /* u16 opponent: evt_setCardOpponent; result 7 (Tetra Master) */
+#define EVT_OP_SET_LOCATION_NAME 0xB0 /* u16 text: copied to g_evtLocationNameBuf, GameData.locationName */
+#define EVT_OP_RESET_LOCATION_NAME 0xB1 /* GameData.locationName back to the event data one (g_evtLocationName) */
+#define EVT_OP_ANIM_SYNC 0xB5 /* obj: copy that actor's stand/walk/run animation (itself: stop) */
+#define EVT_OP_WM_CAMERA_EYE_ACTOR 0xB7 /* world map: the actor moves to the camera eye and drives it (EVT_MOVE_WM_CAMERA_EYE) */
+#define EVT_OP_WM_CAMERA_TARGET_ACTOR 0xB8 /* world map: the same for the camera target (EVT_MOVE_WM_CAMERA_TARGET) */
+#define EVT_OP_PAD_MASK_SET 0xB9 /* u8 port, u16 bits: g_padPortMask |= */
+#define EVT_OP_PAD_MASK_CLEAR 0xBA /* u8 port, u16 bits: g_padPortMask &= ~ */
+#define EVT_OP_TEX_ANIM_PLAY_ONCE 0xC1 /* obj, u8 n: TEXANIM_ACTIVE | TEXANIM_ONESHOT */
+#define EVT_OP_TEX_ANIM_STOP 0xC2 /* obj, u8 n: clears TEXANIM_ACTIVE | TEXANIM_ONESHOT */
+#define EVT_OP_WM_SET_PARAM 0xC4 /* u8 param, u16 value: w_frameSetParameter */
+#define EVT_OP_SOUND_ARG 0xC6 /* u16 cmd, u16 id, u24 arg: GameData.soundHook(cmd, id, arg) */
+#define EVT_OP_SOUND_ARG_PAN 0xC7 /* u16 cmd, u16 id, u24 arg, u8 pan: GameData.soundHook */
+#define EVT_OP_SOUND_ARG_PAN_VOL 0xC8 /* u16 cmd, u16 id, u24 arg, u8 pan, u8 volume: GameData.soundHook */
+#define EVT_OP_ADD_GIL 0xCE /* u24: GameData.gil, at most GIL_MAX */
+#define EVT_OP_REMOVE_GIL 0xCF /* u24: GameData.gil, at least 0 */
+#define EVT_OP_BTL_BANNER 0xD0 /* u16 text: btl_setBanner */
+#define EVT_OP_CLEAR_GLOBALS 0xD1 /* evt_clearGlobalVars */
+#define EVT_OP_ATTACH_OFFSET 0xD4 /* 3 x u16: the model's offset from its parent bone (EVT_OP_ATTACH) */
+#define EVT_OP_DISABLE_ACTORS 0xD5 /* saves every actor's flags, clears EVT_OBJ_ENABLED unless EVT_OBJ_KEEP_ENABLED */
+#define EVT_OP_RESTORE_ACTORS 0xD6 /* EVT_OBJ_ENABLED back from the flags EVT_OP_DISABLE_ACTORS saved */
+#define EVT_OP_SET_CHR_NAME 0xDE /* u8 character, u16 text: Character.name */
+#define EVT_OP_SET_COLLISION_ELLIPSE 0xDF /* u8: EvtObject.collisionEllipse */
+#define EVT_OP_ADD_FROG 0xE0 /* GameData.frogCount++ (at most 0x7FFF) */
+#define EVT_OP_REWARDS_CLOSE 0xE1 /* rewards_requestClose, g_evtHalted */
+#define EVT_OP_BTLSEQ_START 0xE5 /* u8: btlseq_startDirect(g_evtBattleVars[1], g_evtBattleVars[0], arg) */
+#define EVT_OP_BG_OVERLAY_SCREEN 0xE6 /* u8, u8: fldbg_setOverlayScreen */
+#define EVT_OP_MSG_CLOSE_ALL 0xEB /* msg_resetWindows, win_closeAll */
+#define EVT_OP_IDLE_TIMER_RESET 0xEE /* EvtState.idleTimer = 0 */
+#define EVT_OP_WALK_ONLY_OFF 0xF0 /* state.walkOnly = 0 */
+#define EVT_OP_RESET_AP 0xF3 /* u8 character, u8: chr_resetAp */
+#define EVT_OP_LEARN_ABILITY 0xF4 /* u8 character, u8 ability: chr_learnAbility */
+#define EVT_OP_VIB_PLAY 0xF6 /* u8 frame: vib_play */
+#define EVT_OP_VIB_TRACK_ENABLE 0xF9 /* 3 x u8: vib_setTrackEnabled */
+#define EVT_OP_VIB_RATE 0xFA /* u16: vib_setRate */
+#define EVT_OP_VIB_LOOP_MODE 0xFB /* u8: vib_setLoopMode (VIB_LOOP_MODE bits) */
+#define EVT_OP_VIB_RANGE 0xFC /* u8 start, u8 end: vib_setRange */
+#define EVT_OP_PRELOAD 0xFD /* u8, u16: GameData.preloadRequest */
 #define EVT_OP_BGI_FLOOR_MOVE_START 0xFF00 /* u8, u8: bgi_startFloorMove */
 /* overlay entry points as called from the main exe (the overlays have their own prototypes) */
 #if !defined(OVL_0A_H) && !defined(OVL_0B_H) && !defined(OVL_0C_H) && !defined(OVL_0D_H) && !defined(OVL_14_H) && !defined(OVL_15_H) && !defined(OVL_32_H) && !defined(OVL_33_H) && !defined(OVL_34_H) && !defined(OVL_36_H) && !defined(OVL_37_H) && !defined(OVL_38_H) && !defined(OVL_39_H) && !defined(OVL_3A_H) && !defined(OVL_3B_H) && !defined(OVL_3C_H) && !defined(OVL_3E_H) && !defined(OVL_64_H) && !defined(OVL_65_H)
@@ -4183,9 +4239,9 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     p->animEnd = 0xFF;
     p->runSpeed = 0x1F;
     p->moveTurnRate = 0x10;
-    p->talkTurnScript = 4;
-    p->talkTurnWaitOp = 0x50;
-    p->talkTurnReturnOp = 4;
+    p->talkTurnScript = EVT_OP_RETURN;
+    p->talkTurnWaitOp = EVT_OP_WAIT_TURN;
+    p->talkTurnReturnOp = EVT_OP_RETURN;
     p->turnSpeed = 0x10;
     p->talkTarget = 0xFF;
     p->idleAnimSpeeds.w = 0x10101010;
