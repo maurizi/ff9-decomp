@@ -1258,8 +1258,8 @@ s32 bj_init(void) {
     setlen(&g_bjTpage, 1);
     g_bjTpage.code = 0xE1000697;
     if (!(g_gameState->gameData->flags & 0x20000000)) {
-        ending_soundCmd(0, ENDING_MUSIC, 0, 0, 0);
-        ending_soundCmd(0xC401, ENDING_MUSIC, 0x5A, 0, 0x7F);
+        ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
+        ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, 0x7F);
     }
     game_startFade(1, 1, 0, 0xFFFFFF);
     g_bjState = BJ_ST_START;

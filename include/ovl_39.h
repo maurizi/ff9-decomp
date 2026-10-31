@@ -162,11 +162,6 @@ enum { CONFIRM_YES, CONFIRM_NO };
 #define SAVE_TEXT_CORRUPTED       0x35 /* "Data corrupted." (CRC mismatch) */
 #define SAVE_TEXT_DISC_START      0x36 /* "Start of DISC 1" .. 0x39 "Start of DISC 4" */
 
-/* sounds besides the menu ones */
-#define SE_SAVE_LIST    0x414 /* card read, the file list fades in; also format done */
-#define SE_SAVE_MESSAGE 0x416 /* a message window opens */
-#define SE_SAVE_DONE    0x4ED /* save or load finished */
-
 /* ---- card file layout ---- */
 
 typedef struct {
@@ -517,13 +512,6 @@ typedef union { s32 w; u16 h; } Crc16;
 #endif
 #ifndef SEEK_CUR
 #define SEEK_CUR 1
-#endif
-/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
- * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused. */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67
-#define SE_BUZZER 0x66
-#define SE_CANCEL 0x65
 #endif
 EvtObject *evt_getPlayer(void);
 u8 fld_getDiscChangeMask(void); /* other overlay */

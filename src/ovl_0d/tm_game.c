@@ -3531,11 +3531,11 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
 }
 
 void tm_playSe(s32 arg0) {
-    tm_soundCmd(0xD000, g_tmSeIds[arg0], 0, 0x80, 0x7F);
+    tm_soundCmd(SND_SE_PLAY, g_tmSeIds[arg0], 0, SND_PAN_CENTER, SND_VOL_MAX);
 }
 
 void tm_stopSe(s32 arg0) {
-    tm_soundCmd(0x5100, g_tmSeIds[arg0], 0, 0, 0);
+    tm_soundCmd(SND_SE_STOP, g_tmSeIds[arg0], 0, 0, 0);
 }
 
 void tm_revealBlocks(TmState *arg0) {
@@ -4894,7 +4894,7 @@ void tm_startEndFade(TmState *arg0) {
     arg0->timer = 0;
     game_startFade(2, 1, 0x1E, 0xFFFFFF);
     fade_setAngle(0);
-    tm_soundCmd(0xC401, 0x42, 0x1E, 0x7F, 0);
+    tm_soundCmd(SND_SONG_VOL_FROM_INTPL, MUSIC_TETRA_MASTER, 0x1E, 0x7F, 0);
     arg0->task = TM_TASK_END_FADE;
 }
 

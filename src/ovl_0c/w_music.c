@@ -43,7 +43,7 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
         s.seIds[0] = 0x68;
         break;
     case 1:
-        s.seIds[0] = 0x66;
+        s.seIds[0] = SE_BUZZER;
         break;
     case 2:
         s.seIds[0] = 0x6C;
@@ -55,10 +55,10 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
         s.seIds[0] = 0x27E;
         break;
     case 5:
-        s.seIds[0] = 0x2AA;
+        s.seIds[0] = SE_HELP_OPEN;
         break;
     case 39:
-        s.seIds[0] = 0x67;
+        s.seIds[0] = SE_CURSOR;
         break;
     }
     if (s.seIds[0] != -1) {
@@ -84,7 +84,7 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
             s.seIds[0] = 0x37C;
             break;
         case 36:
-            s.seIds[0] = 0x44A;
+            s.seIds[0] = SE_CHOCOBO_CALL;
             break;
         case 37:
             s.seIds[0] = 0x37A;
@@ -306,7 +306,7 @@ void wm_musicPlay(u16 arg0) {
 
     g_worldMusicId = wm_getSongMusicId(arg0);
     g_worldMusicStarted = 1;
-    wm_soundCommand(0, g_worldMusicId, 0, 0, 0);
+    wm_soundCommand(SND_MUSIC_PLAY, g_worldMusicId, 0, 0, 0);
     if (v == 0) {
         v = 0x7D;
     }
@@ -314,7 +314,7 @@ void wm_musicPlay(u16 arg0) {
 }
 
 void wm_musicStop(u16 arg0) {
-    wm_soundCommand(0x100, wm_getSongMusicId(arg0), 0, 0, 0);
+    wm_soundCommand(SND_MUSIC_STOP, wm_getSongMusicId(arg0), 0, 0, 0);
 }
 
 void wm_musicFade(void) {

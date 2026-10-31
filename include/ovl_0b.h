@@ -324,102 +324,6 @@ typedef struct {
 } BtlUnit28;
 
 /* battle unit; 8 of them at Battle.units, linked through next */
-/* BtlUnit.status bits (docs/runtime-findings.md "Battle STATUS bits"; 0x4 unidentified). BtlUnit.autoStatus uses the same
- * bits (btl_hasStatus tests both words). */
-#define BTL_STATUS_PETRIFY         0x00000001 /* runtime: Break; model CLUT turns to stone (btl_setStoneClut) */
-#define BTL_STATUS_VENOM           0x00000002 /* code: the tick drains HP and MP (btl_tickPoison, btl_tickVenomMp) */
-#define BTL_STATUS_SILENCE         0x00000008 /* runtime: Silence */
-#define BTL_STATUS_BLIND           0x00000010 /* runtime: Blind */
-#define BTL_STATUS_TROUBLE         0x00000020 /* code: btl_spreadTroubleDamage splashes half the damage on allies */
-#define BTL_STATUS_ZOMBIE          0x00000040 /* code: healing hurts, drain reversed */
-#define BTL_STATUS_DEATH_IMMUNE    0x00000080 /* code: instant death/gravity formulas fail on it */
-#define BTL_STATUS_KO              0x00000100 /* runtime: set when the monster died */
-#define BTL_STATUS_LOW_HP          0x00000200 /* added when hp * 6 < maxHp */
-#define BTL_STATUS_CONFUSE         0x00000400 /* runtime: Confuse */
-#define BTL_STATUS_BERSERK         0x00000800 /* runtime: Berserk */
-#define BTL_STATUS_STOP            0x00001000 /* runtime: Stop */
-#define BTL_STATUS_AUTO_LIFE       0x00002000 /* runtime: Auto-Life; KO queues the revive command 0x3D */
-#define BTL_STATUS_TRANCE          0x00004000 /* runtime */
-#define BTL_STATUS_DEFEND          0x00008000 /* runtime: removed by btl_setCmd at every action */
-#define BTL_STATUS_POISON          0x00010000 /* runtime: Poison */
-#define BTL_STATUS_SLEEP           0x00020000 /* runtime: Sleep; timer at +0x48 (unk46[1]) */
-#define BTL_STATUS_REGEN           0x00040000 /* runtime: the Regen spell adds it (btl_addStatus); timer at +0x44 (unk40[2]) */
-#define BTL_STATUS_HASTE           0x00080000 /* runtime: Haste */
-#define BTL_STATUS_SLOW            0x00100000 /* runtime: Slow */
-#define BTL_STATUS_FLOAT           0x00200000 /* runtime: Float */
-#define BTL_STATUS_SHELL           0x00400000 /* runtime: Shell */
-#define BTL_STATUS_PROTECT         0x00800000 /* runtime: Protect */
-#define BTL_STATUS_HEAT            0x01000000 /* code: acting while it is set adds KO (btl_processCmdQueue) */
-#define BTL_STATUS_FREEZE          0x02000000 /* runtime */
-#define BTL_STATUS_VANISH          0x04000000 /* runtime: Vanish; hides the meshes (btl_hideMeshes) */
-#define BTL_STATUS_DOOM            0x08000000 /* code: countdown number (btl_drawStatusCountdown) */
-#define BTL_STATUS_MINI            0x10000000 /* runtime: Mini */
-#define BTL_STATUS_REFLECT         0x20000000 /* runtime: Reflect */
-#define BTL_STATUS_JUMP            0x40000000 /* code: in the air (btl_checkCmdUsable) */
-#define BTL_STATUS_GRADUAL_PETRIFY 0x80000000 /* code: countdown number (btl_drawStatusCountdown) */
-
-/* BtlCmd.cmdNo. 0x00-0x2F index the command table g_btlCmdTable; the names are its menu texts (g_btlCmdNames; the table's
- * own name for a repeated text gets a number). Ids from 0x30 up are queued by the battle code itself. */
-#define BTL_CMD_NONE          0x00
-#define BTL_CMD_ATTACK        0x01 /* runtime: Attack (ability 0xB0) */
-#define BTL_CMD_STEAL         0x02 /* ability 0xB1 Steal (0xB5 Mug with a support bit, btl_setCmd) */
-#define BTL_CMD_JUMP          0x03 /* runtime: Jump; ability 0xB2 */
-#define BTL_CMD_DEFEND        0x04 /* runtime: Defend */
-#define BTL_CMD_FLEE          0x05 /* runtime: Flee */
-#define BTL_CMD_CHANGE        0x07 /* runtime: Change (row) */
-#define BTL_CMD_EAT           0x08 /* runtime: Eat */
-#define BTL_CMD_COOK          0x09
-#define BTL_CMD_SPEAR         0x0A /* code: the landing of Jump (cmd 3) queues it with ability 0xB9 Spear */
-#define BTL_CMD_SPEAR_TRANCE  0x0B /* code: the landing of cmd 0xC queues it with ability 0xBA Spear */
-#define BTL_CMD_JUMP_TRANCE   0x0C /* table text Jump, ability 0xAC */
-#define BTL_CMD_FOCUS         0x0D /* runtime: Focus */
-#define BTL_CMD_ITEM          0x0E
-#define BTL_CMD_THROW         0x0F /* runtime: Throw */
-#define BTL_CMD_SUMMON        0x10 /* code: btl_rollShortSummon handles 0x10/0x12/0x14 */
-#define BTL_CMD_WHT_MAG       0x11 /* runtime: Wht Mag */
-#define BTL_CMD_EIDOLON       0x12
-#define BTL_CMD_WHT_MAG2      0x13
-#define BTL_CMD_SUMMON2       0x14
-#define BTL_CMD_DBL_WHT       0x15
-#define BTL_CMD_BLK_MAG       0x16 /* runtime: Blk Mag */
-#define BTL_CMD_DBL_BLK       0x17
-#define BTL_CMD_BLU_MAG       0x18 /* runtime: Blu Mag */
-#define BTL_CMD_SKILL         0x19 /* runtime: Skill */
-#define BTL_CMD_DYNE          0x1A
-#define BTL_CMD_DRAGON        0x1B
-#define BTL_CMD_FLAIR         0x1C
-#define BTL_CMD_ELAN          0x1D
-#define BTL_CMD_SWD_ART       0x1E
-#define BTL_CMD_SWD_MAG       0x1F
-#define BTL_CMD_SEIKEN        0x20
-#define BTL_CMD_SEIKEN2       0x21
-#define BTL_CMD_WHT_MAG3      0x22
-#define BTL_CMD_ENEMY_TURN    0x2F /* runtime: the enemy AI's command (event-script trigger 0x2F, btl_setEnemyCmd) */
-#define BTL_CMD_TABLE_COUNT   0x30 /* entries in g_btlCmdTable; lower ids are chosen commands, higher ones automatic */
-#define BTL_CMD_COUNTER       0x31 /* runtime: Counter queues it with Attack against the attacker (btl_tryCounter) */
-#define BTL_CMD_RETURN_MAGIC  0x32 /* code: Return Magic queues it with the spell that hit (btl_tryCounter) */
-#define BTL_CMD_AUTO_POTION   0x33 /* code: btl_tryAutoPotion queues it with the item; handled like Item */
-#define BTL_CMD_CHARGE_ATTACK 0x34 /* code: formula 0x3D (ability Charge!) queues an Attack by each low-HP party unit */
-#define BTL_CMD_ENEMY_COUNTER 0x35 /* code: enemy command from the event script (trigger 0x35 = hit) */
-#define BTL_CMD_ENEMY_DEATH   0x36 /* code: enemy command from the event script (trigger 0x36 = killed) */
-#define BTL_CMD_ENEMY_REACT   0x37 /* code: btl_startCmdEffect plays a sequence for it like 0x2F/0x35/0x36 */
-#define BTL_CMD_ESCAPE        0x38 /* runtime: queued by btl_rollFlee / btl_tryEscape; ability 0xB4 Flee */
-#define BTL_CMD_TRANCE_EIDOLON 0x39 /* code: trance Eidolon timer (btl_updateUnitStatus) casts Battle.eidolonAbility */
-#define BTL_CMD_REBIRTH_FLAME 0x3A /* code: the item 0xF9 chance in btl_checkSideDefeated, ability 0x49 Rebirth Flame */
-#define BTL_CMD_TRANCE        0x3B /* code: adding/removing BTL_STATUS_TRANCE queues it; effect 0x101 in trance */
-#define BTL_CMD_KO            0x3C /* code: adding BTL_STATUS_KO queues it (btl_addStatus) */
-#define BTL_CMD_AUTO_LIFE     0x3D /* code: KO with BTL_STATUS_AUTO_LIFE queues it */
-#define BTL_CMD_PETRIFY       0x3E /* code: adding BTL_STATUS_PETRIFY during combat queues it */
-
-/* BtlCmd.subNo / Battle.abilities indices with a fixed use in the code (names from the ability text g_btlAbilityNames) */
-#define BTL_ABIL_REBIRTH_FLAME 0x49
-#define BTL_ABIL_ATTACK        0xB0
-#define BTL_ABIL_FLEE          0xB4
-#define BTL_ABIL_MUG           0xB5
-#define BTL_ABIL_SPEAR         0xB9
-#define BTL_ABIL_SPEAR_TRANCE  0xBA
-#define BTL_ABIL_TERRA_HOMING  0xBB
-#define BTL_ABIL_THROW         0xBE
 
 /* Battle.phase, as btl_update switches on it */
 #define BTL_PHASE_SCRIPT   1 /* code: waits for the event script (btl_setBattleVar 33-36 act only now) */
@@ -456,16 +360,6 @@ typedef struct {
 #define BTL_SETVAR_PLAY_CAMERA    36 /* in BTL_PHASE_SCRIPT: btlcam_playScene(btl_getSceneData(n)) */
 #define BTL_SETVAR_NEXT_LOCATION  37 /* evt_setNextLocation(n) */
 #define BTL_SETVAR_ADD_GIL        38 /* gil += n, at most 9999999 */
-
-/* element bits (BtlUnit.elem*, BtlCmd8.element, weapon[6]); names from the element texts btl_getElementName returns */
-#define BTL_ELEM_FIRE    0x01
-#define BTL_ELEM_ICE     0x02
-#define BTL_ELEM_THUNDER 0x04
-#define BTL_ELEM_EARTH   0x08 /* misses Float and flying enemies (btl_missIfAirborne) */
-#define BTL_ELEM_WATER   0x10
-#define BTL_ELEM_WIND    0x20
-#define BTL_ELEM_HOLY    0x40
-#define BTL_ELEM_SHADOW  0x80
 
 /* btl_hasEnemyFlag categories (enemy type record unk2) */
 #define BTL_ENEMY_UNDEAD 0x10 /* code: Regen and healing hurt it like Zombie (btl_tickRegen, btl_calcHeal) */

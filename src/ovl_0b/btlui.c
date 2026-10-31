@@ -172,7 +172,7 @@ s32 btl_isTargetWindowOpen(void) {
 }
 
 u8 *btl_getAbilityName(s32 arg0) {
-    if (arg0 >= 0xC0) {
+    if (arg0 >= ABILITY_SUPPORT_FIRST) {
         return NULL;
     }
     return g_gameState->gameData->ctx.battle->abilities[arg0].nameOfs + g_btlAbilityNames;
@@ -393,7 +393,7 @@ void btlui_copyTranceAbilities(Unk80104F88Entry *arg0) {
 /* character 3: also list the abilities of character record 1 and its equipment */
 void btlui_linkSwdMagAbilities(Unk80104F88Entry *arg0) {
     Unk800FD56C *m = &g_btlCmdTable[BTL_CMD_SWD_MAG];
-    Character *c = &g_gameState->gameData->characters[1];
+    Character *c = &g_gameState->gameData->characters[CHR_VIVI];
     AbilityEntry *ab = g_abilityRows[1];
     s32 i;
     s32 j;
@@ -404,10 +404,10 @@ void btlui_linkSwdMagAbilities(Unk80104F88Entry *arg0) {
     s32 e;
     ItemInfo *it;
 
-    if (arg0->chr->info.b.id == 3) {
+    if (arg0->chr->info.b.id == CHR_STEINER) {
         for (i = 0; i < m->count; i++) {
             slot = g_btlCmdAbilities[m->first + i];
-            v = chr_findAbilitySlot(1, g_btlSwdMagSourceAbilities[i]);
+            v = chr_findAbilitySlot(CHR_VIVI, g_btlSwdMagSourceAbilities[i]);
             if (v >= 0) {
                 arg0->apCounters[slot] = &c->ap[v];
                 arg0->apNeeded[slot] = ab[v].ap;
@@ -918,13 +918,13 @@ u8 btlui_isHelpOpen(void) {
 void btlui_toggleHelp(u8 arg0) {
     if (arg0) {
         if (g_btluiHelp.open == 0) {
-            snd_playSe(0x2AA);
+            snd_playSe(SE_HELP_OPEN);
             g_btluiHelp.open = 1;
             g_btluiHelp.opening = 1;
             g_btluiHelp.frame = 0;
         }
     } else if (g_btluiHelp.open != 0 && g_btluiHelp.closeReq == 0) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         g_btluiHelp.closeReq = 1;
     }
 }
@@ -1135,7 +1135,7 @@ void btlui_openCmdMenu(void) {
     win_setDrawOverlay(g_btlUi->windows[3], btlui_drawCmdOverlay);
     win_setOnOpened(g_btlUi->windows[3], btlui_onCmdMenuOpened);
     btlui_buildCmdList();
-    snd_playSe(0x414);
+    snd_playSe(SE_WINDOW_OPEN);
 }
 
 void btlui_drawCmdList(Window *arg0) {
@@ -1231,19 +1231,19 @@ void btlui_confirmCmd(void) {
     if (g_btlCmdMenu.sideCmd.side == 0) {
         if (g_btlCmdMenu.enabled[g_btlCmdMenu.cursor] != 0) {
             do {
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 btlui_saveCursor(&g_btlCmdMenu.unit->menu->cursor, 0, g_btlCmdMenu.cursor, 0);
                 f = g_btluiCmdConfirmFns[e->kind];
             } while (0);
         } else {
-            snd_playSe(0x66);
+            snd_playSe(SE_BUZZER);
             return;
         }
     } else {
         if (g_btlCmdMenu.sideCmd.ready == 0) {
             return;
         }
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         btlui_saveCursor(&g_btlCmdMenu.unit->menu->cursor, 0, g_btlCmdMenu.cursor, 0);
         f = g_btluiSideCmdConfirmFn;
     }
@@ -1543,7 +1543,7 @@ void btlui_onCmdMenuOpened(void) {
 void btlui_cmdCursorUp(void) {
     if (g_btlCmdMenu.sideCmd.side == 0) {
         do {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             g_btlCmdMenu.cursor = g_btlCmdMenu.cursor != 0 ? g_btlCmdMenu.cursor - 1 : 3;
         } while (g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor] == 0);
     }
@@ -1552,7 +1552,7 @@ void btlui_cmdCursorUp(void) {
 void btlui_cmdCursorDown(void) {
     if (g_btlCmdMenu.sideCmd.side == 0) {
         do {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             g_btlCmdMenu.cursor = g_btlCmdMenu.cursor < 3 ? g_btlCmdMenu.cursor + 1 : 0;
         } while (g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor] == 0);
     }
@@ -1654,7 +1654,7 @@ void btlui_slideLeft(void) {
                 g_btlSideCmd.slide = 0;
             }
         } else if (g_btlSideCmd.slide == 2 && (g_padRepeat & PAD_LEFT)) {
-            snd_playSe(0x417);
+            snd_playSe(SE_PAGE);
             g_btlSideCmd.slide = 1;
             g_btlSideCmd.side = 2;
             g_btlSideCmd.ready = 0;
@@ -1662,7 +1662,7 @@ void btlui_slideLeft(void) {
         }
     } else if (g_btlSideCmd.side == 0) {
         if (g_padRepeat & PAD_LEFT) {
-            snd_playSe(0x417);
+            snd_playSe(SE_PAGE);
             g_btlSideCmd.slide = 1;
             g_btlSideCmd.side = 2;
             g_btlSideCmd.ready = 0;
@@ -1681,7 +1681,7 @@ void btlui_slideRight(void) {
                 g_btlSideCmd.slide = 0;
             }
         } else if (g_btlSideCmd.slide == 2 && (g_padRepeat & PAD_RIGHT)) {
-            snd_playSe(0x417);
+            snd_playSe(SE_PAGE);
             g_btlSideCmd.slide = 1;
             g_btlSideCmd.side = 1;
             g_btlSideCmd.ready = 0;
@@ -1689,7 +1689,7 @@ void btlui_slideRight(void) {
         }
     } else if (g_btlSideCmd.side == 0) {
         if (g_padRepeat & PAD_RIGHT) {
-            snd_playSe(0x417);
+            snd_playSe(SE_PAGE);
             g_btlSideCmd.slide = 1;
             g_btlSideCmd.side = 1;
             g_btlSideCmd.ready = 0;
@@ -1730,7 +1730,7 @@ void btlui_openList(Unk800EE37C *arg0) {
     g_btluiList.trance = arg0->trance;
     g_btluiList.doubleCast = 0;
     g_btluiList.label2Width = (arg0->label2 != 0) ? ui_measureLabel((u8 *)arg0->label2) : 0;
-    g_btluiList.halfMp = chr_hasSupportAbility((g_btluiList.unit->flags >> 1) & 0xF, 0xE2);
+    g_btluiList.halfMp = chr_hasSupportAbility((g_btluiList.unit->flags >> 1) & 0xF, SA_HALF_MP);
     n = g_btluiList.cmd->count;
     menuList_init(&l, n, (n < 5) ? n : 4, 1, 0x44);
     f = (g_gameState->config >> 2) & 1;
@@ -1752,7 +1752,7 @@ void btlui_listInput(void) {
     Window *w;
     if (l->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
             w = g_btlUi->windows[2];
             btlui_saveCursor(&g_btluiList.unit->menu->cursor, 1, w->list.top, w->list.cursor);
             if (g_btluiList.doubleCast == 0) {
@@ -1901,12 +1901,12 @@ void btlui_updateList(void) {
     if (g_btluiList.cmdNo == BTL_CMD_SWD_MAG) {
         if (g_btlUi->swdMagPartner == 0 || g_btlUi->swdMagBlocked.h != 0) {
             btlui_closeList();
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
         }
     }
     if (g_btluiList.trance == 0 && (u8)btl_hasStatus(g_btluiList.unit, BTL_STATUS_TRANCE)) {
         btlui_closeList();
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
     }
 }
 
@@ -1926,11 +1926,11 @@ s32 btlui_getListHelpText(void) {
 void btlui_listConfirm(void) {
     Window *w;
     if ((u8)g_btluiListConfirmFns[g_btluiList.cmd->kind]()) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         w = g_btlUi->windows[2];
         btlui_saveCursor(&g_btluiList.unit->menu->cursor, 1, w->list.top, w->list.cursor);
     } else {
-        snd_playSe(0x66);
+        snd_playSe(SE_BUZZER);
     }
 }
 
@@ -2075,7 +2075,7 @@ s32 btlui_resolveAbility(s32 arg0) {
             break;
         }
     } else if (arg0 == 0x42) {
-        t = g_btluiList.unit->menu->chr->equip[4] == 0xDE;
+        t = g_btluiList.unit->menu->chr->equip[4] == ITEM_MAIDEN_PRAYER;
         arg0 = t + 0x42;
     }
     return arg0;
@@ -2153,7 +2153,7 @@ void btlui_startTargetSelect(Unk800EF80C *arg0) {
     g_btlTarget.doubleCast = arg0->doubleCast;
     g_btlTarget.targetAll = g_btluiTargetAllByType[g_btlTarget.targetType];
     g_btlTarget.windowOpen = 0;
-    g_btlTarget.halfMp = chr_hasSupportAbility((g_btlTarget.unit->flags >> 1) & 0xF, 0xE2);
+    g_btlTarget.halfMp = chr_hasSupportAbility((g_btlTarget.unit->flags >> 1) & 0xF, SA_HALF_MP);
     g_btlTarget.trance = arg0->trance;
     g_btlTarget.unk7 = (u32)(arg0->targetType - 6) < 3;
     g_btlTarget.canSwitchSide = arg0->targetType == 0 || arg0->targetType == 3 || arg0->targetType == 9 || arg0->targetType == 6;
@@ -2325,7 +2325,7 @@ void btlui_toggleTargetAll(void) {
             }
         }
         if (old != g_btlTarget.targetAll) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
         }
     }
 }
@@ -2420,7 +2420,7 @@ void btlui_confirmTarget(void) {
         }
         btlui_closeWindows();
     }
-    snd_playSe(0x67);
+    snd_playSe(SE_CURSOR);
 }
 
 s32 btlui_confirmDoubleCast(s32 arg0) {
@@ -2677,7 +2677,7 @@ void btlui_onUnitUntargetable(BtlUnit *arg0) {
 void btlui_targetInput(void) {
     u32 v;
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         btlui_cancelTarget();
         return;
     }
@@ -2690,7 +2690,7 @@ void btlui_targetInput(void) {
         return;
     }
     if (g_padRepeat & BTN_L2) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         v = g_gameState->config;
         g_gameState->config = (v & ~0x80000) | ((((v >> 19) & 1) ^ 1) << 19);
         return;
@@ -2700,7 +2700,7 @@ void btlui_targetInput(void) {
 
 void btlui_updateTarget(void) {
     if (!(btlui_isCmdUsable() & 0xFF)) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         btlui_cancelTarget();
     } else if (btlui_refreshTargets() & 0xFF) {
         btlui_updateTargetWindow();
@@ -2793,25 +2793,25 @@ void btlui_targetMove(void) {
 
 void btlui_targetPrev(void) {
     if (btlui_cycleTarget(0) & 0xFF) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     }
 }
 
 void btlui_targetNext(void) {
     if (btlui_cycleTarget(1) & 0xFF) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     }
 }
 
 void btlui_targetEnemySide(void) {
     if (btlui_switchTargetSide(0) & 0xFF) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     }
 }
 
 void btlui_targetPartySide(void) {
     if (btlui_switchTargetSide(1) & 0xFF) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     }
 }
 

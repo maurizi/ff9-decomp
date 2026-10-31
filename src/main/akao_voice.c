@@ -226,43 +226,43 @@ void akao_setVoiceVolume(s32 v, u32 l, u32 r, s32 vol) {
 }
 
 void akao_setVoicePitch(s32 v, s32 x) {
-    SPU_VOICE_REG(v, 0x4) = x;
+    SPU_VOICE_REG(v, SPU_VOICE_PITCH) = x;
 }
 
 void akao_setVoiceStartAddr(s32 v, s32 x) {
-    SPU_VOICE_REG(v, 0x6) = (u32)x >> 3;
+    SPU_VOICE_REG(v, SPU_VOICE_START_ADDR) = (u32)x >> 3;
 }
 
 void akao_setVoiceLoopAddr(s32 v, s32 x) {
-    SPU_VOICE_REG(v, 0xE) = (u32)x >> 3;
+    SPU_VOICE_REG(v, SPU_VOICE_LOOP_ADDR) = (u32)x >> 3;
 }
 
 void akao_setVoiceAdsr1(s32 v, u16 x) {
-    SPU_VOICE_REG(v, 0x8) = x;
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = x;
 }
 
 void akao_setVoiceAdsr2(s32 v, u16 x) {
-    SPU_VOICE_REG(v, 0xA) = x;
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = x;
 }
 
 void akao_setVoiceAttack(s32 v, s32 a, s32 b) {
-    SPU_VOICE_REG(v, 0x8) = SPU_VOICE_REG8(v, 0x8) | ((((u32)b >> 2) << 15) | (a << 8));
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = SPU_VOICE_REG8(v, SPU_VOICE_ADSR1) | ((((u32)b >> 2) << 15) | (a << 8));
 }
 
 void akao_setVoiceDecay(s32 v, s32 x) {
-    SPU_VOICE_REG(v, 0x8) = (SPU_VOICE_REG(v, 0x8) & 0xFF0F) | (x << 4);
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR1) & 0xFF0F) | (x << 4);
 }
 
 void akao_setVoiceSustainLevel(s32 v, s32 x) {
-    SPU_VOICE_REG(v, 0x8) = (SPU_VOICE_REG(v, 0x8) & 0xFFF0) | x;
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR1) & 0xFFF0) | x;
 }
 
 void akao_setVoiceSustain(s32 v, s32 a, s32 b) {
-    SPU_VOICE_REG(v, 0xA) = (SPU_VOICE_REG(v, 0xA) & 0x3F) | ((((u32)b >> 1) << 14) | (a << 6));
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR2) & 0x3F) | ((((u32)b >> 1) << 14) | (a << 6));
 }
 
 void akao_setVoiceRelease(s32 v, s32 a, s32 b) {
-    SPU_VOICE_REG(v, 0xA) = (SPU_VOICE_REG(v, 0xA) & 0xFFC0) | ((((u32)b >> 2) << 5) | a);
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR2) & 0xFFC0) | ((((u32)b >> 2) << 5) | a);
 }
 
 void akao_writeVoice(s32 v, AkaoVoiceRegs *p, s32 vol) {

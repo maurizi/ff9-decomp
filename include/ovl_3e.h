@@ -8,11 +8,6 @@
 #include "ff9.h"
 
 /* main exe: candidates for ff9.h */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67  /* cursor move / pick */
-#define SE_BUZZER 0x66  /* refused action */
-#define SE_CANCEL 0x65  /* Circle backs out */
-#endif
 /* libcd (PsyQ libcd.h names) */
 #define CdlNop           0x01
 #define CdlStandby       0x07

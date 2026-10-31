@@ -439,7 +439,7 @@ void menuEquip_optimize(void) {
         }
     }
     menuEquip_applyEquip(c);
-    snd_playSe(SE_EQUIP);
+    snd_playSe(SE_SET);
 }
 
 void menuEquip_dropUnlearnedSupport(Character *c) {
@@ -706,7 +706,7 @@ void menuEquip_equipSelected(void) {
         menuEquip_applyEquip(c);
         menuEquip_closeList();
     }
-    snd_playSe(SE_EQUIP);
+    snd_playSe(SE_SET);
 }
 
 void menuEquip_removeSlot(void) {
@@ -726,7 +726,7 @@ void menuEquip_removeSlot(void) {
             ok = 1;
         }
     }
-    se = SE_EQUIP;
+    se = SE_SET;
     if (!ok) {
         se = SE_BUZZER;
     }

@@ -121,7 +121,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
         }
         btl_updateKo(u);
     }
-    if (arg1->phase == BTL_PHASE_EXIT_DEFEAT && !((arg1->scene.flags >> 4) & 1) && (u8)btl_playVictoryMusic(arg0, 0x1E, 6) == 0) {
+    if (arg1->phase == BTL_PHASE_EXIT_DEFEAT && !((arg1->scene.flags >> 4) & 1) && (u8)btl_playVictoryMusic(arg0, 0x1E, MUSIC_DEFEAT) == 0) {
         r = 0;
     }
     btl_drawScene(arg0, arg1, sp);
@@ -194,9 +194,9 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     } else {
                         done = 0;
                         if ((s8)arg1->fleeBrightness == 0x20) {
-                            btl_soundCmd(0xD000, 0xB5A, 0, 0x80, 0x7F);
-                            btl_soundCmd(0xD000, 0xB5B, 0, 0x80, 0x7F);
-                            btl_soundCmd(0xD000, 0xB5C, 0, 0x80, 0x7F);
+                            btl_soundCmd(SND_SE_PLAY, SE_FLEE_1, 0, SND_PAN_CENTER, SND_VOL_MAX);
+                            btl_soundCmd(SND_SE_PLAY, SE_FLEE_2, 0, SND_PAN_CENTER, SND_VOL_MAX);
+                            btl_soundCmd(SND_SE_PLAY, SE_FLEE_3, 0, SND_PAN_CENTER, SND_VOL_MAX);
                             arg1->fleeBrightness -= 2;
                         }
                     }
@@ -218,7 +218,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             arg0->battleFlags |= 0x40;
             arg0->battleResult = 1;
             if ((arg1->scene.flags >> 6) & 1) {
-                if ((u8)btl_playVictoryMusic(arg0, 0x1E, 5) == 0) {
+                if ((u8)btl_playVictoryMusic(arg0, 0x1E, MUSIC_VICTORY) == 0) {
                     break;
                 }
                 for (u = arg1->unitList; u != NULL; u = u->next) {
@@ -289,7 +289,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     arg0->gil = 0;
                 }
                 btl_showMessage(BTL_MSG_DROPPED_GIL, gil);
-            } else if ((u8)btl_partyHasSupport(1, 0x4000) != 0) {
+            } else if ((u8)btl_partyHasSupport(1, SA_BIT(SA_FLEE_GIL)) != 0) {
                 g_btlRewards.fleeGil = 1;
                 g_btlRewards.gil = gil / 10;
             }
@@ -385,7 +385,7 @@ void btl_initBattleState(void) {
     if (gd->darkBattle != 0) {
         v = 8;
     }
-    gd->characters[3].info.w = (gd->characters[3].info.w & ~0x1F0) | (v << 4);
+    gd->characters[CHR_STEINER].info.w = (gd->characters[CHR_STEINER].info.w & ~0x1F0) | (v << 4);
     g_gameState->gameData->battleResult = 0;
     btl_initState();
     btlfx_initAll();

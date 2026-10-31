@@ -244,7 +244,7 @@ void wm_load(s32 arg0) {
     wm_findMapScript(obj, arg0);
     wm_findAreaData(obj, (s16)g_gameState->gameData->worldAreaId);
     wm_uploadParkedSound();
-    wm_soundCommand(0x900, 0, 0, 0, 0);
+    wm_soundCommand(SND_MUSIC_RESUME, 0, 0, 0, 0);
     evt_loadScripts(obj->mapScript);
     evt_init((u8 *)obj->mapScript);
     while (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) != 0) {
@@ -1326,9 +1326,9 @@ void wm_startBattleTransition(void) {
         akao_fadeMusicVolume(0, 0xF, 0);
     }
     g_gameState->gameData->ctx.world->obj->battleStep = 5;
-    wm_soundCommand(SND_SE_PLAY, 0x27C, 0, 0x80, 0x7F);
-    wm_soundCommand(SND_SE_PLAY, 0x27B, 0, 0x80, 0x7F);
-    wm_soundCommand(SND_SE_PLAY, 0x27A, 0, 0x80, 0x7F);
+    wm_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_1, 0, SND_PAN_CENTER, SND_VOL_MAX);
+    wm_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_2, 0, SND_PAN_CENTER, SND_VOL_MAX);
+    wm_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_3, 0, SND_PAN_CENTER, SND_VOL_MAX);
     g_gameState->gameData->flags |= (GD_MENU_DISABLED | GD_MENU_OPEN | GD_HIDE_MODELS | GD_HIDE_BG | GD_NO_FLIP);
     g_gameState->gameData->ctx.world->flags |= 0x300;
     g_gameState->vsyncMode = 0;
@@ -1361,9 +1361,9 @@ void wm_updateBattleTransition(void) {
         if (o->battleMusic != 0xFFFF && o->battleMusic != gd->musicId[0]) {
             cd_seekAsync(g_gameState->imgSector + wm_findSoundFile(o->battleMusic | DB_MUSIC, &size, gs), 0);
             if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
-                wm_soundCommand(0x800, g_gameState->gameData->musicId[0], 0, 0, 0);
+                wm_soundCommand(SND_MUSIC_SUSPEND, g_gameState->gameData->musicId[0], 0, 0, 0);
             }
-            wm_soundCommand(0x700, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
+            wm_soundCommand(SND_MUSIC_LOAD, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
             g_gameState->gameData->ctx.world->obj->battleStep = -1;
         } else {
             cd_seekAsync(g_gameState->imgSector + file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE))->sector, 0);
@@ -1372,7 +1372,7 @@ void wm_updateBattleTransition(void) {
     } else if (o->battleStep == -1) {
         if (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) == 0) {
             cd_seekAsync(g_gameState->imgSector + file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE))->sector, 0);
-            wm_soundCommand(0, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
+            wm_soundCommand(SND_MUSIC_PLAY, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
             akao_setMusicVolume(0, 0x7F);
             g_gameState->gameData->ctx.world->obj->battleStep = -2;
         }

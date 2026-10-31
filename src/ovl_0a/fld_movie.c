@@ -1302,7 +1302,7 @@ void fld_movieFinish(void) {
     g_gameState->vsyncMode = 2;
     g_gameState->dispEnv[0].disp.x = 0x140;
     g_gameState->dispEnv[1].disp.x = 0;
-    fld_soundCommand(0x6201, -1, g_gameState->gameData->ctx.field->area->scene->sndVolume, 0, 0);
+    fld_soundCommand(SND_STREAM_VOL, -1, g_gameState->gameData->ctx.field->area->scene->sndVolume, 0, 0);
 }
 
 s32 fld_isMoviePlaying(void) {
@@ -1485,9 +1485,9 @@ void fld_updateEncounter(void) {
                 preload_remove(preload_waitCurrent()->fileId);
             }
             preload_discardRange((s32)g_loadAreaEnd, 0x156F00);
-            fld_soundCommand(0xD000, 0x27C, 0, 0x80, 0x7F);
-            fld_soundCommand(0xD000, 0x27B, 0, 0x80, 0x7F);
-            fld_soundCommand(0xD000, 0x27A, 0, 0x80, 0x7F);
+            fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_1, 0, SND_PAN_CENTER, SND_VOL_MAX);
+            fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_2, 0, SND_PAN_CENTER, SND_VOL_MAX);
+            fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_3, 0, SND_PAN_CENTER, SND_VOL_MAX);
             g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_ENCOUNTER_LOADED;
         }
         if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
@@ -1501,22 +1501,22 @@ void fld_updateEncounter(void) {
             if (g_gameState->gameData->ctx.field->area->scene->battleMusic != 0xFFFF
                 && g_gameState->gameData->ctx.field->area->scene->battleMusic != g_gameState->gameData->musicId[0]) {
                 if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
-                    fld_soundCommand(0x800, g_gameState->gameData->musicId[0], 0, 0, 0);
+                    fld_soundCommand(SND_MUSIC_SUSPEND, g_gameState->gameData->musicId[0], 0, 0, 0);
                 }
-                fld_soundCommand(0x700, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
+                fld_soundCommand(SND_MUSIC_LOAD, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
                 g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -1;
             } else {
                 g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -2;
             }
         } else if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == -1) {
-            if (fld_soundCommand(0xC00, -1, 0, 0, 0) == 0) {
+            if (fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0) == 0) {
                 g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -2;
             }
         } else if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == -2) {
             fld_suspendResidentSfx();
             if (g_gameState->gameData->ctx.field->area->scene->battleMusic != 0xFFFF
                 && !(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
-                fld_soundCommand(0, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
+                fld_soundCommand(SND_MUSIC_PLAY, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
                 akao_setMusicVolume(0, 0x7F);
             }
             g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -3;

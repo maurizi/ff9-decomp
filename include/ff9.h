@@ -1789,22 +1789,10 @@ extern s32 g_padPortMask[];
 #define GD_MUSIC2_LOADED 0x40000000
 #define GD_MUSIC2_PLAYING 0x80000000
 
-/* menu sound effects (snd_playSe ids) */
-#define SE_CANCEL 0x65 /* Circle backs out; help closes */
-#define SE_BUZZER 0x66 /* refused action */
-#define SE_CURSOR 0x67 /* cursor move / pick (menuList_*) */
-#define SE_PAGE 0x417 /* menuList page / L1-R1 switch */
-
 /* inventory and character limits */
-#define ITEM_NONE 0xFF /* empty item id / equipment slot */
-#define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
-#define KEY_ITEM_COUNT 0x50 /* key item ids (keyItem_has) */
 #define LEVEL_MAX 99
 #define EXP_MAX 9999999
 #define GIL_MAX 9999999
-#define ABILITY_MAX 0x30 /* entries in a character's g_abilityRows ability row (Character.ap) */
-#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
-#define SUPPORT_COUNT 0x40
 
 /* main-menu screens (g_menuScreen.screen, menuScreen_open/switch; runtime field/menu campaign) */
 #define MENU_SCREEN_MAIN 0
@@ -1836,31 +1824,6 @@ extern s32 g_padPortMask[];
 #define WM_PARAM_TITLE_PHASE 0xD2 /* g_worldTitlePhase */
 #define WM_PARAM_NAVI_VISIBLE 0xD3 /* g_worldNaviVisible */
 
-/* battle commands main sends through btl_setEnemyCmd / evt_battleTrigger (ovl_0b.h has the full list) */
-#define BTL_CMD_ENEMY_TURN 0x2F /* the enemy AI's command (event-script trigger 0x2F) */
-#define BTL_CMD_ENEMY_COUNTER 0x35 /* enemy command from the event script (trigger 0x35 = hit) */
-#define BTL_CMD_ENEMY_DEATH 0x36 /* enemy command from the event script (trigger 0x36 = killed) */
-
-/* Sound command words for the mode's sound handler (GameData.soundHook: fld_soundCommand / wm_soundCommand).
- * Bits 12-13 type (0 music, 1 SE, 3 bank), 8-11 kind, 0-5 sub-command, 7 resident SE slot, 6 slot index.
- * The SE/state/volume words carry the world map's debug-print names (ovl_0c WM_SND_*). */
-#define SND_MUSIC_PLAY 0x0000
-#define SND_MUSIC_STOP 0x0100
-#define SND_MUSIC_LOAD 0x0700 /* load only */
-#define SND_MUSIC_SUSPEND 0x0800 /* save song/volume, then stop */
-#define SND_MUSIC_RESUME 0x0900 /* replay the saved song */
-#define SND_GET_STATE 0x0C00 /* "Waiting [ State : %d ]": non-zero while loading */
-#define SND_SE_PLAY 0xD000 /* "SE Play" (snd_playSe) */
-#define SND_SE_STOP 0x5100 /* "SE Stop" */
-#define SND_SE_VOL 0x9201 /* "SE Vol" */
-#define SND_SE_PITCH 0x9203
-#define SND_SE_VOL_INTPL 0xD301 /* "SE Vol Intpl" */
-#define SND_SONG_VOL_INTPL 0x8301
-#define SND_MUSIC_VOL_INTPL 0x8601 /* "Music Vol Intpl", "Music Fade Force" */
-#define SND_SE_SUSPEND 0x1800
-#define SND_SE_RESUME 0x1900
-#define SND_BANK_LOAD 0x7700
-#define SND_RESIDENT 0x80
 extern u32 g_padRepeat; /* press, then auto-repeat after 15 frames, every 5 */
 extern s32 g_menuFrame; /* frame counter? */
 
@@ -3036,26 +2999,6 @@ typedef struct {
     u16 adsrVol;
     u16 loopAddr; /* loop address */
 } SpuVoiceReg;
-#define SPU_VOICE_REG(v, r) (*(u16 *)(SPU_VOICE_BASE + (r) + (v) * 16))
-#define SPU_VOICE_REG8(v, r) (*(u8 *)(SPU_VOICE_BASE + (r) + (v) * 16))
-#define SPU_REG16(a) (*(u16 *)(a))
-/* SPU registers (psx-spx names) */
-#define SPU_VOICE_BASE 0x1F801C00 /* 24 voices x 16 bytes (SpuVoiceReg) */
-#define SPU_MAIN_VOL_L 0x1F801D80
-#define SPU_MAIN_VOL_R 0x1F801D82
-#define SPU_KEY_ON_LO 0x1F801D88
-#define SPU_KEY_ON_HI 0x1F801D8A
-#define SPU_KEY_OFF_LO 0x1F801D8C
-#define SPU_KEY_OFF_HI 0x1F801D8E
-#define SPU_PITCH_MOD_LO 0x1F801D90
-#define SPU_PITCH_MOD_HI 0x1F801D92
-#define SPU_NOISE_ON_LO 0x1F801D94
-#define SPU_NOISE_ON_HI 0x1F801D96
-#define SPU_REVERB_ON_LO 0x1F801D98
-#define SPU_REVERB_ON_HI 0x1F801D9A
-#define SPU_CTRL 0x1F801DAA
-#define SPU_CD_VOL_L 0x1F801DB0
-#define SPU_CD_VOL_R 0x1F801DB2
 extern s16 g_akaoCdVolumeHi;
 extern s32 g_akaoCdVolumeStep;
 s32 akao_isqrt(s32);

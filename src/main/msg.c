@@ -178,12 +178,12 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 break;
             case 0xE:
                 n = g_msgNumbers[*s++];
-                if (n < 0x100) {
+                if (n < ITEM_ID_KEY_FIRST) {
                     str = g_itemNames + g_itemTable[n].name;
-                } else if (n < 0x200) {
-                    str = g_keyItemNames + g_keyItemTable[n - 0x100].name;
+                } else if (n < ITEM_ID_CARD_FIRST) {
+                    str = g_keyItemNames + g_keyItemTable[n - ITEM_ID_KEY_FIRST].name;
                 } else {
-                    str = (u8 *)card_getName(n - 0x200);
+                    str = (u8 *)card_getName(n - ITEM_ID_CARD_FIRST);
                 }
                 w += msg_measureLine_width(str);
                 break;
@@ -725,7 +725,7 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             if (w->waitFrames == 0xFF) {
                 w->waitFrames = 1;
                 if (g_msgChoiceLine >= 0) {
-                    g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+                    g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
                 }
                 return 1;
             }
@@ -745,19 +745,19 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             } else {
                 g_msgChoice = g_msgChoiceCount - 1;
             }
-            g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
         } else if (pad & 0x40) {
             if (g_msgChoice < g_msgChoiceCount - 1) {
                 g_msgChoice++;
             } else {
                 g_msgChoice = 0;
             }
-            g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
         } else if (!(pad & 0x10000) || g_msgChoiceCancel < 0) {
             return 0;
         } else {
             g_msgChoice = g_msgChoiceCancel;
-            g_gameState->gameData->soundHook(0xD000, 0x65, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CANCEL, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
         }
         return 1;
     }
@@ -1330,12 +1330,12 @@ s32 msg_emitItemName(s32 id, s32 n) {
     s32 i;
     u8 *t;
 
-    if (id < 0x100) {
+    if (id < ITEM_ID_KEY_FIRST) {
         t = g_itemNames + g_itemTable[id].name;
-    } else if (id < 0x200) {
-        t = g_keyItemNames + g_keyItemTable[id - 0x100].name;
+    } else if (id < ITEM_ID_CARD_FIRST) {
+        t = g_keyItemNames + g_keyItemTable[id - ITEM_ID_KEY_FIRST].name;
     } else {
-        t = (u8 *)card_getName(id - 0x200);
+        t = (u8 *)card_getName(id - ITEM_ID_CARD_FIRST);
     }
     s = t;
     for (len = 0; len < 32; len++) {

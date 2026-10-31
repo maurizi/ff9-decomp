@@ -20,7 +20,6 @@ enum { SHOP_MODE_INIT, SHOP_MODE_UPDATE, SHOP_MODE_EXIT }; /* s_shopModes[kind][
 /* ShopBuy/ShopSynth/ShopSell.state: index into their input tables */
 enum { SHOP_ST_NONE, SHOP_ST_LIST, SHOP_ST_QUANTITY };
 #define SHOP_QUANTITY_STEP 10 /* Up/Down in the quantity window */
-#define ITEM_NONE      0xFF
 #define ITEM_MAX_COUNT 99
 #define GIL_MAX        9999999
 
@@ -166,11 +165,6 @@ extern u8 s_shopImage[];
 
 extern u8 g_shopBuyText[];
 /* main exe: candidates for ff9.h */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67  /* cursor move / pick */
-#define SE_BUZZER 0x66  /* refused action */
-#define SE_CANCEL 0x65  /* Circle backs out */
-#endif
 #define SE_SHOP 0x415   /* Cross in a shop quantity window: buy / sell / synthesize */
 s32 item_getEquipSlot(s32); /* equip slot of an item, -1 = not equipment */
 s32 chr_getPortrait(s32); /* main.c defines it returning u8; used unmasked */

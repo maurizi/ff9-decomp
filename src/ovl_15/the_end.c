@@ -126,8 +126,8 @@ s32 ending_theEndInit(void) {
     file_setTimPos(p, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
     file_loadTim(p);
     akao_stopMusic(0);
-    ending_soundCmd(0, ENDING_MUSIC, 0, 0, 0);
-    ending_soundCmd(0xC401, ENDING_MUSIC, 0x5A, 0, 0x7F);
+    ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
+    ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, 0x7F);
     game_startFade(1, 1, 0, 0xFFFFFF);
     g_theEndState = THEEND_ST_START;
     g_theEndUnused = 0;
@@ -329,12 +329,12 @@ void ending_exit(void) {
 
     SetDispMask(0);
     if (g_gameState->gameData->flags & 0x20000000) {
-        ending_soundCmd(0x8301, ENDING_MUSIC, 0x5A, 0, 0);
+        ending_soundCmd(SND_SONG_VOL_INTPL, ENDING_MUSIC, 0x5A, 0, 0);
         for (i = 0x59; i >= 0; i--) {
             VSync(0);
         }
     }
-    ending_soundCmd(0x100, ENDING_MUSIC, 0, 0, 0);
+    ending_soundCmd(SND_MUSIC_STOP, ENDING_MUSIC, 0, 0, 0);
     db_unregister(g_endingData);
     g_endingData = NULL;
 }

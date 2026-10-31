@@ -133,15 +133,15 @@ void fld_discPromptLeave(void) {
 void fld_discPromptInput(void) {
     if (!fade_isBusy()) {
         if (g_padRepeat & (PAD_UP | PAD_DOWN)) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             g_fieldDiscChange.cursor ^= 1;
         } else if (g_padRepeat & BTN_CIRCLE) {
             if (g_fieldDiscChange.cursor == 0) {
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 g_fieldDiscChange.cursor = 1;
             }
         } else if (g_padRepeat & BTN_CROSS) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             fade_outDefault();
             fade_setOnDone(fld_discPromptSelect);
         }

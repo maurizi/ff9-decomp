@@ -1133,7 +1133,7 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
 void btlfx_playSwingSound(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
     if (btlfx_isPartyUnit(arg0) != 0) {
-        btl_soundCmd(0xD000, btl_getWeaponSound((u8)u->flags >> 5, 0), 0, btl_soundPan(arg0), 0x7F);
+        btl_soundCmd(SND_SE_PLAY, btl_getWeaponSound((u8)u->flags >> 5, 0), 0, btl_soundPan(arg0), SND_VOL_MAX);
     }
 }
 

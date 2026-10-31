@@ -21,7 +21,7 @@ s32 evt_getSysVar(s32 op) {
         r = g_evtState->controlEnabled;
         break;
     case 3:
-        r = fld_soundCommand(0xC00, -1, 0, 0, 0);
+        r = fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0);
         break;
     case 4:
         r = g_evtTalkAngle;
@@ -1984,23 +1984,23 @@ s32 evt_execInstr(void) {
     case EVT_OP_ADD_ITEM:
         a = evt_getArg16_inline();
         b = evt_getArg8_inline();
-        if (a < 0x100) {
+        if (a < ITEM_ID_KEY_FIRST) {
             item_add(a, b);
-        } else if (a < 0x200) {
-            keyItem_add(a - 0x100);
+        } else if (a < ITEM_ID_CARD_FIRST) {
+            keyItem_add(a - ITEM_ID_KEY_FIRST);
         } else {
             while (--b != -1) {
-                card_add(a - 0x200);
+                card_add(a - ITEM_ID_CARD_FIRST);
             }
         }
         return 0;
     case 0x49:
         a = evt_getArg16_inline();
         b = evt_getArg8_inline();
-        if (a < 0x100) {
+        if (a < ITEM_ID_KEY_FIRST) {
             item_remove(a, b);
-        } else if (a < 0x200) {
-            keyItem_remove(a - 0x100);
+        } else if (a < ITEM_ID_CARD_FIRST) {
+            keyItem_remove(a - ITEM_ID_KEY_FIRST);
         }
         return 0;
     case 0xCE:

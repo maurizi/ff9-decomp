@@ -134,7 +134,7 @@ u8 discChange_checkDisc(void) {
         cd_stopMotor();
         return DISC_CHECK_WRONG_DISC;
     }
-    snd_playSe(0x4ED);
+    snd_playSe(SE_COMPLETE);
     return DISC_CHECK_OK;
 }
 

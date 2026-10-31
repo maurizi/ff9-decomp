@@ -108,7 +108,7 @@ s32 opening_attract(s32 arg0) {
             if (!(g_attractFlags.bits & ATTRACT_IDLE_FADE) && (u8)scene_isTitleIdle() && timer < TITLE_IDLE_FADE + 1) {
                 game_startFade(1, 1, TITLE_IDLE_FADE, 0xFFFFFF);
                 if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
-                    opening_soundCmd(0x8301, TITLE_MUSIC, 0x5A, 0, 0);
+                    opening_soundCmd(SND_SONG_VOL_INTPL, TITLE_MUSIC, 0x5A, 0, 0);
                 }
                 g_attractFlags.bits |= ATTRACT_IDLE_FADE;
             }
@@ -117,7 +117,7 @@ s32 opening_attract(s32 arg0) {
                     g_attractState = ATTRACT_ST_TIMEOUT;
                 }
                 if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
-                    opening_soundCmd(0x100, TITLE_MUSIC, 0, 0, 0);
+                    opening_soundCmd(SND_MUSIC_STOP, TITLE_MUSIC, 0, 0, 0);
                 }
             }
             if ((g_attractFlags.bits & ATTRACT_IDLE_FADE) || (u8)scene_isTitleIdle()) {

@@ -30,22 +30,22 @@ s32 akao_setSeTables(u8 *a) {
 
 s32 akao_playMusic(void *a) {
     g_akaoArgs.arg0 = (s32)a;
-    return akao_command(0x10);
+    return akao_command(AKAO_CMD_PLAY_MUSIC);
 }
 
 void akao_stopMusic(s32 a) {
     g_akaoArgs.arg0 = a;
-    akao_command(0x11);
+    akao_command(AKAO_CMD_STOP_MUSIC);
 }
 
 void akao_playMusicFrom(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b;
-    akao_command(0x14);
+    akao_command(AKAO_CMD_PLAY_MUSIC_FROM);
 }
 
 void akao_saveMusic(void) {
-    akao_command(0x40);
+    akao_command(AKAO_CMD_SAVE_MUSIC);
 }
 
 s32 akao_clearSavedMusic(void) {
@@ -58,20 +58,20 @@ s32 akao_clearSavedMusic(void) {
 void akao_pushMusic(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0x7F;
-    akao_command(0x19);
+    akao_command(AKAO_CMD_PUSH_MUSIC);
 }
 
 void akao_crossfadeMusic(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b;
     g_akaoArgs.arg2 = c & 0x7F;
-    akao_command(0x1A);
+    akao_command(AKAO_CMD_CROSSFADE_MUSIC);
 }
 
 s32 akao_playMusicCount(void *a, s32 b) {
     g_akaoArgs.arg0 = (s32)a;
     g_akaoArgs.arg1 = b;
-    return akao_command(0x12);
+    return akao_command(AKAO_CMD_PLAY_MUSIC_COUNT);
 }
 
 s32 akao_playSe(s32 a, s32 b, s32 c, s32 d) {
@@ -86,21 +86,21 @@ s32 akao_playSe(s32 a, s32 b, s32 c, s32 d) {
         if (r != 0) {
             return r;
         }
-        akao_command(0x24);
+        akao_command(AKAO_CMD_PLAY_SE_BANK);
         return a;
     }
-    return akao_command(0x20);
+    return akao_command(AKAO_CMD_PLAY_SE);
 }
 
 void akao_stopSe(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFFFFFF;
-    akao_command(0x21);
+    akao_command(AKAO_CMD_STOP_SE);
 }
 
 void akao_playSeDefault(s32 a) {
     g_akaoArgs.arg0 = a & 0x3FF;
-    akao_command(0x30);
+    akao_command(AKAO_CMD_PLAY_SE_DEFAULT);
 }
 
 u32 akao_getActiveSe(void) {
@@ -147,37 +147,37 @@ s32 akao_isSePlaying(u32 id) {
 
 void akao_setOutputMode(s32 a) {
     if (a == 1) {
-        a = 0x81;
+        a = AKAO_CMD_SET_OUTPUT_MODE2;
     } else {
-        a = 0x80;
+        a = AKAO_CMD_SET_OUTPUT_MODE1;
     }
     akao_command(a);
 }
 
 void akao_setMuteMask(s32 a) {
     g_akaoArgs.arg0 = a;
-    akao_command(0x90);
+    akao_command(AKAO_CMD_SET_MUTE_MASK);
 }
 
 void akao_setCondition(s32 a) {
     g_akaoArgs.arg0 = a;
-    akao_command(0x92);
+    akao_command(AKAO_CMD_SET_CONDITION);
 }
 
 void akao_pause(u32 x) {
     s32 cmd;
     switch (x) {
     case 1:
-        cmd = 0x9B;
+        cmd = AKAO_CMD_PAUSE_MUSIC;
         break;
     case 2:
-        cmd = 0x9D;
+        cmd = AKAO_CMD_PAUSE_SE;
         break;
     case 3:
-        cmd = 0x9F;
+        cmd = AKAO_CMD_PAUSE_STREAM;
         break;
     default:
-        cmd = 0x99;
+        cmd = AKAO_CMD_PAUSE_ALL;
         break;
     }
     akao_command(cmd);
@@ -187,16 +187,16 @@ void akao_resume(u32 x) {
     s32 cmd;
     switch (x) {
     case 1:
-        cmd = 0x9A;
+        cmd = AKAO_CMD_RESUME_MUSIC;
         break;
     case 2:
-        cmd = 0x9C;
+        cmd = AKAO_CMD_RESUME_SE;
         break;
     case 3:
-        cmd = 0x9E;
+        cmd = AKAO_CMD_RESUME_STREAM;
         break;
     default:
-        cmd = 0x98;
+        cmd = AKAO_CMD_RESUME_ALL;
         break;
     }
     akao_command(cmd);
@@ -204,20 +204,20 @@ void akao_resume(u32 x) {
 
 void akao_setAllSeVolume(s32 a) {
     g_akaoArgs.arg0 = a & 0x7F;
-    akao_command(0xA8);
+    akao_command(AKAO_CMD_SET_ALL_SE_VOLUME);
 }
 
 void akao_fadeAllSeVolume(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0x7F;
-    akao_command(0xA9);
+    akao_command(AKAO_CMD_FADE_ALL_SE_VOLUME);
 }
 
 void akao_setSeVolume(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFFFFFF;
     g_akaoArgs.arg2 = c & 0x7F;
-    akao_command(0xA0);
+    akao_command(AKAO_CMD_SET_SE_VOLUME);
 }
 
 void akao_fadeSeVolume(s32 a, s32 b, s32 c, s32 d) {
@@ -225,25 +225,25 @@ void akao_fadeSeVolume(s32 a, s32 b, s32 c, s32 d) {
     g_akaoArgs.arg1 = b & 0xFFFFFF;
     g_akaoArgs.arg2 = c;
     g_akaoArgs.arg3 = d & 0x7F;
-    akao_command(0xA1);
+    akao_command(AKAO_CMD_FADE_SE_VOLUME);
 }
 
 void akao_sendCmdAA(s32 a) {
     g_akaoArgs.arg0 = a & 0xFF;
-    akao_command(0xAA);
+    akao_command(AKAO_CMD_SET_ALL_SE_PAN);
 }
 
 void akao_sendCmdAB(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
-    akao_command(0xAB);
+    akao_command(AKAO_CMD_FADE_ALL_SE_PAN);
 }
 
 void akao_sendCmdA2(s32 a, s32 b, u8 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFFFFFF;
     g_akaoArgs.arg2 = c;
-    akao_command(0xA2);
+    akao_command(AKAO_CMD_SET_SE_PAN);
 }
 
 void akao_sendCmdA3(s32 a, s32 b, s32 c, u8 d) {
@@ -251,25 +251,25 @@ void akao_sendCmdA3(s32 a, s32 b, s32 c, u8 d) {
     g_akaoArgs.arg1 = b & 0xFFFFFF;
     g_akaoArgs.arg2 = c;
     g_akaoArgs.arg3 = d;
-    akao_command(0xA3);
+    akao_command(AKAO_CMD_FADE_SE_PAN);
 }
 
 void akao_sendCmdAC(s32 a) {
     g_akaoArgs.arg0 = a & 0xFF;
-    akao_command(0xAC);
+    akao_command(AKAO_CMD_SET_ALL_SE_PITCH);
 }
 
 void akao_sendCmdAD(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
-    akao_command(0xAD);
+    akao_command(AKAO_CMD_FADE_ALL_SE_PITCH);
 }
 
 void akao_sendCmdA4(s32 a, s32 b, u8 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFFFFFF;
     g_akaoArgs.arg2 = c;
-    akao_command(0xA4);
+    akao_command(AKAO_CMD_SET_SE_PITCH);
 }
 
 void akao_sendCmdA5(s32 a, s32 b, s32 c, u8 d) {
@@ -277,20 +277,20 @@ void akao_sendCmdA5(s32 a, s32 b, s32 c, u8 d) {
     g_akaoArgs.arg1 = b & 0xFFFFFF;
     g_akaoArgs.arg2 = c;
     g_akaoArgs.arg3 = d;
-    akao_command(0xA5);
+    akao_command(AKAO_CMD_FADE_SE_PITCH);
 }
 
 void akao_setMusicVolume(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0x7F;
-    akao_command(0xC0);
+    akao_command(AKAO_CMD_SET_MUSIC_VOLUME);
 }
 
 void akao_fadeMusicVolume(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b;
     g_akaoArgs.arg2 = c & 0x7F;
-    akao_command(0xC1);
+    akao_command(AKAO_CMD_FADE_MUSIC_VOLUME);
 }
 
 void akao_fadeMusicVolumeFrom(s32 a, s32 b, s32 c, s32 d) {
@@ -298,100 +298,100 @@ void akao_fadeMusicVolumeFrom(s32 a, s32 b, s32 c, s32 d) {
     g_akaoArgs.arg1 = b;
     g_akaoArgs.arg2 = c & 0x7F;
     g_akaoArgs.arg3 = d & 0x7F;
-    akao_command(0xC2);
+    akao_command(AKAO_CMD_FADE_MUSIC_VOLUME_FROM);
 }
 
 void akao_sendCmdC4(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0x7F;
-    akao_command(0xC4);
+    akao_command(AKAO_CMD_SET_MUSIC_PAN);
 }
 
 void akao_sendCmdC5(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b;
     g_akaoArgs.arg2 = c & 0x7F;
-    akao_command(0xC5);
+    akao_command(AKAO_CMD_FADE_MUSIC_PAN);
 }
 
 void akao_setCdVolume(s32 a) {
     g_akaoArgs.arg0 = a;
-    akao_command(0x70);
+    akao_command(AKAO_CMD_SET_CD_VOLUME);
 }
 
 void akao_fadeCdVolume(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b;
-    akao_command(0x71);
+    akao_command(AKAO_CMD_FADE_CD_VOLUME);
 }
 
 void akao_fadeCdVolumeFrom(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b;
     g_akaoArgs.arg2 = c;
-    akao_command(0x72);
+    akao_command(AKAO_CMD_FADE_CD_VOLUME_FROM);
 }
 
 void akao_setTempoScale(s32 a) {
     g_akaoArgs.arg0 = a & 0xFF;
-    akao_command(0xD0);
+    akao_command(AKAO_CMD_SET_TEMPO_SCALE);
 }
 
 void akao_fadeTempoScale(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
-    akao_command(0xD1);
+    akao_command(AKAO_CMD_FADE_TEMPO_SCALE);
 }
 
 void akao_fadeTempoScaleFrom(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
     g_akaoArgs.arg2 = c & 0xFF;
-    akao_command(0xD2);
+    akao_command(AKAO_CMD_FADE_TEMPO_SCALE_FROM);
 }
 
 void akao_setPitchScale(s32 a) {
     g_akaoArgs.arg0 = a & 0xFF;
-    akao_command(0xD4);
+    akao_command(AKAO_CMD_SET_PITCH_SCALE);
 }
 
 void akao_fadePitchScale(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
-    akao_command(0xD5);
+    akao_command(AKAO_CMD_FADE_PITCH_SCALE);
 }
 
 void akao_fadePitchScaleFrom(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
     g_akaoArgs.arg2 = c & 0xFF;
-    akao_command(0xD6);
+    akao_command(AKAO_CMD_FADE_PITCH_SCALE_FROM);
 }
 
 void akao_setTempoPitchScale(s32 a) {
     g_akaoArgs.arg0 = a & 0xFF;
-    akao_command(0xD8);
+    akao_command(AKAO_CMD_SET_TEMPO_PITCH_SCALE);
 }
 
 void akao_fadeTempoPitchScale(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
-    akao_command(0xD9);
+    akao_command(AKAO_CMD_FADE_TEMPO_PITCH_SCALE);
 }
 
 void akao_fadeTempoPitchScaleFrom(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
     g_akaoArgs.arg2 = c & 0xFF;
-    akao_command(0xDA);
+    akao_command(AKAO_CMD_FADE_TEMPO_PITCH_SCALE_FROM);
 }
 
 void akao_stopMusicNow(void) {
-    akao_command(0xF0);
+    akao_command(AKAO_CMD_STOP_MUSIC_NOW);
 }
 
 void akao_stopAllSe(void) {
-    akao_command(0xF1);
+    akao_command(AKAO_CMD_STOP_ALL_SE);
 }
 
 void akao_loadBankRetry(s32 a, s32 b) {
@@ -538,28 +538,28 @@ void akao_sendCmdE0(s32 *a, s32 b, s32 c) {
         g_akaoArgs.arg0 = (s32)a;
         g_akaoArgs.arg1 = (b & 0xFF) << 8;
         g_akaoArgs.arg2 = c;
-        akao_command(0xE0);
+        akao_command(AKAO_CMD_STREAM_START);
     }
 }
 
 void akao_sendCmdE2(void) {
-    akao_command(0xE2);
+    akao_command(AKAO_CMD_STREAM_STOP);
 }
 
 void akao_sendCmdE4(s32 a) {
     g_akaoArgs.arg0 = (a & 0x7F) << 8;
-    akao_command(0xE4);
+    akao_command(AKAO_CMD_SET_STREAM_VOLUME);
 }
 
 void akao_sendCmdE5(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = (b & 0x7F) << 8;
-    akao_command(0xE5);
+    akao_command(AKAO_CMD_FADE_STREAM_VOLUME);
 }
 
 void akao_sendCmdE6(s32 a) {
     g_akaoArgs.arg0 = (a & 0xFF) << 8;
-    akao_command(0xE6);
+    akao_command(AKAO_CMD_SET_STREAM_PAN);
 }
 
 s32 akao_uploadSeBank(s32 *a, s32 b) {
@@ -588,7 +588,7 @@ s32 akao_uploadSeBank(s32 *a, s32 b) {
 void akao_sendCmdED(s32 a, s32 b) {
     g_akaoArgs.arg0 = (a & 0xFF) << 8;
     g_akaoArgs.arg1 = b;
-    akao_command(0xED);
+    akao_command(AKAO_CMD_STREAM_PLAY_RESIDENT);
 }
 
 void akao_sendCmdEC(s32 *a, s32 b, s32 c, s32 d) {
@@ -602,7 +602,7 @@ void akao_sendCmdEC(s32 *a, s32 b, s32 c, s32 d) {
         g_akaoArgs.arg1 = (b & 0xFF) << 8;
         g_akaoArgs.arg2 = x;
         g_akaoArgs.arg3 = d;
-        akao_command(0xEC);
+        akao_command(AKAO_CMD_STREAM_PLAY_ONE_SHOT);
     }
 }
 
@@ -612,7 +612,7 @@ s32 akao_sendCmdE8(s32 a, s32 b) {
     }
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b;
-    akao_command(0xE8);
+    akao_command(AKAO_CMD_STREAM_SETUP_RING);
     return 0;
 }
 

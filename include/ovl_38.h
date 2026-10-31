@@ -16,8 +16,6 @@ enum {
 
 #define STATUS_NO_SLOT      0xFF /* StatusMenu.slot before the first character is shown */
 #define STATUS_PAGE_ROWS    8    /* abilities per page window */
-#define STATUS_ABILITY_MAX  0x30 /* entries in a character's g_abilityRows ability row */
-#define STATUS_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
 
 /* g_statusMenuText ids */
 #define STATUS_TEXT_HELP   0   /* help: the status ailments */
@@ -103,18 +101,6 @@ extern StatusTable s_menuStatusCmdTable;
 extern StatusPool s_menuStatusCmdNames;
 
 /* main exe: candidates for ff9.h */
-/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
- * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused; SE_PAGE is menuList_pageUp/pageDown's
- * sound, also played on L1/R1 character switches. */
-#ifndef SE_CURSOR
-#define SE_CURSOR 0x67
-#define SE_BUZZER 0x66
-#define SE_CANCEL 0x65
-#define SE_PAGE   0x417
-#endif
-#ifndef ITEM_NONE
-#define ITEM_NONE 0xFF /* empty Character.equip slot */
-#endif
 extern s32 g_labelCommand;
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
 typedef struct {

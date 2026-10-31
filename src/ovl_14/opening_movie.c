@@ -22,8 +22,8 @@ s32 opening_movieThenTitle(void) {
                 fade_clear();
             } else {
                 if (!(g_gameState->gameData->flags & 0x20000000)) {
-                    opening_soundCmd(0, TITLE_MUSIC, 0, 0, 0);
-                    opening_soundCmd(0xC401, TITLE_MUSIC, 0x5A, 0, 0x7F);
+                    opening_soundCmd(SND_MUSIC_PLAY, TITLE_MUSIC, 0, 0, 0);
+                    opening_soundCmd(SND_SONG_VOL_FROM_INTPL, TITLE_MUSIC, 0x5A, 0, 0x7F);
                 }
                 g_movieSkipped = 1;
                 g_movieState = MOVIE_ST_END;
@@ -61,8 +61,8 @@ s32 opening_movieThenTitle(void) {
                         mbg_stop();
                         cd_pause();
                         if (!(g_gameState->gameData->flags & 0x20000000)) {
-                            opening_soundCmd(0, TITLE_MUSIC, 0, 0, 0);
-                            opening_soundCmd(0xC401, TITLE_MUSIC, 0x5A, 0, 0x7F);
+                            opening_soundCmd(SND_MUSIC_PLAY, TITLE_MUSIC, 0, 0, 0);
+                            opening_soundCmd(SND_SONG_VOL_FROM_INTPL, TITLE_MUSIC, 0x5A, 0, 0x7F);
                         }
                     }
                     if (g_movieLastFrame >= g_mbgFrame) {
@@ -77,7 +77,7 @@ s32 opening_movieThenTitle(void) {
                     g_movieFlags |= MOVIE_ENDED;
                 }
                 if (!(g_movieFlags & MOVIE_MUSIC) && g_mbgFrame > 0) {
-                    opening_soundCmd(0, TITLE_MUSIC, 0, 0, 0);
+                    opening_soundCmd(SND_MUSIC_PLAY, TITLE_MUSIC, 0, 0, 0);
                     g_movieFlags |= MOVIE_MUSIC;
                 }
                 if (!(g_movieFlags & MOVIE_SKIPPING) && (g_padPortPressed[0] & (PAD_START | PAD_CROSS)) && g_mbgFrame < end) {

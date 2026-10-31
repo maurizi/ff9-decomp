@@ -158,7 +158,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         return 0;
     }
     {
-        if (u == cmd->caster && (u32)(cmd->cmdNo - 0x37) >= 7) {
+        if (u == cmd->caster && (u32)(cmd->cmdNo - BTL_CMD_ENEMY_REACT) >= 7) {
             cur = (s32)u->model->motion;
             if (cur == u->motions[10] || cur == u->motions[11]) {
                 u->model->motion = (BtlUnit9CC *)u->motions[9];
@@ -308,8 +308,8 @@ void btl_updateKo(BtlUnit *u) {
             }
             return;
         case 3:
-            btl_playUnitSound(u, 0x79, 0x7F);
-            btl_playUnitSound(u, 0x78, 0x7F);
+            btl_playUnitSound(u, SE_ENEMY_DEATH_1, 0x7F);
+            btl_playUnitSound(u, SE_ENEMY_DEATH_2, 0x7F);
             u->koState++;
         case 4:
             btl_setUnitFade(u, e->flags & 0x3F);

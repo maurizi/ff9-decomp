@@ -536,7 +536,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
     case 0x4E:
         arg0->atb = arg0->max->maxAtb;
         arg0->cmdIssued = 1;
-        btl_setCmd(arg0->cmd, BTL_CMD_SUMMON2, BTL_ABIL_TERRA_HOMING, (u16)arg2, 8);
+        btl_setCmd(arg0->cmd, BTL_CMD_SUMMON2, ABIL_TERRA_HOMING, (u16)arg2, 8);
         btlui_enable(1);
         btlui_setAtbEnabled(1);
         break;
@@ -579,7 +579,7 @@ s32 btl_getBattleVar(s32 arg0) {
     case BTL_GETVAR_ABILITY_ELEMENT:
         if (b->curCmd != NULL && b->curCmd->caster != NULL) {
             r = 0;
-            if (!(b->curCmd->caster->support[1] & 1)) {
+            if (!(b->curCmd->caster->support[1] & SA_BIT(SA_MAG_ELEM_NULL))) {
                 r = b->curCmd->ability->element;
             }
         }
@@ -678,7 +678,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         }
         break;
     case 40:
-        btl_soundCmd(0x8601, 0, 0x1E, 0, 0);
+        btl_soundCmd(SND_MUSIC_VOL_INTPL, 0, 0x1E, 0, 0);
         g_gameState->gameData->battleFlags |= 0x10;
         break;
     }

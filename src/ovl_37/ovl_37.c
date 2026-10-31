@@ -137,7 +137,7 @@ void menuItem_selectItem(s32 idx, MenuList *l) {
         if (it->slots & 1) {
             s_menuItem.targetKind = e->targetKind;
             ok = 1;
-            s_menuItem.targetMode = p->unk0 != 0xFB ? e->targetMode : 0;
+            s_menuItem.targetMode = p->unk0 != ITEM_GYSAHL_GREENS ? e->targetMode : 0;
             if (s_menuItem.targetMode == 0) {
                 menuItem_useOnTarget(p->unk0);
             } else {
@@ -470,7 +470,7 @@ void menuItem_update(void) {
 
 void menuItem_exit(void) {
     if (g_gameState->mode == 3) {
-        snd_stopSe(0x44A);
+        snd_stopSe(SE_CHOCOBO_CALL);
     }
     help_setLocked(0);
     help_setCursorOnTop(1);
@@ -695,7 +695,7 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
 
 void menuItem_onKwehOpened(Window *w) {
     if (g_gameState->mode == 3) {
-        snd_startSe(0x44A);
+        snd_startSe(SE_CHOCOBO_CALL);
     }
 }
 
@@ -716,7 +716,7 @@ void menuItem_stepKweh(void) {
             if (t >= 0x60) {
                 s_menuItem.popupTimer = 0;
                 if (g_gameState->mode == 3) {
-                    snd_stopSe(0x44A);
+                    snd_stopSe(SE_CHOCOBO_CALL);
                 }
                 help_setLocked(0);
                 help_setCursorOnTop(1);

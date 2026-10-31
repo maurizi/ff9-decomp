@@ -252,7 +252,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
             u->obj->frame = 0;
         }
         c = g_gameState->gameData->ctx.battle->curCmd;
-        if (c->caster != u || c->cmdNo > 0x30) {
+        if (c->caster != u || c->cmdNo > BTL_CMD_TABLE_COUNT) {
             u->cmdIssued = 0;
         }
         btl_removeQueuedCmd(u, BTL_CMD_KO);
@@ -356,7 +356,7 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                         t->regenTimer -= arg0->atbSpeed;
                     }
                 }
-                if ((arg0->status & BTL_STATUS_TRANCE) && ((arg0->flags >> 1) & 0xF) == 2) {
+                if ((arg0->status & BTL_STATUS_TRANCE) && ((arg0->flags >> 1) & 0xF) == CHR_DAGGER) {
                     b = g_gameState->gameData->ctx.battle;
                     fl = b->cmdFlags;
                     if (fl & 4) {
@@ -376,9 +376,9 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                 if (t->jumpTimer < 0) {
                     c = arg0->delayedCmd;
                     if (c->cmdNo == BTL_CMD_JUMP) {
-                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR, BTL_ABIL_SPEAR, (u16)c->targets);
+                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR, ABIL_SPEAR, (u16)c->targets);
                     } else {
-                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR_TRANCE, BTL_ABIL_SPEAR_TRANCE, (u16)c->targets);
+                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR_TRANCE, ABIL_SPEAR_TRANCE, (u16)c->targets);
                     }
                 }
             }
@@ -814,10 +814,10 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
-                k = item_getCount(0xF9);
+                k = item_getCount(ITEM_PHOENIX_PINION);
                 if (*g_randPtr++ < k) {
                     btlui_setAtbEnabled(1);
-                    btl_setCmd(u->cmd, BTL_CMD_REBIRTH_FLAME, BTL_ABIL_REBIRTH_FLAME, btl_getUnitMask(0) & 0xFFFF, 1);
+                    btl_setCmd(u->cmd, BTL_CMD_REBIRTH_FLAME, ABIL_REBIRTH_FLAME, btl_getUnitMask(0) & 0xFFFF, 1);
                     return;
                 }
             }
@@ -837,7 +837,7 @@ s32 btl_rollAmbush(u32 *arg0) {
         r = (((*arg0 >> 3) & 1) == 0) * 2;
     } else {
         th = 0x18;
-        if ((u8)btl_partyHasSupport(1, 0x200)) {
+        if ((u8)btl_partyHasSupport(1, SA_BIT(SA_ALERT))) {
             th = 0;
         } else if ((*arg0 >> 3) & 1) {
             th = 0xFF;
@@ -849,7 +849,7 @@ s32 btl_rollAmbush(u32 *arg0) {
             r = 0;
         } else {
             th = 0x10;
-            if ((u8)btl_partyHasSupport(1, 0x400)) {
+            if ((u8)btl_partyHasSupport(1, SA_BIT(SA_INITIATIVE))) {
                 th = 0x55;
             }
             if (g_randPtr >= g_randTableEnd) {
@@ -1004,7 +1004,7 @@ void btl_saveCharacter(BtlUnit *arg0, s32 arg1) {
         c->trance = arg0->trance;
     }
     btl_copyStats((Unk800BD8C0 *)&c->hp, (Unk800BD8C0 *)&arg0->hp);
-    if ((arg0->support[1] & 0x8000) && arg1 == 0) {
+    if ((arg0->support[1] & SA_BIT(SA_GUARDIAN_MOG)) && arg1 == 0) {
         c->status = 0;
         return;
     }
@@ -1184,7 +1184,7 @@ s32 btl_pickRandomUnit(s32 arg0) {
 s32 btl_playVictoryMusic(GameData *arg0, u32 arg1, s32 arg2) {
     Battle *b;
     if (!(arg0->battleFlags & 0x10)) {
-        btl_soundCmd(0x8601, 0, arg1, 0, 0);
+        btl_soundCmd(SND_MUSIC_VOL_INTPL, 0, arg1, 0, 0);
         arg0->battleFlags |= 0x10;
     }
     if (!(arg0->battleFlags & 2)) {
@@ -1193,14 +1193,14 @@ s32 btl_playVictoryMusic(GameData *arg0, u32 arg1, s32 arg2) {
         if ((u32)(s8)b->partyBrightness < arg1) {
             return 0;
         }
-        btl_soundCmd(0x700, arg2, 0, 0, 0);
+        btl_soundCmd(SND_MUSIC_LOAD, arg2, 0, 0, 0);
         arg0->battleFlags |= 2;
     }
-    if (btl_soundCmd(0xC00, 0, 0, 0, 0) != 0) {
+    if (btl_soundCmd(SND_GET_STATE, 0, 0, 0, 0) != 0) {
         return 0;
     }
     if (!(arg0->battleFlags & 0x20)) {
-        btl_soundCmd(0, arg2, 0, 0, 0);
+        btl_soundCmd(SND_MUSIC_PLAY, arg2, 0, 0, 0);
         arg0->battleFlags |= 0x20;
     }
     return 1;
@@ -1227,7 +1227,7 @@ void btl_playUnitSound(BtlUnit *arg0, u16 arg1, u8 arg2) {
         v.vx = arg0->pos[0] >> 16;
         v.vy = arg0->pos[1] >> 16;
         v.vz = arg0->pos[2] >> 16;
-        btl_soundCmd(0xD000, arg1, 0, btl_soundPan((s32)&v), arg2);
+        btl_soundCmd(SND_SE_PLAY, arg1, 0, btl_soundPan((s32)&v), arg2);
     }
 }
 
