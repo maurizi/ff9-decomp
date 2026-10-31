@@ -13,11 +13,11 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos1C);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos1C);
         if (work->emit4 != NULL) {
-            work->emit4->trails = (s32)D_801E7968;
+            work->emit4->trails = (s32)fx_087_trails;
             work->emit4->trailSlots = 0x19;
             work->emit4->trailStride = 0x30;
         }
-        ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos14, (s16 *)&work->unk2C);
+        ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos14, (s16 *)&work->aim2C);
     } else {
         frame = entry->frame;
         if (work->emit4 != NULL) {
@@ -25,9 +25,9 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4 = NULL;
             }
             if (work->emit4 != NULL) {
-                work->emit4->rot.vx = work->unk2C.vx;
-                work->emit4->rot.vy = work->unk2C.vy;
-                work->emit4->rot.vz = work->unk2C.vz;
+                work->emit4->rot.vx = work->aim2C.vx;
+                work->emit4->rot.vy = work->aim2C.vy;
+                work->emit4->rot.vz = work->aim2C.vz;
             }
         }
         if (frame == 8) {

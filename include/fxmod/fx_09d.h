@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR pos0; /* position: env->targets->centerX, -0x190, unk3C */
+    SVECTOR pos0; /* position: env->targets->centerX, -0x190, centerZ */
 } Fx09dWork;
 
 extern Unk800F78A4 *fx_09d_env;

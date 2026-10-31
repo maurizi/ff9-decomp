@@ -6,10 +6,10 @@
  * this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
-extern s16 D_801E9D50[];
+extern s16 fx_097_pieceDist[];
 extern Unk800F78A4 *fx_097_env;
 
-void func_801E8284(s16 *a, s16 *b, s32 i, s16 *out);
+void fx_097_piecePos(s16 *a, s16 *b, s32 i, s16 *out);
 typedef struct {
     s32 vx;
     s32 vy;
@@ -18,33 +18,33 @@ typedef struct {
 
 /* one shard, a pool item */
 typedef struct {
-    s16 unk0; /* state */
-    s16 unk2; /* flying */
-    s32 unk4; /* index */
-    s32 unk8; /* frame */
-    Fx097Vec3 unkC; /* position << 4 */
+    s16 state0; /* state */
+    s16 flying2; /* flying */
+    s32 index4; /* index */
+    s32 frame8; /* frame */
+    Fx097Vec3 posC; /* position << 4 */
     SVECTOR pos18; /* velocity */
     SVECTOR rot20; /* rotation */
-    s16 unk28; /* rotation speed */
-    s16 unk2A;
-    s32 unk2C; /* models */
-    s32 unk30;
+    s16 spinX28; /* rotation speed */
+    s16 spinY2A;
+    s32 model2C; /* models */
+    s32 model30;
     Pool6CEntry *emit34;
 } Fx097Item; /* 0x38 */
 
 typedef struct {
     u8 pad0[0x20];
-    s32 unk20[22]; /* models */
-    s16 unk78;
+    s32 models20[22]; /* models */
+    s16 shatter78;
 } Fx097Work;
 
-extern SVECTOR D_801E9CE8[];
+extern SVECTOR fx_097_shardRot[];
 static s32 fx_097_op80PoolTask(s32 mode, Fx097Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
                   Fx097Work *work);
 
 typedef struct {
-    u32 unk0; /* state */
-    s32 unk4; /* frame */
+    u32 state0; /* state */
+    s32 frame4; /* frame */
     s32 model8; /* models */
     s32 modelC;
     s32 model10;
@@ -56,15 +56,15 @@ typedef struct {
     SVECTOR pos60;
     SVECTOR pos68;
     SVECTOR unk70;
-    s16 unk78;
-    s16 unk7A; /* shards spawned */
-    s32 unk7C;
-    s32 unk80;
+    s16 shatter78;
+    s16 shardCount7A; /* shards spawned */
+    s32 scrollStep7C;
+    s32 scroll80;
     Pool6CEntry *emit84;
 } Fx097Work80; /* 0x88 */
 
 extern BtlModel fx_097_effModels[];
-extern s32 D_801E9D18[14];
+extern s32 fx_097_pieceBlocks[14];
 
 /* propagated */
 

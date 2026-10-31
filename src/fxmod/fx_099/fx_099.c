@@ -13,8 +13,8 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x40;
     } else if (mode == 1) {
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->state0 = 0;
+        work->frame4 = 0;
         fx_099_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         work->pos8.vy = 0;
@@ -28,19 +28,19 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (r > 0x2000) {
             r = 0x2000;
         }
-        work->unk18 = r / 2;
-        work->unk20.vx = 0;
-        work->unk20.vy = 0;
-        work->unk20.vz = 0;
-        work->unk28[0] = work->unk18;
-        work->unk28[1] = work->unk18;
-        work->unk28[2] = work->unk18;
-        work->unk34[0] = work->pos8.vx;
-        work->unk34[1] = work->pos8.vy;
-        work->unk34[2] = work->pos8.vz;
+        work->scale18 = r / 2;
+        work->rot20.vx = 0;
+        work->rot20.vy = 0;
+        work->rot20.vz = 0;
+        work->scale28[0] = work->scale18;
+        work->scale28[1] = work->scale18;
+        work->scale28[2] = work->scale18;
+        work->modelPos34[0] = work->pos8.vx;
+        work->modelPos34[1] = work->pos8.vy;
+        work->modelPos34[2] = work->pos8.vz;
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
@@ -54,17 +54,17 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (t > 0x1000) {
                         t = 0x1000;
                     }
-                    rot.vx = work->unk20.vx;
-                    rot.vy = work->unk20.vy;
-                    rot.vz = work->unk20.vz;
+                    rot.vx = work->rot20.vx;
+                    rot.vy = work->rot20.vy;
+                    rot.vz = work->rot20.vz;
                     rot.vy += (i << 12) / 5;
                     rot.vx += 0x200 - (ex->math_sin(t >> 2) >> 3);
                     ex->Hi_SetEffModelSlice(work->model1C, 0);
-                    ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->unk34, (s32)work->unk28, work->model1C);
+                    ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->modelPos34, (s32)work->scale28, work->model1C);
                 }
             }
             if (frame >= 0x17) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
@@ -77,12 +77,12 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         if (t > 0x1000) {
                             t = 0x1000;
                         }
-                        rot.vx = work->unk20.vx;
-                        rot.vy = work->unk20.vy;
-                        rot.vz = work->unk20.vz;
+                        rot.vx = work->rot20.vx;
+                        rot.vy = work->rot20.vy;
+                        rot.vz = work->rot20.vz;
                         rot.vy += (i << 12) / 5;
                         ex->Hi_SetEffModelSlice(work->model1C, 0);
-                        ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->unk34, (s32)work->unk28, work->model1C);
+                        ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->modelPos34, (s32)work->scale28, work->model1C);
                         ex->Hi_ModifyEffModelAbr(work->model1C, 1);
                         ex->Hi_ModifyEffModelRGB(work->model1C, c, c, c);
                     }
@@ -106,7 +106,7 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }

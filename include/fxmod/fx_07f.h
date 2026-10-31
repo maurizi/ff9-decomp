@@ -5,11 +5,11 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame for btlfx_drawBackdrop */
+    s32 state0; /* state */
+    s32 bgFrame4; /* frame for btlfx_drawBackdrop */
     SVECTOR pos8; /* position: env->targets->centerX */
-    SVECTOR pos10; /* unk8 raised by 0x180 */
-    s32 unk18[3]; /* model position (VECTOR without its pad word) */
+    SVECTOR pos10; /* pos8 raised by 0x180 */
+    s32 modelPos18[3]; /* model position (VECTOR without its pad word) */
     SVECTOR rot24; /* model rotation */
     s32 model2C; /* model */
     s32 model30; /* model */

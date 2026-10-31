@@ -1,23 +1,25 @@
 #ifndef FX_0B4_H
 #define FX_0B4_H
 
-/* Effect module fx_0b4 (dir 13 file 0xB4). */
+/* Effect module fx_0b4 (dir 13 file 0xB4): enemy Aero (Griffin and others). Six emitters whose particles follow
+ * rotation+position paths (fxm_followPathParticle). Evidence: [data] the party ability / item tables and enemy
+ * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 unk0[3]; /* position */
-    s16 unk6[3]; /* rotation */
+    s16 pos0[3]; /* position */
+    s16 rot6[3]; /* rotation */
 } Fx0b4Key; /* 0xC */
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* keys */
-    Fx0b4Key *unk4;
+    u16 count2; /* keys */
+    Fx0b4Key *keys4;
 } Fx0b4Path;
 
 typedef struct {
-    u16 unk0; /* start frame */
-    u16 unk2; /* frames since the start */
+    u16 start0; /* start frame */
+    u16 count2; /* frames since the start */
 } Fx0b4Timer;
 
 typedef struct {
@@ -31,17 +33,17 @@ typedef struct {
     SVECTOR pos34; /* caster position */
 } Fx0b4Work;
 
-extern Fx0b4Timer D_801E80EC[6];
-extern u16 D_801E8104[6]; /* particle files */
-extern u16 D_801E8110[6]; /* path files */
-extern SVECTOR D_801E811C;
+extern Fx0b4Timer fx_0b4_timers[6];
+extern u16 fx_0b4_emitBlocks[6]; /* particle files */
+extern u16 fx_0b4_pathBlocks[6]; /* path files */
+extern SVECTOR fx_0b4_emitRot;
 extern s32 (*fx_0b4_op80ParticleMotions[6])(); /* motion callbacks */
 extern Unk800F78A4 *fx_0b4_env;
-extern SVECTOR D_801E818C; /* path origin */
-extern SVECTOR D_801E8194[6];
-extern Fx0b4Path D_801E81C4[6];
-extern s32 D_801E81F4[6][0x360];
-extern s32 D_801ED2F4[];
+extern SVECTOR fx_0b4_pathOrigin; /* path origin */
+extern SVECTOR fx_0b4_emitStartPos[6];
+extern Fx0b4Path fx_0b4_paths[6];
+extern s32 fx_0b4_trails[6][0x360];
+extern s32 fx_0b4_trails2[];
 
 s32 fx_0b4_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 fx_0b4_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);

@@ -1,7 +1,9 @@
 #ifndef FX_08D_H
 #define FX_08D_H
 
-/* Effect module fx_08d (dir 13 file 0x8D). */
+/* Effect module fx_08d (dir 13 file 0x8D): Cura, one target (party; item Hi-Potion; enemy Cura of Beatrix).
+ * Emitters and a btlfx_drawSpriteLine. Evidence: [data] the party ability / item tables and enemy sequences that
+ * play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -10,11 +12,11 @@ typedef struct {
     Pool6CEntry *emit8;
     SVECTOR posC; /* caster body position */
     SVECTOR pos14; /* caster position */
-    u16 unk1C;
-    u16 unk1E;
+    u16 frame1C;
+    u16 alpha1E;
 } Fx08dWork;
 
 extern Unk800F78A4 *fx_08d_env;
-extern s32 D_801E79B0[];
+extern s32 fx_08d_trails[];
 
 #endif

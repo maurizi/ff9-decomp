@@ -1,11 +1,11 @@
 #include "fxmod/fx_0aa.h"
 
 static s32 fx_0aa_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_lerpParticle(pt, pos, &D_801E9088, &D_801E9098, frame, n);
+    return fxm_lerpParticle(pt, pos, &fx_0aa_pathFrom0, &fx_0aa_pathTo0, frame, n);
 }
 
 static s32 fx_0aa_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_lerpParticle(pt, pos, &D_801E9090, &D_801E90A0, frame, n);
+    return fxm_lerpParticle(pt, pos, &fx_0aa_pathFrom1, &fx_0aa_pathTo1, frame, n);
 }
 
 static s32 fxm_lerpParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 n) {
@@ -34,15 +34,15 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitBonePos(0x10, 0x2B, (u16 *)&work->pos18);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E90A8);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E90B0);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_0aa_emitStartPos0);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_0aa_emitStartPos1);
             if (work->emit8 != NULL) {
-                work->emit8->trails = (s32)D_801E7D88;
+                work->emit8->trails = (s32)fx_0aa_trails;
                 work->emit8->trailSlots = 0xC;
                 work->emit8->trailStride = 0x70;
             }
             if (work->emitC != NULL) {
-                work->emitC->trails = (s32)D_801E82C8;
+                work->emitC->trails = (s32)fx_0aa_trails2;
                 work->emitC->trailSlots = 0xC;
                 work->emitC->trailStride = 0x70;
             }
@@ -52,20 +52,20 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->emitC != NULL) {
                 ((EffMotion *)work->emitC->file)->update = fx_0aa_op80ParticleMotion1;
             }
-            D_801E9088.vx = work->pos10.vx;
-            D_801E9088.vy = work->pos10.vy;
-            D_801E9088.vz = work->pos10.vz;
-            D_801E9090.vx = work->pos18.vx;
-            D_801E9090.vy = work->pos18.vy;
-            D_801E9090.vz = work->pos18.vz;
-            D_801E9098.vx = env->targets->centerX;
-            D_801E9098.vy = env->targets->centerY;
-            D_801E9098.vz = env->targets->centerZ;
-            D_801E90A0.vx = env->targets->centerX;
-            D_801E90A0.vy = env->targets->centerY;
-            D_801E90A0.vz = env->targets->centerZ;
-            D_801E9098.vx = D_801E9088.vx;
-            D_801E90A0.vx = D_801E9090.vx;
+            fx_0aa_pathFrom0.vx = work->pos10.vx;
+            fx_0aa_pathFrom0.vy = work->pos10.vy;
+            fx_0aa_pathFrom0.vz = work->pos10.vz;
+            fx_0aa_pathFrom1.vx = work->pos18.vx;
+            fx_0aa_pathFrom1.vy = work->pos18.vy;
+            fx_0aa_pathFrom1.vz = work->pos18.vz;
+            fx_0aa_pathTo0.vx = env->targets->centerX;
+            fx_0aa_pathTo0.vy = env->targets->centerY;
+            fx_0aa_pathTo0.vz = env->targets->centerZ;
+            fx_0aa_pathTo1.vx = env->targets->centerX;
+            fx_0aa_pathTo1.vy = env->targets->centerY;
+            fx_0aa_pathTo1.vz = env->targets->centerZ;
+            fx_0aa_pathTo0.vx = fx_0aa_pathFrom0.vx;
+            fx_0aa_pathTo1.vx = fx_0aa_pathFrom1.vx;
         }
         return frame >= 0x1E;
     }
@@ -93,7 +93,7 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos14);
             if (work->emit0 != NULL) {
-                work->emit0->trails = (s32)D_801E8808;
+                work->emit0->trails = (s32)fx_0aa_trails3;
                 work->emit0->trailSlots = 8;
                 work->emit0->trailStride = 0x110;
             }

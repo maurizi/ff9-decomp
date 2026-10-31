@@ -5,22 +5,22 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* start frame */
-    s32 unk4; /* frames left, -1 = free */
-    u32 unk8; /* destination slots, 4 bits each (1-based) */
-    u32 unkC; /* source slots, 4 bits each (1-based, 0 = none) */
-    s16 *unk10; /* data */
+    s32 start0; /* start frame */
+    s32 framesLeft4; /* frames left, -1 = free */
+    u32 dst8; /* destination slots, 4 bits each (1-based) */
+    u32 srcC; /* source slots, 4 bits each (1-based, 0 = none) */
+    s16 *data10; /* data */
 } Fx0b1Track; /* 0x14 */
 
-extern s32 D_801E8B90; /* frame */
-extern Fx0b1Track D_801E8B9C[16];
-extern SVECTOR D_801E8CDC[];
-extern s32 D_801EAA54; /* fade timer */
-extern s32 D_801EAA5C[4]; /* models */
-extern SVECTOR D_801EAA6C; /* model rotation */
-extern VECTOR D_801EAA7C; /* model scale */
-extern VECTOR D_801EAA8C[4]; /* model positions */
-extern SVECTOR D_801EAACC[4]; /* unit body positions */
+extern s32 fx_0b1_camKeyFrame; /* frame */
+extern Fx0b1Track fx_0b1_camKeys[16];
+extern SVECTOR fx_0b1_camKeyPoints[];
+extern s32 fx_0b1_fadeTimer; /* fade timer */
+extern s32 fx_0b1_models[4]; /* models */
+extern SVECTOR fx_0b1_modelRot; /* model rotation */
+extern VECTOR fx_0b1_modelScale; /* model scale */
+extern VECTOR fx_0b1_modelPos[4]; /* model positions */
+extern SVECTOR fx_0b1_bodyPos[4]; /* unit body positions */
 extern BtlModel fx_0b1_effModels[];
 
 static void fxm_camKeyReset(void);
@@ -38,7 +38,7 @@ typedef struct {
     u8 pad0[0x54];
     Fx0b1SummonData *unk54;
     u8 pad58[0x60 - 0x58];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx0b1Summon;
 
 typedef struct {
@@ -46,40 +46,40 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[21];
+    SVECTOR pts4[21];
 } Fx0b1Trail; /* 0xAC */
 
 #define SUMMON0B1(env) ((Fx0b1Summon *)(env)->loader)
 
-extern SVECTOR D_801E8D04;
-extern VECTOR D_801E8D0C;
-extern VECTOR D_801E8D1C;
-extern SVECTOR D_801E8D2C;
-extern s32 D_801E8D3C[8];
+extern SVECTOR fx_0b1_summonRot;
+extern VECTOR fx_0b1_summonPos;
+extern VECTOR fx_0b1_summonScale;
+extern SVECTOR fx_0b1_startPos;
+extern s32 fx_0b1_timers[8];
 extern Pool6CEntry *fx_0b1_emitter0;
-extern SVECTOR D_801E8D64;
+extern SVECTOR fx_0b1_emitPos0;
 extern Pool6CEntry *fx_0b1_emitter1;
-extern SVECTOR D_801E8D74;
+extern SVECTOR fx_0b1_emitPos1;
 extern Pool6CEntry *fx_0b1_emitter2;
-extern SVECTOR D_801E8D84;
-extern s32 D_801E8D8C[];
+extern SVECTOR fx_0b1_emitPos2;
+extern s32 fx_0b1_trails[];
 extern Pool6CEntry *fx_0b1_emitter3;
-extern SVECTOR D_801EA874;
-extern SVECTOR D_801EA87C;
+extern SVECTOR fx_0b1_emitPos3;
+extern SVECTOR fx_0b1_emitStartPos3;
 extern Pool6CEntry *fx_0b1_emitter4;
-extern SVECTOR D_801EA88C;
+extern SVECTOR fx_0b1_emitPos4;
 extern Pool6CEntry *fx_0b1_emitter5;
-extern SVECTOR D_801EA89C;
+extern SVECTOR fx_0b1_emitPos5;
 extern Pool6CEntry *fx_0b1_emitter6;
-extern SVECTOR D_801EA8AC;
+extern SVECTOR fx_0b1_emitPos6;
 extern Pool6CEntry *fx_0b1_emitter7;
-extern SVECTOR D_801EA8BC;
+extern SVECTOR fx_0b1_emitPos7;
 extern Pool6CEntry *fx_0b1_emitter8;
-extern SVECTOR D_801EA8CC;
+extern SVECTOR fx_0b1_emitPos8;
 extern Pool6CEntry *fx_0b1_emitter9;
-extern SVECTOR D_801EA8DC;
+extern SVECTOR fx_0b1_emitPos9;
 extern Pool6CEntry *fx_0b1_emitter10;
-extern SVECTOR D_801EA8EC;
-extern Fx0b1Trail D_801EA8FC[2];
+extern SVECTOR fx_0b1_emitPos10;
+extern Fx0b1Trail fx_0b1_beams[2];
 
 #endif

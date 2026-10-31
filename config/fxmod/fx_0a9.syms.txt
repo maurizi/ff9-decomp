@@ -4,3 +4,7 @@ fx_0a9_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script o
 fx_0a9_op83 = 0x801E7CE8; // type:func [code] header op entry 3, effect script op 0x83 (btlfx_spawnTask)
 fx_0a9_op83PoolTask = 0x801E77EC; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_0a9_op83
 fx_0a9_env = 0x801E7F58; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_0a9_bolts = 0x801E7F68; // [code] 16 eleven-point btlfx_drawTrail strips (Fx0a9Bolt) filled by fxm_spawnBolt, drawn by fx_0a9_op83PoolTask
+fx_0a9_nextBolt = 0x801E8528; // [code] index of the next fx_0a9_bolts strip (mod 16), reset by fxm_resetBolts and advanced by fxm_spawnBolt
+fxm_resetBolts = 0x801E79C8; // type:func [code] sets the next-bolt index (fx_0a9_nextBolt) to 0, called by fx_0a9_op83 mode 1
+fxm_spawnBolt = 0x801E79D4; // type:func [code] fills the next bolt strip with 11 jittered points from to (btlfx_offsetPoint) and spawns a pool particle on each point
