@@ -728,14 +728,14 @@ typedef struct {
 #define BTL_FXK_BOUNCE  0x10 /* a Reflect bounce (with NO_CAST); control op 8 doesn't wait for the enemy sequence */
 
 typedef struct Unk800F78A40 {
-    s16 phase; /* -1 idle, else the btlfx_runScript state (0 save VRAM .. 4 run ops) */
+    s16 phase; /* BTLFX_PHASE_* (btlfx_runScript) */
     s16 effectId; /* effect being played (btlfx_start, after btlfx_resolveFirstUse) */
     u8 pad4[0x8 - 4];
     s16 file; /* effect file slot of the script (btlfx_getFileData) */
     u8 padA[0xF - 0xA];
     u8 seqRelease; /* set by btlseq op 0A; control op 8 waits for it with an enemy caster */
     u8 pad10[0x1C - 0x10];
-    u32 flags;
+    u32 flags; /* BTLFX_HDR_* (as Unk800FEC40.flags) */
     u8 retry; /* btlfx_retryOp: run the same op again next frame */
     u8 pad21[0x23 - 0x21];
     u8 seqSync; /* Unk800FEC40.seqSync */
@@ -875,7 +875,7 @@ typedef struct {
 extern volatile Unk80104E68 g_btluiState;
 
 typedef struct {
-    s16 phase; /* -1 idle, else the btlfx_runScript state (0 save VRAM .. 4 run ops) */
+    s16 phase; /* BTLFX_PHASE_* (btlfx_runScript) */
     s16 effectId; /* effect being played (btlfx_start, after btlfx_resolveFirstUse) */
     s16 wait; /* frames left of control op 1 (a = 0) */
     s16 fileId; /* effect file id of control op 5 (file = its slot) */
@@ -898,7 +898,7 @@ typedef struct {
     s8 turnDone; /* unit ops: the turn op has finished (btlfx_opFaceTarget, btlfx_opFaceHome) */
     s8 waitDone; /* unit ops 0x79-0x7B: the side/timing wait finished */
     u8 *pc; /* script pointer, 3-byte commands */
-    s32 flags;
+    s32 flags; /* BTLFX_HDR_* */
     u8 retry; /* btlfx_retryOp: run the same op again next frame */
     u8 ending; /* end op: cleanup ran, waiting for btlfx_reloadCommonData */
     u8 partyReload; /* control op 11: btl_reloadParty running */
@@ -927,12 +927,12 @@ typedef struct {
     s32 sector; /* CD sector of the next read */
     s32 effectId; /* effect file being loaded (btlfx_loadFile) */
     s32 slot; /* buffer slot 0/1 of the current block */
-    s16 state; /* state machine step (btlfx_updateLoader), 0 idle */
+    s16 state; /* BTLFX_LD_* (btlfx_updateLoader) */
     s16 stage; /* 1 data read, 2 textures read, 3 module ready (control op 4 waits for it) */
     s16 blockType; /* block header word 0: 1 loads into the second module buffer in slot 1 */
     s16 cmdsLeft; /* commands left in the current block */
     u8 pad14[0x16 - 0x14];
-    u8 cmdKind; /* command kind: 0/1 textures, 2 data, 3 module code, 4/5/6 summon, 7 sound bank, 8 load buffer, 9 common textures, 10 data ring */
+    u8 cmdKind; /* BTLFX_LDCMD_* */
     u8 cmdArg; /* command argument (kind 2: ring size follows; kind 9: texture page mask) */
     u16 blockCount; /* block count */
     u16 block; /* block being loaded */
@@ -966,6 +966,30 @@ typedef struct {
     u8 commonTexCount; /* kind 9 blocks loaded (control op 7 a=2 waits for b) */
 } Unk80100DC0;
 extern Unk80100DC0 g_btlfxLoader;
+
+/* Unk80100DC0.state (btlfx_updateLoader switches on state - 1). Evidence: [code] */
+#define BTLFX_LD_IDLE        0
+#define BTLFX_LD_READ_HEADER 1 /* read the file's first sector (btlfx_loadFile) */
+#define BTLFX_LD_WAIT_HEADER 2
+#define BTLFX_LD_NEXT_BLOCK  3 /* start the next block, or stop after blockCount (btlfx_loadNextBlock) */
+#define BTLFX_LD_NEXT_CMD    4 /* start reading the next command's data */
+#define BTLFX_LD_WAIT_CMD    5 /* wait for the read, then process it by cmdKind */
+#define BTLFX_LD_WAIT_SPU    6 /* sound bank: wait for the SPU transfer */
+#define BTLFX_LD_WAIT_SOUND  7 /* sound bank: wait for btlfx_loadSoundBank (soundUploaded) */
+
+/* Unk80100DC0.cmdKind: block command kinds (btlfx_updateLoader). Evidence: [code] */
+#define BTLFX_LDCMD_TEX          0 /* textures with their header (images, then the texture rects) */
+#define BTLFX_LDCMD_TEX_MORE     1 /* more of the texture data */
+#define BTLFX_LDCMD_DATA         2 /* file data into the data ring (its heap: file data 0) */
+#define BTLFX_LDCMD_CODE         3 /* effect module code: its init runs, stage 3 */
+#define BTLFX_LDCMD_SUMMON_TEX   4 /* summon file into the party buffers (party models unloaded), its textures uploaded */
+#define BTLFX_LDCMD_SUMMON_MODEL 5 /* summon model data, registered (Hi_RegisterSummonModel) */
+#define BTLFX_LDCMD_SUMMON_DATA  6 /* summon work data */
+#define BTLFX_LDCMD_SOUND        7 /* sound bank */
+#define BTLFX_LDCMD_LOADBUF      8 /* data into the battle load buffer */
+#define BTLFX_LDCMD_COMMON_TEX   9 /* common texture pages (cmdArg: page mask) */
+#define BTLFX_LDCMD_RING         10 /* more data appended in the data ring */
+
 
 typedef struct {
     s32 cmdNo;
