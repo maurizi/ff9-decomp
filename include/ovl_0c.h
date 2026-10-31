@@ -299,7 +299,7 @@ typedef struct {
     u8 rgb[3]; /* rgb */
     u8 texture;    /* texture */
     u8 unk14;
-    u8 flags; /* flags: 1 = semi transparent, 0xE0 = mode */
+    u8 flags; /* WMSRC_* */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
 
@@ -364,6 +364,10 @@ typedef struct {
     u8 rgb[3]; /* rgb */
     u8 flags; /* flags */
 } WmSrcF3; /* 0xC */
+/* WmSrc*.flags (same as ovl_0a) */
+#define WMSRC_SEMITRANS 0x1 /* the packet builder sets the semi-transparency bit */
+#define WMSRC_DOUBLE_SIDED 0x2 /* the mesh draw functions skip the nclip backface test */
+#define WMSRC_TPAGE_BITS 0xE0 /* with WMSRC_SEMITRANS: ORed into the tpage (abr bits 5-6, and bit 7) */
 
 typedef struct {
     u16 packetSize;
@@ -385,7 +389,7 @@ typedef struct {
 } WmModelGroup; /* 0x28 */
 
 typedef struct {
-    u16 flags; /* flags: 1 = relocated */
+    u16 flags; /* WMMODEL_* */
     u8 boneCount;
     u8 groupCount; /* group count */
     u16 packetSize; /* sum of the groups' packetSize (ovl_0a WmModel, docs/field-models.md) */
@@ -394,6 +398,8 @@ typedef struct {
     s32 bones;
     WmModelGroup *groups;
 } WmModel;
+/* WmModel.flags */
+#define WMMODEL_RELOCATED 0x1 /* the model init (wm_model.c) turned the file offsets into pointers */
 
 typedef struct {
     s16 unk0;

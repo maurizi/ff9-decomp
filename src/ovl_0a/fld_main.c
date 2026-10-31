@@ -80,7 +80,7 @@ void fld_main(s32 arg0) {
                 bgi_updateAnims();
                 bgi_updateFloorMoves();
             }
-            if (!(g_gameState->gameData->ctx.field->flags & 0x10)) {
+            if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_VIBRATION)) {
                 vib_update();
             }
             if (!(g_gameState->gameData->flags & GD_HIDE_SPRITES)) {
@@ -92,13 +92,13 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_WINDOWS)) {
                 game_updateWindows();
             }
-            if (!(g_gameState->gameData->ctx.field->flags & 0x800)) {
+            if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_FADE)) {
                 game_updateFade();
             }
-            if (!(g_gameState->gameData->ctx.field->flags & 4)) {
+            if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_ENCOUNTER)) {
                 fld_updateEncounter();
             }
-            if (!(g_gameState->gameData->ctx.field->flags & 0x80)) {
+            if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_TIMER)) {
                 game_updateTimer();
             }
             if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_PRELOAD)) {
@@ -356,7 +356,7 @@ void fld_load(s32 arg0) {
     game_freezeScreen();
     g_gameState->flags &= ~0x30F;
     g_gameState->gameData->flags |= GD_NO_FLIP;
-    g_gameState->gameData->ctx.field->flags |= 4;
+    g_gameState->gameData->ctx.field->flags |= FLD_MAP_NO_ENCOUNTER;
     game_setClearColor(0, 0, 0);
     g_padPortMask[0] &= 0xFFFF0006;
     for (i = 1; i >= 0; i--) {
@@ -619,7 +619,7 @@ void fld_refindSectors(void) {
     gd = gs->gameData;
     f = gd->ctx.field;
     id = -1;
-    if (f->flags & 0x10000) {
+    if (f->flags & FLD_MAP_REFIND_SECTORS) {
         gs2 = gs;
         gd2 = gd;
         g = gs2->dirs;

@@ -196,11 +196,15 @@ typedef struct FieldMap {
 } FieldMap;
 /* FieldMap.flags (g_fieldFlagQueue.mapFlags queues changes one frame ahead) */
 #define FLD_MAP_NO_WINDOWS 0x1 /* fld_main skips func_80023A0C (win_updateAll/win_drawAll) */
+#define FLD_MAP_NO_ENCOUNTER 0x4 /* fld_main skips fld_updateEncounter; fld_load sets it; while clear, the sound loader (fld_soundCommand) keeps 0x3000 more heap free */
 #define FLD_MAP_NO_BGI_ANIM 0x8 /* fld_main skips bgi_updateAnims/bgi_updateFloorMoves */
+#define FLD_MAP_NO_VIBRATION 0x10 /* fld_main skips vib_update */
 #define FLD_MAP_NO_DISPENV 0x20 /* fld_endFrame skips PutDispEnv */
 #define FLD_MAP_NO_DRAW 0x40 /* fld_endFrame skips the OT draw */
+#define FLD_MAP_NO_TIMER 0x80 /* fld_main skips game_updateTimer */
 #define FLD_MAP_SHADOW_MASK 0x200 /* fld_drawShadow wraps the shadow quads in mask-bit packets */
 #define FLD_MAP_CLEAR_ONLY 0x400 /* fld_endFrame only does PutDrawEnv */
+#define FLD_MAP_NO_FADE 0x800 /* fld_main skips game_updateFade */
 #define FLD_MAP_NO_PRELOAD 0x1000 /* fld_main skips preload_update (fld_movieStart, main menu_doOpen) */
 #define FLD_MAP_REFIND_SECTORS 0x10000 /* fld_exit keeps the area id, fld_refindSectors rescans the directory */
 #define FLD_MAP_DISC_CHANGE 0x100000 /* fld_requestDiscChange, fld_isDiscChangePending */
@@ -208,7 +212,9 @@ typedef struct FieldMap {
 /* walkmesh flag bits (bgi_dumpText "Flags"; code in bgi.c / bgi_move.c) */
 #define BGI_FLAG_ACTIVE 0x1 /* triangle/floor walkable, actor entry or animation active */
 #define BGI_ANIM_PLAYING 0x4 /* BgiAnim / BgiFloorMove: advancing, cleared at the end */
+#define BGI_ANIM_LOOP 0x8 /* BgiAnim / BgiFloorMove: the updates run while PLAYING or LOOP, so it keeps cycling after an end clears PLAYING */
 #define BGI_ANIM_BOUNCE 0x10 /* BgiAnim / BgiFloorMove: reverse at the ends instead of wrapping */
+#define BGI_ANIM_MODE (BGI_ANIM_LOOP | BGI_ANIM_BOUNCE) /* bgi_setAnimMode / bgi_setFloorMoveMode */
 #define BGI_TRI_VISITED 0x80 /* BgiTriangle: marked during a neighbour search, cleared before each */
 /* triangle mask byte (flags >> 8, ANDed with g_fieldBgi.maskFilter) */
 #define BGI_MASK_NO_PLAYER 0x80 /* blocks the player actor */
@@ -299,6 +305,14 @@ typedef struct {
     s16 viewportRateY[4];
 } FieldBgState;
 /* FieldBgState.flags */
+#define FLDBG_SCROLL_MODE 0x7 /* scripted scroll state, stepped by fldbg_updateScroll; fldbg_followPlayer only runs at 0 */
+#define FLDBG_SCROLL_START 1 /* fldbg_scrollTo: first frame (becomes FLDBG_SCROLL_RUN) */
+#define FLDBG_SCROLL_RUN 2 /* fldbg_scrollTo's scroll in progress */
+#define FLDBG_SCROLL_TO_PLAYER 3 /* fldbg_scrollToPlayer: scroll back to the player, then 0 (following resumes) */
+#define FLDBG_SCROLL_HELD 4 /* a fldbg_scrollTo scroll ended: the camera stays put (no following) */
+#define FLDBG_SCROLL_SMOOTH 0x8 /* fldbg_updateScroll eases with math_cos instead of moving linearly (scroll argument 8) */
+#define FLDBG_SCROLL_LIMITS 0x20 /* camera scroll limits in force (fldbg_disableScrollLimits/fldbg_enableScrollLimits) */
+#define FLDBG_FOLLOW 0x40 /* fldbg_setFollow: the camera follows the player; scrolling needs it */
 #define FLDBG_CAMERA_CHANGED 0x80 /* fldbg_setCamera/fldbg_setOverlayPos; fldbg_updateOverlayScroll clears it */
 
 /* field background file (g_fieldBgData = g_fieldBgCtx.unk10, fld_setupBackground): the header holds
@@ -676,7 +690,7 @@ typedef struct {
     u8 rgb[3]; /* rgb */
     u8 texture;    /* texture */
     u8 unk14;
-    u8 flags; /* flags: 1 = semi transparent, 0xE0 = mode */
+    u8 flags; /* WMSRC_* */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
 
@@ -762,7 +776,7 @@ typedef struct {
 } WmModelGroup; /* 0x28 */
 
 typedef struct {
-    u16 flags; /* flags: 1 = relocated */
+    u16 flags; /* WMMODEL_* */
     u8 boneCount;  /* bone count */
     u8 groupCount; /* group count (<= 32: ModelObj.hiddenGroups bits) */
     u16 packetSize; /* sum of the groups' packetSize (u16, wraps for model 200; the field code sums the groups) */
@@ -771,6 +785,8 @@ typedef struct {
     s32 bones;
     WmModelGroup *groups;
 } WmModel;
+/* WmModel.flags */
+#define WMMODEL_RELOCATED 0x1 /* fldmdl_initModel turned the file offsets into pointers */
 
 typedef struct {
     s16 unk0;
@@ -859,7 +875,8 @@ typedef struct ModelObj {
 #define MDL_BEHIND_CAMERA 0x10 /* fldmdl_cullBehindCamera: origin SZ 0 or parent behind; colour/abr helpers skip it */
 /* WmSrc*.flags */
 #define WMSRC_SEMITRANS 0x1 /* fldmdl_buildPackets, fldmdl_setSemiTrans */
-#define WMSRC_DOUBLE_SIDED 0x2 /* fldmdl_drawMeshC skips the nclip test */
+#define WMSRC_DOUBLE_SIDED 0x2 /* the fldmdl_drawMesh* functions skip the nclip backface test */
+#define WMSRC_TPAGE_BITS 0xE0 /* with WMSRC_SEMITRANS: ORed into the tpage (abr bits 5-6, and bit 7) by fldmdl_buildPackets */
 
 typedef union {
     u32 w;

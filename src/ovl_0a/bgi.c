@@ -436,7 +436,7 @@ s32 bgi_updateAnims(void) {
         if (!(e->flags & BGI_FLAG_ACTIVE)) {
             continue;
         }
-        if (!(e->flags & 0xC)) {
+        if (!(e->flags & (BGI_ANIM_PLAYING | BGI_ANIM_LOOP))) {
             continue;
         }
         old = -1;
@@ -447,10 +447,10 @@ s32 bgi_updateAnims(void) {
             m = pts[j].triangleCount;
             for (k = 0; k < m; k++, ids++) {
                 f = nodes[*ids].flags;
-                if (f & 1) {
+                if (f & BGI_FLAG_ACTIVE) {
                     old = j;
                 }
-                nodes[*ids].flags = f & ~1;
+                nodes[*ids].flags = f & ~BGI_FLAG_ACTIVE;
             }
         }
         pos = e->curFrame;
@@ -769,7 +769,7 @@ s32 bgi_updateFloorMoves(void) {
 
     e = g_fieldBgiFloorMoves;
     for (i = 0; i < 30; e++, i++) {
-        if (!(e->flags & BGI_FLAG_ACTIVE) || !(e->flags & 0xC)) {
+        if (!(e->flags & BGI_FLAG_ACTIVE) || !(e->flags & (BGI_ANIM_PLAYING | BGI_ANIM_LOOP))) {
             continue;
         }
         t = &g_fieldBgi.floors[e->floor];
@@ -777,7 +777,7 @@ s32 bgi_updateFloorMoves(void) {
         a = g_fieldBgi.actors;
         for (j = 0; j < g_fieldBgi.actorCount; a++, j++) {
             flags = a->flags;
-            if ((flags & 1) && a->floor == e->floor && a->triangle >= 0) {
+            if ((flags & BGI_FLAG_ACTIVE) && a->floor == e->floor && a->triangle >= 0) {
                 p = a->actor;
                 ((ActorPosView *)p)->pos[e->axis] += e->cur - e->prev;
                 switch (e->axis) {
@@ -939,7 +939,7 @@ s32 bgi_setTriangleActive(s32 arg0, s32 arg1) {
     u16 v;
 
     if (arg1 != 0) {
-        v = n->flags | 1;
+        v = n->flags | BGI_FLAG_ACTIVE;
     } else {
         v = n->flags & ~BGI_FLAG_ACTIVE;
     }
@@ -1109,7 +1109,7 @@ s32 bgi_setAnimMode(u32 arg0, s32 arg1) {
         return 0;
     }
     e = &g_fieldBgi.anims[arg0];
-    e->flags = (e->flags & 0xFFE7) | (arg1 & 0x18);
+    e->flags = (e->flags & ~BGI_ANIM_MODE) | (arg1 & BGI_ANIM_MODE);
     return 1;
 }
 
@@ -1207,7 +1207,7 @@ s32 bgi_setFloorMovePlaying(s32 arg0, s32 arg1) {
     u16 v;
 
     if (arg1 != 0) {
-        v = e->flags | 5;
+        v = e->flags | BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING;
     } else {
         v = e->flags & ~(BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING);
     }
@@ -1219,7 +1219,7 @@ s32 bgi_setFloorMovePlaying(s32 arg0, s32 arg1) {
 s32 bgi_setFloorMoveMode(s32 arg0, s32 arg1) {
     BgiFloorMove *e = bgi_getFloorMove_inline(arg0);
 
-    e->flags = (e->flags & 0xFFE7) | (arg1 & 0x18);
+    e->flags = (e->flags & ~BGI_ANIM_MODE) | (arg1 & BGI_ANIM_MODE);
     return 1;
 }
 

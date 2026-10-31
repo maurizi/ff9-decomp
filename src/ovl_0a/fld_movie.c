@@ -1258,7 +1258,7 @@ void fld_movieUpdate(void) {
                 if (g_fieldMovieLastFrame >= g_mbgFrame) {
                     ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
                     g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_HIDE_ALL);
-                    g_gameState->gameData->ctx.field->flags &= ~0xE01;
+                    g_gameState->gameData->ctx.field->flags &= ~(FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
                     if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0 && g_gameState->gameData->drawBuf == 0) {
                         g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x = 0x1E0;
                     }
@@ -1298,7 +1298,7 @@ void fld_movieFinish(void) {
     g_gameState->gameData->flags &= ~0x5D;
     f = g_gameState->gameData->ctx.field;
     g_fieldMovieFlags &= 0xFE00;
-    f->flags &= ~0x1E01;
+    f->flags &= ~(FLD_MAP_NO_PRELOAD | FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
     g_gameState->vsyncMode = 2;
     g_gameState->dispEnv[0].disp.x = 0x140;
     g_gameState->dispEnv[1].disp.x = 0;
@@ -1349,7 +1349,7 @@ void fld_endFrame(void) {
     }
     DrawSync(0);
     if (!(mbg_getStatus() & 2)) {
-        if ((g_gameState->gameData->flags & GD_HIDE_ALL) == GD_HIDE_ALL && (g_gameState->gameData->ctx.field->flags & 4)) {
+        if ((g_gameState->gameData->flags & GD_HIDE_ALL) == GD_HIDE_ALL && (g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_ENCOUNTER)) {
             g_gameState->vsyncMode = 0;
         } else {
             g_gameState->vsyncMode = 2;
