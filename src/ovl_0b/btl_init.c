@@ -104,8 +104,8 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->flags |= BTL_UNIT_TARGETABLE;
     u->flags = (u->flags & ~BTL_UNIT_SLOT_MASK) | ((s & 7) << BTL_UNIT_SLOT_SHIFT);
     u->flags &= ~BTL_UNIT_MODEL_PART;
-    if (g_evtGlobalVars.b[0x10] == 0 || (c->classFlags & CHR_CLASS_GUEST) ||
-        (BTL_UNIT_INDEX(u->flags) == CHR_DAGGER && g_evtGlobalVars.b[0x11] != 0)) {
+    if (g_evtGlobalVars.b[EVT_GB_TRANCE_ENABLED] == 0 || (c->classFlags & CHR_CLASS_GUEST) ||
+        (BTL_UNIT_INDEX(u->flags) == CHR_DAGGER && g_evtGlobalVars.b[EVT_GB_DAGGER_FALTERS] != 0)) {
         u->trance = 0;
         u->flags &= ~BTL_UNIT_TRANCE_ENABLED;
     } else {
