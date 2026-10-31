@@ -15,7 +15,7 @@ void battleEnd_main(void) {
             g_gameState->mode = s->unk6;
             break;
         case 2:
-            g_gameState->mode = 0;
+            g_gameState->mode = GS_MODE_OPENING;
             break;
         }
         game_updateWindows();
@@ -31,7 +31,7 @@ void battleEnd_main(void) {
         DrawOTagEnv(ctx->ot[i] + OT_LAST, &g_gameState->drawEnv[i]);
         g_gameState->gameData->drawBuf ^= 1;
         gfx_setBuffer(g_gameState->gameData->drawBuf);
-    } while (g_gameState->mode == 8);
+    } while (g_gameState->mode == GS_MODE_BATTLE_END);
     battleEnd_exit();
 }
 
@@ -75,7 +75,7 @@ void battleEnd_exit(void) {
         g->flags |= 0x400000;
     }
     g_gameState->gameData->depTable = (FileTable *)-1;
-    if (g_gameState->mode == 0) {
+    if (g_gameState->mode == GS_MODE_OPENING) {
         btl_soundCmd(SND_MUSIC_VOL_INTPL, 0, 0x1E, 0, 0);
         for (i = 29; i >= 0; i--) {
             VSync(0);

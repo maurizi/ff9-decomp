@@ -336,7 +336,7 @@ void tm_setup(TmState *s) {
     tm_copyFileEntry((u8 *)g_tmOpponents, TM_FILE_OPPONENTS, 0x200);
     tm_copyFileEntry((u8 *)g_tmCardData, TM_FILE_CARD_DATA, 0x1F4);
     tm_copyFileEntry((u8 *)g_tmDecks, TM_FILE_DECKS, 0x400);
-    g_evtMode = 1;
+    g_evtMode = EVT_MODE_FIELD;
     g_gameState->vsyncMode = 0;
     game_initGfx();
     text_setBank(g_tmText);

@@ -430,7 +430,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                 if (c < 0x62) {
                     c ^= 1;
                 }
-                c = (g_gameState->config >> 1) & 1 ? (g_gameState->padMap >> (c * 4)) & 0xF : c & 0xF;
+                c = (g_gameState->config >> CFG_BIT_CONTROLLER) & 1 ? (g_gameState->padMap >> (c * 4)) & 0xF : c & 0xF;
                 if (c < 2) {
                     c ^= 1;
                 }
@@ -546,7 +546,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 w->speed = *p++;
                 break;
             case 0x42:
-                w->speed = g_msgTextSpeeds[(g_gameState->config >> 14) & 7];
+                w->speed = g_msgTextSpeeds[(g_gameState->config >> CFG_SHIFT_MSG_SPEED) & 7];
                 break;
             case 0xC:
                 w->flags |= 4;
@@ -679,7 +679,7 @@ void msg_drawText(MsgWindow *w) {
 
     if (i >= 0 && i < g_msgTable->unk0) {
         e = (u8 *)g_msgTable->unk4;
-        e += *(u16 *)&((u32 *)e)[(g_evtMode == 2 || g_evtMode == 4) ? i : i * 2 + 1];
+        e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
     }
     if (e != NULL) {
         pen_move(((w->w - w->textWidth) >> 1) + 4, 2);
@@ -719,7 +719,7 @@ void msg_drawText(MsgWindow *w) {
 s32 msg_input(MsgWindow *w, s32 pad) {
     u8 f;
 
-    if ((g_evtMode == 1 && (pad & 0xA0000)) || (g_evtMode != 1 && (pad & 0x20000))) {
+    if ((g_evtMode == EVT_MODE_FIELD && (pad & 0xA0000)) || (g_evtMode != EVT_MODE_FIELD && (pad & 0x20000))) {
         f = w->flags;
         if (!(f & 0x40)) {
             if (w->waitFrames == 0xFF) {
@@ -811,7 +811,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     e = NULL;
     if (msg >= 0 && msg < g_msgTable->unk0) {
         e = (u8 *)g_msgTable->unk4;
-        e += *(u16 *)&((u32 *)e)[(g_evtMode == 2 || g_evtMode == 4) ? msg : msg * 2 + 1];
+        e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? msg : msg * 2 + 1];
     }
     if (e == NULL) {
         return;
@@ -821,7 +821,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     w->waitFrames = 0;
     w->id = id;
     w->msgId = msg;
-    w->speed = g_msgTextSpeeds[(g_gameState->config >> 14) & 7];
+    w->speed = g_msgTextSpeeds[(g_gameState->config >> CFG_SHIFT_MSG_SPEED) & 7];
     w->pageStart = 0;
     w->typeAccum = 8;
     w->pendingChars = 0;
@@ -896,10 +896,10 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
 
     if (i >= 0 && i < g_msgTable->unk0) {
         e = (u8 *)g_msgTable->unk4;
-        v = ((u32 *)e)[g_evtMode == 4 ? i : i * 2];
+        v = ((u32 *)e)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
             out->w = ((v >> 16) & 0xFFF) + 9;
-            out->h = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].lines) * 14 + 6;
+            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].lines) * 14 + 6;
         }
         e += v & 0xFFFF;
     }
@@ -1241,10 +1241,10 @@ u8 *msg_getEntry(s32 i, WinLayout *out) {
 
     if (i >= 0 && i < g_msgTable->unk0) {
         e = (u8 *)g_msgTable->unk4;
-        v = ((u32 *)e)[g_evtMode == 4 ? i : i * 2];
+        v = ((u32 *)e)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
             out->w = ((v >> 16) & 0xFFF) + 9;
-            out->h = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].lines) * 14 + 6;
+            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].lines) * 14 + 6;
         }
         e += v & 0xFFFF;
     }
@@ -1256,7 +1256,7 @@ void *msg_getText(s32 i) {
 
     if (i >= 0 && i < g_msgTable->unk0) {
         e = (u8 *)g_msgTable->unk4;
-        e += *(u16 *)&((u32 *)e)[(g_evtMode == 2 || g_evtMode == 4) ? i : i * 2 + 1];
+        e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
     }
     return e;
 }
@@ -1452,7 +1452,7 @@ void msg_drawHereIcon(EvtObject *o) {
         if (n == 0) {
             g_hereIconActive = 0;
         }
-        if (g_evtMode == 1 && !(g_gameState->gameData->flags & GD_HIDE_ALL) && n < 58) {
+        if (g_evtMode == EVT_MODE_FIELD && !(g_gameState->gameData->flags & GD_HIDE_ALL) && n < 58) {
             s = &g_hereIconSprite;
             pen_begin();
             pen_pushPos();
@@ -1636,7 +1636,7 @@ void msg_startHereIcon(s32 arg0) {
         g_hereIconTimer = 0;
         return;
     }
-    mode = (g_gameState->config >> 17) & 1;
+    mode = (g_gameState->config >> CFG_BIT_HERE_ICON) & 1;
     mode = mode == 0;
     if (arg0 >= 3 || (g_evtState->controlEnabled != 0 &&
                       (mode >= 2 || (mode == 1 && (arg0 == 2 || g_evtMsgCount >= 3 || g_evtPlayerAnimCount != 0))))) {

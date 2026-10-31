@@ -134,7 +134,7 @@ void mbg_mdecOutCallback(void) {
                 g_mbgDecode.frameRect[0].w = 0x140;
                 g_mbgDecode.frameRect[1].w = 0x140;
                 g_mbgDecode.slice.w = 0x10;
-                if (g_gameState->mode == 1 || g_gameState->mode == 5) {
+                if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
                     g_fieldFlagQueue.mapFlags[1][0] = 9;
                     g_fieldFlagQueue.gameFlags[1][0] |= 0x14;
                 }
@@ -148,7 +148,7 @@ void mbg_mdecOutCallback(void) {
                 g_mbgDecode.slice.w = 0x18;
                 g_gameState->gameData->flags |= 0x14;
                 g_mbgRgb24 = 1;
-                if (g_gameState->mode == 1 || g_gameState->mode == 5) {
+                if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
                     g_gameState->gameData->ctx.ovl65->unk0 |= 9;
                 }
                 g_mbgPlayer.modeSwitch = 2;
@@ -335,7 +335,7 @@ s32 mbg_play(u32 movie, s32 idx) {
     if (mbg_streamReset() != 0) {
         ok = 0;
     } else {
-        if (g_gameState->mode == 1 || g_gameState->mode == 5) {
+        if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
             mbg_streamSetBaseSector(((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->movieFile);
         }
         ok = mbg_streamStart(file, g_mbgMovie->startFrame, 99999, NULL, 0) == 0;

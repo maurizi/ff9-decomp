@@ -98,7 +98,7 @@ s32 evt_getSysVar(s32 op) {
         r = (u8)btlseq_isBusy();
         break;
     case 26:
-        r = g_evtMode == 4;
+        r = g_evtMode == EVT_MODE_BATTLE_END;
         break;
     case 27:
         r = g_gameState->gameData->battleResult;
@@ -973,7 +973,7 @@ s32 evt_execInstr(void) {
     case EVT_OP_SET_RADIUS:
         if (g_evtActor->kind == 4) {
             a = evt_getArg8_inline();
-            if (g_evtMode == 1 && po->modelId != 0xFFFF) {
+            if (g_evtMode == EVT_MODE_FIELD && po->modelId != 0xFFFF) {
                 bgi_setActorRadius(po->modelSlot, (a << 2) & 0xFFFC);
             }
             po->collisionRadius = evt_getArg8_inline();
@@ -1001,7 +1001,7 @@ s32 evt_execInstr(void) {
     case EVT_OP_SET_POS_XZ:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
-        c = g_evtMode == 1 && po->modelId != 0xFFFF;
+        c = g_evtMode == EVT_MODE_FIELD && po->modelId != 0xFFFF;
         if (c) {
             bgi_setActorActive(po->modelSlot, 0);
         }
@@ -1024,7 +1024,7 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
-        d = g_evtMode == 1 && po->modelId != 0xFFFF;
+        d = g_evtMode == EVT_MODE_FIELD && po->modelId != 0xFFFF;
         if (d) {
             bgi_setActorActive(po->modelSlot, 0);
         }
@@ -1268,7 +1268,7 @@ s32 evt_execInstr(void) {
         actor->jumpStartY = actor->pos.vy;
         actor->jumpStartZ = actor->pos.vz;
         actor->animSpeed = ((actor->animEnd - actor->animStart) << 4) / a;
-        if (g_evtMode == 1 && po->modelId != 0xFFFF) {
+        if (g_evtMode == EVT_MODE_FIELD && po->modelId != 0xFFFF) {
             bgi_setActorActive(po->modelSlot, 0);
         }
         return 0;
@@ -2187,7 +2187,7 @@ s32 evt_execInstr(void) {
         fld_movieCommand(a, b, evt_getArg8_inline());
         return 0;
     case 0xB7:
-        if (g_evtMode == 3) {
+        if (g_evtMode == EVT_MODE_WORLD) {
             VECTOR *v = wm_getCameraEye();
             actor->pos.vx = v->vx;
             actor->pos.vy = v->vy;
@@ -2196,7 +2196,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xB8:
-        if (g_evtMode == 3) {
+        if (g_evtMode == EVT_MODE_WORLD) {
             VECTOR *v = wm_getCameraTarget();
             actor->pos.vx = v->vx;
             actor->pos.vy = v->vy;
@@ -2326,11 +2326,11 @@ s32 evt_execInstr(void) {
         return 0;
     default:
         switch (g_evtMode) {
-        case 1:
+        case EVT_MODE_FIELD:
             return evt_modelOpField(po, op);
-        case 2:
+        case EVT_MODE_BATTLE:
             return evt_modelOpBattle(po, op);
-        case 3:
+        case EVT_MODE_WORLD:
             return evt_modelOpWorld(po, op);
         }
         return 1;
@@ -2773,7 +2773,7 @@ void evt_checkPlayerAction(EvtObject *p) {
     EvtObject *o;
 
     t = msg_getPadPressed();
-    btn = t & (g_evtMode == 1 ? (BTN_CROSS | BTN_SQUARE) : BTN_CROSS);
+    btn = t & (g_evtMode == EVT_MODE_FIELD ? (BTN_CROSS | BTN_SQUARE) : BTN_CROSS);
     if (btn && (o = evt_findNearestObject(p, 4, NULL)) != NULL) {
         g_evtTalkAngle = evt_angleToObject(p, o, p->pos.rotY);
         if ((u32)(g_evtTalkAngle + 0x3FF) < 0x7FF) {
@@ -2896,19 +2896,19 @@ s32 evt_updateObjects(void) {
     EvtState *s;
 
     g_evtPlayerMoved = 0;
-    world = g_evtMode == 2;
+    world = g_evtMode == EVT_MODE_BATTLE;
     for (n = g_evtState->objects; n != NULL; n = n->next) {
         o = n->obj;
         if (o->kind == 4) {
             z = o;
             if (o->uid == g_evtState->playerUid && o->state == 1) {
                 if (g_evtState->controlEnabled != 0) {
-                    if (g_evtMode == 1) {
+                    if (g_evtMode == EVT_MODE_FIELD) {
                         o->prevPos.vx = o->pos.vx;
                         o->prevPos.vy = o->pos.vy;
                         o->prevPos.vz = o->pos.vz;
                         evt_movePlayer(o);
-                    } else if (g_evtMode == 3) {
+                    } else if (g_evtMode == EVT_MODE_WORLD) {
                         g_evtPlayerMoved = g_worldPlayerStepped;
                         evt_checkPlayerAction(o);
                         t1 = evt_findNearestObject(o, 0, &dist);
@@ -2952,7 +2952,7 @@ s32 evt_updateObjects(void) {
     }
     g_evtWorldCamTargetObj = NULL;
     g_evtWorldCamEyeObj = NULL;
-    if (g_evtMode == 1) {
+    if (g_evtMode == EVT_MODE_FIELD) {
         fldbg_getCamera(&b);
         g_evtCameraChanged = b != g_evtCamera;
         g_evtCamera = b;
@@ -2969,7 +2969,7 @@ s32 evt_updateObjects(void) {
             o = n->obj;
             if (o->kind == 4) {
                 p = o;
-                if (g_evtMode == 1) {
+                if (g_evtMode == EVT_MODE_FIELD) {
                     f = evt_updateActorWalkmesh(p);
                     if ((p->uid != g_evtState->playerUid || g_evtPushFrames >= 0) && (f & 1) &&
                         (t = evt_findNearestObject(p, 0, NULL)) != NULL) {
@@ -2987,7 +2987,7 @@ s32 evt_updateObjects(void) {
                             evt_checkPlayerAction(p);
                         }
                     }
-                } else if (g_evtMode == 3) {
+                } else if (g_evtMode == EVT_MODE_WORLD) {
                     if (p->moveFlags & 0x40) {
                         VECTOR *v = wm_getCameraEye();
                         v->vx = p->pos.vx;
@@ -3020,7 +3020,7 @@ s32 evt_updateObjects(void) {
                 if (dx != 0 || dz != 0) {
                     moved = 1;
                 }
-                if (g_evtMode == 1) {
+                if (g_evtMode == EVT_MODE_FIELD) {
                     if (p->flags & 0x80) {
                         evt_updateObjects_turn(p);
                     }
@@ -3028,7 +3028,7 @@ s32 evt_updateObjects(void) {
                         evt_updateLookAt(p);
                     }
                 }
-                if (g_evtMode == 3 && (p->flags & 0x80)) {
+                if (g_evtMode == EVT_MODE_WORLD && (p->flags & 0x80)) {
                     evt_updateObjects_turn(p);
                 }
                 if (moved) {
@@ -3074,7 +3074,7 @@ s32 evt_updateObjects(void) {
         r = 3;
     }
     if (r == 3 || r == 7) {
-        if (g_evtMode == 1) {
+        if (g_evtMode == EVT_MODE_FIELD) {
             for (m = g_evtState->objects; m != NULL; m = m->next) {
                 p = m->obj;
                 if (p->kind == 4 && p->modelId != 0xFFFF) {
@@ -3340,20 +3340,20 @@ void evt_init(u8 *data) {
     gs->gameData->locationName = data + 0x2C;
     mode = g_gameState->mode;
     switch (mode) {
-    case 1:
+    case GS_MODE_FIELD:
         g_evtMode = mode;
         break;
-    case 2:
+    case GS_MODE_BATTLE:
         g_evtMode = mode;
         break;
-    case 3:
+    case GS_MODE_WORLD:
         g_evtMode = mode;
         break;
-    case 8:
-        g_evtMode = 4;
+    case GS_MODE_BATTLE_END:
+        g_evtMode = EVT_MODE_BATTLE_END;
         break;
     }
-    if ((g_evtStateData.mode == 1 || g_evtStateData.mode == 3) && g_evtMode == 2) {
+    if ((g_evtStateData.mode == EVT_MODE_FIELD || g_evtStateData.mode == EVT_MODE_WORLD) && g_evtMode == EVT_MODE_BATTLE) {
         g_evtSavedState = g_evtStateData;
     }
     g_evtState = &g_evtStateData;
@@ -3403,7 +3403,7 @@ void evt_init(u8 *data) {
         g_evtUnitObjects[i] = NULL;
     }
     D_8007AE04 = 0;
-    if (g_evtMode == 2) {
+    if (g_evtMode == EVT_MODE_BATTLE) {
         for (i = 0; i < 4; i++) {
             r = msg_getPartyMemberId(i);
             if (r >= 0) {
@@ -3415,9 +3415,9 @@ void evt_init(u8 *data) {
         g_gameState->gameData->rainCount = 0;
     }
     D_8007AE04 = 4;
-    if ((g_evtMode == 1 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
-        (g_evtMode == 3 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->worldId) ||
-        (g_gameState->prevMode == 9 && g_evtModelsPending != 0)) {
+    if ((g_evtMode == EVT_MODE_FIELD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
+        (g_evtMode == EVT_MODE_WORLD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->worldId) ||
+        (g_gameState->prevMode == GS_MODE_TETRA_MASTER && g_evtModelsPending != 0)) {
         d = data - g_evtSavedState.scriptBase;
         g_evtStateData = g_evtSavedState;
         for (q = g_evtState->objects; q != NULL; q = q->next) {
@@ -3425,7 +3425,7 @@ void evt_init(u8 *data) {
             if (o->ip != NULL) {
                 o->ip += d;
             }
-            if (o->kind == 4 && g_evtMode == 1) {
+            if (o->kind == 4 && g_evtMode == EVT_MODE_FIELD) {
                 fld_queueModelBundle(o->scriptIdx);
             }
         }
@@ -3442,8 +3442,8 @@ void evt_init(u8 *data) {
     }
     g_evtState->scriptBase = data;
     g_evtState->mode = g_evtMode;
-    g_evtState->locationId = g_evtMode == 1   ? g_gameState->gameData->fieldId
-                          : g_evtMode == 3 ? g_gameState->gameData->worldId
+    g_evtState->locationId = g_evtMode == EVT_MODE_FIELD   ? g_gameState->gameData->fieldId
+                          : g_evtMode == EVT_MODE_WORLD ? g_gameState->gameData->worldId
                                             : 0;
 }
 
@@ -3452,12 +3452,12 @@ void evt_createModels(void) {
     EvtObject *o;
     s16 *q;
 
-    if ((g_evtMode == 1 || g_evtMode == 3 || g_gameState->prevMode == 9) && g_evtModelsPending != 0) {
+    if ((g_evtMode == EVT_MODE_FIELD || g_evtMode == EVT_MODE_WORLD || g_gameState->prevMode == GS_MODE_TETRA_MASTER) && g_evtModelsPending != 0) {
         for (n = g_evtState->objects; n != NULL; n = n->next) {
             o = n->obj;
             if (o->kind == 4 && o->modelId != 0xFFFF) {
                 o->modelSlot = evt_createModel(o);
-                if (g_evtMode == 1) {
+                if (g_evtMode == EVT_MODE_FIELD) {
                     q = (s16 *)bgi_getActor(o->modelSlot);
                     bgi_setActorRadius(o->modelSlot, o->savedWalkRadius * 4);
                     if (q != NULL) {
@@ -3477,7 +3477,7 @@ void evt_onMenuOpen(void) {
     s32 n;
     msg_closeAll();
     msg_startHereIcon(0);
-    if (g_evtMode == 3) {
+    if (g_evtMode == EVT_MODE_WORLD) {
         s = g_worldAreaNames;
         n = (evt_getSysVar(WM_PARAM_AREA) * 2) & 0x7F;
         while (n != 0) {
@@ -3585,7 +3585,7 @@ void evt_setDrawPosAtObject(EvtObject *o, s32 dx, s32 dy) {
     v.vx = o->pos.vx;
     v.vy = o->pos.vy + ((o->height * (s8)o->scale) >> 6) - 50;
     v.vz = o->pos.vz;
-    if (g_evtMode == 1) {
+    if (g_evtMode == EVT_MODE_FIELD) {
         fldbg_applyGeomOffset();
     }
     gd = g_gameState->gameData;
@@ -3594,7 +3594,7 @@ void evt_setDrawPosAtObject(EvtObject *o, s32 dx, s32 dy) {
     gte_ldv0(pv);
     gte_rtps();
     gte_stsxy((s32 *)&sxy);
-    if (g_evtMode == 1) {
+    if (g_evtMode == EVT_MODE_FIELD) {
         fldbg_resetGeomOffset();
     }
     p[0] = *(s16 *)&sxy;
@@ -3917,7 +3917,7 @@ void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
     GameData *gd;
 
     if (x != NULL && y != NULL) {
-        if (g_evtMode == 1) {
+        if (g_evtMode == EVT_MODE_FIELD) {
             fldbg_applyGeomOffset();
         }
         gd = g_gameState->gameData;
@@ -3926,7 +3926,7 @@ void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
         gte_ldv0(v);
         gte_rtps();
         gte_stsxy(&s);
-        if (g_evtMode == 1) {
+        if (g_evtMode == EVT_MODE_FIELD) {
             fldbg_resetGeomOffset();
         }
         *x = s.vx;

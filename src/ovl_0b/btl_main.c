@@ -35,7 +35,7 @@ void btl_main(s32 arg0) {
                 preload_update();
             }
         } else {
-            g_gameState->mode = 8;
+            g_gameState->mode = GS_MODE_BATTLE_END;
             g_gameState->flags |= 0x100;
         }
         btl_endFrame();
@@ -377,9 +377,9 @@ void btl_initReturnInfo(void) {
     p->unk0 = 0;
     p->freeHeap = 0;
     p->returnMode = g_gameState->prevMode;
-    if (g_gameState->prevMode == 1) {
+    if (g_gameState->prevMode == GS_MODE_FIELD) {
         p->returnId = g_gameState->gameData->fieldId;
-    } else if (g_gameState->prevMode == 3) {
+    } else if (g_gameState->prevMode == GS_MODE_WORLD) {
         p->returnId = g_gameState->gameData->worldId;
     } else {
         p->returnId = -1;

@@ -309,7 +309,7 @@ void wm_exit(void) {
                       &g_gameState->gameData->sceneSectors[1]);
         g_gameState->gameData->battleId = obj->sceneId;
         g_gameState->mode = mode;
-        g_gameState->prevMode = 3;
+        g_gameState->prevMode = GS_MODE_WORLD;
         break;
     case WM_EXIT_WORLD:
         i = wm_depFindArea(wm_depFindField(obj->sceneId, &gd->sceneSector[1], &gd->sceneSectors[1]), &g_gameState->gameData->sceneSector[0],
@@ -322,7 +322,7 @@ void wm_exit(void) {
                                                  &g_gameState->gameData->sceneSector[0], &g_gameState->gameData->sceneSectors[0]);
         g_gameState->gameData->fieldId = obj->sceneId;
         g_gameState->mode = mode;
-        g_gameState->prevMode = 3;
+        g_gameState->prevMode = GS_MODE_WORLD;
         break;
     default:
         SystemError(0x39, 0x194);

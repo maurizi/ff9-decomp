@@ -120,7 +120,7 @@ void fld_gameOver(void) {
     s32 i;
 
     gameover_main(g_gameState->gameData->ctx.field->area->scene->eventScript);
-    g_gameState->mode = 0;
+    g_gameState->mode = GS_MODE_OPENING;
     g_gameState->flags |= GS_RELOAD_FILE_TABLES;
     if ((g_gameState->gameData->flags & GD_MUSIC_PLAYING) && g_gameState->gameData->musicId[0] != 0xFFFF) {
         fld_soundCommand(SND_SONG_VOL_INTPL, g_gameState->gameData->musicId[0], 0x1E, 0, 0);
@@ -444,16 +444,16 @@ void fld_exit(void) {
         fld_depFindBackground(fld_depFindBattle(sc->nextId, &g_gameState->gameData->sceneSector[0], &g_gameState->gameData->sceneSectors[0]),
                       &g_gameState->gameData->sceneSector[1], &g_gameState->gameData->sceneSectors[1]);
         g_gameState->gameData->battleId = sc->nextId;
-        g_gameState->mode = 2;
-        g_gameState->prevMode = 1;
+        g_gameState->mode = GS_MODE_BATTLE;
+        g_gameState->prevMode = GS_MODE_FIELD;
         break;
     case FLD_EXIT_WORLD:
         id = fld_depFindArea(fld_depFindField(sc->nextId, &g_gameState->gameData->sceneSector[1], &g_gameState->gameData->sceneSectors[1]),
                            &g_gameState->gameData->sceneSector[0], &g_gameState->gameData->sceneSectors[0]);
         g_gameState->gameData->worldId = sc->nextId;
         g_gameState->gameData->worldAreaId = id;
-        g_gameState->mode = 3;
-        g_gameState->prevMode = 1;
+        g_gameState->mode = GS_MODE_WORLD;
+        g_gameState->prevMode = GS_MODE_FIELD;
         break;
     case FLD_EXIT_TETRA_MASTER:
         if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
@@ -461,20 +461,20 @@ void fld_exit(void) {
         }
         fld_suspendResidentSfx();
         akao_sendCmdE2();
-        g_gameState->mode = 9;
-        g_gameState->prevMode = 1;
+        g_gameState->mode = GS_MODE_TETRA_MASTER;
+        g_gameState->prevMode = GS_MODE_FIELD;
         break;
     case FLD_EXIT_GAME_OVER:
         akao_stopSe(-1, 0);
         akao_sendCmdE2();
-        g_gameState->mode = 7;
-        g_gameState->prevMode = 1;
+        g_gameState->mode = GS_MODE_GAME_OVER;
+        g_gameState->prevMode = GS_MODE_FIELD;
         break;
     case 4:
         akao_stopSe(-1, 0);
         akao_sendCmdE2();
-        g_gameState->mode = 4;
-        g_gameState->prevMode = 1;
+        g_gameState->mode = GS_MODE_ENDING;
+        g_gameState->prevMode = GS_MODE_FIELD;
         break;
     case FLD_EXIT_FIELD:
         if (g_gameState->gameData->ctx.field->flags & FLD_MAP_REFIND_SECTORS) {

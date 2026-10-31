@@ -103,7 +103,7 @@ void btl_copyStats(Unk800BD8C0 *arg0, Unk800BD8C0 *arg1) {
 void btl_resetAtbSpeed(Unk800BD8F0 *arg0) {
     s32 v;
     arg0->atbSpeed = 10;
-    v = (g_gameState->config >> 8) & 7;
+    v = (g_gameState->config >> CFG_SHIFT_BTL_SPEED) & 7;
     if (v == 0) {
         arg0->atbSpeed = 8;
     } else if (v == 2) {

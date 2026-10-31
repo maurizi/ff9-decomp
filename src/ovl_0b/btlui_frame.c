@@ -153,10 +153,10 @@ u8 *btl_buildBanner(u8 *arg0) {
 
 u8 *btl_buildBannerFrame(u8 *arg0, RECT *arg1) {
     RECT r;
-    u8 *v = win_buildBorder((s32)arg1, g_btlBanner.ot, 1, 0, 1, (g_gameState->config >> 18) & 1, arg0);
+    u8 *v = win_buildBorder((s32)arg1, g_btlBanner.ot, 1, 0, 1, CONFIG_WINDOW_COLOR(), arg0);
     r.x = arg1->x + 2;
     r.y = arg1->y + 2;
     r.w = arg1->w - 3;
     r.h = arg1->h - 3;
-    return win_buildFill((s32)&r, g_btlBanner.ot, 0, 0, (g_gameState->config >> 18) & 1, v);
+    return win_buildFill((s32)&r, g_btlBanner.ot, 0, 0, CONFIG_WINDOW_COLOR(), v);
 }

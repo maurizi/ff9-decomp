@@ -283,7 +283,7 @@ void menuChocograph_restoreVram(void) {
     Ovl32Image *img = s_menuChocographPictures;
     s32 sel;
 
-    if (g_gameState->mode == 3) {
+    if (g_gameState->mode == GS_MODE_WORLD) {
         sel = g_gameState->gameData->chocograph;
         if (sel != 0) {
             menuChocograph_getPictureRects(sel - 1, &r0, &r1);

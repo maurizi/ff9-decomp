@@ -35,7 +35,7 @@ void win_drawFrame(Window *w) {
     s32 abr;
     RECT t;
 
-    abr = g_gameState->config >> 18;
+    abr = g_gameState->config >> CFG_BIT_WINDOW_COLOR;
     abr &= 1;
 
     if (w->style == 2) {
@@ -424,7 +424,7 @@ void win_drawListBox(RECT *r, s32 otz, s32 mode, MenuList *m) {
     RECT t;
     s32 abr;
 
-    abr = g_gameState->config >> 18;
+    abr = g_gameState->config >> CFG_BIT_WINDOW_COLOR;
     abr &= 1;
 
     if (mode == 1) {

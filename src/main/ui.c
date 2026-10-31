@@ -1109,7 +1109,7 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     if (h < 0x20) {
         h0 = h;
     }
-    if (g_gameState->mode == 3) {
+    if (g_gameState->mode == GS_MODE_WORLD) {
         cx = 0x280;
         cy = 0xDC;
     } else {
@@ -1236,7 +1236,7 @@ void ui_drawPortraitIdFull(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
 void ui_getPartyPortraitRects(s32 arg0, RECT *a, RECT *b, RECT *c) {
     s32 x, y;
 
-    if (g_gameState->mode == 3) {
+    if (g_gameState->mode == GS_MODE_WORLD) {
         x = 0x280;
         y = 0xDC;
     } else {

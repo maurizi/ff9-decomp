@@ -81,7 +81,7 @@ void menu_finish(void) {
     void (*fn)(u8);
     u8 idx;
 
-    if (g_gameState->mode == 1) {
+    if (g_gameState->mode == GS_MODE_FIELD) {
         g_gameState->gameData->ctx.ovl65->unk0 &= ~0x1000;
     }
     g_gameState->gameData->flags &= ~GD_MENU_OPEN;
@@ -195,7 +195,7 @@ void menu_readPortraits(void) {
     if (g_menu.type == 0) {
         if (party_hasChanged() == 0) {
             g_menu.state = 2;
-        } else if (busy == 0 || g_gameState->mode != 3) {
+        } else if (busy == 0 || g_gameState->mode != GS_MODE_WORLD) {
             g_menu.reading = 1;
             f = file_find(DIR_COMMON, FILE_MENU_PORTRAITS);
             if (cd_readAsync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, RAM_SUB_OVL(void *),
@@ -207,7 +207,7 @@ void menu_readPortraits(void) {
 }
 
 void menu_updateLoad(void) {
-    if (g_gameState->mode != 3 || cd_getState() == 0) {
+    if (g_gameState->mode != GS_MODE_WORLD || cd_getState() == 0) {
         menu_loadOverlay();
     }
 }

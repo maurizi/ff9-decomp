@@ -72,10 +72,10 @@ s32 vib_update(void) {
     if (b >= 0x80) {
         b = 1;
     }
-    if (!((g_gameState->config & 0xFF) >> 7) || g_gameState->mode == 5) {
+    if (!((g_gameState->config & 0xFF) >> CFG_BIT_VIBRATION) || g_gameState->mode == 5) {
         g_padActuator[0].unk0 = b;
         g_padActuator[0].unk1 = a;
-        if (g_gameState->mode == 2 && btlui_isSecondPortUsed()) {
+        if (g_gameState->mode == GS_MODE_BATTLE && btlui_isSecondPortUsed()) {
             g_padActuator[1].unk0 = b;
             g_padActuator[1].unk1 = a;
         }

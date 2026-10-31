@@ -364,9 +364,9 @@ typedef struct {
 typedef struct {
     u32 flags; /* flags: GS_* */
     u32 allocTop; /* allocator top after boot (g_allocTop, game_initState) */
-    u8 mode; /* runtime: 0 title, 1 field (and its menus) */
+    u8 mode; /* GS_MODE_* */
     u8 vsyncMode; /* VSync mode */
-    u8 prevMode; /* mode being left (1 field, 3 world, set by the exits); 9 makes evt_init/evt_createModels rebuild models after Tetra Master */
+    u8 prevMode; /* GS_MODE_* being left (field, world, Tetra Master; set by the exits) */
     u8 disc;          /* disc bit (1 << disc - 1) of the SLUS file file_initImg found, 0xFF = none */
     DISPENV *dispEnv;    /* [2] */
     DRAWENV *drawEnv;   /* [2] */
@@ -1769,6 +1769,23 @@ extern s32 g_padPortMask[];
 #define GS_WM_LEAVE 0x1000 /* wm_entry loop ends */
 #define GS_WM_NEW_MAP 0x2000 /* wm_main loop ends without leaving wm_entry */
 #define GS_RELOAD_FILE_TABLES 0x100000 /* set at boot (game_resetState) and after a disc change; file_loadDirTables reloads, then clears it */
+
+/* GameState.mode / prevMode: the mode game_main runs next (its switch, game_loadModeOverlay's overlay table) */
+#define GS_MODE_OPENING 0 /* ovl_14 opening_main (logos, title) */
+#define GS_MODE_FIELD 1 /* ovl_0a fld_entry */
+#define GS_MODE_BATTLE 2 /* ovl_0b btl_entry */
+#define GS_MODE_WORLD 3 /* ovl_0c wm_entry */
+#define GS_MODE_ENDING 4 /* ovl_15 ending_main */
+/* 5: no overlay and no case in game_main; vib_update and ovl_64/ovl_0a treat it like the field (docs/wip/constants_runtime_main.md) */
+#define GS_MODE_GAME_OVER 7 /* ovl_65 fld_gameOver (field exit FLD_EXIT_GAME_OVER) */
+#define GS_MODE_BATTLE_END 8 /* ovl_65 battleEnd_main, set by ovl_0b when a battle ends */
+#define GS_MODE_TETRA_MASTER 9 /* ovl_0d tm_main; as prevMode it makes evt_init/evt_createModels rebuild the field models */
+
+/* g_evtMode / EvtState.mode: the event system's mode, from GameState.mode in evt_init */
+#define EVT_MODE_FIELD 1
+#define EVT_MODE_BATTLE 2
+#define EVT_MODE_WORLD 3
+#define EVT_MODE_BATTLE_END 4 /* GS_MODE_BATTLE_END */
 
 /* GameData.flags flags */
 #define GD_MENU_DISABLED 0x1 /* menu_doOpen refuses to open */
@@ -3202,7 +3219,7 @@ void akao_channelsToVoiceMask(AkaoChannel *, u32 *, u32, u32);
 #define CFG_SHIFT_CHAR_PORT   20 /* one bit per character: 1 = controller port 2 */
 #define CFG_BTL_SPEED_MAX     2
 #define CFG_MSG_SPEED_MAX     6
-#define CONFIG_WINDOW_COLOR() ((g_gameState->config >> 18) & 1) /* CFG_BIT_WINDOW_COLOR: the window palette (pal/abr) of all window drawing */
+#define CONFIG_WINDOW_COLOR() ((g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1) /* CFG_BIT_WINDOW_COLOR: the window palette (pal/abr) of all window drawing */
 
 /* GameState.config/padMap viewed as a pair: the config menu's settings (saved by ovl_39) */
 typedef struct {
@@ -3990,10 +4007,10 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     p->idleAnimSpeeds.w = 0x10101010;
     p->flags |= 4;
     switch (g_evtMode) {
-    case 1:
+    case EVT_MODE_FIELD:
         fld_queueModelBundle(uid);
         break;
-    case 2:
+    case EVT_MODE_BATTLE:
         g_evtUnitObjects[D_8007AE04++] = p;
         break;
     }

@@ -934,7 +934,7 @@ s16 bgi_getHeight(s16 arg0, s16 arg1) {
             g = g_gameState->gameData;
             return ((EvtObject *)g->npcModels[g->ctx.field->playerObj].actor)->pos.vy;
         }
-        if (g_gameState->mode == 1) {
+        if (g_gameState->mode == GS_MODE_FIELD) {
             return evt_getPlayer()->pos.vy;
         }
         return 0;

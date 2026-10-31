@@ -91,7 +91,7 @@ void opening_swapBuffers(void) {
 void func_800A73B8(void) {
     GameData *ctx = g_gameState->gameData;
     game_setClearColor(0, 0, 0);
-    g_gameState->mode = 1;
+    g_gameState->mode = GS_MODE_FIELD;
     g_gameState->vsyncMode = 2;
     ctx->fieldId = 0;
     ctx->fieldAreaId = 1;

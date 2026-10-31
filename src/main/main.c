@@ -13,36 +13,36 @@ void game_main(void) {
         game_initData();
         do {
             switch (g_gameState->mode) {
-            case 0:
-                game_loadModeOverlay(0);
+            case GS_MODE_OPENING:
+                game_loadModeOverlay(GS_MODE_OPENING);
                 opening_main();
                 break;
-            case 1:
-                game_loadModeOverlay(1);
+            case GS_MODE_FIELD:
+                game_loadModeOverlay(GS_MODE_FIELD);
                 fld_entry();
                 break;
-            case 2:
-                game_loadModeOverlay(2);
+            case GS_MODE_BATTLE:
+                game_loadModeOverlay(GS_MODE_BATTLE);
                 btl_entry();
                 break;
-            case 8:
-                game_loadModeOverlay(8);
+            case GS_MODE_BATTLE_END:
+                game_loadModeOverlay(GS_MODE_BATTLE_END);
                 battleEnd_main();
                 break;
-            case 3:
-                game_loadModeOverlay(3);
+            case GS_MODE_WORLD:
+                game_loadModeOverlay(GS_MODE_WORLD);
                 wm_entry();
                 break;
-            case 9:
-                game_loadModeOverlay(9);
+            case GS_MODE_TETRA_MASTER:
+                game_loadModeOverlay(GS_MODE_TETRA_MASTER);
                 tm_main();
                 break;
-            case 7:
-                game_loadModeOverlay(7);
+            case GS_MODE_GAME_OVER:
+                game_loadModeOverlay(GS_MODE_GAME_OVER);
                 fld_gameOver();
                 break;
-            case 4:
-                game_loadModeOverlay(4);
+            case GS_MODE_ENDING:
+                game_loadModeOverlay(GS_MODE_ENDING);
                 ending_main();
                 break;
             }

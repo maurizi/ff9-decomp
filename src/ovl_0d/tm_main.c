@@ -25,8 +25,8 @@ void tm_init(void) {
 void tm_exit(void) {
     tm_freeDataCopy();
     tm_soundCmd(SND_MUSIC_STOP, MUSIC_TETRA_MASTER, 0, 0, 0);
-    g_gameState->prevMode = 9;
-    g_gameState->mode = 1;
+    g_gameState->prevMode = GS_MODE_TETRA_MASTER;
+    g_gameState->mode = GS_MODE_FIELD;
 }
 
 s32 tm_loadSoundBlocks(void) {

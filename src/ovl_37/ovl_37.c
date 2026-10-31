@@ -322,7 +322,7 @@ void menuItem_sortAuto(void) {
 s32 menuItem_callChocobo(void) {
     ItemMenu *m = &s_menuItem;
 
-    if (g_gameState->mode == 3 && g_evtGlobalVars.b[0xBF] != 0 && g_evtGlobalVars.b[0xB5] == 0) {
+    if (g_gameState->mode == GS_MODE_WORLD && g_evtGlobalVars.b[0xBF] != 0 && g_evtGlobalVars.b[0xB5] == 0) {
         if (wm_canCallChocobo()) {
             g_evtGlobalVars.b[0xB5] = 1;
             wm_callChocobo();
@@ -469,7 +469,7 @@ void menuItem_update(void) {
 }
 
 void menuItem_exit(void) {
-    if (g_gameState->mode == 3) {
+    if (g_gameState->mode == GS_MODE_WORLD) {
         snd_stopSe(SE_CHOCOBO_CALL);
     }
     help_setLocked(0);
@@ -694,7 +694,7 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
 }
 
 void menuItem_onKwehOpened(Window *w) {
-    if (g_gameState->mode == 3) {
+    if (g_gameState->mode == GS_MODE_WORLD) {
         snd_startSe(SE_CHOCOBO_CALL);
     }
 }
@@ -715,7 +715,7 @@ void menuItem_stepKweh(void) {
             s_menuItem.popupTimer = t + 1;
             if (t >= 0x60) {
                 s_menuItem.popupTimer = 0;
-                if (g_gameState->mode == 3) {
+                if (g_gameState->mode == GS_MODE_WORLD) {
                     snd_stopSe(SE_CHOCOBO_CALL);
                 }
                 help_setLocked(0);

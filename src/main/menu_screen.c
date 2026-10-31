@@ -18,7 +18,7 @@ void menuScreen_init(void) {
     g_menuScreenSwitch.overlayLoading = 0;
     g_menuScreenSwitch.switching = 0;
     g_menuScreenSwitch.fadingOut = 0;
-    g_menuScreenSwitch.screens = g_gameState->mode != 3 ? g_menuScreensField : g_menuScreensWorld;
+    g_menuScreenSwitch.screens = g_gameState->mode != GS_MODE_WORLD ? g_menuScreensField : g_menuScreensWorld;
     t = g_menuScreenSwitch.screens;
     t[g_menuScreenCur].init();
 }
@@ -229,7 +229,7 @@ void menuScreen_onSwitchFaded(void) {
     g_menuScreenSwitch.busy = 0;
     g_menuScreen.screen = g_menuScreenSwitch.target;
     g_menuScreenSwitch.screens[g_menuScreen.screen].init();
-    if (g_gameState->mode != 3) {
+    if (g_gameState->mode != GS_MODE_WORLD) {
         menuMainField_setCursor(g_menuScreen.screen - 1);
     } else {
         menuMainWorld_setCursor(g_menuScreen.screen - 1);

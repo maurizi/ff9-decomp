@@ -26,7 +26,7 @@ s32 evt_getAnimFrameCount(a, b)
 }
 
 s32 evt_updateActorWalkmesh(EvtObject *p) {
-    if (g_gameState->mode == 3) {
+    if (g_gameState->mode == GS_MODE_WORLD) {
         goto ret0;
     }
     if (p->kind != 4) {

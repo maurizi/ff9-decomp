@@ -197,8 +197,8 @@ void game_resetState(void) {
     gs->flags = GS_RELOAD_FILE_TABLES;
     gs->disc = 0xFF;
     gs->allocTop = 0;
-    gs->mode = 0;
-    gs->prevMode = 0;
+    gs->mode = GS_MODE_OPENING;
+    gs->prevMode = GS_MODE_OPENING;
     gs->imgSector = -1;
     gs->gameData = NULL;
     game_setClearColor(0, 0, 0);

@@ -156,7 +156,7 @@ void fade_outAdditive(s32 a) {
 }
 
 u32 *fade_getOt(s32 i) {
-    if (g_gameState->mode != 2) {
+    if (g_gameState->mode != GS_MODE_BATTLE) {
         return &g_gameState->gameData->ot[i][g_fade.otz];
     }
     return &g_fadeBattleOt[i];

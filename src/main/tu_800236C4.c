@@ -67,7 +67,7 @@ void config_apply(void) {
 }
 
 void config_applySound(void) {
-    akao_setOutputMode(g_gameState->config & 1);
+    akao_setOutputMode((g_gameState->config >> CFG_BIT_SOUND) & 1);
 }
 
 void game_initGfx(void) {

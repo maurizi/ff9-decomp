@@ -494,7 +494,7 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
     s32 r;
     s8 one;
     if (arg0->pc[0] != 0x20 && !((arg0->cmd->ability->unk0_17 >> 13) & 1)) {
-        if (((g_gameState->config >> 4) & (one = 1)) == one) {
+        if (((g_gameState->config >> CFG_BIT_CAMERA) & (one = 1)) == one) {
             goto end;
         }
         f = arg1->status;

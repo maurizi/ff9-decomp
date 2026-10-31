@@ -812,7 +812,7 @@ void menuAbility_drawSupportRow(s32 x, s32 y, s32 i, Character *c) {
         if (st == ABILITY_EQUIPPED) {
             menuAbility_drawIcon(x + 8, y, 0x1C, s_menuAbility.animFrame);
         }
-        if (!((g_gameState->config >> 18) & 1)) {
+        if (!(CONFIG_WINDOW_COLOR())) {
             menuAbility_drawIcon(x + 8, y, 0x1C, st >= ABILITY_USABLE ? 9 : 10);
         } else {
             menuAbility_drawIcon(x + 8, y, 0x1C, st >= ABILITY_USABLE ? 7 : 8);

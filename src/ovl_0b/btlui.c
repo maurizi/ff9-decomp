@@ -160,7 +160,7 @@ u8 btl_isAtbRunning(void) {
     if (g_btluiState.atbOn == 0) {
         return 0;
     }
-    f = (g_gameState->config >> 3) & 1;
+    f = (g_gameState->config >> CFG_BIT_ATB) & 1;
     if (f != 1) {
         return 1;
     }
@@ -261,7 +261,7 @@ void btlui_updateTargetFlags(void) {
         r = 1;
     } else {
         do {
-            f = (g->config >> 19) & 1;
+            f = (g->config >> CFG_BIT_TARGET_WINDOW) & 1;
             if (f == 1) {
                 r = 1;
             }
@@ -348,8 +348,8 @@ void btlui_initPartyEntries(void) {
         e->chr = &g_gameState->gameData->characters[(u->flags >> 1) & 0xF];
         e->learns = chr_canLearnAbilities(e->chr);
         e->defaultSet = chr_getAppearanceType(e->chr->info.b.id, (e->chr->classFlags >> 4) & 1);
-        if ((g_gameState->config >> 5) & 1) {
-            f = ((s32)(g_gameState->config >> 20) >> e->defaultSet) & 1;
+        if ((g_gameState->config >> CFG_BIT_BTL_CONTROL) & 1) {
+            f = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> e->defaultSet) & 1;
         } else {
             f = 0;
         }
@@ -1118,7 +1118,7 @@ void btlui_openCmdMenu(void) {
 
     p = &g_btlCmdMenu.sideCmd;
     e = g_btlUi->cmdUnit->menu;
-    if (!((g_gameState->config >> 2) & 1)) {
+    if (!((g_gameState->config >> CFG_BIT_CURSOR) & 1)) {
         g_btlCmdMenu.cursor = 0;
     } else {
         g_btlCmdMenu.cursor = e->cursor.cmdRow;
@@ -1392,7 +1392,7 @@ void btlui_drawSideFrame(RECT *r, s32 otz) {
     r2.y = r->y + 1;
     r2.w = r->w - 3;
     r2.h = r->h - 3;
-    win_drawFill(&r2, otz, 0, 0, (g_gameState->config >> 18) & 1);
+    win_drawFill(&r2, otz, 0, 0, CONFIG_WINDOW_COLOR());
 }
 
 void btlui_drawTranceLabel(s32 x, s32 y, s32 otz, char *str) {
@@ -1733,7 +1733,7 @@ void btlui_openList(Unk800EE37C *arg0) {
     g_btluiList.halfMp = chr_hasSupportAbility((g_btluiList.unit->flags >> 1) & 0xF, SA_HALF_MP);
     n = g_btluiList.cmd->count;
     menuList_init(&l, n, (n < 5) ? n : 4, 1, 0x44);
-    f = (g_gameState->config >> 2) & 1;
+    f = (g_gameState->config >> CFG_BIT_CURSOR) & 1;
     if (f == 1) {
         e = g_btluiList.unit->menu;
         c = &e->cursor;
@@ -3397,7 +3397,7 @@ void btlui_drawPanelHeader(void) {
     s32 i;
     Unk800F412C *e;
 
-    ui_drawRule(0x8E, g_btluiPanel->y, 8, 1, 0xA9, (g_gameState->config >> 18) & 1);
+    ui_drawRule(0x8E, g_btluiPanel->y, 8, 1, 0xA9, CONFIG_WINDOW_COLOR());
     r.x = 0x8E;
     r.y = g_btluiPanel->y - 3;
     r.w = g_gameState->dispEnv->disp.w - 0x8E;
@@ -3683,7 +3683,7 @@ void btlui_drawPortIcons(void) {
     s32 f;
 
     if (!(g->flags & 0x100) && !(g->ctx.battle->flags & 0x20) && g_btluiState.enabled != 0 &&
-        (f = (g_gameState->config >> 5) & 1) == 1) {
+        (f = (g_gameState->config >> CFG_BIT_BTL_CONTROL) & 1) == 1) {
         ClearOTag(&g_btluiPortIconOt, 1);
         if (g_btluiState.vsyncTick & 0x20) {
             if (g_btluiState.port == 0) {
@@ -3763,7 +3763,7 @@ void btlui_readPad(void) {
 
 u8 btlui_anyOnSecondPort(void) {
     s32 i;
-    s32 f = (g_gameState->config >> 5) & 1;
+    s32 f = (g_gameState->config >> CFG_BIT_BTL_CONTROL) & 1;
     if (f != 1) {
         return 0;
     }
@@ -3772,7 +3772,7 @@ u8 btlui_anyOnSecondPort(void) {
         if (c == 0) {
             continue;
         }
-        if (((s32)(g_gameState->config >> 20) >> chr_getDefaultSet(c)) & 1) {
+        if (((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> chr_getDefaultSet(c)) & 1) {
             return 1;
         }
     }
