@@ -362,7 +362,7 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r >>= 5;
         break;
     case 0x42:
-        r = (g_gameState->gameData->characters + BTL_UNIT_INDEX(arg0->flags))->info.w >> 4;
+        r = (g_gameState->gameData->characters + BTL_UNIT_INDEX(arg0->flags))->info.w >> CHR_INFO_KIND_SHIFT;
         r &= 0x1F;
         break;
     case 0x43:

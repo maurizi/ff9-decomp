@@ -1325,10 +1325,10 @@ s32 btl_getPartyModelId(s32 arg0, s32 arg1) {
     if (!(arg1 & 0x20)) {
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
-            m = ((s16)u->modelId != g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.w >> 4) & 0x1F : 0x13]) << 4;
+            m = ((s16)u->modelId != g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F : 0x13]) << 4;
         }
     }
-    idx = g_gameState->gameData->party[arg0]->info.w >> 4;
+    idx = g_gameState->gameData->party[arg0]->info.w >> CHR_INFO_KIND_SHIFT;
     idx &= 0x1F;
     if ((arg1 & 0x10) != m) {
         if (!(arg1 & 0x20)) {

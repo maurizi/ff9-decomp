@@ -47,3 +47,4 @@
 # MACROS BTL_WEAPON_THROWABLE, BTL_WEAPON_COUNT (g_weaponTable), BTLFX_UNIT_CASTER / BTLFX_UNIT_PARTNER (btl_getUnit ids),
 #   BTLFX_SUMMON_MAGIC; btlseq_opPlayCamera 0x14000000 -> BTL_STATUS_VANISH | BTL_STATUS_MINI; btlui item loops use
 #   ITEM_SLOT_COUNT / ITEM_NONE / ITEM_FIRST_USABLE
+# MACROS (uses) Character.info.w >> 4 -> CHR_INFO_KIND_SHIFT (5 sites); (info.w >> 1) & 0x100 -> CHR_INFO_BATTLE_ROW_BIT / BTL_UNIT_ROW_SHIFT (btl_model.c)

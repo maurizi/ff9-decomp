@@ -671,7 +671,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             btl_showMessage(BTL_MSG_TRANCE);
             u->modelId = g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind + 0x13 : 0x26];
         } else {
-            u->modelId = g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.w >> 4) & 0x1F : 0x13];
+            u->modelId = g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F : 0x13];
         }
         break;
     case BTL_CMD_KO:
