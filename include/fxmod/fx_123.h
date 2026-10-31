@@ -30,7 +30,7 @@ typedef struct {
 } Fx123Bone;
 
 extern Fx123Bone D_801E8F64[6];
-extern Unk800F78A4 *D_801E90CC;
+extern Unk800F78A4 *fx_123_env;
 extern SVECTOR D_801E9BFC[6];
 extern SVECTOR D_801E9C2C[6];
 
@@ -119,7 +119,7 @@ extern Fx123Shot D_801E8F7C[6];
 extern u16 D_801E9054[6];
 extern u16 D_801E9060[6];
 extern s32 D_801E906C[6];
-extern BtlModel D_801E90DC[];
+extern BtlModel fx_123_effModels[];
 extern Fx123Path_0b4 D_801E965C[6];
 extern u8 D_801E96BC[6][0xE0];
 extern SVECTOR D_801E9C5C[6];

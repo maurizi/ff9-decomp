@@ -8,3 +8,5 @@ fxm_randStripPoint32 = 0x801E9FC4; // type:func [code] random point of a random 
 fxm_drawJaggedTrail = 0x801E9968; // type:func [code] fills a trail strip from to (noise table, lerped side offset, optional dip) and draws it at otZ 0x80
 fxm_drawJaggedTrailBranch = 0x801E9C08; // type:func [code] fxm_drawJaggedTrail branching off point i of a strip with a random width
 fx_19f_op83PoolTask = 0x801E9D20; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_19f_op83
+fx_19f_env = 0x801EAA48; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_19f_effModels = 0x801EAB28; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

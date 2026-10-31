@@ -16,6 +16,6 @@ typedef struct {
     SVECTOR unk28; /* below the target */
 } Fx03fWork; /* 0x30 */
 
-extern Unk800F78A4 *D_801E7A58;
+extern Unk800F78A4 *fx_03f_env;
 
 #endif

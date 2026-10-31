@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR unk8; /* caster bone position */
 } Fx0dcWork84;
 
-extern Unk800F78A4 *D_801E9354;
+extern Unk800F78A4 *fx_0dc_env;
 
 s32 fx_0dc_op84(s32 mode, Fx0dcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
@@ -72,6 +72,6 @@ typedef struct {
 } Fx0dcWork80; /* 0x88 */
 
 extern s32 D_801E92B8[14];
-extern BtlModel D_801E9364[];
+extern BtlModel fx_0dc_effModels[];
 
 #endif

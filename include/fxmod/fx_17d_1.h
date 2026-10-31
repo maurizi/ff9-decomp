@@ -4,7 +4,7 @@
 /* Effect module fx_17d_1 (dir 13 file 0x17D). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801ED420;
+extern Unk800F78A4 *fx_17d_1_env;
 
 void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr);
 void func_801EC944(u32 *ot, s32 tpage, s32 x, s32 r, s32 g, s32 b);
@@ -44,7 +44,7 @@ typedef struct {
     s32 unk78; /* model */
 } Fx17d1Work80; /* 0x7C */
 
-extern BtlModel D_801ED430[];
+extern BtlModel fx_17d_1_effModels[];
 extern s32 D_801ED5C0[];
 
 s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);

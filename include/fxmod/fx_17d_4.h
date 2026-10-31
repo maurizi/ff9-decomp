@@ -4,7 +4,7 @@
 /* Effect module fx_17d_4 (dir 13 file 0x17d). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801E9890;
+extern Unk800F78A4 *fx_17d_4_env;
 extern s16 D_801E97FC[16];
 extern SVECTOR D_801E981C[3];
 extern s16 D_801E9814[3];
@@ -74,7 +74,7 @@ typedef struct {
 extern SVECTOR D_801E971C;
 extern s32 D_801E989C[];
 extern s8 D_801EB25C;
-extern BtlModel D_801EB65C[];
+extern BtlModel fx_17d_4_effModels[];
 void func_801E7B8C(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
 void func_801E7EB4(Unk80100C78Entry *entry, SVECTOR *from, s32 ot);
 

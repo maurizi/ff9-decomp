@@ -15,7 +15,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x58;
     } else if (mode == 1) {
-        D_801E7C60 = env;
+        fx_032_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m0);
         ex->btlfx_matrixPointAhead(&m0, (s16)env->targets->fxParam, (s32)env->camera);

@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk4[1];
 } Fx19fTrail;
 
-extern Unk800F78A4 *D_801EAA48;
+extern Unk800F78A4 *fx_19f_env;
 
 typedef struct {
     s16 x, y, z;
@@ -124,7 +124,7 @@ extern s32 D_801EA9DC[3];
 extern s32 D_801EA9E8[3];
 extern s32 D_801EA9F4[3];
 extern Fx19fTrail D_801EAA58;
-extern BtlModel D_801EAB28[];
+extern BtlModel fx_19f_effModels[];
 extern Fx19fTrail17 D_801EAF18[6];
 extern Fx19fTrail13 D_801EB268[3];
 void func_801E7894(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,

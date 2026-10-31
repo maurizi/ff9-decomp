@@ -185,10 +185,10 @@ extern s32 D_801EA820;
 extern s32 D_801EA824;
 extern u8 D_801EA93C[];
 extern s16 D_801EA774[];
-extern BtlModel D_801EACDC[];
+extern BtlModel fx_026_effModels[];
 extern SVECTOR D_801EC5E4;
 extern Fx026CamPath D_801EA8C4[];
-extern Unk800F78A4 *D_801EACCC;
+extern Unk800F78A4 *fx_026_env;
 extern Fx026Shatter *D_801ED9CC[8];
 extern Fx026Shard *D_801ED9EC[8];
 extern s32 D_801EDA08; /* shatter line */

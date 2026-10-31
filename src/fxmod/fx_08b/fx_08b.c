@@ -19,7 +19,7 @@ s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x5C;
     } else if (mode == 1) {
-        D_801E7D74 = env;
+        fx_08b_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk18);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk20);
         ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk20, 0x708, (s16 *)&work->unk38);
@@ -103,7 +103,7 @@ s32 fx_08b_op81(s32 mode, Fx08bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         s32 n = *arg4;
         work->unkC = n;
-        D_801E7D74 = env;
+        fx_08b_env = env;
         if (n >= env->targets->targetCount) {
             fxm_setSignal(env, 7, 1);
             return 1;

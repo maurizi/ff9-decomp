@@ -9,7 +9,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x44;
     } else if (mode == 1) {
-        D_801E7A54 = env;
+        fx_12f_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
         work->unk18.vx = env->targets->centerX;
         work->unk18.vz = env->targets->centerZ;

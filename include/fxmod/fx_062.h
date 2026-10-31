@@ -49,8 +49,8 @@ typedef struct {
     VECTOR unkC0; /* scale */
 } Fx062Work; /* 0xD0 (0xD4 allocated) */
 
-extern Unk800F78A4 *D_801E882C;
-extern BtlModel D_801E883C[];
+extern Unk800F78A4 *fx_062_env;
+extern BtlModel fx_062_effModels[];
 extern u32 D_801E8B5C[];
 extern SVECTOR D_801E8F5C;
 extern SVECTOR D_801E8F64;

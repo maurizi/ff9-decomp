@@ -10,8 +10,8 @@ typedef struct {
     SVECTOR unk8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0dbWork84;
 
-extern Unk800F78A4 *D_801E894C;
-extern BtlModel D_801E895C[];
+extern Unk800F78A4 *fx_0db_env;
+extern BtlModel fx_0db_effModels[];
 
 typedef struct {
     s32 unk0; /* state */

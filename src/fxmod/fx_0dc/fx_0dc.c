@@ -1,7 +1,7 @@
 #include "fxmod/fx_0dc.h"
 
 void func_801E7718(s16 *a, s16 *b, s32 i, s16 *out) {
-    BTLFX_EXPORTS(D_801E9354)->btlfx_pointAhead(a, b, -((D_801E92F0[i] * 0x455) >> 9), out);
+    BTLFX_EXPORTS(fx_0dc_env)->btlfx_pointAhead(a, b, -((D_801E92F0[i] * 0x455) >> 9), out);
 }
 
 static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
@@ -202,8 +202,8 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         init->elemFn = (s32)fx_0dc_op80PoolTask;
         init->poolCount = 0x20;
     } else if (mode == 1) {
-        D_801E9354 = env;
-        ex->btlfx_initEffModels(D_801E9364, 0x19);
+        fx_0dc_env = env;
+        ex->btlfx_initEffModels(fx_0dc_effModels, 0x19);
         tp = 0x9A;
         w->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x14), tp, 0x3DC0,
                                                   0x80, 0);
@@ -471,7 +471,7 @@ s32 fx_0dc_op84(s32 mode, Fx0dcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x10;
     } else {
         if (mode == 1) {
-            D_801E9354 = env;
+            fx_0dc_env = env;
             work->unk0 = 0;
             work->unk4 = 0;
         } else {

@@ -18,7 +18,7 @@ typedef struct {
     SVECTOR unk4[25];
 } Fx0e0Bolt;
 
-extern Unk800F78A4 *D_801EA918;
+extern Unk800F78A4 *fx_0e0_env;
 
 static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr);
 static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr, s32 flip);
@@ -109,6 +109,6 @@ typedef union {
 extern SVECTOR D_801EA8B0;
 extern CVECTOR D_801EA8C8[];
 extern Fx0e0Bolt D_801EA928[];
-extern BtlModel D_801EAB98[];
+extern BtlModel fx_0e0_effModels[];
 
 #endif

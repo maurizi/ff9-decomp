@@ -41,7 +41,7 @@ s32 fx_191_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
 }
 
 s32 func_801E7870(Pool30Entry *e, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 frame, s32 frames) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E855C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_191_env);
     SVECTOR a;
     SVECTOR b;
     s32 t;
@@ -133,7 +133,7 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        D_801E855C = env;
+        fx_191_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);
         D_801E8574.vx = work->unk10.vx;
@@ -176,7 +176,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x60;
     } else if (mode == 1) {
-        D_801E855C = env;
+        fx_191_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk18);
         D_801E859C.vx = work->unk18.vx;
         D_801E859C.vy = work->unk18.vy;

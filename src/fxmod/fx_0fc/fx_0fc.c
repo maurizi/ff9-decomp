@@ -7,7 +7,7 @@ s32 fx_0fc_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     if (mode == 0) {
         *arg4 = 8;
     } else if (mode == 1) {
-        D_801E77F4 = env;
+        fx_0fc_env = env;
         ex->btlfx_getUnitHomePos(0, (s16 *)work);
         return 0;
     } else {

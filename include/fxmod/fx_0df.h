@@ -39,10 +39,10 @@ typedef struct {
     SVECTOR unk4[15];
 } Fx0dfBolt;
 
-extern Unk800F78A4 *D_801E9E90;
+extern Unk800F78A4 *fx_0df_env;
 extern SVECTOR D_801EA350[24]; /* recent positions */
 extern s32 D_801EA410; /* next slot in D_801EA350 */
-extern Unk80100C78Entry *D_801EA414;
+extern Unk80100C78Entry *fx_0df_task;
 
 void func_801E7EB8(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7);
 static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
@@ -95,7 +95,7 @@ typedef struct {
     Pool6CEntry *unk3C;
 } Fx0dfWork80; /* 0x40 */
 
-extern BtlModel D_801E9EA0[];
+extern BtlModel fx_0df_effModels[];
 static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));
 s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);

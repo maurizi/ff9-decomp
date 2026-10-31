@@ -2,7 +2,7 @@
 
 static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = (frame - 4) << 9;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7C04);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1a3_env);
 
     if (t > 0x1000) {
         t = 0x1000;
@@ -24,7 +24,7 @@ s32 fx_1a3_op80(s32 mode, Fx1a3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        D_801E7C04 = env;
+        fx_1a3_env = env;
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         D_801E93FC.vx = work->unk10.vx;
@@ -64,7 +64,7 @@ s32 fx_1a3_op81(s32 mode, Fx1a3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        D_801E7C04 = env;
+        fx_1a3_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unkC);
         work->unk14.vx = work->unkC.vx;
         work->unk14.vy = work->unkC.vy;

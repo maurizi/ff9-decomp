@@ -1,7 +1,7 @@
 #include "fxmod/fx_084.h"
 
 static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7B90);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_084_env);
     s32 t = frame << 8;
     s32 a;
 
@@ -33,9 +33,9 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x24;
     } else if (mode == 1) {
-        D_801E7B90 = env;
+        fx_084_env = env;
         work->unk0 = 0;
-        D_801E7BA8 = entry;
+        fx_084_task = entry;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         BTLFX_COPY_SVEC(&D_801E7B98, &work->unk4);
     } else {

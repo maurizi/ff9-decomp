@@ -11,6 +11,6 @@ typedef struct {
     SVECTOR unk10;
 } Fx1b1Work;
 
-extern Unk800F78A4 *D_801E78B0;
+extern Unk800F78A4 *fx_1b1_env;
 
 #endif

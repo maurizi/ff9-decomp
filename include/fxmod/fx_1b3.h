@@ -106,13 +106,13 @@ extern Fx1b3Split D_801EB574;
 extern Fx1b3Split D_801EB5E4[2];
 extern Fx1b3Split D_801EB6B4[3];
 extern SVECTOR D_801EB7EC;
-extern BtlModel D_801EB7F4[];
+extern BtlModel fx_1b3_effModels[];
 
 void func_801EA39C(Fx1b3Split *sp);
 void func_801EA7E4(Fx1b3Split *sp);
 
 /* copied */
-extern Unk800F78A4 *D_801EB074;
+extern Unk800F78A4 *fx_1b3_env;
 /* end copied */
 
 #endif

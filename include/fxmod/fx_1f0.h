@@ -31,9 +31,9 @@ typedef struct {
 } Fx1f0Work; /* 0xB8 */
 
 extern s32 D_801E84F0[];
-extern Unk800F78A4 *D_801E8548;
+extern Unk800F78A4 *fx_1f0_env;
 extern Fx1f0Unit D_801E8558[4];
-extern BtlModel D_801E8608[];
+extern BtlModel fx_1f0_effModels[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 

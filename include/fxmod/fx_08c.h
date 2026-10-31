@@ -13,7 +13,7 @@ typedef struct {
     s32 unk24; /* model */
 } Fx08cWork;
 
-extern Unk800F78A4 *D_801E7AA8;
-extern BtlModel D_801E7AB8[];
+extern Unk800F78A4 *fx_08c_env;
+extern BtlModel fx_08c_effModels[];
 
 #endif

@@ -1,7 +1,7 @@
 #include "fxmod/fx_1b3.h"
 
 static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
-    Unk800F78A4 *env = D_801EB074;
+    Unk800F78A4 *env = fx_1b3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 c = ex->btlfx_lerpRatio(from, to, t, n);
 
@@ -9,7 +9,7 @@ static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EB074);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b3_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -63,8 +63,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         s32 buf;
 
-        D_801EB074 = env;
-        ex->btlfx_initEffModels(D_801EB7F4, 0x14);
+        fx_1b3_env = env;
+        ex->btlfx_initEffModels(fx_1b3_effModels, 0x14);
         for (i = 0; i < 32; i++) {
             work->unk0[i] = 0;
             work->unk80[i] = NULL;
@@ -842,7 +842,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 INCLUDE_RODATA("asm/us/fx_1b3/nonmatchings/fx_1b3", fx_1b3_headerPtr);
 
 void func_801EA39C(Fx1b3Split *sp) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EB074);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b3_env);
     SVECTOR *q;
     Fx1b3Piece *p;
     s32 i;
@@ -917,7 +917,7 @@ void func_801EA7E4(Fx1b3Split *sp) {
     VECTOR out;
     VECTOR scale;
     MATRIX m;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EB074);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b3_env);
     Fx1b3Piece *p;
     SVECTOR *v;
     s32 i;

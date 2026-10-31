@@ -2,7 +2,7 @@
 
 static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
-    Unk800F78A4 *env = D_801E9150;
+    Unk800F78A4 *env = fx_0d6_env;
     RECT rect;
     VECTOR sv;
     SVECTOR zero;
@@ -163,10 +163,10 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x38;
     } else if (mode == 1) {
-        D_801E9150 = env;
+        fx_0d6_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
-        ex->btlfx_initEffModels(D_801E9160, 6);
+        ex->btlfx_initEffModels(fx_0d6_effModels, 6);
         work->unk14[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 1);
         work->unk14[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1B), 1);
         work->unk14[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1D), 1);
@@ -443,7 +443,7 @@ s32 fx_0d6_op84(s32 mode, Fx0d6Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        D_801E9150 = env;
+        fx_0d6_env = env;
         work->unk0 = 0;
         work->unk4 = 0;
     } else {

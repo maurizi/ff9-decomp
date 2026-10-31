@@ -41,7 +41,7 @@ typedef struct {
 extern u16 D_801E84DC[4]; /* files */
 extern SVECTOR D_801E84E4[4];
 extern s32 (*D_801E8504[4])();
-extern Unk800F78A4 *D_801E855C;
+extern Unk800F78A4 *fx_191_env;
 extern Fx191Path D_801E8564;
 extern Fx191Path D_801E856C;
 extern SVECTOR D_801E8574;

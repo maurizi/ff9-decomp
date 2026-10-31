@@ -63,8 +63,8 @@ typedef struct {
     u16 unk34; /* model */
 } Fx1b2Work82; /* 0x38 */
 
-extern Unk800F78A4 *D_801E84EC;
-extern BtlModel D_801E84FC[];
+extern Unk800F78A4 *fx_1b2_env;
+extern BtlModel fx_1b2_effModels[];
 extern Fx1b2Path D_801E8754;
 extern u32 D_801E875C[];
 extern s32 D_801E8B5C[][0x258];
@@ -81,7 +81,7 @@ static s32 fxm_isMotionDone(s32 unit);
 static void fxm_startMotion2IfActive(s32 unit);
 
 /* copied */
-extern Unk800F78A4 *D_801E84EC;
+extern Unk800F78A4 *fx_1b2_env;
 /* end copied */
 
 #endif

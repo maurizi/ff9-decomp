@@ -18,7 +18,7 @@ void func_801E7704(Fx1b7Split *s, SVECTOR (*faces)[3]) {
 }
 
 static s32 fxm_splitModelAdd(s32 model) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E87E0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b7_env);
     Fx1b7Split *s = D_801E87E8;
     SVECTOR (*f)[3] = s->unk28;
     s32 n;
@@ -55,7 +55,7 @@ Fx1b7Piece *func_801E7830(void) {
 s32 func_801E7868(void) {
     Fx1b7Split *s = D_801E87E8;
     SVECTOR (*f)[3] = s->unk24;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E87E0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b7_env);
     s32 t = D_801E87F0;
     SVECTOR d;
     Fx1b7Piece *p;
@@ -113,7 +113,7 @@ void func_801E7ACC(void) {
     p = D_801E87EC;
     zero[0] = 0;
     zero[1] = 0;
-    ex = BTLFX_EXPORTS(D_801E87E0);
+    ex = BTLFX_EXPORTS(fx_1b7_env);
     dir.vx = 0;
     dir.vy = 0;
     dir.vz = -0x2BC;
@@ -200,7 +200,7 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x64;
     } else if (mode == 1) {
-        D_801E87E0 = env;
+        fx_1b7_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
         pos.vz -= 0x258;
         work->unk8[0] = pos.vx;
@@ -222,7 +222,7 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         pos.vy -= 0x80;
         env->camera->points[3].vx = pos.vx;
         env->camera->points[3].vy = pos.vy;
-        D_801E87E4 = entry;
+        fx_1b7_task = entry;
         env->camera->points[3].vz = pos.vz;
         work->unk0 = 0;
         work->unk4 = 0;
@@ -294,7 +294,7 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_stopEmitter(work->unk40);
                 ex->btlfx_fadeUnitById(0x10, 0);
                 ex->btlfx_moveSummonToHeap(0x6E);
-                ex->btlfx_initEffModels(D_801E8800, 8);
+                ex->btlfx_initEffModels(fx_1b7_effModels, 8);
                 for (i = 0; i < 8; i++) {
                     work->unk44[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8788[i]), 0);
                 }
@@ -365,7 +365,7 @@ s32 fx_1b7_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E87E0 = env;
+        fx_1b7_env = env;
         ex->btlfx_clearUnitStatus(0x10);
     } else {
         return 1;

@@ -6,3 +6,5 @@ fxm_posPathGet = 0x801E829C; // type:func [code] key i of a path of SVECTOR posi
 fxm_posPathInit = 0x801E8284; // type:func [code] sets up the fxm_posPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
 fxm_lerpSvec = 0x801E81E8; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
 fxm_lerpRatio = 0x801E822C; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
+fx_1e6_env = 0x801E8348; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_1e6_effModels = 0x801E8358; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

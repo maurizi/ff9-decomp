@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 /* copied */
-extern Unk800F78A4 *D_801EA260;
+extern Unk800F78A4 *fx_1f2_env;
 /* end copied */
 
 typedef struct {
@@ -93,7 +93,7 @@ extern SVECTOR D_801EA660;
 extern SVECTOR D_801EA670[4]; /* unit positions */
 extern Fx1f2Trail D_801EA690[16];
 extern Fx1f2Trail D_801EBB90[4];
-extern BtlModel D_801ED090[];
+extern BtlModel fx_1f2_effModels[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 

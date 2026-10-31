@@ -19,11 +19,11 @@ s32 fx_05f_op80(s32 mode, Fx05fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkC.vx = env->targets->centerX;
         work->unkC.vy = env->targets->centerY;
         work->unkC.vz = env->targets->centerZ;
-        D_801E8320 = env;
+        fx_05f_env = env;
         work->unkC.vy = 0;
         BTLFX_COPY_SVEC(&work->unk4, &work->unkC);
         work->unk4.vy -= 0x200;
-        ex->btlfx_initEffModels(D_801E8330, 8);
+        ex->btlfx_initEffModels(fx_05f_effModels, 8);
         work->unk14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 6), 0x39, 0x3D00, 0, 0x80);
         work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x39, 0x3D00, 0, 0x80);
         work->unk1C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
@@ -139,7 +139,7 @@ s32 fx_05f_op81(s32 mode, Fx05fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x68;
     } else if (mode == 1) {
-        D_801E8320 = env;
+        fx_05f_env = env;
         work->unk40 = env->targets->targetCount;
         for (i = 0; i < work->unk40; i++) {
             ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk0[i]);

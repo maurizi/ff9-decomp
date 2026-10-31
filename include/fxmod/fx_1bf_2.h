@@ -53,8 +53,8 @@ typedef struct {
 } Fx1bf2Work80; /* 0xBC */
 
 extern SVECTOR D_801E89F4;
-extern Unk800F78A4 *D_801E8A44;
-extern BtlModel D_801E8A54[];
+extern Unk800F78A4 *fx_1bf_2_env;
+extern BtlModel fx_1bf_2_effModels[];
 
 s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 

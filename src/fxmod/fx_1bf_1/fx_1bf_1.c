@@ -1,7 +1,7 @@
 #include "fxmod/fx_1bf_1.h"
 
 static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EF2D8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_1_env);
     s32 a = ex->btlfx_rand();
 
     v->pad = 0;
@@ -137,9 +137,9 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801EF2D8 = env;
+        fx_1bf_1_env = env;
         ex->btlfx_initParticleSystem();
-        ex->btlfx_initEffModels(D_801EF2E8, 0xE);
+        ex->btlfx_initEffModels(fx_1bf_1_effModels, 0xE);
         work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8A), 0);
         work->unk74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x88), 0);
         work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x86), 1);
@@ -583,7 +583,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
 static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *trail, s32 n, s32 *noise, SVECTOR *from,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip) {
-    Unk800F78A4 *env = D_801EF2D8;
+    Unk800F78A4 *env = fx_1bf_1_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     SVECTOR rot;
@@ -623,7 +623,7 @@ static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Tr
 static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 n, s32 *noise,
                    s32 i, s32 type, s32 alpha, s32 pad) {
     SVECTOR *pt = path->unk4;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EF2D8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_1_env);
     SVECTOR mid;
 
     pt += i;
@@ -701,7 +701,7 @@ s32 fx_1bf_1_op83(s32 mode, Fx1bf1Work83 *work, Unk800F78A4 *env, Fx1bf1Inst *in
         init->poolCount = 5;
     } else if (mode == 1) {
         n = init->workSize;
-        D_801EF2D8 = env;
+        fx_1bf_1_env = env;
         work->unk0 = D_801F0198[0];
         p = D_801F0198[0];
         for (i = 0; i < 64; i++) {

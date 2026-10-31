@@ -9,7 +9,7 @@ static s32 fx_0aa_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s
 }
 
 s32 func_801E7784(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 n) {
-    BTLFX_EXPORTS(D_801E7D78)->btlfx_lerpVec((s16 *)from, (s16 *)to, frame << 9, (s16 *)pos);
+    BTLFX_EXPORTS(fx_0aa_env)->btlfx_lerpVec((s16 *)from, (s16 *)to, frame << 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -26,7 +26,7 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x20;
     } else if (mode == 1) {
-        D_801E7D78 = env;
+        fx_0aa_env = env;
     } else {
         frame = entry->frame;
         if (frame == 4) {
@@ -81,7 +81,7 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk14.vx = env->targets->centerX;
         work->unk14.vy = env->targets->centerY;
-        D_801E7D78 = env;
+        fx_0aa_env = env;
         work->unk14.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;

@@ -18,7 +18,7 @@ typedef struct {
 
 extern s16 D_801E7BCC[];
 extern s32 D_801E7BDC; /* particles spawned */
-extern Unk800F78A4 *D_801E7C28;
+extern Unk800F78A4 *fx_036_env;
 extern SVECTOR D_801E7C30; /* target position */
 
 static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3);

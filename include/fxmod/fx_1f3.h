@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 /* copied */
-extern Unk800F78A4 *D_801E8DB0;
+extern Unk800F78A4 *fx_1f3_env;
 /* end copied */
 
 typedef struct {
@@ -83,7 +83,7 @@ typedef struct {
 } Fx1f3Work80; /* 0x120 */
 
 extern Fx1f3RingDef D_801E8CA8[16];
-extern BtlModel D_801E8DC0[];
+extern BtlModel fx_1f3_effModels[];
 extern s32 D_801EA6C0[];
 extern Fx1f3Rock D_801EC370[8];
 extern Fx1f3Ring D_801EC4F0[16];

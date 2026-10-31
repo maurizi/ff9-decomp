@@ -62,7 +62,7 @@ static s32 fxm_keyGetValue(Fx0b3Track *track, s32 t) {
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
-    Unk800F78A4 *env = D_801ED5E0;
+    Unk800F78A4 *env = fx_0b3_env;
     u32 *p = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;
@@ -107,8 +107,8 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801ED5E0 = env;
-        ex->btlfx_initEffModels(D_801ED5F0, 0x10);
+        fx_0b3_env = env;
+        ex->btlfx_initEffModels(fx_0b3_effModels, 0x10);
         work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
         work->unk34.vx = 0x1800;
         work->unk34.vy = 0x1800;
@@ -227,7 +227,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801ED5E0 = env;
+        fx_0b3_env = env;
         D_801EE270 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x89), 1);
         work->unk88[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x86), 1);
         work->unk88[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x87), 0);
@@ -396,7 +396,7 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801ED5E0 = env;
+        fx_0b3_env = env;
         work->unk78[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8B), 1);
         work->unk78[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8A), 1);
         work->unk78[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8C), 1);
@@ -538,7 +538,7 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 void func_801E8DF4(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 az,
                    s32 ay, s32 ph, s32 dph, s32 ax, s32 phx, s32 dphx) {
-    Unk800F78A4 *env = D_801ED5E0;
+    Unk800F78A4 *env = fx_0b3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col0;
     CVECTOR col1;
@@ -739,7 +739,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk48.vx = 0;
         work->unk48.vy = 0;
         work->unk48.vz = 0;
-        D_801ED5E0 = env;
+        fx_0b3_env = env;
         work->unk88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8E), 1);
         work->unk8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8F), 1);
         work->unk80.vx = 0;
@@ -858,7 +858,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 s32 func_801E9DB8(s32 a) {
-    s32 v = BTLFX_EXPORTS(D_801ED5E0)->math_sin(a);
+    s32 v = BTLFX_EXPORTS(fx_0b3_env)->math_sin(a);
 
     if (v < 0) {
         v >>= 1;
@@ -868,7 +868,7 @@ s32 func_801E9DB8(s32 a) {
 
 void func_801E9DFC(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 ay, s32 ph, s32 dph, s32 az, s32 phz, s32 dphz) {
-    Unk800F78A4 *env = D_801ED5E0;
+    Unk800F78A4 *env = fx_0b3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col0;
     CVECTOR col1;
@@ -1126,7 +1126,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk28.vx = 0;
         work->unk28.vy = 0;
         work->unk28.vz = 0;
-        D_801ED5E0 = env;
+        fx_0b3_env = env;
         ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->unk54->unk18C, ((Fx0b3Summon *)env->loader)->unk60);
         ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->loader)->unk60, 0x5A);
         return 0;
@@ -1313,7 +1313,7 @@ s32 fx_0b3_op86(s32 mode, Fx0b3Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = sizeof(Fx0b3Work86);
     } else if (mode == 1) {
-        D_801ED5E0 = env;
+        fx_0b3_env = env;
         work->unk40 = env->targets->targetCount;
         for (i = 0; i < work->unk40; i++) {
             if (ex->btlfx_isEnemyUnit(i) != 0) {
@@ -1342,7 +1342,7 @@ s32 fx_0b3_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         *arg4 = 4;
     } else if (mode == 1) {
         t = *arg4;
-        D_801ED5E0 = env;
+        fx_0b3_env = env;
         *work = t;
         if (*work >= 10) {
             v.vx = env->targets->centerX;

@@ -22,7 +22,7 @@ typedef struct {
     SVECTOR unk14; /* position: env->targets->centerX..Z */
 } Fx0aaWork81;
 
-extern Unk800F78A4 *D_801E7D78;
+extern Unk800F78A4 *fx_0aa_env;
 extern s32 D_801E7D88[];
 extern s32 D_801E82C8[];
 extern s32 D_801E8808[];

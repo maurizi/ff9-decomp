@@ -15,3 +15,5 @@ fxm_startMotion3IfActive = 0x801E8E00; // type:func [code] fxm_startUnitMotion(u
 fxm_offsetTableEntry = 0x801E8AFC; // type:func [code] base + ((s32 *)base)[i + 1], an entry of an offset table relative to its start
 fx_1ec_op80ParticleMotion = 0x801E78E0; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1ec_op80
 fx_1ec_op81ParticleMotion = 0x801E79DC; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1ec_op81
+fx_1ec_env = 0x801E8E94; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_1ec_effModels = 0x801E8EA4; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

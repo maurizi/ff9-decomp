@@ -54,14 +54,14 @@ typedef struct {
     s32 unk18; /* kind */
 } Fx018Work83; /* 0x1C */
 
-extern BtlModel D_801E9CF0[];
+extern BtlModel fx_018_effModels[];
 extern SVECTOR D_801E9CE0; /* previous bolt end */
-extern Unk80100C78Entry *D_801E9CEC;
+extern Unk80100C78Entry *fx_018_task;
 extern s32 D_801EA9E0[];
 extern s32 D_801E9E80; /* ring radius */
 extern u16 D_801E9C88[];
 extern u16 D_801E9C90[];
-extern Unk800F78A4 *D_801E9CE8;
+extern Unk800F78A4 *fx_018_env;
 extern Fx018Strip D_801E9E90[];
 extern Fx018Branch D_801EA650[];
 extern s32 D_801EA9D0; /* faster bolts */

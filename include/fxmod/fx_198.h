@@ -23,7 +23,7 @@ typedef struct {
 } Fx198Key;
 
 extern s16 D_801E7DE8[0x11]; /* file ids */
-extern Unk800F78A4 *D_801E7E54;
-extern BtlModel D_801E7E64[];
+extern Unk800F78A4 *fx_198_env;
+extern BtlModel fx_198_effModels[];
 
 #endif

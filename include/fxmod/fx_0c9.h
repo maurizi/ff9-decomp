@@ -25,8 +25,8 @@ typedef struct {
     u16 unk54; /* model */
 } Fx0c9Work81;
 
-extern Unk800F78A4 *D_801E7D38;
-extern BtlModel D_801E7D48[];
+extern Unk800F78A4 *fx_0c9_env;
+extern BtlModel fx_0c9_effModels[];
 extern SVECTOR D_801E7E10; /* particle position */
 extern SVECTOR D_801E7E18;
 extern s32 D_801E7E28[];

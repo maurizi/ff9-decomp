@@ -85,7 +85,7 @@ extern SVECTOR D_801E91EC[]; /* piece landing offsets */
 extern s32 D_801E921C[]; /* model frame per animation frame */
 extern Fx197Shatter D_801EAFC0;
 extern Fx197Tri D_801EC5C0[];
-extern BtlModel D_801E9670[];
+extern BtlModel fx_197_effModels[];
 extern s32 D_801EAF70;
 extern s32 D_801EAF74;
 extern s32 D_801E9130[6][3];
@@ -102,7 +102,7 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
                   Unk800DA1B8 *pool, Fx197Work81 *work);
 
 /* copied */
-extern Unk800F78A4 *D_801E9660;
+extern Unk800F78A4 *fx_197_env;
 extern Fx197Shatter *D_801EAF80[8];
 extern Fx197Shard *D_801EAFA0[8];
 extern s32 D_801EAFBC; /* shatter line */

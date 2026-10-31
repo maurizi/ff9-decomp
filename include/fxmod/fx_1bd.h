@@ -33,7 +33,7 @@ typedef struct {
     Fx1bdKey12 *unk4;
 } Fx1bdTrack12;
 
-extern BtlModel D_801E9E64[];
+extern BtlModel fx_1bd_effModels[];
 
 
 typedef struct {
@@ -72,7 +72,7 @@ static void fxm_posPathInit(Fx1bdPath *path, u16 *data);
 static s32 fxm_posPathGet(Fx1bdPath *path, s32 t, SVECTOR *out);
 
 /* copied */
-extern Unk800F78A4 *D_801E9E54;
+extern Unk800F78A4 *fx_1bd_env;
 /* end copied */
 
 /* propagated */

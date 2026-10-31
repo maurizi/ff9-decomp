@@ -27,7 +27,7 @@
     "lwc2\t$0, 0(%0)" \
     : : "r"(r0))
 
-extern Unk800F78A4 *D_801E8EE8;
+extern Unk800F78A4 *fx_007_env;
 
 static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
@@ -44,7 +44,7 @@ typedef struct {
     s32 unk34; /* frame */
 } Fx007Work80; /* 0x38 */
 
-extern BtlModel D_801E8EF8[];
+extern BtlModel fx_007_effModels[];
 extern u8 D_801E93A8[];
 extern u16 D_801E9638[];
 

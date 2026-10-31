@@ -26,7 +26,7 @@ static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32
                    s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind);
 static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx0d9Strip *strip, Fx0d9Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
                    s32 kind);
-extern Unk800F78A4 *D_801E9EA0;
+extern Unk800F78A4 *fx_0d9_env;
 extern SVECTOR D_801EA04C[]; /* strips[0].unk4: the strips start 4 bytes earlier */
 #define FX_0D9_STRIPS ((Fx0d9Strip *)((u8 *)D_801EA04C - 4))
 static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3);
@@ -74,7 +74,7 @@ typedef struct {
     s32 unk18; /* kind */
 } Fx0d9Work83; /* 0x1C */
 extern SVECTOR D_801E9E98; /* previous bolt end */
-extern Unk80100C78Entry *D_801E9EA4;
+extern Unk80100C78Entry *fx_0d9_task;
 extern s32 D_801EAB98[];
 s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 
@@ -88,6 +88,6 @@ typedef struct {
     s32 pad20;
 } Fx0d9Work80; /* 0x24 */
 
-extern BtlModel D_801E9EA8[];
+extern BtlModel fx_0d9_effModels[];
 extern s32 D_801EA038;
 #endif

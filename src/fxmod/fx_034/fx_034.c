@@ -4,7 +4,7 @@ void func_801E7744(s32 model, s32 scale, u8 *buf) {
     s32 n;
     s32 j = 0;
 
-    n = BTLFX_EXPORTS(D_801E82A0)->btlfx_getEffModelMeshCount(model & 0xFFFF);
+    n = BTLFX_EXPORTS(fx_034_env)->btlfx_getEffModelMeshCount(model & 0xFFFF);
     for (; j < n; j++) {
         for (model = 0; model < 8; model++) {
             func_801E7810(model, D_801E82D0[model], scale, D_801E82B0[model]);
@@ -71,7 +71,7 @@ void func_801E7A00(s32 model, u8 *buf) {
     s32 m;
     s32 mdl;
 
-    ex = BTLFX_EXPORTS(D_801E82A0);
+    ex = BTLFX_EXPORTS(fx_034_env);
     mdl = model;
     j = 0;
     m = mdl & 0xFFFF;
@@ -134,8 +134,8 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x74;
     } else if (mode == 1) {
-        D_801E82A0 = env;
-        ex->btlfx_initEffModels(D_801E88C0, 2);
+        fx_034_env = env;
+        ex->btlfx_initEffModels(fx_034_effModels, 2);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk34);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk3C);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk44);

@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
-extern Unk800F78A4 *D_801E7DF4;
+extern Unk800F78A4 *fx_130_env;
 
 typedef struct {
     s32 unk0[8]; /* countdowns */
@@ -25,7 +25,7 @@ typedef struct {
     VECTOR unk40; /* model scale */
 } Fx130Unit; /* 0x50 */
 
-extern BtlModel D_801E7E04[];
+extern BtlModel fx_130_effModels[];
 extern Fx130Unit D_801E8124[4];
 extern SVECTOR D_801E812C; /* D_801E8124[0].unk8 */
 

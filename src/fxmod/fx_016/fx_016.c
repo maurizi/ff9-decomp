@@ -18,10 +18,10 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x38;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E8358 = env;
+        fx_016_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unkC);
-        ex->btlfx_initEffModels(D_801E8368, 8);
+        ex->btlfx_initEffModels(fx_016_effModels, 8);
         work->unk14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
         work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
         work->unk1C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x39, 0x3D00, 0, 0x80);
@@ -137,7 +137,7 @@ s32 fx_016_op81(s32 mode, Fx016Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x68;
     } else if (mode == 1) {
-        D_801E8358 = env;
+        fx_016_env = env;
         work->unk40 = env->targets->targetCount;
         for (i = 0; i < work->unk40; i++) {
             ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk0[i]);

@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk4[25];
 } Fx134Bolt;
 
-extern Unk800F78A4 *D_801EC8E4;
+extern Unk800F78A4 *fx_134_env;
 
 static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr);
 static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 abr);
@@ -78,7 +78,7 @@ extern s16 D_801EC880[4];
 extern CVECTOR D_801EC888[];
 extern CVECTOR D_801EC894[2];
 extern Fx134Bolt D_801EC8F4[];
-extern BtlModel D_801ECB64[];
+extern BtlModel fx_134_effModels[];
 extern u8 D_801ED1A4[];
 
 #endif

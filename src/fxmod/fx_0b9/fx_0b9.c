@@ -10,7 +10,7 @@ s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vx = env->targets->centerX;
         work->unk8.vy = env->targets->centerY;
         work->unk8.vz = env->targets->centerZ;
-        D_801E7B94 = env;
+        fx_0b9_env = env;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -73,7 +73,7 @@ s32 fx_0b9_op81(s32 mode, Fx0b9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         s32 n = *arg4;
         work->unk14 = n;
-        D_801E7B94 = env;
+        fx_0b9_env = env;
         if (n >= env->targets->targetCount) {
             return 1;
         }

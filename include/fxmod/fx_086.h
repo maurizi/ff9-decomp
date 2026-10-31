@@ -11,7 +11,7 @@ typedef struct {
     u8 code;
 } Fx086Rgbc; /* primitive colour word */
 
-extern Unk800F78A4 *D_801E9D6C;
+extern Unk800F78A4 *fx_086_env;
 
 static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);
 #define gte_stszotz(r0) __asm__ volatile( \
@@ -44,7 +44,7 @@ typedef struct {
     Pool6CEntry *unk44;
 } Fx086Work80; /* 0x48 */
 
-extern BtlModel D_801E9D7C[];
+extern BtlModel fx_086_effModels[];
 extern SVECTOR D_801EA3BC[];
 extern SVECTOR D_801EB5BC[64];
 void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,

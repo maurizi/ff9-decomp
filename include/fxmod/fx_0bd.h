@@ -13,6 +13,6 @@ typedef struct {
     SVECTOR unk0; /* unit 0x10 position */
 } Fx0bdWork81;
 
-extern Unk800F78A4 *D_801E78DC;
+extern Unk800F78A4 *fx_0bd_env;
 
 #endif

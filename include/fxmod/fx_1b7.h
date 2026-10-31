@@ -57,8 +57,8 @@ typedef struct {
 } Fx1b7Work80; /* 0x64 */
 
 extern s16 D_801E8788[8]; /* model files */
-extern Unk80100C78Entry *D_801E87E4;
-extern BtlModel D_801E8800[];
+extern Unk80100C78Entry *fx_1b7_task;
+extern BtlModel fx_1b7_effModels[];
 extern s32 D_801E8E40[];
 extern s32 D_801EA3C0[];
 
@@ -68,7 +68,7 @@ void func_801E7ACC(void);
 #define FX1B7_RESET_STACK(save) __asm__ volatile("lw $29, 0(%0)" : : "r"(save) : "memory")
 
 /* copied */
-extern Unk800F78A4 *D_801E87E0;
+extern Unk800F78A4 *fx_1b7_env;
 extern Fx1b7Split *D_801E87E8;
 /* end copied */
 

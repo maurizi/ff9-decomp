@@ -8,8 +8,8 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x44;
     } else if (mode == 1) {
-        D_801E7DC4 = env;
-        ex->btlfx_initEffModels(D_801E7DD4, 1);
+        fx_184_env = env;
+        ex->btlfx_initEffModels(fx_184_effModels, 1);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         work->unk10.vx = work->unk0.vx;
         work->unk10.vy = work->unk0.vy;
@@ -47,7 +47,7 @@ s32 fx_184_op81(s32 mode, Fx184Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        D_801E7DC4 = env;
+        fx_184_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
         work->unk4.vy = 0;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
@@ -66,7 +66,7 @@ s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x3C;
     } else if (mode == 1) {
-        D_801E7DC4 = env;
+        fx_184_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         work->unk8.vx = work->unk0.vx;
         work->unk8.vy = work->unk0.vy;
@@ -110,7 +110,7 @@ s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DC4);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_184_env);
     SVECTOR pos;
     s32 t;
 
@@ -127,7 +127,7 @@ static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height,
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E7DC4)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_184_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

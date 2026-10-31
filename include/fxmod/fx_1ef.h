@@ -24,7 +24,7 @@ typedef struct {
     SVECTOR unk4[21];
 } Fx1efTrail; /* 0xAC */
 
-extern Unk800F78A4 *D_801E8B9C;
+extern Unk800F78A4 *fx_1ef_env;
 extern SVECTOR D_801E8D14; /* summon rotation */
 extern VECTOR D_801E8D1C; /* summon position */
 extern VECTOR D_801E8D2C; /* summon scale */
@@ -65,7 +65,7 @@ extern s32 D_801EAA8C[4][0x1FE];
 extern s32 D_801ECA6C[4][0x1FE];
 
 /* copied */
-extern Unk800F78A4 *D_801E8B9C;
+extern Unk800F78A4 *fx_1ef_env;
 /* end copied */
 
 /* propagated */

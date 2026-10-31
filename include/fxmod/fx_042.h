@@ -44,7 +44,7 @@ typedef struct {
 extern s32 D_801E8F0C[];
 extern u16 D_801E8514[];
 extern u16 D_801E851C[];
-extern Unk800F78A4 *D_801E856C;
+extern Unk800F78A4 *fx_042_env;
 extern Fx042Strip D_801E857C[];
 extern Fx042Branch D_801E8BAC[];
 

@@ -42,8 +42,8 @@ typedef struct {
 } Fx05dWork; /* 0x68 */
 
 extern u8 D_801E8048[6];
-extern Unk800F78A4 *D_801E8098;
-extern BtlModel D_801E80A8[];
+extern Unk800F78A4 *fx_05d_env;
+extern BtlModel fx_05d_effModels[];
 extern s32 D_801E8558[];
 extern SVECTOR D_801E8DC0;
 extern Fx05dTrack12 D_801E8DA0;

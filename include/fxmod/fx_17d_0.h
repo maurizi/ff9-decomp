@@ -20,7 +20,7 @@ typedef struct {
 } Fx17d0Piece;
 
 extern Fx17d0Piece D_801E9370[21];
-extern Unk800F78A4 *D_801E9470;
+extern Unk800F78A4 *fx_17d_0_env;
 extern u8 D_801EBC90[][0x24];
 
 void func_801E7704(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b);
@@ -78,7 +78,7 @@ extern SVECTOR D_801E9368;
 extern s16 D_801E9418[];
 extern s16 D_801E9424[];
 extern SVECTOR D_801E9480[];
-extern BtlModel D_801EA380[];
+extern BtlModel fx_17d_0_effModels[];
 extern VECTOR D_801EBC80;
 
 #endif

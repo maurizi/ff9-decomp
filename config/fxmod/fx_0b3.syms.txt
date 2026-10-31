@@ -13,3 +13,5 @@ fxm_keyGetVec2 = 0x801E7754; // type:func [code] two SVECTORs of key t (clamped)
 fxm_keyGetVec3 = 0x801E77DC; // type:func [code] three SVECTORs of key t (clamped), outputs may be NULL
 fxm_keyGetValue = 0x801E7890; // type:func [code] s16 key t (clamped) of a key list
 fxm_nextRingPoint = 0x801EA6C8; // type:func [code] next of 16 stored points (wrapping index), sets pad 1
+fx_0b3_env = 0x801ED5E0; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_0b3_effModels = 0x801ED5F0; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

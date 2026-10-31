@@ -7,9 +7,9 @@ void func_801E7704(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b) {
     s32 x;
 
     h >>= 1;
-    p = (POLY_G4 *)D_801E9470->prim;
-    ex = BTLFX_EXPORTS(D_801E9470);
-    D_801E9470->prim = (u8 *)(p + 4);
+    p = (POLY_G4 *)fx_17d_0_env->prim;
+    ex = BTLFX_EXPORTS(fx_17d_0_env);
+    fx_17d_0_env->prim = (u8 *)(p + 4);
     for (i = 0; i < 4; i++, p++) {
         setlen(p, 8);
         setcode(p, GPU_POLY_G4 | GPU_ABE);
@@ -42,7 +42,7 @@ void func_801E7704(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b) {
 void func_801E7894(s32 n, s32 r, SVECTOR *pts) {
     SVECTOR *q;
     u32 *col = (u32 *)(pts + n);
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9470);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_0_env);
     s32 i;
     s32 rad;
     s32 a;
@@ -58,7 +58,7 @@ void func_801E7894(s32 n, s32 r, SVECTOR *pts) {
 }
 
 void func_801E79E8(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CVECTOR *rgb, s32 p, s32 abr) {
-    Unk800F78A4 *env = D_801E9470;
+    Unk800F78A4 *env = fx_17d_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     LINE_G2 *prim;
     CVECTOR c;
@@ -125,7 +125,7 @@ void func_801E79E8(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CV
 }
 
 void func_801E7D18(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s32 models, s16 *morphs, s32 scale) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9470);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_0_env);
     s16 *morph = morphs; /* a copy: the original loads scale before morphs */
     VECTOR pos;
     VECTOR sc;
@@ -220,8 +220,8 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     } else if (mode == 1) {
         work->unk0 = 0xA;
         work->unk4 = 0;
-        D_801E9470 = env;
-        ex->btlfx_initEffModels(D_801EA380, 0x20);
+        fx_17d_0_env = env;
+        ex->btlfx_initEffModels(fx_17d_0_effModels, 0x20);
         work->unkBA = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);
         BTLFX_COPY_SVEC(&work->unk8, &D_801E9368);
         work->unk18.vy = -0x1000;
@@ -555,7 +555,7 @@ s32 fx_17d_0_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entr
     if (mode == 0) {
         *arg4 = 4;
     } else if (mode == 1) {
-        D_801E9470 = env;
+        fx_17d_0_env = env;
     } else {
         frame = entry->frame;
         f = (s16 *)ex->btlfx_getFileData(entry->file, 0x1A);

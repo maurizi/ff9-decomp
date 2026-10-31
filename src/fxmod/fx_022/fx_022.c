@@ -7,7 +7,7 @@ s32 fx_022_op80(s32 mode, Fx022Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x14;
     } else if (mode == 1) {
-        D_801E7898 = env;
+        fx_022_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk4);
         ex->btlfx_getUnitArgBonePos(0x10, 1, (u16 *)&work->unkC);
         env->camera->points[0].vx = work->unk4.vx;

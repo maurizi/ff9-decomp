@@ -27,7 +27,7 @@ typedef struct {
     u8 code;
 } Fx0b2Rgbc; /* primitive colour word */
 
-extern Unk800F78A4 *D_801E90A0;
+extern Unk800F78A4 *fx_0b2_env;
 extern Fx0b2Trail D_801E90B0[3];
 
 void func_801E7704(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,

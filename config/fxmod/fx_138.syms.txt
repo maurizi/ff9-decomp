@@ -14,3 +14,5 @@ fx_138_op81SpawnPoint2 = 0x801E774C; // type:func [code] particle spawn callback
 fx_138_op81SpawnPoint3 = 0x801E7770; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_138_op81 through D_801E84A0
 fx_138_op81SpawnPoint4 = 0x801E7794; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_138_op81 through D_801E84A0
 fx_138_op81SpawnPoint5 = 0x801E77B8; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_138_op81 through D_801E84A0
+fx_138_env = 0x801E8500; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_138_effModels = 0x801E8510; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

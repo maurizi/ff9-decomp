@@ -10,6 +10,6 @@ typedef struct {
     SVECTOR unk8;
 } Fx19bWork;
 
-extern Unk800F78A4 *D_801E793C;
+extern Unk800F78A4 *fx_19b_env;
 
 #endif

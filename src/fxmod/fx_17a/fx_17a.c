@@ -2,7 +2,7 @@
 
 void func_801E7718(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r, s32 p, CVECTOR *rgb, s32 tpage, s32 clut, s32 u,
                    s32 v, s32 dang, s32 abr) {
-    Unk800F78A4 *env = D_801E9F5C;
+    Unk800F78A4 *env = fx_17a_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     MATRIX m;
@@ -168,8 +168,8 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 2;
         work->unk4 = 0;
-        D_801E9F5C = env;
-        ex->btlfx_initEffModels(D_801E9F64, 6);
+        fx_17a_env = env;
+        ex->btlfx_initEffModels(fx_17a_effModels, 6);
         work->unk80 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0xBA, 0x3FC0, 0, 0);
         work->unk84 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0xBA, 0x3EC0, 0, 0x80);
         work->unk88 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x3A, 0x3E81, 0, 0x80);

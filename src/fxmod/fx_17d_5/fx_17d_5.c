@@ -224,9 +224,9 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
         w->unk0 = 0;
         w->unk4 = 0;
         w->unk8 = 0;
-        D_801EE52C = env;
+        fx_17d_5_env = env;
         ex->btlfx_initParticleSystem();
-        ex->btlfx_initEffModels(D_801EE53C, 5);
+        ex->btlfx_initEffModels(fx_17d_5_effModels, 5);
         w->unk84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x85), 1);
         w->unk88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x87), 1);
         w->unk8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x88), 1);

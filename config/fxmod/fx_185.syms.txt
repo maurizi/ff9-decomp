@@ -2,3 +2,5 @@ fx_185_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_185_header = 0x801E7A8C; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_185_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_185_op81 = 0x801E79B0; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
+fx_185_env = 0x801E7AD4; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_185_effModels = 0x801E7AE4; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

@@ -15,8 +15,8 @@ typedef struct {
     Pool6CEntry *unk2C;
 } Fx0ceWork;
 
-extern Unk800F78A4 *D_801E7D20;
-extern BtlModel D_801E7D30[];
+extern Unk800F78A4 *fx_0ce_env;
+extern BtlModel fx_0ce_effModels[];
 extern s32 D_801E7E00[];
 
 #endif

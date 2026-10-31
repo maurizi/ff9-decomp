@@ -7,7 +7,7 @@ s32 fx_03b_op80(s32 mode, Fx03bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x30;
     } else if (mode == 1) {
-        D_801E7970 = env;
+        fx_03b_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk10);
         work->unk18.vx = work->unk10.vx;
         work->unk18.vy = work->unk10.vy;

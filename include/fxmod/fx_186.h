@@ -27,7 +27,7 @@ typedef struct {
     s32 unk108; /* bounce height */
 } Fx186Work81; /* 0x10C */
 
-extern Unk800F78A4 *D_801E9214;
+extern Unk800F78A4 *fx_186_env;
 
 typedef struct {
     s32 unk0;
@@ -49,7 +49,7 @@ extern s16 D_801E9B84[]; /* StoreImage buffer */
 extern u16 D_801E8DA4[10]; /* rock model files */
 extern u16 D_801E8DB8[10]; /* rock model files (alternate) */
 extern u32 D_801E8E14[];
-extern BtlModel D_801E9224[];
+extern BtlModel fx_186_effModels[];
 static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame);
 
 #endif

@@ -30,9 +30,9 @@ typedef struct {
     s32 unk28;
 } Fx0cbWork; /* 0x2C */
 
-extern BtlModel D_801E8680[];
+extern BtlModel fx_0cb_effModels[];
 
-extern Unk800F78A4 *D_801E8670;
+extern Unk800F78A4 *fx_0cb_env;
 
 static void fxm_anglesFromEye(s16 *a, s16 *b);
 static s32 fx_0cb_op80PoolTask(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx0cbWork *work);

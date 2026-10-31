@@ -47,8 +47,8 @@ typedef struct {
 } Fx1e9Inst;
 
 extern s32 D_801E8518;
-extern Unk800F78A4 *D_801E8564;
-extern BtlModel D_801E8574[];
+extern Unk800F78A4 *fx_1e9_env;
+extern BtlModel fx_1e9_effModels[];
 extern Fx1e9Trail D_801E8644[8];
 extern s32 D_801E88A4;
 

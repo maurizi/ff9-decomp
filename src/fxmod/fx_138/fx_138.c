@@ -31,7 +31,7 @@ s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 arg1, s32 i) {
 }
 
 void func_801E77DC(SVECTOR *out, Fx138Path *path, s32 i) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8500);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_138_env);
     MATRIX m;
     VECTOR v;
     SVECTOR sv;
@@ -66,9 +66,9 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xA0;
     } else if (mode == 1) {
-        D_801E8500 = env;
+        fx_138_env = env;
         fxm_setSignal(env, 7, 0);
-        ex->btlfx_initEffModels(D_801E8510, 4);
+        ex->btlfx_initEffModels(fx_138_effModels, 4);
         ex->btlfx_getUnitPos(0, &work->unk70.vx);
         ex->btlfx_getUnitRot(0, &work->unk78.vx);
         D_801E8E68.vx = 0;
@@ -154,7 +154,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x34;
     } else if (mode == 1) {
-        D_801E8500 = env;
+        fx_138_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk20);
         work->unk32 = 0x1000;
         work->unk30 = 0;
@@ -210,7 +210,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E8500)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_138_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -246,7 +246,7 @@ static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
-    Unk800F78A4 *env = D_801E8500;
+    Unk800F78A4 *env = fx_138_env;
     u32 *p = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;

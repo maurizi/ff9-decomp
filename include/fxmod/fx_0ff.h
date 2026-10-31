@@ -25,8 +25,8 @@ typedef struct {
 } Fx0ffOrbit;
 
 extern u16 D_801E7C68[3];
-extern Unk800F78A4 *D_801E7CB8;
-extern BtlModel D_801E7CC8[];
+extern Unk800F78A4 *fx_0ff_env;
+extern BtlModel fx_0ff_effModels[];
 extern Fx0ffOrbit D_801E7F28[6];
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

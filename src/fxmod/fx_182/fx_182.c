@@ -11,7 +11,7 @@ s32 fx_182_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         work->vx = env->targets->centerX;
         work->vz = env->targets->centerZ;
         work->vy = -0x200;
-        D_801E78A0 = env;
+        fx_182_env = env;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)work);
         if (p != NULL) {
             p->otZ = 0x40;

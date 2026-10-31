@@ -56,8 +56,8 @@ typedef struct {
     s32 padD8;
 } Fx063Work; /* 0xDC */
 
-extern Unk800F78A4 *D_801E8710;
-extern BtlModel D_801E8720[];
+extern Unk800F78A4 *fx_063_env;
+extern BtlModel fx_063_effModels[];
 extern u32 D_801E8A40[];
 extern Fx063Strip D_801E8E40[10];
 extern Fx063Unit D_801E9870[];

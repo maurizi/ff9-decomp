@@ -6,7 +6,7 @@ s32 fx_124_op80(s32 mode, Fx124Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        D_801E783C = env;
+        fx_124_env = env;
         env->camera->paused = 0;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk4);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);

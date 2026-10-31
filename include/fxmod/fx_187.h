@@ -21,7 +21,7 @@ typedef struct {
 } Fx187Work; /* 0x64 */
 
 extern u16 D_801E7DB8[2]; /* bones */
-extern Unk800F78A4 *D_801E7E04;
+extern Unk800F78A4 *fx_187_env;
 extern s32 D_801E7E14[];
 extern s32 D_801E7F7C[];
 extern s32 D_801E80E4[];

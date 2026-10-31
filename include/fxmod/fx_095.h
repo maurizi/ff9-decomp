@@ -30,7 +30,7 @@ typedef struct {
     s32 unkC; /* release */
 } Fx095Ctl;
 
-extern Unk800F78A4 *D_801E8904;
+extern Unk800F78A4 *fx_095_env;
 extern SVECTOR D_801E890C;
 
 static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx095Ctl *ctl);

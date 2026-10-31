@@ -22,7 +22,7 @@ typedef struct {
     SVECTOR unk4;
 } Fx10aWork81;
 
-extern Unk800F78A4 *D_801E7BB4;
-extern BtlModel D_801E7BC4[];
+extern Unk800F78A4 *fx_10a_env;
+extern BtlModel fx_10a_effModels[];
 
 #endif

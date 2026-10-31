@@ -58,13 +58,13 @@ typedef struct {
 extern SVECTOR D_801E9AC4;
 extern u8 D_801E9ACC[];
 extern Fx17aRing D_801E9B44[2];
-extern BtlModel D_801E9F64[];
+extern BtlModel fx_17a_effModels[];
 
 static s32 fx_17a_op80PoolTask(s32 mode, Fx17aPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 /* propagated */
 
-extern Unk800F78A4 *D_801E9F5C;
+extern Unk800F78A4 *fx_17a_env;
 void func_801E7718(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r, s32 p, CVECTOR *rgb, s32 tpage, s32 clut, s32 u,
                    s32 v, s32 dang, s32 abr);
 

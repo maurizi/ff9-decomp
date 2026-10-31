@@ -2,7 +2,7 @@
 
 void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9D6C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_086_env);
     Fx086Rgbc c0;
     Fx086Rgbc c1;
     Fx086Rgbc c2;
@@ -33,13 +33,13 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     s32 hd;
     s32 q;
 
-    gte_SetRotMatrix(D_801E9D6C->viewMatrix);
-    gte_SetTransMatrix(D_801E9D6C->viewMatrix);
+    gte_SetRotMatrix(fx_086_env->viewMatrix);
+    gte_SetTransMatrix(fx_086_env->viewMatrix);
     gte_ldv0(pos);
-    gt4 = (POLY_GT4 *)D_801E9D6C->prim;
+    gt4 = (POLY_GT4 *)fx_086_env->prim;
     *(s32 *)&c2 = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
-    D_801E9D6C->prim = (u8 *)(ft4 + 14);
+    fx_086_env->prim = (u8 *)(ft4 + 14);
     c0.r = c0.g = c0.b = c;
     c1.r = c1.g = c1.b = c;
     c0.code = abr != 0xFF ? 0x2E : 0x2C;
@@ -143,7 +143,7 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
 static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
     SVECTOR *p;
     s32 *prev;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9D6C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_086_env);
     s32 i;
     s32 rad;
     s32 a;
@@ -161,7 +161,7 @@ static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
 }
 
 static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pt, CVECTOR *col, s32 p, s32 abr) {
-    Unk800F78A4 *env = D_801E9D6C;
+    Unk800F78A4 *env = fx_086_env;
     CVECTOR c;
     MATRIX m;
     s32 hsave;
@@ -243,7 +243,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x48;
     } else if (mode == 1) {
-        D_801E9D6C = env;
+        fx_086_env = env;
         work->unk0 = 1;
         work->unk4 = 0;
         fxm_randDiscPoints(0x180, 0x400, D_801EA3BC);
@@ -253,7 +253,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8[3] = 0x78;
         work->unk8[4] = 0xC8;
         work->unk8[5] = 0x78;
-        ex->btlfx_initEffModels(D_801E9D7C, 8);
+        ex->btlfx_initEffModels(fx_086_effModels, 8);
         work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x11), 0x9A, 0x3E00, 0, 0);
         work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x139, 0xFFFF, 0, 0x80);
         work->unk2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0xB9, 0x3D40, 0, 0);

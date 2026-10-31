@@ -23,8 +23,8 @@ typedef struct {
     SVECTOR unkAC; /* caster body position */
 } Fx0cdWork;
 
-extern Unk800F78A4 *D_801E7DD4;
-extern BtlModel D_801E7DE4[];
+extern Unk800F78A4 *fx_0cd_env;
+extern BtlModel fx_0cd_effModels[];
 extern s32 D_801E8044[];
 extern s32 D_801E92B4[];
 

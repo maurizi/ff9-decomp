@@ -12,7 +12,7 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x24;
     } else if (mode == 1) {
-        D_801E7AEC = env;
+        fx_02f_env = env;
         for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E7AFC[i]);
         }

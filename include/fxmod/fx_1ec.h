@@ -51,7 +51,7 @@ typedef struct {
     u16 unk6E;
 } Fx1ecWork82; /* 0x70 */
 
-extern BtlModel D_801E8EA4[];
+extern BtlModel fx_1ec_effModels[];
 extern s32 D_801E91B4[];
 extern s32 D_801E97F4[];
 extern s32 D_801E9FD4[];
@@ -72,7 +72,7 @@ static s32 fxm_isMotionDone(s32 unit);
 static void fxm_startMotion3IfActive(s32 unit);
 
 /* copied */
-extern Unk800F78A4 *D_801E8E94;
+extern Unk800F78A4 *fx_1ec_env;
 extern Fx1ecPath D_801E9034[0x12];
 static s32 fxm_posPathGet(Fx1ecPath *path, s32 t, SVECTOR *out);
 extern SVECTOR D_801EFB64;

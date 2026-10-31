@@ -84,8 +84,8 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unkC = 0;
-        D_801E7C9C = env;
-        ex->btlfx_initEffModels(D_801E7CAC, 1);
+        fx_0cc_env = env;
+        ex->btlfx_initEffModels(fx_0cc_effModels, 1);
         work->unk10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xF), 0);
         BTLFX_COPY_SVEC(&work->unk4, &env->targets->centerX);
         work->unk4.vy = 0;

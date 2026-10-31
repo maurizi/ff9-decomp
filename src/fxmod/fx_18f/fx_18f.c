@@ -12,7 +12,7 @@ s32 fx_18f_op80(s32 mode, Fx18fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vx = work->unk4.vx;
         env->camera->points[0].vy = work->unk4.vy;
         env->camera->points[0].vz = work->unk4.vz;
-        D_801E7820 = env;
+        fx_18f_env = env;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
     } else {
         return entry->frame >= 0x32;

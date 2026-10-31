@@ -6,7 +6,7 @@ s32 fx_12e_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E77A8 = env;
+        fx_12e_env = env;
     } else {
         ex->btlfx_fadeUnitById(0, -1);
         return 1;

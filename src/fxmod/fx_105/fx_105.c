@@ -1,7 +1,7 @@
 #include "fxmod/fx_105.h"
 
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx105Seg *buf, s32 abr) {
-    Unk800F78A4 *env = D_801EAB18;
+    Unk800F78A4 *env = fx_105_env;
     CVECTOR c0;
     CVECTOR c1;
     s32 otz;
@@ -111,7 +111,7 @@ static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data) {
 static void fxm_camKeyUpdate(void) {
     SVECTOR *ext = D_801EAC68;
     s32 i;
-    Unk800F78A4 *env = D_801EAB18;
+    Unk800F78A4 *env = fx_105_env;
     s32 frame = D_801EAB1C;
     s32 k;
     s32 d;
@@ -167,10 +167,10 @@ static void fxm_camKeyUpdate(void) {
 }
 
 void func_801E7D9C(s32 z, s32 tpage, s32 y0, s32 y1, CVECTOR *rgb) {
-    POLY_G4 *p = (POLY_G4 *)D_801EAB18->prim;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EAB18);
+    POLY_G4 *p = (POLY_G4 *)fx_105_env->prim;
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_105_env);
 
-    D_801EAB18->prim = (u8 *)(p + 1);
+    fx_105_env->prim = (u8 *)(p + 1);
     p->code = (tpage != 0xFF) ? 0x3A : 0x38;
     p->r0 = rgb[0].r;
     p->g0 = rgb[0].g;
@@ -223,8 +223,8 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1D8;
     } else if (mode == 1) {
-        D_801EAB18 = env;
-        ex->btlfx_initEffModels(D_801EADD8, 0xF);
+        fx_105_env = env;
+        ex->btlfx_initEffModels(fx_105_effModels, 0xF);
         for (i = 0xF; i >= 0; i--) {
             (&work->unk0)[i] = 0;
         }
@@ -805,7 +805,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 void func_801E9E1C(void) {
-    Unk800F78A4 *env = D_801EAB18;
+    Unk800F78A4 *env = fx_105_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx105Spark *p;
     s32 t;
@@ -824,7 +824,7 @@ void func_801E9E1C(void) {
 }
 
 void func_801E9F28(s32 c) {
-    Unk800F78A4 *env = D_801EAB18;
+    Unk800F78A4 *env = fx_105_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
     SVECTOR v[4];
@@ -897,7 +897,7 @@ void func_801E9F28(s32 c) {
 }
 
 void func_801EA298(s16 *data, s32 c, s32 h, s32 n) {
-    Unk800F78A4 *env = D_801EAB18;
+    Unk800F78A4 *env = fx_105_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     SVECTOR rot;
@@ -1002,7 +1002,7 @@ void func_801EA6D4(s16 *data, s32 c, s32 c2, s32 n) {
     s32 tp;
 
     p = data + 2;
-    env = D_801EAB18;
+    env = fx_105_env;
     ex = BTLFX_EXPORTS(env);
     a.vy = -0xC0;
     a.vx = a.vz = b.vx = b.vz = 0;

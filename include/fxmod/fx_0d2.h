@@ -105,7 +105,7 @@ static s32 fxm_rotPosPathGet(Fx0d2KeyPath *path, s32 i, SVECTOR *rot, SVECTOR *p
 static void fxm_valuePathInit(Fx0d2Path *path, u16 *data);
 static void fxm_vecPathInit(Fx0d2Path *path, u16 *data);
 static s32 fxm_vecPathGet(Fx0d2Path *track, s32 t, VECTOR *out);
-extern Unk800F78A4 *D_801ED8E0;
+extern Unk800F78A4 *fx_0d2_env;
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 typedef struct {
     Fx0d2Keys keys;
@@ -180,7 +180,7 @@ typedef struct {
     s32 unk60; /* summon model */
 } Fx0d2Summon;
 
-extern BtlModel D_801ED8F0[];
+extern BtlModel fx_0d2_effModels[];
 extern Fx0d2Keys D_801EF228;
 extern Fx0d2Keys D_801EF230;
 extern Fx0d2Keys D_801EF250;

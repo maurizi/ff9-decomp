@@ -37,8 +37,8 @@ typedef struct {
     u8 code;
 } Fx179Rgbc; /* primitive colour word */
 
-extern Unk800F78A4 *D_801E8A0C;
-extern BtlModel D_801EAA9C[];
+extern Unk800F78A4 *fx_179_env;
+extern BtlModel fx_179_effModels[];
 extern u8 D_801EAB6C[];
 extern Fx179Tri D_801E8A1C[160];
 extern Fx179Shard D_801E991C[160];

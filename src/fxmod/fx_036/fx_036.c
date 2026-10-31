@@ -1,7 +1,7 @@
 #include "fxmod/fx_036.h"
 
 static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7C28);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_036_env);
 
     out->vx = D_801E7BCC[D_801E7BDC];
     out->vy = D_801E7C30.vy - ex->btlfx_rand() % 400;
@@ -25,7 +25,7 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E7C30.vx = env->targets->centerX;
         D_801E7C30.vy = env->targets->centerY;
-        D_801E7C28 = env;
+        fx_036_env = env;
         D_801E7C30.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
@@ -66,7 +66,7 @@ s32 fx_036_op81(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
     if (mode == 0) {
         *arg4 = 2;
     } else if (mode == 1) {
-        D_801E7C28 = env;
+        fx_036_env = env;
         *work = 0x80;
     } else {
         ex->btlfx_fadeUnitById(0x10, *work);

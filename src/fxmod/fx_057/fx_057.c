@@ -2,9 +2,9 @@
 
 static void fx_057_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *e, SVECTOR *pos, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 t,
                    s32 n) {
-    Unk800F78A4 *env = D_801E8EA4;
+    Unk800F78A4 *env = fx_057_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Unk80100C78Entry *entry = D_801EA97C;
+    Unk80100C78Entry *entry = fx_057_task;
     u8 *buf = (u8 *)ex->btlfx_getParticleTrail(pt, e);
     s32 s;
     s32 d;
@@ -60,9 +60,9 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x38;
     } else if (mode == 1) {
-        D_801E8EA4 = env;
+        fx_057_env = env;
         D_801EA708 = 0;
-        D_801EA97C = entry;
+        fx_057_task = entry;
         work->unk10.vx = 0;
         work->unk10.vy = 0;
         work->unk10.vz = 0;
@@ -93,7 +93,7 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk34 != NULL) {
             work->unk34->otZ = 0x10;
         }
-        ex->btlfx_initEffModels(D_801EA724, 3);
+        ex->btlfx_initEffModels(fx_057_effModels, 3);
         work->unk8 =
             ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x19), 0x137, 0xFFFF, 0, 0x80);
         work->unkC = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x28));
@@ -269,7 +269,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E8EA4 = env;
+        fx_057_env = env;
         work->unk8 = ex->btlfx_addRadiusSixth(0, 0);
         work->unkC.vx = 0;
         work->unkC.vy = 0;

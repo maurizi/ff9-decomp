@@ -8,7 +8,7 @@ s32 fx_102_op80(s32 mode, Fx102Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x70;
     } else if (mode == 1) {
-        D_801E797C = env;
+        fx_102_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk28);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk28);
         for (i = 0; i < 8; i++) {

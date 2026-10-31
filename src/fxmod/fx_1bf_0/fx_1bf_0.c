@@ -1,7 +1,7 @@
 #include "fxmod/fx_1bf_0.h"
 
 static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8830);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
     SVECTOR *v;
 
     D_801E881C.unk0 = D_801E881C.unk2 = 1;
@@ -34,7 +34,7 @@ void func_801E77C0(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, 
     s32 cnt;
     s32 t;
 
-    ex = BTLFX_EXPORTS(D_801E8830);
+    ex = BTLFX_EXPORTS(fx_1bf_0_env);
     k = 0;
     data = (u8 *)ex->btlfx_getFileData(entry->file, 0x1D);
     w = (w * 3) >> 1;
@@ -87,7 +87,7 @@ void func_801E7B70(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot) {
     SVECTOR rot;
     SVECTOR ang;
     s32 k = 0;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8830);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
     Fx1bf0Pt *p;
     s32 i;
     s32 a;
@@ -132,7 +132,7 @@ void func_801E7E98(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
     SVECTOR ang;
     SVECTOR *d = D_801E87BC;
     s32 i = 0;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8830);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
 
     rot.vx = 0x400;
     rot.vy = 0;
@@ -179,9 +179,9 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
     } else if (mode == 1) {
         work->unk0 = 5;
         work->unk4 = 0;
-        D_801E8830 = env;
+        fx_1bf_0_env = env;
         ex->btlfx_initParticleSystem();
-        ex->btlfx_initEffModels(D_801EA5FC, 5);
+        ex->btlfx_initEffModels(fx_1bf_0_effModels, 5);
         work->unk8.vx = D_801E86BC.vx;
         work->unk8.vy = D_801E86BC.vy;
         work->unk8.vz = D_801E86BC.vz;

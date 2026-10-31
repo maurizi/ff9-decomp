@@ -22,7 +22,7 @@ typedef struct {
     SVECTOR unkC;
 } Fx0f0Work81;
 
-extern Unk800F78A4 *D_801E7C20;
+extern Unk800F78A4 *fx_0f0_env;
 extern s32 D_801E7C30[];
 extern s32 D_801E8D40[];
 extern s32 D_801E9E50[];

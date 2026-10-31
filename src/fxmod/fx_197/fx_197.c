@@ -62,7 +62,7 @@ static s32 fxm_keyGetValue(Fx197Track *track, s32 t) {
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
-    Unk800F78A4 *env = D_801E9660;
+    Unk800F78A4 *env = fx_197_env;
     u32 *p = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;
@@ -103,7 +103,7 @@ static void fxm_shatterInit(s32 i, s32 n, Fx197Shatter *buf, Fx197Tri *tris) {
 }
 
 static s32 fxm_shatterAddModel(s32 i, s32 model) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9660);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_197_env);
     Fx197Shatter *h = D_801EAF80[i];
     Fx197Tri *t = h->unkC;
     Fx197Shard *p;
@@ -144,7 +144,7 @@ static s32 fxm_shatterRelease(s32 i) {
     s32 k = 0;
     Fx197Shatter *h = D_801EAF80[i];
     Fx197Tri *t = h->unk8;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9660);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_197_env);
     s32 n = 0;
     s32 y = D_801EAFBC;
     Fx197Shard *p;
@@ -187,7 +187,7 @@ static void fxm_shatterUpdate(s32 i) {
     VECTOR out;
     VECTOR sv;
     MATRIX m;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9660);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_197_env);
     Fx197Shard *p;
     Fx197Shatter *h;
     Fx197Tri *t;
@@ -454,8 +454,8 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E9660 = env;
-        ex->btlfx_initEffModels(D_801E9670, 0x20);
+        fx_197_env = env;
+        ex->btlfx_initEffModels(fx_197_effModels, 0x20);
         D_801EAF74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD8), 0);
         D_801EAF70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD9), 1);
         for (i = 0; i < 6; i++) {
@@ -577,7 +577,7 @@ s32 fx_197_op87(s32 mode, Fx197Work87 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x14;
     } else if (mode == 1) {
         work->unk0 = *arg4 - 3;
-        D_801E9660 = env;
+        fx_197_env = env;
     } else {
         frame = entry->frame;
         fxm_keyGetVec((Fx197Track *)ex->btlfx_getFileData(entry->file, D_801E9270[work->unk0].unk2), frame,

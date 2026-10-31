@@ -11,3 +11,5 @@ fxm_pinParticle1 = 0x801E7738; // type:func [code] particle motion callback (Eff
 fxm_pinParticle2 = 0x801E776C; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
 fxm_pinParticle3 = 0x801E77A0; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
 fxm_pinParticle4 = 0x801E77D4; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fx_09b_env = 0x801E8164; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_09b_effModels = 0x801E8174; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

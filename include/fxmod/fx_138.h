@@ -59,10 +59,10 @@ extern Fx138Ring D_801E8408[3];
 extern u16 D_801E8450[6][4];
 extern u16 D_801E8480[3];
 extern u16 D_801E8494[6];
-extern BtlModel D_801E8510[];
+extern BtlModel fx_138_effModels[];
 extern u16 D_801E8488[6]; /* trail files */
 extern s32 D_801E84A0[6];
-extern Unk800F78A4 *D_801E8500;
+extern Unk800F78A4 *fx_138_env;
 extern u8 D_801E8860[];
 extern SVECTOR D_801E8E70[6];
 extern Fx138Path D_801E8830[6];

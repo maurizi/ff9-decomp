@@ -39,7 +39,7 @@ static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8548);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1f0_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -73,8 +73,8 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0xB8;
     } else if (mode == 1) {
-        D_801E8548 = env;
-        ex->btlfx_initEffModels(D_801E8608, 4);
+        fx_1f0_env = env;
+        ex->btlfx_initEffModels(fx_1f0_effModels, 4);
         for (i = 15; i >= 0; i--) {
             work->unk0[i] = 0;
         }

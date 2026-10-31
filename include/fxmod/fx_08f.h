@@ -15,7 +15,7 @@
     "nop;" \
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
-extern Unk800F78A4 *D_801E8A04;
+extern Unk800F78A4 *fx_08f_env;
 static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pts, CVECTOR *col, s32 p, s32 abr);
 typedef struct {
     s32 unk0; /* state */
@@ -34,7 +34,7 @@ typedef struct {
     Pool6CEntry *unk44;
 } Fx08fWork80; /* 0x48 */
 
-extern BtlModel D_801E8A14[];
+extern BtlModel fx_08f_effModels[];
 extern SVECTOR D_801E9054[];
 extern u8 D_801EA254[];
 static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);

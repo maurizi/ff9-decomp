@@ -4,7 +4,7 @@ static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
     s32 t = (frame << 12) / frames;
     s32 row = (e->unk1F - 1) % 6;
     s32 v = t * D_801E7CD8[row][0];
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7D8C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1ad_env);
     s32 frac = v & 0xFFF;
     s32 i = v / 4096;
     SVECTOR a;
@@ -44,8 +44,8 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E7D8C = env;
-        ex->btlfx_initEffModels(D_801E7D9C, 1);
+        fx_1ad_env = env;
+        ex->btlfx_initEffModels(fx_1ad_effModels, 1);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         work->unk24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
     } else {

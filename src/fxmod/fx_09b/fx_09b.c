@@ -42,13 +42,13 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x74;
     } else if (mode == 1) {
         s32 n = *arg4;
-        D_801E8164 = env;
+        fx_09b_env = env;
         work->unk6C = n;
         if (n >= 5) {
             return 1;
         }
         if (n == 0) {
-            ex->btlfx_initEffModels(D_801E8174, 5);
+            ex->btlfx_initEffModels(fx_09b_effModels, 5);
         }
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk54);
         work->unk64.vx = work->unk54.vx;
@@ -149,14 +149,14 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 static void fxm_startUnitMotion(s32 unit, s32 motion) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8164);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_09b_env);
 
     ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
     ex->btlfx_setMotionFrame(unit, 0);
 }
 
 static s32 fxm_isMotionDone(s32 unit) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8164);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_09b_env);
 
     s32 r;
 
@@ -169,13 +169,13 @@ static s32 fxm_isMotionDone(s32 unit) {
 }
 
 static void fxm_startMotion2IfActive(s32 unit) {
-    if (BTLFX_EXPORTS(D_801E8164)->btlfx_isUnitActive(unit)) {
+    if (BTLFX_EXPORTS(fx_09b_env)->btlfx_isUnitActive(unit)) {
         fxm_startUnitMotion(unit, 2);
     }
 }
 
 static void fxm_startMotion3IfActive(s32 unit) {
-    if (BTLFX_EXPORTS(D_801E8164)->btlfx_isUnitActive(unit)) {
+    if (BTLFX_EXPORTS(fx_09b_env)->btlfx_isUnitActive(unit)) {
         fxm_startUnitMotion(unit, 3);
     }
 }

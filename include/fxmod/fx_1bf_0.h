@@ -7,7 +7,7 @@
 /* copied */
 extern SVECTOR D_801E87BC[3];
 extern s16 D_801E879C[16];
-extern Unk800F78A4 *D_801E8830;
+extern Unk800F78A4 *fx_1bf_0_env;
 /* end copied */
 
 /* propagated */
@@ -42,7 +42,7 @@ typedef struct {
 } Fx1bf0Work; /* 0x28 */
 
 extern SVECTOR D_801E86BC;
-extern BtlModel D_801EA5FC[];
+extern BtlModel fx_1bf_0_effModels[];
 extern u8 D_801EA1FC[];
 s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

@@ -4,7 +4,7 @@
 /* Effect module fx_1cc (dir 13 file 0x1cc). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801E9C34;
+extern Unk800F78A4 *fx_1cc_env;
 extern s16 D_801E9BD0[];
 
 typedef struct Fx1ccObj {
@@ -57,7 +57,7 @@ typedef struct {
     s32 unk80;
 } Fx1ccWork80; /* 0x84 */
 
-extern BtlModel D_801E9C44[];
+extern BtlModel fx_1cc_effModels[];
 extern s32 D_801E9B98[14];
 static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
                   Fx1ccInst *inst);

@@ -4,15 +4,15 @@
 /* Effect module fx_081 (dir 13 file 0x81). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801E8ED8;
+extern Unk800F78A4 *fx_081_env;
 extern SVECTOR D_801EA728;
 extern SVECTOR D_801EA730;
 extern Pool6CEntry *D_801EA738;
-extern Unk80100C78Entry *D_801EA9B0;
+extern Unk80100C78Entry *fx_081_task;
 extern s32 D_801EA73C; /* glow level */
 extern Pool6CEntry *D_801EA740;
 extern SVECTOR D_801EA748; /* caster body position */
-extern BtlModel D_801EA758[];
+extern BtlModel fx_081_effModels[];
 extern u8 D_801E8EE8[];
 
 typedef struct {

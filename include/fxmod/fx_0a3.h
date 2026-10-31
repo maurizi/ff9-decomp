@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk18; /* unit 0x10 rotation */
 } Fx0a3Work;
 
-extern Unk800F78A4 *D_801E791C;
+extern Unk800F78A4 *fx_0a3_env;
 extern s32 D_801E792C[];
 extern s32 D_801E800C[];
 

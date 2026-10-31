@@ -14,7 +14,7 @@ typedef struct {
     SVECTOR unk20; /* unk10 raised by 0x190 */
 } Fx0abWork;
 
-extern Unk800F78A4 *D_801E7918;
+extern Unk800F78A4 *fx_0ab_env;
 extern s32 D_801E7928[];
 
 #endif

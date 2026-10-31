@@ -73,7 +73,7 @@ typedef struct {
     s32 unk88;
 } Fx0baPath; /* 0x8C */
 
-extern Unk800F78A4 *D_801EC5F0;
+extern Unk800F78A4 *fx_0ba_env;
 extern Fx0baPath D_801ED424[32];
 extern s32 D_801EEFDC;
 
@@ -152,7 +152,7 @@ typedef struct {
     s16 unk9A;
     u8 pad9C[4];
 } Fx0baWork80; /* 0xA0 */
-extern BtlModel D_801EC600[];
+extern BtlModel fx_0ba_effModels0[];
 s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 typedef struct {
@@ -220,7 +220,7 @@ extern s32 D_801EC584[3];
 extern s32 D_801EC590[3];
 extern s32 D_801EC59C[3];
 extern Fx0baPTrail D_801ECAC0;
-extern BtlModel D_801ECB90[];
+extern BtlModel fx_0ba_effModels1[];
 extern Fx0baPTrail17 D_801ECF80[6];
 extern Fx0baPTrail13 D_801ED2D0[3];
 

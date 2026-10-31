@@ -19,8 +19,8 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x30;
     } else if (mode == 1) {
-        D_801E7EF8 = env;
-        ex->btlfx_initEffModels(D_801E8118, 10);
+        fx_12c_env = env;
+        ex->btlfx_initEffModels(fx_12c_effModels, 10);
         for (i = 7, q = &work->unk0[7]; i >= 0; i--) {
             *q-- = 0;
         }

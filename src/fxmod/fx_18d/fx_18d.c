@@ -10,7 +10,7 @@ s32 fx_18d_op80(s32 mode, Fx18dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk4 = 0;
         work->unk0 = 0;
-        D_801E7A38 = env;
+        fx_18d_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         work->unk8.vx = env->targets->centerX;
         work->unk8.vz = env->targets->centerZ;

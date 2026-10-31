@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk4[1];
 } Fx17d7Trail;
 
-extern Unk800F78A4 *D_801EF2DC;
+extern Unk800F78A4 *fx_17d_7_env;
 extern s32 D_801EFDDC; /* radius */
 
 typedef struct {
@@ -128,7 +128,7 @@ typedef struct {
     s32 unkA0;
 } Fx17d7Work80; /* 0xA4 */
 
-extern BtlModel D_801EF2EC[];
+extern BtlModel fx_17d_7_effModels[];
 extern SVECTOR D_801EF258;
 extern s16 D_801EF264[];
 

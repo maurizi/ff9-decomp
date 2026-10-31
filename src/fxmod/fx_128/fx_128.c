@@ -1,7 +1,7 @@
 #include "fxmod/fx_128.h"
 
 static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    BTLFX_EXPORTS(D_801E89D4)->btlfx_lerpVec((s16 *)&D_801E8F9C, (s16 *)&D_801E8FA4, (frame << 12) / 12, (s16 *)pos);
+    BTLFX_EXPORTS(fx_128_env)->btlfx_lerpVec((s16 *)&D_801E8F9C, (s16 *)&D_801E8FA4, (frame << 12) / 12, (s16 *)pos);
     out->unk0.vx = pos->vx << 12;
     out->unk0.vy = pos->vy << 12;
     out->unk0.vz = pos->vz << 12;
@@ -12,7 +12,7 @@ static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 arg1, SVECTOR *pos
 }
 
 static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    BTLFX_EXPORTS(D_801E89D4)->btlfx_lerpVec((s16 *)&D_801E8F9C, (s16 *)((u8 *)D_801E8FB4 + (out->unk1F - 1) * 8),
+    BTLFX_EXPORTS(fx_128_env)->btlfx_lerpVec((s16 *)&D_801E8F9C, (s16 *)((u8 *)D_801E8FB4 + (out->unk1F - 1) * 8),
                                              (frame << 12) / 12, (s16 *)pos);
     out->unk0.vx = pos->vx << 12;
     out->unk0.vy = pos->vy << 12;
@@ -30,7 +30,7 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x18;
     } else if (mode == 1) {
-        D_801E89D4 = env;
+        fx_128_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk10);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk8);
@@ -87,8 +87,8 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xB0;
     } else if (mode == 1) {
-        D_801E89D4 = env;
-        ex->btlfx_initEffModels(D_801E89E4, 7);
+        fx_128_env = env;
+        ex->btlfx_initEffModels(fx_128_effModels, 7);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk50);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk58);
         if (env->targets->targetCount == mode) {
@@ -283,7 +283,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E89D4)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_128_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

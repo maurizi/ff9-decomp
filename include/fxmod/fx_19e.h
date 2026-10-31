@@ -18,7 +18,7 @@ typedef struct {
     u8 pad28[0x30 - 0x28];
 } Fx19eWork81;
 
-extern Unk800F78A4 *D_801E7EC8;
+extern Unk800F78A4 *fx_19e_env;
 
 
 /* propagated */

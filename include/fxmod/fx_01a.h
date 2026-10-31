@@ -11,7 +11,7 @@ typedef struct {
     SVECTOR unkC; /* target position */
 } Fx01aWork;
 
-extern Unk800F78A4 *D_801E7910;
+extern Unk800F78A4 *fx_01a_env;
 extern s32 D_801E7920[];
 extern s32 D_801E7D80[];
 

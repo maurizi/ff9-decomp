@@ -27,10 +27,10 @@ typedef struct {
     u16 unk70;
 } Fx034Work; /* 0x74 */
 
-extern BtlModel D_801E88C0[];
+extern BtlModel fx_034_effModels[];
 extern u8 D_801E8990[];
 extern u8 D_801EA040[];
-extern Unk800F78A4 *D_801E82A0;
+extern Unk800F78A4 *fx_034_env;
 extern SVECTOR *D_801E82B0[8]; /* split model vertices, per primitive kind */
 extern u16 D_801E82D0[8]; /* primitive counts */
 extern Fx034Point D_801E82E0[]; /* primitive centres */

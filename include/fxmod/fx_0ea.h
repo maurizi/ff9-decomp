@@ -32,7 +32,7 @@ typedef struct {
 
 extern u16 D_801E7DF4[4];
 extern Fx0eaPathFn D_801E7DFC[4];
-extern Unk800F78A4 *D_801E7E54;
+extern Unk800F78A4 *fx_0ea_env;
 extern SVECTOR D_801E7E5C; /* path start */
 extern SVECTOR D_801E7E64[4]; /* path ends */
 extern SVECTOR D_801E7E84;

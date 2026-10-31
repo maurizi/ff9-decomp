@@ -22,10 +22,10 @@ typedef struct {
 } Fx0a0Work;
 
 extern Fx0a0Line D_801E7D84;
-extern Unk800F78A4 *D_801E7D98;
+extern Unk800F78A4 *fx_0a0_env;
 extern s32 D_801E7DA4[];
 extern SVECTOR D_801E8864;
-extern Unk80100C78Entry *D_801E886C;
+extern Unk80100C78Entry *fx_0a0_task;
 extern s32 D_801E8870;
 
 #define gte_stsxy01(r0, r1) __asm__ volatile( \

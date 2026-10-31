@@ -9,7 +9,7 @@ s32 fx_1f8_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E7B6C.vx = 0;
         D_801E7B6C.vy = 0;
         D_801E7B6C.vz = -0x618;
-        D_801E7B64 = env;
+        fx_1f8_env = env;
         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7B6C);
     } else {
         return entry->frame >= 0x40;
@@ -27,8 +27,8 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *arg4 = 0;
     } else if (mode == 1) {
         D_801E7B74[0] = 0;
-        D_801E7B64 = env;
-        ex->btlfx_initEffModels(D_801E7C14, 4);
+        fx_1f8_env = env;
+        ex->btlfx_initEffModels(fx_1f8_effModels, 4);
         for (i = 0; i < env->targets->targetCount; i++) {
             D_801E7B84[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x177,
                                                        0xFFFF, 0, 0x80);

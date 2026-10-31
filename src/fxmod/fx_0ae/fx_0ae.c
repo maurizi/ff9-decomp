@@ -10,7 +10,7 @@ s32 fx_0ae_op80(s32 mode, Fx0aeWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x28;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E79BC = env;
+        fx_0ae_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);
         ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], &bone);

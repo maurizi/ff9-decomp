@@ -4,3 +4,5 @@ fx_1cc_op80 = 0x801E8A9C; // type:func [code] header op entry 0, effect script o
 fxm_drawTexelQuads = 0x801E7720; // type:func [code] 3D grid of POLY_G4 whose vertex colours are the 15-bit texels of colors, then StoreImage reads the next VRAM cell into colors
 fxm_drawBulgeGrid14 = 0x801E7CBC; // type:func [code] 14x14 POLY_GT4 grid whose vertices rise by a cosine bump of height h near the centre, shaded by height
 fx_1cc_op80PoolTask = 0x801E82D0; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_1cc_op80
+fx_1cc_env = 0x801E9C34; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_1cc_effModels = 0x801E9C44; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

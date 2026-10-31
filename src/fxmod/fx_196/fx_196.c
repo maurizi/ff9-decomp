@@ -62,7 +62,7 @@ static s32 fxm_keyGetValue(Fx196Track *track, s32 t) {
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
-    Unk800F78A4 *env = D_801E915C;
+    Unk800F78A4 *env = fx_196_env;
     u32 *p = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;
@@ -91,7 +91,7 @@ static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32
 }
 
 s32 func_801E7A5C(s32 a) {
-    s32 v = BTLFX_EXPORTS(D_801E915C)->math_sin(a);
+    s32 v = BTLFX_EXPORTS(fx_196_env)->math_sin(a);
 
     if (v < 0) {
         v >>= 1;
@@ -101,7 +101,7 @@ s32 func_801E7A5C(s32 a) {
 
 void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 amp, s32 ph, s32 step, s32 r, s32 ang, s32 d) {
-    Unk800F78A4 *env = D_801E915C;
+    Unk800F78A4 *env = fx_196_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR c0;
     CVECTOR c1;
@@ -324,7 +324,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x4C;
     } else if (mode == 1) {
-        D_801E915C = env;
+        fx_196_env = env;
         work->unk0 = 0;
         work->unk4 = 0;
     } else {
@@ -524,7 +524,7 @@ s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x44;
     } else if (mode == 1) {
-        D_801E915C = env;
+        fx_196_env = env;
         work->unk40 = env->targets->targetCount;
         for (i = 0; i < work->unk40; i++) {
             if (ex->btlfx_isEnemyUnit(i) != 0) {
@@ -555,7 +555,7 @@ s32 fx_196_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         *arg4 = 4;
     } else if (mode == 1) {
         n = *arg4;
-        D_801E915C = env;
+        fx_196_env = env;
         *work = n;
     } else {
         frame = entry->frame;

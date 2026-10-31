@@ -11,7 +11,7 @@ s32 fx_09d_op80(s32 mode, Fx09dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0.vx = env->targets->centerX;
         work->unk0.vy = -0x190;
         work->unk0.vz = env->targets->centerZ;
-        D_801E7880 = env;
+        fx_09d_env = env;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk0);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);

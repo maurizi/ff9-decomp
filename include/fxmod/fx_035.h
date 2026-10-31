@@ -13,6 +13,6 @@ typedef struct {
     SVECTOR unk1C; /* unkC on the ground */
 } Fx035Work;
 
-extern Unk800F78A4 *D_801E78FC;
+extern Unk800F78A4 *fx_035_env;
 
 #endif

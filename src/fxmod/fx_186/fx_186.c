@@ -94,8 +94,8 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 3;
         work->unk4 = 0;
-        D_801E9214 = env;
-        ex->btlfx_initEffModels(D_801E9224, 0xC);
+        fx_186_env = env;
+        ex->btlfx_initEffModels(fx_186_effModels, 0xC);
         work->unk8.vx = 0;
         work->unk8.vy = 0;
         work->unk8.vz = 0;
@@ -373,12 +373,12 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x10C;
     } else if (mode == 1) {
-        D_801E9214 = env;
+        fx_186_env = env;
         {
             s32 n = env->targets->targetCount;
             /* The dead conditional store splits the block, so n lives across blocks and is left to global-alloc.
              * That leaves two local qtys here, which local-alloc sorts properly (its hand-written three-qty sort
-             * compares qty numbers instead of positions), giving %hi(D_801E9214) v0 and env->targets v1. */
+             * compares qty numbers instead of positions), giving %hi(fx_186_env) v0 and env->targets v1. */
             if (n != 0) k = 0;
             k = 0;
             work->unk0 = 0;

@@ -15,7 +15,7 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk10 = NULL;
         work->unk14 = NULL;
         work->unk0 = 0;
-        D_801E7BA8 = env;
+        fx_0f7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
     } else {
         frame = entry->frame;

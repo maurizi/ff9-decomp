@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk4[57];
 } Fx0e31Bolt;
 
-extern Unk800F78A4 *D_801F0A04;
+extern Unk800F78A4 *fx_0e3_1_env;
 
 void func_801EC71C(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9);

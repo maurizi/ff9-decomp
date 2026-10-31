@@ -53,9 +53,9 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E8048 = env;
+        fx_17d_2_env = env;
         ex->btlfx_initParticleSystem();
-        ex->btlfx_initEffModels(D_801E8058, 5);
+        ex->btlfx_initEffModels(fx_17d_2_effModels, 5);
         work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
         work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
         work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);

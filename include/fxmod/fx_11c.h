@@ -41,7 +41,7 @@ typedef struct {
 } Fx11cBurst;
 
 extern Fx11cBurst D_801E7EDC[5];
-extern Unk800F78A4 *D_801E7F9C;
+extern Unk800F78A4 *fx_11c_env;
 extern s32 D_801E7FAC[];
 extern s32 D_801E86FC[];
 extern s32 D_801E8E4C[];

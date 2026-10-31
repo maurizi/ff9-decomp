@@ -36,7 +36,7 @@ void func_801E7804(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 s
 }
 
 void func_801E79D0(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 start, s32 pad, s32 ang) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8DD8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1ea_env);
     MATRIX m;
     VECTOR o;
     SVECTOR rot;
@@ -89,7 +89,7 @@ s32 fx_1ea_op80(s32 mode, Fx1eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x18;
     } else if (mode == 1) {
-        D_801E8DD8 = env;
+        fx_1ea_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk10);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk8);
@@ -149,8 +149,8 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xB8;
     } else if (mode == 1) {
-        D_801E8DD8 = env;
-        ex->btlfx_initEffModels(D_801E8DE8, 0xA);
+        fx_1ea_env = env;
+        ex->btlfx_initEffModels(fx_1ea_effModels, 0xA);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk84);
         D_801E9B58.vx = work->unk84.vx;
         D_801E9B58.vy = work->unk84.vy;
@@ -364,7 +364,7 @@ s32 fx_1ea_op82(s32 mode, Fx1eaWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 4;
     } else if (mode == 1) {
-        D_801E8DD8 = env;
+        fx_1ea_env = env;
         work->unk2 = -1;
         work->unk0 = -1;
     } else {
@@ -392,7 +392,7 @@ s32 fx_1ea_op82(s32 mode, Fx1eaWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E8DD8)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_1ea_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -402,7 +402,7 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801E8DD8)->btlfx_drawScreenTint((u32 *)(D_801E8DD8->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_1ea_env)->btlfx_drawScreenTint((u32 *)(fx_1ea_env->ot + ot), arg4, c, c, c);
 }
 
 static void fxm_posPathInit(Fx1eaPath *path, u16 *data) {

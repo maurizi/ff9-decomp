@@ -25,7 +25,7 @@ typedef struct {
 
 extern s32 D_801E80F4[5]; /* particle files */
 extern s32 (*D_801E8108[5])(); /* motion callbacks */
-extern BtlModel D_801E8174[];
+extern BtlModel fx_09b_effModels[];
 extern s32 D_801E8564[5][0x10A];
 extern SVECTOR D_801E9A34[5]; /* particle positions */
 extern SVECTOR D_801E9A64[5];
@@ -38,7 +38,7 @@ s32 fxm_pinParticle4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 fram
 static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 static s32 fxm_isMotionDone(s32 unit);
 static void fxm_startMotion2IfActive(s32 unit);
-extern Unk800F78A4 *D_801E8164;
+extern Unk800F78A4 *fx_09b_env;
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static void fxm_startMotion3IfActive(s32 unit);
 

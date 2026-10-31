@@ -12,6 +12,6 @@ typedef struct {
     SVECTOR unk18;
 } Fx135Work;
 
-extern Unk800F78A4 *D_801E7918;
+extern Unk800F78A4 *fx_135_env;
 
 #endif

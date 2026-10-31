@@ -18,7 +18,7 @@ void func_801E7704(Fx1b6Split *s, SVECTOR (*faces)[3]) {
 }
 
 s32 func_801E774C(s32 model) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E85B4);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b6_env);
     Fx1b6Split *s = D_801E9744;
     SVECTOR (*f)[3] = s->unk24;
     s32 n;
@@ -54,7 +54,7 @@ Fx1b6Piece *func_801E7830(void) {
 
 void func_801E7868(void) {
     Fx1b6Split *s = D_801E9744;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E85B4);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b6_env);
     s32 t = D_801E974C;
     SVECTOR (*f)[3] = s->unk20;
     SVECTOR d;
@@ -107,7 +107,7 @@ void func_801E7AAC(void) {
     p = D_801E9748;
     zero[0] = 0;
     zero[1] = 0;
-    ex = BTLFX_EXPORTS(D_801E85B4);
+    ex = BTLFX_EXPORTS(fx_1b6_env);
     scale.vx = scale.vy = scale.vz = 0xE80;
     rot.vz = 0;
     for (i = 0; i < 0x708; i++, p++) {
@@ -180,7 +180,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x64;
     } else if (mode == 1) {
-        D_801E85B4 = env;
+        fx_1b6_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
         pos.vy -= 0x110;
         work->unk8[0] = pos.vx;
@@ -196,7 +196,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = 0;
         BTLFX_COPY_SVEC(&work->unk54, &work->unk4C);
         work->unk14.vy += 0x800;
-        D_801E85B8 = entry;
+        fx_1b6_task = entry;
         work->unk5C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk44);
         if (p != NULL) {
             p->otZ = 0x140;
@@ -242,7 +242,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_moveSummonToHeap(0x64);
                 work->unk0 = 1;
                 entry->frame = -1;
-                ex->btlfx_initEffModels(D_801E9754, 7);
+                ex->btlfx_initEffModels(fx_1b6_effModels, 7);
                 for (i = 0; i < 7; i++) {
                     work->unk28[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E855C[i]), 0);
                 }
@@ -309,7 +309,7 @@ s32 fx_1b6_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E85B4 = env;
+        fx_1b6_env = env;
         ex->btlfx_clearUnitStatus(0x10);
     } else {
         return 1;
@@ -324,7 +324,7 @@ s32 fx_1b6_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 4;
     } else if (mode == 1) {
-        D_801E85B4 = env;
+        fx_1b6_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
         pos.vy += 0x180;
         env->camera->points[3].vx = pos.vx;

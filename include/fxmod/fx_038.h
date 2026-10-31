@@ -31,8 +31,8 @@ typedef struct {
 } Fx038Work; /* 0x1C */
 
 extern u8 D_801E82AC[0x18]; /* spawn frames */
-extern Unk800F78A4 *D_801E830C;
-extern BtlModel D_801E831C[];
+extern Unk800F78A4 *fx_038_env;
+extern BtlModel fx_038_effModels[];
 
 static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx038Work *work);

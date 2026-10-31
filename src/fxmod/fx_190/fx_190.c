@@ -10,7 +10,7 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x74;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E7AF8 = env;
+        fx_190_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&work->unk44);
         ex->btlfx_getUnitBonePos(0x10, 0x2C, (u16 *)&work->unk4C);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk34);

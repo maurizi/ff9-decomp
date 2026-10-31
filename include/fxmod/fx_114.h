@@ -88,7 +88,7 @@ typedef struct {
     s16 unk12;
 } Fx114Wave;
 
-extern Unk800F78A4 *D_801EB768;
+extern Unk800F78A4 *fx_114_env;
 extern Fx114Wave D_801ED078;
 extern Fx114Track6 D_801ED0E8; /* scale keys */
 extern u32 D_801ED1C8[];
@@ -327,7 +327,7 @@ typedef struct {
     u8 pad182[0x198 - 0x182];
 } Fx114Work80; /* 0x198 */
 
-extern BtlModel D_801EB778[];
+extern BtlModel fx_114_effModels[];
 extern u8 D_801EB6A4[];
 extern u8 D_801EB6BC[];
 extern Fx114Path D_801ED090;

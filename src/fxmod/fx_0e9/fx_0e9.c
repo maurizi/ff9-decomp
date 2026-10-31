@@ -1,7 +1,7 @@
 #include "fxmod/fx_0e9.h"
 
 static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7CFC);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0e9_env);
     SVECTOR v;
     SVECTOR rot;
     s32 rad;
@@ -54,7 +54,7 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x20;
     } else if (mode == 1) {
-        D_801E7CFC = env;
+        fx_0e9_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);
@@ -87,7 +87,7 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E7CFC)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_0e9_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

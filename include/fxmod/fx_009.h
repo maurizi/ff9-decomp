@@ -8,7 +8,7 @@ typedef struct {
     Pool6CEntry *unk0;
 } Fx009Work;
 
-extern Unk800F78A4 *D_801E7818;
+extern Unk800F78A4 *fx_009_env;
 extern s32 D_801E7828[];
 
 #endif

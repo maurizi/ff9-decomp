@@ -19,7 +19,7 @@ typedef struct {
     s16 unk38; /* hold up */
 } Fx0ebWork;
 
-extern Unk800F78A4 *D_801E7C24;
+extern Unk800F78A4 *fx_0eb_env;
 extern s32 D_801E7C34[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);

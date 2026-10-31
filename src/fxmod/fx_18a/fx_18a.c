@@ -29,13 +29,13 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x28;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E8A24 = env;
+        fx_18a_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk14);
         work->unk20 = 0;
         work->unk4 = 0;
         D_801E89D8 = 0;
-        ex->btlfx_initEffModels(D_801E8A34, 1);
+        ex->btlfx_initEffModels(fx_18a_effModels, 1);
         work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0xB7, 0x3D80, 0, 0);
     } else {
         c = 0;
@@ -231,7 +231,7 @@ void func_801E85A4(void) {
 void func_801E85B0(Fx18aInst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to) {
     Fx18aTrail *tr = &D_801E8B04[D_801E90D4];
     SVECTOR *pt = &tr->unk4[14];
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8A24);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_18a_env);
     SVECTOR v;
     Fx18aSpark *e;
     s32 i;
@@ -276,7 +276,7 @@ s32 fx_18a_op82(s32 mode, Fx18aWork82 *work, Unk800F78A4 *env, Fx18aInst *inst, 
         init->elemFn = (s32)fx_18a_op82PoolTask;
         init->poolCount = 0xB4;
     } else if (mode == 1) {
-        D_801E8A24 = env;
+        fx_18a_env = env;
         func_801E85A4();
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         work->unk8.vx = 0;

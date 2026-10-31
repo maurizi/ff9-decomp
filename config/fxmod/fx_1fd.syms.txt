@@ -18,3 +18,5 @@ fxm_camChanReset = 0x801E9A50; // type:func [code] frees the 64 camera key slots
 fxm_camChanAdd = 0x801E9A9C; // type:func [code] takes a free camera key slot (start frame, destination point nibbles, channel, key data)
 fxm_camChanUpdate = 0x801E9AF8; // type:func [code] steps channel ch, slots whose start frame is reached copy keys into camera points (env camera, nibble = point + 1)
 fxm_moveUnitHome = 0x801E9984; // type:func [code] moves the unit from b to its home position (btlfx_getUnitHomePos) over n frames
+fx_1fd_env = 0x801E9E4C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_1fd_effModels = 0x801E9E5C; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

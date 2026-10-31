@@ -26,7 +26,7 @@ typedef struct {
     s32 unkC; /* target index */
 } Fx01dWork81;
 
-extern Unk800F78A4 *D_801E7D34;
+extern Unk800F78A4 *fx_01d_env;
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 

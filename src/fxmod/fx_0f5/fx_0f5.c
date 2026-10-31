@@ -2,7 +2,7 @@
 
 void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 c, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 dr, s32 ang, s32 dang, s32 dseg, s32 abr, s32 flicker) {
-    Unk800F78A4 *env = D_801E8A74;
+    Unk800F78A4 *env = fx_0f5_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col0;
     CVECTOR col1;
@@ -194,8 +194,8 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x24;
     } else if (mode == 1) {
-        D_801E8A74 = env;
-        ex->btlfx_initEffModels(D_801E8A84, 1);
+        fx_0f5_env = env;
+        ex->btlfx_initEffModels(fx_0f5_effModels, 1);
         work->unk20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
         work->unk0 = 0;
         work->unk4 = 0;

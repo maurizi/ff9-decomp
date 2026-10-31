@@ -30,7 +30,7 @@ typedef struct {
     Fx129Vec3 unk70;
 } Fx129Work;
 
-extern Unk800F78A4 *D_801E7C04;
-extern BtlModel D_801E7C14[];
+extern Unk800F78A4 *fx_129_env;
+extern BtlModel fx_129_effModels[];
 
 #endif

@@ -19,10 +19,10 @@ typedef struct {
     SVECTOR unk4[15];
 } Fx07dStrip; /* 0x7C */
 
-extern Unk800F78A4 *D_801E9FB0;
+extern Unk800F78A4 *fx_07d_env;
 extern SVECTOR D_801EA470[24];
 extern s32 D_801EA530;
-extern Unk80100C78Entry *D_801EA534;
+extern Unk80100C78Entry *fx_07d_task;
 extern s32 D_801EA538;
 extern Fx07dStrip D_801EA540[];
 extern s32 D_801EA8B0[64][3]; /* random arc profile */
@@ -54,7 +54,7 @@ typedef struct {
     Pool6CEntry *unk3C;
 } Fx07dWork80; /* 0x40 */
 
-extern BtlModel D_801E9FC0[];
+extern BtlModel fx_07d_effModels[];
 
 typedef struct {
     SVECTOR unk0; /* caster body position */

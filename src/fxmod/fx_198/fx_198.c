@@ -23,9 +23,9 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E7E54 = env;
+        fx_198_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
-        ex->btlfx_initEffModels(D_801E7E64, 5);
+        ex->btlfx_initEffModels(fx_198_effModels, 5);
         key = (Fx198Key *)ex->btlfx_getFileData(entry->file, 0x15);
         work->unk1C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)key, 0x137, 0xFFFF, 0, 0x80);
         work->unk14 = 0;

@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR unk8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0d6Work84;
 
-extern Unk800F78A4 *D_801E9150;
+extern Unk800F78A4 *fx_0d6_env;
 
 typedef struct {
     SVECTOR unk0; /* caster body position */
@@ -24,7 +24,7 @@ typedef struct {
     s32 unk34; /* frame counter */
 } Fx0d6Work80; /* 0x38 */
 
-extern BtlModel D_801E9160[];
+extern BtlModel fx_0d6_effModels[];
 extern s32 D_801E9610[];
 extern u16 D_801E98A0[];
 s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);

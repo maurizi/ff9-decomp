@@ -3,3 +3,4 @@ fx_194_header = 0x801E7DB4; // [code] module header (0, init, ops), btlfx_update
 fx_194_op80 = 0x801E789C; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_194_op81 = 0x801E7C60; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_194_op80GridVertex = 0x801E7704; // type:func [code] screen grid vertex callback (last argument of the grid drawer), installed by fx_194_op80
+fx_194_env = 0x801E7DFC; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS

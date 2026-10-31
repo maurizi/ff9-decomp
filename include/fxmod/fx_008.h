@@ -12,7 +12,7 @@ typedef struct {
     u16 unk16;
 } Fx008Work;
 
-extern Unk800F78A4 *D_801E78EC;
+extern Unk800F78A4 *fx_008_env;
 extern s32 D_801E78FC[];
 
 #endif

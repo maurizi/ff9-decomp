@@ -3,7 +3,7 @@
 static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
     SVECTOR *p;
     s32 *prev;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8A04);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_08f_env);
     s32 i;
     s32 rad;
     s32 a;
@@ -21,7 +21,7 @@ static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
 }
 
 static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pt, CVECTOR *col, s32 p, s32 abr) {
-    Unk800F78A4 *env = D_801E8A04;
+    Unk800F78A4 *env = fx_08f_env;
     CVECTOR c;
     MATRIX m;
     s32 hsave;
@@ -121,7 +121,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = sizeof(Fx08fWork80);
     } else if (mode == 1) {
-        D_801E8A04 = env;
+        fx_08f_env = env;
         work->unk0 = 1;
         work->unk4 = 0;
         fxm_randDiscPoints(0x180, 0x400, D_801E9054);
@@ -131,7 +131,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8[3] = 0x78;
         work->unk8[4] = 0xC8;
         work->unk8[5] = 0x78;
-        ex->btlfx_initEffModels(D_801E8A14, 8);
+        ex->btlfx_initEffModels(fx_08f_effModels, 8);
         work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x11), 0x9A, 0x3E00, 0, 0);
         work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x139, 0xFFFF, 0, 0x80);
         work->unk2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1A), 0xB9, 0x3D40, 0, 0);

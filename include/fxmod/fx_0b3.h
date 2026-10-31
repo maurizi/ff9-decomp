@@ -45,7 +45,7 @@ typedef struct {
     s32 unk74; /* morph weight */
 } Fx0b3Work80; /* 0x78 */
 
-extern BtlModel D_801ED5F0[];
+extern BtlModel fx_0b3_effModels[];
 
 typedef struct {
     u8 pad0[0x184];
@@ -143,7 +143,7 @@ static void fxm_keyGetVec(Fx0b3Track *track, s32 t, SVECTOR *out);
 static void fxm_keyGetVec2(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b);
 static void fxm_keyGetVec3(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
 static s32 fxm_keyGetValue(Fx0b3Track *track, s32 t);
-extern Unk800F78A4 *D_801ED5E0;
+extern Unk800F78A4 *fx_0b3_env;
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
 
 typedef struct {

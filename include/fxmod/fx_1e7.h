@@ -35,7 +35,7 @@ typedef struct {
 extern u16 D_801E826C[5]; /* files */
 extern u16 D_801E8278[5]; /* path files */
 extern s32 (*D_801E8284[5])(SVECTOR *, SVECTOR *, s32, s32);
-extern Unk800F78A4 *D_801E82E0;
+extern Unk800F78A4 *fx_1e7_env;
 extern s32 D_801E82E4; /* op81 frame */
 extern Fx1e7Path D_801E82F0;
 extern Fx1e7Path D_801E8300[5];

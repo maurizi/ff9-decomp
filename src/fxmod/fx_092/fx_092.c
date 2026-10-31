@@ -7,7 +7,7 @@ s32 fx_092_op80(s32 mode, Fx092Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x48;
     } else if (mode == 1) {
-        D_801E7A1C = env;
+        fx_092_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk18);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk20);

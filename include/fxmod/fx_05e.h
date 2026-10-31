@@ -49,11 +49,11 @@ extern SVECTOR D_801E887C;
 extern SVECTOR D_801E8884;
 extern u8 D_801E88D4[];
 extern Unk80100DC054 D_801E8E84;
-extern BtlModel D_801E9014[];
+extern BtlModel fx_05e_effModels[];
 extern u8 D_801E90E4[];
 extern Fx05eSeg D_801E9744[];
 extern Fx05eSeg D_801E9854[];
-extern Unk800F78A4 *D_801E8E74;
+extern Unk800F78A4 *fx_05e_env;
 
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx05eSeg *buf, s32 abr);
 static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out);

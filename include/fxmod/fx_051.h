@@ -13,7 +13,7 @@ typedef struct {
 } Fx051Work;
 
 extern SVECTOR D_801E799C;
-extern Unk800F78A4 *D_801E79EC;
+extern Unk800F78A4 *fx_051_env;
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 

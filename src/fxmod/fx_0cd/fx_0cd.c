@@ -12,11 +12,11 @@ s32 fx_0cd_op80(s32 mode, Fx0cdWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0xB4;
     } else if (mode == 1) {
-        D_801E7DD4 = env;
+        fx_0cd_env = env;
         for (i = 7, q = &((s32 *)work)[7]; i >= 0; i--, q--) {
             *q = 0;
         }
-        ex->btlfx_initEffModels(D_801E7DE4, 3);
+        ex->btlfx_initEffModels(fx_0cd_effModels, 3);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unkA4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkAC);
         work->unk20.unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);

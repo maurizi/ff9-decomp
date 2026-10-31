@@ -3,7 +3,7 @@
 void func_801E7704(s32 model, SVECTOR *center) {
     Fx179Tri *t = D_801E8A1C;
     Fx179Tri *u = D_801E8A1C;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8A0C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_179_env);
     Fx179Shard *s;
     SVECTOR d;
     s32 i;
@@ -45,7 +45,7 @@ void func_801E78E8(void) {
 
     bias[0] = 0;
     bias[1] = 0;
-    ex = BTLFX_EXPORTS(D_801E8A0C);
+    ex = BTLFX_EXPORTS(fx_179_env);
     sc.vx = sc.vy = sc.vz = 0xF00;
     for (i = 0; i < 160; i++, s++, t++) {
         if (s->unk18 >= 0) {
@@ -89,7 +89,7 @@ void func_801E78E8(void) {
 
 void func_801E7B68(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8A0C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_179_env);
     Fx179Rgbc c0;
     Fx179Rgbc c1;
     Fx179Rgbc c2;
@@ -118,13 +118,13 @@ void func_801E7B68(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     s32 jn;
     s32 kn;
 
-    gte_SetRotMatrix(D_801E8A0C->viewMatrix);
-    gte_SetTransMatrix(D_801E8A0C->viewMatrix);
+    gte_SetRotMatrix(fx_179_env->viewMatrix);
+    gte_SetTransMatrix(fx_179_env->viewMatrix);
     gte_ldv0(pos);
-    gt4 = (POLY_GT4 *)D_801E8A0C->prim;
+    gt4 = (POLY_GT4 *)fx_179_env->prim;
     *(s32 *)&c2 = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
-    D_801E8A0C->prim = (u8 *)(ft4 + 14);
+    fx_179_env->prim = (u8 *)(ft4 + 14);
     c0.r = c0.g = c0.b = c;
     c1.r = c1.g = c1.b = c;
     c0.code = abr != 0xFF ? 0x2E : 0x2C;
@@ -245,8 +245,8 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk10.vx = env->targets->centerX;
         work->unk10.vy = env->targets->centerY;
         work->unk10.vz = env->targets->centerZ;
-        D_801E8A0C = env;
-        ex->btlfx_initEffModels(D_801EAA9C, 1);
+        fx_179_env = env;
+        ex->btlfx_initEffModels(fx_179_effModels, 1);
         work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x9A, 0x3D40, 0, 0);
     } else {
     frame = entry->frame;

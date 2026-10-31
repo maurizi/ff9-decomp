@@ -12,7 +12,7 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x44;
     } else if (mode == 1) {
-        D_801E8168 = env;
+        fx_1a4_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk14);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk14);
         if (work->unk0 != NULL) {
@@ -100,11 +100,11 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x5C;
     } else if (mode == 1) {
-        D_801E8168 = env;
+        fx_1a4_env = env;
         if (env->targets->fxArgs[1] != 0) {
             return 1;
         }
-        ex->btlfx_initEffModels(D_801E8178, 3);
+        ex->btlfx_initEffModels(fx_1a4_effModels, 3);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk44);
         work->unk8.vx = 0x800;
         work->unk8.vy = 0;
@@ -191,7 +191,7 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E8168)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_1a4_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

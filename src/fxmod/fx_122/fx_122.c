@@ -12,7 +12,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x50;
     } else if (mode == 1) {
-        D_801E7D44 = env;
+        fx_122_env = env;
         env->camera->paused = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk30);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk38);
@@ -62,7 +62,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vz = work->unkC.vz;
         work->unk48 = -1;
         work->unk4A = -1;
-        ex->btlfx_initEffModels(D_801E7D54, 1);
+        ex->btlfx_initEffModels(fx_122_effModels, 1);
         work->unk4C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
     } else {
         frame = entry->frame;
@@ -116,7 +116,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E7D44)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_122_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

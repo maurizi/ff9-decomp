@@ -24,7 +24,7 @@ typedef struct {
     SVECTOR unk4[21];
 } Fx1eeTrail; /* 0xAC */
 
-extern Unk800F78A4 *D_801E9104;
+extern Unk800F78A4 *fx_1ee_env;
 extern SVECTOR D_801E927C; /* summon rotation */
 extern VECTOR D_801E9284; /* summon position */
 extern VECTOR D_801E9294; /* summon scale */
@@ -74,7 +74,7 @@ extern Fx1eeSpark D_801EB004[12][4];
 #define SUMMON(env) ((Fx1eeSummon *)(env)->loader)
 
 /* copied */
-extern Unk800F78A4 *D_801E9104;
+extern Unk800F78A4 *fx_1ee_env;
 /* end copied */
 
 /* propagated */

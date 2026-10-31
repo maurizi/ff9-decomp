@@ -30,7 +30,7 @@ typedef struct {
     SVECTOR unkC; /* caster body position */
 } Fx1f7Work; /* 0x14 */
 
-extern Unk800F78A4 *D_801E80C8;
+extern Unk800F78A4 *fx_1f7_env;
 extern s32 D_801E7EB0[6][17]; /* bones */
 extern s32 D_801E8048[2][7]; /* bones */
 extern SVECTOR D_801E80D8[64];

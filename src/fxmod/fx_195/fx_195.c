@@ -2,7 +2,7 @@
 
 void func_801E7704(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
                    s32 arg7) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EA278);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     SVECTOR pos;
     SVECTOR rot;
     SVECTOR *p;
@@ -32,7 +32,7 @@ void func_801E7704(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SV
 
 void func_801E78A4(Unk80100C78Entry *entry, Fx195Trail57 *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5,
                    s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EA278);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     SVECTOR pos;
     SVECTOR rot;
     SVECTOR *p;
@@ -63,7 +63,7 @@ void func_801E78A4(Unk80100C78Entry *entry, Fx195Trail57 *trail, SVECTOR *from, 
 
 void func_801E7AA0(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9, s32 arg10) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EA278);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     SVECTOR pos;
     SVECTOR rot;
     SVECTOR *p;
@@ -94,7 +94,7 @@ void func_801E7AA0(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SV
 
 void func_801E7C98(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EA278);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     Fx195Rgbc c0;
     Fx195Rgbc c1;
     Fx195Rgbc c2;
@@ -125,13 +125,13 @@ void func_801E7C98(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     s32 hd;
     s32 q;
 
-    gte_SetRotMatrix(D_801EA278->viewMatrix);
-    gte_SetTransMatrix(D_801EA278->viewMatrix);
+    gte_SetRotMatrix(fx_195_env->viewMatrix);
+    gte_SetTransMatrix(fx_195_env->viewMatrix);
     gte_ldv0(pos);
-    gt4 = (POLY_GT4 *)D_801EA278->prim;
+    gt4 = (POLY_GT4 *)fx_195_env->prim;
     *(s32 *)&c2 = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
-    D_801EA278->prim = (u8 *)(ft4 + 46);
+    fx_195_env->prim = (u8 *)(ft4 + 46);
     c0.r = c0.g = c0.b = c;
     c1.r = c1.g = c1.b = c;
     c0.code = abr != 0xFF ? 0x2E : 0x2C;
@@ -233,7 +233,7 @@ void func_801E7C98(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
 }
 
 void func_801E83BC(VECTOR *pos, SVECTOR *rot) {
-    Unk800F78A4 *env = D_801EA278;
+    Unk800F78A4 *env = fx_195_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     s32 tmp;
@@ -267,8 +267,8 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801EA278 = env;
-        ex->btlfx_initEffModels(D_801EA288, 7);
+        fx_195_env = env;
+        ex->btlfx_initEffModels(fx_195_effModels, 7);
         work->unk80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x11), 1);
         work->unk84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x14), 1);
         work->unk5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);

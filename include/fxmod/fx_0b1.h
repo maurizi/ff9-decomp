@@ -21,12 +21,12 @@ extern SVECTOR D_801EAA6C; /* model rotation */
 extern VECTOR D_801EAA7C; /* model scale */
 extern VECTOR D_801EAA8C[4]; /* model positions */
 extern SVECTOR D_801EAACC[4]; /* unit body positions */
-extern BtlModel D_801EAAEC[];
+extern BtlModel fx_0b1_effModels[];
 
 static void fxm_camKeyReset(void);
 static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data);
 static void fxm_camKeyUpdate(void);
-extern Unk800F78A4 *D_801E8B8C;
+extern Unk800F78A4 *fx_0b1_env;
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 typedef struct {

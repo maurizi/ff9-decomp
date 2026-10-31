@@ -4,6 +4,6 @@
 /* Effect module fx_132 (dir 13 file 0x132). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801E78BC;
+extern Unk800F78A4 *fx_132_env;
 
 #endif

@@ -2,7 +2,7 @@
 
 static void fx_1a8_op80ElemDraw0(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 arg5, s32 arg6, s32 t, s32 n) {
     s32 r = (t << 12) / n;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E97CC);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1a8_env);
     VECTOR p;
     VECTOR s;
     s32 a;
@@ -27,7 +27,7 @@ static void fx_1a8_op80ElemDraw0(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot,
 
 static void fx_1a8_op80ElemDraw1(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 arg5, s32 arg6, s32 t, s32 n) {
     s32 r = (t << 12) / n;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E97CC);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1a8_env);
     VECTOR p;
     VECTOR s;
     s32 a;
@@ -52,7 +52,7 @@ static void fx_1a8_op80ElemDraw1(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot,
 
 void func_801E7950(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 z0, s32 z1, s32 col, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 h, s32 abr, s32 step) {
-    Unk800F78A4 *env = D_801E97CC;
+    Unk800F78A4 *env = fx_1a8_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR c0;
     CVECTOR c1;
@@ -199,8 +199,8 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E97CC = env;
-        ex->btlfx_initEffModels(D_801E97DC, 0xC);
+        fx_1a8_env = env;
+        ex->btlfx_initEffModels(fx_1a8_effModels, 0xC);
         work->unk28 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x19), 0);
         work->unk4C[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x10), 0);
         work->unk4C[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0);

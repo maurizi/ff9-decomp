@@ -11,7 +11,7 @@ typedef struct {
     s32 unk48[8]; /* unit heights */
 } Fx0deWork81; /* 0x68 */
 
-extern Unk800F78A4 *D_801E8698;
+extern Unk800F78A4 *fx_0de_env;
 extern s32 D_801E8CE8; /* jump scale */
 
 s32 fx_0de_op81(s32 mode, Fx0deWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
@@ -37,6 +37,6 @@ typedef struct {
     u16 unk2;
 } Fx0deFlash;
 extern Fx0deFlash D_801E85F0[];
-extern BtlModel D_801E86A8[];
+extern BtlModel fx_0de_effModels[];
 
 #endif

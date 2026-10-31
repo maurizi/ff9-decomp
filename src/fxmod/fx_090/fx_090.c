@@ -19,7 +19,7 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk60.vz = env->targets->centerZ;
         work->unk58.vy -= 0x320;
         work->unk60.vy -= 0x4B0;
-        D_801E7E38 = env;
+        fx_090_env = env;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk50);
         work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk50);
         if (work->unk0 != NULL) {
@@ -39,7 +39,7 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk3C.vx = 0x1000;
         work->unk3C.vy = 0x1000;
         work->unk3C.vz = 0x1000;
-        ex->btlfx_initEffModels(D_801E7E48, 2);
+        ex->btlfx_initEffModels(fx_090_effModels, 2);
         work->unk70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x1B, 0x3D09, 0, 0);
         work->unk72 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x1B, 0x3D09, 0, 0);
         work->unk6C = work->unk68 = -1;
@@ -102,7 +102,7 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E7E38)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_090_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

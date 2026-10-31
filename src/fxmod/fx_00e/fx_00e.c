@@ -14,13 +14,13 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x28;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E7A78 = env;
+        fx_00e_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
         work->unk18[0] = work->unk8.vx;
         work->unk18[1] = work->unk8.vy;
         work->unk18[2] = work->unk8.vz;
-        ex->btlfx_initEffModels(D_801E7A88, 2);
+        ex->btlfx_initEffModels(fx_00e_effModels, 2);
         work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x138, 0xFFFF, 0, 0x80);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk8);
         if (p != NULL) {

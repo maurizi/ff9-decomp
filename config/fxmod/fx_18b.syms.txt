@@ -3,3 +3,4 @@ fx_18b_header = 0x801E8234; // [code] module header (0, init, ops), btlfx_update
 fx_18b_op80 = 0x801E7FA0; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fxm_drawRadialScreenGrid = 0x801E7704; // type:func [code] rings of POLY_GT4 around a screen point textured with the screen (a DR_MOVE copy into src, or the display), vertex callback fn
 fx_18b_op80GridVertex = 0x801E7EB8; // type:func [code] screen grid vertex callback (last argument of the grid drawer), installed by fx_18b_op80
+fx_18b_env = 0x801E827C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS

@@ -12,6 +12,6 @@ typedef struct {
     u8 pad20[8];
 } Fx00aWork; /* 0x28 */
 
-extern Unk800F78A4 *D_801E784C;
+extern Unk800F78A4 *fx_00a_env;
 
 #endif

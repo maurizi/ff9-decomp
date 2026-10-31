@@ -10,6 +10,6 @@ typedef struct {
     s32 unkC;
 } Fx1c9Work;
 
-extern Unk800F78A4 *D_801E78C8;
+extern Unk800F78A4 *fx_1c9_env;
 
 #endif

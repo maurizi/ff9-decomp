@@ -22,7 +22,7 @@ typedef struct {
     s32 unk1C; /* spawned */
 } Fx188Work; /* 0x20 */
 
-extern Unk800F78A4 *D_801E7E88;
+extern Unk800F78A4 *fx_188_env;
 extern s32 D_801E7E98[];
 extern s32 D_801E86CC; /* scale */
 

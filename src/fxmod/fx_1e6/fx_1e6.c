@@ -1,7 +1,7 @@
 #include "fxmod/fx_1e6.h"
 
 void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8348);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1e6_env);
     MATRIX m;
     VECTOR o;
     SVECTOR v;
@@ -60,7 +60,7 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        D_801E8348 = env;
+        fx_1e6_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
         work->unk4.vy -= 0x12C;
         D_801E92F8.vx = work->unk4.vx;
@@ -97,8 +97,8 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x68;
     } else if (mode == 1) {
-        D_801E8348 = env;
-        ex->btlfx_initEffModels(D_801E8358, 2);
+        fx_1e6_env = env;
+        ex->btlfx_initEffModels(fx_1e6_effModels, 2);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk48);
         work->unk34.vx = 0x1000;
         work->unk34.vy = 0x1000;
@@ -236,7 +236,7 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E8348)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_1e6_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

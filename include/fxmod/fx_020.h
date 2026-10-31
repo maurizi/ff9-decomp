@@ -11,7 +11,7 @@ typedef struct {
 } Fx020Work;
 
 extern SVECTOR D_801E7894;
-extern Unk800F78A4 *D_801E78E4;
+extern Unk800F78A4 *fx_020_env;
 extern s32 D_801E78F4[];
 
 #endif

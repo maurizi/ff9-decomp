@@ -1,7 +1,7 @@
 #include "fxmod/fx_0b8.h"
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EA7A0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0b8_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -56,8 +56,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1EC;
     } else if (mode == 1) {
-        D_801EA7A0 = env;
-        ex->btlfx_initEffModels(D_801EA8B0, 0x20);
+        fx_0b8_env = env;
+        ex->btlfx_initEffModels(fx_0b8_effModels, 0x20);
         for (i = 0x27, q = &work->unk0[0x27]; i >= 0; i--, q--) {
             *q = 0;
         }
@@ -752,7 +752,7 @@ void func_801E9D80(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 a
     s32 k0;
     s32 k1;
 
-    env = D_801EA7A0;
+    env = fx_0b8_env;
     ex = BTLFX_EXPORTS(env);
     uv0.u = uv2.u = 0;
     uv1.u = uv3.u = 0x5F;
@@ -830,7 +830,7 @@ void func_801EA1E0(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpage, s32 c
     POLY_F4 *f4;
     s32 i;
 
-    env = D_801EA7A0;
+    env = fx_0b8_env;
     ex = BTLFX_EXPORTS(env);
     uv0.u = uv2.u = 0;
     uv1.u = uv3.u = 0xFF;
@@ -862,7 +862,7 @@ void func_801EA1E0(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpage, s32 c
 }
 
 void func_801EA424(s32 ot) {
-    Unk800F78A4 *env = D_801EA7A0;
+    Unk800F78A4 *env = fx_0b8_env;
     POLY_G4 *p = (POLY_G4 *)env->prim;
     BtlfxExports *ex;
 
@@ -883,7 +883,7 @@ void func_801EA424(s32 ot) {
 }
 
 void func_801EA4E0(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 ot) {
-    Unk800F78A4 *env = D_801EA7A0;
+    Unk800F78A4 *env = fx_0b8_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 v = ex->btlfx_lerpRatio(a, b, t, n);
 
@@ -891,7 +891,7 @@ void func_801EA4E0(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 ot) {
 }
 
 static s32 fx_0b8_op80ParticleMotion(Pool30Entry *pt, s32 a1, SVECTOR *pos, s32 a3, s32 frame, s32 n) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EA7A0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0b8_env);
     SVECTOR v;
     s32 r;
     SVECTOR off;

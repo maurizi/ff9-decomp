@@ -21,6 +21,6 @@ typedef struct {
 } Fx0f6Layer;
 
 extern Fx0f6Layer D_801E7984[4];
-extern Unk800F78A4 *D_801E79FC;
+extern Unk800F78A4 *fx_0f6_env;
 
 #endif

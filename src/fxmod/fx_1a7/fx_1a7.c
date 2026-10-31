@@ -37,7 +37,7 @@ s32 fx_1a7_op80ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
 }
 
 s32 func_801E7968(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8940);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1a7_env);
 
     ex->btlfx_lerpVec((s16 *)&D_801EA5C0, (s16 *)&D_801EA5D0, (frame << 12) / 12, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
@@ -88,7 +88,7 @@ s32 fx_1a7_op81ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
 }
 
 s32 func_801E7D18(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8940);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1a7_env);
 
     ex->btlfx_lerpVec((s16 *)&D_801EA5C8, (s16 *)&D_801EA5D8, (frame << 12) / 12, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
@@ -113,7 +113,7 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x3C;
     } else if (mode == 1) {
-        D_801E8940 = env;
+        fx_1a7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk2C);
         D_801EA5D0.vx = work->unk2C.vx;
         D_801EA5D0.vy = work->unk2C.vy;
@@ -183,7 +183,7 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x64;
     } else if (mode == 1) {
-        D_801E8940 = env;
+        fx_1a7_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk34);
         D_801EA5D8.vx = work->unk34.vx;
         D_801EA5D8.vy = work->unk34.vy;

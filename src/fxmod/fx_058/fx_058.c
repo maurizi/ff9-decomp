@@ -99,12 +99,12 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         work->unk1C = 0;
         work->unk20 = 0;
-        D_801E7E64 = env;
+        fx_058_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unkC);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
         work->unk14.vy += 0x800;
-        ex->btlfx_initEffModels(D_801E7E74, 1);
+        ex->btlfx_initEffModels(fx_058_effModels, 1);
         work->unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
     } else if (work->unk0 == 0) {
         if (work->unk1C < 0x20) {
@@ -136,7 +136,7 @@ s32 fx_058_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 1) {
-        D_801E7E64 = env;
+        fx_058_env = env;
         ex->btlfx_clearEffModels();
     }
     return 1;

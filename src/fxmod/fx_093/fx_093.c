@@ -9,7 +9,7 @@ s32 fx_093_op80(s32 mode, Fx093Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x2C;
     } else if (mode == 1) {
-        D_801E79F4 = env;
+        fx_093_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk0);
         ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], &bone);
         ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x100, (s32)&work->unk8);

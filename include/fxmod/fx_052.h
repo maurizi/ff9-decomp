@@ -33,8 +33,8 @@ typedef struct {
     s16 unk2; /* fade-out countdown */
 } Fx052Work82;
 
-extern Unk800F78A4 *D_801E7FA8;
-extern BtlModel D_801E7FB8[];
+extern Unk800F78A4 *fx_052_env;
+extern BtlModel fx_052_effModels[];
 extern s32 D_801E8218[];
 extern s32 D_801E8FD8[];
 

@@ -4,7 +4,7 @@
 /* Effect module fx_07a (dir 13 file 0x7A). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801E94F4;
+extern Unk800F78A4 *fx_07a_env;
 extern s32 D_801E94F8;
 extern s32 D_801E94FC;
 extern s32 D_801E9500;
@@ -52,7 +52,7 @@ typedef struct {
     s32 pad104;
 } Fx07aWork; /* 0x108 */
 
-extern BtlModel D_801E9934[];
+extern BtlModel fx_07a_effModels[];
 extern SVECTOR D_801E9B8C;
 extern SVECTOR D_801E9B94;
 extern Fx07aStrip D_801E9BA4[5];

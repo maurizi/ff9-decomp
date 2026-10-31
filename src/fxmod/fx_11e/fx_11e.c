@@ -15,7 +15,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         n = *arg4;
         work->unk58 = n;
-        D_801E7FD0 = env;
+        fx_11e_env = env;
         if (n >= env->targets->targetCount) {
             fxm_setSignal(env, 7, 1);
             return 1;
@@ -25,7 +25,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_playFileSound(8, entry->file, -1);
         ex->btlfx_playFileSound(9, entry->file, -1);
         if (D_801E7F84 == 0) {
-            ex->btlfx_initEffModels(D_801E7FE0, 8);
+            ex->btlfx_initEffModels(fx_11e_effModels, 8);
             D_801E7F84 = mode;
         }
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk50);

@@ -7,7 +7,7 @@ s32 fx_0c2_op80(s32 mode, Fx0c2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        D_801E847C = env;
+        fx_0c2_env = env;
         ex->btlfx_getUnitBoneMatrix(0x10, 0x17, &bone);
         ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x64, (s32)&work->unk4);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk4);
@@ -21,7 +21,7 @@ s32 fx_0c2_op80(s32 mode, Fx0c2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    BTLFX_EXPORTS(D_801E847C)->btlfx_lerpVec((s16 *)&D_801E8484, (s16 *)&D_801E848C, (frame << 12) / 9, (s16 *)pos);
+    BTLFX_EXPORTS(fx_0c2_env)->btlfx_lerpVec((s16 *)&D_801E8484, (s16 *)&D_801E848C, (frame << 12) / 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -41,7 +41,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         s32 n = *arg4;
         work->unk4C = n;
-        D_801E847C = env;
+        fx_0c2_env = env;
         if (n >= env->targets->targetCount) {
             fxm_setSignal(env, 7, 1);
             return 1;
@@ -135,7 +135,7 @@ s32 fx_0c2_op82(s32 mode, Fx0c2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk8.vx = env->targets->centerX;
         work->unk8.vy = env->targets->centerY;
-        D_801E847C = env;
+        fx_0c2_env = env;
         work->unk8.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
@@ -153,7 +153,7 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         s32 n = *arg4;
         work->unk10 = n;
-        D_801E847C = env;
+        fx_0c2_env = env;
         if (n >= env->targets->targetCount) {
             return 1;
         }
@@ -166,7 +166,7 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E847C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0c2_env);
     SVECTOR rot;
     SVECTOR pos;
 
@@ -183,7 +183,7 @@ static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *de
 }
 
 static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E847C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0c2_env);
     SVECTOR from;
     SVECTOR rot;
     SVECTOR to;
@@ -216,14 +216,14 @@ static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBa
 }
 
 static void fxm_startUnitMotion(s32 unit, s32 motion) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E847C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0c2_env);
 
     ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
     ex->btlfx_setMotionFrame(unit, 0);
 }
 
 static s32 fxm_isMotionDone(s32 unit) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E847C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0c2_env);
 
     s32 r;
 
@@ -236,13 +236,13 @@ static s32 fxm_isMotionDone(s32 unit) {
 }
 
 static void fxm_startMotion2IfActive(s32 unit) {
-    if (BTLFX_EXPORTS(D_801E847C)->btlfx_isUnitActive(unit)) {
+    if (BTLFX_EXPORTS(fx_0c2_env)->btlfx_isUnitActive(unit)) {
         fxm_startUnitMotion(unit, 2);
     }
 }
 
 static void fxm_startMotion3IfActive(s32 unit) {
-    if (BTLFX_EXPORTS(D_801E847C)->btlfx_isUnitActive(unit)) {
+    if (BTLFX_EXPORTS(fx_0c2_env)->btlfx_isUnitActive(unit)) {
         fxm_startUnitMotion(unit, 3);
     }
 }

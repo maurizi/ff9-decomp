@@ -13,7 +13,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     DVECTOR h;
     CVECTOR c0;
     CVECTOR c1;
-    Unk800F78A4 *env = D_801E8AB8;
+    Unk800F78A4 *env = fx_07e_env;
     u32 *move = NULL;
     s32 step;
     s32 cx;
@@ -244,7 +244,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)arg4)->elemFn = (s32)fx_07e_op80PoolTask;
         ((EffInit *)arg4)->poolCount = 0xB;
     } else if (mode == 1) {
-        D_801E8AB8 = env;
+        fx_07e_env = env;
         arg4 = (s32 *)*arg4;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         work->unk1C = 0x2EE;
@@ -262,7 +262,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk14.vy = 0;
         } while (0);
         work->unk14.vz = 0;
-        ex->btlfx_initEffModels(D_801E8AC8, 1);
+        ex->btlfx_initEffModels(fx_07e_effModels, 1);
         work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0xBB, 0x3E40, 0,
                                                  0x80);
     } else {
@@ -307,7 +307,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fx_07e_op81GridVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8AB8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_07e_env);
     s32 x;
     s32 y;
     s32 t;
@@ -336,7 +336,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = sizeof(Fx07eWork81);
     } else if (mode == 1) {
-        D_801E8AB8 = env;
+        fx_07e_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         work->unk8 = ex->btlfx_addRadiusSixth(0, 0x20);
         work->unk0 = 0;

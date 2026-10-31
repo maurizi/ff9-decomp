@@ -18,6 +18,6 @@ typedef struct {
     u16 unk42;
 } Fx0e5Work;
 
-extern Unk800F78A4 *D_801E7A9C;
+extern Unk800F78A4 *fx_0e5_env;
 
 #endif

@@ -1,7 +1,7 @@
 #include "fxmod/fx_1be.h"
 
 static s32 fxm_easeLerpSvec(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8FD8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1be_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -20,7 +20,7 @@ static s32 fxm_easeLerpSvec(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to,
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8FD8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1be_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -59,8 +59,8 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     if (mode == 0) {
         *arg4 = 0xDC;
     } else if (mode == 1) {
-        D_801E8FD8 = env;
-        ex->btlfx_initEffModels(D_801E91E8, 5);
+        fx_1be_env = env;
+        ex->btlfx_initEffModels(fx_1be_effModels, 5);
         {
             u8 *b = &w->unk0[31];
             for (i = 31; i >= 0; i--, b--) {
@@ -371,7 +371,7 @@ void func_801E89A8(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 a
     s32 k0;
     s32 k1;
 
-    env = D_801E8FD8;
+    env = fx_1be_env;
     ex = BTLFX_EXPORTS(env);
     uv1.u = uv3.u = 0x5F;
     uv0.v = uv1.v = 0x40;

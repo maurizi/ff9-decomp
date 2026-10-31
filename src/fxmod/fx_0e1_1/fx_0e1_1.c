@@ -18,7 +18,7 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
         work->unk8.vx = D_801ECD70.vx;
         work->unk8.vy = D_801ECD70.vy;
         work->unk8.vz = D_801ECD70.vz;
-        D_801ECDD0 = env;
+        fx_0e1_1_env = env;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
         if (p != NULL) {
             p->otZ = 0x20;
@@ -137,7 +137,7 @@ s32 fx_0e1_1_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entr
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801ECDD0 = env;
+        fx_0e1_1_env = env;
         env->camera->paused = 0;
     } else {
         return 1;

@@ -1,3 +1,5 @@
 fx_112_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
 fx_112_header = 0x801E8008; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_112_op80 = 0x801E7790; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
+fx_112_env = 0x801E8050; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_112_effModels = 0x801E8060; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

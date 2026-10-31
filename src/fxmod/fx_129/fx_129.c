@@ -11,8 +11,8 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x7C;
     } else if (mode == 1) {
-        D_801E7C04 = env;
-        ex->btlfx_initEffModels(D_801E7C14, 1);
+        fx_129_env = env;
+        ex->btlfx_initEffModels(fx_129_effModels, 1);
         tex[0] = tex[2] = 0xF7;
         tex[1] = 0x3CC0;
         tex[3] = 0x3C80;

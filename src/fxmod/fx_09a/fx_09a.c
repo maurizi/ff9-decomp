@@ -1,7 +1,7 @@
 #include "fxmod/fx_09a.h"
 
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx09aSeg *buf, s32 abr) {
-    Unk800F78A4 *env = D_801E8858;
+    Unk800F78A4 *env = fx_09a_env;
     CVECTOR c0;
     CVECTOR c1;
     s32 otz;
@@ -83,7 +83,7 @@ static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVEC
 }
 
 static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out) {
-    Unk800F78A4 *env = D_801E8858;
+    Unk800F78A4 *env = fx_09a_env;
     MATRIX m;
 
     BTLFX_EXPORTS(env)->Hi_GetSummonBoneMatrix(model, bone, (BtlBone *)&m);
@@ -120,7 +120,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 1;
         work->unk4 = 0;
-        D_801E8858 = env;
+        fx_09a_env = env;
         file = ex->btlfx_getFileData(entry->file, 2);
         ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, 8), &file, 1, &D_801E8868);
         work->unk8 = -1;

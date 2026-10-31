@@ -9,7 +9,7 @@ s32 fx_19e_op80(s32 mode, Fx19eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4.vx = env->targets->centerX;
         work->unk4.vy = env->targets->centerY;
         work->unk4.vz = env->targets->centerZ;
-        D_801E7EC8 = env;
+        fx_19e_env = env;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
         if (work->unk0 != NULL) {
             work->unk0->otZ = 0x80;
@@ -26,7 +26,7 @@ s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x30;
     } else if (mode == 1) {
-        D_801E7EC8 = env;
+        fx_19e_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         work->unk18.vx = env->targets->centerX;
         work->unk18.vy = env->targets->centerY;
@@ -42,7 +42,7 @@ s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E7EC8)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_19e_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -50,7 +50,7 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
 }
 
 static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7EC8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_19e_env);
     SVECTOR pos;
     s32 t;
 
@@ -67,7 +67,7 @@ static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height,
 }
 
 static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7EC8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_19e_env);
     SVECTOR rot;
     SVECTOR pos;
 
@@ -84,7 +84,7 @@ static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *de
 }
 
 static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7EC8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_19e_env);
     SVECTOR from;
     SVECTOR rot;
     SVECTOR to;

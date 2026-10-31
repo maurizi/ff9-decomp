@@ -7,7 +7,7 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x34;
     } else if (mode == 1) {
-        D_801E7958 = env;
+        fx_087_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unkC);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk1C);

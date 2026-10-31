@@ -2,7 +2,7 @@
 
 static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
-    Unk800F78A4 *env = D_801ED534;
+    Unk800F78A4 *env = fx_0d3_env;
     RECT rect;
     VECTOR sv;
     SVECTOR zero;
@@ -144,7 +144,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     DVECTOR h;
     CVECTOR c0;
     CVECTOR c1;
-    Unk800F78A4 *env = D_801ED534;
+    Unk800F78A4 *env = fx_0d3_env;
     u32 *move = NULL;
     s32 step;
     s32 cx;
@@ -352,7 +352,7 @@ static s32 fxm_keyGetValue(Fx0d3Track *track, s32 t) {
 
 void func_801E8628(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
                    Fx0d3Seg *buf, s32 abr, s32 phase) {
-    Unk800F78A4 *env = D_801ED534;
+    Unk800F78A4 *env = fx_0d3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR c;
     s32 otz;
@@ -452,8 +452,8 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801ED534 = env;
-        ex->btlfx_initEffModels(D_801ED544, 7);
+        fx_0d3_env = env;
+        ex->btlfx_initEffModels(fx_0d3_effModels, 7);
         D_801EB050 = work->unk60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x16), 1);
         m = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x26), 1);
         work->unk28.vy = 0x800;
@@ -562,7 +562,7 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 static s32 fx_0d3_op81SpawnPoint(SVECTOR *v) {
     s32 i = D_801EB098;
-    Unk800F78A4 *env = D_801ED534;
+    Unk800F78A4 *env = fx_0d3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     v->pad = 1;
@@ -576,7 +576,7 @@ static s32 fx_0d3_op81SpawnPoint(SVECTOR *v) {
 }
 
 static void fxm_waveVertexX(s16 *v) {
-    s32 t = (BTLFX_EXPORTS(D_801ED534)->math_sin(D_801EDF48 + (v[1] << 8)) * D_801EDF44) >> 12;
+    s32 t = (BTLFX_EXPORTS(fx_0d3_env)->math_sin(D_801EDF48 + (v[1] << 8)) * D_801EDF44) >> 12;
     s32 x = v[0];
 
     v[0] = x + t;
@@ -646,7 +646,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801ED534 = env;
+        fx_0d3_env = env;
         work->unk54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
         work->unk58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xC), 1);
         work->unk5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 1);
@@ -1114,7 +1114,7 @@ s32 fx_0d3_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801ED534 = env;
+        fx_0d3_env = env;
         env->camera->paused = 0;
     } else {
         return 1;
@@ -1129,7 +1129,7 @@ s32 fx_0d3_op87(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        D_801ED534 = env;
+        fx_0d3_env = env;
     } else {
         frame = entry->frame;
         fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, D_801EB0C4[1]), frame, &work[0]);

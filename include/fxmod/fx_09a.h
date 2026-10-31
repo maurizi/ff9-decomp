@@ -9,7 +9,7 @@ typedef struct {
     SVECTOR unk8;
 } Fx09aSeg; /* 0x10 */
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx09aSeg *buf, s32 abr);
-extern Unk800F78A4 *D_801E8858;
+extern Unk800F78A4 *fx_09a_env;
 static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out);
 
 typedef struct {

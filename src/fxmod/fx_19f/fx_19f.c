@@ -1,7 +1,7 @@
 #include "fxmod/fx_19f.h"
 
 static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
-    Unk800F78A4 *env = D_801EAA48;
+    Unk800F78A4 *env = fx_19f_env;
     POLY_G4 *prim;
     BtlfxExports *ex;
     s32 i;
@@ -40,7 +40,7 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
 
 void func_801E7894(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EAA48);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
     SVECTOR pos;
     SVECTOR rot;
     SVECTOR *p;
@@ -146,8 +146,8 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801EAA48 = env;
-        ex->btlfx_initEffModels(D_801EAB28, 5);
+        fx_19f_env = env;
+        ex->btlfx_initEffModels(fx_19f_effModels, 5);
         work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 1);
         work->unk74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x27), 0);
         work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1A), 0);
@@ -625,7 +625,7 @@ s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 4;
     } else if (mode == 1) {
-        D_801EAA48 = env;
+        fx_19f_env = env;
     } else {
         frame = entry->frame;
         k = (Fx19fKeys *)ex->btlfx_getFileData(entry->file, 0x2B);
@@ -661,7 +661,7 @@ s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 
 static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *trail, s32 n, s32 *noise, SVECTOR *from,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip) {
-    Unk800F78A4 *env = D_801EAA48;
+    Unk800F78A4 *env = fx_19f_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     SVECTOR rot;
@@ -700,7 +700,7 @@ static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19f
 static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *path, Fx19fTrail *trail, s32 n, s32 *noise,
                    s32 i, s32 type, s32 alpha, s32 pad) {
     SVECTOR *pt = path->unk4;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EAA48);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
     SVECTOR mid;
 
     pt += i;
@@ -759,7 +759,7 @@ static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk8010
 }
 
 static s32 fxm_randStripPoint32(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EAA48);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
     SVECTOR *p = D_801EB3BC[ex->btlfx_rand() % 32].unk0;
 
     p += ex->btlfx_rand() % 17;
@@ -797,7 +797,7 @@ s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, 
         init->poolCount = 0x20;
     } else if (mode == 1) {
         i = init->workSize;
-        D_801EAA48 = env;
+        fx_19f_env = env;
         work->unk0 = D_801EC9B8[0];
         np = D_801EC9B8[0];
         for (n = 0; n < 64; n++) {

@@ -12,3 +12,4 @@ fxm_startMotion3IfActive = 0x801E83D4; // type:func [code] fxm_startUnitMotion(u
 fxm_turnUnitBy = 0x801E7EC4; // type:func [code] adds delta / n to the unit rotation each frame, returns 1 on frame n - 1
 fxm_turnUnitToward = 0x801E8040; // type:func [code] on frame 0 aims unit at target (optionally relative and turned back), then turns by 1/n of it per frame
 fx_0c2_op81ParticleMotion = 0x801E7804; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_0c2_op81
+fx_0c2_env = 0x801E847C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS

@@ -8,7 +8,7 @@ s32 fx_131_op80(s32 mode, Fx131Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        D_801E78EC = env;
+        fx_131_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->unk8);
         work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
         if (work->unk18 != NULL) {

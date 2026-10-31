@@ -46,7 +46,7 @@ extern Fx12bShard D_801E97BC[];
 extern Fx12bShard D_801E9894[];
 extern Fx12bShard D_801E996C[];
 extern Fx12bShard D_801E9A20[];
-extern Unk800F78A4 *D_801E9B34;
+extern Unk800F78A4 *fx_12b_env;
 extern s32 D_801EC9D4[];
 extern s32 D_801EE0E4[];
 extern SVECTOR D_801EF854;

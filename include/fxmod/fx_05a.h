@@ -17,8 +17,8 @@ typedef struct {
     u16 unk44; /* model */
 } Fx05aWork; /* 0x48 */
 
-extern Unk800F78A4 *D_801E7B10;
-extern BtlModel D_801E7B20[];
+extern Unk800F78A4 *fx_05a_env;
+extern BtlModel fx_05a_effModels[];
 extern s32 D_801E7BF0[];
 
 #endif

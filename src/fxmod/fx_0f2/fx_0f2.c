@@ -8,8 +8,8 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x5C;
     } else if (mode == 1) {
-        D_801E7B80 = env;
-        ex->btlfx_initEffModels(D_801E7B90, 1);
+        fx_0f2_env = env;
+        ex->btlfx_initEffModels(fx_0f2_effModels, 1);
         work->unk38.vx = env->targets->centerX;
         work->unk38.vy = env->targets->centerY;
         work->unk38.vz = env->targets->centerZ;
@@ -87,7 +87,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E7B80)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_0f2_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

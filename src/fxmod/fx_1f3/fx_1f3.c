@@ -1,7 +1,7 @@
 #include "fxmod/fx_1f3.h"
 
 static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
-    Unk800F78A4 *env = D_801E8DB0;
+    Unk800F78A4 *env = fx_1f3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 c = ex->btlfx_lerpRatio(from, to, t, n);
 
@@ -9,7 +9,7 @@ static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8DB0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1f3_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -59,8 +59,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk40[4] = NULL;
         work->unk40[5] = NULL;
         work->unk40[6] = NULL;
-        D_801E8DB0 = env;
-        ex->btlfx_initEffModels(D_801E8DC0, 0x20);
+        fx_1f3_env = env;
+        ex->btlfx_initEffModels(fx_1f3_effModels, 0x20);
         for (i = 15, q = &work->unk0[15]; i >= 0; i--, q--) {
             *q = 0;
         }

@@ -2,7 +2,7 @@
 
 static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
-    Unk800F78A4 *env = D_801E9E38;
+    Unk800F78A4 *env = fx_0e1_0_env;
     RECT rect;
     VECTOR sv;
     SVECTOR zero;
@@ -133,7 +133,7 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
 
 void func_801E7CB4(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
                    Fx0e10Seg *buf, s32 abr, s32 phase) {
-    Unk800F78A4 *env = D_801E9E38;
+    Unk800F78A4 *env = fx_0e1_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR c;
     s32 otz;
@@ -213,7 +213,7 @@ void func_801E7CB4(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s3
 
 void func_801E80A8(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32 dy, s32 abr, s32 sy, s32 tpage, s32 clut, s32 u,
                    s32 v, s32 w, s32 h, s32 c, s32 amp, s32 ph, s32 dphx, s32 dphy) {
-    Unk800F78A4 *env = D_801E9E38;
+    Unk800F78A4 *env = fx_0e1_0_env;
     BtlfxExports *ex;
     POLY_FT4 *ft4;
     POLY_GT4 *gt4;
@@ -312,7 +312,7 @@ void func_801E80A8(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32 dy, s32 abr
 }
 
 static s32 fx_0e1_0_op80SpawnPoint(SVECTOR *out) {
-    Unk800F78A4 *env = D_801E9E38;
+    Unk800F78A4 *env = fx_0e1_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;
 
@@ -368,8 +368,8 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E9E38 = env;
-        ex->btlfx_initEffModels(D_801EA388, 5);
+        fx_0e1_0_env = env;
+        ex->btlfx_initEffModels(fx_0e1_0_effModels, 5);
         work->unk50 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x82), 0);
         work->unk54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x81), 0);
         work->unk58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x80), 0);

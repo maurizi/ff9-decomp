@@ -8,8 +8,8 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x58;
     } else if (mode == 1) {
-        D_801E7FA8 = env;
-        ex->btlfx_initEffModels(D_801E7FB8, 3);
+        fx_052_env = env;
+        ex->btlfx_initEffModels(fx_052_effModels, 3);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk40);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk48);
         work->unkC.vz = -0x200;
@@ -89,7 +89,7 @@ s32 fx_052_op81(s32 mode, Fx052Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x14;
     } else if (mode == 1) {
-        D_801E7FA8 = env;
+        fx_052_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unkC);
         if (work->unk0 != NULL) {
@@ -123,7 +123,7 @@ s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 4;
     } else if (mode == 1) {
-        D_801E7FA8 = env;
+        fx_052_env = env;
         work->unk2 = -1;
         work->unk0 = -1;
     } else {
@@ -151,7 +151,7 @@ s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E7FA8)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_052_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -161,7 +161,7 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801E7FA8)->btlfx_drawScreenTint((u32 *)(D_801E7FA8->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_052_env)->btlfx_drawScreenTint((u32 *)(fx_052_env->ot + ot), arg4, c, c, c);
 }
 
 INCLUDE_RODATA("asm/us/fx_052/nonmatchings/fx_052", fx_052_headerPtr);

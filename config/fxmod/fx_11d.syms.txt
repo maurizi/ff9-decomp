@@ -3,3 +3,4 @@ fx_11d_header = 0x801E7D54; // [code] module header (0, init, ops), btlfx_update
 fx_11d_op80 = 0x801E78B8; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_11d_op80ParticleMotion0 = 0x801E7704; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_11d_op80
 fx_11d_op80ParticleMotion1 = 0x801E7754; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_11d_op80
+fx_11d_env = 0x801E7D9C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS

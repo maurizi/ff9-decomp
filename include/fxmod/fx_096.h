@@ -30,8 +30,8 @@ typedef struct {
     s16 vx, vy, vz;
 } Fx096Vec3;
 
-extern Unk800F78A4 *D_801E831C;
-extern BtlModel D_801E832C[];
+extern Unk800F78A4 *fx_096_env;
+extern BtlModel fx_096_effModels[];
 extern u16 D_801E84BC[0xA28]; /* model A vertices */
 extern u16 D_801E990C[0xA28]; /* their rest positions */
 extern Fx096Vec3 D_801EAD5C[]; /* polygon centers */

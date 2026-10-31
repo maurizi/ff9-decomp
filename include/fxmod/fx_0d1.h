@@ -14,6 +14,6 @@ typedef struct {
     SVECTOR unk1C; /* caster body position */
 } Fx0d1Work;
 
-extern Unk800F78A4 *D_801E7990;
+extern Unk800F78A4 *fx_0d1_env;
 
 #endif

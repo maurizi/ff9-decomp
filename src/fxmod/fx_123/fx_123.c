@@ -74,7 +74,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x8C;
     } else if (mode == 1) {
-        D_801E90CC = env;
+        fx_123_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk4C);
         work->unk54.vx = work->unk4C.vx;
         work->unk54.vy = work->unk4C.vy;
@@ -169,8 +169,8 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x188;
     } else if (mode == 1) {
-        D_801E90CC = env;
-        ex->btlfx_initEffModels(D_801E90DC, 7);
+        fx_123_env = env;
+        ex->btlfx_initEffModels(fx_123_effModels, 7);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk64);
         for (n = 0; n < 6; n++) {
             fxm_rotPosPathInit((Fx123Path *)&D_801E965C[n], (u16 *)ex->btlfx_getFileData(entry->file, D_801E9054[n]));
@@ -329,7 +329,7 @@ s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk14.vx = env->targets->centerX;
         work->unk14.vy = env->targets->centerY;
-        D_801E90CC = env;
+        fx_123_env = env;
         work->unk14.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
@@ -356,7 +356,7 @@ s32 fx_123_op83(s32 mode, Fx123Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 4;
     } else if (mode == 1) {
-        D_801E90CC = env;
+        fx_123_env = env;
         work->unk2 = -1;
         work->unk0 = -1;
     } else {
@@ -384,7 +384,7 @@ s32 fx_123_op83(s32 mode, Fx123Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801E90CC)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_123_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -423,5 +423,5 @@ static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801E90CC)->btlfx_drawScreenTint((u32 *)(D_801E90CC->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_123_env)->btlfx_drawScreenTint((u32 *)(fx_123_env->ot + ot), arg4, c, c, c);
 }

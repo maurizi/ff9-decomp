@@ -14,7 +14,7 @@ typedef struct {
     s32 unk28[2];
 } Fx125Work;
 
-extern Unk800F78A4 *D_801E7D78;
-extern BtlModel D_801E7D88[];
+extern Unk800F78A4 *fx_125_env;
+extern BtlModel fx_125_effModels[];
 
 #endif

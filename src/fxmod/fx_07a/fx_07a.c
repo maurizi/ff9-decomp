@@ -1,7 +1,7 @@
 #include "fxmod/fx_07a.h"
 
 static s32 fxm_easeLerpSvec(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E94F4);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_07a_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -20,7 +20,7 @@ static s32 fxm_easeLerpSvec(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to,
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E94F4);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_07a_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -62,8 +62,8 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x108;
     } else if (mode == 1) {
-        D_801E94F4 = env;
-        ex->btlfx_initEffModels(D_801E9934, 3);
+        fx_07a_env = env;
+        ex->btlfx_initEffModels(fx_07a_effModels, 3);
         for (i = 15; i >= 0; i--) {
             work->unk0[i] = 0;
         }
@@ -304,7 +304,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 void func_801E8A88(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
-    Unk800F78A4 *env = D_801E94F4;
+    Unk800F78A4 *env = fx_07a_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     u8 uv[4][8];
     SVECTOR p[4];

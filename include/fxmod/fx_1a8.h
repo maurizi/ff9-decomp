@@ -4,7 +4,7 @@
 /* Effect module fx_1a8 (dir 13 file 0x1a8). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801E97CC;
+extern Unk800F78A4 *fx_1a8_env;
 extern s32 D_801E97D4[2]; /* models */
 
 static void fx_1a8_op80ElemDraw0(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 arg5, s32 arg6, s32 t, s32 n);
@@ -39,7 +39,7 @@ typedef struct {
 
 extern SVECTOR D_801E937C;
 extern u32 D_801E93CC[];
-extern BtlModel D_801E97DC[];
+extern BtlModel fx_1a8_effModels[];
 extern u8 D_801EA13C[];
 
 #endif

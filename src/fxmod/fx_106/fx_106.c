@@ -1,7 +1,7 @@
 #include "fxmod/fx_106.h"
 
 static s32 fx_106_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7C10);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_106_env);
     s32 t = (frame - 4) << 8;
 
     ex->btlfx_lerpVec((s16 *)&D_801E9400, (s16 *)&D_801E9408, t, (s16 *)pos);
@@ -21,7 +21,7 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        D_801E7C10 = env;
+        fx_106_env = env;
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         D_801E9408.vx = work->unk10.vx;
@@ -61,7 +61,7 @@ s32 fx_106_op81(s32 mode, Fx106Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        D_801E7C10 = env;
+        fx_106_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unkC);
         work->unk14.vx = work->unkC.vx;
         work->unk14.vy = work->unkC.vy;

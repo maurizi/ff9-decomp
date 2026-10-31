@@ -11,3 +11,4 @@ fx_1a0_op81ParticleMotion2 = 0x801E778C; // type:func [code] particle motion cal
 fx_1a0_op81ParticleMotion3 = 0x801E77D0; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1a0_op81 through D_801E7F28
 fx_1a0_op81ParticleMotion4 = 0x801E7814; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1a0_op81 through D_801E7F28
 fx_1a0_op81ParticleMotion5 = 0x801E7858; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1a0_op81 through D_801E7F28
+fx_1a0_env = 0x801E7F88; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS

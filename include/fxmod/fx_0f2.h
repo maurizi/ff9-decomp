@@ -21,8 +21,8 @@ typedef struct {
     u16 unk58; /* model */
 } Fx0f2Work;
 
-extern Unk800F78A4 *D_801E7B80;
-extern BtlModel D_801E7B90[];
+extern Unk800F78A4 *fx_0f2_env;
+extern BtlModel fx_0f2_effModels[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

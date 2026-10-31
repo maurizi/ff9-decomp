@@ -60,8 +60,8 @@ typedef struct {
 } Fx17d5Summon;
 
 extern SVECTOR D_801EE4DC; /* aim point */
-extern Unk800F78A4 *D_801EE52C;
-extern BtlModel D_801EE53C[];
+extern Unk800F78A4 *fx_17d_5_env;
+extern BtlModel fx_17d_5_effModels[];
 extern u8 D_801EE860[][0xCC]; /* spark trails */
 
 static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,

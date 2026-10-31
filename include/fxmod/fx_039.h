@@ -20,7 +20,7 @@ typedef struct {
     s32 unk20; /* projectile index (0..2) */
 } Fx039Work81; /* 0x24 */
 
-extern Unk800F78A4 *D_801E7BA0;
+extern Unk800F78A4 *fx_039_env;
 extern s32 D_801E7BB0[][0x318];
 extern SVECTOR D_801EA0D0[];
 

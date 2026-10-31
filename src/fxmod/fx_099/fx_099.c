@@ -15,11 +15,11 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E7C28 = env;
+        fx_099_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
         work->unk8.vy = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
-        ex->btlfx_initEffModels(D_801E7C38, 1);
+        ex->btlfx_initEffModels(fx_099_effModels, 1);
         work->unk1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 0);
         r = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (r < 0x800) {

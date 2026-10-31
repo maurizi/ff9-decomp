@@ -14,7 +14,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk4 = *arg4;
         work->unk0 = 0;
-        D_801E7CA0 = env;
+        fx_0f3_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         work->unk24 = NULL;
     } else {

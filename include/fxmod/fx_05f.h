@@ -30,8 +30,8 @@ typedef struct {
     u16 unk2;
 } Fx05fPair;
 
-extern BtlModel D_801E8330[];
+extern BtlModel fx_05f_effModels[];
 extern Fx05fPair D_801E8278[];
-extern Unk800F78A4 *D_801E8320;
+extern Unk800F78A4 *fx_05f_env;
 
 #endif

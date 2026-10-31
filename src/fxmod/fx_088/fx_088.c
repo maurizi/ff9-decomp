@@ -7,7 +7,7 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x20;
     } else if (mode == 1) {
-        D_801E7DA0 = env;
+        fx_088_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk10);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk10);
@@ -48,7 +48,7 @@ s32 fx_088_op81(s32 mode, Fx088Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk8.vx = env->targets->centerX;
         work->unk8.vy = env->targets->centerY;
-        D_801E7DA0 = env;
+        fx_088_env = env;
         work->unk8.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
@@ -58,7 +58,7 @@ s32 fx_088_op81(s32 mode, Fx088Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DA0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_088_env);
     SVECTOR rot;
     SVECTOR pos;
 
@@ -75,7 +75,7 @@ static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *de
 }
 
 static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DA0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_088_env);
     SVECTOR from;
     SVECTOR rot;
     SVECTOR to;

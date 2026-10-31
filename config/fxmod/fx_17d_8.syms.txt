@@ -2,3 +2,5 @@ fx_17d_8_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module,
 fx_17d_8_header = 0x801E89FC; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_17d_8_op80 = 0x801E7894; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_17d_8_op80PoolTask = 0x801E7718; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_17d_8_op80
+fx_17d_8_env = 0x801E8A44; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_17d_8_effModels = 0x801E8A54; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

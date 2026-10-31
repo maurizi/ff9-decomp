@@ -4,7 +4,7 @@
 /* Effect module fx_0d3 (dir 13 file 0xD3). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801ED534;
+extern Unk800F78A4 *fx_0d3_env;
 extern s32 D_801EB084[5];
 extern s32 D_801EB098;
 extern u16 D_801EB0C4[3]; /* file ids for op87 tracks, end frame */
@@ -73,7 +73,7 @@ typedef struct {
 extern SVECTOR D_801EB048;
 extern s32 D_801EB050;
 extern u8 D_801EB114[];
-extern BtlModel D_801ED544[];
+extern BtlModel fx_0d3_effModels[];
 s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 typedef struct {

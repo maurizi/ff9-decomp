@@ -18,7 +18,7 @@ typedef struct {
 extern s32 D_801E9D84[];
 extern s32 D_801E9DB8;
 extern s32 D_801E9DBC;
-extern Unk800F78A4 *D_801E9E38;
+extern Unk800F78A4 *fx_0e1_0_env;
 
 void func_801E7CB4(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
                    Fx0e10Seg *buf, s32 abr, s32 phase);
@@ -78,7 +78,7 @@ extern SVECTOR D_801E9D7C;
 extern Fx0e10BonePair D_801E9D98[4];
 extern u8 D_801E9DC0[];
 extern Fx0e10Seg D_801E9E48[4][21];
-extern BtlModel D_801EA388[];
+extern BtlModel fx_0e1_0_effModels[];
 extern u8 D_801EA778[];
 extern u8 D_801EAE08[];
 

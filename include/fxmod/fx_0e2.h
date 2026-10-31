@@ -25,7 +25,7 @@ typedef struct {
     s16 unk12; /* angle around it */
 } Fx0e2Orbit;
 
-extern Unk800F78A4 *D_801ECC0C;
+extern Unk800F78A4 *fx_0e2_env;
 extern Fx0e2Orbit D_801EE8FC[];
 extern u8 D_801EFDEC[][0x240]; /* per-unit texture animation */
 
@@ -189,7 +189,7 @@ extern u16 D_801ECB8C[5];
 extern u16 D_801ECB98[5];
 extern BtlTexInfo D_801ECBA4[];
 extern s16 D_801ECBB4[];
-extern BtlModel D_801ECC1C[];
+extern BtlModel fx_0e2_effModels[];
 extern Fx0e2Ribbon80 D_801EE51C;
 extern Fx0e2Path D_801EE524;
 extern s16 D_801EE52E;

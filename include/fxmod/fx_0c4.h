@@ -10,6 +10,6 @@ typedef struct {
     SVECTOR unk8; /* position: env->targets->centerX..Z */
 } Fx0c4Work;
 
-extern Unk800F78A4 *D_801E785C;
+extern Unk800F78A4 *fx_0c4_env;
 
 #endif

@@ -13,7 +13,7 @@ s32 fx_1a6_op80ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3
 }
 
 s32 func_801E77C4(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8298);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1a6_env);
     s32 t = frame << 9;
 
     if (t > 0x1000) {
@@ -37,7 +37,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x4C;
     } else if (mode == 1) {
         s32 n = *arg4;
-        D_801E8298 = env;
+        fx_1a6_env = env;
         work->unk48 = n;
         if (n >= 3) {
             return 1;
@@ -150,7 +150,7 @@ s32 fx_1a6_op81(s32 mode, Fx1a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        D_801E8298 = env;
+        fx_1a6_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
     } else {
@@ -160,14 +160,14 @@ s32 fx_1a6_op81(s32 mode, Fx1a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 static void fxm_startUnitMotion(s32 unit, s32 motion) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8298);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1a6_env);
 
     ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
     ex->btlfx_setMotionFrame(unit, 0);
 }
 
 static s32 fxm_isMotionDone(s32 unit) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8298);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1a6_env);
 
     s32 r;
 
@@ -180,13 +180,13 @@ static s32 fxm_isMotionDone(s32 unit) {
 }
 
 static void fxm_startMotion2IfActive(s32 unit) {
-    if (BTLFX_EXPORTS(D_801E8298)->btlfx_isUnitActive(unit)) {
+    if (BTLFX_EXPORTS(fx_1a6_env)->btlfx_isUnitActive(unit)) {
         fxm_startUnitMotion(unit, 2);
     }
 }
 
 static void fxm_startMotion3IfActive(s32 unit) {
-    if (BTLFX_EXPORTS(D_801E8298)->btlfx_isUnitActive(unit)) {
+    if (BTLFX_EXPORTS(fx_1a6_env)->btlfx_isUnitActive(unit)) {
         fxm_startUnitMotion(unit, 3);
     }
 }

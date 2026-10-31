@@ -27,7 +27,7 @@ typedef struct {
     s32 (*unk8)(VECTOR *, s32, SVECTOR *, s32, s32, s32);
 } Fx0e9EffHdr;
 
-extern Unk800F78A4 *D_801E7CFC;
+extern Unk800F78A4 *fx_0e9_env;
 extern Fx0e9Orbit D_801E7D0C;
 extern SVECTOR D_801E7D1C;
 extern SVECTOR D_801E7D24;

@@ -9,7 +9,7 @@ s32 fx_029_op80(s32 mode, Fx029Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x10;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E7828 = env;
+        fx_029_env = env;
         ((s32 *)&work->unk8)[0] = ((s32 *)&env->targets->centerX)[0];
         t = ((s32 *)&env->targets->centerX)[1];
         work->unk8.vy -= 0xFA;

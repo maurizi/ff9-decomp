@@ -50,8 +50,8 @@ extern Fx005Branch D_801E9280[];
 extern s32 D_801E95F0[];
 extern u16 D_801E8BC8[];
 extern u16 D_801E8BD0[];
-extern Unk800F78A4 *D_801E8C40;
-extern Unk80100C78Entry *D_801E95E0;
+extern Unk800F78A4 *fx_005_env;
+extern Unk80100C78Entry *fx_005_task;
 
 static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx005Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
                    s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind);

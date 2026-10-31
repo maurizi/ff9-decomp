@@ -17,7 +17,7 @@ s32 fx_0ea_op81ParticleMotion3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3
 }
 
 s32 func_801E77D4(Pool30Entry *pt, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7E54);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0ea_env);
     s32 t = (frame << 12) / 18;
 
     ex->btlfx_lerpVec((s16 *)&D_801E7E5C, (s16 *)to, t, (s16 *)pos);
@@ -39,7 +39,7 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        D_801E7E54 = env;
+        fx_0ea_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk8);
         work->unk10.vx = work->unk8.vx;
         work->unk10.vy = work->unk8.vy;
@@ -85,7 +85,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         n = *arg4;
         work->unk20 = n;
-        D_801E7E54 = env;
+        fx_0ea_env = env;
         if (n >= env->targets->targetCount || ex->btl_getUnit(0x10) == ex->btl_getUnit(work->unk20)) {
             fxm_setSignal(env, 7, 1);
             return 1;

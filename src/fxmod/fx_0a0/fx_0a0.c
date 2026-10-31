@@ -2,7 +2,7 @@
 
 /* Draws a gouraud line from a to b, colors c0/c1 faded towards black by p (0x1000 = full; < 0 = full). */
 void func_801E7704(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s32 p, s32 abr) {
-    Unk800F78A4 *env = D_801E7D98;
+    Unk800F78A4 *env = fx_0a0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     LINE_G2 *prim;
     CVECTOR col0;
@@ -30,7 +30,7 @@ void func_801E7704(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s32 p, s32 
 }
 
 static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7D98);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0a0_env);
     SVECTOR *v;
 
     D_801E7D84.unk0 = D_801E7D84.unk2 = 1;
@@ -48,8 +48,8 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 ar
 }
 
 static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7D98);
-    Unk80100C78Entry *entry = D_801E886C;
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0a0_env);
+    Unk80100C78Entry *entry = fx_0a0_task;
     CVECTOR c0;
     CVECTOR c1;
     s32 r;
@@ -77,10 +77,10 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x24;
     } else if (mode == 1) {
-        D_801E7D98 = env;
+        fx_0a0_env = env;
         work->unk0 = 0;
         D_801E8870 = 0x1000;
-        D_801E886C = entry;
+        fx_0a0_task = entry;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk4);
         BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
         BTLFX_COPY_SVEC(&work->unkC, &work->unk4);

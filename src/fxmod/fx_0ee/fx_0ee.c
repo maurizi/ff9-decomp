@@ -8,7 +8,7 @@ s32 fx_0ee_op80(s32 mode, Fx0eeWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        D_801E792C = env;
+        fx_0ee_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk8);
         work->unk0.vx += ex->math_sin(work->unk8.vy) >> 4;

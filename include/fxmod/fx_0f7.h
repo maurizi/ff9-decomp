@@ -25,6 +25,6 @@ typedef struct {
 } Fx0f7Spark;
 
 extern Fx0f7Spark D_801E7AE0[4];
-extern Unk800F78A4 *D_801E7BA8;
+extern Unk800F78A4 *fx_0f7_env;
 
 #endif

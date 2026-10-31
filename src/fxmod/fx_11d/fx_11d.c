@@ -15,7 +15,7 @@ static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 a
 }
 
 s32 func_801E77A4(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s32 frame, s32 n) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7D9C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_11d_env);
     SVECTOR a;
     SVECTOR b;
     SVECTOR c;
@@ -43,7 +43,7 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x34;
     } else if (mode == 1) {
-        D_801E7D9C = env;
+        fx_11d_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk1C);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk1C);
         if (work->unk0 != NULL) {

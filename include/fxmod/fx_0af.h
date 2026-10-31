@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk18; /* angles from unk8 to unk10 */
 } Fx0afWork;
 
-extern Unk800F78A4 *D_801E798C;
+extern Unk800F78A4 *fx_0af_env;
 extern s32 D_801E799C[];
 extern s32 D_801E828C[];
 

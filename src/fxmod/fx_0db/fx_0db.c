@@ -184,8 +184,8 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)arg4)->elemFn = (s32)fx_0db_op80PoolTask;
         ((EffInit *)arg4)->poolCount = 0xA;
     } else if (mode == 1) {
-        D_801E894C = env;
-        ex->btlfx_initEffModels(D_801E895C, 6);
+        fx_0db_env = env;
+        ex->btlfx_initEffModels(fx_0db_effModels, 6);
         work->unk4 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13), 0x9A, 0x3DC0, 0x80, 0);
         work->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x15), 0x9A, 0x3DC0, 0x80, 0);
         work->unkC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x16), 0x9A, 0x3DC0, 0x80, 0);
@@ -297,7 +297,7 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        D_801E894C = env;
+        fx_0db_env = env;
         work->unk0 = 0;
         work->unk4 = 0;
     } else {

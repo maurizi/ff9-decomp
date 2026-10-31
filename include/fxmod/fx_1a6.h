@@ -26,7 +26,7 @@ typedef struct {
 
 extern u16 D_801E823C[3]; /* files */
 extern s32 (*D_801E8244[3])();
-extern Unk800F78A4 *D_801E8298;
+extern Unk800F78A4 *fx_1a6_env;
 extern s32 D_801E82A8[3][0x5A];
 extern s32 D_801E86E8[3][0x1D0];
 extern s32 D_801E9CA8[3][0x560];

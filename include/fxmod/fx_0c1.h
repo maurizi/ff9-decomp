@@ -19,7 +19,7 @@ typedef struct {
     SVECTOR unk48; /* angles from unk38 to unk20 */
 } Fx0c1Work;
 
-extern Unk800F78A4 *D_801E7C18;
+extern Unk800F78A4 *fx_0c1_env;
 extern SVECTOR D_801E7C20; /* particle path start */
 extern SVECTOR D_801E7C28; /* particle path end */
 extern SVECTOR D_801E7C30;

@@ -14,7 +14,7 @@ typedef struct {
     SVECTOR unk28; /* lerp output */
 } Fx0a5Work;
 
-extern Unk800F78A4 *D_801E7A2C;
+extern Unk800F78A4 *fx_0a5_env;
 extern s32 D_801E7A3C[];
 
 #endif

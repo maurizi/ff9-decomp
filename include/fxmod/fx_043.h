@@ -20,7 +20,7 @@ typedef struct {
     SVECTOR unk20; /* angles from unk8 to D_801E7BD0 */
 } Fx043Work81; /* 0x28 */
 
-extern Unk800F78A4 *D_801E7BC8;
+extern Unk800F78A4 *fx_043_env;
 extern SVECTOR D_801E7BD0; /* particle start */
 extern SVECTOR D_801E7BD8; /* particle end */
 extern SVECTOR D_801E7BE0;

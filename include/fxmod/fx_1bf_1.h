@@ -80,7 +80,7 @@ static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx
                    s32 i, s32 type, s32 alpha, s32 pad);
 
 /* copied */
-extern Unk800F78A4 *D_801EF2D8;
+extern Unk800F78A4 *fx_1bf_1_env;
 extern s32 D_801EFDD8; /* radius */
 static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *trail, s32 n, s32 *noise, SVECTOR *from,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);
@@ -122,7 +122,7 @@ typedef struct {
     s32 unkA0;
 } Fx1bf1Work80; /* 0xA4 */
 
-extern BtlModel D_801EF2E8[];
+extern BtlModel fx_1bf_1_effModels[];
 extern SVECTOR D_801EF254;
 extern s16 D_801EF260[];
 static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot);

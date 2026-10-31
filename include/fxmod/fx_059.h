@@ -27,7 +27,7 @@ typedef struct {
 
 extern s16 D_801E7D38[];
 extern s16 D_801E7D50[];
-extern Unk800F78A4 *D_801E7DB0;
+extern Unk800F78A4 *fx_059_env;
 
 static s32 fx_059_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx059Work80 *work);

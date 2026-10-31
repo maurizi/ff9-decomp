@@ -13,7 +13,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     DVECTOR h;
     CVECTOR c0;
     CVECTOR c1;
-    Unk800F78A4 *env = D_801E9FB0;
+    Unk800F78A4 *env = fx_07d_env;
     u32 *move = NULL;
     s32 step;
     s32 cx;
@@ -160,9 +160,9 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
 }
 
 static void fx_07d_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 a3, s32 *a4, s32 *a5, s32 a6, s32 frame) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9FB0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_07d_env);
 
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(D_801EA534->file, 3), pos, (SVECTOR *)a3, *a4 / 2, frame, 1, *a5, 0,
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(fx_07d_task->file, 3), pos, (SVECTOR *)a3, *a4 / 2, frame, 1, *a5, 0,
                       0);
     BTLFX_COPY_SVEC(&D_801EA470[D_801EA530], pos);
     D_801EA530 = (D_801EA530 + 1) % 24;
@@ -177,7 +177,7 @@ static void fxm_twistVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
     t = ((0x6C - r) << 12) / 108;
     t = (t * D_801EA538) >> 12;
     r = (r * 9) >> 3;
-    ex = BTLFX_EXPORTS(D_801E9FB0);
+    ex = BTLFX_EXPORTS(fx_07d_env);
     a += 0x9B;
     a += t;
     x = (ex->math_cos(a) * r) >> 12;
@@ -187,7 +187,7 @@ static void fxm_twistVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
 }
 
 static void fxm_anglesFromEye(s16 *a, s16 *b) {
-    BTLFX_EXPORTS(D_801E9FB0)->btlfx_aimAngles((s16 *)&D_801E9FB0->camera->eye, a, b);
+    BTLFX_EXPORTS(fx_07d_env)->btlfx_aimAngles((s16 *)&fx_07d_env->camera->eye, a, b);
 }
 
 static s32 fx_07d_op80PoolTask(s32 mode, Fx07dOrb *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx07dWork80 *work) {
@@ -277,10 +277,10 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         init->elemFn = (s32)fx_07d_op80PoolTask;
         init->poolCount = 6;
     } else if (mode == 1) {
-        D_801E9FB0 = env;
+        fx_07d_env = env;
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801EA534 = entry;
+        fx_07d_task = entry;
         work->unk8 = ex->btlfx_addRadiusSixth(0, 0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         work->unk14 = work->unkC.vx;
@@ -348,7 +348,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0 = 1;
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0xFF, 0xFF);
-                ex->btlfx_initEffModels(D_801E9FC0, 6);
+                ex->btlfx_initEffModels(fx_07d_effModels, 6);
                 work->unk20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x139,
                                                          0xFFFF, 0, 0x80);
                 work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x16), 0x38,
@@ -605,7 +605,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 void func_801E9834(Unk80100C78Entry *entry, Fx07dStrip *buf, s32 *tab, SVECTOR *from, SVECTOR *to, s32 r0, s32 r1, s32 s,
                    s32 step, s32 a9, s32 a10, s32 pad) {
-    Unk800F78A4 *env = D_801E9FB0;
+    Unk800F78A4 *env = fx_07d_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     SVECTOR ang;
@@ -663,7 +663,7 @@ s32 fx_07d_op83(s32 mode, Fx07dWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)arg4)->elemFn = (s32)fx_07d_op83PoolTask;
         ((EffInit *)arg4)->poolCount = 7;
     } else if (mode == 1) {
-        D_801E9FB0 = env;
+        fx_07d_env = env;
         t = *arg4;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
         work->unk8 = D_801EA8B0[0];

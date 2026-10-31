@@ -41,8 +41,8 @@ typedef struct {
     VECTOR unk94; /* position */
 } Fx079Work; /* 0xA4 */
 
-extern Unk800F78A4 *D_801E86F4;
-extern BtlModel D_801E8704[];
+extern Unk800F78A4 *fx_079_env;
+extern BtlModel fx_079_effModels[];
 extern SVECTOR D_801E895C;
 extern SVECTOR D_801E8964;
 extern SVECTOR D_801E896C;

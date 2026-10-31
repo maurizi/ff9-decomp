@@ -10,8 +10,8 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x60;
     } else if (mode == 1) {
-        D_801E7D6C = env;
-        ex->btlfx_initEffModels(D_801E7D7C, 0xA);
+        fx_078_env = env;
+        ex->btlfx_initEffModels(fx_078_effModels, 0xA);
         work->unk10.vx = env->targets->centerX;
         work->unk10.vy = env->targets->centerY;
         work->unk10.vz = env->targets->centerZ;

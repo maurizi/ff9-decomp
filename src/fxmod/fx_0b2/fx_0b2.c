@@ -2,7 +2,7 @@
 
 void func_801E7704(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9, s32 arg10) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E90A0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0b2_env);
     SVECTOR pos;
     SVECTOR rot;
     SVECTOR *p;
@@ -33,7 +33,7 @@ void func_801E7704(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SV
 
 void func_801E78FC(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
                    s32 arg9, s32 arg10, s32 arg11, s32 arg12, s32 arg13, s32 arg14, s32 arg15) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E90A0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0b2_env);
     Fx0b2Rgbc c0;
     Fx0b2Rgbc c1;
     Fx0b2Rgbc c2;
@@ -62,13 +62,13 @@ void func_801E78FC(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32 arg
     s32 ju;
     s32 rv;
 
-    gte_SetRotMatrix(D_801E90A0->viewMatrix);
-    gte_SetTransMatrix(D_801E90A0->viewMatrix);
+    gte_SetRotMatrix(fx_0b2_env->viewMatrix);
+    gte_SetTransMatrix(fx_0b2_env->viewMatrix);
     gte_ldv0(arg0);
-    gt4 = (POLY_GT4 *)D_801E90A0->prim;
+    gt4 = (POLY_GT4 *)fx_0b2_env->prim;
     *(s32 *)&c2 = 0;
     ft4 = (POLY_FT4 *)((u8 *)gt4 + arg15 * 0x68);
-    D_801E90A0->prim = (u8 *)ft4 + arg15 * 0xC8;
+    fx_0b2_env->prim = (u8 *)ft4 + arg15 * 0xC8;
     c0.r = c0.g = c0.b = arg5;
     c1.r = c1.g = c1.b = arg5;
     c0.code = arg14 != 0xFF ? 0x2E : 0x2C;
@@ -196,7 +196,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == one) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E90A0 = env;
+        fx_0b2_env = env;
         ((s32 *)&work->unk8)[0] = ((s32 *)&env->targets->centerX)[0];
         ((s32 *)&work->unk8)[1] = ((s32 *)&env->targets->centerX)[1];
         work->unk18.vx = 0x400;

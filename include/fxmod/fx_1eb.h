@@ -58,8 +58,8 @@ typedef struct {
 
 extern u16 D_801E8210[3]; /* model files */
 extern u16 D_801E8218[3]; /* path files */
-extern Unk800F78A4 *D_801E8268;
-extern BtlModel D_801E8278[];
+extern Unk800F78A4 *fx_1eb_env;
+extern BtlModel fx_1eb_effModels[];
 extern Fx1ebKeyPath D_801E8728[3];
 extern Fx1ebPath D_801E8740;
 extern s32 D_801E8748[];
@@ -70,7 +70,7 @@ static void fxm_rotPosPathInit(Fx1ebKeyPath *path, u16 *data);
 static void fxm_valuePathInit(Fx1ebPath *path, u16 *data);
 
 /* copied */
-extern Unk800F78A4 *D_801E8268;
+extern Unk800F78A4 *fx_1eb_env;
 /* end copied */
 
 /* propagated */

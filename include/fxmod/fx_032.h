@@ -20,6 +20,6 @@ typedef struct {
     Pool6CEntry *unk54;
 } Fx032Work; /* 0x58 */
 
-extern Unk800F78A4 *D_801E7C60;
+extern Unk800F78A4 *fx_032_env;
 
 #endif

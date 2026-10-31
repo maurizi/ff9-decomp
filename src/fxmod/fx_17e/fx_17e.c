@@ -11,11 +11,11 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x54;
     } else if (mode == 1) {
-        D_801E7AA8 = env;
+        fx_17e_env = env;
         for (i = 3; i >= 0; i--) {
             work->unk40[i] = 0;
         }
-        ex->btlfx_initEffModels(D_801E7AB8, 1);
+        ex->btlfx_initEffModels(fx_17e_effModels, 1);
         work->unk28.vx = 0;
         work->unk28.vy = 0;
         work->unk28.vz = 0;

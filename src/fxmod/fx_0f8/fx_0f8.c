@@ -7,7 +7,7 @@ s32 fx_0f8_op80(s32 mode, Fx0f8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        D_801E7BD0 = env;
+        fx_0f8_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk4);
         work->unkC.vx = env->targets->centerX;
         work->unkC.vy = env->targets->centerY;
@@ -47,7 +47,7 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk28.vx = env->targets->centerX;
         work->unk28.vy = env->targets->centerY;
         work->unk28.vz = env->targets->centerZ;
-        D_801E7BD0 = env;
+        fx_0f8_env = env;
         for (t = D_801E7B78, i = 0; i < 4; i++, t++) {
             (work->unk30 + i)->vx = work->unk28.vx;
             (work->unk30 + i)->vy = work->unk28.vy;

@@ -18,7 +18,7 @@ void func_801E7704(Fx1b0Split *s, SVECTOR (*faces)[3]) {
 }
 
 static s32 fxm_splitModelAdd(s32 model) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EBF34);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b0_env);
     Fx1b0Split *s = D_801EBF3C;
     SVECTOR (*f)[3] = s->unk28;
     s32 n;
@@ -55,7 +55,7 @@ Fx1b0Piece *func_801E7830(void) {
 s32 func_801E7868(SVECTOR *center) {
     Fx1b0Split *s = D_801EBF3C;
     SVECTOR (*f)[3] = s->unk24;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EBF34);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b0_env);
     SVECTOR d;
     Fx1b0Piece *p;
     s32 j;
@@ -108,7 +108,7 @@ void func_801E7B04(void) {
     p = D_801EBF40;
     zero[0] = 0;
     zero[1] = 0;
-    ex = BTLFX_EXPORTS(D_801EBF34);
+    ex = BTLFX_EXPORTS(fx_1b0_env);
     scale.vx = scale.vy = 0x1000;
     scale.vz = 0xF00;
     rot.vz = 0;
@@ -173,7 +173,7 @@ void func_801E7B04(void) {
 
 static s32 fx_1b0_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 k = e->unk1F - 1;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EBF34);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1b0_env);
     Fx1b0Orbit *o = &D_801EC724[k];
     SVECTOR v;
 
@@ -220,7 +220,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x5C;
     } else if (mode == 1) {
-        D_801EBF34 = env;
+        fx_1b0_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&v);
         work->unk8[0] = v.vx;
         work->unk8[1] = v.vy;
@@ -238,7 +238,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk30.vy = 0;
         env->camera->points[3].vx = v.vx;
         env->camera->points[3].vy = v.vy;
-        D_801EBF38 = entry;
+        fx_1b0_task = entry;
         env->camera->points[3].vz = v.vz;
         work->unk0 = 0;
         work->unk4 = 0;
@@ -313,7 +313,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x3B) {
                 ex->btlfx_fadeUnitById(0x10, 0);
                 ex->btlfx_moveSummonToHeap(0x64);
-                ex->btlfx_initEffModels(D_801EBF44, 0xA);
+                ex->btlfx_initEffModels(fx_1b0_effModels, 0xA);
                 for (j = 0; j < 8; j++) {
                     work->unk3C[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8CEC[j]), 0);
                 }
@@ -441,7 +441,7 @@ s32 fx_1b0_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801EBF34 = env;
+        fx_1b0_env = env;
         ex->btlfx_clearUnitStatus(0x10);
     } else {
         return 1;

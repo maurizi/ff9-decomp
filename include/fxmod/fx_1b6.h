@@ -25,7 +25,7 @@ typedef struct {
     Fx1b6Piece unk44[0x708];
 } Fx1b6Split;
 
-extern Unk800F78A4 *D_801E85B4;
+extern Unk800F78A4 *fx_1b6_env;
 extern Fx1b6Split *D_801E9744;
 extern Fx1b6Piece *D_801E9748;
 extern s32 D_801E974C;
@@ -61,15 +61,15 @@ typedef struct {
 } Fx1b6Work80; /* 0x64 */
 
 extern s16 D_801E855C[7]; /* model files */
-extern Unk80100C78Entry *D_801E85B8;
+extern Unk80100C78Entry *fx_1b6_task;
 extern s32 D_801E85C4[];
-extern BtlModel D_801E9754[];
+extern BtlModel fx_1b6_effModels[];
 
 #define FX1B6_SPAD_STACK(save) __asm__ volatile("sw $29, 0(%0)\n\tmove $29, %1" : : "r"(save), "r"(0x1F8003F8) : "memory")
 #define FX1B6_RESET_STACK(save) __asm__ volatile("lw $29, 0(%0)" : : "r"(save) : "memory")
 
 /* copied */
-extern Unk800F78A4 *D_801E85B4;
+extern Unk800F78A4 *fx_1b6_env;
 /* end copied */
 
 #endif

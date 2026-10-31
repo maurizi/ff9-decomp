@@ -11,8 +11,8 @@ s32 fx_10f_op80(s32 mode, Fx10fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x8C;
     } else if (mode == 1) {
-        D_801E7BAC = env;
-        ex->btlfx_initEffModels(D_801E7BBC, 2);
+        fx_10f_env = env;
+        ex->btlfx_initEffModels(fx_10f_effModels, 2);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk10);
@@ -78,7 +78,7 @@ s32 fx_10f_op81(s32 mode, Fx10fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        D_801E7BAC = env;
+        fx_10f_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
         if (work->unk0 != NULL) {

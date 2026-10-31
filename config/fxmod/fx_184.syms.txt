@@ -6,3 +6,5 @@ fx_184_op82 = 0x801E79F4; // type:func [code] header op entry 2, effect script o
 fxm_lerpSvec = 0x801E7CE0; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
 fxm_lerpRatio = 0x801E7D24; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
 fxm_moveUnitArc = 0x801E7BC4; // type:func [code] moves the unit from its frame-0 position to dst over n frames, lifted by a sine arc of the given height
+fx_184_env = 0x801E7DC4; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_184_effModels = 0x801E7DD4; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

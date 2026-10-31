@@ -26,6 +26,6 @@ typedef struct {
 } Fx0f8Spawn;
 
 extern Fx0f8Spawn D_801E7B78[4];
-extern Unk800F78A4 *D_801E7BD0;
+extern Unk800F78A4 *fx_0f8_env;
 
 #endif

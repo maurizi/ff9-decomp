@@ -18,6 +18,6 @@ typedef struct {
     SVECTOR unk40; /* angles from env->camera->unk54 to unk28 */
 } Fx092Work;
 
-extern Unk800F78A4 *D_801E7A1C;
+extern Unk800F78A4 *fx_092_env;
 
 #endif

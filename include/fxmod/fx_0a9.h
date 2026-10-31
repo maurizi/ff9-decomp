@@ -32,7 +32,7 @@ typedef struct {
     SVECTOR unk8; /* btlfx_getUnitArgBonePos(0x10, 0) */
 } Fx0a9Work83;
 
-extern Unk800F78A4 *D_801E7F58;
+extern Unk800F78A4 *fx_0a9_env;
 extern Fx0a9Bolt D_801E7F68[16];
 extern s32 D_801E8528; /* next bolt */
 

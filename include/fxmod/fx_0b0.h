@@ -19,7 +19,7 @@ typedef struct {
 } Fx0b0Work;
 
 extern u16 D_801E7C8C[2]; /* bones */
-extern Unk800F78A4 *D_801E7CD8;
+extern Unk800F78A4 *fx_0b0_env;
 extern s32 D_801E7CE8[];
 extern s32 D_801E88A8[];
 extern s32 D_801E9468[];

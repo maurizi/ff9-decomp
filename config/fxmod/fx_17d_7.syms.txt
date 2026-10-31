@@ -7,3 +7,5 @@ fxm_drawArcTrail = 0x801EE6E4; // type:func [code] fills a trail strip from to (
 fxm_drawJaggedTrailBranch = 0x801EE990; // type:func [code] fxm_drawJaggedTrail branching off point i of a strip with a random width
 fx_17d_7_op80PoolTask = 0x801EC7C8; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_17d_7_op80
 fx_17d_7_op83PoolTask = 0x801EEAA8; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_17d_7_op83
+fx_17d_7_env = 0x801EF2DC; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_17d_7_effModels = 0x801EF2EC; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

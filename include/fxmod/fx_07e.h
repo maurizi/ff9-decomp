@@ -22,8 +22,8 @@ typedef struct {
     s32 unk8; /* index */
 } Fx07ePart; /* 0xC */
 
-extern Unk800F78A4 *D_801E8AB8;
-extern BtlModel D_801E8AC8[];
+extern Unk800F78A4 *fx_07e_env;
+extern BtlModel fx_07e_effModels[];
 extern s32 D_801E8B90;
 
 static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,

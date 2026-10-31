@@ -17,7 +17,7 @@ typedef struct {
     SVECTOR unk20; /* start position */
 } Fx0cfWork81;
 
-extern Unk800F78A4 *D_801E7EC8;
+extern Unk800F78A4 *fx_0cf_env;
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

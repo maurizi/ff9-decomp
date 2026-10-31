@@ -44,7 +44,7 @@ typedef struct {
 
 extern u16 D_801E8528[];
 extern u16 D_801E8530[];
-extern Unk800F78A4 *D_801E8580;
+extern Unk800F78A4 *fx_003_env;
 extern Fx003Strip D_801E8590[];
 extern Fx003Branch D_801E8BC0[];
 extern s32 D_801E8F20[];

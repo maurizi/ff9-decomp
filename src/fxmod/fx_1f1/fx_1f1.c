@@ -1,7 +1,7 @@
 #include "fxmod/fx_1f1.h"
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7F04);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1f1_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -35,9 +35,9 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
     if (mode == 0) {
         *arg4 = 0x40;
     } else if (mode == 1) {
-        D_801E7F04 = env;
+        fx_1f1_env = env;
         ex->btlfx_clearUnitStatus(0x10);
-        ex->btlfx_initEffModels(D_801E8214, 8);
+        ex->btlfx_initEffModels(fx_1f1_effModels, 8);
         for (i = 15; i >= 0; i--) {
             work[i] = 0;
         }

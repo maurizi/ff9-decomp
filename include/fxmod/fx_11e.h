@@ -26,8 +26,8 @@ typedef struct {
     u16 unk5E;
 } Fx11eWork; /* 0x60 */
 extern s32 D_801E7F84; /* models registered */
-extern Unk800F78A4 *D_801E7FD0;
-extern BtlModel D_801E7FE0[];
+extern Unk800F78A4 *fx_11e_env;
+extern BtlModel fx_11e_effModels[];
 s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 #endif

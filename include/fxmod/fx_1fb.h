@@ -4,7 +4,7 @@
 /* Effect module fx_1fb (dir 13 file 0x1fb). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801E7B74;
+extern Unk800F78A4 *fx_1fb_env;
 extern SVECTOR D_801E7B7C;
 extern s32 D_801E7B84[2]; /* fade-out / fade-in countdowns */
 extern SVECTOR D_801E7B94[4]; /* unit body positions */

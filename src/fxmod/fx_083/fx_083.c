@@ -15,8 +15,8 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = sizeof(Fx083Work);
     } else if (mode == 1) {
-        D_801E83B0 = env;
-        ex->btlfx_initEffModels(D_801E83C0, 0x14);
+        fx_083_env = env;
+        ex->btlfx_initEffModels(fx_083_effModels, 0x14);
         for (i = 9; i >= 0; i--) {
             work->unk0[i] = 0;
         }

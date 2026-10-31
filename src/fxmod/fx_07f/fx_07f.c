@@ -14,7 +14,7 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x34;
     } else if (mode == 1) {
-        D_801E7B4C = env;
+        fx_07f_env = env;
         BTLFX_COPY_SVEC(&work->unk8, &env->targets->centerX);
         BTLFX_COPY_SVEC(&work->unk10, &work->unk8);
         work->unk18[0] = work->unk8.vx;
@@ -34,7 +34,7 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (p != NULL) {
             p->otZ = -0x20;
         }
-        ex->btlfx_initEffModels(D_801E7B5C, 2);
+        ex->btlfx_initEffModels(fx_07f_effModels, 2);
         work->unk2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xB7, 0x3D40, 0, 0);
         work->unk30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x139, 0xFFFF, 0x40, 0x80);
     } else {

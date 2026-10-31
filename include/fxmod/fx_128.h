@@ -18,7 +18,7 @@ typedef struct {
     SVECTOR unk10; /* caster rotation */
 } Fx128Work80;
 
-extern Unk800F78A4 *D_801E89D4;
+extern Unk800F78A4 *fx_128_env;
 extern SVECTOR D_801E8F9C; /* path start */
 extern SVECTOR D_801E8FA4; /* path end */
 extern SVECTOR D_801E8FB4[]; /* path ends */
@@ -94,7 +94,7 @@ typedef struct {
 
 extern u16 D_801E8974[];
 extern u16 D_801E8980[];
-extern BtlModel D_801E89E4[];
+extern BtlModel fx_128_effModels[];
 extern Fx128Path_0b4 D_801E8F5C;
 extern Fx128Path_0b4 D_801E8F64[];
 extern Fx128Path D_801E8F8C;

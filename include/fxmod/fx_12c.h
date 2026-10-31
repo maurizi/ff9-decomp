@@ -19,10 +19,10 @@ typedef struct {
     s32 unk30; /* bounce time */
 } Fx12cRock; /* 0x34 */
 
-extern Unk800F78A4 *D_801E7EF8;
+extern Unk800F78A4 *fx_12c_env;
 extern Fx12cRock D_801E7F08[10];
 extern s32 D_801E8110; /* bounce strength */
-extern BtlModel D_801E8118[];
+extern BtlModel fx_12c_effModels[];
 extern u32 D_801E88E8[];
 
 s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);

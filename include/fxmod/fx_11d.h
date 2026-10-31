@@ -31,7 +31,7 @@ typedef struct {
 
 extern Fx11dPathKey D_801E7D24[4];
 extern Fx11dPathKey D_801E7D3C[4];
-extern Unk800F78A4 *D_801E7D9C;
+extern Unk800F78A4 *fx_11d_env;
 extern s32 D_801E7DAC[];
 extern s32 D_801E7F6C[];
 extern s32 D_801E812C[];

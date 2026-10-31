@@ -44,7 +44,7 @@ typedef struct {
 
 extern Fx083Pair D_801E8328[];
 extern Fx083Pair D_801E8348[];
-extern Unk800F78A4 *D_801E83B0;
-extern BtlModel D_801E83C0[];
+extern Unk800F78A4 *fx_083_env;
+extern BtlModel fx_083_effModels[];
 
 #endif

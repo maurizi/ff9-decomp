@@ -10,7 +10,7 @@ s32 fx_051_op80(s32 mode, Fx051Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         s32 n = *arg4;
 
         work->unk18 = n;
-        D_801E79EC = env;
+        fx_051_env = env;
         if (n >= env->targets->targetCount) {
             fxm_setSignal(env, 7, 1);
             return 1;

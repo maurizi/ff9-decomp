@@ -13,7 +13,7 @@ typedef struct {
     SVECTOR unk20; /* angles from unk8 to unk10 */
 } Fx0aeWork;
 
-extern Unk800F78A4 *D_801E79BC;
+extern Unk800F78A4 *fx_0ae_env;
 extern s32 D_801E79CC[];
 
 #endif

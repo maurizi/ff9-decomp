@@ -17,3 +17,5 @@ fxm_shatterUpdate = 0x801E9564; // type:func [code] moves and spins every live s
 fx_026_op80PoolTask = 0x801E7A5C; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_026_op80
 fx_026_op82PoolTask = 0x801E8670; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_026_op82
 fx_026_op81PoolTask = 0x801E98BC; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_026_op81
+fx_026_env = 0x801EACCC; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_026_effModels = 0x801EACDC; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

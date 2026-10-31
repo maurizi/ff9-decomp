@@ -33,8 +33,8 @@ typedef struct {
     Pool6CEntry *unk7C;
 } Fx17d2Work; /* 0x80 */
 
-extern Unk800F78A4 *D_801E8048;
-extern BtlModel D_801E8058[];
+extern Unk800F78A4 *fx_17d_2_env;
+extern BtlModel fx_17d_2_effModels[];
 
 static s32 fx_17d_2_op80PoolTask(s32 mode, Fx17d2Elem *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx17d2Work *work);

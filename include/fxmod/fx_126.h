@@ -23,8 +23,8 @@ typedef struct {
     s32 unk9C[4]; /* unit hit */
 } Fx126Work; /* 0xAC */
 
-extern Unk800F78A4 *D_801E80DC;
-extern BtlModel D_801E80EC[];
+extern Unk800F78A4 *fx_126_env;
+extern BtlModel fx_126_effModels[];
 
 s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 void func_801E7D48(s32 len, s32 t, SVECTOR *p0, SVECTOR *p1, SVECTOR *p2, SVECTOR *p3, SVECTOR *p4, VECTOR *out);

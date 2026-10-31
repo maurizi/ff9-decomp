@@ -66,7 +66,7 @@ typedef struct {
     s32 unk50;
 } Fx1a2Work80; /* 0x54 */
 
-extern BtlModel D_801EB2C4[];
+extern BtlModel fx_1a2_effModels[];
 extern CVECTOR D_801E97F0;
 extern CVECTOR D_801E97F4;
 extern CVECTOR D_801E97F8;
@@ -77,7 +77,7 @@ extern s32 D_801EBA94[];
 extern s32 D_801EBF54[];
 
 /* copied */
-extern Unk800F78A4 *D_801E9844;
+extern Unk800F78A4 *fx_1a2_env;
 /* end copied */
 
 #endif

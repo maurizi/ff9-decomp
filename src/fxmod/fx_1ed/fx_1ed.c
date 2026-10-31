@@ -29,7 +29,7 @@ static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data) {
 static void fxm_camKeyUpdate(void) {
     SVECTOR *ext = D_801E8A60;
     s32 i;
-    Unk800F78A4 *env = D_801E8910;
+    Unk800F78A4 *env = fx_1ed_env;
     s32 frame = D_801E8914;
     s32 k;
     s32 d;
@@ -85,7 +85,7 @@ static void fxm_camKeyUpdate(void) {
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8910);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1ed_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -126,7 +126,7 @@ s32 fx_1ed_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E8910 = env;
+        fx_1ed_env = env;
         for (i = 7; i >= 0; i--) {
             D_801E8AC0[i] = 0;
         }
@@ -348,7 +348,7 @@ s32 fx_1ed_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E8910 = env;
+        fx_1ed_env = env;
         for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801EA7E0[i]);
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801EA7E0[i]);

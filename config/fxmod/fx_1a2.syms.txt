@@ -4,3 +4,5 @@ fx_1a2_op80 = 0x801E832C; // type:func [code] header op entry 0, effect script o
 fx_1a2_op81 = 0x801E9734; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fxm_drawRibbonTrail = 0x801E7718; // type:func [code] pushes the a-b edge into a history of n edges and draws POLY_G4 between them, colours fading along it (n >= 1000 clears)
 fx_1a2_op80PoolTask = 0x801E804C; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_1a2_op80
+fx_1a2_env = 0x801E9844; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_1a2_effModels = 0x801EB2C4; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

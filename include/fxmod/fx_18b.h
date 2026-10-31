@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk14; /* caster body position */
 } Fx18bWork; /* 0x1C */
 
-extern Unk800F78A4 *D_801E827C;
+extern Unk800F78A4 *fx_18b_env;
 extern s32 D_801E8280; /* wave phase */
 extern s32 D_801E8284; /* wave amplitude */
 

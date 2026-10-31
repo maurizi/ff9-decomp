@@ -10,6 +10,6 @@ typedef struct {
     s32 unkC;
 } Fx19cWork;
 
-extern Unk800F78A4 *D_801E7970;
+extern Unk800F78A4 *fx_19c_env;
 
 #endif

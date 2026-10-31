@@ -16,7 +16,7 @@ typedef struct {
     s32 unk34[3]; /* model position (VECTOR without its pad word) */
 } Fx099Work;
 
-extern Unk800F78A4 *D_801E7C28;
-extern BtlModel D_801E7C38[];
+extern Unk800F78A4 *fx_099_env;
+extern BtlModel fx_099_effModels[];
 
 #endif

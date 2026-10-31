@@ -11,7 +11,7 @@ s32 fx_031_op80(s32 mode, Fx031Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x38;
     } else if (mode == 1) {
-        D_801E7AE8 = env;
+        fx_031_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         work->unk8.vy += 0x80;

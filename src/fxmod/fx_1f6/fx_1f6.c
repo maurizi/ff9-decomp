@@ -10,11 +10,11 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0xB4;
     } else if (mode == 1) {
-        D_801E7DD4 = env;
+        fx_1f6_env = env;
         for (i = 7; i >= 0; i--) {
             work->unk0[i] = 0;
         }
-        ex->btlfx_initEffModels(D_801E7DE4, 3);
+        ex->btlfx_initEffModels(fx_1f6_effModels, 3);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unkA4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkAC);
         work->unk20[0].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);

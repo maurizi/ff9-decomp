@@ -20,7 +20,7 @@ typedef struct {
 } Fx1fdWork80; /* 0x3C */
 
 extern u16 D_801E9DF8[5]; /* files */
-extern BtlModel D_801E9E5C[];
+extern BtlModel fx_1fd_effModels[];
 extern Fx1fdPath D_801EBB7C[5];
 extern s32 D_801EBBAC[5][0x78];
 extern SVECTOR D_801ED70C[5];
@@ -45,7 +45,7 @@ static void fxm_posPathInit(Fx1fdPath *path, u16 *data);
 static s32 fxm_posPathGet(Fx1fdPath *path, s32 t, SVECTOR *out);
 
 /* copied */
-extern Unk800F78A4 *D_801E9E4C;
+extern Unk800F78A4 *fx_1fd_env;
 /* end copied */
 
 /* propagated */

@@ -37,12 +37,12 @@ extern SVECTOR D_801EA714;
 extern s32 D_801E8EB4[];
 extern s32 D_801EA708; /* fade */
 extern Pool6CEntry *D_801EA70C;
-extern BtlModel D_801EA724[];
-extern Unk800F78A4 *D_801E8EA4;
+extern BtlModel fx_057_effModels[];
+extern Unk800F78A4 *fx_057_env;
 extern SVECTOR D_801EA6F4; /* camera rest position */
 extern SVECTOR D_801EA6FC; /* particle head position */
 extern Pool6CEntry *D_801EA704;
-extern Unk80100C78Entry *D_801EA97C;
+extern Unk80100C78Entry *fx_057_task;
 
 static void fx_057_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *e, SVECTOR *pos, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 t,
                    s32 n);

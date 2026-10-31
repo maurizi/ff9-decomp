@@ -2,7 +2,7 @@
 
 /* ribbon trail: push a new pair of edge points and draw the quads between steps, fading out */
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx05eSeg *buf, s32 abr) {
-    Unk800F78A4 *env = D_801E8E74;
+    Unk800F78A4 *env = fx_05e_env;
     CVECTOR c0;
     CVECTOR c1;
     s32 otz;
@@ -85,7 +85,7 @@ static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVEC
 
 /* transform a point by a bone of the summon model, then restore the camera matrix */
 static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out) {
-    Unk800F78A4 *env = D_801E8E74;
+    Unk800F78A4 *env = fx_05e_env;
     MATRIX m;
 
     BTLFX_EXPORTS(env)->Hi_GetSummonBoneMatrix(model, bone, (BtlBone *)&m);
@@ -124,7 +124,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801E8E74 = env;
+        fx_05e_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk10);
         work->unk10.vy &= 0xFFF;
@@ -164,7 +164,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk2C.vx = 0;
         work->unk2C.vz = 0;
         work->unk2C.vy = work->unk10.vy;
-        ex->btlfx_initEffModels(D_801E9014, 1);
+        ex->btlfx_initEffModels(fx_05e_effModels, 1);
         work->unk28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);
     } else {
         state = work->unk0;

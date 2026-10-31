@@ -22,7 +22,7 @@ static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
 }
 
 void func_801E77FC(SVECTOR *pos) {
-    Unk800F78A4 *env = D_801E98A0;
+    Unk800F78A4 *env = fx_0ec_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR *p = ex->btlfx_poolSpawn((s16 *)D_801E98A4->unk10);
     MATRIX m;
@@ -51,7 +51,7 @@ void func_801E77FC(SVECTOR *pos) {
 void func_801E798C(s32 model, SVECTOR *center) {
     Fx0ecTri *t = D_801EB3D0;
     Fx0ecTri *u = D_801EB3D0;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E98A0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0ec_env);
     Fx0ecShard *p;
     SVECTOR d;
     s32 i;
@@ -105,7 +105,7 @@ void func_801E7B84(void) {
 
     bias[0] = 0;
     bias[1] = 0;
-    ex = BTLFX_EXPORTS(D_801E98A0);
+    ex = BTLFX_EXPORTS(fx_0ec_env);
     sc.vx = sc.vy = sc.vz = 0xF80;
     for (i = 0; i < 0x70; i++, s++, t++) {
         if (s->unk18 >= 0) {
@@ -192,7 +192,7 @@ s32 func_801E7F00(u8 *buf) {
 }
 
 s32 func_801E7F40(s32 model) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E98A0);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0ec_env);
     Fx0ecSplit *sp = &D_801ECA90;
     Fx0ecVertex *v = (Fx0ecVertex *)sp->unk10;
     s32 n;
@@ -243,7 +243,7 @@ s32 func_801E8064(s32 y, SVECTOR *center) {
     sp = &D_801ECA90;
     t = (Fx0ecTri *)sp->unkC;
     u = t;
-    ex = BTLFX_EXPORTS(D_801E98A0);
+    ex = BTLFX_EXPORTS(fx_0ec_env);
     for (n = k; i < sp->unk2; i++, u++, t++, k++) {
         if (y < (u->unk0[0].vy + u->unk0[1].vy + u->unk0[2].vy) / 3 && u->unk0[0].pad == 0) {
             p = func_801E802C();
@@ -288,7 +288,7 @@ void func_801E82D8(void) {
 
     bias[0] = 0;
     bias[1] = 0;
-    ex = BTLFX_EXPORTS(D_801E98A0);
+    ex = BTLFX_EXPORTS(fx_0ec_env);
     sc.vx = sc.vy = sc.vz = 0xEC0;
     for (i = 0; i < 300; i++, s++) {
         if (s->unk18 >= 0) {
@@ -368,7 +368,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         init->elemFn = (s32)fx_0ec_op80PoolTask;
         init->poolCount = 0x80;
     } else if (mode == 1) {
-        D_801E98A0 = env;
+        fx_0ec_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
         r = ex->btlfx_getUnitRadius(0) + 0xF0;
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk10);
@@ -397,7 +397,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vy = sv.vy;
         env->camera->points[2].vz = sv.vz;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        ex->btlfx_initEffModels(D_801EEB80, 9);
+        ex->btlfx_initEffModels(fx_0ec_effModels, 9);
         work->unk38 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x97, 0x3D40,
                                                       0x80, 0x80);
         work->unk3C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x97, 0x3D40,

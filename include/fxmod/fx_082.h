@@ -20,7 +20,7 @@ typedef struct {
     s32 unk0[3]; /* caster scale */
 } Fx082Work81;
 
-extern Unk800F78A4 *D_801E7E64;
-extern BtlModel D_801E7E74[];
+extern Unk800F78A4 *fx_082_env;
+extern BtlModel fx_082_effModels[];
 
 #endif

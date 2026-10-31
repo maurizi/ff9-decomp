@@ -13,7 +13,7 @@ typedef struct {
 
 extern SVECTOR D_801E7D78[6];
 extern s16 D_801E7DA8[6];
-extern Unk800F78A4 *D_801E7DFC;
+extern Unk800F78A4 *fx_194_env;
 extern s32 D_801E7E00; /* wave amplitude */
 extern s32 D_801E7E04; /* wave phase */
 

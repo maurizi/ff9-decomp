@@ -8,7 +8,7 @@ s32 fx_136_op80(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x14;
     } else if (mode == 1) {
-        D_801E79C8 = env;
+        fx_136_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         ex->btlfx_getUnitBoneMatrix(0x10, 2, (BtlBone *)&m);
         ex->btlfx_matrixPointAhead(&m, 0x190, (s32)&work->unkC);
@@ -35,7 +35,7 @@ s32 fx_136_op81(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x14;
     } else if (mode == 1) {
-        D_801E79C8 = env;
+        fx_136_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->unkC);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unkC);
         if (work->unk0 != NULL) {

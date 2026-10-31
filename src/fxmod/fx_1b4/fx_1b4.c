@@ -64,7 +64,7 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EF174.vx = work->unk44.vx;
         D_801EF174.vy = work->unk44.vy;
         D_801EF174.vz = work->unk44.vz;
-        D_801E8654 = env;
+        fx_1b4_env = env;
         work->unk8C.vx = work->unk44.vx;
         work->unk8C.vy = work->unk44.vy;
         work->unk8C.vz = work->unk44.vz;
@@ -129,7 +129,7 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk10.vx = env->targets->centerX;
         work->unk10.vy = env->targets->centerY;
-        D_801E8654 = env;
+        fx_1b4_env = env;
         work->unk10.vz = env->targets->centerZ;
         work->unk10.vy -= 0x258;
     } else {
@@ -210,7 +210,7 @@ s32 fx_1b4_op82(s32 mode, Fx1b4Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk1C.vx = env->targets->centerX;
         work->unk1C.vy = env->targets->centerY;
-        D_801E8654 = env;
+        fx_1b4_env = env;
         work->unk1C.vz = env->targets->centerZ;
         work->unk1C.vy -= 0x258;
     } else {
@@ -258,7 +258,7 @@ s32 fx_1b4_op83(s32 mode, Fx1b4Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk4.vx = env->targets->centerX;
         work->unk4.vy = env->targets->centerY;
-        D_801E8654 = env;
+        fx_1b4_env = env;
         work->unk4.vz = env->targets->centerZ;
         work->unk4.vy -= 0x258;
     } else {

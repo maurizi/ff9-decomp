@@ -31,10 +31,10 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
     x0 = x - (w >> 1) * 3 / 2;
     abrBits = (abr & 3) << 5;
     m = w >> 2;
-    ex = BTLFX_EXPORTS(D_801ED420);
-    p = (POLY_FT4 *)D_801ED420->prim;
+    ex = BTLFX_EXPORTS(fx_17d_1_env);
+    p = (POLY_FT4 *)fx_17d_1_env->prim;
     dh = h >> 2;
-    D_801ED420->prim = (u8 *)(p + 16);
+    fx_17d_1_env->prim = (u8 *)(p + 16);
     y0 = y - (h >> 1);
     j = 0;
     dw = m;
@@ -88,10 +88,10 @@ void func_801EC944(u32 *ot, s32 tpage, s32 x, s32 r, s32 g, s32 b) {
     s32 i;
     s32 k;
 
-    prim = (POLY_G4 *)D_801ED420->prim;
-    ex = BTLFX_EXPORTS(D_801ED420);
+    prim = (POLY_G4 *)fx_17d_1_env->prim;
+    ex = BTLFX_EXPORTS(fx_17d_1_env);
     p = prim;
-    D_801ED420->prim = (u8 *)(prim + 4);
+    fx_17d_1_env->prim = (u8 *)(prim + 4);
     for (i = 0; i < 4; i++) {
         setlen(p, 8);
         p->code = GPU_POLY_G4 | GPU_ABE;
@@ -130,8 +130,8 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801ED420 = env;
-        ex->btlfx_initEffModels(D_801ED430, 2);
+        fx_17d_1_env = env;
+        ex->btlfx_initEffModels(fx_17d_1_effModels, 2);
         work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x9E), 1);
         ex->Hi_SetSummonMotion(((Fx17d1Summon *)env->loader)->unk54->unk180, ((Fx17d1Summon *)env->loader)->unk60);
         work->unk28.vx = 0;

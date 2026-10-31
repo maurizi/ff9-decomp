@@ -13,7 +13,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     DVECTOR h;
     CVECTOR c0;
     CVECTOR c1;
-    Unk800F78A4 *env = D_801E827C;
+    Unk800F78A4 *env = fx_18b_env;
     u32 *move = NULL;
     s32 step;
     s32 cx;
@@ -160,7 +160,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
 }
 
 static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 arg3, s16 *out) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E827C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_18b_env);
     s32 s = (ex->math_sin((i << 11) >> 4) * D_801E8284) >> 12;
 
     r += (s * ex->math_sin(D_801E8280 + (i << 10))) >> 12;
@@ -178,7 +178,7 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        D_801E827C = env;
+        fx_18b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk14);
         work->unk8 = ex->btlfx_addRadiusSixth(0, 0x20);

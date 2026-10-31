@@ -8,6 +8,6 @@ typedef struct {
     SVECTOR unk0; /* caster position */
 } Fx0b7Work;
 
-extern Unk800F78A4 *D_801E786C;
+extern Unk800F78A4 *fx_0b7_env;
 
 #endif

@@ -54,7 +54,7 @@ extern SVECTOR D_801E8330;
 extern SVECTOR D_801E8338;
 extern s32 D_801E8350[];
 extern s32 D_801E9D00[];
-extern Unk800F78A4 *D_801E82F0;
+extern Unk800F78A4 *fx_127_env;
 extern SVECTOR D_801E82F8; /* path start */
 extern SVECTOR D_801E8300; /* path end */
 extern SVECTOR D_801E8308;

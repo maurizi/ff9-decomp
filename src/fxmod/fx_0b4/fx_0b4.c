@@ -68,7 +68,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x3C;
     } else if (mode == 1) {
-        D_801E8184 = env;
+        fx_0b4_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk2C);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk34);
         D_801E818C.vx = work->unk34.vx;

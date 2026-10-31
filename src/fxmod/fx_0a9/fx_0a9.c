@@ -9,7 +9,7 @@ s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0xC;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E7F58 = env;
+        fx_0a9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk4);
         if (p != NULL) {
@@ -68,7 +68,7 @@ void func_801E79C8(void) {
 }
 
 void func_801E79D4(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7F58);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0a9_env);
     SVECTOR pos;
     SVECTOR ang;
     s32 r;
@@ -125,7 +125,7 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)arg4)->elemFn = (s32)fx_0a9_op83PoolTask;
         ((EffInit *)arg4)->poolCount = 0xB0;
     } else if (mode == 1) {
-        D_801E7F58 = env;
+        fx_0a9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
         func_801E79C8();

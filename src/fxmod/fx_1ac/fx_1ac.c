@@ -1,7 +1,7 @@
 #include "fxmod/fx_1ac.h"
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8300);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1ac_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -33,7 +33,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x60;
     } else if (mode == 1) {
-        D_801E8300 = env;
+        fx_1ac_env = env;
         for (i = 7; i >= 0; i--) {
             work->unk0[i] = 0;
         }

@@ -8,7 +8,7 @@ s32 fx_132_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     if (mode == 0) {
         *arg4 = 8;
     } else if (mode == 1) {
-        D_801E78BC = env;
+        fx_132_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)work);
         dir = env->targets->fxArgs[0];
         if (dir < 0x80) {

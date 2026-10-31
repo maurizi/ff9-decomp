@@ -7,7 +7,7 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x60;
     } else if (mode == 1) {
-        D_801E7EFC = env;
+        fx_12a_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk20);
         ex->btlfx_getUnitArgBonePos(0x10, 1, (u16 *)&work->unk28);
         work->unk30.vx = work->unk20.vx;
@@ -111,7 +111,7 @@ s32 fx_12a_op81(s32 mode, Fx12aWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4.vx = env->targets->centerX;
         work->unk4.vy = env->targets->centerY;
         work->unk4.vz = env->targets->centerZ;
-        D_801E7EFC = env;
+        fx_12a_env = env;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk4);
     } else {
         return entry->frame >= 0x28;
@@ -129,7 +129,7 @@ s32 fx_12a_op82(s32 mode, Fx12aWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         n = *arg4;
         work->unk10 = n;
-        D_801E7EFC = env;
+        fx_12a_env = env;
         if (n >= env->targets->targetCount) {
             fxm_setSignal(env, 7, 1);
             return 1;

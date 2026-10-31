@@ -2,7 +2,7 @@
 
 static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
-    Unk800F78A4 *env = D_801E8F3C;
+    Unk800F78A4 *env = fx_048_env;
     RECT rect;
     VECTOR sv;
     SVECTOR zero;
@@ -163,13 +163,13 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x38;
     } else if (mode == 1) {
         work->unk0.vx = env->targets->centerX;
-        D_801E8F3C = env;
+        fx_048_env = env;
         work->unk0.vy = env->targets->centerY;
         work->unk0.vz = env->targets->centerZ;
         work->unk0.vy -= 0x200;
         BTLFX_COPY_SVEC(&work->unk8, &work->unk0);
         work->unk8.vy = 0;
-        ex->btlfx_initEffModels(D_801E8F4C, 6);
+        ex->btlfx_initEffModels(fx_048_effModels, 6);
         work->unk14[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xC), 1);
         work->unk14[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
         work->unk14[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);

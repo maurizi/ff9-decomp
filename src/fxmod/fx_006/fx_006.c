@@ -13,8 +13,8 @@ s32 fx_006_op80(s32 mode, Fx006Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        D_801E7F6C = env;
-        ex->btlfx_initEffModels(D_801E7F7C, 4);
+        fx_006_env = env;
+        ex->btlfx_initEffModels(fx_006_effModels, 4);
         work->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0xBA, 0x3DC0, 0, 0);
         work->unkC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0xBA, 0x3DC0, 0, 0);
         work->unk10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xBA, 0x3DC0, 0, 0);

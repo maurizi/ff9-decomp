@@ -36,7 +36,7 @@ typedef struct {
     s16 *unk10; /* pool */
 } Fx18aInst;
 
-extern Unk800F78A4 *D_801E8A24;
+extern Unk800F78A4 *fx_18a_env;
 extern Fx18aTrail D_801E8B04[12];
 extern s32 D_801E90D4;
 
@@ -58,6 +58,6 @@ typedef struct {
 } Fx18aWork80; /* 0x28 */
 
 extern s32 D_801E89D8;
-extern BtlModel D_801E8A34[];
+extern BtlModel fx_18a_effModels[];
 
 #endif

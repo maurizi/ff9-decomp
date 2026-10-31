@@ -1,7 +1,7 @@
 #include "fxmod/fx_18c.h"
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7B10);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_18c_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -28,7 +28,7 @@ s32 fx_18c_op80(s32 mode, Fx18cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        D_801E7B10 = env;
+        fx_18c_env = env;
         for (i = 2; i >= 0; i--) {
             D_801E7B20[i] = 0;
         }

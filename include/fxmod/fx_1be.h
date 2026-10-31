@@ -15,7 +15,7 @@ extern SVECTOR D_801E8FE8[64];
 static s32 fxm_easeLerpSvec(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out);
 
 /* copied */
-extern Unk800F78A4 *D_801E8FD8;
+extern Unk800F78A4 *fx_1be_env;
 /* end copied */
 
 typedef struct {
@@ -48,7 +48,7 @@ typedef struct {
     s32 unk34; /* delay */
 } Fx1beUnit; /* 0x38 */
 
-extern BtlModel D_801E91E8[];
+extern BtlModel fx_1be_effModels[];
 extern s32 D_801E95D0;
 extern s32 D_801E95D4;
 extern s32 D_801E95D8;

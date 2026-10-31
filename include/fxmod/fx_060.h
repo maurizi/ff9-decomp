@@ -9,7 +9,7 @@ typedef struct {
     SVECTOR unk4; /* target body position */
 } Fx060Work;
 
-extern Unk800F78A4 *D_801E7910;
+extern Unk800F78A4 *fx_060_env;
 extern s32 D_801E7920[];
 extern s32 D_801E7EF0[];
 

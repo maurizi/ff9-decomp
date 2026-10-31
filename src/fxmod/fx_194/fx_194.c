@@ -3,7 +3,7 @@
 static void fx_194_op80GridVertex(SVECTOR *v) {
     s32 y = v->vy;
     s32 x = v->vx;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DFC);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_194_env);
     s32 nx = x + ((ex->math_cos(D_801E7E04 + y * 0x18) * D_801E7E00) >> 13);
     s32 ny = y + ((ex->math_sin(D_801E7E04 + x * 0x18) * D_801E7E00) >> 12);
 
@@ -45,7 +45,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x1C;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E7DFC = env;
+        fx_194_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk4);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
@@ -118,7 +118,7 @@ s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        D_801E7DFC = env;
+        fx_194_env = env;
         work->unk0 = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk4);

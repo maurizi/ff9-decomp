@@ -1,7 +1,7 @@
 #include "fxmod/fx_112.h"
 
 void func_801E7718(s32 x, s32 y, s32 w, s32 h, s32 dx, s32 dy) {
-    Unk800F78A4 *env = D_801E8050;
+    Unk800F78A4 *env = fx_112_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     RECT r;
 
@@ -27,8 +27,8 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x54;
     } else if (mode == 1) {
-        D_801E8050 = env;
-        ex->btlfx_initEffModels(D_801E8060, 1);
+        fx_112_env = env;
+        ex->btlfx_initEffModels(fx_112_effModels, 1);
         work->unk20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x137, 0xFFFF, 0, 0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unkC);

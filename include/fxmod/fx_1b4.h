@@ -42,7 +42,7 @@ extern u16 D_801E85BC[8];
 extern u16 D_801E85CC[8];
 extern u16 D_801E85DC[8];
 extern s32 (*D_801E85EC[8])();
-extern Unk800F78A4 *D_801E8654;
+extern Unk800F78A4 *fx_1b4_env;
 extern Fx1b4Path D_801E8664[8];
 extern Fx1b4Path D_801E86A4[8];
 extern s32 D_801E86E4[8][0x3C];

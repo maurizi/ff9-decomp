@@ -2,7 +2,7 @@
 
 static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx005Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
                    s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8C40);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_005_env);
     SVECTOR v;
     SVECTOR ang;
     SVECTOR *p;
@@ -38,7 +38,7 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx005Strip *strip, s3
 
 static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx005Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
                    s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8C40);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_005_env);
     SVECTOR v;
     SVECTOR ang;
     SVECTOR *p;
@@ -80,20 +80,20 @@ static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx005Strip *strip, Fx
     SVECTOR v;
 
     p += i;
-    ex = BTLFX_EXPORTS(D_801E8C40);
+    ex = BTLFX_EXPORTS(fx_005_env);
     ex->btlfx_lerpVec((s16 *)p, (s16 *)(p + 1), 0x4000, (s16 *)&v);
     fxm_drawJaggedStrip4(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x37, 0, arg5, arg6, kind);
 }
 
 static void fx_005_op83ElemDraw(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *col, s32 arg6, s32 t, s32 n) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8C40);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_005_env);
     Unk80100C78Entry *entry;
     SVECTOR r;
     s32 s;
     s32 w;
 
     BTLFX_COPY_SVEC(&r, rot);
-    entry = D_801E95E0;
+    entry = fx_005_task;
     s = ex->math_sin((t << 11) / n);
     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x1D), pos, &r, *scale + 0x200, t, 1, s, 0, 0);
     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), pos, &r, *scale + 0x200, t, 1, s, 2, 2);
@@ -193,7 +193,7 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->elemFn = (s32)fx_005_op83PoolTask;
         init->poolCount = 0xC;
     } else if (mode == 1) {
-        D_801E8C40 = env;
+        fx_005_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
         i = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
@@ -203,7 +203,7 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             *q++ = ex->btlfx_randCentered(0x200);
             *q++ = ex->btlfx_randCentered(0xF5);
         }
-        D_801E95E0 = entry;
+        fx_005_task = entry;
         work->unk14 = 0;
     } else {
         frame = entry->frame;

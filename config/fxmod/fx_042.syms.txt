@@ -5,3 +5,4 @@ fxm_drawJaggedStrip16 = 0x801E7704; // type:func [code] 16-point jagged strip fr
 fxm_drawJaggedStrip4 = 0x801E796C; // type:func [code] 4-point jagged strip from to (noise table, sine bulge amp), drawn with btlfx_drawTrail
 fxm_drawJaggedBranch4 = 0x801E7BF8; // type:func [code] fxm_drawJaggedStrip4 branching off point i of a strip with a random width
 fx_042_op83PoolTask = 0x801E7CEC; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_042_op83
+fx_042_env = 0x801E856C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS

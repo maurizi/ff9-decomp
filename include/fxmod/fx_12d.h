@@ -35,8 +35,8 @@ extern BtlTexInfo D_801E7CC0;
 extern s16 D_801E7CD8[6][2]; /* D_801E7CC0's entries in reverse order */
 extern BtlTexInfo D_801E7CF0;
 extern s16 D_801E7D08[6][2]; /* D_801E7CF0's entries in reverse order */
-extern Unk800F78A4 *D_801E7D68;
-extern BtlModel D_801E7D78[];
+extern Unk800F78A4 *fx_12d_env;
+extern BtlModel fx_12d_effModels[];
 extern SVECTOR D_801E7E40;
 extern s32 D_801E7E48[];
 extern s32 D_801E8388[];

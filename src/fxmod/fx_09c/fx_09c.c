@@ -13,7 +13,7 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk20 = NULL;
         work->unk3C = NULL;
-        D_801E7BB8 = env;
+        fx_09c_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk18);
         work->unk0.vx = work->unk10.vx + ex->btlfx_randRange(-0x100, 0x100);

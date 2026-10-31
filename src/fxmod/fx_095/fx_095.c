@@ -100,7 +100,7 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)arg4)->elemFn = (s32)fx_095_op80PoolTask;
         ((EffInit *)arg4)->poolCount = 0xC;
     } else if (mode == 1) {
-        D_801E8904 = env;
+        fx_095_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801E890C);
         work->unk4 = 0;
         work->unk0 = 0;
@@ -151,7 +151,7 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 void func_801E7CBC(s32 n, s32 x, s32 y, u16 *buf, RECT *r) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8904);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_095_env);
     RECT a;
     RECT b;
     RECT c;
@@ -175,8 +175,8 @@ void func_801E7CBC(s32 n, s32 x, s32 y, u16 *buf, RECT *r) {
     case 0:
         sx = r->x;
         sy = r->y;
-        a.x = D_801E8904->drawEnv->clip.x + (x - (r->w >> 1));
-        a.y = D_801E8904->drawEnv->clip.y + (y - (r->h >> 1));
+        a.x = fx_095_env->drawEnv->clip.x + (x - (r->w >> 1));
+        a.y = fx_095_env->drawEnv->clip.y + (y - (r->h >> 1));
         a.w = r->w;
         a.h = r->h;
         ex->MoveImage(&a, sx, sy);
@@ -230,7 +230,7 @@ void func_801E7F48(s32 ot, s32 x, s32 y, s32 r, s32 c, RECT *rect) {
     s32 cu;
     s32 cv;
 
-    env = D_801E8904;
+    env = fx_095_env;
     gt4 = (POLY_GT4 *)env->prim;
     ft3 = (POLY_FT3 *)(gt4 + 16);
     g4 = (POLY_G4 *)(ft3 + 16);
@@ -345,7 +345,7 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = sizeof(Fx095Work81);
     } else if (mode == 1) {
-        D_801E8904 = env;
+        fx_095_env = env;
         work->unk0 = 0;
         work->unk4 = 0;
     } else {

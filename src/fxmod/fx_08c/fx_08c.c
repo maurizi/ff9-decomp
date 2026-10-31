@@ -23,8 +23,8 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk18[0] = work->unk8.vx;
         work->unk18[1] = work->unk8.vy;
         work->unk18[2] = work->unk8.vz;
-        D_801E7AA8 = env;
-        ex->btlfx_initEffModels(D_801E7AB8, 2);
+        fx_08c_env = env;
+        ex->btlfx_initEffModels(fx_08c_effModels, 2);
         work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
         if (p != NULL) {

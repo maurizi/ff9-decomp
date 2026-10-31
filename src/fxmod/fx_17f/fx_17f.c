@@ -22,7 +22,7 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        D_801E7C50 = env;
+        fx_17f_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk20);
         if (ex->btlfx_isEnemyUnit(0x10) != 0) {
             ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);

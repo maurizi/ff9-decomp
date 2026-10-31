@@ -32,8 +32,8 @@ typedef struct {
     u16 unk42;
 } Fx03dWork82; /* 0x44 */
 
-extern Unk800F78A4 *D_801E7E60;
-extern BtlModel D_801E7E70[];
+extern Unk800F78A4 *fx_03d_env;
+extern BtlModel fx_03d_effModels[];
 extern s32 D_801E8000[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);

@@ -184,8 +184,8 @@ s32 fx_004_op80(s32 mode, Fx004Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->elemFn = (s32)fx_004_op80PoolTask;
         init->poolCount = 0xA;
     } else if (mode == 1) {
-        D_801E860C = env;
-        ex->btlfx_initEffModels(D_801E861C, 6);
+        fx_004_env = env;
+        ex->btlfx_initEffModels(fx_004_effModels, 6);
         work->unk4 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13), 0x9A, 0x3DC0, 0x80, 0);
         work->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x15), 0x9A, 0x3DC0, 0x80, 0);
         work->unkC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x16), 0x9A, 0x3DC0, 0x80, 0);

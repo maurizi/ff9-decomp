@@ -44,7 +44,7 @@ typedef struct {
     Unk800DA1B8 *unk10; /* particle pool */
 } Fx0ecWork;
 
-extern Unk800F78A4 *D_801E98A0;
+extern Unk800F78A4 *fx_0ec_env;
 extern Fx0ecWork *D_801E98A4;
 extern SVECTOR D_801E98A8; /* shard rotation */
 extern SVECTOR D_801E98B0; /* shard origin */
@@ -83,7 +83,7 @@ typedef struct {
 
 extern s32 D_801E9850[2];
 extern u8 D_801E98D0[];
-extern BtlModel D_801EEB80[];
+extern BtlModel fx_0ec_effModels[];
 
 s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 

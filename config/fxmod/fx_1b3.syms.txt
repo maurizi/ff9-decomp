@@ -3,3 +3,5 @@ fx_1b3_header = 0x801EB02C; // [code] module header (0, init, ops), btlfx_update
 fx_1b3_op80 = 0x801E7904; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fxm_easeLerp = 0x801E77CC; // type:func [code] btlfx_lerp from to over n frames at frame t, curve 0 linear, 1 ease-out (quadratic), 2 ease-in
 fxm_tintScreenRatio = 0x801E773C; // type:func [code] btlfx_drawScreenTint with a grey level btlfx_lerpRatio(from, to, t, n)
+fx_1b3_env = 0x801EB074; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_1b3_effModels = 0x801EB7F4; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

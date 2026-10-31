@@ -11,6 +11,6 @@ typedef struct {
     Pool6CEntry *unk18;
 } Fx131Work;
 
-extern Unk800F78A4 *D_801E78EC;
+extern Unk800F78A4 *fx_131_env;
 
 #endif

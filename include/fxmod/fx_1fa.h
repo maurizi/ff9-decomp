@@ -12,7 +12,7 @@ typedef struct {
     s32 unk10; /* radius */
 } Fx1faRing; /* 0x14 */
 
-extern Unk800F78A4 *D_801E80DC;
+extern Unk800F78A4 *fx_1fa_env;
 extern SVECTOR D_801E80E4;
 extern s32 D_801E80EC[]; /* countdown; an array (in-struct for alias analysis) */
 extern SVECTOR D_801E80F4;

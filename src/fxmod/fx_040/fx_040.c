@@ -41,7 +41,7 @@ s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s
 }
 
 s32 func_801E7864(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 t, s32 n) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7EF8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_040_env);
     s32 k;
     s32 r;
 
@@ -81,7 +81,7 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7F08.vx = env->targets->centerX;
         D_801E7F08.vy = env->targets->centerY;
         D_801E7F08.vz = env->targets->centerZ;
-        D_801E7EF8 = env;
+        fx_040_env = env;
         D_801E7F08.vy -= 0x190;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk40);
         D_801E7F00.vx = work->unk40.vx;

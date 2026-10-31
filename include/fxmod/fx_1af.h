@@ -17,9 +17,9 @@ typedef struct {
 } Fx1afWork; /* 0x54 */
 
 extern s16 D_801E7EF4[5]; /* model files */
-extern Unk800F78A4 *D_801E7F48;
-extern Unk80100C78Entry *D_801E7F4C;
-extern BtlModel D_801E7F58[];
+extern Unk800F78A4 *fx_1af_env;
+extern Unk80100C78Entry *fx_1af_task;
+extern BtlModel fx_1af_effModels[];
 extern s32 D_801E8348[];
 
 #endif

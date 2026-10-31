@@ -1,7 +1,7 @@
 #include "fxmod/fx_033.h"
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7AE4);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_033_env);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
 
@@ -29,7 +29,7 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x30;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E7AE4 = env;
+        fx_033_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         ex->btlfx_getUnitHomePos(0, (s16 *)&work->unk14);

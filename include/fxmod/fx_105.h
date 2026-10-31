@@ -4,7 +4,7 @@
 /* Effect module fx_105 (dir 13 file 0x105). */
 #include "btlfx_mod.h"
 
-extern Unk800F78A4 *D_801EAB18;
+extern Unk800F78A4 *fx_105_env;
 typedef struct {
     s16 vx, vy, vz, pad, unk8, unkA;
 } Fx105Spark; /* 0xC */
@@ -138,7 +138,7 @@ extern Fx105Seg D_801EAC98[];
 extern SVECTOR D_801EADA8;
 extern VECTOR D_801EADB8;
 extern VECTOR D_801EADC8;
-extern BtlModel D_801EADD8[];
+extern BtlModel fx_105_effModels[];
 extern Fx105Drop D_801EB998[32];
 static void fxm_camKeyUpdate(void);
 

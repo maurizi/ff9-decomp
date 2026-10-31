@@ -17,7 +17,7 @@ typedef struct {
     s32 unk3C; /* model */
 } Fx1feWork81; /* 0x40 */
 
-extern BtlModel D_801E9070[];
+extern BtlModel fx_1fe_effModels[];
 extern SVECTOR D_801E88F8;
 extern SVECTOR D_801E8900;
 extern CVECTOR D_801E8908;
@@ -26,7 +26,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 /* propagated */
 
-extern Unk800F78A4 *D_801E9060;
+extern Unk800F78A4 *fx_1fe_env;
 extern s32 D_801E95E8;
 extern s32 D_801E95EC;
 static void fxm_waveVertexX(s16 *v);

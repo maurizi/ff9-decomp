@@ -16,8 +16,8 @@ typedef struct {
     s32 unk34; /* frame counter */
 } Fx048Work; /* 0x38 */
 
-extern Unk800F78A4 *D_801E8F3C;
-extern BtlModel D_801E8F4C[];
+extern Unk800F78A4 *fx_048_env;
+extern BtlModel fx_048_effModels[];
 extern s32 D_801E93FC[];
 extern u16 D_801E968C[];
 

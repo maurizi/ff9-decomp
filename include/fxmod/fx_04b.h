@@ -20,7 +20,7 @@ typedef struct {
     s32 unk14; /* target index */
 } Fx04bWork81; /* 0x18 */
 
-extern Unk800F78A4 *D_801E7B94;
+extern Unk800F78A4 *fx_04b_env;
 extern SVECTOR D_801E7B9C;
 extern s32 D_801E7BA4[];
 extern s32 D_801E87D4[];

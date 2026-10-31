@@ -1,14 +1,14 @@
 #include "fxmod/fx_134.h"
 
 static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
-    POLY_FT4 *p = (POLY_FT4 *)D_801EC8E4->prim;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EC8E4);
+    POLY_FT4 *p = (POLY_FT4 *)fx_134_env->prim;
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_134_env);
     u8 col[4];
     s32 u1;
     s32 v1;
     s32 y1;
 
-    D_801EC8E4->prim = (u8 *)(p + 2);
+    fx_134_env->prim = (u8 *)(p + 2);
     col[0] = col[1] = col[2] = c;
     if (abr != 0xFF) {
         col[3] = 0x2E;
@@ -58,12 +58,12 @@ static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tp
     s32 y1;
 
     n = 2;
-    ex = BTLFX_EXPORTS(D_801EC8E4);
+    ex = BTLFX_EXPORTS(fx_134_env);
     if (flip != 0) {
         n = 4;
     }
-    p = (POLY_FT4 *)D_801EC8E4->prim;
-    D_801EC8E4->prim = (u8 *)(p + n);
+    p = (POLY_FT4 *)fx_134_env->prim;
+    fx_134_env->prim = (u8 *)(p + n);
     col[0] = col[1] = col[2] = c;
     if (abr != 0xFF) {
         col[3] = 0x2E;
@@ -103,7 +103,7 @@ static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tp
 }
 
 static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 abr) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EC8E4);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_134_env);
     MATRIX m;
     VECTOR sc;
     SVECTOR zero;
@@ -120,11 +120,11 @@ static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 t
         ((s32 *)&zero)[1] = 0;
         ((s32 *)&zero)[0] = 0;
     }
-    gte_SetRotMatrix(D_801EC8E4->viewMatrix);
-    gte_SetTransMatrix(D_801EC8E4->viewMatrix);
+    gte_SetRotMatrix(fx_134_env->viewMatrix);
+    gte_SetTransMatrix(fx_134_env->viewMatrix);
     gte_ldv0(pos);
-    p = (POLY_FT4 *)D_801EC8E4->prim;
-    D_801EC8E4->prim = (u8 *)(p + 1);
+    p = (POLY_FT4 *)fx_134_env->prim;
+    fx_134_env->prim = (u8 *)(p + 1);
     col[0] = col[1] = col[2] = c >> 5;
     col[3] = (abr != 0xFF) ? 0x2E : 0x2C;
     tpage |= (abr & 3) << 5;
@@ -191,15 +191,15 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
     s32 v0;
     s32 v1;
 
-    ex = BTLFX_EXPORTS(D_801EC8E4);
+    ex = BTLFX_EXPORTS(fx_134_env);
     ((s32 *)&center)[0] = 0;
     center.vz = 0;
-    gte_SetRotMatrix(D_801EC8E4->viewMatrix);
-    gte_SetTransMatrix(D_801EC8E4->viewMatrix);
+    gte_SetRotMatrix(fx_134_env->viewMatrix);
+    gte_SetTransMatrix(fx_134_env->viewMatrix);
     gte_ldv0(pos);
-    p = (POLY_GT4 *)D_801EC8E4->prim;
+    p = (POLY_GT4 *)fx_134_env->prim;
     code = 0x3C;
-    D_801EC8E4->prim = (u8 *)(p + 576);
+    fx_134_env->prim = (u8 *)(p + 576);
     if (abr != 0xFF) {
         code = 0x3E;
     }
@@ -301,7 +301,7 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
 
 void func_801E8460(Unk80100C78Entry *entry, Fx134Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9, s32 pad) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EC8E4);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_134_env);
     SVECTOR p;
     SVECTOR rot;
     SVECTOR *pt;
@@ -589,8 +589,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801EC8E4 = env;
-        ex->btlfx_initEffModels(D_801ECB64, 8);
+        fx_134_env = env;
+        ex->btlfx_initEffModels(fx_134_effModels, 8);
         work->unk5C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x98, 0x3D80, 0, 0);
         work->unk60 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x118, 0xFFFF, 0x40,
                                                  0);

@@ -1,7 +1,7 @@
 #include "fxmod/fx_0fb_0.h"
 
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx0fb0Seg *buf, s32 abr) {
-    Unk800F78A4 *env = D_801EB3AC;
+    Unk800F78A4 *env = fx_0fb_0_env;
     CVECTOR c0;
     CVECTOR c1;
     s32 otz;
@@ -84,7 +84,7 @@ static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVEC
 
 void func_801E7B90(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 tpage, s32 clut, s32 u, s32 v, s32 amp,
                    s32 ph, s32 step, s32 abr) {
-    Unk800F78A4 *env = D_801EB3AC;
+    Unk800F78A4 *env = fx_0fb_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR c0;
     CVECTOR c1;
@@ -215,7 +215,7 @@ void func_801E7B90(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 tpage
 
 void func_801E809C(SVECTOR *pos, s32 dy, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 amp, s32 ph, s32 step,
                    s32 abr, s32 ph2) {
-    Unk800F78A4 *env = D_801EB3AC;
+    Unk800F78A4 *env = fx_0fb_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR a;
     SVECTOR b;
@@ -427,7 +427,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801EB3AC = env;
+        fx_0fb_0_env = env;
         ex->btlfx_initEffModels(SUMMON0FB(env)->unk38, 0x1F);
         work->unkC.vy = 0;
         work->unkC.vx = 0;
@@ -1076,7 +1076,7 @@ s32 fx_0fb_0_op81(s32 mode, Fx0fb0Work81 *work, Unk800F78A4 *env, Unk80100C78Ent
     if (mode == 0) {
         *arg4 = 0x10C;
     } else if (mode == 1) {
-        D_801EB3AC = env;
+        fx_0fb_0_env = env;
         work->unk104 = env->targets->targetCount;
         work->unk0 = 0;
         for (i = 0; i < work->unk104; i++) {
@@ -1146,7 +1146,7 @@ s32 fx_0fb_0_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entr
         env->camera->points[2].vx = v.vx;
         env->camera->points[2].vy = v.vy;
         env->camera->points[2].vz = v.vz;
-        D_801EB3AC = env;
+        fx_0fb_0_env = env;
         return 1;
     } else {
         return 0;

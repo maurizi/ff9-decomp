@@ -28,10 +28,10 @@ typedef struct {
 } Fx1f1Model; /* 0x60 */
 
 extern s32 D_801E7E9C[];
-extern Unk800F78A4 *D_801E7F04;
+extern Unk800F78A4 *fx_1f1_env;
 extern Fx1f1Unit D_801E7F14[];
 extern Fx1f1Model D_801E7F34[];
-extern BtlModel D_801E8214[];
+extern BtlModel fx_1f1_effModels[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 

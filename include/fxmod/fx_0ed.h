@@ -18,7 +18,7 @@ typedef struct {
     u8 unk10;
 } Fx0edBattleState;
 
-extern Unk800F78A4 *D_801E9224;
+extern Unk800F78A4 *fx_0ed_env;
 
 s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
@@ -63,6 +63,6 @@ extern Unk80100DC054 D_801E9234;
 extern u8 D_801E9494[];
 extern Fx0edSeg D_801E9AF4[17];
 extern Fx0edSeg D_801E9C04[17];
-extern BtlModel D_801E93C4[];
+extern BtlModel fx_0ed_effModels[];
 
 #endif

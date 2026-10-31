@@ -44,8 +44,8 @@ typedef struct {
     u16 unk66;
 } Fx1e6Work81; /* 0x68 */
 
-extern Unk800F78A4 *D_801E8348;
-extern BtlModel D_801E8358[];
+extern Unk800F78A4 *fx_1e6_env;
+extern BtlModel fx_1e6_effModels[];
 extern Fx1e6Path D_801E84E8;
 extern s32 D_801E84F8[];
 extern s32 D_801E87C8[];
@@ -63,7 +63,7 @@ static void fxm_posPathInit(Fx1e6Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx1e6Path *path, s32 t, SVECTOR *out);
 
 /* copied */
-extern Unk800F78A4 *D_801E8348;
+extern Unk800F78A4 *fx_1e6_env;
 /* end copied */
 
 #endif

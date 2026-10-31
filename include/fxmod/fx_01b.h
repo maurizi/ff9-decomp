@@ -9,6 +9,6 @@ typedef struct {
     SVECTOR unk4; /* target position */
 } Fx01bWork;
 
-extern Unk800F78A4 *D_801E78CC;
+extern Unk800F78A4 *fx_01b_env;
 
 #endif

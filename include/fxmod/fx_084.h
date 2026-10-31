@@ -13,10 +13,10 @@ typedef struct {
     Pool6CEntry *unk20;
 } Fx084Work;
 
-extern Unk800F78A4 *D_801E7B90;
+extern Unk800F78A4 *fx_084_env;
 extern SVECTOR D_801E7B98; /* particle path start */
 extern SVECTOR D_801E7BA0; /* particle path end */
-extern Unk80100C78Entry *D_801E7BA8;
+extern Unk80100C78Entry *fx_084_task;
 
 static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame);
 

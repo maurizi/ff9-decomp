@@ -14,7 +14,7 @@ s32 fx_0a6_op80(s32 mode, Fx0a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk1C.vy = env->targets->centerY;
         work->unk1C.vz = env->targets->centerZ;
         work->unk14.vy -= 0xC8;
-        D_801E7974 = env;
+        fx_0a6_env = env;
     } else {
         frame = entry->frame;
         if (frame == 0) {

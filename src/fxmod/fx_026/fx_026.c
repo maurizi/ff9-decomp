@@ -62,7 +62,7 @@ static s32 fxm_keyGetValue(Fx026Track *track, s32 t) {
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
-    Unk800F78A4 *env = D_801EACCC;
+    Unk800F78A4 *env = fx_026_env;
     u32 *p = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;
@@ -167,8 +167,8 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801EACCC = env;
-        ex->btlfx_initEffModels(D_801EACDC, 0x20);
+        fx_026_env = env;
+        ex->btlfx_initEffModels(fx_026_effModels, 0x20);
         work->unk58.vy = 0x800;
         work->unk4C.vx = 0x1000;
         work->unk4C.vy = 0x1000;
@@ -520,7 +520,7 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vy = 0;
         D_801EC5E4.vx = work->unk8.vx;
         D_801EC5E4.vy = work->unk8.vy;
-        D_801EACCC = env;
+        fx_026_env = env;
         D_801EC5E4.vz = work->unk8.vz;
     } else {
         frame = entry->frame;
@@ -606,7 +606,7 @@ static void fxm_shatterInit(s32 i, s32 n, Fx026Shatter *buf, Fx026Tri *tris) {
 }
 
 static s32 fxm_shatterAddModel(s32 i, s32 model) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EACCC);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_026_env);
     Fx026Shatter *h = D_801ED9CC[i];
     Fx026Tri *t = h->unkC;
     Fx026Shard *p;
@@ -647,7 +647,7 @@ static s32 fxm_shatterRelease(s32 i) {
     s32 k = 0;
     Fx026Shatter *h = D_801ED9CC[i];
     Fx026Tri *t = h->unk8;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EACCC);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_026_env);
     s32 n = 0;
     s32 y = D_801EDA08;
     Fx026Shard *p;
@@ -691,7 +691,7 @@ static void fxm_shatterUpdate(s32 i) {
     VECTOR out;
     VECTOR sv;
     MATRIX m;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EACCC);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_026_env);
     Fx026Shard *p;
     Fx026Shatter *h;
     Fx026Tri *t;
@@ -952,7 +952,7 @@ s32 fx_026_op81(s32 mode, Fx026Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         init->elemFn = (s32)fx_026_op81PoolTask;
         init->poolCount = 0x4A;
     } else if (mode == 1) {
-        D_801EACCC = env;
+        fx_026_env = env;
         work->unk0 = 0;
         work->unk4 = 0;
         for (i = 0; i < 6; i++) {
@@ -1073,7 +1073,7 @@ s32 fx_026_op87(s32 mode, Fx026Work87 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x14;
     } else if (mode == 1) {
         work->unk0 = *arg4;
-        D_801EACCC = env;
+        fx_026_env = env;
     } else {
         frame = entry->frame;
         fxm_keyGetVec((Fx026Track *)ex->btlfx_getFileData(entry->file, D_801EA8C4[work->unk0].unk2), frame,

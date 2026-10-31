@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk4[1];
 } Fx17d6Trail;
 
-extern Unk800F78A4 *D_801E93B4;
+extern Unk800F78A4 *fx_17d_6_env;
 
 typedef struct {
     u8 unk0;
@@ -108,7 +108,7 @@ typedef struct {
 
 extern SVECTOR D_801E9360;
 extern u8 D_801E9368[];
-extern BtlModel D_801E93C4[];
+extern BtlModel fx_17d_6_effModels[];
 extern s32 D_801E9624[];
 extern SVECTOR D_801EB104;
 extern SVECTOR D_801EB10C;

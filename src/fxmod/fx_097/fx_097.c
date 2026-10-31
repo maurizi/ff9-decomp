@@ -2,7 +2,7 @@
 
 static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
-    Unk800F78A4 *env = D_801E9DB4;
+    Unk800F78A4 *env = fx_097_env;
     RECT rect;
     VECTOR sv;
     SVECTOR zero;
@@ -132,7 +132,7 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
 }
 
 static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 h, s32 abr) {
-    Unk800F78A4 *env = D_801E9DB4;
+    Unk800F78A4 *env = fx_097_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
     VECTOR sc;
@@ -276,7 +276,7 @@ static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
 }
 
 void func_801E8284(s16 *a, s16 *b, s32 i, s16 *out) {
-    BTLFX_EXPORTS(D_801E9DB4)->btlfx_pointAhead(a, b, -((D_801E9D50[i] * 0x455) >> 9), out);
+    BTLFX_EXPORTS(fx_097_env)->btlfx_pointAhead(a, b, -((D_801E9D50[i] * 0x455) >> 9), out);
 }
 
 static s32 fx_097_op80PoolTask(s32 mode, Fx097Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
@@ -483,8 +483,8 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         init->elemFn = (s32)fx_097_op80PoolTask;
         init->poolCount = 0x20;
     } else if (mode == 1) {
-        D_801E9DB4 = env;
-        ex->btlfx_initEffModels(D_801E9DC4, 0x19);
+        fx_097_env = env;
+        ex->btlfx_initEffModels(fx_097_effModels, 0x19);
         c = 0x9A;
         i = 0;
         work->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x14), c, 0x3DC0, 0x80, 0);

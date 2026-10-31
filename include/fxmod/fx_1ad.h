@@ -15,8 +15,8 @@ typedef struct {
 } Fx1adWork;
 
 extern u16 D_801E7CD8[6][9]; /* per row: count, bones */
-extern Unk800F78A4 *D_801E7D8C;
-extern BtlModel D_801E7D9C[];
+extern Unk800F78A4 *fx_1ad_env;
+extern BtlModel fx_1ad_effModels[];
 extern s32 D_801E7E6C[];
 extern s32 D_801E8F4C[];
 

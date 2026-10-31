@@ -24,7 +24,7 @@ typedef struct {
     SVECTOR unk4[21];
 } Fx1edTrail; /* 0xAC */
 
-extern Unk800F78A4 *D_801E8910;
+extern Unk800F78A4 *fx_1ed_env;
 extern SVECTOR D_801E8A88; /* summon rotation */
 extern VECTOR D_801E8A90; /* summon position */
 extern VECTOR D_801E8AA0; /* summon scale */
@@ -61,7 +61,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 #define SUMMON(env) ((Fx1edSummon *)(env)->loader)
 
 /* copied */
-extern Unk800F78A4 *D_801E8910;
+extern Unk800F78A4 *fx_1ed_env;
 extern SVECTOR D_801EA7E0[];
 /* end copied */
 

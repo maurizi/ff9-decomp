@@ -2,7 +2,7 @@
 
 void func_801EC738(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r, s32 p, CVECTOR *rgb, s32 tpage, s32 clut, s32 u,
                    s32 v, s32 dang, s32 abr) {
-    Unk800F78A4 *env = D_801F0D2C;
+    Unk800F78A4 *env = fx_0fb_1_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     MATRIX m;
@@ -396,7 +396,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        D_801F0D2C = env;
+        fx_0fb_1_env = env;
         ex->btlfx_initEffModels(((Fx0fb1Summon *)env->loader)->unk38, 0x1F);
         for (i = 0; i < 2; i++) {
             work->unk4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801F0864[i]),
@@ -1041,7 +1041,7 @@ s32 fx_0fb_1_op81(s32 mode, Fx0fb1Work81 *work, Unk800F78A4 *env, Unk80100C78Ent
     if (mode == 0) {
         *arg4 = 0x1A8;
     } else if (mode == 1) {
-        D_801F0D2C = env;
+        fx_0fb_1_env = env;
         work->unk1A0 = env->targets->targetCount;
         for (i = 0; i < work->unk1A0; i++) {
             if (ex->btlfx_isEnemyUnit(i) != 0) {
@@ -1113,7 +1113,7 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
     } else if (mode == 1) {
         units = env->targets;
         n = *arg4;
-        D_801F0D2C = env;
+        fx_0fb_1_env = env;
         work->unk24 = units->targetCount;
         work->unk0 = 0;
         if (n >= work->unk24) {

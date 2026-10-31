@@ -24,7 +24,7 @@ typedef struct {
     SVECTOR unk8;
 } Fx0e30Seg; /* 0x10: one step of the ribbon history */
 
-extern Unk800F78A4 *D_801EA868;
+extern Unk800F78A4 *fx_0e3_0_env;
 extern s32 D_801EB370;
 extern s32 D_801EB374;
 extern s32 D_801EB378;
@@ -102,7 +102,7 @@ extern Fx0e30Seg D_801EA878[4][15];
 extern u8 D_801EAC38[4][0x12C];
 extern Fx0e30Arc D_801EB0E8[];
 extern Fx0e30Bolt D_801EB388[];
-extern BtlModel D_801EB6A8[];
+extern BtlModel fx_0e3_0_effModels[];
 
 #define SUMMON(env) ((Fx0e30Summon *)(env)->loader)
 

@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR unk8; /* caster bone position */
 } Fx0ddWork84;
 
-extern Unk800F78A4 *D_801E83B0;
+extern Unk800F78A4 *fx_0dd_env;
 
 typedef struct {
     s16 unk0, unk2, unk4; /* position */
@@ -53,7 +53,7 @@ static void fxm_vecTrackInit(Fx0ddTrack6 *track, u16 *data);
 static s32 fxm_vecTrackGet(Fx0ddTrack6 *track, s32 t, VECTOR *out);
 
 extern u8 D_801E8360[6];
-extern BtlModel D_801E83C0[];
+extern BtlModel fx_0dd_effModels[];
 extern s32 D_801E8870[];
 extern Fx0ddTrack12 D_801E90B8;
 extern Fx0ddTrack12 D_801E90C0;

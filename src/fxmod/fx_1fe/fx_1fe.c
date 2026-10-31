@@ -2,7 +2,7 @@
 
 static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
-    Unk800F78A4 *env = D_801E9060;
+    Unk800F78A4 *env = fx_1fe_env;
     RECT rect;
     VECTOR sv;
     SVECTOR zero;
@@ -132,7 +132,7 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
 }
 
 static void fxm_waveVertexX(s16 *v) {
-    s32 t = (BTLFX_EXPORTS(D_801E9060)->math_sin(D_801E95EC + (v[1] << 8)) * D_801E95E8) >> 12;
+    s32 t = (BTLFX_EXPORTS(fx_1fe_env)->math_sin(D_801E95EC + (v[1] << 8)) * D_801E95E8) >> 12;
     s32 x = v[0];
 
     v[0] = x + t;
@@ -158,8 +158,8 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 1;
         work->unk4 = 0;
-        D_801E9060 = env;
-        ex->btlfx_initEffModels(D_801E9070, 7);
+        fx_1fe_env = env;
+        ex->btlfx_initEffModels(fx_1fe_effModels, 7);
         work->unk34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
         work->unk38 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
         work->unk3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xF), 1);
@@ -358,7 +358,7 @@ s32 fx_1fe_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E9060 = env;
+        fx_1fe_env = env;
         env->camera->paused = 0;
     } else {
         return 1;

@@ -19,7 +19,7 @@ typedef struct {
     SVECTOR unk18; /* target position */
 } Fx193Work81;
 
-extern Unk800F78A4 *D_801E7CB4;
+extern Unk800F78A4 *fx_193_env;
 extern SVECTOR D_801E7CBC;
 extern SVECTOR D_801E7CC4;
 extern SVECTOR D_801E7CCC;

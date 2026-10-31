@@ -36,7 +36,7 @@ extern u16 D_801E8104[6]; /* particle files */
 extern u16 D_801E8110[6]; /* path files */
 extern SVECTOR D_801E811C;
 extern s32 (*D_801E8124[6])(); /* motion callbacks */
-extern Unk800F78A4 *D_801E8184;
+extern Unk800F78A4 *fx_0b4_env;
 extern SVECTOR D_801E818C; /* path origin */
 extern SVECTOR D_801E8194[6];
 extern Fx0b4Path D_801E81C4[6];

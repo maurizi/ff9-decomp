@@ -20,7 +20,7 @@ typedef struct {
     SVECTOR unk4[57];
 } Fx195Trail57;
 
-extern Unk800F78A4 *D_801EA278;
+extern Unk800F78A4 *fx_195_env;
 
 /* propagated */
 void func_801E83BC(VECTOR *pos, SVECTOR *rot);
@@ -74,7 +74,7 @@ typedef struct {
     s32 unk94;
 } Fx195Work80; /* 0x98 */
 
-extern BtlModel D_801EA288[];
+extern BtlModel fx_195_effModels[];
 extern SVECTOR D_801EA228;
 extern Fx195Trail D_801EA808[];
 extern Fx195Trail57 D_801EAB08[];

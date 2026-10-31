@@ -21,7 +21,7 @@ typedef struct {
     SVECTOR unk1C; /* above the target body */
 } Fx044Work81; /* 0x24 */
 
-extern Unk800F78A4 *D_801E7A64;
+extern Unk800F78A4 *fx_044_env;
 extern s32 D_801E7A74[];
 
 #endif

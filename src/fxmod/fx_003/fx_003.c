@@ -2,7 +2,7 @@
 
 static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx003Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
                    s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8580);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_003_env);
     SVECTOR v;
     SVECTOR ang;
     SVECTOR *p;
@@ -38,7 +38,7 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx003Strip *strip, s3
 
 static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx003Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
                    s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8580);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_003_env);
     SVECTOR v;
     SVECTOR ang;
     SVECTOR *p;
@@ -80,7 +80,7 @@ static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx003Strip *strip, Fx
     SVECTOR v;
 
     p += i;
-    ex = BTLFX_EXPORTS(D_801E8580);
+    ex = BTLFX_EXPORTS(fx_003_env);
     ex->btlfx_lerpVec((s16 *)p, (s16 *)(p + 1), 0x4000, (s16 *)&v);
     fxm_drawJaggedStrip4(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x37, 0, arg5, arg6, kind);
 }
@@ -167,7 +167,7 @@ s32 fx_003_op83(s32 mode, Fx003Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->elemFn = (s32)fx_003_op83PoolTask;
         init->poolCount = 0xC;
     } else if (mode == 1) {
-        D_801E8580 = env;
+        fx_003_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
         work->unk8 = D_801E8F20;
         q = D_801E8F20;

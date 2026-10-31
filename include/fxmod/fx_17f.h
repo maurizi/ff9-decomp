@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk20; /* caster position */
 } Fx17fWork;
 
-extern Unk800F78A4 *D_801E7C50;
+extern Unk800F78A4 *fx_17f_env;
 extern s32 D_801E7C60[0x2BC];
 extern s32 D_801E88E0[];
 

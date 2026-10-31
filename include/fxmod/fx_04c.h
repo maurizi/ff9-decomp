@@ -17,6 +17,6 @@ typedef struct {
     s32 unk38; /* current target */
 } Fx04cWork81; /* 0x3C */
 
-extern Unk800F78A4 *D_801E7CB4;
+extern Unk800F78A4 *fx_04c_env;
 
 #endif

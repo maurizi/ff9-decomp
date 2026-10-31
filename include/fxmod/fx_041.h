@@ -35,7 +35,7 @@ typedef struct {
     SVECTOR unk14;
 } Fx041Work81; /* 0x1C */
 
-extern Unk800F78A4 *D_801E7F3C;
+extern Unk800F78A4 *fx_041_env;
 extern Fx041Path D_801E7F44;
 extern SVECTOR D_801E7F4C; /* target position */
 extern SVECTOR D_801E7F54; /* last path point */

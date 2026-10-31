@@ -1,7 +1,7 @@
 #include "fxmod/fx_1a2.h"
 
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx1a2Seg *buf, s32 abr) {
-    Unk800F78A4 *env = D_801E9844;
+    Unk800F78A4 *env = fx_1a2_env;
     CVECTOR c0;
     CVECTOR c1;
     s32 otz;
@@ -83,7 +83,7 @@ static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVEC
 }
 
 void func_801E7B88(s32 model, SVECTOR *center) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9844);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1a2_env);
     SVECTOR v;
     Fx1a2Tri *t;
     Fx1a2Piece *p;
@@ -129,7 +129,7 @@ void func_801E7D68(void) {
     p = D_801EA484;
     ((s32 *)&bias)[0] = 0;
     ((s32 *)&bias)[1] = 0;
-    ex = BTLFX_EXPORTS(D_801E9844);
+    ex = BTLFX_EXPORTS(fx_1a2_env);
     scale.vx = scale.vy = scale.vz = 0xF80;
     for (i = 0; i < 130; i++, p++, t++) {
         if (p->unk18 >= 0) {
@@ -280,8 +280,8 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     } else if (mode == 1) {
         w->unk0 = 0;
         w->unk4 = 0;
-        D_801E9844 = env;
-        ex->btlfx_initEffModels(D_801EB2C4, 10);
+        fx_1a2_env = env;
+        ex->btlfx_initEffModels(fx_1a2_effModels, 10);
         w->unk3C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0xB8, 0x3DC0, 0x80, 0);
         w->unk40 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0xB8, 0x3DC0, 0x80, 0);
         w->unk30[0] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0xBA, 0x3E40, 0, 0xE0);
@@ -600,7 +600,7 @@ s32 fx_1a2_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     if (mode == 0) {
         *arg4 = 8;
     } else if (mode == 1) {
-        D_801E9844 = env;
+        fx_1a2_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)work);
         return 0;
     } else {

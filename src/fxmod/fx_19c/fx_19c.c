@@ -7,7 +7,7 @@ s32 fx_19c_op80(s32 mode, Fx19cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        D_801E7970 = env;
+        fx_19c_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         work->unkC = 0x80;
     } else {
@@ -35,7 +35,7 @@ s32 fx_19c_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     if (mode == 0) {
         *arg4 = 8;
     } else if (mode == 1) {
-        D_801E7970 = env;
+        fx_19c_env = env;
     } else {
         frame = entry->frame;
         ex->btlfx_getUnitPos(0x10, (s16 *)work);

@@ -39,8 +39,8 @@ typedef struct {
 } Fx078Work; /* 0x60 */
 
 extern u8 D_801E7D18[10];
-extern Unk800F78A4 *D_801E7D6C;
-extern BtlModel D_801E7D7C[];
+extern Unk800F78A4 *fx_078_env;
+extern BtlModel fx_078_effModels[];
 extern s32 D_801E854C[];
 extern Fx078Track12 D_801E8EAC;
 extern Fx078Track6 D_801E8EB4;

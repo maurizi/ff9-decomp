@@ -24,7 +24,7 @@ typedef struct {
     Fx1fcPoint *unk4;
 } Fx1fcPath;
 
-extern BtlModel D_801EC15C[];
+extern BtlModel fx_1fc_effModels[];
 extern u32 D_801EDADC[];
 extern SVECTOR D_801EDEDC[8]; /* unit positions */
 extern VECTOR D_801EDF1C[8]; /* unit scales */
@@ -44,7 +44,7 @@ static inline void fx1fc_copy(SVECTOR *d, SVECTOR *s) {
 }
 
 /* copied */
-extern Unk800F78A4 *D_801EC14C;
+extern Unk800F78A4 *fx_1fc_env;
 /* end copied */
 
 /* propagated */

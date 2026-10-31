@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 extern s16 D_801E9CB8[];
-extern Unk800F78A4 *D_801E9D1C;
+extern Unk800F78A4 *fx_098_env;
 
 void func_801E8284(s16 *a, s16 *b, s32 i, s16 *out);
 typedef struct {
@@ -63,7 +63,7 @@ typedef struct {
     Pool6CEntry *unk84; /* particle */
 } Fx098Work80; /* 0x88 */
 
-extern BtlModel D_801E9D2C[];
+extern BtlModel fx_098_effModels[];
 extern s32 D_801E9C80[14];
 s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 

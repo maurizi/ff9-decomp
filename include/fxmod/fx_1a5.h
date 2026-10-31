@@ -11,7 +11,7 @@ typedef struct {
     s32 unk10; /* unit */
 } Fx1a5Work;
 
-extern Unk800F78A4 *D_801E7950;
+extern Unk800F78A4 *fx_1a5_env;
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 

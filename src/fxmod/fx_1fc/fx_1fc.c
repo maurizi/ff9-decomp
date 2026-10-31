@@ -8,8 +8,8 @@ s32 fx_1fc_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801EC14C = env;
-        ex->btlfx_initEffModels(D_801EC15C, 0x20);
+        fx_1fc_env = env;
+        ex->btlfx_initEffModels(fx_1fc_effModels, 0x20);
         for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&D_801EDEDC[i]);
             ex->btlfx_getUnitScale(i, (s32 *)&D_801EDF1C[i]);
@@ -32,7 +32,7 @@ s32 fx_1fc_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801EC14C = env;
+        fx_1fc_env = env;
     } else {
         return entry->frame > 0;
     }
@@ -43,7 +43,7 @@ s32 fx_1fc_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801EC14C = env;
+        fx_1fc_env = env;
     } else {
         return entry->frame > 0;
     }
@@ -84,7 +84,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = 0x1000;
         work->unk20.vy = 0x1000;
         work->unk20.vz = 0x1000;
-        D_801EC14C = env;
+        fx_1fc_env = env;
         fxm_rotPosPathInit((Fx1fcPath *)&D_801EDA5C, (u16 *)ex->btlfx_getFileData(entry->file, 0x13));
         work->unk136[0] = ex->btlfx_registerEffectModel(&D_801E99A4, 1);
         work->unk8.vx = 0;
@@ -272,7 +272,7 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xB0;
     } else if (mode == 1) {
-        D_801EC14C = env;
+        fx_1fc_env = env;
         for (j = 0; j < env->targets->targetCount; j++) {
             work->unkA0[j] = 0;
             ex->btlfx_getUnitHomePos(j, (s16 *)&work->unk20[j]);
@@ -307,7 +307,7 @@ static s32 fxm_offsetTableEntry(u8 *base, u16 i) {
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801EC14C)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_1fc_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -410,11 +410,11 @@ static s32 fxm_vecPathGet(Fx1fcTrack6 *track, s32 t, VECTOR *out) {
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801EC14C)->btlfx_drawScreenTint((u32 *)(D_801EC14C->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_1fc_env)->btlfx_drawScreenTint((u32 *)(fx_1fc_env->ot + ot), arg4, c, c, c);
 }
 
 static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801EC14C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_1fc_env);
     SVECTOR a;
     SVECTOR out;
 
@@ -457,7 +457,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
 }
 
 static void fxm_camChanUpdate(s32 ch) {
-    Unk800F78A4 *env = D_801EC14C;
+    Unk800F78A4 *env = fx_1fc_env;
     s32 i;
     s32 k;
     s32 d;

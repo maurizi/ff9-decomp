@@ -10,7 +10,7 @@ s32 fx_04e_op80(s32 mode, Fx04eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC.vx = env->targets->centerX;
         work->unkC.vy = env->targets->centerY;
         work->unkC.vz = env->targets->centerZ;
-        D_801E7930 = env;
+        fx_04e_env = env;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unkC);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7940;

@@ -1,7 +1,7 @@
 #include "fxmod/fx_043.h"
 
 static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7BC8);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_043_env);
     s32 r = t << 10;
 
     if (r > 0x1000) {
@@ -23,7 +23,7 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        D_801E7BC8 = env;
+        fx_043_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
         work->unk14.vy -= 0x64;
         D_801E7BD8.vx = work->unk14.vx;
@@ -58,7 +58,7 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        D_801E7BC8 = env;
+        fx_043_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk10);
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&D_801E7BD0, (s16 *)&work->unk20);

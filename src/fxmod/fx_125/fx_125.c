@@ -17,7 +17,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x30;
     } else if (mode == 1) {
         work->unk0 = 0;
-        D_801E7D78 = env;
+        fx_125_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
         work->unkC.vx = work->unk4.vx;
@@ -28,7 +28,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk1C.vz = work->unk4.vz;
         work->unkC.vy -= 0x100;
         work->unk1C.vy -= 0x400;
-        ex->btlfx_initEffModels(D_801E7D88, 3);
+        ex->btlfx_initEffModels(fx_125_effModels, 3);
         work->unk24 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0xB3,
                                                       0x3D40, 0, 0);
         x = env->dispEnv->disp.x;

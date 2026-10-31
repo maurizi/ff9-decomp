@@ -2,9 +2,9 @@
 
 static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,
                    s32 n) {
-    Unk800F78A4 *env = D_801E8ED8;
+    Unk800F78A4 *env = fx_081_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Unk80100C78Entry *entry = D_801EA9B0;
+    Unk80100C78Entry *entry = fx_081_task;
     SVECTOR v;
     s32 r;
     s32 t;
@@ -62,9 +62,9 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = sizeof(Fx081Work80);
     } else if (mode == 1) {
-        D_801E8ED8 = env;
+        fx_081_env = env;
         D_801EA73C = 0;
-        D_801EA9B0 = entry;
+        fx_081_task = entry;
         work->unk10.vx = 0;
         work->unk10.vy = 0;
         work->unk10.vz = 0;
@@ -95,7 +95,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk34 != NULL) {
             work->unk34->otZ = 0x10;
         }
-        ex->btlfx_initEffModels(D_801EA758, 3);
+        ex->btlfx_initEffModels(fx_081_effModels, 3);
         work->unk8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x21), 0x137,
                                                 0xFFFF, 0,
                                                 0x80);
@@ -281,7 +281,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkC.vx = 0;
         work->unkC.vy = 0;
         work->unkC.vz = 0;
-        D_801E8ED8 = env;
+        fx_081_env = env;
         e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unkC);
         if (e != NULL) {
             e->otZ = work->unk8 + 0x40;

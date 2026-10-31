@@ -57,8 +57,8 @@ typedef struct {
 
 extern u16 D_801E8288[6]; /* model files */
 extern u16 D_801E8294[6]; /* path files */
-extern Unk800F78A4 *D_801E82E8;
-extern BtlModel D_801E82F8[];
+extern Unk800F78A4 *fx_183_env;
+extern BtlModel fx_183_effModels[];
 extern Fx183Path D_801E8878[6];
 extern s32 D_801E88A8[][0xF0];
 
@@ -67,7 +67,7 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_rotPosPathInit(Fx183Path *path, u16 *data);
 
 /* copied */
-extern Unk800F78A4 *D_801E82E8;
+extern Unk800F78A4 *fx_183_env;
 /* end copied */
 
 /* propagated */

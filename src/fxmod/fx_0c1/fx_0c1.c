@@ -1,7 +1,7 @@
 #include "fxmod/fx_0c1.h"
 
 static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    BTLFX_EXPORTS(D_801E7C18)->btlfx_lerpVec((s16 *)&D_801E7C20, (s16 *)&D_801E7C28, (frame << 12) / 9, (s16 *)pos);
+    BTLFX_EXPORTS(fx_0c1_env)->btlfx_lerpVec((s16 *)&D_801E7C20, (s16 *)&D_801E7C28, (frame << 12) / 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -19,7 +19,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x50;
     } else if (mode == 1) {
-        D_801E7C18 = env;
+        fx_0c1_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk10);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk18);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk20);

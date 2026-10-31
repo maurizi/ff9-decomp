@@ -12,7 +12,7 @@ typedef struct {
     Pool6CEntry *unk20;
 } Fx02fWork; /* 0x24 */
 
-extern Unk800F78A4 *D_801E7AEC;
+extern Unk800F78A4 *fx_02f_env;
 extern SVECTOR D_801E7AFC[]; /* target body positions */
 extern s32 D_801E7B3C[];
 

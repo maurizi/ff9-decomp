@@ -10,7 +10,7 @@ static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTO
 
 s32 func_801E7794(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 amp, s32 frame, s32 frames) {
     s32 t = (frame << 12) / 7;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7CB4);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_193_env);
 
     if (t > 0x1000) {
         t = 0x1000;
@@ -35,7 +35,7 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        D_801E7CB4 = env;
+        fx_193_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         D_801E7CC4.vx = work->unk8.vx;
         D_801E7CC4.vy = work->unk8.vy;
@@ -76,7 +76,7 @@ s32 fx_193_op81(s32 mode, Fx193Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x20;
     } else if (mode == 1) {
-        D_801E7CB4 = env;
+        fx_193_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);

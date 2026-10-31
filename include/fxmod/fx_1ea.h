@@ -41,7 +41,7 @@ static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot)
 static s32 fxm_posPathGet(Fx1eaPath *path, s32 t, SVECTOR *out);
 
 /* copied */
-extern Unk800F78A4 *D_801E8DD8;
+extern Unk800F78A4 *fx_1ea_env;
 /* end copied */
 
 /* propagated */
@@ -97,7 +97,7 @@ extern u16 D_801E8D68[];
 extern u16 D_801E8D74[];
 extern u16 D_801E8D80[];
 extern u16 D_801E8D84[];
-extern BtlModel D_801E8DE8[];
+extern BtlModel fx_1ea_effModels[];
 extern Fx1eaRibbon D_801E95B8;
 extern Fx1eaRibbon D_801E95D8;
 extern Fx1eaPath_0b4 D_801E95F0;

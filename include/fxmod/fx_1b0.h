@@ -25,7 +25,7 @@ typedef struct {
     Fx1b0Piece unk4C[0x7BC];
 } Fx1b0Split;
 
-extern Unk800F78A4 *D_801EBF34;
+extern Unk800F78A4 *fx_1b0_env;
 extern Fx1b0Split *D_801EBF3C;
 extern Fx1b0Piece *D_801EBF40;
 
@@ -73,11 +73,11 @@ extern s16 D_801E8CEC[8]; /* model files */
 extern s32 D_801E8D44[];
 extern s32 D_801EA2C4[];
 extern s32 D_801EAFE4[];
-extern Unk80100C78Entry *D_801EBF38;
-extern BtlModel D_801EBF44[];
+extern Unk80100C78Entry *fx_1b0_task;
+extern BtlModel fx_1b0_effModels[];
 
 /* copied */
-extern Unk800F78A4 *D_801EBF34;
+extern Unk800F78A4 *fx_1b0_env;
 /* end copied */
 
 #endif

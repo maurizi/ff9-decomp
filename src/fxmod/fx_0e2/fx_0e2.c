@@ -1,7 +1,7 @@
 #include "fxmod/fx_0e2.h"
 
 void func_801E77C0(void *trackA, void *trackB, s32 t, Fx0e2Trail *trail, s32 size, s32 pad) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801ECC0C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0e2_env);
     SVECTOR rot;
     SVECTOR pos;
     SVECTOR rotA;
@@ -88,7 +88,7 @@ void func_801E7A0C(void *track, Fx0e2Trail *trail, s32 size, s32 base, s32 pad) 
 
 void func_801E7BE8(void *track, Fx0e2Trail *trail, s32 size, s32 base, s32 count, s32 pad) {
     s32 k;
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801ECC0C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0e2_env);
     SVECTOR pos;
     SVECTOR *pt;
     s32 n;
@@ -123,7 +123,7 @@ void func_801E7BE8(void *track, Fx0e2Trail *trail, s32 size, s32 base, s32 count
 
 void func_801E7D5C(void *trackA, void *trackB, Fx0e2Trail *trail, s32 size, s32 base, s32 count, s32 pad, s32 t,
                    s32 rotY) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801ECC0C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0e2_env);
     MATRIX m;
     VECTOR out;
     SVECTOR rot;
@@ -176,7 +176,7 @@ void func_801E7D5C(void *trackA, void *trackB, Fx0e2Trail *trail, s32 size, s32 
 }
 
 void func_801E7FBC(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist) {
-    Unk800F78A4 *env = D_801ECC0C;
+    Unk800F78A4 *env = fx_0e2_env;
     Fx0e2Edge *e = D_801EE62C;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
@@ -254,7 +254,7 @@ void func_801E7FBC(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scal
 }
 
 void func_801E83B0(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY) {
-    Unk800F78A4 *env = D_801ECC0C;
+    Unk800F78A4 *env = fx_0e2_env;
     Fx0e2Edge *e = D_801EE62C;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
@@ -324,10 +324,10 @@ void func_801E86D0(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
     s32 z;
 
     tp = tpage | 0x20;
-    p = (POLY_GT4 *)D_801ECC0C->prim;
-    D_801ECC0C->prim = (u8 *)(p + n);
+    p = (POLY_GT4 *)fx_0e2_env->prim;
+    fx_0e2_env->prim = (u8 *)(p + n);
     cl = clut;
-    ex = BTLFX_EXPORTS(D_801ECC0C);
+    ex = BTLFX_EXPORTS(fx_0e2_env);
     for (i = 0; i < n - 1; i++, p++, e++) {
         p->tpage = tp;
         p->clut = cl;
@@ -417,8 +417,8 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x16C;
     } else if (mode == 1) {
-        D_801ECC0C = env;
-        ex->btlfx_initEffModels(D_801ECC1C, 0x20);
+        fx_0e2_env = env;
+        ex->btlfx_initEffModels(fx_0e2_effModels, 0x20);
         D_801F1004.vx = env->targets->centerX;
         D_801F1004.vy = env->targets->centerY;
         D_801F1004.vz = env->targets->centerZ;
@@ -954,7 +954,7 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x13C;
     } else if (mode == 1) {
-        D_801ECC0C = env;
+        fx_0e2_env = env;
         work->unk1C.vx = -0x18D;
         work->unk1C.vz = -0x25E;
         work->unk14.vx = 0;
@@ -1102,7 +1102,7 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x6C;
     } else if (mode == 1) {
         work->unk50.vx = env->targets->centerX;
-        D_801ECC0C = env;
+        fx_0e2_env = env;
         work->unk50.vy = env->targets->centerY;
         work->unk50.vz = env->targets->centerZ;
         work->unk50.vy -= 0x3E8;
@@ -1361,7 +1361,7 @@ s32 fx_0e2_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         work->vx = 0;
         work->vy = 0;
         work->vz = 0x4B0;
-        D_801ECC0C = env;
+        fx_0e2_env = env;
         for (i = 0; i < env->targets->targetCount; i++, o++) {
             ex->btlfx_getUnitPos(i, (s16 *)&o->unk0);
             ex->btlfx_getUnitRot(i, (s16 *)&o->unk8);
@@ -1403,7 +1403,7 @@ s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0xD0;
     } else if (mode == 1) {
         o = D_801EE8FC;
-        D_801ECC0C = env;
+        fx_0e2_env = env;
         for (i = 0; i < env->targets->targetCount; i++, o++) {
             work->unkC0[i] = 0;
             ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk40[i]);
@@ -1444,7 +1444,7 @@ s32 fx_0e2_op85(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
     if (mode == 0) {
         *arg4 = 2;
     } else if (mode == 1) {
-        D_801ECC0C = env;
+        fx_0e2_env = env;
         *work = -1;
     } else {
         frame = entry->frame;
@@ -1465,7 +1465,7 @@ static s32 fxm_offsetTableEntry(u8 *base, u16 i) {
 }
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(D_801ECC0C)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+    BTLFX_EXPORTS(fx_0e2_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -1527,11 +1527,11 @@ static s32 fxm_rotPosPathGet(Fx0e2Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801ECC0C)->btlfx_drawScreenTint((u32 *)(D_801ECC0C->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_0e2_env)->btlfx_drawScreenTint((u32 *)(fx_0e2_env->ot + ot), arg4, c, c, c);
 }
 
 static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
-    BtlfxExports *ex = BTLFX_EXPORTS(D_801ECC0C);
+    BtlfxExports *ex = BTLFX_EXPORTS(fx_0e2_env);
     SVECTOR a;
     SVECTOR out;
 
@@ -1574,7 +1574,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
 }
 
 static void fxm_camChanUpdate(s32 ch) {
-    Unk800F78A4 *env = D_801ECC0C;
+    Unk800F78A4 *env = fx_0e2_env;
     s32 i;
     s32 k;
     s32 d;
@@ -1607,7 +1607,7 @@ static void fxm_camChanUpdate(s32 ch) {
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
-    Unk800F78A4 *env = D_801ECC0C;
+    Unk800F78A4 *env = fx_0e2_env;
     u32 *p = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;

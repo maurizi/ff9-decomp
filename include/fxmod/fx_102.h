@@ -13,6 +13,6 @@ typedef struct {
 } Fx102Work;
 
 extern u16 D_801E7924[8];
-extern Unk800F78A4 *D_801E797C;
+extern Unk800F78A4 *fx_102_env;
 
 #endif

@@ -33,7 +33,7 @@ typedef struct {
     s32 unk1A4;
 } Fx0fb1Work81; /* 0x1A8 */
 
-extern Unk800F78A4 *D_801F0D2C;
+extern Unk800F78A4 *fx_0fb_1_env;
 extern s32 D_801F0D30; /* set when the units are put back */
 extern s32 D_801F0D34; /* unit brightness */
 

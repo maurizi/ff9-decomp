@@ -64,8 +64,8 @@ typedef struct {
     s16 unk3A;
 } Fx180Work83; /* 0x3C */
 
-extern Unk800F78A4 *D_801E9258;
-extern BtlModel D_801E9268[];
+extern Unk800F78A4 *fx_180_env;
+extern BtlModel fx_180_effModels[];
 extern Fx180Path D_801E93F8[0x12];
 extern Fx180Path D_801E9488[0x1E];
 extern s32 D_801E9578[];
@@ -93,7 +93,7 @@ static s32 fxm_isMotionDone(s32 unit);
 static void fxm_startMotion3IfActive(s32 unit);
 
 /* copied */
-extern Unk800F78A4 *D_801E9258;
+extern Unk800F78A4 *fx_180_env;
 /* end copied */
 
 /* propagated */

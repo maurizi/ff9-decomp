@@ -31,9 +31,9 @@ typedef struct {
     u16 unk2;
 } Fx016Pair;
 
-extern BtlModel D_801E8368[];
+extern BtlModel fx_016_effModels[];
 extern Fx016Pair D_801E82B0[];
-extern Unk800F78A4 *D_801E8358;
+extern Unk800F78A4 *fx_016_env;
 extern s32 D_801E89A8; /* jump scale */
 
 #endif

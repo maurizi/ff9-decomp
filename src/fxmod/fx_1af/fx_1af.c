@@ -16,14 +16,14 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x54;
     } else if (mode == 1) {
-        D_801E7F48 = env;
+        fx_1af_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&v);
         work->unk8[0] = v.vx;
         work->unk8[1] = v.vy;
         work->unk8[2] = v.vz;
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
         ex->btlfx_getUnitScale(0x10, (VECTOR *)work->unk1C);
-        D_801E7F4C = entry;
+        fx_1af_task = entry;
         work->unk0 = 0;
         work->unk4 = 0;
         work->unk28.vx = work->unk8[0];
@@ -43,7 +43,7 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 entry->frame = -1;
                 ex->btlfx_fadeUnitById(0x10, 0);
                 ex->btlfx_moveSummonToHeap(0x50);
-                ex->btlfx_initEffModels(D_801E7F58, 5);
+                ex->btlfx_initEffModels(fx_1af_effModels, 5);
                 for (i = 0; i < 5; i++) {
                     work->unk40[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7EF4[i]), 0);
                 }
@@ -159,7 +159,7 @@ s32 fx_1af_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E7F48 = env;
+        fx_1af_env = env;
         ex->btlfx_clearUnitStatus(0x10);
     } else {
         return 1;
@@ -174,7 +174,7 @@ s32 fx_1af_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 4;
     } else if (mode == 1) {
-        D_801E7F48 = env;
+        fx_1af_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&v);
         env->camera->points[3].vx = v.vx;
         env->camera->points[3].vy = v.vy;

@@ -17,7 +17,7 @@ typedef struct {
     SVECTOR unk8; /* position: env->targets->centerX..Z */
 } Fx088Work81;
 
-extern Unk800F78A4 *D_801E7DA0;
+extern Unk800F78A4 *fx_088_env;
 extern s32 D_801E7DB0[];
 
 static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta);

@@ -7,3 +7,5 @@ fxm_drawBulgeGrid24 = 0x801E7E18; // type:func [code] 24x24 POLY_GT4 grid whose 
 fxm_drawSprite3D = 0x801E7B08; // type:func [code] one POLY_FT4 quad of w x h texels at pos, rotated and scaled
 fxm_drawTiledStrip = 0x801E7910; // type:func [code] two (flip four) POLY_FT4 tiles of the texture side by side across the screen
 fx_0e0_op80PoolTask = 0x801E8628; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_0e0_op80
+fx_0e0_env = 0x801EA918; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_0e0_effModels = 0x801EAB98; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

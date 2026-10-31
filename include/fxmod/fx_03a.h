@@ -24,10 +24,10 @@ typedef struct {
     s32 unk30; /* bounce time */
 } Fx03aModel; /* 0x34 */
 
-extern Unk800F78A4 *D_801E7DA8;
+extern Unk800F78A4 *fx_03a_env;
 extern Fx03aModel D_801E7DB8[10];
 extern s32 D_801E7FC0; /* bounce power */
-extern BtlModel D_801E7FC8[];
+extern BtlModel fx_03a_effModels[];
 extern u32 D_801E8798[];
 
 #endif
