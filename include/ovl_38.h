@@ -16,8 +16,6 @@ enum {
 
 #define STATUS_NO_SLOT      0xFF /* StatusMenu.slot before the first character is shown */
 #define STATUS_PAGE_ROWS    8    /* abilities per page window */
-#define STATUS_ABILITY_MAX  0x30 /* entries in a character's g_abilityRows ability row */
-#define STATUS_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
 
 /* g_statusMenuText ids */
 #define STATUS_TEXT_HELP   0   /* help: the status ailments */
@@ -103,9 +101,6 @@ extern StatusTable s_menuStatusCmdTable;
 extern StatusPool s_menuStatusCmdNames;
 
 /* main exe: candidates for ff9.h */
-#ifndef ITEM_NONE
-#define ITEM_NONE 0xFF /* empty Character.equip slot */
-#endif
 extern s32 g_labelCommand;
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
 typedef struct {

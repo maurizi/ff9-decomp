@@ -1005,7 +1005,7 @@ s32 rewards_initApCounter(s32 i) {
     u32 ap = s_rewards.rewards.ap;
     Counter *c = &s_rewards.rewards.apGain[i];
 
-    if (chr_hasSupportAbility(g_gameState->gameData->party[i]->info.b.id, SUPPORT_ABILITY_UP)) {
+    if (chr_hasSupportAbility(g_gameState->gameData->party[i]->info.b.id, SA_ABILITY_UP)) {
         c->target = ap * 2;
     } else {
         c->target = ap;
@@ -1137,7 +1137,7 @@ u32 rewards_initExpCounter(s32 arg0) {
     u32 step;
 
     c->target = exp;
-    if (chr_hasSupportAbility(m->info.b.id, SUPPORT_LEVEL_UP)) {
+    if (chr_hasSupportAbility(m->info.b.id, SA_LEVEL_UP)) {
         c->target += exp >> 1;
     }
     if (exp < 16) {
@@ -1270,7 +1270,7 @@ void rewards_initGil(void) {
 
     for (i = 0; i < 4; i++) {
         m = g_gameState->gameData->party[i];
-        if (m != NULL && chr_hasSupportAbility(m->info.b.id, SUPPORT_MILLIONAIRE)) {
+        if (m != NULL && chr_hasSupportAbility(m->info.b.id, SA_MILLIONAIRE)) {
             found = 1;
         }
     }

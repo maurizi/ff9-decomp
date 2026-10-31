@@ -55,7 +55,7 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
     memset(sum, r, 4);
     for (i = 1; i < 5; i++) {
         if (equip[i] != ITEM_NONE) {
-            if (equip[i] < 0xE0) {
+            if (equip[i] < ITEM_FIRST_USABLE) {
                 j = equip[i] - 0x58;
                 b = &g_armorStatBonus[j];
                 sum[0] += b->defense;

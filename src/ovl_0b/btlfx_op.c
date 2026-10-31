@@ -2023,7 +2023,7 @@ void btlfx_playCmdCamera(s32 arg0) {
     } else if (u->flags & 1) {
         if ((u8)btl_hasStatus(u, BTL_STATUS_TRANCE) == 0) {
             if ((hi >> 4) == 1 || (hi >> 4) == 7) {
-                if (((u->flags >> 1) & 0xF) == 2) {
+                if (((u->flags >> 1) & 0xF) == CHR_DAGGER) {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[2]);
                 } else {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[3]);

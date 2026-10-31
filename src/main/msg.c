@@ -178,12 +178,12 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 break;
             case 0xE:
                 n = g_msgNumbers[*s++];
-                if (n < 0x100) {
+                if (n < ITEM_ID_KEY_FIRST) {
                     str = g_itemNames + g_itemTable[n].name;
-                } else if (n < 0x200) {
-                    str = g_keyItemNames + g_keyItemTable[n - 0x100].name;
+                } else if (n < ITEM_ID_CARD_FIRST) {
+                    str = g_keyItemNames + g_keyItemTable[n - ITEM_ID_KEY_FIRST].name;
                 } else {
-                    str = (u8 *)card_getName(n - 0x200);
+                    str = (u8 *)card_getName(n - ITEM_ID_CARD_FIRST);
                 }
                 w += msg_measureLine_width(str);
                 break;
@@ -1330,12 +1330,12 @@ s32 msg_emitItemName(s32 id, s32 n) {
     s32 i;
     u8 *t;
 
-    if (id < 0x100) {
+    if (id < ITEM_ID_KEY_FIRST) {
         t = g_itemNames + g_itemTable[id].name;
-    } else if (id < 0x200) {
-        t = g_keyItemNames + g_keyItemTable[id - 0x100].name;
+    } else if (id < ITEM_ID_CARD_FIRST) {
+        t = g_keyItemNames + g_keyItemTable[id - ITEM_ID_KEY_FIRST].name;
     } else {
-        t = (u8 *)card_getName(id - 0x200);
+        t = (u8 *)card_getName(id - ITEM_ID_CARD_FIRST);
     }
     s = t;
     for (len = 0; len < 32; len++) {

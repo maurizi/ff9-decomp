@@ -137,7 +137,7 @@ void menuItem_selectItem(s32 idx, MenuList *l) {
         if (it->slots & 1) {
             s_menuItem.targetKind = e->targetKind;
             ok = 1;
-            s_menuItem.targetMode = p->unk0 != 0xFB ? e->targetMode : 0;
+            s_menuItem.targetMode = p->unk0 != ITEM_GYSAHL_GREENS ? e->targetMode : 0;
             if (s_menuItem.targetMode == 0) {
                 menuItem_useOnTarget(p->unk0);
             } else {

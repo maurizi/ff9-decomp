@@ -289,7 +289,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     arg0->gil = 0;
                 }
                 btl_showMessage(BTL_MSG_DROPPED_GIL, gil);
-            } else if ((u8)btl_partyHasSupport(1, 0x4000) != 0) {
+            } else if ((u8)btl_partyHasSupport(1, SA_BIT(SA_FLEE_GIL)) != 0) {
                 g_btlRewards.fleeGil = 1;
                 g_btlRewards.gil = gil / 10;
             }
@@ -385,7 +385,7 @@ void btl_initBattleState(void) {
     if (gd->darkBattle != 0) {
         v = 8;
     }
-    gd->characters[3].info.w = (gd->characters[3].info.w & ~0x1F0) | (v << 4);
+    gd->characters[CHR_STEINER].info.w = (gd->characters[CHR_STEINER].info.w & ~0x1F0) | (v << 4);
     g_gameState->gameData->battleResult = 0;
     btl_initState();
     btlfx_initAll();

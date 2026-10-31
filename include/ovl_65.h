@@ -13,17 +13,9 @@ void func_800F4E68(void);
 
 /* main exe: candidates for ff9.h */
 void timer_enable(u8);
-#ifndef ITEM_NONE
-#define ITEM_NONE 0xFF
-#endif
 #define LEVEL_MAX 99
 #define EXP_MAX   9999999
 #define GIL_MAX   9999999
-#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
-/* support abilities, names from this overlay's name table (s_rewardsSupportNames) */
-#define SUPPORT_LEVEL_UP    0xEB /* "Level Up": exp x1.5 */
-#define SUPPORT_ABILITY_UP  0xEC /* "Ability Up": AP x2 */
-#define SUPPORT_MILLIONAIRE 0xED /* "Millionaire": gil x1.5 */
 #define BATTLE_END_GAME_OVER 6   /* GameData.unk56E: party defeated (gameover_main) */
 
 /* sounds of the rewards screen */

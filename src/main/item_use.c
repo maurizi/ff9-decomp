@@ -103,7 +103,7 @@ u8 fieldCalc_apply(MainCalc *c) {
 }
 
 u8 fieldCalc_checkAlive(MainCalc *c) {
-    if (chr_hasStatus(c->target, 0x41) || c->target->hp == 0) {
+    if (chr_hasStatus(c->target, CHR_STATUS_PETRIFY | CHR_STATUS_ZOMBIE) || c->target->hp == 0) {
         c->flags |= 1;
         return 0;
     }
@@ -111,8 +111,8 @@ u8 fieldCalc_checkAlive(MainCalc *c) {
 }
 
 u8 fieldCalc_checkDead(MainCalc *c) {
-    if (chr_hasStatus(c->target, 1) || c->target->hp != 0 ||
-        (chr_hasStatus(c->target, 0x40) && c->target->hp == 0)) {
+    if (chr_hasStatus(c->target, CHR_STATUS_PETRIFY) || c->target->hp != 0 ||
+        (chr_hasStatus(c->target, CHR_STATUS_ZOMBIE) && c->target->hp == 0)) {
         c->flags |= 1;
         return 0;
     }
@@ -150,7 +150,7 @@ void fieldCalc_casterStatusHalf(MainCalc *c) {
 }
 
 void fieldCalc_supportBoost(MainCalc *a) {
-    if (a->caster->supportAbilities[1] & 2) {
+    if (a->caster->supportAbilities[1] & SA_BIT(SA_CONCENTRATE)) {
         a->multiplier = (a->multiplier * 3) >> 1;
     }
 }
@@ -173,7 +173,7 @@ void fieldCalc_calcReviveHp(MainCalc *c) {
     Character *t = c->target;
     s32 v = t->maxHp * (t->spirit + c->cmd->power);
 
-    if (c->caster->supportAbilities[1] & 2) {
+    if (c->caster->supportAbilities[1] & SA_BIT(SA_CONCENTRATE)) {
         v /= 50;
     } else {
         v /= 100;
@@ -228,7 +228,7 @@ void fieldCalc_cureStatus(MainCalc *c) {
 }
 
 void chr_addHp(Character *u, s32 n) {
-    if (!chr_hasStatus(u, 1)) {
+    if (!chr_hasStatus(u, CHR_STATUS_PETRIFY)) {
         u->hp += n;
         if (u->hp > u->maxHp) {
             u->hp = u->maxHp;
@@ -237,7 +237,7 @@ void chr_addHp(Character *u, s32 n) {
 }
 
 void chr_addMp(Character *u, s32 n) {
-    if (!chr_hasStatus(u, 1)) {
+    if (!chr_hasStatus(u, CHR_STATUS_PETRIFY)) {
         u->mp += n;
         if (u->mp > u->maxMp) {
             u->mp = u->maxMp;

@@ -252,7 +252,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
             u->obj->frame = 0;
         }
         c = g_gameState->gameData->ctx.battle->curCmd;
-        if (c->caster != u || c->cmdNo > 0x30) {
+        if (c->caster != u || c->cmdNo > BTL_CMD_TABLE_COUNT) {
             u->cmdIssued = 0;
         }
         btl_removeQueuedCmd(u, BTL_CMD_KO);
@@ -356,7 +356,7 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                         t->regenTimer -= arg0->atbSpeed;
                     }
                 }
-                if ((arg0->status & BTL_STATUS_TRANCE) && ((arg0->flags >> 1) & 0xF) == 2) {
+                if ((arg0->status & BTL_STATUS_TRANCE) && ((arg0->flags >> 1) & 0xF) == CHR_DAGGER) {
                     b = g_gameState->gameData->ctx.battle;
                     fl = b->cmdFlags;
                     if (fl & 4) {
@@ -376,9 +376,9 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                 if (t->jumpTimer < 0) {
                     c = arg0->delayedCmd;
                     if (c->cmdNo == BTL_CMD_JUMP) {
-                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR, BTL_ABIL_SPEAR, (u16)c->targets);
+                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR, ABIL_SPEAR, (u16)c->targets);
                     } else {
-                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR_TRANCE, BTL_ABIL_SPEAR_TRANCE, (u16)c->targets);
+                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR_TRANCE, ABIL_SPEAR_TRANCE, (u16)c->targets);
                     }
                 }
             }
@@ -814,10 +814,10 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
-                k = item_getCount(0xF9);
+                k = item_getCount(ITEM_PHOENIX_PINION);
                 if (*g_randPtr++ < k) {
                     btlui_setAtbEnabled(1);
-                    btl_setCmd(u->cmd, BTL_CMD_REBIRTH_FLAME, BTL_ABIL_REBIRTH_FLAME, btl_getUnitMask(0) & 0xFFFF, 1);
+                    btl_setCmd(u->cmd, BTL_CMD_REBIRTH_FLAME, ABIL_REBIRTH_FLAME, btl_getUnitMask(0) & 0xFFFF, 1);
                     return;
                 }
             }
@@ -837,7 +837,7 @@ s32 btl_rollAmbush(u32 *arg0) {
         r = (((*arg0 >> 3) & 1) == 0) * 2;
     } else {
         th = 0x18;
-        if ((u8)btl_partyHasSupport(1, 0x200)) {
+        if ((u8)btl_partyHasSupport(1, SA_BIT(SA_ALERT))) {
             th = 0;
         } else if ((*arg0 >> 3) & 1) {
             th = 0xFF;
@@ -849,7 +849,7 @@ s32 btl_rollAmbush(u32 *arg0) {
             r = 0;
         } else {
             th = 0x10;
-            if ((u8)btl_partyHasSupport(1, 0x400)) {
+            if ((u8)btl_partyHasSupport(1, SA_BIT(SA_INITIATIVE))) {
                 th = 0x55;
             }
             if (g_randPtr >= g_randTableEnd) {
@@ -1004,7 +1004,7 @@ void btl_saveCharacter(BtlUnit *arg0, s32 arg1) {
         c->trance = arg0->trance;
     }
     btl_copyStats((Unk800BD8C0 *)&c->hp, (Unk800BD8C0 *)&arg0->hp);
-    if ((arg0->support[1] & 0x8000) && arg1 == 0) {
+    if ((arg0->support[1] & SA_BIT(SA_GUARDIAN_MOG)) && arg1 == 0) {
         c->status = 0;
         return;
     }

@@ -105,7 +105,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->flags = (u->flags & ~0xE0) | ((s & 7) << 5);
     u->flags &= ~0x800000;
     if (g_evtGlobalVars.b[0x10] == 0 || (c->classFlags & 0x10) ||
-        (((u->flags >> 1) & 0xF) == 2 && g_evtGlobalVars.b[0x11] != 0)) {
+        (((u->flags >> 1) & 0xF) == CHR_DAGGER && g_evtGlobalVars.b[0x11] != 0)) {
         u->trance = 0;
         u->flags &= ~0x40000000;
     } else {
@@ -155,7 +155,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         u->status |= BTL_STATUS_LOW_HP;
     }
     btl_addStatuses(u, c->status & 0xFE);
-    if (c->status & 1) {
+    if (c->status & CHR_STATUS_PETRIFY) {
         btl_addStatus(u, BTL_STATUS_PETRIFY);
     }
     btl_applyAutoAbilities(u);

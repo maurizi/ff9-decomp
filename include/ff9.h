@@ -1790,15 +1790,9 @@ extern s32 g_padPortMask[];
 #define GD_MUSIC2_PLAYING 0x80000000
 
 /* inventory and character limits */
-#define ITEM_NONE 0xFF /* empty item id / equipment slot */
-#define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
-#define KEY_ITEM_COUNT 0x50 /* key item ids (keyItem_has) */
 #define LEVEL_MAX 99
 #define EXP_MAX 9999999
 #define GIL_MAX 9999999
-#define ABILITY_MAX 0x30 /* entries in a character's g_abilityRows ability row (Character.ap) */
-#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
-#define SUPPORT_COUNT 0x40
 
 /* main-menu screens (g_menuScreen.screen, menuScreen_open/switch; runtime field/menu campaign) */
 #define MENU_SCREEN_MAIN 0
@@ -1830,10 +1824,6 @@ extern s32 g_padPortMask[];
 #define WM_PARAM_TITLE_PHASE 0xD2 /* g_worldTitlePhase */
 #define WM_PARAM_NAVI_VISIBLE 0xD3 /* g_worldNaviVisible */
 
-/* battle commands main sends through btl_setEnemyCmd / evt_battleTrigger (ovl_0b.h has the full list) */
-#define BTL_CMD_ENEMY_TURN 0x2F /* the enemy AI's command (event-script trigger 0x2F) */
-#define BTL_CMD_ENEMY_COUNTER 0x35 /* enemy command from the event script (trigger 0x35 = hit) */
-#define BTL_CMD_ENEMY_DEATH 0x36 /* enemy command from the event script (trigger 0x36 = killed) */
 
 /* db keys: kind << 16 | id (db_lookup, docs/encounters.md) */
 #define DB_MODEL 0x20000 /* evt_createModel: an object's model id */

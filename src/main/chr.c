@@ -109,16 +109,16 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
     for (i = 0; i < 4; i++) {
         if (chr_testSupportBit(in->support.unk0, g_chrHpMpSupports[i])) {
             switch (g_chrHpMpSupports[i]) {
-            case 0xC5:
+            case SA_HP_10:
                 out->maxHp += out->maxHp / 10;
                 break;
-            case 0xC6:
+            case SA_HP_20:
                 out->maxHp += out->maxHp / 5;
                 break;
-            case 0xC7:
+            case SA_MP_10:
                 out->maxMp += out->maxMp / 10;
                 break;
-            case 0xC8:
+            case SA_MP_20:
                 out->maxMp += out->maxMp / 5;
                 break;
             }
@@ -225,7 +225,7 @@ void chr_join(s32 ch, u8 avg, s32 eq) {
     }
     n = 0;
     sum = 0;
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < CHR_COUNT; i++) {
         if (ch != i) {
             if (g_gameState->gameData->characters[i].info.b.recruited) {
                 n++;
@@ -254,21 +254,21 @@ void party_initNewGame(void) {
     s32 i;
     party_setChanged(0);
     memset(party, 0, 0x1C);
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < CHR_COUNT; i++) {
         chr_init(i);
     }
-    chr_setRecruited(0);
-    chr_setRecruited(1);
-    chr_setRecruited(2);
-    chr_setRecruited(3);
-    chr_setRecruited(4);
-    chr_setRecruited(5);
-    chr_setRecruited(7);
-    chr_setRecruited(6);
-    party_setMember(0, 0);
-    party_setMember(1, 1);
-    party_setMember(2, 2);
-    party_setMember(3, 3);
+    chr_setRecruited(CHR_ZIDANE);
+    chr_setRecruited(CHR_VIVI);
+    chr_setRecruited(CHR_DAGGER);
+    chr_setRecruited(CHR_STEINER);
+    chr_setRecruited(CHR_FREYA);
+    chr_setRecruited(CHR_QUINA);
+    chr_setRecruited(CHR_AMARANT);
+    chr_setRecruited(CHR_EIKO);
+    party_setMember(0, CHR_ZIDANE);
+    party_setMember(1, CHR_VIVI);
+    party_setMember(2, CHR_DAGGER);
+    party_setMember(3, CHR_STEINER);
     g_gameState->gameData->gil = 500;
     g_gameState->gameData->firstUseFxSeen = 0;
 }
@@ -427,7 +427,7 @@ u8 chr_getClassFlags(u32 x) {
 
 void party_setMember(s32 slot, s32 ch) {
     Character *old = g_gameState->gameData->party[slot];
-    if (ch >= 9) {
+    if (ch >= CHR_COUNT) {
         ch = -1;
     }
     if (ch < 0) {
@@ -442,13 +442,13 @@ void party_setMember(s32 slot, s32 ch) {
 }
 
 void chr_setRecruited(u32 i) {
-    if (i < 9) {
+    if (i < CHR_COUNT) {
         g_gameState->gameData->characters[i].info.b.recruited = 1;
     }
 }
 
 void chr_clearRecruited(u32 i) {
-    if (i < 9) {
+    if (i < CHR_COUNT) {
         g_gameState->gameData->characters[i].info.b.recruited = 0;
     }
 }
@@ -505,11 +505,11 @@ void chr_fitSupportAbilities(Character *c) {
     id = c->info.b.id;
     c->stones = c->maxStones;
     do {
-        if (chr_hasSupportAbility(id, i + 0xC0)) {
+        if (chr_hasSupportAbility(id, i + ABILITY_SUPPORT_FIRST)) {
             if (c->stones >= e->unk1) {
                 c->stones -= e->unk1;
             } else {
-                chr_setSupportAbility(id, i + 0xC0, 0);
+                chr_setSupportAbility(id, i + ABILITY_SUPPORT_FIRST, 0);
             }
         }
         i++;
