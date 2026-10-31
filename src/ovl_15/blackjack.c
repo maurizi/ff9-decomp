@@ -75,7 +75,7 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
 
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    e = file_find(0, 0x64);
+    e = file_find(DIR_OVERLAYS, OVL_MOVIE);
     cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
@@ -1232,24 +1232,24 @@ s32 bj_main(void) {
 s32 bj_init(void) {
     s32 p;
 
-    p = (s32)db_lookupRegistered(4, 0x44F4C, 0);
+    p = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F4C, 0);
     file_setTimPos(p, 0, 0xE4, 0x1C0, 0x180);
     file_loadTim(p);
     file_setTimPos(p, 0, 0xE5, 0x1C0, 0x180);
     file_loadTim(p);
-    p = (s32)db_lookupRegistered(4, 0x44F4D, 0);
+    p = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F4D, 0);
     file_setTimPos(p, 0, 0xE6, 0x1EC, 0x100);
     file_loadTim(p);
-    p = (s32)db_lookupRegistered(4, 0x44F4E, 0);
+    p = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F4E, 0);
     file_setTimPos(p, 0, 0xE0, 0x1C0, 0x100);
     file_loadTim(p);
-    p = (s32)db_lookupRegistered(4, 0x44F50, 0);
+    p = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F50, 0);
     file_setTimPos(p, 0, 0xE1, 0x1D6, 0x100);
     file_loadTim(p);
-    p = (s32)db_lookupRegistered(4, 0x44F4F, 0);
+    p = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F4F, 0);
     file_setTimPos(p, 0, 0xE2, 0x1C0, 0x140);
     file_loadTim(p);
-    p = (s32)db_lookupRegistered(4, 0x44F51, 0);
+    p = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44F51, 0);
     file_setTimPos(p, 0, 0xE9, 0x280, 0x100);
     file_loadTim(p);
     setRECT(&g_bjClutRect, 0x20, 0xE4, 0x10, 1);

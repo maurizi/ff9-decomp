@@ -199,8 +199,8 @@ s32 func_800A8F10(void) {
 }
 
 s32 btl_loadResidentMusic(void) {
-    s32 a = (s32)db_lookupRegistered(4, 0x70005, 0);
-    file_copyViaVram(g_gameState->gameData->musicSeq2, a, (s32)db_lookupRegistered(5, 0x70005, 0), NULL);
+    s32 a = (s32)db_lookupRegistered(DB_GET_ADDR, 0x70005, 0);
+    file_copyViaVram(g_gameState->gameData->musicSeq2, a, (s32)db_lookupRegistered(DB_GET_SIZE, 0x70005, 0), NULL);
     DrawSync(0);
     return 0;
 }
@@ -208,9 +208,9 @@ s32 btl_loadResidentMusic(void) {
 s32 btl_loadSoundBanks(void) {
     s32 i;
     for (i = 1; i >= 0; i--) {
-        s32 id = g_btlSoundBankIds[i] | 0x90000;
-        s32 a = (s32)db_lookupRegistered(4, id, 0);
-        s32 b = (s32)db_lookupRegistered(5, id, 0);
+        s32 id = g_btlSoundBankIds[i] | DB_SOUND_BANK;
+        s32 a = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
+        s32 b = (s32)db_lookupRegistered(DB_GET_SIZE, id, 0);
         akao_beginBankUpload();
         akao_uploadBank(a, b, 1);
     }
@@ -218,7 +218,7 @@ s32 btl_loadSoundBanks(void) {
 }
 
 s32 btl_loadShadowTexture(void) {
-    s32 p = (s32)db_lookupRegistered(4, 0x42774, 0);
+    s32 p = (s32)db_lookupRegistered(DB_GET_ADDR, DB_SHADOW_TIM, 0);
     file_setTimPos(p, 0x100, 0xFF, 0x200, 0xE0);
     file_loadTim(p);
     DrawSync(0);
@@ -233,7 +233,7 @@ s32 btl_initPartyNames(void) {
 s32 btl_loadCommonData(void) {
     s32 p = g_modeHeap;
     Battle *b = g_gameState->gameData->ctx.battle;
-    FileEntry *f = file_find(1, 0x271B);
+    FileEntry *f = file_find(DIR_COMMON, FILE_BTL_COMMON);
     s32 s = f->sector;
     void *ctx = g_gameState->gameData->cdRead;
     cdRead_init(ctx, s, (f->unkC - s) << 11, (void *)p, 0, -1, NULL);
@@ -241,11 +241,11 @@ s32 btl_loadCommonData(void) {
     }
     b->files->data[0] = (void *)p;
     db_register(p, 0);
-    file_copyViaVram((s32)b->statusInfo, (s32)db_lookupRegistered(4, 0x1F4, 0), 0x180, NULL);
-    file_copyViaVram((s32)b->abilities, (s32)db_lookupRegistered(4, 0x1F5, 0), 0xC00, NULL);
-    file_copyViaVram((s32)b->statusSets, (s32)db_lookupRegistered(4, 0x1F6, 0), 0x100, NULL);
+    file_copyViaVram((s32)b->statusInfo, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F4, 0), 0x180, NULL);
+    file_copyViaVram((s32)b->abilities, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F5, 0), 0xC00, NULL);
+    file_copyViaVram((s32)b->statusSets, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F6, 0), 0x100, NULL);
     DrawSync(0);
-    g_modeHeap = db_lookup(p, 4, 0x1E, 0);
+    g_modeHeap = db_lookup(p, DB_GET_ADDR, 0x1E, 0);
     return 0;
 }
 
@@ -400,11 +400,11 @@ void btl_initReturnInfo(void) {
 }
 
 s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1) {
-    s32 id = (arg1 & 0xFFFF) | 0x110000;
-    arg0->sceneBuf = (s32)db_lookupRegistered(4, id, 0);
-    arg0->unk20 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x100000), 0);
-    arg0->script = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x50000), 0);
-    arg0->unk14 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x60000), 0);
+    s32 id = (arg1 & 0xFFFF) | DB_BATTLE;
+    arg0->sceneBuf = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
+    arg0->unk20 = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, 0x100000), 0);
+    arg0->script = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_FIELD), 0);
+    arg0->unk14 = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_AREA), 0);
     btl_initScene();
     evt_init((u8 *)arg0->script);
     msg_init();
@@ -415,13 +415,13 @@ s32 btl_setupBackground(Battle11C0 *arg0, s32 arg1) {
     s32 id = btl_findBackgroundId();
     s32 i;
     RECT r;
-    arg0->bgData = (s32)db_lookupRegistered(4, id, 0);
-    arg0->bgHeader = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x1A0000), 0);
-    if (db_lookupRegistered(0xB, id, 0x190000) != 0) {
-        arg0->bgTexAnims = db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x190000), 0);
+    arg0->bgData = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
+    arg0->bgHeader = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_BTL_BG_HEADER), 0);
+    if (db_lookupRegistered(DB_GET_COUNT_IN, id, DB_TEX_ANIM) != 0) {
+        arg0->bgTexAnims = db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_TEX_ANIM), 0);
     }
-    for (i = 0; i < (s32)db_lookupRegistered(0xB, id, 0x40000); i++) {
-        file_loadTim((s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, (i & 0xFFFF) | 0x40000), 0));
+    for (i = 0; i < (s32)db_lookupRegistered(DB_GET_COUNT_IN, id, DB_TIM); i++) {
+        file_loadTim((s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, (i & 0xFFFF) | DB_TIM), 0));
     }
     if (arg0->bgTexAnims != NULL) {
         r.y = 0;
@@ -508,15 +508,15 @@ s32 btl_reloadPartyStep(s32 arg0) {
                 continue;
             }
             id = btl_getPartyModelId(i, arg0 & ~0x10);
-            e->model->header = db_lookupRegistered(4, id, 0);
+            e->model->header = db_lookupRegistered(DB_GET_ADDR, id, 0);
             k = (id & 0xFFFFFF) | (cid << 24);
             pa = (s32 *)db_getModelTexPages(k);
             pb = (s32 *)db_getModelUvOffsets(k);
             pc = (s32 *)db_getModelTexPos(k);
             btl_applyModelTextures(e->model, (s16 *)pa, (s16 *)pb);
-            p = (s32)db_lookupRegistered(9, id, 0x190000);
+            p = (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_TEX_ANIM);
             if (p != -1) {
-                v = (s32)db_lookupRegistered(4, p, 0);
+                v = (s32)db_lookupRegistered(DB_GET_ADDR, p, 0);
             } else {
                 v = 0;
             }
@@ -540,7 +540,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             e->actor->frame = 0;
             m = u->weaponModel;
             save = m->parentBone;
-            id2 = ((Unk8006E0E8 *)u->weapon)->modelId | 0x20000;
+            id2 = ((Unk8006E0E8 *)u->weapon)->modelId | DB_MODEL;
             m->header = (BtlUnit9C8 *)btl_getWeaponModelHeader(i);
             btl_getWeaponTexInfo(id2, i, &pa, &pb, &pc);
             btl_applyModelTextures(m, (s16 *)pa, (s16 *)pb);
@@ -566,7 +566,7 @@ s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
     }
     b->files->data[2] = (void *)v;
     db_register(v, 0);
-    gd->depTable = (FileTable *)db_lookup(v, 2, 0x140000, 0);
+    gd->depTable = (FileTable *)db_lookup(v, DB_GET_AT, DB_DEP_TABLE, 0);
     return 0;
 }
 
@@ -663,7 +663,7 @@ loop:
         if (akao_getSpuTransferState() != 0) {
             break;
         }
-        h = db_lookup((s32)cd->dest, 2, 0x90000, 0);
+        h = db_lookup((s32)cd->dest, DB_GET_AT, DB_SOUND_BANK, 0);
         if (arg2->bank == -1) {
             akao_loadBankRetry(h, 0);
         } else {
@@ -763,7 +763,7 @@ loop:
         do {
             id = *p;
             if (id != 0xFFFF) {
-                f = dep_find(g_gameState->gameData->depTable, id | 0x20000);
+                f = dep_find(g_gameState->gameData->depTable, id | DB_MODEL);
                 if ((u32)f->sector < best) {
                     best = f->sector;
                     bf = f;
@@ -787,9 +787,9 @@ loop:
         }
         break;
     case 6:
-        sp1C = db_lookup((s32)b->work->heap, 2, 0x1B0000, 0);
+        sp1C = db_lookup((s32)b->work->heap, DB_GET_AT, DB_PACK, 0);
         dst = arg2->dst;
-        tbl = (Unk800AA504Tbl *)db_lookup((s32)b->files->data[2], 2, 0x120000, 0);
+        tbl = (Unk800AA504Tbl *)db_lookup((s32)b->files->data[2], DB_GET_AT, DB_MODEL_INFO, 0);
         tf = tbl->entries;
         te = &tf[tbl->count] - 1;
         do {
@@ -800,7 +800,7 @@ loop:
                 r = (Unk800AA504Pos8 *)(bb + n);
                 while (n > 0) {
                     n--;
-                    x = db_lookup(dst, 2, (n & 0xFFFF) | 0x40000, 0);
+                    x = db_lookup(dst, DB_GET_AT, (n & 0xFFFF) | DB_TIM, 0);
                     h = clut_getX(a[n].clut);
                     file_setTimPos(x, h, clut_getY(a[n].clut), r[n].x, r[n].y);
                     file_loadTim(x);
@@ -962,7 +962,7 @@ loop:
         n = btl_findNearestFile(0xA, (u16 *)h, (u16 *)q, (u16 **)&p, &sz);
         if (n != -1) {
             i = -1;
-            f = (FileEntry16 *)file_find(0xA, *p);
+            f = (FileEntry16 *)file_find(DIR_CHAR_MODELS, *p);
             p[0] = i;
             p[4] = i;
             arg1->slot = p - h;
@@ -1097,9 +1097,9 @@ s32 btl_uploadModelTextures(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s
     s32 h;
     s32 m;
 
-    sp18 = db_lookup(arg0->buf, 2, 0x1B0000, 0);
+    sp18 = db_lookup(arg0->buf, DB_GET_AT, DB_PACK, 0);
     dst = arg1->dst1;
-    tbl = (Unk800AA504Tbl *)db_lookup(sp18, 2, 0x120000, 0);
+    tbl = (Unk800AA504Tbl *)db_lookup(sp18, DB_GET_AT, DB_MODEL_INFO, 0);
     te = tbl->entries;
     n = te->tex.b[3];
     a = (Unk800AA504Pos *)((u8 *)te + (te->tex.w & 0xFFFFFF));
@@ -1110,7 +1110,7 @@ s32 btl_uploadModelTextures(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s
             n--;
             x = arg2 * 64 + 0xC0;
             y = arg2 * 3;
-            m = db_lookup(dst, 2, (n & 0xFFFF) | 0x40000, 0);
+            m = db_lookup(dst, DB_GET_AT, (n & 0xFFFF) | DB_TIM, 0);
             if (arg3) {
                 yy = y + 0xE5 + r[n].y;
                 h = (r[n].y << 7) + 0x80;
@@ -1245,12 +1245,12 @@ s16 btl_loadModelsStep(s32 arg0) {
 
 s32 btl_findWeaponModel(s32 arg0, s32 arg1) {
     s32 v = g_gameState->gameData->ctx.battle->work->weaponBufs[arg1];
-    return db_lookup(db_lookup(v, 2, 0x1B0000, 0), 4, arg0, 0);
+    return db_lookup(db_lookup(v, DB_GET_AT, DB_PACK, 0), DB_GET_ADDR, arg0, 0);
 }
 
 void btl_getWeaponTexInfo(s32 arg0, s32 arg1, s32 **arg2, s32 **arg3, s32 **arg4) {
     s32 v = g_gameState->gameData->ctx.battle->work->weaponBufs[arg1];
-    Unk800AB758 *h = (Unk800AB758 *)(db_lookup(db_lookup(v, 2, 0x1B0000, 0), 2, 0x120000, 0) + 4);
+    Unk800AB758 *h = (Unk800AB758 *)(db_lookup(db_lookup(v, DB_GET_AT, DB_PACK, 0), DB_GET_AT, DB_MODEL_INFO, 0) + 4);
     s32 *p = (s32 *)((u8 *)h + h->tablesOfs);
     s32 n = h->count;
     *arg2 = p;
@@ -1282,8 +1282,8 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     }
     e->modelId = arg0;
     e->obj = arg1;
-    e->model->header = (BtlUnit9C8 *)db_lookupRegistered(4, e->modelId, 0);
-    e->model->motion = (BtlUnit9CC *)db_lookupRegistered(4, btl_getAnimFileId(e->modelId), 0);
+    e->model->header = (BtlUnit9C8 *)db_lookupRegistered(DB_GET_ADDR, e->modelId, 0);
+    e->model->motion = (BtlUnit9CC *)db_lookupRegistered(DB_GET_ADDR, btl_getAnimFileId(e->modelId), 0);
     c = e->model->motion;
     if (IS_OFFSET(c->rotKeys)) {
         c->rotKeys = (s32)c + c->rotKeys;
@@ -1304,9 +1304,9 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     for (; i < cnt; i++) {
     }
     btl_applyModelTextures(e->model, pa, pb);
-    p = (s32)db_lookupRegistered(9, e->modelId, 0x190000);
+    p = (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, e->modelId, DB_TEX_ANIM);
     if (p != -1) {
-        e->model->texAnims = (BtlUnit9C50 *)db_lookupRegistered(4, p, 0);
+        e->model->texAnims = (BtlUnit9C50 *)db_lookupRegistered(DB_GET_ADDR, p, 0);
         btl_relocTexAnims(e->model->texAnims, pc);
     }
     e->flags |= 1;
@@ -1335,12 +1335,12 @@ s32 btl_getPartyModelId(s32 arg0, s32 arg1) {
             idx += 0x13;
         }
     }
-    return g_btlCharModelIds[idx] | 0x20000;
+    return g_btlCharModelIds[idx] | DB_MODEL;
 }
 
 s32 btl_getWeaponModelHeader(s32 arg0) {
     s32 v = g_gameState->gameData->ctx.battle->work->weaponBufs[arg0];
-    return db_lookup(db_lookup(v, 2, 0x1B0000, 0), 2, 0x20000, 0);
+    return db_lookup(db_lookup(v, DB_GET_AT, DB_PACK, 0), DB_GET_AT, DB_MODEL, 0);
 }
 
 s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
@@ -1407,7 +1407,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         }
         break;
     case 3:
-        f = (FileEntry16 *)file_find(0xA, btl_getPartyModelId(arg0, arg1 & ~0x10));
+        f = (FileEntry16 *)file_find(DIR_CHAR_MODELS, btl_getPartyModelId(arg0, arg1 & ~0x10));
         src = g_gameState->imgSector + f->unk4;
         sz = f->unkC - f->unk4;
         req->size0 = f->unk2 << 11;
@@ -1420,9 +1420,9 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         break;
     case 5:
         id = btl_getPartyModelId(arg0, arg1 & ~0x10);
-        model = db_lookup(st->buf, 2, 0x1B0000, 0);
+        model = db_lookup(st->buf, DB_GET_AT, DB_PACK, 0);
         img = (s32)g_gameState->gameData->ctx.battle->work->loadBuf;
-        t = (Unk800ABBC4Tbl *)db_lookup(model, 2, 0x120000, 0);
+        t = (Unk800ABBC4Tbl *)db_lookup(model, DB_GET_AT, DB_MODEL_INFO, 0);
         e = t->entries;
         for (i = 0; i < t->count; i++) {
             if (e[i].modelId == (u16)id) {
@@ -1432,7 +1432,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
                 b = a + n;
                 r = (Unk800ABBC4Rect *)(b + n);
                 for (j = 0; j < n; j++) {
-                    w = db_lookup(img, 2, (j & 0xFFFF) | 0x40000, 0);
+                    w = db_lookup(img, DB_GET_AT, (j & 0xFFFF) | DB_TIM, 0);
                     s = r[j].y + 0xE5;
                     y = arg0 * 3 + s;
                     h = (r[j].y << 7) + 0x80;
@@ -1461,15 +1461,15 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
             id2 = btl_getPartyModelId(arg0, arg1 & ~0x10);
-            ent->model->header = db_lookupRegistered(4, id2, 0);
+            ent->model->header = db_lookupRegistered(DB_GET_ADDR, id2, 0);
             k = (id2 & 0xFFFFFF) | (cid << 24);
             pa = db_getModelTexPages(k);
             pb = db_getModelUvOffsets(k);
             pc = db_getModelTexPos(k);
             btl_applyModelTextures(ent->model, (s16 *)pa, (s16 *)pb);
-            p = (s32)db_lookupRegistered(9, id2, 0x190000);
+            p = (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id2, DB_TEX_ANIM);
             if (p != -1) {
-                anim = (s32)db_lookupRegistered(4, p, 0);
+                anim = (s32)db_lookupRegistered(DB_GET_ADDR, p, 0);
             } else {
                 anim = 0;
             }
@@ -1496,7 +1496,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
 s32 btl_getAnimFileId(s32 arg0) {
     u16 *p = db_findModelInfo(arg0);
     if (p != NULL) {
-        return p[1] | 0x30000;
+        return p[1] | DB_ANIM;
     }
     return -1;
 }
@@ -1737,7 +1737,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
     switch ((arg0 >> 12) & 3) {
     case 0:
-        id = (arg1 & 0xFFFF) | 0x70000;
+        id = (arg1 & 0xFFFF) | DB_MUSIC;
         switch (kind) {
         case 0:
         case 7:
@@ -1824,10 +1824,10 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         return -1;
     case 1:
-        id = (arg1 & 0xFFFF) | 0x80000;
+        id = (arg1 & 0xFFFF) | DB_SE;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)db_lookupRegistered(4, id, 0);
+            h = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
         }
         /* padded: a zero word follows the first jump table */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
@@ -1881,7 +1881,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         return -1;
     case 3:
-        id = (arg1 & 0xFFFF) | 0x90000;
+        id = (arg1 & 0xFFFF) | DB_SOUND_BANK;
         switch (kind) {
         case 7:
             if (arg2 >= 4) {
@@ -1998,7 +1998,7 @@ s32 btl_getWeaponSound(s32 arg0, u16 arg1) {
     if (f == 0) {
         return -1;
     }
-    return db_lookup(f, 3, arg1 | 0x80000, 0);
+    return db_lookup(f, DB_GET_KEY_AT, arg1 | DB_SE, 0);
 }
 
 s32 btl_getWeaponSoundBank(s32 arg0) {
@@ -2012,7 +2012,7 @@ s32 btl_getWeaponSoundBank(s32 arg0) {
             } while (0);
         } while (0);
     }
-    return ((FileEntry16 *)file_find(8, g_weaponTable[c->equip[0]].modelId))->unk2 | 0x90000;
+    return ((FileEntry16 *)file_find(DIR_WEAPON_MODELS, g_weaponTable[c->equip[0]].modelId))->unk2 | DB_SOUND_BANK;
 }
 
 s32 btl_getSoundFileSectors(s32 arg0, s32 *arg1) {
@@ -2025,7 +2025,7 @@ s32 btl_getSoundFileSectors(s32 arg0, s32 *arg1) {
         }
         return e->sector;
     } else {
-        f = file_find(11, arg0);
+        f = file_find(DIR_SOUND_BANKS, arg0);
         if (arg1 != 0) {
             *arg1 = (f->unkC - f->sector) << 11;
         }
@@ -2044,7 +2044,7 @@ s16 btl_loadWeaponSoundStep(s32 arg0, BtlStepTask *arg1) {
         return ++arg1->step;
     case 2:
         m = &g_gameState->gameData->ctx.battle->files->weaponFiles[arg0];
-        l = (BtlAnimEvtList *)db_lookup((s32)*m, 2, 0x140000, 0);
+        l = (BtlAnimEvtList *)db_lookup((s32)*m, DB_GET_AT, DB_DEP_TABLE, 0);
         e = l->events;
         for (i = l->count - 1; i >= 0; i--) {
             if (e[i].data.b.unk2 == 9) {
@@ -2075,28 +2075,28 @@ s32 btl_getDepLink(s32 arg0) {
 }
 
 s32 btl_unpackMusic(s32 arg0) {
-    s32 v = db_lookup(arg0, 3, 0x70000, 0);
-    s32 a = db_lookup(arg0, 4, v, 0);
-    memcpy((u8 *)arg0, (u8 *)a, db_lookup(arg0, 5, v, 0));
+    s32 v = db_lookup(arg0, DB_GET_KEY_AT, DB_MUSIC, 0);
+    s32 a = db_lookup(arg0, DB_GET_ADDR, v, 0);
+    memcpy((u8 *)arg0, (u8 *)a, db_lookup(arg0, DB_GET_SIZE, v, 0));
     return 0;
 }
 
 void btl_onSoundRead(Unk800AE844 *arg0) {
     s32 p = arg0->addr;
-    s32 id = g_gameState->gameData->soundLoadBank | 0x90000;
+    s32 id = g_gameState->gameData->soundLoadBank | DB_SOUND_BANK;
     s32 f;
     s32 base;
     s32 n;
 
     if (arg0->done == 0) {
-        f = db_lookup(p, 2, 0x1B0000, 0);
+        f = db_lookup(p, DB_GET_AT, DB_PACK, 0);
         base = p;
         if (f == -1) {
-            p = db_lookup(p, 4, id, 0);
+            p = db_lookup(p, DB_GET_ADDR, id, 0);
             g_gameState->gameData->soundBankSize = db_getSize(base);
         } else {
-            p = db_lookup(f, 4, id, 0);
-            g_gameState->gameData->soundBankSize = db_lookup(base, 2, 0x1B0001, 0) - g_gameState->gameData->soundLoadDest;
+            p = db_lookup(f, DB_GET_ADDR, id, 0);
+            g_gameState->gameData->soundBankSize = db_lookup(base, DB_GET_AT, 0x1B0001, 0) - g_gameState->gameData->soundLoadDest;
         }
     }
     n = g_gameState->gameData->soundBankSize - arg0->done;
@@ -2180,11 +2180,11 @@ void btl_preloadExit(void) {
     b = g_gameState->gameData->ctx.battle->work;
     preload_init();
     g_gameState->gameData->preloadRequest = NULL;
-    f = file_find(0, 0x10065);
+    f = file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE_END));
     size = (f->unkC - f->sector) << 11;
-    preload_setEntry(preload_add(), 0, 0x10065, (s32)PSX_RAM(u8 *, 0x801EDF00), size, size, f->sector, size);
-    f = file_find(1, 0x2713);
+    preload_setEntry(preload_add(), 0, OVL_KEY(OVL_BATTLE_END), (s32)PSX_RAM(u8 *, 0x801EDF00), size, size, f->sector, size);
+    f = file_find(DIR_COMMON, FILE_BTL_END_DB);
     dst = b->loadBuf;
     size = (f->unkC - f->sector) << 11;
-    preload_setEntry(preload_add(), 0, 0x2713, (s32)dst, size, size, f->sector, size);
+    preload_setEntry(preload_add(), 0, FILE_BTL_END_DB, (s32)dst, size, size, f->sector, size);
 }

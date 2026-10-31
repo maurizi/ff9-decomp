@@ -1841,27 +1841,6 @@ extern s32 g_padPortMask[];
 #define BTL_CMD_ENEMY_COUNTER 0x35 /* enemy command from the event script (trigger 0x35 = hit) */
 #define BTL_CMD_ENEMY_DEATH 0x36 /* enemy command from the event script (trigger 0x36 = killed) */
 
-/* db keys: kind << 16 | id (db_lookup, docs/encounters.md) */
-#define DB_MODEL 0x20000 /* evt_createModel: an object's model id */
-#define DB_ANIM 0x30000 /* model animation (evt_getAnimFrameCount) */
-#define DB_TIM 0x40000 /* TIM images (file_loadTim, game_loadCommonImages) */
-#define DB_FIELD 0x50000 /* field / world file and its event script */
-#define DB_AREA 0x60000 /* area bundle */
-#define DB_MUSIC 0x70000 /* music sequences */
-#define DB_SE 0x80000 /* sound effects */
-#define DB_SOUND_BANK 0x90000 /* AKAO banks (game_loadCommonAkao, game_loadCommonDb's db) */
-#define DB_BG 0xA0000 /* field background */
-#define DB_WALKMESH 0xB0000 /* field walkmesh (bgi) */
-#define DB_FONT 0xD0000 /* the font (GameData.font, game_loadCommonImages) */
-#define DB_BATTLE 0x110000 /* encounter bundle */
-#define DB_MODEL_INFO 0x120000 /* per-model tables */
-#define DB_DEP_TABLE 0x140000 /* dependency table (GameData.depTable) */
-#define DB_SPRITE 0x160000
-#define DB_IMAGE_PACK 0x170000
-#define DB_TEX_ANIM 0x190000 /* model texture animations */
-#define DB_PACK 0x1B0000 /* nested container inside field/world files */
-#define DB_LIGHTS 0x1F0000
-
 /* Sound command words for the mode's sound handler (GameData.soundHook: fld_soundCommand / wm_soundCommand).
  * Bits 12-13 type (0 music, 1 SE, 3 bank), 8-11 kind, 0-5 sub-command, 7 resident SE slot, 6 slot index.
  * The SE/state/volume words carry the world map's debug-print names (ovl_0c WM_SND_*). */

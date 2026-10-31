@@ -7,7 +7,6 @@
 #include "ff9.h"
 
 #define CARD_COUNT     100
-#define CARD_IMAGE_FILE 0x32 /* file of dir 1 with the card images (s_menuCard.imageFile) */
 #define CARD_GRID_ROWS 10 /* the CARD window is 10 x 10 cells */
 #define CARD_GRID_COLS 10
 #define CARD_RANK_COUNT 32

@@ -25,9 +25,9 @@ s32 opening_attract(s32 arg0) {
         case ATTRACT_ST_IMAGES:
             if (i < ATTRACT_IMAGES) {
                 k = arg0 * ATTRACT_IMAGES + i;
-                id = g_attractImages[k] | 0x40000;
+                id = g_attractImages[k] | DB_TIM;
                 if (timer == -1) {
-                    tim = (s32)db_lookupRegistered(4, id, 0);
+                    tim = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
                     file_setTimPos(tim, 0, 0xE0, 0x280, 0);
                     file_loadTim(tim);
                     timer = ATTRACT_FRAMES;
@@ -138,7 +138,7 @@ s32 opening_attractInit(s32 idx) {
 
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    e = file_find(1, g_attractFiles[idx]);
+    e = file_find(DIR_COMMON, g_attractFiles[idx]);
     cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }

@@ -151,7 +151,7 @@ s32 btlfx_loadFile(s32 arg0) {
     if (g_btlfxLoader.state != 0) {
         return -1;
     }
-    ofs = ((FileEntry16 *)file_find(0xD, arg0))->unk0;
+    ofs = ((FileEntry16 *)file_find(DIR_BTL_EFFECTS, arg0))->unk0;
     base = g_gameState->gameData->ctx.battle->dataSector;
     g_btlfxLoader.slotBlock.w = -1;
     g_btlfxLoader.effectId = arg0;

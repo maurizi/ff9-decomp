@@ -44,14 +44,14 @@ void opening_bootScreenLoad(void) {
 
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    e = file_find(1, 0x2718);
+    e = file_find(DIR_COMMON, FILE_BOOT_SCREEN);
     cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     buf = g_loadAreaEnd + 0x10000;
     g_bootScreenData = buf;
     db_register((s32)buf, 0);
-    g_bootScreenImage = (s32)db_lookupRegistered(4, 0x44FB0, 0);
+    g_bootScreenImage = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44FB0, 0);
     file_setTimPos(g_bootScreenImage, 0, 0xE0, 0x280, 0);
     file_loadTim(g_bootScreenImage);
     game_startFade(1, 1, 0, 0xFFFFFF);

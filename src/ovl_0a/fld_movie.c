@@ -8,7 +8,7 @@ s32 fld_queueModelBundle(s32 uid) {
         return 0;
     }
     id = fld_remapModelId(id);
-    if (db_lookupRegistered(4, id, 0) == NULL) {
+    if (db_lookupRegistered(DB_GET_ADDR, id, 0) == NULL) {
         g_fieldModelQueue[g_gameState->gameData->ctx.field->area->scene->modelQueueCount] = id;
         g_gameState->gameData->ctx.field->area->scene->modelQueueCount++;
     }
@@ -45,7 +45,7 @@ s32 fld_loadModelBundle(s32 arg0) {
     s32 x2;
     s32 y2;
 
-    f = file_find(10, arg0);
+    f = file_find(DIR_CHAR_MODELS, arg0);
     size = (f->unkC - f->sector) << 11;
     c = fld_findModelCache(arg0);
     if (c->addr == 0) {
@@ -59,16 +59,16 @@ s32 fld_loadModelBundle(s32 arg0) {
         DrawSync(0);
         fld_invalidateModelCache(g_modeHeap + m);
     }
-    vp = db_lookupRegistered(4, 0x1C0000, 0);
+    vp = db_lookupRegistered(DB_GET_ADDR, DB_VRAM_ALLOC, 0);
     n = g_modeHeap;
-    pack1 = db_lookup(n, 2, DB_PACK, 0);
-    pack2 = db_lookup(n, 2, (DB_PACK | 1), 0);
-    hdr = (u8 *)db_lookup(pack1, 2, DB_MODEL_INFO, 0) + 4;
+    pack1 = db_lookup(n, DB_GET_AT, DB_PACK, 0);
+    pack2 = db_lookup(n, DB_GET_AT, (DB_PACK | 1), 0);
+    hdr = (u8 *)db_lookup(pack1, DB_GET_AT, DB_MODEL_INFO, 0) + 4;
     tp = (s16 *)(hdr + (*(u32 *)(hdr + 4) & 0xFFFFFF));
     uv = tp + hdr[7] * 2;
     ent = (FieldTexEnt *)(uv + hdr[7] * 2);
     for (i = 0; i < hdr[7]; i++) {
-        img = db_lookup(pack2, 2, (i & 0xFFFF) | DB_TIM, 0);
+        img = db_lookup(pack2, DB_GET_AT, (i & 0xFFFF) | DB_TIM, 0);
         e1 = ent[i].srcX;
         if (e1 & 1) {
             x = vp->pageX;
@@ -96,7 +96,7 @@ s32 fld_loadModelBundle(s32 arg0) {
         }
     }
     for (i = 0; i < hdr[7]; i++) {
-        img = db_lookup(pack2, 2, (i & 0xFFFF) | DB_TIM, 0);
+        img = db_lookup(pack2, DB_GET_AT, (i & 0xFFFF) | DB_TIM, 0);
         e = ent[i].srcX;
         if (!(e & 1)) {
             x2 = vp->stripX;
@@ -175,8 +175,8 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     arg0 = fld_remapModelId(arg0);
     s->modelId = arg0;
     s->actor = arg1;
-    s->model->model = db_lookupRegistered(4, arg0, 0);
-    if ((s->model->anim = db_lookupRegistered(4, fld_getModelAnimId(arg0), 0)) != NULL) {
+    s->model->model = db_lookupRegistered(DB_GET_ADDR, arg0, 0);
+    if ((s->model->anim = db_lookupRegistered(DB_GET_ADDR, fld_getModelAnimId(arg0), 0)) != NULL) {
         a = s->model->anim;
         if (IS_OFFSET(a->bones)) {
             a->bones = (s32)a + a->bones;
@@ -202,7 +202,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     fldmdl_buildPackets(s->model, (WmTexInfo *)tex, (s16(*)[2])uv);
     g_gameState->gameData->ctx.field->area->scene->heapTop += sum;
     fld_trimModelCache();
-    t = db_lookupRegistered(8, arg0, DB_MODEL_INFO);
+    t = db_lookupRegistered(DB_GET_AT_IN, arg0, DB_MODEL_INFO);
     e = t->entries;
     for (i = t->count - 1; i >= 0; i--) {
         if (e->modelId == (u16)arg0) {
@@ -210,7 +210,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
         }
     }
     if (sprId != -1) {
-        s->model->texAnims = db_lookupRegistered(4, sprId, 0);
+        s->model->texAnims = db_lookupRegistered(DB_GET_ADDR, sprId, 0);
         fldmdl_initTexAnims((TexAnimRelocSet *)s->model->texAnims, (ModelTexOfs *)spr);
     }
     if (g_gameState->gameData->ctx.field->area->scene->walkmesh != NULL) {
@@ -247,7 +247,7 @@ s32 fld_depFindByLink(s32 arg0) {
 }
 
 s32 fld_getModelAnimId(s32 arg0) {
-    WmAnimTable *t = db_lookupRegistered(8, arg0, DB_MODEL_INFO);
+    WmAnimTable *t = db_lookupRegistered(DB_GET_AT_IN, arg0, DB_MODEL_INFO);
     s32 i;
     WmAnimTableEntry *e;
 
@@ -262,7 +262,7 @@ s32 fld_getModelAnimId(s32 arg0) {
 
 /* look up the three tables of an area entry */
 s32 fld_getModelTables(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
-    WmAnimTable *t = db_lookupRegistered(8, arg0, DB_MODEL_INFO);
+    WmAnimTable *t = db_lookupRegistered(DB_GET_AT_IN, arg0, DB_MODEL_INFO);
     WmAnimTableEntry *e = t->entries;
     s32 i;
 
@@ -415,7 +415,7 @@ void fld_drawModels(void) {
         if (c != NULL) {
             o = c->obj;
             m = c->model;
-            w = db_lookupRegistered(4, o->anim | DB_ANIM, 0);
+            w = db_lookupRegistered(DB_GET_ADDR, o->anim | DB_ANIM, 0);
             m->anim = w;
             if (w != NULL && IS_OFFSET(w->bones)) {
                 w->bones = (void *)((u8 *)w + (s32)w->bones);
@@ -598,9 +598,9 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             fldmdl_initModel(y->model, (u8 *)g_gameState->gameData->ctx.field->area->scene->heapTop);
             fldmdl_buildPackets(y->model, (WmTexInfo *)tex, (s16(*)[2])uv);
             g_gameState->gameData->ctx.field->area->scene->heapTop += sum;
-            id = (s32)db_lookupRegistered(9, y->modelId, DB_TEX_ANIM);
+            id = (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, y->modelId, DB_TEX_ANIM);
             if (id != -1) {
-                y->model->texAnims = db_lookupRegistered(4, id, 0);
+                y->model->texAnims = db_lookupRegistered(DB_GET_ADDR, id, 0);
                 fldmdl_initTexAnims((TexAnimRelocSet *)y->model->texAnims, (ModelTexOfs *)spr);
             }
             fld_trimModelCache();
@@ -1167,7 +1167,7 @@ void fld_movieUpdate(void) {
     case 1:
         if (cd_getState() == 0) {
             if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
-                FileEntry *f = file_find(0, 0x64);
+                FileEntry *f = file_find(DIR_OVERLAYS, OVL_MOVIE);
                 cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11,
                               (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
@@ -1463,8 +1463,8 @@ void fld_updateEncounter(void) {
         g_gameState->gameData->ctx.field->area->scene->encounterStep++;
     } else {
         if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_ENCOUNTER_LOADED)) {
-            if (preload_isReady(0x1000B) != 0) {
-                e = preload_find(0x1000B);
+            if (preload_isReady(OVL_KEY(OVL_BATTLE)) != 0) {
+                e = preload_find(OVL_KEY(OVL_BATTLE));
                 ClearOTag(&g_fieldTempOt, 1);
                 setlen(&g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1], 2);
                 g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[0] = _get_mask(0, 0);
@@ -1606,7 +1606,7 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         if (arg2 != -1) {
             fld_resetSprite(e);
             e->spriteId = arg2;
-            e->sprite = db_lookupRegistered(4, (arg2 & 0xFFFF) | DB_SPRITE, 0);
+            e->sprite = db_lookupRegistered(DB_GET_ADDR, (arg2 & 0xFFFF) | DB_SPRITE, 0);
             e->frameEnd = fld_getSpriteFrameCount(e->sprite) * 16;
         } else {
             e->sprite = NULL;

@@ -32,7 +32,7 @@ void menuCard_init(void) {
     menuCard_initFlip();
     while (cd_getState()) {
     }
-    s_menuCard.imageFile = file_find(1, CARD_IMAGE_FILE);
+    s_menuCard.imageFile = file_find(DIR_COMMON, FILE_CARD_IMAGES);
     for (i = 0; i < 4; i++) {
         id = s_menuCardRepeatIds[i];
         s_menuCard.saved[i].repeatDelay = pad_getRepeatDelay(0, id);

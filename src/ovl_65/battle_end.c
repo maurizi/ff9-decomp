@@ -52,7 +52,7 @@ void battleEnd_init(void) {
         }
     }
     if (g_gameState->gameData->battleFlags & 1) {
-        e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | 0x50000);
+        e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | DB_FIELD);
         if (e != NULL) {
             g_gameState->gameData->fieldAreaId = e->unkC;
             g_gameState->gameData->sceneSector[1] = e->sector;
@@ -97,13 +97,13 @@ s32 battleEnd_loadDb(void) {
     FileEntry *e;
     PreloadEntry *f;
 
-    if (preload_isReady(0x2713)) {
-        f = preload_find(0x2713);
+    if (preload_isReady(FILE_BTL_END_DB)) {
+        f = preload_find(FILE_BTL_END_DB);
         file_copyViaVram(g_modeHeap, f->dest, f->loaded, 0);
-        preload_remove(0x2713);
+        preload_remove(FILE_BTL_END_DB);
         DrawSync(0);
     } else {
-        e = file_find(1, 0x2713);
+        e = file_find(DIR_COMMON, FILE_BTL_END_DB);
         cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead)) {
         }
@@ -139,23 +139,23 @@ void battleEnd_preloadScene(void) {
     if (g_gameState->gameData->battleResult == 6) {
         return;
     }
-    id = 0x1000C;
+    id = OVL_KEY(OVL_WORLD);
     if (b->unk6 == 1) {
-        id = 0x1000A;
+        id = OVL_KEY(OVL_FIELD);
     }
-    f = file_find(0, id);
+    f = file_find(DIR_OVERLAYS, id);
     dst = b->unk1C;
     size = (f->unkC - f->sector) << 11;
     preload_setEntry(preload_add(), 0, id, (s32)dst, size, size, f->sector, size);
     dst += size;
     if (b->unk6 == 1) {
-        id = 0x2714;
+        id = FILE_FLD_COMMON;
     } else if (g_evtGlobalVars.h[0] >= 0x2B52) {
-        id = 0x2716;
+        id = FILE_WM_DATA_LATE;
     } else {
-        id = 0x2712;
+        id = FILE_WM_DATA;
     }
-    f = file_find(1, id);
+    f = file_find(DIR_COMMON, id);
     k = -0x146F00;
     size = (f->unkC - f->sector) << 11;
     at = g_loadAreaEnd - (dst + k);
@@ -166,14 +166,14 @@ void battleEnd_preloadScene(void) {
         return;
     }
     sector = g_gameState->gameData->sceneSector[0];
-    id = g_gameState->gameData->fieldAreaId | 0x60000;
+    id = g_gameState->gameData->fieldAreaId | DB_AREA;
     size = g_gameState->gameData->sceneSectors[0] << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     dst += size;
     sector = g_gameState->gameData->sceneSector[1];
-    id = g_gameState->gameData->fieldId | 0x50000;
+    id = g_gameState->gameData->fieldId | DB_FIELD;
     size = g_gameState->gameData->sceneSectors[1] << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
@@ -181,7 +181,7 @@ void battleEnd_preloadScene(void) {
     g = g_gameState->gameData;
     if ((s16)g->fieldId == g->savedMusicField && g->savedMusicFileSector != -1) {
         sector = g->savedMusicFileSector;
-        id = g->savedMusicId | 0x70000;
+        id = g->savedMusicId | DB_MUSIC;
         preload_setEntry(preload_add(), 1, id, 0, 0, 0, sector, -1);
     }
 }

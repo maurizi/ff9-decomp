@@ -90,10 +90,10 @@ void opening_loadMusic(void) {
     s32 a;
     s32 b;
 
-    a = (s32)db_lookupRegistered(4, TITLE_MUSIC, 0);
-    memmove(g_gameState->gameData->musicSeq, (void *)a, (s32)db_lookupRegistered(5, TITLE_MUSIC, 0));
-    a = (s32)db_lookupRegistered(4, TITLE_MUSIC_BANK, 0);
-    b = (s32)db_lookupRegistered(5, TITLE_MUSIC_BANK, 0);
+    a = (s32)db_lookupRegistered(DB_GET_ADDR, TITLE_MUSIC, 0);
+    memmove(g_gameState->gameData->musicSeq, (void *)a, (s32)db_lookupRegistered(DB_GET_SIZE, TITLE_MUSIC, 0));
+    a = (s32)db_lookupRegistered(DB_GET_ADDR, TITLE_MUSIC_BANK, 0);
+    b = (s32)db_lookupRegistered(DB_GET_SIZE, TITLE_MUSIC_BANK, 0);
     akao_beginBankUpload();
     akao_uploadBank(a, b, 1);
 }
@@ -103,7 +103,7 @@ void opening_loadData(void) {
     FileEntry *e;
 
     buf = g_loadAreaEnd + 0x10000;
-    e = file_find(1, 0x2717);
+    e = file_find(DIR_COMMON, FILE_OPENING_DATA);
     cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, buf, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
@@ -125,7 +125,7 @@ s32 opening_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     kind = (arg0 >> 8) & 0xF;
     switch ((arg0 >> 12) & 3) {
     case 0:
-        id = (arg1 & 0xFFFF) | 0x70000;
+        id = (arg1 & 0xFFFF) | DB_MUSIC;
         switch (kind) {
         case 0:
             if (g_gameState->gameData->soundLoadState != 0) {
@@ -196,10 +196,10 @@ s32 opening_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         return -1;
     case 1:
-        id = (arg1 & 0xFFFF) | 0x80000;
+        id = (arg1 & 0xFFFF) | DB_SE;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)db_lookupRegistered(4, id, 0);
+            h = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
         }
         switch (kind) {
         case 0:

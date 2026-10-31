@@ -33,10 +33,10 @@ s32 tm_loadSoundBlocks(void) {
     s32 i;
     s32 h;
     s32 a, b;
-    for (i = db_lookup(g_tmDataFile, 1, 0x90000, 0) - 1; i >= 0; i--) {
-        h = db_lookup(g_tmDataFile, 3, (i & 0xFFFF) | 0x90000, 0);
-        a = (s32)db_lookupRegistered(4, h, 0);
-        b = (s32)db_lookupRegistered(5, h, 0);
+    for (i = db_lookup(g_tmDataFile, DB_GET_COUNT, DB_SOUND_BANK, 0) - 1; i >= 0; i--) {
+        h = db_lookup(g_tmDataFile, DB_GET_KEY_AT, (i & 0xFFFF) | DB_SOUND_BANK, 0);
+        a = (s32)db_lookupRegistered(DB_GET_ADDR, h, 0);
+        b = (s32)db_lookupRegistered(DB_GET_SIZE, h, 0);
         akao_beginBankUpload();
         akao_uploadBank(a, b, 1);
     }
@@ -44,14 +44,14 @@ s32 tm_loadSoundBlocks(void) {
 }
 
 s32 tm_loadMusic(void) {
-    s32 p = (s32)db_lookupRegistered(4, 0x70042, 0);
-    memmove(g_gameState->gameData->musicSeq, (void *)p, (s32)db_lookupRegistered(5, 0x70042, 0));
+    s32 p = (s32)db_lookupRegistered(DB_GET_ADDR, 0x70042, 0);
+    memmove(g_gameState->gameData->musicSeq, (void *)p, (s32)db_lookupRegistered(DB_GET_SIZE, 0x70042, 0));
     return 0;
 }
 
 s32 tm_loadDataFile(void) {
     s32 dst = (s32)(g_loadAreaEnd + 0x57800);
-    FileEntry *f = file_find(1, 0x2715);
+    FileEntry *f = file_find(DIR_COMMON, FILE_TM_DATA);
     cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, (void *)dst, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
@@ -61,7 +61,7 @@ s32 tm_loadDataFile(void) {
 }
 
 s32 tm_copyDataFile(void) {
-    s32 end = db_lookup(g_tmDataFile, 0, 0x70000, 0);
+    s32 end = db_lookup(g_tmDataFile, DB_GET_BLOCK, DB_MUSIC, 0);
     g_tmDataCopy = (s32)(g_loadAreaEnd + 0x141000);
     memmove((void *)g_tmDataCopy, (void *)g_tmDataFile, end - g_tmDataFile);
     db_register(g_tmDataCopy, 0);
@@ -157,10 +157,10 @@ s32 tm_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         return -1;
     case 1:
-        id = (arg1 & 0xFFFF) | 0x80000;
+        id = (arg1 & 0xFFFF) | DB_SE;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)db_lookupRegistered(4, id, 0);
+            h = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
         }
         switch (kind) {
         case 0:

@@ -24,7 +24,7 @@ s32 btlfx_reloadCommonData(s32 arg0) {
     s32 i;
     u32 *p = PSX_RAM(u32 *, 0x801E7700);
     if (arg0 == 0) {
-        FileEntry *e = file_find(1, 0x2BF);
+        FileEntry *e = file_find(DIR_COMMON, FILE_BTLFX_COMMON);
         cd_readAsync(g_gameState->imgSector + e->sector, (e->unkC - e->sector) << 11, PSX_RAM(void *, 0x801E7700), 0);
     } else if (cd_getState() == 0) {
         btlfx_resetMaskBit();
@@ -1752,9 +1752,9 @@ void btlfx_copyWords(s32 *arg0, s32 *arg1, u32 arg2) {
 }
 
 s32 *btlfx_swapModelData(s32 arg0, s32 *arg1) {
-    s32 id = (arg0 & 0xFFFF) | 0x20000;
-    u32 size = (u32)db_lookupRegistered(5, id, 0);
-    s32 *p = db_lookupRegistered(4, id, 0);
+    s32 id = (arg0 & 0xFFFF) | DB_MODEL;
+    u32 size = (u32)db_lookupRegistered(DB_GET_SIZE, id, 0);
+    s32 *p = db_lookupRegistered(DB_GET_ADDR, id, 0);
     if (*arg1 == 0x1234) {
         btlfx_copyWords(p, arg1 + 1, size);
     } else {

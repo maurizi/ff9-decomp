@@ -438,7 +438,7 @@ void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
     arg1->card = arg0->card;
     arg1->drops.w = arg0->drops;
     for (i = 0; i < 6; i++) {
-        h = db_lookupRegistered(4, arg0->motionIds[i] | 0x30000, 0);
+        h = db_lookupRegistered(DB_GET_ADDR, arg0->motionIds[i] | DB_ANIM, 0);
         arg1->motions[i] = h;
         if (IS_OFFSET(h->rotKeys)) {
             h->rotKeys = (s32)h + h->rotKeys;

@@ -19,7 +19,7 @@ void btlseq_init(void) {
     t->anims = (BtlUnit9CC **)q;
     n = h[1];
     for (i = 0; i < n; i++, q++) {
-        m = db_lookupRegistered(4, (*q & 0xFFFF) | 0x30000, 0);
+        m = db_lookupRegistered(DB_GET_ADDR, (*q & 0xFFFF) | DB_ANIM, 0);
         *q = (u32)m;
         if (IS_OFFSET(m->rotKeys)) {
             m->rotKeys = (s32)m + m->rotKeys;

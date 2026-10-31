@@ -129,8 +129,8 @@ void game_resetData(void) {
 }
 
 s32 game_loadCommonAkao(void) {
-    s32 addr = (s32)db_lookupRegistered(4, DB_SOUND_BANK | 0x84, 0);
-    s32 size = (s32)db_lookupRegistered(5, DB_SOUND_BANK | 0x84, 0);
+    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, DB_SOUND_BANK | 0x84, 0);
+    s32 size = (s32)db_lookupRegistered(DB_GET_SIZE, DB_SOUND_BANK | 0x84, 0);
 
     akao_beginBankUpload();
     akao_uploadBank(addr, size, 1);
@@ -143,9 +143,9 @@ s32 game_loadCommonImages(void) {
     u32 i;
     s32 addr;
 
-    gd->font = db_lookupRegistered(4, DB_FONT, 0);
+    gd->font = db_lookupRegistered(DB_GET_ADDR, DB_FONT, 0);
     for (i = 0; i < 8; i++) {
-        addr = (s32)db_lookupRegistered(4, ids[i] | DB_TIM, 0);
+        addr = (s32)db_lookupRegistered(DB_GET_ADDR, ids[i] | DB_TIM, 0);
         if (addr != 0) {
             file_loadTim(addr);
             DrawSync(0);
@@ -155,7 +155,7 @@ s32 game_loadCommonImages(void) {
 }
 
 s32 game_loadCommonDb(void) {
-    FileEntry *f = file_find(1, 0x271A);
+    FileEntry *f = file_find(DIR_COMMON, FILE_COMMON_DB);
 
     cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, (void *)g_allocTop, 0,
                   -1, NULL);
@@ -163,7 +163,7 @@ s32 game_loadCommonDb(void) {
     }
     g_gameState->gameData->commonDb = (void *)g_allocTop;
     db_register((s32)g_gameState->gameData->commonDb, 0);
-    g_allocTop = db_lookup((s32)g_gameState->gameData->commonDb, 0, DB_SOUND_BANK, 0);
+    g_allocTop = db_lookup((s32)g_gameState->gameData->commonDb, DB_GET_BLOCK, DB_SOUND_BANK, 0);
     return 0;
 }
 

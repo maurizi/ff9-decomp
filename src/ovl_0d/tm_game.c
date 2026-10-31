@@ -433,7 +433,7 @@ void tm_debugPrint(TmState *s, char *msg) {
 }
 
 void tm_loadImageFile(void) {
-    FileEntry *f = file_find(1, 0x44C);
+    FileEntry *f = file_find(DIR_COMMON, FILE_TM_IMAGES);
     if (f == NULL) {
         SystemError(0x46, 0x3E6);
     }
