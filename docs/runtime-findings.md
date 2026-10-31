@@ -2980,3 +2980,22 @@ No new save states.
   at 0x801275B0 (`field_dali_inn`) and 0x800F4430 (`field_d1_456`), read watches on +0 (2), +4 (4) and the 0x20-byte
   table, 600 frames each, 0 hits, while the same watch on +8 / +3 gets ~1000 hits from fld_drawSprites. Leave unnamed
   or `unused0` / `unusedIds`.
+
+## R32 3DS requests: button sprites, field exits, ATE prompt, direct menu screens  (status: proposed; details in docs/r32/3ds-requests.md)
+- binary: main, ovl_0a; data and script-format facts (names proposed at the end of docs/r32/3ds-requests.md)
+- evidence (disc 1):
+  - `field_d1_101`, VRAM dump (`tools/rt/vram.lua`): g_uiSprites 4-18 render as Cross, Circle, Square, Triangle, L1, L2,
+    R1, R2, d-pad, 4 arm highlights, START, SELECT. VRAM (960,256) 64x38 and CLUT (576,224) 16x16 are byte-identical
+    to common-DB TIM 0x42710 (dir 1 file 0x271A, game_loadCommonImages).
+  - `field_d1_101`: region objects uid 15/16/17 (kind 3) hold the op-0x29 polygons. With Zidane teleported into
+    uid 17, evt_checkPlayerAction calls evt_callObjectFunc(uid 17, 1, 2) every field frame; after walking up,
+    evt_setNextLocation(0x70) from op 0x2B and field 112 loads. The global s16 at 0x8007AEF2 (arrival point) is
+    written in the GOTO frame, then read and reset by the new field's init.
+  - `field_d1_352`: poking g_evtGlobalVars.b[0xEE] (0x8007AFDE) = 1 and pressing Select runs the script's
+    expression op 0x4F (0x800525C8) and msg_open(0x62, 1, .., 0x40) ("ACTIVE TIME EVENT" / Select event / Cancel).
+    Poking g_atePromptMode = 1 draws "PRESS [SELECT] TO SEE ATE" at (16, 200).
+  - `field_d1_352`: Triangle, break at ovl_0a menuMain_update, then s_menuMain.cursor = 5, g_menuScreen.slideIn = 0
+    and pc = menuScreen_open(a0 = 6). The Card screen opens (ovl_36 resident, g_menuScreen.screen 6), Circle returns
+    to the main menu with the cursor on Card, and a second Circle closes the menu.
+- confidence: high for all four (code plus runtime). The ATE variables (b[0xEE], u16 at 0xEC, s16 at 0xF1) are
+  script conventions seen in 47 disc-1 fields, not engine state.
