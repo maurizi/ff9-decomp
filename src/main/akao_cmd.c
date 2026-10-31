@@ -1467,30 +1467,30 @@ s32 akao_command(u32 cmd) {
     blk = &g_akaoCommandBlock;
     cmd &= 0xFF;
     switch (cmd) {
-    case 0x10:
-    case 0x12:
-    case 0x14:
-    case 0x19:
-    case 0x1A:
+    case AKAO_CMD_PLAY_MUSIC:
+    case AKAO_CMD_PLAY_MUSIC_COUNT:
+    case AKAO_CMD_PLAY_MUSIC_FROM:
+    case AKAO_CMD_PUSH_MUSIC:
+    case AKAO_CMD_CROSSFADE_MUSIC:
         if (akao_checkHeader((s32 *)g_akaoArgs.arg0) == 0) {
         seq = (AkaoSeqHeader *)g_akaoArgs.arg0;
         if (g_akaoSeq->musicId != seq->id || (g_akaoSubSeq != NULL && g_akaoSubSeq->musicId != g_akaoSeq->musicId)) {
-            if (cmd != 0x19) {
+            if (cmd != AKAO_CMD_PUSH_MUSIC) {
                 akao_setReverbMode(seq->reverbMode);
             }
             blk->arg0 = (s32)seq;
             blk->arg2 = seq->id;
             switch (cmd) {
-            case 0x14:
+            case AKAO_CMD_PLAY_MUSIC_FROM:
                 blk->arg3 = g_akaoArgs.arg1 != 0 ? g_akaoArgs.arg1 | 1 : -1;
                 break;
-            case 0x12:
+            case AKAO_CMD_PLAY_MUSIC_COUNT:
                 blk->arg3 = g_akaoArgs.arg1;
                 break;
-            case 0x19:
+            case AKAO_CMD_PUSH_MUSIC:
                 blk->arg4 = g_akaoArgs.arg1;
                 break;
-            case 0x1A:
+            case AKAO_CMD_CROSSFADE_MUSIC:
                 blk->arg4 = g_akaoArgs.arg1;
                 blk->arg5 = g_akaoArgs.arg2;
                 break;
@@ -1505,33 +1505,33 @@ s32 akao_command(u32 cmd) {
             r = -1;
         }
         break;
-    case 0xD8:
+    case AKAO_CMD_SET_TEMPO_PITCH_SCALE:
         blk->arg0 = g_akaoArgs.arg0;
-        g_akaoCommandHandlers[0xD0](blk);
-        cmd = 0xD4;
+        g_akaoCommandHandlers[AKAO_CMD_SET_TEMPO_SCALE](blk);
+        cmd = AKAO_CMD_SET_PITCH_SCALE;
         break;
-    case 0xD9:
+    case AKAO_CMD_FADE_TEMPO_PITCH_SCALE:
         blk->arg0 = g_akaoArgs.arg0;
         blk->arg1 = g_akaoArgs.arg1;
-        g_akaoCommandHandlers[0xD1](blk);
-        cmd = 0xD5;
+        g_akaoCommandHandlers[AKAO_CMD_FADE_TEMPO_SCALE](blk);
+        cmd = AKAO_CMD_FADE_PITCH_SCALE;
         break;
-    case 0xDA:
+    case AKAO_CMD_FADE_TEMPO_PITCH_SCALE_FROM:
         blk->arg0 = g_akaoArgs.arg0;
         blk->arg1 = g_akaoArgs.arg1;
         blk->arg2 = g_akaoArgs.arg2;
-        g_akaoCommandHandlers[0xD2](blk);
-        cmd = 0xD6;
+        g_akaoCommandHandlers[AKAO_CMD_FADE_TEMPO_SCALE_FROM](blk);
+        cmd = AKAO_CMD_FADE_PITCH_SCALE_FROM;
         break;
-    case 0x99:
-        g_akaoCommandHandlers[0x9B](blk);
-        g_akaoCommandHandlers[0x9D](blk);
-        cmd = 0x9F;
+    case AKAO_CMD_PAUSE_ALL:
+        g_akaoCommandHandlers[AKAO_CMD_PAUSE_MUSIC](blk);
+        g_akaoCommandHandlers[AKAO_CMD_PAUSE_SE](blk);
+        cmd = AKAO_CMD_PAUSE_STREAM;
         break;
-    case 0x98:
-        g_akaoCommandHandlers[0x9A](blk);
-        g_akaoCommandHandlers[0x9C](blk);
-        cmd = 0x9E;
+    case AKAO_CMD_RESUME_ALL:
+        g_akaoCommandHandlers[AKAO_CMD_RESUME_MUSIC](blk);
+        g_akaoCommandHandlers[AKAO_CMD_RESUME_SE](blk);
+        cmd = AKAO_CMD_RESUME_STREAM;
         break;
     default:
         blk->arg0 = g_akaoArgs.arg0;
