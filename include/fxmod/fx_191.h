@@ -28,11 +28,11 @@ typedef struct {
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
     Pool6CEntry *emit14;
-    SVECTOR unk18; /* target body position */
+    SVECTOR pos18; /* target body position */
     u8 pad20[0x30 - 0x20];
-    SVECTOR unk30; /* from, to, from, to */
+    SVECTOR pos30; /* from, to, from, to */
     SVECTOR unk38;
-    SVECTOR unk40;
+    SVECTOR pos40;
     SVECTOR unk48;
     SVECTOR unk50; /* current */
     SVECTOR unk58;

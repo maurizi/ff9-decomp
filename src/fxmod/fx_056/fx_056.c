@@ -19,8 +19,8 @@ s32 fx_056_op80(s32 mode, Fx056Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_playFileSound(1, entry->file, -1);
         ex->btlfx_playFileSound(5, entry->file, -1);
         ex->btlfx_playFileSound(7, entry->file, -1);
-        ex->btlfx_getUnitPos(work->unk10, (s16 *)&work->unk8);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
+        ex->btlfx_getUnitPos(work->unk10, (s16 *)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->unk14 = (s32)D_801E79B8[work->unk10];
             work->emit0->unk12 = 0xA;
@@ -32,7 +32,7 @@ s32 fx_056_op80(s32 mode, Fx056Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0xF) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk8);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(work->unk10, 0x20);
             }

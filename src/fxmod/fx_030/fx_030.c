@@ -9,15 +9,15 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x6C;
     } else if (mode == 1) {
         fx_030_env = env;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk0);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos0);
         work->unk8.vx = env->targets->centerX;
         work->unk8.vz = env->targets->centerZ + 0x1F4;
         work->unk8.vy = 0;
-        ex->btlfx_aimAngles((s16 *)&work->unk0, (s16 *)&work->unk8, (s16 *)&work->unk10);
-        ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk0, (s16 *)&work->unk18);
-        work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk0);
-        work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk0);
-        work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk0);
+        ex->btlfx_aimAngles((s16 *)&work->pos0, (s16 *)&work->unk8, (s16 *)&work->unk10);
+        ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->pos0, (s16 *)&work->unk18);
+        work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos0);
+        work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos0);
+        work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos0);
     } else {
         frame = entry->frame;
         if (work->emit20 != NULL && work->emit20->state == BTLFX_EMIT_DONE) {

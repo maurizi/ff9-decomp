@@ -23,62 +23,62 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 typedef struct {
     u8 unk0[0x28]; /* flags and timers */
     s32 model28; /* model */
-    SVECTOR unk2C; /* rotation */
-    VECTOR unk34; /* scale */
-    VECTOR unk44; /* position */
+    SVECTOR rot2C; /* rotation */
+    VECTOR scale34; /* scale */
+    VECTOR pos44; /* position */
     s32 model54; /* models */
     s32 model58;
-    SVECTOR unk5C;
-    SVECTOR unk64;
-    VECTOR unk6C;
-    VECTOR unk7C;
-    VECTOR unk8C;
-    VECTOR unk9C;
-    VECTOR unkAC;
-    SVECTOR unkBC;
-    SVECTOR unkC4;
+    SVECTOR rot5C;
+    SVECTOR rot64;
+    VECTOR pos6C;
+    VECTOR pos7C;
+    VECTOR scale8C;
+    VECTOR pos9C;
+    VECTOR scaleAC;
+    SVECTOR rotBC;
+    SVECTOR posC4;
     s32 modelCC; /* models */
     s32 modelD0;
     s32 modelD4;
-    VECTOR unkD8;
+    VECTOR scaleD8;
     s32 modelE8; /* models */
     s32 modelEC;
     s32 modelF0;
     s32 modelF4;
     s32 modelF8;
-    VECTOR unkFC;
-    VECTOR unk10C;
-    SVECTOR unk11C;
+    VECTOR posFC;
+    VECTOR scale10C;
+    SVECTOR rot11C;
     s32 unk124;
     s32 model128; /* models */
     s32 model12C;
     s32 model130;
     s32 model134;
     s32 model138;
-    VECTOR unk13C;
-    VECTOR unk14C;
-    SVECTOR unk15C;
-    SVECTOR unk164;
+    VECTOR pos13C;
+    VECTOR scale14C;
+    SVECTOR rot15C;
+    SVECTOR pos164;
     s32 model16C; /* models */
     s32 model170;
-    SVECTOR unk174;
+    SVECTOR rot174;
     s32 model17C;
     s32 model180;
     Pool6CEntry *emit184;
-    SVECTOR unk188;
+    SVECTOR pos188;
     Pool6CEntry *emit190;
-    SVECTOR unk194;
+    SVECTOR pos194;
     Pool6CEntry *emit19C;
-    SVECTOR unk1A0;
-    SVECTOR unk1A8;
+    SVECTOR pos1A0;
+    SVECTOR pos1A8;
     Pool6CEntry *emit1B0;
     s32 unk1B4;
     Pool6CEntry *emit1B8;
-    SVECTOR unk1BC;
+    SVECTOR pos1BC;
     SVECTOR unk1C4;
-    SVECTOR unk1CC;
-    SVECTOR unk1D4;
-    SVECTOR unk1DC;
+    SVECTOR pos1CC;
+    SVECTOR pos1D4;
+    SVECTOR pos1DC;
     s32 unk1E4;
     s32 unk1E8;
 } Fx0b8Work80; /* 0x1EC */

@@ -28,7 +28,7 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* caster body position */
+    SVECTOR pos8; /* caster body position */
     SVECTOR unk10; /* caster rotation */
 } Fx1ebWork80; /* 0x18 */
 
@@ -39,11 +39,11 @@ typedef struct {
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
     Pool6CEntry *emit14;
-    SVECTOR unk18; /* model rotation */
-    VECTOR unk20; /* model position */
-    VECTOR unk30; /* model scale */
+    SVECTOR rot18; /* model rotation */
+    VECTOR pos20; /* model position */
+    VECTOR scale30; /* model scale */
     s32 unk40; /* brightness */
-    SVECTOR unk44; /* target position */
+    SVECTOR pos44; /* target position */
     s32 unk4C; /* fade countdown */
     u16 unk50;
     u16 model52[3]; /* models */
@@ -52,7 +52,7 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4;
+    SVECTOR pos4;
     s32 unkC; /* unit */
 } Fx1ebWork83;
 

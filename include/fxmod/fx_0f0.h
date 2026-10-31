@@ -11,15 +11,15 @@ typedef struct {
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
     SVECTOR unk14;
-    SVECTOR unk1C;
-    SVECTOR unk24;
+    SVECTOR pos1C;
+    SVECTOR pos24;
 } Fx0f0Work80;
 
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC;
+    SVECTOR posC;
 } Fx0f0Work81;
 
 extern Unk800F78A4 *fx_0f0_env;

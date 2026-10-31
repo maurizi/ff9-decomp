@@ -14,25 +14,25 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_0e6_env = env;
         ex->btlfx_initEffModels(fx_0e6_effModels, 1);
-        work->unk24.vx = 0;
-        work->unk24.vy = 0;
-        work->unk24.vz = 0;
-        work->unk4.vx = 0x1000;
-        work->unk4.vy = 0x1000;
-        work->unk4.vz = 0x1000;
+        work->rot24.vx = 0;
+        work->rot24.vy = 0;
+        work->rot24.vz = 0;
+        work->scale4.vx = 0x1000;
+        work->scale4.vy = 0x1000;
+        work->scale4.vz = 0x1000;
         work->model0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0xF7, 0x3D00, 0, 0);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk2C);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk34);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos34);
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), 0, 0, -1, 0x1000, 0x1000, mode,
                           (u8 *)&D_801E7B68, 0);
     } else {
         frame = entry->frame;
-        ex->btlfx_lerpVec((s16 *)&work->unk2C, (s16 *)&work->unk34, (frame << 22) >> 12, (s16 *)&pos);
-        work->unk14.vx = pos.vx;
-        work->unk14.vy = pos.vy;
-        work->unk14.vz = pos.vz;
+        ex->btlfx_lerpVec((s16 *)&work->unk2C, (s16 *)&work->pos34, (frame << 22) >> 12, (s16 *)&pos);
+        work->pos14.vx = pos.vx;
+        work->pos14.vy = pos.vy;
+        work->pos14.vz = pos.vz;
         if (frame < 4) {
-            ex->Hi_DrawEffModel(&work->unk24, &work->unk14, (s32)&work->unk4, work->model0);
+            ex->Hi_DrawEffModel(&work->rot24, &work->pos14, (s32)&work->scale4, work->model0);
         }
         if (frame < 8) {
             n = 25;
@@ -50,7 +50,7 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                               (u8 *)line, 0);
         }
         if (frame == 4) {
-            Pool6CEntry *p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk34);
+            Pool6CEntry *p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos34);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

@@ -19,7 +19,7 @@ typedef struct {
     s32 model8;
     s32 modelC;
     s32 model10;
-    SVECTOR unk14; /* caster body position */
+    SVECTOR pos14; /* caster body position */
     SVECTOR unk1C; /* caster position */
     s16 unk24;
     s16 unk26; /* particles spawned */

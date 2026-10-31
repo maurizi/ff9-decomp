@@ -11,17 +11,17 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* model rotation */
-    VECTOR unk10; /* model position */
-    VECTOR unk20; /* model scale */
+    SVECTOR rot8; /* model rotation */
+    VECTOR pos10; /* model position */
+    VECTOR scale20; /* model scale */
     s32 unk30; /* colour */
     SVECTOR unk34;
     SVECTOR unk3C;
     SVECTOR unk44;
-    SVECTOR unk4C;
+    SVECTOR pos4C;
     SVECTOR unk54;
     SVECTOR unk5C;
-    SVECTOR unk64;
+    SVECTOR pos64;
     s16 unk6C;
     u16 model6E; /* models */
     u16 model70;

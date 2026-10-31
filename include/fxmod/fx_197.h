@@ -60,7 +60,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     SVECTOR unk8; /* position */
-    SVECTOR unk10;
+    SVECTOR pos10;
     s32 unk18[6][3]; /* models of the six pieces */
     s32 pad60[3];
     s32 model6C[7];
@@ -71,7 +71,7 @@ typedef struct {
     s16 unk2; /* piece */
     s32 pad4;
     s32 unk8;
-    SVECTOR unkC; /* position */
+    SVECTOR posC; /* position */
 } Fx197Item81;
 
 typedef struct {

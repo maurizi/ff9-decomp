@@ -11,15 +11,15 @@ s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         fx_04c_env = env;
-        ((s32 *)&work->unk4)[0] = ((s32 *)&env->targets->centerX)[0];
+        ((s32 *)&work->pos4)[0] = ((s32 *)&env->targets->centerX)[0];
         t = ((s32 *)&env->targets->centerX)[1];
-        work->unk4.vy = 0;
-        ((s32 *)&work->unk4)[1] = t;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk4);
+        work->pos4.vy = 0;
+        ((s32 *)&work->pos4)[1] = t;
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
         if (p != NULL) {
             p->otZ = -0x12C;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
         if (p != NULL) {
             p->otZ = -0x258;
         }

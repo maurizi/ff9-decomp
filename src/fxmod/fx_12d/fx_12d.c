@@ -8,15 +8,15 @@ s32 fx_12d_op80(s32 mode, Fx12dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x14;
     } else if (mode == 1) {
         fx_12d_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
-        D_801E7E40.vx = work->unkC.vx;
-        D_801E7E40.vy = work->unkC.vy;
-        D_801E7E40.vz = work->unkC.vz;
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unkC);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
+        D_801E7E40.vx = work->posC.vx;
+        D_801E7E40.vy = work->posC.vy;
+        D_801E7E40.vz = work->posC.vz;
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
     } else {
         frame = entry->frame;
         if (frame == 4) {
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
         }
         return frame >= 0x28;
     }
@@ -31,8 +31,8 @@ s32 fx_12d_op81(s32 mode, Fx12dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x20;
     } else if (mode == 1) {
         fx_12d_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk10);
-        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk10);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
+        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos10);
         if (work->emitC != NULL) {
             work->emitC->unk14 = (s32)D_801E8388;
             work->emitC->unk12 = 8;
@@ -42,8 +42,8 @@ s32 fx_12d_op81(s32 mode, Fx12dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 8) {
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
             if (work->emit8 != NULL) {
                 work->emit8->unk14 = (s32)D_801E7E48;
                 work->emit8->unk12 = 0xC;
@@ -69,15 +69,15 @@ s32 fx_12d_op82(s32 mode, Fx12dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_12d_env = env;
         ex->btlfx_initEffModels(fx_12d_effModels, 1);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk2C);
-        work->unk0.vx = 0;
-        work->unk0.vy = 0;
-        work->unk0.vz = 0;
-        work->unk8.vx = work->unk2C.vx;
-        work->unk8.vy = work->unk2C.vy;
-        work->unk8.vz = work->unk2C.vz;
-        ex->btlfx_getUnitScale(0x10, &work->unk18);
-        work->unk8.vx -= 0x28;
-        work->unk8.vz += 0x304;
+        work->rot0.vx = 0;
+        work->rot0.vy = 0;
+        work->rot0.vz = 0;
+        work->pos8.vx = work->unk2C.vx;
+        work->pos8.vy = work->unk2C.vy;
+        work->pos8.vz = work->unk2C.vz;
+        ex->btlfx_getUnitScale(0x10, &work->scale18);
+        work->pos8.vx -= 0x28;
+        work->pos8.vz += 0x304;
         ex->btlfx_getCasterTexInfo(&D_801E7CC0, &D_801E7CF0, 0x15E);
         for (i = 0; i < 6; i++) {
             D_801E7CD8[5 - i][0] = D_801E7CC0.pages[i][0];
@@ -93,10 +93,10 @@ s32 fx_12d_op82(s32 mode, Fx12dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame > 0) {
-            ex->Hi_SetEffModelSlice(work->unk34, work->unk8.vy);
-            ex->Hi_DrawSliceEffModel(&work->unk0, &work->unk8, (s32)&work->unk18, work->unk34);
+            ex->Hi_SetEffModelSlice(work->unk34, work->pos8.vy);
+            ex->Hi_DrawSliceEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->unk34);
             if (frame - 1 >= 0xC) {
-                work->unk8.vy += 0xF;
+                work->pos8.vy += 0xF;
             }
         }
         if (frame >= 0x50) {

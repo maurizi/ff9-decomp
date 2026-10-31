@@ -7,16 +7,16 @@
 typedef struct {
     SVECTOR unk0; /* from */
     SVECTOR unk8; /* to */
-    SVECTOR unk10; /* model rotation */
-    VECTOR unk18; /* model position */
-    VECTOR unk28; /* model scale */
+    SVECTOR rot10; /* model rotation */
+    VECTOR pos18; /* model position */
+    VECTOR scale28; /* model scale */
     s32 unk38; /* index */
     u16 model3C; /* model */
 } Fx185Work80;
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4;
+    SVECTOR pos4;
 } Fx185Work81;
 
 extern Unk800F78A4 *fx_185_env;

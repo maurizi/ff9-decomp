@@ -30,19 +30,19 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x30;
     } else if (mode == 1) {
         fx_041_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk18);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk20);
-        D_801E7F4C.vx = work->unk20.vx;
-        D_801E7F4C.vy = work->unk20.vy;
-        D_801E7F4C.vz = work->unk20.vz;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos18);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos20);
+        D_801E7F4C.vx = work->pos20.vx;
+        D_801E7F4C.vy = work->pos20.vy;
+        D_801E7F4C.vz = work->pos20.vz;
         fxm_posPathInit(&D_801E7F44, (u16 *)ex->btlfx_getFileData(entry->file, 8));
     } else {
         frame = entry->frame;
         switch (frame) {
         case 3:
-            ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk28);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk28);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk20);
+            ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos28);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos28);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
@@ -52,8 +52,8 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 4:
             fxm_startMotion2IfActive(0);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk18);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos18);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos18);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
@@ -62,8 +62,8 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0xF:
-            ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk28);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk28);
+            ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos28);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos28);
             if (work->emit10 != NULL) {
                 work->emit10->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
@@ -96,13 +96,13 @@ s32 fx_041_op81(s32 mode, Fx041Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_041_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unkC);
-        work->unk14.vx = work->unkC.vx;
-        work->unk14.vy = work->unkC.vy;
-        work->unk14.vz = work->unkC.vz;
-        work->unk14.vy = D_801E7F54.vy;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk14);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk14);
-        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk14);
+        work->pos14.vx = work->unkC.vx;
+        work->pos14.vy = work->unkC.vy;
+        work->pos14.vz = work->unkC.vz;
+        work->pos14.vy = D_801E7F54.vy;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
+        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
     } else {
         return entry->frame >= 0x28;
     }

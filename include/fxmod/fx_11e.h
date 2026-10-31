@@ -9,9 +9,9 @@ static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* model rotation */
-    VECTOR unkC; /* model position */
-    VECTOR unk1C; /* model scale */
+    SVECTOR rot4; /* model rotation */
+    VECTOR posC; /* model position */
+    VECTOR scale1C; /* model scale */
     u8 pad2C[0x30 - 0x2C];
     s32 unk30; /* radius direction */
     s32 unk34; /* angle direction */
@@ -20,7 +20,7 @@ typedef struct {
     s32 unk40; /* radius direction timer */
     s32 unk44; /* angle direction timer */
     SVECTOR unk48; /* target body position */
-    SVECTOR unk50;
+    SVECTOR pos50;
     s32 unk58; /* target */
     u16 model5C; /* models */
     u16 model5E;

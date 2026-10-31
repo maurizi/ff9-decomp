@@ -7,9 +7,9 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* variant (0..2) */
-    SVECTOR unk8; /* target body position */
+    SVECTOR pos8; /* target body position */
     SVECTOR unk10;
-    SVECTOR unk18;
+    SVECTOR pos18;
     s32 unk20;
     Pool6CEntry *emit24;
 } Fx0f3Work;

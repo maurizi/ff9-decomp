@@ -40,15 +40,15 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* home position */
-    SVECTOR unk10; /* particle position */
+    SVECTOR pos10; /* particle position */
     u8 pad18[8];
     SVECTOR unk20; /* camera target */
     Fx17d4Vec3 unk28; /* model position */
-    SVECTOR unk34; /* model rotation */
+    SVECTOR rot34; /* model rotation */
     Fx17d4Vec3 unk3C; /* model scale */
     Fx17d4Vec3 unk48; /* summon position */
     Fx17d4Vec3 unk54; /* summon scale */
-    SVECTOR unk60; /* summon rotation */
+    SVECTOR rot60; /* summon rotation */
     s32 model68; /* models */
     s32 model6C;
     s32 model70;

@@ -29,10 +29,10 @@ typedef struct {
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
-    SVECTOR unk10; /* target position */
-    SVECTOR unk18; /* model rotation */
-    VECTOR unk20; /* model position */
-    VECTOR unk30; /* model scale */
+    SVECTOR pos10; /* target position */
+    SVECTOR rot18; /* model rotation */
+    VECTOR pos20; /* model position */
+    VECTOR scale30; /* model scale */
     s32 unk40;
     SVECTOR unk44; /* trail position */
     u16 model4C[10]; /* models */

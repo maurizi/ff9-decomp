@@ -27,7 +27,7 @@ s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 typedef struct {
     s32 unk0; /* done */
-    SVECTOR unk4; /* caster body position */
+    SVECTOR pos4; /* caster body position */
     SVECTOR unkC; /* caster position */
     s32 model14[8]; /* models */
     s32 unk34; /* scale from the caster's size */

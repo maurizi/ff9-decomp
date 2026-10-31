@@ -8,7 +8,7 @@ typedef struct {
     Pool6CEntry *emit0;
     SVECTOR unk4;
     SVECTOR unkC;
-    SVECTOR unk14;
+    SVECTOR pos14;
 } Fx18eWork;
 
 extern Unk800F78A4 *fx_18e_env;

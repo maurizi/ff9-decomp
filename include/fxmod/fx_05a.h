@@ -7,11 +7,11 @@
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* target position */
-    SVECTOR unk10; /* effect position (raised for big enemies) */
-    SVECTOR unk18; /* model rotation */
-    VECTOR unk20; /* model position */
-    VECTOR unk30; /* model scale */
+    SVECTOR pos8; /* target position */
+    SVECTOR pos10; /* effect position (raised for big enemies) */
+    SVECTOR rot18; /* model rotation */
+    VECTOR pos20; /* model position */
+    VECTOR scale30; /* model scale */
     s16 unk40; /* model brightness */
     s16 unk42; /* screen tint */
     u16 model44; /* model */

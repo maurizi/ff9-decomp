@@ -342,7 +342,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             t = (frame << 12) / 81;
             if (frame == 0x12) {
-                work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
+                work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
                 if (work->emit48 != NULL) {
                     work->emit48->tail->unk0 = -1;
                     ((EffTailSpawn *)work->emit48->tail)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))fxm_nextRingPoint;
@@ -424,10 +424,10 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 v1.vx = env->camera->points[1].vx;
                 v1.vy = env->camera->points[1].vy;
                 v1.vz = env->camera->points[1].vz;
-                work->unk10.vx = (v0.vx + v1.vx) / 2;
-                work->unk10.vy = (v0.vy + v1.vy) / 2;
-                work->unk10.vz = (v0.vz + v1.vz) / 2;
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk10);
+                work->pos10.vx = (v0.vx + v1.vx) / 2;
+                work->pos10.vy = (v0.vy + v1.vy) / 2;
+                work->pos10.vz = (v0.vz + v1.vz) / 2;
+                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
                 if (e != NULL) {
                     e->otZ = 0x40;
                 }

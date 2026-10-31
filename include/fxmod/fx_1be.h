@@ -22,20 +22,20 @@ typedef struct {
     u8 unk0[0x20]; /* counters */
     Pool6CEntry *emit20[16];
     s32 model60; /* model */
-    VECTOR unk64; /* position */
-    VECTOR unk74; /* scale */
-    SVECTOR unk84; /* rotation */
-    SVECTOR unk8C;
+    VECTOR pos64; /* position */
+    VECTOR scale74; /* scale */
+    SVECTOR rot84; /* rotation */
+    SVECTOR pos8C;
     s32 model94; /* models */
     s32 model98;
-    SVECTOR unk9C;
+    SVECTOR rot9C;
     s32 modelA4;
     s32 modelA8;
-    VECTOR unkAC;
-    SVECTOR unkBC;
-    SVECTOR unkC4;
+    VECTOR scaleAC;
+    SVECTOR posBC;
+    SVECTOR posC4;
     SVECTOR unkCC;
-    SVECTOR unkD4;
+    SVECTOR posD4;
 } Fx1beWork80; /* 0xDC */
 
 typedef struct {

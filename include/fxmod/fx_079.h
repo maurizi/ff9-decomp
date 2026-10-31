@@ -38,7 +38,7 @@ typedef struct {
 typedef struct {
     s32 unk0[16]; /* timers */
     Fx079Model unk40[3];
-    VECTOR unk94; /* position */
+    VECTOR pos94; /* position */
 } Fx079Work; /* 0xA4 */
 
 extern Unk800F78A4 *fx_079_env;

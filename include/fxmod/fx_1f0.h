@@ -21,11 +21,11 @@ typedef struct {
     s32 model64;
     s32 model68;
     s32 model6C;
-    VECTOR unk70; /* model position */
-    VECTOR unk80; /* model scale */
-    VECTOR unk90;
-    SVECTOR unkA0; /* model rotation */
-    SVECTOR unkA8;
+    VECTOR pos70; /* model position */
+    VECTOR scale80; /* model scale */
+    VECTOR scale90;
+    SVECTOR rotA0; /* model rotation */
+    SVECTOR rotA8;
     s32 unkB0;
     s32 unkB4;
 } Fx1f0Work; /* 0xB8 */

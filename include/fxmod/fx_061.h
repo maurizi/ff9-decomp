@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 unk0;
-    SVECTOR unk4;
+    SVECTOR pos4;
 } Fx061Work;
 
 extern Unk800F78A4 *fx_061_env;

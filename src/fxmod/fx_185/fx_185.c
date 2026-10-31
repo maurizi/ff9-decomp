@@ -27,25 +27,25 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E8764.vx = work->unk8.vx;
         D_801E8764.vy = work->unk8.vy;
         D_801E8764.vz = work->unk8.vz;
-        ex->btlfx_aimAngles((s16 *)&work->unk0, (s16 *)&work->unk8, (s16 *)&work->unk10);
-        work->unk10.vx = ex->ratan2(work->unk8.vy - work->unk0.vy, work->unk0.vz - work->unk8.vz);
-        work->unk28.vx = 0x1000;
-        work->unk28.vy = 0x1000;
-        work->unk28.vz = 0x1000;
-        work->unk18.vx = work->unk0.vx;
-        work->unk18.vy = work->unk0.vy;
-        work->unk18.vz = work->unk0.vz;
+        ex->btlfx_aimAngles((s16 *)&work->unk0, (s16 *)&work->unk8, (s16 *)&work->rot10);
+        work->rot10.vx = ex->ratan2(work->unk8.vy - work->unk0.vy, work->unk0.vz - work->unk8.vz);
+        work->scale28.vx = 0x1000;
+        work->scale28.vy = 0x1000;
+        work->scale28.vz = 0x1000;
+        work->pos18.vx = work->unk0.vx;
+        work->pos18.vy = work->unk0.vy;
+        work->pos18.vz = work->unk0.vz;
         work->model3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
     } else {
         frame = entry->frame;
         if (frame < 6) {
             ex->btlfx_lerpVec((s16 *)&work->unk0, (s16 *)&work->unk8, frame << 10, (s16 *)&v);
-            work->unk18.vx = v.vx;
-            work->unk18.vy = v.vy;
-            work->unk18.vz = v.vz;
+            work->pos18.vx = v.vx;
+            work->pos18.vy = v.vy;
+            work->pos18.vz = v.vz;
         }
-        ex->Hi_SetEffModelSlice(work->model3C, work->unk18.vy);
-        ex->Hi_DrawSliceEffModel(&work->unk10, &work->unk18, (s32)&work->unk28, work->model3C);
+        ex->Hi_SetEffModelSlice(work->model3C, work->pos18.vy);
+        ex->Hi_DrawSliceEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model3C);
         if (frame >= 4) {
             if (work->unk38 == 0xF) {
                 ex->btlfx_clearEffModels();
@@ -62,11 +62,11 @@ s32 fx_185_op81(s32 mode, Fx185Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        work->unk4.vx = D_801E8764.vx;
-        work->unk4.vy = D_801E8764.vy;
-        work->unk4.vz = D_801E8764.vz;
+        work->pos4.vx = D_801E8764.vx;
+        work->pos4.vy = D_801E8764.vy;
+        work->pos4.vz = D_801E8764.vz;
         fx_185_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

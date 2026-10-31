@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* caster position */
+    SVECTOR pos0; /* caster position */
 } Fx0b7Work;
 
 extern Unk800F78A4 *fx_0b7_env;

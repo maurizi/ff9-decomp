@@ -38,10 +38,10 @@ typedef struct {
     Pool6CEntry *emit88;
     Pool6CEntry *emit8C;
     s32 pad90[(0x100 - 0x90) / 4];
-    SVECTOR unk100;
-    SVECTOR unk108;
+    SVECTOR pos100;
+    SVECTOR pos108;
     SVECTOR unk110[2]; /* bone 5 and bone 9 positions */
-    SVECTOR unk120; /* midpoint */
+    SVECTOR pos120; /* midpoint */
 } Fx1f2Work; /* 0x128 */
 
 typedef struct {

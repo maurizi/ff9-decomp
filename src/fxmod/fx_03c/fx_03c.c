@@ -8,9 +8,9 @@ s32 fx_03c_op80(s32 mode, Fx03cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_03c_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk4);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk14);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->unk14 = (s32)D_801E787C;
             work->emit0->unk12 = 0x2B;

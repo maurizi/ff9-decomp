@@ -16,22 +16,22 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_0e4_env = env;
         ex->btlfx_initEffModels(fx_0e4_effModels, 3);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk34);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos34);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk3C);
-        work->unk8.vx = work->unk3C.vx;
-        work->unk8.vy = work->unk3C.vy;
-        work->unk8.vz = work->unk3C.vz;
-        work->unk10.vx = work->unk34.vx;
-        work->unk10.vy = work->unk34.vy;
-        work->unk10.vz = work->unk34.vz;
-        ex->btlfx_pointAhead((s16 *)&work->unk34, (s16 *)&work->unk3C, ex->btlfx_getUnitRadius(0) + 0x190, (s16 *)&pos);
-        work->unk10.vx = pos.vx;
-        work->unk10.vy = pos.vy;
-        work->unk10.vz = pos.vz;
+        work->rot8.vx = work->unk3C.vx;
+        work->rot8.vy = work->unk3C.vy;
+        work->rot8.vz = work->unk3C.vz;
+        work->pos10.vx = work->pos34.vx;
+        work->pos10.vy = work->pos34.vy;
+        work->pos10.vz = work->pos34.vz;
+        ex->btlfx_pointAhead((s16 *)&work->pos34, (s16 *)&work->unk3C, ex->btlfx_getUnitRadius(0) + 0x190, (s16 *)&pos);
+        work->pos10.vx = pos.vx;
+        work->pos10.vy = pos.vy;
+        work->pos10.vz = pos.vz;
         work->unk64 = 0;
-        work->unk20.vx = 0x5000;
-        work->unk20.vy = 0x6000;
-        work->unk20.vz = 0x5000;
+        work->scale20.vx = 0x5000;
+        work->scale20.vy = 0x6000;
+        work->scale20.vz = 0x5000;
         for (i = 0; i < 3; i++) {
             work->model68[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7CF8[i]), 1);
         }
@@ -42,9 +42,9 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk54.vz = 0;
         work->unk5C = 0;
         work->unk62 = -1;
-        work->unk4C.vx = work->unk10.vx;
-        work->unk4C.vy = work->unk10.vy;
-        work->unk4C.vz = work->unk10.vz;
+        work->unk4C.vx = work->pos10.vx;
+        work->unk4C.vy = work->pos10.vy;
+        work->unk4C.vz = work->pos10.vz;
     } else {
         frame = entry->frame;
         if (frame == 0xC) {
@@ -53,14 +53,14 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame >= 0 && frame < 0x1C) {
             f = frame;
             if (work->unk60 >= 0) {
-                work->unk10.vy = fxm_lerpRatio(-0xFA0, 0, 8 - work->unk60, 8);
+                work->pos10.vy = fxm_lerpRatio(-0xFA0, 0, 8 - work->unk60, 8);
                 if (--work->unk60 == 0) {
-                    work->unk44.vx = work->unk10.vx;
-                    work->unk44.vy = work->unk10.vy;
-                    work->unk44.vz = work->unk10.vz;
-                    work->unk44.vy = 0;
-                    work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk44);
-                    work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk34);
+                    work->pos44.vx = work->pos10.vx;
+                    work->pos44.vy = work->pos10.vy;
+                    work->pos44.vz = work->pos10.vz;
+                    work->pos44.vy = 0;
+                    work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos44);
+                    work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos34);
                 }
             }
             work->unk5C += 0x200;
@@ -75,28 +75,28 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             case 0:
                 if (f < 6) {
                     m = 0;
-                    ex->Hi_DrawEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, m);
+                    ex->Hi_DrawEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, m);
                 } else if (f >= 6 && f < 9) {
                     d = 0x1000 - ((f - 6) << 12) / 3;
                     t = d > 0x1000 ? 0x1000 : d;
-                    ex->Hi_DrawMorphEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->model68[0],
+                    ex->Hi_DrawMorphEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, work->model68[0],
                                              work->model68[1], t);
                 } else {
                     m = 1;
-                    ex->Hi_SetEffModelSlice(m, work->unk10.vy);
-                    ex->Hi_DrawSliceEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, m);
+                    ex->Hi_SetEffModelSlice(m, work->pos10.vy);
+                    ex->Hi_DrawSliceEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, m);
                 }
-                env->camera->points[0].vx = work->unk10.vx;
-                env->camera->points[0].vy = work->unk10.vy;
-                env->camera->points[0].vz = work->unk10.vz;
+                env->camera->points[0].vx = work->pos10.vx;
+                env->camera->points[0].vy = work->pos10.vy;
+                env->camera->points[0].vz = work->pos10.vz;
                 if (f >= 4 && frame < 0xC) {
-                    work->unk20.vy -= 0x400;
+                    work->scale20.vy -= 0x400;
                 }
                 break;
             case 1:
                 m = 2;
-                ex->Hi_SetEffModelSlice(m, work->unk10.vy);
-                ex->Hi_DrawSliceEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, m);
+                ex->Hi_SetEffModelSlice(m, work->pos10.vy);
+                ex->Hi_DrawSliceEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, m);
                 break;
             }
             if (work->unk62 >= 0) {
@@ -104,8 +104,8 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk62--;
                 ex->Hi_ModifyEffModelAbr(m, 1);
                 ex->Hi_ModifyEffModelRGB(m, work->unk30, work->unk30, work->unk30);
-                work->unk10.vy += 0xA;
-                work->unk20.vy -= 0x100;
+                work->pos10.vy += 0xA;
+                work->scale20.vy -= 0x100;
                 work->unk5E -= 0x100;
             }
         }

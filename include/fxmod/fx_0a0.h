@@ -15,8 +15,8 @@ typedef struct {
 typedef struct {
     s32 unk0; /* state */
     SVECTOR unk4; /* btlfx_getUnitArgBonePos(0x10, 0) */
-    SVECTOR unkC;
-    SVECTOR unk14; /* caster body position */
+    SVECTOR posC;
+    SVECTOR pos14; /* caster body position */
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;
 } Fx0a0Work;

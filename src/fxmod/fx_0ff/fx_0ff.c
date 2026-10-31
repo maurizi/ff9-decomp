@@ -18,14 +18,14 @@ s32 fx_0ff_op80(s32 mode, Fx0ffWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_0ff_env = env;
         ex->btlfx_initEffModels(fx_0ff_effModels, 3);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkAC);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unkB4);
-        if (work->unkAC.vy >= -0x117) {
-            work->unkAC.vy = -0x118;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posAC);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->posB4);
+        if (work->posAC.vy >= -0x117) {
+            work->posAC.vy = -0x118;
         }
-        work->unk98.vx = 0x8000;
-        work->unk98.vy = 0x8000;
-        work->unk98.vz = 0x8000;
+        work->scale98.vx = 0x8000;
+        work->scale98.vy = 0x8000;
+        work->scale98.vz = 0x8000;
         r = ex->btlfx_getUnitRadius(0x100);
         r = (r >= 0x899) ? 0x898 : r;
         q = D_801E7F28;
@@ -46,13 +46,13 @@ s32 fx_0ff_op80(s32 mode, Fx0ffWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 2:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unkB4);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posB4);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         case 0x16:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unkAC);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posAC);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
@@ -81,11 +81,11 @@ s32 fx_0ff_op80(s32 mode, Fx0ffWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rot.vx = 0;
                 rot.vy = o->unk2;
                 rot.vz = 0;
-                ex->btlfx_pointAhead((s16 *)&work->unkAC, (s16 *)&rot, o->unk0, (s16 *)&pos);
+                ex->btlfx_pointAhead((s16 *)&work->posAC, (s16 *)&rot, o->unk0, (s16 *)&pos);
                 (work->unk38 + j)->vx = pos.vx;
                 (work->unk38 + j)->vy = pos.vy;
                 (work->unk38 + j)->vz = pos.vz;
-                ex->Hi_DrawEffModel(&work->unk8[j], &work->unk38[j], (s32)&work->unk98, m);
+                ex->Hi_DrawEffModel(&work->unk8[j], &work->unk38[j], (s32)&work->scale98, m);
                 if (work->unkBC >= 0 || work->unkC0 >= 0) {
                     ex->Hi_ModifyEffModelAbr(m, 1);
                     ex->Hi_ModifyEffModelRGB(m, work->unkA8, work->unkA8, work->unkA8);

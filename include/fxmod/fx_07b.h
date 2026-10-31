@@ -7,7 +7,7 @@
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* target body position, moved back */
+    SVECTOR pos8; /* target body position, moved back */
     SVECTOR unk10; /* target rotation */
 } Fx07bWork;
 

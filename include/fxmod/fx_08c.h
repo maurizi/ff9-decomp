@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame for btlfx_drawBackdrop */
-    SVECTOR unk8; /* position: env->targets->centerX..Z */
+    SVECTOR pos8; /* position: env->targets->centerX..Z */
     SVECTOR unk10; /* unk8 raised by 0x100 */
     s32 unk18[3]; /* model position (VECTOR without its pad word) */
     s32 model24; /* model */

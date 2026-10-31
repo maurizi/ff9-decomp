@@ -30,10 +30,10 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 4) {
-            ex->btlfx_getUnitBonePos(0x10, 0x12, (u16 *)&work->unk10);
-            ex->btlfx_getUnitBonePos(0x10, 0x2B, (u16 *)&work->unk18);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
+            ex->btlfx_getUnitBonePos(0x10, 0x12, (u16 *)&work->pos10);
+            ex->btlfx_getUnitBonePos(0x10, 0x2B, (u16 *)&work->pos18);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E90A8);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E90B0);
             if (work->emit8 != NULL) {
@@ -52,12 +52,12 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->emitC != NULL) {
                 ((EffMotion *)work->emitC->file)->unk8 = fx_0aa_op80ParticleMotion1;
             }
-            D_801E9088.vx = work->unk10.vx;
-            D_801E9088.vy = work->unk10.vy;
-            D_801E9088.vz = work->unk10.vz;
-            D_801E9090.vx = work->unk18.vx;
-            D_801E9090.vy = work->unk18.vy;
-            D_801E9090.vz = work->unk18.vz;
+            D_801E9088.vx = work->pos10.vx;
+            D_801E9088.vy = work->pos10.vy;
+            D_801E9088.vz = work->pos10.vz;
+            D_801E9090.vx = work->pos18.vx;
+            D_801E9090.vy = work->pos18.vy;
+            D_801E9090.vz = work->pos18.vz;
             D_801E9098.vx = env->targets->centerX;
             D_801E9098.vy = env->targets->centerY;
             D_801E9098.vz = env->targets->centerZ;
@@ -79,19 +79,19 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        work->unk14.vx = env->targets->centerX;
-        work->unk14.vy = env->targets->centerY;
+        work->pos14.vx = env->targets->centerX;
+        work->pos14.vy = env->targets->centerY;
         fx_0aa_env = env;
-        work->unk14.vz = env->targets->centerZ;
+        work->pos14.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk14);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14);
             break;
         case 4:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk14);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos14);
             if (work->emit0 != NULL) {
                 work->emit0->unk14 = (s32)D_801E8808;
                 work->emit0->unk12 = 8;
@@ -99,8 +99,8 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 6:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk14);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk14);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos14);
             break;
         }
         return frame >= 0x28;

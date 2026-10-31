@@ -8,8 +8,8 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* caster body position */
-    SVECTOR unk14; /* caster position */
+    SVECTOR posC; /* caster body position */
+    SVECTOR pos14; /* caster position */
     u16 unk1C;
     u16 unk1E;
 } Fx08dWork;

@@ -13,21 +13,21 @@ s32 fx_103_op80(s32 mode, Fx103Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0.vx = env->targets->centerX - 0x1F4;
         work->unk0.vy = 0;
         work->unk0.vz = env->targets->centerZ;
-        work->unk30.vx = env->targets->centerX;
-        work->unk30.vy = 0;
-        work->unk30.vz = env->targets->centerZ;
+        work->pos30.vx = env->targets->centerX;
+        work->pos30.vy = 0;
+        work->pos30.vz = env->targets->centerZ;
         fx_103_env = env;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk10);
-        ex->btlfx_getUnitArgBonePos(0x10, 1, (u16 *)&work->unk18);
-        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk0, (s16 *)&work->unk20);
-        ex->btlfx_aimAngles((s16 *)&work->unk18, (s16 *)&work->unk8, (s16 *)&work->unk28);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos10);
+        ex->btlfx_getUnitArgBonePos(0x10, 1, (u16 *)&work->pos18);
+        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->unk0, (s16 *)&work->unk20);
+        ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->unk8, (s16 *)&work->unk28);
         work->unk28.vx = -0x200;
         work->unk20.vx = -0x200;
-        work->emit38 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
+        work->emit38 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
         if (work->emit38 != NULL) {
             work->emit38->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
         }
-        work->emit3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk18);
+        work->emit3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);
         if (work->emit3C != NULL) {
             work->emit3C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
         }
@@ -50,7 +50,7 @@ s32 fx_103_op80(s32 mode, Fx103Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit3C->rot.vz = work->unk28.vz;
         }
         if (frame == 0x10) {
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk30);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos30);
         }
         return frame >= 0x50;
     }

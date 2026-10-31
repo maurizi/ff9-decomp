@@ -78,17 +78,17 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* bolt target */
-    SVECTOR unk10; /* particle position */
+    SVECTOR pos10; /* particle position */
     SVECTOR unk18; /* camera position */
     SVECTOR unk20; /* camera target */
-    SVECTOR unk28; /* bone positions */
-    SVECTOR unk30;
+    SVECTOR pos28; /* bone positions */
+    SVECTOR pos30;
     Fx17d6Vec3 unk38; /* model position */
     SVECTOR unk44; /* model rotation */
     Fx17d6Vec3 unk4C; /* model scale */
     Fx17d6Vec3 unk58; /* summon position */
     Fx17d6Vec3 unk64; /* summon scale */
-    SVECTOR unk70; /* summon rotation */
+    SVECTOR rot70; /* summon rotation */
     Pool6CEntry *emit78;
     s32 model7C; /* models */
     s32 model80;

@@ -6,7 +6,7 @@
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4;
+    SVECTOR pos4;
 } Fx19eWork;
 
 typedef struct {

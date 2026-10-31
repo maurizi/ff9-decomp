@@ -51,37 +51,37 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_initEffModels(fx_09b_effModels, 5);
         }
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk54);
-        work->unk64.vx = work->unk54.vx;
-        work->unk64.vy = work->unk54.vy;
-        work->unk64.vz = work->unk54.vz;
+        work->pos64.vx = work->unk54.vx;
+        work->pos64.vy = work->unk54.vy;
+        work->pos64.vz = work->unk54.vz;
         if (ex->btlfx_rand() & 1) {
-            work->unk64.vx += ex->btlfx_rand() % 100;
+            work->pos64.vx += ex->btlfx_rand() % 100;
         } else {
-            work->unk64.vx -= ex->btlfx_rand() % 100;
+            work->pos64.vx -= ex->btlfx_rand() % 100;
         }
         if (ex->btlfx_rand() & 1) {
-            work->unk64.vy += ex->btlfx_rand() % 100;
+            work->pos64.vy += ex->btlfx_rand() % 100;
         } else {
-            work->unk64.vy -= ex->btlfx_rand() % 100;
+            work->pos64.vy -= ex->btlfx_rand() % 100;
         }
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk3C);
-        work->unk5C.vx = work->unk3C.vx;
-        work->unk5C.vy = work->unk3C.vy;
-        work->unk5C.vz = work->unk3C.vz;
-        env->camera->points[0].vx = work->unk3C.vx;
-        env->camera->points[0].vy = work->unk3C.vy;
-        env->camera->points[0].vz = work->unk3C.vz;
-        work->unk14.vx = 0;
-        work->unk14.vy = 0;
-        work->unk14.vz = 0;
-        work->unk1C.vx = 0;
-        work->unk1C.vy = 0;
-        work->unk1C.vz = 0;
-        work->unk2C.vx = 0x1000;
-        work->unk2C.vy = 0x1000;
-        work->unk2C.vz = 0x1000;
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos3C);
+        work->unk5C.vx = work->pos3C.vx;
+        work->unk5C.vy = work->pos3C.vy;
+        work->unk5C.vz = work->pos3C.vz;
+        env->camera->points[0].vx = work->pos3C.vx;
+        env->camera->points[0].vy = work->pos3C.vy;
+        env->camera->points[0].vz = work->pos3C.vz;
+        work->rot14.vx = 0;
+        work->rot14.vy = 0;
+        work->rot14.vz = 0;
+        work->pos1C.vx = 0;
+        work->pos1C.vy = 0;
+        work->pos1C.vz = 0;
+        work->scale2C.vx = 0x1000;
+        work->scale2C.vy = 0x1000;
+        work->scale2C.vz = 0x1000;
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk3C);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos3C);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E80F4[work->unk6C]),
                                        (s32)&D_801E9A64[work->unk6C]);
         if (work->emit4 != NULL) {
@@ -99,20 +99,20 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 2:
-            ex->btlfx_aimAngles((s16 *)&work->unk3C, (s16 *)&work->unk64, (s16 *)&ang);
-            ex->btlfx_pointAhead((s16 *)&work->unk64, (s16 *)&ang, -0xC8, (s16 *)&work->unk44);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk44);
+            ex->btlfx_aimAngles((s16 *)&work->pos3C, (s16 *)&work->pos64, (s16 *)&ang);
+            ex->btlfx_pointAhead((s16 *)&work->pos64, (s16 *)&ang, -0xC8, (s16 *)&work->pos44);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos44);
             if (work->emitC != NULL) {
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 4:
-            work->unk4C.vx = work->unk64.vx;
-            work->unk4C.vy = work->unk64.vy;
-            work->unk4C.vz = work->unk64.vz;
-            work->unk4C.vy = 0;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk64);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk4C);
+            work->pos4C.vx = work->pos64.vx;
+            work->pos4C.vy = work->pos64.vy;
+            work->pos4C.vz = work->pos64.vz;
+            work->pos4C.vy = 0;
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos64);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos4C);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -127,12 +127,12 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if ((u32)frame < 6) {
-            ex->btlfx_lerpVec((s16 *)&work->unk5C, (s16 *)&work->unk64, (frame << 12) / 5,
+            ex->btlfx_lerpVec((s16 *)&work->unk5C, (s16 *)&work->pos64, (frame << 12) / 5,
                               (s16 *)&D_801E9A34[work->unk6C]);
-            work->unk1C.vx = D_801E9A34[work->unk6C].vx;
-            work->unk1C.vy = D_801E9A34[work->unk6C].vy;
-            work->unk1C.vz = D_801E9A34[work->unk6C].vz;
-            ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->model70);
+            work->pos1C.vx = D_801E9A34[work->unk6C].vx;
+            work->pos1C.vy = D_801E9A34[work->unk6C].vy;
+            work->pos1C.vz = D_801E9A34[work->unk6C].vz;
+            ex->Hi_DrawEffModel(&work->rot14, &work->pos1C, (s32)&work->scale2C, work->model70);
             if (frame == 5 && work->unk6C != 4) {
                 fxm_startMotion2IfActive(0);
             }

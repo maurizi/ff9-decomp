@@ -12,18 +12,18 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     s32 unk8; /* sparks spawned */
-    SVECTOR unkC; /* spark origin */
+    SVECTOR posC; /* spark origin */
     SVECTOR unk14; /* spark target */
     SVECTOR unk1C; /* spark angles */
     SVECTOR unk24;
     u8 pad2C[0x3C - 0x2C];
     SVECTOR unk3C; /* camera */
     Fx17d5Vec3 unk44; /* glow position */
-    SVECTOR unk50; /* glow rotation */
+    SVECTOR rot50; /* glow rotation */
     Fx17d5Vec3 unk58; /* glow scale */
     Fx17d5Vec3 unk64; /* summon position */
     Fx17d5Vec3 unk70; /* summon scale */
-    SVECTOR unk7C; /* summon rotation */
+    SVECTOR rot7C; /* summon rotation */
     s32 model84; /* models */
     s32 model88;
     s32 model8C;
@@ -36,7 +36,7 @@ typedef struct {
     s16 unk2; /* speed */
     s16 unk4; /* turn rate */
     s16 unk6; /* index */
-    SVECTOR unk8; /* position */
+    SVECTOR pos8; /* position */
     s16 unk10; /* angles; unk10 also the kind at spawn */
     s16 unk12;
     s16 unk14; /* homing done */

@@ -842,3 +842,8 @@ Pool6CEntry is the emitter btlfx_startEmitter / btlfx_spawnEmitter return).
 ## Fields: effect model ids
 Integer members that receive btlfx_registerEffectModel / Hi_Register{Tex,Gou,Solid}EffModel / Hi_RegisterTex{List,Ptr}Model
 (the effect model slot id later passed to Hi_DrawEffModel and friends) -> modelXX (476 members).
+
+## Fields: model rotation / position / scale, emitter origins
+SVECTOR/VECTOR members passed (only) as argument 0, 1 or 2 of Hi_DrawEffModel, Hi_DrawMorphEffModel, Hi_DrawSliceEffModel or
+Hi_DrawSummonModel -> rotXX (202), posXX, scaleXX (81); members passed as the origin of btlfx_startEmitter are positions too
+(posXX, 807 in all). Members used in more than one of these roles keep their unkXX name.

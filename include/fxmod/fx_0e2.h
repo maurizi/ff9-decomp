@@ -52,12 +52,12 @@ void func_801E83B0(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 r
 void func_801E86D0(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1);
 typedef struct {
     Pool6CEntry *emit0[5];
-    SVECTOR unk14; /* tower rotation */
-    VECTOR unk1C; /* tower position */
-    VECTOR unk2C; /* tower scale */
-    SVECTOR unk3C; /* piece rotation */
-    VECTOR unk44; /* piece position */
-    VECTOR unk54; /* piece scale */
+    SVECTOR rot14; /* tower rotation */
+    VECTOR pos1C; /* tower position */
+    VECTOR scale2C; /* tower scale */
+    SVECTOR rot3C; /* piece rotation */
+    VECTOR pos44; /* piece position */
+    VECTOR scale54; /* piece scale */
     SVECTOR unk64[4]; /* block rotations */
     VECTOR unk84[4]; /* block positions */
     VECTOR unkC4[4]; /* block scales */
@@ -111,23 +111,23 @@ typedef struct {
     Pool6CEntry *emit20;
     Pool6CEntry *emit24;
     Pool6CEntry *emit28[5];
-    SVECTOR unk3C; /* summon rotation */
-    VECTOR unk44; /* summon position */
-    VECTOR unk54; /* model position */
-    VECTOR unk64; /* scale */
+    SVECTOR rot3C; /* summon rotation */
+    VECTOR pos44; /* summon position */
+    VECTOR pos54; /* model position */
+    VECTOR scale64; /* scale */
     s32 unk74;
     s32 unk78;
-    SVECTOR unk7C;
-    VECTOR unk84;
-    VECTOR unk94;
+    SVECTOR rot7C;
+    VECTOR pos84;
+    VECTOR scale94;
     VECTOR unkA4;
     s32 unkB4;
-    SVECTOR unkB8;
-    VECTOR unkC0;
-    VECTOR unkD0;
-    SVECTOR unkE0;
-    VECTOR unkE8;
-    VECTOR unkF8;
+    SVECTOR rotB8;
+    VECTOR posC0;
+    VECTOR scaleD0;
+    SVECTOR rotE0;
+    VECTOR posE8;
+    VECTOR scaleF8;
     u8 pad108[8];
     SVECTOR unk110;
     SVECTOR unk118;
@@ -226,13 +226,13 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* model rotations */
-    SVECTOR unk14;
-    VECTOR unk1C; /* model position */
-    VECTOR unk2C; /* model scale */
+    SVECTOR rotC; /* model rotations */
+    SVECTOR rot14;
+    VECTOR pos1C; /* model position */
+    VECTOR scale2C; /* model scale */
     s32 unk3C; /* model brightness */
-    SVECTOR unk40; /* effect positions */
-    SVECTOR unk48;
+    SVECTOR pos40; /* effect positions */
+    SVECTOR pos48;
     SVECTOR unk50; /* caster position */
     s32 unk58; /* fade counters */
     s32 unk5C;

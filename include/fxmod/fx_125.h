@@ -6,9 +6,9 @@
 
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* target position */
-    SVECTOR unkC;
-    SVECTOR unk14; /* target body position */
+    SVECTOR pos4; /* target position */
+    SVECTOR posC;
+    SVECTOR pos14; /* target body position */
     SVECTOR unk1C;
     s32 model24; /* models */
     s32 model28[2];

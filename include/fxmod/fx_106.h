@@ -10,15 +10,15 @@ typedef struct {
     SVECTOR unk8; /* caster rotation */
     SVECTOR unk10; /* target body position */
     SVECTOR unk18;
-    SVECTOR unk20;
+    SVECTOR pos20;
 } Fx106Work80;
 
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* target position */
-    SVECTOR unk14;
+    SVECTOR posC; /* target position */
+    SVECTOR pos14;
 } Fx106Work81;
 
 /* effect file header as the particle path callback sees it */

@@ -8,29 +8,29 @@ s32 fx_0ab_op80(s32 mode, Fx0abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x28;
     } else if (mode == 1) {
         fx_0ab_env = env;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk10);
-        work->unk18.vx = work->unk10.vx;
-        work->unk18.vy = work->unk10.vy;
-        work->unk18.vz = work->unk10.vz;
-        work->unk20.vx = work->unk10.vx;
-        work->unk20.vy = work->unk10.vy;
-        work->unk20.vz = work->unk10.vz;
-        work->unk18.vy -= 0xC8;
-        work->unk20.vy -= 0x190;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
+        work->pos18.vx = work->pos10.vx;
+        work->pos18.vy = work->pos10.vy;
+        work->pos18.vz = work->pos10.vz;
+        work->pos20.vx = work->pos10.vx;
+        work->pos20.vy = work->pos10.vy;
+        work->pos20.vz = work->pos10.vz;
+        work->pos18.vy -= 0xC8;
+        work->pos20.vy -= 0x190;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
         if (work->emit0 != NULL) {
             work->emit0->unk14 = (s32)D_801E7928;
             work->emit0->unk12 = 0x11;
             work->emit0->unkC = 0x60;
         }
-        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
+        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
     } else {
         frame = entry->frame;
         if (frame == 0xC) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
         }
         if (frame == 0x10) {
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk20);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
         }
         return frame >= 0x28;
     }

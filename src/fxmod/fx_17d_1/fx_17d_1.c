@@ -136,19 +136,19 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         ex->Hi_SetSummonMotion(((Fx17d1Summon *)env->loader)->unk54->unk180, ((Fx17d1Summon *)env->loader)->unk60);
         work->unk28.vx = 0;
         work->unk28.vy = 0;
-        work->unk68.vx = -0x400;
+        work->rot68.vx = -0x400;
         work->unk5C.vx = work->unk5C.vy = work->unk5C.vz = 0x1000;
         work->unk50.vz = 0x100;
         work->unk34.vx = work->unk34.vy = 0x800;
         work->unk28.vz = 0;
         work->unk34.vz = 0x555;
-        work->unk68.vy = 0;
-        work->unk68.vz = 0;
+        work->rot68.vy = 0;
+        work->rot68.vz = 0;
         work->unk50.vx = 0;
         work->unk50.vy = 0;
-        work->unk40.vx = 0;
-        work->unk40.vy = 0;
-        work->unk40.vz = 0;
+        work->rot40.vx = 0;
+        work->rot40.vy = 0;
+        work->rot40.vz = 0;
         work->unk18.vx = work->unk28.vx;
         work->unk18.vy = work->unk28.vy;
         work->unk18.vz = work->unk28.vz - 0x3000;
@@ -170,15 +170,15 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk28.vz -= 0x26C;
             if (frame != 0) {
                 ex->Hi_SetSummonMotFrame(((Fx17d1Summon *)env->loader)->unk60, 0);
-                ex->Hi_DrawSummonModel(&work->unk68, (VECTOR *)&work->unk50, (s32)&work->unk5C,
+                ex->Hi_DrawSummonModel(&work->rot68, (VECTOR *)&work->unk50, (s32)&work->unk5C,
                                        ((Fx17d1Summon *)env->loader)->unk60, 0);
                 ex->Hi_ModifySummonModelRGB(((Fx17d1Summon *)env->loader)->unk60, ((0x800 - (t >> 2)) >> 5) - 0x80,
                                             ((0x800 - (t >> 2)) >> 5) - 0x80, ((0x800 - (t >> 2)) >> 5) - 0x80);
             }
-            work->unk10.vx = work->unk28.vx;
-            work->unk10.vy = work->unk28.vy;
-            work->unk10.vz = work->unk28.vz - 0x258;
-            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->model78);
+            work->pos10.vx = work->unk28.vx;
+            work->pos10.vy = work->unk28.vy;
+            work->pos10.vz = work->unk28.vz - 0x258;
+            ex->Hi_DrawEffModel(&work->rot40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->model78);
             ex->Hi_ModifyEffModelRGB(work->model78, (t >> 6) - 0x80, (t >> 6) - 0x80, (t >> 6) - 0x80);
             env->camera->points[1].vx = work->unk50.vx;
             env->camera->points[1].vy = work->unk50.vy;
@@ -196,7 +196,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((frame - 12) << 7) / 12, 0, 0);
             }
             if (frame == 8) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9D), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9D), (s32)&work->pos10);
                 work->emit74 = p;
                 if (p != NULL) {
                     p->unk14 = (s32)D_801ED5C0;
@@ -206,7 +206,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                         work->emit74->otZ = 0x80;
                     }
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x80;
                 }
@@ -216,18 +216,18 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                         work->emit74 = NULL;
                     }
                     if (work->emit74 != NULL) {
-                        work->emit74->rot.vx = work->unk40.vx;
-                        work->emit74->rot.vy = work->unk40.vy;
-                        work->emit74->rot.vz = work->unk40.vz;
+                        work->emit74->rot.vx = work->rot40.vx;
+                        work->emit74->rot.vy = work->rot40.vy;
+                        work->emit74->rot.vz = work->rot40.vz;
                     }
                 }
             }
             if (frame >= 5) {
                 ex->btlfx_rangeProgress(frame, 4, 0x14, 0, 0x1000, &k);
                 env->otZ = 0x100;
-                work->unk10.vz += 0x258;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk10, NULL, 0x1000, 0, 1, k);
-                work->unk10.vz -= 0x258;
+                work->pos10.vz += 0x258;
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos10, NULL, 0x1000, 0, 1, k);
+                work->pos10.vz -= 0x258;
                 env->otZ = 0;
             }
             if (frame >= 18) {
@@ -244,16 +244,16 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk28.vx = 0;
                 work->unk28.vz = 0;
                 work->unk18.vy -= 0x1000;
-                work->unk40.vx = 0x400;
-                work->unk40.vy = 0;
-                work->unk40.vz = 0;
+                work->rot40.vx = 0x400;
+                work->rot40.vy = 0;
+                work->rot40.vz = 0;
                 work->unk28.vy = -0x2000;
                 work->unk34.vx = work->unk34.vy = 0x333;
                 work->unk34.vz = 0xC00;
                 env->camera->points[3].vx = work->unk18.vx;
                 env->camera->points[3].vy = work->unk18.vy;
                 env->camera->points[3].vz = work->unk18.vz;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9F), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9F), (s32)&work->pos10);
                 work->emit70 = p;
                 if (p != NULL) {
                     p->otZ = 0x80;
@@ -268,14 +268,14 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk28.vy += 0x58;
             sc.vx = sc.vy = work->unk34.vx * 2 / 3;
             sc.vz = work->unk34.vz;
-            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&sc, work->model78);
-            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->model78);
+            ex->Hi_DrawEffModel(&work->rot40, (VECTOR *)&work->unk28, (s32)&sc, work->model78);
+            ex->Hi_DrawEffModel(&work->rot40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->model78);
             ex->Hi_ModifyEffModelRGB(work->model78, -0x40, -0x40, -0x40);
-            work->unk10.vx = work->unk28.vx;
-            work->unk10.vy = work->unk28.vy;
-            work->unk10.vz = work->unk28.vz;
+            work->pos10.vx = work->unk28.vx;
+            work->pos10.vy = work->unk28.vy;
+            work->pos10.vz = work->unk28.vz;
             env->otZ = 0x100;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk10, NULL, 0x1000, 0, 1, -1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos10, NULL, 0x1000, 0, 1, -1);
             env->otZ = 0;
             if (work->emit70 != NULL) {
                 if (work->emit70->state == BTLFX_EMIT_DONE) {

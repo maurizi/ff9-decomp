@@ -28,7 +28,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4 = 0;
         work->unk8 = 0;
         fx_1f7_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         for (i = 0; i < 6; i++) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&D_801E8458[i], 0);
@@ -48,11 +48,11 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x18) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unkC);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
             }

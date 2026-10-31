@@ -8,7 +8,7 @@ typedef struct {
     s32 unk0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC;
+    SVECTOR posC;
 } Fx12dWork80;
 
 typedef struct {
@@ -16,16 +16,16 @@ typedef struct {
     s32 unk4;
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
-    SVECTOR unk10;
+    SVECTOR pos10;
     s16 unk18;
     s16 unk1A;
     s16 unk1C;
 } Fx12dWork81;
 
 typedef struct {
-    SVECTOR unk0; /* model rotation */
-    VECTOR unk8; /* model position */
-    VECTOR unk18; /* model scale */
+    SVECTOR rot0; /* model rotation */
+    VECTOR pos8; /* model position */
+    VECTOR scale18; /* model scale */
     s32 unk28;
     SVECTOR unk2C; /* caster position */
     u16 unk34; /* model */

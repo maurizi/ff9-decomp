@@ -51,8 +51,8 @@ typedef struct {
     Fx17d0Vec3 unk18; /* model position */
     u8 pad24[0x30 - 0x24];
     SVECTOR unk30;
-    SVECTOR unk38; /* model rotation */
-    SVECTOR unk40; /* spawn position */
+    SVECTOR rot38; /* model rotation */
+    SVECTOR pos40; /* spawn position */
     SVECTOR unk48; /* camera */
     u8 pad50[0x58 - 0x50];
     s32 unk58; /* spark count */

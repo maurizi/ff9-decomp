@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0;
+    SVECTOR pos0;
     SVECTOR unk8;
     SVECTOR unk10; /* angles from unk0 to unk8 */
     SVECTOR unk18; /* angles from unk8 to unk0 */

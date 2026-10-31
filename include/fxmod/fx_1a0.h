@@ -28,14 +28,14 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* target body position */
+    SVECTOR posC; /* target body position */
     s32 unk14; /* index */
     s32 unk18;
 } Fx1a0Work81; /* 0x1C */
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4;
+    SVECTOR pos4;
 } Fx1a0Work82;
 
 extern Fx1a0Bone D_801E7EF8[6];

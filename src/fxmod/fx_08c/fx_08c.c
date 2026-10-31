@@ -16,21 +16,21 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk10.vx = env->targets->centerX;
         work->unk10.vy = env->targets->centerY;
         work->unk10.vz = env->targets->centerZ;
-        work->unk8.vx = env->targets->centerX;
-        work->unk8.vy = env->targets->centerY;
-        work->unk8.vz = env->targets->centerZ;
+        work->pos8.vx = env->targets->centerX;
+        work->pos8.vy = env->targets->centerY;
+        work->pos8.vz = env->targets->centerZ;
         work->unk10.vy -= 0x100;
-        work->unk18[0] = work->unk8.vx;
-        work->unk18[1] = work->unk8.vy;
-        work->unk18[2] = work->unk8.vz;
+        work->unk18[0] = work->pos8.vx;
+        work->unk18[1] = work->pos8.vy;
+        work->unk18[2] = work->pos8.vz;
         fx_08c_env = env;
         ex->btlfx_initEffModels(fx_08c_effModels, 2);
         work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
         if (p != NULL) {
             p->otZ = 0x80;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk8);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
         if (p != NULL) {
             p->otZ = 0x80;
         }

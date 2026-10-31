@@ -28,17 +28,17 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_initEffModels(fx_11e_effModels, 8);
             D_801E7F84 = mode;
         }
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk50);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos50);
         ex->btlfx_getUnitBodyPos(work->unk58, 0, &work->unk48.vx);
-        work->unk4.vx = 0;
-        work->unk4.vy = 0;
-        work->unk4.vz = 0;
-        work->unk1C.vx = 0;
-        work->unk1C.vy = 0;
-        work->unk1C.vz = 0;
-        work->unkC.vx = work->unk48.vx;
-        work->unkC.vy = work->unk48.vy;
-        work->unkC.vz = work->unk48.vz;
+        work->rot4.vx = 0;
+        work->rot4.vy = 0;
+        work->rot4.vz = 0;
+        work->scale1C.vx = 0;
+        work->scale1C.vy = 0;
+        work->scale1C.vz = 0;
+        work->posC.vx = work->unk48.vx;
+        work->posC.vy = work->unk48.vy;
+        work->posC.vz = work->unk48.vz;
         work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
         work->model5E = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
         work->unk30 = ex->btlfx_rand() % 2;
@@ -47,24 +47,24 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk3C = ex->btlfx_rand() % 0x1000;
         work->unk40 = ex->btlfx_rand() % 16;
         work->unk44 = ex->btlfx_rand() % 16;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk50);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos50);
     } else {
         frame = entry->frame;
         if ((u32)(frame - 0x1E) < 0x28) {
             t = frame - 0x1E;
             ex->btlfx_getUnitBodyPos(work->unk58, 0, &v.vx);
-            work->unkC.vx = v.vx;
-            work->unkC.vz = v.vz;
-            work->unkC.vx += work->unk38 * ex->math_sin(work->unk3C) / 4096;
-            work->unkC.vz += work->unk38 * ex->math_cos(work->unk3C) / 4096;
+            work->posC.vx = v.vx;
+            work->posC.vz = v.vz;
+            work->posC.vx += work->unk38 * ex->math_sin(work->unk3C) / 4096;
+            work->posC.vz += work->unk38 * ex->math_cos(work->unk3C) / 4096;
             if (t >= 0x19) {
-                work->unkC.vy += -200 - ex->btlfx_rand() % 40;
+                work->posC.vy += -200 - ex->btlfx_rand() % 40;
                 work->unk38 += 200 + ex->btlfx_rand() % 100;
             } else {
                 if (ex->btlfx_rand() & 1) {
-                    work->unkC.vy += ex->btlfx_rand() % 20;
+                    work->posC.vy += ex->btlfx_rand() % 20;
                 } else {
-                    work->unkC.vy -= ex->btlfx_rand() % 20;
+                    work->posC.vy -= ex->btlfx_rand() % 20;
                 }
                 if (work->unk30 != 0) {
                     work->unk38 += ex->btlfx_rand() % 20;
@@ -76,16 +76,16 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 } else {
                     work->unk3C -= ex->btlfx_rand() % 256;
                 }
-                p.vx = work->unkC.vx;
-                p.vy = work->unkC.vy;
-                p.vz = work->unkC.vz;
+                p.vx = work->posC.vx;
+                p.vy = work->posC.vy;
+                p.vz = work->posC.vz;
                 ex->btlfx_aimAngles(&v.vx, &p.vx, &a.vx);
-                work->unk4.vx = a.vx;
-                work->unk4.vy = a.vy;
-                work->unk4.vz = a.vz;
+                work->rot4.vx = a.vx;
+                work->rot4.vy = a.vy;
+                work->rot4.vz = a.vz;
             }
             if (t == 0x18) {
-                work->unk4.vy += 0x800;
+                work->rot4.vy += 0x800;
             }
             if (--work->unk40 == 0) {
                 work->unk30 ^= 1;
@@ -95,17 +95,17 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk34 ^= 1;
                 work->unk44 = ex->btlfx_rand() % 16;
             }
-            if (work->unk1C.vx < 0x1000) {
-                work->unk1C.vx += 0x80;
-                work->unk1C.vy += 0x80;
-                work->unk1C.vz += 0x80;
+            if (work->scale1C.vx < 0x1000) {
+                work->scale1C.vx += 0x80;
+                work->scale1C.vy += 0x80;
+                work->scale1C.vz += 0x80;
             }
             if (t & 1) {
                 m = work->model5C;
             } else {
                 m = work->model5E;
             }
-            ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, m);
+            ex->Hi_DrawEffModel(&work->rot4, &work->posC, (s32)&work->scale1C, m);
         }
         if (work->emit0 != NULL) {
             if (work->emit0->state == BTLFX_EMIT_DONE) {

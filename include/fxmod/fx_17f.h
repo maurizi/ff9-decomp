@@ -6,10 +6,10 @@
 
 typedef struct {
     s32 unk0[3]; /* target scale */
-    SVECTOR unkC; /* target position */
+    SVECTOR posC; /* target position */
     SVECTOR unk14; /* target rotation */
     BtlUnit9C8 *unk1C;
-    SVECTOR unk20; /* caster position */
+    SVECTOR pos20; /* caster position */
 } Fx17fWork;
 
 extern Unk800F78A4 *fx_17f_env;

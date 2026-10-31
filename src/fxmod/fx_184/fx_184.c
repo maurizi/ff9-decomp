@@ -16,23 +16,23 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk10.vz = work->unk0.vz;
         work->unk10.vy = -0xFA0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk8, (s16 *)&work->unk18);
-        work->unk18.vx = ex->ratan2(work->unk8.vy - work->unk10.vy, work->unk10.vz - work->unk8.vz);
-        work->unk30.vx = 0x1000;
-        work->unk30.vy = 0x1000;
-        work->unk30.vz = 0x1000;
+        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk8, (s16 *)&work->rot18);
+        work->rot18.vx = ex->ratan2(work->unk8.vy - work->unk10.vy, work->unk10.vz - work->unk8.vz);
+        work->scale30.vx = 0x1000;
+        work->scale30.vy = 0x1000;
+        work->scale30.vz = 0x1000;
         ex->btlfx_setWeaponVisible(0x10, 0);
         work->model40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
     } else {
         frame = entry->frame;
         if (frame < 6) {
             ex->btlfx_lerpVec((s16 *)&work->unk10, (s16 *)&work->unk8, frame << 10, (s16 *)&v);
-            work->unk20.vx = v.vx;
-            work->unk20.vy = v.vy;
-            work->unk20.vz = v.vz;
+            work->pos20.vx = v.vx;
+            work->pos20.vy = v.vy;
+            work->pos20.vz = v.vz;
         }
-        ex->Hi_SetEffModelSlice(work->model40, work->unk20.vy);
-        ex->Hi_DrawSliceEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model40);
+        ex->Hi_SetEffModelSlice(work->model40, work->pos20.vy);
+        ex->Hi_DrawSliceEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model40);
         if (frame >= 4) {
             ex->btlfx_clearEffModels();
             return 1;
@@ -48,9 +48,9 @@ s32 fx_184_op81(s32 mode, Fx184Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0xC;
     } else if (mode == 1) {
         fx_184_env = env;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
-        work->unk4.vy = 0;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
+        work->pos4.vy = 0;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

@@ -26,7 +26,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     u8 pad8[0x10 - 0x8];
-    SVECTOR unk10; /* position */
+    SVECTOR pos10; /* position */
     SVECTOR unk18; /* camera */
     u8 pad20[0x48 - 0x20];
     Pool6CEntry *emit48;

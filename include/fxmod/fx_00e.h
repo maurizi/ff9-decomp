@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0;
     s32 unk4; /* background frame */
-    SVECTOR unk8; /* target position */
+    SVECTOR pos8; /* target position */
     SVECTOR unk10; /* target body position */
     s32 unk18[3]; /* model position (a VECTOR without its pad word) */
     s32 model24; /* model */

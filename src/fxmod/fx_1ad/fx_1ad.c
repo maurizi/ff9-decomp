@@ -46,7 +46,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4 = 0;
         fx_1ad_env = env;
         ex->btlfx_initEffModels(fx_1ad_effModels, 1);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         work->model24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
     } else {
         frame = entry->frame;
@@ -60,7 +60,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawScrollMove(n * 4, 0x200, 0x100, 0x20, k, ((n & 3) << 5) + 0x240, ((n * 16) & 0xC0) + 0x100);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->unk4);
             if (frame == 0) {
-                work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
+                work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
                 if (work->emit20 != NULL) {
                     work->emit20->unk14 = (s32)D_801E7E6C;
                     work->emit20->unk12 = 0x48;
@@ -72,7 +72,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->emit20 != NULL) {
                     ((EffMotion *)work->emit20->file)->unk8 = fx_1ad_op80ParticleMotion;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E8F4C;
                     p->unk12 = 0x10;

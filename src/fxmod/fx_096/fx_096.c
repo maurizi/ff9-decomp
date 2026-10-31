@@ -129,8 +129,8 @@ s32 fx_096_op80(s32 mode, Fx096Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x14;
     } else if (mode == 1) {
         fx_096_env = env;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
@@ -152,26 +152,26 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_096_env = env;
         ex->btlfx_initEffModels(fx_096_effModels, 2);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk58);
-        work->unk34.vx = 0x221;
-        work->unk34.vy = 0x221;
-        work->unk34.vz = 0x221;
-        work->unk44.vy = 0x200;
-        work->unk4.vx = 0;
-        work->unk4.vy = 0;
-        work->unk4.vz = 0;
-        work->unkC.vx = 0;
-        work->unkC.vy = 0;
-        work->unkC.vz = 0;
-        work->unk44.vx = 0;
-        work->unk44.vz = 0;
-        work->unk14.vx = work->unk58.vx;
-        work->unk14.vy = work->unk58.vy;
-        work->unk14.vz = work->unk58.vz;
-        work->unk24.vx = work->unk58.vx;
-        work->unk24.vy = work->unk58.vy;
-        work->unk24.vz = work->unk58.vz;
-        work->unk14.vy = -0x258;
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos58);
+        work->scale34.vx = 0x221;
+        work->scale34.vy = 0x221;
+        work->scale34.vz = 0x221;
+        work->scale44.vy = 0x200;
+        work->rot4.vx = 0;
+        work->rot4.vy = 0;
+        work->rot4.vz = 0;
+        work->rotC.vx = 0;
+        work->rotC.vy = 0;
+        work->rotC.vz = 0;
+        work->scale44.vx = 0;
+        work->scale44.vz = 0;
+        work->pos14.vx = work->pos58.vx;
+        work->pos14.vy = work->pos58.vy;
+        work->pos14.vz = work->pos58.vz;
+        work->pos24.vx = work->pos58.vx;
+        work->pos24.vy = work->pos58.vy;
+        work->pos24.vz = work->pos58.vz;
+        work->pos14.vy = -0x258;
         work->model62 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
         work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
         work->unk60 = -1;
@@ -179,7 +179,7 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 7:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk58);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos58);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -197,10 +197,10 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 0 && frame < 0x28) {
             if (frame >= 7) {
                 c = ((frame - 7) << 9) / 3;
-                work->unk44.vx = c;
-                work->unk44.vz = c;
-                work->unk44.vx = (work->unk44.vx > 0x200) ? 0x200 : work->unk44.vx;
-                work->unk44.vz = (work->unk44.vz > 0x200) ? 0x200 : work->unk44.vz;
+                work->scale44.vx = c;
+                work->scale44.vz = c;
+                work->scale44.vx = (work->scale44.vx > 0x200) ? 0x200 : work->scale44.vx;
+                work->scale44.vz = (work->scale44.vz > 0x200) ? 0x200 : work->scale44.vz;
             }
             if (frame >= 0 && frame < 6) {
                 t = frame;
@@ -208,10 +208,10 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     D_801E84BC[i] = D_801E990C[i];
                 }
                 func_801E7744(work->model62, 0, 5 - t, D_801E84BC, D_801EAD5C);
-                work->unk4.vy += 0x200;
+                work->rot4.vy += 0x200;
             }
-            ex->Hi_DrawEffModel(&work->unk4, &work->unk14, (s32)&work->unk34, work->model62);
-            ex->Hi_DrawEffModel(&work->unkC, &work->unk24, (s32)&work->unk44, work->model64);
+            ex->Hi_DrawEffModel(&work->rot4, &work->pos14, (s32)&work->scale34, work->model62);
+            ex->Hi_DrawEffModel(&work->rotC, &work->pos24, (s32)&work->scale44, work->model64);
             if (work->unk60 >= 0) {
                 work->unk54 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk60, 0x10);
                 work->unk60--;

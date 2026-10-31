@@ -47,10 +47,10 @@ typedef struct {
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
-    SVECTOR unk8; /* summon position */
+    SVECTOR pos8; /* summon position */
     Fx0d3Vec3 unk10;
     Fx0d3Vec3 unk1C; /* summon scale */
-    SVECTOR unk28; /* summon rotation */
+    SVECTOR rot28; /* summon rotation */
     Pool6CEntry *emit30;
     Pool6CEntry *emit34;
     u8 pad38[0x60 - 0x38];
@@ -79,12 +79,12 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
-    SVECTOR unk8;
+    SVECTOR pos8;
     Fx0d3Vec3 unk10; /* summon position */
     Fx0d3Vec3 unk1C; /* summon scale */
-    SVECTOR unk28; /* summon rotation */
-    SVECTOR unk30;
-    SVECTOR unk38;
+    SVECTOR rot28; /* summon rotation */
+    SVECTOR pos30;
+    SVECTOR pos38;
     SVECTOR unk40; /* camera */
     u8 pad48[4];
     Pool6CEntry *emit4C;

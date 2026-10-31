@@ -17,16 +17,16 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_0dd_env = env;
         ex->btlfx_initEffModels(fx_0dd_effModels, 6);
-        ex->btlfx_getUnitPos(0, &work->unk10.vx);
-        work->unk18.vx = 0;
-        work->unk18.vy = 0;
-        work->unk18.vz = 0;
-        work->unk20.vx = 0;
-        work->unk20.vy = 0;
-        work->unk20.vz = 0;
-        work->unk30.vx = 0x1000;
-        work->unk30.vy = 0x1000;
-        work->unk30.vz = 0x1000;
+        ex->btlfx_getUnitPos(0, &work->pos10.vx);
+        work->rot18.vx = 0;
+        work->rot18.vy = 0;
+        work->rot18.vz = 0;
+        work->pos20.vx = 0;
+        work->pos20.vy = 0;
+        work->pos20.vz = 0;
+        work->scale30.vx = 0x1000;
+        work->scale30.vy = 0x1000;
+        work->scale30.vz = 0x1000;
         for (i = 0; i < 6; i++) {
             work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8360[i]), 0x97, 0x3D40, 0, 0);
         }
@@ -40,15 +40,15 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&D_801E90D8);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unk10);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos10);
             break;
         case 0x23:
-            fxm_rotPosTrackGet(&D_801E90B8, 0x23, NULL, &work->unk4C);
-            work->unk4C.vx += work->unk10.vx;
-            work->unk4C.vy += work->unk10.vy;
-            work->unk4C.vz += work->unk10.vz;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk4C);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk4C);
+            fxm_rotPosTrackGet(&D_801E90B8, 0x23, NULL, &work->pos4C);
+            work->pos4C.vx += work->pos10.vx;
+            work->pos4C.vy += work->pos10.vy;
+            work->pos4C.vz += work->pos10.vz;
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos4C);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4C);
             if (work->emit8 != NULL) {
                 work->emit8->unk14 = (s32)D_801E8870;
                 work->emit8->unk12 = 0x35;
@@ -106,36 +106,36 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             } else {
                 t = 0x1000 - (work->unk54 << 12) / n;
             }
-            fxm_rotPosTrackGet(&D_801E90B8, frame, &work->unk18, &v);
-            work->unk20.vx = v.vx;
-            work->unk20.vy = v.vy;
-            work->unk20.vz = v.vz;
-            work->unk20.vx += work->unk10.vx;
-            work->unk20.vy += work->unk10.vy;
-            work->unk20.vz += work->unk10.vz;
-            fxm_vecTrackGet(&D_801E90C8, frame, &work->unk30);
-            work->unk30.vx = work->unk30.vx * 2 / 3;
-            work->unk30.vy = work->unk30.vy * 2 / 3;
-            work->unk30.vz = work->unk30.vz * 2 / 3;
-            ex->Hi_DrawMorphEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model5C[a], work->model5C[b], t);
+            fxm_rotPosTrackGet(&D_801E90B8, frame, &work->rot18, &v);
+            work->pos20.vx = v.vx;
+            work->pos20.vy = v.vy;
+            work->pos20.vz = v.vz;
+            work->pos20.vx += work->pos10.vx;
+            work->pos20.vy += work->pos10.vy;
+            work->pos20.vz += work->pos10.vz;
+            fxm_vecTrackGet(&D_801E90C8, frame, &work->scale30);
+            work->scale30.vx = work->scale30.vx * 2 / 3;
+            work->scale30.vy = work->scale30.vy * 2 / 3;
+            work->scale30.vz = work->scale30.vz * 2 / 3;
+            ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[a], work->model5C[b], t);
             ex->Hi_ModifyEffModelAbr(work->model5C[a], 1);
-            fxm_rotPosTrackGet(&D_801E90C0, frame, &work->unk18, &v);
-            work->unk20.vx = v.vx;
-            work->unk20.vy = v.vy;
-            work->unk20.vz = v.vz;
-            work->unk20.vx += work->unk10.vx;
-            work->unk20.vy += work->unk10.vy;
-            work->unk20.vz += work->unk10.vz;
-            fxm_vecTrackGet(&D_801E90D0, frame, &work->unk30);
-            work->unk18.vx -= 0x400;
-            work->unk30.vx = work->unk30.vx * 2 / 3;
-            work->unk30.vy = work->unk30.vy * 2 / 3;
-            work->unk30.vz = work->unk30.vz * 2 / 3;
-            ex->Hi_DrawMorphEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model5C[a], work->model5C[b], t);
+            fxm_rotPosTrackGet(&D_801E90C0, frame, &work->rot18, &v);
+            work->pos20.vx = v.vx;
+            work->pos20.vy = v.vy;
+            work->pos20.vz = v.vz;
+            work->pos20.vx += work->pos10.vx;
+            work->pos20.vy += work->pos10.vy;
+            work->pos20.vz += work->pos10.vz;
+            fxm_vecTrackGet(&D_801E90D0, frame, &work->scale30);
+            work->rot18.vx -= 0x400;
+            work->scale30.vx = work->scale30.vx * 2 / 3;
+            work->scale30.vy = work->scale30.vy * 2 / 3;
+            work->scale30.vz = work->scale30.vz * 2 / 3;
+            ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[a], work->model5C[b], t);
             ex->Hi_ModifyEffModelAbr(work->model5C[a], 1);
-            work->unk44.vx = work->unk20.vx;
-            work->unk44.vy = work->unk20.vy;
-            work->unk44.vz = work->unk20.vz;
+            work->unk44.vx = work->pos20.vx;
+            work->unk44.vy = work->pos20.vy;
+            work->unk44.vz = work->pos20.vz;
             if (frame >= 0) {
                 if (work->emit4 != NULL && work->emit4->state == BTLFX_EMIT_DONE) {
                     work->emit4 = NULL;

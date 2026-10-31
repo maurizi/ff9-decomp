@@ -26,9 +26,9 @@ typedef struct {
     s32 unk4; /* frame */
     s32 model8; /* model */
     s32 modelC; /* model */
-    SVECTOR unk10;
+    SVECTOR pos10;
     Fx081Vec3 unk18;
-    SVECTOR unk24;
+    SVECTOR pos24;
     Pool6CEntry *emit2C;
     Pool6CEntry *emit30;
     Pool6CEntry *emit34;
@@ -41,8 +41,8 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     s32 unk8; /* priority base */
-    SVECTOR unkC; /* target position */
-    SVECTOR unk14;
+    SVECTOR posC; /* target position */
+    SVECTOR pos14;
     Fx081Vec3 unk1C;
     s32 model28; /* model */
 } Fx081Work81; /* 0x2C */

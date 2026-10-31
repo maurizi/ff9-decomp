@@ -10,26 +10,26 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_0ac_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
     } else {
         frame = entry->frame;
         switch (frame) {
         case 2:
             ex->btlfx_getUnitArgBoneMatrix(0x10, 0, &bone);
-            ex->btlfx_matrixPointAhead((MATRIX *)&bone, -0x32, (s32)&work->unk20);
-            work->unk20.vy -= 0x96;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk20);
+            ex->btlfx_matrixPointAhead((MATRIX *)&bone, -0x32, (s32)&work->pos20);
+            work->pos20.vy -= 0x96;
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
             if (work->emit0 != NULL) {
                 work->emit0->unk14 = (s32)D_801E7A38;
                 work->emit0->unk12 = 0x3B;
                 work->emit0->unkC = 0xBC;
             }
-            ex->btlfx_aimAngles((s16 *)&work->unk20, (s16 *)&work->unk10, (s16 *)&work->unk28);
+            ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->unk10, (s16 *)&work->unk28);
             break;
         case 8:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk18);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk18);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos18);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }

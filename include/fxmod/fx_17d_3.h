@@ -18,11 +18,11 @@ typedef struct {
     u32 unk0; /* state */
     s32 unk4; /* counter */
     u8 pad8[8];
-    SVECTOR unk10;
-    SVECTOR unk18;
+    SVECTOR pos10;
+    SVECTOR pos18;
     SVECTOR unk20; /* camera */
     s32 unk28[3]; /* model position */
-    SVECTOR unk34; /* model rotation */
+    SVECTOR rot34; /* model rotation */
     s32 unk3C[3]; /* model scale */
     s32 unk48[3]; /* summon position */
     s32 unk54[3]; /* summon scale */

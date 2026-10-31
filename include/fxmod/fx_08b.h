@@ -13,9 +13,9 @@ typedef struct {
     Pool6CEntry *emit14;
     SVECTOR unk18; /* unit 0x10 position */
     SVECTOR unk20; /* unit 0x10 rotation */
-    SVECTOR unk28; /* unit 0x10 bone 5 position */
-    SVECTOR unk30; /* unit 0x10 bone 0x22 position */
-    SVECTOR unk38; /* unk18 moved 0x708 along unk20 */
+    SVECTOR pos28; /* unit 0x10 bone 5 position */
+    SVECTOR pos30; /* unit 0x10 bone 0x22 position */
+    SVECTOR pos38; /* unk18 moved 0x708 along unk20 */
     SVECTOR unk40; /* angles from unk28 to unk50 */
     SVECTOR unk48; /* angles from unk30 to unk50 */
     SVECTOR unk50; /* unk18 moved 0x7D0 along unk20 */
@@ -24,7 +24,7 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* unit position */
+    SVECTOR pos4; /* unit position */
     s32 unkC; /* unit */
 } Fx08bWork81;
 

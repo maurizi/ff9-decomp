@@ -20,22 +20,22 @@ typedef struct {
     Pool6CEntry *emit40;
     SVECTOR unk44; /* target position */
     SVECTOR unk4C[8];
-    SVECTOR unk8C;
+    SVECTOR pos8C;
 } Fx1b4Work80; /* 0x94 */
 
 typedef struct {
     Pool6CEntry *emit0[4];
-    SVECTOR unk10; /* target position */
+    SVECTOR pos10; /* target position */
 } Fx1b4Work81; /* 0x18 */
 
 typedef struct {
     Pool6CEntry *emit0[7];
-    SVECTOR unk1C; /* target position */
+    SVECTOR pos1C; /* target position */
 } Fx1b4Work82; /* 0x24 */
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* target position */
+    SVECTOR pos4; /* target position */
 } Fx1b4Work83; /* 0xC */
 
 extern u16 D_801E85BC[8];

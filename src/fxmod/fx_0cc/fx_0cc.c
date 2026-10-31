@@ -11,7 +11,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
 
     if (mode == 1) {
         part->unk0 = 0;
-        part->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&part->unk4);
+        part->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&part->pos4);
         if (part->emitC != NULL) {
             part->emitC->otZ = 0;
         }
@@ -23,17 +23,17 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             pos.vy -= 0x1000;
             pos.vy += t;
             pos.vz = pos.vz + ((0x1000 - t) >> 1);
-            BTLFX_COPY_SVEC(&part->unk4, &pos);
-            mpos[0] = part->unk4.vx;
-            mpos[1] = part->unk4.vy;
-            mpos[2] = part->unk4.vz;
+            BTLFX_COPY_SVEC(&part->pos4, &pos);
+            mpos[0] = part->pos4.vx;
+            mpos[1] = part->pos4.vy;
+            mpos[2] = part->pos4.vz;
             scale[0] = scale[1] = scale[2] = 0x1C7;
             rot.vx = frame * 0x18;
             rot.vy = frame * 0x28;
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model10);
             env->otZ = 0x80;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 7), &part->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 7), &part->pos4, NULL, 0x1000, 0, 1, -1, 0, 0);
             env->otZ = 0;
             if (frame >= 0x14) {
                 part->unk0 = 1;
@@ -41,7 +41,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
                 if (part->emitC != NULL) {
                     part->emitC->frame = part->emitC->tail->unk4.unk2;
                 }
-                part->unk4.vy = 0;
+                part->pos4.vy = 0;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0, 0);
             }
             break;
@@ -50,7 +50,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             rot.vy = 0;
             rot.vz = frame << 5;
             rot.pad = 1;
-            BTLFX_COPY_SVEC(&pos, &part->unk4);
+            BTLFX_COPY_SVEC(&pos, &part->pos4);
             pos.vy -= frame * 4;
             env->otZ = 0x10;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 3), &pos, NULL, 0x3000, frame, 1, -1, 0, 0);
@@ -58,7 +58,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
                 env->otZ = 0x64;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), &pos, NULL, -1, frame, 1, -1);
                 env->otZ = 0;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xC), &part->unk4, &rot, 0x1000, frame, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xC), &part->pos4, &rot, 0x1000, frame, 1,
                                   -1, 0, 0);
             }
             env->otZ = 0;

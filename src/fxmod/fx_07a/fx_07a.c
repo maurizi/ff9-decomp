@@ -72,9 +72,9 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xC), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&D_801E9BA4[i], 0);
         }
-        work->unk94.vx = D_801E9B94.vx = env->targets->centerX;
-        work->unk94.vy = D_801E9B94.vz = env->targets->centerZ;
-        work->unk94.vz = D_801E9B94.vy = -0x500;
+        work->pos94.vx = D_801E9B94.vx = env->targets->centerX;
+        work->pos94.vy = D_801E9B94.vz = env->targets->centerZ;
+        work->pos94.vz = D_801E9B94.vy = -0x500;
         work->unk40[0].unk0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x137,
                                                          0xFFFF, 0, 0);
         work->unk40[0].unk4.vx = 0x800;
@@ -180,9 +180,9 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk0[2] != 0) {
             work->unk0[2]--;
             fxm_easeLerpSvec(0, 8, work->unk0[2], &D_801E9B8C, &D_801E9B94, &out);
-            work->unk94.vx = out.vx;
-            work->unk94.vy = out.vy;
-            work->unk94.vz = out.vz;
+            work->pos94.vx = out.vx;
+            work->pos94.vy = out.vy;
+            work->pos94.vz = out.vz;
         }
         if (work->unk0[4] != 0) {
             work->unk0[4]--;
@@ -234,9 +234,9 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk40[2].unk4.vy = work->unk40[1].unk4.vy;
             work->unk40[2].unk4.vx = work->unk40[1].unk4.vx + 0x400;
             work->unk40[1].unk4.vx -= 0x400;
-            ex->Hi_DrawEffModel(&work->unk40[1].unk4, &work->unk94, (s32)&work->unk40[1].unkC, work->unk40[1].unk0);
-            ex->Hi_DrawEffModel(&work->unk40[2].unk4, &work->unk94, (s32)&work->unk40[2].unkC, work->unk40[2].unk0);
-            ex->Hi_DrawEffModel(&work->unk40[0].unk4, &work->unk94, (s32)&work->unk40[0].unkC, work->unk40[0].unk0);
+            ex->Hi_DrawEffModel(&work->unk40[1].unk4, &work->pos94, (s32)&work->unk40[1].unkC, work->unk40[1].unk0);
+            ex->Hi_DrawEffModel(&work->unk40[2].unk4, &work->pos94, (s32)&work->unk40[2].unkC, work->unk40[2].unk0);
+            ex->Hi_DrawEffModel(&work->unk40[0].unk4, &work->pos94, (s32)&work->unk40[0].unkC, work->unk40[0].unk0);
             ex->Hi_ModifyEffModelAbr(work->unk40[0].unk0, 1);
         }
         if (work->unk0[0] != 0) {
@@ -250,9 +250,9 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     cur.vx = D_801E9B8C.vx << 12;
                     cur.vy = D_801E9B8C.vy << 12;
                     cur.vz = D_801E9B8C.vz << 12;
-                    step.vx = ((work->unk94.vx + tr->unk5C - D_801E9B8C.vx) << 12) / n;
-                    step.vy = ((work->unk94.vy + tr->unk60 - D_801E9B8C.vy) << 12) / n;
-                    step.vz = ((work->unk94.vz + tr->unk64 - D_801E9B8C.vz) << 12) / n;
+                    step.vx = ((work->pos94.vx + tr->unk5C - D_801E9B8C.vx) << 12) / n;
+                    step.vy = ((work->pos94.vy + tr->unk60 - D_801E9B8C.vy) << 12) / n;
+                    step.vz = ((work->pos94.vz + tr->unk64 - D_801E9B8C.vz) << 12) / n;
                     q = tr;
                     for (j = 0, pt = tr->unk4; j < n; pt++, j++) {
                         pt->vx = cur.vx >> 12;

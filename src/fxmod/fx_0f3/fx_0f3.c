@@ -15,7 +15,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4 = *arg4;
         work->unk0 = 0;
         fx_0f3_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         work->emit24 = NULL;
     } else {
         state = work->unk0;
@@ -23,7 +23,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (state) {
         case 0:
             t = (frame << 12) / 12;
-            BTLFX_COPY_SVEC(&v, &work->unk8);
+            BTLFX_COPY_SVEC(&v, &work->pos8);
             switch (work->unk4) {
             case 0:
                 v.vy += (t - 0x800) * 2;
@@ -53,10 +53,10 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                               D_801E7CB0[work->unk4], 0);
             env->otZ = 0;
             if (frame == 0) {
-                work->unk18.vx = work->unk10.vx;
-                work->unk18.vy = work->unk10.vy;
-                work->unk18.vz = work->unk10.vz;
-                work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk18);
+                work->pos18.vx = work->unk10.vx;
+                work->pos18.vy = work->unk10.vy;
+                work->pos18.vz = work->unk10.vz;
+                work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos18);
                 if (work->emit24 != NULL) {
                     work->emit24->unk14 = (s32)D_801E7F80[work->unk4];
                     work->emit24->unk12 = 4;
@@ -74,7 +74,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 2, 0x40, 0x40, 0x40);
             }
             if (frame == 7) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }

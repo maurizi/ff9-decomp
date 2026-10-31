@@ -7,12 +7,12 @@
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* model rotation */
-    VECTOR unk10; /* model position */
-    VECTOR unk20; /* model scale */
+    SVECTOR rot8; /* model rotation */
+    VECTOR pos10; /* model position */
+    VECTOR scale20; /* model scale */
     s32 unk30; /* model brightness */
-    SVECTOR unk34; /* summon bone position */
-    SVECTOR unk3C;
+    SVECTOR pos34; /* summon bone position */
+    SVECTOR pos3C;
     s16 unk44; /* fade-in countdown */
     u16 model46; /* model */
 } Fx114Work81; /* 0x48 */
@@ -25,14 +25,14 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* model rotation */
-    VECTOR unkC; /* model position */
-    VECTOR unk1C; /* model scale */
+    SVECTOR rot4; /* model rotation */
+    VECTOR posC; /* model position */
+    VECTOR scale1C; /* model scale */
     SVECTOR unk2C;
     VECTOR unk34;
     VECTOR unk44;
     u8 pad54[0x58 - 0x54];
-    SVECTOR unk58;
+    SVECTOR pos58;
     s16 unk60; /* fade-in countdown */
     s16 unk62; /* fade-out countdown */
     u16 unk64; /* frame */
@@ -171,36 +171,36 @@ typedef struct {
     SVECTOR unkC; /* rotation */
     SVECTOR unk14; /* position */
     s32 unk1C;
-    SVECTOR unk20; /* body rotation */
+    SVECTOR rot20; /* body rotation */
     Fx114Vec3 unk28; /* body position */
     s32 pad34;
     Fx114Vec3 unk38; /* body scale */
     s32 pad44;
-    SVECTOR unk48; /* rock rotation */
+    SVECTOR rot48; /* rock rotation */
     Fx114Vec3 unk50; /* rock position */
     s32 pad5C;
     Fx114Vec3 unk60; /* rock scale */
     s32 pad6C;
-    SVECTOR unk70;
+    SVECTOR rot70;
     Fx114Vec3 unk78;
     s32 pad84;
     Fx114Vec3 unk88;
     s32 unk94;
     s32 unk98;
-    SVECTOR unk9C;
+    SVECTOR rot9C;
     Fx114Vec3 unkA4;
     s32 padB0;
     Fx114Vec3 unkB4;
     s32 padC0;
     s32 unkC4;
     s32 unkC8;
-    SVECTOR unkCC;
+    SVECTOR rotCC;
     Fx114Vec3 unkD4;
     s32 padE0;
     Fx114Vec3 unkE4;
     s32 padF0;
-    SVECTOR unkF4;
-    SVECTOR unkFC;
+    SVECTOR posF4;
+    SVECTOR posFC;
     SVECTOR unk104;
     s16 unk10C; /* frame */
     s16 unk10E;
@@ -264,7 +264,7 @@ typedef struct {
     Pool6CEntry *emit14;
     Pool6CEntry *emit18;
     Pool6CEntry *emit1C;
-    SVECTOR unk20; /* summon rotation */
+    SVECTOR rot20; /* summon rotation */
     Fx114Vec3 unk28; /* summon position */
     s32 pad34;
     Fx114Vec3 unk38; /* summon scale */
@@ -273,38 +273,38 @@ typedef struct {
     SVECTOR unk4C;
     SVECTOR unk54;
     s32 unk5C;
-    SVECTOR unk60;
+    SVECTOR rot60;
     Fx114Vec3 unk68;
     s32 pad74;
     Fx114Vec3 unk78;
     s32 pad84;
-    SVECTOR unk88;
+    SVECTOR rot88;
     Fx114Vec3 unk90;
     s32 pad9C;
     Fx114Vec3 unkA0;
     s32 padAC;
     s32 unkB0;
-    SVECTOR unkB4;
+    SVECTOR rotB4;
     Fx114Vec3 unkBC;
     s32 padC8;
     Fx114Vec3 unkCC;
     s32 padD8;
     s32 unkDC;
-    SVECTOR unkE0;
+    SVECTOR rotE0;
     Fx114Vec3 unkE8;
     s32 padF4;
     Fx114Vec3 unkF8;
     s32 pad104;
     s32 unk108;
-    SVECTOR unk10C;
+    SVECTOR rot10C;
     Fx114Vec3 unk114;
     s32 pad120;
     Fx114Vec3 unk124;
     s32 pad130;
     SVECTOR unk134;
-    SVECTOR unk13C;
+    SVECTOR pos13C;
     SVECTOR unk144;
-    SVECTOR unk14C;
+    SVECTOR pos14C;
     u8 pad154[8];
     u8 unk15C;
     u8 unk15D;

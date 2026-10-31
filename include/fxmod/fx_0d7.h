@@ -36,7 +36,7 @@ typedef struct {
     SVECTOR unk4[16];
 } Fx0d7Strip; /* 0x84 */
 typedef struct {
-    SVECTOR unk0; /* from */
+    SVECTOR pos0; /* from */
     SVECTOR unk8; /* to */
     u8 unk10; /* bolt index */
     u8 unk11; /* state */

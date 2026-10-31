@@ -10,9 +10,9 @@ typedef struct {
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
-    SVECTOR unk14; /* target position */
+    SVECTOR pos14; /* target position */
     SVECTOR unk1C; /* target home position */
-    SVECTOR unk24;
+    SVECTOR pos24;
     SVECTOR unk2C;
     s16 unk34; /* lift countdown */
     s16 unk36; /* drop countdown */

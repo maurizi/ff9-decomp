@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* caster body position */
+    SVECTOR pos4; /* caster body position */
 } Fx080Work;
 
 extern Unk800F78A4 *fx_080_env;

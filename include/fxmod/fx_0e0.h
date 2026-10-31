@@ -32,8 +32,8 @@ typedef struct {
     s16 unk0; /* state */
     s16 unk2; /* sub-state */
     SVECTOR unk4; /* velocity (vx, vy, vz); pad = model scale index */
-    SVECTOR unkC; /* position */
-    SVECTOR unk14; /* rotation */
+    SVECTOR posC; /* position */
+    SVECTOR rot14; /* rotation */
     s16 unk1C; /* rotation speed */
     s16 unk1E;
     Pool6CEntry *emit20; /* particle */
@@ -62,14 +62,14 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* position */
-    SVECTOR unk10; /* target */
+    SVECTOR pos10; /* target */
     SVECTOR unk18; /* camera target */
     u8 pad20[4];
     Fx0e0Vec3 unk24; /* model position */
     Fx0e0Vec3 unk30; /* model scale */
-    SVECTOR unk3C; /* model rotation */
+    SVECTOR rot3C; /* model rotation */
     Fx0e0Vec3 unk44; /* scale */
-    SVECTOR unk50; /* rotation */
+    SVECTOR rot50; /* rotation */
     u8 pad58[4];
     s32 model5C; /* models */
     s32 model60;

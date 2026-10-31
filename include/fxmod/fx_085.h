@@ -59,7 +59,7 @@ static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx085Strip *strip, Fx
 static s32 fxm_jaggedStripTask(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 typedef struct {
-    SVECTOR unk0; /* target body */
+    SVECTOR pos0; /* target body */
     SVECTOR unk8; /* target */
     s32 *unk10; /* jitter table */
     s32 unk14; /* bolts spawned */
@@ -72,7 +72,7 @@ extern s32 D_801EAAEC[];
 
 typedef struct {
     SVECTOR unk0; /* target position */
-    SVECTOR unk8; /* ground position */
+    SVECTOR pos8; /* ground position */
     s32 unk10; /* state */
     s32 model14; /* model */
     s32 model18; /* model */

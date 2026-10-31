@@ -13,22 +13,22 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_05a_env = env;
         ex->btlfx_initEffModels(fx_05a_effModels, 1);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
-        work->unk10.vx = work->unk8.vx;
-        work->unk10.vy = work->unk8.vy;
-        work->unk10.vz = work->unk8.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
+        work->pos10.vx = work->pos8.vx;
+        work->pos10.vy = work->pos8.vy;
+        work->pos10.vz = work->pos8.vz;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->unk14 = (s32)D_801E7BF0;
             work->emit0->unk12 = 0xA;
             work->emit0->unkC = 0xB0;
         }
-        work->unk18.vx = 0;
-        work->unk18.vy = 0;
-        work->unk18.vz = 0;
-        work->unk20.vx = work->unk8.vx;
-        work->unk20.vy = work->unk8.vy;
-        work->unk20.vz = work->unk8.vz;
+        work->rot18.vx = 0;
+        work->rot18.vy = 0;
+        work->rot18.vz = 0;
+        work->pos20.vx = work->pos8.vx;
+        work->pos20.vy = work->pos8.vy;
+        work->pos20.vz = work->pos8.vz;
         if (ex->btlfx_isEnemyUnit(0)) {
             s = 0x155;
             h = ex->btlfx_getUnitHeight(0);
@@ -39,17 +39,17 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (r > 0x320) {
                 s += (r - 0x320) / 4;
             }
-            work->unk10.vy -= (s - 0x155) * 3;
+            work->pos10.vy -= (s - 0x155) * 3;
             if (s > 0x400) {
                 s = 0x400;
             }
-            work->unk30.vx = s;
-            work->unk30.vy = s;
-            work->unk30.vz = s;
+            work->scale30.vx = s;
+            work->scale30.vy = s;
+            work->scale30.vz = s;
         } else {
-            work->unk30.vx = 0x155;
-            work->unk30.vy = 0x155;
-            work->unk30.vz = 0x155;
+            work->scale30.vx = 0x155;
+            work->scale30.vy = 0x155;
+            work->scale30.vz = 0x155;
         }
         work->model44 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x117, 0, 0, 0xC0);
         work->unk40 = -0x14;
@@ -57,15 +57,15 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x19) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos10);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         if (frame >= 0x19) {
-            ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model44);
+            ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model44);
             ex->Hi_ModifyEffModelAbr(work->model44, 1);
-            work->unk18.vy += 0x40;
+            work->rot18.vy += 0x40;
             t = frame - 0x19;
             if (frame >= 0x2D) {
                 ex->Hi_ModifyEffModelRGB(work->model44, work->unk40, work->unk40, work->unk40);

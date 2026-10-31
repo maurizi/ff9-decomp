@@ -10,11 +10,11 @@ s32 fx_029_op80(s32 mode, Fx029Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         fx_029_env = env;
-        ((s32 *)&work->unk8)[0] = ((s32 *)&env->targets->centerX)[0];
+        ((s32 *)&work->pos8)[0] = ((s32 *)&env->targets->centerX)[0];
         t = ((s32 *)&env->targets->centerX)[1];
-        work->unk8.vy -= 0xFA;
-        ((s32 *)&work->unk8)[1] = t;
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
+        work->pos8.vy -= 0xFA;
+        ((s32 *)&work->pos8)[1] = t;
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->otZ = 0x80;
         }

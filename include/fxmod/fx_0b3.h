@@ -31,14 +31,14 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     u8 pad8[8];
-    SVECTOR unk10; /* morph model position */
+    SVECTOR pos10; /* morph model position */
     u8 pad18[0x28 - 0x18];
     Fx0b3Vec3 unk28; /* morph model position */
     Fx0b3Vec3 unk34; /* morph model scale */
-    SVECTOR unk40; /* morph model rotation */
+    SVECTOR rot40; /* morph model rotation */
     Fx0b3Vec3 unk48; /* model position */
     Fx0b3Vec3 unk54; /* model scale */
-    SVECTOR unk60; /* model rotation */
+    SVECTOR rot60; /* model rotation */
     Pool6CEntry *emit68;
     s32 model6C; /* model */
     s32 unk70; /* morph frame */
@@ -66,17 +66,17 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     u8 pad8[8];
-    SVECTOR unk10; /* morph model position */
+    SVECTOR pos10; /* morph model position */
     u8 pad18[0x28 - 0x18];
-    SVECTOR unk28;
-    SVECTOR unk30;
-    SVECTOR unk38;
+    SVECTOR pos28;
+    SVECTOR pos30;
+    SVECTOR pos38;
     Fx0b3Vec3 unk40; /* position */
     Fx0b3Vec3 unk4C; /* scale */
-    SVECTOR unk58; /* rotation */
+    SVECTOR rot58; /* rotation */
     Fx0b3Vec3 unk60;
     Fx0b3Vec3 unk6C;
-    SVECTOR unk78;
+    SVECTOR rot78;
     Pool6CEntry *emit80;
     Pool6CEntry *emit84;
     s32 model88[4]; /* models */
@@ -94,15 +94,15 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     u8 pad8[0x28 - 0x8];
-    SVECTOR unk28;
-    SVECTOR unk30;
+    SVECTOR pos28;
+    SVECTOR pos30;
     u8 pad38[0x48 - 0x38];
     Fx0b3Vec3 unk48; /* position */
     Fx0b3Vec3 unk54; /* scale */
-    SVECTOR unk60; /* rotation */
+    SVECTOR rot60; /* rotation */
     Fx0b3Vec3 unk68;
     Fx0b3Vec3 unk74;
-    SVECTOR unk80;
+    SVECTOR rot80;
     s32 model88; /* model */
     s32 model8C; /* model */
 } Fx0b3Work84; /* 0x90 */
@@ -114,15 +114,15 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     u8 pad8[0x18 - 0x8];
-    SVECTOR unk18;
-    SVECTOR unk20;
+    SVECTOR pos18;
+    SVECTOR pos20;
     u8 pad28[0x38 - 0x28];
     Fx0b3Vec3 unk38; /* position */
     Fx0b3Vec3 unk44; /* scale */
-    SVECTOR unk50; /* rotation */
+    SVECTOR rot50; /* rotation */
     Fx0b3Vec3 unk58;
     Fx0b3Vec3 unk64;
-    SVECTOR unk70;
+    SVECTOR rot70;
     s32 model78[4]; /* models */
 } Fx0b3Work83; /* 0x88 */
 extern s32 D_801EB5AC[4]; /* start frames */
@@ -150,12 +150,12 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     u8 pad8[8];
-    SVECTOR unk10; /* midpoint */
+    SVECTOR pos10; /* midpoint */
     SVECTOR unk18;
     u8 pad20[8];
     Fx0b3Vec3 unk28; /* summon position */
     Fx0b3Vec3 unk34; /* summon scale */
-    SVECTOR unk40; /* summon rotation */
+    SVECTOR rot40; /* summon rotation */
     u8 pad48[0x68 - 0x48];
     Pool6CEntry *emit68;
 } Fx0b3Work85; /* 0x6C */

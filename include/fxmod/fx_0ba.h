@@ -129,16 +129,16 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     u8 pad8[8];
-    SVECTOR unk10; /* orb position */
+    SVECTOR pos10; /* orb position */
     SVECTOR unk18; /* bone position */
     u8 pad20[8];
     Fx0baVec3 unk28; /* model position */
     Fx0baVec3 unk34; /* model scale */
-    SVECTOR unk40; /* model rotation */
+    SVECTOR rot40; /* model rotation */
     Fx0baVec3 unk48; /* summon position */
     Fx0baVec3 unk54; /* summon scale */
-    SVECTOR unk60; /* summon rotation */
-    SVECTOR unk68; /* model rotation */
+    SVECTOR rot60; /* summon rotation */
+    SVECTOR rot68; /* model rotation */
     Fx0baVec3 unk70; /* model scale */
     s32 model7C;
     s32 model80;
@@ -188,13 +188,13 @@ typedef struct {
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* base position */
-    SVECTOR unk10;
+    SVECTOR pos8; /* base position */
+    SVECTOR pos10;
     SVECTOR unk18;
     u8 pad20[0x28];
     s32 unk48[3]; /* model position */
     s32 unk54[3]; /* model scale */
-    SVECTOR unk60; /* model rotation */
+    SVECTOR rot60; /* model rotation */
     Pool6CEntry *emit68;
     Pool6CEntry *emit6C;
     s32 model70; /* models */

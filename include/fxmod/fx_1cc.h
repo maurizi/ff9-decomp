@@ -19,7 +19,7 @@ typedef struct Fx1ccObj {
     s16 unk1A;
     s16 unk1C;
     s16 unk1E;
-    SVECTOR unk20; /* rotation */
+    SVECTOR rot20; /* rotation */
     s16 unk28; /* rotation speed */
     s16 unk2A;
     s32 unk2C; /* model */
@@ -47,9 +47,9 @@ typedef struct {
     s32 model18;
     s32 model1C;
     s32 model20[14]; /* piece models */
-    SVECTOR unk58; /* position */
-    SVECTOR unk60;
-    SVECTOR unk68;
+    SVECTOR pos58; /* position */
+    SVECTOR pos60;
+    SVECTOR pos68;
     SVECTOR unk70;
     s16 unk78;
     s16 unk7A; /* spawned directions */

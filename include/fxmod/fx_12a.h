@@ -13,10 +13,10 @@ typedef struct {
     Pool6CEntry *emit14;
     Pool6CEntry *emit18;
     Pool6CEntry *emit1C;
-    SVECTOR unk20; /* bone positions */
-    SVECTOR unk28;
-    SVECTOR unk30;
-    SVECTOR unk38;
+    SVECTOR pos20; /* bone positions */
+    SVECTOR pos28;
+    SVECTOR pos30;
+    SVECTOR pos38;
     SVECTOR unk40; /* aim targets */
     SVECTOR unk48;
     SVECTOR unk50; /* aim angles */
@@ -25,13 +25,13 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4;
+    SVECTOR pos4;
 } Fx12aWork81;
 
 typedef struct {
     Pool6CEntry *emit0;
     s32 unk4;
-    SVECTOR unk8;
+    SVECTOR pos8;
     s32 unk10; /* target index */
 } Fx12aWork82;
 

@@ -57,12 +57,12 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_0e9_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk10);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
         ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, 0xC8, (s16 *)&D_801E7D1C);
         ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, 0x348, (s16 *)&D_801E7D24);
-        D_801E7D2C.vx = work->unk18.vx;
-        D_801E7D2C.vy = work->unk18.vy;
-        D_801E7D2C.vz = work->unk18.vz;
+        D_801E7D2C.vx = work->pos18.vx;
+        D_801E7D2C.vy = work->pos18.vy;
+        D_801E7D2C.vz = work->pos18.vz;
         ex->btlfx_aimAngles((s16 *)&D_801E7D2C, (s16 *)&D_801E7D24, (s16 *)&rot);
         d.vx = D_801E7D2C.vx - D_801E7D24.vx;
         d.vy = D_801E7D2C.vy - D_801E7D24.vy;
@@ -79,7 +79,7 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x50) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
         }
         return frame >= 0x8C;
     }

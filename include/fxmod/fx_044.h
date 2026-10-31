@@ -8,7 +8,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR unk8; /* target body position */
-    SVECTOR unk10;
+    SVECTOR pos10;
     SVECTOR unk18; /* angles from unk10 to unk8 */
 } Fx044Work80; /* 0x20 */
 
@@ -16,9 +16,9 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* target body position */
-    SVECTOR unk14; /* target position */
-    SVECTOR unk1C; /* above the target body */
+    SVECTOR posC; /* target body position */
+    SVECTOR pos14; /* target position */
+    SVECTOR pos1C; /* above the target body */
 } Fx044Work81; /* 0x24 */
 
 extern Unk800F78A4 *fx_044_env;

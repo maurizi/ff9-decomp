@@ -8,14 +8,14 @@ typedef struct {
     s32 unk0; /* state */
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* unk14 raised by 0xF0 */
-    SVECTOR unk14; /* position: env->targets->centerX */
-    SVECTOR unk1C; /* unit 0x10 bone D_801E7C8C[0] */
-    SVECTOR unk24; /* unit 0x10 bone D_801E7C8C[1] */
-    SVECTOR unk2C; /* unkC, 0x300 to one side */
-    SVECTOR unk34; /* unkC, 0x300 to the other side */
-    SVECTOR unk3C;
-    SVECTOR unk44;
+    SVECTOR posC; /* unk14 raised by 0xF0 */
+    SVECTOR pos14; /* position: env->targets->centerX */
+    SVECTOR pos1C; /* unit 0x10 bone D_801E7C8C[0] */
+    SVECTOR pos24; /* unit 0x10 bone D_801E7C8C[1] */
+    SVECTOR pos2C; /* unkC, 0x300 to one side */
+    SVECTOR pos34; /* unkC, 0x300 to the other side */
+    SVECTOR pos3C;
+    SVECTOR pos44;
 } Fx0b0Work;
 
 extern u16 D_801E7C8C[2]; /* bones */

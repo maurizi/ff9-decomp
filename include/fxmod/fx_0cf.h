@@ -6,7 +6,7 @@
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* position: env->targets->centerX..Z */
+    SVECTOR pos4; /* position: env->targets->centerX..Z */
 } Fx0cfWork80;
 
 typedef struct {

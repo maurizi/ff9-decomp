@@ -5,10 +5,10 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* btlfx_getUnitArgBonePos(0x10, 0) */
+    SVECTOR pos0; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR unk8; /* unit 0x10 bone position */
-    SVECTOR unk10; /* caster body position */
-    SVECTOR unk18; /* caster position */
+    SVECTOR pos10; /* caster body position */
+    SVECTOR pos18; /* caster position */
     SVECTOR unk20; /* angles from unk0 to unk8 */
     Pool6CEntry *emit28;
 } Fx093Work;

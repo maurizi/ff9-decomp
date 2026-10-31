@@ -14,7 +14,7 @@ extern Unk800F78A4 *fx_0d6_env;
 
 typedef struct {
     SVECTOR unk0; /* caster body position */
-    SVECTOR unk8; /* caster position */
+    SVECTOR pos8; /* caster position */
     s32 unk10; /* state */
     s32 model14[4]; /* models */
     s32 model24; /* model */

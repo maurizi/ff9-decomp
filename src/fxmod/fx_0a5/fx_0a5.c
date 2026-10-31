@@ -10,21 +10,21 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x30;
     } else if (mode == 1) {
         fx_0a5_env = env;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
-        work->unk18.vx = env->targets->centerX;
-        work->unk18.vy = env->targets->centerY;
-        work->unk18.vz = env->targets->centerZ;
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
+        work->pos18.vx = env->targets->centerX;
+        work->pos18.vy = env->targets->centerY;
+        work->pos18.vz = env->targets->centerZ;
         work->unk20.vx = env->targets->centerX;
         work->unk20.vy = env->targets->centerY;
         work->unk20.vz = env->targets->centerZ;
-        work->unk18.vx = 0x5DC;
+        work->pos18.vx = 0x5DC;
         work->unk20.vx = -0x5DC;
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
-        ex->btlfx_aimAngles((s16 *)&work->unk8, &env->targets->centerX, (s16 *)&work->unk10);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, &env->targets->centerX, (s16 *)&work->unk10);
     } else {
         frame = entry->frame;
         if (frame == 0x19) {
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk18);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos18);
             if (work->emit0 != NULL) {
                 work->emit0->unk14 = (s32)D_801E7A3C;
                 work->emit0->unk12 = 0x80;
@@ -50,7 +50,7 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (t <= 0x1000) {
                 u = t;
             }
-            ex->btlfx_lerpVec((s16 *)&work->unk18, (s16 *)&work->unk20, u, (s16 *)&work->unk28);
+            ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->unk20, u, (s16 *)&work->unk28);
             if (work->emit0 != NULL) {
                 if (work->emit0->state == BTLFX_EMIT_DONE) {
                     work->emit0 = NULL;

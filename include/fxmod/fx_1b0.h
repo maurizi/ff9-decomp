@@ -59,9 +59,9 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     s32 unk8[3]; /* caster position */
-    SVECTOR unk14; /* caster rotation */
+    SVECTOR rot14; /* caster rotation */
     s32 unk1C[3]; /* caster scale */
-    SVECTOR unk28; /* caster body position */
+    SVECTOR pos28; /* caster body position */
     SVECTOR unk30;
     CVECTOR unk38; /* model colour */
     s32 model3C[8]; /* split models */

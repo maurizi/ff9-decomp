@@ -83,9 +83,9 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_0a0_task = entry;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk4);
         BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
-        BTLFX_COPY_SVEC(&work->unkC, &work->unk4);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
-        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk14);
+        BTLFX_COPY_SVEC(&work->posC, &work->unk4);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
+        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
         if (work->emit1C != NULL) {
             work->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
         }
@@ -95,7 +95,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit1C->unkC = 0xAC;
         }
         work->emit1C->elems->unk24 = fx_0a0_op80ElemDraw;
-        work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
+        work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
         if (work->emit20 != NULL) {
             work->emit20->otZ = 0x20;
         }

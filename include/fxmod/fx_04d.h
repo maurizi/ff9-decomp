@@ -30,7 +30,7 @@ typedef struct {
     s32 modelC;
     s32 model10;
     s32 model14;
-    SVECTOR unk18;
+    SVECTOR pos18;
     SVECTOR unk20;
     s16 unk28; /* split now */
     s16 unk2A;

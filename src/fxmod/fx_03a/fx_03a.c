@@ -20,9 +20,9 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 7; i >= 0; i--) {
             ((s32 *)work)[i] = 0;
         }
-        work->unk20.vx = 0;
-        work->unk20.vy = 0;
-        work->unk20.vz = -0x550;
+        work->pos20.vx = 0;
+        work->pos20.vy = 0;
+        work->pos20.vz = -0x550;
         D_801E7DB8[0].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
         D_801E7DB8[1].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 0xFF);
         D_801E7DB8[2].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 0xFF);
@@ -48,7 +48,7 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, D_801E8798, 0, -0x550, -0x1000);
             break;
         case 1:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk20);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos20);
             if (p != NULL) {
                 p->otZ = 0x100;
             }

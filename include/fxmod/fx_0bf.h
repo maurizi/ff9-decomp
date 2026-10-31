@@ -6,7 +6,7 @@
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* caster body position */
+    SVECTOR pos4; /* caster body position */
     s32 unkC; /* screen tint */
 } Fx0bfWork80;
 

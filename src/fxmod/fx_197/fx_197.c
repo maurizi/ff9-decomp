@@ -295,14 +295,14 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
                 it->unk0 = 1;
                 ((s16 *)it)[-1] = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x20, 0x46);
-                it->unkC.vx = D_801E91EC[it->unk2].vx;
-                it->unkC.vy = D_801E91EC[it->unk2].vy;
-                it->unkC.vz = D_801E91EC[it->unk2].vz;
-                it->unkC.vx += work->unk8.vx;
-                it->unkC.vy += work->unk8.vy;
-                it->unkC.vz += work->unk8.vz;
-                it->unkC.vy = 0;
-                q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&it->unkC);
+                it->posC.vx = D_801E91EC[it->unk2].vx;
+                it->posC.vy = D_801E91EC[it->unk2].vy;
+                it->posC.vz = D_801E91EC[it->unk2].vz;
+                it->posC.vx += work->unk8.vx;
+                it->posC.vy += work->unk8.vy;
+                it->posC.vz += work->unk8.vz;
+                it->posC.vy = 0;
+                q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&it->posC);
                 if (q != NULL) {
                     q->otZ = 0x80;
                 }
@@ -469,9 +469,9 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vx = D_801E9128.vx;
         work->unk8.vy = D_801E9128.vy;
         work->unk8.vz = D_801E9128.vz;
-        work->unk10.vx = D_801E9128.vx;
-        work->unk10.vy = D_801E9128.vy;
-        work->unk10.vz = D_801E9128.vz;
+        work->pos10.vx = D_801E9128.vx;
+        work->pos10.vy = D_801E9128.vy;
+        work->pos10.vz = D_801E9128.vz;
     } else {
         state = work->unk0;
         frame = entry->frame;
@@ -512,15 +512,15 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 D_801E91D0 = 1;
             }
             if (frame == 20) {
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk10);
+                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x40;
                 }
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk10);
+                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x40;
                 }
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk10);
+                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos10);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E92D0;
                     p->unk12 = 0xC;
@@ -529,19 +529,19 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 18) {
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk10);
+                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x40;
                 }
             }
             if (frame == 32) {
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
+                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x40;
                 }
             }
             if (frame == 44) {
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unk10);
+                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x40;
                 }

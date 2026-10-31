@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 unk0; /* knockback countdown */
-    SVECTOR unk4;
+    SVECTOR pos4;
     SVECTOR unkC; /* target body position */
     SVECTOR unk14; /* target home position */
     SVECTOR unk1C; /* target position while pushed back */

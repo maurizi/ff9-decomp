@@ -47,12 +47,12 @@ typedef struct {
 typedef struct {
     s32 unk0[16]; /* timers */
     Fx063Model unk40[3];
-    VECTOR unk94; /* position */
+    VECTOR pos94; /* position */
     SVECTOR unkA4; /* eye */
     s32 modelAC; /* model */
-    SVECTOR unkB0; /* rotation */
-    VECTOR unkB8; /* position */
-    VECTOR unkC8; /* scale */
+    SVECTOR rotB0; /* rotation */
+    VECTOR posB8; /* position */
+    VECTOR scaleC8; /* scale */
     s32 padD8;
 } Fx063Work; /* 0xDC */
 

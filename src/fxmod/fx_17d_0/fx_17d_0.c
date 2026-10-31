@@ -262,9 +262,9 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vx = ((0x1000 - ex->math_cos(h)) >> 1) / 3;
             rot.vy = ex->math_sin(t >> 2) >> 2;
             rot.vz = work->unk4 * 4;
-            work->unk38.vx = rot.vx >> 1;
-            work->unk38.vy = rot.vy >> 1;
-            work->unk38.vz = rot.vz >> 1;
+            work->rot38.vx = rot.vx >> 1;
+            work->rot38.vy = rot.vy >> 1;
+            work->rot38.vz = rot.vz >> 1;
             func_801E79E8((u32 *)env->ot + 8, 0x140, 0x80, ((ex->math_sin(h) * 0x18) >> 12) - 1, &rot, D_801E9480,
                           &col, t, 1);
             if (frame >= 0x19) {
@@ -297,9 +297,9 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             sx = t >> 7;
             rot.vy = (0x1000 - ex->math_sin(q)) >> 2;
             rot.vz = work->unk4 * 4;
-            work->unk38.vx = rot.vx >> 1;
-            work->unk38.vy = rot.vy >> 1;
-            work->unk38.vz = rot.vz >> 1;
+            work->rot38.vx = rot.vx >> 1;
+            work->rot38.vy = rot.vy >> 1;
+            work->rot38.vz = rot.vz >> 1;
             func_801E79E8((u32 *)env->ot + 8, 0x140, 0x80, ~((t * 20) >> 12), &rot, D_801E9480, &col, 0x1000, 1);
             code = 1;
             abr = 1;
@@ -340,18 +340,18 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0) {
                 Pool6CEntry *p;
 
-                BTLFX_COPY_SVEC(&work->unk40, &work->unk8);
-                work->unk40.vy -= 0x140;
-                work->unk40.vz += 0x1000;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x23), (s32)&work->unk40);
+                BTLFX_COPY_SVEC(&work->pos40, &work->unk8);
+                work->pos40.vy -= 0x140;
+                work->pos40.vz += 0x1000;
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x23), (s32)&work->pos40);
                 if (p != NULL) {
                     p->otZ = -0x100;
                 }
             }
             q = t >> 2;
             alpha = 0x1000;
-            work->unk38.vx -= 1;
-            work->unk38.vy += 1;
+            work->rot38.vx -= 1;
+            work->rot38.vy += 1;
             /* mode (dead here) holds the intermediate: as a global pseudo with an a0 preference it gets a0 */
             mode = 0x1000 - ex->math_cos((0x1000 - ex->math_cos(q)) >> 2);
             b = mode >> 2;
@@ -409,8 +409,8 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s32 n;
 
             alpha = 0x1000;
-            work->unk38.vx += 0xC;
-            work->unk38.vy += 6;
+            work->rot38.vx += 0xC;
+            work->rot38.vy += 6;
             func_801E7D18(entry, &work->unk10, frame, (s32)work->model5C, work->unk86, 0x1000);
             if (frame >= 0x79) {
                 s32 a;
@@ -536,7 +536,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 s = 0xAAA;
             }
             sc.vx = sc.vy = sc.vz = s;
-            ex->Hi_DrawEffModel(&work->unk38, &pos, (s32)&sc, work->modelBA);
+            ex->Hi_DrawEffModel(&work->rot38, &pos, (s32)&sc, work->modelBA);
             k = (alpha >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->modelBA, k, k, k);
         }

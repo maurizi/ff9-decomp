@@ -22,19 +22,19 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0xB8, 0x3D40, 0x80, 0x80);
         work->unk0 = 0;
         work->unk24 = 0;
-        work->unk14.vx = env->targets->centerX;
-        work->unk14.vy = env->targets->centerY;
-        work->unk14.vz = env->targets->centerZ;
-        work->unk1C.vx = work->unk14.vx;
-        work->unk1C.vy = work->unk14.vy;
-        work->unk1C.vz = work->unk14.vz;
-        work->unk14.vy -= 0x19F;
+        work->pos14.vx = env->targets->centerX;
+        work->pos14.vy = env->targets->centerY;
+        work->pos14.vz = env->targets->centerZ;
+        work->pos1C.vx = work->pos14.vx;
+        work->pos1C.vy = work->pos14.vy;
+        work->pos1C.vz = work->pos14.vz;
+        work->pos14.vy -= 0x19F;
     } else {
         frame = entry->frame;
         switch (work->unk0) {
         case 0:
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E82A0;
                     p->unk12 = 0xA;
@@ -53,9 +53,9 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            pos.vx = work->unk14.vx;
-            pos.vy = work->unk14.vy;
-            pos.vz = work->unk14.vz;
+            pos.vx = work->pos14.vx;
+            pos.vy = work->pos14.vy;
+            pos.vz = work->pos14.vz;
             ex->Hi_SetEffModelOffset(work->model8, 2);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model8);
             ex->Hi_ModifyEffModelAbr(work->model8, 0);
@@ -72,9 +72,9 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vx = 0;
             rot.vy = frame << 5;
             rot.vz = 0;
-            pos.vx = work->unk14.vx;
-            pos.vy = work->unk14.vy;
-            pos.vz = work->unk14.vz;
+            pos.vx = work->pos14.vx;
+            pos.vy = work->pos14.vy;
+            pos.vz = work->pos14.vz;
             t = frame << 8;
             ex->Hi_SetEffModelOffset(work->model8, 2);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model8);
@@ -88,19 +88,19 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame >= 0x10) {
                 work->unk0 = 3;
                 entry->frame = -1;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->pos14);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos14);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos14);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk1C);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos1C);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x20, 0x46);
             }
             break;
@@ -111,9 +111,9 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vx = 0;
             rot.vy = 0x200;
             rot.vz = 0;
-            pos.vx = work->unk14.vx;
-            pos.vy = work->unk14.vy;
-            pos.vz = work->unk14.vz;
+            pos.vx = work->pos14.vx;
+            pos.vy = work->pos14.vy;
+            pos.vz = work->pos14.vz;
             if (frame < 2) {
                 s = 0x2000 - (frame << 11);
             } else {
@@ -128,7 +128,7 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                          ((s - 0x800) >> 5) - 0x80);
             }
             if (frame == 1) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk1C);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos1C);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }

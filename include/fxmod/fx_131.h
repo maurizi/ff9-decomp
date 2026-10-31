@@ -5,8 +5,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0;
-    SVECTOR unk8;
+    SVECTOR pos0;
+    SVECTOR pos8;
     SVECTOR unk10;
     Pool6CEntry *emit18;
 } Fx131Work;

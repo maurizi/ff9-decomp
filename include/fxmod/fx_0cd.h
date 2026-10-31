@@ -19,7 +19,7 @@ typedef struct {
     Fx0cdModel unk20; /* A */
     Fx0cdModel unk4C; /* B */
     Fx0cdModel unk78; /* C */
-    SVECTOR unkA4; /* caster position */
+    SVECTOR posA4; /* caster position */
     SVECTOR unkAC; /* caster body position */
 } Fx0cdWork;
 

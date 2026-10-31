@@ -10,9 +10,9 @@ typedef struct {
     SVECTOR unkC; /* angles */
     SVECTOR unk14[4];
     SVECTOR unk34; /* caster position */
-    SVECTOR unk3C; /* target position */
-    SVECTOR unk44;
-    SVECTOR unk4C;
+    SVECTOR pos3C; /* target position */
+    SVECTOR pos44;
+    SVECTOR pos4C;
     Pool6CEntry *emit54[4];
     Pool6CEntry *emit64[4];
 } Fx190Work; /* 0x74 */

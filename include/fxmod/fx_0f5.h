@@ -12,7 +12,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     SVECTOR unk8; /* base position */
-    SVECTOR unk10; /* position */
+    SVECTOR pos10; /* position */
     SVECTOR unk18; /* rotation */
     s32 model20; /* model */
 } Fx0f5Work80; /* 0x24 */

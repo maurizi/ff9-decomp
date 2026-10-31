@@ -6,11 +6,11 @@
 
 typedef struct {
     s32 model0; /* model */
-    VECTOR unk4; /* scale */
-    VECTOR unk14; /* position */
-    SVECTOR unk24; /* rotation */
+    VECTOR scale4; /* scale */
+    VECTOR pos14; /* position */
+    SVECTOR rot24; /* rotation */
     SVECTOR unk2C;
-    SVECTOR unk34;
+    SVECTOR pos34;
 } Fx0e6Work;
 
 typedef struct {

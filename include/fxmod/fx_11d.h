@@ -12,9 +12,9 @@ typedef struct {
     Pool6CEntry *emit10;
     Pool6CEntry *emit14;
     Pool6CEntry *emit18;
-    SVECTOR unk1C; /* caster position */
-    SVECTOR unk24;
-    SVECTOR unk2C;
+    SVECTOR pos1C; /* caster position */
+    SVECTOR pos24;
+    SVECTOR pos2C;
 } Fx11dWork;
 
 typedef struct {

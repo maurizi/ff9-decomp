@@ -21,12 +21,12 @@ typedef struct {
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
-    SVECTOR unk8;
-    SVECTOR unk10;
+    SVECTOR pos8;
+    SVECTOR pos10;
     u8 pad18[0x20 - 0x18];
     SVECTOR unk20; /* ring position */
     s32 model28; /* model */
-    SVECTOR unk2C; /* rotation */
+    SVECTOR rot2C; /* rotation */
     Fx1a8Vec3 unk34; /* scale */
     Fx1a8Vec3 unk40; /* position */
     s32 model4C[4]; /* models */

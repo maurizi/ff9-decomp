@@ -30,13 +30,13 @@ typedef struct {
     s32 unk4; /* frame counter */
     u8 pad8[4];
     SVECTOR unkC; /* position */
-    SVECTOR unk14;
-    SVECTOR unk1C;
+    SVECTOR pos14;
+    SVECTOR pos1C;
     SVECTOR unk24;
     u8 pad2C[8];
     Fx17aVec3 unk34; /* model position */
     Fx17aVec3 unk40; /* model scale */
-    SVECTOR unk4C; /* model rotation */
+    SVECTOR rot4C; /* model rotation */
     u8 pad54[0xC];
     Fx17aVec3 unk60;
     SVECTOR unk6C;

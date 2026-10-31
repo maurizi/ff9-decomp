@@ -18,12 +18,12 @@ typedef struct {
     s32 unk8; /* unit */
     s32 unkC; /* units done */
     s32 unk10; /* unit count */
-    SVECTOR unk14; /* unit position */
+    SVECTOR pos14; /* unit position */
     SVECTOR unk1C; /* unit rotation */
-    SVECTOR unk24; /* summon position */
+    SVECTOR pos24; /* summon position */
     s32 unk2C; /* ribbon head */
     s32 unk30;
-    SVECTOR unk34; /* summon rotation */
+    SVECTOR rot34; /* summon rotation */
     s32 unk3C[3]; /* summon scale */
 } Fx09aWork; /* 0x48 */
 

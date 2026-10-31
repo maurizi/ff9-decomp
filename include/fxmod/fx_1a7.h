@@ -18,12 +18,12 @@ typedef struct {
     Pool6CEntry *emit8[9];
     Pool6CEntry *emit2C;
     Pool6CEntry *emit30;
-    SVECTOR unk34; /* caster body position */
+    SVECTOR pos34; /* caster body position */
     SVECTOR unk3C; /* target body position */
-    SVECTOR unk44; /* target position */
+    SVECTOR pos44; /* target position */
     SVECTOR unk4C; /* angles */
-    SVECTOR unk54;
-    SVECTOR unk5C;
+    SVECTOR pos54;
+    SVECTOR pos5C;
 } Fx1a7Work81; /* 0x64 */
 
 extern u16 D_801E8860[9]; /* files */

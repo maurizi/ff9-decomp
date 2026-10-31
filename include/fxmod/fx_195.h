@@ -51,8 +51,8 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* counter */
     SVECTOR unk8;
-    SVECTOR unk10; /* position */
-    SVECTOR unk18;
+    SVECTOR pos10; /* position */
+    SVECTOR pos18;
     SVECTOR unk20; /* camera */
     u8 pad28[0x30 - 0x28];
     s16 unk30;
@@ -65,7 +65,7 @@ typedef struct {
     s32 model5C; /* model */
     Fx195Vec3 unk60; /* model position */
     Fx195Vec3 unk6C; /* model scale */
-    SVECTOR unk78; /* model rotation */
+    SVECTOR rot78; /* model rotation */
     s32 model80; /* models */
     s32 model84;
     s32 model88;

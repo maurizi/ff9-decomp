@@ -328,10 +328,10 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         setVector(&D_801EB78C.unk10, 0x1000, 0x1000, 0x1000);
         setVector(&D_801EB7EC.unk8, 0x1000, 0x1000, 0x1000);
         setVector(&D_801EB7BC.unk10, 0x1000, 0x1000, 0x1000);
-        setVector(&work->unkC, 0, 0, 0);
-        setVector(&work->unk14, 0, 0, 0);
-        setVector(&work->unk1C, 0, 0, 0x4B0);
-        setVector(&work->unk2C, 0x1CCC, 0x1000, 0x1CCC);
+        setVector(&work->rotC, 0, 0, 0);
+        setVector(&work->rot14, 0, 0, 0);
+        setVector(&work->pos1C, 0, 0, 0x4B0);
+        setVector(&work->scale2C, 0x1CCC, 0x1000, 0x1CCC);
         work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), mode);
         work->model6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), mode);
         work->unk58 = -1;
@@ -343,20 +343,20 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk40.vx = 0;
-            work->unk40.vy = 0;
-            work->unk40.vz = 0x4B0;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk40);
+            work->pos40.vx = 0;
+            work->pos40.vy = 0;
+            work->pos40.vz = 0x4B0;
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos40);
             break;
         case 1:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->unk40);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos40);
             break;
         case 6:
-            work->unk48.vx = work->unk40.vx;
-            work->unk48.vy = work->unk40.vy;
-            work->unk48.vz = work->unk40.vz;
-            work->unk48.vy -= 0xC80;
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk48);
+            work->pos48.vx = work->pos40.vx;
+            work->pos48.vy = work->pos40.vy;
+            work->pos48.vz = work->pos40.vz;
+            work->pos48.vy -= 0xC80;
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos48);
             break;
         case 0x1C:
             work->unk58 = 0x20;
@@ -519,8 +519,8 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 8 && frame < 60) {
-            ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->model68);
-            ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->model6A);
+            ex->Hi_DrawEffModel(&work->rotC, &work->pos1C, (s32)&work->scale2C, work->model68);
+            ex->Hi_DrawEffModel(&work->rot14, &work->pos1C, (s32)&work->scale2C, work->model6A);
             if (work->unk60 >= 0) {
                 work->unk3C = fxm_lerpRatio(0, -0x80, 0x20 - work->unk60, 0x20);
                 work->unk60--;

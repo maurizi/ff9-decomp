@@ -53,13 +53,13 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                 (u8 *)&D_801E8E40[i], 0);
         }
         if (env->targets->centerZ < 0) {
-            env->camera->points[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = -0x30C;
+            env->camera->points[0].vz = work->posB8.vz = work->pos94.vz = work->unkA4.vz = -0x30C;
         } else {
-            env->camera->points[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = 0x30C;
+            env->camera->points[0].vz = work->posB8.vz = work->pos94.vz = work->unkA4.vz = 0x30C;
         }
-        env->camera->points[0].vx = work->unkB8.vx = work->unk94.vx = work->unkA4.vx = 0;
-        env->camera->points[0].vy = work->unk94.vy = work->unkA4.vy = -0x600;
-        work->unkB8.vy = 0;
+        env->camera->points[0].vx = work->posB8.vx = work->pos94.vx = work->unkA4.vx = 0;
+        env->camera->points[0].vy = work->pos94.vy = work->unkA4.vy = -0x600;
+        work->posB8.vy = 0;
         for (i = 0; i < env->targets->targetCount; i++) {
             D_801E9870[i].unk0 = (ex->btlfx_rand() & 7) + 0x30;
             D_801E9870[i].unk4 = 0;
@@ -91,17 +91,17 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk40[2].unkC.vz = 0;
         work->modelAC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x17A, 0xFFFF, 0,
                                                  0x80);
-        work->unkB0.vx = 0;
-        work->unkB0.vy = 0;
-        work->unkB0.vz = 0;
-        work->unkC8.vx = 0x400;
-        work->unkC8.vy = 0;
-        work->unkC8.vz = 0x400;
+        work->rotB0.vx = 0;
+        work->rotB0.vy = 0;
+        work->rotB0.vz = 0;
+        work->scaleC8.vx = 0x400;
+        work->scaleC8.vy = 0;
+        work->scaleC8.vz = 0x400;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            ex->btlfx_drawBgOffscreen(0x280, 0x100, 0x70, 0x70, D_801E8A40, work->unkB8.vx, work->unkB8.vz, 0x200);
+            ex->btlfx_drawBgOffscreen(0x280, 0x100, 0x70, 0x70, D_801E8A40, work->posB8.vx, work->posB8.vz, 0x200);
             work->unk0[9] = 1;
             work->unk0[10] = 1;
             break;
@@ -142,11 +142,11 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[5] != 0) {
             work->unk0[5]--;
-            work->unkC8.vy += 0x40;
+            work->scaleC8.vy += 0x40;
         }
         if (work->unk0[6] != 0) {
             work->unk0[6]--;
-            work->unkC8.vy -= 0x80;
+            work->scaleC8.vy -= 0x80;
         }
         if (work->unk0[1] != 0) {
             ex->btlfx_aimAngles((s16 *)&work->unkA4, (s16 *)&env->camera->eye, (s16 *)&work->unk40[1].unk4);
@@ -155,9 +155,9 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk40[2].unk4.vy = work->unk40[1].unk4.vy;
             work->unk40[2].unk4.vx = work->unk40[1].unk4.vx + 0x400;
             work->unk40[1].unk4.vx -= 0x400;
-            ex->Hi_DrawEffModel(&work->unk40[1].unk4, &work->unk94, (s32)&work->unk40[1].unkC, work->unk40[1].unk0);
-            ex->Hi_DrawEffModel(&work->unk40[2].unk4, &work->unk94, (s32)&work->unk40[2].unkC, work->unk40[2].unk0);
-            ex->Hi_DrawEffModel(&work->unk40[0].unk4, &work->unk94, (s32)&work->unk40[0].unkC, work->unk40[0].unk0);
+            ex->Hi_DrawEffModel(&work->unk40[1].unk4, &work->pos94, (s32)&work->unk40[1].unkC, work->unk40[1].unk0);
+            ex->Hi_DrawEffModel(&work->unk40[2].unk4, &work->pos94, (s32)&work->unk40[2].unkC, work->unk40[2].unk0);
+            ex->Hi_DrawEffModel(&work->unk40[0].unk4, &work->pos94, (s32)&work->unk40[0].unkC, work->unk40[0].unk0);
             ex->Hi_ModifyEffModelAbr(work->unk40[0].unk0, 1);
         }
         if (work->unk0[3] != 0) {
@@ -167,7 +167,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelRGB(work->unk40[0].unk0, c, c, c);
         }
         if (work->unk0[4] != 0) {
-            ex->Hi_DrawEffModel(&work->unkB0, &work->unkB8, (s32)&work->unkC8, work->modelAC);
+            ex->Hi_DrawEffModel(&work->rotB0, &work->posB8, (s32)&work->scaleC8, work->modelAC);
         }
         if (work->unk0[7] != 0) {
             for (i = 0; i < env->targets->targetCount; i++) {
@@ -207,9 +207,9 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     s = work->unk40[0].unkC.vx;
                     pt = tr->unk4;
                     r = (ex->math_sin(tr->unkEC) * s) >> 12;
-                    pt->vy = start.vy = work->unk94.vy + ((ex->math_cos(tr->unkEC) * s) >> 12);
-                    pt->vx = start.vx = work->unk94.vx + ((ex->math_cos(tr->unkF0) * r) >> 12);
-                    pt->vz = start.vz = work->unk94.vz + ((ex->math_sin(tr->unkF0) * r) >> 12);
+                    pt->vy = start.vy = work->pos94.vy + ((ex->math_cos(tr->unkEC) * s) >> 12);
+                    pt->vx = start.vx = work->pos94.vx + ((ex->math_cos(tr->unkF0) * r) >> 12);
+                    pt->vz = start.vz = work->pos94.vz + ((ex->math_sin(tr->unkF0) * r) >> 12);
                     strip = (u8 *)tr;
                     pt->unk6 = tr->unkFC;
                     ex->btlfx_aimAngles((s16 *)&work->unkA4, (s16 *)&start, (s16 *)&ang);
@@ -224,10 +224,10 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         tr->unk5C[j].vz += tr->unkC8[j];
                         pt->vx = tr->unk5C[j].vx +
                             ((start.vx * b.vx + start.vx * b.vz +
-                              (work->unk94.vx + ((ex->math_sin(ang.vy) * r) >> 11)) * b.vy) >> 12);
+                              (work->pos94.vx + ((ex->math_sin(ang.vy) * r) >> 11)) * b.vy) >> 12);
                         pt->vz = tr->unk5C[j].vz +
                             ((start.vz * b.vx + start.vz * b.vz +
-                              (work->unk94.vz + ((ex->math_cos(ang.vy) * r) >> 11)) * b.vy) >> 12);
+                              (work->pos94.vz + ((ex->math_cos(ang.vy) * r) >> 11)) * b.vy) >> 12);
                         pt->vy = ex->btlfx_lerpRatio(start.vy, 0, j + 1, 11);
                         pt->unk6 = tr->unkFC;
                     }

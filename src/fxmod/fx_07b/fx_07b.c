@@ -8,8 +8,8 @@ s32 fx_07b_op80(s32 mode, Fx07bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x18;
     } else if (mode == 1) {
         fx_07b_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->unk14 = (s32)D_801E7A28;
             work->emit0->unk12 = 6;
@@ -17,12 +17,12 @@ s32 fx_07b_op80(s32 mode, Fx07bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk10);
         D_801E79C8.vy = work->unk10.vy;
-        work->unk8.vx -= ex->math_sin(work->unk10.vy) * 0x190 / 4096;
-        work->unk8.vz -= ex->math_cos(work->unk10.vy) * 0x190 / 4096;
+        work->pos8.vx -= ex->math_sin(work->unk10.vy) * 0x190 / 4096;
+        work->pos8.vz -= ex->math_cos(work->unk10.vy) * 0x190 / 4096;
     } else {
         frame = entry->frame;
         if (frame == 0xE) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk8);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }

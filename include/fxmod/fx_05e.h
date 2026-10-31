@@ -20,12 +20,12 @@ typedef struct {
 typedef struct {
     s32 unk0;
     s32 unk4; /* frame */
-    SVECTOR unk8; /* summoner position */
+    SVECTOR pos8; /* summoner position */
     SVECTOR unk10; /* summoner rotation */
-    SVECTOR unk18; /* summon position */
+    SVECTOR pos18; /* summon position */
     SVECTOR unk20; /* ribbon head */
     s32 model28; /* slice model */
-    SVECTOR unk2C; /* summon rotation */
+    SVECTOR rot2C; /* summon rotation */
     s32 unk34[3]; /* summon scale */
 } Fx05eWork; /* 0x40 */
 

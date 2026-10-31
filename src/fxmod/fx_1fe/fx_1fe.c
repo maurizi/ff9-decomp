@@ -179,10 +179,10 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 1:
             d = (frame << 12) / 37;
             if (frame == 0) {
-                BTLFX_COPY_SVEC(&work->unk10, &D_801E88F8);
-                work->unk10.vy -= 0x1000;
-                work->unk10.vz -= 0x200;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk10);
+                BTLFX_COPY_SVEC(&work->pos10, &D_801E88F8);
+                work->pos10.vy -= 0x1000;
+                work->pos10.vz -= 0x200;
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos10);
                 if (p != NULL) {
                     p->unk14 = D_801E8960;
                     p->unk12 = 0x40;
@@ -215,11 +215,11 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (p != NULL) {
                     p->otZ = 0x100;
                 }
-                work->unk10.vx = D_801E88F8.vx;
-                work->unk10.vy = D_801E88F8.vy;
-                work->unk10.vz = D_801E88F8.vz;
-                work->unk10.vy -= 0x200;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk10);
+                work->pos10.vx = D_801E88F8.vx;
+                work->pos10.vy = D_801E88F8.vy;
+                work->pos10.vz = D_801E88F8.vz;
+                work->pos10.vy -= 0x200;
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x100;
                 }
@@ -324,21 +324,21 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[3].vy = work->unk20.vy;
             env->camera->points[3].vz = work->unk20.vz;
             if (frame == 0) {
-                work->unk10.vx = D_801E8900.vx;
-                work->unk10.vy = D_801E8900.vy;
-                work->unk10.vz = D_801E8900.vz - 0x100;
-                work->unk10.vy -= 0x400;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->unk10);
+                work->pos10.vx = D_801E8900.vx;
+                work->pos10.vy = D_801E8900.vy;
+                work->pos10.vz = D_801E8900.vz - 0x100;
+                work->pos10.vy -= 0x400;
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x10;
                 }
             }
             if (frame == 0x20) {
-                work->unk18.vx = D_801E8900.vx;
-                work->unk18.vy = D_801E8900.vy;
-                work->unk18.vz = D_801E8900.vz;
-                work->unk10.vz -= 0x100;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->unk18);
+                work->pos18.vx = D_801E8900.vx;
+                work->pos18.vy = D_801E8900.vy;
+                work->pos18.vz = D_801E8900.vz;
+                work->pos10.vz -= 0x100;
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos18);
                 if (p != NULL) {
                     p->otZ = 0x10;
                 }

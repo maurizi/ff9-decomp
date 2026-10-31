@@ -15,21 +15,21 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_0ce_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk10);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         work->unk8.vy -= 0x80;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk18);
-        ex->btlfx_aimAngles((s16 *)&work->unk18, (s16 *)&work->unk8, (s16 *)&work->unk24);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
+        ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->unk8, (s16 *)&work->unk24);
         ex->btlfx_initEffModels(fx_0ce_effModels, 1);
         work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk18);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos18);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
         }
-        work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk18);
+        work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
         if (work->emit2C != NULL) {
             work->emit2C->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
         }
@@ -46,7 +46,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame >= 6) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
                 }

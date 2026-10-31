@@ -48,14 +48,14 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* rotation */
-    VECTOR unkC; /* position */
-    VECTOR unk1C; /* scale */
+    SVECTOR rot4; /* rotation */
+    VECTOR posC; /* position */
+    VECTOR scale1C; /* scale */
     SVECTOR unk2C;
     VECTOR unk34;
     VECTOR unk44;
     u8 pad54[4];
-    SVECTOR unk58;
+    SVECTOR pos58;
     s16 unk60; /* fade-in countdown */
     s16 unk62; /* fade-out countdown */
     u16 unk64; /* frame */
@@ -116,8 +116,8 @@ typedef struct {
     s32 unkC4;
     s32 unkC8;
     Fx1bdModel unkCC;
-    SVECTOR unkF4;
-    SVECTOR unkFC;
+    SVECTOR posF4;
+    SVECTOR posFC;
     SVECTOR unk104;
     s16 unk10C; /* frame */
     s16 unk10E; /* fade countdowns */
@@ -140,7 +140,7 @@ typedef struct {
     s16 unk6; /* lift */
     SVECTOR unk8; /* direction */
     SVECTOR unk10; /* rotation */
-    VECTOR unk18; /* position */
+    VECTOR pos18; /* position */
 } Fx1bdRock; /* 0x28 */
 
 extern Fx1bdRock D_801E9A14[23];

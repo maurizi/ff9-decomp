@@ -31,8 +31,8 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* counter */
     s16 unk8[6];
-    SVECTOR unk14; /* position */
-    SVECTOR unk1C; /* target position */
+    SVECTOR pos14; /* position */
+    SVECTOR pos1C; /* target position */
     s32 model24; /* models */
     s32 model28;
     s32 model2C;

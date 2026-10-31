@@ -75,9 +75,9 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x50;
     } else if (mode == 1) {
-        work->unk28.vx = env->targets->centerX;
-        work->unk28.vy = env->targets->centerY;
-        work->unk28.vz = env->targets->centerZ;
+        work->pos28.vx = env->targets->centerX;
+        work->pos28.vy = env->targets->centerY;
+        work->pos28.vz = env->targets->centerZ;
         D_801E7F08.vx = env->targets->centerX;
         D_801E7F08.vy = env->targets->centerY;
         D_801E7F08.vz = env->targets->centerZ;
@@ -99,18 +99,18 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x12) {
-            work->unk30.vx = env->targets->centerX;
-            work->unk30.vy = env->targets->centerY;
-            work->unk30.vz = env->targets->centerZ;
-            work->unk38.vx = env->targets->centerX;
-            work->unk38.vy = env->targets->centerY;
-            work->unk38.vz = env->targets->centerZ;
-            work->unk30.vx -= 0xC8;
-            work->unk38.vx += 0xC8;
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk30);
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk38);
-            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk28);
-            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk28);
+            work->pos30.vx = env->targets->centerX;
+            work->pos30.vy = env->targets->centerY;
+            work->pos30.vz = env->targets->centerZ;
+            work->pos38.vx = env->targets->centerX;
+            work->pos38.vy = env->targets->centerY;
+            work->pos38.vz = env->targets->centerZ;
+            work->pos30.vx -= 0xC8;
+            work->pos38.vx += 0xC8;
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos30);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos38);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos28);
+            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos28);
         }
         return frame >= 0x3C;
     }

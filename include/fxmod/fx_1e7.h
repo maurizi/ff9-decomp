@@ -27,7 +27,7 @@ typedef struct {
     Pool6CEntry *emit18;
     Pool6CEntry *emit1C;
     SVECTOR unk20; /* target body position */
-    SVECTOR unk28; /* target position */
+    SVECTOR pos28; /* target position */
     s32 unk30;
     s32 unk34; /* waiting for the motion to end */
 } Fx1e7Work81; /* 0x38 */

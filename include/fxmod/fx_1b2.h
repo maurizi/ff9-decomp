@@ -29,14 +29,14 @@ typedef struct {
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
-    SVECTOR unk10; /* model rotation */
-    VECTOR unk18; /* model position */
-    VECTOR unk28; /* model scale */
+    SVECTOR rot10; /* model rotation */
+    VECTOR pos18; /* model position */
+    VECTOR scale28; /* model scale */
     s32 unk38; /* brightness */
     SVECTOR unk3C;
-    SVECTOR unk44; /* bone positions */
-    SVECTOR unk4C;
-    SVECTOR unk54;
+    SVECTOR pos44; /* bone positions */
+    SVECTOR pos4C;
+    SVECTOR pos54;
     s32 unk5C; /* countdown */
     s32 unk60; /* fade countdown */
     s32 unk64;
@@ -48,15 +48,15 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* caster position */
-    SVECTOR unk14; /* bone positions */
-    SVECTOR unk1C;
+    SVECTOR posC; /* caster position */
+    SVECTOR pos14; /* bone positions */
+    SVECTOR pos1C;
 } Fx1b2Work81; /* 0x24 */
 
 typedef struct {
-    SVECTOR unk0; /* model rotation */
-    VECTOR unk8; /* model position */
-    VECTOR unk18; /* model scale */
+    SVECTOR rot0; /* model rotation */
+    VECTOR pos8; /* model position */
+    VECTOR scale18; /* model scale */
     s32 unk28; /* brightness */
     s32 unk2C; /* fade-in countdown */
     s32 unk30; /* fade-out countdown */

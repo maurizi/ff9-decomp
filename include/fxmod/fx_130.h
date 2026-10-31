@@ -9,7 +9,7 @@ extern Unk800F78A4 *fx_130_env;
 
 typedef struct {
     s32 unk0[8]; /* countdowns */
-    SVECTOR unk20; /* centre */
+    SVECTOR pos20; /* centre */
 } Fx130Work; /* 0x28 */
 
 typedef struct {

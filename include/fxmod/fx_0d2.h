@@ -121,13 +121,13 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* slice rotation */
+    SVECTOR rotC; /* slice rotation */
     Fx0d2Vec3 unk14; /* slice position */
     s32 pad20;
     Fx0d2Vec3 unk24; /* slice scale */
     s32 pad30;
-    SVECTOR unk34;
-    SVECTOR unk3C;
+    SVECTOR pos34;
+    SVECTOR pos3C;
     u16 model44[6]; /* slice models */
 } Fx0d2Work81; /* 0x50 */
 
@@ -145,19 +145,19 @@ typedef struct {
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
-    SVECTOR unk14; /* summon rotation */
+    SVECTOR rot14; /* summon rotation */
     Fx0d2Vec3 unk1C; /* summon position */
     s32 pad28;
     Fx0d2Vec3 unk2C; /* summon scale */
     s32 pad38;
-    SVECTOR unk3C; /* slice rotation */
+    SVECTOR rot3C; /* slice rotation */
     Fx0d2Vec3 unk44; /* slice position */
     s32 pad50;
     Fx0d2Vec3 unk54; /* slice scale */
     u8 pad60[0x6C - 0x60];
     SVECTOR unk6C;
-    SVECTOR unk74;
-    SVECTOR unk7C;
+    SVECTOR pos74;
+    SVECTOR pos7C;
     SVECTOR unk84;
     SVECTOR unk8C;
     s32 unk94;
@@ -190,20 +190,20 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* slice rotation */
+    SVECTOR rot8; /* slice rotation */
     Fx0d2Vec3 unk10; /* slice position */
     s32 pad1C;
     Fx0d2Vec3 unk20; /* slice scale */
     s32 pad2C;
-    SVECTOR unk30;
+    SVECTOR rot30;
     Fx0d2Vec3 unk38;
     s32 pad44;
     Fx0d2Vec3 unk48;
     s32 pad54;
     SVECTOR unk58[8]; /* unit positions */
     VECTOR unk98[8]; /* unit scales */
-    SVECTOR unk118;
-    SVECTOR unk120;
+    SVECTOR pos118;
+    SVECTOR pos120;
     SVECTOR unk128;
     s16 unk130; /* fade counters */
     s16 unk132;

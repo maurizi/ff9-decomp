@@ -46,26 +46,26 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_playFileSound(4, entry->file, -1);
         ex->btlfx_playFileSound(7, entry->file, -1);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk10);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk18);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos18);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk20);
         if (ex->btlfx_rand() & 1) {
-            work->unk18.vx += 0x32 + (s32)ex->btlfx_rand % 200;
+            work->pos18.vx += 0x32 + (s32)ex->btlfx_rand % 200;
         } else {
-            work->unk18.vx -= 0x32 + (s32)ex->btlfx_rand % 200;
+            work->pos18.vx -= 0x32 + (s32)ex->btlfx_rand % 200;
         }
         if (ex->btlfx_rand() & 1) {
-            work->unk18.vy += 0x32 + (s32)ex->btlfx_rand % 200;
+            work->pos18.vy += 0x32 + (s32)ex->btlfx_rand % 200;
         } else {
-            work->unk18.vy -= 0x32 + (s32)ex->btlfx_rand % 200;
+            work->pos18.vy -= 0x32 + (s32)ex->btlfx_rand % 200;
         }
-        ex->btlfx_aimAngles((s16 *)&work->unk20, (s16 *)&work->unk18, (s16 *)&work->unk38);
-        ex->btlfx_aimAngles((s16 *)&work->unk18, (s16 *)&work->unk20, (s16 *)&work->unk40);
-        ex->btlfx_pointAhead((s16 *)&work->unk20, (s16 *)&work->unk38, 0x12C, (s16 *)&work->unk28);
+        ex->btlfx_aimAngles((s16 *)&work->unk20, (s16 *)&work->pos18, (s16 *)&work->unk38);
+        ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->unk20, (s16 *)&work->unk40);
+        ex->btlfx_pointAhead((s16 *)&work->unk20, (s16 *)&work->unk38, 0x12C, (s16 *)&work->pos28);
         ex->btlfx_pointAhead((s16 *)&work->unk20, (s16 *)&work->unk38, 0xC8, (s16 *)&D_801EDD28[work->unk48]);
-        D_801EDD48[work->unk48].vx = work->unk18.vx;
-        D_801EDD48[work->unk48].vy = work->unk18.vy;
-        D_801EDD48[work->unk48].vz = work->unk18.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk28);
+        D_801EDD48[work->unk48].vx = work->pos18.vx;
+        D_801EDD48[work->unk48].vy = work->pos18.vy;
+        D_801EDD48[work->unk48].vz = work->pos18.vz;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos28);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E823C[work->unk48]),
                                        (s32)&D_801EDD68[work->unk48]);
         if (work->emit0 != NULL) {
@@ -94,8 +94,8 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->unk48 != 2) {
                 fxm_startMotion2IfActive(0);
             }
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos18);
             if (work->emit8 != NULL) {
                 work->emit8->unk14 = (s32)D_801E9CA8[work->unk48];
                 work->emit8->unk12 = 0x56;
@@ -151,8 +151,8 @@ s32 fx_1a6_op81(s32 mode, Fx1a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0xC;
     } else if (mode == 1) {
         fx_1a6_env = env;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
     } else {
         return entry->frame >= 0x28;
     }

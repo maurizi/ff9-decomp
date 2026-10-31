@@ -30,7 +30,7 @@ s32 fx_0da_op80(s32 mode, Fx0daWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                                     0x80);
         work->unk0 = 1;
         work->unk24 = 0;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk1C);
         return 0;
     } else {
@@ -43,9 +43,9 @@ s32 fx_0da_op80(s32 mode, Fx0daWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            pos[0] = work->unk14.vx;
-            pos[1] = work->unk14.vy;
-            pos[2] = work->unk14.vz;
+            pos[0] = work->pos14.vx;
+            pos[1] = work->pos14.vy;
+            pos[2] = work->pos14.vz;
             ex->Hi_SetEffModelOffset(work->model8, 2);
             ex->Hi_DrawEffModel(&rot, (VECTOR *)pos, (s32)scale, work->model8);
             ex->Hi_ModifyEffModelAbr(work->model8, 0);
@@ -61,9 +61,9 @@ s32 fx_0da_op80(s32 mode, Fx0daWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0;
             rot.vy = frame << 5;
             rot.vz = 0;
-            pos[0] = work->unk14.vx;
-            pos[1] = work->unk14.vy;
-            pos[2] = work->unk14.vz;
+            pos[0] = work->pos14.vx;
+            pos[1] = work->pos14.vy;
+            pos[2] = work->pos14.vz;
             ex->Hi_SetEffModelOffset(work->model8, 2);
             ex->Hi_DrawEffModel(&rot, (VECTOR *)pos, (s32)scale, work->model8);
             ex->Hi_ModifyEffModelAbr(work->model8, 0);
@@ -77,19 +77,19 @@ s32 fx_0da_op80(s32 mode, Fx0daWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x10) {
                 work->unk0 = 3;
                 entry->frame = -1;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos14);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos14);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
@@ -101,9 +101,9 @@ s32 fx_0da_op80(s32 mode, Fx0daWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0;
             rot.vy = 0x200;
             rot.vz = 0;
-            pos[0] = work->unk14.vx;
-            pos[1] = work->unk14.vy;
-            pos[2] = work->unk14.vz;
+            pos[0] = work->pos14.vx;
+            pos[1] = work->pos14.vy;
+            pos[2] = work->pos14.vz;
             if (frame < 2) {
                 m = 0x2000 - (frame << 11);
             } else {
@@ -127,7 +127,7 @@ s32 fx_0da_op80(s32 mode, Fx0daWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->Hi_ModifyEffModelRGB(model, c, d, c);
             if (frame == 1) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos14);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }

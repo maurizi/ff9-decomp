@@ -44,10 +44,10 @@ s32 fx_0ef_op81(s32 mode, Fx0efWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x10;
     } else if (mode == 1) {
         fx_0ef_env = env;
-        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk8);
-        work->unk8.vy += 0x64;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk8);
+        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos8);
+        work->pos8.vy += 0x64;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

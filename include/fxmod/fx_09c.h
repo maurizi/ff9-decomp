@@ -7,11 +7,11 @@
 typedef struct {
     SVECTOR unk0; /* unk10 + random */
     SVECTOR unk8; /* unk10 + random */
-    SVECTOR unk10; /* caster body position */
-    SVECTOR unk18; /* caster body position */
+    SVECTOR pos10; /* caster body position */
+    SVECTOR pos18; /* caster body position */
     Pool6CEntry *emit20;
     u8 pad24[0x2C - 0x24];
-    SVECTOR unk2C;
+    SVECTOR pos2C;
     SVECTOR unk34; /* angles */
     Pool6CEntry *emit3C;
 } Fx09cWork;

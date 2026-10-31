@@ -8,9 +8,9 @@ typedef struct {
     Pool6CEntry *emit0;
     SVECTOR unk4[6]; /* model rotations */
     VECTOR unk34[6]; /* model positions */
-    VECTOR unk94; /* model scale */
+    VECTOR scale94; /* model scale */
     s32 unkA4; /* model brightness */
-    SVECTOR unkA8; /* target body position */
+    SVECTOR posA8; /* target body position */
     s32 unkB0; /* fade-in countdown */
     s32 unkB4; /* fade-out countdown */
     u16 modelB8[3]; /* models */

@@ -11,7 +11,7 @@ typedef struct {
     s16 unk8; /* velocity */
     s16 unkA;
     SVECTOR unkC; /* position */
-    SVECTOR unk14; /* rotation */
+    SVECTOR rot14; /* rotation */
     s16 unk1C; /* spin */
     s16 unk1E;
     s32 unk20; /* model */
@@ -37,8 +37,8 @@ typedef struct {
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* position */
-    SVECTOR unk10;
+    SVECTOR pos8; /* position */
+    SVECTOR pos10;
     Pool6CEntry *emit18;
     s32 model1C[10]; /* rock models */
     s32 model44; /* model */

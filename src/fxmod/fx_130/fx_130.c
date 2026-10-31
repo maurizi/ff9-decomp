@@ -35,9 +35,9 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             *q-- = 0;
         }
         ex->btlfx_initEffModels(fx_130_effModels, 4);
-        work->unk20.vx = env->targets->centerX;
-        work->unk20.vz = env->targets->centerZ;
-        work->unk20.vy = 0;
+        work->pos20.vx = env->targets->centerX;
+        work->pos20.vz = env->targets->centerZ;
+        work->pos20.vy = 0;
         for (i = 0; i < 4; i++) {
             D_801E8124[i].unk18 = -1;
             D_801E8124[i].unk1C = -1;
@@ -58,11 +58,11 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk20);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos20);
             if (p != NULL) {
                 p->otZ = -0x100;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk20);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos20);
             if (p != NULL) {
                 p->otZ = -0x100;
             }
@@ -72,7 +72,7 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[1] = 0x20;
             break;
         case 0x2A:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk20);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
             if (p != NULL) {
                 p->otZ = -0x100;
             }

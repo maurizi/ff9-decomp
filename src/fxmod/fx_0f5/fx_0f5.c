@@ -207,9 +207,9 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         r = (work->unk4 << 9) / 72;
         frame = entry->frame;
         a = 0x1000 - ex->math_cos((work->unk4 << 10) / 72);
-        work->unk10.vx = work->unk8.vx + ((ex->math_cos(a) * r) >> 12);
-        work->unk10.vz = work->unk8.vz + ((ex->math_sin(a) * r) >> 12);
-        work->unk10.vy = work->unk8.vy;
+        work->pos10.vx = work->unk8.vx + ((ex->math_cos(a) * r) >> 12);
+        work->pos10.vz = work->unk8.vz + ((ex->math_sin(a) * r) >> 12);
+        work->pos10.vy = work->unk8.vy;
         rot.vz = 0;
         rot.vx = 0;
         rot.vy = work->unk4 * 32;
@@ -218,17 +218,17 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 12;
             scale.vz = 0x2000;
             scale.vx = scale.vy = t;
-            func_801E7704(&work->unk10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, t >> 6, work->unk4 * 40, 300,
+            func_801E7704(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, t >> 6, work->unk4 * 40, 300,
                           0xC8, 1, 0);
             scale.vx = scale.vy = 0x2000;
             scale.vz = ex->math_sin(t >> 2) * 2;
-            func_801E7704(&work->unk10, &work->unk18, &scale, (ex->math_cos(t >> 2) >> 4) + 0x1C8, 0x280, t >> 5, 0x17, 0x3D00, 0, 0x80, t >> 6,
+            func_801E7704(&work->pos10, &work->unk18, &scale, (ex->math_cos(t >> 2) >> 4) + 0x1C8, 0x280, t >> 5, 0x17, 0x3D00, 0, 0x80, t >> 6,
                           work->unk4 * 40, 300, 0x80, 1, 1);
             scale.vx = scale.vz = t;
             scale.vy = 0x1000 - ex->math_cos(t >> 2);
-            pos.vx = work->unk10.vx;
-            pos.vy = work->unk10.vy;
-            pos.vz = work->unk10.vz;
+            pos.vx = work->pos10.vx;
+            pos.vy = work->pos10.vy;
+            pos.vz = work->pos10.vz;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
             k = (t >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->model20, k, k, k);
@@ -241,20 +241,20 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 12;
             scale.vz = 0x2000;
             scale.vx = scale.vy = t + 0x1000;
-            func_801E7704(&work->unk10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, (t >> 5) + 0x40, work->unk4 * 40, 300,
+            func_801E7704(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, (t >> 5) + 0x40, work->unk4 * 40, 300,
                           0xC8, 1, 0);
             scale.vx = scale.vy = 0x2000;
-            func_801E7704(&work->unk10, &work->unk18, &scale, 0x1C8 - (t >> 5), 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, (t >> 5) + 0x40,
+            func_801E7704(&work->pos10, &work->unk18, &scale, 0x1C8 - (t >> 5), 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, (t >> 5) + 0x40,
                           work->unk4 * 40, 300, 0x80, 1, 1);
-            pos.vx = work->unk10.vx;
-            pos.vy = work->unk10.vy;
-            pos.vz = work->unk10.vz;
+            pos.vx = work->pos10.vx;
+            pos.vy = work->pos10.vy;
+            pos.vz = work->pos10.vz;
             scale.vy = scale.vx = scale.vz = 0x1000;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
             if (frame >= 12) {
                 work->unk0 = 2;
                 entry->frame = -1;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x31;
                 }
@@ -264,14 +264,14 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = frame << 7;
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
             d = (t >> 5) + 0xC0;
-            func_801E7704(&work->unk10, &work->unk18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, d,
+            func_801E7704(&work->pos10, &work->unk18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, d,
                           work->unk4 * 40, 300, (t >> 5) + 0xA0, 1, 0);
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
-            func_801E7704(&work->unk10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->unk4 * 40,
+            func_801E7704(&work->pos10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->unk4 * 40,
                           300, 0x80, 1, 1);
-            pos.vx = work->unk10.vx;
-            pos.vy = work->unk10.vy;
-            pos.vz = work->unk10.vz;
+            pos.vx = work->pos10.vx;
+            pos.vy = work->pos10.vy;
+            pos.vz = work->pos10.vz;
             scale.vy = scale.vx = scale.vz = 0x1000;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
             if (frame >= 0x20) {
@@ -282,16 +282,16 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 3:
             scale.vx = scale.vy = scale.vz = 0x2800;
             t = frame << 8;
-            func_801E7704(&work->unk10, &work->unk18, &scale, 0x88, 0x180, ex->math_cos(t >> 2) >> 5, 0x97, 0x3D40, 0, 0, 0x140,
+            func_801E7704(&work->pos10, &work->unk18, &scale, 0x88, 0x180, ex->math_cos(t >> 2) >> 5, 0x97, 0x3D40, 0, 0, 0x140,
                           work->unk4 * 40, 300, 0x120, 1, 0);
             scale.vx = scale.vy = scale.vz = 0x2800;
-            func_801E7704(&work->unk10, &work->unk18, &scale, 0x148, 0x280, ex->math_cos(t >> 2) >> 5, 0x17, 0x3D00, 0, 0x80, 0x140,
+            func_801E7704(&work->pos10, &work->unk18, &scale, 0x148, 0x280, ex->math_cos(t >> 2) >> 5, 0x17, 0x3D00, 0, 0x80, 0x140,
                           work->unk4 * 40, 300, 0x80, 1, 1);
             scale.vx = scale.vz = 0x1000;
             scale.vy = ex->math_cos(t >> 2);
-            pos.vx = work->unk10.vx;
-            pos.vy = work->unk10.vy;
-            pos.vz = work->unk10.vz;
+            pos.vx = work->pos10.vx;
+            pos.vy = work->pos10.vy;
+            pos.vz = work->pos10.vz;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
             c = ((0x1000 - t) >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->model20, c, c, c);

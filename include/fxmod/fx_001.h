@@ -13,13 +13,13 @@ typedef struct {
     Pool6CEntry *emit14;
     Pool6CEntry *emit18;
     Pool6CEntry *emit1C;
-    SVECTOR unk20; /* model rotation */
-    VECTOR unk28; /* model position */
-    VECTOR unk38; /* model scale */
+    SVECTOR rot20; /* model rotation */
+    VECTOR pos28; /* model position */
+    VECTOR scale38; /* model scale */
     s32 unk48; /* model brightness */
-    SVECTOR unk4C; /* target body position */
-    SVECTOR unk54;
-    SVECTOR unk5C; /* caster position */
+    SVECTOR pos4C; /* target body position */
+    SVECTOR pos54;
+    SVECTOR pos5C; /* caster position */
     s32 unk64; /* fade-in countdown */
     s32 unk68; /* fade-out countdown */
     u16 model6C; /* models */

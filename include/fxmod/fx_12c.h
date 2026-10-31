@@ -6,8 +6,8 @@
 
 typedef struct {
     s32 unk0[8]; /* countdowns */
-    SVECTOR unk20; /* effect position */
-    SVECTOR unk28; /* effect position */
+    SVECTOR pos20; /* effect position */
+    SVECTOR pos28; /* effect position */
 } Fx12cWork; /* 0x30 */
 
 typedef struct {

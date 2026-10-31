@@ -42,11 +42,11 @@ typedef struct {
 typedef struct {
     s32 unk0[16]; /* timers */
     Fx062Model unk40[3];
-    VECTOR unk94; /* position */
+    VECTOR pos94; /* position */
     s32 modelA4; /* model */
-    SVECTOR unkA8; /* rotation */
-    VECTOR unkB0; /* position */
-    VECTOR unkC0; /* scale */
+    SVECTOR rotA8; /* rotation */
+    VECTOR posB0; /* position */
+    VECTOR scaleC0; /* scale */
 } Fx062Work; /* 0xD0 (0xD4 allocated) */
 
 extern Unk800F78A4 *fx_062_env;

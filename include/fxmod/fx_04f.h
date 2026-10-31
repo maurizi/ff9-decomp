@@ -11,10 +11,10 @@ typedef struct {
     s32 modelC;
     s32 model10;
     SVECTOR unk14; /* in front of the target */
-    SVECTOR unk1C;
+    SVECTOR pos1C;
     SVECTOR unk24;
     s32 unk2C[3]; /* model position (a VECTOR without its pad word) */
-    SVECTOR unk38; /* model rotation (target facing) */
+    SVECTOR rot38; /* model rotation (target facing) */
     s32 unk40; /* target radius */
     Pool6CEntry *emit44;
     s32 unk48; /* frame */

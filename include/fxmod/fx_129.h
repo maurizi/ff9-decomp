@@ -10,10 +10,10 @@ typedef struct {
 
 typedef struct {
     s32 unk0; /* model */
-    VECTOR unk4; /* model position */
-    SVECTOR unk14; /* model rotation */
-    VECTOR unk1C; /* model scale */
-    SVECTOR unk2C; /* target body position */
+    VECTOR pos4; /* model position */
+    SVECTOR rot14; /* model rotation */
+    VECTOR scale1C; /* model scale */
+    SVECTOR pos2C; /* target body position */
     s32 unk34; /* bounce phase */
     s32 unk38; /* bounce height */
     s32 unk3C;

@@ -11,12 +11,12 @@ s32 fx_00a_op80(s32 mode, Fx00aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_00a_env = env;
         work->unk0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
     } else {
         frame = entry->frame;
         if (work->unk0 == 0) {
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }

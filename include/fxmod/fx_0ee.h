@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0;
+    SVECTOR pos0;
     SVECTOR unk8;
 } Fx0eeWork;
 

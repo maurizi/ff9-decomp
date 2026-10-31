@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 unk0;
-    SVECTOR unk4; /* target body position */
+    SVECTOR pos4; /* target body position */
     s32 unkC;
 } Fx02aWork;
 

@@ -8,7 +8,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* counter */
     s32 unk8;
-    SVECTOR unkC; /* target body position */
+    SVECTOR posC; /* target body position */
     SVECTOR unk14; /* caster body position */
 } Fx18bWork; /* 0x1C */
 

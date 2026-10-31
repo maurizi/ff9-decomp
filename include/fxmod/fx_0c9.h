@@ -7,7 +7,7 @@
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* caster position */
+    SVECTOR pos8; /* caster position */
     SVECTOR unk10; /* caster body position */
 } Fx0c9Work80;
 
@@ -16,12 +16,12 @@ typedef struct {
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     SVECTOR unkC; /* unit 0x10 body position, raised by 0x50 */
-    SVECTOR unk14; /* caster position */
+    SVECTOR pos14; /* caster position */
     SVECTOR unk1C; /* moves from unk14 to unkC */
-    SVECTOR unk24; /* model rotation */
-    VECTOR unk2C; /* model position */
-    VECTOR unk3C; /* model scale */
-    SVECTOR unk4C;
+    SVECTOR rot24; /* model rotation */
+    VECTOR pos2C; /* model position */
+    VECTOR scale3C; /* model scale */
+    SVECTOR pos4C;
     u16 model54; /* model */
 } Fx0c9Work81;
 

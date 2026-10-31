@@ -33,9 +33,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk60.vx = 0;
         work->unk60.vy = 0;
         work->unk60.vz = 0;
-        work->unk34.vx = 0;
-        work->unk34.vy = 0;
-        work->unk34.vz = 0;
+        work->rot34.vx = 0;
+        work->rot34.vy = 0;
+        work->rot34.vz = 0;
         work->unk3C[0] = work->unk3C[1] = work->unk3C[2] = 0x800;
         work->unk28[0] = work->unk48[0];
         work->unk28[1] = work->unk48[1];
@@ -64,10 +64,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vx = work->unk20.vx;
             env->camera->points[3].vy = work->unk20.vy;
             env->camera->points[3].vz = work->unk20.vz;
-            BTLFX_COPY_SVEC(&work->unk10, &work->unk20);
-            work->unk10.vy += 0x300;
+            BTLFX_COPY_SVEC(&work->pos10, &work->unk20);
+            work->pos10.vy += 0x300;
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801EF084;
                     p->unk12 = 0x10;
@@ -97,7 +97,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model70, work->model74, s);
             ex->Hi_ModifyEffModelAbr(work->model70, 2);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
             ex->btlfx_drawScrollMove(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);
             ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
             {
@@ -136,10 +136,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vx = work->unk20.vx;
             env->camera->points[3].vy = work->unk20.vy;
             env->camera->points[3].vz = work->unk20.vz;
-            BTLFX_COPY_SVEC(&work->unk10, &work->unk20);
-            work->unk10.vy += 0x300;
+            BTLFX_COPY_SVEC(&work->pos10, &work->unk20);
+            work->pos10.vy += 0x300;
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801EF084;
                     p->unk12 = 0x10;
@@ -169,7 +169,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model70, work->model74, s);
             ex->Hi_ModifyEffModelAbr(work->model70, 2);
             ex->Hi_ModifyEffModelRGB(work->model70, 0, 0, 0);
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
             ex->btlfx_drawScrollMove(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);
             ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
             {
@@ -219,14 +219,14 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vy = work->unk20.vy;
                 env->camera->points[3].vz = work->unk20.vz;
             }
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC30[0], (u16 *)&work->unk10);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC30[1], (u16 *)&work->unk18);
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC30[0], (u16 *)&work->pos10);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC30[1], (u16 *)&work->pos18);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
             s2.vx = s2.vz = work->unk3C[0] / 4;
             s2.vy = work->unk3C[1] / 2;
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
             if (frame == 0xC) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->unk14 = (s32)D_801EFD44;
                     work->emit78->unk12 = 0x32;
@@ -235,7 +235,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x20;
                 }
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->unk14 = (s32)D_801F02C4;
                     work->emit7C->unk12 = 0x32;
@@ -297,20 +297,20 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             pp.vy += ex->btlfx_randCentered(6);
             pp.vz += ex->btlfx_randCentered(6);
             ex->Hi_DrawSummonModel((SVECTOR *)&pp, (VECTOR *)work->unk48, (s32)work->unk54, SUMMON(env)->unk60, 0);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC2C[0], (u16 *)&work->unk10);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC2C[1], (u16 *)&work->unk18);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC2C[0], (u16 *)&work->pos10);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC2C[1], (u16 *)&work->pos18);
             if (frame < 18) {
                 work->unk20.vy += (ex->math_cos((frame << 10) / 18) * 0x29) >> 12;
                 env->camera->points[3].vx = work->unk20.vx;
                 env->camera->points[3].vy = work->unk20.vy;
                 env->camera->points[3].vz = work->unk20.vz;
             }
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
             s2.vx = s2.vz = work->unk3C[0] / 2;
             s2.vy = work->unk3C[1] / 2;
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
             if (frame == 0xC) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->unk14 = (s32)D_801EFD44;
                     work->emit78->unk12 = 0x32;
@@ -319,7 +319,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x20;
                 }
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->unk14 = (s32)D_801F02C4;
                     work->emit7C->unk12 = 0x32;
@@ -383,10 +383,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             pp.vy += ex->btlfx_randCentered(2);
             pp.vz += ex->btlfx_randCentered(2);
             ex->Hi_DrawSummonModel((SVECTOR *)&pp, (VECTOR *)work->unk48, (s32)work->unk54, SUMMON(env)->unk60, 0);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC34[0], (u16 *)&work->unk10);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC34[1], (u16 *)&work->unk18);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC34[0], (u16 *)&work->pos10);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC34[1], (u16 *)&work->pos18);
             if (frame == 6) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->unk14 = (s32)D_801EFD44;
                     work->emit78->unk12 = 0x32;
@@ -395,7 +395,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x20;
                 }
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->unk14 = (s32)D_801F02C4;
                     work->emit7C->unk12 = 0x32;
@@ -428,10 +428,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->emit7C->rot.vz = v.vz;
                 }
             }
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
             s2.vx = s2.vz = work->unk3C[0] / 2;
             s2.vy = work->unk3C[1] / 2;
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
             ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
             ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x18) {
@@ -461,12 +461,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vx = work->unk20.vx;
             env->camera->points[3].vy = work->unk20.vy;
             env->camera->points[3].vz = work->unk20.vz;
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC38[0], (u16 *)&work->unk10);
-            BTLFX_COPY_SVEC(&work->unk18, &work->unk10);
-            work->unk18.vy -= 0x46;
-            work->unk18.vz -= 0x80;
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC38[0], (u16 *)&work->pos10);
+            BTLFX_COPY_SVEC(&work->pos18, &work->pos10);
+            work->pos18.vy -= 0x46;
+            work->pos18.vz -= 0x80;
             if (frame == 0xB) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->unk14 = (s32)D_801EFD44;
                     work->emit78->unk12 = 0x32;
@@ -475,7 +475,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
                 }
@@ -494,7 +494,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame == 0) {
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->unk14 = (s32)D_801F02C4;
                     work->emit7C->unk12 = 0x32;
@@ -517,10 +517,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->emit7C->rot.vz = v.vz;
                 }
             }
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
             s2.vx = s2.vz = work->unk3C[0] / 3;
             s2.vy = work->unk3C[1] / 2;
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
             ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
             ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
@@ -554,12 +554,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vx = work->unk20.vx;
             env->camera->points[3].vy = work->unk20.vy;
             env->camera->points[3].vz = work->unk20.vz;
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC38[1], (u16 *)&work->unk10);
-            BTLFX_COPY_SVEC(&work->unk18, &work->unk10);
-            work->unk18.vy -= 0x46;
-            work->unk18.vz -= 0x80;
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC38[1], (u16 *)&work->pos10);
+            BTLFX_COPY_SVEC(&work->pos18, &work->pos10);
+            work->pos18.vy -= 0x46;
+            work->pos18.vz -= 0x80;
             if (frame == 0xB) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->unk14 = (s32)D_801EFD44;
                     work->emit78->unk12 = 0x32;
@@ -568,7 +568,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
                 }
@@ -587,7 +587,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame == 0) {
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->unk14 = (s32)D_801F02C4;
                     work->emit7C->unk12 = 0x32;
@@ -610,10 +610,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->emit7C->rot.vz = v.vz;
                 }
             }
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
             s2.vx = s2.vz = work->unk3C[0] / 3;
             s2.vy = work->unk3C[1] / 2;
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
             ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
             ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
@@ -652,10 +652,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[3].vx = work->unk20.vx;
             env->camera->points[3].vy = work->unk20.vy;
             env->camera->points[3].vz = work->unk20.vz;
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 4, (u16 *)&work->unk10);
-            work->unk10.vz += 0x226;
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 4, (u16 *)&work->pos10);
+            work->pos10.vz += 0x226;
             if (frame == 0xA) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x80;
                 }
@@ -673,10 +673,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->emit78->rot.vz = v.vz;
                 }
             }
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)work->unk3C, work->model68);
             s2.vx = s2.vz = work->unk3C[0] / 3;
             s2.vy = work->unk3C[1] / 2;
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
+            ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->unk28, (s32)&s2, work->model6C);
             ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
             ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x20) {

@@ -8,8 +8,8 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     SVECTOR unk8;
-    SVECTOR unk10;
-    SVECTOR unk18;
+    SVECTOR pos10;
+    SVECTOR pos18;
     SVECTOR unk20; /* camera target */
     u8 pad28[0x34 - 0x28];
     s32 model34; /* model */

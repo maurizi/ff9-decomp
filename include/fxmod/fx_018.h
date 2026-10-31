@@ -38,7 +38,7 @@ typedef struct {
 
 typedef struct {
     SVECTOR unk0; /* target body */
-    SVECTOR unk8; /* target */
+    SVECTOR pos8; /* target */
     s32 unk10; /* state */
     s32 model14; /* models */
     s32 model18;
@@ -47,7 +47,7 @@ typedef struct {
 } Fx018Work80; /* 0x24 */
 
 typedef struct {
-    SVECTOR unk0; /* target body */
+    SVECTOR pos0; /* target body */
     SVECTOR unk8; /* target */
     s32 *unk10; /* jitter table */
     s32 unk14; /* bolts spawned */

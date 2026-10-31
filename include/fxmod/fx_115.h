@@ -8,9 +8,9 @@ typedef struct {
     SVECTOR unk0; /* caster */
     SVECTOR unk8; /* target */
     SVECTOR unk10;
-    SVECTOR unk18; /* model rotation */
-    VECTOR unk20; /* model position */
-    VECTOR unk30; /* model scale */
+    SVECTOR rot18; /* model rotation */
+    VECTOR pos20; /* model position */
+    VECTOR scale30; /* model scale */
     SVECTOR unk40[4]; /* rotation trail */
     VECTOR unk60[4]; /* position trail */
     u16 modelA0; /* models */
@@ -29,7 +29,7 @@ extern BtlModel fx_115_effModels[];
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* caster body position */
+    SVECTOR pos4; /* caster body position */
 } Fx115Work80_0bd;
 s32 fx_115_op81(s32 mode, Fx115Work80_0bd *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

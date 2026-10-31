@@ -8,7 +8,7 @@ typedef struct {
     s32 unk0; /* done */
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* bone position */
-    SVECTOR unk10; /* target body position */
+    SVECTOR pos10; /* target body position */
     u8 pad18[0x20 - 0x18];
     Pool6CEntry *emit20;
     s32 model24; /* model */

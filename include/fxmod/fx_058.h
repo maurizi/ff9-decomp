@@ -10,7 +10,7 @@ typedef struct {
     s32 unk4; /* speed */
     s32 unk8; /* turn rate */
     SVECTOR unkC; /* position */
-    SVECTOR unk14; /* direction */
+    SVECTOR rot14; /* direction */
     u8 *unk1C; /* trail buffer (D_801E7EF0) */
     SVECTOR unk20; /* target; pad = model z scale */
 } Fx058Item; /* 0x28 */

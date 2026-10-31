@@ -56,11 +56,11 @@ typedef struct {
 typedef struct {
     s32 unk0[32]; /* timers: 0 tint, 1 flash, 2 trails, 3 trail kind, 4 sweep, 5 sweep split, 6..0xD */
     Pool6CEntry *emit80[32];
-    SVECTOR unk100; /* body position */
+    SVECTOR pos100; /* body position */
     SVECTOR unk108; /* unit position */
-    SVECTOR unk110;
-    SVECTOR unk118;
-    SVECTOR unk120;
+    SVECTOR pos110;
+    SVECTOR pos118;
+    SVECTOR pos120;
     SVECTOR unk128;
     SVECTOR unk130;
     SVECTOR unk138;
@@ -68,27 +68,27 @@ typedef struct {
     SVECTOR unk148;
     SVECTOR unk150;
     s32 unk158; /* model */
-    SVECTOR unk15C;
-    SVECTOR unk164;
-    VECTOR unk16C;
-    VECTOR unk17C;
-    SVECTOR unk18C;
-    SVECTOR unk194;
-    VECTOR unk19C;
-    VECTOR unk1AC;
-    VECTOR unk1BC;
-    SVECTOR unk1CC;
-    VECTOR unk1D4;
-    VECTOR unk1E4;
-    SVECTOR unk1F4;
-    SVECTOR unk1FC;
-    SVECTOR unk204;
-    VECTOR unk20C;
-    VECTOR unk21C;
-    VECTOR unk22C;
-    SVECTOR unk23C;
-    VECTOR unk244;
-    VECTOR unk254;
+    SVECTOR rot15C;
+    SVECTOR rot164;
+    VECTOR pos16C;
+    VECTOR scale17C;
+    SVECTOR rot18C;
+    SVECTOR rot194;
+    VECTOR pos19C;
+    VECTOR pos1AC;
+    VECTOR scale1BC;
+    SVECTOR rot1CC;
+    VECTOR pos1D4;
+    VECTOR scale1E4;
+    SVECTOR pos1F4;
+    SVECTOR rot1FC;
+    SVECTOR rot204;
+    VECTOR pos20C;
+    VECTOR pos21C;
+    VECTOR scale22C;
+    SVECTOR rot23C;
+    VECTOR pos244;
+    VECTOR scale254;
 } Fx1b3Work80; /* 0x264 */
 
 extern s32 D_801EAFC4[];

@@ -7,20 +7,20 @@
 typedef struct {
     Pool6CEntry *emit0;
     s32 unk4;
-    SVECTOR unk8; /* caster position */
+    SVECTOR pos8; /* caster position */
     s32 unk10;
 } Fx096Work80;
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* model A rotation */
-    SVECTOR unkC; /* model B rotation */
-    VECTOR unk14; /* model A position */
-    VECTOR unk24; /* model B position */
-    VECTOR unk34; /* model A scale */
-    VECTOR unk44; /* model B scale */
+    SVECTOR rot4; /* model A rotation */
+    SVECTOR rotC; /* model B rotation */
+    VECTOR pos14; /* model A position */
+    VECTOR pos24; /* model B position */
+    VECTOR scale34; /* model A scale */
+    VECTOR scale44; /* model B scale */
     s32 unk54; /* brightness */
-    SVECTOR unk58; /* caster position */
+    SVECTOR pos58; /* caster position */
     s16 unk60; /* fade countdown */
     u16 model62; /* models */
     u16 model64;

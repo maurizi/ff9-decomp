@@ -16,9 +16,9 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0[9];
-    SVECTOR unk24; /* caster body position */
+    SVECTOR pos24; /* caster body position */
     SVECTOR unk2C; /* target position */
-    SVECTOR unk34;
+    SVECTOR pos34;
     SVECTOR unk3C;
     SVECTOR unk44;
     SVECTOR unk4C; /* camera targets */
@@ -29,21 +29,21 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0[11];
     SVECTOR unk2C; /* target position */
-    SVECTOR unk34;
-    SVECTOR unk3C;
+    SVECTOR pos34;
+    SVECTOR pos3C;
     SVECTOR unk44;
-    SVECTOR unk4C;
+    SVECTOR pos4C;
 } Fx1ecWork81; /* 0x54 */
 
 typedef struct {
     Pool6CEntry *emit0[8];
-    SVECTOR unk20; /* model rotation */
-    VECTOR unk28; /* model position */
-    VECTOR unk38; /* model scale */
+    SVECTOR rot20; /* model rotation */
+    VECTOR pos28; /* model position */
+    VECTOR scale38; /* model scale */
     s32 unk48; /* brightness */
-    SVECTOR unk4C; /* target position */
-    SVECTOR unk54;
-    SVECTOR unk5C;
+    SVECTOR pos4C; /* target position */
+    SVECTOR pos54;
+    SVECTOR pos5C;
     s32 unk64; /* fade countdown */
     s16 unk68; /* screen fade countdown */
     s16 unk6A; /* screen flash */

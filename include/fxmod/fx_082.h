@@ -7,11 +7,11 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4;
-    SVECTOR unk8; /* caster body position */
-    SVECTOR unk10;
+    SVECTOR pos8; /* caster body position */
+    SVECTOR pos10;
     SVECTOR unk18; /* unk8 moved 0x226 along unk20, raised by 0x145 */
     SVECTOR unk20; /* caster rotation */
-    SVECTOR unk28; /* model rotation */
+    SVECTOR rot28; /* model rotation */
     s32 model30; /* models */
     s32 model34;
 } Fx082Work80;

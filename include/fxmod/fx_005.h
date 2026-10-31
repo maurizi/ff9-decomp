@@ -24,7 +24,7 @@ typedef struct {
 
 /* one bolt, a pool item */
 typedef struct {
-    SVECTOR unk0; /* from */
+    SVECTOR pos0; /* from */
     SVECTOR unk8; /* to */
     u8 unk10;
     u8 unk11; /* state */
@@ -38,8 +38,8 @@ typedef struct {
 } Fx005Bolt;
 
 typedef struct {
-    SVECTOR unk0; /* target body */
-    SVECTOR unk8; /* target */
+    SVECTOR pos0; /* target body */
+    SVECTOR pos8; /* target */
     s32 *unk10; /* jitter table */
     s32 unk14; /* bolts spawned */
 } Fx005Work; /* 0x18 */

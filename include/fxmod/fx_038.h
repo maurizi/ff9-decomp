@@ -7,8 +7,8 @@
 /* falling rock, a pool item */
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* position */
-    SVECTOR unkC; /* rotation */
+    SVECTOR pos4; /* position */
+    SVECTOR rotC; /* rotation */
     Pool6CEntry *emit14;
     SVECTOR unk18; /* landing position */
     s32 unk20; /* index */

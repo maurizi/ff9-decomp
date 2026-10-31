@@ -16,8 +16,8 @@ typedef struct {
     s32 model20; /* model */
     u8 pad24[0x38 - 0x24];
     SVECTOR unk38; /* caster body position */
-    SVECTOR unk40;
-    SVECTOR unk48; /* bone position */
+    SVECTOR pos40;
+    SVECTOR pos48; /* bone position */
     Pool6CEntry *emit50;
 } Fx112Work;
 

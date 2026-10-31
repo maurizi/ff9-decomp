@@ -50,8 +50,8 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* caster position */
-    SVECTOR unk14; /* caster body position */
+    SVECTOR posC; /* caster position */
+    SVECTOR pos14; /* caster body position */
     s32 unk1C; /* charge counter */
     s32 unk20;
     s32 model24; /* model */

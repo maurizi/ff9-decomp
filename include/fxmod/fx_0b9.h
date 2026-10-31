@@ -7,15 +7,15 @@
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* position: env->targets->centerX..Z */
+    SVECTOR pos8; /* position: env->targets->centerX..Z */
     SVECTOR unk10; /* btlfx_getUnitArgBonePos(0x10, 0) */
-    SVECTOR unk18; /* btlfx_getUnitArgBonePos(0x10, 0), every frame */
+    SVECTOR pos18; /* btlfx_getUnitArgBonePos(0x10, 0), every frame */
     SVECTOR unk20; /* angles from unk10 to unk8 */
 } Fx0b9Work80;
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* unit position, raised by 0xC8 */
+    SVECTOR pos4; /* unit position, raised by 0xC8 */
     SVECTOR unkC; /* angles from D_801E7B9C to unk4 */
     s32 unk14; /* unit */
 } Fx0b9Work81;

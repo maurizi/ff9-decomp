@@ -6,8 +6,8 @@
 
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* caster body position */
-    SVECTOR unkC; /* caster position */
+    SVECTOR pos4; /* caster body position */
+    SVECTOR posC; /* caster position */
     SVECTOR unk14;
 } Fx194Work;
 

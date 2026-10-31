@@ -11,7 +11,7 @@ typedef struct {
     s16 unk6;
     s16 unk8;
     s16 padA;
-    SVECTOR unkC; /* rotation */
+    SVECTOR rotC; /* rotation */
 } Fx1bf2Obj;
 
 typedef struct {
@@ -33,7 +33,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* home position */
-    SVECTOR unk10; /* particle position */
+    SVECTOR pos10; /* particle position */
     SVECTOR unk18; /* particle target */
     SVECTOR unk20; /* camera position */
     Fx1bf2Vec3 unk28; /* model position */
@@ -41,7 +41,7 @@ typedef struct {
     Fx1bf2Vec3 unk3C; /* model scale */
     Fx1bf2Vec3 unk48; /* spawn position */
     SVECTOR unk54;
-    SVECTOR unk5C; /* model rotation */
+    SVECTOR rot5C; /* model rotation */
     s32 model64; /* models */
     s32 model68;
     s32 model6C;

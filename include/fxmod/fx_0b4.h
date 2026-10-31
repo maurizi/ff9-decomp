@@ -27,8 +27,8 @@ typedef struct {
     Pool6CEntry *emit20;
     Pool6CEntry *emit24;
     Pool6CEntry *emit28;
-    SVECTOR unk2C; /* caster body position */
-    SVECTOR unk34; /* caster position */
+    SVECTOR pos2C; /* caster body position */
+    SVECTOR pos34; /* caster position */
 } Fx0b4Work;
 
 extern Fx0b4Timer D_801E80EC[6];

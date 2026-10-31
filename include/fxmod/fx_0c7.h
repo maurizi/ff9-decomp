@@ -6,7 +6,7 @@
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* unit 0x10 body position */
+    SVECTOR pos4; /* unit 0x10 body position */
 } Fx0c7Work;
 
 extern Unk800F78A4 *fx_0c7_env;

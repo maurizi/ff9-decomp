@@ -36,10 +36,10 @@ typedef struct {
 typedef struct {
     u32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* summon position */
+    SVECTOR pos8; /* summon position */
     Fx0e10Vec3 unk10; /* summon model position */
     Fx0e10Vec3 unk1C; /* summon model scale */
-    SVECTOR unk28; /* summon model rotation */
+    SVECTOR rot28; /* summon model rotation */
     s32 unk30;
     SVECTOR unk34; /* bone position */
     SVECTOR unk3C;
@@ -51,12 +51,12 @@ typedef struct {
     s32 model58;
     s32 model5C;
     s32 model60;
-    SVECTOR unk64;
+    SVECTOR rot64;
     Fx0e10Vec3 unk6C;
     Fx0e10Vec3 unk78;
     Fx0e10Vec3 unk84;
     Fx0e10Vec3 unk90;
-    SVECTOR unk9C;
+    SVECTOR rot9C;
 } Fx0e10Work80; /* 0xA4 */
 
 typedef struct {

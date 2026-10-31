@@ -20,7 +20,7 @@ typedef struct {
     s16 unk6; /* bob height, then phase */
     s32 unk8; /* frame */
     SVECTOR unkC; /* position */
-    SVECTOR unk14; /* rotation */
+    SVECTOR rot14; /* rotation */
     u16 unk1C; /* spin speed */
     u16 unk1E;
     s32 unk20; /* model */
@@ -48,23 +48,23 @@ typedef struct {
     s32 unk4; /* frame counter */
     s32 unk8; /* rocks spawned */
     SVECTOR unkC; /* base position */
-    SVECTOR unk14;
-    SVECTOR unk1C;
-    SVECTOR unk24;
+    SVECTOR pos14;
+    SVECTOR pos1C;
+    SVECTOR pos24;
     Fx0fbVec3 unk2C; /* model position */
     Fx0fbVec3 unk38; /* model scale */
-    SVECTOR unk44; /* model rotation */
-    SVECTOR unk4C;
-    SVECTOR unk54;
+    SVECTOR rot44; /* model rotation */
+    SVECTOR pos4C;
+    SVECTOR pos54;
     SVECTOR unk5C; /* summon position */
     SVECTOR unk64;
     s32 model6C[27]; /* rock models */
     Fx0fbVec3 unkD8;
     Fx0fbVec3 unkE4;
-    SVECTOR unkF0;
+    SVECTOR rotF0;
     Fx0fbVec3 unkF8;
     Fx0fbVec3 unk104;
-    SVECTOR unk110;
+    SVECTOR rot110;
     s32 model118; /* models */
     s32 model11C;
     s32 model120;

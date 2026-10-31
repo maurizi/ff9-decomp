@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0; /* steps left */
     s32 unk4; /* steps */
-    SVECTOR unk8;
+    SVECTOR pos8;
     SVECTOR unk10; /* from */
     SVECTOR unk18; /* to */
     SVECTOR unk20; /* current */

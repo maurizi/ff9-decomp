@@ -11,15 +11,15 @@ s32 fx_01f_op80(s32 mode, Fx01fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         fx_01f_env = env;
-        ((s32 *)&work->unk4)[0] = ((s32 *)&env->targets->centerX)[0];
+        ((s32 *)&work->pos4)[0] = ((s32 *)&env->targets->centerX)[0];
         t = ((s32 *)&env->targets->centerX)[1];
-        work->unk4.vy -= 0x180;
-        ((s32 *)&work->unk4)[1] = t;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+        work->pos4.vy -= 0x180;
+        ((s32 *)&work->pos4)[1] = t;
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
         if (p != NULL) {
             p->otZ = 0xA0;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk4);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos4);
         if (p != NULL) {
             p->otZ = 0xA0;
         }
@@ -27,15 +27,15 @@ s32 fx_01f_op80(s32 mode, Fx01fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (work->unk0 == 0) {
             if (frame == 0x18) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk4);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4);
                 if (p != NULL) {
                     p->otZ = 0xC8;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk4);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4);
                 if (p != NULL) {
                     p->otZ = 0xC8;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk4);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos4);
                 if (p != NULL) {
                     p->otZ = 0xC8;
                 }

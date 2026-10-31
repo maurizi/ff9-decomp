@@ -378,14 +378,14 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } else {
             work->unk10.vy = 0x800;
         }
-        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, r, (s16 *)&work->unk18);
-        if (ex->btlfx_isEnemyUnit(0) != 0 && work->unk18.vz < -0x200) {
-            work->unk18.vz = -0x200;
+        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, r, (s16 *)&work->pos18);
+        if (ex->btlfx_isEnemyUnit(0) != 0 && work->pos18.vz < -0x200) {
+            work->pos18.vz = -0x200;
         }
         ex->btlfx_rotateOffset(&work->unk10, -0xD2, (s32)&rot);
-        sv.vx = work->unk18.vx + rot.vx;
-        sv.vy = work->unk18.vy + rot.vy - 0x140;
-        sv.vz = work->unk18.vz + rot.vz;
+        sv.vx = work->pos18.vx + rot.vx;
+        sv.vy = work->pos18.vy + rot.vy - 0x140;
+        sv.vz = work->pos18.vz + rot.vz;
         env->camera->points[1].vx = sv.vx;
         env->camera->points[1].vy = sv.vy;
         env->camera->points[1].vz = sv.vz;
@@ -432,11 +432,11 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             k = 0x1755;
         }
         work->unk5C = k;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk18);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos18);
         if (p != NULL) {
             p->otZ = -0x40;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk20);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos20);
         if (p != NULL) {
             p->otZ = 0x80;
         }
@@ -452,15 +452,15 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = work->unk10.vz;
         t = (frame << 12) / 22;
         rot.vy += (0x1000 - t) >> 1;
-        pos.vx = work->unk18.vx;
-        pos.vy = work->unk18.vy;
-        pos.vz = work->unk18.vz;
+        pos.vx = work->pos18.vx;
+        pos.vy = work->pos18.vy;
+        pos.vz = work->pos18.vz;
         h = (ex->math_cos(t >> 2) * 0x514) >> 12;
         pos.vy += h;
-        work->unk20.vx = work->unk18.vx;
-        work->unk20.vy = work->unk18.vy;
-        work->unk20.vz = work->unk18.vz;
-        work->unk20.vy -= (t * 0x140) >> 12;
+        work->pos20.vx = work->pos18.vx;
+        work->pos20.vy = work->pos18.vy;
+        work->pos20.vz = work->pos18.vz;
+        work->pos20.vy -= (t * 0x140) >> 12;
         p = (Pool6CEntry *)ex->btlfx_getFileData(entry->file, 9);
         sv.vx = pos.vx;
         sv.vy = pos.vy;
@@ -491,9 +491,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vx = work->unk10.vx;
         rot.vy = work->unk10.vy;
         rot.vz = work->unk10.vz;
-        pos.vx = work->unk18.vx;
-        pos.vy = work->unk18.vy;
-        pos.vz = work->unk18.vz;
+        pos.vx = work->pos18.vx;
+        pos.vy = work->pos18.vy;
+        pos.vz = work->pos18.vz;
         t = (frame << 12) / 20;
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model38);
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model3C);
@@ -517,9 +517,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vx = work->unk10.vx;
         rot.vy = work->unk10.vy;
         rot.vz = work->unk10.vz;
-        pos.vx = work->unk18.vx;
-        pos.vy = work->unk18.vy;
-        pos.vz = work->unk18.vz;
+        pos.vx = work->pos18.vx;
+        pos.vy = work->pos18.vy;
+        pos.vz = work->pos18.vz;
         t = (frame << 12) / 30;
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model38);
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model3C);
@@ -594,15 +594,15 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 8) {
             if (frame == 8) {
-                work->unk20.vx = work->unk18.vx;
-                work->unk20.vy = work->unk18.vy;
-                work->unk20.vz = work->unk18.vz;
-                work->unk20.vy -= (work->unk5C << 10) >> 12;
-                work->emit60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk18);
+                work->pos20.vx = work->pos18.vx;
+                work->pos20.vy = work->pos18.vy;
+                work->pos20.vz = work->pos18.vz;
+                work->pos20.vy -= (work->unk5C << 10) >> 12;
+                work->emit60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos18);
                 if (p == NULL) {
                     goto skip; /* the original's NULL branch skips the unk60 check (unk60 is NULL then) */
                 }
-                p->unk2C = (s32)&work->unk20;
+                p->unk2C = (s32)&work->pos20;
             }
             if (work->emit60 != NULL && work->emit60->state == BTLFX_EMIT_DONE) {
                 work->emit60 = NULL;
@@ -625,9 +625,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vx = work->unk10.vx;
         rot.vy = work->unk10.vy;
         rot.vz = work->unk10.vz;
-        pos.vx = work->unk18.vx;
-        pos.vy = work->unk18.vy;
-        pos.vz = work->unk18.vz;
+        pos.vx = work->pos18.vx;
+        pos.vy = work->pos18.vy;
+        pos.vz = work->pos18.vz;
         D_801E98C0.vx = sc.vx;
         D_801E98C0.vy = sc.vy;
         D_801E98C0.vz = sc.vz;

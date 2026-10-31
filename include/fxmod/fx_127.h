@@ -18,7 +18,7 @@ typedef struct {
     SVECTOR unk34; /* target body position */
     SVECTOR unk3C; /* target position */
     SVECTOR unk44; /* caster bone position */
-    SVECTOR unk4C;
+    SVECTOR pos4C;
     SVECTOR unk54;
     SVECTOR unk5C;
     SVECTOR unk64;
@@ -36,8 +36,8 @@ typedef struct {
     SVECTOR unk18;
     SVECTOR unk20;
     SVECTOR unk28;
-    SVECTOR unk30;
-    SVECTOR unk38;
+    SVECTOR pos30;
+    SVECTOR pos38;
 } Fx127Work81;
 
 /* effect file header as the particle path callback sees it */

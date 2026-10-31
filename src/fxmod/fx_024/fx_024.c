@@ -19,25 +19,25 @@ s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_024_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk18);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk20);
-        work->unk38.vx = work->unk18.vx;
-        work->unk38.vy = work->unk18.vy;
-        work->unk38.vz = work->unk18.vz;
-        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk20, 0x3E8, (s16 *)&work->unk38);
-        work->unk38.vy = -0xC8;
+        work->pos38.vx = work->unk18.vx;
+        work->pos38.vy = work->unk18.vy;
+        work->pos38.vz = work->unk18.vz;
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk20, 0x3E8, (s16 *)&work->pos38);
+        work->pos38.vy = -0xC8;
         ex->btlfx_getUnitBoneMatrix(0x10, 0xD, (BtlBone *)&u.m);
-        ex->btlfx_matrixPointAhead(&u.m, 0x1F4, (s32)&work->unk28);
+        ex->btlfx_matrixPointAhead(&u.m, 0x1F4, (s32)&work->pos28);
         ex->btlfx_getUnitBoneMatrix(0x10, 0x1D, (BtlBone *)&m2);
-        ex->btlfx_matrixPointAhead(&m2, 0x1F4, (s32)&work->unk30);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk28);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk30);
+        ex->btlfx_matrixPointAhead(&m2, 0x1F4, (s32)&work->pos30);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos28);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos30);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
         }
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
         }
-        ex->btlfx_aimAngles((s16 *)&work->unk28, (s16 *)&work->unk38, (s16 *)&work->unk40);
-        ex->btlfx_aimAngles((s16 *)&work->unk30, (s16 *)&work->unk38, (s16 *)&work->unk48);
+        ex->btlfx_aimAngles((s16 *)&work->pos28, (s16 *)&work->pos38, (s16 *)&work->unk40);
+        ex->btlfx_aimAngles((s16 *)&work->pos30, (s16 *)&work->pos38, (s16 *)&work->unk48);
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -48,10 +48,10 @@ s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 10:
             work->unk50 = 0x80;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->unk50, work->unk50, 0x80);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk38);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk38);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk38);
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk38);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos38);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos38);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos38);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos38);
             break;
         }
         if (frame >= 0xD) {
@@ -109,8 +109,8 @@ s32 fx_024_op81(s32 mode, Fx024Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         fxm_setSignal(env, 7, 0);
-        ex->btlfx_getUnitPos(work->unkC, (s16 *)&work->unk4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk4);
+        ex->btlfx_getUnitPos(work->unkC, (s16 *)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unkC, 0x20);
         }

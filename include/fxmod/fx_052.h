@@ -8,13 +8,13 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* model rotation */
-    SVECTOR unk14; /* second model rotation */
-    VECTOR unk1C; /* model position */
-    VECTOR unk2C; /* model scale */
+    SVECTOR rotC; /* model rotation */
+    SVECTOR rot14; /* second model rotation */
+    VECTOR pos1C; /* model position */
+    VECTOR scale2C; /* model scale */
     s32 unk3C; /* model brightness */
     SVECTOR unk40; /* target body position */
-    SVECTOR unk48; /* target position */
+    SVECTOR pos48; /* target position */
     s16 unk50; /* fade-in countdown */
     u16 model52; /* models */
     u16 model54;
@@ -25,7 +25,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* target body position */
+    SVECTOR posC; /* target body position */
 } Fx052Work81; /* 0x14 */
 
 typedef struct {

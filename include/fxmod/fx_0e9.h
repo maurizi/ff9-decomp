@@ -9,7 +9,7 @@ typedef struct {
     Pool6CEntry *emit4;
     SVECTOR unk8; /* caster position */
     SVECTOR unk10; /* caster rotation */
-    SVECTOR unk18; /* target position */
+    SVECTOR pos18; /* target position */
 } Fx0e9Work;
 
 typedef struct {

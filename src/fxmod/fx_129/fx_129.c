@@ -21,15 +21,15 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         clut[3] = 0;
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
         work->unk0 = (u16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 7), tex, clut);
-        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk2C);
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk14);
-        work->unk14.vy += 0x800;
-        env->camera->points[0].vx = work->unk4.vx = work->unk2C.vx;
-        env->camera->points[0].vz = work->unk4.vz = work->unk2C.vz;
-        env->camera->points[0].vy = work->unk4.vy = work->unk2C.vy;
-        work->unk1C.vz = 0x330;
-        work->unk1C.vy = 0x330;
-        work->unk1C.vx = 0x330;
+        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos2C);
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot14);
+        work->rot14.vy += 0x800;
+        env->camera->points[0].vx = work->pos4.vx = work->pos2C.vx;
+        env->camera->points[0].vz = work->pos4.vz = work->pos2C.vz;
+        env->camera->points[0].vy = work->pos4.vy = work->pos2C.vy;
+        work->scale1C.vz = 0x330;
+        work->scale1C.vy = 0x330;
+        work->scale1C.vx = 0x330;
         work->unk34 = 0;
         work->unk38 = 0;
         work->unk3C = -0x1B00;
@@ -55,14 +55,14 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk40 = 0;
                     work->unk54 = 4;
                     work->unk34++;
-                    work->unk1C.vy = 0x330 - work->unk38;
+                    work->scale1C.vy = 0x330 - work->unk38;
                     switch (work->unk58) {
                     case 0:
-                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk2C);
+                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos2C);
                         break;
                     case 1:
                     case 2:
-                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk2C);
+                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos2C);
                         break;
                     }
                     work->unk58++;
@@ -82,7 +82,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (work->unk54 != 0) {
                 work->unk54--;
                 v = (ex->math_cos(work->unk54 << 9) * (work->unk38 >> 2)) >> 12;
-                work->unk1C.vy = 0x330 - ((v >= 0) ? v : -v);
+                work->scale1C.vy = 0x330 - ((v >= 0) ? v : -v);
             }
         }
         if (frame == 0xB) {
@@ -100,8 +100,8 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->btlfx_setUnitScale(0, (s32 *)&work->unk70);
         }
-        env->camera->points[0].vy = work->unk4.vy = work->unk2C.vy + work->unk40;
-        ex->Hi_DrawEffModel(&work->unk14, &work->unk4, (s32)&work->unk1C, work->unk0);
+        env->camera->points[0].vy = work->pos4.vy = work->pos2C.vy + work->unk40;
+        ex->Hi_DrawEffModel(&work->rot14, &work->pos4, (s32)&work->scale1C, work->unk0);
         if (work->unk34 >= 9) {
             if (work->unk4C < 0x10) {
                 work->unk4C++;

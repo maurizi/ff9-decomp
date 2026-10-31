@@ -8,16 +8,16 @@ typedef struct {
     s32 unk0; /* state */
     Pool6CEntry *emit4[2];
     Pool6CEntry *emitC[2];
-    SVECTOR unk14; /* target position */
-    SVECTOR unk1C;
-    SVECTOR unk24; /* bone positions */
-    SVECTOR unk2C;
+    SVECTOR pos14; /* target position */
+    SVECTOR pos1C;
+    SVECTOR pos24; /* bone positions */
+    SVECTOR pos2C;
     SVECTOR unk34;
     SVECTOR unk3C;
-    SVECTOR unk44;
-    SVECTOR unk4C;
-    SVECTOR unk54;
-    SVECTOR unk5C;
+    SVECTOR pos44;
+    SVECTOR pos4C;
+    SVECTOR pos54;
+    SVECTOR pos5C;
 } Fx187Work; /* 0x64 */
 
 extern u16 D_801E7DB8[2]; /* bones */

@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* position */
+    SVECTOR pos4; /* position */
     Pool6CEntry *emitC;
     SVECTOR unk10; /* start position */
 } Fx0ccPart; /* pool entry data */

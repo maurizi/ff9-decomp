@@ -6,13 +6,13 @@
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* caster body position */
+    SVECTOR pos4; /* caster body position */
 } Fx0bbWork80;
 
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* caster body position */
+    SVECTOR pos8; /* caster body position */
 } Fx0bbWork81;
 
 extern Unk800F78A4 *fx_0bb_env;

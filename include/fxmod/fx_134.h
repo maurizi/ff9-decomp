@@ -32,15 +32,15 @@ typedef struct {
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* position */
-    SVECTOR unk10; /* target */
+    SVECTOR pos8; /* position */
+    SVECTOR pos10; /* target */
     SVECTOR unk18; /* camera target */
     u8 pad20[4];
     Fx134Vec3 unk24; /* model position */
     Fx134Vec3 unk30; /* model scale */
-    SVECTOR unk3C; /* model rotation */
+    SVECTOR rot3C; /* model rotation */
     Fx134Vec3 unk44; /* scale */
-    SVECTOR unk50; /* rotation */
+    SVECTOR rot50; /* rotation */
     s32 unk58; /* scroll */
     s32 model5C; /* models */
     s32 model60;
@@ -58,8 +58,8 @@ typedef struct {
     s16 unk0; /* state */
     s16 unk2; /* phase */
     SVECTOR unk4; /* velocity; pad = size index */
-    SVECTOR unkC; /* position */
-    SVECTOR unk14; /* rotation */
+    SVECTOR posC; /* position */
+    SVECTOR rot14; /* rotation */
     s16 unk1C;
     s16 unk1E;
     Pool6CEntry *emit20;

@@ -53,9 +53,9 @@ typedef struct {
     SVECTOR unk8; /* centre */
     Fx0e31Vec3 unk10; /* summon position */
     Fx0e31Vec3 unk1C; /* summon scale */
-    SVECTOR unk28; /* summon rotation */
-    SVECTOR unk30; /* hand position */
-    SVECTOR unk38;
+    SVECTOR rot28; /* summon rotation */
+    SVECTOR pos30; /* hand position */
+    SVECTOR pos38;
     SVECTOR unk40; /* camera target */
     SVECTOR unk48;
     u8 pad50[8];
@@ -69,13 +69,13 @@ typedef struct {
     s16 unk78;
     s16 unk7A;
     s32 model7C; /* model */
-    SVECTOR unk80;
+    SVECTOR rot80;
     Fx0e31Vec3 unk88;
     Fx0e31Vec3 unk94;
     s32 modelA0; /* model */
     Fx0e31Vec3 unkA4;
     Fx0e31Vec3 unkB0;
-    SVECTOR unkBC;
+    SVECTOR rotBC;
     s32 modelC4; /* models */
     s32 modelC8;
     s32 modelCC;

@@ -100,9 +100,9 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1e6_env = env;
         ex->btlfx_initEffModels(fx_1e6_effModels, 2);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk48);
-        work->unk34.vx = 0x1000;
-        work->unk34.vy = 0x1000;
-        work->unk34.vz = 0x1000;
+        work->scale34.vx = 0x1000;
+        work->scale34.vy = 0x1000;
+        work->scale34.vz = 0x1000;
         work->unk58 = 0;
         work->unk1C.vx = 0;
         work->unk1C.vy = 0;
@@ -119,17 +119,17 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 8:
-            work->unk50.vx = work->unk48.vx;
-            work->unk50.vy = work->unk48.vy;
-            work->unk50.vz = work->unk48.vz;
-            work->unk50.vy -= 0xFA;
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk50);
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk50);
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk50);
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk50);
-            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk50);
-            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk50);
-            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk50);
+            work->pos50.vx = work->unk48.vx;
+            work->pos50.vy = work->unk48.vy;
+            work->pos50.vz = work->unk48.vz;
+            work->pos50.vy -= 0xFA;
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos50);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos50);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos50);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos50);
+            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos50);
+            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos50);
+            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos50);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->unk14 = (s32)D_801E84F8;
                 work->emit0[0]->unk12 = 5;
@@ -213,7 +213,7 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     break;
                 }
             }
-            ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&work->unk34, work->model64, work->model66, w);
+            ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&work->scale34, work->model64, work->model66, w);
             if (work->unk5C >= 0 || work->unk60 >= 0) {
                 if (work->unk5C >= 0) {
                     work->unk44 = fxm_lerpRatio(-0x80, 0, 4 - work->unk5C, 4);

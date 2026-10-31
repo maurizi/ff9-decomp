@@ -24,7 +24,7 @@ typedef struct {
 
 /* one bolt, a pool item */
 typedef struct {
-    SVECTOR unk0; /* from */
+    SVECTOR pos0; /* from */
     SVECTOR unk8; /* to */
     u8 unk10; /* bolt index */
     u8 unk11; /* state */

@@ -7,7 +7,7 @@
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* target position */
+    SVECTOR pos8; /* target position */
 } Fx020Work;
 
 extern SVECTOR D_801E7894;

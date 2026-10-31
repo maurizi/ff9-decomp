@@ -7,11 +7,11 @@
 typedef struct {
     s32 model0; /* model */
     s32 unk4; /* brightness */
-    VECTOR unk8; /* model scale */
-    VECTOR unk18; /* model position */
-    SVECTOR unk28; /* model rotation */
+    VECTOR scale8; /* model scale */
+    VECTOR pos18; /* model position */
+    SVECTOR rot28; /* model rotation */
     SVECTOR unk30;
-    SVECTOR unk38; /* target body position */
+    SVECTOR pos38; /* target body position */
     s32 unk40[4]; /* countdowns */
     s32 unk50;
 } Fx17eWork;

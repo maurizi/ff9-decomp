@@ -47,11 +47,11 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     s32 unk8[3]; /* caster position */
-    SVECTOR unk14; /* caster rotation */
+    SVECTOR rot14; /* caster rotation */
     s32 unk1C[3]; /* caster scale */
-    SVECTOR unk28; /* caster body position */
-    SVECTOR unk30;
-    SVECTOR unk38;
+    SVECTOR pos28; /* caster body position */
+    SVECTOR pos30;
+    SVECTOR pos38;
     Pool6CEntry *emit40;
     s32 model44[8]; /* split models */
 } Fx1b7Work80; /* 0x64 */

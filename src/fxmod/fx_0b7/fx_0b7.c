@@ -8,12 +8,12 @@ s32 fx_0b7_op80(s32 mode, Fx0b7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 8;
     } else if (mode == 1) {
         fx_0b7_env = env;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk0);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk0);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos0);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk0);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos0);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
         }

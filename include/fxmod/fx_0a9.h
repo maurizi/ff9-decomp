@@ -24,7 +24,7 @@ typedef struct {
 
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* caster body position */
+    SVECTOR pos4; /* caster body position */
 } Fx0a9Work80;
 
 typedef struct {

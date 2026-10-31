@@ -47,10 +47,10 @@ typedef struct {
     SVECTOR unk8; /* summon position */
     Fx0e30Vec3 unk10; /* summon model position */
     Fx0e30Vec3 unk1C; /* summon model scale */
-    SVECTOR unk28; /* summon model rotation */
+    SVECTOR rot28; /* summon model rotation */
     SVECTOR unk30; /* camera */
-    SVECTOR unk38; /* bone position */
-    SVECTOR unk40; /* bone position */
+    SVECTOR pos38; /* bone position */
+    SVECTOR pos40; /* bone position */
     s32 unk48;
     Pool6CEntry *emit4C;
     s32 unk50; /* bolts need a reset */
@@ -62,7 +62,7 @@ typedef struct {
     SVECTOR unk68;
     Fx0e30Vec3 unk70;
     Fx0e30Vec3 unk7C;
-    SVECTOR unk88;
+    SVECTOR rot88;
     Fx0e30Vec3 unk90;
     Fx0e30Vec3 unk9C;
 } Fx0e30Work80; /* 0xA8 */

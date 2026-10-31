@@ -15,22 +15,22 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x34;
     } else if (mode == 1) {
         fx_07f_env = env;
-        BTLFX_COPY_SVEC(&work->unk8, &env->targets->centerX);
-        BTLFX_COPY_SVEC(&work->unk10, &work->unk8);
-        work->unk18[0] = work->unk8.vx;
-        work->unk18[1] = work->unk8.vy;
-        work->unk18[2] = work->unk8.vz;
-        work->unk24.vx = 0;
-        work->unk24.vy = 0;
-        work->unk24.vz = 0;
+        BTLFX_COPY_SVEC(&work->pos8, &env->targets->centerX);
+        BTLFX_COPY_SVEC(&work->pos10, &work->pos8);
+        work->unk18[0] = work->pos8.vx;
+        work->unk18[1] = work->pos8.vy;
+        work->unk18[2] = work->pos8.vz;
+        work->rot24.vx = 0;
+        work->rot24.vy = 0;
+        work->rot24.vz = 0;
         work->unk0 = 0;
         work->unk4 = 0;
-        work->unk10.vy -= 0x180;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk8);
+        work->pos10.vy -= 0x180;
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
         if (p != NULL) {
             p->otZ = 0x20;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk8);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
         if (p != NULL) {
             p->otZ = -0x20;
         }
@@ -49,23 +49,23 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vy = sy;
             scale.vz = sxz;
             if (frame < 0xC) {
-                work->unk24.vy = ex->math_sin((frame << 10) / 12) >> 2;
+                work->rot24.vy = ex->math_sin((frame << 10) / 12) >> 2;
             } else {
-                work->unk24.vy = 0x400;
+                work->rot24.vy = 0x400;
             }
-            ex->Hi_DrawEffModel(&work->unk24, (VECTOR *)work->unk18, (s32)&scale, work->model2C);
+            ex->Hi_DrawEffModel(&work->rot24, (VECTOR *)work->unk18, (s32)&scale, work->model2C);
             ex->Hi_ModifyEffModelAbr(work->model2C, 1);
             c = (s >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->model2C, c, c, c);
             scale.vx = sxz;
             scale.vy = sy;
             scale.vz = sxz;
-            work->unk24.vy = frame * 0x18;
-            ex->Hi_DrawEffModel(&work->unk24, (VECTOR *)work->unk18, (s32)&scale, work->model30);
+            work->rot24.vy = frame * 0x18;
+            ex->Hi_DrawEffModel(&work->rot24, (VECTOR *)work->unk18, (s32)&scale, work->model30);
             ex->Hi_ModifyEffModelAbr(work->model30, 1);
             ex->Hi_ModifyEffModelRGB(work->model30, c, c, c);
             if (frame == 0xC) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x46;
                 }

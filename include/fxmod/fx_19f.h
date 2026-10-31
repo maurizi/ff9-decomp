@@ -94,13 +94,13 @@ typedef struct {
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* base position */
-    SVECTOR unk10;
+    SVECTOR pos8; /* base position */
+    SVECTOR pos10;
     SVECTOR unk18;
     u8 pad20[0x28];
     s32 unk48[3]; /* model position */
     s32 unk54[3]; /* model scale */
-    SVECTOR unk60; /* model rotation */
+    SVECTOR rot60; /* model rotation */
     Pool6CEntry *emit68;
     Pool6CEntry *emit6C;
     s32 model70; /* models */

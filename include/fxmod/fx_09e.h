@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
+    SVECTOR pos0; /* caster body position */
 } Fx09eWork;
 
 extern Unk800F78A4 *fx_09e_env;

@@ -7,13 +7,13 @@
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* model rotation */
-    VECTOR unk10; /* model position */
-    VECTOR unk20; /* model scale */
+    SVECTOR rot8; /* model rotation */
+    VECTOR pos10; /* model position */
+    VECTOR scale20; /* model scale */
     s32 unk30; /* model brightness */
-    SVECTOR unk34; /* target position */
+    SVECTOR pos34; /* target position */
     SVECTOR unk3C; /* target rotation */
-    SVECTOR unk44;
+    SVECTOR pos44;
     SVECTOR unk4C;
     SVECTOR unk54;
     s16 unk5C;

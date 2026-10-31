@@ -27,7 +27,7 @@ typedef struct {
     s32 unk0; /* trails on */
     s32 unk4; /* sparks on */
     s32 unk8; /* flash */
-    SVECTOR unkC; /* caster body position */
+    SVECTOR posC; /* caster body position */
 } Fx1f7Work; /* 0x14 */
 
 extern Unk800F78A4 *fx_1f7_env;

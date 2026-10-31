@@ -9,12 +9,12 @@ static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out
 typedef struct {
     s32 unk0[10]; /* countdowns and flags */
     SVECTOR unk28; /* model home position */
-    SVECTOR unk30; /* target position */
+    SVECTOR pos30; /* target position */
     s32 model38; /* model */
-    SVECTOR unk3C; /* model rotation */
-    SVECTOR unk44; /* model position */
-    VECTOR unk4C; /* model position */
-    VECTOR unk5C; /* model scale */
+    SVECTOR rot3C; /* model rotation */
+    SVECTOR pos44; /* model position */
+    VECTOR pos4C; /* model position */
+    VECTOR scale5C; /* model scale */
     SVECTOR unk6C; /* angles towards the model */
     Pool6CEntry *emit74;
 } Fx0faWork; /* 0x78 */

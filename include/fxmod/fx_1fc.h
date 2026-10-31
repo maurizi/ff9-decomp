@@ -94,20 +94,20 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* slice rotation */
+    SVECTOR rot8; /* slice rotation */
     Fx1fcVec3 unk10; /* slice position */
     s32 pad1C;
     Fx1fcVec3 unk20; /* slice scale */
     s32 pad2C;
-    SVECTOR unk30;
+    SVECTOR rot30;
     Fx1fcVec3 unk38;
     s32 pad44;
     Fx1fcVec3 unk48;
     s32 pad54;
     SVECTOR unk58[8]; /* unit positions */
     VECTOR unk98[8]; /* unit scales */
-    SVECTOR unk118;
-    SVECTOR unk120;
+    SVECTOR pos118;
+    SVECTOR pos120;
     SVECTOR unk128;
     s16 unk130; /* fade counters */
     s16 unk132;

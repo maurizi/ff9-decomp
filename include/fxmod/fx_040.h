@@ -11,9 +11,9 @@ typedef struct {
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;
     Pool6CEntry *emit24;
-    SVECTOR unk28; /* target position */
-    SVECTOR unk30; /* left of the target */
-    SVECTOR unk38; /* right of the target */
+    SVECTOR pos28; /* target position */
+    SVECTOR pos30; /* left of the target */
+    SVECTOR pos38; /* right of the target */
     SVECTOR unk40;
     u8 pad48[8];
 } Fx040Work; /* 0x50 */

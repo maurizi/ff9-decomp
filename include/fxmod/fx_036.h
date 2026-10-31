@@ -12,8 +12,8 @@ typedef struct {
     Pool6CEntry *emit10;
     Pool6CEntry *emit14;
     Pool6CEntry *emit18;
-    SVECTOR unk1C;
-    SVECTOR unk24;
+    SVECTOR pos1C;
+    SVECTOR pos24;
 } Fx036Work; /* 0x2C */
 
 extern s16 D_801E7BCC[];

@@ -8,7 +8,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* speed */
     s32 unk8; /* turn rate */
-    SVECTOR unkC; /* position */
+    SVECTOR posC; /* position */
     SVECTOR unk14; /* direction */
     Pool6CEntry *emit1C;
     SVECTOR unk20; /* target */
@@ -16,7 +16,7 @@ typedef struct {
 
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* target */
+    SVECTOR pos4; /* target */
     SVECTOR unkC; /* caster body position */
     SVECTOR unk14; /* caster rotation */
     s32 unk1C; /* spawned */

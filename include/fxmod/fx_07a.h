@@ -46,7 +46,7 @@ typedef struct {
 typedef struct {
     s32 unk0[16]; /* timers */
     Fx07aModel unk40[3];
-    VECTOR unk94; /* position */
+    VECTOR pos94; /* position */
     SVECTOR unkA4[8]; /* unit home positions */
     s32 unkE4[8]; /* unit delays */
     s32 pad104;

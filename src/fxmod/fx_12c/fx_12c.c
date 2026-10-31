@@ -24,9 +24,9 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 7, q = &work->unk0[7]; i >= 0; i--) {
             *q-- = 0;
         }
-        work->unk20.vx = 0;
-        work->unk20.vy = 0;
-        work->unk20.vz = -0x550;
+        work->pos20.vx = 0;
+        work->pos20.vy = 0;
+        work->pos20.vz = -0x550;
         D_801E7F08[0].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
         D_801E7F08[1].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 0xFF);
         D_801E7F08[2].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 0xFF);
@@ -54,16 +54,16 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, D_801E88E8, 0, -0x550, -0x1000);
             break;
         case 1:
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk28);
-            work->unk28.vy = 0;
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk28);
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos28);
+            work->pos28.vy = 0;
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos28);
             if (p != NULL) {
                 p->otZ = -0x100;
             }
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unk28);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos28);
             break;
         case 9:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk20);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos20);
             if (p != NULL) {
                 p->otZ = 0x100;
             }

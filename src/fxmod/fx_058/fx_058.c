@@ -33,18 +33,18 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
             do {
             } while (0);
             ex->btlfx_aimAngles((s16 *)&it->unkC, (s16 *)&it->unk20, (s16 *)&a);
-            ex->btlfx_turnToward((s16 *)&a, (s16 *)&it->unk14, it->unk8);
+            ex->btlfx_turnToward((s16 *)&a, (s16 *)&it->rot14, it->unk8);
             a.vz = frame << 5;
-            ex->btlfx_pointAhead((s16 *)&it->unkC, (s16 *)&it->unk14, it->unk4, (s16 *)&it->unkC);
+            ex->btlfx_pointAhead((s16 *)&it->unkC, (s16 *)&it->rot14, it->unk4, (s16 *)&it->unkC);
             pos.vx = it->unkC.vx;
             pos.vy = it->unkC.vy;
             pos.vz = it->unkC.vz;
             scale.vx = scale.vy = 0x249;
             scale.vz = it->unk20.pad;
             it->unk20.pad += 0x97;
-            it->unk14.vx += 0x800;
-            ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, work->model24);
-            it->unk14.vx -= 0x800;
+            it->rot14.vx += 0x800;
+            ex->Hi_DrawEffModel(&it->rot14, &pos, (s32)&scale, work->model24);
+            it->rot14.vx -= 0x800;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->unkC, NULL, 0, 0x800, 0x1000, 1,
                               it->unk1C, 0);
             d.vx = work->unk4.vx - it->unkC.vx;
@@ -117,10 +117,10 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 it->unk20.vy = work->unk4.vy;
                 k = work->unk1C & 3;
                 j = work->unk14.vy - 0x300;
-                it->unk14.vy = j + k * 0x200;
+                it->rot14.vy = j + k * 0x200;
                 k = work->unk1C >> 2;
-                it->unk14.vx = work->unk14.vx + k * 0xFF;
-                it->unk14.vz = 0;
+                it->rot14.vx = work->unk14.vx + k * 0xFF;
+                it->rot14.vz = 0;
                 it->unk1C = D_801E7EF0[work->unk1C];
             }
         }

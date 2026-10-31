@@ -7,8 +7,8 @@
 typedef struct {
     s32 unk0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* target body position */
-    SVECTOR unk10; /* target position */
+    SVECTOR pos8; /* target body position */
+    SVECTOR pos10; /* target position */
 } Fx000Work;
 
 extern Unk800F78A4 *fx_000_env;

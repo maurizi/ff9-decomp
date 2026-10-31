@@ -122,18 +122,18 @@ static s32 fx_005_op83PoolTask(s32 mode, Fx005Bolt *it, Unk800F78A4 *env, Unk801
             c = ex->math_cos(t >> 2);
             strip = &D_801E8C50[it->unk10];
             br = (Fx005Strip *)&D_801E9280[it->unk10];
-            fxm_drawJaggedStrip16(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame * 0x97, 0x186, frame, c,
+            fxm_drawJaggedStrip16(entry, strip, it->unk18, &it->pos0, &it->unk8, 0, 0x200, frame * 0x97, 0x186, frame, c,
                           ((0x1000 - t) * (it->unk15 + 0xFB)) >> 12, it->unk14);
             fxm_drawJaggedBranch4(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
             fxm_drawJaggedBranch4(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
             if (frame == 0) {
-                it->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&it->unk0);
+                it->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&it->pos0);
                 if (it->emit1C != NULL) {
                     it->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
                 if (it->unk10 & 1) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0xC, 0x46);
-                    p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&it->unk0);
+                    p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&it->pos0);
                     if (p != NULL) {
                         p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                     }
@@ -148,12 +148,12 @@ static s32 fx_005_op83PoolTask(s32 mode, Fx005Bolt *it, Unk800F78A4 *env, Unk801
             c = ex->math_cos(t >> 2);
             strip = &D_801E8C50[it->unk10];
             br = (Fx005Strip *)&D_801E9280[it->unk10];
-            fxm_drawJaggedStrip16(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame << 6, 0x186, frame, c,
+            fxm_drawJaggedStrip16(entry, strip, it->unk18, &it->pos0, &it->unk8, 0, 0x200, frame << 6, 0x186, frame, c,
                           ((0x1000 - t) * 0xAA) >> 12, it->unk14);
             fxm_drawJaggedBranch4(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
             fxm_drawJaggedBranch4(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
             if (frame == 0) {
-                it->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&it->unk0);
+                it->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&it->pos0);
                 if (it->emit1C != NULL) {
                     it->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
@@ -194,9 +194,9 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->poolCount = 0xC;
     } else if (mode == 1) {
         fx_005_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         i = 0;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         q = work->unk10 = D_801E95F0;
         for (; i < 0x40; i++) {
             *q++ = ex->btlfx_randCentered(0x100);
@@ -213,7 +213,7 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (kind > 0) {
             work->unk14++;
-            BTLFX_COPY_SVEC(&a, &work->unk0);
+            BTLFX_COPY_SVEC(&a, &work->pos0);
             if (kind != 2) {
                 a.vx += ex->btlfx_randCentered(0x200);
                 a.vy += ex->btlfx_randCentered(0x300);
@@ -222,7 +222,7 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (kind != 3) {
                 it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (it != NULL) {
-                    BTLFX_COPY_SVEC(&it->unk0, &a);
+                    BTLFX_COPY_SVEC(&it->pos0, &a);
                     BTLFX_COPY_SVEC(&b, &a);
                     b.vy -= 0xC00;
                     r = ex->btlfx_randCentered(0x100) + 0x640;
@@ -233,8 +233,8 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     b.vx += (ex->math_cos(ang) * r) >> 12;
                     b.vz += (ex->math_sin(ang) * r) >> 12;
                     if (kind != 2) {
-                        it->unk0.vx = b.vx;
-                        it->unk0.vz = b.vz;
+                        it->pos0.vx = b.vx;
+                        it->pos0.vz = b.vz;
                     }
                     BTLFX_COPY_SVEC(&it->unk8, &b);
                     it->unk10 = work->unk14 % 12;
@@ -252,7 +252,7 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 for (kind = 0; kind < 2; kind++) {
                     it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (it != NULL) {
-                        BTLFX_COPY_SVEC(&it->unk0, &a);
+                        BTLFX_COPY_SVEC(&it->pos0, &a);
                         BTLFX_COPY_SVEC(&b, &a);
                         b.vy -= 0xC00;
                         r = ex->btlfx_randCentered(0x80) + 0x80;
@@ -268,11 +268,11 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         it->unk15 = 0x80;
                     }
                 }
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->unk0);
+                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos0);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unk8);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->pos8);
             }
         }
         if (frame == 0xF) {
@@ -283,11 +283,11 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c >> 1, c >> 1, c);
         }
         if (frame == 0x14) {
-            p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unk8);
+            p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->pos8);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
             }
-            p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unk0);
+            p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos0);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 p->elems->unk24 = (void (*)())fx_005_op83ElemDraw;

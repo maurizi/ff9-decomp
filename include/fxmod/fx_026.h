@@ -68,21 +68,21 @@ typedef struct {
     s16 unk4; /* track: D_801EA774 index */
     s16 pad6;
     Pool6CEntry *emit8;
-    SVECTOR unkC;
+    SVECTOR posC;
 } Fx026Item;
 
 typedef struct {
     s32 unk0;
     s32 unk4; /* frame */
     u8 pad8[8];
-    SVECTOR unk10;
+    SVECTOR pos10;
     u8 pad18[0x10];
-    SVECTOR unk28; /* summon bone positions */
-    SVECTOR unk30;
+    SVECTOR pos28; /* summon bone positions */
+    SVECTOR pos30;
     SVECTOR unk38;
     Fx026Vec3 unk40; /* summon position */
     Fx026Vec3 unk4C; /* summon scale */
-    SVECTOR unk58; /* summon rotation */
+    SVECTOR rot58; /* summon rotation */
     u8 pad60[4];
     s32 unk64;
     s32 model68; /* models */
@@ -104,7 +104,7 @@ typedef struct {
 typedef struct {
     s32 unk0;
     s32 unk4; /* frame */
-    SVECTOR unk8; /* position */
+    SVECTOR pos8; /* position */
     s32 model10; /* model */
 } Fx026Work82; /* 0x14 */
 
@@ -149,7 +149,7 @@ typedef struct {
     s32 unk0;
     s32 unk4; /* frame */
     SVECTOR unk8; /* position */
-    SVECTOR unk10;
+    SVECTOR pos10;
     s32 unk18[6][3]; /* models of the six pieces */
     s32 pad60[3];
     s32 model6C[7];
@@ -160,7 +160,7 @@ typedef struct {
     s16 unk0; /* state */
     s16 unk2; /* piece */
     s32 pad4[2];
-    SVECTOR unkC;
+    SVECTOR posC;
 } Fx026Item81;
 
 typedef struct {

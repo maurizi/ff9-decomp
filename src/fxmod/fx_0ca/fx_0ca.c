@@ -7,15 +7,15 @@ s32 fx_0ca_op80(s32 mode, Fx0caWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x18;
     } else if (mode == 1) {
-        work->unk10.vx = env->targets->centerX;
-        work->unk10.vy = env->targets->centerY;
-        work->unk10.vz = env->targets->centerZ;
-        work->unk8.vx = work->unk10.vx;
-        work->unk8.vy = work->unk10.vy;
-        work->unk8.vz = work->unk10.vz;
-        work->unk8.vy -= 0x190;
+        work->pos10.vx = env->targets->centerX;
+        work->pos10.vy = env->targets->centerY;
+        work->pos10.vz = env->targets->centerZ;
+        work->pos8.vx = work->pos10.vx;
+        work->pos8.vy = work->pos10.vy;
+        work->pos8.vz = work->pos10.vz;
+        work->pos8.vy -= 0x190;
         fx_0ca_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->unk14 = (s32)D_801E78C8;
             work->emit0->unk12 = 0x1E;
@@ -27,7 +27,7 @@ s32 fx_0ca_op80(s32 mode, Fx0caWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x19) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
         }
         return frame >= 0x46;
     }

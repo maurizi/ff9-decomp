@@ -6,8 +6,8 @@
 
 typedef struct {
     s32 unk0;
-    SVECTOR unk4; /* above unkC */
-    SVECTOR unkC; /* target on the ground */
+    SVECTOR pos4; /* above unkC */
+    SVECTOR posC; /* target on the ground */
     Pool6CEntry *emit14;
 } Fx047Work;
 

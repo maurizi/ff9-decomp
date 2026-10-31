@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 unk0;
-    SVECTOR unk4;
+    SVECTOR pos4;
 } Fx04cWork80;
 
 typedef struct {

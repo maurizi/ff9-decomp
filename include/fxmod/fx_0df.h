@@ -18,7 +18,7 @@ typedef struct {
     s16 unk0;
     s16 unk2; /* size */
     SVECTOR unk4; /* position */
-    SVECTOR unkC; /* rotation */
+    SVECTOR rotC; /* rotation */
     u16 unk14; /* roll */
     u16 unk16; /* roll speed */
 } Fx0dfPart;
@@ -81,7 +81,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     s32 unk8; /* ordering-table offset */
-    SVECTOR unkC; /* caster body position */
+    SVECTOR posC; /* caster body position */
     s32 unk14; /* caster body position, words */
     s32 unk18;
     s32 unk1C;

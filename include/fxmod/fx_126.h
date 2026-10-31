@@ -7,11 +7,11 @@
 typedef struct {
     s32 model0; /* models */
     s32 model4;
-    VECTOR unk8; /* model positions */
-    VECTOR unk18;
-    SVECTOR unk28; /* model rotations */
-    SVECTOR unk30;
-    VECTOR unk38; /* model scale */
+    VECTOR pos8; /* model positions */
+    VECTOR pos18;
+    SVECTOR rot28; /* model rotations */
+    SVECTOR rot30;
+    VECTOR scale38; /* model scale */
     u8 pad48[0x50 - 0x48];
     SVECTOR unk50; /* curve control points */
     SVECTOR unk58;

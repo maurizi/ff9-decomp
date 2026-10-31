@@ -165,7 +165,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_0d6_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         ex->btlfx_initEffModels(fx_0d6_effModels, 6);
         work->model14[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 1);
         work->model14[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1B), 1);
@@ -173,7 +173,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model14[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1E), 1);
         work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x37, 0x3D06, 0x80, 0x80);
         work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x37, 0x3D06, 0x80, 0x80);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk8);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos8);
         if (p != NULL) {
             p->unk14 = (s32)D_801E9610;
             p->unk12 = 0x12;
@@ -213,7 +213,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             bri = ex->math_cos(t >> 2);
             env->otZ = 0x200;
             scl = t / 3 + 0x555;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->unk8, NULL, 0x1000, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->pos8, NULL, 0x1000, 0, 1,
                               ex->math_cos(t >> 2));
             env->otZ = 0;
             if (frame >= 8) {
@@ -257,16 +257,16 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 g = (frame << 12) / 29;
                 w = g >> 2;
                 bri = ex->math_cos(w);
-                pos2.vx = work->unk8.vx;
-                pos2.vy = work->unk8.vy;
+                pos2.vx = work->pos8.vx;
+                pos2.vy = work->pos8.vy;
                 scl = g / 2 + 0x800;
-                pos2.vz = work->unk8.vz;
+                pos2.vz = work->pos8.vz;
                 pos2.vy -= 0x400;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &pos2, &rot, ex->math_sin(w) * 3 / 2 + 0x1000,
                                   0, 1, ex->math_cos(w));
             }
             env->otZ = 0x200;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->unk8, NULL,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->pos8, NULL,
                               ex->math_cos(t >> 2) / 2 * 2 + 0x2000, 0, 1, ex->math_cos(t >> 2));
             env->otZ = 0;
             if (f29) {
@@ -277,9 +277,9 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot2.vx = 0;
                 rot2.vy = frame * 24;
                 rot2.vz = 0;
-                pos.vx = work->unk8.vx;
-                pos.vy = work->unk8.vy;
-                pos.vz = work->unk8.vz;
+                pos.vx = work->pos8.vx;
+                pos.vy = work->pos8.vy;
+                pos.vz = work->pos8.vz;
                 sc.vx = sc.vz = ex->math_sin(s) / 3 + 0x180;
                 sc.vy = ex->math_cos(s) * 3 / 2 + 0x1000;
                 ex->Hi_DrawEffModel(&rot2, &pos, (s32)&sc, work->model24);
@@ -287,7 +287,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                          (ex->math_cos(s) >> 5) - 0x80);
             }
             if (frame == 2) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk8);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos8);
                 if (p != NULL) {
                     p->otZ = 0x100;
                 }
@@ -299,11 +299,11 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 3) {
-                p = work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->unk8);
+                p = work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos8);
                 if (p != NULL) {
                     p->otZ = 0x100;
                 }
-                p = work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->unk8);
+                p = work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos8);
                 if (p != NULL) {
                     p->otZ = 0x100;
                 }
@@ -365,9 +365,9 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 cnt = 0;
                 for (i = 0; i < 0x12; i++) {
                     u = (i << 12) / 18;
-                    pos3.vx = work->unk8.vx;
-                    pos3.vy = work->unk8.vy;
-                    pos3.vz = work->unk8.vz;
+                    pos3.vx = work->pos8.vx;
+                    pos3.vy = work->pos8.vy;
+                    pos3.vz = work->pos8.vz;
                     pos3.vy -= 0x200 + ((u * cc) >> 12);
                     ang += d8;
                     r = (d4 * u) >> 12;
@@ -419,7 +419,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = frame << 8;
             rot.pad = 1;
             rot.vy = 0;
-            fxm_drawTexelQuads(&work->unk8, &rot, 0x117, 0, 0x30, 2, work->unk34 & 7, 0x100, 0x10, 0x10, scl, bri, 1,
+            fxm_drawTexelQuads(&work->pos8, &rot, 0x117, 0, 0x30, 2, work->unk34 & 7, 0x100, 0x10, 0x10, scl, bri, 1,
                           D_801E98A0, 0);
         }
         work->unk34++;

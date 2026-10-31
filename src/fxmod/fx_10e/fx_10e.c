@@ -16,14 +16,14 @@ s32 fx_10e_op80(s32 mode, Fx10eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk10);
-        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk8, (s16 *)&work->unk18);
-        work->unk30.vx = 0x1000;
-        work->unk30.vy = 0x1000;
-        work->unk30.vz = 0x1000;
-        work->unk18.vx += 0x800;
-        work->unk20.vx = work->unk10.vx;
-        work->unk20.vy = work->unk10.vy;
-        work->unk20.vz = work->unk10.vz;
+        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk8, (s16 *)&work->rot18);
+        work->scale30.vx = 0x1000;
+        work->scale30.vy = 0x1000;
+        work->scale30.vz = 0x1000;
+        work->rot18.vx += 0x800;
+        work->pos20.vx = work->unk10.vx;
+        work->pos20.vy = work->unk10.vy;
+        work->pos20.vz = work->unk10.vz;
         work->model88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 1);
         work->model8A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x97, 0x3D40, 0, 0);
     } else {
@@ -31,17 +31,17 @@ s32 fx_10e_op80(s32 mode, Fx10eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame < 0xA) {
             t = frame << 9;
             ex->btlfx_lerpVec((s16 *)&work->unk0, (s16 *)&work->unk8, t, (s16 *)&pos);
-            work->unk20.vx = pos.vx;
-            work->unk20.vy = pos.vy;
-            work->unk20.vz = pos.vz;
-            work->unk20.vy -= (ex->math_sin(t >> 1) * 400) >> 12;
-            work->unk18.vx += 0x200;
+            work->pos20.vx = pos.vx;
+            work->pos20.vy = pos.vy;
+            work->pos20.vz = pos.vz;
+            work->pos20.vy -= (ex->math_sin(t >> 1) * 400) >> 12;
+            work->rot18.vx += 0x200;
         }
-        ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model88);
+        ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model88);
         for (i = 0; i < 3; i++) {
             if (frame >= i + 1) {
                 c = -(i * 16);
-                ex->Hi_DrawEffModel(&work->unk40[i], &work->unk58[i], (s32)&work->unk30, work->model8A);
+                ex->Hi_DrawEffModel(&work->unk40[i], &work->unk58[i], (s32)&work->scale30, work->model8A);
                 ex->Hi_ModifyEffModelAbr(work->model8A, 3);
                 ex->Hi_ModifyEffModelRGB(work->model8A, c, c, c);
             }
@@ -58,12 +58,12 @@ s32 fx_10e_op80(s32 mode, Fx10eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk58[1].vx = work->unk58[0].vx;
         work->unk58[1].vy = work->unk58[0].vy;
         work->unk58[1].vz = work->unk58[0].vz;
-        work->unk40[0].vx = work->unk18.vx;
-        work->unk40[0].vy = work->unk18.vy;
-        work->unk40[0].vz = work->unk18.vz;
-        work->unk58[0].vx = work->unk20.vx;
-        work->unk58[0].vy = work->unk20.vy;
-        work->unk58[0].vz = work->unk20.vz;
+        work->unk40[0].vx = work->rot18.vx;
+        work->unk40[0].vy = work->rot18.vy;
+        work->unk40[0].vz = work->rot18.vz;
+        work->unk58[0].vx = work->pos20.vx;
+        work->unk58[0].vy = work->pos20.vy;
+        work->unk58[0].vz = work->pos20.vz;
         if (frame >= 8) {
             ex->btlfx_clearEffModels();
             return 1;
@@ -79,8 +79,8 @@ s32 fx_10e_op81(s32 mode, Fx10eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0xC;
     } else if (mode == 1) {
         fx_10e_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk4);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

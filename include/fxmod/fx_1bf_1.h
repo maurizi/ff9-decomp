@@ -12,7 +12,7 @@ typedef struct {
     s16 unk8;
     s16 unkA; /* scale */
     SVECTOR unkC; /* position */
-    SVECTOR unk14; /* rotation */
+    SVECTOR rot14; /* rotation */
     s16 unk1C; /* spin */
     s16 unk1E;
     s16 unk20; /* model index */
@@ -94,16 +94,16 @@ extern s32 D_801EF25C;
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* counter */
-    SVECTOR unk8; /* position */
-    SVECTOR unk10;
+    SVECTOR pos8; /* position */
+    SVECTOR pos10;
     SVECTOR unk18; /* camera */
     u8 pad20[8];
     s32 unk28[3]; /* model position */
-    SVECTOR unk34;
-    SVECTOR unk3C;
+    SVECTOR rot34;
+    SVECTOR rot3C;
     s32 unk44[3]; /* model scale */
     s32 unk50[3];
-    SVECTOR unk5C;
+    SVECTOR rot5C;
     Pool6CEntry *emit64;
     Pool6CEntry *emit68;
     Pool6CEntry *emit6C;

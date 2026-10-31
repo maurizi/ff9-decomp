@@ -24,11 +24,11 @@ typedef struct {
     s32 unkD8[5]; /* pillar fade */
     VECTOR unkEC[5]; /* pillar positions */
     s32 unk13C; /* fade */
-    SVECTOR unk140; /* pillar rotation */
+    SVECTOR rot140; /* pillar rotation */
     Fx083Vec3 unk148; /* pillar scale */
     s32 unk154;
     SVECTOR unk158; /* center */
-    SVECTOR unk160; /* caster position */
+    SVECTOR pos160; /* caster position */
     s32 unk168; /* radius */
     s32 unk16C; /* height */
     Pool6CEntry *emit170[4];

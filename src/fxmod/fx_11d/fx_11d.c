@@ -44,8 +44,8 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x34;
     } else if (mode == 1) {
         fx_11d_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk1C);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk1C);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos1C);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos1C);
         if (work->emit0 != NULL) {
             work->emit0->otZ = -0x80;
         }
@@ -96,13 +96,13 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         switch (frame) {
         case 0:
-            ex->btlfx_getUnitBonePos(0x10, 0x37, (u16 *)&work->unk24);
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk24);
+            ex->btlfx_getUnitBonePos(0x10, 0x37, (u16 *)&work->pos24);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos24);
             break;
         case 0x1E:
-            ex->btlfx_getUnitBonePos(0x10, 0, (u16 *)&work->unk2C);
-            work->unk2C.vy -= 0xC8;
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk2C);
+            ex->btlfx_getUnitBonePos(0x10, 0, (u16 *)&work->pos2C);
+            work->pos2C.vy -= 0xC8;
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos2C);
             if (work->emit18 != NULL) {
                 work->emit18->unk14 = (s32)D_801E812C;
                 work->emit18->unk12 = 8;

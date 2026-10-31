@@ -8,11 +8,11 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* counter */
     s32 unk8[3]; /* position */
-    SVECTOR unk14; /* rotation */
+    SVECTOR rot14; /* rotation */
     s32 unk1C[3]; /* scale */
-    SVECTOR unk28;
+    SVECTOR pos28;
     SVECTOR unk30;
-    SVECTOR unk38;
+    SVECTOR pos38;
     s32 model40[5]; /* models */
 } Fx1afWork; /* 0x54 */
 

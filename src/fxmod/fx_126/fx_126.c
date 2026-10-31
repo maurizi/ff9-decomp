@@ -15,18 +15,18 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(fx_126_effModels, 2);
         work->model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
         work->model4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
-        work->unk28.vy = 0x700;
-        work->unk28.vz = 0x400;
-        work->unk30.vy = -0x700;
-        work->unk30.vz = -0x400;
-        work->unk38.vx = 0x2000;
-        work->unk38.vy = 0x2000;
-        work->unk38.vz = 0x2000;
+        work->rot28.vy = 0x700;
+        work->rot28.vz = 0x400;
+        work->rot30.vy = -0x700;
+        work->rot30.vz = -0x400;
+        work->scale38.vx = 0x2000;
+        work->scale38.vy = 0x2000;
+        work->scale38.vz = 0x2000;
         work->unk50.vz = -0x6E0;
         work->unk68.vx = 0x692;
         work->unk70.vx = -0x692;
-        work->unk28.vx = 0;
-        work->unk30.vx = 0;
+        work->rot28.vx = 0;
+        work->rot30.vx = 0;
         work->unk50.vx = 0;
         work->unk50.vy = 0;
         work->unk68.vy = 0;
@@ -39,18 +39,18 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
     frame = entry->frame;
     if (frame >= 1 && frame <= 0x18) {
-        func_801E7D48(0x18, frame, &work->unk58, &work->unk70, &work->unk50, &work->unk68, &work->unk60, &work->unk8);
-        ex->Hi_DrawEffModel(&work->unk28, &work->unk8, (s32)&work->unk38, work->model0);
-        func_801E7D48(0x18, frame, &work->unk60, &work->unk68, &work->unk50, &work->unk70, &work->unk58, &work->unk18);
-        ex->Hi_DrawEffModel(&work->unk30, &work->unk18, (s32)&work->unk38, work->model4);
-        work->unk28.vy -= 0x180;
-        work->unk30.vy += 0x180;
-        env->camera->points[0].vx = work->unk8.vx;
-        env->camera->points[0].vy = work->unk8.vy;
-        env->camera->points[0].vz = work->unk8.vz;
-        env->camera->points[1].vx = work->unk18.vx;
-        env->camera->points[1].vy = work->unk18.vy;
-        env->camera->points[1].vz = work->unk18.vz;
+        func_801E7D48(0x18, frame, &work->unk58, &work->unk70, &work->unk50, &work->unk68, &work->unk60, &work->pos8);
+        ex->Hi_DrawEffModel(&work->rot28, &work->pos8, (s32)&work->scale38, work->model0);
+        func_801E7D48(0x18, frame, &work->unk60, &work->unk68, &work->unk50, &work->unk70, &work->unk58, &work->pos18);
+        ex->Hi_DrawEffModel(&work->rot30, &work->pos18, (s32)&work->scale38, work->model4);
+        work->rot28.vy -= 0x180;
+        work->rot30.vy += 0x180;
+        env->camera->points[0].vx = work->pos8.vx;
+        env->camera->points[0].vy = work->pos8.vy;
+        env->camera->points[0].vz = work->pos8.vz;
+        env->camera->points[1].vx = work->pos18.vx;
+        env->camera->points[1].vy = work->pos18.vy;
+        env->camera->points[1].vz = work->pos18.vz;
     }
     switch (frame) {
     case 8:

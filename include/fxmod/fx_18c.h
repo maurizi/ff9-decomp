@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* home position */
+    SVECTOR pos0; /* home position */
     SVECTOR unk8; /* unk8.vy: height */
 } Fx18cWork;
 

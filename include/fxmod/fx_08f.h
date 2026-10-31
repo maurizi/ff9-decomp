@@ -21,7 +21,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     s16 unk8[6];
-    SVECTOR unk14; /* summon position */
+    SVECTOR pos14; /* summon position */
     SVECTOR unk1C;
     s32 model24; /* models */
     s32 model28;

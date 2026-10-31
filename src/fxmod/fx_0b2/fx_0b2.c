@@ -207,9 +207,9 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         r = work->unk4 * 0x300 / 72;
         frame = entry->frame;
         a = alpha - ex->math_cos(work->unk4 * 1500 / 72);
-        work->unk10.vx = work->unk8.vx + ((ex->math_cos(a) * r) >> 12);
-        work->unk10.vz = work->unk8.vz + ((ex->math_sin(a) * r) >> 12);
-        work->unk10.vy = work->unk8.vy;
+        work->pos10.vx = work->unk8.vx + ((ex->math_cos(a) * r) >> 12);
+        work->pos10.vz = work->unk8.vz + ((ex->math_sin(a) * r) >> 12);
+        work->pos10.vy = work->unk8.vy;
         state = work->unk0;
         /* Dead stores only (flow deletes them, jump2 the branch): the labels end cse's block here, so case 3
          * computes 0x1000 - t from the constant instead of reusing alpha (which cse would know is 0x1000). */
@@ -231,22 +231,22 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vy = alpha;
             scale.vx = alpha;
             w = alpha >> 6;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x11A, 0xFFFF, 0x10, 0x90, w,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x11A, 0xFFFF, 0x10, 0x90, w,
                           work->unk4 * 0xC8, 0x190, 0xC8, 1, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = work->unk4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk10, &rot, 0x6000, 0, 1, alpha / 2, 0,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos10, &rot, 0x6000, 0, 1, alpha / 2, 0,
                               0);
             scale.vy = 0x2000;
             scale.vx = 0x2000;
             t = alpha >> 2;
             scale.vz = ex->math_sin(t) * 2;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, alpha >> 5, 0x1A,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, alpha >> 5, 0x1A,
                           0x3D01, 0, 0, w, work->unk4 * 0xC8, 0x190, 0x80, 1, 8);
             scale.vx = scale.vy = scale.vx * 3 / 2;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, w, 0x17, 0x3D03, 0,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, (ex->math_cos(t) >> 4) + 0x1C8, 0x280, w, 0x17, 0x3D03, 0,
                           0x70, w, work->unk4 * 0xC8, 0x190, 0x40, 1, 8);
             if (frame >= 12) {
                 work->unk0 = 1;
@@ -261,27 +261,27 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vz = 0x2000;
             t = (frame << 12) / 12;
             scale.vx = scale.vy = t + 0x1000;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x11A, 0xFFFF, 0x10, 0x90, (t >> 5) + 0x40,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x11A, 0xFFFF, 0x10, 0x90, (t >> 5) + 0x40,
                           work->unk4 * 0xC8, 0x190, 0xC8, 1, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = work->unk4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk10, &rot, 0x6000, 0, 1,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos10, &rot, 0x6000, 0, 1,
                               t / 2 + 0x800, 0, 0);
             scale.vz = scale.vx = scale.vy = 0x2000;
             y = 0x1C8 - (t >> 5);
-            func_801E78FC(&work->unk10, &work->unk18, &scale, y, 0x280, 0x80, 0x1A, 0x3D01, 0, 0, (t >> 5) + 0x40, work->unk4 * 0xC8,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, y, 0x280, 0x80, 0x1A, 0x3D01, 0, 0, (t >> 5) + 0x40, work->unk4 * 0xC8,
                           0x190, 0x80, 1, 8);
             scale.vx = scale.vy = scale.vx * 3 / 2;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, y, 0x280, 0x40, 0x17, 0x3D03, 0, 0x70, (t >> 5) + 0x40,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, y, 0x280, 0x40, 0x17, 0x3D03, 0, 0x70, (t >> 5) + 0x40,
                           work->unk4 * 0xC8, 0x190, 0x40, 1, 8);
             if (frame >= 12) {
                 Pool6CEntry *p;
 
                 work->unk0 = 2;
                 entry->frame = -1;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
                 if (p != NULL) {
                     p->otZ = 0x58;
                 }
@@ -297,18 +297,18 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             s = (t >> 1) + 0x2000;
             scale.vx = scale.vy = scale.vz = s;
             w = (t >> 5) + 0xC0;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x11A, 0xFFFF, 0x10, 0x90, w,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x11A, 0xFFFF, 0x10, 0x90, w,
                           work->unk4 * 0xC8, 0x190, (t >> 5) + 0xA0, 1, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = work->unk4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk10, &rot, 0x6000, 0, 1, alpha, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos10, &rot, 0x6000, 0, 1, alpha, 0, 0);
             scale.vx = scale.vy = scale.vz = s;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x1A, 0x3D01, 0, 0, w,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x1A, 0x3D01, 0, 0, w,
                           work->unk4 * 0xC8, 0x190, 0x80, 1, 8);
             scale.vx = scale.vy = scale.vx * 3 / 2;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, 0x148, 0x280, 0x40, 0x17, 0x3D03, 0, 0x70, w,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, 0x148, 0x280, 0x40, 0x17, 0x3D03, 0, 0x70, w,
                           work->unk4 * 0xC8, 0x190, 0x40, 1, 8);
             if (frame >= 0x20) {
                 work->unk0 = 3;
@@ -323,20 +323,20 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vx = scale.vy = scale.vz = 0x2800;
             t = frame << 8;
             u = t >> 2;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, 0x88, 0x180, ex->math_cos(u) >> 5, 0x11A, 0xFFFF, 0x10, 0x90,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, 0x88, 0x180, ex->math_cos(u) >> 5, 0x11A, 0xFFFF, 0x10, 0x90,
                           0x140, work->unk4 * 0xC8, 0x190, 0x120, 1, 0x10);
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = work->unk4 * 90;
             rot.pad = 1;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk10, &rot, 0x6000, 0, 1, 0x1000 - t, 0,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos10, &rot, 0x6000, 0, 1, 0x1000 - t, 0,
                               0);
             scale.vx = scale.vy = scale.vz = 0x2800;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, 0x148, 0x280, ex->math_cos(u) >> 5, 0x1A, 0x3D01, 0, 0, 0x140,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, 0x148, 0x280, ex->math_cos(u) >> 5, 0x1A, 0x3D01, 0, 0, 0x140,
                           work->unk4 * 0xC8, 0x190, 0x80, 1, 8);
             alpha -= t;
             scale.vx = scale.vy = scale.vx * 3 / 2;
-            func_801E78FC(&work->unk10, &work->unk18, &scale, 0x148, 0x280, ex->math_cos(u) >> 6, 0x17, 0x3D03, 0, 0x70,
+            func_801E78FC(&work->pos10, &work->unk18, &scale, 0x148, 0x280, ex->math_cos(u) >> 6, 0x17, 0x3D03, 0, 0x70,
                           0x140, work->unk4 * 0xC8, 0x190, 0x40, 1, 8);
             if (frame >= 0x10) {
                 return one;
@@ -358,9 +358,9 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             s32 d;
             s32 e;
 
-            from.vx = work->unk10.vx;
-            from.vy = work->unk10.vy;
-            from.vz = work->unk10.vz;
+            from.vx = work->pos10.vx;
+            from.vy = work->pos10.vy;
+            from.vz = work->pos10.vz;
             from.vy -= 0x640;
             ang = work->unk4 * 0x180 + (ex->btlfx_rand() & 0xFF);
             p = D_801E90B0;
@@ -368,7 +368,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 i++;
                 h = ((ex->btlfx_rand() & 0xFFF) * alpha) >> 12;
                 d = (ex->btlfx_rand() & 0x1FF) + 0x400;
-                BTLFX_COPY_SVEC(&to, &work->unk10);
+                BTLFX_COPY_SVEC(&to, &work->pos10);
                 to.vx += (ex->math_cos(ang) * d) >> 12;
                 to.vz += (ex->math_sin(ang) * d) >> 12;
                 e = ang + ex->btlfx_rand();

@@ -6,7 +6,7 @@
 
 typedef struct {
     SVECTOR unk0; /* caster position */
-    SVECTOR unk8; /* caster position, y = 0 */
+    SVECTOR pos8; /* caster position, y = 0 */
     s32 unk10; /* state */
     s32 model14[4]; /* models */
     s32 model24; /* model */

@@ -10,15 +10,15 @@ typedef struct {
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
-    SVECTOR unk14; /* model rotation */
-    VECTOR unk1C; /* model position */
-    VECTOR unk2C; /* model scale */
-    SVECTOR unk3C; /* btlfx_getUnitArgBonePos(0x10, 0) */
-    SVECTOR unk44; /* unk64 moved -0xC8 along the angles from unk3C */
-    SVECTOR unk4C; /* unk64 on the ground */
+    SVECTOR rot14; /* model rotation */
+    VECTOR pos1C; /* model position */
+    VECTOR scale2C; /* model scale */
+    SVECTOR pos3C; /* btlfx_getUnitArgBonePos(0x10, 0) */
+    SVECTOR pos44; /* unk64 moved -0xC8 along the angles from unk3C */
+    SVECTOR pos4C; /* unk64 on the ground */
     SVECTOR unk54; /* caster body position */
     SVECTOR unk5C; /* copy of unk3C */
-    SVECTOR unk64; /* unk54 + random */
+    SVECTOR pos64; /* unk54 + random */
     s32 unk6C; /* instance (0..4) */
     u16 model70; /* model */
 } Fx09bWork;

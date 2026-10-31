@@ -7,10 +7,10 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
-    SVECTOR unk8; /* effect origin */
+    SVECTOR pos8; /* effect origin */
     s32 unk10;
-    SVECTOR unk14;
-    SVECTOR unk1C;
+    SVECTOR pos14;
+    SVECTOR pos1C;
     SVECTOR unk24; /* camera position */
     Pool6CEntry *emit2C;
     Pool6CEntry *emit30;

@@ -10,8 +10,8 @@ typedef struct {
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
-    SVECTOR unk14; /* unit 0x10 body position */
-    SVECTOR unk1C; /* caster body position */
+    SVECTOR pos14; /* unit 0x10 body position */
+    SVECTOR pos1C; /* caster body position */
 } Fx0d1Work;
 
 extern Unk800F78A4 *fx_0d1_env;

@@ -13,9 +13,9 @@ typedef struct {
     Pool6CEntry *emit14;
     SVECTOR unk18; /* caster position */
     SVECTOR unk20; /* caster rotation */
-    SVECTOR unk28; /* bone 7 point */
-    SVECTOR unk30; /* bone 15 point */
-    SVECTOR unk38; /* in front of the caster */
+    SVECTOR pos28; /* bone 7 point */
+    SVECTOR pos30; /* bone 15 point */
+    SVECTOR pos38; /* in front of the caster */
     SVECTOR unk40; /* angles from unk24 to unk34 */
     SVECTOR unk48; /* angles from unk2C to unk34 */
     s32 unk50; /* screen tint */
@@ -23,7 +23,7 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4; /* target position */
+    SVECTOR pos4; /* target position */
     s32 unkC; /* target index */
 } Fx024Work81;
 

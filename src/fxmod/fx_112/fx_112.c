@@ -53,8 +53,8 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame == 4) {
             ex->btlfx_fadeUnitById(0, 0);
-            ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk40);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk40);
+            ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos40);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos40);
             if (p != NULL) {
                 p->otZ = 0x80;
             }
@@ -97,10 +97,10 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         break;
     case 2:
-        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk48);
+        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->pos48);
         k = frame / 5;
         if (frame == k * 5) {
-            q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk48);
+            q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos48);
             if (q != NULL) {
                 q->unk14 = (s32)D_801E8130[k];
                 q->unk12 = 0x14;
@@ -117,14 +117,14 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame >= 0x10) {
             work->unk0 = 4;
             entry->frame = -1;
-            work->emit50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk48);
+            work->emit50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos48);
             if (p != NULL) {
                 p->otZ = 0x80;
             }
         }
         break;
     case 4:
-        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk48);
+        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->pos48);
         ex->btlfx_getUnitBoneMatrix(0x10, 4, &u.s4.m);
         ex->btlfx_matrixAngles((MATRIX *)&u.s4.m, (s16 *)&u.s4.rot);
         if (work->emit50 != NULL) {
@@ -136,7 +136,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 1) {
                 ex->btlfx_fadeUnitById(0, 0x80);
             }
-            ex->btlfx_lerpVec((s16 *)&work->unk48, (s16 *)&work->unk4, (frame << 12) / 12, (s16 *)&u.s4.v);
+            ex->btlfx_lerpVec((s16 *)&work->pos48, (s16 *)&work->unk4, (frame << 12) / 12, (s16 *)&u.s4.v);
             u.s4.v.vy -= ex->math_sin((frame << 12) / 12 >> 1) >> 3;
             ex->btlfx_setUnitPos(0, (s16 *)&u.s4.v);
             u.s4.scale.vx = u.s4.scale.vy = u.s4.scale.vz =

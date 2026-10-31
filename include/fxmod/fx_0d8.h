@@ -15,7 +15,7 @@ extern u8 D_801E8FB0[][0x84];
 extern u8 D_801E95E0[][0x48];
 
 typedef struct {
-    SVECTOR unk0;
+    SVECTOR pos0;
     SVECTOR unk8;
     u8 unk10; /* index */
     u8 unk11; /* state */
@@ -51,8 +51,8 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32
 static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
                    s32 kind);
 typedef struct {
-    SVECTOR unk0; /* caster body position */
-    SVECTOR unk8; /* caster position */
+    SVECTOR pos0; /* caster body position */
+    SVECTOR pos8; /* caster position */
     s32 *unk10; /* jitter table (D_801E9950) */
     s32 unk14; /* bolts spawned */
 } Fx0d8Work83; /* 0x18 */

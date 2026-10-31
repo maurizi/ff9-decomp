@@ -8,9 +8,9 @@ typedef struct {
     SVECTOR unk0; /* caster */
     SVECTOR unk8; /* target */
     SVECTOR unk10;
-    SVECTOR unk18; /* model rotation */
-    VECTOR unk20; /* model position */
-    VECTOR unk30; /* model scale */
+    SVECTOR rot18; /* model rotation */
+    VECTOR pos20; /* model position */
+    VECTOR scale30; /* model scale */
     SVECTOR unk40[4]; /* rotation trail */
     VECTOR unk60[4]; /* position trail */
     u16 modelA0; /* models */
@@ -19,7 +19,7 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4;
+    SVECTOR pos4;
 } Fx109Work81;
 
 extern Unk800F78A4 *fx_109_env;

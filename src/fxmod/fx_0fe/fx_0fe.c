@@ -18,13 +18,13 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_0fe_env = env;
         ex->btlfx_initEffModels(fx_0fe_effModels, 3);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkA8);
-        if (work->unkA8.vy >= -0x117) {
-            work->unkA8.vy = -0x118;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posA8);
+        if (work->posA8.vy >= -0x117) {
+            work->posA8.vy = -0x118;
         }
-        work->unk94.vx = 0x8000;
-        work->unk94.vy = 0x8000;
-        work->unk94.vz = 0x8000;
+        work->scale94.vx = 0x8000;
+        work->scale94.vy = 0x8000;
+        work->scale94.vz = 0x8000;
         r = ex->btlfx_getUnitRadius(0x100);
         r = (r >= 0x899) ? 0x898 : r;
         q = D_801E7EB4;
@@ -45,7 +45,7 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0x16:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unkA8);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posA8);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
@@ -74,11 +74,11 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rot.vx = 0;
                 rot.vy = o->unk2;
                 rot.vz = 0;
-                ex->btlfx_pointAhead((s16 *)&work->unkA8, (s16 *)&rot, o->unk0, (s16 *)&pos);
+                ex->btlfx_pointAhead((s16 *)&work->posA8, (s16 *)&rot, o->unk0, (s16 *)&pos);
                 (work->unk34 + j)->vx = pos.vx;
                 (work->unk34 + j)->vy = pos.vy;
                 (work->unk34 + j)->vz = pos.vz;
-                ex->Hi_DrawEffModel(&work->unk4[j], &work->unk34[j], (s32)&work->unk94, m);
+                ex->Hi_DrawEffModel(&work->unk4[j], &work->unk34[j], (s32)&work->scale94, m);
                 if (work->unkB0 >= 0 || work->unkB4 >= 0) {
                     ex->Hi_ModifyEffModelAbr(m, 1);
                     ex->Hi_ModifyEffModelRGB(m, work->unkA4, work->unkA4, work->unkA4);

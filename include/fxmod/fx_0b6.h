@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0;
+    SVECTOR pos0;
 } Fx0b6Work;
 
 extern Unk800F78A4 *fx_0b6_env;
