@@ -1,7 +1,9 @@
 #ifndef FX_0D6_H
 #define FX_0D6_H
 
-/* Effect module fx_0d6 (dir 13 file 0xD6). */
+/* Effect module fx_0d6 (dir 13 file 0xD6): Sword Magic Firaga. Fire / ice drawn as a grid of texel quads
+ * (fxm_drawTexelQuads). Evidence: [data] the party ability / item tables and enemy sequences that play this file id
+ * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

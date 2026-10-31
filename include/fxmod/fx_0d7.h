@@ -1,7 +1,10 @@
 #ifndef FX_0D7_H
 #define FX_0D7_H
 
-/* Effect module fx_0d7 (dir 13 file 0xD7). */
+/* Effect module fx_0d7 (dir 13 file 0xD7): Sword Magic Thunder. Lightning bolts drawn as jagged strips
+ * (fxm_drawJaggedStrip16 / fxm_drawJaggedStrip4, fxm_drawJaggedBranch4). Evidence: [data] the party ability / item
+ * tables and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31
+ * runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

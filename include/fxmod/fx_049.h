@@ -1,7 +1,10 @@
 #ifndef FX_049_H
 #define FX_049_H
 
-/* Effect module fx_049 (dir 13 file 0x49). */
+/* Effect module fx_049 (dir 13 file 0x49): Thundara, all targets (and one large target). Lightning bolts drawn as
+ * jagged strips (fxm_drawJaggedStrip16 / fxm_drawJaggedStrip4, fxm_drawJaggedBranch4). Evidence: [data] the party
+ * ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */

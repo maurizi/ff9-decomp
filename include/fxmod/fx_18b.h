@@ -1,7 +1,9 @@
 #ifndef FX_18B_H
 #define FX_18B_H
 
-/* Effect module fx_18b (dir 13 file 0x18b). */
+/* Effect module fx_18b (dir 13 file 0x18b): Gizamaluke's Silent Voice. Captures the screen around the target into
+ * VRAM_BTLFX_SCRATCH and draws it back. Evidence: [data] the party ability / item tables and enemy sequences that
+ * play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

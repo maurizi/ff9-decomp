@@ -1,7 +1,9 @@
 #ifndef FX_098_H
 #define FX_098_H
 
-/* Effect module fx_098 (dir 13 file 0x98). */
+/* Effect module fx_098 (dir 13 file 0x98): Blizzaga, all targets (and one large target). Fire / ice drawn as a grid
+ * of texel quads (fxm_drawTexelQuads). Evidence: [data] the party ability / item tables and enemy sequences that
+ * play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 extern s16 D_801E9CB8[];

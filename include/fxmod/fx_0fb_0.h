@@ -1,7 +1,10 @@
 #ifndef FX_0FB_0_H
 #define FX_0FB_0_H
 
-/* Effect module fx_0fb_0 (dir 13 file 0x0FB): Madeen, full summon (load group 0). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
+/* Effect module fx_0fb_0 (dir 13 file 0x0FB): Madeen, full summon, and Terra Homing (load group 0). Ribbon trails
+ * (fxm_drawRibbonTrail). Evidence: btlfx_start and btlfx_loadFile get the same id for summons
+ * (docs/runtime-findings.md). [data] the party ability / item tables and enemy sequences that play this file id
+ * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

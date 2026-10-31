@@ -1,7 +1,9 @@
 #ifndef FX_0D3_H
 #define FX_0D3_H
 
-/* Effect module fx_0d3 (dir 13 file 0xD3): Phoenix, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
+/* Effect module fx_0d3 (dir 13 file 0xD3): Phoenix, full summon. Fire / ice drawn as a grid of texel quads
+ * (fxm_drawTexelQuads). Also fxm_drawTexRibbonTrail. Evidence: btlfx_start and btlfx_loadFile get the same id for
+ * summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_0d3_env;

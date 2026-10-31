@@ -1,7 +1,10 @@
 #ifndef FX_0D9_H
 #define FX_0D9_H
 
-/* Effect module fx_0d9 (dir 13 file 0xD9). */
+/* Effect module fx_0d9 (dir 13 file 0xD9): Sword Magic Thundaga. Lightning bolts drawn as jagged strips
+ * (fxm_drawJaggedStrip15 / fxm_drawJaggedStrip3, fxm_drawJaggedBranch3, fxm_jaggedStripTask). Evidence: [data] the
+ * party ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

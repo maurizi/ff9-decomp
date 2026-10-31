@@ -1,7 +1,10 @@
 #ifndef FX_0D8_H
 #define FX_0D8_H
 
-/* Effect module fx_0d8 (dir 13 file 0xD8). */
+/* Effect module fx_0d8 (dir 13 file 0xD8): Sword Magic Thundara. Lightning bolts drawn as jagged strips
+ * (fxm_drawJaggedStrip16 / fxm_drawJaggedStrip4, fxm_drawJaggedBranch4). Evidence: [data] the party ability / item
+ * tables and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31
+ * runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

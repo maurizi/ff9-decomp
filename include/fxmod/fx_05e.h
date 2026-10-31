@@ -1,7 +1,9 @@
 #ifndef FX_05E_H
 #define FX_05E_H
 
-/* Effect module fx_05e (dir 13 file 0x5E). */
+/* Effect module fx_05e (dir 13 file 0x5E): Death (party and enemy). Ribbon trails (fxm_drawRibbonTrail). Evidence:
+ * [data] the party ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 /* ribbon history: two edge points per step, unk0.pad = live */

@@ -1,7 +1,10 @@
 #ifndef FX_085_H
 #define FX_085_H
 
-/* Effect module fx_085 (dir 13 file 0x85). */
+/* Effect module fx_085 (dir 13 file 0x85): Thundaga, all targets (and one large target). Lightning bolts drawn as
+ * jagged strips (fxm_drawJaggedStrip15 / fxm_drawJaggedStrip3, fxm_drawJaggedBranch3, fxm_jaggedStripTask).
+ * Evidence: [data] the party ability / item tables and enemy sequences that play this file id
+ * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width); as Fx018Strip */

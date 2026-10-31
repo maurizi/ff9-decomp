@@ -1,7 +1,10 @@
 #ifndef FX_0B2_H
 #define FX_0B2_H
 
-/* Effect module fx_0b2 (dir 13 file 0xB2: Ark's attack; the DS port dumped it from a running Ark battle). */
+/* Effect module fx_0b2 (dir 13 file 0xB2): Twister (Blue Magic; the enemy Twister / Whirlwind, Ark's among them).
+ * Not Ark's summon, which is fx_17d (file 0x17D; short 0x1BF). Evidence: [data] the party ability / item tables and
+ * enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime
+ * pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

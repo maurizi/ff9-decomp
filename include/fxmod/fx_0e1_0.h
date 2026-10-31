@@ -1,7 +1,10 @@
 #ifndef FX_0E1_0_H
 #define FX_0E1_0_H
 
-/* Effect module fx_0e1_0 (dir 13 file 0x0E1). */
+/* Effect module fx_0e1_0 (dir 13 file 0x0E1): Rebirth Flame (Phoenix's second attack), load group 0. Fire / ice
+ * drawn as a grid of texel quads (fxm_drawTexelQuads). Also fxm_drawTexRibbonTrail. Evidence: [data] the party
+ * ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 /* the effect environment block as these callbacks read it */

@@ -15,7 +15,9 @@ typedef struct {
     s16 unk4; /* start frame */
     s16 unk6; /* frames left, -1 = free */
     s16 unk8; /* channel */
-    u16 unkA; /* destination slots, 4 bits each */
+    u16 unkA; /* destination slots, 4 bits each: nibble n (1-10) = ((SVECTOR *)g_btlCamera)[n - 1], i.e. points[0-5]
+               * then pointRots[0-3]; 0 = none. Runtime (Fenrir, g_btlCamera write watch): keys 1-4 write points[0-3],
+               * 9 / 10 pointRots[2] / [3]; fx_0d2_op80 writes slot 7 (pointRots[1]) itself */
     u16 unkC;
     u16 unkE;
 } Fx0d2Track; /* 0x10 */

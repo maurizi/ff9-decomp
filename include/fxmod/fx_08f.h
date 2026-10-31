@@ -1,7 +1,9 @@
 #ifndef FX_08F_H
 #define FX_08F_H
 
-/* Effect module fx_08f (dir 13 file 0x8F). */
+/* Effect module fx_08f (dir 13 file 0x8F): Meteor, alternate file. Streak field (fxm_drawStreakField). Evidence:
+ * [data] the party ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 #define gte_stszotz(r0) __asm__ volatile( \

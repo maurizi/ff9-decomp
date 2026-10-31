@@ -1,7 +1,9 @@
 #ifndef FX_112_H
 #define FX_112_H
 
-/* Effect module fx_112 (dir 13 file 0x112). */
+/* Effect module fx_112 (dir 13 file 0x112): Eat (Magic Vice / Mimic, enemy). Captures the screen around the target
+ * into VRAM_BTLFX_SCRATCH (fxm_captureScreen). Evidence: [data] the party ability / item tables and enemy sequences
+ * that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

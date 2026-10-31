@@ -7348,3 +7348,4 @@ fxm_startMotion3IfActive fxm_startHeavyHitMotionIfActive  # same modules
 # FIELDS include/ff9.h GameData: unk892=inWorldFrame (medium)
 # MACROS include/snd_ids.h g_akaoPauseFlags: AKAO_PAUSE_FORCE_TICK 0x4 (medium, never set)
 # MACROS include/ff9.h Character.classFlags: CHR_CLASS_MALE 0x1 (medium, data only)
+# comments: module identity headers (jagged-strip lightning, texel grid, ribbon trail, streak field modules, fx_18b, fx_112, fx_0b2 = Twister not Ark), VRAM_BTLFX_SCRATCH captures, fx_0d2 camera key nibbles, fx_0b3 scroll textures

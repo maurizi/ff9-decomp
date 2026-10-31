@@ -1,7 +1,10 @@
 #ifndef FX_0B3_H
 #define FX_0B3_H
 
-/* Effect module fx_0b3 (dir 13 file 0xB3): Leviathan, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
+/* Effect module fx_0b3 (dir 13 file 0xB3): Leviathan, full summon. Scrolling water texture: btlfx_drawScrollMove /
+ * fxm_drawScrollMoveX rotate the rows of the 32x128 source at (0x1E0, 0x100) and (0x1E0, 0x180) into (0x1C0, 0x100)
+ * / (0x1C0, 0x180) every frame (runtime: VRAM dumps during the summon; not a screen capture). Evidence: btlfx_start
+ * and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {

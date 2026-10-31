@@ -1,7 +1,9 @@
 #ifndef FX_048_H
 #define FX_048_H
 
-/* Effect module fx_048 (dir 13 file 0x48). */
+/* Effect module fx_048 (dir 13 file 0x48): Firaga, all targets (and one large target). Fire / ice drawn as a grid
+ * of texel quads (fxm_drawTexelQuads). Evidence: [data] the party ability / item tables and enemy sequences that
+ * play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

@@ -1,7 +1,8 @@
 #ifndef FX_105_H
 #define FX_105_H
 
-/* Effect module fx_105 (dir 13 file 0x105): Odin, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
+/* Effect module fx_105 (dir 13 file 0x105): Odin, full summon. Ribbon trails (fxm_drawRibbonTrail). Evidence:
+ * btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_105_env;

@@ -1,7 +1,10 @@
 #ifndef FX_042_H
 #define FX_042_H
 
-/* Effect module fx_042 (dir 13 file 0x42). */
+/* Effect module fx_042 (dir 13 file 0x42): Thunder, all targets (and one large target). Lightning bolts drawn as
+ * jagged strips (fxm_drawJaggedStrip16 / fxm_drawJaggedStrip4, fxm_drawJaggedBranch4). Evidence: [data] the party
+ * ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */

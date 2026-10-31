@@ -107,9 +107,13 @@
 #define VRAM_IMAGE_CLUT_Y 0xE0
 #define VRAM_BTLUI_CACHE_X 0x3C0 /* 16-bit page where the battle UI caches its command icons, header and rows */
 #define VRAM_BTLUI_CACHE_Y 0x100 /* (btlui_cache* copy them in with DR_MOVE, btlui_initCached* draw from it) */
-#define VRAM_BTLFX_SCRATCH_X 0x1C0 /* battle effect screen captures: a rect of the draw buffer around a screen point is */
-#define VRAM_BTLFX_SCRATCH_Y 0x100 /* copied here (DR_MOVE / MoveImage) and drawn back as a 16-bit texture; up to 256x256 */
-                                  /* (fx_18b), Stop (fx_095) at the top, Slow (fx_07e) 0x80 lower */
+/* Battle effect screen captures: a rect of the draw buffer around the target is copied here (DR_MOVE / MoveImage) and
+ * drawn back as a 16-bit texture, up to 256x256. Runtime (VRAM dumps): Slow (fx_07e) copies 128x128 around the target
+ * to (0x1C0, 0x180) every frame and draws it back as the swirling clock face; Stop (fx_095) copies ~192x192 of the
+ * screen, HUD included, to (0x1C0, 0x100) once and shows it greyed. Also Silent Voice (fx_18b) and Eat (fx_112).
+ * Leviathan (fx_0b3) scrolls its file texture rows into 0x1C0, which is no capture. */
+#define VRAM_BTLFX_SCRATCH_X 0x1C0
+#define VRAM_BTLFX_SCRATCH_Y 0x100
 
 /* Ordering tables (docs/r29/battle-render.md). Each mode's scene OT GameData.ot[drawBuf] has OT_LEN entries, is
  * cleared with ClearOTagR (entry i links to i - 1) and drawn from OT_LAST, so higher entries are farther away.
