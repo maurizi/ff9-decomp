@@ -9,7 +9,7 @@ s32 fx_11a_op80(s32 mode, Fx11aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_11a_env = env;
         env->camera->paused = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
     } else {
         return entry->frame >= 0x28;
     }

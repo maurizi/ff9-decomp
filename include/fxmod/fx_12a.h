@@ -5,14 +5,14 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
-    Pool6CEntry *unkC;
-    Pool6CEntry *unk10;
-    Pool6CEntry *unk14;
-    Pool6CEntry *unk18;
-    Pool6CEntry *unk1C;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
+    Pool6CEntry *emitC;
+    Pool6CEntry *emit10;
+    Pool6CEntry *emit14;
+    Pool6CEntry *emit18;
+    Pool6CEntry *emit1C;
     SVECTOR unk20; /* bone positions */
     SVECTOR unk28;
     SVECTOR unk30;
@@ -24,12 +24,12 @@ typedef struct {
 } Fx12aWork80;
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4;
 } Fx12aWork81;
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     s32 unk4;
     SVECTOR unk8;
     s32 unk10; /* target index */

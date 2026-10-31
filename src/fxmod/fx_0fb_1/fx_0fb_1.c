@@ -124,8 +124,8 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
         it->unk14.vz = 0;
         it->unk1C = ex->btlfx_rand() % 128 + 0x80;
         it->unk1E = 0xC0 - ex->btlfx_rand() % 32;
-        it->unk24 = NULL;
-        it->unk20 = NULL;
+        it->emit24 = NULL;
+        it->emit20 = NULL;
     } else {
     if (it->unk0 != 4) {
         it->unk14.vx += it->unk1C;
@@ -174,13 +174,13 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
                             ex->btlfx_rotateOffset(&v, (it->unkA << 16) >> 21, (s32)&q->unk4);
                         }
                     }
-                    it->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&it->unkC);
-                    if (it->unk20 != NULL) {
-                        it->unk20->otZ = 0x20;
+                    it->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&it->unkC);
+                    if (it->emit20 != NULL) {
+                        it->emit20->otZ = 0x20;
                     }
-                    it->unk24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&it->unkC);
-                    if (it->unk20 != NULL) {
-                        it->unk20->otZ = 0x20;
+                    it->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&it->unkC);
+                    if (it->emit20 != NULL) {
+                        it->emit20->otZ = 0x20;
                     }
                 }
             } else {
@@ -196,10 +196,10 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
             }
             break;
         case 1:
-            if (it->unk20 != NULL) {
-                it->unk20->rot.vx = work->unk6C.vx;
-                it->unk20->rot.vy = work->unk6C.vy;
-                it->unk20->rot.vz = work->unk6C.vz;
+            if (it->emit20 != NULL) {
+                it->emit20->rot.vx = work->unk6C.vx;
+                it->emit20->rot.vy = work->unk6C.vy;
+                it->emit20->rot.vz = work->unk6C.vz;
             }
             env->otZ = 0x40;
             if (frame < 10) {
@@ -226,7 +226,7 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
                                          (ex->math_cos(t) >> 5) - 0x80);
             }
             env->otZ = 0;
-            if (it->unk20->state == BTLFX_EMIT_DONE) {
+            if (it->emit20->state == BTLFX_EMIT_DONE) {
                 return 1;
             }
             break;
@@ -257,21 +257,21 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
             if (work->unk5C > pos.vz) {
                 it->unk2 = 1;
                 ((s16 *)it)[-1] = -1;
-                it->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&it->unkC);
-                if (it->unk20 != NULL) {
-                    it->unk20->otZ = 0x20;
+                it->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&it->unkC);
+                if (it->emit20 != NULL) {
+                    it->emit20->otZ = 0x20;
                 }
-                it->unk24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&it->unkC);
-                if (it->unk20 != NULL) {
-                    it->unk20->otZ = 0x20;
+                it->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&it->unkC);
+                if (it->emit20 != NULL) {
+                    it->emit20->otZ = 0x20;
                 }
             }
             break;
         case 1:
-            if (it->unk20 != NULL) {
-                it->unk20->rot.vx = work->unk6C.vx;
-                it->unk20->rot.vy = work->unk6C.vy;
-                it->unk20->rot.vz = work->unk6C.vz;
+            if (it->emit20 != NULL) {
+                it->emit20->rot.vx = work->unk6C.vx;
+                it->emit20->rot.vy = work->unk6C.vy;
+                it->emit20->rot.vz = work->unk6C.vz;
             }
             env->otZ = 0x40;
             if (frame < 6) {
@@ -298,7 +298,7 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
                                          (ex->math_cos(t) >> 5) - 0x80);
             }
             env->otZ = 0;
-            if (it->unk20->state == BTLFX_EMIT_DONE) {
+            if (it->emit20->state == BTLFX_EMIT_DONE) {
                 return 1;
             }
             break;
@@ -726,7 +726,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             work->unk54.vz = D_801F082C.vz;
             BTLFX_COPY_SVEC(&work->unkC, &D_801F082C);
             BTLFX_COPY_SVEC(&work->unk14, &D_801F082C);
-            p = work->unkE4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk14);
+            p = work->emitE4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk14);
             if (p != NULL) {
                 p->otZ = 0x80;
             }
@@ -772,7 +772,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         if (frame >= 0xA) {
             work->unk0 = 5;
             entry->frame = -1;
-            ex->btlfx_stopEmitter(work->unkE4);
+            ex->btlfx_stopEmitter(work->emitE4);
             work->unk8C.vy = 0x400;
             work->unk6C.vy = 0x400;
             work->unk8C.vx = 0;

@@ -46,7 +46,7 @@ typedef struct {
     s32 unk88;
     s32 unk8C;
     SVECTOR unk90[4];
-    Pool6CEntry *unkB0;
+    Pool6CEntry *emitB0;
 } Fx17aWork80; /* 0xB4 */
 
 typedef struct {

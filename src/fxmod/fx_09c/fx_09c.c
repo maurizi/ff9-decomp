@@ -11,8 +11,8 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x40;
     } else if (mode == 1) {
-        work->unk20 = NULL;
-        work->unk3C = NULL;
+        work->emit20 = NULL;
+        work->emit3C = NULL;
         fx_09c_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk18);
@@ -40,8 +40,8 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk2C.vx = a.vx - ((ex->math_sin(work->unk34.vy) * 0x1E0) >> 12);
             work->unk2C.vz = a.vz - ((ex->math_cos(work->unk34.vy) * 0x1E0) >> 12);
             work->unk2C.vy = a.vy - ((ex->math_sin(work->unk34.vx) * 0x1E0) >> 12);
-            work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk2C);
-            work->unk3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk2C);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk2C);
+            work->emit3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk2C);
         }
         if (frame == 0x12) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
@@ -49,24 +49,24 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        if (work->unk20 != NULL) {
-            if (work->unk20->state == BTLFX_EMIT_DONE) {
-                work->unk20 = NULL;
+        if (work->emit20 != NULL) {
+            if (work->emit20->state == BTLFX_EMIT_DONE) {
+                work->emit20 = NULL;
             }
-            if (work->unk20 != NULL) {
-                work->unk20->rot.vx = work->unk34.vx;
-                work->unk20->rot.vy = work->unk34.vy;
-                work->unk20->rot.vz = work->unk34.vz;
+            if (work->emit20 != NULL) {
+                work->emit20->rot.vx = work->unk34.vx;
+                work->emit20->rot.vy = work->unk34.vy;
+                work->emit20->rot.vz = work->unk34.vz;
             }
         }
-        if (work->unk3C != NULL) {
-            if (work->unk3C->state == BTLFX_EMIT_DONE) {
-                work->unk3C = NULL;
+        if (work->emit3C != NULL) {
+            if (work->emit3C->state == BTLFX_EMIT_DONE) {
+                work->emit3C = NULL;
             }
-            if (work->unk3C != NULL) {
-                work->unk3C->rot.vx = work->unk34.vx;
-                work->unk3C->rot.vy = work->unk34.vy;
-                work->unk3C->rot.vz = work->unk34.vz;
+            if (work->emit3C != NULL) {
+                work->emit3C->rot.vx = work->unk34.vx;
+                work->emit3C->rot.vy = work->unk34.vy;
+                work->emit3C->rot.vz = work->unk34.vz;
             }
         }
         return frame >= 0x2D;

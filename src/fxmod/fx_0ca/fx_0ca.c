@@ -15,19 +15,19 @@ s32 fx_0ca_op80(s32 mode, Fx0caWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vz = work->unk10.vz;
         work->unk8.vy -= 0x190;
         fx_0ca_env = env;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
-        if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E78C8;
-            work->unk0->unk12 = 0x1E;
-            work->unk0->unkC = 0x30;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
+        if (work->emit0 != NULL) {
+            work->emit0->unk14 = (s32)D_801E78C8;
+            work->emit0->unk12 = 0x1E;
+            work->emit0->unkC = 0x30;
         }
-        if (work->unk0 != NULL) {
-            work->unk0->otZ = 0x80;
+        if (work->emit0 != NULL) {
+            work->emit0->otZ = 0x80;
         }
     } else {
         frame = entry->frame;
         if (frame == 0x19) {
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
         }
         return frame >= 0x46;
     }

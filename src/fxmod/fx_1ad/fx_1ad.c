@@ -60,17 +60,17 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawScrollMove(n * 4, 0x200, 0x100, 0x20, k, ((n & 3) << 5) + 0x240, ((n * 16) & 0xC0) + 0x100);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->unk4);
             if (frame == 0) {
-                work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
-                if (work->unk20 != NULL) {
-                    work->unk20->unk14 = (s32)D_801E7E6C;
-                    work->unk20->unk12 = 0x48;
-                    work->unk20->unkC = 0x3C;
+                work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
+                if (work->emit20 != NULL) {
+                    work->emit20->unk14 = (s32)D_801E7E6C;
+                    work->emit20->unk12 = 0x48;
+                    work->emit20->unkC = 0x3C;
                 }
-                if (work->unk20 != NULL) {
-                    work->unk20->otZ = k;
+                if (work->emit20 != NULL) {
+                    work->emit20->otZ = k;
                 }
-                if (work->unk20 != NULL) {
-                    ((EffMotion *)work->unk20->file)->unk8 = fx_1ad_op80ParticleMotion;
+                if (work->emit20 != NULL) {
+                    ((EffMotion *)work->emit20->file)->unk8 = fx_1ad_op80ParticleMotion;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
                 if (p != NULL) {

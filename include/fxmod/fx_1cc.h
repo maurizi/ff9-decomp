@@ -24,7 +24,7 @@ typedef struct Fx1ccObj {
     s16 unk2A;
     s32 unk2C; /* model */
     s32 unk30; /* model */
-    Pool6CEntry *unk34; /* particle */
+    Pool6CEntry *emit34; /* particle */
 } Fx1ccObj;
 
 typedef struct {

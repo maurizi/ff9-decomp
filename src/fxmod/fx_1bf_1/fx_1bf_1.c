@@ -244,9 +244,9 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawEffModel(&work->unk5C, (VECTOR *)work->unk50, (s32)&v, work->unk78);
             ex->Hi_ModifyEffModelRGB(work->unk78, (q >> 5) - 0x80, (q >> 5) - 0x80, (q >> 5) - 0x80);
             if (frame == 6) {
-                work->unk64 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk8);
-                if (work->unk64 != NULL) {
-                    work->unk64->otZ = 0x80;
+                work->emit64 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk8);
+                if (work->emit64 != NULL) {
+                    work->emit64->otZ = 0x80;
                 }
             }
             work->unk18.vy -= 3;
@@ -259,11 +259,11 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 entry->frame = -1;
                 BTLFX_COPY_SVEC(&work->unk10, &work->unk8);
                 work->unk10.vy -= 0x800;
-                work->unk68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk10);
-                if (work->unk68 != NULL) {
-                    work->unk68->otZ = 0x80;
+                work->emit68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk10);
+                if (work->emit68 != NULL) {
+                    work->emit68->otZ = 0x80;
                 }
-                work->unk6C = NULL;
+                work->emit6C = NULL;
             }
             break;
         }
@@ -281,12 +281,12 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 5) {
                 q = 0x800;
                 m = (frame << 12) / 5;
-                if (work->unk68 != NULL && work->unk68->state == BTLFX_EMIT_DONE) {
-                    work->unk68 = NULL;
+                if (work->emit68 != NULL && work->emit68->state == BTLFX_EMIT_DONE) {
+                    work->emit68 = NULL;
                 }
                 BTLFX_COPY_SVEC(&p60, &work->unk8);
                 p60.vy -= ((0x1000 - m) << 11) >> 12;
-                ex->btlfx_moveEmitterTo((s32)work->unk68, (s32)&p60);
+                ex->btlfx_moveEmitterTo((s32)work->emit68, (s32)&p60);
                 sc.vx = sc.vz = q * 4;
                 rot.vx = 0;
                 rot.vy = m >> 3;
@@ -440,13 +440,13 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 BTLFX_COPY_SVEC(&work->unk10, &work->unk8);
                 work->unk10.vz -= 0x5DC;
                 work->unk10.vy -= 0x1AE;
-                work->unk6C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk10);
-                if (work->unk6C != NULL) {
-                    work->unk6C->otZ = 0x200;
+                work->emit6C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk10);
+                if (work->emit6C != NULL) {
+                    work->emit6C->otZ = 0x200;
                 }
             }
-            if (work->unk6C != NULL && work->unk6C->state == BTLFX_EMIT_DONE) {
-                work->unk6C = NULL;
+            if (work->emit6C != NULL && work->emit6C->state == BTLFX_EMIT_DONE) {
+                work->emit6C = NULL;
             }
             if (frame >= 70) {
                 work->unk0 = 3;
@@ -461,12 +461,12 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s32 nz;
 
             t = (frame << 12) / 41;
-            if (work->unk6C != NULL) {
-                if (work->unk6C->state == BTLFX_EMIT_DONE) {
-                    work->unk6C = NULL;
+            if (work->emit6C != NULL) {
+                if (work->emit6C->state == BTLFX_EMIT_DONE) {
+                    work->emit6C = NULL;
                 }
-                if (work->unk6C != NULL) {
-                    work->unk6C->otZ = -10 - ((t << 5) >> 12);
+                if (work->emit6C != NULL) {
+                    work->emit6C->otZ = -10 - ((t << 5) >> 12);
                 }
             }
             if (frame < 42) {

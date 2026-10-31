@@ -85,19 +85,19 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
         BTLFX_COPY_SVEC(&work->unkC, &work->unk4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
-        work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk14);
-        if (work->unk1C != NULL) {
-            work->unk1C->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
+        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk14);
+        if (work->emit1C != NULL) {
+            work->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
         }
-        if (work->unk1C != NULL) {
-            work->unk1C->unk14 = (s32)D_801E7DA4;
-            work->unk1C->unk12 = 0x10;
-            work->unk1C->unkC = 0xAC;
+        if (work->emit1C != NULL) {
+            work->emit1C->unk14 = (s32)D_801E7DA4;
+            work->emit1C->unk12 = 0x10;
+            work->emit1C->unkC = 0xAC;
         }
-        work->unk1C->elems->unk24 = fx_0a0_op80ElemDraw;
-        work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
-        if (work->unk20 != NULL) {
-            work->unk20->otZ = 0x20;
+        work->emit1C->elems->unk24 = fx_0a0_op80ElemDraw;
+        work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
+        if (work->emit20 != NULL) {
+            work->emit20->otZ = 0x20;
         }
     } else {
         frame = entry->frame;
@@ -105,10 +105,10 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
         switch (work->unk0) {
         case 0:
-            if (work->unk20 != NULL && work->unk20->state == BTLFX_EMIT_DONE) {
-                work->unk20 = NULL;
+            if (work->emit20 != NULL && work->emit20->state == BTLFX_EMIT_DONE) {
+                work->emit20 = NULL;
             }
-            ex->btlfx_moveEmitterTo((s32)work->unk20, (s32)&work->unk4);
+            ex->btlfx_moveEmitterTo((s32)work->emit20, (s32)&work->unk4);
             if (frame >= 0x29) {
                 work->unk0 = 1;
                 entry->frame = -1;
@@ -118,7 +118,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             t = frame * 0x200;
             D_801E8870 = 0x1000 - t;
             if (frame >= 8) {
-                ex->btlfx_stopEmitter(work->unk1C);
+                ex->btlfx_stopEmitter(work->emit1C);
                 return 1;
             }
             break;

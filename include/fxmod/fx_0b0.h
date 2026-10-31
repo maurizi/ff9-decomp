@@ -6,8 +6,8 @@
 
 typedef struct {
     s32 unk0; /* state */
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* unk14 raised by 0xF0 */
     SVECTOR unk14; /* position: env->targets->centerX */
     SVECTOR unk1C; /* unit 0x10 bone D_801E7C8C[0] */

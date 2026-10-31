@@ -130,9 +130,9 @@ s32 fx_096_op80(s32 mode, Fx096Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_096_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
-        if (work->unk0 != NULL) {
-            work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
+        if (work->emit0 != NULL) {
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
         return entry->frame >= 0x50;
@@ -179,9 +179,9 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 7:
-            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk58);
-            if (work->unk0 != NULL) {
-                work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk58);
+            if (work->emit0 != NULL) {
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 0:

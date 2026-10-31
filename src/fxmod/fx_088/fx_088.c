@@ -10,29 +10,29 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_088_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk10);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk10);
-        if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7DB0;
-            work->unk0->unk12 = 0x19;
-            work->unk0->unkC = 0x30;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk10);
+        if (work->emit0 != NULL) {
+            work->emit0->unk14 = (s32)D_801E7DB0;
+            work->emit0->unk12 = 0x19;
+            work->emit0->unkC = 0x30;
         }
         ex->btlfx_aimAngles((s16 *)&work->unk8, &env->targets->centerX, (s16 *)&work->unk18);
     } else {
         frame = entry->frame;
-        if (work->unk0 != NULL) {
-            if (work->unk0->state == BTLFX_EMIT_DONE) {
-                work->unk0 = NULL;
+        if (work->emit0 != NULL) {
+            if (work->emit0->state == BTLFX_EMIT_DONE) {
+                work->emit0 = NULL;
             }
-            if (work->unk0 != NULL) {
-                work->unk0->rot.vx = work->unk18.vx;
-                work->unk0->rot.vy = work->unk18.vy;
-                work->unk0->rot.vz = work->unk18.vz;
+            if (work->emit0 != NULL) {
+                work->emit0->rot.vx = work->unk18.vx;
+                work->emit0->rot.vy = work->unk18.vy;
+                work->emit0->rot.vz = work->unk18.vz;
             }
         }
         if (frame == 0xC) {
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&env->targets->centerX);
-            if (work->unk4 != NULL) {
-                work->unk4->otZ = 0x20;
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&env->targets->centerX);
+            if (work->emit4 != NULL) {
+                work->emit4->otZ = 0x20;
             }
         }
         return frame >= 0x28;

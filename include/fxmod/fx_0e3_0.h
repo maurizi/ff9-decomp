@@ -52,7 +52,7 @@ typedef struct {
     SVECTOR unk38; /* bone position */
     SVECTOR unk40; /* bone position */
     s32 unk48;
-    Pool6CEntry *unk4C;
+    Pool6CEntry *emit4C;
     s32 unk50; /* bolts need a reset */
     s32 unk54; /* models */
     s32 unk58;

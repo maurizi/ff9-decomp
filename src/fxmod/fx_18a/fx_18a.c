@@ -61,9 +61,9 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x10) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk14);
-                if (work->unk8 != NULL) {
-                    work->unk8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk14);
+                if (work->emit8 != NULL) {
+                    work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
                 }
                 work->unk1C = 0;
             }
@@ -83,8 +83,8 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc.vx = sc.vz = 0x200;
             sc.vy = (ex->math_sin(t) >> 7) + 0x333;
             c = 0x1000;
-            if (work->unk8 != NULL && work->unk8->state == BTLFX_EMIT_DONE) {
-                work->unk8 = NULL;
+            if (work->emit8 != NULL && work->emit8->state == BTLFX_EMIT_DONE) {
+                work->emit8 = NULL;
             }
             if (frame >= 0xB && t == 0) {
                 work->unk0 = 2;
@@ -94,7 +94,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_fadeUnitById(0, -2);
                 work->unkC.vz += 0x64;
                 ex->btlfx_setUnitPos(0, (s16 *)&work->unkC);
-                ex->btlfx_stopEmitter(work->unk8);
+                ex->btlfx_stopEmitter(work->emit8);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unkC);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);

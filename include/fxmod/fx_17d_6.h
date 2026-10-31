@@ -89,7 +89,7 @@ typedef struct {
     Fx17d6Vec3 unk58; /* summon position */
     Fx17d6Vec3 unk64; /* summon scale */
     SVECTOR unk70; /* summon rotation */
-    Pool6CEntry *unk78;
+    Pool6CEntry *emit78;
     s32 unk7C; /* models */
     s32 unk80;
 } Fx17d6Work80; /* 0x84 */

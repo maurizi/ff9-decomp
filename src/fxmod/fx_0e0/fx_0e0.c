@@ -355,7 +355,7 @@ static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk8010
         it->unk14.vz = 0;
         it->unk1C = ex->btlfx_rand() % 64;
         it->unk1E = ex->btlfx_rand() % 32;
-        it->unk20 = NULL;
+        it->emit20 = NULL;
     } else {
         switch (it->unk0) {
         case 0:
@@ -387,7 +387,7 @@ static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk8010
                 if (d.vx * d.vx + d.vy * d.vy + d.vz * d.vz < D_801EB1D8 * D_801EB1D8 * D_801EB1D8) {
                     it->unk2 = 1;
                     ((s16 *)it)[-1] = -1;
-                    it->unk20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&it->unkC);
+                    it->emit20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&it->unkC);
                     if (e != NULL) {
                         e->otZ = 0x20;
                     }
@@ -401,10 +401,10 @@ static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk8010
                 ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, parent->unk5C);
                 ex->btlfx_aimAngles((s16 *)&parent->unk8, (s16 *)&it->unkC, (s16 *)&ang);
                 ang.pad = 1;
-                if (it->unk20 != NULL) {
-                    it->unk20->rot.vx = ang.vx;
-                    it->unk20->rot.vy = ang.vy;
-                    it->unk20->rot.vz = ang.vz;
+                if (it->emit20 != NULL) {
+                    it->emit20->rot.vx = ang.vx;
+                    it->emit20->rot.vy = ang.vy;
+                    it->emit20->rot.vz = ang.vz;
                 }
                 if (frame < 4) {
                     k = 0x1000 - ((frame << 12) >> 2);

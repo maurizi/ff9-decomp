@@ -18,7 +18,7 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
         it->unk4 = 0;
         it->unk8 = 0;
         p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->unk18);
-        it->unk40 = p;
+        it->emit40 = p;
         if (p != NULL) {
             p->otZ = 0x20;
         }
@@ -35,14 +35,14 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
         BTLFX_COPY_SVEC(&rot, r);
         rot.vx -= 0x800;
         fade = 0x1000;
-        if (it->unk40 != NULL) {
-            if (it->unk40->state == BTLFX_EMIT_DONE) {
-                it->unk40 = NULL;
+        if (it->emit40 != NULL) {
+            if (it->emit40->state == BTLFX_EMIT_DONE) {
+                it->emit40 = NULL;
             }
-            if (it->unk40 != NULL) {
-                it->unk40->rot.vx = r->vx;
-                it->unk40->rot.vy = r->vy;
-                it->unk40->rot.vz = r->vz;
+            if (it->emit40 != NULL) {
+                it->emit40->rot.vx = r->vx;
+                it->emit40->rot.vy = r->vy;
+                it->emit40->rot.vz = r->vz;
             }
         }
         it->unk8++;
@@ -57,14 +57,14 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
         BTLFX_COPY_SVEC(&rot, r);
         rot.vx -= 0x800;
         fade = 0x1000;
-        if (it->unk40 != NULL) {
-            if (it->unk40->state == BTLFX_EMIT_DONE) {
-                it->unk40 = NULL;
+        if (it->emit40 != NULL) {
+            if (it->emit40->state == BTLFX_EMIT_DONE) {
+                it->emit40 = NULL;
             }
-            if (it->unk40 != NULL) {
-                it->unk40->rot.vx = rot.vx;
-                it->unk40->rot.vy = rot.vy;
-                it->unk40->rot.vz = rot.vz;
+            if (it->emit40 != NULL) {
+                it->emit40->rot.vx = rot.vx;
+                it->emit40->rot.vy = rot.vy;
+                it->emit40->rot.vz = rot.vz;
             }
         }
         if (work->unk28 != 0) {

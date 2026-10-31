@@ -83,37 +83,37 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk34);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk34);
             break;
         case 8:
-            work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk34);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk34);
             break;
         case 20:
-            work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unk34);
-            if (work->unk18 != NULL) {
-                work->unk18->unk14 = (s32)D_801ED2F4;
-                work->unk18->unk12 = 0x12;
-                work->unk18->unkC = 0x98;
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unk34);
+            if (work->emit18 != NULL) {
+                work->emit18->unk14 = (s32)D_801ED2F4;
+                work->emit18->unk12 = 0x12;
+                work->emit18->unkC = 0x98;
             }
             break;
         case 25:
-            work->unk24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk2C);
+            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk2C);
             break;
         case 45:
-            work->unk28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk34);
+            work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk34);
             break;
         }
         tm = D_801E80EC;
         for (i = 0, cnt = &tm->unk2; i < 6; i++, cnt += 2, tm++) {
             if (frame == tm->unk0) {
-                work->unk0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E8104[i]), (s32)&D_801E8194[i]);
-                if (work->unk0[i] != NULL) {
-                    work->unk0[i]->unk14 = (s32)D_801E81F4[i];
-                    work->unk0[i]->unk12 = 0x18;
-                    work->unk0[i]->unkC = 0x90;
+                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E8104[i]), (s32)&D_801E8194[i]);
+                if (work->emit0[i] != NULL) {
+                    work->emit0[i]->unk14 = (s32)D_801E81F4[i];
+                    work->emit0[i]->unk12 = 0x18;
+                    work->emit0[i]->unkC = 0x90;
                 }
-                if (work->unk0[i] != NULL) {
-                    ((EffMotion *)work->unk0[i]->file)->unk8 = D_801E8124[i];
+                if (work->emit0[i] != NULL) {
+                    ((EffMotion *)work->emit0[i]->file)->unk8 = D_801E8124[i];
                 }
             }
             if (frame >= tm->unk0) {
@@ -121,50 +121,50 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame >= 0) {
-            if (work->unk1C != NULL) {
-                if (work->unk1C->state == BTLFX_EMIT_DONE) {
-                    work->unk1C = NULL;
+            if (work->emit1C != NULL) {
+                if (work->emit1C->state == BTLFX_EMIT_DONE) {
+                    work->emit1C = NULL;
                 }
-                if (work->unk1C != NULL) {
-                    work->unk1C->rot.vx = D_801E811C.vx;
-                    work->unk1C->rot.vy = D_801E811C.vy;
-                    work->unk1C->rot.vz = D_801E811C.vz;
+                if (work->emit1C != NULL) {
+                    work->emit1C->rot.vx = D_801E811C.vx;
+                    work->emit1C->rot.vy = D_801E811C.vy;
+                    work->emit1C->rot.vz = D_801E811C.vz;
                 }
             }
         }
         if (frame >= 8) {
-            if (work->unk20 != NULL) {
-                if (work->unk20->state == BTLFX_EMIT_DONE) {
-                    work->unk20 = NULL;
+            if (work->emit20 != NULL) {
+                if (work->emit20->state == BTLFX_EMIT_DONE) {
+                    work->emit20 = NULL;
                 }
-                if (work->unk20 != NULL) {
-                    work->unk20->rot.vx = D_801E811C.vx;
-                    work->unk20->rot.vy = D_801E811C.vy;
-                    work->unk20->rot.vz = D_801E811C.vz;
+                if (work->emit20 != NULL) {
+                    work->emit20->rot.vx = D_801E811C.vx;
+                    work->emit20->rot.vy = D_801E811C.vy;
+                    work->emit20->rot.vz = D_801E811C.vz;
                 }
             }
         }
         if (frame >= 0x14) {
-            if (work->unk18 != NULL) {
-                if (work->unk18->state == BTLFX_EMIT_DONE) {
-                    work->unk18 = NULL;
+            if (work->emit18 != NULL) {
+                if (work->emit18->state == BTLFX_EMIT_DONE) {
+                    work->emit18 = NULL;
                 }
-                if (work->unk18 != NULL) {
-                    work->unk18->rot.vx = D_801E811C.vx;
-                    work->unk18->rot.vy = D_801E811C.vy;
-                    work->unk18->rot.vz = D_801E811C.vz;
+                if (work->emit18 != NULL) {
+                    work->emit18->rot.vx = D_801E811C.vx;
+                    work->emit18->rot.vy = D_801E811C.vy;
+                    work->emit18->rot.vz = D_801E811C.vz;
                 }
             }
         }
         if (frame >= 0x2D) {
-            if (work->unk28 != NULL) {
-                if (work->unk28->state == BTLFX_EMIT_DONE) {
-                    work->unk28 = NULL;
+            if (work->emit28 != NULL) {
+                if (work->emit28->state == BTLFX_EMIT_DONE) {
+                    work->emit28 = NULL;
                 }
-                if (work->unk28 != NULL) {
-                    work->unk28->rot.vx = D_801E811C.vx;
-                    work->unk28->rot.vy = D_801E811C.vy;
-                    work->unk28->rot.vz = D_801E811C.vz;
+                if (work->emit28 != NULL) {
+                    work->emit28->rot.vx = D_801E811C.vx;
+                    work->emit28->rot.vy = D_801E811C.vy;
+                    work->emit28->rot.vz = D_801E811C.vz;
                 }
             }
         }

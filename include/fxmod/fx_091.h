@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 unk0; /* frame for btlfx_drawBackdrop */
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR unk10; /* caster body position */
     SVECTOR unk18; /* angles from unk8 to unk10 */

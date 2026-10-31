@@ -78,7 +78,7 @@ typedef struct {
     s32 unk54;
     s32 unk58;
     s32 unk5C; /* scale */
-    Pool6CEntry *unk60;
+    Pool6CEntry *emit60;
 } Fx0ecWork80; /* 0x64 */
 
 extern s32 D_801E9850[2];

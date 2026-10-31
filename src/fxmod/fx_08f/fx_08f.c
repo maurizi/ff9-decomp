@@ -202,7 +202,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk14);
-                work->unk44 = p;
+                work->emit44 = p;
                 if (p != NULL) {
                     p->otZ = 0x5C;
                 }
@@ -219,7 +219,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             y = 0x140 - k;
             ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0xE), x - 0x40, y + 0x78, 0, 1, t);
             if (frame >= 0x31) {
-                ex->btlfx_stopEmitter(work->unk44);
+                ex->btlfx_stopEmitter(work->emit44);
                 work->unk1C.vx = 0;
                 work->unk1C.vy = -0x140;
                 work->unk1C.vz = 0;

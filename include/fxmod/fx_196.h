@@ -29,7 +29,7 @@ typedef struct {
     SVECTOR unk10; /* position */
     SVECTOR unk18; /* camera */
     u8 pad20[0x48 - 0x20];
-    Pool6CEntry *unk48;
+    Pool6CEntry *emit48;
 } Fx196Work85; /* 0x4C */
 
 extern CVECTOR D_801E90FC[];

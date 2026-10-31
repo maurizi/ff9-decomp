@@ -17,8 +17,8 @@ typedef struct {
     SVECTOR unk4; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR unkC;
     SVECTOR unk14; /* caster body position */
-    Pool6CEntry *unk1C;
-    Pool6CEntry *unk20;
+    Pool6CEntry *emit1C;
+    Pool6CEntry *emit20;
 } Fx0a0Work;
 
 extern Fx0a0Line D_801E7D84;

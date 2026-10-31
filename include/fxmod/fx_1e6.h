@@ -30,7 +30,7 @@ typedef struct {
 } Fx1e6Work80; /* 0x10 */
 
 typedef struct {
-    Pool6CEntry *unk0[7];
+    Pool6CEntry *emit0[7];
     SVECTOR unk1C; /* model rotation */
     VECTOR unk24; /* model position */
     VECTOR unk34; /* model scale */

@@ -58,11 +58,11 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 env->camera->points[2].vx = v.vx;
                 env->camera->points[2].vy = v.vy;
                 env->camera->points[2].vz = v.vz;
-                work->unk30 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk14);
+                work->emit30 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk14);
                 if (p != NULL) {
                     p->otZ = 0x80;
                 }
-                work->unk2C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk1C);
+                work->emit2C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk1C);
                 if (p != NULL) {
                     p->otZ = 0x80;
                 }
@@ -106,22 +106,22 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
             if (frame < 0x20) {
                 ex->btlfx_drawRippleGrid((s32)&env->ot[2], -frame * 2, 4, 1, 0x78, 1, &D_801ECD80, 0x18, work->unk4 << 8, 0x100, 0);
             }
-            if (work->unk2C->state == BTLFX_EMIT_DONE) {
+            if (work->emit2C->state == BTLFX_EMIT_DONE) {
                 work->unk3C = 0;
             }
             if (work->unk38 != 0) {
                 if (work->unk3C > 0) {
                     work->unk3C -= 0x40;
-                    if (work->unk2C != NULL) {
-                        work->unk2C->unk20 = work->unk3C;
+                    if (work->emit2C != NULL) {
+                        work->emit2C->unk20 = work->unk3C;
                     }
-                    if (work->unk30 != NULL) {
-                        work->unk30->unk20 = work->unk3C;
+                    if (work->emit30 != NULL) {
+                        work->emit30->unk20 = work->unk3C;
                     }
                 } else {
                     work->unk3C = 0;
-                    ex->btlfx_stopEmitter(work->unk2C);
-                    ex->btlfx_stopEmitter(work->unk30);
+                    ex->btlfx_stopEmitter(work->emit2C);
+                    ex->btlfx_stopEmitter(work->emit30);
                     work->unk0 = 0;
                     return 1;
                 }

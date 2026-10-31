@@ -101,8 +101,8 @@ typedef struct {
     s32 unk48[3]; /* model position */
     s32 unk54[3]; /* model scale */
     SVECTOR unk60; /* model rotation */
-    Pool6CEntry *unk68;
-    Pool6CEntry *unk6C;
+    Pool6CEntry *emit68;
+    Pool6CEntry *emit6C;
     s32 unk70; /* models */
     s32 unk74;
     s32 unk78;

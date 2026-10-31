@@ -53,9 +53,9 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             entry->frame = -1;
             ((Fx101BattleState *)env->state)->unk10 = 0;
             ex->btlfx_fadeUnitById(0x10, 0);
-            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk14);
-            if (work->unk8 != NULL) {
-                work->unk8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk14);
+            if (work->emit8 != NULL) {
+                work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
             work->unk1C = 0;
         }
@@ -76,15 +76,15 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         scale.vx = scale.vz = 0x174;
         scale.vy = (ex->math_sin(t0) >> 7) + 0x2AA;
         b = 0x1000;
-        if (work->unk8 != NULL && work->unk8->state == BTLFX_EMIT_DONE) {
-            work->unk8 = NULL;
+        if (work->emit8 != NULL && work->emit8->state == BTLFX_EMIT_DONE) {
+            work->emit8 = NULL;
         }
         if (frame != 0 && t0 == 0 && ((Fx101BattleState *)env->state)->unk10 != 0) {
             work->unk0 = 2;
             entry->frame = -1;
             env->camera->paused = 0;
             ex->btlfx_fadeUnitById(0x10, 0x80);
-            ex->btlfx_stopEmitter(work->unk8);
+            ex->btlfx_stopEmitter(work->emit8);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unkC);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);

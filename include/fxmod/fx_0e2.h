@@ -30,8 +30,8 @@ extern Fx0e2Orbit D_801EE8FC[];
 extern u8 D_801EFDEC[][0x240]; /* per-unit texture animation */
 
 typedef struct {
-    Pool6CEntry *unk0[8];
-    Pool6CEntry *unk20[8];
+    Pool6CEntry *emit0[8];
+    Pool6CEntry *emit20[8];
     SVECTOR unk40[8]; /* unit positions */
     SVECTOR unk80[8]; /* effect positions */
     s16 unkC0[8]; /* unit landed */
@@ -51,7 +51,7 @@ void func_801E7FBC(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scal
 void func_801E83B0(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY);
 void func_801E86D0(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1);
 typedef struct {
-    Pool6CEntry *unk0[5];
+    Pool6CEntry *emit0[5];
     SVECTOR unk14; /* tower rotation */
     VECTOR unk1C; /* tower position */
     VECTOR unk2C; /* tower scale */
@@ -104,13 +104,13 @@ typedef struct {
 typedef s32 (*Fx0e2RegTexList)(BtlUnit9C8 *, BtlTexInfo *, s16 *);
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8[5];
-    Pool6CEntry *unk1C;
-    Pool6CEntry *unk20;
-    Pool6CEntry *unk24;
-    Pool6CEntry *unk28[5];
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8[5];
+    Pool6CEntry *emit1C;
+    Pool6CEntry *emit20;
+    Pool6CEntry *emit24;
+    Pool6CEntry *emit28[5];
     SVECTOR unk3C; /* summon rotation */
     VECTOR unk44; /* summon position */
     VECTOR unk54; /* model position */
@@ -223,9 +223,9 @@ typedef struct {
 } Fx0e2Ribbon1;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* model rotations */
     SVECTOR unk14;
     VECTOR unk1C; /* model position */

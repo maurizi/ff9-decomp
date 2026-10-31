@@ -30,7 +30,7 @@ extern SVECTOR D_801EDEDC[8]; /* unit positions */
 extern VECTOR D_801EDF1C[8]; /* unit scales */
 
 typedef struct {
-    Pool6CEntry *unk0[8];
+    Pool6CEntry *emit0[8];
     SVECTOR unk20[8]; /* unit positions */
     SVECTOR unk60[8];
     s16 unkA0[8]; /* landed */
@@ -92,8 +92,8 @@ typedef struct {
 } Fx1fcVec3;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* slice rotation */
     Fx1fcVec3 unk10; /* slice position */
     s32 pad1C;

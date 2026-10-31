@@ -480,7 +480,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
                 ex->btlfx_startFadeBackground(-1, 2);
-                work->unk6C = NULL;
+                work->emit6C = NULL;
             }
             break;
         case 2:
@@ -590,14 +590,14 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             }
             if (frame == 20) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk10);
-                work->unk6C = p;
+                work->emit6C = p;
                 if (p != NULL) {
                     p->otZ = 0x96;
                 }
             }
             if (frame == 14) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->unk8);
-                work->unk68 = p;
+                work->emit68 = p;
                 if (p != NULL) {
                     p->otZ = -0x20;
                 }
@@ -671,10 +671,10 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 col.r = col.g = col.b = ((frame - 39) << 5) / 12;
                 ex->btlfx_drawScreenGrid(0x200, 0xA0, 0x78, 0x50, 0x3C, cw, cw, ch, ch, &rot, &sc, &col, 1, 0);
             }
-            if (work->unk6C != NULL) {
-                work->unk6C->unk1C = (t >> 1) + 0x1000;
-                if (work->unk6C != NULL) {
-                    work->unk6C->unk20 = (0x1000 - (t >> 2)) * 3 / 4;
+            if (work->emit6C != NULL) {
+                work->emit6C->unk1C = (t >> 1) + 0x1000;
+                if (work->emit6C != NULL) {
+                    work->emit6C->unk20 = (0x1000 - (t >> 2)) * 3 / 4;
                 }
             }
             if (frame >= 51) {
@@ -697,32 +697,32 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             if (frame == 0) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0xFF, 0xFF);
             }
-            if (work->unk68 != NULL && frame < 10) {
+            if (work->emit68 != NULL && frame < 10) {
                 q10 = (frame << 12) / 10;
-                if (work->unk68->state == BTLFX_EMIT_DONE) {
-                    work->unk68 = NULL;
+                if (work->emit68->state == BTLFX_EMIT_DONE) {
+                    work->emit68 = NULL;
                 }
-                if (work->unk68 != NULL) {
+                if (work->emit68 != NULL) {
                     c11 = 0x1000 - q10;
-                    work->unk68->unk20 = c11;
-                    if (work->unk68 != NULL) {
-                        work->unk68->unk1C = c11;
+                    work->emit68->unk20 = c11;
+                    if (work->emit68 != NULL) {
+                        work->emit68->unk1C = c11;
                     }
                 }
                 if (frame == 9) {
-                    ex->btlfx_stopEmitter(work->unk68);
+                    ex->btlfx_stopEmitter(work->emit68);
                 }
             }
-            if (work->unk6C != NULL && frame < 8) {
+            if (work->emit6C != NULL && frame < 8) {
                 q9 = frame << 9;
-                if (work->unk6C->state == BTLFX_EMIT_DONE) {
-                    work->unk6C = NULL;
+                if (work->emit6C->state == BTLFX_EMIT_DONE) {
+                    work->emit6C = NULL;
                 }
-                if (work->unk6C != NULL) {
-                    work->unk6C->unk1C = 0x1000 - q9;
+                if (work->emit6C != NULL) {
+                    work->emit6C->unk1C = 0x1000 - q9;
                 }
                 if (frame == 7) {
-                    ex->btlfx_stopEmitter(work->unk6C);
+                    ex->btlfx_stopEmitter(work->emit6C);
                 }
             }
             if (frame < 14) {

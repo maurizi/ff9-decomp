@@ -5,12 +5,12 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4;
 } Fx1f5Work80;
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4;
     s32 unkC; /* unit */
 } Fx1f5Work82;

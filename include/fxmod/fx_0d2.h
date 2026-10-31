@@ -21,7 +21,7 @@ typedef struct {
 } Fx0d2Track; /* 0x10 */
 
 typedef struct {
-    Pool6CEntry *unk0[8];
+    Pool6CEntry *emit0[8];
     SVECTOR unk20[8]; /* unit positions */
     SVECTOR unk60[8];
     s16 unkA0[8]; /* done */
@@ -50,7 +50,7 @@ typedef struct {
 } Fx0d2Spawn; /* 0xE */
 
 typedef struct {
-    Pool6CEntry *unk0[7];
+    Pool6CEntry *emit0[7];
     Fx0d2Model unk1C[4];
     SVECTOR unkBC[7];
     u16 unkF4[10]; /* models: 0 ring, 1-2 morph pair, 3-8 slices, 9 */
@@ -118,9 +118,9 @@ typedef struct {
 } Fx0d2Trail;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* slice rotation */
     Fx0d2Vec3 unk14; /* slice position */
     s32 pad20;
@@ -140,11 +140,11 @@ extern SVECTOR D_801EFF80[8];
 extern VECTOR D_801EFFC0[8];
 s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
-    Pool6CEntry *unkC;
-    Pool6CEntry *unk10;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
+    Pool6CEntry *emitC;
+    Pool6CEntry *emit10;
     SVECTOR unk14; /* summon rotation */
     Fx0d2Vec3 unk1C; /* summon position */
     s32 pad28;
@@ -188,8 +188,8 @@ extern SVECTOR D_801F0040;
 extern SVECTOR D_801F0050[2];
 s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* slice rotation */
     Fx0d2Vec3 unk10; /* slice position */
     s32 pad1C;

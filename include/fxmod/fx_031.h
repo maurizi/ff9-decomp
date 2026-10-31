@@ -11,8 +11,8 @@ typedef struct {
     SVECTOR unk18;
     SVECTOR unk20;
     SVECTOR unk28;
-    Pool6CEntry *unk30;
-    Pool6CEntry *unk34;
+    Pool6CEntry *emit30;
+    Pool6CEntry *emit34;
 } Fx031Work; /* 0x38 */
 
 extern Unk800F78A4 *fx_031_env;

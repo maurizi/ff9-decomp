@@ -84,7 +84,7 @@ typedef struct {
     s32 unk10; /* state */
     s32 unk14; /* model */
     s32 unk18; /* model */
-    Pool6CEntry *unk1C;
+    Pool6CEntry *emit1C;
     s32 pad20;
 } Fx0d9Work80; /* 0x24 */
 

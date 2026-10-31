@@ -31,7 +31,7 @@ typedef struct {
     s32 unk38;
     s32 unk3C;
     s32 unk40;
-    Pool6CEntry *unk44;
+    Pool6CEntry *emit44;
 } Fx08fWork80; /* 0x48 */
 
 extern BtlModel fx_08f_effModels[];

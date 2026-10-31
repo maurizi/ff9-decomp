@@ -25,8 +25,8 @@ typedef struct {
     u8 unk15;
     s16 unk16;
     s32 *unk18;
-    Pool6CEntry *unk1C;
-    Pool6CEntry *unk20;
+    Pool6CEntry *emit1C;
+    Pool6CEntry *emit20;
 } Fx0d8Part; /* pool entry data */
 
 /* fx_003 copies (asm) */

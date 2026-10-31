@@ -96,9 +96,9 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame >= 8) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                work->unk44 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk1C);
-                if (work->unk44 != NULL) {
-                    work->unk44->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                work->emit44 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk1C);
+                if (work->emit44 != NULL) {
+                    work->emit44->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             break;
@@ -121,14 +121,14 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame % 5 == 0) {
                 ex->btlfx_poolSpawn((s16 *)entry->pool);
             }
-            if (work->unk44 != NULL) {
-                if (work->unk44->state == BTLFX_EMIT_DONE) {
-                    work->unk44 = NULL;
+            if (work->emit44 != NULL) {
+                if (work->emit44->state == BTLFX_EMIT_DONE) {
+                    work->emit44 = NULL;
                 } else {
                     work->unk38.vy += 0x800;
                     ex->btlfx_pointAhead((s16 *)&work->unk14, (s16 *)&work->unk38, frame * 0x12, (s16 *)&v);
                     work->unk38.vy += 0x800;
-                    ex->btlfx_moveEmitterTo((s32)work->unk44, (s32)&v);
+                    ex->btlfx_moveEmitterTo((s32)work->emit44, (s32)&v);
                 }
             }
             if (frame >= 0x14) {

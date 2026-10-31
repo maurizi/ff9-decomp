@@ -7,11 +7,11 @@ s32 fx_009_op80(s32 mode, Fx009Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 4;
     } else if (mode == 1) {
         fx_009_env = env;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&env->targets->centerX);
-        if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7828;
-            work->unk0->unk12 = 0x17;
-            work->unk0->unkC = 0x70;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&env->targets->centerX);
+        if (work->emit0 != NULL) {
+            work->emit0->unk14 = (s32)D_801E7828;
+            work->emit0->unk12 = 0x17;
+            work->emit0->unkC = 0x70;
         }
     } else {
         return entry->frame >= 0x32;

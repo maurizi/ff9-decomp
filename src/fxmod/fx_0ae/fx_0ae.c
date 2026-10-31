@@ -16,14 +16,14 @@ s32 fx_0ae_op80(s32 mode, Fx0aeWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], &bone);
         ex->btlfx_matrixPointAhead((MATRIX *)&bone, (s16)env->targets->fxParam, (s32)&work->unk8);
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk20);
-        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
-        if (work->unk4 != NULL) {
-            work->unk4->unk14 = (s32)D_801E79CC;
-            work->unk4->unk12 = 0x2D;
-            work->unk4->unkC = 0x2C;
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
+        if (work->emit4 != NULL) {
+            work->emit4->unk14 = (s32)D_801E79CC;
+            work->emit4->unk12 = 0x2D;
+            work->emit4->unkC = 0x2C;
         }
-        if (work->unk4 != NULL) {
-            work->unk4->otZ = 0x20;
+        if (work->emit4 != NULL) {
+            work->emit4->otZ = 0x20;
         }
     } else {
         frame = entry->frame;
@@ -31,14 +31,14 @@ s32 fx_0ae_op80(s32 mode, Fx0aeWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], &bone);
             ex->btlfx_matrixPointAhead((MATRIX *)&bone, (s16)env->targets->fxParam, (s32)&work->unk8);
-            if (work->unk4 != NULL) {
-                if (work->unk4->state == BTLFX_EMIT_DONE) {
-                    work->unk4 = NULL;
+            if (work->emit4 != NULL) {
+                if (work->emit4->state == BTLFX_EMIT_DONE) {
+                    work->emit4 = NULL;
                 }
-                if (work->unk4 != NULL) {
-                    work->unk4->rot.vx = work->unk20.vx;
-                    work->unk4->rot.vy = work->unk20.vy;
-                    work->unk4->rot.vz = work->unk20.vz;
+                if (work->emit4 != NULL) {
+                    work->emit4->rot.vx = work->unk20.vx;
+                    work->emit4->rot.vy = work->unk20.vy;
+                    work->emit4->rot.vz = work->unk20.vz;
                 }
             }
             if (frame == 0xC) {

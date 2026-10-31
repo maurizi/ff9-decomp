@@ -83,10 +83,10 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x14:
             work->unk0[3] = 0x20;
             work->unk0[7] = 0x20;
-            work->unk170[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk180[0]);
-            work->unk170[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk180[1]);
-            work->unk170[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk180[2]);
-            work->unk170[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk180[3]);
+            work->emit170[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk180[0]);
+            work->emit170[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk180[1]);
+            work->emit170[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk180[2]);
+            work->emit170[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk180[3]);
             work->unk0[8] = 0x30;
             break;
         case 0x30:
@@ -164,10 +164,10 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk1A0[i].vz = work->unk158.vz + ((ex->math_cos(t + work->unk1C0) *
                                                          (work->unk168 + work->unkA8 + 0x200)) >> 12);
                 work->unk1A0[i].vy = work->unk58[0].vy;
-                if (work->unk170[i] != NULL && work->unk170[i]->state == BTLFX_EMIT_DONE) {
-                    work->unk170[i] = NULL;
+                if (work->emit170[i] != NULL && work->emit170[i]->state == BTLFX_EMIT_DONE) {
+                    work->emit170[i] = NULL;
                 }
-                ex->btlfx_moveEmitterTo((s32)work->unk170[i], (s32)&work->unk1A0[i]);
+                ex->btlfx_moveEmitterTo((s32)work->emit170[i], (s32)&work->unk1A0[i]);
             }
         }
         if (work->unk0[4] != 0) {

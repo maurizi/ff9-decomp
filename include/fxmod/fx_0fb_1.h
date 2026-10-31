@@ -53,8 +53,8 @@ typedef struct {
     SVECTOR unk14; /* rotation */
     s16 unk1C; /* spin */
     s16 unk1E;
-    Pool6CEntry *unk20;
-    Pool6CEntry *unk24;
+    Pool6CEntry *emit20;
+    Pool6CEntry *emit24;
 } Fx0fb1Rock; /* 0x28 */
 
 typedef struct {
@@ -101,7 +101,7 @@ typedef struct {
     s32 unkBC;
     s32 unkC0;
     SVECTOR unkC4[4];
-    Pool6CEntry *unkE4;
+    Pool6CEntry *emitE4;
 } Fx0fb1Op80Work; /* 0xE8 */
 
 typedef struct {

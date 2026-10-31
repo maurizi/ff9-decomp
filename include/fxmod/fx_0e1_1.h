@@ -12,8 +12,8 @@ typedef struct {
     SVECTOR unk14;
     SVECTOR unk1C;
     SVECTOR unk24; /* camera position */
-    Pool6CEntry *unk2C;
-    Pool6CEntry *unk30;
+    Pool6CEntry *emit2C;
+    Pool6CEntry *emit30;
     s32 unk34; /* sway amplitude */
     s32 unk38; /* fading out */
     s32 unk3C; /* particle alpha */

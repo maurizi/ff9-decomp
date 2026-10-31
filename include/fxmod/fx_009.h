@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
 } Fx009Work;
 
 extern Unk800F78A4 *fx_009_env;

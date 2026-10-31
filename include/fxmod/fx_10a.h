@@ -18,7 +18,7 @@ typedef struct {
 } Fx10aWork80;
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4;
 } Fx10aWork81;
 

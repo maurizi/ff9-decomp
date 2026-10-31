@@ -9,7 +9,7 @@ typedef struct {
     s32 unk0; /* state */
     SVECTOR unk4; /* position */
     SVECTOR unkC; /* rotation */
-    Pool6CEntry *unk14;
+    Pool6CEntry *emit14;
     SVECTOR unk18; /* landing position */
     s32 unk20; /* index */
 } Fx038Item; /* 0x24 */

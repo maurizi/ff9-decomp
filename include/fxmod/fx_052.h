@@ -5,9 +5,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* model rotation */
     SVECTOR unk14; /* second model rotation */
     VECTOR unk1C; /* model position */
@@ -22,9 +22,9 @@ typedef struct {
 } Fx052Work80; /* 0x58 */
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* target body position */
 } Fx052Work81; /* 0x14 */
 

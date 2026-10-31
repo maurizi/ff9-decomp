@@ -108,9 +108,9 @@ static s32 fx_0d7_op83PoolTask(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk801
             fxm_drawJaggedBranch4(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
             fxm_drawJaggedBranch4(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
             if (frame == 0) {
-                it->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&it->unk0);
-                if (it->unk1C != NULL) {
-                    it->unk1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
+                it->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&it->unk0);
+                if (it->emit1C != NULL) {
+                    it->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
                 env->otZ = ex->btlfx_addRadiusSixth(0, 0x46);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 8), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
@@ -118,9 +118,9 @@ static s32 fx_0d7_op83PoolTask(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk801
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
             }
             if (frame == 1) {
-                it->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&it->unk0);
-                if (it->unk20 != NULL) {
-                    it->unk20->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
+                it->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&it->unk0);
+                if (it->emit20 != NULL) {
+                    it->emit20->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
             if (frame >= 6) {

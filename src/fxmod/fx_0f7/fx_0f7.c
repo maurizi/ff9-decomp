@@ -11,46 +11,46 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x18;
     } else if (mode == 1) {
-        work->unkC = NULL;
-        work->unk10 = NULL;
-        work->unk14 = NULL;
+        work->emitC = NULL;
+        work->emit10 = NULL;
+        work->emit14 = NULL;
         work->unk0 = 0;
         fx_0f7_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->emit4);
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk4);
-            if (work->unkC != NULL) {
-                work->unkC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->emit4);
+            if (work->emitC != NULL) {
+                work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             work->unk0 = 0x30;
             break;
         case 0x20:
-            work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk4);
-            if (work->unk10 != NULL) {
-                work->unk10->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->emit4);
+            if (work->emit10 != NULL) {
+                work->emit10->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 0x28:
-            ex->btlfx_stopEmitter(work->unkC);
-            work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk4);
-            if (work->unk14 != NULL) {
-                work->unk14->otZ = ex->btlfx_addRadiusSixth(0, 0xC0);
+            ex->btlfx_stopEmitter(work->emitC);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->emit4);
+            if (work->emit14 != NULL) {
+                work->emit14->otZ = ex->btlfx_addRadiusSixth(0, 0xC0);
             }
             break;
         }
-        if (work->unkC != NULL && work->unkC->state == BTLFX_EMIT_DONE) {
-            work->unkC = NULL;
+        if (work->emitC != NULL && work->emitC->state == BTLFX_EMIT_DONE) {
+            work->emitC = NULL;
         }
-        if (work->unk14 != NULL && work->unk14->state == BTLFX_EMIT_DONE) {
-            work->unk14 = NULL;
+        if (work->emit14 != NULL && work->emit14->state == BTLFX_EMIT_DONE) {
+            work->emit14 = NULL;
         }
-        if (work->unkC != NULL) {
+        if (work->emitC != NULL) {
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 4), frame);
         }
-        if (work->unk14 != NULL) {
+        if (work->emit14 != NULL) {
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 2), frame);
         }
         if (work->unk0 != 0) {

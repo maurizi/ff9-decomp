@@ -73,25 +73,25 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vy = work->unk10.vy;
         work->unk18.vz = work->unk10.vz;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801EA714);
-        work->unk2C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
-        if (work->unk2C != NULL) {
-            work->unk2C->otZ = 0x18;
+        work->emit2C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
+        if (work->emit2C != NULL) {
+            work->emit2C->otZ = 0x18;
         }
-        if (work->unk2C != NULL) {
-            work->unk2C->unk14 = (s32)D_801E8EB4;
-            work->unk2C->unk12 = 0x10;
-            work->unk2C->unkC = 0x184;
+        if (work->emit2C != NULL) {
+            work->emit2C->unk14 = (s32)D_801E8EB4;
+            work->emit2C->unk12 = 0x10;
+            work->emit2C->unkC = 0x184;
         }
-        if (work->unk2C != NULL) {
-            work->unk2C->elems->unk24 = (void (*)())fx_057_op80ElemDraw;
+        if (work->emit2C != NULL) {
+            work->emit2C->elems->unk24 = (void (*)())fx_057_op80ElemDraw;
         }
-        D_801EA704 = work->unk30 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unk24);
-        if (work->unk30 != NULL) {
-            work->unk30->otZ = 0x18;
+        D_801EA704 = work->emit30 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unk24);
+        if (work->emit30 != NULL) {
+            work->emit30->otZ = 0x18;
         }
-        work->unk34 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk24);
-        if (work->unk34 != NULL) {
-            work->unk34->otZ = 0x10;
+        work->emit34 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk24);
+        if (work->emit34 != NULL) {
+            work->emit34->otZ = 0x10;
         }
         ex->btlfx_initEffModels(fx_057_effModels, 3);
         work->unk8 =
@@ -104,24 +104,24 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->unk0) {
         case 0:
             t = (frame << 12) / 22;
-            if (work->unk2C != NULL && work->unk2C->state == BTLFX_EMIT_DONE) {
-                work->unk2C = NULL;
+            if (work->emit2C != NULL && work->emit2C->state == BTLFX_EMIT_DONE) {
+                work->emit2C = NULL;
             }
-            if (work->unk30 != NULL && work->unk30->state == BTLFX_EMIT_DONE) {
-                work->unk30 = NULL;
+            if (work->emit30 != NULL && work->emit30->state == BTLFX_EMIT_DONE) {
+                work->emit30 = NULL;
             }
-            if (work->unk34 != NULL && work->unk34->state == BTLFX_EMIT_DONE) {
-                work->unk34 = NULL;
+            if (work->emit34 != NULL && work->emit34->state == BTLFX_EMIT_DONE) {
+                work->emit34 = NULL;
             }
             alpha = 0x1000;
-            if (work->unk2C != NULL) {
-                work->unk2C->unk20 = D_801EA708;
+            if (work->emit2C != NULL) {
+                work->emit2C->unk20 = D_801EA708;
             }
-            if (work->unk30 != NULL) {
-                work->unk30->unk20 = alpha;
+            if (work->emit30 != NULL) {
+                work->emit30->unk20 = alpha;
             }
-            if (work->unk34 != NULL) {
-                work->unk34->unk20 = alpha;
+            if (work->emit34 != NULL) {
+                work->emit34->unk20 = alpha;
             }
             scale = (((0x1000 - t) * 3) >> 1) + 0x1000;
             if (frame < 4) {
@@ -138,39 +138,39 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             alpha = 0x1000 - t;
             scale = 0x1000;
             D_801EA708 = t;
-            if (work->unk2C != NULL && work->unk2C->state == BTLFX_EMIT_DONE) {
-                work->unk2C = NULL;
+            if (work->emit2C != NULL && work->emit2C->state == BTLFX_EMIT_DONE) {
+                work->emit2C = NULL;
             }
-            if (work->unk30 != NULL && work->unk30->state == BTLFX_EMIT_DONE) {
-                work->unk30 = NULL;
+            if (work->emit30 != NULL && work->emit30->state == BTLFX_EMIT_DONE) {
+                work->emit30 = NULL;
             }
-            if (work->unk34 != NULL && work->unk34->state == BTLFX_EMIT_DONE) {
-                work->unk34 = NULL;
+            if (work->emit34 != NULL && work->emit34->state == BTLFX_EMIT_DONE) {
+                work->emit34 = NULL;
             }
-            if (work->unk2C != NULL) {
-                work->unk2C->unk20 = D_801EA708;
+            if (work->emit2C != NULL) {
+                work->emit2C->unk20 = D_801EA708;
             }
-            if (work->unk30 != NULL) {
-                work->unk30->unk20 = alpha;
+            if (work->emit30 != NULL) {
+                work->emit30->unk20 = alpha;
             }
-            if (work->unk34 != NULL) {
-                work->unk34->unk20 = alpha;
+            if (work->emit34 != NULL) {
+                work->emit34->unk20 = alpha;
             }
             if (frame >= 20) {
                 work->unk0 = 2;
                 entry->frame = -1;
-                ex->btlfx_stopEmitter(work->unk30);
-                ex->btlfx_stopEmitter(work->unk34);
+                ex->btlfx_stopEmitter(work->emit30);
+                ex->btlfx_stopEmitter(work->emit34);
                 D_801EA704 = NULL;
             }
             break;
         case 2:
             D_801EA708 = 0x1000;
-            if (work->unk2C != NULL && work->unk2C->state == BTLFX_EMIT_DONE) {
-                work->unk2C = NULL;
+            if (work->emit2C != NULL && work->emit2C->state == BTLFX_EMIT_DONE) {
+                work->emit2C = NULL;
             }
-            if (work->unk2C != NULL) {
-                work->unk2C->unk20 = D_801EA708;
+            if (work->emit2C != NULL) {
+                work->emit2C->unk20 = D_801EA708;
             }
             if (frame == 19) {
                 D_801EA70C = p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
@@ -180,7 +180,7 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
             }
             if (frame >= 22) {
-                ex->btlfx_stopEmitter(work->unk2C);
+                ex->btlfx_stopEmitter(work->emit2C);
                 return 1;
             }
             break;

@@ -197,11 +197,11 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         BTLFX_COPY_SVEC(&work->unk54, &work->unk4C);
         work->unk14.vy += 0x800;
         fx_1b6_task = entry;
-        work->unk5C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk44);
+        work->emit5C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk44);
         if (p != NULL) {
             p->otZ = 0x140;
         }
-        work->unk60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk44);
+        work->emit60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk44);
         if (p != NULL) {
             p->otZ = 0x140;
         }
@@ -214,20 +214,20 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->unk0) {
         case 0:
             t = (frame << 12) / 24;
-            if (work->unk5C != NULL) {
-                if (work->unk5C->state == BTLFX_EMIT_DONE) {
-                    work->unk5C = NULL;
+            if (work->emit5C != NULL) {
+                if (work->emit5C->state == BTLFX_EMIT_DONE) {
+                    work->emit5C = NULL;
                 }
-                if (work->unk5C != NULL) {
-                    work->unk5C->unk20 = 0x1000 - t;
+                if (work->emit5C != NULL) {
+                    work->emit5C->unk20 = 0x1000 - t;
                 }
             }
-            if (work->unk60 != NULL) {
-                if (work->unk60->state == BTLFX_EMIT_DONE) {
-                    work->unk60 = NULL;
+            if (work->emit60 != NULL) {
+                if (work->emit60->state == BTLFX_EMIT_DONE) {
+                    work->emit60 = NULL;
                 }
-                if (work->unk60 != NULL) {
-                    work->unk60->unk20 = t;
+                if (work->emit60 != NULL) {
+                    work->emit60->unk20 = t;
                 }
             }
             if (frame == 1 || frame == 0xF) {

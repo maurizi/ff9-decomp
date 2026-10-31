@@ -52,7 +52,7 @@ typedef struct {
     SVECTOR unk28; /* caster body position */
     SVECTOR unk30;
     SVECTOR unk38;
-    Pool6CEntry *unk40;
+    Pool6CEntry *emit40;
     s32 unk44[8]; /* split models */
 } Fx1b7Work80; /* 0x64 */
 

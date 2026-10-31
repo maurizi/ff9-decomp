@@ -72,14 +72,14 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7D0C.unk8 = 0;
         D_801E7D0C.unkA = 0x6E;
         D_801E7D0C.unk6 = rot.vy;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E7D34);
-        if (work->unk0 != NULL) {
-            ((Fx0e9EffHdr *)work->unk0->file)->unk8 = fx_0e9_op80ParticleMotion;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E7D34);
+        if (work->emit0 != NULL) {
+            ((Fx0e9EffHdr *)work->emit0->file)->unk8 = fx_0e9_op80ParticleMotion;
         }
     } else {
         frame = entry->frame;
         if (frame == 0x50) {
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
         }
         return frame >= 0x8C;
     }

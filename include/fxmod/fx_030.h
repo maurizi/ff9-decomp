@@ -9,9 +9,9 @@ typedef struct {
     SVECTOR unk8;
     SVECTOR unk10; /* angles from unk0 to unk8 */
     SVECTOR unk18; /* angles from unk8 to unk0 */
-    Pool6CEntry *unk20;
-    Pool6CEntry *unk24;
-    Pool6CEntry *unk28;
+    Pool6CEntry *emit20;
+    Pool6CEntry *emit24;
+    Pool6CEntry *emit28;
     SVECTOR unk2C[8]; /* target body positions */
 } Fx030Work; /* 0x6C */
 

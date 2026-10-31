@@ -11,7 +11,7 @@ typedef struct {
     SVECTOR unk10; /* home position */
     SVECTOR unk18;
     SVECTOR unk20; /* current position */
-    Pool6CEntry *unk28;
+    Pool6CEntry *emit28;
 } Fx1f0Unit; /* 0x2C */
 
 typedef struct {

@@ -598,24 +598,24 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vy = work->unk18.vy;
                 work->unk20.vz = work->unk18.vz;
                 work->unk20.vy -= (work->unk5C << 10) >> 12;
-                work->unk60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk18);
+                work->emit60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk18);
                 if (p == NULL) {
                     goto skip; /* the original's NULL branch skips the unk60 check (unk60 is NULL then) */
                 }
                 p->unk2C = (s32)&work->unk20;
             }
-            if (work->unk60 != NULL && work->unk60->state == BTLFX_EMIT_DONE) {
-                work->unk60 = NULL;
+            if (work->emit60 != NULL && work->emit60->state == BTLFX_EMIT_DONE) {
+                work->emit60 = NULL;
             }
         skip:
             sv.vx = work->unk10.vx;
             sv.vy = work->unk10.vy;
             sv.vz = work->unk10.vz;
             sv.vy += 0x800;
-            if (work->unk60 != NULL) {
-                work->unk60->rot.vx = sv.vx;
-                work->unk60->rot.vy = sv.vy;
-                work->unk60->rot.vz = sv.vz;
+            if (work->emit60 != NULL) {
+                work->emit60->rot.vx = sv.vx;
+                work->emit60->rot.vy = sv.vy;
+                work->emit60->rot.vz = sv.vz;
             }
         }
         sv.vx = 0;

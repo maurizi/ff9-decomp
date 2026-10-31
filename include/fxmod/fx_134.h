@@ -50,8 +50,8 @@ typedef struct {
     s32 unk70;
     s32 unk74;
     u8 pad78[4];
-    Pool6CEntry *unk7C;
-    Pool6CEntry *unk80;
+    Pool6CEntry *emit7C;
+    Pool6CEntry *emit80;
 } Fx134Work; /* 0x84 */
 
 typedef struct {
@@ -62,7 +62,7 @@ typedef struct {
     SVECTOR unk14; /* rotation */
     s16 unk1C;
     s16 unk1E;
-    Pool6CEntry *unk20;
+    Pool6CEntry *emit20;
 } Fx134Orb; /* 0x24 */
 
 extern s32 D_801EC868[]; /* orb sizes */

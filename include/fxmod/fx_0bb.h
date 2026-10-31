@@ -5,13 +5,13 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4; /* caster body position */
 } Fx0bbWork80;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* caster body position */
 } Fx0bbWork81;
 

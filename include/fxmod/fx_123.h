@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0[5];
+    Pool6CEntry *emit0[5];
     SVECTOR unk14; /* centre of the units */
 } Fx123Work82;
 
@@ -15,10 +15,10 @@ typedef struct {
 } Fx123Work83;
 
 typedef struct {
-    Pool6CEntry *unk0[6];
-    Pool6CEntry *unk18[6];
-    Pool6CEntry *unk30[6];
-    Pool6CEntry *unk48;
+    Pool6CEntry *emit0[6];
+    Pool6CEntry *emit18[6];
+    Pool6CEntry *emit30[6];
+    Pool6CEntry *emit48;
     SVECTOR unk4C; /* caster position */
     SVECTOR unk54;
     SVECTOR unk5C[6]; /* bone positions */
@@ -85,11 +85,11 @@ static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *
 #define addVector(d, s) (d)->vx += (s)->vx, (d)->vy += (s)->vy, (d)->vz += (s)->vz
 
 typedef struct {
-    Pool6CEntry *unk0[6];
+    Pool6CEntry *emit0[6];
     u8 pad18[0x30 - 0x18];
-    Pool6CEntry *unk30[6];
-    Pool6CEntry *unk48[6];
-    Pool6CEntry *unk60;
+    Pool6CEntry *emit30[6];
+    Pool6CEntry *emit48[6];
+    Pool6CEntry *emit60;
     SVECTOR unk64;
     SVECTOR unk6C[6];
     VECTOR unk9C[6];

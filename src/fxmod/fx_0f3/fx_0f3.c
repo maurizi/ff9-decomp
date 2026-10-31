@@ -16,7 +16,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         fx_0f3_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        work->unk24 = NULL;
+        work->emit24 = NULL;
     } else {
         state = work->unk0;
         frame = entry->frame;
@@ -56,20 +56,20 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk18.vx = work->unk10.vx;
                 work->unk18.vy = work->unk10.vy;
                 work->unk18.vz = work->unk10.vz;
-                work->unk24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk18);
-                if (work->unk24 != NULL) {
-                    work->unk24->unk14 = (s32)D_801E7F80[work->unk4];
-                    work->unk24->unk12 = 4;
-                    work->unk24->unkC = 0xAC;
-                    if (work->unk24 != NULL) {
-                        work->unk24->otZ = 0x40;
+                work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk18);
+                if (work->emit24 != NULL) {
+                    work->emit24->unk14 = (s32)D_801E7F80[work->unk4];
+                    work->emit24->unk12 = 4;
+                    work->emit24->unkC = 0xAC;
+                    if (work->emit24 != NULL) {
+                        work->emit24->otZ = 0x40;
                     }
                 }
             }
-            if (work->unk24 != NULL && work->unk24->state == BTLFX_EMIT_DONE) {
-                work->unk24 = NULL;
+            if (work->emit24 != NULL && work->emit24->state == BTLFX_EMIT_DONE) {
+                work->emit24 = NULL;
             }
-            ex->btlfx_moveEmitterTo((s32)work->unk24, (s32)&work->unk10);
+            ex->btlfx_moveEmitterTo((s32)work->emit24, (s32)&work->unk10);
             if (frame == 6 && work->unk4 == 0) {
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 2, 0x40, 0x40, 0x40);
             }
@@ -83,7 +83,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame >= 0xC) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                ex->btlfx_stopEmitter(work->unk24);
+                ex->btlfx_stopEmitter(work->emit24);
             }
             return 0;
         case 1:

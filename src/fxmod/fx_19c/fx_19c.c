@@ -15,9 +15,9 @@ s32 fx_19c_op80(s32 mode, Fx19cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->otZ = 0x80;
         ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, 2), &work->unk4, frame, 1, -1);
         if (frame == 3) {
-            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
-            if (work->unk0 != NULL) {
-                work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+            if (work->emit0 != NULL) {
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         if (frame == 7) {

@@ -15,7 +15,7 @@ typedef struct {
 } Fx1ecPath;
 
 typedef struct {
-    Pool6CEntry *unk0[9];
+    Pool6CEntry *emit0[9];
     SVECTOR unk24; /* caster body position */
     SVECTOR unk2C; /* target position */
     SVECTOR unk34;
@@ -27,7 +27,7 @@ typedef struct {
 } Fx1ecWork80; /* 0x64 */
 
 typedef struct {
-    Pool6CEntry *unk0[11];
+    Pool6CEntry *emit0[11];
     SVECTOR unk2C; /* target position */
     SVECTOR unk34;
     SVECTOR unk3C;
@@ -36,7 +36,7 @@ typedef struct {
 } Fx1ecWork81; /* 0x54 */
 
 typedef struct {
-    Pool6CEntry *unk0[8];
+    Pool6CEntry *emit0[8];
     SVECTOR unk20; /* model rotation */
     VECTOR unk28; /* model position */
     VECTOR unk38; /* model scale */

@@ -5,8 +5,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR unk10; /* angles from unk8 to env->targets->centerX */
     SVECTOR unk18; /* lerp start: env position at x = 0x5DC */

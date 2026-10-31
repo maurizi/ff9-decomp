@@ -6,11 +6,11 @@
 
 typedef struct {
     s32 unk0; /* countdown */
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit4;
     s32 unk8;
-    Pool6CEntry *unkC;
-    Pool6CEntry *unk10;
-    Pool6CEntry *unk14;
+    Pool6CEntry *emitC;
+    Pool6CEntry *emit10;
+    Pool6CEntry *emit14;
 } Fx0f7Work;
 
 typedef struct {

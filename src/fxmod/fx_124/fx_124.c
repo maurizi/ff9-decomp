@@ -9,9 +9,9 @@ s32 fx_124_op80(s32 mode, Fx124Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_124_env = env;
         env->camera->paused = 0;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk4);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
-        if (work->unk0 != NULL) {
-            work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+        if (work->emit0 != NULL) {
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         return entry->frame >= 0x14;

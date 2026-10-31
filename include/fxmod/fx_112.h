@@ -18,7 +18,7 @@ typedef struct {
     SVECTOR unk38; /* caster body position */
     SVECTOR unk40;
     SVECTOR unk48; /* bone position */
-    Pool6CEntry *unk50;
+    Pool6CEntry *emit50;
 } Fx112Work;
 
 extern Unk800F78A4 *fx_112_env;

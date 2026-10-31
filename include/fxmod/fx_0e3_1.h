@@ -60,12 +60,12 @@ typedef struct {
     SVECTOR unk48;
     u8 pad50[8];
     SVECTOR unk58; /* hand rotation */
-    Pool6CEntry *unk60;
-    Pool6CEntry *unk64;
-    Pool6CEntry *unk68;
+    Pool6CEntry *emit60;
+    Pool6CEntry *emit64;
+    Pool6CEntry *emit68;
     s32 unk6C;
-    Pool6CEntry *unk70;
-    Pool6CEntry *unk74;
+    Pool6CEntry *emit70;
+    Pool6CEntry *emit74;
     s16 unk78;
     s16 unk7A;
     s32 unk7C; /* model */

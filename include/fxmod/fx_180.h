@@ -15,7 +15,7 @@ typedef struct {
 } Fx180Path;
 
 typedef struct {
-    Pool6CEntry *unk0[9];
+    Pool6CEntry *emit0[9];
     SVECTOR unk24; /* caster body position */
     SVECTOR unk2C; /* caster position */
     SVECTOR unk34; /* target position */
@@ -29,7 +29,7 @@ typedef struct {
 } Fx180Work80; /* 0x74 */
 
 typedef struct {
-    Pool6CEntry *unk0[11];
+    Pool6CEntry *emit0[11];
     SVECTOR unk2C; /* target position */
     SVECTOR unk34;
     SVECTOR unk3C;
@@ -38,7 +38,7 @@ typedef struct {
 } Fx180Work81; /* 0x54 */
 
 typedef struct {
-    Pool6CEntry *unk0[8];
+    Pool6CEntry *emit0[8];
     SVECTOR unk20; /* model rotation */
     VECTOR unk28; /* model position */
     VECTOR unk38; /* model scale */
@@ -52,7 +52,7 @@ typedef struct {
 } Fx180Work82; /* 0x6C */
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     u8 pad4[8 - 4];
     SVECTOR unk8; /* caster body position */
     SVECTOR unk10; /* caster position */

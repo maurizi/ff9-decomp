@@ -47,7 +47,7 @@ typedef struct {
 } Fx1bdLine;
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4; /* rotation */
     VECTOR unkC; /* position */
     VECTOR unk1C; /* scale */
@@ -102,9 +102,9 @@ typedef struct {
 } Fx1bdModel; /* 0x28 */
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC;
     SVECTOR unk14;
     s32 unk1C;

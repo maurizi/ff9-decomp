@@ -11,9 +11,9 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
 
     if (mode == 1) {
         part->unk0 = 0;
-        part->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&part->unk4);
-        if (part->unkC != NULL) {
-            part->unkC->otZ = 0;
+        part->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&part->unk4);
+        if (part->emitC != NULL) {
+            part->emitC->otZ = 0;
         }
     } else {
         switch (part->unk0) {
@@ -38,8 +38,8 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             if (frame >= 0x14) {
                 part->unk0 = 1;
                 ((s16 *)part)[-1] = -1;
-                if (part->unkC != NULL) {
-                    part->unkC->frame = part->unkC->tail->unk4.unk2;
+                if (part->emitC != NULL) {
+                    part->emitC->frame = part->emitC->tail->unk4.unk2;
                 }
                 part->unk4.vy = 0;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0, 0);

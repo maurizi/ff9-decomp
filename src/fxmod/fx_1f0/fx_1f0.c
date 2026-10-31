@@ -102,11 +102,11 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 0; i < 4; i++) {
             D_801E8558[i].unk0 = -1;
             D_801E8558[i].unk4 = 0x80;
-            D_801E8558[i].unk28 = NULL;
+            D_801E8558[i].emit28 = NULL;
         }
         for (i = 0; i < env->targets->targetCount; i++) {
             u = &D_801E8558[i];
-            u->unk28 = NULL;
+            u->emit28 = NULL;
             ex->btlfx_fadeUnitById(i, -2);
             ex->btlfx_getUnitHomePos(i, (s16 *)&D_801E8558[i].unk10);
             u->unk8.vx = u->unk10.vx;
@@ -146,8 +146,8 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk0[1] != 0) {
             work->unk0[1]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (D_801E8558[i].unk28 != NULL && D_801E8558[i].unk28->state == BTLFX_EMIT_DONE) {
-                    D_801E8558[i].unk28 = NULL;
+                if (D_801E8558[i].emit28 != NULL && D_801E8558[i].emit28->state == BTLFX_EMIT_DONE) {
+                    D_801E8558[i].emit28 = NULL;
                 }
                 if (D_801E8558[i].unk0 == 0) {
                     if (D_801E8558[i].unk4 != 0) {
@@ -165,9 +165,9 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         work->unk40[3].vy = D_801E8558[i].unk10.vy;
                         work->unk40[3].vz = D_801E8558[i].unk10.vz;
                         fxm_easeBlend4(0, 0x80, D_801E8558[i].unk4, work->unk40, &D_801E8558[i].unk20);
-                        ex->btlfx_moveEmitterTo((s32)D_801E8558[i].unk28, (s32)&D_801E8558[i].unk20);
-                        if (D_801E8558[i].unk4 < 0x10 && D_801E8558[i].unk28 != NULL) {
-                            D_801E8558[i].unk28->unk20 = D_801E8558[i].unk4 << 8;
+                        ex->btlfx_moveEmitterTo((s32)D_801E8558[i].emit28, (s32)&D_801E8558[i].unk20);
+                        if (D_801E8558[i].unk4 < 0x10 && D_801E8558[i].emit28 != NULL) {
+                            D_801E8558[i].emit28->unk20 = D_801E8558[i].unk4 << 8;
                         }
                         ex->btlfx_setUnitPos(i, (s16 *)&D_801E8558[i].unk20);
                         D_801E8558[i].unk20.vy -= 0x100;
@@ -175,23 +175,23 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         D_801E8558[i].unk0 = -1;
                         ex->btlfx_getUnitHomePos(i, (s16 *)&D_801E8558[i].unk20);
                         ex->btlfx_setUnitPos(i, (s16 *)&D_801E8558[i].unk20);
-                        ex->btlfx_stopEmitter(D_801E8558[i].unk28);
+                        ex->btlfx_stopEmitter(D_801E8558[i].emit28);
                     }
                 }
                 if (D_801E8558[i].unk0 > 0) {
                     ex->btlfx_setUnitPos(i, (s16 *)&D_801E8558[i].unk8);
                     if (D_801E8558[i].unk0 == 8) {
-                        D_801E8558[i].unk28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8558[i].unk18);
-                        if (D_801E8558[i].unk28 != NULL) {
-                            D_801E8558[i].unk28->otZ = 0x80;
+                        D_801E8558[i].emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8558[i].unk18);
+                        if (D_801E8558[i].emit28 != NULL) {
+                            D_801E8558[i].emit28->otZ = 0x80;
                         }
                         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E8558[i].unk20);
                         if (p != NULL) {
                             p->otZ = 0x80;
                         }
                     }
-                    if (D_801E8558[i].unk0 < 8 && D_801E8558[i].unk28 != NULL) {
-                        D_801E8558[i].unk28->unk20 = (8 - D_801E8558[i].unk0) << 9;
+                    if (D_801E8558[i].unk0 < 8 && D_801E8558[i].emit28 != NULL) {
+                        D_801E8558[i].emit28->unk20 = (8 - D_801E8558[i].unk0) << 9;
                     }
                     D_801E8558[i].unk0--;
                 }

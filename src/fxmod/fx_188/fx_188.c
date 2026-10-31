@@ -7,9 +7,9 @@ static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk8010
 
     if (mode == 1) {
         e->unk0 = 0;
-        e->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&e->unkC);
-        if (e->unk1C != NULL) {
-            e->unk1C->otZ = 0;
+        e->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&e->unkC);
+        if (e->emit1C != NULL) {
+            e->emit1C->otZ = 0;
         }
         e->unk4 = (ex->btlfx_rand() & 0x1F) + 0x27;
         e->unk8 = (ex->btlfx_rand() & 0x1F) + 0x20;
@@ -32,12 +32,12 @@ static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk8010
         ex->btlfx_pointAhead((s16 *)&e->unkC, (s16 *)&e->unk14, e->unk4, (s16 *)&e->unkC);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xE), &e->unkC, 0, t + 0x800, frame, 1, -1, 0, 0);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 3), &e->unkC, 0, t + 0x800, frame, 2, -1, 0, 0);
-        if (e->unk1C != NULL && e->unk1C->state == BTLFX_EMIT_DONE) {
-            e->unk1C = NULL;
+        if (e->emit1C != NULL && e->emit1C->state == BTLFX_EMIT_DONE) {
+            e->emit1C = NULL;
         }
         if (D_801E86CC == 0) {
-            if (e->unk1C != NULL) {
-                e->unk1C->frame = e->unk1C->tail->unk4.unk2;
+            if (e->emit1C != NULL) {
+                e->emit1C->frame = e->emit1C->tail->unk4.unk2;
             }
             e->unk0 = 1;
             return 1;

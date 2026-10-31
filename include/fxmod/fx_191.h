@@ -15,19 +15,19 @@ typedef struct {
 } Fx191Path;
 
 typedef struct {
-    Pool6CEntry *unk0[4];
+    Pool6CEntry *emit0[4];
     SVECTOR unk10; /* caster position */
     SVECTOR unk18; /* target position */
     SVECTOR unk20; /* angles */
 } Fx191Work80; /* 0x28 */
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
-    Pool6CEntry *unkC;
-    Pool6CEntry *unk10;
-    Pool6CEntry *unk14;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
+    Pool6CEntry *emitC;
+    Pool6CEntry *emit10;
+    Pool6CEntry *emit14;
     SVECTOR unk18; /* target body position */
     u8 pad20[0x30 - 0x20];
     SVECTOR unk30; /* from, to, from, to */

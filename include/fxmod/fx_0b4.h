@@ -21,12 +21,12 @@ typedef struct {
 } Fx0b4Timer;
 
 typedef struct {
-    Pool6CEntry *unk0[6];
-    Pool6CEntry *unk18;
-    Pool6CEntry *unk1C;
-    Pool6CEntry *unk20;
-    Pool6CEntry *unk24;
-    Pool6CEntry *unk28;
+    Pool6CEntry *emit0[6];
+    Pool6CEntry *emit18;
+    Pool6CEntry *emit1C;
+    Pool6CEntry *emit20;
+    Pool6CEntry *emit24;
+    Pool6CEntry *emit28;
     SVECTOR unk2C; /* caster body position */
     SVECTOR unk34; /* caster position */
 } Fx0b4Work;

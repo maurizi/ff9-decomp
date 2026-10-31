@@ -30,7 +30,7 @@ typedef struct {
     s32 unk70;
     s32 unk74;
     s32 unk78;
-    Pool6CEntry *unk7C;
+    Pool6CEntry *emit7C;
 } Fx17d2Work; /* 0x80 */
 
 extern Unk800F78A4 *fx_17d_2_env;

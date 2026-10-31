@@ -53,19 +53,19 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_aimAngles((s16 *)&work->unk44, (s16 *)&work->unk34, (s16 *)&work->unk74);
         switch (frame) {
         case 0xA:
-            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8320);
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E8320);
-            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E8320);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8320);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E8320);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E8320);
             work->unk4C.vx = work->unk44.vx;
             work->unk4C.vy = work->unk44.vy;
             work->unk4C.vz = work->unk44.vz;
             work->unk4C.vy = 0;
-            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk4C);
-            if (work->unk0 != NULL) {
-                work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk4C);
+            if (work->emit0 != NULL) {
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
-            if (work->unk4 != NULL) {
-                work->unk4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            if (work->emit4 != NULL) {
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         case 0x22:
@@ -84,30 +84,30 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801E8300.vx = work->unk34.vx;
             D_801E8300.vy = work->unk34.vy;
             D_801E8300.vz = work->unk34.vz;
-            work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E8328);
-            work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&D_801E8330);
-            D_801E8340 = work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E8338);
-            if (work->unk10 != NULL) {
-                work->unk10->unk14 = (s32)D_801E8350;
-                work->unk10->unk12 = 0x112;
-                work->unk10->unkC = 0x18;
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E8328);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&D_801E8330);
+            D_801E8340 = work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E8338);
+            if (work->emit10 != NULL) {
+                work->emit10->unk14 = (s32)D_801E8350;
+                work->emit10->unk12 = 0x112;
+                work->emit10->unkC = 0x18;
             }
-            if (work->unk14 != NULL) {
-                work->unk14->unk14 = (s32)D_801E9D00;
-                work->unk14->unk12 = 0x28;
-                work->unk14->unkC = 0x40;
+            if (work->emit14 != NULL) {
+                work->emit14->unk14 = (s32)D_801E9D00;
+                work->emit14->unk12 = 0x28;
+                work->emit14->unkC = 0x40;
             }
-            if (work->unk10 != NULL) {
-                ((Fx127EffHdr *)work->unk10->file)->unk8 = fx_127_op80ParticleMotion0;
+            if (work->emit10 != NULL) {
+                ((Fx127EffHdr *)work->emit10->file)->unk8 = fx_127_op80ParticleMotion0;
             }
-            if (work->unk14 != NULL) {
-                ((Fx127EffHdr *)work->unk14->file)->unk8 = fx_127_op80ParticleMotion1;
+            if (work->emit14 != NULL) {
+                ((Fx127EffHdr *)work->emit14->file)->unk8 = fx_127_op80ParticleMotion1;
             }
-            if (work->unk10 != NULL) {
-                work->unk10->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+            if (work->emit10 != NULL) {
+                work->emit10->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
-            if (work->unk14 != NULL) {
-                work->unk14->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+            if (work->emit14 != NULL) {
+                work->emit14->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
             break;
         case 0x27:
@@ -118,18 +118,18 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0xA && frame < 0xE) {
-            if (work->unk0 != NULL && work->unk0->state == BTLFX_EMIT_DONE) {
-                work->unk0 = NULL;
+            if (work->emit0 != NULL && work->emit0->state == BTLFX_EMIT_DONE) {
+                work->emit0 = NULL;
             }
-            ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk44);
-            if (work->unk4 != NULL && work->unk4->state == BTLFX_EMIT_DONE) {
-                work->unk4 = NULL;
+            ex->btlfx_moveEmitterTo((s32)work->emit0, (s32)&work->unk44);
+            if (work->emit4 != NULL && work->emit4->state == BTLFX_EMIT_DONE) {
+                work->emit4 = NULL;
             }
-            ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk44);
-            if (work->unk8 != NULL && work->unk8->state == BTLFX_EMIT_DONE) {
-                work->unk8 = NULL;
+            ex->btlfx_moveEmitterTo((s32)work->emit4, (s32)&work->unk44);
+            if (work->emit8 != NULL && work->emit8->state == BTLFX_EMIT_DONE) {
+                work->emit8 = NULL;
             }
-            ex->btlfx_moveEmitterTo((s32)work->unk8, (s32)&work->unk44);
+            ex->btlfx_moveEmitterTo((s32)work->emit8, (s32)&work->unk44);
             ex->btlfx_aimAngles((s16 *)&work->unk44, (s16 *)&work->unk34, (s16 *)&work->unk74);
             work->unk7C.vx = work->unk74.vx;
             work->unk7C.vy = work->unk74.vy;
@@ -137,34 +137,34 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk7C.vy += 0x800;
         }
         if (frame >= 0xA) {
-            if (work->unk0 != NULL) {
-                if (work->unk0->state == BTLFX_EMIT_DONE) {
-                    work->unk0 = NULL;
+            if (work->emit0 != NULL) {
+                if (work->emit0->state == BTLFX_EMIT_DONE) {
+                    work->emit0 = NULL;
                 }
-                if (work->unk0 != NULL) {
-                    work->unk0->rot.vx = work->unk74.vx;
-                    work->unk0->rot.vy = work->unk74.vy;
-                    work->unk0->rot.vz = work->unk74.vz;
-                }
-            }
-            if (work->unk4 != NULL) {
-                if (work->unk4->state == BTLFX_EMIT_DONE) {
-                    work->unk4 = NULL;
-                }
-                if (work->unk4 != NULL) {
-                    work->unk4->rot.vx = work->unk74.vx;
-                    work->unk4->rot.vy = work->unk74.vy;
-                    work->unk4->rot.vz = work->unk74.vz;
+                if (work->emit0 != NULL) {
+                    work->emit0->rot.vx = work->unk74.vx;
+                    work->emit0->rot.vy = work->unk74.vy;
+                    work->emit0->rot.vz = work->unk74.vz;
                 }
             }
-            if (work->unk8 != NULL) {
-                if (work->unk8->state == BTLFX_EMIT_DONE) {
-                    work->unk8 = NULL;
+            if (work->emit4 != NULL) {
+                if (work->emit4->state == BTLFX_EMIT_DONE) {
+                    work->emit4 = NULL;
                 }
-                if (work->unk8 != NULL) {
-                    work->unk8->rot.vx = work->unk7C.vx;
-                    work->unk8->rot.vy = work->unk7C.vy;
-                    work->unk8->rot.vz = work->unk7C.vz;
+                if (work->emit4 != NULL) {
+                    work->emit4->rot.vx = work->unk74.vx;
+                    work->emit4->rot.vy = work->unk74.vy;
+                    work->emit4->rot.vz = work->unk74.vz;
+                }
+            }
+            if (work->emit8 != NULL) {
+                if (work->emit8->state == BTLFX_EMIT_DONE) {
+                    work->emit8 = NULL;
+                }
+                if (work->emit8 != NULL) {
+                    work->emit8->rot.vx = work->unk7C.vx;
+                    work->emit8->rot.vy = work->unk7C.vy;
+                    work->emit8->rot.vz = work->unk7C.vz;
                 }
             }
         }
@@ -203,25 +203,25 @@ s32 fx_127_op81(s32 mode, Fx127Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk30);
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unk38);
-            if (work->unk0 != NULL) {
-                work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk30);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unk38);
+            if (work->emit0 != NULL) {
+                work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 4:
-            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk38);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk38);
             break;
         }
         if (frame >= 0) {
-            if (work->unk0 != NULL) {
-                if (work->unk0->state == BTLFX_EMIT_DONE) {
-                    work->unk0 = NULL;
+            if (work->emit0 != NULL) {
+                if (work->emit0->state == BTLFX_EMIT_DONE) {
+                    work->emit0 = NULL;
                 }
-                if (work->unk0 != NULL) {
-                    work->unk0->rot.vx = work->unk18.vx;
-                    work->unk0->rot.vy = work->unk18.vy;
-                    work->unk0->rot.vz = work->unk18.vz;
+                if (work->emit0 != NULL) {
+                    work->emit0->rot.vx = work->unk18.vx;
+                    work->emit0->rot.vy = work->unk18.vy;
+                    work->emit0->rot.vz = work->unk18.vz;
                 }
             }
         }

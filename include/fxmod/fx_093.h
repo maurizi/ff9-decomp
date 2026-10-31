@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR unk10; /* caster body position */
     SVECTOR unk18; /* caster position */
     SVECTOR unk20; /* angles from unk0 to unk8 */
-    Pool6CEntry *unk28;
+    Pool6CEntry *emit28;
 } Fx093Work;
 
 extern Unk800F78A4 *fx_093_env;

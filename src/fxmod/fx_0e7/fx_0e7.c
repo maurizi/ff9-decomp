@@ -14,7 +14,7 @@ s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkC.vy = work->unk4.vy;
         work->unkC.vz = work->unk4.vz;
         work->unkC.vy = -0x9C4;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk4);
         work->unk16 = 0x1000;
         work->unk14 = 0;
     } else {
@@ -83,7 +83,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk50.vy = work->unk1C.vy;
             work->unk50.vz = work->unk1C.vz;
             work->unk50.vy = 0;
-            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk50);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk50);
             break;
         case 8:
             work->unk74 = 8;
@@ -91,18 +91,18 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk58.vy = work->unk1C.vy;
             work->unk58.vz = work->unk1C.vz;
             work->unk58.vy = -0xC8;
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk58);
-            if (work->unk4 != NULL) {
-                work->unk4->otZ = 0x80;
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk58);
+            if (work->emit4 != NULL) {
+                work->emit4->otZ = 0x80;
             }
             break;
         case 0x32:
             work->unk60.vx = work->unk40.vx;
             work->unk60.vy = work->unk40.vy;
             work->unk60.vz = work->unk40.vz;
-            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk60);
-            if (work->unk8 != NULL) {
-                work->unk8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk60);
+            if (work->emit8 != NULL) {
+                work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 0x10:

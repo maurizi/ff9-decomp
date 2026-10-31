@@ -13,8 +13,8 @@ typedef struct {
     SVECTOR unk3C; /* target position */
     SVECTOR unk44;
     SVECTOR unk4C;
-    Pool6CEntry *unk54[4];
-    Pool6CEntry *unk64[4];
+    Pool6CEntry *emit54[4];
+    Pool6CEntry *emit64[4];
 } Fx190Work; /* 0x74 */
 
 extern Unk800F78A4 *fx_190_env;

@@ -39,27 +39,27 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk38);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk44);
-        work->unk4C[0] = NULL;
-        work->unk4C[1] = NULL;
-        work->unk4C[2] = NULL;
-        work->unk4C[3] = NULL;
-        work->unk4C[4] = NULL;
+        work->emit4C[0] = NULL;
+        work->emit4C[1] = NULL;
+        work->emit4C[2] = NULL;
+        work->emit4C[3] = NULL;
+        work->emit4C[4] = NULL;
     } else {
         frame = entry->frame;
-        if (work->unk4C[0] != NULL && work->unk4C[0]->state == BTLFX_EMIT_DONE) {
-            work->unk4C[0] = NULL;
+        if (work->emit4C[0] != NULL && work->emit4C[0]->state == BTLFX_EMIT_DONE) {
+            work->emit4C[0] = NULL;
         }
-        if (work->unk4C[1] != NULL && work->unk4C[1]->state == BTLFX_EMIT_DONE) {
-            work->unk4C[1] = NULL;
+        if (work->emit4C[1] != NULL && work->emit4C[1]->state == BTLFX_EMIT_DONE) {
+            work->emit4C[1] = NULL;
         }
-        if (work->unk4C[2] != NULL && work->unk4C[2]->state == BTLFX_EMIT_DONE) {
-            work->unk4C[2] = NULL;
+        if (work->emit4C[2] != NULL && work->emit4C[2]->state == BTLFX_EMIT_DONE) {
+            work->emit4C[2] = NULL;
         }
-        if (work->unk4C[3] != NULL && work->unk4C[3]->state == BTLFX_EMIT_DONE) {
-            work->unk4C[3] = NULL;
+        if (work->emit4C[3] != NULL && work->emit4C[3]->state == BTLFX_EMIT_DONE) {
+            work->emit4C[3] = NULL;
         }
-        if (work->unk4C[4] != NULL && work->unk4C[4]->state == BTLFX_EMIT_DONE) {
-            work->unk4C[4] = NULL;
+        if (work->emit4C[4] != NULL && work->emit4C[4]->state == BTLFX_EMIT_DONE) {
+            work->emit4C[4] = NULL;
         }
         ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk30);
         switch (frame) {
@@ -82,22 +82,22 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 20:
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&D_801E8580);
-            work->unk4C[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8580);
+            work->emit4C[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8580);
             work->unk0[3] = 0x10;
             break;
         case 26:
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&D_801E8588);
-            work->unk4C[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8588);
+            work->emit4C[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8588);
             work->unk0[4] = 0x10;
             break;
         case 32:
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&D_801E8590);
-            work->unk4C[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8590);
+            work->emit4C[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8590);
             work->unk0[5] = 0x10;
             break;
         case 46:
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&D_801E8598);
-            work->unk4C[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E8598);
+            work->emit4C[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E8598);
             work->unk0[6] = 0x10;
             break;
         case 50:
@@ -105,7 +105,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_fadeUnitById(0, 0x80);
             ex->btlfx_setUnitRot(0, (s16 *)&work->unk44);
             ex->btlfx_getUnitHomePos(0, (s16 *)&D_801E85A0);
-            work->unk4C[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E85A0);
+            work->emit4C[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E85A0);
             work->unk0[7] = 0x10;
             break;
         }
@@ -125,13 +125,13 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[3]--;
             ex->btlfx_getUnitBoneMatrix(0x10, 4, (BtlBone *)&m);
             ex->btlfx_matrixAngles(&m, (s16 *)&a);
-            if (work->unk4C[0] != NULL) {
-                work->unk4C[0]->rot.vx = a.vx;
-                work->unk4C[0]->rot.vy = a.vy;
-                work->unk4C[0]->rot.vz = a.vz;
+            if (work->emit4C[0] != NULL) {
+                work->emit4C[0]->rot.vx = a.vx;
+                work->emit4C[0]->rot.vy = a.vy;
+                work->emit4C[0]->rot.vz = a.vz;
             }
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&v);
-            ex->btlfx_moveEmitterTo((s32)work->unk4C[0], (s32)&v);
+            ex->btlfx_moveEmitterTo((s32)work->emit4C[0], (s32)&v);
         }
         if (work->unk0[4] != 0) {
             MATRIX m;
@@ -139,13 +139,13 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[4]--;
             ex->btlfx_getUnitBoneMatrix(0x10, 4, (BtlBone *)&m);
             ex->btlfx_matrixAngles(&m, (s16 *)&a);
-            if (work->unk4C[1] != NULL) {
-                work->unk4C[1]->rot.vx = a.vx;
-                work->unk4C[1]->rot.vy = a.vy;
-                work->unk4C[1]->rot.vz = a.vz;
+            if (work->emit4C[1] != NULL) {
+                work->emit4C[1]->rot.vx = a.vx;
+                work->emit4C[1]->rot.vy = a.vy;
+                work->emit4C[1]->rot.vz = a.vz;
             }
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&v);
-            ex->btlfx_moveEmitterTo((s32)work->unk4C[1], (s32)&v);
+            ex->btlfx_moveEmitterTo((s32)work->emit4C[1], (s32)&v);
         }
         if (work->unk0[5] != 0) {
             MATRIX m;
@@ -153,13 +153,13 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[5]--;
             ex->btlfx_getUnitBoneMatrix(0x10, 4, (BtlBone *)&m);
             ex->btlfx_matrixAngles(&m, (s16 *)&a);
-            if (work->unk4C[2] != NULL) {
-                work->unk4C[2]->rot.vx = a.vx;
-                work->unk4C[2]->rot.vy = a.vy;
-                work->unk4C[2]->rot.vz = a.vz;
+            if (work->emit4C[2] != NULL) {
+                work->emit4C[2]->rot.vx = a.vx;
+                work->emit4C[2]->rot.vy = a.vy;
+                work->emit4C[2]->rot.vz = a.vz;
             }
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&v);
-            ex->btlfx_moveEmitterTo((s32)work->unk4C[2], (s32)&v);
+            ex->btlfx_moveEmitterTo((s32)work->emit4C[2], (s32)&v);
         }
         if (work->unk0[6] != 0) {
             MATRIX m;
@@ -167,23 +167,23 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[6]--;
             ex->btlfx_getUnitBoneMatrix(0x10, 4, (BtlBone *)&m);
             ex->btlfx_matrixAngles(&m, (s16 *)&a);
-            if (work->unk4C[3] != NULL) {
-                work->unk4C[3]->rot.vx = a.vx;
-                work->unk4C[3]->rot.vy = a.vy;
-                work->unk4C[3]->rot.vz = a.vz;
+            if (work->emit4C[3] != NULL) {
+                work->emit4C[3]->rot.vx = a.vx;
+                work->emit4C[3]->rot.vy = a.vy;
+                work->emit4C[3]->rot.vz = a.vz;
             }
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&v);
-            ex->btlfx_moveEmitterTo((s32)work->unk4C[3], (s32)&v);
+            ex->btlfx_moveEmitterTo((s32)work->emit4C[3], (s32)&v);
         }
         if (work->unk0[7] != 0) {
             work->unk0[7]--;
             a.vx = 0xC00;
             a.vz = 0;
             a.vy = 0;
-            if (work->unk4C[4] != NULL) {
-                work->unk4C[4]->rot.vx = a.vx;
-                work->unk4C[4]->rot.vy = a.vy;
-                work->unk4C[4]->rot.vz = a.vz;
+            if (work->emit4C[4] != NULL) {
+                work->emit4C[4]->rot.vx = a.vx;
+                work->emit4C[4]->rot.vy = a.vy;
+                work->emit4C[4]->rot.vz = a.vz;
             }
         }
         if (work->unk0[2] != 0) {

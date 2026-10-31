@@ -6,16 +6,16 @@
 
 typedef struct {
     s32 unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC;
 } Fx12dWork80;
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     s32 unk4;
-    Pool6CEntry *unk8;
-    Pool6CEntry *unkC;
+    Pool6CEntry *emit8;
+    Pool6CEntry *emitC;
     SVECTOR unk10;
     s16 unk18;
     s16 unk1A;

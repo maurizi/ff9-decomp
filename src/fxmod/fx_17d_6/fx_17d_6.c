@@ -62,7 +62,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk58.vx += 0x19F;
         work->unk58.vy -= 0x200;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
-        work->unk78 = p;
+        work->emit78 = p;
         if (p != NULL) {
             p->otZ = 0x200;
         }
@@ -120,7 +120,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x42) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                ex->btlfx_stopEmitter((Pool6CEntry *)&work->unk78);
+                ex->btlfx_stopEmitter((Pool6CEntry *)&work->emit78);
                 ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk1AC, SUMMON(env)->unk60);
                 pos.vx = work->unk58.vx;
                 pos.vy = work->unk58.vy;

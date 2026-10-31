@@ -5,15 +5,15 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     u8 pad4[8];
     SVECTOR unkC;
     SVECTOR unk14; /* above the target body */
 } Fx043Work80; /* 0x1C */
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* target body position */
     SVECTOR unk10; /* target position */
     SVECTOR unk18;

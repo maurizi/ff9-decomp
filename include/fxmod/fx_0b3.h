@@ -39,7 +39,7 @@ typedef struct {
     Fx0b3Vec3 unk48; /* model position */
     Fx0b3Vec3 unk54; /* model scale */
     SVECTOR unk60; /* model rotation */
-    Pool6CEntry *unk68;
+    Pool6CEntry *emit68;
     s32 unk6C; /* model */
     s32 unk70; /* morph frame */
     s32 unk74; /* morph weight */
@@ -77,8 +77,8 @@ typedef struct {
     Fx0b3Vec3 unk60;
     Fx0b3Vec3 unk6C;
     SVECTOR unk78;
-    Pool6CEntry *unk80;
-    Pool6CEntry *unk84;
+    Pool6CEntry *emit80;
+    Pool6CEntry *emit84;
     s32 unk88[4]; /* models */
     s32 unk98; /* morph frame */
     s32 unk9C; /* morph weight */
@@ -157,7 +157,7 @@ typedef struct {
     Fx0b3Vec3 unk34; /* summon scale */
     SVECTOR unk40; /* summon rotation */
     u8 pad48[0x68 - 0x48];
-    Pool6CEntry *unk68;
+    Pool6CEntry *emit68;
 } Fx0b3Work85; /* 0x6C */
 
 extern CVECTOR D_801EB5D8;

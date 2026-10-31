@@ -22,10 +22,10 @@ typedef struct {
     Fx0ddKey12 *unk4;
 } Fx0ddTrack12;
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
-    Pool6CEntry *unkC;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
+    Pool6CEntry *emitC;
     SVECTOR unk10; /* caster position */
     SVECTOR unk18; /* model rotation */
     VECTOR unk20; /* model position */

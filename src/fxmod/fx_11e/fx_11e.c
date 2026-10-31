@@ -47,7 +47,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk3C = ex->btlfx_rand() % 0x1000;
         work->unk40 = ex->btlfx_rand() % 16;
         work->unk44 = ex->btlfx_rand() % 16;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk50);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk50);
     } else {
         frame = entry->frame;
         if ((u32)(frame - 0x1E) < 0x28) {
@@ -107,12 +107,12 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, m);
         }
-        if (work->unk0 != NULL) {
-            if (work->unk0->state == BTLFX_EMIT_DONE) {
-                work->unk0 = NULL;
+        if (work->emit0 != NULL) {
+            if (work->emit0->state == BTLFX_EMIT_DONE) {
+                work->emit0 = NULL;
             }
-            if (work->unk0 != NULL) {
-                work->unk0->unk2C = (s32)&work->unk48;
+            if (work->emit0 != NULL) {
+                work->emit0->unk2C = (s32)&work->unk48;
             }
         }
         if (frame == 3) {

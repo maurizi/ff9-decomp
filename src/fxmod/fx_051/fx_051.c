@@ -20,28 +20,28 @@ s32 fx_051_op80(s32 mode, Fx051Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_playFileSound(5, entry->file, -1);
         ex->btlfx_playFileSound(6, entry->file, -1);
         ex->btlfx_getUnitBodyPos(work->unk18, 0, (s16 *)&work->unk8);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
-        if (work->unk0 != NULL) {
-            work->unk0->otZ = ex->btlfx_addRadiusSixth(work->unk18, 0x20);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
+        if (work->emit0 != NULL) {
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unk18, 0x20);
         }
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk10);
         D_801E799C.vy = work->unk10.vy;
     } else {
         frame = entry->frame;
         if (frame == 0x12) {
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
-            if (work->unk4 != NULL) {
-                work->unk4->otZ = ex->btlfx_addRadiusSixth(work->unk18, 0x80);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
+            if (work->emit4 != NULL) {
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(work->unk18, 0x80);
             }
         }
-        if (frame >= 0x12 && work->unk4 != NULL) {
-            if (work->unk4->state == BTLFX_EMIT_DONE) {
-                work->unk4 = NULL;
+        if (frame >= 0x12 && work->emit4 != NULL) {
+            if (work->emit4->state == BTLFX_EMIT_DONE) {
+                work->emit4 = NULL;
             }
-            if (work->unk4 != NULL) {
-                work->unk4->rot.vx = D_801E799C.vx;
-                work->unk4->rot.vy = D_801E799C.vy;
-                work->unk4->rot.vz = D_801E799C.vz;
+            if (work->emit4 != NULL) {
+                work->emit4->rot.vx = D_801E799C.vx;
+                work->emit4->rot.vy = D_801E799C.vy;
+                work->emit4->rot.vz = D_801E799C.vz;
             }
         }
         if (frame == 0xC) {

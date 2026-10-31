@@ -16,7 +16,7 @@ typedef struct {
     s32 unk2C[3]; /* model position (a VECTOR without its pad word) */
     SVECTOR unk38; /* model rotation (target facing) */
     s32 unk40; /* target radius */
-    Pool6CEntry *unk44;
+    Pool6CEntry *emit44;
     s32 unk48; /* frame */
     s32 unk4C; /* model scale x */
     s32 unk50; /* model scale z */

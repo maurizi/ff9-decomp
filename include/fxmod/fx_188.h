@@ -10,7 +10,7 @@ typedef struct {
     s32 unk8; /* turn rate */
     SVECTOR unkC; /* position */
     SVECTOR unk14; /* direction */
-    Pool6CEntry *unk1C;
+    Pool6CEntry *emit1C;
     SVECTOR unk20; /* target */
 } Fx188Elem; /* 0x28 */
 

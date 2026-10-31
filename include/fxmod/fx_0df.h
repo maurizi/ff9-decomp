@@ -92,7 +92,7 @@ typedef struct {
     s32 pad30;
     s32 unk34; /* scroll */
     s32 unk38; /* yaw offset */
-    Pool6CEntry *unk3C;
+    Pool6CEntry *emit3C;
 } Fx0dfWork80; /* 0x40 */
 
 extern BtlModel fx_0df_effModels[];

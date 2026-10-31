@@ -11,7 +11,7 @@ typedef struct {
     SVECTOR unk14; /* target home position */
     SVECTOR unk1C; /* target position while pushed back */
     SVECTOR unk24; /* angles from unk4 to unkC */
-    Pool6CEntry *unk2C;
+    Pool6CEntry *emit2C;
 } Fx033Work; /* 0x30 */
 
 extern Unk800F78A4 *fx_033_env;

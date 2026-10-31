@@ -85,9 +85,9 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         env->camera->points[3].vx = work->unk18.vx;
         env->camera->points[3].vy = work->unk18.vy;
         env->camera->points[3].vz = work->unk18.vz;
-        work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
-        if (work->unk7C != NULL) {
-            work->unk7C->otZ = 0x80;
+        work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
+        if (work->emit7C != NULL) {
+            work->emit7C->otZ = 0x80;
         }
         for (i = 0; i < 0x14; i++) {
             y = i * 0x140 - 0x400;
@@ -139,13 +139,13 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             r.vz = 0;
             sc.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r, &sc, &col, 0, 0);
-            if (work->unk7C != NULL && work->unk7C->state == BTLFX_EMIT_DONE) {
-                work->unk7C = NULL;
+            if (work->emit7C != NULL && work->emit7C->state == BTLFX_EMIT_DONE) {
+                work->emit7C = NULL;
             }
-            if (work->unk7C != NULL) {
-                work->unk7C->rot.vx = work->unk40.vx;
-                work->unk7C->rot.vy = work->unk40.vy;
-                work->unk7C->rot.vz = work->unk40.vz;
+            if (work->emit7C != NULL) {
+                work->emit7C->rot.vx = work->unk40.vx;
+                work->emit7C->rot.vy = work->unk40.vy;
+                work->emit7C->rot.vz = work->unk40.vz;
             }
             if (frame >= 0x3C) {
                 ex->btlfx_poolClear((Unk800DA1B8 *)entry->pool);

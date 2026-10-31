@@ -166,29 +166,29 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0:
             for (i = 0; i < 6; i++) {
-                work->unk0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E8488[i]), (s32)&D_801E8E70[i]);
-                if (work->unk0[i] != NULL) {
-                    work->unk0[i]->tail->unk0 = -1;
-                    *(s32 *)&work->unk0[i]->tail->unk3C = D_801E84A0[i];
-                    if (work->unk0[i] != NULL) {
-                        work->unk0[i]->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E8488[i]), (s32)&D_801E8E70[i]);
+                if (work->emit0[i] != NULL) {
+                    work->emit0[i]->tail->unk0 = -1;
+                    *(s32 *)&work->emit0[i]->tail->unk3C = D_801E84A0[i];
+                    if (work->emit0[i] != NULL) {
+                        work->emit0[i]->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
                 }
             }
-            work->unk18 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->unk20);
+            work->emit18 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->unk20);
             if (p != NULL) {
                 p->unk14 = (s32)D_801E8860;
-                work->unk18->unk12 = 0x18;
-                work->unk18->unkC = 0x40;
-                if (work->unk18 != NULL) {
-                    work->unk18->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->emit18->unk12 = 0x18;
+                work->emit18->unkC = 0x40;
+                if (work->emit18 != NULL) {
+                    work->emit18->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
             break;
         case 0xC:
-            work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk20);
-            if (work->unk1C != NULL) {
-                work->unk1C->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk20);
+            if (work->emit1C != NULL) {
+                work->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         }

@@ -29,9 +29,9 @@ typedef struct {
     SVECTOR unk10;
     Fx081Vec3 unk18;
     SVECTOR unk24;
-    Pool6CEntry *unk2C;
-    Pool6CEntry *unk30;
-    Pool6CEntry *unk34;
+    Pool6CEntry *emit2C;
+    Pool6CEntry *emit30;
+    Pool6CEntry *emit34;
 } Fx081Work80; /* 0x38 */
 
 static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,

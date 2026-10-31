@@ -313,7 +313,7 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
         case 0:
             if (o->unk8 == 0) {
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&o->unk18);
-                o->unk34 = e;
+                o->emit34 = e;
                 if (e != NULL) {
                     e->otZ = 0x80;
                 }
@@ -321,10 +321,10 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
             sc.vx = 0;
             BTLFX_COPY_SVEC(&a, tab);
             a.vx -= 0x800;
-            if (o->unk34 != NULL) {
-                o->unk34->rot.vx = a.vx;
-                o->unk34->rot.vy = a.vy;
-                o->unk34->rot.vz = a.vz;
+            if (o->emit34 != NULL) {
+                o->emit34->rot.vx = a.vx;
+                o->emit34->rot.vy = a.vy;
+                o->emit34->rot.vz = a.vz;
             }
             if (++o->unk8 > 0) {
                 o->unk0 = 1;
@@ -337,10 +337,10 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
             sc.vz = (ex->math_sin((w << 10) >> 2) * 0x1000) >> 12;
             BTLFX_COPY_SVEC(&a, tab);
             a.vx -= 0x800;
-            if (o->unk34 != NULL) {
-                o->unk34->rot.vx = a.vx;
-                o->unk34->rot.vy = a.vy;
-                o->unk34->rot.vz = a.vz;
+            if (o->emit34 != NULL) {
+                o->emit34->rot.vx = a.vx;
+                o->emit34->rot.vy = a.vy;
+                o->emit34->rot.vz = a.vz;
             }
             if (++o->unk8 >= 4) {
                 o->unk0 = 2;
@@ -351,10 +351,10 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
             sc.vx = sc.vy = sc.vz = 0x1000;
             BTLFX_COPY_SVEC(&a, tab);
             a.vx -= 0x800;
-            if (o->unk34 != NULL) {
-                o->unk34->rot.vx = a.vx;
-                o->unk34->rot.vy = a.vy;
-                o->unk34->rot.vz = a.vz;
+            if (o->emit34 != NULL) {
+                o->emit34->rot.vx = a.vx;
+                o->emit34->rot.vy = a.vy;
+                o->emit34->rot.vz = a.vz;
             }
             if (frame < 12) {
                 u = (frame << 10) / 12;

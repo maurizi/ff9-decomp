@@ -15,8 +15,8 @@ typedef struct {
 } Fx1eaPath;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* caster body position */
     SVECTOR unk10; /* caster rotation */
 } Fx1eaWork80; /* 0x18 */
@@ -65,7 +65,7 @@ typedef struct {
 } Fx1eaVec3;
 
 typedef struct {
-    Pool6CEntry *unk0[11];
+    Pool6CEntry *emit0[11];
     SVECTOR unk2C; /* model rotation */
     Fx1eaVec3 unk34; /* model position */
     s32 pad40;

@@ -102,7 +102,7 @@ static s32 fx_026_op80PoolTask(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk801
 
     if (mode == 1) {
         it->unk0 = 0;
-        it->unk8 = NULL;
+        it->emit8 = NULL;
     } else {
         if (it->unk0 != 0) {
             return 0;
@@ -126,16 +126,16 @@ static s32 fx_026_op80PoolTask(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk801
             it->unkC.vx = pos.vx;
             it->unkC.vy = pos.vy;
             it->unkC.vz = pos.vz;
-            it->unk8 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x86), (s32)&it->unkC);
-            if (it->unk8 != NULL) {
-                it->unk8->otZ = 0x80;
+            it->emit8 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x86), (s32)&it->unkC);
+            if (it->emit8 != NULL) {
+                it->emit8->otZ = 0x80;
             }
         }
-        if (it->unk8 != NULL) {
-            if (it->unk8->state == BTLFX_EMIT_DONE) {
-                it->unk8 = NULL;
+        if (it->emit8 != NULL) {
+            if (it->emit8->state == BTLFX_EMIT_DONE) {
+                it->emit8 = NULL;
             }
-            ex->btlfx_moveEmitterTo((s32)it->unk8, (s32)&p);
+            ex->btlfx_moveEmitterTo((s32)it->emit8, (s32)&p);
         }
         if (frame >= 4) {
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk68);

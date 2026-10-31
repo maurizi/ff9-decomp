@@ -27,7 +27,7 @@ typedef struct {
     s16 unk2A;
     s32 unk2C; /* models */
     s32 unk30;
-    Pool6CEntry *unk34;
+    Pool6CEntry *emit34;
 } Fx098Item; /* 0x38 */
 
 typedef struct {
@@ -60,7 +60,7 @@ typedef struct {
     s16 unk7A; /* spawned directions */
     s32 unk7C;
     s32 unk80;
-    Pool6CEntry *unk84; /* particle */
+    Pool6CEntry *emit84; /* particle */
 } Fx098Work80; /* 0x88 */
 
 extern BtlModel fx_098_effModels[];

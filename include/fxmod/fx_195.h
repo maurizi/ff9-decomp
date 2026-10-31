@@ -60,8 +60,8 @@ typedef struct {
     u8 pad34[0x44 - 0x34];
     s32 unk44;
     u8 pad48[0x54 - 0x48];
-    Pool6CEntry *unk54;
-    Pool6CEntry *unk58;
+    Pool6CEntry *emit54;
+    Pool6CEntry *emit58;
     s32 unk5C; /* model */
     Fx195Vec3 unk60; /* model position */
     Fx195Vec3 unk6C; /* model scale */

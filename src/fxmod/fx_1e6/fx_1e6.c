@@ -123,42 +123,42 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk50.vy = work->unk48.vy;
             work->unk50.vz = work->unk48.vz;
             work->unk50.vy -= 0xFA;
-            work->unk0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk50);
-            work->unk0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk50);
-            work->unk0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk50);
-            work->unk0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk50);
-            work->unk0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk50);
-            work->unk0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk50);
-            work->unk0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk50);
-            if (work->unk0[0] != NULL) {
-                work->unk0[0]->unk14 = (s32)D_801E84F8;
-                work->unk0[0]->unk12 = 5;
-                work->unk0[0]->unkC = 0x90;
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk50);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk50);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk50);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk50);
+            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk50);
+            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk50);
+            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk50);
+            if (work->emit0[0] != NULL) {
+                work->emit0[0]->unk14 = (s32)D_801E84F8;
+                work->emit0[0]->unk12 = 5;
+                work->emit0[0]->unkC = 0x90;
             }
-            if (work->unk0[1] != NULL) {
-                work->unk0[1]->unk14 = (s32)D_801E87C8;
-                work->unk0[1]->unk12 = 5;
-                work->unk0[1]->unkC = 0x90;
+            if (work->emit0[1] != NULL) {
+                work->emit0[1]->unk14 = (s32)D_801E87C8;
+                work->emit0[1]->unk12 = 5;
+                work->emit0[1]->unkC = 0x90;
             }
-            if (work->unk0[2] != NULL) {
-                work->unk0[2]->unk14 = (s32)D_801E8A98;
-                work->unk0[2]->unk12 = 5;
-                work->unk0[2]->unkC = 0x90;
+            if (work->emit0[2] != NULL) {
+                work->emit0[2]->unk14 = (s32)D_801E8A98;
+                work->emit0[2]->unk12 = 5;
+                work->emit0[2]->unkC = 0x90;
             }
-            if (work->unk0[3] != NULL) {
-                work->unk0[3]->unk14 = (s32)D_801E8D68;
-                work->unk0[3]->unk12 = 0x10;
-                work->unk0[3]->unkC = 0x18;
+            if (work->emit0[3] != NULL) {
+                work->emit0[3]->unk14 = (s32)D_801E8D68;
+                work->emit0[3]->unk12 = 0x10;
+                work->emit0[3]->unkC = 0x18;
             }
-            if (work->unk0[4] != NULL) {
-                work->unk0[4]->unk14 = (s32)D_801E8EE8;
-                work->unk0[4]->unk12 = 0x10;
-                work->unk0[4]->unkC = 0x18;
+            if (work->emit0[4] != NULL) {
+                work->emit0[4]->unk14 = (s32)D_801E8EE8;
+                work->emit0[4]->unk12 = 0x10;
+                work->emit0[4]->unkC = 0x18;
             }
-            if (work->unk0[5] != NULL) {
-                work->unk0[5]->unk14 = (s32)D_801E9068;
-                work->unk0[5]->unk12 = 0x10;
-                work->unk0[5]->unkC = 0x18;
+            if (work->emit0[5] != NULL) {
+                work->emit0[5]->unk14 = (s32)D_801E9068;
+                work->emit0[5]->unk12 = 0x10;
+                work->emit0[5]->unkC = 0x18;
             }
             break;
         case 0:

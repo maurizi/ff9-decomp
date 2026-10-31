@@ -117,7 +117,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame >= 0x10) {
             work->unk0 = 4;
             entry->frame = -1;
-            work->unk50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk48);
+            work->emit50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk48);
             if (p != NULL) {
                 p->otZ = 0x80;
             }
@@ -127,10 +127,10 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk48);
         ex->btlfx_getUnitBoneMatrix(0x10, 4, &u.s4.m);
         ex->btlfx_matrixAngles((MATRIX *)&u.s4.m, (s16 *)&u.s4.rot);
-        if (work->unk50 != NULL) {
-            work->unk50->rot.vx = u.s4.rot.vx;
-            work->unk50->rot.vy = u.s4.rot.vy;
-            work->unk50->rot.vz = u.s4.rot.vz;
+        if (work->emit50 != NULL) {
+            work->emit50->rot.vx = u.s4.rot.vx;
+            work->emit50->rot.vy = u.s4.rot.vy;
+            work->emit50->rot.vz = u.s4.rot.vz;
         }
         if (frame < 0xD) {
             if (frame == 1) {

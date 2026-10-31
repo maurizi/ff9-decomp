@@ -305,7 +305,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk34.vz = D_801E9AC4.vz;
                 BTLFX_COPY_SVEC(&work->unkC, &D_801E9AC4);
                 BTLFX_COPY_SVEC(&work->unk14, &D_801E9AC4);
-                p = work->unkB0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk14);
+                p = work->emitB0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk14);
                 if (p != NULL) {
                     p->otZ = 0x80;
                 }
@@ -350,7 +350,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0xA) {
                 work->unk0 = 5;
                 entry->frame = -1;
-                ex->btlfx_stopEmitter(work->unkB0);
+                ex->btlfx_stopEmitter(work->emitB0);
                 work->unk6C.vy = 0x400;
                 work->unk4C.vy = 0x400;
                 work->unk6C.vx = 0;

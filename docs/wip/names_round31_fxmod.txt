@@ -834,3 +834,7 @@ fx_1f8_effModels  <-  fx_1f8:D_801E7C14
 fx_1fc_effModels  <-  fx_1fc:D_801EC15C
 fx_1fd_effModels  <-  fx_1fd:D_801E9E5C
 fx_1fe_effModels  <-  fx_1fe:D_801E9070
+
+## Fields: emitter handles
+Every unkXX member declared Pool6CEntry * (or an array of them) in the module structs -> emitXX (834 members;
+Pool6CEntry is the emitter btlfx_startEmitter / btlfx_spawnEmitter return).

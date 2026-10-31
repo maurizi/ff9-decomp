@@ -76,8 +76,8 @@ typedef struct {
     s32 unk10; /* state */
     s32 unk14; /* model */
     s32 unk18; /* model */
-    Pool6CEntry *unk1C;
-    Pool6CEntry *unk20;
+    Pool6CEntry *emit1C;
+    Pool6CEntry *emit20;
 } Fx085Work80; /* 0x24 */
 
 extern BtlModel fx_085_effModels[];

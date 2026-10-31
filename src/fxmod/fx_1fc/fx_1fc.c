@@ -133,9 +133,9 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk128.vx = 0x1CF;
             work->unk128.vy = -0x7B7;
             work->unk128.vz = 0x27B;
-            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk118);
-            if (work->unk0 != NULL) {
-                work->unk0->otZ = 0x118;
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk118);
+            if (work->emit0 != NULL) {
+                work->emit0->otZ = 0x118;
             }
             break;
         case 12:
@@ -150,10 +150,10 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk120.vx = sum.vx / env->targets->targetCount;
             work->unk120.vy = sum.vy / env->targets->targetCount;
             work->unk120.vz = sum.vz / env->targets->targetCount;
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk120);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk120);
             break;
         case 38:
-            ex->btlfx_stopEmitter(work->unk0);
+            ex->btlfx_stopEmitter(work->emit0);
             break;
         case 22:
             work->unk130 = 0x10;
@@ -233,14 +233,14 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_setUnitScale(q, (s32 *)&work->unk98[q]);
             }
         }
-        if ((u32)(frame - 3) < 0x23 && work->unk0 != NULL) {
-            if (work->unk0->state == BTLFX_EMIT_DONE) {
-                work->unk0 = NULL;
+        if ((u32)(frame - 3) < 0x23 && work->emit0 != NULL) {
+            if (work->emit0->state == BTLFX_EMIT_DONE) {
+                work->emit0 = NULL;
             }
-            if (work->unk0 != NULL) {
-                work->unk0->rot.vx = work->unk128.vx;
-                work->unk0->rot.vy = work->unk128.vy;
-                work->unk0->rot.vz = work->unk128.vz;
+            if (work->emit0 != NULL) {
+                work->emit0->rot.vx = work->unk128.vx;
+                work->emit0->rot.vy = work->unk128.vy;
+                work->emit0->rot.vz = work->unk128.vz;
             }
         }
         if (work->unk130 >= 0) {
@@ -291,9 +291,9 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 b->vx = a->vx;
                 b->vy = a->vy;
                 b->vz = a->vz;
-                work->unk0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk60[i]);
-                if (work->unk0[i] != NULL) {
-                    work->unk0[i]->otZ = 0x80;
+                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk60[i]);
+                if (work->emit0[i] != NULL) {
+                    work->emit0[i]->otZ = 0x80;
                 }
             }
         }

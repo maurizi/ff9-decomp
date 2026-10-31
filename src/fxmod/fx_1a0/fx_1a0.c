@@ -70,9 +70,9 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         if (frame == 0) {
             for (i = 0; i < 6; i++) {
-                work->unk0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E8288[i]);
-                if (work->unk0[i] != NULL) {
-                    work->unk0[i]->otZ = 0x20;
+                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E8288[i]);
+                if (work->emit0[i] != NULL) {
+                    work->emit0[i]->otZ = 0x20;
                 }
             }
         }
@@ -81,10 +81,10 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 6; i++, b++) {
                 ex->btlfx_getUnitBoneMatrix(0x10, b->unk0, (BtlBone *)&m);
                 ex->btlfx_matrixPointAhead(&m, b->unk2, (s32)&work->unk18[i]);
-                if (work->unk0[i] != NULL && work->unk0[i]->state == BTLFX_EMIT_DONE) {
-                    work->unk0[i] = NULL;
+                if (work->emit0[i] != NULL && work->emit0[i]->state == BTLFX_EMIT_DONE) {
+                    work->emit0[i] = NULL;
                 }
-                ex->btlfx_moveEmitterTo((s32)work->unk0[i], (s32)&work->unk18[i]);
+                ex->btlfx_moveEmitterTo((s32)work->emit0[i], (s32)&work->unk18[i]);
             }
         }
         return frame >= 0x14;
@@ -114,27 +114,27 @@ s32 fx_1a0_op81(s32 mode, Fx1a0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         D_801E8268[work->unk14] = frame;
         if (frame == 0) {
-            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7F10[work->unk14]),
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7F10[work->unk14]),
                                            (s32)&D_801E82B8[work->unk14]);
-            if (work->unk0 != NULL) {
-                work->unk0->unk14 = (s32)D_801E7F98[work->unk14];
-                work->unk0->unk12 = 1;
-                work->unk0->unkC = 0x70;
+            if (work->emit0 != NULL) {
+                work->emit0->unk14 = (s32)D_801E7F98[work->unk14];
+                work->emit0->unk12 = 1;
+                work->emit0->unkC = 0x70;
             }
-            if (work->unk0 != NULL) {
-                ((EffMotion *)work->unk0->file)->unk8 = D_801E7F28[work->unk14];
+            if (work->emit0 != NULL) {
+                ((EffMotion *)work->emit0->file)->unk8 = D_801E7F28[work->unk14];
             }
-            if (work->unk0 != NULL) {
-                work->unk0->otZ = 0x20;
+            if (work->emit0 != NULL) {
+                work->emit0->otZ = 0x20;
             }
             if (work->unk18 != 0) {
-                work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unkC);
-                work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unkC);
-                if (work->unk4 != NULL) {
-                    work->unk4->otZ = 0x80;
+                work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unkC);
+                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unkC);
+                if (work->emit4 != NULL) {
+                    work->emit4->otZ = 0x80;
                 }
-                if (work->unk8 != NULL) {
-                    work->unk8->otZ = 0x80;
+                if (work->emit8 != NULL) {
+                    work->emit8->otZ = 0x80;
                 }
             }
         }
@@ -151,7 +151,7 @@ s32 fx_1a0_op82(s32 mode, Fx1a0Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_1a0_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk4);
     } else {
         return entry->frame >= 0x14;
     }

@@ -12,8 +12,8 @@ typedef struct {
 } Fx128Particle;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* caster body position */
     SVECTOR unk10; /* caster rotation */
 } Fx128Work80;
@@ -71,7 +71,7 @@ typedef struct {
 } Fx128Vec3;
 
 typedef struct {
-    Pool6CEntry *unk0[9];
+    Pool6CEntry *emit0[9];
     SVECTOR unk24; /* model rotation */
     Fx128Vec3 unk2C; /* model position */
     s32 pad38;

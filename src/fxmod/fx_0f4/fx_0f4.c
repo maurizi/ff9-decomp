@@ -35,15 +35,15 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk60.vx = work->unk1C.vx;
         work->unk60.vy = work->unk1C.vy;
         work->unk60.vz = work->unk1C.vz;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk58);
-        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk58);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk58);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk58);
         work->unk68 = -1;
         work->unk6A = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0xF:
-            p = work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk58);
+            p = work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk58);
             if (p != NULL) {
                 p->otZ = -0x100;
             }
@@ -51,13 +51,13 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x32:
             break;
         case 0x36:
-            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk58);
-            work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk58);
-            if (work->unkC != NULL) {
-                work->unkC->otZ = 0x80;
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk58);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk58);
+            if (work->emitC != NULL) {
+                work->emitC->otZ = 0x80;
             }
-            if (work->unk10 != NULL) {
-                work->unk10->otZ = 0x100;
+            if (work->emit10 != NULL) {
+                work->emit10->otZ = 0x100;
             }
             break;
         case 0x52:

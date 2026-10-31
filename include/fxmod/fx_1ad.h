@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR unk8; /* bone position */
     SVECTOR unk10; /* target body position */
     u8 pad18[0x20 - 0x18];
-    Pool6CEntry *unk20;
+    Pool6CEntry *emit20;
     s32 unk24; /* model */
 } Fx1adWork;
 

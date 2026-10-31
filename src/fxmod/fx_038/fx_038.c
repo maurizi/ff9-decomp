@@ -16,9 +16,9 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
 
     if (mode == 1) {
         it->unk0 = 0;
-        it->unk14 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&it->unk4);
-        if (it->unk14 != NULL) {
-            it->unk14->otZ = 0x10;
+        it->emit14 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&it->unk4);
+        if (it->emit14 != NULL) {
+            it->emit14->otZ = 0x10;
         }
         return 0;
     }
@@ -56,20 +56,20 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
             env->camera->points[0].vy = it->unk4.vy;
             env->camera->points[0].vz = it->unk4.vz;
         }
-        if (it->unk14 != NULL && it->unk14->state == BTLFX_EMIT_DONE) {
-            it->unk14 = NULL;
+        if (it->emit14 != NULL && it->emit14->state == BTLFX_EMIT_DONE) {
+            it->emit14 = NULL;
         }
         if (frame >= 15) {
             it->unk0 = 1;
             ((s16 *)it)[-1] = -1;
-            if (it->unk14 != NULL) {
-                it->unk14->frame = it->unk14->tail->unk4.unk2;
+            if (it->emit14 != NULL) {
+                it->emit14->frame = it->emit14->tail->unk4.unk2;
             }
             it->unk4.vy = 0;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x18, 0x18, 0x18);
-            it->unk14 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&it->unk4);
-            if (it->unk14 != NULL) {
-                it->unk14->otZ = 0x46;
+            it->emit14 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&it->unk4);
+            if (it->emit14 != NULL) {
+                it->emit14->otZ = 0x46;
             }
             it->unkC.vx = 0;
             it->unkC.vy = ex->btlfx_rand();

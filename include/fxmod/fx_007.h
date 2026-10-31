@@ -39,8 +39,8 @@ typedef struct {
     s32 unk14[4]; /* models */
     s32 unk24;
     s32 unk28;
-    Pool6CEntry *unk2C;
-    Pool6CEntry *unk30;
+    Pool6CEntry *emit2C;
+    Pool6CEntry *emit30;
     s32 unk34; /* frame */
 } Fx007Work80; /* 0x38 */
 

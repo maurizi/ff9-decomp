@@ -9,7 +9,7 @@ typedef struct {
     SVECTOR unk8;
     SVECTOR unk10;
     SVECTOR unk18; /* target position, on the ground */
-    Pool6CEntry *unk20;
+    Pool6CEntry *emit20;
 } Fx02fWork; /* 0x24 */
 
 extern Unk800F78A4 *fx_02f_env;

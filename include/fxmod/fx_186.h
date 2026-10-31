@@ -39,7 +39,7 @@ typedef struct {
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* position */
     SVECTOR unk10;
-    Pool6CEntry *unk18;
+    Pool6CEntry *emit18;
     s32 unk1C[10]; /* rock models */
     s32 unk44; /* model */
     s32 unk48; /* model */

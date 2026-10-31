@@ -48,7 +48,7 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x78;
     } else if (mode == 1) {
-        work->unk74 = NULL;
+        work->emit74 = NULL;
         fx_0fa_env = env;
         ex->btlfx_initEffModels(fx_0fa_effModels, 2);
         for (i = 9, q = &work->unk0[9]; i >= 0; i--) {
@@ -70,8 +70,8 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         return 0;
     } else {
         frame = entry->frame;
-        if (work->unk74 != NULL && work->unk74->state == BTLFX_EMIT_DONE) {
-            work->unk74 = NULL;
+        if (work->emit74 != NULL && work->emit74->state == BTLFX_EMIT_DONE) {
+            work->emit74 = NULL;
         }
         switch (frame) {
         case 0:
@@ -81,7 +81,7 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x14:
             work->unk0[4] = 8;
             work->unk0[6] = 1;
-            work->unk74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk44);
+            work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk44);
             break;
         case 0x20:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk30);
@@ -113,10 +113,10 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk3C.vx -= work->unk0[1] * work->unk0[1] * 4;
             work->unk5C.vx = work->unk5C.vy = work->unk5C.vz = ex->math_cos((0x10 - work->unk0[1]) << 6) / 5;
         }
-        if (work->unk0[6] != 0 && work->unk74 != NULL) {
-            work->unk74->rot.vx = work->unk6C.vx;
-            work->unk74->rot.vy = work->unk6C.vy;
-            work->unk74->rot.vz = work->unk6C.vz;
+        if (work->unk0[6] != 0 && work->emit74 != NULL) {
+            work->emit74->rot.vx = work->unk6C.vx;
+            work->emit74->rot.vy = work->unk6C.vy;
+            work->emit74->rot.vz = work->unk6C.vz;
         }
         if (work->unk0[2] != 0) {
             work->unk0[2]--;

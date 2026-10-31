@@ -42,13 +42,13 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->unk10) {
         case 0:
             if (frame == 0) {
-                work->unk1C = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->unk8);
+                work->emit1C = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->unk8);
                 if (e != NULL) {
                     e->otZ = 0x46;
                 }
             }
             if (frame == 5) {
-                work->unk20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->unk8);
+                work->emit20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->unk8);
                 if (e != NULL) {
                     e->otZ = 0x46;
                 }
@@ -62,8 +62,8 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x1D) {
                 work->unk10 = 1;
                 entry->frame = -1;
-                ex->btlfx_stopEmitter(work->unk1C);
-                ex->btlfx_stopEmitter(work->unk20);
+                ex->btlfx_stopEmitter(work->emit1C);
+                ex->btlfx_stopEmitter(work->emit20);
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk8);
                 if (e != NULL) {
                     e->otZ = 0x20;
@@ -93,7 +93,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (e != NULL) {
                     e->otZ = 0x80;
                 }
-                work->unk1C = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
+                work->emit1C = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
                 if (e != NULL) {
                     e->otZ = 0x80;
                 }
@@ -129,14 +129,14 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0x400;
             rot.vz = 0;
             rot.vy = 0;
-            if (work->unk1C != NULL) {
-                if (work->unk1C->state == BTLFX_EMIT_DONE) {
-                    work->unk1C = NULL;
+            if (work->emit1C != NULL) {
+                if (work->emit1C->state == BTLFX_EMIT_DONE) {
+                    work->emit1C = NULL;
                 }
-                if (work->unk1C != NULL) {
-                    work->unk1C->rot.vx = rot.vx;
-                    work->unk1C->rot.vy = rot.vy;
-                    work->unk1C->rot.vz = rot.vz;
+                if (work->emit1C != NULL) {
+                    work->emit1C->rot.vx = rot.vx;
+                    work->emit1C->rot.vy = rot.vy;
+                    work->emit1C->rot.vz = rot.vz;
                 }
             }
             if (frame < 16) {

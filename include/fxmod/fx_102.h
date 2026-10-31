@@ -5,9 +5,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4[8];
-    Pool6CEntry *unk24;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4[8];
+    Pool6CEntry *emit24;
     SVECTOR unk28;
     SVECTOR unk30[8];
 } Fx102Work;

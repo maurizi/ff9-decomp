@@ -16,7 +16,7 @@ typedef struct {
     VECTOR unk4C; /* model position */
     VECTOR unk5C; /* model scale */
     SVECTOR unk6C; /* angles towards the model */
-    Pool6CEntry *unk74;
+    Pool6CEntry *emit74;
 } Fx0faWork; /* 0x78 */
 
 typedef struct {

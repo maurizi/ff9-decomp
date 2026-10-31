@@ -414,7 +414,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk0 = 2;
                     entry->frame = -1;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0x80, 0x80);
-                    work->unk3C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unkC);
+                    work->emit3C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unkC);
                     if (p != NULL) {
                         p->otZ = work->unk8 + 0x46;
                     }
@@ -517,7 +517,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (frame >= 8) {
                     work->unk0 = 4;
                     entry->frame = -1;
-                    ex->btlfx_stopEmitter(work->unk3C);
+                    ex->btlfx_stopEmitter(work->emit3C);
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xAA, 0xAA, 0xAA);
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unkC);
                     if (p != NULL) {

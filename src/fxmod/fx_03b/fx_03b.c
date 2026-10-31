@@ -15,27 +15,27 @@ s32 fx_03b_op80(s32 mode, Fx03bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk18.vy -= 0xB4;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk20);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk28);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk28);
-        if (work->unk0 != NULL) {
-            work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk28);
+        if (work->emit0 != NULL) {
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
         frame = entry->frame;
         if (frame == 5) {
-            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk20);
-            if (work->unkC != NULL) {
-                work->unkC->unk14 = (s32)D_801E7E80;
-                work->unkC->unk12 = 0x28;
-                work->unkC->unkC = 0x18;
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk20);
+            if (work->emitC != NULL) {
+                work->emitC->unk14 = (s32)D_801E7E80;
+                work->emitC->unk12 = 0x28;
+                work->emitC->unkC = 0x18;
             }
         }
         if (frame == 8) {
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
-            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk18);
-            if (work->unk8 != NULL) {
-                work->unk8->unk14 = (s32)D_801E7980;
-                work->unk8->unk12 = 0x28;
-                work->unk8->unkC = 0x20;
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk18);
+            if (work->emit8 != NULL) {
+                work->emit8->unk14 = (s32)D_801E7980;
+                work->emit8->unk12 = 0x28;
+                work->emit8->unkC = 0x20;
             }
         }
         return frame >= 0x28;

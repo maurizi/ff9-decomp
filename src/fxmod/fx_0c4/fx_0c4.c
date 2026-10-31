@@ -10,8 +10,8 @@ s32 fx_0c4_op80(s32 mode, Fx0c4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vy = env->targets->centerY;
         work->unk8.vz = env->targets->centerZ;
         fx_0c4_env = env;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk8);
-        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
     } else {
         return entry->frame >= 0x50;
     }

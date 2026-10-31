@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk18; /* btlfx_getUnitArgBonePos(0x10, 0) */
     s32 unk20; /* model */
     SVECTOR unk24; /* angles from unk18 to unk8 */
-    Pool6CEntry *unk2C;
+    Pool6CEntry *emit2C;
 } Fx0ceWork;
 
 extern Unk800F78A4 *fx_0ce_env;

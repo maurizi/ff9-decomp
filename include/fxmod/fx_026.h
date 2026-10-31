@@ -67,7 +67,7 @@ typedef struct {
     u16 unk2; /* spin */
     s16 unk4; /* track: D_801EA774 index */
     s16 pad6;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit8;
     SVECTOR unkC;
 } Fx026Item;
 

@@ -51,8 +51,8 @@ typedef struct {
     Fx0d3Vec3 unk10;
     Fx0d3Vec3 unk1C; /* summon scale */
     SVECTOR unk28; /* summon rotation */
-    Pool6CEntry *unk30;
-    Pool6CEntry *unk34;
+    Pool6CEntry *emit30;
+    Pool6CEntry *emit34;
     u8 pad38[0x60 - 0x38];
     s32 unk60; /* models */
     s32 unk64;
@@ -87,8 +87,8 @@ typedef struct {
     SVECTOR unk38;
     SVECTOR unk40; /* camera */
     u8 pad48[4];
-    Pool6CEntry *unk4C;
-    Pool6CEntry *unk50;
+    Pool6CEntry *emit4C;
+    Pool6CEntry *emit50;
     s32 unk54; /* models */
     s32 unk58;
     s32 unk5C;

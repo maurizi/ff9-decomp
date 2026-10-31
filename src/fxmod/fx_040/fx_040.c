@@ -91,9 +91,9 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vy = work->unk40.vy;
         env->camera->points[0].vz = work->unk40.vz;
         for (i = 0; i < 4; i++) {
-            work->unk0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7E98[i]), (s32)&D_801E7F18[i]);
-            if (work->unk0[i] != NULL) {
-                ((s32 *)work->unk0[i]->file)[2] = D_801E7EA0[i];
+            work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7E98[i]), (s32)&D_801E7F18[i]);
+            if (work->emit0[i] != NULL) {
+                ((s32 *)work->emit0[i]->file)[2] = D_801E7EA0[i];
             }
         }
     } else {
@@ -107,10 +107,10 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk38.vz = env->targets->centerZ;
             work->unk30.vx -= 0xC8;
             work->unk38.vx += 0xC8;
-            work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk30);
-            work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk38);
-            work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk28);
-            work->unk24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk28);
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk30);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk38);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk28);
+            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk28);
         }
         return frame >= 0x3C;
     }

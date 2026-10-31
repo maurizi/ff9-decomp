@@ -5,8 +5,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* model rotation */
     VECTOR unk10; /* model position */
     VECTOR unk20; /* model scale */
@@ -24,7 +24,7 @@ typedef struct {
 } Fx114Summon;
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4; /* model rotation */
     VECTOR unkC; /* model position */
     VECTOR unk1C; /* model scale */
@@ -165,9 +165,9 @@ typedef struct {
 } Fx114Vec3;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* rotation */
     SVECTOR unk14; /* position */
     s32 unk1C;
@@ -256,14 +256,14 @@ typedef struct {
 } Fx114Summon80;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     s32 padC;
-    Pool6CEntry *unk10;
-    Pool6CEntry *unk14;
-    Pool6CEntry *unk18;
-    Pool6CEntry *unk1C;
+    Pool6CEntry *emit10;
+    Pool6CEntry *emit14;
+    Pool6CEntry *emit18;
+    Pool6CEntry *emit1C;
     SVECTOR unk20; /* summon rotation */
     Fx114Vec3 unk28; /* summon position */
     s32 pad34;

@@ -56,8 +56,8 @@ typedef struct {
     SVECTOR unk44; /* caster body position */
     SVECTOR unk4C;
     SVECTOR unk54;
-    Pool6CEntry *unk5C;
-    Pool6CEntry *unk60;
+    Pool6CEntry *emit5C;
+    Pool6CEntry *emit60;
 } Fx1b6Work80; /* 0x64 */
 
 extern s16 D_801E855C[7]; /* model files */

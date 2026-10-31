@@ -10,9 +10,9 @@ s32 fx_1cb_op80(s32 mode, Fx1cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4.vy = env->targets->centerY;
         work->unk4.vz = env->targets->centerZ;
         fx_1cb_env = env;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
-        if (work->unk0 != NULL) {
-            work->unk0->otZ = 0x80;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+        if (work->emit0 != NULL) {
+            work->emit0->otZ = 0x80;
         }
     } else {
         return entry->frame >= 0x28;

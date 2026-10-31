@@ -15,7 +15,7 @@ typedef struct {
 } Fx1fdPath;
 
 typedef struct {
-    Pool6CEntry *unk0[5];
+    Pool6CEntry *emit0[5];
     SVECTOR unk14[5];
 } Fx1fdWork80; /* 0x3C */
 
@@ -26,8 +26,8 @@ extern s32 D_801EBBAC[5][0x78];
 extern SVECTOR D_801ED70C[5];
 
 typedef struct {
-    Pool6CEntry *unk0[8];
-    Pool6CEntry *unk20[8];
+    Pool6CEntry *emit0[8];
+    Pool6CEntry *emit20[8];
     SVECTOR unk40[8]; /* unit positions */
     SVECTOR unk80[8];
     s16 unkC0[8]; /* landed */
@@ -118,9 +118,9 @@ typedef struct {
 } Fx1fdRibbon1;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* model rotations */
     SVECTOR unk14;
     VECTOR unk1C; /* model position */

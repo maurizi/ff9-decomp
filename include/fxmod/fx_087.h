@@ -6,8 +6,8 @@
 
 typedef struct {
     s32 unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* unit 0x10 body position */
     SVECTOR unk14; /* caster body position */
     SVECTOR unk1C; /* btlfx_getUnitBonePos(0x10, 0x17) */

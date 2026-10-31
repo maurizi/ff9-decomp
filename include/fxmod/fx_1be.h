@@ -20,7 +20,7 @@ extern Unk800F78A4 *fx_1be_env;
 
 typedef struct {
     u8 unk0[0x20]; /* counters */
-    Pool6CEntry *unk20[16];
+    Pool6CEntry *emit20[16];
     s32 unk60; /* model */
     VECTOR unk64; /* position */
     VECTOR unk74; /* scale */

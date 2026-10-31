@@ -43,8 +43,8 @@ typedef struct {
     s32 unk30;
     SVECTOR unk34; /* bone position */
     SVECTOR unk3C;
-    Pool6CEntry *unk44;
-    Pool6CEntry *unk48;
+    Pool6CEntry *emit44;
+    Pool6CEntry *emit48;
     s32 unk4C; /* ribbons need a reset */
     s32 unk50;
     s32 unk54;

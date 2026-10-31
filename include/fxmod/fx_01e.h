@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* caster body position */
     SVECTOR unk10; /* target body position */
     SVECTOR unk18; /* angles from caster to target */

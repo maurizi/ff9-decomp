@@ -63,7 +63,7 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (e != NULL) {
                     e->otZ = 0x80;
                 }
-                work->unk1C = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&work->unk8);
+                work->emit1C = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&work->unk8);
                 if (e != NULL) {
                     e->otZ = 0x80;
                 }
@@ -99,14 +99,14 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0x400;
             rot.vz = 0;
             rot.vy = 0;
-            if (work->unk1C != NULL) {
-                if (work->unk1C->state == BTLFX_EMIT_DONE) {
-                    work->unk1C = NULL;
+            if (work->emit1C != NULL) {
+                if (work->emit1C->state == BTLFX_EMIT_DONE) {
+                    work->emit1C = NULL;
                 }
-                if (work->unk1C != NULL) {
-                    work->unk1C->rot.vx = rot.vx;
-                    work->unk1C->rot.vy = rot.vy;
-                    work->unk1C->rot.vz = rot.vz;
+                if (work->emit1C != NULL) {
+                    work->emit1C->rot.vx = rot.vx;
+                    work->emit1C->rot.vy = rot.vy;
+                    work->emit1C->rot.vz = rot.vz;
                 }
             }
             if (frame < 16) {

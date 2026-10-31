@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0[5];
+    Pool6CEntry *emit0[5];
     SVECTOR unk14; /* target body position */
     SVECTOR unk1C; /* target position */
 } Fx12bWork82;
@@ -54,7 +54,7 @@ extern SVECTOR D_801EF85C;
 extern SVECTOR D_801EF864;
 
 typedef struct {
-    Pool6CEntry *unk0[4];
+    Pool6CEntry *emit0[4];
     SVECTOR unk10; /* target body position */
 } Fx12bWork81; /* 0x18 */
 extern Fx12bPath D_801E9B44[];
@@ -87,7 +87,7 @@ static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 static s32 fxm_pinParticle(Fx12bParticle *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 
 typedef struct {
-    Pool6CEntry *unk0[4];
+    Pool6CEntry *emit0[4];
     SVECTOR unk10; /* target body position */
 } Fx12bWork80; /* 0x18 */
 

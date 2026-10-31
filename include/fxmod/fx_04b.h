@@ -5,8 +5,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* target position */
     SVECTOR unk10;
     SVECTOR unk18;
@@ -14,7 +14,7 @@ typedef struct {
 } Fx04bWork80; /* 0x28 */
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4; /* above the target */
     SVECTOR unkC; /* angles from D_801E7B9C to unk4 */
     s32 unk14; /* target index */

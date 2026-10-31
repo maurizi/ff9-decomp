@@ -13,17 +13,17 @@ s32 fx_11c_op80(s32 mode, Fx11cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk10.vz = work->unk8.vz;
         work->unk10.vy += 0x12C;
         work->unk10.vz -= 0x12C;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk10);
-        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
-        if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7FAC;
-            work->unk0->unk12 = 0xD;
-            work->unk0->unkC = 0x90;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk10);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
+        if (work->emit0 != NULL) {
+            work->emit0->unk14 = (s32)D_801E7FAC;
+            work->emit0->unk12 = 0xD;
+            work->emit0->unkC = 0x90;
         }
-        if (work->unk4 != NULL) {
-            work->unk4->unk14 = (s32)D_801E86FC;
-            work->unk4->unk12 = 0xD;
-            work->unk4->unkC = 0x90;
+        if (work->emit4 != NULL) {
+            work->emit4->unk14 = (s32)D_801E86FC;
+            work->emit4->unk12 = 0xD;
+            work->emit4->unkC = 0x90;
         }
     } else {
         return entry->frame >= 0x28;
@@ -46,9 +46,9 @@ s32 fx_11c_op81(s32 mode, Fx11cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vy = env->targets->centerY;
         work->unk20.vz = env->targets->centerZ;
         fx_11c_env = env;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk20);
-        work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk20);
-        work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk20);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk20);
+        work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk20);
+        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk20);
         o = D_801E7EDC;
         for (i = 0; i < 5; i++, o++) {
             o->unk10 = 0;
@@ -76,7 +76,7 @@ s32 fx_11c_op81(s32 mode, Fx11cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         q = D_801E7EDC;
         for (j = 0; j < 5; j++, q++) {
             if (q->unk14 == frame) {
-                work->unk4[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, q->unk16),
+                work->emit4[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, q->unk16),
                                                   (s32)&q->unk0);
                 q->unk10 = 1;
             } else if (q->unk10 != 0) {
@@ -107,22 +107,22 @@ s32 fx_11c_op82(s32 mode, Fx11cWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx -= 0x190;
         work->unk28.vx += 0x190;
         fx_11c_env = env;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk18);
-        work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk18);
-        if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E8E4C;
-            work->unk0->unk12 = 8;
-            work->unk0->unkC = 0x90;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk18);
+        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk18);
+        if (work->emit0 != NULL) {
+            work->emit0->unk14 = (s32)D_801E8E4C;
+            work->emit0->unk12 = 8;
+            work->emit0->unkC = 0x90;
         }
     } else {
         frame = entry->frame;
         if (frame == 5) {
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk18);
-            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk18);
         }
         if (frame == 0xD) {
-            work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk20);
-            work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk28);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk20);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk28);
         }
         return frame >= 0x32;
     }

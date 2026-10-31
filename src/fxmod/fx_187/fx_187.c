@@ -76,45 +76,45 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_lerpVec((s16 *)&work->unk2C, (s16 *)&work->unk3C, t, (s16 *)&b);
             if (frame == 0) {
                 BTLFX_COPY_SVEC(&work->unk44, &a);
-                work->unk4[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk44);
-                if (work->unk4[0] != NULL) {
-                    work->unk4[0]->unk14 = (s32)D_801E80E4;
-                    work->unk4[0]->unk12 = 0x20;
-                    work->unk4[0]->unkC = 0x14;
+                work->emit4[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk44);
+                if (work->emit4[0] != NULL) {
+                    work->emit4[0]->unk14 = (s32)D_801E80E4;
+                    work->emit4[0]->unk12 = 0x20;
+                    work->emit4[0]->unkC = 0x14;
                 }
-                if (work->unk4[0] != NULL) {
-                    work->unk4[0]->otZ = 0x18;
+                if (work->emit4[0] != NULL) {
+                    work->emit4[0]->otZ = 0x18;
                 }
                 BTLFX_COPY_SVEC(&work->unk4C, &a);
-                work->unk4[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk4C);
-                if (work->unk4[1] != NULL) {
-                    work->unk4[1]->otZ = 0x18;
+                work->emit4[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk4C);
+                if (work->emit4[1] != NULL) {
+                    work->emit4[1]->otZ = 0x18;
                 }
                 BTLFX_COPY_SVEC(&work->unk54, &b);
-                work->unkC[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk54);
-                if (work->unkC[0] != NULL) {
-                    work->unkC[0]->unk14 = (s32)D_801E8364;
-                    work->unkC[0]->unk12 = 0x20;
-                    work->unkC[0]->unkC = 0x14;
+                work->emitC[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk54);
+                if (work->emitC[0] != NULL) {
+                    work->emitC[0]->unk14 = (s32)D_801E8364;
+                    work->emitC[0]->unk12 = 0x20;
+                    work->emitC[0]->unkC = 0x14;
                 }
-                if (work->unkC[0] != NULL) {
-                    work->unkC[0]->otZ = 0x18;
+                if (work->emitC[0] != NULL) {
+                    work->emitC[0]->otZ = 0x18;
                 }
                 BTLFX_COPY_SVEC(&work->unk5C, &b);
-                work->unkC[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk5C);
-                if (work->unkC[1] != NULL) {
-                    work->unkC[1]->otZ = 0x18;
+                work->emitC[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk5C);
+                if (work->emitC[1] != NULL) {
+                    work->emitC[1]->otZ = 0x18;
                 }
             } else {
                 for (i = 0; i < 2; i++) {
-                    if (work->unk4[i] != NULL && work->unk4[i]->state == BTLFX_EMIT_DONE) {
-                        work->unk4[i] = NULL;
+                    if (work->emit4[i] != NULL && work->emit4[i]->state == BTLFX_EMIT_DONE) {
+                        work->emit4[i] = NULL;
                     }
-                    ex->btlfx_moveEmitterTo((s32)work->unk4[i], (s32)&a);
-                    if (work->unkC[i] != NULL && work->unkC[i]->state == BTLFX_EMIT_DONE) {
-                        work->unkC[i] = NULL;
+                    ex->btlfx_moveEmitterTo((s32)work->emit4[i], (s32)&a);
+                    if (work->emitC[i] != NULL && work->emitC[i]->state == BTLFX_EMIT_DONE) {
+                        work->emitC[i] = NULL;
                     }
-                    ex->btlfx_moveEmitterTo((s32)work->unkC[i], (s32)&b);
+                    ex->btlfx_moveEmitterTo((s32)work->emitC[i], (s32)&b);
                 }
             }
             if (frame == 0xE) {

@@ -20,7 +20,7 @@ typedef struct {
     s16 unk38; /* rotation speed */
     s16 unk3A;
     s32 unk3C; /* size */
-    Pool6CEntry *unk40;
+    Pool6CEntry *emit40;
 } Fx004Item; /* 0x44 */
 
 typedef struct {

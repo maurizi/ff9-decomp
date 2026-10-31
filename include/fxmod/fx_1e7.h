@@ -15,17 +15,17 @@ typedef struct {
 } Fx1e7Path;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* target position */
     s16 unk10;
 } Fx1e7Work80; /* 0x14 */
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4[5];
-    Pool6CEntry *unk18;
-    Pool6CEntry *unk1C;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4[5];
+    Pool6CEntry *emit18;
+    Pool6CEntry *emit1C;
     SVECTOR unk20; /* target body position */
     SVECTOR unk28; /* target position */
     s32 unk30;

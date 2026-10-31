@@ -48,7 +48,7 @@ s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((u8 *)env->state)[0x12] = 0;
         for (i = 0; i < work->unk34; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&work->unk4[i]);
-            work->unk24[i] = NULL;
+            work->emit24[i] = NULL;
         }
         work->unk0 = 0;
         work->unk38 = 0;
@@ -56,10 +56,10 @@ s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (work->unk0) {
         case 0:
-            work->unk24[work->unk38] =
+            work->emit24[work->unk38] =
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk4[work->unk38]);
-            if (work->unk24[work->unk38] != NULL) {
-                work->unk24[work->unk38]->otZ = ex->btlfx_addRadiusSixth(work->unk38, 0x40);
+            if (work->emit24[work->unk38] != NULL) {
+                work->emit24[work->unk38]->otZ = ex->btlfx_addRadiusSixth(work->unk38, 0x40);
             }
             work->unk0 = 1;
             entry->frame = -1;
@@ -98,7 +98,7 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((u8 *)env->state)[0x12] = 0;
         for (i = 0; i < work->unk34; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&work->unk4[i]);
-            work->unk24[i] = NULL;
+            work->emit24[i] = NULL;
         }
         work->unk0 = 0;
         work->unk38 = 0;
@@ -106,10 +106,10 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (work->unk0) {
         case 0:
-            work->unk24[work->unk38] =
+            work->emit24[work->unk38] =
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk4[work->unk38]);
-            if (work->unk24[work->unk38] != NULL) {
-                work->unk24[work->unk38]->otZ = ex->btlfx_addRadiusSixth(work->unk38, 0x40);
+            if (work->emit24[work->unk38] != NULL) {
+                work->emit24[work->unk38]->otZ = ex->btlfx_addRadiusSixth(work->unk38, 0x40);
             }
             work->unk0 = 1;
             entry->frame = -1;

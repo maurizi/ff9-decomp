@@ -25,10 +25,10 @@ typedef struct {
 } Fx1b2Path;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
-    Pool6CEntry *unkC;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
+    Pool6CEntry *emitC;
     SVECTOR unk10; /* model rotation */
     VECTOR unk18; /* model position */
     VECTOR unk28; /* model scale */
@@ -45,9 +45,9 @@ typedef struct {
 } Fx1b2Work80; /* 0x70 */
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* caster position */
     SVECTOR unk14; /* bone positions */
     SVECTOR unk1C;

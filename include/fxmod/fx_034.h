@@ -9,8 +9,8 @@ typedef struct {
 } Fx034Point;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* model rotation */
     VECTOR unk10; /* model position */
     VECTOR unk20; /* model scale */

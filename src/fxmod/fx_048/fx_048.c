@@ -183,8 +183,8 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             p->unkC = 0x24;
             p->otZ = 0x20;
         }
-        work->unk2C = NULL;
-        work->unk30 = NULL;
+        work->emit2C = NULL;
+        work->emit30 = NULL;
         work->unk34 = 0;
         work->unk10 = 0;
     } else {
@@ -318,11 +318,11 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 3) {
-                p = work->unk2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->unk8);
+                p = work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->unk8);
                 if (p != NULL) {
                     p->otZ = 0x100;
                 }
-                p = work->unk30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unk8);
+                p = work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unk8);
                 if (p != NULL) {
                     p->otZ = 0x100;
                 }
@@ -330,24 +330,24 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             r3.vx = 0x400;
             r3.vy = 0;
             r3.vz = 0;
-            if (work->unk2C != NULL) {
-                if (work->unk2C->state == BTLFX_EMIT_DONE) {
-                    work->unk2C = NULL;
+            if (work->emit2C != NULL) {
+                if (work->emit2C->state == BTLFX_EMIT_DONE) {
+                    work->emit2C = NULL;
                 }
-                if (work->unk2C != NULL) {
-                    work->unk2C->rot.vx = r3.vx;
-                    work->unk2C->rot.vy = r3.vy;
-                    work->unk2C->rot.vz = r3.vz;
+                if (work->emit2C != NULL) {
+                    work->emit2C->rot.vx = r3.vx;
+                    work->emit2C->rot.vy = r3.vy;
+                    work->emit2C->rot.vz = r3.vz;
                 }
             }
-            if (work->unk30 != NULL) {
-                if (work->unk30->state == BTLFX_EMIT_DONE) {
-                    work->unk30 = NULL;
+            if (work->emit30 != NULL) {
+                if (work->emit30->state == BTLFX_EMIT_DONE) {
+                    work->emit30 = NULL;
                 }
-                if (work->unk30 != NULL) {
-                    work->unk30->rot.vx = r3.vx;
-                    work->unk30->rot.vy = r3.vy;
-                    work->unk30->rot.vz = r3.vz;
+                if (work->emit30 != NULL) {
+                    work->emit30->rot.vx = r3.vx;
+                    work->emit30->rot.vy = r3.vy;
+                    work->emit30->rot.vz = r3.vz;
                 }
             }
             if (frame < 0x24) {

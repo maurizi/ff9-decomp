@@ -36,7 +36,7 @@ typedef struct {
     SVECTOR unk14; /* rotation */
     s16 unk1C; /* rotation speed */
     s16 unk1E;
-    Pool6CEntry *unk20; /* particle */
+    Pool6CEntry *emit20; /* particle */
 } Fx0e0Obj;
 
 typedef struct {

@@ -51,7 +51,7 @@ typedef struct {
 
 typedef struct {
     s32 unk0[16]; /* timers */
-    Pool6CEntry *unk40[7];
+    Pool6CEntry *emit40[7];
     SVECTOR unk5C; /* target position */
     SVECTOR unk64; /* bone position */
     s32 unk6C; /* model */

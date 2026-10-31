@@ -5,8 +5,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* position: env->targets->centerX..Z */
     SVECTOR unk10; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR unk18; /* btlfx_getUnitArgBonePos(0x10, 0), every frame */
@@ -14,7 +14,7 @@ typedef struct {
 } Fx0b9Work80;
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4; /* unit position, raised by 0xC8 */
     SVECTOR unkC; /* angles from D_801E7B9C to unk4 */
     s32 unk14; /* unit */

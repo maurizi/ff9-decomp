@@ -51,7 +51,7 @@ typedef struct {
     s32 pad30;
     s32 unk34; /* backdrop scroll */
     s32 unk38; /* yaw offset */
-    Pool6CEntry *unk3C;
+    Pool6CEntry *emit3C;
 } Fx07dWork80; /* 0x40 */
 
 extern BtlModel fx_07d_effModels[];

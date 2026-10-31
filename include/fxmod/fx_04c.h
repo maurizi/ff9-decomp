@@ -12,7 +12,7 @@ typedef struct {
 typedef struct {
     s32 unk0; /* state */
     SVECTOR unk4[4]; /* target positions */
-    Pool6CEntry *unk24[4];
+    Pool6CEntry *emit24[4];
     s32 unk34; /* target count */
     s32 unk38; /* current target */
 } Fx04cWork81; /* 0x3C */

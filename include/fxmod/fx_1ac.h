@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR unk38; /* target rotation */
     u8 pad40[0x44 - 0x40];
     SVECTOR unk44; /* saved target rotation */
-    Pool6CEntry *unk4C[5];
+    Pool6CEntry *emit4C[5];
 } Fx1acWork; /* 0x60 */
 
 extern Unk800F78A4 *fx_1ac_env;

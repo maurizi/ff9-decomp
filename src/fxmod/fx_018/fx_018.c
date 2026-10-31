@@ -38,15 +38,15 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->unk10) {
         case 0:
             if (frame == 0) {
-                work->unk1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
-                if (work->unk1C != NULL) {
-                    work->unk1C->otZ = 0x46;
+                work->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
+                if (work->emit1C != NULL) {
+                    work->emit1C->otZ = 0x46;
                 }
             }
             if (frame == 5) {
-                work->unk20 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk8);
-                if (work->unk20 != NULL) {
-                    work->unk20->otZ = 0x46;
+                work->emit20 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk8);
+                if (work->emit20 != NULL) {
+                    work->emit20->otZ = 0x46;
                 }
             }
             if (frame == 28) {
@@ -58,8 +58,8 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 29) {
                 work->unk10 = 1;
                 entry->frame = -1;
-                ex->btlfx_stopEmitter(work->unk1C);
-                ex->btlfx_stopEmitter(work->unk20);
+                ex->btlfx_stopEmitter(work->emit1C);
+                ex->btlfx_stopEmitter(work->emit20);
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->unk8);
                 if (p != NULL) {
                     p->otZ = 0x20;
@@ -89,9 +89,9 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (p != NULL) {
                     p->otZ = 0x80;
                 }
-                work->unk1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&work->unk8);
-                if (work->unk1C != NULL) {
-                    work->unk1C->otZ = 0x80;
+                work->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&work->unk8);
+                if (work->emit1C != NULL) {
+                    work->emit1C->otZ = 0x80;
                 }
             }
             break;
@@ -122,14 +122,14 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             d.vx = 0x400;
             d.vz = 0;
             d.vy = 0;
-            if (work->unk1C != NULL) {
-                if (work->unk1C->state == BTLFX_EMIT_DONE) {
-                    work->unk1C = NULL;
+            if (work->emit1C != NULL) {
+                if (work->emit1C->state == BTLFX_EMIT_DONE) {
+                    work->emit1C = NULL;
                 }
-                if (work->unk1C != NULL) {
-                    work->unk1C->rot.vx = d.vx;
-                    work->unk1C->rot.vy = d.vy;
-                    work->unk1C->rot.vz = d.vz;
+                if (work->emit1C != NULL) {
+                    work->emit1C->rot.vx = d.vx;
+                    work->emit1C->rot.vy = d.vy;
+                    work->emit1C->rot.vz = d.vz;
                 }
             }
             if (frame < 16) {

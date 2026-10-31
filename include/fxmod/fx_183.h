@@ -16,15 +16,15 @@ typedef struct {
 } Fx183Path;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* caster body position */
     SVECTOR unk10; /* caster rotation */
 } Fx183Work80; /* 0x18 */
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
     SVECTOR unk8; /* caster position */
     SVECTOR unk10; /* target position */
     SVECTOR unk18; /* from */
@@ -35,7 +35,7 @@ typedef struct {
 } Fx183Work81; /* 0x4C */
 
 typedef struct {
-    Pool6CEntry *unk0;
+    Pool6CEntry *emit0;
     SVECTOR unk4; /* model rotation */
     VECTOR unkC; /* model position */
     VECTOR unk1C; /* model scales */
@@ -48,9 +48,9 @@ typedef struct {
 } Fx183Work82; /* 0x5C */
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
     SVECTOR unkC; /* target body position */
     s32 unk14; /* unit */
 } Fx183Work83; /* 0x18 */

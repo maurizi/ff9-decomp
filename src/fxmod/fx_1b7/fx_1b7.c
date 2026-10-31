@@ -226,7 +226,7 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[3].vz = pos.vz;
         work->unk0 = 0;
         work->unk4 = 0;
-        work->unk40 = NULL;
+        work->emit40 = NULL;
     } else {
         frame = entry->frame;
         switch (work->unk0) {
@@ -271,13 +271,13 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x10) {
-                work->unk40 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk28);
-                if (work->unk40 != NULL) {
-                    work->unk40->otZ = 0x140;
+                work->emit40 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk28);
+                if (work->emit40 != NULL) {
+                    work->emit40->otZ = 0x140;
                 }
             }
-            if (work->unk40 != NULL && work->unk40->state == BTLFX_EMIT_DONE) {
-                work->unk40 = NULL;
+            if (work->emit40 != NULL && work->emit40->state == BTLFX_EMIT_DONE) {
+                work->emit40 = NULL;
             }
             if (frame == 1 || frame == 0xF || frame == 0x14 || frame == 0x24) {
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 0x40, 0x80, 0x80);
@@ -291,7 +291,7 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x2C) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                ex->btlfx_stopEmitter(work->unk40);
+                ex->btlfx_stopEmitter(work->emit40);
                 ex->btlfx_fadeUnitById(0x10, 0);
                 ex->btlfx_moveSummonToHeap(0x6E);
                 ex->btlfx_initEffModels(fx_1b7_effModels, 8);

@@ -33,10 +33,10 @@ typedef struct {
     s32 unk54;
     s32 unk58;
     s32 pad5C[(0x80 - 0x5C) / 4];
-    Pool6CEntry *unk80;
-    Pool6CEntry *unk84;
-    Pool6CEntry *unk88;
-    Pool6CEntry *unk8C;
+    Pool6CEntry *emit80;
+    Pool6CEntry *emit84;
+    Pool6CEntry *emit88;
+    Pool6CEntry *emit8C;
     s32 pad90[(0x100 - 0x90) / 4];
     SVECTOR unk100;
     SVECTOR unk108;

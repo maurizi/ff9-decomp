@@ -35,8 +35,8 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x12:
         case 0x24:
         case 0x36:
-            work->unk54[work->unk0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk44);
-            work->unk64[work->unk0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4C);
+            work->emit54[work->unk0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk44);
+            work->emit64[work->unk0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4C);
             work->unk14[work->unk0].vy += work->unkC.vy;
             work->unk14[work->unk0].vx += work->unkC.vx;
             work->unk14[work->unk0].vz += work->unkC.vz;
@@ -47,23 +47,23 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk3C);
         }
         for (i = 0; i < work->unk0; i++) {
-            if (work->unk54[i] != NULL && work->unk54[i]->state == BTLFX_EMIT_DONE) {
-                work->unk54[i] = NULL;
+            if (work->emit54[i] != NULL && work->emit54[i]->state == BTLFX_EMIT_DONE) {
+                work->emit54[i] = NULL;
             }
-            if (work->unk64[i] != NULL && work->unk64[i]->state == BTLFX_EMIT_DONE) {
-                work->unk64[i] = NULL;
+            if (work->emit64[i] != NULL && work->emit64[i]->state == BTLFX_EMIT_DONE) {
+                work->emit64[i] = NULL;
             }
-            if (work->unk54[i] != NULL) {
+            if (work->emit54[i] != NULL) {
                 v = (SVECTOR *)((u8 *)work + i * 8 + 0x14);
-                work->unk54[i]->rot.vx = v->vx;
-                work->unk54[i]->rot.vy = v->vy;
-                work->unk54[i]->rot.vz = v->vz;
+                work->emit54[i]->rot.vx = v->vx;
+                work->emit54[i]->rot.vy = v->vy;
+                work->emit54[i]->rot.vz = v->vz;
             }
-            if (work->unk64[i] != NULL) {
+            if (work->emit64[i] != NULL) {
                 v = (SVECTOR *)((u8 *)work + i * 8 + 0x14);
-                work->unk64[i]->rot.vx = v->vx;
-                work->unk64[i]->rot.vy = v->vy;
-                work->unk64[i]->rot.vz = v->vz;
+                work->emit64[i]->rot.vx = v->vx;
+                work->emit64[i]->rot.vy = v->vy;
+                work->emit64[i]->rot.vz = v->vz;
             }
         }
         return frame >= 0x60;

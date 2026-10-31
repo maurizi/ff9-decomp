@@ -22,9 +22,9 @@ s32 fx_047_op80(s32 mode, Fx047Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (p != NULL) {
             p->otZ = 0x80;
         }
-        work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
-        if (work->unk14 != NULL) {
-            work->unk14->otZ = 0x80;
+        work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
+        if (work->emit14 != NULL) {
+            work->emit14->otZ = 0x80;
         }
     } else {
         frame = entry->frame;

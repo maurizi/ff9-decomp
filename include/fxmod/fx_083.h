@@ -31,7 +31,7 @@ typedef struct {
     SVECTOR unk160; /* caster position */
     s32 unk168; /* radius */
     s32 unk16C; /* height */
-    Pool6CEntry *unk170[4];
+    Pool6CEntry *emit170[4];
     SVECTOR unk180[4];
     SVECTOR unk1A0[4];
     s32 unk1C0; /* orbit angle */

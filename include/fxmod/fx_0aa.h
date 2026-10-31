@@ -5,20 +5,20 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
-    Pool6CEntry *unkC;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
+    Pool6CEntry *emitC;
     SVECTOR unk10; /* btlfx_getUnitBonePos(0x10, 0x12) */
     SVECTOR unk18; /* btlfx_getUnitBonePos(0x10, 0x2B) */
 } Fx0aaWork80;
 
 typedef struct {
-    Pool6CEntry *unk0;
-    Pool6CEntry *unk4;
-    Pool6CEntry *unk8;
-    Pool6CEntry *unkC;
-    Pool6CEntry *unk10;
+    Pool6CEntry *emit0;
+    Pool6CEntry *emit4;
+    Pool6CEntry *emit8;
+    Pool6CEntry *emitC;
+    Pool6CEntry *emit10;
     SVECTOR unk14; /* position: env->targets->centerX..Z */
 } Fx0aaWork81;
 

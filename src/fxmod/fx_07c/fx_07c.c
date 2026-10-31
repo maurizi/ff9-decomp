@@ -10,7 +10,7 @@ s32 fx_07c_op80(s32 mode, Fx07cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4.vy = env->targets->centerY;
         work->unk4.vz = env->targets->centerZ;
         fx_07c_env = env;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk4);
     } else {
         return entry->frame >= 0x28;
     }

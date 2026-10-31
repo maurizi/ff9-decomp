@@ -197,13 +197,13 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame == 8) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9D), (s32)&work->unk10);
-                work->unk74 = p;
+                work->emit74 = p;
                 if (p != NULL) {
                     p->unk14 = (s32)D_801ED5C0;
-                    work->unk74->unk12 = 0xE0;
-                    work->unk74->unkC = 0x1C;
-                    if (work->unk74 != NULL) {
-                        work->unk74->otZ = 0x80;
+                    work->emit74->unk12 = 0xE0;
+                    work->emit74->unkC = 0x1C;
+                    if (work->emit74 != NULL) {
+                        work->emit74->otZ = 0x80;
                     }
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk10);
@@ -211,14 +211,14 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p->otZ = 0x80;
                 }
             } else if (frame >= 9) {
-                if (work->unk74 != NULL) {
-                    if (work->unk74->state == BTLFX_EMIT_DONE) {
-                        work->unk74 = NULL;
+                if (work->emit74 != NULL) {
+                    if (work->emit74->state == BTLFX_EMIT_DONE) {
+                        work->emit74 = NULL;
                     }
-                    if (work->unk74 != NULL) {
-                        work->unk74->rot.vx = work->unk40.vx;
-                        work->unk74->rot.vy = work->unk40.vy;
-                        work->unk74->rot.vz = work->unk40.vz;
+                    if (work->emit74 != NULL) {
+                        work->emit74->rot.vx = work->unk40.vx;
+                        work->emit74->rot.vy = work->unk40.vy;
+                        work->emit74->rot.vz = work->unk40.vz;
                     }
                 }
             }
@@ -236,7 +236,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 24) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                ex->btlfx_stopEmitter(work->unk74);
+                ex->btlfx_stopEmitter(work->emit74);
                 lo = ((s32 *)&work->unk8)[0];
                 hi = ((s32 *)&work->unk8)[1];
                 ((s32 *)&work->unk18)[0] = lo;
@@ -254,7 +254,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vy = work->unk18.vy;
                 env->camera->points[3].vz = work->unk18.vz;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9F), (s32)&work->unk10);
-                work->unk70 = p;
+                work->emit70 = p;
                 if (p != NULL) {
                     p->otZ = 0x80;
                 }
@@ -277,14 +277,14 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->otZ = 0x100;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk10, NULL, 0x1000, 0, 1, -1);
             env->otZ = 0;
-            if (work->unk70 != NULL) {
-                if (work->unk70->state == BTLFX_EMIT_DONE) {
-                    work->unk70 = NULL;
+            if (work->emit70 != NULL) {
+                if (work->emit70->state == BTLFX_EMIT_DONE) {
+                    work->emit70 = NULL;
                 }
-                if (work->unk70 != NULL) {
-                    work->unk70->rot.vx = work->unk48.vx;
-                    work->unk70->rot.vy = work->unk48.vy;
-                    work->unk70->rot.vz = work->unk48.vz;
+                if (work->emit70 != NULL) {
+                    work->emit70->rot.vx = work->unk48.vx;
+                    work->emit70->rot.vy = work->unk48.vy;
+                    work->emit70->rot.vz = work->unk48.vz;
                 }
             }
             ex->btlfx_drawScrollMove(frame * 12, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);

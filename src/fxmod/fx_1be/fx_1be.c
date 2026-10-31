@@ -68,7 +68,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             }
         }
         for (i = 15; i >= 0; i--) {
-            w->unk20[i] = NULL;
+            w->emit20[i] = NULL;
         }
         D_801E95D4 = 8;
         D_801E95D8 = 8;
@@ -134,20 +134,20 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk0[4] = 0x10;
             break;
         case 0x18:
-            w->unk20[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&w->unkBC);
-            w->unk20[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&w->unkC4);
-            if (w->unk20[0] != NULL) {
-                w->unk20[0]->otZ = 0x200;
+            w->emit20[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&w->unkBC);
+            w->emit20[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&w->unkC4);
+            if (w->emit20[0] != NULL) {
+                w->emit20[0]->otZ = 0x200;
             }
-            if (w->unk20[1] != NULL) {
-                w->unk20[1]->otZ = 0x200;
+            if (w->emit20[1] != NULL) {
+                w->emit20[1]->otZ = 0x200;
             }
             w->unk0[0xF] = 0x20;
             w->unk0[7] = 0x10;
             w->unk0[5] = 1;
             w->unk0[0x14] = 1;
             w->unk0[0xC] = 0x30;
-            p = w->unk20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->unkD4);
+            p = w->emit20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->unkD4);
             if (p != NULL) {
                 *(s32 *)&p->file->unk8 = (s32)fx_1be_op80ParticleMotion;
             }
@@ -160,7 +160,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk0[0xA] = 0x10;
             w->unk0[0x12] = frame;
             w->unk0[6] = 1;
-            ex->btlfx_stopEmitter(w->unk20[2]);
+            ex->btlfx_stopEmitter(w->emit20[2]);
             w->unk74.vx = 0x555;
             w->unk74.vy = 0x555;
             w->unk74.vz = 0x555;
@@ -208,8 +208,8 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             return 1;
         }
         for (i = 0; i < 16; i++) {
-            if (w->unk20[i] != NULL && w->unk20[i]->state == BTLFX_EMIT_DONE) {
-                w->unk20[i] = NULL;
+            if (w->emit20[i] != NULL && w->emit20[i]->state == BTLFX_EMIT_DONE) {
+                w->emit20[i] = NULL;
             }
         }
         if (w->unk0[1] != 0) {
@@ -235,20 +235,20 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (w->unk0[0xF] != 0) {
             w->unk0[0xF]--;
-            ex->btlfx_moveEmitterTo((s32)w->unk20[0], (s32)&w->unk8C);
-            ex->btlfx_moveEmitterTo((s32)w->unk20[1], (s32)&w->unk8C);
+            ex->btlfx_moveEmitterTo((s32)w->emit20[0], (s32)&w->unk8C);
+            ex->btlfx_moveEmitterTo((s32)w->emit20[1], (s32)&w->unk8C);
         }
         if (w->unk0[0xE] != 0) {
             if (--w->unk0[0xE] != 0) {
-                if (w->unk20[0] != NULL) {
-                    w->unk20[0]->unk20 = w->unk0[0xE] << 8;
+                if (w->emit20[0] != NULL) {
+                    w->emit20[0]->unk20 = w->unk0[0xE] << 8;
                 }
-                if (w->unk20[1] != NULL) {
-                    w->unk20[1]->unk20 = w->unk0[0xE] << 8;
+                if (w->emit20[1] != NULL) {
+                    w->emit20[1]->unk20 = w->unk0[0xE] << 8;
                 }
             } else {
-                ex->btlfx_stopEmitter(w->unk20[0]);
-                ex->btlfx_stopEmitter(w->unk20[1]);
+                ex->btlfx_stopEmitter(w->emit20[0]);
+                ex->btlfx_stopEmitter(w->emit20[1]);
             }
         }
         if (w->unk0[5] != 0) {

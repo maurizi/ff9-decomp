@@ -32,7 +32,7 @@ typedef struct {
     u8 unk13;
     s16 unk14; /* kind */
     s32 *unk18; /* jitter table */
-    Pool6CEntry *unk1C;
+    Pool6CEntry *emit1C;
 } Fx042Bolt;
 
 typedef struct {

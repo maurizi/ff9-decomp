@@ -23,8 +23,8 @@ typedef struct {
     s16 unk14; /* kind */
     s16 unk16;
     s32 *unk18;
-    Pool6CEntry *unk1C;
-    Pool6CEntry *unk20;
+    Pool6CEntry *emit1C;
+    Pool6CEntry *emit20;
 } Fx0d7Part; /* pool entry data */
 
 /* fx_003 copies (asm) */
@@ -44,8 +44,8 @@ typedef struct {
     u8 unk13;
     s16 unk14; /* kind */
     s32 *unk18; /* jitter table (D_801E9260) */
-    Pool6CEntry *unk1C;
-    Pool6CEntry *unk20;
+    Pool6CEntry *emit1C;
+    Pool6CEntry *emit20;
 } Fx0d7Bolt; /* 0x24 */
 typedef struct {
     SVECTOR unk0; /* target body position */

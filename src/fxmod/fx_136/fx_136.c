@@ -12,15 +12,15 @@ s32 fx_136_op80(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         ex->btlfx_getUnitBoneMatrix(0x10, 2, (BtlBone *)&m);
         ex->btlfx_matrixPointAhead(&m, 0x190, (s32)&work->unkC);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
     } else {
         frame = entry->frame;
-        if (work->unk0 != NULL) {
-            if (work->unk0->state == BTLFX_EMIT_DONE) {
-                work->unk0 = NULL;
+        if (work->emit0 != NULL) {
+            if (work->emit0->state == BTLFX_EMIT_DONE) {
+                work->emit0 = NULL;
             }
-            if (work->unk0 != NULL) {
-                work->unk0->unk2C = (s32)&work->unkC;
+            if (work->emit0 != NULL) {
+                work->emit0->unk2C = (s32)&work->unkC;
             }
         }
         return frame >= 0x28;
@@ -37,21 +37,21 @@ s32 fx_136_op81(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_136_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->unkC);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unkC);
-        if (work->unk0 != NULL) {
-            work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unkC);
+        if (work->emit0 != NULL) {
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
     } else {
         frame = entry->frame;
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk4);
-        if (work->unk0 != NULL) {
-            if (work->unk0->state == BTLFX_EMIT_DONE) {
-                work->unk0 = NULL;
+        if (work->emit0 != NULL) {
+            if (work->emit0->state == BTLFX_EMIT_DONE) {
+                work->emit0 = NULL;
             }
-            if (work->unk0 != NULL) {
-                work->unk0->rot.vx = work->unk4.vx;
-                work->unk0->rot.vy = work->unk4.vy;
-                work->unk0->rot.vz = work->unk4.vz;
+            if (work->emit0 != NULL) {
+                work->emit0->rot.vx = work->unk4.vx;
+                work->emit0->rot.vy = work->unk4.vy;
+                work->emit0->rot.vz = work->unk4.vz;
             }
         }
         return frame >= 0x28;

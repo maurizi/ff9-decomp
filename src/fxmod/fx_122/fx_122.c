@@ -92,9 +92,9 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk40.vy = work->unkC.vy;
                 work->unk40.vz = work->unkC.vz;
                 work->unk40.vy -= 0xC8;
-                work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk40);
-                if (work->unk0 != NULL) {
-                    work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk40);
+                if (work->emit0 != NULL) {
+                    work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
         }

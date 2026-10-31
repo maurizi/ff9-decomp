@@ -15,9 +15,9 @@ typedef struct {
 } Fx138Path;
 
 typedef struct {
-    Pool6CEntry *unk0[6];
-    Pool6CEntry *unk18;
-    Pool6CEntry *unk1C;
+    Pool6CEntry *emit0[6];
+    Pool6CEntry *emit18;
+    Pool6CEntry *emit1C;
     SVECTOR unk20; /* caster body position */
     SVECTOR unk28;
     u16 unk30; /* frame, up to 5 */

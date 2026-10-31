@@ -28,9 +28,9 @@ typedef struct {
     SVECTOR unk10; /* position */
     Fx057Vec3 unk18; /* model position */
     SVECTOR unk24;
-    Pool6CEntry *unk2C;
-    Pool6CEntry *unk30;
-    Pool6CEntry *unk34;
+    Pool6CEntry *emit2C;
+    Pool6CEntry *emit30;
+    Pool6CEntry *emit34;
 } Fx057Work80; /* 0x38 */
 
 extern SVECTOR D_801EA714;
