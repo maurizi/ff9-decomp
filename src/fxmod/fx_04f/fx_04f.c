@@ -30,7 +30,7 @@ static s32 fx_04f_op80PoolTask(s32 mode, s32 *it, Unk800F78A4 *env, Unk80100C78E
         scale.vz = (work->unk50 * 7) >> 3;
         BTLFX_COPY_SVEC(&rot, &work->rot38);
         rot.vy += 0x800;
-        ex->btlfx_pointAhead((s16 *)&work->unk14, (s16 *)&rot, *it, (s16 *)&p);
+        ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&rot, *it, (s16 *)&p);
         pos.vx = p.vx;
         pos.vy = p.vy;
         pos.vz = p.vz;
@@ -70,16 +70,16 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x117, 0xFFFF, 0, 0);
         work->unk0 = 0;
         work->unk48 = 0;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot38);
         work->unk40 = ex->btlfx_getUnitRadius(0);
-        ex->btlfx_pointAhead((s16 *)&work->unk14, (s16 *)&work->rot38, work->unk40, (s16 *)&work->unk14);
-        ex->btlfx_pointAhead((s16 *)&work->unk14, (s16 *)&work->rot38, 0x180, (s16 *)&work->unk24);
+        ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&work->rot38, work->unk40, (s16 *)&work->pos14);
+        ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&work->rot38, 0x180, (s16 *)&work->unk24);
         work->rot38.vy += 0x800;
-        work->unk2C[0] = work->unk14.vx;
-        work->unk2C[1] = work->unk14.vy;
-        work->unk2C[2] = work->unk14.vz;
-        BTLFX_COPY_SVEC(&work->pos1C, &work->unk14);
+        work->unk2C[0] = work->pos14.vx;
+        work->unk2C[1] = work->pos14.vy;
+        work->unk2C[2] = work->pos14.vz;
+        BTLFX_COPY_SVEC(&work->pos1C, &work->pos14);
     } else {
         r = 0;
         g = 0;
@@ -126,7 +126,7 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit44 = NULL;
                 } else {
                     work->rot38.vy += 0x800;
-                    ex->btlfx_pointAhead((s16 *)&work->unk14, (s16 *)&work->rot38, frame * 0x12, (s16 *)&v);
+                    ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&work->rot38, frame * 0x12, (s16 *)&v);
                     work->rot38.vy += 0x800;
                     ex->btlfx_moveEmitterTo((s32)work->emit44, (s32)&v);
                 }

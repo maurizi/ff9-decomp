@@ -23,7 +23,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
     s32 unk8; /* priority */
-    SVECTOR unkC; /* caster body position */
+    SVECTOR posC; /* caster body position */
     Fx0cbVec3 unk14;
     s32 model20; /* model */
     s32 model24; /* model */

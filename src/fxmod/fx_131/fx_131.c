@@ -19,8 +19,8 @@ s32 fx_131_op80(s32 mode, Fx131Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->emit18 != NULL && work->emit18->state == BTLFX_EMIT_DONE) {
             work->emit18 = NULL;
         }
-        ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->unk10);
-        ex->btlfx_moveEmitterTo((s32)work->emit18, (s32)&work->unk10);
+        ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->pos10);
+        ex->btlfx_moveEmitterTo((s32)work->emit18, (s32)&work->pos10);
         if (frame == 8) {
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos0);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);

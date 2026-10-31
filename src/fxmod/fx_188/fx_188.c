@@ -67,7 +67,7 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_188_env = env;
         BTLFX_COPY_SVEC(&work->pos4, &env->targets->centerX);
         work->pos4.vy -= 0x200;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unkC);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
         D_801E86CC = 0x1000;
         work->rot14.vy += 0x800;
@@ -80,7 +80,7 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk1C++;
                     e = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (e != NULL) {
-                        BTLFX_COPY_SVEC(&e->posC, &work->unkC);
+                        BTLFX_COPY_SVEC(&e->posC, &work->posC);
                         e->unk20.vx = work->pos4.vx;
                         e->unk20.vz = work->pos4.vz;
                         e->unk20.vy = work->pos4.vy;

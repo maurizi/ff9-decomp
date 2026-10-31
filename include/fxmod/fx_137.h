@@ -7,7 +7,7 @@
 typedef struct {
     SVECTOR unk0;
     SVECTOR pos8;
-    SVECTOR unk10;
+    SVECTOR pos10;
     SVECTOR unk18;
     Pool6CEntry *emit20;
 } Fx137Work;

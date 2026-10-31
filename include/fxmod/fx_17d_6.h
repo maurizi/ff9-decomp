@@ -79,7 +79,7 @@ typedef struct {
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* bolt target */
     SVECTOR pos10; /* particle position */
-    SVECTOR unk18; /* camera position */
+    SVECTOR pos18; /* camera position */
     SVECTOR unk20; /* camera target */
     SVECTOR pos28; /* bone positions */
     SVECTOR pos30;

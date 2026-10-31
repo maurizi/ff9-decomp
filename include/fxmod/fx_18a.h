@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
+    SVECTOR pos0; /* caster body position */
     SVECTOR unk8; /* angles */
 } Fx18aWork82; /* 0x10 */
 

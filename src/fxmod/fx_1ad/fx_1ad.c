@@ -50,10 +50,10 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->model24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->unk8);
-        pos.vx = work->unk8.vx;
-        pos.vy = work->unk8.vy;
-        pos.vz = work->unk8.vz;
+        ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->pos8);
+        pos.vx = work->pos8.vx;
+        pos.vy = work->pos8.vy;
+        pos.vz = work->pos8.vz;
         if (work->unk0 == 0) {
             k = 0x40;
             n = work->unk4;

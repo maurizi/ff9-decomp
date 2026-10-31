@@ -47,9 +47,9 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
             it->rot14.vx -= 0x800;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->unkC, NULL, 0, 0x800, 0x1000, 1,
                               it->unk1C, 0);
-            d.vx = work->unk4.vx - it->unkC.vx;
-            d.vy = work->unk4.vy - it->unkC.vy;
-            d.vz = work->unk4.vz - it->unkC.vz;
+            d.vx = work->pos4.vx - it->unkC.vx;
+            d.vy = work->pos4.vy - it->unkC.vy;
+            d.vz = work->pos4.vz - it->unkC.vz;
             if (d.vx * d.vx + d.vy * d.vy + d.vz * d.vz < 0x40000 || frame >= 0x11) {
                 it->unk0 = 1;
                 ((s16 *)it)[-1] = -1;
@@ -100,8 +100,8 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk1C = 0;
         work->unk20 = 0;
         fx_058_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unkC);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
         work->rot14.vy += 0x800;
         ex->btlfx_initEffModels(fx_058_effModels, 1);
@@ -111,10 +111,10 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk1C++;
             it = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (it != NULL) {
-                BTLFX_COPY_SVEC(&it->unkC, &work->unkC);
-                it->unk20.vx = work->unk4.vx;
-                it->unk20.vz = work->unk4.vz;
-                it->unk20.vy = work->unk4.vy;
+                BTLFX_COPY_SVEC(&it->unkC, &work->posC);
+                it->unk20.vx = work->pos4.vx;
+                it->unk20.vz = work->pos4.vz;
+                it->unk20.vy = work->pos4.vy;
                 k = work->unk1C & 3;
                 j = work->rot14.vy - 0x300;
                 it->rot14.vy = j + k * 0x200;

@@ -7,7 +7,7 @@
 typedef struct {
     Pool6CEntry *emit0[5];
     SVECTOR pos14; /* target body position */
-    SVECTOR unk1C; /* target position */
+    SVECTOR pos1C; /* target position */
 } Fx12bWork82;
 
 /* particle as the path callbacks see it */

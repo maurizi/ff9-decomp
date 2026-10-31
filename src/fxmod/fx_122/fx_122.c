@@ -14,7 +14,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_122_env = env;
         env->camera->paused = 0;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk30);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos30);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot38);
         work->rot4.vx = 0;
         work->rot4.vz = 0;
@@ -31,30 +31,30 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (o->unk4 & 0x8000) {
                         goto forward;
                     }
-                    work->posC.vx = work->unk30.vx;
-                    work->posC.vy = work->unk30.vy - o->unk4;
-                    work->posC.vz = work->unk30.vz;
+                    work->posC.vx = work->pos30.vx;
+                    work->posC.vy = work->pos30.vy - o->unk4;
+                    work->posC.vz = work->pos30.vz;
                     goto found;
                 }
             }
             if (id >= 0x258 || r >= 0x2EE) {
-                work->posC.vx = work->unk30.vx;
-                work->posC.vy = work->unk30.vy - id;
-                work->posC.vz = work->unk30.vz;
+                work->posC.vx = work->pos30.vx;
+                work->posC.vy = work->pos30.vy - id;
+                work->posC.vz = work->pos30.vz;
                 goto found;
             }
             goto unit;
         forward:
-            work->posC.vx = work->unk30.vx;
-            work->posC.vy = work->unk30.vy;
-            work->posC.vz = work->unk30.vz;
+            work->posC.vx = work->pos30.vx;
+            work->posC.vy = work->pos30.vy;
+            work->posC.vz = work->pos30.vz;
             work->posC.vz -= o->unk4 ^ 0x8000;
             goto found;
         }
     unit:
-        work->posC.vx = work->unk30.vx;
-        work->posC.vy = work->unk30.vy;
-        work->posC.vz = work->unk30.vz;
+        work->posC.vx = work->pos30.vx;
+        work->posC.vy = work->pos30.vy;
+        work->posC.vz = work->pos30.vz;
     found:
         work->unk2E = work->posC.vy;
         env->camera->points[0].vx = work->posC.vx;
@@ -69,9 +69,9 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->Hi_DrawEffModel(&work->rot4, &work->posC, (s32)&work->scale1C, work->model4C);
         if (frame >= 0x19 && frame < 0x28) {
             if ((frame & 1) && (ex->btlfx_rand() & 1)) {
-                work->posC.vx = work->unk30.vx + (ex->btlfx_rand() % 4 + 4);
+                work->posC.vx = work->pos30.vx + (ex->btlfx_rand() % 4 + 4);
             } else {
-                work->posC.vx = work->unk30.vx - (ex->btlfx_rand() % 4 + 4);
+                work->posC.vx = work->pos30.vx - (ex->btlfx_rand() % 4 + 4);
             }
             work->posC.vy = work->unk2E + ex->btlfx_rand() % 4;
         }

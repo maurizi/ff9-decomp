@@ -68,13 +68,13 @@ s32 fx_12d_op82(s32 mode, Fx12dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_12d_env = env;
         ex->btlfx_initEffModels(fx_12d_effModels, 1);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk2C);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos2C);
         work->rot0.vx = 0;
         work->rot0.vy = 0;
         work->rot0.vz = 0;
-        work->pos8.vx = work->unk2C.vx;
-        work->pos8.vy = work->unk2C.vy;
-        work->pos8.vz = work->unk2C.vz;
+        work->pos8.vx = work->pos2C.vx;
+        work->pos8.vy = work->pos2C.vy;
+        work->pos8.vz = work->pos2C.vz;
         ex->btlfx_getUnitScale(0x10, &work->scale18);
         work->pos8.vx -= 0x28;
         work->pos8.vz += 0x304;

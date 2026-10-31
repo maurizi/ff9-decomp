@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* time */
-    SVECTOR unk8; /* caster bone position */
+    SVECTOR pos8; /* caster bone position */
 } Fx0dfWork84;
 
 typedef struct {
@@ -68,7 +68,7 @@ static s32 fx_0df_op83PoolTask(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk801
 extern s32 D_801EA790[][3]; /* random arc profile */
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
+    SVECTOR pos0; /* caster body position */
     s32 *unk8; /* arc profile table */
     s32 unkC; /* arcs spawned */
     s32 unk10; /* variant */

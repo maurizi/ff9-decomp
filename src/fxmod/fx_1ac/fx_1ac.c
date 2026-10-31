@@ -61,10 +61,10 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->emit4C[4] != NULL && work->emit4C[4]->state == BTLFX_EMIT_DONE) {
             work->emit4C[4] = NULL;
         }
-        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk30);
+        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->pos30);
         switch (frame) {
         case 0:
-            ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk20);
+            ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos20);
             ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
             D_801E8304 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
             if (p != NULL) {
@@ -112,8 +112,8 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk0[0] != 0) {
             work->unk0[0]--;
             t = 0xE - work->unk0[0];
-            D_801E85A8.vx = ex->btlfx_lerpRatio(work->pos28.vx, work->unk30.vx, t, 0xE);
-            D_801E85A8.vz = ex->btlfx_lerpRatio(work->pos28.vz, work->unk30.vz, t, 0xE);
+            D_801E85A8.vx = ex->btlfx_lerpRatio(work->pos28.vx, work->pos30.vx, t, 0xE);
+            D_801E85A8.vz = ex->btlfx_lerpRatio(work->pos28.vz, work->pos30.vz, t, 0xE);
             D_801E85A8.vy = work->pos28.vy - (t * 0x258 - (t * 0x25) * t);
             ex->btlfx_setUnitPos(0, (s16 *)&D_801E85A8);
             work->rot38.vx -= 0xAA;
@@ -189,7 +189,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk0[2] != 0) {
             work->unk0[2]--;
             if (work->unk0[2] != 0) {
-                ex->btlfx_lerpVec((s16 *)&work->pos28, (s16 *)&work->unk20, (work->unk0[2] << 23) >> 12, (s16 *)&v);
+                ex->btlfx_lerpVec((s16 *)&work->pos28, (s16 *)&work->pos20, (work->unk0[2] << 23) >> 12, (s16 *)&v);
             } else {
                 ex->btlfx_getUnitHomePos(0, (s16 *)&v);
             }

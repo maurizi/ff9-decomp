@@ -37,7 +37,7 @@ typedef struct {
 } Fx003Bolt; /* 0x24 */
 
 typedef struct {
-    SVECTOR unk0; /* target body position */
+    SVECTOR pos0; /* target body position */
     s32 *unk8; /* D_801E8F20 */
     s32 unkC; /* bolts spawned */
 } Fx003Work; /* 0x10 */

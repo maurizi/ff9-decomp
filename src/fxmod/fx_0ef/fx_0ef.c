@@ -10,15 +10,15 @@ s32 fx_0ef_op80(s32 mode, Fx0efWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x68;
     } else if (mode == 1) {
         fx_0ef_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk38);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos38);
     } else {
         o = D_801E7AC8;
         frame = entry->frame;
         for (i = 0; i < 5; i++, o++) {
             if (o->unk2 == frame) {
-                (work->unk40 + i)->vx = work->unk38.vx;
-                (work->unk40 + i)->vy = work->unk38.vy;
-                (work->unk40 + i)->vz = work->unk38.vz;
+                (work->unk40 + i)->vx = work->pos38.vx;
+                (work->unk40 + i)->vy = work->pos38.vy;
+                (work->unk40 + i)->vz = work->pos38.vz;
                 (work->unk40 + i)->vx += o->unk4[0];
                 (work->unk40 + i)->vy += o->unk4[1];
                 (work->unk40 + i)->vz += o->unk4[2];

@@ -23,7 +23,7 @@ extern Fx038Strip D_801E857C[];
 
 typedef struct {
     s32 unk0;
-    SVECTOR unk4; /* target position */
+    SVECTOR pos4; /* target position */
     s32 unkC; /* items spawned */
     s32 model10; /* models */
     s32 model14;

@@ -6,9 +6,9 @@
 
 typedef struct {
     s32 unk0[8]; /* countdowns */
-    SVECTOR unk20; /* caster position */
+    SVECTOR pos20; /* caster position */
     SVECTOR pos28; /* target position */
-    SVECTOR unk30; /* bone position */
+    SVECTOR pos30; /* bone position */
     SVECTOR rot38; /* target rotation */
     u8 pad40[0x44 - 0x40];
     SVECTOR rot44; /* saved target rotation */

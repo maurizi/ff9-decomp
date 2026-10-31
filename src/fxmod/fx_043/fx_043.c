@@ -24,18 +24,18 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x1C;
     } else if (mode == 1) {
         fx_043_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
-        work->unk14.vy -= 0x64;
-        D_801E7BD8.vx = work->unk14.vx;
-        D_801E7BD8.vy = work->unk14.vy;
-        D_801E7BD8.vz = work->unk14.vz;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unkC);
-        D_801E7BD0.vx = work->unkC.vx;
-        D_801E7BD0.vy = work->unkC.vy;
-        D_801E7BD0.vz = work->unkC.vz;
-        env->camera->points[0].vx = work->unkC.vx;
-        env->camera->points[0].vy = work->unkC.vy;
-        env->camera->points[0].vz = work->unkC.vz;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
+        work->pos14.vy -= 0x64;
+        D_801E7BD8.vx = work->pos14.vx;
+        D_801E7BD8.vy = work->pos14.vy;
+        D_801E7BD8.vz = work->pos14.vz;
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->posC);
+        D_801E7BD0.vx = work->posC.vx;
+        D_801E7BD0.vy = work->posC.vy;
+        D_801E7BD0.vz = work->posC.vz;
+        env->camera->points[0].vx = work->posC.vx;
+        env->camera->points[0].vy = work->posC.vy;
+        env->camera->points[0].vz = work->posC.vz;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7BE0);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)D_801E7BE8;
@@ -59,10 +59,10 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x28;
     } else if (mode == 1) {
         fx_043_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
-        ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&D_801E7BD0, (s16 *)&work->unk20);
-        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk20, 0xC8, (s16 *)&work->pos18);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&D_801E7BD0, (s16 *)&work->unk20);
+        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->unk20, 0xC8, (s16 *)&work->pos18);
         work->pos18.vy -= 0x64;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
         if (work->emit0 != NULL) {

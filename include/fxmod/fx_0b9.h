@@ -8,7 +8,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8; /* position: env->targets->centerX..Z */
-    SVECTOR unk10; /* btlfx_getUnitArgBonePos(0x10, 0) */
+    SVECTOR pos10; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR pos18; /* btlfx_getUnitArgBonePos(0x10, 0), every frame */
     SVECTOR unk20; /* angles from unk10 to unk8 */
 } Fx0b9Work80;

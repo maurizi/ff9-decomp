@@ -11,7 +11,7 @@ typedef struct {
     s32 modelC;
     s32 model10;
     SVECTOR pos14; /* target body position */
-    SVECTOR unk1C; /* target position */
+    SVECTOR pos1C; /* target position */
     s32 unk24; /* frame */
 } Fx006Work; /* 0x28 */
 

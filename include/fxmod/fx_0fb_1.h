@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* unit home position */
+    SVECTOR pos4; /* unit home position */
     SVECTOR rotC; /* unit rotation */
     s16 unk14; /* spin speed */
     s16 unk16;

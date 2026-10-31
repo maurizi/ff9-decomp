@@ -10,7 +10,7 @@ typedef struct {
 } Fx0cfWork80;
 
 typedef struct {
-    SVECTOR unk0; /* unit 0x10 body position */
+    SVECTOR pos0; /* unit 0x10 body position */
     SVECTOR unk8; /* angles from unk0 to unk18, turned around */
     SVECTOR unk10; /* unk18 moved 0x320 along unk8 */
     SVECTOR unk18; /* position: env->targets->centerX..Z */

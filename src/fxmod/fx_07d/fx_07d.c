@@ -665,7 +665,7 @@ s32 fx_07d_op83(s32 mode, Fx07dWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_07d_env = env;
         t = *arg4;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         work->unk8 = D_801EA8B0[0];
         p = work->unk8;
         for (i = 0; i < 64; i++) {

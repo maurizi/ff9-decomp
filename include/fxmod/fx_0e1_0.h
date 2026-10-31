@@ -41,7 +41,7 @@ typedef struct {
     Fx0e10Vec3 unk1C; /* summon model scale */
     SVECTOR rot28; /* summon model rotation */
     s32 unk30;
-    SVECTOR unk34; /* bone position */
+    SVECTOR pos34; /* bone position */
     SVECTOR unk3C;
     Pool6CEntry *emit44;
     Pool6CEntry *emit48;

@@ -38,10 +38,10 @@ s32 fx_0bf_op81(s32 mode, Fx0bfWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0bf_env = env;
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk0);
-        env->camera->points[0].vx = work->unk0.vx;
-        env->camera->points[0].vy = work->unk0.vy;
-        env->camera->points[0].vz = work->unk0.vz;
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos0);
+        env->camera->points[0].vx = work->pos0.vx;
+        env->camera->points[0].vy = work->pos0.vy;
+        env->camera->points[0].vz = work->pos0.vz;
         return frame >= 0xC;
     }
     return 0;

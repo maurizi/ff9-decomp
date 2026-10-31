@@ -57,7 +57,7 @@ typedef struct {
     s32 unk0[32]; /* timers: 0 tint, 1 flash, 2 trails, 3 trail kind, 4 sweep, 5 sweep split, 6..0xD */
     Pool6CEntry *emit80[32];
     SVECTOR pos100; /* body position */
-    SVECTOR unk108; /* unit position */
+    SVECTOR pos108; /* unit position */
     SVECTOR pos110;
     SVECTOR pos118;
     SVECTOR pos120;

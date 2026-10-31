@@ -28,8 +28,8 @@ typedef struct {
 } Fx0a9Work80;
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
-    SVECTOR unk8; /* btlfx_getUnitArgBonePos(0x10, 0) */
+    SVECTOR pos0; /* caster body position */
+    SVECTOR pos8; /* btlfx_getUnitArgBonePos(0x10, 0) */
 } Fx0a9Work83;
 
 extern Unk800F78A4 *fx_0a9_env;

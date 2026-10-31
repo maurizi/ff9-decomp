@@ -20,7 +20,7 @@ typedef struct {
     u8 pad8[8];
     SVECTOR pos10;
     SVECTOR pos18;
-    SVECTOR unk20; /* camera */
+    SVECTOR pos20; /* camera */
     s32 unk28[3]; /* model position */
     SVECTOR rot34; /* model rotation */
     s32 unk3C[3]; /* model scale */

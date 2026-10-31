@@ -533,8 +533,8 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 s32 d = ((ex->math_sin((frame << 11) / 159) * 3) >> 2) + 0x400;
 
                 env->otZ = 0xF5;
-                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, 0, (u16 *)&work->unk34);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk34, NULL, 0x1000, 0, 1,
+                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, 0, (u16 *)&work->pos34);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos34, NULL, 0x1000, 0, 1,
                                   d);
                 env->otZ = 0;
             }

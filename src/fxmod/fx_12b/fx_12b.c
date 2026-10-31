@@ -461,7 +461,7 @@ s32 fx_12b_op82(s32 mode, Fx12bWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_12b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk1C);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos1C);
         work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos14);
         work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos14);
         work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);

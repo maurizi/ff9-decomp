@@ -20,7 +20,7 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = 0;
         fx_016_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unkC);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
         ex->btlfx_initEffModels(fx_016_effModels, 8);
         work->model14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
         work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
@@ -44,9 +44,9 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk0 == 0) {
             if (frame < 24) {
                 a = (frame << 12) / 24;
-                pos.vx = work->unkC.vx;
-                pos.vy = work->unkC.vy;
-                pos.vz = work->unkC.vz;
+                pos.vx = work->posC.vx;
+                pos.vy = work->posC.vy;
+                pos.vz = work->posC.vz;
                 v = (((ex->math_sin(a >> 2) / 10) + 0x199) * work->unk34) >> 12;
                 rot.vz = 0;
                 rot.vx = 0;
@@ -72,9 +72,9 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                  * global-alloc preference for s2, which it also gets in the frame < 24 branch. The scale value
                  * here is its own block-local variable w. */
                 m = ((frame - 24) << 12) / 26;
-                pos.vx = work->unkC.vx;
-                pos.vy = work->unkC.vy;
-                pos.vz = work->unkC.vz;
+                pos.vx = work->posC.vx;
+                pos.vy = work->posC.vy;
+                pos.vz = work->posC.vz;
                 w = (work->unk34 * 0x332) >> 12;
                 rot.vz = 0;
                 rot.vx = 0;
@@ -93,9 +93,9 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScrollMove(frame, 0x240, 0x180, 0x10, 0x40, D_801E82B0[frame % 23 + 1].unk0,
                               D_801E82B0[frame % 23 + 1].unk2);
             if (frame >= 24) {
-                pos.vx = work->unkC.vx;
-                pos.vy = work->unkC.vy;
-                pos.vz = work->unkC.vz;
+                pos.vx = work->posC.vx;
+                pos.vy = work->posC.vy;
+                pos.vz = work->posC.vz;
                 scale.vx = scale.vz = (work->unk34 << 11) >> 12;
                 a = ((frame - 24) << 12) / 26;
                 scale.vy = (((ex->math_sin(a >> 2) / 4) + 0x2AA) * work->unk34) >> 12;

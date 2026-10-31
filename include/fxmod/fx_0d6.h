@@ -7,13 +7,13 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* btlfx_getWeaponPos(0x10, 1) */
+    SVECTOR pos8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0d6Work84;
 
 extern Unk800F78A4 *fx_0d6_env;
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
+    SVECTOR pos0; /* caster body position */
     SVECTOR pos8; /* caster position */
     s32 unk10; /* state */
     s32 model14[4]; /* models */

@@ -10,7 +10,7 @@ typedef struct {
 } Fx19eWork;
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
+    SVECTOR pos0; /* caster body position */
     SVECTOR unk8; /* angles */
     SVECTOR unk10; /* destination */
     SVECTOR unk18; /* target position */

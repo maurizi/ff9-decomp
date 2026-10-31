@@ -8,7 +8,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* spawned */
     s32 unk8; /* frame */
-    SVECTOR unkC; /* caster body position */
+    SVECTOR posC; /* caster body position */
     SVECTOR unk14; /* ring rotation */
     s32 unk1C; /* radius */
     s32 unk20; /* scale */
@@ -34,7 +34,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     s32 unk8; /* blend */
-    SVECTOR unkC; /* caster body position */
+    SVECTOR posC; /* caster body position */
 } Fx07eWork81; /* 0x14 */
 
 s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);

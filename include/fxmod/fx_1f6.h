@@ -15,7 +15,7 @@ typedef struct {
     s32 unk0[8]; /* countdowns */
     Fx1f6Model unk20[3];
     SVECTOR posA4; /* target position */
-    SVECTOR unkAC; /* target body position */
+    SVECTOR posAC; /* target body position */
 } Fx1f6Work; /* 0xB4 */
 
 extern Unk800F78A4 *fx_1f6_env;

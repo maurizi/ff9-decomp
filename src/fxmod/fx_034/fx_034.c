@@ -136,9 +136,9 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_034_env = env;
         ex->btlfx_initEffModels(fx_034_effModels, 2);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk34);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos34);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot3C);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk44);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos44);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4C);
         work->emit0 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4C);
         if (work->emit0 != NULL) {
@@ -149,13 +149,13 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
-        ex->btlfx_aimAngles((s16 *)&work->pos4C, (s16 *)&work->unk44, (s16 *)&work->unk54);
+        ex->btlfx_aimAngles((s16 *)&work->pos4C, (s16 *)&work->pos44, (s16 *)&work->unk54);
         a.vx = work->unk54.vx;
         a.vy = work->unk54.vy;
         a.vz = work->unk54.vz;
         a.vy += 0x800;
-        ex->btlfx_pointAhead((s16 *)&work->unk44, (s16 *)&a, 0x320, (s16 *)&p);
-        ex->btlfx_aimAngles((s16 *)&work->unk34, (s16 *)&p, (s16 *)&work->unk5C);
+        ex->btlfx_pointAhead((s16 *)&work->pos44, (s16 *)&a, 0x320, (s16 *)&p);
+        ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&p, (s16 *)&work->unk5C);
         work->unk5C.vy += 0x800;
         work->pos64.vx = p.vx;
         work->pos64.vy = p.vy;

@@ -95,10 +95,10 @@ s32 fx_041_op81(s32 mode, Fx041Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x1C;
     } else if (mode == 1) {
         fx_041_env = env;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unkC);
-        work->pos14.vx = work->unkC.vx;
-        work->pos14.vy = work->unkC.vy;
-        work->pos14.vz = work->unkC.vz;
+        ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
+        work->pos14.vx = work->posC.vx;
+        work->pos14.vy = work->posC.vy;
+        work->pos14.vz = work->posC.vz;
         work->pos14.vy = D_801E7F54.vy;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);

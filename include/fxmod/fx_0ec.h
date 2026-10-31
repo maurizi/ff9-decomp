@@ -65,7 +65,7 @@ void func_801E82D8(void);
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* caster position */
+    SVECTOR pos8; /* caster position */
     SVECTOR rot10; /* caster rotation */
     SVECTOR pos18; /* summon position */
     SVECTOR pos20;

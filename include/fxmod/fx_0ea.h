@@ -16,8 +16,8 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* caster body position */
-    SVECTOR unk10; /* target body position */
+    SVECTOR pos8; /* caster body position */
+    SVECTOR pos10; /* target body position */
     SVECTOR pos18; /* target position */
     s32 unk20; /* target index */
 } Fx0eaWork81;

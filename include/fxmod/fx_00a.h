@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0;
     u8 pad4[0xC];
-    SVECTOR unk10; /* target body position */
+    SVECTOR pos10; /* target body position */
     SVECTOR pos18; /* target position */
     u8 pad20[8];
 } Fx00aWork; /* 0x28 */

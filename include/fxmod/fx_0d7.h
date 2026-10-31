@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* btlfx_getWeaponPos(0x10, 1) */
+    SVECTOR pos8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0d7Work84;
 
 extern u8 D_801E88D0[][0x84];
@@ -48,7 +48,7 @@ typedef struct {
     Pool6CEntry *emit20;
 } Fx0d7Bolt; /* 0x24 */
 typedef struct {
-    SVECTOR unk0; /* target body position */
+    SVECTOR pos0; /* target body position */
     s32 *unk8; /* D_801E9260 */
     s32 unkC; /* bolts spawned */
 } Fx0d7Work; /* 0x10 */

@@ -296,7 +296,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         a.pad = 0x80;
         w->unk48 = (s16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 6), &rot, &a);
         ex->btlfx_getUnitPos(0, (s16 *)&w->pos8);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&w->unk10);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&w->pos10);
         ex->btlfx_setPartnerByArg(0);
         w->unk2C = 0x8F8;
     } else {
@@ -519,7 +519,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                     o->unkC.vx += ex->btlfx_randCentered(0x100);
                     o->unkC.vy += ex->btlfx_randCentered(0x180) - 0x100;
                     o->unkC.vz += ex->btlfx_randCentered(0x100);
-                    o->unk2 = w->pos8.vy - w->unk10.vy;
+                    o->unk2 = w->pos8.vy - w->pos10.vy;
                     o->unkC.vy = w->pos8.vy;
                     o->unk14.vz = 0;
                     o->unk14.vx = 0;

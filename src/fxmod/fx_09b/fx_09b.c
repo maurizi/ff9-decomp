@@ -50,10 +50,10 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (n == 0) {
             ex->btlfx_initEffModels(fx_09b_effModels, 5);
         }
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk54);
-        work->pos64.vx = work->unk54.vx;
-        work->pos64.vy = work->unk54.vy;
-        work->pos64.vz = work->unk54.vz;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos54);
+        work->pos64.vx = work->pos54.vx;
+        work->pos64.vy = work->pos54.vy;
+        work->pos64.vz = work->pos54.vz;
         if (ex->btlfx_rand() & 1) {
             work->pos64.vx += ex->btlfx_rand() % 100;
         } else {

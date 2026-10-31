@@ -8,7 +8,7 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x34;
     } else if (mode == 1) {
         fx_100_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk14);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos14);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos1C);
     } else {
         frame = entry->frame;

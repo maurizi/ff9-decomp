@@ -84,7 +84,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[1].vy = 0;
         env->camera->points[1].vz = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos100);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk108);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos108);
         ((BtlTexInfo *)v)->pages[0][0] = 0x8A;
         ((BtlTexInfo *)v)->pages[1][0] = 0x8C;
         ((BtlTexInfo *)v)->pages[0][1] = 0x3800;
@@ -208,9 +208,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale254.vx = 0x1000;
         work->scale254.vy = 0x1000;
         work->scale254.vz = 0x1000;
-        work->pos244.vx = work->unk108.vx;
-        work->pos244.vy = work->unk108.vy;
-        work->pos244.vz = work->unk108.vz;
+        work->pos244.vx = work->pos108.vx;
+        work->pos244.vy = work->pos108.vy;
+        work->pos244.vz = work->pos108.vz;
         ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[4][0];
         ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[4][1];
         ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[4][0];
@@ -369,9 +369,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[11] = 0x10;
             D_801EB0C0 = D_801EB0BC;
             func_801EA39C(&D_801EB4A4[0]);
-            work->pos19C.vx = work->unk108.vx;
-            work->pos19C.vy = work->unk108.vy;
-            work->pos19C.vz = work->unk108.vz;
+            work->pos19C.vx = work->pos108.vx;
+            work->pos19C.vy = work->pos108.vy;
+            work->pos19C.vz = work->pos108.vz;
             D_801EB0D4.unk6 = 0x990;
             D_801EB0D4.unk4 = 0x3CF;
             D_801EB0D4.unk8 = 0;
@@ -437,12 +437,12 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801EA39C(&D_801EB4A4[1]);
             func_801EA39C(&D_801EB574);
             work->unk0[7] = 0x80;
-            work->pos1AC.vx = work->unk108.vx;
-            work->pos1AC.vy = work->unk108.vy;
-            work->pos1AC.vz = work->unk108.vz;
-            work->pos1D4.vx = work->unk108.vx;
-            work->pos1D4.vz = work->unk108.vz;
-            work->pos1D4.vy = work->unk108.vy;
+            work->pos1AC.vx = work->pos108.vx;
+            work->pos1AC.vy = work->pos108.vy;
+            work->pos1AC.vz = work->pos108.vz;
+            work->pos1D4.vx = work->pos108.vx;
+            work->pos1D4.vz = work->pos108.vz;
+            work->pos1D4.vy = work->pos108.vy;
             break;
         case 0x187:
             ex->btlfx_stopEmitter(work->emit80[7]);
@@ -489,12 +489,12 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801EA39C(&D_801EB5E4[0]);
             func_801EA39C(&D_801EB5E4[1]);
             work->unk0[8] = 0x3C;
-            work->pos20C.vx = work->unk108.vx;
-            work->pos20C.vy = work->unk108.vy;
-            work->pos20C.vz = work->unk108.vz;
-            work->pos21C.vx = work->unk108.vx;
-            work->pos21C.vy = work->unk108.vy;
-            work->pos21C.vz = work->unk108.vz;
+            work->pos20C.vx = work->pos108.vx;
+            work->pos20C.vy = work->pos108.vy;
+            work->pos20C.vz = work->pos108.vz;
+            work->pos21C.vx = work->pos108.vx;
+            work->pos21C.vy = work->pos108.vy;
+            work->pos21C.vz = work->pos108.vz;
             break;
         case 0x1C1:
             ex->btlfx_getUnitBonePos(0x10, 3, (u16 *)&work->pos1F4);

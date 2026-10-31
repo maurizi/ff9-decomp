@@ -79,7 +79,7 @@ typedef struct {
     u8 pad18[0x10];
     SVECTOR pos28; /* summon bone positions */
     SVECTOR pos30;
-    SVECTOR unk38;
+    SVECTOR pos38;
     Fx026Vec3 unk40; /* summon position */
     Fx026Vec3 unk4C; /* summon scale */
     SVECTOR rot58; /* summon rotation */

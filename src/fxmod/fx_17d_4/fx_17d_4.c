@@ -235,12 +235,12 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk28.vz = work->unk48.vz;
         work->unk3C.vy = 0x1000;
         work->unk28.vy += 0x800;
-        work->unk20.vx = work->unk48.vx;
-        work->unk20.vy = work->unk48.vy;
-        work->unk20.vz = work->unk48.vz;
-        env->camera->points[3].vx = work->unk20.vx;
-        env->camera->points[3].vy = work->unk20.vy;
-        env->camera->points[3].vz = work->unk20.vz;
+        work->pos20.vx = work->unk48.vx;
+        work->pos20.vy = work->unk48.vy;
+        work->pos20.vz = work->unk48.vz;
+        env->camera->points[3].vx = work->pos20.vx;
+        env->camera->points[3].vy = work->pos20.vy;
+        env->camera->points[3].vz = work->pos20.vz;
         D_801EB25C = 0;
     } else {
         frame = entry->frame;
@@ -280,14 +280,14 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk28.vx = work->unk48.vx;
                 work->unk28.vy = work->unk48.vy;
                 work->unk28.vz = work->unk48.vz;
-                work->unk20.vx = work->unk48.vx;
-                work->unk20.vy = work->unk48.vy;
-                work->unk20.vz = work->unk48.vz;
+                work->pos20.vx = work->unk48.vx;
+                work->pos20.vy = work->unk48.vy;
+                work->pos20.vz = work->unk48.vz;
                 work->unk28.vy -= 0x400;
-                work->unk20.vy -= 0x8FC;
-                env->camera->points[3].vx = work->unk20.vx;
-                env->camera->points[3].vy = work->unk20.vy;
-                env->camera->points[3].vz = work->unk20.vz;
+                work->pos20.vy -= 0x8FC;
+                env->camera->points[3].vx = work->pos20.vx;
+                env->camera->points[3].vy = work->pos20.vy;
+                env->camera->points[3].vz = work->pos20.vz;
             }
             break;
         case 1:
@@ -418,24 +418,24 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xF0 - frame * 0x14, 0xF0 - frame * 0x14,
                                          0xF0 - frame * 0x14);
             }
-            work->unk20.vy += 8;
-            env->camera->points[3].vx = work->unk20.vx;
-            env->camera->points[3].vy = work->unk20.vy;
-            env->camera->points[3].vz = work->unk20.vz;
+            work->pos20.vy += 8;
+            env->camera->points[3].vx = work->pos20.vx;
+            env->camera->points[3].vy = work->pos20.vy;
+            env->camera->points[3].vz = work->pos20.vz;
             if (frame >= 0x40) {
                 work->unk0 = 4;
                 ex->btlfx_initParticleSystem();
                 entry->frame = -1;
-                ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x21, (u16 *)&work->unk20);
-                work->unk20.vx += 0x40;
-                work->unk20.vy -= 0x5A;
-                work->unk20.vz -= 0x40;
-                work->pos10.vx = work->unk20.vx;
-                work->pos10.vy = work->unk20.vy;
-                work->pos10.vz = work->unk20.vz;
-                env->camera->points[2].vx = work->unk20.vx;
-                env->camera->points[2].vy = work->unk20.vy;
-                env->camera->points[2].vz = work->unk20.vz;
+                ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x21, (u16 *)&work->pos20);
+                work->pos20.vx += 0x40;
+                work->pos20.vy -= 0x5A;
+                work->pos20.vz -= 0x40;
+                work->pos10.vx = work->pos20.vx;
+                work->pos10.vy = work->pos20.vy;
+                work->pos10.vz = work->pos20.vz;
+                env->camera->points[2].vx = work->pos20.vx;
+                env->camera->points[2].vy = work->pos20.vy;
+                env->camera->points[2].vz = work->pos20.vz;
                 work->unk28.vy += 0x1000;
             }
             break;
@@ -454,23 +454,23 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vy = frame;
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->model74);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x21, (u16 *)&work->unk20);
-            work->unk20.vx += 0x40;
-            work->unk20.vy -= 0x5A;
-            work->unk20.vz -= 0x40;
-            work->pos10.vx = work->unk20.vx;
-            work->pos10.vy = work->unk20.vy;
-            work->pos10.vz = work->unk20.vz;
+            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x21, (u16 *)&work->pos20);
+            work->pos20.vx += 0x40;
+            work->pos20.vy -= 0x5A;
+            work->pos20.vz -= 0x40;
+            work->pos10.vx = work->pos20.vx;
+            work->pos10.vy = work->pos20.vy;
+            work->pos10.vz = work->pos20.vz;
             if (frame >= 0xA) {
                 fk = 0x1000 - ex->math_cos(((frame - 0xA) << 10) / 10);
                 f = fk * 0x258;
                 fk = f >> 12;
-                work->unk20.vy += f >> 13;
-                work->unk20.vz -= fk;
+                work->pos20.vy += f >> 13;
+                work->pos20.vz -= fk;
             }
-            env->camera->points[2].vx = work->unk20.vx;
-            env->camera->points[2].vy = work->unk20.vy;
-            env->camera->points[2].vz = work->unk20.vz;
+            env->camera->points[2].vx = work->pos20.vx;
+            env->camera->points[2].vy = work->pos20.vy;
+            env->camera->points[2].vz = work->pos20.vz;
             if (frame == 0) {
                 p_c4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
                 if (p_c4 != NULL) {

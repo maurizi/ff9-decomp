@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* btlfx_getWeaponPos(0x10, 1) */
+    SVECTOR pos8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0d8Work84;
 
 extern Unk80100C78Entry *fx_0d8_task;

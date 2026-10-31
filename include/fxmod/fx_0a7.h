@@ -11,10 +11,10 @@ typedef struct {
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
     Pool6CEntry *emit14;
-    SVECTOR unk18; /* unit 0x10 body position */
+    SVECTOR pos18; /* unit 0x10 body position */
     SVECTOR pos20; /* caster body position */
     SVECTOR pos28; /* caster position */
-    SVECTOR unk30; /* btlfx_getUnitArgBonePos(0x10, 0) */
+    SVECTOR pos30; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR pos38; /* unk30 moved 0x12C along unk48 */
     SVECTOR pos40; /* unk30 moved 0xC8 along unk48 */
     SVECTOR unk48; /* angles from unk30 to unk20 */

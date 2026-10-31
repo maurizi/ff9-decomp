@@ -10,7 +10,7 @@ typedef struct {
     s32 unk8;
     s32 modelC;
     s32 model10;
-    SVECTOR unk14; /* in front of the target */
+    SVECTOR pos14; /* in front of the target */
     SVECTOR pos1C;
     SVECTOR unk24;
     s32 unk2C[3]; /* model position (a VECTOR without its pad word) */

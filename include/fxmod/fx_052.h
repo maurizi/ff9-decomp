@@ -13,7 +13,7 @@ typedef struct {
     VECTOR pos1C; /* model position */
     VECTOR scale2C; /* model scale */
     s32 unk3C; /* model brightness */
-    SVECTOR unk40; /* target body position */
+    SVECTOR pos40; /* target body position */
     SVECTOR pos48; /* target position */
     s16 unk50; /* fade-in countdown */
     u16 model52; /* models */

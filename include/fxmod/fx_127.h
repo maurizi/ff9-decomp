@@ -13,10 +13,10 @@ typedef struct {
     Pool6CEntry *emit14;
     Pool6CEntry *emit18;
     u8 pad1C[0x24 - 0x1C];
-    SVECTOR unk24; /* caster position */
+    SVECTOR pos24; /* caster position */
     SVECTOR rot2C; /* caster rotation */
-    SVECTOR unk34; /* target body position */
-    SVECTOR unk3C; /* target position */
+    SVECTOR pos34; /* target body position */
+    SVECTOR pos3C; /* target position */
     SVECTOR unk44; /* caster bone position */
     SVECTOR pos4C;
     SVECTOR unk54;
@@ -32,7 +32,7 @@ typedef struct {
     Pool6CEntry *emit4;
     s32 unk8;
     Pool6CEntry *emitC;
-    SVECTOR unk10; /* target body position */
+    SVECTOR pos10; /* target body position */
     SVECTOR unk18;
     SVECTOR unk20;
     SVECTOR unk28;

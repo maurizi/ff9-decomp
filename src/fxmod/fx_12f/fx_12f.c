@@ -15,7 +15,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos18.vz = env->targets->centerZ;
         work->pos18.vy = 0;
         work->emit40 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
-        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->pos18, (s16 *)&work->unk0);
+        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos18, (s16 *)&work->unk0);
     } else {
         frame = entry->frame;
         if (work->emit40 != NULL) {
@@ -23,8 +23,8 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit40 = NULL;
             }
         }
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk10);
-        ex->btlfx_moveEmitterTo((s32)work->emit40, (s32)&work->unk10);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos10);
+        ex->btlfx_moveEmitterTo((s32)work->emit40, (s32)&work->pos10);
         if (work->emit40 != NULL) {
             work->emit40->rot.vx = work->unk0.vx;
             work->emit40->rot.vy = work->unk0.vy;

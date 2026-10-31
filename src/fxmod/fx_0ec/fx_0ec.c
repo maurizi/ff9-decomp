@@ -369,7 +369,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         init->poolCount = 0x80;
     } else if (mode == 1) {
         fx_0ec_env = env;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         r = ex->btlfx_getUnitRadius(0) + 0xF0;
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot10);
         work->rot10.vy &= 0xFFF;
@@ -378,7 +378,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } else {
             work->rot10.vy = 0x800;
         }
-        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->rot10, r, (s16 *)&work->pos18);
+        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot10, r, (s16 *)&work->pos18);
         if (ex->btlfx_isEnemyUnit(0) != 0 && work->pos18.vz < -0x200) {
             work->pos18.vz = -0x200;
         }
@@ -390,13 +390,13 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[1].vy = sv.vy;
         env->camera->points[1].vz = sv.vz;
         ex->btlfx_rotateOffset(&work->rot10, -ex->btlfx_getUnitRadius(0), (s32)&rot);
-        sv.vx = work->unk8.vx + rot.vx;
-        sv.vy = work->unk8.vy + rot.vy - 0x140;
-        sv.vz = work->unk8.vz + rot.vz;
+        sv.vx = work->pos8.vx + rot.vx;
+        sv.vy = work->pos8.vy + rot.vy - 0x140;
+        sv.vz = work->pos8.vz + rot.vz;
         env->camera->points[2].vx = sv.vx;
         env->camera->points[2].vy = sv.vy;
         env->camera->points[2].vz = sv.vz;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_initEffModels(fx_0ec_effModels, 9);
         work->model38 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x97, 0x3D40,
                                                       0x80, 0x80);

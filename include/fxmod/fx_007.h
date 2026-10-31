@@ -33,7 +33,7 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
 
 typedef struct {
-    SVECTOR unk0; /* target body position */
+    SVECTOR pos0; /* target body position */
     SVECTOR pos8; /* target position */
     s32 unk10; /* state */
     s32 model14[4]; /* models */

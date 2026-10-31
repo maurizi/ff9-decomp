@@ -27,7 +27,7 @@ typedef struct {
     VECTOR pos8; /* model position */
     VECTOR scale18; /* model scale */
     s32 unk28;
-    SVECTOR unk2C; /* caster position */
+    SVECTOR pos2C; /* caster position */
     u16 unk34; /* model */
 } Fx12dWork82;
 

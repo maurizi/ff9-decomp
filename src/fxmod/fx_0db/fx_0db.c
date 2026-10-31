@@ -197,7 +197,7 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk24 = 0;
         work->unk2C = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk1C);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos1C);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos14);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x46);
@@ -305,7 +305,7 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         b = 0;
         c = 0;
         frame = entry->frame;
-        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->unk8);
+        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->unk0) {
         case 0:
@@ -349,8 +349,8 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &work->unk8, NULL, b / 3, 0, 1, a / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &work->pos8, NULL, b / 3, 0, 1, a / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), &work->pos8, &rot, c / 2, 0, 1, a * 2 / 3);
         env->otZ = 0;
         work->unk4++;
     }

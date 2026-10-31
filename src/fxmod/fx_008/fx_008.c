@@ -19,12 +19,12 @@ s32 fx_008_op80(s32 mode, Fx008Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         work->unk16 = 0x1000;
         work->unk14 = 0;
-        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unkC);
+        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->posC);
     } else {
         frame = entry->frame;
         t = frame - 0x18;
         if (t >= 0 && t < 0x10) {
-            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->unkC, work->unk14, work->unk16);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->posC, work->unk14, work->unk16);
             if (t >= 4) {
                 work->unk16 -= 0x155;
             }

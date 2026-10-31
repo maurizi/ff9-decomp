@@ -8,7 +8,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* target body position */
+    SVECTOR posC; /* target body position */
     SVECTOR pos14;
     SVECTOR pos1C; /* unkC on the ground */
 } Fx035Work;

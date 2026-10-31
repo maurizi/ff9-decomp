@@ -10,8 +10,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0xAC;
     } else if (mode == 1) {
         fx_126_env = env;
-        ex->btlfx_getUnitBonePos(0x10, 0x30, (u16 *)&work->unk60);
-        ex->btlfx_getUnitBonePos(0x10, 8, (u16 *)&work->unk58);
+        ex->btlfx_getUnitBonePos(0x10, 0x30, (u16 *)&work->pos60);
+        ex->btlfx_getUnitBonePos(0x10, 8, (u16 *)&work->pos58);
         ex->btlfx_initEffModels(fx_126_effModels, 2);
         work->model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
         work->model4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
@@ -31,17 +31,17 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk50.vy = 0;
         work->unk68.vy = 0;
         work->unk70.vy = 0;
-        work->unk68.vz = (work->unk58.vz - 0x6E0) >> 1;
-        work->unk70.vz = (work->unk60.vz - 0x6E0) >> 1;
+        work->unk68.vz = (work->pos58.vz - 0x6E0) >> 1;
+        work->unk70.vz = (work->pos60.vz - 0x6E0) >> 1;
         for (k = 3; k >= 0; k--) {
             work->unk9C[k] = 0;
         }
     } else {
     frame = entry->frame;
     if (frame >= 1 && frame <= 0x18) {
-        func_801E7D48(0x18, frame, &work->unk58, &work->unk70, &work->unk50, &work->unk68, &work->unk60, &work->pos8);
+        func_801E7D48(0x18, frame, &work->pos58, &work->unk70, &work->unk50, &work->unk68, &work->pos60, &work->pos8);
         ex->Hi_DrawEffModel(&work->rot28, &work->pos8, (s32)&work->scale38, work->model0);
-        func_801E7D48(0x18, frame, &work->unk60, &work->unk68, &work->unk50, &work->unk70, &work->unk58, &work->pos18);
+        func_801E7D48(0x18, frame, &work->pos60, &work->unk68, &work->unk50, &work->unk70, &work->pos58, &work->pos18);
         ex->Hi_DrawEffModel(&work->rot30, &work->pos18, (s32)&work->scale38, work->model4);
         work->rot28.vy -= 0x180;
         work->rot30.vy += 0x180;

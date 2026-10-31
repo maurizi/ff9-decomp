@@ -36,13 +36,13 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x10;
     } else if (mode == 1) {
         fx_193_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        D_801E7CC4.vx = work->unk8.vx;
-        D_801E7CC4.vy = work->unk8.vy;
-        D_801E7CC4.vz = work->unk8.vz;
-        D_801E7CD4.vx = work->unk8.vx;
-        D_801E7CD4.vy = work->unk8.vy;
-        D_801E7CD4.vz = work->unk8.vz;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
+        D_801E7CC4.vx = work->pos8.vx;
+        D_801E7CC4.vy = work->pos8.vy;
+        D_801E7CC4.vz = work->pos8.vz;
+        D_801E7CD4.vx = work->pos8.vx;
+        D_801E7CD4.vy = work->pos8.vy;
+        D_801E7CD4.vz = work->pos8.vz;
         ex->btlfx_getUnitBonePos(0x10, 0xE, (u16 *)&D_801E7CBC);
         ex->btlfx_getUnitBonePos(0x10, 0x10, (u16 *)&D_801E7CCC);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E7CDC);

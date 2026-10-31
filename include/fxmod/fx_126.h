@@ -14,8 +14,8 @@ typedef struct {
     VECTOR scale38; /* model scale */
     u8 pad48[0x50 - 0x48];
     SVECTOR unk50; /* curve control points */
-    SVECTOR unk58;
-    SVECTOR unk60;
+    SVECTOR pos58;
+    SVECTOR pos60;
     SVECTOR unk68;
     SVECTOR unk70;
     u8 pad78[0x7C - 0x78];

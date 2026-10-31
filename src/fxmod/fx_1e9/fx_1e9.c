@@ -226,7 +226,7 @@ s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, 
     } else if (mode == 1) {
         fx_1e9_env = env;
         func_801E810C();
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
         work->unk8.vx = 0;
         work->unk8.vy = 0;
         work->unk8.vz = 0;
@@ -235,7 +235,7 @@ s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, 
             BTLFX_COPY_SVEC(&from, &work->unk8);
             work->unk8.vx += 0x300 + (ex->btlfx_rand() & 0x7F);
             work->unk8.vy += 0x400 + (ex->btlfx_rand() & 0x7F);
-            func_801E8118(inst, &work->unk0, 0x80, &from, &work->unk8);
+            func_801E8118(inst, &work->pos0, 0x80, &from, &work->unk8);
         }
         work->unk8.vx &= 0xFFF;
         work->unk8.vy &= 0xFFF;

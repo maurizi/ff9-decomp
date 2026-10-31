@@ -8,7 +8,7 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x20;
     } else if (mode == 1) {
         fx_088_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
         if (work->emit0 != NULL) {
@@ -16,7 +16,7 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0->trailSlots = 0x19;
             work->emit0->trailStride = 0x30;
         }
-        ex->btlfx_aimAngles((s16 *)&work->unk8, &env->targets->centerX, (s16 *)&work->unk18);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, &env->targets->centerX, (s16 *)&work->unk18);
     } else {
         frame = entry->frame;
         if (work->emit0 != NULL) {

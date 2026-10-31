@@ -168,7 +168,7 @@ s32 fx_003_op83(s32 mode, Fx003Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->poolCount = 0xC;
     } else if (mode == 1) {
         fx_003_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         work->unk8 = D_801E8F20;
         q = D_801E8F20;
         for (i = 0; i < 0x40; i++) {
@@ -182,7 +182,7 @@ s32 fx_003_op83(s32 mode, Fx003Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0 || frame == 3 || frame == 5 || frame == 6 || frame == 7) {
             if (work->unkC < 5) {
                 work->unkC++;
-                BTLFX_COPY_SVEC(&a, &work->unk0);
+                BTLFX_COPY_SVEC(&a, &work->pos0);
                 if (work->unkC == 3) {
                     a.vx += ex->btlfx_randCentered(0x190);
                     a.vy += ex->btlfx_randCentered(0x190);

@@ -10,7 +10,7 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_052_env = env;
         ex->btlfx_initEffModels(fx_052_effModels, 3);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk40);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos40);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos48);
         work->rotC.vz = -0x200;
         work->rot14.vz = 0x200;
@@ -21,9 +21,9 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale2C.vx = 0x2000;
         work->scale2C.vy = 0x2000;
         work->scale2C.vz = 0x2000;
-        work->pos1C.vx = work->unk40.vx;
-        work->pos1C.vy = work->unk40.vy;
-        work->pos1C.vz = work->unk40.vz;
+        work->pos1C.vx = work->pos40.vx;
+        work->pos1C.vy = work->pos40.vy;
+        work->pos1C.vz = work->pos40.vz;
         work->model52 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
         work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
         work->model56 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE));

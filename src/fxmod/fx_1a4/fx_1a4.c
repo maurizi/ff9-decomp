@@ -44,8 +44,8 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->unk38 != 0) {
                 work->unk3E = -1;
                 work->unk3C = 0x60;
-                ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk24);
-                work->unk24.vy = 0;
+                ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos24);
+                work->pos24.vy = 0;
             }
             break;
         case 0x6A:
@@ -55,9 +55,9 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk3C >= 0) {
             work->unk3C--;
             e = 0x60 - work->unk3C;
-            v.vx = work->unk24.vx;
-            v.vy = work->unk24.vy + e * e;
-            v.vz = work->unk24.vz;
+            v.vx = work->pos24.vx;
+            v.vy = work->pos24.vy + e * e;
+            v.vz = work->pos24.vz;
             ex->btlfx_setUnitPos(0x10, (s16 *)&v);
         }
         if (work->unk3E >= 0) {

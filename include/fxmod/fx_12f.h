@@ -7,7 +7,7 @@
 typedef struct {
     SVECTOR unk0;
     SVECTOR pos8;
-    SVECTOR unk10;
+    SVECTOR pos10;
     SVECTOR pos18;
     SVECTOR unk20[4];
     Pool6CEntry *emit40;

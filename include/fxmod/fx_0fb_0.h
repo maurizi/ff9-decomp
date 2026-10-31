@@ -56,7 +56,7 @@ typedef struct {
     SVECTOR rot44; /* model rotation */
     SVECTOR pos4C;
     SVECTOR pos54;
-    SVECTOR unk5C; /* summon position */
+    SVECTOR pos5C; /* summon position */
     SVECTOR unk64;
     s32 model6C[27]; /* rock models */
     Fx0fbVec3 unkD8;

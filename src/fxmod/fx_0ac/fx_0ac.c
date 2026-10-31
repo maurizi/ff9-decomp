@@ -9,7 +9,7 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x30;
     } else if (mode == 1) {
         fx_0ac_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
     } else {
         frame = entry->frame;
@@ -24,7 +24,7 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0->trailSlots = 0x3B;
                 work->emit0->trailStride = 0xBC;
             }
-            ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->unk10, (s16 *)&work->unk28);
+            ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->pos10, (s16 *)&work->unk28);
             break;
         case 8:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);

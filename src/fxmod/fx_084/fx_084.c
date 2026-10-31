@@ -36,8 +36,8 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_084_env = env;
         work->unk0 = 0;
         fx_084_task = entry;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
-        BTLFX_COPY_SVEC(&D_801E7B98, &work->unk4);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
+        BTLFX_COPY_SVEC(&D_801E7B98, &work->pos4);
     } else {
         frame = entry->frame;
         if (ex->btlfx_isEnemyUnit(0x10) == 0) {
@@ -66,7 +66,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->emit20 != NULL) {
                     work->emit20->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
                 }
-                ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->unk4, (s16 *)&work->unk14);
+                ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos4, (s16 *)&work->unk14);
             }
             break;
         case 2:

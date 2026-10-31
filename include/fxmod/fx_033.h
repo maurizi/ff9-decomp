@@ -7,9 +7,9 @@
 typedef struct {
     s32 unk0; /* knockback countdown */
     SVECTOR pos4;
-    SVECTOR unkC; /* target body position */
-    SVECTOR unk14; /* target home position */
-    SVECTOR unk1C; /* target position while pushed back */
+    SVECTOR posC; /* target body position */
+    SVECTOR pos14; /* target home position */
+    SVECTOR pos1C; /* target position while pushed back */
     SVECTOR unk24; /* angles from unk4 to unkC */
     Pool6CEntry *emit2C;
 } Fx033Work; /* 0x30 */

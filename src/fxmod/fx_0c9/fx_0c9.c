@@ -8,7 +8,7 @@ s32 fx_0c9_op80(s32 mode, Fx0c9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_0c9_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos8);
         if (work->emit4 != NULL) {
@@ -44,8 +44,8 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_0c9_env = env;
         ex->btlfx_initEffModels(fx_0c9_effModels, 1);
-        ex->btlfx_getUnitBodyPos(0x10, 1, (s16 *)&work->unkC);
-        work->unkC.vy -= 0x50;
+        ex->btlfx_getUnitBodyPos(0x10, 1, (s16 *)&work->posC);
+        work->posC.vy -= 0x50;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos14);
         work->unk1C.vx = work->pos14.vx;
         work->unk1C.vy = work->pos14.vy;
@@ -116,7 +116,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 D_801E7E10.vy = work->unk1C.vy;
                 D_801E7E10.vz = work->unk1C.vz;
                 t = (f << 12) / 15;
-                ex->btlfx_lerpVec((s16 *)&work->pos14, (s16 *)&work->unkC, t, (s16 *)&work->unk1C);
+                ex->btlfx_lerpVec((s16 *)&work->pos14, (s16 *)&work->posC, t, (s16 *)&work->unk1C);
                 work->unk1C.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 6), f);

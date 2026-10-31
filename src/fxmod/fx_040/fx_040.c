@@ -83,13 +83,13 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7F08.vz = env->targets->centerZ;
         fx_040_env = env;
         D_801E7F08.vy -= 0x190;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk40);
-        D_801E7F00.vx = work->unk40.vx;
-        D_801E7F00.vy = work->unk40.vy;
-        D_801E7F00.vz = work->unk40.vz;
-        env->camera->points[0].vx = work->unk40.vx;
-        env->camera->points[0].vy = work->unk40.vy;
-        env->camera->points[0].vz = work->unk40.vz;
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos40);
+        D_801E7F00.vx = work->pos40.vx;
+        D_801E7F00.vy = work->pos40.vy;
+        D_801E7F00.vz = work->pos40.vz;
+        env->camera->points[0].vx = work->pos40.vx;
+        env->camera->points[0].vy = work->pos40.vy;
+        env->camera->points[0].vz = work->pos40.vz;
         for (i = 0; i < 4; i++) {
             work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7E98[i]), (s32)&D_801E7F18[i]);
             if (work->emit0[i] != NULL) {

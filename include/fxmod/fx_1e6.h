@@ -24,7 +24,7 @@ typedef struct {
 
 typedef struct {
     s32 unk0;
-    SVECTOR unk4; /* caster position */
+    SVECTOR pos4; /* caster position */
     u16 unkC; /* fade */
     s16 unkE;
 } Fx1e6Work80; /* 0x10 */
@@ -35,7 +35,7 @@ typedef struct {
     VECTOR unk24; /* model position */
     VECTOR scale34; /* model scale */
     s32 unk44; /* brightness */
-    SVECTOR unk48; /* caster body position */
+    SVECTOR pos48; /* caster body position */
     SVECTOR pos50;
     s32 unk58; /* morph counter */
     s32 unk5C; /* fade-in countdown */

@@ -16,7 +16,7 @@ typedef struct {
 } Fx1e9Work80; /* 0x28 */
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
+    SVECTOR pos0; /* caster body position */
     SVECTOR unk8; /* angles */
 } Fx1e9Work82; /* 0x10 */
 

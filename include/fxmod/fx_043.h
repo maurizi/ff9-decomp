@@ -7,14 +7,14 @@
 typedef struct {
     Pool6CEntry *emit0;
     u8 pad4[8];
-    SVECTOR unkC;
-    SVECTOR unk14; /* above the target body */
+    SVECTOR posC;
+    SVECTOR pos14; /* above the target body */
 } Fx043Work80; /* 0x1C */
 
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR unk8; /* target body position */
+    SVECTOR pos8; /* target body position */
     SVECTOR pos10; /* target position */
     SVECTOR pos18;
     SVECTOR unk20; /* angles from unk8 to D_801E7BD0 */

@@ -234,10 +234,10 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4 = 0;
         fx_0cb_env = env;
         work->unk8 = ex->btlfx_addRadiusSixth(0, 0);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
-        work->unk14.vx = work->unkC.vx;
-        work->unk14.vy = work->unkC.vy;
-        work->unk14.vz = work->unkC.vz;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
+        work->unk14.vx = work->posC.vx;
+        work->unk14.vy = work->posC.vy;
+        work->unk14.vz = work->posC.vz;
         ex->btlfx_initEffModels(fx_0cb_effModels, 3);
         work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x12), 1);
         work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
@@ -268,9 +268,9 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             off.vy = 0;
                             off.vx = 0;
                         }
-                        part->unk4.vx = work->unkC.vx + off.vx;
-                        part->unk4.vz = work->unkC.vz + off.vy;
-                        part->unk4.vy = work->unkC.vy + off.vz;
+                        part->unk4.vx = work->posC.vx + off.vx;
+                        part->unk4.vz = work->posC.vz + off.vy;
+                        part->unk4.vy = work->posC.vy + off.vz;
                         part->unk2 = sc;
                         ex->btlfx_randRotation(&part->unkC);
                     }
@@ -284,18 +284,18 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             c = ex->math_cos(q);
             env->otZ = work->unk8 + 0x46;
             data = (u8 *)ex->btlfx_getFileData(entry->file, 5);
-            ex->btlfx_drawRings(data, &work->unkC, &v, ex->math_cos(q) / 3 + 0x2AA, 0, 1, c);
+            ex->btlfx_drawRings(data, &work->posC, &v, ex->math_cos(q) / 3 + 0x2AA, 0, 1, c);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), work->unk4);
             v.vx = 0x200;
             v.vy = 0x590;
             v.vz = 0x80;
             v.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->posC, &v, t / 2 + 0x555, 0, 1, c);
             v.vx = 0x600;
             v.vy = 0x990;
             v.vz = 0x80;
             v.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->posC, &v, t / 2 + 0x555, 0, 1, c);
             env->otZ = 0;
             if (frame >= 0x32) {
                 ex->btlfx_clearEffModels();

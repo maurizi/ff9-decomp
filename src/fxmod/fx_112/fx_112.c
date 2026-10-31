@@ -30,14 +30,14 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_112_env = env;
         ex->btlfx_initEffModels(fx_112_effModels, 1);
         work->model20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x137, 0xFFFF, 0, 0);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rotC);
         ex->btlfx_getUnitScale(0, (VECTOR *)&work->unk14);
-        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk38);
-        work->unk38.vy += 0x80;
-        env->camera->points[3].vx = work->unk38.vx;
-        env->camera->points[3].vy = work->unk38.vy;
-        env->camera->points[3].vz = work->unk38.vz;
+        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos38);
+        work->pos38.vy += 0x80;
+        env->camera->points[3].vx = work->pos38.vx;
+        env->camera->points[3].vy = work->pos38.vy;
+        env->camera->points[3].vz = work->pos38.vz;
         work->unk0 = 0;
     } else {
     frame = entry->frame;
@@ -136,7 +136,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 1) {
                 ex->btlfx_fadeUnitById(0, 0x80);
             }
-            ex->btlfx_lerpVec((s16 *)&work->pos48, (s16 *)&work->unk4, (frame << 12) / 12, (s16 *)&u.s4.v);
+            ex->btlfx_lerpVec((s16 *)&work->pos48, (s16 *)&work->pos4, (frame << 12) / 12, (s16 *)&u.s4.v);
             u.s4.v.vy -= ex->math_sin((frame << 12) / 12 >> 1) >> 3;
             ex->btlfx_setUnitPos(0, (s16 *)&u.s4.v);
             u.s4.scale.vx = u.s4.scale.vy = u.s4.scale.vz =

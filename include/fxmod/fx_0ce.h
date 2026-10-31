@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* caster body position, raised by 0x80 */
+    SVECTOR pos8; /* caster body position, raised by 0x80 */
     SVECTOR pos10; /* caster position */
     SVECTOR pos18; /* btlfx_getUnitArgBonePos(0x10, 0) */
     s32 model20; /* model */

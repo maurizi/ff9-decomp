@@ -5,8 +5,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
-    SVECTOR unk8; /* target body position */
+    SVECTOR pos0; /* caster body position */
+    SVECTOR pos8; /* target body position */
     SVECTOR unk10; /* from */
     SVECTOR rot18; /* model rotation */
     VECTOR pos20; /* model position */
@@ -20,9 +20,9 @@ typedef struct {
 } Fx184Work81;
 
 typedef struct {
-    SVECTOR unk0;
+    SVECTOR pos0;
     SVECTOR unk8;
-    SVECTOR unk10; /* target position */
+    SVECTOR pos10; /* target position */
     SVECTOR unk18; /* destination */
     SVECTOR unk20; /* angles */
     SVECTOR unk28;

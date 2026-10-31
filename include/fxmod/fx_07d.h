@@ -57,7 +57,7 @@ typedef struct {
 extern BtlModel fx_07d_effModels[];
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
+    SVECTOR pos0; /* caster body position */
     s32 *unk8; /* arc profile table */
     s32 unkC; /* arcs spawned */
     s32 unk10; /* variant */

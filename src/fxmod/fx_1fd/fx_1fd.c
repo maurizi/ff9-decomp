@@ -558,13 +558,13 @@ s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         work->vz = 0x4B0;
         fx_1fd_env = env;
         for (i = 0; i < env->targets->targetCount; i++, o++) {
-            ex->btlfx_getUnitPos(i, (s16 *)&o->unk0);
+            ex->btlfx_getUnitPos(i, (s16 *)&o->pos0);
             ex->btlfx_getUnitRot(i, (s16 *)&o->rot8);
-            ex->btlfx_aimAngles((s16 *)work, (s16 *)&o->unk0, (s16 *)&a);
+            ex->btlfx_aimAngles((s16 *)work, (s16 *)&o->pos0, (s16 *)&a);
             o->unk12 = a.vy;
-            d.vx = work->vx - o->unk0.vx;
-            d.vy = work->vy - o->unk0.vy;
-            d.vz = work->vz - o->unk0.vz;
+            d.vx = work->vx - o->pos0.vx;
+            d.vy = work->vy - o->pos0.vy;
+            d.vz = work->vz - o->pos0.vz;
             o->unk10 = ex->btlfx_sqrt(d.vx * d.vx + d.vz * d.vz, 0x14);
         }
     } else {
@@ -572,7 +572,7 @@ s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         if (frame >= 0 && frame <= 0x40) {
             for (j = 0, q = D_801EBADC; j < env->targets->targetCount; j++, q++) {
                 a.vx = work->vx + q->unk10 * ex->math_sin(q->unk12) / 4096;
-                a.vy = q->unk0.vy - frame * 120;
+                a.vy = q->pos0.vy - frame * 120;
                 a.vz = work->vz + q->unk10 * ex->math_cos(q->unk12) / 4096;
                 ex->btlfx_setUnitPos(j, (s16 *)&a);
                 ex->btlfx_aimAngles((s16 *)work, (s16 *)&a, (s16 *)&d);

@@ -15,9 +15,9 @@ typedef struct {
     VECTOR pos10; /* model position */
     VECTOR scale20; /* model scale */
     s32 unk30; /* colour */
-    SVECTOR unk34;
+    SVECTOR pos34;
     SVECTOR rot3C;
-    SVECTOR unk44;
+    SVECTOR pos44;
     SVECTOR pos4C;
     SVECTOR unk54;
     SVECTOR unk5C;

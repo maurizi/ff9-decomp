@@ -114,10 +114,10 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x3C;
     } else if (mode == 1) {
         fx_1a7_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk2C);
-        D_801EA5D0.vx = work->unk2C.vx;
-        D_801EA5D0.vy = work->unk2C.vy;
-        D_801EA5D0.vz = work->unk2C.vz;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos2C);
+        D_801EA5D0.vx = work->pos2C.vx;
+        D_801EA5D0.vy = work->pos2C.vy;
+        D_801EA5D0.vz = work->pos2C.vz;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801EA5E0);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)D_801E89D0;
@@ -188,14 +188,14 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EA5D8.vx = work->pos34.vx;
         D_801EA5D8.vy = work->pos34.vy;
         D_801EA5D8.vz = work->pos34.vz;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk3C);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos3C);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos44);
-        D_801EA5C8.vx = work->unk3C.vx;
-        D_801EA5C8.vy = work->unk3C.vy;
-        D_801EA5C8.vz = work->unk3C.vz;
-        work->pos54.vx = work->unk3C.vx;
-        work->pos54.vy = work->unk3C.vy;
-        work->pos54.vz = work->unk3C.vz;
+        D_801EA5C8.vx = work->pos3C.vx;
+        D_801EA5C8.vy = work->pos3C.vy;
+        D_801EA5C8.vz = work->pos3C.vz;
+        work->pos54.vx = work->pos3C.vx;
+        work->pos54.vy = work->pos3C.vy;
+        work->pos54.vz = work->pos3C.vz;
         work->pos54.vy -= 0xC8;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos54);
         if (work->emit0 != NULL) {

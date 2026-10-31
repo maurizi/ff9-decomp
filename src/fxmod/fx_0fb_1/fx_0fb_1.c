@@ -1120,7 +1120,7 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
             return 1;
         }
         work->unk2C = n;
-        ex->btlfx_getUnitHomePos(n, (s16 *)&work->unk4);
+        ex->btlfx_getUnitHomePos(n, (s16 *)&work->pos4);
         ex->btlfx_getUnitRot(work->unk2C, (s16 *)&work->rotC);
         BTLFX_COPY_SVEC(&work->rot1C, &work->rotC);
         work->unk14 = 0x2000 / (((ex->btlfx_rand() & 1) + 1) * 16);
@@ -1131,7 +1131,7 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
         frame = entry->frame;
         if (work->unk0 == 0) {
             k = frame << 8;
-            BTLFX_COPY_SVEC(&v, &work->unk4);
+            BTLFX_COPY_SVEC(&v, &work->pos4);
             v.vy += (work->unk28 * ex->math_cos(k >> 2)) >> 12;
             ex->btlfx_setUnitPos(work->unk2C, (s16 *)&v);
             work->rot1C.vx += work->unk14;
@@ -1152,7 +1152,7 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vy = 0;
             rot.pad = 1;
             f = (u8 *)ex->btlfx_getFileData(entry->file, 0x12);
-            ex->btlfx_drawRings(f, &work->unk4, &rot, 0x1000, frame, 1, ex->math_cos(k >> 2));
+            ex->btlfx_drawRings(f, &work->pos4, &rot, 0x1000, frame, 1, ex->math_cos(k >> 2));
             if (frame >= 7) {
                 return 1;
             }

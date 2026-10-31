@@ -8,9 +8,9 @@ typedef struct {
     s32 unk0; /* steps left */
     s32 unk4; /* steps */
     SVECTOR pos8;
-    SVECTOR unk10; /* from */
+    SVECTOR pos10; /* from */
     SVECTOR unk18; /* to */
-    SVECTOR unk20; /* current */
+    SVECTOR pos20; /* current */
     SVECTOR unk28; /* angles */
 } Fx1a1Work;
 

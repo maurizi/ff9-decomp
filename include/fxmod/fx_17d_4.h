@@ -42,7 +42,7 @@ typedef struct {
     SVECTOR unk8; /* home position */
     SVECTOR pos10; /* particle position */
     u8 pad18[8];
-    SVECTOR unk20; /* camera target */
+    SVECTOR pos20; /* camera target */
     Fx17d4Vec3 unk28; /* model position */
     SVECTOR rot34; /* model rotation */
     Fx17d4Vec3 unk3C; /* model scale */

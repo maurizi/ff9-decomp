@@ -126,24 +126,24 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)arg4)->poolCount = 0xB0;
     } else if (mode == 1) {
         fx_0a9_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
         func_801E79C8();
         return 0;
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
         if (frame < 0x18) {
             for (i = 0; i < 2; i++) {
-                BTLFX_COPY_SVEC(&v, &work->unk0);
+                BTLFX_COPY_SVEC(&v, &work->pos0);
                 v.vx += ex->btlfx_randCentered(0x180);
                 v.vy += ex->btlfx_randCentered(0x180);
                 v.vz += ex->btlfx_randCentered(0x180);
-                func_801E79D4(entry, &work->unk8, &v);
+                func_801E79D4(entry, &work->pos8, &v);
             }
         }
         env->otZ = 0x40;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->unk8, NULL,
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->pos8, NULL,
                           ex->math_sin((frame << 11) / 24) * 2 / 3, 0, 1, 0x1000 - ((frame & 1) << 11));
         env->otZ = 0;
         if (frame >= 0x18) {

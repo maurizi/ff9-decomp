@@ -152,7 +152,7 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         work->unkC = 0;
         fx_038_env = env;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         ex->btlfx_initEffModels(fx_038_effModels, 3);
         work->model10 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x97, 0x3C80, 0, 0);
         work->model18 =
@@ -169,8 +169,8 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unkC++;
                 it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (it != NULL) {
-                    it->unk18.vx = work->unk4.vx + ex->btlfx_randCentered(0x258);
-                    it->unk18.vz = work->unk4.vz + ex->btlfx_randCentered(0x258);
+                    it->unk18.vx = work->pos4.vx + ex->btlfx_randCentered(0x258);
+                    it->unk18.vz = work->pos4.vz + ex->btlfx_randCentered(0x258);
                     it->unk18.vy = 0;
                     it->unk20 = work->unkC - 1;
                     it->rotC.vx = ex->btlfx_rand();

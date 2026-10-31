@@ -31,10 +31,10 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         fx_033_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
-        ex->btlfx_getUnitHomePos(0, (s16 *)&work->unk14);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
+        ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos14);
         work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos4);
-        ex->btlfx_aimAngles((s16 *)&work->pos4, (s16 *)&work->unkC, (s16 *)&work->unk24);
+        ex->btlfx_aimAngles((s16 *)&work->pos4, (s16 *)&work->posC, (s16 *)&work->unk24);
         if (work->emit2C != NULL) {
             work->emit2C->trails = (s32)D_801E7AF4;
             work->emit2C->trailSlots = 0x2E;
@@ -58,11 +58,11 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk0 != 0) {
             work->unk0--;
             d = fxm_easeLerp(1, 0x18, work->unk0, 0, 0x2000);
-            work->unk1C.vx = work->unk14.vx + ((ex->math_sin(work->unk24.vy) * d) >> 12);
+            work->pos1C.vx = work->pos14.vx + ((ex->math_sin(work->unk24.vy) * d) >> 12);
             c = ex->math_cos(work->unk24.vy) * d;
-            work->unk1C.vy = work->unk14.vy - (d >> 6);
-            work->unk1C.vz = work->unk14.vz + (c >> 12);
-            ex->btlfx_setUnitPos(0, (s16 *)&work->unk1C);
+            work->pos1C.vy = work->pos14.vy - (d >> 6);
+            work->pos1C.vz = work->pos14.vz + (c >> 12);
+            ex->btlfx_setUnitPos(0, (s16 *)&work->pos1C);
         }
         return frame >= 0x32;
     }

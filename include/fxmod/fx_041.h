@@ -31,7 +31,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* target position */
+    SVECTOR posC; /* target position */
     SVECTOR pos14;
 } Fx041Work81; /* 0x1C */
 

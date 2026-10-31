@@ -15,8 +15,8 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_0a1_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
-        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk18);
-        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->unk18, (s16 *)&work->unk28);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos18, (s16 *)&work->unk28);
     } else {
         frame = entry->frame;
         switch (work->unk0) {
@@ -29,7 +29,7 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x40);
                 }
             }
-            ex->btlfx_lerpVec((s16 *)&work->unk18, (s16 *)&work->pos8, 0x1000 - ex->math_cos(t >> 2),
+            ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos8, 0x1000 - ex->math_cos(t >> 2),
                               (s16 *)&pos);
             if (frame == 0) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x10), 0, NULL, -1, 0x1000, 0, 1, D_801E7C70, 0);

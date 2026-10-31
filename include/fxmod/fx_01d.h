@@ -10,7 +10,7 @@ typedef struct {
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
-    SVECTOR unk14; /* caster position */
+    SVECTOR pos14; /* caster position */
     SVECTOR rot1C; /* caster rotation */
     SVECTOR pos24; /* bone 7 point */
     SVECTOR pos2C; /* bone 15 point */

@@ -16,7 +16,7 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         ex->btlfx_initEffModels(fx_1f6_effModels, 3);
         ex->btlfx_getUnitPos(0, (s16 *)&work->posA4);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkAC);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posAC);
         work->unk20[0].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
         work->unk20[1].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 1);
         work->unk20[2].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
@@ -32,9 +32,9 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20[1].unk4.vx = 0;
         work->unk20[1].unk4.vy = 0;
         work->unk20[1].unk4.vz = 0;
-        work->unk20[1].unkC.vx = work->unkAC.vx;
-        work->unk20[1].unkC.vy = work->unkAC.vy;
-        work->unk20[1].unkC.vz = work->unkAC.vz;
+        work->unk20[1].unkC.vx = work->posAC.vx;
+        work->unk20[1].unkC.vy = work->posAC.vy;
+        work->unk20[1].unkC.vz = work->posAC.vz;
         work->unk20[1].unk1C.vx = 0x1000;
         work->unk20[1].unk1C.vy = 0x1000;
         work->unk20[1].unk1C.vz = 0x1000;

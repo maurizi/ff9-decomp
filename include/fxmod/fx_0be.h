@@ -11,7 +11,7 @@ typedef struct {
 } Fx0beWork80;
 
 typedef struct {
-    SVECTOR unk0; /* unit 0x10 position */
+    SVECTOR pos0; /* unit 0x10 position */
 } Fx0beWork81;
 
 extern Unk800F78A4 *fx_0be_env;

@@ -49,7 +49,7 @@ typedef struct {
     u32 unk0; /* state */
     s32 unk4; /* frame counter */
     SVECTOR pos8; /* unit position */
-    SVECTOR unk10; /* body position */
+    SVECTOR pos10; /* body position */
     SVECTOR pos18; /* particle position */
     s16 unk20; /* bouncing rock position */
     s16 unk22;

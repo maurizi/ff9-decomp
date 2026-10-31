@@ -19,7 +19,7 @@ typedef struct {
 } Fx0e2Edge;
 
 typedef struct {
-    SVECTOR unk0; /* unit position */
+    SVECTOR pos0; /* unit position */
     SVECTOR rot8; /* unit rotation */
     s16 unk10; /* distance from the centre */
     s16 unk12; /* angle around it */

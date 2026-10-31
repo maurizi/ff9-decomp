@@ -186,7 +186,7 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
     ((XY32 *)&ang)[0].w = w0;
     ((XY32 *)&ang)[1].w = w1;
     s += c;
-    ex->btlfx_offsetPoint(&work->unkC, (s32)&out, 0, (XY32 *)&ang, work->unk1C, s);
+    ex->btlfx_offsetPoint(&work->posC, (s32)&out, 0, (XY32 *)&ang, work->unk1C, s);
     pos.vx = out.vx;
     pos.vy = out.vy;
     pos.vz = out.vz;
@@ -246,7 +246,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_07e_env = env;
         arg4 = (s32 *)*arg4;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         work->unk1C = 0x2EE;
         work->unk4 = 0;
         work->unk0 = 0;
@@ -337,14 +337,14 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = sizeof(Fx07eWork81);
     } else if (mode == 1) {
         fx_07e_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         work->unk8 = ex->btlfx_addRadiusSixth(0, 0x20);
         work->unk0 = 0;
     } else {
         frame = entry->frame;
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
-        pos = &work->unkC;
+        pos = &work->posC;
         gte_ldv0(pos);
         gte_rtps();
         gte_stsxy(&xy);

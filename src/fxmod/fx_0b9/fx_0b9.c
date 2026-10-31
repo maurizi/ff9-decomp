@@ -23,17 +23,17 @@ s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x28:
-            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk10);
-            D_801E7B9C.vx = work->unk10.vx;
-            D_801E7B9C.vy = work->unk10.vy;
-            D_801E7B9C.vz = work->unk10.vz;
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos10);
+            D_801E7B9C.vx = work->pos10.vx;
+            D_801E7B9C.vy = work->pos10.vy;
+            D_801E7B9C.vz = work->pos10.vz;
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)D_801E87D4;
                 work->emit4->trailSlots = 0xA0;
                 work->emit4->trailStride = 0x18;
             }
-            ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->pos8, (s16 *)&work->unk20);
+            ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos8, (s16 *)&work->unk20);
             break;
         }
         if (frame >= 0xA) {

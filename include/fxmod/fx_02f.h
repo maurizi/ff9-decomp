@@ -7,7 +7,7 @@
 typedef struct {
     SVECTOR unk0; /* beam angles */
     SVECTOR pos8;
-    SVECTOR unk10;
+    SVECTOR pos10;
     SVECTOR unk18; /* target position, on the ground */
     Pool6CEntry *emit20;
 } Fx02fWork; /* 0x24 */

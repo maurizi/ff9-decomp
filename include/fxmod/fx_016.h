@@ -14,7 +14,7 @@ typedef struct {
 typedef struct {
     s32 unk0;
     SVECTOR pos4; /* target body */
-    SVECTOR unkC; /* target */
+    SVECTOR posC; /* target */
     s32 model14; /* models */
     s32 model18;
     s32 model1C;

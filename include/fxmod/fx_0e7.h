@@ -21,7 +21,7 @@ typedef struct {
     VECTOR pos1C; /* model position */
     VECTOR scale2C; /* model scale */
     s32 unk3C; /* model brightness */
-    SVECTOR unk40; /* target position */
+    SVECTOR pos40; /* target position */
     SVECTOR rot48; /* target rotation */
     SVECTOR pos50;
     SVECTOR pos58;

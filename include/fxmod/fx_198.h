@@ -8,7 +8,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     s32 unk8; /* scale */
-    SVECTOR unkC; /* caster position */
+    SVECTOR posC; /* caster position */
     s16 unk14;
     s16 unk16;
     s16 unk18;

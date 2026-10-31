@@ -9,7 +9,7 @@ typedef struct {
     s32 unk4; /* counter */
     s32 unk8;
     SVECTOR posC; /* target body position */
-    SVECTOR unk14; /* caster body position */
+    SVECTOR pos14; /* caster body position */
 } Fx18bWork; /* 0x1C */
 
 extern Unk800F78A4 *fx_18b_env;

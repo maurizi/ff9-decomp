@@ -9,7 +9,7 @@ typedef struct {
     VECTOR scale4; /* scale */
     VECTOR pos14; /* position */
     SVECTOR rot24; /* rotation */
-    SVECTOR unk2C;
+    SVECTOR pos2C;
     SVECTOR pos34;
 } Fx0e6Work;
 

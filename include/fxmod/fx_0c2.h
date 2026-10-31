@@ -13,12 +13,12 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* unit 0x10 position */
+    SVECTOR posC; /* unit 0x10 position */
     SVECTOR rot14; /* unit 0x10 rotation */
     SVECTOR pos1C; /* target body position */
     SVECTOR rot24; /* target rotation */
     SVECTOR pos2C; /* unkC moved 0x12C along unk14 */
-    SVECTOR unk34; /* btlfx_getUnitBonePos(0x10, 0x17) */
+    SVECTOR pos34; /* btlfx_getUnitBonePos(0x10, 0x17) */
     SVECTOR unk3C; /* copy of unk44 */
     SVECTOR unk44; /* angles from unk34 to unk1C */
     s32 unk4C; /* target unit */
@@ -31,7 +31,7 @@ typedef struct {
 
 typedef struct {
     SVECTOR unk0; /* turn angles */
-    SVECTOR unk8; /* unit position */
+    SVECTOR pos8; /* unit position */
     s32 unk10; /* unit */
 } Fx0c2Work83;
 

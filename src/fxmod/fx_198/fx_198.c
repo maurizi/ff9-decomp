@@ -24,7 +24,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         work->unk4 = 0;
         fx_198_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
         ex->btlfx_initEffModels(fx_198_effModels, 5);
         key = (Fx198Key *)ex->btlfx_getFileData(entry->file, 0x15);
         work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)key, 0x137, 0xFFFF, 0, 0x80);
@@ -39,9 +39,9 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame < 0x1E) {
                 key = (Fx198Key *)(ex->btlfx_getFileData(entry->file, 0x16) + 4);
                 key += frame;
-                pos.vx = work->unkC.vx;
-                pos.vy = work->unkC.vy;
-                pos.vz = work->unkC.vz;
+                pos.vx = work->posC.vx;
+                pos.vy = work->posC.vy;
+                pos.vz = work->posC.vz;
                 pos.vz += (work->unk8 << 9) >> 12;
                 rot.vx = key->unk2 + 0x400;
                 rot.vy = key->unk0 + 0x800;
@@ -74,9 +74,9 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     } else {
                         k1 += 0x15;
                     }
-                    p.vx = work->unkC.vx + ((k1->unk0 * work->unk8) >> 12);
-                    p.vy = work->unkC.vy + ((k1->unk2 * work->unk8) >> 12);
-                    p.vz = work->unkC.vz + ((k1->unk4 * work->unk8) >> 12);
+                    p.vx = work->posC.vx + ((k1->unk0 * work->unk8) >> 12);
+                    p.vy = work->posC.vy + ((k1->unk2 * work->unk8) >> 12);
+                    p.vz = work->posC.vz + ((k1->unk4 * work->unk8) >> 12);
                     ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &p, NULL, 0x2000, work->unk4 + j * 4 + j, 1, c);
                     r.vz += 0x40;
                 }
@@ -86,9 +86,9 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     for (; j < 0x11; j++) {
                         k1 = (Fx198Key *)ex->btlfx_getFileData(entry->file, D_801E7DE8[j]);
                         k1 = (Fx198Key *)((u8 *)k1 + 4);
-                        p.vx = work->unkC.vx + ((k1->unk0 * work->unk8) >> 12);
-                        p.vy = work->unkC.vy + ((k1->unk2 * work->unk8) >> 12);
-                        p.vz = work->unkC.vz + ((k1->unk4 * work->unk8) >> 12);
+                        p.vx = work->posC.vx + ((k1->unk0 * work->unk8) >> 12);
+                        p.vy = work->posC.vy + ((k1->unk2 * work->unk8) >> 12);
+                        p.vz = work->posC.vz + ((k1->unk4 * work->unk8) >> 12);
                         ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &p, NULL, 0x1800, work->unk4 + j * 4 + j, 1, c);
                         r.vz += 0x40;
                     }

@@ -13,11 +13,11 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_190_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&work->pos44);
         ex->btlfx_getUnitBonePos(0x10, 0x2C, (u16 *)&work->pos4C);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk34);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos34);
         work->pos3C.vx = env->targets->centerX;
         work->pos3C.vz = env->targets->centerZ;
         work->pos3C.vy = 0;
-        ex->btlfx_aimAngles((s16 *)&work->unk34, (s16 *)&work->pos3C, (s16 *)&work->unk4);
+        ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&work->pos3C, (s16 *)&work->unk4);
         ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos3C, (s16 *)&work->unkC);
         work->unk14[0].vy = 0x80;
         work->unk14[1].vy = -0x80;

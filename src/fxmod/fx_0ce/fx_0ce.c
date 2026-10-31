@@ -14,11 +14,11 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x30;
     } else if (mode == 1) {
         fx_0ce_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
-        work->unk8.vy -= 0x80;
+        work->pos8.vy -= 0x80;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
-        ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->unk8, (s16 *)&work->unk24);
+        ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->pos8, (s16 *)&work->unk24);
         ex->btlfx_initEffModels(fx_0ce_effModels, 1);
         work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
@@ -53,9 +53,9 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 1:
-            mpos[0] = work->unk8.vx;
-            mpos[1] = work->unk8.vy;
-            mpos[2] = work->unk8.vz;
+            mpos[0] = work->pos8.vx;
+            mpos[1] = work->pos8.vy;
+            mpos[2] = work->pos8.vz;
             rot.vx = rot.vz = 0;
             rot.vy = frame * 0x84;
             t = (frame << 12) / 20;
@@ -63,7 +63,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 s = ex->math_sin(t);
             } else {
                 s = ex->math_sin((t - 0x400) / 3) * 3 / 2 + 0x1000;
-                work->unk8.vy -= 0x18;
+                work->pos8.vy -= 0x18;
             }
             scale[0] = scale[2] = 0x1A00;
             scale[1] = s;

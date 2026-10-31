@@ -27,7 +27,7 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x24;
     } else if (mode == 1) {
         fx_018_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         ex->btlfx_initEffModels(fx_018_effModels, 2);
         work->model14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x11), 0xB8, 0x3E40, 0, 0x80);
@@ -393,7 +393,7 @@ s32 fx_018_op83(s32 mode, Fx018Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         kind = init->workSize;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         i = 0;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         q = work->unk10 = D_801EA9E0;
         for (; i < 0x40; i++) {
             *q++ = ex->btlfx_randCentered(0x100);

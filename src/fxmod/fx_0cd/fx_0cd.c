@@ -18,7 +18,7 @@ s32 fx_0cd_op80(s32 mode, Fx0cdWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         ex->btlfx_initEffModels(fx_0cd_effModels, 3);
         ex->btlfx_getUnitPos(0, (s16 *)&work->posA4);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkAC);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posAC);
         work->unk20.unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
         work->unk4C.unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 1);
         work->unk78.unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
@@ -40,9 +40,9 @@ s32 fx_0cd_op80(s32 mode, Fx0cdWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk78.unkC.vx = work->posA4.vx;
         work->unk78.unkC.vy = work->posA4.vy;
         work->unk78.unkC.vz = work->posA4.vz;
-        work->unk4C.unkC.vx = work->unkAC.vx;
-        work->unk4C.unkC.vy = work->unkAC.vy;
-        work->unk4C.unkC.vz = work->unkAC.vz;
+        work->unk4C.unkC.vx = work->posAC.vx;
+        work->unk4C.unkC.vy = work->posAC.vy;
+        work->unk4C.unkC.vz = work->posAC.vz;
         work->unk20.unkC.vx = work->posA4.vx;
         work->unk20.unkC.vy = work->posA4.vy;
         work->unk20.unkC.vz = work->posA4.vz;

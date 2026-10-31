@@ -8,13 +8,13 @@ s32 fx_1b9_op80(s32 mode, Fx1b9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x28;
     } else if (mode == 1) {
         fx_1b9_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk10);
-        work->pos18.vx = work->unk10.vx;
-        work->pos18.vy = work->unk10.vy;
-        work->pos18.vz = work->unk10.vz;
-        work->pos20.vx = work->unk10.vx;
-        work->pos20.vy = work->unk10.vy;
-        work->pos20.vz = work->unk10.vz;
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
+        work->pos18.vx = work->pos10.vx;
+        work->pos18.vy = work->pos10.vy;
+        work->pos18.vz = work->pos10.vz;
+        work->pos20.vx = work->pos10.vx;
+        work->pos20.vy = work->pos10.vy;
+        work->pos20.vz = work->pos10.vz;
     } else {
         frame = entry->frame;
         switch (frame) {

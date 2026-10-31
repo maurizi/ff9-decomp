@@ -49,21 +49,21 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk40[0] != 0) {
             work->unk40[0]--;
-            ex->btlfx_getUnitBonePos(0x10, 5, (u16 *)&work->unk30);
-            work->pos18.vx = work->unk30.vx;
-            work->pos18.vy = work->unk30.vy - 0x64;
-            work->pos18.vz = work->unk30.vz;
+            ex->btlfx_getUnitBonePos(0x10, 5, (u16 *)&work->pos30);
+            work->pos18.vx = work->pos30.vx;
+            work->pos18.vy = work->pos30.vy - 0x64;
+            work->pos18.vz = work->pos30.vz;
         }
         if (work->unk40[1] != 0) {
             work->unk40[1]--;
-            ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->unk30);
-            work->pos18.vx = work->unk30.vx;
-            work->pos18.vy = work->unk30.vy;
-            work->pos18.vz = work->unk30.vz;
+            ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->pos30);
+            work->pos18.vx = work->pos30.vx;
+            work->pos18.vy = work->pos30.vy;
+            work->pos18.vz = work->pos30.vz;
         }
         if (work->unk40[2] != 0) {
             work->unk40[2]--;
-            ex->btlfx_lerpVec((s16 *)&work->unk30, (s16 *)&work->pos38, (3 - work->unk40[2]) * 0x555, (s16 *)&v);
+            ex->btlfx_lerpVec((s16 *)&work->pos30, (s16 *)&work->pos38, (3 - work->unk40[2]) * 0x555, (s16 *)&v);
             work->pos18.vx = v.vx;
             work->pos18.vy = v.vy;
             work->pos18.vz = v.vz;

@@ -10,12 +10,12 @@ typedef struct {
 
 typedef struct {
     u32 unk0; /* state */
-    SVECTOR unk4; /* caster position */
+    SVECTOR pos4; /* caster position */
     SVECTOR rotC; /* caster rotation */
     Fx112Vec3 unk14; /* caster scale */
     s32 model20; /* model */
     u8 pad24[0x38 - 0x24];
-    SVECTOR unk38; /* caster body position */
+    SVECTOR pos38; /* caster body position */
     SVECTOR pos40;
     SVECTOR pos48; /* bone position */
     Pool6CEntry *emit50;

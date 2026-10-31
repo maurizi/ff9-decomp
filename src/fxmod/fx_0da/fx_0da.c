@@ -31,7 +31,7 @@ s32 fx_0da_op80(s32 mode, Fx0daWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = 1;
         work->unk24 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk1C);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos1C);
         return 0;
     } else {
         frame = entry->frame;
@@ -167,7 +167,7 @@ s32 fx_0da_op84(s32 mode, Fx0daWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         b = 0;
         c = 0;
         frame = entry->frame;
-        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->unk8);
+        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->unk0) {
         case 0:
@@ -211,8 +211,8 @@ s32 fx_0da_op84(s32 mode, Fx0daWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x14), &work->unk8, NULL, b / 3, 0, 1, a / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x14), &work->pos8, NULL, b / 3, 0, 1, a / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &work->pos8, &rot, c / 2, 0, 1, a * 2 / 3);
         env->otZ = 0;
         work->unk4++;
     }

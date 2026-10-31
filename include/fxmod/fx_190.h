@@ -9,7 +9,7 @@ typedef struct {
     SVECTOR unk4; /* angles */
     SVECTOR unkC; /* angles */
     SVECTOR unk14[4];
-    SVECTOR unk34; /* caster position */
+    SVECTOR pos34; /* caster position */
     SVECTOR pos3C; /* target position */
     SVECTOR pos44;
     SVECTOR pos4C;

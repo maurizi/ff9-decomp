@@ -13,24 +13,24 @@ s32 fx_10b_op80(s32 mode, Fx10bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_10b_env = env;
         ex->btlfx_initEffModels(fx_10b_effModels, 2);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk10);
-        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk8, (s16 *)&work->rot18);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
+        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos10);
+        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos8, (s16 *)&work->rot18);
         work->scale30.vx = 0x1000;
         work->scale30.vy = 0x1000;
         work->scale30.vz = 0x1000;
         work->rot18.vx += 0x800;
-        work->pos20.vx = work->unk10.vx;
-        work->pos20.vy = work->unk10.vy;
-        work->pos20.vz = work->unk10.vz;
+        work->pos20.vx = work->pos10.vx;
+        work->pos20.vy = work->pos10.vy;
+        work->pos20.vz = work->pos10.vz;
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
         work->model72 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x97, 0x3D40, 0, 0);
     } else {
         frame = entry->frame;
         if (frame < 8) {
             t = (frame << 12) / 6;
-            ex->btlfx_lerpVec((s16 *)&work->unk0, (s16 *)&work->unk8, t, (s16 *)&pos);
+            ex->btlfx_lerpVec((s16 *)&work->pos0, (s16 *)&work->pos8, t, (s16 *)&pos);
             work->pos20.vx = pos.vx;
             work->pos20.vy = pos.vy;
             work->pos20.vz = pos.vz;

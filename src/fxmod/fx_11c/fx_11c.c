@@ -7,10 +7,10 @@ s32 fx_11c_op80(s32 mode, Fx11cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x18;
     } else if (mode == 1) {
         fx_11c_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
-        work->pos10.vx = work->unk8.vx;
-        work->pos10.vy = work->unk8.vy;
-        work->pos10.vz = work->unk8.vz;
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
+        work->pos10.vx = work->pos8.vx;
+        work->pos10.vy = work->pos8.vy;
+        work->pos10.vz = work->pos8.vz;
         work->pos10.vy += 0x12C;
         work->pos10.vz -= 0x12C;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos10);

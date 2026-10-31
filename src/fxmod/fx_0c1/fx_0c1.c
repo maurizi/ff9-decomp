@@ -20,7 +20,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x50;
     } else if (mode == 1) {
         fx_0c1_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk10);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot18);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);
         ex->btlfx_getUnitBoneMatrix(0x10, 0x17, &bone);
@@ -32,13 +32,13 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x24) {
-            ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk38);
-            D_801E7C20.vx = work->unk38.vx;
-            D_801E7C20.vy = work->unk38.vy;
-            D_801E7C20.vz = work->unk38.vz;
+            ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos38);
+            D_801E7C20.vx = work->pos38.vx;
+            D_801E7C20.vy = work->pos38.vy;
+            D_801E7C20.vz = work->pos38.vz;
             ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot18);
-            ex->btlfx_pointAhead((s16 *)&work->unk10, (s16 *)&work->rot18, 0x12C, (s16 *)&work->pos30);
-            ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->pos20, (s16 *)&bone);
+            ex->btlfx_pointAhead((s16 *)&work->pos10, (s16 *)&work->rot18, 0x12C, (s16 *)&work->pos30);
+            ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos20, (s16 *)&bone);
             ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&bone, 0, (s16 *)&D_801E7C28);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos30);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&D_801E7C30);
@@ -48,7 +48,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
-            ex->btlfx_aimAngles((s16 *)&work->unk38, (s16 *)&work->pos20, (s16 *)&work->unk48);
+            ex->btlfx_aimAngles((s16 *)&work->pos38, (s16 *)&work->pos20, (s16 *)&work->unk48);
             work->unk40.vx = work->unk48.vx;
             work->unk40.vy = work->unk48.vy;
             work->unk40.vz = work->unk48.vz;

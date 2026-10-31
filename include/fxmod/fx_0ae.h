@@ -8,7 +8,7 @@ typedef struct {
     s32 unk0; /* state */
     Pool6CEntry *emit4;
     SVECTOR pos8; /* unit 0x10 bone position */
-    SVECTOR unk10; /* caster body position */
+    SVECTOR pos10; /* caster body position */
     SVECTOR pos18; /* caster position */
     SVECTOR unk20; /* angles from unk8 to unk10 */
 } Fx0aeWork;

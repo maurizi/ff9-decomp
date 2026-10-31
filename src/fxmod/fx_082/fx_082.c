@@ -16,20 +16,20 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x38;
     } else if (mode == 1) {
         fx_082_env = env;
-        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk18);
-        BTLFX_COPY_SVEC(&work->pos8, &work->unk18);
+        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos18);
+        BTLFX_COPY_SVEC(&work->pos8, &work->pos18);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot20);
-        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->rot20, 0x226, (s16 *)&work->unk18);
+        ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->rot20, 0x226, (s16 *)&work->pos18);
         work->unk0 = 0;
         work->unk4 = 0;
-        work->unk18.vy -= 0x145;
+        work->pos18.vy -= 0x145;
         BTLFX_COPY_SVEC(&work->rot28, &work->rot20);
         ex->btlfx_initEffModels(fx_082_effModels, 2);
         work->model30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
         work->model34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
-        env->camera->points[0].vx = work->unk18.vx;
-        env->camera->points[0].vy = work->unk18.vy;
-        env->camera->points[0].vz = work->unk18.vz;
+        env->camera->points[0].vx = work->pos18.vx;
+        env->camera->points[0].vy = work->pos18.vy;
+        env->camera->points[0].vz = work->pos18.vz;
     } else {
         bright = morph = sc = 0;
         frame = entry->frame;
@@ -37,11 +37,11 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0:
             t = (frame << 12) / 7;
             if (frame == 0) {
-                work->pos10.vx = work->unk18.vx;
-                work->pos10.vy = work->unk18.vy;
-                work->pos10.vz = work->unk18.vz;
+                work->pos10.vx = work->pos18.vx;
+                work->pos10.vy = work->pos18.vy;
+                work->pos10.vz = work->pos18.vz;
                 work->pos10.vy -= 0x80;
-                if (work->unk18.vz > 0) {
+                if (work->pos18.vz > 0) {
                     work->pos10.vz -= 0x40;
                 } else {
                     work->pos10.vz += 0x40;
@@ -115,9 +115,9 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (bright != 0) {
-            mpos[0] = work->unk18.vx;
-            mpos[1] = work->unk18.vy;
-            mpos[2] = work->unk18.vz;
+            mpos[0] = work->pos18.vx;
+            mpos[1] = work->pos18.vy;
+            mpos[2] = work->pos18.vz;
             scale[0] = sc;
             scale[1] = sc;
             scale[2] = sc;

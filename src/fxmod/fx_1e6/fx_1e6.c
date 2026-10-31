@@ -61,16 +61,16 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x10;
     } else if (mode == 1) {
         fx_1e6_env = env;
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
-        work->unk4.vy -= 0x12C;
-        D_801E92F8.vx = work->unk4.vx;
-        D_801E92F8.vy = work->unk4.vy;
-        D_801E92F8.vz = work->unk4.vz;
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
+        work->pos4.vy -= 0x12C;
+        D_801E92F8.vx = work->pos4.vx;
+        D_801E92F8.vy = work->pos4.vy;
+        D_801E92F8.vz = work->pos4.vz;
         fxm_posPathInit(&D_801E84E8, (u8 *)ex->btlfx_getFileData(entry->file, 0xD));
         work->unkC = 0x1000;
     } else {
         frame = entry->frame;
-        ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->unk4, (s16 *)&D_801E9300);
+        ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos4, (s16 *)&D_801E9300);
         if (frame < 0x20) {
             if ((s32)frame >= 0x18) {
                 work->unkC -= 0x400;
@@ -99,7 +99,7 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_1e6_env = env;
         ex->btlfx_initEffModels(fx_1e6_effModels, 2);
-        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk48);
+        ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos48);
         work->scale34.vx = 0x1000;
         work->scale34.vy = 0x1000;
         work->scale34.vz = 0x1000;
@@ -107,9 +107,9 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1C.vx = 0;
         work->unk1C.vy = 0;
         work->unk1C.vz = 0;
-        work->unk24.vx = work->unk48.vx;
-        work->unk24.vy = work->unk48.vy;
-        work->unk24.vz = work->unk48.vz;
+        work->unk24.vx = work->pos48.vx;
+        work->unk24.vy = work->pos48.vy;
+        work->unk24.vz = work->pos48.vz;
         work->unk24.vy = -0x3CA;
         work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
         work->model66 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
@@ -119,9 +119,9 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 8:
-            work->pos50.vx = work->unk48.vx;
-            work->pos50.vy = work->unk48.vy;
-            work->pos50.vz = work->unk48.vz;
+            work->pos50.vx = work->pos48.vx;
+            work->pos50.vy = work->pos48.vy;
+            work->pos50.vz = work->pos48.vz;
             work->pos50.vy -= 0xFA;
             work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos50);
             work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos50);

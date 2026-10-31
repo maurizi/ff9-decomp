@@ -19,7 +19,7 @@ typedef struct {
     Pool6CEntry *emit18[6];
     Pool6CEntry *emit30[6];
     Pool6CEntry *emit48;
-    SVECTOR unk4C; /* caster position */
+    SVECTOR pos4C; /* caster position */
     SVECTOR pos54;
     SVECTOR unk5C[6]; /* bone positions */
 } Fx123Work80; /* 0x8C */
@@ -90,7 +90,7 @@ typedef struct {
     Pool6CEntry *emit30[6];
     Pool6CEntry *emit48[6];
     Pool6CEntry *emit60;
-    SVECTOR unk64;
+    SVECTOR pos64;
     SVECTOR unk6C[6];
     VECTOR unk9C[6];
     VECTOR scaleFC;

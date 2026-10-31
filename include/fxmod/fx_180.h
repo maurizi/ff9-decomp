@@ -17,7 +17,7 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0[9];
     SVECTOR pos24; /* caster body position */
-    SVECTOR unk2C; /* caster position */
+    SVECTOR pos2C; /* caster position */
     SVECTOR unk34; /* target position */
     SVECTOR pos3C; /* bone position */
     SVECTOR pos44;
@@ -54,10 +54,10 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0;
     u8 pad4[8 - 4];
-    SVECTOR unk8; /* caster body position */
-    SVECTOR unk10; /* caster position */
+    SVECTOR pos8; /* caster body position */
+    SVECTOR pos10; /* caster position */
     SVECTOR unk18; /* destination */
-    SVECTOR unk20; /* caster position */
+    SVECTOR pos20; /* caster position */
     SVECTOR unk28;
     SVECTOR pos30;
     s16 unk38; /* fade countdown */

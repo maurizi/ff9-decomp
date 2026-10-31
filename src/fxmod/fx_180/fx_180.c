@@ -45,7 +45,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_180_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos24);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk2C);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos2C);
         work->unk34.vx = env->targets->centerX;
         work->unk34.vy = env->targets->centerY;
         work->unk34.vz = env->targets->centerZ;
@@ -71,9 +71,9 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk64.vx = work->unk34.vx;
         work->unk64.vy = work->unk34.vy;
         work->unk64.vz = work->unk34.vz;
-        work->unk6C.vx = work->unk2C.vx;
-        work->unk6C.vy = work->unk2C.vy;
-        work->unk6C.vz = work->unk2C.vz;
+        work->unk6C.vx = work->pos2C.vx;
+        work->unk6C.vy = work->pos2C.vy;
+        work->unk6C.vz = work->pos2C.vz;
         work->unk54.vy -= 0x2AF8;
         work->unk54.vz -= 0xFA0;
         work->unk5C.vy -= 0xC80;
@@ -355,12 +355,12 @@ s32 fx_180_op83(s32 mode, Fx180Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x3C;
     } else if (mode == 1) {
         fx_180_env = env;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
         work->unk38 = -1;
         work->unk3A = 0;
-        work->pos30.vx = work->unk8.vx;
-        work->pos30.vy = work->unk8.vy;
-        work->pos30.vz = work->unk8.vz;
+        work->pos30.vx = work->pos8.vx;
+        work->pos30.vy = work->pos8.vy;
+        work->pos30.vz = work->pos8.vz;
         work->pos30.vy += 0x190;
         work->pos30.vz -= 0x3E8;
     } else {
@@ -375,13 +375,13 @@ s32 fx_180_op83(s32 mode, Fx180Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x11:
-            ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk10);
-            work->unk18.vx = work->unk10.vx;
-            work->unk18.vy = work->unk10.vy;
-            work->unk18.vz = work->unk10.vz + 0x1770;
+            ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
+            work->unk18.vx = work->pos10.vx;
+            work->unk18.vy = work->pos10.vy;
+            work->unk18.vz = work->pos10.vz + 0x1770;
             break;
         case 0x25:
-            ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk20);
+            ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos20);
             break;
         case 0x14:
             work->unk38 = 0x1E;
@@ -391,8 +391,8 @@ s32 fx_180_op83(s32 mode, Fx180Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_moveUnitArc(0x10, &work->unk18, frame - 0x11, 0x14, 0, &work->unk28);
         }
         if (frame >= 0x25) {
-            work->unk20.vy += 0xC8;
-            ex->btlfx_setUnitPos(0x10, (s16 *)&work->unk20);
+            work->pos20.vy += 0xC8;
+            ex->btlfx_setUnitPos(0x10, (s16 *)&work->pos20);
         }
         if (work->unk38 >= 0) {
             fxm_tintScreenLerp(0, 0xFF, 0x1E - work->unk38, 0x1E, 1, 0);

@@ -20,7 +20,7 @@ typedef struct {
     Fx0cdModel unk4C; /* B */
     Fx0cdModel unk78; /* C */
     SVECTOR posA4; /* caster position */
-    SVECTOR unkAC; /* caster body position */
+    SVECTOR posAC; /* caster body position */
 } Fx0cdWork;
 
 extern Unk800F78A4 *fx_0cd_env;

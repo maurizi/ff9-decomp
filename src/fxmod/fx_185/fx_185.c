@@ -17,8 +17,8 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (n == 0) {
             ex->btlfx_initEffModels(fx_185_effModels, 0x10);
         }
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
-        work->unk0.vy = -0x7D0;
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
+        work->pos0.vy = -0x7D0;
         work->unk8.vx = env->targets->centerX;
         work->unk8.vy = env->targets->centerY;
         work->unk8.vz = env->targets->centerZ;
@@ -27,19 +27,19 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E8764.vx = work->unk8.vx;
         D_801E8764.vy = work->unk8.vy;
         D_801E8764.vz = work->unk8.vz;
-        ex->btlfx_aimAngles((s16 *)&work->unk0, (s16 *)&work->unk8, (s16 *)&work->rot10);
-        work->rot10.vx = ex->ratan2(work->unk8.vy - work->unk0.vy, work->unk0.vz - work->unk8.vz);
+        ex->btlfx_aimAngles((s16 *)&work->pos0, (s16 *)&work->unk8, (s16 *)&work->rot10);
+        work->rot10.vx = ex->ratan2(work->unk8.vy - work->pos0.vy, work->pos0.vz - work->unk8.vz);
         work->scale28.vx = 0x1000;
         work->scale28.vy = 0x1000;
         work->scale28.vz = 0x1000;
-        work->pos18.vx = work->unk0.vx;
-        work->pos18.vy = work->unk0.vy;
-        work->pos18.vz = work->unk0.vz;
+        work->pos18.vx = work->pos0.vx;
+        work->pos18.vy = work->pos0.vy;
+        work->pos18.vz = work->pos0.vz;
         work->model3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
     } else {
         frame = entry->frame;
         if (frame < 6) {
-            ex->btlfx_lerpVec((s16 *)&work->unk0, (s16 *)&work->unk8, frame << 10, (s16 *)&v);
+            ex->btlfx_lerpVec((s16 *)&work->pos0, (s16 *)&work->unk8, frame << 10, (s16 *)&v);
             work->pos18.vx = v.vx;
             work->pos18.vy = v.vy;
             work->pos18.vz = v.vz;

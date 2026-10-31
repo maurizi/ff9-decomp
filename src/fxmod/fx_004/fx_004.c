@@ -197,7 +197,7 @@ s32 fx_004_op80(s32 mode, Fx004Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk28 = 0;
         work->unk30 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos18);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk20);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos20);
         p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos18);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x46);

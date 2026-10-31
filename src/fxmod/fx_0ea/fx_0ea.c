@@ -94,14 +94,14 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_playFileSound(0x13, entry->file, -1);
         ex->btlfx_playFileSound(0x14, entry->file, -1);
         ex->btlfx_playFileSound(0x15, entry->file, -1);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
-        D_801E7E5C.vx = work->unk8.vx;
-        D_801E7E5C.vy = work->unk8.vy;
-        D_801E7E5C.vz = work->unk8.vz;
-        ex->btlfx_getUnitBodyPos(work->unk20, 0, (s16 *)&work->unk10);
-        D_801E7E64[work->unk20].vx = work->unk10.vx;
-        D_801E7E64[work->unk20].vy = work->unk10.vy;
-        D_801E7E64[work->unk20].vz = work->unk10.vz;
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
+        D_801E7E5C.vx = work->pos8.vx;
+        D_801E7E5C.vy = work->pos8.vy;
+        D_801E7E5C.vz = work->pos8.vz;
+        ex->btlfx_getUnitBodyPos(work->unk20, 0, (s16 *)&work->pos10);
+        D_801E7E64[work->unk20].vx = work->pos10.vx;
+        D_801E7E64[work->unk20].vy = work->pos10.vy;
+        D_801E7E64[work->unk20].vz = work->pos10.vz;
         ex->btlfx_getUnitPos(work->unk20, (s16 *)&work->pos18);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7DF4[work->unk20]), (s32)&D_801E7E84);
         if (work->emit0 != NULL) {

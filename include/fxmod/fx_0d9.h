@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* btlfx_getWeaponPos(0x10, 1) */
+    SVECTOR pos8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0d9Work84;
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width); as Fx018Strip */
@@ -68,7 +68,7 @@ static s32 fxm_jaggedStripTask(s32 mode, Fx0d9Bolt *it, Unk800F78A4 *env, Unk801
 
 typedef struct {
     SVECTOR pos0; /* target body */
-    SVECTOR unk8; /* target */
+    SVECTOR pos8; /* target */
     s32 *unk10; /* jitter table */
     s32 unk14; /* bolts spawned */
     s32 unk18; /* kind */
@@ -79,7 +79,7 @@ extern s32 D_801EAB98[];
 s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 
 typedef struct {
-    SVECTOR unk0; /* caster body position */
+    SVECTOR pos0; /* caster body position */
     SVECTOR pos8; /* caster position */
     s32 unk10; /* state */
     s32 model14; /* model */

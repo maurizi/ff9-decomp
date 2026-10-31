@@ -16,7 +16,7 @@ typedef struct {
     SVECTOR pos3C; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR pos44; /* unk64 moved -0xC8 along the angles from unk3C */
     SVECTOR pos4C; /* unk64 on the ground */
-    SVECTOR unk54; /* caster body position */
+    SVECTOR pos54; /* caster body position */
     SVECTOR unk5C; /* copy of unk3C */
     SVECTOR pos64; /* unk54 + random */
     s32 unk6C; /* instance (0..4) */

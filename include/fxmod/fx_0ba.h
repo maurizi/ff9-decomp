@@ -130,7 +130,7 @@ typedef struct {
     s32 unk4; /* frame counter */
     u8 pad8[8];
     SVECTOR pos10; /* orb position */
-    SVECTOR unk18; /* bone position */
+    SVECTOR pos18; /* bone position */
     u8 pad20[8];
     Fx0baVec3 unk28; /* model position */
     Fx0baVec3 unk34; /* model scale */

@@ -78,7 +78,7 @@ typedef struct {
     Fx128Vec3 unk3C; /* model scale */
     s32 pad48;
     s32 unk4C; /* model colour */
-    SVECTOR unk50; /* caster position */
+    SVECTOR pos50; /* caster position */
     SVECTOR rot58; /* caster rotation */
     SVECTOR pos60; /* target body position */
     SVECTOR pos68; /* target position */

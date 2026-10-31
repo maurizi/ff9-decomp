@@ -168,7 +168,7 @@ s32 fx_0d7_op83(s32 mode, Fx0d7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->poolCount = 0xC;
     } else if (mode == 1) {
         fx_0d7_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         work->unk8 = D_801E9260;
         q = D_801E9260;
         for (i = 0; i < 0x40; i++) {
@@ -182,7 +182,7 @@ s32 fx_0d7_op83(s32 mode, Fx0d7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0 || frame == 3 || frame == 5 || frame == 6 || frame == 7) {
             if (work->unkC < 5) {
                 work->unkC++;
-                BTLFX_COPY_SVEC(&a, &work->unk0);
+                BTLFX_COPY_SVEC(&a, &work->pos0);
                 if (work->unkC == 3) {
                     a.vx += ex->btlfx_randCentered(0x190);
                     a.vy += ex->btlfx_randCentered(0x190);
@@ -241,7 +241,7 @@ s32 fx_0d7_op84(s32 mode, Fx0d7Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         b = 0;
         c = 0;
         frame = entry->frame;
-        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->unk8);
+        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->unk0) {
         case 0:
@@ -285,8 +285,8 @@ s32 fx_0d7_op84(s32 mode, Fx0d7Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->unk8, NULL, b / 3, 0, 1, a / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->pos8, NULL, b / 3, 0, 1, a / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->pos8, &rot, c / 2, 0, 1, a * 2 / 3);
         env->otZ = 0;
         work->unk4++;
     }

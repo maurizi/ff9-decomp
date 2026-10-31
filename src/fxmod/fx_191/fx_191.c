@@ -134,11 +134,11 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x28;
     } else if (mode == 1) {
         fx_191_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk10);
-        ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);
-        D_801E8574.vx = work->unk10.vx;
-        D_801E8574.vy = work->unk10.vy;
-        D_801E8574.vz = work->unk10.vz;
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
+        D_801E8574.vx = work->pos10.vx;
+        D_801E8574.vy = work->pos10.vy;
+        D_801E8574.vz = work->pos10.vz;
         for (i = 0; i < 4; i++) {
             work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E84DC[i]), (s32)&D_801E85CC);
             if (work->emit0[i] != NULL) {
@@ -149,9 +149,9 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->emit0[i] != NULL) {
                 ((EffMotion *)work->emit0[i]->file)->update = D_801E8504[i];
             }
-            D_801E857C[i].vx = work->unk18.vx;
-            D_801E857C[i].vy = work->unk18.vy;
-            D_801E857C[i].vz = work->unk18.vz;
+            D_801E857C[i].vx = work->pos18.vx;
+            D_801E857C[i].vy = work->pos18.vy;
+            D_801E857C[i].vz = work->pos18.vz;
         }
         D_801E857C[0].vx -= 0xC8;
         D_801E857C[0].vy -= 0xC8;
@@ -159,7 +159,7 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E857C[0].vy -= 0xC8;
         D_801E857C[2].vy -= 0x320;
         D_801E857C[3].vy -= 0xC8;
-        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk18, (s16 *)&work->unk20);
+        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos18, (s16 *)&work->unk20);
     } else {
         frame = entry->frame;
         D_801E8D9C = frame;

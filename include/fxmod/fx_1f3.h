@@ -77,9 +77,9 @@ typedef struct {
     SVECTOR rotF0;
     Fx1f3Vec3 unkF8;
     u8 pad104[4];
-    SVECTOR unk108; /* camera */
-    SVECTOR unk110;
-    SVECTOR unk118;
+    SVECTOR pos108; /* camera */
+    SVECTOR pos110;
+    SVECTOR pos118;
 } Fx1f3Work80; /* 0x120 */
 
 extern Fx1f3RingDef D_801E8CA8[16];

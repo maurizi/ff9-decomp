@@ -14,7 +14,7 @@ typedef struct {
     SVECTOR pos28; /* target position */
     SVECTOR pos30; /* left of the target */
     SVECTOR pos38; /* right of the target */
-    SVECTOR unk40;
+    SVECTOR pos40;
     u8 pad48[8];
 } Fx040Work; /* 0x50 */
 

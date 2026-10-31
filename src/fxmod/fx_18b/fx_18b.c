@@ -180,7 +180,7 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_18b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk14);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);
         work->unk8 = ex->btlfx_addRadiusSixth(0, 0x20);
         D_801E8280 = 0;
         work->unk0 = 0;

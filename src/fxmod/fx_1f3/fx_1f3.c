@@ -120,11 +120,11 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rotF0.vy = 0;
         work->rotF0.vz = 0;
         work->unkF8.vz = work->unkF8.vy = work->unkF8.vx = 0x400;
-        ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->unk108);
-        ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->unk110);
-        ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->unk118);
-        work->unk110.vy -= 0x400;
-        work->unk118.vy -= 0x800;
+        ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->pos108);
+        ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->pos110);
+        ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->pos118);
+        work->pos110.vy -= 0x400;
+        work->pos118.vy -= 0x800;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -374,17 +374,17 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[9] != 0) {
             work->unk0[9]--;
-            cam.vx = work->unk108.vx;
-            cam.vz = work->unk108.vz;
-            cam.vy = fxm_easeLerp(1, 0x20, work->unk0[9], work->unk108.vy, work->unk118.vy);
+            cam.vx = work->pos108.vx;
+            cam.vz = work->pos108.vz;
+            cam.vy = fxm_easeLerp(1, 0x20, work->unk0[9], work->pos108.vy, work->pos118.vy);
             ex->btlfx_setUnitPos(0x10, (s16 *)&cam);
         }
         if (work->unk0[10] != 0) {
             work->unk0[10]--;
             if (work->unk0[10] != 0) {
-                cam2.vx = work->unk108.vx;
-                cam2.vz = work->unk108.vz;
-                cam2.vy = fxm_easeLerp(2, 0x20, work->unk0[10], work->unk118.vy, work->unk108.vy);
+                cam2.vx = work->pos108.vx;
+                cam2.vz = work->pos108.vz;
+                cam2.vy = fxm_easeLerp(2, 0x20, work->unk0[10], work->pos118.vy, work->pos108.vy);
             } else {
                 ex->btlfx_getUnitHomePos(0x10, (s16 *)&cam2);
             }

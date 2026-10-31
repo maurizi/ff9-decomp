@@ -89,7 +89,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_128_env = env;
         ex->btlfx_initEffModels(fx_128_effModels, 7);
-        ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk50);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos50);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot58);
         if (env->targets->targetCount == mode) {
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos60);
@@ -123,7 +123,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         work->unk98 = -1;
         work->unk9C = -1;
-        ex->btlfx_pointAhead((s16 *)&work->unk50, (s16 *)&work->rot58, -0x1DE, (s16 *)&work->pos70);
+        ex->btlfx_pointAhead((s16 *)&work->pos50, (s16 *)&work->rot58, -0x1DE, (s16 *)&work->pos70);
         work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos70);
     } else {
         frame = entry->frame;
@@ -210,9 +210,9 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk2C.vx = p1.vx;
             work->unk2C.vy = p1.vy;
             work->unk2C.vz = p1.vz;
-            work->unk2C.vx += work->unk50.vx;
-            work->unk2C.vy += work->unk50.vy;
-            work->unk2C.vz += work->unk50.vz;
+            work->unk2C.vx += work->pos50.vx;
+            work->unk2C.vy += work->pos50.vy;
+            work->unk2C.vz += work->pos50.vz;
             work->unk88.vx = work->unk2C.vx;
             work->unk88.vy = work->unk2C.vy;
             work->unk88.vz = work->unk2C.vz;
@@ -232,9 +232,9 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk2C.vx = p2.vx;
                 work->unk2C.vy = p2.vy;
                 work->unk2C.vz = p2.vz;
-                work->unk2C.vx += work->unk50.vx;
-                work->unk2C.vy += work->unk50.vy;
-                work->unk2C.vz += work->unk50.vz;
+                work->unk2C.vx += work->pos50.vx;
+                work->unk2C.vy += work->pos50.vy;
+                work->unk2C.vz += work->pos50.vz;
                 ex->Hi_SetEffModelSlice(work->modelA0[i + 2], work->unk2C.vy);
                 ex->Hi_DrawSliceEffModel(&work->rot24, (VECTOR *)&work->unk2C, (s32)&work->unk3C, work->modelA0[i + 2]);
                 if (work->unk98 >= 0 || work->unk9C >= 0) {
@@ -266,9 +266,9 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk90.vx = lv.vx;
             work->unk90.vy = lv.vy;
             work->unk90.vz = lv.vz;
-            work->unk90.vx += work->unk50.vx;
-            work->unk90.vy += work->unk50.vy;
-            work->unk90.vz += work->unk50.vz;
+            work->unk90.vx += work->pos50.vx;
+            work->unk90.vy += work->pos50.vy;
+            work->unk90.vz += work->pos50.vz;
             if (work->emit0[0] != NULL && work->emit0[0]->state == BTLFX_EMIT_DONE) {
                 work->emit0[0] = NULL;
             }
