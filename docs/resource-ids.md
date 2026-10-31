@@ -29,3 +29,10 @@ Rules used when replacing literals:
 - Combined music / sound-bank keys (`0x70005`, `0x90164`) are left to the sound naming.
 - Not named yet: db kinds 0x00, 0x10 (encounter `unk20`), 0x18, 0x1E; FF9.IMG dir 9; dir 1 files whose loader says
   nothing about their content (disc-change pictures, attract images come from tables).
+
+## Lead: battle effect VRAM scratch area at (0x1C0, 0x180)
+Not named yet. The ff9-ds port reports (2026-10-31) that some battle effects (the clock in battle d3_b0037) copy part
+of the displayed framebuffer to VRAM (448, 384) = (0x1C0, 0x180) and draw it back as a texture. The same coordinates
+recur in effect modules' calls to btlfx_drawScrollMove and module-local copy helpers (fx_0b3, fx_0b8, fx_0e2, fx_0f5,
+fx_1f1, fx_1fd). Before naming it (e.g. VRAM_BTLFX_SCRATCH_X/Y in res_ids.h), check each helper's parameter order
+(source vs destination rectangle) and confirm the copy at runtime.
