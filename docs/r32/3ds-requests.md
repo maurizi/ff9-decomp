@@ -12,6 +12,11 @@ u16 clut, u8 w, u8 h, u16 tpage`). They all use tpage 0x001F (4 bpp, page at VRA
 The ids are 4 Cross, 5 Circle, 6 Square, 7 Triangle, 8 L1, 9 L2, 10 R1, 11 R2, 12 d-pad, 13-16 d-pad arm highlights
 (up, down, left, right), 17 START, 18 SELECT. All of this was checked against a VRAM dump.
 
+**Correction (dialogue icons):** the message system draws these sprites with `pen_drawSprite` (msg.c:418/437), which
+links its own `pen_addTpage(0x1E)` (page at VRAM (896,256)) and ignores the entry's tpage field; it uses the entry's u,v,
+w,h and CLUT. So dialogue button icons sample page 0x1E, while menus (`ui_drawSprite`) use the entry's tpage 0x001F. The
+3DS port matches the dialogue icons by CLUT/uv/size for that reason (reported 2026-10-31; asm of pen_drawSprite checked).
+
 ### Sprite table (g_uiSprites ids 4-18; decoded from the exe, all `tpage 0x001F`, `clut 0x3824`)
 
 | id | glyph | u | v | w x h | VRAM halfword rect (x = 960 + u/4, y = 256 + v) |
