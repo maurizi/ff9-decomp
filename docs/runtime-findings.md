@@ -2840,7 +2840,17 @@ mode 8).
   share the flight parameters and differ in loop SE (23 / 22) and get-off distance (0x280 / 0x2D0). Proposed
   `WM_MOVE_HILDA_GARDE 8` (or keep WM_MOVE_AIRSHIP), `WM_MOVE_INVINCIBLE 9` (medium).
 
-## Round 31 runtime pass (2026-10-31): rows of docs/wip/round31_runtime_{main_overlays,ovl_0b,fxmod}.md  (status: proposed)
+## Round 31 runtime pass (2026-10-31): rows of docs/wip/round31_runtime_{main_overlays,ovl_0b,fxmod}.md  (status: **applied**)
+Applied: the sweep is `tools/effect_labels.py` (`effect_modules.py catalogue` fills the effect column from it; KNOWN
+0xB2 = Twister); BTL_ENEMY_HUMANOID .. AERIAL (FLYING renamed after Scan's text) and SA_*_KILLER / SA_MAN_EATER;
+Unk800D8124.partyMode + BTLFX_FACE_*; BTLFX_HDR_RESIDENT comment; btl_loadEncounterFile / btl_initEncounter take
+Battle11C0 * (Battle11C0.unk10 = script; Unk800AA08C stays as btl_loadBackgroundStep's step state);
+VRAM_BTLFX_SCRATCH comment; BTLFX_SIG_MOTION/MOVE/TURN/WAIT, the modules' Unk800F78A40.signals[8] (ovl_0b's own
+Unk800FEC40 keeps signals.b[4] + the four named done flags, which op 1 reaches as b[4-7]); BTL_MOTION_HIT /
+BTL_MOTION_HIT_HEAVY, fxm_startHitMotionIfActive / fxm_startHeavyHitMotionIfActive; fx_0d2 / fx_0b3 comments;
+CharBits.victoryPose (CHR_INFO_VICTORY_POSE), GameData.inWorldFrame, AKAO_PAUSE_FORCE_TICK, CHR_CLASS_MALE; module
+identity header comments. Left unnamed: AkaoStreamState.unk20/unk30, tailMode 0x20, FieldSpriteSet.unk0/unk4,
+classFlags 0x4 / 0x8.
 Redux, LuaJIT off, the hang-safe runner `build/rt3/run3.py` copied to `build/r31rt/run3.py` (outputs there).
 `--patch CMD,AB,TGT` rewrites Zidane's first Attack. Disc 3 states `disc3_malboro_lv99_calm` (calm pokes) and
 `disc3_malboro_entry_1100`, disc 1 field states. VRAM was read with `PCSX.GPU.getVRAM()` (a 1 MB Slice, byte-indexable;
