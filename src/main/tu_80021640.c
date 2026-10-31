@@ -29,7 +29,7 @@ s32 evt_updateActorWalkmesh(EvtObject *p) {
     if (g_gameState->mode == GS_MODE_WORLD) {
         goto ret0;
     }
-    if (p->kind != 4) {
+    if (p->kind != EVT_KIND_ACTOR) {
         return 0;
     }
     if (p->modelId == 0xFFFF) {

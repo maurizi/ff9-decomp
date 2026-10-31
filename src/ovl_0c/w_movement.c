@@ -619,7 +619,7 @@ void wm_setMountPalette(void) {
     wm_mountPalettePre();
     for (n = evt_getObjectList(); n != NULL; n = n->next) {
         a = n->obj;
-        if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
+        if (a->state == EVT_STATE_RUNNING && (a->flags & EVT_OBJ_ENABLED) && a->kind == EVT_KIND_ACTOR) {
             if ((a->actorType >= 3 && a->actorType < 8)) {
                 id = a->modelId;
                 switch (a->actorType) {
@@ -677,7 +677,7 @@ void wm_findVehicles(void) {
     EvtObject *a;
 
     for (n = evt_getObjectList(); n != NULL; n = n->next) {
-        if (n->obj->kind == 4) {
+        if (n->obj->kind == EVT_KIND_ACTOR) {
             a = n->obj;
             switch (a->actorType) {
             case 1:
@@ -737,7 +737,7 @@ void wm_drawActors(void) {
     pen_locate(10, 100);
     for (e = evt_getObjectList(); e != NULL; e = e->next) {
         act = e->obj;
-        if (act->kind == 4 && act->state == 1 && (act->flags & 1) && (u8)wm_worldToView((VECTOR *)&act->pos, &a, &b, &z)) {
+        if (act->kind == EVT_KIND_ACTOR && act->state == EVT_STATE_RUNNING && (act->flags & EVT_OBJ_ENABLED) && (u8)wm_worldToView((VECTOR *)&act->pos, &a, &b, &z)) {
             f = 1;
             dv.vx = act->pos.vx - (g_worldCameraEye[0] - n.vx);
             dv.vz = act->pos.vz - (g_worldCameraEye[2] - n.vz);
@@ -1005,7 +1005,7 @@ void wm_updateActors(void) {
     for (e = evt_getObjectList(); e != NULL; e = e->next) {
         act = e->obj;
         cc = &g_worldActorTypeInfo[act->actorType];
-        if (act->kind == 4 && act->state == 1 && (act->flags & 1)) {
+        if (act->kind == EVT_KIND_ACTOR && act->state == EVT_STATE_RUNNING && (act->flags & EVT_OBJ_ENABLED)) {
             switch (act->actorType) {
             case 7:
                 cc->flying = g_worldMoveMode == 6;
@@ -2043,7 +2043,7 @@ void wm_snapActorsToFloor(void) {
     if (n != NULL) {
         do {
             o = n->obj;
-            if (o->kind == 4) {
+            if (o->kind == EVT_KIND_ACTOR) {
                 pos = o->pos;
                 c = &g_worldActorTypeInfo[o->actorType];
                 wm_getGroundHeight((VECTOR *)&pos, &c->cellAttr, &tmp, NULL, &h);

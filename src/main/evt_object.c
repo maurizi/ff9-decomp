@@ -121,7 +121,7 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     o->stackOfs = nw + nv;
     o->varsOfs = nw;
     o->unkC = a3;
-    o->state = 0;
+    o->state = EVT_STATE_NEW;
     o->windowId = 0xFF;
     return o;
 }
@@ -570,7 +570,7 @@ s32 evt_exprSpecial(s32 op) {
     case 0x70:
         px = -1;
         o = (EvtObject *)evt_popResult();
-        if (o != NULL && o->kind == 4) {
+        if (o != NULL && o->kind == EVT_KIND_ACTOR) {
             bgi_getActorTriangle(o->modelSlot, (u16 *)&px, (u16 *)&py);
         }
         r = px;
@@ -578,7 +578,7 @@ s32 evt_exprSpecial(s32 op) {
     case 0x71:
         py = -1;
         o = (EvtObject *)evt_popResult();
-        if (o != NULL && o->kind == 4) {
+        if (o != NULL && o->kind == EVT_KIND_ACTOR) {
             bgi_getActorTriangle(o->modelSlot, (u16 *)&px, (u16 *)&py);
         }
         r = py;

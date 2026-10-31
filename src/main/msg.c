@@ -1579,7 +1579,7 @@ void msg_updatePlayerBubble(void) {
     draw:
     if (!(g_gameState->gameData->flags & GD_HIDE_ALL)) {
         o = evt_getObject(g_evtState->playerUid);
-        if (o != NULL && o->kind == 4) {
+        if (o != NULL && o->kind == EVT_KIND_ACTOR) {
             pen_begin();
             evt_setDrawPosAtObject(o, -2, 0);
             msg_drawPlayerBubble();

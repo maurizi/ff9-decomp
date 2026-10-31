@@ -1095,8 +1095,8 @@ typedef Character Unk800539FC;
 
 
 extern u8 g_menuScreenCur;
-extern struct EvtObject *g_evtWorldCamEyeObj; /* object at the world map's mark 0x40 */
-extern struct EvtObject *g_evtWorldCamTargetObj; /* object at the world map's mark 0x80 */
+extern struct EvtObject *g_evtWorldCamEyeObj; /* object with EVT_MOVE_WM_CAMERA_EYE */
+extern struct EvtObject *g_evtWorldCamTargetObj; /* object with EVT_MOVE_WM_CAMERA_TARGET */
 extern s32 g_msgKeepWindows;
 extern s32 *D_80066764;
 
@@ -1114,7 +1114,7 @@ typedef struct {
 typedef struct EvtObject {
     u8 *ip; /* script instruction pointer (runtime: walks the logged opcodes) */
     u8 level; /* running priority, 7 idle (runtime: 1 while the Moogle's talk function runs) */
-    u8 kind; /* 1 thread, 2 code object, 3 region, 4 actor (ops 0x43/0x07/0x08/0x09) */
+    u8 kind; /* EVT_KIND_* */
     u8 scriptIdx; /* script entry (= uid except copies made by op 0x09 with a uid >= 0x80) */
     u8 uid; /* object id */
     u8 varsOfs; /* header size in words, 5/14/43 for kinds 2/3/4 (g_evtObjVars = o + varsOfs * 4) */
@@ -1123,8 +1123,8 @@ typedef struct EvtObject {
     u8 battleTurnState; /* enemy turn: 2 requested (evt_battleTrigger BTL_CMD_ENEMY_TURN), 1 once the turn function runs, 0 after op 0x38 level 3 */
     u8 unkC;
     u8 wait; /* frames left of op 0x22, 0xFE waiting for its message window, 0xFF waiting for a called function */
-    u8 state; /* 2 running the init function, 1 running, 3 suspended */
-    u8 flags; /* 0x80 turning, 0x02/0x04 collision masks, 0x08 talk mask, 0x10 not pushable (op 0x93 sets bits 0-5) */
+    u8 state; /* EVT_STATE_* */
+    u8 flags; /* EVT_OBJ_* (op 0x93 sets bits 0-5) */
     u8 windowId; /* message window it opened (ops 0x1F/0x20/0x54), 0xFF none */
     u8 actorType; /* op 0x3B; the world map indexes g_worldActorTypeInfo with it (wm_getEncounterEntry, w_frameGetParameter) */
     u8 savedState; /* state saved while suspended (evt_returnFromFunc copies it back) */
@@ -1152,7 +1152,7 @@ typedef struct EvtObject {
     u8 balloonWindow; /* window anchored on the actor (evt_followBalloon), 0xFF none */
     u8 pad3F;
     ActorPos prevPos; /* position one game frame earlier, unk20/rotY double as turn-left/right anims (ops 0x7A/0x7B) */
-    u16 moveFlags; /* 0x100 jumping, bits 0-2 op 0x47, 0x10 getting closer, 0x20 facing locked, 0x40/0x80 world-map camera marks */
+    u16 moveFlags; /* EVT_MOVE_* */
     s16 turnTarget; /* target direction of a turn */
     s16 standAnim; /* op 0x33 */
     s16 walkAnim; /* op 0x34 */
@@ -1164,7 +1164,7 @@ typedef struct EvtObject {
     u8 moveTurnRate; /* per-frame turn step x8 while walking to a point (op 0x55) */
     u8 animStart; /* op 0x3D */
     u8 animEnd; /* op 0x3D */
-    u8 animFlags; /* 0x80 scripted anim playing, 0x02 idle anim, 0x40 reverse, 0x10/0x20 loop/bounce, 0x04 hold last frame */
+    u8 animFlags; /* EVT_ANIM_* */
     u8 animLoops; /* loop count (ops 0x3F/0x98), 0xFF forever */
     u8 animSubFrame; /* 4-bit fraction of the 12.4 frame position */
     u8 pad65[0x68 - 0x65];
@@ -1204,6 +1204,51 @@ typedef struct EvtObject {
     u16 jumpStartZ;
     s16 jumpTargetY; /* op 0xE2 */
 } EvtObject;
+/* EvtObject.kind: what created the object (evt_createObject sets 0, the creating op sets the kind) */
+#define EVT_KIND_THREAD 1 /* EVT_OP_RUN_THREAD: a function of another object running on its own */
+#define EVT_KIND_CODE 2 /* EVT_OP_NEW_CODE, 0x14-byte header */
+#define EVT_KIND_REGION 3 /* EVT_OP_NEW_REGION, 0x38-byte header, a walkmesh region (evt_isInRegion) */
+#define EVT_KIND_ACTOR 4 /* EVT_OP_NEW_ACTOR, 0xAC-byte header, has a model and moves */
+
+/* EvtObject.state (evt_runScripts, evt_returnFromFunc) */
+#define EVT_STATE_NEW 0 /* created this frame (evt_createObject); evt_runScripts makes it EVT_STATE_INIT without running it */
+#define EVT_STATE_RUNNING 1 /* running; when its call stack empties it idles (ip NULL) */
+#define EVT_STATE_INIT 2 /* running the init function (entry 0); when it returns, entry 1 starts at level 7 and the state becomes EVT_STATE_RUNNING */
+#define EVT_STATE_SUSPENDED 3 /* skipped by evt_runScripts; savedState holds the state to restore (evt_init after a battle, evt_returnFromFunc) */
+
+/* EvtObject.flags */
+#define EVT_OBJ_ENABLED 0x01 /* region created with it; actors without it are skipped by the field/world overlays and the navi map; op 0xD5 clears it, op 0xD6 restores it */
+#define EVT_OBJ_NO_PLAYER_COLLISION 0x02 /* passes through the player (evt_findNearestObject: both objects need the bit) */
+#define EVT_OBJ_NO_NPC_COLLISION 0x04 /* passes through objects other than the player; new actors have it */
+#define EVT_OBJ_NO_TALK 0x08 /* evt_findNearestObject's talk search skips it */
+#define EVT_OBJ_NOT_PUSHABLE 0x10 /* bumping into it doesn't count as pushing (g_evtPushable, g_evtPushFrames) */
+#define EVT_OBJ_KEEP_ENABLED 0x20 /* op 0xD5 leaves EVT_OBJ_ENABLED set */
+#define EVT_OBJ_TURNING 0x80 /* a turn started by evt_turnObject is in progress (evt_finishTurn clears it) */
+#define EVT_OBJ_SCRIPT_BITS 0x3F /* the bits EVT_OP_SET_OBJ_FLAGS sets */
+
+/* EvtObject.moveFlags */
+#define EVT_MOVE_LOOK_AT_ACTORS 0x0001 /* turns its head toward nearby EVT_MOVE_LOOK_TARGET actors whose lookParam0 matches its lookParam1 (evt_updateLookAt) */
+#define EVT_MOVE_LOOK_TARGET 0x0002 /* EVT_MOVE_LOOK_AT_ACTORS actors may look at it */
+#define EVT_MOVE_LOOK_AT_SPEAKER 0x0004 /* looks at g_evtLookTarget, the actor whose balloon window is open */
+#define EVT_MOVE_LOOK_BITS 0x0007 /* the bits EVT_OP_SET_MOVE_FLAGS sets (EVT_OP_SET_LOOK sets the first two) */
+#define EVT_MOVE_JUMPING 0x0008 /* EVT_OP_JUMP; cleared at the end of the jump animation (evt_onAnimEnd) */
+#define EVT_MOVE_APPROACHING 0x0010 /* the distance to the walk target fell; the walk ends once it grows again */
+#define EVT_MOVE_FACING_SET 0x0020 /* the walk turned to face the target; the heading stays fixed */
+#define EVT_MOVE_WM_CAMERA_EYE 0x0040 /* world map: the camera eye follows the actor (op 0xB7) */
+#define EVT_MOVE_WM_CAMERA_TARGET 0x0080 /* world map: the camera target follows the actor (op 0xB8) */
+#define EVT_MOVE_LOOKING 0x0100 /* the look-at point is active (lookAtX-Z drive the model's head) */
+#define EVT_MOVE_LOOKED_AT_SPEAKER 0x0200 /* looked at g_evtLookTarget */
+#define EVT_MOVE_LOOK_RELEASED 0x0400 /* the speaker's window closed: no head turn script, the look-at point relaxes (evt_relaxLookAt clears 0x700) */
+
+/* EvtObject.animFlags (evt_stepAnim, evt_onAnimLimit, evt_onAnimEnd) */
+#define EVT_ANIM_IDLE 0x02 /* playing idleAnim (evt_updateIdleTimer) */
+#define EVT_ANIM_HELD 0x04 /* stopped on its last frame (EVT_ANIM_HOLD); evt_stepAnim does nothing */
+#define EVT_ANIM_HOLD 0x08 /* at the end keep the last frame instead of going back to standAnim */
+#define EVT_ANIM_LOOP 0x10 /* at the end restart from animStart (animLoops times, 0xFF forever) */
+#define EVT_ANIM_BOUNCE 0x20 /* at the end reverse direction */
+#define EVT_ANIM_REVERSE 0x40 /* playing backwards */
+#define EVT_ANIM_SCRIPTED 0x80 /* a script animation is playing (EVT_OP_WAIT_ANIM waits for it to end) */
+#define EVT_ANIM_LOOP_MODE (EVT_ANIM_HOLD | EVT_ANIM_LOOP | EVT_ANIM_BOUNCE) /* EVT_OP_SET_ANIM_LOOP's argument << 3 */
 
 /* model object as seen by evt_relaxLookAt (ovl_0a ModelObj, BtlUnit9C in ovl_0b; Unk8004AFF0 has the rest) */
 typedef struct {
@@ -2773,7 +2818,7 @@ static inline void evt_finishTurn_inline(EvtObject *p) {
         p->animFrames = evt_getAnimFrameCount(p->modelId, v);
         p->animSpeed = p->defaultAnimSpeed;
     }
-    p->flags &= 0x7F;
+    p->flags &= ~EVT_OBJ_TURNING;
 }
 
 s32 evt_getSysVar(s32);
@@ -3835,13 +3880,13 @@ void evt_finishTurn(EvtObject *);
 
 /* Inlined helper: start the animation set up in animStart/animEnd/animFlags. */
 static inline void evt_execInstr_anim(EvtObject *p, s32 anim) {
-    if ((p->animFlags & 0x80) && (p->flags & 0x80)) {
+    if ((p->animFlags & EVT_ANIM_SCRIPTED) && (p->flags & EVT_OBJ_TURNING)) {
         evt_finishTurn(p);
     }
     p->anim = anim;
     p->animFrame = p->animStart;
-    p->animFlags &= ~0x46;
-    p->animFlags |= (p->animStart > p->animEnd) ? 0xC0 : 0x80;
+    p->animFlags &= ~(EVT_ANIM_REVERSE | EVT_ANIM_HELD | EVT_ANIM_IDLE);
+    p->animFlags |= (p->animStart > p->animEnd) ? (EVT_ANIM_SCRIPTED | EVT_ANIM_REVERSE) : EVT_ANIM_SCRIPTED;
     p->animSubFrame = 0;
     p->animFrames = evt_getAnimFrameCount(p->modelId, anim);
     p->animSpeed = p->defaultAnimSpeed;
@@ -4010,13 +4055,13 @@ static inline void evt_execInstr_party(void) {
 }
 
 static inline void func_8004B3A8_inline(s32 a, s32 b) {
-    evt_createObject(a, b, 0x14, 0x10)->kind = 2;
+    evt_createObject(a, b, 0x14, 0x10)->kind = EVT_KIND_CODE;
 }
 
 static inline void evt_createRegion_inline(s32 a, s32 b) {
     EvtObject *p = evt_createObject(a, b, 0x38, 0x10);
-    p->kind = 3;
-    p->flags = 1;
+    p->kind = EVT_KIND_REGION;
+    p->flags = EVT_OBJ_ENABLED;
 }
 
 static inline void evt_execInstr_newactor(s32 uid, s32 b) {
@@ -4028,7 +4073,7 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     p->modelId = 0xFFFF;
     p->balloonWindow = 0xFF;
     p->scale = 0x40;
-    p->kind = 4;
+    p->kind = EVT_KIND_ACTOR;
     p->defaultAnimSpeed = 0x10;
     p->speed = 0x1E;
     p->animSpeed = 0x10;
@@ -4041,7 +4086,7 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     p->turnSpeed = 0x10;
     p->talkTarget = 0xFF;
     p->idleAnimSpeeds.w = 0x10101010;
-    p->flags |= 4;
+    p->flags |= EVT_OBJ_NO_NPC_COLLISION;
     switch (g_evtMode) {
     case EVT_MODE_FIELD:
         fld_queueModelBundle(uid);
@@ -4057,10 +4102,10 @@ static inline void evt_execInstr_window(EvtObject *obj, s32 b, s32 c) {
     EvtListNode *n;
     EvtObject *o;
 
-    if ((b & 0xA0) == 0x80 && obj->kind == 4) {
+    if ((b & 0xA0) == 0x80 && obj->kind == EVT_KIND_ACTOR) {
         for (n = g_evtState->objects; n != NULL; n = n->next) {
             o = n->obj;
-            if (o->kind == 4 && o->balloonWindow == c) {
+            if (o->kind == EVT_KIND_ACTOR && o->balloonWindow == c) {
                 o->balloonWindow = 0xFF;
             }
         }

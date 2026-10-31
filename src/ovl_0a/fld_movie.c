@@ -310,7 +310,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
     n = 0;
     for (e = evt_getObjectList(); e != NULL; e = e->next) {
         a = e->obj;
-        if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
+        if (a->state == EVT_STATE_RUNNING && (a->flags & EVT_OBJ_ENABLED) && a->kind == EVT_KIND_ACTOR) {
             s = (FieldObjSlot *)game_getModel(a->modelSlot);
             if (s->model->parent == NULL) {
                 arg0[n++] = s;
@@ -319,7 +319,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
     }
     for (e = evt_getObjectList(); e != NULL; e = e->next) {
         a = e->obj;
-        if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
+        if (a->state == EVT_STATE_RUNNING && (a->flags & EVT_OBJ_ENABLED) && a->kind == EVT_KIND_ACTOR) {
             s = (FieldObjSlot *)game_getModel(a->modelSlot);
             p = s->model->parent;
             if (p != NULL) {

@@ -1481,14 +1481,14 @@ void wm_naviDraw(void) {
     page = g_worldNaviPage;
     switch (g_worldNaviMode) {
     case 1:
-        if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == 1 && (g_worldVehicleActor->flags & 1) &&
+        if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == EVT_STATE_RUNNING && (g_worldVehicleActor->flags & EVT_OBJ_ENABLED) &&
             !((u8)g_worldMoveMode >= 7 && (u8)g_worldMoveMode < 10)) {
             CVECTOR c0 = g_worldNaviVehicleColorA;
             CVECTOR c1 = g_worldNaviVehicleColorB;
             wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2);
             wm_naviDrawMarker(x, z, 1, 1, c0, c1, 0x40, 0xC8, 0x82, 1);
         }
-        if (g_worldMountActor != NULL && g_worldMountActor->state == 1 && (g_worldMountActor->flags & 1) &&
+        if (g_worldMountActor != NULL && g_worldMountActor->state == EVT_STATE_RUNNING && (g_worldMountActor->flags & EVT_OBJ_ENABLED) &&
             !((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode < 7)) {
             CVECTOR c0 = g_worldNaviMountColorA;
             CVECTOR c2 = g_worldNaviMountColorB;
@@ -1502,14 +1502,14 @@ void wm_naviDraw(void) {
         break;
     case 2:
         if (g_worldNaviVisible != 0) {
-            if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == 1 && (g_worldVehicleActor->flags & 1) &&
+            if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == EVT_STATE_RUNNING && (g_worldVehicleActor->flags & EVT_OBJ_ENABLED) &&
                 !((u8)g_worldMoveMode >= 7 && (u8)g_worldMoveMode < 10)) {
                 CVECTOR c0 = g_worldNaviVehicleColorA;
                 CVECTOR c3 = g_worldNaviVehicleColorB;
                 wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2 + 1);
                 wm_naviDrawMarker(x, z, 1, 1, c0, c3, 0x40, 0x28, 9, 1);
             }
-            if (g_worldMountActor != NULL && g_worldMountActor->state == 1 && (g_worldMountActor->flags & 1) &&
+            if (g_worldMountActor != NULL && g_worldMountActor->state == EVT_STATE_RUNNING && (g_worldMountActor->flags & EVT_OBJ_ENABLED) &&
                 !((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode < 7)) {
                 CVECTOR c0 = g_worldNaviMountColorA;
                 CVECTOR c1 = g_worldNaviMountColorB;
