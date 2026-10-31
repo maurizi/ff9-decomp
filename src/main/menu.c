@@ -40,7 +40,7 @@ void menu_doOpen(s32 a, s32 b) {
         g_menu.fadeOutOnClose = 1;
         g_menu.onClose = 0;
         g_menu.state = 1;
-        if (st->mode == 1) {
+        if (st->mode == GS_MODE_FIELD) {
             st->gameData->ctx.ovl65->unk0 |= 0x1000;
         }
         g_gameState->gameData->flags |= GD_MENU_OPEN;

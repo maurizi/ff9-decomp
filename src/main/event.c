@@ -1421,7 +1421,7 @@ s32 evt_execInstr(void) {
     case EVT_OP_SET_MODEL:
         po->modelId = evt_getArg16_inline();
         po->modelSlot = evt_createModel(g_evtCurObj);
-        g_evtCurObj->flags |= 1;
+        g_evtCurObj->flags |= EVT_OBJ_ENABLED;
         po->height = -(evt_getArg8_inline() << 2);
         return 0;
     case 0xD4:

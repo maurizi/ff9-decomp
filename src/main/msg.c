@@ -19,13 +19,13 @@ void msg_init(void) {
     D_8007B94C = f->unk8;
     g_penGlyphDecode.kanjiCode = -1;
     switch (s->mode) {
-    case 1:
+    case GS_MODE_FIELD:
         g_msgTable = s->gameData->ctx.ovl65->unkC->unk8;
         break;
-    case 3:
+    case GS_MODE_WORLD:
         g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->unk8->unk14;
         break;
-    case 2:
+    case GS_MODE_BATTLE:
         g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->work->unk14;
         break;
     }
@@ -55,7 +55,7 @@ void msg_readPad(void) {
     g_msgPadRepeatTimer = g_gameState->vsyncMode != 0 ? g_msgPadRepeatTimer - 2 : g_msgPadRepeatTimer - 1;
     if (g_msgPadRepeatTimer < 0 && !(g_msgPadRepeatTimer & 3)) {
         f = 1;
-        g_msgPadPrev &= ~0xF0;
+        g_msgPadPrev &= ~(PAD_UP | PAD_RIGHT | PAD_DOWN | PAD_LEFT);
     }
     x = cur & ~g_msgPadPrev;
     if (x != 0) {
@@ -75,7 +75,7 @@ void msg_beginDraw(void) {
     u32 *tbl;
     u8 *cur;
 
-    if (s->mode == 2 || s->mode == 6) {
+    if (s->mode == GS_MODE_BATTLE || s->mode == 6) {
         D_8007B9A0 = 1;
         pp = &D_8007B9A8;
         tbl = &D_8007B9B0[s->gameData->drawBuf];
@@ -1422,7 +1422,7 @@ void msg_drawChoiceCursor(Window *w) {
     GameData *g;
     s32 ofs;
 
-    if (g_msgChoiceLine >= 0 && w->state == 3 && (((Window *)w->userData)->animMode & 2)) {
+    if (g_msgChoiceLine >= 0 && w->state == WIN_STATE_OPEN && (((Window *)w->userData)->animMode & 2)) {
         g = g_gameState->gameData;
         g_penOt = g->ot[g->drawBuf] + w->otz;
         pen_begin();

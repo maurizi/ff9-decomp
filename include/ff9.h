@@ -1279,7 +1279,7 @@ typedef struct EvtObject {
 #define EVT_STATE_SUSPENDED 3 /* skipped by evt_runScripts; savedState holds the state to restore (evt_init after a battle, evt_returnFromFunc) */
 
 /* EvtObject.flags */
-#define EVT_OBJ_ENABLED 0x01 /* region created with it; actors without it are skipped by the field/world overlays and the navi map; op 0xD5 clears it, op 0xD6 restores it */
+#define EVT_OBJ_ENABLED 0x01 /* set with the model (EVT_OP_SET_MODEL) and on new regions; actors without it are skipped by the field/world overlays and the navi map; op 0xD5 clears it, op 0xD6 restores it */
 #define EVT_OBJ_NO_PLAYER_COLLISION 0x02 /* passes through the player (evt_findNearestObject: both objects need the bit) */
 #define EVT_OBJ_NO_NPC_COLLISION 0x04 /* passes through objects other than the player; new actors have it */
 #define EVT_OBJ_NO_TALK 0x08 /* evt_findNearestObject's talk search skips it */
@@ -1932,7 +1932,8 @@ extern s32 g_padPortMask[];
 #define GS_MODE_BATTLE 2 /* ovl_0b btl_entry */
 #define GS_MODE_WORLD 3 /* ovl_0c wm_entry */
 #define GS_MODE_ENDING 4 /* ovl_15 ending_main */
-/* 5: no overlay and no case in game_main; vib_update and ovl_64/ovl_0a treat it like the field (docs/wip/constants_runtime_main.md) */
+/* 5: no overlay and no case in game_main; vib_update and ovl_64/ovl_0a treat it like the field. 6: no overlay either;
+ * msg_beginDraw treats it like the battle (docs/wip/constants_runtime_main.md) */
 #define GS_MODE_GAME_OVER 7 /* ovl_65 fld_gameOver (field exit FLD_EXIT_GAME_OVER) */
 #define GS_MODE_BATTLE_END 8 /* ovl_65 battleEnd_main, set by ovl_0b when a battle ends */
 #define GS_MODE_TETRA_MASTER 9 /* ovl_0d tm_main; as prevMode it makes evt_init/evt_createModels rebuild the field models */
