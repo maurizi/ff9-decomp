@@ -7,7 +7,7 @@ void btl_startBattle(void) {
     b = g_gameState->gameData->ctx.battle;
     p = b->work;
     btlbg_init(p->bgHeader, p->bgTexAnims);
-    b->loadFlags |= 1;
+    b->loadFlags |= BTL_LOAD_STARTED;
     btl_initCmdQueue(b);
     btl_initTargetCursor(b);
     btl_initSceneFlags();
@@ -26,7 +26,7 @@ void btl_updateCombat(GameData *arg0, Battle *arg1) {
     u = arg1->unitList;
     sp10 = arg1->work->prims[arg0->drawBuf];
     while (u != NULL) {
-        if (((u->flags >> BTL_UNIT_TARGETED_BIT) & 1) && (arg1->cmdFlags & 2)) {
+        if (((u->flags >> BTL_UNIT_TARGETED_BIT) & 1) && (arg1->cmdFlags & BTL_CMDF_MARKERS)) {
             btl_projectUnitPos(u);
         } else {
             u->onScreen = 0;
@@ -38,7 +38,7 @@ void btl_updateCombat(GameData *arg0, Battle *arg1) {
         if (!((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1)) {
             btl_updateUnitModel(u, &sp10);
         }
-        if (btlui_getActiveUnit() == u && (arg1->cmdFlags & 2) && !(u->model->flags & 0x10)) {
+        if (btlui_getActiveUnit() == u && (arg1->cmdFlags & BTL_CMDF_MARKERS) && !(u->model->flags & 0x10)) {
             btl_drawActiveMarker(arg0, arg1, u);
         }
         btl_updateHpStatus(u);
@@ -227,7 +227,7 @@ void btl_applyHitSupports(BtlUnit *arg0, u8 *arg1) {
 void btl_initCmdQueue(Battle *arg0) {
     arg0->curCmd = NULL;
     arg0->cmdPhase = 0;
-    arg0->cmdFlags = 2;
+    arg0->cmdFlags = BTL_CMDF_MARKERS;
     arg0->escapeCmd.caster = NULL;
     arg0->cmdQueue.caster = NULL;
     btl_clearCmd_inline(&arg0->cmdQueue);
@@ -294,7 +294,7 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     switch (arg1) {
     case BTL_CMD_SPEAR:
     case BTL_CMD_SPEAR_TRANCE:
-        g_gameState->gameData->ctx.battle->cmdFlags |= 0x10;
+        g_gameState->gameData->ctx.battle->cmdFlags |= BTL_CMDF_SPEAR;
         arg0->ability = (BtlCmd8 *)&g_gameState->gameData->ctx.battle->abilities[arg2];
         break;
     case BTL_CMD_THROW:
@@ -304,11 +304,11 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         arg0->ability = &g_gameState->gameData->ctx.battle->enemyAbilities[arg2];
         break;
     case BTL_CMD_ESCAPE:
-        if (g_gameState->gameData->ctx.battle->cmdFlags & 1) {
+        if (g_gameState->gameData->ctx.battle->cmdFlags & BTL_CMDF_ESCAPE) {
             arg0->subNo = arg2;
             return;
         }
-        g_gameState->gameData->ctx.battle->cmdFlags |= 1;
+        g_gameState->gameData->ctx.battle->cmdFlags |= BTL_CMDF_ESCAPE;
         arg0->ability = (BtlCmd8 *)&g_gameState->gameData->ctx.battle->abilities[ABIL_FLEE];
         break;
     case BTL_CMD_ITEM:
@@ -366,7 +366,7 @@ void btl_setEnemyCmd(s32 arg0, s16 arg1, u32 arg2, u32 arg3) {
 
     u = btl_getUnitById(arg0);
     b = g_gameState->gameData->ctx.battle;
-    if (b->cmdFlags & 1 || (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE))) {
+    if (b->cmdFlags & BTL_CMDF_ESCAPE || (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE))) {
         goto fail;
     }
     if (arg2 == 0x2F) {
@@ -657,7 +657,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             }
             btl_clearCmdQueue(arg0);
         } else {
-            arg0->cmdFlags &= ~1;
+            arg0->cmdFlags &= ~BTL_CMDF_ESCAPE;
         }
         return 0;
     case BTL_CMD_TRANCE_EIDOLON:
@@ -895,12 +895,12 @@ void btl_finishCmd(Battle *b) {
             u->cmdIssued = 0;
         } else if (cmd->cmdNo == BTL_CMD_SPEAR) {
             btl_removeStatus(u, BTL_STATUS_JUMP);
-            g_gameState->gameData->ctx.battle->cmdFlags &= ~0x10;
+            g_gameState->gameData->ctx.battle->cmdFlags &= ~BTL_CMDF_SPEAR;
         } else if (cmd->cmdNo == BTL_CMD_SPEAR_TRANCE) {
             btl_addStatus(u, BTL_STATUS_JUMP);
             u->targetableReq = 2;
             u->flags |= BTL_UNIT_HIDDEN;
-            g_gameState->gameData->ctx.battle->cmdFlags &= ~0x10;
+            g_gameState->gameData->ctx.battle->cmdFlags &= ~BTL_CMDF_SPEAR;
         }
         if ((u->status & BTL_STATUS_TRANCE) && cmd->cmdNo != BTL_CMD_JUMP && cmd->cmdNo != BTL_CMD_JUMP_TRANCE) {
             n = (0x12C - u->level) / u->spirit * 10;
@@ -913,12 +913,12 @@ void btl_finishCmd(Battle *b) {
                 btl_removeStatus(u, BTL_STATUS_TRANCE);
             }
             if (cmd->cmdNo == BTL_CMD_EIDOLON && b->eidolonAbility != 0) {
-                b->cmdFlags |= 4;
+                b->cmdFlags |= BTL_CMDF_EIDOLON_TIMER;
                 b->eidolonTimer = (0x3C - u->spirit) * 200;
             }
         }
     } else if (cmd->cmdNo == BTL_CMD_TRANCE_EIDOLON) {
-        b->cmdFlags &= ~8;
+        b->cmdFlags &= ~BTL_CMDF_EIDOLON_QUEUED;
         b->eidolonTimer = (0x3C - u->spirit) * 200;
     } else if (cmd->cmdNo < BTL_CMD_ENEMY_COUNTER && btl_isCmdPending(u->cmd)) {
         u->flags |= BTL_UNIT_CMD_WAITING;
@@ -1009,7 +1009,7 @@ void btl_clearCmdQueue(Battle *arg0) {
     }
     arg0->eidolonTimer = 0;
     arg0->eidolonAbility = 0;
-    arg0->cmdFlags &= ~0xC;
+    arg0->cmdFlags &= ~(BTL_CMDF_EIDOLON_TIMER | BTL_CMDF_EIDOLON_QUEUED);
 }
 
 void btl_enqueueCmd(BtlCmd *arg0) {
@@ -1227,7 +1227,7 @@ void btl_cancelTranceEidolon(BtlUnit *arg0) {
         }
         b->eidolonTimer = 0;
         b->eidolonAbility = 0;
-        b->cmdFlags &= ~0xC;
+        b->cmdFlags &= ~(BTL_CMDF_EIDOLON_TIMER | BTL_CMDF_EIDOLON_QUEUED);
     }
 }
 
@@ -1346,7 +1346,7 @@ void btl_unlinkCmd(BtlCmd **arg0, u8 arg1) {
     p->info.b.unk0_2 = 0;
     p->info.b.automatic = 0;
     if (arg1 && p->cmdNo == BTL_CMD_ESCAPE) {
-        g_gameState->gameData->ctx.battle->cmdFlags &= ~1;
+        g_gameState->gameData->ctx.battle->cmdFlags &= ~BTL_CMDF_ESCAPE;
     }
 }
 

@@ -25,7 +25,7 @@ void btl_initParty(Battle *arg0) {
     for (; n < 4; n++) {
         arg0->units[n].unitBit = 0;
     }
-    arg0->loadFlags |= 0x10;
+    arg0->loadFlags |= BTL_LOAD_PARTY_INIT;
     btl_placeParty();
     k = arg0->scene.flags & 3;
     if (k == 0) {
@@ -87,7 +87,7 @@ void btl_initEnemies(Battle *arg0) {
     }
     prev->next = NULL;
     arg0->unitList = &arg0->units[4];
-    arg0->loadFlags |= 8;
+    arg0->loadFlags |= BTL_LOAD_ENEMIES_INIT;
     btl_setupEnemies();
     btlseq_init();
 }

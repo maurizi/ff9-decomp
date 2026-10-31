@@ -13,22 +13,22 @@ void btl_main(s32 arg0) {
     SetDispMask(1);
     do {
         btl_beginFrame();
-        if (!(g_gameState->gameData->ctx.battle->flags & 0x1000)) {
+        if (!(g_gameState->gameData->ctx.battle->flags & BTL_FLAG_OVER)) {
             btl_checkDiscCover();
             if (btlui_isPauseRequested() != 0) {
                 btl_updatePause();
             }
             if (!(g_gameState->gameData->flags & 0x100)) {
                 if (btl_update() == 1) {
-                    g_gameState->gameData->ctx.battle->flags |= 0x1000;
+                    g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_OVER;
                 }
-                if (!(g_gameState->gameData->ctx.battle->flags & 0x10) && (g_gameState->gameData->ctx.battle->loadFlags & 7) == 7) {
+                if (!(g_gameState->gameData->ctx.battle->flags & BTL_FLAG_UI_STARTED) && (g_gameState->gameData->ctx.battle->loadFlags & BTL_LOAD_READY) == BTL_LOAD_READY) {
                     btlui_init();
-                    g_gameState->gameData->ctx.battle->flags |= 0x10;
+                    g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_UI_STARTED;
                 }
-                if (!(g_gameState->gameData->ctx.battle->flags & 0x40) && (g_gameState->gameData->battleFlags & 0x40)) {
+                if (!(g_gameState->gameData->ctx.battle->flags & BTL_FLAG_EXIT_PRELOADED) && (g_gameState->gameData->battleFlags & 0x40)) {
                     btl_preloadExit();
-                    g_gameState->gameData->ctx.battle->flags |= 0x40;
+                    g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_EXIT_PRELOADED;
                 }
                 game_updateTimer();
                 game_updateFade();
@@ -49,8 +49,8 @@ void btl_updatePause(void) {
     s32 i;
     s32 w;
 
-    if (!(f & 0x1000)) {
-        if (!(gd->flags & 0x100) || (f & 0x20)) {
+    if (!(f & BTL_FLAG_OVER)) {
+        if (!(gd->flags & 0x100) || (f & BTL_FLAG_DISC_COVER_OPEN)) {
             gd->flags |= 0x100;
             akao_pause(0);
             game_resumeClock(1);
@@ -58,7 +58,7 @@ void btl_updatePause(void) {
                 g_padActuator[i].unk1 = 0;
                 g_padActuator[i].unk0 = 0;
             }
-            if (g_gameState->gameData->ctx.battle->flags & 0x20) {
+            if (g_gameState->gameData->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN) {
                 g_padPortMask[0] |= 8;
             }
             ClearOTag(g_btlPauseOt, 1);
@@ -66,7 +66,7 @@ void btl_updatePause(void) {
             g_btlPauseStpOff.code[0] = GPU_STP(0, 0);
             g_btlPauseStpOff.code[1] = 0;
             addPrim(g_btlPauseOt, &g_btlPauseStpOff);
-            if (g_gameState->gameData->ctx.battle->flags & 0x20) {
+            if (g_gameState->gameData->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN) {
                 text_buildSmall(0x66, 0x6D, g_btlPauseOt, "Disc Cover Open", 4, (u8 *)g_gameState->gameData->ctx.battle->work->prims[g_gameState->gameData->drawBuf]);
             } else {
                 ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, g_btlPauseOt, 0xEB, 0, &w, g_btlPauseSprite);
@@ -93,7 +93,7 @@ void btl_updatePause(void) {
             btlui_setPauseRequest(0);
             return;
         }
-    } else if (f & 0x20) {
+    } else if (f & BTL_FLAG_DISC_COVER_OPEN) {
         return;
     }
     game_resumeClock(0);
@@ -111,17 +111,17 @@ void btl_checkDiscCover(void) {
     u16 f;
     a = cd_isShellOpen();
     f = g_gameState->gameData->ctx.battle->flags;
-    if (f & 0x10) {
-        if (!(f & 0x20)) {
+    if (f & BTL_FLAG_UI_STARTED) {
+        if (!(f & BTL_FLAG_DISC_COVER_OPEN)) {
             if (a != 0) {
                 btlui_setPauseRequest(1);
-                g_gameState->gameData->ctx.battle->flags |= 0x20;
+                g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_DISC_COVER_OPEN;
             }
         } else {
             b = cd_getState();
             if (b == 0) {
                 btlui_setPauseRequest(1);
-                g_gameState->gameData->ctx.battle->flags &= ~0x20;
+                g_gameState->gameData->ctx.battle->flags &= ~BTL_FLAG_DISC_COVER_OPEN;
             }
         }
     }
@@ -431,7 +431,7 @@ s32 btl_setupBackground(Battle11C0 *arg0, s32 arg1) {
         btl_relocTexAnims((TexAnimSet *)arg0->bgTexAnims, NULL);
     }
     DrawSync(0);
-    g_gameState->gameData->ctx.battle->flags |= 1;
+    g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_BG_LOADED;
     return 0;
 }
 
@@ -456,7 +456,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
     u8 save;
 
     if (arg0 & 0x8000) {
-        b->flags &= ~4;
+        b->flags &= ~BTL_FLAG_PARTY_LOADED;
         *state = 1;
     }
     switch (*state) {
@@ -549,7 +549,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             m->parentBone = save;
         }
     done:
-        g_gameState->gameData->ctx.battle->flags |= 4;
+        g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_PARTY_LOADED;
         *state = 0;
         break;
     }
@@ -579,7 +579,7 @@ s32 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     GameData *gd2;
     st = arg2;
     if (arg1 == -1) {
-        b->flags &= ~1;
+        b->flags &= ~BTL_FLAG_BG_LOADED;
         st->state = 2;
     }
     if (st->state == 1) {
@@ -596,7 +596,7 @@ s32 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
         v = arg0->bgData;
         b->files->data[3] = (void *)v;
         db_register(v, 0);
-        b->flags |= 1;
+        b->flags |= BTL_FLAG_BG_LOADED;
         st->state = 0;
     }
     return st->state;
@@ -618,7 +618,7 @@ s32 btl_loadSoundsStep(s16 arg0, s32 arg1, Unk800AA24C *arg2) {
     b = gd->ctx.battle;
     cd = gd->cdRead;
     if (arg1 & 0x8000) {
-        b->flags &= ~2;
+        b->flags &= ~BTL_FLAG_ENEMIES_LOADED;
         st->state = 2;
     }
 loop:
@@ -715,7 +715,7 @@ s32 btl_loadEnemyModelsStep(s32 arg0, s32 arg1, Unk800AA504 *arg2) {
     b = g_gameState->gameData->ctx.battle;
     req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
     if (arg1 & 0x8000) {
-        b->flags &= ~2;
+        b->flags &= ~BTL_FLAG_ENEMIES_LOADED;
         st->state = 2;
     }
 loop:
@@ -818,7 +818,7 @@ loop:
         st->state = 4;
         goto loop;
     case 7:
-        b->flags |= 2;
+        b->flags |= BTL_FLAG_ENEMIES_LOADED;
         st->state = 0;
         break;
     }
@@ -845,7 +845,7 @@ s32 btl_loadWeaponModelsStep(s32 arg0, Unk800AA958 *arg1) {
     b = g_gameState->gameData->ctx.battle;
     req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
     if (arg0 & 0x8000) {
-        b->flags &= ~4;
+        b->flags &= ~BTL_FLAG_PARTY_LOADED;
         st->state = 2;
     }
 loop:
@@ -929,7 +929,7 @@ s32 btl_loadPartyModelsStep(s32 arg0, Unk800AA958 *arg1) {
     b = g_gameState->gameData->ctx.battle;
     req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
     if (arg0 & 0x8000) {
-        b->flags &= ~4;
+        b->flags &= ~BTL_FLAG_PARTY_LOADED;
         st->state = 1;
     }
 loop:
@@ -1194,14 +1194,14 @@ void btl_unloadPartyModels(void) {
     btl_unregisterFiles(p->partyModels, 3);
     btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->partyModels, 3);
     btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->weaponFiles, 3);
-    b->flags &= ~4;
+    b->flags &= ~BTL_FLAG_PARTY_LOADED;
 }
 
 void btl_unloadEnemyModels(void) {
     Battle *b = g_gameState->gameData->ctx.battle;
     btl_unregisterFiles(b->files->enemyModels, 2);
     btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->enemyModels, 2);
-    b->flags &= ~2;
+    b->flags &= ~BTL_FLAG_ENEMIES_LOADED;
 }
 
 s16 btl_loadModelsStep(s32 arg0) {
@@ -1236,7 +1236,7 @@ s16 btl_loadModelsStep(s32 arg0) {
         }
     } else if (s == 4) {
         if (btl_loadPartyModelsStep(0x22, ld) == 0) {
-            g_gameState->gameData->ctx.battle->flags |= 4;
+            g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_PARTY_LOADED;
             *state = 0;
         }
     }

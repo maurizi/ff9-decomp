@@ -1287,7 +1287,7 @@ typedef struct {
 
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
-    u16 flags; /* 1 background loaded (btlbg_draw draws), 2 enemy models loaded, 4 party models loaded, 0x10 UI started, 0x20 disc cover open, 0x40 exit preloaded, 0x1000 battle over (btl_main) */
+    u16 flags; /* BTL_FLAG_* */
     u8 unk2[2];
     s32 savedHeap; /* g_modeHeap after btl_initMode; btl_load allocates from here again */
     s32 partyMotions[4][0x22]; /* per party member: motion data addresses; BtlUnit.motions points here (btl_loadPartyMotions) */
@@ -1303,7 +1303,7 @@ typedef struct Battle {
     u8 exitTimer; /* exit phases: frames of the fade before btl_saveParty */
     u8 escapeHeld; /* runtime: 1 while L1+R1 are held (btlui_pollEscape), units take the run-away stance */
     u8 fleeBrightness; /* escaping units' brightness, -2 per tick (btl_victory) */
-    u8 loadFlags; /* 1/2/4 setup steps (btlui_init runs once all three are set), 8 btl_initEnemies, 0x10 btl_initParty */
+    u8 loadFlags; /* BTL_LOAD_*: battle start steps */
     u8 partyBrightness; /* intro fade-in, +4 per tick to 0x20 (btl_updateIntro) */
     u8 enemyBrightness; /* intro fade-in, +4 per tick to 0x20 */
     u8 padD88[0xD90 - 0xD88];
@@ -1313,7 +1313,7 @@ typedef struct Battle {
     BtlCmd *curCmd; /* runtime: Vivi's command while her Attack executes */
     struct Battle108CSet cursorPrims[2]; /* target cursor, per draw buffer */
     BtlUnitList fxTargets; /* effect target list (btl_playCmdEffect -> btlfx_setTargets) */
-    u16 cmdFlags; /* 1 escape queued, 2 active marker and target projection on (btl_setMarkersVisible), 4/8 trance Eidolon timer running/fired, 0x10 Spear pending */
+    u16 cmdFlags; /* BTL_CMDF_* */
     u8 cmdPhase; /* curCmd's step in btl_processCmdQueue (0 check, 1 start effect, 2 wait, 3 finish) */
     u8 eidolonAbility; /* ability of the trance Eidolon follow-up (btl_startCmdEffect, BTL_CMD_EIDOLON) */
     s16 eidolonTimer; /* counts down by atbSpeed until BTL_CMD_TRANCE_EIDOLON */
@@ -1335,6 +1335,34 @@ typedef struct Battle {
     Battle16CC abilities[0xC0]; /* runtime: BtlCmd.ability = &abilities[subNo] (Attack 176, Focus 188) */
     s32 statusSets[64]; /* status masks indexed by ability/weapon status-set bytes (btl_applyAbilityStatus) */
 } Battle; /* 0x23CC */
+
+/* Battle.flags. Evidence: [code] */
+#define BTL_FLAG_BG_LOADED       0x01 /* background loaded: btl_updateIntro draws it (btl_loadBackgroundStep) */
+#define BTL_FLAG_ENEMIES_LOADED  0x02 /* enemy models loaded (btl_loadEnemyModelsStep); btl_updateIntro initialises the enemies */
+#define BTL_FLAG_PARTY_LOADED    0x04 /* party models loaded (btl_loadModelsStep, btl_reloadPartyStep); btl_updateIntro initialises the party */
+#define BTL_FLAG_UI_STARTED      0x10 /* btlui_init ran (btl_main, once loadFlags is BTL_LOAD_READY); the disc cover check runs from here on */
+#define BTL_FLAG_DISC_COVER_OPEN 0x20 /* btl_checkDiscCover: shell open, the pause screen shows "Disc Cover Open" */
+#define BTL_FLAG_EXIT_PRELOADED  0x40 /* btl_preloadExit ran (btl_main) */
+/* 0x100: tested before PutDispEnv (btl_putDispEnvNoUi, btlui_putDispEnvIfReady), never set by the C */
+#define BTL_FLAG_OVER            0x1000 /* btl_update returned 1: btl_main leaves (mode 8) */
+
+/* Battle.loadFlags: battle start steps (btl_updateIntro). Evidence: [code] */
+#define BTL_LOAD_STARTED       0x01 /* btl_startBattle ran */
+#define BTL_LOAD_ENEMIES_SHOWN 0x02 /* the enemies have faded in; btlseq_update runs from here on */
+#define BTL_LOAD_PARTY_SHOWN   0x04 /* the party has faded in */
+#define BTL_LOAD_READY         (BTL_LOAD_STARTED | BTL_LOAD_ENEMIES_SHOWN | BTL_LOAD_PARTY_SHOWN) /* btl_main starts the UI, btlcam_step goes on */
+#define BTL_LOAD_ENEMIES_INIT  0x08 /* btl_initEnemies ran */
+#define BTL_LOAD_PARTY_INIT    0x10 /* btl_initParty ran */
+#define BTL_LOAD_ENEMY_GREY    0x20 /* btl_makeEnemyGreyCluts ran: the enemy fade-in starts */
+#define BTL_LOAD_PARTY_GREY    0x40 /* btl_makePartyGreyCluts ran: the party fade-in starts */
+
+/* Battle.cmdFlags. Evidence: [code] */
+#define BTL_CMDF_ESCAPE         0x01 /* an escape (BTL_CMD_ESCAPE) is queued (btl_setCmd): no other command is accepted, units take the flee stance */
+#define BTL_CMDF_MARKERS_BIT    1
+#define BTL_CMDF_MARKERS        (1 << BTL_CMDF_MARKERS_BIT) /* active-unit marker and target projection on (btl_setMarkersVisible; set by btl_initCmdQueue) */
+#define BTL_CMDF_EIDOLON_TIMER  0x04 /* trance Dagger's Eidolon follow-up timer runs (btl_finishCmd after BTL_CMD_EIDOLON) */
+#define BTL_CMDF_EIDOLON_QUEUED 0x08 /* the timer ran out and BTL_CMD_TRANCE_EIDOLON is queued (btl_updateUnitStatus) */
+#define BTL_CMDF_SPEAR          0x10 /* a Spear (BTL_CMD_SPEAR*) is queued: jumping units' timers stop (btl_updateUnitStatus) */
 
 /* battle work area, allocated at g_loadAreaEnd + 0x61800 */
 typedef struct {

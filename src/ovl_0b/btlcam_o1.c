@@ -404,7 +404,7 @@ s32 btlcam_step(void) {
     e = g_btlCamera.endIntro;
     if (e == 1) {
         b = g_gameState->gameData->ctx.battle;
-        if ((b->loadFlags & 7) == 7) {
+        if ((b->loadFlags & BTL_LOAD_READY) == BTL_LOAD_READY) {
             if ((b->scene.flags >> 2) & 1) {
                 b->phase = e;
             } else {

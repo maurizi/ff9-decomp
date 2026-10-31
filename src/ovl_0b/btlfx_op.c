@@ -1850,14 +1850,14 @@ void btlfx_setUnitTexAnim(s32 arg0, s32 arg1, s32 arg2) {
 
 void btl_setMarkersVisible(s32 arg0) {
     if (arg0 != 0) {
-        g_gameState->gameData->ctx.battle->cmdFlags |= 2;
+        g_gameState->gameData->ctx.battle->cmdFlags |= BTL_CMDF_MARKERS;
     } else {
-        g_gameState->gameData->ctx.battle->cmdFlags &= ~2;
+        g_gameState->gameData->ctx.battle->cmdFlags &= ~BTL_CMDF_MARKERS;
     }
 }
 
 s32 btl_areMarkersVisible(void) {
-    return (g_gameState->gameData->ctx.battle->cmdFlags >> 1) & 1;
+    return (g_gameState->gameData->ctx.battle->cmdFlags >> BTL_CMDF_MARKERS_BIT) & 1;
 }
 
 void btlfx_showCasterCmdName(void) {

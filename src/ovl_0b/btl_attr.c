@@ -619,7 +619,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         b->phase = BTL_PHASE_END;
         b->escapeHeld = 0;
         b->subPhase = BTL_END_STOPPED;
-        b->cmdFlags &= ~1;
+        b->cmdFlags &= ~BTL_CMDF_ESCAPE;
         btl_clearCmdQueue(b);
         for (u = b->unitList; u != NULL; u = u->next) {
             u->flags &= ~BTL_UNIT_CMD_WAITING;

@@ -10,7 +10,7 @@ void btlui_vsync(void) {
         btlui_frameUpdate();
     }
     g = g_gameState->gameData;
-    if (!(g->flags & 0x100) && !(g->ctx.battle->flags & 0x20)) {
+    if (!(g->flags & 0x100) && !(g->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN)) {
         if (g_btluiState.skipFrames == 0 && (u8)btlui_isEnabled()) {
             func_800EB578(0xBA);
             btlui_beginFrame();
@@ -37,7 +37,7 @@ void btlui_frameUpdate(void) {
         btlui_applyEnable();
     }
     if (!(g_gameState->gameData->flags & 0x100)) {
-        if (!(g_gameState->gameData->ctx.battle->flags & 0x20)) {
+        if (!(g_gameState->gameData->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN)) {
             if (g_btluiState.enabled != 0) {
                 g_btluiState.hideWindows = (g_padHeld >> 19) & 1;
                 g_btluiState.prevAtbOn = g_btluiState.atbOn;
@@ -49,7 +49,7 @@ void btlui_frameUpdate(void) {
                 win_reapClosed();
             }
         }
-        if (!(g_gameState->gameData->flags & 0x100) && !(g_gameState->gameData->ctx.battle->flags & 0x20) && g_btluiState.skipFrames != 0) {
+        if (!(g_gameState->gameData->flags & 0x100) && !(g_gameState->gameData->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN) && g_btluiState.skipFrames != 0) {
             g_btluiState.skipFrames--;
         }
     }
@@ -257,7 +257,7 @@ void btlui_updateTargetFlags(void) {
     s32 r = 0;
     volatile Unk80104E68 *p = &g_btluiState;
     s32 f;
-    if (((g->gameData->ctx.battle->cmdFlags >> 1) ^ 1) & 1) {
+    if (((g->gameData->ctx.battle->cmdFlags >> BTL_CMDF_MARKERS_BIT) ^ 1) & 1) {
         r = 1;
     } else {
         do {
@@ -3682,7 +3682,7 @@ void btlui_drawPortIcons(void) {
     Unk80068EE8 *s;
     s32 f;
 
-    if (!(g->flags & 0x100) && !(g->ctx.battle->flags & 0x20) && g_btluiState.enabled != 0 &&
+    if (!(g->flags & 0x100) && !(g->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN) && g_btluiState.enabled != 0 &&
         (f = (g_gameState->config >> 5) & 1) == 1) {
         ClearOTag(&g_btluiPortIconOt, 1);
         if (g_btluiState.vsyncTick & 0x20) {

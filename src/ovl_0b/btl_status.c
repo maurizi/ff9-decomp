@@ -359,11 +359,11 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                 if ((arg0->status & BTL_STATUS_TRANCE) && BTL_UNIT_INDEX(arg0->flags) == CHR_DAGGER) {
                     b = g_gameState->gameData->ctx.battle;
                     fl = b->cmdFlags;
-                    if (fl & 4) {
-                        if (!(fl & 8)) {
+                    if (fl & BTL_CMDF_EIDOLON_TIMER) {
+                        if (!(fl & BTL_CMDF_EIDOLON_QUEUED)) {
                             if (b->eidolonTimer <= 0) {
                                 btl_setCmd(arg0->delayedCmd, BTL_CMD_TRANCE_EIDOLON, g_gameState->gameData->ctx.battle->eidolonAbility, btl_getUnitsWithStatus(1, 0), 8);
-                                g_gameState->gameData->ctx.battle->cmdFlags |= 8;
+                                g_gameState->gameData->ctx.battle->cmdFlags |= BTL_CMDF_EIDOLON_QUEUED;
                             } else {
                                 b->eidolonTimer -= arg0->atbSpeed;
                             }
@@ -371,7 +371,7 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                     }
                 }
                 btl_tickStatusTimers(arg0);
-            } else if ((arg0->status & BTL_STATUS_JUMP) && !(g_gameState->gameData->ctx.battle->cmdFlags & 0x10)) {
+            } else if ((arg0->status & BTL_STATUS_JUMP) && !(g_gameState->gameData->ctx.battle->cmdFlags & BTL_CMDF_SPEAR)) {
                 t->jumpTimer -= arg0->atbSpeed;
                 if (t->jumpTimer < 0) {
                     c = arg0->delayedCmd;
@@ -1044,7 +1044,7 @@ void btl_insertUnit(BtlUnit *arg0) {
 
 void btl_tryEscape(u8 arg0) {
     Battle *b = g_gameState->gameData->ctx.battle;
-    if (!(b->cmdFlags & 1)) {
+    if (!(b->cmdFlags & BTL_CMDF_ESCAPE)) {
         if ((u8)b->scene.flags >> 7 == 0) {
             btl_showMessage(BTL_MSG_CANT_ESCAPE);
         } else if (arg0 && (btl_isAtbRunning() & 0xFF)) {

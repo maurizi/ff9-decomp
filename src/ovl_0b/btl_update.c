@@ -316,12 +316,12 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
 
     ot = (u32 *)arg1->work->prims[arg0->drawBuf];
     btl_loadModelsStep(0);
-    if ((arg1->flags & 2) && (*(u32 *)&arg1->fleeBrightness & 0x2800) == 0x800) {
+    if ((arg1->flags & BTL_FLAG_ENEMIES_LOADED) && (*(u32 *)&arg1->fleeBrightness & 0x2800) == 0x800) {
         btl_makeEnemyGreyCluts();
-        arg1->loadFlags |= 0x20;
-    } else if ((arg1->flags & 4) && (*(u32 *)&arg1->fleeBrightness & 0x5000) == 0x1000) {
+        arg1->loadFlags |= BTL_LOAD_ENEMY_GREY;
+    } else if ((arg1->flags & BTL_FLAG_PARTY_LOADED) && (*(u32 *)&arg1->fleeBrightness & 0x5000) == 0x1000) {
         btl_makePartyGreyCluts();
-        arg1->loadFlags |= 0x40;
+        arg1->loadFlags |= BTL_LOAD_PARTY_GREY;
     }
     for (u = arg1->unitList; u != NULL; u = u->next) {
         if ((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1) {
@@ -335,39 +335,39 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
         }
         btl_updateUnitTint(u);
     }
-    if (arg1->loadFlags & 2) {
+    if (arg1->loadFlags & BTL_LOAD_ENEMIES_SHOWN) {
         btlseq_update();
     }
-    if (arg1->flags & 1) {
+    if (arg1->flags & BTL_FLAG_BG_LOADED) {
         ot = (u32 *)btlbg_draw(&arg0->viewMatrix, arg1->work->bgData, (s32)ot, arg0->ot[arg0->drawBuf],
                                   arg1->work->ot[arg0->drawBuf]);
     }
     ot = (u32 *)btl_drawBanner((u8 *)ot);
-    if (arg1->flags & 2) {
+    if (arg1->flags & BTL_FLAG_ENEMIES_LOADED) {
         f = arg1->loadFlags;
-        if (!(f & 2)) {
-            if (!(f & 8)) {
+        if (!(f & BTL_LOAD_ENEMIES_SHOWN)) {
+            if (!(f & BTL_LOAD_ENEMIES_INIT)) {
                 btl_saveEnemyCluts(ot);
                 btl_initEnemies(arg1);
                 ot = btl_initEnemyState(arg1, ot);
-            } else if (f & 0x20) {
+            } else if (f & BTL_LOAD_ENEMY_GREY) {
                 if ((s8)arg1->enemyBrightness >= 0x20) {
-                    arg1->loadFlags = f | 2;
+                    arg1->loadFlags = f | BTL_LOAD_ENEMIES_SHOWN;
                 } else {
                     arg1->enemyBrightness += 4;
                 }
             }
         }
     }
-    if (arg1->flags & 4) {
+    if (arg1->flags & BTL_FLAG_PARTY_LOADED) {
         g = arg1->loadFlags;
-        if (!(g & 4)) {
-            if (!(g & 0x10)) {
+        if (!(g & BTL_LOAD_PARTY_SHOWN)) {
+            if (!(g & BTL_LOAD_PARTY_INIT)) {
                 btl_savePartyCluts(ot);
                 btl_initParty(arg1);
-            } else if (g & 0x40) {
+            } else if (g & BTL_LOAD_PARTY_GREY) {
                 if ((s8)arg1->partyBrightness >= 0x20) {
-                    arg1->loadFlags = g | 4;
+                    arg1->loadFlags = g | BTL_LOAD_PARTY_SHOWN;
                 } else {
                     arg1->partyBrightness += 4;
                 }

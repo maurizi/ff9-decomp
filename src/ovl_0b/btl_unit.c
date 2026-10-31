@@ -123,7 +123,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     if ((u->flags >> BTL_UNIT_SHADOW_BIT) & 1) {
         id = (u->shadowDirBone << 8) | u->shadowBone;
         if (u->flags & BTL_UNIT_PARTY) {
-            if (!(g_gameState->gameData->ctx.battle->cmdFlags & 1)) {
+            if (!(g_gameState->gameData->ctx.battle->cmdFlags & BTL_CMDF_ESCAPE)) {
                 if (u->escapeStance != g_gameState->gameData->ctx.battle->escapeHeld) {
                     btl_setIdleMotion(u);
                 }
@@ -167,7 +167,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         }
         if (u->flags & BTL_UNIT_PARTY) {
             if (!(u->flags & (BTL_UNIT_COVERING | BTL_UNIT_DODGED))) {
-                if ((b->escapeHeld != 0 || (b->cmdFlags & 1)) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
+                if ((b->escapeHeld != 0 || (b->cmdFlags & BTL_CMDF_ESCAPE)) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
                     u->model->motion = (BtlUnit9CC *)u->motions[17];
                 } else if (u->status & BTL_STATUS_DEFEND) {
                     u->model->motion = (BtlUnit9CC *)u->motions[13];
