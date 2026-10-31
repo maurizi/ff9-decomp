@@ -45,15 +45,15 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E7CD4.vz = work->pos8.vz;
         ex->btlfx_getUnitBonePos(0x10, 0xE, (u16 *)&D_801E7CBC);
         ex->btlfx_getUnitBonePos(0x10, 0x10, (u16 *)&D_801E7CCC);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E7CDC);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&D_801E7CDC);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_193_emitPos);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&fx_193_emitPos);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7CE4;
+            work->emit0->trails = (s32)fx_193_op80Trails0;
             work->emit0->trailSlots = 4;
             work->emit0->trailStride = 0xF0;
         }
         if (work->emit4 != NULL) {
-            work->emit4->trails = (s32)D_801E80A4;
+            work->emit4->trails = (s32)fx_193_op80Trails1;
             work->emit4->trailSlots = 4;
             work->emit4->trailStride = 0xF0;
         }

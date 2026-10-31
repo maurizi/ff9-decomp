@@ -22,7 +22,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos54.vy = work->pos18.vy;
         work->pos54.vz = work->pos18.vz;
         fx_1b2_env = env;
-        fxm_vecPathInit(&D_801E8754, (u8 *)ex->btlfx_getFileData(entry->file, 1));
+        fxm_vecPathInit(&fx_1b2_vecPath, (u8 *)ex->btlfx_getFileData(entry->file, 1));
         work->model6C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x117, 0, 0, 0);
         work->unk3C.vx = -0x200;
         work->unk3C.vy = 0;
@@ -57,12 +57,12 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos44);
                 work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos4C);
                 if (work->emit4 != NULL) {
-                    work->emit4->trails = (s32)D_801E8B5C[work->unk68];
+                    work->emit4->trails = (s32)fx_1b2_op80Trails0[work->unk68];
                     work->emit4->trailSlots = 0x3C;
                     work->emit4->trailStride = 0x28;
                 }
                 if (work->emit8 != NULL) {
-                    work->emit8->trails = (s32)D_801EA77C[work->unk68];
+                    work->emit8->trails = (s32)fx_1b2_op80Trails1[work->unk68];
                     work->emit8->trailSlots = 0x3C;
                     work->emit8->trailStride = 0x28;
                 }
@@ -78,7 +78,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk38 = fxm_lerpRatio(0, -0x80, 4 - work->unk60, 4);
                 work->unk60--;
             }
-            fxm_vecPathGet(&D_801E8754, t, &work->scale28);
+            fxm_vecPathGet(&fx_1b2_vecPath, t, &work->scale28);
             ex->Hi_DrawEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model6C);
             ex->Hi_ModifyEffModelAbr(work->model6C, 1);
             if (work->unk60 >= 0) {
@@ -139,12 +139,12 @@ s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos14);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos1C);
             if (work->emit4 != NULL) {
-                work->emit4->trails = (s32)D_801EC39C;
+                work->emit4->trails = (s32)fx_1b2_op81Trails0;
                 work->emit4->trailSlots = 0xA;
                 work->emit4->trailStride = 0x80;
             }
             if (work->emit8 != NULL) {
-                work->emit8->trails = (s32)D_801EC89C;
+                work->emit8->trails = (s32)fx_1b2_op81Trails1;
                 work->emit8->trailSlots = 0xA;
                 work->emit8->trailStride = 0x80;
             }

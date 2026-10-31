@@ -24,8 +24,8 @@ typedef struct {
 } Fx100Work81;
 
 extern Unk800F78A4 *fx_100_env;
-extern s32 D_801E7D6C[];
-extern s32 D_801E827C[];
+extern s32 fx_100_op80Trails[];
+extern s32 fx_100_op81Trails[];
 
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static s32 fxm_isMotionDone(s32 unit);

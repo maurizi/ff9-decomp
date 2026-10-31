@@ -3,7 +3,7 @@
 static s32 fx_1ec_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR v;
 
-    fxm_posPathGet(&D_801E9034[(s16)(e->slot - 1)], frame, &v);
+    fxm_posPathGet(&fx_1ec_posPath0[(s16)(e->slot - 1)], frame, &v);
     v.vy = v.vy * 4 / 5;
     v.vz = v.vz * 3 / 4;
     v.vx += D_801EFB64.vx;
@@ -21,7 +21,7 @@ static s32 fx_1ec_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
 static s32 fx_1ec_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR v;
 
-    fxm_posPathGet(&D_801E90C4[(s16)(e->slot - 1)], frame, &v);
+    fxm_posPathGet(&fx_1ec_posPath1[(s16)(e->slot - 1)], frame, &v);
     v.vx += D_801EFB6C.vx;
     v.vy += D_801EFB6C.vy;
     v.vz += D_801EFB6C.vz;
@@ -58,7 +58,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EFB64.vz = work->pos24.vz;
         work->pos34.vy = 0;
         for (i = 0; i < 0x12; i++) {
-            fxm_posPathInit(&D_801E9034[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), i));
+            fxm_posPathInit(&fx_1ec_posPath0[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), i));
         }
         work->unk4C.vx = work->unk2C.vx;
         work->unk4C.vy = work->unk2C.vy;
@@ -90,7 +90,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos24);
             work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos24);
             if (work->emit0[3] != NULL) {
-                work->emit0[3]->trails = (s32)D_801E91B4;
+                work->emit0[3]->trails = (s32)fx_1ec_op80Trails0;
                 work->emit0[3]->trailSlots = 0x14;
                 work->emit0[3]->trailStride = 0x50;
             }
@@ -106,9 +106,9 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos24);
             work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->pos24);
             work->emit0[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos34);
-            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&D_801EFB74);
+            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&fx_1ec_emitPos0);
             if (work->emit0[7] != NULL) {
-                work->emit0[7]->trails = (s32)D_801E97F4;
+                work->emit0[7]->trails = (s32)fx_1ec_op80Trails1;
                 work->emit0[7]->trailSlots = 0x12;
                 work->emit0[7]->trailStride = 0x70;
                 if (work->emit0[7] != NULL) {
@@ -164,7 +164,7 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EFB6C.vy = work->pos3C.vy;
         D_801EFB6C.vz = work->pos3C.vz;
         for (i = 0; i < 0x1E; i++) {
-            fxm_posPathInit(&D_801E90C4[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xB), i));
+            fxm_posPathInit(&fx_1ec_posPath1[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xB), i));
         }
     } else {
     frame = entry->frame;
@@ -172,7 +172,7 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0x0:
         work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&work->pos34);
         if (work->emit0[0] != NULL) {
-            work->emit0[0]->trails = (s32)D_801E9FD4;
+            work->emit0[0]->trails = (s32)fx_1ec_op81Trails0;
             work->emit0[0]->trailSlots = 0x17;
             work->emit0[0]->trailStride = 0x90;
         }
@@ -183,7 +183,7 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0x18:
         work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos3C);
         if (work->emit0[2] != NULL) {
-            work->emit0[2]->trails = (s32)D_801EB924;
+            work->emit0[2]->trails = (s32)fx_1ec_op81Trails2;
             work->emit0[2]->trailSlots = 0x20;
             work->emit0[2]->trailStride = 0x50;
         }
@@ -201,9 +201,9 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
         break;
     case 0x38:
-        work->emit0[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&D_801EFB7C);
+        work->emit0[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&fx_1ec_emitPos1);
         if (work->emit0[9] != NULL) {
-            work->emit0[9]->trails = (s32)D_801EC324;
+            work->emit0[9]->trails = (s32)fx_1ec_op81Trails3;
             work->emit0[9]->trailSlots = 0x2A;
             work->emit0[9]->trailStride = 0x90;
             if (work->emit0[9] != NULL) {
@@ -218,7 +218,7 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos4C.vy = -0xFA0;
         work->emit0[10] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos4C);
         if (work->emit0[10] != NULL) {
-            work->emit0[10]->trails = (s32)D_801EACC4;
+            work->emit0[10]->trails = (s32)fx_1ec_op81Trails1;
             work->emit0[10]->trailSlots = 0x16;
             work->emit0[10]->trailStride = 0x90;
         }
@@ -297,12 +297,12 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x20), (s32)&work->pos4C);
             work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x27), (s32)&work->pos4C);
             if (work->emit0[4] != NULL) {
-                work->emit0[4]->trails = (s32)D_801EDAC4;
+                work->emit0[4]->trails = (s32)fx_1ec_op82Trails0;
                 work->emit0[4]->trailSlots = 0x26;
                 work->emit0[4]->trailStride = 0x90;
             }
             if (work->emit0[5] != NULL) {
-                work->emit0[5]->trails = (s32)D_801EF024;
+                work->emit0[5]->trails = (s32)fx_1ec_op82Trails1;
                 work->emit0[5]->trailSlots = 0x14;
                 work->emit0[5]->trailStride = 0x90;
             }

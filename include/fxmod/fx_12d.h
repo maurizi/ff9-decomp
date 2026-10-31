@@ -38,8 +38,8 @@ extern s16 D_801E7D08[6][2]; /* D_801E7CF0's entries in reverse order */
 extern Unk800F78A4 *fx_12d_env;
 extern BtlModel fx_12d_effModels[];
 extern SVECTOR D_801E7E40;
-extern s32 D_801E7E48[];
-extern s32 D_801E8388[];
+extern s32 fx_12d_op81Trails0[];
+extern s32 fx_12d_op81Trails1[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

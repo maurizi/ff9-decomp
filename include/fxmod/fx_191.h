@@ -42,16 +42,16 @@ extern u16 D_801E84DC[4]; /* files */
 extern SVECTOR D_801E84E4[4];
 extern s32 (*fx_191_op80ParticleMotions[4])();
 extern Unk800F78A4 *fx_191_env;
-extern Fx191Path D_801E8564;
-extern Fx191Path D_801E856C;
+extern Fx191Path fx_191_posPath0;
+extern Fx191Path fx_191_posPath1;
 extern SVECTOR D_801E8574;
 extern SVECTOR D_801E857C[4];
 extern SVECTOR D_801E859C;
-extern SVECTOR D_801E85CC;
-extern SVECTOR D_801E85D4;
-extern s32 D_801E85DC[4][0x60];
-extern s32 D_801E8BDC[];
-extern s32 D_801E8CBC[];
+extern SVECTOR fx_191_emitPos0;
+extern SVECTOR fx_191_emitPos1;
+extern s32 fx_191_op80Trails[4][0x60];
+extern s32 fx_191_op81Trails0[];
+extern s32 fx_191_op81Trails1[];
 extern s32 D_801E8D9C; /* op80 frame */
 extern s32 D_801E8DA0; /* op81 frame */
 

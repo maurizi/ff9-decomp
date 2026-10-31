@@ -41,9 +41,9 @@ extern u8 D_801EEC2C[];
 extern u8 D_801EEC30[];
 extern u8 D_801EEC34[];
 extern u8 D_801EEC38[];
-extern u8 D_801EF084[];
-extern u8 D_801EFD44[];
-extern u8 D_801F02C4[];
+extern u8 fx_17d_3_op80Trails0[];
+extern u8 fx_17d_3_op80Trails1[];
+extern u8 fx_17d_3_op80Trails2[];
 
 #define SUMMON(env) ((Fx17d3Summon *)(env)->loader)
 

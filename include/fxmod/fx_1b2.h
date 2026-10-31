@@ -65,12 +65,12 @@ typedef struct {
 
 extern Unk800F78A4 *fx_1b2_env;
 extern BtlModel fx_1b2_effModels[];
-extern Fx1b2Path D_801E8754;
+extern Fx1b2Path fx_1b2_vecPath;
 extern u32 D_801E875C[];
-extern s32 D_801E8B5C[][0x258];
-extern s32 D_801EA77C[][0x258];
-extern s32 D_801EC39C[];
-extern s32 D_801EC89C[];
+extern s32 fx_1b2_op80Trails0[][0x258];
+extern s32 fx_1b2_op80Trails1[][0x258];
+extern s32 fx_1b2_op81Trails0[];
+extern s32 fx_1b2_op81Trails1[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

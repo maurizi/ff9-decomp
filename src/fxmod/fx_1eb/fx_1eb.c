@@ -84,9 +84,9 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale30.vx = 0xAAA;
         work->scale30.vy = 0xAAA;
         work->scale30.vz = 0xAAA;
-        fxm_valuePathInit(&D_801E8740, (u16 *)ex->btlfx_getFileData(entry->file, 7));
+        fxm_valuePathInit(&fx_1eb_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, 7));
         for (j = 0; j < 3; j++) {
-            fxm_rotPosPathInit(&D_801E8728[j], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8218[j]));
+            fxm_rotPosPathInit(&fx_1eb_rotPosPath[j], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8218[j]));
             work->model52[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8210[j]), 1);
         }
         work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
@@ -112,7 +112,7 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 22:
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos44);
             if (work->emit14 != NULL) {
-                work->emit14->trails = (s32)D_801E8748;
+                work->emit14->trails = (s32)fx_1eb_op82Trails;
                 work->emit14->trailSlots = 6;
                 work->emit14->trailStride = 0x60;
             }
@@ -125,7 +125,7 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk4C--;
             }
             for (i = 0; i < 3; i++) {
-                fxm_rotPosPathGet(&D_801E8728[i], t, &work->rot18, &v);
+                fxm_rotPosPathGet(&fx_1eb_rotPosPath[i], t, &work->rot18, &v);
                 work->pos20.vx = v.vx;
                 work->pos20.vy = v.vy;
                 work->pos20.vz = v.vz;
@@ -133,7 +133,7 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos20.vy += work->pos44.vy;
                 work->pos20.vz += work->pos44.vz;
                 if (i == 0 && t >= 0x16) {
-                    fxm_valuePathGet(&D_801E8740, t - 0x16, &m);
+                    fxm_valuePathGet(&fx_1eb_valuePath, t - 0x16, &m);
                     ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model52[i],
                                              work->model58, m);
                 } else {

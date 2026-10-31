@@ -36,7 +36,7 @@ extern Pool6CEntry *fx_1ef_emitter1;
 extern SVECTOR D_801E8D84;
 extern Pool6CEntry *fx_1ef_emitter2;
 extern SVECTOR D_801E8D94;
-extern s32 D_801E8D9C[];
+extern s32 fx_1ef_op80Trails[];
 extern Pool6CEntry *fx_1ef_emitter3;
 extern SVECTOR D_801EA884;
 extern SVECTOR D_801EA88C;
@@ -61,8 +61,8 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 #define SUMMON(env) ((Fx1efSummon *)(env)->loader)
 extern s32 D_801EAA64[2]; /* fade timers */
 extern SVECTOR D_801EAA6C[4]; /* unit body positions */
-extern s32 D_801EAA8C[4][0x1FE];
-extern s32 D_801ECA6C[4][0x1FE];
+extern s32 fx_1ef_op81Trails0[4][0x1FE];
+extern s32 fx_1ef_op81Trails1[4][0x1FE];
 
 /* copied */
 extern Unk800F78A4 *fx_1ef_env;

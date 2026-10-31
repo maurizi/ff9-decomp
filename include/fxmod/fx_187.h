@@ -22,10 +22,10 @@ typedef struct {
 
 extern u16 D_801E7DB8[2]; /* bones */
 extern Unk800F78A4 *fx_187_env;
-extern s32 D_801E7E14[];
-extern s32 D_801E7F7C[];
-extern s32 D_801E80E4[];
-extern s32 D_801E8364[];
-extern s32 D_801E85E4[];
+extern s32 fx_187_op80Trails0[];
+extern s32 fx_187_op80Trails1[];
+extern s32 fx_187_op80Trails2[];
+extern s32 fx_187_op80Trails3[];
+extern s32 fx_187_op80Trails4[];
 
 #endif

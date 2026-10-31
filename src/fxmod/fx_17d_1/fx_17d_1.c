@@ -199,7 +199,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9D), (s32)&work->pos10);
                 work->emit74 = p;
                 if (p != NULL) {
-                    p->trails = (s32)D_801ED5C0;
+                    p->trails = (s32)fx_17d_1_op80Trails;
                     work->emit74->trailSlots = 0xE0;
                     work->emit74->trailStride = 0x1C;
                     if (work->emit74 != NULL) {

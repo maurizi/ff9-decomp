@@ -341,7 +341,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos28);
                 if (p != NULL) {
                     ((EffMotion *)p->file)->update = fx_1b0_op80ParticleMotion;
-                    p->trails = (s32)D_801E8D44;
+                    p->trails = (s32)fx_1b0_op80Trails0;
                     p->trailSlots = 0x20;
                     p->trailStride = 0xAC;
                     p->otZ = 0x140;
@@ -393,7 +393,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos28);
                 if (p != NULL) {
-                    p->trails = (s32)D_801EA2C4;
+                    p->trails = (s32)fx_1b0_op80Trails1;
                     p->trailSlots = 0x18;
                     p->trailStride = 0x8C;
                     p->otZ = 0x140;
@@ -410,7 +410,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 1) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos28);
                 if (p != NULL) {
-                    p->trails = (s32)D_801EAFE4;
+                    p->trails = (s32)fx_1b0_op80Trails2;
                     p->trailSlots = 0x1C;
                     p->trailStride = 0x8C;
                     p->otZ = 0x140;

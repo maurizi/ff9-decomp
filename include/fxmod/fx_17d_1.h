@@ -45,7 +45,7 @@ typedef struct {
 } Fx17d1Work80; /* 0x7C */
 
 extern BtlModel fx_17d_1_effModels[];
-extern s32 D_801ED5C0[];
+extern s32 fx_17d_1_op80Trails[];
 
 s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

@@ -16,7 +16,7 @@ void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start) {
     trail->unk1 = 0;
     if (start < n) {
         for (i = 0; i < n - start; i++) {
-        fxm_posPathGet(&D_801E84E8, 0, &v);
+        fxm_posPathGet(&fx_1e6_posPath, 0, &v);
         v.vx += D_801E92F8.vx;
         v.vy += D_801E92F8.vy;
         v.vz += D_801E92F8.vz;
@@ -31,7 +31,7 @@ void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start) {
     }
     for (i = 0; i < start;) {
         j = i + 1;
-        fxm_posPathGet(&D_801E84E8, start - j, &v);
+        fxm_posPathGet(&fx_1e6_posPath, start - j, &v);
         v.vx = v.vx * 6 / 10;
         v.vy = v.vy * 6 / 10;
         v.vz = v.vz * 6 / 10;
@@ -66,7 +66,7 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E92F8.vx = work->pos4.vx;
         D_801E92F8.vy = work->pos4.vy;
         D_801E92F8.vz = work->pos4.vz;
-        fxm_posPathInit(&D_801E84E8, (u8 *)ex->btlfx_getFileData(entry->file, 0xD));
+        fxm_posPathInit(&fx_1e6_posPath, (u8 *)ex->btlfx_getFileData(entry->file, 0xD));
         work->unkC = 0x1000;
     } else {
         frame = entry->frame;
@@ -131,32 +131,32 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos50);
             work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos50);
             if (work->emit0[0] != NULL) {
-                work->emit0[0]->trails = (s32)D_801E84F8;
+                work->emit0[0]->trails = (s32)fx_1e6_op81Trails0;
                 work->emit0[0]->trailSlots = 5;
                 work->emit0[0]->trailStride = 0x90;
             }
             if (work->emit0[1] != NULL) {
-                work->emit0[1]->trails = (s32)D_801E87C8;
+                work->emit0[1]->trails = (s32)fx_1e6_op81Trails1;
                 work->emit0[1]->trailSlots = 5;
                 work->emit0[1]->trailStride = 0x90;
             }
             if (work->emit0[2] != NULL) {
-                work->emit0[2]->trails = (s32)D_801E8A98;
+                work->emit0[2]->trails = (s32)fx_1e6_op81Trails2;
                 work->emit0[2]->trailSlots = 5;
                 work->emit0[2]->trailStride = 0x90;
             }
             if (work->emit0[3] != NULL) {
-                work->emit0[3]->trails = (s32)D_801E8D68;
+                work->emit0[3]->trails = (s32)fx_1e6_op81Trails3;
                 work->emit0[3]->trailSlots = 0x10;
                 work->emit0[3]->trailStride = 0x18;
             }
             if (work->emit0[4] != NULL) {
-                work->emit0[4]->trails = (s32)D_801E8EE8;
+                work->emit0[4]->trails = (s32)fx_1e6_op81Trails4;
                 work->emit0[4]->trailSlots = 0x10;
                 work->emit0[4]->trailStride = 0x18;
             }
             if (work->emit0[5] != NULL) {
-                work->emit0[5]->trails = (s32)D_801E9068;
+                work->emit0[5]->trails = (s32)fx_1e6_op81Trails5;
                 work->emit0[5]->trailSlots = 0x10;
                 work->emit0[5]->trailStride = 0x18;
             }

@@ -63,8 +63,8 @@ extern BtlModel fx_138_effModels[];
 extern u16 D_801E8488[6]; /* trail files */
 extern s32 fx_138_op81SpawnPoints[6];
 extern Unk800F78A4 *fx_138_env;
-extern u8 D_801E8860[];
-extern SVECTOR D_801E8E70[6];
+extern u8 fx_138_op81Trails[];
+extern SVECTOR fx_138_emitPos[6];
 extern Fx138Path D_801E8830[6];
 extern SVECTOR D_801E8E60; /* path origin */
 extern SVECTOR D_801E8E68; /* path rotation */

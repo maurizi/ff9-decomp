@@ -155,11 +155,11 @@ extern s16 D_801E9DEC[];
 extern s16 D_801E9DF4[];
 extern s16 D_801E9DFC[];
 extern s16 D_801E9E04[];
-extern Fx1bdTrack6 D_801EB77C;
-extern Fx1bdTrack12 D_801EB784[23];
-extern Fx1bdTrack6 D_801EB83C;
-extern Fx1bdTrack6 D_801EB844;
-extern Fx1bdTrack6 D_801EB84C;
+extern Fx1bdTrack6 fx_1bd_vecTrack0;
+extern Fx1bdTrack12 fx_1bd_rotPosTrack[23];
+extern Fx1bdTrack6 fx_1bd_posTrack;
+extern Fx1bdTrack6 fx_1bd_vecTrack1;
+extern Fx1bdTrack6 fx_1bd_vecTrack2;
 
 static void fxm_posTrackInit(Fx1bdTrack12 *track, u16 *data);
 static s32 fxm_posTrackGet(Fx1bdTrack6 *track, s32 t, SVECTOR *out);

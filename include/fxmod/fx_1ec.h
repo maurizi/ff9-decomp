@@ -52,16 +52,16 @@ typedef struct {
 } Fx1ecWork82; /* 0x70 */
 
 extern BtlModel fx_1ec_effModels[];
-extern s32 D_801E91B4[];
-extern s32 D_801E97F4[];
-extern s32 D_801E9FD4[];
-extern s32 D_801EACC4[];
-extern s32 D_801EB924[];
-extern s32 D_801EC324[];
-extern s32 D_801EDAC4[];
-extern s32 D_801EF024[];
-extern SVECTOR D_801EFB74;
-extern SVECTOR D_801EFB7C;
+extern s32 fx_1ec_op80Trails0[];
+extern s32 fx_1ec_op80Trails1[];
+extern s32 fx_1ec_op81Trails0[];
+extern s32 fx_1ec_op81Trails1[];
+extern s32 fx_1ec_op81Trails2[];
+extern s32 fx_1ec_op81Trails3[];
+extern s32 fx_1ec_op82Trails0[];
+extern s32 fx_1ec_op82Trails1[];
+extern SVECTOR fx_1ec_emitPos0;
+extern SVECTOR fx_1ec_emitPos1;
 
 static s32 fx_1ec_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 static s32 fx_1ec_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
@@ -73,10 +73,10 @@ static void fxm_startHeavyHitMotionIfActive(s32 unit);
 
 /* copied */
 extern Unk800F78A4 *fx_1ec_env;
-extern Fx1ecPath D_801E9034[0x12];
+extern Fx1ecPath fx_1ec_posPath0[0x12];
 static s32 fxm_posPathGet(Fx1ecPath *path, s32 t, SVECTOR *out);
 extern SVECTOR D_801EFB64;
-extern Fx1ecPath D_801E90C4[0x1E];
+extern Fx1ecPath fx_1ec_posPath1[0x1E];
 extern SVECTOR D_801EFB6C;
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 /* end copied */

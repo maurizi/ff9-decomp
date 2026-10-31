@@ -95,13 +95,13 @@ typedef struct {
 extern u16 D_801E8974[];
 extern u16 D_801E8980[];
 extern BtlModel fx_128_effModels[];
-extern Fx128Path_0b4 D_801E8F5C;
-extern Fx128Path_0b4 D_801E8F64[];
-extern Fx128Path D_801E8F8C;
-extern Fx128Keys D_801E8F94;
-extern SVECTOR D_801E9004;
-extern SVECTOR D_801E900C;
-extern u8 D_801E9014[];
-extern u8 D_801E92A4[];
+extern Fx128Path_0b4 fx_128_rotPosPath0;
+extern Fx128Path_0b4 fx_128_rotPosPath1[];
+extern Fx128Path fx_128_posPath;
+extern Fx128Keys fx_128_valuePath;
+extern SVECTOR fx_128_emitPos0;
+extern SVECTOR fx_128_emitPos1;
+extern u8 fx_128_op81Trails0[];
+extern u8 fx_128_op81Trails1[];
 
 #endif

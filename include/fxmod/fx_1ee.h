@@ -36,7 +36,7 @@ extern Pool6CEntry *fx_1ee_emitter1;
 extern SVECTOR D_801E92EC;
 extern Pool6CEntry *fx_1ee_emitter2;
 extern SVECTOR D_801E92FC;
-extern s32 D_801E9304[];
+extern s32 fx_1ee_op80Trails[];
 extern Pool6CEntry *fx_1ee_emitter3;
 extern SVECTOR D_801EADEC;
 extern SVECTOR D_801EADF4;

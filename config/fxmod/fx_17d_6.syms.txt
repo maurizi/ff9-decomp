@@ -7,3 +7,4 @@ fxm_drawArcTrailBranch = 0x801E8DBC; // type:func [code] fxm_drawArcTrail branch
 fx_17d_6_op83PoolTask = 0x801E8ED4; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_17d_6_op83
 fx_17d_6_env = 0x801E93B4; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_17d_6_effModels = 0x801E93C4; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_17d_6_op80Trails = 0x801E9624; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler

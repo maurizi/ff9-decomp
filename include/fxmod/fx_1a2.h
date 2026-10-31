@@ -75,8 +75,8 @@ extern CVECTOR D_801E97F8;
 extern Fx1a2Seg D_801EC1B4[];
 extern Fx1a2Seg D_801EC3B4[];
 extern Fx1a2Seg D_801EC5B4[];
-extern s32 D_801EBA94[];
-extern s32 D_801EBF54[];
+extern s32 fx_1a2_op80Trails0[];
+extern s32 fx_1a2_op80Trails1[];
 
 /* copied */
 extern Unk800F78A4 *fx_1a2_env;

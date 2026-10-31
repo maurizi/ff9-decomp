@@ -133,7 +133,7 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4);
                 if (p != NULL) {
-                    p->trails = (s32)D_801E7E98;
+                    p->trails = (s32)fx_188_op80Trails;
                     p->trailSlots = 0x19;
                     p->otZ = 0x20;
                     p->trailStride = 0x54;

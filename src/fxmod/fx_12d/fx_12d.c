@@ -34,7 +34,7 @@ s32 fx_12d_op81(s32 mode, Fx12dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
         work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos10);
         if (work->emitC != NULL) {
-            work->emitC->trails = (s32)D_801E8388;
+            work->emitC->trails = (s32)fx_12d_op81Trails1;
             work->emitC->trailSlots = 8;
             work->emitC->trailStride = 0x60;
         }
@@ -45,7 +45,7 @@ s32 fx_12d_op81(s32 mode, Fx12dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
             if (work->emit8 != NULL) {
-                work->emit8->trails = (s32)D_801E7E48;
+                work->emit8->trails = (s32)fx_12d_op81Trails0;
                 work->emit8->trailSlots = 0xC;
                 work->emit8->trailStride = 0x70;
             }

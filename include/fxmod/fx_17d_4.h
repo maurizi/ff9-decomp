@@ -72,7 +72,7 @@ typedef struct {
 #define SUMMON(env) ((Fx17d4Summon *)(env)->loader)
 
 extern SVECTOR D_801E971C;
-extern s32 D_801E989C[];
+extern s32 fx_17d_4_op80Trails[];
 extern s8 D_801EB25C;
 extern BtlModel fx_17d_4_effModels[];
 void func_801E7B8C(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);

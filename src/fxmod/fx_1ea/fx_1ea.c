@@ -165,12 +165,12 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk44.vx = 0x1800;
         work->unk44.vy = 0x1800;
         work->unk44.vz = 0x1800;
-        fxm_rotPosPathInit((Fx1eaPath *)&D_801E95F0, (u16 *)ex->btlfx_getFileData(entry->file, 0xB));
+        fxm_rotPosPathInit((Fx1eaPath *)&fx_1ea_rotPosPath0, (u16 *)ex->btlfx_getFileData(entry->file, 0xB));
         for (i = 0; i < 5; i++) {
             work->modelA4[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8D5C[i]), 1);
         }
         for (i = 0; i < 5; i++) {
-            fxm_rotPosPathInit((Fx1eaPath *)&D_801E95F8[i], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8D74[i]));
+            fxm_rotPosPathInit((Fx1eaPath *)&fx_1ea_rotPosPath1[i], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8D74[i]));
             work->modelA4[i + 5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8D68[i]), 1);
         }
         D_801E95B8.unk8 = 0;
@@ -268,7 +268,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     t = 0x1000 - (work->unk94 << 12) / n;
                 }
             }
-            fxm_rotPosPathGet(&D_801E95F0, k, &work->rot2C, &pos);
+            fxm_rotPosPathGet(&fx_1ea_rotPosPath0, k, &work->rot2C, &pos);
             work->unk34.vx = pos.vx;
             work->unk34.vy = pos.vy;
             work->unk34.vz = pos.vz;
@@ -282,7 +282,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->modelA4[a], work->unk54, work->unk54, work->unk54);
             }
             for (i2 = 0; i2 < 5; i2++) {
-                fxm_rotPosPathGet(&D_801E95F8[i2], k, &work->rot2C, &pos2);
+                fxm_rotPosPathGet(&fx_1ea_rotPosPath1[i2], k, &work->rot2C, &pos2);
                 work->unk34.vx = pos2.vx;
                 work->unk34.vy = pos2.vy;
                 work->unk34.vz = pos2.vz;

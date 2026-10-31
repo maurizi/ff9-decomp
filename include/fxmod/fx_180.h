@@ -66,21 +66,21 @@ typedef struct {
 
 extern Unk800F78A4 *fx_180_env;
 extern BtlModel fx_180_effModels[];
-extern Fx180Path D_801E93F8[0x12];
-extern Fx180Path D_801E9488[0x1E];
-extern s32 D_801E9578[];
-extern s32 D_801E9BB8[];
-extern s32 D_801EA398[];
-extern s32 D_801EB088[];
-extern s32 D_801EBCE8[];
-extern s32 D_801EC6E8[];
-extern s32 D_801EDE88[];
-extern s32 D_801EF3E8[];
-extern s32 D_801EFF28[];
+extern Fx180Path fx_180_posPath0[0x12];
+extern Fx180Path fx_180_posPath1[0x1E];
+extern s32 fx_180_op80Trails0[];
+extern s32 fx_180_op80Trails1[];
+extern s32 fx_180_op81Trails0[];
+extern s32 fx_180_op81Trails1[];
+extern s32 fx_180_op81Trails2[];
+extern s32 fx_180_op81Trails3[];
+extern s32 fx_180_op82Trails0[];
+extern s32 fx_180_op82Trails1[];
+extern s32 fx_180_op83Trails[];
 extern SVECTOR D_801F0828;
 extern SVECTOR D_801F0830;
-extern SVECTOR D_801F0838;
-extern SVECTOR D_801F0840;
+extern SVECTOR fx_180_emitPos0;
+extern SVECTOR fx_180_emitPos1;
 
 static s32 fx_180_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 static s32 fx_180_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);

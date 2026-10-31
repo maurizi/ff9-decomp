@@ -18,3 +18,4 @@ fx_1ed_emitter7 = 0x801EA638; // [code] emitter handle (Pool6CEntry from btlfx_s
 fx_1ed_emitter8 = 0x801EA648; // [code] emitter handle (Pool6CEntry from btlfx_startEmitter) kept in module data
 fx_1ed_emitter9 = 0x801EA658; // [code] emitter handle (Pool6CEntry from btlfx_startEmitter) kept in module data
 fx_1ed_emitter10 = 0x801EA668; // [code] emitter handle (Pool6CEntry from btlfx_startEmitter) kept in module data
+fx_1ed_op80Trails = 0x801E8B10; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler

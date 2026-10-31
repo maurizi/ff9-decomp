@@ -17,8 +17,8 @@ typedef struct {
 extern u16 D_801E7CD8[6][9]; /* per row: count, bones */
 extern Unk800F78A4 *fx_1ad_env;
 extern BtlModel fx_1ad_effModels[];
-extern s32 D_801E7E6C[];
-extern s32 D_801E8F4C[];
+extern s32 fx_1ad_op80Trails0[];
+extern s32 fx_1ad_op80Trails1[];
 
 static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 

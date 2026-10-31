@@ -43,15 +43,15 @@ extern u16 D_801E85CC[8];
 extern u16 D_801E85DC[8];
 extern s32 (*fx_1b4_op80ParticleMotions[8])();
 extern Unk800F78A4 *fx_1b4_env;
-extern Fx1b4Path D_801E8664[8];
+extern Fx1b4Path fx_1b4_posPath[8];
 extern Fx1b4Path D_801E86A4[8];
-extern s32 D_801E86E4[8][0x3C];
-extern s32 D_801E8E64[8][0xE0];
-extern s32 D_801EAA64[];
-extern s32 D_801ECE64[];
-extern s32 D_801EE0F4[];
+extern s32 fx_1b4_op80Trails0[8][0x3C];
+extern s32 fx_1b4_op80Trails1[8][0xE0];
+extern s32 fx_1b4_op81Trails[];
+extern s32 fx_1b4_op82Trails0[];
+extern s32 fx_1b4_op82Trails1[];
 extern SVECTOR D_801EF174; /* origin */
-extern SVECTOR D_801EF17C;
+extern SVECTOR fx_1b4_emitPos;
 
 static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames);
 static void fxm_posPathInit(Fx1b4Path *path, u16 *data);

@@ -22,12 +22,12 @@ typedef struct {
 } Fx1a3Work81;
 
 extern Unk800F78A4 *fx_1a3_env;
-extern s32 D_801E7C14[];
-extern s32 D_801E8074[];
-extern s32 D_801E86D4[];
+extern s32 fx_1a3_op80Trails[];
+extern s32 fx_1a3_op81Trails0[];
+extern s32 fx_1a3_op81Trails1[];
 extern SVECTOR D_801E93F4; /* from */
 extern SVECTOR D_801E93FC; /* to */
-extern SVECTOR D_801E9404;
+extern SVECTOR fx_1a3_emitPos;
 
 static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 

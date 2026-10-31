@@ -85,7 +85,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vy = 0x1000;
         work->unk20.vz = 0x1000;
         fx_1fc_env = env;
-        fxm_rotPosPathInit((Fx1fcPath *)&D_801EDA5C, (u16 *)ex->btlfx_getFileData(entry->file, 0x13));
+        fxm_rotPosPathInit((Fx1fcPath *)&fx_1fc_rotPosPath0, (u16 *)ex->btlfx_getFileData(entry->file, 0x13));
         work->model136[0] = ex->btlfx_registerEffectModel(&D_801E99A4, 1);
         work->rot8.vx = 0;
         work->rot8.vy = 0x800;
@@ -96,7 +96,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = 0x1000;
         work->unk20.vy = 0x1000;
         work->unk20.vz = 0x1000;
-        fxm_rotPosPathInit((Fx1fcPath *)&D_801EDA64, (u16 *)ex->btlfx_getFileData(entry->file, 2));
+        fxm_rotPosPathInit((Fx1fcPath *)&fx_1fc_rotPosPath1, (u16 *)ex->btlfx_getFileData(entry->file, 2));
         for (i = 0; i < 3; i++) {
             model = ex->Hi_RegisterTexPtrModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8CC0[i]),
                                                D_801E8CC8, D_801E8CD8);
@@ -115,11 +115,11 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->model136[i + 4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)fxm_offsetTableEntry(D_801E8CE8, i), 1);
         }
         for (i = 0; i < 10; i++) {
-            fxm_rotPosPathInit((Fx1fcPath *)&D_801EDA7C[i],
+            fxm_rotPosPathInit((Fx1fcPath *)&fx_1fc_rotPosPath2[i],
                           (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 6), i));
         }
-        fxm_posPathInit((Fx1fcPath *)&D_801EDACC, (u16 *)ex->btlfx_getFileData(entry->file, 0x17));
-        fxm_vecPathInit((Fx1fcPath *)&D_801EDAD4, (u16 *)ex->btlfx_getFileData(entry->file, 0x18));
+        fxm_posPathInit((Fx1fcPath *)&fx_1fc_posPath, (u16 *)ex->btlfx_getFileData(entry->file, 0x17));
+        fxm_vecPathInit((Fx1fcPath *)&fx_1fc_vecPath, (u16 *)ex->btlfx_getFileData(entry->file, 0x18));
         work->unk130 = -1;
         work->unk132 = -1;
         work->unk134 = 0;
@@ -171,7 +171,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         k = frame - 1;
         if ((u32)k < 0x18) {
-            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&D_801EDA5C, k, &work->rot8, &a);
+            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath0, k, &work->rot8, &a);
             work->unk10.vx = a.vx;
             work->unk10.vy = a.vy;
             work->unk10.vz = a.vz;
@@ -182,10 +182,10 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if ((u32)k < 0x28) {
             switch (k) {
             case 0:
-                fxm_valuePathInit((Fx1fcPath *)&D_801EDA6C, (u16 *)ex->btlfx_getFileData(entry->file, 0x1A));
+                fxm_valuePathInit((Fx1fcPath *)&fx_1fc_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, 0x1A));
                 break;
             case 4:
-                fxm_valuePathInit((Fx1fcPath *)&D_801EDA6C, (u16 *)ex->btlfx_getFileData(entry->file, 0x1B));
+                fxm_valuePathInit((Fx1fcPath *)&fx_1fc_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, 0x1B));
                 break;
             }
             if (k < 4) {
@@ -195,12 +195,12 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 m0 = 2;
                 m1 = 3;
             }
-            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&D_801EDA64, k, &work->rot8, &b);
+            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath1, k, &work->rot8, &b);
             work->unk10.vx = b.vx;
             work->unk10.vy = b.vy;
             work->unk10.vz = b.vz;
             work->rot8.vz = -work->rot8.vz;
-            fxm_valuePathGet(&D_801EDA6C, k, &t);
+            fxm_valuePathGet(&fx_1fc_valuePath, k, &t);
             ex->Hi_DrawMorphEffModel(&work->rot8, (VECTOR *)&work->unk10, (s32)&work->unk20, work->model136[m0],
                                      work->model136[m1], t);
         }
@@ -208,7 +208,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             k2 = frame - 1;
             j = 4;
             for (i = 0; i < 10; i++) {
-                fxm_rotPosPathGet((Fx1fcPath_0b4 *)&D_801EDA7C[i], k2, &work->rot30, &c);
+                fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath2[i], k2, &work->rot30, &c);
                 work->unk38.vx = c.vx;
                 work->unk38.vy = c.vy;
                 work->unk38.vz = c.vz;
@@ -220,8 +220,8 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if ((u32)frame < 0x1C) {
-            fxm_posPathGet((Fx1fcPath *)&D_801EDACC, frame, &d);
-            fxm_vecPathGet((Fx1fcTrack6 *)&D_801EDAD4, frame, &e);
+            fxm_posPathGet((Fx1fcPath *)&fx_1fc_posPath, frame, &d);
+            fxm_vecPathGet((Fx1fcTrack6 *)&fx_1fc_vecPath, frame, &e);
             for (q = 0; q < env->targets->targetCount; q++) {
                 work->unk58[q].vx = D_801EDEDC[q].vx + d.vx;
                 work->unk58[q].vy = D_801EDEDC[q].vy + d.vy;

@@ -19,6 +19,6 @@ typedef struct {
 } Fx104Work81;
 
 extern Unk800F78A4 *fx_104_env;
-extern s32 D_801E7A04[];
+extern s32 fx_104_op81Trails[];
 
 #endif

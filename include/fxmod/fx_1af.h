@@ -20,6 +20,6 @@ extern s16 D_801E7EF4[5]; /* model files */
 extern Unk800F78A4 *fx_1af_env;
 extern Unk80100C78Entry *fx_1af_task;
 extern BtlModel fx_1af_effModels[];
-extern s32 D_801E8348[];
+extern s32 fx_1af_op80Trails[];
 
 #endif

@@ -52,8 +52,8 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame >= 0 && frame < 0x18 && frame % 12 == 0) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&D_801E914C);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&D_801E9154);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&fx_11d_emitPos0);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&fx_11d_emitPos1);
             if (work->emit4 != NULL) {
                 ((Fx11dEffHdr *)work->emit4->file)->unk8 = fx_11d_op80ParticleMotion0;
             }
@@ -68,15 +68,15 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame >= 0 && frame < 0x18 && frame % 12 == 0) {
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&D_801E914C);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&D_801E9154);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_11d_emitPos0);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&fx_11d_emitPos1);
             if (work->emitC != NULL) {
-                work->emitC->trails = (s32)D_801E7DAC;
+                work->emitC->trails = (s32)fx_11d_op80Trails0;
                 work->emitC->trailSlots = 4;
                 work->emitC->trailStride = 0x70;
             }
             if (work->emit10 != NULL) {
-                work->emit10->trails = (s32)D_801E7F6C;
+                work->emit10->trails = (s32)fx_11d_op80Trails1;
                 work->emit10->trailSlots = 4;
                 work->emit10->trailStride = 0x70;
             }
@@ -104,7 +104,7 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos2C.vy -= 0xC8;
             work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos2C);
             if (work->emit18 != NULL) {
-                work->emit18->trails = (s32)D_801E812C;
+                work->emit18->trails = (s32)fx_11d_op80Trails2;
                 work->emit18->trailSlots = 8;
                 work->emit18->trailStride = 0x204;
             }

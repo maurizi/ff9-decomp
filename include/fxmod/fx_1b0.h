@@ -70,9 +70,9 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 extern u8 D_801E8CAC[]; /* colour fade table */
 extern s16 D_801E8CEC[8]; /* model files */
-extern s32 D_801E8D44[];
-extern s32 D_801EA2C4[];
-extern s32 D_801EAFE4[];
+extern s32 fx_1b0_op80Trails0[];
+extern s32 fx_1b0_op80Trails1[];
+extern s32 fx_1b0_op80Trails2[];
 extern Unk80100C78Entry *fx_1b0_task;
 extern BtlModel fx_1b0_effModels[];
 

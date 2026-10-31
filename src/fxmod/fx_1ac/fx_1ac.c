@@ -68,7 +68,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
             fx_1ac_emitter = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
             if (p != NULL) {
-                p->trails = (s32)D_801E8310;
+                p->trails = (s32)fx_1ac_op80Trails;
                 p->trailSlots = 4;
                 p->trailStride = 0x9C;
                 ((EffMotion *)p->file)->update = fx_1ac_op80ParticleMotion;

@@ -43,11 +43,11 @@ extern s16 D_801E7F10[6];
 extern s16 D_801E7F1C[6];
 extern s32 (*fx_1a0_op81ParticleMotions[6])();
 extern Unk800F78A4 *fx_1a0_env;
-extern s32 D_801E7F98[6][0x1C];
+extern s32 fx_1a0_op81Trails[6][0x1C];
 extern Fx1a0Path D_801E8238[6];
 extern s32 D_801E8268[6]; /* frames */
 extern SVECTOR D_801E8280;
-extern SVECTOR D_801E8288[6];
+extern SVECTOR fx_1a0_emitPos[6];
 extern SVECTOR D_801E82B8[6];
 
 s32 fx_1a0_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);

@@ -31,8 +31,8 @@ typedef struct {
 
 extern Fx123Bone D_801E8F64[6];
 extern Unk800F78A4 *fx_123_env;
-extern SVECTOR D_801E9BFC[6];
-extern SVECTOR D_801E9C2C[6];
+extern SVECTOR fx_123_emitPos0[6];
+extern SVECTOR fx_123_emitPos1[6];
 
 s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
@@ -120,9 +120,9 @@ extern u16 D_801E9054[6];
 extern u16 D_801E9060[6];
 extern s32 fx_123_pinParticles[6];
 extern BtlModel fx_123_effModels[];
-extern Fx123Path_0b4 D_801E965C[6];
-extern u8 D_801E96BC[6][0xE0];
-extern SVECTOR D_801E9C5C[6];
-extern SVECTOR D_801E9C8C[6];
+extern Fx123Path_0b4 fx_123_rotPosPath[6];
+extern u8 fx_123_op81Trails[6][0xE0];
+extern SVECTOR fx_123_emitPos2[6];
+extern SVECTOR fx_123_emitPos3[6];
 
 #endif

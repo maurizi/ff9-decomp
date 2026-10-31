@@ -4,3 +4,4 @@ fx_17d_4_op80 = 0x801E8018; // type:func [code] header op entry 0, effect script
 fxm_drawTrailLine = 0x801E7720; // type:func [code] btlfx_drawTrail of a two-point strip a to b
 fx_17d_4_env = 0x801E9890; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_17d_4_effModels = 0x801EB65C; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_17d_4_op80Trails = 0x801E989C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler

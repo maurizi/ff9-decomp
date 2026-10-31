@@ -48,12 +48,12 @@ typedef struct {
 
 extern SVECTOR D_801E8310;
 extern SVECTOR D_801E8318;
-extern SVECTOR D_801E8320;
-extern SVECTOR D_801E8328;
-extern SVECTOR D_801E8330;
-extern SVECTOR D_801E8338;
-extern s32 D_801E8350[];
-extern s32 D_801E9D00[];
+extern SVECTOR fx_127_emitPos0;
+extern SVECTOR fx_127_emitPos1;
+extern SVECTOR fx_127_emitPos2;
+extern SVECTOR fx_127_emitPos3;
+extern s32 fx_127_op80Trails0[];
+extern s32 fx_127_op80Trails1[];
 extern Unk800F78A4 *fx_127_env;
 extern SVECTOR D_801E82F8; /* path start */
 extern SVECTOR D_801E8300; /* path end */

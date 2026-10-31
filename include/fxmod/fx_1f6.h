@@ -20,7 +20,7 @@ typedef struct {
 
 extern Unk800F78A4 *fx_1f6_env;
 extern BtlModel fx_1f6_effModels[];
-extern s32 D_801E8044[];
-extern s32 D_801E92B4[];
+extern s32 fx_1f6_op80Trails0[];
+extern s32 fx_1f6_op80Trails1[];
 
 #endif

@@ -37,15 +37,15 @@ extern u16 D_801E8278[5]; /* path files */
 extern s32 (*fx_1e7_op81SpawnPoints[5])(SVECTOR *, SVECTOR *, s32, s32);
 extern Unk800F78A4 *fx_1e7_env;
 extern s32 D_801E82E4; /* op81 frame */
-extern Fx1e7Path D_801E82F0;
+extern Fx1e7Path fx_1e7_posPath;
 extern Fx1e7Path D_801E8300[5];
-extern s32 D_801E8330[];
-extern s32 D_801E8400[];
+extern s32 fx_1e7_op80Trails0[];
+extern s32 fx_1e7_op80Trails1[];
 extern SVECTOR D_801E84D0;
 extern SVECTOR D_801E84D8;
 extern SVECTOR D_801E84E0; /* angles */
-extern SVECTOR D_801E84E8;
-extern SVECTOR D_801E84F0[5];
+extern SVECTOR fx_1e7_emitPos0;
+extern SVECTOR fx_1e7_emitPos1[5];
 
 static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames);
 void func_801E79BC(SVECTOR *out, Fx1e7Path *path, s32 t);

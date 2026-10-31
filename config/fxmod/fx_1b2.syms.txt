@@ -15,3 +15,8 @@ fxm_startHitMotionIfActive = 0x801E840C; // type:func [code] fxm_startUnitMotion
 fxm_startHeavyHitMotionIfActive = 0x801E8458; // type:func [code] fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY) when btlfx_isUnitActive, [runtime] slot 3 = knock-down
 fx_1b2_env = 0x801E84EC; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_1b2_effModels = 0x801E84FC; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_1b2_vecPath = 0x801E8754; // [code] key path state for fxm_vecPathInit and fxm_vecPathGet
+fx_1b2_op80Trails0 = 0x801E8B5C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_1b2_op80Trails1 = 0x801EA77C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_1b2_op81Trails0 = 0x801EC39C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_1b2_op81Trails1 = 0x801EC89C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler

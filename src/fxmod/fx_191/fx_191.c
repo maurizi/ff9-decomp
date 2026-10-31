@@ -84,7 +84,7 @@ static s32 fx_191_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTO
 static s32 fxm_followPathParticle0(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
     SVECTOR v;
 
-    fxm_posPathGet(&D_801E8564, D_801E8DA0 * 3, &v);
+    fxm_posPathGet(&fx_191_posPath0, D_801E8DA0 * 3, &v);
     v.vx += D_801E859C.vx;
     v.vy += D_801E859C.vy;
     v.vz += D_801E859C.vz;
@@ -106,7 +106,7 @@ static s32 fxm_followPathParticle0(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s
 static s32 fxm_followPathParticle1(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
     SVECTOR v;
 
-    fxm_posPathGet(&D_801E856C, (D_801E8DA0 - 5) * 3, &v);
+    fxm_posPathGet(&fx_191_posPath1, (D_801E8DA0 - 5) * 3, &v);
     v.vx += D_801E859C.vx;
     v.vy += D_801E859C.vy;
     v.vz += D_801E859C.vz;
@@ -140,9 +140,9 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E8574.vy = work->pos10.vy;
         D_801E8574.vz = work->pos10.vz;
         for (i = 0; i < 4; i++) {
-            work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E84DC[i]), (s32)&D_801E85CC);
+            work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E84DC[i]), (s32)&fx_191_emitPos0);
             if (work->emit0[i] != NULL) {
-                work->emit0[i]->trails = (s32)D_801E85DC[i];
+                work->emit0[i]->trails = (s32)fx_191_op80Trails[i];
                 work->emit0[i]->trailSlots = 4;
                 work->emit0[i]->trailStride = 0x60;
             }
@@ -181,9 +181,9 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E859C.vx = work->pos18.vx;
         D_801E859C.vy = work->pos18.vy;
         D_801E859C.vz = work->pos18.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E85CC);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_191_emitPos0);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E8BDC;
+            work->emit0->trails = (s32)fx_191_op81Trails0;
             work->emit0->trailSlots = 2;
             work->emit0->trailStride = 0x70;
         }
@@ -193,16 +193,16 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
-        fxm_posPathInit(&D_801E8564, (u8 *)ex->btlfx_getFileData(entry->file, 4));
-        fxm_posPathInit(&D_801E856C, (u8 *)ex->btlfx_getFileData(entry->file, 5));
+        fxm_posPathInit(&fx_191_posPath0, (u8 *)ex->btlfx_getFileData(entry->file, 4));
+        fxm_posPathInit(&fx_191_posPath1, (u8 *)ex->btlfx_getFileData(entry->file, 5));
     } else {
         frame = entry->frame;
         D_801E8DA0 = frame;
         switch (frame) {
         case 5:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&D_801E85D4);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_191_emitPos1);
             if (work->emit4 != NULL) {
-                work->emit4->trails = (s32)D_801E8CBC;
+                work->emit4->trails = (s32)fx_191_op81Trails1;
                 work->emit4->trailSlots = 2;
                 work->emit4->trailStride = 0x70;
             }

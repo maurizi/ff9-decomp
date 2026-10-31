@@ -24,9 +24,9 @@ extern SVECTOR D_801E7CBC;
 extern SVECTOR D_801E7CC4;
 extern SVECTOR D_801E7CCC;
 extern SVECTOR D_801E7CD4;
-extern SVECTOR D_801E7CDC;
-extern s32 D_801E7CE4[];
-extern s32 D_801E80A4[];
+extern SVECTOR fx_193_emitPos;
+extern s32 fx_193_op80Trails0[];
+extern s32 fx_193_op80Trails1[];
 
 static s32 fx_193_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);

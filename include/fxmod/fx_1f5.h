@@ -16,6 +16,6 @@ typedef struct {
 } Fx1f5Work82;
 
 extern Unk800F78A4 *fx_1f5_env;
-extern s32 D_801E79F8[];
+extern s32 fx_1f5_op81Trails[];
 
 #endif

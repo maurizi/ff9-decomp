@@ -100,8 +100,8 @@ extern u16 D_801E8D84[];
 extern BtlModel fx_1ea_effModels[];
 extern Fx1eaRibbon D_801E95B8;
 extern Fx1eaRibbon D_801E95D8;
-extern Fx1eaPath_0b4 D_801E95F0;
-extern Fx1eaPath_0b4 D_801E95F8[];
+extern Fx1eaPath_0b4 fx_1ea_rotPosPath0;
+extern Fx1eaPath_0b4 fx_1ea_rotPosPath1[];
 extern u8 D_801E9628[][0x100];
 extern u8 D_801E9828[][0x88];
 

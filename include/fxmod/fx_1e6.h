@@ -46,13 +46,13 @@ typedef struct {
 
 extern Unk800F78A4 *fx_1e6_env;
 extern BtlModel fx_1e6_effModels[];
-extern Fx1e6Path D_801E84E8;
-extern s32 D_801E84F8[];
-extern s32 D_801E87C8[];
-extern s32 D_801E8A98[];
-extern s32 D_801E8D68[];
-extern s32 D_801E8EE8[];
-extern s32 D_801E9068[];
+extern Fx1e6Path fx_1e6_posPath;
+extern s32 fx_1e6_op81Trails0[];
+extern s32 fx_1e6_op81Trails1[];
+extern s32 fx_1e6_op81Trails2[];
+extern s32 fx_1e6_op81Trails3[];
+extern s32 fx_1e6_op81Trails4[];
+extern s32 fx_1e6_op81Trails5[];
 extern Fx1e6Trail D_801E91E8;
 extern SVECTOR D_801E92F8; /* origin */
 extern SVECTOR D_801E9300; /* rotation */

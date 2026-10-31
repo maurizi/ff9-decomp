@@ -79,6 +79,6 @@ extern CVECTOR D_801EC888[];
 extern CVECTOR D_801EC894[2];
 extern Fx134Bolt D_801EC8F4[];
 extern BtlModel fx_134_effModels[];
-extern u8 D_801ED1A4[];
+extern u8 fx_134_op80Trails[];
 
 #endif

@@ -59,8 +59,8 @@ extern u16 D_801E8288[6]; /* model files */
 extern u16 D_801E8294[6]; /* path files */
 extern Unk800F78A4 *fx_183_env;
 extern BtlModel fx_183_effModels[];
-extern Fx183Path D_801E8878[6];
-extern s32 D_801E88A8[][0xF0];
+extern Fx183Path fx_183_rotPosPath[6];
+extern s32 fx_183_op83Trails[][0xF0];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

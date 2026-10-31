@@ -53,9 +53,9 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_aimAngles((s16 *)&work->unk44, (s16 *)&work->pos34, (s16 *)&work->unk74);
         switch (frame) {
         case 0xA:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8320);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E8320);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E8320);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_127_emitPos0);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_127_emitPos0);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_127_emitPos0);
             work->pos4C.vx = work->unk44.vx;
             work->pos4C.vy = work->unk44.vy;
             work->pos4C.vz = work->unk44.vz;
@@ -84,16 +84,16 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801E8300.vx = work->pos34.vx;
             D_801E8300.vy = work->pos34.vy;
             D_801E8300.vz = work->pos34.vz;
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E8328);
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&D_801E8330);
-            fx_127_emitter = work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E8338);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_127_emitPos1);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&fx_127_emitPos2);
+            fx_127_emitter = work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&fx_127_emitPos3);
             if (work->emit10 != NULL) {
-                work->emit10->trails = (s32)D_801E8350;
+                work->emit10->trails = (s32)fx_127_op80Trails0;
                 work->emit10->trailSlots = 0x112;
                 work->emit10->trailStride = 0x18;
             }
             if (work->emit14 != NULL) {
-                work->emit14->trails = (s32)D_801E9D00;
+                work->emit14->trails = (s32)fx_127_op80Trails1;
                 work->emit14->trailSlots = 0x28;
                 work->emit14->trailStride = 0x40;
             }

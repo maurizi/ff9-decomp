@@ -30,12 +30,12 @@ extern u16 D_801E8860[9]; /* files */
 extern u16 D_801E8874[9]; /* start frames */
 extern u16 D_801E8888[9];
 extern u16 D_801E889C[9];
-extern s32 D_801E89D0[];
-extern s32 D_801E8FD0[9][0xE];
-extern s32 D_801E91D0[];
-extern s32 D_801E96A0[9][0x2C];
-extern s32 D_801E9CD0[];
-extern SVECTOR D_801EA5E0;
+extern s32 fx_1a7_op80Trails0[];
+extern s32 fx_1a7_op80Trails1[9][0xE];
+extern s32 fx_1a7_op81Trails0[];
+extern s32 fx_1a7_op81Trails1[9][0x2C];
+extern s32 fx_1a7_op81Trails2[];
+extern SVECTOR fx_1a7_emitPos;
 
 extern s32 (*fx_1a7_op80ParticleMotions[9])();
 extern s32 (*fx_1a7_op81ParticleMotions[9])();

@@ -92,7 +92,7 @@ typedef struct {
 
 extern Unk800F78A4 *fx_114_env;
 extern Fx114Wave D_801ED078;
-extern Fx114Track6 D_801ED0E8; /* scale keys */
+extern Fx114Track6 fx_114_vecTrack3; /* scale keys */
 extern u32 D_801ED1C8[];
 extern u8 D_801EE658[13][0x50];
 
@@ -239,10 +239,10 @@ extern s16 D_801EB6FC[];
 extern s16 D_801EB704[];
 extern u8 D_801EB70C[];
 extern s16 D_801EB714[];
-extern Fx114Track12 D_801ED0F8[];
-extern Fx114Track12 D_801ED1B0;
-extern Fx114Track6 D_801ED1B8;
-extern Fx114Track6 D_801ED1C0;
+extern Fx114Track12 fx_114_rotPosTrack[];
+extern Fx114Track12 fx_114_posTrack2;
+extern Fx114Track6 fx_114_vecTrack4;
+extern Fx114Track6 fx_114_vecTrack5;
 
 /* Hi_RegisterTexListModel called with three arguments (the original leaves a3 unset) */
 #define REG_TEX_LIST(ex) ((u16 (*)(void *, void *, void *))(ex)->Hi_RegisterTexListModel)
@@ -332,24 +332,24 @@ typedef struct {
 extern BtlModel fx_114_effModels[];
 extern u8 D_801EB6A4[];
 extern u8 D_801EB6BC[];
-extern Fx114Path D_801ED090;
-extern Fx114Path D_801ED098;
-extern Fx114Path D_801ED0A0;
-extern Fx114Path D_801ED0A8;
-extern Fx114Track6 D_801ED0B0;
-extern Fx114Track6 D_801ED0B8;
-extern Fx114Path D_801ED0C0;
-extern Fx114Path D_801ED0C8;
-extern Fx114Track6 D_801ED0D0;
-extern Fx114Track6 D_801ED0D8;
-extern Fx114Track6 D_801ED0E0;
-extern SVECTOR D_801EF288;
-extern SVECTOR D_801EF298[4];
-extern u8 D_801EE318[];
-extern u8 D_801EE3E8[];
-extern u8 D_801EE4B8[];
-extern u8 D_801EE588[];
-extern u8 D_801ED5C8[];
+extern Fx114Path fx_114_posPath0;
+extern Fx114Path fx_114_posPath1;
+extern Fx114Path fx_114_posPath2;
+extern Fx114Path fx_114_posPath3;
+extern Fx114Track6 fx_114_posTrack0;
+extern Fx114Track6 fx_114_posTrack1;
+extern Fx114Path fx_114_posPath4;
+extern Fx114Path fx_114_vecPath;
+extern Fx114Track6 fx_114_vecTrack0;
+extern Fx114Track6 fx_114_vecTrack1;
+extern Fx114Track6 fx_114_vecTrack2;
+extern SVECTOR fx_114_emitPos0;
+extern SVECTOR fx_114_emitPos1[4];
+extern u8 fx_114_op80Trails1[];
+extern u8 fx_114_op80Trails2[];
+extern u8 fx_114_op80Trails3[];
+extern u8 fx_114_op80Trails4[];
+extern u8 fx_114_op80Trails0[];
 extern u16 D_801EEA68[];
 extern u8 D_801EB71C[];
 

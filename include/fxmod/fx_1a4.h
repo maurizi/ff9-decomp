@@ -42,8 +42,8 @@ typedef struct {
 
 extern Unk800F78A4 *fx_1a4_env;
 extern BtlModel fx_1a4_effModels[];
-extern SVECTOR D_801E83D0;
-extern SVECTOR D_801E83D8;
+extern SVECTOR fx_1a4_emitPos0;
+extern SVECTOR fx_1a4_emitPos1;
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

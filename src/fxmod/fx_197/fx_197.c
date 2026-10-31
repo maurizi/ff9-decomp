@@ -522,7 +522,7 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos10);
                 if (p != NULL) {
-                    p->trails = (s32)D_801E92D0;
+                    p->trails = (s32)fx_197_op81Trails;
                     p->trailSlots = 0xC;
                     p->trailStride = 0x4C;
                     p->otZ = 0x40;

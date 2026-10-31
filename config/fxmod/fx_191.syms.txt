@@ -15,3 +15,10 @@ fx_191_op80ParticleMotions = 0x801E8504; // [code] table of ParticleMotion callb
 fxm_lerpParticle = 0x801E7870; // type:func [code] particle motion core, particle lerped from base + a module point to to by the module frame / 12
 fxm_followPathParticle0 = 0x801E7A00; // type:func [code] particle motion core, position = a module posPath key (module frame * 3) plus offsets
 fxm_followPathParticle1 = 0x801E7B24; // type:func [code] particle motion core, position = a second module posPath key (module frame - 5) * 3 plus offsets
+fx_191_posPath0 = 0x801E8564; // [code] key path state for fxm_posPathInit and fxm_posPathGet
+fx_191_posPath1 = 0x801E856C; // [code] key path state for fxm_posPathInit and fxm_posPathGet
+fx_191_emitPos0 = 0x801E85CC; // [code] emitter origin, passed to btlfx_startEmitter
+fx_191_emitPos1 = 0x801E85D4; // [code] emitter origin, passed to btlfx_startEmitter
+fx_191_op80Trails = 0x801E85DC; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_191_op81Trails0 = 0x801E8BDC; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_191_op81Trails1 = 0x801E8CBC; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler

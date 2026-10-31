@@ -21,9 +21,9 @@ typedef struct {
 
 extern u16 D_801E9DF8[5]; /* files */
 extern BtlModel fx_1fd_effModels[];
-extern Fx1fdPath D_801EBB7C[5];
-extern s32 D_801EBBAC[5][0x78];
-extern SVECTOR D_801ED70C[5];
+extern Fx1fdPath fx_1fd_posPath[5];
+extern s32 fx_1fd_op80Trails[5][0x78];
+extern SVECTOR fx_1fd_emitPos[5];
 
 typedef struct {
     Pool6CEntry *emit0[8];
@@ -39,7 +39,7 @@ typedef struct {
     s16 unk10; /* distance from the centre */
     s16 unk12; /* angle around it */
 } Fx1fdOrbit; /* 0x14 */
-extern s32 D_801EC50C[8][0x90];
+extern s32 fx_1fd_op84Trails[8][0x90];
 
 static void fxm_posPathInit(Fx1fdPath *path, u16 *data);
 static s32 fxm_posPathGet(Fx1fdPath *path, s32 t, SVECTOR *out);

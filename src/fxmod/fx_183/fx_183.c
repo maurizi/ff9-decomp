@@ -120,7 +120,7 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk2C.vy = 0x1800;
         work->unk2C.vz = 0x1800;
         for (j = 0; j < 6; j++) {
-            fxm_rotPosPathInit(&D_801E8878[j], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8294[j]));
+            fxm_rotPosPathInit(&fx_183_rotPosPath[j], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8294[j]));
             work->model50[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8288[j]), 1);
         }
         work->unk48 = -1;
@@ -154,7 +154,7 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             for (i = 0; i < 6; i++) {
-                fxm_rotPosPathGet(&D_801E8878[i], t, &work->rot4, &v);
+                fxm_rotPosPathGet(&fx_183_rotPosPath[i], t, &work->rot4, &v);
                 work->posC.vx = v.vx;
                 work->posC.vy = v.vy;
                 work->posC.vz = v.vz;
@@ -202,7 +202,7 @@ s32 fx_183_op83(s32 mode, Fx183Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->posC);
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&work->posC);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E88A8[work->unk14];
+            work->emit0->trails = (s32)fx_183_op83Trails[work->unk14];
             work->emit0->trailSlots = 0xC;
             work->emit0->trailStride = 0x50;
         }

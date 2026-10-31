@@ -32,11 +32,11 @@ typedef struct {
 extern Fx11dPathKey D_801E7D24[4];
 extern Fx11dPathKey D_801E7D3C[4];
 extern Unk800F78A4 *fx_11d_env;
-extern s32 D_801E7DAC[];
-extern s32 D_801E7F6C[];
-extern s32 D_801E812C[];
-extern SVECTOR D_801E914C;
-extern SVECTOR D_801E9154;
+extern s32 fx_11d_op80Trails0[];
+extern s32 fx_11d_op80Trails1[];
+extern s32 fx_11d_op80Trails2[];
+extern SVECTOR fx_11d_emitPos0;
+extern SVECTOR fx_11d_emitPos1;
 
 static s32 fx_11d_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);

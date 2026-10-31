@@ -228,7 +228,7 @@ s32 fx_1fd_op80(s32 mode, Fx1fdWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1fd_env = env;
         ex->btlfx_initEffModels(fx_1fd_effModels, 0x20);
         for (i = 0; i < 5; i++) {
-            fxm_posPathInit(&D_801EBB7C[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x10), i));
+            fxm_posPathInit(&fx_1fd_posPath[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x10), i));
         }
         fxm_camChanReset();
         fxm_camChanAdd(0, 1, 0, fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xE), 0));
@@ -238,9 +238,9 @@ s32 fx_1fd_op80(s32 mode, Fx1fdWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame == 0) {
             q = work->emit0;
             for (j = 0; j < 5; j++) {
-                *q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E9DF8[j]), (s32)&D_801ED70C[j]);
+                *q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E9DF8[j]), (s32)&fx_1fd_emitPos[j]);
                 if (*q != NULL) {
-                    (*q)->trails = (s32)D_801EBBAC[j];
+                    (*q)->trails = (s32)fx_1fd_op80Trails[j];
                     (*q)->trailSlots = 6;
                     (*q)->trailStride = 0x50;
                 }
@@ -250,7 +250,7 @@ s32 fx_1fd_op80(s32 mode, Fx1fdWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 0) {
             t = frame;
             for (i = 0; i < 5; i++) {
-                fxm_posPathGet(&D_801EBB7C[i], t, &work->unk14[i]);
+                fxm_posPathGet(&fx_1fd_posPath[i], t, &work->unk14[i]);
                 if (work->emit0[i] != NULL && work->emit0[i]->state == BTLFX_EMIT_DONE) {
                     work->emit0[i] = NULL;
                 }
@@ -623,7 +623,7 @@ s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk80[i]);
                 work->emit20[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->unk80[i]);
                 if (work->emit0[i] != NULL) {
-                    work->emit0[i]->trails = (s32)D_801EC50C[i];
+                    work->emit0[i]->trails = (s32)fx_1fd_op84Trails[i];
                     work->emit0[i]->trailSlots = 0xC;
                     work->emit0[i]->trailStride = 0x30;
                 }

@@ -47,11 +47,11 @@ extern Fx12bShard D_801E9894[];
 extern Fx12bShard D_801E996C[];
 extern Fx12bShard D_801E9A20[];
 extern Unk800F78A4 *fx_12b_env;
-extern s32 D_801EC9D4[];
-extern s32 D_801EE0E4[];
-extern SVECTOR D_801EF854;
-extern SVECTOR D_801EF85C;
-extern SVECTOR D_801EF864;
+extern s32 fx_12b_op81Trails0[];
+extern s32 fx_12b_op81Trails1[];
+extern SVECTOR fx_12b_emitPos0;
+extern SVECTOR fx_12b_emitPos1;
+extern SVECTOR fx_12b_emitPos2;
 
 typedef struct {
     Pool6CEntry *emit0[4];
@@ -93,7 +93,7 @@ typedef struct {
 
 extern u16 D_801E9AD4[6];
 extern u16 D_801E9AE0[6];
-extern u8 D_801E9BB4[];
-extern u8 D_801EB2C4[];
+extern u8 fx_12b_op80Trails0[];
+extern u8 fx_12b_op80Trails1[];
 
 #endif

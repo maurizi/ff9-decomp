@@ -109,7 +109,7 @@ typedef struct {
 extern SVECTOR D_801E9360;
 extern u8 D_801E9368[];
 extern BtlModel fx_17d_6_effModels[];
-extern s32 D_801E9624[];
+extern s32 fx_17d_6_op80Trails[];
 extern SVECTOR D_801EB104;
 extern SVECTOR D_801EB10C;
 

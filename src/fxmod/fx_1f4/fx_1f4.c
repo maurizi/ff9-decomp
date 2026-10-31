@@ -15,7 +15,7 @@ s32 fx_1f4_op80(s32 mode, Fx1f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
-            p->trails = (s32)D_801E79C8;
+            p->trails = (s32)fx_1f4_op80Trails0;
             p->trailSlots = 0x1E;
             p->trailStride = 0x9C;
         }
@@ -26,7 +26,7 @@ s32 fx_1f4_op80(s32 mode, Fx1f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
-                p->trails = (s32)D_801E8C18;
+                p->trails = (s32)fx_1f4_op80Trails1;
                 p->trailSlots = 0x1E;
                 p->trailStride = 0x9C;
             }

@@ -39,7 +39,7 @@ typedef struct {
 
 extern Unk800F78A4 *fx_179_env;
 extern BtlModel fx_179_effModels[];
-extern u8 D_801EAB6C[];
+extern u8 fx_179_op80Trails[];
 extern Fx179Tri D_801E8A1C[160];
 extern Fx179Shard D_801E991C[160];
 

@@ -27,9 +27,9 @@ typedef struct {
 extern u16 D_801E823C[3]; /* files */
 extern s32 (*fx_1a6_op80ParticleMotions[3])();
 extern Unk800F78A4 *fx_1a6_env;
-extern s32 D_801E82A8[3][0x5A];
-extern s32 D_801E86E8[3][0x1D0];
-extern s32 D_801E9CA8[3][0x560];
+extern s32 fx_1a6_op80Trails0[3][0x5A];
+extern s32 fx_1a6_op80Trails1[3][0x1D0];
+extern s32 fx_1a6_op80Trails2[3][0x560];
 extern SVECTOR D_801EDD28[3]; /* from */
 extern SVECTOR D_801EDD48[3]; /* to */
 extern SVECTOR D_801EDD68[3];

@@ -183,7 +183,7 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x11, (u16 *)&D_801E92FC);
             fx_1ee_emitter2 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x3B), (s32)&D_801E92FC);
             if (e != NULL) {
-                e->trails = (s32)D_801E9304;
+                e->trails = (s32)fx_1ee_op80Trails;
                 e->trailSlots = 0x28;
                 e->trailStride = 0xAC;
                 e->otZ = 0x50;
