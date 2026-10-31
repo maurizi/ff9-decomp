@@ -28,7 +28,7 @@ void menu_open(s32 a, s32 b) {
 void menu_doOpen(s32 a, s32 b) {
     GameState *st = g_gameState;
 
-    if (!(st->gameData->flags & GD_MENU_DISABLED) && g_menu.open == 0 && g_menu.state == 0 && (u32)a < 9) {
+    if (!(st->gameData->flags & GD_MENU_DISABLED) && g_menu.open == 0 && g_menu.state == MENU_STATE_CLOSED && (u32)a < 9) {
         g_menu.open = 1;
         g_menu.type = a;
         g_menu.arg = b;
@@ -39,7 +39,7 @@ void menu_doOpen(s32 a, s32 b) {
         g_menu.fadeInOnClose = 1;
         g_menu.fadeOutOnClose = 1;
         g_menu.onClose = 0;
-        g_menu.state = 1;
+        g_menu.state = MENU_STATE_LOADING;
         if (st->mode == GS_MODE_FIELD) {
             st->gameData->ctx.ovl65->unk0 |= 0x1000;
         }
@@ -94,7 +94,7 @@ void menu_finish(void) {
     g_gameState->drawEnv[1].r0 = g_menu.savedR;
     g_gameState->drawEnv[1].g0 = g_menu.savedG;
     g_gameState->drawEnv[1].b0 = g_menu.savedB;
-    g_menu.state = 0;
+    g_menu.state = MENU_STATE_CLOSED;
     g_menu.open = 0;
     fn = (void (*)(u8))g_menuTypes[g_menu.type].unk8;
     idx = g_menu.type;
@@ -125,7 +125,7 @@ void menu_initForMode(void) {
 }
 
 void menu_reset(void) {
-    g_menu.state = 0;
+    g_menu.state = MENU_STATE_CLOSED;
     g_menu.open = 0;
     g_menu.unk1C = 0;
     g_menu.onClose = 0;
@@ -180,7 +180,7 @@ void menu_loadOverlay(void) {
 void menu_readOverlay(void) {
     FileEntry *f;
     if (cd_getState() == 0) {
-        g_menu.state = 2;
+        g_menu.state = MENU_STATE_WAITING;
         g_menu.reading = 1;
         f = file_find(DIR_OVERLAYS, g_menuTypeOvl[g_menu.type]);
         cd_readAsync(f->sector + g_gameState->imgSector, (f->unkC - f->sector) << 11, RAM_SUB_OVL(void *), menu_onOverlayRead);
@@ -194,13 +194,13 @@ void menu_readPortraits(void) {
 
     if (g_menu.type == 0) {
         if (party_hasChanged() == 0) {
-            g_menu.state = 2;
+            g_menu.state = MENU_STATE_WAITING;
         } else if (busy == 0 || g_gameState->mode != GS_MODE_WORLD) {
             g_menu.reading = 1;
             f = file_find(DIR_COMMON, FILE_MENU_PORTRAITS);
             if (cd_readAsync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, RAM_SUB_OVL(void *),
                               menu_onPortraitsRead)) {
-                g_menu.state = 2;
+                g_menu.state = MENU_STATE_WAITING;
             }
         }
     }
@@ -274,7 +274,7 @@ void menu_start(void) {
     EnterCriticalSection();
     FlushCache();
     ExitCriticalSection();
-    g_menu.state = 3;
+    g_menu.state = MENU_STATE_RUNNING;
     if (g_menu.type == 0 && party_hasChanged()) {
         ui_loadPartyPortraits(RAM_SUB_OVL(u8 *));
         party_setChanged(0);

@@ -54,7 +54,7 @@ CdReadCtx *cdRead_init(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, void (*f
         p->chunk = e;
         p->onDone = f;
         p->unk18 = b;
-        p->state = 1;
+        p->state = CDREAD_WAIT_CD;
     }
     return p;
 }
@@ -65,12 +65,12 @@ s32 cdRead_update(void *arg0) {
 
     if (p != NULL) {
         switch (p->state) {
-        case 1:
+        case CDREAD_WAIT_CD:
             if (cd_getState() == 0) {
-                p->state = 2;
+                p->state = CDREAD_START;
             }
             break;
-        case 2:
+        case CDREAD_START:
             n = p->size - p->offset;
             if (p->chunk != -1 && p->chunk < n) {
                 n = p->chunk;
@@ -79,15 +79,15 @@ s32 cdRead_update(void *arg0) {
                 cd_readAsync(g_gameState->imgSector + p->sector + p->offset / 2048, n, p->dest, NULL);
             }
             p->chunk = n;
-            p->state = 3;
+            p->state = CDREAD_READING;
             p->end = p->dest + n;
             return 3;
-        case 3:
+        case CDREAD_READING:
             if (cd_getState() == 0) {
                 if (p->onDone != NULL) {
                     p->onDone(p);
                 }
-                p->state = 0;
+                p->state = CDREAD_DONE;
             }
             break;
         default:

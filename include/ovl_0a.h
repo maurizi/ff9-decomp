@@ -853,10 +853,7 @@ typedef struct ModelObj {
     s16 attachY;
     s16 attachZ;
 } ModelObj;
-/* ModelObj.flags */
-#define MDL_LOOK_AT 0x1 /* fld_drawModels uses fldmdl_calcBoneMatricesLookAt */
-#define MDL_SCALED 0x2 /* fldmdl_applyScale and the look-at variant apply the scale */
-#define MDL_BEHIND_CAMERA 0x10 /* fldmdl_cullBehindCamera: origin SZ 0 or parent behind; colour/abr helpers skip it */
+/* ModelObj.flags: MDL_* (ff9.h) */
 /* WmSrc*.flags */
 #define WMSRC_SEMITRANS 0x1 /* fldmdl_buildPackets, fldmdl_setSemiTrans */
 #define WMSRC_DOUBLE_SIDED 0x2 /* fldmdl_drawMeshC skips the nclip test */
@@ -913,10 +910,7 @@ typedef struct {
     u16 lastFrame; /* last frame */
     TexAnimRect *rects;
 } TexAnim; /* 0x14 */
-/* TexAnim.flags (fldmdl_updateTexAnims) */
-#define TEXANIM_ACTIVE 0x1
-#define TEXANIM_ONESHOT 0x2 /* cleared with TEXANIM_ACTIVE at the end */
-#define TEXANIM_SCROLL 0x4 /* vertical scroll mode, frameCount 0 */
+/* TexAnim.flags: TEXANIM_* (ff9.h) */
 
 typedef struct {
     u16 count; /* count */

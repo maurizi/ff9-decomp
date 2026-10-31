@@ -182,7 +182,7 @@ void evt_returnFromFunc(EvtObject *o) {
                 q = n->obj;
             }
             if (q != NULL) {
-                if (q->wait == 0xFF) {
+                if (q->wait == EVT_WAIT_CALL) {
                     q->wait = 0;
                     return;
                 }
@@ -232,7 +232,7 @@ s32 evt_callObjectFunc(EvtObject *o, s32 lv, s32 key, s32 save) {
             }
             slot[1] = x;
             if (save) {
-                g_evtCurObj->wait = 0xFF;
+                g_evtCurObj->wait = EVT_WAIT_CALL;
             }
             o->ip = e;
             o->level = lv;
@@ -1115,7 +1115,7 @@ s32 evt_execInstr(void) {
         evt_execInstr_window(g_evtActor, c, g_evtActor->windowId);
         b = evt_getArg16_inline();
         msg_open(b, g_evtActor->windowId, evt_getMsgLayout(g_evtActor, b, c), c);
-        g_evtActor->wait = 0xFE;
+        g_evtActor->wait = EVT_WAIT_WINDOW;
         return 1;
     case EVT_OP_MSG:
         g_evtActor->windowId = evt_getArg8_inline();
@@ -1131,7 +1131,7 @@ s32 evt_execInstr(void) {
         evt_execInstr_window(po, c, g_evtActor->windowId);
         b = evt_getArg16_inline();
         msg_open(b, g_evtActor->windowId, evt_getMsgLayout(po, b, c), c);
-        g_evtActor->wait = 0xFE;
+        g_evtActor->wait = EVT_WAIT_WINDOW;
         return 1;
     case EVT_OP_MSG_OBJ:
         po = evt_getObjectArg();
@@ -1151,7 +1151,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_MSG_WAIT_WIN:
         g_evtActor->windowId = evt_getArg8_inline();
-        g_evtActor->wait = 0xFE;
+        g_evtActor->wait = EVT_WAIT_WINDOW;
         return 1;
     case 0x8E:
         msg_clearWindowOtz();
@@ -1463,7 +1463,7 @@ s32 evt_execInstr(void) {
             m->scaleX = (s8)a << 6;
             m->scaleY = (s8)b << 6;
             m->scaleZ = (s8)c << 6;
-            m->flags |= 2;
+            m->flags |= MDL_SCALED;
         }
         po->scale = b;
         return 0;
@@ -1472,7 +1472,7 @@ s32 evt_execInstr(void) {
         m = evt_getObjectModelData_inline(o);
         b = evt_getArg8_inline();
         if (m != NULL) {
-            m->texAnims->unk0[b].flags |= 1;
+            m->texAnims->unk0[b].flags |= TEXANIM_ACTIVE;
             m->texAnims->unk0[b].pos = 0;
             m->texAnims->unk0[b].lastFrame = 0x1000;
         }
@@ -1482,7 +1482,7 @@ s32 evt_execInstr(void) {
         m = evt_getObjectModelData_inline(o);
         b = evt_getArg8_inline();
         if (m != NULL) {
-            m->texAnims->unk0[b].flags |= 3;
+            m->texAnims->unk0[b].flags |= TEXANIM_ACTIVE | TEXANIM_ONESHOT;
             m->texAnims->unk0[b].pos = 0;
             m->texAnims->unk0[b].lastFrame = 0x1000;
         }
@@ -1492,7 +1492,7 @@ s32 evt_execInstr(void) {
         m = evt_getObjectModelData_inline(o);
         b = evt_getArg8_inline();
         if (m != NULL) {
-            m->texAnims->unk0[b].flags &= 0xFC;
+            m->texAnims->unk0[b].flags &= ~(TEXANIM_ACTIVE | TEXANIM_ONESHOT);
         }
         return 0;
     case EVT_OP_MODEL_FLAGS_SET: {
@@ -2543,7 +2543,7 @@ void evt_relaxLookAt(EvtObject *o, Unk80047B90 *m) {
     o->lookAtX += (out.vx - o->lookAtX) * 100 / d;
     o->lookAtY += (out.vy - o->lookAtY) * 100 / d;
     o->lookAtZ += (out.vz - o->lookAtZ) * 100 / d;
-    m->flags |= 1;
+    m->flags |= MDL_LOOK_AT;
     m->lookAtX = o->lookAtX;
     m->lookAtY = o->lookAtY;
     m->lookAtZ = o->lookAtZ;
@@ -2560,7 +2560,7 @@ static inline void evt_updateLookAt_approach(EvtObject *o, Unk80047B90 *mdl, VEC
     o->lookAtX += (t->vx - o->lookAtX) * 100 / d;
     o->lookAtY += (t->vy - o->lookAtY) * 100 / d;
     o->lookAtZ += (t->vz - o->lookAtZ) * 100 / d;
-    mdl->flags |= 1;
+    mdl->flags |= MDL_LOOK_AT;
     mdl->lookAtX = o->lookAtX;
     mdl->lookAtY = o->lookAtY;
     mdl->lookAtZ = o->lookAtZ;
@@ -2707,7 +2707,7 @@ void evt_updateLookAt(EvtObject *o) {
         evt_relaxLookAt(o, mdl);
     }
     if (!(o->moveFlags & EVT_MOVE_LOOKING)) {
-        mdl->flags &= ~1;
+        mdl->flags &= ~MDL_LOOK_AT;
     }
 }
 

@@ -563,7 +563,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 w->flags |= MSGW_CHOICE;
                 break;
             case 9:
-                w->waitFrames = 0xFF;
+                w->waitFrames = MSGW_WAIT_INPUT;
             case 0x45:
                 w->flags |= MSGW_NO_INPUT;
                 break;
@@ -619,7 +619,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
             break;
         case 0xFE:
         case 0xFF:
-            w->waitFrames = 0xFF;
+            w->waitFrames = MSGW_WAIT_INPUT;
             break;
         case 0xF7:
             g_msgLine++;
@@ -637,7 +637,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
         }
     }
     w->textPos = (w->waitFrames != 0 ? start : p) - e;
-    if (w->waitFrames == 0xFF) {
+    if (w->waitFrames == MSGW_WAIT_INPUT) {
         w->flags &= ~MSGW_SKIP;
     }
     w->typeAccum += w->speed;
@@ -698,7 +698,7 @@ void msg_drawText(MsgWindow *w) {
                 w->typeAccum = 8;
             }
         } else {
-            w->waitFrames -= (w->waitFrames != 0xFF);
+            w->waitFrames -= (w->waitFrames != MSGW_WAIT_INPUT);
             if (w->flags & MSGW_SKIP) {
                 w->waitFrames = 0;
             }
@@ -722,7 +722,7 @@ s32 msg_input(MsgWindow *w, s32 pad) {
     if ((g_evtMode == EVT_MODE_FIELD && (pad & (BTN_CROSS | BTN_SQUARE))) || (g_evtMode != EVT_MODE_FIELD && (pad & BTN_CROSS))) {
         f = w->flags;
         if (!(f & MSGW_NO_INPUT)) {
-            if (w->waitFrames == 0xFF) {
+            if (w->waitFrames == MSGW_WAIT_INPUT) {
                 w->waitFrames = 1;
                 if (g_msgChoiceLine >= 0) {
                     g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);

@@ -262,9 +262,13 @@ typedef struct CdReadCtx {
     s32 chunk; /* chunk size, -1 = all in, bytes read out (cdRead_update) */
     void (*onDone)(struct CdReadCtx *); /* done callback */
     s32 unk18;
-    s32 state; /* state: 1 wait for the drive, 2 start the read, 3 reading, 0 done */
+    s32 state; /* CDREAD_* (cdRead_update) */
     u8 *end; /* dest + bytes read */
 } CdReadCtx; /* GameData.cdRead */
+#define CDREAD_DONE 0
+#define CDREAD_WAIT_CD 1 /* until cd_getState is idle */
+#define CDREAD_START 2 /* cd_readAsync the next chunk */
+#define CDREAD_READING 3 /* until cd_getState is idle, then onDone */
 
 /* runtime: menu_items shows Potion 46, Hi-Potion 10, Ether 12, Phoenix Down 14, ... = {236,46} {237,10} {238,12} {240,14} */
 typedef struct {
@@ -577,7 +581,7 @@ typedef struct {
 extern UnkPair g_padActuator[2];
 
 typedef struct {
-    u8 state; /* 0 closed, 1 loading, 2 waiting for the read/fade, 3 running (g_menuStateFuncs) */
+    u8 state; /* MENU_STATE_* (g_menuStateFuncs index) */
     u8 type; /* menu_open type (g_menuTypes) */
     u8 cardSlot; /* memory card slot (ovl_39 save screen) */
     u8 unk3;
@@ -600,6 +604,11 @@ typedef struct {
     u8 pad23;
     s32 onClose; /* run by menu_finish */
 } MenuState;
+/* MenuState.state (g_menu) */
+#define MENU_STATE_CLOSED 0
+#define MENU_STATE_LOADING 1 /* set by menu_doOpen; menu_updateLoad reads the menu overlay / portraits */
+#define MENU_STATE_WAITING 2 /* read issued (menu_readOverlay / menu_readPortraits); menu_updateWait */
+#define MENU_STATE_RUNNING 3 /* menu_updateRun (menu_updateWait sets it when the loads are done) */
 extern MenuState g_menu;
 
 extern s32 g_nameGlyphs;
@@ -1184,7 +1193,7 @@ typedef struct EvtObject {
     u8 sp; /* call stack depth in words (2 per call) */
     u8 battleTurnState; /* enemy turn: 2 requested (evt_battleTrigger BTL_CMD_ENEMY_TURN), 1 once the turn function runs, 0 after op 0x38 level 3 */
     u8 unkC;
-    u8 wait; /* frames left of op 0x22, 0xFE waiting for its message window, 0xFF waiting for a called function */
+    u8 wait; /* frames left of op 0x22, or EVT_WAIT_WINDOW / EVT_WAIT_CALL */
     u8 state; /* EVT_STATE_* */
     u8 flags; /* EVT_OBJ_* (op 0x93 sets bits 0-5) */
     u8 windowId; /* message window it opened (ops 0x1F/0x20/0x54), 0xFF none */
@@ -1273,6 +1282,10 @@ typedef struct EvtObject {
 #define EVT_KIND_ACTOR 4 /* EVT_OP_NEW_ACTOR, 0xAC-byte header, has a model and moves */
 
 /* EvtObject.state (evt_runScripts, evt_returnFromFunc) */
+/* EvtObject.wait special values (evt_runScripts) */
+#define EVT_WAIT_WINDOW 0xFE /* until its message window closes (msg_isOpen; ops 0x1F/0x54) */
+#define EVT_WAIT_CALL 0xFF /* until a function it called on another object returns (evt_callObjectFunc, evt_returnFromFunc) */
+
 #define EVT_STATE_NEW 0 /* created this frame (evt_createObject); evt_runScripts makes it EVT_STATE_INIT without running it */
 #define EVT_STATE_RUNNING 1 /* running; when its call stack empties it idles (ip NULL) */
 #define EVT_STATE_INIT 2 /* running the init function (entry 0); when it returns, entry 1 starts at level 7 and the state becomes EVT_STATE_RUNNING */
@@ -1312,9 +1325,14 @@ typedef struct EvtObject {
 #define EVT_ANIM_SCRIPTED 0x80 /* a script animation is playing (EVT_OP_WAIT_ANIM waits for it to end) */
 #define EVT_ANIM_LOOP_MODE (EVT_ANIM_HOLD | EVT_ANIM_LOOP | EVT_ANIM_BOUNCE) /* EVT_OP_SET_ANIM_LOOP's argument << 3 */
 
+/* Model object flags: ovl_0a ModelObj.flags, main's views Unk8004AFF0.flags and Unk80047B90.flags */
+#define MDL_LOOK_AT 0x1 /* fld_drawModels uses fldmdl_calcBoneMatricesLookAt (evt_updateLookAt sets it) */
+#define MDL_SCALED 0x2 /* fldmdl_applyScale and the look-at variant apply the scale (EVT_OP_MODEL_SCALE) */
+#define MDL_BEHIND_CAMERA 0x10 /* fldmdl_cullBehindCamera: origin SZ 0 or parent behind; colour/abr helpers skip it */
+
 /* model object as seen by evt_relaxLookAt (ovl_0a ModelObj, BtlUnit9C in ovl_0b; Unk8004AFF0 has the rest) */
 typedef struct {
-    u16 flags; /* 1: look-at on (fldmdl_calcBoneMatricesLookAt turns WmModel.lookAtBone toward lookAtX-Z) */
+    u16 flags; /* MDL_* */
     u8 pad2[0x48 - 0x2];
     s16 lookAtX; /* look-at point (ModelObj.lookAtTarget) */
     s16 lookAtY;
@@ -1622,7 +1640,7 @@ typedef struct MsgWindow {
     s16 textPos; /* offset of the next character */
     s16 pageStart;
     s16 typeAccum; /* text timing in 1/8 characters (+speed per frame) */
-    u8 waitFrames; /* 0xFF waiting for Cross (msg_input), else a text-code pause */
+    u8 waitFrames; /* frames of a text-code pause, or MSGW_WAIT_INPUT */
     u8 h;
     u8 flags; /* MSGW_* */
     u8 speed; /* text speed */
@@ -1631,6 +1649,7 @@ typedef struct MsgWindow {
 } MsgWindow;
 extern MsgWindow g_msgWindows[];
 /* MsgWindow.flags */
+#define MSGW_WAIT_INPUT 0xFF /* MsgWindow.waitFrames: waiting for Cross (msg_input); text codes FE/FF/F9 09 */
 #define MSGW_CHOICE 0x02 /* has a choice (text code F9 08, or msg_allocWindow's flag); msg_getLastModal finds it */
 #define MSGW_SKIP 0x04 /* Cross pressed: the rest of the page shows at once (text code F9 0C sets it too); cleared at the next wait for Cross */
 #define MSGW_NO_SKIP 0x08 /* Cross doesn't skip the text (text codes F9 00/01/0A); cleared at the next page */
@@ -3987,16 +4006,20 @@ typedef struct {
  * its 0x14-byte entries (ovl_0a TexAnimSet / TexAnim), so this record's +4 is entry n's +0 */
 typedef struct {
     u8 pad0[4];
-    u8 flags; /* TexAnim.flags: 1 active, 2 one-shot */
+    u8 flags; /* TexAnim.flags: TEXANIM_* */
     u8 pad5[0xC - 5];
     s32 pos; /* TexAnim.pos: frame position (20.12) */
     u8 pad10[0x12 - 0x10];
     s16 lastFrame; /* TexAnim.lastFrame: 0x1000 forces the next frame's upload */
 } Unk8004AFF0Sub; /* 0x14 */
+/* TexAnim.flags (ovl_0a fldmdl_updateTexAnims; set by EVT_OP_TEX_ANIM_PLAY and ops C1/C2) */
+#define TEXANIM_ACTIVE 0x1
+#define TEXANIM_ONESHOT 0x2 /* cleared with TEXANIM_ACTIVE at the end */
+#define TEXANIM_SCROLL 0x4 /* vertical scroll mode, frameCount 0 */
 
 /* model object (ModelSlot.unk8): main's view of ovl_0a ModelObj / ovl_0b BtlUnit9C (docs/field-models.md) */
 typedef struct Unk8004AFF0 {
-    u16 flags; /* 1 look-at on (lookAtX-Z, fldmdl_calcBoneMatricesLookAt), 2 scaled (scaleX-Z), 0x10 behind the camera */
+    u16 flags; /* MDL_* */
     u8 pad2[4 - 2];
     u8 parentBone; /* op 0x4C: bone of the parent model it follows */
     u8 pad5[0x14 - 5];
