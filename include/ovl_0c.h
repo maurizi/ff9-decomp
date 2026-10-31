@@ -580,9 +580,11 @@ typedef struct WmBlockNode {
     struct WmBlock *block;
     WmBlockPos *pos;
     s16 cell;
-    u8 state;
+    u8 state; /* WM_BLOCK_* */
     s8 slot;
 } WmBlockNode; /* 0x14 */
+#define WM_BLOCK_NONE 0 /* no block yet (wm_blockListRequest, wm_blockListResolve) */
+#define WM_BLOCK_SET 2 /* wm_blockListResolve set block (the loaded chunk's, or the default block); wm_drawBlocks draws it */
 
 /* list: g_worldChunkHead (head) -> g_worldChunkSlots[32] -> g_worldChunkTail (tail) */
 typedef struct {
