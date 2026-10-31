@@ -7,21 +7,21 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* caster position */
-    SVECTOR pos8; /* caster position, y = 0 */
-    s32 unk10; /* state */
+    SVECTOR pos0; /* above the target centre */
+    SVECTOR pos8; /* target centre on the ground */
+    s32 state10; /* state */
     s32 model14[4]; /* models */
     s32 model24; /* model */
     s32 model28; /* model */
     Pool6CEntry *emit2C;
     Pool6CEntry *emit30;
-    s32 unk34; /* frame counter */
+    s32 frame34; /* frame counter */
 } Fx048Work; /* 0x38 */
 
 extern Unk800F78A4 *fx_048_env;
 extern BtlModel fx_048_effModels[];
-extern s32 D_801E93FC[];
-extern u16 D_801E968C[];
+extern s32 fx_048_trails[];
+extern u16 fx_048_texels[];
 
 s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

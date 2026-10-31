@@ -10,19 +10,19 @@ typedef struct {
     SVECTOR pos8; /* target position */
     SVECTOR pos10;
     SVECTOR pos18;
-    SVECTOR unk20; /* angles from unk10 to unk8 */
+    SVECTOR aim20; /* angles from pos10 to pos8 */
 } Fx04bWork80; /* 0x28 */
 
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* above the target */
-    SVECTOR unkC; /* angles from D_801E7B9C to unk4 */
-    s32 unk14; /* target index */
+    SVECTOR aimC; /* angles from fx_04b_casterPos to pos4 */
+    s32 target14; /* target index */
 } Fx04bWork81; /* 0x18 */
 
 extern Unk800F78A4 *fx_04b_env;
-extern SVECTOR D_801E7B9C;
-extern s32 D_801E7BA4[];
-extern s32 D_801E87D4[];
+extern SVECTOR fx_04b_casterPos;
+extern s32 fx_04b_trails[];
+extern s32 fx_04b_trails2[];
 
 #endif

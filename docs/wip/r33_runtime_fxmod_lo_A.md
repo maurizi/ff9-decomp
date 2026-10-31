@@ -16,3 +16,6 @@ Names left as placeholders (or names worth confirming) and what to watch in the 
 - fx_034 (note for the coordinator): fx_034_explodeModel / fx_034_pushPrims / fx_034_splitModel / fx_034_calcPrimCentres
   use Hi_GetMdlVertexPtr like fx_096 and fx_1b3 (other slices); if those copies are byte-identical they could share fxm_ names.
 - fx_03a `Fx03aWork.unk10[4]` (zeroed with the countdowns, never read): confirm unused.
+- fx_04c `((u8 *)env->state)[0x12]` (cleared by fx_04c_op81/op82 mode 1, set to 1 when op82 has visited every target):
+  probably a script signal like BTLFX_SIG_WAIT; watch the effect script wait on it (ovl_0b, not this slice's header).
+- fx_04f `Fx04fWork.unk8` (never touched) and fx_00b / fx_02a `unkC` (zeroed in mode 1 only): confirm unused.

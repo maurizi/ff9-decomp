@@ -3,44 +3,44 @@
 s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
-    v.vx = D_801E7F08.vx;
-    v.vy = D_801E7F08.vy;
-    v.vz = D_801E7F08.vz;
+    v.vx = fx_040_aboveTarget.vx;
+    v.vy = fx_040_aboveTarget.vy;
+    v.vz = fx_040_aboveTarget.vz;
     v.vx -= 0x190;
-    return func_801E7864(out, arg2, &v, t, n);
+    return fx_040_flyToTarget(out, arg2, &v, t, n);
 }
 
 s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
-    v.vx = D_801E7F08.vx;
-    v.vy = D_801E7F08.vy;
-    v.vz = D_801E7F08.vz;
+    v.vx = fx_040_aboveTarget.vx;
+    v.vy = fx_040_aboveTarget.vy;
+    v.vz = fx_040_aboveTarget.vz;
     v.vx -= 0xC8;
-    return func_801E7864(out, arg2, &v, t, n);
+    return fx_040_flyToTarget(out, arg2, &v, t, n);
 }
 
 s32 fx_040_op80ParticleMotion2(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
-    v.vx = D_801E7F08.vx;
-    v.vy = D_801E7F08.vy;
-    v.vz = D_801E7F08.vz;
+    v.vx = fx_040_aboveTarget.vx;
+    v.vy = fx_040_aboveTarget.vy;
+    v.vz = fx_040_aboveTarget.vz;
     v.vx += 0xC8;
-    return func_801E7864(out, arg2, &v, t, n);
+    return fx_040_flyToTarget(out, arg2, &v, t, n);
 }
 
 s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
-    v.vx = D_801E7F08.vx;
-    v.vy = D_801E7F08.vy;
-    v.vz = D_801E7F08.vz;
+    v.vx = fx_040_aboveTarget.vx;
+    v.vy = fx_040_aboveTarget.vy;
+    v.vz = fx_040_aboveTarget.vz;
     v.vx += 0x190;
-    return func_801E7864(out, arg2, &v, t, n);
+    return fx_040_flyToTarget(out, arg2, &v, t, n);
 }
 
-s32 func_801E7864(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 t, s32 n) {
+s32 fx_040_flyToTarget(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 t, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_040_env);
     s32 k;
     s32 r;
@@ -57,7 +57,7 @@ s32 func_801E7864(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 t, s32 n) {
         target->vz -= ex->btlfx_rand() % 200;
     }
     k = ex->btlfx_rand() % 2 + 0x18;
-    ex->btlfx_lerpVec((s16 *)&D_801E7F00, (s16 *)target, ((t * t / k) << 12) / k, (s16 *)pos);
+    ex->btlfx_lerpVec((s16 *)&fx_040_origin, (s16 *)target, ((t * t / k) << 12) / k, (s16 *)pos);
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
@@ -78,20 +78,20 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos28.vx = env->targets->centerX;
         work->pos28.vy = env->targets->centerY;
         work->pos28.vz = env->targets->centerZ;
-        D_801E7F08.vx = env->targets->centerX;
-        D_801E7F08.vy = env->targets->centerY;
-        D_801E7F08.vz = env->targets->centerZ;
+        fx_040_aboveTarget.vx = env->targets->centerX;
+        fx_040_aboveTarget.vy = env->targets->centerY;
+        fx_040_aboveTarget.vz = env->targets->centerZ;
         fx_040_env = env;
-        D_801E7F08.vy -= 0x190;
+        fx_040_aboveTarget.vy -= 0x190;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos40);
-        D_801E7F00.vx = work->pos40.vx;
-        D_801E7F00.vy = work->pos40.vy;
-        D_801E7F00.vz = work->pos40.vz;
+        fx_040_origin.vx = work->pos40.vx;
+        fx_040_origin.vy = work->pos40.vy;
+        fx_040_origin.vz = work->pos40.vz;
         env->camera->points[0].vx = work->pos40.vx;
         env->camera->points[0].vy = work->pos40.vy;
         env->camera->points[0].vz = work->pos40.vz;
         for (i = 0; i < 4; i++) {
-            work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7E98[i]), (s32)&D_801E7F18[i]);
+            work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_040_emitBlocks[i]), (s32)&fx_040_emitPos[i]);
             if (work->emit0[i] != NULL) {
                 ((s32 *)work->emit0[i]->file)[2] = fx_040_op80ParticleMotions[i];
             }

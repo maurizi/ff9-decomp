@@ -28,30 +28,30 @@ typedef struct {
 /* one bolt, a pool item */
 typedef struct {
     SVECTOR pos0; /* from */
-    SVECTOR unk8; /* to */
-    u8 unk10;
-    u8 unk11; /* state */
-    u8 unk12;
-    u8 unk13;
-    u8 unk14; /* kind */
-    u8 unk15;
+    SVECTOR pos8; /* to */
+    u8 strip10;
+    u8 state11; /* state */
+    u8 branchAt12;
+    u8 branchAt13;
+    u8 kind14; /* kind */
+    u8 width15;
     s16 pad16;
-    s32 *unk18; /* jitter table */
+    s32 *jitter18; /* jitter table */
     Pool6CEntry *emit1C;
 } Fx049Bolt;
 
 typedef struct {
     SVECTOR pos0; /* target body */
-    s32 *unk8; /* jitter table */
-    s32 unkC; /* bolts spawned */
+    s32 *jitter8; /* jitter table */
+    s32 boltCountC; /* bolts spawned */
 } Fx049Work; /* 0x10 */
 
-extern s16 D_801E8D20[];
-extern s32 D_801E9738[];
-extern Fx049Strip D_801E8D98[];
-extern Fx049Branch D_801E93C8[];
-extern u16 D_801E8D10[];
-extern u16 D_801E8D18[];
+extern s16 fx_049_boltSchedule[];
+extern s32 fx_049_jitter[];
+extern Fx049Strip fx_049_strips[];
+extern Fx049Branch fx_049_branches[];
+extern u16 fx_049_strip16Blocks[];
+extern u16 fx_049_strip4Blocks[];
 extern Unk800F78A4 *fx_049_env;
 extern Unk80100C78Entry *fx_049_task;
 
