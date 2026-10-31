@@ -189,6 +189,11 @@ every hit of a traced address with the registers in `r`, `--patch CMD,ABILITY[,T
   stalls with the Lv 50 save. States: `r30b_wm_story2600` (story counter 0x2600), `r30b_wm_moogle` (Square pressed at
   the Ice Cavern exit, the world-map moogle flying in). `tools/rt/actors.lua` (`tools/emu.py lua -f`) lists the
   script objects (uid, kind, flags, actorType, modelId, position).
+- **VRAM dumps**: `tools/rt/vram.lua` (`tools/emu.py lua -f`) defines `DumpVram(path)`, which writes the whole 1 MB
+  VRAM (1024x512 halfwords) to a file in ~1 s.
+- **What plays effect id N**: `python3 tools/effect_labels.py --id N` (party abilities, items, fixed ids and every
+  enemy sequence on all discs; `tools/effect_modules.py catalogue` fills the effect column of docs/effect-modules.md
+  with it).
 - Story counter `g_evtGlobalVars.h[0]` is 0x8007AEF0 (u16), `b[n]` is 0x8007AEF0 + n.
 
 ### Speed and the debugger

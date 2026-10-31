@@ -14,7 +14,7 @@ the images to `disks/us/fxmod/` and `make verify` rebuilds every one of them.
 
 Columns: sizes in bytes (hex); `.rodata` = word 0 (the header pointer) plus jump tables/strings before the
 first function; ops = the header's op handlers (script opcodes 0x80+). Names in the effect column come
-from the round 31 static sweep (docs/runtime-findings.md, "Round 31 runtime pass"): effect id = dir-13 file id (after btlfx_resolveFirstUse), read from the party ability table (effect / altEffect; "all targets" / "one target" for target type 3), the usable-item table, the fixed ids in btl_startCmdEffect, and the effect ops of every enemy sequence in the encounter bundles of all four discs (enemy names in brackets). Single-target spells on a large target (radius 0x385+) play the all-targets file (g_btlfxLargeTargetFx). `[group N]` = a summon file's Nth code chunk.
+from the round 31 static sweep (`tools/effect_labels.py`; docs/runtime-findings.md, "Round 31 runtime pass"): effect id = dir-13 file id (after btlfx_resolveFirstUse), read from the party ability table (effect / altEffect; "all targets" / "one target" for target type 3), the usable-item table, the fixed ids in btl_startCmdEffect, and the effect ops of every enemy sequence in the encounter bundles of all four discs (enemy names in brackets). Single-target spells on a large target (radius 0x385+) play the all-targets file (g_btlfxLargeTargetFx). `[group N]` = a summon file's Nth code chunk.
 
 | module | file ids | vram | size | .rodata | .text | .data | ops | sha1 | effect |
 |---|---|---|---|---|---|---|---|---|---|
@@ -48,7 +48,7 @@ from the round 31 static sweep (docs/runtime-findings.md, "Round 31 runtime pass
 | fx_01f | 0x01f | 801E7700 | 25C | 4 | 20C | 4C | 1 | 51c01c04e7e5 | enemy !!! (Yan) |
 | fx_020 | 0x020 | 801E7700 | D34 | 4 | 190 | BA0 | 1 | afc19c02017a | Regen |
 | fx_021 | 0x021 | 801E7700 | 178 | 4 | 128 | 4C | 1 | 62501d12b080 | enemy Open Book (Tantarian) |
-| fx_022 | 0x022 | 801E7700 | 19C | 4 | 14C | 4C | 1 | eb92b93e0ddc | enemy Both tentacles gone, Left tentacle gone, Right tentacle gone (Kraken/Left tentacle/Right tentacle) |
+| fx_022 | 0x022 | 801E7700 | 19C | 4 | 14C | 4C | 1 | eb92b93e0ddc | enemy Right tentacle gone, Left tentacle gone, Both tentacles gone (Kraken/Left tentacle/Right tentacle) |
 | fx_023 | 0x023 | 801E7700 | AE0 | 4 | 4E4 | 5F8 | 1 | 2e97f12405c2 | enemy Psychokinesis (Garland) |
 | fx_024 | 0x024 | 801E7700 | 664 | 4 | 614 | 4C | 2 | 146d3dc9c733 | enemy Aerial Slash (Feather Circle/Garuda, ...) |
 | fx_026 | 0x026 | 801E7700 | 8BCC | 4 | 3070 | 5B58 | 8 | 4244eb13e5b7 | Shiva |
@@ -292,8 +292,8 @@ from the round 31 static sweep (docs/runtime-findings.md, "Round 31 runtime pass
 | fx_12f | 0x12f | 801E7700 | 358 | 4 | 308 | 4C | 1 | 9a9929627710 | enemy Paper Storm (Agares/Gargoyle, ...) |
 | fx_130 | 0x130 | 801E7700 | B64 | 4 | 6A8 | 4B8 | 1 | f190da47caf8 | enemy Propeller Wind (Ark) |
 | fx_131 | 0x131 | 801E7700 | 1F0 | 4 | 1A0 | 4C | 1 | dc3c4868b348 | enemy Golem Revival (Core/Sand Golem) |
-| fx_132 | 0x132 | 801E7700 | 1C0 | 4 | 170 | 4C | 1 | c5f5c4580442 | enemy Hide, Appearance (Cactuar) |
-| fx_133 | 0x133 0x1b5 | 801E7700 | 178 | 4 | 128 | 4C | 1 | 1c0f8cf29680 | enemy Disappear2, Disappear, Close Book (Tantarian, ...) |
+| fx_132 | 0x132 | 801E7700 | 1C0 | 4 | 170 | 4C | 1 | c5f5c4580442 | enemy Appearance, Hide (Cactuar) |
+| fx_133 | 0x133 0x1b5 | 801E7700 | 178 | 4 | 128 | 4C | 1 | 1c0f8cf29680 | enemy Disappear, Disappear2, Close Book (Tantarian, ...) |
 | fx_134 | 0x134 | 801E7700 | 8284 | 48 | 5118 | 3124 | 1 | f2480781a2e2 | Doomsday; enemy Doomsday (Hades, ...) |
 | fx_135 | 0x135 | 801E7700 | 21C | 4 | 1CC | 4C | 1 | b43abf2e6eb1 | enemy Bad Breath, Curse (Hades, ...) |
 | fx_136 | 0x136 | 801E7700 | 2CC | 4 | 27C | 4C | 2 | b2ddd76d60e3 | enemy Absorb (Malboro) |
@@ -346,7 +346,7 @@ from the round 31 static sweep (docs/runtime-findings.md, "Round 31 runtime pass
 | fx_1a1 | 0x1a1 | 801E7700 | 33C | 4 | 2EC | 4C | 1 | 0ab0e3c4ee78 | Climhazzard (Seiken) |
 | fx_1a2 | 0x1a2 | 801E7700 | 50B4 | 18 | 20D8 | 2FC4 | 2 | ce7178aef827 | enemy Moonlight Slash |
 | fx_1a3 | 0x1a3 | 801E7700 | 1D0C | 4 | 4B8 | 1850 | 2 | d900c97d9e96 | enemy Trouble Mucus (Antlion) |
-| fx_1a4 | 0x1a4 | 801E7700 | CE0 | 4 | A1C | 2C0 | 2 | a203d907c0c1 | enemy Death1 (Deathguise) |
+| fx_1a4 | 0x1a4 | 801E7700 | CE0 | 4 | A1C | 2C0 | 2 | a203d907c0c1 | enemy Death0 (Deathguise) |
 | fx_1a5 | 0x1a5 | 801E7700 | 254 | 4 | 204 | 4C | 1 | 84328d6e9f13 | Revive (Elan) |
 | fx_1a6 | 0x1a6 | 801E7700 | 6680 | 4 | B38 | 5B44 | 2 | c5565d710786 | enemy Water-gun (Kraken, ...) |
 | fx_1a7 | 0x1a7 | 801E7700 | 2EE8 | 4 | 115C | 1D88 | 2 | 7c67297310b6 | enemy Mind Blast (Drakan) |

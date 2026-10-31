@@ -5,6 +5,7 @@ Format and loader: docs/ff9img.md ("Battle effect files"). Catalogue: docs/effec
 
     python3 tools/effect_modules.py list                 # one line per module chunk, all discs
     python3 tools/effect_modules.py catalogue            # write config/fxmods.us.txt + docs/effect-modules.md
+                                                         # (effect column: tools/effect_labels.py, else KNOWN)
     python3 tools/effect_modules.py extract disks/us/fxmod   # unique module images as <name>.bin
 
 --disks DIR points at the directory holding disc1..disc4/FF9.IMG (default disks/us). Only the
@@ -184,11 +185,12 @@ def unique(discs):
     return order
 
 
-# Effects whose file id is known from runtime traces (docs/runtime-findings.md, btlfx_loadFile) or the DS port.
+# Fallback for the effect column when the game text can't be read (tools/effect_labels.py needs the exe, ovl_33 and
+# FF9.IMG): ids known from runtime traces (docs/runtime-findings.md, btlfx_loadFile).
 KNOWN = {
     0x4E: "Sleep", 0x7E: "Slow", 0x95: "Stop", 0xCA: "Poison", 0x7F: "Silence", 0x7C: "Mini",
     0x61: "Confuse", 0x0E: "Berserk", 0x9D: "Blind", 0xEC: "Doom", 0x99: "Break", 0x59: "Haste",
-    0x7B: "Protect", 0x3F: "Shell", 0x4F: "Reflect", 0x1B: "Float", 0xB2: "Ark (summon, enemy)",
+    0x7B: "Protect", 0x3F: "Shell", 0x4F: "Reflect", 0x1B: "Float", 0xB2: "Twister",
 }
 
 
@@ -205,8 +207,26 @@ def cmd_list(args):
               f"data {L['size'] - L['data']:#7x} discs {same} sha1 {m['sha1'][:12]}")
 
 
+def effect_labels(disks):
+    """tools/effect_labels.py's Labels, or None (with the reason on stderr) when the game data isn't there."""
+    try:
+        import effect_labels
+        return effect_labels.Labels(disks)
+    except (SystemExit, OSError, KeyError, ImportError) as e:
+        print(f"effect column from KNOWN only (effect_labels: {e})", file=sys.stderr)
+        return None
+
+
+def effect_text(labels, m, aliases):
+    if labels is None:
+        return KNOWN.get(m["fid"], "") if m["group"] == 0 else ""
+    ids = [m["fid"]] + [int(a[3:6], 16) for a in aliases]
+    return labels.row(ids, m["group"] if m["ngroups"] > 1 else None)
+
+
 def cmd_catalogue(args):
     discs = load_all(args.disks)
+    labels = effect_labels(args.disks)
     mods = unique(discs)
     first = discs[min(discs)]
     nfiles = len({k[0] for k in first})
@@ -258,7 +278,14 @@ def cmd_catalogue(args):
         "",
         "Columns: sizes in bytes (hex); `.rodata` = word 0 (the header pointer) plus jump tables/strings before the",
         "first function; ops = the header's op handlers (script opcodes 0x80+). Names in the effect column come",
-        "from runtime traces of `btlfx_loadFile` (docs/runtime-findings.md) or the DS port.",
+        "from the round 31 static sweep (`tools/effect_labels.py`; docs/runtime-findings.md, \"Round 31 runtime "
+        "pass\"): effect id = dir-13 file id (after btlfx_resolveFirstUse), read from the party ability table "
+        "(effect / altEffect; \"all targets\" / \"one target\" for target type 3), the usable-item table, the "
+        "fixed ids in btl_startCmdEffect, and the effect ops of every enemy sequence in the encounter bundles of "
+        "all four discs (enemy names in brackets). Single-target spells on a large target (radius 0x385+) play "
+        "the all-targets file (g_btlfxLargeTargetFx). `[group N]` = a summon file's Nth code chunk."
+        if labels else "from runtime traces of `btlfx_loadFile` (docs/runtime-findings.md); `tools/effect_labels.py` "
+        "fills it when the game data is present.",
         "",
         "| module | file ids | vram | size | .rodata | .text | .data | ops | sha1 | effect |",
         "|---|---|---|---|---|---|---|---|---|---|",
@@ -267,9 +294,17 @@ def cmd_catalogue(args):
         ids = [f"{m['fid']:#05x}"] + [a.replace("fx_", "0x") for a in aliases]
         md.append(f"| {name} | {' '.join(ids)} | {m['vram']:08X} | {L['size']:X} | {L['text']:X} | "
                   f"{L['data'] - L['text']:X} | {L['size'] - L['data']:X} | {len(L['ops'])} | {m['sha1'][:12]} | "
-                  f"{KNOWN.get(m['fid'], '') if m['group'] == 0 else ''} |")
+                  f"{effect_text(labels, m, aliases)} |")
+    # Sections after the table (written by other tools or by hand, e.g. fxmod_void_returns.py --doc) are kept.
+    tail = ""
+    if os.path.exists("docs/effect-modules.md"):
+        old = open("docs/effect-modules.md").read()
+        table = old.find("\n| module |")
+        sec = old.find("\n## ", table) if table >= 0 else -1
+        if sec >= 0:
+            tail = "\n" + old[sec + 1:]
     with open("docs/effect-modules.md", "w") as f:
-        f.write("\n".join(md) + "\n")
+        f.write("\n".join(md) + "\n" + tail)
     print(f"{len(rows)} distinct modules ({len(first)} chunks in {nfiles} files), .text {tot_text:#x} "
           f"of {tot_size:#x} bytes; identical on discs {discs_read}: {identical}")
 
