@@ -1,3 +1,9 @@
 fx_078_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
 fx_078_header = 0x801E7D24; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_078_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
+fxm_rotPosTrackGet = 0x801E7B84; // type:func [code] key t of a track of rotation+position keys (count first), position x and z negated, returns 1 past the end
+fxm_vecTrackGet = 0x801E7CB4; // type:func [code] key t of a track of positions into a VECTOR (count first), returns 1 past the end
+fxm_posTrackGet = 0x801E7C34; // type:func [code] key t of a track of positions (count first), x and z negated, returns 1 past the end
+fxm_rotPosTrackInit = 0x801E7B70; // type:func [code] sets up the fxm_rotPosTrackGet data (track data is count then keys), paired with the getter that follows it
+fxm_posTrackInit = 0x801E7C20; // type:func [code] sets up the fxm_posTrackGet data (track data is count then keys), paired with the getter that follows it
+fxm_vecTrackInit = 0x801E7CA0; // type:func [code] sets up the fxm_vecTrackGet data (track data is count then keys), paired with the getter that follows it

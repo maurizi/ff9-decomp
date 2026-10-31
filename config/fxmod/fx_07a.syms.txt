@@ -1,3 +1,5 @@
 fx_07a_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
 fx_07a_header = 0x801E94AC; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_07a_op80 = 0x801E7A1C; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
+fxm_easeLerp = 0x801E78E4; // type:func [code] btlfx_lerp from to over n frames at frame t, curve 0 linear, 1 ease-out (quadratic), 2 ease-in
+fxm_easeLerpSvec = 0x801E77A8; // type:func [code] fxm_easeLerp for SVECTORs (btlfx_lerpVec), same curves 0 linear, 1 ease-out, 2 ease-in

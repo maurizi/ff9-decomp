@@ -84,7 +84,7 @@ s32 func_801E79C4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
 s32 func_801E7A00(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
     SVECTOR v;
 
-    func_801E8478(&D_801E8564, D_801E8DA0 * 3, &v);
+    fxm_posPathGet(&D_801E8564, D_801E8DA0 * 3, &v);
     v.vx += D_801E859C.vx;
     v.vy += D_801E859C.vy;
     v.vz += D_801E859C.vz;
@@ -106,7 +106,7 @@ s32 func_801E7A00(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 fra
 s32 func_801E7B24(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
     SVECTOR v;
 
-    func_801E8478(&D_801E856C, (D_801E8DA0 - 5) * 3, &v);
+    fxm_posPathGet(&D_801E856C, (D_801E8DA0 - 5) * 3, &v);
     v.vx += D_801E859C.vx;
     v.vy += D_801E859C.vy;
     v.vz += D_801E859C.vz;
@@ -193,8 +193,8 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk0 != NULL) {
             work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
-        func_801E8460(&D_801E8564, (u8 *)ex->btlfx_getFileData(entry->file, 4));
-        func_801E8460(&D_801E856C, (u8 *)ex->btlfx_getFileData(entry->file, 5));
+        fxm_posPathInit(&D_801E8564, (u8 *)ex->btlfx_getFileData(entry->file, 4));
+        fxm_posPathInit(&D_801E856C, (u8 *)ex->btlfx_getFileData(entry->file, 5));
     } else {
         frame = entry->frame;
         D_801E8DA0 = frame;
@@ -289,13 +289,13 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E8460(Fx191Path *path, u16 *data) {
+static void fxm_posPathInit(Fx191Path *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx191Point *)data;
 }
 
-s32 func_801E8478(Fx191Path *path, s32 t, SVECTOR *out) {
+static s32 fxm_posPathGet(Fx191Path *path, s32 t, SVECTOR *out) {
     s32 last = path->unk2 - 1;
     s32 done = 1;
     Fx191Point *p;

@@ -49,11 +49,11 @@ extern SVECTOR D_801E84F0[5];
 
 s32 func_801E776C(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames);
 void func_801E79BC(SVECTOR *out, Fx1e7Path *path, s32 t);
-void func_801E8054(Fx1e7Path *path, u16 *data);
-s32 func_801E806C(Fx1e7Path *path, s32 t, SVECTOR *out);
-void func_801E80D0(s32 unit, s32 motion);
-s32 func_801E813C(s32 unit);
-void func_801E820C(s32 unit);
+static void fxm_posPathInit(Fx1e7Path *path, u16 *data);
+static s32 fxm_posPathGet(Fx1e7Path *path, s32 t, SVECTOR *out);
+static void fxm_startUnitMotion(s32 unit, s32 motion);
+static s32 fxm_isMotionDone(s32 unit);
+static void fxm_startMotion3IfActive(s32 unit);
 
 /* propagated */
 extern Fx1e7Path D_801E82E8[];

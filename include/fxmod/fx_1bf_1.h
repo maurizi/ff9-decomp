@@ -125,7 +125,7 @@ typedef struct {
 extern BtlModel D_801EF2E8[];
 extern SVECTOR D_801EF254;
 extern s16 D_801EF260[];
-s32 func_801EC704(SVECTOR *v, SVECTOR *rot);
+static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot);
 s32 func_801EC7C8(s32 mode, Fx1bf1Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1bf1RockInst *inst);
 
 #endif

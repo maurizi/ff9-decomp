@@ -82,7 +82,7 @@ void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
     }
 }
 
-void func_801E7B74(void) {
+static void fxm_camKeyReset(void) {
     s32 i;
     s32 m;
 
@@ -93,7 +93,7 @@ void func_801E7B74(void) {
     }
 }
 
-void func_801E7BA8(s32 start, u32 dst, u32 src, s16 *data) {
+static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data) {
     s32 i;
 
     for (i = 0; i < 16; i++) {
@@ -108,7 +108,7 @@ void func_801E7BA8(s32 start, u32 dst, u32 src, s16 *data) {
     }
 }
 
-void func_801E7BF8(void) {
+static void fxm_camKeyUpdate(void) {
     SVECTOR *ext = D_801EAC68;
     s32 i;
     Unk800F78A4 *env = D_801EAB18;
@@ -342,21 +342,21 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk120.b = 0x10;
         func_801E7704(&work->unk10C, &work->unk114, 0x408, &work->unk11C, &work->unk120, 0x1000, D_801EAC98, 1);
         func_801E9E1C();
-        func_801E7B74();
-        func_801E7BA8(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 5));
-        func_801E7BA8(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 2));
-        func_801E7BA8(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 8));
-        func_801E7BA8(0, 9, 0, (s16 *)ex->btlfx_getFileData(entry->file, 7));
-        func_801E7BA8(0, 4, 0, (s16 *)ex->btlfx_getFileData(entry->file, 6));
-        func_801E7BA8(0xA7, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0xA));
-        func_801E7BA8(0xA7, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 9));
-        func_801E7BA8(0xA7, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x16));
-        func_801E7BA8(0xFB, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 1));
-        func_801E7BA8(0xFB, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x17));
-        func_801E7BA8(0xFB, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x19));
-        func_801E7BA8(0x137, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x1B));
-        func_801E7BA8(0x137, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x1A));
-        func_801E7BA8(0x137, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x1C));
+        fxm_camKeyReset();
+        fxm_camKeyAdd(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 5));
+        fxm_camKeyAdd(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 2));
+        fxm_camKeyAdd(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 8));
+        fxm_camKeyAdd(0, 9, 0, (s16 *)ex->btlfx_getFileData(entry->file, 7));
+        fxm_camKeyAdd(0, 4, 0, (s16 *)ex->btlfx_getFileData(entry->file, 6));
+        fxm_camKeyAdd(0xA7, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0xA));
+        fxm_camKeyAdd(0xA7, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 9));
+        fxm_camKeyAdd(0xA7, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x16));
+        fxm_camKeyAdd(0xFB, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 1));
+        fxm_camKeyAdd(0xFB, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x17));
+        fxm_camKeyAdd(0xFB, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x19));
+        fxm_camKeyAdd(0x137, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x1B));
+        fxm_camKeyAdd(0x137, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x1A));
+        fxm_camKeyAdd(0x137, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x1C));
         return 0;
     } else {
         frame = entry->frame;
@@ -799,7 +799,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801EA6D4((s16 *)ex->btlfx_getFileData(entry->file, 0x14), a, a, w2C);
             func_801EA6D4((s16 *)ex->btlfx_getFileData(entry->file, 0x25), a, a, w2C);
         }
-        func_801E7BF8();
+        fxm_camKeyUpdate();
     }
     return 0;
 }

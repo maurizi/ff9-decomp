@@ -30,7 +30,7 @@ extern s16 D_801E7D9C[][2];
 extern BtlModel D_801E7E30[];
 extern s32 D_801E7FC0[];
 
-void func_801E7D00(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E7D44(s32 from, s32 to, s32 t, s32 n);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

@@ -4,7 +4,7 @@
 /* Effect module fx_0fa (dir 13 file 0x0FA). */
 #include "btlfx_mod.h"
 
-void func_801E7704(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out);
+static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out);
 
 typedef struct {
     s32 unk0[10]; /* countdowns and flags */

@@ -36,7 +36,7 @@ void func_801E77DC(SVECTOR *out, Fx138Path *path, s32 i) {
     VECTOR v;
     SVECTOR sv;
 
-    func_801E81F0(path, i, &sv);
+    fxm_posPathGet(path, i, &sv);
     sv.vx /= 2;
     sv.vy /= 2;
     sv.vz /= 2;
@@ -67,7 +67,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0xA0;
     } else if (mode == 1) {
         D_801E8500 = env;
-        func_801E8254(env, 7, 0);
+        fxm_setSignal(env, 7, 0);
         ex->btlfx_initEffModels(D_801E8510, 4);
         ex->btlfx_getUnitPos(0, &work->unk70.vx);
         ex->btlfx_getUnitRot(0, &work->unk78.vx);
@@ -108,7 +108,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk88 = 0;
         work->unk8A = sel[3];
         for (i = 0; i < 6; i++) {
-            func_801E81D8(&D_801E8830[i], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8494[i]));
+            fxm_posPathInit(&D_801E8830[i], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8494[i]));
         }
         work->unk8C = -1;
         work->unk8E = -1;
@@ -131,10 +131,10 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (--work->unk92 == 0) {
                 work->unk8E = 0x1A;
                 work->unk90 = 0;
-                func_801E8254(env, 7, 1);
+                fxm_setSignal(env, 7, 1);
             }
         }
-        func_801E8268(0x280 - (work->unk94 << 4), 0x280, 0x180, 0x40, 0x80, 0x240, 0x180);
+        fxm_drawScrollMoveX(0x280 - (work->unk94 << 4), 0x280, 0x180, 0x40, 0x80, 0x240, 0x180);
         work->unk94++;
         if (frame >= 0x28) {
             ex->btlfx_clearEffModels();
@@ -209,21 +209,21 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E813C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E8500)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E8180(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-void func_801E81D8(Fx138Path *path, u16 *data) {
+static void fxm_posPathInit(Fx138Path *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx138Point *)data;
 }
 
-s32 func_801E81F0(Fx138Path *path, s32 t, SVECTOR *out) {
+static s32 fxm_posPathGet(Fx138Path *path, s32 t, SVECTOR *out) {
     s32 last = path->unk2 - 1;
     s32 done = 1;
     Fx138Point *p;
@@ -240,11 +240,11 @@ s32 func_801E81F0(Fx138Path *path, s32 t, SVECTOR *out) {
     return done;
 }
 
-void func_801E8254(Unk800F78A4 *env, s32 i, s32 v) {
+static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
     *((u8 *)env->state + i + 0x10) = v;
 }
 
-void func_801E8268(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
+static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
     Unk800F78A4 *env = D_801E8500;
     u32 *p = (u32 *)env->prim;

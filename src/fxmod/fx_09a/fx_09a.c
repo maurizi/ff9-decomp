@@ -82,7 +82,7 @@ void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
     }
 }
 
-void func_801E7B74(s32 model, s32 bone, SVECTOR *in, SVECTOR *out) {
+static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out) {
     Unk800F78A4 *env = D_801E8858;
     MATRIX m;
 
@@ -280,9 +280,9 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (k != 0) {
-            func_801E7B74(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E87F8, &a);
-            func_801E7B74(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E8800, &b);
-            func_801E7B74(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E8808, &c);
+            fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E87F8, &a);
+            fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E8800, &b);
+            fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E8808, &c);
             if (k < 0) {
                 func_801E7704(&a, &b, 0x3F8, (CVECTOR *)&D_801E87EC, (CVECTOR *)&D_801E87F0, 0, D_801E9058, 1);
                 func_801E7704(&b, &c, 0x3F8, (CVECTOR *)&D_801E87F0, (CVECTOR *)&D_801E87F4, 0, D_801E9168, 1);

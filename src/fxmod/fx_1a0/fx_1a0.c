@@ -39,7 +39,7 @@ s32 func_801E7858(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
 s32 func_801E789C(Pool30Entry *e, SVECTOR *pos, Fx1a0Path *path, s32 t, s32 frame, s32 frames) {
     SVECTOR v;
 
-    func_801E7E94(path, t, &v);
+    fxm_posPathGet(path, t, &v);
     v.vx += D_801E8280.vx;
     v.vy += D_801E8280.vy;
     v.vz += D_801E8280.vz;
@@ -109,7 +109,7 @@ s32 fx_1a0_op81(s32 mode, Fx1a0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E8280.vx = work->unkC.vx;
         D_801E8280.vy = work->unkC.vy;
         D_801E8280.vz = work->unkC.vz;
-        func_801E7E7C(&D_801E8238[work->unk14], (u8 *)ex->btlfx_getFileData(entry->file, D_801E7F1C[work->unk14]));
+        fxm_posPathInit(&D_801E8238[work->unk14], (u8 *)ex->btlfx_getFileData(entry->file, D_801E7F1C[work->unk14]));
     } else {
         frame = entry->frame;
         D_801E8268[work->unk14] = frame;
@@ -158,13 +158,13 @@ s32 fx_1a0_op82(s32 mode, Fx1a0Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E7E7C(Fx1a0Path *path, u16 *data) {
+static void fxm_posPathInit(Fx1a0Path *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx1a0Point *)data;
 }
 
-s32 func_801E7E94(Fx1a0Path *path, s32 t, SVECTOR *out) {
+static s32 fxm_posPathGet(Fx1a0Path *path, s32 t, SVECTOR *out) {
     s32 last = path->unk2 - 1;
     s32 done = 1;
     Fx1a0Point *p;

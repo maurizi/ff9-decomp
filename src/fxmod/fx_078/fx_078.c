@@ -28,9 +28,9 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E7D18[i]),
                                                         0x97, 0x3D40, 0, 0);
         }
-        func_801E7B70(&D_801E8EAC, (u16 *)ex->btlfx_getFileData(entry->file, 0xD));
-        func_801E7CA0(&D_801E8EB4, (u16 *)ex->btlfx_getFileData(entry->file, 0xC));
-        func_801E7C20(&D_801E8EBC, (u16 *)ex->btlfx_getFileData(entry->file, 0x15));
+        fxm_rotPosTrackInit(&D_801E8EAC, (u16 *)ex->btlfx_getFileData(entry->file, 0xD));
+        fxm_vecTrackInit(&D_801E8EB4, (u16 *)ex->btlfx_getFileData(entry->file, 0xC));
+        fxm_posTrackInit(&D_801E8EBC, (u16 *)ex->btlfx_getFileData(entry->file, 0x15));
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -55,19 +55,19 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (frame >= 0 && frame < 0x2D) {
-            func_801E7B84(&D_801E8EAC, frame, &work->unk18, &p);
+            fxm_rotPosTrackGet(&D_801E8EAC, frame, &work->unk18, &p);
             work->unk20.vx = p.vx;
             work->unk20.vy = p.vy;
             work->unk20.vz = p.vz;
             work->unk20.vx += work->unk10.vx;
             work->unk20.vy += work->unk10.vy;
             work->unk20.vz += work->unk10.vz;
-            func_801E7CB4(&D_801E8EB4, frame, &work->unk30);
+            fxm_vecTrackGet(&D_801E8EB4, frame, &work->unk30);
             k = frame % 10;
             ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk4C[k]);
             ex->Hi_ModifyEffModelAbr(work->unk4C[k], 1);
         }
-        func_801E7C34(&D_801E8EBC, frame, &work->unk44);
+        fxm_posTrackGet(&D_801E8EBC, frame, &work->unk44);
         work->unk44.vx += work->unk10.vx;
         work->unk44.vy += work->unk10.vy;
         work->unk44.vz += work->unk10.vz;
@@ -83,12 +83,12 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-void func_801E7B70(Fx078Track12 *track, u16 *data) {
+static void fxm_rotPosTrackInit(Fx078Track12 *track, u16 *data) {
     track->unk0 = *data++;
     track->unk4 = (Fx078Key12 *)data;
 }
 
-s32 func_801E7B84(Fx078Track12 *track, s32 t, SVECTOR *rot, SVECTOR *pos) {
+static s32 fxm_rotPosTrackGet(Fx078Track12 *track, s32 t, SVECTOR *rot, SVECTOR *pos) {
     s32 last = track->unk0 - 1;
     s32 done = 1;
     Fx078Key12 *k;
@@ -112,12 +112,12 @@ s32 func_801E7B84(Fx078Track12 *track, s32 t, SVECTOR *rot, SVECTOR *pos) {
     return done;
 }
 
-void func_801E7C20(Fx078Track6 *track, u16 *data) {
+static void fxm_posTrackInit(Fx078Track6 *track, u16 *data) {
     track->unk0 = *data++;
     track->unk4 = (Fx078Key6 *)data;
 }
 
-s32 func_801E7C34(Fx078Track6 *track, s32 t, SVECTOR *out) {
+static s32 fxm_posTrackGet(Fx078Track6 *track, s32 t, SVECTOR *out) {
     s32 last = track->unk0 - 1;
     s32 done = 1;
     Fx078Key6 *k;
@@ -134,12 +134,12 @@ s32 func_801E7C34(Fx078Track6 *track, s32 t, SVECTOR *out) {
     return done;
 }
 
-void func_801E7CA0(Fx078Track6 *track, u16 *data) {
+static void fxm_vecTrackInit(Fx078Track6 *track, u16 *data) {
     track->unk0 = *data++;
     track->unk4 = (Fx078Key6 *)data;
 }
 
-s32 func_801E7CB4(Fx078Track6 *track, s32 t, VECTOR *out) {
+static s32 fxm_vecTrackGet(Fx078Track6 *track, s32 t, VECTOR *out) {
     s32 last = track->unk0 - 1;
     s32 done = 1;
     Fx078Key6 *k;

@@ -1,0 +1,64 @@
+# Round 31: effect-module names (old -> new). Evidence [code]; the reason is in each module's
+# config/fxmod/fx_XXX.syms.txt entry. Shared helpers carry the fxm_ prefix and are static in every module
+# that does not reference them from its data (asm), so each copy stays module-local.
+
+## Batch 1: shared helpers (duplicate groups)
+fxm_posPathGet  <-  fx_041:func_801E7D08 fx_0d2:func_801E9E88 fx_0e2:func_801EC4A4 fx_0ef:func_801E7A64 fx_114:func_801EA6F4 fx_128:func_801E88B4 fx_12b:func_801E9744 fx_138:func_801E81F0 fx_180:func_801E8F08 fx_191:func_801E8478 fx_1a0:func_801E7E94 fx_1b4:func_801E8558 fx_1bd:func_801E8E90 fx_1e6:func_801E829C fx_1e7:func_801E806C fx_1ea:func_801E8C4C fx_1ec:func_801E8C60 fx_1fc:func_801E876C fx_1fd:func_801E97DC
+fxm_rotPosPathGet  <-  fx_0b4:func_801E8058 fx_0d2:func_801E9F04 fx_0e2:func_801EC520 fx_123:func_801E8E38 fx_128:func_801E8808 fx_183:func_801E81F4 fx_1ea:func_801E8CC8 fx_1eb:func_801E8120 fx_1fc:func_801E87E8 fx_1fd:func_801E9858
+fxm_valuePathGet  <-  fx_0d2:func_801E9FB0 fx_128:func_801E8930 fx_1eb:func_801E81CC fx_1fc:func_801E8894
+fxm_vecPathGet  <-  fx_0d2:func_801EA00C fx_114:func_801EA898 fx_1b2:func_801E8220 fx_1fc:func_801E88F0
+fxm_rotPosTrackGet  <-  fx_05d:func_801E7F34 fx_078:func_801E7B84 fx_0dd:func_801E824C fx_114:func_801EA76C fx_1bd:func_801E8F08
+fxm_vecTrackGet  <-  fx_05d:func_801E7FE4 fx_078:func_801E7CB4 fx_0dd:func_801E82FC fx_114:func_801EA81C fx_1bd:func_801E8FB8
+fxm_posTrackGet  <-  fx_078:func_801E7C34 fx_114:func_801EA670 fx_1bd:func_801E8E0C
+fxm_posPathInit  <-  fx_041:func_801E7CF0 fx_0d2:func_801E9E70 fx_0e2:func_801EC48C fx_0ef:func_801E7A4C fx_114:func_801EA6DC fx_128:func_801E889C fx_12b:func_801E972C fx_138:func_801E81D8 fx_180:func_801E8EF0 fx_191:func_801E8460 fx_1a0:func_801E7E7C fx_1b4:func_801E8540 fx_1bd:func_801E8E78 fx_1e6:func_801E8284 fx_1e7:func_801E8054 fx_1ea:func_801E8C34 fx_1ec:func_801E8C48 fx_1fc:func_801E8754 fx_1fd:func_801E97C4
+fxm_rotPosPathInit  <-  fx_0b4:func_801E8040 fx_0d2:func_801E9EEC fx_0e2:func_801EC508 fx_123:func_801E8E20 fx_128:func_801E87F0 fx_183:func_801E81DC fx_1ea:func_801E8CB0 fx_1eb:func_801E8108 fx_1fc:func_801E87D0 fx_1fd:func_801E9840
+fxm_valuePathInit  <-  fx_0d2:func_801E9F98 fx_128:func_801E8918 fx_1eb:func_801E81B4 fx_1fc:func_801E887C
+fxm_vecPathInit  <-  fx_0d2:func_801E9FF4 fx_114:func_801EA880 fx_1b2:func_801E8208 fx_1fc:func_801E88D8
+fxm_rotPosTrackInit  <-  fx_05d:func_801E7F20 fx_078:func_801E7B70 fx_0dd:func_801E8238 fx_114:func_801EA758 fx_1bd:func_801E8EF4
+fxm_vecTrackInit  <-  fx_05d:func_801E7FD0 fx_078:func_801E7CA0 fx_0dd:func_801E82E8 fx_114:func_801EA808 fx_1bd:func_801E8FA4
+fxm_posTrackInit  <-  fx_078:func_801E7C20 fx_114:func_801EA65C fx_1bd:func_801E8DF8
+fxm_lerpSvec  <-  fx_001:func_801E7D00 fx_023:func_801E7B4C fx_03d:func_801E7D7C fx_052:func_801E7E2C fx_08e:func_801E7D00 fx_090:func_801E7D18 fx_096:func_801E8238 fx_0cf:func_801E78F4 fx_0d2:func_801E9DD4 fx_0e2:func_801EC3F0 fx_0e4:func_801E7C5C fx_0e7:func_801E7E60 fx_0e9:func_801E7C18 fx_0eb:func_801E7B40 fx_0f2:func_801E7A9C fx_0f4:func_801E7CDC fx_0fe:func_801E7B58 fx_0ff:func_801E7BCC fx_114:func_801EA5C0 fx_122:func_801E7BF8 fx_123:func_801E8D84 fx_128:func_801E8754 fx_12b:func_801E9690 fx_12d:func_801E7C24 fx_138:func_801E813C fx_180:func_801E8DBC fx_183:func_801E8140 fx_184:func_801E7CE0 fx_19e:func_801E78F4 fx_1a4:func_801E8084 fx_1ab:func_801E7C9C fx_1b2:func_801E816C fx_1bd:func_801E8D5C fx_1e6:func_801E81E8 fx_1ea:func_801E8B00 fx_1eb:func_801E806C fx_1ec:func_801E8B14 fx_1fc:func_801E86B8 fx_1fd:func_801E9728
+fxm_lerpRatio  <-  fx_001:func_801E7D44 fx_023:func_801E7B90 fx_03d:func_801E7DC0 fx_052:func_801E7E70 fx_08e:func_801E7D44 fx_090:func_801E7D5C fx_096:func_801E827C fx_0cf:func_801E7938 fx_0d2:func_801E9E18 fx_0e2:func_801EC434 fx_0e4:func_801E7CA0 fx_0e7:func_801E7EA4 fx_0e9:func_801E7C5C fx_0eb:func_801E7B84 fx_0f2:func_801E7AE0 fx_0f4:func_801E7D20 fx_0fe:func_801E7B9C fx_0ff:func_801E7C10 fx_114:func_801EA604 fx_122:func_801E7C3C fx_123:func_801E8DC8 fx_128:func_801E8798 fx_12b:func_801E96D4 fx_12d:func_801E7C68 fx_138:func_801E8180 fx_180:func_801E8E00 fx_183:func_801E8184 fx_184:func_801E7D24 fx_19e:func_801E7938 fx_1a4:func_801E80C8 fx_1ab:func_801E7CE0 fx_1b2:func_801E81B0 fx_1bd:func_801E8DA0 fx_1e6:func_801E822C fx_1ea:func_801E8B44 fx_1eb:func_801E80B0 fx_1ec:func_801E8B58 fx_1fc:func_801E86FC fx_1fd:func_801E976C
+fxm_easeLerp  <-  fx_033:func_801E7704 fx_062:func_801E77F0 fx_063:func_801E7704 fx_079:func_801E77B8 fx_07a:func_801E78E4 fx_0b1:func_801E792C fx_0b8:func_801E7704 fx_130:func_801E7704 fx_18c:func_801E7704 fx_1ac:func_801E77D0 fx_1b3:func_801E77CC fx_1be:func_801E7840 fx_1ed:func_801E792C fx_1ee:func_801E792C fx_1ef:func_801E792C fx_1f0:func_801E7948 fx_1f1:func_801E7704 fx_1f2:func_801E7794 fx_1f3:func_801E7794
+fxm_easeLerpSvec  <-  fx_07a:func_801E77A8 fx_1be:func_801E7704
+fxm_easeBlend4  <-  fx_0fa:func_801E7704 fx_1f0:func_801E7704
+fxm_setSignal  <-  fx_01d:func_801E7CD8 fx_024:func_801E7D04 fx_02b:func_801E7CD8 fx_045:func_801E7CDC fx_051:func_801E7988 fx_053:func_801E7C50 fx_056:func_801E794C fx_08b:func_801E7D18 fx_0c2:func_801E8420 fx_0c6:func_801E78F4 fx_0ea:func_801E7DE0 fx_11e:func_801E7F70 fx_12a:func_801E7EA0 fx_12b:func_801E97A8 fx_138:func_801E8254 fx_1a5:func_801E78F4 fx_1e7:func_801E8258
+fxm_tintScreenLerp  <-  fx_052:func_801E7EC8 fx_0d2:func_801EA070 fx_0e2:func_801EC5B4 fx_114:func_801EA914 fx_123:func_801E8ECC fx_180:func_801E8E58 fx_1b2:func_801E8284 fx_1bd:func_801E9034 fx_1ea:func_801E8B9C fx_1ec:func_801E8BB0 fx_1fc:func_801E8954 fx_1fd:func_801E98EC
+fxm_tintScreenRatio  <-  fx_1b3:func_801E773C fx_1f2:func_801E7704 fx_1f3:func_801E7704
+fxm_drawTexelQuads  <-  fx_007:func_801E7704 fx_048:func_801E7704 fx_097:func_801E7720 fx_098:func_801E7720 fx_0d3:func_801E7720 fx_0d6:func_801E7704 fx_0e1_0:func_801E7718 fx_1cc:func_801E7720 fx_1fe:func_801E7704
+fxm_drawScrollMoveX  <-  fx_026:func_801E78BC fx_0b3:func_801E78BC fx_0e2:func_801EC920 fx_114:func_801EB154 fx_138:func_801E8268 fx_196:func_801E78BC fx_197:func_801E78BC fx_1bd:func_801E9874 fx_1fd:func_801E9C58
+fxm_startUnitMotion  <-  fx_041:func_801E7D6C fx_09b:func_801E7F6C fx_0c2:func_801E8298 fx_100:func_801E7B8C fx_180:func_801E8F6C fx_1a6:func_801E80B4 fx_1b2:func_801E831C fx_1e7:func_801E80D0 fx_1ec:func_801E8CC4
+fxm_isMotionDone  <-  fx_041:func_801E7DD8 fx_09b:func_801E7FD8 fx_0c2:func_801E8304 fx_100:func_801E7BF8 fx_180:func_801E8FD8 fx_1a6:func_801E8120 fx_1b2:func_801E8388 fx_1e7:func_801E813C fx_1ec:func_801E8D30
+fxm_startMotion2IfActive  <-  fx_041:func_801E7E5C fx_09b:func_801E805C fx_0c2:func_801E8388 fx_100:func_801E7C7C fx_180:func_801E905C fx_1a6:func_801E81A4 fx_1b2:func_801E840C fx_1e7:func_801E81C0 fx_1ec:func_801E8DB4
+fxm_startMotion3IfActive  <-  fx_041:func_801E7EA8 fx_09b:func_801E80A8 fx_0c2:func_801E83D4 fx_100:func_801E7CC8 fx_180:func_801E90A8 fx_1a6:func_801E81F0 fx_1b2:func_801E8458 fx_1e7:func_801E820C fx_1ec:func_801E8E00
+fxm_offsetTableEntry  <-  fx_0d2:func_801E9DBC fx_0e2:func_801EC3D8 fx_114:func_801EA8FC fx_180:func_801E8DA4 fx_1bd:func_801E901C fx_1ec:func_801E8AFC fx_1fc:func_801E86A0 fx_1fd:func_801E9710
+fxm_camChanReset  <-  fx_0d2:func_801EA1D4 fx_0e2:func_801EC718 fx_114:func_801EA9AC fx_1bd:func_801E90CC fx_1fc:func_801E8AB8 fx_1fd:func_801E9A50
+fxm_camChanAdd  <-  fx_0d2:func_801EA220 fx_0e2:func_801EC764 fx_114:func_801EA9F8 fx_1bd:func_801E9118 fx_1fc:func_801E8B04 fx_1fd:func_801E9A9C
+fxm_camChanUpdate  <-  fx_0d2:func_801EA27C fx_0e2:func_801EC7C0 fx_114:func_801EAA54 fx_1bd:func_801E9174 fx_1fc:func_801E8B60 fx_1fd:func_801E9AF8
+fxm_camKeyReset  <-  fx_0b1:func_801E7704 fx_105:func_801E7B74 fx_1ed:func_801E7704 fx_1ee:func_801E7704 fx_1ef:func_801E7704
+fxm_camKeyAdd  <-  fx_0b1:func_801E7738 fx_105:func_801E7BA8 fx_1ed:func_801E7738 fx_1ee:func_801E7738 fx_1ef:func_801E7738
+fxm_camKeyUpdate  <-  fx_0b1:func_801E7788 fx_105:func_801E7BF8 fx_1ed:func_801E7788 fx_1ee:func_801E7788 fx_1ef:func_801E7788
+fxm_keyGetVec  <-  fx_026:func_801E7704 fx_0b3:func_801E7704 fx_0d3:func_801E8470 fx_196:func_801E7704 fx_197:func_801E7704
+fxm_keyGetVec2  <-  fx_026:func_801E7754 fx_0b3:func_801E7754 fx_0d3:func_801E84C0 fx_196:func_801E7754 fx_197:func_801E7754
+fxm_keyGetVec3  <-  fx_026:func_801E77DC fx_0b3:func_801E77DC fx_0d3:func_801E8548 fx_196:func_801E77DC fx_197:func_801E77DC
+fxm_keyGetValue  <-  fx_026:func_801E7890 fx_0b3:func_801E7890 fx_0d3:func_801E85FC fx_196:func_801E7890 fx_197:func_801E7890
+fxm_turnUnitBy  <-  fx_088:func_801E7984 fx_0c2:func_801E7EC4 fx_0cf:func_801E7AAC fx_19e:func_801E7AAC
+fxm_turnUnitToward  <-  fx_088:func_801E7B00 fx_0c2:func_801E8040 fx_0cf:func_801E7C28 fx_19e:func_801E7C28
+fxm_pinParticle  <-  fx_09b:func_801E7808 fx_114:func_801E784C fx_123:func_801E7A24 fx_12b:func_801E8000
+fxm_moveUnitArc  <-  fx_0cf:func_801E7990 fx_180:func_801E90F4 fx_184:func_801E7BC4 fx_19e:func_801E7990
+fxm_moveUnitHome  <-  fx_0d2:func_801EA108 fx_0e2:func_801EC64C fx_1fc:func_801E89EC fx_1fd:func_801E9984
+fxm_getSummonBonePoint  <-  fx_05e:func_801E7B74 fx_09a:func_801E7B74 fx_0ed:func_801E7B74
+fxm_anglesFromEye  <-  fx_07d:func_801E80C4 fx_0cb:func_801E7EB8 fx_0df:func_801E80B0
+fxm_drawTrailLine  <-  fx_0a0:func_801E783C fx_17d_4:func_801E7720 fx_1bf_0:func_801E7704
+fxm_buildPathTrail  <-  fx_0d2:func_801E77A4 fx_114:func_801E78AC fx_1bd:func_801E77C0
+fxm_shatterInit  <-  fx_026:func_801E912C fx_197:func_801E7A5C
+fxm_shatterAddModel  <-  fx_026:func_801E9170 fx_197:func_801E7AA0
+fxm_shatterFreeShard  <-  fx_026:func_801E928C fx_197:func_801E7BBC
+fxm_shatterRelease  <-  fx_026:func_801E92EC fx_197:func_801E7C1C
+fxm_randDiscPoints  <-  fx_086:func_801E7E18 fx_08f:func_801E7704
+fxm_nextRingPoint  <-  fx_0b3:func_801EA6C8 fx_196:func_801E8370
+fxm_drawCenterBand  <-  fx_0ba:func_801E7704 fx_19f:func_801E7704
+fxm_waveVertexX  <-  fx_0d3:func_801E90D4 fx_1fe:func_801E7CA0
+fxm_drawMirrorSprite  <-  fx_0e0:func_801E7718 fx_134:func_801E7748
+fxm_randRingPoint  <-  fx_17d_7:func_801EC704 fx_1bf_1:func_801EC704
+fxm_splitModelAdd  <-  fx_1b0:func_801E774C fx_1b7:func_801E774C

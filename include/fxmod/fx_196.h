@@ -37,7 +37,7 @@ extern CVECTOR D_801E90FC[];
 extern Fx196CamPath D_801E910C[];
 extern Unk800F78A4 *D_801E915C;
 
-void func_801E7704(Fx196Track *track, s32 t, SVECTOR *out);
+static void fxm_keyGetVec(Fx196Track *track, s32 t, SVECTOR *out);
 void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 amp, s32 ph, s32 step, s32 r, s32 ang, s32 d);
 
@@ -50,6 +50,6 @@ s32 func_801E7A5C(s32 a);
 
 extern s32 D_801E90F8;
 extern SVECTOR D_801E916C[];
-s32 func_801E8370(SVECTOR *v);
+static s32 fxm_nextRingPoint(SVECTOR *v);
 
 #endif

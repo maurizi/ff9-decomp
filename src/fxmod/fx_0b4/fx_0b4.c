@@ -28,7 +28,7 @@ s32 func_801E793C(Pool30Entry *pt, SVECTOR *pos, Fx0b4Timer *timer, Fx0b4Path *p
     SVECTOR rot;
     SVECTOR p;
 
-    func_801E8058(path, frame, &rot, &p);
+    fxm_rotPosPathGet(path, frame, &rot, &p);
     p.vx /= 2;
     p.vz /= 2;
     p.vx = p.vx * 12 / 10;
@@ -76,7 +76,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E818C.vz = work->unk34.vz;
         for (k = 0, tq = D_801E80EC; k < 6; k++, tq++) {
             tq->unk0 = k * 2 + 0x14;
-            func_801E8040(&D_801E81C4[k], ex->btlfx_getFileData(entry->file, D_801E8110[k]));
+            fxm_rotPosPathInit(&D_801E81C4[k], ex->btlfx_getFileData(entry->file, D_801E8110[k]));
         }
         return 0;
     } else {
@@ -173,13 +173,13 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-void func_801E8040(Fx0b4Path *path, u16 *data) {
+static void fxm_rotPosPathInit(Fx0b4Path *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx0b4Point *)data;
 }
 
-s32 func_801E8058(Fx0b4Path *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+static s32 fxm_rotPosPathGet(Fx0b4Path *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
     Fx0b4Key *k;
     s32 r = 1;
 

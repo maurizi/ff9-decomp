@@ -1,6 +1,6 @@
 #include "fxmod/fx_1ef.h"
 
-void func_801E7704(void) {
+static void fxm_camKeyReset(void) {
     s32 i;
     s32 m;
 
@@ -11,7 +11,7 @@ void func_801E7704(void) {
     }
 }
 
-void func_801E7738(s32 start, u32 dst, u32 src, s16 *data) {
+static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data) {
     s32 i;
 
     for (i = 0; i < 16; i++) {
@@ -26,7 +26,7 @@ void func_801E7738(s32 start, u32 dst, u32 src, s16 *data) {
     }
 }
 
-void func_801E7788(void) {
+static void fxm_camKeyUpdate(void) {
     SVECTOR *ext = D_801E8CEC;
     s32 i;
     Unk800F78A4 *env = D_801E8B9C;
@@ -84,7 +84,7 @@ void func_801E7788(void) {
     D_801E8BA0++;
 }
 
-s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8B9C);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -156,10 +156,10 @@ s32 fx_1ef_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E8D3C.vx = 0;
         D_801E8D3C.vy = 0;
         D_801E8D3C.vz = -0x2EE;
-        func_801E7704();
-        func_801E7738(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x14));
-        func_801E7738(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x13));
-        func_801E7738(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x15));
+        fxm_camKeyReset();
+        fxm_camKeyAdd(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x14));
+        fxm_camKeyAdd(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x13));
+        fxm_camKeyAdd(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0x15));
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), 0, NULL, -1, 0x1000, 0x1000, 1, (u8 *)&D_801EA90C[0], 0);
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), 0, NULL, -1, 0x1000, 0x1000, 1, (u8 *)&D_801EA90C[1], 0);
     } else {
@@ -291,7 +291,7 @@ s32 fx_1ef_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             q = tr[1].unk4;
             if (D_801E8D4C[2] != 0) {
                 D_801E8D4C[2]--;
-                y = D_801EA8AC.vy - func_801E792C(1, 8, D_801E8D4C[2], 0, 0x1800);
+                y = D_801EA8AC.vy - fxm_easeLerp(1, 8, D_801E8D4C[2], 0, 0x1800);
             } else {
                 y = D_801EA8AC.vy - 0x1800;
             }
@@ -334,7 +334,7 @@ s32 fx_1ef_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
         }
-        func_801E7788();
+        fxm_camKeyUpdate();
         return frame >= 0x10A;
     }
     return 0;

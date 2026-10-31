@@ -1,6 +1,6 @@
 #include "fxmod/fx_18c.h"
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7B10);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -52,11 +52,11 @@ s32 fx_18c_op80(s32 mode, Fx18cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (D_801E7B20[0] != 0) {
             D_801E7B20[0]--;
-            work->unk8.vy = func_801E7704(2, 0x10, D_801E7B20[0], work->unk0.vy, work->unk0.vy - 0x320);
+            work->unk8.vy = fxm_easeLerp(2, 0x10, D_801E7B20[0], work->unk0.vy, work->unk0.vy - 0x320);
         }
         if (D_801E7B20[2] != 0) {
             D_801E7B20[2]--;
-            work->unk8.vy = func_801E7704(0, 0x10, D_801E7B20[2], work->unk0.vy - 0x320, work->unk0.vy);
+            work->unk8.vy = fxm_easeLerp(0, 0x10, D_801E7B20[2], work->unk0.vy - 0x320, work->unk0.vy);
         }
         if (D_801E7B20[1] != 0) {
             D_801E7B20[1]--;

@@ -13,7 +13,7 @@ typedef struct {
 
 extern Unk800F78A4 *D_801E9D6C;
 
-void func_801E7E18(s32 n, s32 r, SVECTOR *pts);
+static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);
 #define gte_stszotz(r0) __asm__ volatile( \
     "mfc2\t$12, $19;" \
     "nop;" \

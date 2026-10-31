@@ -2,3 +2,8 @@ fx_0cf_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_0cf_header = 0x801E7E80; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_0cf_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_0cf_op81 = 0x801E77E0; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
+fxm_lerpSvec = 0x801E78F4; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
+fxm_lerpRatio = 0x801E7938; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
+fxm_turnUnitBy = 0x801E7AAC; // type:func [code] adds delta / n to the unit rotation each frame, returns 1 on frame n - 1
+fxm_turnUnitToward = 0x801E7C28; // type:func [code] on frame 0 aims unit at target (optionally relative and turned back), then turns by 1/n of it per frame
+fxm_moveUnitArc = 0x801E7990; // type:func [code] moves the unit from its frame-0 position to dst over n frames, lifted by a sine arc of the given height

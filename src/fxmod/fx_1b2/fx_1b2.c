@@ -22,7 +22,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk54.vy = work->unk18.vy;
         work->unk54.vz = work->unk18.vz;
         D_801E84EC = env;
-        func_801E8208(&D_801E8754, (u8 *)ex->btlfx_getFileData(entry->file, 1));
+        fxm_vecPathInit(&D_801E8754, (u8 *)ex->btlfx_getFileData(entry->file, 1));
         work->unk6C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x117, 0, 0, 0);
         work->unk3C.vx = -0x200;
         work->unk3C.vy = 0;
@@ -47,7 +47,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             for (i = 0; i < env->targets->targetCount; i++) {
                 if (work->unk64 != 2) {
-                    func_801E840C(i);
+                    fxm_startMotion2IfActive(i);
                 }
             }
             work->unk64++;
@@ -75,10 +75,10 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk60 = 4;
             }
             if (work->unk60 >= 0) {
-                work->unk38 = func_801E81B0(0, -0x80, 4 - work->unk60, 4);
+                work->unk38 = fxm_lerpRatio(0, -0x80, 4 - work->unk60, 4);
                 work->unk60--;
             }
-            func_801E8220(&D_801E8754, t, &work->unk28);
+            fxm_vecPathGet(&D_801E8754, t, &work->unk28);
             ex->Hi_DrawEffModel(&work->unk10, &work->unk18, (s32)&work->unk28, work->unk6C);
             ex->Hi_ModifyEffModelAbr(work->unk6C, 1);
             if (work->unk60 >= 0) {
@@ -86,8 +86,8 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), t);
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (func_801E8388(i) != 0) {
-                    func_801E831C(i, 0);
+                if (fxm_isMotionDone(i) != 0) {
+                    fxm_startUnitMotion(i, 0);
                 }
             }
             work->unk5C--;
@@ -188,11 +188,11 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0 && frame < 0x32) {
             if (work->unk2C >= 0) {
-                work->unk28 = func_801E81B0(-0x80, 0, 8 - work->unk2C, 8);
+                work->unk28 = fxm_lerpRatio(-0x80, 0, 8 - work->unk2C, 8);
                 work->unk2C--;
             }
             if (work->unk30 >= 0) {
-                work->unk28 = func_801E81B0(0, -0x80, 0xA - work->unk30, 0xA);
+                work->unk28 = fxm_lerpRatio(0, -0x80, 0xA - work->unk30, 0xA);
                 work->unk30--;
             }
             ex->Hi_DrawEffModel(&work->unk0, &work->unk8, (s32)&work->unk18, work->unk34);
@@ -230,21 +230,21 @@ s32 fx_1b2_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     return 0;
 }
 
-void func_801E816C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E84EC)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E81B0(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-void func_801E8208(Fx1b2Path *path, u16 *data) {
+static void fxm_vecPathInit(Fx1b2Path *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx1b2Point *)data;
 }
 
-s32 func_801E8220(Fx1b2Track6 *track, s32 t, VECTOR *out) {
+static s32 fxm_vecPathGet(Fx1b2Track6 *track, s32 t, VECTOR *out) {
     s32 last = track->unk2 - 1;
     s32 done = 1;
     Fx1b2Key6 *k;
@@ -261,20 +261,20 @@ s32 func_801E8220(Fx1b2Track6 *track, s32 t, VECTOR *out) {
     return done;
 }
 
-void func_801E8284(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
     BTLFX_EXPORTS(D_801E84EC)->btlfx_drawScreenTint((u32 *)(D_801E84EC->ot + ot), arg4, c, c, c);
 }
 
-void func_801E831C(s32 unit, s32 motion) {
+static void fxm_startUnitMotion(s32 unit, s32 motion) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E84EC);
 
     ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
     ex->btlfx_setMotionFrame(unit, 0);
 }
 
-s32 func_801E8388(s32 unit) {
+static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E84EC);
 
     s32 r;
@@ -287,15 +287,15 @@ s32 func_801E8388(s32 unit) {
     return r;
 }
 
-void func_801E840C(s32 unit) {
+static void fxm_startMotion2IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E84EC)->btlfx_isUnitActive(unit)) {
-        func_801E831C(unit, 2);
+        fxm_startUnitMotion(unit, 2);
     }
 }
 
-void func_801E8458(s32 unit) {
+static void fxm_startMotion3IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E84EC)->btlfx_isUnitActive(unit)) {
-        func_801E831C(unit, 3);
+        fxm_startUnitMotion(unit, 3);
     }
 }
 

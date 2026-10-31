@@ -35,11 +35,11 @@ s32 func_801E7738(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, 
 s32 func_801E776C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E77A0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E77D4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-s32 func_801E7808(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
-s32 func_801E7FD8(s32 unit);
-void func_801E805C(s32 unit);
+static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
+static s32 fxm_isMotionDone(s32 unit);
+static void fxm_startMotion2IfActive(s32 unit);
 extern Unk800F78A4 *D_801E8164;
-void func_801E7F6C(s32 unit, s32 motion);
-void func_801E80A8(s32 unit);
+static void fxm_startUnitMotion(s32 unit, s32 motion);
+static void fxm_startMotion3IfActive(s32 unit);
 
 #endif

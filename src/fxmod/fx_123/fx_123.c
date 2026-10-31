@@ -1,54 +1,54 @@
 #include "fxmod/fx_123.h"
 
 s32 func_801E77B4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[0], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[0], frame, n);
 }
 
 s32 func_801E77E8(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[1], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[1], frame, n);
 }
 
 s32 func_801E781C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[2], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[2], frame, n);
 }
 
 s32 func_801E7850(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[3], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[3], frame, n);
 }
 
 s32 func_801E7884(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[4], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[4], frame, n);
 }
 
 s32 func_801E78B8(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E96B4[0], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E96B4[0], frame, n);
 }
 
 s32 func_801E78EC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[0], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[0], frame, n);
 }
 
 s32 func_801E7920(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[1], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[1], frame, n);
 }
 
 s32 func_801E7954(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[2], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[2], frame, n);
 }
 
 s32 func_801E7988(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[3], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[3], frame, n);
 }
 
 s32 func_801E79BC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E968C[4], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E968C[4], frame, n);
 }
 
 s32 func_801E79F0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7A24(pt, pos, &D_801E96B4[0], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E96B4[0], frame, n);
 }
 
-s32 func_801E7A24(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n) {
+static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n) {
     pos->vx = src->vx;
     pos->vy = src->vy;
     pos->vz = src->vz;
@@ -173,7 +173,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_initEffModels(D_801E90DC, 7);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk64);
         for (n = 0; n < 6; n++) {
-            func_801E8E20((Fx123Path *)&D_801E965C[n], (u16 *)ex->btlfx_getFileData(entry->file, D_801E9054[n]));
+            fxm_rotPosPathInit((Fx123Path *)&D_801E965C[n], (u16 *)ex->btlfx_getFileData(entry->file, D_801E9054[n]));
             setVector(&work->unk6C[n], 0, 0, 0);
             setVector(&work->unk9C[n], 0, 0, 0);
             work->unk17A[n] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x97, 0x3D40, 0x80, 0);
@@ -232,7 +232,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 setVector(&rot, 0, 0, 0);
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&work->unkFC, work->unk186);
                 for (i = 0; i < 6; i++) {
-                    func_801E8E38(&D_801E965C[i], 3, &work->unk6C[i], &work->unk148[i]);
+                    fxm_rotPosPathGet(&D_801E965C[i], 3, &work->unk6C[i], &work->unk148[i]);
                     addVector(&work->unk148[i], &work->unk64);
                 }
             } else {
@@ -245,7 +245,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                     if (k >= 0 && k < 11) {
                         f = frame >= 11 ? frame - 8 : frame;
-                        func_801E8E38(&D_801E965C[i], f, &work->unk6C[i], &work->unk148[i]);
+                        fxm_rotPosPathGet(&D_801E965C[i], f, &work->unk6C[i], &work->unk148[i]);
                         copyVector(&work->unk9C[i], &work->unk148[i]);
                         addVector(&work->unk9C[i], &work->unk64);
                         addVector(&work->unk148[i], &work->unk64);
@@ -292,7 +292,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         ex->Hi_DrawEffModel(&work->unk6C[i], &work->unk9C[i], (s32)&work->unkFC, work->unk17A[i]);
                     }
                     if (s->unk1E >= 0) {
-                        work->unk10C = func_801E8DC8(0, -0x80, 4 - s->unk1E, 4);
+                        work->unk10C = fxm_lerpRatio(0, -0x80, 4 - s->unk1E, 4);
                         if (s->unk1E == 0) {
                             s->unk18 = 0;
                         } else {
@@ -370,10 +370,10 @@ s32 fx_123_op83(s32 mode, Fx123Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (work->unk0 >= 0) {
-            func_801E8ECC(0, 0xFF, 0x10 - work->unk0, 0x10, 1, 0);
+            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->unk0, 0x10, 1, 0);
             work->unk0--;
         } else if (work->unk2 >= 0) {
-            func_801E8ECC(0xFF, 0, 0x10 - work->unk2, 0x10, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->unk2, 0x10, 1, 0);
             work->unk2--;
         } else {
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
@@ -383,21 +383,21 @@ s32 fx_123_op83(s32 mode, Fx123Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E8D84(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E90CC)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E8DC8(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-void func_801E8E20(Fx123Path *path, u16 *data) {
+static void fxm_rotPosPathInit(Fx123Path *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx123Point *)data;
 }
 
-s32 func_801E8E38(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
     Fx123Key *k;
     s32 r = 1;
 
@@ -420,7 +420,7 @@ s32 func_801E8E38(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
     return r;
 }
 
-void func_801E8ECC(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
     BTLFX_EXPORTS(D_801E90CC)->btlfx_drawScreenTint((u32 *)(D_801E90CC->ot + ot), arg4, c, c, c);

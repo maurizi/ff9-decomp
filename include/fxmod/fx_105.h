@@ -140,7 +140,7 @@ extern VECTOR D_801EADB8;
 extern VECTOR D_801EADC8;
 extern BtlModel D_801EADD8[];
 extern Fx105Drop D_801EB998[32];
-void func_801E7BF8(void);
+static void fxm_camKeyUpdate(void);
 
 #define SUMMON105(env) ((Fx105Summon *)(env)->loader)
 
@@ -156,9 +156,9 @@ typedef struct {
 
 extern s32 D_801EAB1C; /* frame */
 extern Fx105Track D_801EAB28[];
-void func_801E7B74(void);
-void func_801E7BA8(s32 start, u32 dst, u32 src, s16 *data);
+static void fxm_camKeyReset(void);
+static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data);
 extern SVECTOR D_801EAC68[];
-void func_801E7BF8(void);
+static void fxm_camKeyUpdate(void);
 
 #endif

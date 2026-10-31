@@ -54,7 +54,7 @@ s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
 /* propagated */
 extern s32 D_801EA418;
 void func_801E7FE0(s32 r, s32 a1, s32 a, s32 a3, s16 *out);
-void func_801E80B0(SVECTOR *a, SVECTOR *b);
+static void fxm_anglesFromEye(SVECTOR *a, SVECTOR *b);
 
 typedef struct {
     SVECTOR unk0; /* from */

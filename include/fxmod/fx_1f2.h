@@ -95,6 +95,6 @@ extern Fx1f2Trail D_801EA690[16];
 extern Fx1f2Trail D_801EBB90[4];
 extern BtlModel D_801ED090[];
 
-s32 func_801E7794(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

@@ -1,6 +1,6 @@
 #include "fxmod/fx_063.h"
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8710);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -127,18 +127,18 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk0[2] != 0) {
             work->unk0[2]--;
             work->unk40[0].unkC.vx = work->unk40[0].unkC.vy = work->unk40[0].unkC.vz =
-                func_801E7704(2, 0x10, work->unk0[2], 0, 0x400);
+                fxm_easeLerp(2, 0x10, work->unk0[2], 0, 0x400);
             work->unk40[1].unkC.vx = work->unk40[1].unkC.vy = work->unk40[1].unkC.vz =
-                func_801E7704(2, 0x10, work->unk0[2], 0, 0x300);
-            work->unk40[2].unkC.vx = work->unk40[2].unkC.vz = func_801E7704(2, 0x10, work->unk0[2], 0, 0x480);
+                fxm_easeLerp(2, 0x10, work->unk0[2], 0, 0x300);
+            work->unk40[2].unkC.vx = work->unk40[2].unkC.vz = fxm_easeLerp(2, 0x10, work->unk0[2], 0, 0x480);
         }
         if (work->unk0[3] != 0) {
             work->unk0[3]--;
             work->unk40[0].unkC.vx = work->unk40[0].unkC.vy = work->unk40[0].unkC.vz =
-                func_801E7704(2, 8, work->unk0[3], 0x400, 0x200);
+                fxm_easeLerp(2, 8, work->unk0[3], 0x400, 0x200);
             work->unk40[1].unkC.vx = work->unk40[1].unkC.vy = work->unk40[1].unkC.vz =
-                func_801E7704(2, 8, work->unk0[3], 0x300, 0x200);
-            work->unk40[2].unkC.vx = work->unk40[2].unkC.vz = func_801E7704(2, 8, work->unk0[3], 0x480, 0x200);
+                fxm_easeLerp(2, 8, work->unk0[3], 0x300, 0x200);
+            work->unk40[2].unkC.vx = work->unk40[2].unkC.vz = fxm_easeLerp(2, 8, work->unk0[3], 0x480, 0x200);
         }
         if (work->unk0[5] != 0) {
             work->unk0[5]--;
@@ -175,7 +175,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (--D_801E9870[i].unk0 != 0) {
                         D_801E9870[i].unk4 += D_801E9870[i].unk8;
                         if (D_801E9870[i].unk0 < 0x10) {
-                            D_801E9870[i].unk14.vy = D_801E9870[i].unkC.vy + func_801E7704(1, 0x10, D_801E9870[i].unk0, -0x80, 0) +
+                            D_801E9870[i].unk14.vy = D_801E9870[i].unkC.vy + fxm_easeLerp(1, 0x10, D_801E9870[i].unk0, -0x80, 0) +
                                 ((ex->math_sin(D_801E9870[i].unk4) * D_801E9870[i].unk0) >> 10);
                         }
                         if (D_801E9870[i].unk0 >= 0x10 && D_801E9870[i].unk0 < 0x20) {
@@ -183,7 +183,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             D_801E9870[i].unk14.vy = D_801E9870[i].unkC.vy + k;
                         }
                         if (D_801E9870[i].unk0 >= 0x20 && D_801E9870[i].unk0 < 0x30) {
-                            D_801E9870[i].unk14.vy = D_801E9870[i].unkC.vy + func_801E7704(2, 0x10, D_801E9870[i].unk0 - 0x20, 0, -0x80) +
+                            D_801E9870[i].unk14.vy = D_801E9870[i].unkC.vy + fxm_easeLerp(2, 0x10, D_801E9870[i].unk0 - 0x20, 0, -0x80) +
                                 ((ex->math_sin(D_801E9870[i].unk4) * (0x30 - D_801E9870[i].unk0)) >> 10);
                         }
                         ex->btlfx_setUnitPos(i, (s16 *)&D_801E9870[i].unk14);

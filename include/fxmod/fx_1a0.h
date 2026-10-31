@@ -57,7 +57,7 @@ s32 func_801E77D0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
 s32 func_801E7814(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 s32 func_801E7858(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 s32 func_801E789C(Pool30Entry *e, SVECTOR *pos, Fx1a0Path *path, s32 t, s32 frame, s32 frames);
-void func_801E7E7C(Fx1a0Path *path, u16 *data);
-s32 func_801E7E94(Fx1a0Path *path, s32 t, SVECTOR *out);
+static void fxm_posPathInit(Fx1a0Path *path, u16 *data);
+static s32 fxm_posPathGet(Fx1a0Path *path, s32 t, SVECTOR *out);
 
 #endif

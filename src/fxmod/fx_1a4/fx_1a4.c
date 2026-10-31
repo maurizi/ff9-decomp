@@ -69,7 +69,7 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_setUnitPos(0x10, (s16 *)&w);
         }
         if (work->unk40 >= 0) {
-            work->unk34 = func_801E80C8(0, -0x80, 0x20 - work->unk40, 0x20);
+            work->unk34 = fxm_lerpRatio(0, -0x80, 0x20 - work->unk40, 0x20);
             c = work->unk34 + 0x80;
             if (c < 0x46) {
                 ex->btlfx_fadeUnitById(0x10, 0x46);
@@ -150,7 +150,7 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->unk10, &work->unk20, (s32)&work->unk30, work->unk56);
             ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk58);
             if (work->unk52 >= 0) {
-                work->unk40 = func_801E80C8(0, -0x80, 0x15 - work->unk52, 0x15);
+                work->unk40 = fxm_lerpRatio(0, -0x80, 0x15 - work->unk52, 0x15);
                 ex->Hi_ModifyEffModelRGB(work->unk54, work->unk40, work->unk40, work->unk40);
                 ex->Hi_ModifyEffModelRGB(work->unk56, work->unk40, work->unk40, work->unk40);
                 ex->Hi_ModifyEffModelRGB(work->unk58, work->unk40, work->unk40, work->unk40);
@@ -190,11 +190,11 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E8084(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E8168)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E80C8(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 

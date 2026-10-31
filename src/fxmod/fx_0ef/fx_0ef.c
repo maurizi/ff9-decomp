@@ -57,13 +57,13 @@ s32 fx_0ef_op81(s32 mode, Fx0efWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E7A4C(Fx0efPath *path, u16 *data) {
+static void fxm_posPathInit(Fx0efPath *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx0efPoint *)data;
 }
 
-s32 func_801E7A64(Fx0efPath *path, s32 t, SVECTOR *out) {
+static s32 fxm_posPathGet(Fx0efPath *path, s32 t, SVECTOR *out) {
     s32 last = path->unk2 - 1;
     s32 done = 1;
     Fx0efPoint *p;

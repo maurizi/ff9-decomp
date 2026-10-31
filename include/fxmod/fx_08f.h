@@ -37,7 +37,7 @@ typedef struct {
 extern BtlModel D_801E8A14[];
 extern SVECTOR D_801E9054[];
 extern u8 D_801EA254[];
-void func_801E7704(s32 n, s32 r, SVECTOR *pts);
+static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);
 s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 #endif

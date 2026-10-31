@@ -17,7 +17,7 @@ void func_801E7704(Fx1b7Split *s, SVECTOR (*faces)[3]) {
     }
 }
 
-s32 func_801E774C(s32 model) {
+static s32 fxm_splitModelAdd(s32 model) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E87E0);
     Fx1b7Split *s = D_801E87E8;
     SVECTOR (*f)[3] = s->unk28;
@@ -301,7 +301,7 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 buf = ((Fx1b7Summon *)env->loader)->unk54->unk50 + 0x1B800;
                 func_801E7704((Fx1b7Split *)buf, (SVECTOR (*)[3])(buf + 0xDBD8));
                 for (i = 0; i < 8; i++) {
-                    func_801E774C(work->unk44[i]);
+                    fxm_splitModelAdd(work->unk44[i]);
                 }
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0xC0, 0xAA, 0x20);
             }

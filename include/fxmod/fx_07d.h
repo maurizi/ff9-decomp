@@ -65,7 +65,7 @@ typedef struct {
 
 void func_801E7ECC(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 a3, s32 *a4, s32 *a5, s32 a6, s32 frame);
 void func_801E7FF4(s32 d, s32 a1, s32 a, s32 a3, s16 *out);
-void func_801E80C4(s16 *a, s16 *b);
+static void fxm_anglesFromEye(s16 *a, s16 *b);
 void func_801E9834(Unk80100C78Entry *entry, Fx07dStrip *buf, s32 *tab, SVECTOR *from, SVECTOR *to, s32 r0, s32 r1, s32 s,
                    s32 step, s32 a9, s32 a10, s32 pad);
 s32 func_801E9A40(s32 mode, Fx07dArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);

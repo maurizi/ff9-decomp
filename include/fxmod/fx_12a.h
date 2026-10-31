@@ -37,6 +37,6 @@ typedef struct {
 
 extern Unk800F78A4 *D_801E7EFC;
 
-void func_801E7EA0(Unk800F78A4 *env, s32 i, s32 value);
+static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 value);
 
 #endif

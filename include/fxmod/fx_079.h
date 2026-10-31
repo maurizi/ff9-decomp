@@ -54,6 +54,6 @@ extern SVECTOR D_801E8994;
 extern SVECTOR D_801E899C;
 extern Fx079Strip D_801E89A4[5];
 
-s32 func_801E77B8(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

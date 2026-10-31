@@ -29,7 +29,7 @@ extern BtlModel D_801E7DD0[];
 
 s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
-void func_801E7CDC(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E7D20(s32 from, s32 to, s32 t, s32 n);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

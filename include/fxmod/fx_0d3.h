@@ -13,16 +13,16 @@ extern s32 D_801EDF48;
 
 void func_801E8A10(s32 a0, s32 frame, s32 a2, s32 a3, s16 *v);
 s32 func_801E9050(SVECTOR *v);
-void func_801E90D4(s16 *v);
+static void fxm_waveVertexX(s16 *v);
 typedef struct {
     s16 unk0;
     s16 unk2; /* count */
     s16 unk4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx0d3Track;
-void func_801E8470(Fx0d3Track *track, s32 t, SVECTOR *out);
-void func_801E84C0(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b);
-void func_801E8548(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
-s32 func_801E85FC(Fx0d3Track *track, s32 t);
+static void fxm_keyGetVec(Fx0d3Track *track, s32 t, SVECTOR *out);
+static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b);
+static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
+static s32 fxm_keyGetValue(Fx0d3Track *track, s32 t);
 /* ribbon history: two edge points per step, unk0.pad = live */
 typedef struct {
     SVECTOR unk0;
@@ -137,7 +137,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 #define gte_ldv0xy(r0) __asm__ volatile( \
     "lwc2\t$0, 0(%0)" \
     : : "r"(r0))
-void func_801E7720(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
 void func_801E7CBC(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));

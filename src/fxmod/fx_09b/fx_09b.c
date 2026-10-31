@@ -1,26 +1,26 @@
 #include "fxmod/fx_09b.h"
 
 s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7808(pt, pos, &D_801E9A34[0], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E9A34[0], frame, n);
 }
 
 s32 func_801E7738(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7808(pt, pos, &D_801E9A34[1], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E9A34[1], frame, n);
 }
 
 s32 func_801E776C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7808(pt, pos, &D_801E9A34[2], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E9A34[2], frame, n);
 }
 
 s32 func_801E77A0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7808(pt, pos, &D_801E9A34[3], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E9A34[3], frame, n);
 }
 
 s32 func_801E77D4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7808(pt, pos, &D_801E9A34[4], frame, n);
+    return fxm_pinParticle(pt, pos, &D_801E9A34[4], frame, n);
 }
 
-s32 func_801E7808(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n) {
+static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n) {
     pos->vx = src->vx;
     pos->vy = src->vy;
     pos->vz = src->vz;
@@ -134,7 +134,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk1C.vz = D_801E9A34[work->unk6C].vz;
             ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->unk70);
             if (frame == 5 && work->unk6C != 4) {
-                func_801E805C(0);
+                fxm_startMotion2IfActive(0);
             }
         }
         if (frame >= 0x28) {
@@ -148,14 +148,14 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-void func_801E7F6C(s32 unit, s32 motion) {
+static void fxm_startUnitMotion(s32 unit, s32 motion) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8164);
 
     ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
     ex->btlfx_setMotionFrame(unit, 0);
 }
 
-s32 func_801E7FD8(s32 unit) {
+static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8164);
 
     s32 r;
@@ -168,15 +168,15 @@ s32 func_801E7FD8(s32 unit) {
     return r;
 }
 
-void func_801E805C(s32 unit) {
+static void fxm_startMotion2IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E8164)->btlfx_isUnitActive(unit)) {
-        func_801E7F6C(unit, 2);
+        fxm_startUnitMotion(unit, 2);
     }
 }
 
-void func_801E80A8(s32 unit) {
+static void fxm_startMotion3IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E8164)->btlfx_isUnitActive(unit)) {
-        func_801E7F6C(unit, 3);
+        fxm_startUnitMotion(unit, 3);
     }
 }
 

@@ -58,9 +58,9 @@ extern SVECTOR D_801E92F8; /* origin */
 extern SVECTOR D_801E9300; /* rotation */
 
 void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start);
-s32 func_801E822C(s32 from, s32 to, s32 t, s32 n);
-void func_801E8284(Fx1e6Path *path, u16 *data);
-s32 func_801E829C(Fx1e6Path *path, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static void fxm_posPathInit(Fx1e6Path *path, u16 *data);
+static s32 fxm_posPathGet(Fx1e6Path *path, s32 t, SVECTOR *out);
 
 /* copied */
 extern Unk800F78A4 *D_801E8348;

@@ -12,7 +12,7 @@ s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 
         rot.vy = D_801E7D0C.unk6 + 0x800;
         ex->btlfx_pointAhead((s16 *)&D_801E7D1C, (s16 *)&rot, frame * 40, (s16 *)&v);
     } else {
-        rad = D_801E7D0C.unk2 = func_801E7C5C(D_801E7D0C.unk0, 0, 0x6E - D_801E7D0C.unkA, 0x6E);
+        rad = D_801E7D0C.unk2 = fxm_lerpRatio(D_801E7D0C.unk0, 0, 0x6E - D_801E7D0C.unkA, 0x6E);
         rad += (D_801E7D0C.unkA + D_801E7D0C.unkA / 2) * ex->math_sin(D_801E7D0C.unk8) / 4096;
         v.vx = rad * ex->math_sin(D_801E7D0C.unk6) / 4096;
         v.vy = 0;
@@ -86,11 +86,11 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-void func_801E7C18(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E7CFC)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E7C5C(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 

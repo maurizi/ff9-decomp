@@ -35,9 +35,9 @@ extern Unk800F78A4 *D_801E8548;
 extern Fx1f0Unit D_801E8558[4];
 extern BtlModel D_801E8608[];
 
-s32 func_801E7948(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 /* propagated */
-void func_801E7704(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out);
+static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out);
 
 #endif

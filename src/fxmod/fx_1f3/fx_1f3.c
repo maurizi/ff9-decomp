@@ -1,6 +1,6 @@
 #include "fxmod/fx_1f3.h"
 
-void func_801E7704(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
+static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
     Unk800F78A4 *env = D_801E8DB0;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 c = ex->btlfx_lerpRatio(from, to, t, n);
@@ -8,7 +8,7 @@ void func_801E7704(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
     ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), arg4, c, c, c);
 }
 
-s32 func_801E7794(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8DB0);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -234,7 +234,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[1] != 0) {
             work->unk0[1]--;
-            work->unk80.vx = work->unk80.vy = work->unk80.vz = func_801E7794(2, 0x10, work->unk0[1], 0x3000, 0);
+            work->unk80.vx = work->unk80.vy = work->unk80.vz = fxm_easeLerp(2, 0x10, work->unk0[1], 0x3000, 0);
         }
         if (work->unk0[0] != 0) {
             work->unk0[0]--;
@@ -249,7 +249,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[5] != 0) {
             work->unk0[5]--;
-            work->unkB0.vx = work->unkB0.vy = work->unkB0.vz = func_801E7794(2, 0x20, work->unk0[5], 0x100, 0x400);
+            work->unkB0.vx = work->unkB0.vy = work->unkB0.vz = fxm_easeLerp(2, 0x20, work->unk0[5], 0x100, 0x400);
             ex->Hi_DrawEffModel(&work->unkA0, (VECTOR *)&work->unk70, (s32)&work->unkB0, work->unk98);
             ex->Hi_DrawEffModel(&work->unkA8, (VECTOR *)&work->unk70, (s32)&work->unkB0, work->unk9C);
             if (work->unk0[5] < 0x10) {
@@ -261,7 +261,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[8] != 0) {
             work->unk0[8]--;
-            work->unkF8.vx = work->unkF8.vy = work->unkF8.vz = func_801E7794(2, 0x20, work->unk0[8], 0x400, 0x1000);
+            work->unkF8.vx = work->unkF8.vy = work->unkF8.vz = fxm_easeLerp(2, 0x20, work->unk0[8], 0x400, 0x1000);
             ex->Hi_DrawEffModel(&work->unkF0, (VECTOR *)&work->unk70, (s32)&work->unkF8, work->unkE8);
             ex->Hi_DrawEffModel(&work->unkF0, (VECTOR *)&work->unk70, (s32)&work->unkF8, work->unkEC);
             if (work->unk0[8] < 0x10) {
@@ -273,8 +273,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[6] != 0) {
             work->unk0[6]--;
-            work->unkD8.vx = work->unkD8.vy = func_801E7794(2, 0x20, work->unk0[6], 0x400, 0xC00);
-            work->unkD8.vz = func_801E7794(2, 0x20, work->unk0[6], 0x400, 0x800);
+            work->unkD8.vx = work->unkD8.vy = fxm_easeLerp(2, 0x20, work->unk0[6], 0x400, 0xC00);
+            work->unkD8.vz = fxm_easeLerp(2, 0x20, work->unk0[6], 0x400, 0x800);
             ex->Hi_DrawEffModel(&work->unkC8, (VECTOR *)&work->unk70, (s32)&work->unkD8, work->unkC0);
             ex->Hi_DrawEffModel(&work->unkD0, (VECTOR *)&work->unk70, (s32)&work->unkD8, work->unkC4);
             if (work->unk0[6] < 0x10) {
@@ -293,8 +293,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk0[4] != 0) {
             work->unk0[4]--;
             for (i = 0; i < 8; i++) {
-                D_801EC370[i].unk8.vz += func_801E7794(2, 0x60, work->unk0[4], D_801EC370[i].unk4, 0);
-                n2 = func_801E7794(2, 0x60, work->unk0[4], 0x40, 0);
+                D_801EC370[i].unk8.vz += fxm_easeLerp(2, 0x60, work->unk0[4], D_801EC370[i].unk4, 0);
+                n2 = fxm_easeLerp(2, 0x60, work->unk0[4], 0x40, 0);
                 D_801EC370[i].unk10.vz = 0x800;
                 D_801EC370[i].unk10.vy += n2;
                 D_801EC370[i].unk10.vx += n2;
@@ -352,7 +352,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         dst->pad = 0xC0;
                     }
                     if (D_801EC4F0[i].unk12C < 4) {
-                        D_801EC4F0[i].unk134 += func_801E7794(2, 8, D_801EC4F0[i].unk12C, D_801EC4F0[i].unk138, 0);
+                        D_801EC4F0[i].unk134 += fxm_easeLerp(2, 8, D_801EC4F0[i].unk12C, D_801EC4F0[i].unk138, 0);
                         c = D_801EC4F0[i].unk12C << 10;
                     } else {
                         D_801EC4F0[i].unk134 += D_801EC4F0[i].unk138;
@@ -366,17 +366,17 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[2] != 0) {
             work->unk0[2]--;
-            func_801E7704(work->unk0[2], 4, 0xFF, 0, 1, 0);
+            fxm_tintScreenRatio(work->unk0[2], 4, 0xFF, 0, 1, 0);
         }
         if (work->unk0[3] != 0) {
             work->unk0[3]--;
-            func_801E7704(work->unk0[3], 8, 0, 0xFF, 1, 0);
+            fxm_tintScreenRatio(work->unk0[3], 8, 0, 0xFF, 1, 0);
         }
         if (work->unk0[9] != 0) {
             work->unk0[9]--;
             cam.vx = work->unk108.vx;
             cam.vz = work->unk108.vz;
-            cam.vy = func_801E7794(1, 0x20, work->unk0[9], work->unk108.vy, work->unk118.vy);
+            cam.vy = fxm_easeLerp(1, 0x20, work->unk0[9], work->unk108.vy, work->unk118.vy);
             ex->btlfx_setUnitPos(0x10, (s16 *)&cam);
         }
         if (work->unk0[10] != 0) {
@@ -384,7 +384,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->unk0[10] != 0) {
                 cam2.vx = work->unk108.vx;
                 cam2.vz = work->unk108.vz;
-                cam2.vy = func_801E7794(2, 0x20, work->unk0[10], work->unk118.vy, work->unk108.vy);
+                cam2.vy = fxm_easeLerp(2, 0x20, work->unk0[10], work->unk118.vy, work->unk108.vy);
             } else {
                 ex->btlfx_getUnitHomePos(0x10, (s16 *)&cam2);
             }

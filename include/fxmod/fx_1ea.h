@@ -37,8 +37,8 @@ typedef struct {
 extern SVECTOR D_801E9B58; /* origin */
 
 
-void func_801E8B9C(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
-s32 func_801E8C4C(Fx1eaPath *path, s32 t, SVECTOR *out);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static s32 fxm_posPathGet(Fx1eaPath *path, s32 t, SVECTOR *out);
 
 /* copied */
 extern Unk800F78A4 *D_801E8DD8;
@@ -56,7 +56,7 @@ typedef struct {
     u16 unk2; /* keys */
     Fx1eaKey *unk4;
 } Fx1eaPath_0b4;
-s32 func_801E8CC8(Fx1eaPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx1eaPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 
 typedef struct {
     s32 vx;
@@ -107,8 +107,8 @@ extern u8 D_801E9828[][0x88];
 
 void func_801E7804(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 start, s32 pad);
 void func_801E79D0(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 start, s32 pad, s32 ang);
-s32 func_801E8B44(s32 from, s32 to, s32 t, s32 n);
-void func_801E8C34(Fx1eaPath *path, u16 *data);
-void func_801E8CB0(Fx1eaPath *path, u16 *data);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static void fxm_posPathInit(Fx1eaPath *path, u16 *data);
+static void fxm_rotPosPathInit(Fx1eaPath *path, u16 *data);
 
 #endif

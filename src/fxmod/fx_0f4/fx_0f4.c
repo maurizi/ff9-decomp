@@ -74,11 +74,11 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelAbr(work->unk6E, 1);
             if (work->unk68 >= 0 || work->unk6A >= 0) {
                 if (work->unk68 >= 0) {
-                    work->unk3C = func_801E7D20(-0x80, 0, 3 - work->unk68, 3);
+                    work->unk3C = fxm_lerpRatio(-0x80, 0, 3 - work->unk68, 3);
                     work->unk68--;
                 }
                 if (work->unk6A >= 0) {
-                    work->unk3C = func_801E7D20(0, -0x100, 0x10 - work->unk6A, 0x10);
+                    work->unk3C = fxm_lerpRatio(0, -0x100, 0x10 - work->unk6A, 0x10);
                     work->unk6A--;
                 }
                 if (t >= 4) {
@@ -122,11 +122,11 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-void func_801E7CDC(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E7DC0)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E7D20(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 

@@ -3,3 +3,10 @@ fx_1ea_header = 0x801E8D90; // [code] module header (0, init, ops), btlfx_update
 fx_1ea_op80 = 0x801E7C3C; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_1ea_op81 = 0x801E7E50; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_1ea_op82 = 0x801E89AC; // type:func [code] header op entry 2, effect script op 0x82 (btlfx_spawnTask)
+fxm_posPathGet = 0x801E8C4C; // type:func [code] key i of a path of SVECTOR positions (count at +2), clamped to the last key, returns 1 past the end
+fxm_rotPosPathGet = 0x801E8CC8; // type:func [code] key i of a path of rotation+position keys, either output may be NULL, returns 1 past the end
+fxm_posPathInit = 0x801E8C34; // type:func [code] sets up the fxm_posPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_rotPosPathInit = 0x801E8CB0; // type:func [code] sets up the fxm_rotPosPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_lerpSvec = 0x801E8B00; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
+fxm_lerpRatio = 0x801E8B44; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
+fxm_tintScreenLerp = 0x801E8B9C; // type:func [code] btlfx_drawScreenTint with a grey level lerped from to over n frames (fxm_lerpRatio inline)

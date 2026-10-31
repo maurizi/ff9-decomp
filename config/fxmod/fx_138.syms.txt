@@ -2,3 +2,9 @@ fx_138_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_138_header = 0x801E84B8; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_138_op80 = 0x801E794C; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_138_op81 = 0x801E7E2C; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
+fxm_posPathGet = 0x801E81F0; // type:func [code] key i of a path of SVECTOR positions (count at +2), clamped to the last key, returns 1 past the end
+fxm_posPathInit = 0x801E81D8; // type:func [code] sets up the fxm_posPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_lerpSvec = 0x801E813C; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
+fxm_lerpRatio = 0x801E8180; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
+fxm_setSignal = 0x801E8254; // type:func [code] byte i of the btlfx state from signals (offset 0x10), every caller passes 7 = waitDone
+fxm_drawScrollMoveX = 0x801E8268; // type:func [code] horizontal btlfx_drawScrollMove, two DR_MOVEs copy a w-wide strip rotated by x mod w (args x, dstX, dstY, w, h, srcX, srcY)

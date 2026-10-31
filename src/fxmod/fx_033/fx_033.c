@@ -1,6 +1,6 @@
 #include "fxmod/fx_033.h"
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7AE4);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -57,7 +57,7 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0 != 0) {
             work->unk0--;
-            d = func_801E7704(1, 0x18, work->unk0, 0, 0x2000);
+            d = fxm_easeLerp(1, 0x18, work->unk0, 0, 0x2000);
             work->unk1C.vx = work->unk14.vx + ((ex->math_sin(work->unk24.vy) * d) >> 12);
             c = ex->math_cos(work->unk24.vy) * d;
             work->unk1C.vy = work->unk14.vy - (d >> 6);

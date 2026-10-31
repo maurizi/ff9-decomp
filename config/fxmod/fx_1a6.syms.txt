@@ -2,3 +2,7 @@ fx_1a6_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_1a6_header = 0x801E8250; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_1a6_op80 = 0x801E7878; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_1a6_op81 = 0x801E7FF8; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
+fxm_startUnitMotion = 0x801E80B4; // type:func [code] btlfx_setUnitMotion with the unit motion slot, frame 0
+fxm_isMotionDone = 0x801E8120; // type:func [code] unit active (btlfx_isUnitActive) and its motion frame is the last one
+fxm_startMotion2IfActive = 0x801E81A4; // type:func [code] fxm_startUnitMotion(unit, 2) when btlfx_isUnitActive
+fxm_startMotion3IfActive = 0x801E81F0; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive

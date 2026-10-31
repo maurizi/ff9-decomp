@@ -1,6 +1,6 @@
 #include "fxmod/fx_197.h"
 
-void func_801E7704(Fx197Track *track, s32 t, SVECTOR *out) {
+static void fxm_keyGetVec(Fx197Track *track, s32 t, SVECTOR *out) {
     if (t >= track->unk2) {
         t = track->unk2 - 1;
     }
@@ -10,7 +10,7 @@ void func_801E7704(Fx197Track *track, s32 t, SVECTOR *out) {
     out->vz = ((s16 *)track)[2];
 }
 
-void func_801E7754(Fx197Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
+static void fxm_keyGetVec2(Fx197Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
     s16 *k;
 
     if (t >= track->unk2) {
@@ -29,7 +29,7 @@ void func_801E7754(Fx197Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
     }
 }
 
-void func_801E77DC(Fx197Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
+static void fxm_keyGetVec3(Fx197Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
     s16 *k;
 
     if (t >= track->unk2) {
@@ -53,14 +53,14 @@ void func_801E77DC(Fx197Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c)
     }
 }
 
-s32 func_801E7890(Fx197Track *track, s32 t) {
+static s32 fxm_keyGetValue(Fx197Track *track, s32 t) {
     if (t >= track->unk2) {
         t = track->unk2 - 1;
     }
     return (track->unk4 + t)[0];
 }
 
-void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
+static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
     Unk800F78A4 *env = D_801E9660;
     u32 *p = (u32 *)env->prim;
@@ -90,7 +90,7 @@ void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     }
 }
 
-void func_801E7A5C(s32 i, s32 n, Fx197Shatter *buf, Fx197Tri *tris) {
+static void fxm_shatterInit(s32 i, s32 n, Fx197Shatter *buf, Fx197Tri *tris) {
     Fx197Shatter *h;
 
     D_801EAF80[i] = buf;
@@ -102,7 +102,7 @@ void func_801E7A5C(s32 i, s32 n, Fx197Shatter *buf, Fx197Tri *tris) {
     h->unk8 = tris;
 }
 
-s32 func_801E7AA0(s32 i, s32 model) {
+static s32 fxm_shatterAddModel(s32 i, s32 model) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E9660);
     Fx197Shatter *h = D_801EAF80[i];
     Fx197Tri *t = h->unkC;
@@ -126,7 +126,7 @@ s32 func_801E7AA0(s32 i, s32 model) {
     return h->unk2;
 }
 
-Fx197Shard *func_801E7BBC(s32 i) {
+static Fx197Shard *fxm_shatterFreeShard(s32 i) {
     Fx197Shatter *h = D_801EAF80[i];
     Fx197Shard *p = D_801EAFA0[i];
     s32 k;
@@ -139,7 +139,7 @@ Fx197Shard *func_801E7BBC(s32 i) {
     return NULL;
 }
 
-s32 func_801E7C1C(s32 i) {
+static s32 fxm_shatterRelease(s32 i) {
     s32 idx = 0;
     s32 k = 0;
     Fx197Shatter *h = D_801EAF80[i];
@@ -152,7 +152,7 @@ s32 func_801E7C1C(s32 i) {
 
     for (; k < h->unk2; k++, t++, idx++) {
         if (y < t->unk8.vy && t->unk0.pad == 0) {
-            p = func_801E7BBC(i);
+            p = fxm_shatterFreeShard(i);
             if (p != NULL) {
                 t->unk0.pad = 1;
                 p->unk0 = ((t->unk0.vx + t->unk8.vx + t->unk10.vx) / 3) << 12;
@@ -276,7 +276,7 @@ s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (it->unk2 < 6) {
         switch (it->unk0) {
         case 0:
-            func_801E7704((Fx197Track *)ex->btlfx_getFileData(entry->file, D_801E91D4[it->unk2]), frame, &p);
+            fxm_keyGetVec((Fx197Track *)ex->btlfx_getFileData(entry->file, D_801E91D4[it->unk2]), frame, &p);
             p.vx += work->unk8.vx;
             p.vy += work->unk8.vy;
             p.vz += work->unk8.vz;
@@ -346,9 +346,9 @@ s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
             if (on != 0) {
                 it->unk0 = 2;
                 ((s16 *)it)[-1] = -1;
-                func_801E7A5C(it->unk2, 0x14, (Fx197Shatter *)(env->workBuf + D_801E9194[it->unk2].unk0),
+                fxm_shatterInit(it->unk2, 0x14, (Fx197Shatter *)(env->workBuf + D_801E9194[it->unk2].unk0),
                               (Fx197Tri *)(env->workBuf + D_801E9194[it->unk2].unk4));
-                func_801E7AA0(it->unk2, work->unk18[it->unk2][2]);
+                fxm_shatterAddModel(it->unk2, work->unk18[it->unk2][2]);
                 return 0;
             }
             break;
@@ -373,7 +373,7 @@ s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
                 c = -0x40;
                 ex->Hi_ModifyEffModelRGB(work->unk18[it->unk2][2], c, c, c);
             }
-            func_801E7C1C(it->unk2);
+            fxm_shatterRelease(it->unk2);
             func_801E7E94(it->unk2);
             if (frame < 0x14) {
                 break;
@@ -403,8 +403,8 @@ s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
             if (D_801E91CC != 0) {
                 it->unk0 = 1;
                 ((s16 *)it)[-1] = -1;
-                func_801E7A5C(it->unk2, 0x57, &D_801EAFC0, D_801EC5C0);
-                func_801E7AA0(it->unk2, work->unk6C[6]);
+                fxm_shatterInit(it->unk2, 0x57, &D_801EAFC0, D_801EC5C0);
+                fxm_shatterAddModel(it->unk2, work->unk6C[6]);
                 return 0;
             }
             break;
@@ -424,7 +424,7 @@ s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
 
                 ex->Hi_ModifyEffModelRGB(work->unk6C[6], c1, c1, c1);
             }
-            func_801E7C1C(6);
+            fxm_shatterRelease(6);
             func_801E7E94(6);
             if (frame >= 0x57) {
                 return 1;
@@ -580,12 +580,12 @@ s32 fx_197_op87(s32 mode, Fx197Work87 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E9660 = env;
     } else {
         frame = entry->frame;
-        func_801E7704((Fx197Track *)ex->btlfx_getFileData(entry->file, D_801E9270[work->unk0].unk2), frame,
+        fxm_keyGetVec((Fx197Track *)ex->btlfx_getFileData(entry->file, D_801E9270[work->unk0].unk2), frame,
                       &work->unk4);
         env->camera->points[1].vx = work->unk4.vx;
         env->camera->points[1].vy = work->unk4.vy;
         env->camera->points[1].vz = work->unk4.vz;
-        func_801E7704((Fx197Track *)ex->btlfx_getFileData(entry->file, D_801E9270[work->unk0].unk0), frame,
+        fxm_keyGetVec((Fx197Track *)ex->btlfx_getFileData(entry->file, D_801E9270[work->unk0].unk0), frame,
                       &work->unkC);
         env->camera->points[0].vx = work->unkC.vx;
         env->camera->points[0].vy = work->unkC.vy;

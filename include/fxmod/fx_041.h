@@ -43,11 +43,11 @@ extern SVECTOR D_801E7F5C;
 extern s32 D_801E7F6C[];
 
 s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n);
-void func_801E7CF0(Fx041Path *path, u16 *data);
-s32 func_801E7D08(Fx041Path *path, s32 t, SVECTOR *out);
-void func_801E7D6C(s32 unit, s32 motion);
-s32 func_801E7DD8(s32 unit);
-void func_801E7E5C(s32 unit);
-void func_801E7EA8(s32 unit);
+static void fxm_posPathInit(Fx041Path *path, u16 *data);
+static s32 fxm_posPathGet(Fx041Path *path, s32 t, SVECTOR *out);
+static void fxm_startUnitMotion(s32 unit, s32 motion);
+static s32 fxm_isMotionDone(s32 unit);
+static void fxm_startMotion2IfActive(s32 unit);
+static void fxm_startMotion3IfActive(s32 unit);
 
 #endif

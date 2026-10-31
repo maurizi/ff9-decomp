@@ -2,3 +2,5 @@ fx_1fe_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_1fe_header = 0x801E8918; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_1fe_op81 = 0x801E7D10; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_1fe_op85 = 0x801E88C0; // type:func [code] header op entry 5, effect script op 0x85 (btlfx_spawnTask)
+fxm_drawTexelQuads = 0x801E7704; // type:func [code] 3D grid of POLY_G4 whose vertex colours are the 15-bit texels of colors, then StoreImage reads the next VRAM cell into colors
+fxm_waveVertexX = 0x801E7CA0; // type:func [code] btlfx_drawScreenGrid vertex callback, shifts x by a sine of y

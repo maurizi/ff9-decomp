@@ -1,6 +1,6 @@
 #include "fxmod/fx_1bf_1.h"
 
-s32 func_801EC704(SVECTOR *v, SVECTOR *rot) {
+static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EF2D8);
     s32 a = ex->btlfx_rand();
 
@@ -336,7 +336,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk10);
                     if (p != NULL) {
                         p->tail->unk0 = -1;
-                        *(s32 *)&p->tail->unk3C = (s32)func_801EC704;
+                        *(s32 *)&p->tail->unk3C = (s32)fxm_randRingPoint;
                         p->otZ = 0x100;
                     }
                 } else if (frame < 21) {

@@ -29,7 +29,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 extern Unk800F78A4 *D_801E9060;
 extern s32 D_801E95E8;
 extern s32 D_801E95EC;
-void func_801E7CA0(s16 *v);
+static void fxm_waveVertexX(s16 *v);
 s32 fx_1fe_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 /* PsyQ gte_stszotz: SZ3 / 4 */
@@ -54,7 +54,7 @@ s32 fx_1fe_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 #define gte_ldv0xy(r0) __asm__ volatile( \
     "lwc2\t$0, 0(%0)" \
     : : "r"(r0))
-void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
 
 #endif

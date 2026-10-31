@@ -27,9 +27,9 @@ extern Unk800F78A4 *D_801E7D5C;
 extern s32 D_801E7D6C[];
 extern s32 D_801E827C[];
 
-void func_801E7B8C(s32 unit, s32 motion);
-s32 func_801E7BF8(s32 unit);
-void func_801E7C7C(s32 unit);
-void func_801E7CC8(s32 unit);
+static void fxm_startUnitMotion(s32 unit, s32 motion);
+static s32 fxm_isMotionDone(s32 unit);
+static void fxm_startMotion2IfActive(s32 unit);
+static void fxm_startMotion3IfActive(s32 unit);
 
 #endif

@@ -15,14 +15,14 @@ s32 fx_1fc_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->btlfx_getUnitScale(i, (s32 *)&D_801EDF1C[i]);
         }
         ex->btlfx_drawBgOffscreen(0x240, 0x100, 0x80, 0x80, D_801EDADC, 0, 0x200, 0x2BC);
-        func_801E8AB8();
-        func_801E8B04(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0xE));
-        func_801E8B04(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0xC));
-        func_801E8B04(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0xA));
+        fxm_camChanReset();
+        fxm_camChanAdd(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0xE));
+        fxm_camChanAdd(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0xC));
+        fxm_camChanAdd(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0xA));
     } else {
         frame = entry->frame;
         env->camera->pointRots[1].vz = env->camera->points[2].vz;
-        func_801E8B60(0);
+        fxm_camChanUpdate(0);
         return frame >= 0x78;
     }
     return 0;
@@ -85,7 +85,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vy = 0x1000;
         work->unk20.vz = 0x1000;
         D_801EC14C = env;
-        func_801E87D0((Fx1fcPath *)&D_801EDA5C, (u16 *)ex->btlfx_getFileData(entry->file, 0x13));
+        fxm_rotPosPathInit((Fx1fcPath *)&D_801EDA5C, (u16 *)ex->btlfx_getFileData(entry->file, 0x13));
         work->unk136[0] = ex->btlfx_registerEffectModel(&D_801E99A4, 1);
         work->unk8.vx = 0;
         work->unk8.vy = 0x800;
@@ -96,7 +96,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = 0x1000;
         work->unk20.vy = 0x1000;
         work->unk20.vz = 0x1000;
-        func_801E87D0((Fx1fcPath *)&D_801EDA64, (u16 *)ex->btlfx_getFileData(entry->file, 2));
+        fxm_rotPosPathInit((Fx1fcPath *)&D_801EDA64, (u16 *)ex->btlfx_getFileData(entry->file, 2));
         for (i = 0; i < 3; i++) {
             model = ex->Hi_RegisterTexPtrModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8CC0[i]),
                                                D_801E8CC8, D_801E8CD8);
@@ -112,14 +112,14 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk48.vy = 0x1000;
         work->unk48.vz = 0x1000;
         for (i = 0; i < 5; i++) {
-            work->unk136[i + 4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)func_801E86A0(D_801E8CE8, i), 1);
+            work->unk136[i + 4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)fxm_offsetTableEntry(D_801E8CE8, i), 1);
         }
         for (i = 0; i < 10; i++) {
-            func_801E87D0((Fx1fcPath *)&D_801EDA7C[i],
-                          (u16 *)func_801E86A0((u8 *)ex->btlfx_getFileData(entry->file, 6), i));
+            fxm_rotPosPathInit((Fx1fcPath *)&D_801EDA7C[i],
+                          (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 6), i));
         }
-        func_801E8754((Fx1fcPath *)&D_801EDACC, (u16 *)ex->btlfx_getFileData(entry->file, 0x17));
-        func_801E88D8((Fx1fcPath *)&D_801EDAD4, (u16 *)ex->btlfx_getFileData(entry->file, 0x18));
+        fxm_posPathInit((Fx1fcPath *)&D_801EDACC, (u16 *)ex->btlfx_getFileData(entry->file, 0x17));
+        fxm_vecPathInit((Fx1fcPath *)&D_801EDAD4, (u16 *)ex->btlfx_getFileData(entry->file, 0x18));
         work->unk130 = -1;
         work->unk132 = -1;
         work->unk134 = 0;
@@ -171,7 +171,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         k = frame - 1;
         if ((u32)k < 0x18) {
-            func_801E87E8((Fx1fcPath_0b4 *)&D_801EDA5C, k, &work->unk8, &a);
+            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&D_801EDA5C, k, &work->unk8, &a);
             work->unk10.vx = a.vx;
             work->unk10.vy = a.vy;
             work->unk10.vz = a.vz;
@@ -182,10 +182,10 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if ((u32)k < 0x28) {
             switch (k) {
             case 0:
-                func_801E887C((Fx1fcPath *)&D_801EDA6C, (u16 *)ex->btlfx_getFileData(entry->file, 0x1A));
+                fxm_valuePathInit((Fx1fcPath *)&D_801EDA6C, (u16 *)ex->btlfx_getFileData(entry->file, 0x1A));
                 break;
             case 4:
-                func_801E887C((Fx1fcPath *)&D_801EDA6C, (u16 *)ex->btlfx_getFileData(entry->file, 0x1B));
+                fxm_valuePathInit((Fx1fcPath *)&D_801EDA6C, (u16 *)ex->btlfx_getFileData(entry->file, 0x1B));
                 break;
             }
             if (k < 4) {
@@ -195,12 +195,12 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 m0 = 2;
                 m1 = 3;
             }
-            func_801E87E8((Fx1fcPath_0b4 *)&D_801EDA64, k, &work->unk8, &b);
+            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&D_801EDA64, k, &work->unk8, &b);
             work->unk10.vx = b.vx;
             work->unk10.vy = b.vy;
             work->unk10.vz = b.vz;
             work->unk8.vz = -work->unk8.vz;
-            func_801E8894(&D_801EDA6C, k, &t);
+            fxm_valuePathGet(&D_801EDA6C, k, &t);
             ex->Hi_DrawMorphEffModel(&work->unk8, (VECTOR *)&work->unk10, (s32)&work->unk20, work->unk136[m0],
                                      work->unk136[m1], t);
         }
@@ -208,7 +208,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             k2 = frame - 1;
             j = 4;
             for (i = 0; i < 10; i++) {
-                func_801E87E8((Fx1fcPath_0b4 *)&D_801EDA7C[i], k2, &work->unk30, &c);
+                fxm_rotPosPathGet((Fx1fcPath_0b4 *)&D_801EDA7C[i], k2, &work->unk30, &c);
                 work->unk38.vx = c.vx;
                 work->unk38.vy = c.vy;
                 work->unk38.vz = c.vz;
@@ -220,8 +220,8 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if ((u32)frame < 0x1C) {
-            func_801E876C((Fx1fcPath *)&D_801EDACC, frame, &d);
-            func_801E88F0((Fx1fcTrack6 *)&D_801EDAD4, frame, &e);
+            fxm_posPathGet((Fx1fcPath *)&D_801EDACC, frame, &d);
+            fxm_vecPathGet((Fx1fcTrack6 *)&D_801EDAD4, frame, &e);
             for (q = 0; q < env->targets->targetCount; q++) {
                 work->unk58[q].vx = D_801EDEDC[q].vx + d.vx;
                 work->unk58[q].vy = D_801EDEDC[q].vy + d.vy;
@@ -244,13 +244,13 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->unk130 >= 0) {
-            func_801E8954(0, 0xFF, 0x10 - work->unk130, 0x10, 1, 0);
+            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->unk130, 0x10, 1, 0);
             if (--work->unk130 == -1) {
                 work->unk134 = 1;
             }
         }
         if (work->unk132 >= 0) {
-            func_801E8954(0xFF, 0, 0x10 - work->unk132, 0x10, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->unk132, 0x10, 1, 0);
             work->unk132--;
         }
         if (work->unk134 != 0) {
@@ -282,7 +282,7 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         for (i = 0; i < env->targets->targetCount; i++) {
-            if (work->unkA0[i] == 0 && func_801E89EC(i, frame, 4, &work->unk20[i]) != 0) {
+            if (work->unkA0[i] == 0 && fxm_moveUnitHome(i, frame, 4, &work->unk20[i]) != 0) {
                 work->unkA0[i] = 1;
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk20[i]);
                 ex->btlfx_setUnitPos(i, (s16 *)&work->unk20[i]);
@@ -302,25 +302,25 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 func_801E86A0(u8 *base, u16 i) {
+static s32 fxm_offsetTableEntry(u8 *base, u16 i) {
     return (s32)base + ((s32 *)base)[(u16)i + 1];
 }
 
-void func_801E86B8(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801EC14C)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E86FC(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-void func_801E8754(Fx1fcPath *path, u16 *data) {
+static void fxm_posPathInit(Fx1fcPath *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx1fcPoint *)data;
 }
 
-s32 func_801E876C(Fx1fcPath *path, s32 t, SVECTOR *out) {
+static s32 fxm_posPathGet(Fx1fcPath *path, s32 t, SVECTOR *out) {
     s32 last = path->unk2 - 1;
     s32 done = 1;
     Fx1fcPoint *p;
@@ -337,13 +337,13 @@ s32 func_801E876C(Fx1fcPath *path, s32 t, SVECTOR *out) {
     return done;
 }
 
-void func_801E87D0(Fx1fcPath *path, u16 *data) {
+static void fxm_rotPosPathInit(Fx1fcPath *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx1fcPoint *)data;
 }
 
-s32 func_801E87E8(Fx1fcPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+static s32 fxm_rotPosPathGet(Fx1fcPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
     Fx1fcKey *k;
     s32 r = 1;
 
@@ -366,13 +366,13 @@ s32 func_801E87E8(Fx1fcPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
     return r;
 }
 
-void func_801E887C(Fx1fcPath *path, u16 *data) {
+static void fxm_valuePathInit(Fx1fcPath *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx1fcPoint *)data;
 }
 
-s32 func_801E8894(Fx1fcKeys *keys, s32 i, s32 *out) {
+static s32 fxm_valuePathGet(Fx1fcKeys *keys, s32 i, s32 *out) {
     s32 r = 1;
 
     if (i > keys->unk2 - 1) {
@@ -384,13 +384,13 @@ s32 func_801E8894(Fx1fcKeys *keys, s32 i, s32 *out) {
     return r;
 }
 
-void func_801E88D8(Fx1fcPath *path, u16 *data) {
+static void fxm_vecPathInit(Fx1fcPath *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx1fcPoint *)data;
 }
 
-s32 func_801E88F0(Fx1fcTrack6 *track, s32 t, VECTOR *out) {
+static s32 fxm_vecPathGet(Fx1fcTrack6 *track, s32 t, VECTOR *out) {
     s32 last = track->unk2 - 1;
     s32 done = 1;
     Fx1fcKey6 *k;
@@ -407,24 +407,24 @@ s32 func_801E88F0(Fx1fcTrack6 *track, s32 t, VECTOR *out) {
     return done;
 }
 
-void func_801E8954(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
     BTLFX_EXPORTS(D_801EC14C)->btlfx_drawScreenTint((u32 *)(D_801EC14C->ot + ot), arg4, c, c, c);
 }
 
-s32 func_801E89EC(s32 a0, s32 t, s32 n, SVECTOR *b) {
+static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EC14C);
     SVECTOR a;
     SVECTOR out;
 
     ex->btlfx_getUnitHomePos(a0, (s16 *)&a);
-    func_801E86B8(b, &a, (t << 12) / n, &out);
+    fxm_lerpSvec(b, &a, (t << 12) / n, &out);
     ex->btlfx_setUnitPos(a0, (s16 *)&out);
     return t >= n;
 }
 
-void func_801E8AB8(void) {
+static void fxm_camChanReset(void) {
     s32 i;
     s32 m = -1;
 
@@ -436,7 +436,7 @@ void func_801E8AB8(void) {
     }
 }
 
-void func_801E8B04(s16 start, u16 dst, s16 ch, s16 *data) {
+static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     s32 i;
     s32 c;
 
@@ -456,7 +456,7 @@ void func_801E8B04(s16 start, u16 dst, s16 ch, s16 *data) {
     }
 }
 
-void func_801E8B60(s32 ch) {
+static void fxm_camChanUpdate(s32 ch) {
     Unk800F78A4 *env = D_801EC14C;
     s32 i;
     s32 k;

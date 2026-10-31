@@ -41,8 +41,8 @@ typedef struct {
 } Fx1fdOrbit; /* 0x14 */
 extern s32 D_801EC50C[8][0x90];
 
-void func_801E97C4(Fx1fdPath *path, u16 *data);
-s32 func_801E97DC(Fx1fdPath *path, s32 t, SVECTOR *out);
+static void fxm_posPathInit(Fx1fdPath *path, u16 *data);
+static s32 fxm_posPathGet(Fx1fdPath *path, s32 t, SVECTOR *out);
 
 /* copied */
 extern Unk800F78A4 *D_801E9E4C;
@@ -60,9 +60,9 @@ typedef struct {
     u16 unk2; /* keys */
     Fx1fdKey *unk4;
 } Fx1fdPath_0b4;
-s32 func_801E9858(Fx1fdPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
-u16 *func_801E9710(u8 *base, u16 i);
-s32 func_801E9984(s32 a0, s32 t, s32 n, SVECTOR *b);
+static s32 fxm_rotPosPathGet(Fx1fdPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static u16 *fxm_offsetTableEntry(u8 *base, u16 i);
+static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b);
 
 typedef struct {
     s16 *unk0;
@@ -75,9 +75,9 @@ typedef struct {
 } Fx1fdTrack; /* 0x10 */
 extern Fx1fdTrack D_801ED73C[];
 extern s32 D_801EDB3C[];
-void func_801E9A50(void);
-void func_801E9A9C(s16 start, u16 dst, s16 ch, s16 *data);
-void func_801E9AF8(s32 ch);
+static void fxm_camChanReset(void);
+static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);
+static void fxm_camChanUpdate(s32 ch);
 
 typedef struct {
     DVECTOR unk0; /* screen xy of one edge end */
@@ -91,8 +91,8 @@ s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
 void func_801E7704(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist);
 void func_801E7E18(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1);
 
-s32 func_801E976C(s32 from, s32 to, s32 t, s32 n);
-void func_801E9C58(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
 
 typedef struct {
     Fx1fdPath unk0;

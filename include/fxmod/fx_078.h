@@ -47,11 +47,11 @@ extern Fx078Track6 D_801E8EB4;
 extern Fx078Track6 D_801E8EBC;
 extern SVECTOR D_801E8EC4;
 
-void func_801E7B70(Fx078Track12 *track, u16 *data);
-s32 func_801E7B84(Fx078Track12 *track, s32 t, SVECTOR *rot, SVECTOR *pos);
-void func_801E7C20(Fx078Track6 *track, u16 *data);
-s32 func_801E7C34(Fx078Track6 *track, s32 t, SVECTOR *out);
-void func_801E7CA0(Fx078Track6 *track, u16 *data);
-s32 func_801E7CB4(Fx078Track6 *track, s32 t, VECTOR *out);
+static void fxm_rotPosTrackInit(Fx078Track12 *track, u16 *data);
+static s32 fxm_rotPosTrackGet(Fx078Track12 *track, s32 t, SVECTOR *rot, SVECTOR *pos);
+static void fxm_posTrackInit(Fx078Track6 *track, u16 *data);
+static s32 fxm_posTrackGet(Fx078Track6 *track, s32 t, SVECTOR *out);
+static void fxm_vecTrackInit(Fx078Track6 *track, u16 *data);
+static s32 fxm_vecTrackGet(Fx078Track6 *track, s32 t, VECTOR *out);
 
 #endif

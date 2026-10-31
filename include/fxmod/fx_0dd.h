@@ -38,8 +38,8 @@ typedef struct {
     u16 unk5C[6]; /* models */
 } Fx0ddWork80; /* 0x68 */
 
-void func_801E8238(Fx0ddTrack12 *track, u16 *data);
-s32 func_801E824C(Fx0ddTrack12 *track, s32 t, SVECTOR *rot, SVECTOR *pos);
+static void fxm_rotPosTrackInit(Fx0ddTrack12 *track, u16 *data);
+static s32 fxm_rotPosTrackGet(Fx0ddTrack12 *track, s32 t, SVECTOR *rot, SVECTOR *pos);
 
 typedef struct {
     s16 x, y, z;
@@ -49,8 +49,8 @@ typedef struct {
     u16 unk0; /* count */
     Fx0ddKey6 *unk4;
 } Fx0ddTrack6;
-void func_801E82E8(Fx0ddTrack6 *track, u16 *data);
-s32 func_801E82FC(Fx0ddTrack6 *track, s32 t, VECTOR *out);
+static void fxm_vecTrackInit(Fx0ddTrack6 *track, u16 *data);
+static s32 fxm_vecTrackGet(Fx0ddTrack6 *track, s32 t, VECTOR *out);
 
 extern u8 D_801E8360[6];
 extern BtlModel D_801E83C0[];

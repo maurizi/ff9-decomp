@@ -92,7 +92,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 6:
             if (work->unk48 != 2) {
-                func_801E81A4(0);
+                fxm_startMotion2IfActive(0);
             }
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
             work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk18);
@@ -135,8 +135,8 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unkC->rot.vz = work->unk38.vz;
                 }
             }
-            if (frame >= 6 && work->unk48 != 2 && func_801E8120(0) != 0) {
-                func_801E80B4(0, 0);
+            if (frame >= 6 && work->unk48 != 2 && fxm_isMotionDone(0) != 0) {
+                fxm_startUnitMotion(0, 0);
             }
         }
         return frame >= 0x28;
@@ -159,14 +159,14 @@ s32 fx_1a6_op81(s32 mode, Fx1a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-void func_801E80B4(s32 unit, s32 motion) {
+static void fxm_startUnitMotion(s32 unit, s32 motion) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8298);
 
     ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
     ex->btlfx_setMotionFrame(unit, 0);
 }
 
-s32 func_801E8120(s32 unit) {
+static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8298);
 
     s32 r;
@@ -179,15 +179,15 @@ s32 func_801E8120(s32 unit) {
     return r;
 }
 
-void func_801E81A4(s32 unit) {
+static void fxm_startMotion2IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E8298)->btlfx_isUnitActive(unit)) {
-        func_801E80B4(unit, 2);
+        fxm_startUnitMotion(unit, 2);
     }
 }
 
-void func_801E81F0(s32 unit) {
+static void fxm_startMotion3IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E8298)->btlfx_isUnitActive(unit)) {
-        func_801E80B4(unit, 3);
+        fxm_startUnitMotion(unit, 3);
     }
 }
 

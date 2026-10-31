@@ -56,7 +56,7 @@ extern Pool6CEntry *D_801EAE5C;
 extern SVECTOR D_801EAE64;
 extern Fx1eeTrail D_801EAE74[2];
 
-s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 typedef struct {
     s32 unk0; /* delay */
@@ -89,9 +89,9 @@ typedef struct {
 
 extern s32 D_801E9108; /* frame */
 extern Fx1eeTrack D_801E9114[];
-void func_801E7704(void);
-void func_801E7738(s32 start, u32 dst, u32 src, s16 *data);
+static void fxm_camKeyReset(void);
+static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data);
 extern SVECTOR D_801E9254[];
-void func_801E7788(void);
+static void fxm_camKeyUpdate(void);
 
 #endif

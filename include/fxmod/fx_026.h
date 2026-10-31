@@ -193,16 +193,16 @@ extern Fx026Shatter *D_801ED9CC[8];
 extern Fx026Shard *D_801ED9EC[8];
 extern s32 D_801EDA08; /* shatter line */
 
-void func_801E7704(Fx026Track *track, s32 t, SVECTOR *out);
-void func_801E7754(Fx026Track *track, s32 t, SVECTOR *a, SVECTOR *b);
-void func_801E77DC(Fx026Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
-s32 func_801E7890(Fx026Track *track, s32 t);
-void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
-void func_801E912C(s32 i, s32 n, Fx026Shatter *buf, Fx026Tri *tris);
-s32 func_801E9170(s32 i, s32 model);
-Fx026Shard *func_801E928C(s32 i);
+static void fxm_keyGetVec(Fx026Track *track, s32 t, SVECTOR *out);
+static void fxm_keyGetVec2(Fx026Track *track, s32 t, SVECTOR *a, SVECTOR *b);
+static void fxm_keyGetVec3(Fx026Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
+static s32 fxm_keyGetValue(Fx026Track *track, s32 t);
+static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
+static void fxm_shatterInit(s32 i, s32 n, Fx026Shatter *buf, Fx026Tri *tris);
+static s32 fxm_shatterAddModel(s32 i, s32 model);
+static Fx026Shard *fxm_shatterFreeShard(s32 i);
 void func_801E9564(s32 i);
-s32 func_801E92EC(s32 i);
+static s32 fxm_shatterRelease(s32 i);
 s32 func_801E98BC(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx026Work81 *work);
 s32 func_801E8670(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,

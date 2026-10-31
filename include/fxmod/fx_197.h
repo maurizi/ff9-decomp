@@ -55,7 +55,7 @@ typedef struct {
 
 extern Fx197CamPath D_801E9270[];
 
-void func_801E7704(Fx197Track *track, s32 t, SVECTOR *out);
+static void fxm_keyGetVec(Fx197Track *track, s32 t, SVECTOR *out);
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
@@ -106,7 +106,7 @@ extern Unk800F78A4 *D_801E9660;
 extern Fx197Shatter *D_801EAF80[8];
 extern Fx197Shard *D_801EAFA0[8];
 extern s32 D_801EAFBC; /* shatter line */
-Fx197Shard *func_801E7BBC(s32 i);
+static Fx197Shard *fxm_shatterFreeShard(s32 i);
 /* end copied */
 
 #endif

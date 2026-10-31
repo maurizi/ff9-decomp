@@ -1,6 +1,6 @@
 #include "fxmod/fx_0ba.h"
 
-void func_801E7704(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
+static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
     Unk800F78A4 *env = D_801EC5F0;
     POLY_G4 *prim;
     BtlfxExports *ex;
@@ -691,7 +691,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             t = (frame << 12) / 20;
             if (frame < 12) {
                 f5 = 0xFF - (frame << 5) / 12;
-                func_801E7704(env->ot + 2, 1, D_801EC560[frame], 0xC8 - frame * 0xC8 / 12, 0xC8 - frame * 0xC8 / 12,
+                fxm_drawCenterBand(env->ot + 2, 1, D_801EC560[frame], 0xC8 - frame * 0xC8 / 12, 0xC8 - frame * 0xC8 / 12,
                               f5);
             }
             if (frame == 0) {

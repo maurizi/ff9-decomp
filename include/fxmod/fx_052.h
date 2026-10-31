@@ -38,8 +38,8 @@ extern BtlModel D_801E7FB8[];
 extern s32 D_801E8218[];
 extern s32 D_801E8FD8[];
 
-void func_801E7E2C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E7E70(s32 from, s32 to, s32 t, s32 n);
-void func_801E7EC8(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 
 #endif

@@ -113,7 +113,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 0) {
                 work->unk1C.vy = -0xBB8;
             } else if (work->unk70 >= 0) {
-                work->unk1C.vy = func_801E7EA4(-0xBB8, -0x96, 6 - work->unk70, 6);
+                work->unk1C.vy = fxm_lerpRatio(-0xBB8, -0x96, 6 - work->unk70, 6);
                 work->unk70--;
             } else {
                 work->unk1C.vy = -0x96;
@@ -121,7 +121,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 8) {
                 work->unkC.vx = 0x400;
             } else if (work->unk74 >= 0) {
-                work->unkC.vx = func_801E7EA4(0x400, 0, 8 - work->unk74, 8);
+                work->unkC.vx = fxm_lerpRatio(0x400, 0, 8 - work->unk74, 8);
                 work->unk74--;
             } else {
                 work->unkC.vx = 0;
@@ -133,7 +133,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[0].vz = work->unk1C.vz;
             if (work->unk68 >= 0 || work->unk6C >= 0) {
                 if (work->unk6C >= 0) {
-                    work->unk3C = func_801E7EA4(0, -0x80, 0x10 - work->unk6C, 0x10);
+                    work->unk3C = fxm_lerpRatio(0, -0x80, 0x10 - work->unk6C, 0x10);
                     work->unk6C--;
                 }
                 ex->Hi_ModifyEffModelAbr(work->unk7A, 1);
@@ -150,10 +150,10 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E7E60(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E7F54)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E7EA4(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }

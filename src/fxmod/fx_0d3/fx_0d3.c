@@ -1,6 +1,6 @@
 #include "fxmod/fx_0d3.h"
 
-void func_801E7720(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
     Unk800F78A4 *env = D_801ED534;
     RECT rect;
@@ -290,7 +290,7 @@ void func_801E7CBC(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to,
     }
 }
 
-void func_801E8470(Fx0d3Track *track, s32 t, SVECTOR *out) {
+static void fxm_keyGetVec(Fx0d3Track *track, s32 t, SVECTOR *out) {
     if (t >= track->unk2) {
         t = track->unk2 - 1;
     }
@@ -300,7 +300,7 @@ void func_801E8470(Fx0d3Track *track, s32 t, SVECTOR *out) {
     out->vz = ((s16 *)track)[2];
 }
 
-void func_801E84C0(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
+static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
     s16 *k;
 
     if (t >= track->unk2) {
@@ -319,7 +319,7 @@ void func_801E84C0(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
     }
 }
 
-void func_801E8548(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
+static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
     s16 *k;
 
     if (t >= track->unk2) {
@@ -343,7 +343,7 @@ void func_801E8548(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c)
     }
 }
 
-s32 func_801E85FC(Fx0d3Track *track, s32 t) {
+static s32 fxm_keyGetValue(Fx0d3Track *track, s32 t) {
     if (t >= track->unk2) {
         t = track->unk2 - 1;
     }
@@ -575,7 +575,7 @@ s32 func_801E9050(SVECTOR *v) {
     return 0;
 }
 
-void func_801E90D4(s16 *v) {
+static void fxm_waveVertexX(s16 *v) {
     s32 t = (BTLFX_EXPORTS(D_801ED534)->math_sin(D_801EDF48 + (v[1] << 8)) * D_801EDF44) >> 12;
     s32 x = v[0];
 
@@ -937,7 +937,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         u.a.rot.vy = 0;
         u.a.rot.vz = 0;
         ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x1C, 4, 8, 2, 4, &u.a.rot, &u.a.sc, &u.a.col, 0,
-                          (void (*)(SVECTOR *))func_801E90D4);
+                          (void (*)(SVECTOR *))fxm_waveVertexX);
         if (frame_119 >= 0x17) {
             work->unk0 = 4;
             entry->frame = -1;
@@ -978,7 +978,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         u.b.rot.vy = 0;
         u.b.rot.vz = 0;
         ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x1C, 4, 8, 2, 4, &u.b.rot, &u.b.sc, &u.b.col, 0,
-                          (void (*)(SVECTOR *))func_801E90D4);
+                          (void (*)(SVECTOR *))fxm_waveVertexX);
         ex->math_cos(t);
         ex->math_cos(t << 1);
         ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, 1, D_801EB0B8, 0x1D, frame_119 << 9, 0x186, 0x100);
@@ -1024,7 +1024,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vy = 0;
         rot.vz = 0;
         rot.pad = 1;
-        func_801E7720(&D_801EB040, &rot, 0x11C, 0, 0, 4, frame_119 & 0x1F, 0x190, 0xC, 0xC, a_457 + 0x1000, ex->math_cos(a_457), 1,
+        fxm_drawTexelQuads(&D_801EB040, &rot, 0x11C, 0, 0, 4, frame_119 & 0x1F, 0x190, 0xC, 0xC, a_457 + 0x1000, ex->math_cos(a_457), 1,
                       D_801EDF54, 0);
         env->otZ = 0;
         ex->btlfx_drawScrollMove(0x3E8 - frame_119 * 3, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
@@ -1132,11 +1132,11 @@ s32 fx_0d3_op87(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         D_801ED534 = env;
     } else {
         frame = entry->frame;
-        func_801E8470((u8 *)ex->btlfx_getFileData(entry->file, D_801EB0C4[1]), frame, &work[0]);
+        fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, D_801EB0C4[1]), frame, &work[0]);
         env->camera->points[1].vx = work[0].vx;
         env->camera->points[1].vy = work[0].vy;
         env->camera->points[1].vz = work[0].vz;
-        func_801E8470((u8 *)ex->btlfx_getFileData(entry->file, D_801EB0C4[0]), frame, &work[1]);
+        fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, D_801EB0C4[0]), frame, &work[1]);
         env->camera->points[0].vx = work[1].vx;
         env->camera->points[0].vy = work[1].vy;
         env->camera->points[0].vz = work[1].vz;

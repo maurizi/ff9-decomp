@@ -67,7 +67,7 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->unk52);
             work->unkC.vy -= 0x10;
             if (work->unk50 >= 0) {
-                work->unk3C = func_801E7E70(-0x80, 0, 0x18 - work->unk50, 0x18);
+                work->unk3C = fxm_lerpRatio(-0x80, 0, 0x18 - work->unk50, 0x18);
                 work->unk50--;
                 ex->Hi_ModifyEffModelRGB(work->unk52, work->unk3C, work->unk3C, work->unk3C);
                 ex->Hi_ModifyEffModelRGB(work->unk56, work->unk3C, work->unk3C, work->unk3C);
@@ -137,10 +137,10 @@ s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (work->unk0 >= 0) {
-            func_801E7EC8(0, 0xFF, 0x10 - work->unk0, 0x10, 1, 0);
+            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->unk0, 0x10, 1, 0);
             work->unk0--;
         } else if (work->unk2 >= 0) {
-            func_801E7EC8(0xFF, 0, 0x10 - work->unk2, 0x10, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->unk2, 0x10, 1, 0);
             work->unk2--;
         } else {
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
@@ -150,15 +150,15 @@ s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E7E2C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E7FA8)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E7E70(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-void func_801E7EC8(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
     BTLFX_EXPORTS(D_801E7FA8)->btlfx_drawScreenTint((u32 *)(D_801E7FA8->ot + ot), arg4, c, c, c);

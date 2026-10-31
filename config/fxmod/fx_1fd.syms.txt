@@ -5,3 +5,16 @@ fx_1fd_op81 = 0x801E83AC; // type:func [code] header op entry 1, effect script o
 fx_1fd_op82 = 0x801E83E4; // type:func [code] header op entry 2, effect script op 0x82 (btlfx_spawnTask)
 fx_1fd_op83 = 0x801E9138; // type:func [code] header op entry 3, effect script op 0x83 (btlfx_spawnTask)
 fx_1fd_op84 = 0x801E9420; // type:func [code] header op entry 4, effect script op 0x84 (btlfx_spawnTask)
+fxm_posPathGet = 0x801E97DC; // type:func [code] key i of a path of SVECTOR positions (count at +2), clamped to the last key, returns 1 past the end
+fxm_rotPosPathGet = 0x801E9858; // type:func [code] key i of a path of rotation+position keys, either output may be NULL, returns 1 past the end
+fxm_posPathInit = 0x801E97C4; // type:func [code] sets up the fxm_posPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_rotPosPathInit = 0x801E9840; // type:func [code] sets up the fxm_rotPosPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_lerpSvec = 0x801E9728; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
+fxm_lerpRatio = 0x801E976C; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
+fxm_tintScreenLerp = 0x801E98EC; // type:func [code] btlfx_drawScreenTint with a grey level lerped from to over n frames (fxm_lerpRatio inline)
+fxm_drawScrollMoveX = 0x801E9C58; // type:func [code] horizontal btlfx_drawScrollMove, two DR_MOVEs copy a w-wide strip rotated by x mod w (args x, dstX, dstY, w, h, srcX, srcY)
+fxm_offsetTableEntry = 0x801E9710; // type:func [code] base + ((s32 *)base)[i + 1], an entry of an offset table relative to its start
+fxm_camChanReset = 0x801E9A50; // type:func [code] frees the 64 camera key slots and zeroes the 4 channel frame counters
+fxm_camChanAdd = 0x801E9A9C; // type:func [code] takes a free camera key slot (start frame, destination point nibbles, channel, key data)
+fxm_camChanUpdate = 0x801E9AF8; // type:func [code] steps channel ch, slots whose start frame is reached copy keys into camera points (env camera, nibble = point + 1)
+fxm_moveUnitHome = 0x801E9984; // type:func [code] moves the unit from b to its home position (btlfx_getUnitHomePos) over n frames

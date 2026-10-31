@@ -1,3 +1,4 @@
 fx_0fa_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
 fx_0fa_header = 0x801E7FEC; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_0fa_op80 = 0x801E7948; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
+fxm_easeBlend4 = 0x801E7704; // type:func [code] weighted sum of four control points with an eased parameter (curves 0-2 as fxm_easeLerp)

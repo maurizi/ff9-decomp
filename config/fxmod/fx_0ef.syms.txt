@@ -2,3 +2,5 @@ fx_0ef_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_0ef_header = 0x801E7B04; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_0ef_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_0ef_op81 = 0x801E7928; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
+fxm_posPathGet = 0x801E7A64; // type:func [code] key i of a path of SVECTOR positions (count at +2), clamped to the last key, returns 1 past the end
+fxm_posPathInit = 0x801E7A4C; // type:func [code] sets up the fxm_posPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it

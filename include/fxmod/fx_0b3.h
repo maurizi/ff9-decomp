@@ -133,18 +133,18 @@ extern s32 D_801EE280[6]; /* morph models */
 
 
 s32 func_801E9DB8(s32 a);
-s32 func_801EA6C8(SVECTOR *v);
+static s32 fxm_nextRingPoint(SVECTOR *v);
 typedef struct {
     s16 unk0;
     s16 unk2; /* count */
     s16 unk4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx0b3Track;
-void func_801E7704(Fx0b3Track *track, s32 t, SVECTOR *out);
-void func_801E7754(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b);
-void func_801E77DC(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
-s32 func_801E7890(Fx0b3Track *track, s32 t);
+static void fxm_keyGetVec(Fx0b3Track *track, s32 t, SVECTOR *out);
+static void fxm_keyGetVec2(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b);
+static void fxm_keyGetVec3(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
+static s32 fxm_keyGetValue(Fx0b3Track *track, s32 t);
 extern Unk800F78A4 *D_801ED5E0;
-void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
+static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
 
 typedef struct {
     s32 unk0; /* state */

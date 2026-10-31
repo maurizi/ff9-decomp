@@ -33,6 +33,6 @@ extern Fx1f1Unit D_801E7F14[];
 extern Fx1f1Model D_801E7F34[];
 extern BtlModel D_801E8214[];
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

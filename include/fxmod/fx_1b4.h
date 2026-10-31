@@ -54,8 +54,8 @@ extern SVECTOR D_801EF174; /* origin */
 extern SVECTOR D_801EF17C;
 
 s32 func_801E78A4(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames);
-void func_801E8540(Fx1b4Path *path, u16 *data);
-s32 func_801E8558(Fx1b4Path *path, s32 t, SVECTOR *out);
+static void fxm_posPathInit(Fx1b4Path *path, u16 *data);
+static s32 fxm_posPathGet(Fx1b4Path *path, s32 t, SVECTOR *out);
 
 /* propagated */
 s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);

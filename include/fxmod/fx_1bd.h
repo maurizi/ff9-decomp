@@ -67,9 +67,9 @@ extern Fx1bdLine D_801EB764;
 extern u8 D_801EBC54[13][0x50]; /* trails */
 extern u32 D_801EB854[];
 
-s32 func_801E8DA0(s32 from, s32 to, s32 t, s32 n);
-void func_801E8E78(Fx1bdPath *path, u16 *data);
-s32 func_801E8E90(Fx1bdPath *path, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static void fxm_posPathInit(Fx1bdPath *path, u16 *data);
+static s32 fxm_posPathGet(Fx1bdPath *path, s32 t, SVECTOR *out);
 
 /* copied */
 extern Unk800F78A4 *D_801E9E54;
@@ -77,8 +77,8 @@ extern Unk800F78A4 *D_801E9E54;
 
 /* propagated */
 
-void func_801E77C0(Fx1bdPath *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
-u16 *func_801E901C(u16 *base, u16 i);
+static void fxm_buildPathTrail(Fx1bdPath *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
+static u16 *fxm_offsetTableEntry(u16 *base, u16 i);
 
 typedef struct {
     s16 *unk0;
@@ -91,9 +91,9 @@ typedef struct {
 } Fx1bdTrack; /* 0x10 */
 extern Fx1bdTrack D_801EC064[];
 extern s32 D_801EC464[];
-void func_801E90CC(void);
-void func_801E9118(s16 start, u16 dst, s16 ch, s16 *data);
-void func_801E9174(s32 ch);
+static void fxm_camChanReset(void);
+static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);
+static void fxm_camChanUpdate(s32 ch);
 
 typedef struct {
     SVECTOR unk0; /* rotation */
@@ -159,12 +159,12 @@ extern Fx1bdTrack6 D_801EB83C;
 extern Fx1bdTrack6 D_801EB844;
 extern Fx1bdTrack6 D_801EB84C;
 
-void func_801E8DF8(Fx1bdTrack12 *track, u16 *data);
-s32 func_801E8E0C(Fx1bdTrack6 *track, s32 t, SVECTOR *out);
-void func_801E8EF4(Fx1bdTrack12 *track, u16 *data);
-s32 func_801E8F08(Fx1bdTrack12 *track, s32 t, SVECTOR *rot, SVECTOR *pos);
-void func_801E8FA4(Fx1bdTrack12 *track, u16 *data);
-s32 func_801E8FB8(Fx1bdTrack6 *track, s32 t, VECTOR *out);
+static void fxm_posTrackInit(Fx1bdTrack12 *track, u16 *data);
+static s32 fxm_posTrackGet(Fx1bdTrack6 *track, s32 t, SVECTOR *out);
+static void fxm_rotPosTrackInit(Fx1bdTrack12 *track, u16 *data);
+static s32 fxm_rotPosTrackGet(Fx1bdTrack12 *track, s32 t, SVECTOR *rot, SVECTOR *pos);
+static void fxm_vecTrackInit(Fx1bdTrack12 *track, u16 *data);
+static s32 fxm_vecTrackGet(Fx1bdTrack6 *track, s32 t, VECTOR *out);
 
 
 /* PsyQ gte_stszotz: SZ3 / 4 */

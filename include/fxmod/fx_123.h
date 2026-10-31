@@ -36,8 +36,8 @@ extern SVECTOR D_801E9C2C[6];
 
 s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-void func_801E8D84(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E8DC8(s32 from, s32 to, s32 t, s32 n);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 typedef struct {
     s16 x, y, z;
@@ -48,8 +48,8 @@ typedef struct {
     u16 unk2; /* count */
     Fx123Point *unk4;
 } Fx123Path;
-void func_801E8E20(Fx123Path *path, u16 *data);
-void func_801E8ECC(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_rotPosPathInit(Fx123Path *path, u16 *data);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 
 /* propagated */
 extern SVECTOR D_801E968C[]; /* particle positions */
@@ -66,7 +66,7 @@ s32 func_801E7954(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, 
 s32 func_801E7988(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E79BC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E79F0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-s32 func_801E7A24(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
+static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 
 typedef struct {
     s16 unk0[3]; /* position */
@@ -78,7 +78,7 @@ typedef struct {
     u16 unk2; /* keys */
     Fx123Key *unk4;
 } Fx123Path_0b4;
-s32 func_801E8E38(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 
 /* PsyQ libgte.h macros: candidates for psyq.h */
 #define copyVector(d, s) (d)->vx = (s)->vx, (d)->vy = (s)->vy, (d)->vz = (s)->vz

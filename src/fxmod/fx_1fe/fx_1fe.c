@@ -1,6 +1,6 @@
 #include "fxmod/fx_1fe.h"
 
-void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
     Unk800F78A4 *env = D_801E9060;
     RECT rect;
@@ -131,7 +131,7 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
     ex->StoreImage(&rect, (u32 *)colors);
 }
 
-void func_801E7CA0(s16 *v) {
+static void fxm_waveVertexX(s16 *v) {
     s32 t = (BTLFX_EXPORTS(D_801E9060)->math_sin(D_801E95EC + (v[1] << 8)) * D_801E95E8) >> 12;
     s32 x = v[0];
 

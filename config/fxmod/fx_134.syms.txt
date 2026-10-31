@@ -1,3 +1,4 @@
 fx_134_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
 fx_134_header = 0x801EC89C; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_134_op80 = 0x801E9020; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
+fxm_drawMirrorSprite = 0x801E7748; // type:func [code] two POLY_FT4 side by side, the right one mirrored in u

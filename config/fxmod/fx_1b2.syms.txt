@@ -4,3 +4,12 @@ fx_1b2_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script o
 fx_1b2_op81 = 0x801E7CB8; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_1b2_op82 = 0x801E7EB8; // type:func [code] header op entry 2, effect script op 0x82 (btlfx_spawnTask)
 fx_1b2_op83 = 0x801E80D0; // type:func [code] header op entry 3, effect script op 0x83 (btlfx_spawnTask)
+fxm_vecPathGet = 0x801E8220; // type:func [code] key i of a path of positions into a VECTOR, returns 1 past the end
+fxm_vecPathInit = 0x801E8208; // type:func [code] sets up the fxm_vecPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_lerpSvec = 0x801E816C; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
+fxm_lerpRatio = 0x801E81B0; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
+fxm_tintScreenLerp = 0x801E8284; // type:func [code] btlfx_drawScreenTint with a grey level lerped from to over n frames (fxm_lerpRatio inline)
+fxm_startUnitMotion = 0x801E831C; // type:func [code] btlfx_setUnitMotion with the unit motion slot, frame 0
+fxm_isMotionDone = 0x801E8388; // type:func [code] unit active (btlfx_isUnitActive) and its motion frame is the last one
+fxm_startMotion2IfActive = 0x801E840C; // type:func [code] fxm_startUnitMotion(unit, 2) when btlfx_isUnitActive
+fxm_startMotion3IfActive = 0x801E8458; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive

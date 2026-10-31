@@ -22,7 +22,7 @@ typedef struct {
 extern Unk800F78A4 *D_801E7C30;
 extern s32 D_801E7C40[];
 
-void func_801E7B4C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E7B90(s32 from, s32 to, s32 t, s32 n);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

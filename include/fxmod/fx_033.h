@@ -17,6 +17,6 @@ typedef struct {
 extern Unk800F78A4 *D_801E7AE4;
 extern s32 D_801E7AF4[];
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

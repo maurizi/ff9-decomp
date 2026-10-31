@@ -1,6 +1,6 @@
 #include "fxmod/fx_1be.h"
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out) {
+static s32 fxm_easeLerpSvec(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8FD8);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -19,7 +19,7 @@ s32 func_801E7704(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *
     return ex->btlfx_lerpVec((s16 *)from, (s16 *)to, 0x1000 - r, (s16 *)out);
 }
 
-s32 func_801E7840(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8FD8);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -214,12 +214,12 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (w->unk0[1] != 0) {
             w->unk0[1]--;
-            w->unk64.vy = func_801E7840(2, 0x28, w->unk0[1], -0x2000, -0x1000);
+            w->unk64.vy = fxm_easeLerp(2, 0x28, w->unk0[1], -0x2000, -0x1000);
             w->unk8C.vy = w->unk64.vy;
         }
         if (w->unk0[3] != 0) {
             w->unk0[3]--;
-            w->unk74.vx = w->unk74.vz = w->unk74.vy = func_801E7840(1, 8, w->unk0[3], 0x555, 0);
+            w->unk74.vx = w->unk74.vz = w->unk74.vy = fxm_easeLerp(1, 8, w->unk0[3], 0x555, 0);
         }
         if (w->unk0[0] != 0) {
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), frame);
@@ -274,9 +274,9 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 if (u->unk34 == 0) {
                     if (u->unk30 != 0) {
                         u->unk30--;
-                        func_801E7704(1, 0x28, u->unk30, &D_801E95E8[i].unk18, &w->unk8C, &ang);
+                        fxm_easeLerpSvec(1, 0x28, u->unk30, &D_801E95E8[i].unk18, &w->unk8C, &ang);
                         ex->btlfx_setUnitPos(i, (s16 *)&ang);
-                        sc.vx = sc.vy = sc.vz = func_801E7840(1, 0x28, u->unk30, u->unk8.vy, 0);
+                        sc.vx = sc.vy = sc.vz = fxm_easeLerp(1, 0x28, u->unk30, u->unk8.vy, 0);
                         ex->btlfx_setUnitScale(i, (s32 *)&sc);
                         u->unk20.vx += u->unk28.vx;
                         u->unk20.vy += u->unk28.vy;
@@ -328,7 +328,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (w->unk0[0x12] != 0) {
             w->unk0[0x12]--;
-            D_801E95D8 = func_801E7840(1, 0x40, w->unk0[0x12], 4, 0x14);
+            D_801E95D8 = fxm_easeLerp(1, 0x40, w->unk0[0x12], 4, 0x14);
         }
         D_801E95D4 += D_801E95D8;
         if (w->unk0[5] != 0) {
@@ -447,7 +447,7 @@ s32 func_801E8E10(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     from.vx = 0;
     from.vy = -0x800;
     from.vz = 0x418;
-    func_801E7704(1, 0x1000, ((0x1000000 / frames) * frame) >> 12, &from, key, &v);
+    fxm_easeLerpSvec(1, 0x1000, ((0x1000000 / frames) * frame) >> 12, &from, key, &v);
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;

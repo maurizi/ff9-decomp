@@ -62,6 +62,6 @@ extern u32 D_801E8A40[];
 extern Fx063Strip D_801E8E40[10];
 extern Fx063Unit D_801E9870[];
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

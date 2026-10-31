@@ -1,6 +1,6 @@
 #include "fxmod/fx_0e0.h"
 
-void func_801E7718(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
+static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
     POLY_FT4 *p = (POLY_FT4 *)D_801EA918->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EA918);
     u8 col[4];

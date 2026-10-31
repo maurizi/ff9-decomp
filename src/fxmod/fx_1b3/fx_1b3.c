@@ -1,6 +1,6 @@
 #include "fxmod/fx_1b3.h"
 
-void func_801E773C(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
+static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
     Unk800F78A4 *env = D_801EB074;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 c = ex->btlfx_lerpRatio(from, to, t, n);
@@ -8,7 +8,7 @@ void func_801E773C(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
     ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), arg4, c, c, c);
 }
 
-s32 func_801E77CC(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EB074);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;

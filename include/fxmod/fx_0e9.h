@@ -36,7 +36,7 @@ extern SVECTOR D_801E7D34;
 
 s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 
-void func_801E7C18(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E7C5C(s32 from, s32 to, s32 t, s32 n);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

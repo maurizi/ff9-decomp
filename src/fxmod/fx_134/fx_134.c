@@ -1,6 +1,6 @@
 #include "fxmod/fx_134.h"
 
-void func_801E7748(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
+static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
     POLY_FT4 *p = (POLY_FT4 *)D_801EC8E4->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EC8E4);
     u8 col[4];
@@ -710,7 +710,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), work->unk4);
                 ex->btlfx_drawSpriteAtOt(0xFFE, (u8 *)ex->btlfx_getFileData(entry->file, 3), (t >> 6) + 0xA0, (t >> 9) + 0x78,
                                   0, 1, -1);
-                func_801E7748(0xFFD, (t >> 5) + 0x78, (t >> 8) + 0xA9, 0x100, 0x40, 0x80, 0x98, 0x3DC0, 0, 0xC0, 0xFF);
+                fxm_drawMirrorSprite(0xFFD, (t >> 5) + 0x78, (t >> 8) + 0xA9, 0x100, 0x40, 0x80, 0x98, 0x3DC0, 0, 0xC0, 0xFF);
                 ex->btlfx_drawRippleGrid((s32)(env->ot + 8), (t >> 8) + 0x78, 1, 2, 0x78, 1, D_801EC878, 0, 0, 0, 0);
                 c = 0x93;
                 yo = 0;

@@ -15,6 +15,6 @@ typedef struct {
 extern SVECTOR D_801E799C;
 extern Unk800F78A4 *D_801E79EC;
 
-void func_801E7988(Unk800F78A4 *env, s32 i, s32 v);
+static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 
 #endif

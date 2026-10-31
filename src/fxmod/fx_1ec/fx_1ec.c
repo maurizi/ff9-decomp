@@ -3,7 +3,7 @@
 s32 func_801E78E0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR v;
 
-    func_801E8C60(&D_801E9034[(s16)(e->unk1F - 1)], frame, &v);
+    fxm_posPathGet(&D_801E9034[(s16)(e->unk1F - 1)], frame, &v);
     v.vy = v.vy * 4 / 5;
     v.vz = v.vz * 3 / 4;
     v.vx += D_801EFB64.vx;
@@ -21,7 +21,7 @@ s32 func_801E78E0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
 s32 func_801E79DC(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR v;
 
-    func_801E8C60(&D_801E90C4[(s16)(e->unk1F - 1)], frame, &v);
+    fxm_posPathGet(&D_801E90C4[(s16)(e->unk1F - 1)], frame, &v);
     v.vx += D_801EFB6C.vx;
     v.vy += D_801EFB6C.vy;
     v.vz += D_801EFB6C.vz;
@@ -58,7 +58,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EFB64.vz = work->unk24.vz;
         work->unk34.vy = 0;
         for (i = 0; i < 0x12; i++) {
-            func_801E8C48(&D_801E9034[i], func_801E8AFC((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), i));
+            fxm_posPathInit(&D_801E9034[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), i));
         }
         work->unk4C.vx = work->unk2C.vx;
         work->unk4C.vy = work->unk2C.vy;
@@ -164,7 +164,7 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EFB6C.vy = work->unk3C.vy;
         D_801EFB6C.vz = work->unk3C.vz;
         for (i = 0; i < 0x1E; i++) {
-            func_801E8C48(&D_801E90C4[i], func_801E8AFC((u8 *)ex->btlfx_getFileData(entry->file, 0xB), i));
+            fxm_posPathInit(&D_801E90C4[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xB), i));
         }
     } else {
     frame = entry->frame;
@@ -313,7 +313,7 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 32:
             work->unk68 = 0x3C;
             for (i = 0; i < env->targets->targetCount; i++) {
-                func_801E8E00(i);
+                fxm_startMotion3IfActive(i);
             }
             break;
         case 42:
@@ -331,13 +331,13 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->Hi_DrawMorphEffModel(&work->unk20, &work->unk28, (s32)&work->unk38, work->unk6C, work->unk6E, w);
             if (work->unk64 >= 0) {
-                work->unk48 = func_801E8B58(0, -0xFF, 8 - work->unk64, 8);
+                work->unk48 = fxm_lerpRatio(0, -0xFF, 8 - work->unk64, 8);
                 work->unk64--;
                 ex->Hi_ModifyEffModelRGB(work->unk6C, work->unk48, work->unk48, work->unk48);
             }
         }
         if (work->unk68 >= 0) {
-            func_801E8BB0(0, 0xFF, 0x3C - work->unk68, 0x3C, 1, 0);
+            fxm_tintScreenLerp(0, 0xFF, 0x3C - work->unk68, 0x3C, 1, 0);
             work->unk68--;
             if (work->unk68 == -1) {
                 work->unk6A = 1;
@@ -348,8 +348,8 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0x20) {
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (func_801E8D30(i) != 0) {
-                    func_801E8CC4(i, 4);
+                if (fxm_isMotionDone(i) != 0) {
+                    fxm_startUnitMotion(i, 4);
                     ex->btlfx_holdMotion(i);
                 }
             }
@@ -362,31 +362,31 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-u16 *func_801E8AFC(u8 *base, u16 i) {
+static u16 *fxm_offsetTableEntry(u8 *base, u16 i) {
     return (u16 *)((s32)base + ((s32 *)base)[(u16)i + 1]);
 }
 
-void func_801E8B14(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E8E94)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E8B58(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-void func_801E8BB0(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
     BTLFX_EXPORTS(D_801E8E94)->btlfx_drawScreenTint((u32 *)(D_801E8E94->ot + ot), arg4, c, c, c);
 }
 
-void func_801E8C48(Fx1ecPath *path, u16 *data) {
+static void fxm_posPathInit(Fx1ecPath *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx1ecPoint *)data;
 }
 
-s32 func_801E8C60(Fx1ecPath *path, s32 t, SVECTOR *out) {
+static s32 fxm_posPathGet(Fx1ecPath *path, s32 t, SVECTOR *out) {
     s32 last = path->unk2 - 1;
     s32 done = 1;
     Fx1ecPoint *p;
@@ -403,14 +403,14 @@ s32 func_801E8C60(Fx1ecPath *path, s32 t, SVECTOR *out) {
     return done;
 }
 
-void func_801E8CC4(s32 unit, s32 motion) {
+static void fxm_startUnitMotion(s32 unit, s32 motion) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8E94);
 
     ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
     ex->btlfx_setMotionFrame(unit, 0);
 }
 
-s32 func_801E8D30(s32 unit) {
+static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8E94);
 
     s32 r;
@@ -423,14 +423,14 @@ s32 func_801E8D30(s32 unit) {
     return r;
 }
 
-void func_801E8DB4(s32 unit) {
+static void fxm_startMotion2IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E8E94)->btlfx_isUnitActive(unit)) {
-        func_801E8CC4(unit, 2);
+        fxm_startUnitMotion(unit, 2);
     }
 }
 
-void func_801E8E00(s32 unit) {
+static void fxm_startMotion3IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E8E94)->btlfx_isUnitActive(unit)) {
-        func_801E8CC4(unit, 3);
+        fxm_startUnitMotion(unit, 3);
     }
 }

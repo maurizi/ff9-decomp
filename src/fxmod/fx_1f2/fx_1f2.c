@@ -1,6 +1,6 @@
 #include "fxmod/fx_1f2.h"
 
-void func_801E7704(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
+static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
     Unk800F78A4 *env = D_801EA260;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 c = ex->btlfx_lerpRatio(from, to, t, n);
@@ -8,7 +8,7 @@ void func_801E7704(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
     ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), arg4, c, c, c);
 }
 
-s32 func_801E7794(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EA260);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -491,22 +491,22 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unkC != 0) {
             work->unkC--;
-            tint = func_801E7794(1, 0x20, work->unkC, 0, 0xFF);
+            tint = fxm_easeLerp(1, 0x20, work->unkC, 0, 0xFF);
             ex->btlfx_drawScreenTint((u32 *)env->ot, 2, tint, tint, tint);
         }
         if (work->unk10 != 0) {
             work->unk10--;
-            tint = func_801E7794(2, 0x10, work->unk10, 0xFF, 0);
+            tint = fxm_easeLerp(2, 0x10, work->unk10, 0xFF, 0);
             ex->btlfx_drawScreenTint((u32 *)env->ot, 2, tint, tint, tint);
         }
         if (work->unk14 != 0) {
             work->unk14--;
-            tint = func_801E7794(1, 0x10, work->unk14, 0, 0xFF);
+            tint = fxm_easeLerp(1, 0x10, work->unk14, 0, 0xFF);
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 8), 1, tint, tint, tint);
         }
         if (work->unk18 != 0) {
             work->unk18--;
-            tint = func_801E7794(0, 0x10, work->unk18, 0xFF, 0);
+            tint = fxm_easeLerp(0, 0x10, work->unk18, 0xFF, 0);
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 8), 1, tint, tint, tint);
         }
         if (work->unk20 != 0) {

@@ -59,16 +59,16 @@ typedef struct {
     u16 unk2; /* keys */
     Fx1fcKey *unk4;
 } Fx1fcPath_0b4;
-s32 func_801E87E8(Fx1fcPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
-s32 func_801E86A0(u8 *base, u16 i);
+static s32 fxm_rotPosPathGet(Fx1fcPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_offsetTableEntry(u8 *base, u16 i);
 
 typedef struct {
     u16 unk0;
     u16 unk2; /* count */
     s16 *unk4;
 } Fx1fcKeys;
-s32 func_801E8894(Fx1fcKeys *keys, s32 i, s32 *out);
-s32 func_801E89EC(s32 a0, s32 t, s32 n, SVECTOR *b);
+static s32 fxm_valuePathGet(Fx1fcKeys *keys, s32 i, s32 *out);
+static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b);
 
 typedef struct {
     s16 *unk0;
@@ -81,9 +81,9 @@ typedef struct {
 } Fx1fcTrack; /* 0x10 */
 extern Fx1fcTrack D_801EDF9C[];
 extern s32 D_801EE39C[];
-void func_801E8AB8(void);
-void func_801E8B04(s16 start, u16 dst, s16 ch, s16 *data);
-void func_801E8B60(s32 ch);
+static void fxm_camChanReset(void);
+static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);
+static void fxm_camChanUpdate(s32 ch);
 
 typedef struct {
     s32 vx;
@@ -126,13 +126,13 @@ extern Fx1fcKeys D_801EDA6C;
 extern Fx1fcKeys D_801EDA7C[10];
 extern Fx1fcKeys D_801EDACC;
 extern Fx1fcKeys D_801EDAD4;
-void func_801E8754(Fx1fcPath *path, u16 *data);
-s32 func_801E876C(Fx1fcPath *path, s32 t, SVECTOR *out);
-void func_801E87D0(Fx1fcPath *path, u16 *data);
-void func_801E887C(Fx1fcPath *path, u16 *data);
-void func_801E88D8(Fx1fcPath *path, u16 *data);
-s32 func_801E88F0(Fx1fcTrack6 *track, s32 t, VECTOR *out);
-void func_801E8954(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_posPathInit(Fx1fcPath *path, u16 *data);
+static s32 fxm_posPathGet(Fx1fcPath *path, s32 t, SVECTOR *out);
+static void fxm_rotPosPathInit(Fx1fcPath *path, u16 *data);
+static void fxm_valuePathInit(Fx1fcPath *path, u16 *data);
+static void fxm_vecPathInit(Fx1fcPath *path, u16 *data);
+static s32 fxm_vecPathGet(Fx1fcTrack6 *track, s32 t, VECTOR *out);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 
 s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

@@ -52,12 +52,12 @@ s32 fx_088_op81(s32 mode, Fx088Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
-        return func_801E7984(0x10, frame, 0xF, &work->unk8, &work->unk0) != 0;
+        return fxm_turnUnitBy(0x10, frame, 0xF, &work->unk8, &work->unk0) != 0;
     }
     return 0;
 }
 
-s32 func_801E7984(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
+static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DA0);
     SVECTOR rot;
     SVECTOR pos;
@@ -74,7 +74,7 @@ s32 func_801E7984(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
     return frame >= n - 1;
 }
 
-s32 func_801E7B00(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang) {
+static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DA0);
     SVECTOR from;
     SVECTOR rot;

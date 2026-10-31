@@ -1,6 +1,6 @@
 #include "fxmod/fx_1f1.h"
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7F04);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -91,8 +91,8 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                             c = (0x10 - u->unk4) * 0x10;
                             ex->Hi_ModifyEffModelRGB(u->unk18, c, c, c);
                             ex->Hi_ModifyEffModelRGB(u->unk1C, c, c, c);
-                            u->unk50.vy = func_801E7704(2, 0x10, u->unk4 - 0x10, -0x800, 0);
-                            v.vy = func_801E7704(2, 0x10, u->unk4 - 0x10, u->unk8, 0);
+                            u->unk50.vy = fxm_easeLerp(2, 0x10, u->unk4 - 0x10, -0x800, 0);
+                            v.vy = fxm_easeLerp(2, 0x10, u->unk4 - 0x10, u->unk8, 0);
                             v.vx = u->unkC.vx;
                             v.vz = u->unkC.vz;
                             ex->btlfx_setUnitPos(i, (s16 *)&v);
@@ -102,7 +102,7 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                             ex->Hi_ModifyEffModelRGB(u->unk18, c, c, c);
                             ex->Hi_ModifyEffModelRGB(u->unk1C, c, c, c);
                             ex->btlfx_fadeUnitById(i, u->unk4 * 8);
-                            v.vy = u->unk50.vy = func_801E7704(1, 0x10, u->unk4, 0, -0x800);
+                            v.vy = u->unk50.vy = fxm_easeLerp(1, 0x10, u->unk4, 0, -0x800);
                             v.vx = u->unk50.vx;
                             v.vz = u->unk50.vz;
                             ex->btlfx_setUnitPos(i, (s16 *)&v);

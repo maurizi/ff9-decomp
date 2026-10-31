@@ -4,7 +4,7 @@
 /* Effect module fx_11e (dir 13 file 0x11E). */
 #include "btlfx_mod.h"
 
-void func_801E7F70(Unk800F78A4 *env, s32 i, s32 v);
+static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 
 
 typedef struct {

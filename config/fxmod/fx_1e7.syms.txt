@@ -2,3 +2,10 @@ fx_1e7_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_1e7_header = 0x801E8298; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_1e7_op80 = 0x801E7A40; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_1e7_op81 = 0x801E7D10; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
+fxm_posPathGet = 0x801E806C; // type:func [code] key i of a path of SVECTOR positions (count at +2), clamped to the last key, returns 1 past the end
+fxm_posPathInit = 0x801E8054; // type:func [code] sets up the fxm_posPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_setSignal = 0x801E8258; // type:func [code] byte i of the btlfx state from signals (offset 0x10), every caller passes 7 = waitDone
+fxm_startUnitMotion = 0x801E80D0; // type:func [code] btlfx_setUnitMotion with the unit motion slot, frame 0
+fxm_isMotionDone = 0x801E813C; // type:func [code] unit active (btlfx_isUnitActive) and its motion frame is the last one
+fxm_startMotion2IfActive = 0x801E81C0; // type:func [code] fxm_startUnitMotion(unit, 2) when btlfx_isUnitActive
+fxm_startMotion3IfActive = 0x801E820C; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive

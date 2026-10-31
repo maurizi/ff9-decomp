@@ -159,7 +159,7 @@ void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to,
     }
 }
 
-void func_801E7EB8(s16 *a, s16 *b) {
+static void fxm_anglesFromEye(s16 *a, s16 *b) {
     BTLFX_EXPORTS(D_801E8670)->btlfx_aimAngles((s16 *)&D_801E8670->camera->eye, a, b);
 }
 
@@ -180,7 +180,7 @@ s32 func_801E7EFC(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk80100C78Entry *en
     } else {
         a = frame << 9;
         p->unk14 += p->unk16;
-        func_801E7EB8((s16 *)&p->unk4, (s16 *)&rot);
+        fxm_anglesFromEye((s16 *)&p->unk4, (s16 *)&rot);
         rot.vz = p->unk14;
         pos.vx = p->unk4.vx;
         pos.vy = p->unk4.vy;

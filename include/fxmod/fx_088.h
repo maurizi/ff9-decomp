@@ -20,7 +20,7 @@ typedef struct {
 extern Unk800F78A4 *D_801E7DA0;
 extern s32 D_801E7DB0[];
 
-s32 func_801E7984(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta);
-s32 func_801E7B00(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang);
+static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta);
+static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang);
 
 #endif

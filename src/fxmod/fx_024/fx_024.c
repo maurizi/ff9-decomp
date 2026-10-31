@@ -105,10 +105,10 @@ s32 fx_024_op81(s32 mode, Fx024Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkC = n;
         D_801E7D60 = env;
         if (n >= env->targets->targetCount) {
-            func_801E7D04(env, 7, 1);
+            fxm_setSignal(env, 7, 1);
             return 1;
         }
-        func_801E7D04(env, 7, 0);
+        fxm_setSignal(env, 7, 0);
         ex->btlfx_getUnitPos(work->unkC, (s16 *)&work->unk4);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk4);
         if (work->unk0 != NULL) {
@@ -117,14 +117,14 @@ s32 fx_024_op81(s32 mode, Fx024Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 1) {
-            func_801E7D04(env, 7, 1);
+            fxm_setSignal(env, 7, 1);
         }
         return frame >= 0x28;
     }
     return 0;
 }
 
-void func_801E7D04(Unk800F78A4 *env, s32 i, s32 v) {
+static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
     *((u8 *)env->state + i + 0x10) = v;
 }
 

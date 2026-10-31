@@ -1,6 +1,6 @@
 #include "fxmod/fx_1ac.h"
 
-s32 func_801E77D0(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8300);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;

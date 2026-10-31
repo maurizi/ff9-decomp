@@ -185,7 +185,7 @@ void func_801E7FE0(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
     out[1] = y;
 }
 
-void func_801E80B0(SVECTOR *a, SVECTOR *b) {
+static void fxm_anglesFromEye(SVECTOR *a, SVECTOR *b) {
     BTLFX_EXPORTS(D_801E9E90)->btlfx_aimAngles((s16 *)&D_801E9E90->camera->eye, (s16 *)a, (s16 *)b);
 }
 
@@ -210,7 +210,7 @@ s32 func_801E80F4(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *en
     } else {
     t = (frame << 12) / 12;
     p->unk14 += p->unk16;
-    func_801E80B0(&p->unk4, &rot);
+    fxm_anglesFromEye(&p->unk4, &rot);
     rot.vz = p->unk14;
     pos.vx = p->unk4.vx;
     pos.vy = p->unk4.vy;
@@ -372,7 +372,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scale.vz = 0x400;
                 scale.vy = 0x400;
                 scale.vx = 0x400;
-                func_801E80B0(&work->unkC, &rot2);
+                fxm_anglesFromEye(&work->unkC, &rot2);
                 rot2.vx = work->unk38 + (s16)(rot2.vx + 0x400);
                 rot2.vz = 0;
                 ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->unk24);
@@ -419,7 +419,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scale.vz = 0x400;
                 scale.vy = 0x400;
                 scale.vx = 0x400;
-                func_801E80B0(&work->unkC, &rot2);
+                fxm_anglesFromEye(&work->unkC, &rot2);
                 rot2.vx = work->unk38 + (s16)(rot2.vx + 0x400);
                 rot2.vz = 0;
                 ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->unk24);

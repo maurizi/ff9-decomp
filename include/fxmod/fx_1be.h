@@ -12,7 +12,7 @@ typedef struct {
 extern SVECTOR D_801E8F38[9];
 extern SVECTOR D_801E8FE8[64];
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out);
+static s32 fxm_easeLerpSvec(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out);
 
 /* copied */
 extern Unk800F78A4 *D_801E8FD8;
@@ -53,7 +53,7 @@ extern s32 D_801E95D0;
 extern s32 D_801E95D4;
 extern s32 D_801E95D8;
 extern Fx1beUnit D_801E95E8[];
-s32 func_801E7840(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 void func_801E89A8(SVECTOR *pos, SVECTOR *rot, s32 step, s32 tpage, s32 clut, s32 abr);
 s32 func_801E8E10(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 

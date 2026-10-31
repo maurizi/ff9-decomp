@@ -4,3 +4,9 @@ fx_1eb_op80 = 0x801E7780; // type:func [code] header op entry 0, effect script o
 fx_1eb_op81 = 0x801E7994; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_1eb_op82 = 0x801E79D4; // type:func [code] header op entry 2, effect script op 0x82 (btlfx_spawnTask)
 fx_1eb_op83 = 0x801E7F60; // type:func [code] header op entry 3, effect script op 0x83 (btlfx_spawnTask)
+fxm_rotPosPathGet = 0x801E8120; // type:func [code] key i of a path of rotation+position keys, either output may be NULL, returns 1 past the end
+fxm_valuePathGet = 0x801E81CC; // type:func [code] key i of a path of s16 values, returns 1 past the end
+fxm_rotPosPathInit = 0x801E8108; // type:func [code] sets up the fxm_rotPosPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_valuePathInit = 0x801E81B4; // type:func [code] sets up the fxm_valuePathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_lerpSvec = 0x801E806C; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
+fxm_lerpRatio = 0x801E80B0; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio

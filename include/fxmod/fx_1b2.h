@@ -72,13 +72,13 @@ extern s32 D_801EA77C[][0x258];
 extern s32 D_801EC39C[];
 extern s32 D_801EC89C[];
 
-void func_801E816C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E81B0(s32 from, s32 to, s32 t, s32 n);
-void func_801E8208(Fx1b2Path *path, u16 *data);
-s32 func_801E8220(Fx1b2Track6 *track, s32 t, VECTOR *out);
-void func_801E831C(s32 unit, s32 motion);
-s32 func_801E8388(s32 unit);
-void func_801E840C(s32 unit);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static void fxm_vecPathInit(Fx1b2Path *path, u16 *data);
+static s32 fxm_vecPathGet(Fx1b2Track6 *track, s32 t, VECTOR *out);
+static void fxm_startUnitMotion(s32 unit, s32 motion);
+static s32 fxm_isMotionDone(s32 unit);
+static void fxm_startMotion2IfActive(s32 unit);
 
 /* copied */
 extern Unk800F78A4 *D_801E84EC;

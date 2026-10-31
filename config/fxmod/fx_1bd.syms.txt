@@ -4,3 +4,20 @@ fx_1bd_op80 = 0x801E7958; // type:func [code] header op entry 0, effect script o
 fx_1bd_op81 = 0x801E7A50; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_1bd_op82 = 0x801E7A88; // type:func [code] header op entry 2, effect script op 0x82 (btlfx_spawnTask)
 fx_1bd_op83 = 0x801E7FFC; // type:func [code] header op entry 3, effect script op 0x83 (btlfx_spawnTask)
+fxm_posPathGet = 0x801E8E90; // type:func [code] key i of a path of SVECTOR positions (count at +2), clamped to the last key, returns 1 past the end
+fxm_rotPosTrackGet = 0x801E8F08; // type:func [code] key t of a track of rotation+position keys (count first), position x and z negated, returns 1 past the end
+fxm_vecTrackGet = 0x801E8FB8; // type:func [code] key t of a track of positions into a VECTOR (count first), returns 1 past the end
+fxm_posTrackGet = 0x801E8E0C; // type:func [code] key t of a track of positions (count first), x and z negated, returns 1 past the end
+fxm_posPathInit = 0x801E8E78; // type:func [code] sets up the fxm_posPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_posTrackInit = 0x801E8DF8; // type:func [code] sets up the fxm_posTrackGet data (track data is count then keys), paired with the getter that follows it
+fxm_rotPosTrackInit = 0x801E8EF4; // type:func [code] sets up the fxm_rotPosTrackGet data (track data is count then keys), paired with the getter that follows it
+fxm_vecTrackInit = 0x801E8FA4; // type:func [code] sets up the fxm_vecTrackGet data (track data is count then keys), paired with the getter that follows it
+fxm_lerpSvec = 0x801E8D5C; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
+fxm_lerpRatio = 0x801E8DA0; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
+fxm_tintScreenLerp = 0x801E9034; // type:func [code] btlfx_drawScreenTint with a grey level lerped from to over n frames (fxm_lerpRatio inline)
+fxm_drawScrollMoveX = 0x801E9874; // type:func [code] horizontal btlfx_drawScrollMove, two DR_MOVEs copy a w-wide strip rotated by x mod w (args x, dstX, dstY, w, h, srcX, srcY)
+fxm_offsetTableEntry = 0x801E901C; // type:func [code] base + ((s32 *)base)[i + 1], an entry of an offset table relative to its start
+fxm_camChanReset = 0x801E90CC; // type:func [code] frees the 64 camera key slots and zeroes the 4 channel frame counters
+fxm_camChanAdd = 0x801E9118; // type:func [code] takes a free camera key slot (start frame, destination point nibbles, channel, key data)
+fxm_camChanUpdate = 0x801E9174; // type:func [code] steps channel ch, slots whose start frame is reached copy keys into camera points (env camera, nibble = point + 1)
+fxm_buildPathTrail = 0x801E77C0; // type:func [code] fills a trail strip with the last n posPath keys up to start, fading pad from to

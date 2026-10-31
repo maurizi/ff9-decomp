@@ -45,8 +45,8 @@ extern BtlModel D_801E8178[];
 extern SVECTOR D_801E83D0;
 extern SVECTOR D_801E83D8;
 
-void func_801E8084(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E80C8(s32 from, s32 to, s32 t, s32 n);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 /* copied */
 extern Unk800F78A4 *D_801E8168;

@@ -42,7 +42,7 @@ void func_801E7744(u16 model, s32 idx, s32 t, u16 *verts, Fx096Vec3 *centers);
 void func_801E7840(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *centers);
 void func_801E7A74(u16 model, s32 idx, u16 *verts, Fx096Vec3 *centers);
 void func_801E7BC4(u32 kind, s32 count, SVECTOR *verts, Fx096Vec3 *centers);
-void func_801E8238(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E827C(s32 from, s32 to, s32 t, s32 n);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

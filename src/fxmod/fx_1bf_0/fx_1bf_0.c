@@ -1,6 +1,6 @@
 #include "fxmod/fx_1bf_0.h"
 
-void func_801E7704(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8830);
     SVECTOR *v;
 
@@ -69,7 +69,7 @@ void func_801E77C0(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, 
                         BTLFX_COPY_SVEC(&p0, dst);
                         BTLFX_COPY_SVEC(&p1, dst);
                         p1.vy -= 0x1000;
-                        func_801E7704((u8 *)ex->btlfx_getFileData(entry->file, 5), &p1, &p0, 0, 0x800, 1, 0x32);
+                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &p1, &p0, 0, 0x800, 1, 0x32);
                     }
                 } else {
                     BTLFX_COPY_SVEC(dst, &last);
@@ -210,7 +210,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 q.vy = work->unk8.vy - 0x1000;
                 q.vz = p.vz;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &p, NULL, 0xAAA, 0, 1, t);
-                func_801E7704((u8 *)ex->btlfx_getFileData(entry->file, 5), &p, &q, frame, t, 1, 0x20);
+                fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &p, &q, frame, t, 1, 0x20);
             }
             env->otZ = 0;
             if (frame >= 0x3E) {
@@ -230,7 +230,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             t = (frame << 12) / 51;
             bright = 0x1000 - t;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &p2, NULL, 0xAAA, 0, 1, bright);
-            func_801E7704((u8 *)ex->btlfx_getFileData(entry->file, 5), &p2, &q2, frame, bright, 1, (t >> 7) + 0x20);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &p2, &q2, frame, bright, 1, (t >> 7) + 0x20);
             env->otZ = 0;
             rot.vx = 0x400;
             rot.vz = 0;

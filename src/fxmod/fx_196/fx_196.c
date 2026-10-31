@@ -1,6 +1,6 @@
 #include "fxmod/fx_196.h"
 
-void func_801E7704(Fx196Track *track, s32 t, SVECTOR *out) {
+static void fxm_keyGetVec(Fx196Track *track, s32 t, SVECTOR *out) {
     if (t >= track->unk2) {
         t = track->unk2 - 1;
     }
@@ -10,7 +10,7 @@ void func_801E7704(Fx196Track *track, s32 t, SVECTOR *out) {
     out->vz = ((s16 *)track)[2];
 }
 
-void func_801E7754(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
+static void fxm_keyGetVec2(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
     s16 *k;
 
     if (t >= track->unk2) {
@@ -29,7 +29,7 @@ void func_801E7754(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
     }
 }
 
-void func_801E77DC(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
+static void fxm_keyGetVec3(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
     s16 *k;
 
     if (t >= track->unk2) {
@@ -53,14 +53,14 @@ void func_801E77DC(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c)
     }
 }
 
-s32 func_801E7890(Fx196Track *track, s32 t) {
+static s32 fxm_keyGetValue(Fx196Track *track, s32 t) {
     if (t >= track->unk2) {
         t = track->unk2 - 1;
     }
     return (track->unk4 + t)[0];
 }
 
-void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
+static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
     Unk800F78A4 *env = D_801E915C;
     u32 *p = (u32 *)env->prim;
@@ -295,7 +295,7 @@ void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2,
     }
 }
 
-s32 func_801E8370(SVECTOR *v) {
+static s32 fxm_nextRingPoint(SVECTOR *v) {
     s32 i = D_801E90F8;
 
     v->pad = 1;
@@ -345,7 +345,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
                 if (work->unk48 != NULL) {
                     work->unk48->tail->unk0 = -1;
-                    ((EffTailSpawn *)work->unk48->tail)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))func_801E8370;
+                    ((EffTailSpawn *)work->unk48->tail)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))fxm_nextRingPoint;
                 }
                 if (work->unk48 != NULL) {
                     work->unk48->otZ = 0x200;
@@ -459,7 +459,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &v1, &sc2, (CVECTOR *)&v0, 0, 0);
                 }
             }
-            func_801E78BC(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+            fxm_drawScrollMoveX(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
             if (frame >= 0x51) {
                 SVECTOR bp;
 
@@ -503,7 +503,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
             c = ex->math_cos(s) >> 5;
             func_801E7AA0(&pos1, &rot1, &sc1, c, c, 0x17, 0x3D04, 0, 0x80, (ex->math_cos(s) >> 3) + 0x300, s, 0x100, 0, 0,
                           0);
-            func_801E78BC(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+            fxm_drawScrollMoveX(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
             if (frame >= 0x18) {
                 ex->btlfx_clearEffModels();
                 return 1;
@@ -559,11 +559,11 @@ s32 fx_196_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         *work = n;
     } else {
         frame = entry->frame;
-        func_801E7704((Fx196Track *)ex->btlfx_getFileData(entry->file, D_801E910C[*work].unk2), frame, &v);
+        fxm_keyGetVec((Fx196Track *)ex->btlfx_getFileData(entry->file, D_801E910C[*work].unk2), frame, &v);
         env->camera->points[1].vx = v.vx;
         env->camera->points[1].vy = v.vy;
         env->camera->points[1].vz = v.vz;
-        func_801E7704((Fx196Track *)ex->btlfx_getFileData(entry->file, D_801E910C[*work].unk0), frame, &v);
+        fxm_keyGetVec((Fx196Track *)ex->btlfx_getFileData(entry->file, D_801E910C[*work].unk0), frame, &v);
         env->camera->points[0].vx = v.vx;
         env->camera->points[0].vy = v.vy;
         env->camera->points[0].vz = v.vz;

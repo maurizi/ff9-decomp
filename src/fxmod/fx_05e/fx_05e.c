@@ -84,7 +84,7 @@ void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
 }
 
 /* transform a point by a bone of the summon model, then restore the camera matrix */
-void func_801E7B74(s32 model, s32 bone, SVECTOR *in, SVECTOR *out) {
+static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out) {
     Unk800F78A4 *env = D_801E8E74;
     MATRIX m;
 
@@ -293,9 +293,9 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (amp != 0) {
-            func_801E7B74(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E8874, &a);
-            func_801E7B74(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E887C, &b);
-            func_801E7B74(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E8884, &c);
+            fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E8874, &a);
+            fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E887C, &b);
+            fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E8884, &c);
             if (amp < 0) {
                 func_801E7704(&a, &b, 0x3F8, (CVECTOR *)&D_801E8868, (CVECTOR *)&D_801E886C, 0, D_801E9744, 1);
                 func_801E7704(&b, &c, 0x3F8, (CVECTOR *)&D_801E886C, (CVECTOR *)&D_801E8870, 0, D_801E9854, 1);

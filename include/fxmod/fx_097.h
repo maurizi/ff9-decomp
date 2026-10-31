@@ -88,7 +88,7 @@ extern s32 D_801E9D18[14];
 #define gte_ldv0xy(r0) __asm__ volatile( \
     "lwc2\t$0, 0(%0)" \
     : : "r"(r0))
-void func_801E7720(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
 
 #endif

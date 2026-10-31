@@ -65,15 +65,15 @@ extern Fx0d2Spawn D_801EA3DC[7];
 extern Fx0d2Track D_801F0060[64];
 extern s32 D_801F0460[4];
 
-void func_801E77A4(Fx0d2Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
-s32 func_801E9DBC(u8 *base, u16 i);
-void func_801E9DD4(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E9E18(s32 from, s32 to, s32 t, s32 n);
-s32 func_801E9FB0(Fx0d2Keys *keys, s32 i, s32 *out);
-s32 func_801EA108(s32 a0, s32 t, s32 n, SVECTOR *b);
-void func_801EA1D4(void);
-void func_801EA220(s16 start, u16 dst, s16 ch, s16 *data);
-void func_801EA27C(s32 ch);
+static void fxm_buildPathTrail(Fx0d2Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
+static s32 fxm_offsetTableEntry(u8 *base, u16 i);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static s32 fxm_valuePathGet(Fx0d2Keys *keys, s32 i, s32 *out);
+static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b);
+static void fxm_camChanReset(void);
+static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);
+static void fxm_camChanUpdate(s32 ch);
 typedef struct {
     s16 x, y, z;
 } Fx0d2Point;
@@ -98,15 +98,15 @@ typedef struct {
     u16 unk0; /* count */
     Fx0d2Key6 *unk4;
 } Fx0d2Track6;
-void func_801E9E70(Fx0d2Path *path, u16 *data);
-s32 func_801E9E88(Fx0d2Path *path, s32 t, SVECTOR *out);
-void func_801E9EEC(Fx0d2Path *path, u16 *data);
-s32 func_801E9F04(Fx0d2KeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos);
-void func_801E9F98(Fx0d2Path *path, u16 *data);
-void func_801E9FF4(Fx0d2Path *path, u16 *data);
-s32 func_801EA00C(Fx0d2Path *track, s32 t, VECTOR *out);
+static void fxm_posPathInit(Fx0d2Path *path, u16 *data);
+static s32 fxm_posPathGet(Fx0d2Path *path, s32 t, SVECTOR *out);
+static void fxm_rotPosPathInit(Fx0d2Path *path, u16 *data);
+static s32 fxm_rotPosPathGet(Fx0d2KeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static void fxm_valuePathInit(Fx0d2Path *path, u16 *data);
+static void fxm_vecPathInit(Fx0d2Path *path, u16 *data);
+static s32 fxm_vecPathGet(Fx0d2Path *track, s32 t, VECTOR *out);
 extern Unk800F78A4 *D_801ED8E0;
-void func_801EA070(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 typedef struct {
     Fx0d2Keys keys;
     s16 unk8; /* start */

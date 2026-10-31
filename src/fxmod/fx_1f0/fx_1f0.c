@@ -1,6 +1,6 @@
 #include "fxmod/fx_1f0.h"
 
-void func_801E7704(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out) {
+static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out) {
     s32 w[4];
     s32 k;
     s32 s;
@@ -38,7 +38,7 @@ void func_801E7704(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out) {
     }
 }
 
-s32 func_801E7948(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8548);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -164,7 +164,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         work->unk40[3].vx = D_801E8558[i].unk10.vx;
                         work->unk40[3].vy = D_801E8558[i].unk10.vy;
                         work->unk40[3].vz = D_801E8558[i].unk10.vz;
-                        func_801E7704(0, 0x80, D_801E8558[i].unk4, work->unk40, &D_801E8558[i].unk20);
+                        fxm_easeBlend4(0, 0x80, D_801E8558[i].unk4, work->unk40, &D_801E8558[i].unk20);
                         ex->btlfx_moveEmitterTo((s32)D_801E8558[i].unk28, (s32)&D_801E8558[i].unk20);
                         if (D_801E8558[i].unk4 < 0x10 && D_801E8558[i].unk28 != NULL) {
                             D_801E8558[i].unk28->unk20 = D_801E8558[i].unk4 << 8;
@@ -208,7 +208,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[6] != 0) {
             work->unk0[6]--;
-            t = func_801E7948(0, 0x18, work->unk0[6], 0, 0x1000);
+            t = fxm_easeLerp(0, 0x18, work->unk0[6], 0, 0x1000);
             ex->Hi_DrawMorphEffModel(&work->unkA0, &work->unk70, (s32)&work->unk80, work->unk64, work->unk60, t);
             ex->Hi_DrawMorphEffModel(&work->unkA8, &work->unk70, (s32)&work->unk90, work->unk6C, work->unk68, t);
             if (work->unk0[6] > 0x10) {
@@ -224,13 +224,13 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[7] != 0) {
             work->unk0[7]--;
-            work->unk80.vx = work->unk80.vy = work->unk80.vz = func_801E7948(1, 0x18, work->unk0[7], 0x19B0, 0x3000);
-            work->unk90.vx = work->unk90.vy = work->unk90.vz = func_801E7948(1, 0x18, work->unk0[7], 0x1400, 0x2C00);
+            work->unk80.vx = work->unk80.vy = work->unk80.vz = fxm_easeLerp(1, 0x18, work->unk0[7], 0x19B0, 0x3000);
+            work->unk90.vx = work->unk90.vy = work->unk90.vz = fxm_easeLerp(1, 0x18, work->unk0[7], 0x1400, 0x2C00);
         }
         if (work->unk0[8] != 0) {
             work->unk0[8]--;
-            work->unkB0 = func_801E7948(1, 0x18, work->unk0[8], 0, 0x80);
-            work->unkB4 = func_801E7948(1, 0x18, work->unk0[8], 0, 0x80);
+            work->unkB0 = fxm_easeLerp(1, 0x18, work->unk0[8], 0, 0x80);
+            work->unkB4 = fxm_easeLerp(1, 0x18, work->unk0[8], 0, 0x80);
         }
         if (work->unk0[9] != 0) {
             n = work->unk0[9] - 1;

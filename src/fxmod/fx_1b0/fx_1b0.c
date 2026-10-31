@@ -17,7 +17,7 @@ void func_801E7704(Fx1b0Split *s, SVECTOR (*faces)[3]) {
     }
 }
 
-s32 func_801E774C(s32 model) {
+static s32 fxm_splitModelAdd(s32 model) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EBF34);
     Fx1b0Split *s = D_801EBF3C;
     SVECTOR (*f)[3] = s->unk28;
@@ -366,7 +366,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 buf = ((Fx1b0Summon *)env->loader)->unk54->unk50 + 0x19000;
                 func_801E7704((Fx1b0Split *)buf, (SVECTOR (*)[3])(buf + 0xDB88));
                 for (i = 0; i < 8; i++) {
-                    func_801E774C(work->unk3C[i]);
+                    fxm_splitModelAdd(work->unk3C[i]);
                 }
                 ex->btlfx_initParticleSystem();
             }

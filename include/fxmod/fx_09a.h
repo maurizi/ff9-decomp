@@ -10,7 +10,7 @@ typedef struct {
 } Fx09aSeg; /* 0x10 */
 void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx09aSeg *buf, s32 abr);
 extern Unk800F78A4 *D_801E8858;
-void func_801E7B74(s32 model, s32 bone, SVECTOR *in, SVECTOR *out);
+static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out);
 
 typedef struct {
     s32 unk0; /* state */

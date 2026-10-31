@@ -1,3 +1,6 @@
 fx_105_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
 fx_105_header = 0x801EAAD0; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_105_op80 = 0x801E7EF4; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
+fxm_camKeyReset = 0x801E7B74; // type:func [code] frees the 16 camera key slots and zeroes the frame counter
+fxm_camKeyAdd = 0x801E7BA8; // type:func [code] takes a free camera key slot (start frame, destination nibbles, source nibbles, key data)
+fxm_camKeyUpdate = 0x801E7BF8; // type:func [code] copies keys into camera points or a module array (nibble 10+), optionally offset by a source point, counts frames

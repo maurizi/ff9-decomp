@@ -62,15 +62,15 @@ extern BtlModel D_801E82F8[];
 extern Fx183Path D_801E8878[6];
 extern s32 D_801E88A8[][0xF0];
 
-void func_801E8140(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E8184(s32 from, s32 to, s32 t, s32 n);
-void func_801E81DC(Fx183Path *path, u16 *data);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static void fxm_rotPosPathInit(Fx183Path *path, u16 *data);
 
 /* copied */
 extern Unk800F78A4 *D_801E82E8;
 /* end copied */
 
 /* propagated */
-s32 func_801E81F4(Fx183Path *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx183Path *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 
 #endif

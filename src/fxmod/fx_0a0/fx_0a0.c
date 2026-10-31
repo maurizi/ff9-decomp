@@ -29,7 +29,7 @@ void func_801E7704(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s32 p, s32 
     ex->btlfx_addPrimAbr(0x4000000, z, prim, abr);
 }
 
-void func_801E783C(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7D98);
     SVECTOR *v;
 
@@ -65,7 +65,7 @@ void func_801E78F8(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
         s = ex->math_cos((frame << 10) / 40);
         c0.r = c0.g = c0.b = 0x80;
         c1.r = c1.g = c1.b = 0x31;
-        func_801E783C((u8 *)ex->btlfx_getFileData(entry->file, 6), pos, &D_801E8864, 0, s, 1, 0x40);
+        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 6), pos, &D_801E8864, 0, s, 1, 0x40);
     }
 }
 

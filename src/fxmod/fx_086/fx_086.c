@@ -140,7 +140,7 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     }
 }
 
-void func_801E7E18(s32 n, s32 r, SVECTOR *pts) {
+static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
     SVECTOR *p;
     s32 *prev;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E9D6C);
@@ -246,7 +246,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E9D6C = env;
         work->unk0 = 1;
         work->unk4 = 0;
-        func_801E7E18(0x180, 0x400, D_801EA3BC);
+        fxm_randDiscPoints(0x180, 0x400, D_801EA3BC);
         work->unk8[0] = 0xA0;
         work->unk8[1] = 0x78;
         work->unk8[2] = 0;

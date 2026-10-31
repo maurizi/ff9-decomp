@@ -34,7 +34,7 @@ extern BtlModel D_801E8680[];
 
 extern Unk800F78A4 *D_801E8670;
 
-void func_801E7EB8(s16 *a, s16 *b);
+static void fxm_anglesFromEye(s16 *a, s16 *b);
 s32 func_801E7EFC(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx0cbWork *work);
 
 /* propagated */

@@ -88,7 +88,7 @@ extern s32 D_801EA6C0[];
 extern Fx1f3Rock D_801EC370[8];
 extern Fx1f3Ring D_801EC4F0[16];
 extern Fx1f3Line D_801EC510;
-void func_801E7704(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot);
-s32 func_801E7794(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

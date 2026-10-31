@@ -1,6 +1,6 @@
 #include "fxmod/fx_130.h"
 
-s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to) {
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DF4);
     s32 k = 0x20000000 / (n * n);
     s32 r = 0;
@@ -87,9 +87,9 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         ex->Hi_DrawEffModel(&D_801E8124[i].unk28, &D_801E8124[i].unk30, (s32)&D_801E8124[i].unk40, D_801E8124[i].unk24);
                         D_801E8124[i].unk28.vy += 0x80;
                         if (D_801E8124[i].unk1C > 0x10) {
-                            D_801E8124[i].unk8.vy = (D_801E8124[i].unk10.vy + func_801E7704(1, 0x10, D_801E8124[i].unk1C - 0x10, 0, 0x2000)) & 0xFFF;
+                            D_801E8124[i].unk8.vy = (D_801E8124[i].unk10.vy + fxm_easeLerp(1, 0x10, D_801E8124[i].unk1C - 0x10, 0, 0x2000)) & 0xFFF;
                         } else {
-                            D_801E8124[i].unk8.vy = (D_801E8124[i].unk10.vy + func_801E7704(2, 0x10, D_801E8124[i].unk1C, 0x2000, 0x4000)) & 0xFFF;
+                            D_801E8124[i].unk8.vy = (D_801E8124[i].unk10.vy + fxm_easeLerp(2, 0x10, D_801E8124[i].unk1C, 0x2000, 0x4000)) & 0xFFF;
                         }
                         if (D_801E8124[i].unk1C == 0) {
                             D_801E8124[i].unk8.vy = D_801E8124[i].unk10.vy;

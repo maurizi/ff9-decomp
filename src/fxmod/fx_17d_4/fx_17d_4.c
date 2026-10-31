@@ -1,6 +1,6 @@
 #include "fxmod/fx_17d_4.h"
 
-void func_801E7720(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E9890);
     SVECTOR *v;
 
@@ -69,7 +69,7 @@ void func_801E77DC(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, 
                         BTLFX_COPY_SVEC(&p0, dst);
                         BTLFX_COPY_SVEC(&p1, dst);
                         p1.vy -= 0x1000;
-                        func_801E7720((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &p1, &p0, 0, 0x800, 1, 0x32);
+                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &p1, &p0, 0, 0x800, 1, 0x32);
                     }
                 } else {
                     BTLFX_COPY_SVEC(dst, &last);
@@ -491,7 +491,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&s, &work->unk10);
             s.vy += ex->math_sin(r_c6 >> 2) >> 3;
             s.vz -= 0x400;
-            func_801E7720((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &s, &work->unk10, frame, c_5, 1, 0x18);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &s, &work->unk10, frame, c_5, 1, 0x18);
             env->otZ = 0;
             if (frame >= 0x14) {
                 work->unk0 = 5;
@@ -522,7 +522,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             b.vy = work->unk8.vy - 0x1000;
             b.vz = a.vz;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &a, NULL, 0xAAA, 0, 1, t_c5);
-            func_801E7720((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &a, &b, frame, t_c5, 1, 0x20);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &a, &b, frame, t_c5, 1, 0x20);
             env->otZ = 0;
             if (frame >= 0x18) {
                 work->unk0 = 6;
@@ -540,7 +540,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r_c2 = (frame << 12) / 51;
             c_6 = 0x1000 - r_c2;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &a2, NULL, 0xAAA, 0, 1, c_6);
-            func_801E7720((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &a2, &b2, frame, c_6, 1,
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &a2, &b2, frame, c_6, 1,
                           (r_c2 >> 7) + 0x20);
             env->otZ = 0;
             rot2.vx = 0x400;

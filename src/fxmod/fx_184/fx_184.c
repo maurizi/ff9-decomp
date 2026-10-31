@@ -89,7 +89,7 @@ s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         switch (work->unk30) {
         case 0:
-            if (func_801E7BC4(0x10, &work->unk18, work->unk38, work->unk34, 0, &work->unk28)) {
+            if (fxm_moveUnitArc(0x10, &work->unk18, work->unk38, work->unk34, 0, &work->unk28)) {
                 work->unk30 = 1;
                 work->unk34 = 0x10;
                 work->unk38 = 0;
@@ -109,7 +109,7 @@ s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 func_801E7BC4(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start) {
+static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DC4);
     SVECTOR pos;
     s32 t;
@@ -118,7 +118,7 @@ s32 func_801E7BC4(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR 
         ex->btlfx_getUnitPos(unit, (s16 *)start);
     }
     t = (frame << 12) / n;
-    func_801E7CE0(start, dst, t, &pos);
+    fxm_lerpSvec(start, dst, t, &pos);
     if (height) {
         pos.vy -= (ex->math_sin(t >> 1) * height) >> 12;
     }
@@ -126,11 +126,11 @@ s32 func_801E7BC4(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR 
     return frame >= n;
 }
 
-void func_801E7CE0(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E7DC4)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E7D24(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 

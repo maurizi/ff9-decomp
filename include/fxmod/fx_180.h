@@ -84,20 +84,20 @@ extern SVECTOR D_801F0840;
 
 s32 func_801E78E0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 s32 func_801E79DC(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
-s32 func_801E8E00(s32 from, s32 to, s32 t, s32 n);
-void func_801E8E58(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
-void func_801E8EF0(Fx180Path *path, u16 *data);
-s32 func_801E8F08(Fx180Path *path, s32 t, SVECTOR *out);
-void func_801E8F6C(s32 unit, s32 motion);
-s32 func_801E8FD8(s32 unit);
-void func_801E90A8(s32 unit);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_posPathInit(Fx180Path *path, u16 *data);
+static s32 fxm_posPathGet(Fx180Path *path, s32 t, SVECTOR *out);
+static void fxm_startUnitMotion(s32 unit, s32 motion);
+static s32 fxm_isMotionDone(s32 unit);
+static void fxm_startMotion3IfActive(s32 unit);
 
 /* copied */
 extern Unk800F78A4 *D_801E9258;
 /* end copied */
 
 /* propagated */
-s32 func_801E90F4(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start);
-u16 *func_801E8DA4(u8 *base, u16 i);
+static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start);
+static u16 *fxm_offsetTableEntry(u8 *base, u16 i);
 
 #endif

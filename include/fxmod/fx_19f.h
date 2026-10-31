@@ -136,6 +136,6 @@ void func_801E9968(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *trail,
 /* end copied */
 
 /* propagated */
-void func_801E7704(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b);
+static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b);
 
 #endif

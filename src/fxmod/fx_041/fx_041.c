@@ -3,7 +3,7 @@
 s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
-    func_801E7D08(&D_801E7F44, t, &v);
+    fxm_posPathGet(&D_801E7F44, t, &v);
     v.vy = -300;
     D_801E7F54.vy = -300;
     D_801E7F54.vx = v.vx;
@@ -35,7 +35,7 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E7F4C.vx = work->unk20.vx;
         D_801E7F4C.vy = work->unk20.vy;
         D_801E7F4C.vz = work->unk20.vz;
-        func_801E7CF0(&D_801E7F44, (u16 *)ex->btlfx_getFileData(entry->file, 8));
+        fxm_posPathInit(&D_801E7F44, (u16 *)ex->btlfx_getFileData(entry->file, 8));
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -51,7 +51,7 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 4:
-            func_801E7E5C(0);
+            fxm_startMotion2IfActive(0);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk18);
             work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk18);
             if (work->unk8 != NULL) {
@@ -80,8 +80,8 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        if (frame >= 4 && func_801E7DD8(0)) {
-            func_801E7D6C(0, 0);
+        if (frame >= 4 && fxm_isMotionDone(0)) {
+            fxm_startUnitMotion(0, 0);
         }
         return frame >= 0x28;
     }
@@ -109,13 +109,13 @@ s32 fx_041_op81(s32 mode, Fx041Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E7CF0(Fx041Path *path, u16 *data) {
+static void fxm_posPathInit(Fx041Path *path, u16 *data) {
     data++;
     path->unk2 = *data++;
     path->unk4 = (Fx041Point *)data;
 }
 
-s32 func_801E7D08(Fx041Path *path, s32 t, SVECTOR *out) {
+static s32 fxm_posPathGet(Fx041Path *path, s32 t, SVECTOR *out) {
     s32 last = path->unk2 - 1;
     s32 done = 1;
     Fx041Point *p;
@@ -132,14 +132,14 @@ s32 func_801E7D08(Fx041Path *path, s32 t, SVECTOR *out) {
     return done;
 }
 
-void func_801E7D6C(s32 unit, s32 motion) {
+static void fxm_startUnitMotion(s32 unit, s32 motion) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7F3C);
 
     ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
     ex->btlfx_setMotionFrame(unit, 0);
 }
 
-s32 func_801E7DD8(s32 unit) {
+static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7F3C);
 
     s32 r;
@@ -152,15 +152,15 @@ s32 func_801E7DD8(s32 unit) {
     return r;
 }
 
-void func_801E7E5C(s32 unit) {
+static void fxm_startMotion2IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E7F3C)->btlfx_isUnitActive(unit)) {
-        func_801E7D6C(unit, 2);
+        fxm_startUnitMotion(unit, 2);
     }
 }
 
-void func_801E7EA8(s32 unit) {
+static void fxm_startMotion3IfActive(s32 unit) {
     if (BTLFX_EXPORTS(D_801E7F3C)->btlfx_isUnitActive(unit)) {
-        func_801E7D6C(unit, 3);
+        fxm_startUnitMotion(unit, 3);
     }
 }
 

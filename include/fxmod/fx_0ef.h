@@ -37,7 +37,7 @@ typedef struct {
     u16 unk2; /* count */
     Fx0efPoint *unk4;
 } Fx0efPath;
-void func_801E7A4C(Fx0efPath *path, u16 *data);
-s32 func_801E7A64(Fx0efPath *path, s32 t, SVECTOR *out);
+static void fxm_posPathInit(Fx0efPath *path, u16 *data);
+static s32 fxm_posPathGet(Fx0efPath *path, s32 t, SVECTOR *out);
 
 #endif

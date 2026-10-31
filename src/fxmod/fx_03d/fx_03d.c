@@ -114,7 +114,7 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0 && frame < 0x28) {
             if (frame >= 0 && frame < 0xF) {
-                s = func_801E7DC0(0, 0x1800, frame, 0xF);
+                s = fxm_lerpRatio(0, 0x1800, frame, 0xF);
                 work->unk18.vx = s;
                 work->unk18.vy = s;
                 work->unk18.vz = s;
@@ -123,10 +123,10 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk28.vz = s;
             }
             if (frame >= 0xF && frame < 0x28) {
-                s = func_801E7DC0(0x1800, 0x2000, frame - 0xF, 0x19);
+                s = fxm_lerpRatio(0x1800, 0x2000, frame - 0xF, 0x19);
                 work->unk18.vx = s;
                 work->unk18.vz = s;
-                s = func_801E7DC0(0x1800, 0x2800, frame - 0xF, 0x19);
+                s = fxm_lerpRatio(0x1800, 0x2800, frame - 0xF, 0x19);
                 work->unk28.vx = s;
                 work->unk28.vz = s;
             }
@@ -134,11 +134,11 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->unk0, &work->unk8, (s32)&work->unk28, work->unk42);
             if (work->unk3C >= 0 || work->unk3E >= 0) {
                 if (work->unk3C >= 0) {
-                    work->unk38 = func_801E7DC0(-0x80, 0, 0xF - work->unk3C, 0xF);
+                    work->unk38 = fxm_lerpRatio(-0x80, 0, 0xF - work->unk3C, 0xF);
                     work->unk3C--;
                 }
                 if (work->unk3E >= 0) {
-                    work->unk38 = func_801E7DC0(0, -0x80, 0xF - work->unk3E, 0xF);
+                    work->unk38 = fxm_lerpRatio(0, -0x80, 0xF - work->unk3E, 0xF);
                     work->unk3E--;
                 }
                 ex->Hi_ModifyEffModelRGB(work->unk40, work->unk38, work->unk38, work->unk38);
@@ -153,11 +153,11 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E7D7C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E7E60)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E7DC0(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 

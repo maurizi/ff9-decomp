@@ -1,6 +1,6 @@
 #include "fxmod/fx_0fa.h"
 
-void func_801E7704(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out) {
+static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out) {
     s32 w[4];
     s32 k;
     s32 s;

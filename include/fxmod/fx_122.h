@@ -29,7 +29,7 @@ extern Fx122Offset D_801E7C94[0x11];
 extern Unk800F78A4 *D_801E7D44;
 extern BtlModel D_801E7D54[];
 
-void func_801E7BF8(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E7C3C(s32 from, s32 to, s32 t, s32 n);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

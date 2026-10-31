@@ -45,7 +45,7 @@ s32 fx_0eb_op80(s32 mode, Fx0ebWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk34 >= 0) {
             ex->btlfx_getUnitPos(0, (s16 *)&p0);
-            p0.vy = func_801E7B84(work->unk1C.vy, -0x3E8, 0xC - work->unk34, 0xC);
+            p0.vy = fxm_lerpRatio(work->unk1C.vy, -0x3E8, 0xC - work->unk34, 0xC);
             ex->btlfx_setUnitPos(0, (s16 *)&p0);
             if (--work->unk34 == 0) {
                 work->unk38 = 1;
@@ -61,7 +61,7 @@ s32 fx_0eb_op80(s32 mode, Fx0ebWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitHomePos(0, (s16 *)&work->unk1C);
             work->unk1C.vx = p2.vx;
             work->unk1C.vz = p2.vz;
-            p2.vy = func_801E7B84(-0x3E8, work->unk1C.vy, 3 - work->unk36, 3);
+            p2.vy = fxm_lerpRatio(-0x3E8, work->unk1C.vy, 3 - work->unk36, 3);
             ex->btlfx_setUnitPos(0, (s16 *)&p2);
             if (--work->unk36 == 0) {
                 ex->btlfx_getUnitHomePos(0, (s16 *)&work->unk1C);
@@ -92,11 +92,11 @@ s32 fx_0eb_op80(s32 mode, Fx0ebWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-void func_801E7B40(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E7C24)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
 }
 
-s32 func_801E7B84(s32 from, s32 to, s32 t, s32 n) {
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 

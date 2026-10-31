@@ -3,3 +3,9 @@ fx_12b_header = 0x801E9AEC; // [code] module header (0, init, ops), btlfx_update
 fx_12b_op80 = 0x801E8060; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_12b_op81 = 0x801E8B24; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_12b_op82 = 0x801E9484; // type:func [code] header op entry 2, effect script op 0x82 (btlfx_spawnTask)
+fxm_posPathGet = 0x801E9744; // type:func [code] key i of a path of SVECTOR positions (count at +2), clamped to the last key, returns 1 past the end
+fxm_posPathInit = 0x801E972C; // type:func [code] sets up the fxm_posPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
+fxm_lerpSvec = 0x801E9690; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
+fxm_lerpRatio = 0x801E96D4; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
+fxm_setSignal = 0x801E97A8; // type:func [code] byte i of the btlfx state from signals (offset 0x10), every caller passes 7 = waitDone
+fxm_pinParticle = 0x801E8000; // type:func [code] particle motion callback core, holds the particle at src until frame n (returns -1 then)

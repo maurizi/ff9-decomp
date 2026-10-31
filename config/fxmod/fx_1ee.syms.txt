@@ -2,3 +2,7 @@ fx_1ee_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_1ee_header = 0x801E90BC; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_1ee_op80 = 0x801E7A64; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_1ee_op81 = 0x801E87C8; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
+fxm_easeLerp = 0x801E792C; // type:func [code] btlfx_lerp from to over n frames at frame t, curve 0 linear, 1 ease-out (quadratic), 2 ease-in
+fxm_camKeyReset = 0x801E7704; // type:func [code] frees the 16 camera key slots and zeroes the frame counter
+fxm_camKeyAdd = 0x801E7738; // type:func [code] takes a free camera key slot (start frame, destination nibbles, source nibbles, key data)
+fxm_camKeyUpdate = 0x801E7788; // type:func [code] copies keys into camera points or a module array (nibble 10+), optionally offset by a source point, counts frames

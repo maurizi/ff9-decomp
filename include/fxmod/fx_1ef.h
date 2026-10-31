@@ -56,7 +56,7 @@ extern Pool6CEntry *D_801EA8F4;
 extern SVECTOR D_801EA8FC;
 extern Fx1efTrail D_801EA90C[2];
 
-s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to);
+static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #define SUMMON(env) ((Fx1efSummon *)(env)->loader)
 extern s32 D_801EAA64[2]; /* fade timers */
@@ -80,9 +80,9 @@ typedef struct {
 
 extern s32 D_801E8BA0; /* frame */
 extern Fx1efTrack D_801E8BAC[];
-void func_801E7704(void);
-void func_801E7738(s32 start, u32 dst, u32 src, s16 *data);
+static void fxm_camKeyReset(void);
+static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data);
 extern SVECTOR D_801E8CEC[];
-void func_801E7788(void);
+static void fxm_camKeyUpdate(void);
 
 #endif

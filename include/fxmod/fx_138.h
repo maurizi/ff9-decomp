@@ -76,14 +76,14 @@ s32 func_801E7770(SVECTOR *out, s32 arg1, s32 i);
 s32 func_801E7794(SVECTOR *out, s32 arg1, s32 i);
 s32 func_801E77B8(SVECTOR *out, s32 arg1, s32 i);
 void func_801E77DC(SVECTOR *out, Fx138Path *path, s32 i);
-s32 func_801E81F0(Fx138Path *path, s32 i, SVECTOR *out);
+static s32 fxm_posPathGet(Fx138Path *path, s32 i, SVECTOR *out);
 s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-void func_801E813C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E8180(s32 from, s32 to, s32 t, s32 n);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
-void func_801E81D8(Fx138Path *path, u16 *data);
-void func_801E8254(Unk800F78A4 *env, s32 i, s32 v);
-void func_801E8268(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
+static void fxm_posPathInit(Fx138Path *path, u16 *data);
+static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
+static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
 
 #endif

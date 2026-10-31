@@ -64,17 +64,17 @@ extern Fx1ebKeyPath D_801E8728[3];
 extern Fx1ebPath D_801E8740;
 extern s32 D_801E8748[];
 
-void func_801E806C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
-s32 func_801E80B0(s32 from, s32 to, s32 t, s32 n);
-void func_801E8108(Fx1ebKeyPath *path, u16 *data);
-void func_801E81B4(Fx1ebPath *path, u16 *data);
+static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
+static void fxm_rotPosPathInit(Fx1ebKeyPath *path, u16 *data);
+static void fxm_valuePathInit(Fx1ebPath *path, u16 *data);
 
 /* copied */
 extern Unk800F78A4 *D_801E8268;
 /* end copied */
 
 /* propagated */
-s32 func_801E8120(Fx1ebKeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos);
-s32 func_801E81CC(Fx1ebPath *keys, s32 i, s32 *out);
+static s32 fxm_rotPosPathGet(Fx1ebKeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_valuePathGet(Fx1ebPath *keys, s32 i, s32 *out);
 
 #endif

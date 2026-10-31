@@ -29,7 +29,7 @@ extern Fx1b7Piece *D_801E87EC;
 extern s32 D_801E87F0;
 
 void func_801E7704(Fx1b7Split *s, SVECTOR (*faces)[3]);
-s32 func_801E774C(s32 model);
+static s32 fxm_splitModelAdd(s32 model);
 Fx1b7Piece *func_801E7830(void);
 s32 func_801E7868(void);
 
