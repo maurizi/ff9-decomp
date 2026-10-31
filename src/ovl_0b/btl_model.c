@@ -56,7 +56,7 @@ void btl_setModelAbr(BtlUnit9C *arg0, s32 arg1) {
     u8 *p;
     u32 i;
     u8 code;
-    if (!(arg0->flags & 0x10)) {
+    if (!(arg0->flags & BTL_MODEL_OFFSCREEN)) {
         arg0->abr = arg1;
         p = (u8 *)arg0->prims;
         for (i = 0; i < arg0->header->meshCount; i++) {
@@ -128,7 +128,7 @@ void btl_updateTexAnims(TexAnimSet *arg0) {
     }
     for (i = 0; i < arg0->count; i++) {
         e = &arg0->anims[i];
-        if (!(e->flags & 1)) {
+        if (!(e->flags & BTL_TEXANIM_PLAY)) {
             continue;
         }
         if (e->frameCount != 0) {
@@ -161,12 +161,12 @@ void btl_updateTexAnims(TexAnimSet *arg0) {
                     }
                 }
                 e->pos = -((e->waitMin + (e->waitRand + 1) * ((*g_randPtr << 8) | *g_randPtr++) / 0x10000) << 12);
-            } else if (e->flags & 2) {
+            } else if (e->flags & BTL_TEXANIM_ONCE) {
                 e->flags &= 0xFC;
             } else {
                 e->pos = 0;
             }
-        } else if (e->flags & 4) {
+        } else if (e->flags & BTL_TEXANIM_VSCROLL) {
             pos = e->pos;
             frame = pos >> 12;
             for (j = 0; j < e->rectCount; j++) {
@@ -470,8 +470,8 @@ void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
     arg1->max = &e->max;
     arg1->hp = e->max.maxHp;
     arg1->mp = arg1->max->maxMp;
-    s->flags = (s->flags & ~0x100) | ((arg0->flags << 7) & 0x100);
-    if (!((s->flags >> 9) & 1)) {
+    s->flags = (s->flags & ~BTL_ENEMYF_SHARED_MODEL) | ((arg0->flags << 7) & BTL_ENEMYF_SHARED_MODEL);
+    if (!((s->flags >> BTL_ENEMYF_NO_MODEL_BIT) & 1)) {
         arg1->pos[0] = arg1->home->pos[0] = arg1->obj->x = arg0->x << 16;
         arg1->pos[1] = arg1->home->pos[1] = arg1->obj->y = arg0->y << 16;
         arg1->pos[2] = arg1->home->pos[2] = arg1->obj->z = arg0->z << 16;
@@ -509,8 +509,8 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     arg1->baseBone = arg0->baseBone;
     s = &g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg1->flags)];
     s->steal.w = arg0->steal;
-    s->flags = (s->flags & ~0x40) | ((arg0->flags & 1) << 6);
-    s->flags = (s->flags & ~0x80) | ((arg0->flags << 6) & 0x80);
+    s->flags = (s->flags & ~BTL_ENEMYF_SCRIPT_DEATH) | ((arg0->flags & 1) << BTL_ENEMYF_SCRIPT_DEATH_BIT);
+    s->flags = (s->flags & ~BTL_ENEMYF_DEATH_MOTION) | ((arg0->flags << 6) & BTL_ENEMYF_DEATH_MOTION);
     btl_setShadowSize(arg1, arg0->shadowW, arg0->shadowD);
     arg1->shadowBone = arg0->shadowBone;
     arg1->shadowDirBone = arg0->shadowDirBone;

@@ -57,18 +57,18 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         mask = btl_applyReflect(arg0);
         e = arg0->cmdNo;
         if (e == 0xE || e == 0x33) {
-            l->kind = 2;
+            l->kind = BTL_FXK_ITEM;
         } else if (e == 0x1F) {
-            l->kind = 4;
+            l->kind = BTL_FXK_SWD_MAG;
         } else if ((u8)(e - 0x39) < 2) {
-            l->kind = 1;
+            l->kind = BTL_FXK_NO_CAST;
         }
     } else if (arg0->info.b.reflect == 2) {
         arg0->info.b.reflect = 1;
         if (!(arg0->caster->flags & BTL_UNIT_PARTY)) {
             arg0->info.b.enemyBounce = 1;
         }
-        l->kind = 0x11;
+        l->kind = (BTL_FXK_NO_CAST | BTL_FXK_BOUNCE);
     }
     for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
         if (u->unitBit & (u16)arg0->targets) {

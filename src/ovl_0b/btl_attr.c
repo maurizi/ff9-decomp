@@ -12,7 +12,7 @@ void btl_hideMeshes(BtlUnit *arg0, u16 arg1) {
 void btl_showMeshes(BtlUnit *arg0, u16 arg1) {
     s32 i;
     if (!(arg0->flags & BTL_UNIT_PARTY)) {
-        arg0->model->flags &= ~0x20;
+        arg0->model->flags &= ~BTL_MODEL_DRAWN;
     }
     for (i = 0; i < 16; i++) {
         if ((arg1 >> i) & 1) {
@@ -37,8 +37,8 @@ void btl_showWeapon(BtlUnit *arg0) {
 
 s32 btl_setKoMotion(BtlUnit *arg0) {
     arg0->model->motion = (BtlUnit9CC *)arg0->motions[4];
-    arg0->model->texAnims[2].flags &= ~3;
-    arg0->model->texAnims[0].flags |= 3;
+    arg0->model->texAnims[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+    arg0->model->texAnims[0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     arg0->model->texAnims[0].pos = 0;
     arg0->model->texAnims[0].lastFrame = 0x1000;
     arg0->obj->frame = 0;
@@ -469,7 +469,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         arg0->flags = (arg0->flags & ~BTL_UNIT_SHADOW) | ((arg2 & 1) << BTL_UNIT_SHADOW_BIT);
         break;
     case BTL_ATTR_SCALE:
-        arg0->model->flags |= 2;
+        arg0->model->flags |= BTL_MODEL_SCALED;
         arg0->model->scaleX = arg2;
         arg0->model->scaleY = arg2;
         arg0->model->scaleZ = arg2;
@@ -479,7 +479,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         g_gameState->gameData->ctx.battle->work->shadows[k].depth = ((u32)(arg0->shadowD * arg2) >> 12) * 12;
         break;
     case BTL_ATTR_RESET_SCALE:
-        arg0->model->flags &= ~2;
+        arg0->model->flags &= ~BTL_MODEL_SCALED;
         k = btl_getModelSlot(arg0);
         g_gameState->gameData->ctx.battle->work->shadows[k].width = arg0->shadowW * 14;
         k = btl_getModelSlot(arg0);
@@ -495,17 +495,17 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         break;
     case 0x3D:
         off = arg2 * 20;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->flags |= 1;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->flags |= BTL_TEXANIM_PLAY;
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->pos = 0;
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->lastFrame = 0x1000;
         break;
     case 0x3E:
         w = arg2 * 20;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + w))->flags &= ~3;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + w))->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         break;
     case 0x3F:
         x = arg2 * 20;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->flags |= 3;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->pos = 0;
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->lastFrame = 0x1000;
         break;

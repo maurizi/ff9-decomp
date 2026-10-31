@@ -55,14 +55,14 @@ void btl_initEnemies(Battle *arg0) {
 
     for (; i < g_gameState->gameData->ctx.battle->scene.group->enemyCount; i++, n++) {
         e = &arg0->enemies[i];
-        e->flags = (e->flags & ~0x3F) | 0x20;
+        e->flags = (e->flags & ~BTL_ENEMYF_FADE) | BTL_ENEMYF_FADE_OPAQUE;
         u = &arg0->units[n];
         u->modelId = m = btl_getEnemyModelId(i);
         if (m < 0) {
-            e->flags |= 0x200;
+            e->flags |= BTL_ENEMYF_NO_MODEL;
         } else {
             btl_createObjModel(p->obj, m);
-            e->flags &= ~0x200;
+            e->flags &= ~BTL_ENEMYF_NO_MODEL;
             p = p->next;
         }
         k = i;
@@ -71,7 +71,7 @@ void btl_initEnemies(Battle *arg0) {
         u->flags = (u->flags & ~BTL_UNIT_INDEX_MASK) | ((k & 0xF) << BTL_UNIT_INDEX_SHIFT);
         u->flags = (u->flags & ~BTL_UNIT_SLOT_MASK) | (((k + 4) & 7) << BTL_UNIT_SLOT_SHIFT);
         u->flags &= ~BTL_UNIT_TRANCE_ENABLED;
-        u->flags = (u->flags & ~BTL_UNIT_MODEL_PART) | (((e->flags >> 9) & 1) << BTL_UNIT_MODEL_PART_BIT);
+        u->flags = (u->flags & ~BTL_UNIT_MODEL_PART) | (((e->flags >> BTL_ENEMYF_NO_MODEL_BIT) & 1) << BTL_UNIT_MODEL_PART_BIT);
         btl_resetUnit(u, &g_gameState->gameData->npcModels[k]);
         u->home = (struct BtlUnit98 *)&e->home;
         u->weaponModel = NULL;
@@ -271,7 +271,7 @@ void btl_resetUnit(BtlUnit *arg0, ModelSlot *arg1) {
     } else {
         arg0->model = arg1->model;
         arg0->obj = arg1->actor;
-        arg0->model->texAnims[2].flags |= 1;
+        arg0->model->texAnims[2].flags |= BTL_TEXANIM_PLAY;
         arg0->model->texAnims[2].pos = 0;
         arg0->model->texAnims[2].lastFrame = 0x1000;
         for (i = 0; i < arg0->model->header->meshCount; i++) {

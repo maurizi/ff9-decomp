@@ -169,14 +169,14 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
     case 28:
         s->status ^= f;
         if (u->status & BTL_STATUS_MINI) {
-            u->model->flags |= 2;
+            u->model->flags |= BTL_MODEL_SCALED;
             u->model->scaleX = 0x800;
             u->model->scaleY = 0x800;
             u->model->scaleZ = 0x800;
             g_gameState->gameData->ctx.battle->work->shadows[btl_getModelSlot(u)].width = (u->shadowW >> 1) * 14;
             g_gameState->gameData->ctx.battle->work->shadows[btl_getModelSlot(u)].depth = (u->shadowD >> 1) * 12;
         } else {
-            u->model->flags &= ~2;
+            u->model->flags &= ~BTL_MODEL_SCALED;
             g_gameState->gameData->ctx.battle->work->shadows[btl_getModelSlot(u)].width = u->shadowW * 14;
             g_gameState->gameData->ctx.battle->work->shadows[btl_getModelSlot(u)].depth = u->shadowD * 12;
         }
@@ -245,7 +245,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         u->flags &= ~BTL_UNIT_KILLED;
         u->flags &= ~BTL_UNIT_MOTION_HELD;
         if ((s32)m->motion == a4[4] || (s32)m->motion == a4[8]) {
-            m->texAnims[2].flags |= 1;
+            m->texAnims[2].flags |= BTL_TEXANIM_PLAY;
             u->model->texAnims[2].pos = 0;
             u->model->texAnims[2].lastFrame = 0x1000;
             u->model->motion = (BtlUnit9CC *)u->motions[6];
@@ -294,7 +294,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         btl_showMeshes(u, u->vanishMeshes);
         break;
     case 0x10000000:
-        u->model->flags &= ~2;
+        u->model->flags &= ~BTL_MODEL_SCALED;
         g_gameState->gameData->ctx.battle->work->shadows[btl_getModelSlot(u)].width = u->shadowW * 14;
         g_gameState->gameData->ctx.battle->work->shadows[btl_getModelSlot(u)].depth = u->shadowD * 12;
         break;
@@ -1123,7 +1123,7 @@ BtlUnit *btl_getUnitBySlot(s32 arg0) {
 BtlUnit *btl_findBodyUnit(void) {
     BtlUnit *u;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if (!(u->flags & (BTL_UNIT_PARTY | BTL_UNIT_MODEL_PART)) && (((g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(u->flags))->flags >> 8) & 1)) {
+        if (!(u->flags & (BTL_UNIT_PARTY | BTL_UNIT_MODEL_PART)) && (((g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(u->flags))->flags >> BTL_ENEMYF_SHARED_MODEL_BIT) & 1)) {
             return u;
         }
     }

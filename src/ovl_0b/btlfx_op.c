@@ -348,7 +348,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 arg1->target = 0xFF;
             }
         }
-        if (arg2->targets->kind & 4) {
+        if (arg2->targets->kind & BTL_FXK_SWD_MAG) {
             arg1->unit = 0x11;
             arg1->target = 0x10;
         }
@@ -356,7 +356,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         arg1->castMode = ((u32)g_btlfxState.flags & 0x3000) >> 12;
         g_btlfxState.signals.b[2] = 0;
         g_btlfxState.signals.b[3] = 0;
-        a = arg2->targets->kind & 1;
+        a = arg2->targets->kind & BTL_FXK_NO_CAST;
         c = btlfx_isEnemyUnit(arg1->unit);
         arg1->loopFrames = 100;
         btlfx_setPartyTexAnim(arg1->unit, 1, 0);
@@ -372,7 +372,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             } else {
                 arg1->emitter = NULL;
             }
-        } else if (arg2->targets->kind & 2) {
+        } else if (arg2->targets->kind & BTL_FXK_ITEM) {
             arg1->motionMode = 3;
             arg1->phase = 2;
         } else {
@@ -430,7 +430,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 }
                 if (b == 0) {
                     arg1->loopFrames = btlfx_getMotionLength(arg1->unit);
-                    if (arg2->targets->kind & 1) {
+                    if (arg2->targets->kind & BTL_FXK_NO_CAST) {
                         btlfx_showCasterCmdName();
                     }
                 }
@@ -554,10 +554,10 @@ s32 btlfx_opReturnHome(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3
     if (arg0 == 1) {
         arg1->phase = 0;
         arg1->unit = *arg4;
-        if (arg2->targets->kind & 4) {
+        if (arg2->targets->kind & BTL_FXK_SWD_MAG) {
             arg1->unit = 0x11;
         }
-        if (arg2->targets->kind & 1) {
+        if (arg2->targets->kind & BTL_FXK_NO_CAST) {
             return 1;
         }
         if (btlfx_isEnemyUnit(arg1->unit) != 0) {
@@ -1450,7 +1450,7 @@ void btlfx_turnUnitToward(s32 arg0, s16 *arg1, s16 *arg2, s32 arg3, s32 arg4, s3
 void btlfx_getUnitScale(s32 arg0, VECTOR *arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     BtlUnit9C *m = u->model;
-    if (!(m->flags & 2)) {
+    if (!(m->flags & BTL_MODEL_SCALED)) {
         arg1->vz = 0x1000;
         arg1->vy = 0x1000;
         arg1->vx = 0x1000;
@@ -1465,9 +1465,9 @@ void btlfx_setUnitScale(s32 arg0, s32 *arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     if (btl_isModelPart(u) == 0) {
         if (arg1[0] == 0x1000 && arg1[1] == arg1[0] && arg1[2] == arg1[1]) {
-            u->model->flags &= ~2;
+            u->model->flags &= ~BTL_MODEL_SCALED;
         } else {
-            u->model->flags |= 2;
+            u->model->flags |= BTL_MODEL_SCALED;
             u->model->scaleX = arg1[0];
             u->model->scaleY = arg1[1];
             u->model->scaleZ = arg1[2];
@@ -1685,7 +1685,7 @@ void btlfx_signalScriptCue(void) {
 
 void btlfx_reapplyMini(BtlUnit *arg0) {
     if (arg0->status & BTL_STATUS_MINI) {
-        arg0->model->flags |= 2;
+        arg0->model->flags |= BTL_MODEL_SCALED;
         arg0->model->scaleX = 0x800;
         arg0->model->scaleY = 0x800;
         arg0->model->scaleZ = 0x800;
@@ -1833,15 +1833,15 @@ void btlfx_setUnitTexAnim(s32 arg0, s32 arg1, s32 arg2) {
 
     switch (arg1) {
     case 0:
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].flags |= 3;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].pos = 0;
         ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].lastFrame = 0x1000;
         break;
     case 1:
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].flags &= ~3;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         break;
     case 2:
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].flags |= 1;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].flags |= BTL_TEXANIM_PLAY;
         ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].pos = 0;
         ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].lastFrame = 0x1000;
         break;
@@ -2010,7 +2010,7 @@ void btlfx_playCmdCamera(s32 arg0) {
         return;
     }
     hi = arg0 & 0xF0;
-    if (g_btlfxCameraOn == 0 || hi == 0xF0 || (g_btlfxEnv->targets->kind & 2)) {
+    if (g_btlfxCameraOn == 0 || hi == 0xF0 || (g_btlfxEnv->targets->kind & BTL_FXK_ITEM)) {
         return;
     }
     u = btl_getUnit(0x10);
@@ -2018,7 +2018,7 @@ void btlfx_playCmdCamera(s32 arg0) {
         return;
     }
     t = btlfx_getFirstTarget();
-    if (g_btlfxEnv->targets->kind & 4) {
+    if (g_btlfxEnv->targets->kind & BTL_FXK_SWD_MAG) {
         msg = btlfx_getCommonData(g_btlfxCmdCameras[4]);
     } else if (u->flags & BTL_UNIT_PARTY) {
         if ((u8)btl_hasStatus(u, BTL_STATUS_TRANCE) == 0) {

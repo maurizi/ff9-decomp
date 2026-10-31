@@ -224,7 +224,7 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
         anim = g_btlPopupBounce;
     }
     c = anim[arg0->frame];
-    if (!(arg0->unit->model->flags & 0x10)) {
+    if (!(arg0->unit->model->flags & BTL_MODEL_OFFSCREEN)) {
         n = arg0->data.w;
         arg1->rgb = (c & 0x80) ? 0x03000000 : 0x01000000;
         arg1->clut = arg0->clut;
@@ -259,7 +259,7 @@ void btl_drawTextPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
 
     anim = arg0->data.p->anim;
     c = anim[arg0->frame];
-    if (!(arg0->unit->model->flags & 0x10)) {
+    if (!(arg0->unit->model->flags & BTL_MODEL_OFFSCREEN)) {
         arg1->rgb = (c & 0x80) ? 0x03000000 : 0x01000000;
         arg1->clut = arg0->clut;
         g = &g_uiSprites[arg0->data.p->glyph];
@@ -358,7 +358,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
     rot.vz = 0;
     rot.pad = 1;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if (((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1) || (u->model->flags & 0x10)) {
+        if (((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1) || (u->model->flags & BTL_MODEL_OFFSCREEN)) {
             continue;
         }
         if (r->hiddenMask & u->unitBit) {
@@ -393,7 +393,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
             z0 = (tz[k] << 24) >> 20;
             y = y0;
             z = z0;
-            if (mdl->flags & 2) {
+            if (mdl->flags & BTL_MODEL_SCALED) {
                 y = (u32)(y0 * mdl->scaleY) >> 12;
                 z = (u32)(z0 * mdl->scaleZ) >> 12;
             }
@@ -436,7 +436,7 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
     u32 n;
 
     for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if (((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1) || (u->model->flags & 0x10)) {
+        if (((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1) || (u->model->flags & BTL_MODEL_OFFSCREEN)) {
             continue;
         }
         if (g_gameState->gameData->ctx.battle->popups.hiddenMask & u->unitBit) {
@@ -455,7 +455,7 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
             y = (s8)m->iconY[5];
         }
         mdl = u->model;
-        if (mdl->flags & 2) {
+        if (mdl->flags & BTL_MODEL_SCALED) {
             y = (u32)(y * mdl->scaleY) >> 12;
         }
         b = &mdl->bones[bone];

@@ -38,7 +38,7 @@ void btl_updateCombat(GameData *arg0, Battle *arg1) {
         if (!((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1)) {
             btl_updateUnitModel(u, &sp10);
         }
-        if (btlui_getActiveUnit() == u && (arg1->cmdFlags & BTL_CMDF_MARKERS) && !(u->model->flags & 0x10)) {
+        if (btlui_getActiveUnit() == u && (arg1->cmdFlags & BTL_CMDF_MARKERS) && !(u->model->flags & BTL_MODEL_OFFSCREEN)) {
             btl_drawActiveMarker(arg0, arg1, u);
         }
         btl_updateHpStatus(u);
@@ -2757,7 +2757,7 @@ void btl_applyCalcResult(BtlCalc *c) {
         }
         id = c->cmd->subNo | (c->cmd->cmdNo << 8);
         if ((s->flags & BTL_UNIT_PARTY) && !(t->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE))) {
-            if ((((g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(t->flags))->flags >> 6) & 1) && t->hp == 0) {
+            if ((((g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(t->flags))->flags >> BTL_ENEMYF_SCRIPT_DEATH_BIT) & 1) && t->hp == 0) {
                 evt_battleTrigger(0x36, who, s->unitBit, id);
             } else if (t->hp != 0 && c->cmd->cmdNo < BTL_CMD_TABLE_COUNT) {
                 evt_battleTrigger(0x35, who, s->unitBit, id);

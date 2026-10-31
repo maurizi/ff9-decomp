@@ -162,12 +162,17 @@ typedef struct {
 
 typedef struct BtlUnit9C50 {
     u8 pad0[4];
-    u8 flags; /* TexAnim.flags (the entries seen 4 bytes early): 1 playing, 2 stop at the end */
+    u8 flags; /* TexAnim.flags (the entries seen 4 bytes early): BTL_TEXANIM_* */
     u8 pad5[0xC - 5];
     s32 pos; /* TexAnim.pos */
     u8 pad10[0x12 - 0x10];
     s16 lastFrame; /* TexAnim.lastFrame (0x1000 forces a redraw) */
 } BtlUnit9C50; /* 0x14 */
+
+/* TexAnim.flags (btl_updateTexAnims). Evidence: [code] */
+#define BTL_TEXANIM_PLAY    0x01 /* playing */
+#define BTL_TEXANIM_ONCE    0x02 /* stop at the end (else loop) */
+#define BTL_TEXANIM_VSCROLL 0x04 /* vertical scroll (frameCount 0) */
 
 /* texture word of a model, one per texture index (WmSrc*.tex): the model info entry's first table (ovl_0a WmTexInfo).
  * btl_drawMesh puts clut in the first uv word and tpage in the second; btl_setStoneClut moves clut */
@@ -268,7 +273,7 @@ typedef union {
 } BtlPrim;
 
 typedef struct BtlUnit9C {
-    u16 flags; /* 2 scaled (scaleX-Z, btl_applyModelScale), 0x10 off screen (btl_updateModelVisibility) */
+    u16 flags; /* BTL_MODEL_* */
     u8 pad2[4 - 2];
     u8 parentBone; /* weapon models: the bone of the parent model they follow (Character.unk21, btl_initWeapon) */
     u8 abr; /* semi-transparency mode (btl_setModelAbr) */
@@ -295,6 +300,11 @@ typedef struct BtlUnit9C {
     s16 attachY;
     s16 attachZ;
 } BtlUnit9C;
+
+/* BtlUnit9C.flags (unit and weapon models). Evidence: [code] */
+#define BTL_MODEL_SCALED    0x02 /* scaleX-Z apply (btl_applyModelScale; Mini, btlseq_opScale) */
+#define BTL_MODEL_OFFSCREEN 0x10 /* behind the camera (btl_updateModelVisibility; a child takes its parent's): not drawn, no popups */
+#define BTL_MODEL_DRAWN     0x20 /* a mesh group was drawn this frame (btl_updateUnitModel) */
 
 /* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's ModelSlot has pad4) */
 typedef struct {
@@ -644,7 +654,7 @@ typedef struct {
 } BtlScript4;
 
 typedef struct BtlScript {
-    u32 flags; /* 1 waiting for the effect hit, 2 hit seen, 4 end motion done, 8 started without a command (btlseq_startDirect) */
+    u32 flags; /* BTLSEQ_F_* */
     BtlScript4 *cmd; /* command it runs for, NULL = free slot */
     u8 *pc; /* script pointer */
     u8 *prevPc; /* an op's enter handler runs when pc moved */
@@ -667,6 +677,15 @@ typedef struct BtlScript {
     u8 fadeLeft;
     s16 work[8]; /* per-op work area */
 } BtlScript;
+
+/* BtlScript.flags (Battle122C.flags). Evidence: [code] */
+#define BTLSEQ_F_WAIT_HIT       0x01 /* btlseq_opEffect started an effect; the effect's seqSync turns it into HIT */
+#define BTLSEQ_F_HIT_BIT        1
+#define BTLSEQ_F_HIT            (1 << BTLSEQ_F_HIT_BIT) /* the effect hit (btlseq_opWaitEffectHit goes on) */
+#define BTLSEQ_F_END_MOTION_BIT 2
+#define BTLSEQ_F_END_MOTION     (1 << BTLSEQ_F_END_MOTION_BIT) /* btlseq_opEnd put the idle motion back */
+#define BTLSEQ_F_DIRECT_BIT     3
+#define BTLSEQ_F_DIRECT         (1 << BTLSEQ_F_DIRECT_BIT) /* started without a command (btlseq_startDirect): no btl_onCmdEffectDone at the end */
 typedef struct {
     void (*enter)(BtlScript *, BtlUnit *); /* on entry (pc moved) */
     s32 (*step)(BtlScript *, BtlUnit *); /* per frame; 0 = next op */
@@ -687,11 +706,18 @@ typedef struct {
     s16 centerY;
     s16 centerZ;
     u8 pad3E[0x40 - 0x3E];
-    u16 kind; /* btl_playCmdEffect: 1 Eidolon follow-up, 2 item, 4 Swd Mag, 0x11 bounce */
+    u16 kind; /* BTL_FXK_* (btl_playCmdEffect: from the command, or arg2[3]) */
     u16 fxParam; /* btl_playCmdEffect arg2[2] (fx_031: distance ahead of the fxArgs bones) */
     BtlUnit *partner; /* id 0x11: the Swd Mag partner (character kind 2) */
     u8 pad48[0x4C - 0x48];
 } BtlUnitList; /* 0x4C */
+
+/* BtlUnitList.kind. Evidence: [code] */
+#define BTL_FXK_NO_CAST 0x01 /* the caster doesn't step out and cast (btlfx caster task), no command camera: BTL_CMD_TRANCE_EIDOLON, BTL_CMD_REBIRTH_FLAME, bounces, btlseq op 0x1A */
+#define BTL_FXK_ITEM    0x02 /* BTL_CMD_ITEM / BTL_CMD_AUTO_POTION: the item motion, no command camera */
+#define BTL_FXK_SWD_MAG 0x04 /* BTL_CMD_SWD_MAG: the partner (unit 0x11) is the effect's caster */
+/* 0x08: set by btlfx_runScript for effect headers with caster kind 1, tested by the btlfx pool; meaning unknown */
+#define BTL_FXK_BOUNCE  0x10 /* a Reflect bounce (with NO_CAST); control op 8 doesn't wait for the enemy sequence */
 
 typedef struct Unk800F78A40 {
     s16 phase; /* -1 idle, else the btlfx_runScript state (0 save VRAM .. 4 run ops) */
@@ -1031,13 +1057,25 @@ typedef struct {
 
 typedef struct {
     BtlEnemyType *type;
-    u32 flags; /* bit 6 its death triggers the event script (btl_applyCalcResult), 8 model owner (btl_findBodyUnit), 9 no model */
+    u32 flags; /* BTL_ENEMYF_* */
     union {
         s32 w;
         u8 b[4]; /* items to steal, 0xFF = none (btl_calcSteal) */
     } steal;
     u8 home[0x18 - 0xC]; /* home position block (BtlUnit.home) */
 } BtlEnemy; /* 0x18 */
+
+/* BtlEnemy.flags (set from the group record, Unk800C9EE0 / Unk800C9D1C, by btl_initEnemyUnit). Evidence: [code] */
+#define BTL_ENEMYF_FADE              0x3F /* bits 0-5: fade level for btl_setUnitFade, 0 gone */
+#define BTL_ENEMYF_FADE_OPAQUE       0x20 /* start level (btl_initEnemies); the KO fade steps it down by 2 */
+#define BTL_ENEMYF_SCRIPT_DEATH_BIT  6
+#define BTL_ENEMYF_SCRIPT_DEATH      (1 << BTL_ENEMYF_SCRIPT_DEATH_BIT) /* its death is an event-script trigger (0x36) instead of the normal KO (btl_endEnemyHitMotion) */
+#define BTL_ENEMYF_DEATH_MOTION_BIT  7
+#define BTL_ENEMYF_DEATH_MOTION      (1 << BTL_ENEMYF_DEATH_MOTION_BIT) /* a killing hit plays motion 3 and the death cry (btl_startHitMotion) */
+#define BTL_ENEMYF_SHARED_MODEL_BIT  8
+#define BTL_ENEMYF_SHARED_MODEL      (1 << BTL_ENEMYF_SHARED_MODEL_BIT) /* the group's enemies share the first one's model; its owner is the body (btl_findBodyUnit) */
+#define BTL_ENEMYF_NO_MODEL_BIT      9
+#define BTL_ENEMYF_NO_MODEL          (1 << BTL_ENEMYF_NO_MODEL_BIT) /* no model of its own (btl_getEnemyModelId -1): BTL_UNIT_MODEL_PART */
 
 typedef struct {
     void *data[4]; /* registered battle files: [0] common data, [2] encounter, [3] background */
@@ -1467,7 +1505,7 @@ typedef struct Unk800FE3B8 {
     u8 paused; /* script frame stops counting (camera flag 0x100100); effect steps resume it */
     u8 effectPick; /* camera choice btlfx_opPlayCamera mode 3 plays: random 0/1 per effect, or the variant (camera flag 0x2000) */
     SVECTOR eye; /* eye position given to btlcam_lookAt */
-    u8 flags; /* 1 a camera script took over (projDist reset), 2 the effect script started (btlfx_runScript) */
+    u8 flags; /* 1 a camera script took over (projDist reset), BTLCAM_F_EFFECT_RUNNING */
     u8 stepped; /* the effect frame already stepped the camera: btlcam_update skips this frame */
     u16 projDist; /* projection distance (SetGeomScreen through GameData.unkA) */
     u16 baseProjDist; /* default projection distance (0x200) */
@@ -1481,13 +1519,20 @@ typedef struct Unk800FE3B8 {
     s32 idleSwayPhase;
     s32 viewBlend; /* frames left of the blend into the target view (btlcam_applyTargetView) */
     u8 nextVariant; /* variant chosen by a header with flag 0x200 for the next script (2 bits per variant) */
-    u8 mode; /* 0 scene (btlcam_playScene), 1 effect (btlcam_play), 2 enemy sequence (btlcam_playSeq) */
+    u8 mode; /* BTLCAM_MODE_* */
     u8 targetView; /* 1 while the target-select view is on */
     u8 viewState; /* 2: at the target view; btlcam_evalPath counts anchors 0x19/0x1A up to it */
     SVECTOR viewFromEye; /* eye when the target view started */
     SVECTOR viewFromAt; /* target when the target view started */
     BtlUnit *focusUnit; /* unit the scene camera follows (anchor 0xA; btlcam_loadScript variant from its state) */
 } Unk800FE3B8;
+
+/* Unk800FE3B8 (g_btlCamera).mode: what the camera plays. Evidence: [code] */
+#define BTLCAM_MODE_SCENE  0 /* btlcam_playScene */
+#define BTLCAM_MODE_EFFECT 1 /* btlcam_play */
+#define BTLCAM_MODE_SEQ    2 /* enemy sequence (btlcam_playSeq) */
+/* Unk800FE3B8.flags */
+#define BTLCAM_F_EFFECT_RUNNING 0x02 /* the effect script runs its ops (btlfx_runScript phase 4); btlcam_play clears the flags then */
 extern Unk800FE3B8 g_btlCamera;
 
 typedef struct {
@@ -3183,7 +3228,7 @@ typedef struct {
 } TexAnimRect; /* 0xC */
 
 typedef struct {
-    u8 flags; /* 1 playing, 2 stop at the end (else loop), 4 vertical scroll (frameCount 0) */
+    u8 flags; /* BTL_TEXANIM_* */
     u8 frameCount; /* frame count */
     s16 speed; /* speed (20.12) */
     u16 waitMin; /* frames to wait before looping again: waitMin + random(waitRand + 1) */

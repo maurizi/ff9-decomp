@@ -174,7 +174,7 @@ void btlfx_runScript(void) {
         d->ending = 0;
         btlfx_updateCameraEnable();
         btlcam_beginEffect();
-        if (!(g_btlfxEnv->targets->kind & 1)) {
+        if (!(g_btlfxEnv->targets->kind & BTL_FXK_NO_CAST)) {
             btlfx_playCmdCamera(d->flags);
         }
         if (btlfx_loadFile(d->effectId) == 0) {
@@ -190,7 +190,7 @@ void btlfx_runScript(void) {
     case 3:
         if (g_btlfxEnv->loader->stage == 3) {
             d->phase = 4;
-            g_btlfxEnv->camera->flags |= 2;
+            g_btlfxEnv->camera->flags |= BTLCAM_F_EFFECT_RUNNING;
         }
         break;
     case 2:
@@ -296,7 +296,7 @@ void btlfx_runScript(void) {
                 case 8:
                     if (btlfx_isEnemyUnit(0x10) != 0) {
                         g_btlfxState.seqSync = 1;
-                        if (!(g_btlfxEnv->targets->kind & 0x10) && d->seqRelease == 0) {
+                        if (!(g_btlfxEnv->targets->kind & BTL_FXK_BOUNCE) && d->seqRelease == 0) {
                             cont = 0;
                             d->pc -= 3;
                         }

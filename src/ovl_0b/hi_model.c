@@ -578,11 +578,11 @@ void Hi_StartSummonTexAnim(s32 arg0, s32 arg1, u8 arg2) {
     if (arg2) {
         off = arg1 * 4;
         off = (off + arg1) * 4; /* arg1 * sizeof(BtlUnit9C50) */
-        ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->flags |= 3;
+        ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     } else {
         off = arg1 * 4;
         off = (off + arg1) * 4;
-        ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->flags |= 1;
+        ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->flags |= BTL_TEXANIM_PLAY;
     }
     ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->pos = 0;
     ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->lastFrame = 0x1000;
@@ -590,7 +590,7 @@ void Hi_StartSummonTexAnim(s32 arg0, s32 arg1, u8 arg2) {
 
 void Hi_StopSummonTexAnim(s32 arg0, s32 arg1) {
     BtlUnit9C50 *e = &btlfx_getSummonModel(arg0, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->model->texAnims[arg1];
-    e->flags &= ~3;
+    e->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
 }
 
 void Hi_ModifyEffModelAbr(s32 arg0, s32 arg1) {

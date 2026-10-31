@@ -24,7 +24,7 @@ void btlcam_beginEffect(void) {
 }
 
 void btlcam_playScene(s32 arg0) {
-    g_btlCamera.mode = 0;
+    g_btlCamera.mode = BTLCAM_MODE_SCENE;
     g_btlCamera.paused = 0;
     g_btlCamera.flags = 0;
     bzero(&g_btlCamScript, 0x64);
@@ -36,10 +36,10 @@ void btlcam_playScene(s32 arg0) {
 }
 
 void btlcam_play(s32 arg0) {
-    g_btlCamera.mode = 1;
+    g_btlCamera.mode = BTLCAM_MODE_EFFECT;
     g_btlCamera.paused = 0;
     g_btlCamScript.accel = 0;
-    if (g_btlCamera.flags & 2) {
+    if (g_btlCamera.flags & BTLCAM_F_EFFECT_RUNNING) {
         g_btlCamera.flags = 0;
     }
     btlcam_finishPaths();
@@ -52,7 +52,7 @@ void btlcam_playSeq(s32 arg0) {
     btlcam_getUnitAnchors(g_gameState->gameData->ctx.battle->seq.camCaster, g_btlCamScript.casterAnchors);
     btlcam_getUnitAnchors((BtlUnit *)g_gameState->gameData->ctx.battle->seq.camTarget, g_btlCamScript.targetAnchors);
     btlcam_play(arg0);
-    g_btlCamera.mode = 2;
+    g_btlCamera.mode = BTLCAM_MODE_SEQ;
     g_btlCamera.flags = 0;
 }
 
@@ -888,7 +888,7 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
             bcopy(arg0, &g_btlCamera.viewFromEye, 8);
             bcopy(arg1, &g_btlCamera.viewFromAt, 8);
         }
-        if (g_btlCamera.targetView == 1 && ((g_btlCamera.mode == 1 && !(g_btlfxEnv->state->flags & 8)) || g_btlCamera.mode == 2)) {
+        if (g_btlCamera.targetView == 1 && ((g_btlCamera.mode == BTLCAM_MODE_EFFECT && !(g_btlfxEnv->state->flags & 8)) || g_btlCamera.mode == BTLCAM_MODE_SEQ)) {
             if (g_btlCamera.viewState != 2) {
                 if (g_btlCamera.prevViewState != 0 || g_btlCamera.viewBlend == 0) {
                     bcopy(&g_btlCamera.points[4], arg0, 8);

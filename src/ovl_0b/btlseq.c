@@ -101,7 +101,7 @@ void btlseq_startDirect(u16 mask, s16 arg1, u16 id) {
         c->info.w = 0;
         e = btlseq_start(c);
         if (e != NULL) {
-            e->flags |= 8;
+            e->flags |= BTLSEQ_F_DIRECT;
         }
     }
 }
@@ -135,8 +135,8 @@ void btlseq_update(void) {
                 if (op >= 0x23) {
                     op = 0;
                 }
-                if ((s->flags & 1) && g_btlfxEnv->state->seqSync != 0) {
-                    s->flags = (s->flags | 2) & ~1;
+                if ((s->flags & BTLSEQ_F_WAIT_HIT) && g_btlfxEnv->state->seqSync != 0) {
+                    s->flags = (s->flags | BTLSEQ_F_HIT) & ~BTLSEQ_F_WAIT_HIT;
                 }
                 if (s->pc != s->prevPc && g_btlseqOps[op].enter != NULL) {
                     g_btlseqOps[op].enter(s, u);
@@ -178,12 +178,12 @@ void btlseq_update(void) {
 
 s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
-    if (!((arg0->flags >> 2) & 1) && arg0->frame != 0 && arg1->obj->frame >= m->motion->frameCount) {
+    if (!((arg0->flags >> BTLSEQ_F_END_MOTION_BIT) & 1) && arg0->frame != 0 && arg1->obj->frame >= m->motion->frameCount) {
         m->motion = (BtlUnit9CC *)arg1->motions[(arg1->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         arg1->obj->frame = 0;
-        arg0->flags |= 4;
+        arg0->flags |= BTLSEQ_F_END_MOTION;
     }
-    if ((arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) || ((arg0->flags >> 2) & 1)) {
+    if ((arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) || ((arg0->flags >> BTLSEQ_F_END_MOTION_BIT) & 1)) {
         if (g_btlfxEnv->state->phase != -1) {
             return 0;
         }
@@ -193,7 +193,7 @@ s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
         if (g_gameState->gameData->ctx.battle->popups.scanUnit != 0) {
             return 0;
         }
-        if (!((arg0->flags >> 3) & 1)) {
+        if (!((arg0->flags >> BTLSEQ_F_DIRECT_BIT) & 1)) {
             btl_onCmdEffectDone();
         }
         arg0->cmd = 0;
@@ -206,7 +206,7 @@ s32 btlseq_opEndNoAnimWait(BtlScript *arg0) {
         if (arg0->turnFrames != 0) {
             return 0;
         }
-        if (!((arg0->flags >> 3) & 1)) {
+        if (!((arg0->flags >> BTLSEQ_F_DIRECT_BIT) & 1)) {
             btl_onCmdEffectDone();
         }
         arg0->cmd = 0;
@@ -395,7 +395,7 @@ s32 btlseq_opEffect(BtlScript *arg0) {
     v[2] = arg0->pc[7] | (arg0->pc[8] << 8);
     v[3] = arg0->pc[0] == 0x1A;
     btl_playCmdEffect((BtlCmd *)arg0->cmd, id, v);
-    arg0->flags |= 1;
+    arg0->flags |= BTLSEQ_F_WAIT_HIT;
     arg0->pc += 9;
     return 1;
 }
@@ -412,7 +412,7 @@ s32 btlseq_opWaitAnim(BtlScript *arg0, BtlUnit *arg1) {
 }
 
 s32 btlseq_opWaitEffectHit(BtlScript *arg0) {
-    if ((arg0->flags >> 1) & 1) {
+    if ((arg0->flags >> BTLSEQ_F_HIT_BIT) & 1) {
         arg0->pc += 1;
         return 1;
     }
@@ -597,7 +597,7 @@ s32 btlseq_stepScale(BtlScript *arg0, BtlUnit *arg1) {
     u16 v = arg0->work[0] + p[1] * arg0->opFrame / p[2];
     btl_setUnitAttr((s32)arg1, BTL_ATTR_SCALE, v);
     if (v == 0x1000) {
-        arg1->model->flags &= ~2;
+        arg1->model->flags &= ~BTL_MODEL_SCALED;
     }
     if (arg0->opFrame >= p[2]) {
         arg0->pc += 4;
@@ -609,7 +609,7 @@ s32 btlseq_stepScale(BtlScript *arg0, BtlUnit *arg1) {
 s32 btlseq_opPlayTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C50 *g;
     BtlUnit9C50 *e = &arg1->model->texAnims[arg0->pc[1]];
-    e->flags |= 1;
+    e->flags |= BTL_TEXANIM_PLAY;
     g = &arg1->model->texAnims[arg0->pc[1]];
     g->pos = 0;
     e = &arg1->model->texAnims[arg0->pc[1]];
@@ -621,7 +621,7 @@ s32 btlseq_opPlayTexAnim(BtlScript *arg0, BtlUnit *arg1) {
 s32 btlseq_opLoopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C50 *g;
     BtlUnit9C50 *e = &arg1->model->texAnims[arg0->pc[1]];
-    e->flags |= 3;
+    e->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     g = &arg1->model->texAnims[arg0->pc[1]];
     g->pos = 0;
     e = &arg1->model->texAnims[arg0->pc[1]];
