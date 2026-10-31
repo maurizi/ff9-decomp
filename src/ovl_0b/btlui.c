@@ -801,16 +801,16 @@ void btlui_applyTargetable(void) {
     u8 c;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         c = u->targetableReq;
-        if (c >= 2) {
-            if (c == 2) {
-                u->targetableReq = 0;
+        if (c >= BTL_TGTREQ_SET_OFF) {
+            if (c == BTL_TGTREQ_SET_OFF) {
+                u->targetableReq = BTL_TGTREQ_OFF;
                 u->flags &= ~BTL_UNIT_ATB_ACTIVE;
                 u->flags &= ~BTL_UNIT_TARGETABLE;
                 if (g_btlUi->menuState == BTLUI_MENU_TARGET) {
                     btlui_onUnitUntargetable(u);
                 }
-            } else if (c == 3) {
-                u->targetableReq = 1;
+            } else if (c == BTL_TGTREQ_SET_ON) {
+                u->targetableReq = BTL_TGTREQ_ON;
                 u->flags |= BTL_UNIT_ATB_ACTIVE;
                 u->flags |= BTL_UNIT_TARGETABLE;
                 if (g_btlUi->menuState == BTLUI_MENU_TARGET) {

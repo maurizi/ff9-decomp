@@ -130,7 +130,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
                 u->escapeStance = g_gameState->gameData->ctx.battle->escapeHeld;
             }
             *ot = (s32)btl_drawShadow(g_gameState->gameData->ctx.battle->work->shadows, BTL_UNIT_INDEX(u->flags), 0, id, (u8 *)*ot);
-        } else if (u->koState < 4) {
+        } else if (u->koState < BTL_KO_ENEMY_FADE) {
             *ot = (s32)btl_drawShadow(g_gameState->gameData->ctx.battle->work->shadows, BTL_UNIT_INDEX(u->flags) + 9, 0, id, (u8 *)*ot);
         }
     }
@@ -145,7 +145,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
     BtlUnit9C *m;
 
     if (u->status & BTL_STATUS_KO) {
-        if ((u->flags & (BTL_UNIT_PARTY | BTL_UNIT_HIT_MOTION)) == BTL_UNIT_PARTY && u != cmd->caster && u->koState == 0) {
+        if ((u->flags & (BTL_UNIT_PARTY | BTL_UNIT_HIT_MOTION)) == BTL_UNIT_PARTY && u != cmd->caster && u->koState == BTL_KO_NONE) {
             cur = (s32)u->model->motion;
             if (cur != u->motions[4] && cur != u->motions[9]) {
                 u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
@@ -229,7 +229,7 @@ void btl_endPartyHitMotion(BtlUnit *arg0) {
     s32 c = (s32)m->motion;
     if (c == a[2]) {
         if (arg0->status & BTL_STATUS_KO) {
-            arg0->koState = 1;
+            arg0->koState = BTL_KO_START;
             arg0->flags &= ~BTL_UNIT_HIT_MOTION;
         } else if ((arg0->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
             m->motion = (BtlUnit9CC *)a[10];
@@ -238,7 +238,7 @@ void btl_endPartyHitMotion(BtlUnit *arg0) {
         }
     } else if (c == a[3]) {
         if (arg0->status & BTL_STATUS_KO) {
-            arg0->koState = 5;
+            arg0->koState = BTL_KO_PARTY_SET;
             arg0->flags &= ~BTL_UNIT_HIT_MOTION;
             arg0->model->motion = (BtlUnit9CC *)arg0->motions[4];
         } else {
@@ -268,12 +268,12 @@ void btl_endEnemyHitMotion(BtlUnit *arg0) {
         if ((s32)m->motion == a[3] && ((u8)(g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(arg0->flags))->flags >> 7)) {
             m->motion = (BtlUnit9CC *)a[4];
             arg0->obj->frame--;
-            arg0->koState = 3;
+            arg0->koState = BTL_KO_ENEMY_SOUND;
             arg0->flags |= BTL_UNIT_MOTION_HELD;
             return;
         }
         if (!(((g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(arg0->flags))->flags >> 6) & 1) && !((arg0->flags >> BTL_UNIT_KILLED_BIT) & 1)) {
-            arg0->koState = 1;
+            arg0->koState = BTL_KO_START;
             return;
         }
         arg0->model->motion = (BtlUnit9CC *)arg0->motions[(arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
@@ -285,41 +285,41 @@ void btl_updateKo(BtlUnit *u) {
     BtlUnit9C *m;
     u32 f;
 
-    if (u->koState == 0) {
+    if (u->koState == BTL_KO_NONE) {
         return;
     }
     if (!(u->flags & BTL_UNIT_PARTY)) {
         e = &g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)];
         switch (u->koState) {
-        case 1:
+        case BTL_KO_START:
             if (!((u->flags >> BTL_UNIT_MODEL_PART_BIT) & 1)) {
                 u->model->motion = (BtlUnit9CC *)u->motions[4 + ((u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1)];
                 u->obj->frame = 0;
                 u->koState++;
             } else {
-                u->koState = 5;
+                u->koState = BTL_KO_ENEMY_REMOVE;
             }
             btl_playDeathCry(u, e->type->deathCry);
             return;
-        case 2:
+        case BTL_KO_ENEMY_DYING:
             if (u->obj->frame >= u->model->motion->frameCount - 1) {
                 u->flags |= BTL_UNIT_MOTION_HELD;
                 u->koState++;
             }
             return;
-        case 3:
+        case BTL_KO_ENEMY_SOUND:
             btl_playUnitSound(u, SE_ENEMY_DEATH_1, 0x7F);
             btl_playUnitSound(u, SE_ENEMY_DEATH_2, 0x7F);
             u->koState++;
-        case 4:
+        case BTL_KO_ENEMY_FADE:
             btl_setUnitFade(u, e->flags & 0x3F);
             if ((e->flags & 0x3F) == 0) {
-                u->koState = 5;
+                u->koState = BTL_KO_ENEMY_REMOVE;
                 return;
             }
             e->flags = (e->flags & ~0x3F) | (((e->flags & 0x3F) - 2) & 0x3F);
             return;
-        case 5:
+        case BTL_KO_ENEMY_REMOVE:
             if (btl_hasEnemyFlag(u, 8) != 0) {
                 if (g_gameState->gameData->dragonKills < 9999) {
                     g_gameState->gameData->dragonKills++;
@@ -340,7 +340,7 @@ void btl_updateKo(BtlUnit *u) {
         /* padded: the first jump table is 8-aligned in its object */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         switch (u->koState) {
-        case 1:
+        case BTL_KO_START:
             m = u->model;
             if ((s32)m->motion == u->motions[9]) {
                 m->motion = (BtlUnit9CC *)u->motions[32];
@@ -350,29 +350,29 @@ void btl_updateKo(BtlUnit *u) {
             if ((s32)m->motion == u->motions[32] && u->obj->frame < m->motion->frameCount) {
                 break;
             }
-            u->koState = 2;
-        case 2:
+            u->koState = BTL_KO_PARTY_FALL;
+        case BTL_KO_PARTY_FALL:
             if ((f = (u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) == 1) {
                 u->model->motion = (BtlUnit9CC *)u->motions[8];
-                u->koState = 4;
+                u->koState = BTL_KO_PARTY_DOWN;
             } else {
                 u->model->motion = (BtlUnit9CC *)u->motions[7];
-                u->koState = 3;
+                u->koState = BTL_KO_PARTY_COLLAPSE;
             }
             u->obj->frame = 0;
             return;
-        case 3:
+        case BTL_KO_PARTY_COLLAPSE:
             if (u->obj->frame >= u->model->motion->frameCount) {
                 u->model->motion = (BtlUnit9CC *)u->motions[8];
                 u->obj->frame = 0;
                 u->koState++;
             }
             break;
-        case 4:
+        case BTL_KO_PARTY_DOWN:
             if (u->obj->frame < u->model->motion->frameCount) {
                 break;
             }
-        case 5:
+        case BTL_KO_PARTY_SET:
             if ((u8)btl_setKoMotion(u)) {
                 btl_checkSideDefeated(u);
             }

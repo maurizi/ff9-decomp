@@ -163,10 +163,10 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     done = 0;
                 }
                 if (u->status & BTL_STATUS_KO) {
-                    if (u->koState == 0 && btl_isCmdPending(u->koCmd) == 0) {
+                    if (u->koState == BTL_KO_NONE && btl_isCmdPending(u->koCmd) == 0) {
                         btl_setCmd(u->koCmd, BTL_CMD_KO, 0, u->unitBit, 0);
                     }
-                    if (u->koState != 6) {
+                    if (u->koState != BTL_KO_DONE) {
                         done = 0;
                     }
                 } else if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE))) {
@@ -178,8 +178,8 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                 break;
             case BTL_END_ESCAPE:
                 if (u->status & BTL_STATUS_KO) {
-                    if (u->koState == 0) {
-                        u->koState = 1;
+                    if (u->koState == BTL_KO_NONE) {
+                        u->koState = BTL_KO_START;
                     }
                     if (u->model->motion != (BtlUnit9CC *)u->motions[4]) {
                         done = 0;

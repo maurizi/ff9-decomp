@@ -238,7 +238,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
     case 0x100:
         m = u->model;
         a4 = u->motions;
-        u->koState = 0;
+        u->koState = BTL_KO_NONE;
         u->escapeStance = 0;
         u->flags &= ~BTL_UNIT_HIT_MOTION;
         u->flags &= ~BTL_UNIT_CMD_WAITING;
@@ -299,7 +299,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         g_gameState->gameData->ctx.battle->work->shadows[btl_getModelSlot(u)].depth = u->shadowD * 12;
         break;
     case 0x40000000:
-        u->targetableReq = 3;
+        u->targetableReq = BTL_TGTREQ_SET_ON;
         u->atb = 0;
         u->cmdIssued = 0;
         u->flags |= BTL_UNIT_ATB_ACTIVE;
@@ -772,7 +772,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
     s32 k;
     s32 n;
 
-    n = 6;
+    n = BTL_KO_DONE;
     for (u = b->unitList; u != NULL; u = u->next) {
         if ((u->flags & BTL_UNIT_PARTY) == (arg0->flags & BTL_UNIT_PARTY)) {
             if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) || ((u->status & BTL_STATUS_KO) && u->koState != n)) {

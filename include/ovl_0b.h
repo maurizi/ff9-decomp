@@ -482,7 +482,7 @@ typedef struct BtlUnit {
     u8 level; /* Character.level, enemy record level */
     u8 escapeStance; /* Battle.escapeHeld when the idle motion was last chosen (btl_updateUnits re-picks it on a change) */
     u8 baseBone; /* bone used as the unit position (btl_getBaseBonePos) */
-    u8 koState; /* KO state machine step (btl_updateKo) */
+    u8 koState; /* BTL_KO_*: KO state machine step (btl_updateKo) */
     u16 popupFlags; /* BTL_POPUP_*: what btl_spawnPopups shows (BtlCalc.targetResult/casterResult or-ed in) */
     s16 hpChange; /* damage or heal shown by btl_spawnPopups */
     s16 mpChange;
@@ -497,7 +497,7 @@ typedef struct BtlUnit {
     u16 hiddenMeshes; /* BTL_ATTR_HIDE_MESHES / BTL_ATTR_SHOW_MESHES */
     u16 vanishMeshes; /* mesh groups Vanish hides */
     u16 unitBit; /* bit in target masks (BtlCmd.targets): party 0-3, enemies from 4 */
-    u8 targetableReq; /* 2: become untargetable, 3: targetable (btlui_applyTargetable applies it next frame and leaves 0/1); BTL_ATTR 0x34, Jump, landing */
+    u8 targetableReq; /* BTL_TGTREQ_*: BTL_ATTR_TARGETABLE, Jump, landing */
     u8 cmdIssued; /* set when the menu issues its command, cleared when it ends */
     struct Unk80104F88Entry *menu; /* party member menu data */
     s16 screenX;
@@ -512,7 +512,7 @@ typedef struct BtlUnit {
     s16 tickHeal; /* btl_tickRegen */
     s16 tickDamage; /* btl_tickPoison */
     s16 tickMpDamage; /* btl_tickVenomMp */
-    u8 tickFlags; /* 1 regen, 2 poison, 4 venom, 8 regen hurts */
+    u8 tickFlags; /* BTL_TICK_*: popups btl_spawnTickPopups shows */
     u8 inMenuQueue; /* waiting for its command menu (btlui_queueMenuUnit) */
 } BtlUnit; /* 0xD0 */
 
@@ -558,10 +558,36 @@ typedef struct BtlUnit {
 #define BTL_UNIT_TRANCE_ENABLED_BIT 30 /* the trance gauge fills (btl_gainTrance) and shows (btlui_updatePanel); party only, off before the story allows it */
 #define BTL_UNIT_TRANCE_ENABLED    (1 << BTL_UNIT_TRANCE_ENABLED_BIT)
 
+/* BtlUnit.koState (btl_updateKo; enemies and party units step differently). Evidence: [code] */
+#define BTL_KO_NONE           0
+#define BTL_KO_START          1 /* BTL_CMD_KO ran (btl_checkCmdUsable) or the hit motion ended KO */
+#define BTL_KO_ENEMY_DYING    2 /* the death motion plays, then is held on its last frame */
+#define BTL_KO_ENEMY_SOUND    3 /* death sounds (also the start for BTL_UNIT_KILLED enemies) */
+#define BTL_KO_ENEMY_FADE     4 /* fades out by the BtlEnemy fade level; no shadow from here on (btl_updateUnitModel) */
+#define BTL_KO_ENEMY_REMOVE   5 /* rewards, btl_checkSideDefeated, btl_unlinkUnit */
+#define BTL_KO_PARTY_FALL     2 /* picks the collapse motion (7, or 8 straight away in the weak stance) */
+#define BTL_KO_PARTY_COLLAPSE 3 /* motion 7 plays, then motion 8 */
+#define BTL_KO_PARTY_DOWN     4 /* motion 8 plays */
+#define BTL_KO_PARTY_SET      5 /* btl_setKoMotion: the KO motion (4), then DONE or REVIVING */
+#define BTL_KO_DONE           6 /* down for good (btl_checkSideDefeated waits for it on the whole side) */
+#define BTL_KO_REVIVING       7 /* Auto-Life queued its revive command (btl_setKoMotion) */
+
+/* BtlUnit.targetableReq: BTL_UNIT_TARGETABLE change requested for btlui_applyTargetable (next frame) */
+#define BTL_TGTREQ_OFF     0 /* untargetable (applied) */
+#define BTL_TGTREQ_ON      1 /* targetable (applied) */
+#define BTL_TGTREQ_SET_OFF 2 /* make it untargetable */
+#define BTL_TGTREQ_SET_ON  3 /* make it targetable */
+
+/* BtlUnit.tickFlags: status tick popups (btl_spawnTickPopups). Evidence: [code] */
+#define BTL_TICK_REGEN       0x01 /* btl_tickRegen: tickHeal */
+#define BTL_TICK_POISON      0x02 /* btl_tickPoison: tickDamage */
+#define BTL_TICK_VENOM_MP    0x04 /* btl_tickVenomMp: tickMpDamage */
+#define BTL_TICK_REGEN_HURTS 0x08 /* Regen damaged a Zombie or undead unit: the heal number is shown as damage */
+
 /* BtlUnit.popupFlags, BtlCalc.targetResult / casterResult (bits 0-4): what btl_spawnPopups shows. Text popups index
  * g_btlTextPopups: 0 miss, 1 death, 2 guard, 3 critical. Evidence: [code] */
 #define BTL_POPUP_HP       0x01 /* hp number (hpChange; btl_damageHp / btl_healHp in btl_applyCalcResult) */
-#define BTL_POPUP_HEAL     0x02 /* the hp number heals (green; also absorbed damage, btl_finishMagicDamage) */
+#define BTL_POPUP_HEAL     0x02 /* the hp number heals (clut 0xC0; also absorbed damage, btl_finishMagicDamage) */
 #define BTL_POPUP_CRITICAL 0x04 /* "Critical" text (btl_rollCritical); btl_startHitMotion knocks the unit back */
 #define BTL_POPUP_MP       0x08 /* mp number (mpChange) */
 #define BTL_POPUP_MP_HEAL  0x10 /* the mp number heals */
@@ -1115,13 +1141,21 @@ typedef struct BtlCmd8 {
     u8 power; /* power, or the formula's parameter (an item id, a divisor) */
     u8 element; /* element bits */
     u8 rate; /* hit/status rate */
-    u8 flags; /* 1 reflectable, 2 needs a voice (Silence blocks it), 8 Counter answers it, 0x80 Return Magic answers it */
+    u8 flags; /* BTL_ABIL_* */
     u8 statusSet; /* index into Battle.statusSets */
     u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
     u8 unkB;
     u16 altEffect; /* effect played for short summons, Seiken and single-target casts (btl_startCmdEffect) */
     u16 nameOfs; /* name text offset (runtime: Fire 161, Fira 166, Firaga 171, Sleep 178 - steps = name lengths + 1) */
 } BtlCmd8;
+
+/* BtlCmd8.flags (ability flags). Evidence: [code] */
+#define BTL_ABIL_REFLECTABLE    0x01 /* Reflect bounces it (btl_applyReflect) */
+#define BTL_ABIL_VOICE          0x02 /* needs a voice: Silence blocks it */
+#define BTL_ABIL_PHYSICAL       0x08 /* answered by Counter (btl_tryCounter), Cover steps in (BTL_CMD_ENEMY_TURN), a hit wakes Sleep and Confuse */
+#define BTL_ABIL_DISPELS_VANISH 0x10 /* a hit removes Vanish (btl_applyCalcResult) */
+#define BTL_ABIL_NO_HIT_MOTION  0x40 /* the target plays no hit motion (btl_canAddHitStatus) */
+#define BTL_ABIL_RETURNABLE     0x80 /* answered by Return Magic */
 
 typedef struct BtlCmd {
     struct BtlCmd *next; /* queue link */
@@ -1142,9 +1176,22 @@ typedef struct BtlCmd {
             u32 shortSummon : 1; /* plays the ability's altEffect (btl_rollShortSummon) */
             u32 enemyBounce : 1; /* an enemy's reflected spell: btl_processCmdQueue steps it like a party command (btl_updatePartyCmd) */
         } b;
-        u32 w; /* cleared as a word */
+        u32 w; /* cleared as a word; BTL_CMDINFO_* */
     } info;
 } BtlCmd;
+
+/* BtlCmd.info.b as a word (info.w; BtlCalc8.flags) */
+#define BTL_CMDINFO_TARGETING         0x003 /* info.b.targeting */
+#define BTL_CMDINFO_AUTOMATIC         0x010 /* info.b.automatic */
+#define BTL_CMDINFO_COVERED_BIT       5
+#define BTL_CMDINFO_COVERED           (1 << BTL_CMDINFO_COVERED_BIT) /* info.b.covered */
+#define BTL_CMDINFO_DODGED            0x040 /* info.b.dodged */
+#define BTL_CMDINFO_REFLECT_SHIFT     7
+#define BTL_CMDINFO_REFLECT           (3 << BTL_CMDINFO_REFLECT_SHIFT) /* info.b.reflect */
+#define BTL_CMDINFO_MAGIC_FAILED      0x200 /* info.b.magicFailed */
+#define BTL_CMDINFO_SHORT_SUMMON_BIT  10
+#define BTL_CMDINFO_SHORT_SUMMON      (1 << BTL_CMDINFO_SHORT_SUMMON_BIT) /* info.b.shortSummon */
+#define BTL_CMDINFO_ENEMY_BOUNCE      0x800 /* info.b.enemyBounce */
 
 typedef struct BtlShadow {
     u32 shade : 8; /* grey level of the shadow quads (btl_drawShadow) */
@@ -4332,7 +4379,7 @@ s32 vib_init(void *);
 
 /* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
 static inline u8 btl_checkCmdUsable_can(BtlCmd *arg1) {
-    if ((arg1->caster->status & BTL_STATUS_SILENCE) && (arg1->ability->flags & 2)) {
+    if ((arg1->caster->status & BTL_STATUS_SILENCE) && (arg1->ability->flags & BTL_ABIL_VOICE)) {
         btl_showMessage(0x15);
         return 0;
     }

@@ -161,7 +161,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     btl_applyAutoAbilities(u);
     u->home = (struct BtlUnit98 *)&u->obj->x;
     if (u->hp == 0 && btl_addStatus(u, BTL_STATUS_KO) == 2) {
-        u->koState = 5;
+        u->koState = BTL_KO_PARTY_SET;
         btl_setKoMotion(u);
         return;
     }
@@ -251,7 +251,7 @@ void btl_resetUnit(BtlUnit *arg0, ModelSlot *arg1) {
     arg0->tickHeal = 0;
     arg0->tickDamage = 0;
     arg0->tickMpDamage = 0;
-    arg0->koState = 0;
+    arg0->koState = BTL_KO_NONE;
     f = arg0->flags;
     f &= ~BTL_UNIT_HIT_MOTION;
     f &= ~BTL_UNIT_CMD_WAITING;

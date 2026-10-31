@@ -52,15 +52,15 @@ void btl_spawnTickPopups(BtlUnit *arg0) {
     u8 f = arg0->tickFlags;
     u8 n = 0;
     if (!((arg0->flags >> BTL_UNIT_HIDDEN_BIT) & 1)) {
-        if (f & 1) {
-            btl_popupHp((s32)arg0, arg0->tickHeal, (f & 8) ? 0 : 0xC0, 0)->info.b.noClamp = 1;
+        if (f & BTL_TICK_REGEN) {
+            btl_popupHp((s32)arg0, arg0->tickHeal, (f & BTL_TICK_REGEN_HURTS) ? 0 : 0xC0, 0)->info.b.noClamp = 1;
             n = 4;
         }
-        if (f & 2) {
+        if (f & BTL_TICK_POISON) {
             btl_popupHp((s32)arg0, arg0->tickDamage, 0, n)->info.b.noClamp = 1;
             n += 4;
         }
-        if (f & 4) {
+        if (f & BTL_TICK_VENOM_MP) {
             btl_popupMp((s32)arg0, arg0->tickMpDamage, 0, n)->info.b.noClamp = 1;
         }
     }

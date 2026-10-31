@@ -69,7 +69,7 @@ s32 btl_tryCounter(BtlUnit *arg0, BtlUnit *arg1, BtlCmd *arg2) {
     if (arg2->cmdNo >= BTL_CMD_TABLE_COUNT) {
         return 0;
     }
-    if ((arg0->support[1] & SA_BIT(SA_COUNTER)) && (arg2->ability->flags & 8)) {
+    if ((arg0->support[1] & SA_BIT(SA_COUNTER)) && (arg2->ability->flags & BTL_ABIL_PHYSICAL)) {
         r = arg0->spirit;
         if (arg0->support[1] & SA_BIT(SA_EYE_4_EYE)) {
             r *= 2;
@@ -85,7 +85,7 @@ s32 btl_tryCounter(BtlUnit *arg0, BtlUnit *arg1, BtlCmd *arg2) {
             return 1;
         }
     }
-    if ((arg0->support[1] & SA_BIT(SA_RETURN_MAGIC)) && (arg2->ability->flags & 0x80)) {
+    if ((arg0->support[1] & SA_BIT(SA_RETURN_MAGIC)) && (arg2->ability->flags & BTL_ABIL_RETURNABLE)) {
         btl_queueAutoCmd(arg0, BTL_CMD_RETURN_MAGIC, arg2->subNo, arg1->unitBit);
         return 1;
     }
@@ -259,7 +259,7 @@ void btl_initUnitCmds(BtlUnit *arg0) {
     s32 i;
     s32 j;
     if (b->phase == BTL_PHASE_INTRO) {
-        arg0->targetableReq = 1;
+        arg0->targetableReq = BTL_TGTREQ_ON;
     }
     arg0->cmdIssued = 0;
     arg0->onScreen = 0;
@@ -329,12 +329,12 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     arg0->targets = arg3;
     arg0->cmdNo = arg1;
     arg0->subNo = arg2;
-    arg0->info.w = (arg0->info.w & ~3) | (arg4 & 3);
-    arg0->info.w &= ~0x20;
-    arg0->info.w &= ~0x40;
-    arg0->info.w &= ~0x180;
+    arg0->info.w = (arg0->info.w & ~BTL_CMDINFO_TARGETING) | (arg4 & 3);
+    arg0->info.w &= ~BTL_CMDINFO_COVERED;
+    arg0->info.w &= ~BTL_CMDINFO_DODGED;
+    arg0->info.w &= ~BTL_CMDINFO_REFLECT;
     if (arg1 >= 0x31) {
-        arg0->info.w |= 0x10;
+        arg0->info.w |= BTL_CMDINFO_AUTOMATIC;
     } else {
         btl_removeStatus(u, BTL_STATUS_DEFEND);
     }
@@ -676,17 +676,17 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
         break;
     case BTL_CMD_KO:
         btl_checkPartyDisabled(u);
-        if (u->koState == 0) {
+        if (u->koState == BTL_KO_NONE) {
             if (u->flags & BTL_UNIT_PARTY) {
                 if (u->model->motion == (BtlUnit9CC *)u->motions[4]) {
-                    u->koState = 5;
+                    u->koState = BTL_KO_PARTY_SET;
                     return 0;
                 }
-                u->koState = 1;
+                u->koState = BTL_KO_START;
             } else if ((u->flags & (BTL_UNIT_KILLED | BTL_UNIT_MODEL_PART)) == BTL_UNIT_KILLED) {
-                u->koState = 3;
+                u->koState = BTL_KO_ENEMY_SOUND;
             } else {
-                u->koState = 1;
+                u->koState = BTL_KO_START;
             }
         }
         return 0;
@@ -746,7 +746,7 @@ s32 btl_validateTargets(Battle *b, BtlCmd *cmd) {
             cmd->targets = mask;
             return 1;
         }
-        if (cmd->info.w & 3) {
+        if (cmd->info.w & BTL_CMDINFO_TARGETING) {
             return 0;
         }
         if (!f) {
@@ -851,7 +851,7 @@ void btl_execCmd(BtlUnit *arg0) {
         break;
     case BTL_CMD_JUMP:
     case BTL_CMD_JUMP_TRANCE:
-        u->targetableReq = 2;
+        u->targetableReq = BTL_TGTREQ_SET_OFF;
         u->flags |= BTL_UNIT_HIDDEN;
         break;
     case BTL_CMD_ITEM:
@@ -898,7 +898,7 @@ void btl_finishCmd(Battle *b) {
             g_gameState->gameData->ctx.battle->cmdFlags &= ~BTL_CMDF_SPEAR;
         } else if (cmd->cmdNo == BTL_CMD_SPEAR_TRANCE) {
             btl_addStatus(u, BTL_STATUS_JUMP);
-            u->targetableReq = 2;
+            u->targetableReq = BTL_TGTREQ_SET_OFF;
             u->flags |= BTL_UNIT_HIDDEN;
             g_gameState->gameData->ctx.battle->cmdFlags &= ~BTL_CMDF_SPEAR;
         }
@@ -1059,7 +1059,7 @@ s32 btl_applyReflect(BtlCmd *arg0) {
     u32 side;
     BtlUnit *v;
 
-    if ((u32)(arg0->cmdNo - BTL_CMD_ITEM) >= 2 && arg0->cmdNo != BTL_CMD_AUTO_POTION && (arg0->ability->flags & 1) &&
+    if ((u32)(arg0->cmdNo - BTL_CMD_ITEM) >= 2 && arg0->cmdNo != BTL_CMD_AUTO_POTION && (arg0->ability->flags & BTL_ABIL_REFLECTABLE) &&
         !(arg0->caster->support[0] & SA_BIT(SA_REFLECT_NULL))) {
         n = 0;
         m = 0;
@@ -2674,21 +2674,21 @@ void btl_applyCalcResult(BtlCalc *c) {
                 w->pos[2] += 0x1900000;
             }
             t->flags |= BTL_UNIT_DODGED;
-            c->cmd->flags |= 0x40;
+            c->cmd->flags |= BTL_CMDINFO_DODGED;
         }
     } else {
-        if (c->cmd->ability->flags & 8) {
+        if (c->cmd->ability->flags & BTL_ABIL_PHYSICAL) {
             btl_removeStatus(t, BTL_STATUS_CONFUSE);
             btl_removeStatus(t, BTL_STATUS_SLEEP);
         }
-        if (c->cmd->ability->flags & 0x10) {
+        if (c->cmd->ability->flags & BTL_ABIL_DISPELS_VANISH) {
             btl_removeStatus(t, BTL_STATUS_VANISH);
         }
         if (c->targetResult != 0) {
             t->popupFlags |= c->targetResult;
             if (c->targetResult & BTL_POPUP_HP) {
                 n = 0;
-                if (((c->cmd->flags >> 7) & 3) == 1) {
+                if (((c->cmd->flags >> BTL_CMDINFO_REFLECT_SHIFT) & 3) == 1) {
                     for (i = 0; i < 4; i++) {
                         if (s->bounceMasks[i] & t->unitBit) {
                             n++;
@@ -3234,7 +3234,7 @@ void btl_rollShortSummon(BtlCmd *arg0) {
 }
 
 s32 btl_canAddHitStatus(BtlCalc *arg0) {
-    if (((arg0->flags & BTL_CALC_WEAPON_STATUS) && (g_gameState->gameData->ctx.battle->statusSets[arg0->caster->weapon[1]] & 0x42001103)) || (arg0->cmd->ability->flags & 0x40) || ((arg0->cmd->flags >> 5) & 1) || (arg0->target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_DEFEND | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || arg0->caster == arg0->target) {
+    if (((arg0->flags & BTL_CALC_WEAPON_STATUS) && (g_gameState->gameData->ctx.battle->statusSets[arg0->caster->weapon[1]] & 0x42001103)) || (arg0->cmd->ability->flags & BTL_ABIL_NO_HIT_MOTION) || ((arg0->cmd->flags >> BTL_CMDINFO_COVERED_BIT) & 1) || (arg0->target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_DEFEND | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || arg0->caster == arg0->target) {
         return 0;
     }
     return 1;
@@ -3296,7 +3296,7 @@ void btl_halveHitForShell(BtlCalc *arg0) {
 
 void btl_halveHitForSpread(BtlCalc *arg0) {
     BtlCalc8 *c = arg0->cmd;
-    if ((c->flags & 3) == 1 && (u32)((*(u32 *)c->ability & 0xF) - 3) < 3) {
+    if ((c->flags & BTL_CMDINFO_TARGETING) == 1 && (u32)((*(u32 *)c->ability & 0xF) - 3) < 3) {
         arg0->hitRate /= 2;
     }
 }
@@ -3547,7 +3547,7 @@ u8 btl_missIfAirborne(BtlCalc *arg0) {
 
 void btl_halveForSpread(BtlCalc *arg0) {
     BtlCalc8 *c = arg0->cmd;
-    if ((c->flags & 3) == 1 && (u32)((*(u32 *)c->ability & 0xF) - 3) < 3 && btl_countActiveUnits(c->targets < 0x10) >= 2) {
+    if ((c->flags & BTL_CMDINFO_TARGETING) == 1 && (u32)((*(u32 *)c->ability & 0xF) - 3) < 3 && btl_countActiveUnits(c->targets < 0x10) >= 2) {
         arg0->multiplier /= 2;
     }
 }
@@ -3592,7 +3592,7 @@ void btl_finishMagicDamage(BtlCalc *arg0) {
         arg0->multiplier = 1;
     }
     v = a * arg0->multiplier;
-    if ((arg0->cmd->flags >> 10) & 1) {
+    if ((arg0->cmd->flags >> BTL_CMDINFO_SHORT_SUMMON_BIT) & 1) {
         v = v * 2 / 3;
     }
     if (v >= 10000) {
@@ -3611,7 +3611,7 @@ void btl_calcPercentDamage(BtlCalc *arg0) {
         arg0->multiplier = 100;
     }
     v = arg0->target->max->maxHp * arg0->multiplier / 100;
-    if ((arg0->cmd->flags >> 10) & 1) {
+    if ((arg0->cmd->flags >> BTL_CMDINFO_SHORT_SUMMON_BIT) & 1) {
         v = v * 2 / 3;
     }
     if (v >= 10000) {
@@ -3646,7 +3646,7 @@ void btl_applyAbilityStatus(BtlCalc *arg0) {
     BtlCalc8 *c = arg0->cmd;
     u32 mask = g_gameState->gameData->ctx.battle->statusSets[c->ability->statusSet];
     u32 r;
-    if (!((c->flags >> 10) & 1) && c->cmdNo == BTL_CMD_SUMMON2) {
+    if (!((c->flags >> BTL_CMDINFO_SHORT_SUMMON_BIT) & 1) && c->cmdNo == BTL_CMD_SUMMON2) {
         mask |= 0x800000;
     }
     r = btl_addStatuses(arg0->target, mask);

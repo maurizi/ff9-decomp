@@ -186,7 +186,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         }
         break;
     case BTL_CMD_ENEMY_TURN:
-        if ((u16)cmd->targets < 0x10 && (cmd->ability->flags & 8) && !cmd->info.b.targeting) {
+        if ((u16)cmd->targets < 0x10 && (cmd->ability->flags & BTL_ABIL_PHYSICAL) && !cmd->info.b.targeting) {
             t = btl_findCover((u16)cmd->targets);
             if (t) {
                 cmd->targets = t;
@@ -233,7 +233,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
             break;
         }
     default:
-        if ((cmd->ability->targetType == 3 && !cmd->info.b.targeting) || (cmd->info.w & 0x600) ||
+        if ((cmd->ability->targetType == 3 && !cmd->info.b.targeting) || (cmd->info.w & (BTL_CMDINFO_MAGIC_FAILED | BTL_CMDINFO_SHORT_SUMMON)) ||
             cmd->cmdNo == BTL_CMD_SEIKEN || cmd->cmdNo == BTL_CMD_SEIKEN2) {
             btl_playCmdEffect(cmd, cmd->ability->altEffect, 0);
         } else {

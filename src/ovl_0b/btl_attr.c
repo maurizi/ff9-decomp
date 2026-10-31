@@ -43,12 +43,12 @@ s32 btl_setKoMotion(BtlUnit *arg0) {
     arg0->model->texAnims[0].lastFrame = 0x1000;
     arg0->obj->frame = 0;
     if (arg0->status & BTL_STATUS_AUTO_LIFE) {
-        arg0->koState = 7;
+        arg0->koState = BTL_KO_REVIVING;
         btl_setCmd(arg0->reviveCmd, BTL_CMD_AUTO_LIFE, 0, arg0->unitBit, 0);
         btl_removeStatus(arg0, BTL_STATUS_AUTO_LIFE);
         return 0;
     }
-    arg0->koState = 6;
+    arg0->koState = BTL_KO_DONE;
     return 1;
 }
 
@@ -120,7 +120,7 @@ void btl_updateHpStatus(BtlUnit *arg0) {
         goto clamp;
     }
     if (arg0->hp == 0) {
-        if (arg0->koState == 0) {
+        if (arg0->koState == BTL_KO_NONE) {
             btl_addStatus(arg0, BTL_STATUS_KO);
         }
     } else {
@@ -243,7 +243,7 @@ void btl_tickPoison(BtlUnit *arg0) {
         }
     }
     arg0->tickDamage = v;
-    arg0->tickFlags |= 2;
+    arg0->tickFlags |= BTL_TICK_POISON;
 }
 
 void btl_tickRegen(BtlUnit *arg0) {
@@ -251,7 +251,7 @@ void btl_tickRegen(BtlUnit *arg0) {
     if (!(arg0->status & BTL_STATUS_PETRIFY)) {
         v = arg0->max->maxHp >> 4;
         if ((arg0->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(arg0, BTL_ENEMY_UNDEAD) != 0) {
-            arg0->tickFlags |= 8;
+            arg0->tickFlags |= BTL_TICK_REGEN_HURTS;
             if (v < arg0->hp) {
                 arg0->hp -= v;
             } else {
@@ -266,7 +266,7 @@ void btl_tickRegen(BtlUnit *arg0) {
         }
     }
     arg0->tickHeal = v;
-    arg0->tickFlags |= 1;
+    arg0->tickFlags |= BTL_TICK_REGEN;
 }
 
 void btl_tickVenomMp(BtlUnit *arg0) {
@@ -280,7 +280,7 @@ void btl_tickVenomMp(BtlUnit *arg0) {
         }
     }
     arg0->tickMpDamage = v;
-    arg0->tickFlags |= 4;
+    arg0->tickFlags |= BTL_TICK_VENOM_MP;
 }
 
 u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
@@ -449,12 +449,12 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         break;
     case BTL_ATTR_TARGETABLE:
         if (g_gameState->gameData->ctx.battle->phase == BTL_PHASE_INTRO) {
-            arg0->targetableReq = 0;
+            arg0->targetableReq = BTL_TGTREQ_OFF;
             arg0->flags &= ~BTL_UNIT_TARGETABLE;
             arg0->flags &= ~BTL_UNIT_ATB_ACTIVE;
             arg0->flags &= ~BTL_UNIT_TARGETED;
         } else {
-            arg0->targetableReq = arg2 + 2;
+            arg0->targetableReq = arg2 + BTL_TGTREQ_SET_OFF;
         }
         break;
     case BTL_ATTR_HIDDEN:
