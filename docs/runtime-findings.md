@@ -3025,3 +3025,232 @@ No new save states.
     place gives 0. Markers measured at (mapX + 40.5, mapY + 9.5) ± 0.5 px for 7 places. New state `build3ds2_wm_navi`
     (full map open, cursor on Ice Cavern).
 - confidence: high (code plus runtime for each).
+
+## Round 33 runtime pass (2026-10-31): rows of docs/wip/r33_runtime_{fxmod_hi,fxmod_lo_A..D,main_overlays,ovl_0b}.md  (status: proposed)
+Setup: Redux disc 3, LuaJIT off, hang-safe runner `build/rt3/run3.py` from `disc3_malboro_lv99_calm` (calm pokes).
+Any effect id is played by rewriting Zidane's Attack in `btl_playCmdEffect` (`--fn 'btl_playCmdEffect=r.a1=ID'`).
+Two pokes after the load steer btlfx_resolveFirstUse: `GameData.firstUseFxSeen` is GameData+0x55E (0x8008B7AE in
+this save, GameData = *(GameState+0x1C) = 0x8008B250), 0xFFFF plays the short summon ids, 0 the full ones, and
+`g_btlfxLargeTargetFx` (0x800F727C) first byte = 0xFF switches off the Malboro's one-target to all-targets remap.
+`build/r33rt/fxw.py NAME ID --op ADDR --w 'op:off:size' --d 'addr:size'` runs the effect twice: pass 1 logs the
+op handler's mode-1 `work` pointer (the task heap gives the same address on a replay), pass 2 puts Read watchpoints
+(or `:w` Write) on work+off / data and classifies every access by module function and opcode. A Read watchpoint
+only fires on loads (fx_1cc: the single hit is the `-=` in mode 1). Logs `build/r33rt/batch*.log`, screenshots
+`build/rt3/r33_*.png`, sheets `build/r33rt/s_*.png`. One Redux restart (a hang during a Ramuh write watch, redux.log
+"Unknown error in event listener"). No new save states.
+Where the code alone settles a row (ovl_0b asm, effect scripts, module data images in `disks/us/fxmod/`), the row
+says "code" or "static" and gives the evidence.
+
+### Patterns covering many modules
+- **Work `unk0` set to 0 in mode 1 and tested == 0 every frame (fx_000 fx_002 fx_00a fx_00b fx_00e fx_00f fx_016 fx_01b
+  fx_01e fx_01f fx_029 fx_02a fx_038 fx_046 fx_047 fx_04a fx_04c fx_058 fx_059 fx_05f fx_060 fx_061): REFUTED (nobody
+  else writes it).** Representative fx_046 (Fire on the Malboro, the large-target remap of 0), work 0x800FF4EC, Read
+  and Write watch over the whole effect. Accesses are btlfx_heapAlloc+0x60 (the zero fill of btlfx_allocTaskMem), the
+  `sw zero` at fx_046_op80+0x44 in mode 1 and the `lw` at op80+0x108 every frame (40 hits), nothing else. The work
+  block is private task heap memory (btlfx_spawnTask passes it only to the handler), so the same holds for every
+  module of the list by code inspection. Proposed `stop0`, a dead early-out flag that is always 0. medium (the role
+  is a guess, the "only 0" part is high).
+- **Strip point halfword +6 (`Fx026Pt.unk6`, `Fx062Strip.unk114`/`Fx063Strip.unkFC` copies, `Fx079Pt.unk6`,
+  `Fx07aPt.unk6`, the fx_1f7 0x80 / fx_1f2 work unk38 0x200 / fx_1f3 0xC0 pads): CONFIRMED width (code).**
+  btlfx_pushTrailPoint stores `z | (v << 17)`, i.e. point+6 = 2 * the frame entry's byte 2 scaled by `scale`.
+  btlfx_emitTrailRibbonScreen loads `lh 0x6` of the point into IR0 and runs `gpf` on the unit normal of the segment
+  (rsqrt-normalised screen delta), so it is the distance of the strip edges from the centre line. btlfx_emitTrailRibbon3D
+  (`lh 0x6` + gpf) and btlfx_emitTrailRibbonFlat (`lhu 0x6` + gpf) do the same, btlfx_emitTrailLines ignores it.
+  Proposed `halfWidth6` (half-width of the ribbon at this point, scales the edge normal). high.
+- **Trail ring header bytes (every `FxXXXTrail` / `Bolt` buffer, fx_134 `Fx134Bolt` 0x18, 0, 0x18): CONFIRMED (code).**
+  btlfx_drawTrail frame -1 writes out[0] = out[1] = length, out[2] = 0. btlfx_pushTrailPoint: head = out[1] - 1,
+  wrapping to the length passed (slots 0..length), point at out + 4 + head * 8, out[1] = head, out[2] = count + 1
+  until it equals length. The emitters wrap with out[0] + 1. Proposed `lastSlot0` (highest slot index, the ring holds
+  lastSlot0 + 1 points), `head1` (slot of the newest point), `count2` (points pushed, capped at the length). high.
+  fx_134's 0x18, 0, 0x18 is a full 24-point ring with the newest point in slot 0.
+- **Particle `unk12` passed to btlfx_stepModuleParticle (fx_026 `Fx026Shard.unk12` 0x1000, fx_0a9 `Fx0a9Part.unk12`
+  0xE00 +- 0x20, fx_1e9 / fx_101 / fx_18a `Spark.unk12` 0xE00 + randCentered(0x200)): CONFIRMED drag (code).** The
+  step (src_equiv/ovl_0b/math.c BtlfxBody) puts +0x12 in IR0 and runs `gpf` on the velocity, velocity = velocity *
+  drag >> 12 every frame, 0x1000 keeps the speed. Proposed `drag12` (velocity factor per frame, 0x1000 none). high.
+- **Summon slot `unk54` (fx_026 `Fx026Summon.unk54`, fx_0b1 / fx_0b3 / fx_09a, fx_0e1_0 `Fx0e10Summon.unk54`, the
+  `Fx105Summon` copies): CONFIRMED (code).** env->loader is &g_btlfxLoader (Unk80100DC0), +0x54 is
+  `g_btlfxLoader.summon` (Unk80100DC054 *, the summon file in Battle.partyBufs[0]) whose +0x180 is `motions[]`, and +0x60
+  is `summonModel`. Proposed `summon54` everywhere (one shared view of Unk80100DC0 would do). high.
+- **Module data reloaded per cast (fx_197 `fx_197_overlayOn`): CONFIRMED reloaded.** Diamond Dust (0x197, short ids
+  forced) cast by Zidane, `btlfx_spawnTask` traced with a dump of 0x801E91C4: 1 at the first spawn, 0 after frame 20
+  of op81, still 0 after the cast. Second cast from the next menu (`--noload`), first spawn again reads 1, so the
+  effect file (module image included) is read again for every cast and the "only cleared" flag is per cast. high.
+  Name stays.
+
+### fxmod fx_100..fx_1ff (r33_runtime_fxmod_hi.md)
+- **fx_105 `fx_105_quads`: CONFIRMED wind streaks.** Odin (0x105, full). fx_105_drawQuads runs at effect frames
+  627-768. Patching it to `jr ra` after the module loads (`--fn` on fx_105_op80 writing 0x03E00008 at 0x801E9F28)
+  removes the bright white-blue translucent streaks that rush past behind Odin during the charge
+  (`build/r33rt/s_odin_abl.png`, top row normal, bottom ablated). The update moves them along z and wraps them.
+  Proposed `fx_105_windStreaks` (translucent streak quads rushing past during Odin's charge). medium.
+- **fx_105 `fx_105_screenSprites`: CONFIRMED twinkling stars.** btlfx_drawSpriteAtOt from the module at frames
+  385-663, the small flickering points over the night sky and the moon (`build/rt3/r33_odin_08.png`), drifting left
+  after timer30 < 0x28. Proposed `fx_105_stars` (screen sprites twinkling in the night sky, drift left and wrap). medium.
+- **fx_114 `Fx114Work80.unk164`: CONFIRMED loop flag (code).** Hi_DrawSummonModel arg 4 bit 0 = wrap the summon motion
+  to frame 0 at its end, else hold the last frame. Proposed `loopMotion164` (1 loops Ifrit's motion before frame 0x30,
+  0 holds its last frame). high. Same for fx_0e2 `Fx0e2Work80.unk12C` (read 131 times by fx_0e2_op80+0x1010 for that
+  argument during Fenrir, below).
+- **fx_138 `D_801E8408` (3 `Fx138Ring`) and work `unk88`..`unk8E`: CONFIRMED unused.** Lucky Seven (0x138), Read watch on
+  0x801E8408 (0x48 bytes) and work 0x800FF4EC+0x88 (8 bytes), 0 hits over 600 frames. No slot reels on screen
+  (`build/r33rt/s_138.png`). The ring models (`model96`) are registered and never drawn. fx_138_randSets rows are a
+  permutation of 0x14 / 0x28 / 0x50 plus 1 or 2 (reel stop frames and a result kind, by the look). Proposed
+  `fx_138_reels` (three slot-reel records set up from a fx_138_randSets row, never read), work `reelResult8A`
+  (fourth value of that row), `unk88` / `unk8C` / `unk8E` stay (only initialised). low for the reel reading.
+- **fx_17d_4 `D_801EB25C`: CONFIRMED no other reader (static).** No access to 0x801EB25C in the asm of any fx_17d_N
+  group, any other module or ovl_0b, and groups 0/2/4/6/8 replace each other at 0x801E7700. Proposed
+  `fx_17d_4_unused` or leave. high.
+- **fx_17d_6 / fx_17d_7 `Work83.unk8` (`kind8`): CONFIRMED values (static).** File 0x17D script: `05 06` (group 6) ...
+  `83 00 00` at +0x1A7, then `05 07` (group 7) ... `83 00 00` at +0x213 and `83 01 00` at +0x21C. Op 0x83 mode 1 gets
+  `args[0]` = byte a. So fx_17d_6_op83 only ever gets kind 0 (its `kind8 != 0` early return is dead), fx_17d_7_op83
+  gets 0 then 1. Names stay (`kind8`). high.
+- **fx_186 `Fx186Rock.unk6`: INCONCLUSIVE (code only).** State 0 uses it as the hop amplitude (sin), state 1 adds
+  unk6 / 5 to y and then 12 to unk6 (a falling velocity). Proposed `lift6` (hop height in state 0, then y velocity
+  with gravity 12 in state 1). low, not watched.
+- **fx_18a `fx_18a_op80Done`: CONFIRMED no reader.** Kuja's Transform (0x18A) played in full, Read watch on 0x801E89D8,
+  0 hits. Static: no access outside fx_18a_op80. Proposed keep the name, comment "set at the end, nothing reads it". high.
+- **fx_197 `fx_197_overlayOn`**: see the reload pattern above.
+- **fx_1cc work `unk70`: CONFIRMED unused.** Sealion appears (0x1CC), work 0x800FFC7C, Read watch on +0x70 (8 bytes):
+  one hit, fx_1cc_op80+0x2F0 `lhu` of unk70.vy, the `-= 0x80` in mode 1. Proposed `unused70`. high.
+- **fx_1e9 `Fx1e9Spark.unk12` (and fx_101 / fx_18a): drag**, see the patterns above.
+- **fx_1ec `Fx1ecWork80.unk3C` / `unk44`: CONFIRMED unused.** Ultima (0x1EC), work 0x800FF4EC, Read watch on
+  +0x3C..+0x4B, 0 hits. Proposed `unused3C` / `unused44`. high.
+- **Trail point pad / trail header**: see the patterns above (width, lastSlot/head/count).
+- **fx_1f2 `fx_1f2_unitTrails[4]` cleared as 16: CONFIRMED the array is 16 long (static).** The symbol runs from
+  0x801EBB90 to fx_1f2_effModels at 0x801ED090, 0x1500 bytes = 16 * 0x150, all zero in the module image. Only entries
+  below targetCount are drawn. Proposed declare `Fx1f2Trail fx_1f2_unitTrails[16]`. high.
+
+### fxmod slice A fx_000..fx_063
+- **work unk0 pattern**: REFUTED, see above.
+- **fx_018 `Fx018Work83.kind18`: CONFIRMED (static).** File 0x18 (Thundaga) script runs op 0x83 three times,
+  `83 00 00` (+0x2A), `83 01 00` (+0x39), `83 02 00` (+0x3F): the three bolt stages of one cast, the kind is the op's
+  byte a. No other file loads module 0x18. Name stays. high.
+- **fx_026 `Fx026Pt.unk6`**: width (pattern). **`Fx026Shard.unk12`**: drag. **`Fx026Summon.unk54`**: summon54.
+- **fx_026 `Fx026Work80.unk64`: CONFIRMED unused.** Shiva (0x26 full), work 0x800FF57C, Read watch on +0x64, 0 hits.
+- **fx_034 helpers vs fx_096 / fx_1b3: REFUTED as copies.** `tools/fxmod_dups.py --func fx_034 <f>` puts
+  fx_034_explodeModel / pushPrims / splitModel / calcPrimCentres each in a group of one, so no shared fxm_ names.
+- **fx_03a `Fx03aWork.unk10[4]`: CONFIRMED unused.** Earthquake (0x3A), Read watch on work+0x10 (16 bytes), 0 hits.
+- **fx_04c `((u8 *)env->state)[0x12]`: CONFIRMED script signal 2 (static).** It is Unk800F78A40.signals[2]. File 0x4C
+  script runs `80`, `81`, `01 00 0c`, `82`, then `01 01 02` (op 1 a=1 waits for signal b=2) before the fade. Proposed
+  write it as `env->state->signals[2]` (op82 raises it when every target has been visited, the script waits for it). high.
+- **fx_04f `unk8`, fx_00b / fx_02a `unkC`: CONFIRMED unused.** Reflect (0x4F), Esuna (0xB), Silence (0x2A, remap off),
+  Read watches on those words, 0 hits each.
+- **fx_062 / fx_063 strip unk114 / unkFC**: width (pattern). Proposed `width114` / `widthFC`.
+- **fx_057 `otZ8`: CONFIRMED (code).** btlfx_addRadiusSixth(0, 0) = target 0's model radius / 6. Proposed `targetOtZ8`
+  (target 0's model radius over 6, the depth bias of its emitters and rings). high.
+- **fx_05d `unk40` / `unk58`: CONFIRMED unused.** Bio (0x5D, remap off), Read watches, 0 hits.
+- **fx_059 `posZ4`: REFUTED direction (code).** btlfx_pushViewRotation sets the view to a rotation with translation
+  (0, 0, ReadGeomScreen()), so z is distance into the screen from the projection plane. posZ4 starts at -0x20 and
+  grows 0xC8 per frame, so the spiral head recedes from the viewer. Proposed `depthZ4` (spiral head distance into the
+  screen in the view-rotation frame, grows 0xC8 per frame). medium.
+- **fx_004 / fx_04d `unk2C`: CONFIRMED plain frame counter.** Blizzara (0x4 with the remap off, and 0x4D), Read watch on
+  work+0x2C, 46 hits each, all the `lw` of the `++` at op80+0x660 / +0x664. Proposed `frameCount2C`
+  (incremented every update, never read). high.
+
+### fxmod slice B fx_078..fx_0b4
+- **fx_079 / fx_07a `unk6`**: width (pattern), timer * 4 makes the strip thin out as it ends. Proposed `halfWidth6`.
+- **fx_07a `D_801E9504`: CONFIRMED unused.** Demi Shock (Elan, 0x7A), Read watch, 0 hits. Proposed `fx_07a_unusedRadius`.
+- **fx_0a9 `Fx0a9Part.unk12`**: drag (pattern), 0xE00 slows the scattered bolt points about 12% per frame.
+- **fx_0b3 `fx_0b3_sharedModel`: CONFIRMED sea and sky.** Leviathan (0xB3 full). The model is drawn every effect frame
+  372-1727 by the module. Zeroing its scale VECTOR in a `--fn` on Hi_DrawEffModel (only when a3 = the id at 0x801EE270)
+  leaves black where the ocean surface and the sky dome were (frames 400 and 600 fully black, at 1000 the sky behind
+  Leviathan is gone) (`build/r33rt/s_levi.png`, top normal, bottom ablated). Proposed `fx_0b3_seaModel` (ocean surface
+  and sky dome backdrop of Leviathan's scenes). high.
+- **fx_0b3 `Fx0b3Track.unk0`, fx_0b4 `Fx0b4Path.unk0`: REFUTED (stride hypothesis), always 0.** `build/r33rt/k33.lua`
+  hooked btlfx_getFileData and recorded every block used. Aero (0xB4) blocks 1-6 are 388 bytes = 4 + 0x20 keys * 0xC,
+  header 0000 0020. Leviathan's key blocks have strides of 3, 6 and 9 halfwords (blocks 9-13, 17-26, 32-34, 39, 41-46,
+  63) and all start with 0000. Proposed `pad0` (always 0, the count follows). high.
+- **fx_0b1 / fx_0b3 / fx_09a `unk54`**: summon54 (pattern).
+- **fx_097 / fx_098 `unk70`: CONFIRMED unused.** Blizzaga 0x97 (remap off) and 0x98, Read watch on work+0x70: one hit
+  each, the `lhu` of the `-= 0x80` in mode 1 (fx_097_op80+0x2CC, fx_098_op80+0x2EC). Proposed `unused70`.
+
+### fxmod slice C fx_0b5..fx_0e0
+- **fx_0df `fx_0df_recordElemDraw` (0x801E7EB8): CONFIRMED never called.** Flare Sword (0xDF, Zidane as caster, no
+  partner), Exec breakpoint 0 hits. fx_0df_recentNext (0x801EA410) is only written once (`sw` at fx_0df_op80+0xD8 in
+  mode 1), never incremented. No word 0x801E7EB8 in the module image or the whole effect file 0xDF (266240 bytes,
+  disc 3). So fx_0df_recentPos stays as loaded and op83 picks from it. Proposed keep the name with a comment
+  "unreferenced element draw callback, never runs". medium (a run with a real Vivi partner was not tried).
+- **fx_0e0 `D_801EB1D8` / `D_801EB1DC`: CONFIRMED dead (static + runtime).** Both 0 in the module image. Doomsday Sword
+  (0xE0) played in full (`build/r33rt/s_0e0.png`), Read watch on both words, 0 hits. fx_0e0_op80 spawns its pool items
+  only with state0 = 3, so the state 0/1 branch that reads them never runs. Proposed `fx_0e0_captureRadius` and
+  `fx_0e0_endEarly` (dead, 0 in data). high.
+- **fx_0ba `D_801EC550`: CONFIRMED "before the orb" flag (static + runtime).** 1 in the module image (file offset
+  0x4E50). Ramuh (0xBA full): 925 reads at fx_0ba_op82+0x854 / +0x904 and fx_0ba_op83+0x8DC, all within the first ~350
+  effect frames, none after the orb. The write watch run hung Redux, so the clear itself was not caught (static, only
+  fx_0ba_op80 frame 0x3C writes it). Proposed `fx_0ba_preOrb` (1 from the data until the orb appears, bolts spawn
+  every frame and draw impact rings while set). medium.
+
+### fxmod slice D fx_0e1_0..fx_0ff
+- **fx_0e1_1 `Fx0e11BattleState.unk22`: CONFIRMED partyReload.** Unk800F78A40 +0x22 is Unk800FEC40.partyReload
+  (control op 11). Rebirth Flame (0xE1), write watch on 0x800FEC62 over 2800 frames: btlfx_reset+0x10 and
+  btlfx_start+0x4C clear it, btlfx_runScript+0x608 sets it (op `0b 00 00` at script +0x78), btlfx_runScript+0x48 clears it
+  200 frames later when btl_reloadParty finishes. fx_0e1_1_op80 waits for it after frame 0x35 to start the fade.
+  Proposed name the module view's +0x21 / +0x22 `ending` / `partyReload` like Unk800FEC40. high.
+- **fx_0e1_1 `Fx0e11Work.unk10`, fx_0e1_0 `Fx0e10Work80.unk30`: CONFIRMED unused.** Read watches over the whole Rebirth
+  Flame, 0 hits.
+- **fx_0e1_0 `fx_0e1_0_scaleXY` (0x801E88F0): CONFIRMED never called.** Exec breakpoint over 2800 frames, 0 hits.
+- **fx_0e1_0 `unk54`**: summon54 (pattern).
+- **fx_0e7 `Fx0e7Work81.unk68`: CONFIRMED stays -1.** Thievery (0xE7), work 0x800FF508. Write watch on +0x68: only the
+  heap zero fill and the `-1` store at fx_0e7_op81+0x18C. Read 32 times at op81+0x414 (the `>= 0` test). Proposed
+  `fadeInTimer68` (a fade-in countdown this op never starts). medium.
+- **fx_0f3 `Fx0f3Work.unk20`: CONFIRMED unused.** Scoop Art (0xF3), first of three op80 tasks, Read watch, 0 hits.
+- **fx_0fc identity: INCONCLUSIVE (name NOT REACHED).** The only users are encounters 220 and 238 (all discs), whose
+  names don't decode with the US table (`<F6>„<A7><BC>`, ability 2 `<FAD5><FC>=`). Entering 220 from the Pandemonium
+  field hung the loader (pc 0xD80). Played on the Malboro, fx_0fc_op80 moves target 0 back along +z 0xC0 per frame and
+  fades it out at frame 0x12, the Malboro slides away and vanishes (`build/r33rt/s_0fc.png`). Proposed module label
+  "enemy retreat (slides back and fades out)", from encounters 220 / 238.
+- **fx_0ed `Fx0edWork80.unk20`: CONFIRMED unused.** Roulette (0xED), Read watch, 0 hits.
+- **fx_0e3_0 `Fx0e30Work80.unk48` / `unk68` / `unk70` / `unk7C`: CONFIRMED unused.** Bahamut (0xE3 full), Read watches
+  on +0x48 and +0x68..+0x87, 0 hits.
+- **fx_0e3_1 `Fx0e31Work80.unk48`: CONFIRMED swing base.** Read 33 times by btlfx_pointAhead+0x58/0x64/0x70 (11 effect
+  frames), the call that turns it into camTarget40 = camera point 3. Proposed `swingBase48` (point ahead of the hand bone,
+  origin of the camera target swing). high. **`unk6C`**: Read watch, 0 hits, unused.
+- **fx_0e2 Fenrir: `unk12C` CONFIRMED loopMotion (read every frame as Hi_DrawSummonModel's flags), `unkA4`, `unk128`,
+  `unk130`, `unk134` CONFIRMED unused** (Read watches on work+0xA4 and +0x128..+0x137, the only hits are on +0x12C).
+  `Fx0e2Ribbon*` / `Fx0e2Path80` fields not watched.
+- **fx_0ec `Fx0ecVertex.unk6`, fx_0fb_0 / fx_0fb_1 rock fields, fx_0fa: NOT REACHED** (no single address to watch,
+  time spent elsewhere).
+
+### main and overlays (r33_runtime_main_overlays.md)
+- **#1 `GameData.flags` 0x40: REFUTED "only cleared" (code).** It is set through g_fieldFlagQueue: fld_movieUpdate
+  queues 0x44 (with GD_HIDE_MODELS) for a field movie whose movieRgb24 is nonzero, fld_startEncounter queues 0x43
+  (with GD_MENU_DISABLED and GD_MENU_OPEN), fld_endFrame applies the queue. The two clears are the end of those
+  (fld_movieFinish, fld_updateEncounter). Runtime only showed it clear (Pandemonium field 0x33, Malboro battle 0x31,
+  0 writes in 300 battle frames). No reader found in C. Proposed `GD_FLD_TRANSITION 0x40` (set while an encounter
+  starts or a colour-keyed field movie plays), low.
+- **#2 `FieldMap.flags` 0x100: REFUTED "only cleared" (code).** fld_startEncounter queues mapFlags 0x1919 (0x100 with
+  NO_WINDOWS, NO_BGI_ANIM, NO_VIBRATION, NO_FADE, NO_PRELOAD) and fld_updateEncounter clears the same set. Reader not
+  found. Proposed leave literal or `FLD_MAP_ENCOUNTER_0x100`, low.
+- **#3 `FieldBgState.flags` 0xC00: CONFIRMED never set.** Pandemonium field, g_fieldBgState (0x800CA068) = 0x60, write
+  watch 300 frames 0 writes, no C setter. Leave literal.
+- **#4 soundLoadBank 0x84, #5 AkaoStreamState.unk20 / unk30, #6 FieldActorExt 0x02000000: NOT REACHED** (disc 1 field
+  work, not attempted this pass).
+- **#7 GameState.mode 5 / 6**: no runtime action (left literal).
+
+### ovl_0b (r33_runtime_ovl_0b.md)
+- **#1 `EffEmit.kind`: CONFIRMED partly.** btlfx_spawnEmitter traced with a 0x14-byte dump of a2 over 12 effects. Kinds
+  seen ballistic 0 (Fire, Thundaga, Holy, Comet, Firaga, Thundara, Haste, Earth Shake), orbit 1 (Holy, Firaga, Cure,
+  Aero and the enemy cast emitter 0x800F7DD8), spiral 2 (Fire, Firaga, Earthquake, Aero), helix 4 (the party cast
+  emitter 0x800F7F14 at every spell start, Thundara), module 0xFF (Aero). The helix one is the sparkle swirl winding
+  up around Zidane while he casts (`build/r33rt/s_kinds.png`), matching "helix". Wobble 3 and homing 5 not seen.
+- **#2 floorMode other than 0/1: NOT REACHED.** Every ballistic emitter of those 12 effects has floorMode 0.
+- **#3 `BtlCmd8.forceCamera`: CONFIRMED scripted actions (static).** Parsing every encounter bundle (Battle11C020
+  header, groups 0x38, type records 0x74, then BtlCmd8 0x10 each, 562 encounters, 3525 abilities): bit 30 is set on 227
+  abilities in 102 encounters, all scripted or story actions ("Happy"/"More" of the friendly monsters, Ragtime Mouse
+  "Read Quiz", death and appearance sequences, "Camera use", "Death camera", Beatrix Stock Break / Climhazzard,
+  Sealion appears, Kuja Transform / Ultima). Name fits. high.
+- **#4 `BtlCmd8` bits 17-29 / 31: CONFIRMED data only (static).** Bits 17-28 are 1 in all 3525 enemy abilities (a 0xFFF
+  field), bit 29 is set on 17 (Epitaph "Battlemes0", Tonberry "Knife" / "None", Gargoyle / Agares "Rise"), bit 31 on
+  none. Battle16CC / g_usableItemTableById not checked.
+- **#5 `skipParty` (ops 0x6C / 0x6D byte b): CONFIRMED (static).** `tools/rt/fxscan.py 6c,6d`: b = 1 in the items
+  (Elixir, Ether, Echo Screen, Eye Drops, Magic Tag, Vaccine, Annoyntment, Dark Matter, Dead Pepper, Gysahl Greens, Tent,
+  gems), the Break skills, Reis's Wind, White Draw, Shock, Eat, Cook, Dragon Breath, Cherry Blossom, Dragon's Crest, Six
+  Dragons. b = 0 in Luna and Focus. So it is set by abilities that can target allies, where the caster stays home
+  instead of jumping at a party member. high for the data, the on-screen difference was not filmed.
+- **#6 `func_800EA1D0` callers: CONFIRMED none.** No `jal 0x800EA1D0`, no word 0x800EA1D0 and no `addiu` with low half
+  0xA1D0 in any overlay, the exe or any effect module. Exec breakpoint over 12 effect runs, 0 hits. So
+  g_btluiState.unk9 / unk14 are written by dead code only. high.
+- **#7 `FileEntry16.idHi`: NOT REACHED.**
+- **#8 `WmSrcFT4.unk14`, `BtlBoneDef.unk2`: INCONCLUSIVE (asm).** btl_drawMesh has a `lbu 0x14` (0x800C6070) in a
+  0x18-stride loop that tests its 0x2 bit (WMSRC_DOUBLE_SIDED), which looks like a different source type's flags byte, not
+  FT4's unk14. btl_calcBoneMatrices reads byte 2 of the header (`lbu 0x2` after `lw 0x8(s4)`), not of a bone. A
+  per-loop mapping of the source types is needed.
