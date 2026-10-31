@@ -20,10 +20,10 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
                    s32 arg7, s32 arg8);
 static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9, s32 col);
-void func_801ECCF4(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 arg3);
+void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 arg3);
 static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9, s32 col);
-void func_801ED708(VECTOR *pos, SVECTOR *rot);
+void fxm_rollTowardEye(VECTOR *pos, SVECTOR *rot);
 
 typedef struct {
     u8 r;
@@ -48,33 +48,33 @@ typedef struct {
 } Fx0e31Vec3;
 
 typedef struct {
-    u32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    SVECTOR unk8; /* centre */
-    Fx0e31Vec3 unk10; /* summon position */
-    Fx0e31Vec3 unk1C; /* summon scale */
+    u32 state0; /* state */
+    s32 frame4; /* frame counter */
+    SVECTOR center8; /* centre */
+    Fx0e31Vec3 summonPos10; /* summon position */
+    Fx0e31Vec3 summonScale1C; /* summon scale */
     SVECTOR rot28; /* summon rotation */
     SVECTOR pos30; /* hand position */
     SVECTOR pos38;
-    SVECTOR unk40; /* camera target */
+    SVECTOR camTarget40; /* camera target */
     SVECTOR unk48;
     u8 pad50[8];
-    SVECTOR unk58; /* hand rotation */
+    SVECTOR handRot58; /* hand rotation */
     Pool6CEntry *emit60;
     Pool6CEntry *emit64;
     Pool6CEntry *emit68;
     s32 unk6C;
     Pool6CEntry *emit70;
     Pool6CEntry *emit74;
-    s16 unk78;
-    s16 unk7A;
+    s16 sound78;
+    s16 sound7A;
     s32 model7C; /* model */
     SVECTOR rot80;
-    Fx0e31Vec3 unk88;
-    Fx0e31Vec3 unk94;
+    Fx0e31Vec3 pos88;
+    Fx0e31Vec3 scale94;
     s32 modelA0; /* model */
-    Fx0e31Vec3 unkA4;
-    Fx0e31Vec3 unkB0;
+    Fx0e31Vec3 posA4;
+    Fx0e31Vec3 scaleB0;
     SVECTOR rotBC;
     s32 modelC4; /* models */
     s32 modelC8;
@@ -112,13 +112,13 @@ typedef struct {
     u8 pad0[0x54];
     Fx0e31SummonData *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 summonModel60; /* summon model */
 } Fx0e31Summon;
 
 #define SUMMON(env) ((Fx0e31Summon *)(env)->loader)
 
-extern SVECTOR D_801F09B4;
-extern Fx0e31Bolt13 D_801F0A14[];
-extern Fx0e31Bolt D_801F0D14[3];
+extern SVECTOR fx_0e3_1_origin;
+extern Fx0e31Bolt13 fx_0e3_1_arcs[];
+extern Fx0e31Bolt fx_0e3_1_bolts[3];
 
 #endif

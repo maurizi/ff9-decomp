@@ -35,17 +35,17 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit10->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             if (work->emit4 != NULL) {
-                work->emit4->trails = (s32)D_801E7C30;
+                work->emit4->trails = (s32)fx_0f0_op80Trails0;
                 work->emit4->trailSlots = 0x1C;
                 work->emit4->trailStride = 0x9C;
             }
             if (work->emit8 != NULL) {
-                work->emit8->trails = (s32)D_801E8D40;
+                work->emit8->trails = (s32)fx_0f0_op80Trails1;
                 work->emit8->trailSlots = 0x1C;
                 work->emit8->trailStride = 0x9C;
             }
             if (work->emit10 != NULL) {
-                work->emit10->trails = (s32)D_801E9E50;
+                work->emit10->trails = (s32)fx_0f0_op80Trails2;
                 work->emit10->trailSlots = 0x3A;
                 work->emit10->trailStride = 0x70;
             }

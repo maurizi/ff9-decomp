@@ -5,12 +5,12 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 unk0; /* split models */
-    s16 unk2; /* vertices */
-    s32 unk4[2]; /* vertex counts */
-    u8 *unkC; /* vertex buffer */
-    u8 *unk10; /* next free vertex */
-    u8 *unk14[2]; /* model vertices */
+    s16 modelCount0; /* split models */
+    s16 triCount2; /* vertices */
+    s32 triCounts4[2]; /* vertex counts */
+    u8 *trisC; /* vertex buffer */
+    u8 *next10; /* next free vertex */
+    u8 *modelTris14[2]; /* model vertices */
 } Fx0ecSplit;
 
 typedef struct {
@@ -24,52 +24,52 @@ typedef struct {
 } Fx0ecVec3;
 
 typedef struct {
-    Fx0ecVec3 unk0; /* position (.12) */
-    SVECTOR unkC; /* velocity; unkC.pad: scale */
-    s16 unk14; /* spin */
-    s16 unk16;
-    s16 unk18; /* age, < 0: free */
-    s16 unk1A; /* triangle */
+    Fx0ecVec3 pos0; /* position (.12) */
+    SVECTOR velC; /* velocity; unkC.pad: scale */
+    s16 spinX14; /* spin */
+    s16 spinY16;
+    s16 age18; /* age, < 0: free */
+    s16 unk1A; /* start delay (fxm_shatterModelUpdate) or triangle (fxm_splitUpdate) */
 } Fx0ecShard; /* 0x1C */
 
 typedef struct {
     SVECTOR unk0[3];
 } Fx0ecTri;
 
-extern Fx0ecTri D_801EB3D0[0x70];
-extern Fx0ecShard D_801EBE50[0x70];
+extern Fx0ecTri fx_0ec_shatterTris[0x70];
+extern Fx0ecShard fx_0ec_shatterShards[0x70];
 
 typedef struct {
     u8 pad0[0x10];
-    Unk800DA1B8 *unk10; /* particle pool */
+    Unk800DA1B8 *pool10; /* particle pool */
 } Fx0ecWork;
 
 extern Unk800F78A4 *fx_0ec_env;
-extern Fx0ecWork *D_801E98A4;
-extern SVECTOR D_801E98A8; /* shard rotation */
-extern SVECTOR D_801E98B0; /* shard origin */
-extern VECTOR D_801E98C0; /* shard scale */
-extern Fx0ecSplit D_801ECA90;
-extern Fx0ecShard D_801ECAB0[300];
+extern Fx0ecWork *fx_0ec_task;
+extern SVECTOR fx_0ec_modelRot; /* model transform of fx_0ec_spawnImpact */
+extern SVECTOR fx_0ec_modelPos;
+extern VECTOR fx_0ec_modelScale;
+extern Fx0ecSplit fx_0ec_split;
+extern Fx0ecShard fx_0ec_splitShards[300];
 
 static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
-void func_801E77FC(SVECTOR *pos);
+void fx_0ec_spawnImpact(SVECTOR *pos);
 static void fxm_shatterModel(s32 model, SVECTOR *center);
-void func_801E7B84(void);
-s32 func_801E7F00(u8 *buf);
+void fxm_shatterModelUpdate(void);
+s32 fxm_splitModelInit(u8 *buf);
 static s32 fxm_splitModelAdd(s32 model);
-Fx0ecShard *func_801E802C(void);
-s32 func_801E8064(s32 y, SVECTOR *center);
-void func_801E82D8(void);
+Fx0ecShard *fxm_splitFreeShard(void);
+s32 fxm_splitRelease(s32 y, SVECTOR *center);
+void fxm_splitUpdate(void);
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR pos8; /* caster position */
     SVECTOR rot10; /* caster rotation */
     SVECTOR pos18; /* summon position */
     SVECTOR pos20;
-    SVECTOR unk28[2];
+    SVECTOR emitPos28[2];
     s32 model38; /* models */
     s32 model3C;
     s32 model40[3];
@@ -77,12 +77,12 @@ typedef struct {
     s32 model50;
     s32 model54;
     s32 model58;
-    s32 unk5C; /* scale */
+    s32 scale5C; /* scale */
     Pool6CEntry *emit60;
 } Fx0ecWork80; /* 0x64 */
 
-extern s32 D_801E9850[2];
-extern u8 D_801E98D0[];
+extern s32 fx_0ec_pointBlocks[2];
+extern u8 fx_0ec_splitBuf[];
 extern BtlModel fx_0ec_effModels[];
 
 s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);

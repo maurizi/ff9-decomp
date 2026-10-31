@@ -1,7 +1,9 @@
 #ifndef FX_0F4_H
 #define FX_0F4_H
 
-/* Effect module fx_0f4 (dir 13 file 0x0F4). */
+/* Effect module fx_0f4 (dir 13 file 0x0F4): Shift Break. Two growing textured models over backdrops
+ * (btlfx_drawBackdrop). Evidence: [data] the party ability / item tables and enemy sequences that play this file id
+ * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -13,13 +15,13 @@ typedef struct {
     SVECTOR rot14; /* model rotation */
     VECTOR pos1C; /* model position */
     VECTOR scale2C; /* model scale */
-    s32 unk3C; /* model brightness */
+    s32 rgb3C; /* model brightness */
     SVECTOR rot40; /* model 2 rotation */
     VECTOR scale48; /* model 2 scale */
     SVECTOR pos58; /* centre */
-    SVECTOR unk60;
-    s16 unk68; /* fade-in countdown */
-    s16 unk6A; /* fade-out countdown */
+    SVECTOR startPos60;
+    s16 fadeInTimer68; /* fade-in countdown */
+    s16 fadeOutTimer6A; /* fade-out countdown */
     u16 model6C; /* model */
     u16 model6E; /* model 2 */
 } Fx0f4Work; /* 0x70 */

@@ -10,3 +10,7 @@ fx_0ea_op81ParticleMotion3 = 0x801E77A0; // type:func [code] particle motion cal
 fx_0ea_env = 0x801E7E54; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_0ea_op81ParticleMotions = 0x801E7DFC; // [code] table of ParticleMotion callbacks (data), indexed by the op
 fxm_arcParticle = 0x801E77D4; // type:func [code] particle motion core, from the module point to to over 18 frames, lifted by a sine arc of 800
+fx_0ea_emitBlocks = 0x801E7DF4; // [code] effect file block per target index, the emitter btlfx_startEmitter starts in fx_0ea_op81
+fx_0ea_arcFrom = 0x801E7E5C; // [code] caster body position, the start of every fxm_arcParticle path
+fx_0ea_arcTo = 0x801E7E64; // [code] target body position per target index, the end of the fxm_arcParticle path of fx_0ea_op81ParticleMotionN
+fx_0ea_emitPos = 0x801E7E84; // [code] emitter origin, passed to btlfx_startEmitter

@@ -7,11 +7,11 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* end frame of the current target */
-    s32 unk8; /* frame counter */
-    BtlUnit *unkC; /* target */
-    SVECTOR unk10; /* target position */
+    s32 state0; /* state */
+    s32 endFrame4; /* end frame of the current target */
+    s32 frame8; /* frame counter */
+    BtlUnit *unitC; /* target */
+    SVECTOR pos10; /* target position */
 } Fx0edWork81; /* 0x18 */
 
 
@@ -20,22 +20,22 @@ extern Unk800F78A4 *fx_0ed_env;
 s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 typedef struct {
-    SVECTOR unk0;
-    SVECTOR unk8;
+    SVECTOR a0;
+    SVECTOR b8;
 } Fx0edSeg; /* 0x10 */
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx0edSeg *buf, s32 abr);
 static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out);
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR pos8; /* unit position */
     SVECTOR rot10; /* unit rotation */
     SVECTOR pos18; /* model position */
     SVECTOR unk20;
     s32 model28; /* model */
     SVECTOR rot2C; /* model rotation */
-    s32 unk34[3]; /* model scale */
+    s32 scale34[3]; /* model scale */
 } Fx0edWork80; /* 0x40 */
 
 typedef struct {
@@ -45,21 +45,21 @@ typedef struct {
         BtlUnit9CC *motion180;
     } *unk54;
     u8 pad58[0x60 - 0x58];
-    s32 unk60; /* summon model */
+    s32 summonModel60; /* summon model */
 } Fx0edSummon;
 
-extern s32 D_801E8C10[2];
-extern CVECTOR D_801E8C18;
-extern CVECTOR D_801E8C1C;
-extern CVECTOR D_801E8C20;
-extern SVECTOR D_801E8C24;
-extern SVECTOR D_801E8C2C;
-extern SVECTOR D_801E8C34;
-extern u8 D_801E8C84[];
-extern Unk80100DC054 D_801E9234;
-extern u8 D_801E9494[];
-extern Fx0edSeg D_801E9AF4[17];
-extern Fx0edSeg D_801E9C04[17];
+extern s32 fx_0ed_facingBlocks[2];
+extern CVECTOR fx_0ed_ribbonRgb0;
+extern CVECTOR fx_0ed_ribbonRgb1;
+extern CVECTOR fx_0ed_ribbonRgb2;
+extern SVECTOR fx_0ed_ribbonPt0;
+extern SVECTOR fx_0ed_ribbonPt1;
+extern SVECTOR fx_0ed_ribbonPt2;
+extern u8 fx_0ed_op80Trails0[];
+extern Unk80100DC054 fx_0ed_summonModel;
+extern u8 fx_0ed_op80Trails1[];
+extern Fx0edSeg fx_0ed_ribbon0[17];
+extern Fx0edSeg fx_0ed_ribbon1[17];
 extern BtlModel fx_0ed_effModels[];
 
 #endif

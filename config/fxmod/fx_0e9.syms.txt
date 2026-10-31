@@ -5,3 +5,8 @@ fxm_lerpSvec = 0x801E7C18; // type:func [code] out = a + (b - a) * t / 0x1000 (L
 fxm_lerpRatio = 0x801E7C5C; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
 fx_0e9_op80ParticleMotion = 0x801E7704; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_0e9_op80
 fx_0e9_env = 0x801E7CFC; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_0e9_orbit = 0x801E7D0C; // [code] orbit state (Fx0e9Orbit) set up by fx_0e9_op80, advanced each frame by fx_0e9_op80ParticleMotion
+fx_0e9_startPos = 0x801E7D1C; // [code] point 0xC8 ahead of the caster (btlfx_pointAhead), the particle path start in fx_0e9_op80ParticleMotion
+fx_0e9_orbitStart = 0x801E7D24; // [code] point 0x348 ahead of the caster, its distance and angle from the target give the orbit radius and start angle
+fx_0e9_orbitCenter = 0x801E7D2C; // [code] target position, the centre the particle orbits in fx_0e9_op80ParticleMotion
+fx_0e9_emitPos = 0x801E7D34; // [code] emitter origin, passed to btlfx_startEmitter

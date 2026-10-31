@@ -12,18 +12,18 @@ s32 fx_0ef_op80(s32 mode, Fx0efWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0ef_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos38);
     } else {
-        o = D_801E7AC8;
+        o = fx_0ef_spawns;
         frame = entry->frame;
         for (i = 0; i < 5; i++, o++) {
-            if (o->unk2 == frame) {
-                (work->unk40 + i)->vx = work->pos38.vx;
-                (work->unk40 + i)->vy = work->pos38.vy;
-                (work->unk40 + i)->vz = work->pos38.vz;
-                (work->unk40 + i)->vx += o->unk4[0];
-                (work->unk40 + i)->vy += o->unk4[1];
-                (work->unk40 + i)->vz += o->unk4[2];
-                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, o->unk0), (s32)&work->unk40[i]);
-                work->emit14[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk40[i]);
+            if (o->frame2 == frame) {
+                (work->emitPos40 + i)->vx = work->pos38.vx;
+                (work->emitPos40 + i)->vy = work->pos38.vy;
+                (work->emitPos40 + i)->vz = work->pos38.vz;
+                (work->emitPos40 + i)->vx += o->offset4[0];
+                (work->emitPos40 + i)->vy += o->offset4[1];
+                (work->emitPos40 + i)->vz += o->offset4[2];
+                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, o->block0), (s32)&work->emitPos40[i]);
+                work->emit14[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->emitPos40[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
@@ -59,12 +59,12 @@ s32 fx_0ef_op81(s32 mode, Fx0efWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 static void fxm_posPathInit(Fx0efPath *path, u16 *data) {
     data++;
-    path->unk2 = *data++;
-    path->unk4 = (Fx0efPoint *)data;
+    path->count2 = *data++;
+    path->keys4 = (Fx0efPoint *)data;
 }
 
 static s32 fxm_posPathGet(Fx0efPath *path, s32 t, SVECTOR *out) {
-    s32 last = path->unk2 - 1;
+    s32 last = path->count2 - 1;
     s32 done = 1;
     Fx0efPoint *p;
 
@@ -73,7 +73,7 @@ static s32 fxm_posPathGet(Fx0efPath *path, s32 t, SVECTOR *out) {
     } else {
         done = 0;
     }
-    p = &path->unk4[t];
+    p = &path->keys4[t];
     out->vx = p->x;
     out->vy = p->y;
     out->vz = p->z;

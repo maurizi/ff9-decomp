@@ -44,13 +44,13 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
         col0.r = col0.g = col0.b = c;
         col1.r = col1.g = col1.b = c;
     } else {
-        D_801E8A28 &= 0x1F;
-        ex->btlfx_sampleGradient(D_801E89F8, &col0, D_801E8A28);
+        fx_0f5_flickerPhase &= 0x1F;
+        ex->btlfx_sampleGradient(fx_0f5_flickerGradient, &col0, fx_0f5_flickerPhase);
         col0.r = (col0.r * c) >> 7;
         col0.g = (col0.g * c) >> 7;
         col0.b = (col0.b * c) >> 7;
-        ex->btlfx_sampleGradient(D_801E89F8, &col1, D_801E8A28);
-        D_801E8A28++;
+        ex->btlfx_sampleGradient(fx_0f5_flickerGradient, &col1, fx_0f5_flickerPhase);
+        fx_0f5_flickerPhase++;
         col1.r = (col1.r * c) >> 7;
         col1.g = (col1.g * c) >> 7;
         col1.b = (col1.b * c) >> 7;
@@ -197,33 +197,33 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0f5_env = env;
         ex->btlfx_initEffModels(fx_0f5_effModels, 1);
         work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
-        work->unk0 = 0;
-        work->unk4 = 0;
-        BTLFX_COPY_SVEC(&work->unk8, &env->targets->centerX);
-        work->unk18.vx = 0x400;
-        work->unk18.vy = 0x20;
-        work->unk18.vz = 0;
+        work->state0 = 0;
+        work->frame4 = 0;
+        BTLFX_COPY_SVEC(&work->center8, &env->targets->centerX);
+        work->rot18.vx = 0x400;
+        work->rot18.vy = 0x20;
+        work->rot18.vz = 0;
     } else {
-        r = (work->unk4 << 9) / 72;
+        r = (work->frame4 << 9) / 72;
         frame = entry->frame;
-        a = 0x1000 - ex->math_cos((work->unk4 << 10) / 72);
-        work->pos10.vx = work->unk8.vx + ((ex->math_cos(a) * r) >> 12);
-        work->pos10.vz = work->unk8.vz + ((ex->math_sin(a) * r) >> 12);
-        work->pos10.vy = work->unk8.vy;
+        a = 0x1000 - ex->math_cos((work->frame4 << 10) / 72);
+        work->pos10.vx = work->center8.vx + ((ex->math_cos(a) * r) >> 12);
+        work->pos10.vz = work->center8.vz + ((ex->math_sin(a) * r) >> 12);
+        work->pos10.vy = work->center8.vy;
         rot.vz = 0;
         rot.vx = 0;
-        rot.vy = work->unk4 * 32;
-        switch (work->unk0) {
+        rot.vy = work->frame4 * 32;
+        switch (work->state0) {
         case 0:
             t = (frame << 12) / 12;
             scale.vz = 0x2000;
             scale.vx = scale.vy = t;
-            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, t >> 6, work->unk4 * 40, 300,
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, t >> 6, work->frame4 * 40, 300,
                           0xC8, 1, 0);
             scale.vx = scale.vy = 0x2000;
             scale.vz = ex->math_sin(t >> 2) * 2;
-            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, (ex->math_cos(t >> 2) >> 4) + 0x1C8, 0x280, t >> 5, 0x17, 0x3D00, 0, 0x80, t >> 6,
-                          work->unk4 * 40, 300, 0x80, 1, 1);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, (ex->math_cos(t >> 2) >> 4) + 0x1C8, 0x280, t >> 5, 0x17, 0x3D00, 0, 0x80, t >> 6,
+                          work->frame4 * 40, 300, 0x80, 1, 1);
             scale.vx = scale.vz = t;
             scale.vy = 0x1000 - ex->math_cos(t >> 2);
             pos.vx = work->pos10.vx;
@@ -233,7 +233,7 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             k = (t >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->model20, k, k, k);
             if (frame >= 12) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
@@ -241,18 +241,18 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 12;
             scale.vz = 0x2000;
             scale.vx = scale.vy = t + 0x1000;
-            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, (t >> 5) + 0x40, work->unk4 * 40, 300,
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, (t >> 5) + 0x40, work->frame4 * 40, 300,
                           0xC8, 1, 0);
             scale.vx = scale.vy = 0x2000;
-            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0x1C8 - (t >> 5), 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, (t >> 5) + 0x40,
-                          work->unk4 * 40, 300, 0x80, 1, 1);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x1C8 - (t >> 5), 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, (t >> 5) + 0x40,
+                          work->frame4 * 40, 300, 0x80, 1, 1);
             pos.vx = work->pos10.vx;
             pos.vy = work->pos10.vy;
             pos.vz = work->pos10.vz;
             scale.vy = scale.vx = scale.vz = 0x1000;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
             if (frame >= 12) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
                 if (p != NULL) {
@@ -264,10 +264,10 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = frame << 7;
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
             d = (t >> 5) + 0xC0;
-            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, d,
-                          work->unk4 * 40, 300, (t >> 5) + 0xA0, 1, 0);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, d,
+                          work->frame4 * 40, 300, (t >> 5) + 0xA0, 1, 0);
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
-            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->unk4 * 40,
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->frame4 * 40,
                           300, 0x80, 1, 1);
             pos.vx = work->pos10.vx;
             pos.vy = work->pos10.vy;
@@ -275,18 +275,18 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vy = scale.vx = scale.vz = 0x1000;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
             if (frame >= 0x20) {
-                work->unk0 = 3;
+                work->state0 = 3;
                 entry->frame = -1;
             }
             break;
         case 3:
             scale.vx = scale.vy = scale.vz = 0x2800;
             t = frame << 8;
-            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0x88, 0x180, ex->math_cos(t >> 2) >> 5, 0x97, 0x3D40, 0, 0, 0x140,
-                          work->unk4 * 40, 300, 0x120, 1, 0);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x88, 0x180, ex->math_cos(t >> 2) >> 5, 0x97, 0x3D40, 0, 0, 0x140,
+                          work->frame4 * 40, 300, 0x120, 1, 0);
             scale.vx = scale.vy = scale.vz = 0x2800;
-            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0x148, 0x280, ex->math_cos(t >> 2) >> 5, 0x17, 0x3D00, 0, 0x80, 0x140,
-                          work->unk4 * 40, 300, 0x80, 1, 1);
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x148, 0x280, ex->math_cos(t >> 2) >> 5, 0x17, 0x3D00, 0, 0x80, 0x140,
+                          work->frame4 * 40, 300, 0x80, 1, 1);
             scale.vx = scale.vz = 0x1000;
             scale.vy = ex->math_cos(t >> 2);
             pos.vx = work->pos10.vx;
@@ -301,11 +301,11 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        work->unk18.vz -= work->unk4 * 2 + 0x10;
-        ex->btlfx_drawScrollMove(10000 - work->unk4 * 12, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
-        ex->btlfx_drawScrollMove(10000 - work->unk4 * 6, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
-        ex->btlfx_drawScrollMove(work->unk4 * 8, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
-        work->unk4++;
+        work->rot18.vz -= work->frame4 * 2 + 0x10;
+        ex->btlfx_drawScrollMove(10000 - work->frame4 * 12, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
+        ex->btlfx_drawScrollMove(10000 - work->frame4 * 6, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+        ex->btlfx_drawScrollMove(work->frame4 * 8, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+        work->frame4++;
     }
     return 0;
 }

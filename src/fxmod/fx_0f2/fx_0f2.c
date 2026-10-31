@@ -14,19 +14,19 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos38.vy = env->targets->centerY;
         work->pos38.vz = env->targets->centerZ;
         if (ex->btlfx_isEnemyUnit(0)) {
-            work->unk50 = 1;
+            work->isEnemy50 = 1;
         } else {
-            work->unk50 = 0;
+            work->isEnemy50 = 0;
         }
-        switch (work->unk50) {
+        switch (work->isEnemy50) {
         case 1:
-            work->unk34 = 0xC8;
+            work->speed34 = 0xC8;
             work->rot8.vx = 0;
             work->rot8.vy = 0;
             work->rot8.vz = 0;
             break;
         case 0:
-            work->unk34 = -0xC8;
+            work->speed34 = -0xC8;
             work->rot8.vx = 0;
             work->rot8.vy = 0x800;
             work->rot8.vz = 0;
@@ -39,12 +39,12 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale20.vy = 0xAAA;
         work->scale20.vz = 0xAAA;
         work->model58 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x11A, 0, 0, 0x80);
-        work->unk40.vx = work->pos10.vx;
-        work->unk40.vy = work->pos10.vy;
-        work->unk40.vz = work->pos10.vz;
+        work->startPos40.vx = work->pos10.vx;
+        work->startPos40.vy = work->pos10.vy;
+        work->startPos40.vz = work->pos10.vz;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos38);
-        work->unk54 = -1;
-        work->unk56 = -1;
+        work->fadeInTimer54 = -1;
+        work->fadeOutTimer56 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -53,28 +53,28 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos48.vy = work->pos10.vy;
             work->pos48.vz = work->pos10.vz;
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos48);
-            work->unk54 = 3;
+            work->fadeInTimer54 = 3;
             break;
         case 0x15:
-            work->unk56 = 0x10;
+            work->fadeOutTimer56 = 0x10;
             break;
         }
         if (frame >= 0x11 && frame < 0x25) {
             t = frame - 0x11;
             ex->Hi_DrawEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, work->model58);
             ex->Hi_ModifyEffModelAbr(work->model58, 1);
-            if (work->unk54 >= 0 || work->unk56 >= 0) {
-                if (work->unk54 >= 0) {
-                    work->unk30 = fxm_lerpRatio(-0x80, 0, 3 - work->unk54, 3);
-                    work->unk54--;
+            if (work->fadeInTimer54 >= 0 || work->fadeOutTimer56 >= 0) {
+                if (work->fadeInTimer54 >= 0) {
+                    work->rgb30 = fxm_lerpRatio(-0x80, 0, 3 - work->fadeInTimer54, 3);
+                    work->fadeInTimer54--;
                 }
-                if (work->unk56 >= 0) {
-                    work->unk30 = fxm_lerpRatio(0, -0xC0, 0x10 - work->unk56, 0x10);
-                    work->unk56--;
+                if (work->fadeOutTimer56 >= 0) {
+                    work->rgb30 = fxm_lerpRatio(0, -0xC0, 0x10 - work->fadeOutTimer56, 0x10);
+                    work->fadeOutTimer56--;
                 }
-                ex->Hi_ModifyEffModelRGB(work->model58, work->unk30, work->unk30, work->unk30);
+                ex->Hi_ModifyEffModelRGB(work->model58, work->rgb30, work->rgb30, work->rgb30);
             }
-            work->pos10.vz += work->unk34;
+            work->pos10.vz += work->speed34;
             work->scale20.vz += 0x100;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), t);
         }

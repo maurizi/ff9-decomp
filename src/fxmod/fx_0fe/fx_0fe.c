@@ -27,20 +27,20 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale94.vz = 0x8000;
         r = ex->btlfx_getUnitRadius(0x100);
         r = (r >= 0x899) ? 0x898 : r;
-        q = D_801E7EB4;
+        q = fx_0fe_orbits;
         for (i = 0; i < 6; i++, q++) {
-            q->unk0 = r;
-            q->unk2 = i * 0x2AA;
-            q->unk4 = i * 0x2AA;
-            (work->unk4 + i)->vx = 0;
-            (work->unk4 + i)->vy = 0;
-            (work->unk4 + i)->vz = 0;
+            q->radius0 = r;
+            q->angle2 = i * 0x2AA;
+            q->spin4 = i * 0x2AA;
+            (work->rot4 + i)->vx = 0;
+            (work->rot4 + i)->vy = 0;
+            (work->rot4 + i)->vz = 0;
         }
         for (i = 0; i < 3; i++) {
-            work->modelB8[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7BF4[i]), 1);
+            work->modelB8[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_0fe_modelBlocks[i]), 1);
         }
-        work->unkB0 = -1;
-        work->unkB4 = -1;
+        work->fadeInTimerB0 = -1;
+        work->fadeOutTimerB4 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -51,45 +51,45 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 0:
-            work->unkB0 = 4;
+            work->fadeInTimerB0 = 4;
             break;
         case 0x14:
-            work->unkB4 = 8;
+            work->fadeOutTimerB4 = 8;
             break;
         }
         if (frame >= 0 && frame < 0x1C) {
-            if (work->unkB0 >= 0 || work->unkB4 >= 0) {
-                if (work->unkB0 >= 0) {
-                    work->unkA4 = fxm_lerpRatio(-0x80, 0, 4 - work->unkB0, 4);
-                    work->unkB0--;
+            if (work->fadeInTimerB0 >= 0 || work->fadeOutTimerB4 >= 0) {
+                if (work->fadeInTimerB0 >= 0) {
+                    work->rgbA4 = fxm_lerpRatio(-0x80, 0, 4 - work->fadeInTimerB0, 4);
+                    work->fadeInTimerB0--;
                 }
-                if (work->unkB4 >= 0) {
-                    work->unkA4 = fxm_lerpRatio(0, -0x80, 8 - work->unkB4, 8);
-                    work->unkB4--;
+                if (work->fadeOutTimerB4 >= 0) {
+                    work->rgbA4 = fxm_lerpRatio(0, -0x80, 8 - work->fadeOutTimerB4, 8);
+                    work->fadeOutTimerB4--;
                 }
             }
-            o = D_801E7EB4;
+            o = fx_0fe_orbits;
             m = work->modelB8[0];
             for (j = 0; j < 6; j++, o++) {
                 rot.vx = 0;
-                rot.vy = o->unk2;
+                rot.vy = o->angle2;
                 rot.vz = 0;
-                ex->btlfx_pointAhead((s16 *)&work->posA8, (s16 *)&rot, o->unk0, (s16 *)&pos);
-                (work->unk34 + j)->vx = pos.vx;
-                (work->unk34 + j)->vy = pos.vy;
-                (work->unk34 + j)->vz = pos.vz;
-                ex->Hi_DrawEffModel(&work->unk4[j], &work->unk34[j], (s32)&work->scale94, m);
-                if (work->unkB0 >= 0 || work->unkB4 >= 0) {
+                ex->btlfx_pointAhead((s16 *)&work->posA8, (s16 *)&rot, o->radius0, (s16 *)&pos);
+                (work->pos34 + j)->vx = pos.vx;
+                (work->pos34 + j)->vy = pos.vy;
+                (work->pos34 + j)->vz = pos.vz;
+                ex->Hi_DrawEffModel(&work->rot4[j], &work->pos34[j], (s32)&work->scale94, m);
+                if (work->fadeInTimerB0 >= 0 || work->fadeOutTimerB4 >= 0) {
                     ex->Hi_ModifyEffModelAbr(m, 1);
-                    ex->Hi_ModifyEffModelRGB(m, work->unkA4, work->unkA4, work->unkA4);
+                    ex->Hi_ModifyEffModelRGB(m, work->rgbA4, work->rgbA4, work->rgbA4);
                 }
                 m++;
                 if (m > work->modelB8[2]) {
                     m = work->modelB8[0];
                 }
-                o->unk2 += 0x55;
-                o->unk4 += 0x200;
-                work->unk4[j].vy += 0x80;
+                o->angle2 += 0x55;
+                o->spin4 += 0x200;
+                work->rot4[j].vy += 0x80;
             }
         }
         if (frame >= 0x28) {
