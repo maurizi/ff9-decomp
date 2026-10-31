@@ -28,21 +28,21 @@ typedef struct {
 /* one bolt, a pool item */
 typedef struct {
     SVECTOR pos0; /* from */
-    SVECTOR posTo; /* to */
-    u8 strip; /* bolt index */
-    u8 state; /* state */
-    u8 branch0At; /* branch points */
-    u8 branch1At;
-    s16 kind; /* kind */
-    s32 *jitter; /* jitter table (fx_003_jitter) */
+    SVECTOR pos8; /* to */
+    u8 strip10; /* bolt index */
+    u8 state11; /* state */
+    u8 branchAt12; /* branch points */
+    u8 branchAt13;
+    s16 kind14; /* kind */
+    s32 *jitter18; /* jitter table (fx_003_jitter) */
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;
 } Fx003Bolt; /* 0x24 */
 
 typedef struct {
     SVECTOR pos0; /* target body position */
-    s32 *jitter; /* fx_003_jitter */
-    s32 boltCount; /* bolts spawned */
+    s32 *jitter8; /* fx_003_jitter */
+    s32 boltCountC; /* bolts spawned */
 } Fx003Work; /* 0x10 */
 
 extern u16 fx_003_strip16Blocks[];
