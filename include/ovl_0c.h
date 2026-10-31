@@ -456,8 +456,8 @@ typedef struct {
 /* animation track: three 16-bit offsets/constants (x, y in unk0, z in unk4)
  * and their flags in the high half of unk4 (see gte_ldrotkey) */
 typedef struct {
-    u32 unk0;
-    u32 unk4;
+    u32 unk0; /* read only by the gte_ldrotkey asm */
+    u32 unk4; /* read only by the gte_ldrotkey asm */
 } WmAnimKey;
 
 /* animation file header: offsets relocated by wm_loadActorModel */
