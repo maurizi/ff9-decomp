@@ -167,10 +167,10 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[4]->trailStride = 0x48;
             }
             if (work->emit0[2] != NULL) {
-                *(s32 *)&work->emit0[2]->file->unk8 = (s32)fx_128_op81ParticleMotion0;
+                work->emit0[2]->file->m.module.update = fx_128_op81ParticleMotion0;
             }
             if (work->emit0[3] != NULL) {
-                *(s32 *)&work->emit0[3]->file->unk8 = (s32)fx_128_op81ParticleMotion1;
+                work->emit0[3]->file->m.module.update = fx_128_op81ParticleMotion1;
             }
             break;
         case 0x3C:

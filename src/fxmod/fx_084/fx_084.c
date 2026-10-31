@@ -55,7 +55,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit1C->otZ = 0x10;
             }
             if (work->emit1C != NULL) {
-                ((EffMotion *)work->emit1C->file)->update = fx_084_op80ParticleMotion;
+                work->emit1C->file->m.module.update = fx_084_op80ParticleMotion;
             }
             break;
         case 1:

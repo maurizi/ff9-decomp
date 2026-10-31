@@ -1003,7 +1003,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->pos8);
             if (p != NULL) {
                 p->tail->shape = -1;
-                *(s32 *)&p->tail->unk3C = (s32)fx_0d3_op81SpawnPoint;
+                *(s32 *)&p->tail->s.module.spawnFn = (s32)fx_0d3_op81SpawnPoint;
                 p->otZ = 0x20;
             }
         }

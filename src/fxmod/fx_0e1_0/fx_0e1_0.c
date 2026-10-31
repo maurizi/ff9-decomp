@@ -502,7 +502,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
                 if (p != NULL) {
                     p->tail->shape = -1;
-                    *(s32 *)&p->tail->unk3C = (s32)fx_0e1_0_op80SpawnPoint;
+                    *(s32 *)&p->tail->s.module.spawnFn = (s32)fx_0e1_0_op80SpawnPoint;
                     p->otZ = 0x20;
                 }
             }

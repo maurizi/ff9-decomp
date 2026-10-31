@@ -149,7 +149,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk0[0xC] = 0x30;
             p = w->emit20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->posD4);
             if (p != NULL) {
-                *(s32 *)&p->file->unk8 = (s32)fx_1be_op80ParticleMotion;
+                p->file->m.module.update = fx_1be_op80ParticleMotion;
             }
             break;
         case 0x30:

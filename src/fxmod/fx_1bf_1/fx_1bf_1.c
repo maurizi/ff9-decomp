@@ -336,7 +336,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos10);
                     if (p != NULL) {
                         p->tail->shape = -1;
-                        *(s32 *)&p->tail->unk3C = (s32)fxm_randRingPoint;
+                        *(s32 *)&p->tail->s.module.spawnFn = (s32)fxm_randRingPoint;
                         p->otZ = 0x100;
                     }
                 } else if (frame < 21) {

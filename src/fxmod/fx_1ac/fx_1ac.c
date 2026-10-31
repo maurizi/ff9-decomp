@@ -71,7 +71,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p->trails = (s32)D_801E8310;
                 p->trailSlots = 4;
                 p->trailStride = 0x9C;
-                ((EffMotion *)p->file)->update = fx_1ac_op80ParticleMotion;
+                p->file->m.module.update = fx_1ac_op80ParticleMotion;
             }
             work->unk0[0] = 0xE;
             break;

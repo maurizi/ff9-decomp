@@ -2006,20 +2006,6 @@ typedef struct {
     } weights;
 } EffElemHdr; /* 0x14 */
 
-/* effect file header */
-typedef struct {
-    u8 kind; /* particle motion kind (EffMotion.kind) */
-    u8 hasSub; /* nonzero: a sub-emitter (EffSub, then its EffEmit) follows (btlfx_spawnEmitter); EffEmit.emitsSub */
-    u8 pad2[8 - 2];
-    s16 unk8;
-    s16 unkA;
-    u8 padC[0x18 - 0xC];
-    s16 unk18;
-    s16 unk1A;
-    u8 pad1C[0x20 - 0x1C];
-    s16 unk20;
-    s16 unk22;
-} EffFileHdr;
 
 /* emitter animation parameters (btlfx_updateEmitters lerps the *Start/*End pairs over duration into the
  * Pool6CEntry). Evidence: [code] */
@@ -2042,30 +2028,51 @@ typedef struct {
     SVECTOR rotStep; /* added to the emitter rotation every frame; pad = launch direction jitter (+-) */
 } EffAnim; /* 0x38 */
 
-/* emitter spawn shape and animation, after the elements (Pool6CEntry.tail); the shape parameters from 0x3C depend on
- * shape (btlfx_updateEmitters lerps them into Pool6CEntry.radiusMin..unk42) */
-typedef struct {
-    s32 shape; /* spawn shape (btlfx_runEmitters): 0 sphere, 1 cylinder, 2/4 around the emitter rotation, 3 along origin..target, -1 EffTailSpawn.spawnFn */
-    EffAnim anim;
-    s16 unk3C;
-    s16 unk3E;
-    s16 unk40[8];
-    s16 rateTable[8]; /* EffAnim.rateCurve 2: rate by sixteenth of the duration (shape -1: from 0x40) */
-} EffTail;
+/* EffTail.shape: where an emitter spawns its particles and which way it launches them (btlfx_runEmitters); the
+ * parameters are EffTail.s. Evidence: [code] */
+#define BTLFX_SHAPE_MODULE   (-1) /* EffTail.s.module.spawnFn */
+#define BTLFX_SHAPE_SPHERE   0 /* around the origin, launched outward (s.sphere) */
+#define BTLFX_SHAPE_CYLINDER 1 /* vertical cylinder around the origin (s.cylinder, span = height) */
+#define BTLFX_SHAPE_AXIS     2 /* cylinder around the emitter rotation axis (s.cylinder, span = distance along it) */
+#define BTLFX_SHAPE_TUBE     3 /* cylinder around the line origin..target (s.cylinder, span = position on it, 0x1000 = target) */
+#define BTLFX_SHAPE_CONE     4 /* cone along the emitter rotation axis (s.cone) */
 
-/* EffTail as seen by the particle spawner (btlfx_runEmitters), by shape */
+/* emitter spawn shape and animation, after the elements (Pool6CEntry.tail). Evidence: [code] */
 typedef struct {
-    s32 shape;
+    s32 shape; /* BTLFX_SHAPE_* */
     EffAnim anim;
-    s32 (*spawnFn)(SVECTOR *, SVECTOR *, s32, s32); /* shape -1: (offset, direction, frame, duration), set by the effect module; nonzero ends the emitter; offset pad nonzero = absolute position */
-    u8 pad40[4];
-    CVECTOR axisScaleStart; /* shape 0: x/y/z scale of the sphere (128 = 1.0), lerped to axisScaleEnd; cd 1/2 = upper/lower half only */
     union {
-        CVECTOR c;
-        s16 h; /* shape 4: launch direction mode, as dirMode */
-    } axisScaleEnd;
-    s16 dirMode; /* shapes 1-3: launch direction: 1 x angle 0x400 (shapes 2/3: the emitter rotation), 2 -0x400 (reversed), else outward */
-} EffTailSpawn;
+        struct {
+            s16 radiusMinStart; /* spawn distance range (Pool6CEntry.radiusMin / radiusMax), lerped over the duration */
+            s16 radiusMinEnd;
+            s16 radiusMaxStart;
+            s16 radiusMaxEnd;
+            CVECTOR axisScaleStart; /* x/y/z scale of the sphere (128 = 1.0), lerped to axisScaleEnd; cd 1/2: x angle limited to 0..0x800 / 0x800..0x1000 (one half of the sphere) */
+            CVECTOR axisScaleEnd;
+        } sphere; /* BTLFX_SHAPE_SPHERE */
+        struct {
+            s16 radiusStart[2]; /* {min, max} distance from the axis (Pool6CEntry.radiusMin / radiusMax) */
+            s16 radiusEnd[2];
+            s16 spanStart[2]; /* {min, max} (Pool6CEntry.shape.span) */
+            s16 spanEnd[2];
+            s16 dirMode; /* launch direction: 1 along the axis (shape 1: x angle 0x400), 2 the reverse, else outward */
+        } cylinder; /* BTLFX_SHAPE_CYLINDER, BTLFX_SHAPE_AXIS, BTLFX_SHAPE_TUBE */
+        struct {
+            s16 radiusMinStart; /* radius at distance 0 along the axis (Pool6CEntry.radiusMin; both radii are scaled by one random 0..1, filling the cone) */
+            s16 radiusMinEnd;
+            s16 radiusMaxStart; /* radius at distance length (Pool6CEntry.radiusMax) */
+            s16 radiusMaxEnd;
+            s16 lengthStart; /* (Pool6CEntry.shape.cone.length) */
+            s16 lengthEnd;
+            s16 dirMode; /* launch direction: 1 along the axis, 2 the reverse, else along the cone's side */
+        } cone; /* BTLFX_SHAPE_CONE */
+        struct {
+            s32 (*spawnFn)(SVECTOR *, SVECTOR *, s32, s32); /* (offset, direction, frame, duration), set by the effect module (NULL on spawn); nonzero ends the emitter; offset pad nonzero = absolute position */
+            s16 rateTable[8]; /* as EffTail.rateTable */
+        } module; /* BTLFX_SHAPE_MODULE */
+    } s;
+    s16 rateTable[8]; /* EffAnim.rateCurve 2: rate by sixteenth of the duration (BTLFX_SHAPE_MODULE: s.module.rateTable) */
+} EffTail;
 void LoadAverageCol(u8 *, u8 *, s32, s32, u8 *);
 
 /* sub-emitter parameters, the 0x38-byte block in front of Pool6CEntry.sub: particles whose spawnFlags allow it spawn
@@ -2093,29 +2100,122 @@ typedef struct {
     s16 radiusEnd[2];
 } EffSub; /* 0x38 */
 
-/* particle motion parameters of an emitter (its file) or sub-emitter (Pool6CEntry.sub); from 8 they depend on kind
- * (0-5, btlfx_runEmitters / btlfx_runSubEmitter / btlfx_updateParticles) */
+/* EffEmit.kind: particle motion (btlfx_runEmitters / btlfx_runSubEmitter set a particle up, btlfx_updateParticles
+ * moves it; the parameters from EffEmit+8 and the particle's Pool30Entry.motA / motB depend on it). Evidence: [code] */
+#define BTLFX_MOTION_BALLISTIC 0 /* velocity, drag, gravity, optional floor (EffEmit.m.ballistic) */
+#define BTLFX_MOTION_ORBIT     1 /* drawn at a radius from a moving centre, in a turning direction (m.orbit) */
+#define BTLFX_MOTION_SPIRAL    2 /* spins around an axis with growing radius and axial distance (m.spiral) */
+#define BTLFX_MOTION_WOBBLE    3 /* drawn at a radius in a sine-swinging direction (m.wobble) */
+#define BTLFX_MOTION_HELIX     4 /* spins around an axis while moving along it, radius by curve (m.helix) */
+#define BTLFX_MOTION_HOMING    5 /* ballistic, steered toward Pool6CEntry.target (m.homing) */
+#define BTLFX_MOTION_MODULE    0xFF /* EffEmit.m.module.update, set by the effect module; a 0x10-byte EffEmit */
+
+/* radiusCurve of EffEmit.m.orbit / wobble / helix: the particle's radius over its life t */
+#define BTLFX_RADIUS_SIN    0 /* radius * sin(lerp(sinStart, sinEnd, t)) */
+#define BTLFX_RADIUS_GROW   1 /* radius * t */
+#define BTLFX_RADIUS_SHRINK 2 /* radius * (1 - t) */
+
+/* particle motion parameters of an emitter (Pool6CEntry.file: the effect file starts with it) or sub-emitter
+ * (Pool6CEntry.sub). Start/End pairs are lerped over the emitter's life (a sub-emitter's over the parent particle's;
+ * an emitter's partly through Pool6CEntry.cur), *Spread is a random +- per particle. 0x28 bytes, 0x10 for
+ * BTLFX_MOTION_MODULE. Angles: 0x1000 = 360 degrees. Evidence: [code] */
 typedef struct {
-    u8 kind; /* motion kind (EffMotion.kind) */
-    u8 emitsSub; /* nonzero: its particles spawn sub-particles (Pool30Entry.spawnFlags) */
-    s16 lifeStart; /* particle lifetime in frames, lerped over the emitter's (parent's) life, +-lifeSpread */
+    u8 kind; /* BTLFX_MOTION_* */
+    u8 emitsSub; /* nonzero: a sub-emitter (EffSub, then its EffEmit) follows (btlfx_spawnEmitter) and the particles spawn sub-particles (Pool30Entry.spawnFlags) */
+    s16 lifeStart; /* particle lifetime in frames, +-lifeSpread */
     s16 lifeEnd;
     s16 lifeSpread;
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
-    s16 unkE;
-    s16 unk10;
-    s16 unk12;
-    s16 unk14;
-    s16 unk16;
-    s16 unk18;
-    s16 unk1A;
-    s16 unk1C;
-    s16 unk1E;
-    s16 unk20;
-    s16 unk22;
-    s16 unk24;
+    union {
+        struct {
+            s16 speedStart; /* launch speed along the launch direction (Pool30Entry.motA.vel) */
+            s16 speedEnd;
+            s16 speedSpread;
+            s16 drag; /* velocity factor per frame, 0x1000 = none (Pool30Entry.motB.ballistic.drag) */
+            s16 dragSpread;
+            s16 floorMode; /* 0 none, 1 bounce off the floor (Pool6CEntry.rot.pad), else slow down above it, stop on it */
+            s16 floorMargin; /* height above the floor where floorMode acts */
+            s16 bounce; /* floorMode 1: vertical speed kept, 0x100 = 1.0 */
+            s16 jitter; /* nonzero: velocity += jitterX/Y/Z random +- every frame */
+            s16 jitterX;
+            s16 jitterY;
+            s16 jitterZ;
+        } ballistic; /* BTLFX_MOTION_BALLISTIC */
+        struct {
+            s16 turnX; /* direction x angle step per frame (Pool30Entry.motB.orbit.turnX) */
+            s16 turnY;
+            s16 turnXSpread;
+            s16 turnYSpread;
+            s16 drag; /* of the centre, as ballistic (Pool30Entry.motB.orbit.drag) */
+            s16 dragSpread;
+            s16 radiusCurve; /* BTLFX_RADIUS_* */
+            s16 radiusSpread;
+            s16 radiusStart; /* distance from the centre (Pool6CEntry.cur.orbit.radius) */
+            s16 radiusEnd;
+            s16 sinStart; /* BTLFX_RADIUS_SIN: angle over the particle's life */
+            s16 sinEnd;
+            s16 speedStart; /* launch speed of the centre (Pool6CEntry.cur.orbit.speed) */
+            s16 speedEnd;
+            s16 speedSpread;
+        } orbit; /* BTLFX_MOTION_ORBIT */
+        struct {
+            s16 axialSpeedStart; /* distance along the axis per frame (Pool6CEntry.cur.spiral.axialSpeed) */
+            s16 axialSpeedEnd;
+            s16 axialSpeedSpread;
+            s16 spinSpeedSpread;
+            s16 radiusSpeedStart; /* radius growth per frame (btlfx_lerpVec pairs it with radiusSpeedEnd) */
+            s16 spinSpeedStart; /* angle around the axis per frame (paired with spinSpeedEnd) */
+            s16 radiusSpeedEnd;
+            s16 spinSpeedEnd;
+            s16 radiusSpeedSpread;
+        } spiral; /* BTLFX_MOTION_SPIRAL */
+        struct {
+            s16 swingXSpeed; /* sine phase step of the x angle swing per frame */
+            s16 swingYSpeed;
+            s16 swingXSpread;
+            s16 swingYSpread;
+            s16 dirXSpread; /* random +- on the swing centre (the launch direction) */
+            s16 dirYSpread;
+            s16 radiusCurve; /* BTLFX_RADIUS_* */
+            s16 radiusSpread;
+            s16 radiusStart; /* (Pool6CEntry.cur.wobble.radius) */
+            s16 radiusEnd;
+            s16 sinStart;
+            s16 sinEnd;
+        } wobble; /* BTLFX_MOTION_WOBBLE */
+        struct {
+            s16 axialSpeedStart; /* (Pool6CEntry.cur.spiral.axialSpeed) */
+            s16 axialSpeedEnd;
+            s16 axialSpeedSpread;
+            s16 radiusCurve; /* BTLFX_RADIUS_* */
+            s16 radiusStart; /* (btlfx_lerpVec pairs it with radiusEnd) */
+            s16 spinSpeedStart; /* (paired with spinSpeedEnd) */
+            s16 radiusEnd;
+            s16 spinSpeedEnd;
+            s16 radiusSpread;
+            s16 spinSpeedSpread;
+            s16 sinStart;
+            s16 sinEnd;
+        } helix; /* BTLFX_MOTION_HELIX */
+        struct {
+            s16 speedStart; /* as ballistic */
+            s16 speedEnd;
+            s16 speedSpread;
+            s16 drag;
+            s16 dragSpread;
+            s16 steerStart; /* speed added toward the target every frame */
+            s16 steerEnd;
+            s16 pad16; /* unused */
+            s16 jitter; /* as ballistic */
+            s16 jitterX;
+            s16 jitterY;
+            s16 jitterZ;
+            s16 aimX; /* added to the angles toward the target */
+            s16 aimY;
+        } homing; /* BTLFX_MOTION_HOMING */
+        struct {
+            s32 (*update)(); /* (particle, emitter, &pos, trail, frame, frames), nonzero frees the particle */
+        } module; /* BTLFX_MOTION_MODULE */
+    } m;
 } EffEmit;
 
 typedef union {
@@ -2127,10 +2227,23 @@ typedef union {
 } XY32;
 
 typedef struct Pool6CEntry {
-    EffFileHdr *file; /* effect file: header, motion parameters */
-    EffSub *sub; /* sub-emitter parameters (EffMotion), NULL = none; the EffSub block is just before it */
-    s16 unk8;
-    s16 unkA;
+    EffEmit *file; /* effect file: starts with the particle motion parameters */
+    EffSub *sub; /* the sub-emitter's EffEmit (motion parameters), NULL = none; its EffSub block is just before it */
+    union {
+        struct {
+            s16 speed;
+        } ballistic; /* BTLFX_MOTION_BALLISTIC, BTLFX_MOTION_HOMING */
+        struct {
+            s16 radius;
+            s16 speed;
+        } orbit;
+        struct {
+            s16 axialSpeed;
+        } spiral; /* BTLFX_MOTION_SPIRAL, BTLFX_MOTION_HELIX */
+        struct {
+            s16 radius;
+        } wobble;
+    } cur; /* the file's EffEmit Start..End pairs at the current frame (btlfx_updateEmitters), by file->kind */
     s16 trailStride; /* bytes per particle in trails */
     s16 spawnCount; /* particles spawned (modulo trailSlots when trails is set): the next one's slot - 1 */
     s16 subSpawnCount; /* the same for sub-particles */
@@ -2148,10 +2261,16 @@ typedef struct Pool6CEntry {
     XY32 live; /* live particle counts: s.x particles, s.y sub-particles */
     s16 frame; /* frame */
     s16 spawnFrac; /* fraction of the spawn rate carried to the next frame (/0x100) */
-    s16 radiusMin; /* spawn distance range of the shape (EffTail from 0x3C) */
+    s16 radiusMin; /* spawn distance range of the shape (EffTail.s, lerped by btlfx_updateEmitters) */
     s16 radiusMax;
-    s16 unk40;
-    s16 unk42;
+    union {
+        struct {
+            s16 min, max;
+        } span; /* BTLFX_SHAPE_CYLINDER: height, AXIS: distance along the axis, TUBE: position on origin..target */
+        struct {
+            s16 length;
+        } cone; /* BTLFX_SHAPE_CONE: length along the axis */
+    } shape; /* by EffTail.shape */
     s16 accel[3]; /* particle acceleration (EffAnim.accelStart..End) */
     s16 gravity; /* added to the particles' y velocity (EffAnim.gravityStart..End) */
     XY32 field; /* force field {range, strength} (EffAnim.fieldStart..End) */
@@ -2180,9 +2299,21 @@ typedef struct {
     struct {
         s32 vx, vy, vz;
     } pos; /* position, 20.12 */
-    s16 unkC; /* rotation */
-    s16 unkE;
-    s16 unk10;
+    union {
+        struct {
+            s16 x, y, z;
+        } vel; /* BTLFX_MOTION_BALLISTIC, ORBIT (the centre's), HOMING: velocity (btlfx_stepParticle*: pos += vel * 0x40) */
+        struct {
+            s16 angle; /* around the axis (motB.spiral.axis / helix.axis) */
+            s16 speed; /* added to angle every frame */
+            s16 fall; /* the centre's vertical speed, from gravity (btlfx_stepParticleNoDrag) */
+        } spin; /* BTLFX_MOTION_SPIRAL, BTLFX_MOTION_HELIX */
+        struct {
+            s16 phaseX; /* sine phases of the direction swing (x, y angle) */
+            s16 phaseY;
+            s16 radius;
+        } wobble; /* BTLFX_MOTION_WOBBLE */
+    } motA; /* motion state by the emitter's EffEmit.kind; the effect modules' motions use it as they like */
     u8 spawnFlags; /* BTLFX_PART_SUB, bits 0-6: sub-particle spawn fraction (nonzero = spawns sub-particles) */
     s8 spin; /* random spin (EffElem.spinRange) */
     XY32 elemRot; /* element rotation x, y (z in elemRotZ), passed to the draw functions */
@@ -2193,36 +2324,44 @@ typedef struct {
     u8 elemFrame; /* element frame */
     s8 timeStep; /* time step of the motion (btlfx_stepParticle*) */
     u8 slot; /* 0 = free; else the emitter's spawn count % 255 + 1: its trail slot + 1 (btlfx_getParticleTrail), effect modules index their tables with slot - 1 */
-    s16 unk20;
-    s16 unk22;
-    XY32 unk24;
-    XY32 unk28;
+    union {
+        struct {
+            s16 drag; /* velocity factor per frame, 0x1000 = none */
+        } ballistic; /* BTLFX_MOTION_BALLISTIC, BTLFX_MOTION_HOMING */
+        struct {
+            s16 turnX; /* added to dir every frame */
+            s16 turnY;
+            XY32 dir; /* direction x, y angles of the particle from the centre */
+            s16 radius;
+            s16 drag;
+        } orbit; /* BTLFX_MOTION_ORBIT */
+        struct {
+            s16 axial; /* distance along the axis, 4 = 1 */
+            s16 axialSpeed;
+            s16 radius; /* 4 = 1 */
+            s16 radiusSpeed;
+            XY32 axis; /* x, y angles of the axis (the launch direction) */
+        } spiral; /* BTLFX_MOTION_SPIRAL */
+        struct {
+            s16 swingXSpeed; /* added to motA.wobble.phaseX every frame */
+            s16 swingYSpeed;
+            s16 fall; /* the centre's vertical speed, from gravity (btlfx_stepParticleNoDragAlt) */
+            s16 dirX; /* swing centre: direction x, y angles */
+            s16 dirY;
+        } wobble; /* BTLFX_MOTION_WOBBLE */
+        struct {
+            s16 radius;
+            s16 axialSpeed;
+            s32 axial; /* distance along the axis, 0x40 = 1 */
+            XY32 axis;
+        } helix; /* BTLFX_MOTION_HELIX */
+    } motB; /* motion state by EffEmit.kind, continued */
     Pool6CEntry *owner; /* emitter (btlfx_killEmitter, btlfx_moveEmitter) */
 } Pool30Entry; /* 0x30 */
 
 /* Pool30Entry.spawnFlags. Evidence: [code] */
 #define BTLFX_PART_SUB      0x80 /* spawned by the sub-emitter (counts in live.s.y, moves with the EffSub parameters) */
 #define BTLFX_PART_SUB_FRAC 0x7F
-
-/* particle motion parameters (btlfx_updateParticles): the effect file (Pool6CEntry.file) or the sub-emitter's
- * (Pool6CEntry.sub), the EffEmit as the motion step reads it */
-typedef struct {
-    u8 kind; /* motion kind (btlfx_updateParticles): 0-5 built in, 0xFF update */
-    u8 pad1[8 - 1];
-    s32 (*update)(); /* kind 0xFF: set by the effect module; (particle, emitter, &pos, trail, frame, frames), nonzero frees the particle */
-    u8 padC[0xE - 0xC];
-    s16 unkE;
-    u8 pad10[0x12 - 0x10];
-    s16 unk12;
-    s16 unk14;
-    s16 unk16;
-    s16 unk18;
-    s16 unk1A;
-    s16 unk1C;
-    s16 unk1E;
-    s16 unk20;
-    s16 unk22;
-} EffMotion;
 
 typedef struct {
     s32 capacity; /* entries in the buffer */

@@ -1,0 +1,22 @@
+# Round 33 ovl_0b naming (fields as "# FIELDS header Struct: old=new", macro renames as "OLD NEW").
+# New macros (no old name) are listed under "# MACROS". Evidence: [code] (btlfx_heap.c, the btlfx_stepParticle* asm,
+# btlfx_offsetPoint / btlfx_pointAhead / btlfx_rotateOffset / btlfx_transformPoint, btlfx_lerpVec = 3-element lerp).
+#
+# Particle system per-kind unions. EffFileHdr is gone: Pool6CEntry.file is an EffEmit * (the effect file starts with
+# it; hasSub and EffEmit.emitsSub are the same byte). EffMotion is gone: EffEmit.m.module.update (32 module lines).
+# EffTailSpawn is gone: EffTail.s (by shape).
+# FIELDS include/ovl_0b.h EffFileHdr: hasSub=emitsSub, unk8=m.ballistic.speedStart (kinds 0/5) / m.spiral.axialSpeedStart (2/4), unkA=m.ballistic.speedEnd / m.spiral.axialSpeedEnd, unk18=m.orbit.radiusStart / m.wobble.radiusStart, unk1A=m.orbit.radiusEnd / m.wobble.radiusEnd, unk20=m.orbit.speedStart, unk22=m.orbit.speedEnd
+# FIELDS include/ovl_0b.h EffMotion: update=m.module.update (EffEmit)
+# FIELDS include/ovl_0b.h EffEmit (kind 0 m.ballistic): unk8=speedStart, unkA=speedEnd, unkC=speedSpread, unkE=drag, unk10=dragSpread, unk12=floorMode, unk14=floorMargin, unk16=bounce, unk18=jitter, unk1A=jitterX, unk1C=jitterY, unk1E=jitterZ
+# FIELDS include/ovl_0b.h EffEmit (kind 1 m.orbit): unk8=turnX, unkA=turnY, unkC=turnXSpread, unkE=turnYSpread, unk10=drag, unk12=dragSpread, unk14=radiusCurve, unk16=radiusSpread, unk18=radiusStart, unk1A=radiusEnd, unk1C=sinStart, unk1E=sinEnd, unk20=speedStart, unk22=speedEnd, unk24=speedSpread
+# FIELDS include/ovl_0b.h EffEmit (kind 2 m.spiral): unk8=axialSpeedStart, unkA=axialSpeedEnd, unkC=axialSpeedSpread, unkE=spinSpeedSpread, unk10=radiusSpeedStart, unk12=spinSpeedStart, unk14=radiusSpeedEnd, unk16=spinSpeedEnd, unk18=radiusSpeedSpread
+# FIELDS include/ovl_0b.h EffEmit (kind 3 m.wobble): unk8=swingXSpeed, unkA=swingYSpeed, unkC=swingXSpread, unkE=swingYSpread, unk10=dirXSpread, unk12=dirYSpread, unk14=radiusCurve, unk16=radiusSpread, unk18=radiusStart, unk1A=radiusEnd, unk1C=sinStart, unk1E=sinEnd
+# FIELDS include/ovl_0b.h EffEmit (kind 4 m.helix): unk8=axialSpeedStart, unkA=axialSpeedEnd, unkC=axialSpeedSpread, unkE=radiusCurve, unk10=radiusStart, unk12=spinSpeedStart, unk14=radiusEnd, unk16=spinSpeedEnd, unk18=radiusSpread, unk1A=spinSpeedSpread, unk1C=sinStart, unk1E=sinEnd
+# FIELDS include/ovl_0b.h EffEmit (kind 5 m.homing): unk8=speedStart, unkA=speedEnd, unkC=speedSpread, unkE=drag, unk10=dragSpread, unk12=steerStart, unk14=steerEnd, unk16=pad16, unk18=jitter, unk1A=jitterX, unk1C=jitterY, unk1E=jitterZ, unk20=aimX, unk22=aimY
+# FIELDS include/ovl_0b.h EffEmit (kind 0xFF m.module): unk8=update
+# FIELDS include/ovl_0b.h Pool6CEntry: unk8=cur.ballistic.speed / cur.orbit.radius / cur.spiral.axialSpeed / cur.wobble.radius, unkA=cur.orbit.speed, unk40=shape.span.min / shape.cone.length, unk42=shape.span.max
+# FIELDS include/ovl_0b.h Pool30Entry (motA, 0xC): unkC=motA.vel.x / motA.spin.angle / motA.wobble.phaseX, unkE=motA.vel.y / motA.spin.speed / motA.wobble.phaseY, unk10=motA.vel.z / motA.spin.fall / motA.wobble.radius
+# FIELDS include/ovl_0b.h Pool30Entry (motB, 0x20): unk20=motB.ballistic.drag / motB.orbit.turnX / motB.spiral.axial / motB.wobble.swingXSpeed / motB.helix.radius, unk22=motB.orbit.turnY / motB.spiral.axialSpeed / motB.wobble.swingYSpeed / motB.helix.axialSpeed, unk24=motB.orbit.dir / motB.spiral.radius,radiusSpeed / motB.wobble.fall,dirX / motB.helix.axial, unk28=motB.orbit.radius,drag / motB.spiral.axis / motB.wobble.dirY / motB.helix.axis
+# FIELDS include/ovl_0b.h EffTail: unk3C=s.sphere.radiusMinStart / s.cylinder.radiusStart[0] / s.cone.radiusMinStart / s.module.spawnFn, unk3E=s.sphere.radiusMinEnd / s.cylinder.radiusStart[1] / s.cone.radiusMinEnd, unk40[0..1]=s.sphere.radiusMax* / s.cylinder.radiusEnd / s.cone.radiusMax*, unk40[2..5]=s.sphere.axisScaleStart,End / s.cylinder.spanStart,spanEnd / s.cone.lengthStart,lengthEnd,dirMode, unk40=s.module.rateTable
+# FIELDS include/ovl_0b.h EffTailSpawn: spawnFn=s.module.spawnFn, axisScaleStart=s.sphere.axisScaleStart, axisScaleEnd.c=s.sphere.axisScaleEnd, axisScaleEnd.h=s.cone.dirMode, dirMode=s.cylinder.dirMode
+# MACROS BTLFX_MOTION_BALLISTIC/ORBIT/SPIRAL/WOBBLE/HELIX/HOMING/MODULE (EffEmit.kind), BTLFX_RADIUS_SIN/GROW/SHRINK (radiusCurve), BTLFX_SHAPE_MODULE/SPHERE/CYLINDER/AXIS/TUBE/CONE (EffTail.shape)

@@ -90,7 +90,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4->trailStride = 0x4C;
         }
         if (work->emit4 != NULL) {
-            ((EffMotion *)work->emit4->file)->update = fx_09b_pinParticles[work->unk6C];
+            work->emit4->file->m.module.update = fx_09b_pinParticles[work->unk6C];
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);

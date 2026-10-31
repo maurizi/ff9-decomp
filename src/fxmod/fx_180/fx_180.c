@@ -126,7 +126,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[7]->trailStride = 0x70;
             }
             if (work->emit0[7] != NULL) {
-                ((EffMotion *)work->emit0[7]->file)->update = fx_180_op80ParticleMotion;
+                work->emit0[7]->file->m.module.update = fx_180_op80ParticleMotion;
             }
             if (work->emit0[7] != NULL) {
                 work->emit0[7]->otZ = 0x600;
@@ -218,7 +218,7 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[9]->trailStride = 0x90;
             }
             if (work->emit0[9] != NULL) {
-                ((EffMotion *)work->emit0[9]->file)->update = fx_180_op81ParticleMotion;
+                work->emit0[9]->file->m.module.update = fx_180_op81ParticleMotion;
             }
             break;
         case 0x45:

@@ -148,7 +148,7 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         work->emit8[i]->trailStride = 0x38;
                     }
                     if (work->emit8[i] != NULL) {
-                        ((EffMotion *)work->emit8[i]->file)->update = fx_1a7_op80ParticleMotions[i];
+                        work->emit8[i]->file->m.module.update = fx_1a7_op80ParticleMotions[i];
                     }
                     D_801E8950[i] = i * 0x155 + ex->btlfx_rand() % 4096;
                     D_801E8990[i] = i * 10;
@@ -222,7 +222,7 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         work->emit8[i]->trailStride = 0xB0;
                     }
                     if (work->emit8[i] != NULL) {
-                        ((EffMotion *)work->emit8[i]->file)->update = fx_1a7_op81ParticleMotions[i];
+                        work->emit8[i]->file->m.module.update = fx_1a7_op81ParticleMotions[i];
                     }
                     D_801E8970[i] = i * 0x155 + ex->btlfx_rand() % 4096;
                     D_801E89B0[i] = ex->btlfx_rand() % 200 + 0x64;
