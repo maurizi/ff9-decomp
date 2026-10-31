@@ -139,7 +139,7 @@ void akao_startSeq(s32 addr, s32 mask) {
             c->noteTicks = 3;
             c->gateTicks = 1;
             c->pc = g_akaoEmptyTrack;
-            c->voiceDirty |= 0x4400;
+            c->voiceDirty |= AKAO_VD_RELEASE_MODE | AKAO_VD_RELEASE_RATE;
             c->voiceAdsr2 = (c->voiceAdsr2 & 0xFFE0) | 5;
         }
         c->voice = 0x18;
@@ -433,7 +433,7 @@ void akao_markSeqDirty(a, c)
         do {
             if (mask & bit) {
                 mask ^= bit;
-                c->voiceDirty |= 3;
+                c->voiceDirty |= AKAO_VD_VOL;
             }
             c++;
             bit <<= 1;
@@ -452,7 +452,7 @@ void akao_markSeDirty(void) {
         do {
             if (mask & bit) {
                 mask ^= bit;
-                c->voiceDirty |= 3;
+                c->voiceDirty |= AKAO_VD_VOL;
             }
             c++;
             bit <<= 1;
@@ -503,7 +503,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
             c->loopStart[3] += d;
             c->noteTicks += 2;
             c->gateTicks += 2;
-            c->voiceDirty |= 0x1FF93;
+            c->voiceDirty |= AKAO_VD_VOL | AKAO_VD_PITCH | AKAO_VD_START_ADDR | AKAO_VD_ADSR1 | AKAO_VD_ADSR2 | AKAO_VD_LOOP_ADDR;
             akao_shiftInstrumentUp(g_akaoSeq->flags, c);
         } else {
             c->noteTicks = 4;
@@ -913,7 +913,7 @@ void akao_cmdSetSeVolume(AkaoArgs *a) {
             if ((mask & bit) && (c->seMask & a->arg1)) {
                 c->seVolume = ((u16)a->arg2 & 0x7F) << 8;
                 c->seVolumeSlideLen = 0;
-                c->voiceDirty |= 3;
+                c->voiceDirty |= AKAO_VD_VOL;
             }
         }
     } else {
@@ -921,7 +921,7 @@ void akao_cmdSetSeVolume(AkaoArgs *a) {
             if ((mask & bit) && c->seHandle == a->arg0) {
                 c->seVolume = ((u16)a->arg2 & 0x7F) << 8;
                 c->seVolumeSlideLen = 0;
-                c->voiceDirty |= 3;
+                c->voiceDirty |= AKAO_VD_VOL;
             }
         }
     }
@@ -969,7 +969,7 @@ void akao_cmdSetAllSeVolume(u16 *a) {
             if (!(c->seMask & 0x2000000)) {
                 c->seVolume = (*a & 0x7F) << 8;
                 c->seVolumeSlideLen = 0;
-                c->voiceDirty |= 3;
+                c->voiceDirty |= AKAO_VD_VOL;
             }
         }
     }
@@ -1004,7 +1004,7 @@ void akao_cmdSetSePan(AkaoArgs *a) {
             if ((mask & bit) && (c->seMask & a->arg1)) {
                 c->sePan = (u8)a->arg2 << 8;
                 c->sePanSlideLen = 0;
-                c->voiceDirty |= 3;
+                c->voiceDirty |= AKAO_VD_VOL;
             }
         }
     } else {
@@ -1012,7 +1012,7 @@ void akao_cmdSetSePan(AkaoArgs *a) {
             if ((mask & bit) && c->seHandle == a->arg0) {
                 c->sePan = (u8)a->arg2 << 8;
                 c->sePanSlideLen = 0;
-                c->voiceDirty |= 3;
+                c->voiceDirty |= AKAO_VD_VOL;
             }
         }
     }
@@ -1060,7 +1060,7 @@ void akao_cmdSetAllSePan(u8 *a) {
             if (!(c->seMask & 0x2000000)) {
                 c->sePan = *a << 8;
                 c->sePanSlideLen = 0;
-                c->voiceDirty |= 3;
+                c->voiceDirty |= AKAO_VD_VOL;
             }
         }
     }
@@ -1095,7 +1095,7 @@ void akao_cmdSetSePitch(AkaoArgs *a) {
             if ((mask & bit) && (c->seMask & a->arg1)) {
                 c->sePitch = (u8)a->arg2 << 8;
                 c->sePitchSlideLen = 0;
-                c->voiceDirty |= 0x10;
+                c->voiceDirty |= AKAO_VD_PITCH;
             }
         }
     } else {
@@ -1103,7 +1103,7 @@ void akao_cmdSetSePitch(AkaoArgs *a) {
             if ((mask & bit) && c->seHandle == a->arg0) {
                 c->sePitch = (u8)a->arg2 << 8;
                 c->sePitchSlideLen = 0;
-                c->voiceDirty |= 0x10;
+                c->voiceDirty |= AKAO_VD_PITCH;
             }
         }
     }
@@ -1148,7 +1148,7 @@ void akao_cmdSetAllSePitch(u8 *a) {
         if (!(c->seMask & 0x2000000)) {
             c->sePitch = *a << 8;
             c->sePitchSlideLen = 0;
-            c->voiceDirty |= 0x10;
+            c->voiceDirty |= AKAO_VD_PITCH;
         }
         c++;
     }
@@ -1279,7 +1279,7 @@ void akao_cmdSetMuteMask(s32 *arg0) {
     g_akaoMuteMask = *arg0;
     ch = g_akaoChannels;
     for (i = 0; i < 0x20; i++) {
-        ch->voiceDirty |= 3;
+        ch->voiceDirty |= AKAO_VD_VOL;
         ch++;
     }
 }
@@ -1333,7 +1333,7 @@ void akao_cmdResumeMusic(void) {
         do {
             if (mask & bit) {
                 mask &= ~bit;
-                ch->voiceDirty |= 0x2B13;
+                ch->voiceDirty |= AKAO_VD_VOL | AKAO_VD_PITCH | AKAO_VD_ATTACK_MODE | AKAO_VD_ATTACK_RATE | AKAO_VD_SUSTAIN_MODE | AKAO_VD_SUSTAIN_RATE;
             }
             bit <<= 1;
             ch++;
@@ -1392,7 +1392,7 @@ void akao_cmdResumeSe(void) {
         do {
             if (mask & bit) {
                 mask &= ~bit;
-                c->voiceDirty |= 0x2B13;
+                c->voiceDirty |= AKAO_VD_VOL | AKAO_VD_PITCH | AKAO_VD_ATTACK_MODE | AKAO_VD_ATTACK_RATE | AKAO_VD_SUSTAIN_MODE | AKAO_VD_SUSTAIN_RATE;
             }
             bit <<= 1;
             c++;

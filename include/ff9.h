@@ -944,7 +944,7 @@ typedef struct {
     s16 panLfoOut; /* current pan LFO offset */
     u8 pad116[0x118 - 0x116];
     u32 voice; /* voice number */
-    u32 voiceDirty;
+    u32 voiceDirty; /* AKAO_VD_*: voice registers akao_flushVoice still has to write */
     s32 voiceStartAddr;
     s32 voiceLoopAddr;
     u16 voicePitch; /* pitch */
@@ -954,6 +954,24 @@ typedef struct {
     s16 voiceVolL; /* volume left */
     s16 voiceVolR; /* volume right */
 } AkaoChannel; /* 0x134 */
+/* AkaoChannel.voiceDirty / AkaoVoiceRegs.dirty: which SPU voice registers akao_flushVoice writes. The bits are
+ * libspu's SpuVoiceAttr mask bits (SPU_VOICE_VOLL ... SPU_VOICE_LSAX); the AKAO ADSR ops set the ones they change. */
+#define AKAO_VD_VOLL 0x1
+#define AKAO_VD_VOLR 0x2
+#define AKAO_VD_VOL (AKAO_VD_VOLL | AKAO_VD_VOLR) /* akao_setVoiceVolume */
+#define AKAO_VD_PITCH 0x10 /* akao_setVoicePitch */
+#define AKAO_VD_START_ADDR 0x80 /* akao_setVoiceStartAddr */
+#define AKAO_VD_ATTACK_MODE 0x100 /* op B7 */
+#define AKAO_VD_SUSTAIN_MODE 0x200 /* op BB */
+#define AKAO_VD_RELEASE_MODE 0x400 /* op BF */
+#define AKAO_VD_ATTACK_RATE 0x800 /* op AD */
+#define AKAO_VD_DECAY_RATE 0x1000 /* op AE */
+#define AKAO_VD_SUSTAIN_RATE 0x2000 /* op B1 */
+#define AKAO_VD_RELEASE_RATE 0x4000 /* op B2 */
+#define AKAO_VD_SUSTAIN_LEVEL 0x8000 /* op AF */
+#define AKAO_VD_LOOP_ADDR 0x10000 /* akao_setVoiceLoopAddr */
+#define AKAO_VD_ADSR1 (AKAO_VD_ATTACK_MODE | AKAO_VD_ATTACK_RATE | AKAO_VD_DECAY_RATE | AKAO_VD_SUSTAIN_LEVEL) /* 0x9900: akao_setVoiceAdsr1 */
+#define AKAO_VD_ADSR2 (AKAO_VD_SUSTAIN_MODE | AKAO_VD_RELEASE_MODE | AKAO_VD_SUSTAIN_RATE | AKAO_VD_RELEASE_RATE) /* 0x6600: akao_setVoiceAdsr2 */
 void akao_calcChannelVoice(AkaoChannel *, u32); /* channel LFO / pitch update (akao_assignVoices passes the channel bit) */
 
 /* 8-byte key-split region of an AKAO instrument (AkaoChannel.unk18) */

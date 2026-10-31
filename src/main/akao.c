@@ -92,7 +92,7 @@ void akao_tickSe(void) {
             c = g_akaoChannels;
             do {
                 k--;
-                c->voiceDirty |= 0x10;
+                c->voiceDirty |= AKAO_VD_PITCH;
                 c++;
             } while (k != 0);
         }
@@ -144,7 +144,7 @@ void akao_tickSe(void) {
                     c->seVolumeSlideLen = (u16)c->seVolumeSlideLen - 1;
                     v = (s16)c->seVolume + c->seVolumeStep;
                     if ((v & 0xFF00) != ((s16)c->seVolume & 0xFF00)) {
-                        c->voiceDirty |= 3;
+                        c->voiceDirty |= AKAO_VD_VOL;
                     }
                     c->seVolume = v;
                 }
@@ -152,7 +152,7 @@ void akao_tickSe(void) {
                     c->sePanSlideLen--;
                     v = c->sePan + c->sePanStep;
                     if ((v & 0xFF00) != (c->sePan & 0xFF00)) {
-                        c->voiceDirty |= 3;
+                        c->voiceDirty |= AKAO_VD_VOL;
                     }
                     c->sePan = v;
                 }
@@ -160,7 +160,7 @@ void akao_tickSe(void) {
                     c->sePitchSlideLen = (u16)c->sePitchSlideLen - 1;
                     v = c->sePitch + c->sePitchStep;
                     if ((v & 0xFF00) != (c->sePitch & 0xFF00)) {
-                        c->voiceDirty |= 0x10;
+                        c->voiceDirty |= AKAO_VD_PITCH;
                     }
                     c->sePitch = v;
                 }
@@ -727,7 +727,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         c->gateTicks = c->noteTicks;
     }
     c->noteLen = c->noteTicks;
-    c->voiceDirty |= 0x4000;
+    c->voiceDirty |= AKAO_VD_RELEASE_RATE;
     if (op >= 0x8F) {
         if (c->isSe == 0) {
             g_akaoSeq->playingMask &= ~mask;
@@ -796,7 +796,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
             g_akaoSeState.playingMask |= mask;
         }
         op = c->flags;
-        c->voiceDirty |= 0x13;
+        c->voiceDirty |= AKAO_VD_VOL | AKAO_VD_PITCH;
         if (op & 1) {
             v = (c->vibratoDepthParam & 0x7F00) >> 8;
             if (!(c->vibratoDepthParam & 0x8000)) {
@@ -854,7 +854,7 @@ void akao_setChannelInstrument(AkaoChannel *ch, AkaoInstrument *p, s32 arg2) {
     ch->voiceLoopAddr = p->loopAddr;
     ch->voiceAdsr1 = p->adsr1;
     ch->voiceAdsr2 = p->adsr2;
-    ch->voiceDirty |= 0x1FF80;
+    ch->voiceDirty |= AKAO_VD_START_ADDR | AKAO_VD_ADSR1 | AKAO_VD_ADSR2 | AKAO_VD_LOOP_ADDR;
 }
 
 void akao_setChannelProgram(AkaoChannel *c, s32 i) {
@@ -990,7 +990,7 @@ void akao_opFEReturn(Unk8005F038 *a) {
 
 void akao_opA3(AkaoChannel *c) {
     c->expression = *c->pc++ << 8;
-    c->voiceDirty |= 3;
+    c->voiceDirty |= AKAO_VD_VOL;
 }
 
 void akao_opFE12(AkaoChannel *ch) {
@@ -1014,7 +1014,7 @@ void akao_opFE12(AkaoChannel *ch) {
 void akao_opA8(AkaoChannel *c) {
     s32 v = (s8)*c->pc++;
     c->volumeSlideLen = 0;
-    c->voiceDirty |= 3;
+    c->voiceDirty |= AKAO_VD_VOL;
     c->noteVolumeSlideLen = 0;
     c->volume = v << 23;
 }
@@ -1052,7 +1052,7 @@ void akao_opAA(AkaoChannel *ch) {
     s32 v = *p;
     ch->pc = p + 1;
     ch->panSlideLen = 0;
-    ch->voiceDirty |= 3;
+    ch->voiceDirty |= AKAO_VD_VOL;
     ch->pan = ((v + 0x40) & 0xFF) << 8;
 }
 
@@ -1131,7 +1131,7 @@ void akao_opB3(AkaoChannel *c) {
     AkaoInstrument *e = &g_akaoInstruments[c->instrument];
     c->voiceAdsr1 = e->adsr1;
     c->voiceAdsr2 = e->adsr2;
-    c->voiceDirty |= 0xFF00;
+    c->voiceDirty |= AKAO_VD_ADSR1 | AKAO_VD_ADSR2;
     c->flags &= 0xE6FFFFFF;
 }
 
@@ -1183,7 +1183,7 @@ void akao_opD8(AkaoChannel *c) {
         r = prod >> 7;
     }
     c->fineTuneOfs = r;
-    c->voiceDirty |= 0x10;
+    c->voiceDirty |= AKAO_VD_PITCH;
 }
 
 void akao_opD9(AkaoChannel *c) {
@@ -1197,7 +1197,7 @@ void akao_opD9(AkaoChannel *c) {
         r >>= 7;
     }
     c->fineTuneOfs = r;
-    c->voiceDirty |= 0x10;
+    c->voiceDirty |= AKAO_VD_PITCH;
 }
 
 void akao_opB4(AkaoChannel *c) {
@@ -1278,7 +1278,7 @@ void akao_opE4(AkaoChannel *c) {
 void akao_opB6(AkaoChannel *c) {
     c->vibratoOut = 0;
     c->flags &= ~1;
-    c->voiceDirty |= 0x10;
+    c->voiceDirty |= AKAO_VD_PITCH;
 }
 
 void akao_opB8(AkaoChannel *c) {
@@ -1333,7 +1333,7 @@ void akao_opE5(AkaoChannel *c) {
 void akao_opBA(AkaoChannel *c) {
     c->tremoloOut = 0;
     c->flags &= ~2;
-    c->voiceDirty |= 3;
+    c->voiceDirty |= AKAO_VD_VOL;
 }
 
 void akao_opBC(AkaoChannel *arg0) {
@@ -1378,7 +1378,7 @@ void akao_opE6(AkaoChannel *c) {
 void akao_opBE(AkaoChannel *c) {
     c->panLfoOut = 0;
     c->flags &= ~4;
-    c->voiceDirty |= 3;
+    c->voiceDirty |= AKAO_VD_VOL;
 }
 
 void akao_opC4(AkaoChannel *c, u32 mask) {
@@ -1472,7 +1472,7 @@ void akao_opAC(AkaoChannel *arg0) {
 
 void akao_opAD(AkaoChannel *c) {
     s32 v = *c->pc++;
-    c->voiceDirty |= 0x900;
+    c->voiceDirty |= AKAO_VD_ATTACK_MODE | AKAO_VD_ATTACK_RATE;
     c->flags |= 0x1000000;
     c->voiceAdsr1 = (c->voiceAdsr1 & 0x80FF) | (v << 8);
 }
@@ -1480,25 +1480,25 @@ void akao_opAD(AkaoChannel *c) {
 void akao_opAE(AkaoChannel *c, s32 arg1) {
     u16 t = c->voiceAdsr1 & 0xFF0F;
     c->voiceAdsr1 = t | (*c->pc++ << 4);
-    c->voiceDirty |= 0x1000;
+    c->voiceDirty |= AKAO_VD_DECAY_RATE;
 }
 
 void akao_opAF(AkaoChannel *c, s32 arg1) {
     u16 t = c->voiceAdsr1 & 0xFFF0;
     c->voiceAdsr1 = t | *c->pc++;
-    c->voiceDirty |= 0x8000;
+    c->voiceDirty |= AKAO_VD_SUSTAIN_LEVEL;
 }
 
 void akao_opB1(AkaoChannel *c) {
     s32 v = *c->pc++;
-    c->voiceDirty |= 0x2200;
+    c->voiceDirty |= AKAO_VD_SUSTAIN_MODE | AKAO_VD_SUSTAIN_RATE;
     c->flags |= 0x8000000;
     c->voiceAdsr2 = (c->voiceAdsr2 & 0xE03F) | (v << 6);
 }
 
 void akao_opB2(AkaoChannel *c) {
     s32 v = *c->pc++;
-    c->voiceDirty |= 0x4400;
+    c->voiceDirty |= AKAO_VD_RELEASE_MODE | AKAO_VD_RELEASE_RATE;
     c->flags |= 0x10000000;
     c->voiceAdsr2 = (c->voiceAdsr2 & 0xFFE0) | v;
 }
@@ -1509,7 +1509,7 @@ void akao_opB7(AkaoChannel *c) {
     if (v == 5) {
         c->voiceAdsr1 |= 0x8000;
     }
-    c->voiceDirty |= 0x100;
+    c->voiceDirty |= AKAO_VD_ATTACK_MODE;
 }
 
 void akao_opBB(AkaoChannel *c) {
@@ -1527,7 +1527,7 @@ void akao_opBB(AkaoChannel *c) {
         c->voiceAdsr2 = x | 0xC000;
         break;
     }
-    c->voiceDirty |= 0x200;
+    c->voiceDirty |= AKAO_VD_SUSTAIN_MODE;
 }
 
 void akao_opBF(AkaoChannel *c) {
@@ -1536,7 +1536,7 @@ void akao_opBF(AkaoChannel *c) {
     if (v == 7) {
         c->voiceAdsr2 |= 0x20;
     }
-    c->voiceDirty |= 0x400;
+    c->voiceDirty |= AKAO_VD_RELEASE_MODE;
 }
 
 void akao_opFE10(AkaoChannel *c) {
