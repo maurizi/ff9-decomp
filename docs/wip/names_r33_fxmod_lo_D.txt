@@ -111,3 +111,61 @@ fx_0ff D_801E7C68 fx_0ff_modelBlocks  # [code] effect file blocks of the three m
 fx_0ff D_801E7F28 fx_0ff_orbits  # [code] six model orbits (Fx0ffOrbit radius and angle) around the target, btlfx_pointAhead in fx_0ff_op80
 fx_0ff Fx0ffWork unk8=rot8 unk38=pos38 unkA8=rgbA8 unkBC=fadeInTimerBC unkC0=fadeOutTimerC0
 fx_0ff Fx0ffOrbit unk0=radius0 unk2=angle2 unk4=spin4
+
+## fx_0e1_0
+fx_0e1_0 D_801E9D7C fx_0e1_0_origin  # [code] effect origin, copied into the op80 work as the emitter position, the morph model position and the camera point 3
+fx_0e1_0 D_801E9D84 fx_0e1_0_spawnBones  # [code] five summon bones cycled by fx_0e1_0_op80SpawnPoint (Hi_GetSummonBonePos gives the spawn point)
+fx_0e1_0 D_801E9DB8 fx_0e1_0_spawnIndex  # [code] next index into fx_0e1_0_spawnBones, wraps at 5 in fx_0e1_0_op80SpawnPoint
+fx_0e1_0 D_801E9DBC fx_0e1_0_boneSpawnOn  # [code] set by fx_0e1_0_op80 state 2 at frame 0x50, fx_0e1_0_op80SpawnPoint uses the bones while set (else a far point) and the rings are drawn
+fx_0e1_0 D_801E9D98 fx_0e1_0_ribbonBones  # [code] bone pairs (Fx0e10BonePair) of the four ribbons, the a and b edge points of fxm_drawTexRibbonTrail
+fx_0e1_0 D_801E9DC0 fx_0e1_0_gradient  # [code] colour gradient sampled by btlfx_sampleGradient with the frame counter, the RGB of the spinning model (model60)
+fx_0e1_0 D_801E9E48 fx_0e1_0_ribbons  # [code] four 21-step ribbon histories (Fx0e10Seg) of fxm_drawTexRibbonTrail
+fx_0e1_0 D_801EA778 fx_0e1_0_op80Trails0  # [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_0e1_0 D_801EAE08 fx_0e1_0_op80Trails1  # [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_0e1_0 func_801E80A8 fx_0e1_0_drawWaveQuadGrid  # [code] nx by ny screen grid of POLY_FT4 (last row POLY_GT4 fading to black) whose vertices sway by sine waves (amp, phase steps), called twice by fx_0e1_0_op80
+fx_0e1_0 func_801E88F0 fx_0e1_0_scaleXY  # [code] v x and y times 5/4, the other four arguments ignored (no caller or data reference in the module)
+fx_0e1_0 Fx0e10EnvB unk60=summonModel60
+fx_0e1_0 Fx0e10Summon unk60=summonModel60
+fx_0e1_0 Fx0e10Seg unk0=a0 unk8=b8
+fx_0e1_0 Fx0e10BonePair unk0=boneA0 unk4=boneB4
+fx_0e1_0 Fx0e10Work80 unk0=state0 unk4=frame4 unk10=summonPos10 unk1C=summonScale1C unk3C=camPos3C unk4C=ribbonReset4C unk6C=morphPos6C unk78=morphScale78 unk84=pos84 unk90=scale90
+
+## fx_0ec
+fx_0ec D_801EB3D0 fx_0ec_shatterTris  # [code] 0x70 triangles Hi_SplitMdlVertex writes in fxm_shatterModel, moved by fxm_shatterModelUpdate
+fx_0ec D_801EBE50 fx_0ec_shatterShards  # [code] one flying shard (Fx0ecShard) per fx_0ec_shatterTris triangle, started by fxm_shatterModel
+fx_0ec D_801E98A4 fx_0ec_task  # [code] the op80 task entry stored in mode 1, fx_0ec_spawnImpact spawns into its pool (btlfx_poolSpawn)
+fx_0ec D_801E98A8 fx_0ec_modelRot  # [code] model rotation (plus 0x800) stored by fx_0ec_op80 state 3, the matrix fx_0ec_spawnImpact moves a landing point with
+fx_0ec D_801E98B0 fx_0ec_modelPos  # [code] model position stored by fx_0ec_op80 state 3, the translation of the fx_0ec_spawnImpact matrix
+fx_0ec D_801E98C0 fx_0ec_modelScale  # [code] model scale stored by fx_0ec_op80 state 3, ScaleMatrix of the fx_0ec_spawnImpact matrix
+fx_0ec D_801ECA90 fx_0ec_split  # [code] split buffer header (Fx0ecSplit) of fxm_splitModelInit, fxm_splitModelAdd and fxm_splitRelease
+fx_0ec D_801ECAB0 fx_0ec_splitShards  # [code] 300 shards (Fx0ecShard) taken by fxm_splitFreeShard, moved by fxm_splitUpdate
+fx_0ec D_801E98D0 fx_0ec_splitBuf  # [code] triangle buffer given to fxm_splitModelInit in fx_0ec_op80 state 2
+fx_0ec D_801E9850 fx_0ec_pointBlocks  # [code] two effect file blocks read as a point (offset 4) moved by the model matrix, the origins of the 0xB emitters in fx_0ec_op80 state 2
+fx_0ec func_801E77FC fx_0ec_spawnImpact  # [code] spawns a pool element (btlfx_poolSpawn into the fx_0ec_task pool) at the landing point moved by the model matrix, y 0, drawn by fx_0ec_op80PoolTask
+fx_0ec func_801E7B84 fxm_shatterModelUpdate  # [code] moves and spins the fxm_shatterModel shards after their start delay (btlfx_stepModuleParticle, bounce on the floor), rotates their triangles and clears them at the end of their life
+fx_0ec func_801E7F00 fxm_splitModelInit  # [code] resets the module split buffer header to buf and frees every split shard
+fx_0ec func_801E802C fxm_splitFreeShard  # [code] first free split shard (age below 0), or NULL
+fx_0ec func_801E8064 fxm_splitRelease  # [code] turns split triangles whose centre is below y into flying shards moving away from center, returns how many
+fx_0ec func_801E82D8 fxm_splitUpdate  # [code] moves and spins every live split shard (btlfx_stepModuleParticle), rotates its triangle, clears it on the floor (fx_0ec_spawnImpact) or at the end of its life
+fx_0ec Fx0ecWork unk10=pool10
+fx_0ec Fx0ecSplit unk0=modelCount0 unk2=triCount2 unk4=triCounts4 unkC=trisC unk10=next10 unk14=modelTris14
+fx_0ec Fx0ecShard unk0=pos0 unkC=velC unk14=spinX14 unk16=spinY16 unk18=age18
+fx_0ec Fx0ecWork80 unk0=state0 unk4=frame4 unk28=emitPos28 unk5C=scale5C
+
+## fx_0ed
+fx_0ed D_801E8C10 fx_0ed_facingBlocks  # [code] two emitter blocks, chosen by whether the caster and the camera face the same way, started at frame 0x1F of fx_0ed_op80
+fx_0ed D_801E8C18 fx_0ed_ribbonRgb0  # [code] CVECTOR colour of ribbon edge point a (fxm_drawRibbonTrail)
+fx_0ed D_801E8C1C fx_0ed_ribbonRgb1  # [code] CVECTOR colour of ribbon edge point b (fxm_drawRibbonTrail)
+fx_0ed D_801E8C20 fx_0ed_ribbonRgb2  # [code] CVECTOR colour of ribbon edge point c (fxm_drawRibbonTrail)
+fx_0ed D_801E8C24 fx_0ed_ribbonPt0  # [code] point in summon bone 9 space (fxm_getSummonBonePoint), ribbon edge point a
+fx_0ed D_801E8C2C fx_0ed_ribbonPt1  # [code] point in summon bone 9 space (fxm_getSummonBonePoint), ribbon edge point b
+fx_0ed D_801E8C34 fx_0ed_ribbonPt2  # [code] point in summon bone 9 space (fxm_getSummonBonePoint), ribbon edge point c
+fx_0ed D_801E8C84 fx_0ed_op80Trails0  # [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_0ed D_801E9494 fx_0ed_op80Trails1  # [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_0ed D_801E9234 fx_0ed_summonModel  # [code] summon model buffer (Unk80100DC054) given to btlfx_registerSummonModel by fx_0ed_op80
+fx_0ed D_801E9AF4 fx_0ed_ribbon0  # [code] 17-step ribbon history (Fx0edSeg) of the a-b ribbon (fxm_drawRibbonTrail)
+fx_0ed D_801E9C04 fx_0ed_ribbon1  # [code] 17-step ribbon history (Fx0edSeg) of the b-c ribbon (fxm_drawRibbonTrail)
+fx_0ed Fx0edWork81 unk0=state0 unk4=endFrame4 unk8=frame8 unkC=unitC unk10=pos10
+fx_0ed Fx0edWork80 unk0=state0 unk4=frame4 unk34=scale34
+fx_0ed Fx0edSummon unk60=summonModel60
+fx_0ed Fx0edSeg unk0=a0 unk8=b8
