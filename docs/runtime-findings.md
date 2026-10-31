@@ -2692,3 +2692,17 @@ Encounters entered with `tools/rt/enter_battle.py ENC --disc 1 --field 351 --bas
   SE_PAGE 0x417. Code-only (no runtime check): SE_USE_ITEM 0x6A, SE_MESSAGE 0x416, SE_COMPLETE 0x4ED,
   SE_GAME_START 0xC18, SE_CHOCOBO_CALL 0x44A, SE_ENCOUNTER_1-3, SE_ENEMY_DEATH_1/2, SE_FLEE_1-3.
 - confidence: high for the runtime ones.
+
+## Battle flags  (status: applied — BTL_UNIT_*, BTL_POPUP_* etc. in include/ovl_0b.h; the rest of those names are [code])
+- binary: ovl_0b; BtlUnit.flags at unit+0x68, koState +0x7D, popupFlags +0x7E; units[0] at 0x80108EFC (stride 0xD0).
+- method: `tools/emu.py start --disc 2 --state battle_iifa_command` (Vivi's command menu up), `read` the flags words,
+  `press cross` (Attack → target select), `press cross` (confirm), reads every 10-20 frames.
+- party at rest: Zidane 0x51010101, Vivi 0xD101E023, Eiko 0xD101EC4D, Amarant 0xD101E16F; enemy (units[4]) 0x11013280.
+  Bit 0 set on the party only; bits 1-4 = character id (0 Zidane, 1 Vivi, 6 Eiko, 7 Amarant) = BTL_UNIT_INDEX;
+  bits 5-7 = 0,1,2,3 for the party and 4 for the enemy = BTL_UNIT_SLOT; bits 8-9 = 1 for Zidane/Amarant (back row),
+  0 for Vivi/Eiko, 2 for the enemy = BTL_UNIT_ROW; bits 16 (ATB_ACTIVE), 24 (SHADOW), 28 (TARGETABLE) on every unit;
+  bit 30 (TRANCE_ENABLED) on the party only. Bits 10-15 and 31 are set on some units but no C code reads or writes
+  them (left unnamed).
+- Cross on Attack: the enemy gets 0x20000000 (BTL_UNIT_TARGETED, cursor on it); confirming clears it. About 80 frames
+  later the enemy has 0x20000 (BTL_UNIT_HIT_MOTION) and popupFlags 1 (BTL_POPUP_HP, damage number), then 0x80000
+  (BTL_UNIT_CMD_WAITING: its own command queued); all three are clear again 40-60 frames later. confidence: high.
