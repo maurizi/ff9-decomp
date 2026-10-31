@@ -19,3 +19,10 @@ Names left as placeholders (or names worth confirming) and what to watch in the 
 - fx_04c `((u8 *)env->state)[0x12]` (cleared by fx_04c_op81/op82 mode 1, set to 1 when op82 has visited every target):
   probably a script signal like BTLFX_SIG_WAIT; watch the effect script wait on it (ovl_0b, not this slice's header).
 - fx_04f `Fx04fWork.unk8` (never touched) and fx_00b / fx_02a `unkC` (zeroed in mode 1 only): confirm unused.
+- fx_062 `Fx062Strip.unk114` / fx_063 `Fx063Strip.unkFC` (random 8-0x20 / 0x40-0x80, written into every strip point's
+  `Fx06xPt.unk6`): colour or width of the btlfx_drawTrail strip, same question as fx_026 `Fx026Pt.unk6`.
+- fx_057 `Fx057Work80.unk0`.. done; `Fx057Work81.unk8` named otZ8 (btlfx_addRadiusSixth(0, 0), the otZ base of its
+  emitters and rings); worth confirming it is the target's depth bias.
+- fx_05d `Fx05dWork.unk40` (never touched) and `unk58` (set -1 in mode 1, never read): confirm unused.
+- fx_059 `Fx059Work80.posZ4` (the spiral head's z in the btlfx_pushViewRotation frame, -0x20 then +0xC8 per frame):
+  confirm it is depth toward the camera.

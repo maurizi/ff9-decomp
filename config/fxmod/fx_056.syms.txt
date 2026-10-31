@@ -3,3 +3,4 @@ fx_056_header = 0x801E7960; // [code] module header (0, init, ops), btlfx_update
 fx_056_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fxm_setSignal = 0x801E794C; // type:func [code] byte i of the btlfx state from signals (offset 0x10), every caller passes 7 = waitDone
 fx_056_env = 0x801E79A8; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_056_trails = 0x801E79B8; // [code] trail point buffer per target of the mode-1 emitter (Pool6CEntry trails, 0xA slots of 0x90 bytes), fx_056_op80

@@ -12,10 +12,10 @@ typedef struct {
     SVECTOR rot14; /* second model rotation */
     VECTOR pos1C; /* model position */
     VECTOR scale2C; /* model scale */
-    s32 unk3C; /* model brightness */
+    s32 rgb3C; /* model brightness */
     SVECTOR pos40; /* target body position */
     SVECTOR pos48; /* target position */
-    s16 unk50; /* fade-in countdown */
+    s16 fadeIn50; /* fade-in countdown */
     u16 model52; /* models */
     u16 model54;
     u16 model56;
@@ -29,14 +29,14 @@ typedef struct {
 } Fx052Work81; /* 0x14 */
 
 typedef struct {
-    s16 unk0; /* fade-in countdown */
-    s16 unk2; /* fade-out countdown */
+    s16 fadeIn0; /* fade-in countdown */
+    s16 fadeOut2; /* fade-out countdown */
 } Fx052Work82;
 
 extern Unk800F78A4 *fx_052_env;
 extern BtlModel fx_052_effModels[];
-extern s32 D_801E8218[];
-extern s32 D_801E8FD8[];
+extern s32 fx_052_trails[];
+extern s32 fx_052_trails2[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

@@ -6,10 +6,10 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
-/* ribbon history: two edge points per step, unk0.pad = live */
+/* ribbon history: two edge points per step, edge0.pad = live */
 typedef struct {
-    SVECTOR unk0;
-    SVECTOR unk8;
+    SVECTOR edge0;
+    SVECTOR edge8;
 } Fx05eSeg; /* 0x10 */
 
 #define gte_stszotz(r0) __asm__ volatile( \
@@ -20,18 +20,18 @@ typedef struct {
     : : "r"(r0) : "$12", "memory")
 
 typedef struct {
-    s32 unk0;
-    s32 unk4; /* frame */
+    s32 state0;
+    s32 frame4; /* frame */
     SVECTOR pos8; /* summoner position */
     SVECTOR rot10; /* summoner rotation */
     SVECTOR pos18; /* summon position */
-    SVECTOR unk20; /* ribbon head */
+    SVECTOR pos20; /* ribbon head */
     s32 model28; /* slice model */
     SVECTOR rot2C; /* summon rotation */
-    s32 unk34[3]; /* summon scale */
+    s32 scale34[3]; /* summon scale */
 } Fx05eWork; /* 0x40 */
 
-/* the summon slot behind env->unk4 */
+/* the summon slot behind env->loader */
 typedef struct {
     u8 pad0[0x54];
     struct {
@@ -39,22 +39,22 @@ typedef struct {
         BtlUnit9CC *motion180;
     } *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx05eSummon;
 
-extern s32 D_801E8860[2];
-extern SVECTOR D_801E8868;
-extern SVECTOR D_801E886C;
-extern SVECTOR D_801E8870;
-extern SVECTOR D_801E8874;
-extern SVECTOR D_801E887C;
-extern SVECTOR D_801E8884;
-extern u8 D_801E88D4[];
-extern Unk80100DC054 D_801E8E84;
+extern s32 fx_05e_facingBlocks[2];
+extern SVECTOR fx_05e_ribbonRgb0;
+extern SVECTOR fx_05e_ribbonRgb1;
+extern SVECTOR fx_05e_ribbonRgb2;
+extern SVECTOR fx_05e_bonePt0;
+extern SVECTOR fx_05e_bonePt1;
+extern SVECTOR fx_05e_bonePt2;
+extern u8 fx_05e_trails[];
+extern Unk80100DC054 fx_05e_summon;
 extern BtlModel fx_05e_effModels[];
-extern u8 D_801E90E4[];
-extern Fx05eSeg D_801E9744[];
-extern Fx05eSeg D_801E9854[];
+extern u8 fx_05e_trails2[];
+extern Fx05eSeg fx_05e_ribbonA[];
+extern Fx05eSeg fx_05e_ribbonB[];
 extern Unk800F78A4 *fx_05e_env;
 
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx05eSeg *buf, s32 abr);

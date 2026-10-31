@@ -5,7 +5,7 @@ static s32 fx_059_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode != 1) {
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, D_801E7D50[work->unkC]), pos, 0, 0x1000, frame, 1,
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_059_tailBlocks[work->kindC]), pos, 0, 0x1000, frame, 1,
                           0x1000 - (frame << 12) / 12, 0, 0);
         if (frame >= 8) {
             return 1;
@@ -27,40 +27,40 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x1C;
     } else if (mode == 1) {
         s32 n = *arg4;
-        work->unk0 = 0;
-        work->unk4 = -0x20;
-        work->unkC = n - 1;
-        work->unk8 = (n << 10) - 0x400;
+        work->state0 = 0;
+        work->posZ4 = -0x20;
+        work->kindC = n - 1;
+        work->angle8 = (n << 10) - 0x400;
         fx_059_env = env;
-        work->unk10 = (ex->btlfx_rand() & 0x1F) + 0x100;
-        work->unk18 = 0;
-        work->unk14 = (Unk800DA1B8 *)ex->btlfx_allocTaskMem(entry, ex->btlfx_poolSize(8, 12));
-        ex->btlfx_poolInit(work->unk14, entry, 8, 12, (s32)fx_059_op80PoolTask);
+        work->angleStep10 = (ex->btlfx_rand() & 0x1F) + 0x100;
+        work->viewRot18 = 0;
+        work->pool14 = (Unk800DA1B8 *)ex->btlfx_allocTaskMem(entry, ex->btlfx_poolSize(8, 12));
+        ex->btlfx_poolInit(work->pool14, entry, 8, 12, (s32)fx_059_op80PoolTask);
         return 0;
     } else {
         frame = entry->frame;
-        rot.unk4 = work->unk18;
-        work->unk18 += 0x10;
+        rot.rotZ4 = work->viewRot18;
+        work->viewRot18 += 0x10;
         fn = ex->btlfx_pushViewRotation;
         rot.unk0 = 0;
         fn((SVECTOR *)&rot);
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             r = 0xA0 - frame * 0xA0 / 6;
-            pos.vx = (ex->math_cos(work->unk8) * r) >> 12;
-            pos.vy = (ex->math_sin(work->unk8) * r) >> 12;
-            pos.vz = work->unk4;
-            work->unk4 += 0xC8;
-            work->unk8 += work->unk10;
-            p = ex->btlfx_poolSpawn((s16 *)work->unk14);
+            pos.vx = (ex->math_cos(work->angle8) * r) >> 12;
+            pos.vy = (ex->math_sin(work->angle8) * r) >> 12;
+            pos.vz = work->posZ4;
+            work->posZ4 += 0xC8;
+            work->angle8 += work->angleStep10;
+            p = ex->btlfx_poolSpawn((s16 *)work->pool14);
             if (p != NULL) {
                 ((s32 *)p)[0] = ((s32 *)&pos)[0];
                 ((s32 *)p)[1] = ((s32 *)&pos)[1];
             }
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, D_801E7D38[work->unkC]), &pos, 0, 0x1000, 0,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_059_headBlocks[work->kindC]), &pos, 0, 0x1000, 0,
                               1, -1, 0, 0);
             if (frame >= 6) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
@@ -71,8 +71,8 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        if (work->unk14 != NULL) {
-            ex->btlfx_poolUpdate(work->unk14);
+        if (work->pool14 != NULL) {
+            ex->btlfx_poolUpdate(work->pool14);
         }
         ex->btlfx_popViewMatrix();
     }

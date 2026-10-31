@@ -12,13 +12,13 @@ typedef struct {
     SVECTOR rot18; /* model rotation */
     VECTOR pos20; /* model position */
     VECTOR scale30; /* model scale */
-    s16 unk40; /* model brightness */
-    s16 unk42; /* screen tint */
+    s16 rgb40; /* model brightness */
+    s16 tint42; /* screen tint */
     u16 model44; /* model */
 } Fx05aWork; /* 0x48 */
 
 extern Unk800F78A4 *fx_05a_env;
 extern BtlModel fx_05a_effModels[];
-extern s32 D_801E7BF0[];
+extern s32 fx_05a_trails[];
 
 #endif

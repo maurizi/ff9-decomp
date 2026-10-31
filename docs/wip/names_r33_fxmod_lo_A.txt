@@ -306,3 +306,112 @@ fx_04e D_801E7DA0 fx_04e_trails2  # [code] trail point buffer of the frame-0x13 
 
 ## fx_04f
 fx_04f Fx04fWork unk0=state0 unk24=pos24 unk2C=pos2C unk40=radius40 unk48=frame48 unk4C=scaleX4C unk50=scaleZ50
+
+## fx_051
+fx_051 D_801E799C fx_051_emitRot  # [code] rotation whose y is the target's (btlfx_getUnitRot in fx_051_op80 mode 1), copied into the frame-0x12 emitter's rot
+fx_051 Fx051Work unk18=target18
+
+## fx_052
+fx_052 D_801E8218 fx_052_trails  # [code] trail point buffer of the frame-0x1E emitter (Pool6CEntry trails, 0x14 slots of 0xB0 bytes), fx_052_op80
+fx_052 D_801E8FD8 fx_052_trails2  # [code] trail point buffer of the frame-0x50 emitter (Pool6CEntry trails, 0x14 slots of 0xB0 bytes), fx_052_op80
+fx_052 Fx052Work80 unk3C=rgb3C unk50=fadeIn50
+fx_052 Fx052Work82 unk0=fadeIn0 unk2=fadeOut2
+
+## fx_053
+fx_053 D_801E7CBC fx_053_trails  # [code] trail point buffer of the fx_053_op81 emitter (Pool6CEntry trails, 6 slots of 0x88 bytes)
+fx_053 Fx053Work82 unk18=target18
+
+## fx_055
+fx_055 D_801E78CC fx_055_trails  # [code] trail point buffer of the mode-1 emitter (Pool6CEntry trails, 0xA slots of 0x90 bytes), fx_055_op80
+
+## fx_056
+fx_056 D_801E79B8 fx_056_trails  # [code] trail point buffer per target of the mode-1 emitter (Pool6CEntry trails, 0xA slots of 0x90 bytes), fx_056_op80
+fx_056 Fx056Work unk10=target10
+
+## fx_057
+fx_057 D_801EA714 fx_057_targetPos  # [code] target body position stored by fx_057_op80 mode 1, where fx_057_op81 moves its centre in state 1
+fx_057 D_801E8EB4 fx_057_trails  # [code] trail point buffer of the mode-1 emitter (Pool6CEntry trails, 0x10 slots of 0x184 bytes), read back by fx_057_op80ElemDraw
+fx_057 D_801EA708 fx_057_fade  # [code] 0 to 0x1000 fade of fx_057_op80, alpha of emit2C and brightness of the models and rings
+fx_057 D_801EA6F4 fx_057_camRest  # [code] Fx057Work80.pos10 copied in mode 1, camera point 3 eases back to it in fx_057_op80ElemDraw
+fx_057 D_801EA6FC fx_057_headPos  # [code] position of the slot-1 particle written by fx_057_op80ElemDraw, the centre of the fx_057_op80 rings
+fx_057 Fx057Work81 unk0=state0 unk4=frame4 unk8=otZ8 unk1C=pos1C
+fx_057 Fx057Work80 unk0=state0 unk4=frame4 unk18=pos18
+
+## fx_058
+fx_058 D_801E7EF0 fx_058_trailBufs  # [code] btlfx_drawTrail buffer per spawned item (0x54 bytes each), Fx058Item.trail1C in fx_058_op80
+fx_058 Fx058Item unk0=state0 unk4=speed4 unk8=turn8 unkC=posC unk1C=trail1C unk20=target20
+fx_058 Fx058Work unk1C=count1C unk20=frame20
+
+## fx_059
+fx_059 D_801E7D38 fx_059_headBlocks  # [code] effect file block per index (Fx059Work80.kindC) of the particle drawn at the spiral head, fx_059_op80
+fx_059 D_801E7D50 fx_059_tailBlocks  # [code] effect file block per index (Fx059Work80.kindC) of the fading pool particles, fx_059_op80PoolTask
+fx_059 Fx059Work80 unk0=state0 unk4=posZ4 unk8=angle8 unkC=kindC unk10=angleStep10 unk14=pool14 unk18=viewRot18
+fx_059 Fx059Rot unk4=rotZ4
+
+## fx_05a
+fx_05a D_801E7BF0 fx_05a_trails  # [code] trail point buffer of the mode-1 emitter (Pool6CEntry trails, 0xA slots of 0xB0 bytes), fx_05a_op80
+fx_05a Fx05aWork unk40=rgb40 unk42=tint42
+
+## fx_05d
+fx_05d D_801E8048 fx_05d_morphBlocks  # [code] effect file blocks of the six morph models registered into Fx05dWork.model5C by fx_05d_op80
+fx_05d D_801E8558 fx_05d_trails  # [code] trail point buffer of the frame-0x23 emitter (Pool6CEntry trails, 0x35 slots of 0x28 bytes), fx_05d_op80
+fx_05d D_801E8DC0 fx_05d_emitPos  # [code] origin of the frame-0 emitter, moved to Fx05dWork.pos44 every frame by fx_05d_op80
+fx_05d D_801E8DA0 fx_05d_rotPosKeys  # [code] rotation+position track (fxm_rotPosTrackInit, block 1) of the first morph model, fx_05d_op80
+fx_05d D_801E8DA8 fx_05d_rotPosKeys2  # [code] rotation+position track (fxm_rotPosTrackInit, block 0x10) of the second morph model, fx_05d_op80
+fx_05d D_801E8DB0 fx_05d_scaleKeys  # [code] scale track (fxm_vecTrackInit, block 2) of the first morph model, fx_05d_op80
+fx_05d D_801E8DB8 fx_05d_scaleKeys2  # [code] scale track (fxm_vecTrackInit, block 0xF) of the second morph model, fx_05d_op80
+fx_05d Fx05dKey12 unk0=px0 unk2=py2 unk4=pz4 unk6=rx6 unk8=ry8 unkA=rzA
+fx_05d Fx05dTrack12 unk0=count0 unk4=keys4
+fx_05d Fx05dTrack6 unk0=count0 unk4=keys4
+fx_05d Fx05dWork unk44=pos44 unk54=morphFrame54
+
+## fx_05e
+fx_05e D_801E8860 fx_05e_facingBlocks  # [code] two emitter blocks of frame 0x1F, chosen by whether the summoner and the camera face the same side, fx_05e_op80
+fx_05e D_801E8868 fx_05e_ribbonRgb0  # [code] CVECTOR edge colour given to fxm_drawRibbonTrail (first ribbon, side a), fx_05e_op80
+fx_05e D_801E886C fx_05e_ribbonRgb1  # [code] CVECTOR edge colour given to fxm_drawRibbonTrail (shared middle edge), fx_05e_op80
+fx_05e D_801E8870 fx_05e_ribbonRgb2  # [code] CVECTOR edge colour given to fxm_drawRibbonTrail (second ribbon, side c), fx_05e_op80
+fx_05e D_801E8874 fx_05e_bonePt0  # [code] point in summon bone 9 space given to fxm_getSummonBonePoint, ribbon edge a in fx_05e_op80
+fx_05e D_801E887C fx_05e_bonePt1  # [code] point in summon bone 9 space given to fxm_getSummonBonePoint, ribbon edge b in fx_05e_op80
+fx_05e D_801E8884 fx_05e_bonePt2  # [code] point in summon bone 9 space given to fxm_getSummonBonePoint, ribbon edge c in fx_05e_op80
+fx_05e D_801E88D4 fx_05e_trails  # [code] trail point buffer of the frame-0 emitter (Pool6CEntry trails, 0x18 slots of 0x3C bytes), fx_05e_op80
+fx_05e D_801E90E4 fx_05e_trails2  # [code] trail point buffer of the frame-0x26 emitter (Pool6CEntry trails, 0x18 slots of 0x44 bytes), fx_05e_op80
+fx_05e D_801E8E84 fx_05e_summon  # [code] summon model slot (Unk80100DC054) given to btlfx_registerSummonModel by fx_05e_op80 mode 1
+fx_05e D_801E9744 fx_05e_ribbonA  # [code] edge history of the a-b ribbon (Fx05eSeg), fxm_drawRibbonTrail in fx_05e_op80
+fx_05e D_801E9854 fx_05e_ribbonB  # [code] edge history of the b-c ribbon (Fx05eSeg), fxm_drawRibbonTrail in fx_05e_op80
+fx_05e Fx05eSeg unk0=edge0 unk8=edge8
+fx_05e Fx05eWork unk0=state0 unk4=frame4 unk20=pos20 unk34=scale34
+fx_05e Fx05eSummon unk60=model60
+
+## fx_05f
+fx_05f D_801E8278 fx_05f_scrollDst  # [code] VRAM x y pairs per frame (frame % 23 + 1), the destination of btlfx_drawScrollMove in fx_05f_op80
+fx_05f Fx05fWork81 unk0=home0 unk40=count40 unk44=jump44 unk48=height48
+fx_05f Fx05fWork80 unkC=posC
+fx_05f Fx05fPair unk0=x0 unk2=y2
+
+## fx_060
+fx_060 D_801E7EF0 fx_060_trails  # [code] trail point buffer of the block-1 emitter (Pool6CEntry trails, 0x13 slots of 0x6C bytes), fx_060_op80
+fx_060 D_801E7920 fx_060_trails2  # [code] trail point buffer of the block-9 emitter (Pool6CEntry trails, 0xC slots of 0x7C bytes), fx_060_op80
+
+## fx_061
+fx_061 D_801E7EF4 fx_061_trails  # [code] trail point buffer of the block-7 emitter (Pool6CEntry trails, 0x13 slots of 0x6C bytes), fx_061_op80
+fx_061 D_801E7924 fx_061_trails2  # [code] trail point buffer of the block-2 emitter (Pool6CEntry trails, 0xC slots of 0x7C bytes), fx_061_op80
+
+## fx_062
+fx_062 D_801E8B5C fx_062_bgOt  # [code] ordering table given to btlfx_drawBgOffscreen at frame 0 of fx_062_op80
+fx_062 D_801E8F5C fx_062_targetBodyPos  # [code] target body position (btlfx_getUnitBodyPos), refreshed while the target moves in fx_062_op80
+fx_062 D_801E8F64 fx_062_targetHome  # [code] target home position (btlfx_getUnitHomePos), base of the target's lift in fx_062_op80
+fx_062 D_801E8F6C fx_062_targetScale  # [code] target scale (btlfx_getUnitScale), shrunk to half and restored by fx_062_op80
+fx_062 D_801E8F78 fx_062_targetHeight  # [code] target height (btlfx_getUnitHeight), the target only shrinks when it is above 0x200
+fx_062 D_801E8F7C fx_062_strips  # [code] the five curved btlfx_drawTrail strips (Fx062Strip) of fx_062_op80
+fx_062 Fx062Strip unk5C=pos5C unk64=pos64 unk6C=jitter6C unkB4=spinB4 unkB8=spinB8 unkBC=jitterVelBC unkE0=jitterVelE0 unk104=angle104 unk108=angle108 unk10C=x10C unk110=z110 unk118=timer118
+fx_062 Fx062Model unk0=model0 unk4=rot4 unkC=scaleC
+fx_062 Fx062Work unk0=timers0 unk40=models40
+
+## fx_063
+fx_063 D_801E8A40 fx_063_bgOt  # [code] ordering table given to btlfx_drawBgOffscreen at frame 0 of fx_063_op80
+fx_063 D_801E8E40 fx_063_strips  # [code] the ten curved btlfx_drawTrail strips (Fx063Strip) of fx_063_op80
+fx_063 D_801E9870 fx_063_unitBob  # [code] per-target bobbing state (Fx063Unit), btlfx_setUnitPos every frame in fx_063_op80
+fx_063 Fx063Strip unk5C=jitter5C unkA4=jitterVelA4 unkC8=jitterVelC8 unkEC=angleEC unkF0=angleF0 unkF4=spinF4 unkF8=spinF8 unk100=timer100
+fx_063 Fx063Unit unk0=timer0 unk4=phase4 unk8=phaseSpeed8 unkC=homeC unk14=pos14
+fx_063 Fx063Model unk0=model0 unk4=rot4 unkC=scaleC
+fx_063 Fx063Work unk0=timers0 unk40=models40 unkA4=posA4

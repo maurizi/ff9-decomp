@@ -8,11 +8,11 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8; /* target body position */
-    SVECTOR rot10; /* caster rotation */
-    s32 unk18; /* target index */
+    SVECTOR rot10; /* target rotation */
+    s32 target18; /* target index */
 } Fx051Work;
 
-extern SVECTOR D_801E799C;
+extern SVECTOR fx_051_emitRot;
 extern Unk800F78A4 *fx_051_env;
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
