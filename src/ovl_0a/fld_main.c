@@ -95,7 +95,7 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_FADE)) {
                 game_updateFade();
             }
-            if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_ENCOUNTER)) {
+            if (!(g_gameState->gameData->ctx.field->flags & 4)) {
                 fld_updateEncounter();
             }
             if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_TIMER)) {
@@ -356,7 +356,7 @@ void fld_load(s32 arg0) {
     game_freezeScreen();
     g_gameState->flags &= ~0x30F;
     g_gameState->gameData->flags |= GD_NO_FLIP;
-    g_gameState->gameData->ctx.field->flags |= FLD_MAP_NO_ENCOUNTER;
+    g_gameState->gameData->ctx.field->flags |= 4;
     game_setClearColor(0, 0, 0);
     g_padPortMask[0] &= 0xFFFF0006;
     for (i = 1; i >= 0; i--) {
@@ -533,7 +533,7 @@ void fld_initScene(void) {
     sc->sprites = NULL;
     sc->shadows = NULL;
     sc->heapTop = 0;
-    sc->movieState = 0;
+    sc->movieState = FLD_MOVIE_IDLE;
     sc->movieRgb24 = 0;
     sc->movieFile = 0;
     sc->movieList = 0;

@@ -40,6 +40,8 @@ typedef struct {
     s16 offset[3]; /* offset */
     s16 otOffset;
 } FieldSprite; /* 0x24 */
+/* FieldSprite.flags */
+#define FLD_SPR_VISIBLE 0x1 /* fld_drawSprites draws the entry; fld_resetSprite sets it */
 
 /* initialised by fld_initSprites */
 typedef struct FieldSpriteSet {
@@ -86,6 +88,7 @@ typedef struct {
     FieldEvtObj *obj;
 } FieldEvtCtx;
 /* FieldEvtCtx.flags / FieldObjSlot.flags */
+#define FLD_OBJ_LOADED 0x1 /* fld_setupActorModel finished setting up the slot */
 #define FLD_OBJ_TILT 0x2 /* fld_drawModels tilts the model to the floor (bgi_getActorTilt) */
 #define FLD_OBJ_DIR_LIGHT 0x4 /* fld_applyLights uses the directional light */
 #define FLD_OBJ_NO_SHADOW 0x10 /* fld_drawShadow skips the object (event ops 0x7F/0x80; runtime: removes Zidane's shadow) */
@@ -95,6 +98,7 @@ typedef struct {
 #define FLD_OBJ_COLOR_SET 0x400 /* fld_setSlotColor; fld_applyLights keeps it */
 #define FLD_OBJ_SEMITRANS 0x10000 /* fld_modelCommand 0, applied by fld_applyModelCommands */
 #define FLD_OBJ_SEMITRANS_AGAIN 0x20000 /* fld_applyModelCommands: repeat the semi-transparency write for the other buffer */
+#define FLD_OBJ_ABR_CHANGED 0x40000 /* fld_modelCommand 0 got a new abr; fld_applyModelCommands reapplies it and clears this */
 #define FLD_OBJ_CLIP_Y 0x100000 /* fld_modelCommand 4: fld_drawModels uses the ClipY mesh functions */
 
 /* 0x330-byte block, FieldMapObj.unk14 (allocated by fld_allocScene) */
@@ -158,6 +162,24 @@ typedef struct {
 #define FLD_SCN_PRELOADS_QUEUED 0x100000 /* fld_preloadHook queued fld_queueFieldPreloads */
 #define FLD_SCN_PRELOAD_REQUESTED 0x200000 /* fld_preloadRequest accepted a request */
 #define FLD_SCN_PRELOAD_RESTART 0x800000 /* fld_preloadHook re-queues once the queue drains */
+/* FieldScene.movieState (fld_movieUpdate) */
+#define FLD_MOVIE_IDLE 0
+#define FLD_MOVIE_LOAD_OVL 1 /* fld_movieStart; once the CD is idle, start reading the movie overlay (OVL_MOVIE) */
+#define FLD_MOVIE_READ_OVL 2 /* reading it; then sets FLD_MVF_FLUSH_CACHE */
+#define FLD_MOVIE_FIND 3 /* after the cache flush: cd_findFile the movie, cd_seekStreamAsync */
+#define FLD_MOVIE_SEEK 4 /* waiting for the seek */
+#define FLD_MOVIE_READY 5 /* waiting for FLD_MVF_PLAY, then MBG_init / mbg_play */
+#define FLD_MOVIE_PLAYING 6 /* mbg_update each frame */
+#define FLD_MOVIE_STOPPING 7 /* fld_movieStop (also the mbg end callback); waits for the CD, then fld_movieFinish */
+#define FLD_MOVIE_DONE 8
+/* g_fieldMovieFlags */
+#define FLD_MVF_PLAY 0x1 /* fld_movieCommand 2: start playback once ready */
+#define FLD_MVF_RUNNING 0x2 /* queued a frame after mbg_play; fld_movieUpdate updates and fld_isMoviePlaying reports only with it */
+#define FLD_MVF_STOPPED 0x4 /* fld_movieStop ran */
+#define FLD_MVF_FLUSH_CACHE 0x8 /* movie overlay loaded: fld_endFrame flushes the I-cache and clears it */
+#define FLD_MVF_END_FADE 0x20 /* the volume fade (akao_sendCmdE5) for the last frames was sent */
+#define FLD_MVF_CAMERA 0x40 /* models and sprites use the movie's geometry offset (mbg_getGeomOffset); one frame at the start */
+#define FLD_MVF_END_DONE 0x100 /* the end-of-movie flag restore was done or queued */
 
 /* FieldScene.exitReason: why the field loop ended (fld_main sets it from the event system's result, fld_exit
  * switches on it and sets GameState.mode to the same number; docs/encounters.md, docs/runtime-findings.md) */
@@ -196,7 +218,6 @@ typedef struct FieldMap {
 } FieldMap;
 /* FieldMap.flags (g_fieldFlagQueue.mapFlags queues changes one frame ahead) */
 #define FLD_MAP_NO_WINDOWS 0x1 /* fld_main skips func_80023A0C (win_updateAll/win_drawAll) */
-#define FLD_MAP_NO_ENCOUNTER 0x4 /* fld_main skips fld_updateEncounter; fld_load sets it; while clear, the sound loader (fld_soundCommand) keeps 0x3000 more heap free */
 #define FLD_MAP_NO_BGI_ANIM 0x8 /* fld_main skips bgi_updateAnims/bgi_updateFloorMoves */
 #define FLD_MAP_NO_VIBRATION 0x10 /* fld_main skips vib_update */
 #define FLD_MAP_NO_DISPENV 0x20 /* fld_endFrame skips PutDispEnv */
@@ -897,6 +918,9 @@ typedef struct FieldActorExt {
     SVECTOR4 mirrorNormal; /* mirror plane normal */
     FieldColor tint; /* rgb, [3]: frames left */
 } FieldActorExt; /* 0x110 */
+/* FieldActorExt.flags */
+#define FLD_EXT_BUILT 0x1 /* fld_modelCommand 8-11 built the mirrored copy of the model */
+#define FLD_EXT_MIRROR 0x01000000 /* fld_modelCommand 8: fld_applyModelCommands reflects and draws the copy */
 
 /* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
 /* rgb + flag byte (bit 24 of the word: pending) */
@@ -911,6 +935,9 @@ typedef struct FieldActorInfo {
     FieldColor nextColor; /* next colour */
     FieldActorExt *mirror;
 } FieldActorInfo;
+/* FieldActorInfo.flags: the object's flags as last applied, so changes can be detected */
+#define FLD_INFO_DIR_LIGHT 0x4 /* FLD_OBJ_DIR_LIGHT when fld_applyLights last ran */
+#define FLD_INFO_SEMITRANS 0x10000 /* FLD_OBJ_SEMITRANS when fld_applyModelCommands last ran */
 
 /* background VRAM animation (fldmdl_updateTexAnims) */
 typedef struct {
@@ -1082,7 +1109,7 @@ FieldLight *fld_findFloorLight(Unk800B3254 *, FieldEvtCtx *, s16 *);
 
 /* object model slot (game_getModel) */
 typedef struct {
-    s32 flags; /* flags: 1 = loaded */
+    s32 flags; /* FLD_OBJ_* */
     s32 modelId; /* file id */
     ModelObj *model;
     void *actor; /* actor */

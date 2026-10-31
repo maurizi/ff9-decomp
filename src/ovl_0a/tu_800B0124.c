@@ -452,7 +452,7 @@ state:
         }
         g_gameState->gameData->soundLoadDest = SCENE->heapTop ? SCENE->heapTop : g_modeHeap;
         g_gameState->gameData->soundLoadChunk = 0x156F00 - (g_gameState->gameData->soundLoadDest - (s32)g_loadAreaEnd);
-        if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_ENCOUNTER)) {
+        if (!(g_gameState->gameData->ctx.field->flags & 4)) {
             g_gameState->gameData->soundLoadChunk -= 0x3000;
         }
         m = g_gameState->gameData->soundLoadChunk;
@@ -469,7 +469,7 @@ state:
             if (g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk < g_gameState->gameData->soundBankSize) {
                 g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->cdRead[0].dest;
                 d = 0x156F00 - ((s32)g_gameState->gameData->cdRead[0].dest - (s32)g_loadAreaEnd);
-                if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_ENCOUNTER)) {
+                if (!(g_gameState->gameData->ctx.field->flags & 4)) {
                     d -= 0x3000;
                 }
                 d = d / 2048 * 2048;
@@ -973,7 +973,7 @@ s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
     n = (s32)arg0->dest + n - a;
     if ((id & 0xFFFF) != 0x84) {
         sc = gd->ctx.field->area->scene;
-        if (sc->flags & 0x10) {
+        if (sc->flags & FLD_SCN_BANK_SLOT) {
             r = akao_loadBankInSlot(a, sc->soundBankSlot, 0);
         } else {
             r = akao_uploadBank(a, n, 0);
@@ -1055,7 +1055,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
         l = (Unk800B3294 *)fld_findLightColor(lt, c->modelId);
         shade = c->flags & FLD_OBJ_DIR_LIGHT;
         fl = fld_findFloorLight(lt, c, &floor);
-        if ((u8)info->litFloor != (u8)floor || shade != (info->flags & 4) || !(c->flags & FLD_OBJ_LIT)) {
+        if ((u8)info->litFloor != (u8)floor || shade != (info->flags & FLD_INFO_DIR_LIGHT) || !(c->flags & FLD_OBJ_LIT)) {
             chg = 1;
         }
         if (chg) {
@@ -1099,7 +1099,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
             g_gameState->gameData->ctx.field->area->scene->shadows[c->obj->uid].params.scaleZ = dy * 12;
         }
         info->litFloor = floor;
-        info->flags = (info->flags & ~4) | shade;
+        info->flags = (info->flags & ~FLD_INFO_DIR_LIGHT) | shade;
     }
     for (i = arg1 - 1; i >= 0; i--) {
         c = arg0[i];
@@ -1691,7 +1691,7 @@ s32 fld_preloadHook(void) {
         return 1;
     }
     s = g_gameState->gameData->ctx.field->area->scene;
-    if (s->flags & 0x800000) {
+    if (s->flags & FLD_SCN_PRELOAD_RESTART) {
         if (preload_poll() <= 0) {
             preload_reset();
             if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_PRELOADS_QUEUED)) {
@@ -1703,10 +1703,10 @@ s32 fld_preloadHook(void) {
         }
         return 1;
     }
-    if (s->flags & 0x100000) {
+    if (s->flags & FLD_SCN_PRELOADS_QUEUED) {
         return 0;
     }
-    if (s->flags & 0x10000) {
+    if (s->flags & FLD_SCN_ACTORS_READY) {
         fld_setPreloadCursor(s->heapTop);
         fld_queueFieldPreloads();
         g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_PRELOADS_QUEUED;
