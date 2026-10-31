@@ -46,7 +46,7 @@ s32 fld_loadModelBundle(s32 arg0) {
     s32 y2;
 
     f = file_find(DIR_CHAR_MODELS, arg0);
-    size = (f->unkC - f->sector) << 11;
+    size = (f->link - f->sector) << 11;
     c = fld_findModelCache(arg0);
     if (c->addr == 0) {
         cdRead_init(g_gameState->gameData->cdRead, f->sector, size,
@@ -239,7 +239,7 @@ s32 fld_depFindByLink(s32 arg0) {
     FileEntry *e = t->entries;
 
     for (i = t->count - 1; i >= 0; i--) {
-        if (e[i].unkC == arg0) {
+        if (e[i].link == arg0) {
             return e[i].id;
         }
     }
@@ -1168,7 +1168,7 @@ void fld_movieUpdate(void) {
         if (cd_getState() == 0) {
             if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
                 FileEntry *f = file_find(DIR_OVERLAYS, OVL_MOVIE);
-                cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11,
+                cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11,
                               (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
             g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_READ_OVL;

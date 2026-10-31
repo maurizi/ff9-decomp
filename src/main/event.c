@@ -1286,11 +1286,11 @@ s32 evt_execInstr(void) {
         return 1;
     case EVT_OP_SET_PATH: {
         u32 cnt;
-        pt = ((Unk80039C38Quad *)g_evtActor)->unk18;
-        cnt = ((Unk80039C38Quad *)g_evtActor)->unk14 = evt_getArg8_inline();
+        pt = ((Unk80039C38Quad *)g_evtActor)->pts;
+        cnt = ((Unk80039C38Quad *)g_evtActor)->count = evt_getArg8_inline();
         while (cnt-- != 0) {
-            pt->unk0 = evt_getArg16_inline();
-            pt->unk2 = evt_getArg16_inline();
+            pt->x = evt_getArg16_inline();
+            pt->z = evt_getArg16_inline();
             pt++;
         }
         return 0;
@@ -1298,20 +1298,20 @@ s32 evt_execInstr(void) {
     case 0xA4:
         po = evt_getObject_inline(g_evtState->playerUid);
         if (po != NULL) {
-            Unk80039C38Pt *p = ((Unk80039C38Quad *)g_evtActor)->unk18;
-            s32 dx = p[1].unk0 - p[0].unk0;
-            s32 dz = p[1].unk2 - p[0].unk2;
+            Unk80039C38Pt *p = ((Unk80039C38Quad *)g_evtActor)->pts;
+            s32 dx = p[1].x - p[0].x;
+            s32 dz = p[1].z - p[0].z;
             s32 t = (dx * dx + dz * dz) >> 8;
             if (t != 0) {
-                t = (dx * (po->pos.vx - p[0].unk0) + dz * (po->pos.vz - p[0].unk2)) / t;
+                t = (dx * (po->pos.vx - p[0].x) + dz * (po->pos.vz - p[0].z)) / t;
                 if (t < 0) {
                     t = 0;
                 } else if (t > 0x100) {
                     t = 0x100;
                 }
             }
-            g_evtLinePointX = ((t * dx) >> 8) + p[0].unk0;
-            g_evtLinePointZ = ((t * dz) >> 8) + p[0].unk2;
+            g_evtLinePointX = ((t * dx) >> 8) + p[0].x;
+            g_evtLinePointZ = ((t * dz) >> 8) + p[0].z;
         } else {
             g_evtLinePointZ = 0;
             g_evtLinePointX = 0;
@@ -1336,26 +1336,26 @@ s32 evt_execInstr(void) {
         return 0;
     case 0x76: {
         Unk80039C38Quad *q = (Unk80039C38Quad *)g_evtActor;
-        q->unk14 = 2;
-        q->unk18[0].unk0 = q->unk18[1].unk0 = evt_getArg16_inline();
-        q->unk18[0].unk2 = q->unk18[1].unk2 = evt_getArg16_inline();
+        q->count = 2;
+        q->pts[0].x = q->pts[1].x = evt_getArg16_inline();
+        q->pts[0].z = q->pts[1].z = evt_getArg16_inline();
         return 0;
     }
     case 0x77: {
         Unk80039C38Quad *q = (Unk80039C38Quad *)g_evtActor;
         Unk80039C38Pt *p;
-        a = q->unk14;
-        p = &q->unk18[(a > 0 ? a : 1) - 1];
-        p->unk0 = evt_getArg16_inline();
-        p->unk2 = evt_getArg16_inline();
+        a = q->count;
+        p = &q->pts[(a > 0 ? a : 1) - 1];
+        p->x = evt_getArg16_inline();
+        p->z = evt_getArg16_inline();
         return 0;
     }
     case 0x78: {
         Unk80039C38Quad *q = (Unk80039C38Quad *)g_evtActor;
-        s32 k = q->unk14;
+        s32 k = q->count;
         if (k >= 1 && k < 8) {
-            q->unk18[k] = q->unk18[k - 1];
-            q->unk14++;
+            q->pts[k] = q->pts[k - 1];
+            q->count++;
         }
         return 0;
     }
@@ -2358,7 +2358,7 @@ void evt_movePlayer(EvtObject *obj) {
     analog = 0;
     memset(&v, 0, 8);
     pad = msg_getPadHeld();
-    if (((g_padBuf[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
+    if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
         x = g_padAnalog[0].unk0[2];
         y = g_padAnalog[0].unk0[3];
         pad_getAnalogThresholds((Unk4 *)dz);

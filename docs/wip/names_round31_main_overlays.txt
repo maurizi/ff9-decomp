@@ -25,3 +25,20 @@
 # FIELDS include/ff9.h PadActuator (new type for g_padActuator, was UnkPair): unk0=smallMotor,unk1=largeMotor
 # FIELDS include/ff9.h UnkPair (now typedef ItemSlot): unk0=id,unk1=count
 # MACRO FLD_MAP_NO_WINDOWS / FLD_MAP_NO_BGI_ANIM / FLD_MAP_NO_PRELOAD moved from ovl_0a.h to ff9.h (main menu.c, ovl_64 mbg.c)
+# FIELDS include/ff9.h Unk8007B954: unk0=count,unk4=offsets
+# FIELDS include/ff9.h Unk8006D128: unk1=stones,unk2=name
+# FIELDS include/ff9.h WeaponEntry: unk5=attack
+# FIELDS include/ff9.h Ff9ImgHeader: unk8=dirCount,unk10=dirs
+# FIELDS include/ff9.h Unk80039C38Quad: unk14=count,unk18=pts
+# FIELDS include/ff9.h Unk80039C38Pt: unk0=x,unk2=z
+# FIELDS include/ff9.h Unk8006573C: unk12=mp
+# FIELDS include/ff9.h Unk8006DDD0: unk0=hp,unk2=mp
+# FIELDS include/ff9.h Glyph8: unk4=advance
+# FIELDS include/ff9.h Icon: unk4=w
+# FIELDS include/ff9.h Unk8006C9D4: unk0=init,unk4=update,unk8=exit
+# FIELDS include/ff9.h Unk8006BD04: unk0=start,unk4=update,unk8=draw
+# FIELDS include/ff9.h Unk80076F78: unk0=images,unk4=count
+# FIELDS include/ff9.h FileEntry: unk8=sectors,unkC=link
+# FIELDS include/ff9.h Unk8007B988: unk0=type,unk4=buttons
+# FIELDS include/ff9.h Unk80073940: unk0=hdr
+# FIELDS include/ff9.h Unk800703FC: unk0=labels

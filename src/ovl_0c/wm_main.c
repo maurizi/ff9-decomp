@@ -178,13 +178,13 @@ s32 wm_loadWorldData(void) {
         file_copyViaVram((s32)buf, e->dest, e->loaded, 0);
         DrawSync(0);
         if (e->loaded < e->readSize) {
-            cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, buf + e->loaded, e->loaded, -1, 0);
+            cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, buf + e->loaded, e->loaded, -1, 0);
             while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
             }
         }
         preload_remove(id);
     } else {
-        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, buf, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, buf, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
@@ -477,7 +477,7 @@ s32 wm_depFindBattle(s16 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -493,7 +493,7 @@ s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
 
     for (i = 0; i < t->count; i++) {
         if (e[i].id == arg0) {
-            id = e[i].unkC;
+            id = e[i].link;
             break;
         }
     }
@@ -503,7 +503,7 @@ s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -523,7 +523,7 @@ s32 wm_depFindField(s16 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -539,7 +539,7 @@ s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
 
     for (i = 0; i < t->count; i++) {
         if (e[i].id == arg0) {
-            id = e[i].unkC;
+            id = e[i].link;
             break;
         }
     }
@@ -549,7 +549,7 @@ s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -1190,13 +1190,13 @@ s32 *arg1;
     if (((arg0 >> 16) & 0xFF) == 7) {
         e = dep_find(g_gameState->gameData->depTable, arg0);
         if (arg1 != NULL) {
-            *arg1 = e->unk8 << 11;
+            *arg1 = e->sectors << 11;
         }
         return e->sector;
     } else {
         f = file_find(DIR_SOUND_BANKS, arg0);
         if (arg1 != NULL) {
-            *arg1 = (f->unkC - f->sector) << 11;
+            *arg1 = (f->link - f->sector) << 11;
         }
         return f->sector;
     }
@@ -1209,7 +1209,7 @@ s32 wm_depGetLink(s32 arg0) {
 
     for (i = 0; i < t->count; i++) {
         if (e[i].id == arg0) {
-            return e[i].unkC;
+            return e[i].link;
         }
     }
     return -1;
@@ -1396,7 +1396,7 @@ void wm_findBattleMusic(void) {
     id = (u16)obj->sceneId | DB_BATTLE;
     e = g_gameState->gameData->depTable->entries;
     for (; i < g_gameState->gameData->depTable->count; i++) {
-        v = e[i].unkC;
+        v = e[i].link;
         if (e[i].id == id && ((v >> 16) & 0xFF) == 7) {
             g_gameState->gameData->ctx.world->obj->battleMusic = v;
             return;

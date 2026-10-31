@@ -157,7 +157,7 @@ s32 game_loadCommonImages(void) {
 s32 game_loadCommonDb(void) {
     FileEntry *f = file_find(DIR_COMMON, FILE_COMMON_DB);
 
-    cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, (void *)g_allocTop, 0,
+    cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, (void *)g_allocTop, 0,
                   -1, NULL);
     while (cdRead_update(g_gameState->gameData->cdRead)) {
     }

@@ -2111,7 +2111,7 @@ s32 wm_getLeftStickX(s32 *arg0) {
     s32 b;
 
     *arg0 = 0;
-    if (((g_padBuf[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
+    if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = g_padAnalog[0].unk0[2] - 0x80;
         if (g_padAnalog[0].unk0[2] - 0x40U <= 0x80) {
             v = 0;
@@ -2141,7 +2141,7 @@ s32 wm_getLeftStickY(s32 *arg0) {
     s32 v;
 
     *arg0 = 0;
-    if (((g_padBuf[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
+    if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = g_padAnalog[0].unk0[3] - 0x80;
         if (g_padAnalog[0].unk0[3] - 0x40U <= 0x80) {
             v = 0;
@@ -2170,7 +2170,7 @@ s32 wm_getRightStickY(s32 *arg0) {
     s32 v;
 
     *arg0 = 0;
-    if (((g_padBuf[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
+    if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = 0x80 - g_padAnalog[0].unk0[1];
         if (v + 0x40U <= 0x80) {
             v = 0;

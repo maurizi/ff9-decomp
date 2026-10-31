@@ -358,7 +358,7 @@ void ending_loadData(void) {
 
     buf = g_loadAreaEnd + 0x10000;
     e = file_find(DIR_COMMON, FILE_ENDING_DATA);
-    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, buf, 0, -1, 0);
+    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, buf, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     g_endingData = buf;

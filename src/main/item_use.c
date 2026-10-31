@@ -81,10 +81,10 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
 }
 
 s32 chr_payMp(Unk8006573C *a, s16 b) {
-    if (a->unk12 < b) {
+    if (a->mp < b) {
         return 0;
     }
-    a->unk12 -= b;
+    a->mp -= b;
     return 1;
 }
 

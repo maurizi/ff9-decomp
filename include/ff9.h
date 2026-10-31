@@ -565,7 +565,7 @@ extern u8 g_armorDefs[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
 /* weapon table entry (0xC bytes) */
 typedef struct {
     u8 pad0[5];
-    u8 unk5; /* attack */
+    u8 attack; /* attack */
     u8 pad6[0xC - 6];
 } WeaponEntry;
 #if !defined(OVL_0B_H) && !defined(OVL_38_H) /* those headers declare their own view */
@@ -1492,8 +1492,8 @@ static inline EvtObject *evt_getObject_inline(s32 id) {
 
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    s32 type; /* 0 none, 1-2 passed to the focus window chain (2 adds bit 31), set by msg_readPad */
+    s32 buttons;
 } Unk8007B988;
 extern Unk8007B988 g_msgPadEvent;
 extern s32 D_8007B994;
@@ -1774,7 +1774,7 @@ typedef struct {
 extern DbList g_dbList;
 
 typedef struct {
-    u32 unk0;
+    u32 hdr; /* first word of the PadBuf: status, id byte (controller type << 4 | size), so (hdr >> 12) & 0xF = PAD_ID_* */
     u8 pad4[0x24 - 4];
 } Unk80073940; /* 0x24-byte entries */
 extern Unk80073940 g_padBuf[];
@@ -1782,7 +1782,7 @@ extern Unk80073940 g_padBuf[];
 
 typedef struct {
     u8 pad0[0x12];
-    s16 unk12;
+    s16 mp;
 } Unk8006573C;
 
 extern s16 g_resetCount;
@@ -1921,12 +1921,14 @@ void akao_cmdPlayMusic(AkaoArgs *);
 
 /* ---- hoisted from overlay headers ---- */
 
-/* file table entry (file_find / dep_find) */
+/* file table entry: a dependency-table record (dep_find, FileTable.entries). file_find returns its 8-byte
+ * FileIdEntry viewed through this type: there `sectors` is the next entry's id and `link` the next entry's start
+ * sector, i.e. the file's end sector (callers read link - sector as its length). */
 typedef struct {
     s32 id; /* file id (24-bit key in a dependency table, dep_find) */
     s32 sector; /* start sector */
-    s32 unk8;
-    s32 unkC; /* end sector / next id */
+    s32 sectors; /* sector count (fld/wm/btl dep lookups pass it on as the size) */
+    s32 link; /* key of the linked file (dep_find on it: the field's area, a music file's sound bank) */
 } FileEntry;
 
 /* g_gameState->dirTables[i]: 8-byte {id, sector} entries searched by file_find */
@@ -1963,7 +1965,7 @@ typedef struct {
 } MenuView;
 
 typedef struct {
-    s32 unk0[1]; /* indexed past its end: text table */
+    s32 labels[1]; /* window title / label texts, indexed past its end (win_setTitle, ui_drawLabel) */
     s32 abilityList; /* title of ability lists (menuAbility_drawList, btlui_openAbilityList, status ability pages) */
     u8 pad8[0x30 - 8];
     s32 command; /* title of the battle command window (btlui_drawCmdOverlay) */
@@ -2288,8 +2290,8 @@ extern s32 g_menuTypeOvl[];
 void menu_readOverlay(void);
 void menu_readPortraits(void);
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 hp;
+    u16 mp;
 } Unk8006DDD0;
 extern Unk8006DDD0 g_levelHpMp[];
 typedef struct RainNode {
@@ -2349,7 +2351,7 @@ s32 text_measureSmall(u8 *s);
 s32 text_measureDigits(u8 *s);
 typedef struct {
     u8 pad0[4];
-    u8 unk4; /* advance width */
+    u8 advance; /* advance width */
     u8 pad5[3];
 } Glyph8;
 /* g_uiSprites ids of the label font (ui_measureLabel, text_buildLabel): 'A'-'Z' at c - 8, 'a'-'z' share them
@@ -2545,10 +2547,10 @@ void akao_opC6(AkaoChannel *, u32);
 
 
 typedef struct {
-    void (*unk0)(u8);
-    void (*unk4)(u8);
-    s32 unk8;
-} Unk8006C9D4;
+    void (*init)(u8); /* menu_start */
+    void (*update)(u8); /* menu_updateRun */
+    s32 exit; /* menu_finish */
+} Unk8006C9D4; /* g_menuTypes: per menu_open type */
 extern Unk8006C9D4 g_menuTypes[];
 s32 win_resetClock(void);
 void help_update(void);
@@ -2626,8 +2628,8 @@ extern u8 g_akaoSilenceSample[];
 extern s32 g_evtMode;
 /* offset-table blob: count, then per-entry u16 offsets relative to unk4 */
 typedef struct Unk8007B954 {
-    s32 unk0; /* count */
-    u16 unk4[1];
+    s32 count; /* messages */
+    u16 offsets[1]; /* per message, from &offsets (msg_getText) */
 } Unk8007B954;
 extern Unk8007B954 *g_msgTable;
 extern u8 *g_msgTextBanks[];
@@ -2716,8 +2718,8 @@ typedef struct {
 /* ---- main batch 3 ---- */
 typedef struct {
     u8 pad0;
-    u8 unk1;
-    u16 unk2; /* name offset */
+    u8 stones;
+    u16 name; /* name offset */
     u8 pad4[4];
 } Unk8006D128; /* support abilities, indexed by id - 0xC0 */
 extern Unk8006D128 g_supportAbilities[];
@@ -2758,7 +2760,7 @@ void msg_measureLine(u8 **, s32 *); /* add the width of a text control code */
 typedef struct {
     u8 *readPtr; /* stream read pointer */
     u8 *loopPtr; /* loop start (header flags & 2) */
-    s32 flags; /* header +0x18 flags: 1 stereo halves, 2 loops, 0x400, 0x1000000 */
+    s32 flags; /* header +0x18 flags: AKAO_STREAM_* (snd_ids.h) */
     u32 voiceMask; /* voices the stream plays on (akao_streamStart), 0 = stopped */
     s32 voice; /* first of its two voices (left, right = voice + 1) */
     u32 bytesLeft; /* bytes left */
@@ -2865,15 +2867,15 @@ extern u32 g_padPressed; /* buttons that went down this frame */
 void ui_restorePortraits(void);
 void ui_getPortraitRects(s32, RECT *, RECT *);
 typedef struct {
-    u32 *unk0; /* portrait image data, 0x6C0 bytes each */
-    s32 unk4;  /* count */
+    u32 *images; /* portrait image data, 0x6C0 bytes each */
+    s32 count;  /* count */
 } Unk80076F78;
 extern Unk80076F78 g_portraits;
 extern u32 g_portraitSavedVram[]; /* first CLUT, right after g_portraits */
 s32 item_remove(s32, s32);
 typedef struct {
     u8 pad0[4];
-    u8 unk4; /* width */
+    u8 w; /* width */
     u8 pad5[3];
 } Icon; /* sprite drawn by ui_drawSpriteDef */
 extern Icon D_800687C0;
@@ -3219,8 +3221,8 @@ static inline u8 *msg_drawText_msg(s32 i) {
     u8 *e = NULL;
     u16 *t;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        t = g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        t = g_msgTable->offsets;
         e = (u8 *)t;
         e += t[(g_evtMode == 2 || g_evtMode == 4) ? i * 2 : i * 4 + 2];
     }
@@ -3349,10 +3351,10 @@ typedef struct Unk8007AED0 {
     u8 unkE;
 } Unk8007AED0;
 typedef struct {
-    void (*unk0)(FadeState *);
-    s32 unk4;
-    s32 unk8;
-} Unk8006BD04;
+    void (*start)(FadeState *);
+    s32 update;
+    s32 draw;
+} Unk8006BD04; /* g_fadeTypes */
 extern Unk8006BD04 g_fadeTypes[];
 extern u8 g_winStyleOpenAnim[]; /* WIN_STYLE_* -> WIN_ANIM_* (win_init) */
 typedef struct {
@@ -3623,9 +3625,9 @@ void func_80053924(void);
 /* first sector of FF9.IMG: directory records copied to GameState.unk14 */
 typedef struct {
     u8 pad0[8];
-    s32 unk8; /* directory count */
+    s32 dirCount; /* directory count */
     u8 padC[4];
-    DirInfo unk10[15];
+    DirInfo dirs[15];
 } Ff9ImgHeader;
 
 
@@ -4178,13 +4180,13 @@ static inline void evt_execInstr_anim(EvtObject *p, s32 anim) {
 
 /* event region (quad) object, same header as EvtObject */
 typedef struct {
-    s16 unk0; /* x */
-    s16 unk2; /* z */
+    s16 x; /* x */
+    s16 z; /* z */
 } Unk80039C38Pt;
 typedef struct {
     u8 pad0[0x14];
-    s32 unk14; /* vertex count */
-    Unk80039C38Pt unk18[8];
+    s32 count; /* vertex count */
+    Unk80039C38Pt pts[8];
 } Unk80039C38Quad;
 
 /* texture animation n seen from the set's start (Unk8004AFF0.texAnims->unk0[n]): the set has a 4-byte count before

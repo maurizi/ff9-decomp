@@ -34,8 +34,8 @@ void msg_init(void) {
 }
 
 static inline void msg_readPad_set(s32 type, u32 bits) {
-    g_msgPadEvent.unk0 = type;
-    g_msgPadEvent.unk4 = bits;
+    g_msgPadEvent.type = type;
+    g_msgPadEvent.buttons = bits;
 }
 
 void msg_readPad(void) {
@@ -677,8 +677,8 @@ void msg_drawText(MsgWindow *w) {
     u8 *e = NULL;
     s32 i = w->msgId;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
     }
     if (e != NULL) {
@@ -809,8 +809,8 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     u8 *e;
 
     e = NULL;
-    if (msg >= 0 && msg < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (msg >= 0 && msg < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? msg : msg * 2 + 1];
     }
     if (e == NULL) {
@@ -894,8 +894,8 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
     u8 *e = NULL;
     s32 v;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         v = ((u32 *)e)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
             out->w = ((v >> 16) & 0xFFF) + 9;
@@ -1032,19 +1032,19 @@ s32 msg_getPartyMemberId(s32 i) {
 
 void msg_resetPad(void) {
     g_msgPadPrev = 0;
-    g_msgPadEvent.unk0 = 0;
-    g_msgPadEvent.unk4 = 0;
+    g_msgPadEvent.type = 0;
+    g_msgPadEvent.buttons = 0;
 }
 
 void msg_update(void) {
     MsgWindow *p = msg_getFocus();
     s32 a;
     msg_readPad();
-    if (g_msgPadEvent.unk0 < 3) {
-        if (g_msgPadEvent.unk0 > 0) {
+    if (g_msgPadEvent.type < 3) {
+        if (g_msgPadEvent.type > 0) {
             while (p != NULL) {
-                a = g_msgPadEvent.unk4;
-                if (g_msgPadEvent.unk0 == 2) {
+                a = g_msgPadEvent.buttons;
+                if (g_msgPadEvent.type == 2) {
                     a |= 0x80000000;
                 }
                 if (p->onInput(p, a) != 0) {
@@ -1054,8 +1054,8 @@ void msg_update(void) {
             }
         }
     }
-    g_msgPadEvent.unk0 = 0;
-    g_msgPadEvent.unk4 = 0;
+    g_msgPadEvent.type = 0;
+    g_msgPadEvent.buttons = 0;
     D_8007B998 = D_8007B994;
 }
 
@@ -1239,8 +1239,8 @@ u8 *msg_getEntry(s32 i, WinLayout *out) {
     s32 v;
     u32 k;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         v = ((u32 *)e)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
             out->w = ((v >> 16) & 0xFFF) + 9;
@@ -1254,8 +1254,8 @@ u8 *msg_getEntry(s32 i, WinLayout *out) {
 void *msg_getText(s32 i) {
     u8 *e = NULL;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
     }
     return e;

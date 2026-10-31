@@ -169,8 +169,8 @@ void file_initImg(void) {
         cd_readAsync(g_gameState->imgSector, 0x800, hdr, NULL);
         while (cd_getState()) {
         }
-        g_gameState->dirCount = hdr->unk8;
-        memmove(g_gameState->dirs, hdr->unk10, g_gameState->dirCount * sizeof(DirInfo));
+        g_gameState->dirCount = hdr->dirCount;
+        memmove(g_gameState->dirs, hdr->dirs, g_gameState->dirCount * sizeof(DirInfo));
     }
 }
 

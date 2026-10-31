@@ -128,7 +128,7 @@ void menuEquip_drawInfo(void) {
     cur.stats[1] = c->strength;
     cur.stats[2] = c->magic;
     cur.stats[3] = c->spirit;
-    cur.defs[0] = g_weaponTable[c->equip[0]].unk5;
+    cur.defs[0] = g_weaponTable[c->equip[0]].attack;
     cur.defs[1] = c->defense;
     cur.defs[2] = c->evade;
     cur.defs[3] = c->magicDef;
@@ -241,7 +241,7 @@ void menuEquip_drawAbilities(void) {
         if (ab < ABILITY_SUPPORT_FIRST) {
             name = s_menuEquipActionNames + s_menuEquipActionTable[ab].nameOffset;
         } else {
-            name = s_menuEquipSupportNames + g_supportAbilities[ab - ABILITY_SUPPORT_FIRST].unk2;
+            name = s_menuEquipSupportNames + g_supportAbilities[ab - ABILITY_SUPPORT_FIRST].name;
         }
         if (chr_canLearnAbilities(c)) {
             ok = chr_findAbilitySlot(c->info.b.id, ab) >= 0;
@@ -292,7 +292,7 @@ void menuEquip_drawList(void) {
 
     if (m->listOpen != 0) {
         w = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
-        ui_drawLabel(wd->rect.x + 6, r->y - 3, 0x14, g_winLabelStrings.unk0[s_menuEquipSlotLabel[m->equipSlot]], UI_LABEL_NORMAL);
+        ui_drawLabel(wd->rect.x + 6, r->y - 3, 0x14, g_winLabelStrings.labels[s_menuEquipSlotLabel[m->equipSlot]], UI_LABEL_NORMAL);
         ui_drawLabel(wd->rect.x - (w - k), r->y - 3, 0x14, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
         win_drawListBox(r, 0x14, 1, l);
         menuList_getView(l, &view);
@@ -469,8 +469,8 @@ void menuEquip_dropUnlearnedSupport(Character *c) {
             if (a->id >= ABILITY_SUPPORT_FIRST && chr_hasSupportAbility(c->info.b.id, a->id)) {
                 if (s_menuEquipTaught[a->id - ABILITY_SUPPORT_FIRST] == 0 && c->ap[i] < a->ap) {
                     chr_setSupportAbility(c->info.b.id, a->id, 0);
-                    if (c->maxStones - c->stones >= g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].unk1) {
-                        c->stones += g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].unk1;
+                    if (c->maxStones - c->stones >= g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].stones) {
+                        c->stones += g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].stones;
                     } else {
                         c->stones = c->maxStones;
                     }

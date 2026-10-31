@@ -267,7 +267,7 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
         flag = !(a->flags & 2);
     } else {
         sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
-        name = s_menuStatusSupportNames + sup->unk2;
+        name = s_menuStatusSupportNames + sup->name;
         if (chr_testSupportBit(c->supportAbilities, id)) {
             icon = 0xBD;
         } else {

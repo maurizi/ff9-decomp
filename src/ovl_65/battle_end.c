@@ -54,13 +54,13 @@ void battleEnd_init(void) {
     if (g_gameState->gameData->battleFlags & GD_BTL_NEXT_LOCATION) {
         e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | DB_FIELD);
         if (e != NULL) {
-            g_gameState->gameData->fieldAreaId = e->unkC;
+            g_gameState->gameData->fieldAreaId = e->link;
             g_gameState->gameData->sceneSector[1] = e->sector;
-            g_gameState->gameData->sceneSectors[1] = e->unk8;
-            e = dep_find(g_gameState->gameData->depTable, e->unkC);
+            g_gameState->gameData->sceneSectors[1] = e->sectors;
+            e = dep_find(g_gameState->gameData->depTable, e->link);
             if (e != NULL) {
                 g_gameState->gameData->sceneSector[0] = e->sector;
-                g_gameState->gameData->sceneSectors[0] = e->unk8;
+                g_gameState->gameData->sceneSectors[0] = e->sectors;
             }
         }
     }
@@ -104,7 +104,7 @@ s32 battleEnd_loadDb(void) {
         DrawSync(0);
     } else {
         e = file_find(DIR_COMMON, FILE_BTL_END_DB);
-        cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead)) {
         }
     }
@@ -145,7 +145,7 @@ void battleEnd_preloadScene(void) {
     }
     f = file_find(DIR_OVERLAYS, id);
     dst = b->bgData;
-    size = (f->unkC - f->sector) << 11;
+    size = (f->link - f->sector) << 11;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, size, size, f->sector, size);
     dst += size;
     if (b->returnMode == GS_MODE_FIELD) {
@@ -157,7 +157,7 @@ void battleEnd_preloadScene(void) {
     }
     f = file_find(DIR_COMMON, id);
     k = -0x146F00;
-    size = (f->unkC - f->sector) << 11;
+    size = (f->link - f->sector) << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, at, size, f->sector, size);
@@ -963,7 +963,7 @@ void rewards_drawLearnWin(Window *w) {
         name = s_rewardsActionNames + s_rewardsActionTable[id].nameOffset;
         ui_drawSprite(w->x + 6, w->y + 7, w->otz, 0xBC, 0);
     } else {
-        name = s_rewardsSupportNames + g_supportAbilities[id - ABILITY_SUPPORT_FIRST].unk2;
+        name = s_rewardsSupportNames + g_supportAbilities[id - ABILITY_SUPPORT_FIRST].name;
         if (chr_testSupportBit(g_gameState->gameData->party[slot]->supportAbilities, id)) {
             icon = 0xBD;
         } else {

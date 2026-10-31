@@ -236,7 +236,7 @@ s32 btl_loadCommonData(void) {
     FileEntry *f = file_find(DIR_COMMON, FILE_BTL_COMMON);
     s32 s = f->sector;
     void *ctx = g_gameState->gameData->cdRead;
-    cdRead_init(ctx, s, (f->unkC - s) << 11, (void *)p, 0, -1, NULL);
+    cdRead_init(ctx, s, (f->link - s) << 11, (void *)p, 0, -1, NULL);
     while (cdRead_update(ctx) != 0) {
     }
     b->files->data[0] = (void *)p;
@@ -775,9 +775,9 @@ loop:
         if (bp != NULL) {
             arg2->fileId = *bp;
             *bp = -1;
-            req->size0 = bf->unkC << 11;
+            req->size0 = bf->link << 11;
             req->dst0 = (s32)b->work->heap;
-            req->size1 = (bf->unk8 - bf->unkC) << 11;
+            req->size1 = (bf->sectors - bf->link) << 11;
             req->dst1 = arg2->dst;
             cd_readChunks(g_gameState->imgSector + best, req, 2, 0);
             arg2->nextState = 6;
@@ -1029,7 +1029,7 @@ u32 btl_findNearestFile(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
             f = file_find(arg0, id);
             if (f != NULL) {
                 start = f->sector;
-                n = f->unkC - start;
+                n = f->link - start;
             } else {
                 k = 0;
                 switch (arg0) {
@@ -1067,7 +1067,7 @@ u32 btl_findNearestFile(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
                 f = dep_find(g_gameState->gameData->depTable, (k << 16) | id);
                 if (f != NULL) {
                     start = f->sector;
-                    n = f->unk8;
+                    n = f->sectors;
                 }
             }
             if (start < best) {
@@ -1163,12 +1163,12 @@ s32 btl_findBackgroundId(void) {
 s32 btl_getDepSectors(s32 arg0, s32 *arg1, s32 *arg2) {
     FileEntry *e = dep_find(g_gameState->gameData->depTable, arg0);
     *arg1 = e->sector;
-    *arg2 = e->unk8;
+    *arg2 = e->sectors;
     return arg0;
 }
 
 void btl_getLinkedDepSectors(s32 arg0, s32 *arg1, s32 *arg2) {
-    btl_getDepSectors(dep_find(g_gameState->gameData->depTable, arg0)->unkC, arg1, arg2);
+    btl_getDepSectors(dep_find(g_gameState->gameData->depTable, arg0)->link, arg1, arg2);
 }
 
 s32 btl_swapPartyModel(s32 arg0, s32 arg1) {
@@ -2021,13 +2021,13 @@ s32 btl_getSoundFileSectors(s32 arg0, s32 *arg1) {
     if (((arg0 >> 16) & 0xFF) == 7) {
         e = dep_find(g_gameState->gameData->depTable, arg0);
         if (arg1 != 0) {
-            *arg1 = e->unk8 << 11;
+            *arg1 = e->sectors << 11;
         }
         return e->sector;
     } else {
         f = file_find(DIR_SOUND_BANKS, arg0);
         if (arg1 != 0) {
-            *arg1 = (f->unkC - f->sector) << 11;
+            *arg1 = (f->link - f->sector) << 11;
         }
         return f->sector;
     }
@@ -2068,7 +2068,7 @@ s32 btl_getDepLink(s32 arg0) {
     s32 i;
     for (i = t->count - 1; i >= 0; i--) {
         if (e[i].id == arg0) {
-            return e[i].unkC;
+            return e[i].link;
         }
     }
     return -1;
@@ -2181,10 +2181,10 @@ void btl_preloadExit(void) {
     preload_init();
     g_gameState->gameData->preloadRequest = NULL;
     f = file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE_END));
-    size = (f->unkC - f->sector) << 11;
+    size = (f->link - f->sector) << 11;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, OVL_KEY(OVL_BATTLE_END), (s32)RAM_SUB_OVL(u8 *), size, size, f->sector, size);
     f = file_find(DIR_COMMON, FILE_BTL_END_DB);
     dst = b->loadBuf;
-    size = (f->unkC - f->sector) << 11;
+    size = (f->link - f->sector) << 11;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, FILE_BTL_END_DB, (s32)dst, size, size, f->sector, size);
 }

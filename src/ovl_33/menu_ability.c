@@ -30,7 +30,7 @@ static inline s32 menuAbility_getSupportState_inline(s32 id, Character *c) {
         }
     }
     sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
-    if (sup->unk1 > c->stones) {
+    if (sup->stones > c->stones) {
         return ABILITY_GREYED;
     }
     return ABILITY_USABLE;
@@ -561,9 +561,9 @@ void menuAbility_toggleSupport(void) {
             chr_setSupportAbility(c->info.b.id, id, st == ABILITY_USABLE);
             ap = c->stones;
             if (st == ABILITY_USABLE) {
-                c->stones = ap - sup->unk1;
+                c->stones = ap - sup->stones;
             } else {
-                c->stones = ap + sup->unk1;
+                c->stones = ap + sup->stones;
             }
             chr_updateStats(c);
             snd_playSe(SE_SET);
@@ -817,8 +817,8 @@ void menuAbility_drawSupportRow(s32 x, s32 y, s32 i, Character *c) {
         } else {
             menuAbility_drawIcon(x + 8, y, 0x1C, st >= ABILITY_USABLE ? 7 : 8);
         }
-        text_drawBlock(x + 0x18, y, 0x1C, s_menuAbilitySupportNames + sup->unk2, col);
-        text_formatNumber(sup->unk1, buf, 3, TEXT_NUM_ASCII);
+        text_drawBlock(x + 0x18, y, 0x1C, s_menuAbilitySupportNames + sup->name, col);
+        text_formatNumber(sup->stones, buf, 3, TEXT_NUM_ASCII);
         ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
     }
 }
@@ -872,7 +872,7 @@ u32 menuAbility_getSupportState(s32 id, Character *c) {
         }
     }
     sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
-    if (sup->unk1 > c->stones) {
+    if (sup->stones > c->stones) {
         return ABILITY_GREYED;
     }
     return ABILITY_USABLE;

@@ -227,7 +227,7 @@ s32 fld_loadCommon(void) {
         DrawSync(0);
     } else {
         f = file_find(DIR_COMMON, FILE_FLD_COMMON);
-        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
@@ -868,7 +868,7 @@ s32 fld_depFindBattle(arg0, arg1, arg2)
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -884,7 +884,7 @@ s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
 
     for (i = 0; i < t->count; i++) {
         if (e[i].id == arg0) {
-            id = e[i].unkC;
+            id = e[i].link;
             break;
         }
     }
@@ -894,7 +894,7 @@ s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -918,7 +918,7 @@ s32 fld_depFindField(arg0, arg1, arg2)
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -934,7 +934,7 @@ s32 fld_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
 
     for (; e < end; e++) {
         if (e->id == arg0) {
-            id = e->unkC;
+            id = e->link;
             break;
         }
     }
@@ -944,7 +944,7 @@ s32 fld_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e->sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e->unk8;
+                *arg2 = e->sectors;
             }
             break;
         }

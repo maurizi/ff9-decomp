@@ -388,8 +388,8 @@ void shopBuy_drawParty(void) {
         y = 0x9E;
         if (ok) {
             if (!armor) {
-                new = g_weaponTable[id].unk5;
-                cur = g_weaponTable[c->equip[0]].unk5;
+                new = g_weaponTable[id].attack;
+                cur = g_weaponTable[c->equip[0]].attack;
             } else {
                 eq = *(Equip5 *)c->equip;
                 eq.v[kind] = id;
@@ -821,8 +821,8 @@ void shopSynth_drawParty(void) {
         y = 0x9E;
         if (ok) {
             if (!armor) {
-                new = g_weaponTable[s->product].unk5;
-                cur = g_weaponTable[c->equip[0]].unk5;
+                new = g_weaponTable[s->product].attack;
+                cur = g_weaponTable[c->equip[0]].attack;
             } else {
                 eq = *(Equip5 *)c->equip;
                 eq.v[kind] = s->product;
@@ -1288,7 +1288,7 @@ void shopSell_openQuantity(void) {
             win_setOnClosed(s_shopSell.wins[i], shopSell_onQuantityClosed);
             win_setOpenAnim(s_shopSell.wins[i], WIN_ANIM_ZOOM);
             win_setShadow(s_shopSell.wins[i], 1);
-            win_setTitle(s_shopSell.wins[i], g_winLabelStrings.unk0[s_shopSellWindows[i].label]);
+            win_setTitle(s_shopSell.wins[i], g_winLabelStrings.labels[s_shopSellWindows[i].label]);
         }
         snd_playSe(SE_CURSOR);
     } else {

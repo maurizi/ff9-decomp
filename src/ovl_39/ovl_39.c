@@ -1350,7 +1350,7 @@ u8 menuSave_startAccess(s32 mode) {
     win_setOnOpened(s_menuSaveAccess.win, menuSave_onAccessOpened);
     win_setOnClosed(s_menuSaveAccess.win, menuSave_onAccessClosed);
     win_setShadow(s_menuSaveAccess.win, 1);
-    win_setTitle(s_menuSaveAccess.win, g_winLabelStrings.unk0[s_menuSaveAccessTitles[mode]]);
+    win_setTitle(s_menuSaveAccess.win, g_winLabelStrings.labels[s_menuSaveAccessTitles[mode]]);
     return 1;
 }
 
