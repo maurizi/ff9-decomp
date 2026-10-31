@@ -1,7 +1,9 @@
 #ifndef FX_0BB_H
 #define FX_0BB_H
 
-/* Effect module fx_0bb (dir 13 file 0xBB). */
+/* Effect module fx_0bb (dir 13 file 0xBB): Mustard Bomb; enemy Mustard Bomb (Drakan, ...). Evidence: [data] the
+ * party ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

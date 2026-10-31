@@ -1,7 +1,9 @@
 #ifndef FX_0E0_H
 #define FX_0E0_H
 
-/* Effect module fx_0e0 (dir 13 file 0x0E0). */
+/* Effect module fx_0e0 (dir 13 file 0xE0): Sword Magic Doomsday. Evidence: [data] the party ability / item tables
+ * and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime
+ * pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

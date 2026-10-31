@@ -7,11 +7,11 @@
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    SVECTOR pos8; /* unk10 raised by 0x190 */
+    SVECTOR pos8; /* pos10 raised by 0x190 */
     SVECTOR pos10; /* position: env->targets->centerX..Z */
 } Fx0caWork;
 
 extern Unk800F78A4 *fx_0ca_env;
-extern s32 D_801E78C8[];
+extern s32 fx_0ca_trails[];
 
 #endif

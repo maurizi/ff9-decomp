@@ -12,7 +12,7 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x14;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->state0 = 0;
         fx_0d5_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
@@ -22,7 +22,7 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             if (frame < 0x2C) {
                 t = (frame << 12) / 44;
@@ -48,7 +48,7 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
                 if (q != NULL) {
                     q->otZ = 0x80;
-                    q->trails = (s32)D_801E7E40;
+                    q->trails = (s32)fx_0d5_trails;
                     q->trailSlots = 0x15;
                     q->trailStride = 0xAC;
                 }
@@ -90,8 +90,8 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x10;
     } else if (mode == 1) {
         fx_0d5_env = env;
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->state0 = 0;
+        work->frame4 = 0;
     } else {
         a = 0;
         b = 0;
@@ -99,7 +99,7 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             ry = 0x200;
             a = (frame << 12) / 3;
@@ -107,7 +107,7 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             b = u >> 1;
             c = ((0x1000 - a) >> 1) + 0x800;
             if (frame >= 3) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
@@ -120,7 +120,7 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ry = (u >> 3) + 0x200;
             b = c;
             if (frame >= 9) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
             }
             break;
@@ -144,7 +144,7 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xE), &work->pos8, NULL, b / 3, 0, 1, a / 2);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->pos8, &rot, c / 2, 0, 1, a * 2 / 3);
         env->otZ = 0;
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }

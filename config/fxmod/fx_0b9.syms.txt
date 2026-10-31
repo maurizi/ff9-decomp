@@ -3,3 +3,6 @@ fx_0b9_header = 0x801E7B4C; // [code] module header (0, init, ops), btlfx_update
 fx_0b9_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_0b9_op81 = 0x801E79B8; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_0b9_env = 0x801E7B94; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_0b9_srcPos = 0x801E7B9C; // [code] unit 0x10 arg bone position stored by fx_0b9_op80 at frame 0x28, fx_0b9_op81 aims each target emitter from it (btlfx_aimAngles)
+fx_0b9_trails = 0x801E7BA4; // [code] particle trail buffer of the file block 2 emitter (0x82 slots of 0x18 bytes), fx_0b9_op80
+fx_0b9_trails2 = 0x801E87D4; // [code] particle trail buffer of the file block 1 emitter (0xA0 slots of 0x18 bytes), fx_0b9_op80

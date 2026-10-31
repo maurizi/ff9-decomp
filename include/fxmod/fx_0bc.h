@@ -1,7 +1,8 @@
 #ifndef FX_0BC_H
 #define FX_0BC_H
 
-/* Effect module fx_0bc (dir 13 file 0xBC). */
+/* Effect module fx_0bc (dir 13 file 0xBC): Darkside. Evidence: [data] the party ability / item tables and enemy
+ * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

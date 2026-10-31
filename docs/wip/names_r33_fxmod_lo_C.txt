@@ -1,0 +1,74 @@
+# Round 33: effect-module names, slice C (fx_0b5-fx_0e0) (old -> new). Evidence [code]; the reason is in each module's
+# config/fxmod/fx_XXX.syms.txt entry. Data/functions as 'fx_XXX OLD NEW  # why', fields as 'fx_XXX Struct old=new ...'.
+
+## fx_0b5
+fx_0b5 D_801E7910 fx_0b5_trails  # [code] particle trail buffer of the file block 1 emitter (Pool6CEntry trails, 0x24 slots of 0x44 bytes), fx_0b5_op80
+
+## fx_0b9
+fx_0b9 D_801E7B9C fx_0b9_srcPos  # [code] unit 0x10 arg bone position stored by fx_0b9_op80 at frame 0x28, fx_0b9_op81 aims each target emitter from it (btlfx_aimAngles)
+fx_0b9 D_801E7BA4 fx_0b9_trails  # [code] particle trail buffer of the file block 2 emitter (0x82 slots of 0x18 bytes), fx_0b9_op80
+fx_0b9 D_801E87D4 fx_0b9_trails2  # [code] particle trail buffer of the file block 1 emitter (0xA0 slots of 0x18 bytes), fx_0b9_op80
+fx_0b9 Fx0b9Work80 unk20=rot20
+fx_0b9 Fx0b9Work81 unkC=rotC unk14=unit14
+
+## fx_0bf
+fx_0bf Fx0bfWork80 unkC=tintC
+
+## fx_0c1
+fx_0c1 D_801E7C20 fx_0c1_pathFrom  # [code] start of the btlfx_lerpVec path of fx_0c1_op80ParticleMotion, set to the unit 0x10 bone 0x17 position by fx_0c1_op80
+fx_0c1 D_801E7C28 fx_0c1_pathTo  # [code] end of the btlfx_lerpVec path of fx_0c1_op80ParticleMotion, a point on the caster set by fx_0c1_op80 (btlfx_pointAhead)
+fx_0c1 D_801E7C30 fx_0c1_emitPos  # [code] origin passed to btlfx_startEmitter for the file block 0xC emitter whose particles fx_0c1_op80ParticleMotion moves
+fx_0c1 Fx0c1Work unk40=rot40 unk48=rot48
+
+## fx_0c2
+fx_0c2 D_801E8484 fx_0c2_pathFrom  # [code] start of the btlfx_lerpVec path of fx_0c2_op81ParticleMotion, set to the unit 0x10 bone 0x17 position by fx_0c2_op81
+fx_0c2 D_801E848C fx_0c2_pathTo  # [code] end of the btlfx_lerpVec path of fx_0c2_op81ParticleMotion, a point on the target set by fx_0c2_op81 (btlfx_pointAhead)
+fx_0c2 D_801E8494 fx_0c2_emitPos  # [code] origin passed to btlfx_startEmitter for the file block 0xA emitter whose particles fx_0c2_op81ParticleMotion moves
+fx_0c2 Fx0c2Work81 unk3C=rot3C unk44=rot44 unk4C=unit4C
+fx_0c2 Fx0c2Work82 unk0=turn0 unk8=pos8
+fx_0c2 Fx0c2Work83 unk0=turn0 unk10=unit10
+
+## fx_0c6
+fx_0c6 Fx0c6Work unk10=unit10
+
+## fx_0c9
+fx_0c9 D_801E7E10 fx_0c9_particlePos  # [code] position fx_0c9_op81ParticleMotion pins every particle to, updated by fx_0c9_op81 from the arcing model position
+fx_0c9 D_801E7E18 fx_0c9_emitPos  # [code] origin passed to btlfx_startEmitter for the file block 5 emitter (fx_0c9_op81)
+fx_0c9 D_801E7E28 fx_0c9_trails  # [code] particle trail buffer of the file block 5 emitter (0x12 slots of 0xB0 bytes), fx_0c9_op81
+fx_0c9 Fx0c9Work81 unk1C=pos1C
+
+## fx_0ca
+fx_0ca D_801E78C8 fx_0ca_trails  # [code] particle trail buffer of the file block 2 emitter (0x1E slots of 0x30 bytes), fx_0ca_op80
+
+## fx_0cb
+fx_0cb Fx0cbPart unk2=scale2 unk4=pos4 unkC=rotC unk14=spin14 unk16=spinSpeed16
+fx_0cb Fx0cbWork unk0=state0 unk4=frame4 unk8=otZ8 unk14=pos14
+
+## fx_0cc
+fx_0cc Fx0ccPart unk0=state0 unk10=pos10
+fx_0cc Fx0ccWork unk0=state0 unk4=pos4 unkC=spawnCountC
+
+## fx_0cd
+fx_0cd D_801E8044 fx_0cd_trails  # [code] particle trail buffer of the first file block 8 emitter (0x26 slots of 0x7C bytes), fx_0cd_op80 frame 0
+fx_0cd D_801E92B4 fx_0cd_trails2  # [code] particle trail buffer of the second file block 8 emitter (0x26 slots of 0x7C bytes), fx_0cd_op80 frame 8
+fx_0cd Fx0cdModel unk0=model0 unk4=rot4 unkC=posC unk1C=scale1C
+fx_0cd Fx0cdWork unk0=timer0 unk4=timer4 unk8=timer8 unk20=model20 unk4C=model4C unk78=model78
+
+## fx_0ce
+fx_0ce D_801E7E00 fx_0ce_trails  # [code] particle trail buffer of the file block 1 emitter (0x15 slots of 0x34 bytes), fx_0ce_op80
+fx_0ce Fx0ceWork unk0=state0 unk4=frame4 unk24=rot24
+
+## fx_0cf
+fx_0cf Fx0cfWork81 unk8=rot8 unk10=pos10 unk18=pos18 unk20=pos20
+
+## fx_0d0
+fx_0d0 D_801E79B0 fx_0d0_trails  # [code] particle trail buffer of the file block 8 emitter (8 slots of 0x60 bytes), fx_0d0_op80
+
+## fx_0d4
+fx_0d4 Fx0d4Work80 unk0=state0
+fx_0d4 Fx0d4Work84 unk0=state0 unk4=frame4
+
+## fx_0d5
+fx_0d5 D_801E7E40 fx_0d5_trails  # [code] particle trail buffer of the file block 6 emitter (0x15 slots of 0xAC bytes), fx_0d5_op80
+fx_0d5 Fx0d5Work80 unk0=state0
+fx_0d5 Fx0d5Work84 unk0=state0 unk4=frame4

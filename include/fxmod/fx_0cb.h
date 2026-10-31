@@ -1,16 +1,18 @@
 #ifndef FX_0CB_H
 #define FX_0CB_H
 
-/* Effect module fx_0cb (dir 13 file 0xCB). */
+/* Effect module fx_0cb (dir 13 file 0xCB): enemy Light Flare (Thorn/Zorn). Evidence: [data] the party ability /
+ * item tables and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round
+ * 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
     s16 unk0;
-    s16 unk2; /* scale */
-    SVECTOR unk4; /* position */
-    SVECTOR unkC; /* rotation */
-    s16 unk14; /* spin angle */
-    s16 unk16; /* spin speed */
+    s16 scale2; /* scale */
+    SVECTOR pos4; /* position */
+    SVECTOR rotC; /* rotation */
+    s16 spin14; /* spin angle */
+    s16 spinSpeed16; /* spin speed */
 } Fx0cbPart; /* 0x18 */
 
 typedef struct {
@@ -20,11 +22,11 @@ typedef struct {
 } Fx0cbVec3;
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame */
-    s32 unk8; /* priority */
+    s32 state0; /* state */
+    s32 frame4; /* frame */
+    s32 otZ8; /* priority */
     SVECTOR posC; /* caster body position */
-    Fx0cbVec3 unk14;
+    Fx0cbVec3 pos14;
     s32 model20; /* model */
     s32 model24; /* model */
     s32 unk28;

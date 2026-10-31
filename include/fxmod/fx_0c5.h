@@ -1,7 +1,8 @@
 #ifndef FX_0C5_H
 #define FX_0C5_H
 
-/* Effect module fx_0c5 (dir 13 file 0xC5). */
+/* Effect module fx_0c5 (dir 13 file 0xC5): Aura. Evidence: [data] the party ability / item tables and enemy
+ * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

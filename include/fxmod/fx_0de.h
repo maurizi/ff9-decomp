@@ -1,7 +1,9 @@
 #ifndef FX_0DE_H
 #define FX_0DE_H
 
-/* Effect module fx_0de (dir 13 file 0x0DE). */
+/* Effect module fx_0de (dir 13 file 0xDE): Sword Magic Water. Evidence: [data] the party ability / item tables and
+ * enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime
+ * pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

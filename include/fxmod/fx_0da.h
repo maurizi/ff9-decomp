@@ -1,7 +1,9 @@
 #ifndef FX_0DA_H
 #define FX_0DA_H
 
-/* Effect module fx_0da (dir 13 file 0xDA). */
+/* Effect module fx_0da (dir 13 file 0xDA): Sword Magic Blizzard. Evidence: [data] the party ability / item tables
+ * and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime
+ * pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
