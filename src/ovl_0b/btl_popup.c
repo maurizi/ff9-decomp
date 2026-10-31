@@ -95,7 +95,7 @@ BtlPopup *btl_newPopup(BtlUnit *u) {
 
 BtlPopup *btl_popupHp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
-    p->info.b.kind = 0;
+    p->info.b.kind = BTL_POPKIND_HP;
     p->info.b.delay = arg3;
     p->clut = arg2;
     p->data.w = btl_packDigits(arg1);
@@ -104,7 +104,7 @@ BtlPopup *btl_popupHp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
 
 BtlPopup *btl_popupMp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
-    p->info.b.kind = 1;
+    p->info.b.kind = BTL_POPKIND_MP;
     p->info.b.delay = arg3;
     p->clut = arg2;
     p->data.w = btl_packDigits(arg1);
@@ -118,7 +118,7 @@ BtlPopup *btl_popupText(arg0, arg1, arg2, arg3)
     s8 arg3;
 {
     BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
-    p->info.b.kind = 2;
+    p->info.b.kind = BTL_POPKIND_TEXT;
     p->info.b.delay = arg3;
     p->data.p = &g_btlTextPopups[arg1];
     p->clut = arg2;
@@ -170,7 +170,7 @@ u8 *btl_drawPopups(u8 *arg0) {
     for (i = 0; i < 16; i++) {
         p = &r->entries[j];
         if (p->unit != NULL) {
-            if (p->info.b.kind >= 3) {
+            if (p->info.b.kind >= BTL_POPKIND_DONE) {
                 p->unit = NULL;
             } else if (p->info.b.delay != 0) {
                 p->info.b.delay--;
@@ -195,7 +195,7 @@ u8 *btl_drawPopups(u8 *arg0) {
     addPrim(c.ot, c.prim);
     c.prim += 2;
     e = g_btlfxEnv->state;
-    if (((e->flags ^ 1) & 1) | ((e->phase == -1) | ((e->flags >> 15) & 1))) {
+    if (((e->flags ^ 1) & 1) | ((e->phase == BTLFX_PHASE_IDLE) | ((e->flags >> 15) & 1))) {
         btl_drawStatusIcons(&c);
     }
     r->tick++;
@@ -233,7 +233,7 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
         arg1->xy.s.y -= (c & 0x7F) + 5;
         if (arg0->info.b.noClamp == 0) {
             x = w;
-            if (arg0->info.b.kind != 0) {
+            if (arg0->info.b.kind != BTL_POPKIND_HP) {
                 x = D_80068BE8.w + w;
             }
             btl_clampPopup(arg0, arg1, x, 10);
@@ -241,7 +241,7 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
             arg1->xy.s.y += arg0->info.b.yOfs;
         }
         btl_drawPopupDigits(arg1, n);
-        if (arg0->info.b.kind != 0) {
+        if (arg0->info.b.kind != BTL_POPKIND_HP) {
             arg1->xy.s.x += (n >> 16) * 8;
             arg1->xy.s.y += 3;
             btl_drawPopupGlyph(arg1, &D_80068BE8);

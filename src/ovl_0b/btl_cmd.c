@@ -11,7 +11,7 @@ void btl_startBattle(void) {
     btl_initCmdQueue(b);
     btl_initTargetCursor(b);
     btl_initSceneFlags();
-    g_btlRewards.hasPostEvent = (b->scene.flags >> 13) & 1;
+    g_btlRewards.hasPostEvent = (b->scene.flags >> BTL_SCENE_POST_EVENT_BIT) & 1;
     msg_beginDraw();
     evt_update();
     btl_loadModelsStep(1);
@@ -533,7 +533,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     }
     switch (arg1->cmdNo) {
     case BTL_CMD_ATTACK:
-        if (((arg0->scene.flags >> 8) & 1) && (*u->weapon & 1) && (u16)arg1->targets >= 0x10) {
+        if (((arg0->scene.flags >> BTL_SCENE_OUT_OF_REACH_BIT) & 1) && (*u->weapon & 1) && (u16)arg1->targets >= 0x10) {
             msg = 0x17;
             goto fail;
         }
@@ -615,7 +615,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             goto ret0;
         }
     case BTL_CMD_CHARGE_ATTACK:
-        if ((arg0->scene.flags >> 8) & 1) {
+        if ((arg0->scene.flags >> BTL_SCENE_OUT_OF_REACH_BIT) & 1) {
             msg = 0x17;
             if (*u->weapon & 1) {
             fail:
@@ -771,7 +771,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
     u16 n;
     u16 f;
 
-    if (g_btlfxEnv->state->phase != -1) {
+    if (g_btlfxEnv->state->phase != BTLFX_PHASE_IDLE) {
         return;
     }
     b = g_gameState->gameData->ctx.battle;
@@ -2106,7 +2106,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x36:
         {
             s32 v;
-            if ((target->flags & BTL_UNIT_PARTY) || !((g_gameState->gameData->ctx.battle->scene.flags >> 2) & 1)) {
+            if ((target->flags & BTL_UNIT_PARTY) || !((g_gameState->gameData->ctx.battle->scene.flags >> BTL_SCENE_SCRIPT_START_BIT) & 1)) {
                 v = (caster->flags & BTL_UNIT_PARTY) << 11;
                 target->rot[1] = v;
                 target->obj->rotY = v;
@@ -3559,7 +3559,7 @@ void btl_applyAbilityElementBoost(BtlCalc *arg0) {
 }
 
 void btl_applyInvertedPower(Unk800BA938 *arg0) {
-    if ((g_gameState->gameData->ctx.battle->scene.flags >> 10) & 1) {
+    if ((g_gameState->gameData->ctx.battle->scene.flags >> BTL_SCENE_INVERT_POWER_BIT) & 1) {
         arg0->power = 0x3C - arg0->power;
         if (arg0->power <= 0) {
             arg0->power = 1;
@@ -3684,7 +3684,7 @@ void btl_payMpAttack(BtlCalc *arg0) {
 u8 btl_canFlee(BtlCalc *arg0) {
     Battle *b = g_gameState->gameData->ctx.battle;
     BtlUnit *u;
-    if ((u8)b->scene.flags >> 7 == 0) {
+    if ((u8)b->scene.flags >> BTL_SCENE_CAN_ESCAPE_BIT == 0) {
         return 0;
     }
     for (u = b->unitList; u != NULL; u = u->next) {

@@ -30,10 +30,10 @@ s32 btl_update(void) {
                 btlui_enable(1);
                 btlui_setAtbEnabled(1);
             }
-            n = b->scene.flags & 3;
-            if (n == 0) {
+            n = b->scene.flags & BTL_SCENE_AMBUSH;
+            if (n == BTL_AMBUSH_BACK) {
                 btl_showMessage(BTL_MSG_BACK_ATTACK);
-            } else if (n == 1) {
+            } else if (n == BTL_AMBUSH_PREEMPTIVE) {
                 btl_showMessage(BTL_MSG_PREEMPTIVE);
             }
         }
@@ -109,7 +109,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 }
             } else if (arg1->phase == BTL_PHASE_EXIT) {
                 f = u->flags;
-                if ((f & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.flags >> 6) & 1) && (g_gameState->gameData->characters + BTL_UNIT_INDEX(f))->info.b.unkA) {
+                if ((f & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) && (g_gameState->gameData->characters + BTL_UNIT_INDEX(f))->info.b.unkA) {
                     m = u->model;
                     if (u->obj->frame >= m->motion->frameCount) {
                         m->motion = (BtlUnit9CC *)u->motions[19];
@@ -121,7 +121,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
         }
         btl_updateKo(u);
     }
-    if (arg1->phase == BTL_PHASE_EXIT_DEFEAT && !((arg1->scene.flags >> 4) & 1) && (u8)btl_playVictoryMusic(arg0, 0x1E, MUSIC_DEFEAT) == 0) {
+    if (arg1->phase == BTL_PHASE_EXIT_DEFEAT && !((arg1->scene.flags >> BTL_SCENE_NO_GAMEOVER_BIT) & 1) && (u8)btl_playVictoryMusic(arg0, 0x1E, MUSIC_DEFEAT) == 0) {
         r = 0;
     }
     btl_drawScene(arg0, arg1, sp);
@@ -136,7 +136,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
 
     sp18 = arg1->work->prims[arg0->drawBuf];
     done = 1;
-    if (g_btlfxEnv->state->phase != -1 || arg1->cmdQueue.next != NULL || arg1->curCmd != NULL) {
+    if (g_btlfxEnv->state->phase != BTLFX_PHASE_IDLE || arg1->cmdQueue.next != NULL || arg1->curCmd != NULL) {
         done = 0;
     }
     for (u = arg1->unitList; u != NULL; u = u->next) {
@@ -217,7 +217,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         case BTL_END_SCRIPT_VICTORY:
             arg0->battleFlags |= 0x40;
             arg0->battleResult = 1;
-            if ((arg1->scene.flags >> 6) & 1) {
+            if ((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) {
                 if ((u8)btl_playVictoryMusic(arg0, 0x1E, MUSIC_VICTORY) == 0) {
                     break;
                 }
@@ -296,7 +296,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             break;
         }
         if (arg1->phase != BTL_PHASE_END) {
-            if (arg1->phase == BTL_PHASE_EXIT && !((arg1->scene.flags >> 6) & 1)) {
+            if (arg1->phase == BTL_PHASE_EXIT && !((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1)) {
                 arg1->subPhase = 1;
             } else {
                 arg1->subPhase = 0;

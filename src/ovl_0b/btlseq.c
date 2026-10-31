@@ -184,7 +184,7 @@ s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
         arg0->flags |= BTLSEQ_F_END_MOTION;
     }
     if ((arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) || ((arg0->flags >> BTLSEQ_F_END_MOTION_BIT) & 1)) {
-        if (g_btlfxEnv->state->phase != -1) {
+        if (g_btlfxEnv->state->phase != BTLFX_PHASE_IDLE) {
             return 0;
         }
         if (arg0->turnFrames != 0) {
@@ -202,7 +202,7 @@ s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
 }
 
 s32 btlseq_opEndNoAnimWait(BtlScript *arg0) {
-    if (g_btlfxEnv->state->phase == -1) {
+    if (g_btlfxEnv->state->phase == BTLFX_PHASE_IDLE) {
         if (arg0->turnFrames != 0) {
             return 0;
         }
@@ -386,7 +386,7 @@ s32 btlseq_opEffect(BtlScript *arg0) {
     s16 v[4];
     s32 id;
     Unk800F78A40 *e = g_btlfxEnv->state;
-    if ((e->phase != -1) & !((e->flags >> 15) & 1)) {
+    if ((e->phase != BTLFX_PHASE_IDLE) & !((e->flags >> 15) & 1)) {
         return 0;
     }
     id = arg0->pc[1] | (arg0->pc[2] << 8);
@@ -427,7 +427,7 @@ s32 btlseq_opReleaseEffect(BtlScript *arg0) {
 
 s32 btlseq_opWaitEffect(BtlScript *arg0) {
     Unk800F78A40 *p = g_btlfxEnv->state;
-    if ((p->phase == -1) | ((p->flags >> 15) & 1)) {
+    if ((p->phase == BTLFX_PHASE_IDLE) | ((p->flags >> 15) & 1)) {
         arg0->pc += 1;
         return 1;
     }

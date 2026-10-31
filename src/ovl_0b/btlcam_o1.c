@@ -142,8 +142,8 @@ void btlcam_loadScript(s32 arg) {
         case 2:
             switch ((*t >> 12) & 3) {
             case 0:
-                n = g_gameState->gameData->ctx.battle->scene.flags & 3;
-                if (n == 2) {
+                n = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
+                if (n == BTL_AMBUSH_NORMAL) {
                     g_btlCamera.variant = n;
                 } else {
                     g_btlCamera.variant = btlfx_randRange(0, 1);
@@ -182,8 +182,8 @@ void btlcam_loadScript(s32 arg) {
                 } else if ((g_btlCamera.focusUnit->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) || !((g_btlRewards.expMask >> ((u8)g_btlCamera.focusUnit->flags >> BTL_UNIT_SLOT_SHIFT)) & 1)) {
                     g_btlCamera.variant = 0;
                 } else {
-                    n = g_gameState->gameData->ctx.battle->scene.flags & 3;
-                    if (n == 2) {
+                    n = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
+                    if (n == BTL_AMBUSH_NORMAL) {
                         g_btlCamera.variant = n;
                     } else {
                         r = 0;
@@ -233,7 +233,7 @@ void btlcam_finishPaths(void) {
         t = g_btlCamera.paths[i].framesLeft != 0;
         if (t && (u32)(g_btlCamera.paths[i].mode - 2) < 2) {
             btlcam_evalPath(1, &g_btlCamera.paths[i], g_btlCamera.paths[i].keys[1].pos);
-            g_btlCamera.paths[i].mode = 1;
+            g_btlCamera.paths[i].mode = BTLCAM_PATH_HOLD;
         }
     }
 }
@@ -371,7 +371,7 @@ s32 btlcam_step(void) {
             g_btlCamera.paths[1].framesLeft--;
         }
     }
-    if (g_btlCamera.paths[0].mode != 0 && g_btlCamera.paths[1].mode != 0) {
+    if (g_btlCamera.paths[0].mode != BTLCAM_PATH_OFF && g_btlCamera.paths[1].mode != BTLCAM_PATH_OFF) {
         g_btlCamera.projFixed = 0;
         g_btlCamera.viewState = 0;
         btlcam_evalPath(0, &g_btlCamera.paths[0], &g_btlCamera.eye.vx);
@@ -405,7 +405,7 @@ s32 btlcam_step(void) {
     if (e == 1) {
         b = g_gameState->gameData->ctx.battle;
         if ((b->loadFlags & BTL_LOAD_READY) == BTL_LOAD_READY) {
-            if ((b->scene.flags >> 2) & 1) {
+            if ((b->scene.flags >> BTL_SCENE_SCRIPT_START_BIT) & 1) {
                 b->phase = e;
             } else {
                 g_gameState->gameData->ctx.battle->phase = BTL_PHASE_ENTRANCE;
@@ -484,9 +484,9 @@ void btlcam_evalPath(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
     s32 h;
 
     if ((u32)(arg1->mode - 2) < 2 && arg1->framesLeft == 0) {
-        arg1->mode = 1;
+        arg1->mode = BTLCAM_PATH_HOLD;
     }
-    if (arg1->mode >= 2) {
+    if (arg1->mode >= BTLCAM_PATH_LERP) {
         t = arg1->easeModes;
         for (i = 0; i < 2; i++) {
             if (arg1->frames == 0 || arg1->framesLeft == 0) {
@@ -517,7 +517,7 @@ void btlcam_evalPath(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
         v[i].vz = arg1->keys[i].pos[2];
         v[i].pad = arg1->keys[i].pos[3];
     }
-    if (arg1->mode >= 2) {
+    if (arg1->mode >= BTLCAM_PATH_LERP) {
         t = arg1->wrapModes;
         a = &v[0].vx;
         b = &v[1].vx;
@@ -552,7 +552,7 @@ void btlcam_evalPath(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
     }
     LoadAverageShort12(&v[0], &v[1], wa[0], wb[0], &out);
     switch (arg1->mode) {
-    case 2:
+    case BTLCAM_PATH_LERP:
         out.pad = btlfx_lerp(v[0].pad, v[1].pad, wb[1]);
         if (arg0 != 0) {
             arg2[0] = out.vx;
@@ -563,7 +563,7 @@ void btlcam_evalPath(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
         }
         btlcam_orbitAnchor(arg1->keys[1].anchor, arg1->keys[1].anchorFlags, &out.vx, arg2);
         goto tail;
-    case 3:
+    case BTLCAM_PATH_ANCHORED:
         if (arg0 != 0) {
             for (i = 0; i < 2; i++) {
                 btlcam_orbitAnchor(arg1->keys[i].anchor, arg1->keys[i].anchorFlags, &v[i].vx, &w[i].vx);
@@ -588,10 +588,10 @@ void btlcam_evalPath(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
     tail:
         arg2[3] = out.vz;
         if (arg1->framesLeft == 0) {
-            arg1->mode = 1;
+            arg1->mode = BTLCAM_PATH_HOLD;
         }
         break;
-    case 4:
+    case BTLCAM_PATH_CUBIC:
         wa[0] >>= 4;
         wb[0] >>= 4;
         coef[0] = (wa[0] * wa[0] * wa[0]) >> 12;

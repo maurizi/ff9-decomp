@@ -314,7 +314,7 @@ void btl_setupEnemies(void) {
     flags = &b->scene.flags;
     grp = b->scene.group;
     hdr = b->work->encounter;
-    b->scene.flags = (b->scene.flags & ~3) | (btl_rollAmbush(flags) & 3);
+    b->scene.flags = (b->scene.flags & ~BTL_SCENE_AMBUSH) | (btl_rollAmbush(flags) & 3);
     i = 0;
     n = hdr->typeCount + hdr->abilityCount;
     grp2 = hdr->groups;

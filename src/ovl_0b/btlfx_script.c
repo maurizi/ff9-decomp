@@ -1,7 +1,7 @@
 #include "ovl_0b.h"
 
 void btlfx_reset(void) {
-    g_btlfxState.phase = -1;
+    g_btlfxState.phase = BTLFX_PHASE_IDLE;
     g_btlfxState.partyReload = 0;
     g_btlfxState.modelSwap = 0;
 }
@@ -41,7 +41,7 @@ s32 btlfx_resolveFirstUse(s32 arg0) {
 }
 
 s32 btlfx_start(s32 arg0) {
-    if (g_btlfxState.phase != -1) {
+    if (g_btlfxState.phase != BTLFX_PHASE_IDLE) {
         return -1;
     }
     g_btlfxState.phase = 0;
@@ -235,7 +235,7 @@ void btlfx_runScript(void) {
                                 d->flags &= ~1;
                             }
                         } else {
-                            d->phase = -1;
+                            d->phase = BTLFX_PHASE_IDLE;
                             g_btlfxEnv->targets = NULL;
                             btlcam_endEffect();
                             btlfx_initParticleSystem();

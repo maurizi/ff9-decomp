@@ -733,6 +733,9 @@ typedef struct Unk800F78A40 {
     u8 seqSync; /* Unk800FEC40.seqSync */
 } Unk800F78A40;
 
+/* Unk800F78A40.phase / Unk800FEC40.phase (g_btlfxState): btlfx_runScript state */
+#define BTLFX_PHASE_IDLE (-1) /* no effect playing */
+
 typedef struct {
     u8 pad0[0xE];
     s16 stage; /* Unk80100DC0.stage */
@@ -1298,7 +1301,7 @@ typedef struct BtlPopup {
         struct {
             u8 delay; /* frames before it shows (btl_drawPopups) */
             s8 yOfs; /* y offset that keeps it on screen, fixed in its first frame (btl_clampPopup) */
-            u8 kind; /* 0 hp, 1 mp (btl_popupHp/Mp), 2 text (btl_popupText): g_btlPopupDrawFns draw handler; 3+ removes it */
+            u8 kind; /* BTL_POPKIND_*: g_btlPopupDrawFns draw handler */
             u8 noClamp; /* status-tick popups (btl_spawnTickPopups): keep yOfs, no clamping */
         } b;
     } info;
@@ -1309,6 +1312,12 @@ typedef struct BtlPopup {
     u16 clut;
     u8 pad1A[0x1C - 0x1A];
 } BtlPopup; /* 0x1C */
+
+/* BtlPopup.info.b.kind: g_btlPopupDrawFns index */
+#define BTL_POPKIND_HP   0 /* btl_popupHp */
+#define BTL_POPKIND_MP   1 /* btl_popupMp */
+#define BTL_POPKIND_TEXT 2 /* btl_popupText */
+#define BTL_POPKIND_DONE 3 /* and up: the popup is removed */
 
 typedef struct {
     BtlPopup entries[16];
@@ -1357,13 +1366,42 @@ typedef struct Battle108CSet {
 
 /* battle scene data (Battle.scene) */
 typedef struct {
-    u32 flags; /* bits 0-1 ambush (BTL_GETVAR_AMBUSH: 0 back attack, 1 preemptive, 2 normal, btl_rollAmbush); bits 2 and up
+    u32 flags; /* BTL_SCENE_*: bits 0-1 ambush (BTL_GETVAR_AMBUSH: 0 back attack, 1 preemptive, 2 normal, btl_rollAmbush); bits 2 and up
                 * are the encounter's Battle11C020.flags ^ 0x30, shifted left 2 (btl_initSceneFlags) */
     Battle1330 *group; /* enemy group chosen by btl_pickEnemyGroup */
     Battle1334 *enemyTypes; /* the encounter's enemy type records */
     u16 *seqTable; /* enemy battle sequences: counts, offsets, animations (btlseq_init) */
     s16 *sceneData; /* offset table, entries relative to its start (btl_getSceneData) */
 } Battle132C;
+
+/* Battle132C (Battle.scene).flags: bits 0-1 the ambush, bits 2 and up the encounter flags (btl_initSceneFlags).
+ * Evidence: [code] */
+#define BTL_SCENE_AMBUSH        0x03 /* BTL_AMBUSH_* (btl_rollAmbush, BTL_GETVAR_AMBUSH) */
+#define BTL_AMBUSH_BACK         0 /* back attack: the party starts with empty ATB, "Back attack!" */
+#define BTL_AMBUSH_PREEMPTIVE   1 /* preemptive strike: the enemies start with empty ATB, the party's are full */
+#define BTL_AMBUSH_NORMAL       2
+#define BTL_SCENE_SCRIPT_START_BIT 2 /* the intro hands over to the event script (BTL_PHASE_SCRIPT, btlcam_step) */
+#define BTL_SCENE_SCRIPT_START  (1 << BTL_SCENE_SCRIPT_START_BIT)
+/* bit 3: BTL_SETVAR_RESUME resets the ambush to normal unless bits 2 and 3 are both set */
+#define BTL_SCENE_NO_GAMEOVER_BIT 4 /* a defeat plays no defeat music and keeps battleResult 3 (else 6; btl_saveParty) */
+#define BTL_SCENE_NO_GAMEOVER   (1 << BTL_SCENE_NO_GAMEOVER_BIT)
+#define BTL_SCENE_VICTORY_BIT   6 /* victory music, poses and rewards (btl_victory); BTL_SETVAR_END 1 goes through it */
+#define BTL_SCENE_VICTORY       (1 << BTL_SCENE_VICTORY_BIT)
+#define BTL_SCENE_CAN_ESCAPE_BIT 7 /* clear: "Can't escape!" (btl_tryEscape, btl_canFlee) */
+#define BTL_SCENE_CAN_ESCAPE    (1 << BTL_SCENE_CAN_ESCAPE_BIT)
+#define BTL_SCENE_OUT_OF_REACH_BIT 8 /* the enemies are out of reach of weapons with weapon[0] bit 0: "Can't reach!" (btl_checkCmdUsable) */
+#define BTL_SCENE_OUT_OF_REACH  (1 << BTL_SCENE_OUT_OF_REACH_BIT)
+#define BTL_SCENE_NO_VOICE_BIT  9 /* abilities needing a voice (BTL_ABIL_VOICE) are greyed out as under Silence (btlui_getAbilityState) */
+#define BTL_SCENE_NO_VOICE      (1 << BTL_SCENE_NO_VOICE_BIT)
+#define BTL_SCENE_INVERT_POWER_BIT 10 /* btl_applyInvertedPower: power = 60 - power */
+#define BTL_SCENE_INVERT_POWER  (1 << BTL_SCENE_INVERT_POWER_BIT)
+#define BTL_SCENE_NO_PARTY_FX_CAMERA_BIT 11 /* no effect camera when the first target is a party unit (btlfx_updateCameraEnable) */
+#define BTL_SCENE_NO_PARTY_FX_CAMERA (1 << BTL_SCENE_NO_PARTY_FX_CAMERA_BIT)
+#define BTL_SCENE_NO_ENEMY_FX_CAMERA_BIT 12 /* the same for enemy targets */
+#define BTL_SCENE_NO_ENEMY_FX_CAMERA (1 << BTL_SCENE_NO_ENEMY_FX_CAMERA_BIT)
+#define BTL_SCENE_POST_EVENT_BIT 13 /* g_btlRewards.hasPostEvent (btl_startBattle) */
+#define BTL_SCENE_POST_EVENT    (1 << BTL_SCENE_POST_EVENT_BIT)
+/* bit 14: without VICTORY, a victory, stop or escape sets GameData.battleFlags 8 */
 
 typedef struct {
     BtlUnit9C model;
@@ -1489,7 +1527,7 @@ typedef struct {
 
 typedef struct {
     Unk800C412C0 keys[2]; /* from [0] and to [1] (btlcam_setPathKey shifts them) */
-    u8 mode; /* 0 off, 1 hold the key, 2 lerp, 3 lerp between anchored points, 4 cubic over g_btlCamera.points */
+    u8 mode; /* BTLCAM_PATH_* */
     u8 wrapModes; /* per axis, 2 bits: how angles wrap while lerping */
     u8 easeModes; /* 2 bits per weight: 0 linear, 1 ease out, 2 ease in (g_btlCamScript.accel) */
     u8 locked; /* keys set by camera flag 0x8000: the next command doesn't replace the mode or timing */
@@ -1497,6 +1535,13 @@ typedef struct {
     u8 framesLeft; /* counts down in btlcam_step */
     u8 pad1E[0x20 - 0x1E];
 } Unk800C412C; /* 0x20 */
+
+/* Unk800C412C.mode (g_btlCamera.paths[]; set from camera script op bits 5-6) */
+#define BTLCAM_PATH_OFF      0
+#define BTLCAM_PATH_HOLD     1 /* hold the key */
+#define BTLCAM_PATH_LERP     2
+#define BTLCAM_PATH_ANCHORED 3 /* lerp between anchored points */
+#define BTLCAM_PATH_CUBIC    4 /* cubic over g_btlCamera.points */
 
 typedef struct Unk800FE3B8 {
     SVECTOR points[6]; /* camera path control points (cubic, btlcam_step); [4]/[5] keep the eye/target for script flag 0x80 */

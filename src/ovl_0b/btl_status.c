@@ -982,7 +982,7 @@ void btl_checkEnemiesKO(void) {
 s32 btl_saveParty(Battle *arg0) {
     GameData *gd = g_gameState->gameData;
     u8 v = gd->battleResult;
-    if ((v == 3 || v == 6) && !((arg0->scene.flags >> 4) & 1)) {
+    if ((v == 3 || v == 6) && !((arg0->scene.flags >> BTL_SCENE_NO_GAMEOVER_BIT) & 1)) {
         gd->battleResult = 6;
     } else {
         BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
@@ -1045,7 +1045,7 @@ void btl_insertUnit(BtlUnit *arg0) {
 void btl_tryEscape(u8 arg0) {
     Battle *b = g_gameState->gameData->ctx.battle;
     if (!(b->cmdFlags & BTL_CMDF_ESCAPE)) {
-        if ((u8)b->scene.flags >> 7 == 0) {
+        if ((u8)b->scene.flags >> BTL_SCENE_CAN_ESCAPE_BIT == 0) {
             btl_showMessage(BTL_MSG_CANT_ESCAPE);
         } else if (arg0 && (btl_isAtbRunning() & 0xFF)) {
             btl_calcCmd(0, 0, 0, 0x38);

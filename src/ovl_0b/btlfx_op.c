@@ -1989,9 +1989,9 @@ void btlfx_updateCameraEnable(void) {
             r = 0;
         } else {
             if (b->flags & BTL_UNIT_PARTY) {
-                v = g_gameState->gameData->ctx.battle->scene.flags >> 11;
+                v = g_gameState->gameData->ctx.battle->scene.flags >> BTL_SCENE_NO_PARTY_FX_CAMERA_BIT;
             } else {
-                v = g_gameState->gameData->ctx.battle->scene.flags >> 12;
+                v = g_gameState->gameData->ctx.battle->scene.flags >> BTL_SCENE_NO_ENEMY_FX_CAMERA_BIT;
             }
             v &= 1;
             r = v == 0;

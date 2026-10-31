@@ -568,7 +568,7 @@ void btlui_initMenu(void) {
     p->menuState = BTLUI_MENU_NONE;
     p->cmdUnit = NULL;
     g_btlUi->tick = 0;
-    g_btlUi->ambush = g_gameState->gameData->ctx.battle->scene.flags & 3;
+    g_btlUi->ambush = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
     g_btlUi->frozenSide = btlui_getFrozenSide();
     btlui_clearAbilityLists();
     btlui_initPartyEntries();
@@ -1865,7 +1865,7 @@ s32 btlui_getAbilityState(s32 arg0) {
         if ((u8)btl_hasStatus(g_btluiList.unit, BTL_STATUS_SILENCE)) {
             return 1;
         }
-        if ((g_gameState->gameData->ctx.battle->scene.flags >> 9) & 1) {
+        if ((g_gameState->gameData->ctx.battle->scene.flags >> BTL_SCENE_NO_VOICE_BIT) & 1) {
             return 1;
         }
     }

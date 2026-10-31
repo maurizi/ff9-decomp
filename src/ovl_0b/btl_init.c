@@ -27,14 +27,14 @@ void btl_initParty(Battle *arg0) {
     }
     arg0->loadFlags |= BTL_LOAD_PARTY_INIT;
     btl_placeParty();
-    k = arg0->scene.flags & 3;
-    if (k == 0) {
+    k = arg0->scene.flags & BTL_SCENE_AMBUSH;
+    if (k == BTL_AMBUSH_BACK) {
         for (u = arg0->unitList; u != NULL; u = u->next) {
             if (u->flags & BTL_UNIT_PARTY) {
                 u->atb = 0;
             }
         }
-    } else if (k == 1) {
+    } else if (k == BTL_AMBUSH_PREEMPTIVE) {
         for (u = arg0->unitList; u != NULL; u = u->next) {
             if (!(u->flags & BTL_UNIT_PARTY)) {
                 u->atb = 0;
@@ -126,10 +126,10 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     btl_initDoomCount((Unk800C09D8 *)u);
     u->max->maxAtb = (0x3C - u->speed) * 160;
     btl_resetAtbSpeed((Unk800BD8F0 *)u);
-    k = g_gameState->gameData->ctx.battle->scene.flags & 3;
-    if (k == 0) {
+    k = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
+    if (k == BTL_AMBUSH_BACK) {
         u->atb = 0;
-    } else if (k == 1) {
+    } else if (k == BTL_AMBUSH_PREEMPTIVE) {
         u->atb = u->max->maxAtb - 1;
     } else {
         if (g_randPtr >= g_randTableEnd) {
