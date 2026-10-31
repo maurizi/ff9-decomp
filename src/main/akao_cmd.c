@@ -202,8 +202,8 @@ void akao_stopSeChannels(s32 id, s32 mask) {
     if (mask & 0x0FFFFFFF) {
         for (i = 0; i < 16; i++, c++, bit <<= 1) {
             if ((active & bit) && (c->seMask & mask)) {
-                if (c->flags & 0x100000) {
-                    c->flags |= 0x200000;
+                if (c->flags & AKAO_CH_STOP_AT_LOOP) {
+                    c->flags |= AKAO_CH_STOP_REQUESTED;
                 } else {
                     g_akaoSeState.keyOffMask |= bit;
                     akao_stopSeChannel(c, bit);
@@ -243,8 +243,8 @@ void akao_stopSeChannels(s32 id, s32 mask) {
         bit = 0x100;
         for (i = 0; i < 16; i++, c++, bit <<= 1) {
             if ((active & bit) && max == c->age) {
-                if (c->flags & 0x100000) {
-                    c->flags |= 0x200000;
+                if (c->flags & AKAO_CH_STOP_AT_LOOP) {
+                    c->flags |= AKAO_CH_STOP_REQUESTED;
                 } else {
                     g_akaoSeState.keyOffMask |= bit;
                     akao_stopSeChannel(c, bit);
@@ -257,8 +257,8 @@ void akao_stopSeChannels(s32 id, s32 mask) {
             if (active & bit) {
                 if (id == -1) {
                     if (c->seHandle < 0) {
-                        if (c->flags & 0x100000) {
-                            c->flags |= 0x200000;
+                        if (c->flags & AKAO_CH_STOP_AT_LOOP) {
+                            c->flags |= AKAO_CH_STOP_REQUESTED;
                         } else {
                             g_akaoSeState.keyOffMask |= bit;
                             akao_stopSeChannel(c, bit);
@@ -266,8 +266,8 @@ void akao_stopSeChannels(s32 id, s32 mask) {
                         }
                     }
                 } else if (c->seHandle == id) {
-                    if (c->flags & 0x100000) {
-                        c->flags |= 0x200000;
+                    if (c->flags & AKAO_CH_STOP_AT_LOOP) {
+                        c->flags |= AKAO_CH_STOP_REQUESTED;
                     } else {
                         g_akaoSeState.keyOffMask |= bit;
                         akao_stopSeChannel(c, bit);
@@ -402,7 +402,7 @@ void akao_startSe(VoiceParams *p, u8 *a, u8 *b, s32 flag) {
         akao_startSeChannel(c, p, bit, b);
         akao_releaseVoice(g_akaoChannels, c->voice);
         if (a != NULL) {
-            c->flags |= 0x10000;
+            c->flags |= AKAO_CH_SE_SECOND;
         }
     }
     g_akaoFlags.dirty |= 0x110;

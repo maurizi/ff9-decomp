@@ -859,7 +859,7 @@ typedef struct {
     u32 seMask; /* sound-effect channel group bits (VoiceParams +4; akao_stopSeChannels, akao_getActiveSe), 0x2000000 = ignores SE volume/pan/pitch commands */
     u32 pitch; /* pitch of the current note (akao_calcPitch), base of voicePitch and of the vibrato depth */
     s32 pitchSlide; /* pitch offset of a running slide (<< 16), added to voicePitch */
-    u32 flags; /* 1 vibrato, 2 tremolo, 4 pan LFO, 8 drum kit (op FE04), 0x10/0x20 pitch/volume from the previous channel (ops D4-D7), 0x40 full gate (op FE1A), 0x1000 key split, 0x100000 stop only at the loop end (op E0): a stop request sets 0x200000 and op CA then ends the channel; 0x1000000/0x8000000/0x10000000 ADSR fields overridden (ops AD/B1/B2) */
+    u32 flags; /* AKAO_CH_* */
     s32 seBank; /* instrument bank offset of a sound effect (VoiceParams +0x10; akao_remapSeInstrument in op Program) */
     s32 vibratoPeriod; /* LFO period << 12 (op B4) */
     s32 vibratoPeriodStep; /* (op E4) */
@@ -956,6 +956,23 @@ typedef struct {
 } AkaoChannel; /* 0x134 */
 /* AkaoChannel.voiceDirty / AkaoVoiceRegs.dirty: which SPU voice registers akao_flushVoice writes. The bits are
  * libspu's SpuVoiceAttr mask bits (SPU_VOICE_VOLL ... SPU_VOICE_LSAX); the AKAO ADSR ops set the ones they change. */
+/* AkaoChannel.flags */
+#define AKAO_CH_VIBRATO 0x1 /* ops B4 on / B6 off (akao_calcChannelVoice) */
+#define AKAO_CH_TREMOLO 0x2 /* ops B8 / BA */
+#define AKAO_CH_PAN_LFO 0x4 /* ops BC / BE */
+#define AKAO_CH_DRUM_KIT 0x8 /* ops FE04 / FE05: notes play akao_playDrumNote */
+#define AKAO_CH_PITCH_FROM_PREV 0x10 /* ops D4 / D5: the voice pitch follows the previous channel's */
+#define AKAO_CH_VOL_FROM_PREV 0x20 /* ops D6 / D7: the volume follows the previous channel's pitch */
+#define AKAO_CH_FULL_GATE 0x40 /* ops FE1A / FE1B: music notes keep the key on for their whole length */
+#define AKAO_CH_KEY_SPLIT 0x1000 /* op FE14: the instrument has key-split regions (akao_applyKeySplit) */
+#define AKAO_CH_SE_SECOND 0x10000 /* second channel of a two-channel sound effect (akao_startSe); op C6 may pitch-modulate it */
+#define AKAO_CH_STOP_AT_LOOP 0x100000 /* op E0: a stop request only marks AKAO_CH_STOP_REQUESTED (akao_stopSeChannels) */
+#define AKAO_CH_STOP_REQUESTED 0x200000 /* the next loop-back op CA ends the channel instead */
+#define AKAO_CH_ATTACK_SET 0x1000000 /* op AD set the attack rate: notes keep it instead of the instrument's */
+#define AKAO_CH_SUSTAIN_RATE_SET 0x8000000 /* op B1 */
+#define AKAO_CH_RELEASE_RATE_SET 0x10000000 /* op B2 */
+#define AKAO_CH_ADSR_SET (AKAO_CH_ATTACK_SET | AKAO_CH_SUSTAIN_RATE_SET | AKAO_CH_RELEASE_RATE_SET) /* cleared by op B3 */
+
 #define AKAO_VD_VOLL 0x1
 #define AKAO_VD_VOLR 0x2
 #define AKAO_VD_VOL (AKAO_VD_VOLL | AKAO_VD_VOLR) /* akao_setVoiceVolume */

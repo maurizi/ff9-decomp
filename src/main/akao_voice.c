@@ -453,7 +453,7 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
 
     f = c->flags;
     vol = ((c->volume >> 16) * (c->expression >> 8)) >> 7;
-    if ((f & 1) && c->vibratoDelayLeft == 0) {
+    if ((f & AKAO_CH_VIBRATO) && c->vibratoDelayLeft == 0) {
         c->vibratoPhase += c->vibratoRate;
         t = c->vibratoWave((u32)c->vibratoPhase >> 16);
         pan = (s16)((u32)(c->vibratoDepth * t) >> 16);
@@ -464,20 +464,20 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
         c->vibratoOut = x;
         c->voiceDirty |= AKAO_VD_PITCH;
     }
-    if ((f & 2) && c->tremoloDelayLeft == 0) {
+    if ((f & AKAO_CH_TREMOLO) && c->tremoloDelayLeft == 0) {
         c->tremoloPhase += c->tremoloRate;
         t = c->tremoloWave((u32)c->tremoloPhase >> 16);
         pan = (vol * (c->tremoloDepth >> 8)) << 9 >> 16;
         c->voiceDirty |= AKAO_VD_VOL;
         c->tremoloOut = (pan * t) >> 16;
     }
-    if (f & 4) {
+    if (f & AKAO_CH_PAN_LFO) {
         c->panLfoPhase += c->panLfoRate;
         t = c->panLfoWave((u32)c->panLfoPhase >> 16);
         c->voiceDirty |= AKAO_VD_VOL;
         c->panLfoOut = ((c->panLfoDepth >> 8) * t) >> 16;
     }
-    if (f & 0x20) {
+    if (f & AKAO_CH_VOL_FROM_PREV) {
         c->voiceDirty |= AKAO_VD_VOL;
         vol = ((s16)(c[-1].voicePitch << 1) * (c->expression >> 8)) >> 7;
     }
@@ -493,7 +493,7 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
             c->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
         }
     }
-    if (f & 0x10) {
+    if (f & AKAO_CH_PITCH_FROM_PREV) {
         pitch = c[-1].voicePitch + c->vibratoOut + (c->pitchSlide >> 16);
         pan = g_akaoPitchScale & 0xFF0000;
         if (pan != 0) {
@@ -532,7 +532,7 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
 
     f = c->flags;
     vol = ((c->volume >> 16) * (c->expression >> 8)) >> 7;
-    if (f & 1) {
+    if (f & AKAO_CH_VIBRATO) {
         c->vibratoPhase += c->vibratoRate;
         t = c->vibratoWave((u32)c->vibratoPhase >> 16);
         pan = (s16)((u32)(c->vibratoDepth * t) >> 16);
@@ -543,20 +543,20 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
         c->vibratoOut = x;
         c->voiceDirty |= AKAO_VD_PITCH;
     }
-    if (f & 2) {
+    if (f & AKAO_CH_TREMOLO) {
         c->tremoloPhase += c->tremoloRate;
         t = c->tremoloWave((u32)c->tremoloPhase >> 16);
         pan = (vol * (c->tremoloDepth >> 8)) << 9 >> 16;
         c->voiceDirty |= AKAO_VD_VOL;
         c->tremoloOut = (pan * t) >> 16;
     }
-    if (f & 4) {
+    if (f & AKAO_CH_PAN_LFO) {
         c->panLfoPhase += c->panLfoRate;
         t = c->panLfoWave((u32)c->panLfoPhase >> 16);
         c->voiceDirty |= AKAO_VD_VOL;
         c->panLfoOut = ((c->panLfoDepth >> 8) * t) >> 16;
     }
-    if (f & 0x20) {
+    if (f & AKAO_CH_VOL_FROM_PREV) {
         c->voiceDirty |= AKAO_VD_VOL;
         vol = ((s16)(c[-1].voicePitch << 1) * (c->expression >> 8)) >> 7;
     }
@@ -576,7 +576,7 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
             c->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
         }
     }
-    if (f & 0x10) {
+    if (f & AKAO_CH_PITCH_FROM_PREV) {
         pitch = c[-1].voicePitch + c->vibratoOut + (c->pitchSlide >> 16);
         k = c->sePitch & 0xFF00;
         if (!(c->seMask & 0x2000000) && k != 0) {
