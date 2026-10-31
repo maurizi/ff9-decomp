@@ -71,7 +71,7 @@ void battleEnd_exit(void) {
     GameData *g = g_gameState->gameData;
     s32 i;
 
-    if (!(g->battleFlags & GD_BTL_KEEP_MUSIC) && (g->flags & GD_MUSIC_PLAYING) && g->musicId[0] != 0xFFFF) {
+    if (!(g->battleFlags & GD_BTL_KEEP_MUSIC) && (g->flags & GD_MUSIC_PLAYING) && g->musicId[0] != MUSIC_NONE) {
         g->flags |= GD_MUSIC_LEFT_PLAYING;
     }
     g_gameState->gameData->depTable = (FileTable *)-1;

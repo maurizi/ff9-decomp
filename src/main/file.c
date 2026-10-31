@@ -147,14 +147,14 @@ void file_initImg(void) {
     s32 i;
     Ff9ImgHeader *hdr;
 
-    g_gameState->disc = 0xFF;
+    g_gameState->disc = DISC_NONE;
     for (i = 0; i < ARRAY_COUNT(names); i++) {
         if (CdSearchFile(&fp, names[i])) {
             g_gameState->disc = 1 << (i % 4);
             break;
         }
     }
-    if (g_gameState->disc != 0xFF) {
+    if (g_gameState->disc != DISC_NONE) {
         while (cd_getState()) {
         }
         while ((g_gameState->imgSector = cd_findFile("\\FF9.IMG;1")) == -1) {

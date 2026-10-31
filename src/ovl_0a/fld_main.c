@@ -122,7 +122,7 @@ void fld_gameOver(void) {
     gameover_main(g_gameState->gameData->ctx.field->area->scene->eventScript);
     g_gameState->mode = GS_MODE_OPENING;
     g_gameState->flags |= GS_RELOAD_FILE_TABLES;
-    if ((g_gameState->gameData->flags & GD_MUSIC_PLAYING) && g_gameState->gameData->musicId[0] != 0xFFFF) {
+    if ((g_gameState->gameData->flags & GD_MUSIC_PLAYING) && g_gameState->gameData->musicId[0] != MUSIC_NONE) {
         fld_soundCommand(SND_SONG_VOL_INTPL, g_gameState->gameData->musicId[0], 0x1E, 0, 0);
         for (i = 0x1D; i >= 0; i--) {
             VSync(0);
@@ -562,7 +562,7 @@ void fld_initScene(void) {
     }
     sc->encounterScreenX = 0xA0;
     sc->encounterScreenY = 0x70;
-    sc->battleMusic = 0xFFFF;
+    sc->battleMusic = MUSIC_NONE;
     sc->battleMusicBank = 0xFFFF;
     sc->encounterStep = 0;
     sc->encounterMusicStep = 0;

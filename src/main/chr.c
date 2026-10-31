@@ -367,7 +367,7 @@ u8 chr_getAppearanceType(s32 a, u8 b) {
 }
 
 s32 chr_getDefaultSet(Character *c) {
-    return g_chrDefaultSets[c->info.b.id][(c->classFlags & 0x10) != 0];
+    return g_chrDefaultSets[c->info.b.id][(c->classFlags & CHR_CLASS_GUEST) != 0];
 }
 
 u8 chr_getClassFlags(u32 x) {
@@ -683,7 +683,7 @@ u8 chr_testSupportBit(u32 *bits, s32 b) {
 }
 
 u8 chr_canLearnAbilities(Character *a) {
-    if (a->classFlags & 0x10) {
+    if (a->classFlags & CHR_CLASS_GUEST) {
         return 0;
     }
     return (s32)a->info.b.row < 8;

@@ -24,7 +24,7 @@ void opening_resetFieldState(void) {
     ctx->unk9 = 0;
     ctx->npcModelSlots = 0;
     ctx->npcCount = 0;
-    ctx->savedMusicId = 0xFFFF;
+    ctx->savedMusicId = MUSIC_NONE;
     ctx->savedMusicField = 0xFFFF;
     ctx->savedMusicBank = 0xFFFF;
     ctx->savedMusicVolume = 0;
@@ -68,7 +68,7 @@ void opening_resetMusicSlots(void) {
     GameData *ctx = g_gameState->gameData;
 
     for (i = 1; i >= 0; i--) {
-        ctx->musicId[i] = 0xFFFF;
+        ctx->musicId[i] = MUSIC_NONE;
         ctx->musicBank[i] = 0xFFFF;
         ctx->musicHandle[i] = 0;
         ctx->musicVolume[i] = 0x7F;

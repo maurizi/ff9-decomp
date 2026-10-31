@@ -1362,7 +1362,7 @@ void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix
 static inline s32 fld_movieCommand_state(void) {
     s8 v;
 
-    if (g_gameState->disc != 0xFF) {
+    if (g_gameState->disc != DISC_NONE) {
         v = g_gameState->gameData->ctx.field->area->scene->movieState;
         if (v != 0x11) {
             goto other;

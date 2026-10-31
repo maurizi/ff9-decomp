@@ -28,7 +28,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case 9:
             ok = 0;
-            if (g_gameState->gameData->savedMusicId != 0xFFFF && g_gameState->gameData->savedMusicField == (s16)g_gameState->gameData->fieldId) {
+            if (g_gameState->gameData->savedMusicId != MUSIC_NONE && g_gameState->gameData->savedMusicField == (s16)g_gameState->gameData->fieldId) {
                 GameData *p;
                 ok = 1;
                 g_fieldMusicRequest = kind;
@@ -41,7 +41,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->gameData->musicFileSectors = g_gameState->gameData->savedMusicFileSectors;
             }
             /* v2 */
-            g_gameState->gameData->savedMusicId = 0xFFFF;
+            g_gameState->gameData->savedMusicId = MUSIC_NONE;
             g_gameState->gameData->savedMusicBank = 0xFFFF;
             g_gameState->gameData->savedMusicField = 0xFFFF;
             g_gameState->gameData->savedMusicFileSector = -1;
@@ -237,7 +237,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case 9:
             t = 0;
-            if (g_gameState->gameData->sfxSlotId[slot] != 0xFFFF && g_gameState->gameData->sfxSlotSuspendField[slot] == (s16)g_gameState->gameData->fieldId) {
+            if (g_gameState->gameData->sfxSlotId[slot] != SE_NONE && g_gameState->gameData->sfxSlotSuspendField[slot] == (s16)g_gameState->gameData->fieldId) {
                 arg2 = (0x100000 << slot) & 0x300000;
                 t = 1;
                 arg3 = g_gameState->gameData->sfxSlotPan[slot];
@@ -585,7 +585,7 @@ void fld_stopResidentSfx(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        if (g_gameState->gameData->sfxSlotId[i] != 0xFFFF) {
+        if (g_gameState->gameData->sfxSlotId[i] != SE_NONE) {
             fld_soundCommand(SND_SE_STOP | SND_RESIDENT, g_gameState->gameData->sfxSlotId[i], 0, 0, 0);
         }
     }

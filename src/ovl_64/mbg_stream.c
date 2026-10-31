@@ -96,7 +96,7 @@ end:
         }
         h = &g_mbgStream.ringHdrs[g_mbgStream.writeSlot];
         h->firstSector = g_mbgStream.slotSectors - g_mbgStream.slotSector;
-        h->status = (h->status & 0xFFF) | MBG_RING_READY | MBG_RING_BUSY;
+        h->status = (h->status & ~MBG_RING_STATE) | MBG_RING_READY | MBG_RING_BUSY;
         if (g_mbgStream.frame > g_mbgStream.lastFrame) {
             g_mbgStream.endState = MBG_END_LAST_FRAME;
             cd_pause();
@@ -185,7 +185,7 @@ void mbg_streamOnAudioSector(void) {
         }
         h = &g_mbgStream.ringHdrs[g_mbgStream.writeSlot];
         h->firstSector = g_mbgStream.slotSectors - g_mbgStream.slotSector;
-        h->status = (h->status & 0xFFF) | MBG_RING_READY | MBG_RING_BUSY;
+        h->status = (h->status & ~MBG_RING_STATE) | MBG_RING_READY | MBG_RING_BUSY;
         if (g_mbgStream.frame > g_mbgStream.lastFrame) {
             g_mbgStream.endState = MBG_END_LAST_FRAME;
             cd_pause();
@@ -332,7 +332,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
                 g_mbgStream.stalled = 1;
                 goto end;
             }
-            h->status = (h->status & 0xFFF) | MBG_RING_BUSY | MBG_RING_FILLING;
+            h->status = (h->status & ~MBG_RING_STATE) | MBG_RING_BUSY | MBG_RING_FILLING;
         }
         {
             u32 last;
@@ -390,7 +390,7 @@ s32 mbg_streamSetRing(Ovl64RingHdr *ring, u32 per, u32 size) {
     g_mbgStream.slotCount = n;
     g_mbgStream.readSlot = n - 1;
     for (i = 0; i < n; i++) {
-        ring->status = (ring->status & 0xFFF) | MBG_RING_FREE;
+        ring->status = (ring->status & ~MBG_RING_STATE) | MBG_RING_FREE;
         ring++;
     }
     return 0;
@@ -521,7 +521,7 @@ s32 mbg_streamClearRing(void) {
     s32 i;
 
     for (i = 0; i < n; i++, h++) {
-        h->status = (h->status & 0xFFF) | MBG_RING_FREE;
+        h->status = (h->status & ~MBG_RING_STATE) | MBG_RING_FREE;
     }
     return 0;
 }
@@ -529,7 +529,7 @@ s32 mbg_streamClearRing(void) {
 s32 mbg_streamFreeFrame(u8 *data) {
     Ovl64RingHdr *h = &g_mbgStream.ringHdrs[(u32)(data - g_mbgStream.ringData) / 0x8F4 / g_mbgStream.slotSectors];
 
-    h->status = (h->status & 0xFFF) | MBG_RING_FREE;
+    h->status = (h->status & ~MBG_RING_STATE) | MBG_RING_FREE;
     if (g_mbgStream.stalled != 0) {
         cd_readStreamAsync(g_mbgStream.sector, mbg_streamReadyCallback);
         g_mbgStream.stalled = 0;

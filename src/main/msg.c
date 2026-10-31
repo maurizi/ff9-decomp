@@ -837,7 +837,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     r.w = w->w + 3;
     r.h = w->h + 3;
     style = WIN_STYLE_FRAMELESS;
-    if (!(l->tailMode & 0x10)) {
+    if (!(l->tailMode & MSG_TAIL_FRAMELESS)) {
         style = WIN_STYLE_BALLOON;
         if (l->tailOffset == 0 && !(flags & 4)) {
             style = WIN_STYLE_BEVEL;
@@ -849,7 +849,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
         win_setDrawContent(w->window, msg_drawWindowContent);
         win_setDrawOverlay(w->window, msg_drawChoiceCursor);
         if (l->tailOffset != 0 && !(flags & 4)) {
-            win_setTail(w->window, l->tailMode & 3, l->tailOffset);
+            win_setTail(w->window, l->tailMode & MSG_TAIL_DIR, l->tailOffset);
         }
         if (g_msgLayoutAltOpen != 0) {
             win_setOpenAnim(w->window, WIN_ANIM_NONE);

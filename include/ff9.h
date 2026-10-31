@@ -159,6 +159,11 @@ typedef struct {
     u8 ap[0x30]; /* AP per ability slot of the character's g_abilityRows row (chr_getAp, chr_clearAp) */
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
+/* Character.classFlags (chr_getClassFlags: g_chrClassFlags, main data 0x8006CACC = 09 05 06 05 06 05 06 05 15 15 15 16 by
+ * ability row; bits 0x1/0x4/0x8 left unnamed: 0x8 only for row 0, ability 0x62 misses it) */
+#define CHR_CLASS_FEMALE 0x2 /* Protect Girls covers it (btl_findCover); ability 0x61 misses it; rows 2, 4, 6 */
+#define CHR_CLASS_GUEST 0x10 /* rows 8 and up: no ability learning (chr_canLearnAbilities), no trance (btl_initPartyUnit),
+                             * the alternate default set and appearance (chr_getDefaultSet, chr_calcAppearance) */
 
 /* GameData.npcModels entry */
 typedef struct ModelSlot {
@@ -393,7 +398,7 @@ typedef struct {
     u8 mode; /* GS_MODE_* */
     u8 vsyncMode; /* VSync mode */
     u8 prevMode; /* GS_MODE_* being left (field, world, Tetra Master; set by the exits) */
-    u8 disc;          /* disc bit (1 << disc - 1) of the SLUS file file_initImg found, 0xFF = none */
+    u8 disc;          /* DISC_*: disc bit (1 << disc - 1) of the SLUS file file_initImg found */
     DISPENV *dispEnv;    /* [2] */
     DRAWENV *drawEnv;   /* [2] */
     struct DirInfo *dirs; /* [15] FF9.IMG directory records (file_initImg) */
@@ -408,6 +413,12 @@ typedef struct {
 } GameState;
 
 extern GameState *g_gameState;
+/* GameState.disc: one bit per disc of the game found in the drive (bit 0 = disc 1). The opening plays its movie
+ * only with disc 1 in, the ending only with disc 4, and New Game sets disc 1 before scene_checkDisc asks for the disc
+ * that was in before. */
+#define DISC_NONE 0xFF /* no disc read (file_initImg, db.c reset) */
+#define DISC_1    1
+#define DISC_4    8
 void file_loadDirTables(); /* game_initState calls it without arguments */
 
 /* Inlined copy of chr_testSupportBit (support ability bit test). */
@@ -522,6 +533,15 @@ typedef struct {
     u8 sortKey; /* sort key: menuItem_sortAuto */
     u8 pad11;
 } ItemInfo; /* item table, 0x12-byte entries */
+/* ItemInfo.slots: g_equipSlotMasks (main data 0x8006BB84) = 80 20 40 10 08, in Character.equip order */
+#define ITEM_SLOT_USABLE    0x01 /* usable from the Item menu (menuItem_selectItem, ovl_37) */
+#define ITEM_SLOT_ACCESSORY 0x08
+#define ITEM_SLOT_BODY      0x10
+#define ITEM_SLOT_HEAD      0x20
+#define ITEM_SLOT_ARM       0x40
+#define ITEM_SLOT_WEAPON    0x80
+#define ITEM_SLOT_ARMOR (ITEM_SLOT_WEAPON | ITEM_SLOT_HEAD | ITEM_SLOT_ARM | ITEM_SLOT_BODY) /* 0xF0: shop_isEquipmentShop (ovl_3c) */
+#define ITEM_SLOT_EQUIP (ITEM_SLOT_ARMOR | ITEM_SLOT_ACCESSORY) /* 0xF8: equipment (ovl_3c shop screens) */
 extern ItemInfo g_itemTable[];
 extern u8 g_chrHpMpSupports[4]; /* max hp/mp support abilities */
 extern u8 g_chrStatCaps[4]; /* stat caps */
@@ -1256,7 +1276,7 @@ typedef struct EvtObject {
     u8 scale; /* 64 = 1.0 (op 0x9F), places the HERE icon / bubble anchor */
     s16 pitch; /* rotation x while flying to a point (op 0xA2) */
     s16 height; /* -(op 0x2F height << 2), places the HERE icon / bubble anchor */
-    u16 modelId; /* op 0x2F (runtime: 98 Zidane, 220 the Moogle), 0xFFFF none */
+    u16 modelId; /* op 0x2F (runtime: 98 Zidane, 220 the Moogle), EVT_MODEL_NONE */
     u16 anim; /* current animation (runtime: 200 idle, 38 running, 25 walking) */
     u8 animFrames; /* frame count of anim */
     u8 animPrevFrame; /* animFrame of the previous step */
@@ -1264,7 +1284,7 @@ typedef struct EvtObject {
     u8 modelSlot; /* 0-8 the characters, 9 + GameData.npcModelSlots for NPCs */
     u8 collisionRadius; /* x4 world units (op 0x4B) */
     u8 talkRadius; /* x4 world units (op 0x4B, runtime: 0 stops Cross from starting the dialog) */
-    u8 balloonWindow; /* window anchored on the actor (evt_followBalloon), 0xFF none */
+    u8 balloonWindow; /* window anchored on the actor (evt_followBalloon), EVT_BALLOON_NONE */
     u8 pad3F;
     ActorPos prevPos; /* position one game frame earlier, unk20/rotY double as turn-left/right anims (ops 0x7A/0x7B) */
     u16 moveFlags; /* EVT_MOVE_* */
@@ -1363,6 +1383,8 @@ typedef struct EvtObject {
 #define EVT_ANIM_IDLE 0x02 /* playing idleAnim (evt_updateIdleTimer) */
 #define EVT_ANIM_HELD 0x04 /* stopped on its last frame (EVT_ANIM_HOLD); evt_stepAnim does nothing */
 #define EVT_ANIM_HOLD 0x08 /* at the end keep the last frame instead of going back to standAnim */
+#define EVT_MODEL_NONE 0xFFFF /* EvtObject.modelId before op 0x2F (evt_initActor) */
+#define EVT_BALLOON_NONE 0xFF /* EvtObject.balloonWindow: no window follows the actor */
 #define EVT_ANIM_LOOP 0x10 /* at the end restart from animStart (animLoops times, 0xFF forever) */
 #define EVT_ANIM_BOUNCE 0x20 /* at the end reverse direction */
 #define EVT_ANIM_REVERSE 0x40 /* playing backwards */
@@ -1693,6 +1715,12 @@ typedef struct MsgWindow {
     u8 pendingChars;
     u8 tailMode; /* from the layout, passed to win_setTail */
 } MsgWindow;
+/* MsgWindow / WinLayout tailMode: bits 0-1 are win_setTail's mode (evt_placeBalloon: below << 1 | right),
+ * 0x10/0x20 come from the message flags (evt_openMessage); 0x20 has no reader in main */
+#define MSG_TAIL_RIGHT 0x1
+#define MSG_TAIL_BELOW 0x2
+#define MSG_TAIL_DIR (MSG_TAIL_RIGHT | MSG_TAIL_BELOW) /* passed to win_setTail */
+#define MSG_TAIL_FRAMELESS 0x10 /* msg_openWindow opens the window WIN_STYLE_FRAMELESS (no balloon or bevel) */
 extern MsgWindow g_msgWindows[];
 /* MsgWindow.flags */
 #define MSGW_WAIT_INPUT 0xFF /* MsgWindow.waitFrames: waiting for Cross (msg_input); text codes FE/FF/F9 09 */
@@ -4182,7 +4210,7 @@ static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *p) {
     ModelSlot *q;
 
     if (p != NULL) {
-        if (p->modelId == 0xFFFF) {
+        if (p->modelId == EVT_MODEL_NONE) {
             return NULL;
         }
         q = (ModelSlot *)game_getModel(p->modelSlot);
@@ -4309,8 +4337,8 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     p = (EvtObject *)evt_createObject(uid, b, 0xAC, 0x10);
     p->collisionRadius = 0x10;
     p->talkRadius = 0x10;
-    p->modelId = 0xFFFF;
-    p->balloonWindow = 0xFF;
+    p->modelId = EVT_MODEL_NONE;
+    p->balloonWindow = EVT_BALLOON_NONE;
     p->scale = 0x40;
     p->kind = EVT_KIND_ACTOR;
     p->defaultAnimSpeed = 0x10;
@@ -4345,7 +4373,7 @@ static inline void evt_execInstr_window(EvtObject *obj, s32 b, s32 c) {
         for (n = g_evtState->objects; n != NULL; n = n->next) {
             o = n->obj;
             if (o->kind == EVT_KIND_ACTOR && o->balloonWindow == c) {
-                o->balloonWindow = 0xFF;
+                o->balloonWindow = EVT_BALLOON_NONE;
             }
         }
         obj->balloonWindow = c;

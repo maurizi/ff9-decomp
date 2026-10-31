@@ -356,7 +356,7 @@ void wm_resetMapObj(void) {
     o->primCursor = 0;
     o->swirlFrames = 0;
     o->battleStep = 0;
-    o->battleMusic = 0xFFFF;
+    o->battleMusic = MUSIC_NONE;
     o->loadPtr = o->loadBase;
     for (i = 1; i >= 0; i--) {
         o->files[i] = NULL;
@@ -809,11 +809,11 @@ s32 wm_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | DB_MUSIC;
         switch (kind) {
         case 9:
-            if (g_gameState->gameData->savedMusicId == 0xFFFF) {
+            if (g_gameState->gameData->savedMusicId == MUSIC_NONE) {
                 return 0;
             }
             if (g_gameState->gameData->savedMusicField != g_gameState->gameData->worldId) {
-                g_gameState->gameData->savedMusicId = 0xFFFF;
+                g_gameState->gameData->savedMusicId = MUSIC_NONE;
                 g_gameState->gameData->savedMusicField = 0xFFFF;
                 return 0;
             }
@@ -821,7 +821,7 @@ s32 wm_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             arg1 = g_gameState->gameData->savedMusicId;
             g_gameState->gameData->musicVolume[0] = g_gameState->gameData->savedMusicVolume;
             id = arg1 | DB_MUSIC;
-            g_gameState->gameData->savedMusicId = 0xFFFF;
+            g_gameState->gameData->savedMusicId = MUSIC_NONE;
         case 0:
         case 7:
             if (g_gameState->gameData->soundLoadState != 0) {
@@ -1358,7 +1358,7 @@ void wm_updateBattleTransition(void) {
     if (o->battleStep > 0) {
         o->battleStep--;
     } else if (o->battleStep == 0) {
-        if (o->battleMusic != 0xFFFF && o->battleMusic != gd->musicId[0]) {
+        if (o->battleMusic != MUSIC_NONE && o->battleMusic != gd->musicId[0]) {
             cd_seekAsync(g_gameState->imgSector + wm_findSoundFile(o->battleMusic | DB_MUSIC, &size, gs), 0);
             if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                 wm_soundCommand(SND_MUSIC_SUSPEND, g_gameState->gameData->musicId[0], 0, 0, 0);

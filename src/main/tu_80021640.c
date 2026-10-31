@@ -32,7 +32,7 @@ s32 evt_updateActorWalkmesh(EvtObject *p) {
     if (p->kind != EVT_KIND_ACTOR) {
         return 0;
     }
-    if (p->modelId == 0xFFFF) {
+    if (p->modelId == EVT_MODEL_NONE) {
     ret0:
         return 0;
     }

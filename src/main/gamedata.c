@@ -76,13 +76,13 @@ void game_resetData(void) {
     gd->musicFadeStart = 0;
     gd->soundLoadBank = 0xFFFF;
     for (i = 1; i >= 0; i--) {
-        gd->musicId[i] = 0xFFFF;
+        gd->musicId[i] = MUSIC_NONE;
         gd->musicBank[i] = 0xFFFF;
         gd->musicHandle[i] = 0;
         gd->musicVolume[i] = 0x7F;
     }
     gd->musicFadeFrames = 0x1E;
-    gd->savedMusicId = 0xFFFF;
+    gd->savedMusicId = MUSIC_NONE;
     gd->savedMusicBank = 0xFFFF;
     gd->savedMusicField = 0xFFFF;
     gd->savedMusicVolume = 0;
@@ -91,7 +91,7 @@ void game_resetData(void) {
     gd->savedMusicFileSector = -1;
     gd->savedMusicFileSectors = 0xFFFF;
     for (i = 1; i >= 0; i--) {
-        gd->sfxSlotId[i] = 0xFFFF;
+        gd->sfxSlotId[i] = SE_NONE;
         (&gd->worldBankReq)[i] = 0xFFFF;
         gd->sfxSlotVolume[i] = 0x7F;
         gd->sfxSlotPan[i] = 0x80;

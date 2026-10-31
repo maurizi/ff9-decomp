@@ -22,7 +22,7 @@ s32 card_add(s32 a) {
         return -1;
     }
     for (i = 0; i < 100; i++) {
-        if (g_cards.cards[i].id == 0xFF) {
+        if (g_cards.cards[i].id == CARD_NONE) {
             card_rollStats(&g_cards.cards[i], a);
             return card_countOf(a) == 1;
         }
@@ -33,7 +33,7 @@ s32 card_add(s32 a) {
 s32 card_addWithStats(u8 id, u8 a, u8 b, u8 c, u8 d, u8 e) {
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].id == 0xFF) {
+        if (g_cards.cards[i].id == CARD_NONE) {
             g_cards.cards[i].id = id;
             g_cards.cards[i].arrows = a;
             g_cards.cards[i].power = b;
@@ -107,7 +107,7 @@ s32 card_countAll(void) {
     s32 n = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].id != 0xFF) {
+        if (g_cards.cards[i].id != CARD_NONE) {
             n++;
         }
     }
@@ -126,7 +126,7 @@ s32 card_countKinds(void) {
         *p-- = 0;
     }
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].id != 0xFF) {
+        if (g_cards.cards[i].id != CARD_NONE) {
             cnt[g_cards.cards[i].id]++;
         }
     }
@@ -145,7 +145,7 @@ s32 card_remove(s32 id, s32 n) {
     for (i = 0; i < 0x69; i++) {
         if (g_cards.cards[i].id == (u8)id) {
             if (k == n) {
-                g_cards.cards[i].id = 0xFF;
+                g_cards.cards[i].id = CARD_NONE;
                 return 0;
             }
             k++;

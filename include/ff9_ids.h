@@ -45,6 +45,7 @@
  * Tetra Master cards (id - ITEM_ID_CARD_FIRST) */
 #define ITEM_ID_KEY_FIRST  0x100
 #define ITEM_ID_CARD_FIRST 0x200
+#define CARD_NONE 0xFF /* empty CardEntry.id (card_add, card_remove) */
 
 /* ---- abilities: ids 0x00-0xBF are action abilities (BtlCmd.subNo, Battle.abilities), 0xC0-0xFF support abilities
  * (g_abilityRows, AbilityEntry.id). [text abilities] = the menus' action ability names (ovl_33

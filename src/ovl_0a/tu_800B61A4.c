@@ -1421,19 +1421,19 @@ void fldmdl_setAbr(ModelObj *arg0, u16 arg1) {
             p += g->packetSize;
         }
         for (j = 0; j < g->ft4Count; j++) {
-            ((POLY_FT4 *)p)->tpage = arg1 | (((POLY_FT4 *)p)->tpage & 0xFF9F);
+            ((POLY_FT4 *)p)->tpage = arg1 | (((POLY_FT4 *)p)->tpage & ~TPAGE_ABR_MASK);
             p += sizeof(POLY_FT4);
         }
         for (j = 0; j < g->ft3Count; j++) {
-            ((POLY_FT3 *)p)->tpage = arg1 | (((POLY_FT3 *)p)->tpage & 0xFF9F);
+            ((POLY_FT3 *)p)->tpage = arg1 | (((POLY_FT3 *)p)->tpage & ~TPAGE_ABR_MASK);
             p += sizeof(POLY_FT3);
         }
         for (j = 0; j < g->gt4Count; j++) {
-            ((POLY_GT4 *)p)->tpage = arg1 | (((POLY_GT4 *)p)->tpage & 0xFF9F);
+            ((POLY_GT4 *)p)->tpage = arg1 | (((POLY_GT4 *)p)->tpage & ~TPAGE_ABR_MASK);
             p += sizeof(POLY_GT4);
         }
         for (j = 0; j < g->gt3Count; j++) {
-            ((POLY_GT3 *)p)->tpage = arg1 | (((POLY_GT3 *)p)->tpage & 0xFF9F);
+            ((POLY_GT3 *)p)->tpage = arg1 | (((POLY_GT3 *)p)->tpage & ~TPAGE_ABR_MASK);
             p += sizeof(POLY_GT3);
         }
     }

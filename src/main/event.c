@@ -973,7 +973,7 @@ s32 evt_execInstr(void) {
     case EVT_OP_SET_RADIUS:
         if (g_evtActor->kind == EVT_KIND_ACTOR) {
             a = evt_getArg8_inline();
-            if (g_evtMode == EVT_MODE_FIELD && po->modelId != 0xFFFF) {
+            if (g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE) {
                 bgi_setActorRadius(po->modelSlot, (a << 2) & 0xFFFC);
             }
             po->collisionRadius = evt_getArg8_inline();
@@ -1001,7 +1001,7 @@ s32 evt_execInstr(void) {
     case EVT_OP_SET_POS_XZ:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
-        c = g_evtMode == EVT_MODE_FIELD && po->modelId != 0xFFFF;
+        c = g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE;
         if (c) {
             bgi_setActorActive(po->modelSlot, 0);
         }
@@ -1024,7 +1024,7 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
-        d = g_evtMode == EVT_MODE_FIELD && po->modelId != 0xFFFF;
+        d = g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE;
         if (d) {
             bgi_setActorActive(po->modelSlot, 0);
         }
@@ -1268,7 +1268,7 @@ s32 evt_execInstr(void) {
         actor->jumpStartY = actor->pos.vy;
         actor->jumpStartZ = actor->pos.vz;
         actor->animSpeed = ((actor->animEnd - actor->animStart) << 4) / a;
-        if (g_evtMode == EVT_MODE_FIELD && po->modelId != 0xFFFF) {
+        if (g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE) {
             bgi_setActorActive(po->modelSlot, 0);
         }
         return 0;
@@ -1802,7 +1802,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_BGI_ACTOR_ACTIVE:
         a = evt_getArg8_inline();
-        if (po->modelId != 0xFFFF) {
+        if (po->modelId != EVT_MODEL_NONE) {
             bgi_setActorActive(po->modelSlot, a);
         }
         return 0;
@@ -3002,7 +3002,7 @@ s32 evt_updateObjects(void) {
                         v->vz = p->pos.vz;
                     }
                 }
-                if (p->balloonWindow != 0xFF) {
+                if (p->balloonWindow != EVT_BALLOON_NONE) {
                     w = msg_getWindow(p->balloonWindow);
                     if (w != NULL) {
                         evt_followBalloon(p, w);
@@ -3024,7 +3024,7 @@ s32 evt_updateObjects(void) {
                     if (p->flags & EVT_OBJ_TURNING) {
                         evt_updateObjects_turn(p);
                     }
-                    if (p->modelId != 0xFFFF) {
+                    if (p->modelId != EVT_MODEL_NONE) {
                         evt_updateLookAt(p);
                     }
                 }
@@ -3078,7 +3078,7 @@ s32 evt_updateObjects(void) {
         if (g_evtMode == EVT_MODE_FIELD) {
             for (m = g_evtState->objects; m != NULL; m = m->next) {
                 p = m->obj;
-                if (p->kind == EVT_KIND_ACTOR && p->modelId != 0xFFFF) {
+                if (p->kind == EVT_KIND_ACTOR && p->modelId != EVT_MODEL_NONE) {
                     q = bgi_getActor(p->modelSlot);
                     bgi_getActorRadius(p->modelSlot, &h);
                     p->savedWalkRadius = h / 4;
@@ -3456,7 +3456,7 @@ void evt_createModels(void) {
     if ((g_evtMode == EVT_MODE_FIELD || g_evtMode == EVT_MODE_WORLD || g_gameState->prevMode == GS_MODE_TETRA_MASTER) && g_evtModelsPending != 0) {
         for (n = g_evtState->objects; n != NULL; n = n->next) {
             o = n->obj;
-            if (o->kind == EVT_KIND_ACTOR && o->modelId != 0xFFFF) {
+            if (o->kind == EVT_KIND_ACTOR && o->modelId != EVT_MODEL_NONE) {
                 o->modelSlot = evt_createModel(o);
                 if (g_evtMode == EVT_MODE_FIELD) {
                     q = (s16 *)bgi_getActor(o->modelSlot);
@@ -3675,7 +3675,7 @@ s32 evt_getObjectModelData(EvtObject *p) {
     s32 *q;
 
     if (p != NULL) {
-        if (p->modelId == 0xFFFF) {
+        if (p->modelId == EVT_MODEL_NONE) {
             return 0;
         }
         q = (s32 *)game_getModel(p->modelSlot);

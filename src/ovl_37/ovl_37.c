@@ -134,7 +134,7 @@ void menuItem_selectItem(s32 idx, MenuList *l) {
         id = p->unk0;
         it = &g_itemTable[id];
         e = &g_usableItemTable[id - ITEM_FIRST_USABLE];
-        if (it->slots & 1) {
+        if (it->slots & ITEM_SLOT_USABLE) {
             s_menuItem.targetKind = e->targetKind;
             ok = 1;
             s_menuItem.targetMode = p->unk0 != ITEM_GYSAHL_GREENS ? e->targetMode : 0;
@@ -656,7 +656,7 @@ void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
 
     if (p->unk1 != 0 && p->unk0 != ITEM_NONE) {
         it = &g_itemTable[p->unk0];
-        ok = it->slots & 1;
+        ok = it->slots & ITEM_SLOT_USABLE;
         x = col * 0x96;
         y = row * 0xF + (v->y + k);
         text_formatNumber(p->unk1, buf, 2, TEXT_NUM_ASCII);

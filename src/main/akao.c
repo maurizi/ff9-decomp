@@ -67,7 +67,7 @@ void akao_tickSe(void) {
         old = s->volume;
         v = old + s->volumeStep;
         if ((v & 0xFF00) != (old & 0xFF00)) {
-            if (g_akaoOutputFlags & 2) {
+            if (g_akaoOutputFlags & AKAO_MODE_MONO) {
                 old = (old * g_akaoMonoGain) >> 16;
                 akao_setVoiceVolume(s->voice, old, old, 0);
                 akao_setVoiceVolume(s->voice + 1, old, old, 0);
@@ -350,7 +350,7 @@ s32 akao_tick(void) {
                 c = g_akaoSeChannels;
                 do {
                     if (mask & bit) {
-                        if (!(g_akaoPauseFlags & 2) || (c->seMask & 0x2000000)) {
+                        if (!(g_akaoPauseFlags & AKAO_PAUSED_SE) || (c->seMask & AKAO_SE_DEFAULT)) {
                             c->age++;
                             c->noteTicks--;
                             c->gateTicks--;
@@ -539,9 +539,9 @@ void akao_applyKeySplit(AkaoChannel *c, u32 key) {
     if (!(f & AKAO_CH_ATTACK_SET)) {
         c->voiceAdsr1 = e->attack << 8;
     } else {
-        c->voiceAdsr1 &= 0x7F00;
+        c->voiceAdsr1 &= SPU_ADSR1_ATTACK_RATE;
     }
-    c->voiceAdsr1 |= p->adsr1 & 0x80FF;
+    c->voiceAdsr1 |= p->adsr1 & (SPU_ADSR1_ATTACK_EXP | SPU_ADSR1_DECAY_RATE | SPU_ADSR1_SUSTAIN_LEVEL);
     if (!(f & AKAO_CH_SUSTAIN_RATE_SET)) {
         c->voiceAdsr2 &= 0x201F;
         c->voiceAdsr2 |= e->sustainRate << 6;
@@ -549,21 +549,21 @@ void akao_applyKeySplit(AkaoChannel *c, u32 key) {
         c->voiceAdsr2 &= 0x3FDF;
     }
     switch (e->sustainMode) {
-    case 3:
-        c->voiceAdsr2 |= 0x4000;
+    case AKAO_ENV_LINEAR_DEC:
+        c->voiceAdsr2 |= SPU_ADSR2_SUSTAIN_DEC;
         break;
-    case 5:
-        c->voiceAdsr2 |= 0x8000;
+    case AKAO_ENV_EXP_INC:
+        c->voiceAdsr2 |= SPU_ADSR2_SUSTAIN_EXP;
         break;
-    case 7:
-        c->voiceAdsr2 |= 0xC000;
+    case AKAO_ENV_EXP_DEC:
+        c->voiceAdsr2 |= SPU_ADSR2_SUSTAIN_EXP | SPU_ADSR2_SUSTAIN_DEC;
         break;
     }
     if (!(f & AKAO_CH_RELEASE_RATE_SET)) {
-        c->voiceAdsr2 &= 0xFFE0;
+        c->voiceAdsr2 &= ~SPU_ADSR2_RELEASE_RATE;
         c->voiceAdsr2 |= e->releaseRate;
     }
-    c->voiceAdsr2 |= p->adsr2 & 0x20;
+    c->voiceAdsr2 |= p->adsr2 & SPU_ADSR2_RELEASE_EXP;
     c->voiceVolScale = e->volume;
 }
 
@@ -631,9 +631,9 @@ s32 akao_playDrumNote(AkaoChannel *c, u32 mask, s32 key) {
     if (!(f & AKAO_CH_ATTACK_SET)) {
         c->voiceAdsr1 = e->attack << 8;
     } else {
-        c->voiceAdsr1 &= 0x7F00;
+        c->voiceAdsr1 &= SPU_ADSR1_ATTACK_RATE;
     }
-    c->voiceAdsr1 |= p->adsr1 & 0x80FF;
+    c->voiceAdsr1 |= p->adsr1 & (SPU_ADSR1_ATTACK_EXP | SPU_ADSR1_DECAY_RATE | SPU_ADSR1_SUSTAIN_LEVEL);
     if (!(f & AKAO_CH_SUSTAIN_RATE_SET)) {
         c->voiceAdsr2 &= 0x201F;
         c->voiceAdsr2 |= e->sustainRate << 6;
@@ -641,21 +641,21 @@ s32 akao_playDrumNote(AkaoChannel *c, u32 mask, s32 key) {
         c->voiceAdsr2 &= 0x3FDF;
     }
     switch (e->sustainMode) {
-    case 3:
-        c->voiceAdsr2 |= 0x4000;
+    case AKAO_ENV_LINEAR_DEC:
+        c->voiceAdsr2 |= SPU_ADSR2_SUSTAIN_DEC;
         break;
-    case 5:
-        c->voiceAdsr2 |= 0x8000;
+    case AKAO_ENV_EXP_INC:
+        c->voiceAdsr2 |= SPU_ADSR2_SUSTAIN_EXP;
         break;
-    case 7:
-        c->voiceAdsr2 |= 0xC000;
+    case AKAO_ENV_EXP_DEC:
+        c->voiceAdsr2 |= SPU_ADSR2_SUSTAIN_EXP | SPU_ADSR2_SUSTAIN_DEC;
         break;
     }
     if (!(f & AKAO_CH_RELEASE_RATE_SET)) {
-        c->voiceAdsr2 &= 0xFFE0;
+        c->voiceAdsr2 &= ~SPU_ADSR2_RELEASE_RATE;
         c->voiceAdsr2 |= e->releaseRate;
     }
-    c->voiceAdsr2 |= p->adsr2 & 0x20;
+    c->voiceAdsr2 |= p->adsr2 & SPU_ADSR2_RELEASE_EXP;
     r = ((s32 (*)())akao_calcPitch)(p, e->note, c->fineTune, &c->fineTuneOfs);
     c->voiceVolScale = e->volume;
     c->pan = ((e->pan & 0x7F) + 0x40) << 8;
@@ -1474,17 +1474,17 @@ void akao_opAD(AkaoChannel *c) {
     s32 v = *c->pc++;
     c->voiceDirty |= AKAO_VD_ATTACK_MODE | AKAO_VD_ATTACK_RATE;
     c->flags |= AKAO_CH_ATTACK_SET;
-    c->voiceAdsr1 = (c->voiceAdsr1 & 0x80FF) | (v << 8);
+    c->voiceAdsr1 = (c->voiceAdsr1 & (SPU_ADSR1_ATTACK_EXP | SPU_ADSR1_DECAY_RATE | SPU_ADSR1_SUSTAIN_LEVEL)) | (v << 8);
 }
 
 void akao_opAE(AkaoChannel *c, s32 arg1) {
-    u16 t = c->voiceAdsr1 & 0xFF0F;
+    u16 t = c->voiceAdsr1 & ~SPU_ADSR1_DECAY_RATE;
     c->voiceAdsr1 = t | (*c->pc++ << 4);
     c->voiceDirty |= AKAO_VD_DECAY_RATE;
 }
 
 void akao_opAF(AkaoChannel *c, s32 arg1) {
-    u16 t = c->voiceAdsr1 & 0xFFF0;
+    u16 t = c->voiceAdsr1 & ~SPU_ADSR1_SUSTAIN_LEVEL;
     c->voiceAdsr1 = t | *c->pc++;
     c->voiceDirty |= AKAO_VD_SUSTAIN_LEVEL;
 }
@@ -1493,38 +1493,38 @@ void akao_opB1(AkaoChannel *c) {
     s32 v = *c->pc++;
     c->voiceDirty |= AKAO_VD_SUSTAIN_MODE | AKAO_VD_SUSTAIN_RATE;
     c->flags |= AKAO_CH_SUSTAIN_RATE_SET;
-    c->voiceAdsr2 = (c->voiceAdsr2 & 0xE03F) | (v << 6);
+    c->voiceAdsr2 = (c->voiceAdsr2 & ~SPU_ADSR2_SUSTAIN_RATE) | (v << 6);
 }
 
 void akao_opB2(AkaoChannel *c) {
     s32 v = *c->pc++;
     c->voiceDirty |= AKAO_VD_RELEASE_MODE | AKAO_VD_RELEASE_RATE;
     c->flags |= AKAO_CH_RELEASE_RATE_SET;
-    c->voiceAdsr2 = (c->voiceAdsr2 & 0xFFE0) | v;
+    c->voiceAdsr2 = (c->voiceAdsr2 & ~SPU_ADSR2_RELEASE_RATE) | v;
 }
 
 void akao_opB7(AkaoChannel *c) {
     s32 v = *c->pc++;
-    c->voiceAdsr1 &= 0x7FFF;
-    if (v == 5) {
-        c->voiceAdsr1 |= 0x8000;
+    c->voiceAdsr1 &= ~SPU_ADSR1_ATTACK_EXP;
+    if (v == AKAO_ENV_EXP_INC) {
+        c->voiceAdsr1 |= SPU_ADSR1_ATTACK_EXP;
     }
     c->voiceDirty |= AKAO_VD_ATTACK_MODE;
 }
 
 void akao_opBB(AkaoChannel *c) {
     u16 v = *c->pc++;
-    u16 x = c->voiceAdsr2 & 0x3FFF;
+    u16 x = c->voiceAdsr2 & ~(SPU_ADSR2_SUSTAIN_EXP | SPU_ADSR2_SUSTAIN_DEC);
     c->voiceAdsr2 = x;
     switch (v) {
-    case 3:
-        c->voiceAdsr2 = x | 0x4000;
+    case AKAO_ENV_LINEAR_DEC:
+        c->voiceAdsr2 = x | SPU_ADSR2_SUSTAIN_DEC;
         break;
-    case 5:
-        c->voiceAdsr2 = x | 0x8000;
+    case AKAO_ENV_EXP_INC:
+        c->voiceAdsr2 = x | SPU_ADSR2_SUSTAIN_EXP;
         break;
-    case 7:
-        c->voiceAdsr2 = x | 0xC000;
+    case AKAO_ENV_EXP_DEC:
+        c->voiceAdsr2 = x | SPU_ADSR2_SUSTAIN_EXP | SPU_ADSR2_SUSTAIN_DEC;
         break;
     }
     c->voiceDirty |= AKAO_VD_SUSTAIN_MODE;
@@ -1532,9 +1532,9 @@ void akao_opBB(AkaoChannel *c) {
 
 void akao_opBF(AkaoChannel *c) {
     s32 v = *c->pc++;
-    c->voiceAdsr2 &= 0xFFDF;
-    if (v == 7) {
-        c->voiceAdsr2 |= 0x20;
+    c->voiceAdsr2 &= ~SPU_ADSR2_RELEASE_EXP;
+    if (v == AKAO_ENV_EXP_DEC) {
+        c->voiceAdsr2 |= SPU_ADSR2_RELEASE_EXP;
     }
     c->voiceDirty |= AKAO_VD_RELEASE_MODE;
 }
@@ -1763,7 +1763,7 @@ void akao_streamStop(void) {
         SpuSetIRQ(0);
         SpuSetIRQCallback(NULL);
         akao_keyOff(g_akaoStream.voiceMask);
-        if (g_akaoStream.flags & 0x400) {
+        if (g_akaoStream.flags & AKAO_STREAM_FOUR_VOICES) {
             akao_setVoiceLoopAddr(g_akaoStream.voice - 2, 0x1030);
             akao_setVoiceLoopAddr(g_akaoStream.voice - 1, 0x1030);
         }
@@ -1835,13 +1835,13 @@ void akao_streamStart(s32 addr, s32 vol, s32 flag) {
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1100);
     g_akaoSpuBusy = 1;
-    g_akaoStream.loopPtr = (g_akaoStream.flags & 2) ? (s32)(g_akaoStream.readPtr + h->loopStart) : 0;
-    if (g_akaoStream.flags & 1) {
-        g_akaoStream.loopBytes = (g_akaoStream.flags & 2) ? g_akaoStream.bytesLeft - (h->loopStart >> 1) : 0;
+    g_akaoStream.loopPtr = (g_akaoStream.flags & AKAO_STREAM_LOOP) ? (s32)(g_akaoStream.readPtr + h->loopStart) : 0;
+    if (g_akaoStream.flags & AKAO_STREAM_STEREO) {
+        g_akaoStream.loopBytes = (g_akaoStream.flags & AKAO_STREAM_LOOP) ? g_akaoStream.bytesLeft - (h->loopStart >> 1) : 0;
         SpuSetTransferCallback(akao_streamStartStereo);
         size = 0x2000;
     } else {
-        g_akaoStream.loopBytes = (g_akaoStream.flags & 2) ? g_akaoStream.bytesLeft - h->loopStart : 0;
+        g_akaoStream.loopBytes = (g_akaoStream.flags & AKAO_STREAM_LOOP) ? g_akaoStream.bytesLeft - h->loopStart : 0;
         SpuSetTransferCallback(akao_streamUploadSecond);
         size = 0x800;
     }
@@ -1862,7 +1862,7 @@ void akao_streamSetVoice(s32 v, s32 mode, s32 a, s32 b) {
     s16 h;
     s32 pan;
 
-    if (g_akaoOutputFlags & 2) {
+    if (g_akaoOutputFlags & AKAO_MODE_MONO) {
         l = r = (g_akaoSeVolume * g_akaoMonoGain) >> 16;
     } else if (mode == 1) {
         r = 0;
@@ -1882,11 +1882,11 @@ void akao_streamSetVoice(s32 v, s32 mode, s32 a, s32 b) {
     akao_setVoicePitch(v, g_akaoStream.pitch);
     akao_setVoiceStartAddr(v, a);
     akao_setVoiceLoopAddr(v, b);
-    akao_setVoiceAttack(v, 0, 1);
+    akao_setVoiceAttack(v, 0, AKAO_ENV_LINEAR_INC);
     akao_setVoiceDecay(v, 0xF);
     akao_setVoiceSustainLevel(v, 0xF);
-    akao_setVoiceSustain(v, 0x7F, 3);
-    akao_setVoiceRelease(v, 6, 3);
+    akao_setVoiceSustain(v, 0x7F, AKAO_ENV_LINEAR_DEC);
+    akao_setVoiceRelease(v, 6, AKAO_ENV_LINEAR_DEC);
 }
 
 void akao_streamKeyOn(s32 a, s32 b, void (*cb)(void)) {
@@ -1986,11 +1986,11 @@ void akao_cmdSetStreamVolume(s32 *a) {
     if (d->voiceMask == 0) {
         return;
     }
-    if (g_akaoOutputFlags & 2) {
+    if (g_akaoOutputFlags & AKAO_MODE_MONO) {
         v = v * g_akaoMonoGain >> 16;
         akao_setVoiceVolume(d->voice, v, v, 0);
         akao_setVoiceVolume(d->voice + 1, v, v, 0);
-    } else if (d->flags & 1) {
+    } else if (d->flags & AKAO_STREAM_STEREO) {
         v <<= 15;
         v >>= 16;
         akao_setVoiceVolume(d->voice, v, 0, 0);
@@ -2026,11 +2026,11 @@ void akao_cmdSetStreamPan(s32 *a) {
     if (d->voiceMask == 0) {
         return;
     }
-    if (g_akaoOutputFlags & 2) {
+    if (g_akaoOutputFlags & AKAO_MODE_MONO) {
         v = d->volume * g_akaoMonoGain >> 16;
         akao_setVoiceVolume(d->voice, v, v, 0);
         akao_setVoiceVolume(d->voice + 1, v, v, 0);
-    } else if (d->flags & 1) {
+    } else if (d->flags & AKAO_STREAM_STEREO) {
         v = d->volume;
         v <<= 15;
         v >>= 16;
@@ -2227,7 +2227,7 @@ void akao_streamStartRing(void) {
     SpuSetTransferStartAddr(0x1100);
     g_akaoSpuBusy = 1;
     SpuSetTransferCallback(akao_streamStartRingVoices);
-    if (d->flags & 0x400) {
+    if (d->flags & AKAO_STREAM_FOUR_VOICES) {
         SpuWrite(g_akaoStream.readPtr + 0xD0, 0x4000);
         akao_streamNextReadBlock(&d->readBlock);
         akao_streamNextReadBlock(&d->readBlock);
@@ -2265,7 +2265,7 @@ void akao_streamRingKeyOn(s32 a, s32 b, void (*cb)(void)) {
 void akao_streamStartRingVoices(void) {
     s32 a;
     s32 b;
-    if (g_akaoStream.flags & 0x400) {
+    if (g_akaoStream.flags & AKAO_STREAM_FOUR_VOICES) {
         akao_streamSetVoice(g_akaoStream.voice, 1, 0x1100, 0x3100);
         akao_streamSetVoice(g_akaoStream.voice + 1, 2, 0x1900, 0x3900);
         akao_streamSetVoice(g_akaoStream.voice - 2, 1, 0x2100, 0x4100);
@@ -2317,7 +2317,7 @@ s32 akao_streamRefillRing(s32 a, s32 b, s32 n, void (*cb)(void)) {
 void akao_streamRefillRingA(void) {
     s32 a;
     s32 b;
-    if (g_akaoStream.flags & 0x400) {
+    if (g_akaoStream.flags & AKAO_STREAM_FOUR_VOICES) {
         akao_streamNextReadBlock(&g_akaoStream.readBlock);
         a = akao_streamRefillRing(0x1100, 0x1900, 0x2000, akao_streamRefillRingB);
         b = 0x2900;
@@ -2336,7 +2336,7 @@ void akao_streamRefillRingA(void) {
 void akao_streamRefillRingB(void) {
     s32 a;
     s32 b;
-    if (g_akaoStream.flags & 0x400) {
+    if (g_akaoStream.flags & AKAO_STREAM_FOUR_VOICES) {
         akao_streamNextReadBlock(&g_akaoStream.readBlock);
         a = akao_streamRefillRing(0x3100, 0x3900, 0x2000, akao_streamRefillRingA);
         b = 0x4900;
@@ -2359,7 +2359,7 @@ void akao_cmdStreamSetupRing(s32 *a) {
     g_akaoStream.blocksWritten = 0;
     g_akaoStream.blocksRead = 0;
     g_akaoStream.writeBlock = 0;
-    g_akaoStream.flags = 0x1000000;
+    g_akaoStream.flags = AKAO_STREAM_RING_PENDING;
     g_akaoStream.ringBlocks = (u32)g_akaoArgs.arg1 >> 12;
     g_akaoStream.spuAddr = a[0];
     g_akaoStream.unk30 = a[1];

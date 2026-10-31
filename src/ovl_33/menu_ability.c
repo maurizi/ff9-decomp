@@ -603,7 +603,7 @@ void menuAbility_updateHelp(void) {
             if (chr_canLearnAbilities(c)) {
                 goto end;
             }
-            if (c->classFlags & 0x10) {
+            if (c->classFlags & CHR_CLASS_GUEST) {
                 t = ABILITY_TEXT_CANNOT_EQUIP;
             } else {
                 t = ABILITY_TEXT_CANNOT_EQUIP_NOW;

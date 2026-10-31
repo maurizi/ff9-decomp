@@ -1093,9 +1093,9 @@ void wm_updateActors(void) {
             }
         }
         cc = &g_worldActorTypeInfo[g_worldPlayer->actorType];
-        if ((cc->cellAttr & 0xC000) && g_worldCellTriggersOn != 0) {
+        if ((cc->cellAttr & WM_ATTR_TRIGGER_MASK) && g_worldCellTriggersOn != 0) {
             wm_posToCell(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, &cell);
-            evt_callWorldCellTrigger(cell % g_worldCellsW, cell / g_worldCellsW, (cc->cellAttr & 0xC000) >> 14);
+            evt_callWorldCellTrigger(cell % g_worldCellsW, cell / g_worldCellsW, WM_ATTR_TRIGGER(cc->cellAttr));
         }
     }
 }

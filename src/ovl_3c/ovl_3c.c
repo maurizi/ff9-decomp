@@ -310,7 +310,7 @@ void shopBuy_drawInfo(void) {
     r = &s_shopBuy.infoRect;
     l = &s_shopBuy.list;
     id = s_shopBuy.items[l->top + l->cursor];
-    equip = (g_itemTable[id].slots & 0xF8) != 0;
+    equip = (g_itemTable[id].slots & ITEM_SLOT_EQUIP) != 0;
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelInfo, UI_LABEL_NORMAL);
     win_drawBox(r, 0x23, WIN_STYLE_LINE_RULE);
     for (i = 0; i < 3; i++) {
@@ -511,7 +511,7 @@ s32 shop_isEquipmentShop(s32 shop) {
     list = s_shopItems[shop];
     for (i = 0; i < SHOP_LIST_SIZE; i++) {
         if (list[i] != ITEM_NONE) {
-            if (!(g_itemTable[list[i]].slots & 0xF0)) {
+            if (!(g_itemTable[list[i]].slots & ITEM_SLOT_ARMOR)) {
                 return 0;
             }
         }
@@ -618,7 +618,7 @@ void shopBuy_loadList(void) {
         if (s_shopBuy.items[i] == ITEM_NONE) {
             break;
         }
-        if (g_itemTable[s_shopBuy.items[i]].slots & 0xF8) {
+        if (g_itemTable[s_shopBuy.items[i]].slots & ITEM_SLOT_EQUIP) {
             s_shopBuy.hasEquipment = 1;
         }
         s_shopBuy.count++;
@@ -729,7 +729,7 @@ void shopSynth_drawInfo(void) {
     r = &s_shopSynth.infoRect;
     l = &s_shopSynth.list;
     s = &s_shopSynth.recipes[l->top + l->cursor];
-    equip = (g_itemTable[s->product].slots & 0xF8) != 0;
+    equip = (g_itemTable[s->product].slots & ITEM_SLOT_EQUIP) != 0;
     ui_drawEtchedLine(r->x + 2, r->y + 0x36, 0x23, r->w - 5);
     win_drawBox(r, 0x23, WIN_STYLE_LINE_RULE);
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelInfo, UI_LABEL_NORMAL);
@@ -1001,7 +1001,7 @@ void shopSynth_loadRecipes(void) {
         }
     }
     for (i = 0; i < s_shopSynth.count; i++) {
-        if (g_itemTable[s_shopSynth.recipes[i].product].slots & 0xF8) {
+        if (g_itemTable[s_shopSynth.recipes[i].product].slots & ITEM_SLOT_EQUIP) {
             s_shopSynth.hasEquipment = 1;
         }
     }
@@ -1235,7 +1235,7 @@ void shopSell_drawInfoWindow(Window *w) {
     r = (RECT *)w;
     l = &s_shopSell.list;
     e = &g_gameState->gameData->items.slots[(l->top + l->cursor) * 2 + l->col];
-    equip = (g_itemTable[e->unk0].slots & 0xF8) != 0;
+    equip = (g_itemTable[e->unk0].slots & ITEM_SLOT_EQUIP) != 0;
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + 0xC, r->y + s_shopSellInfoRowY[i] - 4, w->otz, text_getFrom(g_shopText, s_shopSellInfoRowText[i]),
                       (s_shopSellInfoRowAlways[i] | equip) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);

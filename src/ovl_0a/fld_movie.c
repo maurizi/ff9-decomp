@@ -1449,10 +1449,10 @@ void fld_updateEncounter(void) {
             akao_fadeMusicVolume(0, 0xF, 0);
             g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = 7;
         }
-        if (g_gameState->gameData->sfxSlotId[0] != 0xFFFF && (g_gameState->gameData->flags & GD_SFX0_PLAYING)) {
+        if (g_gameState->gameData->sfxSlotId[0] != SE_NONE && (g_gameState->gameData->flags & GD_SFX0_PLAYING)) {
             akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf0, 0x100000, 0xF, 0);
         }
-        if (g_gameState->gameData->sfxSlotId[1] != 0xFFFF && (g_gameState->gameData->flags & GD_SFX1_PLAYING)) {
+        if (g_gameState->gameData->sfxSlotId[1] != SE_NONE && (g_gameState->gameData->flags & GD_SFX1_PLAYING)) {
             akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf1, 0x200000, 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
@@ -1498,7 +1498,7 @@ void fld_updateEncounter(void) {
         if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep > 0) {
             g_gameState->gameData->ctx.field->area->scene->encounterMusicStep--;
         } else if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == 0) {
-            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != 0xFFFF
+            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != MUSIC_NONE
                 && g_gameState->gameData->ctx.field->area->scene->battleMusic != g_gameState->gameData->musicId[0]) {
                 if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                     fld_soundCommand(SND_MUSIC_SUSPEND, g_gameState->gameData->musicId[0], 0, 0, 0);
@@ -1514,7 +1514,7 @@ void fld_updateEncounter(void) {
             }
         } else if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == -2) {
             fld_suspendResidentSfx();
-            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != 0xFFFF
+            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != MUSIC_NONE
                 && !(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
                 fld_soundCommand(SND_MUSIC_PLAY, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
                 akao_setMusicVolume(0, 0x7F);

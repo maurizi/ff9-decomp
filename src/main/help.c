@@ -109,7 +109,7 @@ void help_update(void) {
     p = &g_menuHelp;
     if (p->isOpen != 0 && fade_isBusy() == 0 && p->callback != NULL) {
         p->callback();
-        if (p->text != NULL && *p->text != 0xFF) {
+        if (p->text != NULL && *p->text != TEXT_END) {
             help_draw();
         }
     }
