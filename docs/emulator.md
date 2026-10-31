@@ -291,3 +291,4 @@ Start the game (same X display lookup as `emu.py`):
 `DISPLAY=:1 XAUTHORITY=/run/user/$UID/gdm/Xauthority tools/bin/duckstation/DuckStation-x64.AppImage -- "disks/us/raw/FF9 CD1.cue" &`,
 then call the `connect` tool (127.0.0.1:19000). Window capture and pad input tools don't work on Linux.
 Addresses are the usual KSEG0 ones (`0x8006794C`).
+- `tools/rt/enter_tm.py OPPONENT FRAMES` forces a Tetra Master match from a field state (cardOpponent at GameData+0x8B2, GameState.mode 9), `tools/rt/tmdump.py` decodes the TmState at 0x801FF9E0 (docs/r32/3ds-requests-4.md).

@@ -246,7 +246,7 @@ typedef struct {
 /* Tables tm_setup copies out of the image file, at fixed addresses. */
 #define g_tmCardData  PSX_RAM(TmCardData *, 0x80103800) /* [100] */
 #define g_tmDecks     PSX_RAM(TmDeck *, 0x80103C00)     /* [64] */
-#define g_tmOpponents PSX_RAM(TmOpponent *, 0x80104000) /* [256] */
+#define g_tmOpponents PSX_RAM(TmOpponent *, 0x80104000) /* [256], indexed by GameData cardOpponent (event op 0xAE); the first 64 entries are {id/4, id%4} */
 
 /* Card stats as kept in the card stock (main's CardEntry) */
 typedef struct {
@@ -344,7 +344,9 @@ typedef struct {
     s32 defRoll;
     s32 unk5C4; /* not used by C */
     RECT unk5C8; /* write-only: tm_mainLoop sets {50, 30, 200, 100} */
-} TmState;
+} TmState; /* tm_main stack local, at 0x801FF9E0 at runtime (docs/r32/3ds-requests-4.md) */
+#define TM_SEL_YES 0 /* TmState.cursor / quitChoice in the Yes/No tasks */
+#define TM_SEL_NO 1
 
 typedef struct {
     u8 v[8];
