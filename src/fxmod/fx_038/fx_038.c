@@ -15,21 +15,21 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
     s32 v;
 
     if (mode == 1) {
-        it->unk0 = 0;
+        it->state0 = 0;
         it->emit14 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&it->pos4);
         if (it->emit14 != NULL) {
             it->emit14->otZ = 0x10;
         }
         return 0;
     }
-    switch (it->unk0) {
+    switch (it->state0) {
     case 0:
         t = (frame << 12) / 15;
         if (frame == 0) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, -1, 0x1000, 0, 1,
-                              (u8 *)&D_801E857C[it->unk20], 0);
+                              (u8 *)&fx_038_strips[it->strip20], 0);
         }
-        BTLFX_COPY_SVEC(&a, &it->unk18);
+        BTLFX_COPY_SVEC(&a, &it->pos18);
         a.vy -= (0x1000 - t) * 2;
         a.vz += 0x1000 - t;
         BTLFX_COPY_SVEC(&it->pos4, &a);
@@ -48,10 +48,10 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         b.vy += 0x140;
         b.vz -= 0xA0;
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), (s32)&b, NULL, 0, 0x6000, ex->math_cos(t >> 2) * 2 / 3 + 0x555, 1,
-                          (u8 *)&D_801E857C[it->unk20], 0);
+                          (u8 *)&fx_038_strips[it->strip20], 0);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &it->pos4, NULL, 0x1000, 0, 1, -1, 0, 0);
         env->otZ = 0;
-        if (it->unk20 == 0) {
+        if (it->strip20 == 0) {
             env->camera->points[0].vx = it->pos4.vx;
             env->camera->points[0].vy = it->pos4.vy;
             env->camera->points[0].vz = it->pos4.vz;
@@ -60,7 +60,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
             it->emit14 = NULL;
         }
         if (frame >= 15) {
-            it->unk0 = 1;
+            it->state0 = 1;
             ((s16 *)it)[-1] = -1;
             if (it->emit14 != NULL) {
                 it->emit14->frame = it->emit14->tail->anim.duration;
@@ -88,7 +88,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         b.vy += 0x140;
         b.vz -= 0xA0;
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), (s32)&it->pos4, NULL, 0, 0, 0x555, 1,
-                          (u8 *)&D_801E857C[it->unk20], 0);
+                          (u8 *)&fx_038_strips[it->strip20], 0);
         it->rotC.vy += ex->math_cos(k1) >> 7;
         pos.vx = it->pos4.vx;
         pos.vy = it->pos4.vy;
@@ -150,7 +150,7 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->poolCount = 3;
     } else if (mode == 1) {
         work->unk0 = 0;
-        work->unkC = 0;
+        work->countC = 0;
         fx_038_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         ex->btlfx_initEffModels(fx_038_effModels, 3);
@@ -163,23 +163,23 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk0 == 0) {
             spawn = 0;
             if (frame < 0x18) {
-                spawn = D_801E82AC[frame];
+                spawn = fx_038_spawnFrames[frame];
             }
-            if (spawn != 0 && work->unkC < 3) {
-                work->unkC++;
+            if (spawn != 0 && work->countC < 3) {
+                work->countC++;
                 it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (it != NULL) {
-                    it->unk18.vx = work->pos4.vx + ex->btlfx_randCentered(0x258);
-                    it->unk18.vz = work->pos4.vz + ex->btlfx_randCentered(0x258);
-                    it->unk18.vy = 0;
-                    it->unk20 = work->unkC - 1;
+                    it->pos18.vx = work->pos4.vx + ex->btlfx_randCentered(0x258);
+                    it->pos18.vz = work->pos4.vz + ex->btlfx_randCentered(0x258);
+                    it->pos18.vy = 0;
+                    it->strip20 = work->countC - 1;
                     it->rotC.vx = ex->btlfx_rand();
                     it->rotC.vy = ex->btlfx_rand();
                     it->rotC.vz = ex->btlfx_rand();
                 }
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), frame);
-            if (work->unkC >= 3 && frame >= 0x3E) {
+            if (work->countC >= 3 && frame >= 0x3E) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }

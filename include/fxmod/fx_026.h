@@ -7,51 +7,51 @@
 /* keyframe track read from the effect file: count, then the keys */
 typedef struct {
     s16 unk0;
-    s16 unk2; /* count */
-    s16 unk4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
+    s16 count2; /* count */
+    s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx026Track;
 
 /* shattered model: triangles (three vertices each) that fall off as particles */
 typedef struct {
-    SVECTOR unk0; /* pad: already split off */
-    SVECTOR unk8;
-    SVECTOR unk10;
+    SVECTOR vert0; /* pad: already split off */
+    SVECTOR vert8;
+    SVECTOR vert10;
 } Fx026Tri; /* 0x18 */
 
 typedef struct {
-    s16 unk0;
-    s16 unk2; /* triangle count */
-    s32 unk4; /* triangles of the last model */
-    Fx026Tri *unk8;
-    Fx026Tri *unkC; /* next free triangle */
-    Fx026Tri *unk10; /* first triangle of the last model */
+    s16 life0;
+    s16 triCount2; /* triangle count */
+    s32 lastCount4; /* triangles of the last model */
+    Fx026Tri *tris8;
+    Fx026Tri *nextTriC; /* next free triangle */
+    Fx026Tri *lastTris10; /* first triangle of the last model */
 } Fx026Shatter; /* 0x14 */
 
 typedef struct {
-    s32 unk0; /* position (fixed 20.12) */
-    s32 unk4;
-    s32 unk8;
-    s16 unkC; /* velocity */
-    s16 unkE;
-    s16 unk10;
+    s32 x0; /* position (fixed 20.12) */
+    s32 y4;
+    s32 z8;
+    s16 velC; /* velocity */
+    s16 velE;
+    s16 vel10;
     s16 unk12;
-    s16 unk14; /* spin */
-    s16 unk16;
-    s16 unk18; /* frame, -1 = free */
-    s16 unk1A; /* triangle */
+    s16 spin14; /* spin */
+    s16 spin16;
+    s16 frame18; /* frame, -1 = free */
+    s16 tri1A; /* triangle */
 } Fx026Shard; /* 0x1C */
 
 typedef struct {
-    s32 unk0; /* camera path */
-    SVECTOR unk4; /* camera target */
-    SVECTOR unkC; /* camera position */
+    s32 path0; /* camera path */
+    SVECTOR target4; /* camera target */
+    SVECTOR posC; /* camera position */
 } Fx026Work87; /* 0x14 */
 
 /* camera paths: position track, target track, length */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
-    u16 unk4;
+    u16 posTrack0;
+    u16 targetTrack2;
+    u16 length4;
     u16 unk6;
 } Fx026CamPath;
 
@@ -63,33 +63,33 @@ typedef struct {
 
 /* pool item of fx_026_op80PoolTask: a model following a keyframe track */
 typedef struct {
-    s16 unk0; /* done */
-    u16 unk2; /* spin */
-    s16 unk4; /* track: D_801EA774 index */
+    s16 done0; /* done */
+    u16 spin2; /* spin */
+    s16 track4; /* track: fx_026_op80TrackBlocks index */
     s16 pad6;
     Pool6CEntry *emit8;
     SVECTOR posC;
 } Fx026Item;
 
 typedef struct {
-    s32 unk0;
-    s32 unk4; /* frame */
+    s32 state0;
+    s32 frame4; /* frame */
     u8 pad8[8];
     SVECTOR pos10;
     u8 pad18[0x10];
     SVECTOR pos28; /* summon bone positions */
     SVECTOR pos30;
     SVECTOR pos38;
-    Fx026Vec3 unk40; /* summon position */
-    Fx026Vec3 unk4C; /* summon scale */
+    Fx026Vec3 pos40; /* summon position */
+    Fx026Vec3 scale4C; /* summon scale */
     SVECTOR rot58; /* summon rotation */
     u8 pad60[4];
     s32 unk64;
     s32 model68; /* models */
-    s32 unk6C;
+    s32 model6C;
 } Fx026Work80; /* 0x70 */
 
-/* the summon slot behind env->unk4 */
+/* the summon slot behind env->loader */
 typedef struct {
     u8 pad0[0x54];
     struct {
@@ -97,13 +97,13 @@ typedef struct {
         BtlUnit9CC *motion180;
     } *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx026Summon;
 
 /* op82: the barrier model */
 typedef struct {
     s32 unk0;
-    s32 unk4; /* frame */
+    s32 frame4; /* frame */
     SVECTOR pos8; /* position */
     s32 model10; /* model */
 } Fx026Work82; /* 0x14 */
@@ -111,8 +111,8 @@ typedef struct {
 /* pool item of fx_026_op82PoolTask */
 typedef struct {
     s16 unk0;
-    s16 unk2; /* index */
-    s16 unk4; /* type */
+    s16 strip2; /* index */
+    s16 kind4; /* type */
     s16 pad6;
     s32 unk8;
 } Fx026Item82;
@@ -141,57 +141,57 @@ typedef struct {
     Fx026Pt unk4[40];
 } Fx026Strip40; /* 0x144 */
 
-extern Fx026Strip32 D_801EC5EC[];
-extern Fx026Strip32 D_801ECC0C[];
-extern Fx026Strip40 D_801ED22C[];
+extern Fx026Strip32 fx_026_strips0[];
+extern Fx026Strip32 fx_026_strips1[];
+extern Fx026Strip40 fx_026_strips2[];
 /* op81: the shattering barrier */
 typedef struct {
-    s32 unk0;
-    s32 unk4; /* frame */
-    SVECTOR unk8; /* position */
+    s32 state0;
+    s32 frame4; /* frame */
+    SVECTOR pos8; /* position */
     SVECTOR pos10;
-    s32 unk18[6][3]; /* models of the six pieces */
+    s32 pieceModels18[6][3]; /* models of the six pieces */
     s32 pad60[3];
     s32 model6C[7];
 } Fx026Work81; /* 0x88 */
 
 /* pool item of fx_026_op81PoolTask */
 typedef struct {
-    s16 unk0; /* state */
-    s16 unk2; /* piece */
+    s16 state0; /* state */
+    s16 piece2; /* piece */
     s32 pad4[2];
     SVECTOR posC;
 } Fx026Item81;
 
 typedef struct {
-    s32 unk0; /* offsets from env->unk30 */
-    s32 unk4;
+    s32 setOfs0; /* offsets from env->workBuf */
+    s32 trisOfs4;
 } Fx026ShatterSrc;
 
-extern s32 D_801EA788[6][3];
-extern s32 D_801EA828[];
-extern SVECTOR D_801EA840[];
-extern s32 D_801EA870[];
-extern Fx026ShatterSrc D_801EA7EC[];
-extern s32 D_801EC5DC;
-extern s32 D_801EC5E0;
-extern Fx026Shatter D_801EDA0C[];
-extern Fx026Tri D_801EF00C[];
-extern s32 D_801EA7D0[7];
-extern SVECTOR D_801EA780;
-extern s32 D_801EA8B0[];
-extern s32 D_801EA81C;
-extern s32 D_801EA820;
-extern s32 D_801EA824;
-extern u8 D_801EA93C[];
-extern s16 D_801EA774[];
+extern s32 fx_026_pieceModelBlocks[6][3];
+extern s32 fx_026_pieceTrackBlocks[];
+extern SVECTOR fx_026_pieceOffsets[];
+extern s32 fx_026_pieceStages[];
+extern Fx026ShatterSrc fx_026_shatterBufs[];
+extern s32 fx_026_op80Model;
+extern s32 fx_026_op80Model2;
+extern Fx026Shatter fx_026_shatterBuf6[];
+extern Fx026Tri fx_026_shatterTris6[];
+extern s32 fx_026_op81ModelBlocks[7];
+extern SVECTOR fx_026_op81Pos;
+extern s32 fx_026_pieceOrder[];
+extern s32 fx_026_shatterNow;
+extern s32 fx_026_shatterNow6;
+extern s32 fx_026_shatterNow5;
+extern u8 fx_026_trails[];
+extern s16 fx_026_op80TrackBlocks[];
 extern BtlModel fx_026_effModels[];
-extern SVECTOR D_801EC5E4;
-extern Fx026CamPath D_801EA8C4[];
+extern SVECTOR fx_026_stripOrigin;
+extern Fx026CamPath fx_026_camPaths[];
 extern Unk800F78A4 *fx_026_env;
-extern Fx026Shatter *D_801ED9CC[8];
-extern Fx026Shard *D_801ED9EC[8];
-extern s32 D_801EDA08; /* shatter line */
+extern Fx026Shatter *fx_026_shatterSets[8];
+extern Fx026Shard *fx_026_shatterShards[8];
+extern s32 fx_026_shatterLine; /* shatter line */
 
 static void fxm_keyGetVec(Fx026Track *track, s32 t, SVECTOR *out);
 static void fxm_keyGetVec2(Fx026Track *track, s32 t, SVECTOR *a, SVECTOR *b);

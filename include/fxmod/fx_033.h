@@ -5,17 +5,17 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* knockback countdown */
+    s32 timer0; /* knockback countdown */
     SVECTOR pos4;
     SVECTOR posC; /* target body position */
     SVECTOR pos14; /* target home position */
     SVECTOR pos1C; /* target position while pushed back */
-    SVECTOR unk24; /* angles from unk4 to unkC */
+    SVECTOR aim24; /* angles from pos4 to posC */
     Pool6CEntry *emit2C;
 } Fx033Work; /* 0x30 */
 
 extern Unk800F78A4 *fx_033_env;
-extern s32 D_801E7AF4[];
+extern s32 fx_033_trails[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 

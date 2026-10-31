@@ -5,15 +5,15 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* beam angles */
+    SVECTOR aim0; /* beam angles */
     SVECTOR pos8;
     SVECTOR pos10;
-    SVECTOR unk18; /* target position, on the ground */
+    SVECTOR pos18; /* target position, on the ground */
     Pool6CEntry *emit20;
 } Fx02fWork; /* 0x24 */
 
 extern Unk800F78A4 *fx_02f_env;
-extern SVECTOR D_801E7AFC[]; /* target body positions */
-extern s32 D_801E7B3C[];
+extern SVECTOR fx_02f_targetPos[]; /* target body positions */
+extern s32 fx_02f_trails[];
 
 #endif
