@@ -53,7 +53,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
         if (fieldCalc_checkAlive(&c)) {
             if (*(u32 *)&t->hp == *(u32 *)&t->maxHp) { /* hp and mp both full */
             full:
-                c.flags |= 1;
+                c.flags |= MAINCALC_MISS;
                 break;
             }
             fieldCalc_restoreAll(&c);
@@ -89,7 +89,7 @@ s32 chr_payMp(Unk8006573C *a, s16 b) {
 }
 
 u8 fieldCalc_apply(MainCalc *c) {
-    if (c->flags & 1) {
+    if (c->flags & MAINCALC_MISS) {
         c->result |= 0x20;
         return 0;
     }
@@ -104,7 +104,7 @@ u8 fieldCalc_apply(MainCalc *c) {
 
 u8 fieldCalc_checkAlive(MainCalc *c) {
     if (chr_hasStatus(c->target, CHR_STATUS_PETRIFY | CHR_STATUS_ZOMBIE) || c->target->hp == 0) {
-        c->flags |= 1;
+        c->flags |= MAINCALC_MISS;
         return 0;
     }
     return 1;
@@ -113,7 +113,7 @@ u8 fieldCalc_checkAlive(MainCalc *c) {
 u8 fieldCalc_checkDead(MainCalc *c) {
     if (chr_hasStatus(c->target, CHR_STATUS_PETRIFY) || c->target->hp != 0 ||
         (chr_hasStatus(c->target, CHR_STATUS_ZOMBIE) && c->target->hp == 0)) {
-        c->flags |= 1;
+        c->flags |= MAINCALC_MISS;
         return 0;
     }
     return 1;
@@ -217,13 +217,13 @@ void fieldCalc_cureStatusType(MainCalc *c) {
     u8 masks[6] = { 0, 0, 0, 2, 1, 24 };
 
     if (chr_cureStatusMask(c->target, masks[c->cmd->statusSet]) != 2) {
-        c->flags |= 1;
+        c->flags |= MAINCALC_MISS;
     }
 }
 
 void fieldCalc_cureStatus(MainCalc *c) {
     if (chr_cureStatusMask(c->target, c->cmd->statusMask) != 2) {
-        c->flags |= 1;
+        c->flags |= MAINCALC_MISS;
     }
 }
 

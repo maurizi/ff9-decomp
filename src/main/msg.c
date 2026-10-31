@@ -530,7 +530,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 msg_measureLine(&p, &c);
                 break;
             case 0x41:
-                if (!(w->flags & 4)) {
+                if (!(w->flags & MSGW_SKIP)) {
                     w->waitFrames = *p++;
                 } else {
                     p++;
@@ -538,7 +538,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 break;
             case 0:
             case 1:
-                w->flags = (w->flags & ~4) | 8;
+                w->flags = (w->flags & ~MSGW_SKIP) | MSGW_NO_SKIP;
             set26:
                 w->waitFrames = *p++;
                 break;
@@ -549,7 +549,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 w->speed = g_msgTextSpeeds[(g_gameState->config >> CFG_SHIFT_MSG_SPEED) & 7];
                 break;
             case 0xC:
-                w->flags |= 4;
+                w->flags |= MSGW_SKIP;
                 break;
             case 7:
                 p += 2;
@@ -560,15 +560,15 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 pad_getAnalogThresholds(&g_msgSavedAnalogThresholds);
                 pad_setAnalogThresholds(&tmp);
                 g_msgChoiceLine = n;
-                w->flags |= 2;
+                w->flags |= MSGW_CHOICE;
                 break;
             case 9:
                 w->waitFrames = 0xFF;
             case 0x45:
-                w->flags |= 0x40;
+                w->flags |= MSGW_NO_INPUT;
                 break;
             case 0xA:
-                w->flags |= 8;
+                w->flags |= MSGW_NO_SKIP;
                 break;
             case 0xF:
                 g_msgSyncTag = *p++;
@@ -601,7 +601,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
             case 0x85:
             case 0x86:
             case 0x87:
-                if (!(w->flags & 4)) {
+                if (!(w->flags & MSGW_SKIP)) {
                     w->pendingChars = 1;
                     w->typeAccum = 0;
                 }
@@ -630,7 +630,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
         case 0xFD:
             p++;
         default:
-            if (!(w->flags & 4)) {
+            if (!(w->flags & MSGW_SKIP)) {
                 w->typeAccum -= 8;
             }
             break;
@@ -638,7 +638,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
     }
     w->textPos = (w->waitFrames != 0 ? start : p) - e;
     if (w->waitFrames == 0xFF) {
-        w->flags &= ~4;
+        w->flags &= ~MSGW_SKIP;
     }
     w->typeAccum += w->speed;
 }
@@ -660,7 +660,7 @@ void msg_stepControl(MsgWindow *w, u8 *e) {
             break;
         case 0:
             w->pageStart = p + 1 - e;
-            w->flags &= ~8;
+            w->flags &= ~MSGW_NO_SKIP;
             break;
         }
         break;
@@ -693,13 +693,13 @@ void msg_drawText(MsgWindow *w) {
         if (w->waitFrames == 0) {
             if (w->pendingChars == 0) {
                 msg_advanceText(w, e);
-            } else if (w->flags & 4) {
+            } else if (w->flags & MSGW_SKIP) {
                 w->pendingChars = 0;
                 w->typeAccum = 8;
             }
         } else {
             w->waitFrames -= (w->waitFrames != 0xFF);
-            if (w->flags & 4) {
+            if (w->flags & MSGW_SKIP) {
                 w->waitFrames = 0;
             }
             if (w->waitFrames == 0) {
@@ -719,9 +719,9 @@ void msg_drawText(MsgWindow *w) {
 s32 msg_input(MsgWindow *w, s32 pad) {
     u8 f;
 
-    if ((g_evtMode == EVT_MODE_FIELD && (pad & 0xA0000)) || (g_evtMode != EVT_MODE_FIELD && (pad & 0x20000))) {
+    if ((g_evtMode == EVT_MODE_FIELD && (pad & (BTN_CROSS | BTN_SQUARE))) || (g_evtMode != EVT_MODE_FIELD && (pad & BTN_CROSS))) {
         f = w->flags;
-        if (!(f & 0x40)) {
+        if (!(f & MSGW_NO_INPUT)) {
             if (w->waitFrames == 0xFF) {
                 w->waitFrames = 1;
                 if (g_msgChoiceLine >= 0) {
@@ -729,8 +729,8 @@ s32 msg_input(MsgWindow *w, s32 pad) {
                 }
                 return 1;
             }
-            if (!(f & 8)) {
-                w->flags = f | 4;
+            if (!(f & MSGW_NO_SKIP)) {
+                w->flags = f | MSGW_SKIP;
                 return 1;
             }
         }
@@ -739,21 +739,21 @@ s32 msg_input(MsgWindow *w, s32 pad) {
         if (g_msgChoiceWindow != w->id) {
             return 0;
         }
-        if (pad & 0x10) {
+        if (pad & PAD_UP) {
             if (g_msgChoice > 0) {
                 g_msgChoice--;
             } else {
                 g_msgChoice = g_msgChoiceCount - 1;
             }
             g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
-        } else if (pad & 0x40) {
+        } else if (pad & PAD_DOWN) {
             if (g_msgChoice < g_msgChoiceCount - 1) {
                 g_msgChoice++;
             } else {
                 g_msgChoice = 0;
             }
             g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
-        } else if (!(pad & 0x10000) || g_msgChoiceCancel < 0) {
+        } else if (!(pad & BTN_CIRCLE) || g_msgChoiceCancel < 0) {
             return 0;
         } else {
             g_msgChoice = g_msgChoiceCancel;
@@ -828,8 +828,8 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     w->tailOffset = l->tailOffset;
     w->tailMode = l->tailMode;
     w->textWidth = l->w;
-    w->flags |= 0x10;
-    if (!(l->flags & 1)) {
+    w->flags |= MSGW_MESSAGE;
+    if (!(l->flags & WINLAYOUT_NO_FOCUS)) {
         g_msgFocus = w;
     }
     r.x = w->x;
@@ -860,7 +860,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
             win_setTitle(w->window, (s32)g_msgMognetTitle);
         }
     }
-    if (!(l->flags & 1)) {
+    if (!(l->flags & WINLAYOUT_NO_FOCUS)) {
         g_msgChoiceLine = -1;
         n = g_msgChoiceDefault;
         g_msgChoiceDefault = 0;
@@ -988,7 +988,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 g_msgLayoutAltOpen = 1;
                 break;
             case 0x45:
-                g_msgLayout.flags = 1;
+                g_msgLayout.flags = WINLAYOUT_NO_FOCUS;
                 break;
             case 0xD:
                 for (;;) {
@@ -1116,7 +1116,7 @@ MsgWindow *msg_getLastModal(void) {
     MsgWindow *p;
     MsgWindow *r = NULL;
     for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
-        if (p->open != 0 && (p->flags & 2)) {
+        if (p->open != 0 && (p->flags & MSGW_CHOICE)) {
             r = p;
         }
     }
@@ -1213,7 +1213,7 @@ MsgWindow *msg_allocWindow(WinLayout *r, MsgWindow *a, s32 idx, s32 flag) {
     e->w = r->w;
     e->h = r->h;
     if (flag != 0) {
-        e->flags = 2;
+        e->flags = MSGW_CHOICE;
     } else {
         e->flags = 0;
     }

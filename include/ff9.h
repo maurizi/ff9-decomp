@@ -1558,12 +1558,18 @@ typedef struct MsgWindow {
     s16 typeAccum; /* text timing in 1/8 characters (+speed per frame) */
     u8 waitFrames; /* 0xFF waiting for Cross (msg_input), else a text-code pause */
     u8 h;
-    u8 flags; /* 2 modal (msg_allocWindow), 4, 8 */
+    u8 flags; /* MSGW_* */
     u8 speed; /* text speed */
     u8 pendingChars;
     u8 tailMode; /* from the layout, passed to win_setTail */
 } MsgWindow;
 extern MsgWindow g_msgWindows[];
+/* MsgWindow.flags */
+#define MSGW_CHOICE 0x02 /* has a choice (text code F9 08, or msg_allocWindow's flag); msg_getLastModal finds it */
+#define MSGW_SKIP 0x04 /* Cross pressed: the rest of the page shows at once (text code F9 0C sets it too); cleared at the next wait for Cross */
+#define MSGW_NO_SKIP 0x08 /* Cross doesn't skip the text (text codes F9 00/01/0A); cleared at the next page */
+#define MSGW_MESSAGE 0x10 /* opened by msg_open */
+#define MSGW_NO_INPUT 0x40 /* Cross is ignored (text codes F9 09/45) */
 
 
 void menuScreen_loadOverlay(void);
@@ -3446,7 +3452,7 @@ typedef struct {
     Character *target; /* target */
     MainCalcCmd *cmd; /* ability/item data */
     s32 all; /* nonzero: the item/ability hits the whole party (item_useOnMember last argument; fieldCalc_multiTargetHalf) */
-    u8 flags; /* bit 0: miss, set when nothing happens (full hp, dead target, cure failed) */
+    u8 flags; /* MAINCALC_MISS */
     u8 result; /* 0x20 set by fieldCalc_apply */
     s16 power; /* base power (cmd power) */
     s16 defense; /* target magicDef (magic heals), 0 for items */
@@ -3454,6 +3460,7 @@ typedef struct {
     s16 hpChange; /* chr_addHp amount */
     s16 mpChange; /* chr_addMp amount */
 } MainCalc;
+#define MAINCALC_MISS 0x1 /* MainCalc.flags: nothing happens (full hp, dead target, cure failed); fieldCalc_apply then changes nothing */
 
 u8 chr_hasStatus(Character *, s32);
 s32 chr_cureStatusMask(Character *, s32);
@@ -3548,8 +3555,9 @@ typedef struct {
     s8 y; /* y */
     u8 h; /* h */
     u8 anchor; /* anchor: evt_getMsgLayout placement, & 3 = balloon side */
-    u8 flags; /* bit 0: don't make it the current window */
+    u8 flags; /* WINLAYOUT_* */
 } WinLayout;
+#define WINLAYOUT_NO_FOCUS 0x1 /* msg_open doesn't make the window g_msgFocus (text code F9 45 in the layout) */
 s32 msg_overlapsRect(WinLayout *r);
 extern s32 g_msgLayoutAltOpen;
 s32 msg_input(MsgWindow *, s32);

@@ -2358,7 +2358,7 @@ void evt_movePlayer(EvtObject *obj) {
     analog = 0;
     memset(&v, 0, 8);
     pad = msg_getPadHeld();
-    if (((g_padBuf[0].unk0 >> 12) & 0xF) == 7) {
+    if (((g_padBuf[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
         x = g_padAnalog[0].unk0[2];
         y = g_padAnalog[0].unk0[3];
         pad_getAnalogThresholds((Unk4 *)dz);
@@ -2387,23 +2387,23 @@ void evt_movePlayer(EvtObject *obj) {
     }
     if (!analog) {
         run = ((GameConfig *)&g_gameState->config)->movementRun;
-        if ((pad & 0x10000) ? (run ^ 1) != 0 : run != 0) {
+        if ((pad & BTN_CIRCLE) ? (run ^ 1) != 0 : run != 0) {
             speed = 60;
         }
-        if (pad & 0x80) {
+        if (pad & PAD_LEFT) {
             dir = 0x400;
         }
-        if (pad & 0x20) {
+        if (pad & PAD_RIGHT) {
             dir = -0x400;
         }
-        if (pad & 0x40) {
+        if (pad & PAD_DOWN) {
             if (dir == 0x8000) {
                 dir = 0;
             } else {
                 dir -= dir >> 1;
             }
         }
-        if (pad & 0x10) {
+        if (pad & PAD_UP) {
             if (dir == 0x8000) {
                 dir = 0x800;
             } else {
