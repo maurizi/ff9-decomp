@@ -3,3 +3,5 @@ fx_1f9_header = 0x801E78A0; // [code] module header (0, init, ops), btlfx_update
 fx_1f9_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_1f9_op81 = 0x801E77A0; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_1f9_env = 0x801E78E8; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_1f9_emitPos0 = 0x801E78F0; // [code] SVECTOR origin given to btlfx_startEmitter in fx_1f9_op80
+fx_1f9_emitPos1 = 0x801E78F8; // [code] SVECTOR per target from btlfx_getUnitBodyPos, origin given to btlfx_startEmitter in fx_1f9_op81

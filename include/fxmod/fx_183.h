@@ -6,14 +6,14 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 unk0[3]; /* position */
-    s16 unk6[3]; /* rotation */
+    s16 pos0[3]; /* position */
+    s16 rot6[3]; /* rotation */
 } Fx183Key; /* 0xC */
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* keys */
-    Fx183Key *unk4;
+    u16 count2; /* keys */
+    Fx183Key *keys4;
 } Fx183Path;
 
 typedef struct {
@@ -28,7 +28,7 @@ typedef struct {
     Pool6CEntry *emit4;
     SVECTOR pos8; /* caster position */
     SVECTOR pos10; /* target position */
-    SVECTOR unk18; /* from */
+    SVECTOR pos18; /* from */
     SVECTOR rot20; /* model rotation */
     VECTOR pos28; /* model position */
     VECTOR scale38; /* model scale */
@@ -39,12 +39,12 @@ typedef struct {
     Pool6CEntry *emit0;
     SVECTOR rot4; /* model rotation */
     VECTOR posC; /* model position */
-    VECTOR unk1C; /* model scales */
-    VECTOR unk2C;
-    s32 unk3C; /* brightness */
+    VECTOR scale1C; /* model scales */
+    VECTOR scale2C;
+    s32 fade3C; /* brightness */
     SVECTOR pos40; /* target position */
-    s32 unk48; /* fade-in countdown */
-    s32 unk4C; /* fade-out countdown */
+    s32 timer48; /* fade-in countdown */
+    s32 timer4C; /* fade-out countdown */
     u16 model50[6]; /* models */
 } Fx183Work82; /* 0x5C */
 
@@ -53,11 +53,11 @@ typedef struct {
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     SVECTOR posC; /* target body position */
-    s32 unk14; /* unit */
+    s32 unit14; /* unit */
 } Fx183Work83; /* 0x18 */
 
-extern u16 D_801E8288[6]; /* model files */
-extern u16 D_801E8294[6]; /* path files */
+extern u16 fx_183_modelFileIds[6]; /* model files */
+extern u16 fx_183_pathFileIds[6]; /* path files */
 extern Unk800F78A4 *fx_183_env;
 extern BtlModel fx_183_effModels[];
 extern Fx183Path fx_183_rotPosPath[6];

@@ -4,3 +4,5 @@ fx_17d_8_op80 = 0x801E7894; // type:func [code] header op entry 0, effect script
 fx_17d_8_op80PoolTask = 0x801E7718; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_17d_8_op80
 fx_17d_8_env = 0x801E8A44; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_17d_8_effModels = 0x801E8A54; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_17d_8_basePos = 0x801E89F4; // [code] SVECTOR copied in fx_17d_8_op80 mode 1 into work->unk8 (model position base) and camera points[2]
+fx_17d_8_particleDrift = 0x801E8FCC; // [code] set per phase in fx_17d_8_op80, scales the x offset (0x1000-cos)*D subtracted from the element position in fx_17d_8_op80PoolTask

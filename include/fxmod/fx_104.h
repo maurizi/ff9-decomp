@@ -9,7 +9,7 @@ typedef struct {
     Pool6CEntry *emit0;
     s32 unk4;
     SVECTOR pos8;
-    SVECTOR unk10;
+    SVECTOR pos10;
 } Fx104Work80;
 
 typedef struct {

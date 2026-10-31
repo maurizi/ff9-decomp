@@ -5,3 +5,6 @@ fx_1fb_op81 = 0x801E77A0; // type:func [code] header op entry 1, effect script o
 fx_1fb_env = 0x801E7B74; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_1fb_op81Trails0 = 0x801E7BB4; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
 fx_1fb_op81Trails1 = 0x801E9B94; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_1fb_emitPos0 = 0x801E7B7C; // [code] SVECTOR origin given to btlfx_startEmitter in fx_1fb_op80
+fx_1fb_fadeTimers = 0x801E7B84; // [code] s32[2] countdowns set 0x10 at frames 24 and 40, btlfx_fadeUnitById out then in
+fx_1fb_emitPos1 = 0x801E7B94; // [code] SVECTOR per target from btlfx_getUnitBodyPos, origin given to btlfx_startEmitter in fx_1fb_op81

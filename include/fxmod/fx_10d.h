@@ -12,8 +12,8 @@ typedef struct {
     SVECTOR rot18; /* model rotation */
     VECTOR pos20; /* model position */
     VECTOR scale30; /* model scale */
-    SVECTOR unk40[3]; /* rotation trail */
-    VECTOR unk58[3]; /* position trail */
+    SVECTOR rot40[3]; /* rotation trail */
+    VECTOR pos58[3]; /* position trail */
     u16 model88; /* models */
     u16 model8A;
 } Fx10dWork80;

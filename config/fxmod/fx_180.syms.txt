@@ -32,3 +32,5 @@ fx_180_op82Trails1 = 0x801EF3E8; // [code] trail point buffer (Pool6CEntry.trail
 fx_180_op83Trails = 0x801EFF28; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op83 handler
 fx_180_emitPos0 = 0x801F0838; // [code] emitter origin, passed to btlfx_startEmitter
 fx_180_emitPos1 = 0x801F0840; // [code] emitter origin, passed to btlfx_startEmitter
+fx_180_op80PathOrigin = 0x801F0828; // [code] set to the caster body position in fx_180_op80 mode 1, added to every fxm_posPathGet key in fx_180_op80ParticleMotion
+fx_180_op81PathOrigin = 0x801F0830; // [code] set from work->pos3C in fx_180_op81 mode 1, added to every fxm_posPathGet key in fx_180_op81ParticleMotion

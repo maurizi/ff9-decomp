@@ -23,11 +23,11 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->posC.vx = work->pos4.vx;
         work->posC.vy = work->pos4.vy;
         work->posC.vz = work->pos4.vz;
-        work->unk1C.vx = work->pos4.vx;
-        work->unk1C.vy = work->pos4.vy;
-        work->unk1C.vz = work->pos4.vz;
+        work->pos1C.vx = work->pos4.vx;
+        work->pos1C.vy = work->pos4.vy;
+        work->pos1C.vz = work->pos4.vz;
         work->posC.vy -= 0x100;
-        work->unk1C.vy -= 0x400;
+        work->pos1C.vy -= 0x400;
         ex->btlfx_initEffModels(fx_125_effModels, 3);
         work->model24 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0xB3,
                                                       0x3D40, 0, 0);
@@ -51,9 +51,9 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (work->unk0 == 0) {
         if (frame >= 0x14) {
-            pos.vx = work->unk1C.vx;
-            pos.vy = work->unk1C.vy;
-            pos.vz = work->unk1C.vz;
+            pos.vx = work->pos1C.vx;
+            pos.vy = work->pos1C.vy;
+            pos.vz = work->pos1C.vz;
             rot.vy = frame << 5;
             rot.vx = 0;
             rot.vz = 0;

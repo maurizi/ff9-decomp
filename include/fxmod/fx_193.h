@@ -21,10 +21,10 @@ typedef struct {
 } Fx193Work81;
 
 extern Unk800F78A4 *fx_193_env;
-extern SVECTOR D_801E7CBC;
-extern SVECTOR D_801E7CC4;
-extern SVECTOR D_801E7CCC;
-extern SVECTOR D_801E7CD4;
+extern SVECTOR fx_193_op80From0;
+extern SVECTOR fx_193_op80To0;
+extern SVECTOR fx_193_op80From1;
+extern SVECTOR fx_193_op80To1;
 extern SVECTOR fx_193_emitPos;
 extern s32 fx_193_op80Trails0[];
 extern s32 fx_193_op80Trails1[];

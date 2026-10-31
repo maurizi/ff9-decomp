@@ -11,8 +11,8 @@ typedef struct {
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx1eaPoint *unk4;
+    u16 count2; /* count */
+    Fx1eaPoint *keys4;
 } Fx1eaPath;
 
 typedef struct {
@@ -27,15 +27,15 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[1];
+    SVECTOR pos4[1];
 } Fx1eaTrail;
 
 typedef struct {
-    s16 unk0; /* fade-in countdown */
-    s16 unk2; /* fade-out countdown */
+    s16 timer0; /* fade-in countdown */
+    s16 timer2; /* fade-out countdown */
 } Fx1eaWork82;
 
-extern SVECTOR D_801E9B58; /* origin */
+extern SVECTOR fx_1ea_trailOrigin; /* origin */
 
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
@@ -48,14 +48,14 @@ extern Unk800F78A4 *fx_1ea_env;
 /* propagated */
 
 typedef struct {
-    s16 unk0[3]; /* position */
-    s16 unk6[3]; /* rotation */
+    s16 pos0[3]; /* position */
+    s16 rot6[3]; /* rotation */
 } Fx1eaKey; /* 0xC */
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* keys */
-    Fx1eaKey *unk4;
+    u16 count2; /* keys */
+    Fx1eaKey *keys4;
 } Fx1eaPath_0b4;
 static s32 fxm_rotPosPathGet(Fx1eaPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 
@@ -68,46 +68,46 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0[11];
     SVECTOR rot2C; /* model rotation */
-    Fx1eaVec3 unk34; /* model position */
+    Fx1eaVec3 pos34; /* model position */
     s32 pad40;
-    Fx1eaVec3 unk44; /* model scale */
+    Fx1eaVec3 scale44; /* model scale */
     s32 pad50;
-    s32 unk54; /* model colour */
+    s32 rgb54; /* model colour */
     u8 pad58[0x84 - 0x58];
     SVECTOR pos84; /* caster position */
     SVECTOR rot8C; /* caster rotation */
-    s32 unk94; /* morph frame */
-    s32 unk98; /* fade-in countdown */
-    s32 unk9C;
-    s32 unkA0;
+    s32 frame94; /* morph frame */
+    s32 timer98; /* fade-in countdown */
+    s32 timer9C;
+    s32 timerA0;
     u16 modelA4[10]; /* models */
 } Fx1eaWork81; /* 0xB8 */
 
 typedef struct {
-    Fx1eaPath unk0;
-    s16 unk8; /* base */
-    s16 unkA; /* count */
-    s16 unkC; /* alpha */
-    s16 unkE;
+    Fx1eaPath path0;
+    s16 index8; /* base */
+    s16 countA; /* count */
+    s16 alphaC; /* alpha */
+    s16 scaleE;
     s16 unk10; /* pad */
     u8 pad12[0x18 - 0x12];
 } Fx1eaRibbon; /* 0x18 */
 
-extern u16 D_801E8D5C[];
-extern u16 D_801E8D68[];
-extern u16 D_801E8D74[];
-extern u16 D_801E8D80[];
-extern u16 D_801E8D84[];
+extern u16 fx_1ea_morphModelFileIds[];
+extern u16 fx_1ea_sliceModelFileIds[];
+extern u16 fx_1ea_slicePathFileIds[];
+extern u16 fx_1ea_trailPathFileIds0[];
+extern u16 fx_1ea_trailPathFileIds1[];
 extern BtlModel fx_1ea_effModels[];
-extern Fx1eaRibbon D_801E95B8;
-extern Fx1eaRibbon D_801E95D8;
+extern Fx1eaRibbon fx_1ea_ribbon0;
+extern Fx1eaRibbon fx_1ea_ribbon1;
 extern Fx1eaPath_0b4 fx_1ea_rotPosPath0;
 extern Fx1eaPath_0b4 fx_1ea_rotPosPath1[];
-extern u8 D_801E9628[][0x100];
-extern u8 D_801E9828[][0x88];
+extern u8 fx_1ea_ribbonTrails0[][0x100];
+extern u8 fx_1ea_ribbonTrails1[][0x88];
 
-void func_801E7804(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 start, s32 pad);
-void func_801E79D0(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 start, s32 pad, s32 ang);
+void fx_1ea_buildTrail(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 start, s32 pad);
+void fx_1ea_buildTrailRotY(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 start, s32 pad, s32 ang);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_posPathInit(Fx1eaPath *path, u16 *data);
 static void fxm_rotPosPathInit(Fx1eaPath *path, u16 *data);

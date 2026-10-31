@@ -4,14 +4,14 @@ static s32 fx_11d_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 a
     if (frame >= 4) {
         frame = 3;
     }
-    return fxm_boneLerpParticle(out, pos, &D_801E7D24[frame], frame, n);
+    return fxm_boneLerpParticle(out, pos, &fx_11d_boneKeys0[frame], frame, n);
 }
 
 static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     if (frame >= 4) {
         frame = 3;
     }
-    return fxm_boneLerpParticle(out, pos, &D_801E7D3C[frame], frame, n);
+    return fxm_boneLerpParticle(out, pos, &fx_11d_boneKeys1[frame], frame, n);
 }
 
 static s32 fxm_boneLerpParticle(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s32 frame, s32 n) {
@@ -20,9 +20,9 @@ static s32 fxm_boneLerpParticle(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s3
     SVECTOR b;
     SVECTOR c;
 
-    ex->btlfx_getUnitBonePos(0x10, key->unk0, (u16 *)&a);
-    ex->btlfx_getUnitBonePos(0x10, key->unk2, (u16 *)&b);
-    ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, key->unk4, (s16 *)&c);
+    ex->btlfx_getUnitBonePos(0x10, key->bone0, (u16 *)&a);
+    ex->btlfx_getUnitBonePos(0x10, key->bone2, (u16 *)&b);
+    ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, key->blend4, (s16 *)&c);
     c.vz -= 0x32;
     pos->vx = c.vx;
     pos->vy = c.vy;
@@ -55,10 +55,10 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&fx_11d_emitPos0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&fx_11d_emitPos1);
             if (work->emit4 != NULL) {
-                ((Fx11dEffHdr *)work->emit4->file)->unk8 = fx_11d_op80ParticleMotion0;
+                ((Fx11dEffHdr *)work->emit4->file)->motion8 = fx_11d_op80ParticleMotion0;
             }
             if (work->emit8 != NULL) {
-                ((Fx11dEffHdr *)work->emit8->file)->unk8 = fx_11d_op80ParticleMotion1;
+                ((Fx11dEffHdr *)work->emit8->file)->motion8 = fx_11d_op80ParticleMotion1;
             }
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
@@ -81,10 +81,10 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit10->trailStride = 0x70;
             }
             if (work->emitC != NULL) {
-                ((Fx11dEffHdr *)work->emitC->file)->unk8 = fx_11d_op80ParticleMotion0;
+                ((Fx11dEffHdr *)work->emitC->file)->motion8 = fx_11d_op80ParticleMotion0;
             }
             if (work->emit10 != NULL) {
-                ((Fx11dEffHdr *)work->emit10->file)->unk8 = fx_11d_op80ParticleMotion1;
+                ((Fx11dEffHdr *)work->emit10->file)->motion8 = fx_11d_op80ParticleMotion1;
             }
             /* sets unkC twice; unk10 keeps its default */
             if (work->emitC != NULL) {

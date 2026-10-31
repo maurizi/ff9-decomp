@@ -9,7 +9,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8;
-    s32 unk10; /* unit */
+    s32 unit10; /* unit */
 } Fx1a5Work;
 
 extern Unk800F78A4 *fx_1a5_env;

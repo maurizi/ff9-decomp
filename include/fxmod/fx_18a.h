@@ -7,7 +7,7 @@
 
 typedef struct {
     SVECTOR pos0; /* caster body position */
-    SVECTOR unk8; /* angles */
+    SVECTOR rot8; /* angles */
 } Fx18aWork82; /* 0x10 */
 
 typedef struct {
@@ -15,50 +15,50 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[15];
+    SVECTOR points4[15];
 } Fx18aTrail; /* 0x7C */
 
 typedef struct {
-    s32 unk0; /* position, 20.12 */
-    s32 unk4;
-    s32 unk8;
-    s16 unkC; /* velocity */
-    s16 unkE;
-    s16 unk10;
+    s32 pos0; /* position, 20.12 */
+    s32 pos4;
+    s32 pos8;
+    s16 velC; /* velocity */
+    s16 velE;
+    s16 vel10;
     s16 unk12;
-    u16 unk14; /* trail */
-    s16 unk16; /* trail point index */
-    SVECTOR *unk18; /* trail point */
+    u16 slot14; /* trail */
+    s16 index16; /* trail point index */
+    SVECTOR *point18; /* trail point */
 } Fx18aSpark; /* 0x1C */
 
 typedef struct {
-    s32 unk0; /* frame */
+    s32 frame0; /* frame */
     u8 pad4[0xC];
-    s16 *unk10; /* pool */
+    s16 *pool10; /* pool */
 } Fx18aInst;
 
 extern Unk800F78A4 *fx_18a_env;
-extern Fx18aTrail D_801E8B04[12];
-extern s32 D_801E90D4;
+extern Fx18aTrail fx_18a_trails[12];
+extern s32 fx_18a_nextTrail;
 
 static s32 fx_18a_op82PoolTask(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 void func_801E85A4(void);
-void func_801E85B0(Fx18aInst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to);
+void fx_18a_spawnTrail(Fx18aInst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to);
 
-#define TRAIL(e) ((Fx18aTrail *)((e)->unk18 - 2))
+#define TRAIL(e) ((Fx18aTrail *)((e)->point18 - 2))
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     Pool6CEntry *emit8;
     SVECTOR posC; /* caster position */
     SVECTOR pos14; /* caster body position */
-    s32 unk1C; /* charge counter */
+    s32 frame1C; /* charge counter */
     s32 unk20;
     s32 model24; /* model */
 } Fx18aWork80; /* 0x28 */
 
-extern s32 D_801E89D8;
+extern s32 fx_18a_op80Done;
 extern BtlModel fx_18a_effModels[];
 
 #endif

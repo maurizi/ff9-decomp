@@ -6,9 +6,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    s32 unk8; /* scale */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
+    s32 scale8; /* scale */
     SVECTOR posC; /* caster position */
     s16 unk14;
     s16 unk16;
@@ -23,7 +23,7 @@ typedef struct {
     s16 unk4;
 } Fx198Key;
 
-extern s16 D_801E7DE8[0x11]; /* file ids */
+extern s16 fx_198_quadPathFileIds[0x11]; /* file ids */
 extern Unk800F78A4 *fx_198_env;
 extern BtlModel fx_198_effModels[];
 

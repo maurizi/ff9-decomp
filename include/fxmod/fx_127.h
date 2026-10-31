@@ -18,14 +18,14 @@ typedef struct {
     SVECTOR rot2C; /* caster rotation */
     SVECTOR pos34; /* target body position */
     SVECTOR pos3C; /* target position */
-    SVECTOR unk44; /* caster bone position */
+    SVECTOR pos44; /* caster bone position */
     SVECTOR pos4C;
-    SVECTOR unk54;
-    SVECTOR unk5C;
-    SVECTOR unk64;
-    SVECTOR unk6C;
-    SVECTOR unk74;
-    SVECTOR unk7C;
+    SVECTOR rot54;
+    SVECTOR rot5C;
+    SVECTOR pos64;
+    SVECTOR pos6C;
+    SVECTOR rot74;
+    SVECTOR rot7C;
 } Fx127Work80;
 
 typedef struct {
@@ -34,9 +34,9 @@ typedef struct {
     s32 unk8;
     Pool6CEntry *emitC;
     SVECTOR pos10; /* target body position */
-    SVECTOR unk18;
-    SVECTOR unk20;
-    SVECTOR unk28;
+    SVECTOR rot18;
+    SVECTOR rot20;
+    SVECTOR pos28;
     SVECTOR pos30;
     SVECTOR pos38;
 } Fx127Work81;
@@ -47,8 +47,8 @@ typedef struct {
     s32 (*unk8)(VECTOR *, s32, SVECTOR *, s32, s32, s32);
 } Fx127EffHdr;
 
-extern SVECTOR D_801E8310;
-extern SVECTOR D_801E8318;
+extern SVECTOR fx_127_aimRot;
+extern SVECTOR fx_127_aimPoint;
 extern SVECTOR fx_127_emitPos0;
 extern SVECTOR fx_127_emitPos1;
 extern SVECTOR fx_127_emitPos2;
@@ -56,9 +56,9 @@ extern SVECTOR fx_127_emitPos3;
 extern s32 fx_127_op80Trails0[];
 extern s32 fx_127_op80Trails1[];
 extern Unk800F78A4 *fx_127_env;
-extern SVECTOR D_801E82F8; /* path start */
-extern SVECTOR D_801E8300; /* path end */
-extern SVECTOR D_801E8308;
+extern SVECTOR fx_127_lerpFrom; /* path start */
+extern SVECTOR fx_127_lerpTo; /* path end */
+extern SVECTOR fx_127_emitterPos;
 extern Pool6CEntry *fx_127_emitter;
 
 static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);

@@ -6,13 +6,13 @@
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_1f8_env;
-extern SVECTOR D_801E7B6C;
-extern s32 D_801E7B74[1]; /* countdown */
-extern s32 D_801E7B84[4]; /* models */
-extern SVECTOR D_801E7B94; /* model rotation */
-extern VECTOR D_801E7BA4; /* model scale */
-extern VECTOR D_801E7BB4[4]; /* model positions */
-extern SVECTOR D_801E7BF4[4]; /* unit body positions */
+extern SVECTOR fx_1f8_emitPos0;
+extern s32 fx_1f8_timer[1]; /* countdown */
+extern s32 fx_1f8_models[4]; /* models */
+extern SVECTOR fx_1f8_modelRot; /* model rotation */
+extern VECTOR fx_1f8_modelScale; /* model scale */
+extern VECTOR fx_1f8_modelPos[4]; /* model positions */
+extern SVECTOR fx_1f8_emitPos1[4]; /* unit body positions */
 extern BtlModel fx_1f8_effModels[];
 
 #endif

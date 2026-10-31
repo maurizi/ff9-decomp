@@ -6,8 +6,8 @@
 
 extern Unk800F78A4 *fx_17d_1_env;
 
-void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr);
-void func_801EC944(u32 *ot, s32 tpage, s32 x, s32 r, s32 g, s32 b);
+void fx_17d_1_drawTexGrid(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr);
+void fx_17d_1_drawSideFade(u32 *ot, s32 tpage, s32 x, s32 r, s32 g, s32 b);
 
 typedef struct {
     u8 pad0[0x54];
@@ -16,7 +16,7 @@ typedef struct {
         BtlUnit9CC *motion180;
     } *unk54;
     u8 pad58[0x60 - 0x58];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx17d1Summon;
 
 typedef struct {
@@ -26,18 +26,18 @@ typedef struct {
 } Fx17d1Vec3;
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR unk8;
     SVECTOR pos10; /* particle position */
-    SVECTOR unk18; /* camera target */
+    SVECTOR pos18; /* camera target */
     u8 pad20[8];
-    Fx17d1Vec3 unk28; /* model position (28.0, low halves used) */
-    Fx17d1Vec3 unk34; /* model scale */
+    Fx17d1Vec3 pos28; /* model position (28.0, low halves used) */
+    Fx17d1Vec3 scale34; /* model scale */
     SVECTOR rot40; /* model rotation */
-    SVECTOR unk48; /* particle rotation */
-    Fx17d1Vec3 unk50; /* summon position */
-    Fx17d1Vec3 unk5C; /* summon scale */
+    SVECTOR rot48; /* particle rotation */
+    Fx17d1Vec3 pos50; /* summon position */
+    Fx17d1Vec3 scale5C; /* summon scale */
     SVECTOR rot68; /* summon rotation */
     Pool6CEntry *emit70;
     Pool6CEntry *emit74;

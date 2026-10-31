@@ -6,3 +6,7 @@ fxm_tintScreenRatio = 0x801E7704; // type:func [code] btlfx_drawScreenTint with 
 fx_1f3_env = 0x801E8DB0; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_1f3_effModels = 0x801E8DC0; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
 fx_1f3_op80Trails = 0x801EA6C0; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_1f3_ringDefs = 0x801E8CA8; // [code] Fx1f3RingDef[16] bone id and radius copied into rings[i] in fx_1f3_op80 mode 1
+fx_1f3_spinModels = 0x801EC370; // [code] Fx1f3Rock[8] effect models (file 0xD) drawn with eased spin added to rot.vz while timer0[4] runs
+fx_1f3_rings = 0x801EC4F0; // [code] Fx1f3Ring[16] circles of sin/cos*radius points around a bone matrix drawn with btlfx_drawTrail
+fx_1f3_ringTrails = 0x801EC510; // [code] rings + 0x20 = rings[0].unk20, the Fx1f3Line trail buffer given to btlfx_drawTrail

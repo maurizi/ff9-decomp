@@ -5,9 +5,9 @@
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_17d_4_env;
-extern s16 D_801E97FC[16];
-extern SVECTOR D_801E981C[3];
-extern s16 D_801E9814[3];
+extern s16 fx_17d_4_particleFileIds[16];
+extern SVECTOR fx_17d_4_particleOffsets[3];
+extern s16 fx_17d_4_pointFileIds[3];
 
 typedef struct {
     s16 x, y, z;
@@ -20,15 +20,15 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[2];
+    SVECTOR points4[2];
 } Fx17d4Line;
 
-extern Fx17d4Line D_801E987C;
+extern Fx17d4Line fx_17d_4_lineTrail;
 static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
 
-extern s16 D_801E9724[18 * 4]; /* per strand: file, start, stride, width */
-extern Fx17d4Line *D_801E97B4[18];
-void func_801E77DC(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag);
+extern s16 fx_17d_4_strandInfo[18 * 4]; /* per strand: file, start, stride, width */
+extern Fx17d4Line *fx_17d_4_strandTrails[18];
+void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag);
 
 typedef struct {
     s32 vx;
@@ -37,17 +37,17 @@ typedef struct {
 } Fx17d4Vec3;
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    SVECTOR unk8; /* home position */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
+    SVECTOR pos8; /* home position */
     SVECTOR pos10; /* particle position */
     u8 pad18[8];
     SVECTOR pos20; /* camera target */
-    Fx17d4Vec3 unk28; /* model position */
+    Fx17d4Vec3 pos28; /* model position */
     SVECTOR rot34; /* model rotation */
-    Fx17d4Vec3 unk3C; /* model scale */
-    Fx17d4Vec3 unk48; /* summon position */
-    Fx17d4Vec3 unk54; /* summon scale */
+    Fx17d4Vec3 scale3C; /* model scale */
+    Fx17d4Vec3 pos48; /* summon position */
+    Fx17d4Vec3 scale54; /* summon scale */
     SVECTOR rot60; /* summon rotation */
     s32 model68; /* models */
     s32 model6C;
@@ -66,16 +66,16 @@ typedef struct {
         BtlUnit9CC *motion1A0;
     } *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx17d4Summon;
 
 #define SUMMON(env) ((Fx17d4Summon *)(env)->loader)
 
-extern SVECTOR D_801E971C;
+extern SVECTOR fx_17d_4_centerPos;
 extern s32 fx_17d_4_op80Trails[];
 extern s8 D_801EB25C;
 extern BtlModel fx_17d_4_effModels[];
-void func_801E7B8C(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
-void func_801E7EB4(Unk80100C78Entry *entry, SVECTOR *from, s32 ot);
+void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
+void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot);
 
 #endif

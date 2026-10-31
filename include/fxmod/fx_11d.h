@@ -19,19 +19,19 @@ typedef struct {
 } Fx11dWork;
 
 typedef struct {
-    u16 unk0; /* bone from */
-    u16 unk2; /* bone to */
-    u16 unk4; /* blend */
+    u16 bone0; /* bone from */
+    u16 bone2; /* bone to */
+    u16 blend4; /* blend */
 } Fx11dPathKey;
 
 /* effect file header as the particle path callback sees it */
 typedef struct {
     u8 pad0[8];
-    s32 (*unk8)(VECTOR *, s32, SVECTOR *, s32, s32, s32);
+    s32 (*motion8)(VECTOR *, s32, SVECTOR *, s32, s32, s32);
 } Fx11dEffHdr;
 
-extern Fx11dPathKey D_801E7D24[4];
-extern Fx11dPathKey D_801E7D3C[4];
+extern Fx11dPathKey fx_11d_boneKeys0[4];
+extern Fx11dPathKey fx_11d_boneKeys1[4];
 extern Unk800F78A4 *fx_11d_env;
 extern s32 fx_11d_op80Trails0[];
 extern s32 fx_11d_op80Trails1[];

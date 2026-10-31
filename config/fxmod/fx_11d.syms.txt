@@ -10,3 +10,5 @@ fx_11d_op80Trails1 = 0x801E7F6C; // [code] trail point buffer (Pool6CEntry.trail
 fx_11d_op80Trails2 = 0x801E812C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
 fx_11d_emitPos0 = 0x801E914C; // [code] emitter origin, passed to btlfx_startEmitter
 fx_11d_emitPos1 = 0x801E9154; // [code] emitter origin, passed to btlfx_startEmitter
+fx_11d_boneKeys0 = 0x801E7D24; // [code] Fx11dPathKey[4] indexed by particle frame (clamped to 3) in fx_11d_op80ParticleMotion0, passed to fxm_boneLerpParticle
+fx_11d_boneKeys1 = 0x801E7D3C; // [code] Fx11dPathKey[4] indexed by particle frame (clamped to 3) in fx_11d_op80ParticleMotion1, passed to fxm_boneLerpParticle

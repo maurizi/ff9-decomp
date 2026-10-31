@@ -49,38 +49,38 @@ s32 fx_11c_op81(s32 mode, Fx11cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos20);
         work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos20);
         work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos20);
-        o = D_801E7EDC;
+        o = fx_11c_op81Bursts;
         for (i = 0; i < 5; i++, o++) {
-            o->unk10 = 0;
-            o->unk12 = 0;
-            o->unk14 = i * 2;
+            o->active10 = 0;
+            o->frame12 = 0;
+            o->startFrame14 = i * 2;
             o->pos0.vx = work->pos20.vx;
             o->pos0.vy = work->pos20.vy;
             o->pos0.vz = work->pos20.vz;
-            o->unk8.vx = work->pos20.vx;
-            o->unk8.vy = work->pos20.vy;
-            o->unk8.vz = work->pos20.vz;
+            o->pos8.vx = work->pos20.vx;
+            o->pos8.vy = work->pos20.vy;
+            o->pos8.vz = work->pos20.vz;
             if (ex->btlfx_rand() & 1) {
-                o->unk8.vx += ex->btlfx_rand() % 800;
+                o->pos8.vx += ex->btlfx_rand() % 800;
             } else {
-                o->unk8.vx -= ex->btlfx_rand() % 800;
+                o->pos8.vx -= ex->btlfx_rand() % 800;
             }
             if (ex->btlfx_rand() & 1) {
-                o->unk8.vz += ex->btlfx_rand() % 800;
+                o->pos8.vz += ex->btlfx_rand() % 800;
             } else {
-                o->unk8.vz -= ex->btlfx_rand() % 800;
+                o->pos8.vz -= ex->btlfx_rand() % 800;
             }
         }
     } else {
         frame = entry->frame;
-        q = D_801E7EDC;
+        q = fx_11c_op81Bursts;
         for (j = 0; j < 5; j++, q++) {
-            if (q->unk14 == frame) {
-                work->emit4[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, q->unk16),
+            if (q->startFrame14 == frame) {
+                work->emit4[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, q->fileId16),
                                                   (s32)&q->pos0);
-                q->unk10 = 1;
-            } else if (q->unk10 != 0) {
-                q->unk12++;
+                q->active10 = 1;
+            } else if (q->active10 != 0) {
+                q->frame12++;
             }
         }
         return frame >= 0x32;

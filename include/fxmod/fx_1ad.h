@@ -6,8 +6,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* done */
-    s32 unk4; /* frame counter */
+    s32 done0; /* done */
+    s32 frame4; /* frame counter */
     SVECTOR pos8; /* bone position */
     SVECTOR pos10; /* target body position */
     u8 pad18[0x20 - 0x18];
@@ -15,7 +15,7 @@ typedef struct {
     s32 model24; /* model */
 } Fx1adWork;
 
-extern u16 D_801E7CD8[6][9]; /* per row: count, bones */
+extern u16 fx_1ad_boneChains[6][9]; /* per row: count, bones */
 extern Unk800F78A4 *fx_1ad_env;
 extern BtlModel fx_1ad_effModels[];
 extern s32 fx_1ad_op80Trails0[];

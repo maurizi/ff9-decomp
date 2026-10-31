@@ -11,10 +11,10 @@ typedef struct {
 } Fx112Vec3;
 
 typedef struct {
-    u32 unk0; /* state */
+    u32 state0; /* state */
     SVECTOR pos4; /* caster position */
     SVECTOR rotC; /* caster rotation */
-    Fx112Vec3 unk14; /* caster scale */
+    Fx112Vec3 scale14; /* caster scale */
     s32 model20; /* model */
     u8 pad24[0x38 - 0x24];
     SVECTOR pos38; /* caster body position */

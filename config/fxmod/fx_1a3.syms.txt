@@ -8,3 +8,5 @@ fx_1a3_op80Trails = 0x801E7C14; // [code] trail point buffer (Pool6CEntry.trails
 fx_1a3_op81Trails0 = 0x801E8074; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
 fx_1a3_op81Trails1 = 0x801E86D4; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
 fx_1a3_emitPos = 0x801E9404; // [code] emitter origin, passed to btlfx_startEmitter
+fx_1a3_motionFrom = 0x801E93F4; // [code] set to the point 0x190 ahead of the caster bone in fx_1a3_op80, start of the btlfx_lerpVec in fx_1a3_op80ParticleMotion
+fx_1a3_motionTo = 0x801E93FC; // [code] set to the target body position in fx_1a3_op80, end of the btlfx_lerpVec in fx_1a3_op80ParticleMotion

@@ -20,3 +20,4 @@ fx_1b2_op80Trails0 = 0x801E8B5C; // [code] trail point buffer (Pool6CEntry.trail
 fx_1b2_op80Trails1 = 0x801EA77C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
 fx_1b2_op81Trails0 = 0x801EC39C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
 fx_1b2_op81Trails1 = 0x801EC89C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_1b2_bgOt = 0x801E875C; // [code] u32 buffer passed as the ot argument of btlfx_drawBgOffscreen in fx_1b2_op83 (ClearOTag + DrawOTagEnv on it)

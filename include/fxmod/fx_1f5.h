@@ -13,7 +13,7 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
-    s32 unkC; /* unit */
+    s32 unitC; /* unit */
 } Fx1f5Work82;
 
 extern Unk800F78A4 *fx_1f5_env;

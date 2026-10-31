@@ -6,7 +6,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0[8]; /* countdowns */
+    s32 timer0[8]; /* countdowns */
     SVECTOR pos20; /* caster position */
     SVECTOR pos28; /* target position */
     SVECTOR pos30; /* bone position */
@@ -19,13 +19,13 @@ typedef struct {
 extern Unk800F78A4 *fx_1ac_env;
 extern Pool6CEntry *fx_1ac_emitter;
 extern s32 fx_1ac_op80Trails[];
-extern SVECTOR D_801E8580;
-extern SVECTOR D_801E8588;
-extern SVECTOR D_801E8590;
-extern SVECTOR D_801E8598;
-extern SVECTOR D_801E85A0;
-extern SVECTOR D_801E85A8;
-extern SVECTOR D_801E85B0;
+extern SVECTOR fx_1ac_emitPos0;
+extern SVECTOR fx_1ac_emitPos1;
+extern SVECTOR fx_1ac_emitPos2;
+extern SVECTOR fx_1ac_emitPos3;
+extern SVECTOR fx_1ac_emitPos4;
+extern SVECTOR fx_1ac_targetPos;
+extern SVECTOR fx_1ac_lastParticlePos;
 
 static s32 fx_1ac_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 

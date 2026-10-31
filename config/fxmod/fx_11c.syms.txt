@@ -7,3 +7,4 @@ fx_11c_env = 0x801E7F9C; // [code] the effect env (Unk800F78A4) the op handlers 
 fx_11c_op80Trails0 = 0x801E7FAC; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
 fx_11c_op80Trails1 = 0x801E86FC; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
 fx_11c_op82Trails = 0x801E8E4C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op82 handler
+fx_11c_op81Bursts = 0x801E7EDC; // [code] Fx11cBurst[5] initialised in fx_11c_op81 mode 1, each starts an emitter (file from the table) at its start frame

@@ -6,20 +6,20 @@
 
 typedef struct {
     s16 unk0;
-    s16 unk2; /* scale */
-    s16 unk4; /* position */
-    s16 unk6;
-    s16 unk8;
+    s16 scale2; /* scale */
+    s16 posX4; /* position */
+    s16 posY6;
+    s16 posZ8;
     s16 padA;
     SVECTOR rotC; /* rotation */
 } Fx17d8Obj;
 
 typedef struct {
     u8 pad0[0x78];
-    s32 unk78; /* model */
+    s32 model78; /* model */
 } Fx17d8Inst;
 
-extern s32 D_801E8FCC;
+extern s32 fx_17d_8_particleDrift;
 
 typedef struct {
     s32 vx;
@@ -28,17 +28,17 @@ typedef struct {
 } Fx17d8Vec3;
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    SVECTOR unk8; /* home position */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
+    SVECTOR pos8; /* home position */
     SVECTOR pos10; /* particle position */
-    SVECTOR unk18; /* particle target */
-    SVECTOR unk20; /* camera position */
-    Fx17d8Vec3 unk28; /* model position */
+    SVECTOR target18; /* particle target */
+    SVECTOR camPos20; /* camera position */
+    Fx17d8Vec3 pos28; /* model position */
     SVECTOR unk34;
-    Fx17d8Vec3 unk3C; /* model scale */
-    Fx17d8Vec3 unk48; /* spawn position */
-    SVECTOR unk54;
+    Fx17d8Vec3 scale3C; /* model scale */
+    Fx17d8Vec3 pos48; /* spawn position */
+    SVECTOR pos54;
     SVECTOR rot5C; /* model rotation */
     s32 model64; /* models */
     s32 model68;
@@ -46,11 +46,11 @@ typedef struct {
     s32 model70;
     s32 model74;
     s32 model78;
-    MATRIX unk7C; /* saved matrices */
-    MATRIX unk9C;
+    MATRIX viewMtx7C; /* saved matrices */
+    MATRIX viewMtx9C;
 } Fx17d8Work80; /* 0xBC */
 
-extern SVECTOR D_801E89F4;
+extern SVECTOR fx_17d_8_basePos;
 extern Unk800F78A4 *fx_17d_8_env;
 extern BtlModel fx_17d_8_effModels[];
 

@@ -6,26 +6,26 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* speed */
-    s32 unk8; /* turn rate */
+    s32 state0; /* state */
+    s32 speed4; /* speed */
+    s32 turn8; /* turn rate */
     SVECTOR posC; /* position */
-    SVECTOR unk14; /* direction */
+    SVECTOR rot14; /* direction */
     Pool6CEntry *emit1C;
-    SVECTOR unk20; /* target */
+    SVECTOR target20; /* target */
 } Fx188Elem; /* 0x28 */
 
 typedef struct {
-    s32 unk0; /* state */
+    s32 state0; /* state */
     SVECTOR pos4; /* target */
     SVECTOR posC; /* caster body position */
     SVECTOR rot14; /* caster rotation */
-    s32 unk1C; /* spawned */
+    s32 count1C; /* spawned */
 } Fx188Work; /* 0x20 */
 
 extern Unk800F78A4 *fx_188_env;
 extern s32 fx_188_op80Trails[];
-extern s32 D_801E86CC; /* scale */
+extern s32 fx_188_particleScale; /* scale */
 
 static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 

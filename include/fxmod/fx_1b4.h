@@ -11,16 +11,16 @@ typedef struct {
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx1b4Point *unk4;
+    u16 count2; /* count */
+    Fx1b4Point *keys4;
 } Fx1b4Path;
 
 typedef struct {
     Pool6CEntry *emit0[8];
     Pool6CEntry *emit20[8];
     Pool6CEntry *emit40;
-    SVECTOR unk44; /* target position */
-    SVECTOR unk4C[8];
+    SVECTOR pos44; /* target position */
+    SVECTOR pos4C[8];
     SVECTOR pos8C;
 } Fx1b4Work80; /* 0x94 */
 
@@ -39,19 +39,19 @@ typedef struct {
     SVECTOR pos4; /* target position */
 } Fx1b4Work83; /* 0xC */
 
-extern u16 D_801E85BC[8];
-extern u16 D_801E85CC[8];
-extern u16 D_801E85DC[8];
+extern u16 fx_1b4_emitFileIds0[8];
+extern u16 fx_1b4_emitFileIds1[8];
+extern u16 fx_1b4_pathFileIds[8];
 extern s32 (*fx_1b4_op80ParticleMotions[8])();
 extern Unk800F78A4 *fx_1b4_env;
 extern Fx1b4Path fx_1b4_posPath[8];
-extern Fx1b4Path D_801E86A4[8];
+extern Fx1b4Path fx_1b4_op80ParticlePaths[8];
 extern s32 fx_1b4_op80Trails0[8][0x3C];
 extern s32 fx_1b4_op80Trails1[8][0xE0];
 extern s32 fx_1b4_op81Trails[];
 extern s32 fx_1b4_op82Trails0[];
 extern s32 fx_1b4_op82Trails1[];
-extern SVECTOR D_801EF174; /* origin */
+extern SVECTOR fx_1b4_pathOrigin; /* origin */
 extern SVECTOR fx_1b4_emitPos;
 
 static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames);

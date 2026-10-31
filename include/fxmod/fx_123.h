@@ -11,8 +11,8 @@ typedef struct {
 } Fx123Work82;
 
 typedef struct {
-    s16 unk0; /* fade-in countdown */
-    s16 unk2; /* fade-out countdown */
+    s16 timer0; /* fade-in countdown */
+    s16 timer2; /* fade-out countdown */
 } Fx123Work83;
 
 typedef struct {
@@ -22,15 +22,15 @@ typedef struct {
     Pool6CEntry *emit48;
     SVECTOR pos4C; /* caster position */
     SVECTOR pos54;
-    SVECTOR unk5C[6]; /* bone positions */
+    SVECTOR pos5C[6]; /* bone positions */
 } Fx123Work80; /* 0x8C */
 
 typedef struct {
-    u16 unk0; /* bone */
-    u16 unk2; /* offset */
+    u16 bone0; /* bone */
+    u16 dist2; /* offset */
 } Fx123Bone;
 
-extern Fx123Bone D_801E8F64[6];
+extern Fx123Bone fx_123_op80Bones[6];
 extern Unk800F78A4 *fx_123_env;
 extern SVECTOR fx_123_emitPos0[6];
 extern SVECTOR fx_123_emitPos1[6];
@@ -46,20 +46,20 @@ typedef struct {
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx123Point *unk4;
+    u16 count2; /* count */
+    Fx123Point *keys4;
 } Fx123Path;
 static void fxm_rotPosPathInit(Fx123Path *path, u16 *data);
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 
 /* propagated */
-extern SVECTOR D_801E968C[]; /* particle positions */
+extern SVECTOR fx_123_pinPos0[]; /* particle positions */
 static s32 fxm_pinParticle0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 static s32 fxm_pinParticle1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 static s32 fxm_pinParticle2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 static s32 fxm_pinParticle3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 static s32 fxm_pinParticle4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-extern SVECTOR D_801E96B4[]; /* particle positions */
+extern SVECTOR fx_123_pinPos1[]; /* particle positions */
 static s32 fxm_pinParticle5(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 fxm_pinParticle6(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 fxm_pinParticle7(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
@@ -70,14 +70,14 @@ s32 fxm_pinParticle11(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 fra
 static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 
 typedef struct {
-    s16 unk0[3]; /* position */
-    s16 unk6[3]; /* rotation */
+    s16 pos0[3]; /* position */
+    s16 rot6[3]; /* rotation */
 } Fx123Key; /* 0xC */
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* keys */
-    Fx123Key *unk4;
+    u16 count2; /* keys */
+    Fx123Key *keys4;
 } Fx123Path_0b4;
 static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 
@@ -92,33 +92,33 @@ typedef struct {
     Pool6CEntry *emit48[6];
     Pool6CEntry *emit60;
     SVECTOR pos64;
-    SVECTOR unk6C[6];
-    VECTOR unk9C[6];
+    SVECTOR rot6C[6];
+    VECTOR pos9C[6];
     VECTOR scaleFC;
-    s32 unk10C;
-    SVECTOR unk110[6];
+    s32 fade10C;
+    SVECTOR pos110[6];
     SVECTOR pos140;
-    SVECTOR unk148[6];
+    SVECTOR pos148[6];
     s16 unk178;
     u16 model17A[6];
     u16 model186;
 } Fx123Work81; /* 0x188 */
 
 typedef struct {
-    SVECTOR unk0;
-    SVECTOR unk8;
-    SVECTOR unk10;
-    u16 unk18;
-    u16 unk1A;
+    SVECTOR pos0;
+    SVECTOR rot8;
+    SVECTOR pos10;
+    u16 active18;
+    u16 frame1A;
     s16 unk1C;
-    s16 unk1E;
-    s16 unk20;
+    s16 timer1E;
+    s16 angle20;
     s16 unk22;
 } Fx123Shot; /* 0x24 */
 
-extern Fx123Shot D_801E8F7C[6];
-extern u16 D_801E9054[6];
-extern u16 D_801E9060[6];
+extern Fx123Shot fx_123_op81Shots[6];
+extern u16 fx_123_pathFileIds[6];
+extern u16 fx_123_emitFileIds[6];
 extern s32 fx_123_pinParticles[6];
 extern BtlModel fx_123_effModels[];
 extern Fx123Path_0b4 fx_123_rotPosPath[6];

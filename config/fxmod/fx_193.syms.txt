@@ -9,3 +9,7 @@ fxm_wobbleParticle = 0x801E7794; // type:func [code] particle motion core, from 
 fx_193_emitPos = 0x801E7CDC; // [code] emitter origin, passed to btlfx_startEmitter
 fx_193_op80Trails0 = 0x801E7CE4; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
 fx_193_op80Trails1 = 0x801E80A4; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_193_op80From0 = 0x801E7CBC; // [code] caster bone 0xE position from btlfx_getUnitBonePos, lerp start of fxm_wobbleParticle in fx_193_op80ParticleMotion0
+fx_193_op80To0 = 0x801E7CC4; // [code] target body position, lerp end of fxm_wobbleParticle in fx_193_op80ParticleMotion0
+fx_193_op80From1 = 0x801E7CCC; // [code] caster bone 0x10 position from btlfx_getUnitBonePos, lerp start of fxm_wobbleParticle in fx_193_op80ParticleMotion1
+fx_193_op80To1 = 0x801E7CD4; // [code] target body position, lerp end of fxm_wobbleParticle in fx_193_op80ParticleMotion1

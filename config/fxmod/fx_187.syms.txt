@@ -7,3 +7,4 @@ fx_187_op80Trails1 = 0x801E7F7C; // [code] trail point buffer (Pool6CEntry.trail
 fx_187_op80Trails2 = 0x801E80E4; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
 fx_187_op80Trails3 = 0x801E8364; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
 fx_187_op80Trails4 = 0x801E85E4; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_187_bones = 0x801E7DB8; // [code] two bone ids given to btlfx_getUnitBonePos(0x10) for pos24 and pos2C in fx_187_op80

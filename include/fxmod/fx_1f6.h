@@ -6,15 +6,15 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* model */
-    SVECTOR unk4; /* rotation */
-    VECTOR unkC; /* position */
-    VECTOR unk1C; /* scale */
+    s32 model0; /* model */
+    SVECTOR rot4; /* rotation */
+    VECTOR posC; /* position */
+    VECTOR scale1C; /* scale */
 } Fx1f6Model; /* 0x2C */
 
 typedef struct {
-    s32 unk0[8]; /* countdowns */
-    Fx1f6Model unk20[3];
+    s32 timer0[8]; /* countdowns */
+    Fx1f6Model models20[3];
     SVECTOR posA4; /* target position */
     SVECTOR posAC; /* target body position */
 } Fx1f6Work; /* 0xB4 */

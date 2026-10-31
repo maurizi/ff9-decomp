@@ -6,8 +6,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* fade-out countdown */
-    s32 unk4; /* fade-in countdown */
+    s32 fadeOut0; /* fade-out countdown */
+    s32 fadeIn4; /* fade-in countdown */
     SVECTOR pos8;
 } Fx1f4Work;
 

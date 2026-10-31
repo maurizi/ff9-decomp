@@ -3,7 +3,7 @@
 static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = (frame << 12) / frames;
     s32 row = (e->slot - 1) % 6;
-    s32 v = t * D_801E7CD8[row][0];
+    s32 v = t * fx_1ad_boneChains[row][0];
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1ad_env);
     s32 frac = v & 0xFFF;
     s32 i = v / 4096;
@@ -11,8 +11,8 @@ static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
     SVECTOR b;
     SVECTOR c;
 
-    ex->btlfx_getUnitBonePos(0x10, D_801E7CD8[row][i + 1], (u16 *)&a);
-    ex->btlfx_getUnitBonePos(0x10, D_801E7CD8[row][i + 2], (u16 *)&b);
+    ex->btlfx_getUnitBonePos(0x10, fx_1ad_boneChains[row][i + 1], (u16 *)&a);
+    ex->btlfx_getUnitBonePos(0x10, fx_1ad_boneChains[row][i + 2], (u16 *)&b);
     ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, frac, (s16 *)&c);
     pos->vx = c.vx;
     pos->vy = c.vy;
@@ -42,8 +42,8 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->done0 = 0;
+        work->frame4 = 0;
         fx_1ad_env = env;
         ex->btlfx_initEffModels(fx_1ad_effModels, 1);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
@@ -54,11 +54,11 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         pos.vx = work->pos8.vx;
         pos.vy = work->pos8.vy;
         pos.vz = work->pos8.vz;
-        if (work->unk0 == 0) {
+        if (work->done0 == 0) {
             k = 0x40;
-            n = work->unk4;
+            n = work->frame4;
             ex->btlfx_drawScrollMove(n * 4, 0x200, 0x100, 0x20, k, ((n & 3) << 5) + 0x240, ((n * 16) & 0xC0) + 0x100);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->unk4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->frame4);
             if (frame == 0) {
                 work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
                 if (work->emit20 != NULL) {
@@ -92,12 +92,12 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                          (ex->math_sin(t >> 1) >> 5) - 0x80, (ex->math_sin(t >> 1) >> 5) - 0x80);
             }
             if (frame >= 0x45) {
-                work->unk0 = 1;
+                work->done0 = 1;
                 ex->btlfx_clearEffModels();
                 return 1;
             }
         }
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }

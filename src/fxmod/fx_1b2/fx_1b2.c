@@ -24,19 +24,19 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1b2_env = env;
         fxm_vecPathInit(&fx_1b2_vecPath, (u8 *)ex->btlfx_getFileData(entry->file, 1));
         work->model6C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x117, 0, 0, 0);
-        work->unk3C.vx = -0x200;
-        work->unk3C.vy = 0;
-        work->unk3C.vz = 0;
-        work->unk64 = 0;
-        work->unk68 = 0;
-        work->unk5C = 1;
-        work->unk60 = -1;
+        work->rot3C.vx = -0x200;
+        work->rot3C.vy = 0;
+        work->rot3C.vz = 0;
+        work->count64 = 0;
+        work->index68 = 0;
+        work->timer5C = 1;
+        work->timer60 = -1;
         work->emit4 = NULL;
         work->emit8 = NULL;
     } else {
         frame = entry->frame;
         if (!(frame & 0xF)) {
-            work->unk5C = 0xB;
+            work->timer5C = 0xB;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos54);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos54);
             if (work->emit0 != NULL) {
@@ -46,43 +46,43 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emitC->otZ = 0x180;
             }
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (work->unk64 != 2) {
+                if (work->count64 != 2) {
                     fxm_startHitMotionIfActive(i);
                 }
             }
-            work->unk64++;
+            work->count64++;
             if (!(frame & 0xF)) {
                 ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->pos44);
                 ex->btlfx_getUnitBonePos(0x10, 0x29, (u16 *)&work->pos4C);
                 work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos44);
                 work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos4C);
                 if (work->emit4 != NULL) {
-                    work->emit4->trails = (s32)fx_1b2_op80Trails0[work->unk68];
+                    work->emit4->trails = (s32)fx_1b2_op80Trails0[work->index68];
                     work->emit4->trailSlots = 0x3C;
                     work->emit4->trailStride = 0x28;
                 }
                 if (work->emit8 != NULL) {
-                    work->emit8->trails = (s32)fx_1b2_op80Trails1[work->unk68];
+                    work->emit8->trails = (s32)fx_1b2_op80Trails1[work->index68];
                     work->emit8->trailSlots = 0x3C;
                     work->emit8->trailStride = 0x28;
                 }
-                work->unk68++;
+                work->index68++;
             }
         }
-        if (work->unk5C >= 0) {
-            t = 0xB - work->unk5C;
+        if (work->timer5C >= 0) {
+            t = 0xB - work->timer5C;
             if (t == 8) {
-                work->unk60 = 4;
+                work->timer60 = 4;
             }
-            if (work->unk60 >= 0) {
-                work->unk38 = fxm_lerpRatio(0, -0x80, 4 - work->unk60, 4);
-                work->unk60--;
+            if (work->timer60 >= 0) {
+                work->fade38 = fxm_lerpRatio(0, -0x80, 4 - work->timer60, 4);
+                work->timer60--;
             }
             fxm_vecPathGet(&fx_1b2_vecPath, t, &work->scale28);
             ex->Hi_DrawEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model6C);
             ex->Hi_ModifyEffModelAbr(work->model6C, 1);
-            if (work->unk60 >= 0) {
-                ex->Hi_ModifyEffModelRGB(work->model6C, work->unk38, work->unk38, work->unk38);
+            if (work->timer60 >= 0) {
+                ex->Hi_ModifyEffModelRGB(work->model6C, work->fade38, work->fade38, work->fade38);
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), t);
             for (i = 0; i < env->targets->targetCount; i++) {
@@ -90,16 +90,16 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     fxm_startUnitMotion(i, 0);
                 }
             }
-            work->unk5C--;
+            work->timer5C--;
         }
         if (work->emit4 != NULL) {
             if (work->emit4->state == BTLFX_EMIT_DONE) {
                 work->emit4 = NULL;
             }
             if (work->emit4 != NULL) {
-                work->emit4->rot.vx = work->unk3C.vx;
-                work->emit4->rot.vy = work->unk3C.vy;
-                work->emit4->rot.vz = work->unk3C.vz;
+                work->emit4->rot.vx = work->rot3C.vx;
+                work->emit4->rot.vy = work->rot3C.vy;
+                work->emit4->rot.vz = work->rot3C.vz;
             }
         }
         if (work->emit8 != NULL) {
@@ -107,9 +107,9 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit8 = NULL;
             }
             if (work->emit8 != NULL) {
-                work->emit8->rot.vx = work->unk3C.vx;
-                work->emit8->rot.vy = work->unk3C.vy;
-                work->emit8->rot.vz = work->unk3C.vz;
+                work->emit8->rot.vx = work->rot3C.vx;
+                work->emit8->rot.vy = work->rot3C.vy;
+                work->emit8->rot.vz = work->rot3C.vz;
             }
         }
         return frame >= 0x2C;
@@ -174,31 +174,31 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale18.vz = 0x1000;
         fx_1b2_env = env;
         work->model34 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x119, 0, 0, 0);
-        work->unk2C = -1;
-        work->unk30 = -1;
+        work->timer2C = -1;
+        work->timer30 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk2C = 8;
+            work->timer2C = 8;
             break;
         case 0x28:
-            work->unk30 = 0xA;
+            work->timer30 = 0xA;
             break;
         }
         if (frame >= 0 && frame < 0x32) {
-            if (work->unk2C >= 0) {
-                work->unk28 = fxm_lerpRatio(-0x80, 0, 8 - work->unk2C, 8);
-                work->unk2C--;
+            if (work->timer2C >= 0) {
+                work->fade28 = fxm_lerpRatio(-0x80, 0, 8 - work->timer2C, 8);
+                work->timer2C--;
             }
-            if (work->unk30 >= 0) {
-                work->unk28 = fxm_lerpRatio(0, -0x80, 0xA - work->unk30, 0xA);
-                work->unk30--;
+            if (work->timer30 >= 0) {
+                work->fade28 = fxm_lerpRatio(0, -0x80, 0xA - work->timer30, 0xA);
+                work->timer30--;
             }
             ex->Hi_DrawEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->model34);
             ex->Hi_ModifyEffModelAbr(work->model34, 1);
-            if (work->unk2C > 0 || work->unk30 >= 0) {
-                c = work->unk28 + 6;
+            if (work->timer2C > 0 || work->timer30 >= 0) {
+                c = work->fade28 + 6;
                 ex->Hi_ModifyEffModelRGB(work->model34, c, c, c);
             } else {
                 ex->Hi_ModifyEffModelRGB(work->model34, 6, 6, 6);
@@ -223,7 +223,7 @@ s32 fx_1b2_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else {
         frame = entry->frame;
         if (frame == 0) {
-            ex->btlfx_drawBgOffscreen(0x240, 0x100, 0x80, 0x80, D_801E875C, 0, -0x3E8, 0x1770);
+            ex->btlfx_drawBgOffscreen(0x240, 0x100, 0x80, 0x80, fx_1b2_bgOt, 0, -0x3E8, 0x1770);
         }
         return frame >= 5;
     }
@@ -240,12 +240,12 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
 
 static void fxm_vecPathInit(Fx1b2Path *path, u16 *data) {
     data++;
-    path->unk2 = *data++;
-    path->unk4 = (Fx1b2Point *)data;
+    path->count2 = *data++;
+    path->keys4 = (Fx1b2Point *)data;
 }
 
 static s32 fxm_vecPathGet(Fx1b2Track6 *track, s32 t, VECTOR *out) {
-    s32 last = track->unk2 - 1;
+    s32 last = track->count2 - 1;
     s32 done = 1;
     Fx1b2Key6 *k;
 
@@ -254,7 +254,7 @@ static s32 fxm_vecPathGet(Fx1b2Track6 *track, s32 t, VECTOR *out) {
     } else {
         done = 0;
     }
-    k = &track->unk4[t];
+    k = &track->keys4[t];
     out->vx = k->x;
     out->vy = k->y;
     out->vz = k->z;

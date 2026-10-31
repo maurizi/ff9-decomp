@@ -11,8 +11,8 @@ typedef struct {
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx1e6Point *unk4;
+    u16 count2; /* count */
+    Fx1e6Point *keys4;
 } Fx1e6Path;
 
 typedef struct {
@@ -20,27 +20,27 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[1];
+    SVECTOR pos4[1];
 } Fx1e6Trail;
 
 typedef struct {
     s32 unk0;
     SVECTOR pos4; /* caster position */
-    u16 unkC; /* fade */
+    u16 alphaC; /* fade */
     s16 unkE;
 } Fx1e6Work80; /* 0x10 */
 
 typedef struct {
     Pool6CEntry *emit0[7];
-    SVECTOR unk1C; /* model rotation */
-    VECTOR unk24; /* model position */
+    SVECTOR rot1C; /* model rotation */
+    VECTOR pos24; /* model position */
     VECTOR scale34; /* model scale */
-    s32 unk44; /* brightness */
+    s32 rgb44; /* brightness */
     SVECTOR pos48; /* caster body position */
     SVECTOR pos50;
-    s32 unk58; /* morph counter */
-    s32 unk5C; /* fade-in countdown */
-    s32 unk60; /* fade-out countdown */
+    s32 frame58; /* morph counter */
+    s32 timer5C; /* fade-in countdown */
+    s32 timer60; /* fade-out countdown */
     u16 model64; /* models */
     u16 model66;
 } Fx1e6Work81; /* 0x68 */
@@ -54,11 +54,11 @@ extern s32 fx_1e6_op81Trails2[];
 extern s32 fx_1e6_op81Trails3[];
 extern s32 fx_1e6_op81Trails4[];
 extern s32 fx_1e6_op81Trails5[];
-extern Fx1e6Trail D_801E91E8;
-extern SVECTOR D_801E92F8; /* origin */
-extern SVECTOR D_801E9300; /* rotation */
+extern Fx1e6Trail fx_1e6_op80Trail;
+extern SVECTOR fx_1e6_trailOrigin; /* origin */
+extern SVECTOR fx_1e6_trailRot; /* rotation */
 
-void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start);
+void fx_1e6_buildTrail(Fx1e6Trail *trail, s32 size, s32 start);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_posPathInit(Fx1e6Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx1e6Path *path, s32 t, SVECTOR *out);

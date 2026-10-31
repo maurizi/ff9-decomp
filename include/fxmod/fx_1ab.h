@@ -12,15 +12,15 @@ typedef struct {
     SVECTOR rotC; /* model 1 rotation */
     VECTOR pos14; /* model 1 position */
     VECTOR scale24; /* model 1 scale */
-    s32 unk34; /* brightness */
+    s32 color34; /* brightness */
     SVECTOR rot38; /* model 2 rotation */
     VECTOR pos40; /* model 2 position */
     VECTOR scale50; /* model 2 scale */
     VECTOR unk60;
     SVECTOR pos70; /* target position */
     SVECTOR pos78;
-    s16 unk80; /* fade-in countdown */
-    s16 unk82; /* fade-out countdown */
+    s16 timer80; /* fade-in countdown */
+    s16 timer82; /* fade-out countdown */
     u16 model84; /* models */
     u16 model86;
 } Fx1abWork; /* 0x88 */

@@ -6,16 +6,16 @@ s32 fx_113_op80(s32 mode, Fx113Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        work->unk18 = *arg4;
+        work->index18 = *arg4;
         fx_113_env = env;
-        if (work->unk18 >= 3) {
+        if (work->index18 >= 3) {
             return 1;
         }
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         work->pos10.vx = work->pos8.vx;
         work->pos10.vy = work->pos8.vy;
         work->pos10.vz = work->pos8.vz;
-        switch (work->unk18) {
+        switch (work->index18) {
         case 0:
             work->pos10.vx += 0x64;
             work->pos10.vy -= 0x190;

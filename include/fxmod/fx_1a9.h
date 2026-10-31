@@ -6,6 +6,6 @@
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_1a9_env;
-extern SVECTOR D_801E7828;
+extern SVECTOR fx_1a9_emitPos0;
 
 #endif

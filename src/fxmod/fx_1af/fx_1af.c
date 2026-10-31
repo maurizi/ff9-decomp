@@ -18,17 +18,17 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_1af_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&v);
-        work->unk8[0] = v.vx;
-        work->unk8[1] = v.vy;
-        work->unk8[2] = v.vz;
+        work->pos8[0] = v.vx;
+        work->pos8[1] = v.vy;
+        work->pos8[2] = v.vz;
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
-        ex->btlfx_getUnitScale(0x10, (VECTOR *)work->unk1C);
+        ex->btlfx_getUnitScale(0x10, (VECTOR *)work->scale1C);
         fx_1af_task = entry;
-        work->unk0 = 0;
-        work->unk4 = 0;
-        work->pos28.vx = work->unk8[0];
-        work->pos28.vy = work->unk8[1];
-        work->pos28.vz = work->unk8[2];
+        work->state0 = 0;
+        work->frame4 = 0;
+        work->pos28.vx = work->pos8[0];
+        work->pos28.vy = work->pos8[1];
+        work->pos28.vz = work->pos8[2];
         work->pos28.vy = 0;
         work->rot14.vy += 0x800;
         work->pos38.vx = work->pos28.vx;
@@ -36,16 +36,16 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos38.vz = work->pos28.vz;
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             if (frame > 0) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
                 ex->btlfx_fadeUnitById(0x10, 0);
                 ex->btlfx_moveSummonToHeap(0x50);
                 ex->btlfx_initEffModels(fx_1af_effModels, 5);
                 for (i = 0; i < 5; i++) {
-                    work->model40[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7EF4[i]), 0);
+                    work->model40[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_1af_modelFileIds[i]), 0);
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x80, 0xAA);
             }
@@ -75,20 +75,20 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->pos38.vx += 8;
                     work->pos28.vx += 6;
                 }
-                pos.vx = work->unk8[0];
-                pos.vy = work->unk8[1];
-                pos.vz = work->unk8[2];
+                pos.vx = work->pos8[0];
+                pos.vy = work->pos8[1];
+                pos.vz = work->pos8[2];
                 s = t >> 2;
                 pos.vy = y;
                 pos.vx += ex->btlfx_randCentered(ex->math_sin(s) >> 6);
                 pos.vz += ex->btlfx_randCentered(ex->math_sin(s) >> 6);
-                work->unk30.vx = pos.vx;
-                work->unk30.vy = pos.vy;
-                work->unk30.vz = pos.vz;
-                work->unk30.vx += t >> 4;
+                work->pos30.vx = pos.vx;
+                work->pos30.vy = pos.vy;
+                work->pos30.vz = pos.vz;
+                work->pos30.vx += t >> 4;
                 for (j = 0; j < 5; j++) {
                     ex->Hi_SetEffModelSlice(work->model40[j], y);
-                    ex->Hi_DrawSliceEffModel(&work->rot14, &pos, (s32)work->unk1C, work->model40[j]);
+                    ex->Hi_DrawSliceEffModel(&work->rot14, &pos, (s32)work->scale1C, work->model40[j]);
                 }
             }
             if (frame == 0xA) {
@@ -148,7 +148,7 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }

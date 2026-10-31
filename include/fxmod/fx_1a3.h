@@ -26,8 +26,8 @@ extern Unk800F78A4 *fx_1a3_env;
 extern s32 fx_1a3_op80Trails[];
 extern s32 fx_1a3_op81Trails0[];
 extern s32 fx_1a3_op81Trails1[];
-extern SVECTOR D_801E93F4; /* from */
-extern SVECTOR D_801E93FC; /* to */
+extern SVECTOR fx_1a3_motionFrom; /* from */
+extern SVECTOR fx_1a3_motionTo; /* to */
 extern SVECTOR fx_1a3_emitPos;
 
 static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);

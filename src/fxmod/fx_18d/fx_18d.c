@@ -8,29 +8,29 @@ s32 fx_18d_op80(s32 mode, Fx18dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x30;
     } else if (mode == 1) {
-        work->unk4 = 0;
-        work->unk0 = 0;
+        work->duration4 = 0;
+        work->timer0 = 0;
         fx_18d_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         work->pos8.vx = env->targets->centerX;
         work->pos8.vz = env->targets->centerZ;
         ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->pos10);
-        work->unk18.vx = env->targets->centerX;
-        work->unk18.vz = env->targets->centerZ;
-        work->unk18.vy = 0;
-        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->unk18, (s16 *)&work->unk28);
-        work->unk18.vx += (ex->math_sin(work->unk28.vy + 0x800) * 0x320) >> 12;
-        work->unk18.vz += (ex->math_cos(work->unk28.vy + 0x800) * 0x320) >> 12;
+        work->pos18.vx = env->targets->centerX;
+        work->pos18.vz = env->targets->centerZ;
+        work->pos18.vy = 0;
+        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos18, (s16 *)&work->rot28);
+        work->pos18.vx += (ex->math_sin(work->rot28.vy + 0x800) * 0x320) >> 12;
+        work->pos18.vz += (ex->math_cos(work->rot28.vy + 0x800) * 0x320) >> 12;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk4 = 0xC;
-            work->unk0 = 0xC;
+            work->duration4 = 0xC;
+            work->timer0 = 0xC;
             break;
         case 5:
-            work->unk4 = 7;
-            work->unk0 = 7;
+            work->duration4 = 7;
+            work->timer0 = 7;
             work->pos10.vx = work->pos20.vx;
             work->pos10.vy = work->pos20.vy;
             work->pos10.vz = work->pos20.vz;
@@ -42,9 +42,9 @@ s32 fx_18d_op80(s32 mode, Fx18dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        if (work->unk0 != 0) {
-            work->unk0--;
-            ex->btlfx_lerpVec((s16 *)&work->unk18, (s16 *)&work->pos10, (0x1000 / work->unk4) * work->unk0,
+        if (work->timer0 != 0) {
+            work->timer0--;
+            ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos10, (0x1000 / work->duration4) * work->timer0,
                               (s16 *)&work->pos20);
             ex->btlfx_setUnitPos(0x10, (s16 *)&work->pos20);
             env->camera->points[0].vx = work->pos20.vx;

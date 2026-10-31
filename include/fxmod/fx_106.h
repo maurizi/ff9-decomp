@@ -25,15 +25,15 @@ typedef struct {
 /* effect file header as the particle path callback sees it */
 typedef struct {
     u8 pad0[8];
-    s32 (*unk8)(VECTOR *, s32, SVECTOR *, s32, s32, s32);
+    s32 (*motion8)(VECTOR *, s32, SVECTOR *, s32, s32, s32);
 } Fx106EffHdr;
 
 extern Unk800F78A4 *fx_106_env;
 extern s32 fx_106_op80Trails[];
 extern s32 fx_106_op81Trails0[];
 extern s32 fx_106_op81Trails1[];
-extern SVECTOR D_801E9400; /* path start */
-extern SVECTOR D_801E9408; /* path end */
+extern SVECTOR fx_106_pathStart; /* path start */
+extern SVECTOR fx_106_pathEnd; /* path end */
 extern SVECTOR fx_106_emitPos;
 
 static s32 fx_106_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);

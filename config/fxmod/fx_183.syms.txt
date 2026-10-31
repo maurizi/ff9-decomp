@@ -12,3 +12,5 @@ fx_183_env = 0x801E82E8; // [code] the effect env (Unk800F78A4) the op handlers 
 fx_183_effModels = 0x801E82F8; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
 fx_183_rotPosPath = 0x801E8878; // [code] key path state for fxm_rotPosPathInit and fxm_rotPosPathGet
 fx_183_op83Trails = 0x801E88A8; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op83 handler
+fx_183_modelFileIds = 0x801E8288; // [code] 6 btlfx_getFileData indices for btlfx_registerEffectModel in fx_183_op82 mode 1 (work->model50)
+fx_183_pathFileIds = 0x801E8294; // [code] 6 btlfx_getFileData indices for fxm_rotPosPathInit in fx_183_op82 mode 1

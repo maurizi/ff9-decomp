@@ -1,6 +1,6 @@
 #include "fxmod/fx_1e6.h"
 
-void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start) {
+void fx_1e6_buildTrail(Fx1e6Trail *trail, s32 size, s32 start) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1e6_env);
     MATRIX m;
     VECTOR o;
@@ -11,15 +11,15 @@ void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start) {
     s32 j;
 
     n = (size - 4) / 8;
-    p = trail->unk4;
+    p = trail->pos4;
     trail->unk0 = trail->unk2 = n - 1;
     trail->unk1 = 0;
     if (start < n) {
         for (i = 0; i < n - start; i++) {
         fxm_posPathGet(&fx_1e6_posPath, 0, &v);
-        v.vx += D_801E92F8.vx;
-        v.vy += D_801E92F8.vy;
-        v.vz += D_801E92F8.vz;
+        v.vx += fx_1e6_trailOrigin.vx;
+        v.vy += fx_1e6_trailOrigin.vy;
+        v.vz += fx_1e6_trailOrigin.vz;
         p->vx = v.vx;
         p->vy = v.vy;
         p->vz = v.vz;
@@ -35,15 +35,15 @@ void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start) {
         v.vx = v.vx * 6 / 10;
         v.vy = v.vy * 6 / 10;
         v.vz = v.vz * 6 / 10;
-        ex->math_rotMatrixYXZ(&D_801E9300, &m);
+        ex->math_rotMatrixYXZ(&fx_1e6_trailRot, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
         gte_ldv0(&v);
         gte_rtv0tr();
         gte_stlvnl(&o);
-        o.vx += D_801E92F8.vx;
-        o.vy += D_801E92F8.vy;
-        o.vz += D_801E92F8.vz;
+        o.vx += fx_1e6_trailOrigin.vx;
+        o.vy += fx_1e6_trailOrigin.vy;
+        o.vz += fx_1e6_trailOrigin.vz;
         p->vx = o.vx;
         p->vy = o.vy;
         p->vz = o.vz;
@@ -63,20 +63,20 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1e6_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         work->pos4.vy -= 0x12C;
-        D_801E92F8.vx = work->pos4.vx;
-        D_801E92F8.vy = work->pos4.vy;
-        D_801E92F8.vz = work->pos4.vz;
+        fx_1e6_trailOrigin.vx = work->pos4.vx;
+        fx_1e6_trailOrigin.vy = work->pos4.vy;
+        fx_1e6_trailOrigin.vz = work->pos4.vz;
         fxm_posPathInit(&fx_1e6_posPath, (u8 *)ex->btlfx_getFileData(entry->file, 0xD));
-        work->unkC = 0x1000;
+        work->alphaC = 0x1000;
     } else {
         frame = entry->frame;
-        ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos4, (s16 *)&D_801E9300);
+        ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos4, (s16 *)&fx_1e6_trailRot);
         if (frame < 0x20) {
             if ((s32)frame >= 0x18) {
-                work->unkC -= 0x400;
+                work->alphaC -= 0x400;
             }
-            func_801E7724(&D_801E91E8, 0x10C, frame * 4);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xE), 0, NULL, 0, 0x1000, work->unkC, 1, (u8 *)&D_801E91E8, 0);
+            fx_1e6_buildTrail(&fx_1e6_op80Trail, 0x10C, frame * 4);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xE), 0, NULL, 0, 0x1000, work->alphaC, 1, (u8 *)&fx_1e6_op80Trail, 0);
         }
         return (s32)frame >= 0x3C;
     }
@@ -103,18 +103,18 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale34.vx = 0x1000;
         work->scale34.vy = 0x1000;
         work->scale34.vz = 0x1000;
-        work->unk58 = 0;
-        work->unk1C.vx = 0;
-        work->unk1C.vy = 0;
-        work->unk1C.vz = 0;
-        work->unk24.vx = work->pos48.vx;
-        work->unk24.vy = work->pos48.vy;
-        work->unk24.vz = work->pos48.vz;
-        work->unk24.vy = -0x3CA;
+        work->frame58 = 0;
+        work->rot1C.vx = 0;
+        work->rot1C.vy = 0;
+        work->rot1C.vz = 0;
+        work->pos24.vx = work->pos48.vx;
+        work->pos24.vy = work->pos48.vy;
+        work->pos24.vz = work->pos48.vz;
+        work->pos24.vy = -0x3CA;
         work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
         work->model66 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
-        work->unk5C = -1;
-        work->unk60 = -1;
+        work->timer5C = -1;
+        work->timer60 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -162,33 +162,33 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0:
-            work->unk5C = 4;
+            work->timer5C = 4;
             break;
         case 0x13:
-            work->unk60 = 0x10;
+            work->timer60 = 0x10;
             break;
         }
         if ((u32)frame < 0x23) {
             t = frame;
             if (frame >= 9) {
-                if (work->unk58 >= 4) {
+                if (work->frame58 >= 4) {
                     w = 0;
                 } else {
-                    w = 0x1000 - (work->unk58 << 12) / 3;
+                    w = 0x1000 - (work->frame58 << 12) / 3;
                 }
-                work->unk58++;
+                work->frame58++;
             } else {
                 w = 0x1000;
             }
-            rot.vx = work->unk1C.vx;
-            rot.vy = work->unk1C.vy;
-            rot.vz = work->unk1C.vz;
-            pos.vx = work->unk24.vx;
-            pos.vy = work->unk24.vy;
-            pos.vz = work->unk24.vz;
+            rot.vx = work->rot1C.vx;
+            rot.vy = work->rot1C.vy;
+            rot.vz = work->rot1C.vz;
+            pos.vx = work->pos24.vx;
+            pos.vy = work->pos24.vy;
+            pos.vz = work->pos24.vz;
             if ((u32)t < 8) {
                 pos.vy += frame * 4;
-                work->unk24.vy = pos.vy;
+                work->pos24.vy = pos.vy;
                 k = t % 8; switch (k) {
                 case 0:
                 case 4:
@@ -214,17 +214,17 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&work->scale34, work->model64, work->model66, w);
-            if (work->unk5C >= 0 || work->unk60 >= 0) {
-                if (work->unk5C >= 0) {
-                    work->unk44 = fxm_lerpRatio(-0x80, 0, 4 - work->unk5C, 4);
-                    work->unk5C--;
+            if (work->timer5C >= 0 || work->timer60 >= 0) {
+                if (work->timer5C >= 0) {
+                    work->rgb44 = fxm_lerpRatio(-0x80, 0, 4 - work->timer5C, 4);
+                    work->timer5C--;
                 }
-                if (work->unk60 >= 0) {
-                    work->unk44 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk60, 0x10);
-                    work->unk60--;
+                if (work->timer60 >= 0) {
+                    work->rgb44 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer60, 0x10);
+                    work->timer60--;
                 }
                 ex->Hi_ModifyEffModelAbr(work->model64, 1);
-                ex->Hi_ModifyEffModelRGB(work->model64, work->unk44, work->unk44, work->unk44);
+                ex->Hi_ModifyEffModelRGB(work->model64, work->rgb44, work->rgb44, work->rgb44);
             }
         }
         if (frame >= 0x3C) {
@@ -245,12 +245,12 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
 
 static void fxm_posPathInit(Fx1e6Path *path, u16 *data) {
     data++;
-    path->unk2 = *data++;
-    path->unk4 = (Fx1e6Point *)data;
+    path->count2 = *data++;
+    path->keys4 = (Fx1e6Point *)data;
 }
 
 static s32 fxm_posPathGet(Fx1e6Path *path, s32 t, SVECTOR *out) {
-    s32 last = path->unk2 - 1;
+    s32 last = path->count2 - 1;
     s32 done = 1;
     Fx1e6Point *p;
 
@@ -259,7 +259,7 @@ static s32 fxm_posPathGet(Fx1e6Path *path, s32 t, SVECTOR *out) {
     } else {
         done = 0;
     }
-    p = &path->unk4[t];
+    p = &path->keys4[t];
     out->vx = p->x;
     out->vy = p->y;
     out->vz = p->z;

@@ -12,10 +12,10 @@ typedef struct {
 
 typedef struct {
     SVECTOR pos0; /* caster body position */
-    SVECTOR unk8; /* angles */
-    SVECTOR unk10; /* destination */
-    SVECTOR unk18; /* target position */
-    SVECTOR unk20;
+    SVECTOR angle8; /* angles */
+    SVECTOR pos10; /* destination */
+    SVECTOR pos18; /* target position */
+    SVECTOR pos20;
     u8 pad28[0x30 - 0x28];
 } Fx19eWork81;
 

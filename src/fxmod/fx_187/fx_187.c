@@ -12,22 +12,22 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x64;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->state0 = 0;
         fx_187_env = env;
         BTLFX_COPY_SVEC(&work->pos14, &env->targets->centerX);
         BTLFX_COPY_SVEC(&work->pos1C, &work->pos14);
         work->pos14.vy -= 0xF0;
-        BTLFX_COPY_SVEC(&work->unk34, &work->pos14);
-        BTLFX_COPY_SVEC(&work->unk3C, &work->pos14);
-        work->unk34.vx -= 0x300;
-        work->unk3C.vx += 0x300;
-        ex->btlfx_getUnitBonePos(0x10, D_801E7DB8[0], (u16 *)&work->pos24);
-        ex->btlfx_getUnitBonePos(0x10, D_801E7DB8[1], (u16 *)&work->pos2C);
+        BTLFX_COPY_SVEC(&work->pos34, &work->pos14);
+        BTLFX_COPY_SVEC(&work->pos3C, &work->pos14);
+        work->pos34.vx -= 0x300;
+        work->pos3C.vx += 0x300;
+        ex->btlfx_getUnitBonePos(0x10, fx_187_bones[0], (u16 *)&work->pos24);
+        ex->btlfx_getUnitBonePos(0x10, fx_187_bones[1], (u16 *)&work->pos2C);
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBonePos(0x10, D_801E7DB8[0], (u16 *)&work->pos24);
-        ex->btlfx_getUnitBonePos(0x10, D_801E7DB8[1], (u16 *)&work->pos2C);
-        switch (work->unk0) {
+        ex->btlfx_getUnitBonePos(0x10, fx_187_bones[0], (u16 *)&work->pos24);
+        ex->btlfx_getUnitBonePos(0x10, fx_187_bones[1], (u16 *)&work->pos2C);
+        switch (work->state0) {
         case 0:
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos24);
@@ -40,7 +40,7 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame >= 0x10) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos24);
                 if (p != NULL) {
@@ -72,8 +72,8 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             } else {
                 t = 0x1000;
             }
-            ex->btlfx_lerpVec((s16 *)&work->pos24, (s16 *)&work->unk34, t, (s16 *)&a);
-            ex->btlfx_lerpVec((s16 *)&work->pos2C, (s16 *)&work->unk3C, t, (s16 *)&b);
+            ex->btlfx_lerpVec((s16 *)&work->pos24, (s16 *)&work->pos34, t, (s16 *)&a);
+            ex->btlfx_lerpVec((s16 *)&work->pos2C, (s16 *)&work->pos3C, t, (s16 *)&b);
             if (frame == 0) {
                 BTLFX_COPY_SVEC(&work->pos44, &a);
                 work->emit4[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos44);

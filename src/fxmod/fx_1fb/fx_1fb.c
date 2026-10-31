@@ -6,11 +6,11 @@ s32 fx_1fb_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E7B7C.vx = 0;
-        D_801E7B7C.vy = 0;
-        D_801E7B7C.vz = -0x618;
+        fx_1fb_emitPos0.vx = 0;
+        fx_1fb_emitPos0.vy = 0;
+        fx_1fb_emitPos0.vz = -0x618;
         fx_1fb_env = env;
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E7B7C);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1fb_emitPos0);
     } else {
         return entry->frame >= 0x40;
     }
@@ -26,12 +26,12 @@ s32 fx_1fb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E7B84[0] = 0;
-        D_801E7B84[1] = 0;
+        fx_1fb_fadeTimers[0] = 0;
+        fx_1fb_fadeTimers[1] = 0;
         fx_1fb_env = env;
         for (i = 0; i < env->targets->targetCount; i++) {
-            ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E7B94[i]);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E7B94[i]);
+            ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_1fb_emitPos1[i]);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_1fb_emitPos1[i]);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
                 p->trailSlots = 0x1E;
@@ -44,36 +44,36 @@ s32 fx_1fb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         switch (frame) {
         case 16:
             for (i = 0; i < env->targets->targetCount; i++) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7B94[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1fb_emitPos1[i]);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
                     p->trailSlots = 0x1E;
                     p->trails = (s32)fx_1fb_op81Trails1[i];
                     p->trailStride = 0x9C;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E7B94[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&fx_1fb_emitPos1[i]);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
                 }
             }
             break;
         case 24:
-            D_801E7B84[0] = 0x10;
+            fx_1fb_fadeTimers[0] = 0x10;
             break;
         case 40:
-            D_801E7B84[1] = 0x10;
+            fx_1fb_fadeTimers[1] = 0x10;
             break;
         }
-        if (D_801E7B84[0] != 0) {
-            D_801E7B84[0]--;
+        if (fx_1fb_fadeTimers[0] != 0) {
+            fx_1fb_fadeTimers[0]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->btlfx_fadeUnitById(i, D_801E7B84[0] * 8);
+                ex->btlfx_fadeUnitById(i, fx_1fb_fadeTimers[0] * 8);
             }
         }
-        if (D_801E7B84[1] != 0) {
-            D_801E7B84[1]--;
+        if (fx_1fb_fadeTimers[1] != 0) {
+            fx_1fb_fadeTimers[1]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->btlfx_fadeUnitById(i, 0x80 - D_801E7B84[1] * 8);
+                ex->btlfx_fadeUnitById(i, 0x80 - fx_1fb_fadeTimers[1] * 8);
             }
         }
         return frame >= 0x38;

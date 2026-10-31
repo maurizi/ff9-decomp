@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR pos4; /* target position */
     SVECTOR posC;
     SVECTOR pos14; /* target body position */
-    SVECTOR unk1C;
+    SVECTOR pos1C;
     s32 model24; /* models */
     s32 model28[2];
 } Fx125Work;

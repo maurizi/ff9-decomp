@@ -15,3 +15,5 @@ fx_1eb_effModels = 0x801E8278; // [code] effect model buffers given to btlfx_ini
 fx_1eb_rotPosPath = 0x801E8728; // [code] key path state for fxm_rotPosPathInit and fxm_rotPosPathGet
 fx_1eb_valuePath = 0x801E8740; // [code] key path state for fxm_valuePathInit and fxm_valuePathGet
 fx_1eb_op82Trails = 0x801E8748; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op82 handler
+fx_1eb_modelFileIds = 0x801E8210; // [code] 3 btlfx_getFileData indices registered into work model52[j] in op82 mode 1
+fx_1eb_pathFileIds = 0x801E8218; // [code] 3 btlfx_getFileData indices given to fxm_rotPosPathInit for fx_1eb_rotPosPath[j] in op82 mode 1

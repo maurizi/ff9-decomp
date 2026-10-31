@@ -6,10 +6,10 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* count */
-    SVECTOR unk4; /* angles */
-    SVECTOR unkC; /* angles */
-    SVECTOR unk14[4];
+    s32 count0; /* count */
+    SVECTOR rot4; /* angles */
+    SVECTOR rotC; /* angles */
+    SVECTOR rot14[4];
     SVECTOR pos34; /* caster position */
     SVECTOR pos3C; /* target position */
     SVECTOR pos44;

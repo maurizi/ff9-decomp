@@ -12,7 +12,7 @@ s32 fx_104_op80(s32 mode, Fx104Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBoneMatrix(0x10, 0x12, (BtlBone *)&m1);
         ex->btlfx_matrixPointAhead(&m1, 0xC8, (s32)&work->pos8);
         ex->btlfx_getUnitBoneMatrix(0x10, 0x12, (BtlBone *)&m2);
-        ex->btlfx_matrixPointAhead(&m2, 0x320, (s32)&work->unk10);
+        ex->btlfx_matrixPointAhead(&m2, 0x320, (s32)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);

@@ -41,29 +41,29 @@ s32 fx_10f_op80(s32 mode, Fx10fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         for (i = 0; i < 3; i++) {
             if (frame >= i + 1) {
                 c = -(i * 16);
-                ex->Hi_DrawEffModel(&work->unk40[i], &work->unk58[i], (s32)&work->scale30, work->model8A);
+                ex->Hi_DrawEffModel(&work->rot40[i], &work->pos58[i], (s32)&work->scale30, work->model8A);
                 ex->Hi_ModifyEffModelAbr(work->model8A, 3);
                 ex->Hi_ModifyEffModelRGB(work->model8A, c, c, c);
             }
         }
-        work->unk40[2].vx = work->unk40[1].vx;
-        work->unk40[2].vy = work->unk40[1].vy;
-        work->unk40[2].vz = work->unk40[1].vz;
-        work->unk58[2].vx = work->unk58[1].vx;
-        work->unk58[2].vy = work->unk58[1].vy;
-        work->unk58[2].vz = work->unk58[1].vz;
-        work->unk40[1].vx = work->unk40[0].vx;
-        work->unk40[1].vy = work->unk40[0].vy;
-        work->unk40[1].vz = work->unk40[0].vz;
-        work->unk58[1].vx = work->unk58[0].vx;
-        work->unk58[1].vy = work->unk58[0].vy;
-        work->unk58[1].vz = work->unk58[0].vz;
-        work->unk40[0].vx = work->rot18.vx;
-        work->unk40[0].vy = work->rot18.vy;
-        work->unk40[0].vz = work->rot18.vz;
-        work->unk58[0].vx = work->pos20.vx;
-        work->unk58[0].vy = work->pos20.vy;
-        work->unk58[0].vz = work->pos20.vz;
+        work->rot40[2].vx = work->rot40[1].vx;
+        work->rot40[2].vy = work->rot40[1].vy;
+        work->rot40[2].vz = work->rot40[1].vz;
+        work->pos58[2].vx = work->pos58[1].vx;
+        work->pos58[2].vy = work->pos58[1].vy;
+        work->pos58[2].vz = work->pos58[1].vz;
+        work->rot40[1].vx = work->rot40[0].vx;
+        work->rot40[1].vy = work->rot40[0].vy;
+        work->rot40[1].vz = work->rot40[0].vz;
+        work->pos58[1].vx = work->pos58[0].vx;
+        work->pos58[1].vy = work->pos58[0].vy;
+        work->pos58[1].vz = work->pos58[0].vz;
+        work->rot40[0].vx = work->rot18.vx;
+        work->rot40[0].vy = work->rot18.vy;
+        work->rot40[0].vz = work->rot18.vz;
+        work->pos58[0].vx = work->pos20.vx;
+        work->pos58[0].vy = work->pos20.vy;
+        work->pos58[0].vz = work->pos20.vz;
         if (frame >= 8) {
             ex->btlfx_clearEffModels();
             return 1;

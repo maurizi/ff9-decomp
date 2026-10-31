@@ -9,7 +9,7 @@ s32 fx_19c_op80(s32 mode, Fx19cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_19c_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        work->unkC = 0x80;
+        work->colorC = 0x80;
     } else {
         frame = entry->frame;
         env->otZ = 0x80;
@@ -21,7 +21,7 @@ s32 fx_19c_op80(s32 mode, Fx19cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 7) {
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->unkC, work->unkC, work->unkC);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->colorC, work->colorC, work->colorC);
         }
         return frame >= 0x32;
     }

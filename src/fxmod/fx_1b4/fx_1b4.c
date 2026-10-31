@@ -1,44 +1,44 @@
 #include "fxmod/fx_1b4.h"
 
 s32 fx_1b4_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E86A4[0], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[0], frame, n);
 }
 
 s32 fx_1b4_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E86A4[1], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[1], frame, n);
 }
 
 s32 fx_1b4_op80ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E86A4[2], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[2], frame, n);
 }
 
 s32 fx_1b4_op80ParticleMotion3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E86A4[3], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[3], frame, n);
 }
 
 s32 fx_1b4_op80ParticleMotion4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E86A4[4], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[4], frame, n);
 }
 
 s32 fx_1b4_op80ParticleMotion5(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E86A4[5], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[5], frame, n);
 }
 
 s32 fx_1b4_op80ParticleMotion6(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E86A4[6], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[6], frame, n);
 }
 
 s32 fx_1b4_op80ParticleMotion7(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E86A4[7], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[7], frame, n);
 }
 
 static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames) {
     SVECTOR v;
 
     fxm_posPathGet(path, frame, &v);
-    v.vx += D_801EF174.vx;
-    v.vy += D_801EF174.vy;
-    v.vz += D_801EF174.vz;
+    v.vx += fx_1b4_pathOrigin.vx;
+    v.vy += fx_1b4_pathOrigin.vy;
+    v.vz += fx_1b4_pathOrigin.vz;
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;
@@ -58,29 +58,29 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x94;
     } else if (mode == 1) {
-        work->unk44.vx = env->targets->centerX;
-        work->unk44.vy = env->targets->centerY;
-        work->unk44.vz = env->targets->centerZ;
-        D_801EF174.vx = work->unk44.vx;
-        D_801EF174.vy = work->unk44.vy;
-        D_801EF174.vz = work->unk44.vz;
+        work->pos44.vx = env->targets->centerX;
+        work->pos44.vy = env->targets->centerY;
+        work->pos44.vz = env->targets->centerZ;
+        fx_1b4_pathOrigin.vx = work->pos44.vx;
+        fx_1b4_pathOrigin.vy = work->pos44.vy;
+        fx_1b4_pathOrigin.vz = work->pos44.vz;
         fx_1b4_env = env;
-        work->pos8C.vx = work->unk44.vx;
-        work->pos8C.vy = work->unk44.vy;
-        work->pos8C.vz = work->unk44.vz;
+        work->pos8C.vx = work->pos44.vx;
+        work->pos8C.vy = work->pos44.vy;
+        work->pos8C.vz = work->pos44.vz;
         work->pos8C.vy -= 0x258;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
             for (i = 0; i < 8; i++) {
-                fxm_posPathInit(&fx_1b4_posPath[i], (u16 *)ex->btlfx_getFileData(entry->file, D_801E85DC[i]));
-                fxm_posPathGet(&fx_1b4_posPath[i], 0, &work->unk4C[i]);
+                fxm_posPathInit(&fx_1b4_posPath[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_1b4_pathFileIds[i]));
+                fxm_posPathGet(&fx_1b4_posPath[i], 0, &work->pos4C[i]);
                 v = (SVECTOR *)((u8 *)work + i * 8 + 0x4C);
-                v->vx += work->unk44.vx;
-                v->vy += work->unk44.vy;
-                v->vz += work->unk44.vz;
-                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E85BC[i]), (s32)&work->unk4C[i]);
+                v->vx += work->pos44.vx;
+                v->vy += work->pos44.vy;
+                v->vz += work->pos44.vz;
+                work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1b4_emitFileIds0[i]), (s32)&work->pos4C[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->trails = (s32)fx_1b4_op80Trails0[i];
                     work->emit0[i]->trailSlots = 5;
@@ -90,8 +90,8 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x17:
             for (i = 0; i < 8; i++) {
-                fxm_posPathInit(&D_801E86A4[i], (u16 *)ex->btlfx_getFileData(entry->file, D_801E85DC[i]));
-                work->emit20[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E85CC[i]), (s32)&fx_1b4_emitPos);
+                fxm_posPathInit(&fx_1b4_op80ParticlePaths[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_1b4_pathFileIds[i]));
+                work->emit20[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1b4_emitFileIds1[i]), (s32)&fx_1b4_emitPos);
                 if (work->emit20[i] != NULL) {
                     work->emit20[i]->trails = (s32)fx_1b4_op80Trails1[i];
                     work->emit20[i]->trailSlots = 8;
@@ -276,12 +276,12 @@ s32 fx_1b4_op83(s32 mode, Fx1b4Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 static void fxm_posPathInit(Fx1b4Path *path, u16 *data) {
     data++;
-    path->unk2 = *data++;
-    path->unk4 = (Fx1b4Point *)data;
+    path->count2 = *data++;
+    path->keys4 = (Fx1b4Point *)data;
 }
 
 static s32 fxm_posPathGet(Fx1b4Path *path, s32 t, SVECTOR *out) {
-    s32 last = path->unk2 - 1;
+    s32 last = path->count2 - 1;
     s32 done = 1;
     Fx1b4Point *p;
 
@@ -290,7 +290,7 @@ static s32 fxm_posPathGet(Fx1b4Path *path, s32 t, SVECTOR *out) {
     } else {
         done = 0;
     }
-    p = &path->unk4[t];
+    p = &path->keys4[t];
     out->vx = p->x;
     out->vy = p->y;
     out->vz = p->z;

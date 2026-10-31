@@ -34,14 +34,14 @@ typedef struct {
 
 typedef struct {
     SVECTOR pos0; /* spawn position */
-    SVECTOR unk8;
-    u16 unk10; /* started */
-    u16 unk12; /* age */
-    u16 unk14; /* start frame */
-    u16 unk16; /* file */
+    SVECTOR pos8;
+    u16 active10; /* started */
+    u16 frame12; /* age */
+    u16 startFrame14; /* start frame */
+    u16 fileId16; /* file */
 } Fx11cBurst;
 
-extern Fx11cBurst D_801E7EDC[5];
+extern Fx11cBurst fx_11c_op81Bursts[5];
 extern Unk800F78A4 *fx_11c_env;
 extern s32 fx_11c_op80Trails0[];
 extern s32 fx_11c_op80Trails1[];

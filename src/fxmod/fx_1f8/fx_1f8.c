@@ -6,11 +6,11 @@ s32 fx_1f8_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E7B6C.vx = 0;
-        D_801E7B6C.vy = 0;
-        D_801E7B6C.vz = -0x618;
+        fx_1f8_emitPos0.vx = 0;
+        fx_1f8_emitPos0.vy = 0;
+        fx_1f8_emitPos0.vz = -0x618;
         fx_1f8_env = env;
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7B6C);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1f8_emitPos0);
     } else {
         return entry->frame >= 0x40;
     }
@@ -26,44 +26,44 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E7B74[0] = 0;
+        fx_1f8_timer[0] = 0;
         fx_1f8_env = env;
         ex->btlfx_initEffModels(fx_1f8_effModels, 4);
         for (i = 0; i < env->targets->targetCount; i++) {
-            D_801E7B84[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x177,
+            fx_1f8_models[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x177,
                                                        0xFFFF, 0, 0x80);
-            ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E7BF4[i]);
-            D_801E7BB4[i].vx = D_801E7BF4[i].vx;
-            D_801E7BB4[i].vy = D_801E7BF4[i].vy;
-            D_801E7BB4[i].vz = D_801E7BF4[i].vz + 0x100;
-            D_801E7BF4[i].vz += 0x200;
+            ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_1f8_emitPos1[i]);
+            fx_1f8_modelPos[i].vx = fx_1f8_emitPos1[i].vx;
+            fx_1f8_modelPos[i].vy = fx_1f8_emitPos1[i].vy;
+            fx_1f8_modelPos[i].vz = fx_1f8_emitPos1[i].vz + 0x100;
+            fx_1f8_emitPos1[i].vz += 0x200;
         }
-        D_801E7B94.vx = 0;
-        D_801E7B94.vy = 0x800;
-        D_801E7B94.vz = 0;
-        D_801E7BA4.vx = 0x1800;
-        D_801E7BA4.vy = 0x1800;
-        D_801E7BA4.vz = 0x1800;
+        fx_1f8_modelRot.vx = 0;
+        fx_1f8_modelRot.vy = 0x800;
+        fx_1f8_modelRot.vz = 0;
+        fx_1f8_modelScale.vx = 0x1800;
+        fx_1f8_modelScale.vy = 0x1800;
+        fx_1f8_modelScale.vz = 0x1800;
     } else {
         frame = entry->frame;
         if (frame == 0) {
-            D_801E7B74[0] = 0x20;
+            fx_1f8_timer[0] = 0x20;
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&D_801E7BF4[i]);
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7BF4[i]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&fx_1f8_emitPos1[i]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1f8_emitPos1[i]);
             }
         }
-        if (D_801E7B74[0] != 0) {
-            D_801E7B74[0]--;
+        if (fx_1f8_timer[0] != 0) {
+            fx_1f8_timer[0]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->Hi_DrawEffModel(&D_801E7B94, &D_801E7BB4[i], (s32)&D_801E7BA4, D_801E7B84[i]);
-                if (D_801E7B74[0] >= 0x19) {
-                    c = (0x18 - D_801E7B74[0]) * 0x10;
-                    ex->Hi_ModifyEffModelRGB(D_801E7B84[i], c, c, c);
+                ex->Hi_DrawEffModel(&fx_1f8_modelRot, &fx_1f8_modelPos[i], (s32)&fx_1f8_modelScale, fx_1f8_models[i]);
+                if (fx_1f8_timer[0] >= 0x19) {
+                    c = (0x18 - fx_1f8_timer[0]) * 0x10;
+                    ex->Hi_ModifyEffModelRGB(fx_1f8_models[i], c, c, c);
                 }
-                if (D_801E7B74[0] < 8) {
-                    c = (D_801E7B74[0] - 8) * 0x10;
-                    ex->Hi_ModifyEffModelRGB(D_801E7B84[i], c, c, c);
+                if (fx_1f8_timer[0] < 8) {
+                    c = (fx_1f8_timer[0] - 8) * 0x10;
+                    ex->Hi_ModifyEffModelRGB(fx_1f8_models[i], c, c, c);
                 }
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xB), frame);
