@@ -324,7 +324,7 @@ void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
     blink = ((u32)g_menuFrame >> 4) & 1;
     for (i = 0, y = r->y + 0x44; i < 4; y += 0xC, i++) {
         menuEquip_drawStatLabel(r->x + 8, y, 0x1D, s_menuEquipBaseStatText[i], 0);
-        text_formatNumber(cur->stats[i], buf, 2, 1);
+        text_formatNumber(cur->stats[i], buf, 2, TEXT_NUM_ASCII);
         ui_drawSmallDigits(r->x + 0x4A, y, 0x1D, buf, 0);
         if (new != NULL) {
             diff = cur->stats[i] != new->stats[i];
@@ -337,14 +337,14 @@ void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
             } else {
                 col = 3;
             }
-            text_formatNumber(new->stats[i], buf, 2, 1);
+            text_formatNumber(new->stats[i], buf, 2, TEXT_NUM_ASCII);
             ui_drawSmallDigits(r->x + 0x5C, y, 0x1D, s_menuEquipArrow, (diff && blink) ? 0 : 2);
             ui_drawSmallDigits(r->x + 0x6D, y, 0x1D, buf, col);
         }
     }
     for (i = 0, y = r->y + 0x78; i < 5; y += 0xC, i++) {
         menuEquip_drawStatLabel(r->x + 8, y, 0x1D, s_menuEquipBattleStatText[i], 0);
-        text_formatNumber(cur->defs[i], buf, 3, 1);
+        text_formatNumber(cur->defs[i], buf, 3, TEXT_NUM_ASCII);
         ui_drawSmallDigits(r->x + 0x43, y, 0x1D, buf, 0);
         if (new != NULL) {
             diff = cur->defs[i] != new->defs[i];
@@ -357,7 +357,7 @@ void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
             } else {
                 col = 3;
             }
-            text_formatNumber(new->defs[i], buf, 3, 1);
+            text_formatNumber(new->defs[i], buf, 3, TEXT_NUM_ASCII);
             ui_drawSmallDigits(r->x + 0x5C, y, 0x1D, s_menuEquipArrow, (diff && blink) ? 0 : 2);
             ui_drawSmallDigits(r->x + 0x66, y, 0x1D, buf, col);
         }
@@ -651,7 +651,7 @@ void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *v) {
     y = w->rect.y + row * 0xF + v->y;
     ui_drawItemIcon(x + 0xB, y, 0x13, p->unk0, 1);
     text_drawBlock(x + 0x1B, y, 0x13, g_itemNames + g_itemTable[p->unk0].name, 0);
-    text_formatNumber(p->unk1, buf, 2, 1);
+    text_formatNumber(p->unk1, buf, 2, TEXT_NUM_ASCII);
     ui_drawSmallDigits(x + 0x8A, y + 4, 0x13, buf, 0);
 }
 

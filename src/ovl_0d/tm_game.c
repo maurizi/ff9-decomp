@@ -1505,7 +1505,7 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
             }
         }
     }
-    text_formatNumber(n, num, -1, 0);
+    text_formatNumber(n, num, TEXT_NUM_NO_PAD, TEXT_NUM_CODES);
     text_copy(buf, text_get(TM_TEXT_STOCK));
     text_append(buf, num);
     text_append(buf, text_get(TM_TEXT_STOCK_END));
@@ -2993,7 +2993,7 @@ void tm_showStockCard(TmState *s) {
         n = card_countOf((s32)c0);
         if (n != 0) {
             c0 = (TmCard *)tm_getStockCursorId(s);
-            text_formatNumber((s32)c0 + 1, buf, -1, 3);
+            text_formatNumber((s32)c0 + 1, buf, TEXT_NUM_NO_PAD, 3);
             i = text_measureDigits(buf) + 0xE;
             w = i / 2;
             ui_drawSmallDigits(0xD8 - w, 0x78, 0xFFA, g_tmNoLabel, 0);
@@ -4418,13 +4418,13 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     if ((u32)(s->task - TM_TASK_CHOICE) < 2 || s->task == TM_TASK_GAME_QUIT || s->task == TM_TASK_END_FADE) {
 
         ui_drawSmallDigits(0xBC, 0x42, 0xFFA, "WIN", 7);
-        text_formatNumber(card_getWins(), buf, 4, 1);
+        text_formatNumber(card_getWins(), buf, 4, TEXT_NUM_ASCII);
         ui_drawSmallDigits(0xDC, 0x42, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xBC, 0x4C, 0xFFA, "LOSE", 7);
-        text_formatNumber(card_getLosses(), buf, 4, 1);
+        text_formatNumber(card_getLosses(), buf, 4, TEXT_NUM_ASCII);
         ui_drawSmallDigits(0xDC, 0x4C, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xBC, 0x56, 0xFFA, "DRAW", 7);
-        text_formatNumber(card_getDraws(), buf, 4, 1);
+        text_formatNumber(card_getDraws(), buf, 4, TEXT_NUM_ASCII);
         ui_drawSmallDigits(0xDC, 0x56, 0xFFA, buf, 0);
 
         setlen(p, 3);
@@ -4544,10 +4544,10 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         p = (SPRT *)((DR_TPAGE *)p + 1);
     }
     if (s->handCount != TM_HAND_SIZE && s->task != TM_TASK_AWAY_INFO && card_countOf(tm_getStockCursorId(s)) >= 2) {
-        text_formatNumber(s->copyIdx + 1, buf, 3, 1);
+        text_formatNumber(s->copyIdx + 1, buf, 3, TEXT_NUM_ASCII);
         ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xD4, 0xBA, 0xFFA, g_tmSlash, 0);
-        text_formatNumber(card_countOf(tm_getStockCursorId(s)), buf, -1, 1);
+        text_formatNumber(card_countOf(tm_getStockCursorId(s)), buf, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
         ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, buf, 0);
         text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_L1), 0);
         text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_R1), 0);

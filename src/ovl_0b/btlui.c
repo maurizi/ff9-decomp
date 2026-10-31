@@ -1995,7 +1995,7 @@ void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
         c = (res != 2) * 2;
         text_draw(x + 6, y, 7, g_btlAbilityNames + a->nameOfs, c);
         if (a->mpCost != 0) {
-            text_formatNumber(btl_getMpCost((BtlCmd8 *)a), buf, 3, 1);
+            text_formatNumber(btl_getMpCost((BtlCmd8 *)a), buf, 3, TEXT_NUM_ASCII);
             ui_drawSmallDigits(x + 0x60, y + 4, 7, buf, c);
         }
     }
@@ -2027,7 +2027,7 @@ void btlui_drawItemRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
             y = r->y + arg1 * 15 + arg3->y - dy;
             ui_drawItemIcon(x5, y, 7, id, 1);
             text_draw(x + 0x14, y, 7, g_itemNames + it->name, 0);
-            text_formatNumber(n, buf, 2, 1);
+            text_formatNumber(n, buf, 2, TEXT_NUM_ASCII);
             ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, 0);
         }
     }
@@ -2053,7 +2053,7 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
             x = r->x;
             it = &g_itemTable[e->unk0];
             y = r->y + arg1 * 15 + arg3->y - dy;
-            text_formatNumber(n, buf, 2, 1);
+            text_formatNumber(n, buf, 2, TEXT_NUM_ASCII);
             text_draw(x + 5, y, 7, g_itemNames + it->name, 0);
             ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, 0);
         }
@@ -3006,8 +3006,8 @@ void btlui_drawHpList(Window *arg0) {
             c = ((u->status & BTL_STATUS_LOW_HP) != 0) * 4;
         }
         b[0] = 0x2F;
-        text_formatNumber(u->hp, a, 4, 1);
-        text_formatNumber(u->max->maxHp, b + 1, -1, 1);
+        text_formatNumber(u->hp, a, 4, TEXT_NUM_ASCII);
+        text_formatNumber(u->max->maxHp, b + 1, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
         ui_drawDigits(w->x + 4, y, arg0->otz, a, c);
         ui_drawDigits(w->x + 0x20, y - dy, arg0->otz, b, c);
         y += 12;
@@ -3028,9 +3028,9 @@ void btlui_drawMpList(Window *arg0) {
             yy = y - dy;
             c = (u->mp < (s16)(u->max->maxMp / 6)) * 4;
             max[0] = 0x2F;
-            text_formatNumber(u->mp, hp, 3, 1);
+            text_formatNumber(u->mp, hp, 3, TEXT_NUM_ASCII);
             y += 0xC;
-            text_formatNumber((s16)u->max->maxMp, &max[1], -1, 1);
+            text_formatNumber((s16)u->max->maxMp, &max[1], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
             ui_drawDigits(w->x + 4, yy, arg0->otz, hp, c);
             ui_drawDigits(w->x + 0x19, yy, arg0->otz, max, c);
         }
@@ -3646,7 +3646,7 @@ void btlui_onListLabelOut(void) {
 void btlui_drawPanelHp(BtlUnit *arg0, s32 arg1) {
     u8 buf[8];
     s32 dy = 6;
-    text_formatNumber(arg0->menu->gauges[0].shown, buf, 4, 1);
+    text_formatNumber(arg0->menu->gauges[0].shown, buf, 4, TEXT_NUM_ASCII);
     ui_drawDigits(0xD0, g_btluiPanel->y + (arg1 * 12 + dy), 0xE, buf, (u8)g_btluiPanel->rowColor[arg1]);
 }
 
@@ -3657,7 +3657,7 @@ void btlui_drawPanelMp(BtlUnit *arg0, s32 arg1) {
     s32 dy = 6;
     mp = arg0->menu->gauges[1].shown < 0 ? 0 : arg0->menu->gauges[1].shown;
     c = ((s16)(arg0->max->maxMp / 6) >= mp) << 2;
-    text_formatNumber(mp, buf, 3, 1);
+    text_formatNumber(mp, buf, 3, TEXT_NUM_ASCII);
     ui_drawDigits(0xEF, g_btluiPanel->y + (arg1 * 12 + dy), 0xE, buf, c);
 }
 

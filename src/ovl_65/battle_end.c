@@ -223,20 +223,20 @@ void rewards_drawMembers(void) {
                 ui_drawPartyPortrait(r->x + 4, r->y + 4, 0xB, i, dim);
                 rewards_drawLevelUp(r->x + 0x24, r->y + 0x12, 0xB, &s_rewards.levelPopups[i]);
                 s_rewards.prim = text_buildBlock(r->x + 0x29, r->y + 4, g_ot + 0xB, c->name, col, s_rewards.prim);
-                text_formatNumber(c->level, buf, 2, 1);
+                text_formatNumber(c->level, buf, 2, TEXT_NUM_ASCII);
                 ui_drawSprite(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
                 p = buf;
                 s_rewards.prim = text_buildDigits(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, s_rewards.prim);
                 ui_drawStatusIcons(r->x + 0x28, r->y + 0x13, 0xB, c->status, dim);
                 text_drawBlock(r->x + 0x29, r->y + 0x1C, 0xB, text_get(REWARDS_TEXT_EXP), col);
-                text_formatNumber(c->exp, p, 7, 1);
+                text_formatNumber(c->exp, p, 7, TEXT_NUM_ASCII);
                 ui_drawSmallDigits(r->x + 0x62, r->y + 0x20, 0xB, p, col);
                 if (c->level < LEVEL_MAX) {
                     n = g_levelExp[c->level];
                 } else {
                     n = c->exp;
                 }
-                text_formatNumber(n - c->exp, buf, 6, 1);
+                text_formatNumber(n - c->exp, buf, 6, TEXT_NUM_ASCII);
                 ui_drawSmallDigits(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
                 text_drawBlock(r->x + 0x29, r->y + 0x26, 0xB, text_get(REWARDS_TEXT_NEXT), col);
             }
@@ -254,7 +254,7 @@ void rewards_drawExp(void) {
     if (s_rewards.winShown[6] != 0) {
         win_drawBox(r, 0xB, WIN_STYLE_BEVEL);
         win_drawShadow(r, 0xC, WIN_STYLE_BEVEL);
-        text_formatNumber(s_rewards.rewards.expEach, buf, 6, 1);
+        text_formatNumber(s_rewards.rewards.expEach, buf, 6, TEXT_NUM_ASCII);
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
@@ -272,7 +272,7 @@ void rewards_drawAp(void) {
     if (s_rewards.winShown[7] != 0) {
         win_drawBox(r, 0xB, WIN_STYLE_BEVEL);
         win_drawShadow(r, 0xC, WIN_STYLE_BEVEL);
-        text_formatNumber(s_rewards.rewards.ap, buf, 3, 1);
+        text_formatNumber(s_rewards.rewards.ap, buf, 3, TEXT_NUM_ASCII);
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
@@ -294,7 +294,7 @@ void rewards_drawReceivedGil(void) {
     if (s_rewards.winShown[8] != 0) {
         win_drawBox(r, 0xE, WIN_STYLE_BEVEL);
         win_drawShadow(r, 0xF, WIN_STYLE_BEVEL);
-        text_formatNumber(gil, buf, 6, 1);
+        text_formatNumber(gil, buf, 6, TEXT_NUM_ASCII);
         strcat(buf, s_rewardsGilUnit);
         x = r->x;
         y = r->y;
@@ -317,7 +317,7 @@ void rewards_drawCurrentGil(void) {
     if (s_rewards.winShown[9] != 0) {
         win_drawBox(r, 0xE, WIN_STYLE_BEVEL);
         win_drawShadow(r, 0xF, WIN_STYLE_BEVEL);
-        text_formatNumber(gil, buf, 7, 1);
+        text_formatNumber(gil, buf, 7, TEXT_NUM_ASCII);
         strcat(buf, s_rewardsGilUnit2);
         x = r->x;
         y = r->y;
@@ -1388,7 +1388,7 @@ void rewards_drawItems(Window *w) {
         it = &g_itemTable[rw->items[i][0]];
         y = i * 15 + 7;
         y2 = i * 15 + 10;
-        text_formatNumber(rw->items[i][1], s_rewardsTextBuf, 2, 1);
+        text_formatNumber(rw->items[i][1], s_rewardsTextBuf, 2, TEXT_NUM_ASCII);
         ui_drawItemIcon(r->x + 7, r->y + y - off, w->otz, rw->items[i][0], 1);
         text_drawBlock(r->x + 0x16, r->y + y - off, w->otz, g_itemNames + it->name, 0);
         ui_drawSmallDigits(r->x + 0x88, r->y + y2 - off, w->otz, s_rewardsTextBuf, 0);

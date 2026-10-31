@@ -531,7 +531,7 @@ void btl_showMessage(u32 arg0, ...) {
                 }
             } else if (c == special[1]) {
                 dst--;
-                text_formatInt(va_arg(ap, s32), dst, 0);
+                text_formatInt(va_arg(ap, s32), dst, TEXT_NUM_CODES);
             adv:
                 dst += text_getLength(dst);
             }
@@ -588,18 +588,18 @@ void btl_updateScan(void) {
     case 0:
         text_copy(buf, btl_getUnitName(s));
         text_append(buf, (u8 *)text_getFrom(g_btlScanTexts, 10));
-        text_formatInt(s->level, buf + text_getLength(buf), 0);
+        text_formatInt(s->level, buf + text_getLength(buf), TEXT_NUM_CODES);
         g_gameState->gameData->ctx.battle->popups.scan.b[2] = 1;
         break;
     case 1:
         text_copy(buf, (u8 *)text_getFrom(g_btlScanTexts, 11));
-        text_formatInt(s->hp, buf + text_getLength(buf), 0);
+        text_formatInt(s->hp, buf + text_getLength(buf), TEXT_NUM_CODES);
         text_append(buf, (u8 *)text_getFrom(g_btlScanTexts, 13));
-        text_formatInt(s->max->maxHp, buf + text_getLength(buf), 0);
+        text_formatInt(s->max->maxHp, buf + text_getLength(buf), TEXT_NUM_CODES);
         text_append(buf, (u8 *)text_getFrom(g_btlScanTexts, 12));
-        text_formatInt(s->mp, buf + text_getLength(buf), 0);
+        text_formatInt(s->mp, buf + text_getLength(buf), TEXT_NUM_CODES);
         text_append(buf, (u8 *)text_getFrom(g_btlScanTexts, 13));
-        text_formatInt(s->max->maxMp, buf + text_getLength(buf), 0);
+        text_formatInt(s->max->maxMp, buf + text_getLength(buf), TEXT_NUM_CODES);
         g_gameState->gameData->ctx.battle->popups.scan.b[1] = 0;
         g_gameState->gameData->ctx.battle->popups.scan.b[2] = 2;
         break;

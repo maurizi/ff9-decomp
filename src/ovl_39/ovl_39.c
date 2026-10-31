@@ -167,14 +167,14 @@ void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
             ui_drawPortraitId(r->x + 6 + j * 0x21, r->y + 0xD, z, s->party[j].portrait, 0x2C, 0);
         }
     }
-    text_formatNumber(s->level, buf, 2, 1);
+    text_formatNumber(s->level, buf, 2, TEXT_NUM_ASCII);
     text_drawBlock(r->x + 0x90, r->y + 6, z, s->name.v, 0);
     ui_drawSprite(r->x + 0x90, r->y + 0x17, z, 0xB4, 0);
     ui_drawDigits(r->x + 0xA2, r->y + 0x15, z, buf, 0);
     ui_drawSprite(r->x + 0xD8, r->y + 9, z, 0xB1, 0);
     ui_drawSprite(r->x + 0xD8, r->y + 0x16, z, 0xB2, 0);
     ui_drawSmallDigits(r->x + 0xE4, r->y + 0xA, z, buf, text_formatTime(s->playTime, buf, 0));
-    text_formatNumber(s->gil, buf, 7, 1);
+    text_formatNumber(s->gil, buf, 7, TEXT_NUM_ASCII);
     buf[7] = 0xA4;
     buf[8] = 0;
     ui_drawSmallDigits(r->x + 0xE4, r->y + 0x17, z, buf, 0);

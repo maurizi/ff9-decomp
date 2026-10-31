@@ -791,7 +791,7 @@ void menuAbility_drawActionRow(s32 x, s32 y, s32 idx, Character *c) {
         col = s_menuAbilityStateColor[st];
         text_drawBlock(x + 8, y, 0x1C, s_menuAbilityActionNames + info->nameOffset, col);
         if (info->mpCost != 0) {
-            text_formatNumber(menuAbility_getMpCost(info), buf, 3, 1);
+            text_formatNumber(menuAbility_getMpCost(info), buf, 3, TEXT_NUM_ASCII);
             ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
         }
     }
@@ -818,7 +818,7 @@ void menuAbility_drawSupportRow(s32 x, s32 y, s32 i, Character *c) {
             menuAbility_drawIcon(x + 8, y, 0x1C, st >= ABILITY_USABLE ? 7 : 8);
         }
         text_drawBlock(x + 0x18, y, 0x1C, s_menuAbilitySupportNames + sup->unk2, col);
-        text_formatNumber(sup->unk1, buf, 3, 1);
+        text_formatNumber(sup->unk1, buf, 3, TEXT_NUM_ASCII);
         ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
     }
 }

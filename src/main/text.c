@@ -139,12 +139,12 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 y -= *s;
             } else if (*s == TEXT_MSG_NUMBER) {
                 s++;
-                text_formatInt(g_msgNumbers[*s & 7], g_textNumberBuf, 0);
+                text_formatInt(g_msgNumbers[*s & 7], g_textNumberBuf, TEXT_NUM_CODES);
                 pkt = text_buildPlain(x, y, ot, (Character *)g_textNumberBuf, &w, pkt);
                 x += w;
             } else if (*s == TEXT_ARG_NUMBER) {
                 s++;
-                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 0);
+                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, TEXT_NUM_CODES);
                 pkt = text_buildPlain(x, y, ot, (Character *)g_textNumberBuf, &w, pkt);
                 x += w;
             } else if (*s == TEXT_ARG_STRING) {
@@ -153,7 +153,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 x += w;
             } else if (*s == TEXT_ARG_NUMBER_SMALL) {
                 s++;
-                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 1);
+                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, TEXT_NUM_ASCII);
                 pkt = text_buildSmall(x, y, ot, g_textNumberBuf, g_textColor, pkt);
                 x += text_measureSmall(g_textNumberBuf);
             } else if (*s == TEXT_ARG_STRING_SMALL) {
@@ -164,7 +164,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 x += text_measureSmall(g_textArgPtr);
             } else if (*s == TEXT_ARG_NUMBER_LABEL) {
                 s++;
-                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 1);
+                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, TEXT_NUM_ASCII);
                 pkt = ui_buildLabel(x, y, ot, (s32)g_textNumberBuf, g_textColor, pkt);
                 x += ui_measureLabel(g_textNumberBuf);
             } else if (*s == TEXT_ARG_STRING_LABEL) {
@@ -174,7 +174,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 x += ui_measureLabel(g_textArgPtr);
             } else if (*s == TEXT_ARG_NUMBER_DIGITS) {
                 s++;
-                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 1);
+                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, TEXT_NUM_ASCII);
                 pkt = text_buildDigits(x, y, ot, g_textNumberBuf, g_textColor, pkt);
                 x += text_measureDigits(g_textNumberBuf);
             } else if (*s == TEXT_ARG_STRING_DIGITS) {
@@ -724,12 +724,12 @@ s32 text_formatTime(s32 frames, u8 *buf, s32 blink) {
     } else {
         sub = 0;
     }
-    text_formatNumber_inline(hr, buf, 2, 1);
-    text_formatNumber_inline(min, buf + 3, 2, 1);
+    text_formatNumber_inline(hr, buf, 2, TEXT_NUM_ASCII);
+    text_formatNumber_inline(min, buf + 3, 2, TEXT_NUM_ASCII);
     if (buf[3] == ' ') {
         buf[3] = '0';
     }
-    text_formatNumber_inline(sec, buf + 6, 2, 1);
+    text_formatNumber_inline(sec, buf + 6, 2, TEXT_NUM_ASCII);
     if (buf[6] == ' ') {
         buf[6] = '0';
     }

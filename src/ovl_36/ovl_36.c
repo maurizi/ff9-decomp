@@ -134,12 +134,12 @@ void menuCard_drawGrid(void) {
     win_drawShadow(r, 0x1E, WIN_STYLE_LINE_RULE);
     s = text_get(CARD_TEXT_STOCK);
     w = text_measureWidth(s);
-    text_formatNumber(a, buf, 3, 1);
+    text_formatNumber(a, buf, 3, TEXT_NUM_ASCII);
     text_drawBlock(r->x + 8, r->y + 0xA2, 0x14, s, 0);
     ui_drawDigits(r->x + (w + k), r->y + 0xA4, 0x14, buf, 0);
     s = text_get(CARD_TEXT_TYPE);
     w = text_measureWidth(s);
-    text_formatNumber(b, buf, 3, 1);
+    text_formatNumber(b, buf, 3, TEXT_NUM_ASCII);
     ui_drawDigits(r->x + 0x80, r->y + 0xA4, 0x14, buf, 0);
     text_drawBlock(r->x - (w - k2), r->y + 0xA2, 0x14, s, 0);
     for (n = 0, i = 0, x = 4; i < CARD_GRID_COLS; i++, x += 15) {
@@ -180,7 +180,7 @@ void menuCard_drawInfo(void) {
     win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
     win_drawShadow(r, 0x1F, WIN_STYLE_BEVEL);
     ui_drawEtchedLine(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
-    text_formatNumber(s_menuCard.points[CARD_PTS_TOTAL], buf, 4, 1);
+    text_formatNumber(s_menuCard.points[CARD_PTS_TOTAL], buf, 4, TEXT_NUM_ASCII);
     text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(CARD_TEXT_COLLECTORS), 0);
     text_drawBlock(r->x + 0xA, r->y + 0x14, 0x14, text_get(rank), 0);
     text_drawBlock(r->x + 0xA, r->y + 0x26, 0x14, text_get(CARD_TEXT_WIN), 0);
@@ -189,12 +189,12 @@ void menuCard_drawInfo(void) {
     ui_drawSmallDigits(r->x + 0x5A, r->y + 9, 0x14, buf, 0);
     ui_drawSmallDigits(r->x + 0x78, r->y + 0xB, 0x14, s_menuCardPointsUnit, 0);
     w = menuCard_drawInfo_width(text_get(CARD_TEXT_DRAW));
-    text_formatNumber(a, buf, 5, 1);
+    text_formatNumber(a, buf, 5, TEXT_NUM_ASCII);
     w += 0xB;
     ui_drawSmallDigits(r->x + w, r->y + 0x2A, 0x14, buf, 0);
-    text_formatNumber(b, buf, 5, 1);
+    text_formatNumber(b, buf, 5, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + w, r->y + 0x34, 0x14, buf, 0);
-    text_formatNumber(c, buf, 5, 1);
+    text_formatNumber(c, buf, 5, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + w, r->y + 0x3E, 0x14, buf, 0);
 }
 
@@ -227,8 +227,8 @@ void menuCard_drawCardStack(s32 id) {
         same = id == cache->shown;
         name = (u8 *)card_getName(id);
         if (cnt >= 2) {
-            text_formatNumber(s_menuCard.shown[id] + 1, buf, 3, 1);
-            text_formatNumber(cnt, buf + 4, -1, 1);
+            text_formatNumber(s_menuCard.shown[id] + 1, buf, 3, TEXT_NUM_ASCII);
+            text_formatNumber(cnt, buf + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
             buf[3] = '/';
             ui_drawSmallDigits(r->x + 0x2B, r->y + 0x43, 0x14, buf, 0);
             a = text_getButtonSprite(4);

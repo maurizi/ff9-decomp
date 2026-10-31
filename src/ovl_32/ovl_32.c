@@ -154,9 +154,9 @@ void menuChocograph_drawCounts(void) {
     text_drawBlock(r->x + 9, r->y + 3, 0x1C, text_get(CHOCO_TEXT_INVENTORY), 0);
     text_drawBlock(r->x + 9, r->y + 0xF, 0x1C, text_get(CHOCO_TEXT_FOUND), 0);
     st = &s_menuChocograph;
-    text_formatNumber(st->ownedCount, buf, 2, 1);
+    text_formatNumber(st->ownedCount, buf, 2, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x5E, r->y + 7, 0x1C, buf, 0);
-    text_formatNumber(st->foundCount, buf, 2, 1);
+    text_formatNumber(st->foundCount, buf, 2, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x5E, r->y + 0x13, 0x1C, buf, 0);
 }
 

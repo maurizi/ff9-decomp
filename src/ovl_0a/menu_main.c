@@ -183,25 +183,25 @@ void menuMain_drawMember(s32 arg0) {
     ui_drawPortrait(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
     text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->name, 0);
     ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->status, 0);
-    text_formatNumber(c->level, buf, 2, 1);
+    text_formatNumber(c->level, buf, 2, TEXT_NUM_ASCII);
     ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
     ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, buf, 0);
     ui_drawSprite(r->x + 0x3C, r->y + 0x1B, 0x14, 0xAF, 0);
-    text_formatNumber(c->hp, buf, 4, 1);
+    text_formatNumber(c->hp, buf, 4, TEXT_NUM_ASCII);
     buf[4] = 0x2F;
     if (c->hp != 0) {
         color = ((u16)(c->maxHp / 6) >= c->hp) * 4;
     } else {
         color = 3;
     }
-    text_formatNumber(c->maxHp, &buf[5], -1, 1);
+    text_formatNumber(c->maxHp, &buf[5], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x52, r->y + 0x1B, 0x14, buf, color);
     ui_drawSprite(r->x + 0x3C, r->y + 0x24, 0x14, 0xB0, 0);
-    text_formatNumber(c->mp, buf, 3, 1);
+    text_formatNumber(c->mp, buf, 3, TEXT_NUM_ASCII);
     buf[3] = 0x2F;
     maxmp = c->maxMp;
     color = ((s16)(maxmp / 6) >= c->mp) * 4;
-    text_formatNumber(maxmp, &buf[4], -1, 1);
+    text_formatNumber(maxmp, &buf[4], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x59, r->y + 0x24, 0x14, buf, color);
     ui_drawStones(r->x + 0x9B, r->y + 0x14, 0x14, c->stones, c->maxStones);
 }
@@ -229,7 +229,7 @@ void menuMain_drawTimeGil(void) {
     ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 8, 0x13, 0xB1, 0);
     ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 0x15, 0x13, 0xB2, 0);
     ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 9, 0x13, buf, text_formatTime(v, buf, 1));
-    text_formatNumber(g_gameState->gameData->gil, buf, 7, 1);
+    text_formatNumber(g_gameState->gameData->gil, buf, 7, TEXT_NUM_ASCII);
     strcat(buf, s_menuMainGilSuffix);
     ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 0x16, 0x13, buf, 0);
     ui_drawLabel(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y - 3, 0x13, g_labelTimeAndGil, 0);
@@ -319,8 +319,8 @@ void menuMain_setExpHelp(s32 arg0) {
             next = g_levelExp[c->level];
         }
         text_setStringArg(0, c->name);
-        text_formatNumber(c->exp, s_menuMainExpText, 7, 1);
-        text_formatNumber(next - c->exp, s_menuMainNextText, 7, 1);
+        text_formatNumber(c->exp, s_menuMainExpText, 7, TEXT_NUM_ASCII);
+        text_formatNumber(next - c->exp, s_menuMainNextText, 7, TEXT_NUM_ASCII);
         text_setStringArg(1, s_menuMainExpLabel);
         text_setStringArg(2, s_menuMainExpText);
         text_setStringArg(3, s_menuMainNextLabel);

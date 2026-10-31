@@ -7,7 +7,7 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
     if (c == NULL) {
         return;
     }
-    text_formatNumber(c->level, buf, 2, 1);
+    text_formatNumber(c->level, buf, 2, TEXT_NUM_ASCII);
     text_drawBlock(x, y, otz, c->name, 0);
     ui_drawSmallDigits(x + 0x24, y + 0xE, otz, buf, 0);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
@@ -18,14 +18,14 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
     } else {
         col = 3;
     }
-    text_formatNumber(c->hp, buf, 4, 1);
+    text_formatNumber(c->hp, buf, 4, TEXT_NUM_ASCII);
     buf[4] = '/';
-    text_formatNumber(c->maxHp, buf + 5, -1, 1);
+    text_formatNumber(c->maxHp, buf + 5, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     ui_drawSmallDigits(x + 0x16, y + 0x17, otz, buf, col);
     col = ((s16)((s16)c->maxMp / 6) >= (s16)c->mp) << 2;
-    text_formatNumber((s16)c->mp, buf, 3, 1);
+    text_formatNumber((s16)c->mp, buf, 3, TEXT_NUM_ASCII);
     buf[3] = '/';
-    text_formatNumber((s16)c->maxMp, buf + 4, -1, 1);
+    text_formatNumber((s16)c->maxMp, buf + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     ui_drawSmallDigits(x + 0x1D, y + 0x20, otz, buf, col);
 }
 
@@ -719,8 +719,8 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
     if (cur != 0 && cur >= max) {
         pkt = ui_buildSprite(x + 4, y, ot, 0xC0, flag, tmp, pkt);
     } else if (show) {
-        text_formatNumber(cur, buf, 3, 1);
-        text_formatNumber(max, buf + 4, -1, 1);
+        text_formatNumber(cur, buf, 3, TEXT_NUM_ASCII);
+        text_formatNumber(max, buf + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
         buf[3] = 0x2F;
         pkt = ui_buildDigits(x + 3, y + 2, ot, buf, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060) : GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL), (SprtWords *)pkt);
     }
@@ -751,8 +751,8 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
 void ui_drawStones(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     u8 buf[8];
 
-    text_formatNumber(arg3, &buf[0], 2, 1);
-    text_formatNumber(arg4, &buf[3], -1, 1);
+    text_formatNumber(arg3, &buf[0], 2, TEXT_NUM_ASCII);
+    text_formatNumber(arg4, &buf[3], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     buf[2] = '/';
     ui_drawSprite(arg0, arg1, arg2, 0xC1, 0);
     ui_drawDigits(arg0 + 15, arg1 + 1, arg2, buf, arg3 == 0 ? 4 : 0);
@@ -868,7 +868,7 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
     if (c == NULL) {
         return;
     }
-    text_formatNumber(c->level, buf, 2, 1);
+    text_formatNumber(c->level, buf, 2, TEXT_NUM_ASCII);
     text_drawBlock(x, y, otz, c->name, 0);
     ui_drawSmallDigits(x + 0x26, y + 0xE, otz, buf, 0);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);

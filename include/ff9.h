@@ -667,6 +667,10 @@ s32 ui_drawSprite(s32, s32, s32, s32, u8);
 void ui_drawPartyPortrait(s32, s32, s32, s32, u8);
 
 void text_formatNumber(s32, u8 *, s32, u8);
+/* text_formatNumber / text_formatInt number formats (last argument) and width */
+#define TEXT_NUM_CODES 0 /* game text digits 0-9 ('-' 0x0B, fill 0x0F), TEXT_END-terminated: for text_drawBlock */
+#define TEXT_NUM_ASCII 1 /* '0'-'9' ('-', fill ' '), NUL-terminated: for ui_drawSmallDigits / ui_drawLabel / ui_drawDigits */
+#define TEXT_NUM_NO_PAD (-1) /* text_formatNumber width: as many digits as needed (text_formatInt) */
 void item_clearAll(void);
 void keyItem_clearAll(void);
 s32 item_add(s32, s32);

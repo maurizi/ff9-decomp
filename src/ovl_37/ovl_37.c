@@ -659,7 +659,7 @@ void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
         ok = it->slots & 1;
         x = col * 0x96;
         y = row * 0xF + (v->y + k);
-        text_formatNumber(p->unk1, buf, 2, 1);
+        text_formatNumber(p->unk1, buf, 2, TEXT_NUM_ASCII);
         x2 = x + 0x18;
         text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->name, ok ? 0 : 2);
         ui_drawItemIcon(x2, y, 0x1C, p->unk0, ok);

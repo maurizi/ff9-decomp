@@ -128,23 +128,23 @@ void menuStatus_drawStats(void) {
     for (i = 0; i < 5; i++) {
         s_menuStatus.prim = text_buildBlock(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(s_menuStatusBattleStatText[i]), 0, s_menuStatus.prim);
     }
-    text_formatNumber(c->speed, buf, 2, 1);
+    text_formatNumber(c->speed, buf, 2, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x58, r->y + 0x3D, 0x1D, buf, 0);
-    text_formatNumber(c->strength, buf, 2, 1);
+    text_formatNumber(c->strength, buf, 2, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x58, r->y + 0x4A, 0x1D, buf, 0);
-    text_formatNumber(c->magic, buf, 2, 1);
+    text_formatNumber(c->magic, buf, 2, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
-    text_formatNumber(c->spirit, buf, 2, 1);
+    text_formatNumber(c->spirit, buf, 2, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
-    text_formatNumber(g_weaponTable[c->equip[0]].attack, buf, 3, 1);
+    text_formatNumber(g_weaponTable[c->equip[0]].attack, buf, 3, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
-    text_formatNumber(c->defense, buf, 3, 1);
+    text_formatNumber(c->defense, buf, 3, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
-    text_formatNumber(c->evade, buf, 3, 1);
+    text_formatNumber(c->evade, buf, 3, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x51, r->y + 0x8C, 0x1D, buf, 0);
-    text_formatNumber(c->magicDef, buf, 3, 1);
+    text_formatNumber(c->magicDef, buf, 3, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x51, r->y + 0x99, 0x1D, buf, 0);
-    text_formatNumber(c->magicEva, buf, 3, 1);
+    text_formatNumber(c->magicEva, buf, 3, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x51, r->y + 0xA6, 0x1D, buf, 0);
 }
 
@@ -171,14 +171,14 @@ void menuStatus_drawExp(void) {
     }
     text_drawBlock(r->x + 0x74, r->y + 0x46, 0x1D, text_get(STATUS_TEXT_EXP), 0);
     text_drawBlock(r->x + 0x74, r->y + 0x53, 0x1D, text_get(STATUS_TEXT_NEXT), 0);
-    text_formatNumber(c->exp, buf, 7, 1);
+    text_formatNumber(c->exp, buf, 7, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0xAC, r->y + 0x4A, 0x1D, buf, 0);
     if (c->level >= 99) {
         next = c->exp;
     } else {
         next = g_levelExp[c->level];
     }
-    text_formatNumber(next - c->exp, buf, 6, 1);
+    text_formatNumber(next - c->exp, buf, 6, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0xB3, r->y + 0x57, 0x1D, buf, 0);
 }
 
