@@ -313,8 +313,8 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
                 if (p != NULL) {
-                    p->elems[0].unk24 = (void (*)())fx_1a8_op80ElemDraw0;
-                    p->elems[1].unk24 = (void (*)())fx_1a8_op80ElemDraw1;
+                    p->elems[0].draw = (void (*)())fx_1a8_op80ElemDraw0;
+                    p->elems[1].draw = (void (*)())fx_1a8_op80ElemDraw1;
                 }
             }
             break;

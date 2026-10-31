@@ -29,9 +29,9 @@ s32 fx_1f5_op81(s32 mode, Fx1f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1f5_env = env;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos4);
         if (work->emit0 != NULL) {
-            work->emit0->unk14 = (s32)D_801E79F8;
-            work->emit0->unk12 = 0x1E;
-            work->emit0->unkC = 0x68;
+            work->emit0->trails = (s32)D_801E79F8;
+            work->emit0->trailSlots = 0x1E;
+            work->emit0->trailStride = 0x68;
         }
     } else {
         return entry->frame >= 0x28;

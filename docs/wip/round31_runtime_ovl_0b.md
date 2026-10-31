@@ -1,0 +1,13 @@
+# Round 31 ovl_0b: leads left for a runtime check
+
+Round 31 named only what the code proves (`docs/wip/names_round31_ovl_0b.txt`). The rows below are plausible but
+unproven. Each says what to observe with `tools/emu.py` and which state reaches the code (`docs/emulator.md`; all
+addresses ovl_0b, resident in battle).
+
+| # | item | hypothesis | how to observe | state |
+|---|---|---|---|---|
+| 1 | `BtlEnemyType.category` bits 0x01-0x40 (only 0x10 `BTL_ENEMY_UNDEAD` and 0x80 `BTL_ENEMY_FLYING` are named) | `btl_applyKillerBonus` pairs caster support bits 13-20 (ability ids 0xCD-0xD4, missing from `ff9_ids.h`) with category bits 0x80..0x01: the eight "Killer" support abilities, one enemy family each. Bit 0x10 (Undead) lines up with the 4th, 0x80 (Flying) with the 1st | read the support names 0xCD-0xD4 with `tools/ff9text.py` (no emulator needed), then read `category` of a few enemy types at battle start (bird, insect, dragon, human enemies) | any battle; `disc3_malboro_lv99_calm` |
+| 2 | `Unk800D8124.unk2` (`btlfx_opFaceHome`, op argument from `g_btlfxOpArgs.unk1`) | same family as R30 #10: value 2 with a party target makes the op finish at once, and the step skips the turn when it is nonzero and the target is a party unit. Guess: a "skip for party targets" mode | breakpoint `btlfx_opFaceHome` with a0 == 1, log the argument bytes and `g_btlfxState.effectId` | `disc3_malboro_lv99_calm` (Attack, Steal) |
+| 3 | `g_btlfxState.flags` bit 0x8000 (`BTLFX_HDR_RESIDENT`) and `btlfx_isResultDeferred` | the bit marks effects whose script is in the resident module (no file load); with an enemy caster and `fxArgs[0]` set, `btl_execCmd` is deferred to the script. Which effects carry it? | log the effect header word (`RAM_BTLFX_MODULE(u16 *)[effectId]`) at `btlfx_runScript` phase 1 for an enemy attack and a party spell | `disc3_malboro_fire_hit` area |
+| 4 | `Unk800AA08C.unk20` (`btl_initEncounter`) | the DB item of kind 0x10 in the encounter bundle; nothing in C reads it again | dump the item (db key 0x10xxxx) at battle start and compare with the bundle's other items (`docs/encounters.md`) | any battle start |
+| 5 | `Pool6CEntry.unk8` / `unkA`, `EffEmit` / `EffMotion` / `EffFileHdr` fields from offset 8, `Pool30Entry.unkC`-`unk10`, `unk20`-`unk28` | per motion kind (0-5) these hold launch speed, drag, spin angles and radii (btlfx_runEmitters writes them, btlfx_updateParticles reads them); the meaning differs per kind, so they stay unk until a union per kind is written | not a runtime question: write the per-kind unions from btlfx_heap.c (kinds 0/5 velocity + drag, 1 orbit, 2/4 polar spiral, 3 sine wobble) | none |

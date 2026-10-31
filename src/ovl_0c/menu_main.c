@@ -243,7 +243,7 @@ void menuMain_drawLocation(void) {
     win_drawBox(s_menuMainLocationRect, 0x14, WIN_STYLE_BEVEL);
     win_drawShadow(s_menuMainLocationRect, 0x14, WIN_STYLE_BEVEL);
     gd = g_gameState->gameData;
-    if (gd->locationName != NULL && *gd->locationName != 0xFF) {
+    if (gd->locationName != NULL && *gd->locationName != TEXT_END) {
         text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, gd->locationName, TEXT_PAL_WHITE);
     } else {
         text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, text_get(1), TEXT_PAL_WHITE);

@@ -24,7 +24,7 @@ void opening_resetFieldState(void) {
     ctx->unk9 = 0;
     ctx->npcModelSlots = 0;
     ctx->npcCount = 0;
-    ctx->savedMusicId = 0xFFFF;
+    ctx->savedMusicId = MUSIC_NONE;
     ctx->savedMusicField = 0xFFFF;
     ctx->savedMusicBank = 0xFFFF;
     ctx->savedMusicVolume = 0;
@@ -43,8 +43,8 @@ void opening_init(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        g_padActuator[i].unk1 = 0;
-        g_padActuator[i].unk0 = 0;
+        g_padActuator[i].largeMotor = 0;
+        g_padActuator[i].smallMotor = 0;
     }
     akao_stopMusicNow();
     akao_stopAllSe();
@@ -68,7 +68,7 @@ void opening_resetMusicSlots(void) {
     GameData *ctx = g_gameState->gameData;
 
     for (i = 1; i >= 0; i--) {
-        ctx->musicId[i] = 0xFFFF;
+        ctx->musicId[i] = MUSIC_NONE;
         ctx->musicBank[i] = 0xFFFF;
         ctx->musicHandle[i] = 0;
         ctx->musicVolume[i] = 0x7F;
@@ -104,7 +104,7 @@ void opening_loadData(void) {
 
     buf = g_loadAreaEnd + 0x10000;
     e = file_find(DIR_COMMON, FILE_OPENING_DATA);
-    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, buf, 0, -1, 0);
+    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, buf, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     g_openingData = buf;

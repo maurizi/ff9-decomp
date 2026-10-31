@@ -117,12 +117,12 @@ s32 fx_1a0_op81(s32 mode, Fx1a0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7F10[work->unk14]),
                                            (s32)&D_801E82B8[work->unk14]);
             if (work->emit0 != NULL) {
-                work->emit0->unk14 = (s32)D_801E7F98[work->unk14];
-                work->emit0->unk12 = 1;
-                work->emit0->unkC = 0x70;
+                work->emit0->trails = (s32)D_801E7F98[work->unk14];
+                work->emit0->trailSlots = 1;
+                work->emit0->trailStride = 0x70;
             }
             if (work->emit0 != NULL) {
-                ((EffMotion *)work->emit0->file)->unk8 = D_801E7F28[work->unk14];
+                ((EffMotion *)work->emit0->file)->update = D_801E7F28[work->unk14];
             }
             if (work->emit0 != NULL) {
                 work->emit0->otZ = 0x20;

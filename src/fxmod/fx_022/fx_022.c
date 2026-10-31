@@ -21,7 +21,7 @@ s32 fx_022_op80(s32 mode, Fx022Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0 = NULL;
             }
             if (work->emit0 != NULL) {
-                work->emit0->unk2C = (s32)&work->unkC;
+                work->emit0->target = (s32)&work->unkC;
             }
         }
         return frame >= 0x28;

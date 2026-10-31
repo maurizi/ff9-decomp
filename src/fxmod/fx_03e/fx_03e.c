@@ -36,9 +36,9 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801E82A0;
-                    p->unk12 = 0xA;
-                    p->unkC = 0x5C;
+                    p->trails = (s32)D_801E82A0;
+                    p->trailSlots = 0xA;
+                    p->trailStride = 0x5C;
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }

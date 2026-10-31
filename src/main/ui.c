@@ -1156,8 +1156,8 @@ void ui_loadPortraits(void *data, s32 n) {
     u32 *q = prev;
     u32 *cur;
 
-    g_portraits.unk4 = n;
-    g_portraits.unk0 = prev;
+    g_portraits.count = n;
+    g_portraits.images = prev;
     ui_getPortraitRects(0, &r0, &r1);
     StoreImage(&r0, g_portraitSavedVram);
     DrawSync(0);
@@ -1166,7 +1166,7 @@ void ui_loadPortraits(void *data, s32 n) {
     LoadImage(&r1, prev + 0x40);
     DrawSync(0);
     cur = prev + 0x1B0;
-    for (i = 1; i < g_portraits.unk4; i++) {
+    for (i = 1; i < g_portraits.count; i++) {
         ui_getPortraitRects(i, &r0, &r1);
         StoreImage(&r0, prev);
         DrawSync(0);
@@ -1187,14 +1187,14 @@ void ui_loadPortraits(void *data, s32 n) {
 void ui_restorePortraits(void) {
     RECT clut;
     RECT img;
-    u32 *p = g_portraits.unk0;
+    u32 *p = g_portraits.images;
     u32 *q;
     s32 i;
     ui_getPortraitRects(0, &clut, &img);
     LoadImage(&clut, g_portraitSavedVram);
     DrawSync(0);
     q = p;
-    for (i = 1; i < g_portraits.unk4; i++) {
+    for (i = 1; i < g_portraits.count; i++) {
         ui_getPortraitRects(i, &clut, &img);
         LoadImage(&clut, p);
         DrawSync(0);

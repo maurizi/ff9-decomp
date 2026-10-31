@@ -200,7 +200,7 @@ void fade_start(s32 a, s32 b, s32 c, s32 col) {
         g_fade.active = 1;
         g_fade.onDone = 0;
         g_fade.covered = (*(s32 *)&g_fade.endR & 0xFFFFFF) != 0;
-        fn = g_fadeTypes[a].unk0;
+        fn = g_fadeTypes[a].start;
         if (fn != NULL) {
             fn(&g_fade);
         }

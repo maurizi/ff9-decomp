@@ -70,12 +70,12 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0xA:
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7E18);
             if (work->emit0 != NULL) {
-                work->emit0->unk14 = (s32)D_801E7E28;
-                work->emit0->unk12 = 0x12;
-                work->emit0->unkC = 0xB0;
+                work->emit0->trails = (s32)D_801E7E28;
+                work->emit0->trailSlots = 0x12;
+                work->emit0->trailStride = 0xB0;
             }
             if (work->emit0 != NULL) {
-                ((EffMotion *)work->emit0->file)->unk8 = fx_0c9_op81ParticleMotion;
+                ((EffMotion *)work->emit0->file)->update = fx_0c9_op81ParticleMotion;
             }
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x10);

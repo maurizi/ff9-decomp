@@ -570,9 +570,9 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0xA3:
             work->emit1C = p2 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA4), (s32)&D_801F106C);
             if (p2 != NULL) {
-                p2->unk14 = (s32)D_801EFA2C;
-                work->emit1C->unk12 = 0xC;
-                work->emit1C->unkC = 0x50;
+                p2->trails = (s32)D_801EFA2C;
+                work->emit1C->trailSlots = 0xC;
+                work->emit1C->trailStride = 0x50;
                 if (work->emit1C != NULL) {
                     work->emit1C->otZ = 0x100;
                 }
@@ -596,9 +596,9 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i2 = 0; i2 < 5; i2++) {
                 work->emit8[i2] = p3 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801ECB8C[i2]), (s32)&D_801F107C[i2]);
                 if (p3 != NULL) {
-                    p3->unk14 = (s32)&D_801EF0CC[i2];
-                    work->emit8[i2]->unk12 = 6;
-                    work->emit8[i2]->unkC = 0x50;
+                    p3->trails = (s32)&D_801EF0CC[i2];
+                    work->emit8[i2]->trailSlots = 6;
+                    work->emit8[i2]->trailStride = 0x50;
                 }
             }
             break;
@@ -1424,9 +1424,9 @@ s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk80[j]);
                 work->emit20[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk80[j]);
                 if (work->emit0[j] != NULL) {
-                    work->emit0[j]->unk14 = (s32)D_801EFDEC[j];
-                    work->emit0[j]->unk12 = 0xC;
-                    work->emit0[j]->unkC = 0x30;
+                    work->emit0[j]->trails = (s32)D_801EFDEC[j];
+                    work->emit0[j]->trailSlots = 0xC;
+                    work->emit0[j]->trailStride = 0x30;
                 }
                 if (work->emit20[j] != NULL) {
                     work->emit20[j]->otZ = ex->btlfx_addRadiusSixth(j, 0x80);

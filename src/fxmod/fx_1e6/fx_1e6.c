@@ -131,34 +131,34 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos50);
             work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos50);
             if (work->emit0[0] != NULL) {
-                work->emit0[0]->unk14 = (s32)D_801E84F8;
-                work->emit0[0]->unk12 = 5;
-                work->emit0[0]->unkC = 0x90;
+                work->emit0[0]->trails = (s32)D_801E84F8;
+                work->emit0[0]->trailSlots = 5;
+                work->emit0[0]->trailStride = 0x90;
             }
             if (work->emit0[1] != NULL) {
-                work->emit0[1]->unk14 = (s32)D_801E87C8;
-                work->emit0[1]->unk12 = 5;
-                work->emit0[1]->unkC = 0x90;
+                work->emit0[1]->trails = (s32)D_801E87C8;
+                work->emit0[1]->trailSlots = 5;
+                work->emit0[1]->trailStride = 0x90;
             }
             if (work->emit0[2] != NULL) {
-                work->emit0[2]->unk14 = (s32)D_801E8A98;
-                work->emit0[2]->unk12 = 5;
-                work->emit0[2]->unkC = 0x90;
+                work->emit0[2]->trails = (s32)D_801E8A98;
+                work->emit0[2]->trailSlots = 5;
+                work->emit0[2]->trailStride = 0x90;
             }
             if (work->emit0[3] != NULL) {
-                work->emit0[3]->unk14 = (s32)D_801E8D68;
-                work->emit0[3]->unk12 = 0x10;
-                work->emit0[3]->unkC = 0x18;
+                work->emit0[3]->trails = (s32)D_801E8D68;
+                work->emit0[3]->trailSlots = 0x10;
+                work->emit0[3]->trailStride = 0x18;
             }
             if (work->emit0[4] != NULL) {
-                work->emit0[4]->unk14 = (s32)D_801E8EE8;
-                work->emit0[4]->unk12 = 0x10;
-                work->emit0[4]->unkC = 0x18;
+                work->emit0[4]->trails = (s32)D_801E8EE8;
+                work->emit0[4]->trailSlots = 0x10;
+                work->emit0[4]->trailStride = 0x18;
             }
             if (work->emit0[5] != NULL) {
-                work->emit0[5]->unk14 = (s32)D_801E9068;
-                work->emit0[5]->unk12 = 0x10;
-                work->emit0[5]->unkC = 0x18;
+                work->emit0[5]->trails = (s32)D_801E9068;
+                work->emit0[5]->trailSlots = 0x10;
+                work->emit0[5]->trailStride = 0x18;
             }
             break;
         case 0:

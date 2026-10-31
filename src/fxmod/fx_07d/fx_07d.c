@@ -338,7 +338,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->posC);
                 if (p != NULL) {
                     p->otZ = work->unk8 + 0x46;
-                    p->elems->unk24 = (s32)fx_07d_op80ElemDraw;
+                    p->elems->draw = (s32)fx_07d_op80ElemDraw;
                 }
             }
             if (frame == 0x31) {

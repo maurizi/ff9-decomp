@@ -251,9 +251,9 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 2) {
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos24);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801E89F8;
-                    p->unk12 = 0x18;
-                    p->unkC = 0x44;
+                    p->trails = (s32)D_801E89F8;
+                    p->trailSlots = 0x18;
+                    p->trailStride = 0x44;
                     p->otZ = 0x40;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos24);

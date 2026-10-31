@@ -71,6 +71,8 @@
 
 /* cell attribute (WmActorType.unk8, wm_getBlockHeight): area in bits 8-13, topography in bits 2-7 (docs/encounters.md) */
 #define WM_ATTR_AREA(a) (((a) & 0x3F00) >> 8)
+#define WM_ATTR_TRIGGER_MASK 0xC000 /* cell event trigger kind (evt_callWorldCellTrigger's third argument), 0 none */
+#define WM_ATTR_TRIGGER(a) (((a) & WM_ATTR_TRIGGER_MASK) >> 14)
 #define WM_ATTR_TOPOGRAPHY(a) (((a) & 0xFC) >> 2)
 
 /* g_worldMapDebugFlags bits: each gates one group of debug prints */

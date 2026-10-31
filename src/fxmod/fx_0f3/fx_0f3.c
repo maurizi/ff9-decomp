@@ -58,9 +58,9 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->pos18.vz = work->unk10.vz;
                 work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos18);
                 if (work->emit24 != NULL) {
-                    work->emit24->unk14 = (s32)D_801E7F80[work->unk4];
-                    work->emit24->unk12 = 4;
-                    work->emit24->unkC = 0xAC;
+                    work->emit24->trails = (s32)D_801E7F80[work->unk4];
+                    work->emit24->trailSlots = 4;
+                    work->emit24->trailStride = 0xAC;
                     if (work->emit24 != NULL) {
                         work->emit24->otZ = 0x40;
                     }

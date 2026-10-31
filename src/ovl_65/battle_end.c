@@ -12,7 +12,7 @@ void battleEnd_main(void) {
         pad_update();
         switch (battleEnd_update()) {
         case 1:
-            g_gameState->mode = s->unk6;
+            g_gameState->mode = s->returnMode;
             break;
         case 2:
             g_gameState->mode = GS_MODE_OPENING;
@@ -45,22 +45,22 @@ void battleEnd_init(void) {
     battleEnd_loadDb();
     battleEnd_loadPortraits();
     battleEnd_unloadDb();
-    if (s->unk10 != 0 && g_btlRewards.hasPostEvent != 0) {
-        evt_init((u8 *)s->unk10);
-        if (s->unk14 != 0) {
+    if (s->eventScript != 0 && g_btlRewards.hasPostEvent != 0) {
+        evt_init((u8 *)s->eventScript);
+        if (s->texts != 0) {
             msg_init();
         }
     }
     if (g_gameState->gameData->battleFlags & GD_BTL_NEXT_LOCATION) {
         e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | DB_FIELD);
         if (e != NULL) {
-            g_gameState->gameData->fieldAreaId = e->unkC;
+            g_gameState->gameData->fieldAreaId = e->link;
             g_gameState->gameData->sceneSector[1] = e->sector;
-            g_gameState->gameData->sceneSectors[1] = e->unk8;
-            e = dep_find(g_gameState->gameData->depTable, e->unkC);
+            g_gameState->gameData->sceneSectors[1] = e->sectors;
+            e = dep_find(g_gameState->gameData->depTable, e->link);
             if (e != NULL) {
                 g_gameState->gameData->sceneSector[0] = e->sector;
-                g_gameState->gameData->sceneSectors[0] = e->unk8;
+                g_gameState->gameData->sceneSectors[0] = e->sectors;
             }
         }
     }
@@ -71,7 +71,7 @@ void battleEnd_exit(void) {
     GameData *g = g_gameState->gameData;
     s32 i;
 
-    if (!(g->battleFlags & GD_BTL_KEEP_MUSIC) && (g->flags & GD_MUSIC_PLAYING) && g->musicId[0] != 0xFFFF) {
+    if (!(g->battleFlags & GD_BTL_KEEP_MUSIC) && (g->flags & GD_MUSIC_PLAYING) && g->musicId[0] != MUSIC_NONE) {
         g->flags |= GD_MUSIC_LEFT_PLAYING;
     }
     g_gameState->gameData->depTable = (FileTable *)-1;
@@ -104,20 +104,20 @@ s32 battleEnd_loadDb(void) {
         DrawSync(0);
     } else {
         e = file_find(DIR_COMMON, FILE_BTL_END_DB);
-        cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead)) {
         }
     }
-    g_gameState->gameData->ctx.ovl65->unk1354->unk4 = g_modeHeap;
-    db_register(g_gameState->gameData->ctx.ovl65->unk1354->unk4, 0);
+    g_gameState->gameData->ctx.ovl65->files->data1 = g_modeHeap;
+    db_register(g_gameState->gameData->ctx.ovl65->files->data1, 0);
     return 0;
 }
 
 s32 battleEnd_unloadDb(void) {
-    Unk1354 *p = g_gameState->gameData->ctx.ovl65->unk1354;
-    if (p->unk4 != 0) {
-        db_unregister((void *)p->unk4);
-        g_gameState->gameData->ctx.ovl65->unk1354->unk4 = 0;
+    Unk1354 *p = g_gameState->gameData->ctx.ovl65->files;
+    if (p->data1 != 0) {
+        db_unregister((void *)p->data1);
+        g_gameState->gameData->ctx.ovl65->files->data1 = 0;
     }
     return 0;
 }
@@ -140,15 +140,15 @@ void battleEnd_preloadScene(void) {
         return;
     }
     id = OVL_KEY(OVL_WORLD);
-    if (b->unk6 == 1) {
+    if (b->returnMode == GS_MODE_FIELD) {
         id = OVL_KEY(OVL_FIELD);
     }
     f = file_find(DIR_OVERLAYS, id);
-    dst = b->unk1C;
-    size = (f->unkC - f->sector) << 11;
+    dst = b->bgData;
+    size = (f->link - f->sector) << 11;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, size, size, f->sector, size);
     dst += size;
-    if (b->unk6 == 1) {
+    if (b->returnMode == GS_MODE_FIELD) {
         id = FILE_FLD_COMMON;
     } else if (g_evtGlobalVars.h[0] >= 0x2B52) {
         id = FILE_WM_DATA_LATE;
@@ -157,12 +157,12 @@ void battleEnd_preloadScene(void) {
     }
     f = file_find(DIR_COMMON, id);
     k = -0x146F00;
-    size = (f->unkC - f->sector) << 11;
+    size = (f->link - f->sector) << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, at, size, f->sector, size);
     dst += size;
-    if (b->unk6 != 1) {
+    if (b->returnMode != GS_MODE_FIELD) {
         return;
     }
     sector = g_gameState->gameData->sceneSector[0];
@@ -963,7 +963,7 @@ void rewards_drawLearnWin(Window *w) {
         name = s_rewardsActionNames + s_rewardsActionTable[id].nameOffset;
         ui_drawSprite(w->x + 6, w->y + 7, w->otz, 0xBC, 0);
     } else {
-        name = s_rewardsSupportNames + g_supportAbilities[id - ABILITY_SUPPORT_FIRST].unk2;
+        name = s_rewardsSupportNames + g_supportAbilities[id - ABILITY_SUPPORT_FIRST].name;
         if (chr_testSupportBit(g_gameState->gameData->party[slot]->supportAbilities, id)) {
             icon = 0xBD;
         } else {

@@ -167,7 +167,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         fxm_easeBlend4(0, 0x80, D_801E8558[i].unk4, work->unk40, &D_801E8558[i].unk20);
                         ex->btlfx_moveEmitterTo((s32)D_801E8558[i].emit28, (s32)&D_801E8558[i].unk20);
                         if (D_801E8558[i].unk4 < 0x10 && D_801E8558[i].emit28 != NULL) {
-                            D_801E8558[i].emit28->unk20 = D_801E8558[i].unk4 << 8;
+                            D_801E8558[i].emit28->alpha = D_801E8558[i].unk4 << 8;
                         }
                         ex->btlfx_setUnitPos(i, (s16 *)&D_801E8558[i].unk20);
                         D_801E8558[i].unk20.vy -= 0x100;
@@ -191,7 +191,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         }
                     }
                     if (D_801E8558[i].unk0 < 8 && D_801E8558[i].emit28 != NULL) {
-                        D_801E8558[i].emit28->unk20 = (8 - D_801E8558[i].unk0) << 9;
+                        D_801E8558[i].emit28->alpha = (8 - D_801E8558[i].unk0) << 9;
                     }
                     D_801E8558[i].unk0--;
                 }

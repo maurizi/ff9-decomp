@@ -304,7 +304,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0xF) {
                 D_801E95B8.unkC = 0x1000 - (frame - 0xF) * 0x111;
                 if (work->emit0[1] != NULL) {
-                    work->emit0[1]->unk20 = 0x1000 - D_801E95B8.unkC;
+                    work->emit0[1]->alpha = 0x1000 - D_801E95B8.unkC;
                 }
             }
             for (i3 = 0; i3 < 2; i3++) {
@@ -338,7 +338,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             work->unk9C--;
             if (work->emit0[8] != NULL) {
-                work->emit0[8]->unk20 = c;
+                work->emit0[8]->alpha = c;
             }
         }
         if (work->unkA0 >= 0) {
@@ -346,7 +346,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             work->unkA0--;
             if (work->emit0[8] != NULL) {
-                work->emit0[8]->unk20 = c;
+                work->emit0[8]->alpha = c;
             }
         }
         if (frame >= 0x64) {

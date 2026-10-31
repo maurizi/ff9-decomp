@@ -476,9 +476,9 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
                 work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
                 if (work->emit48 != NULL) {
-                    work->emit48->unk14 = (s32)D_801EA778;
-                    work->emit48->unk12 = 0xC;
-                    work->emit48->unkC = 0x8C;
+                    work->emit48->trails = (s32)D_801EA778;
+                    work->emit48->trailSlots = 0xC;
+                    work->emit48->trailStride = 0x8C;
                     if (work->emit48 != NULL) {
                         work->emit48->otZ = 0xC;
                     }
@@ -501,7 +501,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->unk60, 0);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
                 if (p != NULL) {
-                    p->tail->unk0 = -1;
+                    p->tail->shape = -1;
                     *(s32 *)&p->tail->unk3C = (s32)fx_0e1_0_op80SpawnPoint;
                     p->otZ = 0x20;
                 }
@@ -545,9 +545,9 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
                 work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
                 if (work->emit48 != NULL) {
-                    work->emit48->unk14 = (s32)D_801EAE08;
-                    work->emit48->unk12 = 0xC;
-                    work->emit48->unkC = 0x8C;
+                    work->emit48->trails = (s32)D_801EAE08;
+                    work->emit48->trailSlots = 0xC;
+                    work->emit48->trailStride = 0x8C;
                     if (work->emit48 != NULL) {
                         work->emit48->otZ = 0xC;
                     }
@@ -558,13 +558,13 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 s32 e = d >> 4;
 
                 if (work->emit44 != NULL) {
-                    work->emit44->unk20 = 0x1000 - e;
+                    work->emit44->alpha = 0x1000 - e;
                     if (work->emit44 != NULL) {
-                        work->emit44->unk1C = 0x1000 - (d >> 5);
+                        work->emit44->scale = 0x1000 - (d >> 5);
                     }
                 }
                 if (work->emit48 != NULL) {
-                    work->emit48->unk20 = 0x1000 - e;
+                    work->emit48->alpha = 0x1000 - e;
                 }
                 if (frame - 0x7F == 0x10) {
                     ex->btlfx_stopEmitter(work->emit44);

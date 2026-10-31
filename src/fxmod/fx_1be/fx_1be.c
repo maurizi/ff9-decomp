@@ -241,10 +241,10 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         if (w->unk0[0xE] != 0) {
             if (--w->unk0[0xE] != 0) {
                 if (w->emit20[0] != NULL) {
-                    w->emit20[0]->unk20 = w->unk0[0xE] << 8;
+                    w->emit20[0]->alpha = w->unk0[0xE] << 8;
                 }
                 if (w->emit20[1] != NULL) {
-                    w->emit20[1]->unk20 = w->unk0[0xE] << 8;
+                    w->emit20[1]->alpha = w->unk0[0xE] << 8;
                 }
             } else {
                 ex->btlfx_stopEmitter(w->emit20[0]);
@@ -443,7 +443,7 @@ static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
     SVECTOR from;
     SVECTOR *key;
 
-    key = &D_801E8FE8[(e->unk1F - 1) & 0x3F];
+    key = &D_801E8FE8[(e->slot - 1) & 0x3F];
     from.vx = 0;
     from.vy = -0x800;
     from.vz = 0x418;

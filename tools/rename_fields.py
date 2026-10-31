@@ -35,13 +35,19 @@ ERR = re.compile(r"^([\w/.]+):(\d+): structure has no member named `(\w+)'", re.
 def main():
     if len(sys.argv) != 2 or "=" not in sys.argv[1]:
         sys.exit(__doc__)
-    pairs = dict(p.split("=") for p in sys.argv[1].split(","))
+    items = [p.split("=") for p in sys.argv[1].split(",")]
+    olds = [o for o, _ in items]
+    dup = sorted({o for o in olds if olds.count(o) > 1})
+    if dup:
+        sys.exit(f"rename_fields: {', '.join(dup)} given more than once; one run can map an old name to only one "
+                 "new name (two structs with the same unkXX need separate runs)")
+    pairs = dict(items)
     if os.path.exists("/.dockerenv"):
         sys.exit("rename_fields: run this on the host; it calls tools/docker.sh itself (inside the container it can't build)")
     os.makedirs(STDARG_DIR, exist_ok=True)
     open(os.path.join(STDARG_DIR, "stdarg.h"), "w").write(STDARG)
     for _ in range(20):
-        out = subprocess.run(["tools/docker.sh", "make", "-j8", "build"], capture_output=True, text=True)
+        out = subprocess.run(["tools/docker.sh", "make", "-k", "-j8", "-Otarget", "build"], capture_output=True, text=True)
         text = out.stdout + out.stderr
         extra = sorted(glob.glob("docs/wip/*.c") + glob.glob("src_equiv/**/*.c", recursive=True))
         out = subprocess.run(["tools/docker.sh", "sh", "-c", EXTRA_CC, "sh"] + extra, capture_output=True, text=True)

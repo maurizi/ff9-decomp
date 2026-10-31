@@ -55,8 +55,8 @@ void btl_updatePause(void) {
             akao_pause(0);
             game_resumeClock(1);
             for (i = 1; i >= 0; i--) {
-                g_padActuator[i].unk1 = 0;
-                g_padActuator[i].unk0 = 0;
+                g_padActuator[i].largeMotor = 0;
+                g_padActuator[i].smallMotor = 0;
             }
             if (g_gameState->gameData->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN) {
                 g_padPortMask[0] |= 8;
@@ -158,8 +158,8 @@ void btl_initMode(void) {
 void btl_exitMode(void) {
     s32 i;
     for (i = 1; i >= 0; i--) {
-        g_padActuator[i].unk1 = 0;
-        g_padActuator[i].unk0 = 0;
+        g_padActuator[i].largeMotor = 0;
+        g_padActuator[i].smallMotor = 0;
     }
     btl_unloadCommonData();
 }
@@ -236,7 +236,7 @@ s32 btl_loadCommonData(void) {
     FileEntry *f = file_find(DIR_COMMON, FILE_BTL_COMMON);
     s32 s = f->sector;
     void *ctx = g_gameState->gameData->cdRead;
-    cdRead_init(ctx, s, (f->unkC - s) << 11, (void *)p, 0, -1, NULL);
+    cdRead_init(ctx, s, (f->link - s) << 11, (void *)p, 0, -1, NULL);
     while (cdRead_update(ctx) != 0) {
     }
     b->files->data[0] = (void *)p;
@@ -404,7 +404,7 @@ s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1) {
     arg0->sceneBuf = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
     arg0->unk20 = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, 0x100000), 0);
     arg0->script = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_FIELD), 0);
-    arg0->unk14 = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_AREA), 0);
+    arg0->area = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_AREA), 0);
     btl_initScene();
     evt_init((u8 *)arg0->script);
     msg_init();
@@ -775,9 +775,9 @@ loop:
         if (bp != NULL) {
             arg2->fileId = *bp;
             *bp = -1;
-            req->size0 = bf->unkC << 11;
+            req->size0 = bf->link << 11;
             req->dst0 = (s32)b->work->heap;
-            req->size1 = (bf->unk8 - bf->unkC) << 11;
+            req->size1 = (bf->sectors - bf->link) << 11;
             req->dst1 = arg2->dst;
             cd_readChunks(g_gameState->imgSector + best, req, 2, 0);
             arg2->nextState = 6;
@@ -1029,7 +1029,7 @@ u32 btl_findNearestFile(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
             f = file_find(arg0, id);
             if (f != NULL) {
                 start = f->sector;
-                n = f->unkC - start;
+                n = f->link - start;
             } else {
                 k = 0;
                 switch (arg0) {
@@ -1067,7 +1067,7 @@ u32 btl_findNearestFile(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
                 f = dep_find(g_gameState->gameData->depTable, (k << 16) | id);
                 if (f != NULL) {
                     start = f->sector;
-                    n = f->unk8;
+                    n = f->sectors;
                 }
             }
             if (start < best) {
@@ -1163,12 +1163,12 @@ s32 btl_findBackgroundId(void) {
 s32 btl_getDepSectors(s32 arg0, s32 *arg1, s32 *arg2) {
     FileEntry *e = dep_find(g_gameState->gameData->depTable, arg0);
     *arg1 = e->sector;
-    *arg2 = e->unk8;
+    *arg2 = e->sectors;
     return arg0;
 }
 
 void btl_getLinkedDepSectors(s32 arg0, s32 *arg1, s32 *arg2) {
-    btl_getDepSectors(dep_find(g_gameState->gameData->depTable, arg0)->unkC, arg1, arg2);
+    btl_getDepSectors(dep_find(g_gameState->gameData->depTable, arg0)->link, arg1, arg2);
 }
 
 s32 btl_swapPartyModel(s32 arg0, s32 arg1) {
@@ -1408,8 +1408,8 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         break;
     case 3:
         f = (FileEntry16 *)file_find(DIR_CHAR_MODELS, btl_getPartyModelId(arg0, arg1 & ~0x10));
-        src = g_gameState->imgSector + f->unk4;
-        sz = f->unkC - f->unk4;
+        src = g_gameState->imgSector + f->sector;
+        sz = f->endSector - f->sector;
         req->size0 = f->unk2 << 11;
         req->dst0 = st->buf;
         req->size1 = (sz - f->unk2) << 11;
@@ -2021,13 +2021,13 @@ s32 btl_getSoundFileSectors(s32 arg0, s32 *arg1) {
     if (((arg0 >> 16) & 0xFF) == 7) {
         e = dep_find(g_gameState->gameData->depTable, arg0);
         if (arg1 != 0) {
-            *arg1 = e->unk8 << 11;
+            *arg1 = e->sectors << 11;
         }
         return e->sector;
     } else {
         f = file_find(DIR_SOUND_BANKS, arg0);
         if (arg1 != 0) {
-            *arg1 = (f->unkC - f->sector) << 11;
+            *arg1 = (f->link - f->sector) << 11;
         }
         return f->sector;
     }
@@ -2047,7 +2047,7 @@ s16 btl_loadWeaponSoundStep(s32 arg0, BtlStepTask *arg1) {
         l = (BtlAnimEvtList *)db_lookup((s32)*m, DB_GET_AT, DB_DEP_TABLE, 0);
         e = l->events;
         for (i = l->count - 1; i >= 0; i--) {
-            if (e[i].data.b.unk2 == 9) {
+            if (e[i].data.b.kind == 9) {
                 btl_soundCmd(SND_BANK_LOAD, e[i].data.w, arg0 + 4, 0, 0);
                 break;
             }
@@ -2068,7 +2068,7 @@ s32 btl_getDepLink(s32 arg0) {
     s32 i;
     for (i = t->count - 1; i >= 0; i--) {
         if (e[i].id == arg0) {
-            return e[i].unkC;
+            return e[i].link;
         }
     }
     return -1;
@@ -2131,14 +2131,14 @@ void btl_beginFrame(void) {
     ClearOTagR((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], BTL_BG_OT_LEN);
     ClearOTagR(fade_getOt(g_gameState->gameData->drawBuf), 1);
     ClearOTagR((u32 *)btl_getBannerOt(g_gameState->gameData->drawBuf), 1);
-    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unk0, 2);
-    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unk0)[1] = GPU_STP(0, 0);
-    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unk0)[2] = 0;
-    addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], &g_btlFrameStartStp[g_gameState->gameData->drawBuf].unk0);
-    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unkC, 2);
-    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unkC)[1] = GPU_STP(0, 0);
-    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unkC)[2] = 0;
-    addPrim((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], &g_btlFrameStartStp[g_gameState->gameData->drawBuf].unkC);
+    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].mainStp, 2);
+    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].mainStp)[1] = GPU_STP(0, 0);
+    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].mainStp)[2] = 0;
+    addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], &g_btlFrameStartStp[g_gameState->gameData->drawBuf].mainStp);
+    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].bgStp, 2);
+    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].bgStp)[1] = GPU_STP(0, 0);
+    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].bgStp)[2] = 0;
+    addPrim((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], &g_btlFrameStartStp[g_gameState->gameData->drawBuf].bgStp);
     addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], fade_getOt(g_gameState->gameData->drawBuf));
     addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], btl_getBannerOt(g_gameState->gameData->drawBuf));
     btlui_resetVsyncCount();
@@ -2149,16 +2149,16 @@ void btl_endFrame(void) {
         g_gameState->flags |= GS_RESET;
     }
     btlui_waitFrame();
-    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0, 2);
-    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0)[1] = GPU_STP(1, 0);
-    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0)[2] = 0;
-    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0);
-    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC, 2);
-    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC)[1] = GPU_STP(1, 0);
-    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC)[2] = 0;
-    addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC);
+    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].mainStp, 2);
+    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].mainStp)[1] = GPU_STP(1, 0);
+    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].mainStp)[2] = 0;
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].mainStp);
+    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp, 2);
+    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp)[1] = GPU_STP(1, 0);
+    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp)[2] = 0;
+    addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp);
     btl_putDispEnvNoUi();
-    if (!(g_gameState->gameData->flags & GD_PAUSED) && !(g_gameState->gameData->ctx.ovl65->unk0 & 0x200)) {
+    if (!(g_gameState->gameData->flags & GD_PAUSED) && !(g_gameState->gameData->ctx.ovl65->flags & 0x200)) {
         btlui_drawOTagEnv(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
         DrawOTag(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST]);
     }
@@ -2181,10 +2181,10 @@ void btl_preloadExit(void) {
     preload_init();
     g_gameState->gameData->preloadRequest = NULL;
     f = file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE_END));
-    size = (f->unkC - f->sector) << 11;
+    size = (f->link - f->sector) << 11;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, OVL_KEY(OVL_BATTLE_END), (s32)RAM_SUB_OVL(u8 *), size, size, f->sector, size);
     f = file_find(DIR_COMMON, FILE_BTL_END_DB);
     dst = b->loadBuf;
-    size = (f->unkC - f->sector) << 11;
+    size = (f->link - f->sector) << 11;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, FILE_BTL_END_DB, (s32)dst, size, size, f->sector, size);
 }

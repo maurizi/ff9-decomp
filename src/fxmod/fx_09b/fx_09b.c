@@ -85,12 +85,12 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E80F4[work->unk6C]),
                                        (s32)&D_801E9A64[work->unk6C]);
         if (work->emit4 != NULL) {
-            work->emit4->unk14 = (s32)D_801E8564[work->unk6C];
-            work->emit4->unk12 = 0xE;
-            work->emit4->unkC = 0x4C;
+            work->emit4->trails = (s32)D_801E8564[work->unk6C];
+            work->emit4->trailSlots = 0xE;
+            work->emit4->trailStride = 0x4C;
         }
         if (work->emit4 != NULL) {
-            ((EffMotion *)work->emit4->file)->unk8 = D_801E8108[work->unk6C];
+            ((EffMotion *)work->emit4->file)->update = D_801E8108[work->unk6C];
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);

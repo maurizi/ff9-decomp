@@ -183,9 +183,9 @@ s32 fx_1ed_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x11, (u16 *)&D_801E8B08);
             D_801E8B00 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&D_801E8B08);
             if (e != NULL) {
-                e->unk14 = (s32)D_801E8B10;
-                e->unk12 = 0x28;
-                e->unkC = 0xAC;
+                e->trails = (s32)D_801E8B10;
+                e->trailSlots = 0x28;
+                e->trailStride = 0xAC;
                 e->otZ = 0x50;
             }
             break;

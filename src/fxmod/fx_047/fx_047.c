@@ -39,9 +39,9 @@ s32 fx_047_op80(s32 mode, Fx047Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
                 if (p != NULL) {
                     p->otZ = 0x80;
-                    p->unk14 = (s32)D_801E797C;
-                    p->unk12 = 0x1D;
-                    p->unkC = 0xAC;
+                    p->trails = (s32)D_801E797C;
+                    p->trailSlots = 0x1D;
+                    p->trailStride = 0xAC;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posC);
                 if (p != NULL) {

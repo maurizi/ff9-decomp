@@ -62,8 +62,8 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
         }
     }
     if (rumble != NULL && (!((Ovl64Cfg *)&g_gameState->config)->vibrationOff || g_gameState->mode == 5)) {
-        g_padActuator[0].unk0 = rumble->on;
-        g_padActuator[0].unk1 = rumble->level;
+        g_padActuator[0].smallMotor = rumble->on;
+        g_padActuator[0].largeMotor = rumble->level;
     }
     if (mask != NULL && mask->size != 0) {
         bcopy((void *)mask->data, &g_mbgMaskData[g_gameState->gameData->drawBuf ^ 1], mask->size);
@@ -149,7 +149,7 @@ void mbg_mdecOutCallback(void) {
                 g_gameState->gameData->flags |= GD_HIDE_MODELS | GD_HIDE_SPRITES;
                 g_mbgRgb24 = 1;
                 if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
-                    g_gameState->gameData->ctx.ovl65->unk0 |= 9;
+                    g_gameState->gameData->ctx.ovl65->flags |= FLD_MAP_NO_WINDOWS | FLD_MAP_NO_BGI_ANIM;
                 }
                 g_mbgPlayer.modeSwitch = MBG_SWITCH_RESET_ENV;
             }
@@ -158,8 +158,8 @@ void mbg_mdecOutCallback(void) {
             g_mbgPaused = 1;
             g_mbgPlayer.pauseReq = 0;
             mbg_streamSetPaused(1);
-            g_padActuator[0].unk0 = 0;
-            g_padActuator[0].unk1 = 0;
+            g_padActuator[0].smallMotor = 0;
+            g_padActuator[0].largeMotor = 0;
         }
         g_mbgDecode.slice.x = g_mbgDecode.frameRect[g_gameState->gameData->drawBuf ^ 1].x;
         g_mbgDecode.slice.y = g_mbgDecode.frameRect[g_gameState->gameData->drawBuf ^ 1].y;
@@ -625,8 +625,8 @@ s32 mbg_setPause(s32 arg0) {
 s32 mbg_stop(void) {
     akao_sendCmdE2();
     mbg_streamStop();
-    g_padActuator[0].unk0 = 0;
-    g_padActuator[0].unk1 = 0;
+    g_padActuator[0].smallMotor = 0;
+    g_padActuator[0].largeMotor = 0;
     g_mbgState--;
     if (g_mbgPlayer.endCallback != NULL) {
         g_mbgPlayer.endCallback();

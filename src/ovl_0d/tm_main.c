@@ -52,7 +52,7 @@ s32 tm_loadMusic(void) {
 s32 tm_loadDataFile(void) {
     s32 dst = (s32)(g_loadAreaEnd + 0x57800);
     FileEntry *f = file_find(DIR_COMMON, FILE_TM_DATA);
-    cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, (void *)dst, 0, -1, 0);
+    cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, (void *)dst, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     g_tmDataFile = dst;

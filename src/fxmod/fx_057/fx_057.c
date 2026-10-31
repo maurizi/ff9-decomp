@@ -20,7 +20,7 @@ static void fx_057_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *e, SVECTOR *pos, s
     }
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), (s32)pos, (s32 *)e->origin, t,
                       0x1C00 - (t << 12) / n, s, 1, buf, 1);
-    if (pt->unk1F == 1) {
+    if (pt->slot == 1) {
         if (D_801EA704 != NULL) {
             ex->btlfx_moveEmitterTo((s32)D_801EA704, (s32)pos);
         }
@@ -78,12 +78,12 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit2C->otZ = 0x18;
         }
         if (work->emit2C != NULL) {
-            work->emit2C->unk14 = (s32)D_801E8EB4;
-            work->emit2C->unk12 = 0x10;
-            work->emit2C->unkC = 0x184;
+            work->emit2C->trails = (s32)D_801E8EB4;
+            work->emit2C->trailSlots = 0x10;
+            work->emit2C->trailStride = 0x184;
         }
         if (work->emit2C != NULL) {
-            work->emit2C->elems->unk24 = (void (*)())fx_057_op80ElemDraw;
+            work->emit2C->elems->draw = (void (*)())fx_057_op80ElemDraw;
         }
         D_801EA704 = work->emit30 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos24);
         if (work->emit30 != NULL) {
@@ -115,13 +115,13 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             alpha = 0x1000;
             if (work->emit2C != NULL) {
-                work->emit2C->unk20 = D_801EA708;
+                work->emit2C->alpha = D_801EA708;
             }
             if (work->emit30 != NULL) {
-                work->emit30->unk20 = alpha;
+                work->emit30->alpha = alpha;
             }
             if (work->emit34 != NULL) {
-                work->emit34->unk20 = alpha;
+                work->emit34->alpha = alpha;
             }
             scale = (((0x1000 - t) * 3) >> 1) + 0x1000;
             if (frame < 4) {
@@ -148,13 +148,13 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit34 = NULL;
             }
             if (work->emit2C != NULL) {
-                work->emit2C->unk20 = D_801EA708;
+                work->emit2C->alpha = D_801EA708;
             }
             if (work->emit30 != NULL) {
-                work->emit30->unk20 = alpha;
+                work->emit30->alpha = alpha;
             }
             if (work->emit34 != NULL) {
-                work->emit34->unk20 = alpha;
+                work->emit34->alpha = alpha;
             }
             if (frame >= 20) {
                 work->unk0 = 2;
@@ -170,7 +170,7 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit2C = NULL;
             }
             if (work->emit2C != NULL) {
-                work->emit2C->unk20 = D_801EA708;
+                work->emit2C->alpha = D_801EA708;
             }
             if (frame == 19) {
                 D_801EA70C = p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);

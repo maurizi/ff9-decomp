@@ -973,14 +973,14 @@ void btlui_removeItem(s32 arg0) {
     if (item_remove(arg0, 1) != 0) {
         if (arg0 >= 0xE0) {
             i = btlui_findItemListEntry(arg0);
-            if (i != 0xFF && g_btluiItems->items[i]->unk1 == 0) {
+            if (i != 0xFF && g_btluiItems->items[i]->count == 0) {
                 g_btluiItems->items[i] = 0;
                 g_btluiItems->itemCount--;
             }
         }
         if (arg0 < 0x58 && (g_weaponTable[arg0].flags & 4)) {
             i = btlui_findThrowListEntry(arg0);
-            if (i != 0xFF && g_btluiItems->throwItems[i]->unk1 == 0) {
+            if (i != 0xFF && g_btluiItems->throwItems[i]->count == 0) {
                 g_btluiItems->throwItems[i] = 0;
                 g_btluiItems->throwCount--;
             }
@@ -1038,7 +1038,7 @@ void btlui_buildItemList(void) {
     UnkPair *p = g_gameState->gameData->items.slots;
     Unk80104FA8 *f = g_btluiItems;
     for (i = 0; i < 0x100; i++, p++) {
-        if (p->unk1 != 0 && p->unk0 != 0xFF && p->unk0 >= 0xE0) {
+        if (p->count != 0 && p->id != 0xFF && p->id >= 0xE0) {
             f->items[n] = p;
             n++;
         }
@@ -1056,7 +1056,7 @@ void btlui_buildThrowList(void) {
     Unk80104FA8 *p = g_btluiItems;
     e = g_gameState->gameData->items.slots;
     for (; i < 0x100; i++, e++) {
-        if (e->unk1 != 0 && e->unk0 != 0xFF && e->unk0 < 0x58 && (g_weaponTable[e->unk0].flags & 4)) {
+        if (e->count != 0 && e->id != 0xFF && e->id < 0x58 && (g_weaponTable[e->id].flags & 4)) {
             p->throwItems[n] = e;
             n++;
         }
@@ -1093,7 +1093,7 @@ s32 btlui_findItemListEntry(s32 arg0) {
     s32 i;
     Unk80104FA8 *p = g_btluiItems;
     for (i = 0; i < 31; i++) {
-        if (p->items[i] != NULL && arg0 == p->items[i]->unk0) {
+        if (p->items[i] != NULL && arg0 == p->items[i]->id) {
             return i;
         }
     }
@@ -1104,7 +1104,7 @@ s32 btlui_findThrowListEntry(s32 arg0) {
     s32 i;
     Unk80104FA8 *p = g_btluiItems;
     for (i = 0; i < 0x58; i++) {
-        if (p->throwItems[i] != NULL && arg0 == p->throwItems[i]->unk0) {
+        if (p->throwItems[i] != NULL && arg0 == p->throwItems[i]->id) {
             return i;
         }
     }
@@ -1803,16 +1803,16 @@ s32 btlui_selectItem(void) {
     MenuList *l = &g_btlUi->windows[2]->list;
     UnkPair *p = btlui_getItemListEntry(l->cursor + l->top);
     u8 r = 0;
-    Unk8006A774 *e = &g_usableItemTableById[p->unk0];
+    Unk8006A774 *e = &g_usableItemTableById[p->id];
     s32 n;
 
     if (p == NULL) {
         return 0;
     }
-    if ((n = p->unk1) - btlui_getItemReserved(p->unk0) >= 0 && n != btlui_getItemReserved(p->unk0)) {
+    if ((n = p->count) - btlui_getItemReserved(p->id) >= 0 && n != btlui_getItemReserved(p->id)) {
         s.returnState = 2;
         s.cmdNo = g_btluiList.cmdNo;
-        s.subNo = p->unk0;
+        s.subNo = p->id;
         s.targetType = e->unk0_0;
         s.defaultSide = e->unk0_4;
         s.koFirst = e->unk0_31;
@@ -1837,10 +1837,10 @@ s32 btlui_selectThrow(void) {
     if (p == NULL) {
         return 0;
     }
-    if ((n = p->unk1) - btlui_getItemReserved(p->unk0) >= 0 && n != btlui_getItemReserved(p->unk0)) {
+    if ((n = p->count) - btlui_getItemReserved(p->id) >= 0 && n != btlui_getItemReserved(p->id)) {
         s.returnState = 2;
         s.cmdNo = g_btluiList.cmdNo;
-        s.subNo = p->unk0;
+        s.subNo = p->id;
         s.targetType = e->targetType;
         s.defaultSide = e->defaultSide;
         s.koFirst = e->koFirst;
@@ -1861,7 +1861,7 @@ s32 btlui_getAbilityState(s32 arg0) {
     if (e->learns != 0 && e->fromEquip[arg0] == 0 && (s16)*e->apCounters[arg0] < (s16)e->apNeeded[arg0]) {
         return 0;
     }
-    if (a->flags & 2) {
+    if (a->flags & BTL_ABIL_VOICE) {
         if ((u8)btl_hasStatus(g_btluiList.unit, BTL_STATUS_SILENCE)) {
             return 1;
         }
@@ -2014,13 +2014,13 @@ void btlui_drawItemRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
     s32 y;
     ItemInfo *it;
     if (e != NULL) {
-        if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
-            n = e->unk1 - btlui_getItemReserved(e->unk0);
+        if (e->count - btlui_getItemReserved(e->id) >= 0) {
+            n = e->count - btlui_getItemReserved(e->id);
         } else {
             n = 0;
         }
         if (n != 0) {
-            id = e->unk0;
+            id = e->id;
             x = r->x;
             it = &g_itemTable[id];
             x5 = x + 5;
@@ -2044,14 +2044,14 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
     s32 y;
     ItemInfo *it;
     if (e != NULL) {
-        if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
-            n = e->unk1 - btlui_getItemReserved(e->unk0);
+        if (e->count - btlui_getItemReserved(e->id) >= 0) {
+            n = e->count - btlui_getItemReserved(e->id);
         } else {
             n = 0;
         }
         if (n != 0) {
             x = r->x;
-            it = &g_itemTable[e->unk0];
+            it = &g_itemTable[e->id];
             y = r->y + arg1 * 15 + arg3->y - dy;
             text_formatNumber(n, buf, 2, TEXT_NUM_ASCII);
             text_draw(x + 5, y, 7, g_itemNames + it->name, TEXT_PAL_WHITE);
@@ -2083,7 +2083,7 @@ s32 btlui_resolveAbility(s32 arg0) {
 
 s32 btl_getMpCost(BtlCmd8 *arg0) {
     s32 cost = arg0->mpCost;
-    if (arg0->unkB & 4) {
+    if (arg0->flags2 & BTL_ABIL2_SUMMON) {
         if (g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] != 0) {
             cost *= 4;
         }
@@ -2108,9 +2108,9 @@ u8 *btlui_getItemHelpText(void) {
     Unk16 *w = &g_btlUi->windows[2]->list;
     UnkPair *e = btlui_getItemListEntry(w->cursor + w->top);
     if (e != NULL) {
-        if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
-            if (e->unk1 != btlui_getItemReserved(e->unk0)) {
-                return g_btlItemHelp + g_btlItemHelpOfs[e->unk0];
+        if (e->count - btlui_getItemReserved(e->id) >= 0) {
+            if (e->count != btlui_getItemReserved(e->id)) {
+                return g_btlItemHelp + g_btlItemHelpOfs[e->id];
             }
             return NULL;
         }
@@ -2122,9 +2122,9 @@ u8 *btlui_getThrowHelpText(void) {
     Unk16 *w = &g_btlUi->windows[2]->list;
     UnkPair *e = btlui_getThrowListEntry(w->cursor + w->top);
     if (e != NULL) {
-        if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
-            if (e->unk1 != btlui_getItemReserved(e->unk0)) {
-                return g_btlItemHelp + g_btlItemHelpOfs[e->unk0];
+        if (e->count - btlui_getItemReserved(e->id) >= 0) {
+            if (e->count != btlui_getItemReserved(e->id)) {
+                return g_btlItemHelp + g_btlItemHelpOfs[e->id];
             }
             return NULL;
         }
@@ -2182,13 +2182,13 @@ void btlui_startTargetSelect(Unk800EF80C *arg0) {
 
 void btlui_setDefaultTargets(s32 arg0) {
     BtlUnit *u;
-    if (g_btlTarget.targetType == 0xC) {
+    if (g_btlTarget.targetType == BTL_TGT_EVERYONE) {
         for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
             if (((u->flags >> BTL_UNIT_TARGETABLE_BIT) & 1) && (!(u->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {
                 u->flags |= BTL_UNIT_TARGETED;
             }
         }
-    } else if (g_btlTarget.targetType == 0xD) {
+    } else if (g_btlTarget.targetType == BTL_TGT_SELF) {
         g_btlTarget.unit->flags |= BTL_UNIT_TARGETED;
     } else if (arg0 & 0xFF) {
         btlui_targetDefault(g_btluiDefaultTargets[g_btlTarget.targetType][0], g_btluiDefaultTargets[g_btlTarget.targetType][1]);
@@ -2207,7 +2207,7 @@ s32 btlui_cycleTarget(s32 arg0) {
     if (g_btlTarget.targetAll != 0) {
         return 0;
     }
-    if (g_btlTarget.targetType == 0xD) {
+    if (g_btlTarget.targetType == BTL_TGT_SELF) {
         return 0;
     }
     u = BtlFindTargetCursor();
@@ -2349,7 +2349,7 @@ s32 btlui_isCmdUsable(void) {
         if (g_btlTarget.unit->mp < cost) {
             return 0;
         }
-        if ((b->flags & 2) && (btl_hasStatus(g_btlTarget.unit, BTL_STATUS_SILENCE) & 0xFF)) {
+        if ((b->flags & BTL_ABIL_VOICE) && (btl_hasStatus(g_btlTarget.unit, BTL_STATUS_SILENCE) & 0xFF)) {
             return 0;
         }
     }
@@ -2375,7 +2375,7 @@ s32 btlui_refreshTargets(void) {
         }
         return 1;
     }
-    if (g_btlTarget.targetType != 0xC) {
+    if (g_btlTarget.targetType != BTL_TGT_EVERYONE) {
         p = g_gameState->gameData->ctx.battle->unitList;
         n = 0;
         btlui_clearTargeted();

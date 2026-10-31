@@ -254,11 +254,11 @@ void btlfx_resetMaskBit(void) {
     if (g_btlfxEnv->prim != NULL) {
         g_btlfxMaskResetBusy = n = 1;
         p = (Unk800D0940 *)g_btlfxEnv->prim;
-        ot = &p->unkC;
+        ot = &p->ot;
         g_btlfxEnv->prim = (u8 *)(p + 1);
         setlen(p, 2);
-        p->unk4 = GPU_STP(0, 0);
-        p->unk8 = 0;
+        p->stp = GPU_STP(0, 0);
+        p->nop = 0;
         ClearOTag(ot, n);
         addPrim(ot, p);
         EnterCriticalSection();
@@ -356,13 +356,13 @@ void btlfx_drawTrail3D(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5,
         inv = 0x1000 / n;
         c.fadeStep = inv;
         c.fade = inv;
-        c.unk28 = arg1[0];
+        c.anchorXY = arg1[0];
         inv = arg1[1];
         c.ring = arg0;
         c.v0 = arg3;
         c.v1 = arg5;
         c.otZ = g_btlfxEnv->otZ;
-        c.unk2C = inv;
+        c.anchorZ = inv;
         btlfx_emitTrailRibbon3D(n, &c, prim, g_btlfxEnv->ot);
     }
 }
@@ -465,13 +465,13 @@ void btlfx_drawTrail(u8 *p, s32 arg1, s32 *arg2, s32 frame, s32 scale, s32 arg5,
     if (out == NULL) {
         return;
     }
-    n = ((Unk800D1494 *)p)->unk2;
-    k = ((Unk800D1494 *)p)->unkA;
-    cnt = ((Unk800D1494 *)p)->unk0;
-    x = ((Unk800D1494 *)p)->unk4;
-    y = ((Unk800D1494 *)p)->unk6;
-    c = ((Unk800D1494 *)p)->unk8 - 1;
-    d = ((Unk800D1494 *)p)->unk9 - 1;
+    n = ((Unk800D1494 *)p)->length;
+    k = ((Unk800D1494 *)p)->frameOfs;
+    cnt = ((Unk800D1494 *)p)->frameCount;
+    x = ((Unk800D1494 *)p)->tpage;
+    y = ((Unk800D1494 *)p)->clut;
+    c = ((Unk800D1494 *)p)->h - 1;
+    d = ((Unk800D1494 *)p)->w - 1;
     p += sizeof(Unk800D1494);
     if (frame == -1) {
         out[1] = n;
@@ -533,7 +533,7 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     off = *o;
     c.frame = *(u16 *)(arg0 + off);
     off += 2;
-    if (c.frame & 0x8000) {
+    if (c.frame & BTLFX_SPRF_COLOR) {
         d = arg0 + off;
         off += 4;
         c.color = *(u16 *)d | (d[2] << 16);
@@ -548,7 +548,7 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
         c.color = arg6 | (arg6 << 8) | (arg6 << 16);
     }
     s.vz = 0x1000;
-    if (c.frame & 0x4000) {
+    if (c.frame & BTLFX_SPRF_SCALE) {
         e = arg0 + off;
         s.vx = *(u16 *)e;
         s.vy = *(u16 *)(e + 2);
@@ -566,7 +566,7 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
         s.vx = s.vy = arg3;
     }
     arg0 += off;
-    c.frame &= 0x3FFF;
+    c.frame &= BTLFX_SPRF_COUNT;
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
@@ -608,7 +608,7 @@ void btlfx_drawSprite(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     off = *o;
     c.frame = *(u16 *)(arg0 + off);
     off += 2;
-    if (c.frame & 0x8000) {
+    if (c.frame & BTLFX_SPRF_COLOR) {
         d = arg0 + off;
         off += 4;
         c.color = *(u16 *)d | (d[2] << 16);
@@ -622,14 +622,14 @@ void btlfx_drawSprite(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
         arg4 = (arg4 >> 5) & 0xFF;
         c.color = arg4 | (arg4 << 8) | (arg4 << 16);
     }
-    if (c.frame & 0x4000) {
+    if (c.frame & BTLFX_SPRF_SCALE) {
         off += 4;
     }
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     arg0 += off;
-    c.frame &= 0x3FFF;
+    c.frame &= BTLFX_SPRF_COUNT;
     gte_rtps_nn();
     prim = g_btlfxEnv->prim;
     g_btlfxEnv->prim = prim + c.frame * 20;
@@ -666,7 +666,7 @@ void btlfx_drawSpriteAtOt(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 
     off = *o;
     c.frame = *(u16 *)(arg1 + off);
     off += 2;
-    if (c.frame & 0x8000) {
+    if (c.frame & BTLFX_SPRF_COLOR) {
         d = arg1 + off;
         off += 4;
         c.color = *(u16 *)d | (d[2] << 16);
@@ -680,11 +680,11 @@ void btlfx_drawSpriteAtOt(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 
         arg6 = (arg6 >> 5) & 0xFF;
         c.color = arg6 | (arg6 << 8) | (arg6 << 16);
     }
-    if (c.frame & 0x4000) {
+    if (c.frame & BTLFX_SPRF_SCALE) {
         off += 4;
     }
     arg1 += off;
-    c.frame &= 0x3FFF;
+    c.frame &= BTLFX_SPRF_COUNT;
     prim = g_btlfxEnv->prim;
     g_btlfxEnv->prim = prim + c.frame * 20;
     c.color |= (arg5 == 0xFF) ? GPU_CODE(GPU_SPRT) : GPU_CODE(GPU_SPRT | GPU_ABE);
@@ -896,10 +896,10 @@ void btlfx_drawRings(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4,
     w = h->w;
     e = (Unk800D23D8Scale *)(h + 1);
     s.vz = 0x1000;
-    if (((Unk800D23D8Hdr *)e)[-1].flags & 2) {
+    if (((Unk800D23D8Hdr *)e)[-1].flags & BTLFX_RINGS_SCALED) {
         sc = &e[arg4];
-        s.vx = sc->unk0;
-        s.vy = sc->unk2;
+        s.vx = sc->x;
+        s.vy = sc->y;
         if (arg3 >= 0) {
             gte_lddp(arg3);
             gte_ldir(&s);

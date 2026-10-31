@@ -273,9 +273,9 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x24), (s32)&D_801EF854);
             work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x37), (s32)&D_801EF864);
             if (work->emit0[0] != NULL) {
-                work->emit0[0]->unk14 = (s32)D_801E9BB4;
-                work->emit0[0]->unk12 = 6;
-                work->emit0[0]->unkC = 0xA4;
+                work->emit0[0]->trails = (s32)D_801E9BB4;
+                work->emit0[0]->trailSlots = 6;
+                work->emit0[0]->trailStride = 0xA4;
             }
             if (work->emit0[0] != NULL) {
                 ((s32 *)work->emit0[0]->file)[2] = (s32)fx_12b_op80ParticleMotion0;
@@ -288,9 +288,9 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&D_801EF85C);
             work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x38), (s32)&D_801EF864);
             if (work->emit0[1] != NULL) {
-                work->emit0[1]->unk14 = (s32)D_801EB2C4;
-                work->emit0[1]->unk12 = 6;
-                work->emit0[1]->unkC = 0xA4;
+                work->emit0[1]->trails = (s32)D_801EB2C4;
+                work->emit0[1]->trailSlots = 6;
+                work->emit0[1]->trailStride = 0xA4;
             }
             if (work->emit0[1] != NULL) {
                 ((s32 *)work->emit0[1]->file)[2] = (s32)fx_12b_op80ParticleMotion1;
@@ -410,14 +410,14 @@ s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x28), (s32)&D_801EF864);
             work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x29), (s32)&D_801EF864);
             if (work->emit0[0] != NULL) {
-                work->emit0[0]->unk14 = (s32)D_801EC9D4;
-                work->emit0[0]->unk12 = 6;
-                work->emit0[0]->unkC = 0xA4;
+                work->emit0[0]->trails = (s32)D_801EC9D4;
+                work->emit0[0]->trailSlots = 6;
+                work->emit0[0]->trailStride = 0xA4;
             }
             if (work->emit0[1] != NULL) {
-                work->emit0[1]->unk14 = (s32)D_801EE0E4;
-                work->emit0[1]->unk12 = 6;
-                work->emit0[1]->unkC = 0xA4;
+                work->emit0[1]->trails = (s32)D_801EE0E4;
+                work->emit0[1]->trailSlots = 6;
+                work->emit0[1]->trailStride = 0xA4;
             }
             if (work->emit0[0] != NULL) {
                 ((s32 *)work->emit0[0]->file)[2] = (s32)fx_12b_op81ParticleMotion0;

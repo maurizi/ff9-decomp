@@ -102,7 +102,7 @@ u16 btl_findCover(s32 arg0) {
         return 0;
     }
     g = g_gameState->gameData;
-    if (((g->characters + BTL_UNIT_INDEX(t->flags))->classFlags & 2) && t->hp < (t->max->maxHp >> 1)) {
+    if (((g->characters + BTL_UNIT_INDEX(t->flags))->classFlags & CHR_CLASS_FEMALE) && t->hp < (t->max->maxHp >> 1)) {
         for (u = g->ctx.battle->unitList; u != NULL; u = u->next) {
             if ((u->support[1] & SA_BIT(SA_PROTECT_GIRLS)) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && u != t && (best == NULL || best->hp < u->hp)) {
                 best = u;
@@ -1352,7 +1352,7 @@ void btl_unlinkCmd(BtlCmd **arg0, u8 arg1) {
 
 s32 btl_payMpCost(BtlCmd *arg0) {
     s32 mp = arg0->ability->mpCost;
-    if (g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] != 0 && (arg0->ability->unkB & 4)) {
+    if (g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] != 0 && (arg0->ability->flags2 & BTL_ABIL2_SUMMON)) {
         mp <<= 2;
     }
     if (arg0->cmdNo == BTL_CMD_RETURN_MAGIC) {
@@ -2072,7 +2072,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             sub2.cmdNo = BTL_CMD_ITEM;
             sub2.subNo = cmd->ability->power;
             sub2.ability = (BtlCmd8 *)&g_gameState->gameData->ctx.battle->abilities[0];
-            btl_calcCmd(caster, target, &sub2, g_usableItemTable[sub2.subNo - ITEM_FIRST_USABLE].unk4);
+            btl_calcCmd(caster, target, &sub2, g_usableItemTable[sub2.subNo - ITEM_FIRST_USABLE].formula);
             btl_useItem(sub2.subNo);
             return;
         }
@@ -2307,7 +2307,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         {
             s32 v;
             c.multiplier = 15;
-            c.power = g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].unk5;
+            c.power = g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].power;
             c.defense = 0;
             if (caster->support[0] & SA_BIT(SA_CHEMIST)) {
                 c.multiplier = 30;
@@ -2358,20 +2358,20 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         break;
     case 0x4A:
         c.targetResult |= (BTL_POPUP_HP | BTL_POPUP_HEAL);
-        c.targetHpChange = g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].unk5 * (item_getCount(cmd->subNo) + 1);
+        c.targetHpChange = g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].power * (item_getCount(cmd->subNo) + 1);
         break;
     case 0x4B:
         c.targetResult |= BTL_POPUP_HP;
-        c.targetHpChange = g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].unk5 * (item_getCount(cmd->subNo) + 1);
+        c.targetHpChange = g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].power * (item_getCount(cmd->subNo) + 1);
         break;
     case 0x4C:
         c.targetResult |= (BTL_POPUP_HP | BTL_POPUP_HEAL | BTL_POPUP_MP | BTL_POPUP_MP_HEAL);
         c.targetHpChange = target->max->maxHp >> 1;
         c.targetMpChange = target->max->maxMp >> 1;
         RAND_REFILL2();
-        if (g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].unk7 < RAND16() % 100) {
+        if (g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].rate < RAND16() % 100) {
             btl_showMessage(BTL_MSG_SNAKE_BITE);
-            btl_addStatuses(target, g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].unk8);
+            btl_addStatuses(target, g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].statuses);
         }
         break;
     case 0x4D:
@@ -2523,7 +2523,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         btl_addStatus(target, BTL_STATUS_TRANCE);
         break;
     case 0x61:
-        if ((&g_gameState->gameData->characters[BTL_UNIT_INDEX(target->flags)])->classFlags & 2) {
+        if ((&g_gameState->gameData->characters[BTL_UNIT_INDEX(target->flags)])->classFlags & CHR_CLASS_FEMALE) {
             c.flags |= BTL_CALC_MISS;
         } else {
             btl_applyAbilityStatus(&c);
@@ -3664,7 +3664,7 @@ void btl_cureAbilityStatus(BtlCalc *arg0) {
 }
 
 void btl_cureItemStatus(BtlCalc *arg0) {
-    if (btl_removeStatuses(arg0->target, g_usableItemTable[arg0->cmd->subNo - ITEM_FIRST_USABLE].unk8) != 2) {
+    if (btl_removeStatuses(arg0->target, g_usableItemTable[arg0->cmd->subNo - ITEM_FIRST_USABLE].statuses) != 2) {
         arg0->flags |= BTL_CALC_MISS;
     }
 }

@@ -8,7 +8,7 @@ static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s3
     ex->btlfx_lerpVec((s16 *)&D_801E7B98, (s16 *)&D_801E7BA0, t, (s16 *)pos);
     a = t >> 1;
     pos->vy -= (ex->math_sin(a) * 0x180) >> 12;
-    switch (pt->unk1F) {
+    switch (pt->slot) {
     case 1:
         pos->vy -= (ex->math_sin(a) << 9) >> 12;
         break;
@@ -55,7 +55,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit1C->otZ = 0x10;
             }
             if (work->emit1C != NULL) {
-                ((EffMotion *)work->emit1C->file)->unk8 = fx_084_op80ParticleMotion;
+                ((EffMotion *)work->emit1C->file)->update = fx_084_op80ParticleMotion;
             }
             break;
         case 1:

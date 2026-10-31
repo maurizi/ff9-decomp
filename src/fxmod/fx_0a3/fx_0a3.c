@@ -15,18 +15,18 @@ s32 fx_0a3_op80(s32 mode, Fx0a3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_pointAhead((s16 *)&work->pos10, (s16 *)&work->unk18, 0xC8, (s16 *)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
         if (work->emit0 != NULL) {
-            work->emit0->unk14 = (s32)D_801E792C;
-            work->emit0->unk12 = 0x2C;
-            work->emit0->unkC = 0x28;
+            work->emit0->trails = (s32)D_801E792C;
+            work->emit0->trailSlots = 0x2C;
+            work->emit0->trailStride = 0x28;
         }
     } else {
         frame = entry->frame;
         if (frame == 0xA) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
             if (work->emit4 != NULL) {
-                work->emit4->unk14 = (s32)D_801E800C;
-                work->emit4->unk12 = 0x14;
-                work->emit4->unkC = 0x28;
+                work->emit4->trails = (s32)D_801E800C;
+                work->emit4->trailSlots = 0x14;
+                work->emit4->trailStride = 0x28;
             }
         }
         return frame >= 0x1E;

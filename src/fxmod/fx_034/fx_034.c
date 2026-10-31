@@ -142,9 +142,9 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4C);
         work->emit0 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4C);
         if (work->emit0 != NULL) {
-            work->emit0->unk14 = (s32)D_801EA040;
-            work->emit0->unk12 = 0x28;
-            work->emit0->unkC = 0x30;
+            work->emit0->trails = (s32)D_801EA040;
+            work->emit0->trailSlots = 0x28;
+            work->emit0->trailStride = 0x30;
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

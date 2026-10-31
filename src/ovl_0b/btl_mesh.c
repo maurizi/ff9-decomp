@@ -127,7 +127,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT4->flags & 2)) {
+        if (!(sFT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -156,8 +156,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pFT4->u1 = *(u16 *)uv[i1] | t;
         *(u16 *)&pFT4->u2 = *(u16 *)uv[i2];
         *(u16 *)&pFT4->u3 = *(u16 *)uv[i3];
-        if (sFT4->flags & 1) {
-            pFT4->tpage |= sFT4->flags & 0xE0;
+        if (sFT4->flags & WMSRC_SEMITRANS) {
+            pFT4->tpage |= sFT4->flags & WMSRC_TPAGE_BITS;
             setSemiTrans(pFT4, 1);
         }
         otz >>= 6;
@@ -178,7 +178,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT3->flags & 2)) {
+        if (!(sFT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -206,8 +206,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pFT3->u1 = *(u16 *)uv[i1] | t;
         *(u16 *)&pFT3->u2 = *(u16 *)uv[i2];
         gte_stotz(&otz);
-        if (sFT3->flags & 1) {
-            pFT3->tpage |= sFT3->flags & 0xE0;
+        if (sFT3->flags & WMSRC_SEMITRANS) {
+            pFT3->tpage |= sFT3->flags & WMSRC_TPAGE_BITS;
             setSemiTrans(pFT3, 1);
         }
         otz >>= 2;
@@ -229,7 +229,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT4->flags & 2)) {
+        if (!(sGT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -271,8 +271,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pGT4->u1 = *(u16 *)uv[i1] | t;
         *(u16 *)&pGT4->u2 = *(u16 *)uv[i2];
         *(u16 *)&pGT4->u3 = *(u16 *)uv[i3];
-        if (sGT4->flags & 1) {
-            pGT4->tpage |= sGT4->flags & 0xE0;
+        if (sGT4->flags & WMSRC_SEMITRANS) {
+            pGT4->tpage |= sGT4->flags & WMSRC_TPAGE_BITS;
             setSemiTrans(pGT4, 1);
         }
         otz >>= 6;
@@ -293,7 +293,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT3->flags & 2)) {
+        if (!(sGT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -330,8 +330,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pGT3->u0 = *(u16 *)uv[i0] | hi;
         *(u32 *)&pGT3->u1 = *(u16 *)uv[i1] | t;
         *(u16 *)&pGT3->u2 = *(u16 *)uv[i2];
-        if (sGT3->flags & 1) {
-            pGT3->tpage |= sGT3->flags & 0xE0;
+        if (sGT3->flags & WMSRC_SEMITRANS) {
+            pGT3->tpage |= sGT3->flags & WMSRC_TPAGE_BITS;
             setSemiTrans(pGT3, 1);
         }
         otz >>= 2;
@@ -353,7 +353,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG4->flags & 2)) {
+        if (!(sG4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -400,7 +400,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG3->flags & 2)) {
+        if (!(sG3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -446,7 +446,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF4->flags & 2)) {
+        if (!(sF4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -480,7 +480,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF3->flags & 2)) {
+        if (!(sF3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -538,8 +538,8 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
     arg0->attachZ = 0;
     arg0->hiddenMeshes = 0;
     arg0->flags = 0;
-    if (!(h->flags & 1)) {
-        h->flags |= 1;
+    if (!(h->flags & BTL_MODELHDR_RELOCATED)) {
+        h->flags |= BTL_MODELHDR_RELOCATED;
         m = h->meshes = (BtlMesh *)((u8 *)h + (s32)h->meshes);
         h->bones = (s32)h + h->bones;
         for (i = 0; i < h->meshCount; i++, m++) {

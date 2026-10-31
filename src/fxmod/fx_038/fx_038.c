@@ -63,7 +63,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
             it->unk0 = 1;
             ((s16 *)it)[-1] = -1;
             if (it->emit14 != NULL) {
-                it->emit14->frame = it->emit14->tail->unk4.unk2;
+                it->emit14->frame = it->emit14->tail->anim.duration;
             }
             it->pos4.vy = 0;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x18, 0x18, 0x18);

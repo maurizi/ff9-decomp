@@ -195,7 +195,7 @@ void game_resetState(void) {
     s32 i;
 
     gs->flags = GS_RELOAD_FILE_TABLES;
-    gs->disc = 0xFF;
+    gs->disc = DISC_NONE;
     gs->allocTop = 0;
     gs->mode = GS_MODE_OPENING;
     gs->prevMode = GS_MODE_OPENING;

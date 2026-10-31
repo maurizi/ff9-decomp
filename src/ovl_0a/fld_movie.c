@@ -46,7 +46,7 @@ s32 fld_loadModelBundle(s32 arg0) {
     s32 y2;
 
     f = file_find(DIR_CHAR_MODELS, arg0);
-    size = (f->unkC - f->sector) << 11;
+    size = (f->link - f->sector) << 11;
     c = fld_findModelCache(arg0);
     if (c->addr == 0) {
         cdRead_init(g_gameState->gameData->cdRead, f->sector, size,
@@ -239,7 +239,7 @@ s32 fld_depFindByLink(s32 arg0) {
     FileEntry *e = t->entries;
 
     for (i = t->count - 1; i >= 0; i--) {
-        if (e[i].unkC == arg0) {
+        if (e[i].link == arg0) {
             return e[i].id;
         }
     }
@@ -1168,7 +1168,7 @@ void fld_movieUpdate(void) {
         if (cd_getState() == 0) {
             if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
                 FileEntry *f = file_find(DIR_OVERLAYS, OVL_MOVIE);
-                cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11,
+                cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11,
                               (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
             g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_READ_OVL;
@@ -1449,15 +1449,15 @@ void fld_updateEncounter(void) {
             akao_fadeMusicVolume(0, 0xF, 0);
             g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = 7;
         }
-        if (g_gameState->gameData->sfxSlotId[0] != 0xFFFF && (g_gameState->gameData->flags & GD_SFX0_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf0, 0x100000, 0xF, 0);
+        if (g_gameState->gameData->sfxSlotId[0] != SE_NONE && (g_gameState->gameData->flags & GD_SFX0_PLAYING)) {
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[0], 0x100000, 0xF, 0);
         }
-        if (g_gameState->gameData->sfxSlotId[1] != 0xFFFF && (g_gameState->gameData->flags & GD_SFX1_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf1, 0x200000, 0xF, 0);
+        if (g_gameState->gameData->sfxSlotId[1] != SE_NONE && (g_gameState->gameData->flags & GD_SFX1_PLAYING)) {
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[1], 0x200000, 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
-            g_padActuator[i].unk1 = 0;
-            g_padActuator[i].unk0 = 0;
+            g_padActuator[i].largeMotor = 0;
+            g_padActuator[i].smallMotor = 0;
         }
         akao_sendCmdE2();
         g_gameState->gameData->ctx.field->area->scene->encounterStep++;
@@ -1498,7 +1498,7 @@ void fld_updateEncounter(void) {
         if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep > 0) {
             g_gameState->gameData->ctx.field->area->scene->encounterMusicStep--;
         } else if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == 0) {
-            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != 0xFFFF
+            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != MUSIC_NONE
                 && g_gameState->gameData->ctx.field->area->scene->battleMusic != g_gameState->gameData->musicId[0]) {
                 if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                     fld_soundCommand(SND_MUSIC_SUSPEND, g_gameState->gameData->musicId[0], 0, 0, 0);
@@ -1514,7 +1514,7 @@ void fld_updateEncounter(void) {
             }
         } else if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == -2) {
             fld_suspendResidentSfx();
-            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != 0xFFFF
+            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != MUSIC_NONE
                 && !(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
                 fld_soundCommand(SND_MUSIC_PLAY, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
                 akao_setMusicVolume(0, 0x7F);
@@ -1547,8 +1547,8 @@ void fld_togglePause(void) {
         akao_pause(0);
         game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
-            g_padActuator[i].unk1 = 0;
-            g_padActuator[i].unk0 = 0;
+            g_padActuator[i].largeMotor = 0;
+            g_padActuator[i].smallMotor = 0;
         }
         ClearOTag(&g_fieldTempOt, 1);
         ui_buildSprite((320 - g_uiSprites[235].w) / 2, (224 - g_uiSprites[235].h) / 2, &g_fieldTempOt, 0xEB, 0, &tmp, &g_fieldPauseSprite);

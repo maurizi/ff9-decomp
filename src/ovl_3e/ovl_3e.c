@@ -126,11 +126,11 @@ u8 discChange_checkDisc(void) {
     VSync(3);
     for (i = 0; i < 10; i++) {
         file_initImg();
-        if (g_gameState->disc != 0xFF) {
+        if (g_gameState->disc != DISC_NONE) {
             break;
         }
     }
-    if (g_gameState->disc == 0xFF || !(g_gameState->disc & mask)) {
+    if (g_gameState->disc == DISC_NONE || !(g_gameState->disc & mask)) {
         cd_stopMotor();
         return DISC_CHECK_WRONG_DISC;
     }

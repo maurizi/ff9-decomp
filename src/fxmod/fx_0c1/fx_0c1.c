@@ -43,7 +43,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos30);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&D_801E7C30);
             if (work->emit8 != NULL) {
-                ((EffMotion *)work->emit8->file)->unk8 = fx_0c1_op80ParticleMotion;
+                ((EffMotion *)work->emit8->file)->update = fx_0c1_op80ParticleMotion;
             }
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);

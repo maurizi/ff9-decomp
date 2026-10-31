@@ -242,7 +242,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     }
                 }
                 btlcam_playScene(btl_getSceneData(2));
-            } else if ((arg1->scene.flags >> 14) & 1) {
+            } else if ((arg1->scene.flags >> BTL_SCENE_KEEP_MUSIC_BIT) & 1) {
                 arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
             arg1->phase = BTL_PHASE_EXIT;
@@ -252,7 +252,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             arg1->phase = BTL_PHASE_EXIT_DEFEAT;
             break;
         case BTL_END_STOPPED:
-            if ((arg1->scene.flags & 0x4040) == 0x4000) {
+            if ((arg1->scene.flags & (BTL_SCENE_KEEP_MUSIC | BTL_SCENE_VICTORY)) == BTL_SCENE_KEEP_MUSIC) {
                 arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
             arg1->phase = BTL_PHASE_SCRIPT;
@@ -274,7 +274,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     gil += g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->gil;
                 }
             }
-            if ((arg1->scene.flags & 0x4040) == 0x4000) {
+            if ((arg1->scene.flags & (BTL_SCENE_KEEP_MUSIC | BTL_SCENE_VICTORY)) == BTL_SCENE_KEEP_MUSIC) {
                 arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
             arg0->battleResult = 4;
@@ -316,10 +316,10 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
 
     ot = (u32 *)arg1->work->prims[arg0->drawBuf];
     btl_loadModelsStep(0);
-    if ((arg1->flags & BTL_FLAG_ENEMIES_LOADED) && (*(u32 *)&arg1->fleeBrightness & 0x2800) == 0x800) {
+    if ((arg1->flags & BTL_FLAG_ENEMIES_LOADED) && (*(u32 *)&arg1->fleeBrightness & ((BTL_LOAD_ENEMIES_INIT | BTL_LOAD_ENEMY_GREY) << 8)) == BTL_LOAD_ENEMIES_INIT << 8) {
         btl_makeEnemyGreyCluts();
         arg1->loadFlags |= BTL_LOAD_ENEMY_GREY;
-    } else if ((arg1->flags & BTL_FLAG_PARTY_LOADED) && (*(u32 *)&arg1->fleeBrightness & 0x5000) == 0x1000) {
+    } else if ((arg1->flags & BTL_FLAG_PARTY_LOADED) && (*(u32 *)&arg1->fleeBrightness & ((BTL_LOAD_PARTY_INIT | BTL_LOAD_PARTY_GREY) << 8)) == BTL_LOAD_PARTY_INIT << 8) {
         btl_makePartyGreyCluts();
         arg1->loadFlags |= BTL_LOAD_PARTY_GREY;
     }
@@ -385,7 +385,7 @@ void btl_initBattleState(void) {
     if (gd->darkBattle != 0) {
         v = 8;
     }
-    gd->characters[CHR_STEINER].info.w = (gd->characters[CHR_STEINER].info.w & ~0x1F0) | (v << 4);
+    gd->characters[CHR_STEINER].info.w = (gd->characters[CHR_STEINER].info.w & ~CHR_INFO_KIND) | (v << CHR_INFO_KIND_SHIFT);
     g_gameState->gameData->battleResult = 0;
     btl_initState();
     btlfx_initAll();

@@ -32,7 +32,7 @@ s32 evt_updateActorWalkmesh(EvtObject *p) {
     if (p->kind != EVT_KIND_ACTOR) {
         return 0;
     }
-    if (p->modelId == 0xFFFF) {
+    if (p->modelId == EVT_MODEL_NONE) {
     ret0:
         return 0;
     }
@@ -98,8 +98,8 @@ s32 cdRead_update(void *arg0) {
     return 0;
 }
 
-s32 cdRead_getBytesRead(Unk80021910 *a) {
-    if (a->unk1C >= 3) {
+s32 cdRead_getBytesRead(CdReadCtx *a) {
+    if (a->state >= CDREAD_READING) {
         return g_cdLoad.bytesRead;
     }
     return 0;

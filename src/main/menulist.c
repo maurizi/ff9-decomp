@@ -298,13 +298,13 @@ void fade_update(void) {
     }
     f->pkt = buf;
     if (f->active != 0) {
-        fn = (FadeFn)g_fadeTypes[f->type].unk4;
+        fn = (FadeFn)g_fadeTypes[f->type].update;
         if (fn != NULL) {
             fn(f);
         }
     }
     if (*(u32 *)&g_fade & 0xFFFF0000) {
-        fn = (FadeFn)g_fadeTypes[g_fade.type].unk8;
+        fn = (FadeFn)g_fadeTypes[g_fade.type].draw;
         if (fn != NULL) {
             fn(&g_fade);
         }

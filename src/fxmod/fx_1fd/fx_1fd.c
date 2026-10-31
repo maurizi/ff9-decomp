@@ -240,9 +240,9 @@ s32 fx_1fd_op80(s32 mode, Fx1fdWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (j = 0; j < 5; j++) {
                 *q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E9DF8[j]), (s32)&D_801ED70C[j]);
                 if (*q != NULL) {
-                    (*q)->unk14 = (s32)D_801EBBAC[j];
-                    (*q)->unk12 = 6;
-                    (*q)->unkC = 0x50;
+                    (*q)->trails = (s32)D_801EBBAC[j];
+                    (*q)->trailSlots = 6;
+                    (*q)->trailStride = 0x50;
                 }
                 q++;
             }
@@ -623,9 +623,9 @@ s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk80[i]);
                 work->emit20[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->unk80[i]);
                 if (work->emit0[i] != NULL) {
-                    work->emit0[i]->unk14 = (s32)D_801EC50C[i];
-                    work->emit0[i]->unk12 = 0xC;
-                    work->emit0[i]->unkC = 0x30;
+                    work->emit0[i]->trails = (s32)D_801EC50C[i];
+                    work->emit0[i]->trailSlots = 0xC;
+                    work->emit0[i]->trailStride = 0x30;
                 }
                 if (work->emit20[i] != NULL) {
                     work->emit20[i]->otZ = ex->btlfx_addRadiusSixth(i, 0x80);

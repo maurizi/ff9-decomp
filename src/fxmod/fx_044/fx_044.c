@@ -47,9 +47,9 @@ s32 fx_044_op81(s32 mode, Fx044Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos14);
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posC);
         if (work->emit0 != NULL) {
-            work->emit0->unk14 = (s32)D_801E7A74;
-            work->emit0->unk12 = 0xD;
-            work->emit0->unkC = 0x90;
+            work->emit0->trails = (s32)D_801E7A74;
+            work->emit0->trailSlots = 0xD;
+            work->emit0->trailStride = 0x90;
         }
     } else {
         return entry->frame >= 0x28;

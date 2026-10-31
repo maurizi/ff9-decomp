@@ -139,7 +139,7 @@ s32 opening_attractInit(s32 idx) {
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     e = file_find(DIR_COMMON, g_attractFiles[idx]);
-    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
+    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     buf = g_loadAreaEnd + 0x10000;

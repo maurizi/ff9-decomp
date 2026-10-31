@@ -26,9 +26,9 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0x19) {
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos18);
             if (work->emit0 != NULL) {
-                work->emit0->unk14 = (s32)D_801E7A3C;
-                work->emit0->unk12 = 0x80;
-                work->emit0->unkC = 0x20;
+                work->emit0->trails = (s32)D_801E7A3C;
+                work->emit0->trailSlots = 0x80;
+                work->emit0->trailStride = 0x20;
             }
             if (work->emit0 != NULL) {
                 work->emit0->otZ = 0x80;
@@ -56,7 +56,7 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit0 = NULL;
                 }
                 if (work->emit0 != NULL) {
-                    work->emit0->unk2C = (s32)&work->unk28;
+                    work->emit0->target = (s32)&work->unk28;
                 }
             }
         }

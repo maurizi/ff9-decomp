@@ -38,9 +38,9 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[0].vz = work->unkC.vz;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7BE0);
         if (work->emit0 != NULL) {
-            work->emit0->unk14 = (s32)D_801E7BE8;
-            work->emit0->unk12 = 0xB;
-            work->emit0->unkC = 0x20;
+            work->emit0->trails = (s32)D_801E7BE8;
+            work->emit0->trailSlots = 0xB;
+            work->emit0->trailStride = 0x20;
         }
         if (work->emit0 != NULL) {
             ((s32 *)work->emit0->file)[2] = (s32)fx_043_op80ParticleMotion;
@@ -66,9 +66,9 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos18.vy -= 0x64;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
         if (work->emit0 != NULL) {
-            work->emit0->unk14 = (s32)D_801E7D48;
-            work->emit0->unk12 = 0x34;
-            work->emit0->unkC = 0x20;
+            work->emit0->trails = (s32)D_801E7D48;
+            work->emit0->trailSlots = 0x34;
+            work->emit0->trailStride = 0x20;
         }
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
         if (work->emit0 != NULL) {

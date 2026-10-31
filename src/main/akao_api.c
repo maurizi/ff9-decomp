@@ -515,7 +515,7 @@ s32 akao_loadBankInSlot(s32 *a, s32 b, s32 c) {
 s32 akao_setCdMix(s32 vol) {
     u8 v;
 
-    if (g_akaoOutputFlags & 2) {
+    if (g_akaoOutputFlags & AKAO_MODE_MONO) {
         CdlATV *atv = &g_akaoCdAtv;
 
         v = (u32)(vol * 46448) >> 17;
@@ -622,7 +622,7 @@ s32 akao_streamPushBlock(void *unused) { /* mbg_stream passes its stream state *
     if (g_akaoStream.ringBlocks - 1 < g_akaoStream.writeBlock) {
         g_akaoStream.writeBlock = 0;
     }
-    if ((g_akaoStream.flags & 0x1000000) && g_akaoStream.writeBlock >= 2) {
+    if ((g_akaoStream.flags & AKAO_STREAM_RING_PENDING) && g_akaoStream.writeBlock >= 2) {
         akao_streamStartRing();
     }
     return g_akaoStream.readBlock;

@@ -24,18 +24,18 @@ s32 fx_03b_op80(s32 mode, Fx03bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 5) {
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos20);
             if (work->emitC != NULL) {
-                work->emitC->unk14 = (s32)D_801E7E80;
-                work->emitC->unk12 = 0x28;
-                work->emitC->unkC = 0x18;
+                work->emitC->trails = (s32)D_801E7E80;
+                work->emitC->trailSlots = 0x28;
+                work->emitC->trailStride = 0x18;
             }
         }
         if (frame == 8) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);
             if (work->emit8 != NULL) {
-                work->emit8->unk14 = (s32)D_801E7980;
-                work->emit8->unk12 = 0x28;
-                work->emit8->unkC = 0x20;
+                work->emit8->trails = (s32)D_801E7980;
+                work->emit8->trailSlots = 0x28;
+                work->emit8->trailStride = 0x20;
             }
         }
         return frame >= 0x28;

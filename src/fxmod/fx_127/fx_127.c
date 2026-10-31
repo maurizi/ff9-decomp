@@ -88,14 +88,14 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&D_801E8330);
             D_801E8340 = work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E8338);
             if (work->emit10 != NULL) {
-                work->emit10->unk14 = (s32)D_801E8350;
-                work->emit10->unk12 = 0x112;
-                work->emit10->unkC = 0x18;
+                work->emit10->trails = (s32)D_801E8350;
+                work->emit10->trailSlots = 0x112;
+                work->emit10->trailStride = 0x18;
             }
             if (work->emit14 != NULL) {
-                work->emit14->unk14 = (s32)D_801E9D00;
-                work->emit14->unk12 = 0x28;
-                work->emit14->unkC = 0x40;
+                work->emit14->trails = (s32)D_801E9D00;
+                work->emit14->trailSlots = 0x28;
+                work->emit14->trailStride = 0x40;
             }
             if (work->emit10 != NULL) {
                 ((Fx127EffHdr *)work->emit10->file)->unk8 = fx_127_op80ParticleMotion0;

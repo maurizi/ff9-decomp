@@ -44,7 +44,7 @@ s32 btlfx_start(s32 arg0) {
     if (g_btlfxState.phase != BTLFX_PHASE_IDLE) {
         return -1;
     }
-    g_btlfxState.phase = 0;
+    g_btlfxState.phase = BTLFX_PHASE_SAVE_VRAM;
     g_btlfxState.effectId = btlfx_resolveFirstUse(arg0);
     g_btlfxState.seqRelease = 0;
     g_btlfxState.seqSync = 0;
@@ -56,7 +56,7 @@ s32 btlfx_start(s32 arg0) {
     g_btlfxState.partyReload = 0;
     g_btlfxState.modelSwap = 0;
     g_btlfxState.castEnded = 0;
-    g_btlfxState.flags = 0x8000;
+    g_btlfxState.flags = BTLFX_HDR_RESIDENT;
     btlcam_focusCaster();
     g_btlfxEnv->workBuf = g_gameState->gameData->ctx.battle->work->loadBuf;
     return 0;
@@ -142,7 +142,7 @@ void btlfx_runScript(void) {
         btlfx_restoreUnitLook(0x10);
     }
     switch (d->phase) {
-    case 0:
+    case BTLFX_PHASE_SAVE_VRAM:
         r.x = 0x300;
         r.y = 0x140;
         r.w = 0x40;
@@ -150,25 +150,25 @@ void btlfx_runScript(void) {
         btlfx_resetMaskBit();
         StoreImage(&r, RAM_BTLFX_MODULE(u32 *));
         g_btlfxInCall = 0;
-        d->phase = 1;
+        d->phase = BTLFX_PHASE_START;
         break;
-    case 1:
+    case BTLFX_PHASE_START:
         hdr = RAM_BTLFX_MODULE(u16 *)[d->effectId];
         d->flags = hdr & 0xFFFE;
-        g_btlfxEnv->targets->kind &= ~8;
-        if (hdr & 0xC00) {
-            btlfx_swapVramPages(0, NULL, (hdr & 0xC00) >> 10);
+        g_btlfxEnv->targets->kind &= ~BTL_FXK_PARTY_UNLOAD;
+        if (hdr & BTLFX_HDR_VRAM_SWAP) {
+            btlfx_swapVramPages(0, NULL, (hdr & BTLFX_HDR_VRAM_SWAP) >> BTLFX_HDR_VRAM_SWAP_SHIFT);
         }
-        if (hdr & 0x8000) {
+        if (hdr & BTLFX_HDR_RESIDENT) {
             r.x = 0x300;
             r.y = 0x150;
             r.w = 0x40;
             r.h = 0xB0;
             btlfx_resetMaskBit();
             StoreImage(&r, RAM_BTLFX_MODULE(u32 *));
-            d->phase = 2;
-            d->flags &= ~8;
-            d->flags &= ~4;
+            d->phase = BTLFX_PHASE_RESIDENT;
+            d->flags &= ~BTLFX_HDR_CAMERA;
+            d->flags &= ~BTLFX_HDR_PARTNER;
             break;
         }
         d->ending = 0;
@@ -178,27 +178,27 @@ void btlfx_runScript(void) {
             btlfx_playCmdCamera(d->flags);
         }
         if (btlfx_loadFile(d->effectId) == 0) {
-            k = (u8)d->flags >> 4;
+            k = (u8)d->flags >> BTLFX_HDR_CASTER_SHIFT;
             if (k == 1) {
-                g_btlfxEnv->targets->kind |= 8;
+                g_btlfxEnv->targets->kind |= BTL_FXK_PARTY_UNLOAD;
             }
             btlfx_startCasterTask(k);
             d->pc = g_btlfxFileScript;
-            d->phase = 3;
+            d->phase = BTLFX_PHASE_LOADING;
         }
         break;
-    case 3:
+    case BTLFX_PHASE_LOADING:
         if (g_btlfxEnv->loader->stage == 3) {
-            d->phase = 4;
+            d->phase = BTLFX_PHASE_RUN;
             g_btlfxEnv->camera->flags |= BTLCAM_F_EFFECT_RUNNING;
         }
         break;
-    case 2:
+    case BTLFX_PHASE_RESIDENT:
         d->pc = btlfx_findScript(d->effectId);
-        d->phase = 4;
+        d->phase = BTLFX_PHASE_RUN;
         btlfx_showCasterCmdName();
         break;
-    case 4:
+    case BTLFX_PHASE_RUN:
         /* padded: a zero word follows the first jump table */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         cont = 1;
@@ -223,7 +223,7 @@ void btlfx_runScript(void) {
                         btl_setMarkersVisible(1);
                     }
                     if (g_btlfxTasks.count == 0) {
-                        if (d->flags & 1) {
+                        if (d->flags & BTLFX_HDR_COMMON_VRAM) {
                             if (d->ending == 0) {
                                 btlcam_endEffect();
                                 btlfx_initParticleSystem();
@@ -232,7 +232,7 @@ void btlfx_runScript(void) {
                                 btlfx_reloadCommonData(0);
                                 d->ending = 1;
                             } else if (btlfx_reloadCommonData(1) != 0) {
-                                d->flags &= ~1;
+                                d->flags &= ~BTLFX_HDR_COMMON_VRAM;
                             }
                         } else {
                             d->phase = BTLFX_PHASE_IDLE;
@@ -349,7 +349,7 @@ void btlfx_runScript(void) {
                 case 7:
                     switch (a) {
                     case 0:
-                        btlfx_swapVramPages(1, NULL, (d->flags & 0xC00) >> 10);
+                        btlfx_swapVramPages(1, NULL, (d->flags & BTLFX_HDR_VRAM_SWAP) >> BTLFX_HDR_VRAM_SWAP_SHIFT);
                         break;
                     case 1:
                         btlfx_swapVramPages(2, (u32 *)btlfx_getFileData(-1, b), 0);

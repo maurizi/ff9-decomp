@@ -57,14 +57,14 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos44);
                 work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos4C);
                 if (work->emit4 != NULL) {
-                    work->emit4->unk14 = (s32)D_801E8B5C[work->unk68];
-                    work->emit4->unk12 = 0x3C;
-                    work->emit4->unkC = 0x28;
+                    work->emit4->trails = (s32)D_801E8B5C[work->unk68];
+                    work->emit4->trailSlots = 0x3C;
+                    work->emit4->trailStride = 0x28;
                 }
                 if (work->emit8 != NULL) {
-                    work->emit8->unk14 = (s32)D_801EA77C[work->unk68];
-                    work->emit8->unk12 = 0x3C;
-                    work->emit8->unkC = 0x28;
+                    work->emit8->trails = (s32)D_801EA77C[work->unk68];
+                    work->emit8->trailSlots = 0x3C;
+                    work->emit8->trailStride = 0x28;
                 }
                 work->unk68++;
             }
@@ -139,14 +139,14 @@ s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos14);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos1C);
             if (work->emit4 != NULL) {
-                work->emit4->unk14 = (s32)D_801EC39C;
-                work->emit4->unk12 = 0xA;
-                work->emit4->unkC = 0x80;
+                work->emit4->trails = (s32)D_801EC39C;
+                work->emit4->trailSlots = 0xA;
+                work->emit4->trailStride = 0x80;
             }
             if (work->emit8 != NULL) {
-                work->emit8->unk14 = (s32)D_801EC89C;
-                work->emit8->unk12 = 0xA;
-                work->emit8->unkC = 0x80;
+                work->emit8->trails = (s32)D_801EC89C;
+                work->emit8->trailSlots = 0xA;
+                work->emit8->trailStride = 0x80;
             }
             break;
         }

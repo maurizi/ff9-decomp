@@ -113,10 +113,10 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 if (work->unk3C > 0) {
                     work->unk3C -= 0x40;
                     if (work->emit2C != NULL) {
-                        work->emit2C->unk20 = work->unk3C;
+                        work->emit2C->alpha = work->unk3C;
                     }
                     if (work->emit30 != NULL) {
-                        work->emit30->unk20 = work->unk3C;
+                        work->emit30->alpha = work->unk3C;
                     }
                 } else {
                     work->unk3C = 0;

@@ -259,36 +259,36 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&D_801EF298[2]);
         work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&D_801EF298[3]);
         if (work->emit10 != NULL) {
-            work->emit10->unk14 = (s32)D_801EE318;
-            work->emit10->unk12 = 1;
-            work->emit10->unkC = 0xD0;
+            work->emit10->trails = (s32)D_801EE318;
+            work->emit10->trailSlots = 1;
+            work->emit10->trailStride = 0xD0;
         }
         if (work->emit14 != NULL) {
-            work->emit14->unk14 = (s32)D_801EE3E8;
-            work->emit14->unk12 = 1;
-            work->emit14->unkC = 0xD0;
+            work->emit14->trails = (s32)D_801EE3E8;
+            work->emit14->trailSlots = 1;
+            work->emit14->trailStride = 0xD0;
         }
         if (work->emit18 != NULL) {
-            work->emit18->unk14 = (s32)D_801EE4B8;
-            work->emit18->unk12 = 1;
-            work->emit18->unkC = 0xD0;
+            work->emit18->trails = (s32)D_801EE4B8;
+            work->emit18->trailSlots = 1;
+            work->emit18->trailStride = 0xD0;
         }
         if (work->emit1C != NULL) {
-            work->emit1C->unk14 = (s32)D_801EE588;
-            work->emit1C->unk12 = 1;
-            work->emit1C->unkC = 0xD0;
+            work->emit1C->trails = (s32)D_801EE588;
+            work->emit1C->trailSlots = 1;
+            work->emit1C->trailStride = 0xD0;
         }
         if (work->emit10 != NULL) {
-            ((EffMotion *)work->emit10->file)->unk8 = fxm_pinParticle0;
+            ((EffMotion *)work->emit10->file)->update = fxm_pinParticle0;
         }
         if (work->emit14 != NULL) {
-            ((EffMotion *)work->emit14->file)->unk8 = fxm_pinParticle1;
+            ((EffMotion *)work->emit14->file)->update = fxm_pinParticle1;
         }
         if (work->emit18 != NULL) {
-            ((EffMotion *)work->emit18->file)->unk8 = fxm_pinParticle2;
+            ((EffMotion *)work->emit18->file)->update = fxm_pinParticle2;
         }
         if (work->emit1C != NULL) {
-            ((EffMotion *)work->emit1C->file)->unk8 = fxm_pinParticle3;
+            ((EffMotion *)work->emit1C->file)->update = fxm_pinParticle3;
         }
         break;
     case 0x2C:
@@ -298,9 +298,9 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos14C.vz = -0x4B0;
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14C);
         if (work->emit8 != NULL) {
-            work->emit8->unk14 = (s32)D_801ED5C8;
-            work->emit8->unk12 = 0x55;
-            work->emit8->unkC = 0x28;
+            work->emit8->trails = (s32)D_801ED5C8;
+            work->emit8->trailSlots = 0x55;
+            work->emit8->trailStride = 0x28;
         }
         break;
     case 0xA8:

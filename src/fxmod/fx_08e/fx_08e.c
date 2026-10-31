@@ -38,9 +38,9 @@ s32 fx_08e_op80(s32 mode, Fx08eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos58);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos58);
             if (work->emit4 != NULL) {
-                work->emit4->unk14 = (s32)D_801E7FC0;
-                work->emit4->unk12 = 9;
-                work->emit4->unkC = 0xA0;
+                work->emit4->trails = (s32)D_801E7FC0;
+                work->emit4->trailSlots = 9;
+                work->emit4->trailStride = 0xA0;
             }
             break;
         case 22:

@@ -147,14 +147,14 @@ void file_initImg(void) {
     s32 i;
     Ff9ImgHeader *hdr;
 
-    g_gameState->disc = 0xFF;
+    g_gameState->disc = DISC_NONE;
     for (i = 0; i < ARRAY_COUNT(names); i++) {
         if (CdSearchFile(&fp, names[i])) {
             g_gameState->disc = 1 << (i % 4);
             break;
         }
     }
-    if (g_gameState->disc != 0xFF) {
+    if (g_gameState->disc != DISC_NONE) {
         while (cd_getState()) {
         }
         while ((g_gameState->imgSector = cd_findFile("\\FF9.IMG;1")) == -1) {
@@ -169,8 +169,8 @@ void file_initImg(void) {
         cd_readAsync(g_gameState->imgSector, 0x800, hdr, NULL);
         while (cd_getState()) {
         }
-        g_gameState->dirCount = hdr->unk8;
-        memmove(g_gameState->dirs, hdr->unk10, g_gameState->dirCount * sizeof(DirInfo));
+        g_gameState->dirCount = hdr->dirCount;
+        memmove(g_gameState->dirs, hdr->dirs, g_gameState->dirCount * sizeof(DirInfo));
     }
 }
 
@@ -314,13 +314,13 @@ loop:
 void game_setNextScene(u16 arg0) {
     switch (g_gameState->mode) {
     case GS_MODE_FIELD:
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unkA = arg0;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->nextId = arg0;
         break;
     case GS_MODE_BATTLE:
-        g_gameState->gameData->ctx.ovl65->work->unk4 = arg0;
+        g_gameState->gameData->ctx.ovl65->work->returnId = arg0;
         break;
     case GS_MODE_WORLD:
-        g_gameState->gameData->ctx.ovl65->unk8->unk24 = arg0;
+        g_gameState->gameData->ctx.ovl65->worldObj->sceneId = arg0;
         break;
     }
 }

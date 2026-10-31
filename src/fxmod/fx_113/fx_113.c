@@ -55,9 +55,9 @@ s32 fx_113_op81(s32 mode, Fx113Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
         if (work->emit0 != NULL) {
-            work->emit0->unk14 = (s32)D_801E7A84;
-            work->emit0->unk12 = 0xD;
-            work->emit0->unkC = 0x50;
+            work->emit0->trails = (s32)D_801E7A84;
+            work->emit0->trailSlots = 0xD;
+            work->emit0->trailStride = 0x50;
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

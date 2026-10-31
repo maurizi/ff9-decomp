@@ -70,6 +70,20 @@
 #define AKAO_CMD_STOP_MUSIC_NOW        0xF0 /* akao_cmdStopMusicNow */
 #define AKAO_CMD_STOP_ALL_SE           0xF1 /* akao_cmdStopAllSe */
 
+/* g_akaoPauseFlags (bit 4, tested by the tempo loops, is never set in the code) */
+#define AKAO_PAUSED_MUSIC 0x1 /* akao_cmdPauseMusic / akao_cmdResumeMusic; new songs start paused */
+#define AKAO_PAUSED_SE    0x2 /* akao_cmdPauseSe / akao_cmdResumeSe; new SEs start paused */
+/* AkaoChannel.seMask (VoiceParams.mask) bit given by akao_cmdPlaySeDefault: the SE keeps running through
+ * akao_cmdPauseSe and ignores the all-SE volume/pan/pitch commands and its own sePan/seVolume/sePitch
+ * (akao_calcSeChannelVoice plays it centred, unscaled) */
+#define AKAO_SE_DEFAULT 0x2000000
+
+/* AkaoStreamState.flags (copied from the stream header's flags; akao_cmdStreamSetupRing sets RING_PENDING alone) */
+#define AKAO_STREAM_STEREO       0x1 /* voice plays left only, voice + 1 right only (akao_cmdSetStreamVolume/Pan); one-shot upload via akao_streamStartStereo */
+#define AKAO_STREAM_LOOP         0x2 /* loopStart is valid: loopPtr/loopBytes set (akao_streamPlayOneShot) */
+#define AKAO_STREAM_FOUR_VOICES  0x400 /* ring streams use voice - 2 and voice - 1 too (twice the SPU ring) */
+#define AKAO_STREAM_RING_PENDING 0x1000000 /* akao_streamPushBlock starts the ring once two blocks are written */
+
 /* AKAO sequence opcodes (akao_execChannel, akao_peekNextNote). Bytes from AKAO_OP_FIRST_CMD up are commands run
  * through g_akaoOps[op - 0xA0] (lengths g_akaoOpLengths); AKAO_OP_EXT takes a second byte that indexes
  * g_akaoOpsFE. Only opcodes whose handler is named have a macro. */
@@ -129,6 +143,7 @@
 #define SE_GAME_START 0xC18 /* code: New Game on the title (ovl_14), the ending's secret code (ovl_15) */
 #define SE_CHOCOBO_CALL 0x44A /* code: looped while the item menu's "CHOCOBO" / "Kweeeh!" window is up on the world map
                                * (ovl_37 menuItem_onKwehOpened); world-map SE number 36 (w_musicGetID) */
+#define SE_NONE 0xFFFF /* GameData.sfxSlotId: no sound effect in the resident slot */
 /* encounter: the three sounds played together when a random battle starts (field fld_movie, world map) */
 #define SE_ENCOUNTER_1 0x27C
 #define SE_ENCOUNTER_2 0x27B
@@ -141,6 +156,7 @@
 #define SE_FLEE_3 0xB5C
 
 /* Music ids (SND_MUSIC_PLAY / SND_MUSIC_LOAD), only where the code says which song */
+#define MUSIC_NONE 0xFFFF /* GameData.musicId / savedMusicId, FieldScene / WorldMapObj battleMusic: no song */
 #define MUSIC_VICTORY 5 /* btl_playVictoryMusic after BTL_END_VICTORY */
 #define MUSIC_DEFEAT 6 /* btl_playVictoryMusic in BTL_PHASE_EXIT_DEFEAT (game over) */
 #define MUSIC_TETRA_MASTER 0x42 /* ovl_0d tm_init plays it as the card game starts */
@@ -159,6 +175,24 @@
 #define SPU_VOICE_ADSR2 0xA
 #define SPU_VOICE_ADSR_VOL 0xC
 #define SPU_VOICE_LOOP_ADDR 0xE /* repeat address / 8 */
+/* ADSR register fields (psx-spx "SPU Volume and ADSR Generator"; PsyQ SpuVoiceAttr ar/dr/sl, sr/rr and the
+ * *_MODE fields). ADSR2 bit 13 is unused by the SPU; akao keeps it in some masks (0x201F, 0x3FDF), left raw. */
+#define SPU_ADSR1_SUSTAIN_LEVEL 0x000F
+#define SPU_ADSR1_DECAY_RATE    0x00F0
+#define SPU_ADSR1_ATTACK_RATE   0x7F00 /* shift and step */
+#define SPU_ADSR1_ATTACK_EXP    0x8000 /* exponential attack */
+#define SPU_ADSR2_RELEASE_RATE  0x001F
+#define SPU_ADSR2_RELEASE_EXP   0x0020 /* exponential release */
+#define SPU_ADSR2_SUSTAIN_RATE  0x1FC0 /* shift and step */
+#define SPU_ADSR2_SUSTAIN_DEC   0x4000 /* sustain decreases */
+#define SPU_ADSR2_SUSTAIN_EXP   0x8000 /* exponential sustain */
+/* AKAO envelope mode numbers (instrument region sustainMode, ops B7/BB/BF, akao_setVoiceAttack/Sustain/Release's
+ * mode argument): bit 1 = decreasing, bit 2 = exponential (akao_setVoiceSustain: (mode >> 1) << 14,
+ * akao_setVoiceAttack/Release: (mode >> 2) into the exp bit). */
+#define AKAO_ENV_LINEAR_INC 1
+#define AKAO_ENV_LINEAR_DEC 3
+#define AKAO_ENV_EXP_INC    5
+#define AKAO_ENV_EXP_DEC    7
 #define SPU_MAIN_VOL_L 0x1F801D80
 #define SPU_MAIN_VOL_R 0x1F801D82
 #define SPU_KEY_ON_LO 0x1F801D88

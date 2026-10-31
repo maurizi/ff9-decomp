@@ -141,7 +141,7 @@ s32 btlfx_takeWork(s32 arg0) {
 }
 
 void btlfx_resetLoader(void) {
-    g_btlfxLoader.state = 0;
+    g_btlfxLoader.state = BTLFX_LD_IDLE;
 }
 
 s32 btlfx_loadFile(s32 arg0) {
@@ -157,7 +157,7 @@ s32 btlfx_loadFile(s32 arg0) {
     g_btlfxLoader.effectId = arg0;
     g_btlfxLoader.slot = 0;
     g_btlfxLoader.block = 0;
-    g_btlfxLoader.state = 1;
+    g_btlfxLoader.state = BTLFX_LD_READ_HEADER;
     g_btlfxLoader.stage = 0;
     g_btlfxLoader.summonState = 0;
     g_btlfxLoader.summonDataState = 0;
@@ -179,7 +179,7 @@ s32 btlfx_loadNextBlock(void) {
     if (g_btlfxLoader.state != 0) {
         return -1;
     }
-    g_btlfxLoader.state = 3;
+    g_btlfxLoader.state = BTLFX_LD_NEXT_BLOCK;
     g_btlfxLoader.stage = 0;
     g_btlfxLoader.summonState = 0;
     g_btlfxLoader.bufState = 0;
@@ -194,7 +194,7 @@ s32 btlfx_loadNextBlock(void) {
 
 s32 btlfx_loadSoundBank(s32 arg0) {
     if (arg0 == 0) {
-        if (g_btlfxLoader.state != 7 && g_btlfxLoader.state != 0) {
+        if (g_btlfxLoader.state != BTLFX_LD_WAIT_SOUND && g_btlfxLoader.state != BTLFX_LD_IDLE) {
             return 1;
         }
     }
@@ -218,7 +218,7 @@ s32 btlfx_waitSoundBank(s32 arg0, s32 arg1) {
 void btlfx_markCommonVram(RECT *arg0) {
     if (arg0->x >= 0x300 && arg0->x + arg0->w < 0x381) {
         if (arg0->y >= 0x100 && arg0->y + arg0->h < 0x201) {
-            g_btlfxState.flags |= 1;
+            g_btlfxState.flags |= BTLFX_HDR_COMMON_VRAM;
         }
     }
 }
@@ -315,34 +315,34 @@ void btlfx_updateLoader(void) {
             st = d->state - 1;
             cont = 0;
             switch (st) {
-            case 0:
+            case BTLFX_LD_READ_HEADER - 1:
                 cd_readAsync(d->sector, 0x800, g_btlfxFileHeader, NULL);
-                d->state = 2;
+                d->state = BTLFX_LD_WAIT_HEADER;
                 d->sector++;
                 break;
-            case 1:
+            case BTLFX_LD_WAIT_HEADER - 1:
                 if (cd_getState() == 0) {
                     p = g_btlfxFileHeader;
                     cont = 1;
                     d->cmd = p + 1;
-                    d->state = 3;
+                    d->state = BTLFX_LD_NEXT_BLOCK;
                     d->blockCount = p[0];
                 }
                 break;
-            case 2:
+            case BTLFX_LD_NEXT_BLOCK - 1:
                 if (d->block < d->blockCount) {
-p = d->cmd; cont = 1; d->blockType = p[0]; d->cmdsLeft = p[1]; d->cmd += 2; d->state = 4;
+p = d->cmd; cont = 1; d->blockType = p[0]; d->cmdsLeft = p[1]; d->cmd += 2; d->state = BTLFX_LD_NEXT_CMD;
                 } else {
-                    d->state = 0;
+                    d->state = BTLFX_LD_IDLE;
                 }
                 break;
-            case 3:
+            case BTLFX_LD_NEXT_CMD - 1:
                 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
                 p = d->cmd;
                 d->cmdKind = ((u8 *)p)[0];
                 d->cmdArg = ((u8 *)p)[1];
-                if (g_btlfxEnv->targets->kind & 8) {
-                    if (d->cmdKind == 4 || d->cmdKind == 9) {
+                if (g_btlfxEnv->targets->kind & BTL_FXK_PARTY_UNLOAD) {
+                    if (d->cmdKind == BTLFX_LDCMD_SUMMON_TEX || d->cmdKind == BTLFX_LDCMD_COMMON_TEX) {
                         if (btlfx_countVisibleParty() != 0) {
                             break;
                         }
@@ -355,7 +355,7 @@ p = d->cmd; cont = 1; d->blockType = p[0]; d->cmdsLeft = p[1]; d->cmd += 2; d->s
                 rd = p[1] << 11;
                 p += 2;
                 switch (d->cmdKind) {
-                case 2:
+                case BTLFX_LDCMD_DATA:
                     sz = rd;
                     d->stage = 1;
                     if (d->cmdArg != 0) {
@@ -370,17 +370,17 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                         d->ringCursor = d->ringBase;
                     }
                     break;
-                case 10:
+                case BTLFX_LDCMD_RING:
                     dst = d->ringCursor;
                     d->ringCursor = dst + rd;
                     break;
-                case 1:
+                case BTLFX_LDCMD_TEX_MORE:
                     dst = (u8 *)d->texData;
                     break;
-                case 3:
+                case BTLFX_LDCMD_CODE:
                     d->stage = 2;
                     break;
-                case 4:
+                case BTLFX_LDCMD_SUMMON_TEX:
                     d->summonState = 1;
                     btl_unloadPartyModels();
                     dst = (u8 *)g_gameState->gameData->ctx.battle->partyBufs[0];
@@ -390,10 +390,10 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                         d->summon->data[i] = 0;
                     }
                     break;
-                case 5:
+                case BTLFX_LDCMD_SUMMON_MODEL:
                     dst = (u8 *)d->summon + d->summon->dataOfs;
                     break;
-                case 6:
+                case BTLFX_LDCMD_SUMMON_DATA:
                     d->summonDataState = 1;
                     e2 = d->summon;
                     d->workCursor = (s32)e2->work;
@@ -403,16 +403,16 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     d->workLeft -= rd;
                     d->workCursor += rd;
                     break;
-                case 7:
+                case BTLFX_LDCMD_SOUND:
                     d->soundState = 1;
                     dst = (u8 *)g_gameState->gameData->ctx.battle->work->loadBuf;
                     break;
-                case 8:
+                case BTLFX_LDCMD_LOADBUF:
                     d->bufState = 1;
                     dst = (u8 *)g_gameState->gameData->ctx.battle->work->loadBuf;
                     break;
-                case 9:
-                    if (g_btlfxEnv->targets->kind & 8) {
+                case BTLFX_LDCMD_COMMON_TEX:
+                    if (g_btlfxEnv->targets->kind & BTL_FXK_PARTY_UNLOAD) {
                         btl_unloadPartyModels();
                         dst = (u8 *)g_gameState->gameData->ctx.battle->partyBufs[0];
                     } else {
@@ -422,21 +422,21 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                 }
                 d->cmd = p;
                 cd_readAsync(d->sector, rd, dst, NULL);
-                d->state = 5;
+                d->state = BTLFX_LD_WAIT_CMD;
                 d->sector += rd >> 11;
                 break;
-            case 4:
+            case BTLFX_LD_WAIT_CMD - 1:
                 if (cd_getState() != 0) {
                     break;
                 }
-                if (d->cmdKind == 9 && (d->cmdArg & 0xF) && g_btlfxState.castEnded == 0) {
+                if (d->cmdKind == BTLFX_LDCMD_COMMON_TEX && (d->cmdArg & 0xF) && g_btlfxState.castEnded == 0) {
                     break;
                 }
-                if (d->cmdKind == 3 && btlfx_drawSyncStep() == 0) {
+                if (d->cmdKind == BTLFX_LDCMD_CODE && btlfx_drawSyncStep() == 0) {
                     break;
                 }
                 switch (d->cmdKind) {
-                case 2:
+                case BTLFX_LDCMD_DATA:
                     if (d->cmdArg != 0 && btlfx_getFileDataSize(0, 0x40) != 0) {
                         d->modArg = btlfx_getFileData(0, 0x40);
                     }
@@ -449,7 +449,7 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                         d->heaps[d->slot] = NULL;
                     }
                     break;
-                case 0:
+                case BTLFX_LDCMD_TEX:
                     dst = RAM_BTLFX_MODULE(u8 *);
                     if (d->blockType == 1 && d->slot != 0) {
                         dst = RAM_BTLFX_MODULE_HI(u8 *);
@@ -476,10 +476,10 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     d->texData = (u32 *)q;
                     btlfx_uploadTextures(&r.r, (u32 *)q, (Unk800DA790 *)d);
                     break;
-                case 1:
+                case BTLFX_LDCMD_TEX_MORE:
                     btlfx_uploadTextures(&r.r, d->texData, (Unk800DA790 *)d);
                     break;
-                case 3:
+                case BTLFX_LDCMD_CODE:
                     dst = RAM_BTLFX_MODULE(u8 *);
                     if (d->blockType == 1 && d->slot != 0) {
                         dst = RAM_BTLFX_MODULE_HI(u8 *);
@@ -493,7 +493,7 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     d->stage = 3;
                     d->slotBlock.h[d->slot] = d->block;
                     break;
-                case 4:
+                case BTLFX_LDCMD_SUMMON_TEX:
                     cnt = 0;
                     e = d->summon;
                     dst = (u8 *)e + e->dataOfs;
@@ -513,7 +513,7 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                         ((s32 *)g_btlfxSummonTexPos)[cnt * 2] = ((s32 *)g_btlfxSummonTexPos)[cnt * 2 + 1] = r.w;
                     }
                     break;
-                case 5:
+                case BTLFX_LDCMD_SUMMON_MODEL:
                     e = d->summon;
                     dst = (u8 *)e;
                     e->modelHdr = dst + e->dataOfs;
@@ -529,23 +529,23 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     d->summonModel = Hi_RegisterSummonModel(e, e->motions[0] != (s32)e->texAnims ? (s16 *)g_btlfxSummonTexPos : NULL);
                     d->summonState = 2;
                     break;
-                case 6:
+                case BTLFX_LDCMD_SUMMON_DATA:
                     d->summonDataState = 2;
                     break;
-                case 7:
+                case BTLFX_LDCMD_SOUND:
                     d->soundState = 2;
                     d->soundUploading = 1;
                     if (d->soundBlocks == 0) {
                         btlfx_loadSoundBank(1);
                     }
                     break;
-                case 8:
+                case BTLFX_LDCMD_LOADBUF:
                     d->bufState = 2;
                     break;
-                case 9:
+                case BTLFX_LDCMD_COMMON_TEX:
                     m = 1;
                     d->commonTexLoaded = 1;
-                    if (g_btlfxEnv->targets->kind & 8) {
+                    if (g_btlfxEnv->targets->kind & BTL_FXK_PARTY_UNLOAD) {
                         btl_unloadPartyModels();
                         base = (void *)g_gameState->gameData->ctx.battle->partyBufs[0];
                     } else {
@@ -574,36 +574,36 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     break;
                 }
                 if (--d->cmdsLeft <= 0) {
-                    d->state = 0;
+                    d->state = BTLFX_LD_IDLE;
                     break;
                 }
-                if (d->cmdKind == 7) {
+                if (d->cmdKind == BTLFX_LDCMD_SOUND) {
                     if (d->soundBlocks == 0) {
-                        d->state = 6;
+                        d->state = BTLFX_LD_WAIT_SPU;
                     } else {
-                        d->state = 7;
+                        d->state = BTLFX_LD_WAIT_SOUND;
                     }
                     cont = 0;
                     d->soundBlocks++;
                 } else {
                     cont = 0;
-                    if (d->cmdKind < 2 || d->cmdKind == 4 || d->cmdKind == 9) {
+                    if (d->cmdKind < BTLFX_LDCMD_DATA || d->cmdKind == BTLFX_LDCMD_SUMMON_TEX || d->cmdKind == BTLFX_LDCMD_COMMON_TEX) {
                         cont = 0;
                     } else {
                         cont = 1;
                     }
-                    d->state = 4;
+                    d->state = BTLFX_LD_NEXT_CMD;
                 }
                 break;
-            case 5:
+            case BTLFX_LD_WAIT_SPU - 1:
                 if (akao_getSpuTransferState() == 0) {
-                    d->state = 4;
+                    d->state = BTLFX_LD_NEXT_CMD;
                     cont = 1;
                 }
                 break;
-            case 6:
+            case BTLFX_LD_WAIT_SOUND - 1:
                 if (d->soundUploaded != 0) {
-                    d->state = 6;
+                    d->state = BTLFX_LD_WAIT_SPU;
                     d->soundUploaded = 0;
                 }
                 break;

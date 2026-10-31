@@ -7,11 +7,6 @@
 #include "ff9.h"
 
 /* main exe: candidates for ff9.h */
-/* g_gameState->disc: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
- * The ending plays its movie only with disc 4 in (see ovl_14.h). */
-#define DISC_NONE 0xFF
-#define DISC_1    1
-#define DISC_4    8
 void akao_stopMusic(s32);
 s32 text_measureSmall(u8 *); /* text width */
 void file_setTimPos(s32, s32, s32, s32, s32);

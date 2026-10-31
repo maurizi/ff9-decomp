@@ -136,9 +136,9 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 0x4B) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos28);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801E8348;
-                    p->unk12 = 0x2C;
-                    p->unkC = 0x4C;
+                    p->trails = (s32)D_801E8348;
+                    p->trailSlots = 0x2C;
+                    p->trailStride = 0x4C;
                     p->otZ = 0x140;
                 }
             }

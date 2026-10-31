@@ -69,17 +69,17 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E823C[work->unk48]),
                                        (s32)&D_801EDD68[work->unk48]);
         if (work->emit0 != NULL) {
-            work->emit0->unk14 = (s32)D_801E82A8[work->unk48];
-            work->emit0->unk12 = 0xF;
-            work->emit0->unkC = 0x18;
+            work->emit0->trails = (s32)D_801E82A8[work->unk48];
+            work->emit0->trailSlots = 0xF;
+            work->emit0->trailStride = 0x18;
         }
         if (work->emit4 != NULL) {
-            work->emit4->unk14 = (s32)D_801E86E8[work->unk48];
-            work->emit4->unk12 = 0x1D;
-            work->emit4->unkC = 0x40;
+            work->emit4->trails = (s32)D_801E86E8[work->unk48];
+            work->emit4->trailSlots = 0x1D;
+            work->emit4->trailStride = 0x40;
         }
         if (work->emit4 != NULL) {
-            ((EffMotion *)work->emit4->file)->unk8 = D_801E8244[work->unk48];
+            ((EffMotion *)work->emit4->file)->update = D_801E8244[work->unk48];
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
@@ -97,9 +97,9 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos18);
             if (work->emit8 != NULL) {
-                work->emit8->unk14 = (s32)D_801E9CA8[work->unk48];
-                work->emit8->unk12 = 0x56;
-                work->emit8->unkC = 0x40;
+                work->emit8->trails = (s32)D_801E9CA8[work->unk48];
+                work->emit8->trailSlots = 0x56;
+                work->emit8->trailStride = 0x40;
             }
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);

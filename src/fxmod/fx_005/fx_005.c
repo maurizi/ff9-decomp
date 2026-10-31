@@ -290,7 +290,7 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos0);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
-                p->elems->unk24 = (void (*)())fx_005_op83ElemDraw;
+                p->elems->draw = (void (*)())fx_005_op83ElemDraw;
             }
         }
         if (frame >= 0x30) {

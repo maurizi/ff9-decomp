@@ -37,7 +37,7 @@ static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk8010
         }
         if (D_801E86CC == 0) {
             if (e->emit1C != NULL) {
-                e->emit1C->frame = e->emit1C->tail->unk4.unk2;
+                e->emit1C->frame = e->emit1C->tail->anim.duration;
             }
             e->unk0 = 1;
             return 1;
@@ -133,10 +133,10 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801E7E98;
-                    p->unk12 = 0x19;
+                    p->trails = (s32)D_801E7E98;
+                    p->trailSlots = 0x19;
                     p->otZ = 0x20;
-                    p->unkC = 0x54;
+                    p->trailStride = 0x54;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos4);
                 if (p != NULL) {

@@ -28,7 +28,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case 9:
             ok = 0;
-            if (g_gameState->gameData->savedMusicId != 0xFFFF && g_gameState->gameData->savedMusicField == (s16)g_gameState->gameData->fieldId) {
+            if (g_gameState->gameData->savedMusicId != MUSIC_NONE && g_gameState->gameData->savedMusicField == (s16)g_gameState->gameData->fieldId) {
                 GameData *p;
                 ok = 1;
                 g_fieldMusicRequest = kind;
@@ -41,7 +41,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->gameData->musicFileSectors = g_gameState->gameData->savedMusicFileSectors;
             }
             /* v2 */
-            g_gameState->gameData->savedMusicId = 0xFFFF;
+            g_gameState->gameData->savedMusicId = MUSIC_NONE;
             g_gameState->gameData->savedMusicBank = 0xFFFF;
             g_gameState->gameData->savedMusicField = 0xFFFF;
             g_gameState->gameData->savedMusicFileSector = -1;
@@ -237,7 +237,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case 9:
             t = 0;
-            if (g_gameState->gameData->sfxSlotId[slot] != 0xFFFF && g_gameState->gameData->sfxSlotSuspendField[slot] == (s16)g_gameState->gameData->fieldId) {
+            if (g_gameState->gameData->sfxSlotId[slot] != SE_NONE && g_gameState->gameData->sfxSlotSuspendField[slot] == (s16)g_gameState->gameData->fieldId) {
                 arg2 = (0x100000 << slot) & 0x300000;
                 t = 1;
                 arg3 = g_gameState->gameData->sfxSlotPan[slot];
@@ -265,10 +265,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 1:
             if ((arg0 & 0x3F) == 9 && fp) {
                 if (g_gameState->gameData->flags & GD_SFX0_PLAYING) {
-                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf0, 0x100000);
+                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[0], 0x100000);
                 }
                 if (g_gameState->gameData->flags & GD_SFX1_PLAYING) {
-                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf1, 0x200000);
+                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[1], 0x200000);
                 }
                 g_gameState->gameData->flags &= ~(GD_SFX0_PLAYING | GD_SFX1_PLAYING);
             } else {
@@ -585,7 +585,7 @@ void fld_stopResidentSfx(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        if (g_gameState->gameData->sfxSlotId[i] != 0xFFFF) {
+        if (g_gameState->gameData->sfxSlotId[i] != SE_NONE) {
             fld_soundCommand(SND_SE_STOP | SND_RESIDENT, g_gameState->gameData->sfxSlotId[i], 0, 0, 0);
         }
     }
@@ -754,7 +754,7 @@ s32 fld_depGetLink(s32 arg0) {
 
     for (i = t->count - 1; i >= 0; i--) {
         if (e[i].id == arg0) {
-            return e[i].unkC;
+            return e[i].link;
         }
     }
     return -1;
@@ -778,11 +778,11 @@ void fld_findBattleMusic(void) {
     key |= 0x110000;
     w = key;
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
-        id = base[i].unkC;
+        id = base[i].link;
         if (base[i].id == w && ((id >> 16) & 0xFF) == 7) {
             g_gameState->gameData->ctx.field->area->scene->battleMusic = id;
             for (j = 0; j < g_gameState->gameData->depTable->count; j++) {
-                w = base[j].unkC;
+                w = base[j].link;
                 v = base[j].id;
                 if (((base[j].id >> 16) & 0xFF) == 9 && w == id) {
                     g_gameState->gameData->ctx.field->area->scene->battleMusicBank = v;
@@ -830,7 +830,7 @@ s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2) { /* its caller passes t
         x = e[i].id;
         if (((x >> 16) & 0xFF) == 9) {
             found = 0;
-            if (((e[i].unkC >> 16) & 0xFF) == 8) {
+            if (((e[i].link >> 16) & 0xFF) == 8) {
                 s = -1;
                 for (j = 4; j >= 0; j--) {
                     if (g_fieldSoundBankIds[j] == x) {
@@ -935,7 +935,7 @@ s32 fld_depGetFileSector(s32 arg0, s32 *arg1) {
     FileEntry *e = dep_find(g_gameState->gameData->depTable, arg0);
 
     if (arg1 != NULL) {
-        *arg1 = e->unk8 << 11;
+        *arg1 = e->sectors << 11;
     }
     return e->sector;
 }
@@ -1317,7 +1317,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
         if (f == NULL) {
             return -1;
         }
-        if (f->unk8 == 0) {
+        if (f->sectors == 0) {
             return -1;
         }
         if (flag && fld_findPreloadExclude(id)) {
@@ -1552,7 +1552,7 @@ void fld_queueFieldPreloads(void) {
         }
         if (cnt != 0) {
             g = file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE));
-            fld_preloadFile(OVL_KEY(OVL_BATTLE), 0, g->sector, (g->unkC - g->sector) << 11);
+            fld_preloadFile(OVL_KEY(OVL_BATTLE), 0, g->sector, (g->link - g->sector) << 11);
             key = fld_isEncounterPreloadRequested();
             if (key != 0) {
                 fld_removePreloadRequest(OVL_KEY(OVL_BATTLE));
@@ -1565,13 +1565,13 @@ void fld_queueFieldPreloads(void) {
             if (((g_fieldPreloadRequests[i] >> 16) & 0xFF) == 5) {
                 e = dep_find(g_gameState->gameData->depTable, key);
                 if (e != NULL) {
-                    if ((e->unkC & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
-                        f = dep_find(g_gameState->gameData->depTable, e->unkC);
+                    if ((e->link & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
+                        f = dep_find(g_gameState->gameData->depTable, e->link);
                         if (f != NULL) {
-                            fld_preloadFile(e->unkC & 0xFFFFFF, 0, f->sector, f->unk8 << 11);
+                            fld_preloadFile(e->link & 0xFFFFFF, 0, f->sector, f->sectors << 11);
                         }
                     }
-                    fld_preloadFile(key, 0, e->sector, e->unk8 << 11);
+                    fld_preloadFile(key, 0, e->sector, e->sectors << 11);
                     fld_removePreloadRequest(key);
                 }
             }
@@ -1582,10 +1582,10 @@ void fld_queueFieldPreloads(void) {
         cur = -1;
         for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
             x = tbl[i].id;
-            if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+            if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
                 if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
-                    fld_queueFieldPreloads_grp(x & 0xFFFF) == fld_queueFieldPreloads_grp(g_gameState->gameData->fieldId) && best < tbl[i].unk8) {
-                    best = tbl[i].unk8;
+                    fld_queueFieldPreloads_grp(x & 0xFFFF) == fld_queueFieldPreloads_grp(g_gameState->gameData->fieldId) && best < tbl[i].sectors) {
+                    best = tbl[i].sectors;
                     sel = i;
                 }
             }
@@ -1593,9 +1593,9 @@ void fld_queueFieldPreloads(void) {
         if (sel == -1) {
             for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                 x = tbl[i].id;
-                if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
                     if ((x & 0xFFFF) < 9000 && fld_findPreloadExclude(x) == NULL && (x & 0xFFFF) == g_gameState->gameData->ctx.field->prevFieldId) {
-                        best = tbl[i].unk8;
+                        best = tbl[i].sectors;
                         sel = i;
                         break;
                     }
@@ -1605,9 +1605,9 @@ void fld_queueFieldPreloads(void) {
         if (sel == -1) {
             for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                 x = tbl[i].id;
-                if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
                     if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
-                        best < tbl[i].unk8) {
+                        best < tbl[i].sectors) {
                         sel = i;
                         break;
                     }
@@ -1615,16 +1615,16 @@ void fld_queueFieldPreloads(void) {
             }
         }
         if (sel != -1) {
-            if ((tbl[sel].unkC & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
+            if ((tbl[sel].link & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
                 for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
-                    if (tbl[i].id == tbl[sel].unkC) {
-                        fld_preloadFile(tbl[i].id & 0xFFFFFF, 0, tbl[i].sector, tbl[i].unk8 << 11);
+                    if (tbl[i].id == tbl[sel].link) {
+                        fld_preloadFile(tbl[i].id & 0xFFFFFF, 0, tbl[i].sector, tbl[i].sectors << 11);
                         break;
                     }
                 }
             }
             cnt = tbl[sel].id & 0xFFFFFF;
-            fld_preloadFile(cnt, 0, tbl[sel].sector, tbl[sel].unk8 << 11);
+            fld_preloadFile(cnt, 0, tbl[sel].sector, tbl[sel].sectors << 11);
             cur = cnt;
         }
         if (cur != -1) {
@@ -1632,12 +1632,12 @@ void fld_queueFieldPreloads(void) {
             sel = -1;
             for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                 x = tbl[i].id;
-                if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
                     key = x & 0xFFFF;
                     if (key < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
                         fld_findPreloadExclude(x) == NULL && fld_queueFieldPreloads_grp(key) == fld_queueFieldPreloads_grp(g_gameState->gameData->fieldId) &&
-                        best < tbl[i].unk8) {
-                        best = tbl[i].unk8;
+                        best < tbl[i].sectors) {
+                        best = tbl[i].sectors;
                         sel = i;
                         break;
                     }
@@ -1646,10 +1646,10 @@ void fld_queueFieldPreloads(void) {
             if (sel == -1) {
                 for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                     x = tbl[i].id;
-                    if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                    if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
                         if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != (cur & 0xFFFF) && fld_findPreloadExclude(x) == NULL &&
                             (x & 0xFFFF) == g_gameState->gameData->ctx.field->prevFieldId) {
-                            best = tbl[i].unk8;
+                            best = tbl[i].sectors;
                             sel = i;
                             break;
                         }
@@ -1659,9 +1659,9 @@ void fld_queueFieldPreloads(void) {
             if (sel == -1) {
                 for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                     x = tbl[i].id;
-                    if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                    if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
                         if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
-                            fld_findPreloadExclude(x) == NULL && best < tbl[i].unk8) {
+                            fld_findPreloadExclude(x) == NULL && best < tbl[i].sectors) {
                             sel = i;
                             break;
                         }
@@ -1669,9 +1669,9 @@ void fld_queueFieldPreloads(void) {
                 }
             }
             if (sel != -1) {
-                if ((tbl[sel].unkC & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
+                if ((tbl[sel].link & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
                     for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
-                        if (tbl[i].id == tbl[sel].unkC) {
+                        if (tbl[i].id == tbl[sel].link) {
                             fld_preloadFile(tbl[i].id & 0xFFFFFF, 1, tbl[i].sector, -1);
                             return;
                         }

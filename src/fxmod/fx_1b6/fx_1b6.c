@@ -219,7 +219,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit5C = NULL;
                 }
                 if (work->emit5C != NULL) {
-                    work->emit5C->unk20 = 0x1000 - t;
+                    work->emit5C->alpha = 0x1000 - t;
                 }
             }
             if (work->emit60 != NULL) {
@@ -227,7 +227,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit60 = NULL;
                 }
                 if (work->emit60 != NULL) {
-                    work->emit60->unk20 = t;
+                    work->emit60->alpha = t;
                 }
             }
             if (frame == 1 || frame == 0xF) {
@@ -261,9 +261,9 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4C);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801E85C4;
-                    p->unk12 = 0x20;
-                    p->unkC = 0x8C;
+                    p->trails = (s32)D_801E85C4;
+                    p->trailSlots = 0x20;
+                    p->trailStride = 0x8C;
                     p->otZ = 0x140;
                 }
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x80, 0x80, 0x80);

@@ -14,16 +14,16 @@ s32 fx_060_op80(s32 mode, Fx060Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x18);
-            p->unk14 = (s32)D_801E7EF0;
-            p->unk12 = 0x13;
-            p->unkC = 0x6C;
+            p->trails = (s32)D_801E7EF0;
+            p->trailSlots = 0x13;
+            p->trailStride = 0x6C;
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos4);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
-            p->unk14 = (s32)D_801E7920;
-            p->unk12 = 0xC;
-            p->unkC = 0x7C;
+            p->trails = (s32)D_801E7920;
+            p->trailSlots = 0xC;
+            p->trailStride = 0x7C;
         }
     } else {
         frame = entry->frame;

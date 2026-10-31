@@ -35,9 +35,9 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0x1E:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos48);
             if (work->emit4 != NULL) {
-                work->emit4->unk14 = (s32)D_801E8218;
-                work->emit4->unk12 = 0x14;
-                work->emit4->unkC = 0xB0;
+                work->emit4->trails = (s32)D_801E8218;
+                work->emit4->trailSlots = 0x14;
+                work->emit4->trailStride = 0xB0;
             }
             break;
         case 0x37:
@@ -46,9 +46,9 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0x50:
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos48);
             if (work->emit8 != NULL) {
-                work->emit8->unk14 = (s32)D_801E8FD8;
-                work->emit8->unk12 = 0x14;
-                work->emit8->unkC = 0xB0;
+                work->emit8->trails = (s32)D_801E8FD8;
+                work->emit8->trailSlots = 0x14;
+                work->emit8->trailStride = 0xB0;
             }
             break;
         }

@@ -178,9 +178,9 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0x37, 0x3D06, 0x80, 0x80);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos8);
         if (p != NULL) {
-            p->unk14 = (s32)D_801E93FC;
-            p->unk12 = 0x12;
-            p->unkC = 0x24;
+            p->trails = (s32)D_801E93FC;
+            p->trailSlots = 0x12;
+            p->trailStride = 0x24;
             p->otZ = 0x20;
         }
         work->emit2C = NULL;

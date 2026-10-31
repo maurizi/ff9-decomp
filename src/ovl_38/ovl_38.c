@@ -162,7 +162,7 @@ void menuStatus_drawExp(void) {
     c = g_gameState->gameData->party[st->slot];
     show = 0;
     if (g_evtGlobalVars.b[EVT_GB_TRANCE_ENABLED] != 0) {
-        bit = c->classFlags & 0x10;
+        bit = c->classFlags & CHR_CLASS_GUEST;
         show = bit == 0;
     }
     if (show) {
@@ -267,7 +267,7 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
         flag = !(a->flags & 2);
     } else {
         sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
-        name = s_menuStatusSupportNames + sup->unk2;
+        name = s_menuStatusSupportNames + sup->name;
         if (chr_testSupportBit(c->supportAbilities, id)) {
             icon = 0xBD;
         } else {
