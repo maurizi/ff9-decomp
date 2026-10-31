@@ -20,7 +20,7 @@ s32 fx_136_op80(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk2C = (s32)&work->unkC;
+                work->unk0->target = (s32)&work->unkC;
             }
         }
         return frame >= 0x28;

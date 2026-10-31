@@ -48,20 +48,20 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E7CDC);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&D_801E7CDC);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7CE4;
-            work->unk0->unk12 = 4;
-            work->unk0->unkC = 0xF0;
+            work->unk0->trails = (s32)D_801E7CE4;
+            work->unk0->trailSlots = 4;
+            work->unk0->trailStride = 0xF0;
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk14 = (s32)D_801E80A4;
-            work->unk4->unk12 = 4;
-            work->unk4->unkC = 0xF0;
+            work->unk4->trails = (s32)D_801E80A4;
+            work->unk4->trailSlots = 4;
+            work->unk4->trailStride = 0xF0;
         }
         if (work->unk0 != NULL) {
-            ((EffMotion *)work->unk0->file)->unk8 = func_801E7704;
+            ((EffMotion *)work->unk0->file)->update = func_801E7704;
         }
         if (work->unk4 != NULL) {
-            ((EffMotion *)work->unk4->file)->unk8 = func_801E774C;
+            ((EffMotion *)work->unk4->file)->update = func_801E774C;
         }
     } else {
         return entry->frame >= 0x1E;

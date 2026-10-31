@@ -19,9 +19,9 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk10.vz = work->unk8.vz;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7BF0;
-            work->unk0->unk12 = 0xA;
-            work->unk0->unkC = 0xB0;
+            work->unk0->trails = (s32)D_801E7BF0;
+            work->unk0->trailSlots = 0xA;
+            work->unk0->trailStride = 0xB0;
         }
         work->unk18.vx = 0;
         work->unk18.vy = 0;

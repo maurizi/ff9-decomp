@@ -50,9 +50,9 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk4C);
             work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk4C);
             if (work->unk8 != NULL) {
-                work->unk8->unk14 = (s32)D_801E8870;
-                work->unk8->unk12 = 0x35;
-                work->unk8->unkC = 0x28;
+                work->unk8->trails = (s32)D_801E8870;
+                work->unk8->trailSlots = 0x35;
+                work->unk8->trailStride = 0x28;
                 if (work->unk8 != NULL) {
                     work->unk8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }

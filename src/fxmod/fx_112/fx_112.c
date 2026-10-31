@@ -102,9 +102,9 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == k * 5) {
             q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk48);
             if (q != NULL) {
-                q->unk14 = (s32)D_801E8130[k];
-                q->unk12 = 0x14;
-                q->unkC = 0x24;
+                q->trails = (s32)D_801E8130[k];
+                q->trailSlots = 0x14;
+                q->trailStride = 0x24;
                 q->otZ = 0x80;
             }
         }

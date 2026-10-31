@@ -12,9 +12,9 @@ s32 fx_03c_op80(s32 mode, Fx03cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk14);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E787C;
-            work->unk0->unk12 = 0x2B;
-            work->unk0->unkC = 0x40;
+            work->unk0->trails = (s32)D_801E787C;
+            work->unk0->trailSlots = 0x2B;
+            work->unk0->trailStride = 0x40;
         }
     } else {
         return entry->frame >= 0x28;

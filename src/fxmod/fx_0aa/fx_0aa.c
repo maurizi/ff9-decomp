@@ -37,20 +37,20 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E90A8);
             work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E90B0);
             if (work->unk8 != NULL) {
-                work->unk8->unk14 = (s32)D_801E7D88;
-                work->unk8->unk12 = 0xC;
-                work->unk8->unkC = 0x70;
+                work->unk8->trails = (s32)D_801E7D88;
+                work->unk8->trailSlots = 0xC;
+                work->unk8->trailStride = 0x70;
             }
             if (work->unkC != NULL) {
-                work->unkC->unk14 = (s32)D_801E82C8;
-                work->unkC->unk12 = 0xC;
-                work->unkC->unkC = 0x70;
+                work->unkC->trails = (s32)D_801E82C8;
+                work->unkC->trailSlots = 0xC;
+                work->unkC->trailStride = 0x70;
             }
             if (work->unk8 != NULL) {
-                ((EffMotion *)work->unk8->file)->unk8 = func_801E7704;
+                ((EffMotion *)work->unk8->file)->update = func_801E7704;
             }
             if (work->unkC != NULL) {
-                ((EffMotion *)work->unkC->file)->unk8 = func_801E7744;
+                ((EffMotion *)work->unkC->file)->update = func_801E7744;
             }
             D_801E9088.vx = work->unk10.vx;
             D_801E9088.vy = work->unk10.vy;
@@ -93,9 +93,9 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk14);
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk14);
             if (work->unk0 != NULL) {
-                work->unk0->unk14 = (s32)D_801E8808;
-                work->unk0->unk12 = 8;
-                work->unk0->unkC = 0x110;
+                work->unk0->trails = (s32)D_801E8808;
+                work->unk0->trailSlots = 8;
+                work->unk0->trailStride = 0x110;
             }
             break;
         case 6:

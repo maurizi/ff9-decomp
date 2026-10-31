@@ -66,7 +66,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk2C);
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&D_801E8494);
             if (work->unk4 != NULL) {
-                ((EffMotion *)work->unk4->file)->unk8 = func_801E7804;
+                ((EffMotion *)work->unk4->file)->update = func_801E7804;
             }
             if (work->unk4 != NULL) {
                 work->unk4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);

@@ -241,10 +241,10 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         if (w->unk0[0xE] != 0) {
             if (--w->unk0[0xE] != 0) {
                 if (w->unk20[0] != NULL) {
-                    w->unk20[0]->unk20 = w->unk0[0xE] << 8;
+                    w->unk20[0]->alpha = w->unk0[0xE] << 8;
                 }
                 if (w->unk20[1] != NULL) {
-                    w->unk20[1]->unk20 = w->unk0[0xE] << 8;
+                    w->unk20[1]->alpha = w->unk0[0xE] << 8;
                 }
             } else {
                 ex->btlfx_stopEmitter(w->unk20[0]);
@@ -443,7 +443,7 @@ s32 func_801E8E10(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     SVECTOR from;
     SVECTOR *key;
 
-    key = &D_801E8FE8[(e->unk1F - 1) & 0x3F];
+    key = &D_801E8FE8[(e->slot - 1) & 0x3F];
     from.vx = 0;
     from.vy = -0x800;
     from.vz = 0x418;

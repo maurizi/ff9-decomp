@@ -289,7 +289,7 @@ Pool6CEntry *btlfx_startCastEmitter_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2
             e->elems[0].tex = btlfx_getCommonData(0x14);
             e->elems[1].tex = btlfx_getCommonData(6);
             e->elems[2].tex = btlfx_getCommonData(2);
-            e->unk2C = *(s32 *)&arg2.b;
+            e->target = *(s32 *)&arg2.b;
             e->otZ = 0x20;
         }
         btlfx_playSoundSet(2, arg0);
@@ -501,9 +501,9 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 }
                 if (arg1->emitter != NULL && t < 5) {
                     k = (t << 12) >> 2;
-                    arg1->emitter->unk20 = 0x1000 - k;
+                    arg1->emitter->alpha = 0x1000 - k;
                     if (arg1->emitter != NULL) {
-                        arg1->emitter->unk1C = k * 2 + 0x1000;
+                        arg1->emitter->scale = k * 2 + 0x1000;
                     }
                     if (t != 4) {
                         goto skip;
@@ -716,7 +716,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
                     e->elems->tex = (s32)p;
                     e->elems->kind = arg1->scale;
                 }
-                e->elems->unk8 = *p & 0x7FFF; /* outside the NULL check in the original */
+                e->elems->frameCount = *p & 0x7FFF; /* outside the NULL check in the original */
                 arg1->data = e;
             }
             if (arg1->frames < arg1->frame) {

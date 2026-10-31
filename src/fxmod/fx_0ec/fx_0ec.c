@@ -602,7 +602,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (p == NULL) {
                     goto skip; /* the original's NULL branch skips the unk60 check (unk60 is NULL then) */
                 }
-                p->unk2C = (s32)&work->unk20;
+                p->target = (s32)&work->unk20;
             }
             if (work->unk60 != NULL && work->unk60->state == BTLFX_EMIT_DONE) {
                 work->unk60 = NULL;

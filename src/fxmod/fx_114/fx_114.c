@@ -259,36 +259,36 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&D_801EF298[2]);
         work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&D_801EF298[3]);
         if (work->unk10 != NULL) {
-            work->unk10->unk14 = (s32)D_801EE318;
-            work->unk10->unk12 = 1;
-            work->unk10->unkC = 0xD0;
+            work->unk10->trails = (s32)D_801EE318;
+            work->unk10->trailSlots = 1;
+            work->unk10->trailStride = 0xD0;
         }
         if (work->unk14 != NULL) {
-            work->unk14->unk14 = (s32)D_801EE3E8;
-            work->unk14->unk12 = 1;
-            work->unk14->unkC = 0xD0;
+            work->unk14->trails = (s32)D_801EE3E8;
+            work->unk14->trailSlots = 1;
+            work->unk14->trailStride = 0xD0;
         }
         if (work->unk18 != NULL) {
-            work->unk18->unk14 = (s32)D_801EE4B8;
-            work->unk18->unk12 = 1;
-            work->unk18->unkC = 0xD0;
+            work->unk18->trails = (s32)D_801EE4B8;
+            work->unk18->trailSlots = 1;
+            work->unk18->trailStride = 0xD0;
         }
         if (work->unk1C != NULL) {
-            work->unk1C->unk14 = (s32)D_801EE588;
-            work->unk1C->unk12 = 1;
-            work->unk1C->unkC = 0xD0;
+            work->unk1C->trails = (s32)D_801EE588;
+            work->unk1C->trailSlots = 1;
+            work->unk1C->trailStride = 0xD0;
         }
         if (work->unk10 != NULL) {
-            ((EffMotion *)work->unk10->file)->unk8 = func_801E777C;
+            ((EffMotion *)work->unk10->file)->update = func_801E777C;
         }
         if (work->unk14 != NULL) {
-            ((EffMotion *)work->unk14->file)->unk8 = func_801E77B0;
+            ((EffMotion *)work->unk14->file)->update = func_801E77B0;
         }
         if (work->unk18 != NULL) {
-            ((EffMotion *)work->unk18->file)->unk8 = func_801E77E4;
+            ((EffMotion *)work->unk18->file)->update = func_801E77E4;
         }
         if (work->unk1C != NULL) {
-            ((EffMotion *)work->unk1C->file)->unk8 = func_801E7818;
+            ((EffMotion *)work->unk1C->file)->update = func_801E7818;
         }
         break;
     case 0x2C:
@@ -298,9 +298,9 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk14C.vz = -0x4B0;
         work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk14C);
         if (work->unk8 != NULL) {
-            work->unk8->unk14 = (s32)D_801ED5C8;
-            work->unk8->unk12 = 0x55;
-            work->unk8->unkC = 0x28;
+            work->unk8->trails = (s32)D_801ED5C8;
+            work->unk8->trailSlots = 0x55;
+            work->unk8->trailStride = 0x28;
         }
         break;
     case 0xA8:

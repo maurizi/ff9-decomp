@@ -498,8 +498,8 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&work->unk0);
                 if (p != NULL) {
-                    p->tail->unk0 = -1;
-                    ((EffTailSpawn *)p->tail)->unk3C = func_801E8B10;
+                    p->tail->shape = -1;
+                    ((EffTailSpawn *)p->tail)->spawnFn = func_801E8B10;
                     p->otZ = 0x20;
                 }
             }

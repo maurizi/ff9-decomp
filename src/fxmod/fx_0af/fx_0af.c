@@ -15,9 +15,9 @@ s32 fx_0af_op80(s32 mode, Fx0afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk18);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk8);
         if (work->unk4 != NULL) {
-            work->unk4->unk14 = (s32)D_801E799C;
-            work->unk4->unk12 = 0x1E;
-            work->unk4->unkC = 0x4C;
+            work->unk4->trails = (s32)D_801E799C;
+            work->unk4->trailSlots = 0x1E;
+            work->unk4->trailStride = 0x4C;
         }
         if (work->unk4 != NULL) {
             work->unk4->otZ = 0x20;
@@ -38,9 +38,9 @@ s32 fx_0af_op80(s32 mode, Fx0afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801E828C;
-                    p->unk12 = 0x1E;
-                    p->unkC = 0x4C;
+                    p->trails = (s32)D_801E828C;
+                    p->trailSlots = 0x1E;
+                    p->trailStride = 0x4C;
                     p->otZ = 0x20;
                 }
             }

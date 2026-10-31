@@ -172,7 +172,7 @@ void func_801E7B04(void) {
 }
 
 s32 func_801E7E48(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    s32 k = e->unk1F - 1;
+    s32 k = e->slot - 1;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EBF34);
     Fx1b0Orbit *o = &D_801EC724[k];
     SVECTOR v;
@@ -340,10 +340,10 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x31) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk28);
                 if (p != NULL) {
-                    ((EffMotion *)p->file)->unk8 = func_801E7E48;
-                    p->unk14 = (s32)D_801E8D44;
-                    p->unk12 = 0x20;
-                    p->unkC = 0xAC;
+                    ((EffMotion *)p->file)->update = func_801E7E48;
+                    p->trails = (s32)D_801E8D44;
+                    p->trailSlots = 0x20;
+                    p->trailStride = 0xAC;
                     p->otZ = 0x140;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk28);
@@ -393,9 +393,9 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk28);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801EA2C4;
-                    p->unk12 = 0x18;
-                    p->unkC = 0x8C;
+                    p->trails = (s32)D_801EA2C4;
+                    p->trailSlots = 0x18;
+                    p->trailStride = 0x8C;
                     p->otZ = 0x140;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk28);
@@ -410,9 +410,9 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 1) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk28);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801EAFE4;
-                    p->unk12 = 0x1C;
-                    p->unkC = 0x8C;
+                    p->trails = (s32)D_801EAFE4;
+                    p->trailSlots = 0x1C;
+                    p->trailStride = 0x8C;
                     p->otZ = 0x140;
                 }
             }

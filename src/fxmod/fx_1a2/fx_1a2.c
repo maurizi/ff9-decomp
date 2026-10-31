@@ -425,16 +425,16 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         if (frame == 0) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&w->unk8);
             if (p != NULL) {
-                p->unk14 = (s32)D_801EBA94;
-                p->unk12 = 0x10;
-                p->unkC = 0x4C;
+                p->trails = (s32)D_801EBA94;
+                p->trailSlots = 0x10;
+                p->trailStride = 0x4C;
                 p->otZ = 0x40;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&w->unk8);
             if (p != NULL) {
-                p->unk14 = (s32)D_801EBF54;
-                p->unk12 = 8;
-                p->unkC = 0x4C;
+                p->trails = (s32)D_801EBF54;
+                p->trailSlots = 8;
+                p->trailStride = 0x4C;
                 p->otZ = 0x40;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)(q = &w->unk8));

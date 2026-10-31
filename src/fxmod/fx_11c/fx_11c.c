@@ -16,14 +16,14 @@ s32 fx_11c_op80(s32 mode, Fx11cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk10);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7FAC;
-            work->unk0->unk12 = 0xD;
-            work->unk0->unkC = 0x90;
+            work->unk0->trails = (s32)D_801E7FAC;
+            work->unk0->trailSlots = 0xD;
+            work->unk0->trailStride = 0x90;
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk14 = (s32)D_801E86FC;
-            work->unk4->unk12 = 0xD;
-            work->unk4->unkC = 0x90;
+            work->unk4->trails = (s32)D_801E86FC;
+            work->unk4->trailSlots = 0xD;
+            work->unk4->trailStride = 0x90;
         }
     } else {
         return entry->frame >= 0x28;
@@ -110,9 +110,9 @@ s32 fx_11c_op82(s32 mode, Fx11cWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk18);
         work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk18);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E8E4C;
-            work->unk0->unk12 = 8;
-            work->unk0->unkC = 0x90;
+            work->unk0->trails = (s32)D_801E8E4C;
+            work->unk0->trailSlots = 8;
+            work->unk0->trailStride = 0x90;
         }
     } else {
         frame = entry->frame;

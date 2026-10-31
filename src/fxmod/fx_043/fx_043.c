@@ -38,9 +38,9 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[0].vz = work->unkC.vz;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7BE0);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7BE8;
-            work->unk0->unk12 = 0xB;
-            work->unk0->unkC = 0x20;
+            work->unk0->trails = (s32)D_801E7BE8;
+            work->unk0->trailSlots = 0xB;
+            work->unk0->trailStride = 0x20;
         }
         if (work->unk0 != NULL) {
             ((s32 *)work->unk0->file)[2] = (s32)func_801E7704;
@@ -66,9 +66,9 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vy -= 0x64;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk18);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7D48;
-            work->unk0->unk12 = 0x34;
-            work->unk0->unkC = 0x20;
+            work->unk0->trails = (s32)D_801E7D48;
+            work->unk0->trailSlots = 0x34;
+            work->unk0->trailStride = 0x20;
         }
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
         if (work->unk0 != NULL) {

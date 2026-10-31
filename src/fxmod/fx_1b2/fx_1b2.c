@@ -57,14 +57,14 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk44);
                 work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk4C);
                 if (work->unk4 != NULL) {
-                    work->unk4->unk14 = (s32)D_801E8B5C[work->unk68];
-                    work->unk4->unk12 = 0x3C;
-                    work->unk4->unkC = 0x28;
+                    work->unk4->trails = (s32)D_801E8B5C[work->unk68];
+                    work->unk4->trailSlots = 0x3C;
+                    work->unk4->trailStride = 0x28;
                 }
                 if (work->unk8 != NULL) {
-                    work->unk8->unk14 = (s32)D_801EA77C[work->unk68];
-                    work->unk8->unk12 = 0x3C;
-                    work->unk8->unkC = 0x28;
+                    work->unk8->trails = (s32)D_801EA77C[work->unk68];
+                    work->unk8->trailSlots = 0x3C;
+                    work->unk8->trailStride = 0x28;
                 }
                 work->unk68++;
             }
@@ -139,14 +139,14 @@ s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk14);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk1C);
             if (work->unk4 != NULL) {
-                work->unk4->unk14 = (s32)D_801EC39C;
-                work->unk4->unk12 = 0xA;
-                work->unk4->unkC = 0x80;
+                work->unk4->trails = (s32)D_801EC39C;
+                work->unk4->trailSlots = 0xA;
+                work->unk4->trailStride = 0x80;
             }
             if (work->unk8 != NULL) {
-                work->unk8->unk14 = (s32)D_801EC89C;
-                work->unk8->unk12 = 0xA;
-                work->unk8->unkC = 0x80;
+                work->unk8->trails = (s32)D_801EC89C;
+                work->unk8->trailSlots = 0xA;
+                work->unk8->trailStride = 0x80;
             }
             break;
         }

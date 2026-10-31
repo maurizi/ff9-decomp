@@ -60,9 +60,9 @@ s32 fx_0a8_op81(s32 mode, Fx0a8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk20);
         work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk20);
         if (work->unk4 != NULL) {
-            work->unk4->unk14 = (s32)D_801E7B78;
-            work->unk4->unk12 = 6;
-            work->unk4->unkC = 0x60;
+            work->unk4->trails = (s32)D_801E7B78;
+            work->unk4->trailSlots = 6;
+            work->unk4->trailStride = 0x60;
         }
     } else {
         frame = entry->frame;

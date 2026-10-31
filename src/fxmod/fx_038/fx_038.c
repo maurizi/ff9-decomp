@@ -63,7 +63,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             it->unk0 = 1;
             ((s16 *)it)[-1] = -1;
             if (it->unk14 != NULL) {
-                it->unk14->frame = it->unk14->tail->unk4.unk2;
+                it->unk14->frame = it->unk14->tail->anim.duration;
             }
             it->unk4.vy = 0;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x18, 0x18, 0x18);

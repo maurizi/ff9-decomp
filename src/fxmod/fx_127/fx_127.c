@@ -88,14 +88,14 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&D_801E8330);
             D_801E8340 = work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E8338);
             if (work->unk10 != NULL) {
-                work->unk10->unk14 = (s32)D_801E8350;
-                work->unk10->unk12 = 0x112;
-                work->unk10->unkC = 0x18;
+                work->unk10->trails = (s32)D_801E8350;
+                work->unk10->trailSlots = 0x112;
+                work->unk10->trailStride = 0x18;
             }
             if (work->unk14 != NULL) {
-                work->unk14->unk14 = (s32)D_801E9D00;
-                work->unk14->unk12 = 0x28;
-                work->unk14->unkC = 0x40;
+                work->unk14->trails = (s32)D_801E9D00;
+                work->unk14->trailSlots = 0x28;
+                work->unk14->trailStride = 0x40;
             }
             if (work->unk10 != NULL) {
                 ((Fx127EffHdr *)work->unk10->file)->unk8 = func_801E7704;

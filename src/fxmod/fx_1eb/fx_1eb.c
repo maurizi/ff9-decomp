@@ -112,9 +112,9 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 22:
             work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk44);
             if (work->unk14 != NULL) {
-                work->unk14->unk14 = (s32)D_801E8748;
-                work->unk14->unk12 = 6;
-                work->unk14->unkC = 0x60;
+                work->unk14->trails = (s32)D_801E8748;
+                work->unk14->trailSlots = 6;
+                work->unk14->trailStride = 0x60;
             }
             break;
         }
@@ -151,7 +151,7 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 0x18) {
             work->unk50 -= 0x200;
             if (work->unk0 != NULL) {
-                work->unk0->unk20 = work->unk50;
+                work->unk0->alpha = work->unk50;
             }
             if (work->unk50 == 0) {
                 ex->btlfx_stopEmitter(work->unk0);

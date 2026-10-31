@@ -2,7 +2,7 @@
 
 s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = (frame << 12) / frames;
-    s32 row = (e->unk1F - 1) % 6;
+    s32 row = (e->slot - 1) % 6;
     s32 v = t * D_801E7CD8[row][0];
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7D8C);
     s32 frac = v & 0xFFF;
@@ -62,21 +62,21 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 0) {
                 work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
                 if (work->unk20 != NULL) {
-                    work->unk20->unk14 = (s32)D_801E7E6C;
-                    work->unk20->unk12 = 0x48;
-                    work->unk20->unkC = 0x3C;
+                    work->unk20->trails = (s32)D_801E7E6C;
+                    work->unk20->trailSlots = 0x48;
+                    work->unk20->trailStride = 0x3C;
                 }
                 if (work->unk20 != NULL) {
                     work->unk20->otZ = k;
                 }
                 if (work->unk20 != NULL) {
-                    ((EffMotion *)work->unk20->file)->unk8 = func_801E7704;
+                    ((EffMotion *)work->unk20->file)->update = func_801E7704;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801E8F4C;
-                    p->unk12 = 0x10;
-                    p->unkC = 0x6C;
+                    p->trails = (s32)D_801E8F4C;
+                    p->trailSlots = 0x10;
+                    p->trailStride = 0x6C;
                     p->otZ = 0x80;
                 }
             }

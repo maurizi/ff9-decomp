@@ -37,7 +37,7 @@ s32 func_801E7704(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (D_801E86CC == 0) {
             if (e->unk1C != NULL) {
-                e->unk1C->frame = e->unk1C->tail->unk4.unk2;
+                e->unk1C->frame = e->unk1C->tail->anim.duration;
             }
             e->unk0 = 1;
             return 1;
@@ -133,10 +133,10 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk4);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801E7E98;
-                    p->unk12 = 0x19;
+                    p->trails = (s32)D_801E7E98;
+                    p->trailSlots = 0x19;
                     p->otZ = 0x20;
-                    p->unkC = 0x54;
+                    p->trailStride = 0x54;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk4);
                 if (p != NULL) {

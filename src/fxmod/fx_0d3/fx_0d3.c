@@ -490,9 +490,9 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x28) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk14 = (s32)D_801EB114;
-                    p->unk12 = 0xC0;
-                    p->unkC = 0x1C;
+                    p->trails = (s32)D_801EB114;
+                    p->trailSlots = 0xC0;
+                    p->trailStride = 0x1C;
                     p->otZ = 0x100;
                 }
             }
@@ -701,9 +701,9 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame_119 == 1) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk8);
             if (p != NULL) {
-                p->unk14 = (s32)D_801EC614;
-                p->unk12 = 0x4A;
-                p->unkC = 0x1C;
+                p->trails = (s32)D_801EC614;
+                p->trailSlots = 0x4A;
+                p->trailStride = 0x1C;
                 p->otZ = 0x100;
             }
         }
@@ -770,9 +770,9 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk30.vz -= 0x200;
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk30);
             if (p != NULL) {
-                p->unk14 = (s32)D_801ECE34;
-                p->unk12 = 0x40;
-                p->unkC = 0x1C;
+                p->trails = (s32)D_801ECE34;
+                p->trailSlots = 0x40;
+                p->trailStride = 0x1C;
                 p->otZ = 0x80;
             }
             BTLFX_COPY_SVEC(&work->unk38, &D_801EB040);
@@ -1002,7 +1002,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_initParticleSystem();
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unk8);
             if (p != NULL) {
-                p->tail->unk0 = -1;
+                p->tail->shape = -1;
                 *(s32 *)&p->tail->unk3C = (s32)func_801E9050;
                 p->otZ = 0x20;
             }

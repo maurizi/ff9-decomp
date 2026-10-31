@@ -336,7 +336,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk10.vy -= 0x400;
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk10);
                     if (p != NULL) {
-                        p->tail->unk0 = -1;
+                        p->tail->shape = -1;
                         *(s32 *)&p->tail->unk3C = (s32)func_801EC704;
                         p->otZ = 0x100;
                     }

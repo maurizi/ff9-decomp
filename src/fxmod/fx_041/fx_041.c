@@ -71,9 +71,9 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0x12:
             work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E7F5C);
             if (work->unk14 != NULL) {
-                work->unk14->unk14 = (s32)D_801E7F6C;
-                work->unk14->unk12 = 1;
-                work->unk14->unkC = 0xD0;
+                work->unk14->trails = (s32)D_801E7F6C;
+                work->unk14->trailSlots = 1;
+                work->unk14->trailStride = 0xD0;
             }
             if (work->unk14 != NULL) {
                 ((s32 *)work->unk14->file)[2] = (s32)func_801E7704;

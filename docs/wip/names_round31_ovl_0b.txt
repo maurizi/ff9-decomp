@@ -1,0 +1,15 @@
+# Round 31 ovl_0b naming (fields as "# FIELDS header Struct: old=new", macro renames as "OLD NEW").
+# New macros (no old name) are listed under "# MACROS".
+# FIELDS include/ovl_0b.h EffElem: unk2=blend, unk3=flags, unk4=frameMode, unk6=fadeCurve, unk7=alignRot, unk8=frameCount, unkA=rotStepX, unkC=rotStepY, unkE=rotStepZ, unk10=spinRange, unk11=baseRot, unk14=spawnRotStep, unk17=rotSpread, unk1A=scaleStart, unk1B=scaleEnd, unk24=draw
+# FIELDS include/ovl_0b.h EffFileHdr: unk0=kind, pad1=hasSub
+# FIELDS include/ovl_0b.h EffEmit: unk0=kind, unk1=emitsSub, unk2=lifeStart, unk4=lifeEnd, unk6=lifeSpread
+# FIELDS include/ovl_0b.h EffMotion: unk0=kind, unk8=update
+# FIELDS include/ovl_0b.h Pool30Entry: unk12=spawnFlags, unk13=spin, unk18=elemRotZ, unk1F=slot, unk14=elemRot
+# FIELDS include/ovl_0b.h EffElemHdr: unk6=scaleStart, unk8=scaleEnd, unkA=alphaStart, unkC=alphaEnd
+# FIELDS include/ovl_0b.h EffTailSpawn: unk0=shape, unk3C=spawnFn, unk44=axisScaleStart, unk48=axisScaleEnd, unk4C=dirMode, unk4=anim
+# FIELDS include/ovl_0b.h EffTail: unk0=shape, unk4=anim, unk50=rateTable
+# FIELDS include/ovl_0b.h Pool6CEntry: unk10=subSpawnCount, unk12=trailSlots, unk14=trails, unk1C=scale, unk20=alpha, unk2C=target, unk32=spawnNow, unk34=live, unk3A=spawnFrac, unk3E=radiusMax, unk4A=gravity, unk50=subAccel, unk56=subGravity, unk58=subField, unkC=trailStride, unkE=spawnCount, unk3C=radiusMin, unk44=accel, unk4C=field
+# FIELDS include/ovl_0b.h EffAnim: unk0=rateCurve, unk2=duration, unk4=rateStart, unk6=rateEnd, unk8=maxParticles, unkA=stepSpread, unkC=accelStart, unk12=gravityStart, unk14=accelEnd, unk1A=gravityEnd, unk1C=fieldMode, unk1E=fieldCurve, unk20=fieldStart, unk24=fieldEnd, unk28=rot, unk30=rotStep
+# FIELDS include/ovl_0b.h EffSub: unk0=rateStart, unk2=rateEnd, unk4=elems, unk8=weights, unkC=rotMode, unkD=elemCount, unkE=rotJitter, unk10=maxParticles, unk11=startFrame, unk12=stepSpread, unk14=accelStart, unk1A=gravityStart, unk1C=accelEnd, unk22=gravityEnd, unk24=fieldMode, unk26=fieldCurve, unk28=fieldStart, unk2C=fieldEnd, unk30=radiusStart, unk34=radiusEnd
+# MACROS include/ovl_0b.h EffElem.flags: BTLFX_ELEM_NO_ROT BTLFX_ELEM_FIXED_SCALE BTLFX_ELEM_SCREEN_ROT BTLFX_ELEM_FIXED_ALPHA BTLFX_ELEM_SPIN_X BTLFX_ELEM_SPIN_Y BTLFX_ELEM_SPIN_Z
+# MACROS include/ovl_0b.h Pool30Entry.spawnFlags: BTLFX_PART_SUB BTLFX_PART_SUB_FRAC

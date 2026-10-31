@@ -514,9 +514,9 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vz = 0;
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2F), (s32)&work->unk20);
                 if (e != NULL) {
-                    e->unk14 = (s32)D_801EB660;
-                    e->unk12 = 0xF0;
-                    e->unkC = 0x1C;
+                    e->trails = (s32)D_801EB660;
+                    e->trailSlots = 0xF0;
+                    e->trailStride = 0x1C;
                     e->otZ = 0x40;
                 }
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x30), (s32)&work->unk18);
@@ -838,9 +838,9 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x31), (s32)&work->unk30);
                 if (e != NULL) {
-                    e->unk14 = (s32)D_801ED0A0;
-                    e->unk12 = 0x30;
-                    e->unkC = 0x1C;
+                    e->trails = (s32)D_801ED0A0;
+                    e->trailSlots = 0x30;
+                    e->trailStride = 0x1C;
                     e->otZ = 0x100;
                 }
             }
@@ -1138,8 +1138,8 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x12) {
                 work->unk68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&work->unk10);
                 if (work->unk68 != NULL) {
-                    work->unk68->tail->unk0 = -1;
-                    ((EffTailSpawn *)work->unk68->tail)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))func_801EA6C8;
+                    work->unk68->tail->shape = -1;
+                    ((EffTailSpawn *)work->unk68->tail)->spawnFn = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))func_801EA6C8;
                     if (work->unk68 != NULL) {
                         work->unk68->otZ = 0x200;
                     }

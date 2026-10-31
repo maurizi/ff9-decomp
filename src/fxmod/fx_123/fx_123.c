@@ -259,9 +259,9 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                             if (p != NULL) {
                                 p->otZ = 0x80;
                                 if (work->unk30[i] != NULL) {
-                                    work->unk30[i]->unk14 = (s32)D_801E96BC[i];
-                                    work->unk30[i]->unk12 = 2;
-                                    work->unk30[i]->unkC = 0x70;
+                                    work->unk30[i]->trails = (s32)D_801E96BC[i];
+                                    work->unk30[i]->trailSlots = 2;
+                                    work->unk30[i]->trailStride = 0x70;
                                     if (work->unk30[i] != NULL) {
                                         *(s32 *)&work->unk30[i]->file->unk8 = D_801E906C[i];
                                     }

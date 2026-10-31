@@ -35,19 +35,19 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk10->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk14 = (s32)D_801E7C30;
-                work->unk4->unk12 = 0x1C;
-                work->unk4->unkC = 0x9C;
+                work->unk4->trails = (s32)D_801E7C30;
+                work->unk4->trailSlots = 0x1C;
+                work->unk4->trailStride = 0x9C;
             }
             if (work->unk8 != NULL) {
-                work->unk8->unk14 = (s32)D_801E8D40;
-                work->unk8->unk12 = 0x1C;
-                work->unk8->unkC = 0x9C;
+                work->unk8->trails = (s32)D_801E8D40;
+                work->unk8->trailSlots = 0x1C;
+                work->unk8->trailStride = 0x9C;
             }
             if (work->unk10 != NULL) {
-                work->unk10->unk14 = (s32)D_801E9E50;
-                work->unk10->unk12 = 0x3A;
-                work->unk10->unkC = 0x70;
+                work->unk10->trails = (s32)D_801E9E50;
+                work->unk10->trailSlots = 0x3A;
+                work->unk10->trailStride = 0x70;
             }
             break;
         }
@@ -57,7 +57,7 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk10 = NULL;
                 }
                 if (work->unk10 != NULL) {
-                    work->unk10->unk2C = (s32)&work->unk14;
+                    work->unk10->target = (s32)&work->unk14;
                 }
             }
         }

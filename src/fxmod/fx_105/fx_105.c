@@ -673,7 +673,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk130.vz = env->camera->pointRots[2].vz;
                     ex->btlfx_moveEmitterTo((s32)work->unk124, (s32)&work->unk130);
                     if (work->unk8 >= 0x62 && work->unk124 != NULL) {
-                        work->unk124->unk20 = (0x71 - work->unk8) << 8;
+                        work->unk124->alpha = (0x71 - work->unk8) << 8;
                     }
                 } else {
                     ex->btlfx_stopEmitter(work->unk124);

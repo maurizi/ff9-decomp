@@ -1847,37 +1847,48 @@ extern u8 g_btlMessages[];
 extern char s_hiraishiErrorFmt[];
 extern char s_hiFreeEffModelErr[];
 extern char s_hiSplitMdlVertexErr[];
-/* effect element (0x28) in an effect file, after the header */
+/* effect element (0x28) in an effect file, after the header: what a particle draws (btlfx_updateParticles) and how it
+ * starts (btlfx_runEmitters, btlfx_runSubEmitter). Evidence: [code] */
 typedef struct EffElem {
-    u8 kind; /* kind, 9 = no texture */
-    u8 kind2; /* 0xFF = no second texture */
-    u8 unk2;
-    u8 unk3; /* flags */
-    s16 unk4;
-    u8 unk6;
-    u8 unk7;
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
-    s16 unkE;
-    u8 unk10;
-    s8 unk11[3]; /* base rotation */
-    s8 unk14[3]; /* offset */
-    u8 unk17[3]; /* rotation spread */
-    u8 unk1A;
-    u8 unk1B;
+    u8 kind; /* draw kind: 0 btlfx_drawParticles, 1 btlfx_drawSprite, 2 btlfx_drawAnimQuads, 3 btlfx_drawSprites, 4/5/8 btlfx_drawTrail, 6 btlfx_drawRings, 7 btlfx_drawFan, 9 the draw callback (no texture) */
+    u8 kind2; /* second draw kind with tex2, 0xFF = none */
+    u8 blend; /* semi-transparency mode (abr = blend & 3), 0xFF = opaque; 0 and 0xFF become 1 (additive) once alpha <= 0x800 */
+    u8 flags; /* BTLFX_ELEM_* */
+    s16 frameMode; /* 1: the element frame advances every frame and the particle lives frameCount frames, 2: it loops over frameCount, else it stays */
+    u8 fadeCurve; /* alpha over the particle's life unless BTLFX_ELEM_FIXED_ALPHA: 1 cos (fades out), 2 sin (fades in), 3 sin over half a turn (in and out) */
+    u8 alignRot; /* nonzero: the launch direction is added to the start rotation */
+    s16 frameCount; /* element frames (btlfx_opDrawOnUnit copies a sprite set's frame count here) */
+    s16 rotStepX; /* element rotation added every frame */
+    s16 rotStepY;
+    s16 rotStepZ;
+    u8 spinRange; /* random spin per particle (+-spinRange, x4 per frame) on the BTLFX_ELEM_SPIN_* axes */
+    s8 baseRot[3]; /* start rotation (x16) */
+    s8 spawnRotStep[3]; /* start rotation added per emitter frame at spawn (x8) */
+    u8 rotSpread[3]; /* random start rotation (+-, x16) */
+    u8 scaleStart; /* scale over the particle's life (x128, times the emitter's scale), unless BTLFX_ELEM_FIXED_SCALE */
+    u8 scaleEnd;
     s32 tex; /* texture data offset, relocated on load */
     s32 tex2; /* second texture data, relocated on load */
-    void (*unk24)();
+    void (*draw)(); /* kind 9: set by the effect module; (particle, emitter, pos, rot, &scale, &alpha, &blend, frame, frames) */
 } EffElem; /* 0x28 */
 
+/* EffElem.flags (btlfx_updateParticles). Evidence: [code] */
+#define BTLFX_ELEM_NO_ROT      0x01 /* no element rotation */
+#define BTLFX_ELEM_FIXED_SCALE 0x02 /* scale = the emitter's scale (no scaleStart/scaleEnd) */
+#define BTLFX_ELEM_SCREEN_ROT  0x04 /* the rotation is not combined with the view rotation (SVECTOR pad 0 for the draw functions) */
+#define BTLFX_ELEM_FIXED_ALPHA 0x08 /* alpha = the emitter's alpha (no fadeCurve) */
+#define BTLFX_ELEM_SPIN_X      0x10 /* the particle's spin turns the x rotation */
+#define BTLFX_ELEM_SPIN_Y      0x20
+#define BTLFX_ELEM_SPIN_Z      0x40
+
+/* element table header, just before the EffElems (btlfx_spawnEmitter, btlfx_updateEmitters) */
 typedef struct {
     s32 weightCount; /* count of weights */
     s16 elemCount; /* count of EffElem following */
-    u16 unk6;
-    u16 unk8;
-    u16 unkA;
-    u16 unkC;
+    u16 scaleStart; /* emitter scale over its EffAnim duration (Pool6CEntry.scale, 0x1000 = 1.0) */
+    u16 scaleEnd;
+    u16 alphaStart; /* emitter alpha over its duration (Pool6CEntry.alpha, 0x1000 = opaque) */
+    u16 alphaEnd;
     s16 weightAnim; /* 1 = blend weights animated */
     union {
         s32 w;
@@ -1887,8 +1898,9 @@ typedef struct {
 
 /* effect file header */
 typedef struct {
-    u8 unk0; /* kind */
-    u8 pad1[8 - 1];
+    u8 kind; /* particle motion kind (EffMotion.kind) */
+    u8 hasSub; /* nonzero: a sub-emitter (EffSub, then its EffEmit) follows (btlfx_spawnEmitter); EffEmit.emitsSub */
+    u8 pad2[8 - 2];
     s16 unk8;
     s16 unkA;
     u8 padC[0x18 - 0xC];
@@ -1899,81 +1911,86 @@ typedef struct {
     s16 unk22;
 } EffFileHdr;
 
-/* emitter animation parameters */
+/* emitter animation parameters (btlfx_updateEmitters lerps the *Start/*End pairs over duration into the
+ * Pool6CEntry). Evidence: [code] */
 typedef struct {
-    s16 unk0; /* speed curve: 0 linear, 1 sine, 2 table, 3 constant */
-    s16 unk2; /* duration */
-    s16 unk4;
-    s16 unk6;
-    s16 unk8; /* particle limit */
-    s16 unkA;
-    s16 unkC[3];
-    s16 unk12;
-    s16 unk14[3];
-    s16 unk1A;
-    s16 unk1C;
-    s16 unk1E;
-    s16 unk20[2];
-    s16 unk24[2];
-    SVECTOR unk28;
-    SVECTOR unk30;
+    s16 rateCurve; /* spawn rate (8.8 particles per frame) over the duration: 0 lerp rateStart..rateEnd, 1 sin * rateStart, 2 EffTail.rateTable, 3 one per frame */
+    s16 duration; /* emitter frames */
+    s16 rateStart;
+    s16 rateEnd;
+    s16 maxParticles; /* live particle limit */
+    s16 stepSpread; /* random time step per particle (0x40 +-stepSpread, Pool30Entry.timeStep) */
+    s16 accelStart[3]; /* particle acceleration (Pool6CEntry.accel) */
+    s16 gravityStart; /* (Pool6CEntry.gravity) */
+    s16 accelEnd[3];
+    s16 gravityEnd;
+    s16 fieldMode; /* force field (btlfx_updateParticles): 1 push away from fieldPos, 2 pull toward it, 3/4 upward (horizontal distance), 5 along fieldRot, 6 around the fieldRot axis, 7-9 alpha offset by distance (7 3D, 8 horizontal, 9 polar); 0 none */
+    s16 fieldCurve; /* strength by distance: 0 constant, 1 cos, 2 sin, 3 1 - sin, 4 1 - cos, 5 sin(2x) */
+    s16 fieldStart[2]; /* {range, strength} (Pool6CEntry.field) */
+    s16 fieldEnd[2];
+    SVECTOR rot; /* emitter rotation at frame 0 (Pool6CEntry.rot); pad = launch direction mode (btlfx_runEmitters: 0 jitter, 1 jitter + flipped, 2 random, 3 emitter rotation + jitter) */
+    SVECTOR rotStep; /* added to the emitter rotation every frame; pad = launch direction jitter (+-) */
 } EffAnim; /* 0x38 */
 
+/* emitter spawn shape and animation, after the elements (Pool6CEntry.tail); the shape parameters from 0x3C depend on
+ * shape (btlfx_updateEmitters lerps them into Pool6CEntry.radiusMin..unk42) */
 typedef struct {
-    s32 unk0;
-    EffAnim unk4;
+    s32 shape; /* spawn shape (btlfx_runEmitters): 0 sphere, 1 cylinder, 2/4 around the emitter rotation, 3 along origin..target, -1 EffTailSpawn.spawnFn */
+    EffAnim anim;
     s16 unk3C;
     s16 unk3E;
     s16 unk40[8];
-    s16 unk50[8];
+    s16 rateTable[8]; /* EffAnim.rateCurve 2: rate by sixteenth of the duration (shape -1: from 0x40) */
 } EffTail;
 
-/* EffTail as seen by the particle spawner (btlfx_runEmitters), by EffTail.unk0 kind */
+/* EffTail as seen by the particle spawner (btlfx_runEmitters), by shape */
 typedef struct {
-    s32 unk0; /* kind */
-    EffAnim unk4;
-    s32 (*unk3C)(SVECTOR *, SVECTOR *, s32, s32); /* kind -1 */
+    s32 shape;
+    EffAnim anim;
+    s32 (*spawnFn)(SVECTOR *, SVECTOR *, s32, s32); /* shape -1: (offset, direction, frame, duration), set by the effect module; nonzero ends the emitter; offset pad nonzero = absolute position */
     u8 pad40[4];
-    CVECTOR unk44; /* kind 0: colour fade */
+    CVECTOR axisScaleStart; /* shape 0: x/y/z scale of the sphere (128 = 1.0), lerped to axisScaleEnd; cd 1/2 = upper/lower half only */
     union {
         CVECTOR c;
-        s16 h; /* kind 4: rotation mode */
-    } unk48;
-    s16 unk4C; /* kinds 1-3: rotation mode */
+        s16 h; /* shape 4: launch direction mode, as dirMode */
+    } axisScaleEnd;
+    s16 dirMode; /* shapes 1-3: launch direction: 1 x angle 0x400 (shapes 2/3: the emitter rotation), 2 -0x400 (reversed), else outward */
 } EffTailSpawn;
 void LoadAverageCol(u8 *, u8 *, s32, s32, u8 *);
 
-/* 0x38-byte block in front of Pool6CEntry.unk4 */
+/* sub-emitter parameters, the 0x38-byte block in front of Pool6CEntry.sub: particles whose spawnFlags allow it spawn
+ * sub-particles around themselves (btlfx_runSubEmitter); lerps over the parent particle's life. Evidence: [code] */
 typedef struct {
-    s16 unk0;
-    s16 unk2;
-    u8 unk4[4]; /* element indices */
-    u8 unk8[4]; /* element weights */
-    u8 unkC;    /* spawn rotation mode */
-    u8 unkD;    /* element count */
-    s16 unkE;
-    u8 unk10;   /* particle limit */
-    u8 unk11;   /* first spawn frame + 1 */
-    s16 unk12;
-    s16 unk14[3];
-    s16 unk1A;
-    s16 unk1C[3];
-    s16 unk22;
-    s16 unk24;
-    s16 unk26;
-    s16 unk28[2];
-    s16 unk2C[2];
-    s16 unk30[2];
-    s16 unk34[2];
+    s16 rateStart; /* sub-particles per frame, 8.8 */
+    s16 rateEnd;
+    u8 elems[4]; /* element indices */
+    u8 weights[4]; /* element weights */
+    u8 rotMode;    /* launch direction: 0 random + jitter, 1 the same flipped, 2 random, 3 emitter rotation, 4 parent's direction, 5 parent's reversed */
+    u8 elemCount;    /* element count */
+    s16 rotJitter; /* launch direction jitter (+-) */
+    u8 maxParticles;   /* live sub-particle limit (Pool6CEntry.live.s.y) */
+    u8 startFrame;   /* first spawn frame of the parent + 1 */
+    s16 stepSpread; /* as EffAnim.stepSpread */
+    s16 accelStart[3]; /* as EffAnim (Pool6CEntry.subAccel, subGravity, subField) */
+    s16 gravityStart;
+    s16 accelEnd[3];
+    s16 gravityEnd;
+    s16 fieldMode;
+    s16 fieldCurve;
+    s16 fieldStart[2];
+    s16 fieldEnd[2];
+    s16 radiusStart[2]; /* {min, max} spawn distance from the parent */
+    s16 radiusEnd[2];
 } EffSub; /* 0x38 */
 
-/* particle emitter parameters at Pool6CEntry.unk4 (kinds 0-5) */
+/* particle motion parameters of an emitter (its file) or sub-emitter (Pool6CEntry.sub); from 8 they depend on kind
+ * (0-5, btlfx_runEmitters / btlfx_runSubEmitter / btlfx_updateParticles) */
 typedef struct {
-    u8 unk0; /* kind */
-    u8 unk1;
-    s16 unk2;
-    s16 unk4;
-    s16 unk6;
+    u8 kind; /* motion kind (EffMotion.kind) */
+    u8 emitsSub; /* nonzero: its particles spawn sub-particles (Pool30Entry.spawnFlags) */
+    s16 lifeStart; /* particle lifetime in frames, lerped over the emitter's (parent's) life, +-lifeSpread */
+    s16 lifeEnd;
+    s16 lifeSpread;
     s16 unk8;
     s16 unkA;
     s16 unkC;
@@ -2004,33 +2021,33 @@ typedef struct Pool6CEntry {
     EffSub *sub; /* sub-emitter parameters (EffMotion), NULL = none; the EffSub block is just before it */
     s16 unk8;
     s16 unkA;
-    s16 unkC;
-    s16 unkE;
-    s16 unk10;
-    s16 unk12;
-    s32 unk14;
+    s16 trailStride; /* bytes per particle in trails */
+    s16 spawnCount; /* particles spawned (modulo trailSlots when trails is set): the next one's slot - 1 */
+    s16 subSpawnCount; /* the same for sub-particles */
+    s16 trailSlots; /* particles in trails */
+    s32 trails; /* trail point buffer set by the effect module, trailSlots * trailStride bytes, 0 = none (btlfx_getParticleTrail) */
     EffElem *elems; /* elements (btlfx_spawnEmitter relocates their textures) */
-    s32 unk1C;
-    s16 unk20;
+    s32 scale; /* particle scale, 0x1000 = 1.0 (EffElemHdr.scaleStart..End; effect modules set it) */
+    s16 alpha; /* particle alpha, 0x1000 = opaque (EffElemHdr.alphaStart..End) */
     s16 otZ; /* otZ of its particles (btlfx_updateParticles); btlfx_opDrawOnUnit / btlfx_startCastEmitter set it */
     EffTail *tail;
     SVECTOR *origin; /* emitter position (btlfx_moveEmitter shifts its particles with it) */
-    s32 unk2C;
+    s32 target; /* SVECTOR *: end point of shape 3 and the aim of motion kind 5 (starts as origin) */
     s16 state; /* BTLFX_EMIT_* */
-    s16 unk32;
-    XY32 unk34; /* live particle counts (s.x, s.y) */
+    s16 spawnNow; /* particles to spawn this frame (btlfx_updateEmitters, from the spawn rate) */
+    XY32 live; /* live particle counts: s.x particles, s.y sub-particles */
     s16 frame; /* frame */
-    s16 unk3A;
-    s16 unk3C;
-    s16 unk3E;
+    s16 spawnFrac; /* fraction of the spawn rate carried to the next frame (/0x100) */
+    s16 radiusMin; /* spawn distance range of the shape (EffTail from 0x3C) */
+    s16 radiusMax;
     s16 unk40;
     s16 unk42;
-    s16 unk44[3];
-    s16 unk4A;
-    XY32 unk4C;
-    s16 unk50[3];
-    s16 unk56;
-    XY32 unk58;
+    s16 accel[3]; /* particle acceleration (EffAnim.accelStart..End) */
+    s16 gravity; /* added to the particles' y velocity (EffAnim.gravityStart..End) */
+    XY32 field; /* force field {range, strength} (EffAnim.fieldStart..End) */
+    s16 subAccel[3]; /* the same for sub-particles (EffSub) */
+    s16 subGravity;
+    XY32 subField;
     SVECTOR rot; /* emitter rotation (from its EffAnim, or set every frame by the ops: btlfx_opBounce, btlfx_opDrawOnUnit); pad = floor height of the particles */
     SVECTOR *fieldPos; /* centre of the force-field modes 1-9 (btlfx_updateParticles) */
     SVECTOR *fieldRot; /* angles of the force field (modes 5, 6, 9: btlfx_toLocalPolar) */
@@ -2056,16 +2073,16 @@ typedef struct {
     s16 unkC; /* rotation */
     s16 unkE;
     s16 unk10;
-    u8 unk12; /* flags */
-    s8 unk13;
-    XY32 unk14;
-    s16 unk18;
+    u8 spawnFlags; /* BTLFX_PART_SUB, bits 0-6: sub-particle spawn fraction (nonzero = spawns sub-particles) */
+    s8 spin; /* random spin (EffElem.spinRange) */
+    XY32 elemRot; /* element rotation x, y (z in elemRotZ), passed to the draw functions */
+    s16 elemRotZ;
     u8 frame; /* frame */
     u8 frames; /* lifetime in frames */
     u8 elem; /* element index, 0xFF = none */
     u8 elemFrame; /* element frame */
     s8 timeStep; /* time step of the motion (btlfx_stepParticle*) */
-    u8 unk1F; /* in use */
+    u8 slot; /* 0 = free; else the emitter's spawn count % 255 + 1: its trail slot + 1 (btlfx_getParticleTrail), effect modules index their tables with slot - 1 */
     s16 unk20;
     s16 unk22;
     XY32 unk24;
@@ -2073,12 +2090,16 @@ typedef struct {
     Pool6CEntry *owner; /* emitter (btlfx_killEmitter, btlfx_moveEmitter) */
 } Pool30Entry; /* 0x30 */
 
-/* particle motion parameters: the effect file (Pool6CEntry.unk0) or the
- * block at Pool6CEntry.unk4 */
+/* Pool30Entry.spawnFlags. Evidence: [code] */
+#define BTLFX_PART_SUB      0x80 /* spawned by the sub-emitter (counts in live.s.y, moves with the EffSub parameters) */
+#define BTLFX_PART_SUB_FRAC 0x7F
+
+/* particle motion parameters (btlfx_updateParticles): the effect file (Pool6CEntry.file) or the sub-emitter's
+ * (Pool6CEntry.sub), the EffEmit as the motion step reads it */
 typedef struct {
-    u8 unk0; /* kind */
+    u8 kind; /* motion kind (btlfx_updateParticles): 0-5 built in, 0xFF update */
     u8 pad1[8 - 1];
-    s32 (*unk8)();
+    s32 (*update)(); /* kind 0xFF: set by the effect module; (particle, emitter, &pos, trail, frame, frames), nonzero frees the particle */
     u8 padC[0xE - 0xC];
     s16 unkE;
     u8 pad10[0x12 - 0x10];

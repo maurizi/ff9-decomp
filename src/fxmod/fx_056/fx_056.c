@@ -22,9 +22,9 @@ s32 fx_056_op80(s32 mode, Fx056Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(work->unk10, (s16 *)&work->unk8);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E79B8[work->unk10];
-            work->unk0->unk12 = 0xA;
-            work->unk0->unkC = 0x90;
+            work->unk0->trails = (s32)D_801E79B8[work->unk10];
+            work->unk0->trailSlots = 0xA;
+            work->unk0->trailStride = 0x90;
         }
         if (work->unk0 != NULL) {
             work->unk0->otZ = ex->btlfx_addRadiusSixth(work->unk10, 0x20);

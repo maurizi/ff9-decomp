@@ -672,9 +672,9 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 ex->btlfx_drawScreenGrid(0x200, 0xA0, 0x78, 0x50, 0x3C, cw, cw, ch, ch, &rot, &sc, &col, 1, 0);
             }
             if (work->unk6C != NULL) {
-                work->unk6C->unk1C = (t >> 1) + 0x1000;
+                work->unk6C->scale = (t >> 1) + 0x1000;
                 if (work->unk6C != NULL) {
-                    work->unk6C->unk20 = (0x1000 - (t >> 2)) * 3 / 4;
+                    work->unk6C->alpha = (0x1000 - (t >> 2)) * 3 / 4;
                 }
             }
             if (frame >= 51) {
@@ -704,9 +704,9 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 }
                 if (work->unk68 != NULL) {
                     c11 = 0x1000 - q10;
-                    work->unk68->unk20 = c11;
+                    work->unk68->alpha = c11;
                     if (work->unk68 != NULL) {
-                        work->unk68->unk1C = c11;
+                        work->unk68->scale = c11;
                     }
                 }
                 if (frame == 9) {
@@ -719,7 +719,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                     work->unk6C = NULL;
                 }
                 if (work->unk6C != NULL) {
-                    work->unk6C->unk1C = 0x1000 - q9;
+                    work->unk6C->scale = 0x1000 - q9;
                 }
                 if (frame == 7) {
                     ex->btlfx_stopEmitter(work->unk6C);

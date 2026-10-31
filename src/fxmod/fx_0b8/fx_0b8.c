@@ -240,9 +240,9 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0x20:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk1DC);
             if (p != NULL) {
-                p->unk14 = (s32)D_801ECA60;
-                p->unk12 = 0x28;
-                p->unkC = 0x5C;
+                p->trails = (s32)D_801ECA60;
+                p->trailSlots = 0x28;
+                p->trailStride = 0x5C;
             }
             break;
         case 0x28:
@@ -672,7 +672,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0x21]--;
             if (work->unk0[0x21] != 0) {
                 if (work->unk19C != NULL) {
-                    work->unk19C->unk20 = work->unk0[0x21] << 8;
+                    work->unk19C->alpha = work->unk0[0x21] << 8;
                 }
             } else {
                 ex->btlfx_stopEmitter(work->unk19C);
@@ -682,10 +682,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0x1D]--;
             if (work->unk0[0x1D] != 0) {
                 if (work->unk184 != NULL) {
-                    work->unk184->unk20 = work->unk0[0x1D] << 8;
+                    work->unk184->alpha = work->unk0[0x1D] << 8;
                 }
                 if (work->unk190 != NULL) {
-                    work->unk190->unk20 = work->unk0[0x1D] << 8;
+                    work->unk190->alpha = work->unk0[0x1D] << 8;
                 }
             } else {
                 ex->btlfx_stopEmitter(work->unk184);
@@ -896,7 +896,7 @@ s32 func_801EA558(Pool30Entry *pt, s32 a1, SVECTOR *pos, s32 a3, s32 frame, s32 
     s32 r;
     SVECTOR off;
 
-    SVECTOR *a = &D_801EA7B0[(pt->unk1F - 1) & 0x1F];
+    SVECTOR *a = &D_801EA7B0[(pt->slot - 1) & 0x1F];
 
     off.vx = 0;
     off.vy = -0xC00;

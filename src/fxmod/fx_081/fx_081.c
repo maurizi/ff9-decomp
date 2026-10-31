@@ -21,7 +21,7 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
     }
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, (s32 *)p->origin, frame,
                       0x1C00 - (frame << 12) / n, t, 1, (u8 *)r, 1);
-    if (pt->unk1F == 1) {
+    if (pt->slot == 1) {
         if (D_801EA738 != 0) {
             ex->btlfx_moveEmitterTo(D_801EA738, (s32)pos);
         }
@@ -79,11 +79,11 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk2C != NULL) {
             work->unk2C->otZ = 0x18;
             if (work->unk2C != NULL) {
-                work->unk2C->unk14 = (s32)D_801E8EE8;
-                work->unk2C->unk12 = 0x10;
-                work->unk2C->unkC = 0x184;
+                work->unk2C->trails = (s32)D_801E8EE8;
+                work->unk2C->trailSlots = 0x10;
+                work->unk2C->trailStride = 0x184;
                 if (work->unk2C != NULL) {
-                    work->unk2C->elems->unk24 = func_801E7704;
+                    work->unk2C->elems->draw = func_801E7704;
                 }
             }
         }
@@ -117,13 +117,13 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk34 = NULL;
             }
             if (work->unk2C != NULL) {
-                work->unk2C->unk20 = D_801EA73C;
+                work->unk2C->alpha = D_801EA73C;
             }
             if (work->unk30 != NULL) {
-                work->unk30->unk20 = 0x1000;
+                work->unk30->alpha = 0x1000;
             }
             if (work->unk34 != NULL) {
-                work->unk34->unk20 = 0x1000;
+                work->unk34->alpha = 0x1000;
             }
             sc = (((0x1000 - t) * 3) >> 1) + 0x1000;
             if (frame < 4) {
@@ -150,13 +150,13 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk34 = NULL;
             }
             if (work->unk2C != NULL) {
-                work->unk2C->unk20 = D_801EA73C;
+                work->unk2C->alpha = D_801EA73C;
             }
             if (work->unk30 != NULL) {
-                work->unk30->unk20 = b;
+                work->unk30->alpha = b;
             }
             if (work->unk34 != NULL) {
-                work->unk34->unk20 = b;
+                work->unk34->alpha = b;
             }
             if (frame >= 0x14) {
                 work->unk0 = 2;
@@ -173,7 +173,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk2C = NULL;
                 }
                 if (work->unk2C != NULL) {
-                    work->unk2C->unk20 = D_801EA73C;
+                    work->unk2C->alpha = D_801EA73C;
                 }
             }
             if (frame == 0x13) {

@@ -36,9 +36,9 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk4);
         ex->btlfx_aimAngles((s16 *)&work->unk4, (s16 *)&work->unkC, (s16 *)&work->unk24);
         if (work->unk2C != NULL) {
-            work->unk2C->unk14 = (s32)D_801E7AF4;
-            work->unk2C->unk12 = 0x2E;
-            work->unk2C->unkC = 0x4C;
+            work->unk2C->trails = (s32)D_801E7AF4;
+            work->unk2C->trailSlots = 0x2E;
+            work->unk2C->trailStride = 0x4C;
         }
     } else {
         frame = entry->frame;

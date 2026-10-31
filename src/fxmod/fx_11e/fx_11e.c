@@ -112,7 +112,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk2C = (s32)&work->unk48;
+                work->unk0->target = (s32)&work->unk48;
             }
         }
         if (frame == 3) {

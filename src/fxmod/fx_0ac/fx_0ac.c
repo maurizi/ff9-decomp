@@ -20,9 +20,9 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk20.vy -= 0x96;
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk20);
             if (work->unk0 != NULL) {
-                work->unk0->unk14 = (s32)D_801E7A38;
-                work->unk0->unk12 = 0x3B;
-                work->unk0->unkC = 0xBC;
+                work->unk0->trails = (s32)D_801E7A38;
+                work->unk0->trailSlots = 0x3B;
+                work->unk0->trailStride = 0xBC;
             }
             ex->btlfx_aimAngles((s16 *)&work->unk20, (s16 *)&work->unk10, (s16 *)&work->unk28);
             break;

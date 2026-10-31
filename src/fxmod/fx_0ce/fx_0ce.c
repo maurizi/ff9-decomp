@@ -34,9 +34,9 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk2C->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
         }
         if (work->unk2C != NULL) {
-            work->unk2C->unk14 = (s32)D_801E7E00;
-            work->unk2C->unk12 = 0x15;
-            work->unk2C->unkC = 0x34;
+            work->unk2C->trails = (s32)D_801E7E00;
+            work->unk2C->trailSlots = 0x15;
+            work->unk2C->trailStride = 0x34;
         }
         work->unk0 = work->unk4 = 0;
     } else {

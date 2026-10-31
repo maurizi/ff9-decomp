@@ -68,10 +68,10 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitPos(0, (s16 *)&work->unk28);
             D_801E8304 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk28);
             if (p != NULL) {
-                p->unk14 = (s32)D_801E8310;
-                p->unk12 = 4;
-                p->unkC = 0x9C;
-                ((EffMotion *)p->file)->unk8 = func_801E81C4;
+                p->trails = (s32)D_801E8310;
+                p->trailSlots = 4;
+                p->trailStride = 0x9C;
+                ((EffMotion *)p->file)->update = func_801E81C4;
             }
             work->unk0[0] = 0xE;
             break;
@@ -203,7 +203,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 s32 func_801E81C4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR v;
 
-    switch (e->unk1F - 1) {
+    switch (e->slot - 1) {
     case 0: {
         SVECTOR *src = &D_801E85A8;
         s16 x = src->vx;

@@ -11,9 +11,9 @@ s32 fx_07b_op80(s32 mode, Fx07bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7A28;
-            work->unk0->unk12 = 6;
-            work->unk0->unkC = 0xA0;
+            work->unk0->trails = (s32)D_801E7A28;
+            work->unk0->trailSlots = 6;
+            work->unk0->trailStride = 0xA0;
         }
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk10);
         D_801E79C8.vy = work->unk10.vy;

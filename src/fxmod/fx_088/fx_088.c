@@ -12,9 +12,9 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk10);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk10);
         if (work->unk0 != NULL) {
-            work->unk0->unk14 = (s32)D_801E7DB0;
-            work->unk0->unk12 = 0x19;
-            work->unk0->unkC = 0x30;
+            work->unk0->trails = (s32)D_801E7DB0;
+            work->unk0->trailSlots = 0x19;
+            work->unk0->trailStride = 0x30;
         }
         ex->btlfx_aimAngles((s16 *)&work->unk8, &env->targets->centerX, (s16 *)&work->unk18);
     } else {
