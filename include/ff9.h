@@ -257,11 +257,11 @@ typedef struct {
     WmObjView *worldObj; /* WorldMap.obj */
     Unk8E4C *fieldArea; /* FieldMap.area */
     u8 pad10[0xD80 - 0x10];
-    u8 phase; /* ovl_0b Battle.phase */
+    u8 phase; /* ovl_0b Battle.phase (EVT_SYSVAR_BATTLE_PHASE) */
     u8 padD81[0x11C0 - 0xD81];
     Unk11C0 *work; /* ovl_0b Battle.work */
     u8 pad11C4[0x1340 - 0x11C4];
-    u8 groupNo; /* ovl_0b Battle.groupNo (event expression, evt_getSysVar) */
+    u8 groupNo; /* ovl_0b Battle.groupNo (EVT_SYSVAR_BATTLE_GROUP) */
     u8 pad1341[0x1354 - 0x1341];
     Unk1354 *files; /* ovl_0b Battle.files */
 } Unk8E4;
@@ -351,10 +351,10 @@ typedef struct {
     u16 firstUseFxSeen;
     u32 gil; /* capped at 9999999 (runtime: menu shows this value) */
     u8 pad564[0x568 - 0x564];
-    s16 frogCount; /* event op 0xE0 adds 1 (max 0x7FFF), system variable 16; ability formula 0x42 = it * level (Frog Drop) */
+    s16 frogCount; /* event op 0xE0 adds 1 (max 0x7FFF), system variable 16 (EVT_SYSVAR_FROG_COUNT); ability formula 0x42 = it * level (Frog Drop) */
     s16 stealCount; /* +1 per successful steal (btl_calcSteal, max 9999); formula 0x43 = it * speed / 2 (Thievery) */
     s16 dragonKills; /* +1 per defeated enemy with enemy flag 8 (btl_updateKo) or BTL_SETVAR 39 (max 9999); formula 0x44 = it squared (Dragon's Crest) */
-    u8 battleResult; /* how the battle ended, 6 = game over (ovl_0b, ovl_65 battle_end; event system variable 27) */
+    u8 battleResult; /* how the battle ended, 6 = game over (ovl_0b, ovl_65 battle_end; event system variable 27, EVT_SYSVAR_BATTLE_RESULT) */
     u8 battleFlags; /* GD_BTL_*, cleared by btl_initBattleState */
     u8 rainCount; /* rain streaks (event opcode 0xD8, ovl_0b) */
     u8 darkBattle; /* set from wm_isDarkWeather when a world-map battle starts in the dark weather zone - night battle, Steiner model kind 8 (runtime) */
@@ -3946,7 +3946,7 @@ typedef struct {
 #define EVT_OP_SET_IDLE_SPEEDS 0x86 /* 4 x u8: actor.idleAnimSpeeds */
 #define EVT_OP_SET_DIR_OBJ 0x87 /* obj, dir: 0x36 on another object */
 #define EVT_OP_MODEL_CMD 0x88 /* cmd, 3 x s16: fld_modelCommand */
-#define EVT_OP_SOUND_POS 0x89 /* x, y, z, u8: fld_getSoundPanVolume -> sysvars 22/23 */
+#define EVT_OP_SOUND_POS 0x89 /* x, y, z, u8: fld_getSoundPanVolume -> sysvars 22/23 (EVT_SYSVAR_SOUND_VOLUME/PAN) */
 #define EVT_OP_SOUND_POS_OBJ 0x8A /* obj, u8 */
 #define EVT_OP_SET_LOOK 0x8B /* u8, u8: look-at params, flags |= 3 */
 #define EVT_OP_OBJ_COLOR 0x8F /* obj, r, g, b: fld_setObjectColor (retries while fading) */
@@ -3968,7 +3968,7 @@ typedef struct {
 #define EVT_OP_MOVE_XYZ 0xA2 /* x, y, z: evt_moveObjectTo flags 2 (flying) */
 #define EVT_OP_MOVE_XZ_NOTURN 0xA5 /* x, z: evt_moveObjectTo flags 1 */
 #define EVT_OP_BGI_ACTOR_ACTIVE 0xA8 /* u8: bgi_setActorActive */
-#define EVT_OP_OBJ_SCREEN_POS 0xA9 /* obj: evt_projectToScreen -> sysvars 12/13 */
+#define EVT_OP_OBJ_SCREEN_POS 0xA9 /* obj: evt_projectToScreen -> sysvars 12/13 (EVT_SYSVAR_SCREEN_X/Y) */
 #define EVT_OP_PAD_UNLOCK_MENU 0xAA /* g_padPortMask[0] &= ~0x40000 */
 #define EVT_OP_PAD_LOCK_MENU 0xAB /* |= 0x40000 */
 #define EVT_OP_SET_POS_OBJ 0xAD /* obj, x, y, z */
@@ -3992,10 +3992,10 @@ typedef struct {
 #define EVT_OP_JUMP_STEP 0xDC /* one jump frame, retries until done */
 #define EVT_OP_PARTY_REMOVE 0xDD /* chr */
 #define EVT_OP_JUMP 0xE2 /* x, y, z, frames: starts a jump (jumpTarget, jumpFrames) */
-#define EVT_OP_MSG_SYNC_TAG 0xE3 /* u8: D_8007BBD8 (sysvar 8) */
+#define EVT_OP_MSG_SYNC_TAG 0xE3 /* u8: g_msgSyncTag (EVT_SYSVAR_MSG_SYNC_TAG) */
 #define EVT_OP_BG_LAYER_SKEW 0xE4
 #define EVT_OP_BG_ANIM_SHOW_FRAME 0xE7 /* fldbg_showAnimFrame */
-#define EVT_OP_GET_SCROLL 0xEA /* fldbg_getScroll -> sysvars 12/13 */
+#define EVT_OP_GET_SCROLL 0xEA /* fldbg_getScroll -> sysvars 12/13 (EVT_SYSVAR_SCREEN_X/Y) */
 #define EVT_OP_FADE 0xEC /* 6 args: game_startFade */
 #define EVT_OP_BG_VIEWPORT_RATE 0xED
 #define EVT_OP_HERE_ICON 0xEF /* u8: msg_startHereIcon */
@@ -4079,6 +4079,43 @@ typedef struct {
 #define EVT_EXPR_OBJ_VAR_REF 0x78  /* u8 uid, u8 index: another object's variable */
 #define EVT_EXPR_SYSVAR_REF 0x79   /* u8: system variable reference */
 #define EVT_EXPR_SYSVAR 0x7A       /* u8: evt_getSysVar value */
+/* evt_getSysVar ids (operand of EVT_EXPR_SYSVAR), named from what each case returns. Evidence: [code] main
+ * evt_getSysVar; ids 32-0xBF go to ovl_0b btl_getBattleVar (BTL_GETVAR_*), ids >= 0xC0 to ovl_0c
+ * w_frameGetParameter (WM_PARAM_*) */
+#define EVT_SYSVAR_RAND 0              /* next byte of the random table (0-255) */
+#define EVT_SYSVAR_CAMERA 1            /* current field camera index (fldbg_getCamera) */
+#define EVT_SYSVAR_CONTROL_ENABLED 2   /* EvtState.controlEnabled */
+#define EVT_SYSVAR_SOUND_STATE 3       /* fld_soundCommand(SND_GET_STATE): non-zero while loading */
+#define EVT_SYSVAR_TALK_ANGLE 4        /* g_evtTalkAngle */
+#define EVT_SYSVAR_OBJ_CHAR 5          /* character index of the object id on the expression stack (its script among
+                                        * the last 9, the character scripts), -1 if there is no such object */
+#define EVT_SYSVAR_GIL 6               /* GameData.gil */
+#define EVT_SYSVAR_STEP_COUNT 7        /* g_evtStepCount */
+#define EVT_SYSVAR_MSG_SYNC_TAG 8      /* g_msgSyncTag (EVT_OP_MSG_SYNC_TAG, text codes) */
+#define EVT_SYSVAR_CHOICE 9            /* msg_getChoiceIndex(): the chosen message choice */
+#define EVT_SYSVAR_LINE_POINT_X 10     /* g_evtLinePointX */
+#define EVT_SYSVAR_LINE_POINT_Z 11     /* g_evtLinePointZ */
+#define EVT_SYSVAR_SCREEN_X 12         /* g_evtScreenX (EVT_OP_GET_SCROLL, EVT_OP_OBJ_SCREEN_POS) */
+#define EVT_SYSVAR_SCREEN_Y 13         /* g_evtScreenY */
+#define EVT_SYSVAR_MOVIE_FRAME 14      /* fld_movieCommand(4): mbg_getFrame */
+#define EVT_SYSVAR_MOVIE_STATE 15      /* fld_movieCommand(3): field movie state */
+#define EVT_SYSVAR_FROG_COUNT 16       /* GameData.frogCount */
+#define EVT_SYSVAR_TIMER_SECONDS 17    /* timer_getSeconds(): countdown seconds left */
+#define EVT_SYSVAR_CARD_RESULT 18      /* card_getGameResult(): last Tetra Master result */
+#define EVT_SYSVAR_CARD_COUNT 19       /* card_countAll(): cards owned */
+#define EVT_SYSVAR_PLAY_TIME 20        /* game_getPlayTimeSeconds(), at most 0x7FFFFF */
+#define EVT_SYSVAR_TIMER_ENABLED 21    /* timer_isEnabled() */
+#define EVT_SYSVAR_SOUND_VOLUME 22     /* g_evtSoundVolume (EVT_OP_SOUND_POS / EVT_OP_SOUND_POS_OBJ) */
+#define EVT_SYSVAR_SOUND_PAN 23        /* g_evtSoundPan (same ops) */
+#define EVT_SYSVAR_BATTLE_ID 24        /* GameData.battleId (s16) */
+#define EVT_SYSVAR_BTLSEQ_BUSY 25      /* btlseq_isBusy() */
+#define EVT_SYSVAR_BATTLE_END 26       /* g_evtMode == EVT_MODE_BATTLE_END */
+#define EVT_SYSVAR_BATTLE_RESULT 27    /* GameData.battleResult */
+#define EVT_SYSVAR_BATTLE_ARG_HI 28    /* g_evtBattleTriggerArg bits 8-15 */
+#define EVT_SYSVAR_BATTLE_ARG_LO 29    /* g_evtBattleTriggerArg bits 0-7 */
+#define EVT_SYSVAR_BATTLE_PHASE 30     /* ovl_0b Battle.phase (BTL_PHASE_*) */
+#define EVT_SYSVAR_BATTLE_GROUP 31     /* ovl_0b Battle.groupNo */
+#define EVT_SYSVAR_WORLD_FIRST 0xC0    /* from here: w_frameGetParameter; below (from 32): btl_getBattleVar */
 #define EVT_EXPR_CONST16 0x7D      /* s16 constant */
 #define EVT_EXPR_CONST32 0x7E      /* 4 bytes: 26-bit signed constant */
 #define EVT_EXPR_END 0x7F

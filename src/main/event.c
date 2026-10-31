@@ -7,26 +7,26 @@ s32 evt_getSysVar(s32 op) {
     s32 id;
 
     switch ((u32)op) {
-    case 0:
+    case EVT_SYSVAR_RAND:
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
         r = *g_randPtr++;
         break;
-    case 1:
+    case EVT_SYSVAR_CAMERA:
         fldbg_getCamera(buf);
         r = buf[0];
         break;
-    case 2:
+    case EVT_SYSVAR_CONTROL_ENABLED:
         r = g_evtState->controlEnabled;
         break;
-    case 3:
+    case EVT_SYSVAR_SOUND_STATE:
         r = fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0);
         break;
-    case 4:
+    case EVT_SYSVAR_TALK_ANGLE:
         r = g_evtTalkAngle;
         break;
-    case 5:
+    case EVT_SYSVAR_OBJ_CHAR:
         id = ((u8 *)&((u32 *)g_evtCurObj + g_evtCurObj->stackOfs)[g_evtCurObj->sp])[-1];
         o = evt_getObject_inline(id);
         r = -1;
@@ -34,89 +34,89 @@ s32 evt_getSysVar(s32 op) {
             r = o->scriptIdx - (g_evtScriptCount - 9);
         }
         break;
-    case 6:
+    case EVT_SYSVAR_GIL:
         r = g_gameState->gameData->gil;
         break;
-    case 7:
+    case EVT_SYSVAR_STEP_COUNT:
         r = g_evtStepCount;
         break;
-    case 8:
+    case EVT_SYSVAR_MSG_SYNC_TAG:
         r = g_msgSyncTag;
         break;
-    case 9:
+    case EVT_SYSVAR_CHOICE:
         r = msg_getChoiceIndex();
         break;
-    case 10:
+    case EVT_SYSVAR_LINE_POINT_X:
         r = g_evtLinePointX;
         break;
-    case 11:
+    case EVT_SYSVAR_LINE_POINT_Z:
         r = g_evtLinePointZ;
         break;
-    case 12:
+    case EVT_SYSVAR_SCREEN_X:
         r = g_evtScreenX;
         break;
-    case 13:
+    case EVT_SYSVAR_SCREEN_Y:
         r = g_evtScreenY;
         break;
-    case 14:
+    case EVT_SYSVAR_MOVIE_FRAME:
         r = fld_movieCommand(4, 0, 0);
         break;
-    case 15:
+    case EVT_SYSVAR_MOVIE_STATE:
         r = fld_movieCommand(3, 0, 0);
         break;
-    case 16:
+    case EVT_SYSVAR_FROG_COUNT:
         r = g_gameState->gameData->frogCount;
         break;
-    case 17:
+    case EVT_SYSVAR_TIMER_SECONDS:
         r = timer_getSeconds();
         break;
-    case 18:
+    case EVT_SYSVAR_CARD_RESULT:
         r = card_getGameResult();
         break;
-    case 19:
+    case EVT_SYSVAR_CARD_COUNT:
         r = card_countAll();
         break;
-    case 20:
+    case EVT_SYSVAR_PLAY_TIME:
         r = game_getPlayTimeSeconds();
         if (r > 0x7FFFFF) {
             r = 0x7FFFFF;
         }
         break;
-    case 21:
+    case EVT_SYSVAR_TIMER_ENABLED:
         r = timer_isEnabled();
         break;
-    case 22:
+    case EVT_SYSVAR_SOUND_VOLUME:
         r = g_evtSoundVolume;
         break;
-    case 23:
+    case EVT_SYSVAR_SOUND_PAN:
         r = g_evtSoundPan;
         break;
-    case 24:
+    case EVT_SYSVAR_BATTLE_ID:
         r = (s16)g_gameState->gameData->battleId;
         break;
-    case 25:
+    case EVT_SYSVAR_BTLSEQ_BUSY:
         r = (u8)btlseq_isBusy();
         break;
-    case 26:
+    case EVT_SYSVAR_BATTLE_END:
         r = g_evtMode == EVT_MODE_BATTLE_END;
         break;
-    case 27:
+    case EVT_SYSVAR_BATTLE_RESULT:
         r = g_gameState->gameData->battleResult;
         break;
-    case 28:
+    case EVT_SYSVAR_BATTLE_ARG_HI:
         r = (g_evtBattleTriggerArg >> 8) & 0xFF;
         break;
-    case 29:
+    case EVT_SYSVAR_BATTLE_ARG_LO:
         r = (u8)g_evtBattleTriggerArg;
         break;
-    case 30:
+    case EVT_SYSVAR_BATTLE_PHASE:
         r = g_gameState->gameData->ctx.ovl65->phase;
         break;
-    case 31:
+    case EVT_SYSVAR_BATTLE_GROUP:
         r = g_gameState->gameData->ctx.ovl65->groupNo;
         break;
     default:
-        if (op >= 0xC0) {
+        if (op >= EVT_SYSVAR_WORLD_FIRST) {
             r = w_frameGetParameter(op);
         } else {
             r = btl_getBattleVar(op);
