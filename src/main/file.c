@@ -314,13 +314,13 @@ loop:
 void game_setNextScene(u16 arg0) {
     switch (g_gameState->mode) {
     case GS_MODE_FIELD:
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unkA = arg0;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->nextId = arg0;
         break;
     case GS_MODE_BATTLE:
-        g_gameState->gameData->ctx.ovl65->work->unk4 = arg0;
+        g_gameState->gameData->ctx.ovl65->work->returnId = arg0;
         break;
     case GS_MODE_WORLD:
-        g_gameState->gameData->ctx.ovl65->unk8->unk24 = arg0;
+        g_gameState->gameData->ctx.ovl65->worldObj->sceneId = arg0;
         break;
     }
 }

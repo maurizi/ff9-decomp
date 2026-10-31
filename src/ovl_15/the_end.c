@@ -109,7 +109,7 @@ s32 ending_theEnd(void) {
             wait = 5;
             g_endingCodePos = 0;
         }
-        g_padActuator[0].unk0 = 0;
+        g_padActuator[0].smallMotor = 0;
         if (wait > 0) {
             wait--;
         }
@@ -314,8 +314,8 @@ void ending_init(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        g_padActuator[i].unk1 = 0;
-        g_padActuator[i].unk0 = 0;
+        g_padActuator[i].largeMotor = 0;
+        g_padActuator[i].smallMotor = 0;
     }
     g_gameState->gameData->soundHook = ending_soundCmd;
     ending_loadData();

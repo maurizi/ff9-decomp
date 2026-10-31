@@ -1228,14 +1228,14 @@ void shopSell_drawInfoWindow(Window *w) {
     u8 buf[16];
     RECT *r;
     MenuList *l;
-    UnkPair *e;
+    ItemSlot *e;
     u8 equip;
     s32 i;
 
     r = (RECT *)w;
     l = &s_shopSell.list;
     e = &g_gameState->gameData->items.slots[(l->top + l->cursor) * 2 + l->col];
-    equip = (g_itemTable[e->unk0].slots & ITEM_SLOT_EQUIP) != 0;
+    equip = (g_itemTable[e->id].slots & ITEM_SLOT_EQUIP) != 0;
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + 0xC, r->y + s_shopSellInfoRowY[i] - 4, w->otz, text_getFrom(g_shopText, s_shopSellInfoRowText[i]),
                       (s_shopSellInfoRowAlways[i] | equip) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
@@ -1243,10 +1243,10 @@ void shopSell_drawInfoWindow(Window *w) {
     text_formatNumber(g_gameState->gameData->gil, buf, 7, TEXT_NUM_ASCII);
     strcat(buf, s_shopSellInfoGil);
     ui_drawSmallDigits(r->x + 0x39, r->y + s_shopSellInfoRowY[0], w->otz, buf, TEXT_PAL_WHITE);
-    text_formatNumber(item_getCount(e->unk0), buf, 2, TEXT_NUM_ASCII);
+    text_formatNumber(item_getCount(e->id), buf, 2, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSellInfoRowY[1], w->otz, buf, TEXT_PAL_WHITE);
     if (equip) {
-        text_formatNumber(item_countEquipped(e->unk0), buf, 2, TEXT_NUM_ASCII);
+        text_formatNumber(item_countEquipped(e->id), buf, 2, TEXT_NUM_ASCII);
         ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSellInfoRowY[2], w->otz, buf, TEXT_PAL_WHITE);
     }
 }
@@ -1273,13 +1273,13 @@ void shopSell_drawCursor(void) {
 
 void shopSell_openQuantity(void) {
     MenuList *l = &s_shopSell.list;
-    UnkPair *p;
+    ItemSlot *p;
     s32 i;
 
     p = &g_gameState->gameData->items.slots[(l->top + l->cursor) * 2 + l->col];
-    if (p->unk1 != 0) {
+    if (p->count != 0) {
         s_shopSell.quantity = 1;
-        s_shopSell.maxQuantity = p->unk1;
+        s_shopSell.maxQuantity = p->count;
         s_shopSell.state = SHOP_ST_NONE;
         for (i = 0; i < 2; i++) {
             s_shopSell.wins[i] = win_openFree(&s_shopSell.winRects[i], s_shopSellWindows[i].otz, s_shopSellWindows[i].style);
@@ -1390,19 +1390,19 @@ void shopSell_drawScrollRows(void) {
 }
 
 void shopSell_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
-    UnkPair *p = &g_gameState->gameData->items.slots[i];
+    ItemSlot *p = &g_gameState->gameData->items.slots[i];
     ItemInfo *it;
     s32 x, y;
     s32 k = 0x2A;
     u8 buf[8];
 
-    if (p->unk1 != 0) {
-        it = &g_itemTable[p->unk0];
+    if (p->count != 0) {
+        it = &g_itemTable[p->id];
         x = col * 0x96;
         y = v->y + (row * 0xF + k);
-        text_formatNumber(p->unk1, buf, 2, TEXT_NUM_ASCII);
+        text_formatNumber(p->count, buf, 2, TEXT_NUM_ASCII);
         text_drawBlock(x + 0x28, y, 0x1E, g_itemNames + it->name, TEXT_PAL_WHITE);
-        ui_drawItemIcon(x + 0x18, y, 0x1E, p->unk0, 1);
+        ui_drawItemIcon(x + 0x18, y, 0x1E, p->id, 1);
         ui_drawSmallDigits(x + 0x84, y + 4, 0x1E, buf, TEXT_PAL_WHITE);
     }
 }
@@ -1430,7 +1430,7 @@ void shopSell_updateHelp(void) {
     HelpState *h;
     MenuList *l;
     s32 idx;
-    UnkPair *p;
+    ItemSlot *p;
     u8 *text;
 
     h = &g_menuHelp;
@@ -1439,10 +1439,10 @@ void shopSell_updateHelp(void) {
         l = &s_shopSell.list;
         idx = (l->top + l->cursor) * 2 + l->col;
         p = &g_gameState->gameData->items.slots[idx];
-        if (p->unk1 == 0) {
+        if (p->count == 0) {
             return;
         }
-        text = s_shopItemHelp + g_itemTable[p->unk0].help;
+        text = s_shopItemHelp + g_itemTable[p->id].help;
     } else if (s_shopSell.state == SHOP_ST_QUANTITY) {
         text = text_get(SHOP_SELL_TEXT_QUANTITY_HELP);
     } else {

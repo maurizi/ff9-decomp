@@ -1208,7 +1208,7 @@ s32 bj_main(void) {
         ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xB0, 0x10, buf, g_bjCanDouble ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
         sprintf(buf, g_bjStrSplit);
         ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xC0, 0x10, buf, g_bjCanSplit ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-        g_padActuator[0].unk0 = 0;
+        g_padActuator[0].smallMotor = 0;
         if (cnt > 0) {
             cnt--;
         }

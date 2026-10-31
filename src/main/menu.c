@@ -41,7 +41,7 @@ void menu_doOpen(s32 a, s32 b) {
         g_menu.onClose = 0;
         g_menu.state = MENU_STATE_LOADING;
         if (st->mode == GS_MODE_FIELD) {
-            st->gameData->ctx.ovl65->unk0 |= 0x1000;
+            st->gameData->ctx.ovl65->flags |= FLD_MAP_NO_PRELOAD;
         }
         g_gameState->gameData->flags |= GD_MENU_OPEN;
         help_init();
@@ -82,7 +82,7 @@ void menu_finish(void) {
     u8 idx;
 
     if (g_gameState->mode == GS_MODE_FIELD) {
-        g_gameState->gameData->ctx.ovl65->unk0 &= ~0x1000;
+        g_gameState->gameData->ctx.ovl65->flags &= ~FLD_MAP_NO_PRELOAD;
     }
     g_gameState->gameData->flags &= ~GD_MENU_OPEN;
     g_gameState->gameData->flags &= ~GD_HIDE_ALL;

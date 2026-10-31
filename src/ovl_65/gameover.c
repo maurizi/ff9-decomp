@@ -134,7 +134,7 @@ s32 battleEnd_update(void) {
             timer_enable(0);
         }
         func_800F4E68();
-        gameover_main((s32)g_gameState->gameData->ctx.ovl65->work->unk1C);
+        gameover_main((s32)g_gameState->gameData->ctx.ovl65->work->bgData);
         return 2;
     }
     return 0;

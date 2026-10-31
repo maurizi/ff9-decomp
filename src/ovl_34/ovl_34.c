@@ -828,14 +828,14 @@ void menuConfig_setRumble(u8 on) {
 
     if (on) {
         for (i = 0; i < 2; i++) {
-            g_padActuator[i].unk1 = 0xFF;
-            g_padActuator[i].unk0 = 1;
+            g_padActuator[i].largeMotor = 0xFF;
+            g_padActuator[i].smallMotor = 1;
         }
         return;
     }
     for (i = 0; i < 2; i++) {
-        g_padActuator[i].unk0 = 0;
-        g_padActuator[i].unk1 = 0;
+        g_padActuator[i].smallMotor = 0;
+        g_padActuator[i].largeMotor = 0;
     }
 }
 

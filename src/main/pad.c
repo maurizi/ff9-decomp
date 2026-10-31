@@ -76,7 +76,7 @@ void pad_update(void) {
                             PadSetMainMode(i << 4, 1, 0);
                             g_padFlags |= b;
                         } else {
-                            PadSetAct(i << 4, &g_padActuator[i].unk0, 2);
+                            PadSetAct(i << 4, &g_padActuator[i].smallMotor, 2);
                             PadSetActAlign(i << 4, g_padActAlign);
                             g_padFlags = g_padFlags & ~((1 << (i * 4)) | b) & ~(4 << (i * 4));
                         }
@@ -85,7 +85,7 @@ void pad_update(void) {
             }
             b = 4 << (i * 4);
             if ((g_padFlags & b) && g_padPortState[i] == 6) {
-                PadSetAct(i << 4, &g_padActuator[i].unk0, 2);
+                PadSetAct(i << 4, &g_padActuator[i].smallMotor, 2);
                 PadSetActAlign(i << 4, g_padActAlign);
                 g_padPortState[i] = 4;
                 g_padFlags &= ~b;

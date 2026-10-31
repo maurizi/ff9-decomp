@@ -90,8 +90,8 @@ void wm_shutdown(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        g_padActuator[i].unk1 = 0;
-        g_padActuator[i].unk0 = 0;
+        g_padActuator[i].largeMotor = 0;
+        g_padActuator[i].smallMotor = 0;
     }
     w_frameSystemDestructor();
     wm_freeWorldData();
@@ -1414,8 +1414,8 @@ void wm_togglePause(void) {
         akao_pause(0);
         game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
-            g_padActuator[i].unk1 = 0;
-            g_padActuator[i].unk0 = 0;
+            g_padActuator[i].largeMotor = 0;
+            g_padActuator[i].smallMotor = 0;
         }
         ClearOTag(&g_worldPauseOT, 1);
         ui_buildSprite((320 - g_uiSprites[235].w) / 2, (218 - g_uiSprites[235].h) / 2, &g_worldPauseOT, 0xEB, 0, buf, g_worldPauseSprite);

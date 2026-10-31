@@ -20,13 +20,13 @@ void msg_init(void) {
     g_penGlyphDecode.kanjiCode = -1;
     switch (s->mode) {
     case GS_MODE_FIELD:
-        g_msgTable = s->gameData->ctx.ovl65->unkC->unk8;
+        g_msgTable = s->gameData->ctx.ovl65->fieldArea->msgTable;
         break;
     case GS_MODE_WORLD:
-        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->unk8->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->worldObj->areaData;
         break;
     case GS_MODE_BATTLE:
-        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->work->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->work->texts;
         break;
     }
     g_msgReady = 1;
@@ -1679,27 +1679,27 @@ s32 evt_modelOpField(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].sizeX = a * 14;
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].sizeZ = b * 12;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].sizeX = a * 14;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].sizeZ = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].ofsX = a;
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].ofsZ = b;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].ofsX = a;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].ofsZ = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].fixedAngle = a * 16;
+        gs->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].fixedAngle = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         fld_enableRain(0, 0, 1);
@@ -1729,27 +1729,27 @@ s32 evt_modelOpBattle(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].sizeX = a * 14;
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].sizeZ = b * 12;
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].sizeX = a * 14;
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].sizeZ = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].ofsX = a;
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].ofsZ = b;
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].ofsX = a;
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].ofsZ = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->ctx.ovl65->work->unk28[o->modelSlot].fixedAngle = a * 16;
+        gs->gameData->ctx.ovl65->work->shadows[o->modelSlot].fixedAngle = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         a = evt_getArg8();
@@ -1778,27 +1778,27 @@ s32 evt_modelOpWorld(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].sizeX = a * 14;
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].sizeZ = b * 12;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].sizeX = a * 14;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].sizeZ = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].ofsX = a;
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].ofsZ = b;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].ofsX = a;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].ofsZ = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        ((Unk11C0Slot *)gs->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].fixedAngle = a * 16;
+        gs->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].fixedAngle = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         a = evt_getArg8();

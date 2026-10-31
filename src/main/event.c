@@ -113,7 +113,7 @@ s32 evt_getSysVar(s32 op) {
         r = g_gameState->gameData->ctx.ovl65->phase;
         break;
     case 31:
-        r = g_gameState->gameData->ctx.ovl65->unk1340;
+        r = g_gameState->gameData->ctx.ovl65->groupNo;
         break;
     default:
         if (op >= 0xC0) {

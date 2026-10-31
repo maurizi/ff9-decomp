@@ -218,14 +218,13 @@ typedef struct FieldMap {
     s32 soundBankSize;
     u8 unk24[0x2C];
 } FieldMap;
-/* FieldMap.flags (g_fieldFlagQueue.mapFlags queues changes one frame ahead) */
-#define FLD_MAP_NO_WINDOWS 0x1 /* fld_main skips func_80023A0C (win_updateAll/win_drawAll) */
+/* FieldMap.flags (g_fieldFlagQueue.mapFlags queues changes one frame ahead); FLD_MAP_NO_WINDOWS 0x1,
+ * FLD_MAP_NO_BGI_ANIM 0x8 and FLD_MAP_NO_PRELOAD 0x1000 are in ff9.h (main and ovl_64 set them) */
 #define FLD_MAP_ACTIVE 0x4 /* the field is running normally: set by fld_load (every field, runtime), cleared by
                             * fld_startEncounter when the encounter swirl starts. While clear, fld_main runs
                             * fld_updateEncounter (the swirl / battle preload), fld_endFrame draws with DrawOTag
                             * instead of DrawOTagEnv (the swirl reuses the last frame) and the sound loader keeps
                             * 0x3000 bytes back for the swirl buffer; with GD_HIDE_ALL it selects vsyncMode 0 */
-#define FLD_MAP_NO_BGI_ANIM 0x8 /* fld_main skips bgi_updateAnims/bgi_updateFloorMoves */
 #define FLD_MAP_NO_VIBRATION 0x10 /* fld_main skips vib_update */
 #define FLD_MAP_NO_DISPENV 0x20 /* fld_endFrame skips PutDispEnv */
 #define FLD_MAP_NO_DRAW 0x40 /* fld_endFrame skips the OT draw */
@@ -233,7 +232,6 @@ typedef struct FieldMap {
 #define FLD_MAP_SHADOW_MASK 0x200 /* fld_drawShadow wraps the shadow quads in mask-bit packets */
 #define FLD_MAP_CLEAR_ONLY 0x400 /* fld_endFrame only does PutDrawEnv */
 #define FLD_MAP_NO_FADE 0x800 /* fld_main skips game_updateFade */
-#define FLD_MAP_NO_PRELOAD 0x1000 /* fld_main skips preload_update (fld_movieStart, main menu_doOpen) */
 #define FLD_MAP_REFIND_SECTORS 0x10000 /* fld_exit keeps the area id, fld_refindSectors rescans the directory */
 #define FLD_MAP_DISC_CHANGE 0x100000 /* fld_requestDiscChange, fld_isDiscChangePending */
 

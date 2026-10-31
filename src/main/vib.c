@@ -27,10 +27,10 @@ s32 vib_init(VibData *t) {
     }
     vib_selectTrack(0, 0, 1);
     vib_selectTrack(0, 1, 1);
-    g_padActuator[0].unk0 = 0;
-    g_padActuator[0].unk1 = 0;
-    g_padActuator[1].unk0 = 0;
-    g_padActuator[1].unk1 = 0;
+    g_padActuator[0].smallMotor = 0;
+    g_padActuator[0].largeMotor = 0;
+    g_padActuator[1].smallMotor = 0;
+    g_padActuator[1].largeMotor = 0;
     return 0;
 }
 
@@ -73,11 +73,11 @@ s32 vib_update(void) {
         b = 1;
     }
     if (!((g_gameState->config & 0xFF) >> CFG_BIT_VIBRATION) || g_gameState->mode == 5) {
-        g_padActuator[0].unk0 = b;
-        g_padActuator[0].unk1 = a;
+        g_padActuator[0].smallMotor = b;
+        g_padActuator[0].largeMotor = a;
         if (g_gameState->mode == GS_MODE_BATTLE && btlui_isSecondPortUsed()) {
-            g_padActuator[1].unk0 = b;
-            g_padActuator[1].unk1 = a;
+            g_padActuator[1].smallMotor = b;
+            g_padActuator[1].largeMotor = a;
         }
     }
     g_vib.pos += g_vib.rate;
@@ -91,10 +91,10 @@ s32 vib_update(void) {
         f = g_vib.flags;
         g_vib.flags = f & ~VIB_RUNNING;
         if (!(f & VIB_LOOP)) {
-            g_padActuator[0].unk0 = 0;
-            g_padActuator[0].unk1 = 0;
-            g_padActuator[1].unk0 = 0;
-            g_padActuator[1].unk1 = 0;
+            g_padActuator[0].smallMotor = 0;
+            g_padActuator[0].largeMotor = 0;
+            g_padActuator[1].smallMotor = 0;
+            g_padActuator[1].largeMotor = 0;
             g_vib.flags = f & ~(VIB_PLAYING | VIB_RUNNING);
         }
     }
@@ -108,10 +108,10 @@ s32 vib_update(void) {
         f = g_vib.flags;
         g_vib.flags = f & ~VIB_RUNNING;
         if (!(f & VIB_LOOP)) {
-            g_padActuator[0].unk0 = 0;
-            g_padActuator[0].unk1 = 0;
-            g_padActuator[1].unk0 = 0;
-            g_padActuator[1].unk1 = 0;
+            g_padActuator[0].smallMotor = 0;
+            g_padActuator[0].largeMotor = 0;
+            g_padActuator[1].smallMotor = 0;
+            g_padActuator[1].largeMotor = 0;
             g_vib.flags = f & ~(VIB_PLAYING | VIB_RUNNING);
         }
     }
@@ -129,10 +129,10 @@ s32 vib_selectTrack(s32 row, s32 col, s32 sel) {
     r = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs) + row;
     if (sel) {
         r->unk0[col] |= 1;
-        g_padActuator[0].unk0 = 0;
-        g_padActuator[0].unk1 = 0;
-        g_padActuator[1].unk0 = 0;
-        g_padActuator[1].unk1 = 0;
+        g_padActuator[0].smallMotor = 0;
+        g_padActuator[0].largeMotor = 0;
+        g_padActuator[1].smallMotor = 0;
+        g_padActuator[1].largeMotor = 0;
         g_vib.flags &= ~(VIB_PLAYING | VIB_RUNNING);
         g_vib.pos = g_vib.start << 8;
     } else {
@@ -142,10 +142,10 @@ s32 vib_selectTrack(s32 row, s32 col, s32 sel) {
 }
 
 s32 vib_clear(void) {
-    g_padActuator[0].unk0 = 0;
-    g_padActuator[0].unk1 = 0;
-    g_padActuator[1].unk0 = 0;
-    g_padActuator[1].unk1 = 0;
+    g_padActuator[0].smallMotor = 0;
+    g_padActuator[0].largeMotor = 0;
+    g_padActuator[1].smallMotor = 0;
+    g_padActuator[1].largeMotor = 0;
     g_vib.flags = 0;
     g_vib.start = 0;
     g_vib.end = 0;
@@ -169,10 +169,10 @@ s32 vib_setPlaying(s32 on) {
             g_vib.pos = g_vib.start << 8;
         }
     } else {
-        g_padActuator[0].unk0 = 0;
-        g_padActuator[0].unk1 = 0;
-        g_padActuator[1].unk0 = 0;
-        g_padActuator[1].unk1 = 0;
+        g_padActuator[0].smallMotor = 0;
+        g_padActuator[0].largeMotor = 0;
+        g_padActuator[1].smallMotor = 0;
+        g_padActuator[1].largeMotor = 0;
         g_vib.flags &= ~(VIB_PLAYING | VIB_RUNNING);
     }
     return 0;

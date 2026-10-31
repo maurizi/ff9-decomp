@@ -87,11 +87,6 @@ s32 preload_startRead(void);
 void preload_setVramRect(PreloadEntry *, s16, s16, s16, s16);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-} UnkPair;
-
-typedef struct {
     u16 codeBase; /* (second table) high byte: first two-byte code; subtracted from a code to index the glyphs (text_buildPlain/text_measure, kanji table) */
     u8 pad2[2];
     u16 extCode; /* high byte: first text code that takes an extra byte (text_draw: (c << 8) + next byte - extCode + extBase) */
@@ -179,27 +174,38 @@ typedef struct ModelSlot {
 #define MODEL_SLOT_LOADED    0x1  /* the slot has a model (set when it is built, cleared by fld_exit / btl_cleanup / wm exit) */
 #define MODEL_SLOT_NO_SHADOW 0x10 /* no shadow drawn (EVT_OP_JUMP sets it for the jump) */
 
+/* main's and ovl_65's view of ovl_0b BtlFiles (Battle.files) */
 typedef struct {
     u8 pad0[4];
-    s32 unk4; /* load address */
+    s32 data1; /* BtlFiles.data[1]: the battle-end db ovl_65 registers at g_modeHeap (battleEnd_loadDb / battleEnd_unloadDb) */
 } Unk1354;
 
+/* view of ovl_0b Battle11C0 (Battle.work), the fields main and ovl_65 read */
 typedef struct {
     u8 pad0[4];
-    s16 unk4; /* set by game_setNextScene */
-    u8 unk6;
+    s16 returnId; /* Battle11C0.returnId; game_setNextScene sets it in battle */
+    u8 returnMode; /* Battle11C0.returnMode: GameState.mode battleEnd_main goes back to (1 = field) */
     u8 pad7[0x10 - 7];
-    s32 unk10;
-    s32 unk14;
+    s32 eventScript; /* event script battleEnd_init runs (evt_init) when g_btlRewards.hasPostEvent; btl_initMode clears it */
+    s32 texts; /* Battle11C0.texts: message table in battle (msg_init); battleEnd_init calls msg_init when it is set */
     u8 pad18[4];
-    u8 *unk1C; /* load address */
-    u8 pad20[4];
-    s16 unk24; /* set by game_setNextScene */
-    u8 pad26[2];
-    struct Unk11C0Slot *unk28; /* per-object model slots, indexed by unk3B */
+    u8 *bgData; /* Battle11C0.bgData: battleEnd_preloadScene reads the next mode's overlay here */
+    u8 pad20[0x28 - 0x20];
+    struct Unk11C0Slot *shadows; /* Battle11C0.shadows, indexed by EvtObject.modelSlot (EVT_OP_SHADOW_*) */
 } Unk11C0;
 
-/* per-object shadow (0x28 bytes, Unk11C0.unk28), built by shadow_initSlots, set by the EVT_OP_SHADOW_* ops in evt_modelOp* */
+/* main's view of ovl_0c WorldMapObj (WorldMap.obj) */
+typedef struct {
+    u8 pad0[0x14];
+    struct Unk8007B954 *areaData; /* WorldMapObj.areaData, the message table on the world map (msg_init) */
+    u8 pad18[0x1C - 0x18];
+    struct Unk11C0Slot *shadows; /* WorldMapObj.shadows (WmObjEnt, the same 0x28-byte record), by EvtObject.modelSlot */
+    u8 pad20[0x24 - 0x20];
+    s16 sceneId; /* WorldMapObj.sceneId; game_setNextScene sets it on the world map */
+} WmObjView;
+
+/* per-object shadow (0x28 bytes: Battle11C0.shadows, WorldMapObj.shadows, FieldScene.shadows), built by
+ * shadow_initSlots, set by the EVT_OP_SHADOW_* ops in evt_modelOp* */
 typedef struct Unk11C0Slot {
     u32 unk0_0 : 8;
     u32 sizeX : 12; /* EVT_OP_SHADOW_SIZE x * 14 (0xE0 from shadow_initSlots) */
@@ -207,37 +213,46 @@ typedef struct Unk11C0Slot {
     u32 fixedAngle : 12; /* EVT_OP_SHADOW_FIXED angle * 16, used with model flag 0x20 */
     u32 ofsX : 10; /* event op 0x82 x offset */
     u32 ofsZ : 10; /* event op 0x82 z offset */
-    POLY_FT4 *unk8[2][4]; /* prims, filled by shadow_initSlots */
+    POLY_FT4 *prims[2][4]; /* shadow quads per draw buffer, filled by shadow_initSlots (ovl_0c WmObjEnt.prims) */
 } Unk11C0Slot;
 
+/* main's view of ovl_0a FieldScene (FieldMapObj.scene) */
 typedef struct {
     u8 pad0[0xA];
-    s16 unkA; /* set by game_setNextScene */
+    s16 nextId; /* FieldScene.nextId; game_setNextScene sets it in a field */
     u8 padC[0x2C - 0xC];
-    struct Unk11C0Slot *unk2C; /* per-object model slots, indexed by unk3B */
+    struct Unk11C0Slot *shadows; /* FieldScene.shadows, by EvtObject.modelSlot */
 } Unk8E4C14;
 
+/* main's view of ovl_0a FieldMapObj (FieldMap.area) */
 typedef struct {
     u8 pad0[8];
-    struct Unk8007B954 *unk8; /* message table */
+    struct Unk8007B954 *msgTable; /* FieldMapObj.msgTable (msg_init) */
     u8 padC[0x14 - 0xC];
-    Unk8E4C14 *unk14;
+    Unk8E4C14 *scene; /* FieldMapObj.scene */
 } Unk8E4C;
 
+/* GameData.ctx as main and ovl_65 see it: the offsets of ovl_0a FieldMap, ovl_0c WorldMap and ovl_0b Battle
+ * that are read through it */
 typedef struct {
-    u32 unk0;
+    u32 flags; /* the mode's flags word: FieldMap.flags (FLD_MAP_NO_PRELOAD from menu_doOpen; ovl_64 sets
+                * FLD_MAP_NO_WINDOWS | FLD_MAP_NO_BGI_ANIM), WorldMap.flags, Battle.flags (ovl_0b btl_main tests 0x200) */
     u8 pad4[4];
-    Unk11C0 *unk8;
-    Unk8E4C *unkC;
+    WmObjView *worldObj; /* WorldMap.obj */
+    Unk8E4C *fieldArea; /* FieldMap.area */
     u8 pad10[0xD80 - 0x10];
     u8 phase; /* ovl_0b Battle.phase */
     u8 padD81[0x11C0 - 0xD81];
     Unk11C0 *work; /* ovl_0b Battle.work */
     u8 pad11C4[0x1340 - 0x11C4];
-    u8 unk1340;
+    u8 groupNo; /* ovl_0b Battle.groupNo (event expression, evt_getSysVar) */
     u8 pad1341[0x1354 - 0x1341];
-    Unk1354 *unk1354;
+    Unk1354 *files; /* ovl_0b Battle.files */
 } Unk8E4;
+/* Unk8E4.flags in field mode (FieldMap.flags; the other FLD_MAP_* bits are in ovl_0a.h) */
+#define FLD_MAP_NO_WINDOWS 0x1 /* fld_main skips func_80023A0C (win_updateAll/win_drawAll) */
+#define FLD_MAP_NO_BGI_ANIM 0x8 /* fld_main skips bgi_updateAnims/bgi_updateFloorMoves */
+#define FLD_MAP_NO_PRELOAD 0x1000 /* fld_main skips preload_update (fld_movieStart, main menu_doOpen) */
 
 typedef struct {
     s32 unk0;
@@ -285,6 +300,7 @@ typedef struct {
     u8 id;
     u8 count;
 } ItemSlot;
+typedef ItemSlot UnkPair; /* old name, still used by ovl_0b */
 
 /* GameData.items: item inventory, copied as a block by the save code (ovl_39) */
 typedef struct {
@@ -622,7 +638,12 @@ typedef struct {
 
 /* ---- misc globals ---- */
 
-extern UnkPair g_padActuator[2];
+/* per port: the DualShock actuator bytes PadSetAct sends (pad_update), set by vib_update from the vibration tracks */
+typedef struct {
+    u8 smallMotor; /* actuator 0: on/off (vib_update clamps the track sum to 1) */
+    u8 largeMotor; /* actuator 1: strength 0-255 */
+} PadActuator;
+extern PadActuator g_padActuator[2];
 
 typedef struct {
     u8 state; /* MENU_STATE_* (g_menuStateFuncs index) */

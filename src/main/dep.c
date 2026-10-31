@@ -25,10 +25,10 @@ s32 shadow_initSlots(s32 prim, s32 cx, s32 cy, s32 u, s32 v, s32 n, s32 flags) {
         for (j = 0; j < 2; j++) {
             for (k = 0; k < 4; k++) {
                 if (!(flags & 1)) {
-                    q->unk8[j][k] = NULL;
+                    q->prims[j][k] = NULL;
                     continue;
                 }
-                q->unk8[j][k] = (POLY_FT4 *)prim;
+                q->prims[j][k] = (POLY_FT4 *)prim;
                 if (flags & 2) {
                     prim += 0xC;
                 }

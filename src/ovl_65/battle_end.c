@@ -12,7 +12,7 @@ void battleEnd_main(void) {
         pad_update();
         switch (battleEnd_update()) {
         case 1:
-            g_gameState->mode = s->unk6;
+            g_gameState->mode = s->returnMode;
             break;
         case 2:
             g_gameState->mode = GS_MODE_OPENING;
@@ -45,9 +45,9 @@ void battleEnd_init(void) {
     battleEnd_loadDb();
     battleEnd_loadPortraits();
     battleEnd_unloadDb();
-    if (s->unk10 != 0 && g_btlRewards.hasPostEvent != 0) {
-        evt_init((u8 *)s->unk10);
-        if (s->unk14 != 0) {
+    if (s->eventScript != 0 && g_btlRewards.hasPostEvent != 0) {
+        evt_init((u8 *)s->eventScript);
+        if (s->texts != 0) {
             msg_init();
         }
     }
@@ -108,16 +108,16 @@ s32 battleEnd_loadDb(void) {
         while (cdRead_update(g_gameState->gameData->cdRead)) {
         }
     }
-    g_gameState->gameData->ctx.ovl65->unk1354->unk4 = g_modeHeap;
-    db_register(g_gameState->gameData->ctx.ovl65->unk1354->unk4, 0);
+    g_gameState->gameData->ctx.ovl65->files->data1 = g_modeHeap;
+    db_register(g_gameState->gameData->ctx.ovl65->files->data1, 0);
     return 0;
 }
 
 s32 battleEnd_unloadDb(void) {
-    Unk1354 *p = g_gameState->gameData->ctx.ovl65->unk1354;
-    if (p->unk4 != 0) {
-        db_unregister((void *)p->unk4);
-        g_gameState->gameData->ctx.ovl65->unk1354->unk4 = 0;
+    Unk1354 *p = g_gameState->gameData->ctx.ovl65->files;
+    if (p->data1 != 0) {
+        db_unregister((void *)p->data1);
+        g_gameState->gameData->ctx.ovl65->files->data1 = 0;
     }
     return 0;
 }
@@ -140,15 +140,15 @@ void battleEnd_preloadScene(void) {
         return;
     }
     id = OVL_KEY(OVL_WORLD);
-    if (b->unk6 == 1) {
+    if (b->returnMode == GS_MODE_FIELD) {
         id = OVL_KEY(OVL_FIELD);
     }
     f = file_find(DIR_OVERLAYS, id);
-    dst = b->unk1C;
+    dst = b->bgData;
     size = (f->unkC - f->sector) << 11;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, size, size, f->sector, size);
     dst += size;
-    if (b->unk6 == 1) {
+    if (b->returnMode == GS_MODE_FIELD) {
         id = FILE_FLD_COMMON;
     } else if (g_evtGlobalVars.h[0] >= 0x2B52) {
         id = FILE_WM_DATA_LATE;
@@ -162,7 +162,7 @@ void battleEnd_preloadScene(void) {
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, at, size, f->sector, size);
     dst += size;
-    if (b->unk6 != 1) {
+    if (b->returnMode != GS_MODE_FIELD) {
         return;
     }
     sector = g_gameState->gameData->sceneSector[0];

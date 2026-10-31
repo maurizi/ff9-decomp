@@ -55,8 +55,8 @@ void btl_updatePause(void) {
             akao_pause(0);
             game_resumeClock(1);
             for (i = 1; i >= 0; i--) {
-                g_padActuator[i].unk1 = 0;
-                g_padActuator[i].unk0 = 0;
+                g_padActuator[i].largeMotor = 0;
+                g_padActuator[i].smallMotor = 0;
             }
             if (g_gameState->gameData->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN) {
                 g_padPortMask[0] |= 8;
@@ -158,8 +158,8 @@ void btl_initMode(void) {
 void btl_exitMode(void) {
     s32 i;
     for (i = 1; i >= 0; i--) {
-        g_padActuator[i].unk1 = 0;
-        g_padActuator[i].unk0 = 0;
+        g_padActuator[i].largeMotor = 0;
+        g_padActuator[i].smallMotor = 0;
     }
     btl_unloadCommonData();
 }
@@ -2158,7 +2158,7 @@ void btl_endFrame(void) {
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC)[2] = 0;
     addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC);
     btl_putDispEnvNoUi();
-    if (!(g_gameState->gameData->flags & GD_PAUSED) && !(g_gameState->gameData->ctx.ovl65->unk0 & 0x200)) {
+    if (!(g_gameState->gameData->flags & GD_PAUSED) && !(g_gameState->gameData->ctx.ovl65->flags & 0x200)) {
         btlui_drawOTagEnv(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
         DrawOTag(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST]);
     }

@@ -1456,8 +1456,8 @@ void fld_updateEncounter(void) {
             akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf1, 0x200000, 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
-            g_padActuator[i].unk1 = 0;
-            g_padActuator[i].unk0 = 0;
+            g_padActuator[i].largeMotor = 0;
+            g_padActuator[i].smallMotor = 0;
         }
         akao_sendCmdE2();
         g_gameState->gameData->ctx.field->area->scene->encounterStep++;
@@ -1547,8 +1547,8 @@ void fld_togglePause(void) {
         akao_pause(0);
         game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
-            g_padActuator[i].unk1 = 0;
-            g_padActuator[i].unk0 = 0;
+            g_padActuator[i].largeMotor = 0;
+            g_padActuator[i].smallMotor = 0;
         }
         ClearOTag(&g_fieldTempOt, 1);
         ui_buildSprite((320 - g_uiSprites[235].w) / 2, (224 - g_uiSprites[235].h) / 2, &g_fieldTempOt, 0xEB, 0, &tmp, &g_fieldPauseSprite);
