@@ -65,7 +65,7 @@ void pad_update(void) {
         } else if (state == 1) {
             g_padFlags |= 4 << (i * 4);
         }
-        if (PADBUF(i)->status == 0 && (((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_ANALOG || ((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_DIGITAL)) {
+        if (PADBUF(i)->status == 0 && (((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_ANALOG || ((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_DIGITAL)) {
             if ((g_padFlags >> (i * 4)) & 1) {
                 if (g_padPortState[i] == 2) {
                     g_padFlags &= ~(1 << (i * 4));
@@ -76,7 +76,7 @@ void pad_update(void) {
                             PadSetMainMode(i << 4, 1, 0);
                             g_padFlags |= b;
                         } else {
-                            PadSetAct(i << 4, &g_padActuator[i].unk0, 2);
+                            PadSetAct(i << 4, &g_padActuator[i].smallMotor, 2);
                             PadSetActAlign(i << 4, g_padActAlign);
                             g_padFlags = g_padFlags & ~((1 << (i * 4)) | b) & ~(4 << (i * 4));
                         }
@@ -85,7 +85,7 @@ void pad_update(void) {
             }
             b = 4 << (i * 4);
             if ((g_padFlags & b) && g_padPortState[i] == 6) {
-                PadSetAct(i << 4, &g_padActuator[i].unk0, 2);
+                PadSetAct(i << 4, &g_padActuator[i].smallMotor, 2);
                 PadSetActAlign(i << 4, g_padActAlign);
                 g_padPortState[i] = 4;
                 g_padFlags &= ~b;
@@ -107,7 +107,7 @@ void pad_update(void) {
                     g_padHoldFrames[i][j] = 0;
                 }
             }
-            if ((g_padFlags & 0x8000) && ((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
+            if ((g_padFlags & 0x8000) && ((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
                 if (g_padAnalog[i].unk0[2] < g_padAnalogThresholds.unk0[2]) {
                     g_padPortHeld[i] |= PAD_LEFT;
                 }

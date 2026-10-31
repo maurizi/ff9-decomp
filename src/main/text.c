@@ -812,7 +812,7 @@ s32 ui_measureLabel(u8 *s) {
         if (*s == ' ') {
             adv = 5;
         } else {
-            adv = g->unk4;
+            adv = g->advance;
         }
         s++;
         w += adv - 1;

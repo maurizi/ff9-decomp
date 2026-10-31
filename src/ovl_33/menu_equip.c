@@ -128,7 +128,7 @@ void menuEquip_drawInfo(void) {
     cur.stats[1] = c->strength;
     cur.stats[2] = c->magic;
     cur.stats[3] = c->spirit;
-    cur.defs[0] = g_weaponTable[c->equip[0]].unk5;
+    cur.defs[0] = g_weaponTable[c->equip[0]].attack;
     cur.defs[1] = c->defense;
     cur.defs[2] = c->evade;
     cur.defs[3] = c->magicDef;
@@ -241,7 +241,7 @@ void menuEquip_drawAbilities(void) {
         if (ab < ABILITY_SUPPORT_FIRST) {
             name = s_menuEquipActionNames + s_menuEquipActionTable[ab].nameOffset;
         } else {
-            name = s_menuEquipSupportNames + g_supportAbilities[ab - ABILITY_SUPPORT_FIRST].unk2;
+            name = s_menuEquipSupportNames + g_supportAbilities[ab - ABILITY_SUPPORT_FIRST].name;
         }
         if (chr_canLearnAbilities(c)) {
             ok = chr_findAbilitySlot(c->info.b.id, ab) >= 0;
@@ -292,7 +292,7 @@ void menuEquip_drawList(void) {
 
     if (m->listOpen != 0) {
         w = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
-        ui_drawLabel(wd->rect.x + 6, r->y - 3, 0x14, g_winLabelStrings.unk0[s_menuEquipSlotLabel[m->equipSlot]], UI_LABEL_NORMAL);
+        ui_drawLabel(wd->rect.x + 6, r->y - 3, 0x14, g_winLabelStrings.labels[s_menuEquipSlotLabel[m->equipSlot]], UI_LABEL_NORMAL);
         ui_drawLabel(wd->rect.x - (w - k), r->y - 3, 0x14, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
         win_drawListBox(r, 0x14, 1, l);
         menuList_getView(l, &view);
@@ -405,7 +405,7 @@ void menuEquip_optimize(void) {
     s32 kind;
     s32 cur;
     Character *c;
-    UnkPair *p;
+    ItemSlot *p;
     ItemInfo *it;
 
     best = 0;
@@ -419,12 +419,12 @@ void menuEquip_optimize(void) {
             cur = -1;
         }
         for (j = 0, max = -1, p = g_gameState->gameData->items.slots; j < ITEM_SLOT_COUNT; j++, p++) {
-            if (p->unk1 != 0) {
-                it = &g_itemTable[p->unk0];
+            if (p->count != 0) {
+                it = &g_itemTable[p->id];
                 if ((it->slots & s_menuEquipOptSlotMask[i]) && (it->equipMask & s_menuEquipOptCharMask[kind])) {
                     if (it->rank > max) {
                         max = it->rank;
-                        best = p->unk0;
+                        best = p->id;
                     }
                 }
             }
@@ -469,8 +469,8 @@ void menuEquip_dropUnlearnedSupport(Character *c) {
             if (a->id >= ABILITY_SUPPORT_FIRST && chr_hasSupportAbility(c->info.b.id, a->id)) {
                 if (s_menuEquipTaught[a->id - ABILITY_SUPPORT_FIRST] == 0 && c->ap[i] < a->ap) {
                     chr_setSupportAbility(c->info.b.id, a->id, 0);
-                    if (c->maxStones - c->stones >= g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].unk1) {
-                        c->stones += g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].unk1;
+                    if (c->maxStones - c->stones >= g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].stones) {
+                        c->stones += g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].stones;
                     } else {
                         c->stones = c->maxStones;
                     }
@@ -527,7 +527,7 @@ void menuEquip_updateHelp(void) {
     Character *c;
     u8 *buf;
     s32 id;
-    UnkPair *e;
+    ItemSlot *e;
     MenuList *l;
 
     c = g_gameState->gameData->party[s_menuEquip.slot];
@@ -547,8 +547,8 @@ void menuEquip_updateHelp(void) {
         }
     } else if (s_menuEquip.state == EQUIP_STATE_LIST && (l = &s_menuEquip.list)->rows != 0) {
         e = s_menuEquip.items + (l->top + l->cursor);
-        if (e->unk1 != 0) {
-            g_menuHelp.text = s_menuEquipItemHelp + g_itemTable[e->unk0].help;
+        if (e->count != 0) {
+            g_menuHelp.text = s_menuEquipItemHelp + g_itemTable[e->id].help;
         }
     }
 }
@@ -640,7 +640,7 @@ void menuEquip_drawScrollRows(void) {
 
 void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *v) {
     WinDef *w;
-    UnkPair *p;
+    ItemSlot *p;
     s32 x;
     s32 y;
     u8 buf[16];
@@ -649,9 +649,9 @@ void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *v) {
     x = s_menuEquip.listWin.rect.x;
     w = &s_menuEquip.listWin;
     y = w->rect.y + row * 0xF + v->y;
-    ui_drawItemIcon(x + 0xB, y, 0x13, p->unk0, 1);
-    text_drawBlock(x + 0x1B, y, 0x13, g_itemNames + g_itemTable[p->unk0].name, TEXT_PAL_WHITE);
-    text_formatNumber(p->unk1, buf, 2, TEXT_NUM_ASCII);
+    ui_drawItemIcon(x + 0xB, y, 0x13, p->id, 1);
+    text_drawBlock(x + 0x1B, y, 0x13, g_itemNames + g_itemTable[p->id].name, TEXT_PAL_WHITE);
+    text_formatNumber(p->count, buf, 2, TEXT_NUM_ASCII);
     ui_drawSmallDigits(x + 0x8A, y + 4, 0x13, buf, TEXT_PAL_WHITE);
 }
 

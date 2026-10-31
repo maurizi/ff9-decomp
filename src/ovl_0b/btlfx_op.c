@@ -25,7 +25,7 @@ s32 btlfx_reloadCommonData(s32 arg0) {
     u32 *p = RAM_BTLFX_MODULE(u32 *);
     if (arg0 == 0) {
         FileEntry *e = file_find(DIR_COMMON, FILE_BTLFX_COMMON);
-        cd_readAsync(g_gameState->imgSector + e->sector, (e->unkC - e->sector) << 11, RAM_BTLFX_MODULE(void *), 0);
+        cd_readAsync(g_gameState->imgSector + e->sector, (e->link - e->sector) << 11, RAM_BTLFX_MODULE(void *), 0);
     } else if (cd_getState() == 0) {
         btlfx_resetMaskBit();
         r.w = 0x40;

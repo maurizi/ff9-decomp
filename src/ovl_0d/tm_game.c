@@ -437,7 +437,7 @@ void tm_loadImageFile(void) {
     if (f == NULL) {
         SystemError(0x46, 0x3E6);
     }
-    cd_readSync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, TM_IMAGE_FILE);
+    cd_readSync(g_gameState->imgSector + f->sector, (f->link - f->sector) << 11, TM_IMAGE_FILE);
 }
 
 u8 *tm_getFileEntry(s32 i) {
@@ -1654,18 +1654,18 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
     b = tm_getCardAt(s, s->dstX, s->dstY);
     tm_getBattleValues((s32)s, &pos, a, b);
     s->valuesTimer = 0x3C;
-    if (s->timer == 0x23) {
+    if (s->timer == TM_FIGHT_CLASH) {
         tm_playSe(TM_SE_BATTLE);
     }
-    if (s->timer < 0x23) {
+    if (s->timer < TM_FIGHT_CLASH) {
         s->atkShown = pos.atk;
         s->defShown = pos.def;
-    } else if (s->timer < 0x43) {
+    } else if (s->timer < TM_FIGHT_ROLL) {
         x = (s->srcX + s->dstX) * 43 / 2 + 0x48;
         y = (s->srcY + s->dstY) * 26 + 9;
         c = s->brightness;
         h = 0x30;
-        if (s->timer - 0x23 < 0xF) {
+        if (s->timer - TM_FIGHT_CLASH < 0xF) {
             h = 0x28;
         }
         setlen(p, 4);
@@ -1677,8 +1677,8 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
         p->b0 = c;
         p->w = 0x28;
         p->h = h;
-        p->u0 = (((s->timer - 0x23) & 0xF) >> 2) * 40;
-        p->v0 = ((s->timer - 0x23) / 16) * 40;
+        p->u0 = (((s->timer - TM_FIGHT_CLASH) & 0xF) >> 2) * 40;
+        p->v0 = ((s->timer - TM_FIGHT_CLASH) / 16) * 40;
         o = ot + 30;
         p->clut = getClut(0, 0xEC);
         AddPrim(o, p);
@@ -1690,13 +1690,13 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
         p = (SPRT *)((DR_TPAGE *)p + 1);
         s->defShown = pos.def;
     } else {
-        if (s->timer == 0x43) {
+        if (s->timer == TM_FIGHT_ROLL) {
             s->atkRoll = rand() % pos.atk;
             s->defRoll = rand() % pos.def;
         }
-        s->atkShown = pos.atk - (pos.atk - s->atkRoll) * (s->timer - 0x43) / 23;
-        s->defShown = pos.def - (pos.def - s->defRoll) * (s->timer - 0x43) / 23;
-        if (s->timer >= 0x5A) {
+        s->atkShown = pos.atk - (pos.atk - s->atkRoll) * (s->timer - TM_FIGHT_ROLL) / 23;
+        s->defShown = pos.def - (pos.def - s->defRoll) * (s->timer - TM_FIGHT_ROLL) / 23;
+        if (s->timer >= TM_FIGHT_END) {
             e = s->flips;
             tm_clearFlips(s);
             e->mode = TM_FLIP_BATTLE;

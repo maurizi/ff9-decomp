@@ -41,8 +41,8 @@ void game_allocData(void) {
     gd->musicSeq = (void *)g_allocTop;
     w = g_allocTop + 0x6800;
     gd->musicSeq2 = w;
-    gd->sfxSlotBuf0 = (void *)(w + 0x2000);
-    gd->sfxSlotBuf1 = (void *)(w + 0x2800);
+    gd->sfxSlotBuf[0] = (void *)(w + 0x2000);
+    gd->sfxSlotBuf[1] = (void *)(w + 0x2800);
     g_allocTop = w + 0x3000;
 }
 
@@ -76,13 +76,13 @@ void game_resetData(void) {
     gd->musicFadeStart = 0;
     gd->soundLoadBank = 0xFFFF;
     for (i = 1; i >= 0; i--) {
-        gd->musicId[i] = 0xFFFF;
+        gd->musicId[i] = MUSIC_NONE;
         gd->musicBank[i] = 0xFFFF;
         gd->musicHandle[i] = 0;
         gd->musicVolume[i] = 0x7F;
     }
     gd->musicFadeFrames = 0x1E;
-    gd->savedMusicId = 0xFFFF;
+    gd->savedMusicId = MUSIC_NONE;
     gd->savedMusicBank = 0xFFFF;
     gd->savedMusicField = 0xFFFF;
     gd->savedMusicVolume = 0;
@@ -91,7 +91,7 @@ void game_resetData(void) {
     gd->savedMusicFileSector = -1;
     gd->savedMusicFileSectors = 0xFFFF;
     for (i = 1; i >= 0; i--) {
-        gd->sfxSlotId[i] = 0xFFFF;
+        gd->sfxSlotId[i] = SE_NONE;
         (&gd->worldBankReq)[i] = 0xFFFF;
         gd->sfxSlotVolume[i] = 0x7F;
         gd->sfxSlotPan[i] = 0x80;
@@ -157,7 +157,7 @@ s32 game_loadCommonImages(void) {
 s32 game_loadCommonDb(void) {
     FileEntry *f = file_find(DIR_COMMON, FILE_COMMON_DB);
 
-    cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, (void *)g_allocTop, 0,
+    cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, (void *)g_allocTop, 0,
                   -1, NULL);
     while (cdRead_update(g_gameState->gameData->cdRead)) {
     }

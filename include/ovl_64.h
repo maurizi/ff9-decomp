@@ -138,6 +138,7 @@ typedef struct {
 #define MBG_RING_FREE 0x1000 /* mbg_streamSetRing / mbg_streamClearRing / mbg_streamFreeFrame */
 #define MBG_RING_FILLING 0x2000 /* with MBG_RING_BUSY: the reader started writing sectors into the slot */
 #define MBG_RING_BUSY 0x4000 /* in use (filling or ready) */
+#define MBG_RING_STATE (MBG_RING_FREE | MBG_RING_FILLING | MBG_RING_BUSY | MBG_RING_READY) /* the state changes keep the other bits */
 #define MBG_RING_READY 0x8000 /* with MBG_RING_BUSY: a complete frame; mbg_streamGetFrame hands it out */
 
 /* sector header at the end of each ring slot */

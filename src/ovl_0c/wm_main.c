@@ -90,8 +90,8 @@ void wm_shutdown(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        g_padActuator[i].unk1 = 0;
-        g_padActuator[i].unk0 = 0;
+        g_padActuator[i].largeMotor = 0;
+        g_padActuator[i].smallMotor = 0;
     }
     w_frameSystemDestructor();
     wm_freeWorldData();
@@ -178,13 +178,13 @@ s32 wm_loadWorldData(void) {
         file_copyViaVram((s32)buf, e->dest, e->loaded, 0);
         DrawSync(0);
         if (e->loaded < e->readSize) {
-            cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, buf + e->loaded, e->loaded, -1, 0);
+            cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, buf + e->loaded, e->loaded, -1, 0);
             while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
             }
         }
         preload_remove(id);
     } else {
-        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, buf, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, buf, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
@@ -356,7 +356,7 @@ void wm_resetMapObj(void) {
     o->primCursor = 0;
     o->swirlFrames = 0;
     o->battleStep = 0;
-    o->battleMusic = 0xFFFF;
+    o->battleMusic = MUSIC_NONE;
     o->loadPtr = o->loadBase;
     for (i = 1; i >= 0; i--) {
         o->files[i] = NULL;
@@ -477,7 +477,7 @@ s32 wm_depFindBattle(s16 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -493,7 +493,7 @@ s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
 
     for (i = 0; i < t->count; i++) {
         if (e[i].id == arg0) {
-            id = e[i].unkC;
+            id = e[i].link;
             break;
         }
     }
@@ -503,7 +503,7 @@ s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -523,7 +523,7 @@ s32 wm_depFindField(s16 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -539,7 +539,7 @@ s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
 
     for (i = 0; i < t->count; i++) {
         if (e[i].id == arg0) {
-            id = e[i].unkC;
+            id = e[i].link;
             break;
         }
     }
@@ -549,7 +549,7 @@ s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -809,11 +809,11 @@ s32 wm_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | DB_MUSIC;
         switch (kind) {
         case 9:
-            if (g_gameState->gameData->savedMusicId == 0xFFFF) {
+            if (g_gameState->gameData->savedMusicId == MUSIC_NONE) {
                 return 0;
             }
             if (g_gameState->gameData->savedMusicField != g_gameState->gameData->worldId) {
-                g_gameState->gameData->savedMusicId = 0xFFFF;
+                g_gameState->gameData->savedMusicId = MUSIC_NONE;
                 g_gameState->gameData->savedMusicField = 0xFFFF;
                 return 0;
             }
@@ -821,7 +821,7 @@ s32 wm_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             arg1 = g_gameState->gameData->savedMusicId;
             g_gameState->gameData->musicVolume[0] = g_gameState->gameData->savedMusicVolume;
             id = arg1 | DB_MUSIC;
-            g_gameState->gameData->savedMusicId = 0xFFFF;
+            g_gameState->gameData->savedMusicId = MUSIC_NONE;
         case 0:
         case 7:
             if (g_gameState->gameData->soundLoadState != 0) {
@@ -1190,13 +1190,13 @@ s32 *arg1;
     if (((arg0 >> 16) & 0xFF) == 7) {
         e = dep_find(g_gameState->gameData->depTable, arg0);
         if (arg1 != NULL) {
-            *arg1 = e->unk8 << 11;
+            *arg1 = e->sectors << 11;
         }
         return e->sector;
     } else {
         f = file_find(DIR_SOUND_BANKS, arg0);
         if (arg1 != NULL) {
-            *arg1 = (f->unkC - f->sector) << 11;
+            *arg1 = (f->link - f->sector) << 11;
         }
         return f->sector;
     }
@@ -1209,7 +1209,7 @@ s32 wm_depGetLink(s32 arg0) {
 
     for (i = 0; i < t->count; i++) {
         if (e[i].id == arg0) {
-            return e[i].unkC;
+            return e[i].link;
         }
     }
     return -1;
@@ -1358,7 +1358,7 @@ void wm_updateBattleTransition(void) {
     if (o->battleStep > 0) {
         o->battleStep--;
     } else if (o->battleStep == 0) {
-        if (o->battleMusic != 0xFFFF && o->battleMusic != gd->musicId[0]) {
+        if (o->battleMusic != MUSIC_NONE && o->battleMusic != gd->musicId[0]) {
             cd_seekAsync(g_gameState->imgSector + wm_findSoundFile(o->battleMusic | DB_MUSIC, &size, gs), 0);
             if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                 wm_soundCommand(SND_MUSIC_SUSPEND, g_gameState->gameData->musicId[0], 0, 0, 0);
@@ -1396,7 +1396,7 @@ void wm_findBattleMusic(void) {
     id = (u16)obj->sceneId | DB_BATTLE;
     e = g_gameState->gameData->depTable->entries;
     for (; i < g_gameState->gameData->depTable->count; i++) {
-        v = e[i].unkC;
+        v = e[i].link;
         if (e[i].id == id && ((v >> 16) & 0xFF) == 7) {
             g_gameState->gameData->ctx.world->obj->battleMusic = v;
             return;
@@ -1414,8 +1414,8 @@ void wm_togglePause(void) {
         akao_pause(0);
         game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
-            g_padActuator[i].unk1 = 0;
-            g_padActuator[i].unk0 = 0;
+            g_padActuator[i].largeMotor = 0;
+            g_padActuator[i].smallMotor = 0;
         }
         ClearOTag(&g_worldPauseOT, 1);
         ui_buildSprite((320 - g_uiSprites[235].w) / 2, (218 - g_uiSprites[235].h) / 2, &g_worldPauseOT, 0xEB, 0, buf, g_worldPauseSprite);

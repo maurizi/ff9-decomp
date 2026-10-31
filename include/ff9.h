@@ -87,11 +87,6 @@ s32 preload_startRead(void);
 void preload_setVramRect(PreloadEntry *, s16, s16, s16, s16);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-} UnkPair;
-
-typedef struct {
     u16 codeBase; /* (second table) high byte: first two-byte code; subtracted from a code to index the glyphs (text_buildPlain/text_measure, kanji table) */
     u8 pad2[2];
     u16 extCode; /* high byte: first text code that takes an extra byte (text_draw: (c << 8) + next byte - extCode + extBase) */
@@ -114,6 +109,15 @@ typedef union {
         u32 unk11 : 15;
     } b;
 } CharBits;
+/* CharBits.w masks, for the code that reads the word */
+#define CHR_INFO_ID 0xF
+#define CHR_INFO_KIND_SHIFT 4
+#define CHR_INFO_KIND 0x1F0
+#define CHR_INFO_BATTLE_ROW_BIT 9
+#define CHR_INFO_BATTLE_ROW (1 << CHR_INFO_BATTLE_ROW_BIT)
+#define CHR_INFO_RECRUITED_BIT 11
+#define CHR_INFO_ROW_SHIFT 12
+#define CHR_INFO_ROW 0x1F000
 
 /* Character record: GameData.characters[9]; GameData.party[] points at the party members. Field names checked
  * against the main menu at runtime (docs/runtime-findings.md). */
@@ -159,6 +163,11 @@ typedef struct {
     u8 ap[0x30]; /* AP per ability slot of the character's g_abilityRows row (chr_getAp, chr_clearAp) */
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
+/* Character.classFlags (chr_getClassFlags: g_chrClassFlags, main data 0x8006CACC = 09 05 06 05 06 05 06 05 15 15 15 16 by
+ * ability row; bits 0x1/0x4/0x8 left unnamed: 0x8 only for row 0, ability 0x62 misses it) */
+#define CHR_CLASS_FEMALE 0x2 /* Protect Girls covers it (btl_findCover); ability 0x61 misses it; rows 2, 4, 6 */
+#define CHR_CLASS_GUEST 0x10 /* rows 8 and up: no ability learning (chr_canLearnAbilities), no trance (btl_initPartyUnit),
+                             * the alternate default set and appearance (chr_getDefaultSet, chr_calcAppearance) */
 
 /* GameData.npcModels entry */
 typedef struct ModelSlot {
@@ -174,27 +183,38 @@ typedef struct ModelSlot {
 #define MODEL_SLOT_LOADED    0x1  /* the slot has a model (set when it is built, cleared by fld_exit / btl_cleanup / wm exit) */
 #define MODEL_SLOT_NO_SHADOW 0x10 /* no shadow drawn (EVT_OP_JUMP sets it for the jump) */
 
+/* main's and ovl_65's view of ovl_0b BtlFiles (Battle.files) */
 typedef struct {
     u8 pad0[4];
-    s32 unk4; /* load address */
+    s32 data1; /* BtlFiles.data[1]: the battle-end db ovl_65 registers at g_modeHeap (battleEnd_loadDb / battleEnd_unloadDb) */
 } Unk1354;
 
+/* view of ovl_0b Battle11C0 (Battle.work), the fields main and ovl_65 read */
 typedef struct {
     u8 pad0[4];
-    s16 unk4; /* set by game_setNextScene */
-    u8 unk6;
+    s16 returnId; /* Battle11C0.returnId; game_setNextScene sets it in battle */
+    u8 returnMode; /* Battle11C0.returnMode: GameState.mode battleEnd_main goes back to (1 = field) */
     u8 pad7[0x10 - 7];
-    s32 unk10;
-    s32 unk14;
+    s32 eventScript; /* event script battleEnd_init runs (evt_init) when g_btlRewards.hasPostEvent; btl_initMode clears it */
+    s32 texts; /* Battle11C0.texts: message table in battle (msg_init); battleEnd_init calls msg_init when it is set */
     u8 pad18[4];
-    u8 *unk1C; /* load address */
-    u8 pad20[4];
-    s16 unk24; /* set by game_setNextScene */
-    u8 pad26[2];
-    struct Unk11C0Slot *unk28; /* per-object model slots, indexed by unk3B */
+    u8 *bgData; /* Battle11C0.bgData: battleEnd_preloadScene reads the next mode's overlay here */
+    u8 pad20[0x28 - 0x20];
+    struct Unk11C0Slot *shadows; /* Battle11C0.shadows, indexed by EvtObject.modelSlot (EVT_OP_SHADOW_*) */
 } Unk11C0;
 
-/* per-object shadow (0x28 bytes, Unk11C0.unk28), built by shadow_initSlots, set by the EVT_OP_SHADOW_* ops in evt_modelOp* */
+/* main's view of ovl_0c WorldMapObj (WorldMap.obj) */
+typedef struct {
+    u8 pad0[0x14];
+    struct Unk8007B954 *areaData; /* WorldMapObj.areaData, the message table on the world map (msg_init) */
+    u8 pad18[0x1C - 0x18];
+    struct Unk11C0Slot *shadows; /* WorldMapObj.shadows (WmObjEnt, the same 0x28-byte record), by EvtObject.modelSlot */
+    u8 pad20[0x24 - 0x20];
+    s16 sceneId; /* WorldMapObj.sceneId; game_setNextScene sets it on the world map */
+} WmObjView;
+
+/* per-object shadow (0x28 bytes: Battle11C0.shadows, WorldMapObj.shadows, FieldScene.shadows), built by
+ * shadow_initSlots, set by the EVT_OP_SHADOW_* ops in evt_modelOp* */
 typedef struct Unk11C0Slot {
     u32 unk0_0 : 8;
     u32 sizeX : 12; /* EVT_OP_SHADOW_SIZE x * 14 (0xE0 from shadow_initSlots) */
@@ -202,37 +222,46 @@ typedef struct Unk11C0Slot {
     u32 fixedAngle : 12; /* EVT_OP_SHADOW_FIXED angle * 16, used with model flag 0x20 */
     u32 ofsX : 10; /* event op 0x82 x offset */
     u32 ofsZ : 10; /* event op 0x82 z offset */
-    POLY_FT4 *unk8[2][4]; /* prims, filled by shadow_initSlots */
+    POLY_FT4 *prims[2][4]; /* shadow quads per draw buffer, filled by shadow_initSlots (ovl_0c WmObjEnt.prims) */
 } Unk11C0Slot;
 
+/* main's view of ovl_0a FieldScene (FieldMapObj.scene) */
 typedef struct {
     u8 pad0[0xA];
-    s16 unkA; /* set by game_setNextScene */
+    s16 nextId; /* FieldScene.nextId; game_setNextScene sets it in a field */
     u8 padC[0x2C - 0xC];
-    struct Unk11C0Slot *unk2C; /* per-object model slots, indexed by unk3B */
+    struct Unk11C0Slot *shadows; /* FieldScene.shadows, by EvtObject.modelSlot */
 } Unk8E4C14;
 
+/* main's view of ovl_0a FieldMapObj (FieldMap.area) */
 typedef struct {
     u8 pad0[8];
-    struct Unk8007B954 *unk8; /* message table */
+    struct Unk8007B954 *msgTable; /* FieldMapObj.msgTable (msg_init) */
     u8 padC[0x14 - 0xC];
-    Unk8E4C14 *unk14;
+    Unk8E4C14 *scene; /* FieldMapObj.scene */
 } Unk8E4C;
 
+/* GameData.ctx as main and ovl_65 see it: the offsets of ovl_0a FieldMap, ovl_0c WorldMap and ovl_0b Battle
+ * that are read through it */
 typedef struct {
-    u32 unk0;
+    u32 flags; /* the mode's flags word: FieldMap.flags (FLD_MAP_NO_PRELOAD from menu_doOpen; ovl_64 sets
+                * FLD_MAP_NO_WINDOWS | FLD_MAP_NO_BGI_ANIM), WorldMap.flags, Battle.flags (ovl_0b btl_main tests 0x200) */
     u8 pad4[4];
-    Unk11C0 *unk8;
-    Unk8E4C *unkC;
+    WmObjView *worldObj; /* WorldMap.obj */
+    Unk8E4C *fieldArea; /* FieldMap.area */
     u8 pad10[0xD80 - 0x10];
     u8 phase; /* ovl_0b Battle.phase */
     u8 padD81[0x11C0 - 0xD81];
     Unk11C0 *work; /* ovl_0b Battle.work */
     u8 pad11C4[0x1340 - 0x11C4];
-    u8 unk1340;
+    u8 groupNo; /* ovl_0b Battle.groupNo (event expression, evt_getSysVar) */
     u8 pad1341[0x1354 - 0x1341];
-    Unk1354 *unk1354;
+    Unk1354 *files; /* ovl_0b Battle.files */
 } Unk8E4;
+/* Unk8E4.flags in field mode (FieldMap.flags; the other FLD_MAP_* bits are in ovl_0a.h) */
+#define FLD_MAP_NO_WINDOWS 0x1 /* fld_main skips func_80023A0C (win_updateAll/win_drawAll) */
+#define FLD_MAP_NO_BGI_ANIM 0x8 /* fld_main skips bgi_updateAnims/bgi_updateFloorMoves */
+#define FLD_MAP_NO_PRELOAD 0x1000 /* fld_main skips preload_update (fld_movieStart, main menu_doOpen) */
 
 typedef struct {
     s32 unk0;
@@ -280,6 +309,7 @@ typedef struct {
     u8 id;
     u8 count;
 } ItemSlot;
+typedef ItemSlot UnkPair; /* old name, still used by ovl_0b */
 
 /* GameData.items: item inventory, copied as a block by the save code (ovl_39) */
 typedef struct {
@@ -342,8 +372,7 @@ typedef struct {
     u16 musicBank[2]; /* its sound bank (dep link of the music file) */
     u8 musicHandle[2]; /* akao_playMusic handle per slot */
     u8 musicVolume[2]; /* per slot, 0x7F = full */
-    void *sfxSlotBuf0; /* resident sound effect slot 0 data (0x800 bytes), akao_playSe handle, channel mask 0x100000 */
-    void *sfxSlotBuf1; /* slot 1 (0x800 bytes), mask 0x200000 */
+    void *sfxSlotBuf[2]; /* resident sound effect slot data (0x800 bytes each), the akao_playSe handle; channel mask 0x100000 << slot */
     u16 sfxSlotId[2]; /* sound effect loaded in each slot, 0xFFFF = none */
     u16 worldBankReq; /* last sound bank requested by the world map (wm_soundCommand class 3 kind 7 skips a repeat) */
     u16 unk836;
@@ -393,7 +422,7 @@ typedef struct {
     u8 mode; /* GS_MODE_* */
     u8 vsyncMode; /* VSync mode */
     u8 prevMode; /* GS_MODE_* being left (field, world, Tetra Master; set by the exits) */
-    u8 disc;          /* disc bit (1 << disc - 1) of the SLUS file file_initImg found, 0xFF = none */
+    u8 disc;          /* DISC_*: disc bit (1 << disc - 1) of the SLUS file file_initImg found */
     DISPENV *dispEnv;    /* [2] */
     DRAWENV *drawEnv;   /* [2] */
     struct DirInfo *dirs; /* [15] FF9.IMG directory records (file_initImg) */
@@ -408,6 +437,12 @@ typedef struct {
 } GameState;
 
 extern GameState *g_gameState;
+/* GameState.disc: one bit per disc of the game found in the drive (bit 0 = disc 1). The opening plays its movie
+ * only with disc 1 in, the ending only with disc 4, and New Game sets disc 1 before scene_checkDisc asks for the disc
+ * that was in before. */
+#define DISC_NONE 0xFF /* no disc read (file_initImg, db.c reset) */
+#define DISC_1    1
+#define DISC_4    8
 void file_loadDirTables(); /* game_initState calls it without arguments */
 
 /* Inlined copy of chr_testSupportBit (support ability bit test). */
@@ -522,6 +557,15 @@ typedef struct {
     u8 sortKey; /* sort key: menuItem_sortAuto */
     u8 pad11;
 } ItemInfo; /* item table, 0x12-byte entries */
+/* ItemInfo.slots: g_equipSlotMasks (main data 0x8006BB84) = 80 20 40 10 08, in Character.equip order */
+#define ITEM_SLOT_USABLE    0x01 /* usable from the Item menu (menuItem_selectItem, ovl_37) */
+#define ITEM_SLOT_ACCESSORY 0x08
+#define ITEM_SLOT_BODY      0x10
+#define ITEM_SLOT_HEAD      0x20
+#define ITEM_SLOT_ARM       0x40
+#define ITEM_SLOT_WEAPON    0x80
+#define ITEM_SLOT_ARMOR (ITEM_SLOT_WEAPON | ITEM_SLOT_HEAD | ITEM_SLOT_ARM | ITEM_SLOT_BODY) /* 0xF0: shop_isEquipmentShop (ovl_3c) */
+#define ITEM_SLOT_EQUIP (ITEM_SLOT_ARMOR | ITEM_SLOT_ACCESSORY) /* 0xF8: equipment (ovl_3c shop screens) */
 extern ItemInfo g_itemTable[];
 extern u8 g_chrHpMpSupports[4]; /* max hp/mp support abilities */
 extern u8 g_chrStatCaps[4]; /* stat caps */
@@ -529,7 +573,7 @@ extern u8 g_armorDefs[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
 /* weapon table entry (0xC bytes) */
 typedef struct {
     u8 pad0[5];
-    u8 unk5; /* attack */
+    u8 attack; /* attack */
     u8 pad6[0xC - 6];
 } WeaponEntry;
 #if !defined(OVL_0B_H) && !defined(OVL_38_H) /* those headers declare their own view */
@@ -602,7 +646,12 @@ typedef struct {
 
 /* ---- misc globals ---- */
 
-extern UnkPair g_padActuator[2];
+/* per port: the DualShock actuator bytes PadSetAct sends (pad_update), set by vib_update from the vibration tracks */
+typedef struct {
+    u8 smallMotor; /* actuator 0: on/off (vib_update clamps the track sum to 1) */
+    u8 largeMotor; /* actuator 1: strength 0-255 */
+} PadActuator;
+extern PadActuator g_padActuator[2];
 
 typedef struct {
     u8 state; /* MENU_STATE_* (g_menuStateFuncs index) */
@@ -670,7 +719,7 @@ extern DrawBufs g_drawBufs;
 
 /* window frame insets per style (rodata, win_setClip) */
 typedef struct {
-    s8 unk0[5][4];
+    s8 insets[5][4]; /* per window style: x, y, w, h added to the clip rect (win_setClip) */
 } Unk80010CE0;
 extern Unk80010CE0 g_winClipInsets;
 
@@ -885,13 +934,8 @@ typedef struct {
     u8 unk38;
 } Unk8001A084; /* pad state? (near libpad) */
 
-typedef struct {
-    s32 unk0;
-    u8 pad4[0x10];
-    s32 unk14;
-} Unk8005F038;
 
-/* Sound sequencer channel (AKAO): unk0 is the byte-code read pointer. */
+/* Sound sequencer channel (AKAO) */
 typedef struct {
     u8 *pc; /* byte-code read pointer (akao_execChannel) */
     u8 *loopStart[4]; /* loop start addresses (op C8, C9/CA jump back) */
@@ -900,7 +944,7 @@ typedef struct {
     s32 (*vibratoWave)(u32); /* LFO wave functions (pitch, volume, pan): pitch LFO wave (op B4, g_akaoLfoWaves) */
     s32 (*tremoloWave)(u32); /* volume LFO wave (op B8) */
     s32 (*panLfoWave)(u32); /* pan LFO wave (op BC) */
-    u32 seMask; /* sound-effect channel group bits (VoiceParams +4; akao_stopSeChannels, akao_getActiveSe), 0x2000000 = ignores SE volume/pan/pitch commands */
+    u32 seMask; /* sound-effect channel group bits (VoiceParams +4; akao_stopSeChannels, akao_getActiveSe), AKAO_SE_DEFAULT */
     u32 pitch; /* pitch of the current note (akao_calcPitch), base of voicePitch and of the vibrato depth */
     s32 pitchSlide; /* pitch offset of a running slide (<< 16), added to voicePitch */
     u32 flags; /* AKAO_CH_* */
@@ -1256,7 +1300,7 @@ typedef struct EvtObject {
     u8 scale; /* 64 = 1.0 (op 0x9F), places the HERE icon / bubble anchor */
     s16 pitch; /* rotation x while flying to a point (op 0xA2) */
     s16 height; /* -(op 0x2F height << 2), places the HERE icon / bubble anchor */
-    u16 modelId; /* op 0x2F (runtime: 98 Zidane, 220 the Moogle), 0xFFFF none */
+    u16 modelId; /* op 0x2F (runtime: 98 Zidane, 220 the Moogle), EVT_MODEL_NONE */
     u16 anim; /* current animation (runtime: 200 idle, 38 running, 25 walking) */
     u8 animFrames; /* frame count of anim */
     u8 animPrevFrame; /* animFrame of the previous step */
@@ -1264,7 +1308,7 @@ typedef struct EvtObject {
     u8 modelSlot; /* 0-8 the characters, 9 + GameData.npcModelSlots for NPCs */
     u8 collisionRadius; /* x4 world units (op 0x4B) */
     u8 talkRadius; /* x4 world units (op 0x4B, runtime: 0 stops Cross from starting the dialog) */
-    u8 balloonWindow; /* window anchored on the actor (evt_followBalloon), 0xFF none */
+    u8 balloonWindow; /* window anchored on the actor (evt_followBalloon), EVT_BALLOON_NONE */
     u8 pad3F;
     ActorPos prevPos; /* position one game frame earlier, unk20/rotY double as turn-left/right anims (ops 0x7A/0x7B) */
     u16 moveFlags; /* EVT_MOVE_* */
@@ -1280,7 +1324,7 @@ typedef struct EvtObject {
     u8 animStart; /* op 0x3D */
     u8 animEnd; /* op 0x3D */
     u8 animFlags; /* EVT_ANIM_* */
-    u8 animLoops; /* loop count (ops 0x3F/0x98), 0xFF forever */
+    u8 animLoops; /* loop count (ops 0x3F/0x98), EVT_ANIM_FOREVER */
     u8 animSubFrame; /* 4-bit fraction of the 12.4 frame position */
     u8 pad65[0x68 - 0x65];
     u8 jumpFrame; /* 0 .. jumpFrames */
@@ -1363,7 +1407,10 @@ typedef struct EvtObject {
 #define EVT_ANIM_IDLE 0x02 /* playing idleAnim (evt_updateIdleTimer) */
 #define EVT_ANIM_HELD 0x04 /* stopped on its last frame (EVT_ANIM_HOLD); evt_stepAnim does nothing */
 #define EVT_ANIM_HOLD 0x08 /* at the end keep the last frame instead of going back to standAnim */
-#define EVT_ANIM_LOOP 0x10 /* at the end restart from animStart (animLoops times, 0xFF forever) */
+#define EVT_MODEL_NONE 0xFFFF /* EvtObject.modelId before op 0x2F (evt_initActor) */
+#define EVT_BALLOON_NONE 0xFF /* EvtObject.balloonWindow: no window follows the actor */
+#define EVT_ANIM_LOOP 0x10 /* at the end restart from animStart (animLoops times, EVT_ANIM_FOREVER) */
+#define EVT_ANIM_FOREVER 0xFF /* EvtObject.animLoops: loop without end */
 #define EVT_ANIM_BOUNCE 0x20 /* at the end reverse direction */
 #define EVT_ANIM_REVERSE 0x40 /* playing backwards */
 #define EVT_ANIM_SCRIPTED 0x80 /* a script animation is playing (EVT_OP_WAIT_ANIM waits for it to end) */
@@ -1449,8 +1496,8 @@ static inline EvtObject *evt_getObject_inline(s32 id) {
 
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    s32 type; /* 0 none, 1-2 passed to the focus window chain (2 adds bit 31), set by msg_readPad */
+    s32 buttons;
 } Unk8007B988;
 extern Unk8007B988 g_msgPadEvent;
 extern s32 D_8007B994;
@@ -1601,10 +1648,6 @@ extern VibState g_vib;
 #define VIB_LOOP_MODE (VIB_LOOP | VIB_BOUNCE) /* the bits vib_setLoopMode sets (event op) */
 u8 btlui_isSecondPortUsed(void); /* ovl_0b */
 
-typedef struct {
-    u8 pad0[0x1C];
-    s32 unk1C;
-} Unk80021910;
 
 extern u8 g_chrAppearanceTypes[][2];
 extern u8 g_menuScreenStrings[];
@@ -1693,6 +1736,12 @@ typedef struct MsgWindow {
     u8 pendingChars;
     u8 tailMode; /* from the layout, passed to win_setTail */
 } MsgWindow;
+/* MsgWindow / WinLayout tailMode: bits 0-1 are win_setTail's mode (evt_placeBalloon: below << 1 | right),
+ * 0x10/0x20 come from the message flags (evt_getMsgLayout); 0x20 has no reader in main */
+#define MSG_TAIL_RIGHT 0x1
+#define MSG_TAIL_BELOW 0x2
+#define MSG_TAIL_DIR (MSG_TAIL_RIGHT | MSG_TAIL_BELOW) /* passed to win_setTail */
+#define MSG_TAIL_FRAMELESS 0x10 /* msg_open opens the window WIN_STYLE_FRAMELESS (no balloon or bevel) */
 extern MsgWindow g_msgWindows[];
 /* MsgWindow.flags */
 #define MSGW_WAIT_INPUT 0xFF /* MsgWindow.waitFrames: waiting for Cross (msg_input); text codes FE/FF/F9 09 */
@@ -1725,7 +1774,7 @@ typedef struct {
 extern DbList g_dbList;
 
 typedef struct {
-    u32 unk0;
+    u32 hdr; /* first word of the PadBuf: status, id byte (controller type << 4 | size), so (hdr >> 12) & 0xF = PAD_ID_* */
     u8 pad4[0x24 - 4];
 } Unk80073940; /* 0x24-byte entries */
 extern Unk80073940 g_padBuf[];
@@ -1733,7 +1782,7 @@ extern Unk80073940 g_padBuf[];
 
 typedef struct {
     u8 pad0[0x12];
-    s16 unk12;
+    s16 mp;
 } Unk8006573C;
 
 extern s16 g_resetCount;
@@ -1872,12 +1921,14 @@ void akao_cmdPlayMusic(AkaoArgs *);
 
 /* ---- hoisted from overlay headers ---- */
 
-/* file table entry (file_find / dep_find) */
+/* file table entry: a dependency-table record (dep_find, FileTable.entries). file_find returns its 8-byte
+ * FileIdEntry viewed through this type: there `sectors` is the next entry's id and `link` the next entry's start
+ * sector, i.e. the file's end sector (callers read link - sector as its length). */
 typedef struct {
     s32 id; /* file id (24-bit key in a dependency table, dep_find) */
     s32 sector; /* start sector */
-    s32 unk8;
-    s32 unkC; /* end sector / next id */
+    s32 sectors; /* sector count (fld/wm/btl dep lookups pass it on as the size) */
+    s32 link; /* key of the linked file (dep_find on it: the field's area, a music file's sound bank) */
 } FileEntry;
 
 /* g_gameState->dirTables[i]: 8-byte {id, sector} entries searched by file_find */
@@ -1914,7 +1965,7 @@ typedef struct {
 } MenuView;
 
 typedef struct {
-    s32 unk0[1]; /* indexed past its end: text table */
+    s32 labels[1]; /* window title / label texts, indexed past its end (win_setTitle, ui_drawLabel) */
     s32 abilityList; /* title of ability lists (menuAbility_drawList, btlui_openAbilityList, status ability pages) */
     u8 pad8[0x30 - 8];
     s32 command; /* title of the battle command window (btlui_drawCmdOverlay) */
@@ -2181,7 +2232,7 @@ void menu_onPortraitsRead(u8 *);
 void akao_relocInstruments(s32 *, AkaoInstrument *, u32, s32);
 s32 akao_loadBankAt(s32 *, s32, s32, u32);
 typedef struct {
-    s32 unk0[4];
+    s32 w[4]; /* per window style (win_isVisible) */
 } Unk80010CD0;
 extern Unk80010CD0 g_winMinWidths; /* min widths per window style */
 void akao_freeSubSeqVoices(void);
@@ -2239,8 +2290,8 @@ extern s32 g_menuTypeOvl[];
 void menu_readOverlay(void);
 void menu_readPortraits(void);
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 hp;
+    u16 mp;
 } Unk8006DDD0;
 extern Unk8006DDD0 g_levelHpMp[];
 typedef struct RainNode {
@@ -2300,7 +2351,7 @@ s32 text_measureSmall(u8 *s);
 s32 text_measureDigits(u8 *s);
 typedef struct {
     u8 pad0[4];
-    u8 unk4; /* advance width */
+    u8 advance; /* advance width */
     u8 pad5[3];
 } Glyph8;
 /* g_uiSprites ids of the label font (ui_measureLabel, text_buildLabel): 'A'-'Z' at c - 8, 'a'-'z' share them
@@ -2496,10 +2547,10 @@ void akao_opC6(AkaoChannel *, u32);
 
 
 typedef struct {
-    void (*unk0)(u8);
-    void (*unk4)(u8);
-    s32 unk8;
-} Unk8006C9D4;
+    void (*init)(u8); /* menu_start */
+    void (*update)(u8); /* menu_updateRun */
+    s32 exit; /* menu_finish */
+} Unk8006C9D4; /* g_menuTypes: per menu_open type */
 extern Unk8006C9D4 g_menuTypes[];
 s32 win_resetClock(void);
 void help_update(void);
@@ -2577,8 +2628,8 @@ extern u8 g_akaoSilenceSample[];
 extern s32 g_evtMode;
 /* offset-table blob: count, then per-entry u16 offsets relative to unk4 */
 typedef struct Unk8007B954 {
-    s32 unk0; /* count */
-    u16 unk4[1];
+    s32 count; /* messages */
+    u16 offsets[1]; /* per message, from &offsets (msg_getText) */
 } Unk8007B954;
 extern Unk8007B954 *g_msgTable;
 extern u8 *g_msgTextBanks[];
@@ -2667,8 +2718,8 @@ typedef struct {
 /* ---- main batch 3 ---- */
 typedef struct {
     u8 pad0;
-    u8 unk1;
-    u16 unk2; /* name offset */
+    u8 stones;
+    u16 name; /* name offset */
     u8 pad4[4];
 } Unk8006D128; /* support abilities, indexed by id - 0xC0 */
 extern Unk8006D128 g_supportAbilities[];
@@ -2709,7 +2760,7 @@ void msg_measureLine(u8 **, s32 *); /* add the width of a text control code */
 typedef struct {
     u8 *readPtr; /* stream read pointer */
     u8 *loopPtr; /* loop start (header flags & 2) */
-    s32 flags; /* header +0x18 flags: 1 stereo halves, 2 loops, 0x400, 0x1000000 */
+    s32 flags; /* header +0x18 flags: AKAO_STREAM_* (snd_ids.h) */
     u32 voiceMask; /* voices the stream plays on (akao_streamStart), 0 = stopped */
     s32 voice; /* first of its two voices (left, right = voice + 1) */
     u32 bytesLeft; /* bytes left */
@@ -2816,15 +2867,15 @@ extern u32 g_padPressed; /* buttons that went down this frame */
 void ui_restorePortraits(void);
 void ui_getPortraitRects(s32, RECT *, RECT *);
 typedef struct {
-    u32 *unk0; /* portrait image data, 0x6C0 bytes each */
-    s32 unk4;  /* count */
+    u32 *images; /* portrait image data, 0x6C0 bytes each */
+    s32 count;  /* count */
 } Unk80076F78;
 extern Unk80076F78 g_portraits;
 extern u32 g_portraitSavedVram[]; /* first CLUT, right after g_portraits */
 s32 item_remove(s32, s32);
 typedef struct {
     u8 pad0[4];
-    u8 unk4; /* width */
+    u8 w; /* width */
     u8 pad5[3];
 } Icon; /* sprite drawn by ui_drawSpriteDef */
 extern Icon D_800687C0;
@@ -3170,8 +3221,8 @@ static inline u8 *msg_drawText_msg(s32 i) {
     u8 *e = NULL;
     u16 *t;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        t = g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        t = g_msgTable->offsets;
         e = (u8 *)t;
         e += t[(g_evtMode == 2 || g_evtMode == 4) ? i * 2 : i * 4 + 2];
     }
@@ -3277,8 +3328,11 @@ s32 akao_isqrt(s32);
 extern s32 g_akaoTempoScaleStep;
 extern s32 g_akaoPitchScaleStep;
 extern AkaoArgs g_akaoOpSeArgs;
+/* vibration track (g_vib.data + tracksOfs), [0] = actuator 1 (largeMotor), [1] = actuator 0 (smallMotor) as vib_update sums them */
 typedef struct {
-    u16 unk0[6];
+    u16 flags[2]; /* bit 0: enabled (vib_selectTrack, vib_setTrackEnabled) */
+    u16 length[2]; /* last frame with data */
+    u16 dataOfs[2]; /* per-frame strengths, from g_vib.data */
 } VibTrack;
 extern u32 g_akaoStreamVoices;
 /* voice parameter block written to the SPU by akao_writeVoice */
@@ -3294,16 +3348,11 @@ typedef struct {
     s16 volL; /* volume left */
     s16 volR; /* volume right */
 } AkaoVoiceRegs;
-/* script object (g_evtUnitObjects[]) */
-typedef struct Unk8007AED0 {
-    u8 pad0[0xE];
-    u8 unkE;
-} Unk8007AED0;
 typedef struct {
-    void (*unk0)(FadeState *);
-    s32 unk4;
-    s32 unk8;
-} Unk8006BD04;
+    void (*start)(FadeState *);
+    s32 update;
+    s32 draw;
+} Unk8006BD04; /* g_fadeTypes */
 extern Unk8006BD04 g_fadeTypes[];
 extern u8 g_winStyleOpenAnim[]; /* WIN_STYLE_* -> WIN_ANIM_* (win_init) */
 typedef struct {
@@ -3574,9 +3623,9 @@ void func_80053924(void);
 /* first sector of FF9.IMG: directory records copied to GameState.unk14 */
 typedef struct {
     u8 pad0[8];
-    s32 unk8; /* directory count */
+    s32 dirCount; /* directory count */
     u8 padC[4];
-    DirInfo unk10[15];
+    DirInfo dirs[15];
 } Ff9ImgHeader;
 
 
@@ -3603,13 +3652,13 @@ void game_freezeScreen(void);
 /* overlay load addresses by game mode (game_loadModeOverlay). The rodata block
  * g_modeOverlayAddrs also holds the next word and libgpu's version string. */
 typedef struct {
-    u32 *unk0[10];
+    u32 *addr[10]; /* per GameState.mode */
 } LoadAddrs;
 extern LoadAddrs g_modeOverlayAddrs;
 
 /* battle calculation context (fieldCalc_checkAlive ... chr_addMp) */
 typedef struct {
-    u32 unk0; /* low nibble: kind */
+    u32 info; /* as ovl_0b BtlCmd8's first word: bits 0-3 target type (fieldCalc_multiTargetHalf), 8-16 effect id */
     u8 pad4;
     u8 power; /* power */
     u8 pad6[2];
@@ -4129,13 +4178,13 @@ static inline void evt_execInstr_anim(EvtObject *p, s32 anim) {
 
 /* event region (quad) object, same header as EvtObject */
 typedef struct {
-    s16 unk0; /* x */
-    s16 unk2; /* z */
+    s16 x; /* x */
+    s16 z; /* z */
 } Unk80039C38Pt;
 typedef struct {
     u8 pad0[0x14];
-    s32 unk14; /* vertex count */
-    Unk80039C38Pt unk18[8];
+    s32 count; /* vertex count */
+    Unk80039C38Pt pts[8];
 } Unk80039C38Quad;
 
 /* texture animation n seen from the set's start (Unk8004AFF0.texAnims->unk0[n]): the set has a 4-byte count before
@@ -4182,7 +4231,7 @@ static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *p) {
     ModelSlot *q;
 
     if (p != NULL) {
-        if (p->modelId == 0xFFFF) {
+        if (p->modelId == EVT_MODEL_NONE) {
             return NULL;
         }
         q = (ModelSlot *)game_getModel(p->modelSlot);
@@ -4309,8 +4358,8 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     p = (EvtObject *)evt_createObject(uid, b, 0xAC, 0x10);
     p->collisionRadius = 0x10;
     p->talkRadius = 0x10;
-    p->modelId = 0xFFFF;
-    p->balloonWindow = 0xFF;
+    p->modelId = EVT_MODEL_NONE;
+    p->balloonWindow = EVT_BALLOON_NONE;
     p->scale = 0x40;
     p->kind = EVT_KIND_ACTOR;
     p->defaultAnimSpeed = 0x10;
@@ -4345,7 +4394,7 @@ static inline void evt_execInstr_window(EvtObject *obj, s32 b, s32 c) {
         for (n = g_evtState->objects; n != NULL; n = n->next) {
             o = n->obj;
             if (o->kind == EVT_KIND_ACTOR && o->balloonWindow == c) {
-                o->balloonWindow = 0xFF;
+                o->balloonWindow = EVT_BALLOON_NONE;
             }
         }
         obj->balloonWindow = c;

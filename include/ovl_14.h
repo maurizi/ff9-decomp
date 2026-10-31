@@ -29,12 +29,6 @@ typedef struct {
 } SceneDirEntry;
 
 /* main exe: candidates for ff9.h */
-/* g_gameState->disc: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
- * The opening plays its movie only with disc 1 in (bit 0), the ending only with disc 4 (bit 3), and New Game
- * sets it to disc 1 before scene_checkDisc asks for the disc that was in before. */
-#define DISC_NONE 0xFF
-#define DISC_1    1
-#define DISC_4    8
 /* menu_open types (docs/runtime-findings.md field/menu campaign) */
 #define MENU_SAVE 4 /* save / load (ovl_39); argument 1 = title Continue */
 #define MENU_DISC 8 /* "Change to DISC" (ovl_3e); argument (disc & 3) << 14 | field id, 0x3A98 here */

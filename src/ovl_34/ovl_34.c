@@ -813,7 +813,7 @@ u8 menuConfig_hasVibration(void) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        if (((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
+        if (((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
             return 1;
         }
         if (g_padPortState[i] == 6) {
@@ -828,14 +828,14 @@ void menuConfig_setRumble(u8 on) {
 
     if (on) {
         for (i = 0; i < 2; i++) {
-            g_padActuator[i].unk1 = 0xFF;
-            g_padActuator[i].unk0 = 1;
+            g_padActuator[i].largeMotor = 0xFF;
+            g_padActuator[i].smallMotor = 1;
         }
         return;
     }
     for (i = 0; i < 2; i++) {
-        g_padActuator[i].unk0 = 0;
-        g_padActuator[i].unk1 = 0;
+        g_padActuator[i].smallMotor = 0;
+        g_padActuator[i].largeMotor = 0;
     }
 }
 

@@ -20,13 +20,13 @@ void msg_init(void) {
     g_penGlyphDecode.kanjiCode = -1;
     switch (s->mode) {
     case GS_MODE_FIELD:
-        g_msgTable = s->gameData->ctx.ovl65->unkC->unk8;
+        g_msgTable = s->gameData->ctx.ovl65->fieldArea->msgTable;
         break;
     case GS_MODE_WORLD:
-        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->unk8->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->worldObj->areaData;
         break;
     case GS_MODE_BATTLE:
-        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->work->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->work->texts;
         break;
     }
     g_msgReady = 1;
@@ -34,8 +34,8 @@ void msg_init(void) {
 }
 
 static inline void msg_readPad_set(s32 type, u32 bits) {
-    g_msgPadEvent.unk0 = type;
-    g_msgPadEvent.unk4 = bits;
+    g_msgPadEvent.type = type;
+    g_msgPadEvent.buttons = bits;
 }
 
 void msg_readPad(void) {
@@ -677,8 +677,8 @@ void msg_drawText(MsgWindow *w) {
     u8 *e = NULL;
     s32 i = w->msgId;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
     }
     if (e != NULL) {
@@ -809,8 +809,8 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     u8 *e;
 
     e = NULL;
-    if (msg >= 0 && msg < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (msg >= 0 && msg < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? msg : msg * 2 + 1];
     }
     if (e == NULL) {
@@ -837,7 +837,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     r.w = w->w + 3;
     r.h = w->h + 3;
     style = WIN_STYLE_FRAMELESS;
-    if (!(l->tailMode & 0x10)) {
+    if (!(l->tailMode & MSG_TAIL_FRAMELESS)) {
         style = WIN_STYLE_BALLOON;
         if (l->tailOffset == 0 && !(flags & 4)) {
             style = WIN_STYLE_BEVEL;
@@ -849,7 +849,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
         win_setDrawContent(w->window, msg_drawWindowContent);
         win_setDrawOverlay(w->window, msg_drawChoiceCursor);
         if (l->tailOffset != 0 && !(flags & 4)) {
-            win_setTail(w->window, l->tailMode & 3, l->tailOffset);
+            win_setTail(w->window, l->tailMode & MSG_TAIL_DIR, l->tailOffset);
         }
         if (g_msgLayoutAltOpen != 0) {
             win_setOpenAnim(w->window, WIN_ANIM_NONE);
@@ -894,8 +894,8 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
     u8 *e = NULL;
     s32 v;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         v = ((u32 *)e)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
             out->w = ((v >> 16) & 0xFFF) + 9;
@@ -1032,19 +1032,19 @@ s32 msg_getPartyMemberId(s32 i) {
 
 void msg_resetPad(void) {
     g_msgPadPrev = 0;
-    g_msgPadEvent.unk0 = 0;
-    g_msgPadEvent.unk4 = 0;
+    g_msgPadEvent.type = 0;
+    g_msgPadEvent.buttons = 0;
 }
 
 void msg_update(void) {
     MsgWindow *p = msg_getFocus();
     s32 a;
     msg_readPad();
-    if (g_msgPadEvent.unk0 < 3) {
-        if (g_msgPadEvent.unk0 > 0) {
+    if (g_msgPadEvent.type < 3) {
+        if (g_msgPadEvent.type > 0) {
             while (p != NULL) {
-                a = g_msgPadEvent.unk4;
-                if (g_msgPadEvent.unk0 == 2) {
+                a = g_msgPadEvent.buttons;
+                if (g_msgPadEvent.type == 2) {
                     a |= 0x80000000;
                 }
                 if (p->onInput(p, a) != 0) {
@@ -1054,8 +1054,8 @@ void msg_update(void) {
             }
         }
     }
-    g_msgPadEvent.unk0 = 0;
-    g_msgPadEvent.unk4 = 0;
+    g_msgPadEvent.type = 0;
+    g_msgPadEvent.buttons = 0;
     D_8007B998 = D_8007B994;
 }
 
@@ -1239,8 +1239,8 @@ u8 *msg_getEntry(s32 i, WinLayout *out) {
     s32 v;
     u32 k;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         v = ((u32 *)e)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
             out->w = ((v >> 16) & 0xFFF) + 9;
@@ -1254,8 +1254,8 @@ u8 *msg_getEntry(s32 i, WinLayout *out) {
 void *msg_getText(s32 i) {
     u8 *e = NULL;
 
-    if (i >= 0 && i < g_msgTable->unk0) {
-        e = (u8 *)g_msgTable->unk4;
+    if (i >= 0 && i < g_msgTable->count) {
+        e = (u8 *)g_msgTable->offsets;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
     }
     return e;
@@ -1679,27 +1679,27 @@ s32 evt_modelOpField(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].sizeX = a * 14;
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].sizeZ = b * 12;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].sizeX = a * 14;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].sizeZ = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].ofsX = a;
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].ofsZ = b;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].ofsX = a;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].ofsZ = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].fixedAngle = a * 16;
+        gs->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].fixedAngle = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         fld_enableRain(0, 0, 1);
@@ -1729,27 +1729,27 @@ s32 evt_modelOpBattle(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].sizeX = a * 14;
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].sizeZ = b * 12;
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].sizeX = a * 14;
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].sizeZ = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].ofsX = a;
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].ofsZ = b;
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].ofsX = a;
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].ofsZ = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->ctx.ovl65->work->unk28[o->modelSlot].fixedAngle = a * 16;
+        gs->gameData->ctx.ovl65->work->shadows[o->modelSlot].fixedAngle = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         a = evt_getArg8();
@@ -1778,27 +1778,27 @@ s32 evt_modelOpWorld(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].sizeX = a * 14;
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].sizeZ = b * 12;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].sizeX = a * 14;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].sizeZ = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].ofsX = a;
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].ofsZ = b;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].ofsX = a;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].ofsZ = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        ((Unk11C0Slot *)gs->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].fixedAngle = a * 16;
+        gs->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].fixedAngle = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         a = evt_getArg8();

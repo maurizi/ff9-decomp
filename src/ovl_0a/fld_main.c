@@ -122,7 +122,7 @@ void fld_gameOver(void) {
     gameover_main(g_gameState->gameData->ctx.field->area->scene->eventScript);
     g_gameState->mode = GS_MODE_OPENING;
     g_gameState->flags |= GS_RELOAD_FILE_TABLES;
-    if ((g_gameState->gameData->flags & GD_MUSIC_PLAYING) && g_gameState->gameData->musicId[0] != 0xFFFF) {
+    if ((g_gameState->gameData->flags & GD_MUSIC_PLAYING) && g_gameState->gameData->musicId[0] != MUSIC_NONE) {
         fld_soundCommand(SND_SONG_VOL_INTPL, g_gameState->gameData->musicId[0], 0x1E, 0, 0);
         for (i = 0x1D; i >= 0; i--) {
             VSync(0);
@@ -172,8 +172,8 @@ void fld_quit(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        g_padActuator[i].unk1 = 0;
-        g_padActuator[i].unk0 = 0;
+        g_padActuator[i].largeMotor = 0;
+        g_padActuator[i].smallMotor = 0;
     }
     fld_stopResidentSfx();
     fld_freeCommon();
@@ -227,7 +227,7 @@ s32 fld_loadCommon(void) {
         DrawSync(0);
     } else {
         f = file_find(DIR_COMMON, FILE_FLD_COMMON);
-        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
@@ -562,7 +562,7 @@ void fld_initScene(void) {
     }
     sc->encounterScreenX = 0xA0;
     sc->encounterScreenY = 0x70;
-    sc->battleMusic = 0xFFFF;
+    sc->battleMusic = MUSIC_NONE;
     sc->battleMusicBank = 0xFFFF;
     sc->encounterStep = 0;
     sc->encounterMusicStep = 0;
@@ -868,7 +868,7 @@ s32 fld_depFindBattle(arg0, arg1, arg2)
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -884,7 +884,7 @@ s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
 
     for (i = 0; i < t->count; i++) {
         if (e[i].id == arg0) {
-            id = e[i].unkC;
+            id = e[i].link;
             break;
         }
     }
@@ -894,7 +894,7 @@ s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -918,7 +918,7 @@ s32 fld_depFindField(arg0, arg1, arg2)
                 *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e[i].unk8;
+                *arg2 = e[i].sectors;
             }
             break;
         }
@@ -934,7 +934,7 @@ s32 fld_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
 
     for (; e < end; e++) {
         if (e->id == arg0) {
-            id = e->unkC;
+            id = e->link;
             break;
         }
     }
@@ -944,7 +944,7 @@ s32 fld_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
                 *arg1 = e->sector;
             }
             if (arg2 != NULL) {
-                *arg2 = e->unk8;
+                *arg2 = e->sectors;
             }
             break;
         }

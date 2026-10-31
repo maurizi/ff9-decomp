@@ -102,7 +102,7 @@ u16 btl_findCover(s32 arg0) {
         return 0;
     }
     g = g_gameState->gameData;
-    if (((g->characters + BTL_UNIT_INDEX(t->flags))->classFlags & 2) && t->hp < (t->max->maxHp >> 1)) {
+    if (((g->characters + BTL_UNIT_INDEX(t->flags))->classFlags & CHR_CLASS_FEMALE) && t->hp < (t->max->maxHp >> 1)) {
         for (u = g->ctx.battle->unitList; u != NULL; u = u->next) {
             if ((u->support[1] & SA_BIT(SA_PROTECT_GIRLS)) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && u != t && (best == NULL || best->hp < u->hp)) {
                 best = u;
@@ -2523,7 +2523,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         btl_addStatus(target, BTL_STATUS_TRANCE);
         break;
     case 0x61:
-        if ((&g_gameState->gameData->characters[BTL_UNIT_INDEX(target->flags)])->classFlags & 2) {
+        if ((&g_gameState->gameData->characters[BTL_UNIT_INDEX(target->flags)])->classFlags & CHR_CLASS_FEMALE) {
             c.flags |= BTL_CALC_MISS;
         } else {
             btl_applyAbilityStatus(&c);

@@ -14,7 +14,7 @@ void btl_initParty(Battle *arg0) {
         c = g_gameState->gameData->party[i];
         if (c != NULL) {
             u = &arg0->units[n];
-            u->modelId = g_btlCharModelIds[(c->info.w >> 4) & 0x1F];
+            u->modelId = g_btlCharModelIds[(c->info.w >> CHR_INFO_KIND_SHIFT) & 0x1F];
             btl_createObjModel(p->obj, u->modelId);
             btl_initPartyUnit(c, u, i, n);
             n++;
@@ -100,11 +100,11 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->unitBit = 1 << n;
     g_btlRewards.expMask |= 1 << (s = slot);
     u->flags |= BTL_UNIT_PARTY;
-    u->flags = (u->flags & ~BTL_UNIT_INDEX_MASK) | ((c->info.w & 0xF) << BTL_UNIT_INDEX_SHIFT);
+    u->flags = (u->flags & ~BTL_UNIT_INDEX_MASK) | ((c->info.w & CHR_INFO_ID) << BTL_UNIT_INDEX_SHIFT);
     u->flags |= BTL_UNIT_TARGETABLE;
     u->flags = (u->flags & ~BTL_UNIT_SLOT_MASK) | ((s & 7) << BTL_UNIT_SLOT_SHIFT);
     u->flags &= ~BTL_UNIT_MODEL_PART;
-    if (g_evtGlobalVars.b[0x10] == 0 || (c->classFlags & 0x10) ||
+    if (g_evtGlobalVars.b[0x10] == 0 || (c->classFlags & CHR_CLASS_GUEST) ||
         (BTL_UNIT_INDEX(u->flags) == CHR_DAGGER && g_evtGlobalVars.b[0x11] != 0)) {
         u->trance = 0;
         u->flags &= ~BTL_UNIT_TRANCE_ENABLED;
@@ -121,7 +121,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->level = c->level;
     u->max = (BtlUnit24 *)&c->maxHp;
     btl_copyStats((Unk800BD8C0 *)&u->hp, (Unk800BD8C0 *)&c->hp);
-    btl_resetUnit(u, &g_gameState->gameData->chrModels[c->info.w & 0xF]);
+    btl_resetUnit(u, &g_gameState->gameData->chrModels[c->info.w & CHR_INFO_ID]);
     u->vanishMeshes = 0xFFFF;
     btl_initDoomCount((Unk800C09D8 *)u);
     u->max->maxAtb = (0x3C - u->speed) * 160;
@@ -141,7 +141,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
     }
     u->weaponModel = &g_gameState->gameData->ctx.battle->weaponModels[n].model;
-    btl_loadPartyMotions(u, (c->info.w >> 4) & 0x1F, n);
+    btl_loadPartyMotions(u, (c->info.w >> CHR_INFO_KIND_SHIFT) & 0x1F, n);
     btl_initWeapon(c, u);
     u->defense = c->defense;
     u->evade = c->evade;

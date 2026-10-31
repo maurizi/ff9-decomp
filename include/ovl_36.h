@@ -57,7 +57,6 @@ typedef struct {
 
 /* Card image cache (s_menuCard.cache): 12 VRAM slots, filled round-robin. */
 #define CARD_CACHE_SLOTS 12
-#define CARD_NONE 0xFF
 typedef struct {
     u8 oldest;    /* slot to evict when all are used */
     u8 next;      /* slot to fill next */

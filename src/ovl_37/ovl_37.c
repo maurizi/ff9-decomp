@@ -122,7 +122,7 @@ void menuItem_inputManualArrange(void) {
 }
 
 void menuItem_selectItem(s32 idx, MenuList *l) {
-    UnkPair *p;
+    ItemSlot *p;
     ItemInfo *it;
     Unk8006B1F4 *e;
     u8 ok;
@@ -130,16 +130,16 @@ void menuItem_selectItem(s32 idx, MenuList *l) {
 
     p = &g_gameState->gameData->items.slots[idx];
     ok = 0;
-    if (p->unk1 != 0 && p->unk0 != ITEM_NONE && p->unk0 >= ITEM_FIRST_USABLE) {
-        id = p->unk0;
+    if (p->count != 0 && p->id != ITEM_NONE && p->id >= ITEM_FIRST_USABLE) {
+        id = p->id;
         it = &g_itemTable[id];
         e = &g_usableItemTable[id - ITEM_FIRST_USABLE];
-        if (it->slots & 1) {
+        if (it->slots & ITEM_SLOT_USABLE) {
             s_menuItem.targetKind = e->targetKind;
             ok = 1;
-            s_menuItem.targetMode = p->unk0 != ITEM_GYSAHL_GREENS ? e->targetMode : 0;
+            s_menuItem.targetMode = p->id != ITEM_GYSAHL_GREENS ? e->targetMode : 0;
             if (s_menuItem.targetMode == 0) {
-                menuItem_useOnTarget(p->unk0);
+                menuItem_useOnTarget(p->id);
             } else {
                 menuItem_openTarget();
             }
@@ -344,7 +344,7 @@ s32 menuItem_callChocobo(void) {
 void menuItem_updateHelp(void) {
     RECT r;
     MenuList *l;
-    UnkPair *p;
+    ItemSlot *p;
     s32 i;
     s16 x;
     s16 y;
@@ -397,8 +397,8 @@ void menuItem_updateHelp(void) {
         return;
     }
     p = &g_gameState->gameData->items.slots[menuItem_getSlot(l)];
-    if (p->unk1 != 0) {
-        h->text = &s_menuItemHelp[g_itemTable[p->unk0].help];
+    if (p->count != 0) {
+        h->text = &s_menuItemHelp[g_itemTable[p->id].help];
     }
 }
 
@@ -647,22 +647,22 @@ void menuItem_drawTargetWindow(void) {
 }
 
 void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
-    UnkPair *p = &g_gameState->gameData->items.slots[i];
+    ItemSlot *p = &g_gameState->gameData->items.slots[i];
     ItemInfo *it;
     u8 ok;
     s32 x, y, x2;
     s32 k = 0x2A;
     u8 buf[8];
 
-    if (p->unk1 != 0 && p->unk0 != ITEM_NONE) {
-        it = &g_itemTable[p->unk0];
-        ok = it->slots & 1;
+    if (p->count != 0 && p->id != ITEM_NONE) {
+        it = &g_itemTable[p->id];
+        ok = it->slots & ITEM_SLOT_USABLE;
         x = col * 0x96;
         y = row * 0xF + (v->y + k);
-        text_formatNumber(p->unk1, buf, 2, TEXT_NUM_ASCII);
+        text_formatNumber(p->count, buf, 2, TEXT_NUM_ASCII);
         x2 = x + 0x18;
         text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->name, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-        ui_drawItemIcon(x2, y, 0x1C, p->unk0, ok);
+        ui_drawItemIcon(x2, y, 0x1C, p->id, ok);
         ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, buf, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
     }
 }

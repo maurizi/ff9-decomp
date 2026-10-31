@@ -71,7 +71,7 @@ void akao_startSeq(s32 addr, s32 mask) {
     x = 0xFFFFFF;
     g_akaoSeState.keyOffMask |= ~bit & (~(g_akaoSeState.activeMask | g_akaoStreamVoices) & x);
     g_akaoSeq->keyOffMask = 0;
-    if (g_akaoPauseFlags & 1) {
+    if (g_akaoPauseFlags & AKAO_PAUSED_MUSIC) {
         g_akaoSeq->activeMask = 0;
         g_akaoSeq->pausedMask |= active & mask;
     } else {
@@ -140,7 +140,7 @@ void akao_startSeq(s32 addr, s32 mask) {
             c->gateTicks = 1;
             c->pc = g_akaoEmptyTrack;
             c->voiceDirty |= AKAO_VD_RELEASE_MODE | AKAO_VD_RELEASE_RATE;
-            c->voiceAdsr2 = (c->voiceAdsr2 & 0xFFE0) | 5;
+            c->voiceAdsr2 = (c->voiceAdsr2 & ~SPU_ADSR2_RELEASE_RATE) | 5;
         }
         c->voice = 0x18;
         active &= ~bit;
@@ -183,7 +183,7 @@ void akao_stopSeq(AkaoSeq *a, AkaoChannel *c, s32 id) {
         for (i = 0; i < 24; i++) {
             if (g_akaoVoiceOwner[i] == a) {
                 g_akaoVoiceOwner[i] = NULL;
-                akao_setVoiceRelease(i, 5, 3);
+                akao_setVoiceRelease(i, 5, AKAO_ENV_LINEAR_DEC);
             }
         }
     }
@@ -302,7 +302,7 @@ void akao_startSeChannel(AkaoChannel *c, VoiceParams *p, s32 mask, u8 *data) {
     c->sePitchSlideLen = 0;
     akao_resetChannel(c, data);
     g_akaoVoiceOwner[c->voice] = NULL;
-    akao_setVoiceRelease(c->voice, 5, 3);
+    akao_setVoiceRelease(c->voice, 5, AKAO_ENV_LINEAR_DEC);
     g_akaoSeState.activeMask |= mask;
     g_akaoSeState.keyOffMask |= mask;
     mask = ~mask;
@@ -311,12 +311,12 @@ void akao_startSeChannel(AkaoChannel *c, VoiceParams *p, s32 mask, u8 *data) {
     g_akaoSeState.noiseMask &= mask;
     g_akaoSeState.reverbMask &= mask;
     g_akaoSeState.pitchModMask &= mask;
-    if (g_akaoPauseFlags & 2) {
+    if (g_akaoPauseFlags & AKAO_PAUSED_SE) {
         mask = 0x100;
         c = g_akaoSeChannels;
         n = 16;
         do {
-            if ((g_akaoSeState.activeMask & mask) && !(c->seMask & 0x2000000)) {
+            if ((g_akaoSeState.activeMask & mask) && !(c->seMask & AKAO_SE_DEFAULT)) {
                 g_akaoSeState.activeMask &= ~mask;
                 g_akaoSeState.pausedMask |= mask;
             }
@@ -525,7 +525,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
     g_akaoSavedSeq.musicId = 0;
     g_akaoSeState.keyOffMask |= ~active & (~(g_akaoSeState.activeMask | g_akaoStream.voiceMask) & x);
     g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
-    if (g_akaoPauseFlags & 1) {
+    if (g_akaoPauseFlags & AKAO_PAUSED_MUSIC) {
         g_akaoSeq->pausedMask = g_akaoSeq->activeMask;
         g_akaoSeq->activeMask = 0;
     }
@@ -656,7 +656,7 @@ void akao_cmdPlaySeDefault(AkaoArgs *p) {
     s32 i;
     s32 n = g_akaoSeExtraCounts[p->arg0];
 
-    p->arg1 = 0x2000000;
+    p->arg1 = AKAO_SE_DEFAULT;
     p->arg2 = 0x80;
     p->arg3 = 0x7F;
     p->arg4 = akao_findBankSlot(g_akaoSeBankIds[p->arg0]);
@@ -966,7 +966,7 @@ void akao_cmdSetAllSeVolume(u16 *a) {
     AkaoChannel *c = g_akaoSeChannels;
     for (i = 0; i < 16; i++, c++, bit <<= 1) {
         if (mask & bit) {
-            if (!(c->seMask & 0x2000000)) {
+            if (!(c->seMask & AKAO_SE_DEFAULT)) {
                 c->seVolume = (*a & 0x7F) << 8;
                 c->seVolumeSlideLen = 0;
                 c->voiceDirty |= AKAO_VD_VOL;
@@ -983,7 +983,7 @@ void akao_cmdFadeAllSeVolume(AkaoArgs *p) {
     s16 n;
 
     for (i = 0; i < 16; i++, c++, bit <<= 1) {
-        if ((mask & bit) && !(c->seMask & 0x2000000)) {
+        if ((mask & bit) && !(c->seMask & AKAO_SE_DEFAULT)) {
             n = 1;
             if (p->arg0 != 0) {
                 n = p->arg0;
@@ -1057,7 +1057,7 @@ void akao_cmdSetAllSePan(u8 *a) {
     AkaoChannel *c = g_akaoSeChannels;
     for (i = 0; i < 16; i++, c++, bit <<= 1) {
         if (mask & bit) {
-            if (!(c->seMask & 0x2000000)) {
+            if (!(c->seMask & AKAO_SE_DEFAULT)) {
                 c->sePan = *a << 8;
                 c->sePanSlideLen = 0;
                 c->voiceDirty |= AKAO_VD_VOL;
@@ -1074,7 +1074,7 @@ void akao_cmdFadeAllSePan(AkaoArgs *p) {
     s16 n;
 
     for (i = 0; i < 16; i++, c++, bit <<= 1) {
-        if ((mask & bit) && !(c->seMask & 0x2000000)) {
+        if ((mask & bit) && !(c->seMask & AKAO_SE_DEFAULT)) {
             n = 1;
             if (p->arg0 != 0) {
                 n = p->arg0;
@@ -1145,7 +1145,7 @@ void akao_cmdSetAllSePitch(u8 *a) {
     s32 i;
     AkaoChannel *c = g_akaoSeChannels;
     for (i = 16; i != 0; i--) {
-        if (!(c->seMask & 0x2000000)) {
+        if (!(c->seMask & AKAO_SE_DEFAULT)) {
             c->sePitch = *a << 8;
             c->sePitchSlideLen = 0;
             c->voiceDirty |= AKAO_VD_PITCH;
@@ -1162,7 +1162,7 @@ void akao_cmdFadeAllSePitch(AkaoArgs *p) {
     s16 n;
 
     for (i = 0; i < 16; i++, c++, bit <<= 1) {
-        if ((mask & bit) && !(c->seMask & 0x2000000)) {
+        if ((mask & bit) && !(c->seMask & AKAO_SE_DEFAULT)) {
             n = 1;
             if (p->arg0 != 0) {
                 n = p->arg0;
@@ -1246,7 +1246,7 @@ void akao_cmdStopAllSe(void) {
     u32 bit = 0x100;
     u32 i;
     for (i = 0; i < 16; i++, c++, bit <<= 1) {
-        if ((g_akaoSeState.activeMask & bit) && !(c->seMask & 0x2000000)) {
+        if ((g_akaoSeState.activeMask & bit) && !(c->seMask & AKAO_SE_DEFAULT)) {
             g_akaoSeState.keyOffMask |= bit;
             akao_stopSeChannel(c, bit);
             c->flags = 0;
@@ -1303,8 +1303,8 @@ void akao_cmdPauseMusic(void) {
                 if (m & bit) {
                     akao_setVoiceVolume(i, 0, 0, 0);
                     akao_setVoicePitch(i, 0);
-                    akao_setVoiceAttack(i, 0x7F, 1);
-                    akao_setVoiceSustain(i, 0x7F, 3);
+                    akao_setVoiceAttack(i, 0x7F, AKAO_ENV_LINEAR_INC);
+                    akao_setVoiceSustain(i, 0x7F, AKAO_ENV_LINEAR_DEC);
                     m &= ~bit;
                 }
                 bit <<= 1;
@@ -1316,7 +1316,7 @@ void akao_cmdPauseMusic(void) {
         t->activeMask = 0;
         t->pausedMask = v;
     }
-    g_akaoPauseFlags |= 1;
+    g_akaoPauseFlags |= AKAO_PAUSED_MUSIC;
 }
 
 void akao_cmdResumeMusic(void) {
@@ -1342,7 +1342,7 @@ void akao_cmdResumeMusic(void) {
         g_akaoSeq->pausedMask = 0;
         g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     }
-    g_akaoPauseFlags &= ~1;
+    g_akaoPauseFlags &= ~AKAO_PAUSED_MUSIC;
 }
 
 void akao_cmdPauseSe(void) {
@@ -1357,7 +1357,7 @@ void akao_cmdPauseSe(void) {
         c = g_akaoSeChannels;
         bit = 0x100;
         for (i = 0; i < 16; i++, c++, bit <<= 1) {
-            if ((m & bit) && (c->seMask & 0x2000000)) {
+            if ((m & bit) && (c->seMask & AKAO_SE_DEFAULT)) {
                 m &= ~bit;
             }
         }
@@ -1369,15 +1369,15 @@ void akao_cmdPauseSe(void) {
             if (m & bit) {
                 akao_setVoiceVolume(v, 0, 0, 0);
                 akao_setVoicePitch(v, 0);
-                akao_setVoiceAttack(v, 0x7F, 1);
-                akao_setVoiceSustain(v, 0x7F, 3);
+                akao_setVoiceAttack(v, 0x7F, AKAO_ENV_LINEAR_INC);
+                akao_setVoiceSustain(v, 0x7F, AKAO_ENV_LINEAR_DEC);
                 m &= ~bit;
             }
             bit <<= 1;
             v++;
         }
     }
-    g_akaoPauseFlags |= 2;
+    g_akaoPauseFlags |= AKAO_PAUSED_SE;
 }
 
 void akao_cmdResumeSe(void) {
@@ -1402,7 +1402,7 @@ void akao_cmdResumeSe(void) {
         g_akaoSeState.activeMask |= m;
         g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     }
-    g_akaoPauseFlags &= ~2;
+    g_akaoPauseFlags &= ~AKAO_PAUSED_SE;
 }
 
 void akao_cmdPauseStream(void) {
@@ -1426,11 +1426,11 @@ void akao_cmdResumeStream(void) {
     }
     akao_setVoicePitch(d->voice, d->pitch);
     akao_setVoicePitch(d->voice + 1, d->pitch);
-    if (g_akaoOutputFlags & 2) {
+    if (g_akaoOutputFlags & AKAO_MODE_MONO) {
         v = d->volume * g_akaoMonoGain >> 16;
         akao_setVoiceVolume(d->voice, v, v, 0);
         akao_setVoiceVolume(d->voice + 1, v, v, 0);
-    } else if (d->flags & 1) {
+    } else if (d->flags & AKAO_STREAM_STEREO) {
         v = d->volume;
         v <<= 15;
         v >>= 16;

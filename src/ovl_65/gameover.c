@@ -103,7 +103,7 @@ void gameover_initDisp(DispBuf *b) {
 void gameover_loadImage(s32 arg0) {
     FileEntry *e = file_find(DIR_COMMON, FILE_GAMEOVER_IMAGE);
 
-    cd_readSync(g_gameState->imgSector + e->sector, (e->unkC - e->sector) << 11, arg0);
+    cd_readSync(g_gameState->imgSector + e->sector, (e->link - e->sector) << 11, arg0);
     file_loadTim(arg0);
 }
 
@@ -134,7 +134,7 @@ s32 battleEnd_update(void) {
             timer_enable(0);
         }
         func_800F4E68();
-        gameover_main((s32)g_gameState->gameData->ctx.ovl65->work->unk1C);
+        gameover_main((s32)g_gameState->gameData->ctx.ovl65->work->bgData);
         return 2;
     }
     return 0;

@@ -268,17 +268,17 @@ void menuParty_drawPortrait(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
         c = &g_gameState->gameData->characters[id];
         if (c->status & CHR_STATUS_VENOM) {
             icon = &D_800687C0;
-            ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            ui_drawSpriteDef(x + ((0x20 - icon->w) >> 1), yy, otz, icon, 0);
             yy = base - 0xF;
         }
         if (c->status & CHR_STATUS_PETRIFY) {
             icon = &D_80068E38;
-            ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            ui_drawSpriteDef(x + ((0x20 - icon->w) >> 1), yy, otz, icon, 0);
             yy -= 7;
         }
         if (c->hp == 0) {
             icon = &D_80068E30;
-            ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            ui_drawSpriteDef(x + ((0x20 - icon->w) >> 1), yy, otz, icon, 0);
         }
         ui_drawPortraitId(x, y, otz, chr_getPortrait(id), h, arg5);
     }

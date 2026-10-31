@@ -137,6 +137,12 @@ enum {
 };
 
 /* A card in a hand or on the board. Stats are hex digits on screen (value >> 4). */
+/* TmState.timer in TM_TASK_BATTLE (tm_taskBattle): the values show, then the clash sprite with TM_SE_BATTLE,
+ * then both values roll down to the random results; at the end the flash shows the winner */
+#define TM_FIGHT_CLASH 0x23
+#define TM_FIGHT_ROLL 0x43 /* the rolls are drawn here; 23 frames of countdown follow */
+#define TM_FIGHT_END 0x5A
+
 typedef struct {
     u8 id;     /* 0-99 */
     u8 arrows; /* bit d = arrow in direction d (TM_DIR_*) */
@@ -260,7 +266,7 @@ typedef struct {
     s32 boardY;
     TmCard cards[10]; /* 0-4 player hand, 5-9 enemy hand */
     TmCell board[4][4]; /* [y][x] */
-    s32 timer;    /* frames in the current task, reset by most task changes */
+    s32 timer;    /* frames in the current task, reset by most task changes (TM_FIGHT_*) */
     u8 brightness;
     u8 pad2ED[3];
     TmBlock blocks[6];

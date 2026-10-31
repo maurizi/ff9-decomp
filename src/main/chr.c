@@ -82,7 +82,7 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
     out->stats[3] = in->base.unk0[7];
     id = in->equip.unk0[0];
     if (id != 0xFF) {
-        out->defs[0] = g_weaponTable[id].unk5;
+        out->defs[0] = g_weaponTable[id].attack;
     }
     for (i = 0; i < 4; i++) {
         id = (&in->equip.unk0[1])[i];
@@ -367,7 +367,7 @@ u8 chr_getAppearanceType(s32 a, u8 b) {
 }
 
 s32 chr_getDefaultSet(Character *c) {
-    return g_chrDefaultSets[c->info.b.id][(c->classFlags & 0x10) != 0];
+    return g_chrDefaultSets[c->info.b.id][(c->classFlags & CHR_CLASS_GUEST) != 0];
 }
 
 u8 chr_getClassFlags(u32 x) {
@@ -506,8 +506,8 @@ void chr_fitSupportAbilities(Character *c) {
     c->stones = c->maxStones;
     do {
         if (chr_hasSupportAbility(id, i + ABILITY_SUPPORT_FIRST)) {
-            if (c->stones >= e->unk1) {
-                c->stones -= e->unk1;
+            if (c->stones >= e->stones) {
+                c->stones -= e->stones;
             } else {
                 chr_setSupportAbility(id, i + ABILITY_SUPPORT_FIRST, 0);
             }
@@ -657,7 +657,7 @@ s32 chr_countSupportStones(s32 ch) {
     u32 *bits = g_gameState->gameData->characters[ch].supportAbilities;
     for (i = 0; i < 0x40; i++) {
         if (bits[i >> 5] & (1 << (i & 0x1F))) {
-            sum += g_supportAbilities[i].unk1;
+            sum += g_supportAbilities[i].stones;
         }
     }
     return sum;
@@ -683,7 +683,7 @@ u8 chr_testSupportBit(u32 *bits, s32 b) {
 }
 
 u8 chr_canLearnAbilities(Character *a) {
-    if (a->classFlags & 0x10) {
+    if (a->classFlags & CHR_CLASS_GUEST) {
         return 0;
     }
     return (s32)a->info.b.row < 8;
@@ -786,7 +786,7 @@ s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
 }
 
 s32 chr_calcMaxHp(s32 lv, s32 m) {
-    s32 r = g_levelHpMp[lv - 1].unk0 * m / 50;
+    s32 r = g_levelHpMp[lv - 1].hp * m / 50;
     if (r >= 10000) {
         r = 9999;
     }
@@ -794,7 +794,7 @@ s32 chr_calcMaxHp(s32 lv, s32 m) {
 }
 
 s32 chr_calcMaxMp(s32 lv, s32 m) {
-    s32 r = g_levelHpMp[lv - 1].unk2 * m / 100;
+    s32 r = g_levelHpMp[lv - 1].mp * m / 100;
     if (r >= 1000) {
         r = 999;
     }
