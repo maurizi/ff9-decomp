@@ -1,6 +1,6 @@
 #include "fxmod/fx_084.h"
 
-s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame) {
+static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7B90);
     s32 t = frame << 8;
     s32 a;
@@ -55,7 +55,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk1C->otZ = 0x10;
             }
             if (work->unk1C != NULL) {
-                ((EffMotion *)work->unk1C->file)->unk8 = func_801E7704;
+                ((EffMotion *)work->unk1C->file)->unk8 = fx_084_op80ParticleMotion;
             }
             break;
         case 1:

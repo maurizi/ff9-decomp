@@ -1,6 +1,6 @@
 #include "fxmod/fx_12b.h"
 
-s32 func_801E7704(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op80ParticleMotion0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     s32 i = p->unk1F - 1;
     Fx12bShard *s = &D_801E97BC[i];
     Fx12bPath *path = &D_801E9B44[i];
@@ -15,7 +15,7 @@ s32 func_801E7704(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame,
     return 0;
 }
 
-s32 func_801E77B0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op80ParticleMotion1(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     s32 i = p->unk1F - 1;
     Fx12bShard *s = &D_801E9894[i];
     Fx12bPath *path = &D_801E9B74[i];
@@ -30,7 +30,7 @@ s32 func_801E77B0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame,
     return 0;
 }
 
-s32 func_801E785C(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op81ParticleMotion0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     s32 i = p->unk1F - 1;
     Fx12bShard *s = &D_801E996C[i];
     Fx12bPath *path = &D_801E9BA4;
@@ -42,7 +42,7 @@ s32 func_801E785C(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame,
     return func_801E7B10(p, pos, s, frame, n);
 }
 
-s32 func_801E78F8(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op81ParticleMotion1(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     s32 i = p->unk1F - 1;
     Fx12bShard *s = &D_801E9A20[i];
     Fx12bPath *path = &D_801E9BAC;
@@ -129,7 +129,7 @@ s32 func_801E7CA8(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, s32 frame, s32 
     return 0;
 }
 
-s32 func_801E7E40(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op80ParticleMotion2(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     SVECTOR v;
     SVECTOR *o = (SVECTOR *)((u8 *)D_801EF7F4 + (p->unk1F - 1) * 8);
 
@@ -143,7 +143,7 @@ s32 func_801E7E40(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame,
     return fxm_pinParticle(p, pos, &v, frame, n);
 }
 
-s32 func_801E7EB0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op80ParticleMotion3(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     SVECTOR v;
     SVECTOR *o = (SVECTOR *)((u8 *)D_801EF824 + (p->unk1F - 1) * 8);
 
@@ -157,7 +157,7 @@ s32 func_801E7EB0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame,
     return fxm_pinParticle(p, pos, &v, frame, n);
 }
 
-s32 func_801E7F20(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op81ParticleMotion2(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     SVECTOR v;
     SVECTOR *o = (SVECTOR *)((u8 *)D_801EF7F4 + (p->unk1F - 1) * 8);
 
@@ -171,7 +171,7 @@ s32 func_801E7F20(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame,
     return fxm_pinParticle(p, pos, &v, frame, n);
 }
 
-s32 func_801E7F90(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op81ParticleMotion3(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     SVECTOR v;
     SVECTOR *o = (SVECTOR *)((u8 *)D_801EF824 + (p->unk1F - 1) * 8);
 
@@ -278,10 +278,10 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[0]->unkC = 0xA4;
             }
             if (work->unk0[0] != NULL) {
-                ((s32 *)work->unk0[0]->file)[2] = (s32)func_801E7704;
+                ((s32 *)work->unk0[0]->file)[2] = (s32)fx_12b_op80ParticleMotion0;
             }
             if (work->unk0[2] != NULL) {
-                ((s32 *)work->unk0[2]->file)[2] = (s32)func_801E7E40;
+                ((s32 *)work->unk0[2]->file)[2] = (s32)fx_12b_op80ParticleMotion2;
             }
             break;
         case 1:
@@ -293,10 +293,10 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[1]->unkC = 0xA4;
             }
             if (work->unk0[1] != NULL) {
-                ((s32 *)work->unk0[1]->file)[2] = (s32)func_801E77B0;
+                ((s32 *)work->unk0[1]->file)[2] = (s32)fx_12b_op80ParticleMotion1;
             }
             if (work->unk0[3] != NULL) {
-                ((s32 *)work->unk0[3]->file)[2] = (s32)func_801E7EB0;
+                ((s32 *)work->unk0[3]->file)[2] = (s32)fx_12b_op80ParticleMotion3;
             }
             break;
         }
@@ -420,16 +420,16 @@ s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[1]->unkC = 0xA4;
             }
             if (work->unk0[0] != NULL) {
-                ((s32 *)work->unk0[0]->file)[2] = (s32)func_801E785C;
+                ((s32 *)work->unk0[0]->file)[2] = (s32)fx_12b_op81ParticleMotion0;
             }
             if (work->unk0[1] != NULL) {
-                ((s32 *)work->unk0[1]->file)[2] = (s32)func_801E78F8;
+                ((s32 *)work->unk0[1]->file)[2] = (s32)fx_12b_op81ParticleMotion1;
             }
             if (work->unk0[2] != NULL) {
-                ((s32 *)work->unk0[2]->file)[2] = (s32)func_801E7F20;
+                ((s32 *)work->unk0[2]->file)[2] = (s32)fx_12b_op81ParticleMotion2;
             }
             if (work->unk0[3] != NULL) {
-                ((s32 *)work->unk0[3]->file)[2] = (s32)func_801E7F90;
+                ((s32 *)work->unk0[3]->file)[2] = (s32)fx_12b_op81ParticleMotion3;
             }
         }
         for (j = 0, r = D_801E9A20, q = D_801E996C; j < 5; j++, q++, r++) {

@@ -6,3 +6,6 @@ fxm_startUnitMotion = 0x801E80B4; // type:func [code] btlfx_setUnitMotion with t
 fxm_isMotionDone = 0x801E8120; // type:func [code] unit active (btlfx_isUnitActive) and its motion frame is the last one
 fxm_startMotion2IfActive = 0x801E81A4; // type:func [code] fxm_startUnitMotion(unit, 2) when btlfx_isUnitActive
 fxm_startMotion3IfActive = 0x801E81F0; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive
+fx_1a6_op80ParticleMotion0 = 0x801E7704; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1a6_op80 through D_801E8244
+fx_1a6_op80ParticleMotion1 = 0x801E7744; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1a6_op80 through D_801E8244
+fx_1a6_op80ParticleMotion2 = 0x801E7784; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1a6_op80 through D_801E8244

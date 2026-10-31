@@ -26,9 +26,9 @@ extern Unk800F78A4 *D_801E8AB8;
 extern BtlModel D_801E8AC8[];
 extern s32 D_801E8B90;
 
-s32 func_801E7EB8(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
+static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
                   Fx07eWork80 *work);
-void func_801E8498(s32 r, s32 a1, s32 a, s32 a3, s16 *out);
+static void fx_07e_op81GridVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out);
 
 typedef struct {
     s32 unk0; /* state */

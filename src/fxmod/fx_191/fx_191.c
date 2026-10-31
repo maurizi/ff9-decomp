@@ -1,6 +1,6 @@
 #include "fxmod/fx_191.h"
 
-s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_191_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR z;
 
     z.vx = 0;
@@ -10,7 +10,7 @@ s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     return func_801E7870(e, pos, &D_801E84E4[0], &D_801E857C[0], frame, frames);
 }
 
-s32 func_801E775C(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_191_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR z;
 
     z.vx = 0;
@@ -20,7 +20,7 @@ s32 func_801E775C(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     return func_801E7870(e, pos, &D_801E84E4[1], &D_801E857C[1], frame, frames);
 }
 
-s32 func_801E77B8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_191_op80ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR z;
 
     z.vx = 0;
@@ -30,7 +30,7 @@ s32 func_801E77B8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     return func_801E7870(e, pos, &D_801E84E4[2], &D_801E857C[2], frame, frames);
 }
 
-s32 func_801E7814(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_191_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR z;
 
     z.vx = 0;
@@ -63,7 +63,7 @@ s32 func_801E7870(Pool30Entry *e, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 
     return 0;
 }
 
-s32 func_801E7988(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_191_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR z;
 
     z.vx = 0;
@@ -72,7 +72,7 @@ s32 func_801E7988(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     return func_801E7A00(e, pos, &z, frame, frames);
 }
 
-s32 func_801E79C4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_191_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR z;
 
     z.vx = 0;
@@ -188,7 +188,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0->unkC = 0x70;
         }
         if (work->unk0 != NULL) {
-            ((EffMotion *)work->unk0->file)->unk8 = func_801E7988;
+            ((EffMotion *)work->unk0->file)->unk8 = fx_191_op81ParticleMotion0;
         }
         if (work->unk0 != NULL) {
             work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -207,7 +207,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk4->unkC = 0x70;
             }
             if (work->unk4 != NULL) {
-                ((EffMotion *)work->unk4->file)->unk8 = func_801E79C4;
+                ((EffMotion *)work->unk4->file)->unk8 = fx_191_op81ParticleMotion1;
             }
             if (work->unk4 != NULL) {
                 work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);

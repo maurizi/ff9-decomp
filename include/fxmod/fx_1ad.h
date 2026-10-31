@@ -20,6 +20,6 @@ extern BtlModel D_801E7D9C[];
 extern s32 D_801E7E6C[];
 extern s32 D_801E8F4C[];
 
-s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 
 #endif

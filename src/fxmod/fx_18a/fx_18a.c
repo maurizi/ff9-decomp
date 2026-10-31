@@ -197,7 +197,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 func_801E844C(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_18a_op82PoolTask(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 zero[2];
     SVECTOR *pt;
@@ -273,7 +273,7 @@ s32 fx_18a_op82(s32 mode, Fx18aWork82 *work, Unk800F78A4 *env, Fx18aInst *inst, 
     if (mode == 0) {
         init->workSize = 0x10;
         init->elemSize = 0x1C;
-        init->elemFn = (s32)func_801E844C;
+        init->elemFn = (s32)fx_18a_op82PoolTask;
         init->poolCount = 0xB4;
     } else if (mode == 1) {
         D_801E8A24 = env;

@@ -29,7 +29,7 @@ extern Unk800F78A4 *D_801E7E64;
 extern BtlModel D_801E7E74[];
 extern u8 D_801E7EF0[][0x54];
 
-s32 func_801E7704(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx058Work *work);
 
 #endif

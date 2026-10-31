@@ -69,12 +69,12 @@ extern Fx138Path D_801E8830[6];
 extern SVECTOR D_801E8E60; /* path origin */
 extern SVECTOR D_801E8E68; /* path rotation */
 
-s32 func_801E7704(SVECTOR *out, s32 arg1, s32 i);
-s32 func_801E7728(SVECTOR *out, s32 arg1, s32 i);
-s32 func_801E774C(SVECTOR *out, s32 arg1, s32 i);
-s32 func_801E7770(SVECTOR *out, s32 arg1, s32 i);
-s32 func_801E7794(SVECTOR *out, s32 arg1, s32 i);
-s32 func_801E77B8(SVECTOR *out, s32 arg1, s32 i);
+s32 fx_138_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i);
+s32 fx_138_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i);
+s32 fx_138_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i);
+s32 fx_138_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i);
+s32 fx_138_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i);
+s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 arg1, s32 i);
 void func_801E77DC(SVECTOR *out, Fx138Path *path, s32 i);
 static s32 fxm_posPathGet(Fx138Path *path, s32 i, SVECTOR *out);
 s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);

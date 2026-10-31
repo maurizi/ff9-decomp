@@ -13,3 +13,5 @@ fxm_isMotionDone = 0x801E8D30; // type:func [code] unit active (btlfx_isUnitActi
 fxm_startMotion2IfActive = 0x801E8DB4; // type:func [code] fxm_startUnitMotion(unit, 2) when btlfx_isUnitActive
 fxm_startMotion3IfActive = 0x801E8E00; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive
 fxm_offsetTableEntry = 0x801E8AFC; // type:func [code] base + ((s32 *)base)[i + 1], an entry of an offset table relative to its start
+fx_1ec_op80ParticleMotion = 0x801E78E0; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1ec_op80
+fx_1ec_op81ParticleMotion = 0x801E79DC; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_1ec_op81

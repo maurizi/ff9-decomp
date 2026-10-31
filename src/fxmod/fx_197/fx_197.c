@@ -255,7 +255,7 @@ static void fxm_shatterUpdate(s32 i) {
     }
 }
 
-s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx197Work81 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
@@ -449,7 +449,7 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x88;
         init->elemSize = 0x14;
-        init->elemFn = (s32)func_801E81EC;
+        init->elemFn = (s32)fx_197_op81PoolTask;
         init->poolCount = 7;
     } else if (mode == 1) {
         work->unk0 = 0;

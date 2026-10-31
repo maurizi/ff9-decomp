@@ -11,8 +11,8 @@ extern u16 D_801EB0C4[3]; /* file ids for op87 tracks, end frame */
 extern s32 D_801EDF44;
 extern s32 D_801EDF48;
 
-void func_801E8A10(s32 a0, s32 frame, s32 a2, s32 a3, s16 *v);
-s32 func_801E9050(SVECTOR *v);
+static void fx_0d3_op80GridVertex(s32 a0, s32 frame, s32 a2, s32 a3, s16 *v);
+static s32 fx_0d3_op81SpawnPoint(SVECTOR *v);
 static void fxm_waveVertexX(s16 *v);
 typedef struct {
     s16 unk0;

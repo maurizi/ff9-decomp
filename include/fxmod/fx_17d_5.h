@@ -64,7 +64,7 @@ extern Unk800F78A4 *D_801EE52C;
 extern BtlModel D_801EE53C[];
 extern u8 D_801EE860[][0xCC]; /* spark trails */
 
-s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx17d5Work80 *parent);
 
 #endif

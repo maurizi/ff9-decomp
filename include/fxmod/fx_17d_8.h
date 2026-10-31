@@ -54,7 +54,7 @@ extern SVECTOR D_801E89F4;
 extern Unk800F78A4 *D_801E8A44;
 extern BtlModel D_801E8A54[];
 
-s32 func_801E7718(s32 mode, Fx17d8Obj *w, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx17d8Inst *inst);
+static s32 fx_17d_8_op80PoolTask(s32 mode, Fx17d8Obj *w, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx17d8Inst *inst);
 s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 
 #endif

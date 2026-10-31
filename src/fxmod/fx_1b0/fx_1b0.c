@@ -171,7 +171,7 @@ void func_801E7B04(void) {
     }
 }
 
-s32 func_801E7E48(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1b0_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 k = e->unk1F - 1;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EBF34);
     Fx1b0Orbit *o = &D_801EC724[k];
@@ -340,7 +340,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x31) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk28);
                 if (p != NULL) {
-                    ((EffMotion *)p->file)->unk8 = func_801E7E48;
+                    ((EffMotion *)p->file)->unk8 = fx_1b0_op80ParticleMotion;
                     p->unk14 = (s32)D_801E8D44;
                     p->unk12 = 0x20;
                     p->unkC = 0xAC;

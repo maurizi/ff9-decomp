@@ -60,8 +60,8 @@ extern SVECTOR D_801E8300; /* path end */
 extern SVECTOR D_801E8308;
 extern Pool6CEntry *D_801E8340;
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-s32 func_801E77D0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_127_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E7818(VECTOR *out, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 len, s32 frame, s32 n);
 
 #endif

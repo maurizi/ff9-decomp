@@ -63,7 +63,7 @@ extern SVECTOR D_801EFDE4;
 extern SVECTOR D_801EFDEC;
 extern s32 D_801F019C[64][3]; /* noise */
 
-s32 func_801EEAA8(s32 mode, Fx17d7Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_17d_7_op83PoolTask(s32 mode, Fx17d7Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 typedef struct {
     s16 unk0; /* state */

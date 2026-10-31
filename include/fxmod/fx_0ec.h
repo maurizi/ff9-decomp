@@ -52,7 +52,7 @@ extern VECTOR D_801E98C0; /* shard scale */
 extern Fx0ecSplit D_801ECA90;
 extern Fx0ecShard D_801ECAB0[300];
 
-s32 func_801E7704(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 void func_801E77FC(SVECTOR *pos);
 void func_801E798C(s32 model, SVECTOR *center);
 void func_801E7B84(void);

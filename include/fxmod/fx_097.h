@@ -37,7 +37,7 @@ typedef struct {
 } Fx097Work;
 
 extern SVECTOR D_801E9CE8[];
-s32 func_801E82F4(s32 mode, Fx097Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
+static s32 fx_097_op80PoolTask(s32 mode, Fx097Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
                   Fx097Work *work);
 
 typedef struct {

@@ -311,7 +311,7 @@ void func_801E80A8(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32 dy, s32 abr
     }
 }
 
-s32 func_801E8844(SVECTOR *out) {
+static s32 fx_0e1_0_op80SpawnPoint(SVECTOR *out) {
     Unk800F78A4 *env = D_801E9E38;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;
@@ -502,7 +502,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk8);
                 if (p != NULL) {
                     p->tail->unk0 = -1;
-                    *(s32 *)&p->tail->unk3C = (s32)func_801E8844;
+                    *(s32 *)&p->tail->unk3C = (s32)fx_0e1_0_op80SpawnPoint;
                     p->otZ = 0x20;
                 }
             }

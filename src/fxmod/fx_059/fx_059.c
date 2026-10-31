@@ -1,6 +1,6 @@
 #include "fxmod/fx_059.h"
 
-s32 func_801E7704(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_059_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx059Work80 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
@@ -35,7 +35,7 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk10 = (ex->btlfx_rand() & 0x1F) + 0x100;
         work->unk18 = 0;
         work->unk14 = (Unk800DA1B8 *)ex->btlfx_allocTaskMem(entry, ex->btlfx_poolSize(8, 12));
-        ex->btlfx_poolInit(work->unk14, entry, 8, 12, (s32)func_801E7704);
+        ex->btlfx_poolInit(work->unk14, entry, 8, 12, (s32)fx_059_op80PoolTask);
         return 0;
     } else {
         frame = entry->frame;

@@ -14,3 +14,6 @@ fxm_shatterAddModel = 0x801E9170; // type:func [code] splits a model into triang
 fxm_shatterFreeShard = 0x801E928C; // type:func [code] first free shard of shatter set i, or NULL
 fxm_shatterRelease = 0x801E92EC; // type:func [code] turns triangles below the module height threshold into flying shards, returns how many
 fxm_shatterUpdate = 0x801E9564; // type:func [code] moves and spins every live shard of shatter set i (btlfx_stepModuleParticle), clears it at the end of its life
+fx_026_op80PoolTask = 0x801E7A5C; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_026_op80
+fx_026_op82PoolTask = 0x801E8670; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_026_op82
+fx_026_op81PoolTask = 0x801E98BC; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_026_op81

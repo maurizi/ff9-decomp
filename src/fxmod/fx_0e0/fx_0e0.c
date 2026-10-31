@@ -331,7 +331,7 @@ void func_801E8430(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTOR *from, SVEC
 
 INCLUDE_RODATA("asm/us/fx_0e0/nonmatchings/fx_0e0", fx_0e0_headerPtr);
 
-s32 func_801E8628(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
+static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
                   Fx0e0Inst *parent) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
@@ -545,7 +545,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x84;
         init->elemSize = 0x24;
-        init->elemFn = (s32)func_801E8628;
+        init->elemFn = (s32)fx_0e0_op80PoolTask;
         init->poolCount = 0x31;
     } else if (one = 1, mode == one) {
         work->unk0 = 6;

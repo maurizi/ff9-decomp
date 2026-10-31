@@ -40,7 +40,7 @@ extern Unk800F78A4 *D_801E8A24;
 extern Fx18aTrail D_801E8B04[12];
 extern s32 D_801E90D4;
 
-s32 func_801E844C(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_18a_op82PoolTask(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 void func_801E85A4(void);
 void func_801E85B0(Fx18aInst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to);
 

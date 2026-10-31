@@ -1,13 +1,13 @@
 #include "fxmod/fx_11d.h"
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_11d_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     if (frame >= 4) {
         frame = 3;
     }
     return func_801E77A4(out, pos, &D_801E7D24[frame], frame, n);
 }
 
-s32 func_801E7754(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     if (frame >= 4) {
         frame = 3;
     }
@@ -55,10 +55,10 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&D_801E914C);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&D_801E9154);
             if (work->unk4 != NULL) {
-                ((Fx11dEffHdr *)work->unk4->file)->unk8 = func_801E7704;
+                ((Fx11dEffHdr *)work->unk4->file)->unk8 = fx_11d_op80ParticleMotion0;
             }
             if (work->unk8 != NULL) {
-                ((Fx11dEffHdr *)work->unk8->file)->unk8 = func_801E7754;
+                ((Fx11dEffHdr *)work->unk8->file)->unk8 = fx_11d_op80ParticleMotion1;
             }
             if (work->unk4 != NULL) {
                 work->unk4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
@@ -81,10 +81,10 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk10->unkC = 0x70;
             }
             if (work->unkC != NULL) {
-                ((Fx11dEffHdr *)work->unkC->file)->unk8 = func_801E7704;
+                ((Fx11dEffHdr *)work->unkC->file)->unk8 = fx_11d_op80ParticleMotion0;
             }
             if (work->unk10 != NULL) {
-                ((Fx11dEffHdr *)work->unk10->file)->unk8 = func_801E7754;
+                ((Fx11dEffHdr *)work->unk10->file)->unk8 = fx_11d_op80ParticleMotion1;
             }
             /* sets unkC twice; unk10 keeps its default */
             if (work->unkC != NULL) {

@@ -36,7 +36,7 @@ extern Unk800F78A4 *D_801E7F58;
 extern Fx0a9Bolt D_801E7F68[16];
 extern s32 D_801E8528; /* next bolt */
 
-s32 func_801E77EC(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0a9Work83 *work);
 void func_801E79C8(void);
 void func_801E79D4(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to);

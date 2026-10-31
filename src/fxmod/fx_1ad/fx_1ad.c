@@ -1,6 +1,6 @@
 #include "fxmod/fx_1ad.h"
 
-s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = (frame << 12) / frames;
     s32 row = (e->unk1F - 1) % 6;
     s32 v = t * D_801E7CD8[row][0];
@@ -70,7 +70,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk20->otZ = k;
                 }
                 if (work->unk20 != NULL) {
-                    ((EffMotion *)work->unk20->file)->unk8 = func_801E7704;
+                    ((EffMotion *)work->unk20->file)->unk8 = fx_1ad_op80ParticleMotion;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
                 if (p != NULL) {

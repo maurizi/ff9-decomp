@@ -23,8 +23,8 @@ extern SVECTOR D_801E8F9C; /* path start */
 extern SVECTOR D_801E8FA4; /* path end */
 extern SVECTOR D_801E8FB4[]; /* path ends */
 
-s32 func_801E7704(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-s32 func_801E77C8(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 
 typedef struct {
     s16 x, y, z;

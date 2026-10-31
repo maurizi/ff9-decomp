@@ -1,36 +1,36 @@
 #include "fxmod/fx_1a0.h"
 
-s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = D_801E8268[0] * 2;
 
     return func_801E789C(e, pos, &D_801E8238[0], t, frame, frames);
 }
 
-s32 func_801E7748(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = D_801E8268[1] * 2;
 
     return func_801E789C(e, pos, &D_801E8238[1], t, frame, frames);
 }
 
-s32 func_801E778C(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = D_801E8268[2] * 2;
 
     return func_801E789C(e, pos, &D_801E8238[2], t, frame, frames);
 }
 
-s32 func_801E77D0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = D_801E8268[3] * 2;
 
     return func_801E789C(e, pos, &D_801E8238[3], t, frame, frames);
 }
 
-s32 func_801E7814(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = D_801E8268[4] * 2;
 
     return func_801E789C(e, pos, &D_801E8238[4], t, frame, frames);
 }
 
-s32 func_801E7858(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion5(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = D_801E8268[5] * 2;
 
     return func_801E789C(e, pos, &D_801E8238[5], t, frame, frames);

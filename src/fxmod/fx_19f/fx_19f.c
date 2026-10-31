@@ -708,7 +708,7 @@ static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot,
     fxm_drawJaggedTrail(entry, file, ot, trail, n, noise, pt, &mid, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
 }
 
-s32 func_801E9D20(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 t;
     s32 c;
@@ -793,7 +793,7 @@ s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, 
     if (mode == 0) {
         init->workSize = 0xC;
         init->elemSize = 0x1C;
-        init->elemFn = (s32)func_801E9D20;
+        init->elemFn = (s32)fx_19f_op83PoolTask;
         init->poolCount = 0x20;
     } else if (mode == 1) {
         i = init->workSize;

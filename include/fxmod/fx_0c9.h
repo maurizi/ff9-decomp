@@ -31,6 +31,6 @@ extern SVECTOR D_801E7E10; /* particle position */
 extern SVECTOR D_801E7E18;
 extern s32 D_801E7E28[];
 
-s32 func_801E7828(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_0c9_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 
 #endif

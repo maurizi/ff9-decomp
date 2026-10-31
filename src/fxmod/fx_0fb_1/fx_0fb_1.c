@@ -105,7 +105,7 @@ void func_801EC738(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r, s32 p, CVEC
 
 INCLUDE_RODATA("asm/us/fx_0fb_1/nonmatchings/fx_0fb_1", fx_0fb_1_headerPtr);
 
-s32 func_801ECBE0(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0fb1Work80 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
@@ -340,7 +340,7 @@ s32 func_801ECBE0(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk80100C78Entry *
     return 0;
 }
 
-/* padded: a zero word follows func_801ECBE0's jump table (op80's table is 8-aligned in the original object) */
+/* padded: a zero word follows fx_0fb_1_op80PoolTask's jump table (op80's table is 8-aligned in the original object) */
 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 /* Matching notes: cases 3-6 use fx_17a op80's variable roles; case 3 reuses t (the original keeps it in t's
@@ -391,7 +391,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     if (mode == 0) {
         init->workSize = 0xE8;
         init->elemSize = 0x28;
-        init->elemFn = (s32)func_801ECBE0;
+        init->elemFn = (s32)fx_0fb_1_op80PoolTask;
         init->poolCount = 0x30;
     } else if (mode == 1) {
         work->unk0 = 0;

@@ -1,6 +1,6 @@
 #include "fxmod/fx_043.h"
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
+static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7BC8);
     s32 r = t << 10;
 
@@ -43,7 +43,7 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0->unkC = 0x20;
         }
         if (work->unk0 != NULL) {
-            ((s32 *)work->unk0->file)[2] = (s32)func_801E7704;
+            ((s32 *)work->unk0->file)[2] = (s32)fx_043_op80ParticleMotion;
         }
     } else {
         return entry->frame >= 0x1E;

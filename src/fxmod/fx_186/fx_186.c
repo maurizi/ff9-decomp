@@ -1,6 +1,6 @@
 #include "fxmod/fx_186.h"
 
-s32 func_801E7704(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame) {
+static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
@@ -89,7 +89,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x4C;
         init->elemSize = 0x28;
-        init->elemFn = (s32)func_801E7704;
+        init->elemFn = (s32)fx_186_op80PoolTask;
         init->poolCount = 0xA;
     } else if (mode == 1) {
         work->unk0 = 3;

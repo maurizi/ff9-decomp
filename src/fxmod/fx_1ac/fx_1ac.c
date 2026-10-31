@@ -71,7 +71,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p->unk14 = (s32)D_801E8310;
                 p->unk12 = 4;
                 p->unkC = 0x9C;
-                ((EffMotion *)p->file)->unk8 = func_801E81C4;
+                ((EffMotion *)p->file)->unk8 = fx_1ac_op80ParticleMotion;
             }
             work->unk0[0] = 0xE;
             break;
@@ -200,7 +200,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-s32 func_801E81C4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1ac_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR v;
 
     switch (e->unk1F - 1) {

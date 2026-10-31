@@ -1,6 +1,6 @@
 #include "fxmod/fx_180.h"
 
-s32 func_801E78E0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_180_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR v;
 
     fxm_posPathGet(&D_801E93F8[(s16)(e->unk1F - 1)], frame, &v);
@@ -18,7 +18,7 @@ s32 func_801E78E0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     return 0;
 }
 
-s32 func_801E79DC(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_180_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR v;
 
     fxm_posPathGet(&D_801E9488[(s16)(e->unk1F - 1)], frame, &v);
@@ -126,7 +126,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[7]->unkC = 0x70;
             }
             if (work->unk0[7] != NULL) {
-                ((EffMotion *)work->unk0[7]->file)->unk8 = func_801E78E0;
+                ((EffMotion *)work->unk0[7]->file)->unk8 = fx_180_op80ParticleMotion;
             }
             if (work->unk0[7] != NULL) {
                 work->unk0[7]->otZ = 0x600;
@@ -218,7 +218,7 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[9]->unkC = 0x90;
             }
             if (work->unk0[9] != NULL) {
-                ((EffMotion *)work->unk0[9]->file)->unk8 = func_801E79DC;
+                ((EffMotion *)work->unk0[9]->file)->unk8 = fx_180_op81ParticleMotion;
             }
             break;
         case 0x45:

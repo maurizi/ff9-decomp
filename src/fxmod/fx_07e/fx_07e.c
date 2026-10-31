@@ -159,7 +159,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     }
 }
 
-s32 func_801E7EB8(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
+static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
                   Fx07eWork80 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR out;
@@ -241,7 +241,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         ((EffInit *)arg4)->workSize = sizeof(Fx07eWork80);
         ((EffInit *)arg4)->elemSize = sizeof(Fx07ePart);
-        ((EffInit *)arg4)->elemFn = (s32)func_801E7EB8;
+        ((EffInit *)arg4)->elemFn = (s32)fx_07e_op80PoolTask;
         ((EffInit *)arg4)->poolCount = 0xB;
     } else if (mode == 1) {
         D_801E8AB8 = env;
@@ -306,7 +306,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E8498(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
+static void fx_07e_op81GridVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8AB8);
     s32 x;
     s32 y;
@@ -367,7 +367,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r1.w = 0x7A;
             r1.h = 0x7A;
             t = frame << 8;
-            fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &r1, func_801E8498);
+            fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &r1, fx_07e_op81GridVertex);
             D_801E8B90 = ex->math_sin(t >> 2) >> 1;
             env->otZ = work->unk8;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), pos, NULL, 0x2000, 0, 1, 0x1000, 0, 0);
@@ -384,7 +384,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r2.w = 0x7A;
             r2.h = 0x7A;
             t = (frame << 12) / 12;
-            fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &r2, func_801E8498);
+            fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &r2, fx_07e_op81GridVertex);
             a = t >> 2;
             D_801E8B90 = ex->math_cos(a) >> 1;
             env->otZ = work->unk8;

@@ -85,7 +85,7 @@ static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx003Strip *strip, Fx
     fxm_drawJaggedStrip4(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x37, 0, arg5, arg6, kind);
 }
 
-s32 func_801E7CEC(s32 mode, Fx003Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_003_op83PoolTask(s32 mode, Fx003Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx003Strip *strip;
     Fx003Strip *br;
@@ -164,7 +164,7 @@ s32 fx_003_op83(s32 mode, Fx003Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         init->workSize = 0x10;
         init->elemSize = 0x24;
-        init->elemFn = (s32)func_801E7CEC;
+        init->elemFn = (s32)fx_003_op83PoolTask;
         init->poolCount = 0xC;
     } else if (mode == 1) {
         D_801E8580 = env;

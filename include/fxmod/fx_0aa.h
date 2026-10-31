@@ -33,8 +33,8 @@ extern SVECTOR D_801E90A0;
 extern SVECTOR D_801E90A8;
 extern SVECTOR D_801E90B0;
 
-s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-s32 func_801E7744(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_0aa_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_0aa_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E7784(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 n);
 
 #endif

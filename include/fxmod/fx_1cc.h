@@ -59,7 +59,7 @@ typedef struct {
 
 extern BtlModel D_801E9C44[];
 extern s32 D_801E9B98[14];
-s32 func_801E82D0(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
+static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
                   Fx1ccInst *inst);
 
 s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);

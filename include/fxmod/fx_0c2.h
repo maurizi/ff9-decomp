@@ -39,7 +39,7 @@ extern SVECTOR D_801E8484; /* particle path start */
 extern SVECTOR D_801E848C; /* particle path end */
 extern SVECTOR D_801E8494;
 
-s32 func_801E7804(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta);
 static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang);
 void func_801E7D6C(s32 unit, s32 motion);

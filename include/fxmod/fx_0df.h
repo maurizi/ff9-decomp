@@ -45,7 +45,7 @@ extern s32 D_801EA410; /* next slot in D_801EA350 */
 extern Unk80100C78Entry *D_801EA414;
 
 void func_801E7EB8(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7);
-s32 func_801E80F4(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0dfWork *work);
 void func_801E93F4(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
                    s32 ang, s32 dang, s32 arg9, s32 arg10, s32 pad);
@@ -64,7 +64,7 @@ typedef struct {
 } Fx0dfArc;
 
 extern Fx0dfBolt D_801EA420[];
-s32 func_801E9600(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_0df_op83PoolTask(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 extern s32 D_801EA790[][3]; /* random arc profile */
 
 typedef struct {

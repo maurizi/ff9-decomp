@@ -334,7 +334,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0xBC:
             work->unk1B0 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk1A8);
             if (p != NULL) {
-                *(s32 *)&p->file->unk8 = (s32)func_801EA558;
+                *(s32 *)&p->file->unk8 = (s32)fx_0b8_op80ParticleMotion;
             }
             work->unk0[0x21] = 0x10;
             break;
@@ -890,7 +890,7 @@ void func_801EA4E0(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 ot) {
     ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), mode, v, v, v);
 }
 
-s32 func_801EA558(Pool30Entry *pt, s32 a1, SVECTOR *pos, s32 a3, s32 frame, s32 n) {
+static s32 fx_0b8_op80ParticleMotion(Pool30Entry *pt, s32 a1, SVECTOR *pos, s32 a3, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EA7A0);
     SVECTOR v;
     s32 r;

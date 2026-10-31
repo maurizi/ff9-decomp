@@ -176,7 +176,7 @@ void func_801E7D18(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s32 mode
     }
 }
 
-s32 func_801E7FE0(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_17d_0_op80PoolTask(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 1) {
@@ -215,7 +215,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     if (mode == 0) {
         arg4->workSize = 0xBC;
         arg4->elemSize = 0x10;
-        arg4->elemFn = (s32)func_801E7FE0;
+        arg4->elemFn = (s32)fx_17d_0_op80PoolTask;
         arg4->poolCount = 0x20;
     } else if (mode == 1) {
         work->unk0 = 0xA;

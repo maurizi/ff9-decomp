@@ -159,7 +159,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     }
 }
 
-void func_801E7ECC(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 a3, s32 *a4, s32 *a5, s32 a6, s32 frame) {
+static void fx_07d_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 a3, s32 *a4, s32 *a5, s32 a6, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E9FB0);
 
     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(D_801EA534->file, 3), pos, (SVECTOR *)a3, *a4 / 2, frame, 1, *a5, 0,
@@ -190,7 +190,7 @@ static void fxm_anglesFromEye(s16 *a, s16 *b) {
     BTLFX_EXPORTS(D_801E9FB0)->btlfx_aimAngles((s16 *)&D_801E9FB0->camera->eye, a, b);
 }
 
-s32 func_801E8108(s32 mode, Fx07dOrb *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx07dWork80 *work) {
+static s32 fx_07d_op80PoolTask(s32 mode, Fx07dOrb *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx07dWork80 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
@@ -274,7 +274,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x40;
         init->elemSize = 0x18;
-        init->elemFn = (s32)func_801E8108;
+        init->elemFn = (s32)fx_07d_op80PoolTask;
         init->poolCount = 6;
     } else if (mode == 1) {
         D_801E9FB0 = env;
@@ -338,7 +338,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unkC);
                 if (p != NULL) {
                     p->otZ = work->unk8 + 0x46;
-                    p->elems->unk24 = (s32)func_801E7ECC;
+                    p->elems->unk24 = (s32)fx_07d_op80ElemDraw;
                 }
             }
             if (frame == 0x31) {
@@ -635,7 +635,7 @@ void func_801E9834(Unk80100C78Entry *entry, Fx07dStrip *buf, s32 *tab, SVECTOR *
     env->otZ = 0;
 }
 
-s32 func_801E9A40(s32 mode, Fx07dArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_07d_op83PoolTask(s32 mode, Fx07dArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     if (mode != 1) {
         func_801E9834(entry, &D_801EA540[arc->unk10], arc->unk14, &arc->unk0, &arc->unk8, 0, 0x200, frame * 0x9B, 0x186,
                       2, 0x1000, ((0x1000 - (frame << 12) / 5) << 6) >> 12);
@@ -660,7 +660,7 @@ s32 fx_07d_op83(s32 mode, Fx07dWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         ((EffInit *)arg4)->workSize = sizeof(Fx07dWork83);
         ((EffInit *)arg4)->elemSize = sizeof(Fx07dArc);
-        ((EffInit *)arg4)->elemFn = (s32)func_801E9A40;
+        ((EffInit *)arg4)->elemFn = (s32)fx_07d_op83PoolTask;
         ((EffInit *)arg4)->poolCount = 7;
     } else if (mode == 1) {
         D_801E9FB0 = env;

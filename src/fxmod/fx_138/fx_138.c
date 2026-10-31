@@ -1,31 +1,31 @@
 #include "fxmod/fx_138.h"
 
-s32 func_801E7704(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i) {
     func_801E77DC(out, &D_801E8830[0], i);
     return 0;
 }
 
-s32 func_801E7728(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i) {
     func_801E77DC(out, &D_801E8830[1], i);
     return 0;
 }
 
-s32 func_801E774C(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i) {
     func_801E77DC(out, &D_801E8830[2], i);
     return 0;
 }
 
-s32 func_801E7770(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i) {
     func_801E77DC(out, &D_801E8830[3], i);
     return 0;
 }
 
-s32 func_801E7794(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i) {
     func_801E77DC(out, &D_801E8830[4], i);
     return 0;
 }
 
-s32 func_801E77B8(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 arg1, s32 i) {
     func_801E77DC(out, &D_801E8830[5], i);
     return 0;
 }

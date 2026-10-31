@@ -429,7 +429,7 @@ void func_801E8628(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s3
     }
 }
 
-void func_801E8A10(s32 a0, s32 frame, s32 a2, s32 a3, s16 *v) {
+static void fx_0d3_op80GridVertex(s32 a0, s32 frame, s32 a2, s32 a3, s16 *v) {
     frame += 7;
     v[0] = (v[0] * frame) >> 3;
     v[1] = (v[1] * frame) >> 3;
@@ -549,7 +549,7 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScrollMove(work->unk68, 0x240, 0x100, 0x1C, 0x70, 0x25C, 0x100);
             ex->btlfx_drawScrollMove(work->unk68 * 2 / 3, 0x240, 0x170, 0x1C, 0x70, 0x25C, 0x170);
             fxm_drawRadialScreenGrid(2, 0xA0, 0x78, 0x10, 4, 0x29, ((ex->math_sin(t >> 2) << 5) >> 12) + 0x40, 0, 0,
-                          func_801E8A10);
+                          fx_0d3_op80GridVertex);
             if (frame >= 0x4B) {
                 ex->btlfx_initParticleSystem();
                 return 1;
@@ -560,7 +560,7 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 func_801E9050(SVECTOR *v) {
+static s32 fx_0d3_op81SpawnPoint(SVECTOR *v) {
     s32 i = D_801EB098;
     Unk800F78A4 *env = D_801ED534;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -1003,7 +1003,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unk8);
             if (p != NULL) {
                 p->tail->unk0 = -1;
-                *(s32 *)&p->tail->unk3C = (s32)func_801E9050;
+                *(s32 *)&p->tail->unk3C = (s32)fx_0d3_op81SpawnPoint;
                 p->otZ = 0x20;
             }
         }

@@ -1,6 +1,6 @@
 #include "fxmod/fx_0c1.h"
 
-s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     BTLFX_EXPORTS(D_801E7C18)->btlfx_lerpVec((s16 *)&D_801E7C20, (s16 *)&D_801E7C28, (frame << 12) / 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
@@ -43,7 +43,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk30);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&D_801E7C30);
             if (work->unk8 != NULL) {
-                ((EffMotion *)work->unk8->file)->unk8 = func_801E7704;
+                ((EffMotion *)work->unk8->file)->unk8 = fx_0c1_op80ParticleMotion;
             }
             if (work->unk8 != NULL) {
                 work->unk8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);

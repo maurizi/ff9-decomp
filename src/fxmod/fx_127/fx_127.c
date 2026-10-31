@@ -1,6 +1,6 @@
 #include "fxmod/fx_127.h"
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E82F0);
     s32 ret = func_801E7818(out, pos, &D_801E82F8, &D_801E8300, 5, frame, n);
 
@@ -16,7 +16,7 @@ s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 
     return ret;
 }
 
-s32 func_801E77D0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_127_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return func_801E7818(out, pos, &D_801E82F8, &D_801E8300, 5, frame, n);
 }
 
@@ -98,10 +98,10 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk14->unkC = 0x40;
             }
             if (work->unk10 != NULL) {
-                ((Fx127EffHdr *)work->unk10->file)->unk8 = func_801E7704;
+                ((Fx127EffHdr *)work->unk10->file)->unk8 = fx_127_op80ParticleMotion0;
             }
             if (work->unk14 != NULL) {
-                ((Fx127EffHdr *)work->unk14->file)->unk8 = func_801E77D0;
+                ((Fx127EffHdr *)work->unk14->file)->unk8 = fx_127_op80ParticleMotion1;
             }
             if (work->unk10 != NULL) {
                 work->unk10->otZ = ex->btlfx_addRadiusSixth(0, 0x20);

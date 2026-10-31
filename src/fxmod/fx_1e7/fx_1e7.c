@@ -1,10 +1,10 @@
 #include "fxmod/fx_1e7.h"
 
-s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_1e7_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return func_801E776C(pt, pos, &D_801E82E8[0], frame, n);
 }
 
-s32 func_801E7738(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return func_801E776C(pt, pos, &D_801E82E8[1], frame, n);
 }
 
@@ -39,27 +39,27 @@ s32 func_801E776C(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 
     return 0;
 }
 
-s32 func_801E7908(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i) {
     func_801E79BC(out, &D_801E8300[0], i);
     return 0;
 }
 
-s32 func_801E792C(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i) {
     func_801E79BC(out, &D_801E8300[1], i);
     return 0;
 }
 
-s32 func_801E7950(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i) {
     func_801E79BC(out, &D_801E8300[2], i);
     return 0;
 }
 
-s32 func_801E7974(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i) {
     func_801E79BC(out, &D_801E8300[3], i);
     return 0;
 }
 
-s32 func_801E7998(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i) {
     func_801E79BC(out, &D_801E8300[4], i);
     return 0;
 }
@@ -103,7 +103,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk0->unkC = 0xD0;
                 }
                 if (work->unk0 != NULL) {
-                    ((EffMotion *)work->unk0->file)->unk8 = func_801E7704;
+                    ((EffMotion *)work->unk0->file)->unk8 = fx_1e7_op80ParticleMotion0;
                 }
                 if (work->unk0 != NULL) {
                     work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -117,7 +117,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk4->unkC = 0xD0;
             }
             if (work->unk4 != NULL) {
-                ((EffMotion *)work->unk4->file)->unk8 = func_801E7738;
+                ((EffMotion *)work->unk4->file)->unk8 = fx_1e7_op80ParticleMotion1;
             }
             if (work->unk4 != NULL) {
                 work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);

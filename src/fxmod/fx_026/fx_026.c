@@ -90,7 +90,7 @@ static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32
     }
 }
 
-s32 func_801E7A5C(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_026_op80PoolTask(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx026Work80 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
@@ -161,7 +161,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x70;
         init->elemSize = 0x14;
-        init->elemFn = (s32)func_801E7A5C;
+        init->elemFn = (s32)fx_026_op80PoolTask;
         init->poolCount = 6;
     } else {
     if (mode == 1) {
@@ -344,7 +344,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 func_801E8670(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx026Work82 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
@@ -510,7 +510,7 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x14;
         init->elemSize = 0xC;
-        init->elemFn = (s32)func_801E8670;
+        init->elemFn = (s32)fx_026_op82PoolTask;
         init->poolCount = 0x18;
     } else if (mode == 1) {
         work->unk8.vx = 0;
@@ -759,7 +759,7 @@ static void fxm_shatterUpdate(s32 i) {
     }
 }
 
-s32 func_801E98BC(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+static s32 fx_026_op81PoolTask(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx026Work81 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
@@ -949,7 +949,7 @@ s32 fx_026_op81(s32 mode, Fx026Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x88;
         init->elemSize = 0x14;
-        init->elemFn = (s32)func_801E98BC;
+        init->elemFn = (s32)fx_026_op81PoolTask;
         init->poolCount = 0x4A;
     } else if (mode == 1) {
         D_801EACCC = env;

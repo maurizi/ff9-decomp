@@ -17,7 +17,7 @@ extern Unk800F78A4 *D_801E7DFC;
 extern s32 D_801E7E00; /* wave amplitude */
 extern s32 D_801E7E04; /* wave phase */
 
-void func_801E7704(SVECTOR *v);
+static void fx_194_op80GridVertex(SVECTOR *v);
 void func_801E77DC(s32 frame, s32 amp, SVECTOR *v);
 
 #endif

@@ -1,10 +1,10 @@
 #include "fxmod/fx_0aa.h"
 
-s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0aa_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return func_801E7784(pt, pos, &D_801E9088, &D_801E9098, frame, n);
 }
 
-s32 func_801E7744(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0aa_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return func_801E7784(pt, pos, &D_801E9090, &D_801E90A0, frame, n);
 }
 
@@ -47,10 +47,10 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unkC->unkC = 0x70;
             }
             if (work->unk8 != NULL) {
-                ((EffMotion *)work->unk8->file)->unk8 = func_801E7704;
+                ((EffMotion *)work->unk8->file)->unk8 = fx_0aa_op80ParticleMotion0;
             }
             if (work->unkC != NULL) {
-                ((EffMotion *)work->unkC->file)->unk8 = func_801E7744;
+                ((EffMotion *)work->unkC->file)->unk8 = fx_0aa_op80ParticleMotion1;
             }
             D_801E9088.vx = work->unk10.vx;
             D_801E9088.vy = work->unk10.vy;

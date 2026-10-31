@@ -1,6 +1,6 @@
 #include "fxmod/fx_0db.h"
 
-s32 func_801E7704(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx0dbWork80 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR d;
@@ -181,7 +181,7 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         ((EffInit *)arg4)->workSize = 0x34;
         ((EffInit *)arg4)->elemSize = 0x44;
-        ((EffInit *)arg4)->elemFn = (s32)func_801E7704;
+        ((EffInit *)arg4)->elemFn = (s32)fx_0db_op80PoolTask;
         ((EffInit *)arg4)->poolCount = 0xA;
     } else if (mode == 1) {
         D_801E894C = env;

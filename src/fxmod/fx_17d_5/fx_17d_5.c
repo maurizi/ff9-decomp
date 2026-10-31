@@ -1,6 +1,6 @@
 #include "fxmod/fx_17d_5.h"
 
-s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx17d5Work80 *parent) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR ang;
@@ -218,7 +218,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x98;
         init->elemSize = 0x24;
-        init->elemFn = (s32)func_801EC704;
+        init->elemFn = (s32)fx_17d_5_op80PoolTask;
         init->poolCount = 0x39;
     } else if (mode == 1) {
         w->unk0 = 0;

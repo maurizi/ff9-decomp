@@ -24,6 +24,6 @@ extern SVECTOR D_801E7C20; /* particle path start */
 extern SVECTOR D_801E7C28; /* particle path end */
 extern SVECTOR D_801E7C30;
 
-s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 
 #endif

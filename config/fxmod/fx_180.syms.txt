@@ -15,3 +15,5 @@ fxm_startMotion2IfActive = 0x801E905C; // type:func [code] fxm_startUnitMotion(u
 fxm_startMotion3IfActive = 0x801E90A8; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive
 fxm_offsetTableEntry = 0x801E8DA4; // type:func [code] base + ((s32 *)base)[i + 1], an entry of an offset table relative to its start
 fxm_moveUnitArc = 0x801E90F4; // type:func [code] moves the unit from its frame-0 position to dst over n frames, lifted by a sine arc of the given height
+fx_180_op80ParticleMotion = 0x801E78E0; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_180_op80
+fx_180_op81ParticleMotion = 0x801E79DC; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_180_op81

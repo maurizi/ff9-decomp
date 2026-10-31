@@ -331,7 +331,7 @@ void func_801E8460(Unk80100C78Entry *entry, Fx134Bolt *bolt, SVECTOR *from, SVEC
 
 INCLUDE_RODATA("asm/us/fx_134/nonmatchings/fx_134", fx_134_headerPtr);
 
-s32 func_801E8658(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx134Work *parent) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
@@ -507,7 +507,7 @@ s32 func_801E8658(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk80100C78Entry *en
     return 0;
 }
 
-/* padded: a zero word follows func_801E8658's jump table (op80's table is 8-aligned in the original object) */
+/* padded: a zero word follows fx_134_op80PoolTask's jump table (op80's table is 8-aligned in the original object) */
 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 /* Matching notes (same family as fx_0e0 op80): scalar temporaries are separate variables per case (_cN) and per
@@ -584,7 +584,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         init->workSize = 0x84;
         init->elemSize = 0x24;
-        init->elemFn = (s32)func_801E8658;
+        init->elemFn = (s32)fx_134_op80PoolTask;
         init->poolCount = 0x31;
     } else if (mode == 1) {
         work->unk0 = 0;

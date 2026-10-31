@@ -12,7 +12,7 @@ static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot) {
     return 0;
 }
 
-s32 func_801EC7C8(s32 mode, Fx1bf1Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1bf1RockInst *inst) {
+static s32 fx_1bf_1_op80PoolTask(s32 mode, Fx1bf1Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1bf1RockInst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
@@ -132,7 +132,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     if (mode == 0) {
         arg4->workSize = 0xA4;
         arg4->elemSize = 0x24;
-        arg4->elemFn = (s32)func_801EC7C8;
+        arg4->elemFn = (s32)fx_1bf_1_op80PoolTask;
         arg4->poolCount = 0x28;
     } else if (mode == 1) {
         work->unk0 = 0;
@@ -631,7 +631,7 @@ static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx
     fxm_drawArcTrail(entry, file, ot, trail, n, noise, &mid, pt, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
 }
 
-s32 func_801EEA80(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_1bf_1_op83PoolTask(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 t;
     s32 c;
@@ -697,7 +697,7 @@ s32 fx_1bf_1_op83(s32 mode, Fx1bf1Work83 *work, Unk800F78A4 *env, Fx1bf1Inst *in
     if (mode == 0) {
         init->workSize = 0xC;
         init->elemSize = 0x1C;
-        init->elemFn = (s32)func_801EEA80;
+        init->elemFn = (s32)fx_1bf_1_op83PoolTask;
         init->poolCount = 5;
     } else if (mode == 1) {
         n = init->workSize;

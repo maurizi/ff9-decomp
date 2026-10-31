@@ -21,6 +21,6 @@ extern s32 D_801E7BDC; /* particles spawned */
 extern Unk800F78A4 *D_801E7C28;
 extern SVECTOR D_801E7C30; /* target position */
 
-s32 func_801E7704(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3);
+static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3);
 
 #endif

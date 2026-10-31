@@ -29,6 +29,6 @@ extern SVECTOR D_801E93F4; /* from */
 extern SVECTOR D_801E93FC; /* to */
 extern SVECTOR D_801E9404;
 
-s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 
 #endif

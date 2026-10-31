@@ -5,3 +5,5 @@ fx_1bf_1_op83 = 0x801EED90; // type:func [code] header op entry 3, effect script
 fxm_randRingPoint = 0x801EC704; // type:func [code] random point on a horizontal ring of the module radius, rot vy = its angle
 fxm_drawArcTrail = 0x801EE6BC; // type:func [code] fills a trail strip from to (noise table, side offset lerped along a sine, optional dip) and draws it at otZ 0x80
 fxm_drawArcTrailBranch = 0x801EE968; // type:func [code] fxm_drawArcTrail branching off point i of a strip with a random width
+fx_1bf_1_op80PoolTask = 0x801EC7C8; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_1bf_1_op80
+fx_1bf_1_op83PoolTask = 0x801EEA80; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_1bf_1_op83

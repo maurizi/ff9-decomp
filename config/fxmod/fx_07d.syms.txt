@@ -5,3 +5,6 @@ fx_07d_op83 = 0x801E9B18; // type:func [code] header op entry 3, effect script o
 fxm_anglesFromEye = 0x801E80C4; // type:func [code] btlfx_aimAngles from the camera eye to a
 fxm_drawRadialScreenGrid = 0x801E7718; // type:func [code] rings of POLY_GT4 around a screen point textured with the screen (a DR_MOVE copy into src, or the display), vertex callback fn
 fxm_twistVertex = 0x801E7FF4; // type:func [code] fxm_drawRadialScreenGrid vertex callback, polar point turned by an angle that grows toward the centre
+fx_07d_op80PoolTask = 0x801E8108; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_07d_op80
+fx_07d_op83PoolTask = 0x801E9A40; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_07d_op83
+fx_07d_op80ElemDraw = 0x801E7ECC; // type:func [code] element draw callback (EffElem kind 9, unk24, called per particle with position, rotation, scale, alpha), installed by fx_07d_op80

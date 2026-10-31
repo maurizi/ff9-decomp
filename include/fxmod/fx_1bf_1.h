@@ -84,7 +84,7 @@ extern Unk800F78A4 *D_801EF2D8;
 extern s32 D_801EFDD8; /* radius */
 static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *trail, s32 n, s32 *noise, SVECTOR *from,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);
-s32 func_801EEA80(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_1bf_1_op83PoolTask(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 extern s32 D_801F0198[64][3]; /* noise */
 extern SVECTOR D_801EFDE0;
 extern SVECTOR D_801EFDE8;
@@ -126,6 +126,6 @@ extern BtlModel D_801EF2E8[];
 extern SVECTOR D_801EF254;
 extern s16 D_801EF260[];
 static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot);
-s32 func_801EC7C8(s32 mode, Fx1bf1Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1bf1RockInst *inst);
+static s32 fx_1bf_1_op80PoolTask(s32 mode, Fx1bf1Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1bf1RockInst *inst);
 
 #endif

@@ -34,7 +34,7 @@ typedef struct {
     Pool6CEntry *unk34;
 } Fx081Work80; /* 0x38 */
 
-void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,
+static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,
                    s32 n);
 
 typedef struct {

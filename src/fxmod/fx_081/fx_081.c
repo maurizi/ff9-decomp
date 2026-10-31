@@ -1,6 +1,6 @@
 #include "fxmod/fx_081.h"
 
-void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,
+static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,
                    s32 n) {
     Unk800F78A4 *env = D_801E8ED8;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -83,7 +83,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk2C->unk12 = 0x10;
                 work->unk2C->unkC = 0x184;
                 if (work->unk2C != NULL) {
-                    work->unk2C->elems->unk24 = func_801E7704;
+                    work->unk2C->elems->unk24 = fx_081_op80ElemDraw;
                 }
             }
         }

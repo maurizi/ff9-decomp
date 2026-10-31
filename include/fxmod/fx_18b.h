@@ -16,7 +16,7 @@ extern Unk800F78A4 *D_801E827C;
 extern s32 D_801E8280; /* wave phase */
 extern s32 D_801E8284; /* wave amplitude */
 
-void func_801E7EB8(s32 r, s32 i, s32 ang, s32 arg3, s16 *out);
+static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 arg3, s16 *out);
 
 /* propagated */
 static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,

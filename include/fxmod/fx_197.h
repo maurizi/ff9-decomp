@@ -98,7 +98,7 @@ extern s32 D_801E91CC;
 extern s32 D_801E91D0;
 extern u8 D_801E92D0[];
 
-s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx197Work81 *work);
 
 /* copied */

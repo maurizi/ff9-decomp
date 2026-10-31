@@ -9,3 +9,5 @@ fxm_drawCenterBand = 0x801E7704; // type:func [code] four POLY_G4, a horizontal 
 fxm_randStripPoint32 = 0x801EB1CC; // type:func [code] random point of a random one of the 32 module strips (17 points each), pad 1, returns 0
 fxm_drawJaggedTrail = 0x801EA850; // type:func [code] fills a trail strip from to (noise table, lerped side offset, optional dip) and draws it at otZ 0x80
 fxm_drawJaggedTrailBranch = 0x801EAAF0; // type:func [code] fxm_drawJaggedTrail branching off point i of a strip with a random width
+fx_0ba_op83PoolTask = 0x801EAC08; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_0ba_op83
+fx_0ba_op85PoolTask = 0x801EBFB8; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_0ba_op85

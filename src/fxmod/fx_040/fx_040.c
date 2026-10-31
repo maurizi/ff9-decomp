@@ -1,6 +1,6 @@
 #include "fxmod/fx_040.h"
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
+s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
     v.vx = D_801E7F08.vx;
@@ -10,7 +10,7 @@ s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) 
     return func_801E7864(out, arg2, &v, t, n);
 }
 
-s32 func_801E775C(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
+s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
     v.vx = D_801E7F08.vx;
@@ -20,7 +20,7 @@ s32 func_801E775C(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) 
     return func_801E7864(out, arg2, &v, t, n);
 }
 
-s32 func_801E77B4(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
+s32 fx_040_op80ParticleMotion2(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
     v.vx = D_801E7F08.vx;
@@ -30,7 +30,7 @@ s32 func_801E77B4(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) 
     return func_801E7864(out, arg2, &v, t, n);
 }
 
-s32 func_801E780C(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
+s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
     v.vx = D_801E7F08.vx;

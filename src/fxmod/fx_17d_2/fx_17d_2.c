@@ -1,6 +1,6 @@
 #include "fxmod/fx_17d_2.h"
 
-s32 func_801E7704(s32 mode, Fx17d2Elem *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_17d_2_op80PoolTask(s32 mode, Fx17d2Elem *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx17d2Work *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
@@ -48,7 +48,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
     if (mode == 0) {
         arg4->workSize = 0x80;
         arg4->elemSize = 0x18;
-        arg4->elemFn = (s32)func_801E7704;
+        arg4->elemFn = (s32)fx_17d_2_op80PoolTask;
         arg4->poolCount = 0x14;
     } else if (mode == 1) {
         work->unk0 = 0;

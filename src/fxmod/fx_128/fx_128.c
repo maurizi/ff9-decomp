@@ -1,6 +1,6 @@
 #include "fxmod/fx_128.h"
 
-s32 func_801E7704(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     BTLFX_EXPORTS(D_801E89D4)->btlfx_lerpVec((s16 *)&D_801E8F9C, (s16 *)&D_801E8FA4, (frame << 12) / 12, (s16 *)pos);
     out->unk0.vx = pos->vx << 12;
     out->unk0.vy = pos->vy << 12;
@@ -11,7 +11,7 @@ s32 func_801E7704(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 fram
     return 0;
 }
 
-s32 func_801E77C8(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     BTLFX_EXPORTS(D_801E89D4)->btlfx_lerpVec((s16 *)&D_801E8F9C, (s16 *)((u8 *)D_801E8FB4 + (out->unk1F - 1) * 8),
                                              (frame << 12) / 12, (s16 *)pos);
     out->unk0.vx = pos->vx << 12;
@@ -167,10 +167,10 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[4]->unkC = 0x48;
             }
             if (work->unk0[2] != NULL) {
-                *(s32 *)&work->unk0[2]->file->unk8 = (s32)func_801E7704;
+                *(s32 *)&work->unk0[2]->file->unk8 = (s32)fx_128_op81ParticleMotion0;
             }
             if (work->unk0[3] != NULL) {
-                *(s32 *)&work->unk0[3]->file->unk8 = (s32)func_801E77C8;
+                *(s32 *)&work->unk0[3]->file->unk8 = (s32)fx_128_op81ParticleMotion1;
             }
             break;
         case 0x3C:

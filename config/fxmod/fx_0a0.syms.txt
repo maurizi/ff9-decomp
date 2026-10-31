@@ -2,3 +2,4 @@ fx_0a0_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_0a0_header = 0x801E7D3C; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_0a0_op80 = 0x801E7AA8; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fxm_drawTrailLine = 0x801E783C; // type:func [code] btlfx_drawTrail of a two-point strip a to b
+fx_0a0_op80ElemDraw = 0x801E78F8; // type:func [code] element draw callback (EffElem kind 9, unk24, called per particle with position, rotation, scale, alpha), installed by fx_0a0_op80

@@ -3,3 +3,4 @@ fx_097_header = 0x801E9D6C; // [code] module header (0, init, ops), btlfx_update
 fx_097_op80 = 0x801E8B7C; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fxm_drawTexelQuads = 0x801E7720; // type:func [code] 3D grid of POLY_G4 whose vertex colours are the 15-bit texels of colors, then StoreImage reads the next VRAM cell into colors
 fxm_drawBulgeGrid14 = 0x801E7CBC; // type:func [code] 14x14 POLY_GT4 grid whose vertices rise by a cosine bump of height h near the centre, shaded by height
+fx_097_op80PoolTask = 0x801E82F4; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_097_op80

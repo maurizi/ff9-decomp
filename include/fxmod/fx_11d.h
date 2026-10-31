@@ -38,8 +38,8 @@ extern s32 D_801E812C[];
 extern SVECTOR D_801E914C;
 extern SVECTOR D_801E9154;
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-s32 func_801E7754(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_11d_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E77A4(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s32 frame, s32 n);
 
 #endif

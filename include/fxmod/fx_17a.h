@@ -60,7 +60,7 @@ extern u8 D_801E9ACC[];
 extern Fx17aRing D_801E9B44[2];
 extern BtlModel D_801E9F64[];
 
-s32 func_801E7BC0(s32 mode, Fx17aPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_17a_op80PoolTask(s32 mode, Fx17aPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 /* propagated */
 

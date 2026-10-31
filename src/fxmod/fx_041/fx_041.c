@@ -1,6 +1,6 @@
 #include "fxmod/fx_041.h"
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
+static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
     SVECTOR v;
 
     fxm_posPathGet(&D_801E7F44, t, &v);
@@ -76,7 +76,7 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk14->unkC = 0xD0;
             }
             if (work->unk14 != NULL) {
-                ((s32 *)work->unk14->file)[2] = (s32)func_801E7704;
+                ((s32 *)work->unk14->file)[2] = (s32)fx_041_op80ParticleMotion;
             }
             break;
         }

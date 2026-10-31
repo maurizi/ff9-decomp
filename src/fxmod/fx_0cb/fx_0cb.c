@@ -163,7 +163,7 @@ static void fxm_anglesFromEye(s16 *a, s16 *b) {
     BTLFX_EXPORTS(D_801E8670)->btlfx_aimAngles((s16 *)&D_801E8670->camera->eye, a, b);
 }
 
-s32 func_801E7EFC(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx0cbWork *work) {
+static s32 fx_0cb_op80PoolTask(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx0cbWork *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
@@ -227,7 +227,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         ((EffInit *)arg4)->workSize = sizeof(Fx0cbWork);
         ((EffInit *)arg4)->elemSize = sizeof(Fx0cbPart);
-        ((EffInit *)arg4)->elemFn = (s32)func_801E7EFC;
+        ((EffInit *)arg4)->elemFn = (s32)fx_0cb_op80PoolTask;
         ((EffInit *)arg4)->poolCount = 6;
     } else if (mode == 1) {
         work->unk0 = 0;

@@ -61,7 +61,7 @@ typedef struct {
     s32 vz;
 } Fx026Vec3;
 
-/* pool item of func_801E7A5C: a model following a keyframe track */
+/* pool item of fx_026_op80PoolTask: a model following a keyframe track */
 typedef struct {
     s16 unk0; /* done */
     u16 unk2; /* spin */
@@ -108,7 +108,7 @@ typedef struct {
     s32 unk10; /* model */
 } Fx026Work82; /* 0x14 */
 
-/* pool item of func_801E8670 */
+/* pool item of fx_026_op82PoolTask */
 typedef struct {
     s16 unk0;
     s16 unk2; /* index */
@@ -155,7 +155,7 @@ typedef struct {
     s32 unk6C[7];
 } Fx026Work81; /* 0x88 */
 
-/* pool item of func_801E98BC */
+/* pool item of fx_026_op81PoolTask */
 typedef struct {
     s16 unk0; /* state */
     s16 unk2; /* piece */
@@ -203,9 +203,9 @@ static s32 fxm_shatterAddModel(s32 i, s32 model);
 static Fx026Shard *fxm_shatterFreeShard(s32 i);
 static void fxm_shatterUpdate(s32 i);
 static s32 fxm_shatterRelease(s32 i);
-s32 func_801E98BC(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+static s32 fx_026_op81PoolTask(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx026Work81 *work);
-s32 func_801E8670(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx026Work82 *work);
 
 #endif

@@ -189,7 +189,7 @@ static void fxm_anglesFromEye(SVECTOR *a, SVECTOR *b) {
     BTLFX_EXPORTS(D_801E9E90)->btlfx_aimAngles((s16 *)&D_801E9E90->camera->eye, (s16 *)a, (s16 *)b);
 }
 
-s32 func_801E80F4(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0dfWork *work) {
     s16 half;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -266,7 +266,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x40;
         init->elemSize = 0x18;
-        init->elemFn = (s32)func_801E80F4;
+        init->elemFn = (s32)fx_0df_op80PoolTask;
         init->poolCount = 6;
     } else if (mode == 1) {
         D_801E9E90 = env;
@@ -557,7 +557,7 @@ void func_801E93F4(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTO
     env->otZ = 0;
 }
 
-s32 func_801E9600(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_0df_op83PoolTask(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     if (mode != 1) {
         func_801E93F4(entry, &D_801EA420[arc->unk10], arc->unk14, &arc->unk0, &arc->unk8, 0, 0x200, frame * 0x9B, 0x186,
                       2, 0x1000, ((0x1000 - (frame << 12) / 5) << 6) >> 12);
@@ -582,7 +582,7 @@ s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         ((EffInit *)arg4)->workSize = sizeof(Fx0dfWork83);
         ((EffInit *)arg4)->elemSize = sizeof(Fx0dfArc);
-        ((EffInit *)arg4)->elemFn = (s32)func_801E9600;
+        ((EffInit *)arg4)->elemFn = (s32)fx_0df_op83PoolTask;
         ((EffInit *)arg4)->poolCount = 7;
     } else if (mode == 1) {
         D_801E9E90 = env;

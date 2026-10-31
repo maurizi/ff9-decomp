@@ -34,7 +34,7 @@ static s32 fxm_splitModelAdd(s32 model);
 Fx1b0Piece *func_801E7830(void);
 s32 func_801E7868(SVECTOR *center);
 void func_801E7B04(void);
-s32 func_801E7E48(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1b0_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 
 typedef struct {
     SVECTOR unk0; /* angles */

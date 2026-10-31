@@ -1,6 +1,6 @@
 #include "fxmod/fx_036.h"
 
-s32 func_801E7704(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
+static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7C28);
 
     out->vx = D_801E7BCC[D_801E7BDC];
@@ -46,7 +46,7 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk24);
             if (work->unk10 != NULL) {
                 work->unk10->tail->unk0 = -1;
-                ((EffTailSpawn *)work->unk10->tail)->unk3C = func_801E7704;
+                ((EffTailSpawn *)work->unk10->tail)->unk3C = fx_036_op80SpawnPoint;
             }
             work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&env->targets->centerX);
             work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&env->targets->centerX);

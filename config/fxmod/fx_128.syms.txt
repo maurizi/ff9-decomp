@@ -10,3 +10,5 @@ fxm_posPathInit = 0x801E889C; // type:func [code] sets up the fxm_posPathGet dat
 fxm_valuePathInit = 0x801E8918; // type:func [code] sets up the fxm_valuePathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
 fxm_lerpSvec = 0x801E8754; // type:func [code] out = a + (b - a) * t / 0x1000 (LoadAverageShort12 weights 0x1000 - t, t)
 fxm_lerpRatio = 0x801E8798; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
+fx_128_op81ParticleMotion0 = 0x801E7704; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_128_op81
+fx_128_op81ParticleMotion1 = 0x801E77C8; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_128_op81

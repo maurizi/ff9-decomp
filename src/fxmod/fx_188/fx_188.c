@@ -1,6 +1,6 @@
 #include "fxmod/fx_188.h"
 
-s32 func_801E7704(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR ang;
     s32 t;
@@ -59,7 +59,7 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         arg4->workSize = 0x20;
         arg4->elemSize = 0x28;
-        arg4->elemFn = (s32)func_801E7704;
+        arg4->elemFn = (s32)fx_188_op80PoolTask;
         arg4->poolCount = 0xC;
     } else if (mode == 1) {
         work->unk0 = 0;

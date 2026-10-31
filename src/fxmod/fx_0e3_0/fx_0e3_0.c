@@ -139,7 +139,7 @@ void func_801E7D40(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *bolt, SVECTOR 
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), 0, (s32 *)arg1, arg8, 0x1000, arg9, 1, (u8 *)bolt, 1);
 }
 
-s32 func_801E7F48(s32 mode, Fx0e30Puff *p, Unk800F78A4 *env, Unk80100C78Entry *entry) {
+static s32 fx_0e3_0_op80PoolTask(s32 mode, Fx0e30Puff *p, Unk800F78A4 *env, Unk80100C78Entry *entry) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     SVECTOR pos;
@@ -233,7 +233,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     if (mode == 0) {
         init->workSize = 0xA8;
         init->elemSize = 0x10;
-        init->elemFn = (s32)func_801E7F48;
+        init->elemFn = (s32)fx_0e3_0_op80PoolTask;
         init->poolCount = 0xC;
     } else if (mode == 1) {
         work->unk0 = 0;

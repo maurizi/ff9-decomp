@@ -149,7 +149,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk0[0xC] = 0x30;
             p = w->unk20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->unkD4);
             if (p != NULL) {
-                *(s32 *)&p->file->unk8 = (s32)func_801E8E10;
+                *(s32 *)&p->file->unk8 = (s32)fx_1be_op80ParticleMotion;
             }
             break;
         case 0x30:
@@ -438,7 +438,7 @@ void func_801E89A8(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 a
     }
 }
 
-s32 func_801E8E10(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     SVECTOR v;
     SVECTOR from;
     SVECTOR *key;

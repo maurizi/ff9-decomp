@@ -9,3 +9,11 @@ fxm_lerpSvec = 0x801E9690; // type:func [code] out = a + (b - a) * t / 0x1000 (L
 fxm_lerpRatio = 0x801E96D4; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
 fxm_setSignal = 0x801E97A8; // type:func [code] byte i of the btlfx state from signals (offset 0x10), every caller passes 7 = waitDone
 fxm_pinParticle = 0x801E8000; // type:func [code] particle motion callback core, holds the particle at src until frame n (returns -1 then)
+fx_12b_op80ParticleMotion0 = 0x801E7704; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_12b_op80
+fx_12b_op80ParticleMotion1 = 0x801E77B0; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_12b_op80
+fx_12b_op80ParticleMotion2 = 0x801E7E40; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_12b_op80
+fx_12b_op80ParticleMotion3 = 0x801E7EB0; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_12b_op80
+fx_12b_op81ParticleMotion0 = 0x801E785C; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_12b_op81
+fx_12b_op81ParticleMotion1 = 0x801E78F8; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_12b_op81
+fx_12b_op81ParticleMotion2 = 0x801E7F20; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_12b_op81
+fx_12b_op81ParticleMotion3 = 0x801E7F90; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_12b_op81

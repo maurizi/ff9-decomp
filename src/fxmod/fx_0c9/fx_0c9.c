@@ -20,7 +20,7 @@ s32 fx_0c9_op80(s32 mode, Fx0c9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 func_801E7828(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0c9_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     pos->vx = D_801E7E10.vx;
     pos->vy = D_801E7E10.vy;
     pos->vz = D_801E7E10.vz;
@@ -75,7 +75,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0->unkC = 0xB0;
             }
             if (work->unk0 != NULL) {
-                ((EffMotion *)work->unk0->file)->unk8 = func_801E7828;
+                ((EffMotion *)work->unk0->file)->unk8 = fx_0c9_op81ParticleMotion;
             }
             if (work->unk0 != NULL) {
                 work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x10);

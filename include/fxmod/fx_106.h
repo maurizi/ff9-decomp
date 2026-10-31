@@ -35,6 +35,6 @@ extern SVECTOR D_801E9400; /* path start */
 extern SVECTOR D_801E9408; /* path end */
 extern SVECTOR D_801E9410;
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_106_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 
 #endif

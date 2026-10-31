@@ -1,6 +1,6 @@
 #include "fxmod/fx_0e9.h"
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7CFC);
     SVECTOR v;
     SVECTOR rot;
@@ -74,7 +74,7 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7D0C.unk6 = rot.vy;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E7D34);
         if (work->unk0 != NULL) {
-            ((Fx0e9EffHdr *)work->unk0->file)->unk8 = func_801E7704;
+            ((Fx0e9EffHdr *)work->unk0->file)->unk8 = fx_0e9_op80ParticleMotion;
         }
     } else {
         frame = entry->frame;

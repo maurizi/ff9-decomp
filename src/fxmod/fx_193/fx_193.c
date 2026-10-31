@@ -1,10 +1,10 @@
 #include "fxmod/fx_193.h"
 
-s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_193_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     return func_801E7794(e, pos, &D_801E7CBC, &D_801E7CC4, -0x320, frame, frames);
 }
 
-s32 func_801E774C(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     return func_801E7794(e, pos, &D_801E7CCC, &D_801E7CD4, 0x320, frame, frames);
 }
 
@@ -58,10 +58,10 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk4->unkC = 0xF0;
         }
         if (work->unk0 != NULL) {
-            ((EffMotion *)work->unk0->file)->unk8 = func_801E7704;
+            ((EffMotion *)work->unk0->file)->unk8 = fx_193_op80ParticleMotion0;
         }
         if (work->unk4 != NULL) {
-            ((EffMotion *)work->unk4->file)->unk8 = func_801E774C;
+            ((EffMotion *)work->unk4->file)->unk8 = fx_193_op80ParticleMotion1;
         }
     } else {
         return entry->frame >= 0x1E;

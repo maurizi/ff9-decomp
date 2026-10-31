@@ -4,7 +4,7 @@ void func_801E7718(s16 *a, s16 *b, s32 i, s16 *out) {
     BTLFX_EXPORTS(D_801E9354)->btlfx_pointAhead(a, b, -((D_801E92F0[i] * 0x455) >> 9), out);
 }
 
-s32 func_801E7788(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
+static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
                   Fx0dcWork *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR *p;
@@ -199,7 +199,7 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     if (mode == 0) {
         init->workSize = 0x88;
         init->elemSize = 0x38;
-        init->elemFn = (s32)func_801E7788;
+        init->elemFn = (s32)fx_0dc_op80PoolTask;
         init->poolCount = 0x20;
     } else if (mode == 1) {
         D_801E9354 = env;

@@ -85,7 +85,7 @@ static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx005Strip *strip, Fx
     fxm_drawJaggedStrip4(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x37, 0, arg5, arg6, kind);
 }
 
-void func_801E7CEC(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *col, s32 arg6, s32 t, s32 n) {
+static void fx_005_op83ElemDraw(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *col, s32 arg6, s32 t, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8C40);
     Unk80100C78Entry *entry;
     SVECTOR r;
@@ -103,7 +103,7 @@ void func_801E7CEC(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s
     ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), pos, &r, w, t, 1, *col);
 }
 
-s32 func_801E7F60(s32 mode, Fx005Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_005_op83PoolTask(s32 mode, Fx005Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx005Strip *strip;
     Fx005Strip *br;
@@ -190,7 +190,7 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         init->workSize = 0x18;
         init->elemSize = 0x24;
-        init->elemFn = (s32)func_801E7F60;
+        init->elemFn = (s32)fx_005_op83PoolTask;
         init->poolCount = 0xC;
     } else if (mode == 1) {
         D_801E8C40 = env;
@@ -290,7 +290,7 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unk0);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
-                p->elems->unk24 = (void (*)())func_801E7CEC;
+                p->elems->unk24 = (void (*)())fx_005_op83ElemDraw;
             }
         }
         if (frame >= 0x30) {

@@ -63,8 +63,8 @@ extern s32 D_801EF024[];
 extern SVECTOR D_801EFB74;
 extern SVECTOR D_801EFB7C;
 
-s32 func_801E78E0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
-s32 func_801E79DC(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1ec_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1ec_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 static void fxm_posPathInit(Fx1ecPath *path, u16 *data);

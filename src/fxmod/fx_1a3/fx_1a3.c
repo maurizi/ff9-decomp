@@ -1,6 +1,6 @@
 #include "fxmod/fx_1a3.h"
 
-s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 t = (frame - 4) << 9;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7C04);
 
@@ -43,7 +43,7 @@ s32 fx_1a3_op80(s32 mode, Fx1a3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0->unkC = 0x20;
         }
         if (work->unk0 != NULL) {
-            ((EffMotion *)work->unk0->file)->unk8 = func_801E7704;
+            ((EffMotion *)work->unk0->file)->unk8 = fx_1a3_op80ParticleMotion;
         }
         if (work->unk0 != NULL) {
             work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);

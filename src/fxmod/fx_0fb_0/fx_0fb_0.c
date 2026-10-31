@@ -305,7 +305,7 @@ void func_801E809C(SVECTOR *pos, s32 dy, s32 c, s32 tpage, s32 clut, s32 u, s32 
     }
 }
 
-s32 func_801E8540(s32 mode, Fx0fb0Rock *r, Unk800F78A4 *env) {
+static s32 fx_0fb_0_op80PoolTask(s32 mode, Fx0fb0Rock *r, Unk800F78A4 *env) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR sc;
@@ -422,7 +422,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     if (mode == 0) {
         init->workSize = 0x128;
         init->elemSize = 0x28;
-        init->elemFn = (s32)func_801E8540;
+        init->elemFn = (s32)fx_0fb_0_op80PoolTask;
         init->poolCount = 0x32;
     } else if (mode == 1) {
         work->unk0 = 0;

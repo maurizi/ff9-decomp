@@ -1,18 +1,18 @@
 #include "fxmod/fx_0ea.h"
 
-s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return func_801E77D4(pt, pos, &D_801E7E64[0], frame, n);
 }
 
-s32 func_801E7738(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return func_801E77D4(pt, pos, &D_801E7E64[1], frame, n);
 }
 
-s32 func_801E776C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return func_801E77D4(pt, pos, &D_801E7E64[2], frame, n);
 }
 
-s32 func_801E77A0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return func_801E77D4(pt, pos, &D_801E7E64[3], frame, n);
 }
 

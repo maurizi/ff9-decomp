@@ -8,3 +8,9 @@ fxm_lerpSvec = 0x801E813C; // type:func [code] out = a + (b - a) * t / 0x1000 (L
 fxm_lerpRatio = 0x801E8180; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
 fxm_setSignal = 0x801E8254; // type:func [code] byte i of the btlfx state from signals (offset 0x10), every caller passes 7 = waitDone
 fxm_drawScrollMoveX = 0x801E8268; // type:func [code] horizontal btlfx_drawScrollMove, two DR_MOVEs copy a w-wide strip rotated by x mod w (args x, dstX, dstY, w, h, srcX, srcY)
+fx_138_op81SpawnPoint0 = 0x801E7704; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_138_op81 through D_801E84A0
+fx_138_op81SpawnPoint1 = 0x801E7728; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_138_op81 through D_801E84A0
+fx_138_op81SpawnPoint2 = 0x801E774C; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_138_op81 through D_801E84A0
+fx_138_op81SpawnPoint3 = 0x801E7770; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_138_op81 through D_801E84A0
+fx_138_op81SpawnPoint4 = 0x801E7794; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_138_op81 through D_801E84A0
+fx_138_op81SpawnPoint5 = 0x801E77B8; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_138_op81 through D_801E84A0

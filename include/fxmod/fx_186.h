@@ -50,6 +50,6 @@ extern u16 D_801E8DA4[10]; /* rock model files */
 extern u16 D_801E8DB8[10]; /* rock model files (alternate) */
 extern u32 D_801E8E14[];
 extern BtlModel D_801E9224[];
-s32 func_801E7704(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame);
+static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame);
 
 #endif

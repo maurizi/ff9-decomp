@@ -341,7 +341,7 @@ static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx
     fxm_drawArcTrail(entry, file, ot, trail, n, noise, &mid, pt, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
 }
 
-s32 func_801E8ED4(s32 mode, Fx17d6Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_17d_6_op83PoolTask(s32 mode, Fx17d6Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 t;
     s32 a;
@@ -383,7 +383,7 @@ s32 fx_17d_6_op83(s32 mode, Fx17d6Work83 *work, Unk800F78A4 *env, Fx17d6Inst *in
     if (mode == 0) {
         init->workSize = 0xC;
         init->elemSize = 0x1C;
-        init->elemFn = (s32)func_801E8ED4;
+        init->elemFn = (s32)fx_17d_6_op83PoolTask;
         init->poolCount = 6;
     } else if (mode == 1) {
         n = init->workSize;

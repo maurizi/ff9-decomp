@@ -62,6 +62,6 @@ static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx0d7Strip *strip, Fx
                    s32 kind);
 extern Unk800F78A4 *D_801E88C0;
 extern s32 D_801E9260[];
-s32 func_801E7CEC(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_0d7_op83PoolTask(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 #endif

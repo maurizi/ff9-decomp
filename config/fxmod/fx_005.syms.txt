@@ -4,3 +4,5 @@ fx_005_op83 = 0x801E83D0; // type:func [code] header op entry 3, effect script o
 fxm_drawJaggedStrip16 = 0x801E7704; // type:func [code] 16-point jagged strip from to (noise table jitters t, side offset and width), drawn with btlfx_drawTrail
 fxm_drawJaggedStrip4 = 0x801E796C; // type:func [code] 4-point jagged strip from to (noise table, sine bulge amp), drawn with btlfx_drawTrail
 fxm_drawJaggedBranch4 = 0x801E7BF8; // type:func [code] fxm_drawJaggedStrip4 branching off point i of a strip with a random width
+fx_005_op83PoolTask = 0x801E7F60; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_005_op83
+fx_005_op83ElemDraw = 0x801E7CEC; // type:func [code] element draw callback (EffElem kind 9, unk24, called per particle with position, rotation, scale, alpha), installed by fx_005_op83

@@ -1,6 +1,6 @@
 #include "fxmod/fx_095.h"
 
-s32 func_801E7704(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx095Ctl *ctl) {
+static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx095Ctl *ctl) {
 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 scale;
@@ -97,7 +97,7 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         ((EffInit *)arg4)->workSize = sizeof(Fx095Work80);
         ((EffInit *)arg4)->elemSize = sizeof(Fx095Part);
-        ((EffInit *)arg4)->elemFn = (s32)func_801E7704;
+        ((EffInit *)arg4)->elemFn = (s32)fx_095_op80PoolTask;
         ((EffInit *)arg4)->poolCount = 0xC;
     } else if (mode == 1) {
         D_801E8904 = env;

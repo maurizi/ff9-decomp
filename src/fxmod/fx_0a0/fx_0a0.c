@@ -47,7 +47,7 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 ar
     ex->btlfx_drawTrail(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&D_801E7D84, 0);
 }
 
-void func_801E78F8(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame) {
+static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7D98);
     Unk80100C78Entry *entry = D_801E886C;
     CVECTOR c0;
@@ -94,7 +94,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk1C->unk12 = 0x10;
             work->unk1C->unkC = 0xAC;
         }
-        work->unk1C->elems->unk24 = func_801E78F8;
+        work->unk1C->elems->unk24 = fx_0a0_op80ElemDraw;
         work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
         if (work->unk20 != NULL) {
             work->unk20->otZ = 0x20;

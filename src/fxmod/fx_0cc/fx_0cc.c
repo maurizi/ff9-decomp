@@ -1,6 +1,6 @@
 #include "fxmod/fx_0cc.h"
 
-s32 func_801E7704(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0ccWork *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 mpos[3];
@@ -79,7 +79,7 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         ((EffInit *)arg4)->workSize = 0x14;
         ((EffInit *)arg4)->elemSize = 0x18;
-        ((EffInit *)arg4)->elemFn = (s32)func_801E7704;
+        ((EffInit *)arg4)->elemFn = (s32)fx_0cc_op80PoolTask;
         ((EffInit *)arg4)->poolCount = 0xB;
     } else if (mode == 1) {
         work->unk0 = 0;

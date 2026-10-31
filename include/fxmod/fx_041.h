@@ -42,7 +42,7 @@ extern SVECTOR D_801E7F54; /* last path point */
 extern SVECTOR D_801E7F5C;
 extern s32 D_801E7F6C[];
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n);
+static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n);
 static void fxm_posPathInit(Fx041Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx041Path *path, s32 t, SVECTOR *out);
 static void fxm_startUnitMotion(s32 unit, s32 motion);

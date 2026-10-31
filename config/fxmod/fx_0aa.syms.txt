@@ -2,3 +2,5 @@ fx_0aa_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_0aa_header = 0x801E7D30; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_0aa_op80 = 0x801E7828; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_0aa_op81 = 0x801E7B20; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
+fx_0aa_op80ParticleMotion0 = 0x801E7704; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_0aa_op80
+fx_0aa_op80ParticleMotion1 = 0x801E7744; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_0aa_op80

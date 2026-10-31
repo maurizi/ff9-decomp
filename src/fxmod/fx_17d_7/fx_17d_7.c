@@ -12,7 +12,7 @@ static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot) {
     return 0;
 }
 
-s32 func_801EC7C8(s32 mode, Fx17d7Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx17d7RockInst *inst) {
+static s32 fx_17d_7_op80PoolTask(s32 mode, Fx17d7Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx17d7RockInst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
@@ -130,7 +130,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     if (mode == 0) {
         arg4->workSize = 0xA4;
         arg4->elemSize = 0x24;
-        arg4->elemFn = (s32)func_801EC7C8;
+        arg4->elemFn = (s32)fx_17d_7_op80PoolTask;
         arg4->poolCount = 0x28;
     } else if (mode == 1) {
         work->unk0 = 0;
@@ -631,7 +631,7 @@ static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot,
     fxm_drawArcTrail(entry, file, ot, trail, n, noise, pt, &mid, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
 }
 
-s32 func_801EEAA8(s32 mode, Fx17d7Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_17d_7_op83PoolTask(s32 mode, Fx17d7Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 t;
     s32 c;
@@ -697,7 +697,7 @@ s32 fx_17d_7_op83(s32 mode, Fx17d7Work83 *work, Unk800F78A4 *env, Fx17d7Inst *in
     if (mode == 0) {
         init->workSize = 0xC;
         init->elemSize = 0x1C;
-        init->elemFn = (s32)func_801EEAA8;
+        init->elemFn = (s32)fx_17d_7_op83PoolTask;
         init->poolCount = 5;
     } else if (mode == 1) {
         n = init->workSize;

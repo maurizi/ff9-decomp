@@ -25,10 +25,10 @@ extern SVECTOR D_801E7F00; /* particle origin */
 extern SVECTOR D_801E7F08; /* above the target */
 extern SVECTOR D_801E7F18[4];
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
-s32 func_801E775C(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
-s32 func_801E77B4(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
-s32 func_801E780C(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
+s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
+s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
+s32 fx_040_op80ParticleMotion2(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
+s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
 s32 func_801E7864(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 t, s32 n);
 
 #endif

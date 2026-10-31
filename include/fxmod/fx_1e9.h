@@ -52,7 +52,7 @@ extern BtlModel D_801E8574[];
 extern Fx1e9Trail D_801E8644[8];
 extern s32 D_801E88A4;
 
-s32 func_801E7FCC(s32 mode, Fx1e9Spark *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_1e9_op82PoolTask(s32 mode, Fx1e9Spark *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 void func_801E810C(void);
 void func_801E8118(Fx1e9Inst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to);
 

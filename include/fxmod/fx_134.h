@@ -69,7 +69,7 @@ extern s32 D_801EC868[]; /* orb sizes */
 extern s32 D_801EF97C; /* catch radius */
 extern s32 D_801EF980;
 
-s32 func_801E8658(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx134Work *parent);
 
 extern SVECTOR D_801EC860; /* caster position */

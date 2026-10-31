@@ -1,6 +1,6 @@
 #include "fxmod/fx_0ec.h"
 
-s32 func_801E7704(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     s32 t;
@@ -365,7 +365,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x64;
         init->elemSize = 8;
-        init->elemFn = (s32)func_801E7704;
+        init->elemFn = (s32)fx_0ec_op80PoolTask;
         init->poolCount = 0x80;
     } else if (mode == 1) {
         D_801E98A0 = env;

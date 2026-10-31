@@ -21,7 +21,7 @@ typedef struct {
 extern Unk800F78A4 *D_801E7C9C;
 extern BtlModel D_801E7CAC[];
 
-s32 func_801E7704(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0ccWork *work);
 
 #endif

@@ -20,7 +20,7 @@ s32 fx_0c2_op80(s32 mode, Fx0c2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 func_801E7804(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     BTLFX_EXPORTS(D_801E847C)->btlfx_lerpVec((s16 *)&D_801E8484, (s16 *)&D_801E848C, (frame << 12) / 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
@@ -66,7 +66,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk2C);
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&D_801E8494);
             if (work->unk4 != NULL) {
-                ((EffMotion *)work->unk4->file)->unk8 = func_801E7804;
+                ((EffMotion *)work->unk4->file)->unk8 = fx_0c2_op81ParticleMotion;
             }
             if (work->unk4 != NULL) {
                 work->unk4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);

@@ -34,7 +34,7 @@ extern SVECTOR D_801E7D24;
 extern SVECTOR D_801E7D2C;
 extern SVECTOR D_801E7D34;
 
-s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

@@ -1,6 +1,6 @@
 #include "fxmod/fx_194.h"
 
-void func_801E7704(SVECTOR *v) {
+static void fx_194_op80GridVertex(SVECTOR *v) {
     s32 y = v->vy;
     s32 x = v->vx;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DFC);
@@ -101,7 +101,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = 0;
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x73, 0x20, 0x17, 0xA, 0xA, 5, 5, &rot, &scale, &col, state,
-                              func_801E7704);
+                              fx_194_op80GridVertex);
             if (frame >= 0x20) {
                 return 1;
             }
