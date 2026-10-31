@@ -1,0 +1,11 @@
+# Round 33: effect-module names, fx_000-fx_0ff (old -> new). Evidence [code]; the reason is in each module's
+# config/fxmod/fx_XXX.syms.txt entry. Data/functions as 'fx_XXX OLD NEW  # why', fields as 'fx_XXX Struct old=new ...'.
+
+## fx_003
+fx_003 D_801E8528 fx_003_strip16Blocks  # [code] effect file block per bolt kind, the btlfx_drawTrail texture of fxm_drawJaggedStrip16
+fx_003 D_801E8530 fx_003_strip4Blocks  # [code] effect file block per bolt kind, the btlfx_drawTrail texture of fxm_drawJaggedStrip4 (branches)
+fx_003 D_801E8590 fx_003_strips  # [code] per-bolt 16-point strip buffers (Fx003Strip), indexed by Fx003Bolt.strip in fx_003_op83PoolTask
+fx_003 D_801E8BC0 fx_003_branches  # [code] per-bolt branch strip buffers (Fx003Branch), indexed by Fx003Bolt.strip in fx_003_op83PoolTask
+fx_003 D_801E8F20 fx_003_jitter  # [code] 0x40 triples of btlfx_randCentered noise filled by fx_003_op83 mode 1, read by the jagged strip drawers
+fx_003 Fx003Bolt unk8=posTo unk10=strip unk11=state unk12=branch0At unk13=branch1At unk14=kind unk18=jitter
+fx_003 Fx003Work unk8=jitter unkC=boltCount
