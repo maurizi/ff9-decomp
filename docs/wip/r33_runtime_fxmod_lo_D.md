@@ -16,3 +16,5 @@ Placeholders left after the code-only pass, with what to watch in the emulator t
 - fx_0e3_0 `Fx0e30Work80.unk68/unk70/unk7C`: a rotation, position (fx_0e3_0_origin) and scale (0x1000) set in mode 1 that no state reads; `unk48` only cleared. Hypothesis: a model transform the Bahamut code no longer uses.
 - fx_0e3_0 `Fx0e30BonePair.unk0/unk2`: entries 0-3 are bone pairs, entries 4-7 distances for btlfx_matrixPointAhead, so the members stay unnamed.
 - fx_0e3_1 `Fx0e31Work80.unk48` (a point ahead of a hand bone, the base of the camera target swing) and `unk6C` (never touched by the C). Hypothesis: unk48 = swing base; confirm with a watch during Bahamut's Mega Flare.
+- fx_0fb_0 `Fx0fb0Rock.unk6` (bob height in state 0, a phase from btlfx_rand in state 1) and `Fx0fb0Work80.unkD8/unkF8` are named only where one role holds; unk6 stays. `D_801EB35C` (declared, unused in C) sits inside fx_0fb_0_ribbonRgb.
+- fx_0fb_1 `Fx0fb1Rock.unk4/unk6/unk8`: a velocity added to the position for one rock kind, a particle size for kind 4. Left unnamed; watch the pool during Madeen. `D_801F0D3C` (BtlModel[], declared but unused in C) left as is.
