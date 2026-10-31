@@ -182,3 +182,34 @@ fx_0e0 Fx0e0Inst unk8=pos8 unk5C=model5C unk70=model70
 fx_0e0 Fx0e0Work80 unk0=state0 unk4=frame4 unk8=pos8 unk18=camAt18 unk24=pos24 unk30=scale30 unk44=scale44
 fx_0e0 Fx0e0Spark unk0=state0 unk4=velX4 unk6=velY6 unk8=velZ8 unkC=posXC unkE=posYE unk10=posZ10 unk14=rotX14 unk16=rotY16 unk18=rotZ18
 fx_0e0 Fx0e0Work84 unk0=state0 unk4=frame4
+
+## fx_0ba
+fx_0ba func_801EC124 fxm_arcTrailReset  # [code] resets the ring index of the arc trails (fx_0ba_arcTrailNext), called by fx_0ba_op85 mode 1 before fxm_arcTrailSpawn
+fx_0ba func_801EC130 fxm_arcTrailSpawn  # [code] fills the next 17-point arc trail (btlfx_lerpVec of two angle sets, btlfx_pointAhead around a centre at radius r) and spawns one pool particle per point that rides it, fx_0ba_op85
+fx_0ba D_801EED20 fx_0ba_arcTrails  # [code] ring of 5 17-point trails (Fx0baTrail) filled by fxm_arcTrailSpawn and drawn by fx_0ba_op85PoolTask (btlfx_drawTrail)
+fx_0ba D_801EEFDC fx_0ba_arcTrailNext  # [code] next slot of fx_0ba_arcTrails (mod 5), reset by fxm_arcTrailReset
+fx_0ba D_801ECAB0 fx_0ba_summonPos  # [code] Ramuh's draw position (Hi_DrawSummonModel) set every frame by fx_0ba_op80, centre of the fx_0ba_op85 arc trails and the fx_0ba_op83 kind 2 bolts
+fx_0ba D_801ECAB8 fx_0ba_orbPos  # [code] the orb position (Fx0baWork80.pos10) while fx_0ba_op80 shows it, zero otherwise, fx_0ba_op83 kind 2 bolts end there when set
+fx_0ba D_801EC54C fx_0ba_summonDone  # [code] set to 1 when fx_0ba_op80 ends, fx_0ba_op83 and fx_0ba_op85 stop spawning and end
+fx_0ba D_801EC554 fx_0ba_boltSrc  # [code] orb position written every frame by fx_0ba_op81, start of the fx_0ba_op83 bolts
+fx_0ba D_801EC55C fx_0ba_boltLen  # [code] bolt length set every frame by fx_0ba_op81 (0x1000, then from the key height), fx_0ba_op83 kind 1 bolt length and amplitude
+fx_0ba D_801EC560 fx_0ba_bandWidths  # [code] s16 per frame, the width passed to fxm_drawCenterBand by fx_0ba_op81 state 3
+fx_0ba D_801EC578 fx_0ba_ribbonFromBlocks  # [code] per ribbon (3) the effect file block of the start point list, lerped with fx_0ba_ribbonToBlocks into fx_0ba_ribbons by fx_0ba_op81
+fx_0ba D_801EC584 fx_0ba_ribbonToBlocks  # [code] per ribbon (3) the effect file block of the end point list, lerped with fx_0ba_ribbonFromBlocks into fx_0ba_ribbons by fx_0ba_op81
+fx_0ba D_801EC590 fx_0ba_ribbon13FromBlocks  # [code] per ribbon (3) the effect file block of the start point list of the 13-point ribbons (fx_0ba_ribbons13), fx_0ba_op81
+fx_0ba D_801EC59C fx_0ba_ribbon13ToBlocks  # [code] per ribbon (3) the effect file block of the end point list of the 13-point ribbons (fx_0ba_ribbons13), fx_0ba_op81
+fx_0ba D_801ECAC0 fx_0ba_offsetTrail  # [code] strip buffer drawn by fxm_drawOffsetTrail in fx_0ba_op81 state 3
+fx_0ba D_801ECF80 fx_0ba_ribbons  # [code] 6 17-point trails (two per ribbon, btlfx_drawTrail file blocks 5 and 0xD) built by fx_0ba_op81
+fx_0ba D_801ED2D0 fx_0ba_ribbons13  # [code] 3 13-point trails (btlfx_drawTrail file block 0x16) built by fx_0ba_op81
+fx_0ba D_801ED420 fx_0ba_boltTrails  # [code] per-bolt 17-point trails (Fx0baTrail) drawn by fxm_drawJaggedTrail, indexed by Fx0baBolt.strip10 in fx_0ba_op83PoolTask
+fx_0ba D_801ED424 fx_0ba_boltPoints  # [code] the points of fx_0ba_boltTrails (4 bytes in, Fx0baPath), fxm_randStripPoint32 picks a random point of a random bolt from it
+fx_0ba D_801EE5A0 fx_0ba_boltBranches  # [code] per-bolt branch strips (Fx0baStrip4) drawn by fxm_drawJaggedTrailBranch, indexed by Fx0baBolt.strip10
+fx_0ba D_801EEA20 fx_0ba_boltJitter  # [code] btlfx_randCentered noise table filled by fx_0ba_op83 mode 1, Fx0baBolt.jitter18 points into it
+fx_0ba Fx0baPart unk0=posX0 unk4=posY4 unk8=posZ8 unkC=velXC unkE=velYE unk10=velZ10 unk14=trail14 unk16=pointIdx16 unk18=point18
+fx_0ba Fx0baWork85 unk8=rot8
+fx_0ba Fx0baBolt unk0=pos0 unk8=pos8 unk10=strip10 unk11=kind11 unk12=branchAt12 unk13=branchAt13 unk15=amp15 unk18=jitter18
+fx_0ba Fx0baPath unk0=points0
+fx_0ba Fx0baWork83 unk0=jitter0 unk4=boltCount4 unk8=kind8
+fx_0ba Fx0baSummon unk60=model60
+fx_0ba Fx0baWork80 unk0=state0 unk4=frame4 unk28=pos28 unk34=scale34 unk48=summonPos48 unk54=summonScale54 unk70=scale70
+fx_0ba Fx0baPWork81 unk0=state0 unk4=frame4 unk18=camAt18 unk48=pos48 unk54=scale54

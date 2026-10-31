@@ -13,3 +13,6 @@ hypothesis, what to watch.
 - fx_0e0 `D_801EB1DC`: s32 that ends fx_0e0_op80PoolTask items in phase 1 when nonzero; never written by the
   module. Hypothesis: a constant 0 (dead switch) or a flag the effect file data sets. Watch: memory watch on
   0x801EB1DC during Doomsday Sword.
+- fx_0ba `D_801EC550`: s32 only cleared by the module (fx_0ba_op80 at frame 0x3C, when the orb appears). While
+  nonzero, fx_0ba_op83 kind 2 bolts spawn every frame and draw file block 0x29 impact rings. Hypothesis: data
+  initialised to 1, a "before the orb" phase flag. Watch: read 0x801EC550 when Ramuh's module loads and at the orb.

@@ -410,8 +410,8 @@ fx_0ba fx_0ba_op83PoolTask 0x5c4 0x801eac08
 fx_0ba fxm_randStripPoint32 0xf0 0x801eb1cc
 fx_0ba fx_0ba_op83 0xcfc 0x801eb2bc
 fx_0ba fx_0ba_op85PoolTask 0x16c 0x801ebfb8
-fx_0ba func_801EC124 0xc 0x801ec124
-fx_0ba func_801EC130 0x2b8 0x801ec130
+fx_0ba fxm_arcTrailReset 0xc 0x801ec124
+fx_0ba fxm_arcTrailSpawn 0x2b8 0x801ec130
 fx_0ba fx_0ba_op85 0x164 0x801ec3e8
 fx_0bb fx_0bb_op80 0xe8 0x801e7704
 fx_0bb fx_0bb_op81 0x16c 0x801e77ec
