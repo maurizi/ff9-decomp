@@ -1440,10 +1440,14 @@ extern s16 g_akaoSavedSeqMusicId;
 extern s32 D_8007F8DC;
 typedef struct {
     s32 bankUpload; /* 1 while a sound bank upload runs (akao_beginBankUpload / akao_uploadBank) */
-    s32 mode; /* output mode 1/2 (akao_cmdSetOutputMode1/2), 0x100 crossfade pending (akao_cmdCrossfadeMusic) */
-    s32 dirty; /* SPU state to update in akao_updateVoices: 0x10 noise clock, 0x80 reverb depth, 0x100 noise/reverb/pitch-mod voice masks */
+    s32 mode; /* output mode 1/2 (akao_cmdSetOutputMode1/2), | AKAO_MODE_CROSSFADE */
+    s32 dirty; /* AKAO_DIRTY_*: SPU state akao_updateVoices still has to write */
 } AkaoFlags;
 extern AkaoFlags g_akaoFlags;
+#define AKAO_MODE_CROSSFADE 0x100 /* AkaoFlags.mode: akao_cmdCrossfadeMusic started one, akao_tickCrossfade runs until the sub sequence ends */
+#define AKAO_DIRTY_NOISE_CLOCK 0x10 /* AkaoFlags.dirty: SpuSetNoiseClock */
+#define AKAO_DIRTY_REVERB_DEPTH 0x80 /* SpuSetReverbModeDepth */
+#define AKAO_DIRTY_VOICE_MODES 0x100 /* the noise / reverb / pitch-modulation voice masks */
 /* menu state */
 typedef struct {
     u8 active; /* 1 while the main menu runs (menuScreen_init / menuScreen_exit) */

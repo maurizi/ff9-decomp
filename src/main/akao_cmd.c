@@ -164,7 +164,7 @@ void akao_startSeq(s32 addr, s32 mask) {
     g_akaoSeq->condition = 0;
     g_akaoSeq->playingMask = 0;
     g_akaoSeq->keyOnMask = 0;
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_stopSeq(AkaoSeq *a, AkaoChannel *c, s32 id) {
@@ -277,7 +277,7 @@ void akao_stopSeChannels(s32 id, s32 mask) {
             }
         }
     }
-    g_akaoFlags.dirty |= 0x110;
+    g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_startSeChannel(AkaoChannel *c, VoiceParams *p, s32 mask, u8 *data) {
@@ -405,7 +405,7 @@ void akao_startSe(VoiceParams *p, u8 *a, u8 *b, s32 flag) {
             c->flags |= AKAO_CH_SE_SECOND;
         }
     }
-    g_akaoFlags.dirty |= 0x110;
+    g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_VOICE_MODES;
 }
 
 static inline u8 *akao_getSeData_get(s32 i) {
@@ -487,7 +487,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
     g_akaoSeq->data = (u8 *)seq;
     g_akaoSeq->keyOnMask = 0;
     bit = 1;
-    g_akaoFlags.dirty |= 0x90;
+    g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_REVERB_DEPTH;
     d = (u8 *)seq - old;
     active = g_akaoSeq->activeMask;
     g_akaoSeq->regionTable = (u16 *)((u8 *)g_akaoSeq->regionTable + d);
@@ -524,7 +524,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
     x = 0xFFFFFF;
     g_akaoSavedSeq.musicId = 0;
     g_akaoSeState.keyOffMask |= ~active & (~(g_akaoSeState.activeMask | g_akaoStream.voiceMask) & x);
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     if (g_akaoPauseFlags & 1) {
         g_akaoSeq->pausedMask = g_akaoSeq->activeMask;
         g_akaoSeq->activeMask = 0;
@@ -620,7 +620,7 @@ void akao_cmdCrossfadeMusic(AkaoArgs *a) {
         d = a->arg4;
         g_akaoCrossfade.volume = 0x7F8000;
         g_akaoCrossfade.fadeLen = d;
-        g_akaoFlags.mode |= 0x100;
+        g_akaoFlags.mode |= AKAO_MODE_CROSSFADE;
         g_akaoCrossfade.volumeStep = -0x7F8000 / d;
     }
     g_akaoSeq->volume = 0;
@@ -1252,7 +1252,7 @@ void akao_cmdStopAllSe(void) {
             c->flags = 0;
         }
     }
-    g_akaoFlags.dirty |= 0x110;
+    g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_cmdSetOutputMode1(void) {
@@ -1340,7 +1340,7 @@ void akao_cmdResumeMusic(void) {
         } while (mask != 0);
         t = g_akaoSeq->activeMask = g_akaoSeq->pausedMask;
         g_akaoSeq->pausedMask = 0;
-        g_akaoFlags.dirty |= 0x100;
+        g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     }
     g_akaoPauseFlags &= ~1;
 }
@@ -1400,7 +1400,7 @@ void akao_cmdResumeSe(void) {
         m = g_akaoSeState.pausedMask;
         g_akaoSeState.pausedMask = 0;
         g_akaoSeState.activeMask |= m;
-        g_akaoFlags.dirty |= 0x100;
+        g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     }
     g_akaoPauseFlags &= ~2;
 }

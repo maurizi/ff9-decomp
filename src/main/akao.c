@@ -227,7 +227,7 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
                     g_akaoSeq->reverbDepthSlideLen--;
                     g_akaoSeq->reverbDepth += g_akaoSeq->reverbDepthStep;
                     flags = g_akaoFlags.dirty;
-                    flags |= 0x80;
+                    flags |= AKAO_DIRTY_REVERB_DEPTH;
                     if (sub == 0) {
                         g_akaoFlags.dirty = flags;
                     }
@@ -333,10 +333,10 @@ s32 akao_tick(void) {
                 akao_tickChannels(g_akaoSubChannels, 1);
                 g_akaoSeq = &g_akaoMainSeq;
             }
-            if ((g_akaoFlags.mode & 0x100) && !(g_akaoTickCount & 3)) {
+            if ((g_akaoFlags.mode & AKAO_MODE_CROSSFADE) && !(g_akaoTickCount & 3)) {
                 akao_tickCrossfade(g_akaoSubSeq, g_akaoSubChannels);
                 if (g_akaoSubSeq->activeMask == 0) {
-                    g_akaoFlags.mode &= ~0x100;
+                    g_akaoFlags.mode &= ~AKAO_MODE_CROSSFADE;
                 }
             }
         }
@@ -664,7 +664,7 @@ s32 akao_playDrumNote(AkaoChannel *c, u32 mask, s32 key) {
     } else {
         g_akaoSeq->reverbMask &= ~mask;
     }
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     return r;
 }
 
@@ -906,7 +906,7 @@ void akao_opEnd(AkaoChannel *c, s32 mask) {
         akao_stopSeChannel(c, mask);
     }
     c->flags = 0;
-    g_akaoFlags.dirty |= 0x110;
+    g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_opFETempo(AkaoChannel *c) {
@@ -942,7 +942,7 @@ void akao_opFE02(AkaoChannel *c) {
     v = hi << 20;
     v |= lo << 12;
     a->reverbDepthSlideLen = 0;
-    g_akaoFlags.dirty |= 0x80;
+    g_akaoFlags.dirty |= AKAO_DIRTY_REVERB_DEPTH;
     a->reverbDepth = v;
 }
 
@@ -1387,7 +1387,7 @@ void akao_opC4(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.noiseMask |= mask;
     }
-    g_akaoFlags.dirty |= 0x110;
+    g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_opC5(AkaoChannel *c, u32 mask) {
@@ -1396,7 +1396,7 @@ void akao_opC5(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.noiseMask &= ~mask;
     }
-    g_akaoFlags.dirty |= 0x110;
+    g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_VOICE_MODES;
     c->noiseTimer = 0;
 }
 
@@ -1406,7 +1406,7 @@ void akao_opC6(AkaoChannel *c, u32 mask) {
     } else if (c->flags & AKAO_CH_SE_SECOND) {
         g_akaoSeState.pitchModMask |= mask;
     }
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_opC7(AkaoChannel *c, u32 mask) {
@@ -1415,7 +1415,7 @@ void akao_opC7(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.pitchModMask &= ~mask;
     }
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     c->pitchModTimer = 0;
 }
 
@@ -1425,7 +1425,7 @@ void akao_opC2(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.reverbMask |= mask;
     }
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_opC3(AkaoChannel *c, u32 mask) {
@@ -1434,7 +1434,7 @@ void akao_opC3(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.reverbMask &= ~mask;
     }
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_opCC(AkaoChannel *a) {
@@ -1467,7 +1467,7 @@ void akao_opAC(AkaoChannel *arg0) {
     } else {
         g_akaoSeState.noiseClock = b;
     }
-    g_akaoFlags.dirty |= 0x10;
+    g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK;
 }
 
 void akao_opAD(AkaoChannel *c) {
@@ -1772,7 +1772,7 @@ void akao_streamStop(void) {
         m = g_akaoStream.voiceMask;
         g_akaoStream.voiceMask = 0;
         g_akaoSeState.reverbMask &= ~m;
-        g_akaoFlags.dirty |= 0x100;
+        g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     }
 }
 
@@ -1853,7 +1853,7 @@ void akao_streamStart(s32 addr, s32 vol, s32 flag) {
     }
     g_akaoSeState.pitchModMask &= ~g_akaoStreamVoices;
     g_akaoSeState.noiseMask &= ~g_akaoStreamVoices;
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_streamSetVoice(s32 v, s32 mode, s32 a, s32 b) {
@@ -2108,7 +2108,7 @@ void akao_streamPlayOneShot(s32 arg0, s32 b, s32 addr, s32 loop) {
         }
         g_akaoSeState.pitchModMask &= ~g_akaoStreamVoices;
         g_akaoSeState.noiseMask &= ~g_akaoStreamVoices;
-        g_akaoFlags.dirty |= 0x100;
+        g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     }
 }
 
@@ -2145,7 +2145,7 @@ void akao_streamPlayResident(s32 unused, s32 flag) {
     irq = h2[8] + ((u32)h2[4] >> 1) + 8;
     g_akaoSeState.pitchModMask &= ~g_akaoStream.voiceMask;
     g_akaoSeState.noiseMask &= ~g_akaoStream.voiceMask;
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
     SpuSetIRQAddr(irq);
     SpuSetIRQCallback(akao_streamArmStop);
     if (h2[6] & 1) {
@@ -2242,7 +2242,7 @@ void akao_streamStartRing(void) {
     g_akaoSeState.reverbMask &= ~g_akaoStreamVoices;
     g_akaoSeState.pitchModMask &= ~g_akaoStreamVoices;
     g_akaoSeState.noiseMask &= ~g_akaoStreamVoices;
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
 }
 
 void akao_streamRingKeyOn(s32 a, s32 b, void (*cb)(void)) {

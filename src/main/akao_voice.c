@@ -397,7 +397,7 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
             } else {
                 g_akaoSeState.noiseMask ^= mask;
             }
-            g_akaoFlags.dirty |= 0x110;
+            g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_VOICE_MODES;
         }
     }
     if (c->pitchModTimer != 0) {
@@ -407,7 +407,7 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
             } else {
                 g_akaoSeState.pitchModMask ^= mask;
             }
-            g_akaoFlags.dirty |= 0x100;
+            g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
         }
     }
     if ((u16)c->vibratoDepthSlideLen != 0) {
@@ -695,7 +695,7 @@ void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                     if (ch->voice < 24) {
                         akao_writeVoice(ch->voice, (AkaoVoiceRegs *)&ch->voice, (u16)ch->voiceVolScale);
                         g_akaoVoiceOwner[ch->voice] = g_akaoSeq;
-                        g_akaoFlags.dirty |= 0x100;
+                        g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
                     }
                 } else if (ch->voice < 24) {
                     /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
@@ -795,7 +795,7 @@ void akao_updateVoices(void) {
         akao_readEnvelopes(ex);
     }
     if (g_akaoSubSeq != NULL) {
-        if (g_akaoFlags.mode & 0x100) {
+        if (g_akaoFlags.mode & AKAO_MODE_CROSSFADE) {
             akao_applyCrossfadeVolume(g_akaoSubSeq, g_akaoSubChannels);
         }
         t = g_akaoSubSeq;
@@ -827,7 +827,7 @@ void akao_updateVoices(void) {
             akao_assignVoices(g_akaoChannels, m2, b2, &keyon);
             g_akaoSeq->keyOnMask = 0;
         }
-        if (g_akaoFlags.mode & 0x100) {
+        if (g_akaoFlags.mode & AKAO_MODE_CROSSFADE) {
             if (m2) {
                 akao_restoreCrossfadeVolume(g_akaoSubSeq, g_akaoSubChannels);
             } else {
@@ -864,22 +864,22 @@ void akao_updateVoices(void) {
         g_akaoSeState.keyOnMask = 0;
     }
     m2 = g_akaoFlags.dirty;
-    if (m2 & 0x80) {
+    if (m2 & AKAO_DIRTY_REVERB_DEPTH) {
         SpuSetReverbModeDepth(g_akaoSeq->reverbDepth >> 12, g_akaoSeq->reverbDepth >> 12);
-        g_akaoFlags.dirty &= ~0x80;
+        g_akaoFlags.dirty &= ~AKAO_DIRTY_REVERB_DEPTH;
     }
-    if (m2 & 0x10) {
+    if (m2 & AKAO_DIRTY_NOISE_CLOCK) {
         SpuSetNoiseClock(g_akaoSeState.activeMask ? g_akaoSeState.noiseClock : g_akaoSeq->noiseClock);
-        g_akaoFlags.dirty &= ~0x10;
+        g_akaoFlags.dirty &= ~AKAO_DIRTY_NOISE_CLOCK;
     }
-    if (m2 & 0x100) {
+    if (m2 & AKAO_DIRTY_VOICE_MODES) {
         akao_buildVoiceModeMask((u32 *)&g_akaoVoiceModeMasks[1], g_akaoSubSeq->noiseMask, g_akaoSeq->noiseMask, g_akaoSeState.noiseMask);
         akao_buildVoiceModeMask((u32 *)&g_akaoVoiceModeMasks[0], g_akaoSubSeq->reverbMask, g_akaoSeq->reverbMask, g_akaoSeState.reverbMask);
         akao_buildVoiceModeMask((u32 *)&g_akaoVoiceModeMasks[2], g_akaoSubSeq->pitchModMask, g_akaoSeq->pitchModMask, g_akaoSeState.pitchModMask);
         akao_setReverbVoices(g_akaoVoiceModeMasks[0]);
         akao_setNoiseVoices(g_akaoVoiceModeMasks[1]);
         akao_setPitchModVoices(g_akaoVoiceModeMasks[2]);
-        g_akaoFlags.dirty &= ~0x100;
+        g_akaoFlags.dirty &= ~AKAO_DIRTY_VOICE_MODES;
     }
     if (keyon) {
         akao_keyOn(keyon);
@@ -972,5 +972,5 @@ void akao_buildVoiceModeMask(u32 *out, u32 m1, u32 m2, u32 extra) {
         akao_channelsToVoiceMask(g_akaoChannels, &r, b, keep);
     }
     *out = r |= extra;
-    g_akaoFlags.dirty |= 0x100;
+    g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
 }

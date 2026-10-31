@@ -187,7 +187,7 @@ loop1:
     g_akaoSeq->reverbDepth = 0x3FFF000;
     g_akaoSeq->reverbDepthStep = 0;
     g_akaoSeq->reverbDepthSlideLen = 0;
-    g_akaoFlags.dirty |= 0x80;
+    g_akaoFlags.dirty |= AKAO_DIRTY_REVERB_DEPTH;
     akao_setReverbMode(4);
     SpuSetReverb(1);
     for (i = 0; i < 24; i++) {
