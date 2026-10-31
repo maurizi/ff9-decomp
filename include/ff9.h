@@ -103,7 +103,7 @@ typedef union {
         u32 id : 4;    /* character id (index into GameData.unk3C) */
         u32 kind : 5;  /* model/appearance kind (chr_calcAppearance; btlfx_getUnitKind, battle model and motion tables; 2 = Sword Magic user); index into g_portraitByKind */
         u32 battleRow : 1; /* = the battle unit's row (flags >> 8 & 3, btl_toggleRow); toggled by the menu's Order; event op 0x62 */
-        u32 unkA : 1;
+        u32 victoryPose : 1; /* runtime: with it the character strikes its victory pose at the end of a won battle (btl_update), without it stays in its idle stance; event op 0xDB sets it */
         u32 recruited : 1; /* chr_setRecruited / chr_clearRecruited; members counted by chr_join's level average, shops, config */
         u32 row : 5;   /* ability table row (g_abilityRows) */
         u32 unk11 : 15;
@@ -115,6 +115,8 @@ typedef union {
 #define CHR_INFO_KIND 0x1F0
 #define CHR_INFO_BATTLE_ROW_BIT 9
 #define CHR_INFO_BATTLE_ROW (1 << CHR_INFO_BATTLE_ROW_BIT)
+#define CHR_INFO_VICTORY_POSE_BIT 10
+#define CHR_INFO_VICTORY_POSE (1 << CHR_INFO_VICTORY_POSE_BIT)
 #define CHR_INFO_RECRUITED_BIT 11
 #define CHR_INFO_ROW_SHIFT 12
 #define CHR_INFO_ROW 0x1F000
@@ -164,7 +166,10 @@ typedef struct {
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
 /* Character.classFlags (chr_getClassFlags: g_chrClassFlags, main data 0x8006CACC = 09 05 06 05 06 05 06 05 15 15 15 16 by
- * ability row; bits 0x1/0x4/0x8 left unnamed: 0x8 only for row 0, ability 0x62 misses it) */
+ * ability row; bits 0x4/0x8 left unnamed: 0x8 only for row 0, ability formula 0x62 misses it, 0x4 on every other row;
+ * formula 0x62 is in no ability or enemy record, so neither was observed) */
+#define CHR_CLASS_MALE 0x1 /* data only, medium: set on every row without CHR_CLASS_FEMALE (Quina included); no code
+                            * tests it (battle AI scripts can read classFlags through btl_attr 0x43) */
 #define CHR_CLASS_FEMALE 0x2 /* Protect Girls covers it (btl_findCover); ability 0x61 misses it; rows 2, 4, 6 */
 #define CHR_CLASS_GUEST 0x10 /* rows 8 and up: no ability learning (chr_canLearnAbilities), no trance (btl_initPartyUnit),
                              * the alternate default set and appearance (chr_getDefaultSet, chr_calcAppearance) */
@@ -394,7 +399,7 @@ typedef struct {
     Unk880 worldCamera; /* world map camera state (g_worldCamera points here, cleared with the next 0x18 bytes); saved */
     u8 worldCamKeep; /* opening_setWorldCamKeepNew / opening_setWorldCamKeepLoad, world-map camera reset (runtime) */
     u8 pad891;
-    u8 unk892;
+    u8 inWorldFrame; /* 1 while a world-map frame runs once the vehicles are found (wm_frameMain sets it at the start, clears it at the end); a field entered with it 0 resets the world camera yaw on return (w_movement). Saved (ovl_39). Runtime: 1 at the vsync pause, 0 with the menu open; it only stays 1 when a frame does not finish (e.g. a save written during one). Name medium (the vehicle-to-field case was not tried) */
     u8 pad893[0x8A8 - 0x893];
     s32 musicFileSector; /* CD sector of the current music file (fld_refindSectors, fld_soundCommand) */
     s32 savedMusicFileSector; /* musicFileSector saved with savedMusicId */

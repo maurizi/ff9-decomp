@@ -702,7 +702,7 @@ void wm_findVehicles(void) {
                 break;
             }
             if (a == evt_getPlayer()) {
-                if (g_gameState->prevMode == GS_MODE_FIELD && g_gameState->gameData->unk892 == 0) {
+                if (g_gameState->prevMode == GS_MODE_FIELD && g_gameState->gameData->inWorldFrame == 0) {
                     if (g_worldMoveModeInfo->cameraInFront != 0) {
                         g_worldCamera->yawOffset = 0x800;
                     } else {

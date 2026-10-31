@@ -109,7 +109,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 }
             } else if (arg1->phase == BTL_PHASE_EXIT) {
                 f = u->flags;
-                if ((f & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) && (g_gameState->gameData->characters + BTL_UNIT_INDEX(f))->info.b.unkA) {
+                if ((f & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) && (g_gameState->gameData->characters + BTL_UNIT_INDEX(f))->info.b.victoryPose) {
                     m = u->model;
                     if (u->obj->frame >= m->motion->frameCount) {
                         m->motion = (BtlUnit9CC *)u->motions[19];

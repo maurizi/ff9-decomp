@@ -70,9 +70,12 @@
 #define AKAO_CMD_STOP_MUSIC_NOW        0xF0 /* akao_cmdStopMusicNow */
 #define AKAO_CMD_STOP_ALL_SE           0xF1 /* akao_cmdStopAllSe */
 
-/* g_akaoPauseFlags (bit 4, tested by the tempo loops, is never set in the code) */
+/* g_akaoPauseFlags */
 #define AKAO_PAUSED_MUSIC 0x1 /* akao_cmdPauseMusic / akao_cmdResumeMusic; new songs start paused */
 #define AKAO_PAUSED_SE    0x2 /* akao_cmdPauseSe / akao_cmdResumeSe; new SEs start paused */
+#define AKAO_PAUSE_FORCE_TICK 0x4 /* both tempo loops step the sequencer every frame while it is set. Never set: the
+                                   * only writers are the pause/resume commands (1, 2) and akao_init (0), no overlay
+                                   * references the flags, runtime write watch saw none. Medium: a debug step? */
 /* AkaoChannel.seMask (VoiceParams.mask) bit given by akao_cmdPlaySeDefault: the SE keeps running through
  * akao_cmdPauseSe and ignores the all-SE volume/pan/pitch commands and its own sePan/seVolume/sePitch
  * (akao_calcSeChannelVoice plays it centred, unscaled) */

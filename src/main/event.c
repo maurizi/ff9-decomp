@@ -1668,7 +1668,7 @@ s32 evt_execInstr(void) {
     case 0xDB:
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
-            g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~0x400) | ((evt_getArg8_inline() & 1) << 10);
+            g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~CHR_INFO_VICTORY_POSE) | ((evt_getArg8_inline() & 1) << CHR_INFO_VICTORY_POSE_BIT);
         }
         return 0;
     case EVT_OP_SET_DIR_OFFSETS:

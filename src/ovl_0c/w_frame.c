@@ -80,7 +80,7 @@ s32 wm_frameMain(void) {
 
     g_worldStartup = 0;
     if (g_worldVehiclesFound != 0) {
-        g_gameState->gameData->unk892 = 1;
+        g_gameState->gameData->inWorldFrame = 1;
     }
     g_worldEventResult = 0;
     if (wm_getPadPressed() & BTN_TRIANGLE) {
@@ -165,7 +165,7 @@ s32 wm_frameMain(void) {
         break;
     }
     if (g_worldVehiclesFound != 0) {
-        g_gameState->gameData->unk892 = 0;
+        g_gameState->gameData->inWorldFrame = 0;
     }
     g_worldTimeTotal = 0;
     g_worldTimeTotal = g_worldTimeLogic;

@@ -289,7 +289,7 @@ typedef struct {
 typedef struct {
     s32 chocograph; /* GameData.chocograph */
     Unk880 worldCamera; /* GameData.worldCamera */
-    u8 unk14; /* GameData.unk892 */
+    u8 unk14; /* GameData.inWorldFrame */
 } SaveMisc;
 
 typedef struct {

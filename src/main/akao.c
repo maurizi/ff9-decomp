@@ -197,7 +197,7 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
     }
     acc = g_akaoSeq->tempoAcc + tempo;
     g_akaoSeq->tempoAcc = acc;
-    if ((acc & 0xFFFF0000) || (g_akaoPauseFlags & 4)) {
+    if ((acc & 0xFFFF0000) || (g_akaoPauseFlags & AKAO_PAUSE_FORCE_TICK)) {
         g_akaoSeq->tempoAcc = acc & 0xFFFF;
         do {
             for (;;) {
@@ -344,7 +344,7 @@ s32 akao_tick(void) {
             mask = g_akaoSeState.activeMask;
             acc = g_akaoSeState.tempoAcc + g_akaoSeState.tempo.h[1];
             g_akaoSeState.tempoAcc = acc;
-            if ((acc & 0xFFFF0000) || (g_akaoPauseFlags & 4)) {
+            if ((acc & 0xFFFF0000) || (g_akaoPauseFlags & AKAO_PAUSE_FORCE_TICK)) {
                 g_akaoSeState.tempoAcc = acc & 0xFFFF;
                 bit = 0x100;
                 c = g_akaoSeChannels;

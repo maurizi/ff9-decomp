@@ -7343,3 +7343,8 @@ BTL_ENEMY_FLYING BTL_ENEMY_AERIAL  # [text btl scan] g_btlScanTexts[7] "Aerial";
 fxm_startMotion2IfActive fxm_startHitMotionIfActive  # fx_041 fx_09b fx_0c2 fx_100 fx_180 fx_1a6 fx_1b2 fx_1e7 fx_1ec
 fxm_startMotion3IfActive fxm_startHeavyHitMotionIfActive  # same modules
 # fx_0ed: local view Fx0edBattleState dropped (env->state->signals[0])
+## main and overlays
+# FIELDS include/ff9.h CharBits.b: unkA=victoryPose (+ CHR_INFO_VICTORY_POSE(_BIT) 0x400; event op 0xDB)
+# FIELDS include/ff9.h GameData: unk892=inWorldFrame (medium)
+# MACROS include/snd_ids.h g_akaoPauseFlags: AKAO_PAUSE_FORCE_TICK 0x4 (medium, never set)
+# MACROS include/ff9.h Character.classFlags: CHR_CLASS_MALE 0x1 (medium, data only)
