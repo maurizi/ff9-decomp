@@ -224,10 +224,10 @@ s32 wm_getWeatherByPos(void) {
 }
 
 void wm_setWeather(s32 mode, s32 flag, s32 arg2) {
-    if (mode == 5) {
+    if (mode == WM_WEATHER_KEEP) {
         mode = g_worldWeatherMode;
     }
-    if (flag == 2) {
+    if (flag == WM_FOG_KEEP) {
         flag = g_worldFog;
     }
     g_worldWeatherMode = mode;

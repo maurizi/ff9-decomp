@@ -200,7 +200,7 @@ typedef struct WorldMap {
 #define WM_MAP_NO_FADE 0x200 /* wm_main skips game_updateFade (also set by wm_startBattleTransition) */
 #define WM_MAP_NO_TRANSITION 0x400 /* set by wm_load; while clear wm_main runs wm_updateBattleTransition */
 #define WM_MAP_NO_TIMER 0x800 /* wm_main skips game_updateTimer */
-#define WM_MAP_NAVI_SCREEN 0x1000 /* w_frame: set while g_worldNaviMode == 2 */
+#define WM_MAP_NAVI_SCREEN 0x1000 /* w_frame: set while g_worldNaviMode == WM_NAVI_FULL */
 
 typedef struct {
     u8 pad0[0x11];
@@ -1074,7 +1074,10 @@ extern s16 g_worldClimbSmooth;
 extern s16 g_worldSpeedSmooth;
 extern s32 g_worldHeapStack[];
 extern u8 g_worldCameraFourProbes;
-extern s32 g_worldNaviMode; /* navi mode */
+extern s32 g_worldNaviMode; /* WM_NAVI_* */
+/* g_worldNaviMode (WM_REQ_NAVI_MODE, default event var 0x64; wm_naviDraw) */
+#define WM_NAVI_MINI 1 /* mini map */
+#define WM_NAVI_FULL 2 /* full-screen map */
 extern u8 g_worldNaviVisible;
 extern s32 g_worldTitleDelay;
 extern POLY_G3 *g_worldNaviConePrim;

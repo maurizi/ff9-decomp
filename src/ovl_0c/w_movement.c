@@ -1166,7 +1166,7 @@ void wm_movePlayer(WmActorType *cc) {
     if (g_worldMoveModeInfo->countsSteps != 0 && g_worldPlayerPosChanged != 0 && w_frameGetParameter(0xC1) != 0x34 && g_worldTitleId == -1) {
         g_worldPlayerStepped = D_800CCE55;
     }
-    if (D_800CCE4A == 0 && g_worldNaviMode != 2 && g_worldMusicState == WM_MUSIC_READY && g_worldMapLoaded != 0 && g_worldCameraSmoothing == 0) {
+    if (D_800CCE4A == 0 && g_worldNaviMode != WM_NAVI_FULL && g_worldMusicState == WM_MUSIC_READY && g_worldMapLoaded != 0 && g_worldCameraSmoothing == 0) {
         wm_controlPlayer();
     }
     spd = g_worldPlayerSpeed;

@@ -1480,7 +1480,7 @@ void wm_naviDraw(void) {
     }
     page = g_worldNaviPage;
     switch (g_worldNaviMode) {
-    case 1:
+    case WM_NAVI_MINI:
         if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == 1 && (g_worldVehicleActor->flags & 1) &&
             !((u8)g_worldMoveMode >= WM_MOVE_STEER && (u8)g_worldMoveMode < WM_MOVE_FAST_WALK)) {
             CVECTOR c0 = g_worldNaviVehicleColorA;
@@ -1500,7 +1500,7 @@ void wm_naviDraw(void) {
             wm_naviDrawChocograph();
         }
         break;
-    case 2:
+    case WM_NAVI_FULL:
         if (g_worldNaviVisible != 0) {
             if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == 1 && (g_worldVehicleActor->flags & 1) &&
                 !((u8)g_worldMoveMode >= WM_MOVE_STEER && (u8)g_worldMoveMode < WM_MOVE_FAST_WALK)) {
@@ -1549,11 +1549,11 @@ void wm_naviUpdate(void) {
 
     if (g_worldNaviActive != 0) {
         pad = 0;
-        if (g_worldNaviMode == 2) {
+        if (g_worldNaviMode == WM_NAVI_FULL) {
             dir = 1;
             stick.vx = 0;
             stick.vy = 0;
-            if (g_worldNaviPrevMode == 1) {
+            if (g_worldNaviPrevMode == WM_NAVI_MINI) {
                 wm_naviWorldToMap(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, &g_worldNaviCursorX, &g_worldNaviCursorY, g_worldNaviPage * 2 + 1);
                 g_worldNaviCursorX <<= 12;
                 g_worldNaviCursorY <<= 12;
