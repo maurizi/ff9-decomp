@@ -400,7 +400,7 @@ s32 wm_isMapSongPlaying(void) {
     if (g_worldMusicId == g_worldSongMusicIds[1]) {
         r = 1;
     }
-    if (g_worldMoveMode == 0) {
+    if (g_worldMoveMode == WM_MOVE_WALK) {
         if (g_worldMusicId == g_worldSongMusicIds[3]) {
             r = 1;
         }

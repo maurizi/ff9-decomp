@@ -17,7 +17,7 @@ void mbg_drawStreamDebug(u32 *ot, s32 buf) {
         r = g_mbgDebugRingColors[j].r;
         g = g_mbgDebugRingColors[j].g;
         b = g_mbgDebugRingColors[j].b;
-        if (h->status & 0x8000) {
+        if (h->status & MBG_RING_READY) {
             if (r != 0) {
                 r += 0x60;
             }
@@ -27,7 +27,7 @@ void mbg_drawStreamDebug(u32 *ot, s32 buf) {
             if (b != 0) {
                 b += 0x60;
             }
-        } else if (h->status & 0x4000) {
+        } else if (h->status & MBG_RING_BUSY) {
             if (r != 0) {
                 r -= 0x20;
             }
@@ -73,7 +73,7 @@ void mbg_streamOnVideoSector(void) {
         }
         s = (Ovl64SectHdr *)p;
         if (s->frame != g_mbgStream.frame) {
-            g_mbgStream.endState = 2;
+            g_mbgStream.endState = MBG_END_ERROR;
             cd_pause();
         }
         if (s->type != 4) {
@@ -96,9 +96,9 @@ end:
         }
         h = &g_mbgStream.ringHdrs[g_mbgStream.writeSlot];
         h->firstSector = g_mbgStream.slotSectors - g_mbgStream.slotSector;
-        h->status = (h->status & 0xFFF) | 0xC000;
+        h->status = (h->status & 0xFFF) | MBG_RING_READY | MBG_RING_BUSY;
         if (g_mbgStream.frame > g_mbgStream.lastFrame) {
-            g_mbgStream.endState = 1;
+            g_mbgStream.endState = MBG_END_LAST_FRAME;
             cd_pause();
         }
         g_mbgStream.slotSector = 0;
@@ -185,9 +185,9 @@ void mbg_streamOnAudioSector(void) {
         }
         h = &g_mbgStream.ringHdrs[g_mbgStream.writeSlot];
         h->firstSector = g_mbgStream.slotSectors - g_mbgStream.slotSector;
-        h->status = (h->status & 0xFFF) | 0xC000;
+        h->status = (h->status & 0xFFF) | MBG_RING_READY | MBG_RING_BUSY;
         if (g_mbgStream.frame > g_mbgStream.lastFrame) {
-            g_mbgStream.endState = 1;
+            g_mbgStream.endState = MBG_END_LAST_FRAME;
             cd_pause();
         }
         g_mbgStream.slotSector = 0;
@@ -240,8 +240,8 @@ s32 mbg_streamStart(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4
 s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **arg2, Ovl64Pair **arg3, MbgRumble **arg4) {
     Ovl64RingHdr *h = &g_mbgStream.ringHdrs[g_mbgStream.readSlot];
 
-    if (!(h->status & 0x8000)) {
-        if (g_mbgStream.endState == 0) {
+    if (!(h->status & MBG_RING_READY)) {
+        if (g_mbgStream.endState == MBG_END_NONE) {
             return 3;
         }
         return 5;
@@ -296,7 +296,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
             g_mbgStream.channel = hdr[5];
         }
     } else if (hdr[5] == hdr[9] && g_mbgStream.channel != hdr[5]) {
-        g_mbgStream.endState = 2;
+        g_mbgStream.endState = MBG_END_ERROR;
         cd_pause();
     }
     g_mbgStreamBusy = 1;
@@ -313,7 +313,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
                 prev = g_mbgStream.slotCount - 1;
             }
             h = &g_mbgStream.ringHdrs[prev];
-            if (!(h->status & 0x1000)) {
+            if (!(h->status & MBG_RING_FREE)) {
                 {
                     /* `last` is never read: assigning it inside the expression stops fold from
                      * rewriting `a - (b - 1)` as `(a + 1) - b`, as in the original. */
@@ -332,7 +332,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
                 g_mbgStream.stalled = 1;
                 goto end;
             }
-            h->status = (h->status & 0xFFF) | 0x6000;
+            h->status = (h->status & 0xFFF) | MBG_RING_BUSY | MBG_RING_FILLING;
         }
         {
             u32 last;
@@ -356,7 +356,7 @@ s32 mbg_streamReset(void) {
     }
     g_mbgStream.unk0 = 1;
     g_mbgStream.stalled = 0;
-    g_mbgStream.endState = 0;
+    g_mbgStream.endState = MBG_END_NONE;
     g_mbgStream.hasCamera = 0;
     g_mbgStream.channel = -1;
     return 0;
@@ -390,7 +390,7 @@ s32 mbg_streamSetRing(Ovl64RingHdr *ring, u32 per, u32 size) {
     g_mbgStream.slotCount = n;
     g_mbgStream.readSlot = n - 1;
     for (i = 0; i < n; i++) {
-        ring->status = (ring->status & 0xFFF) | 0x1000;
+        ring->status = (ring->status & 0xFFF) | MBG_RING_FREE;
         ring++;
     }
     return 0;
@@ -467,13 +467,13 @@ s32 mbg_streamPeekFrame(u8 **data, Ovl64RingHdr **hdr, s32 *kind) {
     Ovl64RingHdr *h;
 
     h = &g_mbgStream.ringHdrs[g_mbgStream.readSlot];
-    if (h->status & 0x1000) {
+    if (h->status & MBG_RING_FREE) {
         *kind = 0;
-    } else if (h->status & 0x8000) {
+    } else if (h->status & MBG_RING_READY) {
         *kind = 1;
-    } else if (h->status & 0x2000) {
+    } else if (h->status & MBG_RING_FILLING) {
         *kind = 2;
-    } else if (h->status & 0x4000) {
+    } else if (h->status & MBG_RING_BUSY) {
         *kind = 3;
     }
     *hdr = h;
@@ -487,7 +487,7 @@ s32 mbg_streamCountFree(s32 *count) {
     s32 i;
 
     for (i = 0; i < n; i++, h++) {
-        if (h->status & 0x1000) {
+        if (h->status & MBG_RING_FREE) {
             (*count)++;
         }
     }
@@ -521,7 +521,7 @@ s32 mbg_streamClearRing(void) {
     s32 i;
 
     for (i = 0; i < n; i++, h++) {
-        h->status = (h->status & 0xFFF) | 0x1000;
+        h->status = (h->status & 0xFFF) | MBG_RING_FREE;
     }
     return 0;
 }
@@ -529,7 +529,7 @@ s32 mbg_streamClearRing(void) {
 s32 mbg_streamFreeFrame(u8 *data) {
     Ovl64RingHdr *h = &g_mbgStream.ringHdrs[(u32)(data - g_mbgStream.ringData) / 0x8F4 / g_mbgStream.slotSectors];
 
-    h->status = (h->status & 0xFFF) | 0x1000;
+    h->status = (h->status & 0xFFF) | MBG_RING_FREE;
     if (g_mbgStream.stalled != 0) {
         cd_readStreamAsync(g_mbgStream.sector, mbg_streamReadyCallback);
         g_mbgStream.stalled = 0;

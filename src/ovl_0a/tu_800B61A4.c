@@ -79,9 +79,9 @@ void fldmdl_initModel(ModelObj *arg0, u8 *arg1) {
     WmModelGroup *g2;
 
     m = arg0->model;
-    if (!(m->flags & 1)) {
+    if (!(m->flags & WMMODEL_RELOCATED)) {
         i = 0;
-        m->flags |= 1;
+        m->flags |= WMMODEL_RELOCATED;
         m->bones = (s32)m + m->bones;
         g = (WmModelGroup *)((u8 *)m + (s32)m->groups);
         m->groups = g;
@@ -184,8 +184,8 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pFT4->v3 = g->uvs[sFT4->uvs[3]][1];
                 pFT4->clut = arg0->texInfo[sFT4->texture].clut;
                 pFT4->tpage = tp = arg0->texInfo[sFT4->texture].tpage & ~0x20;
-                if (sFT4->flags & 1) {
-                    pFT4->tpage = tp | (sFT4->flags & 0xE0);
+                if (sFT4->flags & WMSRC_SEMITRANS) {
+                    pFT4->tpage = tp | (sFT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT4, 1);
                 }
                 prim += sizeof(POLY_FT4);
@@ -218,8 +218,8 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pFT3->v2 = g->uvs[sFT3->uvs[2]][1];
                 pFT3->clut = arg0->texInfo[sFT3->texture].clut;
                 pFT3->tpage = tp = arg0->texInfo[sFT3->texture].tpage & ~0x20;
-                if (sFT3->flags & 1) {
-                    pFT3->tpage = tp | (sFT3->flags & 0xE0);
+                if (sFT3->flags & WMSRC_SEMITRANS) {
+                    pFT3->tpage = tp | (sFT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT3, 1);
                 }
                 prim += sizeof(POLY_FT3);
@@ -265,8 +265,8 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pGT4->v3 = g->uvs[sGT4->uvs[3]][1];
                 pGT4->clut = arg0->texInfo[sGT4->texture].clut;
                 pGT4->tpage = tp = arg0->texInfo[sGT4->texture].tpage & ~0x20;
-                if (sGT4->flags & 1) {
-                    pGT4->tpage = tp | (sGT4->flags & 0xE0);
+                if (sGT4->flags & WMSRC_SEMITRANS) {
+                    pGT4->tpage = tp | (sGT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT4, 1);
                 }
                 prim += sizeof(POLY_GT4);
@@ -308,8 +308,8 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pGT3->v2 = g->uvs[sGT3->uvs[2]][1];
                 pGT3->clut = arg0->texInfo[sGT3->texture].clut;
                 pGT3->tpage = tp = arg0->texInfo[sGT3->texture].tpage & ~0x20;
-                if (sGT3->flags & 1) {
-                    pGT3->tpage = tp | (sGT3->flags & 0xE0);
+                if (sGT3->flags & WMSRC_SEMITRANS) {
+                    pGT3->tpage = tp | (sGT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT3, 1);
                 }
                 prim += sizeof(POLY_GT3);
@@ -448,7 +448,7 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT4->flags & 2)) {
+        if (!(sFT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT4, 0);
             gte_nclip_b();
@@ -477,7 +477,7 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT3->flags & 2)) {
+        if (!(sFT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT3, 0);
             gte_nclip_b();
@@ -509,7 +509,7 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT4->flags & 2)) {
+        if (!(sGT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT4, 0);
             gte_nclip_b();
@@ -539,7 +539,7 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT3->flags & 2)) {
+        if (!(sGT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT3, 0);
             gte_nclip_b();
@@ -571,7 +571,7 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG4->flags & 2)) {
+        if (!(sG4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG4, 0);
             gte_nclip_b();
@@ -600,7 +600,7 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG3->flags & 2)) {
+        if (!(sG3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG3, 0);
             gte_nclip_b();
@@ -632,7 +632,7 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF4->flags & 2)) {
+        if (!(sF4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF4, 0);
             gte_nclip_b();
@@ -662,7 +662,7 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF3->flags & 2)) {
+        if (!(sF3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF3, 0);
             gte_nclip_b();
@@ -1921,7 +1921,7 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sFT4->flags & 2)) {
+        if (!(sFT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT4, 0);
             gte_nclip_b();
@@ -1954,7 +1954,7 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sFT3->flags & 2)) {
+        if (!(sFT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT3, 0);
             gte_nclip_b();
@@ -1986,7 +1986,7 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sGT4->flags & 2)) {
+        if (!(sGT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT4, 0);
             gte_nclip_b();
@@ -2019,7 +2019,7 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sGT3->flags & 2)) {
+        if (!(sGT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT3, 0);
             gte_nclip_b();
@@ -2051,7 +2051,7 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sG4->flags & 2)) {
+        if (!(sG4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG4, 0);
             gte_nclip_b();
@@ -2084,7 +2084,7 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sG3->flags & 2)) {
+        if (!(sG3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG3, 0);
             gte_nclip_b();
@@ -2116,7 +2116,7 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sF4->flags & 2)) {
+        if (!(sF4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF4, 0);
             gte_nclip_b();
@@ -2149,7 +2149,7 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sF3->flags & 2)) {
+        if (!(sF3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF3, 0);
             gte_nclip_b();
@@ -2257,7 +2257,7 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT4->flags & 2)) {
+        if (!(sFT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT4, 0);
             gte_nclip_b();
@@ -2286,7 +2286,7 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT3->flags & 2)) {
+        if (!(sFT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT3, 0);
             gte_nclip_b();
@@ -2318,7 +2318,7 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT4->flags & 2)) {
+        if (!(sGT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT4, 0);
             gte_nclip_b();
@@ -2348,7 +2348,7 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT3->flags & 2)) {
+        if (!(sGT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT3, 0);
             gte_nclip_b();
@@ -2380,7 +2380,7 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG4->flags & 2)) {
+        if (!(sG4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG4, 0);
             gte_nclip_b();
@@ -2409,7 +2409,7 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG3->flags & 2)) {
+        if (!(sG3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG3, 0);
             gte_nclip_b();
@@ -2441,7 +2441,7 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF4->flags & 2)) {
+        if (!(sF4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF4, 0);
             gte_nclip_b();
@@ -2471,7 +2471,7 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF3->flags & 2)) {
+        if (!(sF3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF3, 0);
             gte_nclip_b();
@@ -2576,7 +2576,7 @@ s32 fldbg_initEffectList(void) {
     g_fieldBgCtx.entries = (BgEntry *)g_fieldBgCtx.work;
     for (; i < n; i++) {
         if (trk[i].flags & FLDBG_OVL_ANIMATED) {
-            g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].type = 0x10;
+            g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].type = BGENT_OVERLAY_ANIM;
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].overlay = i;
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].dataOffset = 0;
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].dataSize = 0;
@@ -2796,7 +2796,7 @@ s32 fldbg_updateFollowOverlays(void) {
         f = g_fieldBgFollowOverlays;
         for (i = 0; i < g_fieldBgFollowOverlayCount; i++, f++) {
             o = (BgOverlay *)((u16)f->overlay * sizeof(BgOverlay) + (u32)objs);
-            if ((o->flags & 2) && o->cameraId == st->cameraId) {
+            if ((o->flags & FLDBG_OVL_VISIBLE) && o->cameraId == st->cameraId) {
                 x = st->scroll.x + (sx - bg->posX - (f->offsetX + 0xA0));
                 y = f->offsetY;
                 o->x = x;
@@ -3182,12 +3182,12 @@ s32 fldbg_updateScroll(void) {
     s32 y;
     s32 mode;
     flags = g_fieldBgState.flags;
-    if (!(flags & 0x40)) {
+    if (!(flags & FLDBG_FOLLOW)) {
         return 0;
     }
-    mode = flags & 7;
-    smooth = flags & 8;
-    if (mode == 1 || mode == 2 || mode == 3) {
+    mode = flags & FLDBG_SCROLL_MODE;
+    smooth = flags & FLDBG_SCROLL_SMOOTH;
+    if (mode == FLDBG_SCROLL_START || mode == FLDBG_SCROLL_RUN || mode == FLDBG_SCROLL_TO_PLAYER) {
         ox = g_fieldBgState.scroll.x;
         oy = g_fieldBgState.scroll.y;
         h = g_fieldBgData;
@@ -3280,14 +3280,14 @@ s32 fldbg_updateScroll(void) {
         t = 112 - (*(s16 *)&g_fieldBgState.scroll.y - (((BgCamera *)s)->height >> 1));
         g_fieldBgState.geomOffsetX = i;
         g_fieldBgState.geomOffsetY = t;
-        if (mode == 1) {
-            g_fieldBgState.flags = (g_fieldBgState.flags & ~7) | 2;
+        if (mode == FLDBG_SCROLL_START) {
+            g_fieldBgState.flags = (g_fieldBgState.flags & ~FLDBG_SCROLL_MODE) | FLDBG_SCROLL_RUN;
         }
         if (++g_fieldBgState.scrollFrame > dur) {
-            if ((g_fieldBgState.flags & 7) == 2) {
-                g_fieldBgState.flags = (g_fieldBgState.flags & ~7) | 0x84;
+            if ((g_fieldBgState.flags & FLDBG_SCROLL_MODE) == FLDBG_SCROLL_RUN) {
+                g_fieldBgState.flags = (g_fieldBgState.flags & ~FLDBG_SCROLL_MODE) | FLDBG_CAMERA_CHANGED | FLDBG_SCROLL_HELD;
             } else {
-                g_fieldBgState.flags = (g_fieldBgState.flags & ~7) | 0x80;
+                g_fieldBgState.flags = (g_fieldBgState.flags & ~FLDBG_SCROLL_MODE) | FLDBG_CAMERA_CHANGED;
             }
         }
     }
@@ -3323,10 +3323,10 @@ s32 fldbg_followPlayer(void) {
     s32 s;
     s32 v;
     flags = g_fieldBgState.flags;
-    if (flags & 7) {
+    if (flags & FLDBG_SCROLL_MODE) {
         return 0;
     }
-    if (!(flags & 0x40)) {
+    if (!(flags & FLDBG_FOLLOW)) {
         return 0;
     }
     mode = g_gameState->mode;
@@ -3405,7 +3405,7 @@ s32 fldbg_followPlayer(void) {
     g_fieldBgState.geomOffsetY = sy - c->centerY;
     px = &dx;
     py = &dy;
-    if (g_fieldBgState.flags & 0x40) {
+    if (g_fieldBgState.flags & FLDBG_FOLLOW) {
         ox = g_fieldBgState.scroll.x;
         oy = g_fieldBgState.scroll.y;
         if ((s16)cx < c->scrollMinX) {
@@ -3507,7 +3507,7 @@ BgSprt *fldbg_init(void) {
         DVECTOR v;
     } u; /* projected origin */
 
-    g_fieldBgState.flags = 0x60;
+    g_fieldBgState.flags = FLDBG_FOLLOW | FLDBG_SCROLL_LIMITS;
     g_fieldBgState.unk74 = 0x40;
     g_fieldBgState.followHeight = 0x144;
     g_fieldBgState.unk78 = 0xE10;
@@ -3573,7 +3573,7 @@ s32 fldbg_draw(void) {
     do {
         for (i = 0; i < g_fieldBgCtx.entryCount; i++) {
             switch (g_fieldBgCtx.entries[i].type) {
-            case 0x10:
+            case BGENT_OVERLAY_ANIM:
                 j = 1;
                 break;
             case 0x40:
@@ -3593,7 +3593,7 @@ s32 fldbg_draw(void) {
     h->screenY = h->posY - (s16)(c->scroll.y - 0x70);
     o = (BgOverlay *)((u8 *)h + h->overlayOffset);
     for (j = 0; j < h->overlayCount; j++) {
-        if ((o[j].flags & 2) && o[j].cameraId == c->cameraId) {
+        if ((o[j].flags & FLDBG_OVL_VISIBLE) && o[j].cameraId == c->cameraId) {
             fldbg_drawOverlay(&o[j], g_fieldBgCtx.overlayRgb + j * 3);
         }
     }
@@ -3617,7 +3617,7 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     BgFile *bg;
     FieldBgState *st = NULL; /* dead store: lets cse keep the st = p copy below */
 
-    if (!(g_fieldBgState.flags & 0x40)) {
+    if (!(g_fieldBgState.flags & FLDBG_FOLLOW)) {
         return 0;
     }
     mode = g_gameState->mode;
@@ -3685,14 +3685,14 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     }
     g_fieldBgState.scrollFrame = 1;
     if (arg1 == -1) {
-        g_fieldBgState.flags = (g_fieldBgState.flags & ~7) | 3;
+        g_fieldBgState.flags = (g_fieldBgState.flags & ~FLDBG_SCROLL_MODE) | FLDBG_SCROLL_TO_PLAYER;
     } else {
-        f = g_fieldBgState.flags & ~0xF;
-        g_fieldBgState.flags = f | 3;
-        if (arg1 == 8) {
-            g_fieldBgState.flags = f | 8 | 3;
+        f = g_fieldBgState.flags & ~(FLDBG_SCROLL_MODE | FLDBG_SCROLL_SMOOTH);
+        g_fieldBgState.flags = f | FLDBG_SCROLL_TO_PLAYER;
+        if (arg1 == FLDBG_SCROLL_SMOOTH) {
+            g_fieldBgState.flags = f | FLDBG_SCROLL_SMOOTH | FLDBG_SCROLL_TO_PLAYER;
         } else {
-            g_fieldBgState.flags = f | 3;
+            g_fieldBgState.flags = f | FLDBG_SCROLL_TO_PLAYER;
         }
     }
     return 1;
@@ -3790,7 +3790,7 @@ s32 fldbg_startClutFade(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5,
     n = (u8)arg4 - t;
     size = n * 4 + 0x2C;
     e = &g_fieldBgCtx.entries[arg0];
-    e->type = 0x80;
+    e->type = BGENT_CLUT_FADE;
     e->dataSize = size;
     h = g_fieldBgCtx.data;
     q = (u8 *)h + h->overlayOffset;
@@ -3949,22 +3949,22 @@ s32 fldbg_moveOrigin(s32 arg0, s32 arg1, s32 arg2) {
 s32 fldbg_scrollTo(s16 arg0, s16 arg1, s16 arg2, s32 arg3) {
     s32 f;
 
-    if (!(g_fieldBgState.flags & 0x40)) {
+    if (!(g_fieldBgState.flags & FLDBG_FOLLOW)) {
         return 0;
     }
     g_fieldBgState.scrollFrame = 1;
     g_fieldBgState.scrollToX = arg0;
-    f = g_fieldBgState.flags & ~0xF;
+    f = g_fieldBgState.flags & ~(FLDBG_SCROLL_MODE | FLDBG_SCROLL_SMOOTH);
     g_fieldBgState.scrollToY = arg1;
     g_fieldBgState.scrollFrames = arg2;
     g_fieldBgState.flags = f;
     g_fieldBgState.scrollFrom = g_fieldBgState.scroll;
-    if (arg3 == 8) {
-        g_fieldBgState.flags = f | 8;
+    if (arg3 == FLDBG_SCROLL_SMOOTH) {
+        g_fieldBgState.flags = f | FLDBG_SCROLL_SMOOTH;
     } else {
         g_fieldBgState.flags = f;
     }
-    g_fieldBgState.flags |= 1;
+    g_fieldBgState.flags |= FLDBG_SCROLL_START;
     return 1;
 }
 
@@ -3976,18 +3976,18 @@ s32 fldbg_getScroll(u16 *arg0, u16 *arg1) {
 
 s32 fldbg_setFollow(s32 arg0, s32 arg1, s32 arg2) {
     if (arg0 != 0) {
-        g_fieldBgState.flags |= 0x40;
+        g_fieldBgState.flags |= FLDBG_FOLLOW;
         if (arg1 > 0) {
             fldbg_scrollToPlayer(arg1, arg2);
         }
     } else {
-        g_fieldBgState.flags &= ~0x40;
+        g_fieldBgState.flags &= ~FLDBG_FOLLOW;
     }
     return 1;
 }
 
 s32 fldbg_isFollowing(void) {
-    if (g_fieldBgState.flags & 0x40) {
+    if (g_fieldBgState.flags & FLDBG_FOLLOW) {
         return 1;
     }
     return 0;
@@ -4025,7 +4025,7 @@ s32 fldbg_setFollowHeight(s16 arg0) {
 }
 
 s32 fldbg_hasScrollLimits(void) {
-    if (g_fieldBgState.flags & 0x20) {
+    if (g_fieldBgState.flags & FLDBG_SCROLL_LIMITS) {
         return 1;
     }
     return 0;
@@ -4034,7 +4034,7 @@ s32 fldbg_hasScrollLimits(void) {
 s32 fldbg_disableScrollLimits(void) {
     BgCamera *c;
 
-    if (!(g_fieldBgState.flags & 0x20)) {
+    if (!(g_fieldBgState.flags & FLDBG_SCROLL_LIMITS)) {
         return 0;
     }
     if (g_fieldBgData != NULL) {
@@ -4047,7 +4047,7 @@ s32 fldbg_disableScrollLimits(void) {
         c->scrollMaxX = 0x7FFF;
         c->scrollMinY = -0x8000;
         c->scrollMaxY = 0x7FFF;
-        g_fieldBgState.flags &= ~0x20;
+        g_fieldBgState.flags &= ~FLDBG_SCROLL_LIMITS;
     }
     return 1;
 }
@@ -4055,7 +4055,7 @@ s32 fldbg_disableScrollLimits(void) {
 s32 fldbg_enableScrollLimits(void) {
     BgCamera *c;
 
-    if (g_fieldBgState.flags & 0x20) {
+    if (g_fieldBgState.flags & FLDBG_SCROLL_LIMITS) {
         return 0;
     }
     if (g_fieldBgData != NULL) {
@@ -4064,7 +4064,7 @@ s32 fldbg_enableScrollLimits(void) {
         c->scrollMaxX = g_fieldBgState.savedScrollMaxX;
         c->scrollMinY = g_fieldBgState.savedScrollMinY;
         c->scrollMaxY = g_fieldBgState.savedScrollMaxY;
-        g_fieldBgState.flags |= 0x20;
+        g_fieldBgState.flags |= FLDBG_SCROLL_LIMITS;
     }
     return 1;
 }
@@ -4438,7 +4438,7 @@ s32 fldbg_scanEntries(void) {
     ret = 1;
     for (i = 0; i < g_fieldBgCtx.entryCount; i++) {
         type = g_fieldBgCtx.entries[i].type;
-        if (type == 0x10) {
+        if (type == BGENT_OVERLAY_ANIM) {
             type = 0;
         } else if (type == 0x40) {
             type = ret;

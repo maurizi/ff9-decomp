@@ -116,10 +116,11 @@
 #define WM_WEATHER_AUTO 4 /* WM_REQ_WEATHER: turn auto weather on */
 #define WM_WEATHER_KEEP 5
 
-/* movement mode control types (WmMoveMode.unk0, wm_controlPlayer) */
+/* WmMoveMode.controlType (wm_controlPlayer: wm_controlWalk / wm_controlFly / wm_controlSteer) */
 #define WM_CTRL_WALK 0
 #define WM_CTRL_FLY 1
 #define WM_CTRL_STEER 2
+#define WM_CTRL_WALK_FAST 3 /* WM_MOVE_FAST_WALK; handled like WM_CTRL_WALK by the camera */
 
 /* songs (w_musicRequestSend strings) */
 #define WM_SONG_NORMAL 0 /* "Normal Song" */
@@ -177,10 +178,15 @@ typedef struct {
     void *files[2]; /* [1] freed by wm_freeFile */
     u8 unk3C[16];
 } WorldMapObj;
+/* WorldMapObj.flags */
+#define WM_OBJ_SWIRL_DONE 0x1 /* wm_updateBattleTransition: swirl_update finished; the battle starts once loaded */
+/* WorldMapObj.battleStep: counts down from 5 (wm_startBattleTransition), at 0 starts loading, then */
+#define WM_BTLSTEP_MUSIC -1 /* waiting for the battle music load */
+#define WM_BTLSTEP_SWIRL -2 /* waiting for WM_OBJ_SWIRL_DONE */
 
 /* world map context, GameData.unk8E4.world */
 typedef struct WorldMap {
-    u32 flags; /* flags: 0x100 0x200 0x400 0x800 skip per-frame updates */
+    u32 flags; /* WM_MAP_* */
     u8 *mapHeapBase; /* end of the load area */
     WorldMapObj *obj; /* = &unk48 */
     void *worldData; /* allocation, freed by wm_freeWorldData */
@@ -191,8 +197,10 @@ typedef struct WorldMap {
 /* WorldMap.flags */
 #define WM_MAP_LOADING 0x1 /* set at the start of wm_init, cleared at the end of wm_load */
 #define WM_MAP_NO_FRAME 0x100 /* wm_main skips wm_frameMain (wm_startBattleTransition) */
+#define WM_MAP_NO_FADE 0x200 /* wm_main skips game_updateFade (also set by wm_startBattleTransition) */
 #define WM_MAP_NO_TRANSITION 0x400 /* set by wm_load; while clear wm_main runs wm_updateBattleTransition */
-#define WM_MAP_NAVI_SCREEN 0x1000 /* w_frame: set while g_worldNaviMode == 2 */
+#define WM_MAP_NO_TIMER 0x800 /* wm_main skips game_updateTimer */
+#define WM_MAP_NAVI_SCREEN 0x1000 /* w_frame: set while g_worldNaviMode == WM_NAVI_FULL */
 
 typedef struct {
     u8 pad0[0x11];
@@ -248,6 +256,17 @@ typedef struct {
     s16 rideOffset;
     s16 floorY;
 } WmActorType; /* 0x10 */
+/* EvtObject.actorType on the world map, index into g_worldActorTypeInfo (wm_findVehicles; world scripts set it
+ * with op 0x3B before the model, docs/runtime-findings.md R30b) */
+#define WM_ACTOR_WALKER 1 /* party leader on foot (model 310), g_worldWalkerActor */
+#define WM_ACTOR_WALKER_ALT 2 /* also g_worldWalkerActor (model 309, only in world file 2) */
+#define WM_ACTOR_CHOCOBO0 3 /* 3-7: g_worldMountActor; wm_setMountPalette picks palette 0-4 by type; */
+#define WM_ACTOR_CHOCOBO1 4 /* move modes 1-6 play WM_SONG_CHOCOBO, and only walkers can call one */
+#define WM_ACTOR_CHOCOBO2 5 /* (wm_canCallChocobo) */
+#define WM_ACTOR_CHOCOBO3 6
+#define WM_ACTOR_CHOCOBO4 7 /* WmActorType.flying while g_worldMoveMode is 6 (wm_updateActors) */
+#define WM_ACTOR_MOOGLE 11 /* g_worldMoogleActor (model 307), comes when called with Square */
+#define WM_ACTOR_NO_MODEL 14 /* wm_drawActorModel and wm_drawActorShadow draw nothing for it */
 
 /* camera preset, blended by wm_updateCameraPreset / wm_calcCameraPreset */
 typedef struct {
@@ -279,6 +298,15 @@ typedef struct {
     u8 pad12[2];
     u32 allowedCells[2]; /* allowed cell types (bit mask) */
 } WmMoveMode; /* 0x1C */
+/* g_worldMoveMode (event var b[0xBE], w_movementChange): index into g_worldMoveModes, whose entries give
+ * control type, music and loop SE */
+#define WM_MOVE_WALK 0 /* WM_CTRL_WALK, counts steps */
+#define WM_MOVE_CHOCOBO 1 /* 1-6: WM_SONG_CHOCOBO, riding g_worldMountActor */
+#define WM_MOVE_CHOCOBO_FLY 6 /* last chocobo mode: WM_CTRL_FLY, airborne; WM_ACTOR_CHOCOBO4 flies */
+#define WM_MOVE_STEER 7 /* WM_CTRL_STEER, loop SE 24 */
+#define WM_MOVE_AIRSHIP 8 /* 8, 9: WM_CTRL_FLY with WM_SONG_AIRSHIP and a loop SE */
+#define WM_MOVE_AIRSHIP2 9
+#define WM_MOVE_FAST_WALK 10 /* wm_movePlayer while g_worldFastWalk: 4x speed */
 
 /* doubly linked node (wm_frmbufInit) */
 typedef struct WmFrmbufSlot {
@@ -299,7 +327,7 @@ typedef struct {
     u8 rgb[3]; /* rgb */
     u8 texture;    /* texture */
     u8 unk14;
-    u8 flags; /* flags: 1 = semi transparent, 0xE0 = mode */
+    u8 flags; /* WMSRC_* */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
 
@@ -364,6 +392,10 @@ typedef struct {
     u8 rgb[3]; /* rgb */
     u8 flags; /* flags */
 } WmSrcF3; /* 0xC */
+/* WmSrc*.flags (same as ovl_0a) */
+#define WMSRC_SEMITRANS 0x1 /* the packet builder sets the semi-transparency bit */
+#define WMSRC_DOUBLE_SIDED 0x2 /* the mesh draw functions skip the nclip backface test */
+#define WMSRC_TPAGE_BITS 0xE0 /* with WMSRC_SEMITRANS: ORed into the tpage (abr bits 5-6, and bit 7) */
 
 typedef struct {
     u16 packetSize;
@@ -385,7 +417,7 @@ typedef struct {
 } WmModelGroup; /* 0x28 */
 
 typedef struct {
-    u16 flags; /* flags: 1 = relocated */
+    u16 flags; /* WMMODEL_* */
     u8 boneCount;
     u8 groupCount; /* group count */
     u16 packetSize; /* sum of the groups' packetSize (ovl_0a WmModel, docs/field-models.md) */
@@ -394,6 +426,8 @@ typedef struct {
     s32 bones;
     WmModelGroup *groups;
 } WmModel;
+/* WmModel.flags */
+#define WMMODEL_RELOCATED 0x1 /* the model init (wm_model.c) turned the file offsets into pointers */
 
 typedef struct {
     s16 unk0;
@@ -458,15 +492,19 @@ typedef struct ModelObj {
     u16 attachZ;
 } ModelObj;
 /* ModelObj.flags */
+#define MDL_SCALED 0x2 /* wm_applyScale applies the scale (as ovl_0a) */
 #define MDL_BEHIND_CAMERA 0x10 /* wm_cullBehindCamera: origin SZ 0 or parent behind */
 
 /* model slot (game_getModel) */
 typedef struct {
-    s32 flags; /* flags: 1 = loaded */
+    s32 flags; /* WM_SLOT_* */
     s32 modelId; /* file id */
     ModelObj *obj;
     EvtObject *actor;
 } WmObjSlot;
+/* WmObjSlot.flags */
+#define WM_SLOT_LOADED 0x1 /* wm_loadActorModel built the model */
+#define WM_SLOT_NO_SHADOW 0x10 /* wm_drawShadow skips the object (FLD_OBJ_NO_SHADOW in the field) */
 s32 evt_getObjectChrIndex(EvtObject *);
 void wm_drawMesh(ModelObj *, u8);
 void wm_projectMesh(ModelObj *, u8);
@@ -502,6 +540,10 @@ typedef struct {
     u8 pad5[3];
     WinDef panels[6];
 } MenuMain;
+/* MenuMain.state (menuMain_selectCommand) */
+#define MENUMAIN_COMMAND 0 /* picking a command */
+#define MENUMAIN_MEMBER 1 /* picking the party member for it (menuScreen_needsMember) */
+#define MENUMAIN_ORDER 2 /* Order: swapping party members */
 
 /* map cell (4 bytes) */
 typedef struct {
@@ -594,6 +636,10 @@ typedef struct WmChunkSlot {
     u8 hasData;
     u8 pad11[3];
 } WmChunkSlot; /* 0x14 */
+/* WmChunkSlot.state */
+#define WM_CHUNK_WANTED 0 /* wm_chunkRequest took the slot; wm_findChunkRun picks runs of these */
+#define WM_CHUNK_READING 1 /* in the run wm_readChunks is reading */
+#define WM_CHUNK_READY 2 /* wm_chunksLoaded relocated the pack; blocks can use it */
 
 /* colour + 2 values (8 bytes) */
 typedef struct {
@@ -1028,7 +1074,10 @@ extern s16 g_worldClimbSmooth;
 extern s16 g_worldSpeedSmooth;
 extern s32 g_worldHeapStack[];
 extern u8 g_worldCameraFourProbes;
-extern s32 g_worldNaviMode; /* navi mode */
+extern s32 g_worldNaviMode; /* WM_NAVI_* */
+/* g_worldNaviMode (WM_REQ_NAVI_MODE, default event var 0x64; wm_naviDraw) */
+#define WM_NAVI_MINI 1 /* mini map */
+#define WM_NAVI_FULL 2 /* full-screen map */
 extern u8 g_worldNaviVisible;
 extern s32 g_worldTitleDelay;
 extern POLY_G3 *g_worldNaviConePrim;

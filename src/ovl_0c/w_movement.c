@@ -50,7 +50,7 @@ void wm_updateCamera(void) {
     g_gameState->gameData->projDist = g_worldCameraParams.projDist;
     g_worldCamera->yaw &= 0xFFF;
     g_worldCameraTargetHeight = g_worldCameraParams.targetHeight;
-    if ((u8)g_worldMoveMode == 8 || (u8)g_worldMoveMode == 9) {
+    if ((u8)g_worldMoveMode == WM_MOVE_AIRSHIP || (u8)g_worldMoveMode == WM_MOVE_AIRSHIP2) {
         t = g_worldPlayer->pos.vy + 0x1518;
         g_worldCameraTargetHeight = g_worldCameraParams.targetHeight - (t > 0 ? t >> 3 : t / 6);
     }
@@ -174,8 +174,8 @@ void wm_cameraFollow(void) {
             }
             if (dir != 0) {
                 switch (g_worldMoveModeInfo->controlType) {
-                case 1:
-                case 2:
+                case WM_CTRL_FLY:
+                case WM_CTRL_STEER:
                     switch (dir) {
                     case 2:
                         step = (d + 0x80) / 8;
@@ -185,8 +185,8 @@ void wm_cameraFollow(void) {
                         break;
                     }
                     break;
-                case 0:
-                case 3:
+                case WM_CTRL_WALK:
+                case WM_CTRL_WALK_FAST:
                     switch (dir) {
                     case 2:
                         step = ((d + 0x80) << 8) / (g_worldCameraEaseDiv << 5);
@@ -249,7 +249,7 @@ void wm_cameraFollow(void) {
             wm_wrapPos(&v.vx, &v.vz);
             wm_getGroundHeight(&v, &cell, &t, &g_worldCameraPolyCache[0], (u16 *)&h);
         }
-        if (g_worldMoveModeInfo->controlType == 1) {
+        if (g_worldMoveModeInfo->controlType == WM_CTRL_FLY) {
             if (h < -0x2134) {
                 h = -0x2134;
             }
@@ -269,7 +269,7 @@ void wm_cameraFollow(void) {
             }
             y2 = g_worldCameraParams.groundClearance + h;
         }
-        if (g_worldMoveModeInfo->controlType == 1 && y2 > -0x1194) {
+        if (g_worldMoveModeInfo->controlType == WM_CTRL_FLY && y2 > -0x1194) {
             y2 = -0x1194;
         }
         d = y2 - g_worldCameraEye[1];
@@ -287,8 +287,8 @@ void wm_cameraFollow(void) {
         }
         if (dir != 0) {
             switch (g_worldMoveModeInfo->controlType) {
-            case 1:
-            case 2:
+            case WM_CTRL_FLY:
+            case WM_CTRL_STEER:
                 switch (dir) {
                 case 2:
                     step = (d + 0x100) / 4;
@@ -298,8 +298,8 @@ void wm_cameraFollow(void) {
                     break;
                 }
                 break;
-            case 0:
-            case 3:
+            case WM_CTRL_WALK:
+            case WM_CTRL_WALK_FAST:
                 switch (dir) {
                 case 2:
                     step = ((d + 0x100) << 8) / (((g_worldCameraEaseScale - 2) * g_worldCameraEaseDiv * 7) >> k);
@@ -592,11 +592,11 @@ void wm_initMovement(void) {
         g_worldActorTypeInfo[i].floorY = 0;
     }
     if (g_worldDataSet == WM_DATASET_DISC4) {
-        g_worldMoveModes[9].music = 3;
-        g_worldMoveModes[0].music = 3;
+        g_worldMoveModes[WM_MOVE_AIRSHIP2].music = WM_SONG_DISC4;
+        g_worldMoveModes[WM_MOVE_WALK].music = WM_SONG_DISC4;
     } else {
-        g_worldMoveModes[9].music = 2;
-        g_worldMoveModes[0].music = 0;
+        g_worldMoveModes[WM_MOVE_AIRSHIP2].music = WM_SONG_AIRSHIP;
+        g_worldMoveModes[WM_MOVE_WALK].music = WM_SONG_NORMAL;
     }
 }
 
@@ -620,22 +620,22 @@ void wm_setMountPalette(void) {
     for (n = evt_getObjectList(); n != NULL; n = n->next) {
         a = n->obj;
         if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
-            if ((a->actorType >= 3 && a->actorType < 8)) {
+            if ((a->actorType >= WM_ACTOR_CHOCOBO0 && a->actorType <= WM_ACTOR_CHOCOBO4)) {
                 id = a->modelId;
                 switch (a->actorType) {
-                case 3:
+                case WM_ACTOR_CHOCOBO0:
                     k = 0;
                     break;
-                case 4:
+                case WM_ACTOR_CHOCOBO1:
                     k = 1;
                     break;
-                case 5:
+                case WM_ACTOR_CHOCOBO2:
                     k = 2;
                     break;
-                case 6:
+                case WM_ACTOR_CHOCOBO3:
                     k = 3;
                     break;
-                case 7:
+                case WM_ACTOR_CHOCOBO4:
                     k = 4;
                     break;
                 }
@@ -680,15 +680,15 @@ void wm_findVehicles(void) {
         if (n->obj->kind == 4) {
             a = n->obj;
             switch (a->actorType) {
-            case 1:
-            case 2:
+            case WM_ACTOR_WALKER:
+            case WM_ACTOR_WALKER_ALT:
                 g_worldWalkerActor = a;
                 break;
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
+            case WM_ACTOR_CHOCOBO0:
+            case WM_ACTOR_CHOCOBO1:
+            case WM_ACTOR_CHOCOBO2:
+            case WM_ACTOR_CHOCOBO3:
+            case WM_ACTOR_CHOCOBO4:
                 g_worldMountActor = a;
                 break;
             case 8:
@@ -771,8 +771,8 @@ void wm_drawActors(void) {
                 if (act->actorType == 8) {
                     f = 0;
                 }
-                if (act->actorType == 1 || act->actorType == 2) {
-                    if ((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode <= 6) {
+                if (act->actorType == WM_ACTOR_WALKER || act->actorType == WM_ACTOR_WALKER_ALT) {
+                    if ((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO && (u8)g_worldMoveMode <= WM_MOVE_CHOCOBO_FLY) {
                         f = 0;
                     }
                 }
@@ -875,7 +875,7 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
             }
         }
         wm_calcBoneMatrices(m, s->actor->animFrame);
-        if (arg0->actorType != 0xE) {
+        if (arg0->actorType != WM_ACTOR_NO_MODEL) {
             n = m->model->groupCount;
             if (c->terrainClass != 0 && c->rideOffset > 0) {
                 m->clipY = arg1->vy - c->rideOffset + 100;
@@ -914,7 +914,7 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
     c = &g_worldActorTypeInfo[arg0->actorType];
     k = arg0->modelSlot;
     sx = 0x1000;
-    if (arg0->actorType != 0xE) {
+    if (arg0->actorType != WM_ACTOR_NO_MODEL) {
         d = c->floorY - arg0->pos.vy;
         arg1->vy += d;
         arg1->vy -= d / 8;
@@ -1007,10 +1007,10 @@ void wm_updateActors(void) {
         cc = &g_worldActorTypeInfo[act->actorType];
         if (act->kind == 4 && act->state == 1 && (act->flags & 1)) {
             switch (act->actorType) {
-            case 7:
-                cc->flying = g_worldMoveMode == 6;
+            case WM_ACTOR_CHOCOBO4:
+                cc->flying = g_worldMoveMode == WM_MOVE_CHOCOBO_FLY;
                 break;
-            case 11:
+            case WM_ACTOR_MOOGLE:
                 g_worldMoogleActor = act;
                 break;
             }
@@ -1029,19 +1029,19 @@ void wm_updateActors(void) {
     }
     pen_setColorPreset(0);
     switch (g_worldMoveModeInfo->controlType) {
-    case 0:
-    case 3:
+    case WM_CTRL_WALK:
+    case WM_CTRL_WALK_FAST:
         if (g_worldMapLoaded != 0) {
             wm_cameraAutoTurnWalk();
         }
         break;
-    case 1:
-    case 2:
+    case WM_CTRL_FLY:
+    case WM_CTRL_STEER:
         wm_cameraAutoTurnVehicle();
         break;
     }
-    if ((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode <= 6) {
-        g_worldActorTypeInfo[1].rideOffset = g_worldActorTypeInfo[g_worldPlayer->actorType].rideOffset;
+    if ((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO && (u8)g_worldMoveMode <= WM_MOVE_CHOCOBO_FLY) {
+        g_worldActorTypeInfo[WM_ACTOR_WALKER].rideOffset = g_worldActorTypeInfo[g_worldPlayer->actorType].rideOffset;
     }
     if (g_worldMountActor != NULL) {
         if (g_worldMountActor->rotZ < 0) {
@@ -1055,7 +1055,7 @@ void wm_updateActors(void) {
         }
     }
     if (g_worldVehicleActor != NULL) {
-        if (g_worldMoveModeInfo->controlType != 1) {
+        if (g_worldMoveModeInfo->controlType != WM_CTRL_FLY) {
             if (g_worldVehicleActor->rotZ < 14) {
                 g_worldVehicleActor->rotZ += 10;
             }
@@ -1166,7 +1166,7 @@ void wm_movePlayer(WmActorType *cc) {
     if (g_worldMoveModeInfo->countsSteps != 0 && g_worldPlayerPosChanged != 0 && w_frameGetParameter(0xC1) != 0x34 && g_worldTitleId == -1) {
         g_worldPlayerStepped = D_800CCE55;
     }
-    if (D_800CCE4A == 0 && g_worldNaviMode != 2 && g_worldMusicState == WM_MUSIC_READY && g_worldMapLoaded != 0 && g_worldCameraSmoothing == 0) {
+    if (D_800CCE4A == 0 && g_worldNaviMode != WM_NAVI_FULL && g_worldMusicState == WM_MUSIC_READY && g_worldMapLoaded != 0 && g_worldCameraSmoothing == 0) {
         wm_controlPlayer();
     }
     spd = g_worldPlayerSpeed;
@@ -1177,7 +1177,7 @@ void wm_movePlayer(WmActorType *cc) {
     if (g_worldMoveModeInfo->airborne == 0) {
         saved = g_worldMoveMode;
         if (g_worldFastWalk != 0) {
-            g_worldMoveMode = 10;
+            g_worldMoveMode = WM_MOVE_FAST_WALK;
             spd *= 4;
         }
         i = 0;
@@ -1343,7 +1343,7 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
     c = &g_worldPolyCache[k];
     v.vx += math_sin(g_worldPlayerHeading + (ang = arg1 + 0x800)) * arg3 >> 12;
     v.vz += math_cos(g_worldPlayerHeading + ang) * arg3 >> 12;
-    if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == 0x34 && g_worldMoveModeInfo->controlType != 1) {
+    if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == 0x34 && g_worldMoveModeInfo->controlType != WM_CTRL_FLY) {
         wm_getGroundHeight(&v, &cell, &h, NULL, (u16 *)&v.vy);
     } else {
         wm_getGroundHeight(&v, &cell, &h, c, (u16 *)&v.vy);
@@ -1527,15 +1527,15 @@ void w_movementChange(void) {
     prev = g_worldMoveModeInfo;
     g_worldMoveMode = g_evtGlobalVars.b[0xBE];
     g_worldMoveModeInfo = p = &g_worldMoveModes[g_worldMoveMode];
-    if (old == 7) {
+    if (old == WM_MOVE_STEER) {
         wm_seStop(prev->loopSe);
     }
     if (p->loopSe != 0) {
         wm_sePlay(p->loopSe, 0);
-        if (g_worldMoveMode != 7) {
+        if (g_worldMoveMode != WM_MOVE_STEER) {
             wm_seFadeVolume(p->loopSe, 0x3C, 0x3F);
         }
-        if ((u8)(g_worldMoveMode - 8) < 2) {
+        if ((u8)(g_worldMoveMode - WM_MOVE_AIRSHIP) < 2) {
             wm_sePlay(0x26, 0);
         }
         g_worldCamera->viewForceNormal = 1;
@@ -1543,10 +1543,10 @@ void w_movementChange(void) {
     if (prev == NULL || prev->music != p->music) {
         w_musicRequestSend(p->music);
     }
-    if (g_worldMoveMode == 0 && (u8)(old - 1) < 6) {
+    if (g_worldMoveMode == WM_MOVE_WALK && (u8)(old - WM_MOVE_CHOCOBO) < 6) {
         g_worldPlayerHeading = (g_worldMountActor->pos.rotY + 0x400) & 0xFFF;
     }
-    if ((u8)(g_worldMoveMode - 1) < 6 && old == 0) {
+    if ((u8)(g_worldMoveMode - WM_MOVE_CHOCOBO) < 6 && old == WM_MOVE_WALK) {
         g_worldPlayerHeading = g_worldMountActor->pos.rotY & 0xFFF;
     }
     if (g_worldMoveModes[old].airborne == g_worldMoveModes[g_worldMoveMode].airborne) {
@@ -1801,10 +1801,10 @@ void wm_controlFly(void) {
         g_worldPlayerTurn *= 2;
         g_worldPlayerSpeed *= 2;
     }
-    if (g_worldMoveMode == 9) {
+    if (g_worldMoveMode == WM_MOVE_AIRSHIP2) {
         g_worldPlayerTurn = g_worldPlayerTurn * (600 - g_worldPlayerSpeed / 2) >> 8;
     }
-    if (g_worldMoveMode == 8) {
+    if (g_worldMoveMode == WM_MOVE_AIRSHIP) {
         g_worldPlayerTurn = g_worldPlayerTurn * (580 - g_worldPlayerSpeed / 2) >> 8;
     }
     if (x != 0 || z < 0) {
@@ -2257,13 +2257,13 @@ s32 wm_getTerrainHeightOffset(s32 arg0, u32 arg1, u8 *arg2) {
 
 void wm_controlPlayer(void) {
     switch (g_worldMoveModeInfo->controlType) {
-    case 0:
+    case WM_CTRL_WALK:
         wm_controlWalk();
         break;
-    case 2:
+    case WM_CTRL_STEER:
         wm_controlSteer();
         break;
-    case 1:
+    case WM_CTRL_FLY:
         wm_controlFly();
         break;
     }

@@ -577,22 +577,22 @@ void tm_loadTim(TmTim *tim, s32 x, s32 y, s32 cx, s32 cy) {
     s32 tp;
 
     img = (TmTimImage *)((u8 *)tim + (tim->clutLen + 8));
-    switch ((s32)(tim->flags & 3)) {
-    case 0:
+    switch ((s32)(tim->flags & TM_TIM_PMODE)) {
+    case TM_TIM_4BIT:
         tp = 0;
         LoadTPage(img->data, tp, 0, x, y, img->w << 2, img->h);
         DrawSync(0);
         LoadClut(tim->clut, cx, cy);
         DrawSync(0);
         break;
-    case 1:
+    case TM_TIM_8BIT:
         tp = 1;
         LoadTPage(img->data, tp, 0, x, y, img->w << tp, img->h);
         DrawSync(0);
         LoadClut(tim->clut, cx, cy);
         DrawSync(0);
         break;
-    case 2:
+    case TM_TIM_16BIT:
         break;
     default:
         return;
@@ -1721,15 +1721,15 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
                 s->flashNext = TM_TASK_BATTLE_LOSE;
             }
             switch (l->type) {
-            case 0:
-            case 1:
+            case TM_TYPE_P:
+            case TM_TYPE_M:
                 if ((rand() & 0x3F) == 0) {
-                    l->type = 2;
+                    l->type = TM_TYPE_X;
                 }
                 break;
-            case 2:
+            case TM_TYPE_X:
                 if ((rand() & 0x7F) == 0) {
-                    l->type = 3;
+                    l->type = TM_TYPE_A;
                 }
                 break;
             }
@@ -1759,22 +1759,22 @@ void tm_getBattleValues(s32 unused, TmBattle *out, TmCard *a, TmCard *b) {
     bmdef = b->mdef;
     def = 0;
     switch (a->type) {
-    case 0:
+    case TM_TYPE_P:
         atk = aatk;
         def = bpdef;
         break;
-    case 1:
+    case TM_TYPE_M:
         atk = aatk;
         def = bmdef;
         break;
-    case 2:
+    case TM_TYPE_X:
         atk = aatk;
         def = bpdef;
         if (bmdef < def) {
             def = bmdef;
         }
         break;
-    case 3:
+    case TM_TYPE_A:
         atk = aatk;
         if (atk < apdef) {
             atk = apdef;
@@ -2850,16 +2850,16 @@ void tm_initHands(TmState *s) {
         r = rand() & 3;
         switch (r) {
         case 0:
-            c->type = 0;
+            c->type = TM_TYPE_P;
             break;
         case 1:
             c->type = r;
             break;
         case 2:
-            c->type = 3;
+            c->type = TM_TYPE_A;
             break;
         case 3:
-            c->type = 2;
+            c->type = TM_TYPE_X;
             break;
         }
         c->pdef = rand();
@@ -3204,7 +3204,7 @@ void tm_makeCard(TmState *s, TmCard *c, s32 arg2, s32 random) {
     }
     c->type = tbl[(u8)id].type;
     if (!(rand() & 0x7F)) {
-        c->type = 2;
+        c->type = TM_TYPE_X;
     }
 }
 
@@ -3280,16 +3280,16 @@ void *tm_drawCardStats(u32 *ot, SPRT *p, TmState *s, TmCard *card, u8 c) {
     }
     p = tm_drawStatGlyph(ot, p, (s32)s, x + 9, y + 0x28, card->power >> 4, c);
     switch (card->type) {
-    case 0:
+    case TM_TYPE_P:
         p = tm_drawStatGlyph(ot, p, (s32)s, x + 15, y + 0x28, 0x10, c);
         break;
-    case 1:
+    case TM_TYPE_M:
         p = tm_drawStatGlyph(ot, p, (s32)s, x + 15, y + 0x28, 0x11, c);
         break;
-    case 2:
+    case TM_TYPE_X:
         p = tm_drawStatGlyph(ot, p, (s32)s, x + 15, y + 0x28, 0x12, c);
         break;
-    case 3:
+    case TM_TYPE_A:
         p = tm_drawStatGlyph(ot, p, (s32)s, x + 15, y + 0x28, 0xA, c);
         break;
     }

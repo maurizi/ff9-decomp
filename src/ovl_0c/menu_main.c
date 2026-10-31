@@ -52,7 +52,7 @@ void menuMain_inputMember(void) {
 
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(SE_CANCEL);
-        s_menuMain.state = 0;
+        s_menuMain.state = MENUMAIN_COMMAND;
         return;
     } else if (g_padRepeat & BTN_CROSS) {
         snd_playSe(SE_CURSOR);
@@ -80,7 +80,7 @@ void menuMain_inputOrder(void) {
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(SE_CANCEL);
         if (s_menuMain.orderPicked == 0) {
-            s_menuMain.state = 0;
+            s_menuMain.state = MENUMAIN_COMMAND;
         } else {
             s_menuMain.orderPicked = 0;
         }
@@ -256,19 +256,19 @@ void menuMain_drawCursor(void) {
     blink = (g_menuScreenFrame & 3) != 0;
     help_setCursorOnTop(s_menuMain.state - 1U >= 2);
     if (!fade_isBusy()) {
-        if (s_menuMain.state == 0 || blink) {
+        if (s_menuMain.state == MENUMAIN_COMMAND || blink) {
             g_menuHelp.x = 0xE0;
             g_menuHelp.otz = 1;
             g_menuHelp.y = s_menuMain.cursor * 0xF + 0x11;
             help_drawCursor();
         }
-        if (s_menuMain.state == 1) {
+        if (s_menuMain.state == MENUMAIN_MEMBER) {
             g_menuHelp.otz = 0xC;
             g_menuHelp.x = s_menuMain.panels[0].rect.x - 0xE;
             g_menuHelp.y = g_menuScreenMember * 0x2E + 0x20;
             help_drawCursor();
         }
-        if (s_menuMain.state == 2) {
+        if (s_menuMain.state == MENUMAIN_ORDER) {
             if (s_menuMain.orderPicked == 1) {
                 g_menuHelp.otz = 0xB;
                 g_menuHelp.x = s_menuMain.panels[0].rect.x - 0xA;
@@ -289,20 +289,20 @@ void menuMain_drawCursor(void) {
 
 void menuMain_updateHelp(void) {
     g_menuHelp.text = 0;
-    if (s_menuMain.state == 0) {
+    if (s_menuMain.state == MENUMAIN_COMMAND) {
         g_menuHelp.text = (u8 *)menuScreen_getCommandHelp(s_menuMain.cursor);
-    } else if (s_menuMain.state == 1) {
-        if (s_menuMain.cursor + 1 == 3) {
+    } else if (s_menuMain.state == MENUMAIN_MEMBER) {
+        if (s_menuMain.cursor + 1 == MENU_SCREEN_EQUIP) {
             menuMain_setEquipHelp(s_menuMain.cursor);
         } else {
             s32 a = s_menuMain.cursor + 2;
-            if (s_menuMain.cursor + 1 == 4) {
+            if (s_menuMain.cursor + 1 == MENU_SCREEN_STATUS) {
                 menuMain_setExpHelp(a);
             } else {
                 g_menuHelp.text = text_get(a);
             }
         }
-    } else if (s_menuMain.state == 2) {
+    } else if (s_menuMain.state == MENUMAIN_ORDER) {
         g_menuHelp.text = text_get(s_menuMain.orderPicked + 0xB);
     }
 }
@@ -333,14 +333,14 @@ void menuMain_setExpHelp(s32 arg0) {
 }
 
 void menuMain_selectCommand(void) {
-    if (s_menuMain.cursor + 1 != 5) {
+    if (s_menuMain.cursor + 1 != MENU_SCREEN_ORDER) {
         if (menuScreen_needsMember(s_menuMain.cursor + 1) == 0) {
             menuScreen_open(s_menuMain.cursor + 1);
         } else {
-            s_menuMain.state = 1;
+            s_menuMain.state = MENUMAIN_MEMBER;
         }
     } else {
-        s_menuMain.state = 2;
+        s_menuMain.state = MENUMAIN_ORDER;
         s_menuMain.orderPicked = 0;
     }
     snd_playSe(SE_CURSOR);
@@ -381,7 +381,7 @@ void menuMain_init(void) {
         s_menuMain.cursor = 0;
         s_menuMain.orderCursor = 0;
     }
-    s_menuMain.state = 0;
+    s_menuMain.state = MENUMAIN_COMMAND;
     text_setBank(s_menuMainText);
     menuMain_initPanels();
     r.x = 8;

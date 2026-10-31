@@ -80,7 +80,7 @@ void fld_main(s32 arg0) {
                 bgi_updateAnims();
                 bgi_updateFloorMoves();
             }
-            if (!(g_gameState->gameData->ctx.field->flags & 0x10)) {
+            if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_VIBRATION)) {
                 vib_update();
             }
             if (!(g_gameState->gameData->flags & GD_HIDE_SPRITES)) {
@@ -92,13 +92,13 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_WINDOWS)) {
                 game_updateWindows();
             }
-            if (!(g_gameState->gameData->ctx.field->flags & 0x800)) {
+            if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_FADE)) {
                 game_updateFade();
             }
             if (!(g_gameState->gameData->ctx.field->flags & 4)) {
                 fld_updateEncounter();
             }
-            if (!(g_gameState->gameData->ctx.field->flags & 0x80)) {
+            if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_TIMER)) {
                 game_updateTimer();
             }
             if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_PRELOAD)) {
@@ -533,7 +533,7 @@ void fld_initScene(void) {
     sc->sprites = NULL;
     sc->shadows = NULL;
     sc->heapTop = 0;
-    sc->movieState = 0;
+    sc->movieState = FLD_MOVIE_IDLE;
     sc->movieRgb24 = 0;
     sc->movieFile = 0;
     sc->movieList = 0;
@@ -619,7 +619,7 @@ void fld_refindSectors(void) {
     gd = gs->gameData;
     f = gd->ctx.field;
     id = -1;
-    if (f->flags & 0x10000) {
+    if (f->flags & FLD_MAP_REFIND_SECTORS) {
         gs2 = gs;
         gd2 = gd;
         g = gs2->dirs;

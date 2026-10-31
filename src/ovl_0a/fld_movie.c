@@ -222,7 +222,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
         bgi_setActorActive(slot, 1);
     }
     g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_ACTORS_READY;
-    s->flags |= 1;
+    s->flags |= FLD_OBJ_LOADED;
     return slot;
 }
 
@@ -286,7 +286,7 @@ s32 fld_isModelTexAnimActive(ModelObj *arg0) {
     if (t != NULL) {
         e = t->anims;
         for (i = t->count - 1; i >= 0; i--) {
-            if (e[i].flags & 1) {
+            if (e[i].flags & TEXANIM_ACTIVE) {
                 return 1;
             }
         }
@@ -332,7 +332,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
             }
         }
     }
-    if (g_gameState->gameData->ctx.field->area->scene->movieState != 0) {
+    if (g_gameState->gameData->ctx.field->area->scene->movieState != FLD_MOVIE_IDLE) {
         for (i = 0; i < n; i++) {
             o = arg0[i]->model;
             m = o->model;
@@ -378,7 +378,7 @@ void fld_drawModels(void) {
 
     lim = 100;
     j = 0;
-    if (g_fieldMovieFlags & 0x40) {
+    if (g_fieldMovieFlags & FLD_MVF_CAMERA) {
         mbg_getGeomOffset(&ofs[0], &ofs[1]);
         SetGeomOffset(ofs[0], ofs[1]);
     } else {
@@ -494,7 +494,7 @@ void fld_drawModels(void) {
         if (c != NULL && !(c->flags & 0x1000)) {
             m = c->model;
             if (m->texAnims->count >= 2 && fld_isModelTexAnimActive(m) == 0) {
-                m->texAnims->anims[2].flags |= 1;
+                m->texAnims->anims[2].flags |= TEXANIM_ACTIVE;
                 m->texAnims->anims[2].pos = 0;
                 m->texAnims->anims[2].lastFrame = 0x1000;
             }
@@ -512,7 +512,7 @@ void fld_drawModels(void) {
     }
     fld_applyModelCommands(list, n);
     g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
-    if (!(g_fieldMovieFlags & 0x40)) {
+    if (!(g_fieldMovieFlags & FLD_MVF_CAMERA)) {
         fldbg_resetGeomOffset();
     }
 }
@@ -541,7 +541,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             c->flags &= ~FLD_OBJ_SEMITRANS;
         } else {
             if (arg2 != (s8)info->abr) {
-                c->flags |= 0x40000;
+                c->flags |= FLD_OBJ_ABR_CHANGED;
             }
             c->flags |= FLD_OBJ_SEMITRANS;
         }
@@ -578,7 +578,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_gameState->gameData->ctx.field->area->scene->heapTop += sizeof(FieldActorExt);
         }
         y = x;
-        if (!(x->flags & 1)) {
+        if (!(x->flags & FLD_EXT_BUILT)) {
             *y->obj = *c->obj;
             y->model->model = ((ModelObj *)c->model)->model;
             y->model->anim = ((ModelObj *)c->model)->anim;
@@ -604,7 +604,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 fldmdl_initTexAnims((TexAnimRelocSet *)y->model->texAnims, (ModelTexOfs *)spr);
             }
             fld_trimModelCache();
-            x->flags |= 0x02000001;
+            x->flags |= 0x02000000 | FLD_EXT_BUILT;
         }
         switch (arg1) {
         case 8:
@@ -614,9 +614,9 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 y->model->mirrorNormal.w[1] = x->mirrorNormal.w[1];
                 y->model->mirrorPoint.w[0] = x->mirrorPoint.w[0];
                 y->model->mirrorPoint.w[1] = x->mirrorPoint.w[1];
-                x->flags |= 0x01000000;
+                x->flags |= FLD_EXT_MIRROR;
             } else {
-                x->flags &= ~0x01000000;
+                x->flags &= ~FLD_EXT_MIRROR;
             }
             break;
         case 9:
@@ -686,8 +686,8 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
         upd = 0;
         info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->obj->uid];
         vis = c->flags & FLD_OBJ_SEMITRANS;
-        chg = (info->flags & 0x10000) ^ vis;
-        f4 = c->flags & 0x40000;
+        chg = (info->flags & FLD_INFO_SEMITRANS) ^ vis;
+        f4 = c->flags & FLD_OBJ_ABR_CHANGED;
         f2 = c->flags & FLD_OBJ_SEMITRANS_AGAIN;
         if (chg || f4 || f2) {
             upd = 1;
@@ -704,11 +704,11 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
             if (c->flags & FLD_OBJ_SEMITRANS_AGAIN) {
                 c->flags &= ~FLD_OBJ_SEMITRANS_AGAIN;
             }
-            c->flags &= ~0x40000;
+            c->flags &= ~FLD_OBJ_ABR_CHANGED;
             if (chg || f4) {
                 c->flags |= FLD_OBJ_SEMITRANS_AGAIN;
             }
-            info->flags = (info->flags & ~0x10000) | vis;
+            info->flags = (info->flags & ~FLD_INFO_SEMITRANS) | vis;
         }
     }
     for (i = arg1 - 1; i >= 0; i--) {
@@ -718,7 +718,7 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
         }
         info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->obj->uid];
         x = info->mirror;
-        if (x != NULL && (x->flags & 0x01000000)) {
+        if (x != NULL && (x->flags & FLD_EXT_MIRROR)) {
             fldmdl_reflectModel(x->model);
             y = x;
             fldmdl_calcBoneMatrices(x->model, x->src->obj->animFrame);
@@ -1132,7 +1132,7 @@ s32 fld_movieCommand(s32 arg0, s32 arg1, s32 arg2) {
         fld_movieStop();
         return 0;
     case 2:
-        g_fieldMovieFlags |= 1;
+        g_fieldMovieFlags |= FLD_MVF_PLAY;
         break;
     case 3:
         return fld_movieCommand_state();
@@ -1154,7 +1154,7 @@ void fld_movieStart(s32 arg0, s32 arg1, s32 arg2) {
     fld_clearModelCache();
     preload_reset();
     g_gameState->gameData->ctx.field->flags |= FLD_MAP_NO_PRELOAD;
-    g_gameState->gameData->ctx.field->area->scene->movieState = 1;
+    g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_LOAD_OVL;
 }
 
 void fld_movieUpdate(void) {
@@ -1164,54 +1164,54 @@ void fld_movieUpdate(void) {
     s32 d;
 
     switch (g_gameState->gameData->ctx.field->area->scene->movieState) {
-    case 1:
+    case FLD_MOVIE_LOAD_OVL:
         if (cd_getState() == 0) {
             if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
                 FileEntry *f = file_find(DIR_OVERLAYS, OVL_MOVIE);
                 cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11,
                               (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
-            g_gameState->gameData->ctx.field->area->scene->movieState = 2;
+            g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_READ_OVL;
         }
         break;
-    case 2:
+    case FLD_MOVIE_READ_OVL:
         if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
-            g_fieldMovieFlags |= 8;
-            g_gameState->gameData->ctx.field->area->scene->movieState = 3;
+            g_fieldMovieFlags |= FLD_MVF_FLUSH_CACHE;
+            g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_FIND;
         }
         break;
-    case 3:
-        if (!(g_fieldMovieFlags & 8)) {
+    case FLD_MOVIE_FIND:
+        if (!(g_fieldMovieFlags & FLD_MVF_FLUSH_CACHE)) {
             g_gameState->gameData->ctx.field->area->scene->movieFile = cd_findFile(
                 g_mbgMovieLists[g_gameState->gameData->ctx.field->area->scene->movieList]
                     .movies[g_gameState->gameData->ctx.field->area->scene->movieEntry].path);
             if (cd_getState() == 0) {
                 cd_seekStreamAsync(g_gameState->gameData->ctx.field->area->scene->movieFile);
-                g_gameState->gameData->ctx.field->area->scene->movieState = 4;
+                g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_SEEK;
             }
         }
         break;
-    case 4:
+    case FLD_MOVIE_SEEK:
         if (cd_getState() == 0) {
-            g_gameState->gameData->ctx.field->area->scene->movieState = 5;
+            g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_READY;
         }
         break;
-    case 5:
-        if (g_fieldMovieFlags & 1) {
+    case FLD_MOVIE_READY:
+        if (g_fieldMovieFlags & FLD_MVF_PLAY) {
             b = 1;
             if (g_gameState->gameData->drawBuf != 0) {
                 b = 2;
             }
-            g_fieldFlagQueue.mapFlags[0][b - 1] = 0x600;
-            g_fieldFlagQueue.gameFlags[0][b - 1] = 0x19;
-            g_fieldFlagQueue.mapFlags[0][b - 1] |= 0x800;
+            g_fieldFlagQueue.mapFlags[0][b - 1] = FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK;
+            g_fieldFlagQueue.gameFlags[0][b - 1] = GD_HIDE_SPRITES | GD_HIDE_BG | GD_MENU_DISABLED;
+            g_fieldFlagQueue.mapFlags[0][b - 1] |= FLD_MAP_NO_FADE;
             if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0) {
                 g_fieldFlagQueue.gameFlags[0][b - 1] |= 0x44;
-                g_fieldFlagQueue.mapFlags[0][b - 1] |= 1;
+                g_fieldFlagQueue.mapFlags[0][b - 1] |= FLD_MAP_NO_WINDOWS;
             }
-            g_fieldFlagQueue.movieFlags[0][b - 1] = 0x40;
-            g_fieldFlagQueue.movieFlags[1][b] = 0x40;
-            g_fieldFlagQueue.movieFlags[0][b] = 2;
+            g_fieldFlagQueue.movieFlags[0][b - 1] = FLD_MVF_CAMERA;
+            g_fieldFlagQueue.movieFlags[1][b] = FLD_MVF_CAMERA;
+            g_fieldFlagQueue.movieFlags[0][b] = FLD_MVF_RUNNING;
             if (!(g_padPortMask[0] & BTN_START)) {
                 g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_MOVIE_DISPMASK;
                 g_padPortMask[0] |= BTN_START;
@@ -1227,21 +1227,21 @@ void fld_movieUpdate(void) {
             mbg_setVolume(2, 4, g_gameState->gameData->ctx.field->area->scene->movieSndVolume);
             mbg_play(g_gameState->gameData->ctx.field->area->scene->movieList,
                           g_gameState->gameData->ctx.field->area->scene->movieEntry);
-            g_gameState->gameData->ctx.field->area->scene->movieState = 6;
+            g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_PLAYING;
         }
         break;
-    case 6:
-        if (g_fieldMovieFlags & 0x40) {
+    case FLD_MOVIE_PLAYING:
+        if (g_fieldMovieFlags & FLD_MVF_CAMERA) {
             mbg_getStartCamera((void *)&g_gameState->gameData->viewMatrix, &g_gameState->gameData->projDist);
         }
-        if ((g_fieldMovieFlags & 2) && (mbg_getStatus() & 2)) {
+        if ((g_fieldMovieFlags & FLD_MVF_RUNNING) && (mbg_getStatus() & 2)) {
             done = mbg_update(0);
             t = mbg_getLastFrame();
-            if (!(g_fieldMovieFlags & 0x20) && (u32)t < 99999) {
+            if (!(g_fieldMovieFlags & FLD_MVF_END_FADE) && (u32)t < 99999) {
                 d = t - g_mbgFrame;
                 if (d < 4) {
                     akao_sendCmdE5(d * 4, 0);
-                    g_fieldMovieFlags |= 0x20;
+                    g_fieldMovieFlags |= FLD_MVF_END_FADE;
                 }
             }
             if (done != 0) {
@@ -1254,28 +1254,28 @@ void fld_movieUpdate(void) {
             } else if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0 && g_gameState->gameData->drawBuf == 0) {
                 g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x = 0x1E0;
             }
-            if ((g_mbgFrame >= t || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & 0x100)) {
+            if ((g_mbgFrame >= t || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & FLD_MVF_END_DONE)) {
                 if (g_fieldMovieLastFrame >= g_mbgFrame) {
                     ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
                     g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_HIDE_ALL);
-                    g_gameState->gameData->ctx.field->flags &= ~0xE01;
+                    g_gameState->gameData->ctx.field->flags &= ~(FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
                     if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0 && g_gameState->gameData->drawBuf == 0) {
                         g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x = 0x1E0;
                     }
                     printf("Fr: %d\n", g_fieldMovieLastFrame);
                 } else {
                     g_fieldFlagQueue.gameFlags[1][0] = (GD_MENU_DISABLED | GD_HIDE_ALL);
-                    g_fieldFlagQueue.mapFlags[1][0] = 0xE01;
+                    g_fieldFlagQueue.mapFlags[1][0] = FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS;
                 }
-                g_fieldMovieFlags |= 0x100;
+                g_fieldMovieFlags |= FLD_MVF_END_DONE;
             }
             g_fieldMovieLastFrame = g_mbgFrame;
         }
         break;
-    case 7:
-        if ((g_fieldMovieFlags & 4) && cd_getState() == 0) {
+    case FLD_MOVIE_STOPPING:
+        if ((g_fieldMovieFlags & FLD_MVF_STOPPED) && cd_getState() == 0) {
             fld_movieFinish();
-            g_gameState->gameData->ctx.field->area->scene->movieState = 8;
+            g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_DONE;
         }
         break;
     }
@@ -1288,8 +1288,8 @@ void fld_movieStop(void) {
     }
     mbg_shutdown();
     cd_cancel();
-    g_fieldMovieFlags |= 4;
-    g_gameState->gameData->ctx.field->area->scene->movieState = 7;
+    g_fieldMovieFlags |= FLD_MVF_STOPPED;
+    g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_STOPPING;
 }
 
 void fld_movieFinish(void) {
@@ -1298,7 +1298,7 @@ void fld_movieFinish(void) {
     g_gameState->gameData->flags &= ~0x5D;
     f = g_gameState->gameData->ctx.field;
     g_fieldMovieFlags &= 0xFE00;
-    f->flags &= ~0x1E01;
+    f->flags &= ~(FLD_MAP_NO_PRELOAD | FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
     g_gameState->vsyncMode = 2;
     g_gameState->dispEnv[0].disp.x = 0x140;
     g_gameState->dispEnv[1].disp.x = 0;
@@ -1306,7 +1306,7 @@ void fld_movieFinish(void) {
 }
 
 s32 fld_isMoviePlaying(void) {
-    if ((u32)(g_gameState->gameData->ctx.field->area->scene->movieState - 6) < 2 && (g_fieldMovieFlags & 2)
+    if ((u32)(g_gameState->gameData->ctx.field->area->scene->movieState - FLD_MOVIE_PLAYING) < 2 && (g_fieldMovieFlags & FLD_MVF_RUNNING)
         && (mbg_getStatus() & 2)) {
         return 1;
     }
@@ -1357,11 +1357,11 @@ void fld_endFrame(void) {
     }
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    if (g_fieldMovieFlags & 8) {
+    if (g_fieldMovieFlags & FLD_MVF_FLUSH_CACHE) {
         EnterCriticalSection();
         FlushCache();
         ExitCriticalSection();
-        g_fieldMovieFlags &= ~8;
+        g_fieldMovieFlags &= ~FLD_MVF_FLUSH_CACHE;
     }
     if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_DISPENV)) {
         PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
@@ -1690,7 +1690,7 @@ void fld_drawSprites(void) {
     if (h == NULL) {
         return;
     }
-    if (g_fieldMovieFlags & 0x40) {
+    if (g_fieldMovieFlags & FLD_MVF_CAMERA) {
         mbg_getGeomOffset(&xy[0], &xy[1]);
         SetGeomOffset(xy[0], xy[1]);
     } else {
@@ -1700,7 +1700,7 @@ void fld_drawSprites(void) {
     ot = &g_gameState->gameData->ot[g_gameState->gameData->drawBuf][g_gameState->gameData->ctx.field->area->scene->otBias];
     for (i = 0; i < h->count; i++) {
         e = &h->entries[i];
-        if (e->sprite != NULL && (e->flags & 1)) {
+        if (e->sprite != NULL && (e->flags & FLD_SPR_VISIBLE)) {
             if ((s8)e->parent != -1) {
                 t = ((MATRIX *)((FieldObjSlot *)game_getModel((s8)e->parent))->model->boneMatrices)[e->bone].t;
                 e->pos[0] = t[0] + e->offset[0];
@@ -1720,7 +1720,7 @@ void fld_drawSprites(void) {
             }
         }
     }
-    if (!(g_fieldMovieFlags & 0x40)) {
+    if (!(g_fieldMovieFlags & FLD_MVF_CAMERA)) {
         fldbg_resetGeomOffset();
     }
 }
@@ -1732,7 +1732,7 @@ void fld_resetSprite(FieldSprite *arg0) {
     arg0->scale = 0x1000;
     arg0->speed = 0x10;
     arg0->brightness = 0x80;
-    arg0->flags = 1;
+    arg0->flags = FLD_SPR_VISIBLE;
     arg0->abr = 0xF;
     arg0->spriteId = -1;
     arg0->parent = -1;
