@@ -7,8 +7,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* time */
+    s32 state0; /* state */
+    s32 frame4; /* time */
     SVECTOR pos8; /* caster bone position */
 } Fx0dfWork84;
 
@@ -18,19 +18,19 @@ typedef struct {
 
 typedef struct {
     s16 unk0;
-    s16 unk2; /* size */
-    SVECTOR unk4; /* position */
+    s16 size2; /* size */
+    SVECTOR pos4; /* position */
     SVECTOR rotC; /* rotation */
-    u16 unk14; /* roll */
-    u16 unk16; /* roll speed */
+    u16 roll14; /* roll */
+    u16 rollSpeed16; /* roll speed */
 } Fx0dfPart;
 
 typedef struct {
     u8 pad0[0x20];
-    s32 unk20; /* models */
-    s32 unk24;
-    s32 unk28;
-    s32 unk2C;
+    s32 model20; /* models */
+    s32 model24;
+    s32 model28;
+    s32 model2C;
 } Fx0dfWork;
 
 typedef struct {
@@ -42,11 +42,11 @@ typedef struct {
 } Fx0dfBolt;
 
 extern Unk800F78A4 *fx_0df_env;
-extern SVECTOR D_801EA350[24]; /* recent positions */
-extern s32 D_801EA410; /* next slot in D_801EA350 */
+extern SVECTOR fx_0df_recentPos[24]; /* recent positions */
+extern s32 fx_0df_recentNext; /* next slot in fx_0df_recentPos */
 extern Unk80100C78Entry *fx_0df_task;
 
-void func_801E7EB8(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7);
+void fx_0df_recordElemDraw(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7);
 static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0dfWork *work);
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
@@ -54,35 +54,35 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
 s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 /* propagated */
-extern s32 D_801EA418;
+extern s32 fx_0df_twist;
 static void fxm_twistVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out);
 static void fxm_anglesFromEye(SVECTOR *a, SVECTOR *b);
 
 typedef struct {
-    SVECTOR unk0; /* from */
-    SVECTOR unk8; /* to */
-    s32 unk10; /* buffer index */
-    s32 *unk14; /* per-point (t offset, amplitude, step) */
+    SVECTOR pos0; /* from */
+    SVECTOR pos8; /* to */
+    s32 strip10; /* buffer index */
+    s32 *jitter14; /* per-point (t offset, amplitude, step) */
 } Fx0dfArc;
 
-extern Fx0dfBolt D_801EA420[];
+extern Fx0dfBolt fx_0df_arcStrips[];
 static s32 fx_0df_op83PoolTask(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
-extern s32 D_801EA790[][3]; /* random arc profile */
+extern s32 fx_0df_arcJitter[][3]; /* random arc profile */
 
 typedef struct {
     SVECTOR pos0; /* caster body position */
-    s32 *unk8; /* arc profile table */
-    s32 unkC; /* arcs spawned */
-    s32 unk10; /* variant */
+    s32 *jitter8; /* arc profile table */
+    s32 arcCountC; /* arcs spawned */
+    s32 kind10; /* variant */
 } Fx0dfWork83; /* 0x14 */
 s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    s32 unk8; /* ordering-table offset */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
+    s32 otZ8; /* ordering-table offset */
     SVECTOR posC; /* caster body position */
     s32 unk14; /* caster body position, words */
     s32 unk18;
@@ -92,8 +92,8 @@ typedef struct {
     s32 model28;
     s32 model2C;
     s32 pad30;
-    s32 unk34; /* scroll */
-    s32 unk38; /* yaw offset */
+    s32 scroll34; /* scroll */
+    s32 yaw38; /* yaw offset */
     Pool6CEntry *emit3C;
 } Fx0dfWork80; /* 0x40 */
 

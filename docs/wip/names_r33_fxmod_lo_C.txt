@@ -157,3 +157,28 @@ fx_0de Fx0deWork81 unk0=homePos0 unk40=unitCount40 unk44=jumpHeight44 unk48=heig
 fx_0de Fx0deWork80 unkC=posC unk34=scale34
 fx_0de Fx0deWork84 unk0=state0 unk4=frame4
 fx_0de Fx0deFlash unk0=srcX0 unk2=srcY2
+
+## fx_0df
+fx_0df func_801E7EB8 fx_0df_recordElemDraw  # [code] element draw callback signature (particle position, rotation, scale, alpha, frame) that draws file block 0x10 particles and records the position in fx_0df_recentPos, not referenced by the module code
+fx_0df D_801EA350 fx_0df_recentPos  # [code] ring of the last 24 positions written by fx_0df_recordElemDraw, fx_0df_op83 picks random arc endpoints from it
+fx_0df D_801EA410 fx_0df_recentNext  # [code] next slot of fx_0df_recentPos (mod 24), reset by fx_0df_op80
+fx_0df D_801EA418 fx_0df_twist  # [code] twist strength of fxm_twistVertex (scales the radial angle offset), set to 0x800 by fx_0df_op80
+fx_0df D_801EA420 fx_0df_arcStrips  # [code] per-arc 15-point strip buffers (Fx0dfBolt) drawn by fxm_drawOffsetTrail, indexed by Fx0dfArc.strip10 in fx_0df_op83PoolTask
+fx_0df D_801EA790 fx_0df_arcJitter  # [code] btlfx_randCentered noise triples filled by fx_0df_op83 mode 1, per-point offsets of fxm_drawOffsetTrail
+fx_0df Fx0dfPart unk2=size2 unk4=pos4 unk14=roll14 unk16=rollSpeed16
+fx_0df Fx0dfWork unk20=model20 unk24=model24 unk28=model28 unk2C=model2C
+fx_0df Fx0dfArc unk0=pos0 unk8=pos8 unk10=strip10 unk14=jitter14
+fx_0df Fx0dfWork83 unk8=jitter8 unkC=arcCountC unk10=kind10
+fx_0df Fx0dfWork80 unk0=state0 unk4=frame4 unk8=otZ8 unk34=scroll34 unk38=yaw38
+fx_0df Fx0dfWork84 unk0=state0 unk4=frame4
+
+## fx_0e0
+fx_0e0 D_801EA8B0 fx_0e0_centerPos  # [code] SVECTOR the effect is centred on, fx_0e0_op80 copies it into Fx0e0Work80.pos8 and draws file blocks 0x1A 0x1B rings at it
+fx_0e0 D_801EA8B8 fx_0e0_objScales  # [code] model scale per Fx0e0Obj kind (Fx0e0Obj.vel4.pad), Hi_DrawEffModel scale in fx_0e0_op80PoolTask
+fx_0e0 D_801EA8C8 fx_0e0_rippleColors  # [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0e0_op80, entry 1 pulses with math_sin
+fx_0e0 D_801EA928 fx_0e0_trailStrips  # [code] 25-point strip buffers (Fx0e0Bolt) drawn by fxm_drawOffsetTrail in fx_0e0_op80
+fx_0e0 Fx0e0Obj unk0=state0 unk2=phase2 unk4=vel4 unk1C=spinX1C unk1E=spinY1E
+fx_0e0 Fx0e0Inst unk8=pos8 unk5C=model5C unk70=model70
+fx_0e0 Fx0e0Work80 unk0=state0 unk4=frame4 unk8=pos8 unk18=camAt18 unk24=pos24 unk30=scale30 unk44=scale44
+fx_0e0 Fx0e0Spark unk0=state0 unk4=velX4 unk6=velY6 unk8=velZ8 unkC=posXC unkE=posYE unk10=posZ10 unk14=rotX14 unk16=rotY16 unk18=rotZ18
+fx_0e0 Fx0e0Work84 unk0=state0 unk4=frame4

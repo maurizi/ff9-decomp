@@ -549,7 +549,7 @@ fx_0de fx_0de_op80 0x8e0 0x801e7704
 fx_0de fx_0de_op81 0x2cc 0x801e7fe4
 fx_0de fx_0de_op84 0x340 0x801e82b0
 fx_0df fxm_drawRadialScreenGrid 0x7b4 0x801e7704
-fx_0df func_801E7EB8 0x128 0x801e7eb8
+fx_0df fx_0df_recordElemDraw 0x128 0x801e7eb8
 fx_0df fxm_twistVertex 0xd0 0x801e7fe0
 fx_0df fxm_anglesFromEye 0x44 0x801e80b0
 fx_0df fx_0df_op80PoolTask 0x3a0 0x801e80f4
