@@ -28,7 +28,7 @@ s32 opening_attract(s32 arg0) {
                 id = g_attractImages[k] | DB_TIM;
                 if (timer == -1) {
                     tim = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
-                    file_setTimPos(tim, 0, 0xE0, 0x280, 0);
+                    file_setTimPos(tim, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
                     file_loadTim(tim);
                     timer = ATTRACT_FRAMES;
                     game_startFade(1, 1, 0xF0, 0);

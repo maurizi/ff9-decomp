@@ -52,7 +52,7 @@ void opening_bootScreenLoad(void) {
     g_bootScreenData = buf;
     db_register((s32)buf, 0);
     g_bootScreenImage = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44FB0, 0);
-    file_setTimPos(g_bootScreenImage, 0, 0xE0, 0x280, 0);
+    file_setTimPos(g_bootScreenImage, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
     file_loadTim(g_bootScreenImage);
     game_startFade(1, 1, 0, 0xFFFFFF);
     g_padPortMask[0] = 0;

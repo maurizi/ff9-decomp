@@ -97,6 +97,17 @@
 #define SCREEN_H 224
 #define SCREEN_H_NTSC 240
 
+/* VRAM layout shared by several functions (the framebuffers fill x 0..2*SCREEN_W-1 at the top) */
+#define VRAM_SHADOW_CLUT_X 0x100 /* unit shadow palette: btl_loadShadowTexture uploads it, the battle shadow quads */
+#define VRAM_SHADOW_CLUT_Y 0xFF  /* and fld_drawShadow use it */
+#define VRAM_MODEL_CLUT_X 0x100 /* battle model palettes (btl_uploadModelTextures, btl_swapPartyModelStep) */
+#define VRAM_IMAGE_X 0x280 /* full-screen still images, right of the framebuffers (opening attract and boot */
+#define VRAM_IMAGE_Y 0     /* screens, THE END) */
+#define VRAM_IMAGE_CLUT_X 0 /* their palettes, below the framebuffers */
+#define VRAM_IMAGE_CLUT_Y 0xE0
+#define VRAM_BTLUI_CACHE_X 0x3C0 /* 16-bit page where the battle UI caches its command icons, header and rows */
+#define VRAM_BTLUI_CACHE_Y 0x100 /* (btlui_cache* copy them in with DR_MOVE, btlui_initCached* draw from it) */
+
 /* Ordering tables (docs/r29/battle-render.md). Each mode's scene OT GameData.ot[drawBuf] has OT_LEN entries, is
  * cleared with ClearOTagR (entry i links to i - 1) and drawn from OT_LAST, so higher entries are farther away.
  * Battle and world map clear OT_PAD extra entries on each side. */

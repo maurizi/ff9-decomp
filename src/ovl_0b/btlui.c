@@ -1288,7 +1288,7 @@ void btlui_buildCmdList(void) {
 
 void btlui_initCachedCmdIcons(s32 arg0) {
     s32 i;
-    s32 u = 0x3C0;
+    s32 u = VRAM_BTLUI_CACHE_X;
     s32 y = 0x9A;
 
     for (i = 0; i < 4; i++) {
@@ -1305,12 +1305,12 @@ void btlui_initCachedCmdIcons(s32 arg0) {
         y += 0x10;
     }
     setlen(&g_btluiPrims->cmdIconsTpage[arg0], 1);
-    *g_btluiPrims->cmdIconsTpage[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
+    *g_btluiPrims->cmdIconsTpage[arg0].code = get_mode(1, 1, getTPage(2, 0, VRAM_BTLUI_CACHE_X, VRAM_BTLUI_CACHE_Y));
 }
 
 void btlui_cacheCmdIcons(void) {
     RECT r = s_btluiCmdIconsSrc;
-    s32 x = 0x3C0;
+    s32 x = VRAM_BTLUI_CACHE_X;
     s32 y = 0x1E0;
     s32 i = 0;
     r.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
@@ -3101,13 +3101,13 @@ void btlui_cacheHeader(void) {
     setRECT(&r, 0xD0, p->y - 4, 0x40, 4);
     r.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
     r.y += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][1];
-    SetDrawMove((DR_MOVE *)g_primPtr, &r, 0x3C0, 0x1F8);
+    SetDrawMove((DR_MOVE *)g_primPtr, &r, VRAM_BTLUI_CACHE_X, 0x1F8);
     addPrim(&g_ot[19], g_primPtr);
     g_primPtr += sizeof(DR_MOVE);
     setRECT(&r, 0x110, p->y - 4, 0x30, 4);
     r.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
     r.y += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][1];
-    SetDrawMove((DR_MOVE *)g_primPtr, &r, 0x3C0, 0x1FC);
+    SetDrawMove((DR_MOVE *)g_primPtr, &r, VRAM_BTLUI_CACHE_X, 0x1FC);
     addPrim(&g_ot[19], g_primPtr);
     g_primPtr += sizeof(DR_MOVE);
 }
@@ -3139,7 +3139,7 @@ void btlui_initCachedHeader(s32 arg0) {
     g_btluiPrims->headerB[arg0].w = 0x30;
     g_btluiPrims->headerB[arg0].h = 4;
     setlen(&g_btluiPrims->headerTpage[arg0], 1);
-    *g_btluiPrims->headerTpage[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
+    *g_btluiPrims->headerTpage[arg0].code = get_mode(1, 1, getTPage(2, 0, VRAM_BTLUI_CACHE_X, VRAM_BTLUI_CACHE_Y));
 }
 
 void btlui_openListWindow(s32 arg0) {
@@ -3302,7 +3302,7 @@ void btlui_initCachedRows(s32 arg0) {
         g_btluiPrims->rowsB[i][arg0].clut = 0;
     }
     setlen(&g_btluiPrims->rowsTpage[arg0], 1);
-    *g_btluiPrims->rowsTpage[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
+    *g_btluiPrims->rowsTpage[arg0].code = get_mode(1, 1, getTPage(2, 0, VRAM_BTLUI_CACHE_X, VRAM_BTLUI_CACHE_Y));
 }
 
 void btlui_drawPartyPanel(void) {
@@ -3469,7 +3469,7 @@ void btlui_cacheRows(void) {
         h = g_btluiPanel->rowCount * 12;
         b.h = h;
         a.h = h;
-        SetDrawMove((DR_MOVE *)g_primPtr, &a, 0x3C0, 0x1B0);
+        SetDrawMove((DR_MOVE *)g_primPtr, &a, VRAM_BTLUI_CACHE_X, 0x1B0);
         addPrim(&g_ot[19], g_primPtr);
         g_primPtr += sizeof(DR_MOVE);
         SetDrawMove((DR_MOVE *)g_primPtr, &b, 0x3E0, 0x1B0);

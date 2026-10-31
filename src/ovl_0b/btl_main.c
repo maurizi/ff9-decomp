@@ -219,7 +219,7 @@ s32 btl_loadSoundBanks(void) {
 
 s32 btl_loadShadowTexture(void) {
     s32 p = (s32)db_lookupRegistered(DB_GET_ADDR, DB_SHADOW_TIM, 0);
-    file_setTimPos(p, 0x100, 0xFF, 0x200, 0xE0);
+    file_setTimPos(p, VRAM_SHADOW_CLUT_X, VRAM_SHADOW_CLUT_Y, 0x200, 0xE0);
     file_loadTim(p);
     DrawSync(0);
     return 0;
@@ -1118,10 +1118,10 @@ s32 btl_uploadModelTextures(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s
                 yy = y + 0xE8;
                 h = 0x1D0;
             }
-            file_setTimPos(m, 0x100, yy, x, h);
+            file_setTimPos(m, VRAM_MODEL_CLUT_X, yy, x, h);
             file_loadTim(m);
             a[n].tpage = getTPage(1, 0, x, h);
-            a[n].clut = getClut(0x100, yy);
+            a[n].clut = getClut(VRAM_MODEL_CLUT_X, yy);
             b[n].tpage = 0;
             b[n].clut = h % 256 - h % 128;
             r[n].w = x;
@@ -1437,7 +1437,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
                     y = arg0 * 3 + s;
                     h = (r[j].y << 7) + 0x80;
                     x = (arg0 << 6) + 0xC0;
-                    file_setTimPos(w, 0x100, y, x, h);
+                    file_setTimPos(w, VRAM_MODEL_CLUT_X, y, x, h);
                     file_loadTim(w);
                     a[j].tpage = ((h & 0x100) >> 4) | (s16)(((x & 0x3FF) >> 6) | 0x80) | ((h & 0x200) << 2);
                     a[j].clut = (y << 6) | 0x10;
@@ -1544,7 +1544,7 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
         setRGB0(SHADOW_QUAD(i), e->shade, e->shade, e->shade);
         setSemiTrans(SHADOW_QUAD(i), 1);
         SHADOW_QUAD(i)->tpage = 0xC8;
-        SHADOW_QUAD(i)->clut = 0x3FD0;
+        SHADOW_QUAD(i)->clut = getClut(VRAM_SHADOW_CLUT_X, VRAM_SHADOW_CLUT_Y);
         prim += sizeof(POLY_FT4);
     }
     tu = 0;

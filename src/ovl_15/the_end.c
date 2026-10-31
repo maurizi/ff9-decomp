@@ -123,7 +123,7 @@ s32 ending_theEnd(void) {
 s32 ending_theEndInit(void) {
     s32 p = (s32)db_lookupRegistered(DB_GET_ADDR, g_endingImage | DB_TIM, 0);
 
-    file_setTimPos(p, 0, 0xE0, 0x280, 0);
+    file_setTimPos(p, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
     file_loadTim(p);
     akao_stopMusic(0);
     ending_soundCmd(0, ENDING_MUSIC, 0, 0, 0);

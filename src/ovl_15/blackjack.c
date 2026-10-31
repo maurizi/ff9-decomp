@@ -164,12 +164,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         setRGB0(p, c, c, c);
         p->w = 0x68;
         p->h = 0x28;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
-        t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        t->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
@@ -182,12 +182,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->v0 = 0;
         p->w = 0x70;
         p->h = 0x28;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
-        t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        t->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
@@ -203,12 +203,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->w = 0x68;
         p->h = 0x28;
         p->v0 = 0x28;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
-        t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        t->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
@@ -221,12 +221,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->u0 = 0x68;
         p->v0 = 0x28;
         p->h = 0x28;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
-        t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        t->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
@@ -242,12 +242,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->u0 = 0;
         p->v0 = 0xA0;
         p->h = 0x28;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
-        t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        t->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
@@ -260,12 +260,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->u0 = 0;
         p->w = 0x90;
         p->h = 0x28;
-        p->clut = 0x3A40;
+        p->clut = getClut(0, 0xE9);
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
-        t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        t->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
@@ -285,7 +285,7 @@ s32 bj_drawCardBack(s32 x, s32 y) {
     p->w = 0x38;
     p->h = 0x48;
     p->y0 = y;
-    p->clut = 0x3940;
+    p->clut = getClut(0, 0xE5);
     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
     return 0;
@@ -308,7 +308,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->v0 = rank * 14;
     p->w = 9;
     p->h = 0xE;
-    p->clut = 0x3980;
+    p->clut = getClut(0, 0xE6);
     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
 
@@ -322,7 +322,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->v0 = rank * 14;
     p->w = 9;
     p->h = 0xE;
-    p->clut = 0x3980;
+    p->clut = getClut(0, 0xE6);
     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
 
@@ -336,7 +336,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->v0 = 0xD5;
     p->w = 0xB;
     p->h = 0xB;
-    p->clut = 0x3900;
+    p->clut = getClut(0, 0xE4);
     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
 
@@ -350,7 +350,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->y0 = y + 0x2D;
     p->w = 0xB;
     p->h = 0xB;
-    p->clut = 0x3900;
+    p->clut = getClut(0, 0xE4);
     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
 
@@ -367,7 +367,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             p->y0 = y + 0x1E;
             p->w = 0xB;
             p->h = 0xB;
-            p->clut = 0x3900;
+            p->clut = getClut(0, 0xE4);
             addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
             g_bjSprtCount++;
         } else {
@@ -411,7 +411,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             }
             p->w = 0xB;
             p->h = 0xB;
-            p->clut = 0x3900;
+            p->clut = getClut(0, 0xE4);
             addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
             g_bjSprtCount++;
         }
@@ -427,7 +427,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->h = 0x48;
     p->x0 = x;
     p->y0 = y;
-    p->clut = 0x3900;
+    p->clut = getClut(0, 0xE4);
     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
     return 0;

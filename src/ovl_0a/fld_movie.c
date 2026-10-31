@@ -931,7 +931,7 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
         setRGB0(p[i], e->params.shade, e->params.shade, e->params.shade);
         p[i]->tpage = getTPage(1, 2, g_gameState->gameData->ctx.field->area->scene->shadowTexX,
                                g_gameState->gameData->ctx.field->area->scene->shadowTexY);
-        p[i]->clut = getClut(256, 255);
+        p[i]->clut = getClut(VRAM_SHADOW_CLUT_X, VRAM_SHADOW_CLUT_Y);
         switch (i) {
         case 0:
             setUV4(p[0], u0, v0, u0 + 31, v0, u0, v0 + 31, u0 + 31, v0 + 31);
