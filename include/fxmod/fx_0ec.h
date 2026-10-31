@@ -29,7 +29,7 @@ typedef struct {
     s16 spinX14; /* spin */
     s16 spinY16;
     s16 age18; /* age, < 0: free */
-    s16 unk1A; /* triangle */
+    s16 unk1A; /* start delay (fxm_shatterModelUpdate) or triangle (fxm_splitUpdate) */
 } Fx0ecShard; /* 0x1C */
 
 typedef struct {
