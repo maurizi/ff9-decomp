@@ -1215,3 +1215,871 @@ fx_1a2 Fx1a2Rock: unk0 -> count0
 fx_1b3 Fx1b3Trail: unk4 -> points4
 fx_1f3 Fx1f3Work80: unk0 -> timer0
 fx_1a2 Fx1a2Work80: unk0 -> state0
+
+## Batch 3: fx_105/fx_114/fx_1bd summons, fx_1ed-1ef Carbuncle, fx_1f2/fx_1fc/fx_1fd and the rest (fields as 'module Struct: old -> new')
+fx_105: func_801E7D9C -> fx_105_drawScreenBand
+fx_105: func_801E9E1C -> fx_105_initQuads
+fx_105: func_801E9F28 -> fx_105_drawQuads
+fx_105: func_801EA298 -> fx_105_drawCamRibbon
+fx_105: func_801EA6D4 -> fx_105_drawWorldRibbon
+fx_105: D_801EC168 -> fx_105_quads
+fx_105: D_801EC2E8 -> fx_105_camRibbonPts
+fx_105: D_801EC378 -> fx_105_worldRibbonPts
+fx_105: D_801EAA90 -> fx_105_modelTimers
+fx_105: D_801EAC98 -> fx_105_ribbonSegs
+fx_105: D_801EADA8 -> fx_105_modelRot
+fx_105: D_801EADB8 -> fx_105_modelPos
+fx_105: D_801EADC8 -> fx_105_modelScale
+fx_105: D_801EB998 -> fx_105_screenSprites
+fx_105: D_801EAB1C -> fx_105_camFrame
+fx_105: D_801EAB28 -> fx_105_camKeys
+fx_105: D_801EAC68 -> fx_105_camKeyPoints
+fx_114: D_801ED078 -> fx_114_pathTrail
+fx_114: D_801ED1C8 -> fx_114_bgOt
+fx_114: D_801EE658 -> fx_114_op82Trails
+fx_114: D_801EF268 -> fx_114_pinPoints
+fx_114: D_801EB71C -> fx_114_pinBones
+fx_114: D_801EF2B8 -> fx_114_camKeys
+fx_114: D_801EF6B8 -> fx_114_camChanFrames
+fx_114: D_801EB2F4 -> fx_114_op83Pieces
+fx_114: D_801EB68C -> fx_114_op83TexSelect
+fx_114: D_801EB6A4 -> fx_114_texInfo0
+fx_114: D_801EB6BC -> fx_114_texPos0
+fx_114: D_801EB6D4 -> fx_114_texInfo1
+fx_114: D_801EB6E0 -> fx_114_texPos1
+fx_114: D_801EB6EC -> fx_114_texInfo2
+fx_114: D_801EB6F4 -> fx_114_texInfo3
+fx_114: D_801EB6FC -> fx_114_texPos2
+fx_114: D_801EB704 -> fx_114_texPos3
+fx_114: D_801EB70C -> fx_114_texInfo4
+fx_114: D_801EB714 -> fx_114_texPos4
+fx_114: D_801EEA68 -> fx_114_texelColors
+fx_130: D_801E8124 -> fx_130_units
+fx_134: D_801EC860 -> fx_134_origin
+fx_134: D_801EC868 -> fx_134_orbScales
+fx_134: D_801EC878 -> fx_134_rippleColors0
+fx_134: D_801EC880 -> fx_134_orbSpeeds
+fx_134: D_801EC888 -> fx_134_rippleColors1
+fx_134: D_801EC894 -> fx_134_rippleColors2
+fx_134: D_801EC8F4 -> fx_134_bolts
+fx_134: D_801EF97C -> fx_134_catchRadius
+fx_134: D_801EF980 -> fx_134_stopOrbs
+fx_137: D_801E7AD0 -> fx_137_targetPos
+fx_138: func_801E77DC -> fx_138_getPathPoint
+fx_138: D_801E8450 -> fx_138_randSets
+fx_138: D_801E8480 -> fx_138_modelFileIds
+fx_138: D_801E8488 -> fx_138_emitFileIds
+fx_138: D_801E8494 -> fx_138_pathFileIds
+fx_138: D_801E8830 -> fx_138_posPaths
+fx_138: D_801E8E60 -> fx_138_pathOrigin
+fx_138: D_801E8E68 -> fx_138_pathRot
+fx_179: func_801E78E8 -> fxm_updateShatterPieces
+fx_179: D_801E8A1C -> fx_179_shatterTris
+fx_179: D_801E991C -> fx_179_shatterPieces
+fx_17d_6: D_801E9360 -> fx_17d_6_basePos
+fx_17d_6: D_801E9368 -> fx_17d_6_bones
+fx_17d_6: D_801EB104 -> fx_17d_6_boltTo
+fx_17d_6: D_801EB10C -> fx_17d_6_boltFrom
+fx_17d_6: D_801EB114 -> fx_17d_6_boltState
+fx_17d_6: D_801EB124 -> fx_17d_6_boltTrails
+fx_17d_6: D_801EB474 -> fx_17d_6_branchTrails
+fx_17d_6: D_801EB584 -> fx_17d_6_noise
+fx_17d_7: D_801EF258 -> fx_17d_7_basePos
+fx_17d_7: D_801EF260 -> fx_17d_7_releaseLevel
+fx_17d_7: D_801EF264 -> fx_17d_7_rockOffsetsX
+fx_17d_7: D_801EFDDC -> fx_17d_7_ringRadius
+fx_17d_7: D_801EFDE4 -> fx_17d_7_boltBase
+fx_17d_7: D_801EFDEC -> fx_17d_7_boltTop
+fx_17d_7: D_801EFDFC -> fx_17d_7_boltTrails
+fx_17d_7: D_801F00BC -> fx_17d_7_branchTrails
+fx_17d_7: D_801F019C -> fx_17d_7_noise
+fx_195: D_801EA228 -> fx_195_basePos
+fx_195: D_801EA808 -> fx_195_shortTrails
+fx_195: D_801EAB08 -> fx_195_longTrails
+fx_195: D_801EAEA0 -> fx_195_longTrail2
+fx_195: func_801E7704 -> fx_195_buildOffsetTrail
+fx_196: D_801E90F8 -> fx_196_nextWavePoint
+fx_196: D_801E90FC -> fx_196_rippleColors
+fx_196: D_801E910C -> fx_196_camPaths
+fx_196: D_801E916C -> fx_196_wavePoints
+fx_196: func_801E7AA0 -> fx_196_drawWaveMesh
+fx_197: D_801E9128 -> fx_197_basePos
+fx_197: D_801E9130 -> fx_197_pieceModelFileIds
+fx_197: D_801E9178 -> fx_197_modelFileIds
+fx_197: D_801E9194 -> fx_197_shatterBufs
+fx_197: D_801E91C4 -> fx_197_overlayOn
+fx_197: D_801E91C8 -> fx_197_shatterFlag0
+fx_197: D_801E91CC -> fx_197_shatterFlag1
+fx_197: D_801E91D0 -> fx_197_shatterFlag2
+fx_197: D_801E91D4 -> fx_197_piecePathFileIds
+fx_197: D_801E91EC -> fx_197_pieceOffsets
+fx_197: D_801E921C -> fx_197_pieceModelFrames
+fx_197: D_801E925C -> fx_197_spawnPieces
+fx_197: D_801E9270 -> fx_197_camPaths
+fx_197: D_801EAF70 -> fx_197_model0
+fx_197: D_801EAF74 -> fx_197_model1
+fx_197: D_801EAF80 -> fx_197_shatters
+fx_197: D_801EAFA0 -> fx_197_shards
+fx_197: D_801EAFBC -> fx_197_shatterHeight
+fx_197: D_801EAFC0 -> fx_197_shatterBuf6
+fx_197: D_801EC5C0 -> fx_197_shatterTris6
+fx_1b0: func_801E7704 -> fx_1b0_initSplit
+fx_1b0: func_801E7830 -> fx_1b0_findFreePiece
+fx_1b0: func_801E7868 -> fx_1b0_launchPieces
+fx_1b0: func_801E7B04 -> fx_1b0_updatePieces
+fx_1b0: D_801EBF3C -> fx_1b0_split
+fx_1b0: D_801EBF40 -> fx_1b0_pieces
+fx_1b0: D_801EC714 -> fx_1b0_orbitCenter
+fx_1b0: D_801EC724 -> fx_1b0_orbits
+fx_1b0: D_801E8CAC -> fx_1b0_colorGradient
+fx_1b0: D_801E8CEC -> fx_1b0_modelFileIds
+fx_19f: D_801EA9AC -> fx_19f_boltCenter
+fx_19f: D_801EA9B4 -> fx_19f_boltLength
+fx_19f: D_801EA9B8 -> fx_19f_bandWidths
+fx_19f: D_801EA9D0 -> fx_19f_stripFromFileIds0
+fx_19f: D_801EA9DC -> fx_19f_stripToFileIds0
+fx_19f: D_801EA9E8 -> fx_19f_stripFromFileIds1
+fx_19f: D_801EA9F4 -> fx_19f_stripToFileIds1
+fx_19f: D_801EAA58 -> fx_19f_offsetTrail
+fx_19f: D_801EAF18 -> fx_19f_stripTrails0
+fx_19f: D_801EB268 -> fx_19f_stripTrails1
+fx_19f: D_801EB3B8 -> fx_19f_boltTrails
+fx_19f: D_801EB3BC -> fx_19f_boltTrailPoints
+fx_19f: D_801EC538 -> fx_19f_branchTrails
+fx_19f: D_801EC9B8 -> fx_19f_noise
+fx_1bd: D_801E9A14 -> fx_1bd_op83Pieces
+fx_1bd: D_801E9DAC -> fx_1bd_op83TexSelect
+fx_1bd: D_801E9DC4 -> fx_1bd_texInfo0
+fx_1bd: D_801E9DD0 -> fx_1bd_texPos0
+fx_1bd: D_801E9DDC -> fx_1bd_texInfo1
+fx_1bd: D_801E9DE4 -> fx_1bd_texInfo2
+fx_1bd: D_801E9DEC -> fx_1bd_texPos1
+fx_1bd: D_801E9DF4 -> fx_1bd_texPos2
+fx_1bd: D_801E9DFC -> fx_1bd_texInfo3
+fx_1bd: D_801E9E04 -> fx_1bd_texPos3
+fx_1bd: D_801EB764 -> fx_1bd_pathTrail
+fx_1bd: D_801EB854 -> fx_1bd_bgOt
+fx_1bd: D_801EBC54 -> fx_1bd_op82Trails
+fx_1bd: D_801EC064 -> fx_1bd_camKeys
+fx_1bd: D_801EC464 -> fx_1bd_camChanFrames
+fx_1be: func_801E89A8 -> fx_1be_drawGradientGrid
+fx_1be: D_801E8F38 -> fx_1be_gridColors
+fx_1be: D_801E8FE8 -> fx_1be_op80ParticleEnds
+fx_1be: D_801E95D4 -> fx_1be_scrollPos
+fx_1be: D_801E95D8 -> fx_1be_scrollSpeed
+fx_1be: D_801E95E8 -> fx_1be_units
+fx_1bf_0: func_801E77C0 -> fx_1bf_0_drawStrands
+fx_1bf_0: func_801E7B70 -> fxm_drawPatternParticles
+fx_1bf_0: func_801E7E98 -> fxm_drawOffsetParticles3
+fx_1bf_0: D_801E86BC -> fx_1bf_0_origin
+fx_1bf_0: D_801E86C4 -> fx_1bf_0_strandParams
+fx_1bf_0: D_801E8754 -> fx_1bf_0_strandTrails
+fx_1bf_0: D_801E879C -> fx_1bf_0_particleFileIds
+fx_1bf_0: D_801E87B4 -> fx_1bf_0_pointFileIds
+fx_1bf_0: D_801E87BC -> fx_1bf_0_particleOffsets
+fx_1bf_0: D_801E881C -> fx_1bf_0_lineTrail
+fx_1bf_1: D_801EF254 -> fx_1bf_1_origin
+fx_1bf_1: D_801EF25C -> fx_1bf_1_releaseZ
+fx_1bf_1: D_801EF260 -> fx_1bf_1_spawnOffsets
+fx_1bf_1: D_801EFDD8 -> fx_1bf_1_ringRadius
+fx_1bf_1: D_801EFDE0 -> fx_1bf_1_boltPos0
+fx_1bf_1: D_801EFDE8 -> fx_1bf_1_boltPos1
+fx_1bf_1: D_801EFDF8 -> fx_1bf_1_boltTrails
+fx_1bf_1: D_801F00B8 -> fx_1bf_1_branchTrails
+fx_1bf_1: D_801F0198 -> fx_1bf_1_noise
+fx_1ec: D_801EFB64 -> fx_1ec_op80Origin
+fx_1ec: D_801EFB6C -> fx_1ec_op81Origin
+fx_1ed: D_801E8914 -> fx_1ed_camFrame
+fx_1ed: D_801E8920 -> fx_1ed_camKeys
+fx_1ed: D_801E8A60 -> fx_1ed_camKeyPoints
+fx_1ed: D_801E8A88 -> fx_1ed_modelRot
+fx_1ed: D_801E8A90 -> fx_1ed_modelPos
+fx_1ed: D_801E8AA0 -> fx_1ed_modelScale
+fx_1ed: D_801E8AB0 -> fx_1ed_emitPos0
+fx_1ed: D_801E8AC0 -> fx_1ed_timers
+fx_1ed: D_801E8AE8 -> fx_1ed_emitter0Pos
+fx_1ed: D_801E8AF8 -> fx_1ed_emitter1Pos
+fx_1ed: D_801E8B08 -> fx_1ed_emitter2Pos
+fx_1ed: D_801EA5F8 -> fx_1ed_emitter3Target
+fx_1ed: D_801EA600 -> fx_1ed_emitter3Pos
+fx_1ed: D_801EA610 -> fx_1ed_emitter4Pos
+fx_1ed: D_801EA620 -> fx_1ed_emitter5Pos
+fx_1ed: D_801EA630 -> fx_1ed_emitter6Pos
+fx_1ed: D_801EA640 -> fx_1ed_emitter7Pos
+fx_1ed: D_801EA650 -> fx_1ed_emitter8Pos
+fx_1ed: D_801EA660 -> fx_1ed_emitter9Pos
+fx_1ed: D_801EA670 -> fx_1ed_emitter10Pos
+fx_1ed: D_801EA680 -> fx_1ed_trails
+fx_1ed: D_801EA7E0 -> fx_1ed_op81TargetPos
+fx_1ee: D_801E9108 -> fx_1ee_camFrame
+fx_1ee: D_801E9114 -> fx_1ee_camKeys
+fx_1ee: D_801E9254 -> fx_1ee_camKeyPoints
+fx_1ee: D_801E927C -> fx_1ee_modelRot
+fx_1ee: D_801E9284 -> fx_1ee_modelPos
+fx_1ee: D_801E9294 -> fx_1ee_modelScale
+fx_1ee: D_801E92A4 -> fx_1ee_emitPos0
+fx_1ee: D_801E92B4 -> fx_1ee_timers
+fx_1ee: D_801E92DC -> fx_1ee_emitter0Pos
+fx_1ee: D_801E92EC -> fx_1ee_emitter1Pos
+fx_1ee: D_801E92FC -> fx_1ee_emitter2Pos
+fx_1ee: D_801EADEC -> fx_1ee_emitter3Target
+fx_1ee: D_801EADF4 -> fx_1ee_emitter3Pos
+fx_1ee: D_801EAE04 -> fx_1ee_emitter4Pos
+fx_1ee: D_801EAE14 -> fx_1ee_emitter5Pos
+fx_1ee: D_801EAE24 -> fx_1ee_emitter6Pos
+fx_1ee: D_801EAE34 -> fx_1ee_emitter7Pos
+fx_1ee: D_801EAE44 -> fx_1ee_emitter8Pos
+fx_1ee: D_801EAE54 -> fx_1ee_emitter9Pos
+fx_1ee: D_801EAE64 -> fx_1ee_emitter10Pos
+fx_1ee: D_801EAE74 -> fx_1ee_trails
+fx_1ee: D_801EAFCC -> fx_1ee_op81Timer
+fx_1ee: D_801EAFD4 -> fx_1ee_sparkOrigin
+fx_1ee: D_801EAFE4 -> fx_1ee_op81TargetPos
+fx_1ee: D_801EB004 -> fx_1ee_sparks
+fx_1ef: D_801E8BA0 -> fx_1ef_camFrame
+fx_1ef: D_801E8BAC -> fx_1ef_camKeys
+fx_1ef: D_801E8CEC -> fx_1ef_camKeyPoints
+fx_1ef: D_801E8D14 -> fx_1ef_modelRot
+fx_1ef: D_801E8D1C -> fx_1ef_modelPos
+fx_1ef: D_801E8D2C -> fx_1ef_modelScale
+fx_1ef: D_801E8D3C -> fx_1ef_emitPos0
+fx_1ef: D_801E8D4C -> fx_1ef_timers
+fx_1ef: D_801E8D74 -> fx_1ef_emitter0Pos
+fx_1ef: D_801E8D84 -> fx_1ef_emitter1Pos
+fx_1ef: D_801E8D94 -> fx_1ef_emitter2Pos
+fx_1ef: D_801EA884 -> fx_1ef_emitter3Target
+fx_1ef: D_801EA88C -> fx_1ef_emitter3Pos
+fx_1ef: D_801EA89C -> fx_1ef_emitter4Pos
+fx_1ef: D_801EA8AC -> fx_1ef_emitter5Pos
+fx_1ef: D_801EA8BC -> fx_1ef_emitter6Pos
+fx_1ef: D_801EA8CC -> fx_1ef_emitter7Pos
+fx_1ef: D_801EA8DC -> fx_1ef_emitter8Pos
+fx_1ef: D_801EA8EC -> fx_1ef_emitter9Pos
+fx_1ef: D_801EA8FC -> fx_1ef_emitter10Pos
+fx_1ef: D_801EA90C -> fx_1ef_trails
+fx_1ef: D_801EAA64 -> fx_1ef_fadeTimers
+fx_1ef: D_801EAA6C -> fx_1ef_op81TargetPos
+fx_1f2: D_801EA270 -> fx_1f2_model0
+fx_1f2: D_801EA2A0 -> fx_1f2_model1
+fx_1f2: D_801EA2D0 -> fx_1f2_model2
+fx_1f2: D_801EA300 -> fx_1f2_orbitModels
+fx_1f2: D_801EA3E0 -> fx_1f2_model3
+fx_1f2: D_801EA410 -> fx_1f2_model4
+fx_1f2: D_801EA470 -> fx_1f2_model5
+fx_1f2: D_801EA4A0 -> fx_1f2_model6
+fx_1f2: D_801EA500 -> fx_1f2_model7
+fx_1f2: D_801EA530 -> fx_1f2_model8
+fx_1f2: D_801EA568 -> fx_1f2_sparkRot
+fx_1f2: D_801EA5F0 -> fx_1f2_model9
+fx_1f2: D_801EA600 -> fx_1f2_model9Pos
+fx_1f2: D_801EA620 -> fx_1f2_model10
+fx_1f2: D_801EA650 -> fx_1f2_emitPos0
+fx_1f2: D_801EA658 -> fx_1f2_faceAngles
+fx_1f2: D_801EA660 -> fx_1f2_emitPos1
+fx_1f2: D_801EA670 -> fx_1f2_unitPos
+fx_1f2: D_801EA690 -> fx_1f2_trails
+fx_1f2: D_801EBB90 -> fx_1f2_unitTrails
+fx_1fc: D_801E8CC0 -> fx_1fc_modelFileIds
+fx_1fc: D_801E8CC8 -> fx_1fc_texPages
+fx_1fc: D_801E8CD8 -> fx_1fc_texUv
+fx_1fc: D_801E8CE8 -> fx_1fc_effModelTable
+fx_1fc: D_801E99A4 -> fx_1fc_sliceModelData
+fx_1fc: D_801EDADC -> fx_1fc_bgOt
+fx_1fc: D_801EDEDC -> fx_1fc_unitPos
+fx_1fc: D_801EDF1C -> fx_1fc_unitScale
+fx_1fc: D_801EDF9C -> fx_1fc_camKeys
+fx_1fc: D_801EE39C -> fx_1fc_camChanFrames
+fx_1fd: D_801E9DF8 -> fx_1fd_emitFileIds
+fx_1fd: D_801EB75C -> fx_1fd_ribbon0
+fx_1fd: D_801EB78C -> fx_1fd_ribbon1
+fx_1fd: D_801EB7BC -> fx_1fd_ribbon2
+fx_1fd: D_801EB7EC -> fx_1fd_ribbon3
+fx_1fd: D_801EB80C -> fx_1fd_ribbonEdges
+fx_1fd: D_801EBADC -> fx_1fd_unitOrbits
+fx_1fd: D_801ED73C -> fx_1fd_camKeys
+fx_1fd: D_801EDB3C -> fx_1fd_camChanFrames
+fx_105 Fx105Track: unk0 -> frame0
+fx_105 Fx105Track: unk4 -> timer4
+fx_105 Fx105Track: unk8 -> dstSlots8
+fx_105 Fx105Track: unkC -> srcSlotsC
+fx_105 Fx105Track: unk10 -> keys10
+fx_105 Fx105Summon: unk54 -> summon54
+fx_105 Fx105Summon: unk60 -> summonModel60
+fx_105 Fx105Work80: unk14 -> timer14
+fx_105 Fx105Work80: unk18 -> timer18
+fx_105 Fx105Work80: unk1C -> timer1C
+fx_105 Fx105Work80: unk20 -> timer20
+fx_105 Fx105Work80: unk24 -> timer24
+fx_105 Fx105Work80: unk28 -> timer28
+fx_105 Fx105Work80: unk2C -> timer2C
+fx_105 Fx105Work80: unk30 -> timer30
+fx_105 Fx105Work80: unkCC -> rotCC
+fx_105 Fx105Work80: unk10C -> pos10C
+fx_105 Fx105Work80: unk114 -> pos114
+fx_105 Fx105Work80: unk11C -> color11C
+fx_105 Fx105Work80: unk120 -> color120
+fx_105 Fx105Work80: unk130 -> pos130
+fx_105 Fx105Work80: unk158 -> pos158
+fx_105 Fx105Work80: unk170 -> scale170
+fx_105 Fx105Work80: unk198 -> pos198
+fx_105 Fx105Work80: unk1A8 -> scale1A8
+fx_105 Fx105Work80: unk1B8 -> hold1B8
+fx_114 Fx114Work81: unk30 -> color30
+fx_114 Fx114Work81: unk44 -> timer44
+fx_114 Fx114Summon: unk60 -> summonModel60
+fx_114 Fx114Summon80: unk54 -> summon54
+fx_114 Fx114Work82: unk62 -> timer62
+fx_114 Fx114Work82: unk64 -> frame64
+fx_114 Fx114Key12: unk0 -> pos0
+fx_114 Fx114Key12: unk2 -> pos2
+fx_114 Fx114Key12: unk4 -> pos4
+fx_114 Fx114Key12: unk6 -> rot6
+fx_114 Fx114Key12: unk8 -> rot8
+fx_114 Fx114Key12: unkA -> rotA
+fx_114 Fx114Wave: unkC -> fadeC
+fx_114 Fx114Wave: unkE -> scaleE
+fx_114 Fx114Wave: unk10 -> fadeFrom10
+fx_114 Fx114Wave: unk12 -> fadeTo12
+fx_114 Fx114Work83: unk28 -> pos28
+fx_114 Fx114Work83: unk38 -> scale38
+fx_114 Fx114Work83: unk50 -> pos50
+fx_114 Fx114Work83: unk78 -> pos78
+fx_114 Fx114Work83: unk88 -> scale88
+fx_114 Fx114Work83: unk98 -> color98
+fx_114 Fx114Work83: unkA4 -> posA4
+fx_114 Fx114Work83: unkB4 -> scaleB4
+fx_114 Fx114Work83: unkC4 -> colorC4
+fx_114 Fx114Work83: unkC8 -> colorC8
+fx_114 Fx114Work83: unkD4 -> posD4
+fx_114 Fx114Work83: unkE4 -> scaleE4
+fx_114 Fx114Work83: unk10C -> frame10C
+fx_114 Fx114Work83: unk10E -> timer10E
+fx_114 Fx114Work83: unk110 -> timer110
+fx_114 Fx114Work83: unk112 -> timer112
+fx_114 Fx114Work83: unk114 -> timer114
+fx_114 Fx114Work83: unk116 -> timer116
+fx_114 Fx114Work83: unk118 -> model118
+fx_114 Fx114Work83: unk148 -> model148
+fx_114 Fx114Rock: unk1 -> flags1
+fx_114 Fx114Rock: unk18 -> pos18
+fx_114 Fx114Work80: unk48 -> color48
+fx_114 Fx114Work80: unk4C -> rot4C
+fx_114 Fx114Work80: unk5C -> scale5C
+fx_114 Fx114Work80: unk68 -> pos68
+fx_114 Fx114Work80: unk90 -> pos90
+fx_114 Fx114Work80: unkA0 -> scaleA0
+fx_114 Fx114Work80: unkB0 -> colorB0
+fx_114 Fx114Work80: unkBC -> posBC
+fx_114 Fx114Work80: unkCC -> scaleCC
+fx_114 Fx114Work80: unkDC -> colorDC
+fx_114 Fx114Work80: unkE8 -> posE8
+fx_114 Fx114Work80: unkF8 -> scaleF8
+fx_114 Fx114Work80: unk108 -> color108
+fx_114 Fx114Work80: unk124 -> scale124
+fx_114 Fx114Work80: unk134 -> pos134
+fx_114 Fx114Work80: unk15C -> color15C
+fx_114 Fx114Work80: unk15D -> color15D
+fx_114 Fx114Work80: unk15E -> color15E
+fx_114 Fx114Work80: unk160 -> index160
+fx_114 Fx114Work80: unk168 -> frame168
+fx_114 Fx114Work80: unk16C -> frame16C
+fx_114 Fx114Work80: unk16E -> timer16E
+fx_114 Fx114Work80: unk170 -> timer170
+fx_114 Fx114Work80: unk172 -> timer172
+fx_114 Fx114Work80: unk174 -> timer174
+fx_114 Fx114Work80: unk176 -> timer176
+fx_114 Fx114Work80: unk17C -> model17C
+fx_130 Fx130Work: unk0 -> timer0
+fx_130 Fx130Unit: unk8 -> rot8
+fx_130 Fx130Unit: unk10 -> rot10
+fx_130 Fx130Unit: unk18 -> timer18
+fx_130 Fx130Unit: unk1C -> timer1C
+fx_130 Fx130Unit: unk20 -> timer20
+fx_130 Fx130Unit: unk24 -> model24
+fx_130 Fx130Unit: unk28 -> rot28
+fx_130 Fx130Unit: unk30 -> pos30
+fx_130 Fx130Unit: unk40 -> scale40
+fx_134 Fx134Bolt: unk4 -> pos4
+fx_134 Fx134Work: unk0 -> state0
+fx_134 Fx134Work: unk18 -> pos18
+fx_134 Fx134Work: unk24 -> pos24
+fx_134 Fx134Work: unk30 -> scale30
+fx_134 Fx134Work: unk44 -> scale44
+fx_134 Fx134Work: unk58 -> scroll58
+fx_134 Fx134Orb: unk2 -> phase2
+fx_134 Fx134Orb: unk1C -> spin1C
+fx_134 Fx134Orb: unk1E -> spin1E
+fx_135 Fx135Work: unk18 -> rot18
+fx_137 Fx137Work: unk0 -> rot0
+fx_137 Fx137Work: unk18 -> pos18
+fx_138 Fx138Path: unk2 -> count2
+fx_138 Fx138Path: unk4 -> keys4
+fx_138 Fx138Work81: unk28 -> pos28
+fx_138 Fx138Work81: unk30 -> frame30
+fx_138 Fx138Work81: unk32 -> fade32
+fx_138 Fx138Work80: unk24 -> pos24
+fx_138 Fx138Work80: unk70 -> pos70
+fx_138 Fx138Work80: unk78 -> rot78
+fx_138 Fx138Work80: unk90 -> active90
+fx_138 Fx138Work80: unk92 -> timer92
+fx_138 Fx138Work80: unk94 -> frame94
+fx_138 Fx138Ring: unk0 -> rot0
+fx_179 Fx179Tri: unk0 -> verts0
+fx_179 Fx179Shard: unk4 -> pos4
+fx_179 Fx179Shard: unk8 -> pos8
+fx_179 Fx179Shard: unkC -> velC
+fx_179 Fx179Shard: unkE -> velE
+fx_179 Fx179Shard: unk10 -> vel10
+fx_179 Fx179Shard: unk14 -> rot14
+fx_179 Fx179Shard: unk16 -> rot16
+fx_179 Fx179Shard: unk18 -> frame18
+fx_179 Fx179Shard: unk1A -> delay1A
+fx_17d_6 Fx17d6Trail: unk4 -> points4
+fx_17d_6 Fx17d6Bolt: unk0 -> to0
+fx_17d_6 Fx17d6Bolt: unk8 -> from8
+fx_17d_6 Fx17d6Bolt: unk10 -> slot10
+fx_17d_6 Fx17d6Bolt: unk12 -> index12
+fx_17d_6 Fx17d6Bolt: unk14 -> angle14
+fx_17d_6 Fx17d6Bolt: unk15 -> width15
+fx_17d_6 Fx17d6Bolt: unk18 -> noise18
+fx_17d_6 Fx17d6Summon: unk60 -> model60
+fx_17d_6 Fx17d6Work80: unk20 -> pos20
+fx_17d_6 Fx17d6Work80: unk38 -> pos38
+fx_17d_6 Fx17d6Work80: unk44 -> rot44
+fx_17d_6 Fx17d6Work80: unk4C -> scale4C
+fx_17d_6 Fx17d6Work80: unk58 -> pos58
+fx_17d_6 Fx17d6Work80: unk64 -> scale64
+fx_17d_6 Fx17d6Bolt: unk11 -> kind11
+fx_17d_7 Fx17d7Trail: unk4 -> points4
+fx_17d_7 Fx17d7Bolt: unk0 -> to0
+fx_17d_7 Fx17d7Bolt: unk8 -> from8
+fx_17d_7 Fx17d7Bolt: unk10 -> slot10
+fx_17d_7 Fx17d7Bolt: unk11 -> kind11
+fx_17d_7 Fx17d7Bolt: unk12 -> index12
+fx_17d_7 Fx17d7Bolt: unk14 -> angle14
+fx_17d_7 Fx17d7Bolt: unk15 -> width15
+fx_17d_7 Fx17d7Bolt: unk18 -> noise18
+fx_17d_7 Fx17d7Rock: unk2 -> phase2
+fx_17d_7 Fx17d7Rock: unk6 -> vel6
+fx_17d_7 Fx17d7Rock: unkA -> scaleA
+fx_17d_7 Fx17d7Rock: unkC -> posC
+fx_17d_7 Fx17d7Rock: unk1C -> spin1C
+fx_17d_7 Fx17d7Rock: unk1E -> spin1E
+fx_17d_7 Fx17d7Rock: unk20 -> index20
+fx_17d_7 Fx17d7Rock: unk22 -> release22
+fx_17d_7 Fx17d7RockInst: unk84 -> model84
+fx_17d_7 Fx17d7Work80: unk28 -> pos28
+fx_17d_7 Fx17d7Work80: unk44 -> scale44
+fx_17d_7 Fx17d7Work80: unk50 -> pos50
+fx_195 Fx195Trail: unk4 -> points4
+fx_195 Fx195Work80: unk0 -> state0
+fx_195 Fx195Work80: unk20 -> camPos20
+fx_195 Fx195Work80: unk30 -> sound30
+fx_195 Fx195Work80: unk32 -> sound32
+fx_195 Fx195Work80: unk60 -> pos60
+fx_195 Fx195Work80: unk6C -> scale6C
+fx_196 Fx196Track: unk2 -> count2
+fx_196 Fx196Track: unk4 -> keys4
+fx_196 Fx196CamPath: unk0 -> fileId0
+fx_196 Fx196Work86: unk40 -> count40
+fx_196 Fx196Work85: unk18 -> camPos18
+fx_197 Fx197Tri: unk0 -> vert0
+fx_197 Fx197Tri: unk8 -> vert8
+fx_197 Fx197Tri: unk10 -> vert10
+fx_197 Fx197Shatter: unk2 -> count2
+fx_197 Fx197Shatter: unk4 -> count4
+fx_197 Fx197Shatter: unkC -> nextTriC
+fx_197 Fx197Shard: unkE -> velE
+fx_197 Fx197Shard: unk14 -> spin14
+fx_197 Fx197Shard: unk16 -> spin16
+fx_197 Fx197Shard: unk18 -> frame18
+fx_197 Fx197Shard: unk1A -> index1A
+fx_19f Fx19fTrail: unk4 -> points4
+fx_19f Fx19fTrailPts: unk0 -> points0
+fx_19f Fx19fBolt: unk8 -> pos8
+fx_19f Fx19fBolt: unk10 -> index10
+fx_19f Fx19fBolt: unk11 -> kind11
+fx_19f Fx19fBolt: unk12 -> index12
+fx_19f Fx19fBolt: unk18 -> noise18
+fx_19f Fx19fWork81: unk48 -> pos48
+fx_19f Fx19fWork81: unk54 -> scale54
+fx_1b0 Fx1b0Piece: unk0 -> posX0
+fx_1b0 Fx1b0Piece: unk4 -> posY4
+fx_1b0 Fx1b0Piece: unk8 -> posZ8
+fx_1b0 Fx1b0Piece: unkC -> velC
+fx_1b0 Fx1b0Piece: unk14 -> rotX14
+fx_1b0 Fx1b0Piece: unk16 -> rotY16
+fx_1b0 Fx1b0Piece: unk18 -> frame18
+fx_1b0 Fx1b0Piece: unk1A -> face1A
+fx_1b0 Fx1b0Split: unk2 -> count2
+fx_1b0 Fx1b0Split: unk24 -> faces24
+fx_1b0 Fx1b0Split: unk28 -> nextFace28
+fx_1b0 Fx1b0Split: unk2C -> modelFaces2C
+fx_1b0 Fx1b0Split: unk4C -> pieces4C
+fx_1b0 Fx1b0Orbit: unkA -> spinA
+fx_1b0 Fx1b0Work80: unk1C -> scale1C
+fx_1b0 Fx1b0Work80: unk38 -> color38
+fx_1bd Fx1bdPath: unk2 -> count2
+fx_1bd Fx1bdPath: unk4 -> keys4
+fx_1bd Fx1bdTrack6: unk0 -> count0
+fx_1bd Fx1bdKey12: unk6 -> rot6
+fx_1bd Fx1bdKey12: unk8 -> rot8
+fx_1bd Fx1bdKey12: unkA -> rotA
+fx_1bd Fx1bdLine: unkC -> alphaC
+fx_1bd Fx1bdLine: unk10 -> alpha10
+fx_1bd Fx1bdLine: unk12 -> alpha12
+fx_1bd Fx1bdTrack: unkE -> countE
+fx_1bd Fx1bdWork82: unk60 -> timer60
+fx_1bd Fx1bdWork82: unk62 -> timer62
+fx_1bd Fx1bdModel: unk18 -> scale18
+fx_1bd Fx1bdWork83: unk20 -> xform20
+fx_1bd Fx1bdWork83: unk48 -> xform48
+fx_1bd Fx1bdWork83: unk70 -> xform70
+fx_1bd Fx1bdWork83: unk98 -> fade98
+fx_1bd Fx1bdWork83: unk9C -> xform9C
+fx_1bd Fx1bdWork83: unkC4 -> fadeC4
+fx_1bd Fx1bdWork83: unkC8 -> fadeC8
+fx_1bd Fx1bdWork83: unkCC -> xformCC
+fx_1bd Fx1bdWork83: unk10C -> frame10C
+fx_1bd Fx1bdWork83: unk10E -> timer10E
+fx_1bd Fx1bdWork83: unk110 -> timer110
+fx_1bd Fx1bdWork83: unk112 -> timer112
+fx_1bd Fx1bdWork83: unk114 -> timer114
+fx_1bd Fx1bdWork83: unk116 -> timer116
+fx_1bd Fx1bdWork83: unk118 -> model118
+fx_1bd Fx1bdWork83: unk148 -> model148
+fx_1bd Fx1bdRock: unk1 -> flag1
+fx_1be Fx1beUnit: unk0 -> rot0
+fx_1be Fx1beUnit: unk8 -> scale8
+fx_1be Fx1beUnit: unk18 -> pos18
+fx_1be Fx1beUnit: unk20 -> rot20
+fx_1be Fx1beUnit: unk28 -> spin28
+fx_1be Fx1beUnit: unk30 -> timer30
+fx_1be Fx1beUnit: unk34 -> timer34
+fx_1bf_0 Fx1bf0Line: unk4 -> points4
+fx_1bf_0 Fx1bf0Work: unk0 -> state0
+fx_1bf_0 Fx1bf0Work: unk8 -> pos8
+fx_1bf_1 Fx1bf1Rock: unk0 -> state0
+fx_1bf_1 Fx1bf1Rock: unk2 -> phase2
+fx_1bf_1 Fx1bf1Rock: unk4 -> vel4
+fx_1bf_1 Fx1bf1Rock: unk6 -> vel6
+fx_1bf_1 Fx1bf1Rock: unk8 -> vel8
+fx_1bf_1 Fx1bf1Rock: unkA -> scaleA
+fx_1bf_1 Fx1bf1Rock: unkC -> posC
+fx_1bf_1 Fx1bf1Rock: unk1C -> spin1C
+fx_1bf_1 Fx1bf1Rock: unk1E -> spin1E
+fx_1bf_1 Fx1bf1Rock: unk20 -> index20
+fx_1bf_1 Fx1bf1Rock: unk22 -> offset22
+fx_1bf_1 Fx1bf1RockInst: unk84 -> models84
+fx_1bf_1 Fx1bf1Inst: unk10 -> pool10
+fx_1bf_1 Fx1bf1Bolt: unk11 -> kind11
+fx_1bf_1 Fx1bf1Bolt: unk12 -> index12
+fx_1bf_1 Fx1bf1Bolt: unk14 -> angle14
+fx_1bf_1 Fx1bf1Bolt: unk15 -> width15
+fx_1bf_1 Fx1bf1Bolt: unk18 -> noise18
+fx_1bf_1 Fx1bf1Work80: unk28 -> pos28
+fx_1bf_1 Fx1bf1Work80: unk44 -> scale44
+fx_1bf_1 Fx1bf1Work80: unk50 -> pos50
+fx_1ec Fx1ecPath: unk2 -> count2
+fx_1ec Fx1ecPath: unk4 -> keys4
+fx_1ec Fx1ecWork80: unk2C -> pos2C
+fx_1ec Fx1ecWork80: unk4C -> camPos4C
+fx_1ec Fx1ecWork80: unk54 -> camPos54
+fx_1ec Fx1ecWork80: unk5C -> camPos5C
+fx_1ec Fx1ecWork81: unk44 -> pos44
+fx_1ec Fx1ecWork82: unk48 -> rgb48
+fx_1ec Fx1ecWork82: unk64 -> timer64
+fx_1ec Fx1ecWork82: unk68 -> timer68
+fx_1ec Fx1ecWork82: unk6A -> flag6A
+fx_1ed Fx1edTrack: unk0 -> frame0
+fx_1ed Fx1edTrack: unk4 -> timer4
+fx_1ed Fx1edTrack: unk8 -> slot8
+fx_1ed Fx1edTrack: unkC -> slotC
+fx_1ed Fx1edTrack: unk10 -> keys10
+fx_1ed Fx1edSummon: unk60 -> model60
+fx_1ee Fx1eeTrack: unk0 -> frame0
+fx_1ee Fx1eeTrack: unk4 -> timer4
+fx_1ee Fx1eeTrack: unk8 -> slot8
+fx_1ee Fx1eeTrack: unkC -> slotC
+fx_1ee Fx1eeTrack: unk10 -> keys10
+fx_1ee Fx1eeSummon: unk60 -> model60
+fx_1ef Fx1efTrack: unk0 -> frame0
+fx_1ef Fx1efTrack: unk4 -> timer4
+fx_1ef Fx1efTrack: unk8 -> slot8
+fx_1ef Fx1efTrack: unkC -> slotC
+fx_1ef Fx1efTrack: unk10 -> keys10
+fx_1ef Fx1efSummon: unk60 -> model60
+fx_1f2 Fx1f2Work: unk0 -> active0
+fx_1f2 Fx1f2Work: unk4 -> timer4
+fx_1f2 Fx1f2Work: unk8 -> timer8
+fx_1f2 Fx1f2Work: unkC -> timerC
+fx_1f2 Fx1f2Work: unk10 -> timer10
+fx_1f2 Fx1f2Work: unk14 -> timer14
+fx_1f2 Fx1f2Work: unk18 -> timer18
+fx_1f2 Fx1f2Work: unk20 -> timer20
+fx_1f2 Fx1f2Work: unk24 -> timer24
+fx_1f2 Fx1f2Work: unk28 -> timer28
+fx_1f2 Fx1f2Work: unk2C -> spin2C
+fx_1f2 Fx1f2Work: unk34 -> timer34
+fx_1f2 Fx1f2Work: unk3C -> timer3C
+fx_1f2 Fx1f2Work: unk40 -> done40
+fx_1f2 Fx1f2Work: unk44 -> timer44
+fx_1f2 Fx1f2Work: unk48 -> done48
+fx_1f2 Fx1f2Work: unk4C -> timer4C
+fx_1f2 Fx1f2Work: unk50 -> timer50
+fx_1f2 Fx1f2Work: unk54 -> timer54
+fx_1f2 Fx1f2Work: unk58 -> timer58
+fx_1f2 Fx1f2Work: unk110 -> bonePos110
+fx_1f2 Fx1f2Trail: unkD0 -> velD0
+fx_1fc Fx1fcTrack6: unk2 -> count2
+fx_1fc Fx1fcTrack6: unk4 -> keys4
+fx_1fc Fx1fcKey: unk0 -> pos0
+fx_1fc Fx1fcKey: unk6 -> rot6
+fx_1fc Fx1fcTrack: unk8 -> channel8
+fx_1fc Fx1fcTrack: unkA -> slotsA
+fx_1fc Fx1fcTrack: unkC -> indexC
+fx_1fc Fx1fcTrack: unkE -> countE
+fx_1fc Fx1fcWork83: unk10 -> pos10
+fx_1fc Fx1fcWork83: unk20 -> scale20
+fx_1fc Fx1fcWork83: unk38 -> pos38
+fx_1fc Fx1fcWork83: unk48 -> scale48
+fx_1fc Fx1fcWork83: unk58 -> pos58
+fx_1fc Fx1fcWork83: unk98 -> scale98
+fx_1fc Fx1fcWork83: unk128 -> rot128
+fx_1fc Fx1fcWork83: unk130 -> timer130
+fx_1fc Fx1fcWork83: unk132 -> timer132
+fx_1fc Fx1fcWork83: unk134 -> active134
+fx_1fc Fx1fcWork84: unk60 -> emitPos60
+fx_1fc Fx1fcWork84: unkA0 -> doneA0
+fx_1fd Fx1fdPath: unk2 -> count2
+fx_1fd Fx1fdPath: unk4 -> keys4
+fx_1fd Fx1fdKey: unk0 -> pos0
+fx_1fd Fx1fdKey: unk6 -> rot6
+fx_1fd Fx1fdWork80: unk14 -> pos14
+fx_1fd Fx1fdWork84: unk40 -> pos40
+fx_1fd Fx1fdWork84: unk80 -> emitPos80
+fx_1fd Fx1fdWork84: unkC0 -> doneC0
+fx_1fd Fx1fdOrbit: unk10 -> radius10
+fx_1fd Fx1fdOrbit: unk12 -> angle12
+fx_1fd Fx1fdTrack: unk8 -> channel8
+fx_1fd Fx1fdTrack: unkA -> slotsA
+fx_1fd Fx1fdTrack: unkC -> indexC
+fx_1fd Fx1fdTrack: unkE -> countE
+fx_1fd Fx1fdRibbon: unk1A -> count1A
+fx_1fd Fx1fdRibbon: unk1C -> bright1C
+fx_1fd Fx1fdRibbon: unk1E -> width1E
+fx_1fd Fx1fdRibbon: unk20 -> blend20
+fx_1fd Fx1fdRibbon: unk22 -> angle22
+fx_1fd Fx1fdRibbon1: unk16 -> width16
+fx_1fd Fx1fdRibbon1: unk18 -> angle18
+fx_1fd Fx1fdWork82: unk3C -> tint3C
+fx_1fd Fx1fdWork82: unk58 -> timer58
+fx_1fd Fx1fdWork82: unk5C -> timer5C
+fx_1fd Fx1fdWork82: unk60 -> timer60
+fx_1fd Fx1fdWork82: unk64 -> frame64
+fx_1fd Fx1fdWork82: unk66 -> speed66
+fx_105 Fx105Seg: unk0 -> pos0
+fx_105 Fx105Seg: unk8 -> pos8
+fx_105 Fx105Flash: unk4 -> timer4
+fx_105 Fx105Drop: unk10 -> flicker10
+fx_105 Fx105Work80: unkC -> timerC
+fx_114 Fx114Summon80: unk60 -> summonModel60
+fx_114 Fx114Track12: unk0 -> count0
+fx_114 Fx114Track12: unk4 -> keys4
+fx_114 Fx114Path: unk2 -> count2
+fx_114 Fx114Wave: unk8 -> start8
+fx_114 Fx114Wave: unkA -> countA
+fx_114 Fx114Track: unk6 -> timer6
+fx_114 Fx114Track: unkC -> indexC
+fx_114 Fx114Track: unkE -> countE
+fx_114 Fx114Rock: unk10 -> rot10
+fx_114 Fx114Work80: unk28 -> pos28
+fx_114 Fx114Work80: unk38 -> scale38
+fx_114 Fx114Work80: unk54 -> pos54
+fx_114 Fx114Work80: unk78 -> scale78
+fx_114 Fx114Work80: unk114 -> pos114
+fx_130 Fx130Unit: unk0 -> pos0
+fx_134 Fx134Work: unk4 -> frame4
+fx_134 Fx134Orb: unk0 -> kind0
+fx_179 Fx179Shard: unk0 -> pos0
+fx_179 Fx179Work: unk4 -> frame4
+fx_17d_6 Fx17d6Trail17: unk4 -> points4
+fx_17d_6 Fx17d6Inst: unk0 -> frame0
+fx_17d_6 Fx17d6Inst: unk10 -> pool10
+fx_17d_6 Fx17d6Work80: unk8 -> pos8
+fx_17d_7 Fx17d7Trail17: unk4 -> points4
+fx_17d_7 Fx17d7Inst: unk0 -> frame0
+fx_17d_7 Fx17d7Inst: unk10 -> pool10
+fx_17d_7 Fx17d7Work83: unk8 -> kind8
+fx_17d_7 Fx17d7Work80: unk18 -> pos18
+fx_195 Fx195Trail57: unk4 -> points4
+fx_196 Fx196CamPath: unk2 -> fileId2
+fx_196 Fx196CamPath: unk4 -> duration4
+fx_196 Fx196Work86: unk0 -> pos0
+fx_197 Fx197Shatter: unk0 -> duration0
+fx_197 Fx197Shatter: unk8 -> tris8
+fx_197 Fx197Shatter: unk10 -> modelTris10
+fx_197 Fx197Shard: unk4 -> pos4
+fx_197 Fx197Shard: unkC -> velC
+fx_197 Fx197Track: unk2 -> count2
+fx_197 Fx197Work81: unk18 -> model18
+fx_19f Fx19fTrail17: unk4 -> points4
+fx_19f Fx19fBolt: unk0 -> pos0
+fx_19f Fx19fWork83: unk8 -> kind8
+fx_19f Fx19fInst: unk10 -> pool10
+fx_1b0 Fx1b0Split: unk0 -> count0
+fx_1b0 Fx1b0Split: unk4 -> counts4
+fx_1b0 Fx1b0Orbit: unk8 -> spin8
+fx_1bd Fx1bdTrack6: unk4 -> keys4
+fx_1bd Fx1bdTrack12: unk0 -> count0
+fx_1bd Fx1bdKey12: unk2 -> pos2
+fx_1bd Fx1bdLine: unk8 -> start8
+fx_1bd Fx1bdLine: unkA -> countA
+fx_1bd Fx1bdTrack: unk6 -> timer6
+fx_1bd Fx1bdTrack: unkC -> indexC
+fx_1bd Fx1bdRock: unk10 -> rot10
+fx_1bf_1 Fx1bf1Inst: unk0 -> frame0
+fx_1bf_1 Fx1bf1Work83: unk4 -> count4
+fx_1bf_1 Fx1bf1Work83: unk8 -> kind8
+fx_1bf_1 Fx1bf1Bolt: unk10 -> index10
+fx_1bf_1 Fx1bf1Work80: unk18 -> pos18
+fx_1ec Fx1ecWork81: unk2C -> pos2C
+fx_1ed Fx1edTrail: unk4 -> pos4
+fx_1ee Fx1eeTrail: unk4 -> pos4
+fx_1ee Fx1eeSpark: unk0 -> timer0
+fx_1ee Fx1eeSpark: unk8 -> tex8
+fx_1ee Fx1eeSpark: unkC -> angleC
+fx_1ee Fx1eeSpark: unk10 -> radius10
+fx_1ef Fx1efTrail: unk4 -> pos4
+fx_1f2 Fx1f2Model: unk0 -> model0
+fx_1f2 Fx1f2Model: unk4 -> radius4
+fx_1f2 Fx1f2Model: unk8 -> rot8
+fx_1f2 Fx1f2Model: unk10 -> pos10
+fx_1f2 Fx1f2Model: unk20 -> scale20
+fx_1f2 Fx1f2Ring: unkC -> radiusC
+fx_1f2 Fx1f2Ring: unk18 -> pos18
+fx_1f2 Fx1f2Ring: unk28 -> scale28
+fx_1f2 Fx1f2Trail: unk50 -> pos50
+fx_1fc Fx1fcPath: unk2 -> count2
+fx_1fc Fx1fcPath: unk4 -> keys4
+fx_1fc Fx1fcTrack: unk0 -> keys0
+fx_1fc Fx1fcTrack: unk6 -> timer6
+fx_1fc Fx1fcWork84: unk20 -> pos20
+fx_1fd Fx1fdPath_0b4: unk2 -> count2
+fx_1fd Fx1fdPath_0b4: unk4 -> keys4
+fx_1fd Fx1fdTrack: unk0 -> keys0
+fx_1fd Fx1fdTrack: unk6 -> timer6
+fx_1fd Fx1fdEdge: unk8 -> otz8
+fx_1fd Fx1fdRibbon: unk10 -> scale10
+fx_1fd Fx1fdRibbon1: unk12 -> count12
+fx_1fd Fx1fdRibbon1: unk14 -> bright14
+fx_105 Fx105Flash: unk0 -> timer0
+fx_105 Fx105Drop: unk4 -> posY4
+fx_105 Fx105Drop: unk8 -> speed8
+fx_105 Fx105Work80: unk10 -> flag10
+fx_114 Fx114Work82: unk60 -> timer60
+fx_114 Fx114Track6: unk0 -> count0
+fx_114 Fx114Track6: unk4 -> keys4
+fx_114 Fx114Track: unk8 -> chan8
+fx_114 Fx114Track: unkA -> dstSlotsA
+fx_114 Fx114Rock: unk2 -> done2
+fx_114 Fx114Rock: unk6 -> vel6
+fx_134 Fx134Orb: unk4 -> vel4
+fx_179 Fx179Work: unk0 -> state0
+fx_17d_6 Fx17d6Trail5: unk4 -> points4
+fx_17d_6 Fx17d6Work83: unk0 -> noise0
+fx_17d_6 Fx17d6Work83: unk8 -> kind8
+fx_17d_7 Fx17d7Trail5: unk4 -> points4
+fx_17d_7 Fx17d7Work83: unk0 -> noise0
+fx_17d_7 Fx17d7Rock: unk8 -> vel8
+fx_195 Fx195Work80: unk4 -> frame4
+fx_196 Fx196Work85: unk0 -> state0
+fx_196 Fx196Work85: unk4 -> frame4
+fx_197 Fx197Shard: unk0 -> pos0
+fx_197 Fx197Shard: unk8 -> pos8
+fx_197 Fx197Shard: unk10 -> vel10
+fx_197 Fx197Track: unk4 -> keys4
+fx_197 Fx197Work87: unkC -> camPosC
+fx_197 Fx197CamPath: unk2 -> fileId2
+fx_19f Fx19fTrail4: unk4 -> points4
+fx_19f Fx19fWork83: unk0 -> noise0
+fx_1b0 Fx1b0Orbit: unk0 -> angle0
+fx_1b0 Fx1b0Work80: unk4 -> frame4
+fx_1b0 Fx1b0Work80: unk8 -> pos8
+fx_1bd Fx1bdTrack12: unk4 -> keys4
+fx_1bd Fx1bdKey12: unk0 -> pos0
+fx_1bd Fx1bdTrack: unk8 -> chan8
+fx_1bd Fx1bdTrack: unkA -> dstA
+fx_1bd Fx1bdRock: unk2 -> done2
+fx_1bd Fx1bdRock: unk6 -> vel6
+fx_1bf_1 Fx1bf1Work83: unk0 -> noise0
+fx_1bf_1 Fx1bf1Trail: unk4 -> points4
+fx_1bf_1 Fx1bf1Bolt: unk8 -> pos8
+fx_1ee Fx1eeSpark: unk4 -> timer4
+fx_1f2 Fx1f2Ring: unk0 -> model0
+fx_1f2 Fx1f2Ring: unk4 -> model4
+fx_1f2 Fx1f2Ring: unk8 -> model8
+fx_1f2 Fx1f2Ring: unk10 -> rot10
+fx_1fc Fx1fcPath_0b4: unk2 -> count2
+fx_1fc Fx1fcPath_0b4: unk4 -> keys4
+fx_1fd Fx1fdTrack: unk4 -> startFrame4
+fx_1fd Fx1fdEdge: unk0 -> sxy0
+fx_1fd Fx1fdRibbon: unk8 -> path8
+fx_105 Fx105Drop: unk0 -> posX0
+fx_105 Fx105Work80: unk4 -> timer4
+fx_105 Fx105Work80: unk8 -> timer8
+fx_114 Fx114Path: unk4 -> keys4
+fx_114 Fx114Wave: unk0 -> path0
+fx_114 Fx114Work83: unk60 -> scale60
+fx_114 Fx114Rock: unk8 -> angle8
+fx_17d_6 Fx17d6Work83: unk4 -> count4
+fx_17d_6 Fx17d6Work80: unk0 -> state0
+fx_17d_7 Fx17d7Work83: unk4 -> count4
+fx_17d_7 Fx17d7Rock: unk0 -> state0
+fx_197 Fx197Work87: unk0 -> index0
+fx_197 Fx197Work87: unk4 -> camPos4
+fx_197 Fx197Work81: unk8 -> pos8
+fx_197 Fx197Item81: unk2 -> index2
+fx_19f Fx19fTrail13: unk4 -> points4
+fx_19f Fx19fInst: unk0 -> frame0
+fx_1b0 Fx1b0Work80: unk0 -> state0
+fx_1bd Fx1bdKey12: unk4 -> pos4
+fx_1bd Fx1bdLine: unk0 -> path0
+fx_1bd Fx1bdModel: unk8 -> pos8
+fx_1bf_1 Fx1bf1Trail17: unk4 -> points4
+fx_1bf_1 Fx1bf1Bolt: unk0 -> pos0
+fx_1f2 Fx1f2Trail: unk4 -> points4
+fx_1fc Fx1fcKeys: unk2 -> count2
+fx_1fc Fx1fcKeys: unk4 -> keys4
+fx_1fd Fx1fdEdge: unk4 -> sxy4
+fx_1fd Fx1fdRibbon: unk0 -> path0
+fx_1fd Fx1fdRibbon1: unk8 -> scale8
+fx_105 Fx105Work80: unk0 -> visible0
+fx_114 Fx114Track: unk0 -> keys0
+fx_114 Fx114Track: unk4 -> frame4
+fx_17d_6 Fx17d6Work80: unk4 -> frame4
+fx_17d_7 Fx17d7Rock: unk4 -> vel4
+fx_17d_7 Fx17d7Work80: unk0 -> state0
+fx_197 Fx197CamPath: unk0 -> fileId0
+fx_197 Fx197CamPath: unk4 -> duration4
+fx_19f Fx19fWork83: unk4 -> count4
+fx_19f Fx19fWork81: unk0 -> state0
+fx_1bd Fx1bdTrack: unk0 -> keys0
+fx_1bd Fx1bdTrack: unk4 -> frame4
+fx_1bd Fx1bdRock: unk8 -> angle8
+fx_1bf_1 Fx1bf1Trail5: unk4 -> points4
+fx_1bf_1 Fx1bf1Work80: unk0 -> state0
+fx_1fc Fx1fcTrack: unk4 -> startFrame4
+fx_1fd Fx1fdRibbon1: unk0 -> path0
+fx_114 Fx114Rock: unk0 -> frame0
+fx_114 Fx114Rock: unk4 -> speed4
+fx_17d_7 Fx17d7Work80: unk4 -> frame4
+fx_197 Fx197Work81: unk0 -> state0
+fx_197 Fx197Work81: unk4 -> frame4
+fx_19f Fx19fWork81: unk4 -> frame4
+fx_1bd Fx1bdModel: unk0 -> rot0
+fx_1bd Fx1bdRock: unk4 -> speed4
+fx_197 Fx197Item81: unk0 -> state0
+fx_197 Fx197Offsets: unk4 -> trisOfs4
+fx_1bd Fx1bdRock: unk0 -> frame0
+fx_197 Fx197Offsets: unk0 -> shatterOfs0

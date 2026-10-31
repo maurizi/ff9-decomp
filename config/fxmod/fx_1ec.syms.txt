@@ -29,3 +29,5 @@ fx_1ec_op82Trails0 = 0x801EDAC4; // [code] trail point buffer (Pool6CEntry.trail
 fx_1ec_op82Trails1 = 0x801EF024; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op82 handler
 fx_1ec_emitPos0 = 0x801EFB74; // [code] emitter origin, passed to btlfx_startEmitter
 fx_1ec_emitPos1 = 0x801EFB7C; // [code] emitter origin, passed to btlfx_startEmitter
+fx_1ec_op80Origin = 0x801EFB64; // [code] set to the caster body position in op80 mode 1, fx_1ec_op80ParticleMotion adds it to the scaled path point
+fx_1ec_op81Origin = 0x801EFB6C; // [code] set to work pos3C in op81 mode 1, fx_1ec_op81ParticleMotion adds it to the path point

@@ -70,26 +70,26 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         for (i = 15; i >= 0; i--) {
             w->emit20[i] = NULL;
         }
-        D_801E95D4 = 8;
-        D_801E95D8 = 8;
+        fx_1be_scrollPos = 8;
+        fx_1be_scrollSpeed = 8;
         D_801E95D0 = 2;
         for (i = 0; i < env->targets->targetCount; i++) {
-            D_801E95E8[i].unk34 = ex->btlfx_rand() & 7;
-            D_801E95E8[i].unk30 = 0x28;
-            D_801E95E8[i].unk28.vx = ex->btlfx_randRange(-0x20, 0x20);
-            D_801E95E8[i].unk28.vy = ex->btlfx_randRange(-0x40, 0x40);
-            D_801E95E8[i].unk28.vz = ex->btlfx_randRange(-0x20, 0x20);
-            ex->btlfx_getUnitScale(i, &D_801E95E8[i].unk8);
-            ex->btlfx_getUnitRot(i, (s16 *)&D_801E95E8[i].unk0);
-            ex->btlfx_getUnitRot(i, (s16 *)&D_801E95E8[i].unk20);
-            ex->btlfx_getUnitHomePos(i, (s16 *)&D_801E95E8[i].unk18);
+            fx_1be_units[i].timer34 = ex->btlfx_rand() & 7;
+            fx_1be_units[i].timer30 = 0x28;
+            fx_1be_units[i].spin28.vx = ex->btlfx_randRange(-0x20, 0x20);
+            fx_1be_units[i].spin28.vy = ex->btlfx_randRange(-0x40, 0x40);
+            fx_1be_units[i].spin28.vz = ex->btlfx_randRange(-0x20, 0x20);
+            ex->btlfx_getUnitScale(i, &fx_1be_units[i].scale8);
+            ex->btlfx_getUnitRot(i, (s16 *)&fx_1be_units[i].rot0);
+            ex->btlfx_getUnitRot(i, (s16 *)&fx_1be_units[i].rot20);
+            ex->btlfx_getUnitHomePos(i, (s16 *)&fx_1be_units[i].pos18);
         }
         for (i = 0; i < 0x40; i++) {
             r = ex->btlfx_rand() & 0xFFF;
             c = (ex->btlfx_rand() & 0xDFF) + 0xB00;
-            D_801E8FE8[i].vx = (ex->math_sin(c) * r) >> 12;
-            D_801E8FE8[i].vz = ((ex->math_cos(c) * r) >> 12) + 0x418;
-            D_801E8FE8[i].vy = 0;
+            fx_1be_op80ParticleEnds[i].vx = (ex->math_sin(c) * r) >> 12;
+            fx_1be_op80ParticleEnds[i].vz = ((ex->math_cos(c) * r) >> 12) + 0x418;
+            fx_1be_op80ParticleEnds[i].vy = 0;
         }
         w->posD4.vx = 0;
         w->posD4.vy = 0;
@@ -199,8 +199,8 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             break;
         case 0x7C:
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->btlfx_setUnitScale(i, (s32 *)&D_801E95E8[i].unk8);
-                ex->btlfx_setUnitRot(i, (s16 *)&D_801E95E8[i].unk0);
+                ex->btlfx_setUnitScale(i, (s32 *)&fx_1be_units[i].scale8);
+                ex->btlfx_setUnitRot(i, (s16 *)&fx_1be_units[i].rot0);
             }
             w->unk0[0x10] = 8;
             break;
@@ -270,21 +270,21 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         if (w->unk0[0xC] != 0) {
             w->unk0[0xC]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                u = &D_801E95E8[i];
-                if (u->unk34 == 0) {
-                    if (u->unk30 != 0) {
-                        u->unk30--;
-                        fxm_easeLerpSvec(1, 0x28, u->unk30, &D_801E95E8[i].unk18, &w->pos8C, &ang);
+                u = &fx_1be_units[i];
+                if (u->timer34 == 0) {
+                    if (u->timer30 != 0) {
+                        u->timer30--;
+                        fxm_easeLerpSvec(1, 0x28, u->timer30, &fx_1be_units[i].pos18, &w->pos8C, &ang);
                         ex->btlfx_setUnitPos(i, (s16 *)&ang);
-                        sc.vx = sc.vy = sc.vz = fxm_easeLerp(1, 0x28, u->unk30, u->unk8.vy, 0);
+                        sc.vx = sc.vy = sc.vz = fxm_easeLerp(1, 0x28, u->timer30, u->scale8.vy, 0);
                         ex->btlfx_setUnitScale(i, (s32 *)&sc);
-                        u->unk20.vx += u->unk28.vx;
-                        u->unk20.vy += u->unk28.vy;
-                        u->unk20.vz += u->unk28.vz;
-                        ex->btlfx_setUnitRot(i, (s16 *)&D_801E95E8[i].unk20);
+                        u->rot20.vx += u->spin28.vx;
+                        u->rot20.vy += u->spin28.vy;
+                        u->rot20.vz += u->spin28.vz;
+                        ex->btlfx_setUnitRot(i, (s16 *)&fx_1be_units[i].rot20);
                     }
                 } else {
-                    u->unk34--;
+                    u->timer34--;
                 }
             }
         }
@@ -305,21 +305,21 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             pos.vy = -0x1200;
             rot2.vz = 0;
             rot2.vx += 0xA0;
-            func_801E89A8(&pos, &rot2, a, 0x19, 0x3D03, 1);
+            fx_1be_drawGradientGrid(&pos, &rot2, a, 0x19, 0x3D03, 1);
             pos.vy = 0x200;
             rot2.vz = 0x800;
             rot2.vx -= 0x140;
-            func_801E89A8(&pos, &rot2, a, 0x19, 0x3D03, 1);
+            fx_1be_drawGradientGrid(&pos, &rot2, a, 0x19, 0x3D03, 1);
         }
         if (w->unk0[0x10] != 0) {
             w->unk0[0x10]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->btlfx_getUnitHomePos(i, (s16 *)&D_801E95E8[i].unk18);
-                D_801E95E8[i].unk18.vy -= ex->math_sin(w->unk0[0x10] << 7) >> 1;
-                ex->btlfx_setUnitPos(i, (s16 *)&D_801E95E8[i].unk18);
+                ex->btlfx_getUnitHomePos(i, (s16 *)&fx_1be_units[i].pos18);
+                fx_1be_units[i].pos18.vy -= ex->math_sin(w->unk0[0x10] << 7) >> 1;
+                ex->btlfx_setUnitPos(i, (s16 *)&fx_1be_units[i].pos18);
                 if (w->unk0[0x10] == 0) {
-                    D_801E95E8[i].unk18.vy = 0;
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&D_801E95E8[i].unk18);
+                    fx_1be_units[i].pos18.vy = 0;
+                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1be_units[i].pos18);
                     if (p != NULL) {
                         p->otZ = -0x100;
                     }
@@ -328,14 +328,14 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (w->unk0[0x12] != 0) {
             w->unk0[0x12]--;
-            D_801E95D8 = fxm_easeLerp(1, 0x40, w->unk0[0x12], 4, 0x14);
+            fx_1be_scrollSpeed = fxm_easeLerp(1, 0x40, w->unk0[0x12], 4, 0x14);
         }
-        D_801E95D4 += D_801E95D8;
+        fx_1be_scrollPos += fx_1be_scrollSpeed;
         if (w->unk0[5] != 0) {
-            ex->btlfx_drawScrollMove(D_801E95D4, 0x2C0, 0x100, 0x38, 0x70, 0x2C0, 0x170);
+            ex->btlfx_drawScrollMove(fx_1be_scrollPos, 0x2C0, 0x100, 0x38, 0x70, 0x2C0, 0x170);
         }
         if (w->unk0[0x14] != 0) {
-            ex->btlfx_drawScrollMove(0x2710 - D_801E95D4, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+            ex->btlfx_drawScrollMove(0x2710 - fx_1be_scrollPos, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
         }
         if (w->unk0[9] != 0) {
             ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x140, 0x18, 0x60, 0x240, 0x1A0);
@@ -353,7 +353,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     return 0;
 }
 
-void func_801E89A8(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 abr) {
+void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 abr) {
     SVECTOR v[4];
     SVECTOR t;
     MATRIX m;
@@ -394,15 +394,15 @@ void func_801E89A8(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 a
     k0 = 0;
     k1 = n;
     for (j = 0; j < 8; j++) {
-        t.vx = D_801E8F38[j].vx;
-        t.vy = D_801E8F38[j].vy;
-        t.vz = D_801E8F38[j].vz;
+        t.vx = fx_1be_gridColors[j].vx;
+        t.vy = fx_1be_gridColors[j].vy;
+        t.vz = fx_1be_gridColors[j].vz;
         c0.r = (t.vx * k0) >> 12;
         c0.g = (t.vy * k0) >> 12;
         c0.b = (t.vz * k0) >> 12;
-        t.vx = D_801E8F38[j + 1].vx;
-        t.vy = D_801E8F38[j + 1].vy;
-        t.vz = D_801E8F38[j + 1].vz;
+        t.vx = fx_1be_gridColors[j + 1].vx;
+        t.vy = fx_1be_gridColors[j + 1].vy;
+        t.vz = fx_1be_gridColors[j + 1].vz;
         c1.r = (t.vx * k1) >> 12;
         c1.g = (t.vy * k1) >> 12;
         c1.b = (t.vz * k1) >> 12;
@@ -443,7 +443,7 @@ static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
     SVECTOR from;
     SVECTOR *key;
 
-    key = &D_801E8FE8[(e->slot - 1) & 0x3F];
+    key = &fx_1be_op80ParticleEnds[(e->slot - 1) & 0x3F];
     from.vx = 0;
     from.vy = -0x800;
     from.vz = 0x418;

@@ -1,60 +1,60 @@
 #include "fxmod/fx_1b0.h"
 
-void func_801E7704(Fx1b0Split *s, SVECTOR (*faces)[3]) {
+void fx_1b0_initSplit(Fx1b0Split *s, SVECTOR (*faces)[3]) {
     Fx1b0Piece *p;
     s32 i;
 
-    D_801EBF3C = s;
-    D_801EBF40 = s->unk4C;
-    p = s->unk4C;
-    s->unk0 = 0;
-    s->unk2 = 0;
-    s->unk28 = faces;
-    s->unk24 = faces;
+    fx_1b0_split = s;
+    fx_1b0_pieces = s->pieces4C;
+    p = s->pieces4C;
+    s->count0 = 0;
+    s->count2 = 0;
+    s->nextFace28 = faces;
+    s->faces24 = faces;
     for (i = 0; i < 0x7BC; i++) {
-        p->unk18 = -1;
+        p->frame18 = -1;
         p++;
     }
 }
 
 static s32 fxm_splitModelAdd(s32 model) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1b0_env);
-    Fx1b0Split *s = D_801EBF3C;
-    SVECTOR (*f)[3] = s->unk28;
+    Fx1b0Split *s = fx_1b0_split;
+    SVECTOR (*f)[3] = s->nextFace28;
     s32 n;
     s32 i;
     s32 k;
 
     n = (u32)ex->Hi_GetSplitMdlVertex(model, -1) / 24;
     ex->Hi_SplitMdlVertex(model, -1, (s32)f);
-    k = s->unk0;
-    s->unk2C[k] = f;
-    s->unk4[k] = n;
-    s->unk28 = f + n;
-    s->unk2 += n;
-    s->unk0++;
+    k = s->count0;
+    s->modelFaces2C[k] = f;
+    s->counts4[k] = n;
+    s->nextFace28 = f + n;
+    s->count2 += n;
+    s->count0++;
     for (i = 0; i < n; i++) {
         (*f)[0].pad = 0;
         f++;
     }
-    return s->unk2;
+    return s->count2;
 }
 
-Fx1b0Piece *func_801E7830(void) {
-    Fx1b0Piece *p = D_801EBF40;
+Fx1b0Piece *fx_1b0_findFreePiece(void) {
+    Fx1b0Piece *p = fx_1b0_pieces;
     s32 i;
 
     for (i = 0; i < 0x7BC; i++, p++) {
-        if (p->unk18 < 0) {
+        if (p->frame18 < 0) {
             return p;
         }
     }
     return NULL;
 }
 
-s32 func_801E7868(SVECTOR *center) {
-    Fx1b0Split *s = D_801EBF3C;
-    SVECTOR (*f)[3] = s->unk24;
+s32 fx_1b0_launchPieces(SVECTOR *center) {
+    Fx1b0Split *s = fx_1b0_split;
+    SVECTOR (*f)[3] = s->faces24;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1b0_env);
     SVECTOR d;
     Fx1b0Piece *p;
@@ -65,31 +65,31 @@ s32 func_801E7868(SVECTOR *center) {
     j = 0;
     i = 0;
     n = 0;
-    for (; i < s->unk2; i++, f++, j++) {
-        p = func_801E7830();
+    for (; i < s->count2; i++, f++, j++) {
+        p = fx_1b0_findFreePiece();
         if (p != NULL) {
             (*f)[0].pad = 1;
-            p->unk0 = (((*f)[0].vx + (*f)[1].vx + (*f)[2].vx) / 3) << 12;
-            p->unk4 = (((*f)[0].vy + (*f)[1].vy + (*f)[2].vy) / 3) << 12;
-            p->unk8 = (((*f)[0].vz + (*f)[1].vz + (*f)[2].vz) / 3) << 12;
-            p->unk18 = 0;
-            p->unk1A = j;
-            p->unkC.pad = 0x1000;
-            p->unk14 = ex->btlfx_randCentered(0x40);
-            p->unk16 = ex->btlfx_randCentered(0x80);
-            d.vx = (p->unk0 >> 12) - center->vx;
-            d.vy = (p->unk4 >> 12) - center->vy;
-            d.vz = (p->unk8 >> 12) - center->vz;
-            p->unkC.vx = d.vx / 10 + ex->btlfx_randCentered(0x10);
-            p->unkC.vy = d.vy / 10 + ex->btlfx_randCentered(0x10);
-            p->unkC.vz = d.vz / 10 + ex->btlfx_randCentered(0x10);
+            p->posX0 = (((*f)[0].vx + (*f)[1].vx + (*f)[2].vx) / 3) << 12;
+            p->posY4 = (((*f)[0].vy + (*f)[1].vy + (*f)[2].vy) / 3) << 12;
+            p->posZ8 = (((*f)[0].vz + (*f)[1].vz + (*f)[2].vz) / 3) << 12;
+            p->frame18 = 0;
+            p->face1A = j;
+            p->velC.pad = 0x1000;
+            p->rotX14 = ex->btlfx_randCentered(0x40);
+            p->rotY16 = ex->btlfx_randCentered(0x80);
+            d.vx = (p->posX0 >> 12) - center->vx;
+            d.vy = (p->posY4 >> 12) - center->vy;
+            d.vz = (p->posZ8 >> 12) - center->vz;
+            p->velC.vx = d.vx / 10 + ex->btlfx_randCentered(0x10);
+            p->velC.vy = d.vy / 10 + ex->btlfx_randCentered(0x10);
+            p->velC.vz = d.vz / 10 + ex->btlfx_randCentered(0x10);
             n++;
         }
     }
     return n;
 }
 
-void func_801E7B04(void) {
+void fx_1b0_updatePieces(void) {
     Fx1b0Split *s;
     Fx1b0Piece *p;
     BtlfxExports *ex;
@@ -104,8 +104,8 @@ void func_801E7B04(void) {
     SVECTOR (*f)[3];
     s32 i;
 
-    s = D_801EBF3C;
-    p = D_801EBF40;
+    s = fx_1b0_split;
+    p = fx_1b0_pieces;
     zero[0] = 0;
     zero[1] = 0;
     ex = BTLFX_EXPORTS(fx_1b0_env);
@@ -113,11 +113,11 @@ void func_801E7B04(void) {
     scale.vz = 0xF00;
     rot.vz = 0;
     for (i = 0; i < 0x7BC; i++, p++) {
-        if (p->unk18 >= 0) {
-            f = &s->unk24[p->unk1A];
-            c.vx = p->unk0 >> 12;
-            c.vy = p->unk4 >> 12;
-            c.vz = p->unk8 >> 12;
+        if (p->frame18 >= 0) {
+            f = &s->faces24[p->face1A];
+            c.vx = p->posX0 >> 12;
+            c.vy = p->posY4 >> 12;
+            c.vz = p->posZ8 >> 12;
             v[0].vx = (*f)[0].vx - c.vx;
             v[0].vy = (*f)[0].vy - c.vy;
             v[0].vz = (*f)[0].vz - c.vz;
@@ -128,12 +128,12 @@ void func_801E7B04(void) {
             v[2].vy = (*f)[2].vy - c.vy;
             v[2].vz = (*f)[2].vz - c.vz;
             ex->btlfx_stepModuleParticle((Pool6CEntry *)p, 0, (SVECTOR *)zero, &out);
-            if (p->unk4 >= 0) {
-                *(s32 *)&rot.vx = *(s32 *)&p->unk14;
+            if (p->posY4 >= 0) {
+                *(s32 *)&rot.vx = *(s32 *)&p->rotX14;
                 ex->math_rotMatrixYXZ(&rot, &m);
-                m.t[0] = p->unk0 >> 12;
-                m.t[1] = p->unk4 >> 12;
-                m.t[2] = p->unk8 >> 12;
+                m.t[0] = p->posX0 >> 12;
+                m.t[1] = p->posY4 >> 12;
+                m.t[2] = p->posZ8 >> 12;
                 ex->ScaleMatrix(&m, &scale);
                 ex->SetRotMatrix(&m);
                 ex->SetTransMatrix(&m);
@@ -155,12 +155,12 @@ void func_801E7B04(void) {
                 (*f)[2].vx = o.vx;
                 (*f)[2].vy = o.vy;
                 (*f)[2].vz = o.vz;
-                p->unk18++;
-                if (p->unk18 < 0x80) {
+                p->frame18++;
+                if (p->frame18 < 0x80) {
                     continue;
                 }
             }
-            p->unk18 = -1;
+            p->frame18 = -1;
             (*f)[2].vz = 0;
             *(s32 *)&(*f)[2].vx = 0;
             (*f)[1].vz = 0;
@@ -174,22 +174,22 @@ void func_801E7B04(void) {
 static s32 fx_1b0_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
     s32 k = e->slot - 1;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1b0_env);
-    Fx1b0Orbit *o = &D_801EC724[k];
+    Fx1b0Orbit *o = &fx_1b0_orbits[k];
     SVECTOR v;
 
     if (frame == 0) {
-        o->unk0.vx = k << 9;
-        o->unk0.vy = k * 0x140;
-        o->unk0.vz = 0;
-        o->unk8 = ex->btlfx_randCentered(0x20) + 0x40;
-        o->unkA = ex->btlfx_randCentered(0x20) + 0x190;
+        o->angle0.vx = k << 9;
+        o->angle0.vy = k * 0x140;
+        o->angle0.vz = 0;
+        o->spin8 = ex->btlfx_randCentered(0x20) + 0x40;
+        o->spinA = ex->btlfx_randCentered(0x20) + 0x190;
     }
-    ex->btlfx_pointAhead((s16 *)&D_801EC714, (s16 *)&o->unk0, (ex->math_sin(((frame << 12) / frames) >> 2) * 0xBB8) >> 12,
+    ex->btlfx_pointAhead((s16 *)&fx_1b0_orbitCenter, (s16 *)&o->angle0, (ex->math_sin(((frame << 12) / frames) >> 2) * 0xBB8) >> 12,
                       (s16 *)&v);
-    o->unk0.vx += o->unk8;
-    o->unk0.vy += o->unkA;
-    o->unk8 = (o->unk8 * 0x11) >> 4;
-    o->unkA = (o->unkA * 7) >> 3;
+    o->angle0.vx += o->spin8;
+    o->angle0.vy += o->spinA;
+    o->spin8 = (o->spin8 * 0x11) >> 4;
+    o->spinA = (o->spinA * 7) >> 3;
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;
@@ -222,16 +222,16 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_1b0_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&v);
-        work->unk8[0] = v.vx;
-        work->unk8[1] = v.vy;
-        work->unk8[2] = v.vz;
+        work->pos8[0] = v.vx;
+        work->pos8[1] = v.vy;
+        work->pos8[2] = v.vz;
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
-        ex->btlfx_getUnitScale(0x10, work->unk1C);
+        ex->btlfx_getUnitScale(0x10, work->scale1C);
         work->rot14.vy += 0x800;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos28);
-        D_801EC714.vx = work->pos28.vx;
-        D_801EC714.vy = work->pos28.vy;
-        D_801EC714.vz = work->pos28.vz;
+        fx_1b0_orbitCenter.vx = work->pos28.vx;
+        fx_1b0_orbitCenter.vy = work->pos28.vy;
+        fx_1b0_orbitCenter.vz = work->pos28.vz;
         work->unk30.vx = work->pos28.vx;
         work->unk30.vy = work->pos28.vy;
         work->unk30.vz = work->pos28.vz;
@@ -240,13 +240,13 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[3].vy = v.vy;
         fx_1b0_task = entry;
         env->camera->points[3].vz = v.vz;
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->state0 = 0;
+        work->frame4 = 0;
     } else {
         a = 0;
         b = 0;
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             env->otZ = 0xC8;
             t = (frame << 12) / 90;
@@ -308,21 +308,21 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x40, 0x40, 0x20);
             }
             if (frame >= 0x3C) {
-                ex->btlfx_sampleGradient(D_801E8CAC, &work->unk38, frame - 0x3C);
+                ex->btlfx_sampleGradient(fx_1b0_colorGradient, &work->color38, frame - 0x3C);
             }
             if (frame == 0x3B) {
                 ex->btlfx_fadeUnitById(0x10, 0);
                 ex->btlfx_moveSummonToHeap(0x64);
                 ex->btlfx_initEffModels(fx_1b0_effModels, 0xA);
                 for (j = 0; j < 8; j++) {
-                    work->model3C[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8CEC[j]), 0);
+                    work->model3C[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_1b0_modelFileIds[j]), 0);
                 }
             }
             if (frame >= 0x3C) {
                 work->rot14.vy += t >> 2;
                 for (i = 0; i < 8; i++) {
-                    ex->Hi_DrawEffModel(&work->rot14, (VECTOR *)work->unk8, (s32)work->unk1C, work->model3C[i]);
-                    ex->Hi_ModifyEffModelRGB(work->model3C[i], work->unk38.r - 0x80, work->unk38.g - 0x80, work->unk38.b);
+                    ex->Hi_DrawEffModel(&work->rot14, (VECTOR *)work->pos8, (s32)work->scale1C, work->model3C[i]);
+                    ex->Hi_ModifyEffModelRGB(work->model3C[i], work->color38.r - 0x80, work->color38.g - 0x80, work->color38.b);
                 }
             }
             if (frame == 0x10) {
@@ -361,10 +361,10 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0xFF, 0xFF, 0xFF);
             }
             if (frame >= 0x5A) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
                 buf = ((Fx1b0Summon *)env->loader)->unk54->unk50 + 0x19000;
-                func_801E7704((Fx1b0Split *)buf, (SVECTOR (*)[3])(buf + 0xDB88));
+                fx_1b0_initSplit((Fx1b0Split *)buf, (SVECTOR (*)[3])(buf + 0xDB88));
                 for (i = 0; i < 8; i++) {
                     fxm_splitModelAdd(work->model3C[i]);
                 }
@@ -376,13 +376,13 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             w.vy = 0;
             w.vz = 0;
             if (frame == 0) {
-                func_801E7868(&w);
+                fx_1b0_launchPieces(&w);
             }
             work->rot14.vy += 0x18;
             for (i = 0; i < 8; i++) {
-                ex->Hi_DrawEffModel(&work->rot14, (VECTOR *)work->unk8, (s32)work->unk1C, work->model3C[i]);
+                ex->Hi_DrawEffModel(&work->rot14, (VECTOR *)work->pos8, (s32)work->scale1C, work->model3C[i]);
             }
-            func_801E7B04();
+            fx_1b0_updatePieces();
             if (frame == 0) {
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 0, 0xFF, 0xFF);
             }
@@ -430,7 +430,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vx = scale.vy = scale.vz = b + 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &w, &scale, (CVECTOR *)&v, 1, 0);
         }
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }

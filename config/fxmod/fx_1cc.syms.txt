@@ -8,5 +8,5 @@ fx_1cc_env = 0x801E9C34; // [code] the effect env (Unk800F78A4) the op handlers 
 fx_1cc_effModels = 0x801E9C44; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
 fx_1cc_dirRots = 0x801E9B68; // [code] SVECTOR table indexed by the object direction index (o unk4, work unk7A), used as Hi_DrawEffModel rotation, emitter rot and spawn angle (tab->vy) in op80PoolTask and op80 state 3
 fx_1cc_pieceFileIds = 0x801E9B98; // [code] 14 btlfx_getFileData indices whose models op80 mode 1 registers into work model20 (piece models)
-fx_1cc_pieceDists = 0x801E9BD0; // [code] s16 per piece index, func_801E8284 passes -(value*4) as the btlfx_pointAhead distance
+fx_1cc_pieceDists = 0x801E9BD0; // [code] s16 per piece index, fx_1cc_piecePos passes -(value*4) as the btlfx_pointAhead distance
 fx_1cc_piecePos = 0x801E8284; // type:func [code] btlfx_pointAhead from along to by -pieceDists[i]*4, gives the start position of piece i (op80 state 5 and op80PoolTask)

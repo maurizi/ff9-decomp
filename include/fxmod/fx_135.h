@@ -10,7 +10,7 @@ typedef struct {
     Pool6CEntry *emit4;
     SVECTOR pos8;
     SVECTOR pos10;
-    SVECTOR unk18;
+    SVECTOR rot18;
 } Fx135Work;
 
 extern Unk800F78A4 *fx_135_env;

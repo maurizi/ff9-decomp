@@ -10,7 +10,7 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[1];
+    SVECTOR points4[1];
 } Fx19fTrail;
 
 extern Unk800F78A4 *fx_19f_env;
@@ -25,18 +25,18 @@ typedef struct {
     Fx19fKey unk4[1];
 } Fx19fKeys;
 typedef struct {
-    SVECTOR unk0[17]; /* points of a 17-point trail (its 4-byte header precedes them) */
+    SVECTOR points0[17]; /* points of a 17-point trail (its 4-byte header precedes them) */
     u8 pad88[4];
 } Fx19fTrailPts; /* 0x8C */
 
-extern Fx19fTrailPts D_801EB3BC[32];
+extern Fx19fTrailPts fx_19f_boltTrailPoints[32];
 
 typedef struct {
     u8 unk0;
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[17];
+    SVECTOR points4[17];
 } Fx19fTrail17; /* 0x8C */
 
 typedef struct {
@@ -44,38 +44,38 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[4];
+    SVECTOR points4[4];
 } Fx19fTrail4; /* 0x24 */
 
 typedef struct {
-    SVECTOR unk0; /* from */
-    SVECTOR unk8; /* to */
-    u8 unk10; /* trail index */
-    u8 unk11; /* kind */
-    u8 unk12;
+    SVECTOR pos0; /* from */
+    SVECTOR pos8; /* to */
+    u8 index10; /* trail index */
+    u8 kind11; /* kind */
+    u8 index12;
     u8 unk13;
     u8 unk14;
     u8 unk15;
     u8 pad16[2];
-    s32 *unk18; /* noise */
+    s32 *noise18; /* noise */
 } Fx19fBolt;
 
-extern Fx19fTrail17 D_801EB3B8[];
-extern Fx19fTrail4 D_801EC538[];
-extern SVECTOR D_801EA9AC;
-extern s32 D_801EA9B4;
-extern s32 D_801EC9B8[64][3]; /* noise */
+extern Fx19fTrail17 fx_19f_boltTrails[];
+extern Fx19fTrail4 fx_19f_branchTrails[];
+extern SVECTOR fx_19f_boltCenter;
+extern s32 fx_19f_boltLength;
+extern s32 fx_19f_noise[64][3]; /* noise */
 
 typedef struct {
-    s32 *unk0; /* noise */
-    s32 unk4; /* spawn count */
-    s32 unk8; /* kind */
+    s32 *noise0; /* noise */
+    s32 count4; /* spawn count */
+    s32 kind8; /* kind */
 } Fx19fWork83;
 
 typedef struct {
-    s32 unk0; /* frame */
+    s32 frame0; /* frame */
     u8 pad4[0xC];
-    s16 *unk10; /* pool */
+    s16 *pool10; /* pool */
 } Fx19fInst;
 
 static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
@@ -93,14 +93,14 @@ typedef struct {
 } Fx19fKey12; /* 0xC */
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR pos8; /* base position */
     SVECTOR pos10;
     SVECTOR unk18;
     u8 pad20[0x28];
-    s32 unk48[3]; /* model position */
-    s32 unk54[3]; /* model scale */
+    s32 pos48[3]; /* model position */
+    s32 scale54[3]; /* model scale */
     SVECTOR rot60; /* model rotation */
     Pool6CEntry *emit68;
     Pool6CEntry *emit6C;
@@ -116,18 +116,18 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[13];
+    SVECTOR points4[13];
 } Fx19fTrail13; /* 0x6C */
 
-extern s16 D_801EA9B8[];
-extern s32 D_801EA9D0[3];
-extern s32 D_801EA9DC[3];
-extern s32 D_801EA9E8[3];
-extern s32 D_801EA9F4[3];
-extern Fx19fTrail D_801EAA58;
+extern s16 fx_19f_bandWidths[];
+extern s32 fx_19f_stripFromFileIds0[3];
+extern s32 fx_19f_stripToFileIds0[3];
+extern s32 fx_19f_stripFromFileIds1[3];
+extern s32 fx_19f_stripToFileIds1[3];
+extern Fx19fTrail fx_19f_offsetTrail;
 extern BtlModel fx_19f_effModels[];
-extern Fx19fTrail17 D_801EAF18[6];
-extern Fx19fTrail13 D_801EB268[3];
+extern Fx19fTrail17 fx_19f_stripTrails0[6];
+extern Fx19fTrail13 fx_19f_stripTrails1[3];
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9);
 

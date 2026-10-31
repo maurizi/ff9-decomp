@@ -12,8 +12,8 @@ typedef struct {
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx1bdPoint *unk4;
+    u16 count2; /* count */
+    Fx1bdPoint *keys4;
 } Fx1bdPath;
 
 typedef struct {
@@ -21,31 +21,31 @@ typedef struct {
 } Fx1bdKey6;
 
 typedef struct {
-    u16 unk0; /* count */
-    Fx1bdKey6 *unk4;
+    u16 count0; /* count */
+    Fx1bdKey6 *keys4;
 } Fx1bdTrack6;
 
 typedef struct {
-    s16 unk0, unk2, unk4; /* position */
-    s16 unk6, unk8, unkA; /* rotation */
+    s16 pos0, pos2, pos4; /* position */
+    s16 rot6, rot8, rotA; /* rotation */
 } Fx1bdKey12;
 
 typedef struct {
-    u16 unk0; /* count */
-    Fx1bdKey12 *unk4;
+    u16 count0; /* count */
+    Fx1bdKey12 *keys4;
 } Fx1bdTrack12;
 
 extern BtlModel fx_1bd_effModels[];
 
 
 typedef struct {
-    Fx1bdPath unk0;
-    s16 unk8;
-    s16 unkA;
-    s16 unkC; /* alpha */
+    Fx1bdPath path0;
+    s16 start8;
+    s16 countA;
+    s16 alphaC; /* alpha */
     s16 unkE;
-    s16 unk10;
-    s16 unk12;
+    s16 alpha10;
+    s16 alpha12;
 } Fx1bdLine;
 
 typedef struct {
@@ -58,16 +58,16 @@ typedef struct {
     VECTOR unk44;
     u8 pad54[4];
     SVECTOR pos58;
-    s16 unk60; /* fade-in countdown */
-    s16 unk62; /* fade-out countdown */
+    s16 timer60; /* fade-in countdown */
+    s16 timer62; /* fade-out countdown */
     u16 unk64; /* frame */
     u16 model66; /* model */
     u16 model68; /* model */
 } Fx1bdWork82; /* 0x6C */
 
-extern Fx1bdLine D_801EB764;
-extern u8 D_801EBC54[13][0x50]; /* trails */
-extern u32 D_801EB854[];
+extern Fx1bdLine fx_1bd_pathTrail;
+extern u8 fx_1bd_op82Trails[13][0x50]; /* trails */
+extern u32 fx_1bd_bgOt[];
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_posPathInit(Fx1bdPath *path, u16 *data);
@@ -83,24 +83,24 @@ static void fxm_buildPathTrail(Fx1bdPath *keys, u8 *buf, s32 size, s32 start, s3
 static u16 *fxm_offsetTableEntry(u16 *base, u16 i);
 
 typedef struct {
-    s16 *unk0;
-    s16 unk4; /* start frame */
-    s16 unk6; /* frames left, -1 = free */
-    s16 unk8; /* channel */
-    u16 unkA; /* destination slots, 4 bits each */
-    u16 unkC;
-    u16 unkE;
+    s16 *keys0;
+    s16 frame4; /* start frame */
+    s16 timer6; /* frames left, -1 = free */
+    s16 chan8; /* channel */
+    u16 dstA; /* destination slots, 4 bits each */
+    u16 indexC;
+    u16 countE;
 } Fx1bdTrack; /* 0x10 */
-extern Fx1bdTrack D_801EC064[];
-extern s32 D_801EC464[];
+extern Fx1bdTrack fx_1bd_camKeys[];
+extern s32 fx_1bd_camChanFrames[];
 static void fxm_camChanReset(void);
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);
 static void fxm_camChanUpdate(s32 ch);
 
 typedef struct {
-    SVECTOR unk0; /* rotation */
-    VECTOR unk8; /* position */
-    VECTOR unk18; /* scale */
+    SVECTOR rot0; /* rotation */
+    VECTOR pos8; /* position */
+    VECTOR scale18; /* scale */
 } Fx1bdModel; /* 0x28 */
 
 typedef struct {
@@ -110,51 +110,51 @@ typedef struct {
     SVECTOR unkC;
     SVECTOR unk14;
     s32 unk1C;
-    Fx1bdModel unk20;
-    Fx1bdModel unk48;
-    Fx1bdModel unk70;
-    s32 unk98;
-    Fx1bdModel unk9C;
-    s32 unkC4;
-    s32 unkC8;
-    Fx1bdModel unkCC;
+    Fx1bdModel xform20;
+    Fx1bdModel xform48;
+    Fx1bdModel xform70;
+    s32 fade98;
+    Fx1bdModel xform9C;
+    s32 fadeC4;
+    s32 fadeC8;
+    Fx1bdModel xformCC;
     SVECTOR posF4;
     SVECTOR posFC;
     SVECTOR unk104;
-    s16 unk10C; /* frame */
-    s16 unk10E; /* fade countdowns */
-    s16 unk110;
-    s16 unk112;
-    s16 unk114;
-    s16 unk116;
-    u16 unk118[24]; /* models */
-    u16 unk148;
+    s16 frame10C; /* frame */
+    s16 timer10E; /* fade countdowns */
+    s16 timer110;
+    s16 timer112;
+    s16 timer114;
+    s16 timer116;
+    u16 model118[24]; /* models */
+    u16 model148;
     u16 model14A;
     u16 model14C;
 } Fx1bdWork83; /* 0x150 */
 
 typedef struct {
-    u8 unk0; /* start frame */
-    u8 unk1; /* flags */
-    u8 unk2; /* done */
+    u8 frame0; /* start frame */
+    u8 flag1; /* flags */
+    u8 done2; /* done */
     u8 pad3;
-    s16 unk4; /* speed */
-    s16 unk6; /* lift */
-    SVECTOR unk8; /* direction */
-    SVECTOR unk10; /* rotation */
+    s16 speed4; /* speed */
+    s16 vel6; /* lift */
+    SVECTOR angle8; /* direction */
+    SVECTOR rot10; /* rotation */
     VECTOR pos18; /* position */
 } Fx1bdRock; /* 0x28 */
 
-extern Fx1bdRock D_801E9A14[23];
-extern u8 D_801E9DAC[];
-extern s16 D_801E9DC4[];
-extern s16 D_801E9DD0[];
-extern s16 D_801E9DDC[];
-extern s16 D_801E9DE4[];
-extern s16 D_801E9DEC[];
-extern s16 D_801E9DF4[];
-extern s16 D_801E9DFC[];
-extern s16 D_801E9E04[];
+extern Fx1bdRock fx_1bd_op83Pieces[23];
+extern u8 fx_1bd_op83TexSelect[];
+extern s16 fx_1bd_texInfo0[];
+extern s16 fx_1bd_texPos0[];
+extern s16 fx_1bd_texInfo1[];
+extern s16 fx_1bd_texInfo2[];
+extern s16 fx_1bd_texPos1[];
+extern s16 fx_1bd_texPos2[];
+extern s16 fx_1bd_texInfo3[];
+extern s16 fx_1bd_texPos3[];
 extern Fx1bdTrack6 fx_1bd_vecTrack0;
 extern Fx1bdTrack12 fx_1bd_rotPosTrack[23];
 extern Fx1bdTrack6 fx_1bd_posTrack;

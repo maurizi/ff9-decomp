@@ -9,8 +9,8 @@ typedef struct {
     u8 v;
 } Fx1beUV;
 
-extern SVECTOR D_801E8F38[9];
-extern SVECTOR D_801E8FE8[64];
+extern SVECTOR fx_1be_gridColors[9];
+extern SVECTOR fx_1be_op80ParticleEnds[64];
 
 static s32 fxm_easeLerpSvec(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out);
 
@@ -39,22 +39,22 @@ typedef struct {
 } Fx1beWork80; /* 0xDC */
 
 typedef struct {
-    SVECTOR unk0; /* rotation */
-    VECTOR unk8; /* scale */
-    SVECTOR unk18; /* home position */
-    SVECTOR unk20; /* rotation */
-    SVECTOR unk28; /* spin */
-    s32 unk30;
-    s32 unk34; /* delay */
+    SVECTOR rot0; /* rotation */
+    VECTOR scale8; /* scale */
+    SVECTOR pos18; /* home position */
+    SVECTOR rot20; /* rotation */
+    SVECTOR spin28; /* spin */
+    s32 timer30;
+    s32 timer34; /* delay */
 } Fx1beUnit; /* 0x38 */
 
 extern BtlModel fx_1be_effModels[];
 extern s32 D_801E95D0;
-extern s32 D_801E95D4;
-extern s32 D_801E95D8;
-extern Fx1beUnit D_801E95E8[];
+extern s32 fx_1be_scrollPos;
+extern s32 fx_1be_scrollSpeed;
+extern Fx1beUnit fx_1be_units[];
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
-void func_801E89A8(SVECTOR *pos, SVECTOR *rot, s32 step, s32 tpage, s32 clut, s32 abr);
+void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 step, s32 tpage, s32 clut, s32 abr);
 static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 
 #endif

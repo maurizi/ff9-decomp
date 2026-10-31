@@ -6,3 +6,6 @@ fx_179_effModels = 0x801EAA9C; // [code] effect model buffers given to btlfx_ini
 fxm_drawTexCylinder = 0x801E7B68; // type:func [code] textured quads around a circle (cos/sin of an advancing angle times a radius) in rows, at pos rotated and scaled
 fxm_shatterModel = 0x801E7704; // type:func [code] splits a model into triangles and starts one flying piece per triangle, moving away from center
 fx_179_op80Trails = 0x801EAB6C; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fxm_updateShatterPieces = 0x801E78E8; // type:func [code] same code as fx_1a2 fxm_updateShatterPieces (fx_0ec func_801E7B84), steps each live piece with btlfx_stepModuleParticle, spins and rewrites its triangle, frees it after 0x20 frames
+fx_179_shatterTris = 0x801E8A1C; // [code] 160 triangles filled by Hi_SplitMdlVertex in fxm_shatterModel and transformed in place by fxm_updateShatterPieces (fx_1a2 naming)
+fx_179_shatterPieces = 0x801E991C; // [code] 160 Fx179Shard states set up by fxm_shatterModel and stepped by fxm_updateShatterPieces (fx_1a2 naming)

@@ -10,7 +10,7 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[13];
+    SVECTOR points4[13];
 } Fx195Trail; /* 0x6C */
 
 typedef struct {
@@ -18,7 +18,7 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[57];
+    SVECTOR points4[57];
 } Fx195Trail57;
 
 extern Unk800F78A4 *fx_195_env;
@@ -49,23 +49,23 @@ typedef struct {
 } Fx195Vec3;
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* counter */
+    s32 state0; /* state */
+    s32 frame4; /* counter */
     SVECTOR unk8;
     SVECTOR pos10; /* position */
     SVECTOR pos18;
-    SVECTOR unk20; /* camera */
+    SVECTOR camPos20; /* camera */
     u8 pad28[0x30 - 0x28];
-    s16 unk30;
-    s16 unk32;
+    s16 sound30;
+    s16 sound32;
     u8 pad34[0x44 - 0x34];
     s32 unk44;
     u8 pad48[0x54 - 0x48];
     Pool6CEntry *emit54;
     Pool6CEntry *emit58;
     s32 model5C; /* model */
-    Fx195Vec3 unk60; /* model position */
-    Fx195Vec3 unk6C; /* model scale */
+    Fx195Vec3 pos60; /* model position */
+    Fx195Vec3 scale6C; /* model scale */
     SVECTOR rot78; /* model rotation */
     s32 model80; /* models */
     s32 model84;
@@ -76,10 +76,10 @@ typedef struct {
 } Fx195Work80; /* 0x98 */
 
 extern BtlModel fx_195_effModels[];
-extern SVECTOR D_801EA228;
-extern Fx195Trail D_801EA808[];
-extern Fx195Trail57 D_801EAB08[];
-extern Fx195Trail57 D_801EAEA0;
+extern SVECTOR fx_195_basePos;
+extern Fx195Trail fx_195_shortTrails[];
+extern Fx195Trail57 fx_195_longTrails[];
+extern Fx195Trail57 fx_195_longTrail2;
 static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx195Trail57 *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5,
                    s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10);
 static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
