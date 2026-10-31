@@ -3305,3 +3305,30 @@ says "code" or "static" and gives the evidence.
 - proposed: fix the `tm_taskGetSelect` comment; `TM_SEL_YES 0` / `TM_SEL_NO 1`; note the TmState runtime address
   0x801FF9E0 in include/ovl_0d.h's TmState comment.
 - confidence: high (C plus runtime for every cursor and confirm path listed; GAME_QUIT, EXTENSION and CARD_LESS5 were not run).
+
+## R34 3DS request: Mognet (status: proposed; answers in docs/r32/3ds-requests-5-mognet.md)
+- binary: main (`msg_input`, `msg_update`, `msg_getChoiceIndex`, `msg_close`, `evt_update`, `evt_findNearestObject`,
+  `evt_callObjectFunc`), field event scripts (58 Moogle talk functions, tag 3); disc 1, field 351 (Dali inn Moogle)
+- confirm without a press: at `evt_updateObjects` entry (`until evt_updateObjects`), `write g_msgChoice ROW` and
+  `write g_msgPadPressed 0x20000 --size 4` → the script's `WAIT 1 / JMP_IF !padPressed(0xB0000)` loop accepts it.
+  From `build3ds2_mog_choice`: Mognet menu (mask 6, "You have a letter from Kumop to Mogki" in window 5), then
+  row 0 → letter list (mask 0x8001 "Trapped In Ice! / Cancel"), row 0 → window 3 msgId 0x2E flags 0x10 (the letter).
+  States `build3ds5m_mognet_menu`, `build3ds5m_letter_list`, `build3ds5m_letter_open`.
+- `msg_close(3)` run in place of one `msg_update` (pc hijack at its entry, ra kept) closes the letter; the script
+  (op 0x54 wait) fades back and continues. Hijacking at `evt_updateObjects` entry with ra = pc instead loops forever
+  (its own ra is lost); use a function whose return the caller ignores.
+- `evt_findNearestObject(player 0x8007805C, 4, NULL)` (same hijack): 0x80078588 = the Moogle (kind 4, scriptIdx 8,
+  modelId 220, talkRadius 22) at `field_dali_inn_moogle`, NULL at `field_dali_inn`; `evt_callObjectFunc(moogle, 1, 3, 0)`
+  opens the Moogle menu (mask 0x47).
+- Mognet globals (g_evtGlobalVars.b): 0x400 version, 0x408 give counter (2 → 3 on Give), 0x40A + 4k carried slots
+  {used, letter, from, to} (save: 01 06 08 0A), 0x417 taken bits / 0x41F received bits (MSB-first per byte; letter 5
+  bit set again after the poked delivery), 0x428/0x437 list scratch (5 / 6). Static survey of all talk functions in
+  the answer doc (46 letters, ids 3-48, Moogle ids = text bank msg 0 names).
+- proposed (not applied): `EVT_SYSVAR_MSG_CHOICE 9`, `EVT_SYSVAR_CONTROL_ENABLED 2`; `EVT_GB_MOGNET_VERSION 0x400`,
+  `EVT_GB_MOGNET_GIVE_COUNT 0x408`, `EVT_GB_MOGNET_SLOTS 0x40A`, `EVT_GB_MOGNET_TAKEN 0x417`, `EVT_GB_MOGNET_RECEIVED
+  0x41F`, `EVT_GB_MOGNET_LIST_LETTER 0x428`, `EVT_GB_MOGNET_LIST_SENDER 0x437`; expression op names
+  `EVT_EXPR_PAD_PRESSED 0x4F`, `EVT_EXPR_SYSVAR 0x7A`, `EVT_EXPR_CONST16 0x7D`, `EVT_EXPR_CONST26 0x7E`,
+  `EVT_EXPR_OBJPROP 0x78`, `EVT_EXPR_END 0x7F`.
+- confidence: high for the choice/confirm mechanics, the carried-slot and bit layouts (script + runtime); medium for
+  `b[0x408]`'s purpose (only incremented on Give and printed by field 3100) and for the auto-letter / hand-out
+  condition tables (static extraction, one runtime case).
