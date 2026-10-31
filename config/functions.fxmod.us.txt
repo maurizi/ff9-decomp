@@ -323,7 +323,7 @@ fx_09c fx_09c_op80 0x46c 0x801e7704
 fx_09d fx_09d_op80 0x134 0x801e7704
 fx_09e fx_09e_op80 0x134 0x801e7704
 fx_09f fx_09f_op80 0x268 0x801e7704
-fx_0a0 func_801E7704 0x138 0x801e7704
+fx_0a0 fx_0a0_drawGouraudLine 0x138 0x801e7704
 fx_0a0 fxm_drawTrailLine 0xbc 0x801e783c
 fx_0a0 fx_0a0_op80ElemDraw 0x1b0 0x801e78f8
 fx_0a0 fx_0a0_op80 0x294 0x801e7aa8
@@ -338,8 +338,8 @@ fx_0a8 fx_0a8_op80 0x214 0x801e7704
 fx_0a8 fx_0a8_op81 0x208 0x801e7918
 fx_0a9 fx_0a9_op80 0xe8 0x801e7704
 fx_0a9 fx_0a9_op83PoolTask 0x1dc 0x801e77ec
-fx_0a9 func_801E79C8 0xc 0x801e79c8
-fx_0a9 func_801E79D4 0x314 0x801e79d4
+fx_0a9 fxm_resetBolts 0xc 0x801e79c8
+fx_0a9 fxm_spawnBolt 0x314 0x801e79d4
 fx_0a9 fx_0a9_op83 0x228 0x801e7ce8
 fx_0aa fx_0aa_op80ParticleMotion0 0x40 0x801e7704
 fx_0aa fx_0aa_op80ParticleMotion1 0x40 0x801e7744
@@ -359,7 +359,7 @@ fx_0b1 fxm_easeLerp 0x138 0x801e792c
 fx_0b1 fx_0b1_op80 0xd64 0x801e7a64
 fx_0b1 fx_0b1_op81 0x37c 0x801e87c8
 fx_0b2 fxm_drawOffsetTrail 0x1f8 0x801e7704
-fx_0b2 func_801E78FC 0x87c 0x801e78fc
+fx_0b2 fx_0b2_drawFunnel 0x87c 0x801e78fc
 fx_0b2 fx_0b2_op80 0xee0 0x801e8178
 fx_0b3 fxm_keyGetVec 0x50 0x801e7704
 fx_0b3 fxm_keyGetVec2 0x88 0x801e7754
@@ -369,10 +369,10 @@ fx_0b3 fxm_drawScrollMoveX 0x1a0 0x801e78bc
 fx_0b3 fx_0b3_op80 0x4ac 0x801e7a5c
 fx_0b3 fx_0b3_op81 0x764 0x801e7f08
 fx_0b3 fx_0b3_op83 0x788 0x801e866c
-fx_0b3 func_801E8DF4 0x7f4 0x801e8df4
+fx_0b3 fxm_drawWaveWall 0x7f4 0x801e8df4
 fx_0b3 fx_0b3_op84 0x7d0 0x801e95e8
-fx_0b3 func_801E9DB8 0x44 0x801e9db8
-fx_0b3 func_801E9DFC 0x8cc 0x801e9dfc
+fx_0b3 fxm_sinHalfNeg 0x44 0x801e9db8
+fx_0b3 fxm_drawWaterSheet 0x8cc 0x801e9dfc
 fx_0b3 fxm_nextRingPoint 0x60 0x801ea6c8
 fx_0b3 fx_0b3_op85 0xb2c 0x801ea728
 fx_0b3 fx_0b3_op86 0x158 0x801eb254

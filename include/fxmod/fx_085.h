@@ -33,7 +33,7 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 unk3;
-    SVECTOR unk4[3];
+    SVECTOR pts4[3];
     u8 pad1C[0x1C];
 } Fx085Branch; /* 0x38 */
 

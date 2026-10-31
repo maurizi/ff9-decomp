@@ -1,7 +1,9 @@
 #ifndef FX_0A6_H
 #define FX_0A6_H
 
-/* Effect module fx_0a6 (dir 13 file 0xA6). */
+/* Effect module fx_0a6 (dir 13 file 0xA6): enemy Sweep (Stroper). Emitters only. Evidence: [data] the party
+ * ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -15,6 +17,6 @@ typedef struct {
 } Fx0a6Work;
 
 extern Unk800F78A4 *fx_0a6_env;
-extern s32 D_801E7984[];
+extern s32 fx_0a6_trails[];
 
 #endif

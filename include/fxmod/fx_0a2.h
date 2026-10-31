@@ -1,7 +1,9 @@
 #ifndef FX_0A2_H
 #define FX_0A2_H
 
-/* Effect module fx_0a2 (dir 13 file 0xA2). */
+/* Effect module fx_0a2 (dir 13 file 0xA2): Cura, all targets. Emitters only. Evidence: [data] the party ability /
+ * item tables and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md,
+ * "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -11,6 +13,6 @@ typedef struct {
 } Fx0a2Work;
 
 extern Unk800F78A4 *fx_0a2_env;
-extern s32 D_801E7894[];
+extern s32 fx_0a2_trails[];
 
 #endif

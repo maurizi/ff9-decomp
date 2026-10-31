@@ -14,19 +14,19 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos18.vx = env->targets->centerX;
         work->pos18.vy = env->targets->centerY;
         work->pos18.vz = env->targets->centerZ;
-        work->unk20.vx = env->targets->centerX;
-        work->unk20.vy = env->targets->centerY;
-        work->unk20.vz = env->targets->centerZ;
+        work->pos20.vx = env->targets->centerX;
+        work->pos20.vy = env->targets->centerY;
+        work->pos20.vz = env->targets->centerZ;
         work->pos18.vx = 0x5DC;
-        work->unk20.vx = -0x5DC;
+        work->pos20.vx = -0x5DC;
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
-        ex->btlfx_aimAngles((s16 *)&work->pos8, &env->targets->centerX, (s16 *)&work->unk10);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, &env->targets->centerX, (s16 *)&work->aim10);
     } else {
         frame = entry->frame;
         if (frame == 0x19) {
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos18);
             if (work->emit0 != NULL) {
-                work->emit0->trails = (s32)D_801E7A3C;
+                work->emit0->trails = (s32)fx_0a5_trails;
                 work->emit0->trailSlots = 0x80;
                 work->emit0->trailStride = 0x20;
             }
@@ -39,9 +39,9 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4 = NULL;
             }
             if (work->emit4 != NULL) {
-                work->emit4->rot.vx = work->unk10.vx;
-                work->emit4->rot.vy = work->unk10.vy;
-                work->emit4->rot.vz = work->unk10.vz;
+                work->emit4->rot.vx = work->aim10.vx;
+                work->emit4->rot.vy = work->aim10.vy;
+                work->emit4->rot.vz = work->aim10.vz;
             }
         }
         if (frame >= 0x19) {
@@ -50,13 +50,13 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (t <= 0x1000) {
                 u = t;
             }
-            ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->unk20, u, (s16 *)&work->unk28);
+            ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos20, u, (s16 *)&work->pos28);
             if (work->emit0 != NULL) {
                 if (work->emit0->state == BTLFX_EMIT_DONE) {
                     work->emit0 = NULL;
                 }
                 if (work->emit0 != NULL) {
-                    work->emit0->target = (s32)&work->unk28;
+                    work->emit0->target = (s32)&work->pos28;
                 }
             }
         }
