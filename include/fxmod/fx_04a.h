@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0;
+    s32 stop0; /* dead early-out flag, always 0 (see Fx046Work.stop0) */
     SVECTOR pos4; /* target body position */
 } Fx04aWork;
 

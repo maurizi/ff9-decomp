@@ -44,7 +44,7 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x54];
-    Fx1b6SummonData *unk54;
+    Fx1b6SummonData *summon54; /* g_btlfxLoader.summon */
 } Fx1b6Summon;
 
 typedef struct {

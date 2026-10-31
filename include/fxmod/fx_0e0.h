@@ -13,9 +13,9 @@ typedef struct {
 } Fx0e0Work84;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[25];
 } Fx0e0Bolt;
@@ -51,8 +51,10 @@ typedef struct {
 } Fx0e0Inst;
 
 extern s32 fx_0e0_objScales[];
-extern s32 D_801EB1D8;
-extern s32 D_801EB1DC;
+/* Dead: both 0 in the module data, read only by the pool items' state 0/1 branch, and fx_0e0_op80 spawns its pool
+ * items with state0 = 3 (no reads over a whole Doomsday Sword, runtime round 33). */
+extern s32 fx_0e0_captureRadius;
+extern s32 fx_0e0_endEarly;
 
 typedef struct {
     s32 vx;

@@ -15,8 +15,8 @@ void fx_0e2_stripFromTrackBlend(void *trackA, void *trackB, s32 t, Fx0e2Trail *t
 
     n = (size - 4) / 8;
     pt = trail->unk4;
-    trail->unk0 = trail->unk2 = n - 1;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = n - 1;
+    trail->head1 = 0;
     r = t;
     for (i = 0; i < n; i++, pt++) {
         fxm_rotPosPathGet(trackA, i, &rotA, &posA);
@@ -57,8 +57,8 @@ void fx_0e2_stripFromTrack(void *track, Fx0e2Trail *trail, s32 size, s32 base, s
 
     n = (size - 4) / 8;
     pt = trail->unk4;
-    trail->unk0 = trail->unk2 = n - 1;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = n - 1;
+    trail->head1 = 0;
     for (i = 0; i < n; i++, pt++) {
         fxm_rotPosPathGet(track, i + base, &rot, &pos);
         pos.vx /= 2;
@@ -96,8 +96,8 @@ void fx_0e2_stripFromPosPath(void *track, Fx0e2Trail *trail, s32 size, s32 base,
 
     n = (size - 4) / 8;
     pt = trail->unk4;
-    trail->unk0 = trail->unk2 = n - 1;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = n - 1;
+    trail->head1 = 0;
     if (count < n) {
         for (i = 0; i < n - count; i++, pt++) {
             pt->pad = 0;
@@ -137,8 +137,8 @@ void fx_0e2_stripFromTrackBlendRot(void *trackA, void *trackB, Fx0e2Trail *trail
 
     n = (size - 4) / 8;
     pt = trail->unk4;
-    trail->unk0 = trail->unk2 = n - 1;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = n - 1;
+    trail->head1 = 0;
     if (count < n) {
         for (i = 0; i < n - count; i++, pt++) {
             pt->pad = 0;
@@ -538,14 +538,14 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0x2E:
             work->unk128 = 0;
-            work->unk12C = 0;
-            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->unk54->motion180[0], ((Fx0e2Summon *)env->loader)->summonModel60);
+            work->loopMotion12C = 0;
+            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->summon54->motion180[0], ((Fx0e2Summon *)env->loader)->summonModel60);
             break;
         case 0x97:
             work->rot3C.vx = 0x181;
             work->unk128 = 1;
-            work->unk12C = 0;
-            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->unk54->motion180[1], ((Fx0e2Summon *)env->loader)->summonModel60);
+            work->loopMotion12C = 0;
+            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->summon54->motion180[1], ((Fx0e2Summon *)env->loader)->summonModel60);
             break;
         }
         switch (frame) {
@@ -647,7 +647,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         n = frame - 0x2E;
         if (n >= 0 && n < 0x83) {
             ex->Hi_DrawSummonModel(&work->rot3C, &work->pos44, (s32)&work->scale64, ((Fx0e2Summon *)env->loader)->summonModel60,
-                                   work->unk12C);
+                                   work->loopMotion12C);
             if (n >= 0 && n < 0x14) {
                 ex->Hi_ModifySummonModelRGB(((Fx0e2Summon *)env->loader)->summonModel60, -0x20, -0x20, -0x20);
             }

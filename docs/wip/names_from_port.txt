@@ -11003,3 +11003,43 @@ g_evtGlobalVars.b[0x67] g_evtGlobalVars.b[EVT_GB_NAVI_PLACE]
 #   BTLFX_SUMMON_MAGIC; btlseq_opPlayCamera 0x14000000 -> BTL_STATUS_VANISH | BTL_STATUS_MINI; btlui item loops use
 #   ITEM_SLOT_COUNT / ITEM_NONE / ITEM_FIRST_USABLE
 # MACROS (uses) Character.info.w >> 4 -> CHR_INFO_KIND_SHIFT (5 sites); (info.w >> 1) & 0x100 -> CHR_INFO_BATTLE_ROW_BIT / BTL_UNIT_ROW_SHIFT (btl_model.c)
+
+# ===== round 33 runtime pass =====
+# Applied from docs/runtime-findings.md "Round 33 runtime pass". Data/functions as 'fx_XXX OLD NEW  # why',
+# fields as 'fx_XXX Struct old=new'. Fields found unused or write-only got a comment in their header, not a name.
+## patterns
+# FIELDS work unk0=stop0 (dead early-out flag, always 0; medium): fx_000 fx_002 fx_00a fx_00b fx_00e fx_00f fx_016 fx_01b
+#   fx_01e fx_01f fx_029 fx_02a fx_038 fx_046 fx_047 fx_04a fx_04c fx_058 fx_059 (Fx059Work81) fx_05f fx_060 fx_061
+# FIELDS every btlfx_drawTrail ring header struct (FxXXXStrip/Branch/Trail/Bolt/Line/Arc, 47 modules): unk0=lastSlot0 unk1=head1 unk2=count2
+# FIELDS strip points: Fx026Pt Fx062Pt Fx063Pt Fx079Pt Fx07aPt unk6=halfWidth6; Fx062Strip unk114=width114; Fx063Strip unkFC=widthFC; Fx1f2Work unk38=halfWidth38
+# FIELDS particles: Fx026Shard Fx0a9Part Fx101Spark Fx18aSpark Fx1e9Spark unk12=drag12
+# FIELDS summon slot views (FxXXXSummon, 28 modules): unk54=summon54
+fx_105 fx_105_quads fx_105_windStreaks  # [runtime] Odin's wind streaks
+fx_105 fx_105_initQuads fx_105_initWindStreaks  # [runtime] follows the data name
+fx_105 fx_105_drawQuads fx_105_drawWindStreaks  # [runtime] ablation removes the streaks
+fx_105 fx_105_screenSprites fx_105_stars  # [runtime] twinkling stars over the night sky
+fx_0b3 fx_0b3_sharedModel fx_0b3_seaModel  # [runtime] ocean surface and sky dome
+fx_0e0 D_801EB1D8 fx_0e0_captureRadius  # [runtime] dead, 0 in data
+fx_0e0 D_801EB1DC fx_0e0_endEarly  # [runtime] dead, 0 in data
+fx_0ba D_801EC550 fx_0ba_preOrb  # [runtime] 1 until the orb appears
+fx_07a D_801E9504 fx_07a_unusedRadius  # [runtime] never read
+fx_17d_4 D_801EB25C fx_17d_4_unused  # [runtime] no reader anywhere
+fx_114 Fx114Work80 unk164=loopMotion164
+fx_0e2 Fx0e2Work80 unk12C=loopMotion12C
+fx_004 Fx004Work unk2C=frameCount2C
+fx_04d Fx04dWork unk2C=frameCount2C
+fx_057 Fx057Work81 otZ8=targetOtZ8
+fx_059 Fx059Work80 posZ4=depthZ4
+fx_0e3_1 Fx0e31Work80 unk48=swingBase48
+fx_0e7 Fx0e7Work81 unk68=fadeInTimer68
+fx_0b3 Fx0b3Track unk0=pad0
+fx_0b4 Fx0b4Path unk0=pad0
+fx_0e1_1 ((Fx0e11BattleState *)env->state)->unk22 env->state->partyReload  # Fx0e11BattleState removed; Unk800F78A40 pad21 -> ending, partyReload
+fx_04c ((u8 *)env->state)[0x12] env->state->signals[2]
+fx_1f2 fx_1f2_unitTrails[4] fx_1f2_unitTrails[16]  # declaration only
+# COMMENTS (no rename): fx_0df_recordElemDraw / fx_0e1_0_scaleXY never called, fx_18a_op80Done no reader, fx_0fc enemy retreat,
+#   fx_138 D_801E8408 / unk88..unk8E never read, fx_17d_6 kind8 always 0, fx_018 kind18 bolt stages, fx_197_overlayOn reloaded per cast,
+#   unused fields (fx_1cc/097/098 unk70, fx_1ec unk3C/unk44, fx_026 unk64, fx_03a unk10, fx_04f unk8, fx_00b/02a unkC,
+#   fx_05d unk40/unk58, fx_0e1_0 unk30, fx_0e1_1 unk10, fx_0f3 unk20, fx_0ed unk20, fx_0e3_1 unk6C, fx_0e3_0 unk48/68/70/7C,
+#   fx_0e2 unkA4/128/130/134); ovl_0b BtlCmd8.forceCamera, skipParty (both views), EffEmit.kind / BTLFX_MOTION_HELIX (cast swirl),
+#   func_800EA1D0 dead; ovl_0a GameData.flags 0x40 and FieldMap.flags 0x100 left literal with a comment where queued.

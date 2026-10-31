@@ -10,11 +10,11 @@ typedef struct {
     s16 vx, vy, vz, pad, unk8, unkA;
 } Fx105Spark; /* 0xC */
 
-extern Fx105Spark fx_105_quads[];
+extern Fx105Spark fx_105_windStreaks[];
 
 void fx_105_drawScreenBand(s32 z, s32 tpage, s32 y0, s32 y1, CVECTOR *rgb);
-void fx_105_initQuads(void);
-void fx_105_drawQuads(s32 c);
+void fx_105_initWindStreaks(void);
+void fx_105_drawWindStreaks(s32 c);
 void fx_105_drawWorldRibbon(s16 *data, s32 c, s32 c2, s32 n);
 void fx_105_drawCamRibbon(s16 *data, s32 c, s32 h, s32 n);
 
@@ -140,7 +140,7 @@ extern SVECTOR fx_105_modelRot;
 extern VECTOR fx_105_modelPos;
 extern VECTOR fx_105_modelScale;
 extern BtlModel fx_105_effModels[];
-extern Fx105Drop fx_105_screenSprites[32];
+extern Fx105Drop fx_105_stars[32];
 static void fxm_camKeyUpdate(void);
 
 #define SUMMON105(env) ((Fx105Summon *)(env)->loader)

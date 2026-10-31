@@ -511,7 +511,7 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x3C) {
-                ex->Hi_SetSummonMotion(((Fx0d3Summon *)env->loader)->unk54->motion180, ((Fx0d3Summon *)env->loader)->model60);
+                ex->Hi_SetSummonMotion(((Fx0d3Summon *)env->loader)->summon54->motion180, ((Fx0d3Summon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0d3Summon *)env->loader)->model60, 0);
             } else if (frame >= 0x3C) {
                 k = frame - 0x3C;
@@ -669,7 +669,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos8.vz = work->summonPos10.vz;
         work->pos8.vy += 0x136;
         sm = (Fx0d3Summon81 *)env->loader;
-        ex->Hi_SetSummonMotion(sm->unk54->motion180[0], sm->model60);
+        ex->Hi_SetSummonMotion(sm->summon54->motion180[0], sm->model60);
         ex->Hi_SetSummonMotFrame(((Fx0d3Summon81 *)env->loader)->model60, 0xA);
         return 0;
     } else {
@@ -678,7 +678,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0:
         t = (frame_119 << 12) / 66;
         if (frame_119 == 18) {
-            ex->Hi_SetSummonMotion(((Fx0d3Summon81 *)env->loader)->unk54->motion180[1], ((Fx0d3Summon81 *)env->loader)->model60);
+            ex->Hi_SetSummonMotion(((Fx0d3Summon81 *)env->loader)->summon54->motion180[1], ((Fx0d3Summon81 *)env->loader)->model60);
         }
         work->summonPos10.vy += 0xC00;
         ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C,
@@ -948,7 +948,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[3].vx = work->camAt40.vx;
             env->camera->points[3].vy = work->camAt40.vy;
             env->camera->points[3].vz = work->camAt40.vz;
-            ex->Hi_SetSummonMotion(((Fx0d3Summon81 *)env->loader)->unk54->motion180[2], ((Fx0d3Summon81 *)env->loader)->model60);
+            ex->Hi_SetSummonMotion(((Fx0d3Summon81 *)env->loader)->summon54->motion180[2], ((Fx0d3Summon81 *)env->loader)->model60);
         }
         break;
     case 4:
@@ -985,7 +985,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame_119 >= 0xE) {
             work->state0 = 5;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(((Fx0d3Summon81 *)env->loader)->unk54->motion180[3], ((Fx0d3Summon81 *)env->loader)->model60);
+            ex->Hi_SetSummonMotion(((Fx0d3Summon81 *)env->loader)->summon54->motion180[3], ((Fx0d3Summon81 *)env->loader)->model60);
             work->summonPos10.vx = 0;
             work->summonPos10.vy = 0;
             work->summonPos10.vz = 0;

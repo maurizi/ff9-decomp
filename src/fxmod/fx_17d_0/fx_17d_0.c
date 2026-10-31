@@ -390,10 +390,10 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos10.vy = 0;
                 BTLFX_COPY_SVEC(&work->pos8, &work->pos18);
                 for (i = 0; i < 2; i++) {
-                    r0[i][0] = ((Fx17d0Summon *)env->loader)->unk54->texInfo18[fx_17d_0_texSlots[i]];
-                    r0[i][1] = ((Fx17d0Summon *)env->loader)->unk54->texInfo24[fx_17d_0_texSlots[i]];
+                    r0[i][0] = ((Fx17d0Summon *)env->loader)->summon54->texInfo18[fx_17d_0_texSlots[i]];
+                    r0[i][1] = ((Fx17d0Summon *)env->loader)->summon54->texInfo24[fx_17d_0_texSlots[i]];
                     r1[i][0] = 0;
-                    r1[i][1] = ((Fx17d0Summon *)env->loader)->unk54->texPos30[fx_17d_0_texSlots[i]];
+                    r1[i][1] = ((Fx17d0Summon *)env->loader)->summon54->texPos30[fx_17d_0_texSlots[i]];
                 }
                 for (i = 0; i < 5; i++) {
                     work->modelB0[i] = ((s32 (*)(void *, void *, void *))ex->Hi_RegisterTexListModel)(

@@ -4,8 +4,8 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 ar
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
     SVECTOR *v;
 
-    fx_1bf_0_lineTrail.unk0 = fx_1bf_0_lineTrail.unk2 = 1;
-    fx_1bf_0_lineTrail.unk1 = 0;
+    fx_1bf_0_lineTrail.lastSlot0 = fx_1bf_0_lineTrail.count2 = 1;
+    fx_1bf_0_lineTrail.head1 = 0;
     v = fx_1bf_0_lineTrail.points4;
     v[0].vx = a->vx;
     v[0].vy = a->vy;
@@ -46,8 +46,8 @@ void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, 
             tr = fx_1bf_0_strandTrails[j];
             tr = (Fx1bf0Line *)((u8 *)tr + fx_1bf_0_strandParams[j * 4 + 2] * k);
             width = w * (fx_1bf_0_strandParams[j * 4 + 3] + 1);
-            tr->unk0 = tr->unk2 = cnt - 1;
-            tr->unk1 = 0;
+            tr->lastSlot0 = tr->count2 = cnt - 1;
+            tr->head1 = 0;
             pts += 2;
             dst = tr->points4;
             for (i = 0; i < cnt; i++, dst++, pts += 3) {

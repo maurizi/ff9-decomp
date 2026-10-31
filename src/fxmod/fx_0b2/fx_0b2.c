@@ -13,8 +13,8 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVEC
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     i = 0;
     p = trail->pts4;
-    trail->unk0 = trail->unk2 = 0x18;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = 0x18;
+    trail->head1 = 0;
     do {
         t = 0x1000 - (i << 12) / 24;
         t += ex->btlfx_randCentered(0x100);

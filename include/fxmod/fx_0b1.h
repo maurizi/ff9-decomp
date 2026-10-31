@@ -36,15 +36,15 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x54];
-    Fx0b1SummonData *unk54;
+    Fx0b1SummonData *summon54; /* g_btlfxLoader.summon */
     u8 pad58[0x60 - 0x58];
     s32 model60; /* summon model */
 } Fx0b1Summon;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR pts4[21];
 } Fx0b1Trail; /* 0xAC */

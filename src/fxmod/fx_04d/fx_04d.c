@@ -194,7 +194,7 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0xBA, 0x3D40, 0, 0x80);
         work->state0 = 0;
         work->count2A = 0;
-        work->unk2C = 0;
+        work->frameCount2C = 0;
         work->split28 = 0;
         work->scroll30 = 0;
         work->pos18.vx = env->targets->centerX;
@@ -285,7 +285,7 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     }
     ex->btlfx_drawScrollMove(work->scroll30, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
-    work->unk2C++;
+    work->frameCount2C++;
     }
     return 0;
 }

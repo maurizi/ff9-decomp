@@ -91,9 +91,9 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->unk4;
-    bolt->unk2 = 0xC;
-    bolt->unk0 = 0xC;
-    bolt->unk1 = 0;
+    bolt->count2 = 0xC;
+    bolt->lastSlot0 = 0xC;
+    bolt->head1 = 0;
     for (i = 0; i < 13; i++) {
         t = 0x1000 - (i << 12) / 12;
         t += ex->btlfx_randCentered(fx_0e3_0_alongJitter);
@@ -121,9 +121,9 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->unk4;
-    bolt->unk2 = 0x30;
-    bolt->unk0 = 0x30;
-    bolt->unk1 = 0;
+    bolt->count2 = 0x30;
+    bolt->lastSlot0 = 0x30;
+    bolt->head1 = 0;
     for (i = 0; i < 0x31; i++) {
         t = 0x1000 - (i << 12) / 48;
         t += ex->btlfx_randCentered(0x97);
@@ -281,7 +281,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (frame >= 0x18) {
             if (frame == 0x18) {
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion180, SUMMON(env)->summonModel60);
+                ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion180, SUMMON(env)->summonModel60);
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0);
             }
             r = frame - 0x18;
@@ -392,7 +392,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame >= 0x45) {
             work->state0 = 10;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion184, SUMMON(env)->summonModel60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion184, SUMMON(env)->summonModel60);
             ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0);
             work->pos30.vx = 0;
             work->pos30.vy = 0;
@@ -465,7 +465,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame >= 0x18) {
             work->state0 = 1;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion180, SUMMON(env)->summonModel60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion180, SUMMON(env)->summonModel60);
             work->summonScale1C.vx = -0x3000;
             work->rot28.vz = 0;
             work->rot28.vy = 0;
@@ -560,7 +560,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->summonPos10.vz = fx_0e3_0_origin.vz + 0x5000;
             work->trailReset50 = 1;
             work->summonPos10.vy -= 0x2000;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion188, SUMMON(env)->summonModel60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion188, SUMMON(env)->summonModel60);
             ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0);
             work->summonScale1C.vx = 0x1000;
             work->summonScale1C.vy = 0x1000;
@@ -608,7 +608,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->state0 = 4;
             entry->frame = -1;
             work->unk48 = 0;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion18C, SUMMON(env)->summonModel60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion18C, SUMMON(env)->summonModel60);
             ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0xA);
             work->pos30.vy = -0x4966;
             work->pos30.vx = 0;
@@ -663,7 +663,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame >= 0x1E) {
             work->state0 = 5;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion194, SUMMON(env)->summonModel60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion194, SUMMON(env)->summonModel60);
             ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, 0, (u16 *)&work->pos40);
             work->emit4C = NULL;
             work->pos40.vy -= 0x80;

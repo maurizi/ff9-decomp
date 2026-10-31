@@ -7,9 +7,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR pts4[11]; /* bolt points */
 } Fx0a9Bolt; /* 0x5C */
@@ -17,7 +17,7 @@ typedef struct {
 typedef struct {
     s32 pos0[3]; /* position, 20.12 */
     s16 velC[3]; /* velocity */
-    s16 unk12;
+    s16 drag12; /* velocity factor per frame (btlfx_stepModuleParticle), 0x1000 = none */
     u16 bolt14; /* bolt */
     u8 fromEnd16; /* point index from the end */
     u8 kind17;

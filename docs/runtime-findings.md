@@ -3026,7 +3026,7 @@ No new save states.
     (full map open, cursor on Ice Cavern).
 - confidence: high (code plus runtime for each).
 
-## Round 33 runtime pass (2026-10-31): rows of docs/wip/r33_runtime_{fxmod_hi,fxmod_lo_A..D,main_overlays,ovl_0b}.md  (status: proposed)
+## Round 33 runtime pass (2026-10-31): rows of docs/wip/r33_runtime_{fxmod_hi,fxmod_lo_A..D,main_overlays,ovl_0b}.md  (status: **applied**)
 Setup: Redux disc 3, LuaJIT off, hang-safe runner `build/rt3/run3.py` from `disc3_malboro_lv99_calm` (calm pokes).
 Any effect id is played by rewriting Zidane's Attack in `btl_playCmdEffect` (`--fn 'btl_playCmdEffect=r.a1=ID'`).
 Two pokes after the load steer btlfx_resolveFirstUse: `GameData.firstUseFxSeen` is GameData+0x55E (0x8008B7AE in

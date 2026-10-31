@@ -92,7 +92,7 @@ extern s32 fx_197_pieceModelFileIds[6][3];
 extern s32 fx_197_modelFileIds[7];
 extern SVECTOR fx_197_basePos;
 extern s32 fx_197_spawnPieces[];
-extern s32 fx_197_overlayOn;
+extern s32 fx_197_overlayOn; /* 1 in the module image, which is reloaded for every cast (runtime, round 33) */
 extern s32 fx_197_shatterFlag0;
 extern s32 fx_197_shatterFlag1;
 extern s32 fx_197_shatterFlag2;

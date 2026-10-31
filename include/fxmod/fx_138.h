@@ -36,7 +36,7 @@ typedef struct {
     SVECTOR pos70; /* caster position */
     SVECTOR rot78; /* caster rotation */
     u8 pad80[0x88 - 0x80];
-    s16 unk88;
+    s16 unk88; /* unk88..unk8E: only initialised, never read (runtime watch, round 33); unk8A is the fourth value of the fx_138_randSets row */
     s16 unk8A;
     s16 unk8C;
     s16 unk8E;
@@ -56,7 +56,7 @@ typedef struct {
     u8 pad10[0x18 - 0x10];
 } Fx138Ring; /* 0x18 */
 
-extern Fx138Ring D_801E8408[3];
+extern Fx138Ring D_801E8408[3]; /* set up from a fx_138_randSets row, never read (runtime watch, round 33): slot reels that were never drawn? */
 extern u16 fx_138_randSets[6][4];
 extern u16 fx_138_modelFileIds[3];
 extern u16 fx_138_pathFileIds[6];

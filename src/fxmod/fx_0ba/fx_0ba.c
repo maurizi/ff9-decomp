@@ -122,7 +122,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x20) {
                 work->state0 = 1;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->motion180, ((Fx0baSummon *)env->loader)->model60);
+                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->summon54->motion180, ((Fx0baSummon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->model60, 0);
             }
             break;
@@ -167,7 +167,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ShowSummonModelMesh(((Fx0baSummon *)env->loader)->model60, 2);
             }
             if (frame == 0x3B) {
-                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->motion184, ((Fx0baSummon *)env->loader)->model60);
+                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->summon54->motion184, ((Fx0baSummon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->model60, 0);
             }
             if (frame >= 0x3C) {
@@ -190,7 +190,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (p != NULL) {
                         p->otZ = 0x37;
                     }
-                    D_801EC550 = 0;
+                    fx_0ba_preOrb = 0;
                 }
                 bright = 0;
                 ex->btlfx_rangeProgress(frame, 0x3C, 0x23, 0, 0x1000, &fade);
@@ -228,7 +228,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fx_0ba_orbPos.vz = 0;
                 fx_0ba_orbPos.vy = 0;
                 fx_0ba_orbPos.vx = 0;
-                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->motion188, ((Fx0baSummon *)env->loader)->model60);
+                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->summon54->motion188, ((Fx0baSummon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->model60, 0);
                 work->pos18.vx = work->summonPos48.vx;
                 work->pos18.vy = work->summonPos48.vy;
@@ -306,8 +306,8 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTO
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
     v = buf->unk4;
-    buf->unk0 = buf->unk2 = 24;
-    buf->unk1 = 0;
+    buf->lastSlot0 = buf->count2 = 24;
+    buf->head1 = 0;
     for (i = 0; i < 25; i++, v++) {
         t = 0x1000 - (i << 12) / 24;
         t += ex->btlfx_randCentered(0x140);
@@ -807,11 +807,11 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 }
                 ta = &fx_0ba_ribbons[k * 2];
                 pt = ta->unk4;
-                ta->unk0 = ta->unk2 = 0x10;
-                ta->unk1 = 0;
+                ta->lastSlot0 = ta->count2 = 0x10;
+                ta->head1 = 0;
                 tb = &fx_0ba_ribbons[k * 2 + 1];
-                tb->unk0 = tb->unk2 = 0x10;
-                tb->unk1 = 0;
+                tb->lastSlot0 = tb->count2 = 0x10;
+                tb->head1 = 0;
                 pb = tb->unk4;
                 for (j = n = 0; j < 34; j++, n++) {
                     if (j == 17) {
@@ -841,8 +841,8 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 q2 = (s16 *)ex->btlfx_getFileData(entry->file, fx_0ba_ribbon13ToBlocks[k2]);
                 q2 += 8;
                 tc = &fx_0ba_ribbons13[k2];
-                tc->unk0 = tc->unk2 = 0xC;
-                tc->unk1 = 0;
+                tc->lastSlot0 = tc->count2 = 0xC;
+                tc->head1 = 0;
                 pt2 = tc->unk4;
                 for (j2 = 0; j2 < 13; j2++) {
                     i2 = arr70[k2] - j2;
@@ -925,8 +925,8 @@ static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0ba
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
     n = (size - 4) / 8;
     v = buf->unk4;
-    buf->unk0 = buf->unk2 = n - 1;
-    buf->unk1 = 0;
+    buf->lastSlot0 = buf->count2 = n - 1;
+    buf->head1 = 0;
     for (i = 0; i < n; i++, v++) {
         t = 0x1000 - (i << 12) / (n - 1);
         t += *tab++ * 2 / 3;
@@ -1020,7 +1020,7 @@ static s32 fx_0ba_op83PoolTask(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk8010
             c2 = ex->math_cos(t2 >> 2);
             trail2 = &fx_0ba_boltTrails[p->strip10];
             strip2 = &fx_0ba_boltBranches[p->strip10];
-            if (frame < 3 && D_801EC550 != 0) {
+            if (frame < 3 && fx_0ba_preOrb != 0) {
                 q = ((frame + 1) << 12) / 3;
                 ang.vy = 0x200;
                 ang.vx = 0;
@@ -1030,7 +1030,7 @@ static s32 fx_0ba_op83PoolTask(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk8010
                                   0x1000 - q * 2 / 3);
                 env->otZ = 0;
             }
-            if ((u32)(frame - 3) < 3 && D_801EC550 != 0) {
+            if ((u32)(frame - 3) < 3 && fx_0ba_preOrb != 0) {
                 q = ((frame - 2) << 12) / 3;
                 ang.vy = 0x200;
                 ang.vx = 0;
@@ -1226,7 +1226,7 @@ s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 2:
-            if ((D_801EC550 != 0 || !(frame & 1)) && fx_0ba_summonDone == 0) {
+            if ((fx_0ba_preOrb != 0 || !(frame & 1)) && fx_0ba_summonDone == 0) {
                 do {
                     k = ex->btlfx_rand() % 10;
                     pt = (Fx0baPt *)((u8 *)ex->btlfx_getFileData(entry->file, 0x23) + 4) + k;
@@ -1317,8 +1317,8 @@ static void fxm_arcTrailSpawn(Unk80100C78Entry *entry, SVECTOR *center, s32 r, S
     s32 i;
     s32 t;
 
-    trail->unk0 = trail->unk2 = 16;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = 16;
+    trail->head1 = 0;
     for (i = 0; i < 17; i++, p--) {
         t = 0x1000 - (i << 8);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&v);

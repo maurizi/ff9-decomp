@@ -8,11 +8,11 @@ fxm_drawRibbonTrail = 0x801E7704; // type:func [code] pushes the a-b edge into a
 fx_105_env = 0x801EAB18; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_105_effModels = 0x801EADD8; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
 fx_105_drawScreenBand = 0x801E7D9C; // type:func [code] one full-width POLY_G4 (x 0..0x140, y y0..y1) with 4 corner colours plus a DR_MODE for tpage, added at z*4, used for the timed fades in fx_105_op80
-fx_105_initQuads = 0x801E9E1C; // type:func [code] places the 32 fx_105_quads at random offsets around camera point 2, called in fx_105_op80 mode 1
-fx_105_drawQuads = 0x801E9F28; // type:func [code] draws the 32 fx_105_quads as POLY_FT4 (0x400 by 0x600 around each point, grey level c*0x70>>12), moves them in z and wraps them, called while timer24 runs
+fx_105_initWindStreaks = 0x801E9E1C; // type:func [code] places the 32 fx_105_windStreaks at random offsets around camera point 2, called in fx_105_op80 mode 1, [runtime] sets up fx_105_windStreaks (round 33)
+fx_105_drawWindStreaks = 0x801E9F28; // type:func [code] draws the 32 fx_105_windStreaks as POLY_FT4 (0x400 by 0x600 around each point, grey level c*0x70>>12), moves them in z and wraps them, called while timer24 runs, [runtime] patched to jr ra it removes Odin's wind streaks, frames 627-768 (round 33)
 fx_105_drawCamRibbon = 0x801EA298; // type:func [code] projects 17 keyed points (file data) around a point 0x800 ahead of camera point 0 towards point 1 into fx_105_camRibbonPts, draws n POLY_FT4 between them (timer28)
 fx_105_drawWorldRibbon = 0x801EA6D4; // type:func [code] projects 64 keyed points (file data, z relative to the target centre) into fx_105_worldRibbonPts, draws n POLY_FT4 between them (timer2C)
-fx_105_quads = 0x801EC168; // [code] Fx105Spark[32] positions set by fx_105_initQuads, drawn and moved by fx_105_drawQuads
+fx_105_windStreaks = 0x801EC168; // [code] Fx105Spark[32] positions set by fx_105_initWindStreaks, drawn and moved by fx_105_drawWindStreaks, [runtime] translucent streak quads rushing past behind Odin during the charge (ablating fx_105_drawWindStreaks removes them, round 33)
 fx_105_camRibbonPts = 0x801EC2E8; // [code] Fx105BandPt[] screen xy pairs written by gte_stsxy in fx_105_drawCamRibbon, quad corners of its strip
 fx_105_worldRibbonPts = 0x801EC378; // [code] Fx105RibbonPt[] screen xy pairs plus otz written in fx_105_drawWorldRibbon, quad corners of its strip
 fx_105_modelTimers = 0x801EAA90; // [code] Fx105Flash[8], per model138[i] a delay then a frame count, both decremented in fx_105_op80 while flag10 is set, model i drawn while frames left
@@ -20,7 +20,7 @@ fx_105_ribbonSegs = 0x801EAC98; // [code] Fx105Seg history buffer given to fxm_d
 fx_105_modelRot = 0x801EADA8; // [code] SVECTOR (0 0x800 0) rotation arg of Hi_DrawSummonModel in fx_105_op80
 fx_105_modelPos = 0x801EADB8; // [code] VECTOR set from camera point 2 each frame, position arg of Hi_DrawSummonModel in fx_105_op80
 fx_105_modelScale = 0x801EADC8; // [code] VECTOR 0x1000 x3, scale arg of Hi_DrawSummonModel in fx_105_op80
-fx_105_screenSprites = 0x801EB998; // [code] Fx105Drop[32] screen x y and speed set in mode 1, drawn with btlfx_drawSpriteAtOt and moved left (x -= speed, wraps to 0x1E0) while timer30 runs
+fx_105_stars = 0x801EB998; // [code] Fx105Drop[32] screen x y and speed set in mode 1, drawn with btlfx_drawSpriteAtOt and moved left (x -= speed, wraps to 0x1E0) while timer30 runs, [runtime] small twinkling points over Odin's night sky and moon, frames 385-663 (round 33)
 fx_105_camFrame = 0x801EAB1C; // [code] frame counter zeroed by fxm_camKeyReset, compared with the key start frames and incremented by fxm_camKeyUpdate
 fx_105_camKeys = 0x801EAB28; // [code] Fx105Track[16] slots of fxm_camKeyReset/fxm_camKeyAdd/fxm_camKeyUpdate
 fx_105_camKeyPoints = 0x801EAC68; // [code] SVECTOR array that fxm_camKeyUpdate writes and reads for slot nibbles 10 and up (instead of camera points)

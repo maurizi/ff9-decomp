@@ -15,9 +15,9 @@ typedef struct {
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width); as Fx018Strip */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[15];
 } Fx0d9Strip; /* 0x7C */
@@ -35,9 +35,9 @@ extern SVECTOR fx_0d9_stripPoints[]; /* strips[0].unk4: the strips start 4 bytes
 static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[3];
     u8 pad1C[0x1C];

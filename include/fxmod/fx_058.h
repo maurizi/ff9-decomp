@@ -16,7 +16,7 @@ typedef struct {
 } Fx058Item; /* 0x28 */
 
 typedef struct {
-    s32 unk0;
+    s32 stop0; /* dead early-out flag, always 0 (see Fx046Work.stop0) */
     SVECTOR pos4; /* target body position */
     SVECTOR posC; /* caster body position */
     SVECTOR rot14; /* caster rotation */

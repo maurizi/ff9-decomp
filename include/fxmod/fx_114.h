@@ -313,7 +313,7 @@ typedef struct {
     u8 color15E;
     u8 pad15F;
     s32 index160;
-    s32 unk164;
+    s32 loopMotion164; /* Hi_DrawSummonModel flags bit 0: 1 loops Ifrit's motion (before frame 0x30), 0 holds its last frame */
     s32 frame168;
     s16 frame16C;
     s16 timer16E;

@@ -34,7 +34,7 @@ typedef struct {
     SVECTOR pos20;
     s16 split28; /* split now */
     s16 count2A;
-    s32 unk2C;
+    s32 frameCount2C; /* incremented every update, never read */
     s32 scroll30;
 } Fx004Work;
 

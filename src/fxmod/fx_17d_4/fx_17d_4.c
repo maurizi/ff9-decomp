@@ -4,8 +4,8 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 ar
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_4_env);
     SVECTOR *v;
 
-    fx_17d_4_lineTrail.unk0 = fx_17d_4_lineTrail.unk2 = 1;
-    fx_17d_4_lineTrail.unk1 = 0;
+    fx_17d_4_lineTrail.lastSlot0 = fx_17d_4_lineTrail.count2 = 1;
+    fx_17d_4_lineTrail.head1 = 0;
     v = fx_17d_4_lineTrail.points4;
     v[0].vx = a->vx;
     v[0].vy = a->vy;
@@ -46,8 +46,8 @@ void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, 
             tr = fx_17d_4_strandTrails[j];
             tr = (Fx17d4Line *)((u8 *)tr + fx_17d_4_strandInfo[j * 4 + 2] * k);
             width = w * (fx_17d_4_strandInfo[j * 4 + 3] + 1);
-            tr->unk0 = tr->unk2 = cnt - 1;
-            tr->unk1 = 0;
+            tr->lastSlot0 = tr->count2 = cnt - 1;
+            tr->head1 = 0;
             pts += 2;
             dst = tr->points4;
             for (i = 0; i < cnt; i++, dst++, pts += 3) {
@@ -219,7 +219,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x84), 1);
         work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 0);
         work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x86), 1);
-        ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion19C, SUMMON(env)->model60);
+        ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion19C, SUMMON(env)->model60);
         work->pos48.vx = 0;
         work->pos48.vy = -0x400;
         work->pos48.vz = 0;
@@ -241,7 +241,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->camera->points[3].vx = work->pos20.vx;
         env->camera->points[3].vy = work->pos20.vy;
         env->camera->points[3].vz = work->pos20.vz;
-        D_801EB25C = 0;
+        fx_17d_4_unused = 0;
     } else {
         frame = entry->frame;
         switch (work->state0) {
@@ -271,7 +271,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->state0 = 1;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1A0, SUMMON(env)->model60);
+                ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion1A0, SUMMON(env)->model60);
                 work->rot34.vx = 0;
                 work->rot34.vy = 0;
                 work->rot34.vz = 0;
@@ -347,7 +347,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x14) {
                 work->state0 = 3;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1A0, SUMMON(env)->model60);
+                ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion1A0, SUMMON(env)->model60);
                 ex->btlfx_initParticleSystem();
                 work->scale3C.vx = work->scale3C.vz = 0x1800;
                 work->rot34.vx = 0;

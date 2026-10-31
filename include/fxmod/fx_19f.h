@@ -6,9 +6,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[1];
 } Fx19fTrail;
@@ -32,17 +32,17 @@ typedef struct {
 extern Fx19fTrailPts fx_19f_boltTrailPoints[32];
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[17];
 } Fx19fTrail17; /* 0x8C */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[4];
 } Fx19fTrail4; /* 0x24 */
@@ -112,9 +112,9 @@ typedef struct {
 } Fx19fWork81; /* 0x84 */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[13];
 } Fx19fTrail13; /* 0x6C */

@@ -160,7 +160,7 @@ s32 fx_101_op82PoolTask(s32 mode, Fx101Spark *p, Unk800F78A4 *env, Unk80100C78En
     s32 a;
 
     if (mode == 1) {
-        p->unk12 = ex->btlfx_randCentered(0x200) + 0xE00;
+        p->drag12 = ex->btlfx_randCentered(0x200) + 0xE00;
     } else {
         a = 0x1000 - (frame << 9);
         pt = p->pos18;
@@ -169,8 +169,8 @@ s32 fx_101_op82PoolTask(s32 mode, Fx101Spark *p, Unk800F78A4 *env, Unk80100C78En
         pt->pad = 0x14;
         ex->btlfx_stepModuleParticle((Pool6CEntry *)p, 0, (SVECTOR *)bias, pt);
         if (p->index16 == 0) {
-            ((Fx101Bolt *)((s32 *)p->pos18 - 4))->unk0 = ((Fx101Bolt *)((s32 *)p->pos18 - 4))->unk2 = 0xB;
-            ((Fx101Bolt *)((s32 *)p->pos18 - 4))->unk1 = 0;
+            ((Fx101Bolt *)((s32 *)p->pos18 - 4))->lastSlot0 = ((Fx101Bolt *)((s32 *)p->pos18 - 4))->count2 = 0xB;
+            ((Fx101Bolt *)((s32 *)p->pos18 - 4))->head1 = 0;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, 0, 5, 0x1000, a, 1,
                               (u8 *)p->pos18 - 4, 0);
         }
@@ -194,9 +194,9 @@ void fx_101_spawnBolt(Unk80100C78Entry *entry, SVECTOR *origin, s32 ang, SVECTOR
     s32 i;
     s32 t;
 
-    bolt->unk2 = 0xB;
-    bolt->unk0 = 0xB;
-    bolt->unk1 = 0;
+    bolt->count2 = 0xB;
+    bolt->lastSlot0 = 0xB;
+    bolt->head1 = 0;
     for (i = 0; i < 12; i++, pt--) {
         t = 0x1000 - (i << 12) / 11;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);

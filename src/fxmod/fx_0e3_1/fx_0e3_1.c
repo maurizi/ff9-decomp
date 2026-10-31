@@ -12,9 +12,9 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->unk4;
-    bolt->unk2 = 0xC;
-    bolt->unk0 = 0xC;
-    bolt->unk1 = 0;
+    bolt->count2 = 0xC;
+    bolt->lastSlot0 = 0xC;
+    bolt->head1 = 0;
     for (i = 0; i < 13; i++) {
         t = 0x1000 - (i << 12) / 12;
         t += ex->btlfx_randCentered(0x180);
@@ -42,9 +42,9 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->unk4;
-    bolt->unk2 = 4;
-    bolt->unk0 = 4;
-    bolt->unk1 = 0;
+    bolt->count2 = 4;
+    bolt->lastSlot0 = 4;
+    bolt->head1 = 0;
     for (i = 0; i < 5; i++) {
         t = 0x1000 - (i << 10);
         t += ex->btlfx_randCentered(0x80);
@@ -72,9 +72,9 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->unk4;
-    bolt->unk2 = 56;
-    bolt->unk0 = 56;
-    bolt->unk1 = 0;
+    bolt->count2 = 56;
+    bolt->lastSlot0 = 56;
+    bolt->head1 = 0;
     for (i = 0; i < 56 + 1; i++) {
         t = 0x1000 - (i << 12) / 56;
         t += ex->btlfx_randCentered(0x100);
@@ -113,9 +113,9 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->unk4;
-    bolt->unk2 = 12;
-    bolt->unk0 = 12;
-    bolt->unk1 = 0;
+    bolt->count2 = 12;
+    bolt->lastSlot0 = 12;
+    bolt->head1 = 0;
     for (i = 0; i < 12 + 1; i++) {
         t = 0x1000 - (i << 12) / 12;
         t += ex->btlfx_randCentered(0x100);
@@ -451,7 +451,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->summonPos10.vz = work->center8.vz;
         work->summonPos10.vy -= 0x3000;
         work->summonPos10.vz -= 0x2000;
-        ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion198, SUMMON(env)->summonModel60);
+        ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion198, SUMMON(env)->summonModel60);
         ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0);
         work->scale94.vz = work->scale94.vy = work->scale94.vx = 0x1000;
         work->rot80.vx = -0x400;
@@ -582,7 +582,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->state0 = 2;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion19C, SUMMON(env)->summonModel60);
+                ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion19C, SUMMON(env)->summonModel60);
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->summonModel60, 0);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0, 0xFF, 0xFF);
             }
@@ -610,9 +610,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             } else {
                 if (frame == 0x12) {
                     ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&u1.m);
-                    ex->btlfx_matrixPointAhead(&u1.m, 0x80, (s32)&work->unk48);
+                    ex->btlfx_matrixPointAhead(&u1.m, 0x80, (s32)&work->swingBase48);
                 }
-                ex->btlfx_pointAhead(&work->unk48.vx, &work->rotBC.vx,
+                ex->btlfx_pointAhead(&work->swingBase48.vx, &work->rotBC.vx,
                                   -((ex->math_sin(((frame - 0xE) << 10) / 14) * 3) / 2), &work->camTarget40.vx);
             }
             env->camera->points[3].vx = work->camTarget40.vx;

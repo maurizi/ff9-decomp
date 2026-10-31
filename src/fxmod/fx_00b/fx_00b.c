@@ -9,7 +9,7 @@ s32 fx_00b_op80(s32 mode, Fx00bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x10;
     } else if (mode == 1) {
         fx_00b_env = env;
-        work->unk0 = 0;
+        work->stop0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos4);
         if (p != NULL) {
@@ -18,7 +18,7 @@ s32 fx_00b_op80(s32 mode, Fx00bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC = 0;
     } else {
         frame = entry->frame;
-        if (work->unk0 == 0) {
+        if (work->stop0 == 0) {
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), frame);
             if (frame >= 0x28) {
                 return 1;

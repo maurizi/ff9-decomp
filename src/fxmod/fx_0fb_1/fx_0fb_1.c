@@ -591,7 +591,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             work->summonPos1C.vy = work->centerC.vy + 0x14C0;
             work->summonScale28.vz = 0x1000;
             work->pos14.vy += 0xCAC;
-            ex->Hi_SetSummonMotion(((Fx0fb1Summon *)env->loader)->unk54->motion18C, ((Fx0fb1Summon *)env->loader)->summonModel60);
+            ex->Hi_SetSummonMotion(((Fx0fb1Summon *)env->loader)->summon54->motion18C, ((Fx0fb1Summon *)env->loader)->summonModel60);
             ex->Hi_SetSummonMotFrame(((Fx0fb1Summon *)env->loader)->summonModel60, 0);
         }
         break;

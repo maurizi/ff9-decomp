@@ -55,7 +55,7 @@ typedef struct {
     SVECTOR pos58; /* summon position */
     SVECTOR pos60;
     SVECTOR pos68;
-    SVECTOR unk70;
+    SVECTOR unk70; /* unused: only the -= 0x80 in mode 1 reads it */
     s16 shatter78;
     s16 shardCount7A; /* shards spawned */
     s32 scrollStep7C;

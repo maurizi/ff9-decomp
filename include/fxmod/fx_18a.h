@@ -11,9 +11,9 @@ typedef struct {
 } Fx18aWork82; /* 0x10 */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[15];
 } Fx18aTrail; /* 0x7C */
@@ -25,7 +25,7 @@ typedef struct {
     s16 velC; /* velocity */
     s16 velE;
     s16 vel10;
-    s16 unk12;
+    s16 drag12; /* velocity factor per frame (btlfx_stepModuleParticle), 0x1000 = none */
     u16 slot14; /* trail */
     s16 index16; /* trail point index */
     SVECTOR *point18; /* trail point */
@@ -58,7 +58,7 @@ typedef struct {
     s32 model24; /* model */
 } Fx18aWork80; /* 0x28 */
 
-extern s32 fx_18a_op80Done;
+extern s32 fx_18a_op80Done; /* set at the end of op80, nothing reads it (runtime watch, round 33) */
 extern BtlModel fx_18a_effModels[];
 
 #endif

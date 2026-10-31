@@ -35,9 +35,9 @@ typedef struct {
 } Fx0dfWork;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[15];
 } Fx0dfBolt;
@@ -47,6 +47,8 @@ extern SVECTOR fx_0df_recentPos[24]; /* recent positions */
 extern s32 fx_0df_recentNext; /* next slot in fx_0df_recentPos */
 extern Unk80100C78Entry *fx_0df_task;
 
+/* Never called: no reference in the module or effect file 0xDF, no hit on an exec breakpoint (runtime, round 33),
+ * so fx_0df_recentPos keeps its data image. */
 void fx_0df_recordElemDraw(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7);
 static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0dfWork *work);

@@ -32,7 +32,7 @@ typedef struct {
     SVECTOR pos8; /* unit position */
     SVECTOR rot10; /* unit rotation */
     SVECTOR pos18; /* model position */
-    SVECTOR unk20;
+    SVECTOR unk20; /* unused (runtime watch, round 33) */
     s32 model28; /* model */
     SVECTOR rot2C; /* model rotation */
     s32 scale34[3]; /* model scale */
@@ -43,7 +43,7 @@ typedef struct {
     struct {
         u8 pad0[0x180];
         BtlUnit9CC *motion180;
-    } *unk54;
+    } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[0x60 - 0x58];
     s32 summonModel60; /* summon model */
 } Fx0edSummon;

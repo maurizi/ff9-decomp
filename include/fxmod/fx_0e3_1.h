@@ -5,9 +5,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[57];
 } Fx0e31Bolt;
@@ -57,13 +57,13 @@ typedef struct {
     SVECTOR pos30; /* hand position */
     SVECTOR pos38;
     SVECTOR camTarget40; /* camera target */
-    SVECTOR unk48;
+    SVECTOR swingBase48; /* point ahead of the hand bone, origin of the camera target swing (btlfx_pointAhead) */
     u8 pad50[8];
     SVECTOR handRot58; /* hand rotation */
     Pool6CEntry *emit60;
     Pool6CEntry *emit64;
     Pool6CEntry *emit68;
-    s32 unk6C;
+    s32 unk6C; /* unused (runtime watch, round 33) */
     Pool6CEntry *emit70;
     Pool6CEntry *emit74;
     s16 sound78;
@@ -87,17 +87,17 @@ typedef struct {
 } Fx0e31Work80; /* 0xE4 */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[13];
 } Fx0e31Bolt13; /* 0x6C */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[5];
 } Fx0e31Bolt5; /* 0x2C */
@@ -110,7 +110,7 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x54];
-    Fx0e31SummonData *unk54;
+    Fx0e31SummonData *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 summonModel60; /* summon model */
 } Fx0e31Summon;

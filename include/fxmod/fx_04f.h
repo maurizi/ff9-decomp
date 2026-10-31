@@ -7,7 +7,7 @@
 typedef struct {
     s32 state0; /* state */
     s32 model4; /* models */
-    s32 unk8;
+    s32 unk8; /* unused (runtime watch, round 33) */
     s32 modelC;
     s32 model10;
     SVECTOR pos14; /* in front of the target */

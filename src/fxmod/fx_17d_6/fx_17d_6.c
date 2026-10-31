@@ -27,7 +27,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         ex->btlfx_initEffModels(fx_17d_6_effModels, 3);
         work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8B), 1);
         work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8D), 2);
-        ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1A8, SUMMON(env)->model60);
+        ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion1A8, SUMMON(env)->model60);
         work->rot70.vx = 0x100;
         work->rot70.vy = 0x780;
         work->pos58.vz = work->pos58.vy = -0x2000;
@@ -121,7 +121,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->state0 = 1;
                 entry->frame = -1;
                 ex->btlfx_stopEmitter((Pool6CEntry *)&work->emit78);
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1AC, SUMMON(env)->model60);
+                ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion1AC, SUMMON(env)->model60);
                 pos.vx = work->pos58.vx;
                 pos.vy = work->pos58.vy;
                 pos.vz = work->pos58.vz;
@@ -307,8 +307,8 @@ static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Tr
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     cnt = (n - 4) / 8;
     a = cnt;
-    trail->unk0 = trail->unk2 = a - 1;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = a - 1;
+    trail->head1 = 0;
     pt = trail->points4;
     for (i = 0; i < a; i++, pt++) {
         t = 0x1000 - (i << 12) / (a - 1);

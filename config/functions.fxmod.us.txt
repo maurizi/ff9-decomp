@@ -717,8 +717,8 @@ fx_105 fxm_camKeyAdd 0x50 0x801e7ba8
 fx_105 fxm_camKeyUpdate 0x1a4 0x801e7bf8
 fx_105 fx_105_drawScreenBand 0x158 0x801e7d9c
 fx_105 fx_105_op80 0x1f28 0x801e7ef4
-fx_105 fx_105_initQuads 0x10c 0x801e9e1c
-fx_105 fx_105_drawQuads 0x370 0x801e9f28
+fx_105 fx_105_initWindStreaks 0x10c 0x801e9e1c
+fx_105 fx_105_drawWindStreaks 0x370 0x801e9f28
 fx_105 fx_105_drawCamRibbon 0x43c 0x801ea298
 fx_105 fx_105_drawWorldRibbon 0x3bc 0x801ea6d4
 fx_106 fx_106_op80ParticleMotion 0xf4 0x801e7704

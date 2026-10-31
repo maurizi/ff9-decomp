@@ -537,9 +537,9 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->unk4;
-    bolt->unk2 = 0xE;
-    bolt->unk0 = 0xE;
-    bolt->unk1 = 0;
+    bolt->count2 = 0xE;
+    bolt->lastSlot0 = 0xE;
+    bolt->head1 = 0;
     for (i = 0; i < 15; i++) {
         t = 0x1000 - (i << 12) / 14;
         t += *jitter++;

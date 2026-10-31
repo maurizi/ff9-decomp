@@ -16,9 +16,9 @@ typedef struct {
 } Fx0b2Work; /* 0x20 */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR pts4[25];
 } Fx0b2Trail; /* 0xCC */

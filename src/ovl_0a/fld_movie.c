@@ -1206,7 +1206,8 @@ void fld_movieUpdate(void) {
             g_fieldFlagQueue.gameFlags[0][b - 1] = GD_HIDE_SPRITES | GD_HIDE_BG | GD_MENU_DISABLED;
             g_fieldFlagQueue.mapFlags[0][b - 1] |= FLD_MAP_NO_FADE;
             if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0) {
-                g_fieldFlagQueue.gameFlags[0][b - 1] |= 0x44;
+                g_fieldFlagQueue.gameFlags[0][b - 1] |= 0x44; /* GD_HIDE_MODELS | 0x40: 0x40 is set while an encounter starts or
+                                                                * a colour-keyed field movie plays, no reader found (round 33) */
                 g_fieldFlagQueue.mapFlags[0][b - 1] |= FLD_MAP_NO_WINDOWS;
             }
             g_fieldFlagQueue.movieFlags[0][b - 1] = FLD_MVF_CAMERA;
@@ -1405,9 +1406,9 @@ void fld_endFrame(void) {
 void fld_startEncounter(void) {
     g_gameState->gameData->ctx.field->area->scene->encounterStep = 0;
     g_fieldFlagQueue.mapFlags[1][3] = FLD_MAP_ACTIVE;
-    g_fieldFlagQueue.gameFlags[0][0] = 0x43;
+    g_fieldFlagQueue.gameFlags[0][0] = 0x43; /* 0x40 (as in fld_movieUpdate, no reader found) | GD_MENU_DISABLED | GD_MENU_OPEN */
     g_fieldFlagQueue.gameFlags[0][2] = 0x3C;
-    g_fieldFlagQueue.mapFlags[0][2] = 0x1919;
+    g_fieldFlagQueue.mapFlags[0][2] = 0x1919; /* the flags fld_updateEncounter clears; 0x100 has no reader found (round 33) */
     g_padPortMask[0] |= BTN_START;
 }
 

@@ -172,7 +172,7 @@ s32 fx_1ed_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             fx_1ed_timers[5] = 0x10;
             break;
         case 9:
-            ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion180, SUMMON(env)->model60);
+            ex->Hi_SetSummonMotion(SUMMON(env)->summon54->motion180, SUMMON(env)->model60);
             fx_1ed_timers[0] = 1;
             fx_1ed_emitter0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1ed_emitter0Pos);
             break;
@@ -281,11 +281,11 @@ s32 fx_1ed_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         if (fx_1ed_timers[3] != 0) {
             tr = fx_1ed_trails;
             p = tr->pos4;
-            tr->unk0 = tr->unk2 = 0x14;
-            tr->unk1 = 0;
+            tr->lastSlot0 = tr->count2 = 0x14;
+            tr->head1 = 0;
             tr2 = tr + 1;
-            tr2->unk0 = tr2->unk2 = 0x14;
-            tr2->unk1 = 0;
+            tr2->lastSlot0 = tr2->count2 = 0x14;
+            tr2->head1 = 0;
             do {
                 /* empty: the original has a block boundary here (an emptied macro?) */
             } while (0);

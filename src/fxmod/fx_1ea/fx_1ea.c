@@ -8,8 +8,8 @@ void fx_1ea_buildTrail(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s
 
     n = (size - 4) / 8;
     p = trail->pos4;
-    trail->unk0 = trail->unk2 = n - 1;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = n - 1;
+    trail->head1 = 0;
     if (start < n) {
         for (i = 0; i < n - start; i++) {
             p->pad = 0;
@@ -47,8 +47,8 @@ void fx_1ea_buildTrailRotY(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 bas
 
     n = (size - 4) / 8;
     p = trail->pos4;
-    trail->unk0 = trail->unk2 = n - 1;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = n - 1;
+    trail->head1 = 0;
     if (start < n) {
         for (i = 0; i < n - start; i++) {
             p->pad = 0;

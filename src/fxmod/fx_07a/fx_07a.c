@@ -104,7 +104,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_07a_discRadius = 0;
         fx_07a_uvRadiusOut = 0;
         fx_07a_uvRadiusIn = 0;
-        D_801E9504 = 0;
+        fx_07a_unusedRadius = 0;
         fx_07a_ringTwist[4] = 0;
         fx_07a_ringTwist[3] = 0;
         fx_07a_ringTwist[2] = 0;
@@ -245,8 +245,8 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 tr = &fx_07a_strips[i];
                 if (tr->timer10C > 0) {
                     tr->timer10C--;
-                    tr->unk0 = tr->unk2 = n - 1;
-                    tr->unk1 = 0;
+                    tr->lastSlot0 = tr->count2 = n - 1;
+                    tr->head1 = 0;
                     cur.vx = fx_07a_bonePos.vx << 12;
                     cur.vy = fx_07a_bonePos.vy << 12;
                     cur.vz = fx_07a_bonePos.vz << 12;
@@ -258,7 +258,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         pt->vx = cur.vx >> 12;
                         pt->vz = cur.vz >> 12;
                         pt->vy = tr->offsetY6C[j] + (cur.vy >> 12);
-                        pt->unk6 = (u16)tr->timer10C * 4;
+                        pt->halfWidth6 = (u16)tr->timer10C * 4;
                         cur.vx += step.vx;
                         cur.vy += step.vy;
                         cur.vz += step.vz;

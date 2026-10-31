@@ -33,11 +33,11 @@ typedef struct {
     SVECTOR rot18; /* model rotation */
     VECTOR pos20; /* model position */
     VECTOR scale30; /* model scale */
-    s32 unk40;
+    s32 unk40; /* unused (runtime watch, round 33) */
     SVECTOR pos44; /* model position, for the trail */
     SVECTOR pos4C;
     s32 morphFrame54; /* frames into the current morph */
-    s32 unk58;
+    s32 unk58; /* unused (runtime watch, round 33) */
     u16 model5C[6]; /* morph models */
 } Fx05dWork; /* 0x68 */
 

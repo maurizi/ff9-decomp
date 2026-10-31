@@ -280,7 +280,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0xCF:
             work->timer28 = 0x80;
             work->timer34 = 0x80;
-            work->unk38 = 0x200;
+            work->halfWidth38 = 0x200;
             break;
         case 0xFF:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1f2_emitPos0);
@@ -569,8 +569,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (--tr_sp2->unk4C < 8) {
                         s32 n = 9;
 
-                        tr_sp2->unk0 = tr_sp2->unk2 = 8;
-                        tr_sp2->unk1 = 0;
+                        tr_sp2->lastSlot0 = tr_sp2->count2 = 8;
+                        tr_sp2->head1 = 0;
                         sv_sp2 = tr_sp2->points4;
                         for (j = 0; j < n; j++) {
                             fx_1f2_trails[i].pos50[j].vx += fx_1f2_trails[i].velD0[j].vx;
@@ -579,7 +579,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             sv_sp2->vx = fx_1f2_trails[i].pos50[j].vx;
                             sv_sp2->vy = fx_1f2_trails[i].pos50[j].vy;
                             sv_sp2->vz = fx_1f2_trails[i].pos50[j].vz;
-                            sv_sp2->pad = work->unk38;
+                            sv_sp2->pad = work->halfWidth38;
                             sv_sp2++;
                         }
                         alpha = tr_sp2->unk4C << 9;
@@ -618,8 +618,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             gte_SetTransMatrix(&m);
                             n = 9;
                             pt = &fx_1f2_trails[i];
-                            pt->unk0 = pt->unk2 = 8;
-                            pt->unk1 = 0;
+                            pt->lastSlot0 = pt->count2 = 8;
+                            pt->head1 = 0;
                             sv = pt->points4;
                             for (j_u4ce = 0; j_u4ce < n; j_u4ce++) {
                                 ((SVECTOR *)out)->vx = fx_1f2_trails[i].pos50[j_u4ce].vx + j_u4ce * 0x60 - 0x180;
@@ -664,8 +664,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     a = fx_1f2_trails[i].unk4C;
                     fx_1f2_trails[i].unk4C = fx_1f2_trails[i].pos50[a].pad;
                     pt = &fx_1f2_trails[i];
-                    pt->unk0 = pt->unk2 = 8;
-                    pt->unk1 = 0;
+                    pt->lastSlot0 = pt->count2 = 8;
+                    pt->head1 = 0;
                     for (j_u4ce = 0; j_u4ce < n; j_u4ce++) {
                         sv->vx = fx_1f2_trails[i].pos50[a].vx;
                         sv->vy = fx_1f2_trails[i].pos50[a].vy;
@@ -696,8 +696,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (--tr->unk4C < 8) {
                         n_u58 = 9;
                         sv_u58 = tr->points4;
-                        tr->unk0 = tr->unk2 = k8;
-                        tr->unk1 = 0;
+                        tr->lastSlot0 = tr->count2 = k8;
+                        tr->head1 = 0;
                         for (j_u58 = 0; j_u58 < n_u58; j_u58++) {
                             tr->pos50[j_u58].vx += tr->velD0[j_u58].vx;
                             tr->pos50[j_u58].vy += tr->velD0[j_u58].vy;

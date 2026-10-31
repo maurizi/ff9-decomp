@@ -204,7 +204,7 @@ static s32 fx_18a_op82PoolTask(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk801
     s32 a;
 
     if (mode == 1) {
-        e->unk12 = ex->btlfx_randCentered(0x200) + 0xE00;
+        e->drag12 = ex->btlfx_randCentered(0x200) + 0xE00;
     } else {
         a = 0x1000 - (frame << 12) / 12;
         pt = e->point18;
@@ -213,8 +213,8 @@ static s32 fx_18a_op82PoolTask(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk801
         pt->pad = 0x1A;
         ex->btlfx_stepModuleParticle((Pool6CEntry *)e, 0, (SVECTOR *)zero, pt);
         if (e->index16 == 0) {
-            TRAIL(e)->unk0 = TRAIL(e)->unk2 = 0xE;
-            TRAIL(e)->unk1 = 0;
+            TRAIL(e)->lastSlot0 = TRAIL(e)->count2 = 0xE;
+            TRAIL(e)->head1 = 0;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), 0, NULL, 5, 0x1000, a, 1, (u8 *)e->point18 - 4, 0);
         }
         if (frame >= 0xC) {
@@ -237,8 +237,8 @@ void fx_18a_spawnTrail(Fx18aInst *inst, SVECTOR *origin, s32 h, SVECTOR *from, S
     s32 i;
     s32 t;
 
-    tr->unk0 = tr->unk2 = 0xE;
-    tr->unk1 = 0;
+    tr->lastSlot0 = tr->count2 = 0xE;
+    tr->head1 = 0;
     for (i = 0; i < 15; i++, pt--) {
         t = 0x1000 - (i << 12) / 14;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&v);

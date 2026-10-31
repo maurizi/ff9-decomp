@@ -11,14 +11,14 @@ typedef struct {
     s16 vx;
     s16 vy;
     s16 vz;
-    u16 unk6; /* colour */
+    u16 halfWidth6; /* half-width of the ribbon at this point (scales the edge normal) */
 } Fx079Pt;
 
 /* line strip passed to btlfx_drawTrail */
 typedef struct {
-    u8 unk0; /* count - 1 */
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     Fx079Pt pts4[11];
     s32 endX5C; /* end offset */

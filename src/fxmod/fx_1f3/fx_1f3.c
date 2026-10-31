@@ -335,8 +335,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     gte_SetRotMatrix(&fx_1f3_rings[i].matrix0);
                     gte_SetTransMatrix(&fx_1f3_rings[i].matrix0);
                     l = &fx_1f3_rings[i].trail20;
-                    l->unk0 = l->unk2 = 0x20;
-                    l->unk1 = 0;
+                    l->lastSlot0 = l->count2 = 0x20;
+                    l->head1 = 0;
                     dst = l->points4;
                     for (j = 0; j < 0x21; j++, dst++) {
                         v.vx = (ex->math_sin(j * fx_1f3_rings[i].angleStep140 + fx_1f3_rings[i].angle134) * fx_1f3_rings[i].radius13C) >> 12;

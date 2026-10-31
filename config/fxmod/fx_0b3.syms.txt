@@ -21,7 +21,7 @@ fxm_drawWaterSheet = 0x801E9DFC; // type:func [code] 18 by 19 grid of POLY_FT4 (
 fx_0b3_crestPts = 0x801EE2A0; // [code] the 20 crest points fxm_drawWaveWall stores (world space), copied to emitter positions by fx_0b3_op84
 fx_0b3_edgePts = 0x801EE340; // [code] edge points fxm_drawWaterSheet stores (pad = on screen), read by fxm_nextRingPoint and drawn with btlfx_drawAnimQuads in fx_0b3_op85
 fx_0b3_edgePtIdx = 0x801EB5D4; // [code] wrapping index (16) of the next fx_0b3_edgePts point fxm_nextRingPoint returns
-fx_0b3_sharedModel = 0x801EE270; // [code] effect model (block 0x89) registered by fx_0b3_op81 and drawn with scale 0x2800 by fx_0b3_op81 op83 and op84
+fx_0b3_seaModel = 0x801EE270; // [code] effect model (block 0x89) registered by fx_0b3_op81 and drawn with scale 0x2800 by fx_0b3_op81 op83 and op84, [runtime] ocean surface and sky dome backdrop of Leviathan's scenes (zeroing its scale leaves black, round 33)
 fx_0b3_morphBlocks = 0x801EB5A0; // [code] effect file blocks of the 6 morph models (fx_0b3_morphModels) registered by fx_0b3_op80 at frame 20
 fx_0b3_morphModels = 0x801EE280; // [code] the 6 models fx_0b3_op80 and fx_0b3_op81 cycle through with Hi_DrawMorphEffModel
 fx_0b3_partStart = 0x801EB5AC; // [code] start frame of each of the 4 fx_0b3_op81 models (model88)

@@ -8,9 +8,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[1]; /* (size - 4) / 8 points */
 } Fx0e2Trail;
@@ -99,7 +99,7 @@ typedef struct {
     struct {
         u8 pad0[0x180];
         BtlUnit9CC *motion180[8]; /* summon motions */
-    } *unk54;
+    } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 summonModel60; /* summon model */
 } Fx0e2Summon;
@@ -123,7 +123,7 @@ typedef struct {
     SVECTOR rot7C;
     VECTOR pos84;
     VECTOR scale94;
-    VECTOR unkA4;
+    VECTOR unkA4; /* unused (runtime watch, round 33) */
     s32 rgbB4;
     SVECTOR rotB8;
     VECTOR posC0;
@@ -135,10 +135,10 @@ typedef struct {
     SVECTOR emitPos110;
     SVECTOR emitPos118;
     SVECTOR emitPos120;
-    s32 unk128;
-    s32 unk12C;
-    s32 unk130;
-    s32 unk134;
+    s32 unk128; /* unused (runtime watch, round 33) */
+    s32 loopMotion12C; /* Hi_DrawSummonModel flags bit 0: 1 loops the summon motion, 0 holds its last frame */
+    s32 unk130; /* unused (runtime watch, round 33) */
+    s32 unk134; /* unused (runtime watch, round 33) */
     s32 morphStep138;
     s32 morphStep13C;
     s32 fadeTimer140;

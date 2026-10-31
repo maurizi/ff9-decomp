@@ -202,6 +202,8 @@ void btl_addItem(s32 arg0) {
     btlui_addItem(arg0);
 }
 
+/* Dead code: no jal, pointer or address constant for it in any binary or effect module, no hit on an exec
+ * breakpoint over 12 effects (runtime round 33). */
 void func_800EA1D0(s8 arg0) {
     if (g_btluiState.unk9 == 0) {
         g_btluiState.unk9 = 1;

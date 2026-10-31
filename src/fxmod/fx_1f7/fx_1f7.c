@@ -80,8 +80,8 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         d = tr->points4;
                         al = 0x1000;
                         n = 0x21;
-                        tr->unk0 = tr->unk2 = n - 1;
-                        tr->unk1 = 0;
+                        tr->lastSlot0 = tr->count2 = n - 1;
+                        tr->head1 = 0;
                         if (tr->index110 < 0x10) {
                             al = tr->index110 << 8;
                         }

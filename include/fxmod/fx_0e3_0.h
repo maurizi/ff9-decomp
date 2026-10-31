@@ -5,9 +5,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[49];
 } Fx0e30Bolt;
@@ -51,7 +51,7 @@ typedef struct {
     SVECTOR pos30; /* camera */
     SVECTOR pos38; /* bone position */
     SVECTOR pos40; /* bone position */
-    s32 unk48;
+    s32 unk48; /* unused (runtime watch, round 33) */
     Pool6CEntry *emit4C;
     s32 trailReset50; /* bolts need a reset */
     s32 model54; /* models */
@@ -59,9 +59,9 @@ typedef struct {
     s32 model5C;
     s32 model60;
     s32 model64;
-    SVECTOR unk68;
-    Fx0e30Vec3 unk70;
-    Fx0e30Vec3 unk7C;
+    SVECTOR unk68; /* unused (runtime watch, round 33) */
+    Fx0e30Vec3 unk70; /* unused (runtime watch, round 33) */
+    Fx0e30Vec3 unk7C; /* unused (runtime watch, round 33) */
     SVECTOR rot88;
     Fx0e30Vec3 pos90;
     Fx0e30Vec3 scale9C;
@@ -77,7 +77,7 @@ typedef struct {
         BtlUnit9CC *motion18C;
         BtlUnit9CC *motion190;
         BtlUnit9CC *motion194;
-    } *unk54;
+    } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 summonModel60; /* summon model */
 } Fx0e30Summon;
@@ -88,9 +88,9 @@ typedef struct {
 } Fx0e30BonePair;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[13];
 } Fx0e30Arc; /* 0x6C */

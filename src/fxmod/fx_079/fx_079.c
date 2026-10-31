@@ -207,8 +207,8 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 tr = &fx_079_strips[i];
                 if (tr->timer11C > 0) {
                     tr->timer11C--;
-                    tr->unk0 = tr->unk2 = n - 1;
-                    tr->unk1 = 0;
+                    tr->lastSlot0 = tr->count2 = n - 1;
+                    tr->head1 = 0;
                     cur.vx = fx_079_bonePos.vx << 12;
                     cur.vy = fx_079_bonePos.vy << 12;
                     cur.vz = fx_079_bonePos.vz << 12;
@@ -221,7 +221,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         pt->vx = cur.vx >> 12;
                         pt->vz = cur.vz >> 12;
                         pt->vy = tr->offsetY6C[j] + (cur.vy >> 12);
-                        pt->unk6 = tr->timer11C << 2;
+                        pt->halfWidth6 = tr->timer11C << 2;
                         cur.vx += d.vx;
                         cur.vy += d.vy;
                         cur.vz += d.vz;

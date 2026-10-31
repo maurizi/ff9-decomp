@@ -9,7 +9,7 @@ s32 fx_01f_op80(s32 mode, Fx01fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->stop0 = 0;
         fx_01f_env = env;
         ((s32 *)&work->pos4)[0] = ((s32 *)&env->targets->centerX)[0];
         t = ((s32 *)&env->targets->centerX)[1];
@@ -25,7 +25,7 @@ s32 fx_01f_op80(s32 mode, Fx01fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (work->unk0 == 0) {
+        if (work->stop0 == 0) {
             if (frame == 0x18) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4);
                 if (p != NULL) {

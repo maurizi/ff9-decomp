@@ -53,7 +53,7 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x54];
-    Fx1b0SummonData *unk54;
+    Fx1b0SummonData *summon54; /* g_btlfxLoader.summon */
 } Fx1b0Summon;
 
 typedef struct {

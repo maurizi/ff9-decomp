@@ -36,7 +36,7 @@ static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk8
     s32 c;
 
     if (mode == 1) {
-        part->unk12 = ex->btlfx_randCentered(0x20) + 0xE00;
+        part->drag12 = ex->btlfx_randCentered(0x20) + 0xE00;
         part->kind17 = (ex->btlfx_rand() % 3) / 2;
     } else {
         pt = part->point18;
@@ -46,8 +46,8 @@ static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk8
         ((s32 *)&v)[1] = 0;
         ex->btlfx_stepModuleParticle((Pool6CEntry *)part, 0, &v, pt);
         if (part->fromEnd16 == 0) {
-            ((Fx0a9Bolt *)(part->point18 - 2))->unk0 = ((Fx0a9Bolt *)(part->point18 - 2))->unk2 = 0xA;
-            ((Fx0a9Bolt *)(part->point18 - 2))->unk1 = 0;
+            ((Fx0a9Bolt *)(part->point18 - 2))->lastSlot0 = ((Fx0a9Bolt *)(part->point18 - 2))->count2 = 0xA;
+            ((Fx0a9Bolt *)(part->point18 - 2))->head1 = 0;
             if (part->kind17 == 0) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 1), 0, NULL, 4, 0x1000, c, 1,
                                   (u8 *)part->point18 - 4, 0);
@@ -85,8 +85,8 @@ static void fxm_spawnBolt(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
     r = ex->btlfx_rand();
     bolt = &fx_0a9_bolts[fx_0a9_nextBolt];
     p = &bolt->pts4[10];
-    bolt->unk0 = bolt->unk2 = 0xA;
-    bolt->unk1 = 0;
+    bolt->lastSlot0 = bolt->count2 = 0xA;
+    bolt->head1 = 0;
     do {
         t = 0x1000 - (i << 12) / 10;
         s = ex->math_sin(t >> 1);

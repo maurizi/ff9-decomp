@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR pos8; /* target body position */
     SVECTOR headPos10;
     SVECTOR pos18;
-    s32 unk20;
+    s32 unk20; /* unused (runtime watch, round 33) */
     Pool6CEntry *emit24;
 } Fx0f3Work;
 

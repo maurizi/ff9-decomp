@@ -13,7 +13,7 @@ typedef struct {
 typedef struct {
     s32 state0;
     s32 frame4; /* frame */
-    s32 otZ8;
+    s32 targetOtZ8; /* target 0's model radius / 6 (btlfx_addRadiusSixth), depth bias of its emitters and rings */
     SVECTOR posC; /* position */
     SVECTOR pos14;
     Fx057Vec3 pos1C;

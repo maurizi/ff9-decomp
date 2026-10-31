@@ -16,9 +16,9 @@ typedef struct {
 /* propagated */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[2];
 } Fx17d4Line;
@@ -64,7 +64,7 @@ typedef struct {
         u8 pad0[0x19C];
         BtlUnit9CC *motion19C;
         BtlUnit9CC *motion1A0;
-    } *unk54;
+    } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
 } Fx17d4Summon;
@@ -73,7 +73,7 @@ typedef struct {
 
 extern SVECTOR fx_17d_4_centerPos;
 extern s32 fx_17d_4_op80Trails[];
-extern s8 D_801EB25C;
+extern s8 fx_17d_4_unused; /* no reader in any fx_17d group, other module or ovl_0b */
 extern BtlModel fx_17d_4_effModels[];
 void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
 void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot);

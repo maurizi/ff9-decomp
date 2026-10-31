@@ -24,7 +24,7 @@ typedef struct {
     s32 spin2C; /* spin speed */
     s32 unk30;
     s32 timer34; /* sparks timer */
-    s32 unk38;
+    s32 halfWidth38; /* ribbon half-width, stored in the trail points' pad */
     s32 timer3C;
     s32 done40;
     s32 timer44;
@@ -64,9 +64,9 @@ typedef struct {
 } Fx1f2Ring; /* 0x38 */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[9];
     s32 unk4C; /* timer */
@@ -93,7 +93,8 @@ extern SVECTOR fx_1f2_faceAngles; /* angles to the target */
 extern SVECTOR fx_1f2_emitPos1;
 extern SVECTOR fx_1f2_unitPos[4]; /* unit positions */
 extern Fx1f2Trail fx_1f2_trails[16];
-extern Fx1f2Trail fx_1f2_unitTrails[4];
+extern Fx1f2Trail fx_1f2_unitTrails[16]; /* 0x1500 bytes up to fx_1f2_effModels, cleared as 16; only entries below
+                                         * targetCount are drawn */
 extern BtlModel fx_1f2_effModels[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);

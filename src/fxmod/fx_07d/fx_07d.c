@@ -616,8 +616,8 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx07dStrip *buf, s32 *t
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
     v = buf->pts4;
-    buf->unk0 = buf->unk2 = 14;
-    buf->unk1 = 0;
+    buf->lastSlot0 = buf->count2 = 14;
+    buf->head1 = 0;
     for (i = 0; i < 15; i++) {
         t = 0x1000 - (i << 12) / 14;
         t += *tab++;

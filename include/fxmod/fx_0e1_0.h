@@ -28,6 +28,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
 void fx_0e1_0_drawWaveQuadGrid(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32 dy, s32 abr, s32 sy, s32 tpage, s32 clut, s32 u,
                    s32 v, s32 w, s32 h, s32 c, s32 amp, s32 ph, s32 dphx, s32 dphy);
 static s32 fx_0e1_0_op80SpawnPoint(SVECTOR *out);
+/* Never called (no reference, no hit on an exec breakpoint over Rebirth Flame, runtime round 33). */
 void fx_0e1_0_scaleXY(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s16 *v);
 
 typedef struct {
@@ -43,7 +44,7 @@ typedef struct {
     Fx0e10Vec3 summonPos10; /* summon model position */
     Fx0e10Vec3 summonScale1C; /* summon model scale */
     SVECTOR rot28; /* summon model rotation */
-    s32 unk30;
+    s32 unk30; /* unused (runtime watch, round 33) */
     SVECTOR pos34; /* bone position */
     SVECTOR camPos3C;
     Pool6CEntry *emit44;
@@ -67,7 +68,7 @@ typedef struct {
     struct {
         u8 pad0[0x180];
         BtlUnit9CC *motion180;
-    } *unk54;
+    } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 summonModel60; /* summon model */
 } Fx0e10Summon;

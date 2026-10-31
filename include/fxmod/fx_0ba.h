@@ -8,9 +8,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[1];
 } Fx0baStrip;
@@ -29,9 +29,9 @@ typedef struct {
 } Fx0baPart; /* 0x1C */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[17];
 } Fx0baTrail; /* 0x8C */
@@ -57,14 +57,15 @@ typedef struct {
 } Fx0baBolt;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[4];
 } Fx0baStrip4; /* 0x24 */
 
-extern s32 D_801EC550;
+extern s32 fx_0ba_preOrb; /* 1 from the data until the orb appears (fx_0ba_op80 frame 0x3C clears it): bolts spawn every
+                           * frame and draw impact rings while set */
 extern SVECTOR fx_0ba_boltSrc;
 extern Fx0baTrail fx_0ba_boltTrails[];
 extern Fx0baStrip4 fx_0ba_boltBranches[];
@@ -119,7 +120,7 @@ typedef struct {
 } Fx0baUnit;
 typedef struct {
     u8 pad0[0x54];
-    Fx0baUnit *unk54;
+    Fx0baUnit *summon54; /* g_btlfxLoader.summon */
     u8 pad58[0x60 - 0x58];
     s32 model60; /* summon model */
 } Fx0baSummon;
@@ -159,9 +160,9 @@ extern BtlModel fx_0ba_effModels0[];
 s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR unk4[1];
 } Fx0baPTrail;
@@ -177,9 +178,9 @@ typedef struct {
 } Fx0baPKeys;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR unk4[17];
 } Fx0baPTrail17; /* 0x8C */
@@ -208,9 +209,9 @@ typedef struct {
 } Fx0baPWork81; /* 0x84 */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR unk4[13];
 } Fx0baPTrail13; /* 0x6C */

@@ -228,7 +228,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         work->frame4 = 0;
         fx_0b3_env = env;
-        fx_0b3_sharedModel = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x89), 1);
+        fx_0b3_seaModel = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x89), 1);
         work->model88[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x86), 1);
         work->model88[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x87), 0);
         work->model88[2] = work->model88[3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x88), 1);
@@ -241,7 +241,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos40.vx = 0;
         work->pos40.vy = 0;
         work->pos40.vz = 0;
-        ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->unk54->motion190, ((Fx0b3Summon *)env->loader)->model60);
+        ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->summon54->motion190, ((Fx0b3Summon *)env->loader)->model60);
         ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->loader)->model60, 0x28);
         work->rot78.vx = 0;
         work->rot78.vy = 0;
@@ -259,7 +259,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (work->state0 == 0) {
-            ex->Hi_DrawEffModel(&work->rot78, (VECTOR *)&work->modelPos60, (s32)&work->modelScale6C, fx_0b3_sharedModel);
+            ex->Hi_DrawEffModel(&work->rot78, (VECTOR *)&work->modelPos60, (s32)&work->modelScale6C, fx_0b3_seaModel);
             if (frame >= 0x2B) {
                 fxm_keyGetVec3((u8 *)ex->btlfx_getFileData(entry->file, 3), frame, &c, &work->rot58, &d);
                 work->pos40.vx = c.vx;
@@ -422,12 +422,12 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (work->state0 == 0) {
-            ex->Hi_DrawEffModel(&work->rot70, (VECTOR *)&work->modelPos58, (s32)&work->modelScale64, fx_0b3_sharedModel);
+            ex->Hi_DrawEffModel(&work->rot70, (VECTOR *)&work->modelPos58, (s32)&work->modelScale64, fx_0b3_seaModel);
             if (frame == 0) {
-                ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->unk54->motion184, ((Fx0b3Summon *)env->loader)->model60);
+                ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->summon54->motion184, ((Fx0b3Summon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->loader)->model60, 6);
             } else if (frame == 0x42) {
-                ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->unk54->motion188, ((Fx0b3Summon *)env->loader)->model60);
+                ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->summon54->motion188, ((Fx0b3Summon *)env->loader)->model60);
                 ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->loader)->model60, 0);
             }
             fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x13), frame, &a);
@@ -751,12 +751,12 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->modelPos68.vx = 0;
         work->modelPos68.vy = 0;
         work->modelPos68.vz = 0;
-        ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->unk54->motion18C, ((Fx0b3Summon *)env->loader)->model60);
+        ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->summon54->motion18C, ((Fx0b3Summon *)env->loader)->model60);
         ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->loader)->model60, 0x1A);
     } else {
         frame = entry->frame;
         if (work->state0 == 0) {
-            ex->Hi_DrawEffModel(&work->rot80, (VECTOR *)&work->modelPos68, (s32)&work->modelScale74, fx_0b3_sharedModel);
+            ex->Hi_DrawEffModel(&work->rot80, (VECTOR *)&work->modelPos68, (s32)&work->modelScale74, fx_0b3_seaModel);
             fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x15), frame, &a);
             work->summonPos48.vx = a.vx;
             work->summonPos48.vy = a.vy;
@@ -1127,7 +1127,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->summonPos28.vy = 0;
         work->summonPos28.vz = 0;
         fx_0b3_env = env;
-        ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->unk54->motion18C, ((Fx0b3Summon *)env->loader)->model60);
+        ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->loader)->summon54->motion18C, ((Fx0b3Summon *)env->loader)->model60);
         ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->loader)->model60, 0x5A);
         return 0;
     } else {

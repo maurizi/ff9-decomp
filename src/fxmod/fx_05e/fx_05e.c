@@ -159,7 +159,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[2].vz = ((SVECTOR *)&pos)[1].vz;
         file = (u8 *)ex->btlfx_getFileData(entry->file, 2);
         ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, 6), (s32 *)&file, 1, &fx_05e_summon);
-        ex->Hi_SetSummonMotion(((Fx05eSummon *)env->loader)->unk54->motion180, ((Fx05eSummon *)env->loader)->model60);
+        ex->Hi_SetSummonMotion(((Fx05eSummon *)env->loader)->summon54->motion180, ((Fx05eSummon *)env->loader)->model60);
         work->scale34[0] = work->scale34[1] = work->scale34[2] = 0x1000;
         work->rot2C.vx = 0;
         work->rot2C.vz = 0;

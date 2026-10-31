@@ -11,7 +11,7 @@ typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame */
     SVECTOR pos8; /* effect origin */
-    s32 unk10;
+    s32 unk10; /* unused (runtime watch, round 33) */
     SVECTOR pos14;
     SVECTOR pos1C;
     SVECTOR camPos24; /* camera position */
@@ -21,12 +21,6 @@ typedef struct {
     s32 fadeOut38; /* fading out */
     s32 alpha3C; /* particle alpha */
 } Fx0e11Work; /* 0x40 */
-
-/* View of Unk800F78A40 up to the byte fx_0e1_1 reads (ovl_0b.h has it as padding). */
-typedef struct {
-    u8 pad0[0x22];
-    u8 unk22;
-} Fx0e11BattleState;
 
 extern SVECTOR fx_0e1_1_origin;
 extern SVECTOR fx_0e1_1_camPos;

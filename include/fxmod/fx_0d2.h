@@ -179,7 +179,7 @@ typedef struct {
         BtlUnit9CC *motion180;
         BtlUnit9CC *motion184;
         BtlUnit9CC *motion188;
-    } *unk54;
+    } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
 } Fx0d2Summon;

@@ -229,25 +229,25 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             (&work->visible0)[i] = 0;
         }
         for (i = 0; i < 0x20; i++) {
-            fx_105_screenSprites[i].posX0 = ex->btlfx_randRange(0xC0, 0x1E0);
-            fx_105_screenSprites[i].posY4 = ex->btlfx_randRange(0, 0xDA);
-            fx_105_screenSprites[i].speed8 = (ex->btlfx_rand() & 7) + 4;
-            fx_105_screenSprites[i].flicker10 = 1;
+            fx_105_stars[i].posX0 = ex->btlfx_randRange(0xC0, 0x1E0);
+            fx_105_stars[i].posY4 = ex->btlfx_randRange(0, 0xDA);
+            fx_105_stars[i].speed8 = (ex->btlfx_rand() & 7) + 4;
+            fx_105_stars[i].flicker10 = 1;
         }
-        fx_105_screenSprites[0].posX0 = 0x10;
-        fx_105_screenSprites[0].posY4 = 0x10;
-        fx_105_screenSprites[1].posX0 = 0x20;
-        fx_105_screenSprites[1].posY4 = 0x18;
-        fx_105_screenSprites[2].posX0 = 8;
-        fx_105_screenSprites[2].posY4 = 0x28;
-        fx_105_screenSprites[3].posX0 = 0x14;
-        fx_105_screenSprites[3].posY4 = 0xB4;
-        fx_105_screenSprites[4].posX0 = 0x2D;
-        fx_105_screenSprites[4].posY4 = 0xD2;
-        fx_105_screenSprites[5].posX0 = 0x3C;
-        fx_105_screenSprites[5].posY4 = 0xC3;
-        fx_105_screenSprites[6].posX0 = 0x64;
-        fx_105_screenSprites[6].posY4 = 0xBE;
+        fx_105_stars[0].posX0 = 0x10;
+        fx_105_stars[0].posY4 = 0x10;
+        fx_105_stars[1].posX0 = 0x20;
+        fx_105_stars[1].posY4 = 0x18;
+        fx_105_stars[2].posX0 = 8;
+        fx_105_stars[2].posY4 = 0x28;
+        fx_105_stars[3].posX0 = 0x14;
+        fx_105_stars[3].posY4 = 0xB4;
+        fx_105_stars[4].posX0 = 0x2D;
+        fx_105_stars[4].posY4 = 0xD2;
+        fx_105_stars[5].posX0 = 0x3C;
+        fx_105_stars[5].posY4 = 0xC3;
+        fx_105_stars[6].posX0 = 0x64;
+        fx_105_stars[6].posY4 = 0xBE;
         fx_105_modelRot.vx = 0;
         fx_105_modelRot.vy = 0x800;
         fx_105_modelRot.vz = 0;
@@ -341,7 +341,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->color120.r = 0;
         work->color120.b = 0x10;
         fxm_drawRibbonTrail(&work->pos10C, &work->pos114, 0x408, &work->color11C, &work->color120, 0x1000, fx_105_ribbonSegs, 1);
-        fx_105_initQuads();
+        fx_105_initWindStreaks();
         fxm_camKeyReset();
         fxm_camKeyAdd(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 5));
         fxm_camKeyAdd(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, 2));
@@ -706,26 +706,26 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timer30--;
             for (i = 0; i < 32; i++) {
                 a = 0xFFF;
-                if (fx_105_screenSprites[i].flicker10 == 0) {
+                if (fx_105_stars[i].flicker10 == 0) {
                     if (!(ex->btlfx_rand() & 0x1F)) {
-                        fx_105_screenSprites[i].flicker10 = (ex->btlfx_rand() & 7) + 1;
+                        fx_105_stars[i].flicker10 = (ex->btlfx_rand() & 7) + 1;
                     }
                 } else {
-                    fx_105_screenSprites[i].flicker10--;
+                    fx_105_stars[i].flicker10--;
                     a = (ex->btlfx_rand() & 0x3FF) + 0x800;
                 }
-                fx_105_screenSprites[i].flicker10 = ex->btlfx_rand() & 0x1F;
-                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), fx_105_screenSprites[i].posX0, fx_105_screenSprites[i].posY4, 0, 1, a);
+                fx_105_stars[i].flicker10 = ex->btlfx_rand() & 0x1F;
+                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), fx_105_stars[i].posX0, fx_105_stars[i].posY4, 0, 1, a);
                 if (work->timer30 < 0x28) {
-                    fx_105_screenSprites[i].posX0 -= fx_105_screenSprites[i].speed8;
-                    if (fx_105_screenSprites[i].posX0 < 0) {
-                        fx_105_screenSprites[i].posX0 = 0x1E0;
-                        fx_105_screenSprites[i].posY4 = ex->btlfx_randRange(0, 0xDA);
-                        fx_105_screenSprites[i].speed8 = (ex->btlfx_rand() & 7) + 4;
+                    fx_105_stars[i].posX0 -= fx_105_stars[i].speed8;
+                    if (fx_105_stars[i].posX0 < 0) {
+                        fx_105_stars[i].posX0 = 0x1E0;
+                        fx_105_stars[i].posY4 = ex->btlfx_randRange(0, 0xDA);
+                        fx_105_stars[i].speed8 = (ex->btlfx_rand() & 7) + 4;
                     }
                 }
                 if (work->timer30 >= 0x29 && work->timer30 < 0x31) {
-                    fx_105_screenSprites[i].posY4 -= 10;
+                    fx_105_stars[i].posY4 -= 10;
                 }
             }
         }
@@ -784,7 +784,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->timer24 < 4) {
                 a = work->timer24 << 10;
             }
-            fx_105_drawQuads(a);
+            fx_105_drawWindStreaks(a);
         }
         if (work->timer2C != 0) {
             work->timer2C--;
@@ -804,7 +804,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void fx_105_initQuads(void) {
+void fx_105_initWindStreaks(void) {
     Unk800F78A4 *env = fx_105_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx105Spark *p;
@@ -813,7 +813,7 @@ void fx_105_initQuads(void) {
 
     for (i = 0; i < 0x20; i++) {
         t = ex->btlfx_randRange(-((i + 1) * 0x180), -(i * 0x180));
-        p = &fx_105_quads[i];
+        p = &fx_105_windStreaks[i];
         p->vx = t;
         p->vz = ex->btlfx_randRange(-0x1000, 0x2000);
         p->vy = p->vx >> 4;
@@ -823,7 +823,7 @@ void fx_105_initQuads(void) {
     }
 }
 
-void fx_105_drawQuads(s32 c) {
+void fx_105_drawWindStreaks(s32 c) {
     Unk800F78A4 *env = fx_105_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
@@ -861,12 +861,12 @@ void fx_105_drawQuads(s32 c) {
     gte_SetTransMatrix(&m);
     for (i = 0; i < 32; i++) {
         w = i * 16 - 0x5E8;
-        v[0].vx = v[2].vx = fx_105_quads[i].vx - 0x400;
-        v[1].vx = v[3].vx = fx_105_quads[i].vx;
-        v[0].vz = v[1].vz = fx_105_quads[i].vz + w;
-        v[2].vz = v[3].vz = fx_105_quads[i].vz - w;
-        v[0].vy = v[2].vy = fx_105_quads[i].vy - 0x600;
-        v[1].vy = v[3].vy = fx_105_quads[i].vy;
+        v[0].vx = v[2].vx = fx_105_windStreaks[i].vx - 0x400;
+        v[1].vx = v[3].vx = fx_105_windStreaks[i].vx;
+        v[0].vz = v[1].vz = fx_105_windStreaks[i].vz + w;
+        v[2].vz = v[3].vz = fx_105_windStreaks[i].vz - w;
+        v[0].vy = v[2].vy = fx_105_windStreaks[i].vy - 0x600;
+        v[1].vy = v[3].vy = fx_105_windStreaks[i].vy;
         gte_ldv3c(v);
         gte_rtpt();
         if (abr == 0xFF) {
@@ -889,9 +889,9 @@ void fx_105_drawQuads(s32 c) {
         gte_stsxy(&p->x3);
         ex->btlfx_addPrim(0x09000000, otz >> 1, p);
         p++;
-        fx_105_quads[i].vz -= (fx_105_quads[i].vx + 0x3000) >> 6;
-        if (fx_105_quads[i].vz < env->camera->points[2].vz - 0x1000) {
-            fx_105_quads[i].vz = 0x2000;
+        fx_105_windStreaks[i].vz -= (fx_105_windStreaks[i].vx + 0x3000) >> 6;
+        if (fx_105_windStreaks[i].vz < env->camera->points[2].vz - 0x1000) {
+            fx_105_windStreaks[i].vz = 0x2000;
         }
     }
 }

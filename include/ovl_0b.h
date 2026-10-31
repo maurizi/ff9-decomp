@@ -757,7 +757,8 @@ typedef struct Unk800F78A40 {
     u8 pad18[0x1C - 0x18];
     u32 flags; /* BTLFX_HDR_* (as Unk800FEC40.flags) */
     u8 retry; /* btlfx_retryOp: run the same op again next frame */
-    u8 pad21[0x23 - 0x21];
+    u8 ending; /* Unk800FEC40.ending */
+    u8 partyReload; /* Unk800FEC40.partyReload: control op 11, btl_reloadParty running */
     u8 seqSync; /* Unk800FEC40.seqSync */
 } Unk800F78A40;
 
@@ -1264,7 +1265,10 @@ typedef struct BtlCmd8 {
     u32 listKind : 3; /* nonzero: targets are picked from a list window (Battle16CC.listKind) */
     u32 effect : 9; /* effect id (btl_startCmdEffect -> btl_playCmdEffect) */
     u32 unk0_17 : 13; /* not read in ovl_0b */
-    u32 forceCamera : 1; /* the enemy's camera move (btlseq_opPlayCamera) plays even with the fixed-camera option, a Vanish/Mini caster or target, and past the 50% roll */
+    u32 forceCamera : 1; /* the enemy's camera move (btlseq_opPlayCamera) plays even with the fixed-camera option, a Vanish/Mini caster or target, and past the 50% roll.
+                          * Set on 227 enemy abilities in 102 encounters, all scripted or story actions (friendly monsters'
+                          * "Happy"/"More", Ragtime Mouse quiz, death and appearance sequences, Beatrix, Kuja Transform),
+                          * runtime round 33 (static scan of every encounter) */
     u32 unk0_31 : 1; /* not read in ovl_0b */
     u8 formula; /* btl_calcCmd formula */
     u8 power; /* power, or the formula's parameter (an item id, a divisor) */
@@ -2111,7 +2115,7 @@ typedef struct {
 #define BTLFX_MOTION_ORBIT     1 /* drawn at a radius from a moving centre, in a turning direction (m.orbit) */
 #define BTLFX_MOTION_SPIRAL    2 /* spins around an axis with growing radius and axial distance (m.spiral) */
 #define BTLFX_MOTION_WOBBLE    3 /* drawn at a radius in a sine-swinging direction (m.wobble) */
-#define BTLFX_MOTION_HELIX     4 /* spins around an axis while moving along it, radius by curve (m.helix) */
+#define BTLFX_MOTION_HELIX     4 /* spins around an axis while moving along it, radius by curve (m.helix); the swirl around the caster while casting */
 #define BTLFX_MOTION_HOMING    5 /* ballistic, steered toward Pool6CEntry.target (m.homing) */
 #define BTLFX_MOTION_MODULE    0xFF /* EffEmit.m.module.update, set by the effect module; a 0x10-byte EffEmit */
 
@@ -2125,7 +2129,8 @@ typedef struct {
  * an emitter's partly through Pool6CEntry.cur), *Spread is a random +- per particle. 0x28 bytes, 0x10 for
  * BTLFX_MOTION_MODULE. Angles: 0x1000 = 360 degrees. Evidence: [code] */
 typedef struct {
-    u8 kind; /* BTLFX_MOTION_* */
+    u8 kind; /* BTLFX_MOTION_* (runtime round 33: 4 = the party cast emitter, the sparkle swirl winding up around the
+              * caster while casting) */
     u8 emitsSub; /* nonzero: a sub-emitter (EffSub, then its EffEmit) follows (btlfx_spawnEmitter) and the particles spawn sub-particles (Pool30Entry.spawnFlags) */
     s16 lifeStart; /* particle lifetime in frames, +-lifeSpread */
     s16 lifeEnd;
@@ -3205,7 +3210,9 @@ u8 btlui_isTargetWindowOpen(void);
 typedef struct {
     u8 unit; /* unit id moved */
     u8 target;
-    u8 skipParty; /* op argument 2: 1 with a party-unit target ends the op at once (btlfx_opJumpHome) */
+    u8 skipParty; /* op argument 2: 1 with a party-unit target ends the op at once (btlfx_opJumpHome). 1 in abilities
+                   * that can target allies (items, the Break skills, Reis's Wind, White Draw, Eat, Cook, Dragon
+                   * Breath, ...), so the caster stays home instead of jumping at a party member; 0 in Luna and Focus */
     u8 playMotion; /* btlfx_stepJumpHome plays the unit's motion 0x1E */
     s32 frames; /* move frames (the motion's length) */
     s16 from[4]; /* start position */
@@ -3735,7 +3742,8 @@ typedef struct {
     u8 unit; /* unit id moved (0x10 caster) */
     u8 target; /* unit id moved toward */
     union {
-        u8 skipParty; /* btlfx_opJumpForward (op argument 2): 1 with a party-unit target ends the op at once */
+        u8 skipParty; /* btlfx_opJumpForward (op argument 2): 1 with a party-unit target ends the op at once
+                       * (set by items, the Break skills, Reis's Wind, Eat ...: see the jump-home view) */
         u8 reach; /* btlfx_opMoveTowardTarget (g_btlfxOpArgs.paramB[0]): tenths of the way to the strike point */
     } arg;
     u8 playMotion; /* btlfx_stepJumpForward plays the caster's motion 0x1D */

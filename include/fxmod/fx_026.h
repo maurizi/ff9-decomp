@@ -34,7 +34,7 @@ typedef struct {
     s16 velC; /* velocity */
     s16 velE;
     s16 vel10;
-    s16 unk12;
+    s16 drag12; /* velocity factor per frame (btlfx_stepModuleParticle), 0x1000 = none */
     s16 spin14; /* spin */
     s16 spin16;
     s16 frame18; /* frame, -1 = free */
@@ -84,7 +84,7 @@ typedef struct {
     Fx026Vec3 scale4C; /* summon scale */
     SVECTOR rot58; /* summon rotation */
     u8 pad60[4];
-    s32 unk64;
+    s32 unk64; /* unused (runtime watch, round 33) */
     s32 model68; /* models */
     s32 model6C;
 } Fx026Work80; /* 0x70 */
@@ -95,7 +95,7 @@ typedef struct {
     struct {
         u8 pad0[0x180];
         BtlUnit9CC *motion180;
-    } *unk54;
+    } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
 } Fx026Summon;
@@ -122,21 +122,21 @@ typedef struct {
     s16 vx;
     s16 vy;
     s16 vz;
-    u16 unk6; /* colour, 0 = gap */
+    u16 halfWidth6; /* half-width of the ribbon at this point (scales the edge normal; 0 = gap) */
 } Fx026Pt;
 
 typedef struct {
-    u8 unk0; /* count - 1 */
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     Fx026Pt unk4[32];
 } Fx026Strip32; /* 0x104 */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     Fx026Pt unk4[40];
 } Fx026Strip40; /* 0x144 */

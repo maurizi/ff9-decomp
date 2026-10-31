@@ -12,7 +12,7 @@ typedef struct {
 } Fx0b4Key; /* 0xC */
 
 typedef struct {
-    s16 unk0;
+    s16 pad0; /* always 0 in the effect file blocks (runtime, round 33) */
     u16 count2; /* keys */
     Fx0b4Key *keys4;
 } Fx0b4Path;

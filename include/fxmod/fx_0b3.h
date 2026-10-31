@@ -60,7 +60,7 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x54];
-    Fx0b3Unit *unk54;
+    Fx0b3Unit *summon54; /* g_btlfxLoader.summon */
     u8 pad58[0x60 - 0x58];
     s32 model60; /* summon model */
 } Fx0b3Summon;
@@ -87,7 +87,7 @@ typedef struct {
     s32 morphWeight9C; /* morph weight */
 } Fx0b3Work81; /* 0xA0 */
 
-extern s32 fx_0b3_sharedModel; /* model */
+extern s32 fx_0b3_seaModel; /* model */
 extern s32 fx_0b3_morphKeyBlocks[2]; /* file ids */
 extern u8 fx_0b3_trails[];
 extern u8 fx_0b3_trails2[];
@@ -138,7 +138,7 @@ extern s32 fx_0b3_morphModels[6]; /* morph models */
 static s32 fxm_sinHalfNeg(s32 a);
 static s32 fxm_nextRingPoint(SVECTOR *v);
 typedef struct {
-    s16 unk0;
+    s16 pad0; /* always 0 in the effect file blocks (runtime, round 33) */
     s16 count2; /* count */
     s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx0b3Track;

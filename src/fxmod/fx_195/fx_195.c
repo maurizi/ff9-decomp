@@ -13,8 +13,8 @@ void fx_195_buildOffsetTrail(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     i = 0;
     p = trail->points4;
-    trail->unk0 = trail->unk2 = 0xC;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = 0xC;
+    trail->head1 = 0;
     do {
         t = 0x1000 - (i << 12) / 12;
         t += ex->btlfx_randCentered(0x180);
@@ -43,8 +43,8 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx195Trail57 *trail, S
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     i = 0;
     p = trail->points4;
-    trail->unk0 = trail->unk2 = 0x38;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = 0x38;
+    trail->head1 = 0;
     do {
         t = 0x1000 - (i << 12) / 56;
         t += ex->btlfx_randCentered(0x100);
@@ -74,8 +74,8 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx195Trail *trail, SVE
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     i = 0;
     p = trail->points4;
-    trail->unk0 = trail->unk2 = 0xC;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = 0xC;
+    trail->head1 = 0;
     do {
         t = 0x1000 - (i << 12) / 12;
         t += ex->btlfx_randCentered(0x100);

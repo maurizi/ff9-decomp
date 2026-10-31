@@ -12,9 +12,9 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d7Strip *strip, s3
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
     p = strip->unk4;
-    strip->unk2 = 0xF;
-    strip->unk0 = 0xF;
-    strip->unk1 = 0;
+    strip->count2 = 0xF;
+    strip->lastSlot0 = 0xF;
+    strip->head1 = 0;
     for (i = 0; i < 16; i++) {
         t = 0x1000 - (i << 12) / 15;
         t += *tbl++;
@@ -48,9 +48,9 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d7Strip *strip, s32
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
     p = strip->unk4;
-    strip->unk2 = 3;
-    strip->unk0 = 3;
-    strip->unk1 = 0;
+    strip->count2 = 3;
+    strip->lastSlot0 = 3;
+    strip->head1 = 0;
     for (i = 0; i < 4; i++) {
         t = 0x1000 - (i << 12) / 3;
         t += *tbl++ / 2;

@@ -246,7 +246,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (i = 0; i < 7; i++) {
                     work->model28[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_1b6_modelFileIds[i]), 0);
                 }
-                buf = ((Fx1b6Summon *)env->loader)->unk54->unk50 + 0x19000;
+                buf = ((Fx1b6Summon *)env->loader)->summon54->unk50 + 0x19000;
                 fx_1b6_initSplit((Fx1b6Split *)buf, (SVECTOR (*)[3])(buf + 0xC5A8));
                 for (i = 0; i < 7; i++) {
                     fxm_splitModelAdd(work->model28[i]);

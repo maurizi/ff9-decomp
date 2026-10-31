@@ -597,8 +597,8 @@ static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Tr
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     cnt = (n - 4) / 8;
     a = cnt;
-    trail->unk0 = trail->unk2 = a - 1;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = a - 1;
+    trail->head1 = 0;
     pt = trail->points4;
     for (i = 0; i < a; i++, pt++) {
         t = 0x1000 - (i << 12) / (a - 1);

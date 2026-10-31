@@ -14,3 +14,5 @@ fx_0e0_centerPos = 0x801EA8B0; // [code] SVECTOR the effect is centred on, fx_0e
 fx_0e0_objScales = 0x801EA8B8; // [code] model scale per Fx0e0Obj kind (Fx0e0Obj.vel4.pad), Hi_DrawEffModel scale in fx_0e0_op80PoolTask
 fx_0e0_rippleColors = 0x801EA8C8; // [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0e0_op80, entry 1 pulses with math_sin
 fx_0e0_trailStrips = 0x801EA928; // [code] 25-point strip buffers (Fx0e0Bolt) drawn by fxm_drawOffsetTrail in fx_0e0_op80
+fx_0e0_captureRadius = 0x801EB1D8; // [runtime] 0 in data, read only by the state 0/1 pool branch that never runs (0 reads over Doomsday Sword, round 33)
+fx_0e0_endEarly = 0x801EB1DC; // [runtime] 0 in data, read only by the state 0/1 pool branch that never runs (0 reads over Doomsday Sword, round 33)

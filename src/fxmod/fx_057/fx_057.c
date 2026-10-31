@@ -270,13 +270,13 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         work->frame4 = 0;
         fx_057_env = env;
-        work->otZ8 = ex->btlfx_addRadiusSixth(0, 0);
+        work->targetOtZ8 = ex->btlfx_addRadiusSixth(0, 0);
         work->posC.vx = 0;
         work->posC.vy = 0;
         work->posC.vz = 0;
         p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->posC);
         if (p != NULL) {
-            p->otZ = work->otZ8 + 0x40;
+            p->otZ = work->targetOtZ8 + 0x40;
         }
     } else {
     frame = entry->frame;
@@ -288,7 +288,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         d.pad = 0;
         t = (frame << 12) / 7;
         s = ex->math_sin(t >> 2);
-        env->otZ = work->otZ8 + 0x40;
+        env->otZ = work->targetOtZ8 + 0x40;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->posC, NULL, 0x13000, frame, 1, s);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x22), &work->posC, NULL, (t >> 1) + 0x3000, 0, 1,
                           s);
@@ -307,7 +307,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         d.vy = 0;
         d.vz = 0x400;
         d.pad = 0;
-        env->otZ = work->otZ8 + 0x40;
+        env->otZ = work->targetOtZ8 + 0x40;
         t = (frame << 12) / 7;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->posC, &d, 0x3000, frame, 1, 0x1000);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->posC, NULL, t + 0x13000, frame, 1,
@@ -329,20 +329,20 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos14.vy -= 0xC00;
             p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->posC);
             if (p != NULL) {
-                p->otZ = work->otZ8 + 0x40;
+                p->otZ = work->targetOtZ8 + 0x40;
             }
             p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->posC);
             if (p != NULL) {
-                p->otZ = work->otZ8 + 0x40;
+                p->otZ = work->targetOtZ8 + 0x40;
             }
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->posC);
             p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&work->posC);
             if (p != NULL) {
-                p->otZ = work->otZ8 + 0x80;
+                p->otZ = work->targetOtZ8 + 0x80;
             }
             p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->posC);
             if (p != NULL) {
-                p->otZ = work->otZ8 + 0x46;
+                p->otZ = work->targetOtZ8 + 0x46;
             }
             p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x29), (s32)&work->pos14);
             if (p != NULL) {

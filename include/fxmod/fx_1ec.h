@@ -20,8 +20,8 @@ typedef struct {
     SVECTOR pos24; /* caster body position */
     SVECTOR pos2C; /* target position */
     SVECTOR pos34;
-    SVECTOR unk3C;
-    SVECTOR unk44;
+    SVECTOR unk3C; /* unused (runtime watch, round 33) */
+    SVECTOR unk44; /* unused (runtime watch, round 33) */
     SVECTOR camPos4C; /* camera targets */
     SVECTOR camPos54;
     SVECTOR camPos5C;

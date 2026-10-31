@@ -36,3 +36,4 @@ fx_0ba_boltTrails = 0x801ED420; // [code] per-bolt 17-point trails (Fx0baTrail) 
 fx_0ba_boltPoints = 0x801ED424; // [code] the points of fx_0ba_boltTrails (4 bytes in, Fx0baPath), fxm_randStripPoint32 picks a random point of a random bolt from it
 fx_0ba_boltBranches = 0x801EE5A0; // [code] per-bolt branch strips (Fx0baStrip4) drawn by fxm_drawJaggedTrailBranch, indexed by Fx0baBolt.strip10
 fx_0ba_boltJitter = 0x801EEA20; // [code] btlfx_randCentered noise table filled by fx_0ba_op83 mode 1, Fx0baBolt.jitter18 points into it
+fx_0ba_preOrb = 0x801EC550; // [runtime] 1 from the data until the orb appears (fx_0ba_op80 frame 0x3C), bolts spawn every frame and draw impact rings while set, round 33

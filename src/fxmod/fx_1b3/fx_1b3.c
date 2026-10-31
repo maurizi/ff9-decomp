@@ -700,9 +700,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         s32 n;
                         SVECTOR *pt;
 
-                        tr->unk2 = 8;
-                        tr->unk0 = 8;
-                        tr->unk1 = 0;
+                        tr->count2 = 8;
+                        tr->lastSlot0 = 8;
+                        tr->head1 = 0;
                         n = 9;
                         for (pt = tr->points4, j = 0; j < n; j++, pt++) {
                             fx_1b3_trails[i].pos50[j].vx += fx_1b3_trails[i].vel98[j].vx;

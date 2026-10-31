@@ -200,8 +200,8 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 tr = &fx_063_strips[n];
                 if (tr->timer100 != 0) {
                     tr->timer100--;
-                    tr->unk0 = tr->unk2 = 10;
-                    tr->unk1 = 0;
+                    tr->lastSlot0 = tr->count2 = 10;
+                    tr->head1 = 0;
                     tr->angleEC += tr->spinF4;
                     tr->angleF0 += tr->spinF8;
                     s = work->models40[0].scaleC.vx;
@@ -211,7 +211,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     pt->vx = start.vx = work->pos94.vx + ((ex->math_cos(tr->angleF0) * r) >> 12);
                     pt->vz = start.vz = work->pos94.vz + ((ex->math_sin(tr->angleF0) * r) >> 12);
                     strip = (u8 *)tr;
-                    pt->unk6 = tr->unkFC;
+                    pt->halfWidth6 = tr->widthFC;
                     ex->btlfx_aimAngles((s16 *)&work->posA4, (s16 *)&start, (s16 *)&ang);
                     pt++;
                     for (j = 0; j < 9; j++, pt++) {
@@ -229,12 +229,12 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             ((start.vz * b.vx + start.vz * b.vz +
                               (work->pos94.vz + ((ex->math_cos(ang.vy) * r) >> 11)) * b.vy) >> 12);
                         pt->vy = ex->btlfx_lerpRatio(start.vy, 0, j + 1, 11);
-                        pt->unk6 = tr->unkFC;
+                        pt->halfWidth6 = tr->widthFC;
                     }
                     pt->vx = start.vx;
                     pt->vz = start.vz;
                     pt->vy = 0;
-                    pt->unk6 = tr->unkFC;
+                    pt->halfWidth6 = tr->widthFC;
                     if (tr->timer100 < 4) {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xD), 0, NULL, frame, 0x1000,
                                             tr->timer100 << 10, 1, strip, 0);
@@ -248,7 +248,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     tr->angleF0 = ex->btlfx_rand() & 0xFFF;
                     tr->spinF4 = ex->btlfx_randRange(-0x10, 0x10);
                     tr->spinF8 = ex->btlfx_randRange(-0x80, 0x80);
-                    tr->unkFC = ex->btlfx_randRange(0x40, 0x80);
+                    tr->widthFC = ex->btlfx_randRange(0x40, 0x80);
                     for (j = 0; j < 9; j++) {
                         tr->jitter5C[j].vz = 0;
                         tr->jitter5C[j].vx = 0;

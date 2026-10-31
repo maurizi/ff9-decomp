@@ -571,7 +571,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->state0 = 2;
                 entry->frame = -1;
                 fx_0fb_0_rocksReleased = 1;
-                ex->Hi_SetSummonMotion(SUMMON0FB(env)->unk54->motion180[0], SUMMON0FB(env)->summonModel60);
+                ex->Hi_SetSummonMotion(SUMMON0FB(env)->summon54->motion180[0], SUMMON0FB(env)->summonModel60);
                 ex->Hi_SetSummonMotFrame(SUMMON0FB(env)->summonModel60, 0);
                 work->rot44.vy = 0xA70;
                 work->summonScale38.vx = 0x1000;
@@ -688,7 +688,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x19) {
                 work->state0 = 4;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotion(SUMMON0FB(env)->unk54->motion180[1], SUMMON0FB(env)->summonModel60);
+                ex->Hi_SetSummonMotion(SUMMON0FB(env)->summon54->motion180[1], SUMMON0FB(env)->summonModel60);
                 ex->Hi_SetSummonMotFrame(SUMMON0FB(env)->summonModel60, 0);
                 fx_0fb_0_unitsRestored = 1;
                 ex->Hi_GetSummonBonePos(SUMMON0FB(env)->summonModel60, 0x24, (u16 *)&work->pos5C);
@@ -853,7 +853,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x15) {
                 work->state0 = 6;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotion(SUMMON0FB(env)->unk54->motion180[2], SUMMON0FB(env)->summonModel60);
+                ex->Hi_SetSummonMotion(SUMMON0FB(env)->summon54->motion180[2], SUMMON0FB(env)->summonModel60);
             }
         }
         } break;

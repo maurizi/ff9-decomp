@@ -52,8 +52,8 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVEC
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     i = 0;
     p = trail->points4;
-    trail->unk0 = trail->unk2 = 0x18;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = 0x18;
+    trail->head1 = 0;
     do {
         t = 0x1000 - (i << 12) / 24;
         t += ex->btlfx_randCentered(0x140);
@@ -556,11 +556,11 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 ta = &fx_19f_stripTrails0[k * 2];
                 pt = ta->points4;
-                ta->unk0 = ta->unk2 = 0x10;
-                ta->unk1 = 0;
+                ta->lastSlot0 = ta->count2 = 0x10;
+                ta->head1 = 0;
                 tb = &fx_19f_stripTrails0[k * 2 + 1];
-                tb->unk0 = tb->unk2 = 0x10;
-                tb->unk1 = 0;
+                tb->lastSlot0 = tb->count2 = 0x10;
+                tb->head1 = 0;
                 pb = tb->points4;
                 for (j = n = 0; j < 34; j++, n++) {
                     if (j == 17) {
@@ -590,8 +590,8 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 q2 = (s16 *)ex->btlfx_getFileData(entry->file, fx_19f_stripToFileIds1[k2]);
                 q2 += 8;
                 tc = &fx_19f_stripTrails1[k2];
-                tc->unk0 = tc->unk2 = 0xC;
-                tc->unk1 = 0;
+                tc->lastSlot0 = tc->count2 = 0xC;
+                tc->head1 = 0;
                 pt2 = tc->points4;
                 for (j2 = 0; j2 < 13; j2++) {
                     i2 = arr70[k2] - j2;
@@ -674,8 +674,8 @@ static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19f
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     cnt = (n - 4) / 8;
-    trail->unk0 = trail->unk2 = cnt - 1;
-    trail->unk1 = 0;
+    trail->lastSlot0 = trail->count2 = cnt - 1;
+    trail->head1 = 0;
     pt = trail->points4;
     for (i = 0; i < cnt; i++, pt++) {
         t = 0x1000 - (i << 12) / (cnt - 1);

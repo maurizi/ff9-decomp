@@ -33,8 +33,8 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 ar
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0a0_env);
     SVECTOR *v;
 
-    fx_0a0_line.unk0 = fx_0a0_line.unk2 = 1;
-    fx_0a0_line.unk1 = 0;
+    fx_0a0_line.lastSlot0 = fx_0a0_line.count2 = 1;
+    fx_0a0_line.head1 = 0;
     v = fx_0a0_line.pts4;
     v[0].vx = a->vx;
     v[0].vy = a->vy;

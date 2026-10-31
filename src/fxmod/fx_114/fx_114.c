@@ -180,7 +180,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     switch (frame) {
     case 0:
         work->index160 = 0;
-        work->unk164 = 1;
+        work->loopMotion164 = 1;
         work->frame168 = 0x10;
         fxm_posPathInit(&fx_114_posPath0, (u16 *)ex->btlfx_getFileData(entry->file, 0x96));
         fxm_posPathInit(&fx_114_posPath1, (u16 *)ex->btlfx_getFileData(entry->file, 0x8A));
@@ -197,7 +197,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 0x30:
         work->index160 = 1;
-        work->unk164 = 0;
+        work->loopMotion164 = 0;
         ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->summon54->motion180[work->index160],
                                ((Fx114Summon80 *)env->loader)->summonModel60);
         break;
@@ -208,7 +208,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 0x62:
         work->index160 = 2;
-        work->unk164 = 0;
+        work->loopMotion164 = 0;
         ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->summon54->motion180[work->index160],
                                ((Fx114Summon80 *)env->loader)->summonModel60);
         break;
@@ -219,7 +219,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 0x7B:
         work->index160 = 3;
-        work->unk164 = 0;
+        work->loopMotion164 = 0;
         ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->summon54->motion180[work->index160],
                                ((Fx114Summon80 *)env->loader)->summonModel60);
         break;
@@ -356,7 +356,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos28.vy = v58.vy;
         if (work->index160 != 0) {
             ex->Hi_DrawSummonModel(&work->rot20, (VECTOR *)&work->pos28, (s32)&work->scale38,
-                                   ((Fx114Summon80 *)env->loader)->summonModel60, work->unk164);
+                                   ((Fx114Summon80 *)env->loader)->summonModel60, work->loopMotion164);
             if (work->index160 > 0) {
                 k1 = frame / 16 % 8;
                 q1 = frame % 16;

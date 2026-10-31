@@ -5,9 +5,9 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[1];
 } Fx17d6Trail;
@@ -15,17 +15,17 @@ typedef struct {
 extern Unk800F78A4 *fx_17d_6_env;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[17];
 } Fx17d6Trail17; /* 0x8C */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[5];
 } Fx17d6Trail5; /* 0x2C */
@@ -55,7 +55,7 @@ typedef struct {
 typedef struct {
     s32 *noise0; /* noise */
     s32 count4; /* spawn count */
-    s32 kind8;
+    s32 kind8; /* always 0: the file 0x17D script runs group 6's op 0x83 only as `83 00 00` */
 } Fx17d6Work83;
 
 extern SVECTOR fx_17d_6_boltTo; /* to */
@@ -101,7 +101,7 @@ typedef struct {
         u8 pad0[0x1A8];
         BtlUnit9CC *motion1A8;
         BtlUnit9CC *motion1AC;
-    } *unk54;
+    } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 model60; /* summon model */
 } Fx17d6Summon;

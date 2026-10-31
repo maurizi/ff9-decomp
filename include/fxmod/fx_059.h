@@ -6,7 +6,7 @@
 
 typedef struct {
     s32 state0; /* state */
-    s32 posZ4; /* height */
+    s32 depthZ4; /* spiral head's distance into the screen in the view-rotation frame, grows 0xC8 per frame */
     s32 angle8; /* angle */
     s32 kindC; /* index into fx_059_headBlocks / fx_059_tailBlocks */
     s32 angleStep10; /* angle step */
@@ -15,7 +15,7 @@ typedef struct {
 } Fx059Work80;
 
 typedef struct {
-    s32 unk0;
+    s32 stop0; /* dead early-out flag, always 0 (see Fx046Work.stop0) */
     SVECTOR pos4;
 } Fx059Work81;
 

@@ -117,7 +117,7 @@ typedef struct {
     struct {
         u8 pad0[0x18C];
         BtlUnit9CC *motion18C;
-    } *unk54;
+    } *summon54; /* g_btlfxLoader.summon */
     u8 pad58[8];
     s32 summonModel60;
 } Fx0fb1Summon;

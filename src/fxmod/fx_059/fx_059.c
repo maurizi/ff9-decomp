@@ -28,7 +28,7 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         s32 n = *arg4;
         work->state0 = 0;
-        work->posZ4 = -0x20;
+        work->depthZ4 = -0x20;
         work->kindC = n - 1;
         work->angle8 = (n << 10) - 0x400;
         fx_059_env = env;
@@ -49,8 +49,8 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r = 0xA0 - frame * 0xA0 / 6;
             pos.vx = (ex->math_cos(work->angle8) * r) >> 12;
             pos.vy = (ex->math_sin(work->angle8) * r) >> 12;
-            pos.vz = work->posZ4;
-            work->posZ4 += 0xC8;
+            pos.vz = work->depthZ4;
+            work->depthZ4 += 0xC8;
             work->angle8 += work->angleStep10;
             p = ex->btlfx_poolSpawn((s16 *)work->pool14);
             if (p != NULL) {
@@ -87,7 +87,7 @@ s32 fx_059_op81(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0xC;
     } else if (mode == 1) {
         fx_059_env = env;
-        work->unk0 = 0;
+        work->stop0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
         if (p != NULL) {
@@ -103,7 +103,7 @@ s32 fx_059_op81(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         s32 frame = entry->frame;
-        if (work->unk0 == 0 && frame >= 0x20) {
+        if (work->stop0 == 0 && frame >= 0x20) {
             return 1;
         }
     }
@@ -117,7 +117,7 @@ s32 fx_059_op82(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->stop0 = 0;
         fx_059_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4);
@@ -126,7 +126,7 @@ s32 fx_059_op82(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         s32 frame = entry->frame;
-        if (work->unk0 == 0 && frame >= 0x18) {
+        if (work->stop0 == 0 && frame >= 0x18) {
             return 1;
         }
     }

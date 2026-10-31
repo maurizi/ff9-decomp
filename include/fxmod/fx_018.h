@@ -9,17 +9,17 @@
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[15];
 } Fx018Strip; /* 0x7C */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 unk3;
     SVECTOR unk4[3];
     u8 pad1C[0x1C];
@@ -54,7 +54,7 @@ typedef struct {
     SVECTOR pos8; /* target */
     s32 *jitter10; /* jitter table */
     s32 boltCount14; /* bolts spawned */
-    s32 kind18; /* kind */
+    s32 kind18; /* kind: the three bolt stages 0, 1, 2 of one cast (op 0x83 byte a in the file 0x18 script) */
 } Fx018Work83; /* 0x1C */
 
 extern BtlModel fx_018_effModels[];

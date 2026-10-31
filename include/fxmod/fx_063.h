@@ -8,14 +8,14 @@ typedef struct {
     s16 vx;
     s16 vy;
     s16 vz;
-    u16 unk6; /* colour */
+    u16 halfWidth6; /* half-width of the ribbon at this point (scales the edge normal) */
 } Fx063Pt;
 
 /* line strip passed to btlfx_drawTrail: a quadratic curve from the head back to the start point */
 typedef struct {
-    u8 unk0; /* count - 1 */
-    u8 unk1;
-    u8 unk2;
+    u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
+    u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
+    u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     Fx063Pt unk4[11];
     SVECTOR jitter5C[9]; /* jitter */
@@ -25,7 +25,7 @@ typedef struct {
     s32 angleF0; /* angle */
     s32 spinF4; /* angle speed */
     s32 spinF8; /* angle speed */
-    s32 unkFC; /* colour */
+    s32 widthFC; /* ribbon half-width, copied into each point's halfWidth6 */
     s32 timer100; /* timer */
 } Fx063Strip; /* 0x104 */
 

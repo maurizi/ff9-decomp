@@ -9,7 +9,7 @@ typedef struct {
     s32 powerUp4; /* power-up countdown */
     s32 powerDown8; /* power-down countdown */
     s32 gridC; /* blur countdown */
-    s32 unk10[4];
+    s32 unk10[4]; /* unused (runtime watch, round 33) */
     SVECTOR pos20;
     u8 pad28[8];
 } Fx03aWork; /* 0x30 */

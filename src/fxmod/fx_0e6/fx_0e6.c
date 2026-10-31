@@ -37,9 +37,9 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame < 8) {
             n = 25;
             line = &fx_0e6_strip;
-            line->unk2 = 0x18;
-            line->unk0 = 0x18;
-            line->unk1 = 0;
+            line->count2 = 0x18;
+            line->lastSlot0 = 0x18;
+            line->head1 = 0;
             v = line->unk4;
             for (i = 0; i < n; i++) {
                 ex->btlfx_lerpVec((s16 *)&work->pos2C, (s16 *)&pos, (0x1000000 / n * i) >> 12, (s16 *)v);

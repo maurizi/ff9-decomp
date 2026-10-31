@@ -72,7 +72,7 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x54];
-    Fx17d0SummonData *unk54;
+    Fx17d0SummonData *summon54; /* g_btlfxLoader.summon */
 } Fx17d0Summon;
 
 extern SVECTOR fx_17d_0_basePos;

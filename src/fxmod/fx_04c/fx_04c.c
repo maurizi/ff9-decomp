@@ -9,7 +9,7 @@ s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->stop0 = 0;
         fx_04c_env = env;
         ((s32 *)&work->pos4)[0] = ((s32 *)&env->targets->centerX)[0];
         t = ((s32 *)&env->targets->centerX)[1];
@@ -25,7 +25,7 @@ s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        if (work->unk0 == 0) {
+        if (work->stop0 == 0) {
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 5), frame);
             if (frame >= 0x3C) {
                 return 1;
@@ -45,7 +45,7 @@ s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_04c_env = env;
         work->count34 = env->targets->targetCount;
-        ((u8 *)env->state)[0x12] = 0;
+        env->state->signals[2] = 0;
         for (i = 0; i < work->count34; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&work->pos4[i]);
             work->emit24[i] = NULL;
@@ -95,7 +95,7 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_04c_env = env;
         work->count34 = env->targets->targetCount;
-        ((u8 *)env->state)[0x12] = 0;
+        env->state->signals[2] = 0;
         for (i = 0; i < work->count34; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&work->pos4[i]);
             work->emit24[i] = NULL;
@@ -121,7 +121,7 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     entry->frame = -1;
                 } else {
                     work->state0 = 2;
-                    ((u8 *)env->state)[0x12] = 1;
+                    env->state->signals[2] = 1;
                     entry->frame = -1;
                 }
             }

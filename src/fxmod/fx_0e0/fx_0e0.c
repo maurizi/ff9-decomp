@@ -311,9 +311,9 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTO
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->unk4;
-    bolt->unk2 = 0x18;
-    bolt->unk0 = 0x18;
-    bolt->unk1 = 0;
+    bolt->count2 = 0x18;
+    bolt->lastSlot0 = 0x18;
+    bolt->head1 = 0;
     for (i = 0; i < 25; i++) {
         t = 0x1000 - (i << 12) / 24;
         t += ex->btlfx_randCentered(0x100);
@@ -384,7 +384,7 @@ static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk8010
                 } else {
                     k = 0x1000;
                 }
-                if (d.vx * d.vx + d.vy * d.vy + d.vz * d.vz < D_801EB1D8 * D_801EB1D8 * D_801EB1D8) {
+                if (d.vx * d.vx + d.vy * d.vy + d.vz * d.vz < fx_0e0_captureRadius * fx_0e0_captureRadius * fx_0e0_captureRadius) {
                     it->phase2 = 1;
                     ((s16 *)it)[-1] = -1;
                     it->emit20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&it->posC);
@@ -423,7 +423,7 @@ static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk8010
                                       ex->math_cos(frame << 7));
                 }
                 env->otZ = 0;
-                if (D_801EB1DC != 0) {
+                if (fx_0e0_endEarly != 0) {
                     return 1;
                 }
                 break;

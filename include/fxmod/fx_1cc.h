@@ -52,7 +52,7 @@ typedef struct {
     SVECTOR pos58; /* position */
     SVECTOR pos60;
     SVECTOR pos68;
-    SVECTOR unk70;
+    SVECTOR unk70; /* unused: only the -= 0x80 in mode 1 reads it */
     s16 flag78;
     s16 index7A; /* spawned directions */
     s32 frame7C;

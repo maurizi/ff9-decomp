@@ -207,7 +207,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 40) {
             work->state0 = 1;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(((Fx026Summon *)env->loader)->unk54->motion180, ((Fx026Summon *)env->loader)->model60);
+            ex->Hi_SetSummonMotion(((Fx026Summon *)env->loader)->summon54->motion180, ((Fx026Summon *)env->loader)->model60);
             ex->Hi_SetSummonMotFrame(((Fx026Summon *)env->loader)->model60, 0);
             ex->Hi_StartSummonTexAnim(((Fx026Summon *)env->loader)->model60, 0, 0);
         }
@@ -371,9 +371,9 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         strip = &fx_026_strips0[it->strip2];
         t = frame * 2;
         track += ((s32 *)track)[it->strip2];
-        strip->unk2 = 0x1F;
-        strip->unk0 = 0x1F;
-        strip->unk1 = 0;
+        strip->count2 = 0x1F;
+        strip->lastSlot0 = 0x1F;
+        strip->head1 = 0;
         pt = strip->unk4;
         for (i = 0; i < 32; i++, pt++, t--) {
             if (t >= 0) {
@@ -386,11 +386,11 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
                 pt->vx = fx_026_stripOrigin.vx + v.vx;
                 pt->vy = fx_026_stripOrigin.vy + v.vy;
                 pt->vz = fx_026_stripOrigin.vz + v.vz;
-                pt->unk6 = w;
+                pt->halfWidth6 = w;
                 BTLFX_COPY_SVEC(&prev, pt);
             } else {
                 BTLFX_COPY_SVEC(pt, &prev);
-                pt->unk6 = 0;
+                pt->halfWidth6 = 0;
             }
         }
         fade = 0x1000;
@@ -408,9 +408,9 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         strip = &fx_026_strips1[it->strip2];
         t = frame * 4;
         track += ((s32 *)track)[it->strip2];
-        strip->unk2 = 0x1F;
-        strip->unk0 = 0x1F;
-        strip->unk1 = 0;
+        strip->count2 = 0x1F;
+        strip->lastSlot0 = 0x1F;
+        strip->head1 = 0;
         pt = strip->unk4;
         if (t > 32) {
             t = 32;
@@ -426,11 +426,11 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
                 pt->vx = fx_026_stripOrigin.vx + v.vx;
                 pt->vy = fx_026_stripOrigin.vy + v.vy;
                 pt->vz = fx_026_stripOrigin.vz + v.vz;
-                pt->unk6 = w;
+                pt->halfWidth6 = w;
                 BTLFX_COPY_SVEC(&prev, pt);
             } else {
                 BTLFX_COPY_SVEC(pt, &prev);
-                pt->unk6 = 0;
+                pt->halfWidth6 = 0;
             }
         }
         fade = 0x1000;
@@ -454,9 +454,9 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         }
         t = frame * 4;
         strip = (Fx026Strip32 *)&fx_026_strips2[it->strip2];
-        strip->unk2 = 0x27;
-        strip->unk0 = 0x27;
-        strip->unk1 = 0;
+        strip->count2 = 0x27;
+        strip->lastSlot0 = 0x27;
+        strip->head1 = 0;
         pt = strip->unk4;
         if (t > 40) {
             t = 40;
@@ -474,11 +474,11 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
                 pt->vx = fx_026_stripOrigin.vx + v.vx;
                 pt->vy = fx_026_stripOrigin.vy + v.vy;
                 pt->vz = fx_026_stripOrigin.vz + v.vz;
-                pt->unk6 = w;
+                pt->halfWidth6 = w;
                 BTLFX_COPY_SVEC(&prev, pt);
             } else {
                 BTLFX_COPY_SVEC(pt, &prev);
-                pt->unk6 = 0;
+                pt->halfWidth6 = 0;
             }
         }
         fade = 0x1000;
@@ -663,7 +663,7 @@ static s32 fxm_shatterRelease(s32 i) {
                 p->z8 = ((t->vert0.vz + t->vert8.vz + t->vert10.vz) / 3) << 12;
                 p->frame18 = 0;
                 p->tri1A = idx;
-                p->unk12 = 0x1000;
+                p->drag12 = 0x1000;
                 p->spin14 = ex->btlfx_randCentered(0x100);
                 p->spin16 = ex->btlfx_randCentered(0x200);
                 v.vx = p->x0 >> 12;
