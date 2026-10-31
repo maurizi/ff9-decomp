@@ -205,7 +205,7 @@ void fld_discPromptHelp(void) {
 }
 
 void fld_discChangeOpenMenu4(void) {
-    menu_open(4, 2);
+    menu_open(MENU_SAVE, 2);
     menu_setOnClose(fld_discChangeBackToPrompt);
     menu_setFadeInOnClose(0);
 }
@@ -221,7 +221,7 @@ void fld_discChangeBackToPrompt(void) {
 }
 
 void fld_discChangeOpenMenu8(void) {
-    menu_open(8, ((g_fieldDiscChange.disc & 3) << 14) | g_fieldDiscChange.fieldId);
+    menu_open(MENU_DISC, ((g_fieldDiscChange.disc & 3) << 14) | g_fieldDiscChange.fieldId);
     menu_setOnClose(fld_discChangeFinish);
     menu_setFadeInOnClose(0);
 }

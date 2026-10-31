@@ -907,12 +907,12 @@ s32 evt_execInstr(void) {
             g_evtArgRead = 1;
         }
         return 1;
-    case 0x16:
+    case EVT_OP_CALL_CALLER:
         a = evt_getArg8_inline();
         o = evt_getObject_inline(CUR_UID());
         evt_callObjectFunc(o, a, *g_evtCurObj->ip++, 0);
         return 0;
-    case 0x18:
+    case EVT_OP_CALL_CALLER_WAIT_FREE:
         a = evt_getArg8_inline();
         if (evt_getObject_inline(CUR_UID()) != NULL && a < evt_getObject_inline(CUR_UID())->level) {
             o = evt_getObject_inline(CUR_UID());
@@ -922,7 +922,7 @@ s32 evt_execInstr(void) {
         g_evtCurObj->ip = g_evtInstrStart;
         g_evtArgRead = 1;
         return 1;
-    case 0x1A:
+    case EVT_OP_CALL_CALLER_SYNC:
         a = evt_getArg8_inline();
         if (evt_getObject_inline(CUR_UID()) != NULL && a < evt_getObject_inline(CUR_UID())->level) {
             o = evt_getObject_inline(CUR_UID());
@@ -2089,7 +2089,7 @@ s32 evt_execInstr(void) {
         for (; b < 8; b++) {
             g_evtPartyRequest.reserve[b] = 0xFF;
         }
-        menu_open(3, (s32)&g_evtPartyRequest);
+        menu_open(MENU_PARTY, (s32)&g_evtPartyRequest);
         return 1;
     case 0xE9:
         evt_execInstr_party();

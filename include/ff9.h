@@ -2447,6 +2447,14 @@ s32 fade_setOnDone(void (*)(void));
 u16 fade_setAngle(u16);
 void fade_inDefault(void);
 void game_startFade(s32, s32, s32, s32);
+/* menu_open(type, arg): MENU event op (0x75) type values (docs/r32/3ds-requests-3.md) */
+#define MENU_MAIN 0       /* main menu */
+#define MENU_NAME 1       /* name entry */
+#define MENU_SHOP 2       /* shop, arg = shop id (ovl_3c; >= 0x20 synthesis) */
+#define MENU_PARTY 3      /* party select (event op 0xB2, arg = request) */
+#define MENU_SAVE 4       /* save / load (ovl_39); argument 1 = title Continue */
+#define MENU_CHOCOGRAPH 5 /* chocograph */
+#define MENU_DISC 8       /* "Change to DISC" (ovl_3e); argument (disc & 3) << 14 | field id */
 void menu_open(s32, s32);
 void menu_initNewGame(void);
 void menu_initForMode(void);
@@ -3839,6 +3847,9 @@ typedef struct {
 #define EVT_OP_CALL 0x10 /* level, obj, func: evt_callObjectFunc(obj, level, func, 0) */
 #define EVT_OP_CALL_WAIT_FREE 0x12 /* level, obj, func: retries until obj.level > level, then calls */
 #define EVT_OP_CALL_SYNC 0x14 /* level, obj, func: calls with save=1 (caller waits, wait=0xFF) */
+#define EVT_OP_CALL_CALLER 0x16 /* level, func: EVT_OP_CALL aimed at the object that called the current function */
+#define EVT_OP_CALL_CALLER_WAIT_FREE 0x18 /* level, func: EVT_OP_CALL_WAIT_FREE on the caller */
+#define EVT_OP_CALL_CALLER_SYNC 0x1A /* level, func: EVT_OP_CALL_SYNC on the caller */
 #define EVT_OP_DELETE_OBJ 0x1C /* obj (0xFF self): scheduler: evt_deleteObject */
 #define EVT_OP_SET_POS_XZ 0x1D /* x, z: pos/prevPos = (x, -0x8000, z): placed on the floor */
 #define EVT_OP_BG_SCROLL_LIMITS 0x1E /* cam, 4 x s16: fldbg_setScrollLimits */

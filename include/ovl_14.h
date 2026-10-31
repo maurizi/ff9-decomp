@@ -30,8 +30,6 @@ typedef struct {
 
 /* main exe: candidates for ff9.h */
 /* menu_open types (docs/runtime-findings.md field/menu campaign) */
-#define MENU_SAVE 4 /* save / load (ovl_39); argument 1 = title Continue */
-#define MENU_DISC 8 /* "Change to DISC" (ovl_3e); argument (disc & 3) << 14 | field id, 0x3A98 here */
 void file_getTimRects(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
 typedef struct {
     u32 id;

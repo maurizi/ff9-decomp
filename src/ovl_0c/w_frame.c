@@ -87,7 +87,7 @@ s32 wm_frameMain(void) {
         if (g_worldCdUser == WM_CD_FREE && g_worldMapLoaded != 0 && g_worldMusicState == WM_MUSIC_READY) {
             g_worldCdUser = WM_CD_SCRIPT;
             g_gameState->gameData->flags |= GD_MENU_OPEN;
-            menu_open(0, 0);
+            menu_open(MENU_MAIN, 0);
             evt_onMenuOpen();
         }
     }

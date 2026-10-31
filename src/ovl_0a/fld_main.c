@@ -31,7 +31,7 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->gameData->flags & GD_MENU_DISABLED) && (g_padPortPressed & BTN_TRIANGLE) && (g_padPortHeld[0] & (PAD_UP | PAD_RIGHT | PAD_DOWN | PAD_LEFT | BTN_TRIANGLE)) &&
                 !(g_padPortHeld[0] & (PAD_SELECT | PAD_START | BTN_CROSS | BTN_SQUARE | BTN_L1 | BTN_R1 | BTN_L2 | BTN_R2 | BTN_START))) {
                 g_gameState->gameData->flags |= GD_MENU_OPEN;
-                menu_open(0, 0);
+                menu_open(MENU_MAIN, 0);
                 evt_onMenuOpen();
             }
             if (!(g_gameState->gameData->flags & GD_MENU_OPEN)) {

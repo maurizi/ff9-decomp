@@ -192,7 +192,7 @@ void menu_readPortraits(void) {
     s32 busy = cd_getState();
     FileEntry *f;
 
-    if (g_menu.type == 0) {
+    if (g_menu.type == MENU_MAIN) {
         if (party_hasChanged() == 0) {
             g_menu.state = MENU_STATE_WAITING;
         } else if (busy == 0 || g_gameState->mode != GS_MODE_WORLD) {
@@ -275,7 +275,7 @@ void menu_start(void) {
     FlushCache();
     ExitCriticalSection();
     g_menu.state = MENU_STATE_RUNNING;
-    if (g_menu.type == 0 && party_hasChanged()) {
+    if (g_menu.type == MENU_MAIN && party_hasChanged()) {
         ui_loadPartyPortraits(RAM_SUB_OVL(u8 *));
         party_setChanged(0);
     }

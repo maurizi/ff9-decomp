@@ -11043,3 +11043,6 @@ fx_1f2 fx_1f2_unitTrails[4] fx_1f2_unitTrails[16]  # declaration only
 #   fx_05d unk40/unk58, fx_0e1_0 unk30, fx_0e1_1 unk10, fx_0f3 unk20, fx_0ed unk20, fx_0e3_1 unk6C, fx_0e3_0 unk48/68/70/7C,
 #   fx_0e2 unkA4/128/130/134); ovl_0b BtlCmd8.forceCamera, skipParty (both views), EffEmit.kind / BTLFX_MOTION_HELIX (cast swirl),
 #   func_800EA1D0 dead; ovl_0a GameData.flags 0x40 and FieldMap.flags 0x100 left literal with a comment where queued.
+
+# ===== R32c =====
+# new: EVT_OP_CALL_CALLER/_WAIT_FREE/_SYNC 0x16/0x18/0x1A, MENU_MAIN/NAME/SHOP/PARTY/SAVE/CHOCOGRAPH/DISC (MENU_SAVE/MENU_DISC moved from ovl_14.h to ff9.h)

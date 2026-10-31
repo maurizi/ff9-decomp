@@ -303,3 +303,9 @@ item lists are in ovl_3c (`s_shopItems`, `s_shopRecipes`), indexed by that id.
   the rest.
 - `EVT_VAR_LOCAL_S8 0xD0` style constants are not proposed; the var-ref byte layout is documented in
   3ds-requests.md section 2.
+
+## Tools (promoted)
+`tools/evtscript/evtdis.py FIELD [--disc N] [--entry E] [--tag T]` disassembles a field's event script (argument widths
+from evt_execInstr, `optab.json`), and `tools/evtscript/menuscan.py` runs the recipe above over all discs
+(`MENUSCAN_JSON=out.json` writes the summary). Both find FF9.IMG like the other tools (`encounter_catalog.find_image`).
+Applied names: `EVT_OP_CALL_CALLER` / `_WAIT_FREE` / `_SYNC` (0x16/0x18/0x1A), `MENU_MAIN` .. `MENU_DISC` (ff9.h).
