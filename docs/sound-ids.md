@@ -13,7 +13,7 @@ for each one. Sound-effect ids are only named where their meaning is known; othe
    `SND_STREAM_VOL` (0x6201) are named from what the handlers do with them.
 2. **AKAO API** (`src/main/akao_api.c`). Each sender fills `g_akaoArgs` and calls `akao_command(n)`.
 3. **AKAO driver.** `akao_command` runs `g_akaoCommandHandlers[n]` (main 0x8006F740, 256 entries). `AKAO_CMD_*`
-   takes its name from the handler. Where the handler is still a placeholder (`akao_cmdA2`, `akao_cmdE4`, ...), the
+   takes its name from the handler. Where the handler is still a placeholder (`akao_cmdSetSePan`, `akao_cmdSetStreamVolume`, ...), the
    name says what its body does: it writes `sePan`, `sePitch`, `AkaoSeq.pan` or `g_akaoStream` fields, or calls
    `akao_streamStart`/`Stop`/`PlayOneShot`/`PlayResident`. 0x98/0x99 and 0xD8-0xDA are combined commands that
    `akao_command` expands into two handler calls.

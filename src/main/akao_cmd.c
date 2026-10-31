@@ -824,7 +824,7 @@ void akao_cmdFadeMusicVolumeFrom(AkaoArgs *p) {
     akao_markSeqDirty(s, c);
 }
 
-void akao_cmdC4(AkaoArgs *p) {
+void akao_cmdSetMusicPan(AkaoArgs *p) {
     AkaoSeq *s;
     s32 v;
 
@@ -844,7 +844,7 @@ void akao_cmdC4(AkaoArgs *p) {
     }
 }
 
-void akao_cmdC5(AkaoArgs *p) {
+void akao_cmdFadeMusicPan(AkaoArgs *p) {
     s32 n = 1;
     AkaoSeq *s;
     s32 v;
@@ -994,7 +994,7 @@ void akao_cmdFadeAllSeVolume(AkaoArgs *p) {
     }
 }
 
-void akao_cmdA2(AkaoArgs *a) {
+void akao_cmdSetSePan(AkaoArgs *a) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 mask = g_akaoSeState.activeMask;
     u32 bit = 0x100;
@@ -1018,7 +1018,7 @@ void akao_cmdA2(AkaoArgs *a) {
     }
 }
 
-void akao_cmdA3(AkaoArgs *a) {
+void akao_cmdFadeSePan(AkaoArgs *a) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 mask = g_akaoSeState.activeMask;
     u32 bit = 0x100;
@@ -1050,7 +1050,7 @@ void akao_cmdA3(AkaoArgs *a) {
     }
 }
 
-void akao_cmdAA(u8 *a) {
+void akao_cmdSetAllSePan(u8 *a) {
     u32 bit = 0x100;
     u32 mask = g_akaoSeState.activeMask;
     u32 i;
@@ -1066,7 +1066,7 @@ void akao_cmdAA(u8 *a) {
     }
 }
 
-void akao_cmdAB(AkaoArgs *p) {
+void akao_cmdFadeAllSePan(AkaoArgs *p) {
     u32 bit = 0x100;
     u32 mask = g_akaoSeState.activeMask;
     u32 i;
@@ -1085,7 +1085,7 @@ void akao_cmdAB(AkaoArgs *p) {
     }
 }
 
-void akao_cmdA4(AkaoArgs *a) {
+void akao_cmdSetSePitch(AkaoArgs *a) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 mask = g_akaoSeState.activeMask;
     u32 bit = 0x100;
@@ -1109,7 +1109,7 @@ void akao_cmdA4(AkaoArgs *a) {
     }
 }
 
-void akao_cmdA5(AkaoArgs *a) {
+void akao_cmdFadeSePitch(AkaoArgs *a) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 mask = g_akaoSeState.activeMask;
     u32 bit = 0x100;
@@ -1141,7 +1141,7 @@ void akao_cmdA5(AkaoArgs *a) {
     }
 }
 
-void akao_cmdAC(u8 *a) {
+void akao_cmdSetAllSePitch(u8 *a) {
     s32 i;
     AkaoChannel *c = g_akaoSeChannels;
     for (i = 16; i != 0; i--) {
@@ -1154,7 +1154,7 @@ void akao_cmdAC(u8 *a) {
     }
 }
 
-void akao_cmdAD(AkaoArgs *p) {
+void akao_cmdFadeAllSePitch(AkaoArgs *p) {
     u32 bit = 0x100;
     u32 mask = g_akaoSeState.activeMask;
     u32 i;

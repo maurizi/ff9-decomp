@@ -1964,17 +1964,17 @@ void akao_streamRefillStereoB(void) {
     akao_streamRefill(0x2100, 0x2900, 0x1000, akao_streamRefillStereoA);
 }
 
-void akao_cmdE0(s32 *a) {
+void akao_cmdStreamStart(s32 *a) {
     akao_streamStop();
     akao_streamStart(a[0], a[1], a[2]);
     g_akaoSeState.activeMask &= ~g_akaoStream.voiceMask;
 }
 
-void akao_cmdE2(void) {
+void akao_cmdStreamStop(void) {
     akao_streamStop();
 }
 
-void akao_cmdE4(s32 *a) {
+void akao_cmdSetStreamVolume(s32 *a) {
     AkaoStreamState *d = &g_akaoStream;
     s32 v = *a;
     s32 l;
@@ -2004,7 +2004,7 @@ void akao_cmdE4(s32 *a) {
     }
 }
 
-void akao_cmdE5(AkaoArgs *p) {
+void akao_cmdFadeStreamVolume(AkaoArgs *p) {
     s16 n = 1;
 
     if (p->arg0 != 0) {
@@ -2014,7 +2014,7 @@ void akao_cmdE5(AkaoArgs *p) {
     g_akaoStream.volumeFadeLen = n;
 }
 
-void akao_cmdE6(s32 *a) {
+void akao_cmdSetStreamPan(s32 *a) {
     AkaoStreamState *d = &g_akaoStream;
     s32 p = *a;
     s32 v;
@@ -2169,13 +2169,13 @@ void akao_streamPlayResident(s32 unused, s32 flag) {
     SpuSetIRQ(1);
 }
 
-void akao_cmdEC(s32 *a) {
+void akao_cmdStreamPlayOneShot(s32 *a) {
     akao_streamStop();
     akao_streamPlayOneShot(a[0], a[1], a[2], a[3]);
     g_akaoSeState.activeMask &= ~g_akaoStream.voiceMask;
 }
 
-void akao_cmdED(s32 *a) {
+void akao_cmdStreamPlayResident(s32 *a) {
     akao_streamStop();
     akao_streamPlayResident(a[0], a[1]);
     g_akaoSeState.activeMask &= ~g_akaoStream.voiceMask;
@@ -2352,7 +2352,7 @@ void akao_streamRefillRingB(void) {
     }
 }
 
-void akao_cmdE8(s32 *a) {
+void akao_cmdStreamSetupRing(s32 *a) {
     akao_streamStop();
     g_akaoStream.readBlock = -1;
     g_akaoStream.unk20 = 0;

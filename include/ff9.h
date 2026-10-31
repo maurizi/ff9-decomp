@@ -1031,8 +1031,8 @@ typedef struct {
     s32 volumeStep; /* (akao_cmdFadeMusicVolume) */
     s16 volumeFadeLen;
     u8 pad5A[0x5C - 0x5A];
-    s32 pan; /* music pan << 16, 0x40 = centre (akao_cmdC4), added to the channel pans */
-    s32 panStep; /* (akao_cmdC5) */
+    s32 pan; /* music pan << 16, 0x40 = centre (akao_cmdSetMusicPan), added to the channel pans */
+    s32 panStep; /* (akao_cmdFadeMusicPan) */
     s16 panSlideLen;
     s16 reverbDepthSlideLen;
     u16 tempoSlideLen;
@@ -2478,10 +2478,10 @@ typedef struct {
     s32 readBlock; /* ring stream: block the next upload reads (-1 before the start) */
     u32 writeBlock; /* ring stream: block the producer fills next, akao_streamStartRing runs once it reaches 2 */
     u32 ringBlocks; /* ring stream: blocks in the ring (sound command 0xE8 size >> 12) */
-    s32 volume; /* volume (akao_cmdE4/E5, akao_streamSetVoice) */
-    s32 volumeStep; /* (akao_cmdE5 fade) */
+    s32 volume; /* volume (akao_cmdSetStreamVolume/E5, akao_streamSetVoice) */
+    s32 volumeStep; /* (akao_cmdFadeStreamVolume fade) */
     s32 volumeFadeLen;
-    s32 pan; /* pan in bits 8-15 (akao_cmdE6) */
+    s32 pan; /* pan in bits 8-15 (akao_cmdSetStreamPan) */
     u8 pad50[0x58 - 0x50];
     s32 pitch; /* header +0x1C, akao_setVoicePitch on both voices */
 } AkaoStreamState;

@@ -6248,3 +6248,23 @@ D_800CE3D8 g_worldWalkerActor
 D_800CE270 g_worldMoogleActor
 ## ovl_0a
 # FIELDS include/ovl_0a.h FieldBgState: unkA0=clutRows
+
+# ===== constants campaign: AKAO handler names (from their AKAO_CMD_* macros) =====
+akao_cmdA2 akao_cmdSetSePan
+akao_cmdA3 akao_cmdFadeSePan
+akao_cmdA4 akao_cmdSetSePitch
+akao_cmdA5 akao_cmdFadeSePitch
+akao_cmdAA akao_cmdSetAllSePan
+akao_cmdAB akao_cmdFadeAllSePan
+akao_cmdAC akao_cmdSetAllSePitch
+akao_cmdAD akao_cmdFadeAllSePitch
+akao_cmdC4 akao_cmdSetMusicPan
+akao_cmdC5 akao_cmdFadeMusicPan
+akao_cmdE0 akao_cmdStreamStart
+akao_cmdE2 akao_cmdStreamStop
+akao_cmdE4 akao_cmdSetStreamVolume
+akao_cmdE5 akao_cmdFadeStreamVolume
+akao_cmdE6 akao_cmdSetStreamPan
+akao_cmdE8 akao_cmdStreamSetupRing
+akao_cmdEC akao_cmdStreamPlayOneShot
+akao_cmdED akao_cmdStreamPlayResident
