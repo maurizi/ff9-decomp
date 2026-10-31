@@ -403,8 +403,8 @@ void win_drawBox(RECT *a, s32 b, s32 c) {
 void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
     RECT t;
     s32 y;
-    if (style != 4) {
-        if (style >= 2) {
+    if (style != HELP_TAIL_NONE) {
+        if (style >= HELP_TAIL_DOWN) {
             y = r->y + r->h - 2;
         } else {
             y = r->y - 11;

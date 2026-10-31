@@ -46,7 +46,7 @@ void help_layout(HelpLayout *w) {
         w->rect.h = c->h;
     }
     if (m->follow == 0) {
-        w->style = 4;
+        w->style = HELP_TAIL_NONE;
         w->rect.x = m->x;
         w->rect.y = m->y;
         return;
@@ -57,10 +57,10 @@ void help_layout(HelpLayout *w) {
     d1 = c->y + c->h - 10;
     d1 -= v;
     if (d1 < d2) {
-        w->style = 2;
+        w->style = HELP_TAIL_DOWN;
         w->rect.y = m->y - (s16)(w->rect.h + 16);
     } else {
-        w->style = 0;
+        w->style = HELP_TAIL_UP;
         w->rect.y = m->y + 10;
     }
     v = g_menuHelp.x;
@@ -69,7 +69,7 @@ void help_layout(HelpLayout *w) {
     d1 = c->x + c->w - 18;
     d1 -= v;
     if (d1 < d2) {
-        w->style |= 1;
+        w->style |= HELP_TAIL_RIGHT;
         x = g_menuHelp.x - 19;
     } else {
         x = v + 18;

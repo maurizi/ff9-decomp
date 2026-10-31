@@ -2932,9 +2932,14 @@ extern u8 *g_worldAreaNames;
 /* help-window rect plus frame style and x offset (help_layout) */
 typedef struct {
     RECT rect; /*  */
-    s16 style; /* style (win_drawHelpFrame) */
+    s16 style; /* HELP_TAIL_* (win_drawHelpFrame's style argument) */
     s16 tailX; /* x offset (win_drawHelpFrame) */
 } HelpLayout;
+/* help window tail (HelpLayout.style, win_drawHelpFrame style; help_layout picks it) */
+#define HELP_TAIL_UP 0 /* window below the point, tail on its top edge */
+#define HELP_TAIL_RIGHT 1 /* flag: the tail sits right of the window centre (window shifted left) */
+#define HELP_TAIL_DOWN 2 /* window above the point, tail on its bottom edge */
+#define HELP_TAIL_NONE 4 /* no tail (help_layout without a point to follow) */
 void help_layout(HelpLayout *);
 void sprAnim_draw(s32, s32, s32, SprAnim *);
 s32 fade_stepClamp(s32, s32, s32);

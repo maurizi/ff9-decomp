@@ -867,7 +867,7 @@ void btlui_drawHelpWindow(void) {
             text_setColor(m);
             win_setClip(&r, 2, WIN_STYLE_BALLOON);
         }
-        win_drawHelpFrame(&r, 2, 4, 0);
+        win_drawHelpFrame(&r, 2, HELP_TAIL_NONE, 0);
         win_setClip(&r, 2, WIN_STYLE_FRAMELESS);
     }
 }
