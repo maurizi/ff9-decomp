@@ -2,7 +2,7 @@
 
 Names left as placeholders (or names worth confirming) and what to watch in the emulator to settle them.
 
-- fx_000, fx_002, fx_00a, fx_00b, fx_00f, fx_01b, fx_01e, fx_01f `Fx0XXWork.unk0`: set to 0 in mode 1 and tested `== 0`
+- fx_000, fx_002, fx_00a, fx_00b, fx_00e, fx_00f, fx_016, fx_01b, fx_01e, fx_01f, fx_029, fx_02a, fx_038, fx_046, fx_047, fx_04a, fx_04c, fx_058, fx_059, fx_05f, fx_060, fx_061 work `unk0`: set to 0 in mode 1 and tested `== 0`
   before every frame's work, never written otherwise in the module. Hypothesis: a skip/abort flag some other code
   writes into the task work (watch writes to work+0 while the effect plays).
 - fx_018 `Fx018Work83.kind18` (op83 init word 0 = kind 0/1/2): which battle script call passes which kind
@@ -21,8 +21,9 @@ Names left as placeholders (or names worth confirming) and what to watch in the 
 - fx_04f `Fx04fWork.unk8` (never touched) and fx_00b / fx_02a `unkC` (zeroed in mode 1 only): confirm unused.
 - fx_062 `Fx062Strip.unk114` / fx_063 `Fx063Strip.unkFC` (random 8-0x20 / 0x40-0x80, written into every strip point's
   `Fx06xPt.unk6`): colour or width of the btlfx_drawTrail strip, same question as fx_026 `Fx026Pt.unk6`.
-- fx_057 `Fx057Work80.unk0`.. done; `Fx057Work81.unk8` named otZ8 (btlfx_addRadiusSixth(0, 0), the otZ base of its
-  emitters and rings); worth confirming it is the target's depth bias.
+- fx_057 `Fx057Work81.otZ8` (btlfx_addRadiusSixth(0, 0), the otZ base of its
+  emitters and rings): confirm it is the target depth bias.
 - fx_05d `Fx05dWork.unk40` (never touched) and `unk58` (set -1 in mode 1, never read): confirm unused.
 - fx_059 `Fx059Work80.posZ4` (the spiral head's z in the btlfx_pushViewRotation frame, -0x20 then +0xC8 per frame):
   confirm it is depth toward the camera.
+- fx_004 / fx_04d `Fx0XXWork.unk2C`: incremented every update frame, never read. Confirm it is a plain frame counter.
