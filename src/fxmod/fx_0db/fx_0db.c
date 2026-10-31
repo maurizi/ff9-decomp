@@ -15,8 +15,8 @@ static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk801
     s32 fade;
 
     if (mode == 1) {
-        it->unk4 = 0;
-        it->unk8 = 0;
+        it->state4 = 0;
+        it->frame8 = 0;
         p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos14);
         it->emit40 = p;
         if (p != NULL) {
@@ -25,13 +25,13 @@ static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk801
         return 0;
     }
     fade = 0;
-    r = &D_801E88B4[it->unk0];
-    switch (it->unk4) {
+    r = &fx_0db_shardAngles[it->shard0];
+    switch (it->state4) {
     case 0:
-        t = it->unk8 << 10;
+        t = it->frame8 << 10;
         a = t >> 2;
-        scale.vx = scale.vy = ((0x1000 - ex->math_cos(a)) * (it->unk3C * 5 / 2)) >> 12;
-        scale.vz = (ex->math_sin(a) * it->unk3C) >> 12;
+        scale.vx = scale.vy = ((0x1000 - ex->math_cos(a)) * (it->size3C * 5 / 2)) >> 12;
+        scale.vz = (ex->math_sin(a) * it->size3C) >> 12;
         BTLFX_COPY_SVEC(&rot, r);
         rot.vx -= 0x800;
         fade = 0x1000;
@@ -45,15 +45,15 @@ static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk801
                 it->emit40->rot.vz = r->vz;
             }
         }
-        it->unk8++;
-        if (it->unk8 >= 4) {
-            it->unk4 = 1;
-            it->unk8 = 0;
+        it->frame8++;
+        if (it->frame8 >= 4) {
+            it->state4 = 1;
+            it->frame8 = 0;
         }
         break;
     case 1:
-        scale.vx = scale.vy = it->unk3C * 5 / 2;
-        scale.vz = it->unk3C;
+        scale.vx = scale.vy = it->size3C * 5 / 2;
+        scale.vz = it->size3C;
         BTLFX_COPY_SVEC(&rot, r);
         rot.vx -= 0x800;
         fade = 0x1000;
@@ -67,53 +67,53 @@ static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk801
                 it->emit40->rot.vz = rot.vz;
             }
         }
-        if (work->unk24 != 0) {
-            it->unk4 = 2;
-            it->unk8 = 0;
-            it->unk38 += -25 + ex->btlfx_rand() % 50;
-            it->unk3A += -16 + (ex->btlfx_rand() & 0x1F);
-            BTLFX_COPY_SVEC(&it->unk30, r);
-            it->unkC[1].vx = it->unkC[0].vx;
-            it->unkC[1].vy = it->unkC[0].vy;
-            it->unkC[1].vz = it->unkC[0].vz;
-            it->unkC[2].vx = it->unkC[0].vx;
-            it->unkC[2].vy = it->unkC[0].vy;
-            it->unkC[2].vz = it->unkC[0].vz;
+        if (work->split24 != 0) {
+            it->state4 = 2;
+            it->frame8 = 0;
+            it->spinX38 += -25 + ex->btlfx_rand() % 50;
+            it->spinY3A += -16 + (ex->btlfx_rand() & 0x1F);
+            BTLFX_COPY_SVEC(&it->rot30, r);
+            it->posC[1].vx = it->posC[0].vx;
+            it->posC[1].vy = it->posC[0].vy;
+            it->posC[1].vz = it->posC[0].vz;
+            it->posC[2].vx = it->posC[0].vx;
+            it->posC[2].vy = it->posC[0].vy;
+            it->posC[2].vz = it->posC[0].vz;
         }
         break;
     case 2:
-        t = (it->unk8 << 12) / 20;
+        t = (it->frame8 << 12) / 20;
         a = t >> 2;
-        scale.vx = scale.vy = (ex->math_cos(a) * (it->unk3C * 5 / 2)) >> 12;
-        scale.vz = it->unk3C;
+        scale.vx = scale.vy = (ex->math_cos(a) * (it->size3C * 5 / 2)) >> 12;
+        scale.vz = it->size3C;
         fade = ex->math_cos(a);
         k = ex->math_cos(a) >> 7;
         ex->btlfx_rotateOffset(r, k, (s32)&d);
-        it->unkC[0].vx -= d.vx;
-        it->unkC[0].vy -= d.vy - (it->unk8 - 6);
-        it->unkC[0].vz -= d.vz;
+        it->posC[0].vx -= d.vx;
+        it->posC[0].vy -= d.vy - (it->frame8 - 6);
+        it->posC[0].vz -= d.vz;
         ex->btlfx_rotateOffset(r, k * 2, (s32)&d);
-        it->unkC[1].vx -= d.vx;
-        it->unkC[1].vy -= d.vy - (it->unk8 - 6) * 4;
-        it->unkC[1].vz -= d.vz;
+        it->posC[1].vx -= d.vx;
+        it->posC[1].vy -= d.vy - (it->frame8 - 6) * 4;
+        it->posC[1].vz -= d.vz;
         ex->btlfx_rotateOffset(r, k * 2 + k, (s32)&d);
-        r = &it->unk30;
-        it->unkC[2].vx -= d.vx;
-        it->unkC[2].vy -= d.vy - (it->unk8 - 6) * 8;
-        it->unkC[2].vz -= d.vz;
-        it->unk30.vx += it->unk38;
-        it->unk30.vy += it->unk3A;
-        it->unk8++;
-        if (it->unk8 >= 20) {
+        r = &it->rot30;
+        it->posC[2].vx -= d.vx;
+        it->posC[2].vy -= d.vy - (it->frame8 - 6) * 8;
+        it->posC[2].vz -= d.vz;
+        it->rot30.vx += it->spinX38;
+        it->rot30.vy += it->spinY3A;
+        it->frame8++;
+        if (it->frame8 >= 20) {
             return 1;
         }
         break;
     }
     scale.vx >>= 1;
     scale.vy >>= 1;
-    if (it->unk4 < 2) {
+    if (it->state4 < 2) {
         ex->Hi_SetEffModelOffset(work->model4, 2);
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[0], (s32)&scale, work->model4);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->posC[0], (s32)&scale, work->model4);
         if (fade < 4000) {
             ex->Hi_ModifyEffModelAbr(work->model4, 1);
             c = fade >> 5;
@@ -125,9 +125,9 @@ static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk801
         }
         c -= 0x80;
         ex->Hi_ModifyEffModelRGB(work->model4, c, c, c);
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[0], (s32)&scale, work->model10);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->posC[0], (s32)&scale, work->model10);
     } else {
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[0], (s32)&scale, work->model10);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->posC[0], (s32)&scale, work->model10);
         if (fade < 4000) {
             ex->Hi_ModifyEffModelAbr(work->model10, 1);
             c = fade >> 5;
@@ -139,7 +139,7 @@ static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk801
         }
         c -= 0x80;
         ex->Hi_ModifyEffModelRGB(work->model10, c, c, c);
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[1], (s32)&scale, work->modelC);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->posC[1], (s32)&scale, work->modelC);
         if (fade < 4000) {
             ex->Hi_ModifyEffModelAbr(work->modelC, 1);
             c = fade >> 5;
@@ -151,7 +151,7 @@ static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk801
         }
         c -= 0x80;
         ex->Hi_ModifyEffModelRGB(work->modelC, c, c, c);
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[2], (s32)&scale, work->model8);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->posC[2], (s32)&scale, work->model8);
         if (fade < 4000) {
             ex->Hi_ModifyEffModelAbr(work->model8, 1);
             c = fade >> 5;
@@ -191,11 +191,11 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x16), 0x9A, 0x3DC0, 0x80, 0);
         work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x17), 0x9A, 0x3DC0, 0x80, 0);
         work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0xBA, 0x3D40, 0, 0x80);
-        work->unk0 = 0;
-        work->unk26 = 0;
-        work->unk28 = 0;
-        work->unk24 = 0;
-        work->unk2C = 0;
+        work->state0 = 0;
+        work->spawnCount26 = 0;
+        work->frame28 = 0;
+        work->split24 = 0;
+        work->scroll2C = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos1C);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos14);
@@ -206,7 +206,7 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x46);
         }
-        a = &D_801E88B4[0].vx;
+        a = &fx_0db_shardAngles[0].vx;
         for (i = 0, b = a + 1; i < 10; i++) {
             *a += 0x5C;
             a += 4;
@@ -216,30 +216,30 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         return 0;
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             part = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (part != NULL) {
-                part->unk0 = work->unk26;
-                work->unk26++;
-                ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&D_801E88B4[part->unk0], -0x10, (s16 *)&v);
-                part->unkC[0].vx = v.vx;
-                part->unkC[0].vy = v.vy;
-                part->unkC[0].vz = v.vz;
-                part->unk3C = D_801E88B4[part->unk0].pad * 3;
+                part->shard0 = work->spawnCount26;
+                work->spawnCount26++;
+                ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&fx_0db_shardAngles[part->shard0], -0x10, (s16 *)&v);
+                part->posC[0].vx = v.vx;
+                part->posC[0].vy = v.vy;
+                part->posC[0].vz = v.vz;
+                part->size3C = fx_0db_shardAngles[part->shard0].pad * 3;
             }
-            work->unk2C += 0x20;
+            work->scroll2C += 0x20;
             if (frame >= 9) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
         case 1:
-            work->unk2C += (ex->math_cos((frame << 10) / 14) << 5) >> 12;
+            work->scroll2C += (ex->math_cos((frame << 10) / 14) << 5) >> 12;
             if (frame >= 0xE) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
-                work->unk24 = 1;
+                work->split24 = 1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos14);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
@@ -275,8 +275,8 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        ex->btlfx_drawScrollMove(work->unk2C, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
-        work->unk28++;
+        ex->btlfx_drawScrollMove(work->scroll2C, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+        work->frame28++;
     }
     return 0;
 }
@@ -298,8 +298,8 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x10;
     } else if (mode == 1) {
         fx_0db_env = env;
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->state0 = 0;
+        work->frame4 = 0;
     } else {
         a = 0;
         b = 0;
@@ -307,7 +307,7 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             ry = 0x200;
             a = (frame << 12) / 3;
@@ -315,7 +315,7 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             b = u >> 1;
             c = ((0x1000 - a) >> 1) + 0x800;
             if (frame >= 3) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
@@ -328,7 +328,7 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ry = (u >> 3) + 0x200;
             b = c;
             if (frame >= 9) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
             }
             break;
@@ -352,7 +352,7 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &work->pos8, NULL, b / 3, 0, 1, a / 2);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), &work->pos8, &rot, c / 2, 0, 1, a * 2 / 3);
         env->otZ = 0;
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }

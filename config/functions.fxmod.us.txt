@@ -535,7 +535,7 @@ fx_0da fx_0da_op84 0x340 0x801e7e98
 fx_0db fx_0db_op80PoolTask 0x7d4 0x801e7704
 fx_0db fx_0db_op80 0x69c 0x801e7ed8
 fx_0db fx_0db_op84 0x340 0x801e8574
-fx_0dc func_801E7718 0x70 0x801e7718
+fx_0dc fx_0dc_shardPoint 0x70 0x801e7718
 fx_0dc fx_0dc_op80PoolTask 0x888 0x801e7788
 fx_0dc fx_0dc_op80 0xf4c 0x801e8010
 fx_0dc fx_0dc_op84 0x32c 0x801e8f5c

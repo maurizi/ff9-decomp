@@ -8,27 +8,11 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR pos8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0d7Work84;
 
-extern u8 D_801E88D0[][0x84];
-extern u8 D_801E8F00[][0x48];
-
-typedef struct {
-    SVECTOR unk0;
-    SVECTOR unk8;
-    u8 unk10; /* index */
-    u8 unk11; /* state */
-    u8 unk12;
-    u8 unk13;
-    s16 unk14; /* kind */
-    s16 unk16;
-    s32 *unk18;
-    Pool6CEntry *emit1C;
-    Pool6CEntry *emit20;
-} Fx0d7Part; /* pool entry data */
 
 /* fx_003 copies (asm) */
 typedef struct {
@@ -39,32 +23,42 @@ typedef struct {
     SVECTOR unk4[16];
 } Fx0d7Strip; /* 0x84 */
 typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    SVECTOR unk4[8];
+    u8 pad44[4];
+} Fx0d7Branch; /* 0x48 */
+extern Fx0d7Strip fx_0d7_strips[];
+extern Fx0d7Branch fx_0d7_branches[];
+typedef struct {
     SVECTOR pos0; /* from */
-    SVECTOR unk8; /* to */
-    u8 unk10; /* bolt index */
-    u8 unk11; /* state */
-    u8 unk12; /* branch points */
-    u8 unk13;
-    s16 unk14; /* kind */
-    s32 *unk18; /* jitter table (D_801E9260) */
+    SVECTOR pos8; /* to */
+    u8 strip10; /* bolt index */
+    u8 state11; /* state */
+    u8 branchAt12; /* branch points */
+    u8 branchAt13;
+    s16 kind14; /* kind */
+    s32 *jitter18; /* jitter table (fx_0d7_jitter) */
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;
 } Fx0d7Bolt; /* 0x24 */
 typedef struct {
     SVECTOR pos0; /* target body position */
-    s32 *unk8; /* D_801E9260 */
-    s32 unkC; /* bolts spawned */
+    s32 *jitter8; /* fx_0d7_jitter */
+    s32 boltCountC; /* bolts spawned */
 } Fx0d7Work; /* 0x10 */
-extern u16 D_801E8868[];
+extern u16 fx_0d7_strip16Blocks[];
 static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d7Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
                    s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind);
-extern u16 D_801E8870[];
+extern u16 fx_0d7_strip4Blocks[];
 static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d7Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
                    s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind);
 static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx0d7Strip *strip, Fx0d7Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
                    s32 kind);
 extern Unk800F78A4 *fx_0d7_env;
-extern s32 D_801E9260[];
+extern s32 fx_0d7_jitter[];
 static s32 fx_0d7_op83PoolTask(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 #endif

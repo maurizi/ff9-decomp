@@ -7,22 +7,22 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0[8]; /* unit home positions */
-    s32 unk40; /* unit count */
-    s32 unk44; /* jump height */
-    s32 unk48[8]; /* unit heights */
+    SVECTOR homePos0[8]; /* unit home positions */
+    s32 unitCount40; /* unit count */
+    s32 jumpHeight44; /* jump height */
+    s32 height48[8]; /* unit heights */
 } Fx0deWork81; /* 0x68 */
 
 extern Unk800F78A4 *fx_0de_env;
-extern s32 D_801E8CE8; /* jump scale */
+extern s32 fx_0de_jumpScale; /* jump scale */
 
 s32 fx_0de_op81(s32 mode, Fx0deWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 /* propagated */
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR pos8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0deWork84;
 s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
@@ -30,15 +30,15 @@ s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
 typedef struct {
     s32 unk0; /* done */
     SVECTOR pos4; /* caster body position */
-    SVECTOR unkC; /* caster position */
+    SVECTOR posC; /* caster position */
     s32 model14[8]; /* models */
-    s32 unk34; /* scale from the caster's size */
+    s32 scale34; /* scale from the caster's size */
 } Fx0deWork80; /* 0x38 */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 srcX0;
+    u16 srcY2;
 } Fx0deFlash;
-extern Fx0deFlash D_801E85F0[];
+extern Fx0deFlash fx_0de_scrollSrc[];
 extern BtlModel fx_0de_effModels[];
 
 #endif
