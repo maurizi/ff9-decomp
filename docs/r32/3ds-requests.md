@@ -270,16 +270,19 @@ the field.
 - Same without clearing `slideIn`: Card opens just the same, but the return slides the panels in and the cursor is on
   Item (`menuMain_init` reset it).
 
-## Proposed names (not applied)
-- `EVT_OP_SET_PATH` (0x29) → `EVT_OP_SET_REGION` (or a comment): its only engine readers are the region inside test
+## Proposed names (applied)
+- (applied) `EVT_OP_SET_PATH` (0x29) → `EVT_OP_SET_REGION`: its only engine readers are the region inside test
   (`evt_isInRegion`) and op 0xA4; every region's tag-0 function starts with it. `Unk80039C38Quad` → `EvtRegion`
   (`count`, `pts`), `Unk80039C38Pt` → `EvtRegionPt`.
-- 0x76 / 0x77 / 0x78 → `EVT_OP_REGION_SET_POINT` / `EVT_OP_REGION_MOVE_LAST` / `EVT_OP_REGION_DUP_LAST`.
-- Event tag constants: `EVT_FUNC_INIT 0`, `EVT_FUNC_LOOP 1`, `EVT_FUNC_RANGE 2`, `EVT_FUNC_TALK 3`,
+- (applied) 0x76 / 0x77 / 0x78 → `EVT_OP_REGION_START` / `EVT_OP_REGION_MOVE_LAST` / `EVT_OP_REGION_DUP_LAST`
+  (0x76 resets the region to two points at (x, z), so it starts a polygon rather than setting one point).
+- (applied) Event tag constants: `EVT_FUNC_INIT 0`, `EVT_FUNC_LOOP 1`, `EVT_FUNC_RANGE 2`, `EVT_FUNC_TALK 3`,
   `EVT_FUNC_SQUARE 8` (the keys passed to `evt_callObjectFunc` / `evt_checkPlayerAction_find`).
-- Expression ops: `EVT_EXPR_PAD_PRESSED 0x4F`, `EVT_EXPR_PAD_RELEASED 0x58`, `EVT_EXPR_PAD_HELD 0x59`,
-  `EVT_EXPR_END 0x7F`, `EVT_EXPR_CONST16 0x7D`, `EVT_EXPR_CONST32 0x7E`, `EVT_EXPR_SYSVAR 0x7A`.
-- Globals (comments in ff9.h's story-flag list): `g_evtGlobalVars.b[0xEE]` "ATE available (Select opens the ATE
-  menu)", `.h` at +0xEC "available-ATE bits", +0xF1 "ATE choice mask", +2 (s16) "arrival point for the next field".
-- `g_atePromptMode` values: `ATE_PROMPT_OFF 0`, `ATE_PROMPT_SELECT 1` ("Press SELECT to see ATE"), `ATE_PROMPT_BLINK 2`,
-  `ATE_PROMPT_ALWAYS 4` (bit: also without player control).
+- (applied) Expression ops: `EVT_EXPR_PAD_PRESSED 0x4F`, `EVT_EXPR_PAD_RELEASED 0x58`, `EVT_EXPR_PAD_HELD 0x59`,
+  `EVT_EXPR_END 0x7F`, `EVT_EXPR_CONST16 0x7D`, `EVT_EXPR_CONST32 0x7E`, `EVT_EXPR_SYSVAR 0x7A`, plus
+  `EVT_EXPR_PROP_REF 0x29`, `EVT_EXPR_OBJECT 0x5F`, `EVT_EXPR_OBJ_VAR_REF 0x78`, `EVT_EXPR_SYSVAR_REF 0x79` (used in
+  `src_equiv/main/script_text.c`; the original evaluator is asm).
+- (applied) Globals (byte offsets next to ff9.h's `EVT_GB_*`): `EVT_GB_ATE_AVAILABLE 0xEE` (s8), `EVT_GB_ATE_BITS 0xEC`
+  (u16), `EVT_GB_ATE_CHOICE_MASK 0xF1` (s16), `EVT_GB_ARRIVAL_POINT 0x02` (s16). No C uses (script-only).
+- (applied) `g_atePromptMode` values: `ATE_PROMPT_OFF 0`, `ATE_PROMPT_SELECT 1`, `ATE_PROMPT_BLINK 2`,
+  `ATE_PROMPT_ALWAYS 4` (bit), plus `ATE_PROMPT_STYLE_MASK 3`.

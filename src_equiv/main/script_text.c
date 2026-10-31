@@ -934,7 +934,7 @@ void evt_runExpr(void) {
             }
             v = evt_popValue() != 0;
             break;
-        case 0x29: /* property reference (the previous result is left as it was) */
+        case EVT_EXPR_PROP_REF: /* property reference (the previous result is left as it was) */
             push(*r_ip++ | 0x18000000);
             continue;
         case 0x2C: /* = */
@@ -966,15 +966,15 @@ void evt_runExpr(void) {
             r_sp++;
             evt_popAssign(v);
             break;
-        case 0x4F:
+        case EVT_EXPR_PAD_PRESSED:
             t = msg_getPadPressed();
             v = (evt_popValue() & t) != 0;
             break;
-        case 0x58:
+        case EVT_EXPR_PAD_RELEASED:
             t = msg_getPadReleased();
             v = (evt_popValue() & t) != 0;
             break;
-        case 0x59:
+        case EVT_EXPR_PAD_HELD:
             t = msg_getPadHeld();
             v = (evt_popValue() & t) != 0;
             break;
@@ -1012,7 +1012,7 @@ void evt_runExpr(void) {
                 v = math_length3(q->pos.vx - o->pos.vx, 0, q->pos.vz - o->pos.vz);
             }
             break;
-        case 0x5F:
+        case EVT_EXPR_OBJECT:
             v = (s32)evt_resolveObjectId(*r_ip++);
             break;
         case 0x66:
@@ -1046,26 +1046,26 @@ void evt_runExpr(void) {
         case 0x4D:
             SYNCED(evt_popRandomBit());
             break;
-        case 0x78: /* reference to another object's variable: uid, index */
+        case EVT_EXPR_OBJ_VAR_REF: /* reference to another object's variable: uid, index */
             push(((r_ip[0] << 8) | r_ip[1]) | 0x10000000);
             r_ip += 2;
             continue;
-        case 0x79: /* system variable reference */
+        case EVT_EXPR_SYSVAR_REF: /* system variable reference */
             push(*r_ip++ | 0x14000000);
             continue;
-        case 0x7A: /* pushes the masked value but keeps the full one as the previous result */
+        case EVT_EXPR_SYSVAR: /* pushes the masked value but keeps the full one as the previous result */
             v = evt_getSysVar(*r_ip++);
             push((v & 0x3FFFFFF) | 0x1C000000);
             continue;
-        case 0x7D: /* 16-bit immediate */
+        case EVT_EXPR_CONST16: /* 16-bit immediate */
             push(IMM(r_ip[0] | ((s8)r_ip[1] << 8)));
             r_ip += 2;
             continue;
-        case 0x7E: /* 26-bit immediate */
+        case EVT_EXPR_CONST32: /* 26-bit immediate */
             push(IMM(r_ip[0] | (r_ip[1] << 8) | (r_ip[2] << 16) | (((s8)r_ip[3] & 3) << 24)));
             r_ip += 4;
             continue;
-        case 0x7F: /* end */
+        case EVT_EXPR_END:
             g_evtExprSp = r_sp;
             return;
         default:

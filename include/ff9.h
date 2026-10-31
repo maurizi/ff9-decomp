@@ -1657,7 +1657,12 @@ u8 btlui_isSecondPortUsed(void); /* ovl_0b */
 extern u8 g_chrAppearanceTypes[][2];
 extern u8 g_menuScreenStrings[];
 extern u8 g_cardNames[];
-extern s32 g_atePromptMode;
+extern s32 g_atePromptMode; /* ATE_PROMPT_* (EVT_OP_ATE_PROMPT, msg_setAtePrompt) */
+#define ATE_PROMPT_OFF 0            /* nothing drawn */
+#define ATE_PROMPT_SELECT 1         /* "ACTIVE TIME EVENT" alternating with "PRESS [SELECT] TO SEE ATE" every 44 frames */
+#define ATE_PROMPT_BLINK 2          /* grey "ACTIVE TIME EVENT", blinking 15 frames on, 15 off */
+#define ATE_PROMPT_STYLE_MASK 3     /* style bits: ATE_PROMPT_BLINK, any other value draws the ATE_PROMPT_SELECT style */
+#define ATE_PROMPT_ALWAYS 4         /* bit: draw even while the player has no control (scripts use modes 5 and 6) */
 extern s32 g_atePromptTimer;
 /* event / script variables; h[0] is the story progress counter */
 typedef union {
@@ -1673,6 +1678,12 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_NO_ACTION_ABILITIES 0xE3 /* action abilities unusable from the menu (menu_ability) */
 #define EVT_GB_BATTLE_AI_FLAGS 0xC7     /* battle AI script flags (encounters 337, 891) */
 #define EVT_GB_AI_EFFECT_CUE 0x10       /* EVT_GB_BATTLE_AI_FLAGS bit set by btlfx_signalScriptCue, the AI waits for it to end the battle */
+/* script-only globals, set and read by field scripts (docs/r32/3ds-requests.md); byte offsets into g_evtGlobalVars like
+ * the flags above, wider values stored little-endian at that offset (the scripts' s16/u16 variable types) */
+#define EVT_GB_ARRIVAL_POINT 0x02       /* s16 (h[1]): entrance the next field's init places the player at; exits set it before GOTO_FIELD */
+#define EVT_GB_ATE_BITS 0xEC            /* u16 (h[0x76]): available-ATE bits, copied to EVT_GB_ATE_CHOICE_MASK */
+#define EVT_GB_ATE_AVAILABLE 0xEE       /* s8: 1 = an ATE can be viewed (the field script opens the ATE window on Select) */
+#define EVT_GB_ATE_CHOICE_MASK 0xF1     /* s16 (unaligned): enabled choices of the ATE window (EVT_OP_MSG_CHOICE_MASK) */
 
 void config_applySound(void);
 void config_applyPadMapping(void);
@@ -3840,7 +3851,7 @@ typedef struct {
 #define EVT_OP_SET_WALK_SPEED 0x26 /* u8: actor.speed */
 #define EVT_OP_BG_MASK_FILTER 0x27 /* u8: bgi_setMaskFilter */
 #define EVT_OP_MOVIE 0x28 /* cmd, u16, u8: fld_movieCommand */
-#define EVT_OP_SET_PATH 0x29 /* n, {x,z}[n]: points used by 0xA4 */
+#define EVT_OP_SET_REGION 0x29 /* n, {x,z}[n]: EvtRegion polygon (n <= 8) tested by evt_isInRegion; 0xA4 uses pts[0..1] as a line */
 #define EVT_OP_BATTLE 0x2A /* swirl, u16 battle: evt_setNextBattle, returns 3 */
 #define EVT_OP_GOTO_FIELD 0x2B /* u16 field: evt_setNextLocation, returns 4 */
 #define EVT_OP_SET_PLAYER 0x2C /* playerUid = current object */
@@ -3899,6 +3910,9 @@ typedef struct {
 #define EVT_OP_BG_FOLLOW_HEIGHT 0x72 /* s16: fldbg_setFollowHeight */
 #define EVT_OP_BG_LIMITS_OFF 0x74 /* fldbg_disableScrollLimits */
 #define EVT_OP_MENU 0x75 /* type, arg: menu_open + evt_onMenuOpen, returns 1 (runtime: Moogle "Save" -> menu_open(4, 0), ovl_39 loads) */
+#define EVT_OP_REGION_START 0x76 /* x, z: EvtRegion = 2 points, both (x, z) */
+#define EVT_OP_REGION_MOVE_LAST 0x77 /* x, z: overwrite the last point (pts[0] when count is 0) */
+#define EVT_OP_REGION_DUP_LAST 0x78 /* append a copy of the last point (when count is 1-7) */
 #define EVT_OP_SET_TURN_LEFT_ANIM 0x7A /* u16: actor prevPos.rotX field reused as turn-left anim */
 #define EVT_OP_SET_TURN_RIGHT_ANIM 0x7B /* u16 */
 #define EVT_OP_BG_CAMERA 0x7E /* u8 cam: fldbg_setCamera */
@@ -4027,6 +4041,25 @@ typedef struct {
 #define EVT_OP_VIB_RANGE 0xFC /* u8 start, u8 end: vib_setRange */
 #define EVT_OP_PRELOAD 0xFD /* u8, u16: GameData.preloadRequest */
 #define EVT_OP_BGI_FLOOR_MOVE_START 0xFF00 /* u8, u8: bgi_startFloorMove */
+/* function tags in a script entry's {u16 tag, u16 ofs} table (evt_callObjectFunc key) */
+#define EVT_FUNC_INIT 0   /* runs when the object is created */
+#define EVT_FUNC_LOOP 1   /* main loop, started when init returns */
+#define EVT_FUNC_RANGE 2  /* evt_checkPlayerAction: player inside the region / touching the actor (while control is enabled) */
+#define EVT_FUNC_TALK 3   /* evt_checkPlayerAction: Cross (or Square without an EVT_FUNC_SQUARE) on the actor / region */
+#define EVT_FUNC_SQUARE 8 /* evt_checkPlayerAction: Square, tried before EVT_FUNC_TALK */
+/* expression bytes (evt_runExpr, jump table 0x8006E718; C equivalent in src_equiv/main/script_text.c); bytes >= 0x80 are
+ * variable references */
+#define EVT_EXPR_PROP_REF 0x29     /* u8: property reference */
+#define EVT_EXPR_PAD_PRESSED 0x4F  /* (pop & msg_getPadPressed()) != 0 */
+#define EVT_EXPR_PAD_RELEASED 0x58 /* (pop & msg_getPadReleased()) != 0 */
+#define EVT_EXPR_PAD_HELD 0x59     /* (pop & msg_getPadHeld()) != 0 */
+#define EVT_EXPR_OBJECT 0x5F       /* u8 id: evt_resolveObjectId(id) (operand of 0x60 / 0x61) */
+#define EVT_EXPR_OBJ_VAR_REF 0x78  /* u8 uid, u8 index: another object's variable */
+#define EVT_EXPR_SYSVAR_REF 0x79   /* u8: system variable reference */
+#define EVT_EXPR_SYSVAR 0x7A       /* u8: evt_getSysVar value */
+#define EVT_EXPR_CONST16 0x7D      /* s16 constant */
+#define EVT_EXPR_CONST32 0x7E      /* 4 bytes: 26-bit signed constant */
+#define EVT_EXPR_END 0x7F
 /* overlay entry points as called from the main exe (the overlays have their own prototypes) */
 #if !defined(OVL_0A_H) && !defined(OVL_0B_H) && !defined(OVL_0C_H) && !defined(OVL_0D_H) && !defined(OVL_14_H) && !defined(OVL_15_H) && !defined(OVL_32_H) && !defined(OVL_33_H) && !defined(OVL_34_H) && !defined(OVL_36_H) && !defined(OVL_37_H) && !defined(OVL_38_H) && !defined(OVL_39_H) && !defined(OVL_3A_H) && !defined(OVL_3B_H) && !defined(OVL_3C_H) && !defined(OVL_3E_H) && !defined(OVL_64_H) && !defined(OVL_65_H)
 /* mode entry points in overlays, linked through config/xrefs.us.txt */
@@ -4181,16 +4214,17 @@ static inline void evt_execInstr_anim(EvtObject *p, s32 anim) {
     p->animSpeed = p->defaultAnimSpeed;
 }
 
-/* event region (quad) object, same header as EvtObject */
+/* event region object (EVT_KIND_REGION, EVT_OP_NEW_REGION), same header as EvtObject: a convex floor polygon set
+ * by EVT_OP_SET_REGION; evt_checkPlayerAction runs its EVT_FUNC_RANGE function while the player is inside */
 typedef struct {
     s16 x; /* x */
     s16 z; /* z */
-} Unk80039C38Pt;
+} EvtRegionPt;
 typedef struct {
     u8 pad0[0x14];
     s32 count; /* vertex count */
-    Unk80039C38Pt pts[8];
-} Unk80039C38Quad;
+    EvtRegionPt pts[8];
+} EvtRegion;
 
 /* texture animation n seen from the set's start (Unk8004AFF0.texAnims->unk0[n]): the set has a 4-byte count before
  * its 0x14-byte entries (ovl_0a TexAnimSet / TexAnim), so this record's +4 is entry n's +0 */

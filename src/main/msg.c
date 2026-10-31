@@ -1592,10 +1592,10 @@ void msg_updatePlayerBubble(void) {
 }
 
 void msg_drawAtePrompt(void) {
-    if (g_atePromptMode == 0) {
+    if (g_atePromptMode == ATE_PROMPT_OFF) {
         return;
     }
-    if (!(g_atePromptMode & 4) && !evt_isControlEnabled()) {
+    if (!(g_atePromptMode & ATE_PROMPT_ALWAYS) && !evt_isControlEnabled()) {
         return;
     }
     g_atePromptTimer++;
@@ -1604,7 +1604,7 @@ void msg_drawAtePrompt(void) {
     }
     pen_begin();
     pen_setPos(0x10, 200);
-    if ((g_atePromptMode & 3) != 2) {
+    if ((g_atePromptMode & ATE_PROMPT_STYLE_MASK) != ATE_PROMPT_BLINK) {
         if ((g_atePromptTimer / 44) & 1) {
             pen_drawSprite(0x80);
             pen_move(2, 0);

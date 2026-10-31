@@ -7349,3 +7349,12 @@ fxm_startMotion3IfActive fxm_startHeavyHitMotionIfActive  # same modules
 # MACROS include/snd_ids.h g_akaoPauseFlags: AKAO_PAUSE_FORCE_TICK 0x4 (medium, never set)
 # MACROS include/ff9.h Character.classFlags: CHR_CLASS_MALE 0x1 (medium, data only)
 # comments: module identity headers (jagged-strip lightning, texel grid, ribbon trail, streak field modules, fx_18b, fx_112, fx_0b2 = Twister not Ark), VRAM_BTLFX_SCRATCH captures, fx_0d2 camera key nibbles, fx_0b3 scroll textures
+
+# ===== R32 =====
+# Applied from docs/r32/3ds-requests.md "Proposed names" (runtime evidence in docs/runtime-findings.md "R32 3DS requests").
+# TYPES include/ff9.h: Unk80039C38Quad -> EvtRegion, Unk80039C38Pt -> EvtRegionPt
+# MACROS include/ff9.h event ops: EVT_OP_SET_PATH -> EVT_OP_SET_REGION 0x29; new EVT_OP_REGION_START 0x76 EVT_OP_REGION_MOVE_LAST 0x77 EVT_OP_REGION_DUP_LAST 0x78
+# MACROS include/ff9.h function tags: EVT_FUNC_INIT 0 EVT_FUNC_LOOP 1 EVT_FUNC_RANGE 2 EVT_FUNC_TALK 3 EVT_FUNC_SQUARE 8 (evt_checkPlayerAction, evt_findNearestObject, evt_returnFromFunc)
+# MACROS include/ff9.h expression bytes: EVT_EXPR_PROP_REF 0x29 EVT_EXPR_PAD_PRESSED 0x4F EVT_EXPR_PAD_RELEASED 0x58 EVT_EXPR_PAD_HELD 0x59 EVT_EXPR_OBJECT 0x5F EVT_EXPR_OBJ_VAR_REF 0x78 EVT_EXPR_SYSVAR_REF 0x79 EVT_EXPR_SYSVAR 0x7A EVT_EXPR_CONST16 0x7D EVT_EXPR_CONST32 0x7E EVT_EXPR_END 0x7F (src_equiv/main/script_text.c)
+# MACROS include/ff9.h g_atePromptMode: ATE_PROMPT_OFF 0 ATE_PROMPT_SELECT 1 ATE_PROMPT_BLINK 2 ATE_PROMPT_STYLE_MASK 3 ATE_PROMPT_ALWAYS 4 (msg_drawAtePrompt, msg_setAtePrompt caller evt_init)
+# MACROS include/ff9.h g_evtGlobalVars byte offsets: EVT_GB_ARRIVAL_POINT 0x02 (s16) EVT_GB_ATE_BITS 0xEC (u16) EVT_GB_ATE_AVAILABLE 0xEE (s8) EVT_GB_ATE_CHOICE_MASK 0xF1 (s16) (script-only, no C uses)

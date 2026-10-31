@@ -201,7 +201,7 @@ void evt_returnFromFunc(EvtObject *o) {
         }
     } else if (o->state == EVT_STATE_INIT) {
         o->state = EVT_STATE_RUNNING;
-        o->ip = evt_callObjectFunc_find(o->scriptIdx, 1);
+        o->ip = evt_callObjectFunc_find(o->scriptIdx, EVT_FUNC_LOOP);
         o->level = 7;
     } else {
         o->ip = NULL;
@@ -297,7 +297,7 @@ void *evt_findNearestObject(EvtObject *o, s32 flags, s32 *dist) {
         if (q == o || (a && b)) {
             continue;
         }
-        if ((flags & 6) && evt_callObjectFunc_find(q->scriptIdx, back ? 3 : 2) == NULL) {
+        if ((flags & 6) && evt_callObjectFunc_find(q->scriptIdx, back ? EVT_FUNC_TALK : EVT_FUNC_RANGE) == NULL) {
             continue;
         }
         if (q->kind != EVT_KIND_ACTOR) {
@@ -848,7 +848,7 @@ s32 evt_execInstr(void) {
     s32 op;
     s32 a, b, c, d, e, f, i;
     SVECTOR sv;
-    Unk80039C38Pt *pt;
+    EvtRegionPt *pt;
     Unk8004AFF0 *m, *m2;
     u8 *str;
 
@@ -1284,10 +1284,10 @@ s32 evt_execInstr(void) {
         g_evtCurObj->ip = g_evtInstrStart;
         g_evtArgRead = 1;
         return 1;
-    case EVT_OP_SET_PATH: {
+    case EVT_OP_SET_REGION: {
         u32 cnt;
-        pt = ((Unk80039C38Quad *)g_evtActor)->pts;
-        cnt = ((Unk80039C38Quad *)g_evtActor)->count = evt_getArg8_inline();
+        pt = ((EvtRegion *)g_evtActor)->pts;
+        cnt = ((EvtRegion *)g_evtActor)->count = evt_getArg8_inline();
         while (cnt-- != 0) {
             pt->x = evt_getArg16_inline();
             pt->z = evt_getArg16_inline();
@@ -1298,7 +1298,7 @@ s32 evt_execInstr(void) {
     case 0xA4:
         po = evt_getObject_inline(g_evtState->playerUid);
         if (po != NULL) {
-            Unk80039C38Pt *p = ((Unk80039C38Quad *)g_evtActor)->pts;
+            EvtRegionPt *p = ((EvtRegion *)g_evtActor)->pts;
             s32 dx = p[1].x - p[0].x;
             s32 dz = p[1].z - p[0].z;
             s32 t = (dx * dx + dz * dz) >> 8;
@@ -1334,24 +1334,24 @@ s32 evt_execInstr(void) {
             }
         }
         return 0;
-    case 0x76: {
-        Unk80039C38Quad *q = (Unk80039C38Quad *)g_evtActor;
+    case EVT_OP_REGION_START: {
+        EvtRegion *q = (EvtRegion *)g_evtActor;
         q->count = 2;
         q->pts[0].x = q->pts[1].x = evt_getArg16_inline();
         q->pts[0].z = q->pts[1].z = evt_getArg16_inline();
         return 0;
     }
-    case 0x77: {
-        Unk80039C38Quad *q = (Unk80039C38Quad *)g_evtActor;
-        Unk80039C38Pt *p;
+    case EVT_OP_REGION_MOVE_LAST: {
+        EvtRegion *q = (EvtRegion *)g_evtActor;
+        EvtRegionPt *p;
         a = q->count;
         p = &q->pts[(a > 0 ? a : 1) - 1];
         p->x = evt_getArg16_inline();
         p->z = evt_getArg16_inline();
         return 0;
     }
-    case 0x78: {
-        Unk80039C38Quad *q = (Unk80039C38Quad *)g_evtActor;
+    case EVT_OP_REGION_DUP_LAST: {
+        EvtRegion *q = (EvtRegion *)g_evtActor;
         s32 k = q->count;
         if (k >= 1 && k < 8) {
             q->pts[k] = q->pts[k - 1];
@@ -2778,10 +2778,10 @@ void evt_checkPlayerAction(EvtObject *p) {
         g_evtTalkAngle = evt_angleToObject(p, o, p->pos.rotY);
         if ((u32)(g_evtTalkAngle + 0x3FF) < 0x7FF) {
             p->talkTarget = o->uid;
-            if (btn == BTN_SQUARE && evt_callObjectFunc(o, 1, 8, 0)) {
+            if (btn == BTN_SQUARE && evt_callObjectFunc(o, 1, EVT_FUNC_SQUARE, 0)) {
                 return;
             }
-            if (evt_callObjectFunc(o, 1, 3, 0)) {
+            if (evt_callObjectFunc(o, 1, EVT_FUNC_TALK, 0)) {
                 return;
             }
         }
@@ -2790,24 +2790,24 @@ void evt_checkPlayerAction(EvtObject *p) {
         o = evt_findNearestObject(p, 2, NULL);
     }
     if (o != NULL) {
-        evt_callObjectFunc(o, 1, 2, 0);
+        evt_callObjectFunc(o, 1, EVT_FUNC_RANGE, 0);
     }
     if (btn) {
-        o = evt_checkPlayerAction_find(p, 3);
+        o = evt_checkPlayerAction_find(p, EVT_FUNC_TALK);
         if (o != NULL) {
-            if (btn == BTN_SQUARE && evt_callObjectFunc(o, 1, 8, 0)) {
+            if (btn == BTN_SQUARE && evt_callObjectFunc(o, 1, EVT_FUNC_SQUARE, 0)) {
                 return;
             }
-            evt_callObjectFunc(o, 1, 3, 0);
+            evt_callObjectFunc(o, 1, EVT_FUNC_TALK, 0);
             o = NULL;
         } else {
-            o = evt_checkPlayerAction_find(p, 2);
+            o = evt_checkPlayerAction_find(p, EVT_FUNC_RANGE);
         }
     } else {
-        o = evt_checkPlayerAction_find(p, 2);
+        o = evt_checkPlayerAction_find(p, EVT_FUNC_RANGE);
     }
     if (o != NULL) {
-        evt_callObjectFunc(o, 1, 2, 0);
+        evt_callObjectFunc(o, 1, EVT_FUNC_RANGE, 0);
     }
 }
 
@@ -3372,7 +3372,7 @@ void evt_init(u8 *data) {
     g_evtState->objectsTail = NULL;
     g_evtState->objects = NULL;
     msg_resetPlayerBubble();
-    msg_setAtePrompt(0);
+    msg_setAtePrompt(ATE_PROMPT_OFF);
     for (i = 0; i < 0x50; i++) {
         g_evtState->fieldVars[i] = 0;
     }
