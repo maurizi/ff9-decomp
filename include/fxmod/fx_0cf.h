@@ -1,7 +1,8 @@
 #ifndef FX_0CF_H
 #define FX_0CF_H
 
-/* Effect module fx_0cf (dir 13 file 0xCF). */
+/* Effect module fx_0cf (dir 13 file 0xCF): Stock Break. Evidence: [data] the party ability / item tables and enemy
+ * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -11,10 +12,10 @@ typedef struct {
 
 typedef struct {
     SVECTOR pos0; /* unit 0x10 body position */
-    SVECTOR unk8; /* angles from unk0 to unk18, turned around */
-    SVECTOR unk10; /* unk18 moved 0x320 along unk8 */
-    SVECTOR unk18; /* position: env->targets->centerX..Z */
-    SVECTOR unk20; /* start position */
+    SVECTOR rot8; /* angles from pos0 to pos18, turned around */
+    SVECTOR pos10; /* pos18 moved 0x320 along rot8 */
+    SVECTOR pos18; /* position: env->targets->centerX..Z */
+    SVECTOR pos20; /* start position */
 } Fx0cfWork81;
 
 extern Unk800F78A4 *fx_0cf_env;

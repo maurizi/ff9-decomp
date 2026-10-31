@@ -1,12 +1,14 @@
 #ifndef FX_0DB_H
 #define FX_0DB_H
 
-/* Effect module fx_0db (dir 13 file 0xDB). */
+/* Effect module fx_0db (dir 13 file 0xDB): Sword Magic Blizzara. Ice shards (pool items) that grow out of the
+ * caster and split in three. Evidence: [data] the party ability / item tables and enemy sequences that play this
+ * file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR pos8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0dbWork84;
 
@@ -14,26 +16,19 @@ extern Unk800F78A4 *fx_0db_env;
 extern BtlModel fx_0db_effModels[];
 
 typedef struct {
-    s32 unk0; /* state */
+    s32 state0; /* state */
     s32 model4; /* models */
     s32 model8;
     s32 modelC;
     s32 model10;
     SVECTOR pos14; /* caster body position */
     SVECTOR pos1C; /* caster position */
-    s16 unk24;
-    s16 unk26; /* particles spawned */
-    s32 unk28; /* frame counter */
-    s32 unk2C;
+    s16 split24;
+    s16 spawnCount26; /* particles spawned */
+    s32 frame28; /* frame counter */
+    s32 scroll2C;
     s32 unk30;
 } Fx0dbWork80;
-
-typedef struct {
-    s32 unkC[3];
-    s32 unk18[9];
-    s32 unk3C;
-    s32 unk40;
-} Fx0dbPart; /* pool entry data */
 
 typedef struct {
     s32 vx;
@@ -41,31 +36,17 @@ typedef struct {
     s32 vz;
 } Fx0dbPos;
 typedef struct {
-    s32 unk0; /* index into D_801E88B4 */
-    s32 unk4; /* state */
-    s32 unk8; /* frame */
-    Fx0dbPos unkC[3];
-    SVECTOR unk30; /* rotation once split */
-    s16 unk38; /* rotation speed */
-    s16 unk3A;
-    s32 unk3C; /* size */
+    s32 shard0; /* index into fx_0db_shardAngles */
+    s32 state4; /* state */
+    s32 frame8; /* frame */
+    Fx0dbPos posC[3];
+    SVECTOR rot30; /* rotation once split */
+    s16 spinX38; /* rotation speed */
+    s16 spinY3A;
+    s32 size3C; /* size */
     Pool6CEntry *emit40;
 } Fx0dbItem; /* 0x44 */
-typedef struct {
-    s32 unk0;
-    s32 unk4; /* models */
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    SVECTOR unk18;
-    SVECTOR unk20;
-    s16 unk28; /* split now */
-    s16 unk2A;
-    s32 unk2C;
-    s32 unk30;
-} Fx0dbWork;
-extern SVECTOR D_801E88B4[];
+extern SVECTOR fx_0db_shardAngles[];
 static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx0dbWork80 *work);
 

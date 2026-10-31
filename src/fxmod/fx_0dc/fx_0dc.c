@@ -1,7 +1,7 @@
 #include "fxmod/fx_0dc.h"
 
-void func_801E7718(s16 *a, s16 *b, s32 i, s16 *out) {
-    BTLFX_EXPORTS(fx_0dc_env)->btlfx_pointAhead(a, b, -((D_801E92F0[i] * 0x455) >> 9), out);
+void fx_0dc_shardPoint(s16 *a, s16 *b, s32 i, s16 *out) {
+    BTLFX_EXPORTS(fx_0dc_env)->btlfx_pointAhead(a, b, -((fx_0dc_shardDists[i] * 0x455) >> 9), out);
 }
 
 static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
@@ -18,8 +18,8 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
 
     if (mode == 1) {
         it->unk0 = 0;
-        it->unk8 = 0;
-    } else if (it->unk2 == 0) {
+        it->frame8 = 0;
+    } else if (it->flying2 == 0) {
         SVECTOR rot;
         VECTOR scale;
         SVECTOR v38;
@@ -28,10 +28,10 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
         SVECTOR v50;
         SVECTOR v58;
 
-        p = &D_801E9288[it->unk4];
+        p = &fx_0dc_shardAngles[it->shard4];
         switch (it->unk0) {
         case 0:
-            if (it->unk8 == 0) {
+            if (it->frame8 == 0) {
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&it->pos18);
                 it->emit34 = e;
                 if (e != NULL) {
@@ -46,14 +46,14 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
                 it->emit34->rot.vy = rot.vy;
                 it->emit34->rot.vz = rot.vz;
             }
-            if (++it->unk8 > 0) {
+            if (++it->frame8 > 0) {
                 it->unk0 = 1;
-                it->unk8 = 0;
+                it->frame8 = 0;
             }
             break;
         case 1:
             {
-                s32 a = it->unk8 << 10;
+                s32 a = it->frame8 << 10;
 
                 scale.vx = scale.vy = (a * 0x8AA) >> 12;
                 scale.vz = (ex->math_sin(a >> 2) * 0x8AA) >> 12;
@@ -65,9 +65,9 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
                 it->emit34->rot.vy = rot.vy;
                 it->emit34->rot.vz = rot.vz;
             }
-            if (++it->unk8 >= 4) {
+            if (++it->frame8 >= 4) {
                 it->unk0 = 2;
-                it->unk8 = 0;
+                it->frame8 = 0;
             }
             break;
         case 2:
@@ -81,9 +81,9 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
             }
             if (frame < 12) {
                 rot.pad = 1;
-                v38.vx = it->unkC.vx;
-                v38.vy = it->unkC.vy;
-                v38.vz = it->unkC.vz;
+                v38.vx = it->posC.vx;
+                v38.vy = it->posC.vy;
+                v38.vz = it->posC.vz;
                 {
                     s32 a = (frame << 10) / 12;
                     s32 b;
@@ -95,9 +95,9 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
                 }
             }
             n = 6;
-            if (work->unk78 != 0) {
-                it->unk8 = 0;
-                if (it->unk4 < 3) {
+            if (work->split78 != 0) {
+                it->frame8 = 0;
+                if (it->shard4 < 3) {
                     n = 10;
                 }
                 BTLFX_COPY_SVEC(&v50, &it->pos18);
@@ -107,18 +107,18 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
                         q = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     }
                     if (q != NULL) {
-                        q->unk2 = 1;
+                        q->flying2 = 1;
                         q->unk0 = n;
-                        q->unk4 = k;
-                        q->unk8 = 0;
-                        q->unk2C = work->unk20[n];
-                        func_801E7718((s16 *)&v50, (s16 *)p, n, (s16 *)&v48);
+                        q->shard4 = k;
+                        q->frame8 = 0;
+                        q->model2C = work->model20[n];
+                        fx_0dc_shardPoint((s16 *)&v50, (s16 *)p, n, (s16 *)&v48);
                         BTLFX_COPY_SVEC(&q->rot20, p);
-                        q->unkC.vx = v48.vx << 4;
-                        q->unkC.vy = v48.vy << 4;
-                        q->unkC.vz = v48.vz << 4;
-                        q->unk28 = ex->btlfx_randCentered(0x84);
-                        q->unk2A = ex->btlfx_randCentered(0x84);
+                        q->posC.vx = v48.vx << 4;
+                        q->posC.vy = v48.vy << 4;
+                        q->posC.vz = v48.vz << 4;
+                        q->spinX28 = ex->btlfx_randCentered(0x84);
+                        q->spinY2A = ex->btlfx_randCentered(0x84);
                         d = 0x80; /* through a variable, so the 0x80 isn't folded into k * 0x29 */
                         t = -(((ex->btlfx_rand() & 0xF) + d - k * 0x29) * 16);
                         BTLFX_COPY_SVEC(&v58, p);
@@ -136,23 +136,23 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
             scale.vx *= 2;
             scale.vy *= 2;
             scale.vz = scale.vz * 5 / 2;
-            ex->Hi_SetEffModelOffset(it->unk2C, 2);
-            ex->Hi_DrawEffModel(p, (VECTOR *)&it->unkC, (s32)&scale, it->unk2C);
-            ex->Hi_DrawEffModel(p, (VECTOR *)&it->unkC, (s32)&scale, it->unk30);
+            ex->Hi_SetEffModelOffset(it->model2C, 2);
+            ex->Hi_DrawEffModel(p, (VECTOR *)&it->posC, (s32)&scale, it->model2C);
+            ex->Hi_DrawEffModel(p, (VECTOR *)&it->posC, (s32)&scale, it->model30);
             return 0;
         }
     } else {
         VECTOR pos;
         VECTOR scale;
 
-        t = ((it->unk8 << 12) / 22) >> 2;
+        t = ((it->frame8 << 12) / 22) >> 2;
         c = ex->math_cos(t);
-        it->unkC.vx += it->pos18.vx;
-        it->unkC.vy += it->pos18.vy;
-        it->unkC.vz += it->pos18.vz;
+        it->posC.vx += it->pos18.vx;
+        it->posC.vy += it->pos18.vy;
+        it->posC.vz += it->pos18.vz;
         it->pos18.vy += 0x40;
-        it->rot20.vx += it->unk28;
-        it->rot20.vy += it->unk2A;
+        it->rot20.vx += it->spinX28;
+        it->rot20.vy += it->spinY2A;
         c = (c * 3) >> 1;
         if (it->unk0 < 6) {
             scale.vx = scale.vy = (ex->math_cos(t) * 0x19FE) >> 12;
@@ -161,13 +161,13 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
             scale.vx = scale.vy = (ex->math_cos(t) * 0x1154) >> 12;
             scale.vz = (ex->math_cos(t) * 0x15A9) >> 12;
         }
-        pos.vx = it->unkC.vx >> 4;
-        pos.vy = it->unkC.vy >> 4;
-        pos.vz = it->unkC.vz >> 4;
-        ex->Hi_DrawEffModel(&it->rot20, &pos, (s32)&scale, it->unk2C);
-        ex->Hi_ModifyEffModelAbr(it->unk2C, 1);
-        ex->Hi_ModifyEffModelRGB(it->unk2C, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
-        if (++it->unk8 >= 22) {
+        pos.vx = it->posC.vx >> 4;
+        pos.vy = it->posC.vy >> 4;
+        pos.vz = it->posC.vz >> 4;
+        ex->Hi_DrawEffModel(&it->rot20, &pos, (s32)&scale, it->model2C);
+        ex->Hi_ModifyEffModelAbr(it->model2C, 1);
+        ex->Hi_ModifyEffModelRGB(it->model2C, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+        if (++it->frame8 >= 22) {
             return 1;
         }
     }
@@ -219,19 +219,19 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                                                    0, 0x80);
         for (i = 0; i < 14; i++) {
             w->model20[i] = (s16)ex->Hi_RegisterTexEffModel(
-                (BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E92B8[i]), tp, 0x3DC0, 0x80, 0);
+                (BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_0dc_shardModelBlocks[i]), tp, 0x3DC0, 0x80, 0);
         }
-        w->unk0 = 2;
-        w->unk4 = 0;
-        w->unk7A = 0;
-        w->unk78 = 0;
+        w->state0 = 2;
+        w->frame4 = 0;
+        w->spawnCount7A = 0;
+        w->split78 = 0;
         w->unk7C = 0;
         w->unk80 = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&w->pos58);
         BTLFX_COPY_SVEC(&w->pos60, &w->pos58);
         w->pos60.vy -= 0x22A;
-        BTLFX_COPY_SVEC(&w->unk70, &w->pos58);
-        w->unk70.vy -= 0x80;
+        BTLFX_COPY_SVEC(&w->pos70, &w->pos58);
+        w->pos70.vy -= 0x80;
         BTLFX_COPY_SVEC(&w->pos68, &w->pos58);
         w->pos68.vy -= 0x5C6;
         e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&w->pos58);
@@ -255,13 +255,13 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         pos.vz = w->pos58.vz;
         scale.vx = scale.vy = 0x1DFE;
         scale.vz = 0x1354;
-        if (w->unk4 < 3) {
-            t = w->unk4 << 8;
+        if (w->frame4 < 3) {
+            t = w->frame4 << 8;
             scale.vx = scale.vy = (t * scale.vx) >> 10;
             scale.vz = (scale.vz * ex->math_sin(t)) >> 12;
         }
         k = 0;
-        switch (w->unk0) {
+        switch (w->state0) {
         case 2:
             k = 0x1000;
             c = 0x2000 - (frame << 10);
@@ -280,7 +280,7 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 }
             }
             if (frame >= 4) {
-                w->unk0 = 3;
+                w->state0 = 3;
                 entry->frame = -1;
             }
             break;
@@ -289,26 +289,26 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             if (frame & 1) {
                 it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (it != NULL) {
-                    it->unk2 = 0;
-                    it->unk4 = w->unk7A;
-                    p = &D_801E9288[w->unk7A];
-                    if (w->unk7A >= 3) {
-                        it->unk2C = w->modelC;
-                        it->unk30 = w->model18;
+                    it->flying2 = 0;
+                    it->shard4 = w->spawnCount7A;
+                    p = &fx_0dc_shardAngles[w->spawnCount7A];
+                    if (w->spawnCount7A >= 3) {
+                        it->model2C = w->modelC;
+                        it->model30 = w->model18;
                     } else {
-                        it->unk2C = w->model10;
-                        it->unk30 = w->model1C;
+                        it->model2C = w->model10;
+                        it->model30 = w->model1C;
                     }
-                    it->unkC.vx = w->pos58.vx;
-                    it->unkC.vy = w->pos58.vy;
-                    it->unkC.vz = w->pos58.vz;
+                    it->posC.vx = w->pos58.vx;
+                    it->posC.vy = w->pos58.vy;
+                    it->posC.vz = w->pos58.vz;
                     r = 200;
-                    it->unkC.vx += (ex->math_sin(p->vy + 0x800) * r) >> 12;
-                    it->unkC.vz += (ex->math_cos(p->vy + 0x800) * r) >> 12;
-                    it->pos18.vx = it->unkC.vx;
-                    it->pos18.vy = it->unkC.vy;
-                    it->pos18.vz = it->unkC.vz;
-                    w->unk7A++;
+                    it->posC.vx += (ex->math_sin(p->vy + 0x800) * r) >> 12;
+                    it->posC.vz += (ex->math_cos(p->vy + 0x800) * r) >> 12;
+                    it->pos18.vx = it->posC.vx;
+                    it->pos18.vy = it->posC.vy;
+                    it->pos18.vz = it->posC.vz;
+                    w->spawnCount7A++;
                 }
             }
             rot.vx = -0x400;
@@ -317,8 +317,8 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             ex->Hi_SetEffModelOffset(w->model8, 2);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, w->model8);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, w->model14);
-            if (w->unk7A >= 6) {
-                w->unk0 = 4;
+            if (w->spawnCount7A >= 6) {
+                w->state0 = 4;
                 entry->frame = -1;
                 w->emit84 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&w->pos58);
                 if (e != NULL) {
@@ -335,7 +335,7 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, w->model8);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, w->model14);
             if (frame >= 8) {
-                w->unk0 = 5;
+                w->state0 = 5;
                 entry->frame = -1;
             }
             break;
@@ -349,8 +349,8 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, w->model14);
             rot.pad = 1;
             if (frame >= 10) {
-                w->unk0 = 6;
-                w->unk78 = 1;
+                w->state0 = 6;
+                w->split78 = 1;
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
                 ex->btlfx_stopEmitter(w->emit84);
@@ -381,18 +381,18 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 for (j = 0; j < 6; j++) {
                     q = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (q != NULL) {
-                        q->unk2 = 1;
+                        q->flying2 = 1;
                         q->unk0 = j;
-                        q->unk4 = j;
-                        q->unk8 = 0;
-                        q->unk2C = w->model20[j];
-                        func_801E7718((s16 *)&w->pos58, (s16 *)&rot, j, (s16 *)&rot2);
+                        q->shard4 = j;
+                        q->frame8 = 0;
+                        q->model2C = w->model20[j];
+                        fx_0dc_shardPoint((s16 *)&w->pos58, (s16 *)&rot, j, (s16 *)&rot2);
                         BTLFX_COPY_SVEC(&q->rot20, &rot);
-                        q->unkC.vx = rot2.vx * 16;
-                        q->unkC.vy = rot2.vy * 16;
-                        q->unkC.vz = rot2.vz * 16;
-                        q->unk28 = ex->btlfx_randCentered(0x5C);
-                        q->unk2A = ex->btlfx_randCentered(0x80);
+                        q->posC.vx = rot2.vx * 16;
+                        q->posC.vy = rot2.vy * 16;
+                        q->posC.vz = rot2.vz * 16;
+                        q->spinX28 = ex->btlfx_randCentered(0x5C);
+                        q->spinY2A = ex->btlfx_randCentered(0x80);
                         ex->btlfx_rotateOffset(&rot, -(((ex->btlfx_rand() & 0xF) + (0x5C - j * 8)) * 16), (s32)&q->pos18);
                         q->pos18.vx += ex->btlfx_randCentered(0x3E0);
                         q->pos18.vz += ex->btlfx_randCentered(0x3E0);
@@ -426,7 +426,7 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             }
             break;
         }
-        if (w->unk0 >= 2 && w->unk0 < 6) {
+        if (w->state0 >= 2 && w->state0 < 6) {
             w->unk7C++;
             if (w->unk7C < 11) {
                 w->unk80 += 11 - (w->unk7C * 10) / 11;
@@ -438,19 +438,19 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         if (k != 0) {
             rot2.vx = 0x400;
             rot2.vy = 0;
-            rot2.vz = w->unk4 * 41;
+            rot2.vz = w->frame4 * 41;
             rot2.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &w->pos58, &rot2, (w->unk4 << 6) + 0x15A9,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &w->pos58, &rot2, (w->frame4 << 6) + 0x15A9,
                               0, 1, k);
-            rot2.vz = w->unk4 * 24 + 0x400;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &w->pos58, &rot2, (w->unk4 << 6) + 0x15A9,
+            rot2.vz = w->frame4 * 24 + 0x400;
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &w->pos58, &rot2, (w->frame4 << 6) + 0x15A9,
                               0, 1, k);
             env->otZ = 0x127;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &w->pos58, NULL, (w->unk4 << 5) + 0x15A9,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &w->pos58, NULL, (w->frame4 << 5) + 0x15A9,
                               0, 1, k);
             env->otZ = 0;
         }
-        w->unk4++;
+        w->frame4++;
     }
     return 0;
 }
@@ -472,20 +472,20 @@ s32 fx_0dc_op84(s32 mode, Fx0dcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         if (mode == 1) {
             fx_0dc_env = env;
-            work->unk0 = 0;
-            work->unk4 = 0;
+            work->state0 = 0;
+            work->frame4 = 0;
         } else {
             r = c = b = a = 0;
             frame = entry->frame;
             ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
-            switch (work->unk0) {
+            switch (work->state0) {
             case 0:
                 r = 0x200;
                 a = (frame << 12) / 3;
                 b = ex->math_sin(a >> 2) >> 1;
                 c = ((0x1000 - a) >> 1) + 0x800;
                 if (frame >= 3) {
-                    work->unk0 = 1;
+                    work->state0 = 1;
                     entry->frame = -1;
                 }
                 break;
@@ -497,7 +497,7 @@ s32 fx_0dc_op84(s32 mode, Fx0dcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 r = (d >> 3) + 0x200;
                 b = c;
                 if (frame >= 9) {
-                    work->unk0 = 2;
+                    work->state0 = 2;
                     entry->frame = -1;
                 }
                 break;
@@ -521,7 +521,7 @@ s32 fx_0dc_op84(s32 mode, Fx0dcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x29), &work->pos8, NULL, b / 3, 0, 1, a / 2);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x28), &work->pos8, &rot, c, 0, 1, a * 2 / 3);
             env->otZ = 0;
-            work->unk4++;
+            work->frame4++;
         }
     }
     return 0;

@@ -1,12 +1,14 @@
 #ifndef FX_0E0_H
 #define FX_0E0_H
 
-/* Effect module fx_0e0 (dir 13 file 0x0E0). */
+/* Effect module fx_0e0 (dir 13 file 0xE0): Sword Magic Doomsday. Objects (pool items) pulled into a centre point,
+ * offset trails (fxm_drawOffsetTrail) and a ripple grid. Evidence: [data] the party ability / item tables and enemy
+ * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* time */
+    s32 state0; /* state */
+    s32 frame4; /* time */
     SVECTOR pos8; /* caster bone position */
 } Fx0e0Work84;
 
@@ -29,26 +31,26 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTO
 s32 fx_0e0_op84(s32 mode, Fx0e0Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 typedef struct {
-    s16 unk0; /* state */
-    s16 unk2; /* sub-state */
-    SVECTOR unk4; /* velocity (vx, vy, vz); pad = model scale index */
+    s16 state0; /* state */
+    s16 phase2; /* sub-state */
+    SVECTOR vel4; /* velocity (vx, vy, vz); pad = model scale index */
     SVECTOR posC; /* position */
     SVECTOR rot14; /* rotation */
-    s16 unk1C; /* rotation speed */
-    s16 unk1E;
+    s16 spinX1C; /* rotation speed */
+    s16 spinY1E;
     Pool6CEntry *emit20; /* particle */
 } Fx0e0Obj;
 
 typedef struct {
     u8 pad0[8];
-    SVECTOR unk8; /* target */
+    SVECTOR pos8; /* target */
     u8 pad10[0x5C - 0x10];
-    s32 unk5C; /* model */
+    s32 model5C; /* model */
     u8 pad60[0x70 - 0x60];
-    s32 unk70; /* model */
+    s32 model70; /* model */
 } Fx0e0Inst;
 
-extern s32 D_801EA8B8[];
+extern s32 fx_0e0_objScales[];
 extern s32 D_801EB1D8;
 extern s32 D_801EB1DC;
 
@@ -59,16 +61,16 @@ typedef struct {
 } Fx0e0Vec3;
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    SVECTOR unk8; /* position */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
+    SVECTOR pos8; /* position */
     SVECTOR pos10; /* target */
-    SVECTOR unk18; /* camera target */
+    SVECTOR camAt18; /* camera target */
     u8 pad20[4];
-    Fx0e0Vec3 unk24; /* model position */
-    Fx0e0Vec3 unk30; /* model scale */
+    Fx0e0Vec3 pos24; /* model position */
+    Fx0e0Vec3 scale30; /* model scale */
     SVECTOR rot3C; /* model rotation */
-    Fx0e0Vec3 unk44; /* scale */
+    Fx0e0Vec3 scale44; /* scale */
     SVECTOR rot50; /* rotation */
     u8 pad58[4];
     s32 model5C; /* models */
@@ -82,19 +84,19 @@ typedef struct {
 } Fx0e0Work80; /* 0x84 */
 
 typedef struct {
-    s16 unk0; /* state */
+    s16 state0; /* state */
     s16 unk2;
-    s16 unk4;
-    s16 unk6;
-    s16 unk8;
+    s16 velX4;
+    s16 velY6;
+    s16 velZ8;
     s16 unkA;
-    s16 unkC;
-    s16 unkE;
-    s16 unk10;
+    s16 posXC;
+    s16 posYE;
+    s16 posZ10;
     s16 unk12;
-    s16 unk14;
-    s16 unk16;
-    s16 unk18;
+    s16 rotX14;
+    s16 rotY16;
+    s16 rotZ18;
 } Fx0e0Spark;
 
 typedef union {
@@ -106,9 +108,9 @@ typedef union {
     } s;
 } Fx0e0Tmp;
 
-extern SVECTOR D_801EA8B0;
-extern CVECTOR D_801EA8C8[];
-extern Fx0e0Bolt D_801EA928[];
+extern SVECTOR fx_0e0_centerPos;
+extern CVECTOR fx_0e0_rippleColors[];
+extern Fx0e0Bolt fx_0e0_trailStrips[];
 extern BtlModel fx_0e0_effModels[];
 
 #endif

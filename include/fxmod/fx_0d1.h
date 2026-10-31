@@ -1,7 +1,8 @@
 #ifndef FX_0D1_H
 #define FX_0D1_H
 
-/* Effect module fx_0d1 (dir 13 file 0xD1). */
+/* Effect module fx_0d1 (dir 13 file 0xD1): Mental Break. Evidence: [data] the party ability / item tables and enemy
+ * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

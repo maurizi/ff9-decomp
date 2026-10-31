@@ -18,7 +18,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         work->pos8.vy -= 0x80;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
-        ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->pos8, (s16 *)&work->unk24);
+        ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->pos8, (s16 *)&work->rot24);
         ex->btlfx_initEffModels(fx_0ce_effModels, 1);
         work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
@@ -34,17 +34,17 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit2C->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
         }
         if (work->emit2C != NULL) {
-            work->emit2C->trails = (s32)D_801E7E00;
+            work->emit2C->trails = (s32)fx_0ce_trails;
             work->emit2C->trailSlots = 0x15;
             work->emit2C->trailStride = 0x34;
         }
-        work->unk0 = work->unk4 = 0;
+        work->state0 = work->frame4 = 0;
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             if (frame >= 6) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
                 if (p != NULL) {
@@ -91,12 +91,12 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit2C = NULL;
             }
             if (work->emit2C != NULL) {
-                work->emit2C->rot.vx = work->unk24.vx;
-                work->emit2C->rot.vy = work->unk24.vy;
-                work->emit2C->rot.vz = work->unk24.vz;
+                work->emit2C->rot.vx = work->rot24.vx;
+                work->emit2C->rot.vy = work->rot24.vy;
+                work->emit2C->rot.vz = work->rot24.vz;
             }
         }
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }

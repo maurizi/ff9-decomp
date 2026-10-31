@@ -1,0 +1,309 @@
+# Round 33: effect-module names, slice C (fx_0b5-fx_0e0) (old -> new). Evidence [code]; the reason is in each module's
+# config/fxmod/fx_XXX.syms.txt entry. Data/functions as 'fx_XXX OLD NEW  # why', fields as 'fx_XXX Struct old=new ...'.
+
+## fx_0b5
+fx_0b5 D_801E7910 fx_0b5_trails  # [code] particle trail buffer of the file block 1 emitter (Pool6CEntry trails, 0x24 slots of 0x44 bytes), fx_0b5_op80
+
+## fx_0b9
+fx_0b9 D_801E7B9C fx_0b9_srcPos  # [code] unit 0x10 arg bone position stored by fx_0b9_op80 at frame 0x28, fx_0b9_op81 aims each target emitter from it (btlfx_aimAngles)
+fx_0b9 D_801E7BA4 fx_0b9_trails  # [code] particle trail buffer of the file block 2 emitter (0x82 slots of 0x18 bytes), fx_0b9_op80
+fx_0b9 D_801E87D4 fx_0b9_trails2  # [code] particle trail buffer of the file block 1 emitter (0xA0 slots of 0x18 bytes), fx_0b9_op80
+fx_0b9 Fx0b9Work80 unk20=rot20
+fx_0b9 Fx0b9Work81 unkC=rotC unk14=unit14
+
+## fx_0bf
+fx_0bf Fx0bfWork80 unkC=tintC
+
+## fx_0c1
+fx_0c1 D_801E7C20 fx_0c1_pathFrom  # [code] start of the btlfx_lerpVec path of fx_0c1_op80ParticleMotion, set to the unit 0x10 bone 0x17 position by fx_0c1_op80
+fx_0c1 D_801E7C28 fx_0c1_pathTo  # [code] end of the btlfx_lerpVec path of fx_0c1_op80ParticleMotion, a point on the caster set by fx_0c1_op80 (btlfx_pointAhead)
+fx_0c1 D_801E7C30 fx_0c1_emitPos  # [code] origin passed to btlfx_startEmitter for the file block 0xC emitter whose particles fx_0c1_op80ParticleMotion moves
+fx_0c1 Fx0c1Work unk40=rot40 unk48=rot48
+
+## fx_0c2
+fx_0c2 D_801E8484 fx_0c2_pathFrom  # [code] start of the btlfx_lerpVec path of fx_0c2_op81ParticleMotion, set to the unit 0x10 bone 0x17 position by fx_0c2_op81
+fx_0c2 D_801E848C fx_0c2_pathTo  # [code] end of the btlfx_lerpVec path of fx_0c2_op81ParticleMotion, a point on the target set by fx_0c2_op81 (btlfx_pointAhead)
+fx_0c2 D_801E8494 fx_0c2_emitPos  # [code] origin passed to btlfx_startEmitter for the file block 0xA emitter whose particles fx_0c2_op81ParticleMotion moves
+fx_0c2 Fx0c2Work81 unk3C=rot3C unk44=rot44 unk4C=unit4C
+fx_0c2 Fx0c2Work82 unk0=turn0 unk8=pos8
+fx_0c2 Fx0c2Work83 unk0=turn0 unk10=unit10
+
+## fx_0c6
+fx_0c6 Fx0c6Work unk10=unit10
+
+## fx_0c9
+fx_0c9 D_801E7E10 fx_0c9_particlePos  # [code] position fx_0c9_op81ParticleMotion pins every particle to, updated by fx_0c9_op81 from the arcing model position
+fx_0c9 D_801E7E18 fx_0c9_emitPos  # [code] origin passed to btlfx_startEmitter for the file block 5 emitter (fx_0c9_op81)
+fx_0c9 D_801E7E28 fx_0c9_trails  # [code] particle trail buffer of the file block 5 emitter (0x12 slots of 0xB0 bytes), fx_0c9_op81
+fx_0c9 Fx0c9Work81 unk1C=pos1C
+
+## fx_0ca
+fx_0ca D_801E78C8 fx_0ca_trails  # [code] particle trail buffer of the file block 2 emitter (0x1E slots of 0x30 bytes), fx_0ca_op80
+
+## fx_0cb
+fx_0cb Fx0cbPart unk2=scale2 unk4=pos4 unkC=rotC unk14=spin14 unk16=spinSpeed16
+fx_0cb Fx0cbWork unk0=state0 unk4=frame4 unk8=otZ8 unk14=pos14
+
+## fx_0cc
+fx_0cc Fx0ccPart unk0=state0 unk10=pos10
+fx_0cc Fx0ccWork unk0=state0 unk4=pos4 unkC=spawnCountC
+
+## fx_0cd
+fx_0cd D_801E8044 fx_0cd_trails  # [code] particle trail buffer of the first file block 8 emitter (0x26 slots of 0x7C bytes), fx_0cd_op80 frame 0
+fx_0cd D_801E92B4 fx_0cd_trails2  # [code] particle trail buffer of the second file block 8 emitter (0x26 slots of 0x7C bytes), fx_0cd_op80 frame 8
+fx_0cd Fx0cdModel unk0=model0 unk4=rot4 unkC=posC unk1C=scale1C
+fx_0cd Fx0cdWork unk0=timer0 unk4=timer4 unk8=timer8 unk20=model20 unk4C=model4C unk78=model78
+
+## fx_0ce
+fx_0ce D_801E7E00 fx_0ce_trails  # [code] particle trail buffer of the file block 1 emitter (0x15 slots of 0x34 bytes), fx_0ce_op80
+fx_0ce Fx0ceWork unk0=state0 unk4=frame4 unk24=rot24
+
+## fx_0cf
+fx_0cf Fx0cfWork81 unk8=rot8 unk10=pos10 unk18=pos18 unk20=pos20
+
+## fx_0d0
+fx_0d0 D_801E79B0 fx_0d0_trails  # [code] particle trail buffer of the file block 8 emitter (8 slots of 0x60 bytes), fx_0d0_op80
+
+## fx_0d4
+fx_0d4 Fx0d4Work80 unk0=state0
+fx_0d4 Fx0d4Work84 unk0=state0 unk4=frame4
+
+## fx_0d5
+fx_0d5 D_801E7E40 fx_0d5_trails  # [code] particle trail buffer of the file block 6 emitter (0x15 slots of 0xAC bytes), fx_0d5_op80
+fx_0d5 Fx0d5Work80 unk0=state0
+fx_0d5 Fx0d5Work84 unk0=state0 unk4=frame4
+
+## fx_0d6
+fx_0d6 D_801E9610 fx_0d6_trails  # [code] particle trail buffer of the file block 0xE emitter (0x12 slots of 0x24 bytes), fx_0d6_op80
+fx_0d6 D_801E98A0 fx_0d6_texels  # [code] 16-bit texel buffer of fxm_drawTexelQuads (vertex colours read from it, refilled by StoreImage each call), fx_0d6_op80
+fx_0d6 Fx0d6Work80 unk10=state10 unk34=frame34
+fx_0d6 Fx0d6Work84 unk0=state0 unk4=frame4
+
+## fx_0d7
+fx_0d7 D_801E8868 fx_0d7_strip16Blocks  # [code] effect file block per bolt kind, the btlfx_drawTrail texture of fxm_drawJaggedStrip16
+fx_0d7 D_801E8870 fx_0d7_strip4Blocks  # [code] effect file block per bolt kind, the btlfx_drawTrail texture of fxm_drawJaggedStrip4 (branches)
+fx_0d7 D_801E88D0 fx_0d7_strips  # [code] per-bolt 16-point strip buffers (Fx0d7Strip), indexed by Fx0d7Bolt.strip10 in fx_0d7_op83PoolTask
+fx_0d7 D_801E8F00 fx_0d7_branches  # [code] per-bolt branch strip buffers (Fx0d7Branch), indexed by Fx0d7Bolt.strip10 in fx_0d7_op83PoolTask
+fx_0d7 D_801E9260 fx_0d7_jitter  # [code] 0x40 triples of btlfx_randCentered noise filled by fx_0d7_op83 mode 1, read by the jagged strip drawers
+fx_0d7 Fx0d7Bolt unk8=pos8 unk10=strip10 unk11=state11 unk12=branchAt12 unk13=branchAt13 unk14=kind14 unk18=jitter18
+fx_0d7 Fx0d7Work unk8=jitter8 unkC=boltCountC
+fx_0d7 Fx0d7Work84 unk0=state0 unk4=frame4
+
+## fx_0d8
+fx_0d8 D_801E8F28 fx_0d8_strip16Blocks  # [code] effect file block per bolt kind, the btlfx_drawTrail texture of fxm_drawJaggedStrip16
+fx_0d8 D_801E8F30 fx_0d8_strip4Blocks  # [code] effect file block per bolt kind, the btlfx_drawTrail texture of fxm_drawJaggedStrip4 (branches)
+fx_0d8 D_801E8FB0 fx_0d8_strips  # [code] per-bolt 16-point strip buffers (Fx0d8Strip), indexed by Fx0d8Part.strip10 in fx_0d8_op83PoolTask
+fx_0d8 D_801E95E0 fx_0d8_branches  # [code] per-bolt branch strip buffers (Fx0d8Branch), indexed by Fx0d8Part.strip10 in fx_0d8_op83PoolTask
+fx_0d8 D_801E9950 fx_0d8_jitter  # [code] 0x40 triples of btlfx_randCentered noise filled by fx_0d8_op83 mode 1, read by the jagged strip drawers
+fx_0d8 D_801E8F38 fx_0d8_spawnKinds  # [code] s16 per frame 0-15 read by fx_0d8_op83, nonzero spawns bolts that frame (2 at the caster, 3 no pool bolt)
+fx_0d8 Fx0d8Part unk8=pos8 unk10=strip10 unk11=state11 unk12=branchAt12 unk13=branchAt13 unk14=kind14 unk18=jitter18
+fx_0d8 Fx0d8Work83 unk10=jitter10 unk14=boltCount14
+fx_0d8 Fx0d8Work84 unk0=state0 unk4=frame4
+fx_0d8 Fx0d8Part unk15=width15
+
+## fx_0d9
+fx_0d9 D_801E9E40 fx_0d9_strip15Blocks  # [code] effect file block per bolt kind, the btlfx_drawTrail texture of fxm_drawJaggedStrip15
+fx_0d9 D_801E9E48 fx_0d9_strip3Blocks  # [code] effect file block per bolt kind, the btlfx_drawTrail texture of fxm_drawJaggedStrip3 (branches)
+fx_0d9 D_801EA048 fx_0d9_strips  # [code] per-bolt 15-point strip buffers (Fx0d9Strip), indexed by Fx0d9Bolt.strip10 in fxm_jaggedStripTask
+fx_0d9 D_801EA04C fx_0d9_stripPoints  # [code] the points of fx_0d9_strips[0] (4 bytes in), fxm_randStripPoint picks a random point of a random strip from it
+fx_0d9 D_801EA808 fx_0d9_branches  # [code] per-bolt branch strip buffers (Fx0d9Branch), indexed by Fx0d9Bolt.strip10 in fxm_jaggedStripTask
+fx_0d9 D_801EAB98 fx_0d9_jitter  # [code] btlfx_randCentered noise triples filled by fx_0d9_op83 mode 1, read by the jagged strip drawers
+fx_0d9 D_801EAB88 fx_0d9_fastBolts  # [code] flag set by fx_0d9_op83 per kind, fxm_jaggedStripTask then fades bolts over 6 frames instead of 8
+fx_0d9 D_801E9E98 fx_0d9_prevBoltEnd  # [code] end point of the previous chained bolt, fx_0d9_op83 starts the next bolt there
+fx_0d9 D_801EA038 fx_0d9_ringRadius  # [code] radius of the ring of file block 0x18 particles around the model in fx_0d9_op80, grows with the model scale
+fx_0d9 Fx0d9Bolt unk0=pos0 unk8=pos8 unk10=strip10 unk11=state11 unk12=branchAt12 unk13=branchAt13 unk14=kind14 unk15=width15 unk18=jitter18
+fx_0d9 Fx0d9Work83 unk10=jitter10 unk14=boltCount14 unk18=kind18
+fx_0d9 Fx0d9Work80 unk10=state10
+fx_0d9 Fx0d9Work84 unk0=state0 unk4=frame4
+
+## fx_0da
+fx_0da Fx0daWork80 unk0=state0 unk24=frame24
+fx_0da Fx0daWork84 unk0=state0 unk4=frame4
+
+## fx_0db
+fx_0db D_801E88B4 fx_0db_shardAngles  # [code] SVECTOR per ice shard, model rotation and btlfx_pointAhead direction (pad = size), indexed by Fx0dbItem.shard0 in fx_0db_op80PoolTask
+fx_0db Fx0dbItem unk0=shard0 unk4=state4 unk8=frame8 unkC=posC unk30=rot30 unk38=spinX38 unk3A=spinY3A unk3C=size3C
+fx_0db Fx0dbWork80 unk0=state0 unk24=split24 unk26=spawnCount26 unk28=frame28 unk2C=scroll2C
+fx_0db Fx0dbWork84 unk0=state0 unk4=frame4
+
+## fx_0dc
+fx_0dc D_801E9288 fx_0dc_shardAngles  # [code] SVECTOR per ice shard, model rotation and spawn direction, indexed by Fx0dcItem.shard4 in fx_0dc_op80PoolTask and fx_0dc_op80
+fx_0dc D_801E92B8 fx_0dc_shardModelBlocks  # [code] effect file block of each of the 14 shard models (Hi_RegisterTexEffModel, Fx0dcWork80.model20) in fx_0dc_op80
+fx_0dc D_801E92F0 fx_0dc_shardDists  # [code] s16 distance per piece, fx_0dc_shardPoint moves a point back by it (btlfx_pointAhead)
+fx_0dc func_801E7718 fx_0dc_shardPoint  # [code] btlfx_pointAhead from a along angles b by minus fx_0dc_shardDists[i], places the pieces of a breaking shard in fx_0dc_op80PoolTask
+fx_0dc Fx0dcItem unk2=flying2 unk4=shard4 unk8=frame8 unkC=posC unk28=spinX28 unk2A=spinY2A unk2C=model2C unk30=model30
+fx_0dc Fx0dcWork unk20=model20 unk78=split78
+fx_0dc Fx0dcWork80 unk0=state0 unk4=frame4 unk70=pos70 unk78=split78 unk7A=spawnCount7A
+fx_0dc Fx0dcWork84 unk0=state0 unk4=frame4
+
+## fx_0dd
+fx_0dd D_801E8360 fx_0dd_morphBlocks  # [code] effect file block of each of the 6 Hi_RegisterTexEffModel models fx_0dd_op80 morphs through (Hi_DrawMorphEffModel)
+fx_0dd D_801E8870 fx_0dd_trails  # [code] particle trail buffer of the file block 0x11 emitter (0x35 slots of 0x28 bytes), fx_0dd_op80
+fx_0dd D_801E90B8 fx_0dd_rotPosKeys  # [code] rotation/position track (fxm_rotPosTrackInit from file block 1) of the first morph model, fx_0dd_op80
+fx_0dd D_801E90C0 fx_0dd_rotPosKeys2  # [code] rotation/position track (fxm_rotPosTrackInit from file block 0x10) of the second morph model, fx_0dd_op80
+fx_0dd D_801E90C8 fx_0dd_scaleKeys  # [code] scale track (fxm_vecTrackInit from file block 2) of the first morph model, fx_0dd_op80
+fx_0dd D_801E90D0 fx_0dd_scaleKeys2  # [code] scale track (fxm_vecTrackInit from file block 0xF) of the second morph model, fx_0dd_op80
+fx_0dd D_801E90D8 fx_0dd_emitPos  # [code] origin passed to btlfx_startEmitter for the file block 0x14 emitter, which then follows the model (btlfx_moveEmitterTo), fx_0dd_op80
+fx_0dd Fx0ddKey12 unk0=posX0 unk2=posY2 unk4=posZ4 unk6=rotX6 unk8=rotY8 unkA=rotZA
+fx_0dd Fx0ddTrack12 unk0=count0 unk4=keys4
+fx_0dd Fx0ddTrack6 unk0=count0 unk4=keys4
+fx_0dd Fx0ddWork80 unk44=pos44 unk54=morphTime54
+fx_0dd Fx0ddWork84 unk0=state0 unk4=frame4
+
+## fx_0de
+fx_0de D_801E8CE8 fx_0de_jumpScale  # [code] caster size scale (btlfx_getUnitRadius) set by fx_0de_op80, scales the unit jump height in fx_0de_op81
+fx_0de D_801E85F0 fx_0de_scrollSrc  # [code] per-frame VRAM source x y pairs passed to btlfx_drawScrollMove by fx_0de_op80
+fx_0de Fx0deWork81 unk0=homePos0 unk40=unitCount40 unk44=jumpHeight44 unk48=height48
+fx_0de Fx0deWork80 unkC=posC unk34=scale34
+fx_0de Fx0deWork84 unk0=state0 unk4=frame4
+fx_0de Fx0deFlash unk0=srcX0 unk2=srcY2
+
+## fx_0df
+fx_0df func_801E7EB8 fx_0df_recordElemDraw  # [code] element draw callback signature (particle position, rotation, scale, alpha, frame) that draws file block 0x10 particles and records the position in fx_0df_recentPos, not referenced by the module code
+fx_0df D_801EA350 fx_0df_recentPos  # [code] ring of the last 24 positions written by fx_0df_recordElemDraw, fx_0df_op83 picks random arc endpoints from it
+fx_0df D_801EA410 fx_0df_recentNext  # [code] next slot of fx_0df_recentPos (mod 24), reset by fx_0df_op80
+fx_0df D_801EA418 fx_0df_twist  # [code] twist strength of fxm_twistVertex (scales the radial angle offset), set to 0x800 by fx_0df_op80
+fx_0df D_801EA420 fx_0df_arcStrips  # [code] per-arc 15-point strip buffers (Fx0dfBolt) drawn by fxm_drawOffsetTrail, indexed by Fx0dfArc.strip10 in fx_0df_op83PoolTask
+fx_0df D_801EA790 fx_0df_arcJitter  # [code] btlfx_randCentered noise triples filled by fx_0df_op83 mode 1, per-point offsets of fxm_drawOffsetTrail
+fx_0df Fx0dfPart unk2=size2 unk4=pos4 unk14=roll14 unk16=rollSpeed16
+fx_0df Fx0dfWork unk20=model20 unk24=model24 unk28=model28 unk2C=model2C
+fx_0df Fx0dfArc unk0=pos0 unk8=pos8 unk10=strip10 unk14=jitter14
+fx_0df Fx0dfWork83 unk8=jitter8 unkC=arcCountC unk10=kind10
+fx_0df Fx0dfWork80 unk0=state0 unk4=frame4 unk8=otZ8 unk34=scroll34 unk38=yaw38
+fx_0df Fx0dfWork84 unk0=state0 unk4=frame4
+
+## fx_0e0
+fx_0e0 D_801EA8B0 fx_0e0_centerPos  # [code] SVECTOR the effect is centred on, fx_0e0_op80 copies it into Fx0e0Work80.pos8 and draws file blocks 0x1A 0x1B rings at it
+fx_0e0 D_801EA8B8 fx_0e0_objScales  # [code] model scale per Fx0e0Obj kind (Fx0e0Obj.vel4.pad), Hi_DrawEffModel scale in fx_0e0_op80PoolTask
+fx_0e0 D_801EA8C8 fx_0e0_rippleColors  # [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0e0_op80, entry 1 pulses with math_sin
+fx_0e0 D_801EA928 fx_0e0_trailStrips  # [code] 25-point strip buffers (Fx0e0Bolt) drawn by fxm_drawOffsetTrail in fx_0e0_op80
+fx_0e0 Fx0e0Obj unk0=state0 unk2=phase2 unk4=vel4 unk1C=spinX1C unk1E=spinY1E
+fx_0e0 Fx0e0Inst unk8=pos8 unk5C=model5C unk70=model70
+fx_0e0 Fx0e0Work80 unk0=state0 unk4=frame4 unk8=pos8 unk18=camAt18 unk24=pos24 unk30=scale30 unk44=scale44
+fx_0e0 Fx0e0Spark unk0=state0 unk4=velX4 unk6=velY6 unk8=velZ8 unkC=posXC unkE=posYE unk10=posZ10 unk14=rotX14 unk16=rotY16 unk18=rotZ18
+fx_0e0 Fx0e0Work84 unk0=state0 unk4=frame4
+
+## fx_0ba
+fx_0ba func_801EC124 fxm_arcTrailReset  # [code] resets the ring index of the arc trails (fx_0ba_arcTrailNext), called by fx_0ba_op85 mode 1 before fxm_arcTrailSpawn
+fx_0ba func_801EC130 fxm_arcTrailSpawn  # [code] fills the next 17-point arc trail (btlfx_lerpVec of two angle sets, btlfx_pointAhead around a centre at radius r) and spawns one pool particle per point that rides it, fx_0ba_op85
+fx_0ba D_801EED20 fx_0ba_arcTrails  # [code] ring of 5 17-point trails (Fx0baTrail) filled by fxm_arcTrailSpawn and drawn by fx_0ba_op85PoolTask (btlfx_drawTrail)
+fx_0ba D_801EEFDC fx_0ba_arcTrailNext  # [code] next slot of fx_0ba_arcTrails (mod 5), reset by fxm_arcTrailReset
+fx_0ba D_801ECAB0 fx_0ba_summonPos  # [code] Ramuh's draw position (Hi_DrawSummonModel) set every frame by fx_0ba_op80, centre of the fx_0ba_op85 arc trails and the fx_0ba_op83 kind 2 bolts
+fx_0ba D_801ECAB8 fx_0ba_orbPos  # [code] the orb position (Fx0baWork80.pos10) while fx_0ba_op80 shows it, zero otherwise, fx_0ba_op83 kind 2 bolts end there when set
+fx_0ba D_801EC54C fx_0ba_summonDone  # [code] set to 1 when fx_0ba_op80 ends, fx_0ba_op83 and fx_0ba_op85 stop spawning and end
+fx_0ba D_801EC554 fx_0ba_boltSrc  # [code] orb position written every frame by fx_0ba_op81, start of the fx_0ba_op83 bolts
+fx_0ba D_801EC55C fx_0ba_boltLen  # [code] bolt length set every frame by fx_0ba_op81 (0x1000, then from the key height), fx_0ba_op83 kind 1 bolt length and amplitude
+fx_0ba D_801EC560 fx_0ba_bandWidths  # [code] s16 per frame, the width passed to fxm_drawCenterBand by fx_0ba_op81 state 3
+fx_0ba D_801EC578 fx_0ba_ribbonFromBlocks  # [code] per ribbon (3) the effect file block of the start point list, lerped with fx_0ba_ribbonToBlocks into fx_0ba_ribbons by fx_0ba_op81
+fx_0ba D_801EC584 fx_0ba_ribbonToBlocks  # [code] per ribbon (3) the effect file block of the end point list, lerped with fx_0ba_ribbonFromBlocks into fx_0ba_ribbons by fx_0ba_op81
+fx_0ba D_801EC590 fx_0ba_ribbon13FromBlocks  # [code] per ribbon (3) the effect file block of the start point list of the 13-point ribbons (fx_0ba_ribbons13), fx_0ba_op81
+fx_0ba D_801EC59C fx_0ba_ribbon13ToBlocks  # [code] per ribbon (3) the effect file block of the end point list of the 13-point ribbons (fx_0ba_ribbons13), fx_0ba_op81
+fx_0ba D_801ECAC0 fx_0ba_offsetTrail  # [code] strip buffer drawn by fxm_drawOffsetTrail in fx_0ba_op81 state 3
+fx_0ba D_801ECF80 fx_0ba_ribbons  # [code] 6 17-point trails (two per ribbon, btlfx_drawTrail file blocks 5 and 0xD) built by fx_0ba_op81
+fx_0ba D_801ED2D0 fx_0ba_ribbons13  # [code] 3 13-point trails (btlfx_drawTrail file block 0x16) built by fx_0ba_op81
+fx_0ba D_801ED420 fx_0ba_boltTrails  # [code] per-bolt 17-point trails (Fx0baTrail) drawn by fxm_drawJaggedTrail, indexed by Fx0baBolt.strip10 in fx_0ba_op83PoolTask
+fx_0ba D_801ED424 fx_0ba_boltPoints  # [code] the points of fx_0ba_boltTrails (4 bytes in, Fx0baPath), fxm_randStripPoint32 picks a random point of a random bolt from it
+fx_0ba D_801EE5A0 fx_0ba_boltBranches  # [code] per-bolt branch strips (Fx0baStrip4) drawn by fxm_drawJaggedTrailBranch, indexed by Fx0baBolt.strip10
+fx_0ba D_801EEA20 fx_0ba_boltJitter  # [code] btlfx_randCentered noise table filled by fx_0ba_op83 mode 1, Fx0baBolt.jitter18 points into it
+fx_0ba Fx0baPart unk0=posX0 unk4=posY4 unk8=posZ8 unkC=velXC unkE=velYE unk10=velZ10 unk14=trail14 unk16=pointIdx16 unk18=point18
+fx_0ba Fx0baWork85 unk8=rot8
+fx_0ba Fx0baBolt unk0=pos0 unk8=pos8 unk10=strip10 unk11=kind11 unk12=branchAt12 unk13=branchAt13 unk15=amp15 unk18=jitter18
+fx_0ba Fx0baPath unk0=points0
+fx_0ba Fx0baWork83 unk0=jitter0 unk4=boltCount4 unk8=kind8
+fx_0ba Fx0baSummon unk60=model60
+fx_0ba Fx0baWork80 unk0=state0 unk4=frame4 unk28=pos28 unk34=scale34 unk48=summonPos48 unk54=summonScale54 unk70=scale70
+fx_0ba Fx0baPWork81 unk0=state0 unk4=frame4 unk18=camAt18 unk48=pos48 unk54=scale54
+
+## fx_0b8
+fx_0b8 func_801E9D80 fx_0b8_drawGradientPlane  # [code] 4x8 grid of textured POLY_GT4 in a flat plane at pos rotated by rot (math_rotMatrixYXZ), row colours from fx_0b8_planeColors faded by n, fx_0b8_op80
+fx_0b8 func_801EA1E0 fx_0b8_drawScreenBand  # [code] a full-width screen band of 3 textured POLY_GT4 (y, h, scrolled u x, colours c0 c1) over 3 POLY_F4 below it, fx_0b8_op80
+fx_0b8 func_801EA424 fx_0b8_drawScreenGradient  # [code] one full-screen (320x240) POLY_G4 with fixed warm colours at ot, fx_0b8_op80
+fx_0b8 D_801EA680 fx_0b8_planeColors  # [code] SVECTOR rgb per row (9) of fx_0b8_drawGradientPlane
+fx_0b8 D_801EA7B0 fx_0b8_particleFrom  # [code] 32 start points on a circle set by fx_0b8_op80, fx_0b8_op80ParticleMotion lerps particle slot i from entry i to a fixed point
+fx_0b8 D_801EA6D8 fx_0b8_bands  # [code] 4 Fx0b8Band (y, h, x, colours, speeds) moved and drawn with fx_0b8_drawScreenBand by fx_0b8_op80
+fx_0b8 D_801EC1C0 fx_0b8_bolts  # [code] 8 9-point trails (Fx0b8Bolt) with per-point positions and speeds, drawn with btlfx_drawTrail by fx_0b8_op80
+fx_0b8 D_801EC8C0 fx_0b8_units  # [code] per battle unit (Fx0b8Unit) the saved scale and rotation, spin angles and speeds, fx_0b8_op80 lifts and spins the units and restores them
+fx_0b8 D_801ECA60 fx_0b8_trails  # [code] particle trail buffer of the file block 0xE emitter (0x28 slots of 0x5C bytes), fx_0b8_op80
+fx_0b8 D_801ED8C0 fx_0b8_gridShift  # [code] shift applied to the fading btlfx_drawScreenGrid colour (n << shift) in fx_0b8_op80, set to 4
+fx_0b8 Fx0b8Work80 unk124=scale124 unk1E4=scroll1E4 unk1E8=scrollSpeed1E8
+fx_0b8 Fx0b8Bolt unk4C=x4C unk70=y70 unk94=dx94 unkB8=dyB8 unkDC=timerDC
+fx_0b8 Fx0b8Unit unk0=rot0 unk8=scale8 unk14=pos14 unk1C=pitch1C unk1E=yaw1E unk24=rot24 unk2C=spinX2C unk2E=spinY2E unk30=spinZ30
+fx_0b8 Fx0b8Band unk0=y0 unk4=h4 unk8=x8 unkC=colorC unk10=color10 unk14=dx14 unk18=dy18
+fx_0b8 Fx0b8Summon unk60=model60
+
+## fx_0d2
+fx_0d2 D_801EF228 fx_0d2_summonPath  # [code] position path (fxm_posPathInit, file blocks 0x92 then 0x9F) of Fenrir's summon model in fx_0d2_op80 (Hi_DrawSummonModel)
+fx_0d2 D_801EF230 fx_0d2_slicePath  # [code] rotation/position path (file block 0xA7) of the slice model from frame 0xB6 of fx_0d2_op80 (Hi_DrawSliceEffModel)
+fx_0d2 D_801EF250 fx_0d2_emitPath  # [code] position path (file block 0x82) the two file block 0x83 emitters follow (one mirrored in x), fx_0d2_op80
+fx_0d2 D_801F0040 fx_0d2_emitPos  # [code] origin passed to btlfx_startEmitter for the file block 0xA4 emitter in fx_0d2_op80 (then moved to camera pointRots 2)
+fx_0d2 D_801F0050 fx_0d2_emitPos2  # [code] two origins passed to btlfx_startEmitter for the file block 0x83 emitters in fx_0d2_op80
+fx_0d2 D_801F0060 fx_0d2_camChans  # [code] 64 camera key tracks (Fx0d2Track) filled by fxm_camChanAdd, played by fxm_camChanUpdate into g_btlCamera points
+fx_0d2 D_801F0460 fx_0d2_camChanFrame  # [code] frame counter per camera channel (4), advanced by fxm_camChanUpdate and compared with each track start
+fx_0d2 D_801EF270 fx_0d2_slicePaths  # [code] rotation/position paths of the 6 slice models (offset table in file block 0x90 or 0x91), fx_0d2_op81 and fx_0d2_op82
+fx_0d2 D_801EA440 fx_0d2_sliceBlocks  # [code] effect file block of each of the 6 slice models (btlfx_registerEffectModel) in fx_0d2_op81 and fx_0d2_op82
+fx_0d2 D_801EF1F0 fx_0d2_streak  # [code] Fx0d2Trail state (path keys, length, from to) of the 9 file block 0x1B trails built by fxm_buildPathTrail in fx_0d2_op81
+fx_0d2 D_801EF700 fx_0d2_streakBufs  # [code] 9 0x90-byte trail buffers built by fxm_buildPathTrail and drawn with btlfx_drawTrail (file block 0x1B) in fx_0d2_op81
+fx_0d2 D_801EF210 fx_0d2_streak2  # [code] Fx0d2Trail state of the 11 file block 0x25 trails built by fxm_buildPathTrail in fx_0d2_op81
+fx_0d2 D_801EFC10 fx_0d2_streakBufs2  # [code] 11 0x50-byte trail buffers built by fxm_buildPathTrail and drawn with btlfx_drawTrail (file block 0x25) in fx_0d2_op81
+fx_0d2 D_801EF300 fx_0d2_bgBuf  # [code] pixel buffer passed to btlfx_drawBgOffscreen by fx_0d2_op81 at frame 0x41
+fx_0d2 D_801EFF80 fx_0d2_unitPos  # [code] target positions saved by fx_0d2_op81 (btlfx_getUnitPos), fx_0d2_op83 offsets the units from them
+fx_0d2 D_801EFFC0 fx_0d2_unitScale  # [code] target scales saved by fx_0d2_op81 (btlfx_getUnitScale), fx_0d2_op83 scales the units from them and restores them
+fx_0d2 D_801EF240 fx_0d2_ringPath  # [code] rotation/position path (file block 0x84) of the first fx_0d2_op82 slice model (modelF4 0)
+fx_0d2 D_801EF258 fx_0d2_morphCurve  # [code] value path (file block 0x8F) of the Hi_DrawMorphEffModel blend in fx_0d2_op82
+fx_0d2 D_801EA3DC fx_0d2_spawns  # [code] 7 Fx0d2Spawn (file block, start frame, done, position) emitters started by fx_0d2_op82
+fx_0d2 D_801EA474 fx_0d2_spawnRot  # [code] rotation given every frame to the fx_0d2_spawns emitters in fx_0d2_op82
+fx_0d2 D_801EF238 fx_0d2_slicePath2  # [code] rotation/position path (file block 0x28) of the fx_0d2_op83 slice model (model136 0)
+fx_0d2 D_801EB138 fx_0d2_sliceModel  # [code] model data in the module passed to btlfx_registerEffectModel for fx_0d2_op83 model136 0
+fx_0d2 D_801EF248 fx_0d2_morphPath  # [code] rotation/position path (file block 9) of the fx_0d2_op83 morph models
+fx_0d2 D_801EF260 fx_0d2_morphCurve2  # [code] value path (file blocks 0x19 then 0x1A) of the Hi_DrawMorphEffModel blend in fx_0d2_op83
+fx_0d2 D_801EA44C fx_0d2_morphBlocks  # [code] effect file block of each of the 3 Hi_RegisterTexPtrModel morph models in fx_0d2_op83
+fx_0d2 D_801EA454 fx_0d2_texPages  # [code] tpage clut pairs passed to Hi_RegisterTexPtrModel (btl_applyModelTextures arg1) in fx_0d2_op83
+fx_0d2 D_801EA464 fx_0d2_uvOffsets  # [code] uv offsets passed to Hi_RegisterTexPtrModel (btl_applyModelTextures arg2) in fx_0d2_op83
+fx_0d2 D_801EA47C fx_0d2_pieceModels  # [code] offset table of 5 model data blocks in the module (fxm_offsetTableEntry, btlfx_registerEffectModel) for fx_0d2_op83 model136 4-8
+fx_0d2 D_801EF2A0 fx_0d2_piecePaths  # [code] rotation/position paths (offset table in file block 8) of the 10 pieces drawn with fx_0d2_pieceModels in fx_0d2_op83
+fx_0d2 D_801EF2F0 fx_0d2_unitOffsetPath  # [code] position path (file block 0x14) added to fx_0d2_unitPos for every target in fx_0d2_op83
+fx_0d2 D_801EF2F8 fx_0d2_unitScalePath  # [code] vector path (file block 0x15) multiplied into fx_0d2_unitScale for every target in fx_0d2_op83
+fx_0d2 Fx0d2Keys unk2=count2 unk4=keys4
+fx_0d2 Fx0d2Track unk0=data0 unk4=start4 unk6=left6 unk8=chan8 unkA=dstA unkC=keyC unkE=keyCountE
+fx_0d2 Fx0d2Work84 unk20=pos20 unk60=emitPos60 unkA0=doneA0
+fx_0d2 Fx0d2Model unk0=rot0 unk8=pos8 unk18=scale18
+fx_0d2 Fx0d2Spawn unk0=block0 unk2=frame2 unk4=done4 unk6=pos6
+fx_0d2 Fx0d2Work82 unk1C=xform1C unkBC=posBC
+fx_0d2 Fx0d2Path unk2=count2 unk4=points4
+fx_0d2 Fx0d2Key unk0=pos0 unk6=rot6
+fx_0d2 Fx0d2KeyPath unk2=count2 unk4=keys4
+fx_0d2 Fx0d2Track6 unk0=count0 unk4=keys4
+fx_0d2 Fx0d2Trail unk8=start8 unkA=lengthA unk10=from10 unk12=to12
+fx_0d2 Fx0d2Work81 unk14=pos14 unk24=scale24
+fx_0d2 Fx0d2Work80 unk1C=summonPos1C unk2C=summonScale2C unk44=pos44 unk54=scale54 unk6C=pos6C unk84=pos84 unk8C=pos8C unk9C=pathFrame9C
+fx_0d2 Fx0d2Summon unk60=model60
+fx_0d2 Fx0d2Work83 unk10=pos10 unk20=scale20 unk38=pos38 unk48=scale48 unk58=unitPos58 unk98=unitScale98 unk128=rot128 unk130=fadeOut130 unk132=fadeIn132 unk134=white134
+
+## fx_0d3
+fx_0d3 D_801EB048 fx_0d3_summonPos  # [code] base position of Phoenix (Hi_DrawSummonModel position, camera point 3) in fx_0d3_op80 and fx_0d3_op81, never written
+fx_0d3 D_801EB040 fx_0d3_centerPos  # [code] fixed point the fx_0d3_op81 emitters, texel quads (fxm_drawTexelQuads) and camera target use, never written
+fx_0d3 D_801EB050 fx_0d3_sharedModel  # [code] model id of file block 0x26 registered by fx_0d3_op80, fx_0d3_op81 keeps it in Fx0d3Work81.model60 and draws it again
+fx_0d3 D_801EB084 fx_0d3_spawnBones  # [code] 5 summon bone indices cycled by fx_0d3_op81SpawnPoint (Hi_GetSummonBonePos)
+fx_0d3 D_801EB098 fx_0d3_spawnBoneNext  # [code] next index into fx_0d3_spawnBones (mod 5), fx_0d3_op81SpawnPoint
+fx_0d3 D_801EB0C4 fx_0d3_camKeyBlocks  # [code] effect file blocks of the two fxm_keyGetVec camera tracks of fx_0d3_op87 (points 0 and 1) and its end frame
+fx_0d3 D_801EDF44 fx_0d3_waveAmp  # [code] amplitude of the fxm_waveVertexX sine offset, set by fx_0d3_op81
+fx_0d3 D_801EDF48 fx_0d3_wavePhase  # [code] phase of the fxm_waveVertexX sine offset, set by fx_0d3_op81 every frame
+fx_0d3 D_801EB114 fx_0d3_trails  # [code] particle trail buffer of the file block 2 emitter (0xC0 slots of 0x1C bytes), fx_0d3_op80
+fx_0d3 D_801EC614 fx_0d3_trails2  # [code] particle trail buffer of the file block 0xB emitter (0x4A slots of 0x1C bytes), fx_0d3_op81
+fx_0d3 D_801ECE34 fx_0d3_trails3  # [code] particle trail buffer of the file block 0x10 emitter (0x40 slots of 0x1C bytes), fx_0d3_op81
+fx_0d3 D_801EB054 fx_0d3_ribbonBones  # [code] 6 summon bone index pairs, the two edge points (Hi_GetSummonBonePos) of each fxm_drawTexRibbonTrail ribbon in fx_0d3_op81
+fx_0d3 D_801EDAC4 fx_0d3_ribbonSegs  # [code] per ribbon (6) the 12-step edge history (Fx0d3Seg) of fxm_drawTexRibbonTrail in fx_0d3_op81
+fx_0d3 D_801EB09C fx_0d3_rippleColors  # [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0d3_op81 (first ripple)
+fx_0d3 D_801EB0AC fx_0d3_rippleColors2  # [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0d3_op81 (second ripple)
+fx_0d3 D_801EB0B8 fx_0d3_rippleColors3  # [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0d3_op81 (third ripple)
+fx_0d3 D_801EDF54 fx_0d3_texels  # [code] 16-bit texel buffer of fxm_drawTexelQuads (vertex colours read from it, refilled by StoreImage), fx_0d3_op81
+fx_0d3 Fx0d3Track unk2=count2 unk4=keys4
+fx_0d3 Fx0d3Seg unk0=edgeA0 unk8=edgeB8
+fx_0d3 Fx0d3Work80 unk0=state0 unk4=frame4 unk10=summonPos10 unk1C=summonScale1C unk64=model64 unk68=scroll68
+fx_0d3 Fx0d3Summon unk60=model60
+fx_0d3 Fx0d3Work81 unk0=state0 unk4=frame4 unk10=summonPos10 unk1C=summonScale1C unk40=camAt40 unk60=model60
+fx_0d3 Fx0d3Summon81 unk60=model60
+fx_0d3 Fx0d3BonePair unk0=bone0 unk4=bone4
+
+## fx_0d2
+fx_0d2 Fx0d2Work80 unk94=motion94 unk98=loop98

@@ -10,15 +10,15 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
     s32 t;
 
     if (mode == 1) {
-        part->unk0 = 0;
+        part->state0 = 0;
         part->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&part->pos4);
         if (part->emitC != NULL) {
             part->emitC->otZ = 0;
         }
     } else {
-        switch (part->unk0) {
+        switch (part->state0) {
         case 0:
-            BTLFX_COPY_SVEC(&pos, &part->unk10);
+            BTLFX_COPY_SVEC(&pos, &part->pos10);
             t = (frame << 12) / 20;
             pos.vy -= 0x1000;
             pos.vy += t;
@@ -36,7 +36,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 7), &part->pos4, NULL, 0x1000, 0, 1, -1, 0, 0);
             env->otZ = 0;
             if (frame >= 0x14) {
-                part->unk0 = 1;
+                part->state0 = 1;
                 ((s16 *)part)[-1] = -1;
                 if (part->emitC != NULL) {
                     part->emitC->frame = part->emitC->tail->anim.duration;
@@ -82,29 +82,29 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ((EffInit *)arg4)->elemFn = (s32)fx_0cc_op80PoolTask;
         ((EffInit *)arg4)->poolCount = 0xB;
     } else if (mode == 1) {
-        work->unk0 = 0;
-        work->unkC = 0;
+        work->state0 = 0;
+        work->spawnCountC = 0;
         fx_0cc_env = env;
         ex->btlfx_initEffModels(fx_0cc_effModels, 1);
         work->model10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xF), 0);
-        BTLFX_COPY_SVEC(&work->unk4, &env->targets->centerX);
-        work->unk4.vy = 0;
+        BTLFX_COPY_SVEC(&work->pos4, &env->targets->centerX);
+        work->pos4.vy = 0;
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             if (frame & 1) {
-                if (work->unkC < 10) {
-                    work->unkC++;
+                if (work->spawnCountC < 10) {
+                    work->spawnCountC++;
                     part = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (part != NULL) {
-                        part->unk10.vx = work->unk4.vx + ex->btlfx_randCentered(0x800);
-                        part->unk10.vz = work->unk4.vz + ex->btlfx_randCentered(0x800);
-                        part->unk10.vy = 0;
+                        part->pos10.vx = work->pos4.vx + ex->btlfx_randCentered(0x800);
+                        part->pos10.vz = work->pos4.vz + ex->btlfx_randCentered(0x800);
+                        part->pos10.vy = 0;
                     }
                 }
             }
-            if (work->unkC >= 10) {
+            if (work->spawnCountC >= 10) {
                 if (frame >= 0x29) {
                     ex->btlfx_clearEffModels();
                 }

@@ -10,3 +10,7 @@ fx_0e0_op80PoolTask = 0x801E8628; // type:func [code] btlfx pool element functio
 fx_0e0_env = 0x801EA918; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_0e0_effModels = 0x801EAB98; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
 fxm_drawOffsetTrail = 0x801E8430; // type:func [code] trail strip from to (points lerped along, pushed sideways by btlfx_offsetPoint after btlfx_aimAngles), drawn with btlfx_drawTrail
+fx_0e0_centerPos = 0x801EA8B0; // [code] SVECTOR the effect is centred on, fx_0e0_op80 copies it into Fx0e0Work80.pos8 and draws file blocks 0x1A 0x1B rings at it
+fx_0e0_objScales = 0x801EA8B8; // [code] model scale per Fx0e0Obj kind (Fx0e0Obj.vel4.pad), Hi_DrawEffModel scale in fx_0e0_op80PoolTask
+fx_0e0_rippleColors = 0x801EA8C8; // [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0e0_op80, entry 1 pulses with math_sin
+fx_0e0_trailStrips = 0x801EA928; // [code] 25-point strip buffers (Fx0e0Bolt) drawn by fxm_drawOffsetTrail in fx_0e0_op80

@@ -1,7 +1,8 @@
 #ifndef FX_0D0_H
 #define FX_0D0_H
 
-/* Effect module fx_0d0 (dir 13 file 0xD0). */
+/* Effect module fx_0d0 (dir 13 file 0xD0): Power Break. Evidence: [data] the party ability / item tables and enemy
+ * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -14,6 +15,6 @@ typedef struct {
 } Fx0d0Work;
 
 extern Unk800F78A4 *fx_0d0_env;
-extern s32 D_801E79B0[];
+extern s32 fx_0d0_trails[];
 
 #endif

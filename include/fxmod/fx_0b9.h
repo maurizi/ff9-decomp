@@ -1,7 +1,9 @@
 #ifndef FX_0B9_H
 #define FX_0B9_H
 
-/* Effect module fx_0b9 (dir 13 file 0xB9). */
+/* Effect module fx_0b9 (dir 13 file 0xB9): enemy Sandstorm (Core/Sand Golem, ...). Evidence: [data] the party
+ * ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -10,19 +12,19 @@ typedef struct {
     SVECTOR pos8; /* position: env->targets->centerX..Z */
     SVECTOR pos10; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR pos18; /* btlfx_getUnitArgBonePos(0x10, 0), every frame */
-    SVECTOR unk20; /* angles from unk10 to unk8 */
+    SVECTOR rot20; /* angles from pos10 to pos8 */
 } Fx0b9Work80;
 
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* unit position, raised by 0xC8 */
-    SVECTOR unkC; /* angles from D_801E7B9C to unk4 */
-    s32 unk14; /* unit */
+    SVECTOR rotC; /* angles from fx_0b9_srcPos to pos4 */
+    s32 unit14; /* unit */
 } Fx0b9Work81;
 
 extern Unk800F78A4 *fx_0b9_env;
-extern SVECTOR D_801E7B9C;
-extern s32 D_801E7BA4[];
-extern s32 D_801E87D4[];
+extern SVECTOR fx_0b9_srcPos;
+extern s32 fx_0b9_trails[];
+extern s32 fx_0b9_trails2[];
 
 #endif
