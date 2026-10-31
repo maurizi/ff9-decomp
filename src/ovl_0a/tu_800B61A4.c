@@ -2697,14 +2697,14 @@ s32 fldbg_drawFollowMask(BgFile *bg, BgOverlay *o, FieldBgState *st, BgFollowOve
         if (u < 0) {
             u = 0;
         }
-        setXY4(p, 0, u, x, u, 0, 0xE0, x, 0xE0);
+        setXY4(p, 0, u, x, u, 0, SCREEN_H, x, SCREEN_H);
         addPrim(&ot[7], p);
     }
     if (y > 0) {
         u = x + o->width;
         p = &f->quads[*g_fieldBgCtx.bufIndex][1];
-        if (u > 0x140) {
-            u = 0x140;
+        if (u > SCREEN_W) {
+            u = SCREEN_W;
         }
         v = y;
         if (v < 0) {
@@ -2713,18 +2713,18 @@ s32 fldbg_drawFollowMask(BgFile *bg, BgOverlay *o, FieldBgState *st, BgFollowOve
         setXY4(p, 0, 0, u, 0, 0, v, u, v);
         addPrim(&ot[7], p);
     }
-    if (x + o->width < 0x140) {
+    if (x + o->width < SCREEN_W) {
         u = x + o->width;
         v = y + o->height;
         p = &f->quads[*g_fieldBgCtx.bufIndex][2];
-        w = 0x140 - u;
-        if (v > 0xE0) {
-            v = 0xE0;
+        w = SCREEN_W - u;
+        if (v > SCREEN_H) {
+            v = SCREEN_H;
         }
         setXYWH(p, u, 0, w, v);
         addPrim(&ot[7], p);
     }
-    if (y + o->height < 0xE0) {
+    if (y + o->height < SCREEN_H) {
         p = &f->quads[*g_fieldBgCtx.bufIndex][3];
         v = x;
         if (v < 0) {
@@ -2734,7 +2734,7 @@ s32 fldbg_drawFollowMask(BgFile *bg, BgOverlay *o, FieldBgState *st, BgFollowOve
         if (u < 0) {
             u = 0;
         }
-        setXY4(p, v, u, 0x140, u, v, 0xE0, 0x140, 0xE0);
+        setXY4(p, v, u, SCREEN_W, u, v, SCREEN_H, SCREEN_W, SCREEN_H);
         addPrim(&ot[7], p);
     }
     if (f->abr < 4) {

@@ -70,7 +70,7 @@ void opening_main(void) {
 
 void opening_clearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], OT_LEN);
 }
 
 void opening_swapBuffers(void) {
@@ -83,7 +83,7 @@ void opening_swapBuffers(void) {
     PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
     i = ctx->drawBuf;
-    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    DrawOTagEnv(ctx->ot[i] + OT_LAST, &g_gameState->drawEnv[i]);
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);
 }

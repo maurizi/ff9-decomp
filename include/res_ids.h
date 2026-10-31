@@ -90,4 +90,29 @@
 #define FILE_BTL_COMMON 0x271B /* btl_loadCommonData */
 #define FILE_ENDING_DATA 0x2F44 /* ending_loadData */
 
+/* Screen: two SCREEN_W-wide buffers side by side at VRAM (0, 0) and (SCREEN_W, 0) (game_setScreenHeight).
+ * SCREEN_H is the default height (field, menus); battle and world map use 0xDA. The display is centred in the
+ * SCREEN_H_NTSC lines of an NTSC frame. */
+#define SCREEN_W 320
+#define SCREEN_H 224
+#define SCREEN_H_NTSC 240
+
+/* Ordering tables (docs/r29/battle-render.md). Each mode's scene OT GameData.ot[drawBuf] has OT_LEN entries, is
+ * cleared with ClearOTagR (entry i links to i - 1) and drawn from OT_LAST, so higher entries are farther away.
+ * Battle and world map clear OT_PAD extra entries on each side. */
+#define OT_LEN 0x1000
+#define OT_LAST (OT_LEN - 1)
+#define OT_PAD 8
+#define BTL_BG_OT_LEN 0x100 /* battle background OT (Battle11C0.ot, btlbg_draw; btlfx_drawBgOffscreen has its own) */
+
+/* Fixed RAM regions, as PSX_RAM(type, addr) pointers (ports remap them). docs/ff9img.md,
+ * docs/r29/battle-arena-memory.md */
+#define RAM_SUB_OVL(type) PSX_RAM(type, 0x801EDF00) /* load address of the menu overlays (0x32-0x3E) and ovl_65; ends
+                                                     * below the stack. Also where menu_readPortraits reads, and
+                                                     * the top of the field / world model cache */
+#define RAM_BTLFX_MODULE(type) PSX_RAM(type, 0x801E7700) /* battle effect module area (0xA000 bytes, to the ring); also
+                                                          * staging for FILE_BTLFX_COMMON and btlfx_runScript */
+#define RAM_BTLFX_MODULE_HI(type) PSX_RAM(type, 0x801EC700) /* its second half: odd kind-1 groups (summons) */
+#define RAM_BTLFX_RING(type) PSX_RAM(type, 0x801F1700) /* effect data ring (0xC800 bytes, to 0x801FDF00) */
+
 #endif

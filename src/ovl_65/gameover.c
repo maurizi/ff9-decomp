@@ -73,15 +73,15 @@ void gameover_initDisp(DispBuf *b) {
     u32 i;
 
     ClearImage(&rect, 0, 0, 0);
-    SetDefDrawEnv(&b[0].draw, 0, 0, 320, 224);
-    SetDefDispEnv(&b[0].disp, 320, 0, 320, 224);
-    SetDefDrawEnv(&b[1].draw, 320, 0, 320, 224);
-    SetDefDispEnv(&b[1].disp, 0, 0, 320, 224);
+    SetDefDrawEnv(&b[0].draw, 0, 0, SCREEN_W, SCREEN_H);
+    SetDefDispEnv(&b[0].disp, SCREEN_W, 0, SCREEN_W, SCREEN_H);
+    SetDefDrawEnv(&b[1].draw, SCREEN_W, 0, SCREEN_W, SCREEN_H);
+    SetDefDispEnv(&b[1].disp, 0, 0, SCREEN_W, SCREEN_H);
     for (i = 0; i < 2; i++) {
         b[i].draw.dtd = 1;
         b[i].draw.isbg = 1;
         b[i].disp.isinter = 0;
-        setRECT(&b[i].disp.screen, 0, 8, 256, 224);
+        setRECT(&b[i].disp.screen, 0, 8, 256, SCREEN_H);
         gfx_initTpageSprt(&b[i].picTpage0, GetTPage(2, 0, 0, 256));
         setXY0(&b[i].pic0, 0, 0);
         setUV0(&b[i].pic0, 0, 0);
@@ -94,7 +94,7 @@ void gameover_initDisp(DispBuf *b) {
         setRGB0(&b[i].pic1, 0x80, 0x80, 0x80);
         gfx_initTpageTile(&b[i].fadeTpage, GetTPage(0, 2, 0, 0));
         setXY0(&b[i].fade, 0, 0);
-        setWH(&b[i].fade, 320, 224);
+        setWH(&b[i].fade, SCREEN_W, SCREEN_H);
         setRGB0(&b[i].fade, 0, 0, 0);
         SetSemiTrans(&b[i].fade, 1);
     }

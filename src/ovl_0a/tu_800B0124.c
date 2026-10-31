@@ -1762,7 +1762,7 @@ void fld_showSplashImage(void) {
     preload_reset();
     game_setClearColor(0, 0, 0);
     do {
-        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
         switch (state) {
         case 0:
             n = 0x3C;
@@ -1806,7 +1806,7 @@ void fld_showSplashImage(void) {
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
         PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
-        DrawOTagEnv(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + 0xFFF, &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
+        DrawOTagEnv(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + OT_LAST, &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
         g_gameState->gameData->drawBuf ^= 1;
     } while (state < 4);
 }

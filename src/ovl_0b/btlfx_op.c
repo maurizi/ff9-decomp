@@ -22,10 +22,10 @@ s32 btlfx_reloadCommonData(s32 arg0) {
     RECT r;
     s32 ret = 0;
     s32 i;
-    u32 *p = PSX_RAM(u32 *, 0x801E7700);
+    u32 *p = RAM_BTLFX_MODULE(u32 *);
     if (arg0 == 0) {
         FileEntry *e = file_find(DIR_COMMON, FILE_BTLFX_COMMON);
-        cd_readAsync(g_gameState->imgSector + e->sector, (e->unkC - e->sector) << 11, PSX_RAM(void *, 0x801E7700), 0);
+        cd_readAsync(g_gameState->imgSector + e->sector, (e->unkC - e->sector) << 11, RAM_BTLFX_MODULE(void *), 0);
     } else if (cd_getState() == 0) {
         btlfx_resetMaskBit();
         r.w = 0x40;
@@ -1017,7 +1017,7 @@ void btlfx_drawScrollMove(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 
         a.w = arg3;
         a.h = m;
         SetDrawMove(p, &a, arg1, arg2 + h);
-        AddPrim(&g_btlfxEnv->ot[0xFFF], p);
+        AddPrim(&g_btlfxEnv->ot[OT_LAST], p);
     }
     p++;
     if (h != 0) {
@@ -1026,7 +1026,7 @@ void btlfx_drawScrollMove(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 
         b.w = arg3;
         b.h = h;
         SetDrawMove(p, &b, arg1, arg2);
-        AddPrim(&g_btlfxEnv->ot[0xFFF], p);
+        AddPrim(&g_btlfxEnv->ot[OT_LAST], p);
     }
 }
 
@@ -1188,7 +1188,7 @@ void btlfx_drawBgOffscreen(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 ar
     e->env.g0 = 7;
     e->env.b0 = 7;
     e->prev = *(DRAWENV *)&g_btlfxEnv->drawEnv;
-    ClearOTag(ot, 0x100);
+    ClearOTag(ot, BTL_BG_OT_LEN);
     mode = ReadGeomScreen();
     ReadGeomOffset(&ox, &oy);
     SetGeomScreen(0x200);

@@ -1253,7 +1253,7 @@ void wm_streamSoundChunk(WmStreamReq *arg0) {
 void wm_clearOT(void) {
     GameData *gd = g_gameState->gameData;
 
-    ClearOTagR(gd->ot[gd->drawBuf] - 8, 0x1010);
+    ClearOTagR(gd->ot[gd->drawBuf] - OT_PAD, OT_LEN + 2 * OT_PAD);
 }
 
 void wm_endFrame(void) {
@@ -1280,7 +1280,7 @@ void wm_endFrame(void) {
     gd = g_gameState->gameData;
     if (!(gd->flags & GD_PAUSED)) {
         if (gd->ctx.world->flags & WM_MAP_NO_TRANSITION) {
-            DrawOTagEnv(gd->ot[gd->drawBuf] + 0xFFF, &g_gameState->drawEnv[gd->drawBuf]);
+            DrawOTagEnv(gd->ot[gd->drawBuf] + OT_LAST, &g_gameState->drawEnv[gd->drawBuf]);
         } else {
             DrawOTag(gd->ot[gd->drawBuf]);
         }

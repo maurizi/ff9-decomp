@@ -52,7 +52,7 @@ s32 opening_movieThenTitle(void) {
                 r = mbg_update(0);
                 end = mbg_getLastFrame();
                 if (r != 0) {
-                    DrawOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1] + 0xFFF);
+                    DrawOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1] + OT_LAST);
                 } else if (timer == -1 && g_gameState->gameData->drawBuf == 0 && !(g_movieFlags & MOVIE_SKIPPING)) {
                     g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x = 0x1E0;
                 }
@@ -176,7 +176,7 @@ s32 opening_movieInit(void) {
 
 void opening_movieClearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], OT_LEN);
 }
 
 void opening_movieSwap(void) {
@@ -200,7 +200,7 @@ void opening_movieSwap(void) {
         PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
     } else {
         g = g_gameState->gameData;
-        DrawOTagEnv(g->ot[g->drawBuf] + 0xFFF, &g_gameState->drawEnv[g->drawBuf]);
+        DrawOTagEnv(g->ot[g->drawBuf] + OT_LAST, &g_gameState->drawEnv[g->drawBuf]);
     }
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);

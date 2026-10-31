@@ -141,7 +141,7 @@ void fld_init(void) {
     f = g_gameState->gameData->ctx.field;
     fld_initMap();
     g_gameState->vsyncMode = 2;
-    game_setScreenHeight(0xE0);
+    game_setScreenHeight(SCREEN_H);
     game_freezeScreen();
     SetDispMask(1);
     g_gameState->gameData->modelHook = fld_setupActorModel;
@@ -762,8 +762,8 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
     s32 k;
 
     size = g_gameState->gameData->sceneSectors[1] << 11;
-    if ((s32)((s32)PSX_RAM(u8 *, 0x801EDF00) - (g_modeHeap + size)) < 0x17000) {
-        size = (s32)(PSX_RAM(u8 *, 0x801EDF00) - 0x17000) - g_modeHeap;
+    if ((s32)((s32)RAM_SUB_OVL(u8 *) - (g_modeHeap + size)) < 0x17000) {
+        size = (s32)(RAM_SUB_OVL(u8 *) - 0x17000) - g_modeHeap;
         size = size / 2048 * 2048;
     }
     id = (u16)arg1 | DB_FIELD;

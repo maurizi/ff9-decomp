@@ -284,7 +284,7 @@ void tm_mainLoop(void) {
 }
 
 void tm_clearOt(void) {
-    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
 }
 
 void tm_endFrame(TmState *s) {
@@ -305,7 +305,7 @@ void tm_endFrame(TmState *s) {
     PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
-    DrawOTag(ctx->ot[ctx->drawBuf] + 0xFFF);
+    DrawOTag(ctx->ot[ctx->drawBuf] + OT_LAST);
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);
 }

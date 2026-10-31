@@ -669,7 +669,7 @@ void w_frameSystemDestructor(void) {
 }
 
 s32 wm_getModelCacheBottom(void) {
-    return (s32)PSX_RAM(u8 *, 0x801EDF00);
+    return (s32)RAM_SUB_OVL(u8 *);
 }
 
 s32 wm_getChunkBuffer(void) {
@@ -789,7 +789,7 @@ void wm_postDraw(void) {
 }
 
 s32 func_800B8568(void) {
-    return (s32)PSX_RAM(u8 *, 0x801EDF00);
+    return (s32)RAM_SUB_OVL(u8 *);
 }
 
 void wm_initLighting(void) {

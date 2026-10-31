@@ -373,10 +373,10 @@ void btlfx_halt(char *arg0) {
     g_btlfxHaltBufs.cur = &g_btlfxHaltBufs.bufs[1];
     g_btlfxHaltBufs.bufs[0].index = 0;
     g_btlfxHaltBufs.bufs[1].index = 1;
-    SetDefDrawEnv(&g_btlfxHaltBufs.bufs[0].draw, 0, 0, 320, 240);
-    SetDefDrawEnv(&g_btlfxHaltBufs.bufs[1].draw, 0, 240, 320, 240);
-    SetDefDispEnv(&g_btlfxHaltBufs.bufs[0].disp, 0, 240, 320, 240);
-    SetDefDispEnv(&g_btlfxHaltBufs.bufs[1].disp, 0, 0, 320, 240);
+    SetDefDrawEnv(&g_btlfxHaltBufs.bufs[0].draw, 0, 0, SCREEN_W, SCREEN_H_NTSC);
+    SetDefDrawEnv(&g_btlfxHaltBufs.bufs[1].draw, 0, SCREEN_H_NTSC, SCREEN_W, SCREEN_H_NTSC);
+    SetDefDispEnv(&g_btlfxHaltBufs.bufs[0].disp, 0, SCREEN_H_NTSC, SCREEN_W, SCREEN_H_NTSC);
+    SetDefDispEnv(&g_btlfxHaltBufs.bufs[1].disp, 0, 0, SCREEN_W, SCREEN_H_NTSC);
     g_btlfxHaltBufs.bufs[1].draw.isbg = 1;
     g_btlfxHaltBufs.bufs[0].draw.isbg = 1;
     setRGB0(&g_btlfxHaltBufs.bufs[0].draw, 0, 0, 0);

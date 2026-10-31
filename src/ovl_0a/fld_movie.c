@@ -754,7 +754,7 @@ u32 fld_getModelCacheBottom(Unk800C9CCC **arg0) {
     u32 min;
     s32 i;
 
-    min = (s32)PSX_RAM(u8 *, 0x801EDF00);
+    min = (s32)RAM_SUB_OVL(u8 *);
     if (arg0 != NULL) {
         *arg0 = NULL;
     }
@@ -805,7 +805,7 @@ void fld_compactModelCache(void) {
     u32 sz;
     Unk800C9CCC *t;
 
-    top = (s32)PSX_RAM(u8 *, 0x801EDF00);
+    top = (s32)RAM_SUB_OVL(u8 *);
     for (i = 9; i >= 0; i--) {
         s = &g_fieldModelCache[i];
         id = s->id;
@@ -1256,7 +1256,7 @@ void fld_movieUpdate(void) {
             }
             if ((g_mbgFrame >= t || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & 0x100)) {
                 if (g_fieldMovieLastFrame >= g_mbgFrame) {
-                    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+                    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
                     g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_HIDE_ALL);
                     g_gameState->gameData->ctx.field->flags &= ~0xE01;
                     if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0 && g_gameState->gameData->drawBuf == 0) {
@@ -1327,13 +1327,13 @@ void fld_movieRequestStop(void) {
 
 void fld_beginFrame(void) {
     if (g_gameState->gameData->ctx.field->flags & FLD_MAP_SHADOW_MASK) {
-        ClearOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+        ClearOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
         setlen(&g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1], 2);
         g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[0] = _get_mask(0, 0);
         g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[1] = 0;
-        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1][0xFFF], &g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1]);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1][OT_LAST], &g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1]);
     } else {
-        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
     }
     msg_beginDraw();
 }
@@ -1372,7 +1372,7 @@ void fld_endFrame(void) {
             if (f & FLD_MAP_CLEAR_ONLY) {
                 PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
             } else if (f & 4) {
-                DrawOTagEnv(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
+                DrawOTagEnv(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
             } else {
                 DrawOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf]);
             }
@@ -1577,7 +1577,7 @@ void fld_togglePause(void) {
         setlen(&g_fieldPauseDim, 3);
         g_fieldPauseDim.code = 0x62;
         setRGB0(&g_fieldPauseDim, 0x60, 0x60, 0x60);
-        setWH(&g_fieldPauseDim, 320, 224);
+        setWH(&g_fieldPauseDim, SCREEN_W, SCREEN_H);
         setXY0(&g_fieldPauseDim, 0, 0);
         setlen(&g_fieldPauseTPage, 1);
         a = getaddr(&g_fieldTempOt);

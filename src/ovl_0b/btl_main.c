@@ -2127,8 +2127,8 @@ s32 btl_isMusicFadingOut(void) {
 }
 
 void btl_beginFrame(void) {
-    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] - 8, 0x1010);
-    ClearOTagR((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], 0x100);
+    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] - OT_PAD, OT_LEN + 2 * OT_PAD);
+    ClearOTagR((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], BTL_BG_OT_LEN);
     ClearOTagR(fade_getOt(g_gameState->gameData->drawBuf), 1);
     ClearOTagR((u32 *)btl_getBannerOt(g_gameState->gameData->drawBuf), 1);
     setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unk0, 2);
@@ -2152,15 +2152,15 @@ void btl_endFrame(void) {
     setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0, 2);
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0)[1] = GPU_STP(1, 0);
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0)[2] = 0;
-    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0);
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0);
     setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC, 2);
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC)[1] = GPU_STP(1, 0);
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC)[2] = 0;
-    addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[0xFF], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC);
+    addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC);
     btl_putDispEnvNoUi();
     if (!(g_gameState->gameData->flags & 0x100) && !(g_gameState->gameData->ctx.ovl65->unk0 & 0x200)) {
-        btlui_drawOTagEnv(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[0xFF], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
-        DrawOTag(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF]);
+        btlui_drawOTagEnv(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
+        DrawOTag(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST]);
     }
     if (!(g_gameState->gameData->flags & 0x20)) {
         g_gameState->gameData->drawBuf ^= 1;
@@ -2182,7 +2182,7 @@ void btl_preloadExit(void) {
     g_gameState->gameData->preloadRequest = NULL;
     f = file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE_END));
     size = (f->unkC - f->sector) << 11;
-    preload_setEntry(preload_add(), 0, OVL_KEY(OVL_BATTLE_END), (s32)PSX_RAM(u8 *, 0x801EDF00), size, size, f->sector, size);
+    preload_setEntry(preload_add(), 0, OVL_KEY(OVL_BATTLE_END), (s32)RAM_SUB_OVL(u8 *), size, size, f->sector, size);
     f = file_find(DIR_COMMON, FILE_BTL_END_DB);
     dst = b->loadBuf;
     size = (f->unkC - f->sector) << 11;

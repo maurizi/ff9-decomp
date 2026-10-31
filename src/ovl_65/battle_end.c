@@ -8,7 +8,7 @@ void battleEnd_main(void) {
     s = g_gameState->gameData->ctx.ovl65->work;
     battleEnd_init();
     do {
-        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
         pad_update();
         switch (battleEnd_update()) {
         case 1:
@@ -28,7 +28,7 @@ void battleEnd_main(void) {
         PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
         ctx = g_gameState->gameData;
         i = ctx->drawBuf;
-        DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+        DrawOTagEnv(ctx->ot[i] + OT_LAST, &g_gameState->drawEnv[i]);
         g_gameState->gameData->drawBuf ^= 1;
         gfx_setBuffer(g_gameState->gameData->drawBuf);
     } while (g_gameState->mode == 8);
