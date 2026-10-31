@@ -132,8 +132,8 @@ extern SceneMode g_sceneModes[SCENE_COUNT];
 
 typedef struct {
     u8 cur; /* scene id */
-    u8 unk1;
-    u8 unk2;
+    u8 unk1; /* not used by C */
+    u8 unk2; /* write-only (cleared) */
     u8 fadeScreen; /* opening_titleStartFadeIn: 0 fades the choices in, 1 shows them and fades the screen in */
 } SceneState;
 extern SceneState g_scene;
@@ -166,7 +166,7 @@ enum { TITLE_NEW_GAME, TITLE_CONTINUE };
 
 /* Title menu state (g_titleMenu). */
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* write-only (set to 1) */
     u8 shown;    /* choices and cursor drawn */
     u8 fadingIn; /* choices fading in (opening_titleDrawFading), no input */
     u8 cursor;   /* TITLE_NEW_GAME / TITLE_CONTINUE */
@@ -176,7 +176,7 @@ typedef struct {
     u8 decided;   /* set when the fade-out after a choice ends */
     u8 pad9[3];
     s32 fadeFrames;
-    s32 unk10;
+    s32 unk10; /* write-only (cleared) */
     s32 cardEvents[4]; /* OpenEvent handles of g_titleCardEvents */
     TitleImage images[TITLE_IMG_COUNT];
 } TitleMenu;

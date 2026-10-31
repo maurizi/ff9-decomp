@@ -217,7 +217,7 @@ typedef struct {
     u8 type;
     u8 pdef;
     u8 mdef;
-    u8 unk4;
+    u8 unk4; /* not read by C */
 } TmCardData; /* g_tmCardData entry, base stats of a card id */
 
 typedef struct {
@@ -286,7 +286,7 @@ typedef struct {
     s32 deck;     /* opponent's deck, index into g_tmDecks */
     s32 aiLevel;  /* opponent's AI level 0-3 (tm_enemySelect) */
     s32 opponent; /* opponent id from GameData.unk8B2, index into g_tmOpponents */
-    s32 unk454;
+    s32 unk454; /* write-only (set to 1) */
     Window *msgWin; /* confirm / rematch / trade window */
     s32 result;   /* TM_RESULT_* */
     s32 moveFrames; /* length of the card move animations */
@@ -305,8 +305,8 @@ typedef struct {
     TmCard *attacker;
     s32 copyIdx;  /* which copy of the card under the stock cursor */
     Window *infoWin; /* over-100 / discard / draw windows */
-    s32 unk4BC;
-    s32 unk4C0;
+    s32 unk4BC; /* write-only (cleared) */
+    s32 unk4C0; /* write-only (set to 1) */
     Window *less5Win;
     s32 arrowOdds[9]; /* percent chance of a card having 0-8 arrows (tm_makeCard) */
     s32 oddsRow;  /* arrowOdds entry edited in STAGE SELECT */
@@ -323,7 +323,7 @@ typedef struct {
     u8 pad516[0x54C - 0x516];
     s32 hasLostCard;
     s32 lostSlot;
-    s32 unk554;
+    s32 unk554; /* write-only (cleared) */
     u8 savedRepeat[12]; /* key-repeat flags of 12 buttons (pad_isRepeatEnabled), restored on exit */
     s32 nameSlide;  /* R1 card name slide-out (PLAYER CARD SELECT) */
     s32 scrollTimer; /* L1/R1 copy scroll animation in the stock */
@@ -342,8 +342,8 @@ typedef struct {
     s32 quitting;   /* game quit from the stock, hand cards were returned */
     s32 atkRoll;    /* battle rolls, the loser is the side with the lower one */
     s32 defRoll;
-    s32 unk5C4;
-    RECT unk5C8;
+    s32 unk5C4; /* not used by C */
+    RECT unk5C8; /* write-only: tm_mainLoop sets {50, 30, 200, 100} */
 } TmState;
 
 typedef struct {

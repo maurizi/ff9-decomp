@@ -31,8 +31,8 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80019798", func_80019F28);
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80019798", func_80019F90);
 
 void func_8001A084(Unk8001A084 *a) {
-    a->unk38 = a->unk37;
-    a->unk37 = 0;
+    a->prevCmd = a->cmd;
+    a->cmd = 0;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80019798", func_8001A094);
@@ -84,36 +84,36 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80019798", func_8001B8B4);
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80019798", _padCmdParaMode);
 
 void func_8001BCCC(Unk8001A084 *a) {
-    a->unk37 = 0x45;
-    a->unk2C = 0;
-    a->unk36 = 0;
+    a->cmd = 0x45;
+    a->cmdArgs = 0;
+    a->cmdHasArg = 0;
 }
 
 void func_8001BCE0(Unk8001A084 *a, u8 b) {
-    a->unk37 = 0x4C;
-    a->unk2C = (s32)&a->unk24;
-    a->unk24 = b;
-    a->unk36 = 1;
+    a->cmd = 0x4C;
+    a->cmdArgs = (s32)&a->cmdArg;
+    a->cmdArg = b;
+    a->cmdHasArg = 1;
 }
 
 void func_8001BD00(Unk8001A084 *a, u8 b) {
-    a->unk37 = 0x46;
-    a->unk2C = (s32)&a->unk24;
-    a->unk24 = b;
-    a->unk36 = 1;
+    a->cmd = 0x46;
+    a->cmdArgs = (s32)&a->cmdArg;
+    a->cmdArg = b;
+    a->cmdHasArg = 1;
 }
 
 void func_8001BD20(Unk8001A084 *a, u8 b) {
-    a->unk37 = 0x47;
-    a->unk2C = (s32)&a->unk24;
-    a->unk24 = b;
-    a->unk36 = 1;
+    a->cmd = 0x47;
+    a->cmdArgs = (s32)&a->cmdArg;
+    a->cmdArg = b;
+    a->cmdHasArg = 1;
 }
 
 void func_8001BD40(Unk8001A084 *a) {
-    a->unk37 = 0x4B;
-    a->unk2C = 0;
-    a->unk36 = 0;
+    a->cmd = 0x4B;
+    a->cmdArgs = 0;
+    a->cmdHasArg = 0;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80019798", _padSetRC2wait);

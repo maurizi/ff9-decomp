@@ -1560,13 +1560,13 @@ void fld_togglePause(void) {
         if (bright && v == 0) {
             if (fade_getType() == 2) {
                 fade_getWipeColors(buf);
-                c.unk0[0] = (buf[0] + buf[4]) >> 1;
-                c.unk0[1] = (buf[1] + buf[5]) >> 1;
-                c.unk0[2] = (buf[2] + buf[6]) >> 1;
+                c.b[0] = (buf[0] + buf[4]) >> 1;
+                c.b[1] = (buf[1] + buf[5]) >> 1;
+                c.b[2] = (buf[2] + buf[6]) >> 1;
             } else {
                 c = fade_getColor();
             }
-            if (c.unk0[0] >= 200 && c.unk0[1] >= 200 && c.unk0[2] >= 200) {
+            if (c.b[0] >= 200 && c.b[1] >= 200 && c.b[2] >= 200) {
                 setSemiTrans(&g_fieldPauseSprite.sprite, 1);
                 sp = &g_fieldPauseSprite.sprite;
                 sp++;

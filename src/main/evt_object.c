@@ -120,7 +120,7 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     }
     o->stackOfs = nw + nv;
     o->varsOfs = nw;
-    o->unkC = a3;
+    o->stackWords = a3;
     o->state = EVT_STATE_NEW;
     o->windowId = 0xFF;
     return o;

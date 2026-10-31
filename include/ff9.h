@@ -75,7 +75,7 @@ typedef struct {
 #define PRELOAD_Q_READING 10 /* preload_poll until the chunk is done */
 
 typedef struct PreloadQueue {
-    u8 unk0;
+    u8 unk0; /* write-only (preload_init clears it) */
     u8 state; /* state */
     s8 count; /* count */
     s8 cur;
@@ -91,7 +91,7 @@ typedef struct {
     u8 pad2[2];
     u16 extCode; /* high byte: first text code that takes an extra byte (text_draw: (c << 8) + next byte - extCode + extBase) */
     u16 extBase; /* glyph index of the first two-byte code */
-    s16 unk8;
+    s16 unk8; /* copied to D_8007B94C by msg_init, not read otherwise */
     u8 padA[2];
     u32 glyphs[1]; /* glyph info, width in the top 4 bits */
 } Font;
@@ -106,7 +106,7 @@ typedef union {
         u32 victoryPose : 1; /* runtime: with it the character strikes its victory pose at the end of a won battle (btl_update), without it stays in its idle stance; event op 0xDB sets it */
         u32 recruited : 1; /* chr_setRecruited / chr_clearRecruited; members counted by chr_join's level average, shops, config */
         u32 row : 5;   /* ability table row (g_abilityRows) */
-        u32 unk11 : 15;
+        u32 unk11 : 15; /* not used by C */
     } b;
 } CharBits;
 /* CharBits.w masks, for the code that reads the word */
@@ -131,7 +131,7 @@ typedef struct {
     u16 hp;
     s16 mp;
     u8 pad14[0x16 - 0x14];
-    u8 unk16;
+    u8 unk16; /* write-only (chr_setLevel sets 10) */
     u8 stones;    /* magic stones left */
     u16 maxHp;
     s16 maxMp;
@@ -268,12 +268,15 @@ typedef struct {
 #define FLD_MAP_NO_BGI_ANIM 0x8 /* fld_main skips bgi_updateAnims/bgi_updateFloorMoves */
 #define FLD_MAP_NO_PRELOAD 0x1000 /* fld_main skips preload_update (fld_movieStart, main menu_doOpen) */
 
+/* GameData.worldCamera, the world map camera (ovl_0c g_worldCamera); ovl_39 saves it as a block */
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-} Unk880; /* copied as a block by ovl_39 */
+    s16 stickSide;
+    s16 viewBlend;
+    s32 viewBlendSpeed;
+    s32 viewForceNormal;
+    u16 yaw; /* camera angle */
+    u16 yawOffset;
+} WmCameraState;
 
 /* GameData.ctx: per-module context; its layout depends on the loaded
  * overlay. */
@@ -300,7 +303,7 @@ typedef struct CdReadCtx {
     s32 offset; /* byte offset in the file this chunk starts at */
     s32 chunk; /* chunk size, -1 = all in, bytes read out (cdRead_update) */
     void (*onDone)(struct CdReadCtx *); /* done callback */
-    s32 unk18;
+    s32 unk18; /* write-only: cdRead_init stores the total size here too */
     s32 state; /* CDREAD_* (cdRead_update) */
     u8 *end; /* dest + bytes read */
 } CdReadCtx; /* GameData.cdRead */
@@ -323,7 +326,7 @@ typedef struct {
 
 /* GameData.keyItems: 2 bits per item id */
 typedef struct {
-    u8 unk0[0x40];
+    u8 bits[0x40]; /* bit 2n: item n held (keyItem_add/keyItem_has), bit 2n+1: seen (keyItem_setSeen/keyItem_isSeen) */
 } __attribute__((aligned(4))) ItemFlags;
 
 /* g_gameState->gameData: looks like the save-data block */
@@ -331,7 +334,7 @@ typedef struct {
     u32 flags; /* flags: GD_* (menu open/disabled, hide all, paused, music/SE slot state) */
     u32 allocTop; /* allocator top (g_allocTop) after setup */
     u8 drawBuf; /* draw buffer index (0/1): index into GameState drawEnv/dispEnv and ot[] */
-    u8 unk9;
+    u8 unk9; /* write-only (cleared by every mode's setup) */
     u16 projDist; /* projection distance (SetFogNearFar); GTE geometry screen distance (SetGeomScreen), the battle camera's projDist */
     u16 fieldId; /* current field (runtime: Dali inn 351 -> street 350) */
     u16 battleId; /* next battle (encounter bundle id), set by evt_setNextBattle / the field and world exits */
@@ -380,14 +383,14 @@ typedef struct {
     void *sfxSlotBuf[2]; /* resident sound effect slot data (0x800 bytes each), the akao_playSe handle; channel mask 0x100000 << slot */
     u16 sfxSlotId[2]; /* sound effect loaded in each slot, 0xFFFF = none */
     u16 worldBankReq; /* last sound bank requested by the world map (wm_soundCommand class 3 kind 7 skips a repeat) */
-    u16 unk836;
+    u16 unk836; /* write-only (fld_init sets 0xFFFF) */
     s32 (*modelHook)(s32, void *); /* per-mode model setup (field fld_setupActorModel) */
     s32 (*soundHook)(s32, s32, s32, s32, s32); /* per-mode sound command handler (fld_soundCommand, wm_soundCommand, btl_soundCmd), snd_playSe calls it */
     u16 savedMusicBank; /* musicBank saved with savedMusicId */
     u16 musicFadeFrames; /* length of the running music fade (fld_setMusicVolumeFade / fld_isMusicFading) */
     s32 chocograph; /* selected chocograph 1-24, 0 = none (runtime field/menu campaign) */
     s8 enemyGroup; /* forced enemy group of the next battle (event op 0x8C), -1 = random (btl_pickEnemyGroup) */
-    u8 unk849[1];
+    u8 unk849[1]; /* write-only (cleared) */
     u16 musicFileSectors; /* sector count of the current music file (fld_refindSectors, fld_soundCommand) */
     Font *kanjiFont; /* second (kanji) font table */
     u8 savedMusicVolume; /* musicVolume saved with savedMusicId */
@@ -396,7 +399,7 @@ typedef struct {
     CdReadCtx cdRead[1]; /* CD read context (cdRead_init) */
     s32 soundLoadChunk; /* bytes read per chunk while loading a sound bank (free heap rounded to sectors) */
     s32 soundBankSize; /* bytes of the bank part of the sound file being loaded (the music sequence follows) */
-    Unk880 worldCamera; /* world map camera state (g_worldCamera points here, cleared with the next 0x18 bytes); saved */
+    WmCameraState worldCamera; /* world map camera state (g_worldCamera points here, cleared with the next 0x18 bytes); saved */
     u8 worldCamKeep; /* opening_setWorldCamKeepNew / opening_setWorldCamKeepLoad, world-map camera reset (runtime) */
     u8 pad891;
     u8 inWorldFrame; /* 1 while a world-map frame runs once the vehicles are found (wm_frameMain sets it at the start, clears it at the end); a field entered with it 0 resets the world camera yaw on return (w_movement). Saved (ovl_39). Runtime: 1 at the vsync pause, 0 with the menu open; it only stays 1 when a frame does not finish (e.g. a save written during one). Name medium (the vehicle-to-field case was not tried) */
@@ -412,7 +415,7 @@ typedef struct {
     s32 soundLoadDest; /* where the next sound-file chunk is read to */
     s32 musicFadeStart; /* VSync(-1) when the music fade started */
     PreloadQueue *preloadQueue;
-    u8 unk8CC[8];
+    u8 unk8CC[8]; /* write-only (cleared) */
     struct Unk8D4 *chrModelObjs; /* [9] model objects of the characters, bound to chrModels[i].model */
     struct ModelSlot *chrModels; /* [9] per character (game_getModel ids 0-8) */
     struct Unk8D4 *npcModelObjs; /* model objects of the NPCs (npcCount), bound to npcModels[i].model */
@@ -438,7 +441,7 @@ typedef struct {
     u32 padMap; /* custom pad mapping, 4 bits per action */
     u32 playTime; /* frames at 60/s, shown as h:mm:ss in the menu (runtime) */
     s32 dirCount; /* FF9.IMG directories (file_initImg) */
-    u8 unk34[15];
+    u8 unk34[15]; /* write-only (game_resetState clears it) */
 } GameState;
 
 extern GameState *g_gameState;
@@ -662,8 +665,8 @@ typedef struct {
     u8 state; /* MENU_STATE_* (g_menuStateFuncs index) */
     u8 type; /* menu_open type (g_menuTypes) */
     u8 cardSlot; /* memory card slot (ovl_39 save screen) */
-    u8 unk3;
-    u8 unk4;
+    u8 unk3; /* write-only (menu_reset clears it) */
+    u8 unk4; /* write-only (menu_reset clears it) */
     u8 open; /* set by menu_doOpen, cleared by menu_finish */
     u8 reading; /* overlay/portrait read running (g_menuReading) */
     u8 fadingOut;
@@ -675,7 +678,7 @@ typedef struct {
     s32 frame; /* frame counter */
     s32 savedVsyncMode;
     s32 savedPadMask;
-    s32 unk1C;
+    s32 unk1C; /* cleared on open/reset; only read by func_80032A34, which nothing calls */
     u8 savedR; /* saved background colour */
     u8 savedG;
     u8 savedB;
@@ -712,7 +715,7 @@ extern s32 g_winLastVsync;
 typedef struct {
     u8 cur; /* buffer being built */
     u8 uiMode; /* 2 for the battle UI (gfx_setUiMode): windows close without the close animation */
-    u8 unk2;
+    u8 unk2; /* write-only (cleared) */
     u8 pad3;
     s32 freeBytes; /* free bytes in the packet buffer */
     s32 lastVsync; /* VSync(-1) of the last window update (g_winLastVsync) */
@@ -846,7 +849,7 @@ typedef MenuList Unk16; /* older name */
 #define MENULIST_SCROLL_WRAP_COL 0x8 /* the cursor moved past the last/first column: col wraps when the row scroll ends */
 
 typedef struct {
-    u8 unk0[4];
+    u8 b[4];
 } Unk4; /* 4 bytes, byte-aligned (copied with lwl/lwr) */
 
 /* Menu window object (win_openFree returns one of these). */
@@ -930,13 +933,13 @@ extern u8 D_8006826C;
 
 typedef struct {
     u8 pad0[0x24];
-    u8 unk24;
+    u8 cmdArg; /* argument byte of the command */
     u8 pad25[0x2C - 0x25];
-    s32 unk2C;
+    s32 cmdArgs; /* &cmdArg when the command takes one, else NULL */
     u8 pad30[6];
-    u8 unk36;
-    u8 unk37;
-    u8 unk38;
+    u8 cmdHasArg; /* 1 with cmdArgs */
+    u8 cmd; /* controller command byte to send (0x45, 0x46, 0x47, 0x4B, 0x4C; func_8001A084 moves it to prevCmd) */
+    u8 prevCmd;
 } Unk8001A084; /* pad state? (near libpad) */
 
 
@@ -1285,7 +1288,7 @@ typedef struct EvtObject {
     u8 stackOfs; /* varsOfs + local-variable words */
     u8 sp; /* call stack depth in words (2 per call) */
     u8 battleTurnState; /* enemy turn: 2 requested (evt_battleTrigger BTL_CMD_ENEMY_TURN), 1 once the turn function runs, 0 after op 0x38 level 3 */
-    u8 unkC;
+    u8 stackWords; /* call-stack words allocated after the local variables (evt_createObject: 0x10 for code, region and actor objects, 0 for threads); not read by C */
     u8 wait; /* frames left of op 0x22, or EVT_WAIT_WINDOW / EVT_WAIT_CALL */
     u8 state; /* EVT_STATE_* */
     u8 flags; /* EVT_OBJ_* (op 0x93 sets bits 0-5) */
@@ -1736,7 +1739,7 @@ typedef struct MsgWindow {
     s16 open;
     s16 id; /* index in g_msgWindows (msg_open) */
     s32 (*onInput)(struct MsgWindow *, s32); /* pad handler, msg_update */
-    s32 unk10;
+    s32 unk10; /* write-only (cleared) */
     Window *window;
     s16 w;
     s16 tailOffset; /* from the layout, passed to win_setTail */
@@ -1783,7 +1786,7 @@ void akao_streamRefillStereoB(void);
 void akao_onSpuTransferDone(void);
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (db_clear clears it) */
     s16 count; /* count */
     void *dbs[16]; /* registered dbs (db_register / db_unregister) */
 } DbList;
@@ -1909,7 +1912,7 @@ void gfx_init(u32 *, u32 *, s32, s32);
 
 typedef struct {
     u8 pad0[0x34];
-    u16 unk34;
+    u16 unk34; /* not used by C */
 } Unk80021698;
 
 extern s32 g_msgChoiceEnabled;
@@ -1950,13 +1953,13 @@ typedef struct {
 /* g_gameState->dirTables[i]: 8-byte {id, sector} entries searched by file_find */
 typedef struct {
     u16 id; /* id */
-    u16 unk2;
+    u16 unk2; /* not read by C */
     s32 sector; /* start sector (the next entry's sector ends the file) */
 } FileIdEntry;
 
 /* file id table (GameData.depTable) */
 typedef struct FileTable {
-    u16 unk0;
+    u16 unk0; /* not read by C */
     u16 count; /* count */
     FileEntry entries[1]; /* {key, sector, sectors, link} records (dep_find) */
 } FileTable;
@@ -2128,7 +2131,7 @@ extern s32 g_padPortMask[];
 #define WM_PARAM_REQ0 0xC3 /* g_worldReqParams[0..2], e.g. the WM_REQ_GET_GETOFF_POS result */
 #define WM_PARAM_REQ1 0xC4
 #define WM_PARAM_REQ2 0xC5
-#define WM_PARAM_CAMERA_YAW 0xC7 /* g_worldCamera->unkC >> 4 */
+#define WM_PARAM_CAMERA_YAW 0xC7 /* g_worldCamera->yaw >> 4 */
 #define WM_PARAM_CD_BUSY 0xC8 /* "Event:CDAccessWait": g_worldCdUser | music request pending */
 #define WM_PARAM_PLAYER_X 0xC9
 #define WM_PARAM_PLAYER_Y 0xCA
@@ -2213,7 +2216,7 @@ typedef struct {
     u8 magic; /* (chr_calcBaseMagic) */
     u8 spirit; /* (chr_calcBaseSpirit) */
     u8 stones; /* magic stones (chr_calcMaxStones) */
-    u8 unk5;
+    u8 unk5; /* not read by C */
 } ClassStats; /* base stats per character class */
 extern ClassStats g_charClassStats[];
 void pad_initRepeat(void);
@@ -2516,7 +2519,7 @@ void _card_wait(s32);
 /* ---- main batch 1 ---- */
 
 typedef struct {
-    u8 unk0[8];
+    u8 b[8];
 } Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
 extern Unk8 g_cdResult; /* last CD status/result bytes */
 
@@ -2652,9 +2655,9 @@ extern u8 *g_msgTextBanks[];
 
 typedef struct {
     u8 pad0[2];
-    s16 unk2;
+    s16 unk2; /* not used by C */
     u8 pad4[9 - 4];
-    u8 unk9;
+    u8 unk9; /* not used by C */
 } Unk8004EFB0;
 
 /* ---- main batch 2 ---- */
@@ -2727,8 +2730,8 @@ typedef struct {
 extern FadeWipe g_fadeWipe;
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    s32 unk0; /* not used by C */
+    s32 unk4; /* not used by C */
 } Unk8005AE14;
 
 /* ---- main batch 3 ---- */
@@ -2782,11 +2785,11 @@ typedef struct {
     u32 bytesLeft; /* bytes left */
     u32 loopLength; /* loop length (initial), header +0x20 */
     u32 loopBytes; /* bytesLeft reloaded at the loop point (akao_streamRefill) */
-    s32 unk20;
+    s32 unk20; /* write-only: header word +4 on a ring refill (akao_streamRefillRing), cleared by the ring setup */
     s32 blocksWritten; /* ring stream: blocks the producer reported (akao_streamPushBlock) */
     s32 blocksRead; /* ring stream: blocks consumed (akao_streamNextReadBlock) */
     s32 spuAddr; /* SPU address of the stream buffer (SpuSetTransferStartAddr, voice start/loop); the ring in RAM for the ring stream */
-    s32 unk30;
+    s32 unk30; /* write-only: second word of the ring setup argument */
     s32 readBlock; /* ring stream: block the next upload reads (-1 before the start) */
     u32 writeBlock; /* ring stream: block the producer fills next, akao_streamStartRing runs once it reaches 2 */
     u32 ringBlocks; /* ring stream: blocks in the ring (sound command 0xE8 size >> 12) */
@@ -2972,7 +2975,7 @@ extern u8 g_padActAlign[]; /* actuator alignment */
 /* byte view of a g_padBuf pad buffer */
 typedef struct {
     u8 status; /* status, 0 = ok */
-    u8 unk1;
+    u8 unk1; /* not read by C */
     u16 buttons; /* buttons, active low */
     u8 analog[4]; /* analog sticks */
 } PadBuf;
@@ -3268,7 +3271,7 @@ void akao_setVoiceSustainLevel(s32, s32);
 /* streamed AKAO sound header (akao_streamPlayOneShot) */
 typedef struct {
     s32 magic; /* "AKAO" */
-    s32 unk4;
+    s32 unk4; /* only copied to g_akaoStream.unk20 */
     u8 pad8[0x10 - 0x8];
     u32 dataSize; /* data size */
     u32 loopStart; /* loop start offset */
@@ -3321,10 +3324,10 @@ void pen_endFont(void);
 void msg_drawText(MsgWindow *);
 /* 8-byte message-table entry (g_msgTable in modes other than 4) */
 typedef struct {
-    u32 unk0;
-    u16 unk4;
+    u32 unk0; /* not read by C */
+    u16 unk4; /* not read by C */
     u8 lines; /* text lines: window height = lines * 14 + 6 (msg_getEntry) */
-    u8 unk7;
+    u8 unk7; /* not read by C */
 } MsgEntry8;
 
 /* SPU hardware voice registers (0x1F801C00 + voice * 16) */
@@ -3372,14 +3375,14 @@ typedef struct {
 extern Unk8006BD04 g_fadeTypes[];
 extern u8 g_winStyleOpenAnim[]; /* WIN_STYLE_* -> WIN_ANIM_* (win_init) */
 typedef struct {
-    u8 unk0[8];
+    u8 b[8];
 } Bytes8;
 extern Bytes8 g_cardArrowBits; /* card arrow bits (card_rollStats) */
 typedef struct {
-    u8 unk0[5];
+    u8 b[5];
 } Bytes5;
 typedef struct {
-    u32 unk0[2];
+    u32 w[2];
 } Words2;
 /* stat calculation input (chr_calcEquipStats) */
 typedef struct {
@@ -3572,22 +3575,22 @@ typedef struct DirInfo {
 typedef struct {
     u16 id; /*  */
     u16 link; /* list-8 entries: id of a list-11 entry; file_loadDirTables reuses it in list 11 as a mark (1 needed, 2 copied) */
-    u16 unk4;
-    u16 unk6;
+    u16 unk4; /* not read by C */
+    u16 unk6; /* not read by C */
 } Unk8001DE50;
 
 /* file_loadDirTables: 16-byte records copied out of directory list 11 */
 typedef struct {
     u8 pad0[8];
-    u16 unk8;
+    u16 unk8; /* write-only (file_loadDirTables sets 0xFFFF) */
     u8 padA[6];
 } Unk8001DE50b;
 
 /* PreloadEntry.fileId split into its parts */
 typedef struct {
-    u16 unk0;
-    u8 unk2;
-    u8 unk3;
+    u16 unk0; /* not used by C */
+    u8 unk2; /* not used by C */
+    u8 unk3; /* not used by C */
 } FileIdParts;
 
 /* TIM image: header, optional CLUT block (flag bit 3), then the pixel block */
@@ -3711,10 +3714,10 @@ void chr_addMp(Character *, s32);
 /* 12-byte entry of a type-0x12 resource table (db_findModelInfo) */
 typedef struct {
     u16 id; /* id */
-    u16 unk2;
+    u16 unk2; /* not read by C */
     u32 dataOfs : 24; /* data offset from the entry */
     u32 texCount : 8; /* texture count (db_getModelTexCount, db_getModelTexPos) */
-    u32 unk8;
+    u32 unk8; /* not read by C */
 } DbEntry12;
 
 extern TimHeader D_800834D0;
@@ -4549,13 +4552,13 @@ extern AkaoBankUpload g_akaoUpload;
 typedef struct {
     s32 magic; /* AKAO_MAGIC */
     s32 id; /* bank id (g_akaoLoadedBanks keeps the loaded ones) */
-    s32 unk8;
-    s32 unkC;
+    s32 unk8; /* not read by C */
+    s32 unkC; /* not read by C */
     s32 spuAddr; /* where the samples go in SPU RAM */
     s32 sampleSize;
     s32 slot; /* first g_akaoInstruments entry */
     s32 instCount; /* 16-byte instrument entries after the header */
-    s32 unk20[8];
+    s32 unk20[8]; /* not read by C */
 } AkaoBankHeader; /* 0x40 */
 extern AkaoBankHeader g_akaoBankHeader; /* AKAO header copy */
 

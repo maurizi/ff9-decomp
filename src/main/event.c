@@ -2359,8 +2359,8 @@ void evt_movePlayer(EvtObject *obj) {
     memset(&v, 0, 8);
     pad = msg_getPadHeld();
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
-        x = g_padAnalog[0].unk0[2];
-        y = g_padAnalog[0].unk0[3];
+        x = g_padAnalog[0].b[2];
+        y = g_padAnalog[0].b[3];
         pad_getAnalogThresholds((Unk4 *)dz);
         /* The do-while(0) (a macro in the original?) doubles y's reference count in flow,
            which puts y ahead of x in global-alloc order (y s0, x s1). */

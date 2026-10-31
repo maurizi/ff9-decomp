@@ -55,7 +55,7 @@
 #define WM_PARAM_REQ0 0xC3 /* g_worldReqParams[0..2], e.g. the WM_REQ_GET_GETOFF_POS result */
 #define WM_PARAM_REQ1 0xC4
 #define WM_PARAM_REQ2 0xC5
-#define WM_PARAM_CAMERA_YAW 0xC7 /* g_worldCamera->unkC >> 4 */
+#define WM_PARAM_CAMERA_YAW 0xC7 /* g_worldCamera->yaw >> 4 */
 #define WM_PARAM_CD_BUSY 0xC8 /* "Event:CDAccessWait": g_worldCdUser | music request pending */
 #define WM_PARAM_PLAYER_X 0xC9
 #define WM_PARAM_PLAYER_Y 0xCA
@@ -151,7 +151,7 @@ typedef struct {
     unsigned shade : 8;
     unsigned scaleX : 12; /* scale x */
     unsigned scaleZ : 12; /* scale z */
-    unsigned unk4 : 12; /* angle */
+    unsigned unk4 : 12; /* angle; not read by C */
     signed offsetX : 10; /* offset x */
     signed offsetZ : 10; /* offset z */
     POLY_FT4 *prims[2][4]; /* shadow quads, per draw buffer */
@@ -161,7 +161,7 @@ typedef struct {
 typedef struct {
     s32 flags;
     void *heapEnd;
-    u8 unk8[4];
+    u8 unk8[4]; /* write-only (cleared) */
     s16 swirlX;
     s16 swirlY;
     void *mapScript; /* file 0x5xxxx */
@@ -178,7 +178,7 @@ typedef struct {
     u8 *loadBase;
     u8 *loadPtr;
     void *files[2]; /* [1] freed by wm_freeFile */
-    u8 unk3C[16];
+    u8 unk3C[16]; /* write-only (cleared) */
 } WorldMapObj;
 /* WorldMapObj.flags */
 #define WM_OBJ_SWIRL_DONE 0x1 /* wm_updateBattleTransition: swirl_update finished; the battle starts once loaded */
@@ -193,7 +193,7 @@ typedef struct WorldMap {
     WorldMapObj *obj; /* = &unk48 */
     void *worldData; /* allocation, freed by wm_freeWorldData */
     s32 parkedSoundSize;
-    u8 unk14[0x34];
+    u8 unk14[0x34]; /* write-only (cleared) */
     WorldMapObj objData;
 } WorldMap; /* 0x94 */
 /* WorldMap.flags */
@@ -223,7 +223,7 @@ typedef struct WmEffect {
     s16 frame;
     s16 pad1E;
     s32 phase;
-    s32 unk24;
+    s32 unk24; /* write-only (cleared) */
 } WmEffect; /* 0x28 */
 
 /* frame pack slot list: g_worldReadtxHead (head) -> g_worldReadtxSlots[6] -> g_worldReadtxTail (tail) */
@@ -236,15 +236,7 @@ typedef struct WmReadtxSlot {
     u8 padF;
 } WmReadtxSlot; /* 0x10 */
 
-typedef struct {
-    s16 stickSide;
-    s16 viewBlend;
-    s32 viewBlendSpeed;
-    s32 viewForceNormal;
-    u16 yaw; /* camera angle */
-    u16 yawOffset;
-} WmCameraState;
-
+/* WmCameraState is in ff9.h (GameData.worldCamera) */
 typedef struct {
     u8 terrainClass;
     u8 shadowWidth;
@@ -339,7 +331,7 @@ typedef struct {
     u16 uvs[4]; /* uv */
     u8 rgb[3]; /* rgb */
     u8 texture;    /* texture */
-    u8 unk14;
+    u8 unk14; /* not read by C */
     u8 flags; /* WMSRC_* */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
@@ -443,10 +435,10 @@ typedef struct {
 #define WMMODEL_RELOCATED 0x1 /* the model init (wm_model.c) turned the file offsets into pointers */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared) */
     u8 pad2[2];
     void *prims; /* first primitive */
-    s32 unk8;
+    s32 unk8; /* write-only (cleared) */
 } WmModelOut; /* 0xC */
 
 typedef struct {
@@ -457,7 +449,7 @@ typedef struct {
 /* skeleton bone (WmModel.unkC, 4 bytes) */
 typedef struct {
     s16 length; /* length: z offset from the parent */
-    u8 unk2;
+    u8 unk2; /* not read by C */
     u8 parent; /* parent bone */
 } WmBone;
 
@@ -497,7 +489,7 @@ typedef struct ModelObj {
     u16 scaleY;
     u16 scaleZ;
     u16 clipY;
-    s32 unk5C;
+    s32 unk5C; /* write-only (cleared) */
     s32 mirrorSrc;
     u8 pad64[0x74 - 0x64];
     u16 attachX;
@@ -529,7 +521,7 @@ u8 *db_getModelUvOffsets(s32);
 
 /* relocatable block: offsets are turned into pointers by wm_relocatePack */
 typedef struct {
-    s32 unk0;
+    s32 unk0; /* not read by C */
     s32 verts;
     s32 polys;
 } WmPackEntry;
@@ -537,7 +529,7 @@ typedef struct {
 typedef struct {
     s8 count; /* count */
     u8 pad1[3];
-    s32 unk4;
+    s32 unk4; /* relocated by wm_relocatePack, not read otherwise */
     WmPackEntry *entries[1];
 } WmPack;
 
@@ -603,7 +595,7 @@ typedef struct {
 
 /* terrain mesh block (4 per map chunk): wm_getBlockHeight walks its triangles, wm_drawBlock draws it */
 typedef struct WmBlock {
-    u8 unk0;
+    u8 unk0; /* not read by C */
     u8 texArea;
     u16 polyCount; /* polygon count */
     SVECTOR *verts; /* vertices */
@@ -629,11 +621,11 @@ typedef struct {
 
 /* chunk pack read by wm_readChunks: the 4 terrain blocks of one map chunk (wm_getCellBlock) */
 typedef struct WmChunkPack {
-    u8 unk0;
-    u8 unk1;
+    u8 unk0; /* not read by C */
+    u8 unk1; /* not read by C */
     u8 texArea;
-    u8 unk3;
-    s32 unk4;
+    u8 unk3; /* not read by C */
+    s32 unk4; /* not read by C */
     WmBlock *blocks[4];
 } WmChunkPack;
 
@@ -716,7 +708,7 @@ typedef struct {
 } WmAnimTableEntry;
 
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* not read by C */
     u8 count; /* count */
     u8 pad2[2];
     WmAnimTableEntry entries[1];

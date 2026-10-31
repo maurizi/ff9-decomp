@@ -87,9 +87,9 @@ extern s32 s_menuStatusBattleStatText[5];      /* text ids */
 /* local copy of the battle command table (built on the stack from .rodata) */
 typedef struct {
     u16 nameOffset; /* offset of the command name in the string pool */
-    u16 unk2;
-    s32 unk4;
-    s32 unk8;
+    u16 unk2; /* not used by C */
+    s32 unk4; /* not used by C */
+    s32 unk8; /* not used by C */
 } StatusEntry;
 typedef struct {
     StatusEntry v[48];
@@ -104,9 +104,9 @@ extern StatusPool s_menuStatusCmdNames;
 extern s32 g_labelCommand;
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* not used by C */
     u8 pad1;
-    u16 unk2;
+    u16 unk2; /* not used by C */
     u8 pad4;
     u8 attack; /* attack power */
     u8 pad6[0xC - 6];

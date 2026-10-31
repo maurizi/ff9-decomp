@@ -52,7 +52,7 @@ typedef struct {
     u8 used;
     u8 id;   /* card id */
     u8 vram; /* VRAM slot: clut row 0x1F4 + vram, 19x47 block (vram % 3, vram / 3) */
-    u8 unk3;
+    u8 unk3; /* not used by C */
 } CardSlot;
 
 /* Card image cache (s_menuCard.cache): 12 VRAM slots, filled round-robin. */
@@ -90,7 +90,7 @@ typedef struct {
 
 /* Run-length packed block (menuCard_decodeRle). */
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* not used by C */
     u8 notKey; /* ~key: bytes above key start a run of (byte - key) copies of the next byte */
     u16 size;  /* packed size */
     u8 data[1];

@@ -1,0 +1,15 @@
+# Round 33 (main exe and overlays except ovl_0b): field and type renames, one struct per FIELDS line.
+# Fields that are only initialised or never accessed got a "write-only" / "not read by C" / "not used by C" comment
+# in their header instead of a name.
+# FIELDS include/ff9.h ItemFlags: unk0=bits
+# FIELDS include/ff9.h Unk4: unk0=b
+# FIELDS include/ff9.h Unk8: unk0=b
+# FIELDS include/ff9.h Bytes8: unk0=b
+# FIELDS include/ff9.h Bytes5: unk0=b
+# FIELDS include/ff9.h Words2: unk0=w
+# FIELDS include/ff9.h Unk8001A084: unk24=cmdArg, unk2C=cmdArgs, unk36=cmdHasArg, unk37=cmd, unk38=prevCmd
+# FIELDS include/ff9.h EvtObject: unkC=stackWords
+# FIELDS include/ff9.h WmCameraState (was Unk880): unk0=stickSide + viewBlend (s16 pair), unk4=viewBlendSpeed, unk8=viewForceNormal, unkC=yaw + yawOffset (u16 pair)
+# FIELDS include/ovl_64.h Ovl64MovieInfo: unk5=background
+# FIELDS include/ovl_39.h SaveMisc: unk14=inWorldFrame
+Unk880 WmCameraState

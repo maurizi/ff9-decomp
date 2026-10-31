@@ -74,18 +74,18 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
     memset(out, 0, sizeof(EquipStatsOut));
     out->hp = in->hp;
     out->mp = in->mp;
-    out->maxHp = *(u16 *)&in->base.unk0[0];
-    out->maxMp = *(u16 *)&in->base.unk0[2];
-    out->stats[0] = in->base.unk0[4];
-    out->stats[1] = in->base.unk0[5];
-    out->stats[2] = in->base.unk0[6];
-    out->stats[3] = in->base.unk0[7];
-    id = in->equip.unk0[0];
+    out->maxHp = *(u16 *)&in->base.b[0];
+    out->maxMp = *(u16 *)&in->base.b[2];
+    out->stats[0] = in->base.b[4];
+    out->stats[1] = in->base.b[5];
+    out->stats[2] = in->base.b[6];
+    out->stats[3] = in->base.b[7];
+    id = in->equip.b[0];
     if (id != 0xFF) {
         out->defs[0] = g_weaponTable[id].attack;
     }
     for (i = 0; i < 4; i++) {
-        id = (&in->equip.unk0[1])[i];
+        id = (&in->equip.b[1])[i];
         if (id != 0xFF) {
             if ((u32)(id - 0x58) < 0x88) {
                 a = g_armorDefs[id];
@@ -97,7 +97,7 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
         }
     }
     for (i = 0; i < 5; i++) {
-        id = in->equip.unk0[i];
+        id = in->equip.b[i];
         if (id != 0xFF) {
             e = g_equipStatBonus[g_itemTable[id].statBonus].stats;
             out->stats[0] += e[0];
@@ -107,7 +107,7 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
         }
     }
     for (i = 0; i < 4; i++) {
-        if (chr_testSupportBit(in->support.unk0, g_chrHpMpSupports[i])) {
+        if (chr_testSupportBit(in->support.w, g_chrHpMpSupports[i])) {
             switch (g_chrHpMpSupports[i]) {
             case SA_HP_10:
                 out->maxHp += out->maxHp / 10;

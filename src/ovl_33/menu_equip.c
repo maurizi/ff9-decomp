@@ -139,7 +139,7 @@ void menuEquip_drawInfo(void) {
         in.mp = c->mp;
         in.equip = *(Bytes5 *)c->equip;
         in.support = *(Words2 *)c->supportAbilities;
-        in.equip.unk0[s_menuEquip.equipSlot] = (s_menuEquip.items + (s_menuEquip.list.cursor + s_menuEquip.list.top))->id;
+        in.equip.b[s_menuEquip.equipSlot] = (s_menuEquip.items + (s_menuEquip.list.cursor + s_menuEquip.list.top))->id;
         chr_calcEquipStats(&in, &out);
         menuEquip_drawStatCompare(&cur, &out);
         return;
@@ -149,7 +149,7 @@ void menuEquip_drawInfo(void) {
         in.mp = c->mp;
         in.equip = *(Bytes5 *)c->equip;
         in.support = *(Words2 *)c->supportAbilities;
-        in.equip.unk0[s_menuEquip.equipSlot] = ITEM_NONE;
+        in.equip.b[s_menuEquip.equipSlot] = ITEM_NONE;
         chr_calcEquipStats(&in, &out);
         menuEquip_drawStatCompare(&cur, &out);
         return;

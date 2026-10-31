@@ -45,10 +45,10 @@ typedef struct {
 
 /* initialised by fld_initSprites */
 typedef struct FieldSpriteSet {
-    u16 unk0;
+    u16 unk0; /* write-only (fld_initSprites sets 1) */
     u8 capacity;
     u8 count; /* count of 0x24-byte entries at unk8 */
-    u16 *unk4; /* 16 entries, follows this header */
+    u16 *unk4; /* 16 entries, follows this header; write-only (fld_initSprites fills it with 0xFFFF) */
     FieldSprite *entries;
     u8 *primBufs[2]; /* primitive buffers, per draw buffer */
 } FieldSpriteSet; /* 0x14, followed by the buffers it points to */
@@ -107,7 +107,7 @@ typedef struct {
 typedef struct {
     u32 flags; /* flags */
     s32 loadEnd; /* end of the load area */
-    u8 unk8;
+    u8 unk8; /* write-only (cleared) */
     s8 encounterMusicStep;
     s16 nextId; /* current field, then the destination set by game_setNextScene */
     void *eventScript; /* db item 0x5xxxx (fld_findEventScript), passed to evt_init */
@@ -143,12 +143,12 @@ typedef struct {
     u8 sndVolume;
     u8 movieSndVolume;
     u8 soundBankSlot;
-    u8 unk5F;
+    u8 unk5F; /* write-only: fld_soundCommand class 2 kind 2 sub 12 sets it, playing a sound effect clears it */
     u8 modelQueueCount; /* g_fieldModelQueue count */
-    u8 unk61[1];
-    s16 unk62;
-    s32 unk64;
-    u8 unk68[4];
+    u8 unk61[1]; /* write-only (cleared) */
+    s16 unk62; /* write-only (cleared) */
+    s32 unk64; /* write-only (cleared) */
+    u8 unk68[4]; /* write-only (cleared) */
     s32 modelBundleBuf[9]; /* fld_allocScene */
     u8 actorInfoBuf[0x270 - 0x90]; /* FieldActorInfo[24] (fld_allocScene) */
     u8 animSfxBuf[0x330 - 0x270]; /* FieldAnimSfx[16] (fld_allocScene) */
@@ -193,14 +193,14 @@ typedef struct {
 
 /* 0x38-byte object hanging off FieldMap.unkC */
 typedef struct {
-    s32 unk0;
+    s32 unk0; /* write-only (cleared) */
     s32 loadEnd;    /* end of the load area */
     void *msgTable;  /* file 0x6xxxx */
     void *areaFile;
     u16 areaId;
-    u8 unk12[2];
+    u8 unk12[2]; /* write-only (cleared) */
     FieldScene *scene;
-    u8 unk18[0x20];
+    u8 unk18[0x20]; /* write-only (cleared) */
 } FieldMapObj;
 
 /* field context, GameData.unk8E4.field (0x50 bytes) */
@@ -208,15 +208,15 @@ typedef struct FieldMap {
     u32 flags; /* flags */
     s32 loadEnd;
     s8 playerObj;
-    s8 unk9;
+    s8 unk9; /* write-only (cleared) */
     s16 prevFieldId;
     FieldMapObj *area;
     void *commonFile;
-    s32 unk14;
-    s32 unk18;
+    s32 unk14; /* write-only (set to -1) */
+    s32 unk18; /* write-only (set to -1) */
     u8 pad1C[0x20 - 0x1C];
     s32 soundBankSize;
-    u8 unk24[0x2C];
+    u8 unk24[0x2C]; /* write-only (cleared) */
 } FieldMap;
 /* FieldMap.flags (g_fieldFlagQueue.mapFlags queues changes one frame ahead); FLD_MAP_NO_WINDOWS 0x1,
  * FLD_MAP_NO_BGI_ANIM 0x8 and FLD_MAP_NO_PRELOAD 0x1000 are in ff9.h (main and ovl_64 set them) */
@@ -257,7 +257,7 @@ typedef struct FieldMap {
 /* walkmesh actor entry (g_fieldBgi.actors, 0x28 bytes) */
 typedef struct BgiActor {
     s16 flags;
-    s16 unk2;
+    s16 unk2; /* write-only (cleared with flags) */
     s16 floor;
     s16 triangle;
     s16 lastFloor;
@@ -315,19 +315,19 @@ typedef struct {
     s16 playerScreenX; /* projected origin */
     s16 playerScreenY;
     u8 pad30[0x72 - 0x30];
-    u8 unk72;
-    u8 unk73;
-    u8 unk74;
+    u8 unk72; /* write-only (cleared) */
+    u8 unk73; /* write-only (cleared) */
+    u8 unk74; /* write-only (set to 0x40) */
     u8 cameraId;
     s16 followHeight;
-    s32 unk78;
+    s32 unk78; /* write-only: a squared distance, 60 * 60 by default, func_800C0FF4 sets arg * arg */
     u8 pad7C[0x9C - 0x7C];
-    s16 unk9C;
+    s16 unk9C; /* write-only (cleared) */
     u8 pad9E[2];
     u8 clutRows; /* same byte as g_fieldBgClutRows (fldbg_buildOverlaySprites reads and updates it there, runtime) */
-    u8 unkA1;
-    u8 unkA2;
-    u8 unkA3;
+    u8 unkA1; /* write-only (set to 0xFF) */
+    u8 unkA2; /* write-only (set to 0xFF) */
+    u8 unkA3; /* write-only (set to 0xFF) */
     s16 parallaxOriginX;
     s16 parallaxOriginY;
     s16 viewportPos[4][2];
@@ -716,7 +716,7 @@ typedef struct {
 } WmAnimTableEntry; /* 0xC */
 
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* not read by C */
     u8 count; /* count */
     u8 pad2[2];
     WmAnimTableEntry entries[1];
@@ -731,7 +731,7 @@ typedef struct {
     u16 uvs[4]; /* uv */
     u8 rgb[3]; /* rgb */
     u8 texture;    /* texture */
-    u8 unk14;
+    u8 unk14; /* not read by C */
     u8 flags; /* WMSRC_* */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
@@ -831,10 +831,10 @@ typedef struct {
 #define WMMODEL_RELOCATED 0x1 /* fldmdl_initModel turned the file offsets into pointers */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared) */
     u8 pad2[2];
     void *prims; /* first primitive */
-    s32 unk8;
+    s32 unk8; /* write-only (cleared) */
 } WmModelOut; /* 0xC */
 
 typedef struct {
@@ -851,7 +851,7 @@ typedef struct {
 /* skeleton bone (WmModel.unkC, 4 bytes) */
 typedef struct {
     s16 length; /* length: z offset from the parent */
-    u8 unk2;
+    u8 unk2; /* not read by C */
     u8 parent; /* parent bone */
 } WmBone;
 
@@ -903,7 +903,7 @@ typedef struct ModelObj {
     u16 scaleY;
     u16 scaleZ;
     s16 clipY; /* screen y limit (fldmdl_projectMeshClipY) */
-    s32 unk5C;
+    s32 unk5C; /* write-only (cleared) */
     struct ModelObj *mirrorSrc; /* mirrored model (fldmdl_reflectModel) */
     SVECTOR4 mirrorNormal; /* mirror plane normal */
     SVECTOR4 mirrorPoint; /* point on the mirror plane */
@@ -928,7 +928,7 @@ typedef struct FieldActorExt {
     s32 modelId; /* model file id */
     ModelObj *model; /* = unk14 */
     FieldEvtObj *obj; /* = unkAC */
-    s32 unk10;
+    s32 unk10; /* write-only (cleared) */
     u8 modelBuf[0xAC - 0x14]; /* mirrored model */
     u8 objBuf[0xF8 - 0xAC]; /* copy of the object */
     FieldEvtCtx *src;
@@ -947,8 +947,8 @@ typedef struct FieldActorInfo {
     u32 flags; /* flags */
     s8 litFloor; /* walkmesh floor the light was computed for, -1 = none */
     u8 abr;
-    u8 unk6;
-    u8 unk7;
+    u8 unk6; /* write-only (cleared) */
+    u8 unk7; /* write-only (cleared) */
     FieldColor color; /* colour */
     FieldColor nextColor; /* next colour */
     FieldActorExt *mirror;
@@ -1006,7 +1006,7 @@ typedef struct {
     u8 count;  /* colour count */
     u8 first;  /* first */
     u8 last;  /* last */
-    s16 unk4; /* mode */
+    s16 unk4; /* mode; write-only: 1 for fade mode 2, else 0 */
     u8 pad6[2];
     u32 frames; /* frames */
     s32 frame;
@@ -1080,8 +1080,8 @@ typedef struct {
 
 /* texture set tables (fld_loadModelBundle) */
 typedef struct {
-    s16 unk0;
-    s16 unk2;
+    s16 unk0; /* not used by C */
+    s16 unk2; /* not used by C */
 } FieldTexPair; /* tpage/clut or u/v */
 
 /* ModelTexOfs as fld_loadModelBundle fills it in (signed view, the loads must stay lh): on input srcX is a key,
@@ -1146,7 +1146,7 @@ typedef struct {
 } TexAnimRelocRect; /* 0xC */
 
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* not read by C */
     u8 frameCount; /* frame count (= TexAnim.frameCount) */
     u8 pad2[0xC - 2];
     u8 rectCount; /* part count */
@@ -1300,7 +1300,7 @@ extern u8 s_menuMainStatusAbnormal[];
 /* 10 VRAM cache slots at 0x800C9CCC. splat puts the first word at the end of
  * .text (as "g_fieldModelCache"), so the array is reached through that label. */
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared) */
     s16 id; /* id */
     u32 addr; /* address (0 = free) */
     s32 size; /* size */

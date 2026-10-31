@@ -246,21 +246,21 @@ void game_setScreenHeight(s32 h) {
     busy = fade_isSubtractive();
     col = fade_getColor();
     if (busy == 1) {
-        col.unk0[0] = 0xFF - col.unk0[0];
-        col.unk0[1] = 0xFF - col.unk0[1];
-        col.unk0[2] = 0xFF - col.unk0[2];
+        col.b[0] = 0xFF - col.b[0];
+        col.b[1] = 0xFF - col.b[1];
+        col.b[2] = 0xFF - col.b[2];
     }
     if (!fade) {
-        col.unk0[0] = g_gameState->drawEnv->r0;
-        col.unk0[1] = g_gameState->drawEnv->g0;
-        col.unk0[2] = g_gameState->drawEnv->b0;
+        col.b[0] = g_gameState->drawEnv->r0;
+        col.b[1] = g_gameState->drawEnv->g0;
+        col.b[2] = g_gameState->drawEnv->b0;
     }
     if (g_gameState->dispEnv->disp.h < h) {
         r.x = 0;
         r.y = g_gameState->dispEnv->disp.h;
         r.w = 0x280;
         r.h = h - g_gameState->dispEnv->disp.h;
-        ClearImage(&r, col.unk0[0], col.unk0[1], col.unk0[2]);
+        ClearImage(&r, col.b[0], col.b[1], col.b[2]);
         DrawSync(0);
     }
     SetDefDispEnv(&g_gameState->dispEnv[0], SCREEN_W, 0, SCREEN_W, h);
@@ -304,9 +304,9 @@ void game_freezeScreen(void) {
         col = fade_getColor();
         if (fade && !busy) {
             g_freezeDrawEnv.isbg = 1;
-            g_freezeDrawEnv.r0 = col.unk0[0];
-            g_freezeDrawEnv.g0 = col.unk0[1];
-            g_freezeDrawEnv.b0 = col.unk0[2];
+            g_freezeDrawEnv.r0 = col.b[0];
+            g_freezeDrawEnv.g0 = col.b[1];
+            g_freezeDrawEnv.b0 = col.b[2];
         } else {
             g_freezeDrawEnv.isbg = 0;
         }

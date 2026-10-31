@@ -331,12 +331,12 @@ s32 cd_pause(void) {
 }
 
 u8 cd_checkShellOpen(void) {
-    CdControlB(CdlNop, NULL, g_cdResult.unk0);
+    CdControlB(CdlNop, NULL, g_cdResult.b);
     return cd_isShellOpen();
 }
 
 s32 cd_isShellOpen(void) {
-    return (g_cdResult.unk0[0] >> 4) & 1; /* CdlStatShellOpen */
+    return (g_cdResult.b[0] >> 4) & 1; /* CdlStatShellOpen */
 }
 
 u8 cd_submit(CdRequest *r) {
