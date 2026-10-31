@@ -5,7 +5,7 @@ static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s3
     s32 t = frame << 8;
     s32 a;
 
-    ex->btlfx_lerpVec((s16 *)&D_801E7B98, (s16 *)&D_801E7BA0, t, (s16 *)pos);
+    ex->btlfx_lerpVec((s16 *)&fx_084_pathFrom, (s16 *)&fx_084_pathTo, t, (s16 *)pos);
     a = t >> 1;
     pos->vy -= (ex->math_sin(a) * 0x180) >> 12;
     switch (pt->slot) {
@@ -34,10 +34,10 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x24;
     } else if (mode == 1) {
         fx_084_env = env;
-        work->unk0 = 0;
+        work->state0 = 0;
         fx_084_task = entry;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        BTLFX_COPY_SVEC(&D_801E7B98, &work->pos4);
+        BTLFX_COPY_SVEC(&fx_084_pathFrom, &work->pos4);
     } else {
         frame = entry->frame;
         if (ex->btlfx_isEnemyUnit(0x10) == 0) {
@@ -45,12 +45,12 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         } else {
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->posC);
         }
-        BTLFX_COPY_SVEC(&D_801E7BA0, &work->posC);
-        switch (work->unk0) {
+        BTLFX_COPY_SVEC(&fx_084_pathTo, &work->posC);
+        switch (work->state0) {
         case 0:
-            work->unk0 = 1;
+            work->state0 = 1;
             entry->frame = -1;
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7B98);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_084_pathFrom);
             if (work->emit1C != NULL) {
                 work->emit1C->otZ = 0x10;
             }
@@ -60,13 +60,13 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 1:
             if (frame >= 0x10) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
                 work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->posC);
                 if (work->emit20 != NULL) {
                     work->emit20->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
                 }
-                ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos4, (s16 *)&work->unk14);
+                ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos4, (s16 *)&work->aim14);
             }
             break;
         case 2:
@@ -75,9 +75,9 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit20 = NULL;
                 }
                 if (work->emit20 != NULL) {
-                    work->emit20->rot.vx = work->unk14.vx;
-                    work->emit20->rot.vy = work->unk14.vy;
-                    work->emit20->rot.vz = work->unk14.vz;
+                    work->emit20->rot.vx = work->aim14.vx;
+                    work->emit20->rot.vy = work->aim14.vy;
+                    work->emit20->rot.vz = work->aim14.vz;
                 }
             }
             if (frame == 6) {

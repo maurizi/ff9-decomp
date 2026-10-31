@@ -20,7 +20,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         BTLFX_COPY_SVEC(&work->pos8, &work->pos18);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot20);
         ex->btlfx_pointAhead((s16 *)&work->pos18, (s16 *)&work->rot20, 0x226, (s16 *)&work->pos18);
-        work->unk0 = 0;
+        work->state0 = 0;
         work->unk4 = 0;
         work->pos18.vy -= 0x145;
         BTLFX_COPY_SVEC(&work->rot28, &work->rot20);
@@ -33,7 +33,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         bright = morph = sc = 0;
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             t = (frame << 12) / 7;
             if (frame == 0) {
@@ -55,7 +55,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc = (t * 0xC00) >> 12;
             bright = 0x1000;
             if (frame >= 7) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
@@ -71,7 +71,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame >= 4) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
                 if (p != NULL) {
@@ -100,7 +100,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame >= 6) {
-                work->unk0 = 3;
+                work->state0 = 3;
                 entry->frame = -1;
             }
             break;
@@ -144,9 +144,9 @@ s32 fx_082_op81(s32 mode, Fx082Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0xC;
     } else if (mode != 1) {
         frame = entry->frame;
-        v[0] = work->unk0[0];
-        v[1] = work->unk0[1];
-        v[2] = work->unk0[2];
+        v[0] = work->scale0[0];
+        v[1] = work->scale0[1];
+        v[2] = work->scale0[2];
         a = (frame << 8) >> 2;
         k = (ex->math_cos(a) << 11) >> 12;
         b = frame << 9;
@@ -157,7 +157,7 @@ s32 fx_082_op81(s32 mode, Fx082Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         v[2] += k;
         ex->btlfx_setUnitScale(0, v);
         if (frame >= 0x10) {
-            ex->btlfx_setUnitScale(0, work->unk0);
+            ex->btlfx_setUnitScale(0, work->scale0);
             return 1;
         }
     } else {

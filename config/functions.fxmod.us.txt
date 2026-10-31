@@ -218,7 +218,7 @@ fx_079 fx_079_op80 0xdbc 0x801e78f0
 fx_07a fxm_easeLerpSvec 0x13c 0x801e77a8
 fx_07a fxm_easeLerp 0x138 0x801e78e4
 fx_07a fx_07a_op80 0x106c 0x801e7a1c
-fx_07a func_801E8A88 0xa24 0x801e8a88
+fx_07a fx_07a_drawTwistDisc 0xa24 0x801e8a88
 fx_07b fx_07b_op80 0x2c4 0x801e7704
 fx_07c fx_07c_op80 0xcc 0x801e7704
 fx_07d fxm_drawRadialScreenGrid 0x7b4 0x801e7718
