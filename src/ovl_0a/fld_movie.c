@@ -356,7 +356,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
 void fld_drawModels(void) {
     /* block scope: fld_applyModelCommands calls it undeclared (int argument) */
     void fldmdl_projectMesh(ModelObj *, u8);
-    FieldEvtCtx *list[16];
+    FieldObjSlot *list[16];
     SVECTOR rot;
     DVECTOR sxy;
     s32 ofs[2];
@@ -372,8 +372,8 @@ void fld_drawModels(void) {
     s32 lim;
     s32 f;
     ModelObj *m;
-    FieldEvtObj *o;
-    FieldEvtCtx *c;
+    EvtObject *o;
+    FieldObjSlot *c;
     WmModel *w;
 
     lim = 100;
@@ -392,15 +392,15 @@ void fld_drawModels(void) {
         c = list[i];
         if (c != NULL) {
             m = c->model;
-            o = c->obj;
-            if ((c->flags & FLD_OBJ_TILT) && bgi_getActorTilt(o->uid, &ax, &az)) {
+            o = c->actor;
+            if ((c->flags & FLD_OBJ_TILT) && bgi_getActorTilt(o->modelSlot, &ax, &az)) {
                 rot.vx = ax;
-                rot.vy = o->rotY;
+                rot.vy = o->pos.rotY;
                 rot.vz = az;
                 math_rotMatrixZXY(&rot, &m->worldMatrix);
             } else {
-                rot.vx = o->rotX;
-                rot.vy = (o->rotY + j) & 0xFFF;
+                rot.vx = o->pos.rotX;
+                rot.vy = (o->pos.rotY + j) & 0xFFF;
                 rot.vz = o->rotZ;
                 math_rotMatrixZYX(&rot, &m->worldMatrix);
             }
@@ -413,7 +413,7 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            o = c->obj;
+            o = c->actor;
             m = c->model;
             w = db_lookupRegistered(DB_GET_ADDR, o->anim | DB_ANIM, 0);
             m->anim = w;
@@ -429,7 +429,7 @@ void fld_drawModels(void) {
         c = list[i];
         if (c != NULL) {
             m = c->model;
-            o = c->obj;
+            o = c->actor;
             if (m->flags & MDL_LOOK_AT) {
                 fldmdl_calcBoneMatricesLookAt(m, o->animFrame);
             } else {
@@ -486,7 +486,7 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            fld_drawShadow(g_gameState->gameData->ctx.field->area->scene->shadows, c->obj->uid);
+            fld_drawShadow(g_gameState->gameData->ctx.field->area->scene->shadows, c->actor->modelSlot);
         }
     }
     for (i = 0; i < n; i++) {
@@ -520,7 +520,7 @@ void fld_drawModels(void) {
 /* object command arg1 for object arg0 (palette, mirror, triggers) */
 s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     FieldActorInfo *info;
-    FieldEvtCtx *c;
+    FieldObjSlot *c;
     FieldActorExt *x;
     FieldActorExt *y;
     s32 *tex;
@@ -534,7 +534,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     FieldAnimSfx *t;
 
     info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[arg0];
-    c = (FieldEvtCtx *)game_getModel(arg0);
+    c = (FieldObjSlot *)game_getModel(arg0);
     switch (arg1) {
     case 0:
         if ((u8)arg2 == 0xFF) {
@@ -565,7 +565,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             x->flags = 0;
             x->modelId = c->modelId;
             x->model = (ModelObj *)x->modelBuf;
-            x->obj = (FieldEvtObj *)x->objBuf;
+            x->actor = (EvtObject *)x->objBuf;
             x->unk10 = 0;
             x->src = c;
             x->mirrorPoint.v.vx = 0;
@@ -579,7 +579,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         y = x;
         if (!(x->flags & FLD_EXT_BUILT)) {
-            *y->obj = *c->obj;
+            *(FieldEvtObj *)y->actor = *(FieldEvtObj *)c->actor;
             y->model->model = ((ModelObj *)c->model)->model;
             y->model->anim = ((ModelObj *)c->model)->anim;
             fld_getModelTables(y->modelId, &tex, &uv, &spr);
@@ -664,10 +664,10 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return 0;
 }
 
-void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
+void fld_applyModelCommands(FieldObjSlot **arg0, s32 arg1) {
     s32 i;
     s32 j;
-    FieldEvtCtx *c;
+    FieldObjSlot *c;
     FieldActorInfo *info;
     FieldActorExt *x;
     u32 vis;
@@ -684,7 +684,7 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
             continue;
         }
         upd = 0;
-        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->obj->uid];
+        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->actor->modelSlot];
         vis = c->flags & FLD_OBJ_SEMITRANS;
         chg = (info->flags & FLD_INFO_SEMITRANS) ^ vis;
         f4 = c->flags & FLD_OBJ_ABR_CHANGED;
@@ -716,12 +716,12 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
         if (c == NULL) {
             continue;
         }
-        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->obj->uid];
+        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->actor->modelSlot];
         x = info->mirror;
         if (x != NULL && (x->flags & FLD_EXT_MIRROR)) {
             fldmdl_reflectModel(x->model);
             y = x;
-            fldmdl_calcBoneMatrices(x->model, x->src->obj->animFrame);
+            fldmdl_calcBoneMatrices(x->model, x->src->actor->animFrame);
             n = x->model->model->groupCount;
             for (j = 0; j < n; j++) {
                 fldmdl_projectMesh(y->model, j & 0xFF);
@@ -1295,7 +1295,7 @@ void fld_movieStop(void) {
 void fld_movieFinish(void) {
     FieldMap *f;
 
-    g_gameState->gameData->flags &= ~0x5D;
+    g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_HIDE_ALL | 0x40);
     f = g_gameState->gameData->ctx.field;
     g_fieldMovieFlags &= 0xFE00;
     f->flags &= ~(FLD_MAP_NO_PRELOAD | FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
@@ -1524,8 +1524,8 @@ void fld_updateEncounter(void) {
     }
     if ((g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
         && g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == -3) {
-        g_gameState->gameData->flags &= ~0x7F;
-        g_gameState->gameData->ctx.field->flags &= ~0x1919;
+        g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_MENU_OPEN | GD_HIDE_ALL | GD_NO_FLIP | 0x40);
+        g_gameState->gameData->ctx.field->flags &= ~(FLD_MAP_NO_WINDOWS | FLD_MAP_NO_BGI_ANIM | FLD_MAP_NO_VIBRATION | 0x100 | FLD_MAP_NO_FADE | FLD_MAP_NO_PRELOAD);
         g_padPortMask[0] &= ~BTN_START;
         g_gameState->flags |= GS_FLD_LEAVE;
     }

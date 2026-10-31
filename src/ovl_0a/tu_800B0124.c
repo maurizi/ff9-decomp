@@ -626,7 +626,7 @@ void fld_stopSceneSfx(FieldScene *arg0, s16 arg1) {
     akao_sendCmdE2();
 }
 
-void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
+void fld_playAnimSfx(FieldObjSlot **arg0, s32 arg1) {
     s16 a;
     s16 b;
     u16 c;
@@ -636,7 +636,7 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
     u8 n;
     s32 i;
     s32 j;
-    FieldEvtCtx *ctx;
+    FieldObjSlot *ctx;
     FieldAnimSfx *t;
     s32 r;
     s32 ch;
@@ -652,19 +652,19 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
         }
         for (j = n - 1; j >= 0; j--) {
             t = &base[j];
-            if (t->uid == ctx->obj->uid && t->anim == ctx->obj->anim && t->frame == ctx->obj->animFrame) {
+            if (t->modelSlot == ctx->actor->modelSlot && t->anim == ctx->actor->anim && t->frame == ctx->actor->animFrame) {
                 r = 0;
                 a = 0;
                 b = 0;
                 c = 0;
                 vol = 0x80;
                 pan = 0x7F;
-                bgi_getActorTriangle(ctx->obj->uid, (u16 *)&a, (u16 *)&b);
+                bgi_getActorTriangle(ctx->actor->modelSlot, (u16 *)&a, (u16 *)&b);
                 if (a != -1) {
                     bgi_getTriangleFlags(a, &c);
                     c = (s16)c >> 8;
                 }
-                ch = t->uid & 3;
+                ch = t->modelSlot & 3;
                 ch = (0x10000 << ch) & 0xF0000;
                 snd = t->sound[(c >> 4) & 1] | DB_SE;
                 if (t->randomPitch != 0) {
@@ -674,7 +674,7 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
                     v = *g_randPtr++;
                     r = (v >> 4) - 8;
                 }
-                fld_getSoundPanVolume(ctx->obj->pos.vx, ctx->obj->pos.vy, ctx->obj->pos.vz, &vol, &pan);
+                fld_getSoundPanVolume(ctx->actor->pos.vx, ctx->actor->pos.vy, ctx->actor->pos.vz, &vol, &pan);
                 fld_soundCommand(SND_SE_PLAY, snd, ch, vol, pan);
                 if (r != 0) {
                     fld_soundCommand(SND_SE_PITCH, snd, ch, r, 0);
@@ -686,7 +686,7 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
 
 /* find the trigger matching the object, id and value (searching backwards) */
 FieldAnimSfx *fld_findAnimSfx(arg0, arg1, arg2)
-    FieldEvtCtx *arg0;
+    FieldObjSlot *arg0;
     u16 arg1;
     s16 arg2;
 {
@@ -695,7 +695,7 @@ FieldAnimSfx *fld_findAnimSfx(arg0, arg1, arg2)
     FieldAnimSfx *e = &base[sc->animSfxCount] - 1;
 
     do {
-        if (e->uid == arg0->obj->uid && e->anim == arg1 && e->frame == arg2) {
+        if (e->modelSlot == arg0->actor->modelSlot && e->anim == arg1 && e->frame == arg2) {
             return e;
         }
         e--;
@@ -703,7 +703,7 @@ FieldAnimSfx *fld_findAnimSfx(arg0, arg1, arg2)
     return NULL;
 }
 
-FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
+FieldAnimSfx *fld_addAnimSfx(FieldObjSlot *arg0, s32 arg1, s32 arg2) {
     FieldScene *sc = g_gameState->gameData->ctx.field->area->scene;
     u8 i = sc->animSfxCount;
     FieldAnimSfx *e;
@@ -713,8 +713,8 @@ FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
     n = i + 1;
     sc->animSfxCount = n;
     e = &sc->animSfx[i];
-    e->uid = arg0->obj->uid;
-    id = arg0->obj->modelId;
+    e->modelSlot = arg0->actor->modelSlot;
+    id = arg0->actor->modelId;
     e->anim = arg1;
     do {
         e->frame = arg2;
@@ -724,7 +724,7 @@ FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
 }
 
 s32 fld_removeAnimSfx(arg0, arg1, arg2)
-    FieldEvtCtx *arg0;
+    FieldObjSlot *arg0;
     u16 arg1;
     s16 arg2;
 {
@@ -736,7 +736,7 @@ s32 fld_removeAnimSfx(arg0, arg1, arg2)
     e = &base[g_gameState->gameData->ctx.field->area->scene->animSfxCount] - 1;
     last = e;
     do {
-        if (e->uid == arg0->obj->uid && e->anim == arg1 && e->frame == arg2) {
+        if (e->modelSlot == arg0->actor->modelSlot && e->anim == arg1 && e->frame == arg2) {
             if (e != last) {
                 *e = *last;
             }
@@ -1007,11 +1007,11 @@ s32 fld_isMusicFading(void) {
 }
 
 s32 fld_setObjectColor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    return fld_setSlotColor((FieldEvtCtx *)game_getModel(arg0), arg1, arg2, arg3);
+    return fld_setSlotColor((FieldObjSlot *)game_getModel(arg0), arg1, arg2, arg3);
 }
 
 /* apply the field lights to the object colours */
-void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
+void fld_applyLights(FieldObjSlot **arg0, s32 arg1) {
     FieldScene *sc;
     Unk800B3254 *lt;
     FieldLight *amb;
@@ -1019,7 +1019,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
     FieldActorInfo *infos;
     Unk800B3294 *def;
     s32 i;
-    FieldEvtCtx *c;
+    FieldObjSlot *c;
     s32 chg;
     FieldActorInfo *info;
     Unk800B3294 *l;
@@ -1051,7 +1051,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
         if (c == NULL) {
             continue;
         }
-        info = &infos[c->obj->uid];
+        info = &infos[c->actor->modelSlot];
         l = (Unk800B3294 *)fld_findLightColor(lt, c->modelId);
         shade = c->flags & FLD_OBJ_DIR_LIGHT;
         fl = fld_findFloorLight(lt, c, &floor);
@@ -1094,9 +1094,9 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
                 dy += amb->shadowSize;
             }
             dx *= 8;
-            g_gameState->gameData->ctx.field->area->scene->shadows[c->obj->uid].params.shade = dx;
-            g_gameState->gameData->ctx.field->area->scene->shadows[c->obj->uid].params.scaleX = dy * 14;
-            g_gameState->gameData->ctx.field->area->scene->shadows[c->obj->uid].params.scaleZ = dy * 12;
+            g_gameState->gameData->ctx.field->area->scene->shadows[c->actor->modelSlot].params.shade = dx;
+            g_gameState->gameData->ctx.field->area->scene->shadows[c->actor->modelSlot].params.scaleX = dy * 14;
+            g_gameState->gameData->ctx.field->area->scene->shadows[c->actor->modelSlot].params.scaleZ = dy * 12;
         }
         info->litFloor = floor;
         info->flags = (info->flags & ~FLD_INFO_DIR_LIGHT) | shade;
@@ -1106,7 +1106,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
         if (c == NULL) {
             continue;
         }
-        inf2 = &infos[c->obj->uid];
+        inf2 = &infos[c->actor->modelSlot];
         k = inf2->color.w;
         if (k >> 24 != 0) {
             for (j = ((ModelObj *)c->model)->model->groupCount - 1; j >= 0; j--) {
@@ -1119,19 +1119,19 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
 }
 
 /* set the object's light colour */
-s32 fld_setSlotColor(FieldEvtCtx *arg0, s32 arg1, s32 arg2, s32 arg3) {
+s32 fld_setSlotColor(FieldObjSlot *arg0, s32 arg1, s32 arg2, s32 arg3) {
     u32 f = arg0->flags;
-    FieldActorInfo *info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[arg0->obj->uid];
+    FieldActorInfo *info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[arg0->actor->modelSlot];
     u32 col;
 
-    if (!(f & 0x800)) {
+    if (!(f & FLD_OBJ_COLOR_WAIT)) {
         col = (arg1 & 0xFF) | ((arg2 << 8) & 0xFF00) | ((arg3 << 16) & 0xFF0000) | 0x01000000;
         info->nextColor.w = col;
         info->color.w = col;
-        arg0->flags |= 0xC00;
+        arg0->flags |= FLD_OBJ_COLOR_SET | FLD_OBJ_COLOR_WAIT;
         return 1;
     }
-    arg0->flags = f & ~0x800;
+    arg0->flags = f & ~FLD_OBJ_COLOR_WAIT;
     return 0;
 }
 
@@ -1190,13 +1190,13 @@ FieldLight *fld_findGlobalLights(Unk800B3254 *arg0, FieldLight **arg1, FieldLigh
 }
 
 /* find the floor light covering the object's current floor */
-FieldLight *fld_findFloorLight(Unk800B3254 *arg0, FieldEvtCtx *arg1, s16 *arg2) {
+FieldLight *fld_findFloorLight(Unk800B3254 *arg0, FieldObjSlot *arg1, s16 *arg2) {
     u16 tri;
     FieldLight *p;
     s32 n;
     s32 v;
 
-    bgi_getActorTriangle(arg1->obj->uid, &tri, (u16 *)arg2);
+    bgi_getActorTriangle(arg1->actor->modelSlot, &tri, (u16 *)arg2);
     if (arg0->lightCount != 0) {
         if ((u8)*arg2 == 0xFF) {
             return NULL;

@@ -498,16 +498,16 @@ typedef struct ModelObj {
 } ModelObj;
 /* ModelObj.flags: MDL_* (ff9.h; wm_applyScale, wm_cullBehindCamera use them as ovl_0a does) */
 
-/* model slot (game_getModel) */
+/* object model slot (game_getModel): ovl_0c's view of ModelSlot (ff9.h), with the world map's model type */
 typedef struct {
     s32 flags; /* WM_SLOT_* */
-    s32 modelId; /* file id */
-    ModelObj *obj;
+    s32 modelId; /* model item */
+    ModelObj *model;
     EvtObject *actor;
 } WmObjSlot;
-/* WmObjSlot.flags */
-#define WM_SLOT_LOADED 0x1 /* wm_loadActorModel built the model */
-#define WM_SLOT_NO_SHADOW 0x10 /* wm_drawShadow skips the object (FLD_OBJ_NO_SHADOW in the field) */
+/* WmObjSlot.flags (ModelSlot.flags) */
+#define WM_SLOT_LOADED MODEL_SLOT_LOADED /* wm_loadActorModel built the model */
+#define WM_SLOT_NO_SHADOW MODEL_SLOT_NO_SHADOW /* wm_drawShadow skips the object (FLD_OBJ_NO_SHADOW in the field) */
 s32 evt_getObjectChrIndex(EvtObject *);
 void wm_drawMesh(ModelObj *, u8);
 void wm_projectMesh(ModelObj *, u8);

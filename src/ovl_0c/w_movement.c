@@ -854,7 +854,7 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
 
     c = &g_worldActorTypeInfo[arg0->actorType];
     s = (WmObjSlot *)game_getModel(arg0->modelSlot);
-    m = s->obj;
+    m = s->model;
     memset(&r, 0, 8);
     r.vx = s->actor->pos.rotX;
     r.vy = s->actor->pos.rotY;

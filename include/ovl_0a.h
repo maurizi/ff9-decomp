@@ -55,7 +55,7 @@ typedef struct FieldSpriteSet {
 
 /* trigger table entry (fld_removeAnimSfx) */
 typedef struct FieldAnimSfx {
-    u8 uid; /* object uid; low 2 bits also select a channel */
+    u8 modelSlot; /* the actor's EvtObject.modelSlot (fld_addAnimSfx); low 2 bits also select a channel */
     u8 randomPitch;
     u16 modelId; /* the object's modelId when added (fld_addAnimSfx) */
     u16 anim;
@@ -63,7 +63,8 @@ typedef struct FieldAnimSfx {
     u16 sound[2];
 } FieldAnimSfx; /* 0xC */
 
-/* script object (fld_removeAnimSfx) */
+/* the first 0x4C bytes of an EvtObject (same offsets), copied as a block for the mirrored model
+ * (fld_modelCommand 8-11, FieldActorExt.objBuf) */
 typedef struct {
     u8 pad0[0x14];
     struct {
@@ -77,25 +78,28 @@ typedef struct {
     u16 anim;
     u8 pad38[2];
     u8 animFrame;
-    u8 uid; /* uid */
+    u8 modelSlot; /* EvtObject.modelSlot */
     u8 pad3C[0x4C - 0x3C];
 } FieldEvtObj; /* 0x4C */
 
+/* object model slot (game_getModel): ovl_0a's view of ModelSlot (ff9.h), with the field's model and actor types */
 typedef struct {
-    u32 flags; /* flags */
-    s32 modelId; /* model id (fld_setupActorModel), key of fld_findLightColor */
-    void *model; /* model (ModelObj) */
-    FieldEvtObj *obj;
-} FieldEvtCtx;
-/* FieldEvtCtx.flags / FieldObjSlot.flags */
-#define FLD_OBJ_LOADED 0x1 /* fld_setupActorModel finished setting up the slot */
+    u32 flags; /* FLD_OBJ_* */
+    s32 modelId; /* model item (fld_setupActorModel), key of fld_findLightColor */
+    struct ModelObj *model;
+    EvtObject *actor; /* the actor using the slot */
+} FieldObjSlot;
+/* FieldObjSlot.flags (ModelSlot.flags) */
+#define FLD_OBJ_LOADED MODEL_SLOT_LOADED /* fld_setupActorModel finished setting up the slot */
 #define FLD_OBJ_TILT 0x2 /* fld_drawModels tilts the model to the floor (bgi_getActorTilt) */
 #define FLD_OBJ_DIR_LIGHT 0x4 /* fld_applyLights uses the directional light */
-#define FLD_OBJ_NO_SHADOW 0x10 /* fld_drawShadow skips the object (event ops 0x7F/0x80; runtime: removes Zidane's shadow) */
+#define FLD_OBJ_NO_SHADOW MODEL_SLOT_NO_SHADOW /* fld_drawShadow skips the object (event ops 0x7F/0x80; runtime: removes Zidane's shadow) */
 #define FLD_OBJ_SHADOW_FIXED 0x20 /* fld_calcShadowMatrix uses the FieldObjEnt placement (event ops 0x83/0x84) */
 #define FLD_OBJ_NO_ANIM_SFX 0x40 /* fld_playAnimSfx skips the object */
 #define FLD_OBJ_LIT 0x100 /* light colour applied (fld_applyLights) */
 #define FLD_OBJ_COLOR_SET 0x400 /* fld_setSlotColor; fld_applyLights keeps it */
+#define FLD_OBJ_COLOR_WAIT 0x800 /* fld_setSlotColor sets the colour and returns 1, so EVT_OP_OBJ_COLOR runs again next frame;
+                                  * that second call only clears the bit and returns 0 (the op takes two frames) */
 #define FLD_OBJ_NO_IDLE_TEXANIM 0x1000 /* fld_drawModels doesn't restart texture animation 2 when no texture
                                         * animation runs (probably the blink; runtime: stops the restarts) */
 #define FLD_OBJ_SEMITRANS 0x10000 /* fld_modelCommand 0, applied by fld_applyModelCommands */
@@ -922,16 +926,16 @@ typedef union {
     u8 c[4];
 } FieldColor;
 
-/* per-actor extension (FieldActorInfo.unk10) */
+/* per-actor extension (FieldActorInfo.mirror): starts like a FieldObjSlot for the mirrored copy */
 typedef struct FieldActorExt {
     u32 flags; /* flags */
     s32 modelId; /* model file id */
     ModelObj *model; /* = unk14 */
-    FieldEvtObj *obj; /* = unkAC */
+    EvtObject *actor; /* = objBuf (fld_modelCommand 8-11) */
     s32 unk10; /* write-only (cleared) */
     u8 modelBuf[0xAC - 0x14]; /* mirrored model */
     u8 objBuf[0xF8 - 0xAC]; /* copy of the object */
-    FieldEvtCtx *src;
+    FieldObjSlot *src;
     SVECTOR4 mirrorPoint; /* mirror plane point */
     SVECTOR4 mirrorNormal; /* mirror plane normal */
     FieldColor tint; /* rgb, [3]: frames left */
@@ -1120,15 +1124,7 @@ FieldLight *fld_getLightColorTable(Unk800B3254 *);
 s32 bgi_getActorTriangle(s32, u16 *, u16 *);
 s32 bgi_linkFrameNeighbors(BgiHeader *, BgiAnim *, BgiKeyframe *);
 FieldLight *fld_findGlobalLights(Unk800B3254 *, FieldLight **, FieldLight **);
-FieldLight *fld_findFloorLight(Unk800B3254 *, FieldEvtCtx *, s16 *);
-
-/* object model slot (game_getModel) */
-typedef struct {
-    s32 flags; /* FLD_OBJ_* */
-    s32 modelId; /* file id */
-    ModelObj *model;
-    void *actor; /* actor */
-} FieldObjSlot;
+FieldLight *fld_findFloorLight(Unk800B3254 *, FieldObjSlot *, s16 *);
 
 /* field directory entry (fld_refindSectors): the next entry's sector ends this one */
 typedef struct {
@@ -1189,7 +1185,7 @@ s32 fld_preloadRequest(s32, s32);
 s32 fld_preloadHook(void);
 void fld_clearPreloadLists(void);
 s32 game_getModel(s32);
-s32 fld_setSlotColor(FieldEvtCtx *, s32, s32, s32);
+s32 fld_setSlotColor(FieldObjSlot *, s32, s32, s32);
 void fld_discChangeFinish(void);
 void fld_invalidateModelCache(s32);
 s32 fldbg_scrollToPlayer(s32, s32);
@@ -1423,9 +1419,9 @@ void fldmdl_applyScale(ModelObj *);
 void fldmdl_calcBoneMatrices(ModelObj *, u16);
 s32 fld_isModelTexAnimActive(ModelObj *);
 void fldmdl_updateTexAnims(TexAnimSet *);
-void fld_applyLights(FieldEvtCtx **, s32);
-void fld_playAnimSfx(FieldEvtCtx **, s32);
-void fld_applyModelCommands(FieldEvtCtx **, s32);
+void fld_applyLights(FieldObjSlot **, s32);
+void fld_playAnimSfx(FieldObjSlot **, s32);
+void fld_applyModelCommands(FieldObjSlot **, s32);
 void fldmdl_calcBoneMatricesLookAt(ModelObj *, s32);
 void fld_drawShadow(struct FieldObjPlace *, s32);
 s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
@@ -1589,7 +1585,7 @@ void akao_sendCmdE6(s32);
 
 s32 fld_initShadows(s32, s32, s32, s32); /* returns shadow_initSlots's result (the next free address) */
 
-FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *, s32, s32); /* returns the new entry */
+FieldAnimSfx *fld_addAnimSfx(FieldObjSlot *, s32, s32); /* returns the new entry */
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 void akao_resume(u32 x); /* main */
@@ -1630,7 +1626,7 @@ void fld_drawModels(void);
 void fld_drawSprites(void);
 void fld_endFrame(void);
 void fld_exit(void);
-FieldAnimSfx *fld_findAnimSfx(); /* (FieldEvtCtx *, u16, s16); unprototyped: callers pass the argument unconverted */
+FieldAnimSfx *fld_findAnimSfx(); /* (FieldObjSlot *, u16, s16); unprototyped: callers pass the argument unconverted */
 s32 fld_findAreaItem(); /* (FieldMapObj *, u16); unprototyped: callers pass the argument unconverted */
 s32 fld_findEventScript(); /* (FieldScene *, u16); unprototyped: callers pass the argument unconverted */
 Unk800B3294 *fld_findLightColor(); /* (Unk800B3254 *, u16); unprototyped: callers pass the argument unconverted */
@@ -1662,7 +1658,7 @@ s32 fld_needsSplashImage(void);
 s32 fld_readSoundBank(void);
 void fld_refindSectors(void);
 s32 fld_remapModelId(s32 arg0);
-s32 fld_removeAnimSfx(); /* (FieldEvtCtx *, u16, s16); unprototyped: callers pass the argument unconverted */
+s32 fld_removeAnimSfx(); /* (FieldObjSlot *, u16, s16); unprototyped: callers pass the argument unconverted */
 void fld_resetSprite(FieldSprite *arg0);
 void fld_resumeResidentSfx(void);
 void fld_runDiscChange(void);

@@ -177,14 +177,16 @@ typedef struct {
 /* GameData.npcModels entry */
 typedef struct ModelSlot {
     s32 flags; /* MODEL_SLOT_*, others from event op args (the field's FLD_OBJ_* bits) */
-    s32 modelKey; /* 0x20000 | model id (DB_MODEL), -1 after game_clearModelSlot (runtime) */
+    s32 modelId; /* model item, 0x20000 | model id (DB_MODEL), -1 after game_clearModelSlot (runtime) */
     struct BtlUnit9C *model; /* the model object (GameData.chrModelObjs / npcModelObjs entry; battle BtlUnit9C) */
     struct BtlUnitA0 *actor; /* the EvtObject using the slot (FieldMap.playerObj's actor) */
     struct BtlUnit *unit; /* battle unit (btl_resetUnit) */
 } ModelSlot;
-/* ModelSlot.flags. ModelSlot is the same record as ovl_0a's FieldEvtCtx / FieldObjSlot, ovl_0c's WmObjSlot and
- * ovl_0b's BtlObj / Unk8E0Ld (runtime: one read breakpoint on a slot's flags hits fld_drawModels, fld_drawShadow,
- * fld_applyLights...), so these are FLD_OBJ_LOADED / FLD_OBJ_NO_SHADOW and WM_SLOT_LOADED / WM_SLOT_NO_SHADOW. */
+/* ModelSlot.flags. ModelSlot is the same record as ovl_0a's FieldObjSlot, ovl_0c's WmObjSlot and ovl_0b's
+ * BtlObj / Unk8E0Ld (runtime: one read breakpoint on a slot's flags hits fld_drawModels, fld_drawShadow,
+ * fld_applyLights...). Those views keep the field names (flags, modelId, model, actor) and only differ in the
+ * pointer types (each mode has its own model object type); FLD_OBJ_LOADED / FLD_OBJ_NO_SHADOW and
+ * WM_SLOT_LOADED / WM_SLOT_NO_SHADOW are defined as these. */
 #define MODEL_SLOT_LOADED    0x1  /* the slot has a model (set when it is built, cleared by fld_exit / btl_cleanup / wm exit) */
 #define MODEL_SLOT_NO_SHADOW 0x10 /* no shadow drawn (EVT_OP_JUMP sets it for the jump) */
 
@@ -3691,13 +3693,14 @@ typedef struct {
     MainCalcCmd *cmd; /* ability/item data */
     s32 all; /* nonzero: the item/ability hits the whole party (item_useOnMember last argument; fieldCalc_multiTargetHalf) */
     u8 flags; /* MAINCALC_MISS */
-    u8 result; /* 0x20 set by fieldCalc_apply */
+    u8 result; /* MAINCALC_RESULT_*; write-only */
     s16 power; /* base power (cmd power) */
     s16 defense; /* target magicDef (magic heals), 0 for items */
     s16 multiplier; /* level-based (fieldCalc_setMagicHeal) or 10 for items, halved/boosted */
     s16 hpChange; /* chr_addHp amount */
     s16 mpChange; /* chr_addMp amount */
 } MainCalc;
+#define MAINCALC_RESULT_MISS 0x20 /* MainCalc.result: set by fieldCalc_apply on MAINCALC_MISS (the battle's BTL_POPUP_MISS bit) */
 #define MAINCALC_MISS 0x1 /* MainCalc.flags: nothing happens (full hp, dead target, cure failed); fieldCalc_apply then changes nothing */
 
 u8 chr_hasStatus(Character *, s32);
@@ -3919,8 +3922,8 @@ typedef struct {
 #define EVT_OP_SET_TURN_LEFT_ANIM 0x7A /* u16: actor prevPos.rotX field reused as turn-left anim */
 #define EVT_OP_SET_TURN_RIGHT_ANIM 0x7B /* u16 */
 #define EVT_OP_BG_CAMERA 0x7E /* u8 cam: fldbg_setCamera */
-#define EVT_OP_SHADOW_ON 0x7F /* clears FieldObjSlot flag 0x10 (evt_modelOp*) */
-#define EVT_OP_SHADOW_OFF 0x80 /* sets FieldObjSlot flag 0x10: no shadow */
+#define EVT_OP_SHADOW_ON 0x7F /* clears MODEL_SLOT_NO_SHADOW (evt_modelOp*) */
+#define EVT_OP_SHADOW_OFF 0x80 /* sets MODEL_SLOT_NO_SHADOW */
 #define EVT_OP_SHADOW_SIZE 0x81 /* u8, u8: evt_modelOpField */
 #define EVT_OP_SHADOW_FIXED 0x83 /* u8: flag 0x20 + placement */
 #define EVT_OP_SHADOW_UNFIX 0x84

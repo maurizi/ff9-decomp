@@ -13,3 +13,13 @@
 # FIELDS include/ovl_64.h Ovl64MovieInfo: unk5=background
 # FIELDS include/ovl_39.h SaveMisc: unk14=inWorldFrame
 Unk880 WmCameraState
+# ModelSlot views (batch 2): ovl_0a FieldEvtCtx merged into FieldObjSlot {flags, modelId, ModelObj *model, EvtObject *actor};
+# ovl_0c WmObjSlot keeps its type with the same field names. FLD_OBJ_LOADED / FLD_OBJ_NO_SHADOW / WM_SLOT_* = MODEL_SLOT_*.
+FieldEvtCtx FieldObjSlot
+# FIELDS include/ff9.h ModelSlot: modelKey=modelId
+# FIELDS include/ovl_0a.h FieldObjSlot (was FieldEvtCtx): obj=actor (type FieldEvtObj * -> EvtObject *, so obj->uid -> actor->modelSlot, obj->rotX/rotY -> actor->pos.rotX/rotY)
+# FIELDS include/ovl_0a.h FieldEvtObj: uid=modelSlot (offset 0x3B is EvtObject.modelSlot, not the uid)
+# FIELDS include/ovl_0a.h FieldAnimSfx: uid=modelSlot
+# FIELDS include/ovl_0a.h FieldActorExt: obj=actor
+# FIELDS include/ovl_0c.h WmObjSlot: obj=model
+# CONSTANTS FLD_OBJ_COLOR_WAIT 0x800 (ovl_0a.h), MAINCALC_RESULT_MISS 0x20 (ff9.h)

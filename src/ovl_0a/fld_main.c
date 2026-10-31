@@ -581,7 +581,7 @@ void fld_initScene(void) {
     sc->animSfxCount = 0;
     for (i = 15; i >= 0; i--) {
         t = &sc->animSfx[i];
-        t->uid = 0xFF;
+        t->modelSlot = 0xFF;
         t->randomPitch = 0;
         t->modelId = 0xFFFF;
         t->anim = 0xFFFF;
