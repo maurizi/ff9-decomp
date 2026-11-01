@@ -839,7 +839,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     style = WIN_STYLE_FRAMELESS;
     if (!(l->tailMode & MSG_TAIL_FRAMELESS)) {
         style = WIN_STYLE_BALLOON;
-        if (l->tailOffset == 0 && !(flags & 4)) {
+        if (l->tailOffset == 0 && !(flags & MSG_FLAG_NO_TAIL)) {
             style = WIN_STYLE_BEVEL;
         }
     }
@@ -848,15 +848,15 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
         w->window->userData = (s32)w;
         win_setDrawContent(w->window, msg_drawWindowContent);
         win_setDrawOverlay(w->window, msg_drawChoiceCursor);
-        if (l->tailOffset != 0 && !(flags & 4)) {
+        if (l->tailOffset != 0 && !(flags & MSG_FLAG_NO_TAIL)) {
             win_setTail(w->window, l->tailMode & MSG_TAIL_DIR, l->tailOffset);
         }
         if (g_msgLayoutAltOpen != 0) {
             win_setOpenAnim(w->window, WIN_ANIM_NONE);
         }
-        if (flags & 0x40) {
+        if (flags & MSG_FLAG_ATE) {
             win_setTitle(w->window, (s32)g_msgAteTitle);
-        } else if (flags & 8) {
+        } else if (flags & MSG_FLAG_MOGNET) {
             win_setTitle(w->window, (s32)g_msgMognetTitle);
         }
     }

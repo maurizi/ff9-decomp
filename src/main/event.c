@@ -381,7 +381,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
         ry = p->pos.rotY & 0xFFF;
     } else {
         ry = math_atan2(dx, dz);
-        if (!(flags & 1)) {
+        if (!(flags & EVT_MOVETO_NO_TURN)) {
             cur = p->pos.rotY & 0xFFF;
             d = ry - cur;
             if (d < -0x800) {
@@ -406,7 +406,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
             p->pos.rotY = ry;
         }
     }
-    if (flags & 2) {
+    if (flags & EVT_MOVETO_3D) {
         dy = y - p->pos.vy;
         rx = math_atan2(-dy, -math_length3(dx, 0, dz)) & 0xFFF;
         cur = p->pitch & 0xFFF;
@@ -692,10 +692,10 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
 
     w->tailOffset = 0;
     w->tailMode = 0;
-    if ((flags & 0x40) && w->w < 0x72) {
+    if ((flags & MSG_FLAG_ATE) && w->w < 0x72) {
         w->w = 0x72;
     }
-    if (flags & 0x80) {
+    if (flags & MSG_FLAG_BALLOON) {
         if (w->w < 0x1D) {
             w->w = 0x1D;
         }
@@ -754,10 +754,10 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
             break;
         }
     }
-    if ((flags & 4) && w->w < 0x1D) {
+    if ((flags & MSG_FLAG_NO_TAIL) && w->w < 0x1D) {
         w->w = 0x1D;
     }
-    w->tailMode |= flags & 0x30;
+    w->tailMode |= flags & (MSG_FLAG_FRAMELESS | MSG_FLAG_NO_FOLLOW);
     return w;
 }
 
@@ -875,10 +875,10 @@ s32 evt_execInstr(void) {
         evt_execInstr_newactor(a, b);
         g_evtArgRead = 1;
         return 0;
-    case 0x46:
-    case 0x79:
-    case 0xD2:
-    case 0xD3:
+    case EVT_OP_NOP_46:
+    case EVT_OP_NOP_79:
+    case EVT_OP_NOP_D2:
+    case EVT_OP_NOP_D3:
         return 0;
     case EVT_OP_CALL:
         a = evt_getArg8_inline();
@@ -984,7 +984,7 @@ s32 evt_execInstr(void) {
             evt_getArg8_inline();
         }
         return 0;
-    case 0xA3:
+    case EVT_OP_NOP_A3:
         evt_getArg8_inline();
         evt_getArg8_inline();
         evt_getArg8_inline();
@@ -1064,7 +1064,7 @@ s32 evt_execInstr(void) {
             actor->turnSpeed = 0x10;
         }
         return 0;
-    case 0xBB:
+    case EVT_OP_TURN_OBJ:
         actor = evt_getObjectArg();
     case EVT_OP_TURN:
         a = evt_getArg8_inline() << 4;
@@ -1087,7 +1087,7 @@ s32 evt_execInstr(void) {
             evt_turnObject(actor, math_atan2(obj->pos.vx - actor->pos.vx, obj->pos.vz - actor->pos.vz), 1, a);
         }
         return 0;
-    case 0xBC:
+    case EVT_OP_WAIT_TURN_OBJ:
         actor = evt_getObjectArg();
     case EVT_OP_WAIT_TURN:
         if (actor->flags & EVT_OBJ_TURNING) {
@@ -1177,7 +1177,7 @@ s32 evt_execInstr(void) {
         return 1;
     case EVT_OP_MOVE_XZ_NOTURN:
         a = evt_getArg16_inline();
-        if (evt_moveObjectTo(a, 0, evt_getArg16_inline(), 1)) {
+        if (evt_moveObjectTo(a, 0, evt_getArg16_inline(), EVT_MOVETO_NO_TURN)) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
         }
@@ -1190,7 +1190,7 @@ s32 evt_execInstr(void) {
         }
         g_evtArgRead = 1;
         return 1;
-    case 0xA0:
+    case EVT_OP_MOVE_TO_LINE_POINT:
         if (evt_moveObjectTo(g_evtLinePointX, 0, g_evtLinePointZ, 0)) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
@@ -1200,16 +1200,16 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
-        if (evt_moveObjectTo(a, b, c, 2)) {
+        if (evt_moveObjectTo(a, b, c, EVT_MOVETO_3D)) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
         }
         return 1;
-    case 0xE8:
+    case EVT_OP_MOVE_XYZ_NOTURN:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
-        if (evt_moveObjectTo(a, b, c, 3)) {
+        if (evt_moveObjectTo(a, b, c, EVT_MOVETO_NO_TURN | EVT_MOVETO_3D)) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
         }
@@ -1295,7 +1295,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     }
-    case 0xA4:
+    case EVT_OP_LINE_POINT:
         po = evt_getObject_inline(g_evtState->playerUid);
         if (po != NULL) {
             EvtRegionPt *p = ((EvtRegion *)g_evtActor)->pts;
@@ -1317,7 +1317,7 @@ s32 evt_execInstr(void) {
             g_evtLinePointX = 0;
         }
         return 0;
-    case 0x9E:
+    case EVT_OP_PLAYER_TO_LINE_POINT:
         po = evt_getObject_inline(g_evtState->playerUid);
         if (po != NULL) {
             s32 *sp = (s32 *)po + po->stackOfs + po->sp;
@@ -1503,7 +1503,7 @@ s32 evt_execInstr(void) {
         ((ModelSlot *)game_getModel(po->modelSlot))->flags &= ~evt_getArg16_inline();
         return 0;
     }
-    case 0x4E:
+    case EVT_OP_NOP_STRING:
         str = g_evtCurObj->ip - 1;
         while (*str++ != 0) {
         }
@@ -1511,7 +1511,7 @@ s32 evt_execInstr(void) {
         g_evtArgRead = 1;
         g_evtCurObj->ip = str + 1;
         return 0;
-    case 0x4F:
+    case EVT_OP_END_FRAME:
         g_evtArgRead = 1;
         g_evtCurObj->ip++;
         return 6;
@@ -1611,7 +1611,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     }
-    case 0x38:
+    case EVT_OP_BTL_ENEMY_CMD:
         switch (g_evtCurObj->level) {
         case 0: {
             s32 x = (u16)g_evtBattleVars[1], z = (u16)g_evtBattleVars[0];
@@ -1660,12 +1660,12 @@ s32 evt_execInstr(void) {
             while (dst < end) {
                 *dst++ = *src++;
             }
-            *dst = 0xFF;
+            *dst = TEXT_END;
         } else {
             evt_getArg16_inline();
         }
         return 0;
-    case 0xDB:
+    case EVT_OP_SET_VICTORY_POSE:
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
             g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~CHR_INFO_VICTORY_POSE) | ((evt_getArg8_inline() & 1) << CHR_INFO_VICTORY_POSE_BIT);
@@ -1959,7 +1959,7 @@ s32 evt_execInstr(void) {
         d = evt_getArg16_inline();
         fld_spriteCommand(a, b, c, d, evt_getArg16_inline());
         return 0;
-    case 0xDA:
+    case EVT_OP_SPRITE_CMD_U8:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
         c = evt_getArg8_inline();
@@ -2059,7 +2059,7 @@ s32 evt_execInstr(void) {
             evt_execInstr_party();
         }
         return 0;
-    case 0xB2:
+    case EVT_OP_PARTY_MENU:
         g_evtPartyRequest.size = evt_getArg8_inline();
         a = 0;
         for (i = 8; i >= 0; i--) {
@@ -2091,7 +2091,7 @@ s32 evt_execInstr(void) {
         }
         menu_open(MENU_PARTY, (s32)&g_evtPartyRequest);
         return 1;
-    case 0xE9:
+    case EVT_OP_PARTY_UPDATE_UIDS:
         evt_execInstr_party();
         return 0;
     case EVT_OP_SET_HP:
@@ -2128,7 +2128,7 @@ s32 evt_execInstr(void) {
         a = evt_execInstr_chr(evt_getArg8_inline());
         chr_cureStatusBit(&g_gameState->gameData->characters[a], evt_getArg8_inline() & 0xFF);
         return 0;
-    case 0x62:
+    case EVT_OP_SET_ROW:
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
             g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~CHR_INFO_BATTLE_ROW) | ((evt_getArg8_inline() & 1) << CHR_INFO_BATTLE_ROW_BIT);
@@ -2146,7 +2146,7 @@ s32 evt_execInstr(void) {
         while (dst < end) {
             *dst++ = *src++;
         }
-        *dst = 0xFF;
+        *dst = TEXT_END;
         g_gameState->gameData->locationName = g_evtLocationNameBuf;
         return 0;
     }
@@ -2241,7 +2241,7 @@ s32 evt_execInstr(void) {
         a = evt_getArg8_inline();
         ((s32 (*)(s32, s32))g_gameState->gameData->preloadRequest)(a & 0xFF, evt_getArg16_inline() & 0xFFFF);
         return 0;
-    case 0xFF:
+    case EVT_OP_EXT:
         /* padding between the two jump tables in the original rodata */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         op = g_evtArgFlags | 0xFF00;
@@ -2251,74 +2251,74 @@ s32 evt_execInstr(void) {
             a = evt_getArg8_inline();
             bgi_startFloorMove(a, evt_getArg8_inline());
             return 0;
-        case 0xFF01:
+        case EVT_OP_BGI_FLOOR_MOVE_STOP:
             a = evt_getArg8_inline();
             bgi_stopFloorMove(a, evt_getArg8_inline());
             return 0;
-        case 0xFF02:
+        case EVT_OP_BGI_FLOOR_MOVE_PLAYING:
             a = evt_getArg8_inline();
             bgi_setFloorMovePlaying(a, evt_getArg8_inline());
             return 0;
-        case 0xFF03:
+        case EVT_OP_BGI_FLOOR_MOVE_MODE:
             a = evt_getArg8_inline();
             bgi_setFloorMoveMode(a, evt_getArg8_inline());
             return 0;
-        case 0xFF04:
+        case EVT_OP_BGI_FLOOR_MOVE_FLOOR:
             a = evt_getArg8_inline();
             bgi_setFloorMoveFloor(a, evt_getArg8_inline());
             return 0;
-        case 0xFF05:
+        case EVT_OP_BGI_FLOOR_MOVE_SPEED:
             a = evt_getArg8_inline();
             bgi_setFloorMoveSpeed(a, evt_getArg16_inline());
             return 0;
-        case 0xFF06:
+        case EVT_OP_BGI_FLOOR_MOVE_CURVE:
             a = evt_getArg8_inline();
             bgi_setFloorMoveCurve(a, evt_getArg8_inline());
             return 0;
-        case 0xFF07:
+        case EVT_OP_BGI_FLOOR_MOVE_RANGE:
             a = evt_getArg8_inline();
             b = evt_getArg16_inline();
             bgi_setFloorMoveRange(a, b, evt_getArg16_inline());
             return 0;
-        case 0xFF08:
+        case EVT_OP_BGI_FLOOR_MOVE_AXIS:
             a = evt_getArg8_inline();
             bgi_setFloorMoveAxis(a, evt_getArg8_inline());
             return 0;
-        case 0xFF09:
+        case EVT_OP_BGI_ANIM_FRAME:
             a = evt_getArg8_inline();
             bgi_setAnimFrame(a, evt_getArg8_inline());
             return 0;
-        case 0xFF0A:
+        case EVT_OP_BGI_ANIM_SHOW_FRAME:
             a = evt_getArg8_inline();
             bgi_showAnimFrame(a, evt_getArg8_inline());
             return 0;
-        case 0xFF0B:
+        case EVT_OP_BGI_ANIM_PLAYING:
             a = evt_getArg8_inline();
             bgi_setAnimPlaying(a, evt_getArg8_inline());
             return 0;
-        case 0xFF0C:
+        case EVT_OP_BGI_ANIM_MODE:
             a = evt_getArg8_inline();
             bgi_setAnimMode(a, evt_getArg8_inline());
             return 0;
-        case 0xFF0D:
+        case EVT_OP_BGI_ANIM_RATE:
             a = evt_getArg8_inline();
             bgi_setAnimRate(a, evt_getArg16_inline());
             return 0;
-        case 0xFF0E:
+        case EVT_OP_BGI_ANIM_FRAME_VALUES:
             a = evt_getArg8_inline();
             bgi_setAnimFrameValues(a, evt_getArg8_inline());
             return 0;
-        case 0xFF0F:
+        case EVT_OP_BGI_ANIM_FRAME_VALUE:
             a = evt_getArg8_inline();
             b = evt_getArg8_inline();
             bgi_setAnimFrameValue(a, b, evt_getArg8_inline());
             return 0;
-        case 0xFF10:
+        case EVT_OP_BGI_ANIM_RANGE:
             a = evt_getArg8_inline();
             b = evt_getArg8_inline();
             bgi_playAnimRange(a, b, evt_getArg8_inline());
             return 0;
-        case 0xFF11:
+        case EVT_OP_BGI_ANIM_RESET:
             a = evt_getArg8_inline();
             bgi_resetAnim(a, evt_getArg8_inline());
             return 0;
