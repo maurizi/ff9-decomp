@@ -10,7 +10,7 @@ typedef struct {
 } Fx1fdPoint;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx1fdPoint *keys4;
 } Fx1fdPath;
@@ -57,7 +57,7 @@ typedef struct {
 } Fx1fdKey; /* 0xC */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* keys */
     Fx1fdKey *keys4;
 } Fx1fdPath_0b4;
@@ -99,7 +99,7 @@ typedef struct {
     Fx1fdPath path0;
     Fx1fdPath path8;
     SVECTOR scale10; /* scale */
-    s16 unk18;
+    s16 unk18; /* passed to fxm_projectEdgesBlend, which ignores that argument (cleared at init) */
     s16 count1A; /* length */
     s16 bright1C; /* brightness */
     s16 width1E; /* width */
@@ -111,7 +111,7 @@ typedef struct {
 typedef struct {
     Fx1fdPath path0;
     SVECTOR scale8; /* scale */
-    s16 unk10;
+    s16 unk10; /* passed to fxm_projectEdges, which ignores that argument (cleared at init) */
     s16 count12; /* length */
     s16 bright14; /* brightness */
     s16 width16; /* width */
@@ -129,7 +129,7 @@ typedef struct {
     s32 tint3C; /* model brightness */
     SVECTOR pos40; /* effect positions */
     SVECTOR pos48;
-    SVECTOR unk50; /* caster position */
+    SVECTOR unk50; /* write-only: target centre raised by 0x3E8 */
     s32 timer58; /* fade counters */
     s32 timer5C;
     s32 timer60;

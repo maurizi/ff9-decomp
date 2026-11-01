@@ -23,14 +23,14 @@ typedef struct {
     SVECTOR pos8; /* start */
     s16 width10; /* side sway */
     s16 height12; /* arc height */
-    s16 unk14;
+    s16 unk14; /* write-only (cleared) */
     u8 pad16[0x18 - 0x16];
     u16 frame18; /* start frame */
     u16 bone1A; /* bone */
     u16 dist1C;
     u8 pad1E[0x20 - 0x1E];
     u16 frame20; /* state */
-    u16 unk22;
+    u16 unk22; /* unused */
 } Fx12bShard; /* 0x24 */
 
 typedef struct {
@@ -38,7 +38,7 @@ typedef struct {
 } Fx12bPoint;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* key count */
     Fx12bPoint *keys4; /* keys */
 } Fx12bPath;

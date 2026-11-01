@@ -31,7 +31,7 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    s32 unk4;
+    s32 unk4; /* unused */
     SVECTOR pos8;
     s32 unit10; /* target index */
 } Fx12aWork82;

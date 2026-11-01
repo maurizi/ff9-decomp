@@ -7,17 +7,17 @@
 
 typedef struct {
     s16 state0; /* state */
-    s16 unk2;
+    s16 unk2; /* write-only (cleared at spawn) */
     s16 scale4; /* size */
-    s16 unk6;
-    s16 unk8;
+    s16 unk6; /* unused */
+    s16 unk8; /* unused */
     s16 speedA; /* drift */
     SVECTOR posC; /* position */
-    SVECTOR unk14; /* rotation */
-    s16 unk1C;
-    s16 unk1E;
-    s32 unk20;
-    s32 unk24;
+    SVECTOR unk14; /* write-only: rotation */
+    s16 unk1C; /* write-only */
+    s16 unk1E; /* write-only */
+    s32 unk20; /* write-only (cleared at spawn) */
+    s32 unk24; /* write-only (cleared at spawn) */
 } Fx17aPart;
 
 typedef struct {

@@ -363,7 +363,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x5A) {
                 work->state0 = 1;
                 entry->frame = -1;
-                buf = ((Fx1b0Summon *)env->loader)->summon54->unk50 + 0x19000;
+                buf = ((Fx1b0Summon *)env->loader)->summon54->workBuf50 + 0x19000;
                 fx_1b0_initSplit((Fx1b0Split *)buf, (SVECTOR (*)[3])(buf + 0xDB88));
                 for (i = 0; i < 8; i++) {
                     fxm_splitModelAdd(work->model3C[i]);

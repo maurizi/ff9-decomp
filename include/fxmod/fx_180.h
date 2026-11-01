@@ -10,7 +10,7 @@ typedef struct {
 } Fx180Point;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx180Point *keys4;
 } Fx180Path;
@@ -22,7 +22,7 @@ typedef struct {
     SVECTOR pos34; /* target position */
     SVECTOR pos3C; /* bone position */
     SVECTOR pos44;
-    SVECTOR unk4C;
+    SVECTOR unk4C; /* write-only (copy of pos24) */
     SVECTOR camPos54; /* camera targets */
     SVECTOR camPos5C;
     SVECTOR camPos64;

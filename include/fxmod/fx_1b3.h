@@ -11,8 +11,8 @@ typedef struct {
     s16 velZ4;
     s16 timer6; /* frames left */
     s16 rot8; /* spin */
-    s16 unkA;
-    s16 unkC;
+    s16 unkA; /* write-only (random +-0x80) */
+    s16 unkC; /* write-only (random +-0x80) */
     s16 scaleStepE; /* scale step */
     s16 posX10; /* center */
     s16 posY12;
@@ -55,7 +55,7 @@ typedef struct {
 } Fx1b3Trail; /* 0xE0 */
 
 typedef struct {
-    s32 unk0[32]; /* timers: 0 tint, 1 flash, 2 trails, 3 trail kind, 4 sweep, 5 sweep split, 6..0xD */
+    s32 timers0[32]; /* timers: 0 tint, 1 flash, 2 trails, 3 trail kind, 4 sweep, 5 sweep split, 6..0xD */
     Pool6CEntry *emit80[32];
     SVECTOR pos100; /* body position */
     SVECTOR pos108; /* unit position */

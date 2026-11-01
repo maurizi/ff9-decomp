@@ -36,9 +36,9 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
 
 typedef struct {
     s32 state0; /* state */
-    s32 unk4; /* frame */
+    s32 unk4; /* write-only: frame counter */
     SVECTOR pos8;
-    SVECTOR unk10;
+    SVECTOR unk10; /* write-only (copy of pos8) */
     u8 pad18[0x28 - 0x18];
 } Fx1bf0Work; /* 0x28 */
 

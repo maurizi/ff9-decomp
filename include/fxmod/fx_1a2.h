@@ -22,7 +22,7 @@ typedef struct {
     s16 velC; /* velocity */
     s16 velE;
     s16 vel10;
-    s16 unk12;
+    s16 unk12; /* write-only (0x1000) */
     s16 rot14;
     s16 rot16;
     s16 frame18;
@@ -56,7 +56,7 @@ typedef struct {
     s16 pos20; /* bouncing rock position */
     s16 pos22;
     s16 pos24;
-    s16 unk26;
+    s16 unk26; /* unused */
     s32 vel28; /* bouncing rock velocity */
     s32 scale2C; /* scale */
     s32 model30[3]; /* models */

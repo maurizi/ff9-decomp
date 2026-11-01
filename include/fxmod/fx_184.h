@@ -22,7 +22,7 @@ typedef struct {
 
 typedef struct {
     SVECTOR pos0;
-    SVECTOR unk8;
+    SVECTOR unk8; /* write-only (pos0 on the ground) */
     SVECTOR pos10; /* target position */
     SVECTOR pos18; /* destination */
     SVECTOR rot20; /* angles */

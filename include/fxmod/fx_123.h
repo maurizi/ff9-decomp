@@ -45,7 +45,7 @@ typedef struct {
 } Fx123Point;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx123Point *keys4;
 } Fx123Path;
@@ -75,7 +75,7 @@ typedef struct {
 } Fx123Key; /* 0xC */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* keys */
     Fx123Key *keys4;
 } Fx123Path_0b4;
@@ -99,7 +99,7 @@ typedef struct {
     SVECTOR pos110[6];
     SVECTOR pos140;
     SVECTOR pos148[6];
-    s16 unk178;
+    s16 unk178; /* write-only (-1, then 4) */
     u16 model17A[6];
     u16 model186;
 } Fx123Work81; /* 0x188 */
@@ -110,10 +110,10 @@ typedef struct {
     SVECTOR pos10;
     u16 active18;
     u16 frame1A;
-    s16 unk1C;
+    s16 unk1C; /* unused */
     s16 timer1E;
     s16 angle20;
-    s16 unk22;
+    s16 unk22; /* unused */
 } Fx123Shot; /* 0x24 */
 
 extern Fx123Shot fx_123_op81Shots[6];

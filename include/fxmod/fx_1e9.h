@@ -12,7 +12,7 @@ typedef struct {
     SVECTOR posC; /* caster position */
     SVECTOR pos14; /* caster body position */
     s32 frame1C; /* loop counter */
-    s32 unk20;
+    s32 unk20; /* write-only (cleared) */
     s32 model24; /* model */
 } Fx1e9Work80; /* 0x28 */
 

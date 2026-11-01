@@ -10,7 +10,7 @@ typedef struct {
     s32 timer4; /* countdown */
     s32 height8; /* saved height */
     SVECTOR posC; /* unit position */
-    s32 unk14;
+    s32 unk14; /* write-only (cleared) */
     s32 model18; /* models */
     s32 model1C;
     SVECTOR rot20; /* model rotations */

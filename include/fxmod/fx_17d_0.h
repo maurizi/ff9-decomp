@@ -6,11 +6,11 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared at spawn) */
     s16 speed2;
     s32 index4; /* line index */
     SVECTOR pos8;
-    s16 unk10;
+    s16 unk10; /* unused */
 } Fx17d0Part;
 
 typedef struct {
@@ -51,7 +51,7 @@ typedef struct {
     SVECTOR pos10; /* pieces origin */
     Fx17d0Vec3 pos18; /* model position */
     u8 pad24[0x30 - 0x24];
-    SVECTOR unk30;
+    SVECTOR unk30; /* write-only (cleared at init) */
     SVECTOR rot38; /* model rotation */
     SVECTOR pos40; /* spawn position */
     SVECTOR pos48; /* camera */

@@ -43,9 +43,9 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 pos.vy = work->posC.vy;
                 pos.vz = work->posC.vz;
                 pos.vz += (work->scale8 << 9) >> 12;
-                rot.vx = key->unk2 + 0x400;
-                rot.vy = key->unk0 + 0x800;
-                rot.vz = key->unk4;
+                rot.vx = key->y2 + 0x400;
+                rot.vy = key->x0 + 0x800;
+                rot.vz = key->z4;
                 scale.vx = scale.vy = scale.vz = work->scale8;
                 if (frame < 0x18) {
                     b = 0x1000;
@@ -74,9 +74,9 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     } else {
                         k1 += 0x15;
                     }
-                    p.vx = work->posC.vx + ((k1->unk0 * work->scale8) >> 12);
-                    p.vy = work->posC.vy + ((k1->unk2 * work->scale8) >> 12);
-                    p.vz = work->posC.vz + ((k1->unk4 * work->scale8) >> 12);
+                    p.vx = work->posC.vx + ((k1->x0 * work->scale8) >> 12);
+                    p.vy = work->posC.vy + ((k1->y2 * work->scale8) >> 12);
+                    p.vz = work->posC.vz + ((k1->z4 * work->scale8) >> 12);
                     ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &p, NULL, 0x2000, work->frame4 + j * 4 + j, 1, c);
                     r.vz += 0x40;
                 }
@@ -86,9 +86,9 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     for (; j < 0x11; j++) {
                         k1 = (Fx198Key *)ex->btlfx_getFileData(entry->file, fx_198_quadPathFileIds[j]);
                         k1 = (Fx198Key *)((u8 *)k1 + 4);
-                        p.vx = work->posC.vx + ((k1->unk0 * work->scale8) >> 12);
-                        p.vy = work->posC.vy + ((k1->unk2 * work->scale8) >> 12);
-                        p.vz = work->posC.vz + ((k1->unk4 * work->scale8) >> 12);
+                        p.vx = work->posC.vx + ((k1->x0 * work->scale8) >> 12);
+                        p.vy = work->posC.vy + ((k1->y2 * work->scale8) >> 12);
+                        p.vz = work->posC.vz + ((k1->z4 * work->scale8) >> 12);
                         ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &p, NULL, 0x1800, work->frame4 + j * 4 + j, 1, c);
                         r.vz += 0x40;
                     }
@@ -105,8 +105,8 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 t = ((frame - 0x14) << 12) / 20;
                 key2 = (Fx198Key *)(ex->btlfx_getFileData(entry->file, 0x18) + 4);
                 key2 += frame;
-                p.vy = key2->unk2;
-                p.vz = key2->unk4;
+                p.vy = key2->y2;
+                p.vz = key2->z4;
                 i = 0;
                 for (; i < 0xA; i++) {
                     ex->btlfx_getFileData(entry->file, fx_198_quadPathFileIds[i]);

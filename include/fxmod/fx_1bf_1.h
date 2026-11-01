@@ -67,7 +67,7 @@ typedef struct {
     u8 index10; /* trail index */
     u8 kind11; /* kind */
     u8 index12;
-    u8 unk13;
+    u8 unk13; /* write-only (rand % 15) */
     u8 angle14; /* angle */
     u8 width15;
     u8 pad16[2];
@@ -94,7 +94,7 @@ extern s32 fx_1bf_1_releaseZ;
 
 typedef struct {
     s32 state0; /* state */
-    s32 unk4; /* counter */
+    s32 unk4; /* write-only: frame counter */
     SVECTOR pos8; /* position */
     SVECTOR pos10;
     SVECTOR pos18; /* camera */

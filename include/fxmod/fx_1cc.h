@@ -10,17 +10,17 @@ extern Unk800F78A4 *fx_1cc_env;
 extern s16 fx_1cc_pieceDists[];
 
 typedef struct Fx1ccObj {
-    s16 unk0; /* state / piece index */
+    s16 state0; /* state; flying pieces: piece index (< 6 picks the scale) */
     s16 kind2; /* 0: main object, 1: piece */
     s32 index4; /* direction index */
     s32 frame8; /* frame */
     s32 posXC; /* position, 28.4 (low halves used by the main object) */
     s32 posY10;
     s32 posZ14;
-    s16 unk18; /* velocity (main: SVECTOR position) */
-    s16 unk1A;
-    s16 unk1C;
-    s16 unk1E;
+    s16 velX18; /* velocity (main object: SVECTOR position, the emitter origin) */
+    s16 velY1A;
+    s16 velZ1C;
+    s16 unk1E; /* unused (pad of the main object's position) */
     SVECTOR rot20; /* rotation */
     s16 spin28; /* rotation speed */
     s16 spin2A;

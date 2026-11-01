@@ -10,7 +10,7 @@ typedef struct {
 } Fx138Point;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* key count */
     Fx138Point *keys4; /* keys */
 } Fx138Path;
@@ -28,7 +28,7 @@ typedef struct {
 typedef struct {
     u8 pad0[0x24];
     VECTOR pos24; /* model position */
-    VECTOR unk34; /* model scale */
+    VECTOR unk34; /* write-only: model scale */
     u8 pad44[0x48 - 0x44];
     SVECTOR rot48; /* model rotation */
     VECTOR pos50; /* model position */
@@ -37,9 +37,9 @@ typedef struct {
     SVECTOR rot78; /* caster rotation */
     u8 pad80[0x88 - 0x80];
     s16 unk88; /* unk88..unk8E: only initialised, never read (runtime watch, round 33); unk8A is the fourth value of the fx_138_randSets row */
-    s16 unk8A;
-    s16 unk8C;
-    s16 unk8E;
+    s16 unk8A; /* write-only */
+    s16 unk8C; /* write-only (-1) */
+    s16 unk8E; /* write-only (-1, then 0x1A) */
     s16 active90; /* model shown */
     s16 timer92; /* model countdown */
     s16 frame94; /* frame */
@@ -49,10 +49,10 @@ typedef struct {
 
 typedef struct {
     SVECTOR rot0; /* rotation */
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
-    u16 unkE;
+    s16 unk8; /* write-only (0x200) */
+    s16 unkA; /* unused */
+    s16 unkC; /* unused */
+    u16 unkE; /* write-only */
     u8 pad10[0x18 - 0x10];
 } Fx138Ring; /* 0x18 */
 

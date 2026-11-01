@@ -10,7 +10,7 @@ typedef struct {
 } Fx1ecPoint;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx1ecPoint *keys4;
 } Fx1ecPath;

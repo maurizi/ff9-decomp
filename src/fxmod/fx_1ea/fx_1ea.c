@@ -177,12 +177,12 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1ea_ribbon0.countA = 1;
         fx_1ea_ribbon0.alphaC = 0x1000;
         fx_1ea_ribbon0.scaleE = 0x1000;
-        fx_1ea_ribbon0.unk10 = 0x40;
+        fx_1ea_ribbon0.width10 = 0x40;
         fx_1ea_ribbon1.index8 = 0;
         fx_1ea_ribbon1.countA = 1;
         fx_1ea_ribbon1.alphaC = 0x1000;
         fx_1ea_ribbon1.scaleE = 0x1000;
-        fx_1ea_ribbon1.unk10 = 0x40;
+        fx_1ea_ribbon1.width10 = 0x40;
         work->timer98 = -1;
         work->timer9C = -1;
         work->timerA0 = -1;
@@ -310,7 +310,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i3 = 0; i3 < 2; i3++) {
                 fxm_posPathInit(&fx_1ea_ribbon0.path0, (u16 *)ex->btlfx_getFileData(entry->file, fx_1ea_trailPathFileIds0[i3]));
                 fx_1ea_buildTrail(&fx_1ea_ribbon0.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails0[i3], 0x100, fx_1ea_ribbon0.index8, fx_1ea_ribbon0.countA,
-                              fx_1ea_ribbon0.unk10);
+                              fx_1ea_ribbon0.width10);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x20), 0, NULL, 0, fx_1ea_ribbon0.scaleE,
                                     fx_1ea_ribbon0.alphaC, 1, fx_1ea_ribbonTrails0[i3], 0);
             }
@@ -325,7 +325,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i4 = 0; i4 < 6; i4++) {
                 fxm_posPathInit(&fx_1ea_ribbon1.path0, (u16 *)ex->btlfx_getFileData(entry->file, fx_1ea_trailPathFileIds1[i4]));
                 fx_1ea_buildTrailRotY(&fx_1ea_ribbon1.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails1[i4], 0x88, fx_1ea_ribbon1.index8, fx_1ea_ribbon1.countA,
-                              fx_1ea_ribbon1.unk10, ang);
+                              fx_1ea_ribbon1.width10, ang);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x21), 0, NULL, 0, fx_1ea_ribbon1.scaleE,
                                     fx_1ea_ribbon1.alphaC, 1, fx_1ea_ribbonTrails1[i4], 0);
                 if (i4 & 1) {

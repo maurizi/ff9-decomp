@@ -16,7 +16,7 @@ typedef struct {
     s16 velC; /* velocity */
     s16 velE;
     s16 vel10;
-    s16 unk12; /* scale */
+    s16 unk12; /* write-only: scale (0x1000) */
     s16 rot14; /* spin */
     s16 rot16;
     s16 frame18; /* frame, -1 = gone */

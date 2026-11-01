@@ -13,7 +13,7 @@ static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg
 
     if (mode == 1) {
         o->state0 = 0;
-        o->unk6 = ex->btlfx_rand() % 1000 - 400;
+        o->bobVelY6 = ex->btlfx_rand() % 1000 - 400;
         o->rot14.vx = 0;
         o->rot14.vy = 0;
         o->rot14.vz = 0;
@@ -35,18 +35,18 @@ static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg
             pos.vy = o->posC.vy;
             pos.vz = o->posC.vz;
             t = frame << 7;
-            pos.vy = pos.vy - ((ex->math_sin(t >> 2) * o->unk6) >> 12) + ((frame & 1) * 2 - 1) * (t >> 7);
+            pos.vy = pos.vy - ((ex->math_sin(t >> 2) * o->bobVelY6) >> 12) + ((frame & 1) * 2 - 1) * (t >> 7);
             if (frame >= 0x20) {
                 o->state0 = 1;
                 ((s16 *)o)[-1] = -1;
-                o->posC.vx -= o->unk6;
+                o->posC.vx -= o->bobVelY6;
                 o->spin1C = ex->btlfx_randCentered(8);
                 o->spin1E = ex->btlfx_randCentered(8);
                 o->vel8 = o->posC.vx / 4 + ex->btlfx_randCentered(0x80);
                 r = ex->btlfx_randCentered(0x100);
                 x = o->posC.vx / 7;
                 z = o->posC.vz / 7;
-                o->unk6 = (s16)(r - 0x2BC) + ex->btlfx_sqrt(x * x + z * z, 0x14) / 2;
+                o->bobVelY6 = (s16)(r - 0x2BC) + ex->btlfx_sqrt(x * x + z * z, 0x14) / 2;
                 o->velA = o->posC.vz / 4 + ex->btlfx_randCentered(0x80);
             }
             break;
@@ -57,8 +57,8 @@ static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg
             o->posC.vz += o->velA >> 2;
             o->vel8 = o->vel8 * 7 >> 3;
             o->velA = o->velA * 7 >> 3;
-            o->posC.vy += o->unk6 / 5;
-            o->unk6 += 12;
+            o->posC.vy += o->bobVelY6 / 5;
+            o->bobVelY6 += 12;
             if (frame >= 0x28) {
                 return 1;
             }

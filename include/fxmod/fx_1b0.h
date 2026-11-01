@@ -48,7 +48,7 @@ extern Fx1b0Orbit fx_1b0_orbits[];
 
 typedef struct {
     u8 pad0[0x50];
-    u8 *unk50; /* work buffer */
+    u8 *workBuf50; /* work buffer */
 } Fx1b0SummonData;
 
 typedef struct {
@@ -63,7 +63,7 @@ typedef struct {
     SVECTOR rot14; /* caster rotation */
     s32 scale1C[3]; /* caster scale */
     SVECTOR pos28; /* caster body position */
-    SVECTOR unk30;
+    SVECTOR unk30; /* write-only (pos28 on the ground) */
     CVECTOR color38; /* model colour */
     s32 model3C[8]; /* split models */
 } Fx1b0Work80; /* 0x5C */

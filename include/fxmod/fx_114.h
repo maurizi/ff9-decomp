@@ -30,9 +30,9 @@ typedef struct {
     SVECTOR rot4; /* model rotation */
     VECTOR posC; /* model position */
     VECTOR scale1C; /* model scale */
-    SVECTOR unk2C;
-    VECTOR unk34;
-    VECTOR unk44;
+    SVECTOR unk2C; /* write-only (0, 0, 0) */
+    VECTOR unk34; /* write-only (0, 0, 0x320) */
+    VECTOR unk44; /* write-only (0x1000 each) */
     u8 pad54[0x58 - 0x54];
     SVECTOR pos58;
     s16 timer60; /* fade-in countdown */
@@ -69,7 +69,7 @@ typedef struct {
 } Fx114Point;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx114Point *keys4;
 } Fx114Path;
@@ -170,9 +170,9 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC; /* rotation */
-    SVECTOR unk14; /* position */
-    s32 unk1C;
+    SVECTOR unkC; /* write-only: rotation */
+    SVECTOR pos14; /* position (only copied into unk104) */
+    s32 unk1C; /* write-only (0x1800) */
     SVECTOR rot20; /* body rotation */
     Fx114Vec3 pos28; /* body position */
     s32 pad34;
@@ -187,7 +187,7 @@ typedef struct {
     Fx114Vec3 pos78;
     s32 pad84;
     Fx114Vec3 scale88;
-    s32 unk94;
+    s32 unk94; /* unused */
     s32 color98;
     SVECTOR rot9C;
     Fx114Vec3 posA4;
@@ -203,7 +203,7 @@ typedef struct {
     s32 padF0;
     SVECTOR posF4;
     SVECTOR posFC;
-    SVECTOR unk104;
+    SVECTOR unk104; /* write-only: pos14 raised by 0xF0 */
     s16 frame10C; /* frame */
     s16 timer10E;
     s16 timer110;
@@ -305,7 +305,7 @@ typedef struct {
     s32 pad130;
     SVECTOR pos134;
     SVECTOR pos13C;
-    SVECTOR unk144;
+    SVECTOR unk144; /* write-only (0, 0, -0x4B0) */
     SVECTOR pos14C;
     u8 pad154[8];
     u8 color15C;

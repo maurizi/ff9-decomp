@@ -17,12 +17,12 @@ typedef struct {
     s32 timer10;
     s32 timer14;
     s32 timer18;
-    s32 unk1C;
+    s32 unk1C; /* unused */
     s32 timer20; /* screen ripple timer */
     s32 timer24;
     s32 timer28;
     s32 spin2C; /* spin speed */
-    s32 unk30;
+    s32 unk30; /* unused */
     s32 timer34; /* sparks timer */
     s32 halfWidth38; /* ribbon half-width, stored in the trail points' pad */
     s32 timer3C;
@@ -69,7 +69,7 @@ typedef struct {
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
     SVECTOR points4[9];
-    s32 unk4C; /* timer */
+    s32 timer4C; /* timer */
     SVECTOR pos50[16]; /* points (pad = next) */
     SVECTOR velD0[16]; /* velocities */
 } Fx1f2Trail; /* 0x150 */

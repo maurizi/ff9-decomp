@@ -6,7 +6,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     s16 count2; /* count */
     s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx196Track;
@@ -15,7 +15,7 @@ typedef struct {
     u16 fileId0;
     u16 fileId2;
     u16 duration4;
-    u16 unk6;
+    u16 unk6; /* not read by the module */
 } Fx196CamPath;
 
 typedef struct {

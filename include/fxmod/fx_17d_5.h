@@ -37,14 +37,14 @@ typedef struct {
     s16 turn4; /* turn rate */
     s16 index6; /* index */
     SVECTOR pos8; /* position */
-    s16 unk10; /* angles; unk10 also the kind at spawn */
+    s16 angle10; /* angles (with angle12); also the kind (0-2) at spawn */
     s16 angle12;
     s16 flag14; /* homing done */
-    s16 unk16;
+    s16 unk16; /* unused */
     u8 *trail18; /* trail */
     s16 pos1C; /* target */
-    s16 unk1E;
-    s16 unk20;
+    s16 targetY1E; /* target y (pos1C: target x) */
+    s16 targetZ20; /* target z */
     s16 width22; /* trail width */
 } Fx17d5Spark; /* 0x24 */
 

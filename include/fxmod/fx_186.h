@@ -8,7 +8,7 @@
 typedef struct {
     s32 state0; /* state */
     s16 pad4;
-    s16 unk6; /* height */
+    s16 bobVelY6; /* bob height (state 0), then y velocity (state 1) */
     s16 vel8; /* velocity */
     s16 velA;
     SVECTOR posC; /* position */
@@ -31,8 +31,8 @@ typedef struct {
 extern Unk800F78A4 *fx_186_env;
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    s32 unk0; /* unused (the typedef has no users) */
+    s32 unk4; /* unused (the typedef has no users) */
 } Fx186Word2; /* an SVECTOR copied as two words */
 
 typedef struct {

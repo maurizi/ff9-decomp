@@ -10,7 +10,7 @@ typedef struct {
 } Fx1e6Point;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx1e6Point *keys4;
 } Fx1e6Path;
@@ -24,10 +24,10 @@ typedef struct {
 } Fx1e6Trail;
 
 typedef struct {
-    s32 unk0;
+    s32 unk0; /* unused */
     SVECTOR pos4; /* caster position */
     u16 alphaC; /* fade */
-    s16 unkE;
+    s16 unkE; /* unused */
 } Fx1e6Work80; /* 0x10 */
 
 typedef struct {

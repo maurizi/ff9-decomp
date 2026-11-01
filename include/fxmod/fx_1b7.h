@@ -36,7 +36,7 @@ s32 fx_1b7_launchPieces(void);
 
 typedef struct {
     u8 pad0[0x50];
-    u8 *unk50; /* work buffer */
+    u8 *workBuf50; /* work buffer */
 } Fx1b7SummonData;
 
 typedef struct {
@@ -46,7 +46,7 @@ typedef struct {
 
 typedef struct {
     s32 state0; /* state */
-    s32 unk4; /* frame counter */
+    s32 unk4; /* write-only: frame counter */
     s32 pos8[3]; /* caster position */
     SVECTOR rot14; /* caster rotation */
     s32 scale1C[3]; /* caster scale */
