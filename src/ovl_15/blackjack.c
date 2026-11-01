@@ -89,7 +89,7 @@ s32 ending_movieInit(s32 list, s32 entry) {
         }
         mbg_streamSetBaseSector(h);
     }
-    game_startFade(1, 1, 0x78, 0xFFFFFF);
+    game_startFade(FADE_FLAT, FADE_SUB, 0x78, FADE_COLOR_FULL);
     g_movieState = MOVIE_ST_START;
     g_movieFlags = 0;
     for (i = 1; i >= 0; i--) {
@@ -665,7 +665,7 @@ s32 bj_main(void) {
                 timer = 0x4E;
                 bj_shoeInit(&g_bjShoe);
                 bj_shoeShuffle(&g_bjShoe);
-                game_startFade(1, 1, 0x3C, 0);
+                game_startFade(FADE_FLAT, FADE_SUB, 0x3C, FADE_COLOR_NONE);
                 i = 0;
             } else if (timer != 0) {
                 card = g_bjShoe.cards[i];
@@ -1124,7 +1124,7 @@ s32 bj_main(void) {
             break;
         case BJ_ST_END:
             if (timer == -1) {
-                game_startFade(1, 1, 0x3C, 0xFFFFFF);
+                game_startFade(FADE_FLAT, FADE_SUB, 0x3C, FADE_COLOR_FULL);
                 timer = 0x3C;
                 if (g_bjBankroll < BJ_MIN_BET) {
                     g_bjBankroll = BJ_BANKROLL;
@@ -1245,7 +1245,7 @@ s32 bj_init(void) {
         ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
         ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, SND_VOL_MAX);
     }
-    game_startFade(1, 1, 0, 0xFFFFFF);
+    game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
     g_bjState = BJ_ST_START;
     g_padPortMask[0] = 0;
     return 0;

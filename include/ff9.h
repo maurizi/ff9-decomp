@@ -1238,6 +1238,13 @@ typedef struct {
     u8 pad27;
     Unk4 color; /* current colour */
 } FadeState;
+/* fade_start / game_startFade arguments */
+#define FADE_FLAT 1 /* type: the whole screen (fadeFlat_*) */
+#define FADE_WIPE 2 /* type: two rotated quads sweep across (fadeWipe_*) */
+#define FADE_ADD 0 /* subtract: additive blend, colour 0xFFFFFF covers the screen in white */
+#define FADE_SUB 1 /* subtract: subtractive blend, colour 0xFFFFFF covers it in black */
+#define FADE_COLOR_NONE 0 /* end colour: the screen shows */
+#define FADE_COLOR_FULL 0xFFFFFF /* end colour: covered */
 extern FadeState g_fade;
 u32 *fade_getOt(s32);
 #if !defined(OVL_0C_H) /* ovl_0c declares its own typed view */

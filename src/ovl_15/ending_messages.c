@@ -22,14 +22,14 @@ s32 ending_messages(void) {
         case MESSAGES_ST_PAGE1:
             if (timer == -1) {
                 timer = 0xA0;
-                game_startFade(1, 1, 0x14, 0);
+                game_startFade(FADE_FLAT, FADE_SUB, 0x14, FADE_COLOR_NONE);
             } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 0);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
                 if (timer == 0x14) {
-                    game_startFade(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(FADE_FLAT, FADE_SUB, 0x14, FADE_COLOR_FULL);
                 }
                 timer--;
             } else {
@@ -40,7 +40,7 @@ s32 ending_messages(void) {
         case MESSAGES_ST_PAGE2:
             if (timer == -1) {
                 timer = 0xDC;
-                game_startFade(1, 1, 0x14, 0);
+                game_startFade(FADE_FLAT, FADE_SUB, 0x14, FADE_COLOR_NONE);
             } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 1);
@@ -52,7 +52,7 @@ s32 ending_messages(void) {
                     g_messagesPrim = ending_drawText(x, 0x7D, ot, msg, g_messagesPrim);
                 }
                 if (timer == 0x14) {
-                    game_startFade(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(FADE_FLAT, FADE_SUB, 0x14, FADE_COLOR_FULL);
                 }
                 timer--;
             } else {
@@ -63,14 +63,14 @@ s32 ending_messages(void) {
         case MESSAGES_ST_PAGE3:
             if (timer == -1) {
                 timer = 0xA0;
-                game_startFade(1, 1, 0x14, 0);
+                game_startFade(FADE_FLAT, FADE_SUB, 0x14, FADE_COLOR_NONE);
             } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 3);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
                 if (timer == 0x14) {
-                    game_startFade(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(FADE_FLAT, FADE_SUB, 0x14, FADE_COLOR_FULL);
                 }
                 timer--;
             } else {
@@ -81,7 +81,7 @@ s32 ending_messages(void) {
         case MESSAGES_ST_PAGE4:
             if (timer == -1) {
                 timer = 0x118;
-                game_startFade(1, 1, 0x14, 0);
+                game_startFade(FADE_FLAT, FADE_SUB, 0x14, FADE_COLOR_NONE);
             } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 4);
@@ -93,7 +93,7 @@ s32 ending_messages(void) {
                     g_messagesPrim = ending_drawText(x, 0x7D, ot, msg, g_messagesPrim);
                 }
                 if (timer == 0x14) {
-                    game_startFade(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(FADE_FLAT, FADE_SUB, 0x14, FADE_COLOR_FULL);
                 }
                 timer--;
             } else {
@@ -121,7 +121,7 @@ s32 ending_messages(void) {
 
 s32 ending_messagesInit(void) {
     g_gameState->vsyncMode = 0;
-    game_startFade(1, 1, 0, 0xFFFFFF);
+    game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
     g_messagesState = MESSAGES_ST_START;
     g_messagesFrameWord = 0;
     g_messagesFrame = 0;

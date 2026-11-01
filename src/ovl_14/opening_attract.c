@@ -31,7 +31,7 @@ s32 opening_attract(s32 idx) {
                     file_setTimPos(tim, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
                     file_loadTim(tim);
                     timer = ATTRACT_FRAMES;
-                    game_startFade(1, 1, 0xF0, 0);
+                    game_startFade(FADE_FLAT, FADE_SUB, 0xF0, FADE_COLOR_NONE);
                 } else if (timer != 0) {
                     pad = g_padPortPressed[0];
                     setSprt(&g_attractSprites[g_gameState->gameData->drawBuf][0]);
@@ -75,7 +75,7 @@ s32 opening_attract(s32 idx) {
                             g_attractFlags.bits |= ATTRACT_SKIP;
                         }
                         if (!(g_attractFlags.bits & ATTRACT_FADING) && timer < 0xF1) {
-                            game_startFade(1, 1, timer, 0xFFFFFF);
+                            game_startFade(FADE_FLAT, FADE_SUB, timer, FADE_COLOR_FULL);
                             g_attractFlags.bits |= ATTRACT_FADING;
                         }
                     }
@@ -105,7 +105,7 @@ s32 opening_attract(s32 idx) {
             menu_update();
             game_updateWindows();
             if (!(g_attractFlags.bits & ATTRACT_IDLE_FADE) && (u8)scene_isTitleIdle() && timer < TITLE_IDLE_FADE + 1) {
-                game_startFade(1, 1, TITLE_IDLE_FADE, 0xFFFFFF);
+                game_startFade(FADE_FLAT, FADE_SUB, TITLE_IDLE_FADE, FADE_COLOR_FULL);
                 if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
                     opening_soundCmd(SND_SONG_VOL_INTPL, TITLE_MUSIC, 0x5A, 0, 0);
                 }
@@ -144,7 +144,7 @@ s32 opening_attractInit(s32 idx) {
     data = g_loadAreaEnd + 0x10000;
     g_attractData = data;
     db_register((s32)data, 0);
-    game_startFade(1, 1, 0, 0xFFFFFF);
+    game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
     g_attractState = ATTRACT_ST_START;
     g_attractFlags.bits = 0;
     g_padPortMask[0] = 0;

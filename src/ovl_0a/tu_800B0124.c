@@ -1774,8 +1774,8 @@ void fld_showSplashImage(void) {
         case 0:
             duration = 0x3C;
             i = 0;
-            game_startFade(1, 1, 0, 0xFFFFFF);
-            game_startFade(1, 1, duration, i);
+            game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
+            game_startFade(FADE_FLAT, FADE_SUB, duration, i);
             state = 1;
             break;
         case 1:
@@ -1793,7 +1793,7 @@ void fld_showSplashImage(void) {
             } else {
                 duration = 0x3C;
                 i = 0;
-                game_startFade(1, 1, duration, 0xFFFFFF);
+                game_startFade(FADE_FLAT, FADE_SUB, duration, FADE_COLOR_FULL);
                 state = 3;
             }
             break;

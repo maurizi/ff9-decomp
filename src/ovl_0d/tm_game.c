@@ -4838,7 +4838,7 @@ void tm_taskEndFade(TmState *tm) {
 
 void tm_startEndFade(TmState *tm) {
     tm->timer = 0;
-    game_startFade(2, 1, 0x1E, 0xFFFFFF);
+    game_startFade(FADE_WIPE, FADE_SUB, 0x1E, FADE_COLOR_FULL);
     fade_setAngle(0);
     tm_soundCmd(SND_SONG_VOL_FROM_INTPL, MUSIC_TETRA_MASTER, 0x1E, 0x7F, 0);
     tm->task = TM_TASK_END_FADE;

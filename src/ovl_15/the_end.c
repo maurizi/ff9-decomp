@@ -19,9 +19,9 @@ s32 ending_theEnd(void) {
             break;
         case THEEND_ST_SHOW:
             if (timer == -1) {
-                game_startFade(1, 1, 0, 0xFFFFFF);
+                game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
                 timer = 0x21C;
-                game_startFade(1, 1, 0xB4, 0);
+                game_startFade(FADE_FLAT, FADE_SUB, 0xB4, FADE_COLOR_NONE);
             } else if (timer != 0) {
                 setSprt(&g_theEndSprites[g_gameState->gameData->drawBuf][0]);
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].r0 = 0x80;
@@ -86,7 +86,7 @@ s32 ending_theEnd(void) {
             addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_theEndTpages[g_gameState->gameData->drawBuf] + 1));
             if (timer == -1) {
                 timer = 0x5A;
-                game_startFade(1, 1, timer, 0xFFFFFF);
+                game_startFade(FADE_FLAT, FADE_SUB, timer, FADE_COLOR_FULL);
             } else if (--timer == 0) {
                 g_theEndState = THEEND_ST_BLACKJACK;
             }
@@ -126,7 +126,7 @@ s32 ending_theEndInit(void) {
     akao_stopMusic(0);
     ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
     ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, SND_VOL_MAX);
-    game_startFade(1, 1, 0, 0xFFFFFF);
+    game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
     g_theEndState = THEEND_ST_START;
     g_theEndInitWord = 0;
     g_padPortMask[0] = 0;

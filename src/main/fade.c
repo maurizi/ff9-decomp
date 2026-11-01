@@ -130,29 +130,29 @@ void fade_outAdditiveDefault(void) {
 void fade_in(s32 frames) {
     fade_setAngle(0);
     fade_clearEase(1);
-    fade_start(1, 1, 0, 0xFFFFFF);
-    fade_start(1, 1, frames, 0);
+    fade_start(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
+    fade_start(FADE_FLAT, FADE_SUB, frames, FADE_COLOR_NONE);
 }
 
 void fade_out(s32 frames) {
     fade_setAngle(0);
     fade_clearEase(1);
-    fade_start(1, 1, 0, 0);
-    fade_start(1, 1, frames, 0xFFFFFF);
+    fade_start(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_NONE);
+    fade_start(FADE_FLAT, FADE_SUB, frames, FADE_COLOR_FULL);
 }
 
 void fade_inAdditive(s32 frames) {
     fade_setAngle(0);
     fade_clearEase(1);
-    fade_start(1, 0, 0, 0xFFFFFF);
-    fade_start(1, 0, frames, 0);
+    fade_start(FADE_FLAT, FADE_ADD, 0, FADE_COLOR_FULL);
+    fade_start(FADE_FLAT, FADE_ADD, frames, FADE_COLOR_NONE);
 }
 
 void fade_outAdditive(s32 frames) {
     fade_setAngle(0);
     fade_clearEase(1);
-    fade_start(1, 0, 0, 0);
-    fade_start(1, 0, frames, 0xFFFFFF);
+    fade_start(FADE_FLAT, FADE_ADD, 0, FADE_COLOR_NONE);
+    fade_start(FADE_FLAT, FADE_ADD, frames, FADE_COLOR_FULL);
 }
 
 u32 *fade_getOt(s32 i) {

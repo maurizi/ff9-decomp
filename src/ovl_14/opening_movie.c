@@ -85,8 +85,8 @@ s32 opening_movieThenTitle(void) {
                     mbg_setRgb24(0);
                     g_movieFlagQueue[1][g_gameState->gameData->drawBuf != 0 ? 1 : 2] = 2;
                     timer = 6;
-                    game_startFade(1, 1, 0, 0);
-                    game_startFade(1, 1, timer, 0xFFFFFF);
+                    game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_NONE);
+                    game_startFade(FADE_FLAT, FADE_SUB, timer, FADE_COLOR_FULL);
                     g_padPortMask[0] = -1;
                     g_movieFlags |= MOVIE_SKIPPING;
                 }
@@ -110,8 +110,8 @@ s32 opening_movieThenTitle(void) {
             break;
         case MOVIE_ST_TITLE:
             if (!(g_movieFlags & MOVIE_IDLE_FADE) && (u8)scene_isTitleIdle() && timer < TITLE_IDLE_FADE + 1) {
-                game_startFade(1, 1, 0, 0);
-                game_startFade(1, 1, TITLE_IDLE_FADE, 0xFFFFFF);
+                game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_NONE);
+                game_startFade(FADE_FLAT, FADE_SUB, TITLE_IDLE_FADE, FADE_COLOR_FULL);
                 g_movieFlags |= MOVIE_IDLE_FADE;
             }
             if (timer == 0 && g_movieState != MOVIE_ST_STARTED) {
@@ -159,7 +159,7 @@ s32 opening_movieInit(void) {
         }
         mbg_streamSetBaseSector(h);
     }
-    game_startFade(1, 1, 0, 0xFFFFFF);
+    game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
     g_movieState = MOVIE_ST_START;
     g_movieFlags = 0;
     for (i = 1; i >= 0; i--) {

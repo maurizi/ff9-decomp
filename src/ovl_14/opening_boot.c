@@ -12,9 +12,9 @@ void opening_bootScreen(void) {
         opening_bootClearOt();
         pad_update();
         if (framesLeft == 0xD2) {
-            game_startFade(1, 1, 0x3C, 0);
+            game_startFade(FADE_FLAT, FADE_SUB, 0x3C, FADE_COLOR_NONE);
         } else if (framesLeft == 0x3C) {
-            game_startFade(1, 1, 0x3C, 0xFFFFFF);
+            game_startFade(FADE_FLAT, FADE_SUB, 0x3C, FADE_COLOR_FULL);
         }
         setSprt(&g_bootScreenSprite[g_gameState->gameData->drawBuf]);
         g_bootScreenSprite[g_gameState->gameData->drawBuf].r0 = 0x80;
@@ -53,7 +53,7 @@ void opening_bootScreenLoad(void) {
     g_bootScreenImage = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44FB0, 0);
     file_setTimPos(g_bootScreenImage, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
     file_loadTim(g_bootScreenImage);
-    game_startFade(1, 1, 0, 0xFFFFFF);
+    game_startFade(FADE_FLAT, FADE_SUB, 0, FADE_COLOR_FULL);
     g_padPortMask[0] = 0;
 }
 
