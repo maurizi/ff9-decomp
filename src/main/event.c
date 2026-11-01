@@ -374,6 +374,8 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
     s32 r;
 
     p = g_evtActor;
+    /* g_evtActor is NULL when a move op runs in a script that has no actor (seen in d1_f0801); the PS1 then reads and
+     * writes these fields in low RAM. Harmless on the PS1; a native port must check for NULL (ff9-ds F39). */
     speed = p->speed;
     dx = x - p->pos.vx;
     dz = z - p->pos.vz;
