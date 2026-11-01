@@ -6,17 +6,17 @@ void btlfx_reset(void) {
     g_btlfxState.modelSwap = 0;
 }
 
-s32 btlfx_resolveFirstUse(s32 arg0) {
+s32 btlfx_resolveFirstUse(s32 effectId) {
     s32 id;
     s32 i;
     u8 *p;
     s32 bit;
     GameState *g;
 
-    id = arg0;
+    id = effectId;
     if (btlfx_getScaledRadius(0) >= 0x385) {
         for (p = g_btlfxLargeTargetFx[0]; *p != 0xFF; p += 2) {
-            if (p[0] == arg0) {
+            if (p[0] == effectId) {
                 id = p[1];
                 break;
             }
@@ -40,12 +40,12 @@ s32 btlfx_resolveFirstUse(s32 arg0) {
     return id;
 }
 
-s32 btlfx_start(s32 arg0) {
+s32 btlfx_start(s32 effectId) {
     if (g_btlfxState.phase != BTLFX_PHASE_IDLE) {
         return -1;
     }
     g_btlfxState.phase = BTLFX_PHASE_SAVE_VRAM;
-    g_btlfxState.effectId = btlfx_resolveFirstUse(arg0);
+    g_btlfxState.effectId = btlfx_resolveFirstUse(effectId);
     g_btlfxState.seqRelease = 0;
     g_btlfxState.seqSync = 0;
     g_btlfxState.wait = 0;
@@ -568,299 +568,299 @@ s32 btlfx_moveUnitLinear(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32
     return arg2 >= arg3 - 1;
 }
 
-s32 btlfx_opSetParamsA(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 1) {
-        g_btlfxOpArgs.paramA[0] = arg4[0];
-        g_btlfxOpArgs.paramA[1] = arg4[1];
+s32 btlfx_opSetParamsA(s32 mode, s32 work, s32 env, s32 entry, s32 *args) {
+    if (mode == 1) {
+        g_btlfxOpArgs.paramA[0] = args[0];
+        g_btlfxOpArgs.paramA[1] = args[1];
     }
     return 1;
 }
 
-s32 btlfx_opSetParamsB(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4) {
-    if (arg0 == 1) {
-        g_btlfxOpArgs.paramB[0] = arg4[0];
-        g_btlfxOpArgs.paramB[1] = arg4[4];
+s32 btlfx_opSetParamsB(s32 mode, s32 work, s32 env, s32 entry, u8 *args) {
+    if (mode == 1) {
+        g_btlfxOpArgs.paramB[0] = args[0];
+        g_btlfxOpArgs.paramB[1] = args[4];
     }
     return 1;
 }
 
-s32 btlfx_opSwingSound(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 == 1) {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
-        if (btlfx_isPartyUnit(arg1[0]) == 0 || arg1[1] == arg0) {
+s32 btlfx_opSwingSound(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode == 1) {
+        work[0] = args[0];
+        work[1] = args[1];
+        if (btlfx_isPartyUnit(work[0]) == 0 || work[1] == mode) {
             return 1;
         }
         return 0;
     } else {
-        return btlfx_stepSwingSound(arg1, arg2, arg3);
+        return btlfx_stepSwingSound(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opHitSound(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 == 1) {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
-        arg1[2] = g_btlfxOpArgs.paramA[0];
-        arg1[3] = g_btlfxOpArgs.paramA[1];
-        if (btlfx_isPartyUnit(arg1[0]) == 0) {
+s32 btlfx_opHitSound(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode == 1) {
+        work[0] = args[0];
+        work[1] = args[1];
+        work[2] = g_btlfxOpArgs.paramA[0];
+        work[3] = g_btlfxOpArgs.paramA[1];
+        if (btlfx_isPartyUnit(work[0]) == 0) {
             return 1;
         }
-        if (arg1[3] == arg0) {
+        if (work[3] == mode) {
             return 1;
         }
     } else {
-        return btlfx_stepHitSound(arg1, arg2, arg3);
+        return btlfx_stepHitSound(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opUnitSound(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 != 1) {
-        return btlfx_stepUnitSound(arg1, arg2, arg3);
+s32 btlfx_opUnitSound(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode != 1) {
+        return btlfx_stepUnitSound(work, env, entry);
     } else {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
+        work[0] = args[0];
+        work[1] = args[1];
     }
     return 0;
 }
 
-s32 btlfx_opPlayMotion(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 != 1) {
-        return btlfx_stepPlayMotion(arg1, arg2, arg3);
+s32 btlfx_opPlayMotion(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode != 1) {
+        return btlfx_stepPlayMotion(work, env, entry);
     } else {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
+        work[0] = args[0];
+        work[1] = args[1];
     }
     return 0;
 }
 
-s32 btlfx_opPlayMotionWait(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 8;
-    } else if (arg0 != 1) {
-        return btlfx_stepPlayMotionWait(arg1, arg2, arg3);
+s32 btlfx_opPlayMotionWait(s32 mode, Unk800D8EA4 *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 8;
+    } else if (mode != 1) {
+        return btlfx_stepPlayMotionWait(work, env, entry);
     } else {
-        arg1->unit = arg4[0];
-        arg1->motion = arg4[1];
+        work->unit = args[0];
+        work->motion = args[1];
         g_btlfxState.motionDone = 0;
     }
     return 0;
 }
 
-s32 btlfx_opPlayMotionHold(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 8;
-    } else if (arg0 != 1) {
-        return btlfx_stepPlayMotionHold(arg1, arg2, arg3);
+s32 btlfx_opPlayMotionHold(s32 mode, Unk800D8EA4 *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 8;
+    } else if (mode != 1) {
+        return btlfx_stepPlayMotionHold(work, env, entry);
     } else {
-        arg1->unit = arg4[0];
-        arg1->motion = arg4[1];
-        arg1->trimFrames = g_btlfxOpArgs.paramA[0];
+        work->unit = args[0];
+        work->motion = args[1];
+        work->trimFrames = g_btlfxOpArgs.paramA[0];
         g_btlfxState.motionDone = 0;
     }
     return 0;
 }
 
-s32 btlfx_opPlayAttackMotion(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 8;
-    } else if (arg0 != 1) {
-        return btlfx_stepPlayAttackMotion(arg1, arg2, arg3);
+s32 btlfx_opPlayAttackMotion(s32 mode, Unk800D8EA4 *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 8;
+    } else if (mode != 1) {
+        return btlfx_stepPlayAttackMotion(work, env, entry);
     } else {
-        arg1->unit = arg4[0];
-        arg1->motion = arg4[1];
+        work->unit = args[0];
+        work->motion = args[1];
         g_btlfxState.motionDone = 0;
     }
     return 0;
 }
 
-s32 btlfx_opPlayAttackMotionHold(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 8;
-    } else if (arg0 != 1) {
-        return btlfx_stepPlayAttackMotionHold(arg1, arg2, arg3);
+s32 btlfx_opPlayAttackMotionHold(s32 mode, Unk800D8EA4 *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 8;
+    } else if (mode != 1) {
+        return btlfx_stepPlayAttackMotionHold(work, env, entry);
     } else {
-        arg1->unit = arg4[0];
-        arg1->motion = arg4[1];
-        arg1->trimFrames = g_btlfxOpArgs.paramA[0];
+        work->unit = args[0];
+        work->motion = args[1];
+        work->trimFrames = g_btlfxOpArgs.paramA[0];
         g_btlfxState.motionDone = 0;
     }
     return 0;
 }
 
-s32 btlfx_opPlayAttackReturnMotion(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 8;
-    } else if (arg0 != 1) {
-        return btlfx_stepPlayAttackReturnMotion(arg1, arg2, arg3);
+s32 btlfx_opPlayAttackReturnMotion(s32 mode, Unk800D8EA4 *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 8;
+    } else if (mode != 1) {
+        return btlfx_stepPlayAttackReturnMotion(work, env, entry);
     } else {
-        arg1->unit = arg4[0];
-        arg1->motion = arg4[1];
+        work->unit = args[0];
+        work->motion = args[1];
         g_btlfxState.motionDone = 0;
     }
     return 0;
 }
 
-s32 btlfx_opResetMotion(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 8;
-    } else if (arg0 != 1) {
-        return btlfx_stepResetMotion(arg1, arg2, arg3);
+s32 btlfx_opResetMotion(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 8;
+    } else if (mode != 1) {
+        return btlfx_stepResetMotion(work, env, entry);
     } else {
-        *arg1 = *arg4;
+        *work = *args;
     }
     return 0;
 }
 
-s32 btlfx_opFileMotion(s32 arg0, u8 *arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 != 1) {
-        return btlfx_stepFileMotion(arg1, arg2, arg3);
+s32 btlfx_opFileMotion(s32 mode, u8 *work, s32 env, Unk800F78A40 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode != 1) {
+        return btlfx_stepFileMotion(work, env, entry);
     } else {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
+        work[0] = args[0];
+        work[1] = args[1];
     }
     return 0;
 }
 
-s32 btlfx_opFileMotionWait(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 8;
-    } else if (arg0 != 1) {
-        return btlfx_stepFileMotionWait(arg1, arg2, arg3);
+s32 btlfx_opFileMotionWait(s32 mode, Unk800D8EA4 *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 8;
+    } else if (mode != 1) {
+        return btlfx_stepFileMotionWait(work, env, entry);
     } else {
-        arg1->unit = arg4[0];
-        arg1->motion = arg4[1];
+        work->unit = args[0];
+        work->motion = args[1];
         g_btlfxState.motionDone = 0;
     }
     return 0;
 }
 
-s32 btlfx_opReleaseMotion(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 != 1) {
-        return btlfx_stepReleaseMotion(arg1, arg2, arg3);
+s32 btlfx_opReleaseMotion(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode != 1) {
+        return btlfx_stepReleaseMotion(work, env, entry);
     } else {
-        *arg1 = *arg4;
+        *work = *args;
     }
     return 0;
 }
 
-s32 btlfx_opMoveToUnit(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 0x18;
-    } else if (arg0 == 1) {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
-        if (btlfx_isSameUnit(arg1[0], arg1[1]) != 0) {
-            g_btlfxState.moveDone = arg0;
-            return 1;
-        }
-        g_btlfxState.moveDone = 0;
-    } else {
-        return btlfx_stepMoveToUnit((Unk800D9134 *)arg1, arg2, (s32 *)arg3);
-    }
-    return 0;
-}
-
-s32 btlfx_opRunHome(s32 arg0, Unk800D9260 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 0x10;
-    } else if (arg0 != 1) {
-        return btlfx_stepRunHome(arg1, arg2, arg3);
-    } else {
-        arg1->unit = arg4[0];
-        arg1->target = arg4[1];
-        g_btlfxState.moveDone = 0;
-    }
-    return 0;
-}
-
-s32 btlfx_opArcAtTarget(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 0x1C;
-    } else if (arg0 == 1) {
-        arg1->unit = BTLFX_UNIT_CASTER;
-        arg1->target = arg4[0];
-        arg1->frames = arg4[1];
-        arg1->dist = g_btlfxOpArgs.paramA[0] | (g_btlfxOpArgs.paramA[1] << 8);
-        arg1->dist2 = g_btlfxOpArgs.paramB[0] | (g_btlfxOpArgs.paramB[1] << 8);
-        if (btlfx_isSameUnit(arg1->unit, arg1->target) != 0) {
-            g_btlfxState.moveDone = arg0;
-            return 1;
-        }
-        if (btlfx_isPartyUnit(arg1->target) == 0) {
+s32 btlfx_opMoveToUnit(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 0x18;
+    } else if (mode == 1) {
+        work[0] = args[0];
+        work[1] = args[1];
+        if (btlfx_isSameUnit(work[0], work[1]) != 0) {
+            g_btlfxState.moveDone = mode;
             return 1;
         }
         g_btlfxState.moveDone = 0;
     } else {
-        return btlfx_stepArcAtTarget(arg1, arg2, arg3);
+        return btlfx_stepMoveToUnit((Unk800D9134 *)work, env, (s32 *)entry);
     }
     return 0;
 }
 
-s32 btlfx_opJumpForward(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opRunHome(s32 mode, Unk800D9260 *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 0x10;
+    } else if (mode != 1) {
+        return btlfx_stepRunHome(work, env, entry);
+    } else {
+        work->unit = args[0];
+        work->target = args[1];
+        g_btlfxState.moveDone = 0;
+    }
+    return 0;
+}
+
+s32 btlfx_opArcAtTarget(s32 mode, Unk800D7C9C *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 0x1C;
+    } else if (mode == 1) {
+        work->unit = BTLFX_UNIT_CASTER;
+        work->target = args[0];
+        work->frames = args[1];
+        work->dist = g_btlfxOpArgs.paramA[0] | (g_btlfxOpArgs.paramA[1] << 8);
+        work->dist2 = g_btlfxOpArgs.paramB[0] | (g_btlfxOpArgs.paramB[1] << 8);
+        if (btlfx_isSameUnit(work->unit, work->target) != 0) {
+            g_btlfxState.moveDone = mode;
+            return 1;
+        }
+        if (btlfx_isPartyUnit(work->target) == 0) {
+            return 1;
+        }
+        g_btlfxState.moveDone = 0;
+    } else {
+        return btlfx_stepArcAtTarget(work, env, entry);
+    }
+    return 0;
+}
+
+s32 btlfx_opJumpForward(s32 mode, Unk800D7C9C *work, s32 env, s32 *entry, s32 *args) {
     s32 v;
-    if (arg0 == 0) {
-        *arg4 = 0x1C;
-    } else if (arg0 == 1) {
-        arg1->unit = BTLFX_UNIT_CASTER;
-        arg1->target = arg4[0];
-        arg1->arg.skipParty = arg4[1];
-        arg1->playMotion = 1;
-        arg1->dist = g_btlfxOpArgs.paramA[0] | (g_btlfxOpArgs.paramA[1] << 8);
-        if ((v = arg1->arg.skipParty) == arg0 && btlfx_isPartyUnit(arg1->target) != 0) {
+    if (mode == 0) {
+        *args = 0x1C;
+    } else if (mode == 1) {
+        work->unit = BTLFX_UNIT_CASTER;
+        work->target = args[0];
+        work->arg.skipParty = args[1];
+        work->playMotion = 1;
+        work->dist = g_btlfxOpArgs.paramA[0] | (g_btlfxOpArgs.paramA[1] << 8);
+        if ((v = work->arg.skipParty) == mode && btlfx_isPartyUnit(work->target) != 0) {
             g_btlfxState.moveDone = v;
             return 1;
         }
         g_btlfxState.moveDone = 0;
     } else {
-        return btlfx_stepJumpForward(arg1, arg2, arg3);
+        return btlfx_stepJumpForward(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opJumpHome(s32 arg0, Unk800D955C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opJumpHome(s32 mode, Unk800D955C *work, s32 env, s32 *entry, s32 *args) {
     s32 v;
-    if (arg0 == 0) {
-        *arg4 = 0x18;
-    } else if (arg0 == 1) {
-        arg1->unit = BTLFX_UNIT_CASTER;
-        arg1->target = arg4[0];
-        arg1->skipParty = arg4[1];
-        arg1->playMotion = 1;
-        if ((v = arg1->skipParty) == arg0 && btlfx_isPartyUnit(arg1->target) != 0) {
+    if (mode == 0) {
+        *args = 0x18;
+    } else if (mode == 1) {
+        work->unit = BTLFX_UNIT_CASTER;
+        work->target = args[0];
+        work->skipParty = args[1];
+        work->playMotion = 1;
+        if ((v = work->skipParty) == mode && btlfx_isPartyUnit(work->target) != 0) {
             g_btlfxState.moveDone = v;
             return 1;
         }
         g_btlfxState.moveDone = 0;
     } else {
-        return btlfx_stepJumpHome(arg1, arg2, arg3);
+        return btlfx_stepJumpHome(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opMoveToPoint(s32 arg0, Unk800D7E14 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 0x10;
-    } else if (arg0 != 1) {
-        return btlfx_stepMoveToPoint(arg1, arg2, arg3);
+s32 btlfx_opMoveToPoint(s32 mode, Unk800D7E14 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 0x10;
+    } else if (mode != 1) {
+        return btlfx_stepMoveToPoint(work, env, entry);
     } else {
-        arg1->unit = arg4[0];
-        arg1->point = arg4[1];
-        arg1->frames = g_btlfxOpArgs.paramA[0];
+        work->unit = args[0];
+        work->point = args[1];
+        work->frames = g_btlfxOpArgs.paramA[0];
         do {
             g_btlfxState.moveDone = 0;
         } while (0);
@@ -868,186 +868,186 @@ s32 btlfx_opMoveToPoint(s32 arg0, Unk800D7E14 *arg1, s32 arg2, s32 arg3, s32 *ar
     return 0;
 }
 
-s32 btlfx_opMoveTowardTarget(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 0x1C;
-    } else if (arg0 == 1) {
-        arg1->unit = BTLFX_UNIT_CASTER;
-        arg1->target = arg4[0];
-        arg1->frames = arg4[1];
-        arg1->dist = g_btlfxOpArgs.paramA[0] | (g_btlfxOpArgs.paramA[1] << 8);
-        arg1->arg.reach = g_btlfxOpArgs.paramB[0];
-        if (btlfx_isSameUnit(arg1->unit, arg1->target) != 0 || btlfx_isPartyUnit(arg1->target) != 0) {
-            g_btlfxState.moveDone = arg0;
+s32 btlfx_opMoveTowardTarget(s32 mode, Unk800D7C9C *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 0x1C;
+    } else if (mode == 1) {
+        work->unit = BTLFX_UNIT_CASTER;
+        work->target = args[0];
+        work->frames = args[1];
+        work->dist = g_btlfxOpArgs.paramA[0] | (g_btlfxOpArgs.paramA[1] << 8);
+        work->arg.reach = g_btlfxOpArgs.paramB[0];
+        if (btlfx_isSameUnit(work->unit, work->target) != 0 || btlfx_isPartyUnit(work->target) != 0) {
+            g_btlfxState.moveDone = mode;
             return 1;
         }
         g_btlfxState.moveDone = 0;
     } else {
-        return btlfx_stepMoveTowardTarget(arg1, arg2, arg3);
+        return btlfx_stepMoveTowardTarget(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opRunToTarget(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 0x1C;
-    } else if (arg0 == 1) {
-        arg1->unit = BTLFX_UNIT_CASTER;
-        arg1->target = arg4[0];
-        arg1->frames = arg4[1];
-        arg1->dist = g_btlfxOpArgs.paramA[0] | (g_btlfxOpArgs.paramA[1] << 8);
-        if (btlfx_isSameUnit(arg1->unit, arg1->target) != 0) {
-            g_btlfxState.moveDone = arg0;
+s32 btlfx_opRunToTarget(s32 mode, Unk800D7C9C *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 0x1C;
+    } else if (mode == 1) {
+        work->unit = BTLFX_UNIT_CASTER;
+        work->target = args[0];
+        work->frames = args[1];
+        work->dist = g_btlfxOpArgs.paramA[0] | (g_btlfxOpArgs.paramA[1] << 8);
+        if (btlfx_isSameUnit(work->unit, work->target) != 0) {
+            g_btlfxState.moveDone = mode;
             return 1;
         }
-        if (btlfx_isPartyUnit(arg1->target) != 0) {
+        if (btlfx_isPartyUnit(work->target) != 0) {
             return 1;
         }
         g_btlfxState.moveDone = 0;
     } else {
-        return btlfx_stepRunToTarget(arg1, arg2, arg3);
+        return btlfx_stepRunToTarget(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opFaceTarget(s32 arg0, Unk800D805C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 0x14;
-    } else if (arg0 == 1) {
-        arg1->unit = arg4[0];
-        arg1->target = arg4[1];
-        arg1->frames = g_btlfxOpArgs.paramA[0];
-        arg1->turnAway = g_btlfxOpArgs.paramA[1];
-        arg1->snapToFront = g_btlfxOpArgs.paramB[0];
-        arg1->unk8 = 0;
-        if (btlfx_isSameUnit(arg1->unit, arg1->target) != 0) {
-            g_btlfxState.turnDone = arg0;
+s32 btlfx_opFaceTarget(s32 mode, Unk800D805C *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 0x14;
+    } else if (mode == 1) {
+        work->unit = args[0];
+        work->target = args[1];
+        work->frames = g_btlfxOpArgs.paramA[0];
+        work->turnAway = g_btlfxOpArgs.paramA[1];
+        work->snapToFront = g_btlfxOpArgs.paramB[0];
+        work->unk8 = 0;
+        if (btlfx_isSameUnit(work->unit, work->target) != 0) {
+            g_btlfxState.turnDone = mode;
             return 1;
         }
         g_btlfxState.turnDone = 0;
     } else {
-        return btlfx_stepFaceTarget(arg1, arg2, arg3);
+        return btlfx_stepFaceTarget(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opFaceHome(s32 arg0, Unk800D8124 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 0x10;
-    } else if (arg0 == 1) {
-        arg1->unit = arg4[0];
-        arg1->target = arg4[1];
-        arg1->frames = g_btlfxOpArgs.paramA[0];
-        arg1->partyMode = g_btlfxOpArgs.paramA[1];
-        if (arg1->partyMode == BTLFX_FACE_SKIP_PARTY && btlfx_isPartyUnit(arg1->target) != 0) {
-            g_btlfxState.turnDone = arg0;
+s32 btlfx_opFaceHome(s32 mode, Unk800D8124 *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 0x10;
+    } else if (mode == 1) {
+        work->unit = args[0];
+        work->target = args[1];
+        work->frames = g_btlfxOpArgs.paramA[0];
+        work->partyMode = g_btlfxOpArgs.paramA[1];
+        if (work->partyMode == BTLFX_FACE_SKIP_PARTY && btlfx_isPartyUnit(work->target) != 0) {
+            g_btlfxState.turnDone = mode;
             return 1;
         }
         g_btlfxState.turnDone = 0;
     } else {
-        return btlfx_stepFaceHome(arg1, arg2, arg3);
+        return btlfx_stepFaceHome(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opTurnUnit(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 != 1) {
-        return btlfx_stepTurnUnit(arg1, arg2, arg3);
+s32 btlfx_opTurnUnit(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode != 1) {
+        return btlfx_stepTurnUnit(work, env, entry);
     } else {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
-        arg1[2] = g_btlfxOpArgs.paramA[0];
+        work[0] = args[0];
+        work[1] = args[1];
+        work[2] = g_btlfxOpArgs.paramA[0];
     }
     return 0;
 }
 
-s32 btlfx_opWaitKindTime(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opWaitKindTime(s32 mode, u8 *work, s32 env, s32 *entry, s32 *args) {
     s32 v;
     s32 w;
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 == 1) {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
-        arg1[2] = g_btlfxOpArgs.paramA[0];
-        if (btlfx_getKindTiming(arg1[0], arg1[2]) == 0) {
-            g_btlfxState.waitDone = arg0;
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode == 1) {
+        work[0] = args[0];
+        work[1] = args[1];
+        work[2] = g_btlfxOpArgs.paramA[0];
+        if (btlfx_getKindTiming(work[0], work[2]) == 0) {
+            g_btlfxState.waitDone = mode;
             return 1;
         }
-        if ((v = arg1[2]) == arg0 && (w = btlfx_isSameSide(arg1[0], arg1[1])) == v) {
+        if ((v = work[2]) == mode && (w = btlfx_isSameSide(work[0], work[1])) == v) {
             g_btlfxState.waitDone = w;
             return 1;
         }
         g_btlfxState.waitDone = 0;
     } else {
-        return btlfx_stepWaitKindTime(arg1, arg2, arg3);
+        return btlfx_stepWaitKindTime(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opWaitOtherSide(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 == 1) {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
-        arg1[2] = g_btlfxOpArgs.paramA[0];
-        if (btlfx_isSameSide(arg1[0], arg1[1]) == 0) {
-            g_btlfxState.waitDone = arg0;
+s32 btlfx_opWaitOtherSide(s32 mode, u8 *work, s32 env, s32 *entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode == 1) {
+        work[0] = args[0];
+        work[1] = args[1];
+        work[2] = g_btlfxOpArgs.paramA[0];
+        if (btlfx_isSameSide(work[0], work[1]) == 0) {
+            g_btlfxState.waitDone = mode;
             return 1;
         }
         g_btlfxState.waitDone = 0;
     } else {
-        return btlfx_stepWaitOtherSide(arg1, arg2, arg3);
+        return btlfx_stepWaitOtherSide(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opWaitSameSide(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opWaitSameSide(s32 mode, u8 *work, s32 env, s32 *entry, s32 *args) {
     s32 v;
     u8 a, b;
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 == 1) {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
-        arg1[2] = g_btlfxOpArgs.paramA[0];
-        v = btlfx_isSameSide(arg1[0], arg1[1]);
-        if (v == arg0) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode == 1) {
+        work[0] = args[0];
+        work[1] = args[1];
+        work[2] = g_btlfxOpArgs.paramA[0];
+        v = btlfx_isSameSide(work[0], work[1]);
+        if (v == mode) {
             g_btlfxState.waitDone = v;
             return 1;
         }
         g_btlfxState.waitDone = 0;
     } else {
-        return btlfx_stepWaitSameSide(arg1, arg2, arg3);
+        return btlfx_stepWaitSameSide(work, env, entry);
     }
     return 0;
 }
 
-s32 btlfx_opCallWeaponScript(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 != 1) {
-        return btlfx_stepCallWeaponScript(arg1, arg2, arg3);
+s32 btlfx_opCallWeaponScript(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode != 1) {
+        return btlfx_stepCallWeaponScript(work, env, entry);
     } else {
-        *arg1 = *arg4;
+        *work = *args;
     }
     return 0;
 }
 
-s32 btlfx_opSyncOpposed(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if (arg0 == 0) {
-        *arg4 = 4;
-    } else if (arg0 == 1) {
-        arg1[0] = arg4[0];
-        arg1[1] = arg4[1];
-        if (btlfx_isSameSide(arg1[0], arg1[1]) == arg0) {
+s32 btlfx_opSyncOpposed(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
+    if (mode == 0) {
+        *args = 4;
+    } else if (mode == 1) {
+        work[0] = args[0];
+        work[1] = args[1];
+        if (btlfx_isSameSide(work[0], work[1]) == mode) {
             return 1;
         }
     } else {
-        return btlfx_stepSyncOpposed(arg1, arg2, arg3);
+        return btlfx_stepSyncOpposed(work, env, entry);
     }
     return 0;
 }

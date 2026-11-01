@@ -4931,7 +4931,7 @@ void btlfx_getUnitBonePos(s32 arg0, s32 arg1, u16 *arg2);
 s32 btlfx_heapWrapIfFull(Heap *arg0, s32 arg1);
 void btlfx_rotateOffset(SVECTOR *arg0, s32 arg1, s32 arg2);
 void btlfx_setTargets(BtlUnitList *arg0);
-s32 btlfx_start(s32 arg0);
+s32 btlfx_start(s32 effectId);
 s32 btlfx_stepWaitSameSide(u8 *arg0, s32 arg1, s32 *arg2);
 void btlfx_stopEmitter(Pool6CEntry *arg0);
 void btlfx_turnToward(s16 *arg0, s16 *arg1, s32 arg2);

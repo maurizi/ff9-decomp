@@ -125,28 +125,28 @@ s32 btlfx_getCommonData(s32 arg0) {
     return (s32)g_btlfxCommonTable + g_btlfxCommonTable[arg0];
 }
 
-s32 btlfx_opSetResArgsA(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4) {
-    switch (arg0) {
+s32 btlfx_opSetResArgsA(s32 mode, s32 work, s32 env, s32 entry, u8 *args) {
+    switch (mode) {
     case 1:
-        g_btlfxResArgs.mode = arg4[0];
-        g_btlfxResArgs.data = arg4[4];
+        g_btlfxResArgs.mode = args[0];
+        g_btlfxResArgs.data = args[4];
         break;
     }
     return 1;
 }
 
-s32 btlfx_opSetResArgsB(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4) {
-    if (arg0 == 1) {
-        g_btlfxResArgs.offX = arg4[0];
-        g_btlfxResArgs.offY = arg4[4];
+s32 btlfx_opSetResArgsB(s32 mode, s32 work, s32 env, s32 entry, u8 *args) {
+    if (mode == 1) {
+        g_btlfxResArgs.offX = args[0];
+        g_btlfxResArgs.offY = args[4];
     }
     return 1;
 }
 
-s32 btlfx_opSetFrameRate(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    switch (arg0) {
+s32 btlfx_opSetFrameRate(s32 mode, s32 work, s32 env, s32 entry, s32 *args) {
+    switch (mode) {
     case 1:
-        btl_setVsyncMode(60 / *arg4);
+        btl_setVsyncMode(60 / *args);
         break;
     }
     return 1;
@@ -320,7 +320,7 @@ void btlfx_endCastIfNoBounce(void) {
     }
 }
 
-s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 *args) {
     s16 v[4];
     s32 t;
     s32 a;
@@ -329,99 +329,99 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
     s32 k;
     s32 c;
 
-    if (arg0 == 0) {
-        *arg4 = 0x28;
-    } else if (arg0 == 1) {
-        q = arg4;
-        arg1->phase = 0;
-        arg1->frame = 0;
-        arg1->unit = (q[1] & 0xF) + 0x10;
-        arg1->target = q[0];
-        arg1->emitter = NULL;
-        if (arg2->state->flags & BTLFX_HDR_CAMERA) {
+    if (mode == 0) {
+        *args = 0x28;
+    } else if (mode == 1) {
+        q = args;
+        work->phase = 0;
+        work->frame = 0;
+        work->unit = (q[1] & 0xF) + 0x10;
+        work->target = q[0];
+        work->emitter = NULL;
+        if (env->state->flags & BTLFX_HDR_CAMERA) {
             btl_setMarkersVisible(0);
         }
-        if (arg2->targets->bounceCount != 0 && arg1->target != BTLFX_UNIT_NONE) {
-            if (arg2->targets->bounceCount == 1) {
-                arg1->target += 8;
+        if (env->targets->bounceCount != 0 && work->target != BTLFX_UNIT_NONE) {
+            if (env->targets->bounceCount == 1) {
+                work->target += 8;
             } else {
-                arg1->target = 0xFF;
+                work->target = 0xFF;
             }
         }
-        if (arg2->targets->kind & BTL_FXK_SWD_MAG) {
-            arg1->unit = BTLFX_UNIT_PARTNER;
-            arg1->target = BTLFX_UNIT_CASTER;
+        if (env->targets->kind & BTL_FXK_SWD_MAG) {
+            work->unit = BTLFX_UNIT_PARTNER;
+            work->target = BTLFX_UNIT_CASTER;
         }
-        arg1->kind = (u8)q[1] >> 4;
-        arg1->castMode = ((u32)g_btlfxState.flags & BTLFX_HDR_CAST_MODE) >> BTLFX_HDR_CAST_MODE_SHIFT;
+        work->kind = (u8)q[1] >> 4;
+        work->castMode = ((u32)g_btlfxState.flags & BTLFX_HDR_CAST_MODE) >> BTLFX_HDR_CAST_MODE_SHIFT;
         g_btlfxState.signals.b[2] = 0;
         g_btlfxState.signals.b[3] = 0;
-        a = arg2->targets->kind & BTL_FXK_NO_CAST;
-        c = btlfx_isEnemyUnit(arg1->unit);
-        arg1->loopFrames = 100;
-        btlfx_setPartyTexAnim(arg1->unit, 1, 0);
-        if ((a != 0 || arg1->kind == 0xF) && c == 0) {
-            arg1->motionMode = 2;
-            arg1->phase = 2;
+        a = env->targets->kind & BTL_FXK_NO_CAST;
+        c = btlfx_isEnemyUnit(work->unit);
+        work->loopFrames = 100;
+        btlfx_setPartyTexAnim(work->unit, 1, 0);
+        if ((a != 0 || work->kind == 0xF) && c == 0) {
+            work->motionMode = 2;
+            work->phase = 2;
         } else if (c != 0) {
-            arg1->motionMode = 1;
-            arg1->phase = 2;
-            if (a == 0 && arg1->kind != 0xF) {
-                btlfx_getUnitBodyPos(arg1->unit, 0, arg1->pos);
-                arg1->emitter = btlfx_startCastEmitter(arg1->unit, 4, arg1->pos, arg1->pos2);
+            work->motionMode = 1;
+            work->phase = 2;
+            if (a == 0 && work->kind != 0xF) {
+                btlfx_getUnitBodyPos(work->unit, 0, work->pos);
+                work->emitter = btlfx_startCastEmitter(work->unit, 4, work->pos, work->pos2);
             } else {
-                arg1->emitter = NULL;
+                work->emitter = NULL;
             }
-        } else if (arg2->targets->kind & BTL_FXK_ITEM) {
-            arg1->motionMode = 3;
-            arg1->phase = 2;
+        } else if (env->targets->kind & BTL_FXK_ITEM) {
+            work->motionMode = 3;
+            work->phase = 2;
         } else {
-            arg1->motionMode = 0;
+            work->motionMode = 0;
         }
     } else {
-    t = *arg3;
-    switch (arg1->phase) {
+    t = *entry;
+    switch (work->phase) {
     case 0:
-        if (btlfx_stepBack(arg1->unit, arg1->target, t) != 0) {
-            b = arg1->motionMode;
+        if (btlfx_stepBack(work->unit, work->target, t) != 0) {
+            b = work->motionMode;
             if (b != 3) {
-                btlfx_playUnitMotion(arg1->unit, 0x1A);
-                arg1->phase = 1;
+                btlfx_playUnitMotion(work->unit, 0x1A);
+                work->phase = 1;
                 goto set_t;
             }
-            btlfx_playUnitMotion(arg1->unit, 0x1F);
-            arg1->phase = b;
+            btlfx_playUnitMotion(work->unit, 0x1F);
+            work->phase = b;
             btlfx_showCasterCmdName();
             goto set_t;
         }
         break;
     case 1:
-        if (arg1->target != BTLFX_UNIT_NONE && g_btlfxState.effectId != BTLFX_EFFECT_ROULETTE) {
-            btlfx_getUnitPos(arg1->target, v);
-            btlfx_turnUnitTowardFast(arg1->unit, v, (s32)arg1->startRot, t, 0);
+        if (work->target != BTLFX_UNIT_NONE && g_btlfxState.effectId != BTLFX_EFFECT_ROULETTE) {
+            btlfx_getUnitPos(work->target, v);
+            btlfx_turnUnitTowardFast(work->unit, v, (s32)work->startRot, t, 0);
         }
-        if (t >= btlfx_getMotionLength(arg1->unit) - 1) {
-            btlfx_playUnitMotion(arg1->unit, 0x1B);
+        if (t >= btlfx_getMotionLength(work->unit) - 1) {
+            btlfx_playUnitMotion(work->unit, 0x1B);
             t = -1;
-            arg1->phase = 2;
-            btlfx_getUnitPos(arg1->unit, arg1->pos);
-            arg1->emitter = btlfx_startCastEmitter(arg1->unit, arg1->kind, arg1->pos, arg1->pos2);
-            btlfx_setPartyTexAnim(arg1->unit, 0, 0);
+            work->phase = 2;
+            btlfx_getUnitPos(work->unit, work->pos);
+            work->emitter = btlfx_startCastEmitter(work->unit, work->kind, work->pos, work->pos2);
+            btlfx_setPartyTexAnim(work->unit, 0, 0);
             btlfx_showCasterCmdName();
         }
         break;
     case 2:
-        if (arg1->emitter != NULL && arg1->emitter->state == BTLFX_EMIT_DONE) {
-            arg1->emitter = NULL;
+        if (work->emitter != NULL && work->emitter->state == BTLFX_EMIT_DONE) {
+            work->emitter = NULL;
         }
         if (t == 0) {
             k = ((u32)g_btlfxState.flags & BTLFX_HDR_BG_FADE) >> BTLFX_HDR_BG_FADE_SHIFT;
             if (k != 3) {
-                btlfx_startFadeBackground(k, arg1->kind == 1 ? 0xC : 0x14);
+                btlfx_startFadeBackground(k, work->kind == 1 ? 0xC : 0x14);
             }
         }
         b = t - 9;
-        if (arg1->kind == 1) {
+        if (work->kind == 1) {
             if (b >= 0) {
                 if (b < 16) {
                     a = (b * 255) >> 4;
@@ -429,20 +429,20 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                     a = 255;
                 }
                 if (b == 0) {
-                    arg1->loopFrames = btlfx_getMotionLength(arg1->unit);
-                    if (arg2->targets->kind & BTL_FXK_NO_CAST) {
+                    work->loopFrames = btlfx_getMotionLength(work->unit);
+                    if (env->targets->kind & BTL_FXK_NO_CAST) {
                         btlfx_showCasterCmdName();
                     }
                 }
-                switch (arg1->castMode) {
+                switch (work->castMode) {
                 case 0:
-                    btlfx_drawScreenTint((u32 *)(arg2->ot + 1), 1, a, a, a);
+                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, a, a, a);
                     if (b == 16) {
                         btlfx_fadeUnitGroup(2, 0);
                     }
                     break;
                 case 1:
-                    btlfx_drawScreenTint((u32 *)(arg2->ot + 1), 2, a, a, a);
+                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, a, a, a);
                     if (b == 16) {
                         btlfx_fadeUnitGroup(2, 0);
                     }
@@ -455,159 +455,159 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                     break;
                 }
             }
-            if (t % arg1->loopFrames == 0 && t >= 25 && arg1->frame >= 27 && g_btlfxState.signals.b[2] != 0) {
-                btlfx_stopEmitter(arg1->emitter);
+            if (t % work->loopFrames == 0 && t >= 25 && work->frame >= 27 && g_btlfxState.signals.b[2] != 0) {
+                btlfx_stopEmitter(work->emitter);
                 g_btlfxState.signals.b[3] = 1;
                 g_btlfxState.castEnded = 1;
-                arg2->camera->paused = 0;
-                btlfx_setPartyTexAnim(arg1->unit, 2, 0);
+                env->camera->paused = 0;
+                btlfx_setPartyTexAnim(work->unit, 2, 0);
                 return 1;
             }
-        } else if (arg1->motionMode == 0) {
-            if (t % btlfx_getMotionLength(arg1->unit) == 0 && t > 0 && arg1->frame >= 27 && g_btlfxState.signals.b[2] != 0) {
-                btlfx_playUnitMotion(arg1->unit, 0x1C);
+        } else if (work->motionMode == 0) {
+            if (t % btlfx_getMotionLength(work->unit) == 0 && t > 0 && work->frame >= 27 && g_btlfxState.signals.b[2] != 0) {
+                btlfx_playUnitMotion(work->unit, 0x1C);
                 t = -1;
-                arg1->phase = 3;
+                work->phase = 3;
             }
-        } else if (arg1->motionMode == 1) {
-            if (g_btlfxState.signals.b[2] != 0 && arg1->frame >= 27) {
-                arg1->phase = 3;
+        } else if (work->motionMode == 1) {
+            if (g_btlfxState.signals.b[2] != 0 && work->frame >= 27) {
+                work->phase = 3;
             set_t:
                 t = -1;
             }
-        } else if (arg1->motionMode == 3) {
+        } else if (work->motionMode == 3) {
             if (g_btlfxState.signals.b[2] != 0) {
-                arg1->phase = 0;
+                work->phase = 0;
                 goto set_t;
             }
         } else if (g_btlfxState.signals.b[2] != 0) {
             g_btlfxState.signals.b[3] = 1;
             btlfx_endCastIfNoBounce();
-            arg2->camera->paused = 0;
-            btlfx_setPartyTexAnim(arg1->unit, 2, 0);
+            env->camera->paused = 0;
+            btlfx_setPartyTexAnim(work->unit, 2, 0);
             btlfx_showCasterCmdName();
             return 1;
         }
         break;
     case 3:
-        if (t == 0 && arg1->motionMode != 1) {
-            arg2->camera->paused = 0;
-            btlfx_setPartyTexAnim(arg1->unit, 0, 1);
+        if (t == 0 && work->motionMode != 1) {
+            env->camera->paused = 0;
+            btlfx_setPartyTexAnim(work->unit, 0, 1);
         }
-        if (arg1->motionMode != 3) {
-            if (arg1->emitter != NULL) {
-                if (arg1->emitter->state == BTLFX_EMIT_DONE) {
-                    arg1->emitter = NULL;
+        if (work->motionMode != 3) {
+            if (work->emitter != NULL) {
+                if (work->emitter->state == BTLFX_EMIT_DONE) {
+                    work->emitter = NULL;
                 }
-                if (arg1->emitter != NULL && t < 5) {
+                if (work->emitter != NULL && t < 5) {
                     k = (t << 12) >> 2;
-                    arg1->emitter->alpha = 0x1000 - k;
-                    if (arg1->emitter != NULL) {
-                        arg1->emitter->scale = k * 2 + 0x1000;
+                    work->emitter->alpha = 0x1000 - k;
+                    if (work->emitter != NULL) {
+                        work->emitter->scale = k * 2 + 0x1000;
                     }
                     if (t != 4) {
                         goto skip;
                     }
-                    btlfx_stopEmitter(arg1->emitter);
+                    btlfx_stopEmitter(work->emitter);
                 }
             }
             g_btlfxState.signals.b[3] = 1;
             btlfx_endCastIfNoBounce();
         } else {
             g_btlfxState.signals.b[3] = 1;
-            if (arg1->target != BTLFX_UNIT_NONE) {
-                btlfx_getUnitPos(arg1->target, v);
-                btlfx_turnUnitTowardFast(arg1->unit, v, (s32)arg1->startRot, t, 0);
+            if (work->target != BTLFX_UNIT_NONE) {
+                btlfx_getUnitPos(work->target, v);
+                btlfx_turnUnitTowardFast(work->unit, v, (s32)work->startRot, t, 0);
             }
         }
     skip:
-        if (arg1->motionMode == 1) {
+        if (work->motionMode == 1) {
             if (t >= 5) {
                 return 1;
             }
             break;
         }
-        if (t >= btlfx_getMotionLength(arg1->unit) - 1) {
-            if (arg1->motionMode == 0 || arg1->motionMode == 3) {
-                btlfx_playUnitMotion(arg1->unit, 9);
+        if (t >= btlfx_getMotionLength(work->unit) - 1) {
+            if (work->motionMode == 0 || work->motionMode == 3) {
+                btlfx_playUnitMotion(work->unit, 9);
             }
-            btlfx_setPartyTexAnim(arg1->unit, 2, 0);
+            btlfx_setPartyTexAnim(work->unit, 2, 0);
             g_btlfxState.signals.b[3] = 1;
             btlfx_endCastIfNoBounce();
             return 1;
         }
         break;
     }
-    *arg3 = t;
-    arg1->frame++;
+    *entry = t;
+    work->frame++;
     }
     return 0;
 }
 
-s32 btlfx_opReturnHome(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opReturnHome(s32 mode, Unk800E5538 *work, Unk800F78A4 *env, s32 *entry, s32 *args) {
     s32 t;
 
-    if (arg0 == 0) {
-        *arg4 = 0x28;
+    if (mode == 0) {
+        *args = 0x28;
         return 0;
     }
-    if (arg0 == 1) {
-        arg1->phase = 0;
-        arg1->unit = *arg4;
-        if (arg2->targets->kind & BTL_FXK_SWD_MAG) {
-            arg1->unit = BTLFX_UNIT_PARTNER;
+    if (mode == 1) {
+        work->phase = 0;
+        work->unit = *args;
+        if (env->targets->kind & BTL_FXK_SWD_MAG) {
+            work->unit = BTLFX_UNIT_PARTNER;
         }
-        if (arg2->targets->kind & BTL_FXK_NO_CAST) {
+        if (env->targets->kind & BTL_FXK_NO_CAST) {
             return 1;
         }
-        if (btlfx_isEnemyUnit(arg1->unit) != 0) {
+        if (btlfx_isEnemyUnit(work->unit) != 0) {
             return 1;
         }
-        arg1->stopped = btl_hasStatus(btl_getUnit(arg1->unit), BTL_STATUS_STOP);
+        work->stopped = btl_hasStatus(btl_getUnit(work->unit), BTL_STATUS_STOP);
         return 0;
     }
-    t = *arg3;
-    if (arg1->phase == 0) {
-        if (btlfx_moveUnitHome(arg1->unit, t, arg1->startPos, arg1->stopped) != 0) {
+    t = *entry;
+    if (work->phase == 0) {
+        if (btlfx_moveUnitHome(work->unit, t, work->startPos, work->stopped) != 0) {
             t = -1;
-            arg1->phase = 1;
-            if (btlfx_isCmdPendingOnAutoPotion(arg1->unit) != 0) {
-                btlfx_playUnitMotion(arg1->unit, 9);
+            work->phase = 1;
+            if (btlfx_isCmdPendingOnAutoPotion(work->unit) != 0) {
+                btlfx_playUnitMotion(work->unit, 9);
                 return 1;
             }
-            if (arg1->stopped == 0) {
-                btlfx_playUnitMotion(arg1->unit, 0x20);
+            if (work->stopped == 0) {
+                btlfx_playUnitMotion(work->unit, 0x20);
             }
         }
     } else {
-        btlfx_turnUnitTowardFast(arg1->unit, NULL, (s32)arg1->startRot, t, 1);
-        if (t >= btlfx_getMotionLength(arg1->unit) - 1) {
-            btlfx_resetUnitMotion(arg1->unit, 1);
+        btlfx_turnUnitTowardFast(work->unit, NULL, (s32)work->startRot, t, 1);
+        if (t >= btlfx_getMotionLength(work->unit) - 1) {
+            btlfx_resetUnitMotion(work->unit, 1);
             return 1;
         }
     }
-    *arg3 = t;
+    *entry = t;
     return 0;
 }
 
-s32 btlfx_opSetResArgsC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4) {
-    switch (arg0) {
+s32 btlfx_opSetResArgsC(s32 mode, s32 work, s32 env, s32 entry, u8 *args) {
+    switch (mode) {
     case 1:
-        g_btlfxResArgs2.unit = arg4[0];
-        g_btlfxResArgs2.otBias = arg4[4];
+        g_btlfxResArgs2.unit = args[0];
+        g_btlfxResArgs2.otBias = args[4];
         break;
     }
     return 1;
 }
 
-s32 btlfx_opSetSpriteClut(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
+s32 btlfx_opSetSpriteClut(s32 mode, s32 work, s32 env, s32 entry, s32 *args) {
     s32 idx;
     s32 k;
     u16 *p;
-    if (arg0 == 1) {
-        idx = arg4[1] & 0x1F;
-        k = (arg4[1] & 0xE0) >> 5;
-        p = btlfx_getCommonSprite(arg4[0]);
+    if (mode == 1) {
+        idx = args[1] & 0x1F;
+        k = (args[1] & 0xE0) >> 5;
+        p = btlfx_getCommonSprite(args[0]);
         if (k >= 0) {
             if (k < 2) {
                 p[1] = g_btlfxCommonCluts[idx];
@@ -619,7 +619,7 @@ s32 btlfx_opSetSpriteClut(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return 1;
 }
 
-s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opDrawOnUnit(s32 mode, Unk800E57B0 *work, Unk800F78A4 *env, s32 *entry, s32 *args) {
     SVECTOR rot;
     s16 v[4];
     s32 a;
@@ -627,104 +627,104 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
     Pool6CEntry *e;
     u16 *p;
 
-    if (arg0 == 0) {
-        *arg4 = 0x2C;
-    } else if (arg0 == 1) {
-        a = arg4[0];
-        b = arg4[1];
-        arg1->kind = g_btlfxResArgs.mode >> 6;
-        arg1->scale = g_btlfxDrawScales[g_btlfxResArgs.mode & 0xF];
-        arg1->unit = g_btlfxResArgs2.unit;
-        arg1->otBias = g_btlfxResArgs2.otBias * 8;
-        arg1->frame = 0;
-        if (arg1->unit != BTLFX_UNIT_NONE) {
-            btlfx_getUnitBodyPos(arg1->unit, 0, &arg1->pos.vx);
+    if (mode == 0) {
+        *args = 0x2C;
+    } else if (mode == 1) {
+        a = args[0];
+        b = args[1];
+        work->kind = g_btlfxResArgs.mode >> 6;
+        work->scale = g_btlfxDrawScales[g_btlfxResArgs.mode & 0xF];
+        work->unit = g_btlfxResArgs2.unit;
+        work->otBias = g_btlfxResArgs2.otBias * 8;
+        work->frame = 0;
+        if (work->unit != BTLFX_UNIT_NONE) {
+            btlfx_getUnitBodyPos(work->unit, 0, &work->pos.vx);
         } else {
-            *(s32 *)&arg1->pos.vx = *(s32 *)&arg2->targets->centerX;
-            *(s32 *)&arg1->pos.vz = *(s32 *)&arg2->targets->centerZ;
-            arg1->pos.vy -= 0xC0;
+            *(s32 *)&work->pos.vx = *(s32 *)&env->targets->centerX;
+            *(s32 *)&work->pos.vz = *(s32 *)&env->targets->centerZ;
+            work->pos.vy -= 0xC0;
         }
-        switch (arg1->kind) {
+        switch (work->kind) {
         case BTLFX_DRAWON_PARTICLES:
-            arg1->dataId = g_btlfxResArgs.data;
-            arg1->colorIdx = a;
-            arg1->roll = (s8)b << 8;
-            arg1->data = btlfx_getCommonSprite(arg1->dataId);
-            ((u16 *)arg1->data)[1] = g_btlfxCommonCluts[arg1->colorIdx];
-            arg1->frames = *(u16 *)arg1->data & 0x7FFF;
-            arg1->offX = (s8)g_btlfxResArgs.offX * 4;
-            arg1->offY = (s8)g_btlfxResArgs.offY * 4;
+            work->dataId = g_btlfxResArgs.data;
+            work->colorIdx = a;
+            work->roll = (s8)b << 8;
+            work->data = btlfx_getCommonSprite(work->dataId);
+            ((u16 *)work->data)[1] = g_btlfxCommonCluts[work->colorIdx];
+            work->frames = *(u16 *)work->data & 0x7FFF;
+            work->offX = (s8)g_btlfxResArgs.offX * 4;
+            work->offY = (s8)g_btlfxResArgs.offY * 4;
             break;
         case BTLFX_DRAWON_QUADS:
-            arg1->dataId = g_btlfxResArgs.data;
-            arg1->colorIdx = a;
-            arg1->roll = (s8)b << 8;
-            arg1->data = btlfx_getCommonSprite(arg1->dataId);
-            ((u16 *)arg1->data)[2] = g_btlfxCommonCluts[arg1->colorIdx];
-            arg1->frames = *(u16 *)arg1->data & 0x7FFF;
+            work->dataId = g_btlfxResArgs.data;
+            work->colorIdx = a;
+            work->roll = (s8)b << 8;
+            work->data = btlfx_getCommonSprite(work->dataId);
+            ((u16 *)work->data)[2] = g_btlfxCommonCluts[work->colorIdx];
+            work->frames = *(u16 *)work->data & 0x7FFF;
             break;
         case BTLFX_DRAWON_EMITTER:
-            arg1->emitterId = g_btlfxResArgs.data;
-            arg1->dataId = a;
-            arg1->frames = g_btlfxResArgs.mode & 0xF;
-            arg1->scale = b;
+            work->emitterId = g_btlfxResArgs.data;
+            work->dataId = a;
+            work->frames = g_btlfxResArgs.mode & 0xF;
+            work->scale = b;
             break;
         case BTLFX_DRAWON_RINGS:
-            arg1->dataId = a;
-            arg1->frames = g_btlfxResArgs.data;
-            arg1->data = btlfx_getCommonSprite(arg1->dataId);
-            arg1->roll = 0;
+            work->dataId = a;
+            work->frames = g_btlfxResArgs.data;
+            work->data = btlfx_getCommonSprite(work->dataId);
+            work->roll = 0;
             break;
         default:
             return 0;
         }
     } else {
-        if (arg1->unit != BTLFX_UNIT_NONE) {
-            arg2->otZ = btlfx_addRadiusSixth(arg1->unit, arg1->otBias);
-            rot.vy = btlfx_compareDepth(BTLFX_UNIT_CASTER, arg1->unit) << 11;
+        if (work->unit != BTLFX_UNIT_NONE) {
+            env->otZ = btlfx_addRadiusSixth(work->unit, work->otBias);
+            rot.vy = btlfx_compareDepth(BTLFX_UNIT_CASTER, work->unit) << 11;
             rot.pad = 0;
             rot.vx = 0;
-            rot.vz = arg1->roll;
+            rot.vz = work->roll;
         }
-        switch (arg1->kind) {
+        switch (work->kind) {
         case BTLFX_DRAWON_PARTICLES:
-            btlfx_drawParticles(arg1->data, &arg1->pos, &rot, arg1->scale, arg1->frame, 1, 0x1000, arg1->offX, arg1->offY);
+            btlfx_drawParticles(work->data, &work->pos, &rot, work->scale, work->frame, 1, 0x1000, work->offX, work->offY);
             break;
         case BTLFX_DRAWON_QUADS:
-            btlfx_drawAnimQuads(arg1->data, &arg1->pos, &rot, arg1->scale, arg1->frame, 1, 0x1000);
+            btlfx_drawAnimQuads(work->data, &work->pos, &rot, work->scale, work->frame, 1, 0x1000);
             break;
         case BTLFX_DRAWON_EMITTER:
-            if (arg1->frame == arg1->frames) {
-                if (arg1->unit != BTLFX_UNIT_NONE) {
-                    if (arg1->unit == BTLFX_UNIT_CASTER) {
-                        btlfx_getWeaponPos(arg1->unit, 1, &arg1->pos.vx);
+            if (work->frame == work->frames) {
+                if (work->unit != BTLFX_UNIT_NONE) {
+                    if (work->unit == BTLFX_UNIT_CASTER) {
+                        btlfx_getWeaponPos(work->unit, 1, &work->pos.vx);
                         btlfx_getUnitBodyPos(0, 0, v);
-                        btlfx_aimAngles(&arg1->pos.vx, v, arg1->rot);
-                        if (btl_getUnit(0) == btl_getUnit(arg1->unit) && arg1->emitterId == 0x36) {
+                        btlfx_aimAngles(&work->pos.vx, v, work->rot);
+                        if (btl_getUnit(0) == btl_getUnit(work->unit) && work->emitterId == 0x36) {
                             return 1;
                         }
                     } else {
-                        btlfx_getUnitBodyPos(arg1->unit, 0, &arg1->pos.vx);
+                        btlfx_getUnitBodyPos(work->unit, 0, &work->pos.vx);
                     }
                 }
-                e = btlfx_startEmitter((s32)btlfx_getCommonSprite(arg1->emitterId), (s32)&arg1->pos);
+                e = btlfx_startEmitter((s32)btlfx_getCommonSprite(work->emitterId), (s32)&work->pos);
                 if (e != NULL) {
-                    e->otZ = arg1->otBias;
+                    e->otZ = work->otBias;
                 }
-                p = btlfx_getCommonSprite(arg1->dataId);
+                p = btlfx_getCommonSprite(work->dataId);
                 if (e != NULL) {
                     e->elems->tex = (s32)p;
-                    e->elems->kind = arg1->scale;
+                    e->elems->kind = work->scale;
                 }
                 e->elems->frameCount = *p & 0x7FFF; /* outside the NULL check in the original */
-                arg1->data = e;
+                work->data = e;
             }
-            if (arg1->frames < arg1->frame) {
-                e = arg1->data;
-                if (arg1->unit == BTLFX_UNIT_CASTER && e != NULL) {
-                    e->rot.vx = arg1->rot[0];
-                    e->rot.vy = arg1->rot[1];
-                    e->rot.vz = arg1->rot[2];
+            if (work->frames < work->frame) {
+                e = work->data;
+                if (work->unit == BTLFX_UNIT_CASTER && e != NULL) {
+                    e->rot.vx = work->rot[0];
+                    e->rot.vy = work->rot[1];
+                    e->rot.vz = work->rot[2];
                 }
                 if (e->state == BTLFX_EMIT_DONE) {
                     return 1;
@@ -732,19 +732,19 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
             }
             goto next;
         case BTLFX_DRAWON_RINGS:
-            btlfx_drawRings(arg1->data, &arg1->pos, &rot, arg1->scale, arg1->frame, 1, math_cos((arg1->frame << 10) / arg1->frames));
+            btlfx_drawRings(work->data, &work->pos, &rot, work->scale, work->frame, 1, math_cos((work->frame << 10) / work->frames));
             break;
         default:
-            arg2->otZ = 0;
+            env->otZ = 0;
             goto inc;
         }
-        if (arg1->frame >= arg1->frames - 1) {
+        if (work->frame >= work->frames - 1) {
             return 1;
         }
     next:
-        arg2->otZ = 0;
+        env->otZ = 0;
     inc:
-        arg1->frame++;
+        work->frame++;
     }
     return 0;
 }
@@ -757,12 +757,12 @@ void btlfx_spawnDrawOnUnit(s8 arg0, s8 arg1, s8 arg2, s32 arg3, s32 arg4, s32 ar
     btlfx_spawnTask(1, g_btlfxEnv->state->file, arg3, arg4);
 }
 
-s32 btlfx_opApplyResult(s32 arg0, void *arg1, Unk800F78A4 *arg2, void *arg3, s32 *arg4) {
+s32 btlfx_opApplyResult(s32 mode, void *work, Unk800F78A4 *env, void *entry, s32 *args) {
     s32 id;
     s32 *a;
 
-    if (arg0 == 1) {
-        a = arg4;
+    if (mode == 1) {
+        a = args;
         id = a[0];
         if (id == 0xFF) {
             id = -1;
@@ -783,13 +783,13 @@ s32 btlfx_opApplyResult(s32 arg0, void *arg1, Unk800F78A4 *arg2, void *arg3, s32
     return 1;
 }
 
-s32 btlfx_opAddCameraChoice(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
+s32 btlfx_opAddCameraChoice(s32 mode, s32 work, s32 env, Unk800F78A40 *entry, s32 *args) {
     s32 v;
     Unk800FEC40 *p;
     s16 *h;
 
-    if (arg0 == 1) {
-        v = arg4[0];
+    if (mode == 1) {
+        v = args[0];
         if (v == 0xFF) {
             h = g_btlfxState.cameras.h;
             h[0] = 0;
@@ -805,30 +805,30 @@ s32 btlfx_opAddCameraChoice(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s3
     return 1;
 }
 
-s32 btlfx_opPlayCamera(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
+s32 btlfx_opPlayCamera(s32 mode, s32 work, s32 env, Unk800F78A40 *entry, s32 *args) {
     s32 r;
     s32 k;
-    if (arg0 == 1) {
+    if (mode == 1) {
         r = 0;
-        switch (arg4[1]) {
+        switch (args[1]) {
         case 0:
-            r = btlfx_getFileData(arg3->file, arg4[0]);
+            r = btlfx_getFileData(entry->file, args[0]);
             break;
         case 1:
-            r = btlfx_getFileData(arg3->file, g_btlfxState.cameras.b.ids[g_btlfxState.cameraPick]);
+            r = btlfx_getFileData(entry->file, g_btlfxState.cameras.b.ids[g_btlfxState.cameraPick]);
             break;
         case 2:
             if (g_btlfxState.cameras.b.count != 0) {
                 g_btlfxState.cameraPick = btlfx_rand() % g_btlfxState.cameras.b.count;
             }
-            r = btlfx_getFileData(arg3->file, g_btlfxState.cameras.b.ids[g_btlfxState.cameraPick]);
+            r = btlfx_getFileData(entry->file, g_btlfxState.cameras.b.ids[g_btlfxState.cameraPick]);
             break;
         case 3:
             k = g_btlfxEnv->camera->effectPick;
             if (k >= g_btlfxState.cameras.b.count) {
                 k = g_btlfxState.cameras.b.count - 1;
             }
-            r = btlfx_getFileData(arg3->file, g_btlfxState.cameras.b.ids[k]);
+            r = btlfx_getFileData(entry->file, g_btlfxState.cameras.b.ids[k]);
             break;
         }
         if (g_btlfxCameraOn != 0) {
@@ -848,34 +848,34 @@ void btlfx_startFadeBackground(s32 arg0, s32 arg1) {
     btlfx_spawnTask(0xA, -1, v, arg1);
 }
 
-s32 btlfx_opFadeBackground(s32 arg0, Unk800E6270 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opFadeBackground(s32 mode, Unk800E6270 *work, s32 env, s32 *entry, s32 *args) {
     s32 n;
     s32 v;
-    if (arg0 == 0) {
-        *arg4 = 8;
+    if (mode == 0) {
+        *args = 8;
         return 0;
     }
-    if (arg0 == 1) {
-        arg1->from = btlbg_getBrightness() & 0xFF;
-        arg1->delta = arg4[0];
-        if (arg1->delta == 0xFF) {
-            arg1->delta = 0x80;
+    if (mode == 1) {
+        work->from = btlbg_getBrightness() & 0xFF;
+        work->delta = args[0];
+        if (work->delta == 0xFF) {
+            work->delta = 0x80;
         }
-        arg1->delta -= arg1->from;
-        if ((arg1->frames = arg4[1]) == 0 || arg1->delta == 0) {
-            btlbg_setBrightness(arg1->from + arg1->delta);
+        work->delta -= work->from;
+        if ((work->frames = args[1]) == 0 || work->delta == 0) {
+            btlbg_setBrightness(work->from + work->delta);
             return 1;
         }
         return 0;
     }
-    n = *arg3;
-    v = arg1->from + n * arg1->delta / arg1->frames;
+    n = *entry;
+    v = work->from + n * work->delta / work->frames;
     if (v < 0x10) {
         v = 0;
     }
     btlbg_setBrightness(v);
-    if (n < arg1->frames) {
-        *arg3 = n;
+    if (n < work->frames) {
+        *entry = n;
         return 0;
     }
     return 1;
@@ -885,45 +885,45 @@ void btlfx_startFadeUnits(s32 arg0, s32 arg1) {
     btlfx_spawnTask(4, -1, arg0 & 0xFF, arg1 & 0xFF);
 }
 
-s32 btlfx_opFadeUnits(s32 arg0, Unk800E6270 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opFadeUnits(s32 mode, Unk800E6270 *work, s32 env, s32 *entry, s32 *args) {
     s16 v;
     s32 n;
-    if (arg0 == 0) {
-        *arg4 = 0xC;
+    if (mode == 0) {
+        *args = 0xC;
         return 0;
     }
-    if (arg0 == 1) {
-        if (arg4[1] & 4) {
-            arg1->from = 0x80;
+    if (mode == 1) {
+        if (args[1] & 4) {
+            work->from = 0x80;
             v = -0x80;
         } else {
-            arg1->from = 0;
+            work->from = 0;
             v = 0x80;
         }
-        arg1->delta = v;
-        arg1->group = arg4[1] & 0xB;
-        if ((arg1->frames = arg4[0]) != 0) {
+        work->delta = v;
+        work->group = args[1] & 0xB;
+        if ((work->frames = args[0]) != 0) {
             return 0;
         }
-        btlfx_fadeUnitGroup(arg1->group, arg1->from + arg1->delta);
+        btlfx_fadeUnitGroup(work->group, work->from + work->delta);
         return 1;
     }
-    n = *arg3;
-    btlfx_fadeUnitGroup(arg1->group, arg1->from + n * arg1->delta / arg1->frames);
-    if (n < arg1->frames) {
-        *arg3 = n;
+    n = *entry;
+    btlfx_fadeUnitGroup(work->group, work->from + n * work->delta / work->frames);
+    if (n < work->frames) {
+        *entry = n;
         return 0;
     }
     return 1;
 }
 
-s32 btlfx_opPlaySound(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
-    if (arg0 == 1) {
+s32 btlfx_opPlaySound(s32 mode, s32 work, s32 env, Unk800F78A40 *entry, s32 *args) {
+    if (mode == 1) {
         s32 v = -1;
-        if (arg4[1] != 0xFF) {
-            v = arg4[1];
+        if (args[1] != 0xFF) {
+            v = args[1];
         }
-        btlfx_playFileSound(arg4[0], arg3->file, v);
+        btlfx_playFileSound(args[0], entry->file, v);
     }
     return 1;
 }
@@ -932,33 +932,33 @@ void btlfx_startScreenFade(s32 arg0, s32 arg1) {
     btlfx_spawnTask(0xE, -1, arg0, arg1);
 }
 
-s32 btlfx_opScreenFade(s32 arg0, Unk800E6410 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opScreenFade(s32 mode, Unk800E6410 *work, s32 env, s32 *entry, s32 *args) {
     s32 n;
     s32 *p;
-    if (arg0 == 0) {
-        *arg4 = 0xC;
+    if (mode == 0) {
+        *args = 0xC;
         return 0;
     }
-    if (arg0 == 1) {
-        p = arg4;
+    if (mode == 1) {
+        p = args;
         if (p[0] == 2) {
             return 1;
         }
         if (p[0] == 1) {
-            arg1->shade = 0;
+            work->shade = 0;
         } else if (p[0] == 0) {
-            arg1->shade = 0xFF;
+            work->shade = 0xFF;
         }
-        if ((arg1->frames = p[1]) != 0) {
+        if ((work->frames = p[1]) != 0) {
             return 0;
         }
-        btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, arg1->shade, arg1->shade, arg1->shade);
+        btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, work->shade, work->shade, work->shade);
         return 1;
     }
-    n = *arg3;
-    btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, arg1->shade, arg1->shade, arg1->shade);
-    if (n < arg1->frames) {
-        *arg3 = n;
+    n = *entry;
+    btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, work->shade, work->shade, work->shade);
+    if (n < work->frames) {
+        *entry = n;
         return 0;
     }
     return 1;
