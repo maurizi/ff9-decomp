@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-s32 wrain_draw(s32 r) {
+s32 wrain_draw(s32 prim) {
     GameData *gd;
 
     if (g_worldRain.stopping < 2) {
@@ -13,9 +13,9 @@ s32 wrain_draw(s32 r) {
         gd = g_gameState->gameData;
         gte_SetRotMatrix(&gd->viewMatrix);
         gte_SetTransMatrix(&gd->viewMatrix);
-        r = wrain_drawDrops(g_worldRain.active, gd->drawBuf, gd->ot[gd->drawBuf] + 3, r);
+        prim = wrain_drawDrops(g_worldRain.active, gd->drawBuf, gd->ot[gd->drawBuf] + 3, prim);
     }
-    return r;
+    return prim;
 }
 
 u8 *wrain_init(RainNode *buf) {
@@ -41,12 +41,12 @@ u8 *wrain_init(RainNode *buf) {
 
 void wrain_set(s32 count, u32 speed) {
     if (count != 0 && speed != 0) {
-        RainState *p = &g_worldRain;
+        RainState *rain = &g_worldRain;
 
         if (count < 0x83) {
-            p->count = count;
+            rain->count = count;
         } else {
-            p->count = 0x82;
+            rain->count = 0x82;
         }
     }
     g_worldRain.speed = speed * 16;
