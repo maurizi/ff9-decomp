@@ -11484,3 +11484,4 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 #   LV 0xB4, NEW 0xB5, NEW_BLINK 0xB6, HELP_TAG 0xB7, SCROLL_UP/DOWN 0xB8/0xB9, ABIL_ACTION 0xBC, ABIL_SUPPORT_ON 0xBD,
 #   ABIL_ACTION_NA 0xBE, ABIL_SUPPORT_NA 0xBF, AP_MASTERED 0xC0, STONES 0xC1, TIMER_DIGITS 0xE0, TIMER_COLON 0xEA,
 #   ABIL_SUPPORT_OFF 0xF4, EQUIP_SLOTS 0xF9 (+ slot). [code]: what each caller draws beside them.
+# ovl_0b.h BTLFX_EFFECT_*: COMET, ATTACK (+ kind), ATTACK_ENEMY, STEAL_*, TRANCE, TRANCE_CMD, THROW_* (btl_startCmdEffect fixed ids)

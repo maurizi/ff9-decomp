@@ -1661,7 +1661,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             break;
         }
     case BTL_FORMULA_RANDOM_MAGIC:
-        if ((cmd->ability->effect != 0x38 || RAND8() < 0xAB) && (cmd->subNo != ABIL_METEOR || !cmd->info.b.magicFailed)) {
+        if ((cmd->ability->effect != BTLFX_EFFECT_COMET || RAND8() < 0xAB) && (cmd->subNo != ABIL_METEOR || !cmd->info.b.magicFailed)) {
             RAND_REFILL2();
             c.multiplier = RAND16() % (caster->magic + caster->level);
             c.power = cmd->ability->power;

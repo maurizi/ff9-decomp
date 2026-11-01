@@ -105,9 +105,9 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     case BTL_CMD_COUNTER:
     case BTL_CMD_CHARGE_ATTACK:
         if (u->flags & BTL_UNIT_PARTY) {
-            id = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind + 0x64;
+            id = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind + BTLFX_EFFECT_ATTACK;
         } else {
-            id = 0x77;
+            id = BTLFX_EFFECT_ATTACK_ENEMY;
         }
         btl_playCmdEffect(cmd, id, 0);
         break;
@@ -119,19 +119,19 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         }
         switch (k) {
         case CHR_KIND_ZIDANE_DAGGER:
-            btl_playCmdEffect(cmd, 0xC8, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_STEAL_ZIDANE_DAGGER, 0);
             break;
         case CHR_KIND_ZIDANE:
-            btl_playCmdEffect(cmd, 0x111, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_STEAL_ZIDANE, 0);
             break;
         case CHR_KIND_CINNA:
-            btl_playCmdEffect(cmd, 0x13, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_STEAL_CINNA, 0);
             break;
         case CHR_KIND_MARCUS:
-            btl_playCmdEffect(cmd, 0x77, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_ATTACK_ENEMY, 0);
             break;
         default:
-            btl_playCmdEffect(cmd, 0x14, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_STEAL, 0);
             break;
         }
         break;
@@ -154,34 +154,34 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         switch (g_itemTable[cmd->subNo].icon) {
         case ITEM_ICON_DAGGER:
-            btl_playCmdEffect(cmd, 0x110, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_THROW_DAGGER, 0);
             break;
         case ITEM_ICON_THIEF_SWORD:
-            btl_playCmdEffect(cmd, 0x10A, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_THROW_THIEF_SWORD, 0);
             break;
         case ITEM_ICON_SWORD:
         case ITEM_ICON_KNIGHT_SWORD:
-            btl_playCmdEffect(cmd, 0x10B, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_THROW_SWORD, 0);
             break;
         case ITEM_ICON_SPEAR:
-            btl_playCmdEffect(cmd, 0x10C, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_THROW_SPEAR, 0);
             break;
         case ITEM_ICON_CLAW:
-            btl_playCmdEffect(cmd, 0x10D, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_THROW_CLAW, 0);
             break;
         case ITEM_ICON_RACKET:
-            btl_playCmdEffect(cmd, 0x109, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_THROW_RACKET, 0);
             break;
         case ITEM_ICON_ROD:
         case ITEM_ICON_FLUTE:
         case ITEM_ICON_STAFF:
-            btl_playCmdEffect(cmd, 0x10E, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_THROW_ROD, 0);
             break;
         case ITEM_ICON_FORK:
-            btl_playCmdEffect(cmd, 0x10F, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_THROW_FORK, 0);
             break;
         case ITEM_ICON_THROWING:
-            btl_playCmdEffect(cmd, 0x115, 0);
+            btl_playCmdEffect(cmd, BTLFX_EFFECT_THROW_THROWING, 0);
             break;
         }
         break;
@@ -199,9 +199,9 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         btl_startEnemySeq(cmd);
         return;
     case BTL_CMD_TRANCE:
-        id = 0x1E9;
+        id = BTLFX_EFFECT_TRANCE_CMD;
         if (u->status & BTL_STATUS_TRANCE) {
-            id = 0x101;
+            id = BTLFX_EFFECT_TRANCE;
         }
         btl_playCmdEffect(cmd, id, 0);
         break;

@@ -757,6 +757,27 @@ typedef struct {
 /* effect ids (BtlfxState.effectId) tested by ovl_0b, identities from docs/effect-modules.md */
 #define BTLFX_EFFECT_ROULETTE  0x0ED /* fx_0ed Roulette: btlfx_op does not turn the caster towards its target */
 #define BTLFX_EFFECT_ARK_SHORT 0x1BF /* fx_1bf Ark (short) / Eternal Darkness: the caster returns to its idle motion afterwards */
+/* fixed effect ids of btl_startCmdEffect (docs/runtime-findings.md, round 31 static sweep and BTLFX_HDR_RESIDENT:
+ * the Attack and Steal ids are resident physical-hit scripts without a dir-13 file) */
+#define BTLFX_EFFECT_COMET           0x038 /* fx_038 Comet: BTL_FORMULA_RANDOM_MAGIC only deals damage when RAND8() < 0xAB */
+#define BTLFX_EFFECT_ATTACK          0x064 /* + CHR_KIND: the party Attacks 0x64-0x76 */
+#define BTLFX_EFFECT_ATTACK_ENEMY    0x077 /* enemy Attack, also Marcus's Steal */
+#define BTLFX_EFFECT_STEAL_CINNA     0x013
+#define BTLFX_EFFECT_STEAL           0x014 /* Steal by any other kind */
+#define BTLFX_EFFECT_STEAL_ZIDANE_DAGGER 0x0C8 /* CHR_KIND_ZIDANE_DAGGER */
+#define BTLFX_EFFECT_STEAL_ZIDANE    0x111 /* CHR_KIND_ZIDANE */
+#define BTLFX_EFFECT_TRANCE          0x101 /* fx_101 the Trance transformation (Trance command while in Trance) */
+#define BTLFX_EFFECT_TRANCE_CMD      0x1E9 /* fx_1e9 the Trance command when not in Trance */
+/* Throw, by the thrown item's icon (fx_109 .. fx_115) */
+#define BTLFX_EFFECT_THROW_RACKET    0x109
+#define BTLFX_EFFECT_THROW_THIEF_SWORD 0x10A
+#define BTLFX_EFFECT_THROW_SWORD     0x10B /* also knight swords */
+#define BTLFX_EFFECT_THROW_SPEAR     0x10C
+#define BTLFX_EFFECT_THROW_CLAW      0x10D
+#define BTLFX_EFFECT_THROW_ROD       0x10E /* rods, flutes, staffs */
+#define BTLFX_EFFECT_THROW_FORK      0x10F
+#define BTLFX_EFFECT_THROW_DAGGER    0x110
+#define BTLFX_EFFECT_THROW_THROWING  0x115 /* pinwheel, rising sun */
 
 /* BtlUnitList.kind. Evidence: [code] */
 #define BTL_FXK_NO_CAST 0x01 /* the caster doesn't step out and cast (btlfx caster task), no command camera: BTL_CMD_TRANCE_EIDOLON, BTL_CMD_REBIRTH_FLAME, bounces, btlseq op 0x1A */
