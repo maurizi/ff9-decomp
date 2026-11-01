@@ -97,9 +97,9 @@ void wm_updateCamera(void) {
 }
 
 void wm_cameraFollow(void) {
-    VECTOR v;
+    VECTOR probe;
     u32 c0;
-    s32 t;
+    s32 polyIdx;
     s32 h0;
     u32 c1;
     s32 h1;
@@ -113,10 +113,10 @@ void wm_cameraFollow(void) {
     s32 x;
     s32 y;
     s32 z;
-    s32 d;
+    s32 dy;
     s32 dir;
     s32 step;
-    s32 a;
+    s32 ease;
     s32 k;
     s32 x2, y2, z2, d2, step2, dir2;
     s32 dx, dz, s, r;
@@ -160,12 +160,12 @@ void wm_cameraFollow(void) {
             }
         } else {
             step = 0;
-            d = y - g_worldCameraTarget[1];
-            dir = d > 0x80;
-            if (d < -0x80) {
+            dy = y - g_worldCameraTarget[1];
+            dir = dy > 0x80;
+            if (dy < -0x80) {
                 dir = WM_CAM_RAISE;
             }
-            g_worldCameraEaseDiv = (d >= 0 ? d : -d) >> 5;
+            g_worldCameraEaseDiv = (dy >= 0 ? dy : -dy) >> 5;
             if (g_worldCameraEaseDiv < 0x20) {
                 g_worldCameraEaseDiv = 0x20;
             }
@@ -178,10 +178,10 @@ void wm_cameraFollow(void) {
                 case WM_CTRL_STEER:
                     switch (dir) {
                     case WM_CAM_RAISE:
-                        step = (d + 0x80) / 8;
+                        step = (dy + 0x80) / 8;
                         break;
                     case WM_CAM_LOWER:
-                        step = (d - 0x80) / 2;
+                        step = (dy - 0x80) / 2;
                         break;
                     }
                     break;
@@ -189,10 +189,10 @@ void wm_cameraFollow(void) {
                 case WM_CTRL_WALK_FAST:
                     switch (dir) {
                     case WM_CAM_RAISE:
-                        step = ((d + 0x80) << 8) / (g_worldCameraEaseDiv << 5);
+                        step = ((dy + 0x80) << 8) / (g_worldCameraEaseDiv << 5);
                         break;
                     case WM_CAM_LOWER:
-                        step = ((d - 0x80) << 8) / (g_worldCameraEaseDiv << 5);
+                        step = ((dy - 0x80) << 8) / (g_worldCameraEaseDiv << 5);
                         break;
                     }
                     break;
@@ -214,23 +214,23 @@ void wm_cameraFollow(void) {
         y2 = g_worldPlayer->pos.vy + g_worldCameraEyeOffset.vy;
         x2 = g_worldPlayer->pos.vx + g_worldCameraEyeOffset.vx;
         z2 = g_worldPlayer->pos.vz + g_worldCameraEyeOffset.vz;
-        v.vx = x2 + (g_worldCameraDir[0] >> 2);
-        v.vy = y2;
-        v.vz = z2 + (g_worldCameraDir[2] >> 2);
+        probe.vx = x2 + (g_worldCameraDir[0] >> 2);
+        probe.vy = y2;
+        probe.vz = z2 + (g_worldCameraDir[2] >> 2);
         if (g_worldCameraFourProbes != 0) {
-            v.vx += 0x580;
-            wm_wrapPos(&v.vx, &v.vz);
-            wm_getGroundHeight(&v, &c0, &t, &g_worldCameraPolyCache[0], (u16 *)&h0);
-            v.vx -= 0xB00;
-            wm_wrapPos(&v.vx, &v.vz);
-            wm_getGroundHeight(&v, &c1, &t, &g_worldCameraPolyCache[1], (u16 *)&h1);
-            v.vx += 0x580;
-            v.vz += 0x580;
-            wm_wrapPos(&v.vx, &v.vz);
-            wm_getGroundHeight(&v, &c2, &t, &g_worldCameraPolyCache[2], (u16 *)&h2);
-            v.vz -= 0xB00;
-            wm_wrapPos(&v.vx, &v.vz);
-            wm_getGroundHeight(&v, &c3, &t, &g_worldCameraPolyCache[3], (u16 *)&h3);
+            probe.vx += 0x580;
+            wm_wrapPos(&probe.vx, &probe.vz);
+            wm_getGroundHeight(&probe, &c0, &polyIdx, &g_worldCameraPolyCache[0], (u16 *)&h0);
+            probe.vx -= 0xB00;
+            wm_wrapPos(&probe.vx, &probe.vz);
+            wm_getGroundHeight(&probe, &c1, &polyIdx, &g_worldCameraPolyCache[1], (u16 *)&h1);
+            probe.vx += 0x580;
+            probe.vz += 0x580;
+            wm_wrapPos(&probe.vx, &probe.vz);
+            wm_getGroundHeight(&probe, &c2, &polyIdx, &g_worldCameraPolyCache[2], (u16 *)&h2);
+            probe.vz -= 0xB00;
+            wm_wrapPos(&probe.vx, &probe.vz);
+            wm_getGroundHeight(&probe, &c3, &polyIdx, &g_worldCameraPolyCache[3], (u16 *)&h3);
             h = h0;
             cell = c0;
             if (h1 < h) {
@@ -246,8 +246,8 @@ void wm_cameraFollow(void) {
                 cell = c3;
             }
         } else {
-            wm_wrapPos(&v.vx, &v.vz);
-            wm_getGroundHeight(&v, &cell, &t, &g_worldCameraPolyCache[0], (u16 *)&h);
+            wm_wrapPos(&probe.vx, &probe.vz);
+            wm_getGroundHeight(&probe, &cell, &polyIdx, &g_worldCameraPolyCache[0], (u16 *)&h);
         }
         if (g_worldMoveModeInfo->controlType == WM_CTRL_FLY) {
             if (h < -0x2134) {
@@ -272,13 +272,13 @@ void wm_cameraFollow(void) {
         if (g_worldMoveModeInfo->controlType == WM_CTRL_FLY && y2 > -0x1194) {
             y2 = -0x1194;
         }
-        d = y2 - g_worldCameraEye[1];
-        dir = d > 0x100;
+        dy = y2 - g_worldCameraEye[1];
+        dir = dy > 0x100;
         step = 0;
-        if (d < -0x100) {
+        if (dy < -0x100) {
             dir = WM_CAM_RAISE;
         }
-        g_worldCameraEaseDiv = (d >= 0 ? d : -d) >> g_worldCameraEaseShift;
+        g_worldCameraEaseDiv = (dy >= 0 ? dy : -dy) >> g_worldCameraEaseShift;
         if (g_worldCameraEaseDiv < g_worldCameraEaseDivMin) {
             g_worldCameraEaseDiv = g_worldCameraEaseDivMin;
         }
@@ -291,10 +291,10 @@ void wm_cameraFollow(void) {
             case WM_CTRL_STEER:
                 switch (dir) {
                 case WM_CAM_RAISE:
-                    step = (d + 0x100) / 4;
+                    step = (dy + 0x100) / 4;
                     break;
                 case WM_CAM_LOWER:
-                    step = (d - 0x100) / 32;
+                    step = (dy - 0x100) / 32;
                     break;
                 }
                 break;
@@ -302,18 +302,18 @@ void wm_cameraFollow(void) {
             case WM_CTRL_WALK_FAST:
                 switch (dir) {
                 case WM_CAM_RAISE:
-                    step = ((d + 0x100) << 8) / (((g_worldCameraEaseScale - 2) * g_worldCameraEaseDiv * 7) >> k);
+                    step = ((dy + 0x100) << 8) / (((g_worldCameraEaseScale - 2) * g_worldCameraEaseDiv * 7) >> k);
                     break;
                 case WM_CAM_LOWER:
-                    step = ((d - 0x100) << 8) / (g_worldCameraEaseScale * g_worldCameraEaseDiv * 3);
+                    step = ((dy - 0x100) << 8) / (g_worldCameraEaseScale * g_worldCameraEaseDiv * 3);
                     break;
                 }
-                a = step >= 0 ? step : -step;
-                if (a > 0x200) {
-                    a = 0x200;
+                ease = step >= 0 ? step : -step;
+                if (ease > 0x200) {
+                    ease = 0x200;
                 }
-                a = (((0x200 - a) * g_worldCameraEaseBoost >> 12) + 0x800) << 1;
-                step *= a;
+                ease = (((0x200 - ease) * g_worldCameraEaseBoost >> 12) + 0x800) << 1;
+                step *= ease;
                 step /= 4096;
                 break;
             }
