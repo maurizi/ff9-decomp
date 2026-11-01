@@ -12,4 +12,4 @@ fx_1be_op80ParticleEnds = 0x801E8FE8; // [code] 64 random points set in fx_1be_o
 fx_1be_scrollPos = 0x801E95D4; // [code] increased by fx_1be_scrollSpeed every frame, x argument of the two btlfx_drawScrollMove calls in fx_1be_op80
 fx_1be_scrollSpeed = 0x801E95D8; // [code] added to fx_1be_scrollPos every frame, eased from 4 to 0x14 by fxm_easeLerp in fx_1be_op80
 fx_1be_units = 0x801E95E8; // [code] Fx1beUnit per target in fx_1be_op80, saved unit scale rot and home position, pulled toward pos8C and restored at frame 0x7C
-fx_1be_unusedScroll = 0x801E95D0; // [code] set to 2 by fx_1be_op80 mode 1 with fx_1be_scrollPos and fx_1be_scrollSpeed (the next two words), never read
+fx_1be_scrollInitWord = 0x801E95D0; // [code] set to 2 by fx_1be_op80 mode 1 with fx_1be_scrollPos and fx_1be_scrollSpeed (= 8, the next two words), never read

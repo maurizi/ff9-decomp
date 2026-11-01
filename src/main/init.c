@@ -48,7 +48,7 @@ void game_reset(void) {
         VSync(0);
     }
     evt_initSystem();
-    game_resetStub();
+    game_onReset();
     menu_init();
     game_initFade();
     mbg_resetState();

@@ -1213,15 +1213,15 @@ u32 btlfx_getUnitStatus(s32 arg0, u32 arg1) {
     return btl_getUnit(arg0)->status & arg1;
 }
 
-s32 btlfx_exportStub090(void) {
+s32 btlfx_motionNopZero(void) {
     return 0;
 }
 
-s32 btlfx_exportStub094(void) {
+s32 btlfx_motionNopNeg(void) {
     return -1;
 }
 
-void btlfx_exportStub0A4(void) {
+void btlfx_motionNop(void) {
 }
 
 s32 btlfx_stepSwingSound(u8 *arg0, s32 arg1, s32 arg2) {

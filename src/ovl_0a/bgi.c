@@ -838,11 +838,11 @@ s32 bgi_clear(void) {
     return 1;
 }
 
-s32 bgi_okStub(void) {
+s32 bgi_nopOk(void) {
     return 1;
 }
 
-void bgi_setOneStub(s32 *out) {
+void bgi_getOne(s32 *out) {
     *out = 1;
 }
 

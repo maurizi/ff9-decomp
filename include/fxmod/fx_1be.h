@@ -49,7 +49,7 @@ typedef struct {
 } Fx1beUnit; /* 0x38 */
 
 extern BtlModelBuf fx_1be_effModels[];
-extern s32 fx_1be_unusedScroll;
+extern s32 fx_1be_scrollInitWord;
 extern s32 fx_1be_scrollPos;
 extern s32 fx_1be_scrollSpeed;
 extern Fx1beUnit fx_1be_units[];

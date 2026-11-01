@@ -16,7 +16,7 @@ void msg_init(void) {
     g_penGlyphDecode.lead = 0;
     g_penGlyphs = f->glyphs;
     g_penGlyphDecode.extRange = *(s32 *)&f->extCode;
-    g_msgFontUnusedParam = f->unk8;
+    g_msgFontGlyphCount = f->glyphCount;
     g_penGlyphDecode.kanjiCode = -1;
     switch (s->mode) {
     case GS_MODE_FIELD:
@@ -1071,7 +1071,7 @@ u32 msg_getPadReleased(void) {
     return g_msgPadReleased & 0x3FFFFFF;
 }
 
-void msg_endTextStub(void) {
+void msg_onTextEnd(void) {
 }
 
 void msg_resetWindows(void) {

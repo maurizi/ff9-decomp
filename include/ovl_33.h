@@ -198,7 +198,7 @@ extern u8 s_menuEquipTaught[0x40];
 extern u8 s_menuEquipOptSlotMask[5]; /* slot masks */
 extern u16 s_menuEquipOptCharMask[]; /* character masks */
 void menuAbility_loadImages(void);
-void menuAbility_initStub(void);
+void menuAbility_onInit(void);
 void menuEquip_openList(void);
 void menuEquip_removeSlot(void);
 void menuEquip_buildItemList(void);

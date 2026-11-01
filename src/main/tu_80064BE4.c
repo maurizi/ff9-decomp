@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void tim_unusedStub(void) {
+void pen_nop(void) {
 }
 
 void pen_beginOt(s32 a, u32 *b) {

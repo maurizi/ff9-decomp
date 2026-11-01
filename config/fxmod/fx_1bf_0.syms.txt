@@ -14,4 +14,4 @@ fx_1bf_0_particleFileIds = 0x801E879C; // [code] s16 btlfx_getFileData ids of th
 fx_1bf_0_pointFileIds = 0x801E87B4; // [code] s16 btlfx_getFileData ids of the 3 point lists of fxm_drawPatternParticles
 fx_1bf_0_particleOffsets = 0x801E87BC; // [code] 3 SVECTOR offsets (times 2) from from in fxm_drawOffsetParticles3
 fx_1bf_0_lineTrail = 0x801E881C; // [code] two-point trail strip filled and given to btlfx_drawTrail by fxm_drawTrailLine
-fx_1bf_0_unusedBuf = 0x801EA1FC; // [code] 0x400 zero bytes, fx_1bf_0_op80 mode 1 clears byte 0 and nothing reads them
+fx_1bf_0_buf400 = 0x801EA1FC; // [code] 0x400 zero bytes before fx_1bf_0_effModels, fx_1bf_0_op80 mode 1 sets byte 0 to 0 and nothing reads them

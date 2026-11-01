@@ -52,7 +52,7 @@ void btlui_clearOtLinked(u32 *arg0, u32 arg1) {
     }
 }
 
-void btlui_frameUnusedStub(void) {
+void btlui_frameNop(void) {
 }
 
 void btl_initBanner(void) {
@@ -71,7 +71,7 @@ void btl_initBanner(void) {
     g_btlBanner.duration = v;
 }
 
-void btl_bannerExitStub(void) {
+void btl_termBanner(void) {
 }
 
 u8 *btl_drawBanner(u8 *arg0) {

@@ -15,4 +15,4 @@ fx_17d_4_particleFileIds = 0x801E97FC; // [code] s16[16] file ids given to btlfx
 fx_17d_4_pointFileIds = 0x801E9814; // [code] s16[3] file ids of the point lists read by fxm_drawPatternParticles
 fx_17d_4_particleOffsets = 0x801E981C; // [code] SVECTOR[3] offsets (times 2) from the origin in fxm_drawOffsetParticles3
 fx_17d_4_lineTrail = 0x801E987C; // [code] Fx17d4Line two-point btlfx_drawTrail state filled by fxm_drawTrailLine
-fx_17d_4_unused = 0x801EB25C; // [runtime] no access from any fx_17d group, other module or ovl_0b (round 33)
+fx_17d_4_buf400 = 0x801EB25C; // [code] 0x400 zero bytes before fx_17d_4_effModels, fx_17d_4_op80 mode 1 sets byte 0 to 0 (same layout as fx_1bf_0_buf400), no other access (runtime round 33)

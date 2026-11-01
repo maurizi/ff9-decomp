@@ -953,7 +953,7 @@ extern RECT g_worldVramParkRect;
 extern char s_wmStrFrameSystemDestructor[]; /* "w_frameSystemDestructor:\n" */
 extern WmNaviPlace g_worldNaviPlaces[][64];
 extern s32 *g_worldTexBuffers[3];
-extern s32 g_worldUnusedBuffer;
+extern s32 g_worldLowBuffer;
 extern u8 g_worldPointFxBuf[];
 extern u8 *g_worldPointFxBufPtr;
 extern s32 g_worldPrimBuffers[];
@@ -1243,7 +1243,7 @@ extern EvtObject *g_worldMoogleActor;
 extern u8 g_worldFastFly;
 extern s32 g_worldPlayerClimbSpeed;
 extern s32 g_worldMountPaletteOverride;
-extern s32 g_worldMoveUnusedWord;
+extern s32 g_worldMoveInitWord;
 extern u8 g_worldCameraTurnedByHand;
 extern s32 g_worldPlayerSpeed;
 extern u16 g_worldPlayerHeading;
@@ -1267,7 +1267,7 @@ void akao_resume(s32);
 extern s32 g_worldFrameCount;
 extern u8 g_worldMogChoice;
 extern s16 g_worldOtBias;
-extern u8 g_worldSysUnusedFlag;
+extern u8 g_worldSysInitFlag;
 extern u8 g_worldSuspended;
 extern u8 g_worldMapJump;
 extern u8 g_worldVehiclesFound;
@@ -1324,7 +1324,7 @@ extern SVECTOR g_worldCameraEyeOffset;
 extern s32 g_worldCameraTargetHeight;
 extern s32 g_worldCameraDistScale;
 extern s16 g_worldCameraRoll;
-extern u8 g_worldCameraUnusedFlag;
+extern u8 g_worldCameraInitFlag;
 extern u8 g_worldCameraStartPhase;
 
 /* main exe: candidates for ff9.h */

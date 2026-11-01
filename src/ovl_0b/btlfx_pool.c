@@ -1,6 +1,6 @@
 #include "ovl_0b.h"
 
-s32 btlfx_poolUnusedStub(void) {
+s32 btlfx_poolNopZero(void) {
     return 0;
 }
 

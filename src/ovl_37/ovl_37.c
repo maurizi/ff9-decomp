@@ -11,7 +11,7 @@ void menuItem_init(void) {
     s_menuItem.popupTimer = 0;
     s_menuItem.keyView = 0;
     s_menuItem.keyViewPhase = 0;
-    menuItem_initStub();
+    menuItem_onInit();
     menuItem_collectKeyItems();
     text_setBank(g_itemMenuText);
     help_setCallback(help_nullHandler);
@@ -475,7 +475,7 @@ void menuItem_exit(void) {
     help_setLocked(0);
     help_setCursorOnTop(1);
     help_setCallback(NULL);
-    menuItem_exitStub();
+    menuItem_onExit();
 }
 
 void menuItem_input(void) {
@@ -721,7 +721,7 @@ void menuItem_stepKweh(void) {
                 help_setLocked(0);
                 help_setCursorOnTop(1);
                 help_setCallback(NULL);
-                menuItem_exitStub();
+                menuItem_onExit();
                 menuScreen_close();
             }
         }
@@ -806,7 +806,7 @@ void menuItem_loadImages(void) {
     DrawSync(0);
 }
 
-void menuItem_exitStub(void) {
+void menuItem_onExit(void) {
 }
 
 void menuItem_showKeyItem(s32 id) {
@@ -843,7 +843,7 @@ s32 menuItem_getSlot(MenuList *l) {
     return (l->top + l->cursor) * 2 + l->col;
 }
 
-void menuItem_initStub(void) {
+void menuItem_onInit(void) {
 }
 
 INCLUDE_RODATA("asm/us/ovl_37/nonmatchings/ovl_37", s_menuItemKeyImage);

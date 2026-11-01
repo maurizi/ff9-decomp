@@ -98,18 +98,18 @@ u16 btlfx_getMeshPrims(BtlModel *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) 
     return 0;
 }
 
-void btlfx_exportStub308(void) {
+void btlfx_vertexNop(void) {
 }
 
-s32 btlfx_exportStub300(void) {
+s32 btlfx_vertexNopZero1(void) {
     return 0;
 }
 
-s32 btlfx_exportStub30C(void) {
+s32 btlfx_vertexNopZero2(void) {
     return 0;
 }
 
-void btlfx_exportStub29C(void) {
+void btlfx_imageNop(void) {
 }
 
 /* gives every vertex reference of nv-vertex primitives its own copy in arg2 */

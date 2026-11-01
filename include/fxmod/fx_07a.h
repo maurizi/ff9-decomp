@@ -58,7 +58,7 @@ extern BtlModelBuf fx_07a_effModels[];
 extern SVECTOR fx_07a_bonePos;
 extern SVECTOR fx_07a_centerPos;
 extern Fx07aStrip fx_07a_strips[5];
-extern s32 fx_07a_unusedRadius; /* never read (runtime watch, round 33) */
+extern s32 fx_07a_discRadiusIn; /* never read (runtime watch, round 33) */
 extern u32 fx_07a_bgOt[];
 
 #endif

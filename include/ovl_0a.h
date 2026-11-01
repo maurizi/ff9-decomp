@@ -351,7 +351,7 @@ typedef struct {
     u8 unk74; /* write-only (set to 0x40) */
     u8 cameraId;
     s16 followHeight;
-    s32 unusedDistSq; /* write-only: a squared distance, 60 * 60 by default, fldbg_setUnusedDistSq sets arg * arg */
+    s32 radiusSq; /* a radius squared: 60 * 60 from the fldbg init, fldbg_setRadius(r) stores r * r; nothing reads it */
     u8 pad7C[0x9C - 0x7C];
     s16 unk9C; /* write-only (cleared) */
     u8 pad9E[2];
@@ -1717,7 +1717,7 @@ void fldmdl_reflectModel(ModelObj *mdl);
 void fldmdl_setAbr(ModelObj *mdl, u16 abr);
 void fldmdl_setGroupRgb(ModelObj *mdl, u8 groupIdx, s16 red, s16 green, s16 blue);
 void fldmdl_setSemiTrans(ModelObj *mdl, u16 force);
-void fade_fieldInitStub(void); /* main */
+void fade_initField(void); /* main */
 s32 evt_countNpcActors(s32 unused); /* main */
 void fld_drawRain(void);
 void game_resumeClock(u8 resume); /* main */

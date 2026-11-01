@@ -91,7 +91,7 @@ typedef struct {
     u8 pad2[2];
     u16 extCode; /* high byte: first text code that takes an extra byte (text_draw: (c << 8) + next byte - extCode + extBase) */
     u16 extBase; /* glyph index of the first two-byte code */
-    s16 unk8; /* copied to g_msgFontUnusedParam by msg_init, not read otherwise */
+    s16 glyphCount; /* entries in glyphs[] (0xB2 in the US font, tools/ff9text.py); msg_init copies it to g_msgFontGlyphCount, nothing reads it */
     u8 padA[2];
     u32 glyphs[1]; /* glyph info, width in the top 4 bits */
 } Font;
@@ -691,7 +691,7 @@ typedef struct {
     s32 frame; /* frame counter */
     s32 savedVsyncMode;
     s32 savedPadMask;
-    s32 unk1C; /* cleared on open/reset; only read by menu_getUnusedWord1C, which nothing calls */
+    s32 result; /* cleared by menu_doOpen and menu_reset, returned by menu_getResult (no callers); nothing stores another value - the shape of a menu return value */
     u8 savedR; /* saved background colour */
     u8 savedG;
     u8 savedB;
@@ -1327,7 +1327,6 @@ extern s32 g_akaoInstrumentSets[2];
 extern s32 g_akaoRandIndex;
 extern s32 g_akaoInitDone;
 extern s32 g_akaoVoiceModeMasks[3];
-extern s32 g_akaoUnusedWord;
 extern s32 g_akaoVsyncs[2];
 extern s32 g_akaoTickPhase;
 
@@ -1914,7 +1913,7 @@ extern u8 g_chrDefaultSets[][2];
 
 u16 *db_findModelInfo(s32);
 void item_initNew(void);
-void chr_newGameStub(void);
+void chr_initNew(void);
 void party_initNewGame(void);
 s32 snd_quit(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
 void db_quit(void);
@@ -3066,7 +3065,7 @@ extern s32 g_labelConfig;
 void chr_updateStats(Character *);
 s32 chr_calcAppearance(s32, s32, u8 *);
 void ui_loadPortraits(void *, s32);
-void pad_repeatStub(void);
+void pad_onStartPressed(void);
 s32 nextfile(s32);
 s32 close(s32);
 s32 _card_load(s32);
@@ -3557,7 +3556,7 @@ static inline void chr_updateStats_inline(Character *c) {
 extern void (*g_fadeSeekFuncs[])(FadeState *, s32);
 extern s32 g_msgReady;
 extern u32 *g_penGlyphs;
-extern s32 g_msgFontUnusedParam;
+extern s32 g_msgFontGlyphCount;
 void win_closeAll(void);
 void msg_resetChoices(void);
 extern u8 *g_evtScripts; /* script data */
@@ -3762,7 +3761,7 @@ void cd_resetState(void);
 void db_init(void);
 void mbg_resetState(void);
 void menu_init(void);
-void game_resetStub(void);
+void game_onReset(void);
 
 #define ARRAY_COUNT(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -5019,7 +5018,7 @@ void fieldCalc_supportBoost(MainCalc *a);
 void fld_entry(void); /* ovl_0a */
 s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3); /* ovl_0a */
 s32 fldbg_scrollToPlayer(s32 frames, s32 scrollMode); /* ovl_0a */
-void help_drawStub(void);
+void help_onDraw(void);
 void rain_set(s32 a, u32 b);
 void wrain_set(s32 a, u32 b);
 void game_initData(void);

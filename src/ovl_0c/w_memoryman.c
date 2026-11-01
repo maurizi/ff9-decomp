@@ -613,7 +613,7 @@ void wm_initMapState(void) {
     g_worldGetoffSearching = 0;
 }
 
-void wm_memUnusedStub(void) {
+void wm_termMapState(void) {
 }
 
 void wm_drawBlock(u8 *block, s32 parity, s32 far) {

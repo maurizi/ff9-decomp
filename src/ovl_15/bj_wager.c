@@ -55,8 +55,8 @@ void bj_wagerInput(void) {
 }
 
 void bj_wagerDraw(void) {
-    bj_wagerDrawStub1();
-    bj_wagerDrawStub2();
+    bj_wagerDrawBackground();
+    bj_wagerDrawChoices();
     bj_wagerDrawCursor();
 }
 
@@ -69,10 +69,10 @@ void bj_wagerDecide(void) {
     scene_set(SCENE_CHOSEN);
 }
 
-void bj_wagerDrawStub1(void) {
+void bj_wagerDrawBackground(void) {
 }
 
-void bj_wagerDrawStub2(void) {
+void bj_wagerDrawChoices(void) {
 }
 
 void bj_wagerDrawCursor(void) {

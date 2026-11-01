@@ -986,7 +986,7 @@ void wm_chunkListCompact(void) {
     }
 }
 
-void wm_chunkUnusedStub(void) {
+void wm_chunkNop(void) {
 }
 
 /* initialise the texture list */

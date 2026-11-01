@@ -68,7 +68,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         work->scroll1E4 = 8;
         work->scrollSpeed1E8 = 8;
-        fx_0b8_unusedScroll = 2;
+        fx_0b8_scrollInitWord = 2;
         for (i = 0; i < env->targets->targetCount; i++) {
             fx_0b8_units[i].pitch1C = ex->btlfx_randRange(0x200, 0x600);
             fx_0b8_units[i].yaw1E = ex->btlfx_randRange(0x600, 0xA00);

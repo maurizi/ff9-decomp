@@ -38,7 +38,7 @@ void win_runFrame(void) {
     g_winLastVsync = now;
 }
 
-void gfx_unusedStub(void) {
+void gfx_nop(void) {
 }
 
 void gfx_setUiMode(s32 mode) {
@@ -83,7 +83,7 @@ void text_uploadPartyNames(s32 work) {
     DrawSync(0);
 }
 
-void pad_repeatStub(void) {
+void pad_onStartPressed(void) {
 }
 
 s32 win_resetClock(void) {

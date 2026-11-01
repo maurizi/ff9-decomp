@@ -252,7 +252,7 @@ void menuChocograph_loadImages(void) {
     Ovl32Image *dst = &s_menuChocographPictures[0];
     s32 i;
 
-    menuChocograph_loadImagesStub();
+    menuChocograph_onLoadImages();
     LoadImage(&s_menuChocographIconClutRect, (u32 *)s_menuChocographIconImage);
     DrawSync(0);
     LoadImage(&s_menuChocographIconRect, (u32 *)(s_menuChocographIconImage + 0x1C0));
@@ -533,7 +533,7 @@ void menuChocograph_scrollTo(s32 idx) {
     }
 }
 
-void menuChocograph_loadImagesStub(void) {
+void menuChocograph_onLoadImages(void) {
 }
 
 void menuChocograph_getPictureRects(s32 i, RECT *a, RECT *b) {

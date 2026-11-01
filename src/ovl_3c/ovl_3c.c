@@ -141,7 +141,7 @@ void shop_update(void) {
     }
     shop_inputMenu();
     shop_drawMenuAll();
-    shop_updateStub();
+    shop_onUpdate();
 }
 
 void shop_exit(void) {
@@ -160,7 +160,7 @@ void shop_drawMenuAll(void) {
     shop_drawMenuCursor();
 }
 
-void shop_updateStub(void) {
+void shop_onUpdate(void) {
 }
 
 void shop_drawMenuCursor(void) {
@@ -492,7 +492,7 @@ void shopBuy_openQuantity(void) {
 
 void shopBuy_update(void) {
     if (g_padRepeat & 8) {
-        pad_repeatStub();
+        pad_onStartPressed();
     }
     shopBuy_input();
     shopBuy_draw();
