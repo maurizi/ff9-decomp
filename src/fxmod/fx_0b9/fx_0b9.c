@@ -71,13 +71,13 @@ s32 fx_0b9_op81(s32 mode, Fx0b9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = 0x18;
     } else if (mode == 1) {
-        s32 n = *args;
-        work->unit14 = n;
+        s32 unit = *args;
+        work->unit14 = unit;
         fx_0b9_env = env;
-        if (n >= env->targets->targetCount) {
+        if (unit >= env->targets->targetCount) {
             return 1;
         }
-        ex->btlfx_getUnitPos(n, (s16 *)&work->pos4);
+        ex->btlfx_getUnitPos(unit, (s16 *)&work->pos4);
         work->pos4.vy -= 0xC8;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4);
         if (work->emit0 != NULL) {

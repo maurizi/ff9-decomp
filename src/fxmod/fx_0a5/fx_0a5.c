@@ -4,7 +4,7 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 t;
-    s32 u;
+    s32 ratio;
 
     if (mode == 0) {
         *args = 0x30;
@@ -46,11 +46,11 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x19) {
             t = (frame << 12) / 30;
-            u = 0x1000;
+            ratio = 0x1000;
             if (t <= 0x1000) {
-                u = t;
+                ratio = t;
             }
-            ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos20, u, (s16 *)&work->pos28);
+            ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos20, ratio, (s16 *)&work->pos28);
             if (work->emit0 != NULL) {
                 if (work->emit0->state == BTLFX_EMIT_DONE) {
                     work->emit0 = NULL;

@@ -2,8 +2,8 @@
 
 s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR a;
-    SVECTOR b;
+    SVECTOR pos0;
+    SVECTOR pos1;
     Pool6CEntry *emitter;
     s32 frame;
     s32 t;
@@ -35,10 +35,10 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->btlfx_getUnitBonePos(0x10, fx_0b0_bones[0], (u16 *)&work->pos1C);
             ex->btlfx_getUnitBonePos(0x10, fx_0b0_bones[1], (u16 *)&work->pos24);
-            ex->btlfx_lerpVec((s16 *)&work->pos1C, (s16 *)&work->pos2C, t, (s16 *)&a);
-            ex->btlfx_lerpVec((s16 *)&work->pos24, (s16 *)&work->pos34, t, (s16 *)&b);
+            ex->btlfx_lerpVec((s16 *)&work->pos1C, (s16 *)&work->pos2C, t, (s16 *)&pos0);
+            ex->btlfx_lerpVec((s16 *)&work->pos24, (s16 *)&work->pos34, t, (s16 *)&pos1);
             if (frame == 0) {
-                BTLFX_COPY_SVEC(&work->pos3C, &a);
+                BTLFX_COPY_SVEC(&work->pos3C, &pos0);
                 work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos3C);
                 if (work->emit4 != NULL) {
                     work->emit4->trails = (s32)fx_0b0_trails;
@@ -48,7 +48,7 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->emit4 != NULL) {
                     work->emit4->otZ = 0x18;
                 }
-                BTLFX_COPY_SVEC(&work->pos44, &b);
+                BTLFX_COPY_SVEC(&work->pos44, &pos1);
                 work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos44);
                 if (work->emit8 != NULL) {
                     work->emit8->trails = (s32)fx_0b0_trails2;
@@ -76,11 +76,11 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->emit4 != NULL && work->emit4->state == BTLFX_EMIT_DONE) {
                     work->emit4 = NULL;
                 }
-                ex->btlfx_moveEmitterTo((s32)work->emit4, (s32)&a);
+                ex->btlfx_moveEmitterTo((s32)work->emit4, (s32)&pos0);
                 if (work->emit8 != NULL && work->emit8->state == BTLFX_EMIT_DONE) {
                     work->emit8 = NULL;
                 }
-                ex->btlfx_moveEmitterTo((s32)work->emit8, (s32)&b);
+                ex->btlfx_moveEmitterTo((s32)work->emit8, (s32)&pos1);
             }
             if (frame == 0xE) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->posC);

@@ -31,9 +31,9 @@ s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0a9Work83 *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR zero;
     SVECTOR *pt;
-    s32 c;
+    s32 fade;
 
     if (mode == 1) {
         part->drag12 = ex->btlfx_randCentered(0x20) + 0xE00;
@@ -41,18 +41,18 @@ static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk8
     } else {
         pt = part->point18;
         pt->pad = 0x18;
-        c = ex->math_cos(frame << 7);
-        ((s32 *)&v)[0] = 0;
-        ((s32 *)&v)[1] = 0;
-        ex->btlfx_stepModuleParticle((Pool6CEntry *)part, 0, &v, pt);
+        fade = ex->math_cos(frame << 7);
+        ((s32 *)&zero)[0] = 0;
+        ((s32 *)&zero)[1] = 0;
+        ex->btlfx_stepModuleParticle((Pool6CEntry *)part, 0, &zero, pt);
         if (part->fromEnd16 == 0) {
             ((Fx0a9Bolt *)(part->point18 - 2))->lastSlot0 = ((Fx0a9Bolt *)(part->point18 - 2))->count2 = 0xA;
             ((Fx0a9Bolt *)(part->point18 - 2))->head1 = 0;
             if (part->kind17 == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 1), 0, NULL, 4, 0x1000, c, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 1), 0, NULL, 4, 0x1000, fade, 1,
                                   (u8 *)part->point18 - 4, 0);
             } else {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, 4, 0x1000, c, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, 4, 0x1000, fade, 1,
                                   (u8 *)part->point18 - 4, 2);
             }
         }
@@ -115,7 +115,7 @@ static void fxm_spawnBolt(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
 
 s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR target;
     s32 frame;
     s32 i;
 
@@ -135,11 +135,11 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
         if (frame < 0x18) {
             for (i = 0; i < 2; i++) {
-                BTLFX_COPY_SVEC(&v, &work->pos0);
-                v.vx += ex->btlfx_randCentered(0x180);
-                v.vy += ex->btlfx_randCentered(0x180);
-                v.vz += ex->btlfx_randCentered(0x180);
-                fxm_spawnBolt(entry, &work->pos8, &v);
+                BTLFX_COPY_SVEC(&target, &work->pos0);
+                target.vx += ex->btlfx_randCentered(0x180);
+                target.vy += ex->btlfx_randCentered(0x180);
+                target.vz += ex->btlfx_randCentered(0x180);
+                fxm_spawnBolt(entry, &work->pos8, &target);
             }
         }
         env->otZ = 0x40;

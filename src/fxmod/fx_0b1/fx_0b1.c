@@ -108,20 +108,20 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     CVECTOR col;
     SVECTOR rot;
     VECTOR scale;
-    SVECTOR *p;
-    Pool6CEntry *e;
-    Pool6CEntry *e2;
-    Pool6CEntry *e3;
-    SVECTOR *q;
+    SVECTOR *pt0;
+    Pool6CEntry *emit2;
+    Pool6CEntry *emit3;
+    Pool6CEntry *emit4;
+    SVECTOR *pt1;
     Fx0b1Trail *tr;
     Fx0b1Trail *tr2;
     s32 frame;
-    s32 a;
-    s32 c;
-    s32 y;
+    s32 alpha;
+    s32 lineWidth;
+    s32 topY;
     s32 i;
-    u8 n = 0x15;
-    s32 t;
+    u8 count = 0x15;
+    s32 bright;
 
     if (mode == 0) {
         *args = 0;
@@ -181,19 +181,19 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             break;
         case 0x40:
             ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0x11, (u16 *)&fx_0b1_emitPos2);
-            fx_0b1_emitter2 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9), (s32)&fx_0b1_emitPos2);
-            if (e != NULL) {
-                e->trails = (s32)fx_0b1_trails;
-                e->trailSlots = 0x28;
-                e->trailStride = 0xAC;
-                e->otZ = 0x50;
+            fx_0b1_emitter2 = emit2 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9), (s32)&fx_0b1_emitPos2);
+            if (emit2 != NULL) {
+                emit2->trails = (s32)fx_0b1_trails;
+                emit2->trailSlots = 0x28;
+                emit2->trailStride = 0xAC;
+                emit2->otZ = 0x50;
             }
             break;
         case 0x48:
             ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0x11, (u16 *)&fx_0b1_emitStartPos3);
-            fx_0b1_emitter3 = e2 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&fx_0b1_emitStartPos3);
-            if (e2 != NULL) {
-                e2->otZ = 0x40;
+            fx_0b1_emitter3 = emit3 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&fx_0b1_emitStartPos3);
+            if (emit3 != NULL) {
+                emit3->otZ = 0x40;
             }
             break;
         case 0x67:
@@ -203,9 +203,9 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->btlfx_stopEmitter(fx_0b1_emitter2);
             ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0, (u16 *)&fx_0b1_emitPos4);
             fx_0b1_emitPos4.vy -= 0x180;
-            fx_0b1_emitter4 = e3 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1), (s32)&fx_0b1_emitPos4);
-            if (e3 != NULL) {
-                e3->otZ = -0x80;
+            fx_0b1_emitter4 = emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1), (s32)&fx_0b1_emitPos4);
+            if (emit4 != NULL) {
+                emit4->otZ = -0x80;
             }
             fx_0b1_timers[1] = 0x10;
             ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0x11, (u16 *)&fx_0b1_emitPos5);
@@ -280,7 +280,7 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         }
         if (fx_0b1_timers[3] != 0) {
             tr = fx_0b1_beams;
-            p = tr->pts4;
+            pt0 = tr->pts4;
             tr->lastSlot0 = tr->count2 = 0x14;
             tr->head1 = 0;
             tr2 = tr + 1;
@@ -289,44 +289,44 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             do {
                 /* empty: the original has a block boundary here (an emptied macro?) */
             } while (0);
-            q = tr[1].pts4;
+            pt1 = tr[1].pts4;
             if (fx_0b1_timers[2] != 0) {
                 fx_0b1_timers[2]--;
-                y = fx_0b1_emitPos5.vy - fxm_easeLerp(1, 8, fx_0b1_timers[2], 0, 0x1800);
+                topY = fx_0b1_emitPos5.vy - fxm_easeLerp(1, 8, fx_0b1_timers[2], 0, 0x1800);
             } else {
-                y = fx_0b1_emitPos5.vy - 0x1800;
+                topY = fx_0b1_emitPos5.vy - 0x1800;
             }
             if (fx_0b1_timers[4] != 0) {
                 fx_0b1_timers[4]--;
                 if (fx_0b1_timers[4] == 0) {
                     fx_0b1_timers[3] = 0;
                 }
-                c = fx_0b1_timers[4] << 4;
-                a = fx_0b1_timers[4] << 10;
+                lineWidth = fx_0b1_timers[4] << 4;
+                alpha = fx_0b1_timers[4] << 10;
             } else {
-                c = 0x40;
-                a = 0x1000;
+                lineWidth = 0x40;
+                alpha = 0x1000;
             }
-            for (i = 0; i < n; i++) {
-                p->vy = q->vy = ex->btlfx_lerpRatio(fx_0b1_emitPos5.vy, y, i, 0x15);
-                p->vx = q->vx = fx_0b1_emitPos5.vx;
-                p->vz = q->vz = fx_0b1_emitPos5.vz;
-                p->pad = c;
-                q->pad = c * 2;
-                p++;
-                q++;
+            for (i = 0; i < count; i++) {
+                pt0->vy = pt1->vy = ex->btlfx_lerpRatio(fx_0b1_emitPos5.vy, topY, i, 0x15);
+                pt0->vx = pt1->vx = fx_0b1_emitPos5.vx;
+                pt0->vz = pt1->vz = fx_0b1_emitPos5.vz;
+                pt0->pad = lineWidth;
+                pt1->pad = lineWidth * 2;
+                pt0++;
+                pt1++;
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x10), 0, NULL, frame, 0x1000, a, 1, (u8 *)&fx_0b1_beams[0], 0);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x10), 0, NULL, frame, 0x1000, a, 1, (u8 *)&fx_0b1_beams[1], 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x10), 0, NULL, frame, 0x1000, alpha, 1, (u8 *)&fx_0b1_beams[0], 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x10), 0, NULL, frame, 0x1000, alpha, 1, (u8 *)&fx_0b1_beams[1], 0);
         }
         if (fx_0b1_timers[5] != 0) {
             fx_0b1_timers[5]--;
             if (fx_0b1_timers[5] >= 9) {
-                t = (0x10 - fx_0b1_timers[5]) << 4;
+                bright = (0x10 - fx_0b1_timers[5]) << 4;
             } else {
-                t = fx_0b1_timers[5] << 4;
+                bright = fx_0b1_timers[5] << 4;
             }
-            col.r = col.g = col.b = t;
+            col.r = col.g = col.b = bright;
             scale.vx = 0x1000;
             scale.vy = 0x1000;
             scale.vz = 0x1000;
@@ -345,7 +345,7 @@ s32 fx_0b1_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
-    s32 c;
+    s32 bright;
 
     if (mode == 0) {
         *args = 0;
@@ -385,12 +385,12 @@ s32 fx_0b1_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                 for (i = 0; i < env->targets->targetCount; i++) {
                     ex->Hi_DrawEffModel(&fx_0b1_modelRot, &fx_0b1_modelPos[i], (s32)&fx_0b1_modelScale, fx_0b1_models[i]);
                     if (fx_0b1_fadeTimer >= 0x19) {
-                        c = (0x18 - fx_0b1_fadeTimer) * 0x10;
-                        ex->Hi_ModifyEffModelRGB(fx_0b1_models[i], c, c, c);
+                        bright = (0x18 - fx_0b1_fadeTimer) * 0x10;
+                        ex->Hi_ModifyEffModelRGB(fx_0b1_models[i], bright, bright, bright);
                     }
                     if (fx_0b1_fadeTimer < 8) {
-                        c = (fx_0b1_fadeTimer - 8) * 0x10;
-                        ex->Hi_ModifyEffModelRGB(fx_0b1_models[i], c, c, c);
+                        bright = (fx_0b1_fadeTimer - 8) * 0x10;
+                        ex->Hi_ModifyEffModelRGB(fx_0b1_models[i], bright, bright, bright);
                     }
                 }
             } while (0);
