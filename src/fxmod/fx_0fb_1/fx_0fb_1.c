@@ -226,7 +226,7 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
                                          (ex->math_cos(ang) >> 5) - 0x80);
             }
             env->otZ = 0;
-            if (it->emit20->state == BTLFX_EMIT_DONE) {
+            if (PSX_NULLABLE(it->emit20)->state == BTLFX_EMIT_DONE) {
                 return 1;
             }
             break;
@@ -298,7 +298,7 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
                                          (ex->math_cos(ang) >> 5) - 0x80);
             }
             env->otZ = 0;
-            if (it->emit20->state == BTLFX_EMIT_DONE) {
+            if (PSX_NULLABLE(it->emit20)->state == BTLFX_EMIT_DONE) {
                 return 1;
             }
             break;

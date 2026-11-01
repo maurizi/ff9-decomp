@@ -1234,8 +1234,8 @@ s32 fld_enableRain(s32 kind, s32 variant, s32 enable) {
                 }
                 if (preload_overlaps(start, 0x5000) != 0) {
                     /* preload_waitCurrent returns NULL when no preload is in flight (seen in d4_f2928), so the PS1 reads fileId from low
-                     * RAM here. Harmless on the PS1; a native port must check for NULL (ff9-ds F37). */
-                    preload_remove(preload_waitCurrent()->fileId);
+                     * RAM here; a port guards it via PSX_NULLABLE (ff9-ds F37). */
+                    preload_remove(PSX_NULLABLE(preload_waitCurrent())->fileId);
                 }
                 if (g_gameState->gameData->ctx.field->area->scene->heapTop != 0) {
                     start = g_gameState->gameData->ctx.field->area->scene->heapTop;

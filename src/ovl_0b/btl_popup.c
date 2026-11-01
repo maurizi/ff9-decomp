@@ -86,7 +86,7 @@ BtlPopup *btl_newPopup(BtlUnit *owner) {
     popup->unit = owner;
     popup->frame = 0;
     popup->info.w = 0;
-    bone = &owner->model->bones[owner->baseBone];
+    bone = &PSX_NULLABLE(owner->model->bones)[owner->baseBone];
     popup->x = bone->tx;
     popup->y = bone->ty - 4;
     popup->z = bone->tz;

@@ -870,7 +870,7 @@ void wm_initDiscImage(void) {
             g_worldImageNames[i] = g_worldImageNamesDisc1[i];
         }
         printf("Read CD Image [Disc-1]\n");
-        g_worldImageSectors[0] = file_find(DIR_WORLD_IMAGES, 0x3F3)->sector + g_gameState->imgSector;
+        g_worldImageSectors[0] = PSX_NULLABLE(file_find(DIR_WORLD_IMAGES, 0x3F3))->sector + g_gameState->imgSector;
         g_worldImageSectors[3] = file_find(DIR_WORLD_IMAGES, 0x3FD)->sector + g_gameState->imgSector;
         g_worldImageSectors[4] = file_find(DIR_WORLD_IMAGES, 0x407)->sector + g_gameState->imgSector;
     } else {
@@ -878,7 +878,7 @@ void wm_initDiscImage(void) {
             g_worldImageNames[i] = g_worldImageNamesDisc4[i];
         }
         printf("Read CD Image [Disc-4]\n");
-        g_worldImageSectors[0] = file_find(DIR_WORLD_IMAGES, 0x3F6)->sector + g_gameState->imgSector;
+        g_worldImageSectors[0] = PSX_NULLABLE(file_find(DIR_WORLD_IMAGES, 0x3F6))->sector + g_gameState->imgSector;
         g_worldImageSectors[3] = file_find(DIR_WORLD_IMAGES, 0x400)->sector + g_gameState->imgSector;
         g_worldImageSectors[4] = file_find(DIR_WORLD_IMAGES, 0x40A)->sector + g_gameState->imgSector;
     }

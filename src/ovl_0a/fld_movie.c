@@ -202,7 +202,7 @@ s32 fld_setupActorModel(s32 modelId, void *actor) {
     fldmdl_buildPackets(fslot->model, (WmTexInfo *)tex, (s16(*)[2])uv);
     g_gameState->gameData->ctx.field->area->scene->heapTop += sum;
     fld_trimModelCache();
-    table = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
+    table = PSX_NULLABLE(db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO));
     entry = table->entries;
     for (i = table->count - 1; i >= 0; i--) {
         if (entry->modelId == (u16)modelId) {
@@ -247,7 +247,7 @@ s32 fld_depFindByLink(s32 link) {
 }
 
 s32 fld_getModelAnimId(s32 modelId) {
-    WmAnimTable *table = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
+    WmAnimTable *table = PSX_NULLABLE(db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO));
     s32 i;
     WmAnimTableEntry *entry;
 
@@ -262,7 +262,7 @@ s32 fld_getModelAnimId(s32 modelId) {
 
 /* look up the three tables of an area entry */
 s32 fld_getModelTables(s32 modelId, s32 **outTex, s32 **outUv, s32 **outSpr) {
-    WmAnimTable *table = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
+    WmAnimTable *table = PSX_NULLABLE(db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO));
     WmAnimTableEntry *entry = table->entries;
     s32 i;
 
@@ -493,10 +493,10 @@ void fld_drawModels(void) {
         slot = list[i];
         if (slot != NULL && !(slot->flags & FLD_OBJ_NO_IDLE_TEXANIM)) {
             mdl = slot->model;
-            if (mdl->texAnims->count >= 2 && fld_isModelTexAnimActive(mdl) == 0) {
-                mdl->texAnims->anims[2].flags |= TEXANIM_ACTIVE;
-                mdl->texAnims->anims[2].pos = 0;
-                mdl->texAnims->anims[2].lastFrame = 0x1000;
+            if (PSX_NULLABLE(mdl->texAnims)->count >= 2 && fld_isModelTexAnimActive(mdl) == 0) {
+                PSX_NULLABLE(mdl->texAnims)->anims[2].flags |= TEXANIM_ACTIVE;
+                PSX_NULLABLE(mdl->texAnims)->anims[2].pos = 0;
+                PSX_NULLABLE(mdl->texAnims)->anims[2].lastFrame = 0x1000;
             }
         }
     }
@@ -1484,8 +1484,8 @@ void fld_updateEncounter(void) {
                 preload_setVramRect(entry, rect.x, rect.y, rect.w, rect.h);
             } else {
                 /* preload_waitCurrent returns NULL when no preload is in flight (seen in d4_f2928), so the PS1 reads fileId from low
-                 * RAM here. Harmless on the PS1; a native port must check for NULL (ff9-ds F37). */
-                preload_remove(preload_waitCurrent()->fileId);
+                 * RAM here; a port guards it via PSX_NULLABLE (ff9-ds F37). */
+                preload_remove(PSX_NULLABLE(preload_waitCurrent())->fileId);
             }
             preload_discardRange((s32)g_loadAreaEnd, 0x156F00);
             fld_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_1, 0, SND_PAN_CENTER, SND_VOL_MAX);

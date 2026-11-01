@@ -31,7 +31,7 @@
 
 /* A pointer the original code can dereference while it is NULL (it then reads/writes low RAM, harmless on the PS1).
  * The identity here, so the code compiles as in the original; a port redefines it to guard or redirect the access
- * (ff9-ds: PSX_NZ). Used where the dereference sits in a header the port can't patch; .c sites carry a comment. */
+ * (ff9-ds: PSX_NZ). Wraps every known NULL-read site, at the dereference. */
 #ifndef PSX_NULLABLE
 #define PSX_NULLABLE(p) (p)
 #endif

@@ -45,9 +45,9 @@ void btl_updateUnitModel(BtlUnit *unit, s32 *ot) {
         unit->rot[0] = body->rot[0];
         unit->rot[1] = body->rot[1];
         unit->rot[2] = body->rot[2];
-        unit->home->pos[0] = unit->model->bones[unit->baseBone].tx << 16;
+        unit->home->pos[0] = PSX_NULLABLE(unit->model->bones)[unit->baseBone].tx << 16;
         unit->home->pos[1] = 0;
-        unit->home->pos[2] = unit->model->bones[unit->baseBone].tz << 16;
+        unit->home->pos[2] = PSX_NULLABLE(unit->model->bones)[unit->baseBone].tz << 16;
         unit->pos[0] = unit->home->pos[0];
         unit->pos[1] = unit->home->pos[1];
         unit->pos[2] = unit->home->pos[2];
@@ -145,7 +145,7 @@ s32 btl_setIdleMotion(BtlUnit *unit) {
     BtlModel *model;
 
     if (unit->status & BTL_STATUS_KO) {
-        if ((unit->flags & (BTL_UNIT_PARTY | BTL_UNIT_HIT_MOTION)) == BTL_UNIT_PARTY && unit != cmd->caster && unit->koState == BTL_KO_NONE) {
+        if ((unit->flags & (BTL_UNIT_PARTY | BTL_UNIT_HIT_MOTION)) == BTL_UNIT_PARTY && unit != PSX_NULLABLE(cmd)->caster && unit->koState == BTL_KO_NONE) {
             cur = (s32)unit->model->motion;
             if (cur != unit->motions[BTL_MOTION_KO] && cur != unit->motions[BTL_MOTION_READY]) {
                 unit->model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
@@ -154,11 +154,11 @@ s32 btl_setIdleMotion(BtlUnit *unit) {
         return 0;
     }
     if ((unit->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || ((unit->flags >> BTL_UNIT_HIT_MOTION_BIT) & 1)
-        || ((unit->flags & BTL_UNIT_PARTY) && gd->characters[BTL_UNIT_INDEX(unit->flags)].info.b.kind == CHR_KIND_VIVI && cmd->cmdNo == BTL_CMD_SWD_MAG)) {
+        || ((unit->flags & BTL_UNIT_PARTY) && gd->characters[BTL_UNIT_INDEX(unit->flags)].info.b.kind == CHR_KIND_VIVI && PSX_NULLABLE(cmd)->cmdNo == BTL_CMD_SWD_MAG)) {
         return 0;
     }
     {
-        if (unit == cmd->caster && (u32)(cmd->cmdNo - BTL_CMD_ENEMY_REACT) >= 7) {
+        if (unit == PSX_NULLABLE(cmd)->caster && (u32)(PSX_NULLABLE(cmd)->cmdNo - BTL_CMD_ENEMY_REACT) >= 7) {
             cur = (s32)unit->model->motion;
             if (cur == unit->motions[BTL_MOTION_IDLE_TO_READY] || cur == unit->motions[BTL_MOTION_WEAK_TO_READY]) {
                 unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_READY];

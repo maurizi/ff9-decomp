@@ -372,9 +372,9 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
     s32 hit;
     s32 moving;
 
-    actor = g_evtActor;
+    actor = PSX_NULLABLE(g_evtActor);
     /* g_evtActor is NULL when a move op runs in a script that has no actor (seen in d1_f0801); the PS1 then reads and
-     * writes these fields in low RAM. Harmless on the PS1; a native port must check for NULL (ff9-ds F39). */
+     * writes these fields in low RAM; a port guards it via PSX_NULLABLE (ff9-ds F39). */
     speed = actor->speed;
     dx = x - actor->pos.vx;
     dz = z - actor->pos.vz;
@@ -705,16 +705,16 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
         case TEXT_WIN_BOTTOM_LEFT:
         case TEXT_WIN_TOP_RIGHT:
         case TEXT_WIN_TOP_LEFT:
-            evt_placeBalloon(obj, w, w->anchor & 3, 0);
+            evt_placeBalloon(PSX_NULLABLE(obj), w, w->anchor & 3, 0);
             break;
         case TEXT_WIN_FIXED_BOTTOM_RIGHT:
         case TEXT_WIN_FIXED_BOTTOM_LEFT:
         case TEXT_WIN_FIXED_TOP_RIGHT:
         case TEXT_WIN_FIXED_TOP_LEFT:
-            evt_placeBalloon(obj, w, w->anchor & 3, 1);
+            evt_placeBalloon(PSX_NULLABLE(obj), w, w->anchor & 3, 1);
             break;
         default:
-            evt_placeBalloon(obj, w, -1, 0);
+            evt_placeBalloon(PSX_NULLABLE(obj), w, -1, 0);
             break;
         }
     } else {
@@ -1131,7 +1131,7 @@ s32 evt_execInstr(void) {
         po = evt_getObjectArg();
         g_evtActor->windowId = evt_getArg8_inline();
         operand2 = evt_getArg8_inline();
-        evt_execInstr_window(po, operand2, g_evtActor->windowId);
+        evt_execInstr_window(PSX_NULLABLE(po), operand2, g_evtActor->windowId);
         operand1 = evt_getArg16_inline();
         msg_open(operand1, g_evtActor->windowId, evt_getMsgLayout(po, operand1, operand2), operand2);
         g_evtActor->wait = EVT_WAIT_WINDOW;
@@ -1140,7 +1140,7 @@ s32 evt_execInstr(void) {
         po = evt_getObjectArg();
         g_evtActor->windowId = evt_getArg8_inline();
         operand2 = evt_getArg8_inline();
-        evt_execInstr_window(po, operand2, g_evtActor->windowId);
+        evt_execInstr_window(PSX_NULLABLE(po), operand2, g_evtActor->windowId);
         operand1 = evt_getArg16_inline();
         msg_open(operand1, g_evtActor->windowId, evt_getMsgLayout(po, operand1, operand2), operand2);
         return 0;
@@ -1465,16 +1465,16 @@ s32 evt_execInstr(void) {
             mdl->scaleZ = (s8)operand2 << 6;
             mdl->flags |= MDL_SCALED;
         }
-        po->scale = operand1;
+        PSX_NULLABLE(po)->scale = operand1;
         return 0;
     case EVT_OP_TEX_ANIM_PLAY:
         argObj = evt_getObjectArg();
         mdl = evt_getObjectModelData_inline(argObj);
         operand1 = evt_getArg8_inline();
         if (mdl != NULL) {
-            mdl->texAnims->unk0[operand1].flags |= TEXANIM_ACTIVE;
-            mdl->texAnims->unk0[operand1].pos = 0;
-            mdl->texAnims->unk0[operand1].lastFrame = 0x1000;
+            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].flags |= TEXANIM_ACTIVE;
+            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].pos = 0;
+            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].lastFrame = 0x1000;
         }
         return 0;
     case EVT_OP_TEX_ANIM_PLAY_ONCE:
@@ -1482,9 +1482,9 @@ s32 evt_execInstr(void) {
         mdl = evt_getObjectModelData_inline(argObj);
         operand1 = evt_getArg8_inline();
         if (mdl != NULL) {
-            mdl->texAnims->unk0[operand1].flags |= TEXANIM_ACTIVE | TEXANIM_ONESHOT;
-            mdl->texAnims->unk0[operand1].pos = 0;
-            mdl->texAnims->unk0[operand1].lastFrame = 0x1000;
+            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].flags |= TEXANIM_ACTIVE | TEXANIM_ONESHOT;
+            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].pos = 0;
+            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].lastFrame = 0x1000;
         }
         return 0;
     case EVT_OP_TEX_ANIM_STOP:
@@ -1492,7 +1492,7 @@ s32 evt_execInstr(void) {
         mdl = evt_getObjectModelData_inline(argObj);
         operand1 = evt_getArg8_inline();
         if (mdl != NULL) {
-            mdl->texAnims->unk0[operand1].flags &= ~(TEXANIM_ACTIVE | TEXANIM_ONESHOT);
+            PSX_NULLABLE(mdl->texAnims)->unk0[operand1].flags &= ~(TEXANIM_ACTIVE | TEXANIM_ONESHOT);
         }
         return 0;
     case EVT_OP_MODEL_FLAGS_SET: {
@@ -2441,7 +2441,7 @@ void evt_movePlayer(EvtObject *obj) {
         obj->pos.vx += step.vx;
         obj->pos.vz += step.vz;
         hit = evt_findNearestObject(obj, 0, &dist);
-        g_evtPushable = ((hit->flags >> 4) ^ 1) & 1;
+        g_evtPushable = ((PSX_NULLABLE(hit)->flags >> 4) ^ 1) & 1;
         if (g_evtPushable == 0) {
             g_evtPushFrames = 0;
         }

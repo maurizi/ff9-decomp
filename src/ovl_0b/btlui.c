@@ -148,7 +148,7 @@ s32 btlui_isEnabled(void) {
 }
 
 s32 btlui_isTargetSelect(void) {
-    return g_btlUi->menuState == BTLUI_MENU_TARGET;
+    return PSX_NULLABLE(g_btlUi)->menuState == BTLUI_MENU_TARGET;
 }
 
 u8 btlui_isMultiTarget(void) {
@@ -1781,7 +1781,7 @@ s32 btlui_selectItem(void) {
     MenuList *list = &g_btlUi->windows[2]->list;
     UnkPair *slot = btlui_getItemListEntry(list->cursor + list->top);
     u8 ok = 0;
-    Unk8006A774 *info = &g_usableItemTableById[slot->id];
+    Unk8006A774 *info = &g_usableItemTableById[PSX_NULLABLE(slot)->id];
     s32 count;
 
     if (slot == NULL) {
@@ -2233,10 +2233,10 @@ s32 btlui_switchTargetSide(u8 newSide) {
 
     cur = BtlFindTargetCursor();
     /* cur stays NULL when no unit is both targetable and targeted (seen in d3_f1759's battle); the PS1 then reads
-     * cur->flags, and clears BTL_UNIT_TARGETED in it below, through low RAM. Harmless on the PS1; a native port must
-     * check for NULL (ff9-ds F38). */
+     * cur->flags, and clears BTL_UNIT_TARGETED in it below, through low RAM; a port guards it via
+     * PSX_NULLABLE (ff9-ds F38). */
     if (g_btlTarget.canSwitchSide != 0) {
-        if (newSide == (k = cur->flags & BTL_UNIT_PARTY)) {
+        if (newSide == (k = PSX_NULLABLE(cur)->flags & BTL_UNIT_PARTY)) {
             return 0;
         }
         side = !k;
@@ -2251,7 +2251,7 @@ s32 btlui_switchTargetSide(u8 newSide) {
             }
         }
         if (count != 0) {
-            cur->flags &= ~BTL_UNIT_TARGETED;
+            PSX_NULLABLE(cur)->flags &= ~BTL_UNIT_TARGETED;
             if (g_btlTarget.targetAll == 0) {
                 list[0]->flags |= BTL_UNIT_TARGETED;
             } else {

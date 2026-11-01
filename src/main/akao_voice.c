@@ -873,9 +873,9 @@ void akao_updateVoices(void) {
         g_akaoFlags.dirty &= ~AKAO_DIRTY_NOISE_CLOCK;
     }
     if (m2 & AKAO_DIRTY_VOICE_MODES) {
-        akao_buildVoiceModeMask((u32 *)&g_akaoVoiceModeMasks[1], g_akaoSubSeq->noiseMask, g_akaoSeq->noiseMask, g_akaoSeState.noiseMask);
-        akao_buildVoiceModeMask((u32 *)&g_akaoVoiceModeMasks[0], g_akaoSubSeq->reverbMask, g_akaoSeq->reverbMask, g_akaoSeState.reverbMask);
-        akao_buildVoiceModeMask((u32 *)&g_akaoVoiceModeMasks[2], g_akaoSubSeq->pitchModMask, g_akaoSeq->pitchModMask, g_akaoSeState.pitchModMask);
+        akao_buildVoiceModeMask((u32 *)&g_akaoVoiceModeMasks[1], PSX_NULLABLE(g_akaoSubSeq)->noiseMask, g_akaoSeq->noiseMask, g_akaoSeState.noiseMask);
+        akao_buildVoiceModeMask((u32 *)&g_akaoVoiceModeMasks[0], PSX_NULLABLE(g_akaoSubSeq)->reverbMask, g_akaoSeq->reverbMask, g_akaoSeState.reverbMask);
+        akao_buildVoiceModeMask((u32 *)&g_akaoVoiceModeMasks[2], PSX_NULLABLE(g_akaoSubSeq)->pitchModMask, g_akaoSeq->pitchModMask, g_akaoSeState.pitchModMask);
         akao_setReverbVoices(g_akaoVoiceModeMasks[0]);
         akao_setNoiseVoices(g_akaoVoiceModeMasks[1]);
         akao_setPitchModVoices(g_akaoVoiceModeMasks[2]);

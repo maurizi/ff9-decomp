@@ -711,8 +711,8 @@ s32 evt_popValue(void) {
             return evt_getBattleVar(t & 0xFF);
         }
         /* evt_resolveObjectId returns NULL for an id that names no object (world 9008 script, reached from d4_f2954/2955),
-         * and evt_getObjectProp then reads low RAM on the PS1. A native port must check for NULL (ff9-ds F37). */
-        return evt_getObjectProp(evt_resolveObjectId((t >> 8) & 0xFF), t & 0xFF);
+         * and evt_getObjectProp then reads low RAM on the PS1; a port guards it via PSX_NULLABLE (ff9-ds F37). */
+        return evt_getObjectProp(PSX_NULLABLE(evt_resolveObjectId((t >> 8) & 0xFF)), t & 0xFF);
     }
     if (tag & 2) {
         return evt_readVar(g_evtObjVars, t & 0xFFFF, tag);
@@ -1006,7 +1006,7 @@ void evt_runExpr(void) {
         case 0x60: /* angle / distance from the current object to the object at address v */
             /* v comes from opcode 0x5F (an object pointer pushed as a 26-bit immediate); see src_equiv.h. */
         case 0x61:
-            q = (EvtObject *)SCRIPT_PTR_RESTORE(evt_popValue());
+            q = PSX_NULLABLE((EvtObject *)SCRIPT_PTR_RESTORE(evt_popValue()));
             o = g_evtActor;
             if (op == 0x60) {
                 v = (s32)((u32)math_atan2(q->pos.vx - o->pos.vx, q->pos.vz - o->pos.vz) << 20) >> 24;

@@ -22,7 +22,7 @@ s32 evt_getAnimFrameCount(unused, animId)
     s32 unused;
     u16 animId;
 {
-    return ((u16 *)db_lookupRegistered(DB_GET_ADDR, animId | DB_ANIM, 0))[1];
+    return ((u16 *)PSX_NULLABLE(db_lookupRegistered(DB_GET_ADDR, animId | DB_ANIM, 0)))[1];
 }
 
 s32 evt_updateActorWalkmesh(EvtObject *obj) {

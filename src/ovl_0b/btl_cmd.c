@@ -174,7 +174,7 @@ s32 btl_partyHasSupport(s32 word, u32 bits) {
     s32 i;
     GameData *gd = g_gameState->gameData;
     for (i = 0; i < PARTY_SIZE; i++) {
-        if (gd->party[i]->supportAbilities[word] & bits) {
+        if (PSX_NULLABLE(gd->party[i])->supportAbilities[word] & bits) {
             return 1;
         }
     }
@@ -963,7 +963,7 @@ void btl_flushCmdQueue(Battle *battle) {
             if (cmd->cmdNo < BTL_CMD_TABLE_COUNT && caster != NULL && !(caster->status & BTL_STATUS_KO)) {
                 model = caster->model;
                 caster->cmdIssued = 0;
-                if ((s32)model->motion == caster->motions[BTL_MOTION_READY] && ((charIndex = BTL_UNIT_INDEX(caster->flags)) != CHR_EIKO || btl->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (btl->curCmd->cmdNo != BTL_CMD_SWD_MAG && btl->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
+                if ((s32)model->motion == caster->motions[BTL_MOTION_READY] && ((charIndex = BTL_UNIT_INDEX(caster->flags)) != CHR_EIKO || PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_SWD_MAG && PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_DBL_BLK))) {
                     model->motion = (BtlMotion *)caster->motions[32];
                     caster->obj->frame = 0;
                     caster->flags &= ~BTL_UNIT_CMD_WAITING;
@@ -994,7 +994,7 @@ void btl_clearCmdQueue(Battle *battle) {
             if (cmd->cmdNo < BTL_CMD_TABLE_COUNT && caster != NULL && !(caster->status & BTL_STATUS_KO)) {
                 model = caster->model;
                 caster->cmdIssued = 0;
-                if ((s32)model->motion == caster->motions[BTL_MOTION_READY] && ((charIndex = BTL_UNIT_INDEX(caster->flags)) != CHR_EIKO || btl->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (btl->curCmd->cmdNo != BTL_CMD_SWD_MAG && btl->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
+                if ((s32)model->motion == caster->motions[BTL_MOTION_READY] && ((charIndex = BTL_UNIT_INDEX(caster->flags)) != CHR_EIKO || PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_SWD_MAG && PSX_NULLABLE(btl->curCmd)->cmdNo != BTL_CMD_DBL_BLK))) {
                     model->motion = (BtlMotion *)caster->motions[32];
                     caster->obj->frame = 0;
                     caster->flags &= ~BTL_UNIT_CMD_WAITING;
@@ -1310,7 +1310,7 @@ void btl_projectUnitPos(BtlUnit *unit) {
     if (!((unit->flags >> BTL_UNIT_HIDDEN_BIT) & 1)) {
         gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
         gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
-        bone = &unit->model->bones[unit->baseBone];
+        bone = &PSX_NULLABLE(unit->model->bones)[unit->baseBone];
         bonePos.vx = bone->tx;
         bonePos.vy = bone->ty;
         bonePos.vz = bone->tz;
