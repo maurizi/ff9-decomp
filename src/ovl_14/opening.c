@@ -1,9 +1,9 @@
 #include "ovl_14.h"
 
 void opening_main(void) {
-    s32 n;
+    s32 pauseLeft;
 
-    n = 0;
+    pauseLeft = 0;
     opening_init();
     scene_init();
     g_openingState = g_resetCount == 0 ? OPENING_BOOT : OPENING_MOVIE;
@@ -20,7 +20,7 @@ void opening_main(void) {
             if (opening_attract(0) != 0) {
                 g_openingState = OPENING_DONE;
             } else if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
-                n = OPENING_PAUSE_FRAMES;
+                pauseLeft = OPENING_PAUSE_FRAMES;
                 g_openingState = OPENING_PAUSE1;
             } else {
                 g_openingState = OPENING_ATTRACT2;
@@ -28,7 +28,7 @@ void opening_main(void) {
             break;
         case OPENING_PAUSE1:
             VSync(0);
-            if (--n == 0) {
+            if (--pauseLeft == 0) {
                 g_openingState = OPENING_MOVIE2;
             }
             break;
@@ -43,7 +43,7 @@ void opening_main(void) {
             if (opening_attract(1) != 0) {
                 g_openingState = OPENING_DONE;
             } else if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
-                n = OPENING_PAUSE_FRAMES;
+                pauseLeft = OPENING_PAUSE_FRAMES;
                 g_openingState = OPENING_PAUSE2;
             } else {
                 g_openingState = OPENING_ATTRACT1;
@@ -51,7 +51,7 @@ void opening_main(void) {
             break;
         case OPENING_PAUSE2:
             VSync(0);
-            if (--n == 0) {
+            if (--pauseLeft == 0) {
                 g_openingState = OPENING_MOVIE;
             }
             break;
@@ -102,50 +102,50 @@ void opening_findSceneSectors(void) {
     GameState *gs = g_gameState;
     s32 mode = gs->mode;
     GameData *ctx = gs->gameData;
-    DirInfo *f;
+    DirInfo *dirs;
     s32 base;
     u8 *area;
     u8 *start;
-    SceneDirEntry *e;
+    SceneDirEntry *entry;
     s32 key;
     s32 id;
 
     if (mode == GS_MODE_FIELD || mode == GS_MODE_WORLD) {
         id = -1;
-        f = gs->dirs;
-        base = f[0].tableSector;
+        dirs = gs->dirs;
+        base = dirs[0].tableSector;
         area = g_loadAreaEnd + ((base << 11) + 0x14C700);
         if (mode == GS_MODE_FIELD) {
             key = (s16)ctx->fieldId;
-            start = area + ((f[4].tableSector - base) << 11);
-            e = (SceneDirEntry *)start + f[4].count - 1;
+            start = area + ((dirs[4].tableSector - base) << 11);
+            entry = (SceneDirEntry *)start + dirs[4].count - 1;
         } else {
             key = ctx->worldId;
-            start = area + ((f[3].tableSector - base) << 11);
-            e = (SceneDirEntry *)start + f[3].count - 1;
+            start = area + ((dirs[3].tableSector - base) << 11);
+            entry = (SceneDirEntry *)start + dirs[3].count - 1;
         }
         for (;;) {
-            if (e->id == key) {
-                id = e->link;
-                ctx->sceneSector[1] = e->sector;
-                ctx->sceneSectors[1] = e[1].sector - e->sector;
+            if (entry->id == key) {
+                id = entry->link;
+                ctx->sceneSector[1] = entry->sector;
+                ctx->sceneSectors[1] = entry[1].sector - entry->sector;
                 break;
             }
-            e--;
-            if ((u8 *)e < start) {
+            entry--;
+            if ((u8 *)entry < start) {
                 break;
             }
         }
         start = area + ((gs->dirs[2].tableSector - base) << 11);
-        e = (SceneDirEntry *)start + gs->dirs[2].count - 1;
+        entry = (SceneDirEntry *)start + gs->dirs[2].count - 1;
         for (;;) {
-            if (e->id == id) {
-                ctx->sceneSector[0] = e->sector;
-                ctx->sceneSectors[0] = e[1].sector - e->sector;
+            if (entry->id == id) {
+                ctx->sceneSector[0] = entry->sector;
+                ctx->sceneSectors[0] = entry[1].sector - entry->sector;
                 break;
             }
-            e--;
-            if ((u8 *)e < start) {
+            entry--;
+            if ((u8 *)entry < start) {
                 break;
             }
         }
