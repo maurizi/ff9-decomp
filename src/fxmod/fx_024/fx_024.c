@@ -1,6 +1,6 @@
 #include "fxmod/fx_024.h"
 
-s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     union { /* one stack area: bone matrix in mode 1, draw arguments afterwards */
@@ -11,10 +11,10 @@ s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             CVECTOR col;
         } d;
     } u;
-    MATRIX m2;
+    MATRIX boneMat;
 
     if (mode == 0) {
-        *arg4 = 0x54;
+        *args = 0x54;
     } else if (mode == 1) {
         fx_024_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos18);
@@ -26,8 +26,8 @@ s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos38.vy = -0xC8;
         ex->btlfx_getUnitBoneMatrix(0x10, 0xD, (BtlBone *)&u.m);
         ex->btlfx_matrixPointAhead(&u.m, 0x1F4, (s32)&work->pos28);
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x1D, (BtlBone *)&m2);
-        ex->btlfx_matrixPointAhead(&m2, 0x1F4, (s32)&work->pos30);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x1D, (BtlBone *)&boneMat);
+        ex->btlfx_matrixPointAhead(&boneMat, 0x1F4, (s32)&work->pos30);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos28);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos30);
         if (work->emit0 != NULL) {
@@ -55,11 +55,11 @@ s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0xD) {
-            s32 s = (frame << 7) + 0x980;
+            s32 gridScale = (frame << 7) + 0x980;
 
-            u.d.scale.vx = s;
-            u.d.scale.vy = s;
-            u.d.scale.vz = s;
+            u.d.scale.vx = gridScale;
+            u.d.scale.vy = gridScale;
+            u.d.scale.vz = gridScale;
             u.d.col.b = 0x8;
             u.d.col.g = 0x8;
             u.d.col.r = 0x8;
@@ -93,18 +93,18 @@ s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_024_op81(s32 mode, Fx024Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_024_op81(s32 mode, Fx024Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else if (mode == 1) {
-        s32 n = *arg4;
+        s32 target = *args;
 
-        work->targetC = n;
+        work->targetC = target;
         fx_024_env = env;
-        if (n >= env->targets->targetCount) {
+        if (target >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
@@ -124,8 +124,8 @@ s32 fx_024_op81(s32 mode, Fx024Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    env->state->signals[i] = v;
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value) {
+    env->state->signals[signal] = value;
 }
 
 INCLUDE_RODATA("asm/us/fx_024/nonmatchings/fx_024", fx_024_headerPtr);

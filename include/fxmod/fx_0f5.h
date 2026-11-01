@@ -22,7 +22,7 @@ typedef struct {
 
 extern BtlModelBuf fx_0f5_effModels[];
 
-static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 c, s32 tpage, s32 clut, s32 u, s32 v,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 bright, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 dr, s32 ang, s32 dang, s32 dseg, s32 abr, s32 flicker);
 
 #endif

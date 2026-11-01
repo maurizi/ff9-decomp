@@ -2,47 +2,47 @@
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_079_env);
-    s32 k = 0x20000000 / (n * n);
-    s32 r = 0;
+    s32 invSq = 0x20000000 / (n * n);
+    s32 ratio = 0;
 
     switch (curve) {
     case 0:
-        r = 0x1000 - (((0x10000000 / n) * t) >> 16);
+        ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
     case 1:
-        r = (k * (n - t) * (n - t)) >> 17;
+        ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
-        r = 0x1000 - ((k * t * t) >> 17);
+        ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
-    return ex->btlfx_lerp(from, to, r);
+    return ex->btlfx_lerp(from, to, ratio);
 }
 
 INCLUDE_RODATA("asm/us/fx_079/nonmatchings/fx_079", fx_079_headerPtr);
 
-s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR scale;
     SVECTOR pos;
     VECTOR cur;
-    VECTOR d;
+    VECTOR step;
     Fx079Strip *tr;
     Fx079Pt *pt;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 i;
     s32 frame;
     s32 j;
     s32 n = 11;
-    s32 a;
-    s32 b;
-    s32 r;
+    s32 pitch;
+    s32 yaw;
+    s32 rise;
     u8 *strip;
-    s32 w1;
-    s32 w2;
+    s32 speedMin;
+    s32 speedMax;
 
     if (mode == 0) {
-        *arg4 = 0xA8;
+        *args = 0xA8;
     } else if (mode == 1) {
         fx_079_env = env;
         fx_079_emitter = NULL;
@@ -109,9 +109,9 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timers0[7] = 0x10;
             break;
         case 40:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_079_bodyPos);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_079_bodyPos);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 44:
@@ -212,9 +212,9 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     cur.vx = fx_079_bonePos.vx << 12;
                     cur.vy = fx_079_bonePos.vy << 12;
                     cur.vz = fx_079_bonePos.vz << 12;
-                    d.vx = ((work->pos94.vx + tr->endX5C - fx_079_bonePos.vx) << 12) / n;
-                    d.vy = ((work->pos94.vy + tr->endY60 - fx_079_bonePos.vy) << 12) / n;
-                    d.vz = ((work->pos94.vz + tr->endZ64 - fx_079_bonePos.vz) << 12) / n;
+                    step.vx = ((work->pos94.vx + tr->endX5C - fx_079_bonePos.vx) << 12) / n;
+                    step.vy = ((work->pos94.vy + tr->endY60 - fx_079_bonePos.vy) << 12) / n;
+                    step.vz = ((work->pos94.vz + tr->endZ64 - fx_079_bonePos.vz) << 12) / n;
                     strip = (u8 *)tr;
                     pt = tr->pts4;
                     for (j = 0; j < n; pt++, j++) {
@@ -222,9 +222,9 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         pt->vz = cur.vz >> 12;
                         pt->vy = tr->offsetY6C[j] + (cur.vy >> 12);
                         pt->halfWidth6 = tr->timer11C << 2;
-                        cur.vx += d.vx;
-                        cur.vy += d.vy;
-                        cur.vz += d.vz;
+                        cur.vx += step.vx;
+                        cur.vy += step.vy;
+                        cur.vz += step.vz;
                         tr->offsetY6C[j] += tr->speedYC4[j];
                     }
                     if (tr->timer11C < 4) {
@@ -239,19 +239,19 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 } else if (work->timers0[0] >= 5) {
                     tr->timer11C = ex->btlfx_randRange(4, 8);
                     j = 1;
-                    a = ex->btlfx_rand() & 0xFFF;
-                    b = ex->btlfx_rand() & 0xFFF;
-                    r = (ex->math_cos(a) * work->models40[0].scaleC.vx) >> 12;
-                    tr->endY60 = r;
-                    tr->endX5C = (ex->math_sin(b) * abs(r)) >> 12;
-                    tr->endZ64 = (ex->math_cos(b) * abs(r)) >> 12;
+                    pitch = ex->btlfx_rand() & 0xFFF;
+                    yaw = ex->btlfx_rand() & 0xFFF;
+                    rise = (ex->math_cos(pitch) * work->models40[0].scaleC.vx) >> 12;
+                    tr->endY60 = rise;
+                    tr->endX5C = (ex->math_sin(yaw) * abs(rise)) >> 12;
+                    tr->endZ64 = (ex->math_cos(yaw) * abs(rise)) >> 12;
                     tr->speedYC4[0] = 0;
                     tr->offsetY6C[0] = 0;
                     for (; j < n - 1; j++) {
-                        w2 = j * 8 + 16;
-                        w1 = -w2;
+                        speedMax = j * 8 + 16;
+                        speedMin = -speedMax;
                         tr->offsetY6C[j] = ex->btlfx_randRange(-(j * 16) - 32, j * 16 + 32);
-                        tr->speedYC4[j] = ex->btlfx_randRange(w1, w2);
+                        tr->speedYC4[j] = ex->btlfx_randRange(speedMin, speedMax);
                     }
                     tr->speedYC4[j] = 0;
                     tr->offsetY6C[j] = 0;

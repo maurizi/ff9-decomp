@@ -1,62 +1,62 @@
 #include "fxmod/fx_1b4.h"
 
-s32 fx_1b4_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[0], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[1], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[2], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[3], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion4(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[4], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion5(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion5(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[5], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion6(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion6(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[6], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion7(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion7(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[7], frame, n);
 }
 
-static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(path, frame, &v);
-    v.vx += fx_1b4_pathOrigin.vx;
-    v.vy += fx_1b4_pathOrigin.vy;
-    v.vz += fx_1b4_pathOrigin.vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
+    fxm_posPathGet(path, frame, &pathPos);
+    pathPos.vx += fx_1b4_pathOrigin.vx;
+    pathPos.vy += fx_1b4_pathOrigin.vy;
+    pathPos.vz += fx_1b4_pathOrigin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
     if (frame >= frames) {
         return -1;
     }
     return 0;
 }
 
-s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
-    SVECTOR *v;
+    Pool6CEntry *emitter;
+    SVECTOR *pathPos;
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x94;
+        *args = 0x94;
     } else if (mode == 1) {
         work->pos44.vx = env->targets->centerX;
         work->pos44.vy = env->targets->centerY;
@@ -76,10 +76,10 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 8; i++) {
                 fxm_posPathInit(&fx_1b4_posPath[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_1b4_pathFileIds[i]));
                 fxm_posPathGet(&fx_1b4_posPath[i], 0, &work->pos4C[i]);
-                v = (SVECTOR *)((u8 *)work + i * 8 + 0x4C);
-                v->vx += work->pos44.vx;
-                v->vy += work->pos44.vy;
-                v->vz += work->pos44.vz;
+                pathPos = (SVECTOR *)((u8 *)work + i * 8 + 0x4C);
+                pathPos->vx += work->pos44.vx;
+                pathPos->vy += work->pos44.vy;
+                pathPos->vz += work->pos44.vz;
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1b4_emitFileIds0[i]), (s32)&work->pos4C[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->trails = (s32)fx_1b4_op80Trails0[i];
@@ -111,7 +111,7 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     VECTOR scale;
@@ -122,10 +122,10 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     DrMode2Words *dm;
     DrMode2Words *dm2;
     s32 frame;
-    s32 t;
+    s32 elapsed;
 
     if (mode == 0) {
-        *arg4 = 0x18;
+        *args = 0x18;
     } else if (mode == 1) {
         work->pos10.vx = env->targets->centerX;
         work->pos10.vy = env->targets->centerY;
@@ -180,15 +180,15 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
         }
-        t = frame - 0x5B;
-        if ((u32)t < 0xF) {
+        elapsed = frame - 0x5B;
+        if ((u32)elapsed < 0xF) {
             dm2 = (DrMode2Words *)env->prim;
             env->prim += sizeof(DrMode2Words);
             setlen(dm2, 2);
             dm2->code[0] = 0xE6000001;
             dm2->code[1] = 0;
             addPrim(&env->ot[1], dm2);
-            scale2.vz = scale2.vy = scale2.vx = (t << 7) + 0x1000;
+            scale2.vz = scale2.vy = scale2.vx = (elapsed << 7) + 0x1000;
             col2.r = col2.g = col2.b = 0x28;
             rot2.vx = 0;
             rot2.vy = 0;
@@ -201,12 +201,12 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1b4_op82(s32 mode, Fx1b4Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1b4_op82(s32 mode, Fx1b4Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x24;
+        *args = 0x24;
     } else if (mode == 1) {
         work->pos1C.vx = env->targets->centerX;
         work->pos1C.vy = env->targets->centerY;
@@ -249,12 +249,12 @@ s32 fx_1b4_op82(s32 mode, Fx1b4Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1b4_op83(s32 mode, Fx1b4Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1b4_op83(s32 mode, Fx1b4Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
         work->pos4.vx = env->targets->centerX;
         work->pos4.vy = env->targets->centerY;
@@ -283,17 +283,17 @@ static void fxm_posPathInit(Fx1b4Path *path, u16 *data) {
 static s32 fxm_posPathGet(Fx1b4Path *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx1b4Point *p;
+    Fx1b4Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 

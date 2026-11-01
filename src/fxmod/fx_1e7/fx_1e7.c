@@ -1,87 +1,87 @@
 #include "fxmod/fx_1e7.h"
 
-static s32 fx_1e7_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_1e7_op80ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1e7_posPath0[0], frame, n);
 }
 
-static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1e7_posPath0[1], frame, n);
 }
 
-static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames) {
+static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1e7_env);
     MATRIX m;
-    VECTOR o;
-    SVECTOR v;
+    VECTOR world;
+    SVECTOR pathPos;
 
-    fxm_posPathGet(path, frame * 4, &v);
+    fxm_posPathGet(path, frame * 4, &pathPos);
     if (path == fx_1e7_posPath0) {
-        v.vx += 0x50;
+        pathPos.vx += 0x50;
     }
     ex->math_rotMatrixYXZ(&fx_1e7_op80PathRot, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
-    gte_ldv0(&v);
+    gte_ldv0(&pathPos);
     gte_rtv0tr();
-    gte_stlvnl(&o);
-    o.vx += fx_1e7_op80Origin.vx;
-    o.vy += fx_1e7_op80Origin.vy;
-    o.vz += fx_1e7_op80Origin.vz;
-    pos->vx = o.vx;
-    pos->vy = o.vy;
-    pos->vz = o.vz;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    gte_stlvnl(&world);
+    world.vx += fx_1e7_op80Origin.vx;
+    world.vy += fx_1e7_op80Origin.vy;
+    world.vz += fx_1e7_op80Origin.vz;
+    pos->vx = world.vx;
+    pos->vy = world.vy;
+    pos->vz = world.vz;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint0(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[0], i);
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint1(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[1], i);
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint2(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[2], i);
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint3(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[3], i);
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint4(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[4], i);
     return 0;
 }
 
 void fx_1e7_getSpawnPos(SVECTOR *out, Fx1e7Path *path, s32 t) {
-    SVECTOR v;
+    SVECTOR pathPos;
 
-    fxm_posPathGet(path, t, &v);
-    v.vx += fx_1e7_op81Origin.vx;
-    v.vy += fx_1e7_op81Origin.vy;
-    v.vz += fx_1e7_op81Origin.vz;
-    out->vx = v.vx;
-    out->vy = v.vy;
-    out->vz = v.vz;
+    fxm_posPathGet(path, t, &pathPos);
+    pathPos.vx += fx_1e7_op81Origin.vx;
+    pathPos.vy += fx_1e7_op81Origin.vy;
+    pathPos.vz += fx_1e7_op81Origin.vz;
+    out->vx = pathPos.vx;
+    out->vy = pathPos.vy;
+    out->vz = pathPos.vz;
 }
 
-s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x14;
+        *args = 0x14;
     } else if (mode == 1) {
         fx_1e7_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -133,13 +133,13 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x38;
+        *args = 0x38;
     } else if (mode == 1) {
         fx_1e7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);
@@ -193,17 +193,17 @@ static void fxm_posPathInit(Fx1e7Path *path, u16 *data) {
 static s32 fxm_posPathGet(Fx1e7Path *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx1e7Point *p;
+    Fx1e7Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
@@ -217,14 +217,14 @@ static void fxm_startUnitMotion(s32 unit, s32 motion) {
 static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1e7_env);
 
-    s32 r;
+    s32 done;
 
     if (ex->btlfx_isUnitActive(unit)) {
-        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+        done = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    return r;
+    return done;
 }
 
 static void fxm_startHitMotionIfActive(s32 unit) {
@@ -239,8 +239,8 @@ static void fxm_startHeavyHitMotionIfActive(s32 unit) {
     }
 }
 
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    env->state->signals[i] = v;
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value) {
+    env->state->signals[signal] = value;
 }
 
 INCLUDE_RODATA("asm/us/fx_1e7/nonmatchings/fx_1e7", fx_1e7_headerPtr);

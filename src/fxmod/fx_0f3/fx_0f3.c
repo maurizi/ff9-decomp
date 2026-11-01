@@ -1,18 +1,18 @@
 #include "fxmod/fx_0f3.h"
 
-s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    Pool6CEntry *p;
+    SVECTOR headPos;
+    Pool6CEntry *emitter;
     s32 state;
     s32 frame;
     s32 t;
-    s32 d;
+    s32 offset;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
-        work->variant4 = *arg4;
+        work->variant4 = *args;
         work->state0 = 0;
         fx_0f3_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
@@ -23,27 +23,27 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (state) {
         case 0:
             t = (frame << 12) / 12;
-            BTLFX_COPY_SVEC(&v, &work->pos8);
+            BTLFX_COPY_SVEC(&headPos, &work->pos8);
             switch (work->variant4) {
             case 0:
-                v.vy += (t - 0x800) * 2;
+                headPos.vy += (t - 0x800) * 2;
                 break;
             case 1:
-                d = t - 0x800;
-                d *= 2;
-                v.vx -= d;
-                v.vz += d;
-                v.vy -= (0x1000 - ex->math_sin(t >> 1)) * 2 / 3;
+                offset = t - 0x800;
+                offset *= 2;
+                headPos.vx -= offset;
+                headPos.vz += offset;
+                headPos.vy -= (0x1000 - ex->math_sin(t >> 1)) * 2 / 3;
                 break;
             case 2:
-                d = t - 0x800;
-                d *= 2;
-                v.vx += d;
-                v.vz += d;
-                v.vy -= (0x1000 - ex->math_sin(t >> 1)) * 2 / 3;
+                offset = t - 0x800;
+                offset *= 2;
+                headPos.vx += offset;
+                headPos.vz += offset;
+                headPos.vy -= (0x1000 - ex->math_sin(t >> 1)) * 2 / 3;
                 break;
             }
-            BTLFX_COPY_SVEC(&work->headPos10, &v);
+            BTLFX_COPY_SVEC(&work->headPos10, &headPos);
             if (frame == 0) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), (s32)&work->headPos10, 0, -1, 0, 0, 1,
                                   fx_0f3_strips[work->variant4], 0);
@@ -74,9 +74,9 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 2, 0x40, 0x40, 0x40);
             }
             if (frame == 7) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 1, 0x5D, 0x5D, 0x5D);
             }

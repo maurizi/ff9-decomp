@@ -5,7 +5,7 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value);
 
 
 typedef struct {
@@ -29,6 +29,6 @@ typedef struct {
 extern s32 fx_11e_modelsReady; /* models registered */
 extern Unk800F78A4 *fx_11e_env;
 extern BtlModelBuf fx_11e_effModels[];
-s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

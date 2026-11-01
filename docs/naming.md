@@ -13,6 +13,7 @@ so no colons in the tag):
 | `[bios A(3Fh)]` | BIOS call stub, by table and call number (psx-spx names) | `printf` |
 | `[runtime]` | observed in the running game; entry in `docs/runtime-findings.md` | |
 | `[code]` | reasoned from the code; say which functions show it | |
+| `[jp]` | the Japanese release's code or strings, `docs/jp-build.md` | `btl_loadKanjiFont`: empty in the US build, loads the battle kanji font in the JP one |
 
 The comments already in `include/*.h` were written while matching code and were never checked. Treat them
 as leads, not evidence.

@@ -40,17 +40,17 @@ extern Unk800F78A4 *fx_196_env;
 
 static void fxm_keyGetVec(Fx196Track *track, s32 t, SVECTOR *out);
 void fx_196_drawWaveMesh(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2, s32 tpage, s32 clut, s32 u, s32 v,
-                   s32 amp, s32 ph, s32 step, s32 r, s32 ang, s32 d);
+                   s32 amp, s32 ph, s32 step, s32 bulge, s32 ang, s32 dang);
 
 /* copied */
 extern Unk800F78A4 *fx_196_env;
 /* end copied */
 
 /* propagated */
-s32 fxm_sinHalfNeg(s32 a);
+s32 fxm_sinHalfNeg(s32 ang);
 
 extern s32 fx_196_nextWavePoint;
 extern SVECTOR fx_196_wavePoints[];
-static s32 fxm_nextRingPoint(SVECTOR *v);
+static s32 fxm_nextRingPoint(SVECTOR *out);
 
 #endif

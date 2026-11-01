@@ -70,21 +70,21 @@ extern Fx138Path fx_138_posPaths[6];
 extern SVECTOR fx_138_pathOrigin; /* path origin */
 extern SVECTOR fx_138_pathRot; /* path rotation */
 
-s32 fx_138_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i);
-s32 fx_138_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i);
-s32 fx_138_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i);
-s32 fx_138_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i);
-s32 fx_138_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i);
-s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 arg1, s32 i);
-void fx_138_getPathPoint(SVECTOR *out, Fx138Path *path, s32 i);
+s32 fx_138_op81SpawnPoint0(SVECTOR *out, s32 dir, s32 i);
+s32 fx_138_op81SpawnPoint1(SVECTOR *out, s32 dir, s32 i);
+s32 fx_138_op81SpawnPoint2(SVECTOR *out, s32 dir, s32 i);
+s32 fx_138_op81SpawnPoint3(SVECTOR *out, s32 dir, s32 i);
+s32 fx_138_op81SpawnPoint4(SVECTOR *out, s32 dir, s32 i);
+s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 dir, s32 i);
+void fx_138_getPathPoint(SVECTOR *out, Fx138Path *path, s32 key);
 static s32 fxm_posPathGet(Fx138Path *path, s32 i, SVECTOR *out);
-s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
+s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 static void fxm_posPathInit(Fx138Path *path, u16 *data);
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value);
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
 
 #endif

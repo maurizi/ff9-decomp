@@ -2,9 +2,9 @@
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh", btl_drawMesh);
 
-void btl_projectMesh(BtlModel *arg0, u8 arg1) {
-    MATRIX m;
-    BtlMesh *g;
+void btl_projectMesh(BtlModel *model, u8 meshIndex) {
+    MATRIX boneView;
+    BtlMesh *mesh;
     MATRIX *bone;
     SVECTOR *vtx;
     s32 *sxy;
@@ -18,15 +18,15 @@ void btl_projectMesh(BtlModel *arg0, u8 arg1) {
     s16 *c1;
     s16 *c2;
 
-    g = &arg0->header->meshes[arg1];
+    mesh = &model->header->meshes[meshIndex];
     gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
-    cnt = arg0->header->boneCount;
-    bone = (MATRIX *)arg0->bones;
+    cnt = model->header->boneCount;
+    bone = (MATRIX *)model->bones;
     for (i = 0; i < cnt; bone++) {
-        n = g->vertexCounts[i++];
+        n = mesh->vertexCounts[i++];
         if (n != 0) {
             gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
             gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
@@ -36,23 +36,23 @@ void btl_projectMesh(BtlModel *arg0, u8 arg1) {
             c2 = &b->m[0][2];
             gte_rtir_b();
             sxy = &g_vtxScreenXY[k];
-            gte_stclmv(&m);
+            gte_stclmv(&boneView);
             gte_ldclmv(c1);
             gte_rtir();
             sz = &g_vtxScreenZ[k];
-            gte_stclmv(&m.m[0][1]);
+            gte_stclmv(&boneView.m[0][1]);
             gte_ldclmv(c2);
             c1 = (s16 *)b->t;
             gte_rtir_n1();
-            vtx = &g->vertices[k];
-            gte_stclmv(&m.m[0][2]);
+            vtx = &mesh->vertices[k];
+            gte_stclmv(&boneView.m[0][2]);
             gte_ldlv0(c1);
             k += n;
             gte_rtv0tr_n1();
             gte_ldv3c(vtx);
-            gte_stlvnl(m.t);
-            gte_SetRotMatrix(&m);
-            gte_SetTransMatrix(&m);
+            gte_stlvnl(boneView.t);
+            gte_SetRotMatrix(&boneView);
+            gte_SetTransMatrix(&boneView);
             v = vtx;
             do {
                 v += 3;
@@ -68,10 +68,10 @@ void btl_projectMesh(BtlModel *arg0, u8 arg1) {
     }
 }
 
-u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
+u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
     s32 opz;
     s32 otz;
-    BtlMesh *g;
+    BtlMesh *mesh;
     u8 (*uv)[2];
     u8 (*col)[4];
     u32 *ot;
@@ -100,21 +100,21 @@ u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    if (arg0->flags & BTL_MODEL_OFFSCREEN) {
+    if (model->flags & BTL_MODEL_OFFSCREEN) {
         return prim;
     }
-    g = &arg0->header->meshes[arg1];
-    sFT4 = (WmSrcFT4 *)g->prims;
-    uv = g->uvs;
-    col = g->colors;
-    if (arg0->prims == 0) {
-        arg0->prims = (s32)prim;
+    mesh = &model->header->meshes[meshIndex];
+    sFT4 = (WmSrcFT4 *)mesh->prims;
+    uv = mesh->uvs;
+    col = mesh->colors;
+    if (model->prims == 0) {
+        model->prims = (s32)prim;
     }
-    tex = (u32 *)arg0->texPages;
+    tex = (u32 *)model->texPages;
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
-    ot -= g->otBias;
+    ot -= mesh->otBias;
 
-    n = g->nFT4;
+    n = mesh->nFT4;
     for (i = 0; i < n; sFT4++) {
         pFT4 = (POLY_FT4 *)prim;
         i0 = *(u32 *)&sFT4->vtx[0];
@@ -165,7 +165,7 @@ u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_FT4);
     }
 
-    n = g->nFT3;
+    n = mesh->nFT3;
     sFT3 = (WmSrcFT3 *)sFT4;
     for (i = 0; i < n; sFT3++) {
         pFT3 = (POLY_FT3 *)prim;
@@ -215,7 +215,7 @@ u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_FT3);
     }
 
-    n = g->nGT4;
+    n = mesh->nGT4;
     sGT4 = (WmSrcGT4 *)sFT3;
     for (i = 0; i < n; sGT4++) {
         pGT4 = (POLY_GT4 *)prim;
@@ -280,7 +280,7 @@ u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_GT4);
     }
 
-    n = g->nGT3;
+    n = mesh->nGT3;
     sGT3 = (WmSrcGT3 *)sGT4;
     for (i = 0; i < n; sGT3++) {
         pGT3 = (POLY_GT3 *)prim;
@@ -339,7 +339,7 @@ u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_GT3);
     }
 
-    n = g->nG4;
+    n = mesh->nG4;
     sG4 = (WmSrcG4 *)sGT3;
     for (i = 0; i < n; sG4++) {
         pG4 = (POLY_G4 *)prim;
@@ -387,7 +387,7 @@ u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_G4);
     }
 
-    n = g->nG3;
+    n = mesh->nG3;
     sG3 = (WmSrcG3 *)sG4;
     for (i = 0; i < n; sG3++) {
         pG3 = (POLY_G3 *)prim;
@@ -432,7 +432,7 @@ u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_G3);
     }
 
-    n = g->nF4;
+    n = mesh->nF4;
     sF4 = (WmSrcF4 *)sG3;
     for (i = 0; i < n; sF4++) {
         pF4 = (POLY_F4 *)prim;
@@ -467,7 +467,7 @@ u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_F4);
     }
 
-    n = g->nF3;
+    n = mesh->nF3;
     sF3 = (WmSrcF3 *)sF4;
     for (i = 0; i < n; sF3++) {
         pF3 = (POLY_F3 *)prim;
@@ -505,9 +505,9 @@ u8 *btl_buildMeshPrims(BtlModel *arg0, u8 arg1, u8 *prim) {
     return prim + sizeof(P_TAG);
 }
 
-void btl_applyModelTextures(BtlModel *arg0, s16 *arg1, s16 *arg2) {
+void btl_applyModelTextures(BtlModel *model, s16 *texPages, s16 *uvOffsets) {
     BtlModelHeader *h;
-    BtlMesh *m;
+    BtlMesh *mesh;
     u32 i;
     u32 j;
     u32 k;
@@ -520,90 +520,90 @@ void btl_applyModelTextures(BtlModel *arg0, s16 *arg1, s16 *arg2) {
     s32 du;
     s32 dv;
 
-    arg0->scaleX = 0x1000;
-    arg0->scaleY = 0x1000;
-    arg0->scaleZ = 0x1000;
-    arg0->flags |= BTL_MODEL_SCALED;
-    h = arg0->header;
-    arg0->texPages = (BtlTexWord *)arg1;
-    arg0->parent = NULL;
-    arg0->unk60 = NULL;
-    arg0->morph = NULL;
-    arg0->unk44 = 0;
-    arg0->bones = NULL;
-    arg0->prims = 0;
-    arg0->texAnims = NULL;
-    arg0->attachX = 0;
-    arg0->attachY = 0;
-    arg0->attachZ = 0;
-    arg0->hiddenMeshes = 0;
-    arg0->flags = 0;
+    model->scaleX = 0x1000;
+    model->scaleY = 0x1000;
+    model->scaleZ = 0x1000;
+    model->flags |= BTL_MODEL_SCALED;
+    h = model->header;
+    model->texPages = (BtlTexWord *)texPages;
+    model->parent = NULL;
+    model->unk60 = NULL;
+    model->morph = NULL;
+    model->unk44 = 0;
+    model->bones = NULL;
+    model->prims = 0;
+    model->texAnims = NULL;
+    model->attachX = 0;
+    model->attachY = 0;
+    model->attachZ = 0;
+    model->hiddenMeshes = 0;
+    model->flags = 0;
     if (!(h->flags & BTL_MODELHDR_RELOCATED)) {
         h->flags |= BTL_MODELHDR_RELOCATED;
-        m = h->meshes = (BtlMesh *)((u8 *)h + (s32)h->meshes);
+        mesh = h->meshes = (BtlMesh *)((u8 *)h + (s32)h->meshes);
         h->bones = (s32)h + h->bones;
-        for (i = 0; i < h->meshCount; i++, m++) {
-            m->vertexCounts = (u16 *)((u8 *)h + (s32)m->vertexCounts);
-            m->vertices = (SVECTOR *)((u8 *)h + (s32)m->vertices);
-            m->prims = (u32 *)((u8 *)h + (s32)m->prims);
-            m->uvs = (void *)((u8 *)h + (s32)m->uvs);
-            m->colors = (void *)((u8 *)h + (s32)m->colors);
+        for (i = 0; i < h->meshCount; i++, mesh++) {
+            mesh->vertexCounts = (u16 *)((u8 *)h + (s32)mesh->vertexCounts);
+            mesh->vertices = (SVECTOR *)((u8 *)h + (s32)mesh->vertices);
+            mesh->prims = (u32 *)((u8 *)h + (s32)mesh->prims);
+            mesh->uvs = (void *)((u8 *)h + (s32)mesh->uvs);
+            mesh->colors = (void *)((u8 *)h + (s32)mesh->colors);
         }
-        if (arg2 != NULL) {
+        if (uvOffsets != NULL) {
             for (i = 0; i < h->meshCount; i++) {
                 mark = (u8 *)g_vtxScreenZ;
                 for (k = 0; k < 0x1908; k++) {
                     mark[k] = 0;
                 }
-                m = &h->meshes[i];
-                src = (u8 *)m->prims;
-                for (k = 0; k < m->nFT4; k++) {
+                mesh = &h->meshes[i];
+                src = (u8 *)mesh->prims;
+                for (k = 0; k < mesh->nFT4; k++) {
                     ft4 = (WmSrcFT4 *)src;
-                    du = arg2[ft4->tex * 2];
-                    dv = arg2[ft4->tex * 2 + 1];
+                    du = uvOffsets[ft4->tex * 2];
+                    dv = uvOffsets[ft4->tex * 2 + 1];
                     for (j = 0; j < 4; j++) {
                         if (mark[ft4->uv[j]] == 0) {
-                            m->uvs[ft4->uv[j]][0] += du;
-                            m->uvs[ft4->uv[j]][1] += dv;
+                            mesh->uvs[ft4->uv[j]][0] += du;
+                            mesh->uvs[ft4->uv[j]][1] += dv;
                             mark[ft4->uv[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcFT4);
                 }
-                for (k = 0; k < m->nFT3; k++) {
+                for (k = 0; k < mesh->nFT3; k++) {
                     ft3 = (WmSrcFT3 *)src;
-                    du = arg2[ft3->tex * 2];
-                    dv = arg2[ft3->tex * 2 + 1];
+                    du = uvOffsets[ft3->tex * 2];
+                    dv = uvOffsets[ft3->tex * 2 + 1];
                     for (j = 0; j < 3; j++) {
                         if (mark[ft3->uv[j]] == 0) {
-                            m->uvs[ft3->uv[j]][0] += du;
-                            m->uvs[ft3->uv[j]][1] += dv;
+                            mesh->uvs[ft3->uv[j]][0] += du;
+                            mesh->uvs[ft3->uv[j]][1] += dv;
                             mark[ft3->uv[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcFT3);
                 }
-                for (k = 0; k < m->nGT4; k++) {
+                for (k = 0; k < mesh->nGT4; k++) {
                     gt4 = (WmSrcGT4 *)src;
-                    du = arg2[gt4->tex * 2];
-                    dv = arg2[gt4->tex * 2 + 1];
+                    du = uvOffsets[gt4->tex * 2];
+                    dv = uvOffsets[gt4->tex * 2 + 1];
                     for (j = 0; j < 4; j++) {
                         if (mark[gt4->uv[j]] == 0) {
-                            m->uvs[gt4->uv[j]][0] += du;
-                            m->uvs[gt4->uv[j]][1] += dv;
+                            mesh->uvs[gt4->uv[j]][0] += du;
+                            mesh->uvs[gt4->uv[j]][1] += dv;
                             mark[gt4->uv[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcGT4);
                 }
-                for (k = 0; k < m->nGT3; k++) {
+                for (k = 0; k < mesh->nGT3; k++) {
                     gt3 = (WmSrcGT3 *)src;
-                    du = arg2[gt3->tex * 2];
-                    dv = arg2[gt3->tex * 2 + 1];
+                    du = uvOffsets[gt3->tex * 2];
+                    dv = uvOffsets[gt3->tex * 2 + 1];
                     for (j = 0; j < 3; j++) {
                         if (mark[gt3->uv[j]] == 0) {
-                            m->uvs[gt3->uv[j]][0] += du;
-                            m->uvs[gt3->uv[j]][1] += dv;
+                            mesh->uvs[gt3->uv[j]][0] += du;
+                            mesh->uvs[gt3->uv[j]][1] += dv;
                             mark[gt3->uv[j]] = 1;
                         }
                     }
@@ -614,71 +614,71 @@ void btl_applyModelTextures(BtlModel *arg0, s16 *arg1, s16 *arg2) {
     }
 }
 
-void btl_applyModelScale(BtlModel *arg0) {
+void btl_applyModelScale(BtlModel *model) {
     union {
         MATRIX m;
         s32 w[8];
-    } s;
+    } scaleMat;
     s16 x;
 
-    if (arg0->flags & BTL_MODEL_SCALED) {
-        x = arg0->scaleX;
-        s.w[0] = 0x1000;
-        s.w[1] = 0;
-        s.w[2] = 0x1000;
-        s.w[3] = 0;
-        s.w[4] = 0x1000;
-        s.m.m[0][0] = x;
-        gte_SetRotMatrix(&arg0->matrix);
-        gte_ldclmv(&s.m);
+    if (model->flags & BTL_MODEL_SCALED) {
+        x = model->scaleX;
+        scaleMat.w[0] = 0x1000;
+        scaleMat.w[1] = 0;
+        scaleMat.w[2] = 0x1000;
+        scaleMat.w[3] = 0;
+        scaleMat.w[4] = 0x1000;
+        scaleMat.m.m[0][0] = x;
+        gte_SetRotMatrix(&model->matrix);
+        gte_ldclmv(&scaleMat.m);
         gte_rtir();
-        s.m.m[1][1] = arg0->scaleY;
-        gte_stclmv(&arg0->matrix);
-        gte_ldclmv((s16 *)&s.m + 1);
+        scaleMat.m.m[1][1] = model->scaleY;
+        gte_stclmv(&model->matrix);
+        gte_ldclmv((s16 *)&scaleMat.m + 1);
         gte_rtir();
-        s.m.m[2][2] = arg0->scaleZ;
-        gte_stclmv((s16 *)&arg0->matrix + 1);
-        gte_ldclmv((s16 *)&s.m + 2);
+        scaleMat.m.m[2][2] = model->scaleZ;
+        gte_stclmv((s16 *)&model->matrix + 1);
+        gte_ldclmv((s16 *)&scaleMat.m + 2);
         gte_rtir();
-        gte_stclmv((s16 *)&arg0->matrix + 2);
+        gte_stclmv((s16 *)&model->matrix + 2);
     }
 }
 
-void btl_updateModelVisibility(BtlModel *arg0) {
-    SVECTOR v;
+void btl_updateModelVisibility(BtlModel *model) {
+    SVECTOR pos;
     s32 z;
 
-    arg0->flags &= ~BTL_MODEL_OFFSCREEN;
-    if (arg0->parent != NULL) {
-        arg0->flags |= arg0->parent->flags & BTL_MODEL_OFFSCREEN;
+    model->flags &= ~BTL_MODEL_OFFSCREEN;
+    if (model->parent != NULL) {
+        model->flags |= model->parent->flags & BTL_MODEL_OFFSCREEN;
         return;
     }
-    v.vx = arg0->matrix.t[0];
-    v.vy = arg0->matrix.t[1];
-    v.vz = arg0->matrix.t[2];
+    pos.vx = model->matrix.t[0];
+    pos.vy = model->matrix.t[1];
+    pos.vz = model->matrix.t[2];
     gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
     gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
-    gte_ldv0(&v);
+    gte_ldv0(&pos);
     gte_rtps();
     gte_stsz(&z);
     if (z == 0) {
-        arg0->flags |= BTL_MODEL_OFFSCREEN;
+        model->flags |= BTL_MODEL_OFFSCREEN;
     }
 }
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh", btl_calcBoneMatrices);
 
-void btl_setModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
+void btl_setModelRgb(BtlModel *model, s32 r, s32 g, s32 b) {
     u32 i;
     BtlPrim *p;
     u8 code;
 
-    if (!(arg0->flags & BTL_MODEL_OFFSCREEN)) {
+    if (!(model->flags & BTL_MODEL_OFFSCREEN)) {
     i = 0;
-    p = (BtlPrim *)arg0->prims;
-    if (arg0->header->meshCount != 0) {
+    p = (BtlPrim *)model->prims;
+    if (model->header->meshCount != 0) {
     do {
-        if (!(arg0->hiddenMeshes & (1 << i))) {
+        if (!(model->hiddenMeshes & (1 << i))) {
         do {
             code = p->tag.code;
             if (code == 0xFF || code == 0xE1) {
@@ -739,24 +739,24 @@ void btl_setModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
             }
         } while (code != 0xFF);
         }
-    } while (++i < arg0->header->meshCount);
+    } while (++i < model->header->meshCount);
     }
     }
 }
 
-void btl_fillModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
+void btl_fillModelRgb(BtlModel *model, s32 r, s32 g, s32 b) {
     u32 i;
     BtlPrim *p;
     u32 col;
     u8 code;
 
     i = 0;
-    if (!(arg0->flags & BTL_MODEL_OFFSCREEN)) {
+    if (!(model->flags & BTL_MODEL_OFFSCREEN)) {
     col = (b << 16) | ((g << 16) >> 8) | (s16)r;
-    p = (BtlPrim *)arg0->prims;
-    if (arg0->header->meshCount != 0) {
+    p = (BtlPrim *)model->prims;
+    if (model->header->meshCount != 0) {
     do {
-        if (!(arg0->hiddenMeshes & (1 << i))) {
+        if (!(model->hiddenMeshes & (1 << i))) {
         do {
             code = p->tag.code;
             if (code == 0xFF || code == 0xE1) {
@@ -817,7 +817,7 @@ void btl_fillModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
             }
         } while (code != 0xFF);
         }
-    } while (++i < arg0->header->meshCount);
+    } while (++i < model->header->meshCount);
     }
     }
 }

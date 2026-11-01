@@ -281,7 +281,7 @@
  * Evidence: [code]
  * (each name says what btl_calcCmd's case computes); the users in parentheses are the ability (ovl_33 action table
  * +4), usable item (g_usableItemTable +4) and weapon (g_weaponTable +4) records carrying it, decoded with
- * tools/ff9text.py. Formulas no player record uses (0x08, 0x58-0x6B) are enemy abilities'. Weapon formulas 1-7 are
+ * tools/ff9text.py. Formulas no player record uses (0x08, 0x58-0x6B) are enemy abilities', except 0x5A, 0x5C, 0x62 and 0x6B, which no encounter on any disc uses (runtime verification pass). Weapon formulas 1-7 are
  * also btl_setPhysParams' multiplier kind. 0x2F, 0x40, 0x4E-0x52 have no case (no effect). */
 #define BTL_FORMULA_WEAPON_STR         0x01 /* weapon attack, multiplier strength + rand (swords, daggers, spears, claws, rods, flutes, staffs) */
 #define BTL_FORMULA_WEAPON_STR_SPR     0x02 /* multiplier (strength + spirit) / 2 (Zidane's thief swords and Steiner's later swords) */
@@ -337,7 +337,7 @@
 #define BTL_FORMULA_LUCKY_SEVEN        0x35 /* 7/77/777/7777 when caster hp ends in 7, else 1 (Lucky Seven) */
 #define BTL_FORMULA_WHATS_THAT         0x36 /* turns the target round (What's That!?) */
 #define BTL_FORMULA_CHANGE_ROW         0x37 /* btl_toggleRow (Change) */
-#define BTL_FORMULA_FLEE               0x38 /* escape roll (Flee command; btl_tryEscape) */
+#define BTL_FORMULA_FLEE               0x38 /* escape roll (Flee command; btl_canFlee + btl_rollFlee) */
 #define BTL_FORMULA_FLEE_SKILL         0x39 /* sure escape: queues BTL_CMD_ESCAPE (Flee skill) */
 #define BTL_FORMULA_STEAL              0x3A /* (Steal, Mug) */
 #define BTL_FORMULA_SCAN               0x3B /* (Scan) */

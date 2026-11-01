@@ -1,17 +1,17 @@
 #include "fxmod/fx_0ce.h"
 
-s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     s32 mpos[3];
     s32 scale[3];
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
-    s32 s;
+    s32 scaleY;
 
     if (mode == 0) {
-        *arg4 = 0x30;
+        *args = 0x30;
     } else if (mode == 1) {
         fx_0ce_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
@@ -21,13 +21,13 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->pos8, (s16 *)&work->rot24);
         ex->btlfx_initEffModels(fx_0ce_effModels, 1);
         work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
-        if (p != NULL) {
-            p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+        if (emitter != NULL) {
+            emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos18);
-        if (p != NULL) {
-            p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos18);
+        if (emitter != NULL) {
+            emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
         }
         work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
         if (work->emit2C != NULL) {
@@ -46,9 +46,9 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame >= 6) {
                 work->state0 = 1;
                 entry->frame = -1;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
                 }
             }
             break;
@@ -60,13 +60,13 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = frame * 0x84;
             t = (frame << 12) / 20;
             if (t < 0x400) {
-                s = ex->math_sin(t);
+                scaleY = ex->math_sin(t);
             } else {
-                s = ex->math_sin((t - 0x400) / 3) * 3 / 2 + 0x1000;
+                scaleY = ex->math_sin((t - 0x400) / 3) * 3 / 2 + 0x1000;
                 work->pos8.vy -= 0x18;
             }
             scale[0] = scale[2] = 0x1A00;
-            scale[1] = s;
+            scale[1] = scaleY;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model20);
             ex->Hi_ModifyEffModelAbr(work->model20, 2);
             ex->Hi_ModifyEffModelRGB(work->model20, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80,
@@ -75,7 +75,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vz = 0;
             rot.vx = 0;
             scale[0] = scale[2] = 0x2400;
-            scale[1] = s;
+            scale[1] = scaleY;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model20);
             ex->Hi_ModifyEffModelAbr(work->model20, 1);
             ex->Hi_ModifyEffModelRGB(work->model20, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80,

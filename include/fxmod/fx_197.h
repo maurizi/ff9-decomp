@@ -106,7 +106,7 @@ extern Unk800F78A4 *fx_197_env;
 extern Fx197Shatter *fx_197_shatters[8];
 extern Fx197Shard *fx_197_shards[8];
 extern s32 fx_197_shatterHeight; /* shatter line */
-static Fx197Shard *fxm_shatterFreeShard(s32 i);
+static Fx197Shard *fxm_shatterFreeShard(s32 slot);
 /* end copied */
 
 #endif

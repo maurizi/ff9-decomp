@@ -1,14 +1,14 @@
 #include "fxmod/fx_078.h"
 
-s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 k;
+    s32 modelIdx;
     s32 i;
-    SVECTOR p;
+    SVECTOR trackPos;
 
     if (mode == 0) {
-        *arg4 = 0x60;
+        *args = 0x60;
     } else if (mode == 1) {
         fx_078_env = env;
         ex->btlfx_initEffModels(fx_078_effModels, 0xA);
@@ -55,17 +55,17 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (frame >= 0 && frame < 0x2D) {
-            fxm_rotPosTrackGet(&fx_078_rotPosKeys, frame, &work->rot18, &p);
-            work->pos20.vx = p.vx;
-            work->pos20.vy = p.vy;
-            work->pos20.vz = p.vz;
+            fxm_rotPosTrackGet(&fx_078_rotPosKeys, frame, &work->rot18, &trackPos);
+            work->pos20.vx = trackPos.vx;
+            work->pos20.vy = trackPos.vy;
+            work->pos20.vz = trackPos.vz;
             work->pos20.vx += work->pos10.vx;
             work->pos20.vy += work->pos10.vy;
             work->pos20.vz += work->pos10.vz;
             fxm_vecTrackGet(&fx_078_scaleKeys, frame, &work->scale30);
-            k = frame % 10;
-            ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model4C[k]);
-            ex->Hi_ModifyEffModelAbr(work->model4C[k], 1);
+            modelIdx = frame % 10;
+            ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model4C[modelIdx]);
+            ex->Hi_ModifyEffModelAbr(work->model4C[modelIdx], 1);
         }
         fxm_posTrackGet(&fx_078_emitPosKeys, frame, &work->emitPos44);
         work->emitPos44.vx += work->pos10.vx;
@@ -91,23 +91,23 @@ static void fxm_rotPosTrackInit(Fx078Track12 *track, u16 *data) {
 static s32 fxm_rotPosTrackGet(Fx078Track12 *track, s32 t, SVECTOR *rot, SVECTOR *pos) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx078Key12 *k;
+    Fx078Key12 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
+    key = &track->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rotX6;
-        rot->vy = k->rotY8;
-        rot->vz = k->rotZA;
+        rot->vx = key->rotX6;
+        rot->vy = key->rotY8;
+        rot->vz = key->rotZA;
     }
     if (pos != NULL) {
-        pos->vx = -k->posX0;
-        pos->vy = k->posY2;
-        pos->vz = -k->posZ4;
+        pos->vx = -key->posX0;
+        pos->vy = key->posY2;
+        pos->vz = -key->posZ4;
     }
     return done;
 }
@@ -120,17 +120,17 @@ static void fxm_posTrackInit(Fx078Track6 *track, u16 *data) {
 static s32 fxm_posTrackGet(Fx078Track6 *track, s32 t, SVECTOR *out) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx078Key6 *k;
+    Fx078Key6 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
-    out->vx = -k->x;
-    out->vy = k->y;
-    out->vz = -k->z;
+    key = &track->keys4[t];
+    out->vx = -key->x;
+    out->vy = key->y;
+    out->vz = -key->z;
     return done;
 }
 
@@ -142,17 +142,17 @@ static void fxm_vecTrackInit(Fx078Track6 *track, u16 *data) {
 static s32 fxm_vecTrackGet(Fx078Track6 *track, s32 t, VECTOR *out) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx078Key6 *k;
+    Fx078Key6 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
-    out->vx = k->x;
-    out->vy = k->y;
-    out->vz = k->z;
+    key = &track->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 

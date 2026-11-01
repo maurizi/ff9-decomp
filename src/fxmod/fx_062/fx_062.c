@@ -2,47 +2,47 @@
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_062_env);
-    s32 k = 0x20000000 / (n * n);
-    s32 r = 0;
+    s32 invSq = 0x20000000 / (n * n);
+    s32 ratio = 0;
 
     switch (curve) {
     case 0:
-        r = 0x1000 - (((0x10000000 / n) * t) >> 16);
+        ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
     case 1:
-        r = (k * (n - t) * (n - t)) >> 17;
+        ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
-        r = 0x1000 - ((k * t * t) >> 17);
+        ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
-    return ex->btlfx_lerp(from, to, r);
+    return ex->btlfx_lerp(from, to, ratio);
 }
 
 INCLUDE_RODATA("asm/us/fx_062/nonmatchings/fx_062", fx_062_headerPtr);
 
-s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     VECTOR scale;
     SVECTOR ang;
     SVECTOR cur;
-    VECTOR b;
+    VECTOR weights;
     s32 frame;
     u8 *strip;
-    s32 n;
+    s32 strand;
     Fx062Strip *tr;
     Fx062Pt *pt;
     s32 i;
     s32 j;
-    s32 r;
-    s32 s;
+    s32 radius;
+    s32 reach;
     s32 t;
     s32 u;
-    s32 k;
+    s32 bob;
 
     if (mode == 0) {
-        *arg4 = 0xD4;
+        *args = 0xD4;
     } else if (mode == 1) {
         fx_062_env = env;
         ex->btlfx_initEffModels(fx_062_effModels, 4);
@@ -168,8 +168,8 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timers0[9]--;
             pos.vx = fx_062_targetHome.vx;
             pos.vz = fx_062_targetHome.vz;
-            k = ((ex->math_sin(frame << 8) * 16) >> 10) - 0x200;
-            pos.vy = fx_062_targetHome.vy + k;
+            bob = ((ex->math_sin(frame << 8) * 16) >> 10) - 0x200;
+            pos.vy = fx_062_targetHome.vy + bob;
             ex->btlfx_setUnitPos(0, (s16 *)&pos);
         }
         if (work->timers0[8] != 0) {
@@ -210,20 +210,20 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timers0[0] != 0) {
             work->timers0[0]--;
-            for (n = 0; n < 5; n++) {
-                tr = &fx_062_strips[n];
+            for (strand = 0; strand < 5; strand++) {
+                tr = &fx_062_strips[strand];
                 if (tr->timer118 != 0) {
                     tr->timer118--;
                     tr->lastSlot0 = tr->count2 = 10;
                     tr->head1 = 0;
-                    s = work->models40[0].scaleC.vx;
+                    reach = work->models40[0].scaleC.vx;
                     tr->angle104 += tr->spinB4;
                     tr->angle108 += tr->spinB8;
                     pt = tr->pts4;
-                    r = (ex->math_sin(tr->angle104) * s) >> 12;
-                    tr->x10C = (ex->math_cos(tr->angle108) * r) >> 12;
-                    tr->z110 = (ex->math_sin(tr->angle108) * r) >> 12;
-                    pt->vy = tr->pos5C.vy = work->pos94.vy + ((ex->math_cos(tr->angle104) * s) >> 12);
+                    radius = (ex->math_sin(tr->angle104) * reach) >> 12;
+                    tr->x10C = (ex->math_cos(tr->angle108) * radius) >> 12;
+                    tr->z110 = (ex->math_sin(tr->angle108) * radius) >> 12;
+                    pt->vy = tr->pos5C.vy = work->pos94.vy + ((ex->math_cos(tr->angle104) * reach) >> 12);
                     strip = (u8 *)tr;
                     pt->vx = tr->pos5C.vx = work->pos94.vx + tr->x10C;
                     pt->vz = tr->pos5C.vz = work->pos94.vz + tr->z110;
@@ -236,18 +236,18 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     for (j = 0; j < 9; j++, pt++) {
                         t = ((j + 1) * 0x2E8BA) >> 12;
                         u = 0x200 - t;
-                        b.vx = (u * u) >> 6;
-                        b.vy = (t * u + u * 4) >> 6;
-                        b.vz = (t * t) >> 6;
+                        weights.vx = (u * u) >> 6;
+                        weights.vy = (t * u + u * 4) >> 6;
+                        weights.vz = (t * t) >> 6;
                         tr->jitter6C[j].vx += tr->jitterVelBC[j];
                         tr->jitter6C[j].vz += tr->jitterVelE0[j];
                         cur.vx = tr->jitter6C[j].vx +
-                            ((tr->pos5C.vx * b.vx + tr->pos64.vx * b.vz +
-                              (work->pos94.vx + ((ex->math_sin(ang.vy) * -tr->pos5C.vy) >> 10) * b.vy)) >> 12);
-                        pt->vy = (tr->pos5C.vy * b.vx + tr->pos64.vy * b.vz + (work->pos94.vy >> 1) * b.vy) >> 12;
+                            ((tr->pos5C.vx * weights.vx + tr->pos64.vx * weights.vz +
+                              (work->pos94.vx + ((ex->math_sin(ang.vy) * -tr->pos5C.vy) >> 10) * weights.vy)) >> 12);
+                        pt->vy = (tr->pos5C.vy * weights.vx + tr->pos64.vy * weights.vz + (work->pos94.vy >> 1) * weights.vy) >> 12;
                         cur.vz = tr->jitter6C[j].vz +
-                            ((tr->pos5C.vz * b.vx + tr->pos64.vz * b.vz +
-                              (work->pos94.vz + ((ex->math_cos(ang.vy) * -tr->pos5C.vy) >> 10) * b.vy)) >> 12);
+                            ((tr->pos5C.vz * weights.vx + tr->pos64.vz * weights.vz +
+                              (work->pos94.vz + ((ex->math_cos(ang.vy) * -tr->pos5C.vy) >> 10) * weights.vy)) >> 12);
                         pt->vx = cur.vx + tr->jitter6C[j].vx;
                         pt->vz = cur.vz + tr->jitter6C[j].vz;
                         pt->halfWidth6 = tr->width114;

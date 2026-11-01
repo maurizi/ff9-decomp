@@ -81,18 +81,18 @@ s32 btl_update(void) {
     return 0;
 }
 
-s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
-    BtlUnit *u = arg1->unitList;
-    s32 r = 1;
-    s32 sp = arg1->work->prims[arg0->drawBuf];
+s32 btl_updateUnits(GameData *gd, Battle *battle) {
+    BtlUnit *u = battle->unitList;
+    s32 done = 1;
+    s32 prim = battle->work->prims[gd->drawBuf];
     BtlModel *m;
     BtlModel *n;
     u32 f;
     u32 g;
     for (; u != NULL; u = u->next) {
         if (!((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1)) {
-            btl_updateUnitModel(u, &sp);
-            if (arg1->phase == BTL_PHASE_ENTRANCE) {
+            btl_updateUnitModel(u, &prim);
+            if (battle->phase == BTL_PHASE_ENTRANCE) {
                 n = u->model;
                 g = u->flags & ~BTL_UNIT_MOTION_HELD;
                 u->flags = g;
@@ -104,12 +104,12 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 }
                 if (!(u->status & BTL_STATUS_PETRIFY)) {
                     if ((s32)u->model->motion != u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (s32)u->model->motion != u->motions[4]) {
-                        r = 0;
+                        done = 0;
                     }
                 }
-            } else if (arg1->phase == BTL_PHASE_EXIT) {
+            } else if (battle->phase == BTL_PHASE_EXIT) {
                 f = u->flags;
-                if ((f & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) && (g_gameState->gameData->characters + BTL_UNIT_INDEX(f))->info.b.victoryPose) {
+                if ((f & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((battle->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) && (g_gameState->gameData->characters + BTL_UNIT_INDEX(f))->info.b.victoryPose) {
                     m = u->model;
                     if (u->obj->frame >= m->motion->frameCount) {
                         m->motion = (BtlMotion *)u->motions[19];
@@ -121,28 +121,28 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
         }
         btl_updateKo(u);
     }
-    if (arg1->phase == BTL_PHASE_EXIT_DEFEAT && !((arg1->scene.flags >> BTL_SCENE_NO_GAMEOVER_BIT) & 1) && (u8)btl_playVictoryMusic(arg0, 0x1E, MUSIC_DEFEAT) == 0) {
-        r = 0;
+    if (battle->phase == BTL_PHASE_EXIT_DEFEAT && !((battle->scene.flags >> BTL_SCENE_NO_GAMEOVER_BIT) & 1) && (u8)btl_playVictoryMusic(gd, 0x1E, MUSIC_DEFEAT) == 0) {
+        done = 0;
     }
-    btl_drawScene(arg0, arg1, sp);
-    return r;
+    btl_drawScene(gd, battle, prim);
+    return done;
 }
 
-void btl_victory(GameData *arg0, Battle *arg1) {
-    s32 sp18;
+void btl_victory(GameData *gd, Battle *battle) {
+    s32 prim;
     s32 done;
     BtlUnit *u;
     u32 gil;
 
-    sp18 = arg1->work->prims[arg0->drawBuf];
+    prim = battle->work->prims[gd->drawBuf];
     done = 1;
-    if (g_btlfxEnv->state->phase != BTLFX_PHASE_IDLE || arg1->cmdQueue.next != NULL || arg1->curCmd != NULL) {
+    if (g_btlfxEnv->state->phase != BTLFX_PHASE_IDLE || battle->cmdQueue.next != NULL || battle->curCmd != NULL) {
         done = 0;
     }
-    for (u = arg1->unitList; u != NULL; u = u->next) {
+    for (u = battle->unitList; u != NULL; u = u->next) {
         if (!((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1)) {
-            btl_updateUnitModel(u, &sp18);
-            switch (arg1->subPhase) {
+            btl_updateUnitModel(u, &prim);
+            switch (battle->subPhase) {
             case BTL_END_VICTORY:
                 btl_updateHpStatus(u);
                 if ((!(u->flags & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) || ((u->flags & BTL_UNIT_PARTY) && (u->status & BTL_STATUS_KO) && u->model->motion != (BtlMotion *)u->motions[4])) {
@@ -159,7 +159,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                 if (u->flags & BTL_UNIT_PARTY) {
                     btl_removeStatuses(u, (BTL_STATUS_CONFUSE | BTL_STATUS_STOP | BTL_STATUS_DEFEND | BTL_STATUS_FREEZE));
                 }
-                if (arg1->cmdPhase != 0) {
+                if (battle->cmdPhase != 0) {
                     done = 0;
                 }
                 if (u->status & BTL_STATUS_KO) {
@@ -188,16 +188,16 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     }
                 } else if ((u->flags & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
                     u->pos[2] += 0xFF9C0000;
-                    btl_setUnitBrightness(u, (s8)arg1->fleeBrightness);
-                    if ((s8)arg1->fleeBrightness <= 0) {
+                    btl_setUnitBrightness(u, (s8)battle->fleeBrightness);
+                    if ((s8)battle->fleeBrightness <= 0) {
                         u->flags |= BTL_UNIT_HIDDEN;
                     } else {
                         done = 0;
-                        if ((s8)arg1->fleeBrightness == 0x20) {
+                        if ((s8)battle->fleeBrightness == 0x20) {
                             btl_soundCmd(SND_SE_PLAY, SE_FLEE_1, 0, SND_PAN_CENTER, SND_VOL_MAX);
                             btl_soundCmd(SND_SE_PLAY, SE_FLEE_2, 0, SND_PAN_CENTER, SND_VOL_MAX);
                             btl_soundCmd(SND_SE_PLAY, SE_FLEE_3, 0, SND_PAN_CENTER, SND_VOL_MAX);
-                            arg1->fleeBrightness -= 2;
+                            battle->fleeBrightness -= 2;
                         }
                     }
                 }
@@ -207,21 +207,21 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         }
         btl_updateKo(u);
     }
-    if (arg1->subPhase == BTL_END_ESCAPE && (s8)arg1->fleeBrightness < 0x20) {
-        arg1->fleeBrightness -= 2;
+    if (battle->subPhase == BTL_END_ESCAPE && (s8)battle->fleeBrightness < 0x20) {
+        battle->fleeBrightness -= 2;
     }
     if (done) {
         btlui_enable(0);
-        switch (arg1->subPhase) {
+        switch (battle->subPhase) {
         case BTL_END_VICTORY:
         case BTL_END_SCRIPT_VICTORY:
-            arg0->battleFlags |= GD_BTL_EXIT_PRELOAD;
-            arg0->battleResult = BATTLE_END_VICTORY;
-            if ((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) {
-                if ((u8)btl_playVictoryMusic(arg0, 0x1E, MUSIC_VICTORY) == 0) {
+            gd->battleFlags |= GD_BTL_EXIT_PRELOAD;
+            gd->battleResult = BATTLE_END_VICTORY;
+            if ((battle->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) {
+                if ((u8)btl_playVictoryMusic(gd, 0x1E, MUSIC_VICTORY) == 0) {
                     break;
                 }
-                for (u = arg1->unitList; u != NULL; u = u->next) {
+                for (u = battle->unitList; u != NULL; u = u->next) {
                     if (u->flags & BTL_UNIT_PARTY) {
                         btl_removeStatuses(u, (BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_AUTO_LIFE | BTL_STATUS_DEFEND | BTL_STATUS_POISON | BTL_STATUS_SLEEP | BTL_STATUS_REGEN | BTL_STATUS_HASTE | BTL_STATUS_SLOW | BTL_STATUS_FLOAT | BTL_STATUS_SHELL | BTL_STATUS_PROTECT | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_VANISH | BTL_STATUS_DOOM | BTL_STATUS_MINI | BTL_STATUS_REFLECT | BTL_STATUS_GRADUAL_PETRIFY));
                         if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP))) {
@@ -242,23 +242,23 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     }
                 }
                 btlcam_playScene(btl_getSceneData(2));
-            } else if ((arg1->scene.flags >> BTL_SCENE_KEEP_MUSIC_BIT) & 1) {
-                arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
+            } else if ((battle->scene.flags >> BTL_SCENE_KEEP_MUSIC_BIT) & 1) {
+                gd->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
-            arg1->phase = BTL_PHASE_EXIT;
+            battle->phase = BTL_PHASE_EXIT;
             break;
         case BTL_END_DEFEAT:
-            arg0->battleResult = BATTLE_END_DEFEAT;
-            arg1->phase = BTL_PHASE_EXIT_DEFEAT;
+            gd->battleResult = BATTLE_END_DEFEAT;
+            battle->phase = BTL_PHASE_EXIT_DEFEAT;
             break;
         case BTL_END_STOPPED:
-            if ((arg1->scene.flags & (BTL_SCENE_KEEP_MUSIC | BTL_SCENE_VICTORY)) == BTL_SCENE_KEEP_MUSIC) {
-                arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
+            if ((battle->scene.flags & (BTL_SCENE_KEEP_MUSIC | BTL_SCENE_VICTORY)) == BTL_SCENE_KEEP_MUSIC) {
+                gd->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
-            arg1->phase = BTL_PHASE_SCRIPT;
-            btl_clearCmdQueue(arg1);
-            btl_initCmdQueue(arg1);
-            for (u = arg1->unitList; u != NULL; u = u->next) {
+            battle->phase = BTL_PHASE_SCRIPT;
+            btl_clearCmdQueue(battle);
+            btl_initCmdQueue(battle);
+            for (u = battle->unitList; u != NULL; u = u->next) {
                 btl_initUnitCmds(u);
                 if (!(u->flags & BTL_UNIT_PARTY)) {
                     u->obj->rotY = 0;
@@ -268,25 +268,25 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             break;
         case BTL_END_ESCAPE:
             gil = g_btlRewards.gil;
-            arg0->battleFlags |= GD_BTL_EXIT_PRELOAD;
-            for (u = arg1->unitList; u != NULL; u = u->next) {
+            gd->battleFlags |= GD_BTL_EXIT_PRELOAD;
+            for (u = battle->unitList; u != NULL; u = u->next) {
                 if (!(u->flags & BTL_UNIT_PARTY)) {
                     gil += g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->gil;
                 }
             }
-            if ((arg1->scene.flags & (BTL_SCENE_KEEP_MUSIC | BTL_SCENE_VICTORY)) == BTL_SCENE_KEEP_MUSIC) {
-                arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
+            if ((battle->scene.flags & (BTL_SCENE_KEEP_MUSIC | BTL_SCENE_VICTORY)) == BTL_SCENE_KEEP_MUSIC) {
+                gd->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
-            arg0->battleResult = BATTLE_END_ESCAPE;
-            arg1->phase = BTL_PHASE_EXIT_OTHER;
+            gd->battleResult = BATTLE_END_ESCAPE;
+            battle->phase = BTL_PHASE_EXIT_OTHER;
             btl_clearRewards();
-            if (arg0->battleFlags & GD_BTL_FLED) {
+            if (gd->battleFlags & GD_BTL_FLED) {
                 gil /= 10;
-                if (gil < arg0->gil) {
-                    arg0->gil -= gil;
+                if (gil < gd->gil) {
+                    gd->gil -= gil;
                 } else {
-                    gil = arg0->gil;
-                    arg0->gil = 0;
+                    gil = gd->gil;
+                    gd->gil = 0;
                 }
                 btl_showMessage(BTL_MSG_DROPPED_GIL, gil);
             } else if ((u8)btl_partyHasSupport(1, SA_BIT(SA_FLEE_GIL)) != 0) {
@@ -295,81 +295,81 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             }
             break;
         }
-        if (arg1->phase != BTL_PHASE_END) {
-            if (arg1->phase == BTL_PHASE_EXIT && !((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1)) {
-                arg1->subPhase = 1;
+        if (battle->phase != BTL_PHASE_END) {
+            if (battle->phase == BTL_PHASE_EXIT && !((battle->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1)) {
+                battle->subPhase = 1;
             } else {
-                arg1->subPhase = 0;
+                battle->subPhase = 0;
             }
         }
     } else {
-        btl_processCmdQueue(arg1);
+        btl_processCmdQueue(battle);
     }
-    btl_drawScene(arg0, arg1, sp18);
+    btl_drawScene(gd, battle, prim);
 }
 
-void btl_updateIntro(GameData *arg0, Battle *arg1) {
+void btl_updateIntro(GameData *gd, Battle *battle) {
     u32 *ot;
     BtlUnit *u;
-    u8 f;
-    u8 g;
+    u8 enemyLoadFlags;
+    u8 partyLoadFlags;
 
-    ot = (u32 *)arg1->work->prims[arg0->drawBuf];
+    ot = (u32 *)battle->work->prims[gd->drawBuf];
     btl_loadModelsStep(0);
-    if ((arg1->flags & BTL_FLAG_ENEMIES_LOADED) && (*(u32 *)&arg1->fleeBrightness & ((BTL_LOAD_ENEMIES_INIT | BTL_LOAD_ENEMY_GREY) << 8)) == BTL_LOAD_ENEMIES_INIT << 8) {
+    if ((battle->flags & BTL_FLAG_ENEMIES_LOADED) && (*(u32 *)&battle->fleeBrightness & ((BTL_LOAD_ENEMIES_INIT | BTL_LOAD_ENEMY_GREY) << 8)) == BTL_LOAD_ENEMIES_INIT << 8) {
         btl_makeEnemyGreyCluts();
-        arg1->loadFlags |= BTL_LOAD_ENEMY_GREY;
-    } else if ((arg1->flags & BTL_FLAG_PARTY_LOADED) && (*(u32 *)&arg1->fleeBrightness & ((BTL_LOAD_PARTY_INIT | BTL_LOAD_PARTY_GREY) << 8)) == BTL_LOAD_PARTY_INIT << 8) {
+        battle->loadFlags |= BTL_LOAD_ENEMY_GREY;
+    } else if ((battle->flags & BTL_FLAG_PARTY_LOADED) && (*(u32 *)&battle->fleeBrightness & ((BTL_LOAD_PARTY_INIT | BTL_LOAD_PARTY_GREY) << 8)) == BTL_LOAD_PARTY_INIT << 8) {
         btl_makePartyGreyCluts();
-        arg1->loadFlags |= BTL_LOAD_PARTY_GREY;
+        battle->loadFlags |= BTL_LOAD_PARTY_GREY;
     }
-    for (u = arg1->unitList; u != NULL; u = u->next) {
+    for (u = battle->unitList; u != NULL; u = u->next) {
         if ((u->flags >> BTL_UNIT_HIDDEN_BIT) & 1) {
             continue;
         }
         btl_updateUnitModel(u, (s32 *)&ot);
         if (u->flags & BTL_UNIT_PARTY) {
-            btl_setUnitBrightness(u, (s8)arg1->partyBrightness);
+            btl_setUnitBrightness(u, (s8)battle->partyBrightness);
         } else if (!((u->flags >> BTL_UNIT_MODEL_PART_BIT) & 1)) {
-            btl_setUnitBrightness(u, (s8)arg1->enemyBrightness);
+            btl_setUnitBrightness(u, (s8)battle->enemyBrightness);
         }
         btl_updateUnitTint(u);
     }
-    if (arg1->loadFlags & BTL_LOAD_ENEMIES_SHOWN) {
+    if (battle->loadFlags & BTL_LOAD_ENEMIES_SHOWN) {
         btlseq_update();
     }
-    if (arg1->flags & BTL_FLAG_BG_LOADED) {
-        ot = (u32 *)btlbg_draw(&arg0->viewMatrix, arg1->work->bgData, (s32)ot, arg0->ot[arg0->drawBuf],
-                                  arg1->work->ot[arg0->drawBuf]);
+    if (battle->flags & BTL_FLAG_BG_LOADED) {
+        ot = (u32 *)btlbg_draw(&gd->viewMatrix, battle->work->bgData, (s32)ot, gd->ot[gd->drawBuf],
+                                  battle->work->ot[gd->drawBuf]);
     }
     ot = (u32 *)btl_drawBanner((u8 *)ot);
-    if (arg1->flags & BTL_FLAG_ENEMIES_LOADED) {
-        f = arg1->loadFlags;
-        if (!(f & BTL_LOAD_ENEMIES_SHOWN)) {
-            if (!(f & BTL_LOAD_ENEMIES_INIT)) {
+    if (battle->flags & BTL_FLAG_ENEMIES_LOADED) {
+        enemyLoadFlags = battle->loadFlags;
+        if (!(enemyLoadFlags & BTL_LOAD_ENEMIES_SHOWN)) {
+            if (!(enemyLoadFlags & BTL_LOAD_ENEMIES_INIT)) {
                 btl_saveEnemyCluts(ot);
-                btl_initEnemies(arg1);
-                ot = btl_initEnemyState(arg1, ot);
-            } else if (f & BTL_LOAD_ENEMY_GREY) {
-                if ((s8)arg1->enemyBrightness >= 0x20) {
-                    arg1->loadFlags = f | BTL_LOAD_ENEMIES_SHOWN;
+                btl_initEnemies(battle);
+                ot = btl_initEnemyState(battle, ot);
+            } else if (enemyLoadFlags & BTL_LOAD_ENEMY_GREY) {
+                if ((s8)battle->enemyBrightness >= 0x20) {
+                    battle->loadFlags = enemyLoadFlags | BTL_LOAD_ENEMIES_SHOWN;
                 } else {
-                    arg1->enemyBrightness += 4;
+                    battle->enemyBrightness += 4;
                 }
             }
         }
     }
-    if (arg1->flags & BTL_FLAG_PARTY_LOADED) {
-        g = arg1->loadFlags;
-        if (!(g & BTL_LOAD_PARTY_SHOWN)) {
-            if (!(g & BTL_LOAD_PARTY_INIT)) {
+    if (battle->flags & BTL_FLAG_PARTY_LOADED) {
+        partyLoadFlags = battle->loadFlags;
+        if (!(partyLoadFlags & BTL_LOAD_PARTY_SHOWN)) {
+            if (!(partyLoadFlags & BTL_LOAD_PARTY_INIT)) {
                 btl_savePartyCluts(ot);
-                btl_initParty(arg1);
-            } else if (g & BTL_LOAD_PARTY_GREY) {
-                if ((s8)arg1->partyBrightness >= 0x20) {
-                    arg1->loadFlags = g | BTL_LOAD_PARTY_SHOWN;
+                btl_initParty(battle);
+            } else if (partyLoadFlags & BTL_LOAD_PARTY_GREY) {
+                if ((s8)battle->partyBrightness >= 0x20) {
+                    battle->loadFlags = partyLoadFlags | BTL_LOAD_PARTY_SHOWN;
                 } else {
-                    arg1->partyBrightness += 4;
+                    battle->partyBrightness += 4;
                 }
             }
         }

@@ -1,58 +1,58 @@
 #include "fxmod/fx_0fa.h"
 
 static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out) {
-    s32 w[4];
-    s32 k;
-    s32 s;
-    s32 r;
+    s32 weights[4];
+    s32 invSq;
+    s32 ratio;
+    s32 inv;
     s32 i;
-    s32 *wp;
+    s32 *weight;
 
-    k = 0x2000000 / (len * len);
-    s = 0;
+    invSq = 0x2000000 / (len * len);
+    ratio = 0;
     switch (mode) {
     case 0:
-        s = ((0x1000000 / len) * t) >> 16;
+        ratio = ((0x1000000 / len) * t) >> 16;
         break;
     case 1:
-        s = 0x100 - ((k * (len - t) * (len - t)) >> 17);
+        ratio = 0x100 - ((invSq * (len - t) * (len - t)) >> 17);
         break;
     case 2:
-        s = (k * t * t) >> 17;
+        ratio = (invSq * t * t) >> 17;
         break;
     }
-    r = 0x100 - s;
-    w[0] = (s * s * s) >> 12;
-    w[1] = (r * s * s * 6) >> 12;
-    w[2] = (r * r * s * 6) >> 12;
-    w[3] = (r * r * r) >> 12;
+    inv = 0x100 - ratio;
+    weights[0] = (ratio * ratio * ratio) >> 12;
+    weights[1] = (inv * ratio * ratio * 6) >> 12;
+    weights[2] = (inv * inv * ratio * 6) >> 12;
+    weights[3] = (inv * inv * inv) >> 12;
     out->vx = 0;
     out->vy = 0;
     out->vz = 0;
-    wp = w;
+    weight = weights;
     for (i = 0; i < 4; i++) {
-        out->vx += (ctrl[i].vx * *wp) >> 12;
-        out->vy += (ctrl[i].vy * *wp) >> 12;
-        out->vz += (ctrl[i].vz * *wp) >> 12;
-        wp++;
+        out->vx += (ctrl[i].vx * *weight) >> 12;
+        out->vy += (ctrl[i].vy * *weight) >> 12;
+        out->vz += (ctrl[i].vz * *weight) >> 12;
+        weight++;
     }
 }
 
-s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
-    s32 *q;
+    Pool6CEntry *emitter;
+    s32 *timer;
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x78;
+        *args = 0x78;
     } else if (mode == 1) {
         work->emit74 = NULL;
         fx_0fa_env = env;
         ex->btlfx_initEffModels(fx_0fa_effModels, 2);
-        for (i = 9, q = &work->timers0[9]; i >= 0; i--) {
-            *q-- = 0;
+        for (i = 9, timer = &work->timers0[9]; i >= 0; i--) {
+            *timer-- = 0;
         }
         work->model38 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0xFA, 0x3DC0, 0x80, 0x80);
         work->scale5C.vx = 0x333;
@@ -84,9 +84,9 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos44);
             break;
         case 0x20:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos30);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos30);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 0x40:

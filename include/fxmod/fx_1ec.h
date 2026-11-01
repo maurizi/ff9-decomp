@@ -64,10 +64,10 @@ extern s32 fx_1ec_op82Trails1[];
 extern SVECTOR fx_1ec_emitPos0;
 extern SVECTOR fx_1ec_emitPos1;
 
-static s32 fx_1ec_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
-static s32 fx_1ec_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1ec_op80ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fx_1ec_op81ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
 static void fxm_posPathInit(Fx1ecPath *path, u16 *data);
 static s32 fxm_isMotionDone(s32 unit);
 static void fxm_startHeavyHitMotionIfActive(s32 unit);
@@ -83,6 +83,6 @@ static void fxm_startUnitMotion(s32 unit, s32 motion);
 /* end copied */
 
 /* propagated */
-static u16 *fxm_offsetTableEntry(u8 *base, u16 i);
+static u16 *fxm_offsetTableEntry(u8 *base, u16 idx);
 
 #endif

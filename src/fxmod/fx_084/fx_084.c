@@ -1,19 +1,19 @@
 #include "fxmod/fx_084.h"
 
-static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame) {
+static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_084_env);
     s32 t = frame << 8;
-    s32 a;
+    s32 arcAng;
 
     ex->btlfx_lerpVec((s16 *)&fx_084_pathFrom, (s16 *)&fx_084_pathTo, t, (s16 *)pos);
-    a = t >> 1;
-    pos->vy -= (ex->math_sin(a) * 0x180) >> 12;
+    arcAng = t >> 1;
+    pos->vy -= (ex->math_sin(arcAng) * 0x180) >> 12;
     switch (pt->slot) {
     case 1:
-        pos->vy -= (ex->math_sin(a) << 9) >> 12;
+        pos->vy -= (ex->math_sin(arcAng) << 9) >> 12;
         break;
     case 3:
-        pos->vy += (ex->math_sin(a) << 9) >> 12;
+        pos->vy += (ex->math_sin(arcAng) << 9) >> 12;
         break;
     }
     pt->pos.vx = pos->vx << 12;
@@ -25,13 +25,13 @@ static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s3
     return 0;
 }
 
-s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x24;
+        *args = 0x24;
     } else if (mode == 1) {
         fx_084_env = env;
         work->state0 = 0;
@@ -81,9 +81,9 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 6) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
                 }
             }
             if (frame >= 0x2C) {

@@ -24,7 +24,7 @@ typedef struct {
 } Fx17d4Line;
 
 extern Fx17d4Line fx_17d_4_lineTrail;
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
+static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth);
 
 extern s16 fx_17d_4_strandInfo[18 * 4]; /* per strand: file, start, stride, width */
 extern Fx17d4Line *fx_17d_4_strandTrails[18];

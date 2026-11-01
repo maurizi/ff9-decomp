@@ -27,6 +27,6 @@ extern Unk800F78A4 *fx_188_env;
 extern s32 fx_188_op80Trails[];
 extern s32 fx_188_particleScale; /* scale */
 
-static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 #endif

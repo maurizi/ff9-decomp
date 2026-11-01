@@ -1,12 +1,12 @@
 #include "fxmod/fx_0e5.h"
 
-s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    u16 n;
+    u16 lineFrame;
 
     if (mode == 0) {
-        *arg4 = 0x44;
+        *args = 0x44;
     } else if (mode == 1) {
         fx_0e5_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
@@ -38,11 +38,11 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->lineAlpha42 -= 0x200;
             }
             work->lineFrame40++;
-            n = work->lineFrame40;
-            if (n >= 6) {
-                n = 5;
+            lineFrame = work->lineFrame40;
+            if (lineFrame >= 6) {
+                lineFrame = 5;
             }
-            work->lineFrame40 = n;
+            work->lineFrame40 = lineFrame;
         }
         if (work->emit0 != NULL) {
             if (work->emit0->state == BTLFX_EMIT_DONE) {

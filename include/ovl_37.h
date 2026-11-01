@@ -152,7 +152,7 @@ void menuItem_drawTargetWindow(void);
 void menuItem_drawRow(s32, s32, s32, MenuView *);
 void menuItem_drawKeyRow(s32, s32, s32, MenuView *);
 void menuItem_stepKweh(void);
-void menuItem_onExit(void);
+void menuItem_restoreVram(void);
 void menuItem_showKeyItem(s32);
 void menuItem_hideKeyItem(void);
 

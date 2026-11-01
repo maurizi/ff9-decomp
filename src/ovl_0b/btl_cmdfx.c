@@ -1,97 +1,97 @@
 #include "ovl_0b.h"
 
-void btl_setShadowSize(BtlUnit *arg0, s32 arg1, u32 arg2) {
-    s32 k;
-    k = arg0->flags >> BTL_UNIT_INDEX_SHIFT;
-    k &= 0xF;
-    if (!(arg0->flags & BTL_UNIT_PARTY)) {
-        k += 9;
+void btl_setShadowSize(BtlUnit *unit, s32 width, u32 depth) {
+    s32 slot;
+    slot = unit->flags >> BTL_UNIT_INDEX_SHIFT;
+    slot &= 0xF;
+    if (!(unit->flags & BTL_UNIT_PARTY)) {
+        slot += 9;
     }
-    arg0->shadowW = (arg1 & 0xFFFF) / 14;
-    arg0->shadowD = arg2 / 12;
-    g_gameState->gameData->ctx.battle->work->shadows[k].shade = 0;
-    g_gameState->gameData->ctx.battle->work->shadows[k].width = arg0->shadowW * 14;
-    g_gameState->gameData->ctx.battle->work->shadows[k].depth = arg0->shadowD * 12;
+    unit->shadowW = (width & 0xFFFF) / 14;
+    unit->shadowD = depth / 12;
+    g_gameState->gameData->ctx.battle->work->shadows[slot].shade = 0;
+    g_gameState->gameData->ctx.battle->work->shadows[slot].width = unit->shadowW * 14;
+    g_gameState->gameData->ctx.battle->work->shadows[slot].depth = unit->shadowD * 12;
 }
 
-void btl_setUnitFade(BtlUnit *arg0, s32 arg1) {
-    BtlBgHeader *p = btlbg_getHeader();
-    btl_setModelAbr(arg0->model, 0x60);
-    btl_fillModelRgb(arg0->model, (p->lightR * arg1) << 11 >> 16, (p->lightG * arg1) << 11 >> 16, (p->lightB * arg1) << 11 >> 16);
-    if (arg1 == 0) {
-        arg0->flags |= BTL_UNIT_HIDDEN;
+void btl_setUnitFade(BtlUnit *unit, s32 level) {
+    BtlBgHeader *bg = btlbg_getHeader();
+    btl_setModelAbr(unit->model, 0x60);
+    btl_fillModelRgb(unit->model, (bg->lightR * level) << 11 >> 16, (bg->lightG * level) << 11 >> 16, (bg->lightB * level) << 11 >> 16);
+    if (level == 0) {
+        unit->flags |= BTL_UNIT_HIDDEN;
     }
 }
 
-void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
+void btl_playCmdEffect(BtlCmd *cmd, s32 effectId, s16 *fxArgs) {
     Battle *b = g_gameState->gameData->ctx.battle;
     s32 sum[4];
-    BtlUnitList *l;
+    BtlUnitList *list;
     BtlUnit *u;
-    BtlUnit *c;
-    s32 mask;
-    u8 e;
+    BtlUnit *caster;
+    s32 bounceMask;
+    u8 cmdNo;
 
     memset(sum, 0, 0x10);
-    mask = 0;
-    b->fxTargets.caster = arg0->caster;
-    l = &b->fxTargets;
-    if (arg2 != NULL) {
-        l->fxArgs[0] = arg2[0];
-        l->fxArgs[1] = arg2[1];
-        l->fxParam = arg2[2];
-        l->kind = arg2[3];
+    bounceMask = 0;
+    b->fxTargets.caster = cmd->caster;
+    list = &b->fxTargets;
+    if (fxArgs != NULL) {
+        list->fxArgs[0] = fxArgs[0];
+        list->fxArgs[1] = fxArgs[1];
+        list->fxParam = fxArgs[2];
+        list->kind = fxArgs[3];
     } else {
-        l->fxParam = 0;
-        l->kind = 0;
-        l->fxArgs[1] = 0;
-        l->fxArgs[0] = 0;
+        list->fxParam = 0;
+        list->kind = 0;
+        list->fxArgs[1] = 0;
+        list->fxArgs[0] = 0;
     }
-    l->bounceCount = 0;
-    l->targetCount = 0;
-    c = arg0->caster;
-    c->popupFlags = 0;
-    c->mpChange = 0;
-    c->hpChange = 0;
-    if (arg0->info.b.reflect == 0) {
-        mask = btl_applyReflect(arg0);
-        e = arg0->cmdNo;
-        if (e == 0xE || e == 0x33) {
-            l->kind = BTL_FXK_ITEM;
-        } else if (e == 0x1F) {
-            l->kind = BTL_FXK_SWD_MAG;
-        } else if ((u8)(e - 0x39) < 2) {
-            l->kind = BTL_FXK_NO_CAST;
+    list->bounceCount = 0;
+    list->targetCount = 0;
+    caster = cmd->caster;
+    caster->popupFlags = 0;
+    caster->mpChange = 0;
+    caster->hpChange = 0;
+    if (cmd->info.b.reflect == 0) {
+        bounceMask = btl_applyReflect(cmd);
+        cmdNo = cmd->cmdNo;
+        if (cmdNo == 0xE || cmdNo == 0x33) {
+            list->kind = BTL_FXK_ITEM;
+        } else if (cmdNo == 0x1F) {
+            list->kind = BTL_FXK_SWD_MAG;
+        } else if ((u8)(cmdNo - 0x39) < 2) {
+            list->kind = BTL_FXK_NO_CAST;
         }
-    } else if (arg0->info.b.reflect == 2) {
-        arg0->info.b.reflect = 1;
-        if (!(arg0->caster->flags & BTL_UNIT_PARTY)) {
-            arg0->info.b.enemyBounce = 1;
+    } else if (cmd->info.b.reflect == 2) {
+        cmd->info.b.reflect = 1;
+        if (!(cmd->caster->flags & BTL_UNIT_PARTY)) {
+            cmd->info.b.enemyBounce = 1;
         }
-        l->kind = (BTL_FXK_NO_CAST | BTL_FXK_BOUNCE);
+        list->kind = (BTL_FXK_NO_CAST | BTL_FXK_BOUNCE);
     }
     for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if (u->unitBit & (u16)arg0->targets) {
-            l->targets[l->targetCount++] = u;
+        if (u->unitBit & (u16)cmd->targets) {
+            list->targets[list->targetCount++] = u;
             u->popupFlags = 0;
             u->mpChange = 0;
             u->hpChange = 0;
             sum[0] += u->home->pos[0] >> 16;
             sum[2] += u->home->pos[2] >> 16;
         }
-        if (u->unitBit & mask) {
-            l->bounced[l->bounceCount++] = u;
+        if (u->unitBit & bounceMask) {
+            list->bounced[list->bounceCount++] = u;
         }
-        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->flags & BTL_UNIT_PARTY) && g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind == CHR_KIND_VIVI) {
-            l->partner = u;
+        if (cmd->cmdNo == BTL_CMD_SWD_MAG && (u->flags & BTL_UNIT_PARTY) && g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind == CHR_KIND_VIVI) {
+            list->partner = u;
         }
     }
-    l->centerX = sum[0] / (s8)l->targetCount;
-    l->centerY = 0;
-    l->centerZ = sum[2] / (s8)l->targetCount;
+    list->centerX = sum[0] / (s8)list->targetCount;
+    list->centerY = 0;
+    list->centerZ = sum[2] / (s8)list->targetCount;
     btlfx_resetAll();
-    btlfx_setTargets(l);
-    btlfx_start(arg1);
+    btlfx_setTargets(list);
+    btlfx_start(effectId);
 }
 
 void btl_startCmdEffect(BtlCmd *cmd) {

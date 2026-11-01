@@ -63,7 +63,7 @@ extern BtlModelBuf fx_183_effModels[];
 extern Fx183Path fx_183_rotPosPath[6];
 extern s32 fx_183_op83Trails[][0xF0];
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_rotPosPathInit(Fx183Path *path, u16 *data);
 
@@ -72,6 +72,6 @@ extern Unk800F78A4 *fx_183_env;
 /* end copied */
 
 /* propagated */
-static s32 fxm_rotPosPathGet(Fx183Path *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx183Path *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 
 #endif

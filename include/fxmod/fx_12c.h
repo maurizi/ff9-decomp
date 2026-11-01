@@ -26,6 +26,6 @@ extern s32 fx_12c_intensity; /* bounce strength */
 extern BtlModelBuf fx_12c_effModels[];
 extern u32 fx_12c_bgOt[];
 
-s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

@@ -42,7 +42,7 @@ extern SVECTOR fx_12d_casterPos;
 extern s32 fx_12d_op81Trails0[];
 extern s32 fx_12d_op81Trails1[];
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

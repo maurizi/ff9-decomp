@@ -80,7 +80,7 @@ extern Unk800F78A4 *fx_1bd_env;
 /* propagated */
 
 static void fxm_buildPathTrail(Fx1bdPath *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
-static u16 *fxm_offsetTableEntry(u16 *base, u16 i);
+static u16 *fxm_offsetTableEntry(u16 *base, u16 idx);
 
 typedef struct {
     s16 *keys0;

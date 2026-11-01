@@ -2,7 +2,7 @@
 
 INCLUDE_RODATA("asm/us/fx_08b/nonmatchings/fx_08b", fx_08b_headerPtr);
 
-s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     union {
         BtlBone bone;
@@ -14,10 +14,10 @@ s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } u;
     BtlBone bone2;
     s32 frame;
-    s32 v;
+    s32 gridScale;
 
     if (mode == 0) {
-        *arg4 = 0x5C;
+        *args = 0x5C;
     } else if (mode == 1) {
         fx_08b_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos18);
@@ -59,10 +59,10 @@ s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0xD) {
-            v = (frame << 7) + 0x980;
-            u.s.scale.vx = v;
-            u.s.scale.vy = v;
-            u.s.scale.vz = v;
+            gridScale = (frame << 7) + 0x980;
+            u.s.scale.vx = gridScale;
+            u.s.scale.vy = gridScale;
+            u.s.scale.vz = gridScale;
             u.s.col.r = u.s.col.g = u.s.col.b = 0x28;
             u.s.rot.vx = 0;
             u.s.rot.vy = 0;
@@ -94,17 +94,17 @@ s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_08b_op81(s32 mode, Fx08bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_08b_op81(s32 mode, Fx08bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else if (mode == 1) {
-        s32 n = *arg4;
-        work->unitC = n;
+        s32 target = *args;
+        work->unitC = target;
         fx_08b_env = env;
-        if (n >= env->targets->targetCount) {
+        if (target >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
@@ -124,6 +124,6 @@ s32 fx_08b_op81(s32 mode, Fx08bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    env->state->signals[i] = v;
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value) {
+    env->state->signals[signal] = value;
 }

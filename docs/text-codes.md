@@ -28,7 +28,7 @@ Arguments are bytes unless shown otherwise. "msg" means only the message windows
 | 00 | `TEXT_WAIT_PAGE` | frames | pause (Cross can't skip it: `MSGW_NO_SKIP`), then start a new page |
 | 01 | `TEXT_WAIT_CLOSE` | frames | the same pause, then close the window |
 | 02 | `TEXT_SPEED` | speed | typing speed (`MsgWindow.speed`) |
-| 08 | `TEXT_CHOICE_START` | | the choice lines start at the next line (`MSGW_CHOICE`, `g_msgChoiceLine`) |
+| 08 | `TEXT_CHOICE_START` | | the choice lines start at the current line, the one holding the code (`MSGW_CHOICE`, `g_msgChoiceLine`; runtime) |
 | 09 | `TEXT_HOLD` | | wait with Cross ignored (`MSGW_WAIT_INPUT` + `MSGW_NO_INPUT`), so the script has to close the window |
 | 0A | `TEXT_NO_SKIP` | | Cross doesn't skip the rest of the page |
 | 0C | `TEXT_SKIP` | | the rest of the page shows at once (`MSGW_SKIP`) |

@@ -1,26 +1,26 @@
 #include "fxmod/fx_029.h"
 
-s32 fx_029_op80(s32 mode, Fx029Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_029_op80(s32 mode, Fx029Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 t;
+    s32 zWord;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else if (mode == 1) {
-        work->stop0 = 0;
+        work->hold0 = 0;
         fx_029_env = env;
         ((s32 *)&work->pos8)[0] = ((s32 *)&env->targets->centerX)[0];
-        t = ((s32 *)&env->targets->centerX)[1];
+        zWord = ((s32 *)&env->targets->centerX)[1];
         work->pos8.vy -= 0xFA;
-        ((s32 *)&work->pos8)[1] = t;
+        ((s32 *)&work->pos8)[1] = zWord;
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->otZ = 0x80;
         }
     } else {
         frame = entry->frame;
-        if (work->stop0 == 0 && frame >= 0x3C) {
+        if (work->hold0 == 0 && frame >= 0x3C) {
             return 1;
         }
     }

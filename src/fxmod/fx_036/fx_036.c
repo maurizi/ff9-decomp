@@ -1,6 +1,6 @@
 #include "fxmod/fx_036.h"
 
-static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
+static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_036_env);
 
     out->vx = fx_036_spawnX[fx_036_spawnCount];
@@ -16,12 +16,12 @@ static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3
     return 0;
 }
 
-s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x2C;
+        *args = 0x2C;
     } else if (mode == 1) {
         fx_036_targetPos.vx = env->targets->centerX;
         fx_036_targetPos.vy = env->targets->centerY;
@@ -60,11 +60,11 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-s32 fx_036_op81(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_036_op81(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 2;
+        *args = 2;
     } else if (mode == 1) {
         fx_036_env = env;
         *work = 0x80;

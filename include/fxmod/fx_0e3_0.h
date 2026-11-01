@@ -29,12 +29,12 @@ extern s32 fx_0e3_0_alongJitter;
 extern s32 fx_0e3_0_ampJitter;
 extern s32 fx_0e3_0_angleJitter;
 
-static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
+static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 bright,
                    Fx0e30Seg *buf, s32 abr, s32 phase);
 static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9);
-static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9);
+                   s32 dang, s32 frame, s32 fade);
+static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 anchor, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang,
+                   s32 dang, s32 frame, s32 fade);
 static s32 fx_0e3_0_op80PoolTask(s32 mode, Fx0e30Puff *p, Unk800F78A4 *env, Unk80100C78Entry *entry);
 
 typedef struct {

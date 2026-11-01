@@ -1,22 +1,22 @@
 #include "fxmod/fx_11e.h"
 
-s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    SVECTOR p;
-    SVECTOR a;
+    SVECTOR unitPos;
+    SVECTOR orbPos;
+    SVECTOR aim;
     s32 frame;
-    s32 t;
-    s32 n;
-    s32 m;
+    s32 elapsed;
+    s32 target;
+    s32 model;
 
     if (mode == 0) {
-        *arg4 = 0x60;
+        *args = 0x60;
     } else if (mode == 1) {
-        n = *arg4;
-        work->unit58 = n;
+        target = *args;
+        work->unit58 = target;
         fx_11e_env = env;
-        if (n >= env->targets->targetCount) {
+        if (target >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
@@ -51,13 +51,13 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if ((u32)(frame - 0x1E) < 0x28) {
-            t = frame - 0x1E;
-            ex->btlfx_getUnitBodyPos(work->unit58, 0, &v.vx);
-            work->posC.vx = v.vx;
-            work->posC.vz = v.vz;
+            elapsed = frame - 0x1E;
+            ex->btlfx_getUnitBodyPos(work->unit58, 0, &unitPos.vx);
+            work->posC.vx = unitPos.vx;
+            work->posC.vz = unitPos.vz;
             work->posC.vx += work->radius38 * ex->math_sin(work->angle3C) / 4096;
             work->posC.vz += work->radius38 * ex->math_cos(work->angle3C) / 4096;
-            if (t >= 0x19) {
+            if (elapsed >= 0x19) {
                 work->posC.vy += -200 - ex->btlfx_rand() % 40;
                 work->radius38 += 200 + ex->btlfx_rand() % 100;
             } else {
@@ -76,15 +76,15 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 } else {
                     work->angle3C -= ex->btlfx_rand() % 256;
                 }
-                p.vx = work->posC.vx;
-                p.vy = work->posC.vy;
-                p.vz = work->posC.vz;
-                ex->btlfx_aimAngles(&v.vx, &p.vx, &a.vx);
-                work->rot4.vx = a.vx;
-                work->rot4.vy = a.vy;
-                work->rot4.vz = a.vz;
+                orbPos.vx = work->posC.vx;
+                orbPos.vy = work->posC.vy;
+                orbPos.vz = work->posC.vz;
+                ex->btlfx_aimAngles(&unitPos.vx, &orbPos.vx, &aim.vx);
+                work->rot4.vx = aim.vx;
+                work->rot4.vy = aim.vy;
+                work->rot4.vz = aim.vz;
             }
-            if (t == 0x18) {
+            if (elapsed == 0x18) {
                 work->rot4.vy += 0x800;
             }
             if (--work->timer40 == 0) {
@@ -100,12 +100,12 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->scale1C.vy += 0x80;
                 work->scale1C.vz += 0x80;
             }
-            if (t & 1) {
-                m = work->model5C;
+            if (elapsed & 1) {
+                model = work->model5C;
             } else {
-                m = work->model5E;
+                model = work->model5E;
             }
-            ex->Hi_DrawEffModel(&work->rot4, &work->posC, (s32)&work->scale1C, m);
+            ex->Hi_DrawEffModel(&work->rot4, &work->posC, (s32)&work->scale1C, model);
         }
         if (work->emit0 != NULL) {
             if (work->emit0->state == BTLFX_EMIT_DONE) {
@@ -123,8 +123,8 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    env->state->signals[i] = v;
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value) {
+    env->state->signals[signal] = value;
 }
 
 INCLUDE_RODATA("asm/us/fx_11e/nonmatchings/fx_11e", fx_11e_headerPtr);

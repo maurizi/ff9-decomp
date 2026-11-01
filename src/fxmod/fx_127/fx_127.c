@@ -1,8 +1,8 @@
 #include "fxmod/fx_127.h"
 
-static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_127_env);
-    s32 ret = fxm_lerpParticle(out, pos, &fx_127_lerpFrom, &fx_127_lerpTo, 5, frame, n);
+    s32 status = fxm_lerpParticle(out, pos, &fx_127_lerpFrom, &fx_127_lerpTo, 5, frame, n);
 
     fx_127_emitterPos.vx = pos->vx;
     fx_127_emitterPos.vy = 0;
@@ -13,10 +13,10 @@ static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 a
         }
     }
     ex->btlfx_moveEmitterTo((s32)fx_127_emitter, (s32)&fx_127_emitterPos);
-    return ret;
+    return status;
 }
 
-static s32 fx_127_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_127_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_lerpParticle(out, pos, &fx_127_lerpFrom, &fx_127_lerpTo, 5, frame, n);
 }
 
@@ -31,15 +31,15 @@ static s32 fxm_lerpParticle(VECTOR *out, SVECTOR *pos, SVECTOR *from, SVECTOR *t
     return 0;
 }
 
-s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    MATRIX m1;
-    MATRIX m2;
-    MATRIX m3;
+    MATRIX boneMat;
+    MATRIX releaseMat;
+    MATRIX fromMat;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x84;
+        *args = 0x84;
     } else if (mode == 1) {
         fx_127_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos24);
@@ -48,8 +48,8 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos3C);
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&m1);
-        ex->btlfx_matrixPointAhead(&m1, 0, (s32)&work->pos44);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&boneMat);
+        ex->btlfx_matrixPointAhead(&boneMat, 0, (s32)&work->pos44);
         ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos34, (s16 *)&work->rot74);
         switch (frame) {
         case 0xA:
@@ -77,10 +77,10 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_127_aimRot.vx = work->rot5C.vx;
             fx_127_aimRot.vy = work->rot5C.vy;
             fx_127_aimRot.vz = work->rot5C.vz;
-            ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&m2);
-            ex->btlfx_matrixPointAhead(&m2, 0, (s32)&work->pos64);
-            ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&m3);
-            ex->btlfx_matrixPointAhead(&m3, 0, (s32)&fx_127_lerpFrom);
+            ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&releaseMat);
+            ex->btlfx_matrixPointAhead(&releaseMat, 0, (s32)&work->pos64);
+            ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&fromMat);
+            ex->btlfx_matrixPointAhead(&fromMat, 0, (s32)&fx_127_lerpFrom);
             fx_127_lerpTo.vx = work->pos34.vx;
             fx_127_lerpTo.vy = work->pos34.vy;
             fx_127_lerpTo.vz = work->pos34.vz;
@@ -173,12 +173,12 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_127_op81(s32 mode, Fx127Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_127_op81(s32 mode, Fx127Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x40;
+        *args = 0x40;
     } else if (mode == 1) {
         fx_127_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);

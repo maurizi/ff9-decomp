@@ -1,11 +1,11 @@
 #include "fxmod/fx_04e.h"
 
-s32 fx_04e_op80(s32 mode, Fx04eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_04e_op80(s32 mode, Fx04eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x14;
+        *args = 0x14;
     } else if (mode == 1) {
         work->posC.vx = env->targets->centerX;
         work->posC.vy = env->targets->centerY;

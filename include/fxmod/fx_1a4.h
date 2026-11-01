@@ -46,7 +46,7 @@ extern BtlModelBuf fx_1a4_effModels[];
 extern SVECTOR fx_1a4_emitPos0;
 extern SVECTOR fx_1a4_emitPos1;
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 /* copied */

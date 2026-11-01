@@ -22,11 +22,11 @@ typedef struct {
 } Fx1bf0Line;
 
 extern Fx1bf0Line fx_1bf_0_lineTrail;
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
+static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth);
 
 extern s16 fx_1bf_0_strandParams[18 * 4]; /* per strand: file, start, stride, width */
 extern Fx1bf0Line *fx_1bf_0_strandTrails[18];
-void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag);
+void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 reach, s32 lineWidth, s32 alpha, s32 fade, s32 flag);
 extern s16 fx_1bf_0_pointFileIds[];
 
 typedef struct {
@@ -45,6 +45,6 @@ typedef struct {
 extern SVECTOR fx_1bf_0_origin;
 extern BtlModelBuf fx_1bf_0_effModels[];
 extern u8 fx_1bf_0_buf400[];
-s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

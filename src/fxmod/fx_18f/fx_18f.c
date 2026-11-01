@@ -1,10 +1,10 @@
 #include "fxmod/fx_18f.h"
 
-s32 fx_18f_op80(s32 mode, Fx18fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_18f_op80(s32 mode, Fx18fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
         work->pos4.vy = -0x1B58;
         work->pos4.vx = 0;

@@ -1,13 +1,13 @@
 #include "fxmod/fx_11d.h"
 
-static s32 fx_11d_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_11d_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     if (frame >= 4) {
         frame = 3;
     }
     return fxm_boneLerpParticle(out, pos, &fx_11d_boneKeys0[frame], frame, n);
 }
 
-static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     if (frame >= 4) {
         frame = 3;
     }
@@ -16,17 +16,17 @@ static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 a
 
 static s32 fxm_boneLerpParticle(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_11d_env);
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR c;
+    SVECTOR boneA;
+    SVECTOR boneB;
+    SVECTOR mid;
 
-    ex->btlfx_getUnitBonePos(0x10, key->bone0, (u16 *)&a);
-    ex->btlfx_getUnitBonePos(0x10, key->bone2, (u16 *)&b);
-    ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, key->blend4, (s16 *)&c);
-    c.vz -= 0x32;
-    pos->vx = c.vx;
-    pos->vy = c.vy;
-    pos->vz = c.vz;
+    ex->btlfx_getUnitBonePos(0x10, key->bone0, (u16 *)&boneA);
+    ex->btlfx_getUnitBonePos(0x10, key->bone2, (u16 *)&boneB);
+    ex->btlfx_lerpVec((s16 *)&boneA, (s16 *)&boneB, key->blend4, (s16 *)&mid);
+    mid.vz -= 0x32;
+    pos->vx = mid.vx;
+    pos->vy = mid.vy;
+    pos->vz = mid.vz;
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
@@ -36,12 +36,12 @@ static s32 fxm_boneLerpParticle(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s3
     return 0;
 }
 
-s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x34;
+        *args = 0x34;
     } else if (mode == 1) {
         fx_11d_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos1C);

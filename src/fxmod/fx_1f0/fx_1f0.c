@@ -1,77 +1,77 @@
 #include "fxmod/fx_1f0.h"
 
 static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out) {
-    s32 w[4];
-    s32 k;
-    s32 s;
-    s32 r;
+    s32 weights[4];
+    s32 invSq;
+    s32 ratio;
+    s32 inv;
     s32 i;
-    s32 *wp;
+    s32 *weight;
 
-    k = 0x2000000 / (len * len);
-    s = 0;
+    invSq = 0x2000000 / (len * len);
+    ratio = 0;
     switch (mode) {
     case 0:
-        s = ((0x1000000 / len) * t) >> 16;
+        ratio = ((0x1000000 / len) * t) >> 16;
         break;
     case 1:
-        s = 0x100 - ((k * (len - t) * (len - t)) >> 17);
+        ratio = 0x100 - ((invSq * (len - t) * (len - t)) >> 17);
         break;
     case 2:
-        s = (k * t * t) >> 17;
+        ratio = (invSq * t * t) >> 17;
         break;
     }
-    r = 0x100 - s;
-    w[0] = (s * s * s) >> 12;
-    w[1] = (r * s * s * 6) >> 12;
-    w[2] = (r * r * s * 6) >> 12;
-    w[3] = (r * r * r) >> 12;
+    inv = 0x100 - ratio;
+    weights[0] = (ratio * ratio * ratio) >> 12;
+    weights[1] = (inv * ratio * ratio * 6) >> 12;
+    weights[2] = (inv * inv * ratio * 6) >> 12;
+    weights[3] = (inv * inv * inv) >> 12;
     out->vx = 0;
     out->vy = 0;
     out->vz = 0;
-    wp = w;
+    weight = weights;
     for (i = 0; i < 4; i++) {
-        out->vx += (ctrl[i].vx * *wp) >> 12;
-        out->vy += (ctrl[i].vy * *wp) >> 12;
-        out->vz += (ctrl[i].vz * *wp) >> 12;
-        wp++;
+        out->vx += (ctrl[i].vx * *weight) >> 12;
+        out->vy += (ctrl[i].vy * *weight) >> 12;
+        out->vz += (ctrl[i].vz * *weight) >> 12;
+        weight++;
     }
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1f0_env);
-    s32 k = 0x20000000 / (n * n);
-    s32 r = 0;
+    s32 invSq = 0x20000000 / (n * n);
+    s32 ratio = 0;
 
     switch (curve) {
     case 0:
-        r = 0x1000 - (((0x10000000 / n) * t) >> 16);
+        ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
     case 1:
-        r = (k * (n - t) * (n - t)) >> 17;
+        ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
-        r = 0x1000 - ((k * t * t) >> 17);
+        ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
-    return ex->btlfx_lerp(from, to, r);
+    return ex->btlfx_lerp(from, to, ratio);
 }
 
-s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     SVECTOR rot;
     VECTOR scale;
-    Fx1f0Unit *u;
-    Pool6CEntry *p;
+    Fx1f0Unit *unit;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
-    s32 t;
-    s32 v;
-    s32 n;
+    s32 morph;
+    s32 shade;
+    s32 fade;
 
     if (mode == 0) {
-        *arg4 = 0xB8;
+        *args = 0xB8;
     } else if (mode == 1) {
         fx_1f0_env = env;
         ex->btlfx_initEffModels(fx_1f0_effModels, 4);
@@ -105,18 +105,18 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fx_1f0_units[i].emit28 = NULL;
         }
         for (i = 0; i < env->targets->targetCount; i++) {
-            u = &fx_1f0_units[i];
-            u->emit28 = NULL;
+            unit = &fx_1f0_units[i];
+            unit->emit28 = NULL;
             ex->btlfx_fadeUnitById(i, -2);
             ex->btlfx_getUnitHomePos(i, (s16 *)&fx_1f0_units[i].homePos10);
-            u->startPos8.vx = u->homePos10.vx;
-            u->startPos8.vy = u->homePos10.vy + 0x3000;
-            u->startPos8.vz = u->homePos10.vz - 0x1000;
-            u->emitPos18.vx = u->pos20.vx = u->startPos8.vx;
-            u->emitPos18.vy = u->pos20.vy = u->startPos8.vy;
-            u->emitPos18.vz = u->pos20.vz = u->startPos8.vz;
+            unit->startPos8.vx = unit->homePos10.vx;
+            unit->startPos8.vy = unit->homePos10.vy + 0x3000;
+            unit->startPos8.vz = unit->homePos10.vz - 0x1000;
+            unit->emitPos18.vx = unit->pos20.vx = unit->startPos8.vx;
+            unit->emitPos18.vy = unit->pos20.vy = unit->startPos8.vy;
+            unit->emitPos18.vz = unit->pos20.vz = unit->startPos8.vz;
             ex->btlfx_setUnitPos(i, (s16 *)&fx_1f0_units[i].startPos8);
-            u->delay0 = fx_1f0_unitDelays[i];
+            unit->delay0 = fx_1f0_unitDelays[i];
         }
         fx_1f0_units[0].pos20.vy -= 0x100;
     } else {
@@ -185,9 +185,9 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         if (fx_1f0_units[i].emit28 != NULL) {
                             fx_1f0_units[i].emit28->otZ = 0x80;
                         }
-                        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_1f0_units[i].pos20);
-                        if (p != NULL) {
-                            p->otZ = 0x80;
+                        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_1f0_units[i].pos20);
+                        if (emitter != NULL) {
+                            emitter->otZ = 0x80;
                         }
                     }
                     if (fx_1f0_units[i].delay0 < 8 && fx_1f0_units[i].emit28 != NULL) {
@@ -208,18 +208,18 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timer0[6] != 0) {
             work->timer0[6]--;
-            t = fxm_easeLerp(0, 0x18, work->timer0[6], 0, 0x1000);
-            ex->Hi_DrawMorphEffModel(&work->rotA0, &work->pos70, (s32)&work->scale80, work->model64, work->model60, t);
-            ex->Hi_DrawMorphEffModel(&work->rotA8, &work->pos70, (s32)&work->scale90, work->model6C, work->model68, t);
+            morph = fxm_easeLerp(0, 0x18, work->timer0[6], 0, 0x1000);
+            ex->Hi_DrawMorphEffModel(&work->rotA0, &work->pos70, (s32)&work->scale80, work->model64, work->model60, morph);
+            ex->Hi_DrawMorphEffModel(&work->rotA8, &work->pos70, (s32)&work->scale90, work->model6C, work->model68, morph);
             if (work->timer0[6] > 0x10) {
-                v = -((work->timer0[6] - 0x10) << 4);
-                ex->Hi_ModifyEffModelRGB(work->model64, v, v, v);
-                ex->Hi_ModifyEffModelRGB(work->model6C, v, v, v);
+                shade = -((work->timer0[6] - 0x10) << 4);
+                ex->Hi_ModifyEffModelRGB(work->model64, shade, shade, shade);
+                ex->Hi_ModifyEffModelRGB(work->model6C, shade, shade, shade);
             }
             if (work->timer0[6] < 8) {
-                v = -((8 - work->timer0[6]) << 4);
-                ex->Hi_ModifyEffModelRGB(work->model64, v, v, v);
-                ex->Hi_ModifyEffModelRGB(work->model6C, v, v, v);
+                shade = -((8 - work->timer0[6]) << 4);
+                ex->Hi_ModifyEffModelRGB(work->model64, shade, shade, shade);
+                ex->Hi_ModifyEffModelRGB(work->model6C, shade, shade, shade);
             }
         }
         if (work->timer0[7] != 0) {
@@ -233,10 +233,10 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->spinB4 = fxm_easeLerp(1, 0x18, work->timer0[8], 0, 0x80);
         }
         if (work->timer0[9] != 0) {
-            n = work->timer0[9] - 1;
-            work->timer0[9] = n;
-            scale.vz = scale.vy = scale.vx = (n << 2) + 0x1000;
-            col.r = col.g = col.b = n * 3;
+            fade = work->timer0[9] - 1;
+            work->timer0[9] = fade;
+            scale.vz = scale.vy = scale.vx = (fade << 2) + 0x1000;
+            col.r = col.g = col.b = fade * 3;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;

@@ -475,7 +475,7 @@ void menuItem_exit(void) {
     help_setLocked(0);
     help_setCursorOnTop(1);
     help_setCallback(NULL);
-    menuItem_onExit();
+    menuItem_restoreVram();
 }
 
 void menuItem_input(void) {
@@ -721,7 +721,7 @@ void menuItem_stepKweh(void) {
                 help_setLocked(0);
                 help_setCursorOnTop(1);
                 help_setCallback(NULL);
-                menuItem_onExit();
+                menuItem_restoreVram();
                 menuScreen_close();
             }
         }
@@ -806,7 +806,7 @@ void menuItem_loadImages(void) {
     DrawSync(0);
 }
 
-void menuItem_onExit(void) {
+void menuItem_restoreVram(void) {
 }
 
 void menuItem_showKeyItem(s32 id) {

@@ -1,45 +1,45 @@
 #include "fxmod/fx_0b4.h"
 
-s32 fx_0b4_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0b4_op80ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_0b4_timers[0], &fx_0b4_paths[0], frame, n);
 }
 
-s32 fx_0b4_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0b4_op80ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_0b4_timers[1], &fx_0b4_paths[1], frame, n);
 }
 
-s32 fx_0b4_op80ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0b4_op80ParticleMotion2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_0b4_timers[2], &fx_0b4_paths[2], frame, n);
 }
 
-s32 fx_0b4_op80ParticleMotion3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0b4_op80ParticleMotion3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_0b4_timers[3], &fx_0b4_paths[3], frame, n);
 }
 
-s32 fx_0b4_op80ParticleMotion4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0b4_op80ParticleMotion4(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_0b4_timers[4], &fx_0b4_paths[4], frame, n);
 }
 
-s32 fx_0b4_op80ParticleMotion5(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0b4_op80ParticleMotion5(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_0b4_timers[5], &fx_0b4_paths[5], frame, n);
 }
 
 static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx0b4Timer *timer, Fx0b4Path *path, s32 frame, s32 n) {
     SVECTOR rot;
-    SVECTOR p;
+    SVECTOR pathPos;
 
-    fxm_rotPosPathGet(path, frame, &rot, &p);
-    p.vx /= 2;
-    p.vz /= 2;
-    p.vx = p.vx * 12 / 10;
-    p.vy = p.vy * 12 / 10;
-    p.vz = p.vz * 12 / 10;
-    p.vx += fx_0b4_pathOrigin.vx;
-    p.vy += fx_0b4_pathOrigin.vy;
-    p.vz += fx_0b4_pathOrigin.vz;
-    pos->vx = p.vx;
-    pos->vy = p.vy;
-    pos->vz = p.vz;
+    fxm_rotPosPathGet(path, frame, &rot, &pathPos);
+    pathPos.vx /= 2;
+    pathPos.vz /= 2;
+    pathPos.vx = pathPos.vx * 12 / 10;
+    pathPos.vy = pathPos.vy * 12 / 10;
+    pathPos.vz = pathPos.vz * 12 / 10;
+    pathPos.vx += fx_0b4_pathOrigin.vx;
+    pathPos.vy += fx_0b4_pathOrigin.vy;
+    pathPos.vz += fx_0b4_pathOrigin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -51,7 +51,7 @@ static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx0b4Timer *tim
 
 INCLUDE_RODATA("asm/us/fx_0b4/nonmatchings/fx_0b4", fx_0b4_headerPtr);
 
-s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
@@ -66,7 +66,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     u16 *file;
 
     if (mode == 0) {
-        *arg4 = 0x3C;
+        *args = 0x3C;
     } else if (mode == 1) {
         fx_0b4_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos2C);
@@ -179,25 +179,25 @@ static void fxm_rotPosPathInit(Fx0b4Path *path, u16 *data) {
     path->keys4 = (Fx0b4Point *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx0b4Path *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx0b4Key *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx0b4Path *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx0b4Key *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }

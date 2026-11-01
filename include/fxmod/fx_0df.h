@@ -49,17 +49,17 @@ extern Unk80100C78Entry *fx_0df_task;
 
 /* Never called: no reference in the module or effect file 0xDF, no hit on an exec breakpoint (runtime, round 33),
  * so fx_0df_recentPos keeps its data image. */
-void fx_0df_recordElemDraw(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7);
+void fx_0df_recordElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *alpha, s32 blend, s32 frame);
 static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0dfWork *work);
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
-                   s32 ang, s32 dang, s32 arg9, s32 arg10, s32 pad);
-s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth);
+s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 /* propagated */
 extern s32 fx_0df_twist;
-static void fxm_twistVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out);
-static void fxm_anglesFromEye(SVECTOR *a, SVECTOR *b);
+static void fxm_twistVertex(s32 radius, s32 unused1, s32 ang, s32 unused2, s16 *out);
+static void fxm_anglesFromEye(SVECTOR *target, SVECTOR *outAng);
 
 typedef struct {
     SVECTOR pos0; /* from */
@@ -78,8 +78,8 @@ typedef struct {
     s32 arcCountC; /* arcs spawned */
     s32 kind10; /* variant */
 } Fx0dfWork83; /* 0x14 */
-s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));
 
 typedef struct {
@@ -101,7 +101,7 @@ typedef struct {
 } Fx0dfWork80; /* 0x40 */
 
 extern BtlModelBuf fx_0df_effModels[];
-static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));
 s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 

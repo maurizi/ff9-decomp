@@ -1,23 +1,23 @@
 #include "fxmod/fx_04a.h"
 
-s32 fx_04a_op80(s32 mode, Fx04aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_04a_op80(s32 mode, Fx04aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
-        work->stop0 = 0;
+        work->hold0 = 0;
         fx_04a_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos4);
-        if (p != NULL) {
-            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos4);
+        if (emitter != NULL) {
+            emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;
-        if (work->stop0 == 0 && frame >= 0x20) {
+        if (work->hold0 == 0 && frame >= 0x20) {
             return 1;
         }
     }

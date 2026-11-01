@@ -1,46 +1,46 @@
 #include "fxmod/fx_1ad.h"
 
-static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    s32 t = (frame << 12) / frames;
-    s32 row = (e->slot - 1) % 6;
-    s32 v = t * fx_1ad_boneChains[row][0];
+static s32 fx_1ad_op80ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    s32 t = (frame << 12) / n;
+    s32 row = (pt->slot - 1) % 6;
+    s32 chainPos = t * fx_1ad_boneChains[row][0];
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1ad_env);
-    s32 frac = v & 0xFFF;
-    s32 i = v / 4096;
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR c;
+    s32 frac = chainPos & 0xFFF;
+    s32 link = chainPos / 4096;
+    SVECTOR from;
+    SVECTOR to;
+    SVECTOR point;
 
-    ex->btlfx_getUnitBonePos(0x10, fx_1ad_boneChains[row][i + 1], (u16 *)&a);
-    ex->btlfx_getUnitBonePos(0x10, fx_1ad_boneChains[row][i + 2], (u16 *)&b);
-    ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, frac, (s16 *)&c);
-    pos->vx = c.vx;
-    pos->vy = c.vy;
-    pos->vz = c.vz;
-    e->pos.vx = c.vx << 12;
-    e->pos.vy = c.vy << 12;
-    e->pos.vz = c.vz << 12;
-    if (frame >= frames) {
+    ex->btlfx_getUnitBonePos(0x10, fx_1ad_boneChains[row][link + 1], (u16 *)&from);
+    ex->btlfx_getUnitBonePos(0x10, fx_1ad_boneChains[row][link + 2], (u16 *)&to);
+    ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, frac, (s16 *)&point);
+    pos->vx = point.vx;
+    pos->vy = point.vy;
+    pos->vz = point.vz;
+    pt->pos.vx = point.vx << 12;
+    pt->pos.vy = point.vy << 12;
+    pt->pos.vz = point.vz << 12;
+    if (frame >= n) {
         return -1;
     }
     return 0;
 }
 
-s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     VECTOR pos;
     VECTOR scale;
-    MATRIX m;
-    Pool6CEntry *p;
+    MATRIX boneMtx;
+    Pool6CEntry *emitter;
     s32 frame;
-    s32 c;
+    s32 pulse;
     s32 t;
-    s32 k;
-    s32 n;
+    s32 otz;
+    s32 tick;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
         work->done0 = 0;
         work->frame4 = 0;
@@ -55,9 +55,9 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         pos.vy = work->pos8.vy;
         pos.vz = work->pos8.vz;
         if (work->done0 == 0) {
-            k = 0x40;
-            n = work->frame4;
-            ex->btlfx_drawScrollMove(n * 4, 0x200, 0x100, 0x20, k, ((n & 3) << 5) + 0x240, ((n * 16) & 0xC0) + 0x100);
+            otz = 0x40;
+            tick = work->frame4;
+            ex->btlfx_drawScrollMove(tick * 4, 0x200, 0x100, 0x20, otz, ((tick & 3) << 5) + 0x240, ((tick * 16) & 0xC0) + 0x100);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->frame4);
             if (frame == 0) {
                 work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
@@ -67,26 +67,26 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit20->trailStride = 0x3C;
                 }
                 if (work->emit20 != NULL) {
-                    work->emit20->otZ = k;
+                    work->emit20->otZ = otz;
                 }
                 if (work->emit20 != NULL) {
                     work->emit20->file->m.module.update = fx_1ad_op80ParticleMotion;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->trails = (s32)fx_1ad_op80Trails1;
-                    p->trailSlots = 0x10;
-                    p->trailStride = 0x6C;
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_1ad_op80Trails1;
+                    emitter->trailSlots = 0x10;
+                    emitter->trailStride = 0x6C;
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame >= 0xC) {
                 t = ((frame - 0xC) << 12) / 57;
-                c = ex->math_cos((frame * 0x52 + 0x200) & 0x3FE);
+                pulse = ex->math_cos((frame * 0x52 + 0x200) & 0x3FE);
                 scale.vz = 0x1800;
-                scale.vx = scale.vy = c / 3 + 0x1800;
-                ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&m);
-                ex->btlfx_matrixAngles(&m, (s16 *)&rot);
+                scale.vx = scale.vy = pulse / 3 + 0x1800;
+                ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&boneMtx);
+                ex->btlfx_matrixAngles(&boneMtx, (s16 *)&rot);
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
                 ex->Hi_ModifyEffModelRGB(work->model24, (ex->math_sin(t >> 1) >> 5) - 0x80,
                                          (ex->math_sin(t >> 1) >> 5) - 0x80, (ex->math_sin(t >> 1) >> 5) - 0x80);

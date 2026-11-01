@@ -23,7 +23,7 @@ extern BtlModelBuf fx_048_effModels[];
 extern s32 fx_048_trails[];
 extern u16 fx_048_texels[];
 
-s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 /* propagated */
 

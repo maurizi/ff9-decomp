@@ -1,16 +1,16 @@
 #include "fxmod/fx_1a4.h"
 
-s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    SVECTOR w;
+    SVECTOR risePos;
+    SVECTOR hopPos;
     s32 frame;
-    s32 d;
-    s32 e;
-    s32 c;
+    s32 hopFrame;
+    s32 riseFrame;
+    s32 alpha;
 
     if (mode == 0) {
-        *arg4 = 0x44;
+        *args = 0x44;
     } else if (mode == 1) {
         fx_1a4_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos14);
@@ -54,27 +54,27 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->timer3C >= 0) {
             work->timer3C--;
-            e = 0x60 - work->timer3C;
-            v.vx = work->pos24.vx;
-            v.vy = work->pos24.vy + e * e;
-            v.vz = work->pos24.vz;
-            ex->btlfx_setUnitPos(0x10, (s16 *)&v);
+            riseFrame = 0x60 - work->timer3C;
+            risePos.vx = work->pos24.vx;
+            risePos.vy = work->pos24.vy + riseFrame * riseFrame;
+            risePos.vz = work->pos24.vz;
+            ex->btlfx_setUnitPos(0x10, (s16 *)&risePos);
         }
         if (work->timer3E >= 0) {
             work->timer3E--;
-            d = 0x10 - work->timer3E;
-            w.vx = work->pos2C.vx;
-            w.vy = work->pos2C.vy - (d * 0x50 - d * 5 * d);
-            w.vz = work->pos2C.vz;
-            ex->btlfx_setUnitPos(0x10, (s16 *)&w);
+            hopFrame = 0x10 - work->timer3E;
+            hopPos.vx = work->pos2C.vx;
+            hopPos.vy = work->pos2C.vy - (hopFrame * 0x50 - hopFrame * 5 * hopFrame);
+            hopPos.vz = work->pos2C.vz;
+            ex->btlfx_setUnitPos(0x10, (s16 *)&hopPos);
         }
         if (work->timer40 >= 0) {
             work->fade34 = fxm_lerpRatio(0, -0x80, 0x20 - work->timer40, 0x20);
-            c = work->fade34 + 0x80;
-            if (c < 0x46) {
+            alpha = work->fade34 + 0x80;
+            if (alpha < 0x46) {
                 ex->btlfx_fadeUnitById(0x10, 0x46);
             } else {
-                ex->btlfx_fadeUnitById(0x10, c);
+                ex->btlfx_fadeUnitById(0x10, alpha);
             }
             work->timer40--;
         }
@@ -93,12 +93,12 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x5C;
+        *args = 0x5C;
     } else if (mode == 1) {
         fx_1a4_env = env;
         if (env->targets->fxArgs[1] != 0) {
@@ -190,8 +190,8 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_1a4_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_1a4_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

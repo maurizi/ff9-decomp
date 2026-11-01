@@ -32,6 +32,6 @@ extern SVECTOR fx_0c9_particlePos; /* particle position */
 extern SVECTOR fx_0c9_emitPos;
 extern s32 fx_0c9_trails[];
 
-static s32 fx_0c9_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_0c9_op81ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 
 #endif

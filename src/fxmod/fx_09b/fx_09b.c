@@ -1,22 +1,22 @@
 #include "fxmod/fx_09b.h"
 
-s32 fxm_pinParticle0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_09b_shotPos[0], frame, n);
 }
 
-s32 fxm_pinParticle1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_09b_shotPos[1], frame, n);
 }
 
-s32 fxm_pinParticle2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_09b_shotPos[2], frame, n);
 }
 
-s32 fxm_pinParticle3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_09b_shotPos[3], frame, n);
 }
 
-s32 fxm_pinParticle4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle4(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_09b_shotPos[4], frame, n);
 }
 
@@ -33,21 +33,21 @@ static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 fram
     return 0;
 }
 
-s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR ang;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x74;
+        *args = 0x74;
     } else if (mode == 1) {
-        s32 n = *arg4;
+        s32 shot = *args;
         fx_09b_env = env;
-        work->instance6C = n;
-        if (n >= FX_09B_SHOTS) {
+        work->instance6C = shot;
+        if (shot >= FX_09B_SHOTS) {
             return 1;
         }
-        if (n == 0) {
+        if (shot == 0) {
             ex->btlfx_initEffModels(fx_09b_effModels, 5);
         }
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos54);
@@ -158,14 +158,14 @@ static void fxm_startUnitMotion(s32 unit, s32 motion) {
 static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_09b_env);
 
-    s32 r;
+    s32 done;
 
     if (ex->btlfx_isUnitActive(unit)) {
-        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+        done = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    return r;
+    return done;
 }
 
 static void fxm_startHitMotionIfActive(s32 unit) {

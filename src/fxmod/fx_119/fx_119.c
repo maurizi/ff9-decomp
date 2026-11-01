@@ -1,10 +1,10 @@
 #include "fxmod/fx_119.h"
 
-s32 fx_119_op80(s32 mode, Fx119Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_119_op80(s32 mode, Fx119Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
         fx_119_env = env;
         env->camera->paused = 0;

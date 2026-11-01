@@ -2,18 +2,18 @@
 
 INCLUDE_RODATA("asm/us/fx_05d/nonmatchings/fx_05d", fx_05d_headerPtr);
 
-s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
-    s32 a;
-    s32 b;
+    s32 morphFrom;
+    s32 morphTo;
     s32 n;
-    s32 w;
-    SVECTOR p;
+    s32 morph;
+    SVECTOR trackPos;
 
     if (mode == 0) {
-        *arg4 = 0x68;
+        *args = 0x68;
     } else if (mode == 1) {
         fx_05d_env = env;
         ex->btlfx_initEffModels(fx_05d_effModels, 6);
@@ -76,41 +76,41 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 break;
             }
             if (frame < 2) {
-                a = 0;
-                b = 1;
+                morphFrom = 0;
+                morphTo = 1;
                 n = 2;
             } else if (frame < 4) {
-                a = 1;
-                b = 2;
+                morphFrom = 1;
+                morphTo = 2;
                 n = 2;
             } else if (frame < 6) {
-                a = 2;
-                b = 3;
+                morphFrom = 2;
+                morphTo = 3;
                 n = 2;
             } else if (frame < 8) {
-                a = 3;
-                b = 4;
+                morphFrom = 3;
+                morphTo = 4;
                 n = 2;
             } else if (frame < 0x1E) {
-                a = 4;
-                b = 5;
+                morphFrom = 4;
+                morphTo = 5;
                 n = 0xC;
             } else {
-                a = 5;
-                b = 5;
+                morphFrom = 5;
+                morphTo = 5;
                 n = 0;
             }
-            if (a == b) {
-                w = 0x1000;
+            if (morphFrom == morphTo) {
+                morph = 0x1000;
             } else if (n < work->morphFrame54) {
-                w = 0;
+                morph = 0;
             } else {
-                w = 0x1000 - (work->morphFrame54 << 12) / n;
+                morph = 0x1000 - (work->morphFrame54 << 12) / n;
             }
-            fxm_rotPosTrackGet(&fx_05d_rotPosKeys, frame, &work->rot18, &p);
-            work->pos20.vx = p.vx;
-            work->pos20.vy = p.vy;
-            work->pos20.vz = p.vz;
+            fxm_rotPosTrackGet(&fx_05d_rotPosKeys, frame, &work->rot18, &trackPos);
+            work->pos20.vx = trackPos.vx;
+            work->pos20.vy = trackPos.vy;
+            work->pos20.vz = trackPos.vz;
             work->pos20.vx += work->pos10.vx;
             work->pos20.vy += work->pos10.vy;
             work->pos20.vz += work->pos10.vz;
@@ -121,12 +121,12 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->scale30.vx = work->scale30.vx * 2 / 3;
             work->scale30.vy = work->scale30.vy * 2 / 3;
             work->scale30.vz = work->scale30.vz * 2 / 3;
-            ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[a], work->model5C[b], w);
-            ex->Hi_ModifyEffModelAbr(work->model5C[a], 1);
-            fxm_rotPosTrackGet(&fx_05d_rotPosKeys2, frame, &work->rot18, &p);
-            work->pos20.vx = p.vx;
-            work->pos20.vy = p.vy;
-            work->pos20.vz = p.vz;
+            ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[morphFrom], work->model5C[morphTo], morph);
+            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], 1);
+            fxm_rotPosTrackGet(&fx_05d_rotPosKeys2, frame, &work->rot18, &trackPos);
+            work->pos20.vx = trackPos.vx;
+            work->pos20.vy = trackPos.vy;
+            work->pos20.vz = trackPos.vz;
             work->pos20.vx += work->pos10.vx;
             work->pos20.vy += work->pos10.vy;
             work->pos20.vz += work->pos10.vz;
@@ -135,8 +135,8 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->scale30.vx = work->scale30.vx * 2 / 3;
             work->scale30.vy = work->scale30.vy * 2 / 3;
             work->scale30.vz = work->scale30.vz * 2 / 3;
-            ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[a], work->model5C[b], w);
-            ex->Hi_ModifyEffModelAbr(work->model5C[a], 1);
+            ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[morphFrom], work->model5C[morphTo], morph);
+            ex->Hi_ModifyEffModelAbr(work->model5C[morphFrom], 1);
             work->pos44.vx = work->pos20.vx;
             work->pos44.vy = work->pos20.vy;
             work->pos44.vz = work->pos20.vz;
@@ -164,23 +164,23 @@ static void fxm_rotPosTrackInit(Fx05dTrack12 *track, u16 *data) {
 static s32 fxm_rotPosTrackGet(Fx05dTrack12 *track, s32 t, SVECTOR *rot, SVECTOR *pos) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx05dKey12 *k;
+    Fx05dKey12 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
+    key = &track->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rx6;
-        rot->vy = k->ry8;
-        rot->vz = k->rzA;
+        rot->vx = key->rx6;
+        rot->vy = key->ry8;
+        rot->vz = key->rzA;
     }
     if (pos != NULL) {
-        pos->vx = -k->px0;
-        pos->vy = k->py2;
-        pos->vz = -k->pz4;
+        pos->vx = -key->px0;
+        pos->vy = key->py2;
+        pos->vz = -key->pz4;
     }
     return done;
 }
@@ -193,16 +193,16 @@ static void fxm_vecTrackInit(Fx05dTrack6 *track, u16 *data) {
 static s32 fxm_vecTrackGet(Fx05dTrack6 *track, s32 t, VECTOR *out) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx05dKey6 *k;
+    Fx05dKey6 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
-    out->vx = k->x;
-    out->vy = k->y;
-    out->vz = k->z;
+    key = &track->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }

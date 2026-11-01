@@ -1,12 +1,12 @@
 #include "fxmod/fx_0e7.h"
 
-s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    u16 n;
+    u16 lineFrame;
 
     if (mode == 0) {
-        *arg4 = 0x18;
+        *args = 0x18;
     } else if (mode == 1) {
         fx_0e7_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 1, (s16 *)&work->pos4);
@@ -25,11 +25,11 @@ s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->lineAlpha16 -= 0x200;
             }
             work->lineFrame14++;
-            n = work->lineFrame14;
-            if (n >= 6) {
-                n = 5;
+            lineFrame = work->lineFrame14;
+            if (lineFrame >= 6) {
+                lineFrame = 5;
             }
-            work->lineFrame14 = n;
+            work->lineFrame14 = lineFrame;
         }
         return frame >= 0x32;
     }
@@ -38,13 +38,13 @@ s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 INCLUDE_RODATA("asm/us/fx_0e7/nonmatchings/fx_0e7", fx_0e7_headerPtr);
 
-s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x7C;
+        *args = 0x7C;
     } else if (mode == 1) {
         fx_0e7_env = env;
         ex->btlfx_initEffModels(fx_0e7_effModels, 2);
@@ -68,7 +68,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                                                fx_0e7_texPos);
         work->model7A = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 1), fx_0e7_texPages,
                                                                fx_0e7_texPos);
-        work->fadeInTimer68 = -1;
+        work->blend68 = -1;
         work->fadeTimer6C = -1;
         work->dropTimer70 = -1;
         work->tiltTimer74 = -1;
@@ -131,7 +131,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[0].vx = work->pos1C.vx;
             env->camera->points[0].vy = work->pos1C.vy;
             env->camera->points[0].vz = work->pos1C.vz;
-            if (work->fadeInTimer68 >= 0 || work->fadeTimer6C >= 0) {
+            if (work->blend68 >= 0 || work->fadeTimer6C >= 0) {
                 if (work->fadeTimer6C >= 0) {
                     work->rgb3C = fxm_lerpRatio(0, -0x80, 0x10 - work->fadeTimer6C, 0x10);
                     work->fadeTimer6C--;
@@ -150,8 +150,8 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_0e7_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_0e7_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

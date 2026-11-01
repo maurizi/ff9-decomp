@@ -53,9 +53,9 @@ extern BtlModelBuf fx_1e9_effModels[];
 extern Fx1e9Trail fx_1e9_bolts[8];
 extern s32 fx_1e9_nextBolt;
 
-static s32 fx_1e9_op82PoolTask(s32 mode, Fx1e9Spark *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_1e9_op82PoolTask(s32 mode, Fx1e9Spark *spark, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 void fx_1e9_resetBolts(void);
-void fx_1e9_spawnBolt(Fx1e9Inst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to);
+void fx_1e9_spawnBolt(Fx1e9Inst *inst, SVECTOR *origin, s32 dist, SVECTOR *from, SVECTOR *to);
 
 #define TRAIL(e) ((Fx1e9Trail *)((e)->pos18 - 2))
 

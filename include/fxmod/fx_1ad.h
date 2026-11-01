@@ -21,6 +21,6 @@ extern BtlModelBuf fx_1ad_effModels[];
 extern s32 fx_1ad_op80Trails0[];
 extern s32 fx_1ad_op80Trails1[];
 
-static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1ad_op80ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 
 #endif

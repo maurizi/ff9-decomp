@@ -1,15 +1,15 @@
 #include "fxmod/fx_110.h"
 
-s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     s32 frame;
     s32 t;
     s32 i;
-    s32 c;
+    s32 rgb;
 
     if (mode == 0) {
-        *arg4 = 0xA4;
+        *args = 0xA4;
     } else if (mode == 1) {
         fx_110_env = env;
         ex->btlfx_initEffModels(fx_110_effModels, 2);
@@ -39,10 +39,10 @@ s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->modelA0);
         for (i = 0; i < 4; i++) {
             if (frame >= i + 1) {
-                c = -(i * 20);
+                rgb = -(i * 20);
                 ex->Hi_DrawEffModel(&work->rot40[i], &work->pos60[i], (s32)&work->scale30, work->modelA2);
                 ex->Hi_ModifyEffModelAbr(work->modelA2, 3);
-                ex->Hi_ModifyEffModelRGB(work->modelA2, c, c, c);
+                ex->Hi_ModifyEffModelRGB(work->modelA2, rgb, rgb, rgb);
             }
         }
         work->rot40[3].vx = work->rot40[2].vx;
@@ -77,11 +77,11 @@ s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_110_op81(s32 mode, Fx110Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_110_op81(s32 mode, Fx110Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
         fx_110_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);

@@ -1,25 +1,25 @@
 #include "fxmod/fx_17d_8.h"
 
-static s32 fx_17d_8_op80PoolTask(s32 mode, Fx17d8Obj *w, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx17d8Inst *inst) {
+static s32 fx_17d_8_op80PoolTask(s32 mode, Fx17d8Obj *puff, Unk800F78A4 *env, s32 entry, s32 frame, s32 pool, Fx17d8Inst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
-    s32 a;
-    s32 c;
+    s32 ang;
+    s32 drift;
 
     if (mode == 1) {
-        w->unk0 = 0;
+        puff->unk0 = 0;
     } else {
-        a = (frame << 7) >> 2;
-        c = (0x1000 - ex->math_cos(a)) * fx_17d_8_particleDrift;
-        pos.vx = w->posX4;
-        pos.vy = w->posY6;
-        pos.vz = w->posZ8;
-        pos.vx -= c >> 12;
-        scale.vx = scale.vy = scale.vz = ((0x1080 - ex->math_sin(a)) * w->scale2) >> 12;
-        ex->Hi_DrawEffModel(&w->rotC, &pos, (s32)&scale, inst->model78);
-        ex->Hi_ModifyEffModelRGB(inst->model78, (ex->math_sin(a) >> 5) - 0x80, (ex->math_sin(a) >> 5) - 0x80,
-                                 (ex->math_sin(a) >> 5) - 0x80);
+        ang = (frame << 7) >> 2;
+        drift = (0x1000 - ex->math_cos(ang)) * fx_17d_8_particleDrift;
+        pos.vx = puff->posX4;
+        pos.vy = puff->posY6;
+        pos.vz = puff->posZ8;
+        pos.vx -= drift >> 12;
+        scale.vx = scale.vy = scale.vz = ((0x1080 - ex->math_sin(ang)) * puff->scale2) >> 12;
+        ex->Hi_DrawEffModel(&puff->rotC, &pos, (s32)&scale, inst->model78);
+        ex->Hi_ModifyEffModelRGB(inst->model78, (ex->math_sin(ang) >> 5) - 0x80, (ex->math_sin(ang) >> 5) - 0x80,
+                                 (ex->math_sin(ang) >> 5) - 0x80);
         if (frame >= 0x20) {
             return 1;
         }
@@ -36,26 +36,26 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 r0, r1, r2, r3;
     s32 w0, w1, w2, w3;
     VECTOR sc;
-    CVECTOR cv;
-    SVECTOR sv;
-    VECTOR vv;
-    CVECTOR cv2;
-    SVECTOR sv2;
-    VECTOR vv2;
-    VECTOR vv3;
-    Fx17d8Obj *o;
-    Fx17d8Obj *o2;
-    Pool6CEntry *p;
-    s32 n1;
-    s32 n2;
+    CVECTOR gridCol;
+    SVECTOR gridRot;
+    VECTOR gridScale;
+    CVECTOR gridCol3;
+    SVECTOR gridRot3;
+    VECTOR gridScale3;
+    VECTOR gridScale4;
+    Fx17d8Obj *puff;
+    Fx17d8Obj *puff2;
+    Pool6CEntry *emitter;
+    s32 spriteX;
+    s32 shrinkAng;
     s32 frame;
     s32 t;
-    s32 h2;
-    s32 g2;
-    s32 h3;
-    s32 g3;
-    s32 c;
-    s32 v;
+    s32 dimT;
+    s32 coreRgb;
+    s32 outT;
+    s32 outRgb;
+    s32 fade;
+    s32 slideX;
 
     if (mode == 0) {
         init->workSize = 0xBC;
@@ -98,8 +98,8 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t = frame << 7;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             ex->Hi_ModifyEffModelRGB(work->model64, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
-            n1 = (((0x1000 - ex->math_sin(t >> 3)) << 6) >> 12) - 0x2C;
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), n1, 0x78, 0, 0xFF, t);
+            spriteX = (((0x1000 - ex->math_sin(t >> 3)) << 6) >> 12) - 0x2C;
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), spriteX, 0x78, 0, 0xFF, t);
             work->camPos20.vx -= 0x2E;
             env->camera->points[2].vx = work->camPos20.vx;
             env->camera->points[2].vy = work->camPos20.vy;
@@ -127,22 +127,22 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vz = work->camPos20.vz;
             fx_17d_8_particleDrift = 0x400;
             if (frame % 3 == 0) {
-                o = ex->btlfx_poolSpawn((s16 *)entry->pool);
-                if (o != NULL) {
-                    o->rotC.vx = 0x400;
-                    o->rotC.vy = 0x400;
-                    o->rotC.vz = 0;
-                    o->posX4 = work->pos48.vx;
-                    o->posY6 = work->pos48.vy;
-                    o->posZ8 = work->pos48.vz;
-                    o->scale2 = 0x1000;
+                puff = ex->btlfx_poolSpawn((s16 *)entry->pool);
+                if (puff != NULL) {
+                    puff->rotC.vx = 0x400;
+                    puff->rotC.vy = 0x400;
+                    puff->rotC.vz = 0;
+                    puff->posX4 = work->pos48.vx;
+                    puff->posY6 = work->pos48.vy;
+                    puff->posZ8 = work->pos48.vz;
+                    puff->scale2 = 0x1000;
                 }
             }
             env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos54, NULL, t >> 1, 0, 1, t);
             env->otZ = 0;
-            v = (((0x1000 - ex->math_sin((t >> 3) + 0x200)) << 6) >> 12) - 0x2C;
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), v, 0x78, 0, 0xFF, 0x1000);
+            slideX = (((0x1000 - ex->math_sin((t >> 3) + 0x200)) << 6) >> 12) - 0x2C;
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), slideX, 0x78, 0, 0xFF, 0x1000);
             if (frame >= 0x20) {
                 work->state0 = 2;
                 entry->frame = -1;
@@ -151,12 +151,12 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 2:
             t = (frame << 12) / 24;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
-            h2 = t / 2;
-            ex->Hi_ModifyEffModelRGB(work->model68, ((0x800 - h2) >> 5) - 0x80, ((0x800 - h2) >> 5) - 0x80,
-                                     ((0x800 - h2) >> 5) - 0x80);
+            dimT = t / 2;
+            ex->Hi_ModifyEffModelRGB(work->model68, ((0x800 - dimT) >> 5) - 0x80, ((0x800 - dimT) >> 5) - 0x80,
+                                     ((0x800 - dimT) >> 5) - 0x80);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model6C);
-            g2 = ((0x1000 - h2) >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->model6C, g2, g2, g2);
+            coreRgb = ((0x1000 - dimT) >> 5) - 0x80;
+            ex->Hi_ModifyEffModelRGB(work->model6C, coreRgb, coreRgb, coreRgb);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             sc.vx = sc.vy = (0x1000 - ex->math_sin(t >> 2)) / 3 + 0xF5;
             sc.vz = 0x800;
@@ -164,15 +164,15 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model74);
             fx_17d_8_particleDrift = (t >> 1) + 0x400;
             if (frame % 3 == 0) {
-                o2 = ex->btlfx_poolSpawn((s16 *)entry->pool);
-                if (o2 != NULL) {
-                    o2->rotC.vx = 0x400;
-                    o2->rotC.vy = 0x400;
-                    o2->rotC.vz = 0;
-                    o2->posX4 = work->pos48.vx;
-                    o2->posY6 = work->pos48.vy;
-                    o2->posZ8 = work->pos48.vz;
-                    o2->scale2 = 0x1000;
+                puff2 = ex->btlfx_poolSpawn((s16 *)entry->pool);
+                if (puff2 != NULL) {
+                    puff2->rotC.vx = 0x400;
+                    puff2->rotC.vy = 0x400;
+                    puff2->rotC.vz = 0;
+                    puff2->posX4 = work->pos48.vx;
+                    puff2->posY6 = work->pos48.vy;
+                    puff2->posZ8 = work->pos48.vz;
+                    puff2->scale2 = 0x1000;
                 }
             }
             if (frame == 1) {
@@ -183,19 +183,19 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->target18.vy = work->pos54.vy;
                 work->target18.vz = work->pos54.vz;
                 work->target18.vx -= 0xC00;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->target = (s32)&work->target18;
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->target = (s32)&work->target18;
+                    emitter->otZ = 0x80;
                 }
             }
-            cv.r = cv.g = cv.b = 0x84;
-            vv.vy = vv.vx = 0x1020;
-            sv.vx = 0;
-            sv.vy = 0;
-            sv.vz = 0;
-            vv.vz = 0x1000;
-            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv, &vv, &cv, 0, NULL);
+            gridCol.r = gridCol.g = gridCol.b = 0x84;
+            gridScale.vy = gridScale.vx = 0x1020;
+            gridRot.vx = 0;
+            gridRot.vy = 0;
+            gridRot.vz = 0;
+            gridScale.vz = 0x1000;
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &gridRot, &gridScale, &gridCol, 0, NULL);
             env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos54, NULL, (t >> 1) + 0x800, 0, 1,
                               ex->math_cos(t >> 2));
@@ -209,28 +209,28 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 3:
             t = (frame << 12) / 24;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
-            h3 = t / 2;
-            ex->Hi_ModifyEffModelRGB(work->model68, (-h3 >> 5) - 0x80, (-h3 >> 5) - 0x80, (-h3 >> 5) - 0x80);
+            outT = t / 2;
+            ex->Hi_ModifyEffModelRGB(work->model68, (-outT >> 5) - 0x80, (-outT >> 5) - 0x80, (-outT >> 5) - 0x80);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model6C);
-            g3 = ((0x800 - h3) >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->model6C, g3, g3, g3);
+            outRgb = ((0x800 - outT) >> 5) - 0x80;
+            ex->Hi_ModifyEffModelRGB(work->model6C, outRgb, outRgb, outRgb);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
-            n2 = t >> 2;
-            sc.vx = sc.vy = ((0x1000 - ex->math_sin(n2)) * 0xF5) >> 12;
+            shrinkAng = t >> 2;
+            sc.vx = sc.vy = ((0x1000 - ex->math_sin(shrinkAng)) * 0xF5) >> 12;
             sc.vz = 0x800;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model70);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model74);
-            fx_17d_8_particleDrift = n2 + 0xC00;
+            fx_17d_8_particleDrift = shrinkAng + 0xC00;
             if (!(frame & 3) && frame < 0x18) {
-                o = ex->btlfx_poolSpawn((s16 *)entry->pool);
-                if (o != NULL) {
-                    o->rotC.vx = 0x400;
-                    o->rotC.vy = 0x400;
-                    o->rotC.vz = 0;
-                    o->posX4 = work->pos48.vx;
-                    o->posY6 = work->pos48.vy;
-                    o->posZ8 = work->pos48.vz;
-                    o->scale2 = 0x1000 - t;
+                puff = ex->btlfx_poolSpawn((s16 *)entry->pool);
+                if (puff != NULL) {
+                    puff->rotC.vx = 0x400;
+                    puff->rotC.vy = 0x400;
+                    puff->rotC.vz = 0;
+                    puff->posX4 = work->pos48.vx;
+                    puff->posY6 = work->pos48.vy;
+                    puff->posZ8 = work->pos48.vz;
+                    puff->scale2 = 0x1000 - t;
                 }
             }
             if (frame == 0x16) {
@@ -257,13 +257,13 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     ((s32 *)&work->viewMtx7C)[7] = q3;
                 }
             }
-            cv2.r = cv2.g = cv2.b = 0x84;
-            vv2.vy = vv2.vx = 0x1020;
-            sv2.vx = 0;
-            sv2.vy = 0;
-            sv2.vz = 0;
-            vv2.vz = 0x1000;
-            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv2, &vv2, &cv2, 0, NULL);
+            gridCol3.r = gridCol3.g = gridCol3.b = 0x84;
+            gridScale3.vy = gridScale3.vx = 0x1020;
+            gridRot3.vx = 0;
+            gridRot3.vy = 0;
+            gridRot3.vz = 0;
+            gridScale3.vz = 0x1000;
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &gridRot3, &gridScale3, &gridCol3, 0, NULL);
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), -0x2C, 0x78, 0, 0xFF, 0x1000);
             if (frame >= 0x18) {
                 work->state0 = 4;
@@ -319,8 +319,8 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t = (frame << 12) / 20;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             ex->Hi_ModifyEffModelAbr(work->model64, 1);
-            c = 0x1000 - t;
-            ex->Hi_ModifyEffModelRGB(work->model64, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            fade = 0x1000 - t;
+            ex->Hi_ModifyEffModelRGB(work->model64, (fade >> 5) - 0x80, (fade >> 5) - 0x80, (fade >> 5) - 0x80);
             w0 = ((s32 *)&work->viewMtx9C)[0];
             w1 = ((s32 *)&work->viewMtx9C)[1];
             w2 = ((s32 *)&work->viewMtx9C)[2];
@@ -337,14 +337,14 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ((s32 *)env->viewMatrix)[5] = w1;
             ((s32 *)env->viewMatrix)[6] = w2;
             ((s32 *)env->viewMatrix)[7] = w3;
-            cv2.r = cv2.g = cv2.b = 0x84;
-            sv2.vx = 0;
-            sv2.vy = 0;
-            sv2.vz = 0;
-            vv3.vy = vv3.vx = 0x1020;
-            vv3.vz = 0x1000;
-            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv2, &vv3, &cv2, 0, NULL);
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), -0x2C, 0x78, 0, 1, c);
+            gridCol3.r = gridCol3.g = gridCol3.b = 0x84;
+            gridRot3.vx = 0;
+            gridRot3.vy = 0;
+            gridRot3.vz = 0;
+            gridScale4.vy = gridScale4.vx = 0x1020;
+            gridScale4.vz = 0x1000;
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &gridRot3, &gridScale4, &gridCol3, 0, NULL);
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), -0x2C, 0x78, 0, 1, fade);
             if (frame >= 0x14) {
                 ex->btlfx_poolClear(entry->pool);
                 ex->btlfx_clearEffModels();

@@ -36,8 +36,8 @@ extern u16 fx_034_primCounts[8]; /* primitive counts */
 extern Fx034Point fx_034_primCentres[]; /* primitive centres */
 
 void fx_034_explodeModel(s32 model, s32 scale, u8 *buf);
-void fx_034_pushPrims(s32 kind, s32 count, s32 scale, SVECTOR *v);
+void fx_034_pushPrims(s32 kind, s32 count, s32 scale, SVECTOR *verts);
 void fx_034_splitModel(s32 model, u8 *buf);
-void fx_034_calcPrimCentres(s32 kind, s32 count, SVECTOR *v);
+void fx_034_calcPrimCentres(s32 kind, s32 count, SVECTOR *verts);
 
 #endif

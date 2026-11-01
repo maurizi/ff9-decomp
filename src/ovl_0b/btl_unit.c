@@ -16,35 +16,35 @@ void btl_initEquipElements(Character *c, BtlUnit *u) {
     }
 }
 
-void btl_getWeaponOffset(Unk800BC1E0 *arg0, s16 *arg1) {
-    if (!(arg0->flags & 8)) {
-        arg1[0] = 0;
-        arg1[1] = arg0->reach;
+void btl_getWeaponOffset(Unk800BC1E0 *weapon, s16 *out) {
+    if (!(weapon->flags & 8)) {
+        out[0] = 0;
+        out[1] = weapon->reach;
     } else {
-        arg1[0] = arg0->reach;
-        arg1[1] = 0;
+        out[0] = weapon->reach;
+        out[1] = 0;
     }
-    arg1[2] = arg0->offsetZ;
+    out[2] = weapon->offsetZ;
 }
 
 void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     BtlModel *m = u->model;
-    BtlUnitA0 *a = u->obj;
-    BtlUnit *v;
-    SVECTOR tmp;
+    BtlUnitA0 *obj = u->obj;
+    BtlUnit *body;
+    SVECTOR rotCopy;
     SVECTOR rot;
     s32 i;
     s32 n;
-    s32 t;
-    BtlMotion *p;
-    s32 id;
-    BtlModel *w;
+    s32 rotKeysLo;
+    BtlMotion *motion;
+    s32 shadowBones;
+    BtlModel *weapon;
 
     if ((u->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
-        v = btl_findBodyUnit();
-        u->rot[0] = v->rot[0];
-        u->rot[1] = v->rot[1];
-        u->rot[2] = v->rot[2];
+        body = btl_findBodyUnit();
+        u->rot[0] = body->rot[0];
+        u->rot[1] = body->rot[1];
+        u->rot[2] = body->rot[2];
         u->home->pos[0] = u->model->bones[u->baseBone].tx << 16;
         u->home->pos[1] = 0;
         u->home->pos[2] = u->model->bones[u->baseBone].tz << 16;
@@ -58,21 +58,21 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         rot.vx = u->rot[0];
         rot.vy = 0x800;
         rot.vz = u->rot[2];
-        tmp = rot;
-        math_rotMatrixZYX(&tmp, &m->matrix);
+        rotCopy = rot;
+        math_rotMatrixZYX(&rotCopy, &m->matrix);
     } else {
         memset(&rot, 0, 8);
         rot.vx = u->rot[0];
         rot.vy = u->rot[1];
         rot.vz = u->rot[2];
-        tmp = rot;
-        math_rotMatrixZYX(&tmp, &m->matrix);
+        rotCopy = rot;
+        math_rotMatrixZYX(&rotCopy, &m->matrix);
     }
     m->matrix.t[0] = u->pos[0] >> 16;
     m->matrix.t[1] = u->pos[1] >> 16;
     m->matrix.t[2] = u->pos[2] >> 16;
     m->prims = 0;
-    if (a->frame >= m->motion->frameCount) {
+    if (obj->frame >= m->motion->frameCount) {
         if (!(u8)btl_setIdleMotion(u)) {
             u->obj->frame = 0;
         } else if (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) {
@@ -80,17 +80,17 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         }
     }
     btl_applyModelScale(m);
-    p = m->motion;
-    if (IS_OFFSET(p->rotKeys)) {
-        t = p->rotKeysLo;
-        p->rotKeys = (s32)p + p->rotKeys;
-        if (t != 0) {
-            p->rotKeysLo = (s32)m->motion + t;
+    motion = m->motion;
+    if (IS_OFFSET(motion->rotKeys)) {
+        rotKeysLo = motion->rotKeysLo;
+        motion->rotKeys = (s32)motion + motion->rotKeys;
+        if (rotKeysLo != 0) {
+            motion->rotKeysLo = (s32)m->motion + rotKeysLo;
         }
     }
-    *ot = (s32)btl_calcBoneMatrices(m, a->frame, (u8 *)*ot);
+    *ot = (s32)btl_calcBoneMatrices(m, obj->frame, (u8 *)*ot);
     if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) && !((u->flags >> BTL_UNIT_MOTION_HELD_BIT) & 1)) {
-        a->frame++;
+        obj->frame++;
     }
     n = m->header->meshCount;
     btl_updateModelVisibility(m);
@@ -108,9 +108,9 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     if (u->weaponModel != NULL) {
         u->weaponModel->prims = 0;
         *ot = (s32)btl_calcBoneMatrices(u->weaponModel, 0, (u8 *)*ot);
-        w = u->weaponModel;
-        n = w->header->meshCount;
-        btl_updateModelVisibility(w);
+        weapon = u->weaponModel;
+        n = weapon->header->meshCount;
+        btl_updateModelVisibility(weapon);
         u->weaponModel->flags &= ~BTL_MODEL_DRAWN;
         for (i = 0; i < n; i++) {
             if (!(u->weaponModel->hiddenMeshes & (1 << i))) {
@@ -121,7 +121,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         }
     }
     if ((u->flags >> BTL_UNIT_SHADOW_BIT) & 1) {
-        id = (u->shadowDirBone << 8) | u->shadowBone;
+        shadowBones = (u->shadowDirBone << 8) | u->shadowBone;
         if (u->flags & BTL_UNIT_PARTY) {
             if (!(g_gameState->gameData->ctx.battle->cmdFlags & BTL_CMDF_ESCAPE)) {
                 if (u->escapeStance != g_gameState->gameData->ctx.battle->escapeHeld) {
@@ -129,9 +129,9 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
                 }
                 u->escapeStance = g_gameState->gameData->ctx.battle->escapeHeld;
             }
-            *ot = (s32)btl_drawShadow(g_gameState->gameData->ctx.battle->work->shadows, BTL_UNIT_INDEX(u->flags), 0, id, (u8 *)*ot);
+            *ot = (s32)btl_drawShadow(g_gameState->gameData->ctx.battle->work->shadows, BTL_UNIT_INDEX(u->flags), 0, shadowBones, (u8 *)*ot);
         } else if (u->koState < BTL_KO_ENEMY_FADE) {
-            *ot = (s32)btl_drawShadow(g_gameState->gameData->ctx.battle->work->shadows, BTL_UNIT_INDEX(u->flags) + 9, 0, id, (u8 *)*ot);
+            *ot = (s32)btl_drawShadow(g_gameState->gameData->ctx.battle->work->shadows, BTL_UNIT_INDEX(u->flags) + 9, 0, shadowBones, (u8 *)*ot);
         }
     }
 }
@@ -141,7 +141,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
     Battle *b = g->ctx.battle;
     BtlCmd *cmd = b->curCmd;
     s32 cur;
-    s32 *a;
+    s32 *motions;
     BtlModel *m;
 
     if (u->status & BTL_STATUS_KO) {
@@ -179,12 +179,12 @@ s32 btl_setIdleMotion(BtlUnit *u) {
                     }
                 } else {
                     m = u->model;
-                    a = u->motions;
+                    motions = u->motions;
                     cur = (s32)m->motion;
-                    if (cur == a[0] && (u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
-                        m->motion = (BtlMotion *)a[7];
-                    } else if ((cur == a[1] || cur == a[6]) && !(u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
-                        m->motion = (BtlMotion *)a[5];
+                    if (cur == motions[0] && (u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
+                        m->motion = (BtlMotion *)motions[7];
+                    } else if ((cur == motions[1] || cur == motions[6]) && !(u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
+                        m->motion = (BtlMotion *)motions[5];
                     } else {
                         u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
                     }
@@ -198,92 +198,92 @@ s32 btl_setIdleMotion(BtlUnit *u) {
     }
 }
 
-void btl_startHitMotion(BtlUnit *arg0) {
-    u32 f;
-    if (arg0->popupFlags & BTL_POPUP_CRITICAL) {
-        arg0->pos[2] += (arg0->obj->rotY == 0) ? 0xC80000 : 0xFF380000;
+void btl_startHitMotion(BtlUnit *unit) {
+    u32 flags;
+    if (unit->popupFlags & BTL_POPUP_CRITICAL) {
+        unit->pos[2] += (unit->obj->rotY == 0) ? 0xC80000 : 0xFF380000;
     }
-    f = arg0->flags;
-    if (f & BTL_UNIT_PARTY) {
+    flags = unit->flags;
+    if (flags & BTL_UNIT_PARTY) {
         if ((g_gameState->gameData->ctx.battle->curCmd->ability->flags2 & 0x81) == 0x81) {
-            arg0->model->motion = (BtlMotion *)arg0->motions[BTL_MOTION_HIT_HEAVY];
+            unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_HIT_HEAVY];
         } else {
-            arg0->model->motion = (BtlMotion *)arg0->motions[BTL_MOTION_HIT];
+            unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_HIT];
         }
-    } else if (arg0->hp == 0 && (u8)(g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(f))->flags >> BTL_ENEMYF_DEATH_MOTION_BIT) {
-        arg0->model->motion = (BtlMotion *)arg0->motions[BTL_MOTION_HIT_HEAVY];
-        btl_playDeathCry(arg0, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg0->flags)].type->deathCry);
+    } else if (unit->hp == 0 && (u8)(g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(flags))->flags >> BTL_ENEMYF_DEATH_MOTION_BIT) {
+        unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_HIT_HEAVY];
+        btl_playDeathCry(unit, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->deathCry);
     } else {
-        if ((arg0->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
-            arg0 = btl_findBodyUnit();
+        if ((unit->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
+            unit = btl_findBodyUnit();
         }
-        arg0->model->motion = (BtlMotion *)arg0->motions[((arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) + BTL_MOTION_HIT];
+        unit->model->motion = (BtlMotion *)unit->motions[((unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) + BTL_MOTION_HIT];
     }
-    arg0->flags |= BTL_UNIT_HIT_MOTION;
-    arg0->obj->frame = 0;
+    unit->flags |= BTL_UNIT_HIT_MOTION;
+    unit->obj->frame = 0;
 }
 
-void btl_endPartyHitMotion(BtlUnit *arg0) {
-    BtlModel *m = arg0->model;
-    s32 *a = arg0->motions;
-    s32 c = (s32)m->motion;
-    if (c == a[2]) {
-        if (arg0->status & BTL_STATUS_KO) {
-            arg0->koState = BTL_KO_START;
-            arg0->flags &= ~BTL_UNIT_HIT_MOTION;
-        } else if ((arg0->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
-            m->motion = (BtlMotion *)a[10];
+void btl_endPartyHitMotion(BtlUnit *unit) {
+    BtlModel *m = unit->model;
+    s32 *motions = unit->motions;
+    s32 cur = (s32)m->motion;
+    if (cur == motions[2]) {
+        if (unit->status & BTL_STATUS_KO) {
+            unit->koState = BTL_KO_START;
+            unit->flags &= ~BTL_UNIT_HIT_MOTION;
+        } else if ((unit->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
+            m->motion = (BtlMotion *)motions[10];
         } else {
-            arg0->flags &= ~BTL_UNIT_HIT_MOTION;
+            unit->flags &= ~BTL_UNIT_HIT_MOTION;
         }
-    } else if (c == a[3]) {
-        if (arg0->status & BTL_STATUS_KO) {
-            arg0->koState = BTL_KO_PARTY_SET;
-            arg0->flags &= ~BTL_UNIT_HIT_MOTION;
-            arg0->model->motion = (BtlMotion *)arg0->motions[4];
+    } else if (cur == motions[3]) {
+        if (unit->status & BTL_STATUS_KO) {
+            unit->koState = BTL_KO_PARTY_SET;
+            unit->flags &= ~BTL_UNIT_HIT_MOTION;
+            unit->model->motion = (BtlMotion *)unit->motions[4];
         } else {
-            m->motion = (BtlMotion *)a[6];
+            m->motion = (BtlMotion *)motions[6];
         }
-    } else if (c == a[6]) {
-        if ((arg0->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
-            m->motion = (BtlMotion *)a[11];
-        } else if (arg0->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) {
-            arg0->flags &= ~BTL_UNIT_HIT_MOTION;
+    } else if (cur == motions[6]) {
+        if ((unit->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
+            m->motion = (BtlMotion *)motions[11];
+        } else if (unit->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) {
+            unit->flags &= ~BTL_UNIT_HIT_MOTION;
         } else {
-            m->motion = (BtlMotion *)a[5];
+            m->motion = (BtlMotion *)motions[5];
         }
     } else {
-        arg0->flags &= ~BTL_UNIT_HIT_MOTION;
+        unit->flags &= ~BTL_UNIT_HIT_MOTION;
     }
-    arg0->obj->frame = 0;
+    unit->obj->frame = 0;
 }
 
-void btl_endEnemyHitMotion(BtlUnit *arg0) {
+void btl_endEnemyHitMotion(BtlUnit *unit) {
     BtlModel *m;
-    s32 *a;
-    arg0->flags &= ~BTL_UNIT_HIT_MOTION;
-    if (arg0->status & BTL_STATUS_KO) {
-        m = arg0->model;
-        a = arg0->motions;
-        if ((s32)m->motion == a[3] && ((u8)(g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(arg0->flags))->flags >> BTL_ENEMYF_DEATH_MOTION_BIT)) {
-            m->motion = (BtlMotion *)a[4];
-            arg0->obj->frame--;
-            arg0->koState = BTL_KO_ENEMY_SOUND;
-            arg0->flags |= BTL_UNIT_MOTION_HELD;
+    s32 *motions;
+    unit->flags &= ~BTL_UNIT_HIT_MOTION;
+    if (unit->status & BTL_STATUS_KO) {
+        m = unit->model;
+        motions = unit->motions;
+        if ((s32)m->motion == motions[3] && ((u8)(g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(unit->flags))->flags >> BTL_ENEMYF_DEATH_MOTION_BIT)) {
+            m->motion = (BtlMotion *)motions[4];
+            unit->obj->frame--;
+            unit->koState = BTL_KO_ENEMY_SOUND;
+            unit->flags |= BTL_UNIT_MOTION_HELD;
             return;
         }
-        if (!(((g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(arg0->flags))->flags >> BTL_ENEMYF_SCRIPT_DEATH_BIT) & 1) && !((arg0->flags >> BTL_UNIT_KILLED_BIT) & 1)) {
-            arg0->koState = BTL_KO_START;
+        if (!(((g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(unit->flags))->flags >> BTL_ENEMYF_SCRIPT_DEATH_BIT) & 1) && !((unit->flags >> BTL_UNIT_KILLED_BIT) & 1)) {
+            unit->koState = BTL_KO_START;
             return;
         }
-        arg0->model->motion = (BtlMotion *)arg0->motions[(arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+        unit->model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
     }
 }
 
 void btl_updateKo(BtlUnit *u) {
     BtlEnemy *e;
     BtlModel *m;
-    u32 f;
+    u32 weak;
 
     if (u->koState == BTL_KO_NONE) {
         return;
@@ -352,7 +352,7 @@ void btl_updateKo(BtlUnit *u) {
             }
             u->koState = BTL_KO_PARTY_FALL;
         case BTL_KO_PARTY_FALL:
-            if ((f = (u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) == 1) {
+            if ((weak = (u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) == 1) {
                 u->model->motion = (BtlMotion *)u->motions[8];
                 u->koState = BTL_KO_PARTY_DOWN;
             } else {
@@ -381,19 +381,19 @@ void btl_updateKo(BtlUnit *u) {
     }
 }
 
-s32 btl_waitHitMotions(BtlCmd *arg0) {
+s32 btl_waitHitMotions(BtlCmd *cmd) {
     BtlUnit *u;
-    s32 r;
-    u32 bit = arg0->info.b.covered;
+    s32 done;
+    u32 covered = cmd->info.b.covered;
     do {
-        r = 1;
-        if (bit) {
-            return r;
+        done = 1;
+        if (covered) {
+            return done;
         }
     } while (0);
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         if ((u->flags >> BTL_UNIT_HIT_MOTION_BIT) & 1) {
-            r = 0;
+            done = 0;
             if (u->obj->frame >= u->model->motion->frameCount) {
                 u->pos[2] = u->home->pos[2];
                 if (u->flags & BTL_UNIT_PARTY) {
@@ -405,5 +405,5 @@ s32 btl_waitHitMotions(BtlCmd *arg0) {
             }
         }
     }
-    return r;
+    return done;
 }

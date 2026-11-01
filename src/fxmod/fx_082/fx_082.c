@@ -1,19 +1,19 @@
 #include "fxmod/fx_082.h"
 
-s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 scale[3];
     s32 mpos[3];
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 sc;
     s32 morph;
     s32 bright;
-    s32 c;
+    s32 tint;
     s32 t;
 
     if (mode == 0) {
-        *arg4 = 0x38;
+        *args = 0x38;
     } else if (mode == 1) {
         fx_082_env = env;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos18);
@@ -46,9 +46,9 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     work->pos10.vz += 0x40;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x20;
                 }
             }
             work->rot28.vx = -0x200;
@@ -65,21 +65,21 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc = 0xC00;
             bright = 0x1000;
             if (frame == 3) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x20;
                 }
             }
             if (frame >= 4) {
                 work->state0 = 2;
                 entry->frame = -1;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x20;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x20;
                 }
             }
             break;
@@ -90,13 +90,13 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 6;
             work->rot28.vx = 0x400 - ((frame & 1) * 2 - 1) * (ex->math_cos(t >> 2) >> 7);
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x20;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x20;
                 }
             }
             if (frame >= 6) {
@@ -124,38 +124,38 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawMorphEffModel(&work->rot28, (VECTOR *)mpos, (s32)scale, work->model30, work->model34, 0x1000 - morph);
             if (bright < 0x1000) {
                 ex->Hi_ModifyEffModelAbr(work->model30, 1);
-                c = (bright >> 5) - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->model30, c, c, c);
+                tint = (bright >> 5) - 0x80;
+                ex->Hi_ModifyEffModelRGB(work->model30, tint, tint, tint);
             }
         }
     }
     return 0;
 }
 
-s32 fx_082_op81(s32 mode, Fx082Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_082_op81(s32 mode, Fx082Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 v[3];
+    s32 scale[3];
     s32 frame;
-    s32 a;
-    s32 b;
-    s32 k;
+    s32 decayAng;
+    s32 wobbleAng;
+    s32 amp;
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode != 1) {
         frame = entry->frame;
-        v[0] = work->scale0[0];
-        v[1] = work->scale0[1];
-        v[2] = work->scale0[2];
-        a = (frame << 8) >> 2;
-        k = (ex->math_cos(a) << 11) >> 12;
-        b = frame << 9;
-        v[1] -= (ex->math_sin(b) * k) >> 12;
-        k = (ex->math_cos(a) << 11) >> 12;
-        k = (ex->math_sin(b) * k) >> 12;
-        v[0] += k;
-        v[2] += k;
-        ex->btlfx_setUnitScale(0, v);
+        scale[0] = work->scale0[0];
+        scale[1] = work->scale0[1];
+        scale[2] = work->scale0[2];
+        decayAng = (frame << 8) >> 2;
+        amp = (ex->math_cos(decayAng) << 11) >> 12;
+        wobbleAng = frame << 9;
+        scale[1] -= (ex->math_sin(wobbleAng) * amp) >> 12;
+        amp = (ex->math_cos(decayAng) << 11) >> 12;
+        amp = (ex->math_sin(wobbleAng) * amp) >> 12;
+        scale[0] += amp;
+        scale[2] += amp;
+        ex->btlfx_setUnitScale(0, scale);
         if (frame >= 0x10) {
             ex->btlfx_setUnitScale(0, work->scale0);
             return 1;
