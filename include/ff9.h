@@ -29,6 +29,13 @@
 #define REG_ASM(r) asm(r)
 #endif
 
+/* A pointer the original code can dereference while it is NULL (it then reads/writes low RAM, harmless on the PS1).
+ * The identity here, so the code compiles as in the original; a port redefines it to guard or redirect the access
+ * (ff9-ds: PSX_NZ). Used where the dereference sits in a header the port can't patch; .c sites carry a comment. */
+#ifndef PSX_NULLABLE
+#define PSX_NULLABLE(p) (p)
+#endif
+
 /* Is this offset-or-pointer field still a file offset, i.e. not yet relocated in place? Relocated values are
  * KSEG0 pointers (0x80xxxxxx, negative as s32). A port whose pointers are positive defines its own. */
 #ifndef IS_OFFSET

@@ -5023,7 +5023,7 @@ static inline void btl_killUnit_inline(BtlUnit *unit) {
         btl_playDeathCry(unit, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->deathCry);
     }
     model = unit->model;
-    if ((s32)model->motion != unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(unit->flags & BTL_UNIT_PARTY) || (s32)model->motion != unit->motions[BTL_MOTION_READY]) && unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+    if ((s32)model->motion != unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(unit->flags & BTL_UNIT_PARTY) || (s32)model->motion != unit->motions[BTL_MOTION_READY]) && unit != PSX_NULLABLE(g_gameState->gameData->ctx.battle->curCmd)->caster) {
         model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         unit->obj->frame = 0;
     }
@@ -5061,7 +5061,7 @@ static inline void btl_damageHp_inline(BtlUnit *unit, s32 damage, u8 hitMotion) 
         unit->hpChange = 0;
         return;
     }
-    if (unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+    if (unit != PSX_NULLABLE(g_gameState->gameData->ctx.battle->curCmd)->caster) {
         facing = (unit->flags & BTL_UNIT_PARTY) << 11;
         unit->obj->rotY = facing;
         unit->rot[1] = facing;
