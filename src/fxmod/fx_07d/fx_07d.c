@@ -603,35 +603,35 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx07dStrip *buf, s32 *tab, SVECTOR *from, SVECTOR *to, s32 r0, s32 r1, s32 s,
-                   s32 step, s32 a9, s32 a10, s32 pad) {
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx07dStrip *trail, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     Unk800F78A4 *env = fx_07d_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
-    SVECTOR ang;
+    SVECTOR rot;
     s32 i;
     s32 t;
-    s32 h;
-    SVECTOR *v;
+    s32 offset;
+    SVECTOR *pt;
 
-    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    v = buf->pts4;
-    buf->lastSlot0 = buf->count2 = 14;
-    buf->head1 = 0;
+    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
+    pt = trail->pts4;
+    trail->lastSlot0 = trail->count2 = 14;
+    trail->head1 = 0;
     for (i = 0; i < 15; i++) {
         t = 0x1000 - (i << 12) / 14;
-        t += *tab++;
+        t += *jitter++;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
-        h = *tab++;
-        h = (ex->math_sin(t >> 1) * h) >> 12;
-        h += ex->btlfx_lerp(r0, r1, t);
-        ex->btlfx_offsetPoint(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
-        v->pad = pad;
-        s += step + *tab++;
-        v++;
+        offset = *jitter++;
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
+        pt->pad = lineWidth;
+        ang += dang + *jitter++;
+        pt++;
     }
     env->otZ = 0x200;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, NULL, a9, 0x1000, a10 * 2 / 3, 2, (u8 *)buf, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, NULL, frame, 0x1000, fade * 2 / 3, 2, (u8 *)trail, 0);
     env->otZ = 0;
 }
 

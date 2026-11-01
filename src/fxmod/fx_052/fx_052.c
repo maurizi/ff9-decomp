@@ -159,9 +159,9 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_052_env)->btlfx_drawScreenTint((u32 *)(fx_052_env->ot + ot), abr, c, c, c);
+    BTLFX_EXPORTS(fx_052_env)->btlfx_drawScreenTint((u32 *)(fx_052_env->ot + ot), abr, bright, bright, bright);
 }
 
 INCLUDE_RODATA("asm/us/fx_052/nonmatchings/fx_052", fx_052_headerPtr);

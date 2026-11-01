@@ -59,7 +59,7 @@ void fxm_shatterModelUpdate(void);
 s32 fxm_splitModelInit(u8 *buf);
 static s32 fxm_splitModelAdd(s32 model);
 Fx0ecShard *fxm_splitFreeShard(void);
-s32 fxm_splitRelease(s32 y, SVECTOR *center);
+s32 fxm_splitRelease(s32 lineY, SVECTOR *center);
 void fxm_splitUpdate(void);
 
 typedef struct {

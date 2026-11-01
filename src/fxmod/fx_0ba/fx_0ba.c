@@ -294,32 +294,32 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTOR *from, SVECTOR *to, s32 amp, s32 s, s32 step,
-                   s32 a7, s32 a8, s32 pad) {
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0baStrip *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
+                   s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0ba_env);
     SVECTOR pos;
-    SVECTOR ang;
-    SVECTOR *v;
+    SVECTOR rot;
+    SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 h;
+    s32 offset;
 
-    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    v = buf->pts4;
-    buf->lastSlot0 = buf->count2 = 24;
-    buf->head1 = 0;
-    for (i = 0; i < 25; i++, v++) {
+    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
+    pt = trail->pts4;
+    trail->lastSlot0 = trail->count2 = 24;
+    trail->head1 = 0;
+    for (i = 0; i < 25; i++, pt++) {
         t = 0x1000 - (i << 12) / 24;
         t += ex->btlfx_randCentered(0x140);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
-        h = ex->btlfx_randCentered(0x80);
-        h = (ex->math_sin(t >> 1) * h) >> 12;
-        h += 0x20 + ((ex->math_sin(t >> 1) * amp) >> 12);
-        ex->btlfx_offsetPoint(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
-        v->pad = pad;
-        s += step + ex->btlfx_randCentered(0x100);
+        offset = ex->btlfx_randCentered(0x80);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += 0x20 + ((ex->math_sin(t >> 1) * amp) >> 12);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
+        pt->pad = lineWidth;
+        ang += dang + ex->btlfx_randCentered(0x100);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0, NULL, a7, 0x1000, a8, 1, (u8 *)buf, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
 s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
@@ -911,7 +911,7 @@ s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 }
 
 static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx0baStrip *trail, s32 size, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 ampFrom, s32 ampTo, s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 dip) {
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip) {
     Unk800F78A4 *env = fx_0ba_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
@@ -933,13 +933,13 @@ static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx0
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = *noise++;
         offset = (ex->math_sin(t >> 1) * offset) >> 12;
-        offset += ex->btlfx_lerp(ampFrom, ampTo, t);
-        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, width);
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         if (dip != 0) {
             pt->vy -= (ex->math_sin(t >> 1) * dip) >> 12;
         }
         pt->pad = lineWidth;
-        width += dwidth + *noise++;
+        ang += dang + *noise++;
     }
     env->otZ = 0x80;
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, mode);

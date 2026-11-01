@@ -1,37 +1,37 @@
 #include "fxmod/fx_0d2.h"
 
 static void fxm_buildPathTrail(Fx0d2Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip) {
-    SVECTOR v;
-    SVECTOR *p;
-    s32 cnt;
+    SVECTOR pos;
+    SVECTOR *pt;
+    s32 count;
     s32 i;
-    s32 j;
-    s32 k;
+    s32 keyIdx;
+    s32 next;
 
-    cnt = (size - 4) / 8;
-    p = (SVECTOR *)(buf + 4);
-    buf[0] = buf[2] = cnt - 1;
+    count = (size - 4) / 8;
+    pt = (SVECTOR *)(buf + 4);
+    buf[0] = buf[2] = count - 1;
     buf[1] = 0;
-    if (n < cnt) {
-        for (i = 0; i < cnt - n; i++) {
-            p->pad = 0;
-            p++;
+    if (n < count) {
+        for (i = 0; i < count - n; i++) {
+            pt->pad = 0;
+            pt++;
         }
     } else {
-        n = cnt;
+        n = count;
     }
     for (i = 0; i < n; i++) {
-        k = i + 1;
-        j = n - k + start;
-        if (clip != 0 && j >= keys->count2) {
+        next = i + 1;
+        keyIdx = n - next + start;
+        if (clip != 0 && keyIdx >= keys->count2) {
             break;
         }
-        fxm_posPathGet(keys, j, &v);
-        p->vx = v.vx;
-        p->vy = v.vy;
-        p->vz = v.vz;
-        p->pad = from + (to - from) / keys->count2 * (n - i);
-        p++;
+        fxm_posPathGet(keys, keyIdx, &pos);
+        pt->vx = pos.vx;
+        pt->vy = pos.vy;
+        pt->vz = pos.vz;
+        pt->pad = from + (to - from) / keys->count2 * (n - i);
+        pt++;
     }
 }
 
@@ -774,17 +774,17 @@ static void fxm_posPathInit(Fx0d2Path *path, u16 *data) {
 static s32 fxm_posPathGet(Fx0d2Path *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx0d2Point *p;
+    Fx0d2Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->points4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->points4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
@@ -794,27 +794,27 @@ static void fxm_rotPosPathInit(Fx0d2Path *path, u16 *data) {
     path->points4 = (Fx0d2Point *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx0d2KeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx0d2Key *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx0d2KeyPath *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx0d2Key *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }
 
 static void fxm_valuePathInit(Fx0d2Path *path, u16 *data) {
@@ -823,16 +823,16 @@ static void fxm_valuePathInit(Fx0d2Path *path, u16 *data) {
     path->points4 = (Fx0d2Point *)data;
 }
 
-static s32 fxm_valuePathGet(Fx0d2Keys *keys, s32 i, s32 *out) {
-    s32 r = 1;
+static s32 fxm_valuePathGet(Fx0d2Keys *keys, s32 t, s32 *out) {
+    s32 done = 1;
 
-    if (i > keys->count2 - 1) {
-        i = keys->count2 - 1;
+    if (t > keys->count2 - 1) {
+        t = keys->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    *out = *(s16 *)((u8 *)keys->keys4 + (i << 1));
-    return r;
+    *out = *(s16 *)((u8 *)keys->keys4 + (t << 1));
+    return done;
 }
 
 static void fxm_vecPathInit(Fx0d2Path *path, u16 *data) {
@@ -844,24 +844,24 @@ static void fxm_vecPathInit(Fx0d2Path *path, u16 *data) {
 static s32 fxm_vecPathGet(Fx0d2Path *track, s32 t, VECTOR *out) {
     s32 last = track->count2 - 1;
     s32 done = 1;
-    Fx0d2Point *k;
+    Fx0d2Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->points4[t];
-    out->vx = k->x;
-    out->vy = k->y;
-    out->vz = k->z;
+    key = &track->points4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_0d2_env)->btlfx_drawScreenTint((u32 *)(fx_0d2_env->ot + ot), abr, c, c, c);
+    BTLFX_EXPORTS(fx_0d2_env)->btlfx_drawScreenTint((u32 *)(fx_0d2_env->ot + ot), abr, bright, bright, bright);
 }
 
 static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {

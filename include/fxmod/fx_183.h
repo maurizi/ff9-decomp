@@ -72,6 +72,6 @@ extern Unk800F78A4 *fx_183_env;
 /* end copied */
 
 /* propagated */
-static s32 fxm_rotPosPathGet(Fx183Path *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx183Path *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 
 #endif

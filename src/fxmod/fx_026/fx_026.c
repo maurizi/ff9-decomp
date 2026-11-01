@@ -10,46 +10,46 @@ static void fxm_keyGetVec(Fx026Track *track, s32 t, SVECTOR *out) {
     out->vz = ((s16 *)track)[2];
 }
 
-static void fxm_keyGetVec2(Fx026Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
-    s16 *k;
+static void fxm_keyGetVec2(Fx026Track *track, s32 t, SVECTOR *out0, SVECTOR *out1) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 6];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 6];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
 }
 
-static void fxm_keyGetVec3(Fx026Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
-    s16 *k;
+static void fxm_keyGetVec3(Fx026Track *track, s32 t, SVECTOR *out0, SVECTOR *out1, SVECTOR *out2) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 9];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 9];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
-    if (c != NULL) {
-        c->vx = k[6];
-        c->vy = k[7];
-        c->vz = k[8];
+    if (out2 != NULL) {
+        out2->vx = key[6];
+        out2->vy = key[7];
+        out2->vz = key[8];
     }
 }
 
@@ -593,86 +593,86 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_shatterInit(s32 i, s32 n, Fx026Shatter *buf, Fx026Tri *tris) {
-    Fx026Shatter *h;
+static void fxm_shatterInit(s32 slot, s32 life, Fx026Shatter *buf, Fx026Tri *tris) {
+    Fx026Shatter *set;
 
-    fx_026_shatterSets[i] = buf;
-    fx_026_shatterShards[i] = (Fx026Shard *)(buf + 1);
-    h = fx_026_shatterSets[i];
-    h->life0 = n;
-    h->triCount2 = 0;
-    h->nextTriC = tris;
-    h->tris8 = tris;
+    fx_026_shatterSets[slot] = buf;
+    fx_026_shatterShards[slot] = (Fx026Shard *)(buf + 1);
+    set = fx_026_shatterSets[slot];
+    set->life0 = life;
+    set->triCount2 = 0;
+    set->nextTriC = tris;
+    set->tris8 = tris;
 }
 
-static s32 fxm_shatterAddModel(s32 i, s32 model) {
+static s32 fxm_shatterAddModel(s32 slot, s32 model) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_026_env);
-    Fx026Shatter *h = fx_026_shatterSets[i];
-    Fx026Tri *t = h->nextTriC;
-    Fx026Shard *p;
+    Fx026Shatter *set = fx_026_shatterSets[slot];
+    Fx026Tri *tri = set->nextTriC;
+    Fx026Shard *shard;
     s32 n;
     s32 k;
 
     n = (u32)ex->Hi_GetSplitMdlVertex(model, -1) / 24;
-    ex->Hi_SplitMdlVertex(model, -1, (s32)t);
-    h->lastTris10 = t;
-    h->lastCount4 = n;
-    h->nextTriC = t + n;
-    h->triCount2 += n;
-    for (k = 0; k < n; k++, t++) {
-        t->vert0.pad = 0;
+    ex->Hi_SplitMdlVertex(model, -1, (s32)tri);
+    set->lastTris10 = tri;
+    set->lastCount4 = n;
+    set->nextTriC = tri + n;
+    set->triCount2 += n;
+    for (k = 0; k < n; k++, tri++) {
+        tri->vert0.pad = 0;
     }
-    p = fx_026_shatterShards[i];
-    for (k = 0; k < n; k++, p++) {
-        p->frame18 = -1;
+    shard = fx_026_shatterShards[slot];
+    for (k = 0; k < n; k++, shard++) {
+        shard->frame18 = -1;
     }
-    return h->triCount2;
+    return set->triCount2;
 }
 
-static Fx026Shard *fxm_shatterFreeShard(s32 i) {
-    Fx026Shatter *h = fx_026_shatterSets[i];
-    Fx026Shard *p = fx_026_shatterShards[i];
+static Fx026Shard *fxm_shatterFreeShard(s32 slot) {
+    Fx026Shatter *set = fx_026_shatterSets[slot];
+    Fx026Shard *shard = fx_026_shatterShards[slot];
     s32 k;
 
-    for (k = 0; k < h->triCount2; k++, p++) {
-        if (p->frame18 < 0) {
-            return p;
+    for (k = 0; k < set->triCount2; k++, shard++) {
+        if (shard->frame18 < 0) {
+            return shard;
         }
     }
     return NULL;
 }
 
-static s32 fxm_shatterRelease(s32 i) {
+static s32 fxm_shatterRelease(s32 slot) {
     s32 idx = 0;
     s32 k = 0;
-    Fx026Shatter *h = fx_026_shatterSets[i];
-    Fx026Tri *t = h->tris8;
+    Fx026Shatter *set = fx_026_shatterSets[slot];
+    Fx026Tri *tri = set->tris8;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_026_env);
     s32 n = 0;
-    s32 y = fx_026_shatterLine;
-    Fx026Shard *p;
-    SVECTOR v;
+    s32 lineY = fx_026_shatterLine;
+    Fx026Shard *shard;
+    SVECTOR center;
 
-    for (; k < h->triCount2; k++, t++, idx++) {
-        if (y < t->vert8.vy && t->vert0.pad == 0) {
-            p = fxm_shatterFreeShard(i);
-            if (p != NULL) {
-                t->vert0.pad = 1;
-                p->x0 = ((t->vert0.vx + t->vert8.vx + t->vert10.vx) / 3) << 12;
-                p->y4 = ((t->vert0.vy + t->vert8.vy + t->vert10.vy) / 3) << 12;
-                p->z8 = ((t->vert0.vz + t->vert8.vz + t->vert10.vz) / 3) << 12;
-                p->frame18 = 0;
-                p->tri1A = idx;
-                p->drag12 = 0x1000;
-                p->spin14 = ex->btlfx_randCentered(0x100);
-                p->spin16 = ex->btlfx_randCentered(0x200);
-                v.vx = p->x0 >> 12;
-                v.vy = p->y4 >> 12;
-                v.vz = p->z8 >> 12;
-                p->velC = (v.vx >> 5) + ex->btlfx_randCentered(0x18);
+    for (; k < set->triCount2; k++, tri++, idx++) {
+        if (lineY < tri->vert8.vy && tri->vert0.pad == 0) {
+            shard = fxm_shatterFreeShard(slot);
+            if (shard != NULL) {
+                tri->vert0.pad = 1;
+                shard->x0 = ((tri->vert0.vx + tri->vert8.vx + tri->vert10.vx) / 3) << 12;
+                shard->y4 = ((tri->vert0.vy + tri->vert8.vy + tri->vert10.vy) / 3) << 12;
+                shard->z8 = ((tri->vert0.vz + tri->vert8.vz + tri->vert10.vz) / 3) << 12;
+                shard->frame18 = 0;
+                shard->tri1A = idx;
+                shard->drag12 = 0x1000;
+                shard->spin14 = ex->btlfx_randCentered(0x100);
+                shard->spin16 = ex->btlfx_randCentered(0x200);
+                center.vx = shard->x0 >> 12;
+                center.vy = shard->y4 >> 12;
+                center.vz = shard->z8 >> 12;
+                shard->velC = (center.vx >> 5) + ex->btlfx_randCentered(0x18);
                 n++;
-                p->velE = (v.vy >> 5) + (ex->btlfx_rand() & 0x1F);
-                p->vel10 = (v.vz >> 5) + ex->btlfx_randCentered(0x18);
+                shard->velE = (center.vy >> 5) + (ex->btlfx_rand() & 0x1F);
+                shard->vel10 = (center.vz >> 5) + ex->btlfx_randCentered(0x18);
             }
         }
     }
@@ -680,80 +680,80 @@ static s32 fxm_shatterRelease(s32 i) {
 }
 
 /* move the flying shards of shatter i and write their triangles back */
-static void fxm_shatterUpdate(s32 i) {
-    SVECTOR a;
+static void fxm_shatterUpdate(s32 slot) {
+    SVECTOR moved;
     SVECTOR rot;
-    SVECTOR c;
-    SVECTOR d0;
-    SVECTOR d1;
-    SVECTOR d2;
+    SVECTOR center;
+    SVECTOR rel0;
+    SVECTOR rel1;
+    SVECTOR rel2;
     SVECTOR zero;
     VECTOR out;
     VECTOR sv;
     MATRIX m;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_026_env);
-    Fx026Shard *p;
-    Fx026Shatter *h;
-    Fx026Tri *t;
+    Fx026Shard *shard;
+    Fx026Shatter *set;
+    Fx026Tri *tri;
     s32 k;
 
     sv.vx = sv.vy = sv.vz = 0xF9C;
-    p = fx_026_shatterShards[i];
-    h = fx_026_shatterSets[i];
+    shard = fx_026_shatterShards[slot];
+    set = fx_026_shatterSets[slot];
     rot.vz = 0;
     *(s32 *)&zero.vx = 0;
     *(s32 *)&zero.vz = 0;
-    for (k = 0; k < h->triCount2; k++, p++) {
-        if (p->frame18 >= 0) {
-            t = &h->tris8[p->tri1A];
-            c.vx = p->x0 >> 12;
-            c.vy = p->y4 >> 12;
-            c.vz = p->z8 >> 12;
-            d0.vx = t->vert0.vx - c.vx;
-            d0.vy = t->vert0.vy - c.vy;
-            d0.vz = t->vert0.vz - c.vz;
-            d1.vx = t->vert8.vx - c.vx;
-            d1.vy = t->vert8.vy - c.vy;
-            d1.vz = t->vert8.vz - c.vz;
-            d2.vx = t->vert10.vx - c.vx;
-            d2.vy = t->vert10.vy - c.vy;
-            d2.vz = t->vert10.vz - c.vz;
-            ex->btlfx_stepModuleParticle((Pool6CEntry *)p, 0, &zero, &a);
-            *(s32 *)&rot = *(s32 *)&p->spin14;
+    for (k = 0; k < set->triCount2; k++, shard++) {
+        if (shard->frame18 >= 0) {
+            tri = &set->tris8[shard->tri1A];
+            center.vx = shard->x0 >> 12;
+            center.vy = shard->y4 >> 12;
+            center.vz = shard->z8 >> 12;
+            rel0.vx = tri->vert0.vx - center.vx;
+            rel0.vy = tri->vert0.vy - center.vy;
+            rel0.vz = tri->vert0.vz - center.vz;
+            rel1.vx = tri->vert8.vx - center.vx;
+            rel1.vy = tri->vert8.vy - center.vy;
+            rel1.vz = tri->vert8.vz - center.vz;
+            rel2.vx = tri->vert10.vx - center.vx;
+            rel2.vy = tri->vert10.vy - center.vy;
+            rel2.vz = tri->vert10.vz - center.vz;
+            ex->btlfx_stepModuleParticle((Pool6CEntry *)shard, 0, &zero, &moved);
+            *(s32 *)&rot = *(s32 *)&shard->spin14;
             ex->math_rotMatrixYXZ(&rot, &m);
             ex->ScaleMatrix(&m, &sv);
-            m.t[0] = p->x0 >> 12;
-            m.t[1] = p->y4 >> 12;
-            m.t[2] = p->z8 >> 12;
+            m.t[0] = shard->x0 >> 12;
+            m.t[1] = shard->y4 >> 12;
+            m.t[2] = shard->z8 >> 12;
             ex->SetRotMatrix(&m);
             ex->SetTransMatrix(&m);
-            gte_ldv0(&d0);
+            gte_ldv0(&rel0);
             gte_rtv0tr();
             gte_stlvnl(&out);
-            gte_ldv0(&d1);
+            gte_ldv0(&rel1);
             gte_rtv0tr();
-            t->vert0.vx = out.vx;
-            t->vert0.vy = out.vy;
-            t->vert0.vz = out.vz;
+            tri->vert0.vx = out.vx;
+            tri->vert0.vy = out.vy;
+            tri->vert0.vz = out.vz;
             gte_stlvnl(&out);
-            gte_ldv0(&d2);
+            gte_ldv0(&rel2);
             gte_rtv0tr();
-            t->vert8.vx = out.vx;
-            t->vert8.vy = out.vy;
-            t->vert8.vz = out.vz;
+            tri->vert8.vx = out.vx;
+            tri->vert8.vy = out.vy;
+            tri->vert8.vz = out.vz;
             gte_stlvnl(&out);
-            t->vert10.vx = out.vx;
-            t->vert10.vy = out.vy;
-            t->vert10.vz = out.vz;
-            p->frame18++;
-            if (p->frame18 >= h->life0) {
-                p->frame18 = -1;
-                t->vert10.vz = 0;
-                *(s32 *)&t->vert10 = 0;
-                t->vert8.vz = 0;
-                *(s32 *)&t->vert8 = 0;
-                t->vert0.vz = 0;
-                *(s32 *)&t->vert0 = 0;
+            tri->vert10.vx = out.vx;
+            tri->vert10.vy = out.vy;
+            tri->vert10.vz = out.vz;
+            shard->frame18++;
+            if (shard->frame18 >= set->life0) {
+                shard->frame18 = -1;
+                tri->vert10.vz = 0;
+                *(s32 *)&tri->vert10 = 0;
+                tri->vert8.vz = 0;
+                *(s32 *)&tri->vert8 = 0;
+                tri->vert0.vz = 0;
+                *(s32 *)&tri->vert0 = 0;
             }
         }
     }

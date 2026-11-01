@@ -582,7 +582,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 }
 
 static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx1bf1Trail *trail, s32 size, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 ampFrom, s32 ampTo, s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 dip) {
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip) {
     Unk800F78A4 *env = fx_1bf_1_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
@@ -607,13 +607,13 @@ static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx1bf1
         offset = *noise++ / 3;
         offset = (ex->math_sin((t >> 1) >> 1) * offset) >> 12;
         t >>= 1;
-        offset += ex->btlfx_lerp(ampFrom, ampTo, ex->math_sin(t));
-        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, width);
+        offset += ex->btlfx_lerp(amp0, amp1, ex->math_sin(t));
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         if (dip != 0) {
             pt->vy -= (ex->math_sin(t) * dip) >> 12;
         }
         pt->pad = lineWidth;
-        width += dwidth + *noise++;
+        ang += dang + *noise++;
     }
     env->otZ = 0x80;
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, mode);

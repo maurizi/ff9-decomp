@@ -3,9 +3,9 @@
 static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 abr, s32 ot) {
     Unk800F78A4 *env = fx_1f3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 c = ex->btlfx_lerpRatio(from, to, t, n);
+    s32 bright = ex->btlfx_lerpRatio(from, to, t, n);
 
-    ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), abr, c, c, c);
+    ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), abr, bright, bright, bright);
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {

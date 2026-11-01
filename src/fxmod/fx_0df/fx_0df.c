@@ -528,12 +528,12 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
                    s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     Unk800F78A4 *env = fx_0df_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
@@ -543,11 +543,11 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
     for (i = 0; i < 15; i++) {
         t = 0x1000 - (i << 12) / 14;
         t += *jitter++;
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = *jitter++;
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = *jitter++;
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = lineWidth;
         ang += dang + *jitter++;
         pt++;

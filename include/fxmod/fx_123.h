@@ -79,7 +79,7 @@ typedef struct {
     u16 count2; /* keys */
     Fx123Key *keys4;
 } Fx123Path_0b4;
-static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 
 /* PsyQ libgte.h macros: candidates for psyq.h */
 #define copyVector(d, s) (d)->vx = (s)->vx, (d)->vy = (s)->vy, (d)->vz = (s)->vz

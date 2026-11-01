@@ -81,7 +81,7 @@ typedef struct {
 static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx19fTrail *trail, s32 size, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 ampFrom, s32 ampTo, s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 dip);
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip);
 static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 mode, Fx19fTrail *path, Fx19fTrail *trail, s32 size, s32 *noise,
                    s32 branchAt, s32 frame, s32 fade, s32 lineWidth);
 
@@ -133,7 +133,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVEC
 
 /* copied */
 static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx19fTrail *trail, s32 size, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 ampFrom, s32 ampTo, s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 dip);
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip);
 /* end copied */
 
 /* propagated */

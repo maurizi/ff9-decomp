@@ -7,10 +7,10 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     VECTOR sv;
     SVECTOR zero;
     SVECTOR quad[4];
-    CVECTOR c1;
-    CVECTOR c3;
-    CVECTOR c0;
-    CVECTOR c2;
+    CVECTOR colTR;
+    CVECTOR colBR;
+    CVECTOR colTL;
+    CVECTOR colBL;
     MATRIX m;
     s32 otz;
     s32 nclip;
@@ -71,47 +71,47 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
         for (j = 0; j < h; j++, py += size, row += (u32)(w - 1)) {
             px = left;
             src = row;
-            *(s32 *)&c0 = 0;
-            *(s32 *)&c2 = 0;
+            *(s32 *)&colTL = 0;
+            *(s32 *)&colBL = 0;
             for (i = 0; i < w; i++, prim++, px += size, src++) {
                 quad[0].vx = quad[2].vx = px;
                 quad[0].vy = quad[1].vy = py;
                 quad[1].vx = quad[3].vx = px + size;
                 quad[2].vy = quad[3].vy = py + size;
                 if (i >= w - 1) {
-                    *(s32 *)&c1 = 0;
-                    *(s32 *)&c3 = 0;
+                    *(s32 *)&colTR = 0;
+                    *(s32 *)&colBR = 0;
                 } else {
                     if (j == 0) {
-                        *(s32 *)&c1 = 0;
+                        *(s32 *)&colTR = 0;
                     } else {
                         texel = src[0];
-                        c1.r = ((texel & 0x1F) * (bright << 2)) >> 12;
-                        c1.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
-                        c1.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
+                        colTR.r = ((texel & 0x1F) * (bright << 2)) >> 12;
+                        colTR.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        colTR.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
                     }
                     if (j >= h - 1) {
-                        *(s32 *)&c3 = 0;
+                        *(s32 *)&colBR = 0;
                     } else {
                         texel = src[w - 1];
-                        c3.r = ((texel & 0x1F) * (bright << 2)) >> 12;
-                        c3.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
-                        c3.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
+                        colBR.r = ((texel & 0x1F) * (bright << 2)) >> 12;
+                        colBR.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        colBR.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
                     }
                 }
                 gte_ldv3xy(&quad[0], &quad[1], &quad[2]);
-                c0.cd = code;
-                *(s32 *)&prim->r0 = *(s32 *)&c0;
+                colTL.cd = code;
+                *(s32 *)&prim->r0 = *(s32 *)&colTL;
                 gte_rtpt_b();
-                *(s32 *)&prim->r1 = *(s32 *)&c1;
-                *(s32 *)&prim->r2 = *(s32 *)&c2;
+                *(s32 *)&prim->r1 = *(s32 *)&colTR;
+                *(s32 *)&prim->r2 = *(s32 *)&colBL;
                 gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
                 gte_stopz(&nclip);
                 gte_ldv0xy(&quad[3]);
-                *(s32 *)&prim->r3 = *(s32 *)&c3;
+                *(s32 *)&prim->r3 = *(s32 *)&colBR;
                 gte_rtps_b();
-                *(s32 *)&c2 = *(s32 *)&c3;
-                *(s32 *)&c0 = *(s32 *)&c1;
+                *(s32 *)&colBL = *(s32 *)&colBR;
+                *(s32 *)&colTL = *(s32 *)&colTR;
                 gte_stsxy(&prim->x3);
                 if (nclip != 0) {
                     ex->btlfx_addPrim(0x8000000, otz, prim);
@@ -300,46 +300,46 @@ static void fxm_keyGetVec(Fx0d3Track *track, s32 t, SVECTOR *out) {
     out->vz = ((s16 *)track)[2];
 }
 
-static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
-    s16 *k;
+static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 6];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 6];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
 }
 
-static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
-    s16 *k;
+static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1, SVECTOR *out2) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 9];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 9];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
-    if (c != NULL) {
-        c->vx = k[6];
-        c->vy = k[7];
-        c->vz = k[8];
+    if (out2 != NULL) {
+        out2->vx = key[6];
+        out2->vy = key[7];
+        out2->vz = key[8];
     }
 }
 
@@ -350,21 +350,21 @@ static s32 fxm_keyGetValue(Fx0d3Track *track, s32 t) {
     return (track->keys4 + t)[0];
 }
 
-static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
+static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 bright,
                    Fx0d3Seg *buf, s32 abr, s32 phase) {
     Unk800F78A4 *env = fx_0d3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     s32 otz;
     POLY_GT4 *prim;
-    Fx0d3Seg *s;
+    Fx0d3Seg *seg;
     s32 i;
     s32 t;
-    s32 k;
-    s32 j;
+    s32 tileV;
+    s32 next;
 
-    if (p < 0) {
-        p = 0x1000;
+    if (bright < 0) {
+        bright = 0x1000;
     }
     if (n > 1000) {
         n -= 999;
@@ -373,21 +373,21 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
         }
         return;
     }
-    s = &buf[(u32)(n - 1)];
+    seg = &buf[(u32)(n - 1)];
     for (i = 0; i < n; i++) {
-        BTLFX_COPY_SVEC(&s[1].edgeA0, &s[0].edgeA0);
-        BTLFX_COPY_SVEC(&s[1].edgeB8, &s[0].edgeB8);
-        s--;
+        BTLFX_COPY_SVEC(&seg[1].edgeA0, &seg[0].edgeA0);
+        BTLFX_COPY_SVEC(&seg[1].edgeB8, &seg[0].edgeB8);
+        seg--;
     }
-    s = buf;
-    for (i = 0; i < n; i++, s++) {
-        if (!(s[0].edgeA0.pad & s[1].edgeA0.pad)) {
+    seg = buf;
+    for (i = 0; i < n; i++, seg++) {
+        if (!(seg[0].edgeA0.pad & seg[1].edgeA0.pad)) {
             break;
         }
     }
-    BTLFX_COPY_SVEC(&buf->edgeA0, a);
+    BTLFX_COPY_SVEC(&buf->edgeA0, posA);
     buf->edgeA0.pad = 1;
-    BTLFX_COPY_SVEC(&buf->edgeB8, b);
+    BTLFX_COPY_SVEC(&buf->edgeB8, posB);
     n = i;
     prim = (POLY_GT4 *)env->prim;
     env->prim = (u8 *)(prim + n);
@@ -397,18 +397,18 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
     tpage |= (abr & 3) << 5;
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    /* the twin of fx_0e1_0 fxm_drawTexRibbonTrail: i = j in the increment, and the last uv store (u1) is the giv base */
-    for (i = 0; i < n; i = j, buf++, prim++, phase++) {
+    /* the twin of fx_0e1_0 fxm_drawTexRibbonTrail: i = next in the increment, and the last uv store (u1) is the giv base */
+    for (i = 0; i < n; i = next, buf++, prim++, phase++) {
         gte_ldv3c(buf);
         t = (i << 12) / n;
-        col.r = col.g = col.b = p;
+        col.r = col.g = col.b = bright;
         gte_rtpt_b();
-        t = ((0x1000 - t) * p) >> 12;
+        t = ((0x1000 - t) * bright) >> 12;
         col.r = col.g = col.b = t;
         *(s32 *)&prim->r0 = *(s32 *)&prim->r1 = *(s32 *)&col;
         col.r = col.g = col.b = t;
         *(s32 *)&prim->r2 = *(s32 *)&prim->r3 = *(s32 *)&col;
-        j = i + 1;
+        next = i + 1;
         gte_stopz(&otz);
         if (otz != 0) {
             gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
@@ -420,10 +420,10 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
             gte_stsxy(&prim->x3);
             prim->clut = clut;
             prim->tpage = tpage;
-            k = phase & 1;
-            prim->v2 = prim->v3 = v + ((h << k) >> 1);
+            tileV = phase & 1;
+            prim->v2 = prim->v3 = v + ((h << tileV) >> 1);
             prim->u0 = prim->u2 = u;
-            prim->v0 = prim->v1 = v + ((k * h) >> 1);
+            prim->v0 = prim->v1 = v + ((tileV * h) >> 1);
             prim->u1 = prim->u3 = u + w;
         }
     }

@@ -18,7 +18,7 @@
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
 extern Unk800F78A4 *fx_08f_env;
-static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pts, CVECTOR *col, s32 p, s32 abr);
+static void fxm_drawStreakField(u32 *ot, s32 n, s32 projH, s32 dz, void *rot, SVECTOR *pts, CVECTOR *rgb, s32 fade, s32 abr);
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame */

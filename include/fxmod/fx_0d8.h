@@ -54,12 +54,12 @@ typedef struct {
 extern Fx0d8Strip fx_0d8_strips[];
 extern Fx0d8Branch fx_0d8_branches[];
 extern u16 fx_0d8_strip16Blocks[];
-static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 ampFrom, s32 ampTo,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind);
+static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
 extern u16 fx_0d8_strip4Blocks[];
 extern Unk800F78A4 *fx_0d8_env;
 static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind);
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
 static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, s32 *tbl, s32 branchAt, s32 fade, s32 lineWidth,
                    s32 kind);
 typedef struct {

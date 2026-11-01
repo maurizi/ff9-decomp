@@ -10,46 +10,46 @@ static void fxm_keyGetVec(Fx196Track *track, s32 t, SVECTOR *out) {
     out->vz = ((s16 *)track)[2];
 }
 
-static void fxm_keyGetVec2(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
-    s16 *k;
+static void fxm_keyGetVec2(Fx196Track *track, s32 t, SVECTOR *out0, SVECTOR *out1) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 6];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 6];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
 }
 
-static void fxm_keyGetVec3(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
-    s16 *k;
+static void fxm_keyGetVec3(Fx196Track *track, s32 t, SVECTOR *out0, SVECTOR *out1, SVECTOR *out2) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 9];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 9];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
-    if (c != NULL) {
-        c->vx = k[6];
-        c->vy = k[7];
-        c->vz = k[8];
+    if (out2 != NULL) {
+        out2->vx = key[6];
+        out2->vy = key[7];
+        out2->vz = key[8];
     }
 }
 

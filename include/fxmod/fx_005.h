@@ -60,10 +60,10 @@ extern u16 fx_005_strip4Blocks[];
 extern Unk800F78A4 *fx_005_env;
 extern Unk80100C78Entry *fx_005_task;
 
-static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx005Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 ampFrom, s32 ampTo,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind);
+static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx005Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
 static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx005Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind);
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
 static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx005Strip *strip, Fx005Strip *out, s32 *tbl, s32 branchAt, s32 fade, s32 lineWidth,
                    s32 kind);
 static s32 fx_005_op83PoolTask(s32 mode, Fx005Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);

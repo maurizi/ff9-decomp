@@ -49,55 +49,55 @@ void fx_0ec_spawnImpact(SVECTOR *pos) {
 }
 
 static void fxm_shatterModel(s32 model, SVECTOR *center) {
-    Fx0ecTri *t = fx_0ec_shatterTris;
-    Fx0ecTri *u = fx_0ec_shatterTris;
+    Fx0ecTri *tri = fx_0ec_shatterTris;
+    Fx0ecTri *triCopy = fx_0ec_shatterTris;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0ec_env);
-    Fx0ecShard *p;
-    SVECTOR d;
+    Fx0ecShard *shard;
+    SVECTOR dir;
     s32 i;
-    s32 k;
-    s32 r;
+    s32 lift;
+    s32 rnd;
 
-    ex->Hi_SplitMdlVertex(model, -1, (s32)t);
-    p = fx_0ec_shatterShards;
-    for (i = 0; i < 0x70; p++) {
-        p->age18 = 0;
-        p->pos0.vx = ((t->verts0[0].vx + u->verts0[1].vx + u->verts0[2].vx) / 3) << 12;
-        p->pos0.vy = ((u->verts0[0].vy + u->verts0[1].vy + u->verts0[2].vy) / 3) << 12;
-        p->pos0.vz = ((u->verts0[0].vz + u->verts0[1].vz + u->verts0[2].vz) / 3) << 12;
-        p->delayOrTri1A = 0;
+    ex->Hi_SplitMdlVertex(model, -1, (s32)tri);
+    shard = fx_0ec_shatterShards;
+    for (i = 0; i < 0x70; shard++) {
+        shard->age18 = 0;
+        shard->pos0.vx = ((tri->verts0[0].vx + triCopy->verts0[1].vx + triCopy->verts0[2].vx) / 3) << 12;
+        shard->pos0.vy = ((triCopy->verts0[0].vy + triCopy->verts0[1].vy + triCopy->verts0[2].vy) / 3) << 12;
+        shard->pos0.vz = ((triCopy->verts0[0].vz + triCopy->verts0[1].vz + triCopy->verts0[2].vz) / 3) << 12;
+        shard->delayOrTri1A = 0;
         i++;
-        p->velC.pad = 0x1000;
-        p->spinX14 = ex->btlfx_randCentered(0x100);
-        p->spinY16 = ex->btlfx_randCentered(0x200);
-        d.vx = (p->pos0.vx >> 12) - center->vx;
-        d.vy = (p->pos0.vy >> 12) - center->vy;
-        d.vz = (p->pos0.vz >> 12) - center->vz;
-        p->velC.vx = d.vx >> 4;
-        t++;
-        p->velC.vy = d.vy >> 4;
-        r = ex->btlfx_rand();
-        u++;
-        /* Dead store: the branch splits sched1's block here and is gone by final, which keeps the p++ increment
-         * after the rand() call (sched2 then leaves it there and u++ fills the call's delay slot). */
-        if (p == NULL) {
-            k = 0;
+        shard->velC.pad = 0x1000;
+        shard->spinX14 = ex->btlfx_randCentered(0x100);
+        shard->spinY16 = ex->btlfx_randCentered(0x200);
+        dir.vx = (shard->pos0.vx >> 12) - center->vx;
+        dir.vy = (shard->pos0.vy >> 12) - center->vy;
+        dir.vz = (shard->pos0.vz >> 12) - center->vz;
+        shard->velC.vx = dir.vx >> 4;
+        tri++;
+        shard->velC.vy = dir.vy >> 4;
+        rnd = ex->btlfx_rand();
+        triCopy++;
+        /* Dead store: the branch splits sched1's block here and is gone by final, which keeps the shard++ increment
+         * after the rand() call (sched2 then leaves it there and triCopy++ fills the call's delay slot). */
+        if (shard == NULL) {
+            lift = 0;
         }
-        k = (r & 0x1F) + 8;
-        p->velC.vz = (d.vz >> 4) + k;
+        lift = (rnd & 0x1F) + 8;
+        shard->velC.vz = (dir.vz >> 4) + lift;
     }
 }
 
 void fxm_shatterModelUpdate(void) {
-    Fx0ecTri *t = fx_0ec_shatterTris;
-    Fx0ecShard *s = fx_0ec_shatterShards;
+    Fx0ecTri *tri = fx_0ec_shatterTris;
+    Fx0ecShard *shard = fx_0ec_shatterShards;
     BtlfxExports *ex;
     SVECTOR out;
     SVECTOR rot;
-    SVECTOR c;
+    SVECTOR center;
     SVECTOR loc[3];
     s32 bias[2];
-    VECTOR v;
+    VECTOR world;
     VECTOR sc;
     MATRIX m;
     s32 i;
@@ -107,32 +107,32 @@ void fxm_shatterModelUpdate(void) {
     bias[1] = 0;
     ex = BTLFX_EXPORTS(fx_0ec_env);
     sc.vx = sc.vy = sc.vz = 0xF80;
-    for (i = 0; i < 0x70; i++, s++, t++) {
-        if (s->age18 >= 0) {
-            if (s->age18 < s->delayOrTri1A) {
-                s->age18++;
+    for (i = 0; i < 0x70; i++, shard++, tri++) {
+        if (shard->age18 >= 0) {
+            if (shard->age18 < shard->delayOrTri1A) {
+                shard->age18++;
             } else {
-                c.vx = s->pos0.vx >> 12;
-                c.vy = s->pos0.vy >> 12;
-                c.vz = s->pos0.vz >> 12;
+                center.vx = shard->pos0.vx >> 12;
+                center.vy = shard->pos0.vy >> 12;
+                center.vz = shard->pos0.vz >> 12;
                 for (j = 0; j < 3; j++) {
-                    loc[j].vx = t->verts0[j].vx - c.vx;
-                    loc[j].vy = t->verts0[j].vy - c.vy;
-                    loc[j].vz = t->verts0[j].vz - c.vz;
+                    loc[j].vx = tri->verts0[j].vx - center.vx;
+                    loc[j].vy = tri->verts0[j].vy - center.vy;
+                    loc[j].vz = tri->verts0[j].vz - center.vz;
                 }
-                if (s->age18 >= 8) {
-                    ex->btlfx_stepModuleParticle((Pool6CEntry *)s, -10, (SVECTOR *)bias, &out);
-                    if (s->velC.vy < 0 && s->pos0.vy < 0) {
-                        s->velC.vy = -(s->velC.vy >> 1);
-                        if (s->velC.vy < 0x3C) {
-                            fx_0ec_spawnImpact(&c);
+                if (shard->age18 >= 8) {
+                    ex->btlfx_stepModuleParticle((Pool6CEntry *)shard, -10, (SVECTOR *)bias, &out);
+                    if (shard->velC.vy < 0 && shard->pos0.vy < 0) {
+                        shard->velC.vy = -(shard->velC.vy >> 1);
+                        if (shard->velC.vy < 0x3C) {
+                            fx_0ec_spawnImpact(&center);
                             goto kill;
                         }
                     }
                 }
-                if (s->age18 == ex->btlfx_rand() % 3 + 4 || s->age18 >= 8) {
-                    rot.vx = s->spinX14;
-                    rot.vy = s->spinY16;
+                if (shard->age18 == ex->btlfx_rand() % 3 + 4 || shard->age18 >= 8) {
+                    rot.vx = shard->spinX14;
+                    rot.vy = shard->spinY16;
                     rot.vz = 0;
                 } else {
                     rot.vx = 0;
@@ -140,35 +140,35 @@ void fxm_shatterModelUpdate(void) {
                     rot.vz = 0;
                 }
                 ex->math_rotMatrixYXZ(&rot, &m);
-                if (s->age18 >= 8) {
+                if (shard->age18 >= 8) {
                     ex->ScaleMatrix(&m, &sc);
                 }
-                m.t[0] = s->pos0.vx >> 12;
-                m.t[1] = s->pos0.vy >> 12;
-                m.t[2] = s->pos0.vz >> 12;
+                m.t[0] = shard->pos0.vx >> 12;
+                m.t[1] = shard->pos0.vy >> 12;
+                m.t[2] = shard->pos0.vz >> 12;
                 ex->SetRotMatrix(&m);
                 ex->SetTransMatrix(&m);
                 for (j = 0; j < 3; j++) {
                     gte_ldv0(&loc[j]);
                     gte_rtv0tr();
-                    gte_stlvnl(&v);
-                    t->verts0[j].vx = v.vx;
-                    t->verts0[j].vy = v.vy;
-                    t->verts0[j].vz = v.vz;
+                    gte_stlvnl(&world);
+                    tri->verts0[j].vx = world.vx;
+                    tri->verts0[j].vy = world.vy;
+                    tri->verts0[j].vz = world.vz;
                 }
-                if (++s->age18 >= 0x47) {
+                if (++shard->age18 >= 0x47) {
                 kill:
-                    s->age18 = -1;
-                    t->verts0[2].vz = 0;
-                    *(s32 *)&t->verts0[2] = 0;
-                    t->verts0[1].vz = 0;
-                    *(s32 *)&t->verts0[1] = 0;
-                    t->verts0[0].vz = 0;
-                    /* the nested do-while(0)s weight t's refs by loop depth, which puts t ahead of ex in
-                     * global-alloc (t in s3, ex in s4) */
+                    shard->age18 = -1;
+                    tri->verts0[2].vz = 0;
+                    *(s32 *)&tri->verts0[2] = 0;
+                    tri->verts0[1].vz = 0;
+                    *(s32 *)&tri->verts0[1] = 0;
+                    tri->verts0[0].vz = 0;
+                    /* the nested do-while(0)s weight tri's refs by loop depth, which puts tri ahead of ex in
+                     * global-alloc (tri in s3, ex in s4) */
                     do {
                         do {
-                            *(s32 *)&t->verts0[0] = 0;
+                            *(s32 *)&tri->verts0[0] = 0;
                         } while (0);
                     } while (0);
                 }
@@ -178,7 +178,7 @@ void fxm_shatterModelUpdate(void) {
 }
 
 s32 fxm_splitModelInit(u8 *buf) {
-    Fx0ecShard *p = fx_0ec_splitShards;
+    Fx0ecShard *shard = fx_0ec_splitShards;
     s32 i;
 
     fx_0ec_split.modelCount0 = 0;
@@ -186,84 +186,84 @@ s32 fxm_splitModelInit(u8 *buf) {
     fx_0ec_split.next10 = buf;
     fx_0ec_split.trisC = buf;
     for (i = 0; i < 300; i++) {
-        p->age18 = -1;
-        p++;
+        shard->age18 = -1;
+        shard++;
     }
 }
 
 static s32 fxm_splitModelAdd(s32 model) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0ec_env);
-    Fx0ecSplit *sp = &fx_0ec_split;
-    Fx0ecVertex *v = (Fx0ecVertex *)sp->next10;
+    Fx0ecSplit *split = &fx_0ec_split;
+    Fx0ecVertex *vert = (Fx0ecVertex *)split->next10;
     s32 n;
     s32 i;
 
     n = (u32)ex->Hi_GetSplitMdlVertex(model, -1) / sizeof(Fx0ecVertex);
-    ex->Hi_SplitMdlVertex(model, -1, (s32)v);
+    ex->Hi_SplitMdlVertex(model, -1, (s32)vert);
     {
-        s32 k = fx_0ec_split.modelCount0;
-        sp->modelTris14[k] = (u8 *)v;
-        sp->triCounts4[k] = n;
+        s32 slot = fx_0ec_split.modelCount0;
+        split->modelTris14[slot] = (u8 *)vert;
+        split->triCounts4[slot] = n;
     }
-    sp->next10 = (u8 *)(v + n);
-    sp->triCount2 += n;
+    split->next10 = (u8 *)(vert + n);
+    split->triCount2 += n;
     fx_0ec_split.modelCount0++;
     for (i = 0; i < n; i++) {
-        v->split6 = 0;
-        v++;
+        vert->split6 = 0;
+        vert++;
     }
-    return sp->triCount2;
+    return split->triCount2;
 }
 
 Fx0ecShard *fxm_splitFreeShard(void) {
-    Fx0ecShard *p = fx_0ec_splitShards;
+    Fx0ecShard *shard = fx_0ec_splitShards;
     s32 i;
 
     for (i = 0; i < 300; i++) {
-        if (p->age18 < 0) {
-            return p;
+        if (shard->age18 < 0) {
+            return shard;
         }
-        p++;
+        shard++;
     }
     return NULL;
 }
 
-s32 fxm_splitRelease(s32 y, SVECTOR *center) {
-    Fx0ecTri *t;
-    Fx0ecTri *u;
+s32 fxm_splitRelease(s32 lineY, SVECTOR *center) {
+    Fx0ecTri *tri;
+    Fx0ecTri *triCopy;
     BtlfxExports *ex;
-    Fx0ecShard *p;
-    SVECTOR d;
+    Fx0ecShard *shard;
+    SVECTOR dir;
     s32 i;
-    s32 k;
+    s32 triIdx;
     s32 n;
-    Fx0ecSplit *sp;
+    Fx0ecSplit *split;
 
-    i = k = 0;
-    sp = &fx_0ec_split;
-    t = (Fx0ecTri *)sp->trisC;
-    u = t;
+    i = triIdx = 0;
+    split = &fx_0ec_split;
+    tri = (Fx0ecTri *)split->trisC;
+    triCopy = tri;
     ex = BTLFX_EXPORTS(fx_0ec_env);
-    for (n = k; i < sp->triCount2; i++, u++, t++, k++) {
-        if (y < (u->verts0[0].vy + u->verts0[1].vy + u->verts0[2].vy) / 3 && u->verts0[0].pad == 0) {
-            p = fxm_splitFreeShard();
-            if (p != NULL) {
-                u->verts0[0].pad = 1;
-                p->pos0.vx = ((t->verts0[0].vx + u->verts0[1].vx + u->verts0[2].vx) / 3) << 12;
-                p->pos0.vy = ((u->verts0[0].vy + u->verts0[1].vy + u->verts0[2].vy) / 3) << 12;
-                p->pos0.vz = ((u->verts0[0].vz + u->verts0[1].vz + u->verts0[2].vz) / 3) << 12;
-                p->age18 = 0;
-                p->delayOrTri1A = k;
-                p->velC.pad = 0x1000;
-                p->spinX14 = ex->btlfx_randCentered(0x100);
-                p->spinY16 = ex->btlfx_randCentered(0x200);
-                d.vx = (p->pos0.vx >> 12) - center->vx;
-                d.vy = (p->pos0.vy >> 12) - center->vy;
-                d.vz = (p->pos0.vz >> 12) - center->vz;
+    for (n = triIdx; i < split->triCount2; i++, triCopy++, tri++, triIdx++) {
+        if (lineY < (triCopy->verts0[0].vy + triCopy->verts0[1].vy + triCopy->verts0[2].vy) / 3 && triCopy->verts0[0].pad == 0) {
+            shard = fxm_splitFreeShard();
+            if (shard != NULL) {
+                triCopy->verts0[0].pad = 1;
+                shard->pos0.vx = ((tri->verts0[0].vx + triCopy->verts0[1].vx + triCopy->verts0[2].vx) / 3) << 12;
+                shard->pos0.vy = ((triCopy->verts0[0].vy + triCopy->verts0[1].vy + triCopy->verts0[2].vy) / 3) << 12;
+                shard->pos0.vz = ((triCopy->verts0[0].vz + triCopy->verts0[1].vz + triCopy->verts0[2].vz) / 3) << 12;
+                shard->age18 = 0;
+                shard->delayOrTri1A = triIdx;
+                shard->velC.pad = 0x1000;
+                shard->spinX14 = ex->btlfx_randCentered(0x100);
+                shard->spinY16 = ex->btlfx_randCentered(0x200);
+                dir.vx = (shard->pos0.vx >> 12) - center->vx;
+                dir.vy = (shard->pos0.vy >> 12) - center->vy;
+                dir.vz = (shard->pos0.vz >> 12) - center->vz;
                 n++;
-                p->velC.vx = (d.vx >> 3) + ex->btlfx_randCentered(0x10);
-                p->velC.vy = ex->btlfx_randCentered(0x10);
-                p->velC.vz = ex->btlfx_randCentered(0x20) + 0x1E;
+                shard->velC.vx = (dir.vx >> 3) + ex->btlfx_randCentered(0x10);
+                shard->velC.vy = ex->btlfx_randCentered(0x10);
+                shard->velC.vz = ex->btlfx_randCentered(0x20) + 0x1E;
             }
         }
     }
@@ -271,18 +271,18 @@ s32 fxm_splitRelease(s32 y, SVECTOR *center) {
 }
 
 void fxm_splitUpdate(void) {
-    Fx0ecSplit *sp = &fx_0ec_split;
-    Fx0ecShard *s = fx_0ec_splitShards;
+    Fx0ecSplit *split = &fx_0ec_split;
+    Fx0ecShard *shard = fx_0ec_splitShards;
     BtlfxExports *ex;
     SVECTOR out;
     SVECTOR rot;
-    SVECTOR c;
+    SVECTOR center;
     SVECTOR loc[3];
     s32 bias[2];
-    VECTOR v;
+    VECTOR world;
     VECTOR sc;
     MATRIX m;
-    Fx0ecTri *t;
+    Fx0ecTri *tri;
     s32 i;
     s32 j;
 
@@ -290,49 +290,49 @@ void fxm_splitUpdate(void) {
     bias[1] = 0;
     ex = BTLFX_EXPORTS(fx_0ec_env);
     sc.vx = sc.vy = sc.vz = 0xEC0;
-    for (i = 0; i < 300; i++, s++) {
-        if (s->age18 >= 0) {
-            t = (Fx0ecTri *)sp->trisC + s->delayOrTri1A;
-            c.vx = s->pos0.vx >> 12;
-            c.vy = s->pos0.vy >> 12;
-            c.vz = s->pos0.vz >> 12;
+    for (i = 0; i < 300; i++, shard++) {
+        if (shard->age18 >= 0) {
+            tri = (Fx0ecTri *)split->trisC + shard->delayOrTri1A;
+            center.vx = shard->pos0.vx >> 12;
+            center.vy = shard->pos0.vy >> 12;
+            center.vz = shard->pos0.vz >> 12;
             for (j = 0; j < 3; j++) {
-                loc[j].vx = t->verts0[j].vx - c.vx;
-                loc[j].vy = t->verts0[j].vy - c.vy;
-                loc[j].vz = t->verts0[j].vz - c.vz;
+                loc[j].vx = tri->verts0[j].vx - center.vx;
+                loc[j].vy = tri->verts0[j].vy - center.vy;
+                loc[j].vz = tri->verts0[j].vz - center.vz;
             }
-            ex->btlfx_stepModuleParticle((Pool6CEntry *)s, -10, (SVECTOR *)bias, &out);
-            if (s->velC.vy < 0 && s->pos0.vy < 0) {
-                fx_0ec_spawnImpact(&c);
+            ex->btlfx_stepModuleParticle((Pool6CEntry *)shard, -10, (SVECTOR *)bias, &out);
+            if (shard->velC.vy < 0 && shard->pos0.vy < 0) {
+                fx_0ec_spawnImpact(&center);
                 goto kill;
             }
-            rot.vx = s->spinX14;
-            rot.vy = s->spinY16;
+            rot.vx = shard->spinX14;
+            rot.vy = shard->spinY16;
             rot.vz = 0;
             ex->math_rotMatrixYXZ(&rot, &m);
             ex->ScaleMatrix(&m, &sc);
-            m.t[0] = s->pos0.vx >> 12;
-            m.t[1] = s->pos0.vy >> 12;
-            m.t[2] = s->pos0.vz >> 12;
+            m.t[0] = shard->pos0.vx >> 12;
+            m.t[1] = shard->pos0.vy >> 12;
+            m.t[2] = shard->pos0.vz >> 12;
             ex->SetRotMatrix(&m);
             ex->SetTransMatrix(&m);
             for (j = 0; j < 3; j++) {
                 gte_ldv0(&loc[j]);
                 gte_rtv0tr();
-                gte_stlvnl(&v);
-                t->verts0[j].vx = v.vx;
-                t->verts0[j].vy = v.vy;
-                t->verts0[j].vz = v.vz;
+                gte_stlvnl(&world);
+                tri->verts0[j].vx = world.vx;
+                tri->verts0[j].vy = world.vy;
+                tri->verts0[j].vz = world.vz;
             }
-            if (++s->age18 >= 0x20) {
+            if (++shard->age18 >= 0x20) {
             kill:
-                s->age18 = -1;
-                t->verts0[2].vz = 0;
-                *(s32 *)&t->verts0[2] = 0;
-                t->verts0[1].vz = 0;
-                *(s32 *)&t->verts0[1] = 0;
-                t->verts0[0].vz = 0;
-                *(s32 *)&t->verts0[0] = 0;
+                shard->age18 = -1;
+                tri->verts0[2].vz = 0;
+                *(s32 *)&tri->verts0[2] = 0;
+                tri->verts0[1].vz = 0;
+                *(s32 *)&tri->verts0[1] = 0;
+                tri->verts0[0].vz = 0;
+                *(s32 *)&tri->verts0[0] = 0;
             }
         }
     }

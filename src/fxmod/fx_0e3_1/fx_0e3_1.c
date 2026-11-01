@@ -3,12 +3,12 @@
 static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
@@ -18,11 +18,11 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     for (i = 0; i < 13; i++) {
         t = 0x1000 - (i << 12) / 12;
         t += ex->btlfx_randCentered(0x180);
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = ex->btlfx_randCentered(0x80);
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = ex->btlfx_randCentered(0x80);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = 0x1C;
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
@@ -33,12 +33,12 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
                    s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
@@ -48,11 +48,11 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     for (i = 0; i < 5; i++) {
         t = 0x1000 - (i << 10);
         t += ex->btlfx_randCentered(0x80);
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = ex->btlfx_randCentered(0x20);
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += (ex->math_sin(t >> 1) * amp) >> 12;
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = ex->btlfx_randCentered(0x20);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += (ex->math_sin(t >> 1) * amp) >> 12;
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = 0x1A;
         ang += dang + ex->btlfx_randCentered(0xC0);
         pt++;

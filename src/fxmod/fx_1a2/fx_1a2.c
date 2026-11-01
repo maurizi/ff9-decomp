@@ -84,98 +84,98 @@ static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *co
 
 static void fxm_shatterModel(s32 model, SVECTOR *center) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a2_env);
-    SVECTOR v;
-    Fx1a2Tri *t;
-    Fx1a2Piece *p;
+    SVECTOR dir;
+    Fx1a2Tri *tri;
+    Fx1a2Piece *piece;
     s32 i;
 
     ex->Hi_SplitMdlVertex(model, -1, (s32)fx_1a2_shatterTris);
-    t = fx_1a2_shatterTris;
-    p = fx_1a2_shatterPieces;
-    for (i = 0; i < 130; i++, t++, p++) {
-        p->frame18 = 0;
-        p->pos0 = ((t->verts0[0].vx + t->verts0[1].vx + t->verts0[2].vx) / 3) << 12;
-        p->pos4 = ((t->verts0[0].vy + t->verts0[1].vy + t->verts0[2].vy) / 3) << 12;
-        p->pos8 = ((t->verts0[0].vz + t->verts0[1].vz + t->verts0[2].vz) / 3) << 12;
-        p->delay1A = 0;
-        p->unk12 = 0x1000;
-        p->rot14 = ex->btlfx_randCentered(0x100);
-        p->rot16 = ex->btlfx_randCentered(0x200);
-        v.vx = (p->pos0 >> 12) - center->vx;
-        v.vy = (p->pos4 >> 12) - center->vy;
-        v.vz = (p->pos8 >> 12) - center->vz;
-        p->velC = v.vx >> 2;
-        p->velE = v.vy >> 3;
-        p->vel10 = v.vz >> 2;
+    tri = fx_1a2_shatterTris;
+    piece = fx_1a2_shatterPieces;
+    for (i = 0; i < 130; i++, tri++, piece++) {
+        piece->frame18 = 0;
+        piece->pos0 = ((tri->verts0[0].vx + tri->verts0[1].vx + tri->verts0[2].vx) / 3) << 12;
+        piece->pos4 = ((tri->verts0[0].vy + tri->verts0[1].vy + tri->verts0[2].vy) / 3) << 12;
+        piece->pos8 = ((tri->verts0[0].vz + tri->verts0[1].vz + tri->verts0[2].vz) / 3) << 12;
+        piece->delay1A = 0;
+        piece->unk12 = 0x1000;
+        piece->rot14 = ex->btlfx_randCentered(0x100);
+        piece->rot16 = ex->btlfx_randCentered(0x200);
+        dir.vx = (piece->pos0 >> 12) - center->vx;
+        dir.vy = (piece->pos4 >> 12) - center->vy;
+        dir.vz = (piece->pos8 >> 12) - center->vz;
+        piece->velC = dir.vx >> 2;
+        piece->velE = dir.vy >> 3;
+        piece->vel10 = dir.vz >> 2;
     }
 }
 
 void fxm_updateShatterPieces(void) {
     SVECTOR out;
     SVECTOR rot;
-    SVECTOR c;
-    SVECTOR v[3];
+    SVECTOR center;
+    SVECTOR loc[3];
     SVECTOR bias;
-    VECTOR o;
+    VECTOR world;
     VECTOR scale;
     MATRIX m;
     BtlfxExports *ex;
-    Fx1a2Tri *t;
-    Fx1a2Piece *p;
+    Fx1a2Tri *tri;
+    Fx1a2Piece *piece;
     s32 i;
     s32 k;
 
-    t = fx_1a2_shatterTris;
-    p = fx_1a2_shatterPieces;
+    tri = fx_1a2_shatterTris;
+    piece = fx_1a2_shatterPieces;
     ((s32 *)&bias)[0] = 0;
     ((s32 *)&bias)[1] = 0;
     ex = BTLFX_EXPORTS(fx_1a2_env);
     scale.vx = scale.vy = scale.vz = 0xF80;
-    for (i = 0; i < 130; i++, p++, t++) {
-        if (p->frame18 >= 0) {
-            if (p->frame18 < p->delay1A) {
-                p->frame18++;
+    for (i = 0; i < 130; i++, piece++, tri++) {
+        if (piece->frame18 >= 0) {
+            if (piece->frame18 < piece->delay1A) {
+                piece->frame18++;
             } else {
-                c.vx = p->pos0 >> 12;
-                c.vy = p->pos4 >> 12;
-                c.vz = p->pos8 >> 12;
+                center.vx = piece->pos0 >> 12;
+                center.vy = piece->pos4 >> 12;
+                center.vz = piece->pos8 >> 12;
                 for (k = 0; k < 3; k++) {
-                    v[k].vx = t->verts0[k].vx - c.vx;
-                    v[k].vy = t->verts0[k].vy - c.vy;
-                    v[k].vz = t->verts0[k].vz - c.vz;
+                    loc[k].vx = tri->verts0[k].vx - center.vx;
+                    loc[k].vy = tri->verts0[k].vy - center.vy;
+                    loc[k].vz = tri->verts0[k].vz - center.vz;
                 }
-                if (p->frame18 >= 3) {
-                    ex->btlfx_stepModuleParticle((Pool6CEntry *)p, -3, &bias, &out);
-                    if (p->velE < 0 && p->pos4 < 0) {
-                        p->velE = -(p->velE >> 1);
+                if (piece->frame18 >= 3) {
+                    ex->btlfx_stepModuleParticle((Pool6CEntry *)piece, -3, &bias, &out);
+                    if (piece->velE < 0 && piece->pos4 < 0) {
+                        piece->velE = -(piece->velE >> 1);
                     }
                 }
-                rot.vx = p->rot14;
-                rot.vy = p->rot16;
+                rot.vx = piece->rot14;
+                rot.vy = piece->rot16;
                 rot.vz = 0;
                 ex->math_rotMatrixYXZ(&rot, &m);
                 ex->ScaleMatrix(&m, &scale);
-                m.t[0] = p->pos0 >> 12;
-                m.t[1] = p->pos4 >> 12;
-                m.t[2] = p->pos8 >> 12;
+                m.t[0] = piece->pos0 >> 12;
+                m.t[1] = piece->pos4 >> 12;
+                m.t[2] = piece->pos8 >> 12;
                 ex->SetRotMatrix(&m);
                 ex->SetTransMatrix(&m);
                 for (k = 0; k < 3; k++) {
-                    gte_ldv0(&v[k]);
+                    gte_ldv0(&loc[k]);
                     gte_rtv0tr();
-                    gte_stlvnl(&o);
-                    t->verts0[k].vx = o.vx;
-                    t->verts0[k].vy = o.vy;
-                    t->verts0[k].vz = o.vz;
+                    gte_stlvnl(&world);
+                    tri->verts0[k].vx = world.vx;
+                    tri->verts0[k].vy = world.vy;
+                    tri->verts0[k].vz = world.vz;
                 }
-                if (++p->frame18 >= 0x40) {
-                    p->frame18 = -1;
-                    t->verts0[2].vz = 0;
-                    *(s32 *)&t->verts0[2] = 0;
-                    t->verts0[1].vz = 0;
-                    *(s32 *)&t->verts0[1] = 0;
-                    t->verts0[0].vz = 0;
-                    *(s32 *)&t->verts0[0] = 0;
+                if (++piece->frame18 >= 0x40) {
+                    piece->frame18 = -1;
+                    tri->verts0[2].vz = 0;
+                    *(s32 *)&tri->verts0[2] = 0;
+                    tri->verts0[1].vz = 0;
+                    *(s32 *)&tri->verts0[1] = 0;
+                    tri->verts0[0].vz = 0;
+                    *(s32 *)&tri->verts0[0] = 0;
                 }
             }
         }

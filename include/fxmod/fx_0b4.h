@@ -52,7 +52,7 @@ s32 fx_0b4_op80ParticleMotion3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 tra
 s32 fx_0b4_op80ParticleMotion4(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 s32 fx_0b4_op80ParticleMotion5(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx0b4Timer *timer, Fx0b4Path *path, s32 frame, s32 n);
-static s32 fxm_rotPosPathGet(Fx0b4Path *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx0b4Path *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 typedef struct {
     s16 x, y, z;
 } Fx0b4Point;

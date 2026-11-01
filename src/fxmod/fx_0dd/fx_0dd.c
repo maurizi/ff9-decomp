@@ -232,23 +232,23 @@ static void fxm_rotPosTrackInit(Fx0ddTrack12 *track, u16 *data) {
 static s32 fxm_rotPosTrackGet(Fx0ddTrack12 *track, s32 t, SVECTOR *rot, SVECTOR *pos) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx0ddKey12 *k;
+    Fx0ddKey12 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
+    key = &track->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rotX6;
-        rot->vy = k->rotY8;
-        rot->vz = k->rotZA;
+        rot->vx = key->rotX6;
+        rot->vy = key->rotY8;
+        rot->vz = key->rotZA;
     }
     if (pos != NULL) {
-        pos->vx = -k->posX0;
-        pos->vy = k->posY2;
-        pos->vz = -k->posZ4;
+        pos->vx = -key->posX0;
+        pos->vy = key->posY2;
+        pos->vz = -key->posZ4;
     }
     return done;
 }
@@ -261,16 +261,16 @@ static void fxm_vecTrackInit(Fx0ddTrack6 *track, u16 *data) {
 static s32 fxm_vecTrackGet(Fx0ddTrack6 *track, s32 t, VECTOR *out) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx0ddKey6 *k;
+    Fx0ddKey6 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
-    out->vx = k->x;
-    out->vy = k->y;
-    out->vz = k->z;
+    key = &track->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }

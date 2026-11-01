@@ -1,43 +1,43 @@
 #include "fxmod/fx_179.h"
 
 static void fxm_shatterModel(s32 model, SVECTOR *center) {
-    Fx179Tri *t = fx_179_shatterTris;
-    Fx179Tri *u = fx_179_shatterTris;
+    Fx179Tri *tri = fx_179_shatterTris;
+    Fx179Tri *triCopy = fx_179_shatterTris;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_179_env);
-    Fx179Shard *s;
-    SVECTOR d;
+    Fx179Shard *shard;
+    SVECTOR dir;
     s32 i;
 
     ex->Hi_SplitMdlVertex(model, -1, (s32)fx_179_shatterTris);
-    s = fx_179_shatterPieces;
-    for (i = 0; i < 160; i++, t++, u++, s++) {
-        s->frame18 = 0;
-        s->pos0 = (t->verts0[0].vx + u->verts0[1].vx + u->verts0[2].vx) / 3 << 12;
-        s->pos4 = (u->verts0[0].vy + u->verts0[1].vy + u->verts0[2].vy) / 3 << 12;
-        s->pos8 = (u->verts0[0].vz + u->verts0[1].vz + u->verts0[2].vz) / 3 << 12;
-        s->delay1A = 0;
-        s->unk12 = 0x1000;
-        s->rot14 = ex->btlfx_randCentered(0x100);
-        s->rot16 = ex->btlfx_randCentered(0x200);
-        d.vx = (s->pos0 >> 12) - center->vx;
-        d.vy = (s->pos4 >> 12) - center->vy;
-        d.vz = (s->pos8 >> 12) - center->vz;
-        s->velC = d.vx >> 4;
-        s->velE = (d.vy >> 4) + 0x80;
-        s->vel10 = d.vz >> 4;
+    shard = fx_179_shatterPieces;
+    for (i = 0; i < 160; i++, tri++, triCopy++, shard++) {
+        shard->frame18 = 0;
+        shard->pos0 = (tri->verts0[0].vx + triCopy->verts0[1].vx + triCopy->verts0[2].vx) / 3 << 12;
+        shard->pos4 = (triCopy->verts0[0].vy + triCopy->verts0[1].vy + triCopy->verts0[2].vy) / 3 << 12;
+        shard->pos8 = (triCopy->verts0[0].vz + triCopy->verts0[1].vz + triCopy->verts0[2].vz) / 3 << 12;
+        shard->delay1A = 0;
+        shard->unk12 = 0x1000;
+        shard->rot14 = ex->btlfx_randCentered(0x100);
+        shard->rot16 = ex->btlfx_randCentered(0x200);
+        dir.vx = (shard->pos0 >> 12) - center->vx;
+        dir.vy = (shard->pos4 >> 12) - center->vy;
+        dir.vz = (shard->pos8 >> 12) - center->vz;
+        shard->velC = dir.vx >> 4;
+        shard->velE = (dir.vy >> 4) + 0x80;
+        shard->vel10 = dir.vz >> 4;
     }
 }
 
 void fxm_updateShatterPieces(void) {
-    Fx179Tri *t = fx_179_shatterTris;
-    Fx179Shard *s = fx_179_shatterPieces;
+    Fx179Tri *tri = fx_179_shatterTris;
+    Fx179Shard *shard = fx_179_shatterPieces;
     BtlfxExports *ex;
     SVECTOR out;
     SVECTOR rot;
-    SVECTOR c;
+    SVECTOR center;
     SVECTOR loc[3];
     s32 bias[2];
-    VECTOR v;
+    VECTOR world;
     VECTOR sc;
     MATRIX m;
     s32 i;
@@ -47,41 +47,41 @@ void fxm_updateShatterPieces(void) {
     bias[1] = 0;
     ex = BTLFX_EXPORTS(fx_179_env);
     sc.vx = sc.vy = sc.vz = 0xF00;
-    for (i = 0; i < 160; i++, s++, t++) {
-        if (s->frame18 >= 0) {
-            if (s->frame18 >= s->delay1A) {
-                c.vx = s->pos0 >> 12;
-                c.vy = s->pos4 >> 12;
-                c.vz = s->pos8 >> 12;
+    for (i = 0; i < 160; i++, shard++, tri++) {
+        if (shard->frame18 >= 0) {
+            if (shard->frame18 >= shard->delay1A) {
+                center.vx = shard->pos0 >> 12;
+                center.vy = shard->pos4 >> 12;
+                center.vz = shard->pos8 >> 12;
                 for (j = 0; j < 3; j++) {
-                    loc[j].vx = t->verts0[j].vx - c.vx;
-                    loc[j].vy = t->verts0[j].vy - c.vy;
-                    loc[j].vz = t->verts0[j].vz - c.vz;
+                    loc[j].vx = tri->verts0[j].vx - center.vx;
+                    loc[j].vy = tri->verts0[j].vy - center.vy;
+                    loc[j].vz = tri->verts0[j].vz - center.vz;
                 }
-                ex->btlfx_stepModuleParticle((Pool6CEntry *)s, -8, (SVECTOR *)bias, &out);
-                rot.vx = s->rot14;
-                rot.vy = s->rot16;
+                ex->btlfx_stepModuleParticle((Pool6CEntry *)shard, -8, (SVECTOR *)bias, &out);
+                rot.vx = shard->rot14;
+                rot.vy = shard->rot16;
                 rot.vz = 0;
                 ex->math_rotMatrixYXZ(&rot, &m);
                 ex->ScaleMatrix(&m, &sc);
-                m.t[0] = s->pos0 >> 12;
-                m.t[1] = s->pos4 >> 12;
-                m.t[2] = s->pos8 >> 12;
+                m.t[0] = shard->pos0 >> 12;
+                m.t[1] = shard->pos4 >> 12;
+                m.t[2] = shard->pos8 >> 12;
                 ex->SetRotMatrix(&m);
                 ex->SetTransMatrix(&m);
                 for (j = 0; j < 3; j++) {
                     gte_ldv0(&loc[j]);
                     gte_rtv0tr();
-                    gte_stlvnl(&v);
-                    t->verts0[j].vx = v.vx;
-                    t->verts0[j].vy = v.vy;
-                    t->verts0[j].vz = v.vz;
+                    gte_stlvnl(&world);
+                    tri->verts0[j].vx = world.vx;
+                    tri->verts0[j].vy = world.vy;
+                    tri->verts0[j].vz = world.vz;
                 }
-                if (++s->frame18 >= 0x20) {
-                    s->frame18 = -1;
+                if (++shard->frame18 >= 0x20) {
+                    shard->frame18 = -1;
                 }
             } else {
-                s->frame18++;
+                shard->frame18++;
             }
         }
     }

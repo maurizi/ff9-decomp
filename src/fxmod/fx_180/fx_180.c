@@ -422,9 +422,9 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_180_env)->btlfx_drawScreenTint((u32 *)(fx_180_env->ot + ot), abr, c, c, c);
+    BTLFX_EXPORTS(fx_180_env)->btlfx_drawScreenTint((u32 *)(fx_180_env->ot + ot), abr, bright, bright, bright);
 }
 
 static void fxm_posPathInit(Fx180Path *path, u16 *data) {
@@ -436,17 +436,17 @@ static void fxm_posPathInit(Fx180Path *path, u16 *data) {
 static s32 fxm_posPathGet(Fx180Path *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx180Point *p;
+    Fx180Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 

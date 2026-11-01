@@ -397,31 +397,31 @@ static void fxm_rotPosPathInit(Fx123Path *path, u16 *data) {
     path->keys4 = (Fx123Point *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx123Key *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx123Key *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_123_env)->btlfx_drawScreenTint((u32 *)(fx_123_env->ot + ot), abr, c, c, c);
+    BTLFX_EXPORTS(fx_123_env)->btlfx_drawScreenTint((u32 *)(fx_123_env->ot + ot), abr, bright, bright, bright);
 }

@@ -50,8 +50,8 @@ void fx_0e2_stripFromTrack(void *track, Fx0e2Trail *trail, s32 size, s32 base, s
 void fx_0e2_stripFromPosPath(void *track, Fx0e2Trail *trail, s32 size, s32 base, s32 count, s32 pad);
 void fx_0e2_stripFromTrackBlendRot(void *trackA, void *trackB, Fx0e2Trail *trail, s32 size, s32 base, s32 count, s32 pad, s32 t,
                    s32 rotY);
-void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLength, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist);
-void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale, s32 w, s32 rotY);
+void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLength, SVECTOR *scale, s32 width, s32 t, s32 rotY, s32 twist);
+void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale, s32 width, s32 rotY);
 void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1);
 typedef struct {
     Pool6CEntry *emit0[5];
@@ -269,7 +269,7 @@ typedef struct {
     u16 count2; /* keys */
     Fx0e2Key *keys4;
 } Fx0e2Path_0b4;
-static s32 fxm_rotPosPathGet(Fx0e2Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx0e2Path_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 static s32 fxm_offsetTableEntry(u8 *base, u16 i);
 static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b);
 

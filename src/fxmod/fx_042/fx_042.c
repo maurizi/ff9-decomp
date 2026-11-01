@@ -1,16 +1,16 @@
 #include "fxmod/fx_042.h"
 
-static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx042Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 ampFrom, s32 ampTo,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
+static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx042Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_042_env);
     SVECTOR pos;
-    SVECTOR ang;
+    SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
     s32 offset;
 
-    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
+    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = strip->pts4;
     strip->count2 = 0xF;
     strip->lastSlot0 = 0xF;
@@ -21,10 +21,10 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx042Strip *strip, s3
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         offset = *tbl++;
         offset = (ex->math_sin(t >> 1) * offset) >> 12;
-        offset += ex->btlfx_lerp(ampFrom, ampTo, t);
-        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&ang, offset, width);
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = lineWidth;
-        width += dwidth + *tbl++;
+        ang += dang + *tbl++;
         pt++;
     }
     if (kind < FX_042_STRIP_FLAT) {
@@ -37,16 +37,16 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx042Strip *strip, s3
 }
 
 static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx042Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_042_env);
     SVECTOR pos;
-    SVECTOR ang;
+    SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
     s32 offset;
 
-    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
+    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = strip->pts4;
     strip->count2 = 3;
     strip->lastSlot0 = 3;
@@ -59,9 +59,9 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx042Strip *strip, s32
         t >>= 1;
         offset = (ex->math_sin(t) * offset) >> 12;
         offset += (ex->math_sin(t) * amp) >> 12;
-        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&ang, offset, width);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = lineWidth;
-        width += dwidth + *tbl++ / 2;
+        ang += dang + *tbl++ / 2;
         pt++;
     }
     if (kind < FX_042_STRIP_FLAT) {

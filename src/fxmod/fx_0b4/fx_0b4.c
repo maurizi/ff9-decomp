@@ -179,25 +179,25 @@ static void fxm_rotPosPathInit(Fx0b4Path *path, u16 *data) {
     path->keys4 = (Fx0b4Point *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx0b4Path *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx0b4Key *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx0b4Path *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx0b4Key *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }

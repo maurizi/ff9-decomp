@@ -1,47 +1,47 @@
 #include "fxmod/fx_1fd.h"
 
-void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLength, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist) {
+void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLength, SVECTOR *scale, s32 width, s32 t, s32 rotY, s32 twist) {
     Unk800F78A4 *env = fx_1fd_env;
-    Fx1fdEdge *e = fx_1fd_ribbonEdges;
+    Fx1fdEdge *edge = fx_1fd_ribbonEdges;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
-    VECTOR v;
+    VECTOR world;
     SVECTOR ends[2];
     SVECTOR rot;
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR p;
+    SVECTOR posA;
+    SVECTOR posB;
+    SVECTOR pos;
     s32 i;
-    s16 z;
+    s16 roll;
 
     ends[0].vx = 0;
-    ends[0].vy = -w / 2;
+    ends[0].vy = -width / 2;
     ends[0].vz = 0;
     ends[1].vx = 0;
-    ends[1].vy = w / 2;
+    ends[1].vy = width / 2;
     ends[1].vz = 0;
-    for (i = 0; i < 60; i++, e++) {
-        fxm_posPathGet(trackA, i, &a);
-        fxm_posPathGet(trackB, i, &b);
-        ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, t, (s16 *)&p);
-        p.vx = p.vx * scale->vx / 4096;
-        p.vy = p.vy * scale->vy / 4096;
-        p.vz = p.vz * scale->vz / 4096;
+    for (i = 0; i < 60; i++, edge++) {
+        fxm_posPathGet(trackA, i, &posA);
+        fxm_posPathGet(trackB, i, &posB);
+        ex->btlfx_lerpVec((s16 *)&posA, (s16 *)&posB, t, (s16 *)&pos);
+        pos.vx = pos.vx * scale->vx / 4096;
+        pos.vy = pos.vy * scale->vy / 4096;
+        pos.vz = pos.vz * scale->vz / 4096;
         rot.vx = 0;
         rot.vz = 0;
         rot.vy = rotY;
         ex->math_rotMatrixYXZ(&rot, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
-        gte_ldv0(&p);
+        gte_ldv0(&pos);
         gte_rtv0tr();
-        gte_stlvnl(&v);
-        p.vx = v.vx;
-        p.vy = v.vy;
-        p.vz = v.vz + 0x4B0;
+        gte_stlvnl(&world);
+        pos.vx = world.vx;
+        pos.vy = world.vy;
+        pos.vz = world.vz + 0x4B0;
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
-        gte_ldv0(&p);
+        gte_ldv0(&pos);
         gte_rtv0tr();
         gte_stlvnl(m.t);
         rot.vx = 0;
@@ -52,13 +52,13 @@ void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLen
                 rot.vz = 0x400 - (i << 6);
             } else if (i >= 0x1D) {
                 rot.vz = ex->math_sin(((i - 0x1C) << 7) / 4) / 4 + 0x80;
-                z = rot.vz;
-                if (z > 0x400) {
-                    z = 0x400;
+                roll = rot.vz;
+                if (roll > 0x400) {
+                    roll = 0x400;
                 }
-                rot.vz = z;
-                if (p.vz > 0) {
-                    rot.vz = -z;
+                rot.vz = roll;
+                if (pos.vz > 0) {
+                    rot.vz = -roll;
                 }
             }
         } else {
@@ -70,51 +70,51 @@ void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLen
         gte_SetTransMatrix(&m);
         gte_ldv0(&ends[0]);
         gte_rtps();
-        gte_stsxy(&e->sxy0);
+        gte_stsxy(&edge->sxy0);
         gte_ldv0(&ends[1]);
         gte_rtps();
-        gte_stsxy(&e->sxy4);
-        gte_stszotz(&e->otz8);
+        gte_stsxy(&edge->sxy4);
+        gte_stszotz(&edge->otz8);
     }
 }
 
-void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale, s32 w, s32 rotY) {
+void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale, s32 width, s32 rotY) {
     Unk800F78A4 *env = fx_1fd_env;
-    Fx1fdEdge *e = fx_1fd_ribbonEdges;
+    Fx1fdEdge *edge = fx_1fd_ribbonEdges;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
-    VECTOR v;
+    VECTOR world;
     SVECTOR ends[2];
     SVECTOR rot;
-    SVECTOR p;
+    SVECTOR pos;
     s32 i;
 
     ends[0].vx = 0;
-    ends[0].vy = -w / 2;
+    ends[0].vy = -width / 2;
     ends[0].vz = 0;
     ends[1].vx = 0;
-    ends[1].vy = w / 2;
+    ends[1].vy = width / 2;
     ends[1].vz = 0;
-    for (i = 0; i < 60; i++, e++) {
-        fxm_posPathGet(track, i, &p);
-        p.vx = p.vx * scale->vx / 4096;
-        p.vy = p.vy * scale->vy / 4096;
-        p.vz = p.vz * scale->vz / 4096;
+    for (i = 0; i < 60; i++, edge++) {
+        fxm_posPathGet(track, i, &pos);
+        pos.vx = pos.vx * scale->vx / 4096;
+        pos.vy = pos.vy * scale->vy / 4096;
+        pos.vz = pos.vz * scale->vz / 4096;
         rot.vx = 0;
         rot.vy = rotY;
         rot.vz = 0;
         ex->math_rotMatrixYXZ(&rot, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
-        gte_ldv0(&p);
+        gte_ldv0(&pos);
         gte_rtv0tr();
-        gte_stlvnl(&v);
-        p.vx = v.vx;
-        p.vy = v.vy;
-        p.vz = v.vz + 0x4B0;
+        gte_stlvnl(&world);
+        pos.vx = world.vx;
+        pos.vy = world.vy;
+        pos.vz = world.vz + 0x4B0;
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
-        gte_ldv0(&p);
+        gte_ldv0(&pos);
         gte_rtv0tr();
         gte_stlvnl(m.t);
         rot.vx = 0;
@@ -126,11 +126,11 @@ void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale,
         gte_SetTransMatrix(&m);
         gte_ldv0(&ends[0]);
         gte_rtps();
-        gte_stsxy(&e->sxy0);
+        gte_stsxy(&edge->sxy0);
         gte_ldv0(&ends[1]);
         gte_rtps();
-        gte_stsxy(&e->sxy4);
-        gte_stszotz(&e->otz8);
+        gte_stsxy(&edge->sxy4);
+        gte_stszotz(&edge->otz8);
     }
 }
 
@@ -658,17 +658,17 @@ static void fxm_posPathInit(Fx1fdPath *path, u16 *data) {
 static s32 fxm_posPathGet(Fx1fdPath *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx1fdPoint *p;
+    Fx1fdPoint *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
@@ -678,33 +678,33 @@ static void fxm_rotPosPathInit(Fx1fdPath *path, u16 *data) {
     path->keys4 = (Fx1fdPoint *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx1fdPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx1fdKey *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx1fdPath_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx1fdKey *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_1fd_env)->btlfx_drawScreenTint((u32 *)(fx_1fd_env->ot + ot), abr, c, c, c);
+    BTLFX_EXPORTS(fx_1fd_env)->btlfx_drawScreenTint((u32 *)(fx_1fd_env->ot + ot), abr, bright, bright, bright);
 }
 
 static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {

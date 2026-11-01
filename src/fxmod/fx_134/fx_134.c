@@ -45,17 +45,17 @@ static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 
     ex->btlfx_addPrim(0x09000000, ot, poly);
 }
 
-static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr, s32 flip) {
+static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 bright, s32 tpage, s32 clut, s32 u, s32 v, s32 abr, s32 flip) {
     s32 dx;
-    s32 w2;
+    s32 tileW;
     POLY_FT4 *poly;
     BtlfxExports *ex;
     u8 col[4];
     s32 n;
     s32 i;
-    s32 u1;
-    s32 v1;
-    s32 y1;
+    s32 unused1;
+    s32 unused2;
+    s32 unused3;
 
     n = 2;
     ex = BTLFX_EXPORTS(fx_134_env);
@@ -64,7 +64,7 @@ static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tp
     }
     poly = (POLY_FT4 *)fx_134_env->prim;
     fx_134_env->prim = (u8 *)(poly + n);
-    col[0] = col[1] = col[2] = c;
+    col[0] = col[1] = col[2] = bright;
     if (abr != 0xFF) {
         col[3] = 0x2E;
     } else {
@@ -75,13 +75,13 @@ static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tp
     if (flip != 0) {
         dx = 0xA0;
     }
-    w2 = 0x140;
+    tileW = 0x140;
     if (flip != 0) {
-        w2 = 0xA0;
+        tileW = 0xA0;
     }
     for (i = 0; i < n; i++) {
         poly->x0 = poly->x2 = x;
-        poly->x1 = poly->x3 = x + w2;
+        poly->x1 = poly->x3 = x + tileW;
         poly->y0 = poly->y1 = y;
         poly->y2 = poly->y3 = y + h;
         if (flip != 0) {
@@ -169,7 +169,7 @@ static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 t
     }
 }
 
-static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 amp, s32 abr) {
+static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 bright, s32 tpage, s32 clut, s32 u, s32 v, s32 amp, s32 abr) {
     MATRIX m;
     VECTOR sc;
     SVECTOR vtx[4];
@@ -180,12 +180,12 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
     s32 code;
     BtlfxExports *ex;
     POLY_GT4 *poly;
-    s32 d0;
-    s32 d1;
-    s32 d2;
-    s32 d3;
-    s32 r;
-    s32 iv;
+    s32 dist0;
+    s32 dist1;
+    s32 dist2;
+    s32 dist3;
+    s32 shade;
+    s32 tileV;
     s32 u0;
     s32 u1;
     s32 v0;
@@ -219,53 +219,53 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
             vtx[0].vy = vtx[1].vy = i * 0x180 - 0x1200;
             vtx[2].vy = vtx[3].vy = i * 0x180 - 0x1080;
             vtx[1].vx = vtx[3].vx = j * 0x180 - 0x1080;
-            d0 = ex->btlfx_distance(&vtx[0], &center);
-            d1 = ex->btlfx_distance(&vtx[1], &center);
-            d2 = ex->btlfx_distance(&vtx[2], &center);
-            d3 = ex->btlfx_distance(&vtx[3], &center);
-            if (d0 > 0xC00) {
+            dist0 = ex->btlfx_distance(&vtx[0], &center);
+            dist1 = ex->btlfx_distance(&vtx[1], &center);
+            dist2 = ex->btlfx_distance(&vtx[2], &center);
+            dist3 = ex->btlfx_distance(&vtx[3], &center);
+            if (dist0 > 0xC00) {
                 vtx[0].vz = 0;
             } else {
-                vtx[0].vz = ((ex->math_cos((d0 << 11) / 0xC00) + 0x1000) * amp) >> 13;
+                vtx[0].vz = ((ex->math_cos((dist0 << 11) / 0xC00) + 0x1000) * amp) >> 13;
             }
-            if (d1 > 0xC00) {
+            if (dist1 > 0xC00) {
                 vtx[1].vz = 0;
             } else {
-                vtx[1].vz = ((ex->math_cos((d1 << 11) / 0xC00) + 0x1000) * amp) >> 13;
+                vtx[1].vz = ((ex->math_cos((dist1 << 11) / 0xC00) + 0x1000) * amp) >> 13;
             }
-            if (d2 > 0xC00) {
+            if (dist2 > 0xC00) {
                 vtx[2].vz = 0;
             } else {
-                vtx[2].vz = ((ex->math_cos((d2 << 11) / 0xC00) + 0x1000) * amp) >> 13;
+                vtx[2].vz = ((ex->math_cos((dist2 << 11) / 0xC00) + 0x1000) * amp) >> 13;
             }
-            if (d3 > 0xC00) {
+            if (dist3 > 0xC00) {
                 vtx[3].vz = 0;
             } else {
-                vtx[3].vz = ((ex->math_cos((d3 << 11) / 0xC00) + 0x1000) * amp) >> 13;
+                vtx[3].vz = ((ex->math_cos((dist3 << 11) / 0xC00) + 0x1000) * amp) >> 13;
             }
             gte_ldv3c(vtx);
             gte_rtpt();
-            r = c - (vtx[0].vz >> 4);
-            if (r < 0) {
-                r = 0;
+            shade = bright - (vtx[0].vz >> 4);
+            if (shade < 0) {
+                shade = 0;
             }
             poly->code = code;
-            poly->r0 = poly->g0 = poly->b0 = r;
-            r = c - (vtx[1].vz >> 4);
-            if (r < 0) {
-                r = 0;
+            poly->r0 = poly->g0 = poly->b0 = shade;
+            shade = bright - (vtx[1].vz >> 4);
+            if (shade < 0) {
+                shade = 0;
             }
-            poly->r1 = poly->g1 = poly->b1 = r;
-            r = c - (vtx[2].vz >> 4);
-            if (r < 0) {
-                r = 0;
+            poly->r1 = poly->g1 = poly->b1 = shade;
+            shade = bright - (vtx[2].vz >> 4);
+            if (shade < 0) {
+                shade = 0;
             }
-            poly->r2 = poly->g2 = poly->b2 = r;
-            r = c - (vtx[3].vz >> 4);
-            if (r < 0) {
-                r = 0;
+            poly->r2 = poly->g2 = poly->b2 = shade;
+            shade = bright - (vtx[3].vz >> 4);
+            if (shade < 0) {
+                shade = 0;
             }
-            poly->r3 = poly->g3 = poly->b3 = r;
+            poly->r3 = poly->g3 = poly->b3 = shade;
             gte_nclip();
             poly->tpage = tpage;
             poly->clut = clut;
@@ -277,14 +277,14 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
                 gte_ldv0(&vtx[3]);
                 gte_rtps();
                 u0 = u + ((j - 1) & 1) * 48;
-                iv = (i - 1) & 1;
-                v0 = v + iv * 48;
+                tileV = (i - 1) & 1;
+                v0 = v + tileV * 48;
                 u1 = u0 + 0x30;
                 if ((j - 1) & 1) {
                     u1 = u0 + 0x2F;
                 }
                 v1 = v0 + 0x30;
-                if (iv != 0) {
+                if (tileV != 0) {
                     v1 = v0 + 0x2F;
                 }
                 poly->u0 = poly->u2 = u0;
@@ -302,12 +302,12 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx134Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_134_env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pos4;
@@ -317,11 +317,11 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx134Bolt *bolt, SVECTO
     for (i = 0; i < 25; i++) {
         t = 0x1000 - (i << 12) / 24;
         t += ex->btlfx_randCentered(0x100);
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = ex->btlfx_randCentered(0xA0);
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = ex->btlfx_randCentered(0xA0);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;

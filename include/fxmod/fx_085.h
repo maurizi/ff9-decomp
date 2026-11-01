@@ -16,11 +16,11 @@ typedef struct {
     SVECTOR pts4[15];
 } Fx085Strip; /* 0x7C */
 extern u16 fx_085_strip15Blocks[];
-static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 ampFrom, s32 ampTo,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind);
+static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
 extern u16 fx_085_strip3Blocks[];
 static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind);
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
 static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx085Strip *strip, Fx085Strip *out, s32 *tbl, s32 branchAt, s32 fade, s32 lineWidth,
                    s32 kind);
 extern Unk800F78A4 *fx_085_env;
@@ -56,8 +56,8 @@ extern Fx085Strip fx_085_strips[];
 extern Fx085Branch fx_085_branches[];
 extern s32 fx_085_fastBolts; /* faster bolts */
 
-static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 ampFrom, s32 ampTo,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind);
+static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
 static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx085Strip *strip, Fx085Strip *out, s32 *tbl, s32 branchAt, s32 fade, s32 lineWidth,
                    s32 kind);
 static s32 fxm_jaggedStripTask(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);

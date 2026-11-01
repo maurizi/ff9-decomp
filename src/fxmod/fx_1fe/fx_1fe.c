@@ -7,10 +7,10 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     VECTOR sv;
     SVECTOR zero;
     SVECTOR quad[4];
-    CVECTOR c1;
-    CVECTOR c3;
-    CVECTOR c0;
-    CVECTOR c2;
+    CVECTOR colTR;
+    CVECTOR colBR;
+    CVECTOR colTL;
+    CVECTOR colBL;
     MATRIX m;
     s32 otz;
     s32 nclip;
@@ -71,47 +71,47 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
         for (j = 0; j < h; j++, py += size, row += (u32)(w - 1)) {
             px = left;
             src = row;
-            *(s32 *)&c0 = 0;
-            *(s32 *)&c2 = 0;
+            *(s32 *)&colTL = 0;
+            *(s32 *)&colBL = 0;
             for (i = 0; i < w; i++, prim++, px += size, src++) {
                 quad[0].vx = quad[2].vx = px;
                 quad[0].vy = quad[1].vy = py;
                 quad[1].vx = quad[3].vx = px + size;
                 quad[2].vy = quad[3].vy = py + size;
                 if (i >= w - 1) {
-                    *(s32 *)&c1 = 0;
-                    *(s32 *)&c3 = 0;
+                    *(s32 *)&colTR = 0;
+                    *(s32 *)&colBR = 0;
                 } else {
                     if (j == 0) {
-                        *(s32 *)&c1 = 0;
+                        *(s32 *)&colTR = 0;
                     } else {
                         texel = src[0];
-                        c1.r = ((texel & 0x1F) * (bright << 2)) >> 12;
-                        c1.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
-                        c1.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
+                        colTR.r = ((texel & 0x1F) * (bright << 2)) >> 12;
+                        colTR.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        colTR.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
                     }
                     if (j >= h - 1) {
-                        *(s32 *)&c3 = 0;
+                        *(s32 *)&colBR = 0;
                     } else {
                         texel = src[w - 1];
-                        c3.r = ((texel & 0x1F) * (bright << 2)) >> 12;
-                        c3.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
-                        c3.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
+                        colBR.r = ((texel & 0x1F) * (bright << 2)) >> 12;
+                        colBR.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        colBR.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
                     }
                 }
                 gte_ldv3xy(&quad[0], &quad[1], &quad[2]);
-                c0.cd = code;
-                *(s32 *)&prim->r0 = *(s32 *)&c0;
+                colTL.cd = code;
+                *(s32 *)&prim->r0 = *(s32 *)&colTL;
                 gte_rtpt_b();
-                *(s32 *)&prim->r1 = *(s32 *)&c1;
-                *(s32 *)&prim->r2 = *(s32 *)&c2;
+                *(s32 *)&prim->r1 = *(s32 *)&colTR;
+                *(s32 *)&prim->r2 = *(s32 *)&colBL;
                 gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
                 gte_stopz(&nclip);
                 gte_ldv0xy(&quad[3]);
-                *(s32 *)&prim->r3 = *(s32 *)&c3;
+                *(s32 *)&prim->r3 = *(s32 *)&colBR;
                 gte_rtps_b();
-                *(s32 *)&c2 = *(s32 *)&c3;
-                *(s32 *)&c0 = *(s32 *)&c1;
+                *(s32 *)&colBL = *(s32 *)&colBR;
+                *(s32 *)&colTL = *(s32 *)&colTR;
                 gte_stsxy(&prim->x3);
                 if (nclip != 0) {
                     ex->btlfx_addPrim(0x8000000, otz, prim);

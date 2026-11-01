@@ -22,8 +22,8 @@ typedef struct {
     s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx0d3Track;
 static void fxm_keyGetVec(Fx0d3Track *track, s32 t, SVECTOR *out);
-static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b);
-static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
+static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1);
+static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1, SVECTOR *out2);
 static s32 fxm_keyGetValue(Fx0d3Track *track, s32 t);
 /* ribbon history: two edge points per step, edgeA0.pad = live */
 typedef struct {
@@ -38,7 +38,7 @@ typedef struct {
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
 
-static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
+static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 bright,
                    Fx0d3Seg *buf, s32 abr, s32 k);
 typedef struct {
     s32 vx;

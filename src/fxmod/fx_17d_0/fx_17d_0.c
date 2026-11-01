@@ -57,23 +57,23 @@ static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
     }
 }
 
-static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CVECTOR *rgb, s32 p, s32 abr) {
+static void fxm_drawStreakField(u32 *ot, s32 n, s32 projH, s32 dz, SVECTOR *rot, SVECTOR *pts, CVECTOR *rgb, s32 fade, s32 abr) {
     Unk800F78A4 *env = fx_17d_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     LINE_G2 *prim;
     CVECTOR col;
     MATRIX m;
-    s32 oldh;
-    u32 z;
+    s32 oldH;
+    u32 otz;
     u32 *last;
-    SVECTOR *q;
-    SVECTOR *v;
-    LINE_G2 *pp;
-    s32 flag;
+    SVECTOR *curCopy;
+    SVECTOR *cur;
+    LINE_G2 *line;
+    s32 live;
     s32 i;
 
-    if (p < 0) {
-        p = 0x1000;
+    if (fade < 0) {
+        fade = 0x1000;
     }
     prim = (LINE_G2 *)env->prim;
     env->prim = (u8 *)(prim + n);
@@ -82,46 +82,46 @@ static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVE
         col.g = 0;
         col.r = 0;
     } else {
-        gte_DpqColorFar_nst(rgb, p);
+        gte_DpqColorFar_nst(rgb, fade);
         gte_strgb(&col);
     }
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    gte_ReadGeomScreen(&oldh);
-    gte_SetGeomScreen(h);
+    gte_ReadGeomScreen(&oldH);
+    gte_SetGeomScreen(projH);
     ex->math_rotMatrixYXZ(rot, &m);
     m.t[0] = m.t[1] = 0;
-    m.t[2] = h;
+    m.t[2] = projH;
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    v = pts;
-    last = (u32 *)(v + n);
-    for (i = 0, q = v, pp = prim; i < n; i++, last++, q++, v++, pp++, prim++) {
-        flag = *last != 0x7F7F7F7F;
-        gte_ldv0(v);
+    cur = pts;
+    last = (u32 *)(cur + n);
+    for (i = 0, curCopy = cur, line = prim; i < n; i++, last++, curCopy++, cur++, line++, prim++) {
+        live = *last != 0x7F7F7F7F;
+        gte_ldv0(cur);
         gte_rtps();
-        q->vz -= dz;
-        if (dz > 0 && q->vz < -0x80) {
-            q->vz = 0x200;
+        curCopy->vz -= dz;
+        if (dz > 0 && curCopy->vz < -0x80) {
+            curCopy->vz = 0x200;
             *last = 0x7F7F7F7F;
-        } else if (dz < 0 && q->vz > 0x180) {
-            q->vz = -0x100;
+        } else if (dz < 0 && curCopy->vz > 0x180) {
+            curCopy->vz = -0x100;
             *last = 0x7F7F7F7F;
         } else {
-            gte_stsxy(&pp->x0);
-            gte_stszotz(&z);
-            if (z < 0x80 && flag) {
-                gte_DpqColorFar_nst(&col, ((0x80 - z) << 12) >> 7);
+            gte_stsxy(&line->x0);
+            gte_stszotz(&otz);
+            if (otz < 0x80 && live) {
+                gte_DpqColorFar_nst(&col, ((0x80 - otz) << 12) >> 7);
                 gte_strgb(&prim->r0);
-                *(s32 *)&pp->x1 = *last;
-                *(s32 *)&pp->r1 = 0;
-                pp->code = abr == 0xFF ? 0x50 : 0x52;
+                *(s32 *)&line->x1 = *last;
+                *(s32 *)&line->r1 = 0;
+                line->code = abr == 0xFF ? 0x50 : 0x52;
                 ex->btlfx_linkPrimAbr(0x04000000, ot, prim, abr);
             }
-            *last = *(s32 *)&pp->x0;
+            *last = *(s32 *)&line->x0;
         }
     }
-    gte_SetGeomScreen(oldh);
+    gte_SetGeomScreen(oldH);
 }
 
 void fx_17d_0_drawPieces(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s32 models, s16 *morphs, s32 scale) {

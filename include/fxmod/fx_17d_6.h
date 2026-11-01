@@ -66,7 +66,7 @@ extern s32 fx_17d_6_noise[64][3]; /* noise */
 static s32 fx_17d_6_op83PoolTask(s32 mode, Fx17d6Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx17d6Trail *trail, s32 size, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 ampFrom, s32 ampTo, s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 dip);
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip);
 
 typedef struct {
     s32 vx;
