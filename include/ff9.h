@@ -801,6 +801,12 @@ void win_updateAll(void);
  * message windows (msg_renderText / msg_advanceText / msg_getLayout). docs/text-codes.md lists every code.
  * Plain bytes from 0xF7 up are control codes; TEXT_ESC is followed by one escape byte (below), some of which
  * take arguments. Escape bytes the menu renderer doesn't handle go to text_buildCode / text_getCodeWidth. */
+/* letters in the game's text encoding (tools/ff9text.py charmap) */
+#define TEXT_CODE_UPPER_A 0x10 /* 'A'-'Z': 0x10-0x29 */
+#define TEXT_CODE_LOWER_A 0x30 /* 'a'-'z': 0x30-0x49 */
+#define TEXT_CODE_ACCENT_UPPER 0x50 /* 20 accented capitals, A-grave .. U-diaeresis */
+#define TEXT_CODE_ACCENT_LOWER 0x64 /* the same 20 in lower case */
+#define TEXT_CODE_C_CEDILLA 0x78 /* C-cedilla, N-tilde, then their lower case at 0x7A, 0x7B */
 #define TEXT_NEWLINE 0xF7 /* x back to the start, y += 15 (message windows: += 14, the next line) */
 #define TEXT_SPACE_1PX 0xF8 /* message windows: x += 1 */
 #define TEXT_ESC 0xF9

@@ -349,25 +349,25 @@ u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *str, s32 pal, u8 *pkt) {
     s32 k;
     Sprt8Fields *sprtAlias;
 
-    if (*str == 0x40) {
+    if (*str == '@') {
         kana = 1;
         str++;
     }
     while ((ch = *str) != 0) {
-        if ((u8)ch == 0x40) {
+        if ((u8)ch == '@') {
             kana ^= 1;
             str++;
-        } else if ((u8)ch == 0x20) {
+        } else if ((u8)ch == ' ') {
             x += 7;
             str++;
         } else {
-            if ((u32)(ch - 0x21) < 0x3F) {
-                code = *str - 0x20;
-                if (*str == 0x5C) {
+            if ((u32)(ch - '!') < 0x3F) {
+                code = *str - ' ';
+                if (*str == '\\') {
                     code = *str - 0x4D;
                 }
                 goto calc;
-            } else if ((u32)(ch - 0x61) < 0x1A) {
+            } else if ((u32)(ch - 'a') < 26) {
                 code = *str - 0x40;
             calc:
                 row = code >> 5;

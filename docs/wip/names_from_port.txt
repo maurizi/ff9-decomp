@@ -11505,3 +11505,4 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 # ovl_0a.h/ovl_0c.h MENU_MAIN_TEXT_* (s_menuMainText), ovl_0a.h FLD_DISC_TEXT_* (g_fieldDiscChangeText), decoded.
 # ff9.h FADE_FLAT/FADE_WIPE, FADE_ADD/FADE_SUB, FADE_COLOR_NONE/FADE_COLOR_FULL (fade_start / game_startFade arguments).
 # ff9.h PAD_RPT_* (key-repeat channel indexes, from g_padRepeatDefs masks) and PAD_RPT_COUNT 23.
+# ff9.h TEXT_CODE_UPPER_A/LOWER_A/ACCENT_UPPER/ACCENT_LOWER/C_CEDILLA (msg capitalisation); text_buildSmall ASCII char literals.
