@@ -1,6 +1,6 @@
 #include "ovl_64.h"
 
-void mbg_drawStreamDebug(u32 *ot, s32 buf) {
+void mbg_drawStreamDebug(u32 *ot, s32 bufIdx) {
     POLY_F4 *p;
     Ovl64RingHdr *h;
     s32 j;
@@ -38,7 +38,7 @@ void mbg_drawStreamDebug(u32 *ot, s32 buf) {
                 b -= 0x20;
             }
         }
-        p = &g_mbgDebugRingPolys[buf][n++];
+        p = &g_mbgDebugRingPolys[bufIdx][n++];
         SetPolyF4(p);
         setRGB0(p, r, g, b);
         setXY4(p, i * 6 + 0x11, 0xBC, i * 6 + 0x16, 0xBC, i * 6 + 0x11, 0xC4, i * 6 + 0x16, 0xC4);
@@ -48,7 +48,7 @@ void mbg_drawStreamDebug(u32 *ot, s32 buf) {
             h++;
         }
     }
-    p = &g_mbgDebugRingPolys[buf][n];
+    p = &g_mbgDebugRingPolys[bufIdx][n];
     SetPolyF4(p);
     setRGB0(p, 0x10, 0x10, 0x10);
     setXY4(p, 0x10, 0xBB, 0x132, 0xBB, 0x10, 0xC5, 0x132, 0xC5);
@@ -203,22 +203,22 @@ void mbg_streamOnAudioSector(void) {
     }
 }
 
-s32 mbg_streamStart(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4) {
+s32 mbg_streamStart(s32 unused, u32 startFrame, s32 lastFrame, void (*frameCallback)(void), s32 unkC) {
     CdlLOC *loc;
     s32 i;
     Ovl64Pair *p;
 
     CdIntToPos(g_mbgStream.baseSector, &g_mbgStream.startPos);
     g_mbgStream.startSector = CdPosToInt(&g_mbgStream.startPos);
-    if (arg1 >= 2) {
-        g_mbgStream.startSector += (arg1 - 1) * g_mbgStream.frameSectors;
+    if (startFrame >= 2) {
+        g_mbgStream.startSector += (startFrame - 1) * g_mbgStream.frameSectors;
     }
     g_mbgSectorLogCount = 0;
     g_mbgStream.channel = -1;
-    g_mbgStream.startFrame = arg1;
-    g_mbgStream.lastFrame = arg2;
-    g_mbgStream.frameCallback = arg3;
-    g_mbgStream.unkC = arg4;
+    g_mbgStream.startFrame = startFrame;
+    g_mbgStream.lastFrame = lastFrame;
+    g_mbgStream.frameCallback = frameCallback;
+    g_mbgStream.unkC = unkC;
     g_mbgStream.frameSector = 0;
     g_mbgStream.cycleSector = 0;
     g_mbgStream.cameraSel = 0;
@@ -237,7 +237,7 @@ s32 mbg_streamStart(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4
     return 0;
 }
 
-s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **arg2, Ovl64Pair **arg3, MbgRumble **arg4) {
+s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **outCamera, Ovl64Pair **outMask, MbgRumble **outRumble) {
     Ovl64RingHdr *h = &g_mbgStream.ringHdrs[g_mbgStream.readSlot];
 
     if (!(h->status & MBG_RING_READY)) {
@@ -249,13 +249,13 @@ s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **arg2, Ovl
     *hdr = h;
     *data = g_mbgStream.ringData + (h->firstSector + g_mbgStream.readSlot * g_mbgStream.slotSectors) * 0x8F4;
     if (g_mbgStream.hasCamera != 0) {
-        *arg2 = &g_mbgSlotCameras[g_mbgStream.readSlot];
-        *arg3 = &g_mbgSlotMasks[g_mbgStream.readSlot];
+        *outCamera = &g_mbgSlotCameras[g_mbgStream.readSlot];
+        *outMask = &g_mbgSlotMasks[g_mbgStream.readSlot];
     } else {
-        *arg2 = NULL;
-        *arg3 = NULL;
+        *outCamera = NULL;
+        *outMask = NULL;
     }
-    *arg4 = &g_mbgSlotRumble[g_mbgStream.readSlot];
+    *outRumble = &g_mbgSlotRumble[g_mbgStream.readSlot];
     if (g_mbgStream.readSlot == 0) {
         g_mbgStream.readSlot = g_mbgStream.slotCount;
     }
@@ -396,34 +396,34 @@ s32 mbg_streamSetRing(Ovl64RingHdr *ring, u32 per, u32 size) {
     return 0;
 }
 
-s32 mbg_streamSetAudioBuffer(u8 *arg0, s32 arg1, u32 arg2) {
-    if (arg1 != 2) {
+s32 mbg_streamSetAudioBuffer(u8 *audioBuf, s32 mode, u32 sectors) {
+    if (mode != 2) {
         return 2;
     }
-    g_mbgStream.audioSectors = arg2;
+    g_mbgStream.audioSectors = sectors;
     g_mbgStream.audioWrite = 0;
     g_mbgStream.audioLast = 0;
     g_mbgStream.audioPending = 0;
     g_mbgStream.audioPendingMax = 0;
-    g_mbgStream.audioBuf = arg0;
+    g_mbgStream.audioBuf = audioBuf;
     return 0;
 }
 
-s32 mbg_streamSetBaseSector(s32 arg0) {
-    g_mbgStream.baseSector = arg0;
+s32 mbg_streamSetBaseSector(s32 sector) {
+    g_mbgStream.baseSector = sector;
     return 0;
 }
 
-s32 mbg_streamGetCameraSelect(s32 *arg0) {
-    *arg0 = g_mbgStream.cameraSel;
+s32 mbg_streamGetCameraSelect(s32 *outCamera) {
+    *outCamera = g_mbgStream.cameraSel;
     return 0;
 }
 
-s32 mbg_streamSetCameraSelect(u32 arg0) {
-    if (arg0 >= 2) {
+s32 mbg_streamSetCameraSelect(u32 camera) {
+    if (camera >= 2) {
         return 2;
     }
-    g_mbgStream.cameraSel = arg0;
+    g_mbgStream.cameraSel = camera;
     return 0;
 }
 
@@ -494,8 +494,8 @@ s32 mbg_streamCountFree(s32 *count) {
     return 0;
 }
 
-s32 mbg_streamGetLastFrame(s32 *arg0) {
-    *arg0 = g_mbgStream.lastFrame;
+s32 mbg_streamGetLastFrame(s32 *outFrame) {
+    *outFrame = g_mbgStream.lastFrame;
     return 0;
 }
 
@@ -506,8 +506,8 @@ s32 mbg_streamUngetFrame(void) {
     return 0;
 }
 
-s32 mbg_streamSetPaused(s32 arg0) {
-    if (arg0 != 0) {
+s32 mbg_streamSetPaused(s32 paused) {
+    if (paused != 0) {
         cd_pause();
     } else {
         cd_readStreamAsync(g_mbgStream.sector, mbg_streamReadyCallback);

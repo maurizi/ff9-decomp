@@ -5,26 +5,26 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
     u8 *data;
     Ovl64RingHdr *hdr;
     Ovl64FrameInfo *info;
-    Ovl64Pair *mask;
+    Ovl64Pair *maskData;
     MbgRumble *rumble;
     s32 tries;
-    s32 ret;
+    s32 status;
     s8 hi;
 
     tries = 1000;
     info = NULL;
-    mask = NULL;
+    maskData = NULL;
     rumble = NULL;
-    ret = mbg_streamGetFrame(&data, &hdr, &info, &mask, &rumble);
-    while (ret != 0) {
-        if (ret == 5) {
+    status = mbg_streamGetFrame(&data, &hdr, &info, &maskData, &rumble);
+    while (status != 0) {
+        if (status == 5) {
             g_mbgPlayer.ended = 1;
             return NULL;
         }
         if (--tries == 0) {
             return NULL;
         }
-        ret = mbg_streamGetFrame(&data, &hdr, &info, &mask, &rumble);
+        status = mbg_streamGetFrame(&data, &hdr, &info, &maskData, &rumble);
     }
     if (info != NULL) {
         gte_SetGeomOffset((s16)info->ofsX + 0xA0, (s16)info->ofsY + 0x70);
@@ -65,9 +65,9 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
         g_padActuator[0].smallMotor = rumble->on;
         g_padActuator[0].largeMotor = rumble->level;
     }
-    if (mask != NULL && mask->size != 0) {
-        bcopy((void *)mask->data, &g_mbgMaskData[g_gameState->gameData->drawBuf ^ 1], mask->size);
-        g_mbgMaskSize[g_gameState->gameData->drawBuf ^ 1] = mask->size;
+    if (maskData != NULL && maskData->size != 0) {
+        bcopy((void *)maskData->data, &g_mbgMaskData[g_gameState->gameData->drawBuf ^ 1], maskData->size);
+        g_mbgMaskSize[g_gameState->gameData->drawBuf ^ 1] = maskData->size;
     } else {
         g_mbgMaskSize[g_gameState->gameData->drawBuf ^ 1] = 0;
     }
@@ -99,12 +99,12 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
 }
 
 void mbg_mdecOutCallback(void) {
-    u8 res[8];
+    u8 readyArgs[8];
     s32 cur;
 
-    memset(res, 0, 8);
+    memset(readyArgs, 0, 8);
     if (g_mbgStreamDeferred != 0) {
-        mbg_streamReadyCallback(2, res);
+        mbg_streamReadyCallback(2, readyArgs);
         g_mbgStreamDeferred = 0;
     }
     if (g_mbgRgb24 == 0 && g_mbgMaskCursor.size != 0) {
@@ -224,20 +224,20 @@ s32 MBG_init(s32 mode, u8 **buf) {
 
 static inline s32 func_8019_decode_first(void) {
     s32 tries;
-    s32 res;
+    s32 result;
     u8 *data;
     Ovl64Dec *dec = &g_mbgDecode;
 
     while (1) {
         tries = 1000;
-        res = -1;
+        result = -1;
         do {
             data = (u8 *)mbg_readFrame(dec);
             if (data != NULL) {
                 goto found;
             }
             if ((s8)g_mbgPlayer.ended == 1) {
-                res = -1;
+                result = -1;
                 goto check;
             }
         } while (--tries != 0);
@@ -247,19 +247,19 @@ static inline s32 func_8019_decode_first(void) {
         dec->inIdx ^= 1;
         if (DecDCTBufSize((u16 *)data) > 0x4000) {
             mbg_streamFreeFrame(data);
-            res = -1;
+            result = -1;
         } else {
             mbg_vlcDecode(data, dec->mdecIn[dec->inIdx], g_mbgPlayer.vlcTable);
             if (g_mbgPaused) {
                 mbg_streamUngetFrame();
-                res = 0;
+                result = 0;
             } else {
                 mbg_streamFreeFrame(data);
-                res = 0;
+                result = 0;
             }
         }
     check:
-        if (res != -1) {
+        if (result != -1) {
             break;
         }
         if ((s8)g_mbgPlayer.ended != 0) {
@@ -276,7 +276,7 @@ s32 mbg_play(u32 movie, s32 idx) {
     s32 w;
     s32 file;
     s32 tries;
-    s32 res;
+    s32 result;
     u8 *data;
     void (*cb)(void);
     s32 ok;
@@ -380,11 +380,11 @@ static inline void func_8019_wait_frame(Ovl64Dec *dec) {
     dec->frameDone = 0;
 }
 
-s32 mbg_update(s32 arg0) {
+s32 mbg_update(s32 putDisp) {
     Ovl64State *st;
     Ovl64Dec *dec, *d;
     s32 tries;
-    s32 res;
+    s32 result;
     u8 *data;
     u8 mode;
     DISPENV *env;
@@ -433,14 +433,14 @@ s32 mbg_update(s32 arg0) {
     while (1) {
         d = &g_mbgDecode;
         tries = 1000;
-        res = -1;
+        result = -1;
         do {
             data = (u8 *)mbg_readFrame(d);
             if (data != NULL) {
                 goto found;
             }
             if ((s8)g_mbgPlayer.ended == 1) {
-                res = -1;
+                result = -1;
                 goto check;
             }
         } while (--tries != 0);
@@ -450,19 +450,19 @@ s32 mbg_update(s32 arg0) {
         d->inIdx ^= 1;
         if (DecDCTBufSize((u16 *)data) > 0x4000) {
             mbg_streamFreeFrame(data);
-            res = -1;
+            result = -1;
         } else {
             mbg_vlcDecode(data, d->mdecIn[d->inIdx], g_mbgPlayer.vlcTable);
             if (g_mbgPaused) {
                 mbg_streamUngetFrame();
-                res = 0;
+                result = 0;
             } else {
                 mbg_streamFreeFrame(data);
-                res = 0;
+                result = 0;
             }
         }
     check:
-        if (res != -1) {
+        if (result != -1) {
             break;
         }
         if ((s8)g_mbgPlayer.ended != 0) {
@@ -486,7 +486,7 @@ s32 mbg_update(s32 arg0) {
         g_gameState->vsyncMode--;
         g_mbgPlayer.shortFrame = 0;
     }
-    if (arg0 != 0) {
+    if (putDisp != 0) {
         env = (DISPENV *)(g_gameState->gameData->drawBuf * 20 + (s32)g_gameState->dispEnv);
         VSync(0);
         PutDispEnv(env);
@@ -611,8 +611,8 @@ s32 mbg_playToEnd(void) {
     return 1;
 }
 
-s32 mbg_setPause(s32 arg0) {
-    if (arg0 != 0) {
+s32 mbg_setPause(s32 paused) {
+    if (paused != 0) {
         g_mbgPlayer.pauseReq = 1;
     } else {
         g_mbgPlayer.pauseReq = 0;
@@ -644,21 +644,21 @@ s32 mbg_getFrame(void) {
     return -1;
 }
 
-void mbg_setVolume(s32 arg0, s32 arg1, s32 arg2) {
-    if (arg0 < 0) {
+void mbg_setVolume(s32 delay, s32 fade, s32 volume) {
+    if (delay < 0) {
         g_mbgPlayer.volumeDelay = 3;
     } else {
-        g_mbgPlayer.volumeDelay = arg0;
+        g_mbgPlayer.volumeDelay = delay;
     }
-    if (arg1 < 0) {
+    if (fade < 0) {
         g_mbgPlayer.volumeFade = 4;
     } else {
-        g_mbgPlayer.volumeFade = arg1;
+        g_mbgPlayer.volumeFade = fade;
     }
-    if (arg2 < 0) {
+    if (volume < 0) {
         g_mbgPlayer.volume = 0x7F;
     } else {
-        g_mbgPlayer.volume = arg2;
+        g_mbgPlayer.volume = volume;
     }
 }
 
@@ -669,37 +669,37 @@ s32 mbg_getCameraSelect(void) {
     return v;
 }
 
-void mbg_setCameraSelect(u32 arg0) {
-    if (arg0 < 2) {
-        mbg_streamSetCameraSelect(arg0);
+void mbg_setCameraSelect(u32 camera) {
+    if (camera < 2) {
+        mbg_streamSetCameraSelect(camera);
     }
 }
 
-void mbg_setEndCallback(void (*arg0)()) {
-    g_mbgPlayer.endCallback = arg0;
+void mbg_setEndCallback(void (*cb)()) {
+    g_mbgPlayer.endCallback = cb;
 }
 
-void mbg_setScratchVlcTable(s32 arg0) {
-    if (arg0 != 0) {
+void mbg_setScratchVlcTable(s32 useScratch) {
+    if (useScratch != 0) {
         g_mbgPlayer.vlcTable = NULL;
     } else {
         g_mbgPlayer.vlcTable = g_mbgVlcTable;
     }
 }
 
-s32 mbg_getEntryCount(s32 *arg0, u32 arg1) {
-    if (arg1 >= 6) {
+s32 mbg_getEntryCount(s32 *outCount, u32 list) {
+    if (list >= 6) {
         return 0;
     }
-    *arg0 = g_mbgMovieLists[arg1].count;
+    *outCount = g_mbgMovieLists[list].count;
     return 1;
 }
 
-s32 mbg_getEntryName(s32 arg0, u32 arg1, s32 arg2) {
-    if (arg1 >= 6 || arg2 < 0 || arg2 >= g_mbgMovieLists[arg1].count) {
+s32 mbg_getEntryName(s32 outName, u32 list, s32 entry) {
+    if (list >= 6 || entry < 0 || entry >= g_mbgMovieLists[list].count) {
         return 0;
     }
-    strcpy((char *)arg0, g_mbgMovieLists[arg1].entries[arg2].path);
+    strcpy((char *)outName, g_mbgMovieLists[list].entries[entry].path);
     return 1;
 }
 
@@ -713,32 +713,32 @@ s32 mbg_getLastFrame(void) {
     return v;
 }
 
-s32 mbg_getStartCamera(Ovl64Header *arg0, u16 *arg1) {
+s32 mbg_getStartCamera(Ovl64Header *out, u16 *outCameraId) {
     if (g_mbgPlayer.firstFrame != 0) {
         return 0;
     }
-    arg0->m00 = g_mbgStartCamera.m00;
-    arg0->m01 = g_mbgStartCamera.m01;
-    arg0->m02 = g_mbgStartCamera.m02;
-    arg0->m10 = g_mbgStartCamera.m10;
-    arg0->m11 = g_mbgStartCamera.m11;
-    arg0->m12 = g_mbgStartCamera.m12;
-    arg0->m20 = g_mbgStartCamera.m20;
-    arg0->m21 = g_mbgStartCamera.m21;
-    arg0->m22 = g_mbgStartCamera.m22;
-    arg0->tx = g_mbgStartCamera.tx;
-    arg0->ty = g_mbgStartCamera.ty;
-    arg0->tz = g_mbgStartCamera.tz;
-    *arg1 = g_mbgStartCameraId;
+    out->m00 = g_mbgStartCamera.m00;
+    out->m01 = g_mbgStartCamera.m01;
+    out->m02 = g_mbgStartCamera.m02;
+    out->m10 = g_mbgStartCamera.m10;
+    out->m11 = g_mbgStartCamera.m11;
+    out->m12 = g_mbgStartCamera.m12;
+    out->m20 = g_mbgStartCamera.m20;
+    out->m21 = g_mbgStartCamera.m21;
+    out->m22 = g_mbgStartCamera.m22;
+    out->tx = g_mbgStartCamera.tx;
+    out->ty = g_mbgStartCamera.ty;
+    out->tz = g_mbgStartCamera.tz;
+    *outCameraId = g_mbgStartCameraId;
     return 1;
 }
 
-s32 mbg_getGeomOffset(s32 *arg0, s32 *arg1) {
+s32 mbg_getGeomOffset(s32 *outX, s32 *outY) {
     if (g_mbgPlayer.firstFrame != 0) {
         return 0;
     }
-    *arg0 = g_mbgGeomOffset.x;
-    *arg1 = g_mbgGeomOffset.y;
+    *outX = g_mbgGeomOffset.x;
+    *outY = g_mbgGeomOffset.y;
     return 1;
 }
 

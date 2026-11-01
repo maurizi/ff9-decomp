@@ -342,11 +342,11 @@ extern char g_mbgScratchpadMsg[];
 s32 mbg_setRgb24(s32);
 void mbg_vlcBuildTable(void *);
 void mbg_vlcDecode(u8 *, u32 *, void *);
-s32 mbg_streamStart(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4);
+s32 mbg_streamStart(s32 unused, u32 startFrame, s32 lastFrame, void (*frameCallback)(void), s32 unkC);
 s32 mbg_streamReset(void);
 s32 mbg_streamSetRing(Ovl64RingHdr *ring, u32 per, u32 size);
-s32 mbg_streamSetAudioBuffer(u8 *arg0, s32 arg1, u32 arg2);
-s32 mbg_streamSetBaseSector(s32 arg0);
+s32 mbg_streamSetAudioBuffer(u8 *audioBuf, s32 mode, u32 sectors);
+s32 mbg_streamSetBaseSector(s32 sector);
 s32 mbg_streamSeek(CdlLOC *loc);
 s32 mbg_streamGetPos(CdlLOC *loc);
 s32 mbg_streamUngetFrame(void);
@@ -376,6 +376,6 @@ static inline void mbg_streamReadyCallback_retry(void) {
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 s32 fldbg_setCamera(s32 cameraId); /* ovl_0a */
-s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **arg2, Ovl64Pair **arg3, MbgRumble **arg4);
+s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **outCamera, Ovl64Pair **outMask, MbgRumble **outRumble);
 
 #endif
