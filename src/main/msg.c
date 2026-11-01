@@ -725,7 +725,7 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             if (w->waitFrames == MSGW_WAIT_INPUT) {
                 w->waitFrames = 1;
                 if (g_msgChoiceLine >= 0) {
-                    g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
+                    g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, SND_SE_GROUP_MENU, SND_PAN_CENTER, SND_VOL_MAX);
                 }
                 return 1;
             }
@@ -745,19 +745,19 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             } else {
                 g_msgChoice = g_msgChoiceCount - 1;
             }
-            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
+            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, SND_SE_GROUP_MENU, SND_PAN_CENTER, SND_VOL_MAX);
         } else if (pad & PAD_DOWN) {
             if (g_msgChoice < g_msgChoiceCount - 1) {
                 g_msgChoice++;
             } else {
                 g_msgChoice = 0;
             }
-            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
+            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CURSOR, SND_SE_GROUP_MENU, SND_PAN_CENTER, SND_VOL_MAX);
         } else if (!(pad & BTN_CIRCLE) || g_msgChoiceCancel < 0) {
             return 0;
         } else {
             g_msgChoice = g_msgChoiceCancel;
-            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CANCEL, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
+            g_gameState->gameData->soundHook(SND_SE_PLAY, SE_CANCEL, SND_SE_GROUP_MENU, SND_PAN_CENTER, SND_VOL_MAX);
         }
         return 1;
     }

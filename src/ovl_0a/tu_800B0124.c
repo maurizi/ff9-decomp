@@ -215,7 +215,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                         return -1;
                     }
                 }
-                param1 = (0x100000 << slot) & 0x300000;
+                param1 = SND_SE_GROUP_SLOT(slot) & SND_SE_GROUP_SLOTS;
                 playingBit = GD_SFX0_PLAYING << (slot * 2);
                 loadedBit = playingBit >> 1;
                 if (kind == SND_CMD_PLAY && g_gameState->gameData->sfxSlotId[slot] != soundId) {
@@ -238,7 +238,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
         case SND_CMD_RESUME:
             t = 0;
             if (g_gameState->gameData->sfxSlotId[slot] != SE_NONE && g_gameState->gameData->sfxSlotSuspendField[slot] == (s16)g_gameState->gameData->fieldId) {
-                param1 = (0x100000 << slot) & 0x300000;
+                param1 = SND_SE_GROUP_SLOT(slot) & SND_SE_GROUP_SLOTS;
                 t = 1;
                 param2 = g_gameState->gameData->sfxSlotPan[slot];
                 param3 = g_gameState->gameData->sfxSlotVolume[slot];
@@ -265,10 +265,10 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
         case SND_CMD_STOP:
             if (SND_PARAM(cmd) == SND_PARAM_ALL_SLOTS && fp) {
                 if (g_gameState->gameData->flags & GD_SFX0_PLAYING) {
-                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[0], 0x100000);
+                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[0], SND_SE_GROUP_SLOT(0));
                 }
                 if (g_gameState->gameData->flags & GD_SFX1_PLAYING) {
-                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[1], 0x200000);
+                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[1], SND_SE_GROUP_SLOT(1));
                 }
                 g_gameState->gameData->flags &= ~(GD_SFX0_PLAYING | GD_SFX1_PLAYING);
             } else {

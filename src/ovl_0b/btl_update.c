@@ -22,7 +22,7 @@ s32 btl_update(void) {
             b->tick &= 0xF;
             for (u = b->unitList; u != NULL; u = u->next) {
                 if (!(u->flags & BTL_UNIT_PARTY) && (id = btl_getEntranceSound()) != 0xFFFF) {
-                    btl_playUnitSound(u, id, 0x7F);
+                    btl_playUnitSound(u, id, SND_VOL_MAX);
                     break;
                 }
             }

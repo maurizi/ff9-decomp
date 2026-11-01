@@ -62,7 +62,7 @@ s32 w_musicGetID(s32 sound, WmSeIds *out) {
         break;
     }
     if (s.seIds[0] != -1) {
-        s.channelMask = 0x800000;
+        s.channelMask = SND_SE_GROUP_MENU;
         s.count = 1;
         *out = s;
         return 1;

@@ -1243,7 +1243,7 @@ s32 bj_init(void) {
     setDrawTPage(&g_bjTpage, 1, 1, getTPage(1, 0, 0x1C0, 0x100));
     if (!(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
         ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
-        ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, 0x7F);
+        ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, SND_VOL_MAX);
     }
     game_startFade(1, 1, 0, 0xFFFFFF);
     g_bjState = BJ_ST_START;

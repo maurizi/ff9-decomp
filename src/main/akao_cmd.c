@@ -196,7 +196,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
     u32 i;
     s32 max;
 
-    bit = 0x100;
+    bit = AKAO_SE_CH_BIT(0);
     c = g_akaoSeChannels;
     active = g_akaoSeState.activeMask | g_akaoSeState.pausedMask;
     if (seFilter & 0x0FFFFFFF) {
@@ -213,7 +213,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
         }
     } else if (seFilter < 0) {
         c = &g_akaoSeChannels[id];
-        bit = 0x100 << id;
+        bit = AKAO_SE_CH_BIT(id);
         if (active & bit) {
             akao_stopSeChannels(c->seHandle, 0);
         }
@@ -230,7 +230,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
             }
         }
         c = g_akaoSeChannels;
-        bit = 0x100;
+        bit = AKAO_SE_CH_BIT(0);
         max = 0;
         for (i = 0; i < 16; i++, c++, bit <<= 1) {
             if (active & bit) {
@@ -240,7 +240,7 @@ void akao_stopSeChannels(s32 id, s32 seFilter) {
             }
         }
         c = g_akaoSeChannels;
-        bit = 0x100;
+        bit = AKAO_SE_CH_BIT(0);
         for (i = 0; i < 16; i++, c++, bit <<= 1) {
             if ((active & bit) && max == c->age) {
                 if (c->flags & AKAO_CH_STOP_AT_LOOP) {
@@ -354,12 +354,12 @@ void akao_startSe(VoiceParams *p, u8 *track0, u8 *track1, s32 flag) {
     }
     do {
         c = &g_akaoSeChannels[15];
-        bit = 0x800000;
+        bit = AKAO_SE_CH_BIT(15);
         busy = g_akaoSeState.activeMask | g_akaoSeState.pausedMask | g_akaoStream.voiceMask;
         if (track0 != NULL && track1 != NULL) {
             n = 15;
             c--;
-            bit = 0x400000;
+            bit = AKAO_SE_CH_BIT(14);
         loop:
             if (busy & (bit | (bit << 1))) {
                 n--;
@@ -447,7 +447,7 @@ void akao_markSeDirty(void) {
     AkaoChannel *c;
     if (g_akaoSeState.activeMask != 0) {
         pending = g_akaoSeState.activeMask;
-        bit = 0x100;
+        bit = AKAO_SE_CH_BIT(0);
         c = g_akaoSeChannels;
         do {
             if (pending & bit) {
@@ -906,7 +906,7 @@ void akao_cmdFadeCdVolumeFrom(AkaoArgs *args) {
 void akao_cmdSetSeVolume(AkaoArgs *args) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 active = g_akaoSeState.activeMask;
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     if (args->arg1 != 0) {
         for (i = 0; i < 16; i++, c++, bit <<= 1) {
@@ -930,7 +930,7 @@ void akao_cmdSetSeVolume(AkaoArgs *args) {
 void akao_cmdFadeSeVolume(AkaoArgs *args) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 active = g_akaoSeState.activeMask;
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     s16 n;
 
@@ -960,7 +960,7 @@ void akao_cmdFadeSeVolume(AkaoArgs *args) {
 }
 
 void akao_cmdSetAllSeVolume(u16 *args) {
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 active = g_akaoSeState.activeMask;
     u32 i;
     AkaoChannel *c = g_akaoSeChannels;
@@ -976,7 +976,7 @@ void akao_cmdSetAllSeVolume(u16 *args) {
 }
 
 void akao_cmdFadeAllSeVolume(AkaoArgs *args) {
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 active = g_akaoSeState.activeMask;
     u32 i;
     AkaoChannel *c = g_akaoSeChannels;
@@ -997,7 +997,7 @@ void akao_cmdFadeAllSeVolume(AkaoArgs *args) {
 void akao_cmdSetSePan(AkaoArgs *args) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 active = g_akaoSeState.activeMask;
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     if (args->arg1 != 0) {
         for (i = 0; i < 16; i++, c++, bit <<= 1) {
@@ -1021,7 +1021,7 @@ void akao_cmdSetSePan(AkaoArgs *args) {
 void akao_cmdFadeSePan(AkaoArgs *args) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 active = g_akaoSeState.activeMask;
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     s16 n;
 
@@ -1051,7 +1051,7 @@ void akao_cmdFadeSePan(AkaoArgs *args) {
 }
 
 void akao_cmdSetAllSePan(u8 *args) {
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 active = g_akaoSeState.activeMask;
     u32 i;
     AkaoChannel *c = g_akaoSeChannels;
@@ -1067,7 +1067,7 @@ void akao_cmdSetAllSePan(u8 *args) {
 }
 
 void akao_cmdFadeAllSePan(AkaoArgs *args) {
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 active = g_akaoSeState.activeMask;
     u32 i;
     AkaoChannel *c = g_akaoSeChannels;
@@ -1088,7 +1088,7 @@ void akao_cmdFadeAllSePan(AkaoArgs *args) {
 void akao_cmdSetSePitch(AkaoArgs *args) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 active = g_akaoSeState.activeMask;
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     if (args->arg1 != 0) {
         for (i = 0; i < 16; i++, c++, bit <<= 1) {
@@ -1112,7 +1112,7 @@ void akao_cmdSetSePitch(AkaoArgs *args) {
 void akao_cmdFadeSePitch(AkaoArgs *args) {
     AkaoChannel *c = g_akaoSeChannels;
     u32 active = g_akaoSeState.activeMask;
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     s16 n;
 
@@ -1155,7 +1155,7 @@ void akao_cmdSetAllSePitch(u8 *args) {
 }
 
 void akao_cmdFadeAllSePitch(AkaoArgs *args) {
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 active = g_akaoSeState.activeMask;
     u32 i;
     AkaoChannel *c = g_akaoSeChannels;
@@ -1243,7 +1243,7 @@ void akao_cmdStopMusic(s32 *p) {
 
 void akao_cmdStopAllSe(void) {
     AkaoChannel *c = g_akaoSeChannels;
-    u32 bit = 0x100;
+    u32 bit = AKAO_SE_CH_BIT(0);
     u32 i;
     for (i = 0; i < 16; i++, c++, bit <<= 1) {
         if ((g_akaoSeState.activeMask & bit) && !(c->seMask & AKAO_SE_DEFAULT)) {
@@ -1355,13 +1355,13 @@ void akao_cmdPauseSe(void) {
     if (g_akaoSeState.activeMask != 0) {
         m = g_akaoSeState.activeMask;
         c = g_akaoSeChannels;
-        bit = 0x100;
+        bit = AKAO_SE_CH_BIT(0);
         for (i = 0; i < 16; i++, c++, bit <<= 1) {
             if ((m & bit) && (c->seMask & AKAO_SE_DEFAULT)) {
                 m &= ~bit;
             }
         }
-        bit = 0x100;
+        bit = AKAO_SE_CH_BIT(0);
         v = 8;
         g_akaoSeState.pausedMask = m;
         g_akaoSeState.activeMask &= ~m;
@@ -1387,7 +1387,7 @@ void akao_cmdResumeSe(void) {
     s32 m;
     if (g_akaoSeState.pausedMask != 0) {
         pending = g_akaoSeState.pausedMask;
-        bit = 0x100;
+        bit = AKAO_SE_CH_BIT(0);
         c = g_akaoSeChannels;
         do {
             if (pending & bit) {

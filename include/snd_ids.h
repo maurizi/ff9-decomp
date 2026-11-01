@@ -80,6 +80,13 @@
  * akao_cmdPauseSe and ignores the all-SE volume/pan/pitch commands and its own sePan/seVolume/sePitch
  * (akao_calcSeChannelVoice plays it centred, unscaled) */
 #define AKAO_SE_DEFAULT 0x2000000
+/* another seMask group bit: the menu sounds (snd_playSe / snd_stopPlayedSe, the message choice cursor, world map
+ * SE numbers 0-5 and 39 in w_musicGetID) */
+#define SND_SE_GROUP_MENU 0x800000
+#define SND_SE_GROUP_SLOT(n) (0x100000 << (n)) /* group of the SE played from resident slot n (GameData.sfxSlotBuf, field) */
+#define SND_SE_GROUP_SLOTS (SND_SE_GROUP_SLOT(0) | SND_SE_GROUP_SLOT(1))
+/* bit of SE channel i (g_akaoSeChannels[i]) in g_akaoSeState.activeMask / pausedMask / playingMask / keyOnMask */
+#define AKAO_SE_CH_BIT(i) (0x100 << (i))
 
 /* AkaoStreamState.flags (copied from the stream header's flags; akao_cmdStreamSetupRing sets RING_PENDING alone) */
 #define AKAO_STREAM_STEREO       0x1 /* voice plays left only, voice + 1 right only (akao_cmdSetStreamVolume/Pan); one-shot upload via akao_streamStartStereo */

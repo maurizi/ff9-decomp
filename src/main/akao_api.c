@@ -114,7 +114,7 @@ u32 akao_getActiveSe(void) {
     }
     c = g_akaoSeChannels;
     r = 0;
-    for (bit = 0x100; bit & 0xFFFFFF; bit <<= 1) {
+    for (bit = AKAO_SE_CH_BIT(0); bit & 0xFFFFFF; bit <<= 1) {
         if (active & bit) {
             r |= c->seMask;
         }
@@ -136,7 +136,7 @@ s32 akao_isSePlaying(u32 id) {
         return 0;
     }
     c = g_akaoSeChannels;
-    for (bit = 0x100; bit & 0xFFFFFF; bit <<= 1) {
+    for (bit = AKAO_SE_CH_BIT(0); bit & 0xFFFFFF; bit <<= 1) {
         if ((active & bit) && id == c->seMask) {
             return 1;
         }

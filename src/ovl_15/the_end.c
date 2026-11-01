@@ -125,7 +125,7 @@ s32 ending_theEndInit(void) {
     file_loadTim(p);
     akao_stopMusic(0);
     ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
-    ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, 0x7F);
+    ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, SND_VOL_MAX);
     game_startFade(1, 1, 0, 0xFFFFFF);
     g_theEndState = THEEND_ST_START;
     g_theEndInitWord = 0;

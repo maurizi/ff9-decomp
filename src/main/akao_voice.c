@@ -850,7 +850,7 @@ void akao_updateVoices(void) {
     m2 = g_akaoSeState.activeMask & g_akaoSeState.playingMask;
     if (m2) {
         keyon |= g_akaoSeState.keyOnMask;
-        bit = 0x100;
+        bit = AKAO_SE_CH_BIT(0);
         ch = g_akaoSeChannels;
         for (; m2 != 0; bit <<= 1, ch++) {
             if (m2 & bit) {

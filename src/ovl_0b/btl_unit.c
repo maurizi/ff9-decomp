@@ -308,8 +308,8 @@ void btl_updateKo(BtlUnit *u) {
             }
             return;
         case BTL_KO_ENEMY_SOUND:
-            btl_playUnitSound(u, SE_ENEMY_DEATH_1, 0x7F);
-            btl_playUnitSound(u, SE_ENEMY_DEATH_2, 0x7F);
+            btl_playUnitSound(u, SE_ENEMY_DEATH_1, SND_VOL_MAX);
+            btl_playUnitSound(u, SE_ENEMY_DEATH_2, SND_VOL_MAX);
             u->koState++;
         case BTL_KO_ENEMY_FADE:
             btl_setUnitFade(u, e->flags & BTL_ENEMYF_FADE);

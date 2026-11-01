@@ -346,7 +346,7 @@ s32 akao_tick(void) {
             g_akaoSeState.tempoAcc = acc;
             if ((acc & 0xFFFF0000) || (g_akaoPauseFlags & AKAO_PAUSE_FORCE_TICK)) {
                 g_akaoSeState.tempoAcc = acc & 0xFFFF;
-                bit = 0x100;
+                bit = AKAO_SE_CH_BIT(0);
                 c = g_akaoSeChannels;
                 do {
                     if (elapsed & bit) {
@@ -1782,7 +1782,7 @@ s32 akao_allocStreamVoices(void) {
     u32 bit;
 
     do {
-        bit = 0xC00000;
+        bit = AKAO_SE_CH_BIT(14) | AKAO_SE_CH_BIT(15);
         busy = g_akaoSeState.activeMask | g_akaoSeState.pausedMask;
         for (i = 15; i != 0; i--, bit >>= 1) {
             if (!(busy & bit)) {

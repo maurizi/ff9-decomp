@@ -1212,7 +1212,7 @@ s32 btl_playVictoryMusic(GameData *gd, u32 fadeFrames, s32 musicId) {
 
 void btl_playHitSound(BtlUnit *caster, BtlUnit *target) {
     if (!(target->popupFlags & BTL_POPUP_MISS)) {
-        btl_playUnitSound(caster, (u16)btl_getWeaponSound((u8)caster->flags >> BTL_UNIT_SLOT_SHIFT, 1), 0x7F);
+        btl_playUnitSound(caster, (u16)btl_getWeaponSound((u8)caster->flags >> BTL_UNIT_SLOT_SHIFT, 1), SND_VOL_MAX);
     }
 }
 
@@ -1220,7 +1220,7 @@ void btl_playDeathCry(BtlUnit *unit, u16 soundId) {
     Battle *battle = g_gameState->gameData->ctx.battle;
     if (battle->deathCryWait == 0 && !((unit->flags >> BTL_UNIT_DEATH_CRY_BIT) & 1)) {
         battle->deathCryWait = 8;
-        btl_playUnitSound(unit, soundId, 0x7F);
+        btl_playUnitSound(unit, soundId, SND_VOL_MAX);
         unit->flags |= BTL_UNIT_DEATH_CRY;
     }
 }

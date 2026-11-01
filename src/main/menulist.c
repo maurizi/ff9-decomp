@@ -253,11 +253,11 @@ void menuList_getRowsRect(MenuList *m, RECT *src, RECT *dst) {
 }
 
 void snd_playSe(s32 se) {
-    g_gameState->gameData->soundHook(SND_SE_PLAY, se, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
+    g_gameState->gameData->soundHook(SND_SE_PLAY, se, SND_SE_GROUP_MENU, SND_PAN_CENTER, SND_VOL_MAX);
 }
 
 void snd_stopPlayedSe(s32 se) {
-    g_gameState->gameData->soundHook(SND_SE_STOP, se, 0x800000, 0, 0);
+    g_gameState->gameData->soundHook(SND_SE_STOP, se, SND_SE_GROUP_MENU, 0, 0);
 }
 
 void snd_startSe(s32 se) {

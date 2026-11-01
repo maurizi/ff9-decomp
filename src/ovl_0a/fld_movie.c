@@ -1451,10 +1451,10 @@ void fld_updateEncounter(void) {
             g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = 7;
         }
         if (g_gameState->gameData->sfxSlotId[0] != SE_NONE && (g_gameState->gameData->flags & GD_SFX0_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[0], 0x100000, 0xF, 0);
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[0], SND_SE_GROUP_SLOT(0), 0xF, 0);
         }
         if (g_gameState->gameData->sfxSlotId[1] != SE_NONE && (g_gameState->gameData->flags & GD_SFX1_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[1], 0x200000, 0xF, 0);
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf[1], SND_SE_GROUP_SLOT(1), 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].largeMotor = 0;
