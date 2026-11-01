@@ -134,12 +134,12 @@ s32 opening_attract(s32 idx) {
 
 s32 opening_attractInit(s32 idx) {
     u8 *data;
-    FileEntry *e;
+    FileEntry *file;
 
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    e = file_find(DIR_COMMON, g_attractFiles[idx]);
-    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
+    file = file_find(DIR_COMMON, g_attractFiles[idx]);
+    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     data = g_loadAreaEnd + 0x10000;

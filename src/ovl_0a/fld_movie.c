@@ -24,10 +24,10 @@ void fld_clearModelQueue(void) {
 }
 
 s32 fld_loadModelBundle(s32 modelId) {
-    FileEntry *f;
+    FileEntry *file;
     s32 size;
-    Unk800C9CCC *c;
-    s32 n;
+    Unk800C9CCC *cache;
+    s32 data;
     FieldVramPos *vp;
     s32 i;
     s32 j;
@@ -38,31 +38,31 @@ s32 fld_loadModelBundle(s32 modelId) {
     s16 *uv;
     FieldTexEnt *ent;
     s32 img;
-    s32 x, y, cx, cy, e;
+    s32 x, y, cx, cy, tag;
     s32 e1;
     s32 cx2;
     s32 cy2;
     s32 x2;
     s32 y2;
 
-    f = file_find(DIR_CHAR_MODELS, modelId);
-    size = (f->link - f->sector) << 11;
-    c = fld_findModelCache(modelId);
-    if (c->addr == 0) {
-        cdRead_init(g_gameState->gameData->cdRead, f->sector, size,
-                      (void *)(fld_allocModelCache(modelId, size) != 0 ? c->addr : g_modeHeap), 0, -1, 0);
+    file = file_find(DIR_CHAR_MODELS, modelId);
+    size = (file->link - file->sector) << 11;
+    cache = fld_findModelCache(modelId);
+    if (cache->addr == 0) {
+        cdRead_init(g_gameState->gameData->cdRead, file->sector, size,
+                      (void *)(fld_allocModelCache(modelId, size) != 0 ? cache->addr : g_modeHeap), 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
-    if (c->addr != 0) {
-        s32 m = file_copyViaVram(g_modeHeap, c->addr, size, NULL);
+    if (cache->addr != 0) {
+        s32 copySize = file_copyViaVram(g_modeHeap, cache->addr, size, NULL);
         DrawSync(0);
-        fld_invalidateModelCache(g_modeHeap + m);
+        fld_invalidateModelCache(g_modeHeap + copySize);
     }
     vp = db_lookupRegistered(DB_GET_ADDR, DB_VRAM_ALLOC, 0);
-    n = g_modeHeap;
-    pack1 = db_lookup(n, DB_GET_AT, DB_PACK, 0);
-    pack2 = db_lookup(n, DB_GET_AT, (DB_PACK | 1), 0);
+    data = g_modeHeap;
+    pack1 = db_lookup(data, DB_GET_AT, DB_PACK, 0);
+    pack2 = db_lookup(data, DB_GET_AT, (DB_PACK | 1), 0);
     hdr = (u8 *)db_lookup(pack1, DB_GET_AT, DB_MODEL_INFO, 0) + 4;
     tp = (s16 *)(hdr + (*(u32 *)(hdr + 4) & 0xFFFFFF));
     uv = tp + hdr[7] * 2;
@@ -97,8 +97,8 @@ s32 fld_loadModelBundle(s32 modelId) {
     }
     for (i = 0; i < hdr[7]; i++) {
         img = db_lookup(pack2, DB_GET_AT, (i & 0xFFFF) | DB_TIM, 0);
-        e = ent[i].srcX;
-        if (!(e & 1)) {
+        tag = ent[i].srcX;
+        if (!(tag & 1)) {
             x2 = vp->stripX;
             y2 = vp->stripY;
             if (vp->stripY >= 0x1E0) {
@@ -113,11 +113,11 @@ s32 fld_loadModelBundle(s32 modelId) {
             tp[i * 2] = getTPage(1, 0, x2, y2);
             tp[i * 2 + 1] = getClut(cx2, cy2);
             uv[i * 2] = 0;
-            uv[i * 2 + 1] = y2 % 256 - ((e - 2) % 8 * 32 + 0x100) % 128;
+            uv[i * 2 + 1] = y2 % 256 - ((tag - 2) % 8 * 32 + 0x100) % 128;
             ent[i].srcX = x2;
             ent[i].srcY = y2;
             for (j = hdr[7] - 1; j >= 0; j--) {
-                if (ent[j].srcX == e - 1) {
+                if (ent[j].srcX == tag - 1) {
                     ent[i].destX = ent[j].destX;
                     ent[i].destY = ent[j].destY;
                     break;
@@ -150,79 +150,79 @@ s32 fld_setupActorModel(s32 modelId, void *actor) {
     s32 *uv;
     s32 *spr;
     s32 sprId;
-    FieldObjSlot *s;
+    FieldObjSlot *fslot;
     s32 slot;
     u32 k;
     u32 sum;
-    WmModel *m;
-    WmModelGroup *g;
-    WmAnimTable *t;
-    WmAnimTableEntry *e;
+    WmModel *mdl;
+    WmModelGroup *grp;
+    WmAnimTable *table;
+    WmAnimTableEntry *entry;
     s32 i;
-    u32 r;
-    WmModel *a;
+    u32 chrIdx;
+    WmModel *anim;
 
     sprId = -1;
-    r = evt_getObjectChrIndex(actor);
-    if (r < 9) {
-        slot = r;
-        s = (FieldObjSlot *)game_getModel(r);
+    chrIdx = evt_getObjectChrIndex(actor);
+    if (chrIdx < 9) {
+        slot = chrIdx;
+        fslot = (FieldObjSlot *)game_getModel(chrIdx);
     } else {
         slot = g_gameState->gameData->npcModelSlots + 9;
-        s = (FieldObjSlot *)game_getModel(slot);
+        fslot = (FieldObjSlot *)game_getModel(slot);
         g_gameState->gameData->npcModelSlots++;
     }
     modelId = fld_remapModelId(modelId);
-    s->modelId = modelId;
-    s->actor = actor;
-    s->model->model = db_lookupRegistered(DB_GET_ADDR, modelId, 0);
-    if ((s->model->anim = db_lookupRegistered(DB_GET_ADDR, fld_getModelAnimId(modelId), 0)) != NULL) {
-        a = s->model->anim;
-        if (IS_OFFSET(a->bones)) {
-            a->bones = (s32)a + a->bones;
-            if (a->groups != NULL) {
-                a->groups = (WmModelGroup *)((u8 *)s->model->anim + (s32)a->groups);
+    fslot->modelId = modelId;
+    fslot->actor = actor;
+    fslot->model->model = db_lookupRegistered(DB_GET_ADDR, modelId, 0);
+    if ((fslot->model->anim = db_lookupRegistered(DB_GET_ADDR, fld_getModelAnimId(modelId), 0)) != NULL) {
+        anim = fslot->model->anim;
+        if (IS_OFFSET(anim->bones)) {
+            anim->bones = (s32)anim + anim->bones;
+            if (anim->groups != NULL) {
+                anim->groups = (WmModelGroup *)((u8 *)fslot->model->anim + (s32)anim->groups);
             }
         }
     }
     fld_getModelTables(modelId, &tex, &uv, &spr);
-    m = s->model->model;
-    g = m->groups;
+    mdl = fslot->model->model;
+    grp = mdl->groups;
     sum = 0;
-    if (IS_OFFSET(g)) {
-        g = (WmModelGroup *)((u8 *)m + (s32)g);
+    if (IS_OFFSET(grp)) {
+        grp = (WmModelGroup *)((u8 *)mdl + (s32)grp);
     }
-    for (k = 0; k < m->groupCount; k++) {
-        sum += g->packetSize;
-        g++;
+    for (k = 0; k < mdl->groupCount; k++) {
+        sum += grp->packetSize;
+        grp++;
     }
     sum *= 2;
-    sum += s->model->model->boneCount * 32 + s->model->model->groupCount * 12;
-    fldmdl_initModel(s->model, (u8 *)g_gameState->gameData->ctx.field->area->scene->heapTop);
-    fldmdl_buildPackets(s->model, (WmTexInfo *)tex, (s16(*)[2])uv);
+    sum += fslot->model->model->boneCount * 32 + fslot->model->model->groupCount * 12;
+    fldmdl_initModel(fslot->model, (u8 *)g_gameState->gameData->ctx.field->area->scene->heapTop);
+    fldmdl_buildPackets(fslot->model, (WmTexInfo *)tex, (s16(*)[2])uv);
     g_gameState->gameData->ctx.field->area->scene->heapTop += sum;
     fld_trimModelCache();
-    t = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
-    e = t->entries;
-    for (i = t->count - 1; i >= 0; i--) {
-        if (e->modelId == (u16)modelId) {
-            sprId = e->texAnimId | DB_TEX_ANIM;
+    table = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
+    entry = table->entries;
+    for (i = table->count - 1; i >= 0; i--) {
+        if (entry->modelId == (u16)modelId) {
+            sprId = entry->texAnimId | DB_TEX_ANIM;
         }
     }
     if (sprId != -1) {
-        s->model->texAnims = db_lookupRegistered(DB_GET_ADDR, sprId, 0);
-        fldmdl_initTexAnims((TexAnimRelocSet *)s->model->texAnims, (ModelTexOfs *)spr);
+        fslot->model->texAnims = db_lookupRegistered(DB_GET_ADDR, sprId, 0);
+        fldmdl_initTexAnims((TexAnimRelocSet *)fslot->model->texAnims, (ModelTexOfs *)spr);
     }
     if (g_gameState->gameData->ctx.field->area->scene->walkmesh != NULL) {
         if (slot < 9) {
-            bgi_bindActor(slot, s);
+            bgi_bindActor(slot, fslot);
         } else {
-            bgi_addActor(s);
+            bgi_addActor(fslot);
         }
         bgi_setActorActive(slot, 1);
     }
     g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_ACTORS_READY;
-    s->flags |= FLD_OBJ_LOADED;
+    fslot->flags |= FLD_OBJ_LOADED;
     return slot;
 }
 
@@ -234,27 +234,27 @@ s32 fld_remapModelId(s32 modelId) {
 }
 
 s32 fld_depFindByLink(s32 link) {
-    FileTable *t = g_gameState->gameData->depTable;
+    FileTable *table = g_gameState->gameData->depTable;
     s32 i;
-    FileEntry *e = t->entries;
+    FileEntry *entries = table->entries;
 
-    for (i = t->count - 1; i >= 0; i--) {
-        if (e[i].link == link) {
-            return e[i].id;
+    for (i = table->count - 1; i >= 0; i--) {
+        if (entries[i].link == link) {
+            return entries[i].id;
         }
     }
     return -1;
 }
 
 s32 fld_getModelAnimId(s32 modelId) {
-    WmAnimTable *t = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
+    WmAnimTable *table = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
     s32 i;
-    WmAnimTableEntry *e;
+    WmAnimTableEntry *entry;
 
-    e = t->entries;
-    for (i = t->count - 1; i >= 0; i--) {
-        if (e->modelId == (u16)modelId) {
-            return e->animId | DB_ANIM;
+    entry = table->entries;
+    for (i = table->count - 1; i >= 0; i--) {
+        if (entry->modelId == (u16)modelId) {
+            return entry->animId | DB_ANIM;
         }
     }
     return -1;
@@ -262,31 +262,31 @@ s32 fld_getModelAnimId(s32 modelId) {
 
 /* look up the three tables of an area entry */
 s32 fld_getModelTables(s32 modelId, s32 **outTex, s32 **outUv, s32 **outSpr) {
-    WmAnimTable *t = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
-    WmAnimTableEntry *e = t->entries;
+    WmAnimTable *table = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
+    WmAnimTableEntry *entry = table->entries;
     s32 i;
 
-    for (i = t->count - 1; i >= 0; i--) {
-        if (e->modelId == (u16)modelId) {
-            *outTex = (s32 *)((u8 *)e + e->tableOffset);
-            *outUv = *outTex + e->texCount;
-            *outSpr = *outUv + e->texCount;
+    for (i = table->count - 1; i >= 0; i--) {
+        if (entry->modelId == (u16)modelId) {
+            *outTex = (s32 *)((u8 *)entry + entry->tableOffset);
+            *outUv = *outTex + entry->texCount;
+            *outSpr = *outUv + entry->texCount;
             break;
         }
-        e++;
+        entry++;
     }
     return 0;
 }
 
 s32 fld_isModelTexAnimActive(ModelObj *mdl) {
-    Unk800AB0B0 *t = mdl->texAnims;
+    Unk800AB0B0 *texSet = mdl->texAnims;
     s32 i;
-    Unk800AB0B0Entry *e;
+    Unk800AB0B0Entry *anims;
 
-    if (t != NULL) {
-        e = t->anims;
-        for (i = t->count - 1; i >= 0; i--) {
-            if (e[i].flags & TEXANIM_ACTIVE) {
+    if (texSet != NULL) {
+        anims = texSet->anims;
+        for (i = texSet->count - 1; i >= 0; i--) {
+            if (anims[i].flags & TEXANIM_ACTIVE) {
                 return 1;
             }
         }
@@ -295,37 +295,37 @@ s32 fld_isModelTexAnimActive(ModelObj *mdl) {
 }
 
 s32 fld_collectVisibleModels(FieldObjSlot **out) {
-    s32 n;
-    EvtListNode *e;
-    FieldObjSlot *s;
+    s32 count;
+    EvtListNode *node;
+    FieldObjSlot *slot;
     s32 i;
-    WmModel *m;
-    WmModelGroup *g;
+    WmModel *mdl;
+    WmModelGroup *grp;
     u32 sum;
     u32 k;
-    ModelObj *o;
-    EvtObject *a;
-    u16 *p;
+    ModelObj *obj;
+    EvtObject *actor;
+    u16 *parent;
 
-    n = 0;
-    for (e = evt_getObjectList(); e != NULL; e = e->next) {
-        a = e->obj;
-        if (a->state == EVT_STATE_RUNNING && (a->flags & EVT_OBJ_ENABLED) && a->kind == EVT_KIND_ACTOR) {
-            s = (FieldObjSlot *)game_getModel(a->modelSlot);
-            if (s->model->parent == NULL) {
-                out[n++] = s;
+    count = 0;
+    for (node = evt_getObjectList(); node != NULL; node = node->next) {
+        actor = node->obj;
+        if (actor->state == EVT_STATE_RUNNING && (actor->flags & EVT_OBJ_ENABLED) && actor->kind == EVT_KIND_ACTOR) {
+            slot = (FieldObjSlot *)game_getModel(actor->modelSlot);
+            if (slot->model->parent == NULL) {
+                out[count++] = slot;
             }
         }
     }
-    for (e = evt_getObjectList(); e != NULL; e = e->next) {
-        a = e->obj;
-        if (a->state == EVT_STATE_RUNNING && (a->flags & EVT_OBJ_ENABLED) && a->kind == EVT_KIND_ACTOR) {
-            s = (FieldObjSlot *)game_getModel(a->modelSlot);
-            p = s->model->parent;
-            if (p != NULL) {
-                for (i = 0; i < n; i++) {
-                    if ((u16 *)out[i]->model == p) {
-                        out[n++] = s;
+    for (node = evt_getObjectList(); node != NULL; node = node->next) {
+        actor = node->obj;
+        if (actor->state == EVT_STATE_RUNNING && (actor->flags & EVT_OBJ_ENABLED) && actor->kind == EVT_KIND_ACTOR) {
+            slot = (FieldObjSlot *)game_getModel(actor->modelSlot);
+            parent = slot->model->parent;
+            if (parent != NULL) {
+                for (i = 0; i < count; i++) {
+                    if ((u16 *)out[i]->model == parent) {
+                        out[count++] = slot;
                         break;
                     }
                 }
@@ -333,24 +333,24 @@ s32 fld_collectVisibleModels(FieldObjSlot **out) {
         }
     }
     if (g_gameState->gameData->ctx.field->area->scene->movieState != FLD_MOVIE_IDLE) {
-        for (i = 0; i < n; i++) {
-            o = out[i]->model;
-            m = o->model;
-            g = m->groups;
+        for (i = 0; i < count; i++) {
+            obj = out[i]->model;
+            mdl = obj->model;
+            grp = mdl->groups;
             sum = 0;
-            if (IS_OFFSET(g)) {
-                g = (WmModelGroup *)((u8 *)m + (s32)g);
+            if (IS_OFFSET(grp)) {
+                grp = (WmModelGroup *)((u8 *)mdl + (s32)grp);
             }
-            for (k = 0; k < m->groupCount; k++) {
-                sum += g->packetSize;
-                g++;
+            for (k = 0; k < mdl->groupCount; k++) {
+                sum += grp->packetSize;
+                grp++;
             }
-            if (o->packets + (sum * 2 + (o->model->boneCount * 32 + o->model->groupCount * 12)) >= g_loadAreaEnd + 0xF1700) {
+            if (obj->packets + (sum * 2 + (obj->model->boneCount * 32 + obj->model->groupCount * 12)) >= g_loadAreaEnd + 0xF1700) {
                 out[i] = NULL;
             }
         }
     }
-    return n;
+    return count;
 }
 
 void fld_drawModels(void) {
@@ -364,16 +364,16 @@ void fld_drawModels(void) {
     s16 az;
     s32 z;
     u32 *ot;
-    s32 n;
+    s32 count;
     s32 i;
     s32 j;
     s32 j1;
     s32 cnt;
     s32 lim;
-    s32 f;
-    ModelObj *m;
-    EvtObject *o;
-    FieldObjSlot *c;
+    s32 bits;
+    ModelObj *mdl;
+    EvtObject *actor;
+    FieldObjSlot *slot;
     WmModel *w;
 
     lim = 100;
@@ -387,65 +387,65 @@ void fld_drawModels(void) {
     i = 0;
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
     g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot + g_gameState->gameData->ctx.field->area->scene->otBias;
-    n = fld_collectVisibleModels((FieldObjSlot **)list);
-    for (; i < n; i++) {
-        c = list[i];
-        if (c != NULL) {
-            m = c->model;
-            o = c->actor;
-            if ((c->flags & FLD_OBJ_TILT) && bgi_getActorTilt(o->modelSlot, &ax, &az)) {
+    count = fld_collectVisibleModels((FieldObjSlot **)list);
+    for (; i < count; i++) {
+        slot = list[i];
+        if (slot != NULL) {
+            mdl = slot->model;
+            actor = slot->actor;
+            if ((slot->flags & FLD_OBJ_TILT) && bgi_getActorTilt(actor->modelSlot, &ax, &az)) {
                 rot.vx = ax;
-                rot.vy = o->pos.rotY;
+                rot.vy = actor->pos.rotY;
                 rot.vz = az;
-                math_rotMatrixZXY(&rot, &m->worldMatrix);
+                math_rotMatrixZXY(&rot, &mdl->worldMatrix);
             } else {
-                rot.vx = o->pos.rotX;
-                rot.vy = (o->pos.rotY + j) & 0xFFF;
-                rot.vz = o->rotZ;
-                math_rotMatrixZYX(&rot, &m->worldMatrix);
+                rot.vx = actor->pos.rotX;
+                rot.vy = (actor->pos.rotY + j) & 0xFFF;
+                rot.vz = actor->rotZ;
+                math_rotMatrixZYX(&rot, &mdl->worldMatrix);
             }
-            m->worldMatrix.t[0] = o->pos.vx;
-            m->worldMatrix.t[1] = o->pos.vy;
-            m->worldMatrix.t[2] = o->pos.vz;
-            fldmdl_applyScale(m);
+            mdl->worldMatrix.t[0] = actor->pos.vx;
+            mdl->worldMatrix.t[1] = actor->pos.vy;
+            mdl->worldMatrix.t[2] = actor->pos.vz;
+            fldmdl_applyScale(mdl);
         }
     }
-    for (i = 0; i < n; i++) {
-        c = list[i];
-        if (c != NULL) {
-            o = c->actor;
-            m = c->model;
-            w = db_lookupRegistered(DB_GET_ADDR, o->anim | DB_ANIM, 0);
-            m->anim = w;
+    for (i = 0; i < count; i++) {
+        slot = list[i];
+        if (slot != NULL) {
+            actor = slot->actor;
+            mdl = slot->model;
+            w = db_lookupRegistered(DB_GET_ADDR, actor->anim | DB_ANIM, 0);
+            mdl->anim = w;
             if (w != NULL && IS_OFFSET(w->bones)) {
                 w->bones = (void *)((u8 *)w + (s32)w->bones);
                 if (w->groups != NULL) {
-                    w->groups = (void *)((u8 *)m->anim + (s32)w->groups);
+                    w->groups = (void *)((u8 *)mdl->anim + (s32)w->groups);
                 }
             }
         }
     }
-    for (i = 0; i < n; i++) {
-        c = list[i];
-        if (c != NULL) {
-            m = c->model;
-            o = c->actor;
-            if (m->flags & MDL_LOOK_AT) {
-                fldmdl_calcBoneMatricesLookAt(m, o->animFrame);
+    for (i = 0; i < count; i++) {
+        slot = list[i];
+        if (slot != NULL) {
+            mdl = slot->model;
+            actor = slot->actor;
+            if (mdl->flags & MDL_LOOK_AT) {
+                fldmdl_calcBoneMatricesLookAt(mdl, actor->animFrame);
             } else {
-                fldmdl_calcBoneMatrices(m, o->animFrame);
+                fldmdl_calcBoneMatrices(mdl, actor->animFrame);
             }
         }
     }
     gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
     gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
-    for (i = 0; i < n; i++) {
-        c = list[i];
-        if (c != NULL) {
-            m = c->model;
-            rot.vx = ((EvtObject *)m->boneMatrices)->pos.vx;
-            rot.vy = ((EvtObject *)m->boneMatrices)->pos.vy;
-            rot.vz = ((EvtObject *)m->boneMatrices)->pos.vz;
+    for (i = 0; i < count; i++) {
+        slot = list[i];
+        if (slot != NULL) {
+            mdl = slot->model;
+            rot.vx = ((EvtObject *)mdl->boneMatrices)->pos.vx;
+            rot.vy = ((EvtObject *)mdl->boneMatrices)->pos.vy;
+            rot.vz = ((EvtObject *)mdl->boneMatrices)->pos.vz;
             gte_ldv0(&rot);
             gte_rtps();
             gte_stsxy(&sxy);
@@ -456,61 +456,61 @@ void fld_drawModels(void) {
             }
         }
     }
-    for (i = 0; i < n; i++) {
-        c = list[i];
-        if (c != NULL) {
-            m = c->model;
-            f = c->flags & FLD_OBJ_CLIP_Y;
-            lim = m->model->groupCount;
+    for (i = 0; i < count; i++) {
+        slot = list[i];
+        if (slot != NULL) {
+            mdl = slot->model;
+            bits = slot->flags & FLD_OBJ_CLIP_Y;
+            lim = mdl->model->groupCount;
             SetSpadStack12(0x1F8003FC);
-            if (f) {
+            if (bits) {
                 for (j = 0; j < lim; j++) {
-                    f = 1 << j;
-                    if (!(m->hiddenGroups & (u32)f)) {
-                        fldmdl_projectMeshClipY(m, j);
-                        fldmdl_drawMeshClipY(m, j);
+                    bits = 1 << j;
+                    if (!(mdl->hiddenGroups & (u32)bits)) {
+                        fldmdl_projectMeshClipY(mdl, j);
+                        fldmdl_drawMeshClipY(mdl, j);
                     }
                 }
             } else {
                 cnt = lim;
                 for (j1 = 0; j1 < cnt; j1++) {
-                    if (!(m->hiddenGroups & (u32)(1 << j1))) {
-                        fldmdl_projectMesh(m, j1);
-                        fldmdl_drawMesh(m, j1);
+                    if (!(mdl->hiddenGroups & (u32)(1 << j1))) {
+                        fldmdl_projectMesh(mdl, j1);
+                        fldmdl_drawMesh(mdl, j1);
                     }
                 }
             }
             ResetSpadStack12();
         }
     }
-    for (i = 0; i < n; i++) {
-        c = list[i];
-        if (c != NULL) {
-            fld_drawShadow(g_gameState->gameData->ctx.field->area->scene->shadows, c->actor->modelSlot);
+    for (i = 0; i < count; i++) {
+        slot = list[i];
+        if (slot != NULL) {
+            fld_drawShadow(g_gameState->gameData->ctx.field->area->scene->shadows, slot->actor->modelSlot);
         }
     }
-    for (i = 0; i < n; i++) {
-        c = list[i];
-        if (c != NULL && !(c->flags & FLD_OBJ_NO_IDLE_TEXANIM)) {
-            m = c->model;
-            if (m->texAnims->count >= 2 && fld_isModelTexAnimActive(m) == 0) {
-                m->texAnims->anims[2].flags |= TEXANIM_ACTIVE;
-                m->texAnims->anims[2].pos = 0;
-                m->texAnims->anims[2].lastFrame = 0x1000;
+    for (i = 0; i < count; i++) {
+        slot = list[i];
+        if (slot != NULL && !(slot->flags & FLD_OBJ_NO_IDLE_TEXANIM)) {
+            mdl = slot->model;
+            if (mdl->texAnims->count >= 2 && fld_isModelTexAnimActive(mdl) == 0) {
+                mdl->texAnims->anims[2].flags |= TEXANIM_ACTIVE;
+                mdl->texAnims->anims[2].pos = 0;
+                mdl->texAnims->anims[2].lastFrame = 0x1000;
             }
         }
     }
-    for (i = 0; i < n; i++) {
-        c = list[i];
-        if (c != NULL) {
-            fldmdl_updateTexAnims((TexAnimSet *)((ModelObj *)c->model)->texAnims);
+    for (i = 0; i < count; i++) {
+        slot = list[i];
+        if (slot != NULL) {
+            fldmdl_updateTexAnims((TexAnimSet *)((ModelObj *)slot->model)->texAnims);
         }
     }
-    fld_applyLights(list, n);
+    fld_applyLights(list, count);
     if (!(g_gameState->gameData->flags & GD_MENU_OPEN)) {
-        fld_playAnimSfx(list, n);
+        fld_playAnimSfx(list, count);
     }
-    fld_applyModelCommands(list, n);
+    fld_applyModelCommands(list, count);
     g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     if (!(g_fieldMovieFlags & FLD_MVF_CAMERA)) {
         fldbg_resetGeomOffset();
@@ -520,7 +520,7 @@ void fld_drawModels(void) {
 /* model command cmd (FLD_MDLCMD_*) for modelSlot: semi-transparency, Y clip, mirror, animation sounds */
 s32 fld_modelCommand(s32 modelSlot, s32 cmd, s32 param1, s32 param2, s32 param3) {
     FieldActorInfo *info;
-    FieldObjSlot *c;
+    FieldObjSlot *slot;
     FieldActorExt *x;
     FieldActorExt *y;
     s32 *tex;
@@ -528,31 +528,31 @@ s32 fld_modelCommand(s32 modelSlot, s32 cmd, s32 param1, s32 param2, s32 param3)
     s32 *spr;
     u32 k;
     u32 sum;
-    WmModel *m;
-    WmModelGroup *g;
+    WmModel *mdl;
+    WmModelGroup *grp;
     s32 id;
-    FieldAnimSfx *t;
+    FieldAnimSfx *sfx;
 
     info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[modelSlot];
-    c = (FieldObjSlot *)game_getModel(modelSlot);
+    slot = (FieldObjSlot *)game_getModel(modelSlot);
     switch (cmd) {
     case FLD_MDLCMD_SEMITRANS:
         if ((u8)param1 == 0xFF) {
-            c->flags &= ~FLD_OBJ_SEMITRANS;
+            slot->flags &= ~FLD_OBJ_SEMITRANS;
         } else {
             if (param1 != (s8)info->abr) {
-                c->flags |= FLD_OBJ_ABR_CHANGED;
+                slot->flags |= FLD_OBJ_ABR_CHANGED;
             }
-            c->flags |= FLD_OBJ_SEMITRANS;
+            slot->flags |= FLD_OBJ_SEMITRANS;
         }
         info->abr = param1;
         break;
     case FLD_MDLCMD_CLIP_Y:
         if (param1 != 0) {
-            ((ModelObj *)c->model)->clipY = param2;
-            c->flags |= FLD_OBJ_CLIP_Y;
+            ((ModelObj *)slot->model)->clipY = param2;
+            slot->flags |= FLD_OBJ_CLIP_Y;
         } else {
-            c->flags &= ~FLD_OBJ_CLIP_Y;
+            slot->flags &= ~FLD_OBJ_CLIP_Y;
         }
         break;
     case FLD_MDLCMD_MIRROR:
@@ -563,11 +563,11 @@ s32 fld_modelCommand(s32 modelSlot, s32 cmd, s32 param1, s32 param2, s32 param3)
         if (x == NULL) {
             x = info->mirror = (FieldActorExt *)g_gameState->gameData->ctx.field->area->scene->heapTop;
             x->flags = 0;
-            x->modelId = c->modelId;
+            x->modelId = slot->modelId;
             x->model = (ModelObj *)x->modelBuf;
             x->actor = (EvtObject *)x->objBuf;
             x->unk10 = 0;
-            x->src = c;
+            x->src = slot;
             x->mirrorPoint.v.vx = 0;
             x->mirrorPoint.v.vy = 0;
             x->mirrorPoint.v.vz = 0;
@@ -579,19 +579,19 @@ s32 fld_modelCommand(s32 modelSlot, s32 cmd, s32 param1, s32 param2, s32 param3)
         }
         y = x;
         if (!(x->flags & FLD_EXT_BUILT)) {
-            *(FieldEvtObj *)y->actor = *(FieldEvtObj *)c->actor;
-            y->model->model = ((ModelObj *)c->model)->model;
-            y->model->anim = ((ModelObj *)c->model)->anim;
+            *(FieldEvtObj *)y->actor = *(FieldEvtObj *)slot->actor;
+            y->model->model = ((ModelObj *)slot->model)->model;
+            y->model->anim = ((ModelObj *)slot->model)->anim;
             fld_getModelTables(y->modelId, &tex, &uv, &spr);
-            m = y->model->model;
-            g = m->groups;
+            mdl = y->model->model;
+            grp = mdl->groups;
             sum = 0;
-            if (IS_OFFSET(g)) {
-                g = (WmModelGroup *)((u8 *)m + (s32)g);
+            if (IS_OFFSET(grp)) {
+                grp = (WmModelGroup *)((u8 *)mdl + (s32)grp);
             }
-            for (k = 0; k < m->groupCount; k++) {
-                sum += g->packetSize;
-                g++;
+            for (k = 0; k < mdl->groupCount; k++) {
+                sum += grp->packetSize;
+                grp++;
             }
             sum *= 2;
             sum += y->model->model->boneCount * 32 + y->model->model->groupCount * 12;
@@ -609,7 +609,7 @@ s32 fld_modelCommand(s32 modelSlot, s32 cmd, s32 param1, s32 param2, s32 param3)
         switch (cmd) {
         case FLD_MDLCMD_MIRROR:
             if (param1 != 0) {
-                y->model->mirrorSrc = (ModelObj *)c->model;
+                y->model->mirrorSrc = (ModelObj *)slot->model;
                 y->model->mirrorNormal.w[0] = x->mirrorNormal.w[0];
                 y->model->mirrorNormal.w[1] = x->mirrorNormal.w[1];
                 y->model->mirrorPoint.w[0] = x->mirrorPoint.w[0];
@@ -641,22 +641,22 @@ s32 fld_modelCommand(s32 modelSlot, s32 cmd, s32 param1, s32 param2, s32 param3)
     case FLD_MDLCMD_ANIM_SE_ALT:
     case FLD_MDLCMD_ANIM_SE_RANDOM_PITCH:
     case FLD_MDLCMD_ANIM_SE_REMOVE:
-        t = fld_findAnimSfx(c, param1, param2);
-        if (t == NULL && cmd != FLD_MDLCMD_ANIM_SE_REMOVE) {
-            t = fld_addAnimSfx(c, param1, param2);
+        sfx = fld_findAnimSfx(slot, param1, param2);
+        if (sfx == NULL && cmd != FLD_MDLCMD_ANIM_SE_REMOVE) {
+            sfx = fld_addAnimSfx(slot, param1, param2);
         }
         switch (cmd) {
         case FLD_MDLCMD_ANIM_SE:
-            t->sound[0] = param3;
+            sfx->sound[0] = param3;
             break;
         case FLD_MDLCMD_ANIM_SE_ALT:
-            t->sound[1] = param3;
+            sfx->sound[1] = param3;
             break;
         case FLD_MDLCMD_ANIM_SE_RANDOM_PITCH:
-            t->randomPitch = param3 != 0;
+            sfx->randomPitch = param3 != 0;
             break;
         case FLD_MDLCMD_ANIM_SE_REMOVE:
-            fld_removeAnimSfx(c, param1, param2);
+            fld_removeAnimSfx(slot, param1, param2);
             break;
         }
         break;
@@ -667,7 +667,7 @@ s32 fld_modelCommand(s32 modelSlot, s32 cmd, s32 param1, s32 param2, s32 param3)
 void fld_applyModelCommands(FieldObjSlot **slots, s32 count) {
     s32 i;
     s32 j;
-    FieldObjSlot *c;
+    FieldObjSlot *slot;
     FieldActorInfo *info;
     FieldActorExt *x;
     u32 vis;
@@ -675,60 +675,60 @@ void fld_applyModelCommands(FieldObjSlot **slots, s32 count) {
     u32 f4;
     u32 f2;
     s32 upd;
-    s32 n;
+    s32 grpCount;
     FieldActorExt *y;
 
     for (i = count - 1; i >= 0; i--) {
-        c = slots[i];
-        if (c == NULL) {
+        slot = slots[i];
+        if (slot == NULL) {
             continue;
         }
         upd = 0;
-        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->actor->modelSlot];
-        vis = c->flags & FLD_OBJ_SEMITRANS;
+        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[slot->actor->modelSlot];
+        vis = slot->flags & FLD_OBJ_SEMITRANS;
         chg = (info->flags & FLD_INFO_SEMITRANS) ^ vis;
-        f4 = c->flags & FLD_OBJ_ABR_CHANGED;
-        f2 = c->flags & FLD_OBJ_SEMITRANS_AGAIN;
+        f4 = slot->flags & FLD_OBJ_ABR_CHANGED;
+        f2 = slot->flags & FLD_OBJ_SEMITRANS_AGAIN;
         if (chg || f4 || f2) {
             upd = 1;
         }
         if (upd) {
-            if (c->flags & FLD_OBJ_SEMITRANS) {
-                fldmdl_setSemiTrans(c->model, 1);
+            if (slot->flags & FLD_OBJ_SEMITRANS) {
+                fldmdl_setSemiTrans(slot->model, 1);
             } else {
-                fldmdl_setSemiTrans(c->model, 0);
+                fldmdl_setSemiTrans(slot->model, 0);
             }
             if (vis) {
-                fldmdl_setAbr(c->model, ((s32)(info->abr << 24) >> 19) & 0xFFE0);
+                fldmdl_setAbr(slot->model, ((s32)(info->abr << 24) >> 19) & 0xFFE0);
             }
-            if (c->flags & FLD_OBJ_SEMITRANS_AGAIN) {
-                c->flags &= ~FLD_OBJ_SEMITRANS_AGAIN;
+            if (slot->flags & FLD_OBJ_SEMITRANS_AGAIN) {
+                slot->flags &= ~FLD_OBJ_SEMITRANS_AGAIN;
             }
-            c->flags &= ~FLD_OBJ_ABR_CHANGED;
+            slot->flags &= ~FLD_OBJ_ABR_CHANGED;
             if (chg || f4) {
-                c->flags |= FLD_OBJ_SEMITRANS_AGAIN;
+                slot->flags |= FLD_OBJ_SEMITRANS_AGAIN;
             }
             info->flags = (info->flags & ~FLD_INFO_SEMITRANS) | vis;
         }
     }
     for (i = count - 1; i >= 0; i--) {
-        c = slots[i];
-        if (c == NULL) {
+        slot = slots[i];
+        if (slot == NULL) {
             continue;
         }
-        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->actor->modelSlot];
+        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[slot->actor->modelSlot];
         x = info->mirror;
         if (x != NULL && (x->flags & FLD_EXT_MIRROR)) {
             fldmdl_reflectModel(x->model);
             y = x;
             fldmdl_calcBoneMatrices(x->model, x->src->actor->animFrame);
-            n = x->model->model->groupCount;
-            for (j = 0; j < n; j++) {
+            grpCount = x->model->model->groupCount;
+            for (j = 0; j < grpCount; j++) {
                 fldmdl_projectMesh(y->model, j & 0xFF);
                 fldmdl_drawMeshMirrored(y->model, j & 0xFF);
             }
             if (x->tint.c[3] != 0) {
-                for (j = n - 1; j >= 0; j--) {
+                for (j = grpCount - 1; j >= 0; j--) {
                     fldmdl_setGroupRgb(y->model, j & 0xFF, x->tint.c[0], x->tint.c[1], x->tint.c[2]);
                 }
                 x->tint.c[3]--;
@@ -770,21 +770,21 @@ u32 fld_getModelCacheBottom(Unk800C9CCC **outEntry) {
 }
 
 s32 fld_allocModelCache(s32 modelId, s32 size) {
-    Unk800C9CCC *e;
+    Unk800C9CCC *entry;
     u32 lo;
     u32 min;
-    u32 a;
+    u32 addr;
 
-    e = fld_findModelCache(modelId);
+    entry = fld_findModelCache(modelId);
     min = fld_getModelCacheBottom(NULL);
     lo = g_gameState->gameData->ctx.field->area->scene->heapTop;
     if (lo == 0) {
         lo = g_modeHeap;
     }
-    a = min - size;
-    if (lo < a) {
-        e->addr = a;
-        e->size = size;
+    addr = min - size;
+    if (lo < addr) {
+        entry->addr = addr;
+        entry->size = size;
         return 1;
     }
     return 0;
@@ -793,7 +793,7 @@ s32 fld_allocModelCache(s32 modelId, s32 size) {
 /* drop the cached textures no longer listed and pack the rest at the top of RAM */
 void fld_compactModelCache(void) {
     u32 top;
-    Unk800C9CCC *s;
+    Unk800C9CCC *entry;
     s32 i;
     s32 j;
     s32 found;
@@ -803,13 +803,13 @@ void fld_compactModelCache(void) {
     u32 addr;
     s32 id;
     u32 sz;
-    Unk800C9CCC *t;
+    Unk800C9CCC *cand;
 
     top = (s32)RAM_SUB_OVL(u8 *);
     for (i = 9; i >= 0; i--) {
-        s = &g_fieldModelCache[i];
-        id = s->id;
-        if (s->addr != 0) {
+        entry = &g_fieldModelCache[i];
+        id = entry->id;
+        if (entry->addr != 0) {
             found = 0;
             for (j = g_gameState->gameData->ctx.field->area->scene->modelQueueCount - 1; j >= 0; j--) {
                 if ((u16)g_fieldModelQueue[j] == id) {
@@ -818,8 +818,8 @@ void fld_compactModelCache(void) {
                 }
             }
             if (!found) {
-                s->addr = 0;
-                s->size = 0;
+                entry->addr = 0;
+                entry->size = 0;
             }
         }
     }
@@ -827,10 +827,10 @@ void fld_compactModelCache(void) {
         best = 0;
         bi = -1;
         for (i = 9; i >= 0; i--) {
-            t = &g_fieldModelCache[i];
-            sz = t->size;
-            end = t->addr + sz;
-            if (t->addr != 0 && end <= top && best < end) {
+            cand = &g_fieldModelCache[i];
+            sz = cand->size;
+            end = cand->addr + sz;
+            if (cand->addr != 0 && end <= top && best < end) {
                 best = end;
                 bi = i;
             }
@@ -838,11 +838,11 @@ void fld_compactModelCache(void) {
         if (bi == -1) {
             break;
         }
-        s = &g_fieldModelCache[bi];
-        addr = top - s->size;
-        if (s->addr != addr) {
-            file_copyViaVram(addr, s->addr, s->size, NULL);
-            s->addr = addr;
+        entry = &g_fieldModelCache[bi];
+        addr = top - entry->size;
+        if (entry->addr != addr) {
+            file_copyViaVram(addr, entry->addr, entry->size, NULL);
+            entry->addr = addr;
         }
         top = addr;
     }
@@ -860,12 +860,12 @@ void fld_clearModelCache(void) {
 }
 
 void fld_trimModelCache(void) {
-    s32 v = g_gameState->gameData->ctx.field->area->scene->heapTop;
+    s32 top = g_gameState->gameData->ctx.field->area->scene->heapTop;
 
-    if (v == 0) {
-        v = g_modeHeap;
+    if (top == 0) {
+        top = g_modeHeap;
     }
-    fld_invalidateModelCache(v);
+    fld_invalidateModelCache(top);
 }
 
 void fld_invalidateModelCache(s32 addr) {
@@ -880,15 +880,15 @@ void fld_invalidateModelCache(s32 addr) {
 }
 
 void fld_drawShadow(FieldObjPlace *places, s32 slot) {
-    MATRIX m;
-    POLY_FT4 *p[4];
+    MATRIX mtx;
+    POLY_FT4 *polys[4];
     SVECTOR v;
     s32 z[9];
     s32 bias;
     FieldObjPlace *e;
-    FieldObjSlot *s;
+    FieldObjSlot *fslot;
     void *lt;
-    Unk800B3294Bias *t;
+    Unk800B3294Bias *light;
     u32 *stpPrim;
     u32 *mk;
     s32 i;
@@ -899,20 +899,20 @@ void fld_drawShadow(FieldObjPlace *places, s32 slot) {
     s32 v1;
 
     e = &places[slot];
-    s = (FieldObjSlot *)game_getModel(slot);
+    fslot = (FieldObjSlot *)game_getModel(slot);
     bias = 0;
-    if (s->flags & FLD_OBJ_NO_SHADOW) {
+    if (fslot->flags & FLD_OBJ_NO_SHADOW) {
         return;
     }
     lt = g_gameState->gameData->ctx.field->area->scene->lights;
     if (lt != NULL) {
-        t = (Unk800B3294Bias *)fld_findLightColor(lt, s->modelId);
-        if (t == NULL) {
-            t = (Unk800B3294Bias *)fld_findLightColor(lt, -1);
+        light = (Unk800B3294Bias *)fld_findLightColor(lt, fslot->modelId);
+        if (light == NULL) {
+            light = (Unk800B3294Bias *)fld_findLightColor(lt, -1);
         }
-        bias = t->shadowOtBias;
+        bias = light->shadowOtBias;
     }
-    fld_calcShadowMatrix(&e->params, s, &m);
+    fld_calcShadowMatrix(&e->params, fslot, &mtx);
     u0 = (s16)(g_gameState->gameData->ctx.field->area->scene->shadowTexX % 64) * 2;
     v0 = (s16)(g_gameState->gameData->ctx.field->area->scene->shadowTexY % 256);
     for (i = 0; i < 4; i++) {
@@ -922,79 +922,79 @@ void fld_drawShadow(FieldObjPlace *places, s32 slot) {
             setlen(stpPrim, 2);
             stpPrim[1] = _get_mask(0, 1);
             stpPrim[2] = 0;
-            p[i] = (POLY_FT4 *)(stpPrim + 3);
+            polys[i] = (POLY_FT4 *)(stpPrim + 3);
         } else {
-            p[i] = e->prims[g_gameState->gameData->drawBuf][i];
+            polys[i] = e->prims[g_gameState->gameData->drawBuf][i];
         }
-        setPolyFT4(p[i]);
-        setSemiTrans(p[i], 1);
-        setRGB0(p[i], e->params.shade, e->params.shade, e->params.shade);
-        p[i]->tpage = getTPage(1, 2, g_gameState->gameData->ctx.field->area->scene->shadowTexX,
+        setPolyFT4(polys[i]);
+        setSemiTrans(polys[i], 1);
+        setRGB0(polys[i], e->params.shade, e->params.shade, e->params.shade);
+        polys[i]->tpage = getTPage(1, 2, g_gameState->gameData->ctx.field->area->scene->shadowTexX,
                                g_gameState->gameData->ctx.field->area->scene->shadowTexY);
-        p[i]->clut = getClut(VRAM_SHADOW_CLUT_X, VRAM_SHADOW_CLUT_Y);
+        polys[i]->clut = getClut(VRAM_SHADOW_CLUT_X, VRAM_SHADOW_CLUT_Y);
         switch (i) {
         case 0:
-            setUV4(p[0], u0, v0, u0 + 31, v0, u0, v0 + 31, u0 + 31, v0 + 31);
+            setUV4(polys[0], u0, v0, u0 + 31, v0, u0, v0 + 31, u0 + 31, v0 + 31);
             break;
         case 1:
-            setUV4(p[1], u0 + 31, v0, u0, v0, u0 + 31, v0 + 31, u0, v0 + 31);
+            setUV4(polys[1], u0 + 31, v0, u0, v0, u0 + 31, v0 + 31, u0, v0 + 31);
             break;
         case 2:
-            setUV4(p[2], u0, v0 + 31, u0 + 31, v0 + 31, u0, v0, u0 + 31, v0);
+            setUV4(polys[2], u0, v0 + 31, u0 + 31, v0 + 31, u0, v0, u0 + 31, v0);
             break;
         case 3:
-            setUV4(p[3], u0 + 31, v0 + 31, u0, v0 + 31, u0 + 31, v0, u0, v0);
+            setUV4(polys[3], u0 + 31, v0 + 31, u0, v0 + 31, u0 + 31, v0, u0, v0);
             break;
         }
         if (g_gameState->gameData->ctx.field->flags & FLD_MAP_SHADOW_MASK) {
-            mk = (u32 *)(p[i] + 1);
+            mk = (u32 *)(polys[i] + 1);
             setlen(mk, 2);
             mk[1] = _get_mask(0, 1);
             mk[2] = 0;
-            MargePrim(p[i], mk);
-            MargePrim(stpPrim, p[i]);
+            MargePrim(polys[i], mk);
+            MargePrim(stpPrim, polys[i]);
         }
     }
-    gte_MulMatrix0(&g_gameState->gameData->viewMatrix, &m, &m);
+    gte_MulMatrix0(&g_gameState->gameData->viewMatrix, &mtx, &mtx);
     gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
-    gte_ldlv0(m.t);
+    gte_ldlv0(mtx.t);
     gte_rtv0tr();
-    gte_stir(m.t);
-    gte_SetRotMatrix(&m);
-    gte_SetTransMatrix(&m);
+    gte_stir(mtx.t);
+    gte_SetRotMatrix(&mtx);
+    gte_SetTransMatrix(&mtx);
     FIELD_SHADOW_PT(-0x1000, 0x1000);
-    gte_stsxy(&p[0]->x0);
+    gte_stsxy(&polys[0]->x0);
     gte_stsz(&z[0]);
     FIELD_SHADOW_PT(0, 0x1000);
-    gte_stsxy(&p[0]->x1);
-    gte_stsxy(&p[1]->x0);
+    gte_stsxy(&polys[0]->x1);
+    gte_stsxy(&polys[1]->x0);
     gte_stsz(&z[1]);
     FIELD_SHADOW_PT(0x1000, 0x1000);
-    gte_stsxy(&p[1]->x1);
+    gte_stsxy(&polys[1]->x1);
     gte_stsz(&z[2]);
     FIELD_SHADOW_PT(-0x1000, 0);
-    gte_stsxy(&p[0]->x2);
-    gte_stsxy(&p[2]->x0);
+    gte_stsxy(&polys[0]->x2);
+    gte_stsxy(&polys[2]->x0);
     gte_stsz(&z[3]);
     FIELD_SHADOW_PT(0, 0);
-    gte_stsxy(&p[0]->x3);
-    gte_stsxy(&p[1]->x2);
-    gte_stsxy(&p[2]->x1);
-    gte_stsxy(&p[3]->x0);
+    gte_stsxy(&polys[0]->x3);
+    gte_stsxy(&polys[1]->x2);
+    gte_stsxy(&polys[2]->x1);
+    gte_stsxy(&polys[3]->x0);
     gte_stsz(&z[4]);
     FIELD_SHADOW_PT(0x1000, 0);
-    gte_stsxy(&p[1]->x3);
-    gte_stsxy(&p[3]->x1);
+    gte_stsxy(&polys[1]->x3);
+    gte_stsxy(&polys[3]->x1);
     gte_stsz(&z[5]);
     FIELD_SHADOW_PT(-0x1000, -0x1000);
-    gte_stsxy(&p[2]->x2);
+    gte_stsxy(&polys[2]->x2);
     gte_stsz(&z[6]);
     FIELD_SHADOW_PT(0, -0x1000);
-    gte_stsxy(&p[2]->x3);
-    gte_stsxy(&p[3]->x2);
+    gte_stsxy(&polys[2]->x3);
+    gte_stsxy(&polys[3]->x2);
     gte_stsz(&z[7]);
     FIELD_SHADOW_PT(0x1000, -0x1000);
-    gte_stsxy(&p[3]->x3);
+    gte_stsxy(&polys[3]->x3);
     gte_stsz(&z[8]);
 
     k = z[0];
@@ -1046,21 +1046,21 @@ s32 fld_initShadows(s32 heap, s32 count, s32 u, s32 v) {
 
 /* object placement matrix: either a plain y rotation or facing the model's joint */
 void fld_calcShadowMatrix(FieldObjEnt *ent, FieldObjSlot *obj, MATRIX *out) {
-    MATRIX m;
-    SVECTOR v;
+    MATRIX mtx;
+    SVECTOR axis;
     VECTOR dir;
     VECTOR side;
     VECTOR up;
     VECTOR fwd;
-    s32 *d;
-    s32 *s;
-    s32 c;
+    s32 *dst;
+    s32 *src;
+    s32 cs;
     s32 sn;
 
     if (obj->flags & FLD_OBJ_SHADOW_FIXED) {
-        c = math_cos(ent->angle);
+        cs = math_cos(ent->angle);
         sn = math_sin(ent->angle);
-        out->m[0][0] = c * ent->scaleX >> 12;
+        out->m[0][0] = cs * ent->scaleX >> 12;
         out->m[1][0] = 0;
         out->m[2][0] = -sn * ent->scaleX >> 12;
         out->m[0][1] = 0;
@@ -1068,31 +1068,31 @@ void fld_calcShadowMatrix(FieldObjEnt *ent, FieldObjSlot *obj, MATRIX *out) {
         out->m[2][1] = 0;
         out->m[0][2] = sn * ent->scaleZ >> 12;
         out->m[1][2] = 0;
-        out->m[2][2] = c * ent->scaleZ >> 12;
-        out->t[0] = ((c * ent->offsetX + sn * ent->offsetZ) >> 12) + ((EvtObject *)obj->actor)->pos.vx;
+        out->m[2][2] = cs * ent->scaleZ >> 12;
+        out->t[0] = ((cs * ent->offsetX + sn * ent->offsetZ) >> 12) + ((EvtObject *)obj->actor)->pos.vx;
         out->t[1] = ((EvtObject *)obj->actor)->pos.vy;
-        out->t[2] = ((-sn * ent->offsetX + c * ent->offsetZ) >> 12) + ((EvtObject *)obj->actor)->pos.vz;
+        out->t[2] = ((-sn * ent->offsetX + cs * ent->offsetZ) >> 12) + ((EvtObject *)obj->actor)->pos.vz;
     } else {
         /* word-wise copy of the joint matrix */
-        d = (s32 *)&m;
-        s = (s32 *)&((MATRIX *)obj->model->boneMatrices)[1];
-        d[0] = s[0];
-        d[1] = s[1];
-        d[2] = s[2];
-        d[3] = s[3];
-        d[4] = s[4];
-        d[5] = s[5];
-        d[6] = s[6];
-        d[7] = s[7];
-        m.t[2] = 0;
-        m.t[1] = 0;
-        m.t[0] = 0;
-        v.vx = 0;
-        v.vy = -0x1000;
-        v.vz = 0;
-        gte_SetRotMatrix(&m);
-        gte_SetTransMatrix(&m);
-        gte_ldv0(&v);
+        dst = (s32 *)&mtx;
+        src = (s32 *)&((MATRIX *)obj->model->boneMatrices)[1];
+        dst[0] = src[0];
+        dst[1] = src[1];
+        dst[2] = src[2];
+        dst[3] = src[3];
+        dst[4] = src[4];
+        dst[5] = src[5];
+        dst[6] = src[6];
+        dst[7] = src[7];
+        mtx.t[2] = 0;
+        mtx.t[1] = 0;
+        mtx.t[0] = 0;
+        axis.vx = 0;
+        axis.vy = -0x1000;
+        axis.vz = 0;
+        gte_SetRotMatrix(&mtx);
+        gte_SetTransMatrix(&mtx);
+        gte_ldv0(&axis);
         gte_rtv0tr();
         gte_stlvnl(&dir);
         dir.vy = 0;
@@ -1158,17 +1158,17 @@ void fld_movieStart(s32 list, s32 entry, s32 rgb24) {
 }
 
 void fld_movieUpdate(void) {
-    s32 b;
+    s32 queueIdx;
     s32 done;
-    s32 t;
-    s32 d;
+    s32 lastFrame;
+    s32 remain;
 
     switch (g_gameState->gameData->ctx.field->area->scene->movieState) {
     case FLD_MOVIE_LOAD_OVL:
         if (cd_getState() == 0) {
             if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
-                FileEntry *f = file_find(DIR_OVERLAYS, OVL_MOVIE);
-                cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11,
+                FileEntry *file = file_find(DIR_OVERLAYS, OVL_MOVIE);
+                cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11,
                               (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
             g_gameState->gameData->ctx.field->area->scene->movieState = FLD_MOVIE_READ_OVL;
@@ -1198,21 +1198,21 @@ void fld_movieUpdate(void) {
         break;
     case FLD_MOVIE_READY:
         if (g_fieldMovieFlags & FLD_MVF_PLAY) {
-            b = 1;
+            queueIdx = 1;
             if (g_gameState->gameData->drawBuf != 0) {
-                b = 2;
+                queueIdx = 2;
             }
-            g_fieldFlagQueue.mapFlags[0][b - 1] = FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK;
-            g_fieldFlagQueue.gameFlags[0][b - 1] = GD_HIDE_SPRITES | GD_HIDE_BG | GD_MENU_DISABLED;
-            g_fieldFlagQueue.mapFlags[0][b - 1] |= FLD_MAP_NO_FADE;
+            g_fieldFlagQueue.mapFlags[0][queueIdx - 1] = FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK;
+            g_fieldFlagQueue.gameFlags[0][queueIdx - 1] = GD_HIDE_SPRITES | GD_HIDE_BG | GD_MENU_DISABLED;
+            g_fieldFlagQueue.mapFlags[0][queueIdx - 1] |= FLD_MAP_NO_FADE;
             if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0) {
-                g_fieldFlagQueue.gameFlags[0][b - 1] |= 0x44; /* GD_HIDE_MODELS | 0x40: 0x40 is set while an encounter starts or
+                g_fieldFlagQueue.gameFlags[0][queueIdx - 1] |= 0x44; /* GD_HIDE_MODELS | 0x40: 0x40 is set while an encounter starts or
                                                                 * a colour-keyed field movie plays, no reader found (round 33) */
-                g_fieldFlagQueue.mapFlags[0][b - 1] |= FLD_MAP_NO_WINDOWS;
+                g_fieldFlagQueue.mapFlags[0][queueIdx - 1] |= FLD_MAP_NO_WINDOWS;
             }
-            g_fieldFlagQueue.movieFlags[0][b - 1] = FLD_MVF_CAMERA;
-            g_fieldFlagQueue.movieFlags[1][b] = FLD_MVF_CAMERA;
-            g_fieldFlagQueue.movieFlags[0][b] = FLD_MVF_RUNNING;
+            g_fieldFlagQueue.movieFlags[0][queueIdx - 1] = FLD_MVF_CAMERA;
+            g_fieldFlagQueue.movieFlags[1][queueIdx] = FLD_MVF_CAMERA;
+            g_fieldFlagQueue.movieFlags[0][queueIdx] = FLD_MVF_RUNNING;
             if (!(g_padPortMask[0] & BTN_START)) {
                 g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_MOVIE_DISPMASK;
                 g_padPortMask[0] |= BTN_START;
@@ -1237,11 +1237,11 @@ void fld_movieUpdate(void) {
         }
         if ((g_fieldMovieFlags & FLD_MVF_RUNNING) && (mbg_getStatus() & 2)) {
             done = mbg_update(0);
-            t = mbg_getLastFrame();
-            if (!(g_fieldMovieFlags & FLD_MVF_END_FADE) && (u32)t < 99999) {
-                d = t - g_mbgFrame;
-                if (d < 4) {
-                    akao_sendCmdE5(d * 4, 0);
+            lastFrame = mbg_getLastFrame();
+            if (!(g_fieldMovieFlags & FLD_MVF_END_FADE) && (u32)lastFrame < 99999) {
+                remain = lastFrame - g_mbgFrame;
+                if (remain < 4) {
+                    akao_sendCmdE5(remain * 4, 0);
                     g_fieldMovieFlags |= FLD_MVF_END_FADE;
                 }
             }
@@ -1255,7 +1255,7 @@ void fld_movieUpdate(void) {
             } else if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0 && g_gameState->gameData->drawBuf == 0) {
                 g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x = 0x1E0;
             }
-            if ((g_mbgFrame >= t || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & FLD_MVF_END_DONE)) {
+            if ((g_mbgFrame >= lastFrame || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & FLD_MVF_END_DONE)) {
                 if (g_fieldMovieLastFrame >= g_mbgFrame) {
                     ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
                     g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_HIDE_ALL);
@@ -1294,12 +1294,12 @@ void fld_movieStop(void) {
 }
 
 void fld_movieFinish(void) {
-    FieldMap *f;
+    FieldMap *field;
 
     g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_HIDE_ALL | 0x40);
-    f = g_gameState->gameData->ctx.field;
+    field = g_gameState->gameData->ctx.field;
     g_fieldMovieFlags &= 0xFE00;
-    f->flags &= ~(FLD_MAP_NO_PRELOAD | FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
+    field->flags &= ~(FLD_MAP_NO_PRELOAD | FLD_MAP_NO_FADE | FLD_MAP_CLEAR_ONLY | FLD_MAP_SHADOW_MASK | FLD_MAP_NO_WINDOWS);
     g_gameState->vsyncMode = 2;
     g_gameState->dispEnv[0].disp.x = 0x140;
     g_gameState->dispEnv[1].disp.x = 0;
@@ -1343,7 +1343,7 @@ void fld_beginFrame(void) {
 void fld_endFrame(void) {
     s32 i;
     s32 j;
-    u32 f;
+    u32 mapFlags;
 
     if ((g_padPortHeld[0] & PAD_SOFT_RESET) == PAD_SOFT_RESET || (g_padPortHeld[1] & PAD_SOFT_RESET) == PAD_SOFT_RESET) {
         g_gameState->flags |= GS_RESET;
@@ -1368,11 +1368,11 @@ void fld_endFrame(void) {
         PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     }
     if (!(g_gameState->gameData->flags & GD_PAUSED)) {
-        f = g_gameState->gameData->ctx.field->flags;
-        if (!(f & FLD_MAP_NO_DRAW)) {
-            if (f & FLD_MAP_CLEAR_ONLY) {
+        mapFlags = g_gameState->gameData->ctx.field->flags;
+        if (!(mapFlags & FLD_MAP_NO_DRAW)) {
+            if (mapFlags & FLD_MAP_CLEAR_ONLY) {
                 PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
-            } else if (f & FLD_MAP_ACTIVE) {
+            } else if (mapFlags & FLD_MAP_ACTIVE) {
                 DrawOTagEnv(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
             } else {
                 DrawOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf]);
@@ -1413,10 +1413,10 @@ void fld_startEncounter(void) {
 }
 
 void fld_updateEncounter(void) {
-    EvtObject *a;
-    SVECTOR v;
-    RECT r;
-    PreloadEntry *e;
+    EvtObject *player;
+    SVECTOR worldPos;
+    RECT rect;
+    PreloadEntry *entry;
     s32 i;
     s16 w;
 
@@ -1425,15 +1425,15 @@ void fld_updateEncounter(void) {
         g_swirlBuf = g_loadAreaEnd + 0x153F00;
         fld_clearModelCache();
         g_gameState->gameData->ctx.field->area->scene->heapTop = g_modeHeap;
-        a = evt_getPlayer();
-        if (a != NULL) {
+        player = evt_getPlayer();
+        if (player != NULL) {
             fldbg_applyGeomOffset();
-            v.vx = a->pos.vx;
-            v.vy = a->pos.vy;
-            v.vz = a->pos.vz;
+            worldPos.vx = player->pos.vx;
+            worldPos.vy = player->pos.vy;
+            worldPos.vz = player->pos.vz;
             gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
             gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
-            gte_ldv0(&v);
+            gte_ldv0(&worldPos);
             gte_rtps();
             gte_stsxy(&g_gameState->gameData->ctx.field->area->scene->encounterScreenX);
             if ((u16)g_gameState->gameData->ctx.field->area->scene->encounterScreenX >= 320
@@ -1465,23 +1465,23 @@ void fld_updateEncounter(void) {
     } else {
         if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_ENCOUNTER_LOADED)) {
             if (preload_isReady(OVL_KEY(OVL_BATTLE)) != 0) {
-                e = preload_find(OVL_KEY(OVL_BATTLE));
+                entry = preload_find(OVL_KEY(OVL_BATTLE));
                 ClearOTag(&g_fieldTempOt, 1);
                 setlen(&g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1], 2);
                 g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[0] = _get_mask(0, 0);
                 g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[1] = 0;
                 addPrim(&g_fieldTempOt, &g_fieldMaskPkt[g_gameState->gameData->drawBuf]);
                 DrawOTag(&g_fieldTempOt);
-                r.x = 0;
-                r.y = 0x100;
-                r.h = 0x100;
-                r.w = w = (u32)(e->loaded / r.h) >> 1;
-                if (e->loaded % r.h != 0) {
-                    r.w = w + 1;
+                rect.x = 0;
+                rect.y = 0x100;
+                rect.h = 0x100;
+                rect.w = w = (u32)(entry->loaded / rect.h) >> 1;
+                if (entry->loaded % rect.h != 0) {
+                    rect.w = w + 1;
                 }
-                LoadImage(&r, (u32 *)e->dest);
+                LoadImage(&rect, (u32 *)entry->dest);
                 DrawSync(0);
-                preload_setVramRect(e, r.x, r.y, r.w, r.h);
+                preload_setVramRect(entry, rect.x, rect.y, rect.w, rect.h);
             } else {
                 /* preload_waitCurrent returns NULL when no preload is in flight (seen in d4_f2928), so the PS1 reads fileId from low
                  * RAM here. Harmless on the PS1; a native port must check for NULL (ff9-ds F37). */
@@ -1536,13 +1536,13 @@ void fld_updateEncounter(void) {
 
 /* toggle the pause screen */
 void fld_togglePause(void) {
-    Unk4 c;
+    Unk4 color;
     u8 wipeRgb[8];
     s32 spriteW;
     s32 i;
     s32 bright;
-    s32 v;
-    u32 a;
+    s32 subtractive;
+    u32 next;
     SPRT *sp;
 
     g_gameState->gameData->flags ^= GD_PAUSED;
@@ -1559,17 +1559,17 @@ void fld_togglePause(void) {
         if (fade_isActive() || fade_isBusy()) {
             bright = 1;
         }
-        v = fade_isSubtractive();
-        if (bright && v == 0) {
+        subtractive = fade_isSubtractive();
+        if (bright && subtractive == 0) {
             if (fade_getType() == 2) {
                 fade_getWipeColors(wipeRgb);
-                c.b[0] = (wipeRgb[0] + wipeRgb[4]) >> 1;
-                c.b[1] = (wipeRgb[1] + wipeRgb[5]) >> 1;
-                c.b[2] = (wipeRgb[2] + wipeRgb[6]) >> 1;
+                color.b[0] = (wipeRgb[0] + wipeRgb[4]) >> 1;
+                color.b[1] = (wipeRgb[1] + wipeRgb[5]) >> 1;
+                color.b[2] = (wipeRgb[2] + wipeRgb[6]) >> 1;
             } else {
-                c = fade_getColor();
+                color = fade_getColor();
             }
-            if (c.b[0] >= 200 && c.b[1] >= 200 && c.b[2] >= 200) {
+            if (color.b[0] >= 200 && color.b[1] >= 200 && color.b[2] >= 200) {
                 setSemiTrans(&g_fieldPauseSprite.sprite, 1);
                 sp = &g_fieldPauseSprite.sprite;
                 sp++;
@@ -1583,9 +1583,9 @@ void fld_togglePause(void) {
         setWH(&g_fieldPauseDim, SCREEN_W, SCREEN_H);
         setXY0(&g_fieldPauseDim, 0, 0);
         setlen(&g_fieldPauseTPage, 1);
-        a = getaddr(&g_fieldTempOt);
+        next = getaddr(&g_fieldTempOt);
         g_fieldPauseTPage.code[0] = _get_mode(0, 1, getTPage(0, 2, 0, 0));
-        setaddr(&g_fieldPauseDim, a), setaddr(&g_fieldTempOt, &g_fieldPauseDim);
+        setaddr(&g_fieldPauseDim, next), setaddr(&g_fieldTempOt, &g_fieldPauseDim);
         addPrim(&g_fieldTempOt, &g_fieldPauseTPage);
         DrawOTag(&g_fieldTempOt);
         g_gameState->gameData->flags |= GD_NO_FLIP;
@@ -1598,74 +1598,74 @@ void fld_togglePause(void) {
 
 void fld_spriteCommand(s32 spriteIdx, s32 cmd, s32 param1, s32 param2, s32 param3) {
     FieldSpriteSet *h;
-    FieldSprite *e;
+    FieldSprite *spr;
 
     h = g_gameState->gameData->ctx.field->area->scene->sprites;
     if (h == NULL) {
         return;
     }
-    e = &h->entries[spriteIdx];
+    spr = &h->entries[spriteIdx];
     if (cmd == FLD_SPRCMD_SET) {
         if (param1 != -1) {
-            fld_resetSprite(e);
-            e->spriteId = param1;
-            e->sprite = db_lookupRegistered(DB_GET_ADDR, (param1 & 0xFFFF) | DB_SPRITE, 0);
-            e->frameEnd = fld_getSpriteFrameCount(e->sprite) * 16;
+            fld_resetSprite(spr);
+            spr->spriteId = param1;
+            spr->sprite = db_lookupRegistered(DB_GET_ADDR, (param1 & 0xFFFF) | DB_SPRITE, 0);
+            spr->frameEnd = fld_getSpriteFrameCount(spr->sprite) * 16;
         } else {
-            e->sprite = NULL;
+            spr->sprite = NULL;
         }
     } else if (cmd == FLD_SPRCMD_FLAGS) {
         if (param2 != 0) {
-            e->flags |= param1;
+            spr->flags |= param1;
         } else {
-            e->flags &= ~param1;
+            spr->flags &= ~param1;
         }
     } else if (cmd == FLD_SPRCMD_POS) {
-        e->pos[0] = param1;
-        e->pos[1] = param2;
-        e->pos[2] = param3;
+        spr->pos[0] = param1;
+        spr->pos[1] = param2;
+        spr->pos[2] = param3;
     } else if (cmd == FLD_SPRCMD_ROT) {
-        e->rot[0] = param1;
-        e->rot[1] = param2;
-        e->rot[2] = param3;
+        spr->rot[0] = param1;
+        spr->rot[1] = param2;
+        spr->rot[2] = param3;
     } else if (cmd == FLD_SPRCMD_SCALE) {
-        e->scale = param1;
+        spr->scale = param1;
     } else if (cmd == FLD_SPRCMD_PARENT) {
-        e->parent = evt_getModelSlot(param1);
-        e->bone = param2;
+        spr->parent = evt_getModelSlot(param1);
+        spr->bone = param2;
     } else if (cmd == FLD_SPRCMD_BRIGHTNESS) {
-        e->brightness = param1;
+        spr->brightness = param1;
     } else if (cmd == FLD_SPRCMD_ABR) {
-        e->abr = param1;
+        spr->abr = param1;
     } else if (cmd == FLD_SPRCMD_SPEED) {
-        e->speed = param1;
+        spr->speed = param1;
     } else if (cmd == FLD_SPRCMD_FRAME) {
-        e->frame = param1 * 16;
+        spr->frame = param1 * 16;
     } else if (cmd == FLD_SPRCMD_OFFSET) {
-        e->offset[0] = param1;
-        e->offset[1] = param2;
-        e->offset[2] = param3;
+        spr->offset[0] = param1;
+        spr->offset[1] = param2;
+        spr->offset[2] = param3;
     } else if (cmd == FLD_SPRCMD_OT_OFFSET) {
-        e->otOffset = param1;
+        spr->otOffset = param1;
     }
 }
 
 u8 *fld_initSprites(u8 *heap) {
     s32 i;
-    s32 n;
+    s32 cap;
     FieldSpriteSet *h;
 
     fld_getBgKey(g_gameState->gameData->ctx.field->area->scene, (s16)g_gameState->gameData->fieldId);
     i = 0;
-    n = 0x10;
+    cap = 0x10;
     h = (FieldSpriteSet *)heap;
     heap += sizeof(FieldSpriteSet);
     h->unk4 = (u16 *)heap;
     heap += 0x20;
     h->unk0 = 1;
-    h->capacity = n;
+    h->capacity = cap;
     h->count = h->capacity;
-    for (; i < n; i++) {
+    for (; i < cap; i++) {
         h->unk4[i] = 0xFFFF;
     }
     h->entries = (FieldSprite *)heap;
@@ -1684,10 +1684,10 @@ void fld_drawSprites(void) {
     SVECTOR rot;
     s32 xy[2];
     s32 i;
-    FieldSprite *e;
+    FieldSprite *spr;
     u8 *prim;
     u32 *ot;
-    long *t;
+    long *trans;
 
     h = g_gameState->gameData->ctx.field->area->scene->sprites;
     if (h == NULL) {
@@ -1702,24 +1702,24 @@ void fld_drawSprites(void) {
     prim = h->primBufs[g_gameState->gameData->drawBuf];
     ot = &g_gameState->gameData->ot[g_gameState->gameData->drawBuf][g_gameState->gameData->ctx.field->area->scene->otBias];
     for (i = 0; i < h->count; i++) {
-        e = &h->entries[i];
-        if (e->sprite != NULL && (e->flags & FLD_SPR_VISIBLE)) {
-            if ((s8)e->parent != -1) {
-                t = ((MATRIX *)((FieldObjSlot *)game_getModel((s8)e->parent))->model->boneMatrices)[e->bone].t;
-                e->pos[0] = t[0] + e->offset[0];
-                e->pos[1] = t[1] + e->offset[1];
-                e->pos[2] = t[2] + e->offset[2];
+        spr = &h->entries[i];
+        if (spr->sprite != NULL && (spr->flags & FLD_SPR_VISIBLE)) {
+            if ((s8)spr->parent != -1) {
+                trans = ((MATRIX *)((FieldObjSlot *)game_getModel((s8)spr->parent))->model->boneMatrices)[spr->bone].t;
+                spr->pos[0] = trans[0] + spr->offset[0];
+                spr->pos[1] = trans[1] + spr->offset[1];
+                spr->pos[2] = trans[2] + spr->offset[2];
             }
-            rot.vx = e->rot[0];
-            rot.vy = e->rot[1];
-            rot.vz = e->rot[2];
+            rot.vx = spr->rot[0];
+            rot.vy = spr->rot[1];
+            rot.vz = spr->rot[2];
             rot.pad = 0;
-            prim = fld_drawSprite3D(prim, e->sprite, e->pos, &rot, e->scale, e->frame >> 4, e->abr < 4 ? e->abr : 0xFF, e->brightness << 4, &ot[e->otOffset]);
-            e->frame += (s8)e->speed;
-            if (e->frame >= e->frameEnd) {
-                e->frame = 0;
-            } else if (e->frame < 0) {
-                e->frame = ((e->frameEnd >> 4) - 1) << 4;
+            prim = fld_drawSprite3D(prim, spr->sprite, spr->pos, &rot, spr->scale, spr->frame >> 4, spr->abr < 4 ? spr->abr : 0xFF, spr->brightness << 4, &ot[spr->otOffset]);
+            spr->frame += (s8)spr->speed;
+            if (spr->frame >= spr->frameEnd) {
+                spr->frame = 0;
+            } else if (spr->frame < 0) {
+                spr->frame = ((spr->frameEnd >> 4) - 1) << 4;
             }
         }
     }
