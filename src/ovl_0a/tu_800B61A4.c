@@ -1739,6 +1739,7 @@ void fldmdl_updateTexAnims(TexAnimSet *set) {
             if ((pos >> 12) < a->frameCount) {
                 a->pos = pos;
             } else if (a->delayRange != 0) {
+                /* rand16_inline() written out: calling it changes the register allocation here */
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                     if (g_randPtr >= g_randTableEnd) {

@@ -417,7 +417,6 @@ void wm_updateBlockFx(s32 fxId) {
     s32 x;
     s32 y;
     s32 z;
-    s32 b;
     u16 t;
 
     on = 0;
@@ -474,34 +473,13 @@ void wm_updateBlockFx(s32 fxId) {
                 y = e->y - e->rangeY / 2;
                 z = e->z - e->rangeZ / 2;
                 if (e->rangeX != 0) {
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                        if (g_randPtr >= g_randTableEnd) {
-                            rand_refill();
-                        }
-                    }
-                    b = *g_randPtr++;
-                    x += ((b << 8) | b) % e->rangeX;
+                    x += rand16_inline() % e->rangeX;
                 }
                 if (e->rangeY != 0) {
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                        if (g_randPtr >= g_randTableEnd) {
-                            rand_refill();
-                        }
-                    }
-                    b = *g_randPtr++;
-                    y += ((b << 8) | b) % e->rangeY;
+                    y += rand16_inline() % e->rangeY;
                 }
                 if (e->rangeZ != 0) {
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                        if (g_randPtr >= g_randTableEnd) {
-                            rand_refill();
-                        }
-                    }
-                    b = *g_randPtr++;
-                    z += ((b << 8) | b) % e->rangeZ;
+                    z += rand16_inline() % e->rangeZ;
                 }
                 wm_spawnEffect(x, y, z, e->effect, e->scale);
             }

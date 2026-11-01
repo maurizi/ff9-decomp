@@ -3351,12 +3351,8 @@ void btl_applyCasterStatusMod(BtlCalc *calc) {
 }
 
 void btl_randomizeDefense(BtlCalc *calc) {
-    s32 roll;
     if ((calc->target->support[0] & SA_BIT(SA_GAMBLE_DEFENSE)) && calc->defense != 0) {
-        RAND_REFILL2();
-        roll = *g_randPtr;
-        g_randPtr++;
-        calc->defense = ((roll << 8) | roll) % (calc->defense * 2);
+        calc->defense = rand16_inline() % (calc->defense * 2);
     }
 }
 

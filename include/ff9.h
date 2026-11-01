@@ -2939,6 +2939,29 @@ static inline s32 rand8_inline(void) {
  * (btl_applyReflect needs this form). */
 #define RAND8() ({ if (g_randPtr >= g_randTableEnd) { rand_refill(); } (s32)*g_randPtr++; })
 
+/* random table: two refill checks, then one byte read as (b << 8 | b). RAND16 reads g_randPtr in both operands
+ * and increments it in one, which C leaves unsequenced: gcc 2.8 reads the byte once and stores the increment
+ * after the enclosing expression (a statement expression that sequences it moves the store and breaks the match).
+ * A port must read the byte before the increment. */
+#define RAND_REFILL2()                         \
+    if (g_randPtr >= g_randTableEnd) {            \
+        rand_refill();                       \
+        if (g_randPtr >= g_randTableEnd) {        \
+            rand_refill();                   \
+        }                                      \
+    }
+#define RAND16() ((*g_randPtr << 8) | *g_randPtr++)
+
+/* 16-bit roll (b << 8 | b) from one random byte, with the double refill check of RAND_REFILL2. The sequenced
+ * form of RAND16 (field, world map, battle). */
+static inline s32 rand16_inline(void) {
+    s32 b;
+
+    RAND_REFILL2();
+    b = *g_randPtr++;
+    return (b << 8) | b;
+}
+
 /* ---- hoisted for menu overlays ---- */
 void ui_initMemberSwitch(MemberSwitch *, s32, void (*)(void));
 void ui_startMemberSwitch(MemberSwitch *, s32, s32, s32);
