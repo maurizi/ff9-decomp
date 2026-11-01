@@ -46,7 +46,7 @@ fields; its switches are the ovl_0b owner's.
 handlers are named.
 
 ## SE play arguments
-In `SND_SE_PLAY` the third argument is a channel mask (`snd_playSe` passes 0x800000). The fourth is the pan
+In `SND_SE_PLAY` the third argument is a channel group mask, `AkaoChannel.seMask` (`snd_playSe` passes `SND_SE_GROUP_MENU` 0x800000, the field resident slots `SND_SE_GROUP_SLOT(n)`; `AKAO_SE_DEFAULT` is another group bit). The driver's own per-channel bits are `AKAO_SE_CH_BIT(i)`. The fourth is the pan
 (`VoiceParams.pan`, `SND_PAN_CENTER` 0x80) and the fifth is the volume (`& 0x7F`, `SND_VOL_MAX`).
 
 ## Sound-effect ids
