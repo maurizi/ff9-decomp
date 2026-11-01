@@ -113,27 +113,27 @@ void btlfx_imageNop(void) {
 }
 
 /* gives every vertex reference of nv-vertex primitives its own copy in vertexBuf */
-#define SPLIT_PRIMS(cnt, stride, nv)                                \
-    for (j = 0; j < (cnt); j++) {                                   \
-        for (k = 0; k < (nv); k++) {                                \
-            ((SVECTOR *)vertexBuf)[n].vx = src[((u16 *)p)[k]].vx;   \
-            ((SVECTOR *)vertexBuf)[n].vy = src[((u16 *)p)[k]].vy;   \
-            ((SVECTOR *)vertexBuf)[n].vz = src[((u16 *)p)[k]].vz;   \
-            ((u16 *)p)[k] = n;                                      \
-            n++;                                                    \
-        }                                                           \
-        p += (stride);                                              \
+#define SPLIT_PRIMS(cnt, stride, nv)                                   \
+    for (j = 0; j < (cnt); j++) {                                      \
+        for (k = 0; k < (nv); k++) {                                   \
+            ((SVECTOR *)vertexBuf)[outIdx].vx = src[((u16 *)p)[k]].vx; \
+            ((SVECTOR *)vertexBuf)[outIdx].vy = src[((u16 *)p)[k]].vy; \
+            ((SVECTOR *)vertexBuf)[outIdx].vz = src[((u16 *)p)[k]].vz; \
+            ((u16 *)p)[k] = outIdx;                                    \
+            outIdx++;                                                  \
+        }                                                              \
+        p += (stride);                                                 \
     }
 
 u32 btlfx_splitMeshVertices(BtlModel *model, u16 meshIndex, s32 vertexBuf) {
-    u16 n;
+    u16 outIdx;
     BtlMesh *mesh;
     u8 *p;
     SVECTOR *src;
     u32 j;
     u32 k;
 
-    n = 0;
+    outIdx = 0;
     mesh = &model->header->meshes[meshIndex];
     p = (u8 *)mesh->prims;
     src = mesh->vertices;
@@ -146,8 +146,8 @@ u32 btlfx_splitMeshVertices(BtlModel *model, u16 meshIndex, s32 vertexBuf) {
     SPLIT_PRIMS(mesh->nG3, 0x14, 3);
     SPLIT_PRIMS(mesh->nF4, 0x10, 4);
     SPLIT_PRIMS(mesh->nF3, 0xC, 3);
-    mesh->vertexCounts[meshIndex] = n;
-    return vertexBuf + n * 2;
+    mesh->vertexCounts[meshIndex] = outIdx;
+    return vertexBuf + outIdx * 2;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_vertex", s_hiGetMdlVertexPtrErr);

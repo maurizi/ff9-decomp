@@ -4472,10 +4472,10 @@ extern RECT g_btluiTexWindowRect;
 
 /* btl_drawShadow: project one corner of the 3x3 shadow grid */
 #define SHADOW_PT(x, z) \
-    v.vx = (x); \
-    v.vy = 0; \
-    v.vz = (z); \
-    gte_ldv0(&v); \
+    corner.vx = (x); \
+    corner.vy = 0; \
+    corner.vz = (z); \
+    gte_ldv0(&corner); \
     gte_rtps()
 
 /* btl_drawShadow: shadow quad q of `shadow` in the current buffer */

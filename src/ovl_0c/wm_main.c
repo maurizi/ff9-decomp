@@ -625,22 +625,22 @@ s32 wm_findDefaultAnim(s32 modelId) {
 void wm_drawShadow(WmObjEnt *shadows, s32 slot, s32 groundY, s32 jointIdx) {
     MATRIX mat;
     POLY_FT4 *quads[4];
-    SVECTOR v;
+    SVECTOR corner;
     s32 z[9];
-    WmObjEnt *e;
+    WmObjEnt *shadow;
     WmObjSlot *objSlot;
     s32 i;
     s32 k;
 
-    e = &shadows[slot];
+    shadow = &shadows[slot];
     objSlot = (WmObjSlot *)game_getModel(slot);
     if (objSlot->flags & WM_SLOT_NO_SHADOW) {
         return;
     }
-    wm_calcShadowMatrix(e, objSlot, &mat, groundY, jointIdx);
+    wm_calcShadowMatrix(shadow, objSlot, &mat, groundY, jointIdx);
     for (i = 0; i < 4; i++) {
-        quads[i] = e->prims[g_gameState->gameData->drawBuf][i];
-        setRGB0(quads[i], e->shade, e->shade, e->shade);
+        quads[i] = shadow->prims[g_gameState->gameData->drawBuf][i];
+        setRGB0(quads[i], shadow->shade, shadow->shade, shadow->shade);
     }
     gte_MulMatrix0(&g_gameState->gameData->viewMatrix, &mat, &mat);
     gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);

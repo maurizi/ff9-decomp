@@ -1523,7 +1523,7 @@ s32 btl_getModelTexInfo(u32 key, s32 **outTexPages, s32 **outUvOffsets, s32 **ou
 u8 *btl_drawShadow(BtlShadow *shadows, s32 slot, s32 groundY, s32 bones, u8 *prim) {
     MATRIX mtx;
     s32 pad;
-    SVECTOR v;
+    SVECTOR corner;
     s32 z[9];
     BtlShadow *shadow;
     BtlObj *obj;

@@ -882,10 +882,10 @@ void fld_invalidateModelCache(s32 addr) {
 void fld_drawShadow(FieldObjPlace *places, s32 slot) {
     MATRIX mtx;
     POLY_FT4 *polys[4];
-    SVECTOR v;
+    SVECTOR corner;
     s32 z[9];
     s32 bias;
-    FieldObjPlace *e;
+    FieldObjPlace *place;
     FieldObjSlot *fslot;
     void *lt;
     Unk800B3294Bias *light;
@@ -898,7 +898,7 @@ void fld_drawShadow(FieldObjPlace *places, s32 slot) {
     s32 v0;
     s32 v1;
 
-    e = &places[slot];
+    place = &places[slot];
     fslot = (FieldObjSlot *)game_getModel(slot);
     bias = 0;
     if (fslot->flags & FLD_OBJ_NO_SHADOW) {
@@ -912,23 +912,23 @@ void fld_drawShadow(FieldObjPlace *places, s32 slot) {
         }
         bias = light->shadowOtBias;
     }
-    fld_calcShadowMatrix(&e->params, fslot, &mtx);
+    fld_calcShadowMatrix(&place->params, fslot, &mtx);
     u0 = (s16)(g_gameState->gameData->ctx.field->area->scene->shadowTexX % 64) * 2;
     v0 = (s16)(g_gameState->gameData->ctx.field->area->scene->shadowTexY % 256);
     for (i = 0; i < 4; i++) {
         stpPrim = NULL;
         if (g_gameState->gameData->ctx.field->flags & FLD_MAP_SHADOW_MASK) {
-            stpPrim = e->prims[g_gameState->gameData->drawBuf][i];
+            stpPrim = place->prims[g_gameState->gameData->drawBuf][i];
             setlen(stpPrim, 2);
             stpPrim[1] = _get_mask(0, 1);
             stpPrim[2] = 0;
             polys[i] = (POLY_FT4 *)(stpPrim + 3);
         } else {
-            polys[i] = e->prims[g_gameState->gameData->drawBuf][i];
+            polys[i] = place->prims[g_gameState->gameData->drawBuf][i];
         }
         setPolyFT4(polys[i]);
         setSemiTrans(polys[i], 1);
-        setRGB0(polys[i], e->params.shade, e->params.shade, e->params.shade);
+        setRGB0(polys[i], place->params.shade, place->params.shade, place->params.shade);
         polys[i]->tpage = getTPage(1, 2, g_gameState->gameData->ctx.field->area->scene->shadowTexX,
                                g_gameState->gameData->ctx.field->area->scene->shadowTexY);
         polys[i]->clut = getClut(VRAM_SHADOW_CLUT_X, VRAM_SHADOW_CLUT_Y);
