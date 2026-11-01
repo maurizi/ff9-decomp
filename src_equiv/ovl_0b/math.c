@@ -340,27 +340,27 @@ typedef struct BtlfxBody {
  * velocity before gravity); position += velocity (GPL with IR0 = 0x1000) + bias << 6, with the bias
  * components taken in z, x, y order (position.x gets bias->vz, y gets vx, z gets vy); out = position >> 12.
  * Returns nothing (the export slot's word return is $v0 garbage). GTE: IR0-IR3, MAC1-MAC3. */
-void btlfx_stepModuleParticle(void *arg0, s32 gravity, SVECTOR *bias, SVECTOR *out) {
-    BtlfxBody *b = arg0;
+void btlfx_stepModuleParticle(void *particle, s32 gravity, SVECTOR *bias, SVECTOR *out) {
+    BtlfxBody *body = particle;
     s32 vx, vy, vz;
     s32 px, py, pz;
 
-    GTE_MTC2(8, b->drag);
-    GTE_MTC2(9, b->vel[0]);
-    GTE_MTC2(10, b->vel[1]);
-    GTE_MTC2(11, *(u32 *)&b->vel[2]);
+    GTE_MTC2(8, body->drag);
+    GTE_MTC2(9, body->vel[0]);
+    GTE_MTC2(10, body->vel[1]);
+    GTE_MTC2(11, *(u32 *)&body->vel[2]);
     GTE_CMD(0x4B98003D);
     vx = GTE_MFC2(9);
     vy = GTE_MFC2(10) + gravity;
     vz = GTE_MFC2(11);
     GTE_MTC2(8, 0x1000);
-    GTE_MTC2(25, b->pos[0]);
-    GTE_MTC2(26, b->pos[1]);
-    GTE_MTC2(27, b->pos[2]);
+    GTE_MTC2(25, body->pos[0]);
+    GTE_MTC2(26, body->pos[1]);
+    GTE_MTC2(27, body->pos[2]);
     GTE_CMD(0x4BA0003E);
-    b->vel[0] = vx;
-    b->vel[1] = vy;
-    b->vel[2] = vz;
+    body->vel[0] = vx;
+    body->vel[1] = vy;
+    body->vel[2] = vz;
     px = GTE_MFC2(25);
     py = GTE_MFC2(26);
     pz = GTE_MFC2(27);
@@ -368,11 +368,11 @@ void btlfx_stepModuleParticle(void *arg0, s32 gravity, SVECTOR *bias, SVECTOR *o
         s32 bz = bias->vz, bx = bias->vx, by = bias->vy;
 
         px += bz << 6;
-        b->pos[0] = px;
+        body->pos[0] = px;
         py += bx << 6;
-        b->pos[1] = py;
+        body->pos[1] = py;
         pz += by << 6;
-        b->pos[2] = pz;
+        body->pos[2] = pz;
     }
     out->vx = px >> 12;
     out->vy = py >> 12;

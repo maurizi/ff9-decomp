@@ -4,7 +4,7 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh_asm", btl_drawMeshOffset);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh_asm", btlfx_projectSliceMesh);
 
-u8 *btlfx_drawSliceMesh(BtlModel *arg0, u8 arg1, u8 *prim) {
+u8 *btlfx_drawSliceMesh(BtlModel *model, u8 mesh, u8 *prim) {
     s32 opz;
     s32 otz;
     BtlMesh *g;
@@ -38,17 +38,17 @@ u8 *btlfx_drawSliceMesh(BtlModel *arg0, u8 arg1, u8 *prim) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    if (arg0->flags & BTL_MODEL_OFFSCREEN) {
+    if (model->flags & BTL_MODEL_OFFSCREEN) {
         return prim;
     }
-    g = &arg0->header->meshes[arg1];
+    g = &model->header->meshes[mesh];
     src = (u8 *)g->prims;
     uv = g->uvs;
     col = g->colors;
-    if (arg0->prims == 0) {
-        arg0->prims = (s32)prim;
+    if (model->prims == 0) {
+        model->prims = (s32)prim;
     }
-    tex = (u32 *)arg0->texPages;
+    tex = (u32 *)model->texPages;
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
 
     n = g->nFT4;
