@@ -975,6 +975,8 @@ void btl_flushCmdQueue(Battle *battle) {
     }
 }
 
+/* Same loop as btl_flushCmdQueue with a different cmdNo test. Not shared through an inline helper: moving the
+   per-command body into one swaps two temporaries (t0/t1) in both functions. */
 void btl_clearCmdQueue(Battle *battle) {
     BtlCmd *p = &battle->cmdQueue;
     BtlCmd *cmd;
@@ -1002,9 +1004,7 @@ void btl_clearCmdQueue(Battle *battle) {
             p = cmd;
         }
     }
-    battle->eidolonTimer = 0;
-    battle->eidolonAbility = 0;
-    battle->cmdFlags &= ~(BTL_CMDF_EIDOLON_TIMER | BTL_CMDF_EIDOLON_QUEUED);
+    btl_resetEidolon_inline(battle);
 }
 
 void btl_enqueueCmd(BtlCmd *cmd) {
@@ -1208,9 +1208,7 @@ void btl_cancelTranceEidolon(BtlUnit *unit) {
                 break;
             }
         }
-        b->eidolonTimer = 0;
-        b->eidolonAbility = 0;
-        b->cmdFlags &= ~(BTL_CMDF_EIDOLON_TIMER | BTL_CMDF_EIDOLON_QUEUED);
+        btl_resetEidolon_inline(b);
     }
 }
 

@@ -4956,4 +4956,11 @@ static inline void btl_initStatusHitRate_inline(BtlCalc *calc) {
     calc->evade = calc->target->magicEva;
 }
 
+/* Forget a pending Dagger trance eidolon (btl_clearCmdQueue, btl_cancelTranceEidolon). */
+static inline void btl_resetEidolon_inline(Battle *b) {
+    b->eidolonTimer = 0;
+    b->eidolonAbility = 0;
+    b->cmdFlags &= ~(BTL_CMDF_EIDOLON_TIMER | BTL_CMDF_EIDOLON_QUEUED);
+}
+
 #endif
