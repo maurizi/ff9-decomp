@@ -848,9 +848,9 @@ typedef struct Unk80104F88Entry {
     u8 learns; /* the character learns abilities (chr_canLearnAbilities); 0: btlui_addLearnedAbilities skips it */
     u8 defaultSet; /* chr_getAppearanceType of the character */
     u8 port; /* controller port in the two-controller option */
-    u8 *apCounters[0xC0]; /* -> Character.unk58[], AP gathered per ability id */
-    u8 apNeeded[0xC0];
-    u8 fromEquip[0xC0]; /* abilities available from equipment */
+    u8 *apCounters[ABILITY_SUPPORT_FIRST]; /* -> Character.unk58[], AP gathered per ability id */
+    u8 apNeeded[ABILITY_SUPPORT_FIRST];
+    u8 fromEquip[ABILITY_SUPPORT_FIRST]; /* abilities available from equipment */
     Unk800EB518 cursor; /* remembered command and list cursors (btlui_saveCursor) */
 } Unk80104F88Entry; /* 0x4A8, one per party member */
 

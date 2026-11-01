@@ -333,12 +333,12 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     arg0->info.w &= ~BTL_CMDINFO_COVERED;
     arg0->info.w &= ~BTL_CMDINFO_DODGED;
     arg0->info.w &= ~BTL_CMDINFO_REFLECT;
-    if (arg1 >= 0x31) {
+    if (arg1 > BTL_CMD_TABLE_COUNT) {
         arg0->info.w |= BTL_CMDINFO_AUTOMATIC;
     } else {
         btl_removeStatus(u, BTL_STATUS_DEFEND);
     }
-    if (arg1 < 0x37) {
+    if (arg1 < BTL_CMD_ENEMY_REACT) {
         if (g_gameState->gameData->ctx.battle->curCmd != u->tranceCmd) {
             m = u->model;
             a = u->motions;
@@ -349,7 +349,7 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             } else if (c == (BtlMotion *)a[1]) {
                 m->motion = (BtlMotion *)a[11];
                 u->obj->frame = 0;
-            } else if (c == (BtlMotion *)a[13] && arg1 < 0x30) {
+            } else if (c == (BtlMotion *)a[13] && arg1 < BTL_CMD_TABLE_COUNT) {
                 m->motion = (BtlMotion *)a[14];
                 u->obj->frame = 0;
             }
@@ -369,7 +369,7 @@ void btl_setEnemyCmd(s32 arg0, s16 arg1, u32 arg2, u32 arg3) {
     if (b->cmdFlags & BTL_CMDF_ESCAPE || (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE))) {
         goto fail;
     }
-    if (arg2 == 0x2F) {
+    if (arg2 == BTL_CMD_ENEMY_TURN) {
         if (b->phase != BTL_PHASE_COMBAT) {
             goto fail;
         }
@@ -382,8 +382,8 @@ void btl_setEnemyCmd(s32 arg0, s16 arg1, u32 arg2, u32 arg3) {
             arg3 = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->confuseAbility;
         }
     } else {
-        if (arg2 != 0x35) {
-            if (arg2 != 0x36) {
+        if (arg2 != BTL_CMD_ENEMY_COUNTER) {
+            if (arg2 != BTL_CMD_ENEMY_DEATH) {
 fail:
                 u->cmdIssued = 0;
                 return;
@@ -400,7 +400,7 @@ fail:
     } else {
         c->info.b.targeting = 0;
     }
-    if (arg2 > 0x30) {
+    if (arg2 > BTL_CMD_TABLE_COUNT) {
         c->info.b.automatic = 1;
     } else {
         btl_removeStatus(c->caster, BTL_STATUS_DEFEND);

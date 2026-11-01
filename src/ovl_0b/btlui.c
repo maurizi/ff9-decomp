@@ -417,11 +417,11 @@ void btlui_linkSwdMagAbilities(Unk80104F88Entry *arg0) {
         }
         for (i = 0; i < 5; i++) {
             e = c->equip[i];
-            if (e != 0xFF) {
+            if (e != ITEM_NONE) {
                 it = &g_itemTable[e];
                 for (j = 0; j < 3; j++) {
                     id = it->abilities[j];
-                    if (id != 0 && id < 0xC0) {
+                    if (id != 0 && id < ABILITY_SUPPORT_FIRST) {
                         for (k = 0; k < m->count; k++) {
                             if (id == g_btlSwdMagSourceAbilities[k]) {
                                 slot = g_btlCmdAbilities[m->first + k];
@@ -735,7 +735,7 @@ void btlui_clearAbilityLists(void) {
     s32 i, j;
     for (i = 0; i < 4; i++) {
         Unk80104F88Entry *e = &g_btlUi->entries[i];
-        for (j = 0; j < 0xC0; j++) {
+        for (j = 0; j < ABILITY_SUPPORT_FIRST; j++) {
             e->apCounters[j] = 0;
             e->apNeeded[j] = 0;
             e->fromEquip[j] = 0;
@@ -973,7 +973,7 @@ void btlui_getHelpRect(RECT *arg0, RECT *arg1) {
 void btlui_removeItem(s32 arg0) {
     s32 i;
     if (item_remove(arg0, 1) != 0) {
-        if (arg0 >= 0xE0) {
+        if (arg0 >= ITEM_FIRST_USABLE) {
             i = btlui_findItemListEntry(arg0);
             if (i != 0xFF && g_btluiItems->items[i]->count == 0) {
                 g_btluiItems->items[i] = 0;
