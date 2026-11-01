@@ -48,7 +48,7 @@ typedef struct {
     u16 uv[4]; /* uv indices (BtlMesh.uvs) */
     u8 rgb[3]; /* colour (with the code byte: the packet's rgb word) */
     u8 tex; /* texture: BtlModel.texPages index, model info uv offsets */
-    u8 unk14;
+    u8 unk14; /* not read by C (as in ovl_0a/0c WmSrcFT4) */
     u8 flags; /* WMSRC_* */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
@@ -124,7 +124,7 @@ typedef struct {
  * matrix with its parent's (already built: parent < i) and a z offset of `length`; bone 0 is the root */
 typedef struct {
     s16 length; /* offset from the parent's origin along the parent's z axis */
-    u8 unk2;
+    u8 unk2; /* not read by C (as in ovl_0a WmBone) */
     u8 parent; /* parent bone */
 } BtlBoneDef;
 
@@ -135,7 +135,7 @@ typedef struct BtlModelHeader {
     u8 boneCount; /* bones: BtlMesh.vertexCounts entries, motion keys per frame (btl_projectMesh, btl_calcBoneMatrices) */
     u8 meshCount; /* mesh groups (meshes); bit i of BtlModel.hiddenMeshes hides group i */
     u16 packetSize; /* sum of the groups' BtlMesh.packetSize */
-    u8 unk6; /* ovl_0a: look-at bone (WmModel.lookAtBone) */
+    u8 lookAtBone; /* not read by ovl_0b; ovl_0a reads the same header byte as WmModel.lookAtBone */
     u8 pad7;
     u16 height; /* btl_getUnitHeight */
     u16 radius; /* btlfx_getUnitRadius (party units) */
@@ -3331,16 +3331,16 @@ typedef struct {
     s16 state; /* state */
     u16 nextState; /* state after the CD read */
     s16 unk4; /* unk4-unkE, unk20: initialised only (btl_reloadPartyStep) */
-    s16 unk6;
-    s16 unk8;
+    s16 unk6; /* write-only (btl_reloadPartyStep) */
+    s16 unk8; /* write-only (btl_reloadPartyStep) */
     s16 slot; /* party slot of the file being loaded */
     u8 padC[0xE - 0xC];
-    s16 unkE;
+    s16 unkE; /* write-only (btl_reloadPartyStep) */
     union {
         s32 w[4];
         u16 h[8];
     } fileIds; /* file ids still to load, -1 = done */
-    s32 unk20;
+    s32 unk20; /* write-only (btl_reloadPartyStep) */
     s32 buf; /* destination buffer */
 } Unk800AA958; /* party model load state */
 

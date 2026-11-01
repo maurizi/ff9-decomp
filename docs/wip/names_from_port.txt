@@ -11312,3 +11312,6 @@ D_800F7870 g_btlfxEnvData  # [code] the BtlfxEnv block g_btlfxEnv points at
 #   BTLFX_EFFECT_ROULETTE 0xED, BTLFX_EFFECT_ARK_SHORT 0x1BF (docs/effect-modules.md); BTL_TGT_* moved to ff9.h for
 #   fieldCalc_multiTargetHalf; BTL_POPCLUT_HEAL 0xC0; AKAO_DRUM_REVERB 0x80 (AkaoDrumKey.pan), AKAO_VIB_FULL_SCALE 0x8000;
 #   MBG_LAST_FRAME_NONE 0xEEEEEEEE.
+# FIELDS (R38): WmAnimKey (ovl_0a, ovl_0c) unk0=xy, unk4=zFlags [code] gte_ldrotkey; BgOverlayFlags.unk24=cameraWord
+#   (mask clears viewport); BtlModelHeader(Unk800AA08C).unk6=lookAtBone (ovl_0a WmModel.lookAtBone); comments added to
+#   ovl_0b WmSrcFT4.unk14, BtlBoneDef.unk2, Unk800AA958.unk6/8/E/20 (write-only)

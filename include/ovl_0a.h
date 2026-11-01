@@ -488,10 +488,10 @@ typedef struct {
 #define FLDBG_OVL_SKEW_LOOP 0x80 /* fldbg_setOverlaySkewLoop */
 #define FLDBG_OVL_NO_SCROLL 0x7FFF /* BgOverlay.scrollX/scrollY: no loop scrolling on that axis (fldbg_updateOverlayScroll) */
 
-/* BgOverlay's unk24/unk25/unk25_1 bitfield word as a plain u32 (fldbg_buildOverlaySprites masks it by hand) */
+/* BgOverlay's cameraId/skewVertical/viewport/tileCount word as a plain u32 (fldbg_buildOverlaySprites masks it by hand) */
 typedef struct {
     u8 pad0[0x24];
-    u32 unk24;
+    u32 cameraWord;
 } BgOverlayFlags;
 
 typedef struct {
@@ -887,11 +887,11 @@ typedef struct {
     u8 parent; /* parent bone */
 } WmBone;
 
-/* animation track: three 16-bit offsets/constants (x, y in unk0, z in unk4)
- * and their flags in the high half of unk4 (see gte_ldrotkey) */
+/* animation track: three 16-bit offsets/constants (x, y in xy, z in zFlags)
+ * and their flags in the high half of zFlags (see gte_ldrotkey) */
 typedef struct {
-    u32 unk0; /* read only by the gte_ldrotkey asm */
-    u32 unk4; /* read only by the gte_ldrotkey asm */
+    u32 xy; /* x (low half), y (high half): offset of the axis's per-frame bytes, or the constant; read only by the gte_ldrotkey asm */
+    u32 zFlags; /* z (low half) the same; high half: 1 x, 2 y, 4 z is a constant (gte_ldrotkey asm only) */
 } WmAnimKey;
 
 /* SVECTOR copied as two words */

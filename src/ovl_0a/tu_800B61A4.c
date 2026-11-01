@@ -2507,7 +2507,7 @@ s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
 
     /* Statement order and the barrier below are for the scheduler: everything above the barrier
      * forms its own group, where both global loads are ready at once and are scheduled as
-     * lui/lui/lw/lbu, so %hi(g_fieldBgClutRows) gets v1. The unk25_1 mask is set up here (and applied by
+     * lui/lui/lw/lbu, so %hi(g_fieldBgClutRows) gets v1. The viewport mask is set up here (and applied by
      * hand below) because its lui/ori must also sit above the barrier, and buf/the two offsets
      * are read early so their insns land where the original has them. */
     mask = 0xFFFF01FF;
@@ -2525,7 +2525,7 @@ s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
     arg0->screenX = arg0->x + bg->screenX;
     arg0->screenY = arg0->y + bg->screenY;
     arg0->skewVertical = 0;
-    ((BgOverlayFlags *)arg0)->unk24 &= mask; /* arg0->unk25_1 = 0 */
+    ((BgOverlayFlags *)arg0)->cameraWord &= mask; /* arg0->viewport = 0 */
     for (; buf < 2; buf++) {
         for (i = 0; i < n; i++) {
             BgSprt *sp = &arg1[i];
