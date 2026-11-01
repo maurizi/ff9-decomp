@@ -9,7 +9,7 @@ s32 fx_046_op80(s32 mode, Fx046Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *args = 0xC;
     } else if (mode == 1) {
-        work->stop0 = 0;
+        work->hold0 = 0;
         fx_046_env = env;
         ((s32 *)&work->pos4)[0] = ((s32 *)&env->targets->centerX)[0];
         zWord = ((s32 *)&env->targets->centerX)[1];
@@ -25,7 +25,7 @@ s32 fx_046_op80(s32 mode, Fx046Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (work->stop0 == 0 && frame >= 0x3C) {
+        if (work->hold0 == 0 && frame >= 0x3C) {
             return 1;
         }
     }

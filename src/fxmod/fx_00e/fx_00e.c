@@ -13,7 +13,7 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *args = 0x28;
     } else if (mode == 1) {
-        work->stop0 = 0;
+        work->hold0 = 0;
         fx_00e_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -32,7 +32,7 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (work->stop0 == 0) {
+        if (work->hold0 == 0) {
             ang = (frame << 7) >> 1;
             rot.vx = 0;
             rot.vy = 0;

@@ -12,7 +12,7 @@ typedef struct {
 } Fx05fWork81; /* 0x68 */
 
 typedef struct {
-    s32 stop0; /* dead early-out flag, always 0 (see Fx046Work.stop0) */
+    s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     SVECTOR pos4; /* target body */
     SVECTOR posC; /* target */
     s32 model14; /* models */

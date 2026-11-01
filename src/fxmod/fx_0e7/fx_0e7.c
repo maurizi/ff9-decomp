@@ -68,7 +68,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                                                fx_0e7_texPos);
         work->model7A = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 1), fx_0e7_texPages,
                                                                fx_0e7_texPos);
-        work->fadeInTimer68 = -1;
+        work->blend68 = -1;
         work->fadeTimer6C = -1;
         work->dropTimer70 = -1;
         work->tiltTimer74 = -1;
@@ -131,7 +131,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[0].vx = work->pos1C.vx;
             env->camera->points[0].vy = work->pos1C.vy;
             env->camera->points[0].vz = work->pos1C.vz;
-            if (work->fadeInTimer68 >= 0 || work->fadeTimer6C >= 0) {
+            if (work->blend68 >= 0 || work->fadeTimer6C >= 0) {
                 if (work->fadeTimer6C >= 0) {
                     work->rgb3C = fxm_lerpRatio(0, -0x80, 0x10 - work->fadeTimer6C, 0x10);
                     work->fadeTimer6C--;

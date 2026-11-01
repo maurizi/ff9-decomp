@@ -17,7 +17,7 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = 0x38;
     } else if (mode == 1) {
-        work->stop0 = 0;
+        work->hold0 = 0;
         fx_016_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
@@ -41,7 +41,7 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale34 = radius;
     } else {
         frame = entry->frame;
-        if (work->stop0 == 0) {
+        if (work->hold0 == 0) {
             if (frame < 24) {
                 t = (frame << 12) / 24;
                 pos.vx = work->posC.vx;

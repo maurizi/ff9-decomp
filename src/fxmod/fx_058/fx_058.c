@@ -96,7 +96,7 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->elemFn = (s32)fx_058_op80PoolTask;
         init->poolCount = 0x20;
     } else if (mode == 1) {
-        work->stop0 = 0;
+        work->hold0 = 0;
         work->count1C = 0;
         work->frame20 = 0;
         fx_058_env = env;
@@ -106,7 +106,7 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rot14.vy += 0x800;
         ex->btlfx_initEffModels(fx_058_effModels, 1);
         work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
-    } else if (work->stop0 == 0) {
+    } else if (work->hold0 == 0) {
         if (work->count1C < 0x20) {
             work->count1C++;
             it = ex->btlfx_poolSpawn((s16 *)entry->pool);

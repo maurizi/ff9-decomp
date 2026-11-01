@@ -3436,3 +3436,166 @@ Redux with "Unknown error in event listener", killed). New states: `r37_wm_sand`
 - States: disc 1 `r36_lindblum_552_ate`, `r36_lindblum_552_ate_window`, `r36_disc1_end_fmv`, `r36_disc1_discchange_op`,
   `r36_disc1_discchange_prompt`, `r36_disc1_change_to_disc2`; disc 2 `r36_x_change_to_disc2` (the disc-1 state, for
   the swap), `r36_disc2_field800_start`, `r36_x_direct_open_disc2`.
+
+## Verification pass (code-only names), 2026-11-01  (status: proposed fixes below; nothing renamed)
+Method: PCSX-Redux, disc 3 (`disc3_malboro_lv99_calm`, `disc3_pandemonium_lv99_field`, `cpass_wm_hadris`,
+`cpass_wm_airship9`, `r37_wm_air_sand`) and disc 1 (`field_ice_300`, `field_dali_inn`, `field_d1_101`,
+`ds_port_room_revealed`, `ds_port_light_candle_choice`, `ds_port_tantalus_greeting`, `field_dali_inn` → field 50).
+Scratch in `build/verify/`: `run4.py` (= `build/rt3/run3.py` plus `--dedup f=v0`, output `build/verify/NAME.json`),
+`f2.sh`/`f3.sh` (cast via `--patch`, optionally rewrite btl_calcCmd's a3 = formula, dump the BtlCalc at
+btl_applyCalcResult: +0xE power, +0x10 defense, +0x14 multiplier, +0x18 flags, +0x1A/+0x1B popup bytes, +0x1C caster
+and +0x1E target HP change), `formscan.py` (enemy ability records of every encounter, all discs: header {?, groups,
+types, abilities}, 8 + groups * 0x38 + types * 0x74, then 16-byte BtlCmd8), `abtab.py` (ovl_33 action table),
+`kinds.py`/`kind2.sh` (Character.info.kind; GameData.characters at +0x3C, info at +0x34), `wmsweep.py`/`topofind.py`/
+`wmhunt.py` (world topography by flight and by scanning the loaded WmBlock polygons), `msgdump.py` (message table with
+header: entry u16 +0 = start incl. header codes, u16 +4 = text), `msgwatch.py`/`winwatch.py` (MsgWindow state per
+frame). BtlUnit: +0x24 max, +0x28 hp (the "calm" HP poke at 0x80109264 hits hp, not atb). No save states created.
+
+### 1. BTL_FORMULA_* (ovl_0b btl_calcCmd)  — 21 CONFIRMED at runtime, 0 WRONG
+Static check first: the parenthesised users in `ff9_ids.h` match `s_menuAbilityActionTable` (`abtab.py`) for every
+player ability, and the enemy records (`formscan.py`) use 0x08 (1813 records: Strike, Tail, Counter...), 0x58 Melt /
+Blowup, 0x59 HP Switching (Wyerd), 0x5B Cannon (Armstrong), 0x5D Sandstorm / Maelstrom, 0x5E Absorb Magic and 0x5F
+Absorb Strength (Tiamat), 0x60 Trance Full / Transfer, 0x61 Entice (Lamia), 0x63 Flare Star (Ozma, Kuja), 0x64 enemy
+attacks, 0x65 Steal (rate = item 236..), 0x66 Mug, 0x67 Shell/Protect/Haste/Reflect, 0x68 Everyone's Grudge
+(Tonberry), 0x69 Grand Cross (Necron), 0x6A Snort (Yan) / Swallow, 0x6D Mini / Ultra Sound Wave. Every enemy name fits
+its formula. **0x5A, 0x5C, 0x62, 0x6B have no record in any encounter of any disc** (no user at all; the header's
+"0x58-0x6B are enemy abilities'" is too broad for these four).
+Runtime (Zidane's command rewritten with `--patch`, `disc3_malboro_lv99_calm`, Malboro max HP 11687, def/mdef 10):
+- 0x01 WEAPON_STR: Attack, power 71 - def 10 = 61 x mult 53 = 3233 (the "3233" seen before). CONFIRMED.
+- 0x09 MAGIC: Fire (14) vs mdef 10, x 109 = 436. CONFIRMED.
+- 0x0A MAGIC_HEAL: Cure on Zidane: 16 x 109 = 1744 healed, no defense, popup byte 3 (heal). CONFIRMED.
+- 0x10 DRAIN: Drain (32 - 10) x 106 = 2332 to both casterHpChange and targetHpChange. CONFIRMED.
+- 0x11 PERCENT_MAX_HP: Demi 30 -> 3506 = 30% of max 11687, also with the Malboro's hp poked to 5000. CONFIRMED.
+- 0x5B PERCENT_CUR_HP (a3 rewritten): same Demi with hp 5000 -> 1500. CONFIRMED (and the pair is told apart).
+- 0x1A FIXED_DAMAGE: 1,000 Needles -> 1000. CONFIRMED.
+- 0x1D HP_LOST: Minus Strike with Zidane hp 1000 / max 9999 -> 8999. CONFIRMED.
+- 0x45 ITEM_HEAL: Potion -> 150 (power 10 x 15, no Chemist). CONFIRMED. 0x4D 9999_DAMAGE: Dark Matter -> 9999. CONFIRMED.
+- 0x08 PHYSICAL: forced Malboro "Virus Tentacles" (power 66) via btl_setEnemyCmd a3 = 2: (66 - 10) x 40 = 2240;
+  vs Zidane (evade 99) flags MISS. CONFIRMED.
+- 0x58 SELF_DESTRUCT (a3 rewritten, Zidane hp 1234): target takes 1234, Zidane hp 0. CONFIRMED.
+- 0x59 SWAP_HP: Zidane 1234 <-> Malboro: Zidane 9999 (capped at max), Malboro 1234. CONFIRMED.
+- 0x5D LOW_HP_STATUS: Malboro hp -> 4, flags 0x80 (NO_DAMAGE). CONFIRMED.
+- 0x5E ABSORB_MAGIC: Zidane magic 0x63 -> 0xC6, Malboro 0x15 -> 0x0A. CONFIRMED.
+- 0x61 STATUS_NOT_FEMALE (Sleep's status set): on Dagger flags MISS, on Vivi not. CONFIRMED.
+- 0x68 EVT_POWER_DAMAGE: g_evtGlobalVars.b[0xC0] (0x8007AFB0) = 5 -> 16 damage. CONFIRMED (Everyone's Grudge).
+- 0x6A REMOVE_UNIT: on Vivi: Vivi gone from field and HUD (`build/rt3/v_remove_00.png`). CONFIRMED.
+- 0x0B ADD_STATUS (Sleep, no effect on the Malboro), 0x3A STEAL (btl_calcSteal message 0x0C), 0x38 FLEE (Flee
+  command): case reached with the right ability. CONFIRMED (identity).
+- Comment nit only: 0x38's comment says "btl_tryEscape"; its case calls btl_canFlee + btl_rollFlee (btl_tryEscape is
+  0x39's). Not a name problem.
+
+### 2. CHR_KIND_* — 5 CONFIRMED (model / weapon), 5 more consistent by character id, 0 WRONG
+`kinds.py` on the disc-3 save: Zidane kind 0 with Orichalcon (dagger icon) = ZIDANE_DAGGER; Vivi 2; Eiko 11 with
+Mythril Racket = EIKO_RACKET; Steiner 7, Freya 12, Quina 9, Amarant 13, Beatrix (slot 8) 18 match their ids.
+GARNET_LONG / GARNET_SHORT: `kind2.sh` re-entered field 2714 with Dagger's kind poked, then battle 899: kind 3 gives
+unit modelId 0x119 and a waist-long black hair model, kind 5 modelId 0x120 and short hair (`build/verify/k2_crop.png`).
+CONFIRMED. (Poking the kind after the field has loaded changes modelId but not the drawn model: the field preloads
+the battle party models.) Side note: this disc-3 save (story 10980) stores Dagger as kind 4 (LONG_RACKET), i.e. the
+kind is only recomputed by chr_calcAppearance on equip/join, so a save made around the haircut can keep the old kind.
+
+### 3. TEXT_* control codes — 15 CONFIRMED, 1 comment WRONG
+Messages forced by rewriting the id in evt_getMsgLayout (a1) and msg_open (a0) on the next natural message of
+`ds_port_tantalus_greeting`; clearing the balloon flag (evt_getMsgLayout a2, msg_open a3) for the fixed positions.
+- TEXT_WIN_CENTER 5C (msg 4 "Received ..!"): x 104 = 160 - 113/2, y 50 = 74 - 48/2. CONFIRMED.
+- TEXT_WIN_BOTTOM_RIGHT 50 (msg 12 "Skip FMV"): x 249 = 308 - 59, y 188 = 208 - 20. CONFIRMED.
+- TEXT_WIN_TOP 55 (msg 37): x 37 = 160 - 246/2, y 12. TEXT_WIN_TOP_LEFT 53 (msg 39): (12, 12). CONFIRMED.
+- TEXT_WIN_FIXED_TOP_RIGHT 5A (msg 53) without balloon: position left as the layout had it (96, 22). CONFIRMED.
+- Balloon side: msg 39 as a balloon gets tailMode 3 (= 0x53 & 3). CONFIRMED.
+- TEXT_MSG_ITEM_NAME 0E with g_msgNumbers[0] = 0xEC: "Received Potion!", Potion in yellow (`v_item_grid.png`). CONFIRMED.
+- TEXT_CHAR_NAME+0 (10): "Hey, Zidane!" (msg 42). CONFIRMED.
+- TEXT_CHOICES 07 (msg 36 header 07 02 02): g_msgChoiceCount 2, g_msgChoiceCancel 1 (Cancel). CONFIRMED.
+- TEXT_LINE_WIDTHS 0D (msg 36: choice 1 width 108, choice 2 width 55): window textWidth 117 from the wider. CONFIRMED.
+- TEXT_TAB 71: both choice lines start with it and are indented past the hand cursor. CONFIRMED.
+- TEXT_SKIP 0C: msg 4 (starts with 0C) is complete on its first frame; msg 44 (no 0C) types 2 chars per frame over 17
+  frames. CONFIRMED.
+- TEXT_WAIT_CLOSE 01 (msg 39, `01 14`): window flags gain MSGW_NO_SKIP, closes 40 frames after opening with no input.
+  CONFIRMED.
+- TEXT_SPEED 02 / TEXT_SPEED_DEFAULT 42 (msg 34 "Sure is dark...", field 50): write watch on MsgWindow.speed: msg_open,
+  then msg_advanceText+0x178 (case 02) and +0x1AC (case 42). CONFIRMED.
+- TEXT_CHOICE_START 08: name fine, **comment WRONG**: msg_advanceText sets g_msgChoiceLine = g_msgLine, the line that
+  holds the code, not the next line. msg 36 puts 08 at the start of line 0 and line 0 is the first choice
+  (g_msgChoiceLine read 0 in `ds_port_light_candle_choice`). Fix the comment in ff9.h and docs/text-codes.md: "the
+  choice lines start at the current line".
+- Format note for docs/text-codes.md: a message table entry holds two offsets (u16 +0 = start of the header codes,
+  u16 +4 = start of the text, read by msg_getText / msg_open), and messages ended by TEXT_HOLD or closed by the script
+  have no TEXT_END, the next message's header follows directly.
+
+### 4. World map (R37 medium names) — 6 CONFIRMED, 1 INCONCLUSIVE
+- WM_TOPO_BEACH 0x22: airship flight from `cpass_wm_airship9` (`wmsweep.py`): 0x22 cells at the grey sand rim between
+  turquoise water (0x35) and land at (272204, -93321). CONFIRMED.
+- WM_TOPO_SHALLOWS 0x35: the airship's start cell; on screen the light turquoise strip along the coast
+  (`airship9.png`), deeper sea is 0x36-0x39. CONFIRMED.
+- WM_TOPO_NO_ENCOUNTER 0x34: **INCONCLUSIVE**. No cell with topography 0x34 was found: 1500-sample flight plus two
+  `wmhunt.py` flights scanning every loaded block's polygons (~300 000 polygon samples, 34 different topographies,
+  incl. 0x25/0x26 forest, 0x2D/0x2E, 0x3E). 0x34 may not occur in the disc-3 world data; keep the code name.
+- WM_FX_BOAT_SIDE_WAKE 10: `cpass_wm_airship9` with g_worldMoveMode 7 (0x800CE3C4 = 7, g_worldMoveModeInfo =
+  0x800CCC34, b[0xBE] = 7) runs wm_controlSteer: spawns 15 and 10 (two 10s every other spawn). Moving only the type-10
+  spawns off-screen (`--fn` a1 = -30000) removes bright white-blue spray puffs in a line beside the vessel; moving the
+  15s removes only a faint flat trail (`v_boat_sep.png`). CONFIRMED.
+- WM_FX_AIRSHIP_SAND 19: `r37_wm_air_sand` with the airship teleported to (301500, -1500, -58000) (sand): 6 spawns of
+  19; removing them removes a pale sand-coloured haze under and behind the airship (`v_as_zoom.png`). CONFIRMED.
+- WM_FX_CHOCOBO_SAND 14 / WM_FX_CHOCOBO_SPRAY 6: same flight with the player's actorType poked to 7 (gold chocobo):
+  14 over the sand (same pale haze), 6 over the water (a small light blue-white speck). CONFIRMED (6 medium: tiny).
+- WM_FX_BEACH_SPLASH 7, WM_FX_SAND_DUST 27, WM_TOPO_SAND 0x29: R37's runtime evidence stands, not re-run.
+
+### 5. EVT_UPD_*, EVT_GETPROP_*, SND_LOAD_* — 13 CONFIRMED (3 EVT_UPD, 4 GETPROP, 6 SND_LOAD), rest not reached
+Breakpoint on the instruction after `jal evt_update` (field fld_main 0x800A7C54, world 0x800B846C), logging v0 changes:
+- EVT_UPD_WORLD 5: `field_ice_300`, hold Down: 5 at +81, the world map loads. CONFIRMED.
+- EVT_UPD_FIELD 4: walking out of `field_dali_inn` (Up, Left) and `field_d1_101` (Left, Right): 4, then the next field.
+  CONFIRMED.
+- EVT_UPD_BATTLE 3: `ds_port_room_revealed` with Cross every 20 frames: 3 at +834, encounter SEs 0x27C/B/A at +843
+  (Baku battle); world map `cpass_wm_hadris` random encounter: 3, then the same SEs 3 frames later. CONFIRMED.
+- EVT_UPD_END_FRAME / CARD_GAME / GAME_OVER: not reached.
+- EVT_GETPROP_X/Y/Z/ROT: world map walk: props 0-3 on the player object, which carries pos at +0x14/+0x18/+0x1C and
+  rotY at +0x20 (the R37 teleport offsets). CONFIRMED. In battle only unit attributes are asked (props 35, 36, 48, 51,
+  69), and EVT_SETPROP is only used with 48 and 51 there; FLAGS/UID/LEVEL/ANIM_FRAME and EVT_SETPROP_ROT/INSERT not
+  reached.
+- SND_LOAD_*: write watch on GameData.soundLoadState (0x8008BAA1) through the world-map encounter: wm_soundCommand
+  writes 1, 2, 3, 4 (76 frames later), 5, then 0; the battle music load (0x700, id 0) sits between. Order and timing
+  match WAIT_FADE, START, BANK, SEQ_START, SEQ, IDLE. CONFIRMED. The victory fanfare (music 5) loads with no state
+  change (the id-5 shortcut). CONFIRMED.
+
+### 6. Round 33 medium names, BTLFX_FIELD/LAUNCH/FALLOFF — 1 WRONG, 1 INCONCLUSIVE, rest confirmed by code
+- **fxmod `stop0`: WRONG meaning.** fx_046 (Fire): poking work+0 = 1 from the op's mode-2 call (`--fn` on 0x801E7704)
+  makes the op run 165 times instead of 63: with stop0 != 0 the op skips its frame logic and its own `return 1` at frame
+  0x3C, so the task stays alive (until the script's effect ends) instead of stopping. In fx_0de the same field makes
+  the op return 0 at once. So nonzero = "hold / idle, never finish by itself", never set by anything. Proposed
+  `hold0` (comment: "nonzero: the op idles and never ends by itself; always 0").
+- fx_0e7 `fadeInTimer68`: INCONCLUSIVE (name speculative). R33's "stays -1" holds; no code decrements it: when >= 0 it
+  only switches both models to blend mode 1 with the current rgb3C (op81). It is not a countdown in this module. A
+  neutral name such as `blend68` (">= 0: draw the models blended; never set") fits the code better.
+- fx_059 `depthZ4` (Haste): code reading confirms (view-space z of the spiral head, -0x20 + 0xC8 per frame); no new run.
+- fx_105 `windStreaks` / `stars`, fx_0ba `preOrb`: R33's ablation and read-watch evidence stand; not re-run.
+- BTLFX_FIELD_* / BTLFX_FALLOFF_*: the C (btlfx_updateParticles, byte-matching) does exactly what each name says
+  (REPEL pos - fieldPos, ATTRACT the reverse, UP v.vy = -0x1000, FADE_* only change alpha). Runtime: none of Fire,
+  Thundaga, Cure, Haste, Bio, Water, Flare, Holy reaches the field switch (0 calls to btlfx_distance /
+  btlfx_toLocalPolar from it; return addresses 0x800E0AA8.. mapped with objdump), so no effect was watched. Code-only,
+  names fine. BTLFX_LAUNCH_*: not observed, code-only.
+
+### 7. SND_TYPE_ / SND_CMD_ / SND_PARAM_ — 14 CONFIRMED (decoded fields fit what the handler does; audio not listened to)
+Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
+- SE play `0xD000` (type 1, PLAY): Malboro battle attack SEs -> akao_playSe(handle, a2, a3, 0x7F); encounter SEs
+  0x27A-0x27C on field and world; field footsteps. SND_TYPE_SE, SND_CMD_PLAY CONFIRMED.
+- `0x9203` (SE, SET, PITCH) after each `field_ice_300` footstep, value -6..+1: SND_CMD_SET + SND_PARAM_PITCH CONFIRMED.
+- `0x9601` (SE, FADE_ALL, VOLUME, 0x30 frames, 0) then `0x5501` (SE, SET_ALL, VOLUME, 0) when leaving for the world
+  map; `0x5180` (SE STOP, SND_RESIDENT) id 0xC22: SND_CMD_FADE_ALL, SET_ALL, STOP, SND_RESIDENT CONFIRMED.
+- `0x2100` (STREAM, STOP) on the same exit; `0xA000` id 8 (STREAM, PLAY) and `0x6201` (STREAM, SET, VOLUME 100) in the
+  opening: SND_TYPE_STREAM CONFIRMED.
+- Encounter: `0x800` music SUSPEND (field song 0x88 / world 0x45), `0x700` music LOAD id 0, `0x18C0`/`0x1880` SE
+  SUSPEND, then `0x0` music PLAY: SND_CMD_SUSPEND, LOAD, PLAY, SND_TYPE_MUSIC CONFIRMED.
+- Victory: `0x8601` (music FADE_ALL VOLUME, 30 frames, 0) -> akao_fadeMusicVolume(0, 0x1E, 0); `0x700` id 5 ->
+  akao_stopMusic(old handle); `0x0` id 5 -> akao_playMusic: CONFIRMED.
+- `0xC00` GET_STATE polled every frame while soundLoadState != 0. CONFIRMED.
+- Not seen: SND_TYPE_BANK, FADE, FADE_FROM, RESUME, SET_CONDITION, FADE_ALL_FROM, PARAM_TEMPO/TEMPO_PITCH/PAN/
+  CONDITION/PLAY_COUNT/ALL_SLOTS/MOVIE_VOLUME. Bits 14-15 (0xC000) are set in every SE play word; no handler reads
+  them (they are outside the documented fields).
+
+### WRONG / to fix
+| item | now | finding | proposed |
+|---|---|---|---|
+| fxmod work +0 (22 modules) | `stop0` | nonzero makes the op idle and never finish itself (task kept alive); always 0 | `hold0` |
+| `TEXT_CHOICE_START` comment (ff9.h, docs/text-codes.md) | "choice lines start at the next line" | g_msgChoiceLine = current g_msgLine | "start at the current line" |
+| `BTL_FORMULA_*` header note (ff9_ids.h) | "0x58-0x6B are enemy abilities'" | 0x5A, 0x5C, 0x62, 0x6B have no user in any encounter (all discs) | say "unused" for these four |
+| `BTL_FORMULA_FLEE` comment | "btl_tryEscape" | case calls btl_canFlee + btl_rollFlee | "btl_rollFlee" |
+| fx_0e7 work +0x68 | `fadeInTimer68` | never decremented; >= 0 only enables blend mode 1 | `blend68` (or keep, low confidence) |
+| WM_TOPO_NO_ENCOUNTER 0x34 | code name | no 0x34 cell found on disc 3 | keep, INCONCLUSIVE |

@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 stop0; /* dead early-out flag, always 0 (see Fx046Work.stop0) */
+    s32 hold0; /* nonzero: the op idles and never ends by itself (runtime); always 0 in the game (see Fx046Work.hold0) */
     s32 frame4; /* background frame */
     SVECTOR pos8; /* target position */
     SVECTOR pos10; /* target body position */

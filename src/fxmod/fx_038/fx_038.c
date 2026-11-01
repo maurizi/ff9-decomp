@@ -149,7 +149,7 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->elemFn = (s32)fx_038_op80PoolTask;
         init->poolCount = 3;
     } else if (mode == 1) {
-        work->stop0 = 0;
+        work->hold0 = 0;
         work->countC = 0;
         fx_038_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
@@ -160,7 +160,7 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->model14 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA));
     } else {
         frame = entry->frame;
-        if (work->stop0 == 0) {
+        if (work->hold0 == 0) {
             spawn = 0;
             if (frame < 0x18) {
                 spawn = fx_038_spawnFrames[frame];

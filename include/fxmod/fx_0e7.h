@@ -28,7 +28,7 @@ typedef struct {
     SVECTOR pos50;
     SVECTOR pos58;
     SVECTOR pos60;
-    s32 fadeInTimer68; /* fade-in countdown this op never starts: set to -1 in mode 1, tested >= 0 */
+    s32 blend68; /* when >= 0, both models switch to blend mode 1; set to -1 in mode 1 and never changed here (runtime check: not a countdown) */
     s32 fadeTimer6C; /* fade countdown */
     s32 dropTimer70; /* drop countdown */
     s32 tiltTimer74; /* tilt countdown */

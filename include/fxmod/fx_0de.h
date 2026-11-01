@@ -28,7 +28,7 @@ typedef struct {
 s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 typedef struct {
-    s32 stop0; /* dead early-out flag, cleared at init and never set (see Fx046Work.stop0) */
+    s32 hold0; /* dead early-out flag, cleared at init and never set (see Fx046Work.hold0) */
     SVECTOR pos4; /* caster body position */
     SVECTOR posC; /* caster position */
     s32 model14[8]; /* models */

@@ -15,7 +15,7 @@ s32 fx_05f_op80(s32 mode, Fx05fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = 0x34;
     } else if (mode == 1) {
-        work->stop0 = 0;
+        work->hold0 = 0;
         work->posC.vx = env->targets->centerX;
         work->posC.vy = env->targets->centerY;
         work->posC.vz = env->targets->centerZ;
@@ -34,7 +34,7 @@ s32 fx_05f_op80(s32 mode, Fx05fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 9), 0x39, 0x3D00, 0, 0x80);
     } else {
         frame = entry->frame;
-        if (work->stop0 == 0) {
+        if (work->hold0 == 0) {
             if (frame < 24) {
                 t = (frame << 12) / 24;
                 pos.vx = work->posC.vx;

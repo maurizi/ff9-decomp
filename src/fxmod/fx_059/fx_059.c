@@ -87,7 +87,7 @@ s32 fx_059_op81(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *args = 0xC;
     } else if (mode == 1) {
         fx_059_env = env;
-        work->stop0 = 0;
+        work->hold0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
         if (emitter != NULL) {
@@ -103,7 +103,7 @@ s32 fx_059_op81(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         s32 frame = entry->frame;
-        if (work->stop0 == 0 && frame >= 0x20) {
+        if (work->hold0 == 0 && frame >= 0x20) {
             return 1;
         }
     }
@@ -117,7 +117,7 @@ s32 fx_059_op82(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = 0xC;
     } else if (mode == 1) {
-        work->stop0 = 0;
+        work->hold0 = 0;
         fx_059_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4);
@@ -126,7 +126,7 @@ s32 fx_059_op82(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         s32 frame = entry->frame;
-        if (work->stop0 == 0 && frame >= 0x18) {
+        if (work->hold0 == 0 && frame >= 0x18) {
             return 1;
         }
     }

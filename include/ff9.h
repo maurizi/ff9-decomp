@@ -812,7 +812,7 @@ void win_updateAll(void);
 #define TEXT_WAIT_PAGE 0x00 /* + frames: pause (Cross can't skip, MSGW_NO_SKIP), then a new page */
 #define TEXT_WAIT_CLOSE 0x01 /* + frames: the same, then close the window */
 #define TEXT_SPEED 0x02 /* + typing speed (MsgWindow.speed) */
-#define TEXT_CHOICE_START 0x08 /* the choice lines start at the next line (MSGW_CHOICE) */
+#define TEXT_CHOICE_START 0x08 /* the choice lines start at the current line, the one holding this code (MSGW_CHOICE; runtime) */
 #define TEXT_HOLD 0x09 /* wait with Cross ignored (MSGW_WAIT_INPUT, MSGW_NO_INPUT): the script closes the window */
 #define TEXT_NO_SKIP 0x0A /* Cross doesn't skip the rest of the page (MSGW_NO_SKIP) */
 #define TEXT_SKIP 0x0C /* the rest of the page shows at once (MSGW_SKIP) */

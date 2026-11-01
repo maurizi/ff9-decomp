@@ -11008,7 +11008,7 @@ g_evtGlobalVars.b[0x67] g_evtGlobalVars.b[EVT_GB_NAVI_PLACE]
 # Applied from docs/runtime-findings.md "Round 33 runtime pass". Data/functions as 'fx_XXX OLD NEW  # why',
 # fields as 'fx_XXX Struct old=new'. Fields found unused or write-only got a comment in their header, not a name.
 ## patterns
-# FIELDS work unk0=stop0 (dead early-out flag, always 0; medium): fx_000 fx_002 fx_00a fx_00b fx_00e fx_00f fx_016 fx_01b
+# FIELDS work unk0=hold0 (dead early-out flag, always 0; medium): fx_000 fx_002 fx_00a fx_00b fx_00e fx_00f fx_016 fx_01b
 #   fx_01e fx_01f fx_029 fx_02a fx_038 fx_046 fx_047 fx_04a fx_04c fx_058 fx_059 (Fx059Work81) fx_05f fx_060 fx_061
 # FIELDS every btlfx_drawTrail ring header struct (FxXXXStrip/Branch/Trail/Bolt/Line/Arc, 47 modules): unk0=lastSlot0 unk1=head1 unk2=count2
 # FIELDS strip points: Fx026Pt Fx062Pt Fx063Pt Fx079Pt Fx07aPt unk6=halfWidth6; Fx062Strip unk114=width114; Fx063Strip unkFC=widthFC; Fx1f2Work unk38=halfWidth38
@@ -11330,7 +11330,7 @@ fx_059: unk0 -> rotXY0
 fx_0b8: unk0 -> flags0
 fx_0d2: unkC -> fadeC, unkE -> scaleE
 fx_0dc: unk0 -> state0, unk7C -> scrollFrame7C, unk80 -> scroll80
-fx_0de: unk0 -> stop0
+fx_0de: unk0 -> hold0
 fx_0e3_0: unk0 -> edgeA0, unk2 -> edgeB2
 fx_0ec: unk6 -> split6, unk1A -> delayOrTri1A, unk0 -> verts0
 fx_0fa: unk0 -> timers0
@@ -11340,7 +11340,7 @@ commented (unused / write-only / not read): fx_001 unk8; fx_026 unk0 unk6 unk0 u
 
 ## Batch 3: fx_104..fx_1fe members
 fx_114: unk14 -> pos14
-fx_125: unk0 -> stop0
+fx_125: unk0 -> hold0
 fx_127: unk8 -> motionFn8
 fx_17d_5: unk10 -> angle10, unk1E -> targetY1E, unk20 -> targetZ20
 fx_186: unk6 -> bobVelY6
@@ -11462,3 +11462,7 @@ fx_1bf_0_unusedBuf fx_1bf_0_buf400  # [code] 0x400 zero bytes before fx_1bf_0_ef
 btl_onInitMode btl_loadKanjiFont  # [jp] JP body loads the battle kanji font (common db item 4/0x16 into GameData.kanjiFont) and its glyph TIM (4/0x15), then DrawSync, returns 0
 menuItem_onExit menuItem_restoreVram  # [jp] JP body LoadImages back the VRAM block (0,256 44x128) that JP menuItem_loadImages saved with StoreImage before putting the key-item image there; US loads that image to free VRAM (896,384) so the body was compiled out
 D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 0xC (field, world, battle end), pen_getGlyph indexes it for codes from g_penGlyphDecode.kanjiCode on
+
+# ===== verification pass fixes =====
+# FIELDS fxmod work +0 (22 modules): stop0=hold0
+# FIELDS include/fxmod/fx_0e7.h Fx0e7Work: fadeInTimer68=blend68
