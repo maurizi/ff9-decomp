@@ -153,9 +153,9 @@ s32 vib_clear(void) {
     return 0;
 }
 
-s32 vib_play(s32 a) {
-    g_vib.start = a;
-    g_vib.pos = a << 8;
+s32 vib_play(s32 frame) {
+    g_vib.start = frame;
+    g_vib.pos = frame << 8;
     g_vib.flags |= VIB_PLAYING | VIB_RUNNING;
     return 0;
 }
@@ -178,46 +178,46 @@ s32 vib_setPlaying(s32 on) {
     return 0;
 }
 
-s32 vib_setTrackEnabled(s32 a, s32 b, s32 on) {
+s32 vib_setTrackEnabled(s32 track, s32 motor, s32 on) {
     VibTrack *e;
 
-    e = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs) + a;
+    e = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs) + track;
     if (on) {
-        e->flags[b] |= 1;
+        e->flags[motor] |= 1;
     } else {
-        e->flags[b] &= ~1;
+        e->flags[motor] &= ~1;
     }
     return 0;
 }
 
-s32 vib_setRate(s16 a) {
-    g_vib.rate = a;
+s32 vib_setRate(s16 rate) {
+    g_vib.rate = rate;
     return 0;
 }
 
-s32 vib_setLoopMode(s32 a) {
-    g_vib.flags = (g_vib.flags & ~VIB_LOOP_MODE) | (a & VIB_LOOP_MODE);
+s32 vib_setLoopMode(s32 mode) {
+    g_vib.flags = (g_vib.flags & ~VIB_LOOP_MODE) | (mode & VIB_LOOP_MODE);
     return 0;
 }
 
-s32 vib_setRange(s32 a, s32 b) {
-    if (a >= 0) {
-        g_vib.start = a;
+s32 vib_setRange(s32 start, s32 end) {
+    if (start >= 0) {
+        g_vib.start = start;
     }
-    if (b >= 0) {
-        g_vib.end = b;
+    if (end >= 0) {
+        g_vib.end = end;
     }
     return 0;
 }
 
-s32 vib_getFlags(s32 *a) {
-    *a = g_vib.flags;
+s32 vib_getFlags(s32 *outFlags) {
+    *outFlags = g_vib.flags;
     return 0;
 }
 
-s32 vib_isTrackEnabled(s32 a, s32 b, s32 *out) {
+s32 vib_isTrackEnabled(s32 track, s32 motor, s32 *out) {
     VibData *h = g_vib.data;
-    u16 *p = (u16 *)((u8 *)h + h->tracksOfs) + a * 6 + b;
+    u16 *p = (u16 *)((u8 *)h + h->tracksOfs) + track * 6 + motor;
     if (*p & 1) {
         *out = 1;
     } else {
@@ -226,23 +226,23 @@ s32 vib_isTrackEnabled(s32 a, s32 b, s32 *out) {
     return 0;
 }
 
-s32 vib_getData(VibData **a) {
-    *a = g_vib.data;
+s32 vib_getData(VibData **outData) {
+    *outData = g_vib.data;
     return 0;
 }
 
-s32 vib_getRange(s32 *a, s32 *b) {
-    *a = g_vib.start;
-    *b = g_vib.end;
+s32 vib_getRange(s32 *outStart, s32 *outEnd) {
+    *outStart = g_vib.start;
+    *outEnd = g_vib.end;
     return 0;
 }
 
-s32 vib_getRate(s16 *a) {
-    *a = g_vib.rate;
+s32 vib_getRate(s16 *outRate) {
+    *outRate = g_vib.rate;
     return 0;
 }
 
-s32 vib_getFrame(s32 *a) {
-    *a = g_vib.pos >> 8;
+s32 vib_getFrame(s32 *outFrame) {
+    *outFrame = g_vib.pos >> 8;
     return 0;
 }

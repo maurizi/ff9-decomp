@@ -1,12 +1,12 @@
 #include "ff9.h"
 
-EvtObject *evt_allocObject(s32 n) {
+EvtObject *evt_allocObject(s32 words) {
     EvtAllocNode *cur = g_evtState->allocUsed;
     EvtAllocNode *nn = NULL;
     EvtAllocNode *next;
 
     if (cur != NULL) {
-        if ((u32 *)cur->start >= g_evtState->objPool + n) {
+        if ((u32 *)cur->start >= g_evtState->objPool + words) {
             nn = g_evtState->allocFree;
             g_evtState->allocFree = nn->next;
             nn->next = g_evtState->allocUsed;
@@ -14,11 +14,11 @@ EvtObject *evt_allocObject(s32 n) {
             {
                 u32 *p1 = g_evtState->objPool;
                 nn->start = (EvtObject *)p1;
-                nn->end = p1 + n;
+                nn->end = p1 + words;
             }
         } else {
             for (next = cur->next; next != NULL; next = cur->next) {
-                if ((u32 *)next->start >= cur->end + n) {
+                if ((u32 *)next->start >= cur->end + words) {
                     break;
                 }
                 cur = next;
@@ -31,9 +31,9 @@ EvtObject *evt_allocObject(s32 n) {
                 {
                     u32 *p2 = cur->end;
                     nn->start = (EvtObject *)p2;
-                    nn->end = p2 + n;
+                    nn->end = p2 + words;
                 }
-            } else if (cur->end + n <= g_evtState->objPool + 0x500) {
+            } else if (cur->end + words <= g_evtState->objPool + 0x500) {
                 nn = g_evtState->allocFree;
                 g_evtState->allocFree = nn->next;
                 nn->next = NULL;
@@ -41,11 +41,11 @@ EvtObject *evt_allocObject(s32 n) {
                 {
                     u32 *p3 = cur->end;
                     nn->start = (EvtObject *)p3;
-                    nn->end = p3 + n;
+                    nn->end = p3 + words;
                 }
             }
         }
-    } else if (n <= 0x500) {
+    } else if (words <= 0x500) {
         nn = g_evtState->allocFree;
         g_evtState->allocFree = nn->next;
         nn->next = NULL;
@@ -53,7 +53,7 @@ EvtObject *evt_allocObject(s32 n) {
         {
             u32 *p4 = g_evtState->objPool;
             nn->start = (EvtObject *)p4;
-            nn->end = p4 + n;
+            nn->end = p4 + words;
         }
     }
     if (nn != NULL) {
@@ -62,7 +62,7 @@ EvtObject *evt_allocObject(s32 n) {
     return NULL;
 }
 
-EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
+EvtObject *evt_createObject(s32 scriptIdx, s32 id, s32 objBytes, s32 stackWords) {
     EvtObject *o;
     EvtListNode *n;
     EvtState *d;
@@ -71,15 +71,15 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     u32 *end;
 
     if (id == 0) {
-        id = idx;
+        id = scriptIdx;
     }
     o = evt_getObject(id);
     if (o != NULL) {
         evt_deleteObject(o);
     }
-    nw = (a2 + 3) >> 2;
-    nv = (((ScriptEntry *)g_evtScripts)[idx].varBytes + 3) >> 2;
-    o = evt_allocObject(nw + nv + a3);
+    nw = (objBytes + 3) >> 2;
+    nv = (((ScriptEntry *)g_evtScripts)[scriptIdx].varBytes + 3) >> 2;
+    o = evt_allocObject(nw + nv + stackWords);
     end = (u32 *)o + nw + nv;
     for (p = (u32 *)o; p < end; p++) {
         *p = 0;
@@ -96,11 +96,11 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     }
     n->next = NULL;
     n->obj = o;
-    o->scriptIdx = idx;
+    o->scriptIdx = scriptIdx;
     o->uid = id;
     o->kind = 0;
     {
-        u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[idx].offset;
+        u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[scriptIdx].offset;
         s32 c = *(u16 *)h >> 8;
         u16 *q = (u16 *)(h + 2);
 
@@ -120,7 +120,7 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     }
     o->stackOfs = nw + nv;
     o->varsOfs = nw;
-    o->stackWords = a3;
+    o->stackWords = stackWords;
     o->state = EVT_STATE_NEW;
     o->windowId = 0xFF;
     return o;

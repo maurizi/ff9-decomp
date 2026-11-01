@@ -45,21 +45,21 @@ void sprAnim_drawScaledCell(s32 x, s32 y, s32 otz, SprAnim *unused, AnimCell *c)
     g_primPtr = (u8 *)(p + 1);
 }
 
-void sprAnim_init(SprAnim *a, SprAnimData *d) {
-    a->data = d;
-    a->frames = d->frames;
-    a->cellLists = &a->frames[a->data->frameCount];
-    a->base = d;
-    a->playing = 0;
-    a->frame = 0;
-    a->tick = 0;
-    a->onDone = 0;
-    a->frameCount = d->frameCount;
+void sprAnim_init(SprAnim *anim, SprAnimData *data) {
+    anim->data = data;
+    anim->frames = data->frames;
+    anim->cellLists = &anim->frames[anim->data->frameCount];
+    anim->base = data;
+    anim->playing = 0;
+    anim->frame = 0;
+    anim->tick = 0;
+    anim->onDone = 0;
+    anim->frameCount = data->frameCount;
 }
 
-u8 sprAnim_setPlaying(SprAnim *a, u8 b) {
-    u8 old = a->playing;
-    a->playing = b;
+u8 sprAnim_setPlaying(SprAnim *anim, u8 playing) {
+    u8 old = anim->playing;
+    anim->playing = playing;
     return old;
 }
 
@@ -67,11 +67,11 @@ void sprAnim_setOnDone(SprAnim *a, void (*b)()) {
     a->onDone = b;
 }
 
-void sprAnim_reset(SprAnim *a) {
-    a->playing = 0;
-    a->frame = 0;
-    a->tick = 0;
-    a->onDone = 0;
+void sprAnim_reset(SprAnim *anim) {
+    anim->playing = 0;
+    anim->frame = 0;
+    anim->tick = 0;
+    anim->onDone = 0;
 }
 
 void sprAnim_update(SprAnim *anim) {
@@ -90,17 +90,17 @@ void sprAnim_update(SprAnim *anim) {
     }
 }
 
-void sprAnim_draw(s32 x, s32 y, s32 otz, SprAnim *a) {
+void sprAnim_draw(s32 x, s32 y, s32 otz, SprAnim *anim) {
     s32 i;
-    SprAnimFrame *f = &a->frames[a->frame];
-    AnimCellList *cl = &((AnimCellList *)a->cellLists)[f->cellList];
-    AnimCell *c = (AnimCell *)((u8 *)a->base + cl->offset);
+    SprAnimFrame *f = &anim->frames[anim->frame];
+    AnimCellList *cl = &((AnimCellList *)anim->cellLists)[f->cellList];
+    AnimCell *c = (AnimCell *)((u8 *)anim->base + cl->offset);
 
     for (i = 0; i < cl->count; i++) {
         if (!((c->cell.clutTpage >> 26) & 1)) {
-            sprAnim_drawCell(x + f->x, y + f->y, otz, (s32)a, &c->cell);
+            sprAnim_drawCell(x + f->x, y + f->y, otz, (s32)anim, &c->cell);
         } else {
-            sprAnim_drawScaledCell(x + f->x, y + f->y, otz, a, c);
+            sprAnim_drawScaledCell(x + f->x, y + f->y, otz, anim, c);
         }
         c++;
     }

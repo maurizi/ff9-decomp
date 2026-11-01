@@ -5002,8 +5002,8 @@ s32 evt_getArg8(void);
 s32 evt_isControlEnabled(void);
 s32 fade_getOtz(void);
 s32 fade_isSubtractive(void);
-void fieldCalc_calcHpGain(MainCalc *a);
-void fieldCalc_calcMpGain(MainCalc *a);
+void fieldCalc_calcHpGain(MainCalc *calc);
+void fieldCalc_calcMpGain(MainCalc *calc);
 void fieldCalc_calcReviveHp(MainCalc *c);
 void fieldCalc_casterStatusHalf(MainCalc *c);
 void fieldCalc_cureStatus(MainCalc *c);
@@ -5014,7 +5014,7 @@ void fieldCalc_restoreHalf(MainCalc *c);
 void fieldCalc_reviveRandom(MainCalc *c);
 void fieldCalc_setItemHeal(MainCalc *c);
 void fieldCalc_setMagicHeal(MainCalc *c);
-void fieldCalc_supportBoost(MainCalc *a);
+void fieldCalc_supportBoost(MainCalc *calc);
 void fld_entry(void); /* ovl_0a */
 s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3); /* ovl_0a */
 s32 fldbg_scrollToPlayer(s32 frames, s32 scrollMode); /* ovl_0a */
@@ -5033,8 +5033,8 @@ void msg_closeAll(void);
 u32 msg_getPadHeld(void);
 u32 msg_getPadPressed(void);
 void opening_main(void); /* ovl_14 */
-void pad_disableRepeat(s32 a);
-void pad_resetRepeats(s32 a);
+void pad_disableRepeat(s32 port);
+void pad_resetRepeats(s32 port);
 s32 preload_isInVram(PreloadEntry *p);
 s32 text_getButtonSprite(s32 button);
 void tm_main(void); /* ovl_0d */

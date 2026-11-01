@@ -763,82 +763,82 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
     return w;
 }
 
-void evt_turnObject(EvtObject *p, s32 d, s32 wrap, s32 speed) {
+void evt_turnObject(EvtObject *obj, s32 angle, s32 wrap, s32 speed) {
     s32 cur;
     s32 rate;
     s32 frames;
     s16 a;
 
-    p->turnTarget = d & 0xFFF;
-    cur = p->pos.rotY & 0xFFF;
-    d -= cur;
+    obj->turnTarget = angle & 0xFFF;
+    cur = obj->pos.rotY & 0xFFF;
+    angle -= cur;
     if (wrap) {
-        if (d > 0x800) {
-            d -= 0x1000;
-        } else if (d < -0x800) {
-            d += 0x1000;
+        if (angle > 0x800) {
+            angle -= 0x1000;
+        } else if (angle < -0x800) {
+            angle += 0x1000;
         }
     }
-    if (d == 0) {
+    if (angle == 0) {
         return;
     }
-    p->animStart = 0;
-    p->animEnd = 0xFF;
-    p->turnStartDir = cur;
-    p->turnPrevAnim = p->anim;
-    p->flags |= EVT_OBJ_TURNING;
+    obj->animStart = 0;
+    obj->animEnd = 0xFF;
+    obj->turnStartDir = cur;
+    obj->turnPrevAnim = obj->anim;
+    obj->flags |= EVT_OBJ_TURNING;
     if (speed == 0) {
         speed = 0x10;
     }
-    if (d < 0) {
-        frames = evt_getAnimFrameCount(p->modelId, (u16)p->prevPos.rotX);
+    if (angle < 0) {
+        frames = evt_getAnimFrameCount(obj->modelId, (u16)obj->prevPos.rotX);
         rate = frames * 16 / speed;
-        if (-d < 0x400) {
-            rate = rate * -d >> 10;
+        if (-angle < 0x400) {
+            rate = rate * -angle >> 10;
         }
         if (rate >= 6) {
-            p->turnRate = (d + 0x400) / rate;
-            p->animFlags = 0;
-            evt_execInstr_anim(p, (u16)p->prevPos.rotX);
-            if (p->uid == g_evtState->playerUid) {
+            obj->turnRate = (angle + 0x400) / rate;
+            obj->animFlags = 0;
+            evt_execInstr_anim(obj, (u16)obj->prevPos.rotX);
+            if (obj->uid == g_evtState->playerUid) {
                 g_evtPlayerAnimCount++;
             }
-            p->animSpeed = frames * 16 / rate;
+            obj->animSpeed = frames * 16 / rate;
         } else {
-            p->turnRate = EVT_TURN_DIRECT_DOWN;
+            obj->turnRate = EVT_TURN_DIRECT_DOWN;
             a = cur;
-            if (p->turnTarget >= cur) {
+            if (obj->turnTarget >= cur) {
                 a = cur | 0x1000;
             }
-            p->pos.rotY = a;
+            obj->pos.rotY = a;
         }
     } else {
-        frames = evt_getAnimFrameCount(p->modelId, (u16)p->prevPos.rotY);
+        frames = evt_getAnimFrameCount(obj->modelId, (u16)obj->prevPos.rotY);
         rate = frames * 16 / speed;
-        if (d < 0x400) {
-            rate = rate * d >> 10;
+        if (angle < 0x400) {
+            rate = rate * angle >> 10;
         }
         if (rate >= 6) {
-            p->turnRate = (d - 0x400) / rate;
-            p->animFlags = 0;
-            evt_execInstr_anim(p, (u16)p->prevPos.rotY);
-            if (p->uid == g_evtState->playerUid) {
+            obj->turnRate = (angle - 0x400) / rate;
+            obj->animFlags = 0;
+            evt_execInstr_anim(obj, (u16)obj->prevPos.rotY);
+            if (obj->uid == g_evtState->playerUid) {
                 g_evtPlayerAnimCount++;
             }
-            p->animSpeed = frames * 16 / rate;
+            obj->animSpeed = frames * 16 / rate;
         } else {
-            p->turnRate = EVT_TURN_DIRECT_UP;
+            obj->turnRate = EVT_TURN_DIRECT_UP;
             a = cur;
-            if (cur >= p->turnTarget) {
+            if (cur >= obj->turnTarget) {
                 a = cur | 0xF000;
             }
-            p->pos.rotY = a;
+            obj->pos.rotY = a;
         }
     }
     if (rate <= 0) {
         rate = 1;
     }
-    p->turnStep = d / rate;
+    obj->turnStep = angle / rate;
 }
 
 s32 evt_execInstr(void) {
@@ -2481,43 +2481,43 @@ void evt_movePlayer(EvtObject *obj) {
                                  : (g_evtPushFrames < 0 ? g_evtPushFrames + 1 : 0);
 }
 
-s32 evt_callTurnScript(EvtObject *p, s32 b) {
+s32 evt_callTurnScript(EvtObject *obj, s32 angle) {
     s32 *sp;
     s32 ok;
     s32 x;
     u32 hi;
     s32 w;
 
-    if (!(p->moveFlags & EVT_MOVE_LOOK_RELEASED)) {
+    if (!(obj->moveFlags & EVT_MOVE_LOOK_RELEASED)) {
         ok = 0;
-        if (!(p->animFlags & EVT_ANIM_SCRIPTED) && p->talkTurnScript == EVT_OP_TURN_TO_ANGLE) {
-            ok = 0 < p->level;
+        if (!(obj->animFlags & EVT_ANIM_SCRIPTED) && obj->talkTurnScript == EVT_OP_TURN_TO_ANGLE) {
+            ok = 0 < obj->level;
         }
         if (ok) {
-            p->talkTurnAngle = b >> 4;
-            sp = &((s32 *)p + p->stackOfs)[p->sp];
-            sp[0] = p->ip - g_evtState->scriptBase;
-            w = p->wait | (p->level << 8);
+            obj->talkTurnAngle = angle >> 4;
+            sp = &((s32 *)obj + obj->stackOfs)[obj->sp];
+            sp[0] = obj->ip - g_evtState->scriptBase;
+            w = obj->wait | (obj->level << 8);
             hi = g_evtCurObj->uid << 24;
             x = hi | 0xFF0000;
             sp[1] = w | x;
-            p->ip = (u8 *)&p->talkTurnScript;
-            p->level = 0;
-            p->wait = 0;
-            p->sp += 2;
+            obj->ip = (u8 *)&obj->talkTurnScript;
+            obj->level = 0;
+            obj->wait = 0;
+            obj->sp += 2;
         }
     }
     return 1;
 }
 
 /* point 500 units ahead of o at angle a, at head height */
-static inline void evt_updateLookAt_ahead(EvtObject *o, s32 a, VECTOR *out) {
+static inline void evt_updateLookAt_ahead(EvtObject *o, s32 angle, VECTOR *out) {
     SVECTOR v;
     MATRIX m;
 
-    m.m[0][2] = math_sin(a);
+    m.m[0][2] = math_sin(angle);
     m.m[1][1] = ONE;
-    m.m[2][2] = math_cos(a);
+    m.m[2][2] = math_cos(angle);
     m.m[0][0] = m.m[0][1] = m.m[1][0] = m.m[1][2] = m.m[2][0] = m.m[2][1] = 0;
     m.t[0] = o->pos.vx;
     m.t[1] = o->pos.vy;
@@ -3730,7 +3730,7 @@ s32 evt_getWorldCamTargetObj(void) {
     return (s32)g_evtWorldCamTargetObj;
 }
 
-void evt_resetIdleTimer(s32 a) {
+void evt_resetIdleTimer(s32 halfDelay) {
     EvtState *p = g_evtState;
     s32 v;
     if (p->idleTimer >= 0) {
@@ -3738,7 +3738,7 @@ void evt_resetIdleTimer(s32 a) {
             rand_refill();
         }
         v = *g_randPtr++ + 200;
-        if (a == 0) {
+        if (halfDelay == 0) {
             p->idleTimer = v * 4;
         } else {
             p->idleTimer = v * 2;
@@ -3771,10 +3771,10 @@ void evt_initObjectList(void) {
     g_evtState->objects = NULL;
 }
 
-void evt_createRegion(s32 a, s32 b) {
-    EvtObject *p = evt_createObject(a, b, 0x38, 0x10);
-    p->kind = EVT_KIND_REGION;
-    p->flags = EVT_OBJ_ENABLED;
+void evt_createRegion(s32 scriptIdx, s32 id) {
+    EvtObject *obj = evt_createObject(scriptIdx, id, 0x38, 0x10);
+    obj->kind = EVT_KIND_REGION;
+    obj->flags = EVT_OBJ_ENABLED;
 }
 
 u16 evt_getBattleVar(s32 var) {

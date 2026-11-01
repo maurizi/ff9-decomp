@@ -1,19 +1,19 @@
 #include "ff9.h"
 
-u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e) {
+u8 item_useOnMember(Character *caster, Character *target, MainCalcCmd *cmd, u8 kind, s32 all) {
     MainCalc c;
 
-    c.caster = a;
-    c.target = t;
+    c.caster = caster;
+    c.target = target;
     c.cmd = cmd;
-    c.all = e;
+    c.all = all;
     c.flags = 0;
     c.mpChange = 0;
     c.hpChange = 0;
     switch (kind) {
     case BTL_FORMULA_MAGIC_HEAL:
         if (fieldCalc_checkAlive(&c)) {
-            if (t->hp == t->maxHp) {
+            if (target->hp == target->maxHp) {
                 goto full;
             }
             fieldCalc_setMagicHeal(&c);
@@ -33,7 +33,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
         break;
     case BTL_FORMULA_ITEM_HEAL:
         if (fieldCalc_checkAlive(&c)) {
-            if (t->hp == t->maxHp) {
+            if (target->hp == target->maxHp) {
                 goto full;
             }
             fieldCalc_setItemHeal(&c);
@@ -42,7 +42,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
         break;
     case BTL_FORMULA_ITEM_MP_HEAL:
         if (fieldCalc_checkAlive(&c)) {
-            if (t->mp == t->maxMp) {
+            if (target->mp == target->maxMp) {
                 goto full;
             }
             fieldCalc_setItemHeal(&c);
@@ -51,7 +51,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
         break;
     case BTL_FORMULA_ELIXIR:
         if (fieldCalc_checkAlive(&c)) {
-            if (*(u32 *)&t->hp == *(u32 *)&t->maxHp) { /* hp and mp both full */
+            if (*(u32 *)&target->hp == *(u32 *)&target->maxHp) { /* hp and mp both full */
             full:
                 c.flags |= MAINCALC_MISS;
                 break;
@@ -80,11 +80,11 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
     return fieldCalc_apply(&c);
 }
 
-s32 chr_payMp(Unk8006573C *a, s16 b) {
-    if (a->mp < b) {
+s32 chr_payMp(Unk8006573C *c, s16 cost) {
+    if (c->mp < cost) {
         return 0;
     }
-    a->mp -= b;
+    c->mp -= cost;
     return 1;
 }
 
@@ -149,9 +149,9 @@ void fieldCalc_casterStatusHalf(MainCalc *c) {
     }
 }
 
-void fieldCalc_supportBoost(MainCalc *a) {
-    if (a->caster->supportAbilities[1] & SA_BIT(SA_CONCENTRATE)) {
-        a->multiplier = (a->multiplier * 3) >> 1;
+void fieldCalc_supportBoost(MainCalc *calc) {
+    if (calc->caster->supportAbilities[1] & SA_BIT(SA_CONCENTRATE)) {
+        calc->multiplier = (calc->multiplier * 3) >> 1;
     }
 }
 
@@ -161,12 +161,12 @@ void fieldCalc_multiTargetHalf(MainCalc *c) {
     }
 }
 
-void fieldCalc_calcHpGain(MainCalc *a) {
-    u16 v = a->power * a->multiplier;
+void fieldCalc_calcHpGain(MainCalc *calc) {
+    u16 v = calc->power * calc->multiplier;
     if ((s16)v >= 10000) {
         v = 9999;
     }
-    a->hpChange = v;
+    calc->hpChange = v;
 }
 
 void fieldCalc_calcReviveHp(MainCalc *c) {
@@ -184,12 +184,12 @@ void fieldCalc_calcReviveHp(MainCalc *c) {
     c->hpChange = v;
 }
 
-void fieldCalc_calcMpGain(MainCalc *a) {
-    u16 v = a->power * a->multiplier;
+void fieldCalc_calcMpGain(MainCalc *calc) {
+    u16 v = calc->power * calc->multiplier;
     if ((s16)v >= 10000) {
         v = 9999;
     }
-    a->mpChange = v;
+    calc->mpChange = v;
 }
 
 void fieldCalc_restoreAll(MainCalc *c) {
@@ -227,20 +227,20 @@ void fieldCalc_cureStatus(MainCalc *c) {
     }
 }
 
-void chr_addHp(Character *u, s32 n) {
-    if (!chr_hasStatus(u, CHR_STATUS_PETRIFY)) {
-        u->hp += n;
-        if (u->hp > u->maxHp) {
-            u->hp = u->maxHp;
+void chr_addHp(Character *c, s32 amount) {
+    if (!chr_hasStatus(c, CHR_STATUS_PETRIFY)) {
+        c->hp += amount;
+        if (c->hp > c->maxHp) {
+            c->hp = c->maxHp;
         }
     }
 }
 
-void chr_addMp(Character *u, s32 n) {
-    if (!chr_hasStatus(u, CHR_STATUS_PETRIFY)) {
-        u->mp += n;
-        if (u->mp > u->maxMp) {
-            u->mp = u->maxMp;
+void chr_addMp(Character *c, s32 amount) {
+    if (!chr_hasStatus(c, CHR_STATUS_PETRIFY)) {
+        c->mp += amount;
+        if (c->mp > c->maxMp) {
+            c->mp = c->maxMp;
         }
     }
 }
