@@ -125,7 +125,7 @@ u16 btl_findCover(s32 targets) {
     best->pos[0] = target->pos[0];
     best->pos[2] = target->pos[2];
     target->pos[2] += 0xFE700000;
-    best->model->motion = (BtlMotion *)best->motions[15];
+    best->model->motion = (BtlMotion *)best->motions[BTL_MOTION_COVER];
     best->flags |= BTL_UNIT_COVERING;
     return best->unitBit;
 }
@@ -343,14 +343,14 @@ void btl_setCmd(BtlCmd *cmd, u32 cmdNo, s32 subNo, s32 targets, s32 targeting) {
             model = u->model;
             motions = u->motions;
             motion = model->motion;
-            if (motion == (BtlMotion *)motions[0]) {
-                model->motion = (BtlMotion *)motions[10];
+            if (motion == (BtlMotion *)motions[BTL_MOTION_IDLE]) {
+                model->motion = (BtlMotion *)motions[BTL_MOTION_IDLE_TO_READY];
                 u->obj->frame = 0;
-            } else if (motion == (BtlMotion *)motions[1]) {
-                model->motion = (BtlMotion *)motions[11];
+            } else if (motion == (BtlMotion *)motions[BTL_MOTION_IDLE_WEAK]) {
+                model->motion = (BtlMotion *)motions[BTL_MOTION_WEAK_TO_READY];
                 u->obj->frame = 0;
-            } else if (motion == (BtlMotion *)motions[13] && cmdNo < BTL_CMD_TABLE_COUNT) {
-                model->motion = (BtlMotion *)motions[14];
+            } else if (motion == (BtlMotion *)motions[BTL_MOTION_DEFEND_IDLE] && cmdNo < BTL_CMD_TABLE_COUNT) {
+                model->motion = (BtlMotion *)motions[BTL_MOTION_DEFEND_TO_READY];
                 u->obj->frame = 0;
             }
         }
@@ -439,13 +439,13 @@ void btl_processCmdQueue(Battle *b) {
         if (k < 0x37) {
             w = cmd->caster;
             if ((u32)(k - 0x31) < 4) {
-                w->model->motion = (BtlMotion *)w->motions[9];
+                w->model->motion = (BtlMotion *)w->motions[BTL_MOTION_READY];
                 w->obj->frame = 0;
             }
-            if ((w->flags & BTL_UNIT_PARTY) && (s32)w->model->motion != w->motions[9] && (s32)w->model->motion != w->motions[17] &&
+            if ((w->flags & BTL_UNIT_PARTY) && (s32)w->model->motion != w->motions[BTL_MOTION_READY] && (s32)w->model->motion != w->motions[BTL_MOTION_FLEE] &&
                 !(w->status & BTL_STATUS_JUMP)) {
                 if ((s32)w->model->motion == w->motions[(w->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && !((w->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1)) {
-                    w->model->motion = (BtlMotion *)w->motions[9];
+                    w->model->motion = (BtlMotion *)w->motions[BTL_MOTION_READY];
                     w->obj->frame = 0;
                 }
                 return;
@@ -467,14 +467,14 @@ void btl_processCmdQueue(Battle *b) {
     case 0:
         if (!(u8)btl_checkCmdUsable(b, cmd) || !(u8)btl_validateTargets(b, cmd) || !(u8)btl_payMpCost(cmd)) {
             btl_releaseItem(cmd);
-            if (u != NULL && (u->flags & BTL_UNIT_PARTY) && (s32)u->model->motion == u->motions[9]) {
+            if (u != NULL && (u->flags & BTL_UNIT_PARTY) && (s32)u->model->motion == u->motions[BTL_MOTION_READY]) {
                 u->model->motion = (BtlMotion *)u->motions[32];
             }
             b->cmdPhase = 3;
             break;
         }
-        if (u != NULL && (s32)u->model->motion != u->motions[9] && cmd->cmdNo < BTL_CMD_ENEMY_TURN) {
-            u->model->motion = (BtlMotion *)u->motions[9];
+        if (u != NULL && (s32)u->model->motion != u->motions[BTL_MOTION_READY] && cmd->cmdNo < BTL_CMD_ENEMY_TURN) {
+            u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_READY];
             u->obj->frame = 0;
         }
         b->cmdPhase++;
@@ -641,8 +641,8 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
         }
         for (target = battle->unitList; target != NULL; target = target->next) {
             if ((target->flags & BTL_UNIT_PARTY) && !(target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && target->hp != 0) {
-                if (target->model->motion != (BtlMotion *)target->motions[0x11]) {
-                    target->model->motion = (BtlMotion *)target->motions[0x11];
+                if (target->model->motion != (BtlMotion *)target->motions[BTL_MOTION_FLEE]) {
+                    target->model->motion = (BtlMotion *)target->motions[BTL_MOTION_FLEE];
                     target->obj->frame = 0;
                 }
                 battle->phase = BTL_PHASE_END;
@@ -678,7 +678,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
         btl_checkPartyDisabled(u);
         if (u->koState == BTL_KO_NONE) {
             if (u->flags & BTL_UNIT_PARTY) {
-                if (u->model->motion == (BtlMotion *)u->motions[4]) {
+                if (u->model->motion == (BtlMotion *)u->motions[BTL_MOTION_KO]) {
                     u->koState = BTL_KO_PARTY_SET;
                     return 0;
                 }
@@ -782,21 +782,21 @@ void btl_updatePartyCmd(BtlCmd *cmd) {
     if (cmd->cmdNo == BTL_CMD_DEFEND) {
         model = u->model;
         motions = u->motions;
-        if (model->motion == (BtlMotion *)motions[12]) {
+        if (model->motion == (BtlMotion *)motions[BTL_MOTION_DEFEND]) {
             if (u->obj->frame < model->motion->frameCount) {
                 return;
             }
-            model->motion = (BtlMotion *)motions[13];
+            model->motion = (BtlMotion *)motions[BTL_MOTION_DEFEND_IDLE];
             u->obj->frame = 0;
         }
     } else if (cmd->cmdNo == BTL_CMD_CHANGE) {
         model = u->model;
         motions = u->motions;
-        if (model->motion == (BtlMotion *)motions[9]) {
+        if (model->motion == (BtlMotion *)motions[BTL_MOTION_READY]) {
             if (u->obj->frame < model->motion->frameCount) {
                 return;
             }
-            model->motion = (BtlMotion *)motions[29 + BTL_UNIT_ROW(u->flags)];
+            model->motion = (BtlMotion *)motions[BTL_MOTION_CHANGE_ROW + BTL_UNIT_ROW(u->flags)];
             u->obj->frame = 0;
         }
         motions2 = u->motions;
@@ -966,7 +966,7 @@ void btl_flushCmdQueue(Battle *battle) {
             if (cmd->cmdNo < BTL_CMD_TABLE_COUNT && u != NULL && !(u->status & BTL_STATUS_KO)) {
                 model = u->model;
                 u->cmdIssued = 0;
-                if ((s32)model->motion == u->motions[9] && ((charIndex = BTL_UNIT_INDEX(u->flags)) != CHR_EIKO || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
+                if ((s32)model->motion == u->motions[BTL_MOTION_READY] && ((charIndex = BTL_UNIT_INDEX(u->flags)) != CHR_EIKO || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
                     model->motion = (BtlMotion *)u->motions[32];
                     u->obj->frame = 0;
                     u->flags &= ~BTL_UNIT_CMD_WAITING;
@@ -995,7 +995,7 @@ void btl_clearCmdQueue(Battle *battle) {
             if (cmd->cmdNo < BTL_CMD_TABLE_COUNT && u != NULL && !(u->status & BTL_STATUS_KO)) {
                 model = u->model;
                 u->cmdIssued = 0;
-                if ((s32)model->motion == u->motions[9] && ((charIndex = BTL_UNIT_INDEX(u->flags)) != CHR_EIKO || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
+                if ((s32)model->motion == u->motions[BTL_MOTION_READY] && ((charIndex = BTL_UNIT_INDEX(u->flags)) != CHR_EIKO || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (charIndex != CHR_VIVI || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
                     model->motion = (BtlMotion *)u->motions[32];
                     u->obj->frame = 0;
                     u->flags &= ~BTL_UNIT_CMD_WAITING;
@@ -1186,7 +1186,7 @@ void btl_onCmdEffectDone(void) {
         return;
     }
     u = c->caster;
-    if (!(u->status & BTL_STATUS_AUTO_LIFE) || c->cmdNo != BTL_CMD_KO || (s32)u->model->motion == u->motions[4]) {
+    if (!(u->status & BTL_STATUS_AUTO_LIFE) || c->cmdNo != BTL_CMD_KO || (s32)u->model->motion == u->motions[BTL_MOTION_KO]) {
         b->cmdPhase = 4;
     }
 }
@@ -2664,7 +2664,7 @@ void btl_applyCalcResult(BtlCalc *c) {
         t->popupFlags |= BTL_POPUP_MISS;
         if (c->flags & BTL_CALC_DODGED) {
             if (t->flags & BTL_UNIT_PARTY) {
-                t->model->motion = (BtlMotion *)t->motions[16];
+                t->model->motion = (BtlMotion *)t->motions[BTL_MOTION_DODGE];
                 t->obj->frame = 0;
                 t->rot[1] = t->obj->rotY = (t->flags & BTL_UNIT_PARTY) * 0x800;
             } else if (!((t->flags >> BTL_UNIT_MODEL_PART_BIT) & 1)) {
@@ -3083,7 +3083,7 @@ void btl_setTargetHp(BtlCalc *calc) {
         btl_playDeathCry(u, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->deathCry);
     }
     m = u->model;
-    if ((s32)m->motion != u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(u->flags & BTL_UNIT_PARTY) || (s32)m->motion != u->motions[9]) && u != g_gameState->gameData->ctx.battle->curCmd->caster) {
+    if ((s32)m->motion != u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(u->flags & BTL_UNIT_PARTY) || (s32)m->motion != u->motions[BTL_MOTION_READY]) && u != g_gameState->gameData->ctx.battle->curCmd->caster) {
         m->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         u->obj->frame = 0;
     }
@@ -3150,7 +3150,7 @@ u8 btl_checkFrozenShatter(BtlCalc *calc) {
         btl_playDeathCry(u, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->deathCry);
     }
     m = u->model;
-    if ((s32)m->motion != u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(u->flags & BTL_UNIT_PARTY) || (s32)m->motion != u->motions[9]) && u != g_gameState->gameData->ctx.battle->curCmd->caster) {
+    if ((s32)m->motion != u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(u->flags & BTL_UNIT_PARTY) || (s32)m->motion != u->motions[BTL_MOTION_READY]) && u != g_gameState->gameData->ctx.battle->curCmd->caster) {
         m->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         u->obj->frame = 0;
     }
@@ -3210,7 +3210,7 @@ void btl_killUnit(BtlUnit *unit) {
         btl_playDeathCry(unit, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->deathCry);
     }
     model = unit->model;
-    if ((s32)model->motion != unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(unit->flags & BTL_UNIT_PARTY) || (s32)model->motion != unit->motions[9]) && unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+    if ((s32)model->motion != unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(unit->flags & BTL_UNIT_PARTY) || (s32)model->motion != unit->motions[BTL_MOTION_READY]) && unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
         model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         unit->obj->frame = 0;
     }

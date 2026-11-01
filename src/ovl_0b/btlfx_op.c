@@ -529,7 +529,7 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
         }
         if (step >= btlfx_getMotionLength(work->unit) - 1) {
             if (work->motionMode == 0 || work->motionMode == 3) {
-                btlfx_playUnitMotion(work->unit, 9);
+                btlfx_playUnitMotion(work->unit, BTL_MOTION_READY);
             }
             btlfx_setPartyTexAnim(work->unit, 2, 0);
             g_btlfxState.signals.b[3] = 1;
@@ -572,7 +572,7 @@ s32 btlfx_opReturnHome(s32 mode, Unk800E5538 *work, Unk800F78A4 *env, s32 *entry
             step = -1;
             work->phase = 1;
             if (btlfx_isCmdPendingOnAutoPotion(work->unit) != 0) {
-                btlfx_playUnitMotion(work->unit, 9);
+                btlfx_playUnitMotion(work->unit, BTL_MOTION_READY);
                 return 1;
             }
             if (work->stopped == 0) {
@@ -1717,9 +1717,9 @@ s32 btlfx_resetIdleMotion(s32 mode, s32 unitId) {
     BtlUnit *u = btl_getUnit(unitId);
     if (mode == 0) {
         if ((u8)btl_hasStatus(u, BTL_STATUS_KO)) {
-            u->model->motion = (BtlMotion *)u->motions[4];
+            u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_KO];
         } else if ((u->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
-            u->model->motion = (BtlMotion *)u->motions[9];
+            u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_READY];
         } else {
             u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         }

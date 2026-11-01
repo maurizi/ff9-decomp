@@ -484,7 +484,7 @@ void btl_initEnemyUnit(Unk800C9EE0 *placement, BtlUnit *unit, s32 *sceneFlags, s
         unit->rot[1] = rotY;
     }
     unit->motions = (s32 *)enemy->type->motions;
-    unit->model->motion = enemy->type->motions[0];
+    unit->model->motion = enemy->type->motions[BTL_MOTION_IDLE];
 }
 
 void btl_setEnemyStats(Unk800C9D1C *rec, BtlUnit *unit) {

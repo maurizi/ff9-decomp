@@ -1066,7 +1066,7 @@ void btlfx_setFileMotion(Unk800F78A40 *entry, s32 unitId, s32 dataIndex) {
 
 void btlfx_resetUnitMotion(s32 unitId, u8 resetRot) {
     BtlUnit *u = btl_getUnit(unitId);
-    btlfx_setUnitMotion(unitId, u->motions[0]);
+    btlfx_setUnitMotion(unitId, u->motions[BTL_MOTION_IDLE]);
     if (resetRot) {
         u->rot[0] = u->obj->rotX;
         u->rot[1] = u->obj->rotY;
@@ -1282,7 +1282,7 @@ s32 btlfx_stepPlayMotionHold(Unk800D8EA4 *work, s32 env, s32 *entry) {
 s32 btlfx_stepPlayAttackMotion(Unk800D8EA4 *work, s32 env, s32 *entry) {
     s32 frame = *entry;
     if (frame == 0) {
-        btlfx_playUnitMotion(work->unit, 0x17);
+        btlfx_playUnitMotion(work->unit, BTL_MOTION_ATTACK);
         work->lastFrame = btlfx_getMotionLength(work->unit) - 1;
     }
     if (frame >= work->lastFrame) {
@@ -1295,7 +1295,7 @@ s32 btlfx_stepPlayAttackMotion(Unk800D8EA4 *work, s32 env, s32 *entry) {
 s32 btlfx_stepPlayAttackMotionHold(Unk800D8EA4 *work, s32 env, s32 *entry) {
     s32 frame = *entry;
     if (frame == 0) {
-        btlfx_playUnitMotion(work->unit, 0x17);
+        btlfx_playUnitMotion(work->unit, BTL_MOTION_ATTACK);
         work->lastFrame = btlfx_getMotionLength(work->unit) - work->trimFrames - 1;
     }
     if (frame >= work->lastFrame) {
@@ -1310,7 +1310,7 @@ s32 btlfx_stepPlayAttackReturnMotion(Unk800D8EA4 *work, s32 env, s32 *entry) {
     s32 frame = *entry;
     if (btlfx_isPartyUnit(work->motion) == 0) {
         if (frame == 0) {
-            btlfx_playUnitMotion(work->unit, 0x19);
+            btlfx_playUnitMotion(work->unit, BTL_MOTION_ATTACK_RETURN);
             work->lastFrame = btlfx_getMotionLength(work->unit) - 1;
         }
         if (frame < work->lastFrame) {

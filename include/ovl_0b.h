@@ -559,11 +559,31 @@ typedef struct BtlUnit {
     u8 inMenuQueue; /* waiting for its command menu (btlui_queueMenuUnit) */
 } BtlUnit; /* 0xD0 */
 
-/* BtlUnit.motions slots (btl_startHitMotion). Runtime: Zidane's model poked to each slot. 0x17, 0x19, 0x1D, 0x1E are
- * other slots the effect ops play. */
+/* BtlUnit.motions slots (party: 0x22, btl_loadPartyMotions; enemies: BtlEnemyType.motionIds). Runtime: Zidane's model
+ * poked to slots 2 and 3; 0x17 / 0x19 seen in Attack. The rest [code]: what btl_setIdleMotion, btl_endPartyHitMotion,
+ * btl_setCmd and the command code switch between (docs/battle-models.md). Slots 8, 0x12, 0x13 and 0x1A-0x20
+ * are still numbers (docs/wip/literals_runtime.md). */
+#define BTL_MOTION_IDLE      0
+#define BTL_MOTION_IDLE_WEAK 1 /* idle in weak stance (BTL_UNIT_WEAK_STANCE): Venom, Low HP, Poison, Sleep */
 #define BTL_MOTION_HIT       2 /* short flinch, head back */
 #define BTL_MOTION_HIT_HEAVY 3 /* party: knocked off the feet backwards (abilities with flags2 0x81); enemies: the death
                                 * motion, or the hit in weak stance */
+#define BTL_MOTION_KO        4 /* btl_setKoMotion */
+#define BTL_MOTION_WEAK_TO_IDLE 5 /* the weak statuses went away (from IDLE_WEAK or GET_UP) */
+#define BTL_MOTION_GET_UP    6 /* after HIT_HEAVY, or when revived from KO; ends in weak stance */
+#define BTL_MOTION_IDLE_TO_WEAK 7 /* a weak status came while in IDLE */
+#define BTL_MOTION_READY     9 /* holds a command (BTL_UNIT_CMD_WAITING) or acts */
+#define BTL_MOTION_IDLE_TO_READY 10 /* + 1 from IDLE_WEAK (WEAK_TO_READY): a command was set (btl_setCmd) */
+#define BTL_MOTION_WEAK_TO_READY 11
+#define BTL_MOTION_DEFEND    12 /* the Defend command */
+#define BTL_MOTION_DEFEND_IDLE 13 /* held while BTL_STATUS_DEFEND */
+#define BTL_MOTION_DEFEND_TO_READY 14 /* from DEFEND_IDLE when a menu command is set */
+#define BTL_MOTION_COVER     15 /* stepped in front of the target (btl_findCover) */
+#define BTL_MOTION_DODGE     16 /* party target dodged (BTL_CALC_DODGED) */
+#define BTL_MOTION_FLEE      17 /* Flee command, or escape held */
+#define BTL_MOTION_ATTACK    0x17 /* run in and strike (btlfx_opPlayAttackMotion) */
+#define BTL_MOTION_ATTACK_RETURN 0x19 /* jump back after attacking an enemy (btlfx_opPlayAttackReturnMotion) */
+#define BTL_MOTION_CHANGE_ROW 29 /* + BTL_UNIT_ROW: the Change command */
 
 /* BtlUnit.flags (bitfields in Square's source: single bits are read as (flags >> NAME_BIT) & 1). Evidence: [code] */
 #define BTL_UNIT_PARTY             (1 << 0) /* party member, else enemy: the side (btl_initPartyUnit sets it, btl_initEnemies clears it) */

@@ -526,13 +526,13 @@ s32 btl_reloadPartyStep(s32 flags) {
             btl_loadPartyMotions(u, g_gameState->gameData->party[i]->info.b.kind, u - g_gameState->gameData->ctx.battle->units);
             if (u->status & BTL_STATUS_KO) {
                 if (u != g_gameState->gameData->ctx.battle->curCmd->caster) {
-                    u->model->motion = (BtlMotion *)u->motions[4];
+                    u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_KO];
                 } else {
                     goto use9;
                 }
             } else if (u == g_gameState->gameData->ctx.battle->curCmd->caster || ((u->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1)) {
             use9:
-                u->model->motion = (BtlMotion *)u->motions[9];
+                u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_READY];
             } else {
                 u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
             }
@@ -1479,7 +1479,7 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
             btl_loadPartyMotions(u, g_gameState->gameData->party[slot]->info.b.kind,
                           u - g_gameState->gameData->ctx.battle->units);
             if (u->status & BTL_STATUS_KO) {
-                u->model->motion = (BtlMotion *)u->motions[4];
+                u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_KO];
             } else {
                 u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
             }

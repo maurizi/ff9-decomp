@@ -11485,3 +11485,6 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 #   ABIL_ACTION_NA 0xBE, ABIL_SUPPORT_NA 0xBF, AP_MASTERED 0xC0, STONES 0xC1, TIMER_DIGITS 0xE0, TIMER_COLON 0xEA,
 #   ABIL_SUPPORT_OFF 0xF4, EQUIP_SLOTS 0xF9 (+ slot). [code]: what each caller draws beside them.
 # ovl_0b.h BTLFX_EFFECT_*: COMET, ATTACK (+ kind), ATTACK_ENEMY, STEAL_*, TRANCE, TRANCE_CMD, THROW_* (btl_startCmdEffect fixed ids)
+# ovl_0b.h BTL_MOTION_*: IDLE 0, IDLE_WEAK 1, KO 4, WEAK_TO_IDLE 5, GET_UP 6, IDLE_TO_WEAK 7, READY 9, IDLE_TO_READY 10,
+#   WEAK_TO_READY 11, DEFEND 12, DEFEND_IDLE 13, DEFEND_TO_READY 14, COVER 15, DODGE 16, FLEE 17, ATTACK 0x17,
+#   ATTACK_RETURN 0x19, CHANGE_ROW 29 (+ row). Runtime questions for the rest: docs/wip/literals_runtime.md.

@@ -113,9 +113,9 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
          * NULL, so the PS1 reads (and may write) low RAM through them here. Harmless on the PS1; a native port must
          * guard both pointers (ff9-ds F36: battles d2_b0779, d4_b0280/0779/0828/0940). */
     case BTL_STATUS_SLEEP_BIT:
-        if ((u->flags & BTL_UNIT_PARTY) && (s32)u->model->motion != u->motions[1] &&
+        if ((u->flags & BTL_UNIT_PARTY) && (s32)u->model->motion != u->motions[BTL_MOTION_IDLE_WEAK] &&
             g_gameState->gameData->ctx.battle->curCmd->caster != u) {
-            u->model->motion = (BtlMotion *)u->motions[1];
+            u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_IDLE_WEAK];
             u->obj->frame = 0;
         }
         break;
@@ -248,11 +248,11 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         u->flags &= ~BTL_UNIT_CMD_WAITING;
         u->flags &= ~BTL_UNIT_KILLED;
         u->flags &= ~BTL_UNIT_MOTION_HELD;
-        if ((s32)m->motion == a4[4] || (s32)m->motion == a4[8]) {
+        if ((s32)m->motion == a4[BTL_MOTION_KO] || (s32)m->motion == a4[8]) {
             m->texAnims[2].flags |= BTL_TEXANIM_PLAY;
             u->model->texAnims[2].pos = 0;
             u->model->texAnims[2].lastFrame = 0x1000;
-            u->model->motion = (BtlMotion *)u->motions[6];
+            u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_GET_UP];
             u->obj->frame = 0;
         }
         c = g_gameState->gameData->ctx.battle->curCmd;
@@ -389,8 +389,8 @@ void btl_updateUnitStatus(BtlUnit *unit) {
         }
     }
     if ((unit->status & BTL_STATUS_CONFUSE) && unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        if (unit->model->motion == (BtlMotion *)unit->motions[0] || unit->model->motion == (BtlMotion *)unit->motions[1] ||
-            ((unit->flags & BTL_UNIT_PARTY) && unit->model->motion == (BtlMotion *)unit->motions[9])) {
+        if (unit->model->motion == (BtlMotion *)unit->motions[BTL_MOTION_IDLE] || unit->model->motion == (BtlMotion *)unit->motions[BTL_MOTION_IDLE_WEAK] ||
+            ((unit->flags & BTL_UNIT_PARTY) && unit->model->motion == (BtlMotion *)unit->motions[BTL_MOTION_READY])) {
             unit->rot[1] += 0x80;
         }
     }

@@ -368,7 +368,7 @@ void btl_drawStatusIcons(Unk800CCD00 *ctx) {
         if ((status & BTL_STATUS_KO) || !(status & (BTL_STATUS_VENOM | BTL_STATUS_SILENCE | BTL_STATUS_BLIND | BTL_STATUS_TROUBLE | BTL_STATUS_BERSERK | BTL_STATUS_POISON | BTL_STATUS_SLEEP | BTL_STATUS_HASTE | BTL_STATUS_SLOW | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_REFLECT))) {
             continue;
         }
-        if ((u->flags & BTL_UNIT_PARTY) && u->model->motion == (BtlMotion *)u->motions[0x11]) {
+        if ((u->flags & BTL_UNIT_PARTY) && u->model->motion == (BtlMotion *)u->motions[BTL_MOTION_FLEE]) {
             continue;
         }
         sn = math_sin(u->rot[1]);

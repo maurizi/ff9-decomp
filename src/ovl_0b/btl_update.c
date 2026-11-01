@@ -103,7 +103,7 @@ s32 btl_updateUnits(GameData *gd, Battle *battle) {
                     u->obj->frame = 0;
                 }
                 if (!(u->status & BTL_STATUS_PETRIFY)) {
-                    if ((s32)u->model->motion != u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (s32)u->model->motion != u->motions[4]) {
+                    if ((s32)u->model->motion != u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (s32)u->model->motion != u->motions[BTL_MOTION_KO]) {
                         done = 0;
                     }
                 }
@@ -145,12 +145,12 @@ void btl_victory(GameData *gd, Battle *battle) {
             switch (battle->subPhase) {
             case BTL_END_VICTORY:
                 btl_updateHpStatus(u);
-                if ((!(u->flags & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) || ((u->flags & BTL_UNIT_PARTY) && (u->status & BTL_STATUS_KO) && u->model->motion != (BtlMotion *)u->motions[4])) {
+                if ((!(u->flags & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) || ((u->flags & BTL_UNIT_PARTY) && (u->status & BTL_STATUS_KO) && u->model->motion != (BtlMotion *)u->motions[BTL_MOTION_KO])) {
                     done = 0;
                 }
                 break;
             case BTL_END_DEFEAT:
-                if ((u->flags & BTL_UNIT_PARTY) && u->model->motion != (BtlMotion *)u->motions[4] && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) {
+                if ((u->flags & BTL_UNIT_PARTY) && u->model->motion != (BtlMotion *)u->motions[BTL_MOTION_KO] && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) {
                     done = 0;
                 }
                 break;
@@ -170,8 +170,8 @@ void btl_victory(GameData *gd, Battle *battle) {
                         done = 0;
                     }
                 } else if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE))) {
-                    if (u->model->motion != (BtlMotion *)u->motions[0] &&
-                        u->model->motion != (BtlMotion *)u->motions[1]) {
+                    if (u->model->motion != (BtlMotion *)u->motions[BTL_MOTION_IDLE] &&
+                        u->model->motion != (BtlMotion *)u->motions[BTL_MOTION_IDLE_WEAK]) {
                         done = 0;
                     }
                 }
@@ -181,7 +181,7 @@ void btl_victory(GameData *gd, Battle *battle) {
                     if (u->koState == BTL_KO_NONE) {
                         u->koState = BTL_KO_START;
                     }
-                    if (u->model->motion != (BtlMotion *)u->motions[4]) {
+                    if (u->model->motion != (BtlMotion *)u->motions[BTL_MOTION_KO]) {
                         done = 0;
                     } else if (btl_isCmdQueued(u, BTL_CMD_AUTO_LIFE) != 0) {
                         done = 0;
