@@ -185,8 +185,8 @@ static void fxm_twistVertex(s32 radius, s32 unused1, s32 ang, s32 unused2, s16 *
     out[1] = y;
 }
 
-static void fxm_anglesFromEye(SVECTOR *a, SVECTOR *b) {
-    BTLFX_EXPORTS(fx_0df_env)->btlfx_aimAngles((s16 *)&fx_0df_env->camera->eye, (s16 *)a, (s16 *)b);
+static void fxm_anglesFromEye(SVECTOR *target, SVECTOR *outAng) {
+    BTLFX_EXPORTS(fx_0df_env)->btlfx_aimAngles((s16 *)&fx_0df_env->camera->eye, (s16 *)target, (s16 *)outAng);
 }
 
 static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,

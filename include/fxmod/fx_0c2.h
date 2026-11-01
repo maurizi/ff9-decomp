@@ -47,7 +47,7 @@ static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBa
 static void fxm_startHitMotionIfActive(s32 unit);
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static void fxm_startHeavyHitMotionIfActive(s32 unit);
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value);
 extern Unk800F78A4 *fx_0c2_env;
 static s32 fxm_isMotionDone(s32 unit);
 

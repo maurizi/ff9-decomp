@@ -159,8 +159,8 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, 
     }
 }
 
-static void fxm_anglesFromEye(s16 *a, s16 *b) {
-    BTLFX_EXPORTS(fx_0cb_env)->btlfx_aimAngles((s16 *)&fx_0cb_env->camera->eye, a, b);
+static void fxm_anglesFromEye(s16 *target, s16 *outAng) {
+    BTLFX_EXPORTS(fx_0cb_env)->btlfx_aimAngles((s16 *)&fx_0cb_env->camera->eye, target, outAng);
 }
 
 static s32 fx_0cb_op80PoolTask(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx0cbWork *work) {

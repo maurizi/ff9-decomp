@@ -61,7 +61,7 @@ typedef struct {
     Fx1fcKey *keys4;
 } Fx1fcPath_0b4;
 static s32 fxm_rotPosPathGet(Fx1fcPath_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
-static s32 fxm_offsetTableEntry(u8 *base, u16 i);
+static s32 fxm_offsetTableEntry(u8 *base, u16 idx);
 
 typedef struct {
     u16 unk0; /* not read by the module */

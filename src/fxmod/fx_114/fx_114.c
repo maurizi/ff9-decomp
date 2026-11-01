@@ -964,8 +964,8 @@ s32 fx_114_op85(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_114_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_114_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -1091,8 +1091,8 @@ static s32 fxm_vecPathGet(Fx114Path *path, s32 t, VECTOR *out) {
     return done;
 }
 
-static s32 fxm_offsetTableEntry(s32 base, s32 i) {
-    return (s32)base + ((s32 *)base)[(u16)i + 1];
+static s32 fxm_offsetTableEntry(s32 base, s32 idx) {
+    return (s32)base + ((s32 *)base)[(u16)idx + 1];
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {

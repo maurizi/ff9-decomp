@@ -620,15 +620,15 @@ static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx1bf1
     env->otZ = 0;
 }
 
-static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 n, s32 *noise,
-                   s32 i, s32 type, s32 alpha, s32 pad) {
+static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 mode, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 size, s32 *noise,
+                   s32 branchAt, s32 frame, s32 fade, s32 lineWidth) {
     SVECTOR *pt = path->points4;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_1_env);
     SVECTOR mid;
 
-    pt += i;
+    pt += branchAt;
     ex->btlfx_lerpVec((s16 *)(pt + 1), (s16 *)pt, 0x4000, (s16 *)&mid);
-    fxm_drawArcTrail(entry, file, ot, trail, n, noise, &mid, pt, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
+    fxm_drawArcTrail(entry, file, mode, trail, size, noise, &mid, pt, 0, 0x20, ex->btlfx_rand(), 0x33, frame, fade, lineWidth, 0);
 }
 
 static s32 fx_1bf_1_op83PoolTask(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {

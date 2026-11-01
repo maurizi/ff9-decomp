@@ -78,7 +78,7 @@ s32 fx_0e2_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
 s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 typedef struct {
@@ -270,7 +270,7 @@ typedef struct {
     Fx0e2Key *keys4;
 } Fx0e2Path_0b4;
 static s32 fxm_rotPosPathGet(Fx0e2Path_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
-static s32 fxm_offsetTableEntry(u8 *base, u16 i);
+static s32 fxm_offsetTableEntry(u8 *base, u16 idx);
 static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start);
 
 typedef struct {

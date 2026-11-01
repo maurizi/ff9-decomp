@@ -29,7 +29,7 @@ extern Unk800F78A4 *fx_0fe_env;
 extern BtlModelBuf fx_0fe_effModels[];
 extern Fx0feOrbit fx_0fe_orbits[6];
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

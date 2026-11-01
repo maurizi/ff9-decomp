@@ -62,7 +62,7 @@ typedef struct {
     Fx1fdKey *keys4;
 } Fx1fdPath_0b4;
 static s32 fxm_rotPosPathGet(Fx1fdPath_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
-static u16 *fxm_offsetTableEntry(u8 *base, u16 i);
+static u16 *fxm_offsetTableEntry(u8 *base, u16 idx);
 static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start);
 
 typedef struct {

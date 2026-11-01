@@ -73,7 +73,7 @@ extern s32 fx_1b2_op80Trails1[][0x258];
 extern s32 fx_1b2_op81Trails0[];
 extern s32 fx_1b2_op81Trails1[];
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_vecPathInit(Fx1b2Path *path, u16 *data);
 static s32 fxm_vecPathGet(Fx1b2Track6 *track, s32 t, VECTOR *out);

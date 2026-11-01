@@ -71,8 +71,8 @@ extern Fx0d2Track fx_0d2_camChans[64];
 extern s32 fx_0d2_camChanFrame[4];
 
 static void fxm_buildPathTrail(Fx0d2Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
-static s32 fxm_offsetTableEntry(u8 *base, u16 i);
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_offsetTableEntry(u8 *base, u16 idx);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static s32 fxm_valuePathGet(Fx0d2Keys *keys, s32 t, s32 *out);
 static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start);

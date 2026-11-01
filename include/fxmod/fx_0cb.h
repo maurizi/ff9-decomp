@@ -37,7 +37,7 @@ extern BtlModelBuf fx_0cb_effModels[];
 
 extern Unk800F78A4 *fx_0cb_env;
 
-static void fxm_anglesFromEye(s16 *a, s16 *b);
+static void fxm_anglesFromEye(s16 *target, s16 *outAng);
 static s32 fx_0cb_op80PoolTask(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx0cbWork *work);
 
 /* propagated */

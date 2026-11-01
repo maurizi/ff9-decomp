@@ -41,7 +41,7 @@ static void fxm_posPathInit(Fx128Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx128Path *path, s32 t, SVECTOR *out);
 static void fxm_valuePathInit(Fx128Path *path, u16 *data);
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 /* propagated */

@@ -77,8 +77,8 @@ typedef struct {
 extern Fx1bf1Trail17 fx_1bf_1_boltTrails[];
 extern Fx1bf1Trail5 fx_1bf_1_branchTrails[];
 
-static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 n, s32 *noise,
-                   s32 i, s32 type, s32 alpha, s32 pad);
+static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 mode, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 size, s32 *noise,
+                   s32 branchAt, s32 frame, s32 fade, s32 lineWidth);
 
 /* copied */
 extern Unk800F78A4 *fx_1bf_1_env;
