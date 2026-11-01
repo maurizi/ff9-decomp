@@ -3332,3 +3332,28 @@ says "code" or "static" and gives the evidence.
 - confidence: high for the choice/confirm mechanics, the carried-slot and bit layouts (script + runtime); medium for
   `b[0x408]`'s purpose (only incremented on Give and printed by field 3100) and for the auto-letter / hand-out
   condition tables (static extraction, one runtime case).
+
+## R35 3DS models: runtime checks  (status: answered; doc docs/r32/3ds-requests-5-models.md "Runtime checks")
+- binary: ovl_0b (btl_setUnitBrightness, btl_applyBgLight, btl_initBattleState, btl_calcBoneMatrices,
+  btl_uploadModelTextures), main (chr_calcAppearance), field event objects
+- evidence (scratch scripts in build/r35rt/ of the R35 worktree):
+  - colour: `load disc3_malboro_lv99_calm` → FT4/FT3 source rgb and packets of every party body/weapon = 0x62627E with
+    `g_btlbgHeader` light 0x707090 (= × 28/32). `enter_battle.py 899 --field 2714 --base-state
+    disc3_pandemonium_lv99_field --party 0,1,2,6 --frames 60`, then `trace btl_setUnitBrightness btl_applyBgLight
+    --frames 900`: levels 0..0x1C step 4 then 0x20 (no-op), applyBgLight only from btl_initWeapon (4 calls); rgb
+    afterwards still 0x62627E. `r30b_enc21_start` (disc 1): light 0x708898, rgb 0x627785.
+  - Garnet: battle_pose renders of 281/283/288/287 and field 185/76 (long: 281, 283, 185; short: 288, 287, 76);
+    memory card saves parsed (story u16 at save block +448, characters at +2512): card 2 Garnet kind 4 at story
+    6960, kind 5 at 10980 and 11770; card 1 Lv 99 saves kind 3/4 at every story (stale/edited).
+    Poke kind 5 (+ darkBattle 1) in `disc3_pandemonium_lv99_field`, `enter_battle.py 899 --party 0,2,3,6`: Garnet unit
+    model 288, Steiner kind 8, model 286.
+  - field anim: `field_dali_inn` Zidane (uid 19) anim/stand 0xC8, walk 0x19, run 0x26, idle 0x37; `press
+    left+circle --hold 30` → anim 0x19, `press left --hold 40` → 0x26.
+  - weapon: weapon model +0x74 attach (0,0,0), +4 parentBone = Character.weaponBone, bones[0] == body
+    bones[parentBone] (Pandemonium battle and r30b_enc21_start).
+  - VRAM: `lua -f tools/rt/vram.lua`, `DumpVram`: weapon TIM rows found at (0xC0 + 64·slot, 0x1D0); RAM uvs v 208-255,
+    file uvs v − 0x80.
+- names: the R35 type renames (BtlModel, BtlModelHeader, BtlMotion, BtlTexWord, ModelTexWord/ModelTexPos,
+  FieldLightSet, FieldModelLight, one WeaponEntry) and EVT_SYSVAR_* are applied in the R35 commits.
+- confidence: high for 1, 3, 5, 6 and the long/short split of 2; medium for "10300 = the haircut" (bracketed by
+  saves at 6960 and 10980 only); high for Zidane in 4 (other characters' default animIds not checked).

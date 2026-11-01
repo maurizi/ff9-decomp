@@ -43,7 +43,7 @@ s32 evt_getSysVar(s32 op) {
     case EVT_SYSVAR_MSG_SYNC_TAG:
         r = g_msgSyncTag;
         break;
-    case EVT_SYSVAR_CHOICE:
+    case EVT_SYSVAR_MSG_CHOICE:
         r = msg_getChoiceIndex();
         break;
     case EVT_SYSVAR_LINE_POINT_X:

@@ -369,7 +369,7 @@ battle VRAM layout and `db_register`. `btl_registerModel` and `btl_initWeapon` n
   colour.
 - The terrain blocks use LLM/LCM/BK + NCT + DPCS: docs/r29/field-world.md section 7.
 
-## Proposed names (not applied)
+## Proposed names (applied in R35; the old BtlModel 0x98 wrapper became BtlModelBuf)
 
 | symbol | proposed | evidence |
 |---|---|---|
@@ -396,3 +396,43 @@ battle VRAM layout and `db_register`. `btl_registerModel` and `btl_initWeapon` n
    `bones[weaponBone]` (expected from the code).
 6. Weapon TIM placement: confirm a weapon TIM lands at VRAM y 0x1D0 and its uvs + 0x80 fall inside it (the TIM-local
    v = file v − 0x50 rule).
+
+## Runtime checks (PCSX-Redux, R35 runtime pass)
+Scratch scripts in `build/r35rt/` (not committed); evidence also in docs/runtime-findings.md "R35 3DS models".
+
+1. **Battle body colour after the intro = the fade's last step, light × 7/8, not the full light.** Disc 3 Malboro
+   arena (`BtlBgHeader` light 0x70/0x70/0x90): every FT4/FT3 source rgb of all four party bodies and weapons is
+   0x62/0x62/0x7E, and the built packets carry the same value (code 0x2C, no semi-transparency), both in
+   `disc3_malboro_lv99_calm` and 1200 frames into a fresh `enter_battle.py 899` battle. Disc 1 Black Waltz arena
+   (light 0x70/0x88/0x98, `r30b_enc21_start`): 0x62/0x77/0x85. A trace of the fresh battle shows why:
+   `btl_updateIntro` calls `btl_setUnitBrightness` with 0, 4, ..., 0x1C, then 0x20, and level 0x20 writes nothing
+   (`if (level < 0x20)`), so 0x1C (`light × 28 / 32`) stays. The only `btl_applyBgLight` calls are the four from
+   `btl_initWeapon` before the party fade. The shadow shade stays at `shadowShade × 28 / 32` the same way.
+2. **Kinds 3/4 have long hair, 5/6 short hair.** Geometry from the disc (`tools/battle_pose.py` posed in the idle
+   frame 0, side and back views): 281 and 283 have hair down to the waist, 288 and 287 a bob ending at the neck.
+   Field models: 185 long, 76 short. The story counter matches the haircut: on card 2's natural saves Garnet's
+   stored kind is 4 at story 6960 (disc 2, Iifa) and 5 at 10980 (disc 3, Pandemonium) and 11770 (disc 4), and
+   `chr_calcAppearance` switches at 10300. No save sits between 6960 and 10980, so the exact story step of the
+   haircut scene wasn't checked. The stored kind only changes when `chr_calcAppearance` runs (equipment change,
+   `chr_join`): card 1's Lv 99 saves (probably edited) keep kind 4 (long hair) at stories 10400-11765, and the
+   battle then loads 283. Poking kind 5 into the Pandemonium save before `enter_battle.py` loads model 288.
+3. **Kind 8 (model 286) occurs.** `btl_initBattleState` (ovl_0b `btl_update.c:385`) writes Steiner's kind at every
+   battle start: 8 when `GameData.darkBattle` is set (world-map battles in the dark weather zone, or event battles
+   with id bit 15), else 7. Runtime: poking `GameData+0x571` (darkBattle) = 1 before `enter_battle.py 899` gave
+   Steiner (characters[3]) kind 8 and model 286, which matches the earlier finding (runtime-findings "darkBattle":
+   night-sky battle, only Steiner's pixels differ, darker armour). For the Equip view kind 8 never appears
+   (it's only set inside battle and reset to 7 by the next battle without darkness).
+4. **The field model's default animId is not the idle.** Zidane in `field_dali_inn`: `standAnim` 0xC8 (what
+   he plays standing), `walkAnim` 0x19, `runAnim` 0x26, `idleAnim` 0x37 (the fidget after the idle timer). Holding
+   Left+Circle plays 0x19, Left alone 0x26. So 0x030019, model 98's model-info default, is the **walk** cycle; the
+   standing idle is 0x0300C8, which the field script sets with op 0x33 (`EVT_OP_SET_STAND_ANIM`). The other
+   characters' model-info defaults weren't checked at runtime. Use the battle model's idle for the Equip view.
+5. **The weapon attach offset is 0, and the weapon matrix is the body's `bones[weaponBone]`.** All four party weapons in
+   the Pandemonium battle and in `r30b_enc21_start`: `attachX/Y/Z` = (0, 0, 0), `parentBone` = `Character.weaponBone`
+   (0x0D, 0x10, 0x0F, 0x0F / 0x10), `parent` = the body model, `motion` NULL, and the weapon's bone 0 matrix is
+   word-for-word equal to the body's `bones[parentBone]` in the same scene.
+6. **The weapon TIM goes to VRAM y 0x1D0.** VRAM dump (`tools/rt/vram.lua`) in the Pandemonium battle: each weapon's
+   TIM (dir 8 file +0x1018, 8-bit, 128×48 px, header position (192, 464)) is found byte for byte at x = 0xC0 +
+   64·slot (192, 256, 320, 384), y = 464 = 0x1D0, i.e. page rows 0xD0-0xFF; tpage 0x93..0x96, CLUT (256, 232 + 3·slot).
+   The RAM uvs after `btl_applyModelTextures` span v 208-255, and the file holds the same uvs with v − 0x80 (file v
+   0x50-0x7F). So TIM-local v = file v − 0x50, u unchanged (TIM at the page's left edge).

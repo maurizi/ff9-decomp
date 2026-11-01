@@ -4092,7 +4092,7 @@ typedef struct {
 #define EVT_SYSVAR_GIL 6               /* GameData.gil */
 #define EVT_SYSVAR_STEP_COUNT 7        /* g_evtStepCount */
 #define EVT_SYSVAR_MSG_SYNC_TAG 8      /* g_msgSyncTag (EVT_OP_MSG_SYNC_TAG, text codes) */
-#define EVT_SYSVAR_CHOICE 9            /* msg_getChoiceIndex(): the chosen message choice */
+#define EVT_SYSVAR_MSG_CHOICE 9        /* msg_getChoiceIndex(): the chosen message choice */
 #define EVT_SYSVAR_LINE_POINT_X 10     /* g_evtLinePointX */
 #define EVT_SYSVAR_LINE_POINT_Z 11     /* g_evtLinePointZ */
 #define EVT_SYSVAR_SCREEN_X 12         /* g_evtScreenX (EVT_OP_GET_SCROLL, EVT_OP_OBJ_SCREEN_POS) */
