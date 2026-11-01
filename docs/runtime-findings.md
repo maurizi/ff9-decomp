@@ -3631,3 +3631,32 @@ Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
   `r37b_wm_hg3_entry`, `r37b_wm_airship_navi_full`, `r37b_wm_airship_navi_place`, `r37b_wm_airship_goto_prompt`,
   `r37b_wm_boat_entry`, `r37b_wm_moogle_choice`, `r37b_hotcold_howto`, `r37b_hotcold_running`, `r37b_forest_mene_back`;
   disc 4 `r37b_wm_invincible_entry`, `r37b_the_end`, `r37b_bj_wager`, `r37b_bj_action`.
+
+## R38: field minigames (jump rope, Hippaul race, frogs, Canary sword fight, auction, Stellazzio, Hot and Cold)  (status: reference; details in docs/r32/3ds-requests-8.md)
+- binary: field scripts (FF9.IMG dir 4) + main event system; no code symbols renamed.
+- evidence (PCSX-Redux, `tools/rt/enter_field.py FIELD --disc N --poke ...`, then pad presses):
+  - "Error Env Play() Slot=N" is message 0x44 of each area's text, opened by the field init script when
+    b[0x0D] / b[0x0E] == 9; init sets 9 when the byte was 2 (env sound playing) and the new field's env sound id
+    (b[0x09] / b[0x0B], s16) is < 0. Poking 0x8007AEFD = 0000 at the dispatcher removed the box in fields 64 and 2950.
+  - Jump rope, disc 1 field 103 from `field_dali_inn`: Cross at the girl → "You wanna try?" → "0 times" window
+    (msg 0xEA); auto-jumper (`build/3ds8/jumper.py`, press Cross while EvtState.fieldVars s16 +0x25 < 72) → "12
+    times" + "It's gonna get faster after 20!"; no press → fieldVars +0x29 = 5, "Come play with us again!", top-3
+    board b[0x1F0..0x1F8] 21/13/10 → 21/13/12. States `r38_f103_entry`, `r38_jumprope_ask`, `r38_jumprope_ready`,
+    `r38_jumprope_counting`.
+  - Canary, disc 1 field 64 (event.2 = 0): prompts "Press X!" over Blank; `build/3ds8/canary.py` presses the button
+    for fieldVars +0x2E (0 Left 1 Right 2 Triangle 3 Down 4 Cross 5 Up 6 Circle 7 Square); results "Of the 100 nobles
+    watching, 18 were impressed." = (fv s16 +0x1E + fv s16 +0x20) / 29 = (474 + 66) / 29. States `r38_canary_entry`,
+    `r38_canary_howto`, `r38_canary_fighting`, `r38_canary_results`.
+  - Frogs, disc 1 field 657 from `field_burmecia_vault` (Quina in party) with event.2 = 0x1060, b[0x18F] = 1,
+    b[0x311..0x314] = 33 66 55 99: Quina's prompt → "Frogs Captured: 0" window, 8 frog actors (uids 0x80+). States
+    `r38_frog_ask`, `r38_frog_running`, `r38_frog_pond1`.
+  - Disc 2 (`field_iifa_tree`): field 909 auction runs on entry; Cross in region 16 → "Bid Status" + "Bid: 01300 Gil"
+    windows (`r38_auction_entry`, `r38_auction_bid`). Field 911: Stella offers Libra (key item 0x36), Yes → b[0x163]
+    = 0x40, key-item byte GameData+0x780 0x3C → 0x0C (`r38_stella_entry`, `r38_stella_choice`).
+  - Disc 3 (`disc3_pandemonium_lv99_field`): field 1850 with story 7000 → Hippolady's race; `build/3ds8/mash.py`
+    (alternate Circle/Square every 4 vsyncs) → "Vivi wins!", b[0x1EB] 44 → 45 (`r38_hippaul_entry`, `_ask`,
+    `_howto`, `_race`). Field 2950 Hot and Cold without the error box (`r38_hotcold_entry`, `r38_hotcold_running`);
+    a dig on treasure uid 0x87 animates but never reaches msg 0x12D; EvtState.playerUid became 4.
+- proposed: `EVT_GB_ENV_SOUND0_STATE 0x0D` / `EVT_GB_ENV_SOUND1_STATE 0x0E` / `_ID 0x09` / `0x0B` (high), plus the
+  minigame bytes listed at the end of docs/r32/3ds-requests-8.md.
+- confidence: high for the recipes marked verified; Hot and Cold points window and the frog Keep prompt unverified.
