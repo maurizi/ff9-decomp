@@ -232,9 +232,9 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     union {
         VECTOR v;
         SVECTOR s;
-    } u;
+    } scratch;
     s32 frame;
-    s32 a;
+    s32 bobAng;
     Pool6CEntry *emitter;
 
     if (mode == 0) {
@@ -252,9 +252,9 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     frame = entry->frame;
     switch (work->state0) {
     case 0:
-        a = (frame << 8) >> 2;
-        pos.vz = work->pos10.vz + ex->math_cos(a) * 3 / 2;
-        pos.vy = -(ex->math_cos(a) * 3 / 2 + 0x180) + work->pos10.vy;
+        bobAng = (frame << 8) >> 2;
+        pos.vz = work->pos10.vz + ex->math_cos(bobAng) * 3 / 2;
+        pos.vy = -(ex->math_cos(bobAng) * 3 / 2 + 0x180) + work->pos10.vy;
         rot.vx = 0x200;
         rot.vz = -frame << 6;
         pos.vx = 0;
@@ -277,22 +277,22 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[3].vz = out.vz;
         }
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model18);
-        u.v.vx = u.v.vy = u.v.vz = 0xAAA;
-        fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x398, 0x80, 0x17, 0x3D03, 0, 0x40,
+        scratch.v.vx = scratch.v.vy = scratch.v.vz = 0xAAA;
+        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x398, 0x80, 0x17, 0x3D03, 0, 0x40,
                       -(work->frame4 * 0x180), 0x2000, 1, 1);
-        fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x400, 0x80, 0x17, 0x3D00, 0, 0x40,
+        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x400, 0x80, 0x17, 0x3D00, 0, 0x40,
                       -(work->frame4 * 0x180) + 0x400, 0x2000, 1, 1);
-        fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D04, 0, 0x40,
+        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D04, 0, 0x40,
                       -(work->frame4 * 0x180) + 0x800, 0x2000, 1, 1);
-        fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D06, 0, 0x40,
+        fxm_drawTexCylinder(&work->pos8, &rot, &scratch.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D06, 0, 0x40,
                       -(work->frame4 * 0x180) + 0xC00, 0x2000, 1, 1);
         if (frame >= 0x10) {
             work->state0 = 1;
             entry->frame = -1;
-            u.s.vx = 0;
-            u.s.vy = 0;
-            u.s.vz = 0;
-            fxm_shatterModel(work->model18, &u.s);
+            scratch.s.vx = 0;
+            scratch.s.vy = 0;
+            scratch.s.vz = 0;
+            fxm_shatterModel(work->model18, &scratch.s);
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
             if (emitter != NULL) {
                 emitter->otZ = 0x20;

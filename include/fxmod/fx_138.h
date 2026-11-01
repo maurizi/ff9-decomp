@@ -76,7 +76,7 @@ s32 fx_138_op81SpawnPoint2(SVECTOR *out, s32 dir, s32 i);
 s32 fx_138_op81SpawnPoint3(SVECTOR *out, s32 dir, s32 i);
 s32 fx_138_op81SpawnPoint4(SVECTOR *out, s32 dir, s32 i);
 s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 dir, s32 i);
-void fx_138_getPathPoint(SVECTOR *out, Fx138Path *path, s32 i);
+void fx_138_getPathPoint(SVECTOR *out, Fx138Path *path, s32 key);
 static s32 fxm_posPathGet(Fx138Path *path, s32 i, SVECTOR *out);
 s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);

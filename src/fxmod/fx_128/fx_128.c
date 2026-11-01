@@ -72,16 +72,16 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     SVECTOR ang;
-    SVECTOR p1;
-    SVECTOR p2;
+    SVECTOR bodyPos;
+    SVECTOR slicePos;
     MATRIX m;
     VECTOR lv;
-    SVECTOR v;
-    s32 s;
+    SVECTOR offset;
+    s32 morph;
     s32 frame;
     s32 i;
     s32 j;
-    s32 k;
+    s32 pathFrame;
     SVECTOR *p;
 
     if (mode == 0) {
@@ -195,7 +195,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 8 && frame < 0x41) {
-            k = frame - 8;
+            pathFrame = frame - 8;
             if (work->timer98 >= 0 || work->timer9C >= 0) {
                 if (work->timer98 >= 0) {
                     work->fade4C = fxm_lerpRatio(-0x80, 0, 4 - work->timer98, 4);
@@ -206,10 +206,10 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->timer9C--;
                 }
             }
-            fxm_rotPosPathGet(&fx_128_rotPosPath0, k, &work->rot24, &p1);
-            work->pos2C.vx = p1.vx;
-            work->pos2C.vy = p1.vy;
-            work->pos2C.vz = p1.vz;
+            fxm_rotPosPathGet(&fx_128_rotPosPath0, pathFrame, &work->rot24, &bodyPos);
+            work->pos2C.vx = bodyPos.vx;
+            work->pos2C.vy = bodyPos.vy;
+            work->pos2C.vz = bodyPos.vz;
             work->pos2C.vx += work->pos50.vx;
             work->pos2C.vy += work->pos50.vy;
             work->pos2C.vz += work->pos50.vz;
@@ -218,20 +218,20 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos88.vz = work->pos2C.vz;
             ex->btlfx_aimAngles((s16 *)&work->pos70, (s16 *)&work->pos60, (s16 *)&ang);
             work->rot24.vy = ang.vy;
-            if (env->targets->targetCount == 1 && k >= 0x25 && work->rot24.vx <= ang.vx) {
+            if (env->targets->targetCount == 1 && pathFrame >= 0x25 && work->rot24.vx <= ang.vx) {
                 work->rot24.vx = ang.vx;
             }
-            fxm_valuePathGet(&fx_128_valuePath, k, &s);
+            fxm_valuePathGet(&fx_128_valuePath, pathFrame, &morph);
             ex->Hi_DrawMorphEffModel(&work->rot24, (VECTOR *)&work->pos2C, (s32)&work->scale3C, work->modelA0[0],
-                                     work->modelA0[1], s);
+                                     work->modelA0[1], morph);
             if (work->timer98 >= 0 || work->timer9C >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->modelA0[0], work->fade4C, work->fade4C, work->fade4C);
             }
             for (i = 0; i < 5; i++) {
-                fxm_rotPosPathGet(&fx_128_rotPosPath1[i], k, &work->rot24, &p2);
-                work->pos2C.vx = p2.vx;
-                work->pos2C.vy = p2.vy;
-                work->pos2C.vz = p2.vz;
+                fxm_rotPosPathGet(&fx_128_rotPosPath1[i], pathFrame, &work->rot24, &slicePos);
+                work->pos2C.vx = slicePos.vx;
+                work->pos2C.vy = slicePos.vy;
+                work->pos2C.vz = slicePos.vz;
                 work->pos2C.vx += work->pos50.vx;
                 work->pos2C.vy += work->pos50.vy;
                 work->pos2C.vz += work->pos50.vz;
@@ -253,14 +253,14 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 0x19) {
-            fxm_posPathGet(&fx_128_posPath, frame - 8, &v);
+            fxm_posPathGet(&fx_128_posPath, frame - 8, &offset);
             rot.vx = 0;
             rot.vy = work->rot24.vy;
             rot.vz = 0;
             ex->math_rotMatrixYXZ(&rot, &m);
             gte_SetRotMatrix(&m);
             gte_ldtr0();
-            gte_ldv0(&v);
+            gte_ldv0(&offset);
             gte_rtv0tr();
             gte_stlvnl(&lv);
             work->pos90.vx = lv.vx;

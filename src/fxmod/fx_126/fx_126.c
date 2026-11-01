@@ -4,7 +4,7 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *emitter;
     s32 frame;
-    s32 k;
+    s32 target;
 
     if (mode == 0) {
         *args = 0xAC;
@@ -33,8 +33,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos70.vy = 0;
         work->pos68.vz = (work->pos58.vz - 0x6E0) >> 1;
         work->pos70.vz = (work->pos60.vz - 0x6E0) >> 1;
-        for (k = 3; k >= 0; k--) {
-            work->done9C[k] = 0;
+        for (target = 3; target >= 0; target--) {
+            work->done9C[target] = 0;
         }
     } else {
     frame = entry->frame;
@@ -64,54 +64,54 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
-        k = 3;
-        if (k >= env->targets->targetCount) {
-            k = env->targets->targetCount - 1;
+        target = 3;
+        if (target >= env->targets->targetCount) {
+            target = env->targets->targetCount - 1;
         }
-        if (work->done9C[k] == 0) {
-            work->done9C[k] = 1;
-            ex->btlfx_getUnitBodyPos(k, 0, (s16 *)&work->pos7C[k]);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos7C[k]);
+        if (work->done9C[target] == 0) {
+            work->done9C[target] = 1;
+            ex->btlfx_getUnitBodyPos(target, 0, (s16 *)&work->pos7C[target]);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos7C[target]);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(k, 0x80);
+                emitter->otZ = ex->btlfx_addRadiusSixth(target, 0x80);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos7C[k]);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos7C[target]);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(k, 0x80);
+                emitter->otZ = ex->btlfx_addRadiusSixth(target, 0x80);
             }
         }
         break;
     case 10:
-        k = 1;
-        if (k >= env->targets->targetCount) {
-            k = env->targets->targetCount - 1;
+        target = 1;
+        if (target >= env->targets->targetCount) {
+            target = env->targets->targetCount - 1;
         }
-        if (work->done9C[k] == 0) {
-            work->done9C[k] = 1;
-            ex->btlfx_getUnitBodyPos(k, 0, (s16 *)&work->pos7C[k]);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos7C[k]);
+        if (work->done9C[target] == 0) {
+            work->done9C[target] = 1;
+            ex->btlfx_getUnitBodyPos(target, 0, (s16 *)&work->pos7C[target]);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos7C[target]);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(k, 0x80);
+                emitter->otZ = ex->btlfx_addRadiusSixth(target, 0x80);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos7C[k]);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos7C[target]);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(k, 0x80);
+                emitter->otZ = ex->btlfx_addRadiusSixth(target, 0x80);
             }
         }
-        k = 2;
-        if (k >= env->targets->targetCount) {
-            k = env->targets->targetCount - 1;
+        target = 2;
+        if (target >= env->targets->targetCount) {
+            target = env->targets->targetCount - 1;
         }
-        if (work->done9C[k] == 0) {
-            work->done9C[k] = 1;
-            ex->btlfx_getUnitBodyPos(k, 0, (s16 *)&work->pos7C[k]);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos7C[k]);
+        if (work->done9C[target] == 0) {
+            work->done9C[target] = 1;
+            ex->btlfx_getUnitBodyPos(target, 0, (s16 *)&work->pos7C[target]);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos7C[target]);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(k, 0x80);
+                emitter->otZ = ex->btlfx_addRadiusSixth(target, 0x80);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos7C[k]);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos7C[target]);
             if (emitter != NULL) {
-                emitter->otZ = ex->btlfx_addRadiusSixth(k, 0x80);
+                emitter->otZ = ex->btlfx_addRadiusSixth(target, 0x80);
             }
         }
         break;
@@ -122,32 +122,32 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 void fx_126_quarticBezier(s32 len, s32 t, SVECTOR *p0, SVECTOR *p1, SVECTOR *p2, SVECTOR *p3, SVECTOR *p4, VECTOR *out) {
-    s32 w[5];
-    s32 s;
-    s32 r;
+    s32 weight[5];
+    s32 ratio;
+    s32 invRatio;
 
-    s = ((0x80000 / len) * t) >> 12;
-    r = 0x80 - s;
-    w[0] = (r * r * r * r) >> 16;
-    w[1] = (s * r * r * r) >> 13;
-    w[2] = (s * s * r * r * 24) >> 16;
-    w[3] = (s * s * s * r) >> 13;
-    w[4] = (s * s * s * s) >> 16;
-    out->vx = (p0->vx * w[0]) >> 12;
-    out->vy = (p0->vy * w[0]) >> 12;
-    out->vz = (p0->vz * w[0]) >> 12;
-    out->vx += (p1->vx * w[1]) >> 12;
-    out->vy += (p1->vy * w[1]) >> 12;
-    out->vz += (p1->vz * w[1]) >> 12;
-    out->vx += (p2->vx * w[2]) >> 12;
-    out->vy += (p2->vy * w[2]) >> 12;
-    out->vz += (p2->vz * w[2]) >> 12;
-    out->vx += (p3->vx * w[3]) >> 12;
-    out->vy += (p3->vy * w[3]) >> 12;
-    out->vz += (p3->vz * w[3]) >> 12;
-    out->vx += (p4->vx * w[4]) >> 12;
-    out->vy += (p4->vy * w[4]) >> 12;
-    out->vz += (p4->vz * w[4]) >> 12;
+    ratio = ((0x80000 / len) * t) >> 12;
+    invRatio = 0x80 - ratio;
+    weight[0] = (invRatio * invRatio * invRatio * invRatio) >> 16;
+    weight[1] = (ratio * invRatio * invRatio * invRatio) >> 13;
+    weight[2] = (ratio * ratio * invRatio * invRatio * 24) >> 16;
+    weight[3] = (ratio * ratio * ratio * invRatio) >> 13;
+    weight[4] = (ratio * ratio * ratio * ratio) >> 16;
+    out->vx = (p0->vx * weight[0]) >> 12;
+    out->vy = (p0->vy * weight[0]) >> 12;
+    out->vz = (p0->vz * weight[0]) >> 12;
+    out->vx += (p1->vx * weight[1]) >> 12;
+    out->vy += (p1->vy * weight[1]) >> 12;
+    out->vz += (p1->vz * weight[1]) >> 12;
+    out->vx += (p2->vx * weight[2]) >> 12;
+    out->vy += (p2->vy * weight[2]) >> 12;
+    out->vz += (p2->vz * weight[2]) >> 12;
+    out->vx += (p3->vx * weight[3]) >> 12;
+    out->vy += (p3->vy * weight[3]) >> 12;
+    out->vz += (p3->vz * weight[3]) >> 12;
+    out->vx += (p4->vx * weight[4]) >> 12;
+    out->vy += (p4->vy * weight[4]) >> 12;
+    out->vz += (p4->vz * weight[4]) >> 12;
 }
 
 INCLUDE_RODATA("asm/us/fx_126/nonmatchings/fx_126", fx_126_headerPtr);

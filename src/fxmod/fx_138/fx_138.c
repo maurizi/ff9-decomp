@@ -30,35 +30,35 @@ s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 dir, s32 i) {
     return 0;
 }
 
-void fx_138_getPathPoint(SVECTOR *out, Fx138Path *path, s32 i) {
+void fx_138_getPathPoint(SVECTOR *out, Fx138Path *path, s32 key) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_138_env);
     MATRIX m;
-    VECTOR v;
-    SVECTOR sv;
+    VECTOR worldPos;
+    SVECTOR pathPos;
 
-    fxm_posPathGet(path, i, &sv);
-    sv.vx /= 2;
-    sv.vy /= 2;
-    sv.vz /= 2;
+    fxm_posPathGet(path, key, &pathPos);
+    pathPos.vx /= 2;
+    pathPos.vy /= 2;
+    pathPos.vz /= 2;
     ex->math_rotMatrixYXZ(&fx_138_pathRot, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
-    gte_ldv0(&sv);
+    gte_ldv0(&pathPos);
     gte_rtv0tr();
-    gte_stlvnl(&v);
-    v.vx += fx_138_pathOrigin.vx;
-    v.vy += fx_138_pathOrigin.vy;
-    v.vz += fx_138_pathOrigin.vz;
-    out->vx = v.vx;
-    out->vy = v.vy;
-    out->vz = v.vz;
+    gte_stlvnl(&worldPos);
+    worldPos.vx += fx_138_pathOrigin.vx;
+    worldPos.vy += fx_138_pathOrigin.vy;
+    worldPos.vz += fx_138_pathOrigin.vz;
+    out->vx = worldPos.vx;
+    out->vy = worldPos.vy;
+    out->vz = worldPos.vz;
 }
 
 s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Fx138Ring *r;
-    Fx138Ring *q;
-    s16 y;
+    Fx138Ring *reelAlias;
+    Fx138Ring *reel;
+    s16 yaw;
     u16 *sel;
     s32 frame;
     s32 i;
@@ -72,9 +72,9 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(0, &work->pos70.vx);
         ex->btlfx_getUnitRot(0, &work->rot78.vx);
         fx_138_pathRot.vx = 0;
-        y = work->rot78.vy;
+        yaw = work->rot78.vy;
         fx_138_pathRot.vz = 0;
-        fx_138_pathRot.vy = y + 0x800;
+        fx_138_pathRot.vy = yaw + 0x800;
         work->pos24.vx = work->pos70.vx;
         work->pos24.vy = work->pos70.vy;
         work->pos24.vz = work->pos70.vz;
@@ -85,14 +85,14 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk34.vx = 0x800;
         work->unk34.vy = 0x800;
         work->unk34.vz = 0x800;
-        r = fx_138_reels;
+        reelAlias = fx_138_reels;
         sel = fx_138_randSets[ex->btlfx_rand() % 6];
-        for (i = 0, q = fx_138_reels; i < 3; i++, r++, q++) {
-            q->unk8 = 0x200;
-            q->unkE = sel[i];
-            r->rot0.vx = fx_138_pathRot.vx;
-            q->rot0.vy = fx_138_pathRot.vy;
-            q->rot0.vz = fx_138_pathRot.vz;
+        for (i = 0, reel = fx_138_reels; i < 3; i++, reelAlias++, reel++) {
+            reel->unk8 = 0x200;
+            reel->unkE = sel[i];
+            reelAlias->rot0.vx = fx_138_pathRot.vx;
+            reel->rot0.vy = fx_138_pathRot.vy;
+            reel->rot0.vz = fx_138_pathRot.vz;
             work->model96[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_138_modelFileIds[i]), 0x99, 0x3D40, 0, 0);
         }
         work->rot48.vx = fx_138_pathRot.vx;
@@ -149,7 +149,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *emitter;
     s32 frame;
     s32 i;
-    u16 n;
+    u16 spriteFrame;
 
     if (mode == 0) {
         *args = 0x34;
@@ -198,11 +198,11 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->fade32 -= 0x200;
             }
             work->frame30++;
-            n = work->frame30;
-            if (n >= 6) {
-                n = 5;
+            spriteFrame = work->frame30;
+            if (spriteFrame >= 6) {
+                spriteFrame = 5;
             }
-            work->frame30 = n;
+            work->frame30 = spriteFrame;
         }
         return frame >= 0x3C;
     }
