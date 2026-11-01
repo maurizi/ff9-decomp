@@ -228,6 +228,12 @@
 #define SPU_VOICE_REG(v, r) (*(u16 *)(SPU_VOICE_BASE + (r) + (v) * 16))
 #define SPU_VOICE_REG8(v, r) (*(u8 *)(SPU_VOICE_BASE + (r) + (v) * 16))
 #define SPU_REG16(a) (*(u16 *)(a))
+/* SPU RAM the AKAO driver keeps for itself (byte addresses) */
+#define AKAO_SPU_SILENCE 0x1010 /* g_akaoSilenceSample, 0x40 bytes (akao_init) */
+#define AKAO_SPU_SILENCE_LOOP (AKAO_SPU_SILENCE + 0x20) /* idle and finished stream voices loop here (akao_initState,
+                                                         * akao_streamSetVoice); the stream's end IRQ is 8 bytes in */
+#define AKAO_SPU_STREAM_BLOCK(n) (0x1100 + (n) * 0x800) /* the stream's 0x800-byte SPU buffers: mono A/B = 0/2, stereo
+                                                         * left/right = 0/1 then 2/3, the four-voice ring 4-7 */
 #define SPU_VOICE_BASE 0x1F801C00 /* 24 voices x 16 bytes (SpuVoiceReg) */
 /* voice register offsets (r of SPU_VOICE_REG; SpuVoiceReg fields) */
 #define SPU_VOICE_VOL_L 0x0

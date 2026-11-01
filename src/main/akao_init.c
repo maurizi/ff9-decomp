@@ -191,7 +191,7 @@ loop1:
     akao_setReverbMode(4);
     SpuSetReverb(1);
     for (i = 0; i < 24; i++) {
-        akao_setVoiceLoopAddr(i, 0x1030);
+        akao_setVoiceLoopAddr(i, AKAO_SPU_SILENCE_LOOP);
     }
     g_akaoVsyncs[1] = 0;
     g_akaoVsyncs[0] = 0;
@@ -202,7 +202,7 @@ void akao_init(void) {
     SpuStart();
     SpuInitMalloc(4, g_akaoSpuMallocTable);
     SpuSetTransferMode(0);
-    SpuSetTransferStartAddr(0x1010);
+    SpuSetTransferStartAddr(AKAO_SPU_SILENCE);
     akao_spuWrite(g_akaoSilenceSample, 0x40);
     akao_waitSpuTransfer();
     akao_initState();

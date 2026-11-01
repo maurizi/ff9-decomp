@@ -11506,3 +11506,4 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 # ff9.h FADE_FLAT/FADE_WIPE, FADE_ADD/FADE_SUB, FADE_COLOR_NONE/FADE_COLOR_FULL (fade_start / game_startFade arguments).
 # ff9.h PAD_RPT_* (key-repeat channel indexes, from g_padRepeatDefs masks) and PAD_RPT_COUNT 23.
 # ff9.h TEXT_CODE_UPPER_A/LOWER_A/ACCENT_UPPER/ACCENT_LOWER/C_CEDILLA (msg capitalisation); text_buildSmall ASCII char literals.
+# snd_ids.h AKAO_SPU_SILENCE 0x1010, AKAO_SPU_SILENCE_LOOP (+0x20), AKAO_SPU_STREAM_BLOCK(n) (0x1100 + n * 0x800): akao SPU RAM layout.
