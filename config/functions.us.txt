@@ -1943,7 +1943,7 @@ ovl_0b btl_initMode 0x10c 0x800a8cd4
 ovl_0b btl_exitMode 0x44 0x800a8de0
 ovl_0b btl_allocBattle 0x48 0x800a8e24
 ovl_0b btl_clearBattle 0xa4 0x800a8e6c
-ovl_0b btl_onInitMode 0x8 0x800a8f10
+ovl_0b btl_loadKanjiFont 0x8 0x800a8f10
 ovl_0b btl_loadResidentMusic 0x74 0x800a8f18
 ovl_0b btl_loadSoundBanks 0xa0 0x800a8f8c
 ovl_0b btl_loadShadowTexture 0x64 0x800a902c
@@ -3857,7 +3857,7 @@ ovl_37 menuItem_drawArrangeWindow 0x7c 0x801f2e40
 ovl_37 menuItem_onArrangeOpened 0x10 0x801f2ebc
 ovl_37 menuItem_onArrangeClosed 0x10 0x801f2ecc
 ovl_37 menuItem_loadImages 0x54 0x801f2edc
-ovl_37 menuItem_onExit 0x8 0x801f2f30
+ovl_37 menuItem_restoreVram 0x8 0x801f2f30
 ovl_37 menuItem_showKeyItem 0x68 0x801f2f38
 ovl_37 menuItem_hideKeyItem 0x24 0x801f2fa0
 ovl_37 menuItem_getSlot 0x74 0x801f2fc4

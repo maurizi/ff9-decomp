@@ -11457,3 +11457,8 @@ fx_1bf_0_unusedBuf fx_1bf_0_buf400  # [code] 0x400 zero bytes before fx_1bf_0_ef
 # FIELDS: Font.unk8=glyphCount (0xB2), MenuState.unk1C=result, ovl_0a FieldBgState.unusedDistSq=radiusSq,
 #   ovl_0b BtluiState.unusedLatched=firstValueSet, unusedValue=firstValue; btlfx_mod.h export members follow their functions
 # akao_init now clears g_akaoCrossfade.fadeLen (extern g_akaoCrossfadeFadeLen dropped, the symbol stays for the split)
+# ===== JP build =====
+# Counterparts in the Japanese release (SLPS_020.00-03, docs/jp-build.md). Only these US stubs/placeholders have a JP body or JP use that names them.
+btl_onInitMode btl_loadKanjiFont  # [jp] JP body loads the battle kanji font (common db item 4/0x16 into GameData.kanjiFont) and its glyph TIM (4/0x15), then DrawSync, returns 0
+menuItem_onExit menuItem_restoreVram  # [jp] JP body LoadImages back the VRAM block (0,256 44x128) that JP menuItem_loadImages saved with StoreImage before putting the key-item image there; US loads that image to free VRAM (896,384) so the body was compiled out
+D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 0xC (field, world, battle end), pen_getGlyph indexes it for codes from g_penGlyphDecode.kanjiCode on
