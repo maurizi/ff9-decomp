@@ -18,6 +18,7 @@
 
 /* db keys: kind << 16 | id (db_lookup, docs/encounters.md). Preload entries and dependency tables use the same
  * keys. */
+#define DB_KEY_MASK 0xFFFFFF /* kind and id of a key; dependency and preload entries keep flags in the top byte */
 #define DB_OVERLAY 0x10000 /* code overlay, id = its FF9.IMG dir 0 file id (game_loadModeOverlay, preloads) */
 #define DB_MODEL 0x20000 /* evt_createModel: an object's model id */
 #define DB_ANIM 0x30000 /* model animation (evt_getAnimFrameCount) */

@@ -93,11 +93,11 @@ FileEntry *dep_find(FileTable *table, s32 id) {
     FileEntry *entry;
     FileEntry *end;
 
-    id &= 0xFFFFFF;
+    id &= DB_KEY_MASK;
     entry = table->entries;
     end = entry + table->count;
     for (; entry < end; entry++) {
-        if ((entry->id & 0xFFFFFF) == id) {
+        if ((entry->id & DB_KEY_MASK) == id) {
             return entry;
         }
     }

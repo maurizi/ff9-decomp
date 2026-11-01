@@ -78,7 +78,7 @@ s32 akao_playSe(s32 handle, s32 chMask, s32 pan, s32 volume) {
     s32 err;
 
     g_akaoArgs.arg0 = handle;
-    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg1 = chMask & SND_SE_GROUP_ALL;
     g_akaoArgs.arg2 = pan & 0xFF;
     g_akaoArgs.arg3 = volume & 0x7F;
     if ((u32)handle >= 0x400) {
@@ -94,7 +94,7 @@ s32 akao_playSe(s32 handle, s32 chMask, s32 pan, s32 volume) {
 
 void akao_stopSe(s32 handle, s32 chMask) {
     g_akaoArgs.arg0 = handle;
-    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg1 = chMask & SND_SE_GROUP_ALL;
     akao_command(AKAO_CMD_STOP_SE);
 }
 
@@ -114,7 +114,7 @@ u32 akao_getActiveSe(void) {
     }
     chan = g_akaoSeChannels;
     activeSe = 0;
-    for (bit = AKAO_SE_CH_BIT(0); bit & 0xFFFFFF; bit <<= 1) {
+    for (bit = AKAO_SE_CH_BIT(0); bit & SPU_VOICE_ALL; bit <<= 1) {
         if (active & bit) {
             activeSe |= chan->seMask;
         }
@@ -136,7 +136,7 @@ s32 akao_isSePlaying(u32 id) {
         return 0;
     }
     chan = g_akaoSeChannels;
-    for (bit = AKAO_SE_CH_BIT(0); bit & 0xFFFFFF; bit <<= 1) {
+    for (bit = AKAO_SE_CH_BIT(0); bit & SPU_VOICE_ALL; bit <<= 1) {
         if ((active & bit) && id == chan->seMask) {
             return 1;
         }
@@ -215,14 +215,14 @@ void akao_fadeAllSeVolume(s32 frames, s32 volume) {
 
 void akao_setSeVolume(s32 handle, s32 chMask, s32 volume) {
     g_akaoArgs.arg0 = handle;
-    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg1 = chMask & SND_SE_GROUP_ALL;
     g_akaoArgs.arg2 = volume & 0x7F;
     akao_command(AKAO_CMD_SET_SE_VOLUME);
 }
 
 void akao_fadeSeVolume(s32 handle, s32 chMask, s32 frames, s32 volume) {
     g_akaoArgs.arg0 = handle;
-    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg1 = chMask & SND_SE_GROUP_ALL;
     g_akaoArgs.arg2 = frames;
     g_akaoArgs.arg3 = volume & 0x7F;
     akao_command(AKAO_CMD_FADE_SE_VOLUME);
@@ -241,14 +241,14 @@ void akao_sendCmdAB(s32 frames, s32 pan) {
 
 void akao_sendCmdA2(s32 handle, s32 chMask, u8 pan) {
     g_akaoArgs.arg0 = handle;
-    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg1 = chMask & SND_SE_GROUP_ALL;
     g_akaoArgs.arg2 = pan;
     akao_command(AKAO_CMD_SET_SE_PAN);
 }
 
 void akao_sendCmdA3(s32 handle, s32 chMask, s32 frames, u8 pan) {
     g_akaoArgs.arg0 = handle;
-    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg1 = chMask & SND_SE_GROUP_ALL;
     g_akaoArgs.arg2 = frames;
     g_akaoArgs.arg3 = pan;
     akao_command(AKAO_CMD_FADE_SE_PAN);
@@ -267,14 +267,14 @@ void akao_sendCmdAD(s32 frames, s32 pitch) {
 
 void akao_sendCmdA4(s32 handle, s32 chMask, u8 pitch) {
     g_akaoArgs.arg0 = handle;
-    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg1 = chMask & SND_SE_GROUP_ALL;
     g_akaoArgs.arg2 = pitch;
     akao_command(AKAO_CMD_SET_SE_PITCH);
 }
 
 void akao_sendCmdA5(s32 handle, s32 chMask, s32 frames, u8 pitch) {
     g_akaoArgs.arg0 = handle;
-    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg1 = chMask & SND_SE_GROUP_ALL;
     g_akaoArgs.arg2 = frames;
     g_akaoArgs.arg3 = pitch;
     akao_command(AKAO_CMD_FADE_SE_PITCH);

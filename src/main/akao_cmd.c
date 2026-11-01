@@ -1295,7 +1295,7 @@ void akao_cmdPauseMusic(void) {
     AkaoSeq *seq;
     s32 active;
     if (g_akaoSeq->activeMask != 0) {
-        pending = ~(g_akaoSeState.activeMask | g_akaoStream.voiceMask) & 0xFFFFFF;
+        pending = ~(g_akaoSeState.activeMask | g_akaoStream.voiceMask) & SPU_VOICE_ALL;
         if (pending != 0) {
             bit = 1;
             i = 0;

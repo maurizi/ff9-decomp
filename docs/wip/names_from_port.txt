@@ -11511,3 +11511,4 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 # ovl_0b.h BTLFX_RES_* (g_btlfxResidentOps indexes, named after the handlers), BTLFX_OP_UNIT_FIRST 0x50.
 # ovl_0b.h BTLFX_CAST_PARTY/ENEMY/NONE/ITEM (btlfx_opCast motionMode), BTL_MOTION_CAST_START 0x1A, CAST_LOOP 0x1B, CAST_END 0x1C, ITEM 0x1F.
 # getTPage forms for raw tpage words: msg balloon/here icon (abr 2 on VRAM_UI_SHEET), ovl_32 icons, Tetra Master, fade abr; ovl_14/15 still images (VRAM_IMAGE_*).
+# res_ids.h DB_KEY_MASK 0xFFFFFF; snd_ids.h SPU_VOICE_ALL 0xFFFFFF (voice bits), SND_SE_GROUP_ALL 0xFFFFFF (akao_api group masks).

@@ -167,10 +167,10 @@ PreloadEntry *preload_getCurrent(void) {
 PreloadEntry *preload_find(s32 id) {
     PreloadQueue *queue = g_gameState->gameData->preloadQueue;
     s32 i;
-    id &= 0xFFFFFF;
+    id &= DB_KEY_MASK;
     for (i = queue->count - 1; i >= 0; i--) {
         PreloadEntry *entry = &queue->entries[i];
-        if ((entry->fileId & 0xFFFFFF) == id) {
+        if ((entry->fileId & DB_KEY_MASK) == id) {
             return entry;
         }
     }

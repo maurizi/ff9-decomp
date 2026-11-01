@@ -83,6 +83,7 @@
 /* another seMask group bit: the menu sounds (snd_playSe / snd_stopPlayedSe, the message choice cursor, world map
  * SE numbers 0-5 and 39 in w_musicGetID) */
 #define SND_SE_GROUP_MENU 0x800000
+#define SND_SE_GROUP_ALL 0xFFFFFF /* group bits a caller may pass (akao_api masks them; AKAO_SE_DEFAULT is the driver's) */
 #define SND_SE_GROUP_SLOT(n) (0x100000 << (n)) /* group of the SE played from resident slot n (GameData.sfxSlotBuf, field) */
 #define SND_SE_GROUP_SLOTS (SND_SE_GROUP_SLOT(0) | SND_SE_GROUP_SLOT(1))
 /* bit of SE channel i (g_akaoSeChannels[i]) in g_akaoSeState.activeMask / pausedMask / playingMask / keyOnMask */
@@ -234,6 +235,7 @@
                                                          * akao_streamSetVoice); the stream's end IRQ is 8 bytes in */
 #define AKAO_SPU_STREAM_BLOCK(n) (0x1100 + (n) * 0x800) /* the stream's 0x800-byte SPU buffers: mono A/B = 0/2, stereo
                                                          * left/right = 0/1 then 2/3, the four-voice ring 4-7 */
+#define SPU_VOICE_ALL 0xFFFFFF /* the 24 voice bits */
 #define SPU_VOICE_BASE 0x1F801C00 /* 24 voices x 16 bytes (SpuVoiceReg) */
 /* voice register offsets (r of SPU_VOICE_REG; SpuVoiceReg fields) */
 #define SPU_VOICE_VOL_L 0x0

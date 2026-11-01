@@ -1572,7 +1572,7 @@ void fld_queueFieldPreloads(void) {
                     if ((fieldEntry->link & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
                         areaEntry = dep_find(g_gameState->gameData->depTable, fieldEntry->link);
                         if (areaEntry != NULL) {
-                            fld_preloadFile(fieldEntry->link & 0xFFFFFF, 0, areaEntry->sector, areaEntry->sectors << 11);
+                            fld_preloadFile(fieldEntry->link & DB_KEY_MASK, 0, areaEntry->sector, areaEntry->sectors << 11);
                         }
                     }
                     fld_preloadFile(key, 0, fieldEntry->sector, fieldEntry->sectors << 11);
@@ -1622,12 +1622,12 @@ void fld_queueFieldPreloads(void) {
             if ((tbl[sel].link & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
                 for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                     if (tbl[i].id == tbl[sel].link) {
-                        fld_preloadFile(tbl[i].id & 0xFFFFFF, 0, tbl[i].sector, tbl[i].sectors << 11);
+                        fld_preloadFile(tbl[i].id & DB_KEY_MASK, 0, tbl[i].sector, tbl[i].sectors << 11);
                         break;
                     }
                 }
             }
-            cnt = tbl[sel].id & 0xFFFFFF;
+            cnt = tbl[sel].id & DB_KEY_MASK;
             fld_preloadFile(cnt, 0, tbl[sel].sector, tbl[sel].sectors << 11);
             cur = cnt;
         }
@@ -1676,12 +1676,12 @@ void fld_queueFieldPreloads(void) {
                 if ((tbl[sel].link & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
                     for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                         if (tbl[i].id == tbl[sel].link) {
-                            fld_preloadFile(tbl[i].id & 0xFFFFFF, 1, tbl[i].sector, -1);
+                            fld_preloadFile(tbl[i].id & DB_KEY_MASK, 1, tbl[i].sector, -1);
                             return;
                         }
                     }
                 } else {
-                    fld_preloadFile(tbl[sel].id & 0xFFFFFF, 1, tbl[sel].sector, -1);
+                    fld_preloadFile(tbl[sel].id & DB_KEY_MASK, 1, tbl[sel].sector, -1);
                 }
             }
         }
