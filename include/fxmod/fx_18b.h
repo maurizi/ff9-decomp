@@ -18,10 +18,10 @@ extern Unk800F78A4 *fx_18b_env;
 extern s32 fx_18b_wavePhase; /* wave phase */
 extern s32 fx_18b_waveAmp; /* wave amplitude */
 
-static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 arg3, s16 *out);
+static void fx_18b_op80GridVertex(s32 radius, s32 ring, s32 ang, s32 spoke, s16 *out);
 
 /* propagated */
-static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));
 
 #endif

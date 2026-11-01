@@ -894,7 +894,7 @@ typedef struct {
     u8 started; /* btlui_init ran */
     u8 pad7;
     u8 hideWindows; /* Select (pad bit 19) held: btlui_drawWindows skips the windows */
-    u8 unusedLatched; /* set once by btlui_latchUnusedValue (no callers), with unusedValue */
+    u8 firstValueSet; /* set by the first btlui_latchFirstValue call (no callers), which also stores firstValue */
     u8 padA;
     s8 pauseReq; /* pause requested (Start, btlui_readPad; btlui_isPauseRequested) */
     u8 skipFrames; /* frames the vsync callback skips drawing (btlui_resumeFromPause sets 2) */
@@ -905,7 +905,7 @@ typedef struct {
     u8 pad11;
     u8 enableReq; /* btlui_enable(1): btlui_applyEnable enables the UI next frame */
     u8 escapeFrames; /* frames L1+R1 held (btlui_pollEscape: btl_tryEscape(1) every 0x3E) */
-    s8 unusedValue; /* written only by btlui_latchUnusedValue (no callers) */
+    s8 firstValue; /* argument of the first btlui_latchFirstValue call; nothing reads it */
     u8 port; /* controller port of the last command menu (btlui_onCmdMenuOpened, pad_updateRepeat) */
     u8 pad16[0x18 - 0x16];
     s32 vsyncTick; /* btlui_vsync calls (blinks the port icon, btlui_drawPortIcons) */
@@ -3017,7 +3017,7 @@ void btlui_initPanel(void);
 void btlui_saveKeyRepeat(void);
 void btlui_restoreKeyRepeat(void);
 void btlui_initPrims(void);
-void btlui_resetStub(void);
+void btlui_onReset(void);
 void btlui_initDrawBufs(void);
 void btlui_clearDfe(void);
 void btl_execCmd(BtlUnit *);
@@ -4005,7 +4005,7 @@ typedef struct {
 
 void btl_allocBattle(void);
 void btl_clearBattle(void);
-s32 btl_initModeStub(void);
+s32 btl_loadKanjiFont(void);
 s32 btl_loadResidentMusic(void);
 s32 btl_loadSoundBanks(void);
 s32 btl_loadShadowTexture(void);
@@ -4029,9 +4029,9 @@ void btl_removeQueuedCmd(BtlUnit *, u8);
 void btlui_frameUpdate(void);
 s32 btlui_isEnabled(void);
 void btlui_putDispEnvIfReady(void);
-void btlui_vsyncStub(void);
+void btlui_onVsync(void);
 void btlui_readPad(void);
-void btlui_vsyncMarkStub(s32);
+void btlui_perfMark(s32);
 void btlui_beginFrame(void);
 void btlui_cacheFrame(void);
 void btlui_input(void);

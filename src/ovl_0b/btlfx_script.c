@@ -1213,15 +1213,15 @@ u32 btlfx_getUnitStatus(s32 unitId, u32 statusMask) {
     return btl_getUnit(unitId)->status & statusMask;
 }
 
-s32 btlfx_exportStub090(void) {
+s32 btlfx_motionNopZero(void) {
     return 0;
 }
 
-s32 btlfx_exportStub094(void) {
+s32 btlfx_motionNopNeg(void) {
     return -1;
 }
 
-void btlfx_exportStub0A4(void) {
+void btlfx_motionNop(void) {
 }
 
 s32 btlfx_stepSwingSound(u8 *work, s32 env, s32 entry) {

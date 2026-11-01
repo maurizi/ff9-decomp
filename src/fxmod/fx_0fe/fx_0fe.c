@@ -1,20 +1,20 @@
 #include "fxmod/fx_0fe.h"
 
-s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     SVECTOR pos;
     s32 frame;
     s32 i;
     s32 j;
-    s32 r;
-    s32 m;
-    Fx0feOrbit *o;
-    Fx0feOrbit *q;
-    Fx0feOrbit *p;
+    s32 radius;
+    s32 model;
+    Fx0feOrbit *orbit;
+    Fx0feOrbit *initOrbit;
+    Fx0feOrbit *unused;
 
     if (mode == 0) {
-        *arg4 = 0xC0;
+        *args = 0xC0;
     } else if (mode == 1) {
         fx_0fe_env = env;
         ex->btlfx_initEffModels(fx_0fe_effModels, 3);
@@ -25,13 +25,13 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale94.vx = 0x8000;
         work->scale94.vy = 0x8000;
         work->scale94.vz = 0x8000;
-        r = ex->btlfx_getUnitRadius(0x100);
-        r = (r >= 0x899) ? 0x898 : r;
-        q = fx_0fe_orbits;
-        for (i = 0; i < 6; i++, q++) {
-            q->radius0 = r;
-            q->angle2 = i * 0x2AA;
-            q->spin4 = i * 0x2AA;
+        radius = ex->btlfx_getUnitRadius(0x100);
+        radius = (radius >= 0x899) ? 0x898 : radius;
+        initOrbit = fx_0fe_orbits;
+        for (i = 0; i < 6; i++, initOrbit++) {
+            initOrbit->radius0 = radius;
+            initOrbit->angle2 = i * 0x2AA;
+            initOrbit->spin4 = i * 0x2AA;
             (work->rot4 + i)->vx = 0;
             (work->rot4 + i)->vy = 0;
             (work->rot4 + i)->vz = 0;
@@ -68,27 +68,27 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->fadeOutTimerB4--;
                 }
             }
-            o = fx_0fe_orbits;
-            m = work->modelB8[0];
-            for (j = 0; j < 6; j++, o++) {
+            orbit = fx_0fe_orbits;
+            model = work->modelB8[0];
+            for (j = 0; j < 6; j++, orbit++) {
                 rot.vx = 0;
-                rot.vy = o->angle2;
+                rot.vy = orbit->angle2;
                 rot.vz = 0;
-                ex->btlfx_pointAhead((s16 *)&work->posA8, (s16 *)&rot, o->radius0, (s16 *)&pos);
+                ex->btlfx_pointAhead((s16 *)&work->posA8, (s16 *)&rot, orbit->radius0, (s16 *)&pos);
                 (work->pos34 + j)->vx = pos.vx;
                 (work->pos34 + j)->vy = pos.vy;
                 (work->pos34 + j)->vz = pos.vz;
-                ex->Hi_DrawEffModel(&work->rot4[j], &work->pos34[j], (s32)&work->scale94, m);
+                ex->Hi_DrawEffModel(&work->rot4[j], &work->pos34[j], (s32)&work->scale94, model);
                 if (work->fadeInTimerB0 >= 0 || work->fadeOutTimerB4 >= 0) {
-                    ex->Hi_ModifyEffModelAbr(m, 1);
-                    ex->Hi_ModifyEffModelRGB(m, work->rgbA4, work->rgbA4, work->rgbA4);
+                    ex->Hi_ModifyEffModelAbr(model, 1);
+                    ex->Hi_ModifyEffModelRGB(model, work->rgbA4, work->rgbA4, work->rgbA4);
                 }
-                m++;
-                if (m > work->modelB8[2]) {
-                    m = work->modelB8[0];
+                model++;
+                if (model > work->modelB8[2]) {
+                    model = work->modelB8[0];
                 }
-                o->angle2 += 0x55;
-                o->spin4 += 0x200;
+                orbit->angle2 += 0x55;
+                orbit->spin4 += 0x200;
                 work->rot4[j].vy += 0x80;
             }
         }
@@ -100,8 +100,8 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_0fe_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_0fe_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

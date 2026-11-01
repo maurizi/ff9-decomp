@@ -1,75 +1,75 @@
 #include "fxmod/fx_17d_4.h"
 
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_4_env);
-    SVECTOR *v;
+    SVECTOR *pts;
 
     fx_17d_4_lineTrail.lastSlot0 = fx_17d_4_lineTrail.count2 = 1;
     fx_17d_4_lineTrail.head1 = 0;
-    v = fx_17d_4_lineTrail.points4;
-    v[0].vx = a->vx;
-    v[0].vy = a->vy;
-    v[0].vz = a->vz;
-    v[0].pad = arg6;
-    v[1].vx = b->vx;
-    v[1].vy = b->vy;
-    v[1].vz = b->vz;
-    v[1].pad = arg6;
-    ex->btlfx_drawTrail(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&fx_17d_4_lineTrail, 0);
+    pts = fx_17d_4_lineTrail.points4;
+    pts[0].vx = from->vx;
+    pts[0].vy = from->vy;
+    pts[0].vz = from->vz;
+    pts[0].pad = lineWidth;
+    pts[1].vx = to->vx;
+    pts[1].vy = to->vy;
+    pts[1].vz = to->vz;
+    pts[1].pad = lineWidth;
+    ex->btlfx_drawTrail(file, 0, NULL, frame, 0x1000, fade, abr, (u8 *)&fx_17d_4_lineTrail, 0);
 }
 
 void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag) {
     u8 *data;
-    s32 k;
+    s32 layer;
     s32 width;
     BtlfxExports *ex;
     SVECTOR last;
-    SVECTOR p0;
-    SVECTOR p1;
+    SVECTOR lineTo;
+    SVECTOR lineFrom;
     s16 *pts;
     Fx17d4Line *tr;
     SVECTOR *dst;
     s32 j;
     s32 i;
     s32 cnt;
-    s32 t;
+    s32 startFrame;
 
     ex = BTLFX_EXPORTS(fx_17d_4_env);
-    k = 0;
+    layer = 0;
     data = (u8 *)ex->btlfx_getFileData(entry->file, 0x8A);
     w = (w * 3) >> 1;
     do {
         for (j = 0; j < 18; j++) {
-            cnt = *(u16 *)(data + ((j + k * 18) << 2));
+            cnt = *(u16 *)(data + ((j + layer * 18) << 2));
             pts = (s16 *)(data + cnt);
             cnt = pts[1];
             tr = fx_17d_4_strandTrails[j];
-            tr = (Fx17d4Line *)((u8 *)tr + fx_17d_4_strandInfo[j * 4 + 2] * k);
+            tr = (Fx17d4Line *)((u8 *)tr + fx_17d_4_strandInfo[j * 4 + 2] * layer);
             width = w * (fx_17d_4_strandInfo[j * 4 + 3] + 1);
             tr->lastSlot0 = tr->count2 = cnt - 1;
             tr->head1 = 0;
             pts += 2;
             dst = tr->points4;
             for (i = 0; i < cnt; i++, dst++, pts += 3) {
-                t = fx_17d_4_strandInfo[j * 4 + 1];
+                startFrame = fx_17d_4_strandInfo[j * 4 + 1];
                 if (i == 0) {
                     last.vx = from->vx + pts[0] * 2;
                     last.vy = from->vy + pts[1] * 2;
                     last.vz = from->vz + pts[2] * 2;
                     last.pad = 0;
                 }
-                t += i;
-                if (n >= t) {
+                startFrame += i;
+                if (n >= startFrame) {
                     dst->vx = from->vx + pts[0] * 2;
                     dst->vy = from->vy + pts[1] * 2;
                     dst->vz = from->vz + pts[2] * 2;
                     dst->pad = width;
                     BTLFX_COPY_SVEC(&last, dst);
-                    if (t == n && flag) {
-                        BTLFX_COPY_SVEC(&p0, dst);
-                        BTLFX_COPY_SVEC(&p1, dst);
-                        p1.vy -= 0x1000;
-                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &p1, &p0, 0, 0x800, 1, 0x32);
+                    if (startFrame == n && flag) {
+                        BTLFX_COPY_SVEC(&lineTo, dst);
+                        BTLFX_COPY_SVEC(&lineFrom, dst);
+                        lineFrom.vy -= 0x1000;
+                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &lineFrom, &lineTo, 0, 0x800, 1, 0x32);
                     }
                 } else {
                     BTLFX_COPY_SVEC(dst, &last);
@@ -78,8 +78,8 @@ void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, 
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_strandInfo[j * 4]), 0, (s32 *)from, 0, 0x1000, a,
                                 1, (u8 *)tr, fade);
         }
-        k++;
-    } while (k < 3);
+        layer++;
+    } while (layer < 3);
 }
 
 void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot) {
@@ -88,21 +88,21 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
     SVECTOR ang;
     s32 k = 0;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_4_env);
-    Fx17d4Pt *p;
+    Fx17d4Pt *pt;
     s32 i;
-    s32 a;
+    s32 orbitAng;
 
     rot.vx = 0x400;
     rot.vy = 0;
     rot.pad = 1;
     for (; k < 3; k++) {
-        p = (Fx17d4Pt *)ex->btlfx_getFileData(entry->file, fx_17d_4_pointFileIds[k]);
-        p = (Fx17d4Pt *)((u8 *)p + 4);
-        for (i = 0; i < 20; i++, p++) {
+        pt = (Fx17d4Pt *)ex->btlfx_getFileData(entry->file, fx_17d_4_pointFileIds[k]);
+        pt = (Fx17d4Pt *)((u8 *)pt + 4);
+        for (i = 0; i < 20; i++, pt++) {
             if (i < n) {
-                pos.vx = from->vx + p->x * 2;
-                pos.vy = from->vy + p->y * 2;
-                pos.vz = from->vz + p->z * 2;
+                pos.vx = from->vx + pt->x * 2;
+                pos.vy = from->vy + pt->y * 2;
+                pos.vz = from->vz + pt->z * 2;
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_particleFileIds[i & 7]), &pos, &rot, 0x3000,
@@ -113,10 +113,10 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
     for (k = 0; k < 3; k++) {
         for (i = 0; i < 27; i++) {
             if (i <= n * 27 / 20) {
-                a = ((i + k * 27) << 12) / 81;
-                pos.vx = from->vx + ((ex->math_cos(a) * 1600) >> 12);
+                orbitAng = ((i + k * 27) << 12) / 81;
+                pos.vx = from->vx + ((ex->math_cos(orbitAng) * 1600) >> 12);
                 pos.vy = from->vy;
-                pos.vz = from->vz + ((ex->math_sin(a) * 1600) >> 12);
+                pos.vz = from->vz + ((ex->math_sin(orbitAng) * 1600) >> 12);
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_particleFileIds[i & 7]), &pos, &rot, 0x1800,
@@ -130,7 +130,7 @@ void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
     SVECTOR pos;
     SVECTOR rot;
     SVECTOR ang;
-    SVECTOR *d = fx_17d_4_particleOffsets;
+    SVECTOR *ofs = fx_17d_4_particleOffsets;
     s32 i = 0;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_4_env);
 
@@ -138,76 +138,77 @@ void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
     rot.vy = 0;
     rot.pad = 1;
     do {
-        pos.vx = from->vx + d->vx * 2;
-        pos.vy = from->vy + d->vy * 2;
-        pos.vz = from->vz + d->vz * 2;
+        pos.vx = from->vx + ofs->vx * 2;
+        pos.vy = from->vy + ofs->vy * 2;
+        pos.vz = from->vz + ofs->vz * 2;
         ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
         rot.vz = -ang.vy;
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_17d_4_particleFileIds[i + 8]), &pos, &rot, 0x2AF8, 0, 1, ot, 0, 0);
-        d++;
+        ofs++;
         i++;
     } while (i < 3);
 }
 
 INCLUDE_RODATA("asm/us/fx_17d_4/nonmatchings/fx_17d_4", fx_17d_4_headerPtr);
 
-/* Matching notes: scalar temporaries are split per case and per use (names are role-search leftovers: _cN = case,
- * the rest found by build/s/roles.py), since sharing a variable across cases makes it a call-crossing global and
- * changes the allocation; which roles share a variable was searched. Case 6: fxm_drawPatternParticles's third argument (f3)
- * is its own variable, o = 0x20 is set inside the frame < 0x1E branch, x and f3 are set first in their branches
- * and x is declared before flag/f3 (spill slot order 0x78/0x7C/0x80). Case 4's
- * f-update reuses one variable for 0x1000 - cos and f >> 12; case 5's offsets go through k5z/n5z and are copied
- * a -> b; mode 1's copy order and other statement orders were searched (build/s/permhc.py, bperm.py, winperm.py). */
-s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
-    s32 q6b;
-    s32 g5;
-    Pool6CEntry *p_c1;
-    s32 w13_c2;
-    s32 r_c2;
-    s32 t_c3;
-    s32 x_c3;
-    s32 i_c3;
-    s32 q_c3;
-    Pool6CEntry *p_c4;
-    s32 t_c5;
-    s32 q4_c6;
-    s32 w13_c6;
-    s32 r_c6;
-    s32 q_c6;
+/* Matching notes: scalar temporaries are split per case and per use (found by build/s/roles.py), since sharing a
+ * variable across cases makes it a call-crossing global and changes the allocation; which roles share a variable was
+ * searched. Case 6: fxm_drawPatternParticles's third argument (patternFrame) is its own variable, strandWidth = 0x20
+ * is set inside the frame < 0x1E branch, strandFrame and patternFrame are set first in their branches and
+ * strandFrame is declared before flag/patternFrame (spill slot order 0x78/0x7C/0x80). Case 4's drift update reuses
+ * one variable (ease) for 0x1000 - cos and drift >> 12; case 5's offsets go through orbitX/orbitZ and are copied
+ * ringPos -> lineTop; mode 1's copy order and other statement orders were searched (build/s/permhc.py, bperm.py,
+ * winperm.py). */
+s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
+    s32 ringBright;
+    s32 orbitRadius;
+    Pool6CEntry *emitter;
+    s32 spinStep;
+    s32 ramp;
+    s32 spinStep3;
+    s32 grow;
+    s32 ring;
+    s32 fadeT;
+    Pool6CEntry *sparkEmitter;
+    s32 phase;
+    s32 flashAng;
+    s32 ringAlpha;
+    s32 bobT;
+    s32 particleAlpha;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR sc;
     Fx17d4Vec3 pos;
     SVECTOR rot;
-    SVECTOR s;
-    SVECTOR b;
-    SVECTOR a;
-    SVECTOR rot2;
-    SVECTOR b2;
-    SVECTOR a2;
-    s32 c_1;
-    s32 c_5;
-    s32 c_6;
+    SVECTOR lineFrom;
+    SVECTOR lineTop;
+    SVECTOR ringPos;
+    SVECTOR flatRot;
+    SVECTOR baseTop;
+    SVECTOR basePos;
+    s32 orbitAng;
+    s32 lineFade;
+    s32 fadeOut;
     s32 frame;
-    s32 k;
-    s32 n;
-    s32 m;
-    s32 f;
-    s32 g;
-    s32 x6n;
+    s32 alpha;
+    s32 ringScale;
+    s32 bobAng;
+    s32 drift;
+    s32 strandFade;
+    s32 strandFrame;
     s32 flag;
-    s32 f3;
-    s32 k5z;
-    s32 n5z;
-    s32 n5y;
-    s32 k5x;
-    s32 fk;
-    s32 s6a;
-    s32 c6a;
-    s32 k5;
-    s32 w3;
+    s32 patternFrame;
+    s32 orbitX;
+    s32 orbitZ;
+    s32 outT;
+    s32 strandWidth;
+    s32 ease;
+    s32 flashScale;
+    s32 flashAlpha;
+    s32 strandCue;
+    s32 ringBase;
 
     if (mode == 0) {
-        *arg4 = 0x84;
+        *args = 0x84;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -241,15 +242,15 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->camera->points[3].vx = work->pos20.vx;
         env->camera->points[3].vy = work->pos20.vy;
         env->camera->points[3].vz = work->pos20.vz;
-        fx_17d_4_unused = 0;
+        fx_17d_4_buf400 = 0;
     } else {
         frame = entry->frame;
         switch (work->state0) {
         case 0:
-            r_c2 = (frame << 12) / 20;
+            ramp = (frame << 12) / 20;
             ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0);
-            work->pos48.vy += ex->math_cos(r_c2 >> 2) >> 4;
-            work->scale54.vx = work->scale54.vy = work->scale54.vz = ex->math_cos(r_c2 >> 2) + 0x800;
+            work->pos48.vy += ex->math_cos(ramp >> 2) >> 4;
+            work->scale54.vx = work->scale54.vy = work->scale54.vz = ex->math_cos(ramp >> 2) + 0x800;
             ex->Hi_DrawSummonModel(&work->rot60, (VECTOR *)&work->pos48, (s32)&work->scale54, SUMMON(env)->model60, 0);
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
             ex->Hi_ModifyEffModelAbr(work->model68, 1);
@@ -304,40 +305,40 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos10.vx = work->pos48.vx;
                 work->pos10.vz = work->pos48.vz;
                 work->pos10.vy -= 0x400;
-                p_c1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
-                if (p_c1 != NULL) {
-                    p_c1->trails = (s32)fx_17d_4_op80Trails;
-                    p_c1->trailSlots = 0x30;
-                    p_c1->trailStride = 0x8C;
-                    p_c1->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_17d_4_op80Trails;
+                    emitter->trailSlots = 0x30;
+                    emitter->trailStride = 0x8C;
+                    emitter->otZ = 0x20;
                 }
             }
             break;
         case 2:
             work->scale54.vx = work->scale54.vy = work->scale54.vz = 0x1000;
-            t_c5 = (frame << 12) / 20;
-            m = t_c5 >> 2;
-            work->pos48.vy -= (ex->math_cos(m) * 10) >> 12;
+            phase = (frame << 12) / 20;
+            bobAng = phase >> 2;
+            work->pos48.vy -= (ex->math_cos(bobAng) * 10) >> 12;
             ex->Hi_DrawSummonModel(&work->rot60, (VECTOR *)&work->pos48, (s32)&work->scale54, SUMMON(env)->model60, 0);
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
-            n = t_c5 / 2 + 0x800;
-            sc.vy = ex->math_sin(m) / 2 + 0x800;
+            ringScale = phase / 2 + 0x800;
+            sc.vy = ex->math_sin(bobAng) / 2 + 0x800;
             pos.vx = work->pos48.vx;
             pos.vy = work->pos48.vy;
             pos.vz = work->pos48.vz;
-            for (r_c2 = 0, w13_c2 = 0x20; r_c2 < 4; r_c2++, w13_c2 += 0x10) {
-                s32 y;
+            for (ramp = 0, spinStep = 0x20; ramp < 4; ramp++, spinStep += 0x10) {
+                s32 yaw;
 
                 rot.vx = 0;
                 rot.vz = 0;
-                sc.vx = sc.vz = (n * (r_c2 + 2)) / 6;
-                y = frame * w13_c2;
-                rot.vy = y;
+                sc.vx = sc.vz = (ringScale * (ramp + 2)) / 6;
+                yaw = frame * spinStep;
+                rot.vy = yaw;
                 ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->model78);
                 ex->Hi_ModifyEffModelAbr(work->model78, 1);
-                ex->Hi_ModifyEffModelRGB(work->model78, (ex->math_sin(t_c5 >> 2) >> 5) - 0x80, (ex->math_sin(t_c5 >> 2) >> 5) - 0x80,
-                                         (ex->math_sin(t_c5 >> 2) >> 5) - 0x80);
-                y = 0;
+                ex->Hi_ModifyEffModelRGB(work->model78, (ex->math_sin(phase >> 2) >> 5) - 0x80, (ex->math_sin(phase >> 2) >> 5) - 0x80,
+                                         (ex->math_sin(phase >> 2) >> 5) - 0x80);
+                yaw = 0;
             }
             ex->btlfx_drawScrollMove(frame * 24, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
             if (frame > 0x10) {
@@ -361,7 +362,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         case 3:
-            x_c3 = frame << 6;
+            grow = frame << 6;
             if (frame < 0x20) {
                 work->rot60.vy = (ex->math_sin((frame << 10) >> 5) - 0x1000) >> 3;
             }
@@ -386,31 +387,31 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vx = 0x800;
             rot.vy = frame * 4;
             rot.vz = 0;
-            sc.vx = sc.vz = x_c3 / 3 + 0x800;
+            sc.vx = sc.vz = grow / 3 + 0x800;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->model6C);
-            ex->Hi_ModifyEffModelRGB(work->model6C, (ex->math_cos(x_c3 >> 2) >> 5) - 0x80, (ex->math_cos(x_c3 >> 2) >> 5) - 0x80,
-                                     (ex->math_cos(x_c3 >> 2) >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model6C, (ex->math_cos(grow >> 2) >> 5) - 0x80, (ex->math_cos(grow >> 2) >> 5) - 0x80,
+                                     (ex->math_cos(grow >> 2) >> 5) - 0x80);
             if (frame < 0x28) {
-                q_c3 = (frame << 12) / 40;
-                sc.vy = q_c3 / 3 + 0x1000;
-                w3 = q_c3 + 0x1000;
+                fadeT = (frame << 12) / 40;
+                sc.vy = fadeT / 3 + 0x1000;
+                ringBase = fadeT + 0x1000;
                 pos.vx = work->pos48.vx;
                 pos.vy = work->pos48.vy;
-                q6b = ((0x1000 - q_c3) >> 5) - 0x80;
+                ringBright = ((0x1000 - fadeT) >> 5) - 0x80;
                 pos.vz = work->pos48.vz;
-                for (i_c3 = 0, t_c3 = 0x20; i_c3 < 3; i_c3++, t_c3 += 0x10) {
-                    s32 y;
+                for (ring = 0, spinStep3 = 0x20; ring < 3; ring++, spinStep3 += 0x10) {
+                    s32 yaw;
 
                     rot.vx = 0;
                     rot.vz = 0;
-                    sc.vx = sc.vz = (w3 * (i_c3 + 2)) / 5;
+                    sc.vx = sc.vz = (ringBase * (ring + 2)) / 5;
                     sc.vy = sc.vy * 2 / 3;
-                    y = frame * t_c3;
-                    rot.vy = y;
+                    yaw = frame * spinStep3;
+                    rot.vy = yaw;
                     ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->model78);
                     ex->Hi_ModifyEffModelAbr(work->model78, 1);
-                    ex->Hi_ModifyEffModelRGB(work->model78, q6b, q6b, q6b);
-                    y = 0;
+                    ex->Hi_ModifyEffModelRGB(work->model78, ringBright, ringBright, ringBright);
+                    yaw = 0;
                 }
             }
             ex->btlfx_drawScrollMove(0x2710 - frame * 3, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
@@ -440,7 +441,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         case 4:
-            r_c6 = (frame << 12) / 20;
+            bobT = (frame << 12) / 20;
             work->scale54.vx = work->scale54.vy = work->scale54.vz = 0x1000;
             ex->Hi_DrawSummonModel(&work->rot60, (VECTOR *)&work->pos48, (s32)&work->scale54, SUMMON(env)->model60, 0);
             work->rot34.vy += 2;
@@ -462,36 +463,36 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->pos10.vy = work->pos20.vy;
             work->pos10.vz = work->pos20.vz;
             if (frame >= 0xA) {
-                fk = 0x1000 - ex->math_cos(((frame - 0xA) << 10) / 10);
-                f = fk * 0x258;
-                fk = f >> 12;
-                work->pos20.vy += f >> 13;
-                work->pos20.vz -= fk;
+                ease = 0x1000 - ex->math_cos(((frame - 0xA) << 10) / 10);
+                drift = ease * 0x258;
+                ease = drift >> 12;
+                work->pos20.vy += drift >> 13;
+                work->pos20.vz -= ease;
             }
             env->camera->points[2].vx = work->pos20.vx;
             env->camera->points[2].vy = work->pos20.vy;
             env->camera->points[2].vz = work->pos20.vz;
             if (frame == 0) {
-                p_c4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
-                if (p_c4 != NULL) {
-                    p_c4->otZ = 0x8C;
+                sparkEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
+                if (sparkEmitter != NULL) {
+                    sparkEmitter->otZ = 0x8C;
                 }
             }
             env->otZ = 0x10;
-            w13_c6 = 0x1000;
+            ringAlpha = 0x1000;
             if (frame < 8) {
-                w13_c6 = frame << 9;
+                ringAlpha = frame << 9;
             }
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->pos10, NULL, 0x1000, 0, 1, w13_c6);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->pos10, NULL, 0x1000, 0, 1, ringAlpha);
             if (frame >= 6) {
-                c_5 = ((frame - 6) << 12) / 14;
+                lineFade = ((frame - 6) << 12) / 14;
             } else {
-                c_5 = 0;
+                lineFade = 0;
             }
-            BTLFX_COPY_SVEC(&s, &work->pos10);
-            s.vy += ex->math_sin(r_c6 >> 2) >> 3;
-            s.vz -= 0x400;
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &s, &work->pos10, frame, c_5, 1, 0x18);
+            BTLFX_COPY_SVEC(&lineFrom, &work->pos10);
+            lineFrom.vy += ex->math_sin(bobT >> 2) >> 3;
+            lineFrom.vz -= 0x400;
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &lineFrom, &work->pos10, frame, lineFade, 1, 0x18);
             env->otZ = 0;
             if (frame >= 0x14) {
                 work->state0 = 5;
@@ -510,19 +511,19 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         case 5:
             env->otZ = 0x10;
-            t_c5 = (frame << 12) / 24;
-            c_1 = ex->math_cos(t_c5 >> 1) >> 1;
-            g5 = ex->math_cos(t_c5 >> 2) >> 1;
-            k5z = (ex->math_cos(c_1) * g5) >> 12;
-            n5z = (ex->math_sin(c_1) * g5) >> 12;
-            a.vx = work->pos8.vx + k5z;
-            a.vy = work->pos8.vy;
-            a.vz = work->pos8.vz + n5z;
-            b.vx = a.vx;
-            b.vy = work->pos8.vy - 0x1000;
-            b.vz = a.vz;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &a, NULL, 0xAAA, 0, 1, t_c5);
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &a, &b, frame, t_c5, 1, 0x20);
+            phase = (frame << 12) / 24;
+            orbitAng = ex->math_cos(phase >> 1) >> 1;
+            orbitRadius = ex->math_cos(phase >> 2) >> 1;
+            orbitX = (ex->math_cos(orbitAng) * orbitRadius) >> 12;
+            orbitZ = (ex->math_sin(orbitAng) * orbitRadius) >> 12;
+            ringPos.vx = work->pos8.vx + orbitX;
+            ringPos.vy = work->pos8.vy;
+            ringPos.vz = work->pos8.vz + orbitZ;
+            lineTop.vx = ringPos.vx;
+            lineTop.vy = work->pos8.vy - 0x1000;
+            lineTop.vz = ringPos.vz;
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &ringPos, NULL, 0xAAA, 0, 1, phase);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &ringPos, &lineTop, frame, phase, 1, 0x20);
             env->otZ = 0;
             if (frame >= 0x18) {
                 work->state0 = 6;
@@ -530,76 +531,76 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         case 6:
-            a2.vx = work->pos8.vx;
-            a2.vy = work->pos8.vy;
-            a2.vz = work->pos8.vz;
-            b2.vx = a2.vx;
-            b2.vy = work->pos8.vy - 0x1000;
-            b2.vz = a2.vz;
+            basePos.vx = work->pos8.vx;
+            basePos.vy = work->pos8.vy;
+            basePos.vz = work->pos8.vz;
+            baseTop.vx = basePos.vx;
+            baseTop.vy = work->pos8.vy - 0x1000;
+            baseTop.vz = basePos.vz;
             env->otZ = 0x10;
-            r_c2 = (frame << 12) / 51;
-            c_6 = 0x1000 - r_c2;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &a2, NULL, 0xAAA, 0, 1, c_6);
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &a2, &b2, frame, c_6, 1,
-                          (r_c2 >> 7) + 0x20);
+            ramp = (frame << 12) / 51;
+            fadeOut = 0x1000 - ramp;
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &basePos, NULL, 0xAAA, 0, 1, fadeOut);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &basePos, &baseTop, frame, fadeOut, 1,
+                          (ramp >> 7) + 0x20);
             env->otZ = 0;
-            rot2.vx = 0x400;
-            rot2.vz = 0;
-            rot2.vy = 0;
-            rot2.pad = 1;
+            flatRot.vx = 0x400;
+            flatRot.vz = 0;
+            flatRot.vy = 0;
+            flatRot.pad = 1;
             if (frame < 0x10) {
-                q4_c6 = (frame << 12) >> 6;
-                s6a = ex->math_sin(q4_c6) * 5;
-                c6a = ex->math_cos(q4_c6);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &a2, &rot2, s6a, 0, 1, c6a);
+                flashAng = (frame << 12) >> 6;
+                flashScale = ex->math_sin(flashAng) * 5;
+                flashAlpha = ex->math_cos(flashAng);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &basePos, &flatRot, flashScale, 0, 1, flashAlpha);
             }
             if (frame >= 0x1E) {
-                k = (frame - 0x1E) << 9;
-                if (k > 0x1000) {
-                    k = 0x1000;
+                alpha = (frame - 0x1E) << 9;
+                if (alpha > 0x1000) {
+                    alpha = 0x1000;
                 }
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &a2, &rot2, 0x5000, 0, 1, k);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &basePos, &flatRot, 0x5000, 0, 1, alpha);
             }
             flag = 0;
             if (frame < 0x26) {
                 if (frame < 0x1E) {
-                    k5x = 0x20;
-                    x6n = frame;
-                    k5 = 0x1000;
-                    g = 0;
+                    strandWidth = 0x20;
+                    strandFrame = frame;
+                    strandCue = 0x1000;
+                    strandFade = 0;
                     flag = 1;
-                    f3 = 0;
-                    q_c6 = 0;
-                    k = 0;
+                    patternFrame = 0;
+                    particleAlpha = 0;
+                    alpha = 0;
                 } else {
-                    n5y = (frame - 0x1E) << 9;
-                    x6n = 0x1D;
-                    k5x = 0x27;
-                    k5 = 0x1000;
-                    g = 0;
-                    f3 = (frame - 0x1E) * 3;
-                    q_c6 = 0x1000;
-                    if (n5y >= 0x800) {
-                        k = (n5y - 0x800) * 2;
+                    outT = (frame - 0x1E) << 9;
+                    strandFrame = 0x1D;
+                    strandWidth = 0x27;
+                    strandCue = 0x1000;
+                    strandFade = 0;
+                    patternFrame = (frame - 0x1E) * 3;
+                    particleAlpha = 0x1000;
+                    if (outT >= 0x800) {
+                        alpha = (outT - 0x800) * 2;
                     } else {
-                        k = 0;
+                        alpha = 0;
                     }
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((0x1000 - n5y) * 0x64) >> 12, 0, 0);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((0x1000 - outT) * 0x64) >> 12, 0, 0);
                 }
             } else {
-                g = 1;
-                x6n = 0x1D;
-                n5y = ((frame - 0x26) << 12) / 13;
-                k5x = (n5y >> 3) + 0x40;
-                k5 = 0x1000 - n5y * 2 / 3;
-                f3 = 0x15;
-                k = k5;
-                q_c6 = k;
+                strandFade = 1;
+                strandFrame = 0x1D;
+                outT = ((frame - 0x26) << 12) / 13;
+                strandWidth = (outT >> 3) + 0x40;
+                strandCue = 0x1000 - outT * 2 / 3;
+                patternFrame = 0x15;
+                alpha = strandCue;
+                particleAlpha = alpha;
             }
-            fx_17d_4_drawStrands(entry, &fx_17d_4_centerPos, x6n, k5x, k5, g, flag);
-            if (q_c6 != 0) {
-                fxm_drawPatternParticles(entry, &fx_17d_4_centerPos, f3, q_c6);
-                fxm_drawOffsetParticles3(entry, &fx_17d_4_centerPos, k);
+            fx_17d_4_drawStrands(entry, &fx_17d_4_centerPos, strandFrame, strandWidth, strandCue, strandFade, flag);
+            if (particleAlpha != 0) {
+                fxm_drawPatternParticles(entry, &fx_17d_4_centerPos, patternFrame, particleAlpha);
+                fxm_drawOffsetParticles3(entry, &fx_17d_4_centerPos, alpha);
             }
             if (frame >= 0x33) {
                 ex->btlfx_clearEffModels();

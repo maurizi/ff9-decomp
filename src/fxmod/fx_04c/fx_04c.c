@@ -1,27 +1,27 @@
 #include "fxmod/fx_04c.h"
 
-s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
-    s32 t;
+    s32 zWord;
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
         work->stop0 = 0;
         fx_04c_env = env;
         ((s32 *)&work->pos4)[0] = ((s32 *)&env->targets->centerX)[0];
-        t = ((s32 *)&env->targets->centerX)[1];
+        zWord = ((s32 *)&env->targets->centerX)[1];
         work->pos4.vy = 0;
-        ((s32 *)&work->pos4)[1] = t;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
-        if (p != NULL) {
-            p->otZ = -0x12C;
+        ((s32 *)&work->pos4)[1] = zWord;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
+        if (emitter != NULL) {
+            emitter->otZ = -0x12C;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
-        if (p != NULL) {
-            p->otZ = -0x258;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        if (emitter != NULL) {
+            emitter->otZ = -0x258;
         }
     } else {
         frame = entry->frame;
@@ -35,13 +35,13 @@ s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x3C;
+        *args = 0x3C;
     } else if (mode == 1) {
         fx_04c_env = env;
         work->count34 = env->targets->targetCount;
@@ -85,13 +85,13 @@ s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x3C;
+        *args = 0x3C;
     } else if (mode == 1) {
         fx_04c_env = env;
         work->count34 = env->targets->targetCount;

@@ -22,17 +22,17 @@ typedef struct {
     SVECTOR pts4[15]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0d9Strip; /* 0x7C */
 extern u16 fx_0d9_strip15Blocks[];
-static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
-                   s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind);
+static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
 extern u16 fx_0d9_strip3Blocks[];
 static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
-                   s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind);
-static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx0d9Strip *strip, Fx0d9Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
+static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx0d9Strip *strip, Fx0d9Strip *out, s32 *tbl, s32 branchAt, s32 fade, s32 lineWidth,
                    s32 kind);
 extern Unk800F78A4 *fx_0d9_env;
 extern SVECTOR fx_0d9_stripPoints[]; /* strips[0].pts4: the strips start 4 bytes earlier */
 #define FX_0D9_STRIPS ((Fx0d9Strip *)((u8 *)fx_0d9_stripPoints - 4))
-static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3);
+static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n);
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
@@ -62,9 +62,9 @@ extern Fx0d9Strip fx_0d9_strips[];
 extern Fx0d9Branch fx_0d9_branches[];
 extern s32 fx_0d9_fastBolts; /* faster bolts */
 
-static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
-                   s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind);
-static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx0d9Strip *strip, Fx0d9Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
+static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind);
+static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx0d9Strip *strip, Fx0d9Strip *out, s32 *tbl, s32 branchAt, s32 fade, s32 lineWidth,
                    s32 kind);
 static s32 fxm_jaggedStripTask(s32 mode, Fx0d9Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 

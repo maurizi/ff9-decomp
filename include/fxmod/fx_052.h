@@ -38,8 +38,8 @@ extern BtlModelBuf fx_052_effModels[];
 extern s32 fx_052_trails[];
 extern s32 fx_052_trails2[];
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
 
 #endif

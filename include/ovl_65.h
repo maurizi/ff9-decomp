@@ -9,7 +9,7 @@
 /* other overlays (battle, 0x800A7000+ / 0x800E....) */
 s32 btl_soundCmd(s32, s32, s32, s32, s32);
 void btlui_loadPortraits(void);
-void btl_bannerExitStub(void);
+void btl_termBanner(void);
 
 /* main exe: candidates for ff9.h */
 void timer_enable(u8);
@@ -343,7 +343,7 @@ u8 rewards_addItems(void);
 void rewards_drawItems(Window *);
 void rewards_resetFullWarning(void);
 u8 rewards_tryAddItems(void);
-void rewards_stepGilStub(void);
+void rewards_onStepGil(void);
 void rewards_openItemsWin(void);
 void rewards_drawItemsLabels(Window *);
 void rewards_drawFullWarning(Window *);

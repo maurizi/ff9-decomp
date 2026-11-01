@@ -1,14 +1,14 @@
 #include "fxmod/fx_1f6.h"
 
-s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
-    s32 c;
+    s32 shade;
 
     if (mode == 0) {
-        *arg4 = 0xB4;
+        *args = 0xB4;
     } else if (mode == 1) {
         fx_1f6_env = env;
         for (i = 7; i >= 0; i--) {
@@ -51,32 +51,32 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0x0:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
-            if (p != NULL) {
-                p->trails = (s32)fx_1f6_op80Trails0;
-                p->trailSlots = 0x26;
-                p->trailStride = 0x7C;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_1f6_op80Trails0;
+                emitter->trailSlots = 0x26;
+                emitter->trailStride = 0x7C;
             }
             break;
         case 0x8:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
-            if (p != NULL) {
-                p->trails = (s32)fx_1f6_op80Trails1;
-                p->trailSlots = 0x26;
-                p->trailStride = 0x7C;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_1f6_op80Trails1;
+                emitter->trailSlots = 0x26;
+                emitter->trailStride = 0x7C;
             }
             break;
         case 0x10:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posA4);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posA4);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
             }
             work->timer0[0] = 0x20;
             break;
         case 0x28:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->posA4);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->posA4);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
             }
             work->timer0[1] = 0x30;
             break;
@@ -99,12 +99,12 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->models20[2].rot4, &work->models20[2].posC, (s32)&work->models20[2].scale1C,
                                 work->models20[2].model0);
             if (work->timer0[0] >= 0x19) {
-                c = -((work->timer0[0] - 0x18) << 5);
-                ex->Hi_ModifyEffModelRGB(work->models20[2].model0, c, c, c);
+                shade = -((work->timer0[0] - 0x18) << 5);
+                ex->Hi_ModifyEffModelRGB(work->models20[2].model0, shade, shade, shade);
             }
             if (work->timer0[0] < 8) {
-                c = (work->timer0[0] << 5) - 0x100;
-                ex->Hi_ModifyEffModelRGB(work->models20[2].model0, c, c, c);
+                shade = (work->timer0[0] << 5) - 0x100;
+                ex->Hi_ModifyEffModelRGB(work->models20[2].model0, shade, shade, shade);
             }
         }
         if (work->timer0[1] != 0) {
@@ -114,12 +114,12 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->models20[0].rot4, &work->models20[0].posC, (s32)&work->models20[0].scale1C,
                                 work->models20[0].model0);
             if (work->timer0[1] >= 0x29) {
-                c = -((work->timer0[1] - 0x28) << 5);
-                ex->Hi_ModifyEffModelRGB(work->models20[0].model0, c, c, c);
+                shade = -((work->timer0[1] - 0x28) << 5);
+                ex->Hi_ModifyEffModelRGB(work->models20[0].model0, shade, shade, shade);
             }
             if (work->timer0[1] < 8) {
-                c = work->timer0[1] * 0x10 - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->models20[0].model0, c, c, c);
+                shade = work->timer0[1] * 0x10 - 0x80;
+                ex->Hi_ModifyEffModelRGB(work->models20[0].model0, shade, shade, shade);
             }
         }
         if (work->timer0[2] != 0) {
@@ -128,14 +128,14 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->models20[1].scale1C.vx = work->models20[1].scale1C.vz = ex->btlfx_lerpRatio(0x4000, 0, work->timer0[2], 0x18);
             ex->Hi_DrawEffModel(&work->models20[1].rot4, &work->models20[1].posC, (s32)&work->models20[1].scale1C,
                                 work->models20[1].model0);
-            c = -0x40;
+            shade = -0x40;
             if (work->timer0[2] >= 0x11) {
-                c = -((work->timer0[2] - 0x10) * 8) - 0x40;
+                shade = -((work->timer0[2] - 0x10) * 8) - 0x40;
             }
             if (work->timer0[2] < 8) {
-                c = work->timer0[2] * 8 - 0x80;
+                shade = work->timer0[2] * 8 - 0x80;
             }
-            ex->Hi_ModifyEffModelRGB(work->models20[1].model0, c, c, c);
+            ex->Hi_ModifyEffModelRGB(work->models20[1].model0, shade, shade, shade);
         }
         return frame >= 0x80;
     }

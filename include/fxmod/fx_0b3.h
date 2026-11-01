@@ -110,7 +110,7 @@ typedef struct {
     s32 model8C; /* model */
 } Fx0b3Work84; /* 0x90 */
 
-static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9,
+static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 bright, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9,
                    s32 a10, s32 a11, s32 a12, s32 a13, s32 a14);
 
 typedef struct {
@@ -135,16 +135,16 @@ extern u16 fx_0b3_morphBlocks[6]; /* morph model file ids */
 extern s32 fx_0b3_morphModels[6]; /* morph models */
 
 
-static s32 fxm_sinHalfNeg(s32 a);
-static s32 fxm_nextRingPoint(SVECTOR *v);
+static s32 fxm_sinHalfNeg(s32 ang);
+static s32 fxm_nextRingPoint(SVECTOR *out);
 typedef struct {
     s16 pad0; /* always 0 in the effect file blocks (runtime, round 33) */
     s16 count2; /* count */
     s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx0b3Track;
 static void fxm_keyGetVec(Fx0b3Track *track, s32 t, SVECTOR *out);
-static void fxm_keyGetVec2(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b);
-static void fxm_keyGetVec3(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
+static void fxm_keyGetVec2(Fx0b3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1);
+static void fxm_keyGetVec3(Fx0b3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1, SVECTOR *out2);
 static s32 fxm_keyGetValue(Fx0b3Track *track, s32 t);
 extern Unk800F78A4 *fx_0b3_env;
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
@@ -164,8 +164,8 @@ typedef struct {
 } Fx0b3Work85; /* 0x6C */
 
 extern CVECTOR fx_0b3_rippleColor;
-static void fxm_drawWaterSheet(SVECTOR *a, SVECTOR *b, VECTOR *c, s32 r, s32 k, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9, s32 a10,
+static void fxm_drawWaterSheet(SVECTOR *a, SVECTOR *b, VECTOR *c, s32 bright, s32 brightShade, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9, s32 a10,
                    s32 a11, s32 a12, s32 a13, s32 a14);
-s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

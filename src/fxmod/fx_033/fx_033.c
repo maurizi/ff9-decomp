@@ -2,31 +2,31 @@
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_033_env);
-    s32 k = 0x20000000 / (n * n);
-    s32 r = 0;
+    s32 invSq = 0x20000000 / (n * n);
+    s32 ratio = 0;
 
     switch (curve) {
     case 0:
-        r = 0x1000 - (((0x10000000 / n) * t) >> 16);
+        ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
     case 1:
-        r = (k * (n - t) * (n - t)) >> 17;
+        ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
-        r = 0x1000 - ((k * t * t) >> 17);
+        ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
-    return ex->btlfx_lerp(from, to, r);
+    return ex->btlfx_lerp(from, to, ratio);
 }
 
-s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 d;
-    s32 c;
+    s32 dist;
+    s32 dz;
 
     if (mode == 0) {
-        *arg4 = 0x30;
+        *args = 0x30;
     } else if (mode == 1) {
         work->timer0 = 0;
         fx_033_env = env;
@@ -57,11 +57,11 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timer0 != 0) {
             work->timer0--;
-            d = fxm_easeLerp(1, 0x18, work->timer0, 0, 0x2000);
-            work->pos1C.vx = work->pos14.vx + ((ex->math_sin(work->aim24.vy) * d) >> 12);
-            c = ex->math_cos(work->aim24.vy) * d;
-            work->pos1C.vy = work->pos14.vy - (d >> 6);
-            work->pos1C.vz = work->pos14.vz + (c >> 12);
+            dist = fxm_easeLerp(1, 0x18, work->timer0, 0, 0x2000);
+            work->pos1C.vx = work->pos14.vx + ((ex->math_sin(work->aim24.vy) * dist) >> 12);
+            dz = ex->math_cos(work->aim24.vy) * dist;
+            work->pos1C.vy = work->pos14.vy - (dist >> 6);
+            work->pos1C.vz = work->pos14.vz + (dz >> 12);
             ex->btlfx_setUnitPos(0, (s16 *)&work->pos1C);
         }
         return frame >= 0x32;

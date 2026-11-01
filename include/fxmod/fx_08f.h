@@ -18,7 +18,7 @@
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
 extern Unk800F78A4 *fx_08f_env;
-static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pts, CVECTOR *col, s32 p, s32 abr);
+static void fxm_drawStreakField(u32 *ot, s32 n, s32 projH, s32 dz, void *rot, SVECTOR *pts, CVECTOR *rgb, s32 fade, s32 abr);
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame */
@@ -39,7 +39,7 @@ typedef struct {
 extern BtlModelBuf fx_08f_effModels[];
 extern SVECTOR fx_08f_streakPts[];
 extern u8 fx_08f_trail[];
-static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);
-s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+static void fxm_randDiscPoints(s32 n, s32 radius, SVECTOR *pts);
+s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

@@ -1,11 +1,11 @@
 #include "fxmod/fx_100.h"
 
-s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x34;
+        *args = 0x34;
     } else if (mode == 1) {
         fx_100_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos14);
@@ -52,13 +52,13 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_100_op81(s32 mode, Fx100Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_100_op81(s32 mode, Fx100Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x1C;
+        *args = 0x1C;
     } else if (mode == 1) {
         fx_100_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
@@ -98,14 +98,14 @@ static void fxm_startUnitMotion(s32 unit, s32 motion) {
 static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_100_env);
 
-    s32 r;
+    s32 done;
 
     if (ex->btlfx_isUnitActive(unit)) {
-        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+        done = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    return r;
+    return done;
 }
 
 static void fxm_startHitMotionIfActive(s32 unit) {

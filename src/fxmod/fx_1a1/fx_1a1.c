@@ -1,12 +1,12 @@
 #include "fxmod/fx_1a1.h"
 
-s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x30;
+        *args = 0x30;
     } else if (mode == 1) {
         work->count4 = 0;
         work->timer0 = 0;
@@ -36,9 +36,9 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos10.vz = work->pos20.vz;
             break;
         case 10:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         }

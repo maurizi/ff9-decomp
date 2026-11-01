@@ -65,24 +65,24 @@ extern Fx12bPath fx_12b_op81PosPath1;
 extern SVECTOR fx_12b_bonePoints0[];
 extern SVECTOR fx_12b_bonePoints1[];
 
-static s32 fx_12b_op80ParticleMotion0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-static s32 fx_12b_op80ParticleMotion1(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-static s32 fx_12b_op81ParticleMotion0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-static s32 fx_12b_op81ParticleMotion1(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-s32 fx_12b_pathParticle(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, Fx12bPath *path, SVECTOR *ofs, s32 frame, s32 n);
-s32 fx_12b_arcParticle0(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, s32 frame, s32 n);
-s32 fx_12b_arcParticle1(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, s32 frame, s32 n);
-static s32 fx_12b_op80ParticleMotion2(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-static s32 fx_12b_op80ParticleMotion3(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-static s32 fx_12b_op81ParticleMotion2(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-static s32 fx_12b_op81ParticleMotion3(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_12b_op80ParticleMotion0(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fx_12b_op80ParticleMotion1(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fx_12b_op81ParticleMotion0(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fx_12b_op81ParticleMotion1(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+s32 fx_12b_pathParticle(Fx12bParticle *pt, SVECTOR *pos, Fx12bShard *shard, Fx12bPath *path, SVECTOR *ofs, s32 frame, s32 n);
+s32 fx_12b_arcParticle0(Fx12bParticle *pt, SVECTOR *pos, Fx12bShard *shard, s32 frame, s32 n);
+s32 fx_12b_arcParticle1(Fx12bParticle *pt, SVECTOR *pos, Fx12bShard *shard, s32 frame, s32 n);
+static s32 fx_12b_op80ParticleMotion2(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fx_12b_op80ParticleMotion3(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fx_12b_op81ParticleMotion2(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fx_12b_op81ParticleMotion3(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 static s32 fxm_posPathGet(Fx12bPath *path, s32 i, SVECTOR *out);
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 static void fxm_posPathInit(Fx12bPath *path, u16 *data);
-s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
+s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value);
 
 /* propagated */
 static s32 fxm_pinParticle(Fx12bParticle *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);

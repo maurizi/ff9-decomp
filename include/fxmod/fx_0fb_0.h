@@ -34,13 +34,13 @@ extern s32 fx_0fb_0_unitsRestored;
 extern Unk800F78A4 *fx_0fb_0_env;
 
 static s32 fx_0fb_0_op80PoolTask(s32 mode, Fx0fb0Rock *r, Unk800F78A4 *env);
-s32 fx_0fb_0_op81(s32 mode, Fx0fb0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0fb_0_op81(s32 mode, Fx0fb0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 typedef struct {
     SVECTOR a0;
     SVECTOR b8;
 } Fx0fb0Seg; /* 0x10 */
-static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx0fb0Seg *buf, s32 abr);
+static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *colorA, CVECTOR *colorB, s32 fade, Fx0fb0Seg *buf, s32 abr);
 
 typedef struct {
     s32 vx, vy, vz;

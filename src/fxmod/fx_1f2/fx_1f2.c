@@ -1,30 +1,30 @@
 #include "fxmod/fx_1f2.h"
 
-static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
+static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 abr, s32 ot) {
     Unk800F78A4 *env = fx_1f2_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 c = ex->btlfx_lerpRatio(from, to, t, n);
+    s32 bright = ex->btlfx_lerpRatio(from, to, t, n);
 
-    ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), arg4, c, c, c);
+    ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), abr, bright, bright, bright);
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1f2_env);
-    s32 k = 0x20000000 / (n * n);
-    s32 r = 0;
+    s32 invSq = 0x20000000 / (n * n);
+    s32 ratio = 0;
 
     switch (curve) {
     case 0:
-        r = 0x1000 - (((0x10000000 / n) * t) >> 16);
+        ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
     case 1:
-        r = (k * (n - t) * (n - t)) >> 17;
+        ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
-        r = 0x1000 - ((k * t * t) >> 17);
+        ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
-    return ex->btlfx_lerp(from, to, r);
+    return ex->btlfx_lerp(from, to, ratio);
 }
 
 /* Matching levers: variables shared between distant blocks become long global pseudos that take callee-saved
@@ -39,7 +39,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
  * hoisted fx_1f2_trails in the tr register and copies it to the base register. */
 #define FX1F2_DRAW(m) ex->Hi_DrawEffModel(&(m).rot8, &(m).pos10, (s32)&(m).scale20, (m).model0)
 
-s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     SVECTOR rot;
@@ -51,24 +51,24 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 flag;
     s32 flag2;
     s32 frame;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     Fx1f2Trail *tr;
     Fx1f2Ring *rg;
     Fx1f2Model *md;
     SVECTOR *sv;
     s32 i;
     s32 j;
-    s32 a;
-    s32 r;
-    s32 c;
+    s32 link;
+    s32 radius;
+    s32 side;
     s32 lo;
-    s32 hi;
+    s32 offZ;
     s32 alpha;
     s32 n;
     s32 tint;
     s32 j_m1s;
-    s32 lo_m1s;
-    s32 a_m1s;
+    s32 offX;
+    s32 ang;
     s32 lo_r0;
     s32 lo_md;
     Fx1f2Model *md_r28;
@@ -84,14 +84,14 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 a_u58;
     SVECTOR *sv_u58;
     s32 n_u58;
-    s32 k8;
+    s32 lastSlot;
     s32 fd;
     Fx1f2Model *mm;
-    VECTOR *q;
-    VECTOR *q2;
+    VECTOR *unused0;
+    VECTOR *unused1;
 
     if (mode == 0) {
-        *arg4 = 0x128;
+        *args = 0x128;
     } else if (mode == 1) {
         env->camera->points[1].vx = 0;
         env->camera->points[1].vz = -0x4000;
@@ -126,19 +126,19 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fx_1f2_trails[i].timer4C = ex->btlfx_rand() & 0xF;
             for (j_m1s = 0; j_m1s < 0x10;) {
                 if (i & 1) {
-                    a_m1s = j_m1s << 8;
-                    c = 1;
-                    r = (ex->btlfx_rand() & 0xFF) + 0x17E;
+                    ang = j_m1s << 8;
+                    side = 1;
+                    radius = (ex->btlfx_rand() & 0xFF) + 0x17E;
                 } else {
-                    a_m1s = 0x1000 - (j_m1s << 8);
-                    c = 0;
-                    r = (ex->btlfx_rand() & 0xFF) + 0x200;
+                    ang = 0x1000 - (j_m1s << 8);
+                    side = 0;
+                    radius = (ex->btlfx_rand() & 0xFF) + 0x200;
                 }
-                lo_m1s = (ex->math_sin(a_m1s) * r) >> 12;
-                hi = ex->math_cos(a_m1s) * r;
-                fx_1f2_trails[i].pos50[j_m1s].vx = work->bonePos110[c].vx - lo_m1s;
-                fx_1f2_trails[i].pos50[j_m1s].vz = work->bonePos110[c].vz - (hi >> 12);
-                fx_1f2_trails[i].pos50[j_m1s].vy = work->bonePos110[c].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
+                offX = (ex->math_sin(ang) * radius) >> 12;
+                offZ = ex->math_cos(ang) * radius;
+                fx_1f2_trails[i].pos50[j_m1s].vx = work->bonePos110[side].vx - offX;
+                fx_1f2_trails[i].pos50[j_m1s].vz = work->bonePos110[side].vz - (offZ >> 12);
+                fx_1f2_trails[i].pos50[j_m1s].vy = work->bonePos110[side].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
                 fx_1f2_trails[i].pos50[j_m1s].pad = j_m1s + 1;
                 j_m1s++;
             }
@@ -228,18 +228,18 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             work->spin2C = 0x20;
             work->timer4C = 0x5F;
-            p = work->emit84 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos120);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = work->emit84 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos120);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             break;
         case 0x2D:
             work->timer54 = 0x32;
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->bonePos110[0]);
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->bonePos110[1]);
-            p = work->emit80 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos120);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = work->emit80 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos120);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             break;
         case 0x4F:
@@ -268,13 +268,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos108.vx = 0;
             work->pos108.vy = 0x4C8;
             work->pos108.vz = 0;
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos100);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos100);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos108);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos108);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             break;
         case 0xCF:
@@ -283,19 +283,19 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->halfWidth38 = 0x200;
             break;
         case 0xFF:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1f2_emitPos0);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1f2_emitPos0);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             break;
         case 0x11F:
-            p = work->emit88 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1f2_emitPos1);
-            if (p != NULL) {
-                p->otZ = 0x400;
+            emitter = work->emit88 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1f2_emitPos1);
+            if (emitter != NULL) {
+                emitter->otZ = 0x400;
             }
-            p = work->emit8C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&fx_1f2_emitPos1);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = work->emit8C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&fx_1f2_emitPos1);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             work->timer4 = 0x80;
             break;
@@ -510,12 +510,12 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 8), 1, tint, tint, tint);
         }
         if (work->timer20 != 0) {
-            s32 k;
+            s32 fade;
 
             work->timer20--;
-            k = work->timer20;
-            scale.vz = scale.vy = scale.vx = k * 3 + 0x1000;
-            col.r = col.g = col.b = k * 2;
+            fade = work->timer20;
+            scale.vz = scale.vy = scale.vx = fade * 3 + 0x1000;
+            col.r = col.g = col.b = fade * 2;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
@@ -661,18 +661,18 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
                     n = 9;
                     sv = tp->points4;
-                    a = fx_1f2_trails[i].timer4C;
-                    fx_1f2_trails[i].timer4C = fx_1f2_trails[i].pos50[a].pad;
+                    link = fx_1f2_trails[i].timer4C;
+                    fx_1f2_trails[i].timer4C = fx_1f2_trails[i].pos50[link].pad;
                     pt = &fx_1f2_trails[i];
                     pt->lastSlot0 = pt->count2 = 8;
                     pt->head1 = 0;
                     for (j_u4ce = 0; j_u4ce < n; j_u4ce++) {
-                        sv->vx = fx_1f2_trails[i].pos50[a].vx;
-                        sv->vy = fx_1f2_trails[i].pos50[a].vy;
-                        sv->vz = fx_1f2_trails[i].pos50[a].vz;
+                        sv->vx = fx_1f2_trails[i].pos50[link].vx;
+                        sv->vy = fx_1f2_trails[i].pos50[link].vy;
+                        sv->vz = fx_1f2_trails[i].pos50[link].vz;
                         sv->pad = 0x80;
                         sv++;
-                        a = fx_1f2_trails[i].pos50[a].pad;
+                        link = fx_1f2_trails[i].pos50[link].pad;
                     }
                     env->otZ = 0x80;
                     alpha_u4cn = 0xFFF;
@@ -689,14 +689,14 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->timer58 != 0) {
             work->timer58--;
             env->otZ = 0x40;
-            k8 = 8;
+            lastSlot = 8;
             for (i = 0; i < env->targets->targetCount; i++) {
                 tr = &fx_1f2_unitTrails[i];
                 if (tr->timer4C != 0) {
                     if (--tr->timer4C < 8) {
                         n_u58 = 9;
                         sv_u58 = tr->points4;
-                        tr->lastSlot0 = tr->count2 = k8;
+                        tr->lastSlot0 = tr->count2 = lastSlot;
                         tr->head1 = 0;
                         for (j_u58 = 0; j_u58 < n_u58; j_u58++) {
                             tr->pos50[j_u58].vx += tr->velD0[j_u58].vx;
@@ -716,7 +716,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                             (u8 *)tr, 0);
                     }
                 } else {
-                    tr->timer4C = k8;
+                    tr->timer4C = lastSlot;
                     ((SVECTOR *)out)[1].vx = fx_1f2_unitPos[i].vx + ex->btlfx_randRange(-0x40, 0x40);
                     ((SVECTOR *)out)[1].vz = fx_1f2_unitPos[i].vz + ex->btlfx_randRange(-0x40, 0x40);
                     for (j_u58 = 0; j_u58 < 9; j_u58++) {

@@ -15,7 +15,7 @@ extern SVECTOR fx_0b8_particleFrom[32];
 
 void fx_0b8_drawScreenBand(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpage, s32 clut, s32 abr);
 void fx_0b8_drawScreenGradient(s32 ot);
-static void fxm_tintScreenLerp(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 ot);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
 static s32 fx_0b8_op80ParticleMotion(Pool30Entry *pt, s32 a1, SVECTOR *pos, s32 a3, s32 frame, s32 n);
 extern Unk800F78A4 *fx_0b8_env;
 extern SVECTOR fx_0b8_planeColors[]; /* colour table */
@@ -139,7 +139,7 @@ typedef struct {
 
 extern Fx0b8Band fx_0b8_bands[4];
 extern BtlModelBuf fx_0b8_effModels[];
-extern s32 fx_0b8_unusedScroll;
+extern s32 fx_0b8_scrollInitWord;
 extern Fx0b8Bolt fx_0b8_bolts[8];
 extern Fx0b8Unit fx_0b8_units[];
 extern s32 fx_0b8_trails[];

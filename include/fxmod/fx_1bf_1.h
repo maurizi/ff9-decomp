@@ -77,15 +77,15 @@ typedef struct {
 extern Fx1bf1Trail17 fx_1bf_1_boltTrails[];
 extern Fx1bf1Trail5 fx_1bf_1_branchTrails[];
 
-static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 n, s32 *noise,
-                   s32 i, s32 type, s32 alpha, s32 pad);
+static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 mode, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 size, s32 *noise,
+                   s32 branchAt, s32 frame, s32 fade, s32 lineWidth);
 
 /* copied */
 extern Unk800F78A4 *fx_1bf_1_env;
 extern s32 fx_1bf_1_ringRadius; /* radius */
-static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *trail, s32 n, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);
-static s32 fx_1bf_1_op83PoolTask(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx1bf1Trail *trail, s32 size, s32 *noise, SVECTOR *from,
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip);
+static s32 fx_1bf_1_op83PoolTask(s32 mode, Fx1bf1Bolt *bolt, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 extern s32 fx_1bf_1_noise[64][3]; /* noise */
 extern SVECTOR fx_1bf_1_boltPos0;
 extern SVECTOR fx_1bf_1_boltPos1;
@@ -126,7 +126,7 @@ typedef struct {
 extern BtlModelBuf fx_1bf_1_effModels[];
 extern SVECTOR fx_1bf_1_origin;
 extern s16 fx_1bf_1_spawnOffsets[];
-static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot);
-static s32 fx_1bf_1_op80PoolTask(s32 mode, Fx1bf1Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1bf1RockInst *inst);
+static s32 fxm_randRingPoint(SVECTOR *out, SVECTOR *rot);
+static s32 fx_1bf_1_op80PoolTask(s32 mode, Fx1bf1Rock *rock, Unk800F78A4 *env, s32 entry, s32 frame, s32 pool, Fx1bf1RockInst *inst);
 
 #endif

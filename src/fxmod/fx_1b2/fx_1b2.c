@@ -1,13 +1,13 @@
 #include "fxmod/fx_1b2.h"
 
-s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
-    s32 t;
+    s32 pathFrame;
 
     if (mode == 0) {
-        *arg4 = 0x70;
+        *args = 0x70;
     } else if (mode == 1) {
         work->pos18.vx = 0;
         work->pos18.vy = 0;
@@ -70,21 +70,21 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->timer5C >= 0) {
-            t = 0xB - work->timer5C;
-            if (t == 8) {
+            pathFrame = 0xB - work->timer5C;
+            if (pathFrame == 8) {
                 work->timer60 = 4;
             }
             if (work->timer60 >= 0) {
                 work->fade38 = fxm_lerpRatio(0, -0x80, 4 - work->timer60, 4);
                 work->timer60--;
             }
-            fxm_vecPathGet(&fx_1b2_vecPath, t, &work->scale28);
+            fxm_vecPathGet(&fx_1b2_vecPath, pathFrame, &work->scale28);
             ex->Hi_DrawEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model6C);
             ex->Hi_ModifyEffModelAbr(work->model6C, 1);
             if (work->timer60 >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->model6C, work->fade38, work->fade38, work->fade38);
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), t);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), pathFrame);
             for (i = 0; i < env->targets->targetCount; i++) {
                 if (fxm_isMotionDone(i) != 0) {
                     fxm_startUnitMotion(i, 0);
@@ -117,12 +117,12 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x24;
+        *args = 0x24;
     } else if (mode == 1) {
         fx_1b2_env = env;
         ex->btlfx_initEffModels(fx_1b2_effModels, 3);
@@ -155,13 +155,13 @@ s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 c;
+    s32 bright;
 
     if (mode == 0) {
-        *arg4 = 0x38;
+        *args = 0x38;
     } else if (mode == 1) {
         work->pos8.vz = -0x44C;
         work->rot0.vx = 0;
@@ -198,8 +198,8 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->model34);
             ex->Hi_ModifyEffModelAbr(work->model34, 1);
             if (work->timer2C > 0 || work->timer30 >= 0) {
-                c = work->fade28 + 6;
-                ex->Hi_ModifyEffModelRGB(work->model34, c, c, c);
+                bright = work->fade28 + 6;
+                ex->Hi_ModifyEffModelRGB(work->model34, bright, bright, bright);
             } else {
                 ex->Hi_ModifyEffModelRGB(work->model34, 6, 6, 6);
             }
@@ -212,12 +212,12 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1b2_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1b2_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1b2_env = env;
     } else {
@@ -230,8 +230,8 @@ s32 fx_1b2_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_1b2_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_1b2_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -247,24 +247,24 @@ static void fxm_vecPathInit(Fx1b2Path *path, u16 *data) {
 static s32 fxm_vecPathGet(Fx1b2Track6 *track, s32 t, VECTOR *out) {
     s32 last = track->count2 - 1;
     s32 done = 1;
-    Fx1b2Key6 *k;
+    Fx1b2Key6 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
-    out->vx = k->x;
-    out->vy = k->y;
-    out->vz = k->z;
+    key = &track->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_1b2_env)->btlfx_drawScreenTint((u32 *)(fx_1b2_env->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_1b2_env)->btlfx_drawScreenTint((u32 *)(fx_1b2_env->ot + ot), abr, bright, bright, bright);
 }
 
 static void fxm_startUnitMotion(s32 unit, s32 motion) {
@@ -277,14 +277,14 @@ static void fxm_startUnitMotion(s32 unit, s32 motion) {
 static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1b2_env);
 
-    s32 r;
+    s32 done;
 
     if (ex->btlfx_isUnitActive(unit)) {
-        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+        done = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    return r;
+    return done;
 }
 
 static void fxm_startHitMotionIfActive(s32 unit) {

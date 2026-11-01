@@ -1,17 +1,17 @@
 #include "fxmod/fx_0e1_1.h"
 
-s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
-    SVECTOR v;
+    Pool6CEntry *emitter;
+    SVECTOR camPos;
     s32 frame;
-    s32 t;
-    s32 c;
-    s32 d;
-    u16 b;
+    s32 tint;
+    s32 alpha;
+    s32 lift;
+    u16 baseY;
 
     if (mode == 0) {
-        *arg4 = 0x40;
+        *args = 0x40;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -19,17 +19,17 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
         work->pos8.vy = fx_0e1_1_origin.vy;
         work->pos8.vz = fx_0e1_1_origin.vz;
         fx_0e1_1_env = env;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = 0x20;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = 0x20;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = 0x100;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = 0x100;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = 0x12C;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = 0x12C;
         }
         work->unk10 = 0;
     } else {
@@ -37,38 +37,38 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
         switch (work->state0) {
         case 0:
             if (frame >= 0x24) {
-                t = ((frame - 0x24) * 255) / 16;
-                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 1, t, t, t);
+                tint = ((frame - 0x24) * 255) / 16;
+                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 1, tint, tint, tint);
             }
             if (frame < 0x14) {
-                c = ex->math_cos((frame << 10) / 20);
+                alpha = ex->math_cos((frame << 10) / 20);
                 env->otZ = 0x80;
-                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos8, frame, c);
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos8, frame, alpha);
                 env->otZ = 0;
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), frame);
             if (frame >= 0x34) {
                 ex->btlfx_initParticleSystem();
-                v.vx = fx_0e1_1_camPos.vx;
-                v.vy = fx_0e1_1_camPos.vy - 0x800;
-                v.vz = fx_0e1_1_camPos.vz;
-                work->camPos24.vx = v.vx;
-                work->camPos24.vy = v.vy;
-                work->camPos24.vz = v.vz;
-                env->camera->points[2].vx = v.vx;
-                env->camera->points[2].vy = v.vy;
-                env->camera->points[2].vz = v.vz;
-                work->emit30 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                camPos.vx = fx_0e1_1_camPos.vx;
+                camPos.vy = fx_0e1_1_camPos.vy - 0x800;
+                camPos.vz = fx_0e1_1_camPos.vz;
+                work->camPos24.vx = camPos.vx;
+                work->camPos24.vy = camPos.vy;
+                work->camPos24.vz = camPos.vz;
+                env->camera->points[2].vx = camPos.vx;
+                env->camera->points[2].vy = camPos.vy;
+                env->camera->points[2].vz = camPos.vz;
+                work->emit30 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                work->emit2C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos1C);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                work->emit2C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos1C);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                work->pos1C.vx = v.vx;
-                work->pos1C.vy = v.vy;
-                work->pos1C.vz = v.vz;
+                work->pos1C.vx = camPos.vx;
+                work->pos1C.vy = camPos.vy;
+                work->pos1C.vz = camPos.vz;
                 work->pos1C.vy -= 0x300;
                 work->swayAmp34 = 0x200;
                 work->alpha3C = 0x1000;
@@ -87,10 +87,10 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 work->swayAmp34 = 0;
             }
             if (frame < 0x41) {
-                d = ex->math_cos(frame << 5);
-                b = fx_0e1_1_camPos.vy;
-                d = ((((d * 0x800) >> 12) + 0x1000) >> 1) - 0x200;
-                work->camPos24.vy = b - d;
+                lift = ex->math_cos(frame << 5);
+                baseY = fx_0e1_1_camPos.vy;
+                lift = ((((lift * 0x800) >> 12) + 0x1000) >> 1) - 0x200;
+                work->camPos24.vy = baseY - lift;
             }
             work->pos1C.vx = work->camPos24.vx;
             work->pos1C.vy = work->camPos24.vy;
@@ -133,9 +133,9 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
     return 0;
 }
 
-s32 fx_0e1_1_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0e1_1_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_0e1_1_env = env;
         env->camera->paused = 0;

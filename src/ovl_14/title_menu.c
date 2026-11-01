@@ -65,7 +65,7 @@ void opening_titleInput(void) {
 }
 
 void opening_titleDraw(void) {
-    opening_titleDrawStub();
+    opening_titleOnDraw();
     opening_titleDrawBackground();
     opening_titleDrawChoices();
     opening_titleDrawCursor();
@@ -136,7 +136,7 @@ void opening_titleDecide(void) {
     fade_setOnDone(opening_titleOnFadeOut);
 }
 
-void opening_titleDrawStub(void) {
+void opening_titleOnDraw(void) {
 }
 
 void opening_titleDrawBackground(void) {

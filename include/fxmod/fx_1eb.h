@@ -65,7 +65,7 @@ extern Fx1ebKeyPath fx_1eb_rotPosPath[3];
 extern Fx1ebPath fx_1eb_valuePath;
 extern s32 fx_1eb_op82Trails[];
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_rotPosPathInit(Fx1ebKeyPath *path, u16 *data);
 static void fxm_valuePathInit(Fx1ebPath *path, u16 *data);
@@ -75,7 +75,7 @@ extern Unk800F78A4 *fx_1eb_env;
 /* end copied */
 
 /* propagated */
-static s32 fxm_rotPosPathGet(Fx1ebKeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos);
-static s32 fxm_valuePathGet(Fx1ebPath *keys, s32 i, s32 *out);
+static s32 fxm_rotPosPathGet(Fx1ebKeyPath *path, s32 t, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_valuePathGet(Fx1ebPath *keys, s32 t, s32 *out);
 
 #endif

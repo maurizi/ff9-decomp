@@ -2,27 +2,27 @@
 
 INCLUDE_RODATA("asm/us/fx_12c/nonmatchings/fx_12c", fx_12c_headerPtr);
 
-s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     CVECTOR col;
     SVECTOR rot;
     VECTOR sc;
-    s32 *q;
+    s32 *timer;
     s32 frame;
     s32 t;
-    s32 y;
-    s32 c;
+    s32 height;
+    s32 bright;
     s32 n;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x30;
+        *args = 0x30;
     } else if (mode == 1) {
         fx_12c_env = env;
         ex->btlfx_initEffModels(fx_12c_effModels, 10);
-        for (i = 7, q = &work->timer0[7]; i >= 0; i--) {
-            *q-- = 0;
+        for (i = 7, timer = &work->timer0[7]; i >= 0; i--) {
+            *timer-- = 0;
         }
         work->pos20.vx = 0;
         work->pos20.vy = 0;
@@ -56,16 +56,16 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 1:
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos28);
             work->pos28.vy = 0;
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos28);
-            if (p != NULL) {
-                p->otZ = -0x100;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos28);
+            if (emitter != NULL) {
+                emitter->otZ = -0x100;
             }
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos28);
             break;
         case 9:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos20);
-            if (p != NULL) {
-                p->otZ = 0x100;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos20);
+            if (emitter != NULL) {
+                emitter->otZ = 0x100;
             }
             work->timer0[3] = 0x40;
             work->timer0[1] = 0x10;
@@ -89,9 +89,9 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer0[0]--;
             for (i = 0; i < 9; i++) {
                 if ((t = ++fx_12c_bounceModels[i].frame30) >= 0) {
-                    y = fx_12c_bounceModels[i].speed2C * t - ((t * (t << 8)) >> 1);
-                    if (y < 0) {
-                        y = 0;
+                    height = fx_12c_bounceModels[i].speed2C * t - ((t * (t << 8)) >> 1);
+                    if (height < 0) {
+                        height = 0;
                         fx_12c_bounceModels[i].speed2C = ex->btlfx_rand() % (fx_12c_intensity + 1);
                         if (work->timer0[0] < 8) {
                             fx_12c_bounceModels[i].frame30 = -100;
@@ -99,7 +99,7 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             fx_12c_bounceModels[i].frame30 = 0;
                         }
                     }
-                    fx_12c_bounceModels[i].scale4.vy = y;
+                    fx_12c_bounceModels[i].scale4.vy = height;
                     ex->Hi_DrawEffModel(&fx_12c_bounceModels[i].rot24, &fx_12c_bounceModels[i].pos14, (s32)&fx_12c_bounceModels[i].scale4,
                                         fx_12c_bounceModels[i].model0);
                 }
@@ -113,10 +113,10 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             sc.vx = 0x1000;
             sc.vy = (n << 1) + 0x1000;
             sc.vz = 0x1000;
-            c = fx_12c_intensity / 15;
-            col.r = col.g = col.b = c;
+            bright = fx_12c_intensity / 15;
+            col.r = col.g = col.b = bright;
             ex->btlfx_drawScreenGrid(5, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &sc, &col, 1, NULL);
-            ex->btlfx_drawScreenTint((u32 *)&env->ot[4], 2, c, c, c);
+            ex->btlfx_drawScreenTint((u32 *)&env->ot[4], 2, bright, bright, bright);
         }
         return frame >= 0x80;
     }

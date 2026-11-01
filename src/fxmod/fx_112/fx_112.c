@@ -3,29 +3,29 @@
 static void fxm_captureScreen(s32 x, s32 y, s32 w, s32 h, s32 dx, s32 dy) {
     Unk800F78A4 *env = fx_112_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    RECT r;
+    RECT rect;
 
-    r.x = env->dispEnv->disp.x + x - (w >> 1);
-    r.y = env->dispEnv->disp.y + y - (h >> 1);
-    r.w = w;
-    r.h = h;
-    ex->MoveImage(&r, dx, dy);
+    rect.x = env->dispEnv->disp.x + x - (w >> 1);
+    rect.y = env->dispEnv->disp.y + y - (h >> 1);
+    rect.w = w;
+    rect.h = h;
+    ex->MoveImage(&rect, dx, dy);
 }
 
 INCLUDE_RODATA("asm/us/fx_112/nonmatchings/fx_112", fx_112_headerPtr);
 
-s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 k;
+    s32 slot;
     s32 t;
-    s32 s;
-    Pool6CEntry *p;
-    Pool6CEntry *q;
-    Fx112Locals u;
+    s32 arc;
+    Pool6CEntry *emitter;
+    Pool6CEntry *trailEmitter;
+    Fx112Locals locals;
 
     if (mode == 0) {
-        *arg4 = 0x54;
+        *args = 0x54;
     } else if (mode == 1) {
         fx_112_env = env;
         ex->btlfx_initEffModels(fx_112_effModels, 1);
@@ -44,9 +44,9 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     switch (work->state0) {
     case 0:
         if (frame == 0) {
-            u.s0.scale0.vx = u.s0.scale0.vz = work->scale14.vx;
-            u.s0.scale0.vy = work->scale14.vx + 0x1CC;
-            ex->btlfx_setUnitScale(0, (s32 *)&u.s0.scale0);
+            locals.s0.scale0.vx = locals.s0.scale0.vz = work->scale14.vx;
+            locals.s0.scale0.vy = work->scale14.vx + 0x1CC;
+            ex->btlfx_setUnitScale(0, (s32 *)&locals.s0.scale0);
         }
         if (frame == 3) {
             fxm_captureScreen(0xA0, 0x8C, 0x80, 0xC0, VRAM_BTLFX_SCRATCH_X, VRAM_BTLFX_SCRATCH_Y);
@@ -54,23 +54,23 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 4) {
             ex->btlfx_fadeUnitById(0, 0);
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos40);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos40);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos40);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
         } else if (frame >= 5) {
             t = ((frame - 4) << 12) / 28;
-            ex->btlfx_getUnitBonePos(0x10, 9, (u16 *)&u.s0.a);
-            ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&u.s0.b);
-            ex->btlfx_aimAngles((s16 *)&u.s0.a, (s16 *)&u.s0.b, (s16 *)&u.s0.rot);
-            u.s0.rot.vy += 0x800;
-            u.s0.pos.vx = (u.s0.a.vx + u.s0.b.vx) >> 1;
-            u.s0.pos.vy = (u.s0.a.vy + u.s0.b.vy) >> 1;
-            u.s0.pos.vz = (u.s0.a.vz + u.s0.b.vz) >> 1;
-            u.s0.scale.vx = ((ex->math_sin(t * 5 + 0x400) / 3 + 0x1400) * (0x1000 - (t >> 1))) >> 12;
-            u.s0.scale.vy = ((ex->math_sin(t * 5) / 3 + 0x1400) * (0x1000 - (t >> 1))) >> 12;
-            u.s0.scale.vz = ((ex->math_cos(t * 6) / 3 + 0x1400) * (0x1000 - (t >> 1))) >> 12;
-            ex->Hi_DrawEffModel(&u.s0.rot, &u.s0.pos, (s32)&u.s0.scale, work->model20);
+            ex->btlfx_getUnitBonePos(0x10, 9, (u16 *)&locals.s0.a);
+            ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&locals.s0.b);
+            ex->btlfx_aimAngles((s16 *)&locals.s0.a, (s16 *)&locals.s0.b, (s16 *)&locals.s0.rot);
+            locals.s0.rot.vy += 0x800;
+            locals.s0.pos.vx = (locals.s0.a.vx + locals.s0.b.vx) >> 1;
+            locals.s0.pos.vy = (locals.s0.a.vy + locals.s0.b.vy) >> 1;
+            locals.s0.pos.vz = (locals.s0.a.vz + locals.s0.b.vz) >> 1;
+            locals.s0.scale.vx = ((ex->math_sin(t * 5 + 0x400) / 3 + 0x1400) * (0x1000 - (t >> 1))) >> 12;
+            locals.s0.scale.vy = ((ex->math_sin(t * 5) / 3 + 0x1400) * (0x1000 - (t >> 1))) >> 12;
+            locals.s0.scale.vz = ((ex->math_cos(t * 6) / 3 + 0x1400) * (0x1000 - (t >> 1))) >> 12;
+            ex->Hi_DrawEffModel(&locals.s0.rot, &locals.s0.pos, (s32)&locals.s0.scale, work->model20);
         }
         if (frame >= 0x20) {
             work->state0 = 1;
@@ -79,18 +79,18 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     case 1:
         t = (frame << 12) / 9;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&u.s1.pos);
-        ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&u.s1.bone);
-        ex->btlfx_lerpVec((s16 *)&u.s1.bone, (s16 *)&u.s1.pos, t, (s16 *)&u.s1.v);
-        s = ex->math_sin((t * 0x992) >> 12);
-        u.s1.rot.vx = -frame << 8;
-        u.s1.rot.vy = u.s1.rot.vz = frame * 6;
-        u.s1.scale.vx = u.s1.scale.vy = u.s1.scale.vz = ((0x1000 - t) * 0x1400) >> 13;
-        u.s1.v.vy -= s >> 5;
-        u.s1.tr.vx = u.s1.v.vx;
-        u.s1.tr.vy = u.s1.v.vy;
-        u.s1.tr.vz = u.s1.v.vz;
-        ex->Hi_DrawEffModel(&u.s1.rot, &u.s1.tr, (s32)&u.s1.scale, work->model20);
+        ex->btlfx_getUnitPos(0x10, (s16 *)&locals.s1.pos);
+        ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&locals.s1.bone);
+        ex->btlfx_lerpVec((s16 *)&locals.s1.bone, (s16 *)&locals.s1.pos, t, (s16 *)&locals.s1.v);
+        arc = ex->math_sin((t * 0x992) >> 12);
+        locals.s1.rot.vx = -frame << 8;
+        locals.s1.rot.vy = locals.s1.rot.vz = frame * 6;
+        locals.s1.scale.vx = locals.s1.scale.vy = locals.s1.scale.vz = ((0x1000 - t) * 0x1400) >> 13;
+        locals.s1.v.vy -= arc >> 5;
+        locals.s1.tr.vx = locals.s1.v.vx;
+        locals.s1.tr.vy = locals.s1.v.vy;
+        locals.s1.tr.vz = locals.s1.v.vz;
+        ex->Hi_DrawEffModel(&locals.s1.rot, &locals.s1.tr, (s32)&locals.s1.scale, work->model20);
         if (frame >= 9) {
             work->state0 = 2;
             entry->frame = -1;
@@ -98,14 +98,14 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     case 2:
         ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->pos48);
-        k = frame / 5;
-        if (frame == k * 5) {
-            q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos48);
-            if (q != NULL) {
-                q->trails = (s32)fx_112_op80Trails[k];
-                q->trailSlots = 0x14;
-                q->trailStride = 0x24;
-                q->otZ = 0x80;
+        slot = frame / 5;
+        if (frame == slot * 5) {
+            trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos48);
+            if (trailEmitter != NULL) {
+                trailEmitter->trails = (s32)fx_112_op80Trails[slot];
+                trailEmitter->trailSlots = 0x14;
+                trailEmitter->trailStride = 0x24;
+                trailEmitter->otZ = 0x80;
             }
         }
         if (frame >= 0x13) {
@@ -117,35 +117,35 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame >= 0x10) {
             work->state0 = 4;
             entry->frame = -1;
-            work->emit50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos48);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            work->emit50 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos48);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
         }
         break;
     case 4:
         ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->pos48);
-        ex->btlfx_getUnitBoneMatrix(0x10, 4, &u.s4.m);
-        ex->btlfx_matrixAngles((MATRIX *)&u.s4.m, (s16 *)&u.s4.rot);
+        ex->btlfx_getUnitBoneMatrix(0x10, 4, &locals.s4.m);
+        ex->btlfx_matrixAngles((MATRIX *)&locals.s4.m, (s16 *)&locals.s4.rot);
         if (work->emit50 != NULL) {
-            work->emit50->rot.vx = u.s4.rot.vx;
-            work->emit50->rot.vy = u.s4.rot.vy;
-            work->emit50->rot.vz = u.s4.rot.vz;
+            work->emit50->rot.vx = locals.s4.rot.vx;
+            work->emit50->rot.vy = locals.s4.rot.vy;
+            work->emit50->rot.vz = locals.s4.rot.vz;
         }
         if (frame < 0xD) {
             if (frame == 1) {
                 ex->btlfx_fadeUnitById(0, 0x80);
             }
-            ex->btlfx_lerpVec((s16 *)&work->pos48, (s16 *)&work->pos4, (frame << 12) / 12, (s16 *)&u.s4.v);
-            u.s4.v.vy -= ex->math_sin((frame << 12) / 12 >> 1) >> 3;
-            ex->btlfx_setUnitPos(0, (s16 *)&u.s4.v);
-            u.s4.scale.vx = u.s4.scale.vy = u.s4.scale.vz =
+            ex->btlfx_lerpVec((s16 *)&work->pos48, (s16 *)&work->pos4, (frame << 12) / 12, (s16 *)&locals.s4.v);
+            locals.s4.v.vy -= ex->math_sin((frame << 12) / 12 >> 1) >> 3;
+            ex->btlfx_setUnitPos(0, (s16 *)&locals.s4.v);
+            locals.s4.scale.vx = locals.s4.scale.vy = locals.s4.scale.vz =
                 work->scale14.vx / 2 + ((work->scale14.vx / 2 * ((frame << 12) / 12)) >> 12);
-            ex->btlfx_setUnitScale(0, (s32 *)&u.s4.scale);
-            u.s4.r.vx = work->rotC.vx + ((0x1000 - (frame << 12) / 12) >> 1);
-            u.s4.r.vy = work->rotC.vy - (0x1000 - (frame << 12) / 12) / 3;
-            u.s4.r.vz = work->rotC.vz;
-            ex->btlfx_setUnitRot(0, (s16 *)&u.s4.r);
+            ex->btlfx_setUnitScale(0, (s32 *)&locals.s4.scale);
+            locals.s4.r.vx = work->rotC.vx + ((0x1000 - (frame << 12) / 12) >> 1);
+            locals.s4.r.vy = work->rotC.vy - (0x1000 - (frame << 12) / 12) / 3;
+            locals.s4.r.vz = work->rotC.vz;
+            ex->btlfx_setUnitRot(0, (s16 *)&locals.s4.r);
         }
         if (frame >= 0x10) {
             return 1;

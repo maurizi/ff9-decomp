@@ -1,17 +1,17 @@
 #include "fxmod/fx_03e.h"
 
-s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 s;
+    s32 morph;
     s32 t;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     VECTOR pos;
     VECTOR scale;
     SVECTOR rot;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
         fx_03e_env = env;
         ex->btlfx_initEffModels(fx_03e_effModels, 4);
@@ -34,12 +34,12 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->trails = (s32)fx_03e_trails;
-                    p->trailSlots = 0xA;
-                    p->trailStride = 0x5C;
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_03e_trails;
+                    emitter->trailSlots = 0xA;
+                    emitter->trailStride = 0x5C;
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame >= 8) {
@@ -88,17 +88,17 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame >= 0x10) {
                 work->state0 = 3;
                 entry->frame = -1;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos1C);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x20, 0x46);
@@ -115,22 +115,22 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vy = work->pos14.vy;
             pos.vz = work->pos14.vz;
             if (frame < 2) {
-                s = 0x2000 - (frame << 11);
+                morph = 0x2000 - (frame << 11);
             } else {
-                s = 0x1000 - ((frame - 2) << 12) / 14;
+                morph = 0x1000 - ((frame - 2) << 12) / 14;
             }
-            if (s > 0x1000) {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model8, work->modelC, s - 0x1000);
+            if (morph > 0x1000) {
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model8, work->modelC, morph - 0x1000);
                 ex->Hi_ModifyEffModelRGB(work->model8, -0x40, -0x40, -0x40);
             } else {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->modelC, work->model10, s);
-                ex->Hi_ModifyEffModelRGB(work->modelC, ((s - 0x800) >> 5) - 0x80, ((s - 0x800) >> 5) - 0x80,
-                                         ((s - 0x800) >> 5) - 0x80);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->modelC, work->model10, morph);
+                ex->Hi_ModifyEffModelRGB(work->modelC, ((morph - 0x800) >> 5) - 0x80, ((morph - 0x800) >> 5) - 0x80,
+                                         ((morph - 0x800) >> 5) - 0x80);
             }
             if (frame == 1) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos1C);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos1C);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame >= 0xC) {

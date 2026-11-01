@@ -41,7 +41,7 @@ extern s16 fx_0e7_texPos[4];
 extern Unk800F78A4 *fx_0e7_env;
 extern BtlModelBuf fx_0e7_effModels[];
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

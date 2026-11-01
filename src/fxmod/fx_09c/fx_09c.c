@@ -1,15 +1,15 @@
 #include "fxmod/fx_09c.h"
 
-s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR a;
-    SVECTOR b;
+    SVECTOR tip;
+    SVECTOR bonePos;
     BtlBone bone;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x40;
+        *args = 0x40;
     } else if (mode == 1) {
         work->emit20 = NULL;
         work->emit3C = NULL;
@@ -25,28 +25,28 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 4) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         if (frame == 0xA) {
             ex->btlfx_getUnitBoneMatrix(0x10, 0x11, &bone);
-            ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x800, (s32)&a);
-            ex->btlfx_getUnitBonePos(0x10, 0x11, (u16 *)&b);
-            ex->btlfx_aimAngles((s16 *)&a, (s16 *)&b, (s16 *)&work->aim34);
+            ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x800, (s32)&tip);
+            ex->btlfx_getUnitBonePos(0x10, 0x11, (u16 *)&bonePos);
+            ex->btlfx_aimAngles((s16 *)&tip, (s16 *)&bonePos, (s16 *)&work->aim34);
             work->aim34.vy -= 0xB4;
-            ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&a);
-            work->pos2C.vx = a.vx - ((ex->math_sin(work->aim34.vy) * 0x1E0) >> 12);
-            work->pos2C.vz = a.vz - ((ex->math_cos(work->aim34.vy) * 0x1E0) >> 12);
-            work->pos2C.vy = a.vy - ((ex->math_sin(work->aim34.vx) * 0x1E0) >> 12);
+            ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&tip);
+            work->pos2C.vx = tip.vx - ((ex->math_sin(work->aim34.vy) * 0x1E0) >> 12);
+            work->pos2C.vz = tip.vz - ((ex->math_cos(work->aim34.vy) * 0x1E0) >> 12);
+            work->pos2C.vy = tip.vy - ((ex->math_sin(work->aim34.vx) * 0x1E0) >> 12);
             work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos2C);
             work->emit3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos2C);
         }
         if (frame == 0x12) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         if (work->emit20 != NULL) {

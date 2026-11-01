@@ -4,7 +4,7 @@ void btlui_vsync(void) {
     GameData *g;
     g_btluiState.inVsync = 1;
     btlui_putDispEnvIfReady();
-    btlui_vsyncStub();
+    btlui_onVsync();
     btlui_readPad();
     if (g_btluiState.frameReady != 0) {
         btlui_frameUpdate();
@@ -12,7 +12,7 @@ void btlui_vsync(void) {
     g = g_gameState->gameData;
     if (!(g->flags & GD_PAUSED) && !(g->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN)) {
         if (g_btluiState.skipFrames == 0 && (u8)btlui_isEnabled()) {
-            btlui_vsyncMarkStub(0xBA);
+            btlui_perfMark(0xBA);
             btlui_beginFrame();
             btlui_cacheFrame();
             btlui_updateTargetFlags();
@@ -20,7 +20,7 @@ void btlui_vsync(void) {
             btlui_drawWindows();
             btlui_update();
             btlui_submitOt();
-            btlui_vsyncMarkStub(0xBB);
+            btlui_perfMark(0xBB);
         }
     }
     g_btluiState.vsyncCount++;
@@ -86,7 +86,7 @@ void btlui_resetVsyncCount(void) {
 void btlui_reset(void) {
     memset(&g_btluiState, 0, 0x11C);
     btlui_initHeap();
-    btlui_resetStub();
+    btlui_onReset();
     btlui_initDrawBufs();
     btlui_saveKeyRepeat();
     btlui_initHelp();
@@ -204,10 +204,10 @@ void btl_addItem(s32 itemId) {
 
 /* Dead code: no jal, pointer or address constant for it in any binary or effect module, no hit on an exec
  * breakpoint over 12 effects (runtime round 33). */
-void btlui_latchUnusedValue(s8 value) {
-    if (g_btluiState.unusedLatched == 0) {
-        g_btluiState.unusedLatched = 1;
-        g_btluiState.unusedValue = value;
+void btlui_latchFirstValue(s8 value) {
+    if (g_btluiState.firstValueSet == 0) {
+        g_btluiState.firstValueSet = 1;
+        g_btluiState.firstValue = value;
     }
 }
 
@@ -311,7 +311,7 @@ void btlui_drawCached(void) {
     btlui_drawCachedHeader();
 }
 
-void btlui_vsyncStub(void) {
+void btlui_onVsync(void) {
 }
 
 void btlui_applyEnable(void) {
@@ -720,7 +720,7 @@ void btlui_clearCursor(Unk800EB518 *saved) {
     }
 }
 
-void btlui_vsyncMarkStub(s32 mark) {
+void btlui_perfMark(s32 mark) {
 }
 
 u8 *btlui_getQueueCountPtr(void) {
@@ -3210,7 +3210,7 @@ void btlui_initHeap(void) {
     g_btluiHeap.used = 0;
 }
 
-void btlui_unusedStub(void) {
+void btlui_termHeap(void) {
 }
 
 void *btlui_alloc(s32 bytes) {
@@ -3794,7 +3794,7 @@ void btlui_initPrims(void) {
     }
 }
 
-void btlui_resetStub(void) {
+void btlui_onReset(void) {
 }
 
 void btlui_initDrawBufs(void) {

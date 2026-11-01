@@ -25,10 +25,10 @@ extern SVECTOR fx_040_origin; /* particle origin */
 extern SVECTOR fx_040_aboveTarget; /* above the target */
 extern SVECTOR fx_040_emitPos[4];
 
-s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
-s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
-s32 fx_040_op80ParticleMotion2(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
-s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n);
-s32 fx_040_flyToTarget(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 t, s32 n);
+s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+s32 fx_040_op80ParticleMotion2(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+s32 fx_040_flyToTarget(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 frame, s32 n);
 
 #endif

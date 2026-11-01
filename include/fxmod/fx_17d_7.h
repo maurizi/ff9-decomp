@@ -63,7 +63,7 @@ extern SVECTOR fx_17d_7_boltBase;
 extern SVECTOR fx_17d_7_boltTop;
 extern s32 fx_17d_7_noise[64][3]; /* noise */
 
-static s32 fx_17d_7_op83PoolTask(s32 mode, Fx17d7Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+static s32 fx_17d_7_op83PoolTask(s32 mode, Fx17d7Bolt *bolt, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 typedef struct {
     s16 state0; /* state */
@@ -87,14 +87,14 @@ typedef struct {
 
 extern s32 fx_17d_7_releaseLevel;
 
-static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *trail, s32 n, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);
-static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *path, Fx17d7Trail *trail, s32 n, s32 *noise,
-                   s32 i, s32 type, s32 alpha, s32 pad);
+static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx17d7Trail *trail, s32 size, s32 *noise, SVECTOR *from,
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip);
+static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 mode, Fx17d7Trail *path, Fx17d7Trail *trail, s32 size, s32 *noise,
+                   s32 branchAt, s32 frame, s32 fade, s32 lineWidth);
 
 /* copied */
-static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *trail, s32 n, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);
+static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx17d7Trail *trail, s32 size, s32 *noise, SVECTOR *from,
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip);
 /* end copied */
 
 typedef struct {

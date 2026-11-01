@@ -555,7 +555,7 @@ s32 chr_learnAbility(s32 ch, s32 id) {
     return 1;
 }
 
-void chr_newGameStub(void) {
+void chr_initNew(void) {
 }
 
 void chr_clearAllAp(void) {

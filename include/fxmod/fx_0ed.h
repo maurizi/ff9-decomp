@@ -17,13 +17,13 @@ typedef struct {
 
 extern Unk800F78A4 *fx_0ed_env;
 
-s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 typedef struct {
     SVECTOR a0;
     SVECTOR b8;
 } Fx0edSeg; /* 0x10 */
-static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx0edSeg *buf, s32 abr);
+static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *colorA, CVECTOR *colorB, s32 fade, Fx0edSeg *buf, s32 abr);
 static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out);
 
 typedef struct {

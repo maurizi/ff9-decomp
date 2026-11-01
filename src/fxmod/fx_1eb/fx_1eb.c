@@ -1,10 +1,10 @@
 #include "fxmod/fx_1eb.h"
 
-s32 fx_1eb_op80(s32 mode, Fx1ebWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1eb_op80(s32 mode, Fx1ebWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0x18;
+        *args = 0x18;
     } else if (mode == 1) {
         fx_1eb_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
@@ -45,9 +45,9 @@ s32 fx_1eb_op80(s32 mode, Fx1ebWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1eb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1eb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1eb_env = env;
     } else {
@@ -58,17 +58,17 @@ s32 fx_1eb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 
 INCLUDE_RODATA("asm/us/fx_1eb/nonmatchings/fx_1eb", fx_1eb_headerPtr);
 
-s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    s32 m;
+    SVECTOR pathPos;
+    s32 morph;
     s32 frame;
     s32 i;
     s32 j;
-    s32 t;
+    s32 pathFrame;
 
     if (mode == 0) {
-        *arg4 = 0x60;
+        *args = 0x60;
     } else if (mode == 1) {
         fx_1eb_env = env;
         ex->btlfx_initEffModels(fx_1eb_effModels, 6);
@@ -119,23 +119,23 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0 && frame < 0x28) {
-            t = frame;
+            pathFrame = frame;
             if (work->timer4C >= 0) {
                 work->rgb40 = fxm_lerpRatio(0, -0x80, 0xA - work->timer4C, 0xA);
                 work->timer4C--;
             }
             for (i = 0; i < 3; i++) {
-                fxm_rotPosPathGet(&fx_1eb_rotPosPath[i], t, &work->rot18, &v);
-                work->pos20.vx = v.vx;
-                work->pos20.vy = v.vy;
-                work->pos20.vz = v.vz;
+                fxm_rotPosPathGet(&fx_1eb_rotPosPath[i], pathFrame, &work->rot18, &pathPos);
+                work->pos20.vx = pathPos.vx;
+                work->pos20.vy = pathPos.vy;
+                work->pos20.vz = pathPos.vz;
                 work->pos20.vx += work->pos44.vx;
                 work->pos20.vy += work->pos44.vy;
                 work->pos20.vz += work->pos44.vz;
-                if (i == 0 && t >= 0x16) {
-                    fxm_valuePathGet(&fx_1eb_valuePath, t - 0x16, &m);
+                if (i == 0 && pathFrame >= 0x16) {
+                    fxm_valuePathGet(&fx_1eb_valuePath, pathFrame - 0x16, &morph);
                     ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model52[i],
-                                             work->model58, m);
+                                             work->model58, morph);
                 } else {
                     ex->Hi_SetEffModelSlice(work->model52[i], work->pos20.vy);
                     ex->Hi_DrawSliceEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model52[i]);
@@ -165,13 +165,13 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1eb_op83(s32 mode, Fx1ebWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1eb_op83(s32 mode, Fx1ebWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else if (mode == 1) {
-        s32 unit = *arg4;
+        s32 unit = *args;
         work->unitC = unit;
         fx_1eb_env = env;
         if (unit >= env->targets->targetCount) {
@@ -188,8 +188,8 @@ s32 fx_1eb_op83(s32 mode, Fx1ebWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_1eb_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_1eb_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -202,27 +202,27 @@ static void fxm_rotPosPathInit(Fx1ebKeyPath *path, u16 *data) {
     path->keys4 = (Fx1ebKey *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx1ebKeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx1ebKey *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx1ebKeyPath *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx1ebKey *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }
 
 static void fxm_valuePathInit(Fx1ebPath *path, u16 *data) {
@@ -231,14 +231,14 @@ static void fxm_valuePathInit(Fx1ebPath *path, u16 *data) {
     path->keys4 = (Fx1ebPoint *)data;
 }
 
-static s32 fxm_valuePathGet(Fx1ebPath *keys, s32 i, s32 *out) {
-    s32 r = 1;
+static s32 fxm_valuePathGet(Fx1ebPath *keys, s32 t, s32 *out) {
+    s32 done = 1;
 
-    if (i > keys->count2 - 1) {
-        i = keys->count2 - 1;
+    if (t > keys->count2 - 1) {
+        t = keys->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    *out = *(s16 *)((u8 *)keys->keys4 + (i << 1));
-    return r;
+    *out = *(s16 *)((u8 *)keys->keys4 + (t << 1));
+    return done;
 }

@@ -21,6 +21,6 @@ extern s32 fx_036_spawnCount; /* particles spawned */
 extern Unk800F78A4 *fx_036_env;
 extern SVECTOR fx_036_targetPos; /* target position */
 
-static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3);
+static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n);
 
 #endif

@@ -38,7 +38,7 @@ typedef struct {
 extern SVECTOR fx_1ea_trailOrigin; /* origin */
 
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
 static s32 fxm_posPathGet(Fx1eaPath *path, s32 t, SVECTOR *out);
 
 /* copied */
@@ -57,7 +57,7 @@ typedef struct {
     u16 count2; /* keys */
     Fx1eaKey *keys4;
 } Fx1eaPath_0b4;
-static s32 fxm_rotPosPathGet(Fx1eaPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx1eaPath_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 
 typedef struct {
     s32 vx;

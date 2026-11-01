@@ -71,16 +71,16 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
     return 0;
 }
 
-s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx0ccPart *part;
     s32 frame;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = 0x14;
-        ((EffInit *)arg4)->elemSize = 0x18;
-        ((EffInit *)arg4)->elemFn = (s32)fx_0cc_op80PoolTask;
-        ((EffInit *)arg4)->poolCount = 0xB;
+        ((EffInit *)args)->workSize = 0x14;
+        ((EffInit *)args)->elemSize = 0x18;
+        ((EffInit *)args)->elemFn = (s32)fx_0cc_op80PoolTask;
+        ((EffInit *)args)->poolCount = 0xB;
     } else if (mode == 1) {
         work->state0 = 0;
         work->spawnCountC = 0;

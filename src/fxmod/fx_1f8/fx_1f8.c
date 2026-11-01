@@ -1,10 +1,10 @@
 #include "fxmod/fx_1f8.h"
 
-s32 fx_1f8_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1f8_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1f8_emitPos0.vx = 0;
         fx_1f8_emitPos0.vy = 0;
@@ -17,14 +17,14 @@ s32 fx_1f8_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     return 0;
 }
 
-s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
-    s32 c;
+    s32 shade;
 
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1f8_timer[0] = 0;
         fx_1f8_env = env;
@@ -58,12 +58,12 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->Hi_DrawEffModel(&fx_1f8_modelRot, &fx_1f8_modelPos[i], (s32)&fx_1f8_modelScale, fx_1f8_models[i]);
                 if (fx_1f8_timer[0] >= 0x19) {
-                    c = (0x18 - fx_1f8_timer[0]) * 0x10;
-                    ex->Hi_ModifyEffModelRGB(fx_1f8_models[i], c, c, c);
+                    shade = (0x18 - fx_1f8_timer[0]) * 0x10;
+                    ex->Hi_ModifyEffModelRGB(fx_1f8_models[i], shade, shade, shade);
                 }
                 if (fx_1f8_timer[0] < 8) {
-                    c = (fx_1f8_timer[0] - 8) * 0x10;
-                    ex->Hi_ModifyEffModelRGB(fx_1f8_models[i], c, c, c);
+                    shade = (fx_1f8_timer[0] - 8) * 0x10;
+                    ex->Hi_ModifyEffModelRGB(fx_1f8_models[i], shade, shade, shade);
                 }
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xB), frame);

@@ -2,12 +2,12 @@
 
 static void fxm_camKeyReset(void) {
     s32 i;
-    s32 m;
+    s32 freeMark;
 
     fx_1ee_camFrame = 0;
-    m = FX_1EE_KEY_FREE;
+    freeMark = FX_1EE_KEY_FREE;
     for (i = 15; i >= 0; i--) {
-        fx_1ee_camKeys[i].timer4 = m;
+        fx_1ee_camKeys[i].timer4 = freeMark;
     }
 }
 
@@ -32,10 +32,10 @@ static void fxm_camKeyUpdate(void) {
     Unk800F78A4 *env = fx_1ee_env;
     s32 frame = fx_1ee_camFrame;
     s32 k;
-    s32 d;
-    s32 s;
+    s32 dstSlot;
+    s32 srcSlot;
     s32 x, y, z;
-    s32 j;
+    s32 extIdx;
 
     for (i = 0; i < 16; i++) {
         if (fx_1ee_camKeys[i].timer4 == 0 && fx_1ee_camKeys[i].frame0 == frame) {
@@ -45,37 +45,37 @@ static void fxm_camKeyUpdate(void) {
         if (fx_1ee_camKeys[i].timer4 > 0) {
             fx_1ee_camKeys[i].timer4--;
             for (k = 0; k < 3; k++) {
-                d = ((fx_1ee_camKeys[i].slot8 >> (k * 4)) & 0xF) - 1;
-                s = ((fx_1ee_camKeys[i].slotC >> (k * 4)) & 0xF) - 1;
-                if (d >= 0) {
+                dstSlot = ((fx_1ee_camKeys[i].slot8 >> (k * 4)) & 0xF) - 1;
+                srcSlot = ((fx_1ee_camKeys[i].slotC >> (k * 4)) & 0xF) - 1;
+                if (dstSlot >= 0) {
                     x = *fx_1ee_camKeys[i].keys10;
                     fx_1ee_camKeys[i].keys10++;
                     y = *fx_1ee_camKeys[i].keys10;
                     fx_1ee_camKeys[i].keys10++;
                     z = *fx_1ee_camKeys[i].keys10;
                     fx_1ee_camKeys[i].keys10++;
-                    if (s >= 0) {
+                    if (srcSlot >= 0) {
                         /* each branch adds its own source; jump2's cross-jumping merges the identical tails */
-                        if (s >= 10) {
-                            j = s - 10;
-                            x += ext[j].vx;
-                            y += ext[j].vy;
-                            z += ext[j].vz;
+                        if (srcSlot >= 10) {
+                            extIdx = srcSlot - 10;
+                            x += ext[extIdx].vx;
+                            y += ext[extIdx].vy;
+                            z += ext[extIdx].vz;
                         } else {
-                            x += ((SVECTOR *)env->camera)[s].vx;
-                            y += ((SVECTOR *)env->camera)[s].vy;
-                            z += ((SVECTOR *)env->camera)[s].vz;
+                            x += ((SVECTOR *)env->camera)[srcSlot].vx;
+                            y += ((SVECTOR *)env->camera)[srcSlot].vy;
+                            z += ((SVECTOR *)env->camera)[srcSlot].vz;
                         }
                     }
-                    if (d >= 10) {
-                        j = d - 10;
-                        ext[j].vx = x;
-                        ext[j].vy = y;
-                        ext[j].vz = z;
+                    if (dstSlot >= 10) {
+                        extIdx = dstSlot - 10;
+                        ext[extIdx].vx = x;
+                        ext[extIdx].vy = y;
+                        ext[extIdx].vz = z;
                     } else {
-                        ((SVECTOR *)env->camera)[d].vx = x;
-                        ((SVECTOR *)env->camera)[d].vy = y;
-                        ((SVECTOR *)env->camera)[d].vz = z;
+                        ((SVECTOR *)env->camera)[dstSlot].vx = x;
+                        ((SVECTOR *)env->camera)[dstSlot].vy = y;
+                        ((SVECTOR *)env->camera)[dstSlot].vz = z;
                     }
                 }
             }
@@ -86,45 +86,45 @@ static void fxm_camKeyUpdate(void) {
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1ee_env);
-    s32 k = 0x20000000 / (n * n);
-    s32 r = 0;
+    s32 invSq = 0x20000000 / (n * n);
+    s32 ratio = 0;
 
     switch (curve) {
     case 0:
-        r = 0x1000 - (((0x10000000 / n) * t) >> 16);
+        ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
     case 1:
-        r = (k * (n - t) * (n - t)) >> 17;
+        ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
-        r = 0x1000 - ((k * t * t) >> 17);
+        ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
-    return ex->btlfx_lerp(from, to, r);
+    return ex->btlfx_lerp(from, to, ratio);
 }
 
-s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     SVECTOR rot;
     VECTOR scale;
-    SVECTOR *p;
-    Pool6CEntry *e;
-    Pool6CEntry *e2;
-    Pool6CEntry *e3;
-    SVECTOR *q;
+    SVECTOR *pt;
+    Pool6CEntry *emitter2;
+    Pool6CEntry *emitter3;
+    Pool6CEntry *emitter4;
+    SVECTOR *pt2;
     Fx1eeTrail *tr;
     Fx1eeTrail *tr2;
     s32 frame;
-    s32 a;
-    s32 c;
-    s32 y;
+    s32 alpha;
+    s32 lineWidth;
+    s32 topY;
     s32 i;
     u8 n = 0x15;
-    s32 t;
+    s32 shade;
 
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1ee_env = env;
         for (i = 7; i >= 0; i--) {
@@ -181,19 +181,19 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             break;
         case 0x40:
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 0x11, (u16 *)&fx_1ee_emitter2Pos);
-            fx_1ee_emitter2 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x3B), (s32)&fx_1ee_emitter2Pos);
-            if (e != NULL) {
-                e->trails = (s32)fx_1ee_op80Trails;
-                e->trailSlots = 0x28;
-                e->trailStride = 0xAC;
-                e->otZ = 0x50;
+            fx_1ee_emitter2 = emitter2 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x3B), (s32)&fx_1ee_emitter2Pos);
+            if (emitter2 != NULL) {
+                emitter2->trails = (s32)fx_1ee_op80Trails;
+                emitter2->trailSlots = 0x28;
+                emitter2->trailStride = 0xAC;
+                emitter2->otZ = 0x50;
             }
             break;
         case 0x48:
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 0x11, (u16 *)&fx_1ee_emitter3Pos);
-            fx_1ee_emitter3 = e2 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x39), (s32)&fx_1ee_emitter3Pos);
-            if (e2 != NULL) {
-                e2->otZ = 0x40;
+            fx_1ee_emitter3 = emitter3 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x39), (s32)&fx_1ee_emitter3Pos);
+            if (emitter3 != NULL) {
+                emitter3->otZ = 0x40;
             }
             break;
         case 0x67:
@@ -203,9 +203,9 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->btlfx_stopEmitter(fx_1ee_emitter2);
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 0, (u16 *)&fx_1ee_emitter4Pos);
             fx_1ee_emitter4Pos.vy -= 0x180;
-            fx_1ee_emitter4 = e3 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x30), (s32)&fx_1ee_emitter4Pos);
-            if (e3 != NULL) {
-                e3->otZ = -0x80;
+            fx_1ee_emitter4 = emitter4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x30), (s32)&fx_1ee_emitter4Pos);
+            if (emitter4 != NULL) {
+                emitter4->otZ = -0x80;
             }
             fx_1ee_timers[1] = 0x10;
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 0x11, (u16 *)&fx_1ee_emitter5Pos);
@@ -280,7 +280,7 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         }
         if (fx_1ee_timers[3] != 0) {
             tr = fx_1ee_trails;
-            p = tr->pos4;
+            pt = tr->pos4;
             tr->lastSlot0 = tr->count2 = 0x14;
             tr->head1 = 0;
             tr2 = tr + 1;
@@ -288,44 +288,44 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             tr2->head1 = 0;
             do {
                             } while (0);
-            q = tr[1].pos4;
+            pt2 = tr[1].pos4;
             if (fx_1ee_timers[2] != 0) {
                 fx_1ee_timers[2]--;
-                y = fx_1ee_emitter5Pos.vy - fxm_easeLerp(1, 8, fx_1ee_timers[2], 0, 0x1800);
+                topY = fx_1ee_emitter5Pos.vy - fxm_easeLerp(1, 8, fx_1ee_timers[2], 0, 0x1800);
             } else {
-                y = fx_1ee_emitter5Pos.vy - 0x1800;
+                topY = fx_1ee_emitter5Pos.vy - 0x1800;
             }
             if (fx_1ee_timers[4] != 0) {
                 fx_1ee_timers[4]--;
                 if (fx_1ee_timers[4] == 0) {
                     fx_1ee_timers[3] = 0;
                 }
-                c = fx_1ee_timers[4] << 4;
-                a = fx_1ee_timers[4] << 10;
+                lineWidth = fx_1ee_timers[4] << 4;
+                alpha = fx_1ee_timers[4] << 10;
             } else {
-                c = 0x40;
-                a = 0x1000;
+                lineWidth = 0x40;
+                alpha = 0x1000;
             }
             for (i = 0; i < n; i++) {
-                p->vy = q->vy = ex->btlfx_lerpRatio(fx_1ee_emitter5Pos.vy, y, i, 0x15);
-                p->vx = q->vx = fx_1ee_emitter5Pos.vx;
-                p->vz = q->vz = fx_1ee_emitter5Pos.vz;
-                p->pad = c;
-                q->pad = c * 2;
-                p++;
-                q++;
+                pt->vy = pt2->vy = ex->btlfx_lerpRatio(fx_1ee_emitter5Pos.vy, topY, i, 0x15);
+                pt->vx = pt2->vx = fx_1ee_emitter5Pos.vx;
+                pt->vz = pt2->vz = fx_1ee_emitter5Pos.vz;
+                pt->pad = lineWidth;
+                pt2->pad = lineWidth * 2;
+                pt++;
+                pt2++;
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x33), 0, NULL, frame, 0x1000, a, 1, (u8 *)&fx_1ee_trails[0], 0);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x33), 0, NULL, frame, 0x1000, a, 1, (u8 *)&fx_1ee_trails[1], 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x33), 0, NULL, frame, 0x1000, alpha, 1, (u8 *)&fx_1ee_trails[0], 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x33), 0, NULL, frame, 0x1000, alpha, 1, (u8 *)&fx_1ee_trails[1], 0);
         }
         if (fx_1ee_timers[5] != 0) {
             fx_1ee_timers[5]--;
             if (fx_1ee_timers[5] >= 9) {
-                t = (0x10 - fx_1ee_timers[5]) << 4;
+                shade = (0x10 - fx_1ee_timers[5]) << 4;
             } else {
-                t = fx_1ee_timers[5] << 4;
+                shade = fx_1ee_timers[5] << 4;
             }
-            col.r = col.g = col.b = t;
+            col.r = col.g = col.b = shade;
             scale.vx = 0x1000;
             scale.vy = 0x1000;
             scale.vz = 0x1000;
@@ -347,19 +347,19 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     fx_1ee_sparks[r][2].tex8 = (u8 *)ex->btlfx_getFileData(entry->file, b); \
     fx_1ee_sparks[r][3].tex8 = (u8 *)ex->btlfx_getFileData(entry->file, b);
 
-s32 fx_1ee_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1ee_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Fx1eeSpark *e;
-    Pool6CEntry *p;
+    Fx1eeSpark *spark;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 j;
-    s32 n;
-    s32 r;
-    s32 s;
+    s32 fade;
+    s32 scale;
+    s32 offX;
 
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1ee_op81Timer[0] = 0;
         fx_1ee_env = env;
@@ -393,25 +393,25 @@ s32 fx_1ee_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             fx_1ee_op81Timer[0] = 0x20;
             break;
         case 8:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&fx_1ee_sparkOrigin);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&fx_1ee_sparkOrigin);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
             break;
         case 0x18:
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_1ee_op81TargetPos[i]);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_1ee_op81TargetPos[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_1ee_op81TargetPos[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1ee_op81TargetPos[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1ee_op81TargetPos[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&fx_1ee_op81TargetPos[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&fx_1ee_op81TargetPos[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
             }
             break;
@@ -421,18 +421,18 @@ s32 fx_1ee_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             env->otZ = 0x200;
             for (i = 0; i < 12; i++) {
                 for (j = 0; j < 4; j++) {
-                    e = (Fx1eeSpark *)(i * 0x50 + j * 0x14 + (s32)fx_1ee_sparks);
-                    if (e->timer0 != 0) {
-                        e->timer0--;
-                    } else if (e->timer4 != 0) {
-                        e->angleC -= 0x40;
-                        e->radius10 -= 2;
-                        e->timer4--;
-                        r = (e->radius10 << 8) + 0x4000;
-                        n = e->timer4 << 9;
-                        s = (ex->math_sin(e->angleC) * e->radius10) >> 12;
-                        ex->btlfx_drawParticles(e->tex8, &fx_1ee_sparkOrigin, NULL, r, 0, 1, n, s,
-                                                (ex->math_cos(e->angleC) * e->radius10) >> 12);
+                    spark = (Fx1eeSpark *)(i * 0x50 + j * 0x14 + (s32)fx_1ee_sparks);
+                    if (spark->timer0 != 0) {
+                        spark->timer0--;
+                    } else if (spark->timer4 != 0) {
+                        spark->angleC -= 0x40;
+                        spark->radius10 -= 2;
+                        spark->timer4--;
+                        scale = (spark->radius10 << 8) + 0x4000;
+                        fade = spark->timer4 << 9;
+                        offX = (ex->math_sin(spark->angleC) * spark->radius10) >> 12;
+                        ex->btlfx_drawParticles(spark->tex8, &fx_1ee_sparkOrigin, NULL, scale, 0, 1, fade, offX,
+                                                (ex->math_cos(spark->angleC) * spark->radius10) >> 12);
                     }
                 }
             }

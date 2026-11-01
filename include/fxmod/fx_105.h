@@ -15,9 +15,9 @@ extern Fx105Spark fx_105_windStreaks[];
 
 void fx_105_drawScreenBand(s32 z, s32 tpage, s32 y0, s32 y1, CVECTOR *rgb);
 void fx_105_initWindStreaks(void);
-void fx_105_drawWindStreaks(s32 c);
-void fx_105_drawWorldRibbon(s16 *data, s32 c, s32 c2, s32 n);
-void fx_105_drawCamRibbon(s16 *data, s32 c, s32 h, s32 n);
+void fx_105_drawWindStreaks(s32 bright);
+void fx_105_drawWorldRibbon(s16 *data, s32 bright, s32 unused, s32 n);
+void fx_105_drawCamRibbon(s16 *data, s32 bright, s32 halfWidth, s32 n);
 
 typedef struct {
     DVECTOR xy0;
@@ -38,7 +38,7 @@ typedef struct {
     SVECTOR pos0;
     SVECTOR pos8;
 } Fx105Seg; /* 0x10 */
-static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx105Seg *buf, s32 abr);
+static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *colorA, CVECTOR *colorB, s32 fade, Fx105Seg *buf, s32 abr);
 
 typedef struct {
     u8 pad0[0x54];

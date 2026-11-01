@@ -1,27 +1,27 @@
 #include "fxmod/fx_043.h"
 
-static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
+static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_043_env);
-    s32 r = t << 10;
+    s32 ratio = frame << 10;
 
-    if (r > 0x1000) {
-        r = 0x1000;
+    if (ratio > 0x1000) {
+        ratio = 0x1000;
     }
-    ex->btlfx_lerpVec((s16 *)&fx_043_particleFrom, (s16 *)&fx_043_particleTo, r, (s16 *)pos);
+    ex->btlfx_lerpVec((s16 *)&fx_043_particleFrom, (s16 *)&fx_043_particleTo, ratio, (s16 *)pos);
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
-    if (t >= n) {
+    if (frame >= n) {
         return -1;
     }
     return 0;
 }
 
-s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0x1C;
+        *args = 0x1C;
     } else if (mode == 1) {
         fx_043_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
@@ -51,12 +51,12 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
         fx_043_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);

@@ -1,18 +1,18 @@
 #include "fxmod/fx_07f.h"
 
-s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR scale;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
-    s32 s;
+    s32 fade;
     s32 t;
     s32 sxz;
     s32 sy;
-    s32 c;
+    s32 tint;
 
     if (mode == 0) {
-        *arg4 = 0x34;
+        *args = 0x34;
     } else if (mode == 1) {
         fx_07f_env = env;
         BTLFX_COPY_SVEC(&work->pos8, &env->targets->centerX);
@@ -26,13 +26,13 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->state0 = 0;
         work->bgFrame4 = 0;
         work->pos10.vy -= 0x180;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = 0x20;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = 0x20;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = -0x20;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = -0x20;
         }
         ex->btlfx_initEffModels(fx_07f_effModels, 2);
         work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0xB7, 0x3D40, 0, 0);
@@ -42,7 +42,7 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             t = (frame << 12) / 41;
-            s = ex->math_sin(t >> 1);
+            fade = ex->math_sin(t >> 1);
             sy = ex->math_sin(t >> 2) * 3;
             sxz = t + 0x1800;
             scale.vx = sxz;
@@ -55,19 +55,19 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->Hi_DrawEffModel(&work->rot24, (VECTOR *)work->modelPos18, (s32)&scale, work->model2C);
             ex->Hi_ModifyEffModelAbr(work->model2C, 1);
-            c = (s >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->model2C, c, c, c);
+            tint = (fade >> 5) - 0x80;
+            ex->Hi_ModifyEffModelRGB(work->model2C, tint, tint, tint);
             scale.vx = sxz;
             scale.vy = sy;
             scale.vz = sxz;
             work->rot24.vy = frame * 0x18;
             ex->Hi_DrawEffModel(&work->rot24, (VECTOR *)work->modelPos18, (s32)&scale, work->model30);
             ex->Hi_ModifyEffModelAbr(work->model30, 1);
-            ex->Hi_ModifyEffModelRGB(work->model30, c, c, c);
+            ex->Hi_ModifyEffModelRGB(work->model30, tint, tint, tint);
             if (frame == 0xC) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x46;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x46;
                 }
             }
             if (frame >= 0x29) {

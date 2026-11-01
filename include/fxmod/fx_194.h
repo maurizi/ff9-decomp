@@ -19,6 +19,6 @@ extern s32 fx_194_waveAmp; /* wave amplitude */
 extern s32 fx_194_wavePhase; /* wave phase */
 
 static void fx_194_op80GridVertex(SVECTOR *v);
-void fx_194_shakeCamPoint(s32 frame, s32 amp, SVECTOR *v);
+void fx_194_shakeCamPoint(s32 frame, s32 amp, SVECTOR *point);
 
 #endif

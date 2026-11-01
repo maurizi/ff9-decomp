@@ -1,137 +1,137 @@
 #include "fxmod/fx_191.h"
 
-s32 fx_191_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    SVECTOR z;
+s32 fx_191_op80ParticleMotion0(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
     fx_191_op80Offsets[0].vx -= 0x96;
-    return fxm_lerpParticle(e, pos, &fx_191_op80Offsets[0], &fx_191_op80Targets[0], frame, frames);
+    return fxm_lerpParticle(pt, pos, &fx_191_op80Offsets[0], &fx_191_op80Targets[0], frame, frames);
 }
 
-s32 fx_191_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    SVECTOR z;
+s32 fx_191_op80ParticleMotion1(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
     fx_191_op80Offsets[1].vx += 0x96;
-    return fxm_lerpParticle(e, pos, &fx_191_op80Offsets[1], &fx_191_op80Targets[1], frame, frames);
+    return fxm_lerpParticle(pt, pos, &fx_191_op80Offsets[1], &fx_191_op80Targets[1], frame, frames);
 }
 
-s32 fx_191_op80ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    SVECTOR z;
+s32 fx_191_op80ParticleMotion2(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
     fx_191_op80Offsets[2].vx -= 0x32;
-    return fxm_lerpParticle(e, pos, &fx_191_op80Offsets[2], &fx_191_op80Targets[2], frame, frames);
+    return fxm_lerpParticle(pt, pos, &fx_191_op80Offsets[2], &fx_191_op80Targets[2], frame, frames);
 }
 
-s32 fx_191_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    SVECTOR z;
+s32 fx_191_op80ParticleMotion3(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
     fx_191_op80Offsets[3].vx += 0x32;
-    return fxm_lerpParticle(e, pos, &fx_191_op80Offsets[3], &fx_191_op80Targets[3], frame, frames);
+    return fxm_lerpParticle(pt, pos, &fx_191_op80Offsets[3], &fx_191_op80Targets[3], frame, frames);
 }
 
-static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 frame, s32 frames) {
+static s32 fxm_lerpParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_191_env);
-    SVECTOR a;
-    SVECTOR b;
+    SVECTOR start;
+    SVECTOR cur;
     s32 t;
 
-    a.vx = fx_191_op80Origin.vx + base->vx;
+    start.vx = fx_191_op80Origin.vx + base->vx;
     t = (fx_191_op80Frame << 12) / 12;
-    a.vy = fx_191_op80Origin.vy + base->vy;
-    a.vz = fx_191_op80Origin.vz + base->vz;
-    ex->btlfx_lerpVec((s16 *)&a, (s16 *)to, t, (s16 *)&b);
-    pos->vx = b.vx;
-    pos->vy = b.vy;
-    pos->vz = b.vz;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    start.vy = fx_191_op80Origin.vy + base->vy;
+    start.vz = fx_191_op80Origin.vz + base->vz;
+    ex->btlfx_lerpVec((s16 *)&start, (s16 *)to, t, (s16 *)&cur);
+    pos->vx = cur.vx;
+    pos->vy = cur.vy;
+    pos->vz = cur.vz;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
     return 0;
 }
 
-static s32 fx_191_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    SVECTOR z;
+static s32 fx_191_op81ParticleMotion0(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
-    return fxm_followPathParticle0(e, pos, &z, frame, frames);
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
+    return fxm_followPathParticle0(pt, pos, &zero, frame, frames);
 }
 
-static s32 fx_191_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    SVECTOR z;
+static s32 fx_191_op81ParticleMotion1(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
-    return fxm_followPathParticle1(e, pos, &z, frame, frames);
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
+    return fxm_followPathParticle1(pt, pos, &zero, frame, frames);
 }
 
-static s32 fxm_followPathParticle0(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fxm_followPathParticle0(Pool30Entry *pt, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_191_posPath0, fx_191_op81Frame * 3, &v);
-    v.vx += fx_191_op81PathOrigin.vx;
-    v.vy += fx_191_op81PathOrigin.vy;
-    v.vz += fx_191_op81PathOrigin.vz;
-    v.vx += ofs->vx;
-    v.vy += ofs->vy;
-    v.vz += ofs->vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    fxm_posPathGet(&fx_191_posPath0, fx_191_op81Frame * 3, &pathPos);
+    pathPos.vx += fx_191_op81PathOrigin.vx;
+    pathPos.vy += fx_191_op81PathOrigin.vy;
+    pathPos.vz += fx_191_op81PathOrigin.vz;
+    pathPos.vx += ofs->vx;
+    pathPos.vy += ofs->vy;
+    pathPos.vz += ofs->vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
     return 0;
 }
 
-static s32 fxm_followPathParticle1(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fxm_followPathParticle1(Pool30Entry *pt, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_191_posPath1, (fx_191_op81Frame - 5) * 3, &v);
-    v.vx += fx_191_op81PathOrigin.vx;
-    v.vy += fx_191_op81PathOrigin.vy;
-    v.vz += fx_191_op81PathOrigin.vz;
-    v.vx += ofs->vx;
-    v.vy += ofs->vy;
-    v.vz += ofs->vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    fxm_posPathGet(&fx_191_posPath1, (fx_191_op81Frame - 5) * 3, &pathPos);
+    pathPos.vx += fx_191_op81PathOrigin.vx;
+    pathPos.vy += fx_191_op81PathOrigin.vy;
+    pathPos.vz += fx_191_op81PathOrigin.vz;
+    pathPos.vx += ofs->vx;
+    pathPos.vy += ofs->vy;
+    pathPos.vz += ofs->vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
     return 0;
 }
 
-s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
         fx_191_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
@@ -168,13 +168,13 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 t;
 
     if (mode == 0) {
-        *arg4 = 0x60;
+        *args = 0x60;
     } else if (mode == 1) {
         fx_191_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos18);
@@ -298,17 +298,17 @@ static void fxm_posPathInit(Fx191Path *path, u16 *data) {
 static s32 fxm_posPathGet(Fx191Path *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx191Point *p;
+    Fx191Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 

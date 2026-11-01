@@ -1,85 +1,85 @@
 #include "fxmod/fx_1bf_0.h"
 
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
-    SVECTOR *v;
+    SVECTOR *pts;
 
     fx_1bf_0_lineTrail.lastSlot0 = fx_1bf_0_lineTrail.count2 = 1;
     fx_1bf_0_lineTrail.head1 = 0;
-    v = fx_1bf_0_lineTrail.points4;
-    v[0].vx = a->vx;
-    v[0].vy = a->vy;
-    v[0].vz = a->vz;
-    v[0].pad = arg6;
-    v[1].vx = b->vx;
-    v[1].vy = b->vy;
-    v[1].vz = b->vz;
-    v[1].pad = arg6;
-    ex->btlfx_drawTrail(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&fx_1bf_0_lineTrail, 0);
+    pts = fx_1bf_0_lineTrail.points4;
+    pts[0].vx = from->vx;
+    pts[0].vy = from->vy;
+    pts[0].vz = from->vz;
+    pts[0].pad = lineWidth;
+    pts[1].vx = to->vx;
+    pts[1].vy = to->vy;
+    pts[1].vz = to->vz;
+    pts[1].pad = lineWidth;
+    ex->btlfx_drawTrail(file, 0, NULL, frame, 0x1000, fade, abr, (u8 *)&fx_1bf_0_lineTrail, 0);
 }
 
-void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag) {
+void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 reach, s32 lineWidth, s32 alpha, s32 fade, s32 flag) {
     u8 *data;
-    s32 k;
+    s32 layer;
     s32 width;
     BtlfxExports *ex;
     SVECTOR last;
-    SVECTOR p0;
-    SVECTOR p1;
+    SVECTOR lineBase;
+    SVECTOR lineTop;
     s16 *pts;
     Fx1bf0Line *tr;
     SVECTOR *dst;
     s32 j;
     s32 i;
     s32 cnt;
-    s32 t;
+    s32 pointFrame;
 
     ex = BTLFX_EXPORTS(fx_1bf_0_env);
-    k = 0;
+    layer = 0;
     data = (u8 *)ex->btlfx_getFileData(entry->file, 0x1D);
-    w = (w * 3) >> 1;
+    lineWidth = (lineWidth * 3) >> 1;
     do {
         for (j = 0; j < 18; j++) {
-            cnt = *(u16 *)(data + ((j + k * 18) << 2));
+            cnt = *(u16 *)(data + ((j + layer * 18) << 2));
             pts = (s16 *)(data + cnt);
             cnt = pts[1];
             tr = fx_1bf_0_strandTrails[j];
-            tr = (Fx1bf0Line *)((u8 *)tr + fx_1bf_0_strandParams[j * 4 + 2] * k);
-            width = w * (fx_1bf_0_strandParams[j * 4 + 3] + 1);
+            tr = (Fx1bf0Line *)((u8 *)tr + fx_1bf_0_strandParams[j * 4 + 2] * layer);
+            width = lineWidth * (fx_1bf_0_strandParams[j * 4 + 3] + 1);
             tr->lastSlot0 = tr->count2 = cnt - 1;
             tr->head1 = 0;
             pts += 2;
             dst = tr->points4;
             for (i = 0; i < cnt; i++, dst++, pts += 3) {
-                t = fx_1bf_0_strandParams[j * 4 + 1];
+                pointFrame = fx_1bf_0_strandParams[j * 4 + 1];
                 if (i == 0) {
                     last.vx = from->vx + pts[0] * 2;
                     last.vy = from->vy + pts[1] * 2;
                     last.vz = from->vz + pts[2] * 2;
                     last.pad = 0;
                 }
-                t += i;
-                if (n >= t) {
+                pointFrame += i;
+                if (reach >= pointFrame) {
                     dst->vx = from->vx + pts[0] * 2;
                     dst->vy = from->vy + pts[1] * 2;
                     dst->vz = from->vz + pts[2] * 2;
                     dst->pad = width;
                     BTLFX_COPY_SVEC(&last, dst);
-                    if (t == n && flag) {
-                        BTLFX_COPY_SVEC(&p0, dst);
-                        BTLFX_COPY_SVEC(&p1, dst);
-                        p1.vy -= 0x1000;
-                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &p1, &p0, 0, 0x800, 1, 0x32);
+                    if (pointFrame == reach && flag) {
+                        BTLFX_COPY_SVEC(&lineBase, dst);
+                        BTLFX_COPY_SVEC(&lineTop, dst);
+                        lineTop.vy -= 0x1000;
+                        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &lineTop, &lineBase, 0, 0x800, 1, 0x32);
                     }
                 } else {
                     BTLFX_COPY_SVEC(dst, &last);
                 }
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_strandParams[j * 4]), 0, (s32 *)from, 0, 0x1000, a,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_strandParams[j * 4]), 0, (s32 *)from, 0, 0x1000, alpha,
                                 1, (u8 *)tr, fade);
         }
-        k++;
-    } while (k < 3);
+        layer++;
+    } while (layer < 3);
 }
 
 void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot) {
@@ -88,21 +88,21 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
     SVECTOR ang;
     s32 k = 0;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
-    Fx1bf0Pt *p;
+    Fx1bf0Pt *pt;
     s32 i;
-    s32 a;
+    s32 orbitAng;
 
     rot.vx = 0x400;
     rot.vy = 0;
     rot.pad = 1;
     for (; k < 3; k++) {
-        p = (Fx1bf0Pt *)ex->btlfx_getFileData(entry->file, fx_1bf_0_pointFileIds[k]);
-        p = (Fx1bf0Pt *)((u8 *)p + 4);
-        for (i = 0; i < 20; i++, p++) {
+        pt = (Fx1bf0Pt *)ex->btlfx_getFileData(entry->file, fx_1bf_0_pointFileIds[k]);
+        pt = (Fx1bf0Pt *)((u8 *)pt + 4);
+        for (i = 0; i < 20; i++, pt++) {
             if (i < n) {
-                pos.vx = from->vx + p->x * 2;
-                pos.vy = from->vy + p->y * 2;
-                pos.vz = from->vz + p->z * 2;
+                pos.vx = from->vx + pt->x * 2;
+                pos.vy = from->vy + pt->y * 2;
+                pos.vz = from->vz + pt->z * 2;
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i & 7]), &pos, &rot, 0x3000,
@@ -113,10 +113,10 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
     for (k = 0; k < 3; k++) {
         for (i = 0; i < 27; i++) {
             if (i <= n * 27 / 20) {
-                a = ((i + k * 27) << 12) / 81;
-                pos.vx = from->vx + ((ex->math_cos(a) * 1600) >> 12);
+                orbitAng = ((i + k * 27) << 12) / 81;
+                pos.vx = from->vx + ((ex->math_cos(orbitAng) * 1600) >> 12);
                 pos.vy = from->vy;
-                pos.vz = from->vz + ((ex->math_sin(a) * 1600) >> 12);
+                pos.vz = from->vz + ((ex->math_sin(orbitAng) * 1600) >> 12);
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i & 7]), &pos, &rot, 0x1800,
@@ -130,7 +130,7 @@ void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
     SVECTOR pos;
     SVECTOR rot;
     SVECTOR ang;
-    SVECTOR *d = fx_1bf_0_particleOffsets;
+    SVECTOR *ofs = fx_1bf_0_particleOffsets;
     s32 i = 0;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
 
@@ -138,44 +138,44 @@ void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
     rot.vy = 0;
     rot.pad = 1;
     do {
-        pos.vx = from->vx + d->vx * 2;
-        pos.vy = from->vy + d->vy * 2;
-        pos.vz = from->vz + d->vz * 2;
+        pos.vx = from->vx + ofs->vx * 2;
+        pos.vy = from->vy + ofs->vy * 2;
+        pos.vz = from->vz + ofs->vz * 2;
         ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
         rot.vz = -ang.vy;
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i + 8]), &pos, &rot, 0x2AF8, 0, 1, ot, 0, 0);
-        d++;
+        ofs++;
         i++;
     } while (i < 3);
 }
 
-s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR q;
-    SVECTOR p;
+    SVECTOR ringTop;
+    SVECTOR ringPos;
     SVECTOR rot;
-    SVECTOR q2;
-    SVECTOR p2;
+    SVECTOR centerTop;
+    SVECTOR centerPos;
     s32 frame;
     s32 t;
-    s32 a;
-    s32 b;
-    s32 c;
-    s32 d;
-    s32 e;
-    s32 n;
+    s32 orbitAng;
+    s32 orbitRadius;
+    s32 offX;
+    s32 prog;
+    s32 offZ;
+    s32 reach;
     s32 flag;
     s32 fade;
-    s32 m;
-    s32 w;
+    s32 shown;
+    s32 lineWidth;
     s32 alpha;
-    s32 s2;
-    s32 s0;
+    s32 patternAlpha;
+    s32 offsetAlpha;
     s32 bright;
-    s16 y6;
+    s16 baseY;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
         work->state0 = 5;
         work->unk4 = 0;
@@ -191,7 +191,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
         env->camera->points[3].vx = work->pos8.vx;
         env->camera->points[3].vy = work->pos8.vy;
         env->camera->points[3].vz = work->pos8.vz;
-        fx_1bf_0_unusedBuf[0] = 0;
+        fx_1bf_0_buf400[0] = 0;
     } else {
         frame = entry->frame;
         switch (work->state0) {
@@ -199,18 +199,18 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             env->otZ = 0x10;
             if (frame >= 0x26) {
                 t = ((frame - 0x26) << 12) / 24;
-                a = ex->math_cos(t >> 1) >> 1;
-                b = ex->math_cos(t >> 2) >> 1;
-                c = (ex->math_cos(a) * b) >> 12;
-                e = (ex->math_sin(a) * b) >> 12;
-                p.vx = work->pos8.vx + c;
-                p.vy = work->pos8.vy;
-                p.vz = work->pos8.vz + e;
-                q.vx = p.vx;
-                q.vy = work->pos8.vy - 0x1000;
-                q.vz = p.vz;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &p, NULL, 0xAAA, 0, 1, t);
-                fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &p, &q, frame, t, 1, 0x20);
+                orbitAng = ex->math_cos(t >> 1) >> 1;
+                orbitRadius = ex->math_cos(t >> 2) >> 1;
+                offX = (ex->math_cos(orbitAng) * orbitRadius) >> 12;
+                offZ = (ex->math_sin(orbitAng) * orbitRadius) >> 12;
+                ringPos.vx = work->pos8.vx + offX;
+                ringPos.vy = work->pos8.vy;
+                ringPos.vz = work->pos8.vz + offZ;
+                ringTop.vx = ringPos.vx;
+                ringTop.vy = work->pos8.vy - 0x1000;
+                ringTop.vz = ringPos.vz;
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &ringPos, NULL, 0xAAA, 0, 1, t);
+                fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &ringPos, &ringTop, frame, t, 1, 0x20);
             }
             env->otZ = 0;
             if (frame >= 0x3E) {
@@ -219,77 +219,77 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             }
             break;
         case 6:
-            p2.vx = work->pos8.vx;
-            p2.vy = work->pos8.vy;
-            p2.vz = work->pos8.vz;
-            q2.vx = p2.vx;
-            y6 = work->pos8.vy;
-            q2.vz = p2.vz;
-            q2.vy = y6 - 0x1000;
+            centerPos.vx = work->pos8.vx;
+            centerPos.vy = work->pos8.vy;
+            centerPos.vz = work->pos8.vz;
+            centerTop.vx = centerPos.vx;
+            baseY = work->pos8.vy;
+            centerTop.vz = centerPos.vz;
+            centerTop.vy = baseY - 0x1000;
             env->otZ = 0x10;
             t = (frame << 12) / 51;
             bright = 0x1000 - t;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &p2, NULL, 0xAAA, 0, 1, bright);
-            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &p2, &q2, frame, bright, 1, (t >> 7) + 0x20);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), &centerPos, NULL, 0xAAA, 0, 1, bright);
+            fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &centerPos, &centerTop, frame, bright, 1, (t >> 7) + 0x20);
             env->otZ = 0;
             rot.vx = 0x400;
             rot.vz = 0;
             rot.vy = 0;
             rot.pad = 1;
             if (frame < 0x10) {
-                s32 x = (frame << 12) >> 6;
-                s32 y = ex->math_sin(x) * 5;
-                s32 z = ex->math_cos(x);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &p2, &rot, y, 0, 1, z);
+                s32 ang = (frame << 12) >> 6;
+                s32 ringSize = ex->math_sin(ang) * 5;
+                s32 ringAlpha = ex->math_cos(ang);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &centerPos, &rot, ringSize, 0, 1, ringAlpha);
             }
             if (frame >= 0x1E) {
-                s0 = (frame - 0x1E) << 9;
-                if (s0 > 0x1000) {
-                    s0 = 0x1000;
+                offsetAlpha = (frame - 0x1E) << 9;
+                if (offsetAlpha > 0x1000) {
+                    offsetAlpha = 0x1000;
                 }
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &p2, &rot, 0x5000, 0, 1, s0);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &centerPos, &rot, 0x5000, 0, 1, offsetAlpha);
             }
             flag = 0;
             if (frame < 0x26) {
                 if (frame < 0x1E) {
-                    n = frame;
-                    w = 0x20;
+                    reach = frame;
+                    lineWidth = 0x20;
                     alpha = 0x1000;
                     fade = 0;
                     flag = 1;
-                    m = 0;
-                    s2 = fade;
-                    s0 = fade;
+                    shown = 0;
+                    patternAlpha = fade;
+                    offsetAlpha = fade;
                 } else {
-                    s32 x = frame - 0x1E;
-                    d = x << 9;
-                    n = 0x1D;
-                    w = 0x27;
+                    s32 elapsed = frame - 0x1E;
+                    prog = elapsed << 9;
+                    reach = 0x1D;
+                    lineWidth = 0x27;
                     alpha = 0x1000;
                     fade = 0;
-                    m = x * 3;
-                    s2 = alpha;
-                    if (d >= 0x800) {
-                        s0 = (d - 0x800) * 2;
+                    shown = elapsed * 3;
+                    patternAlpha = alpha;
+                    if (prog >= 0x800) {
+                        offsetAlpha = (prog - 0x800) * 2;
                     } else {
-                        s0 = 0;
+                        offsetAlpha = 0;
                     }
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((0x1000 - d) * 100) >> 12, 0, 0);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((0x1000 - prog) * 100) >> 12, 0, 0);
                 }
             } else {
-                d = ((frame - 0x26) << 12) / 13;
+                prog = ((frame - 0x26) << 12) / 13;
                 fade = 1;
-                n = 0x1D;
-                m = 0x15;
-                alpha = 0x1000 - d * 2 / 3;
-                w = (d >> 3) + 0x40;
-                s0 = alpha;
-                s2 = s0;
+                reach = 0x1D;
+                shown = 0x15;
+                alpha = 0x1000 - prog * 2 / 3;
+                lineWidth = (prog >> 3) + 0x40;
+                offsetAlpha = alpha;
+                patternAlpha = offsetAlpha;
             }
-            fx_1bf_0_drawStrands(entry, &fx_1bf_0_origin, n, w, alpha, fade, flag);
-            if (s2 != 0) {
-                fxm_drawPatternParticles(entry, &fx_1bf_0_origin, m, s2);
-                fxm_drawOffsetParticles3(entry, &fx_1bf_0_origin, s0);
+            fx_1bf_0_drawStrands(entry, &fx_1bf_0_origin, reach, lineWidth, alpha, fade, flag);
+            if (patternAlpha != 0) {
+                fxm_drawPatternParticles(entry, &fx_1bf_0_origin, shown, patternAlpha);
+                fxm_drawOffsetParticles3(entry, &fx_1bf_0_origin, offsetAlpha);
             }
             if (frame >= 0x33) {
                 rot.vx = fx_1bf_0_origin.vx;

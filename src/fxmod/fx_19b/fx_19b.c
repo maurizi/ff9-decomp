@@ -1,10 +1,10 @@
 #include "fxmod/fx_19b.h"
 
-s32 fx_19b_op80(s32 mode, Fx19bWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_19b_op80(s32 mode, Fx19bWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else if (mode == 1) {
         fx_19b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
@@ -22,12 +22,12 @@ s32 fx_19b_op80(s32 mode, Fx19bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-s32 fx_19b_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_19b_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 8;
+        *args = 8;
     } else if (mode == 1) {
         fx_19b_env = env;
     } else {

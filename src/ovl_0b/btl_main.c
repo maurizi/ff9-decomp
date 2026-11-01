@@ -146,7 +146,7 @@ void btl_initMode(void) {
     g->kanjiFont = 0;
     b->dataSector = g_gameState->imgSector + g_gameState->dirs[13].firstSector;
     btl_loadCommonData();
-    btl_initModeStub();
+    btl_loadKanjiFont();
     btl_loadResidentMusic();
     btl_loadSoundBanks();
     btl_loadShadowTexture();
@@ -194,7 +194,7 @@ void btl_clearBattle(void) {
     }
 }
 
-s32 btl_initModeStub(void) {
+s32 btl_loadKanjiFont(void) {
     return 0;
 }
 

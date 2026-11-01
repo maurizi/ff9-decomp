@@ -1,47 +1,47 @@
 #include "fxmod/fx_180.h"
 
-static s32 fx_180_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fx_180_op80ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_180_posPath0[(s16)(e->slot - 1)], frame, &v);
-    v.vy = v.vy * 4 / 5;
-    v.vz = v.vz * 3 / 4;
-    v.vx += fx_180_op80PathOrigin.vx;
-    v.vy += fx_180_op80PathOrigin.vy;
-    v.vz += fx_180_op80PathOrigin.vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
+    fxm_posPathGet(&fx_180_posPath0[(s16)(pt->slot - 1)], frame, &pathPos);
+    pathPos.vy = pathPos.vy * 4 / 5;
+    pathPos.vz = pathPos.vz * 3 / 4;
+    pathPos.vx += fx_180_op80PathOrigin.vx;
+    pathPos.vy += fx_180_op80PathOrigin.vy;
+    pathPos.vz += fx_180_op80PathOrigin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
     if (frame >= frames) {
         return -1;
     }
     return 0;
 }
 
-static s32 fx_180_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fx_180_op81ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_180_posPath1[(s16)(e->slot - 1)], frame, &v);
-    v.vx += fx_180_op81PathOrigin.vx;
-    v.vy += fx_180_op81PathOrigin.vy;
-    v.vz += fx_180_op81PathOrigin.vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
+    fxm_posPathGet(&fx_180_posPath1[(s16)(pt->slot - 1)], frame, &pathPos);
+    pathPos.vx += fx_180_op81PathOrigin.vx;
+    pathPos.vy += fx_180_op81PathOrigin.vy;
+    pathPos.vz += fx_180_op81PathOrigin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
     if (frame >= frames) {
         return -1;
     }
     return 0;
 }
 
-s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x74;
+        *args = 0x74;
     } else if (mode == 1) {
         fx_180_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos24);
@@ -150,13 +150,13 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 INCLUDE_RODATA("asm/us/fx_180/nonmatchings/fx_180", fx_180_headerPtr);
 
-s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x54;
+        *args = 0x54;
     } else if (mode == 1) {
         work->pos2C.vx = env->targets->centerX;
         work->pos2C.vy = env->targets->centerY;
@@ -243,15 +243,15 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 t;
-    s32 w;
+    s32 morphFrame;
+    s32 morph;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x6C;
+        *args = 0x6C;
     } else if (mode == 1) {
         fx_180_env = env;
         ex->btlfx_initEffModels(fx_180_effModels, 2);
@@ -315,16 +315,16 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timer64 = 8;
             break;
         }
-        t = frame - 0x1E;
-        if ((u32)t < 0x14) {
-            if (t < 0) {
-                w = 0x1000;
-            } else if (t >= 0x14) {
-                w = 0;
+        morphFrame = frame - 0x1E;
+        if ((u32)morphFrame < 0x14) {
+            if (morphFrame < 0) {
+                morph = 0x1000;
+            } else if (morphFrame >= 0x14) {
+                morph = 0;
             } else {
-                w = 0x1000 - (t << 12) / 20;
+                morph = 0x1000 - (morphFrame << 12) / 20;
             }
-            ex->Hi_DrawMorphEffModel(&work->rot20, &work->pos28, (s32)&work->scale38, work->model68, work->model6A, w);
+            ex->Hi_DrawMorphEffModel(&work->rot20, &work->pos28, (s32)&work->scale38, work->model68, work->model6A, morph);
             if (work->timer64 >= 0) {
                 work->fade48 = fxm_lerpRatio(0, -0xFF, 8 - work->timer64, 8);
                 work->timer64--;
@@ -347,12 +347,12 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_180_op83(s32 mode, Fx180Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_180_op83(s32 mode, Fx180Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x3C;
+        *args = 0x3C;
     } else if (mode == 1) {
         fx_180_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
@@ -409,22 +409,22 @@ s32 fx_180_op83(s32 mode, Fx180Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static u16 *fxm_offsetTableEntry(u8 *base, u16 i) {
-    return (u16 *)((s32)base + ((s32 *)base)[(u16)i + 1]);
+static u16 *fxm_offsetTableEntry(u8 *base, u16 idx) {
+    return (u16 *)((s32)base + ((s32 *)base)[(u16)idx + 1]);
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_180_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_180_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_180_env)->btlfx_drawScreenTint((u32 *)(fx_180_env->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_180_env)->btlfx_drawScreenTint((u32 *)(fx_180_env->ot + ot), abr, bright, bright, bright);
 }
 
 static void fxm_posPathInit(Fx180Path *path, u16 *data) {
@@ -436,17 +436,17 @@ static void fxm_posPathInit(Fx180Path *path, u16 *data) {
 static s32 fxm_posPathGet(Fx180Path *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx180Point *p;
+    Fx180Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
@@ -460,14 +460,14 @@ static void fxm_startUnitMotion(s32 unit, s32 motion) {
 static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_180_env);
 
-    s32 r;
+    s32 done;
 
     if (ex->btlfx_isUnitActive(unit)) {
-        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+        done = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    return r;
+    return done;
 }
 
 static void fxm_startHitMotionIfActive(s32 unit) {

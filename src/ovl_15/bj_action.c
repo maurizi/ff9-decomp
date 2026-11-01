@@ -59,8 +59,8 @@ void bj_actionInput(void) {
 }
 
 void bj_actionDraw(void) {
-    bj_actionDrawStub1();
-    bj_actionDrawStub2();
+    bj_actionDrawBackground();
+    bj_actionDrawChoices();
     bj_actionDrawCursor();
 }
 
@@ -73,10 +73,10 @@ void bj_actionDecide(void) {
     scene_set(SCENE_CHOSEN);
 }
 
-void bj_actionDrawStub1(void) {
+void bj_actionDrawBackground(void) {
 }
 
-void bj_actionDrawStub2(void) {
+void bj_actionDrawChoices(void) {
 }
 
 void bj_actionDrawCursor(void) {

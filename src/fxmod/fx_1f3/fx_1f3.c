@@ -1,56 +1,56 @@
 #include "fxmod/fx_1f3.h"
 
-static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
+static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 abr, s32 ot) {
     Unk800F78A4 *env = fx_1f3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 c = ex->btlfx_lerpRatio(from, to, t, n);
+    s32 bright = ex->btlfx_lerpRatio(from, to, t, n);
 
-    ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), arg4, c, c, c);
+    ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), abr, bright, bright, bright);
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1f3_env);
-    s32 k = 0x20000000 / (n * n);
-    s32 r = 0;
+    s32 invSq = 0x20000000 / (n * n);
+    s32 ratio = 0;
 
     switch (curve) {
     case 0:
-        r = 0x1000 - (((0x10000000 / n) * t) >> 16);
+        ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
     case 1:
-        r = (k * (n - t) * (n - t)) >> 17;
+        ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
-        r = 0x1000 - ((k * t * t) >> 17);
+        ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
-    return ex->btlfx_lerp(from, to, r);
+    return ex->btlfx_lerp(from, to, ratio);
 }
 
-s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR vert;
     VECTOR out;
     SVECTOR cam;
     SVECTOR cam2;
     s32 flag;
-    Pool6CEntry *p;
-    Fx1f3Ring *g;
+    Pool6CEntry *emitter;
+    Fx1f3Ring *unused0;
     Fx1f3RingDef *def;
     SVECTOR *dst;
-    Fx1f3Line *l;
-    s32 n1;
-    s32 n2;
+    Fx1f3Line *trail;
+    s32 elapsed;
+    s32 grow;
     s32 frame;
     s32 i;
     s32 j;
-    s32 c;
-    s32 a;
-    s32 b;
-    s32 *q;
+    s32 shade;
+    s32 scaleMin;
+    s32 scaleMax;
+    s32 *timerPtr;
 
     if (mode == 0) {
-        *arg4 = 0x120;
+        *args = 0x120;
     } else if (mode == 1) {
         work->emit40[0] = NULL;
         work->emit40[1] = NULL;
@@ -61,8 +61,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit40[6] = NULL;
         fx_1f3_env = env;
         ex->btlfx_initEffModels(fx_1f3_effModels, 0x20);
-        for (i = 15, q = &work->timer0[15]; i >= 0; i--, q--) {
-            *q = 0;
+        for (i = 15, timerPtr = &work->timer0[15]; i >= 0; i--, timerPtr--) {
+            *timerPtr = 0;
         }
         work->pos5C.vx = env->targets->centerX;
         work->pos5C.vz = env->targets->centerZ;
@@ -77,9 +77,9 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&fx_1f3_rings[i].trail20, 2);
         }
-        for (i = 0, b = 0x600, a = 0x400; i < 8; i++, b += 0x200, a += 0x200) {
+        for (i = 0, scaleMax = 0x600, scaleMin = 0x400; i < 8; i++, scaleMax += 0x200, scaleMin += 0x200) {
             fx_1f3_spinModels[i].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
-            fx_1f3_spinModels[i].scale10.vy = fx_1f3_spinModels[i].scale10.vx = fx_1f3_spinModels[i].scale10.vz = ex->btlfx_randRange(a, b);
+            fx_1f3_spinModels[i].scale10.vy = fx_1f3_spinModels[i].scale10.vx = fx_1f3_spinModels[i].scale10.vz = ex->btlfx_randRange(scaleMin, scaleMax);
             fx_1f3_spinModels[i].pos20.vx = work->pos5C.vx;
             fx_1f3_spinModels[i].pos20.vz = work->pos5C.vz;
             fx_1f3_spinModels[i].pos20.vy = work->pos5C.vy + ex->btlfx_randRange(-0x200, 0x200);
@@ -140,15 +140,15 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x2A:
-            p = work->emit40[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos64);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = work->emit40[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos64);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             break;
         case 0x52:
-            p = work->emit40[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos5C);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = work->emit40[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos5C);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             break;
         case 0x62:
@@ -161,25 +161,25 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit40[2]->otZ = 0x200;
                 }
             }
-            p = work->emit40[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos5C);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = work->emit40[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos5C);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             break;
         case 0x72:
             work->timer0[0] = 0x80;
             break;
         case 0x7E:
-            p = work->emit40[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos5C);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = work->emit40[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos5C);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             break;
         case 0x92:
             ex->btlfx_stopEmitter(work->emit40[6]);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos5C);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos5C);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             work->timer0[1] = 0x10;
             break;
@@ -199,9 +199,9 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timer0[6] = 0x20;
             work->timer0[8] = 0x20;
             work->timer0[4] = 0x60;
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos5C);
-            if (p != NULL) {
-                p->otZ = 0x200;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos5C);
+            if (emitter != NULL) {
+                emitter->otZ = 0x200;
             }
             break;
         case 0xBE:
@@ -240,10 +240,10 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timer0[0]--;
             ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos5C, (s16 *)&work->rot90);
             ex->Hi_DrawEffModel(&work->rot90, (VECTOR *)&work->pos70, (s32)&work->scale80, work->model6C);
-            n1 = 0x80 - work->timer0[0];
-            if (n1 < 8) {
-                c = (n1 << 5) - 0x100;
-                ex->Hi_ModifyEffModelRGB(work->model6C, c, c, c);
+            elapsed = 0x80 - work->timer0[0];
+            if (elapsed < 8) {
+                shade = (elapsed << 5) - 0x100;
+                ex->Hi_ModifyEffModelRGB(work->model6C, shade, shade, shade);
             }
             ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x240, 0x100, 0x40, 0x80, 0x240, 0x180);
         }
@@ -253,9 +253,9 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rotA0, (VECTOR *)&work->pos70, (s32)&work->scaleB0, work->model98);
             ex->Hi_DrawEffModel(&work->rotA8, (VECTOR *)&work->pos70, (s32)&work->scaleB0, work->model9C);
             if (work->timer0[5] < 0x10) {
-                c = -((0x10 - work->timer0[5]) * 0x10);
-                ex->Hi_ModifyEffModelRGB(work->model98, c, c, c);
-                ex->Hi_ModifyEffModelRGB(work->model9C, c, c, c);
+                shade = -((0x10 - work->timer0[5]) * 0x10);
+                ex->Hi_ModifyEffModelRGB(work->model98, shade, shade, shade);
+                ex->Hi_ModifyEffModelRGB(work->model9C, shade, shade, shade);
             }
             ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x240, 0x100, 0x40, 0x80, 0x240, 0x180);
         }
@@ -265,9 +265,9 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rotF0, (VECTOR *)&work->pos70, (s32)&work->scaleF8, work->modelE8);
             ex->Hi_DrawEffModel(&work->rotF0, (VECTOR *)&work->pos70, (s32)&work->scaleF8, work->modelEC);
             if (work->timer0[8] < 0x10) {
-                c = -((0x10 - work->timer0[8]) * 0x10);
-                ex->Hi_ModifyEffModelRGB(work->modelE8, c, c, c);
-                ex->Hi_ModifyEffModelRGB(work->modelEC, c, c, c);
+                shade = -((0x10 - work->timer0[8]) * 0x10);
+                ex->Hi_ModifyEffModelRGB(work->modelE8, shade, shade, shade);
+                ex->Hi_ModifyEffModelRGB(work->modelEC, shade, shade, shade);
             }
             ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
         }
@@ -278,9 +278,9 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rotC8, (VECTOR *)&work->pos70, (s32)&work->scaleD8, work->modelC0);
             ex->Hi_DrawEffModel(&work->rotD0, (VECTOR *)&work->pos70, (s32)&work->scaleD8, work->modelC4);
             if (work->timer0[6] < 0x10) {
-                c = -((0x10 - work->timer0[6]) * 0x10);
-                ex->Hi_ModifyEffModelRGB(work->modelC0, c, c, c);
-                ex->Hi_ModifyEffModelRGB(work->modelC4, c, c, c);
+                shade = -((0x10 - work->timer0[6]) * 0x10);
+                ex->Hi_ModifyEffModelRGB(work->modelC0, shade, shade, shade);
+                ex->Hi_ModifyEffModelRGB(work->modelC4, shade, shade, shade);
             }
             work->rotC8.vy = 0x400;
             work->rotC8.vx = 0x200;
@@ -294,15 +294,15 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timer0[4]--;
             for (i = 0; i < 8; i++) {
                 fx_1f3_spinModels[i].rot8.vz += fxm_easeLerp(2, 0x60, work->timer0[4], fx_1f3_spinModels[i].spin4, 0);
-                n2 = fxm_easeLerp(2, 0x60, work->timer0[4], 0x40, 0);
+                grow = fxm_easeLerp(2, 0x60, work->timer0[4], 0x40, 0);
                 fx_1f3_spinModels[i].scale10.vz = 0x800;
-                fx_1f3_spinModels[i].scale10.vy += n2;
-                fx_1f3_spinModels[i].scale10.vx += n2;
+                fx_1f3_spinModels[i].scale10.vy += grow;
+                fx_1f3_spinModels[i].scale10.vx += grow;
                 ex->Hi_DrawEffModel(&fx_1f3_spinModels[i].rot8, (VECTOR *)&fx_1f3_spinModels[i].pos20, (s32)&fx_1f3_spinModels[i].scale10,
                                     fx_1f3_spinModels[i].model0);
                 if (work->timer0[4] < 0x40) {
-                    c = -((0x40 - work->timer0[4]) * 4);
-                    ex->Hi_ModifyEffModelRGB(fx_1f3_spinModels[i].model0, c, c, c);
+                    shade = -((0x40 - work->timer0[4]) * 4);
+                    ex->Hi_ModifyEffModelRGB(fx_1f3_spinModels[i].model0, shade, shade, shade);
                 }
             }
         }
@@ -328,21 +328,21 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 16; i++) {
                 if (fx_1f3_rings[i].timer12C != 0) {
                     fx_1f3_rings[i].timer12C--;
-                    ex->btlfx_getUnitBonePos(0x10, fx_1f3_rings[i].bone130, (u16 *)&v);
-                    fx_1f3_rings[i].matrix0.t[0] = v.vx;
-                    fx_1f3_rings[i].matrix0.t[1] = v.vy;
-                    fx_1f3_rings[i].matrix0.t[2] = v.vz;
+                    ex->btlfx_getUnitBonePos(0x10, fx_1f3_rings[i].bone130, (u16 *)&vert);
+                    fx_1f3_rings[i].matrix0.t[0] = vert.vx;
+                    fx_1f3_rings[i].matrix0.t[1] = vert.vy;
+                    fx_1f3_rings[i].matrix0.t[2] = vert.vz;
                     gte_SetRotMatrix(&fx_1f3_rings[i].matrix0);
                     gte_SetTransMatrix(&fx_1f3_rings[i].matrix0);
-                    l = &fx_1f3_rings[i].trail20;
-                    l->lastSlot0 = l->count2 = 0x20;
-                    l->head1 = 0;
-                    dst = l->points4;
+                    trail = &fx_1f3_rings[i].trail20;
+                    trail->lastSlot0 = trail->count2 = 0x20;
+                    trail->head1 = 0;
+                    dst = trail->points4;
                     for (j = 0; j < 0x21; j++, dst++) {
-                        v.vx = (ex->math_sin(j * fx_1f3_rings[i].angleStep140 + fx_1f3_rings[i].angle134) * fx_1f3_rings[i].radius13C) >> 12;
-                        v.vz = (ex->math_cos(j * fx_1f3_rings[i].angleStep140 + fx_1f3_rings[i].angle134) * fx_1f3_rings[i].radius13C) >> 12;
-                        v.vy = 0;
-                        gte_ldv0(&v);
+                        vert.vx = (ex->math_sin(j * fx_1f3_rings[i].angleStep140 + fx_1f3_rings[i].angle134) * fx_1f3_rings[i].radius13C) >> 12;
+                        vert.vz = (ex->math_cos(j * fx_1f3_rings[i].angleStep140 + fx_1f3_rings[i].angle134) * fx_1f3_rings[i].radius13C) >> 12;
+                        vert.vy = 0;
+                        gte_ldv0(&vert);
                         gte_rtv0tr();
                         gte_stlvnl(&out);
                         gte_stflg(&flag);
@@ -353,12 +353,12 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                     if (fx_1f3_rings[i].timer12C < 4) {
                         fx_1f3_rings[i].angle134 += fxm_easeLerp(2, 8, fx_1f3_rings[i].timer12C, fx_1f3_rings[i].spin138, 0);
-                        c = fx_1f3_rings[i].timer12C << 10;
+                        shade = fx_1f3_rings[i].timer12C << 10;
                     } else {
                         fx_1f3_rings[i].angle134 += fx_1f3_rings[i].spin138;
-                        c = (8 - fx_1f3_rings[i].timer12C) << 10;
+                        shade = (8 - fx_1f3_rings[i].timer12C) << 10;
                     }
-                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, NULL, 0, 0x1000, c, 1,
+                    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, NULL, 0, 0x1000, shade, 1,
                                         (u8 *)&fx_1f3_rings[i].trail20, 2);
                 }
             }

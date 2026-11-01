@@ -2,13 +2,13 @@
 
 INCLUDE_RODATA("asm/us/fx_1ab/nonmatchings/fx_1ab", fx_1ab_headerPtr);
 
-s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 t;
+    s32 elapsed;
 
     if (mode == 0) {
-        *arg4 = 0x88;
+        *args = 0x88;
     } else if (mode == 1) {
         fx_1ab_env = env;
         ex->btlfx_initEffModels(fx_1ab_effModels, 2);
@@ -65,7 +65,7 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (frame >= 0xF && frame < 0x3F) {
-            t = frame - 0xF;
+            elapsed = frame - 0xF;
             ex->Hi_SetEffModelSlice(work->model84, work->pos14.vy);
             ex->Hi_DrawSliceEffModel(&work->rotC, &work->pos14, (s32)&work->scale24, work->model84);
             ex->Hi_DrawEffModel(&work->rot38, &work->pos40, (s32)&work->scale50, work->model86);
@@ -81,7 +81,7 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_ModifyEffModelRGB(work->model84, work->color34, work->color34, work->color34);
                 ex->Hi_ModifyEffModelRGB(work->model86, work->color34, work->color34, work->color34);
             }
-            if (t < 8) {
+            if (elapsed < 8) {
                 work->pos14.vy -= 0x145;
             } else {
                 if (work->scale24.vy > 0x400) {
@@ -91,7 +91,7 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->scale50.vx += 0x40;
             work->scale50.vz += 0x40;
-            if (t >= 8) {
+            if (elapsed >= 8) {
                 work->scale50.vy -= 8;
             } else {
                 work->scale50.vy += 0xAA;
@@ -109,8 +109,8 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_1ab_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_1ab_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

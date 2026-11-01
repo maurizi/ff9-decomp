@@ -1,33 +1,33 @@
 #include "fxmod/fx_041.h"
 
-static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
-    SVECTOR v;
+static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_041_path, t, &v);
-    v.vy = -300;
+    fxm_posPathGet(&fx_041_path, frame, &pathPos);
+    pathPos.vy = -300;
     fx_041_lastPathPos.vy = -300;
-    fx_041_lastPathPos.vx = v.vx;
-    fx_041_lastPathPos.vz = v.vz;
-    v.vx += fx_041_targetPos.vx;
-    v.vz += fx_041_targetPos.vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
+    fx_041_lastPathPos.vx = pathPos.vx;
+    fx_041_lastPathPos.vz = pathPos.vz;
+    pathPos.vx += fx_041_targetPos.vx;
+    pathPos.vz += fx_041_targetPos.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
-    if (t >= n) {
+    if (frame >= n) {
         return -1;
     }
     return 0;
 }
 
-s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x30;
+        *args = 0x30;
     } else if (mode == 1) {
         fx_041_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos18);
@@ -88,11 +88,11 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_041_op81(s32 mode, Fx041Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_041_op81(s32 mode, Fx041Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0x1C;
+        *args = 0x1C;
     } else if (mode == 1) {
         fx_041_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
@@ -118,17 +118,17 @@ static void fxm_posPathInit(Fx041Path *path, u16 *data) {
 static s32 fxm_posPathGet(Fx041Path *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx041Point *p;
+    Fx041Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->points4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->points4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
@@ -142,14 +142,14 @@ static void fxm_startUnitMotion(s32 unit, s32 motion) {
 static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_041_env);
 
-    s32 r;
+    s32 done;
 
     if (ex->btlfx_isUnitActive(unit)) {
-        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+        done = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    return r;
+    return done;
 }
 
 static void fxm_startHitMotionIfActive(s32 unit) {

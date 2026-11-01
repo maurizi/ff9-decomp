@@ -1,18 +1,18 @@
 #include "fxmod/fx_0ea.h"
 
-s32 fx_0ea_op81ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_arcParticle(pt, pos, &fx_0ea_arcTo[0], frame, n);
 }
 
-s32 fx_0ea_op81ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_arcParticle(pt, pos, &fx_0ea_arcTo[1], frame, n);
 }
 
-s32 fx_0ea_op81ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_arcParticle(pt, pos, &fx_0ea_arcTo[2], frame, n);
 }
 
-s32 fx_0ea_op81ParticleMotion3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_arcParticle(pt, pos, &fx_0ea_arcTo[3], frame, n);
 }
 
@@ -31,13 +31,13 @@ static s32 fxm_arcParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *to, s32 frame
     return 0;
 }
 
-s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    u16 n;
+    u16 lineFrame;
 
     if (mode == 0) {
-        *arg4 = 0x1C;
+        *args = 0x1C;
     } else if (mode == 1) {
         fx_0ea_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos8);
@@ -64,29 +64,29 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->lineAlpha1A -= 0x200;
             }
             work->lineFrame18++;
-            n = work->lineFrame18;
-            if (n >= 6) {
-                n = 5;
+            lineFrame = work->lineFrame18;
+            if (lineFrame >= 6) {
+                lineFrame = 5;
             }
-            work->lineFrame18 = n;
+            work->lineFrame18 = lineFrame;
         }
         return frame >= 0x32;
     }
     return 0;
 }
 
-s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 n;
+    s32 target;
 
     if (mode == 0) {
-        *arg4 = 0x24;
+        *args = 0x24;
     } else if (mode == 1) {
-        n = *arg4;
-        work->target20 = n;
+        target = *args;
+        work->target20 = target;
         fx_0ea_env = env;
-        if (n >= env->targets->targetCount || ex->btl_getUnit(0x10) == ex->btl_getUnit(work->target20)) {
+        if (target >= env->targets->targetCount || ex->btl_getUnit(0x10) == ex->btl_getUnit(work->target20)) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
@@ -126,8 +126,8 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    env->state->signals[i] = v;
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value) {
+    env->state->signals[signal] = value;
 }
 
 INCLUDE_RODATA("asm/us/fx_0ea/nonmatchings/fx_0ea", fx_0ea_headerPtr);

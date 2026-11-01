@@ -1,26 +1,26 @@
 #include "fxmod/fx_081.h"
 
-static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,
+static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 rot, s32 *scale, s32 alpha, s32 blend, s32 frame,
                    s32 n) {
     Unk800F78A4 *env = fx_081_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Unk80100C78Entry *entry = fx_081_task;
-    SVECTOR v;
-    s32 r;
-    s32 t;
-    s32 k;
+    SVECTOR camPos;
+    s32 trail;
+    s32 fade;
+    s32 elapsed;
 
-    r = ex->btlfx_getParticleTrail(pt, p);
+    trail = ex->btlfx_getParticleTrail(pt, owner);
     if (frame == 0) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)trail, 0);
     }
     if (frame < n - 4) {
-        t = 0x1000;
+        fade = 0x1000;
     } else {
-        t = 0x1000 - (((frame - (n - 4)) << 12) >> 2);
+        fade = 0x1000 - (((frame - (n - 4)) << 12) >> 2);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, (s32 *)p->origin, frame,
-                      0x1C00 - (frame << 12) / n, t, 1, (u8 *)r, 1);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, (s32 *)owner->origin, frame,
+                      0x1C00 - (frame << 12) / n, fade, 1, (u8 *)trail, 1);
     if (pt->slot == 1) {
         if (fx_081_emitter0 != 0) {
             ex->btlfx_moveEmitterTo(fx_081_emitter0, (s32)pos);
@@ -32,35 +32,35 @@ static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s
             env->camera->points[3].vz = pos->vz;
             return;
         }
-        k = frame - 0x1D;
-        if (k < 0x20) {
-            ex->btlfx_lerpVec((s16 *)pos, (s16 *)&fx_081_camEndPos, 0x1000 - ex->math_cos(k << 5), (s16 *)&v);
+        elapsed = frame - 0x1D;
+        if (elapsed < 0x20) {
+            ex->btlfx_lerpVec((s16 *)pos, (s16 *)&fx_081_camEndPos, 0x1000 - ex->math_cos(elapsed << 5), (s16 *)&camPos);
         } else {
-            BTLFX_COPY_SVEC(&v, &fx_081_camEndPos);
+            BTLFX_COPY_SVEC(&camPos, &fx_081_camEndPos);
         }
-        env->camera->points[3].vx = v.vx;
-        env->camera->points[3].vy = v.vy;
-        env->camera->points[3].vz = v.vz;
+        env->camera->points[3].vx = camPos.vx;
+        env->camera->points[3].vy = camPos.vy;
+        env->camera->points[3].vz = camPos.vz;
     }
 }
 
-s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR ang;
     SVECTOR rot;
     VECTOR scale;
     SVECTOR unused;
     s32 frame;
-    s32 b;
+    s32 alpha;
     s32 sc;
-    s32 c;
+    s32 swell;
     s32 t;
-    s32 u;
-    s32 c4;
-    Pool6CEntry *e;
+    s32 tint;
+    s32 swell4;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx081Work80);
+        *args = sizeof(Fx081Work80);
     } else if (mode == 1) {
         fx_081_env = env;
         fx_081_glow = 0;
@@ -102,10 +102,10 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->modelC = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x17));
     } else {
         frame = entry->frame;
-        sc = b = 0;
+        sc = alpha = 0;
         switch (work->state0) {
         case 0:
-            b = 0x1000;
+            alpha = 0x1000;
             t = (frame << 12) / 22;
             if (work->emit2C != NULL && work->emit2C->state == BTLFX_EMIT_DONE) {
                 work->emit2C = NULL;
@@ -127,8 +127,8 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             sc = (((0x1000 - t) * 3) >> 1) + 0x1000;
             if (frame < 4) {
-                u = 0xFF - frame * 0xFF / 4;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, u >> 1, u, u);
+                tint = 0xFF - frame * 0xFF / 4;
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 1, tint, tint);
             }
             if (frame >= 0x16) {
                 work->state0 = 1;
@@ -137,7 +137,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 1:
             t = (frame << 12) / 20;
-            b = 0x1000 - t;
+            alpha = 0x1000 - t;
             sc = 0x1000;
             fx_081_glow = t;
             if (work->emit2C != NULL && work->emit2C->state == BTLFX_EMIT_DONE) {
@@ -153,10 +153,10 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit2C->alpha = fx_081_glow;
             }
             if (work->emit30 != NULL) {
-                work->emit30->alpha = b;
+                work->emit30->alpha = alpha;
             }
             if (work->emit34 != NULL) {
-                work->emit34->alpha = b;
+                work->emit34->alpha = alpha;
             }
             if (frame >= 0x14) {
                 work->state0 = 2;
@@ -177,9 +177,9 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x13) {
-                fx_081_emitter1 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos10);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                fx_081_emitter1 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
             }
@@ -189,14 +189,14 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        if (b != 0) {
+        if (alpha != 0) {
             ang.pad = 0;
             ang.vy = 0;
             ang.vx = 0;
             ang.vz = -work->frame4 * 20;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &fx_081_leadPos, &ang, sc, 0, 1, b);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &fx_081_leadPos, &ang, 0xE00, 0, 1, b);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 4), &fx_081_leadPos, &ang, 0x1000, 0, 1, b);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &fx_081_leadPos, &ang, sc, 0, 1, alpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &fx_081_leadPos, &ang, 0xE00, 0, 1, alpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 4), &fx_081_leadPos, &ang, 0x1000, 0, 1, alpha);
         }
         if (fx_081_glow != 0) {
             scale.vx = 0x1000;
@@ -224,22 +224,22 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->pos10, &rot, 0x16000, 0, 1,
                               fx_081_glow);
-            c = ex->math_cos(((work->frame4 - 0x16) << 10) / 42);
-            c4 = c * 4;
+            swell = ex->math_cos(((work->frame4 - 0x16) << 10) / 42);
+            swell4 = swell * 4;
             rot.vx = -0x180;
             rot.vy = (work->frame4 * 32) + 0x180;
             rot.vz = work->frame4 * 0x18;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->pos10, &rot, c4, 0, 1, fx_081_glow);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->pos10, &rot, swell4, 0, 1, fx_081_glow);
             rot.vx = 0x200;
             rot.vy = 0x200 - work->frame4 * 32;
             rot.vz = -work->frame4 * 16;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->pos10, &rot, (c * 8 + c4) >> 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->pos10, &rot, (swell * 8 + swell4) >> 1,
                               0, 1,
                               fx_081_glow);
             rot.vx = 0x100;
             rot.vy = -0x180 - work->frame4 * 0x18;
             rot.vz = -work->frame4 * 16;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->pos10, &rot, (c * 16 + c4) >> 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->pos10, &rot, (swell * 16 + swell4) >> 1,
                               0, 1,
                               fx_081_glow);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x22), work->frame4);
@@ -250,30 +250,30 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     SVECTOR ang;
     SVECTOR pos;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
-    s32 s;
-    s32 u;
-    s32 h;
-    s32 c;
-    s32 a;
+    s32 fade;
+    s32 tint;
+    s32 orbitRadius;
+    s32 bright;
+    s32 orbitAng;
     s32 i;
     s32 j;
-    s32 w;
+    s32 twist;
     s32 vx;
     SVECTOR *pp;
     SVECTOR *pp2;
-    s32 w4;
-    s32 n;
+    s32 twist16;
+    s32 ring;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx081Work81);
+        *args = sizeof(Fx081Work81);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -282,9 +282,9 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->posC.vy = 0;
         work->posC.vz = 0;
         fx_081_env = env;
-        e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->posC);
-        if (e != NULL) {
-            e->otZ = work->otZ8 + 0x40;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->posC);
+        if (emitter != NULL) {
+            emitter->otZ = work->otZ8 + 0x40;
         }
     } else {
         frame = entry->frame;
@@ -295,11 +295,11 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.pad = 0;
             rot.vz = 0x400;
             t = (frame << 12) / 7;
-            s = ex->math_sin(t >> 2);
+            fade = ex->math_sin(t >> 2);
             env->otZ = work->otZ8 + 0x40;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 9), &work->posC, NULL, 0x13000, frame, 1, s);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 9), &work->posC, NULL, 0x13000, frame, 1, fade);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 4), &work->posC, NULL, (t >> 1) + 0x3000, 0, 1,
-                              s);
+                              fade);
             env->otZ = 0;
             ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->posC, work->frame4,
                               ex->math_sin(t >> 2));
@@ -339,26 +339,26 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk1C.vy = work->posC.vy;
                 work->pos14.vy -= 0xC00;
                 work->unk1C.vz = work->posC.vz;
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->posC);
-                if (e != NULL) {
-                    e->otZ = work->otZ8 + 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = work->otZ8 + 0x40;
                 }
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->posC);
-                if (e != NULL) {
-                    e->otZ = work->otZ8 + 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = work->otZ8 + 0x40;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->posC);
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->posC);
-                if (e != NULL) {
-                    e->otZ = work->otZ8 + 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = work->otZ8 + 0x80;
                 }
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos14);
-                if (e != NULL) {
-                    e->otZ = 0x46;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x46;
                 }
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x27), (s32)&work->posC);
-                if (e != NULL) {
-                    e->otZ = 0x46;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x27), (s32)&work->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x46;
                 }
             }
             break;
@@ -366,13 +366,13 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             j = frame << 7;
             env->otZ = 0;
             if (frame < 6) {
-                u = 0xFF - frame * 0xFF / 6;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, u >> 1, u, u);
+                tint = 0xFF - frame * 0xFF / 6;
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint >> 1, tint, tint);
             }
-            /* the first loop's a (the original keeps it in s0; t keeps its own register) */
-            a = j >> 2;
-            c = ex->math_cos(a);
-            h = ((ex->math_sin(a) * 0x60E) >> 12) + 0x100;
+            /* the first loop's orbitAng (the original keeps it in s0; t keeps its own register) */
+            orbitAng = j >> 2;
+            bright = ex->math_cos(orbitAng);
+            orbitRadius = ((ex->math_sin(orbitAng) * 0x60E) >> 12) + 0x100;
             ang.vx = 0;
             ang.vy = 0;
             ang.vz = 0;
@@ -382,26 +382,26 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     ang.vx = -0x200 - work->frame4 * 0x18;
                 }
-                a = work->frame4 * 41 + (j << 7);
-                for (i = 0; i < 12; i++, a += 0x155) {
-                    ex->btlfx_offsetPoint(&work->posC, (s32)pp, 0, (XY32 *)&ang, h, a);
+                orbitAng = work->frame4 * 41 + (j << 7);
+                for (i = 0; i < 12; i++, orbitAng += 0x155) {
+                    ex->btlfx_offsetPoint(&work->posC, (s32)pp, 0, (XY32 *)&ang, orbitRadius, orbitAng);
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xC), pp, NULL, 0x1000, frame & 0xF, 1,
-                                      c, 0, 0);
+                                      bright, 0, 0);
                 }
             }
-            h = h * 2 / 3;
+            orbitRadius = orbitRadius * 2 / 3;
             pp2 = pp;
-            /* n indexes fx_081_ringCounts: loop.c drops it for the reduced giv, whose increment then comes before
-             * w += frame and j++ as in the original */
-            for (j = 0, n = 0, w = 0; j < 10; n++, w += frame, j++) {
+            /* ring indexes fx_081_ringCounts: loop.c drops it for the reduced giv, whose increment then comes before
+             * twist += frame and j++ as in the original */
+            for (j = 0, ring = 0, twist = 0; j < 10; ring++, twist += frame, j++) {
                 vx = 0x400 - (j << 11) / 9;
-                for (i = 0; i < fx_081_ringCounts[n]; i++) {
+                for (i = 0; i < fx_081_ringCounts[ring]; i++) {
                     /* a long enough lifetime for loop.c to hoist it, and the add's operand order */
-                    w4 = w << 4;
-                    ang.vy = (a = (i << 12) / fx_081_ringCounts[n] - (work->frame4 << 5)) + w4;
+                    twist16 = twist << 4;
+                    ang.vy = (orbitAng = (i << 12) / fx_081_ringCounts[ring] - (work->frame4 << 5)) + twist16;
                     ang.vx = vx;
-                    ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&ang, h, (s16 *)pp2);
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x25), pp2, NULL, c + 0x800, 0, 1, c, 0,
+                    ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&ang, orbitRadius, (s16 *)pp2);
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x25), pp2, NULL, bright + 0x800, 0, 1, bright, 0,
                                       0);
                 }
             }

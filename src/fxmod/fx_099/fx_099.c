@@ -1,17 +1,17 @@
 #include "fxmod/fx_099.h"
 
-s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 t;
-    s32 r;
-    s32 c;
+    s32 scale;
+    s32 bright;
 
     if (mode == 0) {
-        *arg4 = 0x40;
+        *args = 0x40;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -21,14 +21,14 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_initEffModels(fx_099_effModels, 1);
         work->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 0);
-        r = (ex->btlfx_getUnitRadius(0) << 12) / 720;
-        if (r < 0x800) {
-            r = 0x800;
+        scale = (ex->btlfx_getUnitRadius(0) << 12) / 720;
+        if (scale < 0x800) {
+            scale = 0x800;
         }
-        if (r > 0x2000) {
-            r = 0x2000;
+        if (scale > 0x2000) {
+            scale = 0x2000;
         }
-        work->scale18 = r / 2;
+        work->scale18 = scale / 2;
         work->rot20.vx = 0;
         work->rot20.vy = 0;
         work->rot20.vz = 0;
@@ -43,9 +43,9 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x20;
                 }
             }
             for (i = 0; i < 5; i++) {
@@ -70,7 +70,7 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 1:
             if (frame < 0x10) {
-                c = (ex->math_cos((frame << 10) >> 4) >> 5) - 0x80;
+                bright = (ex->math_cos((frame << 10) >> 4) >> 5) - 0x80;
                 for (i = 0; i < 5; i++) {
                     if (frame >= i * 2) {
                         t = ((frame - i * 2) << 12) / 7;
@@ -84,20 +84,20 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         ex->Hi_SetEffModelSlice(work->model1C, 0);
                         ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->modelPos34, (s32)work->scale28, work->model1C);
                         ex->Hi_ModifyEffModelAbr(work->model1C, 1);
-                        ex->Hi_ModifyEffModelRGB(work->model1C, c, c, c);
+                        ex->Hi_ModifyEffModelRGB(work->model1C, bright, bright, bright);
                     }
                 }
             }
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
             if (frame == 8) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
             if (frame >= 0x20) {

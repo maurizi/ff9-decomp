@@ -1,15 +1,15 @@
 #include "fxmod/fx_17e.h"
 
-s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
-    SVECTOR v;
+    Pool6CEntry *emitter;
+    SVECTOR lerpPos;
     s32 frame;
     s32 i;
-    s32 c;
+    s32 fade;
 
     if (mode == 0) {
-        *arg4 = 0x54;
+        *args = 0x54;
     } else if (mode == 1) {
         fx_17e_env = env;
         for (i = 3; i >= 0; i--) {
@@ -41,9 +41,9 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer40[2] = 3;
             break;
         case 26:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos38);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos38);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         }
@@ -63,10 +63,10 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timer40[2] != 0) {
             work->timer40[2]--;
-            ex->btlfx_lerpVec((s16 *)&work->pos30, (s16 *)&work->pos38, (3 - work->timer40[2]) * 0x555, (s16 *)&v);
-            work->pos18.vx = v.vx;
-            work->pos18.vy = v.vy;
-            work->pos18.vz = v.vz;
+            ex->btlfx_lerpVec((s16 *)&work->pos30, (s16 *)&work->pos38, (3 - work->timer40[2]) * 0x555, (s16 *)&lerpPos);
+            work->pos18.vx = lerpPos.vx;
+            work->pos18.vy = lerpPos.vy;
+            work->pos18.vz = lerpPos.vz;
         }
         if (work->timer50 != 0) {
             work->timer50--;
@@ -76,9 +76,9 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer40[3]--;
             ex->Hi_DrawEffModel(&work->rot28, &work->pos18, (s32)&work->scale8, work->model0);
             if (work->fade4 != 0x80) {
-                c = work->fade4 - 0x80;
+                fade = work->fade4 - 0x80;
                 ex->Hi_ModifyEffModelAbr(work->model0, 1);
-                ex->Hi_ModifyEffModelRGB(work->model0, c, c, c);
+                ex->Hi_ModifyEffModelRGB(work->model0, fade, fade, fade);
             }
         }
         return frame >= 0x42;

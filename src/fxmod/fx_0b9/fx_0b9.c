@@ -1,11 +1,11 @@
 #include "fxmod/fx_0b9.h"
 
-s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
         work->pos8.vx = env->targets->centerX;
         work->pos8.vy = env->targets->centerY;
@@ -64,20 +64,20 @@ s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_0b9_op81(s32 mode, Fx0b9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b9_op81(s32 mode, Fx0b9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x18;
+        *args = 0x18;
     } else if (mode == 1) {
-        s32 n = *arg4;
-        work->unit14 = n;
+        s32 unit = *args;
+        work->unit14 = unit;
         fx_0b9_env = env;
-        if (n >= env->targets->targetCount) {
+        if (unit >= env->targets->targetCount) {
             return 1;
         }
-        ex->btlfx_getUnitPos(n, (s16 *)&work->pos4);
+        ex->btlfx_getUnitPos(unit, (s16 *)&work->pos4);
         work->pos4.vy -= 0xC8;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4);
         if (work->emit0 != NULL) {

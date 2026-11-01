@@ -1,12 +1,12 @@
 #include "fxmod/fx_052.h"
 
-s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 t;
+    s32 elapsed;
 
     if (mode == 0) {
-        *arg4 = 0x58;
+        *args = 0x58;
     } else if (mode == 1) {
         fx_052_env = env;
         ex->btlfx_initEffModels(fx_052_effModels, 3);
@@ -52,9 +52,9 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        t = frame - 0x37;
-        if (t >= 0 && t < 0x79) {
-            if (t >= 0x23) {
+        elapsed = frame - 0x37;
+        if (elapsed >= 0 && elapsed < 0x79) {
+            if (elapsed >= 0x23) {
                 if (work->scale2C.vx > 0x400) {
                     work->scale2C.vx -= 0x100;
                     work->scale2C.vy -= 0x100;
@@ -82,12 +82,12 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_052_op81(s32 mode, Fx052Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_052_op81(s32 mode, Fx052Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x14;
+        *args = 0x14;
     } else if (mode == 1) {
         fx_052_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
@@ -116,12 +116,12 @@ s32 fx_052_op81(s32 mode, Fx052Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 4;
+        *args = 4;
     } else if (mode == 1) {
         fx_052_env = env;
         work->fadeOut2 = -1;
@@ -150,18 +150,18 @@ s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_052_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_052_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_052_env)->btlfx_drawScreenTint((u32 *)(fx_052_env->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_052_env)->btlfx_drawScreenTint((u32 *)(fx_052_env->ot + ot), abr, bright, bright, bright);
 }
 
 INCLUDE_RODATA("asm/us/fx_052/nonmatchings/fx_052", fx_052_headerPtr);

@@ -1,6 +1,6 @@
 #include "fxmod/fx_128.h"
 
-static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_128_env)->btlfx_lerpVec((s16 *)&fx_128_lerpFrom, (s16 *)&fx_128_lerpTo, (frame << 12) / 12, (s16 *)pos);
     out->pos0.vx = pos->vx << 12;
     out->pos0.vy = pos->vy << 12;
@@ -11,7 +11,7 @@ static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 arg1, SVECTOR *pos
     return 0;
 }
 
-static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_128_env)->btlfx_lerpVec((s16 *)&fx_128_lerpFrom, (s16 *)((u8 *)fx_128_lerpToRand + (out->index1F - 1) * 8),
                                              (frame << 12) / 12, (s16 *)pos);
     out->pos0.vx = pos->vx << 12;
@@ -23,12 +23,12 @@ static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 arg1, SVECTOR *pos
     return 0;
 }
 
-s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x18;
+        *args = 0x18;
     } else if (mode == 1) {
         fx_128_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
@@ -68,24 +68,24 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     SVECTOR ang;
-    SVECTOR p1;
-    SVECTOR p2;
+    SVECTOR bodyPos;
+    SVECTOR slicePos;
     MATRIX m;
     VECTOR lv;
-    SVECTOR v;
-    s32 s;
+    SVECTOR offset;
+    s32 morph;
     s32 frame;
     s32 i;
     s32 j;
-    s32 k;
-    SVECTOR *p;
+    s32 pathFrame;
+    SVECTOR *unused;
 
     if (mode == 0) {
-        *arg4 = 0xB0;
+        *args = 0xB0;
     } else if (mode == 1) {
         fx_128_env = env;
         ex->btlfx_initEffModels(fx_128_effModels, 7);
@@ -195,7 +195,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 8 && frame < 0x41) {
-            k = frame - 8;
+            pathFrame = frame - 8;
             if (work->timer98 >= 0 || work->timer9C >= 0) {
                 if (work->timer98 >= 0) {
                     work->fade4C = fxm_lerpRatio(-0x80, 0, 4 - work->timer98, 4);
@@ -206,10 +206,10 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->timer9C--;
                 }
             }
-            fxm_rotPosPathGet(&fx_128_rotPosPath0, k, &work->rot24, &p1);
-            work->pos2C.vx = p1.vx;
-            work->pos2C.vy = p1.vy;
-            work->pos2C.vz = p1.vz;
+            fxm_rotPosPathGet(&fx_128_rotPosPath0, pathFrame, &work->rot24, &bodyPos);
+            work->pos2C.vx = bodyPos.vx;
+            work->pos2C.vy = bodyPos.vy;
+            work->pos2C.vz = bodyPos.vz;
             work->pos2C.vx += work->pos50.vx;
             work->pos2C.vy += work->pos50.vy;
             work->pos2C.vz += work->pos50.vz;
@@ -218,20 +218,20 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos88.vz = work->pos2C.vz;
             ex->btlfx_aimAngles((s16 *)&work->pos70, (s16 *)&work->pos60, (s16 *)&ang);
             work->rot24.vy = ang.vy;
-            if (env->targets->targetCount == 1 && k >= 0x25 && work->rot24.vx <= ang.vx) {
+            if (env->targets->targetCount == 1 && pathFrame >= 0x25 && work->rot24.vx <= ang.vx) {
                 work->rot24.vx = ang.vx;
             }
-            fxm_valuePathGet(&fx_128_valuePath, k, &s);
+            fxm_valuePathGet(&fx_128_valuePath, pathFrame, &morph);
             ex->Hi_DrawMorphEffModel(&work->rot24, (VECTOR *)&work->pos2C, (s32)&work->scale3C, work->modelA0[0],
-                                     work->modelA0[1], s);
+                                     work->modelA0[1], morph);
             if (work->timer98 >= 0 || work->timer9C >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->modelA0[0], work->fade4C, work->fade4C, work->fade4C);
             }
             for (i = 0; i < 5; i++) {
-                fxm_rotPosPathGet(&fx_128_rotPosPath1[i], k, &work->rot24, &p2);
-                work->pos2C.vx = p2.vx;
-                work->pos2C.vy = p2.vy;
-                work->pos2C.vz = p2.vz;
+                fxm_rotPosPathGet(&fx_128_rotPosPath1[i], pathFrame, &work->rot24, &slicePos);
+                work->pos2C.vx = slicePos.vx;
+                work->pos2C.vy = slicePos.vy;
+                work->pos2C.vz = slicePos.vz;
                 work->pos2C.vx += work->pos50.vx;
                 work->pos2C.vy += work->pos50.vy;
                 work->pos2C.vz += work->pos50.vz;
@@ -253,14 +253,14 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 0x19) {
-            fxm_posPathGet(&fx_128_posPath, frame - 8, &v);
+            fxm_posPathGet(&fx_128_posPath, frame - 8, &offset);
             rot.vx = 0;
             rot.vy = work->rot24.vy;
             rot.vz = 0;
             ex->math_rotMatrixYXZ(&rot, &m);
             gte_SetRotMatrix(&m);
             gte_ldtr0();
-            gte_ldv0(&v);
+            gte_ldv0(&offset);
             gte_rtv0tr();
             gte_stlvnl(&lv);
             work->pos90.vx = lv.vx;
@@ -282,8 +282,8 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_128_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_128_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -296,27 +296,27 @@ static void fxm_rotPosPathInit(Fx128Path *path, u16 *data) {
     path->keys4 = (Fx128Point *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx128Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx128Key *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx128Path_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx128Key *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }
 
 static void fxm_posPathInit(Fx128Path *path, u16 *data) {
@@ -328,17 +328,17 @@ static void fxm_posPathInit(Fx128Path *path, u16 *data) {
 static s32 fxm_posPathGet(Fx128Path *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx128Point *p;
+    Fx128Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
@@ -348,16 +348,16 @@ static void fxm_valuePathInit(Fx128Path *path, u16 *data) {
     path->keys4 = (Fx128Point *)data;
 }
 
-static s32 fxm_valuePathGet(Fx128Keys *keys, s32 i, s32 *out) {
-    s32 r = 1;
+static s32 fxm_valuePathGet(Fx128Keys *keys, s32 t, s32 *out) {
+    s32 done = 1;
 
-    if (i > keys->count2 - 1) {
-        i = keys->count2 - 1;
+    if (t > keys->count2 - 1) {
+        t = keys->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    *out = *(s16 *)((u8 *)keys->values4 + (i << 1));
-    return r;
+    *out = *(s16 *)((u8 *)keys->values4 + (t << 1));
+    return done;
 }
 
 INCLUDE_RODATA("asm/us/fx_128/nonmatchings/fx_128", fx_128_headerPtr);

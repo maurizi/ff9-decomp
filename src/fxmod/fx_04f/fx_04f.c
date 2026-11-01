@@ -3,40 +3,40 @@
 static s32 fx_04f_op80PoolTask(s32 mode, s32 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx04fWork *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR p;
+    SVECTOR ahead;
     SVECTOR rot;
     VECTOR scale;
     VECTOR pos;
-    s32 a;
-    s32 c;
-    s32 s;
-    s32 *q;
-    s32 c2;
+    s32 ang;
+    s32 bright;
+    s32 size;
+    s32 *baseSizePtr;
+    s32 baseSize;
 
     if (mode == 1) {
         *it = 0;
     } else {
-        a = ((frame << 12) / 9) >> 1;
-        c = ex->math_sin(a);
+        ang = ((frame << 12) / 9) >> 1;
+        bright = ex->math_sin(ang);
         if (frame < 5) {
-            c2 = a + 0x200;
-            s = ((ex->math_sin((frame << 10) >> 2) * (work->scaleX4C >> 1)) >> 12) + c2;
+            baseSize = ang + 0x200;
+            size = ((ex->math_sin((frame << 10) >> 2) * (work->scaleX4C >> 1)) >> 12) + baseSize;
         } else {
-            c2 = a + 0x200;
-            s = (work->scaleX4C >> 1) + *(q = &c2); /* the address taken changes c2's register (permuter) */
+            baseSize = ang + 0x200;
+            size = (work->scaleX4C >> 1) + *(baseSizePtr = &baseSize); /* the address taken changes baseSize's register (permuter) */
         }
-        scale.vy = s;
-        scale.vx = s;
+        scale.vy = size;
+        scale.vx = size;
         scale.vz = (work->scaleZ50 * 7) >> 3;
         BTLFX_COPY_SVEC(&rot, &work->rot38);
         rot.vy += 0x800;
-        ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&rot, *it, (s16 *)&p);
-        pos.vx = p.vx;
-        pos.vy = p.vy;
-        pos.vz = p.vz;
+        ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&rot, *it, (s16 *)&ahead);
+        pos.vx = ahead.vx;
+        pos.vy = ahead.vy;
+        pos.vz = ahead.vz;
         *it -= 0x18;
         ex->Hi_DrawEffModel(&work->rot38, &pos, (s32)&scale, work->model4);
-        ex->Hi_ModifyEffModelRGB(work->model4, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+        ex->Hi_ModifyEffModelRGB(work->model4, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
         if (frame >= 9) {
             return 1;
         }
@@ -50,11 +50,11 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 r;
     s32 g;
     s32 b;
-    s32 k;
-    s32 t;
+    s32 glow;
+    s32 growth;
     VECTOR scale;
-    SVECTOR v;
-    s32 q;
+    SVECTOR emitPos;
+    s32 ratio;
 
     if (mode == 0) {
         init->workSize = 0x54;
@@ -84,7 +84,7 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         r = 0;
         g = 0;
         b = 0;
-        k = 0;
+        glow = 0;
         frame = entry->frame;
         switch (work->state0) {
         case 0:
@@ -103,7 +103,7 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 1:
-            q = (frame << 12) / 20;
+            ratio = (frame << 12) / 20;
             if (frame < 10) {
                 r = 0x1000;
                 b = (frame << 12) / 10;
@@ -113,11 +113,11 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 g = 0x1000;
                 r = 0x1000;
             }
-            k = q;
-            t = k * 0xC00;
-            scale.vy = (t >> 12) + 0xC00;
-            scale.vx = (t >> 12) + 0xC00;
-            scale.vz = t >> 11;
+            glow = ratio;
+            growth = glow * 0xC00;
+            scale.vy = (growth >> 12) + 0xC00;
+            scale.vx = (growth >> 12) + 0xC00;
+            scale.vz = growth >> 11;
             if (frame % 5 == 0) {
                 ex->btlfx_poolSpawn((s16 *)entry->pool);
             }
@@ -126,9 +126,9 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit44 = NULL;
                 } else {
                     work->rot38.vy += 0x800;
-                    ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&work->rot38, frame * 0x12, (s16 *)&v);
+                    ex->btlfx_pointAhead((s16 *)&work->pos14, (s16 *)&work->rot38, frame * 0x12, (s16 *)&emitPos);
                     work->rot38.vy += 0x800;
-                    ex->btlfx_moveEmitterTo((s32)work->emit44, (s32)&v);
+                    ex->btlfx_moveEmitterTo((s32)work->emit44, (s32)&emitPos);
                 }
             }
             if (frame >= 0x14) {
@@ -140,11 +140,11 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vy = 0x1800;
             scale.vx = 0x1800;
             scale.vz = 0x1800;
-            q = (frame << 12) / 12;
-            b = 0x1000 - q;
+            ratio = (frame << 12) / 12;
+            b = 0x1000 - ratio;
             g = b;
             r = b;
-            k = b;
+            glow = b;
             if (frame >= 0xD) {
                 ex->btlfx_clearEffModels();
                 return 1;
@@ -160,7 +160,7 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rot38.vz = -work->frame48 * 0x18;
         ex->Hi_DrawEffModel(&work->rot38, (VECTOR *)work->pos2C, (s32)&scale, work->model10);
         ex->Hi_ModifyEffModelAbr(work->model10, 1);
-        ex->Hi_ModifyEffModelRGB(work->model10, (k * 2 / 3 >> 5) - 0x80, (k * 2 / 3 >> 5) - 0x80, (k * 2 / 3 >> 5) - 0x80);
+        ex->Hi_ModifyEffModelRGB(work->model10, (glow * 2 / 3 >> 5) - 0x80, (glow * 2 / 3 >> 5) - 0x80, (glow * 2 / 3 >> 5) - 0x80);
         work->rot38.vz = 0;
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xA), work->frame48);
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xD), work->frame48);

@@ -27,6 +27,6 @@ extern SVECTOR fx_043_emitPos;
 extern s32 fx_043_trails[];
 extern s32 fx_043_trails2[];
 
-static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n);
+static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 
 #endif

@@ -15,7 +15,7 @@ typedef struct {
 
 extern Unk800F78A4 *fx_086_env;
 
-static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);
+static void fxm_randDiscPoints(s32 n, s32 radius, SVECTOR *pts);
 #define gte_stszotz(r0) __asm__ volatile( \
     "mfc2\t$12, $19;" \
     "nop;" \
@@ -27,7 +27,7 @@ static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);
     "nop;" \
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
-static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pts, CVECTOR *col, s32 p, s32 abr);
+static void fxm_drawStreakField(u32 *ot, s32 n, s32 projH, s32 dz, void *rot, SVECTOR *pts, CVECTOR *rgb, s32 fade, s32 abr);
 
 typedef struct {
     s32 state0; /* state */
@@ -49,7 +49,7 @@ typedef struct {
 extern BtlModelBuf fx_086_effModels[];
 extern SVECTOR fx_086_streakPts[];
 extern SVECTOR fx_086_spritePos[64];
-static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 bright, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang);
 
 #endif

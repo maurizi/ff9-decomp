@@ -24,7 +24,7 @@ typedef struct {
 } Fx17d4Line;
 
 extern Fx17d4Line fx_17d_4_lineTrail;
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
+static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth);
 
 extern s16 fx_17d_4_strandInfo[18 * 4]; /* per strand: file, start, stride, width */
 extern Fx17d4Line *fx_17d_4_strandTrails[18];
@@ -73,7 +73,7 @@ typedef struct {
 
 extern SVECTOR fx_17d_4_centerPos;
 extern s32 fx_17d_4_op80Trails[];
-extern s8 fx_17d_4_unused; /* no reader in any fx_17d group, other module or ovl_0b */
+extern s8 fx_17d_4_buf400; /* no reader in any fx_17d group, other module or ovl_0b */
 extern BtlModelBuf fx_17d_4_effModels[];
 void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
 void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot);

@@ -8,7 +8,7 @@ void wm_initBuffers(void) {
     g_worldTexBuffers[0] = PSX_RAM(s32 *, 0x80180800);
     g_worldTexBuffers[1] = PSX_RAM(s32 *, 0x8018A000);
     g_worldTexBuffers[2] = PSX_RAM(s32 *, 0x80193800);
-    g_worldUnusedBuffer = (s32)PSX_RAM(u8 *, 0x80100800);
+    g_worldLowBuffer = (s32)PSX_RAM(u8 *, 0x80100800);
     g_worldPrimPtr = g_worldPrimBuffers[*g_worldBufIndex];
 }
 
@@ -41,7 +41,7 @@ void wm_systemInit(void) {
     g_worldMogChoice = 0;
     g_worldVehiclesFound = 0;
     g_worldOtBias = 0;
-    g_worldSysUnusedFlag = 0;
+    g_worldSysInitFlag = 0;
     g_worldSuspended = 0;
     g_worldMapJump = 0;
     g_worldBufIndex = &g_gameState->gameData->drawBuf;

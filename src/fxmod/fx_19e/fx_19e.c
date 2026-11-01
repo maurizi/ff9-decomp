@@ -1,10 +1,10 @@
 #include "fxmod/fx_19e.h"
 
-s32 fx_19e_op80(s32 mode, Fx19eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_19e_op80(s32 mode, Fx19eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
         work->pos4.vx = env->targets->centerX;
         work->pos4.vy = env->targets->centerY;
@@ -20,11 +20,11 @@ s32 fx_19e_op80(s32 mode, Fx19eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0x30;
+        *args = 0x30;
     } else if (mode == 1) {
         fx_19e_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
@@ -41,8 +41,8 @@ s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_19e_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_19e_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -66,7 +66,7 @@ static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height,
     return frame >= n;
 }
 
-static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
+static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *unused, SVECTOR *delta) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19e_env);
     SVECTOR rot;
     SVECTOR pos;

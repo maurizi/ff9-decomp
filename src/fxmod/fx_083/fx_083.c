@@ -2,18 +2,18 @@
 
 INCLUDE_RODATA("asm/us/fx_083/nonmatchings/fx_083", fx_083_headerPtr);
 
-s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s16 tex[8];
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
-    s32 r;
-    s32 n;
-    s32 t;
+    s32 tint;
+    s32 pillar;
+    s32 ang;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx083Work);
+        *args = sizeof(Fx083Work);
     } else if (mode == 1) {
         fx_083_env = env;
         ex->btlfx_initEffModels(fx_083_effModels, 0x14);
@@ -90,17 +90,17 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timers0[8] = 0x30;
             break;
         case 0x30:
-            e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos160);
-            if (e != NULL) {
-                e->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos160);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
-            e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos160);
-            if (e != NULL) {
-                e->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos160);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
-            e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos160);
-            if (e != NULL) {
-                e->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos160);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
             break;
         case 0x34:
@@ -158,10 +158,10 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->timers0[8] != 0) {
             work->timers0[8]--;
             for (i = 0; i < 4; i++) {
-                t = i << 10;
-                work->emitPos1A0[i].vx = work->center158.vx + ((ex->math_sin(t + work->orbit1C0) *
+                ang = i << 10;
+                work->emitPos1A0[i].vx = work->center158.vx + ((ex->math_sin(ang + work->orbit1C0) *
                                                          (work->radius168 + work->ringOffsetA8 + 0x200)) >> 12);
-                work->emitPos1A0[i].vz = work->center158.vz + ((ex->math_cos(t + work->orbit1C0) *
+                work->emitPos1A0[i].vz = work->center158.vz + ((ex->math_cos(ang + work->orbit1C0) *
                                                          (work->radius168 + work->ringOffsetA8 + 0x200)) >> 12);
                 work->emitPos1A0[i].vy = work->ringPos58[0].vy;
                 if (work->emit170[i] != NULL && work->emit170[i]->state == BTLFX_EMIT_DONE) {
@@ -183,11 +183,11 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timers0[7] != 0) {
             work->pillarPosEC[0].vy = work->ringHeightAC;
-            if (!(work->timers0[7] & 7) && (n = work->timers0[7] >> 3) > 0) {
-                work->pillarOnC4[n] = 1;
-                work->pillarPosEC[n].vx = work->pillarPosEC[0].vx;
-                work->pillarPosEC[n].vy = work->pillarPosEC[0].vy;
-                work->pillarPosEC[n].vz = work->pillarPosEC[0].vz;
+            if (!(work->timers0[7] & 7) && (pillar = work->timers0[7] >> 3) > 0) {
+                work->pillarOnC4[pillar] = 1;
+                work->pillarPosEC[pillar].vx = work->pillarPosEC[0].vx;
+                work->pillarPosEC[pillar].vy = work->pillarPosEC[0].vy;
+                work->pillarPosEC[pillar].vz = work->pillarPosEC[0].vz;
             }
             work->timers0[7]--;
         }
@@ -201,16 +201,16 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     ex->Hi_DrawEffModel(&work->rot140, &work->pillarPosEC[i], (s32)&work->pillarScale148, work->modelB0[i]);
                     if (work->pillarFadeD8[i] > 0) {
                         work->pillarFadeD8[i]--;
-                        r = (work->pillarFadeD8[i] << 5) - 0x100;
-                        ex->Hi_ModifyEffModelRGB(work->modelB0[i], r, r, r);
+                        tint = (work->pillarFadeD8[i] << 5) - 0x100;
+                        ex->Hi_ModifyEffModelRGB(work->modelB0[i], tint, tint, tint);
                         if (work->pillarFadeD8[i] == 0) {
                             work->pillarOnC4[i] = 0;
                         }
                     }
                     if (i == 0 && work->fade13C != 0) {
                         work->fade13C--;
-                        r = -(work->fade13C * 0x10);
-                        ex->Hi_ModifyEffModelRGB(work->modelB0[0], r, r, r);
+                        tint = -(work->fade13C * 0x10);
+                        ex->Hi_ModifyEffModelRGB(work->modelB0[0], tint, tint, tint);
                     }
                 }
             }

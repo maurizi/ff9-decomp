@@ -33,7 +33,7 @@
 
 /* ---- globals the headers don't declare yet (types from their use in this module) ---- */
 extern u32 D_8007BCB4;           /* CLUT/texture word added to glyph sprites (pen_setPalette) */
-extern u32 *D_8007BBD0;          /* second glyph table (pen_getGlyph) */
+extern u32 *g_penKanjiGlyphs;          /* second glyph table (pen_getGlyph) */
 extern u32 g_penColor;           /* pen colour, 0xBBGGRR */
 extern u8 *D_8007BCAC;           /* packet pointer of the pen_beginBuffered sessions */
 extern DVECTOR D_8007BC78[];     /* pen stack storage */
@@ -63,7 +63,7 @@ s32 evt_exprUnitFirst(void);
 s16 msg_isOpen(s32 i);
 void evt_setCurUnit(void *p);
 void math_rotMatrixZYX(void *a, void *b);
-void msg_endTextStub(void);
+void msg_onTextEnd(void);
 s32 evt_execInstr(void);
 
 /* ---- the register file ---- */
@@ -115,7 +115,7 @@ u32 pen_getGlyph(s32 c) {
     if (e < 0) {
         return g_penGlyphs[d + (range >> 16)];
     }
-    return D_8007BBD0[e];
+    return g_penKanjiGlyphs[e];
 }
 
 /* Dialogue-font glyph: one sprite, then the pen advances by the glyph's width. */
@@ -654,7 +654,7 @@ void func_80051B58(const char *fmt, ...) {
         }
     }
     pen_endBuffered();
-    msg_endTextStub();
+    msg_onTextEnd();
     va_end(ap);
 }
 

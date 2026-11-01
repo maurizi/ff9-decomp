@@ -1,12 +1,12 @@
 #include "fxmod/fx_184.h"
 
-s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR dropPos;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x44;
+        *args = 0x44;
     } else if (mode == 1) {
         fx_184_env = env;
         ex->btlfx_initEffModels(fx_184_effModels, 1);
@@ -26,10 +26,10 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame < 6) {
-            ex->btlfx_lerpVec((s16 *)&work->pos10, (s16 *)&work->pos8, frame << 10, (s16 *)&v);
-            work->pos20.vx = v.vx;
-            work->pos20.vy = v.vy;
-            work->pos20.vz = v.vz;
+            ex->btlfx_lerpVec((s16 *)&work->pos10, (s16 *)&work->pos8, frame << 10, (s16 *)&dropPos);
+            work->pos20.vx = dropPos.vx;
+            work->pos20.vy = dropPos.vy;
+            work->pos20.vz = dropPos.vz;
         }
         ex->Hi_SetEffModelSlice(work->model40, work->pos20.vy);
         ex->Hi_DrawSliceEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model40);
@@ -41,11 +41,11 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_184_op81(s32 mode, Fx184Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_184_op81(s32 mode, Fx184Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
         fx_184_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
@@ -60,11 +60,11 @@ s32 fx_184_op81(s32 mode, Fx184Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0x3C;
+        *args = 0x3C;
     } else if (mode == 1) {
         fx_184_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
@@ -126,8 +126,8 @@ static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height,
     return frame >= n;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_184_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_184_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {

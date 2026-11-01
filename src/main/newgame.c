@@ -2,6 +2,6 @@
 
 void game_newGame(void) {
     item_initNew();
-    chr_newGameStub();
+    chr_initNew();
     party_initNewGame();
 }

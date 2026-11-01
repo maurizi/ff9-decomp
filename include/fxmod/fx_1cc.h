@@ -61,7 +61,7 @@ typedef struct {
 
 extern BtlModelBuf fx_1cc_effModels[];
 extern s32 fx_1cc_pieceFileIds[14];
-static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
+static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *obj, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 pool,
                   Fx1ccInst *inst);
 
 s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
@@ -92,6 +92,6 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     : : "r"(r0))
 static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
-static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 h, s32 abr);
+static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 bright, s32 tpage, s32 clut, s32 u, s32 v, s32 amp, s32 abr);
 
 #endif
