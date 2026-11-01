@@ -1,343 +1,343 @@
 #include "ovl_0b.h"
 
-u16 Hi_RegisterSolidEffModel(BtlModelHeader *arg0) {
-    BtlObjSlot *p = btlfx_allocEffModel();
-    if (p == NULL) {
+u16 Hi_RegisterSolidEffModel(BtlModelHeader *header) {
+    BtlObjSlot *slot = btlfx_allocEffModel();
+    if (slot == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterSolidEffModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    if (p->model == NULL) {
+    if (slot->model == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterSolidEffModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    p->used = 1;
-    p->slice = 0;
-    p->kind = HI_EFFMODEL_SOLID;
-    p->otOffset = 0;
-    p->sliceY = 0;
-    p->model->header = arg0;
-    p->model->motion = NULL;
-    btl_applyModelTextures(p->model, NULL, NULL);
-    return p->id;
+    slot->used = 1;
+    slot->slice = 0;
+    slot->kind = HI_EFFMODEL_SOLID;
+    slot->otOffset = 0;
+    slot->sliceY = 0;
+    slot->model->header = header;
+    slot->model->motion = NULL;
+    btl_applyModelTextures(slot->model, NULL, NULL);
+    return slot->id;
 }
 
-u16 Hi_RegisterGouEffModel(BtlModelHeader *arg0) {
-    BtlObjSlot *p = btlfx_allocEffModel();
-    if (p == NULL) {
+u16 Hi_RegisterGouEffModel(BtlModelHeader *header) {
+    BtlObjSlot *slot = btlfx_allocEffModel();
+    if (slot == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterGouEffModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    if (p->model == NULL) {
+    if (slot->model == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterGouEffModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    p->used = 1;
-    p->slice = 0;
-    p->kind = HI_EFFMODEL_GOU;
-    p->otOffset = 0;
-    p->sliceY = 0;
-    p->model->header = arg0;
-    p->model->motion = NULL;
-    btl_applyModelTextures(p->model, NULL, NULL);
-    return p->id;
+    slot->used = 1;
+    slot->slice = 0;
+    slot->kind = HI_EFFMODEL_GOU;
+    slot->otOffset = 0;
+    slot->sliceY = 0;
+    slot->model->header = header;
+    slot->model->motion = NULL;
+    btl_applyModelTextures(slot->model, NULL, NULL);
+    return slot->id;
 }
 
-u16 Hi_RegisterTexEffModel(BtlModelHeader *arg0, s16 arg1, s16 arg2, s32 arg3, s32 arg4) {
-    s16 v[2];
-    BtlObjSlot *p = btlfx_allocEffModel();
-    if (p == NULL) {
+u16 Hi_RegisterTexEffModel(BtlModelHeader *header, s16 tpage, s16 clut, s32 uOfs, s32 vOfs) {
+    s16 uvOffset[2];
+    BtlObjSlot *slot = btlfx_allocEffModel();
+    if (slot == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterTexEffModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    if (p->model == NULL) {
+    if (slot->model == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterTexEffModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    p->used = 1;
-    p->slice = 0;
-    p->kind = HI_EFFMODEL_TEX;
-    p->otOffset = 0;
-    p->sliceY = 0;
-    p->model->header = arg0;
-    p->model->motion = NULL;
-    p->tex.pages[0][0] = arg1;
-    p->tex.pages[0][1] = arg2;
-    v[0] = arg3;
-    v[1] = arg4;
-    btl_applyModelTextures(p->model, p->tex.pages[0], v);
-    return p->id;
+    slot->used = 1;
+    slot->slice = 0;
+    slot->kind = HI_EFFMODEL_TEX;
+    slot->otOffset = 0;
+    slot->sliceY = 0;
+    slot->model->header = header;
+    slot->model->motion = NULL;
+    slot->tex.pages[0][0] = tpage;
+    slot->tex.pages[0][1] = clut;
+    uvOffset[0] = uOfs;
+    uvOffset[1] = vOfs;
+    btl_applyModelTextures(slot->model, slot->tex.pages[0], uvOffset);
+    return slot->id;
 }
 
-u16 Hi_RegisterTexListModel(BtlModelHeader *arg0, BtlTexInfo *arg1, s16 *arg2, s32 arg3) {
-    BtlObjSlot *p = btlfx_allocEffModel();
-    if (p == NULL) {
+u16 Hi_RegisterTexListModel(BtlModelHeader *header, BtlTexInfo *texInfo, s16 *uvOffsets, s32 texCount) {
+    BtlObjSlot *slot = btlfx_allocEffModel();
+    if (slot == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterTexListModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    if (p->model == NULL) {
+    if (slot->model == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterTexListModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    p->used = 1;
-    p->slice = 0;
-    p->kind = HI_EFFMODEL_TEX;
-    p->otOffset = 0;
-    p->sliceY = 0;
-    p->model->header = arg0;
-    p->model->motion = NULL;
-    p->tex = *arg1;
-    btl_applyModelTextures(p->model, p->tex.pages[0], arg2);
-    return p->id;
+    slot->used = 1;
+    slot->slice = 0;
+    slot->kind = HI_EFFMODEL_TEX;
+    slot->otOffset = 0;
+    slot->sliceY = 0;
+    slot->model->header = header;
+    slot->model->motion = NULL;
+    slot->tex = *texInfo;
+    btl_applyModelTextures(slot->model, slot->tex.pages[0], uvOffsets);
+    return slot->id;
 }
 
-u16 Hi_RegisterTexPtrModel(BtlModelHeader *arg0, s16 *arg1, s16 *arg2) {
-    BtlObjSlot *p = btlfx_allocEffModel();
-    if (p == NULL) {
+u16 Hi_RegisterTexPtrModel(BtlModelHeader *header, s16 *texPages, s16 *uvOffsets) {
+    BtlObjSlot *slot = btlfx_allocEffModel();
+    if (slot == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterTexPtrModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    if (p->model == NULL) {
+    if (slot->model == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterTexPtrModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    p->used = 1;
-    p->slice = 0;
-    p->kind = HI_EFFMODEL_TEX;
-    p->otOffset = 0;
-    p->sliceY = 0;
-    p->model->header = arg0;
-    p->model->motion = NULL;
-    btl_applyModelTextures(p->model, arg1, arg2);
-    return p->id;
+    slot->used = 1;
+    slot->slice = 0;
+    slot->kind = HI_EFFMODEL_TEX;
+    slot->otOffset = 0;
+    slot->sliceY = 0;
+    slot->model->header = header;
+    slot->model->motion = NULL;
+    btl_applyModelTextures(slot->model, texPages, uvOffsets);
+    return slot->id;
 }
 
 s32 btlfx_modelUnusedStub1(void) {
     return 0;
 }
 
-s32 Hi_RegisterSummonModel(Unk80100DC054 *arg0, s16 *arg1) {
-    s16 t[6][2];
-    Unk8010141C *p = btlfx_allocSummonModel();
+s32 Hi_RegisterSummonModel(Unk80100DC054 *summon, s16 *texPos) {
+    s16 uvOffsets[6][2];
+    Unk8010141C *slot = btlfx_allocSummonModel();
     s32 i;
-    if (p == NULL) {
+    if (slot == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterSummonModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    if (p->model == NULL) {
+    if (slot->model == NULL) {
         sprintf(g_btlfxErrorMsg, "Hi_RegisterSummonModel()\nmemory not enough!");
         btlfx_error(g_btlfxErrorMsg);
     }
-    p->used = 1;
-    p->frame = 0;
-    p->model->header = (BtlModelHeader *)arg0->modelHdr;
-    p->model->motion = (BtlMotion *)arg0->motions[0];
-    if (arg1 != NULL) {
-        p->texAnimOn = 1;
+    slot->used = 1;
+    slot->frame = 0;
+    slot->model->header = (BtlModelHeader *)summon->modelHdr;
+    slot->model->motion = (BtlMotion *)summon->motions[0];
+    if (texPos != NULL) {
+        slot->texAnimOn = 1;
     } else {
-        p->texAnimOn = 0;
+        slot->texAnimOn = 0;
     }
-    for (i = 0; i < arg0->texCount; i++) {
-        p->tex[i][0] = arg0->texTpage[i];
-        p->tex[i][1] = arg0->texClut[i];
-        t[i][0] = 0;
-        t[i][1] = arg0->texY[i];
-        if (arg1 != NULL) {
-            p->texPos[i][0] = arg1[0];
-            p->texPos[i][1] = arg1[1];
-            p->texPos[i][2] = arg1[2];
-            p->texPos[i][3] = arg1[3];
-            arg1 += 4;
+    for (i = 0; i < summon->texCount; i++) {
+        slot->tex[i][0] = summon->texTpage[i];
+        slot->tex[i][1] = summon->texClut[i];
+        uvOffsets[i][0] = 0;
+        uvOffsets[i][1] = summon->texY[i];
+        if (texPos != NULL) {
+            slot->texPos[i][0] = texPos[0];
+            slot->texPos[i][1] = texPos[1];
+            slot->texPos[i][2] = texPos[2];
+            slot->texPos[i][3] = texPos[3];
+            texPos += 4;
         }
     }
-    btl_applyModelTextures(p->model, p->tex[0], t[0]);
-    p->model->texAnims = arg0->texAnims;
-    btl_relocTexAnims((TexAnimSet *)p->model->texAnims, (u16 (*)[4])p->texPos);
-    return (u16)p->id;
+    btl_applyModelTextures(slot->model, slot->tex[0], uvOffsets[0]);
+    slot->model->texAnims = summon->texAnims;
+    btl_relocTexAnims((TexAnimSet *)slot->model->texAnims, (u16 (*)[4])slot->texPos);
+    return (u16)slot->id;
 }
 
-void Hi_DrawEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
-    BtlObjSlot *s = btlfx_getEffModel(arg3, "Hi_DrawEffModel()\nid:%d cannot use!");
+void Hi_DrawEffModel(SVECTOR *rot, VECTOR *pos, s32 scale, s32 modelId) {
+    BtlObjSlot *slot = btlfx_getEffModel(modelId, "Hi_DrawEffModel()\nid:%d cannot use!");
     s32 n;
     s32 i;
     s32 v;
-    btl_setModelTransform(s->model, arg0, arg1, arg2);
-    g_btlfxEnv->prim = btl_calcBoneMatrices(s->model, 0, g_btlfxEnv->prim);
-    s->model->prims = 0;
-    n = s->model->header->meshCount;
+    btl_setModelTransform(slot->model, rot, pos, scale);
+    g_btlfxEnv->prim = btl_calcBoneMatrices(slot->model, 0, g_btlfxEnv->prim);
+    slot->model->prims = 0;
+    n = slot->model->header->meshCount;
     for (i = 0; i < n; i++) {
-        btl_projectMesh(s->model, i);
-        if (s->otOffset != 0) {
-            g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, s->otOffset);
+        btl_projectMesh(slot->model, i);
+        if (slot->otOffset != 0) {
+            g_btlfxEnv->prim = btl_drawMeshOffset(slot->model, i, g_btlfxEnv->prim, slot->otOffset);
         } else {
-            switch ((u16)s->kind) {
+            switch ((u16)slot->kind) {
             case HI_EFFMODEL_SOLID:
             case HI_EFFMODEL_TEX:
-                g_btlfxEnv->prim = btl_drawMesh(s->model, i, g_btlfxEnv->prim);
+                g_btlfxEnv->prim = btl_drawMesh(slot->model, i, g_btlfxEnv->prim);
                 break;
             case HI_EFFMODEL_GOU:
-                g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, 0);
+                g_btlfxEnv->prim = btl_drawMeshOffset(slot->model, i, g_btlfxEnv->prim, 0);
                 break;
             }
         }
     }
 }
 
-void Hi_DrawSliceEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
-    BtlObjSlot *s = btlfx_getEffModel(arg3, "Hi_DrawSliceEffModel()\nid:%d cannot use!");
+void Hi_DrawSliceEffModel(SVECTOR *rot, VECTOR *pos, s32 scale, s32 modelId) {
+    BtlObjSlot *slot = btlfx_getEffModel(modelId, "Hi_DrawSliceEffModel()\nid:%d cannot use!");
     s32 n;
     s32 i;
-    btl_setModelTransform(s->model, arg0, arg1, arg2);
-    g_btlfxEnv->prim = btl_calcBoneMatrices(s->model, 0, g_btlfxEnv->prim);
-    s->model->prims = 0;
-    s->model->sliceY = arg1->vy - s->sliceY;
-    n = s->model->header->meshCount;
+    btl_setModelTransform(slot->model, rot, pos, scale);
+    g_btlfxEnv->prim = btl_calcBoneMatrices(slot->model, 0, g_btlfxEnv->prim);
+    slot->model->prims = 0;
+    slot->model->sliceY = pos->vy - slot->sliceY;
+    n = slot->model->header->meshCount;
     for (i = 0; i < n; i++) {
-        btlfx_projectSliceMesh(s->model, i);
-        g_btlfxEnv->prim = btlfx_drawSliceMesh(s->model, i, g_btlfxEnv->prim);
+        btlfx_projectSliceMesh(slot->model, i);
+        g_btlfxEnv->prim = btlfx_drawSliceMesh(slot->model, i, g_btlfxEnv->prim);
     }
 }
 
-void Hi_DrawEffModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    BtlObjSlot *s = btlfx_getEffModel(arg1, "Hi_DrawEffModelByBone()\nid:%d cannot use!");
+void Hi_DrawEffModelByBone(s32 scale, s32 modelId, s32 summonId, s32 bone) {
+    BtlObjSlot *slot = btlfx_getEffModel(modelId, "Hi_DrawEffModelByBone()\nid:%d cannot use!");
     s32 n;
     s32 i;
     s32 v;
-    g_btlfxEnv->prim = btl_calcBoneMatrices(s->model, 0, g_btlfxEnv->prim);
-    Hi_GetSummonBoneMatrix(arg2, arg3, (BtlBone *)&s->model->matrix);
-    if (arg0 != 0) {
-        btl_scaleModelMatrix(s->model, (VECTOR *)arg0);
+    g_btlfxEnv->prim = btl_calcBoneMatrices(slot->model, 0, g_btlfxEnv->prim);
+    Hi_GetSummonBoneMatrix(summonId, bone, (BtlBone *)&slot->model->matrix);
+    if (scale != 0) {
+        btl_scaleModelMatrix(slot->model, (VECTOR *)scale);
     }
-    s->model->prims = 0;
-    n = s->model->header->meshCount;
+    slot->model->prims = 0;
+    n = slot->model->header->meshCount;
     for (i = 0; i < n; i++) {
-        btl_projectMesh(s->model, i);
-        if (s->otOffset != 0) {
-            g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, s->otOffset);
+        btl_projectMesh(slot->model, i);
+        if (slot->otOffset != 0) {
+            g_btlfxEnv->prim = btl_drawMeshOffset(slot->model, i, g_btlfxEnv->prim, slot->otOffset);
         } else {
-            switch ((u16)s->kind) {
+            switch ((u16)slot->kind) {
             case HI_EFFMODEL_SOLID:
             case HI_EFFMODEL_TEX:
-                g_btlfxEnv->prim = btl_drawMesh(s->model, i, g_btlfxEnv->prim);
+                g_btlfxEnv->prim = btl_drawMesh(slot->model, i, g_btlfxEnv->prim);
                 break;
             case HI_EFFMODEL_GOU:
-                g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, 0);
+                g_btlfxEnv->prim = btl_drawMeshOffset(slot->model, i, g_btlfxEnv->prim, 0);
                 break;
             }
         }
     }
 }
 
-void Hi_DrawMorphEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    char *str = "Hi_DrawMorphEffModel()\nid:%d cannot use!";
-    BtlObjSlot *s = btlfx_getEffModel(arg3, str);
+void Hi_DrawMorphEffModel(SVECTOR *rot, VECTOR *pos, s32 scale, s32 modelId, s32 morphId, s32 weight) {
+    char *errFmt = "Hi_DrawMorphEffModel()\nid:%d cannot use!";
+    BtlObjSlot *slot = btlfx_getEffModel(modelId, errFmt);
     s32 n;
     s32 i;
-    s->model->morph = btlfx_getEffModel(arg4, str)->model->header;
-    btl_setModelTransform(s->model, arg0, arg1, arg2);
-    g_btlfxEnv->prim = btl_calcBoneMatrices(s->model, 0, g_btlfxEnv->prim);
-    s->model->prims = 0;
-    n = s->model->header->meshCount;
+    slot->model->morph = btlfx_getEffModel(morphId, errFmt)->model->header;
+    btl_setModelTransform(slot->model, rot, pos, scale);
+    g_btlfxEnv->prim = btl_calcBoneMatrices(slot->model, 0, g_btlfxEnv->prim);
+    slot->model->prims = 0;
+    n = slot->model->header->meshCount;
     for (i = 0; i < n; i++) {
-        btlfx_projectMorphMesh(s->model, i, arg5);
-        if (s->otOffset != 0) {
-            g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, s->otOffset);
+        btlfx_projectMorphMesh(slot->model, i, weight);
+        if (slot->otOffset != 0) {
+            g_btlfxEnv->prim = btl_drawMeshOffset(slot->model, i, g_btlfxEnv->prim, slot->otOffset);
         } else {
-            switch ((u16)s->kind) {
+            switch ((u16)slot->kind) {
             case HI_EFFMODEL_SOLID:
             case HI_EFFMODEL_TEX:
-                g_btlfxEnv->prim = btl_drawMesh(s->model, i, g_btlfxEnv->prim);
+                g_btlfxEnv->prim = btl_drawMesh(slot->model, i, g_btlfxEnv->prim);
                 break;
             case HI_EFFMODEL_GOU:
-                g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, 0);
+                g_btlfxEnv->prim = btl_drawMeshOffset(slot->model, i, g_btlfxEnv->prim, 0);
                 break;
             }
         }
     }
 }
 
-void Hi_DrawMorphModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    char *str = "Hi_DrawMorphModelByBone()\nid:%d cannot use!";
-    BtlObjSlot *s = btlfx_getEffModel(arg1, str);
+void Hi_DrawMorphModelByBone(s32 scale, s32 modelId, s32 morphId, s32 weight, s32 summonId, s32 bone) {
+    char *errFmt = "Hi_DrawMorphModelByBone()\nid:%d cannot use!";
+    BtlObjSlot *slot = btlfx_getEffModel(modelId, errFmt);
     s32 n;
     s32 i;
-    s->model->morph = btlfx_getEffModel(arg2, str)->model->header;
-    g_btlfxEnv->prim = btl_calcBoneMatrices(s->model, 0, g_btlfxEnv->prim);
-    Hi_GetSummonBoneMatrix(arg4, arg5, (BtlBone *)&s->model->matrix);
-    if (arg0 != 0) {
-        btl_scaleModelMatrix(s->model, (VECTOR *)arg0);
+    slot->model->morph = btlfx_getEffModel(morphId, errFmt)->model->header;
+    g_btlfxEnv->prim = btl_calcBoneMatrices(slot->model, 0, g_btlfxEnv->prim);
+    Hi_GetSummonBoneMatrix(summonId, bone, (BtlBone *)&slot->model->matrix);
+    if (scale != 0) {
+        btl_scaleModelMatrix(slot->model, (VECTOR *)scale);
     }
-    s->model->prims = 0;
-    n = s->model->header->meshCount;
+    slot->model->prims = 0;
+    n = slot->model->header->meshCount;
     for (i = 0; i < n; i++) {
-        btlfx_projectMorphMesh(s->model, i, arg3);
-        if (s->otOffset != 0) {
-            g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, s->otOffset);
+        btlfx_projectMorphMesh(slot->model, i, weight);
+        if (slot->otOffset != 0) {
+            g_btlfxEnv->prim = btl_drawMeshOffset(slot->model, i, g_btlfxEnv->prim, slot->otOffset);
         } else {
-            switch ((u16)s->kind) {
+            switch ((u16)slot->kind) {
             case HI_EFFMODEL_SOLID:
             case HI_EFFMODEL_TEX:
-                g_btlfxEnv->prim = btl_drawMesh(s->model, i, g_btlfxEnv->prim);
+                g_btlfxEnv->prim = btl_drawMesh(slot->model, i, g_btlfxEnv->prim);
                 break;
             case HI_EFFMODEL_GOU:
-                g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, 0);
+                g_btlfxEnv->prim = btl_drawMeshOffset(slot->model, i, g_btlfxEnv->prim, 0);
                 break;
             }
         }
     }
 }
 
-s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
-    Unk8010141C *s = btlfx_getSummonModel(arg3, "Hi_DrawSummonModel()\nid:%d cannot use!");
-    BtlMotion *a;
-    s32 n;
-    s32 f;
-    s32 c;
+s32 Hi_DrawSummonModel(SVECTOR *rot, VECTOR *pos, s32 scale, s32 summonId, s32 flags) {
+    Unk8010141C *slot = btlfx_getSummonModel(summonId, "Hi_DrawSummonModel()\nid:%d cannot use!");
+    BtlMotion *motion;
+    s32 frameCount;
+    s32 frame;
+    s32 meshCount;
     s32 i;
-    btl_setModelTransform(s->model, arg0, arg1, arg2);
-    a = s->model->motion;
-    if (IS_OFFSET(a->rotKeys)) {
-        a->rotKeys = (s32)a + a->rotKeys;
-        if (a->rotKeysLo != 0) {
-            a->rotKeysLo = (s32)s->model->motion + a->rotKeysLo;
+    btl_setModelTransform(slot->model, rot, pos, scale);
+    motion = slot->model->motion;
+    if (IS_OFFSET(motion->rotKeys)) {
+        motion->rotKeys = (s32)motion + motion->rotKeys;
+        if (motion->rotKeysLo != 0) {
+            motion->rotKeysLo = (s32)slot->model->motion + motion->rotKeysLo;
         }
     }
-    n = s->model->motion->frameCount;
-    if (s->frame >= n) {
-        if (arg4 & 1) {
-            s->frame = 0;
+    frameCount = slot->model->motion->frameCount;
+    if (slot->frame >= frameCount) {
+        if (flags & 1) {
+            slot->frame = 0;
         } else {
-            s->frame = n - 1;
+            slot->frame = frameCount - 1;
         }
     }
-    if (s->texAnimOn != 0) {
-        btl_updateTexAnims((TexAnimSet *)s->model->texAnims);
+    if (slot->texAnimOn != 0) {
+        btl_updateTexAnims((TexAnimSet *)slot->model->texAnims);
     }
-    f = s->frame;
-    g_btlfxEnv->prim = btl_calcBoneMatrices(s->model, f, g_btlfxEnv->prim);
-    s->frame++;
-    s->model->prims = 0;
-    c = s->model->header->meshCount;
-    for (i = 0; i < c; i++) {
-        if (!(s->model->hiddenMeshes & (1 << i))) {
-            btl_projectMesh(s->model, i);
-            g_btlfxEnv->prim = btl_drawMesh(s->model, i, g_btlfxEnv->prim);
+    frame = slot->frame;
+    g_btlfxEnv->prim = btl_calcBoneMatrices(slot->model, frame, g_btlfxEnv->prim);
+    slot->frame++;
+    slot->model->prims = 0;
+    meshCount = slot->model->header->meshCount;
+    for (i = 0; i < meshCount; i++) {
+        if (!(slot->model->hiddenMeshes & (1 << i))) {
+            btl_projectMesh(slot->model, i);
+            g_btlfxEnv->prim = btl_drawMesh(slot->model, i, g_btlfxEnv->prim);
         }
     }
-    return f;
+    return frame;
 }
 
-void Hi_SetSummonMotion(BtlMotion *arg0, s32 arg1) {
-    Unk8010141C *p = btlfx_getSummonModel(arg1, "Hi_SetSummonMotion()\nid:%d cannot use!");
-    p->frame = 0;
-    p->model->motion = arg0;
+void Hi_SetSummonMotion(BtlMotion *motion, s32 summonId) {
+    Unk8010141C *slot = btlfx_getSummonModel(summonId, "Hi_SetSummonMotion()\nid:%d cannot use!");
+    slot->frame = 0;
+    slot->model->motion = motion;
 }
 
-void Hi_SetSummonMotFrame(s32 arg0, s32 arg1) {
-    Unk8010141C *p = btlfx_getSummonModel(arg0, s_hiSetSummonMotFrameErr);
-    if (p->model->motion->frameCount < arg1) {
-        p->frame = 0;
+void Hi_SetSummonMotFrame(s32 summonId, s32 frame) {
+    Unk8010141C *slot = btlfx_getSummonModel(summonId, s_hiSetSummonMotFrameErr);
+    if (slot->model->motion->frameCount < frame) {
+        slot->frame = 0;
     } else {
-        p->frame = arg1;
+        slot->frame = frame;
     }
 }
 
@@ -369,7 +369,7 @@ void btlfx_modelUnusedStub2(void) {
 void btlfx_modelUnusedStub3(void) {
 }
 
-void btlfx_halt(char *arg0) {
+void btlfx_halt(char *msg) {
     g_btlfxHaltBufs.cur = &g_btlfxHaltBufs.bufs[1];
     g_btlfxHaltBufs.bufs[0].index = 0;
     g_btlfxHaltBufs.bufs[1].index = 1;
@@ -395,13 +395,13 @@ void btlfx_halt(char *arg0) {
     }
 }
 
-void btlfx_error(char *arg0) {
-    char buf[0x100];
-    sprintf(buf, s_hiraishiErrorFmt, arg0);
-    btlfx_halt(buf);
+void btlfx_error(char *msg) {
+    char text[0x100];
+    sprintf(text, s_hiraishiErrorFmt, msg);
+    btlfx_halt(text);
 }
 
-void btlfx_initEffModels(BtlModelBuf *arg0, s32 arg1) {
+void btlfx_initEffModels(BtlModelBuf *bufs, s32 count) {
     BtlObjSlot *p = g_btlfxEffModels;
     s32 i;
     s32 j;
@@ -415,13 +415,13 @@ void btlfx_initEffModels(BtlModelBuf *arg0, s32 arg1) {
         }
     }
     p = g_btlfxEffModels;
-    for (i = 0; i < arg1; i++, p++, arg0++) {
-        p->model = &arg0->model;
+    for (i = 0; i < count; i++, p++, bufs++) {
+        p->model = &bufs->model;
     }
 }
 
-void Hi_FreeEffModel(s32 arg0) {
-    btlfx_getEffModel(arg0, s_hiFreeEffModelErr)->used = 0;
+void Hi_FreeEffModel(s32 modelId) {
+    btlfx_getEffModel(modelId, s_hiFreeEffModelErr)->used = 0;
 }
 
 void btlfx_clearEffModels(void) {
@@ -434,7 +434,7 @@ void btlfx_clearEffModels(void) {
     }
 }
 
-void btlfx_initSummonModels(BtlModelBuf *arg0, s32 arg1) {
+void btlfx_initSummonModels(BtlModelBuf *bufs, s32 count) {
     Unk8010141C *p = g_btlfxSummonModels;
     s32 i;
     s32 j;
@@ -453,8 +453,8 @@ void btlfx_initSummonModels(BtlModelBuf *arg0, s32 arg1) {
         }
     }
     p = g_btlfxSummonModels;
-    for (i = 0; i < arg1; i++, p++, arg0++) {
-        p->model = &arg0->model;
+    for (i = 0; i < count; i++, p++, bufs++) {
+        p->model = &bufs->model;
     }
 }
 
@@ -469,20 +469,20 @@ void btlfx_clearSummonModels(void) {
     }
 }
 
-void btlfx_getUnitBonePos(s32 arg0, s32 arg1, u16 *arg2) {
-    btl_getBonePos(btl_getUnit(arg0)->model, arg1, arg2);
+void btlfx_getUnitBonePos(s32 unitId, s32 bone, u16 *out) {
+    btl_getBonePos(btl_getUnit(unitId)->model, bone, out);
 }
 
-void btlfx_getUnitArgBonePos(s32 arg0, s32 arg1, u16 *arg2) {
-    btl_getBonePos(btl_getUnit(arg0)->model, g_btlfxEnv->targets->fxArgs[arg1], arg2);
+void btlfx_getUnitArgBonePos(s32 unitId, s32 argIndex, u16 *out) {
+    btl_getBonePos(btl_getUnit(unitId)->model, g_btlfxEnv->targets->fxArgs[argIndex], out);
 }
 
-void btlfx_getUnitBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
-    btl_getBoneMatrix(btl_getUnit(arg0)->model, arg1, arg2);
+void btlfx_getUnitBoneMatrix(s32 unitId, s32 bone, BtlBone *out) {
+    btl_getBoneMatrix(btl_getUnit(unitId)->model, bone, out);
 }
 
-void btlfx_getUnitArgBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
-    btl_getBoneMatrix(btl_getUnit(arg0)->model, g_btlfxEnv->targets->fxArgs[arg1], arg2);
+void btlfx_getUnitArgBoneMatrix(s32 unitId, s32 argIndex, BtlBone *out) {
+    btl_getBoneMatrix(btl_getUnit(unitId)->model, g_btlfxEnv->targets->fxArgs[argIndex], out);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", s_hiSetSummonMotFrameErr);
@@ -491,67 +491,67 @@ INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", s_hiraishiErrorFmt);
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", s_hiFreeEffModelErr);
 
-void Hi_GetSummonBonePos(s32 arg0, s32 arg1, u16 *arg2) {
-    btl_getBonePos(btlfx_getSummonModel(arg0, "Hi_GetSummonBonePos()\nid:%d cannot use!")->model, arg1, arg2);
+void Hi_GetSummonBonePos(s32 summonId, s32 bone, u16 *out) {
+    btl_getBonePos(btlfx_getSummonModel(summonId, "Hi_GetSummonBonePos()\nid:%d cannot use!")->model, bone, out);
 }
 
-void Hi_GetSummonBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
-    btl_getBoneMatrix(btlfx_getSummonModel(arg0, "Hi_GetSummonBoneMatrix()\nid:%d cannot use!")->model, arg1, arg2);
+void Hi_GetSummonBoneMatrix(s32 summonId, s32 bone, BtlBone *out) {
+    btl_getBoneMatrix(btlfx_getSummonModel(summonId, "Hi_GetSummonBoneMatrix()\nid:%d cannot use!")->model, bone, out);
 }
 
-void btl_getBonePos(BtlModel *arg0, s32 arg1, u16 *arg2) {
-    arg2[0] = arg0->bones[arg1].tx;
-    arg2[1] = arg0->bones[arg1].ty;
-    arg2[2] = arg0->bones[arg1].tz;
+void btl_getBonePos(BtlModel *model, s32 bone, u16 *out) {
+    out[0] = model->bones[bone].tx;
+    out[1] = model->bones[bone].ty;
+    out[2] = model->bones[bone].tz;
 }
 
-void btl_getBoneMatrix(BtlModel *arg0, s32 arg1, BtlBone *arg2) {
-    *arg2 = arg0->bones[arg1];
+void btl_getBoneMatrix(BtlModel *model, s32 bone, BtlBone *out) {
+    *out = model->bones[bone];
 }
 
-void btl_setModelTransform(BtlModel *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR *arg3) {
+void btl_setModelTransform(BtlModel *model, SVECTOR *rot, VECTOR *pos, VECTOR *scale) {
     SVECTOR r;
     VECTOR t;
-    if (arg1 != NULL) {
-        math_rotMatrixYXZ(arg1, &arg0->matrix);
+    if (rot != NULL) {
+        math_rotMatrixYXZ(rot, &model->matrix);
     } else {
         r.vx = 0;
         r.vy = 0;
         r.vz = 0;
-        math_rotMatrixYXZ(&r, &arg0->matrix);
+        math_rotMatrixYXZ(&r, &model->matrix);
     }
-    if (arg2 != NULL) {
-        TransMatrix(&arg0->matrix, arg2);
+    if (pos != NULL) {
+        TransMatrix(&model->matrix, pos);
     } else {
         t.vx = 0;
         t.vy = 0;
         t.vz = 0;
-        TransMatrix(&arg0->matrix, &t);
+        TransMatrix(&model->matrix, &t);
     }
-    if (arg3 != 0) {
-        btl_scaleModelMatrix(arg0, arg3);
+    if (scale != 0) {
+        btl_scaleModelMatrix(model, scale);
     } else {
-        arg0->scaleX = 0x1000;
-        arg0->scaleY = 0x1000;
-        arg0->scaleZ = 0x1000;
-        btl_applyModelScale(arg0);
+        model->scaleX = 0x1000;
+        model->scaleY = 0x1000;
+        model->scaleZ = 0x1000;
+        btl_applyModelScale(model);
     }
 }
 
-/* scales the model matrix by arg1 (MulMatrix0 with a diagonal matrix built word by word) */
-void btl_scaleModelMatrix(BtlModel *arg0, VECTOR *arg1) {
+/* scales the model matrix by scale (MulMatrix0 with a diagonal matrix built word by word) */
+void btl_scaleModelMatrix(BtlModel *model, VECTOR *scale) {
     MATRIX m;
     s32 *d;
     s16 x, y, z;
 
     d = (s32 *)&m;
-    x = arg1->vx;
+    x = scale->vx;
     d[0] = 0x1000;
     m.m[0][0] = x;
-    y = arg1->vy;
+    y = scale->vy;
     d[2] = 0x1000;
     m.m[1][1] = y;
-    z = arg1->vz;
+    z = scale->vz;
     d[1] = 0;
     d[3] = 0;
     d[4] = 0x1000;
@@ -559,118 +559,118 @@ void btl_scaleModelMatrix(BtlModel *arg0, VECTOR *arg1) {
     d[6] = 0;
     d[7] = 0;
     m.m[2][2] = z;
-    gte_MulMatrix0(&arg0->matrix, &m, &arg0->matrix);
+    gte_MulMatrix0(&model->matrix, &m, &model->matrix);
 }
 
-void Hi_ShowSummonModelMesh(s32 arg0, s32 arg1) {
-    btlfx_getSummonModel(arg0, "Hi_ShowSummonModelMesh()\nid:%d cannot use!")->model->hiddenMeshes &= ~(1 << arg1);
+void Hi_ShowSummonModelMesh(s32 summonId, s32 mesh) {
+    btlfx_getSummonModel(summonId, "Hi_ShowSummonModelMesh()\nid:%d cannot use!")->model->hiddenMeshes &= ~(1 << mesh);
 }
 
-void Hi_HideSummonModelMesh(s32 arg0, s32 arg1) {
-    btlfx_getSummonModel(arg0, "Hi_HideSummonModelMesh()\nid:%d cannot use!")->model->hiddenMeshes |= 1 << arg1;
+void Hi_HideSummonModelMesh(s32 summonId, s32 mesh) {
+    btlfx_getSummonModel(summonId, "Hi_HideSummonModelMesh()\nid:%d cannot use!")->model->hiddenMeshes |= 1 << mesh;
 }
 
-/* starts texture animation arg1 of summon model arg0 (arg2: also set flag 2) */
-void Hi_StartSummonTexAnim(s32 arg0, s32 arg1, u8 arg2) {
-    Unk8010141C *p = btlfx_getSummonModel(arg0, "Hi_StartSummonTexAnim()\nid:%d cannot use!");
+/* starts texture animation anim of summon model summonId (once: also set flag 2) */
+void Hi_StartSummonTexAnim(s32 summonId, s32 anim, u8 once) {
+    Unk8010141C *slot = btlfx_getSummonModel(summonId, "Hi_StartSummonTexAnim()\nid:%d cannot use!");
     s32 off;
 
-    if (arg2) {
-        off = arg1 * 4;
-        off = (off + arg1) * 4; /* arg1 * sizeof(BtlUnit9C50) */
-        ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+    if (once) {
+        off = anim * 4;
+        off = (off + anim) * 4; /* anim * sizeof(BtlUnit9C50) */
+        ((BtlUnit9C50 *)((u8 *)slot->model->texAnims + off))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     } else {
-        off = arg1 * 4;
-        off = (off + arg1) * 4;
-        ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->flags |= BTL_TEXANIM_PLAY;
+        off = anim * 4;
+        off = (off + anim) * 4;
+        ((BtlUnit9C50 *)((u8 *)slot->model->texAnims + off))->flags |= BTL_TEXANIM_PLAY;
     }
-    ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->pos = 0;
-    ((BtlUnit9C50 *)((u8 *)p->model->texAnims + off))->lastFrame = 0x1000;
+    ((BtlUnit9C50 *)((u8 *)slot->model->texAnims + off))->pos = 0;
+    ((BtlUnit9C50 *)((u8 *)slot->model->texAnims + off))->lastFrame = 0x1000;
 }
 
-void Hi_StopSummonTexAnim(s32 arg0, s32 arg1) {
-    BtlUnit9C50 *e = &btlfx_getSummonModel(arg0, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->model->texAnims[arg1];
-    e->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+void Hi_StopSummonTexAnim(s32 summonId, s32 anim) {
+    BtlUnit9C50 *texAnim = &btlfx_getSummonModel(summonId, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->model->texAnims[anim];
+    texAnim->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
 }
 
-void Hi_ModifyEffModelAbr(s32 arg0, s32 arg1) {
-    if (arg1 != 0xFF) {
-        btl_setModelAbr(btlfx_getEffModel(arg0, "Hi_ModifyEffModelAbr()\nid:%d cannot use!")->model, (u16)(arg1 << 5));
-    }
-}
-
-void Hi_ModifyEffModelRGB(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
-    btl_setModelRgb(btlfx_getEffModel(arg0, "Hi_ModifyEffModelRGB()\nid:%d cannot use!")->model, arg1, arg2, arg3);
-}
-
-void Hi_SetEffModelOffset(s32 arg0, s16 arg1) {
-    btlfx_getEffModel(arg0, "Hi_SetEffModelOffset()\nid:%d cannot use!")->otOffset = arg1;
-}
-
-void Hi_SetEffModelSlice(s32 arg0, s16 arg1) {
-    BtlObjSlot *p = btlfx_getEffModel(arg0, "Hi_SetEffModelSlice()\nid:%d cannot use!");
-    p->slice = 1;
-    p->sliceY = arg1;
-}
-
-void Hi_ModifySummonModelAbr(s32 arg0, s32 arg1) {
-    if (arg1 != 0xFF) {
-        btl_setModelAbr(btlfx_getSummonModel(arg0, "Hi_ModifySummonModelAbr()\nid:%d cannot use!")->model, (u16)(arg1 << 5));
+void Hi_ModifyEffModelAbr(s32 modelId, s32 abr) {
+    if (abr != 0xFF) {
+        btl_setModelAbr(btlfx_getEffModel(modelId, "Hi_ModifyEffModelAbr()\nid:%d cannot use!")->model, (u16)(abr << 5));
     }
 }
 
-void Hi_ModifySummonModelRGB(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
-    btl_setModelRgb(btlfx_getSummonModel(arg0, "Hi_ModifySummonModelRGB()\nid:%d cannot use!")->model, arg1, arg2, arg3);
+void Hi_ModifyEffModelRGB(s32 modelId, s16 r, s16 g, s16 b) {
+    btl_setModelRgb(btlfx_getEffModel(modelId, "Hi_ModifyEffModelRGB()\nid:%d cannot use!")->model, r, g, b);
 }
 
-BtlObjSlot *btlfx_getEffModel(s32 arg0, char *arg1) {
-    BtlObjSlot *p = &g_btlfxEffModels[arg0];
-    if (p->used == 0 || p->model == NULL) {
-        sprintf(g_btlfxErrorMsg, arg1, arg0);
+void Hi_SetEffModelOffset(s32 modelId, s16 otOffset) {
+    btlfx_getEffModel(modelId, "Hi_SetEffModelOffset()\nid:%d cannot use!")->otOffset = otOffset;
+}
+
+void Hi_SetEffModelSlice(s32 modelId, s16 sliceY) {
+    BtlObjSlot *slot = btlfx_getEffModel(modelId, "Hi_SetEffModelSlice()\nid:%d cannot use!");
+    slot->slice = 1;
+    slot->sliceY = sliceY;
+}
+
+void Hi_ModifySummonModelAbr(s32 summonId, s32 abr) {
+    if (abr != 0xFF) {
+        btl_setModelAbr(btlfx_getSummonModel(summonId, "Hi_ModifySummonModelAbr()\nid:%d cannot use!")->model, (u16)(abr << 5));
+    }
+}
+
+void Hi_ModifySummonModelRGB(s32 summonId, s16 r, s16 g, s16 b) {
+    btl_setModelRgb(btlfx_getSummonModel(summonId, "Hi_ModifySummonModelRGB()\nid:%d cannot use!")->model, r, g, b);
+}
+
+BtlObjSlot *btlfx_getEffModel(s32 modelId, char *errFmt) {
+    BtlObjSlot *slot = &g_btlfxEffModels[modelId];
+    if (slot->used == 0 || slot->model == NULL) {
+        sprintf(g_btlfxErrorMsg, errFmt, modelId);
         btlfx_error(g_btlfxErrorMsg);
     }
-    return p;
+    return slot;
 }
 
-Unk8010141C *btlfx_getSummonModel(s32 arg0, char *arg1) {
-    Unk8010141C *p = &g_btlfxSummonModels[arg0];
-    if (p->used == 0 || p->model == NULL) {
-        sprintf(g_btlfxErrorMsg, arg1, arg0);
+Unk8010141C *btlfx_getSummonModel(s32 summonId, char *errFmt) {
+    Unk8010141C *slot = &g_btlfxSummonModels[summonId];
+    if (slot->used == 0 || slot->model == NULL) {
+        sprintf(g_btlfxErrorMsg, errFmt, summonId);
         btlfx_error(g_btlfxErrorMsg);
     }
-    return p;
+    return slot;
 }
 
-void btlfx_getUnitMeshCount(s32 arg0) {
-    btl_getMeshCount(btl_getUnit(arg0)->model);
+void btlfx_getUnitMeshCount(s32 unitId) {
+    btl_getMeshCount(btl_getUnit(unitId)->model);
 }
 
 /* Void in the original; effect modules read $v0 after it (export 0x318): btl_getMeshCount's u8 result.
    Ports must return it (docs/effect-modules.md). */
-void btlfx_getEffModelMeshCount(s32 arg0) {
-    btl_getMeshCount(btlfx_getEffModel(arg0, s_hiSplitMdlVertexErr)->model);
+void btlfx_getEffModelMeshCount(s32 modelId) {
+    btl_getMeshCount(btlfx_getEffModel(modelId, s_hiSplitMdlVertexErr)->model);
 }
 
-u8 btl_getMeshCount(BtlModel *arg0) {
-    return arg0->header->meshCount;
+u8 btl_getMeshCount(BtlModel *model) {
+    return model->header->meshCount;
 }
 
-void btlfx_getCasterTexInfo(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
-    s32 k;
-    BtlTexInfo *a;
-    BtlTexInfo *b;
-    u16 i;
-    ModelSlot *e;
+void btlfx_getCasterTexInfo(BtlTexInfo *texPages, BtlTexInfo *uvOffsets, s32 texId) {
+    s32 key;
+    BtlTexInfo *pages;
+    BtlTexInfo *uvs;
+    u16 index;
+    ModelSlot *npc;
 
-    i = BTL_UNIT_INDEX(btl_getUnit(BTLFX_UNIT_CASTER)->flags);
-    e = &g_gameState->gameData->npcModels[i];
-    k = arg2 & 0xFFFF;
-    k |= 0x20000;
-    k |= e->actor->modelSlot << 24;
-    a = (BtlTexInfo *)db_getModelTexPages(k);
-    b = (BtlTexInfo *)db_getModelUvOffsets(k);
-    *arg0 = *a;
-    *arg1 = *b;
+    index = BTL_UNIT_INDEX(btl_getUnit(BTLFX_UNIT_CASTER)->flags);
+    npc = &g_gameState->gameData->npcModels[index];
+    key = texId & 0xFFFF;
+    key |= 0x20000;
+    key |= npc->actor->modelSlot << 24;
+    pages = (BtlTexInfo *)db_getModelTexPages(key);
+    uvs = (BtlTexInfo *)db_getModelUvOffsets(key);
+    *texPages = *pages;
+    *uvOffsets = *uvs;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", s_hiSplitMdlVertexErr);

@@ -1,72 +1,72 @@
 #include "ovl_0b.h"
 
-void btl_addMeshRgb(BtlModel *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    BtlMesh *g = &arg0->header->meshes[arg1];
-    u32 *p = g->prims;
+void btl_addMeshRgb(BtlModel *model, u8 meshIndex, s16 addR, s16 addG, s16 addB) {
+    BtlMesh *mesh = &model->header->meshes[meshIndex];
+    u32 *p = mesh->prims;
     u32 i;
-    for (i = 0; i < g->nFT4; i++) {
-        p[4] = btl_addRgbClamped(p[4], arg2, arg3, arg4);
+    for (i = 0; i < mesh->nFT4; i++) {
+        p[4] = btl_addRgbClamped(p[4], addR, addG, addB);
         p += 6;
     }
-    for (i = 0; i < g->nFT3; i++) {
-        p[2] = btl_addRgbClamped(p[2], arg2, arg3, arg4);
+    for (i = 0; i < mesh->nFT3; i++) {
+        p[2] = btl_addRgbClamped(p[2], addR, addG, addB);
         p += 5;
     }
 }
 
-void btl_setMeshRgb(BtlModel *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    BtlMesh *g = &arg0->header->meshes[arg1];
-    u32 *p = g->prims;
-    u32 v = (arg4 << 16) | (arg3 << 8) | arg2;
+void btl_setMeshRgb(BtlModel *model, u8 meshIndex, s16 r, s16 g, s16 b) {
+    BtlMesh *mesh = &model->header->meshes[meshIndex];
+    u32 *p = mesh->prims;
+    u32 rgb = (b << 16) | (g << 8) | r;
     u32 i;
-    for (i = 0; i < g->nFT4; i++) {
-        p[4] = (p[4] & 0xFF000000) | v;
+    for (i = 0; i < mesh->nFT4; i++) {
+        p[4] = (p[4] & 0xFF000000) | rgb;
         p += 6;
     }
-    for (i = 0; i < g->nFT3; i++) {
-        p[2] = (p[2] & 0xFF000000) | v;
+    for (i = 0; i < mesh->nFT3; i++) {
+        p[2] = (p[2] & 0xFF000000) | rgb;
         p += 5;
     }
 }
 
-u32 btl_addRgbClamped(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s16 b = arg3 + ((arg0 >> 16) & 0xFF);
-    s16 g = arg2 + ((arg0 >> 8) & 0xFF);
-    s16 r = arg1 + (arg0 & 0xFF);
-    arg0 &= 0xFF000000;
+u32 btl_addRgbClamped(u32 color, s32 addR, s32 addG, s32 addB) {
+    s16 b = addB + ((color >> 16) & 0xFF);
+    s16 g = addG + ((color >> 8) & 0xFF);
+    s16 r = addR + (color & 0xFF);
+    color &= 0xFF000000;
     if (r >= 0x100) {
-        arg0 |= 0xFF;
+        color |= 0xFF;
     } else if (r > 0) {
-        arg0 |= r;
+        color |= r;
     }
     if (g >= 0x100) {
-        arg0 |= 0xFF00;
+        color |= 0xFF00;
     } else if (g > 0) {
-        arg0 |= g << 8;
+        color |= g << 8;
     }
     if (b >= 0x100) {
-        arg0 |= 0xFF0000;
+        color |= 0xFF0000;
     } else if (b > 0) {
-        arg0 |= b << 16;
+        color |= b << 16;
     }
-    return arg0;
+    return color;
 }
 
-void btl_setModelAbr(BtlModel *arg0, s32 arg1) {
+void btl_setModelAbr(BtlModel *model, s32 abr) {
     u8 *p;
     u32 i;
     u8 code;
-    if (!(arg0->flags & BTL_MODEL_OFFSCREEN)) {
-        arg0->abr = arg1;
-        p = (u8 *)arg0->prims;
-        for (i = 0; i < arg0->header->meshCount; i++) {
-            if (!(arg0->hiddenMeshes & (1 << i))) {
+    if (!(model->flags & BTL_MODEL_OFFSCREEN)) {
+        model->abr = abr;
+        p = (u8 *)model->prims;
+        for (i = 0; i < model->header->meshCount; i++) {
+            if (!(model->hiddenMeshes & (1 << i))) {
                 do {
                     code = getcode(p);
                     if (code == 0xFF) {
                         p += sizeof(DR_TPAGE);
                     } else if (code == 0xE1) {
-                        ((DR_TPAGE *)p)->code[0] = (u16)arg1 | 0xE1000000;
+                        ((DR_TPAGE *)p)->code[0] = (u16)abr | 0xE1000000;
                         p += sizeof(DR_TPAGE);
                     } else {
                         code &= 0x3C;
@@ -74,22 +74,22 @@ void btl_setModelAbr(BtlModel *arg0, s32 arg1) {
                     switch (code) {
                     case GPU_POLY_FT4:
                         setSemiTrans(p, 1);
-                        ((POLY_FT4 *)p)->tpage = arg1 | (((POLY_FT4 *)p)->tpage & ~TPAGE_ABR_MASK);
+                        ((POLY_FT4 *)p)->tpage = abr | (((POLY_FT4 *)p)->tpage & ~TPAGE_ABR_MASK);
                         p += sizeof(POLY_FT4);
                         break;
                     case GPU_POLY_FT3:
                         setSemiTrans(p, 1);
-                        ((POLY_FT3 *)p)->tpage = arg1 | (((POLY_FT3 *)p)->tpage & ~TPAGE_ABR_MASK);
+                        ((POLY_FT3 *)p)->tpage = abr | (((POLY_FT3 *)p)->tpage & ~TPAGE_ABR_MASK);
                         p += sizeof(POLY_FT3);
                         break;
                     case GPU_POLY_GT4:
                         setSemiTrans(p, 1);
-                        ((POLY_GT4 *)p)->tpage = arg1 | (((POLY_GT4 *)p)->tpage & ~TPAGE_ABR_MASK);
+                        ((POLY_GT4 *)p)->tpage = abr | (((POLY_GT4 *)p)->tpage & ~TPAGE_ABR_MASK);
                         p += sizeof(POLY_GT4);
                         break;
                     case GPU_POLY_GT3:
                         setSemiTrans(p, 1);
-                        ((POLY_GT3 *)p)->tpage = arg1 | (((POLY_GT3 *)p)->tpage & ~TPAGE_ABR_MASK);
+                        ((POLY_GT3 *)p)->tpage = abr | (((POLY_GT3 *)p)->tpage & ~TPAGE_ABR_MASK);
                         p += sizeof(POLY_GT3);
                         break;
                     case GPU_POLY_G4:
@@ -113,72 +113,72 @@ void btl_setModelAbr(BtlModel *arg0, s32 arg1) {
     }
 }
 
-void btl_updateTexAnims(TexAnimSet *arg0) {
+void btl_updateTexAnims(TexAnimSet *set) {
     RECT r;
     u32 i;
     u32 j;
-    TexAnim *e;
-    TexAnimRect *t;
+    TexAnim *anim;
+    TexAnimRect *rect;
     s32 pos;
     s16 frame;
     s16 last;
 
-    if (arg0 == NULL) {
+    if (set == NULL) {
         return;
     }
-    for (i = 0; i < arg0->count; i++) {
-        e = &arg0->anims[i];
-        if (!(e->flags & BTL_TEXANIM_PLAY)) {
+    for (i = 0; i < set->count; i++) {
+        anim = &set->anims[i];
+        if (!(anim->flags & BTL_TEXANIM_PLAY)) {
             continue;
         }
-        if (e->frameCount != 0) {
-            pos = e->pos;
+        if (anim->frameCount != 0) {
+            pos = anim->pos;
             frame = pos >> 12;
-            last = e->lastFrame;
+            last = anim->lastFrame;
             if (frame >= 0) {
                 if (frame != last) {
-                    for (j = 0; j < e->rectCount; j++) {
-                        t = &e->rects[j];
-                        r.x = t->src[frame][0];
-                        r.y = t->src[frame][1];
-                        r.w = t->w;
-                        r.h = t->h;
-                        MoveImage(&r, t->x, t->y);
+                    for (j = 0; j < anim->rectCount; j++) {
+                        rect = &anim->rects[j];
+                        r.x = rect->src[frame][0];
+                        r.y = rect->src[frame][1];
+                        r.w = rect->w;
+                        r.h = rect->h;
+                        MoveImage(&r, rect->x, rect->y);
                     }
-                    e->lastFrame = frame;
+                    anim->lastFrame = frame;
                 }
-                pos += e->speed;
+                pos += anim->speed;
             } else {
                 pos += 0x1000;
             }
-            if ((pos >> 12) < e->frameCount) {
-                e->pos = pos;
-            } else if (e->waitRand != 0) {
+            if ((pos >> 12) < anim->frameCount) {
+                anim->pos = pos;
+            } else if (anim->waitRand != 0) {
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                     if (g_randPtr >= g_randTableEnd) {
                         rand_refill();
                     }
                 }
-                e->pos = -((e->waitMin + (e->waitRand + 1) * ((*g_randPtr << 8) | *g_randPtr++) / 0x10000) << 12);
-            } else if (e->flags & BTL_TEXANIM_ONCE) {
-                e->flags &= 0xFC;
+                anim->pos = -((anim->waitMin + (anim->waitRand + 1) * ((*g_randPtr << 8) | *g_randPtr++) / 0x10000) << 12);
+            } else if (anim->flags & BTL_TEXANIM_ONCE) {
+                anim->flags &= 0xFC;
             } else {
-                e->pos = 0;
+                anim->pos = 0;
             }
-        } else if (e->flags & BTL_TEXANIM_VSCROLL) {
-            pos = e->pos;
+        } else if (anim->flags & BTL_TEXANIM_VSCROLL) {
+            pos = anim->pos;
             frame = pos >> 12;
-            for (j = 0; j < e->rectCount; j++) {
-                t = &e->rects[j];
-                MoveImage((RECT *)t, t->x, t->y - frame);
-                r.x = t->x;
-                r.y = t->y - frame;
-                r.w = t->w;
+            for (j = 0; j < anim->rectCount; j++) {
+                rect = &anim->rects[j];
+                MoveImage((RECT *)rect, rect->x, rect->y - frame);
+                r.x = rect->x;
+                r.y = rect->y - frame;
+                r.w = rect->w;
                 r.h = frame;
-                MoveImage(&r, t->x, t->y + t->h - frame);
+                MoveImage(&r, rect->x, rect->y + rect->h - frame);
             }
-            e->pos = (pos & 0xFFF) + e->speed;
+            anim->pos = (pos & 0xFFF) + anim->speed;
         }
     }
 }
@@ -256,34 +256,34 @@ Battle11C020 *btl_initScene(void) {
     return s;
 }
 
-Battle1330 *btl_pickEnemyGroup(Battle11C020 *arg0) {
-    Battle1330 *e;
-    u16 r;
+Battle1330 *btl_pickEnemyGroup(Battle11C020 *encounter) {
+    Battle1330 *group;
+    u16 roll;
     u16 sum;
     u16 i;
-    s8 v;
+    s8 forced;
     if (g_randPtr >= g_randTableEnd) {
         rand_refill();
     }
-    r = (*g_randPtr++ * 100) / 256;
-    e = arg0->groups;
-    sum = e->weight;
+    roll = (*g_randPtr++ * 100) / 256;
+    group = encounter->groups;
+    sum = group->weight;
     i = 0;
-    while (r >= sum) {
-        e++;
-        sum += e->weight;
+    while (roll >= sum) {
+        group++;
+        sum += group->weight;
         i++;
     }
-    v = g_gameState->gameData->enemyGroup;
-    if (v != -1) {
-        i = v;
-        if (i >= arg0->groupCount) {
+    forced = g_gameState->gameData->enemyGroup;
+    if (forced != -1) {
+        i = forced;
+        if (i >= encounter->groupCount) {
             i = 0;
         }
-        e = &arg0->groups[i];
+        group = &encounter->groups[i];
     }
     g_gameState->gameData->ctx.battle->groupNo = i;
-    return e;
+    return group;
 }
 
 void btl_initSceneFlags(void) {
@@ -424,119 +424,119 @@ void btl_placeParty(void) {
     }
 }
 
-void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
+void btl_initEnemyType(Unk800C9D1C *rec, BtlEnemyType *type) {
     s16 i;
-    BtlMotion *h;
-    arg1->radius = arg0->radius;
-    arg1->category = arg0->category;
-    arg1->level = arg0->level;
-    arg1->eatAbility = arg0->eatAbility;
-    arg1->max.maxHp = arg0->maxHp;
-    arg1->max.maxMp = arg0->maxMp;
-    arg1->gil = arg0->gil;
-    arg1->exp = arg0->exp;
-    arg1->card = arg0->card;
-    arg1->drops.w = arg0->drops;
+    BtlMotion *motion;
+    type->radius = rec->radius;
+    type->category = rec->category;
+    type->level = rec->level;
+    type->eatAbility = rec->eatAbility;
+    type->max.maxHp = rec->maxHp;
+    type->max.maxMp = rec->maxMp;
+    type->gil = rec->gil;
+    type->exp = rec->exp;
+    type->card = rec->card;
+    type->drops.w = rec->drops;
     for (i = 0; i < 6; i++) {
-        h = db_lookupRegistered(DB_GET_ADDR, arg0->motionIds[i] | DB_ANIM, 0);
-        arg1->motions[i] = h;
-        if (IS_OFFSET(h->rotKeys)) {
-            h->rotKeys = (s32)h + h->rotKeys;
-            if (h->rotKeysLo != 0) {
-                h->rotKeysLo = (s32)arg1->motions[i] + h->rotKeysLo;
+        motion = db_lookupRegistered(DB_GET_ADDR, rec->motionIds[i] | DB_ANIM, 0);
+        type->motions[i] = motion;
+        if (IS_OFFSET(motion->rotKeys)) {
+            motion->rotKeys = (s32)motion + motion->rotKeys;
+            if (motion->rotKeysLo != 0) {
+                motion->rotKeysLo = (s32)type->motions[i] + motion->rotKeysLo;
             }
         }
     }
     for (i = 0; i < 3; i++) {
-        arg1->bones[i] = arg0->bones[i];
+        type->bones[i] = rec->bones[i];
     }
-    arg1->deathCry = arg0->deathCry;
-    arg1->confuseAbility = arg0->confuseAbility;
+    type->deathCry = rec->deathCry;
+    type->confuseAbility = rec->confuseAbility;
     for (i = 0; i < 6; i++) {
-        arg1->iconBones[i] = arg0->iconBones[i];
-        arg1->iconY[i] = arg0->iconY[i];
-        arg1->iconZ[i] = arg0->iconZ[i];
+        type->iconBones[i] = rec->iconBones[i];
+        type->iconY[i] = rec->iconY[i];
+        type->iconZ[i] = rec->iconZ[i];
     }
 }
 
-void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
+void btl_initEnemyUnit(Unk800C9EE0 *placement, BtlUnit *unit, s32 *sceneFlags, s32 index) {
     Battle *b = g_gameState->gameData->ctx.battle;
-    BtlEnemy *s = &b->enemies[BTL_UNIT_INDEX(arg1->flags)];
-    BtlEnemyType *e;
-    s16 r;
-    s->type = &b->enemyTypes[arg0->type];
-    arg1->flags = (((arg1->flags & ~BTL_UNIT_TARGETABLE) | ((arg0->flags & 1) << BTL_UNIT_TARGETABLE_BIT)) & ~BTL_UNIT_ROW_MASK) | (2 << BTL_UNIT_ROW_SHIFT);
-    e = &g_gameState->gameData->ctx.battle->enemyTypes[arg0->type];
-    arg1->max = &e->max;
-    arg1->hp = e->max.maxHp;
-    arg1->mp = arg1->max->maxMp;
-    s->flags = (s->flags & ~BTL_ENEMYF_SHARED_MODEL) | ((arg0->flags << 7) & BTL_ENEMYF_SHARED_MODEL);
-    if (!((s->flags >> BTL_ENEMYF_NO_MODEL_BIT) & 1)) {
-        arg1->pos[0] = arg1->home->pos[0] = arg1->obj->x = arg0->x << 16;
-        arg1->pos[1] = arg1->home->pos[1] = arg1->obj->y = arg0->y << 16;
-        arg1->pos[2] = arg1->home->pos[2] = arg1->obj->z = arg0->z << 16;
-        arg1->obj->rotX = 0;
-        arg1->rot[0] = 0;
-        arg1->obj->rotZ = 0;
-        arg1->rot[2] = 0;
-        r = (arg0->rotY + g_btlEnemyRotByAmbush[*arg2 & 3]) & 0xFFF;
-        arg1->obj->rotY = r;
-        arg1->rot[1] = r;
+    BtlEnemy *enemy = &b->enemies[BTL_UNIT_INDEX(unit->flags)];
+    BtlEnemyType *type;
+    s16 rotY;
+    enemy->type = &b->enemyTypes[placement->type];
+    unit->flags = (((unit->flags & ~BTL_UNIT_TARGETABLE) | ((placement->flags & 1) << BTL_UNIT_TARGETABLE_BIT)) & ~BTL_UNIT_ROW_MASK) | (2 << BTL_UNIT_ROW_SHIFT);
+    type = &g_gameState->gameData->ctx.battle->enemyTypes[placement->type];
+    unit->max = &type->max;
+    unit->hp = type->max.maxHp;
+    unit->mp = unit->max->maxMp;
+    enemy->flags = (enemy->flags & ~BTL_ENEMYF_SHARED_MODEL) | ((placement->flags << 7) & BTL_ENEMYF_SHARED_MODEL);
+    if (!((enemy->flags >> BTL_ENEMYF_NO_MODEL_BIT) & 1)) {
+        unit->pos[0] = unit->home->pos[0] = unit->obj->x = placement->x << 16;
+        unit->pos[1] = unit->home->pos[1] = unit->obj->y = placement->y << 16;
+        unit->pos[2] = unit->home->pos[2] = unit->obj->z = placement->z << 16;
+        unit->obj->rotX = 0;
+        unit->rot[0] = 0;
+        unit->obj->rotZ = 0;
+        unit->rot[2] = 0;
+        rotY = (placement->rotY + g_btlEnemyRotByAmbush[*sceneFlags & 3]) & 0xFFF;
+        unit->obj->rotY = rotY;
+        unit->rot[1] = rotY;
     }
-    arg1->motions = (s32 *)s->type->motions;
-    arg1->model->motion = s->type->motions[0];
+    unit->motions = (s32 *)enemy->type->motions;
+    unit->model->motion = enemy->type->motions[0];
 }
 
-void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
-    BtlEnemy *s;
-    BtlShadow *t;
+void btl_setEnemyStats(Unk800C9D1C *rec, BtlUnit *unit) {
+    BtlEnemy *enemy;
+    BtlShadow *shadow;
 
-    arg1->statusImmune = arg0->statusImmune;
-    arg1->autoStatus = arg0->autoStatus;
-    arg1->status = arg0->status;
-    arg1->hp = arg0->maxHp;
-    arg1->mp = arg0->maxMp;
-    arg1->defense = arg0->defence[0];
-    arg1->evade = arg0->defence[1];
-    arg1->magicDef = arg0->defence[2];
-    arg1->magicEva = arg0->defence[3];
-    arg1->speed = arg0->stats[0];
-    arg1->strength = arg0->stats[1];
-    arg1->magic = arg0->stats[2];
-    arg1->spirit = arg0->stats[3];
-    *(s32 *)&arg1->elemGuard = arg0->elements;
-    *(s32 *)&arg1->hiddenMeshes = arg0->meshMasks;
-    arg1->baseBone = arg0->baseBone;
-    s = &g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg1->flags)];
-    s->steal.w = arg0->steal;
-    s->flags = (s->flags & ~BTL_ENEMYF_SCRIPT_DEATH) | ((arg0->flags & 1) << BTL_ENEMYF_SCRIPT_DEATH_BIT);
-    s->flags = (s->flags & ~BTL_ENEMYF_DEATH_MOTION) | ((arg0->flags << 6) & BTL_ENEMYF_DEATH_MOTION);
-    btl_setShadowSize(arg1, arg0->shadowW, arg0->shadowD);
-    arg1->shadowBone = arg0->shadowBone;
-    arg1->shadowDirBone = arg0->shadowDirBone;
-    t = &g_gameState->gameData->ctx.battle->work->shadows[BTL_UNIT_INDEX(arg1->flags) + 9];
-    t->offsetX = arg0->shadowX;
-    t->offsetZ = arg0->shadowZ;
+    unit->statusImmune = rec->statusImmune;
+    unit->autoStatus = rec->autoStatus;
+    unit->status = rec->status;
+    unit->hp = rec->maxHp;
+    unit->mp = rec->maxMp;
+    unit->defense = rec->defence[0];
+    unit->evade = rec->defence[1];
+    unit->magicDef = rec->defence[2];
+    unit->magicEva = rec->defence[3];
+    unit->speed = rec->stats[0];
+    unit->strength = rec->stats[1];
+    unit->magic = rec->stats[2];
+    unit->spirit = rec->stats[3];
+    *(s32 *)&unit->elemGuard = rec->elements;
+    *(s32 *)&unit->hiddenMeshes = rec->meshMasks;
+    unit->baseBone = rec->baseBone;
+    enemy = &g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)];
+    enemy->steal.w = rec->steal;
+    enemy->flags = (enemy->flags & ~BTL_ENEMYF_SCRIPT_DEATH) | ((rec->flags & 1) << BTL_ENEMYF_SCRIPT_DEATH_BIT);
+    enemy->flags = (enemy->flags & ~BTL_ENEMYF_DEATH_MOTION) | ((rec->flags << 6) & BTL_ENEMYF_DEATH_MOTION);
+    btl_setShadowSize(unit, rec->shadowW, rec->shadowD);
+    unit->shadowBone = rec->shadowBone;
+    unit->shadowDirBone = rec->shadowDirBone;
+    shadow = &g_gameState->gameData->ctx.battle->work->shadows[BTL_UNIT_INDEX(unit->flags) + 9];
+    shadow->offsetX = rec->shadowX;
+    shadow->offsetZ = rec->shadowZ;
 }
 
-void btl_copyAbility(BtlCmd8 *arg0, BtlCmd8 *arg1) {
-    *arg1 = *arg0;
+void btl_copyAbility(BtlCmd8 *src, BtlCmd8 *dst) {
+    *dst = *src;
 }
 
-s32 btl_getSceneData(s32 arg0) {
-    s16 *t = g_gameState->gameData->ctx.battle->scene.sceneData;
-    return (s32)t + t[arg0];
+s32 btl_getSceneData(s32 index) {
+    s16 *table = g_gameState->gameData->ctx.battle->scene.sceneData;
+    return (s32)table + table[index];
 }
 
-s16 btl_getEnemyModelId(s16 arg0) {
-    Unk800C9EE0 *e = &g_gameState->gameData->ctx.battle->scene.group->enemies[arg0];
-    s32 r;
-    if (arg0 > 0 && (e->flags & 2)) {
-        r = -1;
+s16 btl_getEnemyModelId(s16 index) {
+    Unk800C9EE0 *placement = &g_gameState->gameData->ctx.battle->scene.group->enemies[index];
+    s32 modelId;
+    if (index > 0 && (placement->flags & 2)) {
+        modelId = -1;
     } else {
-        r = g_gameState->gameData->ctx.battle->scene.enemyTypes[e->type].modelId;
+        modelId = g_gameState->gameData->ctx.battle->scene.enemyTypes[placement->type].modelId;
     }
-    return r;
+    return modelId;
 }
 
 u16 btl_getEntranceSound(void) {
