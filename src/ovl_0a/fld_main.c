@@ -36,11 +36,11 @@ void fld_main(s32 arg0) {
             }
             if (!(g_gameState->gameData->flags & GD_MENU_OPEN)) {
                 switch (evt_update()) {
-                case 3:
+                case EVT_UPD_BATTLE:
                     g_gameState->gameData->ctx.field->area->scene->exitReason = FLD_EXIT_BATTLE;
                     fld_startEncounter();
                     break;
-                case 4:
+                case EVT_UPD_FIELD:
                     if (g_gameState->gameData->ctx.field->area->scene->nextId == FLD_NEXT_ENDING) {
                         g_gameState->gameData->ctx.field->area->scene->exitReason = FLD_EXIT_ENDING;
                         g_gameState->flags |= GS_FLD_LEAVE;
@@ -48,15 +48,15 @@ void fld_main(s32 arg0) {
                         g_gameState->flags |= GS_FLD_NEW_FIELD;
                     }
                     break;
-                case 5:
+                case EVT_UPD_WORLD:
                     g_gameState->gameData->ctx.field->area->scene->exitReason = FLD_EXIT_WORLD;
                     g_gameState->flags |= GS_FLD_LEAVE;
                     break;
-                case 7:
+                case EVT_UPD_CARD_GAME:
                     g_gameState->gameData->ctx.field->area->scene->exitReason = FLD_EXIT_TETRA_MASTER;
                     g_gameState->flags |= GS_FLD_LEAVE;
                     break;
-                case 8:
+                case EVT_UPD_GAME_OVER:
                     g_gameState->gameData->ctx.field->area->scene->exitReason = FLD_EXIT_GAME_OVER;
                     g_gameState->flags |= GS_FLD_LEAVE;
                     break;

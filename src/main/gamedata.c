@@ -72,7 +72,7 @@ void game_resetData(void) {
     gd->locationName = NULL;
     gd->debugLocationName = NULL;
     gd->chocograph = 0;
-    gd->soundLoadState = 0;
+    gd->soundLoadState = SND_LOAD_IDLE;
     gd->musicFadeStart = 0;
     gd->soundLoadBank = 0xFFFF;
     for (i = 1; i >= 0; i--) {

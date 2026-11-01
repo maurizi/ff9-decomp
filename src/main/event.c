@@ -1361,29 +1361,29 @@ s32 evt_execInstr(void) {
     }
     case EVT_OP_GOTO_FIELD:
         evt_setNextLocation(evt_getArg16_inline());
-        return 4;
+        return EVT_UPD_FIELD;
     case EVT_OP_GOTO_WORLD:
         evt_setNextLocation(evt_getArg16_inline());
-        return 5;
+        return EVT_UPD_WORLD;
     case EVT_OP_CARD_GAME:
         evt_setCardOpponent(evt_getArg16_inline() & 0xFFFF);
-        return 7;
+        return EVT_UPD_CARD_GAME;
     case EVT_OP_GAME_OVER:
-        return 8;
+        return EVT_UPD_GAME_OVER;
     case EVT_OP_BATTLE:
         g_swirlVariant = evt_getArg8_inline();
         g_gameState->gameData->enemyGroup = -1;
         a = evt_getArg16_inline();
         g_gameState->gameData->darkBattle = (a >> 15) & 1;
         evt_setNextBattle(a & 0x7FFF);
-        return 3;
+        return EVT_UPD_BATTLE;
     case EVT_OP_BATTLE_EX:
         g_swirlVariant = evt_getArg8_inline();
         g_gameState->gameData->enemyGroup = evt_getArg8_inline();
         a = evt_getArg16_inline();
         g_gameState->gameData->darkBattle = (a >> 15) & 1;
         evt_setNextBattle(a & 0x7FFF);
-        return 3;
+        return EVT_UPD_BATTLE;
     case EVT_OP_ENCOUNTER_RATE:
         if ((g_evtState->encounterRate = evt_getArg8_inline()) == 0) {
             g_evtEncounterChance = 0;
@@ -1514,7 +1514,7 @@ s32 evt_execInstr(void) {
     case EVT_OP_END_FRAME:
         g_evtArgRead = 1;
         g_evtCurObj->ip++;
-        return 6;
+        return EVT_UPD_END_FRAME;
     case EVT_OP_SET_STAND_ANIM:
         actor->standAnim = evt_getArg16_inline();
         return 0;
@@ -2945,7 +2945,7 @@ s32 evt_updateObjects(void) {
         l = g_evtState->objects;
     }
     r = evt_runScripts(l);
-    if (r == 6) {
+    if (r == EVT_UPD_END_FRAME) {
         r = 0;
     } else {
         g_evtResumeNode = 0;
@@ -3826,21 +3826,21 @@ s32 evt_getObjectProp(EvtObject *o, s32 prop) {
     void *u;
 
     switch (prop) {
-    case 0:
+    case EVT_GETPROP_X:
         return o->pos.vx;
-    case 1:
+    case EVT_GETPROP_Y:
         return o->pos.vy;
-    case 2:
+    case EVT_GETPROP_Z:
         return o->pos.vz;
-    case 3:
+    case EVT_GETPROP_ROT:
         return (u8)((u16)o->pos.rotY >> 4);
-    case 4:
+    case EVT_GETPROP_FLAGS:
         return o->flags;
-    case 5:
+    case EVT_GETPROP_UID:
         return o->uid;
-    case 6:
+    case EVT_GETPROP_LEVEL:
         return o->level;
-    case 7:
+    case EVT_GETPROP_ANIM_FRAME:
         return o->animFrame;
     }
     r = 0;
@@ -3865,7 +3865,7 @@ void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2) {
 
     if (arg0 != NULL) {
         i = 0;
-        if (arg1 == 2) {
+        if (arg1 == EVT_SETPROP_ROT) {
             arg0->pos.rotY = arg2 * 16;
             return;
         }
@@ -3875,7 +3875,7 @@ void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2) {
             }
         }
         if (i < 8) {
-            if (arg1 == 0x20) {
+            if (arg1 == EVT_SETPROP_INSERT) {
                 fn = btl_findUnitByBit;
             } else {
                 fn = btl_getUnitById;

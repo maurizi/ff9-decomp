@@ -88,10 +88,10 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             mode = sub->fieldMode;
             rs = owner->subGravity;
             rp = owner->subAccel;
-            if (mode != 0) {
+            if (mode != BTLFX_FIELD_NONE) {
                 curve = sub->fieldCurve;
                 range = owner->subField.s.x;
-                if (mode < 7) {
+                if (mode < BTLFX_FIELD_FADE) {
                     amp = owner->subField.s.y;
                 } else {
                     amp = sub->fieldStart[1];
@@ -102,10 +102,10 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             mode = owner->tail->anim.fieldMode;
             rs = owner->gravity;
             rp = owner->accel;
-            if (mode != 0) {
+            if (mode != BTLFX_FIELD_NONE) {
                 curve = owner->tail->anim.fieldCurve;
                 range = owner->field.s.x;
-                if (mode < 7) {
+                if (mode < BTLFX_FIELD_FADE) {
                     amp = owner->field.s.y;
                 } else {
                     amp = owner->tail->anim.fieldStart[1];
@@ -113,7 +113,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             }
             if (owner->sub != NULL) {
                 lvl = (owner->sub - 1)->rotMode;
-                if (lvl >= 4) {
+                if (lvl >= BTLFX_LAUNCH_PARENT) {
                     rel.vx = e->pos.vx >> 12;
                     rel.vy = e->pos.vy >> 12;
                     rel.vz = e->pos.vz >> 12;
@@ -238,9 +238,9 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             break;
         }
         ofs = 0xFFFF;
-        if (mode != 0) {
+        if (mode != BTLFX_FIELD_NONE) {
             switch (mode) {
-            case 1:
+            case BTLFX_FIELD_REPEL:
                 /* padded: a zero word follows the first jump table */
                 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
                 cnt = btlfx_distance(&pos, owner->fieldPos);
@@ -251,7 +251,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                     VectorNormalS(&d, &v);
                 }
                 break;
-            case 2:
+            case BTLFX_FIELD_ATTRACT:
                 cnt = btlfx_distance(&pos, owner->fieldPos);
                 if (cnt <= range) {
                     d.vx = owner->fieldPos->vx - pos.vx;
@@ -260,8 +260,8 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                     VectorNormalS(&d, &v);
                 }
                 break;
-            case 3:
-            case 4:
+            case BTLFX_FIELD_UP:
+            case BTLFX_FIELD_UP_2:
                 *(s32 *)&v.vx = *(s32 *)&pos.vx;
                 v.vy = owner->fieldPos->vy;
                 *(s32 *)&v.vz = *(s32 *)&pos.vz;
@@ -269,13 +269,13 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 ((s32 *)&v)[0] = 0;
                 v.vy = -0x1000;
                 break;
-            case 5:
+            case BTLFX_FIELD_ALONG_AXIS:
                 btlfx_toLocalPolar(&pos, owner->fieldPos, owner->fieldRot, (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
                     btlfx_rotateOffset(owner->fieldRot, 0x1000, (s32)&v);
                 }
                 break;
-            case 6:
+            case BTLFX_FIELD_AROUND_AXIS:
                 btlfx_toLocalPolar(&pos, owner->fieldPos, owner->fieldRot, (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
                     ((s32 *)&v)[1] = 0;
@@ -283,16 +283,16 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                     btlfx_offsetPoint(&v, (s32)&v, 0, (XY32 *)owner->fieldRot, 0x1000, scale);
                 }
                 break;
-            case 7:
+            case BTLFX_FIELD_FADE:
                 cnt = btlfx_distance(&pos, owner->fieldPos);
                 break;
-            case 8:
+            case BTLFX_FIELD_FADE_FLAT:
                 *(s32 *)&v.vx = *(s32 *)&pos.vx;
                 v.vy = owner->fieldPos->vy;
                 *(s32 *)&v.vz = *(s32 *)&pos.vz;
                 cnt = btlfx_distance(&v, owner->fieldPos);
                 break;
-            case 9:
+            case BTLFX_FIELD_FADE_POLAR:
                 btlfx_toLocalPolar(&pos, owner->fieldPos, owner->fieldRot, (s32)&alpha, (s32)&cnt, &scale);
                 break;
             }
@@ -302,25 +302,25 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 d.vy = v.vy;
                 d.vz = v.vz;
                 switch (curve) {
-                case 0:
+                case BTLFX_FALLOFF_CONST:
                     break;
-                case 1:
+                case BTLFX_FALLOFF_COS:
                     amp = (math_cos(scale) * amp) >> 12;
                     break;
-                case 2:
+                case BTLFX_FALLOFF_SIN:
                     amp = (math_sin(scale) * amp) >> 12;
                     break;
-                case 3:
+                case BTLFX_FALLOFF_INV_SIN:
                     amp = ((0x1000 - math_sin(scale)) * amp) >> 12;
                     break;
-                case 4:
+                case BTLFX_FALLOFF_INV_COS:
                     amp = ((0x1000 - math_cos(scale)) * amp) >> 12;
                     break;
-                case 5:
+                case BTLFX_FALLOFF_SIN2:
                     amp = (math_sin(scale * 2) * amp) >> 12;
                     break;
                 }
-                if (mode < 7) {
+                if (mode < BTLFX_FIELD_FADE) {
                     gte_lddp(amp);
                     gte_ldir(&d);
                     gte_gpf12();
@@ -331,7 +331,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 } else {
                     ofs = amp;
                 }
-            } else if (mode >= 7) {
+            } else if (mode >= BTLFX_FIELD_FADE) {
                 ofs = 0;
             }
         }
@@ -461,7 +461,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             }
         }
         if (owner->sub != NULL && (e->spawnFlags & BTLFX_PART_SUB_FRAC)) {
-            if (lvl >= 4) {
+            if (lvl >= BTLFX_LAUNCH_PARENT) {
                 btlfx_aimAngles((s16 *)&rel, (s16 *)&pos, (s16 *)&v);
             }
             btlfx_runSubEmitter(pool, e, &pos, &v);
@@ -1056,21 +1056,21 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
             p->pos.vy = (off.vy + base->vy) << 12;
             p->pos.vz = (off.vz + base->vz) << 12;
             switch (anim->rot.pad) {
-            case 1:
+            case BTLFX_LAUNCH_SHAPE_FLIPPED:
                 rot.vx += btlfx_randCentered(anim->rotStep.pad);
                 rot.vy += btlfx_randCentered(anim->rotStep.pad);
                 rot.vx = (rot.vx + 0x800) & 0xFFF;
                 break;
-            case 2:
+            case BTLFX_LAUNCH_RANDOM:
                 btlfx_randRotation(&rot);
                 break;
-            case 3:
+            case BTLFX_LAUNCH_EMITTER:
                 ((XY32 *)&rot)[0].w = ((XY32 *)&e->rot)[0].w;
                 ((XY32 *)&rot)[1].w = ((XY32 *)&e->rot)[1].w;
                 rot.vx += btlfx_randCentered(anim->rotStep.pad);
                 rot.vy += btlfx_randCentered(anim->rotStep.pad);
                 break;
-            case 0:
+            case BTLFX_LAUNCH_SHAPE:
                 rot.vx += btlfx_randCentered(anim->rotStep.pad);
                 rot.vy += btlfx_randCentered(anim->rotStep.pad);
                 break;
@@ -1283,33 +1283,33 @@ void btlfx_runSubEmitter(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *ro
                 p->pos.vy = (off.vy + pos->vy) << 12;
                 p->pos.vz = (off.vz + pos->vz) << 12;
                 switch (sub->rotMode) {
-                case 2:
+                case BTLFX_LAUNCH_RANDOM:
                     btlfx_randRotation(&ang);
                     break;
-                case 3:
+                case BTLFX_LAUNCH_EMITTER:
                     ((XY32 *)&ang)[0].w = ((XY32 *)&owner->rot)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)&owner->rot)[1].w;
                     ang.vx += btlfx_randCentered(sub->rotJitter);
                     ang.vy += btlfx_randCentered(sub->rotJitter);
                     break;
-                case 4:
+                case BTLFX_LAUNCH_PARENT:
                     ((XY32 *)&ang)[0].w = ((XY32 *)rot)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)rot)[1].w;
                     ang.vx += btlfx_randCentered(sub->rotJitter);
                     ang.vy += btlfx_randCentered(sub->rotJitter);
                     break;
-                case 0:
+                case BTLFX_LAUNCH_SHAPE:
                     ang.vx += btlfx_randCentered(sub->rotJitter);
                     ang.vy += btlfx_randCentered(sub->rotJitter);
                     break;
-                case 5:
+                case BTLFX_LAUNCH_PARENT_REVERSED:
                     ((XY32 *)&ang)[0].w = ((XY32 *)rot)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)rot)[1].w;
                     ang.vx += btlfx_randCentered(sub->rotJitter);
                     ang.vy += btlfx_randCentered(sub->rotJitter);
                     ang.vx = (ang.vx + 0x800) & 0xFFF;
                     break;
-                case 1:
+                case BTLFX_LAUNCH_SHAPE_FLIPPED:
                     ang.vx += btlfx_randCentered(sub->rotJitter);
                     ang.vy += btlfx_randCentered(sub->rotJitter);
                     ang.vx = (ang.vx + 0x800) & 0xFFF;

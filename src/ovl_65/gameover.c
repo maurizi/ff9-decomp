@@ -113,15 +113,15 @@ s32 battleEnd_update(void) {
     g = g_gameState->gameData;
     msg_beginDraw();
     switch (g->battleResult) {
-    case 1:
+    case BATTLE_END_VICTORY:
     case 2:
-    case 3:
-    case 4:
+    case BATTLE_END_DEFEAT:
+    case BATTLE_END_ESCAPE:
     case 5:
     case 7:
         if (!rewards_update()) {
             if (g->battleResult == 2) {
-                g->battleResult = 1;
+                g->battleResult = BATTLE_END_VICTORY;
             }
             func_800F4E68();
             rewards_exit();

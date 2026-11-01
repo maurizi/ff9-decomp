@@ -2103,11 +2103,11 @@ typedef struct {
     s16 gravityStart; /* (Pool6CEntry.gravity) */
     s16 accelEnd[3];
     s16 gravityEnd;
-    s16 fieldMode; /* force field (btlfx_updateParticles): 1 push away from fieldPos, 2 pull toward it, 3/4 upward (horizontal distance), 5 along fieldRot, 6 around the fieldRot axis, 7-9 alpha offset by distance (7 3D, 8 horizontal, 9 polar); 0 none */
-    s16 fieldCurve; /* strength by distance: 0 constant, 1 cos, 2 sin, 3 1 - sin, 4 1 - cos, 5 sin(2x) */
+    s16 fieldMode; /* BTLFX_FIELD_*: force field (btlfx_updateParticles) */
+    s16 fieldCurve; /* BTLFX_FALLOFF_*: strength by distance */
     s16 fieldStart[2]; /* {range, strength} (Pool6CEntry.field) */
     s16 fieldEnd[2];
-    SVECTOR rot; /* emitter rotation at frame 0 (Pool6CEntry.rot); pad = launch direction mode (btlfx_runEmitters: 0 jitter, 1 jitter + flipped, 2 random, 3 emitter rotation + jitter) */
+    SVECTOR rot; /* emitter rotation at frame 0 (Pool6CEntry.rot); pad = launch direction (BTLFX_LAUNCH_*, btlfx_runEmitters) */
     SVECTOR rotStep; /* added to the emitter rotation every frame; pad = launch direction jitter (+-) */
 } EffAnim; /* 0x38 */
 
@@ -2165,7 +2165,7 @@ typedef struct {
     s16 rateEnd;
     u8 elems[4]; /* element indices */
     u8 weights[4]; /* element weights */
-    u8 rotMode;    /* launch direction: 0 random + jitter, 1 the same flipped, 2 random, 3 emitter rotation, 4 parent's direction, 5 parent's reversed */
+    u8 rotMode;    /* BTLFX_LAUNCH_*: launch direction */
     u8 elemCount;    /* element count */
     s16 rotJitter; /* launch direction jitter (+-) */
     u8 maxParticles;   /* live sub-particle limit (Pool6CEntry.live.s.y) */
@@ -2192,6 +2192,37 @@ typedef struct {
 #define BTLFX_MOTION_HELIX     4 /* spins around an axis while moving along it, radius by curve (m.helix); the swirl around the caster while casting */
 #define BTLFX_MOTION_HOMING    5 /* ballistic, steered toward Pool6CEntry.target (m.homing) */
 #define BTLFX_MOTION_MODULE    0xFF /* EffEmit.m.module.update, set by the effect module; a 0x10-byte EffEmit */
+
+/* fieldMode of EffAnim / EffSub: force field around Pool6CEntry.fieldPos, applied within range (fieldStart[0]) with
+ * strength by fieldCurve (btlfx_updateParticles). Modes below BTLFX_FIELD_FADE move the particle, the others offset its
+ * alpha. Evidence: [code] btlfx_updateParticles */
+#define BTLFX_FIELD_NONE        0
+#define BTLFX_FIELD_REPEL       1 /* pushed away from fieldPos */
+#define BTLFX_FIELD_ATTRACT     2 /* pulled toward fieldPos */
+#define BTLFX_FIELD_UP          3 /* pushed up (-y), horizontal distance */
+#define BTLFX_FIELD_UP_2        4 /* the same code as BTLFX_FIELD_UP */
+#define BTLFX_FIELD_ALONG_AXIS  5 /* pushed along fieldRot (btlfx_toLocalPolar distance) */
+#define BTLFX_FIELD_AROUND_AXIS 6 /* pushed in the plane around the fieldRot axis, at the particle's polar angle */
+#define BTLFX_FIELD_FADE        7 /* alpha + strength by 3D distance (strength from fieldStart[1], not lerped) */
+#define BTLFX_FIELD_FADE_FLAT   8 /* the same by horizontal distance */
+#define BTLFX_FIELD_FADE_POLAR  9 /* the same by btlfx_toLocalPolar distance */
+
+/* fieldCurve: field strength by the distance fraction d (0 at fieldPos, a quarter turn at the range) */
+#define BTLFX_FALLOFF_CONST   0
+#define BTLFX_FALLOFF_COS     1 /* cos d: full at the centre, none at the range */
+#define BTLFX_FALLOFF_SIN     2 /* sin d: none at the centre */
+#define BTLFX_FALLOFF_INV_SIN 3 /* 1 - sin d */
+#define BTLFX_FALLOFF_INV_COS 4 /* 1 - cos d */
+#define BTLFX_FALLOFF_SIN2    5 /* sin 2d: strongest half-way */
+
+/* launch direction of a new particle: EffAnim.rot.pad (btlfx_runEmitters, 0-3) and EffSub.rotMode
+ * (btlfx_runSubEmitter, 0-5); every mode but BTLFX_LAUNCH_RANDOM adds +-rotJitter. Evidence: [code] the two switches */
+#define BTLFX_LAUNCH_SHAPE           0 /* the spawn shape's direction (the sub-emitter's random spawn offset) */
+#define BTLFX_LAUNCH_SHAPE_FLIPPED   1 /* the same with x turned half a turn */
+#define BTLFX_LAUNCH_RANDOM          2 /* btlfx_randRotation */
+#define BTLFX_LAUNCH_EMITTER         3 /* the emitter's rotation */
+#define BTLFX_LAUNCH_PARENT          4 /* sub-particles: the parent particle's direction of travel this frame */
+#define BTLFX_LAUNCH_PARENT_REVERSED 5 /* the same with x turned half a turn */
 
 /* radiusCurve of EffEmit.m.orbit / wobble / helix: the particle's radius over its life t */
 #define BTLFX_RADIUS_SIN    0 /* radius * sin(lerp(sinStart, sinEnd, t)) */
@@ -4751,15 +4782,15 @@ typedef struct {
 
 /* btlfx_opDrawOnUnit effect state (sprite sheet on a unit) */
 typedef struct {
-    u8 kind; /* kind (resident op argument >> 6) */
+    u8 kind; /* BTLFX_DRAWON_* (resident op argument >> 6) */
     u8 unit; /* unit id, 0xFF = none (targets' centre) */
     s16 otBias; /* otZ for the unit (btlfx_addRadiusSixth) */
     s16 scale; /* sprite scale, -1 = none (btlfx_drawAnimQuads/btlfx_drawParticles arg 3) */
     s16 roll; /* z rotation of the sprites (op argument b << 8) */
     s16 dataId; /* common data id of the sprite set (btlfx_getCommonSprite) */
-    s16 emitterId; /* common data id of the emitter (kind 3) */
+    s16 emitterId; /* common data id of the emitter (BTLFX_DRAWON_EMITTER) */
     s16 colorIdx; /* g_btlfxCommonCluts palette index */
-    s16 frames; /* frame count (kind 2: frame the emitter starts) */
+    s16 frames; /* frame count (BTLFX_DRAWON_EMITTER: frame the emitter starts) */
     void *data; /* sprite set */
     s32 frame; /* frame */
     s16 offX; /* x offset (x4) */
@@ -4767,6 +4798,11 @@ typedef struct {
     SVECTOR pos; /* position */
     s16 rot[3]; /* rotation (btlfx_aimAngles) */
 } Unk800E57B0; /* 0x2C */
+/* Unk800E57B0.kind (bits 6-7 of the op's mode byte): what btlfx_opDrawOnUnit draws. Evidence: [code] its two switches */
+#define BTLFX_DRAWON_PARTICLES 0 /* common sprite set dataId, btlfx_drawParticles with offX/offY */
+#define BTLFX_DRAWON_QUADS     1 /* common sprite set dataId, btlfx_drawAnimQuads */
+#define BTLFX_DRAWON_EMITTER   2 /* starts common emitter emitterId on frame `frames` with sprite set dataId (btlfx_spawnDrawOnUnit) */
+#define BTLFX_DRAWON_RINGS     3 /* btlfx_drawRings, fading out with cos */
 
 extern u16 g_btlfxDrawScales[];
 s32 btlfx_compareDepth(s32, s32);

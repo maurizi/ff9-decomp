@@ -1732,7 +1732,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 m2;
 
     kind = (arg0 >> 8) & 0xF;
-    if (kind == SND_CMD_GET_STATE && g_gameState->gameData->soundLoadState != 0) {
+    if (kind == SND_CMD_GET_STATE && g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
         goto stream;
     }
     switch ((arg0 >> 12) & 3) {
@@ -1741,7 +1741,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case SND_CMD_PLAY:
         case SND_CMD_LOAD:
-            if (g_gameState->gameData->soundLoadState != 0) {
+            if (g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
                 return -1;
             }
             if (g_btlSoundLoadKind == -1) {
@@ -1762,7 +1762,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                     g_gameState->gameData->soundLoadChunk = 0x16800;
                     g_btlSoundLoadId = id;
                     g_gameState->gameData->soundBankSize = 0;
-                    g_gameState->gameData->soundLoadState = 2;
+                    g_gameState->gameData->soundLoadState = SND_LOAD_START;
                     return g_gameState->gameData->soundLoadState;
                 }
                 memmove(g_gameState->gameData->musicSeq, (void *)g_gameState->gameData->musicSeq2, 0x2000);
@@ -1902,7 +1902,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_btlSoundLoadKind = kind;
             g_btlSoundLoadId = id;
             g_gameState->gameData->soundBankSize = 0;
-            g_gameState->gameData->soundLoadState = 2;
+            g_gameState->gameData->soundLoadState = SND_LOAD_START;
             return g_gameState->gameData->soundLoadState;
         case SND_CMD_GET_STATE:
             goto stream;
@@ -1914,7 +1914,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 stream:
     gd = g_gameState->gameData;
     switch (gd->soundLoadState) {
-    case 2:
+    case SND_LOAD_START:
         if (((g_btlSoundLoadId >> 16) & 0xFF) == DB_MUSIC >> 16) {
             gd->soundLoadBank = gd->musicBank[0];
         } else {
@@ -1926,9 +1926,9 @@ stream:
         }
         ge = g_gameState->gameData;
         cdRead_init(ge->cdRead, g_btlSoundLoadSector, size, (void *)ge->soundLoadDest, 0, g_gameState->gameData->soundLoadChunk, btl_onSoundRead);
-        g_gameState->gameData->soundLoadState = 3;
+        g_gameState->gameData->soundLoadState = SND_LOAD_BANK;
         break;
-    case 3:
+    case SND_LOAD_BANK:
         if (cdRead_update(gd->cdRead) == 0 && akao_getSpuTransferState() == 0) {
             gf = g_gameState->gameData;
             if (gf->cdRead[0].offset + gf->cdRead[0].chunk < gf->soundBankSize) {
@@ -1942,14 +1942,14 @@ stream:
                 if (g_btlSoundLoadKind != SND_CMD_RESUME) {
                     gf->musicVolume[0] = 0x7F;
                 }
-                g_gameState->gameData->soundLoadState = 4;
+                g_gameState->gameData->soundLoadState = SND_LOAD_SEQ_START;
             } else {
                 g_btlSoundLoadKind = -1;
-                g_gameState->gameData->soundLoadState = 0;
+                g_gameState->gameData->soundLoadState = SND_LOAD_IDLE;
             }
         }
         break;
-    case 4:
+    case SND_LOAD_SEQ_START:
         n = gd->cdRead[0].offset + gd->cdRead[0].chunk - gd->soundBankSize;
         if (n > 0) {
             memcpy(gd->musicSeq, (u8 *)(gd->soundLoadDest + (gd->soundBankSize - gd->cdRead[0].offset)), n);
@@ -1960,9 +1960,9 @@ stream:
         gh = g_gameState->gameData;
         cdRead_init(gh->cdRead, g_btlSoundLoadSector, gh->cdRead[0].size, (void *)gh->soundLoadDest,
                       gh->cdRead[0].offset + gh->cdRead[0].chunk, m2, NULL);
-        g_gameState->gameData->soundLoadState = 5;
+        g_gameState->gameData->soundLoadState = SND_LOAD_SEQ;
         break;
-    case 5:
+    case SND_LOAD_SEQ:
         if (cdRead_update(gd->cdRead) == 0) {
             gi = g_gameState->gameData;
             k1 = gi->cdRead[0].offset + gi->cdRead[0].chunk;
@@ -1974,7 +1974,7 @@ stream:
             } else {
                 btl_unpackMusic((s32)gi->musicSeq);
                 g_gameState->gameData->flags |= GD_MUSIC_LOADED;
-                g_gameState->gameData->soundLoadState = 0;
+                g_gameState->gameData->soundLoadState = SND_LOAD_IDLE;
                 if (g_btlSoundLoadKind == SND_CMD_PLAY) {
                     goto finish;
                 }

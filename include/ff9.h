@@ -398,7 +398,7 @@ typedef struct {
     u16 musicFileSectors; /* sector count of the current music file (fld_refindSectors, fld_soundCommand) */
     Font *kanjiFont; /* second (kanji) font table */
     u8 savedMusicVolume; /* musicVolume saved with savedMusicId */
-    u8 soundLoadState; /* music/bank load state machine (fld_soundCommand 1 wait fade, 2 start read, 3 bank, 4-5 sequence, 0 idle) */
+    u8 soundLoadState; /* SND_LOAD_*: music/bank load state machine of the mode's sound command (fld_soundCommand, btl_soundCmd, wm_soundCommand) */
     u16 soundLoadBank; /* id of the sound bank being loaded (fld_soundBankReadCallback looks it up) */
     CdReadCtx cdRead[1]; /* CD read context (cdRead_init) */
     s32 soundLoadChunk; /* bytes read per chunk while loading a sound bank (free heap rounded to sectors) */
@@ -426,6 +426,14 @@ typedef struct {
     struct ModelSlot *npcModels; /* per NPC (game_getModel ids 9+), indexed by FieldMap.playerObj */
     Unk8E4Ptr ctx; /* the running mode's context (field, world, battle, ...) */
 } GameData;
+/* GameData.soundLoadState. Evidence: [code] the SND_CMD_GET_STATE step of fld_soundCommand / btl_soundCmd /
+ * wm_soundCommand, which all run the same machine (the battle one starts at SND_LOAD_START). */
+#define SND_LOAD_IDLE 0
+#define SND_LOAD_WAIT_FADE 1 /* waits for the music fade-out, stops the music if GD_MUSIC_STOP_PENDING */
+#define SND_LOAD_START 2     /* finds the sound file, akao_beginBankUpload, starts the CD read */
+#define SND_LOAD_BANK 3      /* reads the bank part in chunks (uploaded to SPU); then the sequence or idle */
+#define SND_LOAD_SEQ_START 4 /* copies what the last bank chunk read of the sequence, reads on into musicSeq */
+#define SND_LOAD_SEQ 5       /* reads the rest of the sequence; then unpack it, GD_MUSIC_LOADED, idle */
 
 
 typedef struct {
@@ -1435,6 +1443,19 @@ typedef struct EvtObject {
     u16 jumpStartZ;
     s16 jumpTargetY; /* op 0xE2 */
 } EvtObject;
+/* Object property numbers of the script expression's object variables (evt_popValue -> evt_getObjectProp,
+ * evt_popAssign -> evt_setObjectProp). The two number them differently; any other property goes to the battle unit
+ * of a battle object (btl_getUnitAttr / btl_setUnitAttr, BTL_ATTR_*). Evidence: [code] the two functions. */
+#define EVT_GETPROP_X 0
+#define EVT_GETPROP_Y 1
+#define EVT_GETPROP_Z 2
+#define EVT_GETPROP_ROT 3        /* rotY >> 4, as a byte */
+#define EVT_GETPROP_FLAGS 4
+#define EVT_GETPROP_UID 5
+#define EVT_GETPROP_LEVEL 6
+#define EVT_GETPROP_ANIM_FRAME 7
+#define EVT_SETPROP_ROT 2        /* rotY = value * 16 */
+#define EVT_SETPROP_INSERT 0x20  /* BTL_ATTR_INSERT: the unit isn't listed yet, so it's found with btl_findUnitByBit */
 /* EvtObject.kind: what created the object (evt_createObject sets 0, the creating op sets the kind) */
 #define EVT_KIND_THREAD 1 /* EVT_OP_RUN_THREAD: a function of another object running on its own */
 #define EVT_KIND_CODE 2 /* EVT_OP_NEW_CODE, 0x14-byte header */
@@ -3073,6 +3094,15 @@ void game_updateFade(void);
 void game_updateTimer(void);
 void game_setScreenHeight(s32);
 s32 evt_update(); /* defined K&R-style: u8 param (unused); some callers pass none */
+/* evt_execInstr results that end evt_runScripts' pass and come back from evt_updateObjects / evt_update (0 = none;
+ * evt_execInstr's 1 only suspends the running object, 2 is a deleted object). Evidence: [code] evt_execInstr returns,
+ * evt_runScripts (stops on 3-8), evt_updateObjects (6 -> 0), fld_main and wm_frameMain (WM_EVT_*) switch on them. */
+#define EVT_UPD_BATTLE 3    /* EVT_OP_BATTLE / EVT_OP_BATTLE_EX: fld_main -> FLD_EXIT_BATTLE */
+#define EVT_UPD_FIELD 4     /* EVT_OP_GOTO_FIELD: next field (or FLD_NEXT_ENDING) */
+#define EVT_UPD_WORLD 5     /* EVT_OP_GOTO_WORLD: fld_main -> FLD_EXIT_WORLD */
+#define EVT_UPD_END_FRAME 6 /* EVT_OP_END_FRAME: the pass resumes at g_evtResumeNode next frame; evt_update returns 0 */
+#define EVT_UPD_CARD_GAME 7 /* EVT_OP_CARD_GAME: fld_main -> FLD_EXIT_TETRA_MASTER */
+#define EVT_UPD_GAME_OVER 8 /* EVT_OP_GAME_OVER: fld_main -> FLD_EXIT_GAME_OVER */
 u8 menuScreen_needsMember(s32);
 s32 menuScreen_getCommandHelp(s32);
 void menuScreen_close(void);

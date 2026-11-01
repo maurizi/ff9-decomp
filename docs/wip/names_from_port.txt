@@ -11191,3 +11191,17 @@ main item_useOnMember: its kind switch is the formula (BTL_FORMULA_MAGIC_HEAL, C
   ITEM_MP_HEAL, ELIXIR, PHOENIX_DOWN, SOFT, ITEM_CURE_STATUS, TENT); its callers pass the ovl_33/ovl_37 `effect`
   fields, which are this formula byte.
 # BATTLE_END_* moved from ovl_0b.h/ovl_65.h to ff9.h
+# ===== R37 =====
+DB_GET_* (res_ids.h, existing) in main db_lookup's mode tests/switch and its recursive calls.
+BATTLE_END_VICTORY/DEFEAT/ESCAPE (ff9.h, existing) in ovl_65 battleEnd_update and rewards_getKind; 2, 5, 7 stay literal.
+EVT_UPD_BATTLE 3 / FIELD 4 / WORLD 5 / END_FRAME 6 / CARD_GAME 7 / GAME_OVER 8 (ff9.h): evt_execInstr results that end
+  evt_runScripts' pass; evt_execInstr returns, evt_updateObjects, ovl_0a fld_main's switch; ovl_0c WM_EVT_* now alias them.
+EVT_GETPROP_X/Y/Z/ROT/FLAGS/UID/LEVEL/ANIM_FRAME 0-7, EVT_SETPROP_ROT 2, EVT_SETPROP_INSERT 0x20 (ff9.h):
+  evt_getObjectProp / evt_setObjectProp.
+chr_calcAppearance's switch: CHR_* 0-7 and CHR_STATS_CINNA..BEATRIX 8-11 (g_chrAppearanceTypes holds the stat-class
+  numbering: slots 5-8 with the guest flag give 8-11).
+SND_LOAD_IDLE/WAIT_FADE/START/BANK/SEQ_START/SEQ 0-5 (ff9.h): GameData.soundLoadState in fld_soundCommand,
+  btl_soundCmd, wm_soundCommand, the_end, gamedata init.
+BTLFX_FIELD_* 0-9, BTLFX_FALLOFF_* 0-5, BTLFX_LAUNCH_* 0-5 (ovl_0b.h): btlfx_updateParticles fieldMode/fieldCurve,
+  btlfx_runEmitters rot.pad and btlfx_runSubEmitter rotMode.
+BTLFX_DRAWON_PARTICLES/QUADS/EMITTER/RINGS 0-3 (ovl_0b.h): btlfx_opDrawOnUnit kind, btlfx_spawnDrawOnUnit.

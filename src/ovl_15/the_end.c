@@ -172,7 +172,7 @@ s32 ending_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | DB_MUSIC;
         switch (kind) {
         case SND_CMD_PLAY:
-            if (g_gameState->gameData->soundLoadState != 0) {
+            if (g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
                 return -1;
             }
             if (g_endingSoundPending == -1) {

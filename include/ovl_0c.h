@@ -93,9 +93,9 @@
 #define WM_STATE_RUNNING 2 /* set by wm_chunksLoaded after the first 16 chunks: draw and pad input */
 
 /* g_worldEventResult: event-script frame result returned by wm_frameMain */
-#define WM_EVT_BATTLE 3 /* -> WM_EXIT_BATTLE */
-#define WM_EVT_FIELD 4 /* "MAP JUMP" -> WM_EXIT_FIELD */
-#define WM_EVT_WORLD 5 /* next world map */
+#define WM_EVT_BATTLE EVT_UPD_BATTLE /* -> WM_EXIT_BATTLE */
+#define WM_EVT_FIELD EVT_UPD_FIELD /* "MAP JUMP" -> WM_EXIT_FIELD */
+#define WM_EVT_WORLD EVT_UPD_WORLD /* next world map */
 
 /* WorldMapObj.exitReason, switched on by wm_exit */
 #define WM_EXIT_FIELD 1

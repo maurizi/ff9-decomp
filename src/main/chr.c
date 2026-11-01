@@ -154,12 +154,12 @@ s32 chr_calcAppearance(s32 kind, s32 flag, u8 *item) {
     u8 k = g_itemTable[*item].icon;
     s32 r;
 
-    switch (t) {
-    case 0:
+    switch (t) { /* the character (stat class numbering: g_chrAppearanceTypes gives slots 5-8 with the guest flag 8-11) */
+    case CHR_ZIDANE:
         return k != ITEM_ICON_DAGGER; /* CHR_KIND_ZIDANE : CHR_KIND_ZIDANE_DAGGER */
-    case 1:
+    case CHR_VIVI:
         return CHR_KIND_VIVI;
-    case 2:
+    case CHR_DAGGER:
         if ((u16)g_evtGlobalVars.h[0] >= 10300) {
             r = CHR_KIND_GARNET_SHORT;
             if (k == ITEM_ICON_RACKET) {
@@ -172,31 +172,31 @@ s32 chr_calcAppearance(s32 kind, s32 flag, u8 *item) {
             r = CHR_KIND_GARNET_LONG_RACKET;
         }
         return r;
-    case 3:
+    case CHR_STEINER:
         return CHR_KIND_STEINER;
-    case 4:
+    case CHR_FREYA:
         return CHR_KIND_FREYA;
-    case 5:
+    case CHR_QUINA:
         return CHR_KIND_QUINA;
-    case 6:
+    case CHR_EIKO:
         r = CHR_KIND_EIKO;
         if (k == ITEM_ICON_RACKET) {
             r = CHR_KIND_EIKO_RACKET;
         }
         return r;
-    case 7:
+    case CHR_AMARANT:
         return CHR_KIND_AMARANT;
-    case 8:
+    case CHR_STATS_CINNA:
         return CHR_KIND_CINNA;
-    case 9:
+    case CHR_STATS_MARCUS:
         return CHR_KIND_MARCUS;
-    case 10:
+    case CHR_STATS_BLANK:
         r = CHR_KIND_BLANK;
         if ((u16)(g_evtGlobalVars.h[0] - 1500) < 100) {
             r = CHR_KIND_BLANK_ALT;
         }
         return r;
-    case 11:
+    case CHR_STATS_BEATRIX:
         return CHR_KIND_BEATRIX;
     }
     return -1;

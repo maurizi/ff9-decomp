@@ -607,7 +607,7 @@ s32 rewards_getKind(void) {
     u8 mode = g_gameState->gameData->battleResult;
     s32 ret = 0;
 
-    if (mode == 4) {
+    if (mode == BATTLE_END_ESCAPE) {
         ret = g_btlRewards.fleeGil != 0;
     } else if (mode != 7) {
         ret = 1;

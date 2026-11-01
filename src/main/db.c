@@ -87,41 +87,41 @@ s32 db_lookup(s32 arg0, s32 mode, s32 key, s32 arg3) {
         if (type == hi) {
             blk = (u8 *)ent + ((u32)blk & 0xFFFFFF);
             cnt = blk[1];
-            if (mode == 0) {
+            if (mode == DB_GET_BLOCK) {
                 return (s32)blk;
             }
             ids = (u16 *)(blk + 4);
-            if (mode == 1) {
+            if (mode == DB_GET_COUNT) {
                 return cnt;
             }
             ofs = (u32 *)((u8 *)ids + cnt * 2);
             if ((s32)ofs & 3) {
                 ofs = (u32 *)((u8 *)ofs - (((s32)ofs & 3) - 4));
             }
-            if (mode == 3) {
+            if (mode == DB_GET_KEY_AT) {
                 return (type << 16) | ids[lo];
             }
-            if (mode == 2) {
+            if (mode == DB_GET_AT) {
                 p = &ofs[lo];
                 return (s32)p + (*p & 0xFFFFFF);
             }
             for (j = 0; j < cnt; j++) {
                 if (*ids == lo) {
                     switch (mode) {
-                    case 4:
+                    case DB_GET_ADDR:
                         do {
                         } while (0);
                         return (s32)ofs + (*ofs & 0xFFFFFF);
-                    case 5:
+                    case DB_GET_SIZE:
                         return (ofs[1] & 0xFFFFFF) - (ofs[0] & 0xFFFFFF) + 4;
-                    case 9:
-                        r = db_lookup(arg0, 3, arg3, 0);
+                    case DB_GET_KEY_AT_IN:
+                        r = db_lookup(arg0, DB_GET_KEY_AT, arg3, 0);
                         return r;
-                    case 8:
-                        r = db_lookup(arg0, 2, arg3, 0);
+                    case DB_GET_AT_IN:
+                        r = db_lookup(arg0, DB_GET_AT, arg3, 0);
                         return r;
-                    case 11:
-                        r = db_lookup(arg0, 1, arg3, 0);
+                    case DB_GET_COUNT_IN:
+                        r = db_lookup(arg0, DB_GET_COUNT, arg3, 0);
                         return r;
                     default:
                         return -1;

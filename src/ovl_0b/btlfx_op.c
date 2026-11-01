@@ -645,7 +645,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
             arg1->pos.vy -= 0xC0;
         }
         switch (arg1->kind) {
-        case 0:
+        case BTLFX_DRAWON_PARTICLES:
             arg1->dataId = g_btlfxResArgs.data;
             arg1->colorIdx = a;
             arg1->roll = (s8)b << 8;
@@ -655,7 +655,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
             arg1->offX = (s8)g_btlfxResArgs.offX * 4;
             arg1->offY = (s8)g_btlfxResArgs.offY * 4;
             break;
-        case 1:
+        case BTLFX_DRAWON_QUADS:
             arg1->dataId = g_btlfxResArgs.data;
             arg1->colorIdx = a;
             arg1->roll = (s8)b << 8;
@@ -663,13 +663,13 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
             ((u16 *)arg1->data)[2] = g_btlfxCommonCluts[arg1->colorIdx];
             arg1->frames = *(u16 *)arg1->data & 0x7FFF;
             break;
-        case 2:
+        case BTLFX_DRAWON_EMITTER:
             arg1->emitterId = g_btlfxResArgs.data;
             arg1->dataId = a;
             arg1->frames = g_btlfxResArgs.mode & 0xF;
             arg1->scale = b;
             break;
-        case 3:
+        case BTLFX_DRAWON_RINGS:
             arg1->dataId = a;
             arg1->frames = g_btlfxResArgs.data;
             arg1->data = btlfx_getCommonSprite(arg1->dataId);
@@ -687,13 +687,13 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
             rot.vz = arg1->roll;
         }
         switch (arg1->kind) {
-        case 0:
+        case BTLFX_DRAWON_PARTICLES:
             btlfx_drawParticles(arg1->data, &arg1->pos, &rot, arg1->scale, arg1->frame, 1, 0x1000, arg1->offX, arg1->offY);
             break;
-        case 1:
+        case BTLFX_DRAWON_QUADS:
             btlfx_drawAnimQuads(arg1->data, &arg1->pos, &rot, arg1->scale, arg1->frame, 1, 0x1000);
             break;
-        case 2:
+        case BTLFX_DRAWON_EMITTER:
             if (arg1->frame == arg1->frames) {
                 if (arg1->unit != 0xFF) {
                     if (arg1->unit == BTLFX_UNIT_CASTER) {
@@ -731,7 +731,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
                 }
             }
             goto next;
-        case 3:
+        case BTLFX_DRAWON_RINGS:
             btlfx_drawRings(arg1->data, &arg1->pos, &rot, arg1->scale, arg1->frame, 1, math_cos((arg1->frame << 10) / arg1->frames));
             break;
         default:
@@ -753,7 +753,7 @@ void btlfx_spawnDrawOnUnit(s8 arg0, s8 arg1, s8 arg2, s32 arg3, s32 arg4, s32 ar
     g_btlfxResArgs2.unit = arg0;
     g_btlfxResArgs2.otBias = arg1;
     g_btlfxResArgs.data = arg2;
-    g_btlfxResArgs.mode = arg5 | 0x80;
+    g_btlfxResArgs.mode = arg5 | (BTLFX_DRAWON_EMITTER << 6);
     btlfx_spawnTask(1, g_btlfxEnv->state->file, arg3, arg4);
 }
 

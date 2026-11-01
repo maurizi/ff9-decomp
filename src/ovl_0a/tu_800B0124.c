@@ -18,7 +18,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 d;
 
     kind = (arg0 >> 8) & 0xF;
-    if (kind == SND_CMD_GET_STATE && g_gameState->gameData->soundLoadState != 0) {
+    if (kind == SND_CMD_GET_STATE && g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
         goto state;
     }
     switch ((arg0 >> 12) & 3) {
@@ -51,7 +51,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
         case SND_CMD_PLAY:
         case SND_CMD_LOAD:
-            if (g_gameState->gameData->soundLoadState != 0) {
+            if (g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
                 return -1;
             }
             if (g_fieldMusicRequest == -1) {
@@ -69,7 +69,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->gameData->musicBank[0] = t;
                 g_fieldSoundLoadId = id;
                 g_gameState->gameData->musicId[0] = arg1;
-                g_gameState->gameData->soundLoadState = 1;
+                g_gameState->gameData->soundLoadState = SND_LOAD_WAIT_FADE;
                 return g_gameState->gameData->soundLoadState;
             }
             if (g_fieldMusicRequest == SND_CMD_LOAD) {
@@ -85,7 +85,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_fieldMusicRequest = -1;
             return 0;
         case SND_CMD_GET_STATE:
-            if (g_gameState->gameData->soundLoadState != 0) {
+            if (g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
                 goto state;
             }
             return fld_isMusicFading() ? 6 : 0;
@@ -363,7 +363,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case SND_CMD_PLAY:
             slot = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
-            if (g_gameState->gameData->soundLoadState != 0) {
+            if (g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
                 return -1;
             }
             akao_sendCmdE4(fld_isMoviePlaying() ? SCENE->movieSndVolume : SCENE->sndVolume);
@@ -410,7 +410,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             g_fieldMusicRequest = kind;
             g_fieldSoundLoadId = id;
-            g_gameState->gameData->soundLoadState = 1;
+            g_gameState->gameData->soundLoadState = SND_LOAD_WAIT_FADE;
             return g_gameState->gameData->soundLoadState;
         case SND_CMD_GET_STATE:
             goto state;
@@ -421,16 +421,16 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 
 state:
     switch (g_gameState->gameData->soundLoadState) {
-    case 1:
+    case SND_LOAD_WAIT_FADE:
         if (fld_isMusicFading() == 0) {
             if (g_gameState->gameData->flags & GD_MUSIC_STOP_PENDING) {
                 akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 g_gameState->gameData->flags &= ~GD_MUSIC_STOP_PENDING;
             }
-            g_gameState->gameData->soundLoadState = 2;
+            g_gameState->gameData->soundLoadState = SND_LOAD_START;
         }
         break;
-    case 2:
+    case SND_LOAD_START:
         if (((g_fieldSoundLoadId >> 16) & 0xFF) == (DB_MUSIC >> 16)) {
             g_gameState->gameData->soundLoadBank = g_gameState->gameData->musicBank[0];
         } else {
@@ -460,9 +460,9 @@ state:
         g_gameState->gameData->soundBankSize = 0;
         cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, sz, (void *)g_gameState->gameData->soundLoadDest, 0,
                       g_gameState->gameData->soundLoadChunk, fld_soundBankReadCallback);
-        g_gameState->gameData->soundLoadState = 3;
+        g_gameState->gameData->soundLoadState = SND_LOAD_BANK;
         break;
-    case 3:
+    case SND_LOAD_BANK:
         if (cdRead_update(g_gameState->gameData->cdRead) == 0 && akao_getSpuTransferState() == 0) {
             fld_invalidateModelCache((s32)g_gameState->gameData->cdRead[0].end);
             preload_discardRange((s32)g_gameState->gameData->cdRead[0].dest, g_gameState->gameData->cdRead[0].chunk);
@@ -479,14 +479,14 @@ state:
                 if (g_fieldMusicRequest != SND_CMD_RESUME) {
                     g_gameState->gameData->musicVolume[0] = 0x7F;
                 }
-                g_gameState->gameData->soundLoadState = 4;
+                g_gameState->gameData->soundLoadState = SND_LOAD_SEQ_START;
             } else {
                 g_fieldMusicRequest = -1;
-                g_gameState->gameData->soundLoadState = 0;
+                g_gameState->gameData->soundLoadState = SND_LOAD_IDLE;
             }
         }
         break;
-    case 4:
+    case SND_LOAD_SEQ_START:
         n = g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk - g_gameState->gameData->soundBankSize;
         if (n > 0) {
             memcpy(g_gameState->gameData->musicSeq, (u8 *)g_gameState->gameData->soundLoadDest + (g_gameState->gameData->soundBankSize - g_gameState->gameData->cdRead[0].offset), n);
@@ -496,9 +496,9 @@ state:
         t = t / 2048 * 2048;
         cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
                       g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, t, NULL);
-        g_gameState->gameData->soundLoadState = 5;
+        g_gameState->gameData->soundLoadState = SND_LOAD_SEQ;
         break;
-    case 5:
+    case SND_LOAD_SEQ:
         if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
             if (g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk < g_gameState->gameData->cdRead[0].size) {
                 m = g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk - g_gameState->gameData->soundBankSize;
@@ -507,7 +507,7 @@ state:
             } else {
                 fld_unpackMusicSeq((s32)g_gameState->gameData->musicSeq);
                 g_gameState->gameData->flags |= GD_MUSIC_LOADED;
-                g_gameState->gameData->soundLoadState = 0;
+                g_gameState->gameData->soundLoadState = SND_LOAD_IDLE;
                 if (g_fieldMusicRequest != SND_CMD_LOAD) {
                     goto start;
                 }
