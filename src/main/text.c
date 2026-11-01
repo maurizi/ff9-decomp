@@ -1,7 +1,7 @@
 #include "ff9.h"
 
 s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
-    u8 buf[16];
+    u8 rowPixels[16];
     u8 w;
     u8 start;
     u8 width;
@@ -21,12 +21,12 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
     start = w >> 4;
     width = (w & 0xF) + 1;
     src = (u8 *)g_nameGlyphs + (c << 6);
-    memset(buf, 0, 0x10);
+    memset(rowPixels, 0, 0x10);
     for (row = 0; row < 12; row++) {
         for (i = 0; i < 4; i++) {
             b = src[row * 4 + i];
             for (j = 0; j < 4; j++) {
-                buf[i * 4 + j] = b & 3;
+                rowPixels[i * 4 + j] = b & 3;
                 b >>= 2;
             }
         }
@@ -34,11 +34,11 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
             px = x + i;
             if (!(px & 1)) {
                 p = dst + (px >> 1);
-                v = buf[start + i];
+                v = rowPixels[start + i];
                 o = *p;
                 if (hi) { *p = o | (v << 2); } else { *p = o | v; }
             } else {
-                v = buf[start + i];
+                v = rowPixels[start + i];
                 px >>= 1;
                 p = dst + px;
                 o = *p;
@@ -698,7 +698,7 @@ s32 text_getCodeWidth(s32 c) {
     return r;
 }
 
-s32 text_formatTime(s32 frames, u8 *buf, s32 blink) {
+s32 text_formatTime(s32 frames, u8 *out, s32 blink) {
     s32 r = 0;
     s32 sec;
     s32 min;
@@ -724,24 +724,24 @@ s32 text_formatTime(s32 frames, u8 *buf, s32 blink) {
     } else {
         sub = 0;
     }
-    text_formatNumber_inline(hr, buf, 2, TEXT_NUM_ASCII);
-    text_formatNumber_inline(min, buf + 3, 2, TEXT_NUM_ASCII);
-    if (buf[3] == ' ') {
-        buf[3] = '0';
+    text_formatNumber_inline(hr, out, 2, TEXT_NUM_ASCII);
+    text_formatNumber_inline(min, out + 3, 2, TEXT_NUM_ASCII);
+    if (out[3] == ' ') {
+        out[3] = '0';
     }
-    text_formatNumber_inline(sec, buf + 6, 2, TEXT_NUM_ASCII);
-    if (buf[6] == ' ') {
-        buf[6] = '0';
+    text_formatNumber_inline(sec, out + 6, 2, TEXT_NUM_ASCII);
+    if (out[6] == ' ') {
+        out[6] = '0';
     }
     if ((u8)sub < 30) {
-        buf[2] = ':';
-        buf[5] = ':';
+        out[2] = ':';
+        out[5] = ':';
     } else {
-        buf[5] = ' ';
-        buf[2] = ' ';
+        out[5] = ' ';
+        out[2] = ' ';
     }
     if (hr < 10) {
-        buf[0] = '0';
+        out[0] = '0';
     }
     return r;
 }
@@ -750,13 +750,13 @@ u8 *text_append(u8 *dst, u8 *src) {
     s32 c;
     u8 th;
     u8 *p;
-    u8 *ret;
+    u8 *start;
     u8 *s;
     s32 c2;
     u8 th2;
 
-    ret = dst;
-    s = ret;
+    start = dst;
+    s = start;
     p = s;
     th = g_gameState->gameData->font->extCode >> 8;
     while ((c = *p) != TEXT_END) {
@@ -784,7 +784,7 @@ u8 *text_append(u8 *dst, u8 *src) {
         }
     }
     *dst = TEXT_END;
-    return ret;
+    return start;
 }
 
 s32 ui_measureLabel(u8 *s) {
@@ -935,18 +935,18 @@ TextSize text_measure(u8 *s) {
     return r;
 }
 
-s32 text_initNameImage(s32 arg0) {
-    g_nameGlyphs = arg0;
-    g_nameImage = arg0 + 0x4000;
+s32 text_initNameImage(s32 work) {
+    g_nameGlyphs = work;
+    g_nameImage = work + 0x4000;
     memset(g_nameImage, 0, 0x3F0);
     return g_nameImage;
 }
 
-void text_renderPartyName(s32 arg0) {
-    s32 x = (arg0 & 1) * 0x54;
-    s32 y = arg0 >> 1;
+void text_renderPartyName(s32 slot) {
+    s32 x = (slot & 1) * 0x54;
+    s32 y = slot >> 1;
     s32 i;
-    u8 *name = g_gameState->gameData->party[arg0]->name;
+    u8 *name = g_gameState->gameData->party[slot]->name;
 
     for (i = 0; i < 7; i++) {
         if (*name == 0xFF) {
@@ -956,20 +956,20 @@ void text_renderPartyName(s32 arg0) {
     }
 }
 
-void ui_drawLabel(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4) {
-    g_primPtr = ui_buildLabel(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+void ui_drawLabel(s32 x, s32 y, s32 otz, s32 str, s32 mode) {
+    g_primPtr = ui_buildLabel(x, y, &g_ot[otz], str, mode, g_primPtr);
 }
 
-void ui_drawSmallDigits(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
-    g_primPtr = text_buildSmall(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+void ui_drawSmallDigits(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
+    g_primPtr = text_buildSmall(x, y, &g_ot[otz], s, pal, g_primPtr);
 }
 
-void ui_drawDigits(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
-    g_primPtr = text_buildDigits(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+void ui_drawDigits(s32 x, s32 y, s32 otz, u8 *s, s32 style) {
+    g_primPtr = text_buildDigits(x, y, &g_ot[otz], s, style, g_primPtr);
 }
 
-void text_drawBlock(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
-    g_primPtr = text_buildBlock(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+void text_drawBlock(s32 x, s32 y, s32 otz, u8 *s, s32 mode) {
+    g_primPtr = text_buildBlock(x, y, &g_ot[otz], s, mode, g_primPtr);
 }
 
 u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
@@ -1029,15 +1029,15 @@ u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords 
     return (u8 *)(p + 1);
 }
 
-u8 *text_buildDpad(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
-    s32 tmp[2];
+u8 *text_buildDpad(s32 x, s32 y, u32 *ot, u32 dirMask, u8 flag, s32 *outWidth, u8 *pkt) {
+    s32 arrowW[2];
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (mask & (1 << i)) {
-            pkt = ui_buildSprite(x + g_dpadArrowSprites[i].x, y + g_dpadArrowSprites[i].y, ot, g_dpadArrowSprites[i].sprite, b, tmp, pkt);
+        if (dirMask & (1 << i)) {
+            pkt = ui_buildSprite(x + g_dpadArrowSprites[i].x, y + g_dpadArrowSprites[i].y, ot, g_dpadArrowSprites[i].sprite, flag, arrowW, pkt);
         }
     }
-    return ui_buildSprite(x, y, ot, UI_SPRITE_DPAD, b, c, pkt);
+    return ui_buildSprite(x, y, ot, UI_SPRITE_DPAD, flag, outWidth, pkt);
 }
 
 s32 text_measureStyle(u8 *s, s32 idx) {
@@ -1070,8 +1070,8 @@ s32 text_measureDigits(u8 *s) {
     return w;
 }
 
-s32 text_measureWidth(s32 arg0) {
-    return text_measure((u8 *)arg0).w;
+s32 text_measureWidth(s32 s) {
+    return text_measure((u8 *)s).w;
 }
 
 u8 *text_buildFontTpage(u32 *ot, DrTpageWords *p) {
@@ -1081,7 +1081,7 @@ u8 *text_buildFontTpage(u32 *ot, DrTpageWords *p) {
     return (u8 *)(p + 1);
 }
 
-void text_formatNumber(s32 n, u8 *buf, s32 width, u8 ascii) {
+void text_formatNumber(s32 n, u8 *out, s32 width, u8 ascii) {
     s32 base = 0;
     s32 fill;
     s32 i;
@@ -1097,20 +1097,20 @@ void text_formatNumber(s32 n, u8 *buf, s32 width, u8 ascii) {
         fill = 0xF;
     }
     if (width < 0) {
-        text_formatInt(n, buf, ascii);
+        text_formatInt(n, out, ascii);
         return;
     }
-    memset(buf, fill, width);
+    memset(out, fill, width);
     for (i = 0; i < width; i++) {
         d = n % 10;
         q = n / 10;
-        buf[width - i - 1] = d + base;
+        out[width - i - 1] = d + base;
         if (q == 0) {
             break;
         }
         n = q;
     }
-    end = buf + width;
+    end = out + width;
     if (!ascii) {
         *end = 0xFF;
     } else {
@@ -1118,8 +1118,8 @@ void text_formatNumber(s32 n, u8 *buf, s32 width, u8 ascii) {
     }
 }
 
-void text_formatInt(s32 v, u8 *buf, s32 ascii) {
-    u8 tmp[16];
+void text_formatInt(s32 v, u8 *out, s32 ascii) {
+    u8 digits[16];
     s32 n = 0;
     s32 i;
     s32 base;
@@ -1135,21 +1135,21 @@ void text_formatInt(s32 v, u8 *buf, s32 ascii) {
         term = 0;
     }
     if (v == 0) {
-        *buf++ = base;
+        *out++ = base;
     } else {
         if (v < 0) {
-            *buf++ = minus;
+            *out++ = minus;
             v = -v;
         }
         while (v != 0) {
-            tmp[n++] = base + v % 10;
+            digits[n++] = base + v % 10;
             v /= 10;
         }
         for (i = 0; i < n;) {
-            *buf++ = tmp[n - ++i];
+            *out++ = digits[n - ++i];
         }
     }
-    *buf = term;
+    *out = term;
 }
 
 s32 text_getLength(u8 *s) {
@@ -1191,8 +1191,8 @@ u8 *text_copy(u8 *dst, u8 *src) {
     return start;
 }
 
-s32 text_getButtonSprite(s32 arg0) {
-    return g_buttonSprites[config_remapButton(arg0)];
+s32 text_getButtonSprite(s32 button) {
+    return g_buttonSprites[config_remapButton(button)];
 }
 
 void text_setStringArg(s32 i, u8 *v) {

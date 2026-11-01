@@ -328,31 +328,31 @@ void win_setClip(RECT *r, s32 otz, s32 style) {
     g_primPtr += sizeof(DR_AREA);
 }
 
-Window *win_openFree(RECT *r, s32 a, s32 b) {
+Window *win_openFree(RECT *r, s32 otz, s32 style) {
     s32 i;
     Window *w = g_windows;
-    Window *res;
+    Window *win;
     for (i = 0; i < 10; i++, w++) {
         if (w->state == WIN_STATE_CLOSED) {
             break;
         }
     }
     if (i < 10) {
-        res = win_init(r, a, b, w);
+        win = win_init(r, otz, style, w);
     } else {
-        res = NULL;
+        win = NULL;
     }
-    return res;
+    return win;
 }
 
-Window *win_open(RECT *r, s32 a, s32 b, u32 i) {
-    Window *res;
-    if (i < 10) {
-        res = win_init(r, a, b, &g_windows[i]);
+Window *win_open(RECT *r, s32 otz, s32 style, u32 slot) {
+    Window *win;
+    if (slot < 10) {
+        win = win_init(r, otz, style, &g_windows[slot]);
     } else {
-        res = NULL;
+        win = NULL;
     }
-    return res;
+    return win;
 }
 
 void win_close(Window *w) {
@@ -476,62 +476,62 @@ void win_reapClosed(void) {
     }
 }
 
-void win_setOnOpened(Window *arg0, void (*arg1)(Window *)) {
-    arg0->onOpened = arg1;
+void win_setOnOpened(Window *win, void (*cb)(Window *)) {
+    win->onOpened = cb;
 }
 
-void win_setDrawContent(Window *arg0, void (*arg1)(Window *)) {
-    arg0->drawContent = arg1;
+void win_setDrawContent(Window *win, void (*cb)(Window *)) {
+    win->drawContent = cb;
 }
 
-void win_setDrawOverlay(Window *arg0, void (*arg1)(Window *)) {
-    arg0->drawOverlay = arg1;
+void win_setDrawOverlay(Window *win, void (*cb)(Window *)) {
+    win->drawOverlay = cb;
 }
 
-void win_setOnClosed(Window *arg0, void (*arg1)(Window *)) {
-    arg0->onClosed = arg1;
+void win_setOnClosed(Window *win, void (*cb)(Window *)) {
+    win->onClosed = cb;
 }
 
-void win_setTitle(Window *arg0, s32 arg1) {
-    arg0->titleX = 6;
-    arg0->title = arg1;
-    arg0->titleY = -3;
+void win_setTitle(Window *win, s32 title) {
+    win->titleX = 6;
+    win->title = title;
+    win->titleY = -3;
 }
 
-void win_setShadow(Window *arg0, u8 arg1) {
-    arg0->shadow = arg1;
+void win_setShadow(Window *win, u8 shadow) {
+    win->shadow = shadow;
 }
 
-void win_setTranslucent(Window *arg0, u8 arg1) {
-    arg0->translucent = arg1;
+void win_setTranslucent(Window *win, u8 translucent) {
+    win->translucent = translucent;
 }
 
-void win_setVisible(Window *arg0, u8 arg1) {
-    arg0->visible = arg1;
+void win_setVisible(Window *win, u8 visible) {
+    win->visible = visible;
 }
 
-void win_setOpenFrames(Window *arg0, s16 arg1) {
-    arg0->openFrames = arg1;
-    if (arg0->style != WIN_STYLE_BALLOON) {
-        win_setOpenAnim(arg0, arg0->animMode);
+void win_setOpenFrames(Window *win, s16 frames) {
+    win->openFrames = frames;
+    if (win->style != WIN_STYLE_BALLOON) {
+        win_setOpenAnim(win, win->animMode);
     } else {
-        win_setTail(arg0, arg0->tailMode, arg0->tailX);
+        win_setTail(win, win->tailMode, win->tailX);
     }
 }
 
-void win_setCloseFrames(Window *arg0, s16 arg1) {
-    arg0->openFrames = arg1;
-    win_setCloseAnim(arg0, arg0->animMode);
+void win_setCloseFrames(Window *win, s16 frames) {
+    win->openFrames = frames;
+    win_setCloseAnim(win, win->animMode);
 }
 
-void win_setList(Window *arg0, MenuList *arg1) {
-    arg0->list = *arg1;
+void win_setList(Window *win, MenuList *list) {
+    win->list = *list;
 }
 
-void win_setTitleAt(Window *arg0, s32 arg1, s16 arg2, s8 arg3) {
-    arg0->title = arg1;
-    arg0->titleX = arg2;
-    arg0->titleY = arg3;
+void win_setTitleAt(Window *win, s32 title, s16 x, s8 y) {
+    win->title = title;
+    win->titleX = x;
+    win->titleY = y;
 }
 
 void win_drawFillPal(RECT *a, s32 b) {

@@ -3220,7 +3220,7 @@ typedef struct {
     s16 x1;
     s16 y1;
 } LineXY;
-u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *out, SprtWords *s);
+u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidth, SprtWords *s);
 u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p);
 /* Inlined copy of ui_buildSpriteDef (SPRT + DR_TPAGE from a sprite descriptor). */
 static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *out, SprtWords *s) {
@@ -5037,12 +5037,12 @@ void opening_main(void); /* ovl_14 */
 void pad_disableRepeat(s32 a);
 void pad_resetRepeats(s32 a);
 s32 preload_isInVram(PreloadEntry *p);
-s32 text_getButtonSprite(s32 arg0);
+s32 text_getButtonSprite(s32 button);
 void tm_main(void); /* ovl_0d */
-void win_drawBalloonBorder(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4);
-void win_drawBorder(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4);
+void win_drawBalloonBorder(RECT *rect, s32 otz, u8 flag, u8 abe, s32 pal);
+void win_drawBorder(RECT *rect, s32 otz, u8 flag, u8 abe, s32 pal);
 void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff);
-Window *win_open(RECT *r, s32 a, s32 b, u32 i);
+Window *win_open(RECT *r, s32 otz, s32 style, u32 slot);
 void wm_entry(void); /* ovl_0c */
 
 #endif

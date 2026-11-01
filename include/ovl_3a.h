@@ -90,6 +90,6 @@ void menuName_updateHelp(void);
 void menuName_clampCursor(void);
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
-s32 chr_getPortrait(s32 arg0); /* main */
+s32 chr_getPortrait(s32 charId); /* main */
 
 #endif
