@@ -4362,7 +4362,7 @@ s32 fldbg_addFollowOverlay(s32, s16, s16, s8, u8, u8, u8);
 s32 fldbg_setCamera(s32);
 s32 fldbg_moveOrigin(s16, s16, s16);
 s32 fldbg_scrollTo(s16, s16, u16, s32);
-s32 fldbg_getScroll(u16 *arg0, u16 *arg1);
+s32 fldbg_getScroll(u16 *outX, u16 *outY);
 s32 fldbg_setFollow(s32, s32, s32);
 s32 fldbg_setFollowHeight(s16);
 s32 fldbg_disableScrollLimits(void);
@@ -5018,7 +5018,7 @@ void fieldCalc_setMagicHeal(MainCalc *c);
 void fieldCalc_supportBoost(MainCalc *a);
 void fld_entry(void); /* ovl_0a */
 s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4); /* ovl_0a */
-s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1); /* ovl_0a */
+s32 fldbg_scrollToPlayer(s32 frames, s32 scrollMode); /* ovl_0a */
 void help_drawStub(void);
 void rain_set(s32 a, u32 b);
 void wrain_set(s32 a, u32 b);

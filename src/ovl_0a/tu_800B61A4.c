@@ -1,6 +1,6 @@
 #include "ovl_0a.h"
 
-void fldmdl_projectMesh(ModelObj *arg0, u8 arg1) {
+void fldmdl_projectMesh(ModelObj *mdl, u8 groupIdx) {
     MATRIX m;
     WmModelGroup *g;
     MATRIX *bone;
@@ -16,13 +16,13 @@ void fldmdl_projectMesh(ModelObj *arg0, u8 arg1) {
     s16 *c1;
     s16 *c2;
 
-    g = &arg0->model->groups[arg1];
+    g = &mdl->model->groups[groupIdx];
     gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
-    cnt = arg0->model->boneCount;
-    bone = (MATRIX *)arg0->boneMatrices;
+    cnt = mdl->model->boneCount;
+    bone = (MATRIX *)mdl->boneMatrices;
     for (i = 0; i < cnt; bone++) {
         n = ((u16 *)g->boneVertexCounts)[i++];
         if (n != 0) {
@@ -66,8 +66,8 @@ void fldmdl_projectMesh(ModelObj *arg0, u8 arg1) {
     }
 }
 
-/* attach a model file (relocating it once) and lay out its work buffers at arg1 */
-void fldmdl_initModel(ModelObj *arg0, u8 *arg1) {
+/* attach a model file (relocating it once) and lay out its work buffers at work */
+void fldmdl_initModel(ModelObj *mdl, u8 *work) {
     WmModel *m;
     WmModelGroup *g;
     u32 i;
@@ -78,7 +78,7 @@ void fldmdl_initModel(ModelObj *arg0, u8 *arg1) {
     WmModelGroup *p;
     WmModelGroup *g2;
 
-    m = arg0->model;
+    m = mdl->model;
     if (!(m->flags & WMMODEL_RELOCATED)) {
         i = 0;
         m->flags |= WMMODEL_RELOCATED;
@@ -93,36 +93,36 @@ void fldmdl_initModel(ModelObj *arg0, u8 *arg1) {
             p->colors = (void *)((u8 *)m + (s32)p->colors);
         }
     }
-    g2 = arg0->model->groups;
+    g2 = mdl->model->groups;
     size = 0;
     if (IS_OFFSET(g2)) {
-        g2 = (WmModelGroup *)((u8 *)g2 + (s32)arg0->model);
+        g2 = (WmModelGroup *)((u8 *)g2 + (s32)mdl->model);
     }
-    n = arg0->model->groupCount;
+    n = mdl->model->groupCount;
     for (k = 0; k < n; k++) {
         size += g2->packetSize;
         g2++;
     }
-    arg0->scaleX = 0x1000;
-    arg0->scaleY = 0x1000;
-    arg0->scaleZ = 0x1000;
-    arg0->parent = NULL;
-    arg0->mirrorSrc = NULL;
-    arg0->unk5C = 0;
-    arg0->hiddenGroups = 0;
-    arg0->attachX = 0;
-    arg0->attachY = 0;
-    arg0->attachZ = 0;
-    arg0->packets = arg1;
-    arg0->texAnims = NULL;
-    pp = arg1 + size * 2;
-    arg0->boneMatrices = pp;
-    arg0->flags |= MDL_SCALED;
-    *(volatile u16 *)&arg0->flags = 0;
-    arg0->groupOut = (WmModelOut *)(pp + m->boneCount * 32);
+    mdl->scaleX = 0x1000;
+    mdl->scaleY = 0x1000;
+    mdl->scaleZ = 0x1000;
+    mdl->parent = NULL;
+    mdl->mirrorSrc = NULL;
+    mdl->unk5C = 0;
+    mdl->hiddenGroups = 0;
+    mdl->attachX = 0;
+    mdl->attachY = 0;
+    mdl->attachZ = 0;
+    mdl->packets = work;
+    mdl->texAnims = NULL;
+    pp = work + size * 2;
+    mdl->boneMatrices = pp;
+    mdl->flags |= MDL_SCALED;
+    *(volatile u16 *)&mdl->flags = 0;
+    mdl->groupOut = (WmModelOut *)(pp + m->boneCount * 32);
 }
 
-void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
+void fldmdl_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2]) {
     WmModel *m;
     WmModelGroup *g;
     WmModelOut *out;
@@ -154,10 +154,10 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
     POLY_F3 *pF3;
     WmSrcF3 *sF3;
 
-    prim = arg0->packets;
-    m = arg0->model;
-    arg0->texInfo = arg1;
-    o = arg0->groupOut;
+    prim = mdl->packets;
+    m = mdl->model;
+    mdl->texInfo = texInfo;
+    o = mdl->groupOut;
     for (k = 0; k < m->groupCount; k++) {
         out = &o[k];
         g = &m->groups[k];
@@ -182,15 +182,15 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pFT4->v2 = g->uvs[sFT4->uvs[2]][1];
                 pFT4->u3 = g->uvs[sFT4->uvs[3]][0];
                 pFT4->v3 = g->uvs[sFT4->uvs[3]][1];
-                pFT4->clut = arg0->texInfo[sFT4->texture].clut;
-                pFT4->tpage = tp = arg0->texInfo[sFT4->texture].tpage & ~0x20;
+                pFT4->clut = mdl->texInfo[sFT4->texture].clut;
+                pFT4->tpage = tp = mdl->texInfo[sFT4->texture].tpage & ~0x20;
                 if (sFT4->flags & WMSRC_SEMITRANS) {
                     pFT4->tpage = tp | (sFT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT4, 1);
                 }
                 prim += sizeof(POLY_FT4);
-                du = arg2[sFT4->texture][0];
-                dv = arg2[sFT4->texture][1];
+                du = uvOffsets[sFT4->texture][0];
+                dv = uvOffsets[sFT4->texture][1];
                 pFT4->u0 += du;
                 pFT4->v0 += dv;
                 pFT4->u1 += du;
@@ -216,15 +216,15 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pFT3->v1 = g->uvs[sFT3->uvs[1]][1];
                 pFT3->u2 = g->uvs[sFT3->uvs[2]][0];
                 pFT3->v2 = g->uvs[sFT3->uvs[2]][1];
-                pFT3->clut = arg0->texInfo[sFT3->texture].clut;
-                pFT3->tpage = tp = arg0->texInfo[sFT3->texture].tpage & ~0x20;
+                pFT3->clut = mdl->texInfo[sFT3->texture].clut;
+                pFT3->tpage = tp = mdl->texInfo[sFT3->texture].tpage & ~0x20;
                 if (sFT3->flags & WMSRC_SEMITRANS) {
                     pFT3->tpage = tp | (sFT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT3, 1);
                 }
                 prim += sizeof(POLY_FT3);
-                du = arg2[sFT3->texture][0];
-                dv = arg2[sFT3->texture][1];
+                du = uvOffsets[sFT3->texture][0];
+                dv = uvOffsets[sFT3->texture][1];
                 pFT3->u0 += du;
                 pFT3->v0 += dv;
                 pFT3->u1 += du;
@@ -263,15 +263,15 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pGT4->v2 = g->uvs[sGT4->uvs[2]][1];
                 pGT4->u3 = g->uvs[sGT4->uvs[3]][0];
                 pGT4->v3 = g->uvs[sGT4->uvs[3]][1];
-                pGT4->clut = arg0->texInfo[sGT4->texture].clut;
-                pGT4->tpage = tp = arg0->texInfo[sGT4->texture].tpage & ~0x20;
+                pGT4->clut = mdl->texInfo[sGT4->texture].clut;
+                pGT4->tpage = tp = mdl->texInfo[sGT4->texture].tpage & ~0x20;
                 if (sGT4->flags & WMSRC_SEMITRANS) {
                     pGT4->tpage = tp | (sGT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT4, 1);
                 }
                 prim += sizeof(POLY_GT4);
-                du = arg2[sGT4->texture][0];
-                dv = arg2[sGT4->texture][1];
+                du = uvOffsets[sGT4->texture][0];
+                dv = uvOffsets[sGT4->texture][1];
                 pGT4->u0 += du;
                 pGT4->v0 += dv;
                 pGT4->u1 += du;
@@ -306,15 +306,15 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pGT3->v1 = g->uvs[sGT3->uvs[1]][1];
                 pGT3->u2 = g->uvs[sGT3->uvs[2]][0];
                 pGT3->v2 = g->uvs[sGT3->uvs[2]][1];
-                pGT3->clut = arg0->texInfo[sGT3->texture].clut;
-                pGT3->tpage = tp = arg0->texInfo[sGT3->texture].tpage & ~0x20;
+                pGT3->clut = mdl->texInfo[sGT3->texture].clut;
+                pGT3->tpage = tp = mdl->texInfo[sGT3->texture].tpage & ~0x20;
                 if (sGT3->flags & WMSRC_SEMITRANS) {
                     pGT3->tpage = tp | (sGT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT3, 1);
                 }
                 prim += sizeof(POLY_GT3);
-                du = arg2[sGT3->texture][0];
-                dv = arg2[sGT3->texture][1];
+                du = uvOffsets[sGT3->texture][0];
+                dv = uvOffsets[sGT3->texture][1];
                 pGT3->u0 += du;
                 pGT3->v0 += dv;
                 pGT3->u1 += du;
@@ -397,7 +397,7 @@ void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
     }
 }
 
-void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
+void fldmdl_drawMeshC(ModelObj *mdl, u8 groupIdx) {
     WmModelGroup *g;
     u32 *ot;
     s32 opz;
@@ -426,11 +426,11 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
     POLY_F3 *pF3;
 
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
-    g = &arg0->model->groups[arg1];
+    g = &mdl->model->groups[groupIdx];
     if (g_gameState->gameData->drawBuf != 0) {
-        prim = (u8 *)arg0->groupOut[arg1].prims + g->packetSize;
+        prim = (u8 *)mdl->groupOut[groupIdx].prims + g->packetSize;
     } else {
-        prim = arg0->groupOut[arg1].prims;
+        prim = mdl->groupOut[groupIdx].prims;
     }
 
     n = g->ft4Count;
@@ -681,54 +681,54 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
     }
 }
 
-void fldmdl_applyScale(ModelObj *arg0) {
+void fldmdl_applyScale(ModelObj *mdl) {
     MATRIX m;
 
-    if (arg0->flags & MDL_SCALED) {
+    if (mdl->flags & MDL_SCALED) {
         *(s32 *)&m.m[0][0] = ONE;
         *(s32 *)&m.m[0][2] = 0;
         *(s32 *)&m.m[1][1] = ONE;
         *(s32 *)&m.m[2][0] = 0;
         *(s32 *)&m.m[2][2] = ONE;
-        m.m[0][0] = arg0->scaleX;
-        gte_SetRotMatrix(&arg0->worldMatrix);
+        m.m[0][0] = mdl->scaleX;
+        gte_SetRotMatrix(&mdl->worldMatrix);
         gte_ldclmv(&m);
         gte_rtir();
-        m.m[1][1] = arg0->scaleY;
-        gte_stclmv(&arg0->worldMatrix);
+        m.m[1][1] = mdl->scaleY;
+        gte_stclmv(&mdl->worldMatrix);
         gte_ldclmv(&m.m[0][1]);
         gte_rtir();
-        m.m[2][2] = arg0->scaleZ;
-        gte_stclmv(&arg0->worldMatrix.m[0][1]);
+        m.m[2][2] = mdl->scaleZ;
+        gte_stclmv(&mdl->worldMatrix.m[0][1]);
         gte_ldclmv(&m.m[0][2]);
         gte_rtir();
-        gte_stclmv(&arg0->worldMatrix.m[0][2]);
+        gte_stclmv(&mdl->worldMatrix.m[0][2]);
     }
 }
 
-void fldmdl_cullBehindCamera(ModelObj *arg0) {
+void fldmdl_cullBehindCamera(ModelObj *mdl) {
     SVECTOR v;
     s32 sz;
 
-    arg0->flags &= ~MDL_BEHIND_CAMERA;
-    if (arg0->parent != NULL) {
-        arg0->flags |= arg0->parent->flags & MDL_BEHIND_CAMERA;
+    mdl->flags &= ~MDL_BEHIND_CAMERA;
+    if (mdl->parent != NULL) {
+        mdl->flags |= mdl->parent->flags & MDL_BEHIND_CAMERA;
     } else {
-        v.vx = arg0->worldMatrix.t[0];
-        v.vy = arg0->worldMatrix.t[1];
-        v.vz = arg0->worldMatrix.t[2];
+        v.vx = mdl->worldMatrix.t[0];
+        v.vy = mdl->worldMatrix.t[1];
+        v.vz = mdl->worldMatrix.t[2];
         gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
         gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
         gte_ldv0(&v);
         gte_rtps();
         gte_stsz(&sz);
         if (sz == 0) {
-            arg0->flags |= MDL_BEHIND_CAMERA;
+            mdl->flags |= MDL_BEHIND_CAMERA;
         }
     }
 }
 
-void fldmdl_calcBoneMatrices(ModelObj *arg0, u16 arg1) {
+void fldmdl_calcBoneMatrices(ModelObj *mdl, u16 frame) {
     SVECTOR sv;
     u16 nb;
     VECTOR *vec;
@@ -745,53 +745,53 @@ void fldmdl_calcBoneMatrices(ModelObj *arg0, u16 arg1) {
     s16 *c2;
     s32 w0, w1, w2, w3;
 
-    anim = (WmAnim *)arg0->anim;
+    anim = (WmAnim *)mdl->anim;
     if (anim == NULL) {
-        if (arg0->parent != NULL) {
+        if (mdl->parent != NULL) {
             /* attached to a bone of the parent model */
-            w0 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[0];
-            w1 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[1];
-            w2 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[2];
-            w3 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[3];
-            ((s32 *)arg0->boneMatrices)[0] = w0;
-            ((s32 *)arg0->boneMatrices)[1] = w1;
-            ((s32 *)arg0->boneMatrices)[2] = w2;
-            ((s32 *)arg0->boneMatrices)[3] = w3;
-            w0 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[4];
-            w1 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[5];
-            w2 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[6];
-            w3 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[7];
-            ((s32 *)arg0->boneMatrices)[4] = w0;
-            ((s32 *)arg0->boneMatrices)[5] = w1;
-            ((s32 *)arg0->boneMatrices)[6] = w2;
-            ((s32 *)arg0->boneMatrices)[7] = w3;
-            gte_SetRotMatrix(arg0->boneMatrices);
-            gte_ldv0(&arg0->attachX);
+            w0 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[0];
+            w1 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[1];
+            w2 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[2];
+            w3 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[3];
+            ((s32 *)mdl->boneMatrices)[0] = w0;
+            ((s32 *)mdl->boneMatrices)[1] = w1;
+            ((s32 *)mdl->boneMatrices)[2] = w2;
+            ((s32 *)mdl->boneMatrices)[3] = w3;
+            w0 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[4];
+            w1 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[5];
+            w2 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[6];
+            w3 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[7];
+            ((s32 *)mdl->boneMatrices)[4] = w0;
+            ((s32 *)mdl->boneMatrices)[5] = w1;
+            ((s32 *)mdl->boneMatrices)[6] = w2;
+            ((s32 *)mdl->boneMatrices)[7] = w3;
+            gte_SetRotMatrix(mdl->boneMatrices);
+            gte_ldv0(&mdl->attachX);
             gte_rtv0();
             gte_stsv(&sv);
-            ((MATRIX *)arg0->boneMatrices)->t[0] += sv.vx;
-            ((MATRIX *)arg0->boneMatrices)->t[1] += sv.vy;
-            ((MATRIX *)arg0->boneMatrices)->t[2] += sv.vz;
+            ((MATRIX *)mdl->boneMatrices)->t[0] += sv.vx;
+            ((MATRIX *)mdl->boneMatrices)->t[1] += sv.vy;
+            ((MATRIX *)mdl->boneMatrices)->t[2] += sv.vz;
         } else {
-            ((MATRIX *)arg0->boneMatrices)->m[0][0] = arg0->worldMatrix.m[0][0];
-            ((MATRIX *)arg0->boneMatrices)->m[0][1] = -arg0->worldMatrix.m[0][1];
-            ((MATRIX *)arg0->boneMatrices)->m[0][2] = -arg0->worldMatrix.m[0][2];
-            ((MATRIX *)arg0->boneMatrices)->m[1][0] = arg0->worldMatrix.m[1][0];
-            ((MATRIX *)arg0->boneMatrices)->m[1][1] = -arg0->worldMatrix.m[1][1];
-            ((MATRIX *)arg0->boneMatrices)->m[1][2] = -arg0->worldMatrix.m[1][2];
-            ((MATRIX *)arg0->boneMatrices)->m[2][0] = arg0->worldMatrix.m[2][0];
-            ((MATRIX *)arg0->boneMatrices)->m[2][1] = -arg0->worldMatrix.m[2][1];
-            ((MATRIX *)arg0->boneMatrices)->m[2][2] = -arg0->worldMatrix.m[2][2];
-            ((MATRIX *)arg0->boneMatrices)->t[0] = arg0->worldMatrix.t[0];
-            ((MATRIX *)arg0->boneMatrices)->t[1] = arg0->worldMatrix.t[1];
-            ((MATRIX *)arg0->boneMatrices)->t[2] = arg0->worldMatrix.t[2];
+            ((MATRIX *)mdl->boneMatrices)->m[0][0] = mdl->worldMatrix.m[0][0];
+            ((MATRIX *)mdl->boneMatrices)->m[0][1] = -mdl->worldMatrix.m[0][1];
+            ((MATRIX *)mdl->boneMatrices)->m[0][2] = -mdl->worldMatrix.m[0][2];
+            ((MATRIX *)mdl->boneMatrices)->m[1][0] = mdl->worldMatrix.m[1][0];
+            ((MATRIX *)mdl->boneMatrices)->m[1][1] = -mdl->worldMatrix.m[1][1];
+            ((MATRIX *)mdl->boneMatrices)->m[1][2] = -mdl->worldMatrix.m[1][2];
+            ((MATRIX *)mdl->boneMatrices)->m[2][0] = mdl->worldMatrix.m[2][0];
+            ((MATRIX *)mdl->boneMatrices)->m[2][1] = -mdl->worldMatrix.m[2][1];
+            ((MATRIX *)mdl->boneMatrices)->m[2][2] = -mdl->worldMatrix.m[2][2];
+            ((MATRIX *)mdl->boneMatrices)->t[0] = mdl->worldMatrix.t[0];
+            ((MATRIX *)mdl->boneMatrices)->t[1] = mdl->worldMatrix.t[1];
+            ((MATRIX *)mdl->boneMatrices)->t[2] = mdl->worldMatrix.t[2];
         }
         return;
     }
-    nb = arg0->model->boneCount;
+    nb = mdl->model->boneCount;
     bones = (MATRIX *)0x1F800018;
     if (nb >= 31) {
-        bones = (MATRIX *)arg0->boneMatrices;
+        bones = (MATRIX *)mdl->boneMatrices;
     }
     m = bones;
     vec = (VECTOR *)0x1F800008;
@@ -803,37 +803,37 @@ void fldmdl_calcBoneMatrices(ModelObj *arg0, u16 arg1) {
     if (anim->constMask & 1) {
         bones->t[0] = anim->rootPos[0];
     } else {
-        bones->t[0] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[0]))[arg1];
+        bones->t[0] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[0]))[frame];
     }
     if (anim->constMask & 2) {
         m->t[1] = anim->rootPos[1];
     } else {
-        m->t[1] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[1]))[arg1];
+        m->t[1] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[1]))[frame];
     }
     if (anim->constMask & 4) {
         m->t[2] = anim->rootPos[2];
     } else {
-        m->t[2] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[2]))[arg1];
+        m->t[2] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[2]))[frame];
     }
     end = &bones[nb];
     do {
-        gte_ldrotkey(key, anim, arg1, rot);
+        gte_ldrotkey(key, anim, frame, rot);
         if (key2 != NULL) {
-            gte_ldrotkey_lo(key2, anim, arg1, rot);
+            gte_ldrotkey_lo(key2, anim, frame, rot);
             key2++;
         }
         key++;
         math_rotMatrixZYX_gte(rot, m);
         m++;
     } while (m < end);
-    if (arg0->parent != NULL) {
+    if (mdl->parent != NULL) {
         {
             s32 x0, x1, x2, x3;
 
-            x0 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[0];
-            x1 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[1];
-            x2 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[2];
-            x3 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[3];
+            x0 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[0];
+            x1 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[1];
+            x2 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[2];
+            x3 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[3];
             ((s32 *)bones)[0] = x0;
             ((s32 *)bones)[1] = x1;
             ((s32 *)bones)[2] = x2;
@@ -842,25 +842,25 @@ void fldmdl_calcBoneMatrices(ModelObj *arg0, u16 arg1) {
         {
             s32 x0, x1, x2, x3;
 
-            x0 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[4];
-            x1 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[5];
-            x2 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[6];
-            x3 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[7];
+            x0 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[4];
+            x1 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[5];
+            x2 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[6];
+            x3 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[7];
             ((s32 *)bones)[4] = x0;
             ((s32 *)bones)[5] = x1;
             ((s32 *)bones)[6] = x2;
             ((s32 *)bones)[7] = x3;
         }
         gte_SetRotMatrix(bones);
-        gte_ldv0(&arg0->attachX);
+        gte_ldv0(&mdl->attachX);
         gte_rtv0();
         gte_stsv(&sv);
         bones->t[0] += sv.vx;
         bones->t[1] += sv.vy;
         bones->t[2] += sv.vz;
     } else {
-        gte_SetRotMatrix(&arg0->worldMatrix);
-        gte_SetTransMatrix(&arg0->worldMatrix);
+        gte_SetRotMatrix(&mdl->worldMatrix);
+        gte_SetTransMatrix(&mdl->worldMatrix);
         gte_ldclmv(bones);
         c1 = &bones->m[0][1];
         c2 = &bones->m[0][2];
@@ -877,7 +877,7 @@ void fldmdl_calcBoneMatrices(ModelObj *arg0, u16 arg1) {
         gte_rtv0tr();
         gte_stlvnl(c1);
     }
-    b = (WmBone *)arg0->model->bones + 1;
+    b = (WmBone *)mdl->model->bones + 1;
     m = bones + 1;
     p = &bones[b->parent];
     do {
@@ -901,7 +901,7 @@ void fldmdl_calcBoneMatrices(ModelObj *arg0, u16 arg1) {
         m++;
     } while (m < end);
     if (nb < 31) {
-        m = (MATRIX *)arg0->boneMatrices;
+        m = (MATRIX *)mdl->boneMatrices;
         do {
             s32 x0, x1, x2, x3;
 
@@ -927,124 +927,124 @@ void fldmdl_calcBoneMatrices(ModelObj *arg0, u16 arg1) {
     }
 }
 
-void fldmdl_addGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_addGroupRgb(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     WmModelGroup *g;
     u8 *p;
     u32 j;
     u32 k;
 
-    if (arg0->flags & MDL_BEHIND_CAMERA) {
+    if (mdl->flags & MDL_BEHIND_CAMERA) {
         return;
     }
-    g = &arg0->model->groups[arg1];
+    g = &mdl->model->groups[groupIdx];
     for (k = 0; k < 2; k++) {
-        p = arg0->groupOut[arg1].prims;
+        p = mdl->groupOut[groupIdx].prims;
         if (k != 0) {
             p += g->packetSize;
         }
         for (j = 0; j < g->ft4Count; j++) {
-            *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT4 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT4 *)p)->r0, dr, dg, db);
             p += sizeof(POLY_FT4);
         }
         for (j = 0; j < g->ft3Count; j++) {
-            *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT3 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT3 *)p)->r0, dr, dg, db);
             p += sizeof(POLY_FT3);
         }
         for (j = 0; j < g->gt4Count; j++) {
-            *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r0, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r1, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r2, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r3, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r0, dr, dg, db);
+            *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r1, dr, dg, db);
+            *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r2, dr, dg, db);
+            *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r3, dr, dg, db);
             p += sizeof(POLY_GT4);
         }
         for (j = 0; j < g->gt3Count; j++) {
-            *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r0, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r1, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r2, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r0, dr, dg, db);
+            *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r1, dr, dg, db);
+            *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r2, dr, dg, db);
             p += sizeof(POLY_GT3);
         }
         for (j = 0; j < g->g4Count; j++) {
-            *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r0, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r1, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r2, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r3, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r0, dr, dg, db);
+            *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r1, dr, dg, db);
+            *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r2, dr, dg, db);
+            *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r3, dr, dg, db);
             p += sizeof(POLY_G4);
         }
         for (j = 0; j < g->g3Count; j++) {
-            *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r0, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r1, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r2, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r0, dr, dg, db);
+            *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r1, dr, dg, db);
+            *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r2, dr, dg, db);
             p += sizeof(POLY_G3);
         }
         for (j = 0; j < g->f4Count; j++) {
-            *(u32 *)&((POLY_F4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F4 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F4 *)p)->r0, dr, dg, db);
             p += sizeof(POLY_F4);
         }
         for (j = 0; j < g->f3Count; j++) {
-            *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F3 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F3 *)p)->r0, dr, dg, db);
             p += sizeof(POLY_F3);
         }
     }
 }
 
-void fldmdl_addGroupRgbCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_addGroupRgbCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     WmModelGroup *g;
     u8 *p;
     u32 j;
 
-    if (arg0->flags & MDL_BEHIND_CAMERA) {
+    if (mdl->flags & MDL_BEHIND_CAMERA) {
         return;
     }
-    g = &arg0->model->groups[arg1];
-    p = arg0->groupOut[arg1].prims;
+    g = &mdl->model->groups[groupIdx];
+    p = mdl->groupOut[groupIdx].prims;
     if (g_gameState->gameData->drawBuf != 0) {
         p += g->packetSize;
     }
     for (j = 0; j < g->ft4Count; j++) {
-        *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT4 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT4 *)p)->r0, dr, dg, db);
         p += sizeof(POLY_FT4);
     }
     for (j = 0; j < g->ft3Count; j++) {
-        *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT3 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT3 *)p)->r0, dr, dg, db);
         p += sizeof(POLY_FT3);
     }
     for (j = 0; j < g->gt4Count; j++) {
-        *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r0, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r1, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r2, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r3, arg2, arg3, arg4);
+        *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r0, dr, dg, db);
+        *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r1, dr, dg, db);
+        *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r2, dr, dg, db);
+        *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r3, dr, dg, db);
         p += sizeof(POLY_GT4);
     }
     for (j = 0; j < g->gt3Count; j++) {
-        *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r0, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r1, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r2, arg2, arg3, arg4);
+        *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r0, dr, dg, db);
+        *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r1, dr, dg, db);
+        *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r2, dr, dg, db);
         p += sizeof(POLY_GT3);
     }
     for (j = 0; j < g->g4Count; j++) {
-        *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r0, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r1, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r2, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r3, arg2, arg3, arg4);
+        *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r0, dr, dg, db);
+        *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r1, dr, dg, db);
+        *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r2, dr, dg, db);
+        *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r3, dr, dg, db);
         p += sizeof(POLY_G4);
     }
     for (j = 0; j < g->g3Count; j++) {
-        *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r0, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r1, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r2, arg2, arg3, arg4);
+        *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r0, dr, dg, db);
+        *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r1, dr, dg, db);
+        *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r2, dr, dg, db);
         p += sizeof(POLY_G3);
     }
     for (j = 0; j < g->f4Count; j++) {
-        *(u32 *)&((POLY_F4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F4 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_F4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F4 *)p)->r0, dr, dg, db);
         p += sizeof(POLY_F4);
     }
     for (j = 0; j < g->f3Count; j++) {
-        *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F3 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F3 *)p)->r0, dr, dg, db);
         p += sizeof(POLY_F3);
     }
 }
 
-void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_tintGroup(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     u32 *col;
     WmModelGroup *g;
     u8 *p;
@@ -1053,19 +1053,19 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     u32 k;
     u8 c;
 
-    if (arg0->flags & MDL_BEHIND_CAMERA) {
+    if (mdl->flags & MDL_BEHIND_CAMERA) {
         return;
     }
-    g = &arg0->model->groups[arg1];
+    g = &mdl->model->groups[groupIdx];
     for (k = 0; k < 2; k++) {
         s = g->prims;
-        p = arg0->groupOut[arg1].prims;
+        p = mdl->groupOut[groupIdx].prims;
         if (k != 0) {
             p += g->packetSize;
         }
         for (j = 0; j < g->ft4Count; j++) {
             c = ((POLY_FT4 *)p)->code;
-            *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT4 *)s)->rgb, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT4 *)s)->rgb, dr, dg, db);
             ((POLY_FT4 *)p)->code = c;
             p += sizeof(POLY_FT4);
             s += sizeof(WmSrcFT4);
@@ -1073,7 +1073,7 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 
         for (j = 0; j < g->ft3Count; j++) {
             c = ((POLY_FT3 *)p)->code;
-            *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT3 *)s)->rgb, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT3 *)s)->rgb, dr, dg, db);
             ((POLY_FT3 *)p)->code = c;
             p += sizeof(POLY_FT3);
             s += sizeof(WmSrcFT3);
@@ -1082,13 +1082,13 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         for (j = 0; j < g->gt4Count; j++) {
             c = ((POLY_GT4 *)p)->code;
             col = (u32 *)g->colors[((WmSrcGT4 *)s)->colors[0]];
-            *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT4 *)s)->colors[1]];
-            *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT4 *)s)->colors[2]];
-            *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT4 *)s)->colors[3]];
-            *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*col, dr, dg, db);
             ((POLY_GT4 *)p)->code = c;
             p += sizeof(POLY_GT4);
             s += sizeof(WmSrcGT4);
@@ -1097,11 +1097,11 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         for (j = 0; j < g->gt3Count; j++) {
             c = ((POLY_GT3 *)p)->code;
             col = (u32 *)g->colors[((WmSrcGT3 *)s)->colors[0]];
-            *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT3 *)s)->colors[1]];
-            *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT3 *)s)->colors[2]];
-            *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*col, dr, dg, db);
             ((POLY_GT3 *)p)->code = c;
             p += sizeof(POLY_GT3);
             s += sizeof(WmSrcGT3);
@@ -1110,13 +1110,13 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         for (j = 0; j < g->g4Count; j++) {
             c = ((POLY_G4 *)p)->code;
             col = (u32 *)g->colors[((WmSrcG4 *)s)->colors[0]];
-            *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG4 *)s)->colors[1]];
-            *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG4 *)s)->colors[2]];
-            *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG4 *)s)->colors[3]];
-            *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*col, dr, dg, db);
             ((POLY_G4 *)p)->code = c;
             p += sizeof(POLY_G4);
             s += sizeof(WmSrcG4);
@@ -1125,11 +1125,11 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         for (j = 0; j < g->g3Count; j++) {
             c = ((POLY_G3 *)p)->code;
             col = (u32 *)g->colors[((WmSrcG3 *)s)->colors[0]];
-            *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG3 *)s)->colors[1]];
-            *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG3 *)s)->colors[2]];
-            *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*col, dr, dg, db);
             ((POLY_G3 *)p)->code = c;
             p += sizeof(POLY_G3);
             s += sizeof(WmSrcG3);
@@ -1137,7 +1137,7 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 
         for (j = 0; j < g->f4Count; j++) {
             c = ((POLY_F4 *)p)->code;
-            *(u32 *)&((POLY_F4 *)p)->r0 |= fldmdl_addRgbClamped(*(u32 *)((WmSrcF4 *)s)->rgb, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F4 *)p)->r0 |= fldmdl_addRgbClamped(*(u32 *)((WmSrcF4 *)s)->rgb, dr, dg, db);
             ((POLY_F4 *)p)->code = c;
             p += sizeof(POLY_F4);
             s += sizeof(WmSrcF4);
@@ -1145,7 +1145,7 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 
         for (j = 0; j < g->f3Count; j++) {
             c = ((POLY_F3 *)p)->code;
-            *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcF3 *)s)->rgb, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcF3 *)s)->rgb, dr, dg, db);
             ((POLY_F3 *)p)->code = c;
             p += sizeof(POLY_F3);
             s += sizeof(WmSrcF3);
@@ -1154,7 +1154,7 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 }
 
 /* recolour a model group in the current draw buffer (linked prims only) */
-void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_tintGroupCur(ModelObj *mdl, u8 groupIdx, s16 dr, s16 dg, s16 db) {
     u32 *col;
     WmModelGroup *g;
     u8 *p;
@@ -1162,11 +1162,11 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
     u32 j;
     u8 c;
 
-    if (arg0->flags & MDL_BEHIND_CAMERA) {
+    if (mdl->flags & MDL_BEHIND_CAMERA) {
         return;
     }
-    g = &arg0->model->groups[arg1];
-    p = arg0->groupOut[arg1].prims;
+    g = &mdl->model->groups[groupIdx];
+    p = mdl->groupOut[groupIdx].prims;
     s = g->prims;
     if (g_gameState->gameData->drawBuf != 0) {
         p += g->packetSize;
@@ -1174,7 +1174,7 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
     for (j = 0; j < g->ft4Count; j++) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_FT4 *)p)->code;
-            *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT4 *)s)->rgb, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT4 *)s)->rgb, dr, dg, db);
             ((POLY_FT4 *)p)->code = c;
         }
         p += sizeof(POLY_FT4);
@@ -1184,7 +1184,7 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
     for (j = 0; j < g->ft3Count; j++) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_FT3 *)p)->code;
-            *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT3 *)s)->rgb, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT3 *)s)->rgb, dr, dg, db);
             ((POLY_FT3 *)p)->code = c;
         }
         p += sizeof(POLY_FT3);
@@ -1195,13 +1195,13 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_GT4 *)p)->code;
             col = (u32 *)g->colors[((WmSrcGT4 *)s)->colors[0]];
-            *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT4 *)s)->colors[1]];
-            *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT4 *)s)->colors[2]];
-            *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT4 *)s)->colors[3]];
-            *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*col, dr, dg, db);
             ((POLY_GT4 *)p)->code = c;
         }
         p += sizeof(POLY_GT4);
@@ -1212,11 +1212,11 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_GT3 *)p)->code;
             col = (u32 *)g->colors[((WmSrcGT3 *)s)->colors[0]];
-            *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT3 *)s)->colors[1]];
-            *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcGT3 *)s)->colors[2]];
-            *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*col, dr, dg, db);
             ((POLY_GT3 *)p)->code = c;
         }
         p += sizeof(POLY_GT3);
@@ -1227,13 +1227,13 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_G4 *)p)->code;
             col = (u32 *)g->colors[((WmSrcG4 *)s)->colors[0]];
-            *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG4 *)s)->colors[1]];
-            *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG4 *)s)->colors[2]];
-            *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG4 *)s)->colors[3]];
-            *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*col, dr, dg, db);
             ((POLY_G4 *)p)->code = c;
         }
         p += sizeof(POLY_G4);
@@ -1244,11 +1244,11 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_G3 *)p)->code;
             col = (u32 *)g->colors[((WmSrcG3 *)s)->colors[0]];
-            *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG3 *)s)->colors[1]];
-            *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*col, dr, dg, db);
             col = (u32 *)g->colors[((WmSrcG3 *)s)->colors[2]];
-            *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*col, dr, dg, db);
             ((POLY_G3 *)p)->code = c;
         }
         p += sizeof(POLY_G3);
@@ -1258,7 +1258,7 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
     for (j = 0; j < g->f4Count; j++) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_F4 *)p)->code;
-            *(u32 *)&((POLY_F4 *)p)->r0 |= fldmdl_addRgbClamped(*(u32 *)((WmSrcF4 *)s)->rgb, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F4 *)p)->r0 |= fldmdl_addRgbClamped(*(u32 *)((WmSrcF4 *)s)->rgb, dr, dg, db);
             ((POLY_F4 *)p)->code = c;
         }
         p += sizeof(POLY_F4);
@@ -1268,7 +1268,7 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
     for (j = 0; j < g->f3Count; j++) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_F3 *)p)->code;
-            *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcF3 *)s)->rgb, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcF3 *)s)->rgb, dr, dg, db);
             ((POLY_F3 *)p)->code = c;
         }
         p += sizeof(POLY_F3);
@@ -1276,21 +1276,21 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
     }
 }
 
-void fldmdl_setGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_setGroupRgb(ModelObj *mdl, u8 groupIdx, s16 red, s16 green, s16 blue) {
     WmModelGroup *g;
     u32 c;
     u8 *p;
     u32 j;
 
-    if (arg0->flags & MDL_BEHIND_CAMERA) {
+    if (mdl->flags & MDL_BEHIND_CAMERA) {
         return;
     }
-    g = &arg0->model->groups[arg1];
-    c = (arg4 << 16) | (arg3 << 8) | arg2;
+    g = &mdl->model->groups[groupIdx];
+    c = (blue << 16) | (green << 8) | red;
     if (g_gameState->gameData->drawBuf != 0) {
-        p = arg0->groupOut[arg1].prims + g->packetSize;
+        p = mdl->groupOut[groupIdx].prims + g->packetSize;
     } else {
-        p = arg0->groupOut[arg1].prims;
+        p = mdl->groupOut[groupIdx].prims;
     }
     for (j = 0; j < g->ft4Count; j++) {
         *(u32 *)&((POLY_FT4 *)p)->r0 = c | (((POLY_FT4 *)p)->code << 24);
@@ -1326,48 +1326,48 @@ void fldmdl_setGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     }
 }
 
-u32 fldmdl_addRgbClamped(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s16 b = arg3 + ((arg0 >> 16) & 0xFF);
-    s16 g = arg2 + ((arg0 >> 8) & 0xFF);
-    s16 r = arg1 + (arg0 & 0xFF);
-    arg0 &= 0xFF000000;
+u32 fldmdl_addRgbClamped(u32 rgb, s32 dr, s32 dg, s32 db) {
+    s16 b = db + ((rgb >> 16) & 0xFF);
+    s16 g = dg + ((rgb >> 8) & 0xFF);
+    s16 r = dr + (rgb & 0xFF);
+    rgb &= 0xFF000000;
     if (r >= 0x100) {
-        arg0 |= 0xFF;
+        rgb |= 0xFF;
     } else if (r > 0) {
-        arg0 |= r;
+        rgb |= r;
     }
     if (g >= 0x100) {
-        arg0 |= 0xFF00;
+        rgb |= 0xFF00;
     } else if (g > 0) {
-        arg0 |= g << 8;
+        rgb |= g << 8;
     }
     if (b >= 0x100) {
-        arg0 |= 0xFF0000;
+        rgb |= 0xFF0000;
     } else if (b > 0) {
-        arg0 |= b << 16;
+        rgb |= b << 16;
     }
-    return arg0;
+    return rgb;
 }
 
-void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1) {
+void fldmdl_setSemiTrans(ModelObj *mdl, u16 force) {
     u32 i;
     u32 j;
     u8 *p;
     WmModelGroup *g;
     u8 *s;
 
-    if (arg0->flags & MDL_BEHIND_CAMERA) {
+    if (mdl->flags & MDL_BEHIND_CAMERA) {
         return;
     }
-    for (i = 0; i < arg0->model->groupCount; i++) {
-        g = &arg0->model->groups[i];
+    for (i = 0; i < mdl->model->groupCount; i++) {
+        g = &mdl->model->groups[i];
         s = g->prims;
-        p = arg0->groupOut[i].prims;
+        p = mdl->groupOut[i].prims;
         if (g_gameState->gameData->drawBuf != 0) {
             p += g->packetSize;
         }
         for (j = 0; j < g->ft4Count; j++) {
-            if ((((WmSrcFT4 *)s)->flags & WMSRC_SEMITRANS) || arg1 != 0) {
+            if ((((WmSrcFT4 *)s)->flags & WMSRC_SEMITRANS) || force != 0) {
                 setSemiTrans((POLY_FT4 *)p, 1);
             } else {
                 setSemiTrans((POLY_FT4 *)p, 0);
@@ -1376,7 +1376,7 @@ void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1) {
             s += sizeof(WmSrcFT4);
         }
         for (j = 0; j < g->ft3Count; j++) {
-            if ((((WmSrcFT3 *)s)->flags & WMSRC_SEMITRANS) || arg1 != 0) {
+            if ((((WmSrcFT3 *)s)->flags & WMSRC_SEMITRANS) || force != 0) {
                 setSemiTrans((POLY_FT3 *)p, 1);
             } else {
                 setSemiTrans((POLY_FT3 *)p, 0);
@@ -1385,7 +1385,7 @@ void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1) {
             p += sizeof(POLY_FT3);
         }
         for (j = 0; j < g->gt4Count; j++) {
-            if ((((WmSrcGT4 *)s)->flags & WMSRC_SEMITRANS) || arg1 != 0) {
+            if ((((WmSrcGT4 *)s)->flags & WMSRC_SEMITRANS) || force != 0) {
                 setSemiTrans((POLY_GT4 *)p, 1);
             } else {
                 setSemiTrans((POLY_GT4 *)p, 0);
@@ -1394,7 +1394,7 @@ void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1) {
             p += sizeof(POLY_GT4);
         }
         for (j = 0; j < g->gt3Count; j++) {
-            if ((((WmSrcGT3 *)s)->flags & WMSRC_SEMITRANS) || arg1 != 0) {
+            if ((((WmSrcGT3 *)s)->flags & WMSRC_SEMITRANS) || force != 0) {
                 setSemiTrans((POLY_GT3 *)p, 1);
             } else {
                 setSemiTrans((POLY_GT3 *)p, 0);
@@ -1405,41 +1405,41 @@ void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1) {
     }
 }
 
-void fldmdl_setAbr(ModelObj *arg0, u16 arg1) {
+void fldmdl_setAbr(ModelObj *mdl, u16 abr) {
     u32 i;
     u32 j;
     u8 *p;
     WmModelGroup *g;
 
-    if (arg0->flags & MDL_BEHIND_CAMERA) {
+    if (mdl->flags & MDL_BEHIND_CAMERA) {
         return;
     }
-    for (i = 0; i < arg0->model->groupCount; i++) {
-        g = &arg0->model->groups[i];
-        p = arg0->groupOut[i].prims;
+    for (i = 0; i < mdl->model->groupCount; i++) {
+        g = &mdl->model->groups[i];
+        p = mdl->groupOut[i].prims;
         if (g_gameState->gameData->drawBuf != 0) {
             p += g->packetSize;
         }
         for (j = 0; j < g->ft4Count; j++) {
-            ((POLY_FT4 *)p)->tpage = arg1 | (((POLY_FT4 *)p)->tpage & ~TPAGE_ABR_MASK);
+            ((POLY_FT4 *)p)->tpage = abr | (((POLY_FT4 *)p)->tpage & ~TPAGE_ABR_MASK);
             p += sizeof(POLY_FT4);
         }
         for (j = 0; j < g->ft3Count; j++) {
-            ((POLY_FT3 *)p)->tpage = arg1 | (((POLY_FT3 *)p)->tpage & ~TPAGE_ABR_MASK);
+            ((POLY_FT3 *)p)->tpage = abr | (((POLY_FT3 *)p)->tpage & ~TPAGE_ABR_MASK);
             p += sizeof(POLY_FT3);
         }
         for (j = 0; j < g->gt4Count; j++) {
-            ((POLY_GT4 *)p)->tpage = arg1 | (((POLY_GT4 *)p)->tpage & ~TPAGE_ABR_MASK);
+            ((POLY_GT4 *)p)->tpage = abr | (((POLY_GT4 *)p)->tpage & ~TPAGE_ABR_MASK);
             p += sizeof(POLY_GT4);
         }
         for (j = 0; j < g->gt3Count; j++) {
-            ((POLY_GT3 *)p)->tpage = arg1 | (((POLY_GT3 *)p)->tpage & ~TPAGE_ABR_MASK);
+            ((POLY_GT3 *)p)->tpage = abr | (((POLY_GT3 *)p)->tpage & ~TPAGE_ABR_MASK);
             p += sizeof(POLY_GT3);
         }
     }
 }
 
-void fldmdl_calcBoneMatricesLookAt(ModelObj *arg0, s32 arg1) {
+void fldmdl_calcBoneMatricesLookAt(ModelObj *mdl, s32 frame) {
     VECTOR v;
     VECTOR up;
     VECTOR r0;
@@ -1463,49 +1463,49 @@ void fldmdl_calcBoneMatricesLookAt(ModelObj *arg0, s32 arg1) {
     s16 *d2;
     s32 w0, w1, w2, w3;
 
-    anim = (WmAnim *)arg0->anim;
+    anim = (WmAnim *)mdl->anim;
     if (anim == NULL) {
-        if (arg0->parent != NULL) {
+        if (mdl->parent != NULL) {
             /* attached to a bone of the parent model */
-            w0 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[0];
-            w1 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[1];
-            w2 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[2];
-            w3 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[3];
-            ((s32 *)arg0->boneMatrices)[0] = w0;
-            ((s32 *)arg0->boneMatrices)[1] = w1;
-            ((s32 *)arg0->boneMatrices)[2] = w2;
-            ((s32 *)arg0->boneMatrices)[3] = w3;
-            w0 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[4];
-            w1 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[5];
-            w2 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[6];
-            w3 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[7];
-            ((s32 *)arg0->boneMatrices)[4] = w0;
-            ((s32 *)arg0->boneMatrices)[5] = w1;
-            ((s32 *)arg0->boneMatrices)[6] = w2;
-            ((s32 *)arg0->boneMatrices)[7] = w3;
-            ((MATRIX *)arg0->boneMatrices)->t[0] += arg0->attachX;
-            ((MATRIX *)arg0->boneMatrices)->t[1] += arg0->attachY;
-            ((MATRIX *)arg0->boneMatrices)->t[2] += arg0->attachZ;
+            w0 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[0];
+            w1 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[1];
+            w2 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[2];
+            w3 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[3];
+            ((s32 *)mdl->boneMatrices)[0] = w0;
+            ((s32 *)mdl->boneMatrices)[1] = w1;
+            ((s32 *)mdl->boneMatrices)[2] = w2;
+            ((s32 *)mdl->boneMatrices)[3] = w3;
+            w0 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[4];
+            w1 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[5];
+            w2 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[6];
+            w3 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[7];
+            ((s32 *)mdl->boneMatrices)[4] = w0;
+            ((s32 *)mdl->boneMatrices)[5] = w1;
+            ((s32 *)mdl->boneMatrices)[6] = w2;
+            ((s32 *)mdl->boneMatrices)[7] = w3;
+            ((MATRIX *)mdl->boneMatrices)->t[0] += mdl->attachX;
+            ((MATRIX *)mdl->boneMatrices)->t[1] += mdl->attachY;
+            ((MATRIX *)mdl->boneMatrices)->t[2] += mdl->attachZ;
         } else {
-            ((MATRIX *)arg0->boneMatrices)->m[0][0] = arg0->worldMatrix.m[0][0];
-            ((MATRIX *)arg0->boneMatrices)->m[0][1] = -arg0->worldMatrix.m[0][1];
-            ((MATRIX *)arg0->boneMatrices)->m[0][2] = -arg0->worldMatrix.m[0][2];
-            ((MATRIX *)arg0->boneMatrices)->m[1][0] = arg0->worldMatrix.m[1][0];
-            ((MATRIX *)arg0->boneMatrices)->m[1][1] = -arg0->worldMatrix.m[1][1];
-            ((MATRIX *)arg0->boneMatrices)->m[1][2] = -arg0->worldMatrix.m[1][2];
-            ((MATRIX *)arg0->boneMatrices)->m[2][0] = arg0->worldMatrix.m[2][0];
-            ((MATRIX *)arg0->boneMatrices)->m[2][1] = -arg0->worldMatrix.m[2][1];
-            ((MATRIX *)arg0->boneMatrices)->m[2][2] = -arg0->worldMatrix.m[2][2];
-            ((MATRIX *)arg0->boneMatrices)->t[0] = arg0->worldMatrix.t[0];
-            ((MATRIX *)arg0->boneMatrices)->t[1] = arg0->worldMatrix.t[1];
-            ((MATRIX *)arg0->boneMatrices)->t[2] = arg0->worldMatrix.t[2];
+            ((MATRIX *)mdl->boneMatrices)->m[0][0] = mdl->worldMatrix.m[0][0];
+            ((MATRIX *)mdl->boneMatrices)->m[0][1] = -mdl->worldMatrix.m[0][1];
+            ((MATRIX *)mdl->boneMatrices)->m[0][2] = -mdl->worldMatrix.m[0][2];
+            ((MATRIX *)mdl->boneMatrices)->m[1][0] = mdl->worldMatrix.m[1][0];
+            ((MATRIX *)mdl->boneMatrices)->m[1][1] = -mdl->worldMatrix.m[1][1];
+            ((MATRIX *)mdl->boneMatrices)->m[1][2] = -mdl->worldMatrix.m[1][2];
+            ((MATRIX *)mdl->boneMatrices)->m[2][0] = mdl->worldMatrix.m[2][0];
+            ((MATRIX *)mdl->boneMatrices)->m[2][1] = -mdl->worldMatrix.m[2][1];
+            ((MATRIX *)mdl->boneMatrices)->m[2][2] = -mdl->worldMatrix.m[2][2];
+            ((MATRIX *)mdl->boneMatrices)->t[0] = mdl->worldMatrix.t[0];
+            ((MATRIX *)mdl->boneMatrices)->t[1] = mdl->worldMatrix.t[1];
+            ((MATRIX *)mdl->boneMatrices)->t[2] = mdl->worldMatrix.t[2];
         }
         return;
     }
-    nb = arg0->model->boneCount;
+    nb = mdl->model->boneCount;
     bones = (MATRIX *)0x1F800018;
     if (nb >= 31) {
-        bones = (MATRIX *)arg0->boneMatrices;
+        bones = (MATRIX *)mdl->boneMatrices;
     }
     m = bones;
     vec = (VECTOR *)0x1F800008;
@@ -1517,23 +1517,23 @@ void fldmdl_calcBoneMatricesLookAt(ModelObj *arg0, s32 arg1) {
     if (anim->constMask & 1) {
         bones->t[0] = anim->rootPos[0];
     } else {
-        bones->t[0] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[0]))[(u16)arg1];
+        bones->t[0] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[0]))[(u16)frame];
     }
     if (anim->constMask & 2) {
         m->t[1] = anim->rootPos[1];
     } else {
-        m->t[1] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[1]))[(u16)arg1];
+        m->t[1] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[1]))[(u16)frame];
     }
     if (anim->constMask & 4) {
         m->t[2] = anim->rootPos[2];
     } else {
-        m->t[2] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[2]))[(u16)arg1];
+        m->t[2] = ((s16 *)((u8 *)anim + (u16)anim->rootPos[2]))[(u16)frame];
     }
     end = &bones[nb];
 loop1:
-    gte_ldrotkey(key, anim, arg1, rot);
+    gte_ldrotkey(key, anim, frame, rot);
     if (key2 != NULL) {
-        gte_ldrotkey_lo(key2, anim, arg1, rot);
+        gte_ldrotkey_lo(key2, anim, frame, rot);
         key2++;
     }
     key++;
@@ -1542,14 +1542,14 @@ loop1:
     if (m < end) {
         goto loop1;
     }
-    if (arg0->parent != NULL) {
+    if (mdl->parent != NULL) {
         {
             s32 x0, x1, x2, x3;
 
-            x0 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[0];
-            x1 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[1];
-            x2 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[2];
-            x3 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[3];
+            x0 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[0];
+            x1 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[1];
+            x2 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[2];
+            x3 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[3];
             ((s32 *)bones)[0] = x0;
             ((s32 *)bones)[1] = x1;
             ((s32 *)bones)[2] = x2;
@@ -1558,21 +1558,21 @@ loop1:
         {
             s32 x0, x1, x2, x3;
 
-            x0 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[4];
-            x1 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[5];
-            x2 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[6];
-            x3 = ((s32 *)&((MATRIX *)arg0->parent->boneMatrices)[arg0->parentBone])[7];
+            x0 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[4];
+            x1 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[5];
+            x2 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[6];
+            x3 = ((s32 *)&((MATRIX *)mdl->parent->boneMatrices)[mdl->parentBone])[7];
             ((s32 *)bones)[4] = x0;
             ((s32 *)bones)[5] = x1;
             ((s32 *)bones)[6] = x2;
             ((s32 *)bones)[7] = x3;
         }
-        bones->t[0] += arg0->attachX;
-        bones->t[1] += arg0->attachY;
-        bones->t[2] += arg0->attachZ;
+        bones->t[0] += mdl->attachX;
+        bones->t[1] += mdl->attachY;
+        bones->t[2] += mdl->attachZ;
     } else {
-        gte_SetRotMatrix(&arg0->worldMatrix);
-        gte_SetTransMatrix(&arg0->worldMatrix);
+        gte_SetRotMatrix(&mdl->worldMatrix);
+        gte_SetTransMatrix(&mdl->worldMatrix);
         gte_ldclmv(bones);
         d1 = &bones->m[0][1];
         d2 = &bones->m[0][2];
@@ -1592,8 +1592,8 @@ loop1:
     m = bones + 1;
     idx = 1;
     up_p = &r2;
-    key2 = (WmAnimKey *)((WmBone *)arg0->model->bones + 1);
-    head = arg0->model->lookAtBone;
+    key2 = (WmAnimKey *)((WmBone *)mdl->model->bones + 1);
+    head = mdl->model->lookAtBone;
     rot = (SVECTOR *)&v;
     p = &bones[((WmBone *)key2)->parent];
 loop:
@@ -1607,11 +1607,11 @@ loop:
     gte_rtir();
     vec->vz = ((WmBone *)key2)->length;
     gte_stclmv(key);
-    arg1 = (s32)&m->m[0][2];
-    gte_ldclmv((s16 *)arg1);
+    frame = (s32)&m->m[0][2];
+    gte_ldclmv((s16 *)frame);
     gte_rtir();
     key2 = (WmAnimKey *)((WmBone *)key2 + 1);
-    gte_stclmv((s16 *)arg1);
+    gte_stclmv((s16 *)frame);
     gte_ldlv0(vec);
     gte_rtv0tr();
     p = &bones[((WmBone *)key2)->parent];
@@ -1620,9 +1620,9 @@ loop:
         up.vx = 0;
         up.vy = 0x1000;
         up.vz = 0;
-        v.vx = m->t[0] - arg0->lookAtTarget[0];
-        v.vy = m->t[1] - arg0->lookAtTarget[1];
-        v.vz = m->t[2] - arg0->lookAtTarget[2];
+        v.vx = m->t[0] - mdl->lookAtTarget[0];
+        v.vy = m->t[1] - mdl->lookAtTarget[1];
+        v.vz = m->t[2] - mdl->lookAtTarget[2];
         VectorNormal(&v, up_p);
         gte_ldopv1(&up);
         gte_ldopv2(up_p);
@@ -1643,25 +1643,25 @@ loop:
         m->m[2][0] = r0.vz;
         m->m[2][1] = r2.vz;
         m->m[2][2] = r1.vz;
-        if (arg0->flags & MDL_SCALED) {
+        if (mdl->flags & MDL_SCALED) {
             *(s32 *)&s.m[0][0] = ONE;
             *(s32 *)&s.m[0][2] = 0;
             *(s32 *)&s.m[1][1] = ONE;
             *(s32 *)&s.m[2][0] = 0;
             *(s32 *)&s.m[2][2] = ONE;
-            s.m[0][0] = arg0->scaleX;
+            s.m[0][0] = mdl->scaleX;
             gte_SetRotMatrix(m);
             gte_ldclmv(&s);
             gte_rtir();
-            s.m[1][1] = arg0->scaleY;
+            s.m[1][1] = mdl->scaleY;
             gte_stclmv(m);
             gte_ldclmv(&s.m[0][1]);
             gte_rtir();
-            s.m[2][2] = arg0->scaleZ;
+            s.m[2][2] = mdl->scaleZ;
             gte_stclmv(key);
             gte_ldclmv(&s.m[0][2]);
             gte_rtir();
-            gte_stclmv((s16 *)arg1);
+            gte_stclmv((s16 *)frame);
         }
     }
     m++;
@@ -1670,7 +1670,7 @@ loop:
         goto loop;
     }
     if (nb < 31) {
-        m = (MATRIX *)arg0->boneMatrices;
+        m = (MATRIX *)mdl->boneMatrices;
         do {
             s32 x0, x1, x2, x3;
 
@@ -1696,7 +1696,7 @@ loop:
     }
 }
 
-void fldmdl_updateTexAnims(TexAnimSet *arg0) {
+void fldmdl_updateTexAnims(TexAnimSet *set) {
     RECT r;
     u32 i;
     u32 j;
@@ -1708,11 +1708,11 @@ void fldmdl_updateTexAnims(TexAnimSet *arg0) {
     s32 v;
     s16 last;
 
-    if (arg0 == NULL) {
+    if (set == NULL) {
         return;
     }
-    for (i = 0; i < arg0->count; i++) {
-        a = &arg0->anims[i];
+    for (i = 0; i < set->count; i++) {
+        a = &set->anims[i];
         if (!(a->flags & TEXANIM_ACTIVE)) {
             continue;
         }
@@ -1811,7 +1811,7 @@ void fldmdl_initTexAnims(TexAnimRelocSet *hdr, ModelTexOfs *ofs) {
     }
 }
 
-void fldmdl_projectMeshClipY(ModelObj *arg0, u8 arg1) {
+void fldmdl_projectMeshClipY(ModelObj *mdl, u8 groupIdx) {
     WmModelGroup *g;
     MATRIX *bone;
     SVECTOR *vtx;
@@ -1828,10 +1828,10 @@ void fldmdl_projectMeshClipY(ModelObj *arg0, u8 arg1) {
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
-    g = &arg0->model->groups[arg1];
-    bone = (MATRIX *)arg0->boneMatrices;
-    cnt = arg0->model->boneCount;
-    ymax = arg0->clipY;
+    g = &mdl->model->groups[groupIdx];
+    bone = (MATRIX *)mdl->boneMatrices;
+    cnt = mdl->model->boneCount;
+    ymax = mdl->clipY;
     vtx = g->vertices;
     for (i = 0; i < cnt; bone++) {
         n = ((u16 *)g->boneVertexCounts)[i++];
@@ -1869,7 +1869,7 @@ void fldmdl_projectMeshClipY(ModelObj *arg0, u8 arg1) {
     }
 }
 
-void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
+void fldmdl_drawMeshClipY(ModelObj *mdl, u8 groupIdx) {
     WmModelGroup *g;
     u32 *ot;
     s32 opz;
@@ -1897,12 +1897,12 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    g = &arg0->model->groups[arg1];
+    g = &mdl->model->groups[groupIdx];
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
     if (g_gameState->gameData->drawBuf != 0) {
-        prim = (u8 *)arg0->groupOut[arg1].prims + g->packetSize;
+        prim = (u8 *)mdl->groupOut[groupIdx].prims + g->packetSize;
     } else {
-        prim = arg0->groupOut[arg1].prims;
+        prim = mdl->groupOut[groupIdx].prims;
     }
 
     n = g->ft4Count;
@@ -2167,18 +2167,18 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
 }
 
 /* reflect the mirrored model across the plane (unk64 normal, unk6C point) */
-void fldmdl_reflectModel(ModelObj *arg0) {
+void fldmdl_reflectModel(ModelObj *mdl) {
     MATRIX *m;
     s32 nx;
     s32 ny;
     s32 nz;
     s32 d;
 
-    if (arg0->mirrorSrc != NULL) {
-        nx = arg0->mirrorNormal.v.vx;
-        ny = arg0->mirrorNormal.v.vy;
-        nz = arg0->mirrorNormal.v.vz;
-        d = (arg0->mirrorPoint.v.vx * nx + arg0->mirrorPoint.v.vy * ny + arg0->mirrorPoint.v.vz * nz) >> 11;
+    if (mdl->mirrorSrc != NULL) {
+        nx = mdl->mirrorNormal.v.vx;
+        ny = mdl->mirrorNormal.v.vy;
+        nz = mdl->mirrorNormal.v.vz;
+        d = (mdl->mirrorPoint.v.vx * nx + mdl->mirrorPoint.v.vy * ny + mdl->mirrorPoint.v.vz * nz) >> 11;
         m = (MATRIX *)0x1F800000;
         m->m[0][0] = ONE - ((nx * nx) >> 11);
         m->m[1][1] = ONE - ((ny * ny) >> 11);
@@ -2190,24 +2190,24 @@ void fldmdl_reflectModel(ModelObj *arg0) {
         m->t[1] = (d * ny) >> 12;
         m->t[2] = (d * nz) >> 12;
         gte_SetRotMatrix(m);
-        gte_ldclmv(&arg0->mirrorSrc->worldMatrix);
+        gte_ldclmv(&mdl->mirrorSrc->worldMatrix);
         gte_rtir();
-        gte_stclmv(&arg0->worldMatrix);
-        gte_ldclmv(&arg0->mirrorSrc->worldMatrix.m[0][1]);
+        gte_stclmv(&mdl->worldMatrix);
+        gte_ldclmv(&mdl->mirrorSrc->worldMatrix.m[0][1]);
         gte_rtir();
-        gte_stclmv(&arg0->worldMatrix.m[0][1]);
-        gte_ldclmv(&arg0->mirrorSrc->worldMatrix.m[0][2]);
+        gte_stclmv(&mdl->worldMatrix.m[0][1]);
+        gte_ldclmv(&mdl->mirrorSrc->worldMatrix.m[0][2]);
         gte_rtir();
-        gte_stclmv(&arg0->worldMatrix.m[0][2]);
+        gte_stclmv(&mdl->worldMatrix.m[0][2]);
         gte_SetTransMatrix(m);
-        gte_ldlv0(arg0->mirrorSrc->worldMatrix.t);
+        gte_ldlv0(mdl->mirrorSrc->worldMatrix.t);
         gte_rtv0tr();
-        gte_stlvnl(arg0->worldMatrix.t);
-        arg0->anim = arg0->mirrorSrc->anim;
+        gte_stlvnl(mdl->worldMatrix.t);
+        mdl->anim = mdl->mirrorSrc->anim;
     }
 }
 
-void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
+void fldmdl_drawMeshMirrored(ModelObj *mdl, u8 groupIdx) {
     WmModelGroup *g;
     u32 *ot;
     s32 opz;
@@ -2235,11 +2235,11 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
     POLY_F3 *pF3;
 
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
-    g = &arg0->model->groups[arg1];
+    g = &mdl->model->groups[groupIdx];
     if (g_gameState->gameData->drawBuf != 0) {
-        prim = (u8 *)arg0->groupOut[arg1].prims + g->packetSize;
+        prim = (u8 *)mdl->groupOut[groupIdx].prims + g->packetSize;
     } else {
-        prim = arg0->groupOut[arg1].prims;
+        prim = mdl->groupOut[groupIdx].prims;
     }
 
     n = g->ft4Count;
@@ -2490,51 +2490,51 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
     }
 }
 
-s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
+s32 fldbg_buildOverlaySprites(BgOverlay *ovl, BgSprt *sprites, BgSprt **spritesEnd) {
     BgPos *pos;
     BgTile *tile;
     u32 i;
-    u32 buf;
+    u32 bufIdx;
     s32 n;
     s32 w;
     s32 x;
     u16 t;
     BgFile *bg;
     s32 u;
-    s32 mask;
+    s32 viewportMask;
     s32 posOfs;
     s32 tileOfs;
 
     /* Statement order and the barrier below are for the scheduler: everything above the barrier
      * forms its own group, where both global loads are ready at once and are scheduled as
      * lui/lui/lw/lbu, so %hi(g_fieldBgClutRows) gets v1. The viewport mask is set up here (and applied by
-     * hand below) because its lui/ori must also sit above the barrier, and buf/the two offsets
+     * hand below) because its lui/ori must also sit above the barrier, and bufIdx/the two offsets
      * are read early so their insns land where the original has them. */
-    mask = 0xFFFF01FF;
+    viewportMask = 0xFFFF01FF;
     bg = g_fieldBgData;
     u = g_fieldBgClutRows;
-    posOfs = arg0->posOffset;
-    tileOfs = arg0->tileOffset;
-    buf = 0;
-    arg0->sprites = arg1;
+    posOfs = ovl->posOffset;
+    tileOfs = ovl->tileOffset;
+    bufIdx = 0;
+    ovl->sprites = sprites;
     do { } while (0);
     pos = (BgPos *)((u8 *)bg + posOfs);
     tile = (BgTile *)((u8 *)bg + tileOfs);
     w = u + 0xDF;
-    n = arg0->tileCount;
-    arg0->screenX = arg0->x + bg->screenX;
-    arg0->screenY = arg0->y + bg->screenY;
-    arg0->skewVertical = 0;
-    ((BgOverlayFlags *)arg0)->cameraWord &= mask; /* arg0->viewport = 0 */
-    for (; buf < 2; buf++) {
+    n = ovl->tileCount;
+    ovl->screenX = ovl->x + bg->screenX;
+    ovl->screenY = ovl->y + bg->screenY;
+    ovl->skewVertical = 0;
+    ((BgOverlayFlags *)ovl)->cameraWord &= viewportMask; /* ovl->viewport = 0 */
+    for (; bufIdx < 2; bufIdx++) {
         for (i = 0; i < n; i++) {
-            BgSprt *sp = &arg1[i];
+            BgSprt *sp = &sprites[i];
             setSprt16(&sp->sprt);
             sp->sprt.r0 = 0x80;
             sp->sprt.g0 = 0x80;
             sp->sprt.b0 = 0x80;
-            sp->sprt.x0 = arg0->screenX + pos[i].x;
-            sp->sprt.y0 = arg0->screenY + pos[i].y;
+            sp->sprt.x0 = ovl->screenX + pos[i].x;
+            sp->sprt.y0 = ovl->screenY + pos[i].y;
             sp->sprt.u0 = tile[i].u;
             sp->sprt.v0 = tile[i].v;
             if (tile[i].trans) {
@@ -2555,9 +2555,9 @@ s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
                 w = x;
             }
         }
-        arg1 += n;
+        sprites += n;
     }
-    *arg2 = arg1;
+    *spritesEnd = sprites;
     g_fieldBgClutRows = w + 0x21;
     return 1;
 }
@@ -2810,7 +2810,7 @@ s32 fldbg_updateFollowOverlays(void) {
     }
 }
 
-s32 fldbg_initOverlays(u8 *arg0, BgSprt **arg1) {
+s32 fldbg_initOverlays(u8 *heap, BgSprt **spritesOut) {
     BgFile *h;
     BgCamera *c;
     s32 x;
@@ -2835,16 +2835,16 @@ s32 fldbg_initOverlays(u8 *arg0, BgSprt **arg1) {
     size = n * 3;
     y = g_fieldBgState.scroll.y - 112;
     h->screenY = h->posY - (s16)y;
-    g_fieldBgCtx.overlayRgb = arg0;
+    g_fieldBgCtx.overlayRgb = heap;
     while (size / 4 * 4 != size) {
         size++;
     }
-    g_fieldBgCtx.overlayTinted = arg0 + size;
+    g_fieldBgCtx.overlayTinted = heap + size;
     size += n;
     while (size / 4 * 4 != size) {
         size++;
     }
-    *arg1 = (BgSprt *)(arg0 + size);
+    *spritesOut = (BgSprt *)(heap + size);
     for (i = 0; i < 4; i++) {
         g_fieldBgState.viewportPos[i][0] = 0;
         g_fieldBgState.viewportPos[i][1] = 0;
@@ -2860,7 +2860,7 @@ s32 fldbg_initOverlays(u8 *arg0, BgSprt **arg1) {
         g_fieldBgCtx.overlayRgb[i * 3 + 2] = 0x80;
         g_fieldBgCtx.overlayTinted[i] = 0;
         p = o;
-        if (fldbg_buildOverlaySprites(p, *arg1, arg1) != 1) {
+        if (fldbg_buildOverlaySprites(p, *spritesOut, spritesOut) != 1) {
             return 0;
         }
         o->minX = -0x8000;
@@ -2874,7 +2874,7 @@ s32 fldbg_initOverlays(u8 *arg0, BgSprt **arg1) {
     return 1;
 }
 
-s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
+s32 fldbg_drawOverlay(BgOverlay *o, u8 *unused) {
     BgSprt *spr;
     u32 *ot;
     BgFile *h;
@@ -2890,14 +2890,14 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
     u16 oy;
     u16 wx;
     u16 wy;
-    u8 buf;
+    u8 bufIdx;
 
     spr = o->sprites;
-    buf = *g_fieldBgCtx.bufIndex;
+    bufIdx = *g_fieldBgCtx.bufIndex;
     h = g_fieldBgCtx.data;
     n = o->tileCount;
-    ot = g_fieldBgCtx.ot[buf];
-    if (buf != 0) {
+    ot = g_fieldBgCtx.ot[bufIdx];
+    if (bufIdx != 0) {
         spr += n;
     }
     x = o->x + h->screenX;
@@ -3103,15 +3103,15 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
     return 1;
 }
 
-s32 fldbg_updateOverlayScroll(BgFile *arg0) {
+s32 fldbg_updateOverlayScroll(BgFile *bg) {
     s32 i;
     s32 n;
     BgOverlay *o;
     BgOverlay *objs;
     s32 v;
 
-    n = arg0->overlayCount;
-    objs = (BgOverlay *)((u8 *)arg0 + arg0->overlayOffset);
+    n = bg->overlayCount;
+    objs = (BgOverlay *)((u8 *)bg + bg->overlayOffset);
     for (i = 0; i < n; i++) {
         o = &objs[i];
         if (o->flags & FLDBG_OVL_LOOP) {
@@ -3600,7 +3600,7 @@ s32 fldbg_draw(void) {
     return 1;
 }
 
-s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
+s32 fldbg_scrollToPlayer(s32 frames, s32 scrollMode) {
     SVECTOR v;
     s16 xy[2];
     BgCamera *c;
@@ -3678,18 +3678,18 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     }
     g_fieldBgState.scrollToX = x;
     g_fieldBgState.scrollToY = y;
-    if (arg0 == -1) {
+    if (frames == -1) {
         g_fieldBgState.scrollFrames = 0x1E;
     } else {
-        g_fieldBgState.scrollFrames = arg0;
+        g_fieldBgState.scrollFrames = frames;
     }
     g_fieldBgState.scrollFrame = 1;
-    if (arg1 == -1) {
+    if (scrollMode == -1) {
         g_fieldBgState.flags = (g_fieldBgState.flags & ~FLDBG_SCROLL_MODE) | FLDBG_SCROLL_TO_PLAYER;
     } else {
         f = g_fieldBgState.flags & ~(FLDBG_SCROLL_MODE | FLDBG_SCROLL_SMOOTH);
         g_fieldBgState.flags = f | FLDBG_SCROLL_TO_PLAYER;
-        if (arg1 == FLDBG_SCROLL_SMOOTH) {
+        if (scrollMode == FLDBG_SCROLL_SMOOTH) {
             g_fieldBgState.flags = f | FLDBG_SCROLL_SMOOTH | FLDBG_SCROLL_TO_PLAYER;
         } else {
             g_fieldBgState.flags = f | FLDBG_SCROLL_TO_PLAYER;
@@ -3698,24 +3698,24 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     return 1;
 }
 
-/* add a screen fade: rectangle (arg0..arg2), mode arg3, colour arg4..arg6 */
-s32 fldbg_addFollowOverlay(s16 arg0, s16 arg1, s16 arg2, s8 arg3, u8 arg4, u8 arg5, u8 arg6) {
+/* add a follow overlay for overlayId at (offsetX, offsetY); abr >= 0 also colours its quads r, g, b (semi-transparent below 4) */
+s32 fldbg_addFollowOverlay(s16 overlayId, s16 offsetX, s16 offsetY, s8 abr, u8 r, u8 g, u8 b) {
     u32 i;
 
-    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].overlay = arg0;
-    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].offsetX = arg1;
-    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].offsetY = arg2;
-    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].abr = arg3;
-    if (arg3 >= 0) {
-        g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].r = arg4;
-        g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].g = arg5;
-        g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].b = arg6;
+    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].overlay = overlayId;
+    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].offsetX = offsetX;
+    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].offsetY = offsetY;
+    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].abr = abr;
+    if (abr >= 0) {
+        g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].r = r;
+        g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].g = g;
+        g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].b = b;
         for (i = 0; i < 4; i++) {
             SetPolyF4(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].quads[0][i]);
-            setRGB0(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].quads[0][i], arg4, arg5, arg6);
+            setRGB0(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].quads[0][i], r, g, b);
             SetPolyF4(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].quads[0][i + 4]); /* = unkC[1][i] */
-            setRGB0(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].quads[1][i], arg4, arg5, arg6);
-            if (arg3 >= 4) {
+            setRGB0(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].quads[1][i], r, g, b);
+            if (abr >= 4) {
                 setSemiTrans(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].quads[0][i], 0);
                 setSemiTrans(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].quads[1][i], 0);
             } else {
@@ -3729,7 +3729,7 @@ s32 fldbg_addFollowOverlay(s16 arg0, s16 arg1, s16 arg2, s8 arg3, u8 arg4, u8 ar
 }
 
 /* toggle a background object's tint */
-s32 fldbg_toggleOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+s32 fldbg_toggleOverlayColor(s32 overlayId, u8 r, u8 g, u8 b) {
     BgFile *h;
     BgOverlay *o;
     BgSprt *s;
@@ -3738,10 +3738,10 @@ s32 fldbg_toggleOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     s32 off;
     u16 i;
 
-    t = g_fieldBgCtx.overlayTinted[arg0];
+    t = g_fieldBgCtx.overlayTinted[overlayId];
     h = g_fieldBgCtx.data;
     if (t != 0) {
-        o = &((BgOverlay *)((u8 *)h + h->overlayOffset))[arg0];
+        o = &((BgOverlay *)((u8 *)h + h->overlayOffset))[overlayId];
         n = o->tileCount;
         s = o->sprites;
         off = 0;
@@ -3749,15 +3749,15 @@ s32 fldbg_toggleOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
             off = n;
         }
         for (i = 0; i < n; i++) {
-            setRGB0(&s[i + off].sprt, arg1, arg2, arg3);
+            setRGB0(&s[i + off].sprt, r, g, b);
         }
-        g_fieldBgCtx.overlayTinted[arg0] = 0;
+        g_fieldBgCtx.overlayTinted[overlayId] = 0;
         return 0;
     }
-    g_fieldBgCtx.overlayRgb[arg0 * 3 + 0] = arg1;
-    g_fieldBgCtx.overlayRgb[arg0 * 3 + 1] = arg2;
-    g_fieldBgCtx.overlayRgb[arg0 * 3 + 2] = arg3;
-    o = &((BgOverlay *)((u8 *)h + h->overlayOffset))[arg0];
+    g_fieldBgCtx.overlayRgb[overlayId * 3 + 0] = r;
+    g_fieldBgCtx.overlayRgb[overlayId * 3 + 1] = g;
+    g_fieldBgCtx.overlayRgb[overlayId * 3 + 2] = b;
+    o = &((BgOverlay *)((u8 *)h + h->overlayOffset))[overlayId];
     n = o->tileCount;
     s = o->sprites;
     off = 0;
@@ -3765,13 +3765,13 @@ s32 fldbg_toggleOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
         off = n;
     }
     for (i = 0; i < n; i++) {
-        setRGB0(&s[i + off].sprt, arg1, arg2, arg3);
+        setRGB0(&s[i + off].sprt, r, g, b);
     }
-    g_fieldBgCtx.overlayTinted[arg0] = 1;
+    g_fieldBgCtx.overlayTinted[overlayId] = 1;
     return 1;
 }
 
-s32 fldbg_startClutFade(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 arg6, u8 arg7) {
+s32 fldbg_startClutFade(s32 entryId, u8 mode, u32 frames, u8 first, s32 last, u8 r, u8 g, u8 b) {
     s32 rgb[3];
     BgEntry *e;
     FieldPalAnim *p;
@@ -3786,10 +3786,10 @@ s32 fldbg_startClutFade(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5,
     s32 k;
     register u16 v REG_ASM("$3");
 
-    t = arg3 - 1;
-    n = (u8)arg4 - t;
+    t = first - 1;
+    n = (u8)last - t;
     size = n * 4 + 0x2C;
-    e = &g_fieldBgCtx.entries[arg0];
+    e = &g_fieldBgCtx.entries[entryId];
     e->type = BGENT_CLUT_FADE;
     e->dataSize = size;
     h = g_fieldBgCtx.data;
@@ -3804,52 +3804,52 @@ s32 fldbg_startClutFade(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5,
     e->dataOffset = (u8 *)p - (u8 *)g_fieldBgCtx.entries;
     p->active = 1;
     p->count = n;
-    p->first = arg3;
-    p->last = arg4;
-    p->frames = arg2;
+    p->first = first;
+    p->last = last;
+    p->frames = frames;
     p->frame = 0;
-    if (arg2 >= 2) {
-        rgb[0] = arg5 << 16;
-        rgb[1] = arg6 << 16;
-        rgb[2] = arg7 << 16;
-        switch (arg1) {
+    if (frames >= 2) {
+        rgb[0] = r << 16;
+        rgb[1] = g << 16;
+        rgb[2] = b << 16;
+        switch (mode) {
         case 0:
-            rgb[0] = ((u32)(arg5 << 24) / (arg2 << 16)) << 8;
-            rgb[1] = ((u32)(arg6 << 24) / (arg2 << 16)) << 8;
-            rgb[2] = ((u32)(arg7 << 24) / (arg2 << 16)) << 8;
+            rgb[0] = ((u32)(r << 24) / (frames << 16)) << 8;
+            rgb[1] = ((u32)(g << 24) / (frames << 16)) << 8;
+            rgb[2] = ((u32)(b << 24) / (frames << 16)) << 8;
             p->unk4 = 0;
             break;
         case 1:
-            rgb[0] = -(((u32)(arg5 << 24) / (arg2 << 16)) << 8);
-            rgb[1] = -(((u32)(arg6 << 24) / (arg2 << 16)) << 8);
-            rgb[2] = -(((u32)(arg7 << 24) / (arg2 << 16)) << 8);
+            rgb[0] = -(((u32)(r << 24) / (frames << 16)) << 8);
+            rgb[1] = -(((u32)(g << 24) / (frames << 16)) << 8);
+            rgb[2] = -(((u32)(b << 24) / (frames << 16)) << 8);
             p->unk4 = 0;
             break;
         case 2:
-            rgb[0] = ((u32)(arg5 << 24) / (arg2 << 16)) << 8;
-            rgb[1] = ((u32)(arg6 << 24) / (arg2 << 16)) << 8;
-            rgb[2] = ((u32)(arg7 << 24) / (arg2 << 16)) << 8;
+            rgb[0] = ((u32)(r << 24) / (frames << 16)) << 8;
+            rgb[1] = ((u32)(g << 24) / (frames << 16)) << 8;
+            rgb[2] = ((u32)(b << 24) / (frames << 16)) << 8;
             p->unk4 = 1;
             break;
         }
     } else {
-        switch (arg1) {
+        switch (mode) {
         case 0:
-            rgb[0] = arg5;
-            rgb[1] = arg6;
-            rgb[2] = arg7;
+            rgb[0] = r;
+            rgb[1] = g;
+            rgb[2] = b;
             p->unk4 = 0;
             break;
         case 1:
-            rgb[0] = -arg5;
-            rgb[1] = -arg6;
-            rgb[2] = -arg7;
+            rgb[0] = -r;
+            rgb[1] = -g;
+            rgb[2] = -b;
             p->unk4 = 0;
             break;
         case 2:
-            rgb[0] = arg5;
-            rgb[1] = arg6;
-            rgb[2] = arg7;
+            rgb[0] = r;
+            rgb[1] = g;
+            rgb[2] = b;
             p->unk4 = 1;
             break;
         }
@@ -3859,7 +3859,7 @@ s32 fldbg_startClutFade(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5,
     p->stepB = rgb[2];
     p->savedOffset = 0x2C;
     p->workOffset = n * 2 + 0x2C;
-    p->rect.x = arg3;
+    p->rect.x = first;
     p->rect.y = y;
     p->rect.w = n;
     p->rect.h = 1;
@@ -3873,12 +3873,12 @@ s32 fldbg_startClutFade(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5,
     return 1;
 }
 
-s32 fldbg_setCamera(s32 arg0) {
+s32 fldbg_setCamera(s32 cameraId) {
     BgCamera *c;
     BgFile *h;
 
     h = g_fieldBgData;
-    c = (BgCamera *)((u8 *)h + h->cameraOffset) + arg0;
+    c = (BgCamera *)((u8 *)h + h->cameraOffset) + cameraId;
     *g_fieldBgState.projDist = c->projDist;
     gte_SetGeomScreen(c->projDist);
     g_fieldBgState.viewMatrix->m[0][0] = c->rot[0][0];
@@ -3895,7 +3895,7 @@ s32 fldbg_setCamera(s32 arg0) {
     g_fieldBgState.viewMatrix->t[2] = c->trans[2];
     h->scrollMaxX = c->scrollMaxX;
     h->scrollMaxY = c->scrollMaxY;
-    g_fieldBgState.cameraId = arg0;
+    g_fieldBgState.cameraId = cameraId;
     g_fieldBgState.flags |= FLDBG_CAMERA_CHANGED;
     g_gameState->gameData->ctx.field->area->scene->otBias = c->otBias;
     return 1;
@@ -3904,62 +3904,62 @@ s32 fldbg_setCamera(s32 arg0) {
 void fldbg_unusedStub(void) {
 }
 
-void fldbg_setRenderContext(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
-    g_fieldBgCtx.bufIndex = (u8 *)arg0;
-    g_fieldBgCtx.projDist = arg1;
-    g_fieldBgCtx.ot[0] = (u32 *)arg2;
-    g_fieldBgCtx.ot[1] = (u32 *)arg3;
+void fldbg_setRenderContext(s32 bufIndex, s32 projDist, s32 ot0, s32 ot1, s32 viewMatrix, u8 *heap) {
+    g_fieldBgCtx.bufIndex = (u8 *)bufIndex;
+    g_fieldBgCtx.projDist = projDist;
+    g_fieldBgCtx.ot[0] = (u32 *)ot0;
+    g_fieldBgCtx.ot[1] = (u32 *)ot1;
     g_fieldBgCtx.data = 0;
     g_fieldBgCtx.entryCount = 0;
     g_fieldBgCtx.entries = NULL;
     g_fieldBgCtx.work = 0;
     g_fieldBgCtx.workSize = 0;
     g_fieldBgCtx.workUsed = 0;
-    g_fieldBgCtx.viewMatrix = arg4;
-    g_fieldBgCtx.heap = arg5;
-    g_fieldBgCtx.overlayRgb = arg5;
-    g_fieldBgCtx.overlayTinted = arg5;
+    g_fieldBgCtx.viewMatrix = viewMatrix;
+    g_fieldBgCtx.heap = heap;
+    g_fieldBgCtx.overlayRgb = heap;
+    g_fieldBgCtx.overlayTinted = heap;
 }
 
-void fldbg_setWorkBuffer(s32 arg0, s32 arg1) {
-    g_fieldBgCtx.work = arg0;
-    g_fieldBgCtx.workSize = arg1;
+void fldbg_setWorkBuffer(s32 work, s32 size) {
+    g_fieldBgCtx.work = work;
+    g_fieldBgCtx.workSize = size;
     g_fieldBgCtx.workUsed = 0;
 }
 
-void fldbg_setData(BgFile *arg0) {
-    g_fieldBgData = arg0;
+void fldbg_setData(BgFile *bg) {
+    g_fieldBgData = bg;
 }
 
-s32 fldbg_moveOrigin(s32 arg0, s32 arg1, s32 arg2) {
-    u16 x = g_fieldBgData->orgX + arg0;
-    u16 y = g_fieldBgData->orgY + arg1;
+s32 fldbg_moveOrigin(s32 dx, s32 dy, s32 dz) {
+    u16 x = g_fieldBgData->orgX + dx;
+    u16 y = g_fieldBgData->orgY + dy;
     u16 z;
 
     g_fieldBgData->orgX = x;
     g_fieldBgData->orgY = y;
     g_fieldBgData->posX = x;
     g_fieldBgData->posY = y;
-    z = g_fieldBgData->orgDepth + arg2;
+    z = g_fieldBgData->orgDepth + dz;
     g_fieldBgData->orgDepth = z;
     g_fieldBgData->baseDepth = z;
     return 1;
 }
 
-s32 fldbg_scrollTo(s16 arg0, s16 arg1, s16 arg2, s32 arg3) {
+s32 fldbg_scrollTo(s16 x, s16 y, s16 frames, s32 scrollMode) {
     s32 f;
 
     if (!(g_fieldBgState.flags & FLDBG_FOLLOW)) {
         return 0;
     }
     g_fieldBgState.scrollFrame = 1;
-    g_fieldBgState.scrollToX = arg0;
+    g_fieldBgState.scrollToX = x;
     f = g_fieldBgState.flags & ~(FLDBG_SCROLL_MODE | FLDBG_SCROLL_SMOOTH);
-    g_fieldBgState.scrollToY = arg1;
-    g_fieldBgState.scrollFrames = arg2;
+    g_fieldBgState.scrollToY = y;
+    g_fieldBgState.scrollFrames = frames;
     g_fieldBgState.flags = f;
     g_fieldBgState.scrollFrom = g_fieldBgState.scroll;
-    if (arg3 == FLDBG_SCROLL_SMOOTH) {
+    if (scrollMode == FLDBG_SCROLL_SMOOTH) {
         g_fieldBgState.flags = f | FLDBG_SCROLL_SMOOTH;
     } else {
         g_fieldBgState.flags = f;
@@ -3968,17 +3968,17 @@ s32 fldbg_scrollTo(s16 arg0, s16 arg1, s16 arg2, s32 arg3) {
     return 1;
 }
 
-s32 fldbg_getScroll(u16 *arg0, u16 *arg1) {
-    *arg0 = g_fieldBgState.scroll.x;
-    *arg1 = g_fieldBgState.scroll.y;
+s32 fldbg_getScroll(u16 *outX, u16 *outY) {
+    *outX = g_fieldBgState.scroll.x;
+    *outY = g_fieldBgState.scroll.y;
     return 1;
 }
 
-s32 fldbg_setFollow(s32 arg0, s32 arg1, s32 arg2) {
-    if (arg0 != 0) {
+s32 fldbg_setFollow(s32 enable, s32 frames, s32 scrollMode) {
+    if (enable != 0) {
         g_fieldBgState.flags |= FLDBG_FOLLOW;
-        if (arg1 > 0) {
-            fldbg_scrollToPlayer(arg1, arg2);
+        if (frames > 0) {
+            fldbg_scrollToPlayer(frames, scrollMode);
         }
     } else {
         g_fieldBgState.flags &= ~FLDBG_FOLLOW;
@@ -4010,17 +4010,17 @@ s32 fldbg_resetGeomOffset(void) {
     return 1;
 }
 
-s32 fldbg_setUnusedDistSq(s32 arg0) {
-    if (arg0 == -1) {
+s32 fldbg_setUnusedDistSq(s32 dist) {
+    if (dist == -1) {
         g_fieldBgState.unusedDistSq = 3600;
     } else {
-        g_fieldBgState.unusedDistSq = arg0 * arg0;
+        g_fieldBgState.unusedDistSq = dist * dist;
     }
     return 1;
 }
 
-s32 fldbg_setFollowHeight(s16 arg0) {
-    g_fieldBgState.followHeight = arg0;
+s32 fldbg_setFollowHeight(s16 height) {
+    g_fieldBgState.followHeight = height;
     return 1;
 }
 
@@ -4069,26 +4069,26 @@ s32 fldbg_enableScrollLimits(void) {
     return 1;
 }
 
-s32 fldbg_setViewport(s32 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    g_fieldBgState.viewportPos[arg0][0] = arg1;
-    g_fieldBgState.viewportPos[arg0][1] = arg2;
-    g_fieldBgState.viewportSize[arg0][0] = arg3;
-    g_fieldBgState.viewportSize[arg0][1] = arg4;
+s32 fldbg_setViewport(s32 viewportId, s16 x, s16 y, s16 w, s16 h) {
+    g_fieldBgState.viewportPos[viewportId][0] = x;
+    g_fieldBgState.viewportPos[viewportId][1] = y;
+    g_fieldBgState.viewportSize[viewportId][0] = w;
+    g_fieldBgState.viewportSize[viewportId][1] = h;
     return 1;
 }
 
-s32 fldbg_setViewportScrollRate(s32 arg0, s16 arg1, s16 arg2) {
-    g_fieldBgState.viewportRateX[arg0] = arg1;
-    g_fieldBgState.viewportRateY[arg0] = arg2;
+s32 fldbg_setViewportScrollRate(s32 viewportId, s16 rateX, s16 rateY) {
+    g_fieldBgState.viewportRateX[viewportId] = rateX;
+    g_fieldBgState.viewportRateY[viewportId] = rateY;
     return 1;
 }
 
 /* move a background object, clamped to its limits */
-s32 fldbg_moveOverlay(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
-    BgOverlay *o = &((BgOverlay *)((u8 *)g_fieldBgData + g_fieldBgData->overlayOffset))[arg0];
-    s16 x = o->baseX + arg1;
-    s16 y = o->baseY + arg2;
-    s16 z = arg3 + o->baseDepth;
+s32 fldbg_moveOverlay(s32 overlayId, s16 dx, s16 dy, s16 dz) {
+    BgOverlay *o = &((BgOverlay *)((u8 *)g_fieldBgData + g_fieldBgData->overlayOffset))[overlayId];
+    s16 x = o->baseX + dx;
+    s16 y = o->baseY + dy;
+    s16 z = dz + o->baseDepth;
 
     if (x < o->minX) {
         x = o->minX;
@@ -4109,14 +4109,14 @@ s32 fldbg_moveOverlay(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
     return 1;
 }
 
-s32 fldbg_getOverlayColor(s32 arg0, u8 *arg1, u8 *arg2, u8 *arg3) {
-    *arg1 = g_fieldBgCtx.overlayRgb[arg0 * 3];
-    *arg2 = g_fieldBgCtx.overlayRgb[arg0 * 3 + 1];
-    *arg3 = g_fieldBgCtx.overlayRgb[arg0 * 3 + 2];
+s32 fldbg_getOverlayColor(s32 overlayId, u8 *outR, u8 *outG, u8 *outB) {
+    *outR = g_fieldBgCtx.overlayRgb[overlayId * 3];
+    *outG = g_fieldBgCtx.overlayRgb[overlayId * 3 + 1];
+    *outB = g_fieldBgCtx.overlayRgb[overlayId * 3 + 2];
     return 1;
 }
 
-s32 fldbg_setOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+s32 fldbg_setOverlayColor(s32 overlayId, u8 r, u8 g, u8 b) {
     BgFile *h;
     BgOverlay *o;
     BgSprt *s;
@@ -4125,10 +4125,10 @@ s32 fldbg_setOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     u16 i;
 
     h = g_fieldBgCtx.data;
-    g_fieldBgCtx.overlayRgb[arg0 * 3 + 0] = arg1;
-    g_fieldBgCtx.overlayRgb[arg0 * 3 + 1] = arg2;
-    g_fieldBgCtx.overlayRgb[arg0 * 3 + 2] = arg3;
-    o = &((BgOverlay *)((u8 *)h + h->overlayOffset))[arg0];
+    g_fieldBgCtx.overlayRgb[overlayId * 3 + 0] = r;
+    g_fieldBgCtx.overlayRgb[overlayId * 3 + 1] = g;
+    g_fieldBgCtx.overlayRgb[overlayId * 3 + 2] = b;
+    o = &((BgOverlay *)((u8 *)h + h->overlayOffset))[overlayId];
     n = o->tileCount;
     s = o->sprites;
     off = 0;
@@ -4136,16 +4136,16 @@ s32 fldbg_setOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
         off = n;
     }
     for (i = 0; i < n; i++) {
-        setRGB0(&s[i + off].sprt, arg1, arg2, arg3);
+        setRGB0(&s[i + off].sprt, r, g, b);
     }
     return 1;
 }
 
-s32 fldbg_showOverlay(s32 arg0, s32 arg1) {
-    BgOverlay *o = fldbg_overlayPtr(arg0);
+s32 fldbg_showOverlay(s32 overlayId, s32 visible) {
+    BgOverlay *o = fldbg_overlayPtr(overlayId);
     u8 v;
 
-    if (arg1 != 0) {
+    if (visible != 0) {
         v = o->flags | FLDBG_OVL_VISIBLE;
     } else {
         v = o->flags & ~FLDBG_OVL_VISIBLE;
@@ -4154,26 +4154,26 @@ s32 fldbg_showOverlay(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 fldbg_setOverlayLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
-    BgOverlay *o = fldbg_overlayPtr(arg0);
+s32 fldbg_setOverlayLoop(s32 overlayId, s32 enable, s16 scrollX, s16 scrollY) {
+    BgOverlay *o = fldbg_overlayPtr(overlayId);
 
-    if (arg1 != 0) {
+    if (enable != 0) {
         o->flags |= FLDBG_OVL_LOOP;
     } else {
         o->flags &= ~FLDBG_OVL_LOOP;
     }
-    o->scrollX = arg2;
+    o->scrollX = scrollX;
     o->fracX = 0;
-    o->scrollY = arg3;
+    o->scrollY = scrollY;
     o->fracY = 0;
     return 1;
 }
 
-s32 fldbg_setOverlayScreen(s32 arg0, s32 arg1) {
-    BgOverlay *o = fldbg_overlayPtr(arg0);
+s32 fldbg_setOverlayScreen(s32 overlayId, s32 enable) {
+    BgOverlay *o = fldbg_overlayPtr(overlayId);
     u8 v;
 
-    if (arg1 != 0) {
+    if (enable != 0) {
         v = o->flags | FLDBG_OVL_SCREEN;
     } else {
         v = o->flags & ~FLDBG_OVL_SCREEN;
@@ -4182,21 +4182,21 @@ s32 fldbg_setOverlayScreen(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 fldbg_setOverlaySkewLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
-    BgOverlay *o = fldbg_overlayPtr(arg0);
+s32 fldbg_setOverlaySkewLoop(s32 overlayId, s32 enable, s16 scrollX, s16 scrollY, s32 vertical) {
+    BgOverlay *o = fldbg_overlayPtr(overlayId);
 
-    if (arg1 != 0) {
+    if (enable != 0) {
         o->flags |= FLDBG_OVL_SKEW_LOOP;
     } else {
         o->flags &= ~FLDBG_OVL_SKEW_LOOP;
     }
-    if (arg4 != 0) {
-        o->scrollX = arg3;
-        o->scrollY = arg2;
+    if (vertical != 0) {
+        o->scrollX = scrollY;
+        o->scrollY = scrollX;
         o->skewVertical = 1;
     } else {
-        o->scrollX = arg2;
-        o->scrollY = arg3;
+        o->scrollX = scrollX;
+        o->scrollY = scrollY;
         o->skewVertical = 0;
     }
     o->fracX = 0;
@@ -4204,58 +4204,58 @@ s32 fldbg_setOverlaySkewLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
     return 1;
 }
 
-s32 fldbg_setOverlayParallax(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
-    BgOverlay *o = fldbg_overlayPtr(arg0);
+s32 fldbg_setOverlayParallax(s32 overlayId, s32 enable, s16 scrollX, s16 scrollY) {
+    BgOverlay *o = fldbg_overlayPtr(overlayId);
 
-    if (arg1 != 0) {
+    if (enable != 0) {
         o->flags |= FLDBG_OVL_PARALLAX;
     } else {
         o->flags &= ~FLDBG_OVL_PARALLAX;
     }
-    o->scrollX = arg2;
-    o->scrollY = arg3;
+    o->scrollX = scrollX;
+    o->scrollY = scrollY;
     return 1;
 }
 
-s32 fldbg_setOverlayPos(s32 arg0, s16 arg1, s16 arg2) {
-    BgOverlay *o = fldbg_overlayPtr(arg0);
+s32 fldbg_setOverlayPos(s32 overlayId, s16 x, s16 y) {
+    BgOverlay *o = fldbg_overlayPtr(overlayId);
 
-    o->x = arg1;
-    o->baseX = arg1;
-    o->y = arg2;
-    o->baseY = arg2;
+    o->x = x;
+    o->baseX = x;
+    o->y = y;
+    o->baseY = y;
     g_fieldBgState.flags |= FLDBG_CAMERA_CHANGED;
     return 1;
 }
 
-s32 fldbg_setOverlayViewport(s32 arg0, s32 arg1) {
-    BgOverlay *o = fldbg_overlayPtr(arg0);
+s32 fldbg_setOverlayViewport(s32 overlayId, s32 viewport) {
+    BgOverlay *o = fldbg_overlayPtr(overlayId);
 
-    o->viewport = arg1;
+    o->viewport = viewport;
     return 1;
 }
 
-s32 fldbg_setAnimFrame(s32 arg0, s32 arg1) {
-    BgOverlayAnim *p = fldbg_overlayAnimPtr(arg0);
+s32 fldbg_setAnimFrame(s32 animId, s32 frame) {
+    BgOverlayAnim *p = fldbg_overlayAnimPtr(animId);
 
     p->delayCounter = 0;
     p->flags |= FLDBG_ANIM_ACTIVE;
-    p->pos = arg1 << 8;
+    p->pos = frame << 8;
     return 1;
 }
 
-s32 fldbg_showAnimFrame(s32 arg0, s32 arg1) {
+s32 fldbg_showAnimFrame(s32 animId, s32 frame) {
     s32 i;
     BgOverlayAnim *p;
     BgAnimStep *st;
     BgOverlay *objs;
 
     i = 0;
-    p = fldbg_overlayAnimPtr(arg0);
+    p = fldbg_overlayAnimPtr(animId);
     st = fldbg_animSteps(p);
     objs = fldbg_overlayPtr(0);
     for (; i < p->stepCount; st++, i++) {
-        if (i == arg1) {
+        if (i == frame) {
             objs[st->overlay].flags |= FLDBG_OVL_VISIBLE;
         } else {
             objs[st->overlay].flags &= ~FLDBG_OVL_VISIBLE;
@@ -4265,11 +4265,11 @@ s32 fldbg_showAnimFrame(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 fldbg_playAnim(s32 arg0, s32 arg1) {
-    BgOverlayAnim *p = fldbg_overlayAnimPtr(arg0);
+s32 fldbg_playAnim(s32 animId, s32 play) {
+    BgOverlayAnim *p = fldbg_overlayAnimPtr(animId);
     u8 v;
 
-    if (arg1 != 0) {
+    if (play != 0) {
         v = p->flags | 6;
     } else {
         v = p->flags & ~6;
@@ -4278,51 +4278,51 @@ s32 fldbg_playAnim(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 fldbg_setAnimSpeed(s32 arg0, s32 arg1) {
-    fldbg_overlayAnimPtr(arg0)->speed = arg1;
+s32 fldbg_setAnimSpeed(s32 animId, s32 speed) {
+    fldbg_overlayAnimPtr(animId)->speed = speed;
     return 1;
 }
 
-s32 fldbg_setAnimDelayAll(s32 arg0, u8 arg1) {
-    BgOverlayAnim *p = fldbg_overlayAnimPtr(arg0);
+s32 fldbg_setAnimDelayAll(s32 animId, u8 delay) {
+    BgOverlayAnim *p = fldbg_overlayAnimPtr(animId);
     BgAnimStep *st = fldbg_animSteps(p);
     s32 n = p->stepCount;
     s32 i;
 
     for (i = 0; i < n; i++) {
-        st[i].delay = arg1;
+        st[i].delay = delay;
     }
     return 1;
 }
 
-s32 fldbg_setAnimStepDelay(s32 arg0, s32 arg1, u8 arg2) {
-    fldbg_animSteps(fldbg_overlayAnimPtr(arg0))[arg1].delay = arg2;
+s32 fldbg_setAnimStepDelay(s32 animId, s32 step, u8 delay) {
+    fldbg_animSteps(fldbg_overlayAnimPtr(animId))[step].delay = delay;
     return 1;
 }
 
-s32 fldbg_setAnimFlags(s32 arg0, s32 arg1) {
-    fldbg_overlayAnimPtr(arg0)->flags |= arg1 & (FLDBG_ANIM_LOOP | FLDBG_ANIM_PINGPONG);
+s32 fldbg_setAnimFlags(s32 animId, s32 flags) {
+    fldbg_overlayAnimPtr(animId)->flags |= flags & (FLDBG_ANIM_LOOP | FLDBG_ANIM_PINGPONG);
     return 1;
 }
 
-s32 fldbg_playAnimRange(s32 arg0, u32 arg1, u32 arg2) {
+s32 fldbg_playAnimRange(s32 animId, u32 first, u32 last) {
     BgFile *b = g_fieldBgData;
-    BgOverlayAnim *p = &((BgOverlayAnim *)((u8 *)b + b->overlayAnimOffset))[arg0];
+    BgOverlayAnim *p = &((BgOverlayAnim *)((u8 *)b + b->overlayAnimOffset))[animId];
     BgAnimStep *st = (BgAnimStep *)((u8 *)b + p->stepOffset);
 
     p->delayCounter = 0;
     p->flags |= (FLDBG_ANIM_ACTIVE | FLDBG_ANIM_PLAY_ONCE);
-    p->pos = arg1 << 8;
-    st[arg2].delay = -1;
-    if ((p->speed > 0 && arg2 < arg1) || (p->speed < 0 && arg1 < arg2)) {
+    p->pos = first << 8;
+    st[last].delay = -1;
+    if ((p->speed > 0 && last < first) || (p->speed < 0 && first < last)) {
         p->speed = -p->speed;
     }
     return 1;
 }
 
-s32 fldbg_resetAnim(s32 arg0, s32 arg1) {
+s32 fldbg_resetAnim(s32 animId, s32 showFirst) {
     BgFile *d = g_fieldBgData;
-    BgOverlayAnim *p = &((BgOverlayAnim *)((u8 *)d + d->overlayAnimOffset))[arg0];
+    BgOverlayAnim *p = &((BgOverlayAnim *)((u8 *)d + d->overlayAnimOffset))[animId];
     BgOverlay *objs;
     BgAnimStep *st;
     s32 i;
@@ -4335,7 +4335,7 @@ s32 fldbg_resetAnim(s32 arg0, s32 arg1) {
     objs = (BgOverlay *)((u8 *)d + d->overlayOffset);
     st = (BgAnimStep *)((u8 *)d + p->stepOffset);
     for (; i < p->stepCount; i++) {
-        if (arg1 != 0 && i == 0) {
+        if (showFirst != 0 && i == 0) {
             objs[st[i].overlay].flags |= FLDBG_OVL_VISIBLE;
         } else {
             objs[st[i].overlay].flags &= ~FLDBG_OVL_VISIBLE;
@@ -4344,68 +4344,68 @@ s32 fldbg_resetAnim(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 fldbg_getEntryType(s32 arg0, u8 *arg1) {
-    *arg1 = g_fieldBgCtxEntries[arg0].type;
+s32 fldbg_getEntryType(s32 entryId, u8 *outType) {
+    *outType = g_fieldBgCtxEntries[entryId].type;
     return 1;
 }
 
-s32 fldbg_getWorkBlock(s32 arg0) {
-    return g_fieldBgCtxWork + (arg0 << 9);
+s32 fldbg_getWorkBlock(s32 block) {
+    return g_fieldBgCtxWork + (block << 9);
 }
 
 /* set the camera scroll limits */
-s32 fldbg_setScrollLimits(s32 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    BgCamera *c = &((BgCamera *)((u8 *)g_fieldBgData + g_fieldBgData->cameraOffset))[arg0];
+s32 fldbg_setScrollLimits(s32 cameraId, s16 minX, s16 maxX, s16 minY, s16 maxY) {
+    BgCamera *c = &((BgCamera *)((u8 *)g_fieldBgData + g_fieldBgData->cameraOffset))[cameraId];
     s16 v;
 
-    c->scrollMinX = v = arg1 + 160;
+    c->scrollMinX = v = minX + 160;
     if (v > c->width - 160) {
         c->scrollMinX = c->width - 160;
     }
-    c->scrollMaxX = v = arg2 - 160;
+    c->scrollMaxX = v = maxX - 160;
     if (v < 160) {
         c->scrollMaxX = 160;
     }
-    c->scrollMinY = v = arg3 + 112;
+    c->scrollMinY = v = minY + 112;
     if (v > c->height - 112) {
         c->scrollMinY = c->height - 112;
     }
-    c->scrollMaxY = v = arg4 - 112;
+    c->scrollMaxY = v = maxY - 112;
     if (v < 112) {
         c->scrollMaxY = 112;
     }
     return 1;
 }
 
-s32 fldbg_getCamera(u8 *arg0) {
-    *arg0 = g_fieldBgState.cameraId;
+s32 fldbg_getCamera(u8 *outCameraId) {
+    *outCameraId = g_fieldBgState.cameraId;
     return 1;
 }
 
-s32 fldbg_setCameraCenter(s32 arg0, s16 arg1, s16 arg2) {
-    BgCamera *c = fldbg_cameraPtr(arg0);
+s32 fldbg_setCameraCenter(s32 cameraId, s16 x, s16 y) {
+    BgCamera *c = fldbg_cameraPtr(cameraId);
 
-    c->centerX = arg1;
-    c->centerY = arg2;
+    c->centerX = x;
+    c->centerY = y;
     return 1;
 }
 
-s32 fldbg_getCameraCenter(s32 arg0, u16 *arg1, u16 *arg2) {
-    BgCamera *c = fldbg_cameraPtr(arg0);
+s32 fldbg_getCameraCenter(s32 cameraId, u16 *outX, u16 *outY) {
+    BgCamera *c = fldbg_cameraPtr(cameraId);
 
-    *arg1 = c->centerX;
-    *arg2 = c->centerY;
+    *outX = c->centerX;
+    *outY = c->centerY;
     return 1;
 }
 
-s32 fldbg_getClutFadeSize(s32 arg0) {
-    return arg0 * 4 + 0x2C;
+s32 fldbg_getClutFadeSize(s32 count) {
+    return count * 4 + 0x2C;
 }
 
-s32 fldbg_allocWork(s32 arg0) {
+s32 fldbg_allocWork(s32 size) {
     s32 r = g_fieldBgCtx.work + g_fieldBgCtx.workUsed;
 
-    g_fieldBgCtx.workUsed += arg0;
+    g_fieldBgCtx.workUsed += size;
     return r;
 }
 
@@ -4432,34 +4432,34 @@ s32 fldbg_resetAllAnims(void) {
 
 s32 fldbg_scanEntries(void) {
     u32 i;
-    s32 ret;
+    s32 ok;
     s32 type;
 
-    ret = 1;
+    ok = 1;
     for (i = 0; i < g_fieldBgCtx.entryCount; i++) {
         type = g_fieldBgCtx.entries[i].type;
         if (type == BGENT_OVERLAY_ANIM) {
             type = 0;
         } else if (type == 0x40) {
-            type = ret;
+            type = ok;
         }
     }
-    return ret;
+    return ok;
 }
 
 s32 fldbg_okStub1(void) {
     return 1;
 }
 
-s32 fldbg_setOverlaySpriteColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
-    BgOverlay *o = fldbg_overlayPtr(arg0);
+s32 fldbg_setOverlaySpriteColor(s32 overlayId, u8 r, u8 g, u8 b) {
+    BgOverlay *o = fldbg_overlayPtr(overlayId);
     u16 n = o->tileCount;
     BgSprt *s = o->sprites;
     u16 i;
 
     for (i = 0; i < n; i++) {
-        setRGB0(&s[i].sprt, arg1, arg2, arg3);
-        setRGB0(&s[i + n].sprt, arg1, arg2, arg3);
+        setRGB0(&s[i].sprt, r, g, b);
+        setRGB0(&s[i + n].sprt, r, g, b);
     }
     return 1;
 }
