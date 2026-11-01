@@ -795,10 +795,10 @@ s32 wm_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     s32 id;
     s32 h;
     s32 t;
-    s32 n;
+    s32 seqBytes;
     s32 sz;
-    s32 m;
-    s32 d;
+    s32 seqOffset;
+    s32 room;
 
     kind = (cmd >> 8) & 0xF;
     if (kind == SND_CMD_GET_STATE && g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
@@ -1071,10 +1071,10 @@ state:
         if (cdRead_update(g_gameState->gameData->cdRead) == 0 && akao_getSpuTransferState() == 0) {
             if (g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk < g_gameState->gameData->soundBankSize) {
                 g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->cdRead[0].dest;
-                d = 0x10000 + wm_getModelCacheBottom() - g_gameState->gameData->soundLoadDest;
-                d = d / 2048 * 2048;
+                room = 0x10000 + wm_getModelCacheBottom() - g_gameState->gameData->soundLoadDest;
+                room = room / 2048 * 2048;
                 cdRead_init(g_gameState->gameData->cdRead, g_worldMusicSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
-                              g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, d, wm_streamSoundChunk);
+                              g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, room, wm_streamSoundChunk);
             } else if (g_worldMusicReqIdKind == (DB_MUSIC >> 16)) {
                 if (g_worldMusicReqKind != SND_CMD_RESUME) {
                     g_gameState->gameData->musicVolume[0] = 0x7F;
@@ -1087,12 +1087,12 @@ state:
         }
         break;
     case SND_LOAD_SEQ_START:
-        n = g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk - g_gameState->gameData->soundBankSize;
-        if (n > 0) {
-            memcpy(g_gameState->gameData->musicSeq, (u8 *)g_gameState->gameData->soundLoadDest + (g_gameState->gameData->soundBankSize - g_gameState->gameData->cdRead[0].offset), n);
+        seqBytes = g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk - g_gameState->gameData->soundBankSize;
+        if (seqBytes > 0) {
+            memcpy(g_gameState->gameData->musicSeq, (u8 *)g_gameState->gameData->soundLoadDest + (g_gameState->gameData->soundBankSize - g_gameState->gameData->cdRead[0].offset), seqBytes);
         }
-        t = 0x6800 - n;
-        g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + n);
+        t = 0x6800 - seqBytes;
+        g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + seqBytes);
         t = t / 2048 * 2048;
         cdRead_init(g_gameState->gameData->cdRead, g_worldMusicSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
                       g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, t, NULL);
@@ -1101,9 +1101,9 @@ state:
     case SND_LOAD_SEQ:
         if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
             if (g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk < g_gameState->gameData->cdRead[0].size) {
-                m = g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk - g_gameState->gameData->soundBankSize;
-                g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + m);
-                cdRead_init(g_gameState->gameData->cdRead, g_worldMusicSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest, m, 0x6800 - m, NULL);
+                seqOffset = g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk - g_gameState->gameData->soundBankSize;
+                g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + seqOffset);
+                cdRead_init(g_gameState->gameData->cdRead, g_worldMusicSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest, seqOffset, 0x6800 - seqOffset, NULL);
             } else {
                 wm_unpackMusic((s32)g_gameState->gameData->musicSeq);
                 g_gameState->gameData->flags |= GD_MUSIC_LOADED;
