@@ -144,7 +144,7 @@ void btl_applyAutoAbilities(BtlUnit *arg0) {
     }
     if (arg0->support[0] & SA_BIT(SA_AUTO_REGEN)) {
         arg0->autoStatus |= BTL_STATUS_REGEN;
-        btl_initDotTimer(arg0, 0x12);
+        btl_initDotTimer(arg0, BTL_STATUS_REGEN_BIT);
     }
     if (arg0->support[0] & SA_BIT(SA_AUTO_LIFE)) {
         arg0->status |= BTL_STATUS_AUTO_LIFE;

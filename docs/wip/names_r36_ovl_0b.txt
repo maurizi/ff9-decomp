@@ -10,3 +10,7 @@ CHR_KIND_* (include/ff9_ids.h): Character.info.b.kind 0-18, CHR_KIND_COUNT 19, C
   btl_checkCmdUsable, btlfx_isUnitKind, the Eiko kind tests, g_btlfxKindTimings, btlcam party presets.
 ITEM_ICON_* (include/ff9_ids.h): ItemInfo.icon weapon kinds 0-12, named from the items carrying them; used in
   chr_calcAppearance and btl_startCmdEffect (Throw).
+BTL_STATUS_*_BIT (include/ff9_ids.h): the 32 status bit indexes; BTL_STATUS_TIMED_FIRST_BIT (16, statusTimers[bit - it]),
+  BTL_STATUS_TIMED 0xEFFF0000 (timer-driven statuses, btl_addStatus / btl_tickStatusTimers). btl_addStatus' switch
+  and btl_removeStatus' switch (masks), btl_initDotTimer's bit argument, statusInfo[DOOM_BIT]; the add/remove
+  mask literals expanded into BTL_STATUS_* ORs.

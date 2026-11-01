@@ -60,7 +60,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
     if (s->autoStatus & f) {
         return 1;
     }
-    if ((s->status & f) && (f & 0x8800FF7F)) {
+    if ((s->status & f) && (f & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_VIRUS | BTL_STATUS_SILENCE | BTL_STATUS_BLIND | BTL_STATUS_TROUBLE | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_LOW_HP | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_AUTO_LIFE | BTL_STATUS_TRANCE | BTL_STATUS_DEFEND | BTL_STATUS_DOOM | BTL_STATUS_GRADUAL_PETRIFY))) {
         return 1;
     }
     i = 0;
@@ -74,23 +74,23 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         }
     }
     if (btl_isCmdQueued(u, BTL_CMD_PETRIFY)) {
-        blk |= tbl[0].prevents;
+        blk |= tbl[BTL_STATUS_PETRIFY_BIT].prevents;
     }
     if (blk & f) {
         return 1;
     }
-    if (!(f & 0x10180001)) {
-        if ((f & 0x20D03) && (u8)btl_cancelUnitCmds(u)) {
+    if (!(f & (BTL_STATUS_PETRIFY | BTL_STATUS_HASTE | BTL_STATUS_SLOW | BTL_STATUS_MINI))) {
+        if ((f & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_SLEEP)) && (u8)btl_cancelUnitCmds(u)) {
             u->atb = 0;
             u->flags &= ~BTL_UNIT_ATB_ACTIVE;
-            if (!(f & 0x100)) {
+            if (!(f & BTL_STATUS_KO)) {
                 u->cmdIssued = 0;
             }
         }
         s->status |= f;
     }
     switch (n) {
-    case 0:
+    case BTL_STATUS_PETRIFY_BIT:
         if (!btl_isCmdPending(u->koCmd)) {
             if (g_gameState->gameData->ctx.battle->phase >= BTL_PHASE_ENTRANCE) {
                 btl_setCmd(u->koCmd, BTL_CMD_PETRIFY, 0, u->unitBit, 0);
@@ -104,27 +104,27 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
             }
         }
         break;
-    case 1:
+    case BTL_STATUS_VENOM_BIT:
         if (g_gameState->gameData->ctx.battle->phase >= BTL_PHASE_ENTRANCE) {
             btl_checkSideDefeated(u);
         }
-    case 17:
+    case BTL_STATUS_SLEEP_BIT:
         if ((u->flags & BTL_UNIT_PARTY) && (s32)u->model->motion != u->motions[1] &&
             g_gameState->gameData->ctx.battle->curCmd->caster != u) {
             u->model->motion = (BtlMotion *)u->motions[1];
             u->obj->frame = 0;
         }
         break;
-    case 6:
+    case BTL_STATUS_ZOMBIE_BIT:
         if ((u->flags & BTL_UNIT_PARTY) && !(u->status & BTL_STATUS_TRANCE)) {
             u->trance = 0;
         }
-    case 11:
-    case 24:
-    case 25:
+    case BTL_STATUS_BERSERK_BIT:
+    case BTL_STATUS_HEAT_BIT:
+    case BTL_STATUS_FREEZE_BIT:
         btl_updateStatusColor(u);
         break;
-    case 8:
+    case BTL_STATUS_KO_BIT:
         if (u->hp != 0) {
             u->popupFlags |= BTL_POPUP_DEATH;
             btl_killUnit(u);
@@ -139,13 +139,13 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
             }
         }
         break;
-    case 12:
+    case BTL_STATUS_STOP_BIT:
         btl_checkSideDefeated(u);
         break;
-    case 14:
+    case BTL_STATUS_TRANCE_BIT:
         btl_setCmd(u->tranceCmd, BTL_CMD_TRANCE, 0, u->unitBit, 0);
         break;
-    case 19:
+    case BTL_STATUS_HASTE_BIT:
         if (u->status & BTL_STATUS_SLOW) {
             btl_removeStatus(u, BTL_STATUS_SLOW);
             return 2;
@@ -154,7 +154,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         u->atbSpeed = u->atbSpeed * 3 / 2;
         s->status |= f;
         break;
-    case 20:
+    case BTL_STATUS_SLOW_BIT:
         if (u->status & BTL_STATUS_HASTE) {
             btl_removeStatus(u, BTL_STATUS_HASTE);
             return 2;
@@ -163,10 +163,10 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         u->atbSpeed = u->atbSpeed * 2 / 3;
         s->status |= f;
         break;
-    case 26:
+    case BTL_STATUS_VANISH_BIT:
         btl_hideMeshes(u, u->vanishMeshes);
         break;
-    case 28:
+    case BTL_STATUS_MINI_BIT:
         s->status ^= f;
         if (u->status & BTL_STATUS_MINI) {
             u->model->flags |= BTL_MODEL_SCALED;
@@ -186,17 +186,17 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
     if (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) {
         u->flags &= ~BTL_UNIT_ATB_ACTIVE;
     }
-    if (f & 0xEFFF0000) {
-        if (f & 0x9B130000) {
+    if (f & BTL_STATUS_TIMED) {
+        if (f & (BTL_STATUS_POISON | BTL_STATUS_SLEEP | BTL_STATUS_SLOW | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_DOOM | BTL_STATUS_MINI | BTL_STATUS_GRADUAL_PETRIFY)) {
             k = (0x3C - u->spirit) * 8;
-        } else if (f & 0x24EC0000) {
+        } else if (f & (BTL_STATUS_REGEN | BTL_STATUS_HASTE | BTL_STATUS_FLOAT | BTL_STATUS_SHELL | BTL_STATUS_PROTECT | BTL_STATUS_VANISH | BTL_STATUS_REFLECT)) {
             k = u->spirit * 8;
         } else {
             k = (0x3C - u->spirit) * 4;
         }
-        u->statusTimers[n - 16] = tbl[n].timerScale * k;
+        u->statusTimers[n - BTL_STATUS_TIMED_FIRST_BIT] = tbl[n].timerScale * k;
     }
-    if (f & 0x50002) {
+    if (f & (BTL_STATUS_VENOM | BTL_STATUS_POISON | BTL_STATUS_REGEN)) {
         btl_initDotTimer(u, n);
     }
     return 2;
@@ -214,28 +214,28 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
     if (!(s->status & f)) {
         return 1;
     }
-    if (!(u->flags & BTL_UNIT_PARTY) && g_gameState->gameData->ctx.battle->phase == BTL_PHASE_END && (f & 0x1003)) {
+    if (!(u->flags & BTL_UNIT_PARTY) && g_gameState->gameData->ctx.battle->phase == BTL_PHASE_END && (f & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) {
         return 1;
     }
     s->status &= ~f;
     switch (f) {
-    case 0x1:
+    case BTL_STATUS_PETRIFY:
         btl_setStoneClut(u, 0);
         break;
-    case 0x800:
+    case BTL_STATUS_BERSERK:
         if ((u8)btl_cancelUnitCmds(u)) {
             u->atb = 0;
             u->cmdIssued = 0;
             u->flags &= ~BTL_UNIT_ATB_ACTIVE;
         }
-    case 0x40:
-    case 0x1000000:
-    case 0x2000000:
+    case BTL_STATUS_ZOMBIE:
+    case BTL_STATUS_HEAT:
+    case BTL_STATUS_FREEZE:
         if (u->status & (BTL_STATUS_ZOMBIE | BTL_STATUS_BERSERK | BTL_STATUS_HEAT | BTL_STATUS_FREEZE)) {
             btl_updateStatusColor(u);
         }
         break;
-    case 0x100:
+    case BTL_STATUS_KO:
         m = u->model;
         a4 = u->motions;
         u->koState = BTL_KO_NONE;
@@ -257,10 +257,10 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         }
         btl_removeQueuedCmd(u, BTL_CMD_KO);
         if (u->autoStatus & BTL_STATUS_REGEN) {
-            btl_initDotTimer(u, 0x12);
+            btl_initDotTimer(u, BTL_STATUS_REGEN_BIT);
         }
         break;
-    case 0x400:
+    case BTL_STATUS_CONFUSE:
         u->rot[1] = u->obj->rotY;
         if ((u8)btl_cancelUnitCmds(u)) {
             u->atb = 0;
@@ -268,7 +268,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
             u->flags &= ~BTL_UNIT_ATB_ACTIVE;
         }
         break;
-    case 0x4000:
+    case BTL_STATUS_TRANCE:
         u->trance = 0;
         btl_cancelTranceEidolon(u);
         if (u->status & BTL_STATUS_JUMP) {
@@ -282,23 +282,23 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         }
         btl_setCmd(u->tranceCmd, BTL_CMD_TRANCE, 0, u->unitBit, 0);
         break;
-    case 0x80000:
-    case 0x100000:
+    case BTL_STATUS_HASTE:
+    case BTL_STATUS_SLOW:
         btl_resetAtbSpeed((Unk800BD8F0 *)u);
         break;
-    case 0x200000:
+    case BTL_STATUS_FLOAT:
         u->pos[1] = 0;
         u->home->pos[1] = 0;
         break;
-    case 0x4000000:
+    case BTL_STATUS_VANISH:
         btl_showMeshes(u, u->vanishMeshes);
         break;
-    case 0x10000000:
+    case BTL_STATUS_MINI:
         u->model->flags &= ~BTL_MODEL_SCALED;
         g_gameState->gameData->ctx.battle->work->shadows[btl_getModelSlot(u)].width = u->shadowW * 14;
         g_gameState->gameData->ctx.battle->work->shadows[btl_getModelSlot(u)].depth = u->shadowD * 12;
         break;
-    case 0x40000000:
+    case BTL_STATUS_JUMP:
         u->targetableReq = BTL_TGTREQ_SET_ON;
         u->atb = 0;
         u->cmdIssued = 0;
@@ -306,7 +306,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         u->delayedCmd->cmdNo = 0;
         u->delayedCmd->targets = 0;
         break;
-    case 0x80000000:
+    case BTL_STATUS_GRADUAL_PETRIFY:
         btl_removeQueuedCmd(u, BTL_CMD_PETRIFY);
         break;
     }
@@ -330,7 +330,7 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
             if ((arg0->flags >> BTL_UNIT_ATB_ACTIVE_BIT) & 1) {
                 if (arg0->status & BTL_STATUS_VENOM) {
                     if (t->venomTimer <= 0) {
-                        btl_initDotTimer(arg0, 1);
+                        btl_initDotTimer(arg0, BTL_STATUS_VENOM_BIT);
                         btl_tickPoison(arg0);
                         btl_tickVenomMp(arg0);
                         btl_spawnTickPopups(arg0);
@@ -340,7 +340,7 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                 }
                 if (arg0->status & BTL_STATUS_POISON) {
                     if (t->poisonTimer <= 0) {
-                        btl_initDotTimer(arg0, 0x10);
+                        btl_initDotTimer(arg0, BTL_STATUS_POISON_BIT);
                         btl_tickPoison(arg0);
                         btl_spawnTickPopups(arg0);
                     } else {
@@ -349,7 +349,7 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                 }
                 if (BtlUnitHasStatus(arg0, BTL_STATUS_REGEN)) {
                     if (t->regenTimer <= 0) {
-                        btl_initDotTimer(arg0, 0x12);
+                        btl_initDotTimer(arg0, BTL_STATUS_REGEN_BIT);
                         btl_tickRegen(arg0);
                         btl_spawnTickPopups(arg0);
                     } else {
@@ -417,10 +417,10 @@ void btl_updateUnitTint(BtlUnit *arg0) {
                 m = m % 24;
                 /* v is the colour-select flag here and the fade level below; the table branch's level goes
                    through w (a u32), so its loads stay word-sized. */
-                if ((arg0->status & (BTL_STATUS_SHELL | BTL_STATUS_PROTECT)) == 0xC00000) {
+                if ((arg0->status & (BTL_STATUS_SHELL | BTL_STATUS_PROTECT)) == (BTL_STATUS_SHELL | BTL_STATUS_PROTECT)) {
                     v = (n % 48) >= 24;
                 } else {
-                    v = (arg0->status & BTL_STATUS_PROTECT) < 0x800000;
+                    v = (arg0->status & BTL_STATUS_PROTECT) < BTL_STATUS_PROTECT;
                 }
                 if (v) {
                     r = e->lightR - 0x40;
@@ -438,7 +438,7 @@ void btl_updateUnitTint(BtlUnit *arg0) {
                 } else {
                     v = 24 - m;
                 }
-            } else if ((arg0->status & (BTL_STATUS_KO | BTL_STATUS_TRANCE)) == 0x4000) {
+            } else if ((arg0->status & (BTL_STATUS_KO | BTL_STATUS_TRANCE)) == BTL_STATUS_TRANCE) {
                 u8 tbl[8][3] = {
                     { 0xFF, 0x60, 0x60 }, { 0x68, 0x78, 0xFF }, { 0xFF, 0xB8, 0x78 }, { 0x80, 0xC0, 0xD0 },
                     { 0xC0, 0x68, 0x90 }, { 0xD0, 0x70, 0x78 }, { 0xC8, 0xD8, 0x68 }, { 0xD0, 0xB8, 0x68 },
@@ -655,7 +655,7 @@ void btl_clearUnitStatus(BtlUnit *arg0) {
 
 void btl_initDoomCount(Unk800C09D8 *arg0) {
     s32 t = (0x3C - arg0->spirit) * 8;
-    arg0->countdownStep = t * g_gameState->gameData->ctx.battle->statusInfo[27].timerScale;
+    arg0->countdownStep = t * g_gameState->gameData->ctx.battle->statusInfo[BTL_STATUS_DOOM_BIT].timerScale;
 }
 
 void btl_interruptUnit(BtlUnit *arg0, s32 arg1) {
@@ -697,10 +697,10 @@ void btl_initDotTimer(BtlUnit *u, s32 n) {
     u8 k;
     s32 v;
 
-    if (n == 1) {
+    if (n == BTL_STATUS_VENOM_BIT) {
         v = u->spirit * 4;
         k = 0;
-    } else if (n == 0x10) {
+    } else if (n == BTL_STATUS_POISON_BIT) {
         v = u->spirit * 4;
         k = 1;
     } else {
@@ -745,8 +745,8 @@ void btl_tickStatusTimers(BtlUnit *arg0) {
     s32 bit;
     s32 m;
     for (i = 0; i < 16; i++) {
-        bit = 0x10000 << i;
-        m = bit & 0xEFFF0000;
+        bit = BTL_STATUS_POISON << i;
+        m = bit & BTL_STATUS_TIMED;
         if ((arg0->status & m) && (s16)(arg0->statusTimers[i] -= arg0->atbSpeed) < 0) {
             if (bit < 0) {
                 if (!btl_isCmdPending(arg0->koCmd) && btl_addStatus(arg0, BTL_STATUS_PETRIFY) != 2) {
@@ -754,7 +754,7 @@ void btl_tickStatusTimers(BtlUnit *arg0) {
                     arg0->popupFlags |= BTL_POPUP_MISS;
                     btl_spawnPopups(arg0);
                 }
-            } else if (bit & 0x08000000) {
+            } else if (bit & BTL_STATUS_DOOM) {
                 btl_addStatus(arg0, BTL_STATUS_KO);
                 btl_spawnPopups(arg0);
             } else {

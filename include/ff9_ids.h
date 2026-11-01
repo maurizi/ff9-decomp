@@ -287,6 +287,42 @@
 #define BTL_STATUS_REFLECT         0x20000000 /* runtime: Reflect */
 #define BTL_STATUS_JUMP            0x40000000 /* code: in the air (btl_checkCmdUsable) */
 #define BTL_STATUS_GRADUAL_PETRIFY 0x80000000 /* code: countdown number (btl_drawStatusCountdown) */
+/* status bit indexes (mask = 1 << index): Battle.statusInfo[], btl_addStatus' switch, btl_initDotTimer */
+#define BTL_STATUS_PETRIFY_BIT         0
+#define BTL_STATUS_VENOM_BIT           1
+#define BTL_STATUS_VIRUS_BIT           2
+#define BTL_STATUS_SILENCE_BIT         3
+#define BTL_STATUS_BLIND_BIT           4
+#define BTL_STATUS_TROUBLE_BIT         5
+#define BTL_STATUS_ZOMBIE_BIT          6
+#define BTL_STATUS_DEATH_IMMUNE_BIT    7
+#define BTL_STATUS_KO_BIT              8
+#define BTL_STATUS_LOW_HP_BIT          9
+#define BTL_STATUS_CONFUSE_BIT         10
+#define BTL_STATUS_BERSERK_BIT         11
+#define BTL_STATUS_STOP_BIT            12
+#define BTL_STATUS_AUTO_LIFE_BIT       13
+#define BTL_STATUS_TRANCE_BIT          14
+#define BTL_STATUS_DEFEND_BIT          15
+#define BTL_STATUS_POISON_BIT          16
+#define BTL_STATUS_SLEEP_BIT           17
+#define BTL_STATUS_REGEN_BIT           18
+#define BTL_STATUS_HASTE_BIT           19
+#define BTL_STATUS_SLOW_BIT            20
+#define BTL_STATUS_FLOAT_BIT           21
+#define BTL_STATUS_SHELL_BIT           22
+#define BTL_STATUS_PROTECT_BIT         23
+#define BTL_STATUS_HEAT_BIT            24
+#define BTL_STATUS_FREEZE_BIT          25
+#define BTL_STATUS_VANISH_BIT          26
+#define BTL_STATUS_DOOM_BIT            27
+#define BTL_STATUS_MINI_BIT            28
+#define BTL_STATUS_REFLECT_BIT         29
+#define BTL_STATUS_JUMP_BIT            30
+#define BTL_STATUS_GRADUAL_PETRIFY_BIT 31
+#define BTL_STATUS_TIMED_FIRST_BIT     BTL_STATUS_POISON_BIT /* bits from here have a timer: BtlUnit.statusTimers[bit - this] */
+#define BTL_STATUS_TIMED 0xEFFF0000 /* code: the statuses whose timer runs out (bits 16-31 but Mini): btl_addStatus sets
+                                     * it, btl_tickStatusTimers counts it down */
 /* Character.status: the same bits */
 #define CHR_STATUS_PETRIFY BTL_STATUS_PETRIFY
 #define CHR_STATUS_VENOM   BTL_STATUS_VENOM
