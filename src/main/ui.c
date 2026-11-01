@@ -186,12 +186,12 @@ void ui_drawBackground(void) {
     poly->xy0 = 0;
     poly->xy2 = 0x800000;
     poly->xy3 = w | 0x800000;
-    addPrim(&g_ot[0xFFF], poly);
+    addPrim(&g_ot[OT_LAST], poly);
     g_primPtr += sizeof(PolyG4Words);
 
     setlen(g_primPtr, PRIM_LEN(DR_TPAGE));
     ((DrTpageWords *)g_primPtr)->code = get_mode(1, 1, 0x40);
-    addPrim(&g_ot[0xFFF], g_primPtr);
+    addPrim(&g_ot[OT_LAST], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
 
     tw.x = g_uiBackgroundSprite.u;
@@ -202,7 +202,7 @@ void ui_drawBackground(void) {
     setlen(g_primPtr, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&g_noTexWindow);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
-    addPrim(&g_ot[0xFFF], g_primPtr);
+    addPrim(&g_ot[OT_LAST], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
 
     setlen(g_primPtr, PRIM_LEN(SPRT));
@@ -210,13 +210,13 @@ void ui_drawBackground(void) {
     ((SprtWords *)g_primPtr)->xy = 0;
     ((SprtWords *)g_primPtr)->uvclut = g_uiBackgroundSprite.clut << 16;
     ((SprtWords *)g_primPtr)->wh = w | 0x800000;
-    addPrim(&g_ot[0xFFF], g_primPtr);
+    addPrim(&g_ot[OT_LAST], g_primPtr);
     g_primPtr += sizeof(SprtWords);
 
     setlen(g_primPtr, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, g_uiBackgroundSprite.tpage);
     ((DrMode2Words *)g_primPtr)->code[1] = get_tw(&tw);
-    addPrim(&g_ot[0xFFF], g_primPtr);
+    addPrim(&g_ot[OT_LAST], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
 }
 

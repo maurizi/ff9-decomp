@@ -1093,6 +1093,8 @@ extern u8 g_worldUsePolyCache;
 extern u8 g_worldChunkGeneration;
 extern u8 g_worldChunkFlags[]; /* map cells, g_worldChunksW per row */
 #define WM_CELL(x, y) g_worldChunkFlags[(y) * g_worldChunksW + (x)]
+#define WM_CELL_FORM 0x80 /* load the cell's story-form chunk (wm_applyStoryForms sets it; wm_chunkRequest clears it when the chunk has none) */
+#define WM_CELL_TEX_MASK 0x3F /* texture pack read with the chunk (w_readtxRequest) */
 extern u16 g_worldFormStoryThresholds[11]; /* story progress thresholds (wm_applyStoryForms) */
 extern u8 g_worldFormStatusTable[][11];
 extern u32 g_worldLandCellTypes[2]; /* cell type masks */

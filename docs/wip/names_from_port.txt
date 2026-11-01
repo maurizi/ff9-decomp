@@ -11499,3 +11499,4 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 
 # ===== R37b world map script variables =====
 # new: EVT_GB_WM_WALKER_POS/VEHICLE_POS/CHOCOBO_POS, EVT_GB_NAVI_MODE, EVT_GB_WM_FILE, EVT_GB_CHOCOGRAPH_FOUND/OWNED, EVT_GB_CHOCOBO_LEVEL
+# ovl_0c.h WM_CELL_FORM 0x80, WM_CELL_TEX_MASK 0x3F (g_worldChunkFlags cell bits); main ui.c g_ot[OT_LAST].

@@ -305,44 +305,44 @@ void wm_applyStoryForms(void) {
         for (form = 0; form < 7; form++) {
             switch (g_worldFormStatusTable[form][i]) {
             case WM_FORM_STATUS(WM_FORM_SGATE):
-                WM_CELL(18, 14) |= 0x80;
-                WM_CELL(17, 12) |= 0x80;
+                WM_CELL(18, 14) |= WM_CELL_FORM;
+                WM_CELL(17, 12) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_SGATE] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_CLAY):
-                WM_CELL(13, 12) |= 0x80;
-                WM_CELL(14, 12) |= 0x80;
+                WM_CELL(13, 12) |= WM_CELL_FORM;
+                WM_CELL(14, 12) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_CLAY] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_LIND):
-                WM_CELL(13, 16) |= 0x80;
-                WM_CELL(13, 17) |= 0x80;
-                WM_CELL(14, 16) |= 0x80;
-                WM_CELL(14, 17) |= 0x80;
+                WM_CELL(13, 16) |= WM_CELL_FORM;
+                WM_CELL(13, 17) |= WM_CELL_FORM;
+                WM_CELL(14, 16) |= WM_CELL_FORM;
+                WM_CELL(14, 17) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_LIND] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_KUROMA):
-                WM_CELL(14, 6) |= 0x80;
-                WM_CELL(21, 10) |= 0x80;
-                WM_CELL(22, 14) |= 0x80;
+                WM_CELL(14, 6) |= WM_CELL_FORM;
+                WM_CELL(21, 10) |= WM_CELL_FORM;
+                WM_CELL(22, 14) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_KUROMA] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_ALEX):
-                WM_CELL(19, 10) |= 0x80;
-                WM_CELL(19, 11) |= 0x80;
-                WM_CELL(20, 10) |= 0x80;
-                WM_CELL(20, 11) |= 0x80;
+                WM_CELL(19, 10) |= WM_CELL_FORM;
+                WM_CELL(19, 11) |= WM_CELL_FORM;
+                WM_CELL(20, 10) |= WM_CELL_FORM;
+                WM_CELL(20, 11) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_ALEX] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_HOKORA_MIZU):
-                WM_CELL(3, 9) |= 0x80;
-                WM_CELL(9, 1) |= 0x80;
+                WM_CELL(3, 9) |= WM_CELL_FORM;
+                WM_CELL(9, 1) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_HOKORA_MIZU] = 1;
                 break;
             case WM_FORM_STATUS(WM_FORM_HOKORA_HI):
-                WM_CELL(7, 1) |= 0x80;
-                WM_CELL(8, 1) |= 0x80;
-                WM_CELL(14, 15) |= 0x80;
+                WM_CELL(7, 1) |= WM_CELL_FORM;
+                WM_CELL(8, 1) |= WM_CELL_FORM;
+                WM_CELL(14, 15) |= WM_CELL_FORM;
                 g_worldFormFlags[WM_FORM_HOKORA_HI] = 1;
                 break;
             }
@@ -379,16 +379,16 @@ void wm_applyStoryForms(void) {
     printf("General Global Flag = %x\n", g_evtGeneralFlags);
     if (g_evtGeneralFlags & EVT_GB_GENERAL_MOGNET_FORM) {
         printf("- Replace Mog Net -\n");
-        WM_CELL(16, 1) |= 0x80;
-        WM_CELL(13, 4) |= 0x80;
-        WM_CELL(14, 5) |= 0x80;
+        WM_CELL(16, 1) |= WM_CELL_FORM;
+        WM_CELL(13, 4) |= WM_CELL_FORM;
+        WM_CELL(14, 5) |= WM_CELL_FORM;
         g_worldFormFlags[WM_FORM_MOG_NET] = 1;
     }
     if (g_evtGeneralFlags & EVT_GB_GENERAL_CHOCOBO_FORM) {
         printf("- Replace Chocobo Heaven -\n");
-        WM_CELL(0, 0) |= 0x80;
-        WM_CELL(16, 14) |= 0x80;
-        WM_CELL(9, 17) |= 0x80;
+        WM_CELL(0, 0) |= WM_CELL_FORM;
+        WM_CELL(16, 14) |= WM_CELL_FORM;
+        WM_CELL(9, 17) |= WM_CELL_FORM;
         g_worldFormFlags[WM_FORM_CHOCOBO_HEAVEN] = 1;
     }
 }
@@ -660,7 +660,7 @@ void wm_requestChunks(s32 chunk) {
             for (k = 0; k < 16; k++, slot = slot->next) {
                 if (slot->chunkId == id) {
                     chunkFlags = g_worldChunkFlags[slot->chunkId];
-                    if (chunkFlags & 0x3F) {
+                    if (chunkFlags & WM_CELL_TEX_MASK) {
                         w_readtxRequest(chunkFlags);
                     }
                     slot->prev->next = slot->next;
@@ -684,7 +684,7 @@ void wm_requestChunks(s32 chunk) {
         }
         wm_chunkRequest(missing[k]);
         chunkFlags = g_worldChunkFlags[missing[k]];
-        if (chunkFlags & 0x3F) {
+        if (chunkFlags & WM_CELL_TEX_MASK) {
             w_readtxRequest(chunkFlags);
         }
     }
@@ -782,15 +782,15 @@ void wm_readChunks(void) {
                 wm_getChunkEntryT(id, 0, &baseEntry);
                 wm_getChunkEntryT(id, 1, &formEntry);
             }
-            if ((*cell & 0x80) && formEntry.packSectors == 0) {
+            if ((*cell & WM_CELL_FORM) && formEntry.packSectors == 0) {
                 if (g_worldMapDebugFlags & WM_DEBUG_FORM) {
                     printf(s_wmStrBlockNoForm, id2);
                 }
-                *cell &= 0x7F;
+                *cell &= (u8)~WM_CELL_FORM;
             }
-            texBuf = (*cell & 0x3F) ? wm_readtxFind(*cell, 0) : 0;
+            texBuf = (*cell & WM_CELL_TEX_MASK) ? wm_readtxFind(*cell, 0) : 0;
             slot->hasData = 1;
-            if (!(*cell & 0x80)) {
+            if (!(*cell & WM_CELL_FORM)) {
                 g_worldChunkReadReqs[i * 4 + 0].size = baseEntry.packSectors << 11;
                 g_worldChunkReadReqs[i * 4 + 0].dest = slot->pack;
                 g_worldChunkReadReqs[i * 4 + 1].size = baseEntry.texSectors << 11;
