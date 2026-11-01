@@ -8,7 +8,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Pool6CEntry *emitter;
     s32 frame;
     s32 t;
-    s32 s;
+    s32 scaleY;
 
     if (mode == 0) {
         *args = 0x30;
@@ -60,13 +60,13 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = frame * 0x84;
             t = (frame << 12) / 20;
             if (t < 0x400) {
-                s = ex->math_sin(t);
+                scaleY = ex->math_sin(t);
             } else {
-                s = ex->math_sin((t - 0x400) / 3) * 3 / 2 + 0x1000;
+                scaleY = ex->math_sin((t - 0x400) / 3) * 3 / 2 + 0x1000;
                 work->pos8.vy -= 0x18;
             }
             scale[0] = scale[2] = 0x1A00;
-            scale[1] = s;
+            scale[1] = scaleY;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model20);
             ex->Hi_ModifyEffModelAbr(work->model20, 2);
             ex->Hi_ModifyEffModelRGB(work->model20, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80,
@@ -75,7 +75,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vz = 0;
             rot.vx = 0;
             scale[0] = scale[2] = 0x2400;
-            scale[1] = s;
+            scale[1] = scaleY;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model20);
             ex->Hi_ModifyEffModelAbr(work->model20, 1);
             ex->Hi_ModifyEffModelRGB(work->model20, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80,

@@ -36,7 +36,7 @@ static s32 fx_0c9_op81ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s
 s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 f;
+    s32 elapsed;
     s32 t;
 
     if (mode == 0) {
@@ -89,19 +89,19 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0xA) {
-            f = frame - 0xA;
-            if (f < 0x11) {
+            elapsed = frame - 0xA;
+            if (elapsed < 0x11) {
                 work->pos2C.vx = work->pos1C.vx;
                 work->pos2C.vy = work->pos1C.vy;
                 work->pos2C.vz = work->pos1C.vz;
             }
             ex->Hi_DrawEffModel(&work->rot24, &work->pos2C, (s32)&work->scale3C, work->model54);
             ex->Hi_ModifyEffModelAbr(work->model54, 1);
-            if (f < 0xC) {
+            if (elapsed < 0xC) {
                 work->scale3C.vx++;
                 work->scale3C.vy++;
                 work->scale3C.vz++;
-            } else if (f >= 0x2E) {
+            } else if (elapsed >= 0x2E) {
                 work->scale3C.vx -= 8;
                 work->scale3C.vy -= 8;
                 work->scale3C.vz -= 8;
@@ -111,15 +111,15 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->scale3C.vz = 0;
                 }
             }
-            if (f < 0x11) {
+            if (elapsed < 0x11) {
                 fx_0c9_particlePos.vx = work->pos1C.vx;
                 fx_0c9_particlePos.vy = work->pos1C.vy;
                 fx_0c9_particlePos.vz = work->pos1C.vz;
-                t = (f << 12) / 15;
+                t = (elapsed << 12) / 15;
                 ex->btlfx_lerpVec((s16 *)&work->pos14, (s16 *)&work->posC, t, (s16 *)&work->pos1C);
                 work->pos1C.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 6), f);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 6), elapsed);
         }
         if (frame >= 0x50) {
             ex->btlfx_clearEffModels();

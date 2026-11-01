@@ -39,10 +39,10 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = 0x50;
     } else if (mode == 1) {
-        s32 n = *args;
-        work->unit4C = n;
+        s32 unit = *args;
+        work->unit4C = unit;
         fx_0c2_env = env;
-        if (n >= env->targets->targetCount) {
+        if (unit >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
@@ -151,13 +151,13 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = 0x14;
     } else if (mode == 1) {
-        s32 n = *args;
-        work->unit10 = n;
+        s32 unit = *args;
+        work->unit10 = unit;
         fx_0c2_env = env;
-        if (n >= env->targets->targetCount) {
+        if (unit >= env->targets->targetCount) {
             return 1;
         }
-        ex->btlfx_getUnitPos(n, (s16 *)&work->pos8);
+        ex->btlfx_getUnitPos(unit, (s16 *)&work->pos8);
     } else {
         frame = entry->frame;
         return fxm_turnUnitToward(0x10, work->unit10, frame, 4, 0, 1, &work->turn0) != 0;
