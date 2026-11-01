@@ -102,7 +102,7 @@ void pad_initRepeat(void) {
     pad_getAnalogThresholds(&g_padSavedThresholds);
     for (port = 0; port < 2; port++) {
         pad_disableRepeat(port);
-        for (i = 0; i < 23; i++) {
+        for (i = 0; i < PAD_RPT_COUNT; i++) {
             pad_resetRepeat(port, i);
             pad_setRepeatEnabled(port, i, g_padRepeatDefs[i].enabled);
             pad_setRepeatMask(port, i, g_padRepeatDefs[i].mask);
@@ -123,7 +123,7 @@ void pad_updateRepeat(s32 port) {
 
     g_padHeld = g_padPortHeld[port];
     g_padPressed = g_padPortPressed[port];
-    for (i = 0; i < 23; chan++, i++) {
+    for (i = 0; i < PAD_RPT_COUNT; chan++, i++) {
         if (chan->enabled != 0) {
             heldBits = g_padHeld & chan->mask & chan->prevHeld;
             chan->prevHeld = g_padHeld;
@@ -171,7 +171,7 @@ void pad_setStickAsDpad(u8 on) {
 
 void pad_disableRepeat(s32 port) {
     s32 i;
-    for (i = 0; i < 0x17; i++) {
+    for (i = 0; i < PAD_RPT_COUNT; i++) {
         pad_resetRepeat(port, i);
         pad_setRepeatEnabled(port, i, 0);
     }
@@ -179,7 +179,7 @@ void pad_disableRepeat(s32 port) {
 
 void pad_resetRepeats(s32 port) {
     s32 i;
-    for (i = 0; i < 0x17; i++) {
+    for (i = 0; i < PAD_RPT_COUNT; i++) {
         pad_resetRepeat(port, i);
     }
 }
@@ -194,7 +194,7 @@ void pad_resetRepeat(s32 port, s32 button) {
 
 void pad_clearRepeats(s32 port) {
     s32 i;
-    for (i = 0; i < 0x17; i++) {
+    for (i = 0; i < PAD_RPT_COUNT; i++) {
         pad_clearRepeat(port, i);
     }
 }

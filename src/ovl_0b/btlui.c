@@ -697,8 +697,8 @@ void btlui_closeWindows(void) {
             btlui_closeListWindow(0);
         }
         for (i = 0; i < 2; i++) {
-            pad_setRepeatEnabled(i, 2, 0);
-            pad_setRepeatEnabled(i, 3, 0);
+            pad_setRepeatEnabled(i, PAD_RPT_LEFT, 0);
+            pad_setRepeatEnabled(i, PAD_RPT_RIGHT, 0);
         }
     }
 }
@@ -2177,8 +2177,8 @@ void btlui_startTargetSelect(Unk800EF80C *req) {
         btlui_openListWindow(g_btlTarget.listKind);
     }
     for (i = 0; i < 2; i++) {
-        pad_setRepeatEnabled(i, 2, 1);
-        pad_setRepeatEnabled(i, 3, 1);
+        pad_setRepeatEnabled(i, PAD_RPT_LEFT, 1);
+        pad_setRepeatEnabled(i, PAD_RPT_RIGHT, 1);
     }
 }
 
@@ -2491,8 +2491,8 @@ void btlui_cancelTarget(void) {
         unit->flags &= ~BTL_UNIT_TARGETED;
     }
     for (i = 0; i < 2; i++) {
-        pad_setRepeatEnabled(i, 2, 0);
-        pad_setRepeatEnabled(i, 3, 0);
+        pad_setRepeatEnabled(i, PAD_RPT_LEFT, 0);
+        pad_setRepeatEnabled(i, PAD_RPT_RIGHT, 0);
     }
 }
 
@@ -3729,13 +3729,13 @@ void btlui_saveKeyRepeat(void) {
     i = 0;
     row = g_btluiSavedRepeat[0];
     for (; i < 2; i++, row += 0x18) {
-        for (j = 0; j < 0x17; j++) {
+        for (j = 0; j < PAD_RPT_COUNT; j++) {
             row[j] = pad_isRepeatEnabled(i, j);
         }
-        pad_setRepeatEnabled(i, 2, 0);
-        pad_setRepeatEnabled(i, 3, 0);
-        pad_setRepeatTiming(i, 0xE, 0xF, 0xA);
-        pad_setRepeatEnabled(i, 0xE, 1);
+        pad_setRepeatEnabled(i, PAD_RPT_LEFT, 0);
+        pad_setRepeatEnabled(i, PAD_RPT_RIGHT, 0);
+        pad_setRepeatTiming(i, PAD_RPT_BTN_CROSS, 0xF, 0xA);
+        pad_setRepeatEnabled(i, PAD_RPT_BTN_CROSS, 1);
         pad_clearRepeats(i);
     }
     g_btluiSecondPort = btlui_anyOnSecondPort();
@@ -3745,7 +3745,7 @@ void btlui_restoreKeyRepeat(void) {
     s32 i, j;
     u8 *saved;
     for (i = 0, saved = g_btluiSavedRepeat[0]; i < 2; i++) {
-        for (j = 0; j < 0x17; j++) {
+        for (j = 0; j < PAD_RPT_COUNT; j++) {
             pad_setRepeatEnabled(i, j, saved[j]);
         }
         saved += 0x18;

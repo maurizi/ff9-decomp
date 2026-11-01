@@ -2329,6 +2329,32 @@ typedef struct {
     u8 pad7;
 } PadRepeatDef;
 extern PadRepeatDef g_padRepeatDefs[23]; /* pad_initRepeat defaults */
+/* key-repeat channels (g_padRepeats[port][ch], pad_setRepeat*): channel ch repeats the bits of
+ * g_padRepeatDefs[ch].mask, read from the table */
+#define PAD_RPT_UP 0 /* PAD_UP */
+#define PAD_RPT_DOWN 1 /* PAD_DOWN */
+#define PAD_RPT_LEFT 2 /* PAD_LEFT */
+#define PAD_RPT_RIGHT 3 /* PAD_RIGHT */
+#define PAD_RPT_CIRCLE 4 /* PAD_CIRCLE */
+#define PAD_RPT_CROSS 5 /* PAD_CROSS */
+#define PAD_RPT_TRIANGLE 6 /* PAD_TRIANGLE */
+#define PAD_RPT_SQUARE 7 /* PAD_SQUARE */
+#define PAD_RPT_L1 8 /* PAD_L1 */
+#define PAD_RPT_R1 9 /* PAD_R1 */
+#define PAD_RPT_L2 10 /* PAD_L2 */
+#define PAD_RPT_R2 11 /* PAD_R2 */
+#define PAD_RPT_SELECT 12 /* PAD_SELECT */
+#define PAD_RPT_START 13 /* PAD_START */
+#define PAD_RPT_BTN_CROSS 14 /* BTN_CROSS */
+#define PAD_RPT_BTN_CIRCLE 15 /* BTN_CIRCLE */
+#define PAD_RPT_BTN_TRIANGLE 16 /* BTN_TRIANGLE */
+#define PAD_RPT_BTN_SQUARE 17 /* BTN_SQUARE */
+#define PAD_RPT_BTN_L1 18 /* BTN_L1 */
+#define PAD_RPT_BTN_R1 19 /* BTN_R1 */
+#define PAD_RPT_BTN_L2 20 /* BTN_L2 */
+#define PAD_RPT_BTN_R2 21 /* BTN_R2 */
+#define PAD_RPT_BTN_TRIANGLE_ALT 22 /* BTN_TRIANGLE_ALT */
+#define PAD_RPT_COUNT 23
 typedef struct {
     u8 x0, y0, x1, y1, x2, y2, x3, y3;
 } Unk80068F48;
