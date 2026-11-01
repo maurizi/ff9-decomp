@@ -301,7 +301,7 @@ void mbg_applyMask(void *, u32 *, u16);
 typedef struct {
     u8 pad0[3];
     u8 len; /* packet length (2) */
-    u32 code[2]; /* 0xE6000002 (check mask), 0 */
+    u32 code[2]; /* GPU_STP(0, 1) (check mask), 0 */
 } Ovl64Stp;
 extern Ovl64Stp g_mbgMaskStp[2];
 s32 mbg_stop(void);

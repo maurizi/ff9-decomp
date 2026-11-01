@@ -62,7 +62,9 @@ int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 #define GPU_POLY_G4 0x38
 #define GPU_POLY_GT4 0x3C
 #define GPU_LINE_F2 0x40
+#define GPU_LINE_F3 0x48 /* polyline, ended by GPU_LINE_TERM */
 #define GPU_LINE_G2 0x50
+#define GPU_LINE_TERM 0x55555555 /* end of a polyline's vertex list */
 #define GPU_TILE 0x60
 #define GPU_SPRT 0x64
 #define GPU_TILE_1 0x68
@@ -255,6 +257,15 @@ typedef struct {
     s16 x0, y0;
     s16 x1, y1;
 } LINE_F2;
+
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    s16 x1, y1;
+    s16 x2, y2;
+    u32 pad; /* GPU_LINE_TERM */
+} LINE_F3;
 
 typedef struct {
     u32 tag;

@@ -421,8 +421,8 @@ s32 mbg_update(s32 putDisp) {
     g_mbgMaskCursor.cursor = g_mbgMaskCursor.data = (s32)&g_mbgMaskData[g_gameState->gameData->drawBuf];
     if (g_mbgRgb24 == 0 && g_mbgMaskCursor.size != 0) {
         Ovl64Stp *p = &g_mbgMaskStp[g_gameState->gameData->drawBuf];
-        p->len = 2;
-        p->code[0] = 0xE6000002;
+        p->len = PRIM_LEN(DR_STP);
+        p->code[0] = GPU_STP(0, 1);
         p->code[1] = 0;
     }
     dec = &g_mbgDecode;

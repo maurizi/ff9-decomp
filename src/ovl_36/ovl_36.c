@@ -273,23 +273,23 @@ void menuCard_drawCellHighlight(void) {
     }
     x = r->x + (s16)(s_menuCard.col * 15 + 4);
     y = r->y + (s16)(s_menuCard.row * 15 + 10);
-    setlen(g_primPtr, PRIM_LEN(POLY_F4));
-    rgbc = (a * 8) | 0x48000000;
+    setlen(g_primPtr, PRIM_LEN(LINE_F3));
+    rgbc = (a * 8) | GPU_CODE(GPU_LINE_F3);
     ((PolyF4Words *)g_primPtr)->rgbc = rgbc;
     ((PolyF4Words *)g_primPtr)->xy0 = x | (y << 16);
     ((PolyF4Words *)g_primPtr)->xy1 = (x + 13) | (y << 16);
     ((PolyF4Words *)g_primPtr)->xy2 = (x + 13) | ((y + 13) << 16);
-    ((PolyF4Words *)g_primPtr)->xy3 = 0x55555555;
+    ((PolyF4Words *)g_primPtr)->xy3 = GPU_LINE_TERM;
     addPrim(&g_ot[18], g_primPtr);
-    g_primPtr += 0x18;
-    setlen(g_primPtr, PRIM_LEN(POLY_F4));
+    g_primPtr += sizeof(LINE_F3);
+    setlen(g_primPtr, PRIM_LEN(LINE_F3));
     ((PolyF4Words *)g_primPtr)->rgbc = rgbc;
     ((PolyF4Words *)g_primPtr)->xy0 = x | (y << 16);
     ((PolyF4Words *)g_primPtr)->xy1 = x | ((y + 13) << 16);
     ((PolyF4Words *)g_primPtr)->xy2 = (x + 13) | ((y + 13) << 16);
-    ((PolyF4Words *)g_primPtr)->xy3 = 0x55555555;
+    ((PolyF4Words *)g_primPtr)->xy3 = GPU_LINE_TERM;
     addPrim(&g_ot[18], g_primPtr);
-    g_primPtr += 0x18;
+    g_primPtr += sizeof(LINE_F3);
 }
 
 void menuCard_drawCursor(void) {
