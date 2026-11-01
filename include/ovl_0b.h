@@ -370,6 +370,8 @@ typedef struct {
 #define BTL_GETVAR_WEAPON_ELEMENT 38 /* element of curCmd's caster's weapon */
 #define BTL_GETVAR_ABILITY_ELEMENT 39 /* element of curCmd's ability */
 #define BTL_GETVAR_LOAD_FLAGS     40 /* Battle.loadFlags */
+#define BTL_GETVAR_EXP            41 /* g_btlRewards.exp */
+#define BTL_GETVAR_EIKO_REBIRTH   42 /* the first CHR_KIND_EIKO* unit has BTL_CMD_REBIRTH_FLAME queued */
 /* btl_setBattleVar ids */
 #define BTL_SETVAR_STOP_COMBAT    32 /* phase END with subPhase 2: the units settle, then BTL_PHASE_SCRIPT */
 #define BTL_SETVAR_END            33 /* in BTL_PHASE_SCRIPT: ends the battle with result n (GameData.unk56E) */
@@ -378,6 +380,8 @@ typedef struct {
 #define BTL_SETVAR_PLAY_CAMERA    36 /* in BTL_PHASE_SCRIPT: btlcam_playScene(btl_getSceneData(n)) */
 #define BTL_SETVAR_NEXT_LOCATION  37 /* evt_setNextLocation(n) */
 #define BTL_SETVAR_ADD_GIL        38 /* gil += n, at most 9999999 */
+#define BTL_SETVAR_ADD_DRAGON_KILL 39 /* GameData.dragonKills + 1, at most 9999 */
+#define BTL_SETVAR_FADE_MUSIC     40 /* SND_MUSIC_VOL_INTPL fade, sets GD_BTL_VICTORY_MUSIC_FADE */
 
 /* BtlEnemyType.category bits (btl_hasEnemyFlag). Names: bit j is Scan's text g_btlScanTexts[j] (btl_updateScan
  * prints one line per set bit); the Killer supports pair with them in btl_applyKillerBonus (SA_*_KILLER). */
@@ -459,8 +463,19 @@ typedef struct {
 #define BTL_ATTR_SCALE         0x37 /* code: btlseq_opScale */
 #define BTL_ATTR_RESET_SCALE   0x38
 #define BTL_ATTR_MODEL         0x39
+#define BTL_ATTR_HIDDEN_MESHES 0x3A /* get: BtlUnit.hiddenMeshes */
 #define BTL_ATTR_HIDE_MESHES   0x3B
 #define BTL_ATTR_SHOW_MESHES   0x3C
+#define BTL_ATTR_TEXANIM_PLAY  0x3D /* set: plays model texture animation n (loops) */
+#define BTL_ATTR_TEXANIM_STOP  0x3E /* set: stops texture animation n */
+#define BTL_ATTR_TEXANIM_ONCE  0x3F /* set: plays texture animation n once */
+#define BTL_ATTR_ROW           0x40 /* get: BTL_UNIT_ROW */
+#define BTL_ATTR_SLOT          0x41 /* get: unit slot (BtlUnit.flags bits 5-7) */
+#define BTL_ATTR_KIND          0x42 /* get: the character's CHR_KIND_* (Character.info.b.kind) */
+#define BTL_ATTR_CLASS_FLAGS   0x43 /* get: Character.classFlags (CHR_CLASS_*) */
+#define BTL_ATTR_CATEGORY      0x44 /* get: the enemy's BtlEnemyType.category (BTL_ENEMY_*) */
+#define BTL_ATTR_WEAK_STANCE   0x45 /* BtlUnit.flags BTL_UNIT_WEAK_STANCE */
+#define BTL_ATTR_INDEX         0x46 /* get: BTL_UNIT_INDEX (character id or enemy index) */
 #define BTL_ATTR_ADD_REWARDS   0x47 /* set: btl_addEnemyRewards */
 #define BTL_ATTR_STRENGTH      0x48
 #define BTL_ATTR_MAGIC         0x49
@@ -468,6 +483,7 @@ typedef struct {
 #define BTL_ATTR_EVADE         0x4B
 #define BTL_ATTR_MAGIC_DEFENCE 0x4C
 #define BTL_ATTR_MAGIC_EVADE   0x4D
+#define BTL_ATTR_TERRA_HOMING  0x4E /* set: fills the ATB and queues BTL_CMD_SUMMON2 ABIL_TERRA_HOMING at targets n */
 
 typedef struct BtlUnit {
     struct BtlUnit *next; /* active-unit list (Battle.unitList) */

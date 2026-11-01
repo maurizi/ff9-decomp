@@ -350,32 +350,32 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
     case BTL_ATTR_MODEL:
         r = (s16)arg0->modelId;
         break;
-    case 0x3A:
+    case BTL_ATTR_HIDDEN_MESHES:
         r = arg0->hiddenMeshes;
         break;
-    case 0x40:
+    case BTL_ATTR_ROW:
         r = arg0->flags >> BTL_UNIT_ROW_SHIFT;
         r &= 3;
         break;
-    case 0x41:
+    case BTL_ATTR_SLOT:
         r = (u8)arg0->flags;
         r >>= 5;
         break;
-    case 0x42:
+    case BTL_ATTR_KIND:
         r = (g_gameState->gameData->characters + BTL_UNIT_INDEX(arg0->flags))->info.w >> CHR_INFO_KIND_SHIFT;
         r &= 0x1F;
         break;
-    case 0x43:
+    case BTL_ATTR_CLASS_FLAGS:
         r = (g_gameState->gameData->characters + BTL_UNIT_INDEX(arg0->flags))->classFlags;
         break;
-    case 0x44:
+    case BTL_ATTR_CATEGORY:
         r = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg0->flags)].type->category;
         break;
-    case 0x45:
+    case BTL_ATTR_WEAK_STANCE:
         r = arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT;
         r &= 1;
         break;
-    case 0x46:
+    case BTL_ATTR_INDEX:
         r = arg0->flags >> BTL_UNIT_INDEX_SHIFT;
         r &= 0xF;
         break;
@@ -493,23 +493,23 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         btl_showMeshes(arg0, arg2);
         arg0->hiddenMeshes &= ~arg2;
         break;
-    case 0x3D:
+    case BTL_ATTR_TEXANIM_PLAY:
         off = arg2 * 20;
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->flags |= BTL_TEXANIM_PLAY;
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->pos = 0;
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->lastFrame = 0x1000;
         break;
-    case 0x3E:
+    case BTL_ATTR_TEXANIM_STOP:
         w = arg2 * 20;
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + w))->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         break;
-    case 0x3F:
+    case BTL_ATTR_TEXANIM_ONCE:
         x = arg2 * 20;
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->pos = 0;
         ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->lastFrame = 0x1000;
         break;
-    case 0x45:
+    case BTL_ATTR_WEAK_STANCE:
         arg0->flags = (arg0->flags & ~BTL_UNIT_WEAK_STANCE) | ((arg2 & 1) << BTL_UNIT_WEAK_STANCE_BIT);
         break;
     case BTL_ATTR_ADD_REWARDS:
@@ -533,7 +533,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
     case BTL_ATTR_MAGIC_EVADE:
         arg0->magicEva = arg2;
         break;
-    case 0x4E:
+    case BTL_ATTR_TERRA_HOMING:
         arg0->atb = arg0->max->maxAtb;
         arg0->cmdIssued = 1;
         btl_setCmd(arg0->cmd, BTL_CMD_SUMMON2, ABIL_TERRA_HOMING, (u16)arg2, 8);
@@ -587,10 +587,10 @@ s32 btl_getBattleVar(s32 arg0) {
     case BTL_GETVAR_LOAD_FLAGS:
         r = b->loadFlags;
         break;
-    case 41:
+    case BTL_GETVAR_EXP:
         r = g_btlRewards.exp;
         break;
-    case 42:
+    case BTL_GETVAR_EIKO_REBIRTH:
         r = 0;
         for (u = b->unitList; u != NULL; u = u->next) {
             if (u->flags & BTL_UNIT_PARTY) {
@@ -672,12 +672,12 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
             g_gameState->gameData->gil = GIL_MAX;
         }
         break;
-    case 39:
+    case BTL_SETVAR_ADD_DRAGON_KILL:
         if (g_gameState->gameData->dragonKills < 9999) {
             g_gameState->gameData->dragonKills++;
         }
         break;
-    case 40:
+    case BTL_SETVAR_FADE_MUSIC:
         btl_soundCmd(SND_MUSIC_VOL_INTPL, 0, 0x1E, 0, 0);
         g_gameState->gameData->battleFlags |= GD_BTL_VICTORY_MUSIC_FADE;
         break;
