@@ -148,7 +148,7 @@ void menuName_drawPortrait(void) {
     SprtWords *p;
     u32 clut = (GetClut(0, 0x100) << 16) | 0xB000;
 
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     p = (SprtWords *)g_primPtr;
     p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = (s_menuNamePortraitWin->x + 2) | ((s_menuNamePortraitWin->y + 2) << 16);

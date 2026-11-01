@@ -37,7 +37,7 @@ s32 shadow_initSlots(s32 prim, s32 cx, s32 cy, s32 u, s32 v, s32 n, s32 flags) {
                 if (flags & 2) {
                     prim += 0xC;
                 }
-                setlen(p, 9);
+                setlen(p, PRIM_LEN(POLY_FT4));
                 setcode(p, GPU_POLY_FT4 | GPU_ABE);
                 switch (k) {
                 case 0:

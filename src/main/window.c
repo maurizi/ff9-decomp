@@ -650,7 +650,7 @@ void win_drawDivider(RECT *r, s32 otz, MenuList *m, s32 style) {
 
     c = g_winLineColors[style][(m->scroll & MENULIST_SCROLL_UP) ? 1 : 0];
     p = (LineF2Words *)g_primPtr;
-    setlen(p, 3);
+    setlen(p, PRIM_LEN(LINE_F2));
     ((LineF2Words *)g_primPtr)->rgbc = c;
     p->x0 = r->x + 2;
     p->x1 = r->x + r->w - 3;

@@ -507,7 +507,7 @@ void menuSave_drawBookIcon(s32 x, s32 y, s32 z, s32 idx) {
 
     clut = GetClut(0, BOOK_CLUT_Y);
 
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     e = &s_menuSaveBookFrames[idx];
     ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     ((SprtWords *)g_primPtr)->xy = x | (y << 16);
@@ -1519,7 +1519,7 @@ void menuSave_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
         for (i = 0; i < 3; i++) {
             s32 k = i + 2;
             s32 yy = (y + k) << 16;
-            setlen(g_primPtr, 3);
+            setlen(g_primPtr, PRIM_LEN(LINE_F2));
             l = (LineWords *)g_primPtr;
             l->rgbc = s_menuSaveGaugeColors[i];
             l->xy0 = (x + 4) | yy;
@@ -1533,7 +1533,7 @@ void menuSave_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     SetTexWindow(g_primPtr, &s_menuSaveGaugeTexWindow);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     p = (SprtWords *)g_primPtr;
     p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = ((x + ic->w) & 0xFFFF) | (y << 16);

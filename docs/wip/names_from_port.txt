@@ -11466,3 +11466,12 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 # ===== verification pass fixes =====
 # FIELDS fxmod work +0 (22 modules): stop0=hold0
 # FIELDS include/fxmod/fx_0e7.h Fx0e7Work: fadeInTimer68=blend68
+
+# ===== literals pass =====
+# Macros only (no symbol renames); each replaced literal compiles to the same bytes.
+# psyq.h: setSprt8, setTile, setTile1, setTile8, setTile16, setLineF2, setLineG2 (PsyQ libgpu.h names), and
+#   PRIM_LEN(type) = sizeof(type) / 4 - 1, the tag length of a primitive.
+# setlen(p, N) in game code: setlen + code byte store -> set<Prim>(p); setlen(p, 1) + DR_TPAGE word ->
+#   setDrawTPage(p, dfe, dtd, tpage); otherwise setlen(p, PRIM_LEN(T)) with T the primitive written next
+#   (SPRT/TILE/... from the code byte, DR_STP for GPU_STP/_get_mask, DR_MODE for get_mode + get_tw).
+#   Left: three setlen(p, 2) right before a SetDrawTPage() library call (ui.c, ovl_39, ovl_3a).

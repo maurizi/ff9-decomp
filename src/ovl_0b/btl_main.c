@@ -62,7 +62,7 @@ void btl_updatePause(void) {
                 g_padPortMask[0] |= 8;
             }
             ClearOTag(g_btlPauseOt, 1);
-            setlen(&g_btlPauseStpOff, 2);
+            setlen(&g_btlPauseStpOff, PRIM_LEN(DR_STP));
             g_btlPauseStpOff.code[0] = GPU_STP(0, 0);
             g_btlPauseStpOff.code[1] = 0;
             addPrim(g_btlPauseOt, &g_btlPauseStpOff);
@@ -71,7 +71,7 @@ void btl_updatePause(void) {
             } else {
                 ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, g_btlPauseOt, 0xEB, 0, &w, g_btlPauseSprite);
             }
-            setlen(&g_btlPauseDimTile, 3);
+            setlen(&g_btlPauseDimTile, PRIM_LEN(TILE));
             g_btlPauseDimTile.code = GPU_TILE | GPU_ABE;
             g_btlPauseDimTile.r0 = 0x60;
             g_btlPauseDimTile.g0 = 0x60;
@@ -81,11 +81,10 @@ void btl_updatePause(void) {
             g_btlPauseDimTile.x0 = 0;
             g_btlPauseDimTile.y0 = 0;
             addPrim(g_btlPauseOt, &g_btlPauseDimTile);
-            setlen(&g_btlPauseDrawMode, 1);
-            g_btlPauseDrawMode.code[0] = get_mode(0, 1, getTPage(0, 2, 0, 0));
+            setDrawTPage(&g_btlPauseDrawMode, 0, 1, getTPage(0, 2, 0, 0));
             addPrim(g_btlPauseOt, &g_btlPauseDrawMode);
             g_btlPauseStpOn.code[0] = GPU_STP(1, 0);
-            setlen(&g_btlPauseStpOn, 2);
+            setlen(&g_btlPauseStpOn, PRIM_LEN(DR_STP));
             g_btlPauseStpOn.code[1] = 0;
             addPrim(g_btlPauseOt, &g_btlPauseStpOn);
             DrawOTag(g_btlPauseOt);
@@ -2131,11 +2130,11 @@ void btl_beginFrame(void) {
     ClearOTagR((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], BTL_BG_OT_LEN);
     ClearOTagR(fade_getOt(g_gameState->gameData->drawBuf), 1);
     ClearOTagR((u32 *)btl_getBannerOt(g_gameState->gameData->drawBuf), 1);
-    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].mainStp, 2);
+    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].mainStp, PRIM_LEN(DR_STP));
     ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].mainStp)[1] = GPU_STP(0, 0);
     ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].mainStp)[2] = 0;
     addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], &g_btlFrameStartStp[g_gameState->gameData->drawBuf].mainStp);
-    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].bgStp, 2);
+    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].bgStp, PRIM_LEN(DR_STP));
     ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].bgStp)[1] = GPU_STP(0, 0);
     ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].bgStp)[2] = 0;
     addPrim((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], &g_btlFrameStartStp[g_gameState->gameData->drawBuf].bgStp);
@@ -2149,11 +2148,11 @@ void btl_endFrame(void) {
         g_gameState->flags |= GS_RESET;
     }
     btlui_waitFrame();
-    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].mainStp, 2);
+    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].mainStp, PRIM_LEN(DR_STP));
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].mainStp)[1] = GPU_STP(1, 0);
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].mainStp)[2] = 0;
     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].mainStp);
-    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp, 2);
+    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp, PRIM_LEN(DR_STP));
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp)[1] = GPU_STP(1, 0);
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp)[2] = 0;
     addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp);

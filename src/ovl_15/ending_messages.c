@@ -207,7 +207,7 @@ s32 ending_textWidth(u8 *s) {
 void *ending_drawGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 *out, SprtWords *p) {
     u32 n;
 
-    setlen(p, 4);
+    setlen(p, PRIM_LEN(SPRT));
     p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = ((x + ((glyph >> 20) & 3)) & 0xFFFF) | (y << 16);
     p->uvclut = (glyph & 0x40FFFF) + 0x38270000;

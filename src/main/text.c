@@ -60,7 +60,7 @@ s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
         return 0;
     }
     g = tbl[c];
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     w = (g >> 16) & 0xF;
     p = (SprtWords *)g_primPtr;
     p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
@@ -90,7 +90,7 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
             s++;
         }
         g = *(f->glyphs + c);
-        setlen(p, 4);
+        setlen(p, PRIM_LEN(SPRT));
         k = (g >> 20) & 3;
         p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
         w = g >> 28;
@@ -104,7 +104,7 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
         p++;
         s++;
     }
-    setlen(p, 1);
+    setlen(p, PRIM_LEN(DR_TPAGE));
     ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1E);
     addPrim(ot, p);
     g_primPtr = (u8 *)p + 8;
@@ -226,7 +226,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
         }
         s++;
     }
-    setlen(pkt, 1);
+    setlen(pkt, PRIM_LEN(DR_TPAGE));
     ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
     addPrim(ot, pkt);
     pkt += sizeof(DrTpageWords);
@@ -272,7 +272,7 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
         }
         s++;
     }
-    setlen(pkt, 1);
+    setlen(pkt, PRIM_LEN(DR_TPAGE));
     ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
     addPrim(ot, pkt);
     *w = x - x0;
@@ -317,7 +317,7 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
             g = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_UNDERSCORE];
         }
         if (*s != ' ') {
-            setlen(p, 4);
+            setlen(p, PRIM_LEN(SPRT));
             p->rgbc = rgbc;
             p->xy = (x & 0xFFFF) | (y << 16);
             w = g->w;
@@ -331,7 +331,7 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
         s++;
         x += w - 1;
     }
-    setlen(p, 1);
+    setlen(p, PRIM_LEN(DR_TPAGE));
     ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
     addPrim(ot, p);
     return (u8 *)p + 8;
@@ -387,7 +387,7 @@ u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
                 v = 0;
                 u = 0;
             }
-            setlen(p, 3);
+            setlen(p, PRIM_LEN(SPRT_8));
             p->rgbc = GPU_RGBC(GPU_SPRT_8, 0x808080);
             q = p;
             if ((u8)(*s + 0x22) < 2) {
@@ -406,7 +406,7 @@ u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
             s++;
         }
     }
-    setlen(p, 1);
+    setlen(p, PRIM_LEN(DR_TPAGE));
     ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
     hi = getaddr(ot); /* reuses hi as the tag temp */
     setaddr(p, hi), setaddr(ot, p);
@@ -991,7 +991,7 @@ u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
             } else {
                 u = 0xE8;
             }
-            setlen(p, 4);
+            setlen(p, PRIM_LEN(SPRT));
             p->rgbc = rgbc;
             p->xy = (x & 0xFFFF) | (y << 16);
             p->wh = 0xA0008;
@@ -1003,8 +1003,7 @@ u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
         x += 7;
     }
     t = (DrTpageWords *)p;
-    setlen(t, 1);
-    t->code = get_mode(1, 1, 0x1F);
+    setDrawTPage(t, 1, 1, 0x1F);
     addPrim(ot, t);
     return (u8 *)(t + 1);
 }
@@ -1017,7 +1016,7 @@ u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 mode, s32 *out, SprtWo
     if (mode != TEXT_PAL_PLAIN) {
         rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
-    setlen(p, 4);
+    setlen(p, PRIM_LEN(SPRT));
     p->xy = ((x + dx) & 0xFFFF) | (y << 16);
     p->rgbc = rgbc;
     p->uvclut = (glyph & 0x40FFFF) + (g_textPalettes[mode] << 16);
@@ -1075,8 +1074,7 @@ s32 text_measureWidth(s32 s) {
 }
 
 u8 *text_buildFontTpage(u32 *ot, DrTpageWords *p) {
-    setlen(p, 1);
-    p->code = get_mode(1, 1, 0x1E);
+    setDrawTPage(p, 1, 1, 0x1E);
     addPrim(ot, p);
     return (u8 *)(p + 1);
 }

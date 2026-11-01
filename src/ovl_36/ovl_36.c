@@ -273,7 +273,7 @@ void menuCard_drawCellHighlight(void) {
     }
     x = r->x + (s16)(s_menuCard.col * 15 + 4);
     y = r->y + (s16)(s_menuCard.row * 15 + 10);
-    setlen(g_primPtr, 5);
+    setlen(g_primPtr, PRIM_LEN(POLY_F4));
     rgbc = (a * 8) | 0x48000000;
     ((PolyF4Words *)g_primPtr)->rgbc = rgbc;
     ((PolyF4Words *)g_primPtr)->xy0 = x | (y << 16);
@@ -282,7 +282,7 @@ void menuCard_drawCellHighlight(void) {
     ((PolyF4Words *)g_primPtr)->xy3 = 0x55555555;
     addPrim(&g_ot[18], g_primPtr);
     g_primPtr += 0x18;
-    setlen(g_primPtr, 5);
+    setlen(g_primPtr, PRIM_LEN(POLY_F4));
     ((PolyF4Words *)g_primPtr)->rgbc = rgbc;
     ((PolyF4Words *)g_primPtr)->xy0 = x | (y << 16);
     ((PolyF4Words *)g_primPtr)->xy1 = x | ((y + 13) << 16);
@@ -377,7 +377,7 @@ void menuCard_drawFace(s32 x, s32 y, s32 z, s32 dim) {
     s32 c;
     u32 rgbc;
 
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     c = 0x80 - dim * 0x16;
     rgbc = c | (c << 8) | (c << 16) | GPU_CODE(GPU_SPRT);
     p = (SprtWords *)g_primPtr;
@@ -421,7 +421,7 @@ void menuCard_drawSprite(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
     SprtWords *p;
     Ovl36Sprite *t;
 
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     p = (SprtWords *)g_primPtr;
     t = &s_menuCardSprites[idx];
     p->rgbc = rgbc;

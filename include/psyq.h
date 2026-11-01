@@ -37,6 +37,16 @@ int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 #define setPolyGT4(p) setlen(p, 12), setcode(p, 0x3C)
 #define setSprt(p) setlen(p, 4), setcode(p, 0x64)
 #define setSprt16(p) setlen(p, 3), setcode(p, 0x7C)
+#define setSprt8(p) setlen(p, 3), setcode(p, 0x74)
+#define setTile(p) setlen(p, 3), setcode(p, 0x60)
+#define setTile1(p) setlen(p, 2), setcode(p, 0x68)
+#define setTile8(p) setlen(p, 2), setcode(p, 0x70)
+#define setTile16(p) setlen(p, 2), setcode(p, 0x78)
+#define setLineF2(p) setlen(p, 3), setcode(p, 0x40)
+#define setLineG2(p) setlen(p, 4), setcode(p, 0x50)
+/* A tag's len for primitive TYPE (words after the tag), for code that sets len and then writes the code byte
+   or whole words itself: setlen(p, PRIM_LEN(SPRT)). Not a PsyQ macro. */
+#define PRIM_LEN(type) (sizeof(type) / 4 - 1)
 #define TPAGE_ABR_MASK 0x60 /* texture page word bits 5-6: semi-transparency rate (getTPage's abr << 5) */
 #define GPU_STP(set, check) (0xE6000000 | ((check) << 1) | (set)) /* GP0(E6h) as ovl_0b writes it */
 #define _get_mask(set, chk) (0xE6000000 | ((chk) ? 2 : 0) | ((set) ? 1 : 0)) /* GP0(E6h) mask-bit setting word */

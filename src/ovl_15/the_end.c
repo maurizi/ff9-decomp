@@ -23,8 +23,7 @@ s32 ending_theEnd(void) {
                 timer = 0x21C;
                 game_startFade(1, 1, 0xB4, 0);
             } else if (timer != 0) {
-                setlen(&g_theEndSprites[g_gameState->gameData->drawBuf][0], 4);
-                g_theEndSprites[g_gameState->gameData->drawBuf][0].code = GPU_SPRT;
+                setSprt(&g_theEndSprites[g_gameState->gameData->drawBuf][0]);
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].r0 = 0x80;
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].g0 = 0x80;
                 g_theEndSprites[g_gameState->gameData->drawBuf][0].b0 = 0x80;
@@ -38,7 +37,7 @@ s32 ending_theEnd(void) {
                 addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndSprites[g_gameState->gameData->drawBuf][0]);
                 setDrawTPage(&g_theEndTpages[g_gameState->gameData->drawBuf][0], 1, 1, 0x10A);
                 addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndTpages[g_gameState->gameData->drawBuf][0]);
-                setlen((g_theEndSprites[g_gameState->gameData->drawBuf] + 1), 4);
+                setlen((g_theEndSprites[g_gameState->gameData->drawBuf] + 1), PRIM_LEN(SPRT));
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->code = GPU_SPRT;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
                 (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;
@@ -56,8 +55,7 @@ s32 ending_theEnd(void) {
             }
             break;
         case THEEND_ST_FADE:
-            setlen(&g_theEndSprites[g_gameState->gameData->drawBuf][0], 4);
-            g_theEndSprites[g_gameState->gameData->drawBuf][0].code = GPU_SPRT;
+            setSprt(&g_theEndSprites[g_gameState->gameData->drawBuf][0]);
             g_theEndSprites[g_gameState->gameData->drawBuf][0].r0 = 0x80;
             g_theEndSprites[g_gameState->gameData->drawBuf][0].g0 = 0x80;
             g_theEndSprites[g_gameState->gameData->drawBuf][0].b0 = 0x80;
@@ -71,7 +69,7 @@ s32 ending_theEnd(void) {
             addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndSprites[g_gameState->gameData->drawBuf][0]);
             setDrawTPage(&g_theEndTpages[g_gameState->gameData->drawBuf][0], 1, 1, 0x10A);
             addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndTpages[g_gameState->gameData->drawBuf][0]);
-            setlen((g_theEndSprites[g_gameState->gameData->drawBuf] + 1), 4);
+            setlen((g_theEndSprites[g_gameState->gameData->drawBuf] + 1), PRIM_LEN(SPRT));
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->code = GPU_SPRT;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
             (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;

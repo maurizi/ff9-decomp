@@ -76,7 +76,7 @@ u8 *btlfx_drawSliceMesh(BtlModel *model, u8 mesh, u8 *prim) {
             }
         }
         *(u32 *)&pFT4->r0 = *(u32 *)sFT4->rgb;
-        setlen(pFT4, 9);
+        setlen(pFT4, PRIM_LEN(POLY_FT4));
         *(s32 *)&pFT4->x0 = xy0;
         *(s32 *)&pFT4->x1 = xy1;
         *(s32 *)&pFT4->x2 = xy2;
@@ -125,7 +125,7 @@ u8 *btlfx_drawSliceMesh(BtlModel *model, u8 mesh, u8 *prim) {
         }
         otz &= 0xFFFFF;
         *(u32 *)&pFT3->r0 = *(u32 *)sFT3->rgb;
-        setlen(pFT3, 7);
+        setlen(pFT3, PRIM_LEN(POLY_FT3));
         *(s32 *)&pFT3->x0 = xy0;
         *(s32 *)&pFT3->x1 = xy1;
         *(s32 *)&pFT3->x2 = xy2;
@@ -185,8 +185,7 @@ u8 *btlfx_drawSliceMesh(BtlModel *model, u8 mesh, u8 *prim) {
         *(u32 *)&pGT4->r2 = *cp;
         cp = (u32 *)col[i1 >> 16];
         *(u32 *)&pGT4->r3 = *cp;
-        setlen(pGT4, 12);
-        setcode(pGT4, GPU_POLY_GT4);
+        setPolyGT4(pGT4);
         a = *(u32 *)&sGT4->uv[0];
         i1 = *(u32 *)&sGT4->uv[2];
         hi = t & 0xFFFF0000;
@@ -239,8 +238,7 @@ u8 *btlfx_drawSliceMesh(BtlModel *model, u8 mesh, u8 *prim) {
         *(u32 *)&pGT3->r1 = *cp;
         cp = (u32 *)col[sGT3->col[2]];
         *(u32 *)&pGT3->r2 = *cp;
-        setlen(pGT3, 9);
-        setcode(pGT3, GPU_POLY_GT3);
+        setPolyGT3(pGT3);
         hi = t & 0xFFFF0000;
         t <<= 16;
         *(u32 *)&pGT3->u0 = *(u16 *)uv[sGT3->uv[0]] | hi;
@@ -295,8 +293,7 @@ u8 *btlfx_drawSliceMesh(BtlModel *model, u8 mesh, u8 *prim) {
         *(u32 *)&pG4->r2 = *cp;
         cp = (u32 *)col[i1 >> 16];
         *(u32 *)&pG4->r3 = *cp;
-        setlen(pG4, 8);
-        setcode(pG4, GPU_POLY_G4);
+        setPolyG4(pG4);
         addPrim(&ot[otz >> 6], pG4);
         prim += sizeof(POLY_G4);
     }
@@ -335,8 +332,7 @@ u8 *btlfx_drawSliceMesh(BtlModel *model, u8 mesh, u8 *prim) {
         *(u32 *)&pG3->r1 = *cp;
         cp = (u32 *)col[sG3->col[2]];
         *(u32 *)&pG3->r2 = *cp;
-        setlen(pG3, 6);
-        setcode(pG3, GPU_POLY_G3);
+        setPolyG3(pG3);
         otz /= 3;
         addPrim(&ot[otz >> 4], pG3);
         prim += sizeof(POLY_G3);
@@ -367,7 +363,7 @@ u8 *btlfx_drawSliceMesh(BtlModel *model, u8 mesh, u8 *prim) {
             }
         }
         *(u32 *)&pF4->r0 = *(u32 *)sF4->rgb;
-        setlen(pF4, 5);
+        setlen(pF4, PRIM_LEN(POLY_F4));
         *(s32 *)&pF4->x0 = xy0;
         *(s32 *)&pF4->x1 = xy1;
         *(s32 *)&pF4->x2 = xy2;
@@ -403,8 +399,7 @@ u8 *btlfx_drawSliceMesh(BtlModel *model, u8 mesh, u8 *prim) {
         }
         otz &= 0xFFFFF;
         *(u32 *)&pF3->r0 = *(u32 *)sF3->rgb;
-        setlen(pF3, 4);
-        setcode(pF3, GPU_POLY_F3);
+        setPolyF3(pF3);
         *(s32 *)&pF3->x0 = xy0;
         *(s32 *)&pF3->x1 = xy1;
         *(s32 *)&pF3->x2 = xy2;

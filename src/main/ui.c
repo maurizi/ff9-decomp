@@ -69,7 +69,7 @@ void win_drawShadowRect(RECT *r, s32 otz) {
     TileWords *p;
     DrTpageWords *t;
 
-    setlen(g_primPtr, 3);
+    setlen(g_primPtr, PRIM_LEN(TILE));
     ((TileWords *)g_primPtr)->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     p = (TileWords *)g_primPtr;
     p->xy = (r->x + 3) | ((r->y + r->h) << 16);
@@ -77,7 +77,7 @@ void win_drawShadowRect(RECT *r, s32 otz) {
     addPrim(&g_ot[otz], p);
     g_primPtr = (u8 *)(p + 1);
 
-    setlen(g_primPtr, 3);
+    setlen(g_primPtr, PRIM_LEN(TILE));
     ((TileWords *)g_primPtr)->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     p = (TileWords *)g_primPtr;
     p->xy = (r->x + r->w) | ((r->y + 3) << 16);
@@ -85,7 +85,7 @@ void win_drawShadowRect(RECT *r, s32 otz) {
     addPrim(&g_ot[otz], p);
     g_primPtr = (u8 *)(p + 1);
 
-    setlen(g_primPtr, 1);
+    setlen(g_primPtr, PRIM_LEN(DR_TPAGE));
     t = (DrTpageWords *)g_primPtr;
     t->code = get_mode(1, 1, 0);
     addPrim(&g_ot[otz], t);
@@ -97,7 +97,7 @@ void win_drawShadowSlant(RECT *r, s32 otz) {
     DrTpageWords *t;
 
     p = (PolyF4Half *)g_primPtr;
-    setlen(p, 5);
+    setlen(p, PRIM_LEN(POLY_F4));
     p->rgbc = GPU_CODE(GPU_POLY_F4 | GPU_ABE);
     p->x0 = r->x + 4;
     p->y0 = r->y + r->h - 1;
@@ -111,7 +111,7 @@ void win_drawShadowSlant(RECT *r, s32 otz) {
     addPrim(&g_ot[otz], p);
 
     p = (PolyF4Half *)g_primPtr;
-    setlen(p, 5);
+    setlen(p, PRIM_LEN(POLY_F4));
     p->rgbc = GPU_CODE(GPU_POLY_F4 | GPU_ABE);
     p->x0 = r->x + r->w - 3;
     p->y0 = r->y + 2;
@@ -124,7 +124,7 @@ void win_drawShadowSlant(RECT *r, s32 otz) {
     g_primPtr += sizeof(PolyF4Half);
     addPrim(&g_ot[otz], p);
 
-    setlen(g_primPtr, 1);
+    setlen(g_primPtr, PRIM_LEN(DR_TPAGE));
     t = (DrTpageWords *)g_primPtr;
     t->code = get_mode(1, 1, 0);
     addPrim(&g_ot[otz], t);
@@ -136,7 +136,7 @@ void win_drawShadowSlant2(RECT *r, s32 otz) {
     DrTpageWords *t;
 
     p = (PolyF4Half *)g_primPtr;
-    setlen(p, 5);
+    setlen(p, PRIM_LEN(POLY_F4));
     p->rgbc = GPU_CODE(GPU_POLY_F4 | GPU_ABE);
     p->x0 = r->x + 2;
     p->y0 = r->y + r->h;
@@ -150,7 +150,7 @@ void win_drawShadowSlant2(RECT *r, s32 otz) {
     addPrim(&g_ot[otz], p);
 
     p = (PolyF4Half *)g_primPtr;
-    setlen(p, 5);
+    setlen(p, PRIM_LEN(POLY_F4));
     p->rgbc = GPU_CODE(GPU_POLY_F4 | GPU_ABE);
     p->x0 = r->x + r->w - 3;
     p->y0 = r->y;
@@ -163,7 +163,7 @@ void win_drawShadowSlant2(RECT *r, s32 otz) {
     g_primPtr += sizeof(PolyF4Half);
     addPrim(&g_ot[otz], p);
 
-    setlen(g_primPtr, 1);
+    setlen(g_primPtr, PRIM_LEN(DR_TPAGE));
     t = (DrTpageWords *)g_primPtr;
     t->code = get_mode(1, 1, 0);
     addPrim(&g_ot[otz], t);
@@ -176,7 +176,7 @@ void ui_drawBackground(void) {
     PolyG4Words *p;
 
     w = g_gameState->dispEnv->disp.w;
-    setlen(g_primPtr, 8);
+    setlen(g_primPtr, PRIM_LEN(POLY_G4));
     p = (PolyG4Words *)g_primPtr;
     p->rgbc0 = GPU_CODE(GPU_POLY_G4 | GPU_ABE);
     p->rgb2 = 0x505050;
@@ -189,7 +189,7 @@ void ui_drawBackground(void) {
     addPrim(&g_ot[0xFFF], p);
     g_primPtr += sizeof(PolyG4Words);
 
-    setlen(g_primPtr, 1);
+    setlen(g_primPtr, PRIM_LEN(DR_TPAGE));
     ((DrTpageWords *)g_primPtr)->code = get_mode(1, 1, 0x40);
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
@@ -199,13 +199,13 @@ void ui_drawBackground(void) {
     tw.w = g_uiBackgroundSprite.w;
     tw.h = g_uiBackgroundSprite.h;
 
-    setlen(g_primPtr, 2);
+    setlen(g_primPtr, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&g_noTexWindow);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
 
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     ((SprtWords *)g_primPtr)->xy = 0;
     ((SprtWords *)g_primPtr)->uvclut = g_uiBackgroundSprite.clut << 16;
@@ -213,7 +213,7 @@ void ui_drawBackground(void) {
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(SprtWords);
 
-    setlen(g_primPtr, 2);
+    setlen(g_primPtr, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, g_uiBackgroundSprite.tpage);
     ((DrMode2Words *)g_primPtr)->code[1] = get_tw(&tw);
     addPrim(&g_ot[0xFFF], g_primPtr);
@@ -229,13 +229,13 @@ u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
     tw.w = g_winFillSprite.w;
     tw.h = g_winFillSprite.h;
 
-    setlen(pkt, 2);
+    setlen(pkt, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)pkt)->code[0] = get_tw(&g_noTexWindow);
     ((DrMode2Words *)pkt)->code[1] = 0;
     addPrim(ot, pkt);
     pkt += sizeof(DrMode2Words);
 
-    setlen(pkt, 4);
+    setlen(pkt, PRIM_LEN(SPRT));
     ((SprtWords *)pkt)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     ((SprtWords *)pkt)->xy = (u16)r->x | (r->y << 16);
     ((SprtWords *)pkt)->uvclut = u | (v << 8) | (clut << 16);
@@ -243,7 +243,7 @@ u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
     addPrim(ot, pkt);
     pkt += sizeof(SprtWords);
 
-    setlen(pkt, 2);
+    setlen(pkt, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)pkt)->code[0] = get_mode(1, 1, g_winFillSprite.tpage);
     ((DrMode2Words *)pkt)->code[1] = get_tw(&tw);
     addPrim(ot, pkt);
@@ -275,14 +275,14 @@ void win_drawLineBorder(RECT *r, s32 otz, u8 skip, s32 abr) {
     col = g_winLineColors[abr];
     for (i = skip != 0; i < 4; i++) {
         p = (LineF2W *)g_primPtr;
-        setlen(p, 3);
+        setlen(p, PRIM_LEN(LINE_F2));
         p->rgbc = col[i >> 1];
         p->xy0 = (u16)l[i].x0 | (l[i].y0 << 16);
         p->xy1 = (u16)l[i].x1 | (l[i].y1 << 16);
         addPrim(&g_ot[otz], p);
         g_primPtr += sizeof(LineF2W);
         p = (LineF2W *)g_primPtr;
-        setlen(p, 3);
+        setlen(p, PRIM_LEN(LINE_F2));
         p->rgbc = col[(i >> 1) + 2];
         p->xy0 = ((l[i].x0 + g_winShadowLineOffsets[i][0]) & 0xFFFF) | ((l[i].y0 + g_winShadowLineOffsets[i][1]) << 16);
         p->xy1 = ((l[i].x1 + g_winShadowLineOffsets[i][2]) & 0xFFFF) | ((l[i].y1 + g_winShadowLineOffsets[i][3]) << 16);
@@ -315,7 +315,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
         for (j = 0, x = r->x; j < 2; j++) {
             if (flag || i || !j) {
                 d = (UiSprite *)&g_uiSprites[g_winCornerSprites[style][i * 2 + j]];
-                setlen(pkt, 3);
+                setlen(pkt, PRIM_LEN(SPRT_8));
                 ((Sprt8Words *)pkt)->rgbc = g_winCornerRgbc[flag] | semi;
                 ((Sprt8Words *)pkt)->xy = (u16)x | (y << 16);
                 ((Sprt8Words *)pkt)->uvclut = d->u | (d->v << 8) | clut;
@@ -327,7 +327,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
         y += r->h - 8;
     }
 
-    setlen(pkt, 2);
+    setlen(pkt, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)pkt)->code[0] = get_tw(&g_noTexWindow);
     ((DrMode2Words *)pkt)->code[1] = 0;
     addPrim(ot, pkt);
@@ -337,7 +337,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
         y = r->y + r->h - 8;
         for (i = 0; i < n; i++) {
             d = (UiSprite *)&g_uiSprites[g_winHEdgeSprites[style][i]];
-            setlen(pkt, 4);
+            setlen(pkt, PRIM_LEN(SPRT));
             ((SprtWords *)pkt)->rgbc = g_winEdgeRgbc[flag] | semi;
             ((SprtWords *)pkt)->xy = ((r->x + 8) & 0xFFFF) | (y << 16);
             ((SprtWords *)pkt)->uvclut = clut;
@@ -349,7 +349,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
             tw.w = d->w;
             tw.h = d->h;
             pkt += sizeof(SprtWords);
-            setlen(pkt, 2);
+            setlen(pkt, PRIM_LEN(DR_MODE));
             ((DrMode2Words *)pkt)->code[0] = get_tw(&tw);
             ((DrMode2Words *)pkt)->code[1] = 0;
             addPrim(ot, pkt);
@@ -360,7 +360,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
         x = r->x;
         for (i = 0; i < n; i++) {
             d = (UiSprite *)&g_uiSprites[g_winVEdgeSprites[style][i]];
-            setlen(pkt, 4);
+            setlen(pkt, PRIM_LEN(SPRT));
             ((SprtWords *)pkt)->rgbc = g_winEdgeRgbc[flag] | semi;
             ((SprtWords *)pkt)->xy = (x & 0xFFFF) | ((r->y + 8) << 16);
             ((SprtWords *)pkt)->uvclut = clut;
@@ -372,14 +372,14 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
             tw.w = d->w;
             tw.h = d->h;
             pkt += sizeof(SprtWords);
-            setlen(pkt, 2);
+            setlen(pkt, PRIM_LEN(DR_MODE));
             ((DrMode2Words *)pkt)->code[0] = get_tw(&tw);
             ((DrMode2Words *)pkt)->code[1] = 0;
             addPrim(ot, pkt);
             pkt += sizeof(DrMode2Words);
         }
     }
-    setlen(pkt, 1);
+    setlen(pkt, PRIM_LEN(DR_TPAGE));
     ((DrTpageWords *)pkt)->code = get_mode(1, 1, d->tpage);
     addPrim(ot, pkt);
     return pkt + sizeof(DrTpageWords);
@@ -403,7 +403,7 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
     }
     for (i = 0; i < 2; i++) {
         d = &((UiSprite *)g_uiSprites)[g_winRuleSprites[style][i]];
-        setlen(g_primPtr, 4);
+        setlen(g_primPtr, PRIM_LEN(SPRT));
         yy = y << 16;
         ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         if (i != 0) {
@@ -417,7 +417,7 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
         g_primPtr += sizeof(SprtWords);
     }
     if (w > 0x10) {
-        setlen(g_primPtr, 2);
+        setlen(g_primPtr, PRIM_LEN(DR_MODE));
         ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&g_noTexWindow);
         ((DrMode2Words *)g_primPtr)->code[1] = 0;
         addPrim(&g_ot[otz], g_primPtr);
@@ -427,7 +427,7 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
         tw.y = d->v;
         tw.w = d->w;
         tw.h = d->h;
-        setlen(g_primPtr, 4);
+        setlen(g_primPtr, PRIM_LEN(SPRT));
         ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         ((SprtWords *)g_primPtr)->xy = ((x + 8) & 0xFFFF) | (y << 16);
         ((SprtWords *)g_primPtr)->uvclut = (style << 10) | (clut << 16);
@@ -435,7 +435,7 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
         addPrim(&g_ot[otz], g_primPtr);
         g_primPtr += sizeof(SprtWords);
     }
-    setlen(g_primPtr, 2);
+    setlen(g_primPtr, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, d->tpage);
     ((DrMode2Words *)g_primPtr)->code[1] = get_tw(w > 0x10 ? &tw : &g_noTexWindow);
     addPrim(&g_ot[otz], g_primPtr);
@@ -483,7 +483,7 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
             c1 = e->c[2];
             CVECTOR_LERP(c2, &c1, t1, cur, max);
         }
-        setlen(g_primPtr, 8);
+        setlen(g_primPtr, PRIM_LEN(POLY_G4));
         p = (PolyG4Words *)g_primPtr;
         p->rgbc0 = p->rgb2 = c1.r | (c1.g << 8) | (c1.b << 16) | GPU_CODE(GPU_POLY_G4);
         p->rgb1 = p->rgb3 = c2.r | (c2.g << 8) | (c2.b << 16);
@@ -496,7 +496,7 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
         g_primPtr = (u8 *)(p + 1);
     }
     ui_drawSprite(x, y, otz, 2, 0);
-    setlen(g_primPtr, 3);
+    setlen(g_primPtr, PRIM_LEN(TILE));
     t = (TileWords *)g_primPtr;
     t->rgbc = *(u32 *)&e->c[0];
     t->xy = (x + 1) | ((y + 1) << 16);
@@ -516,7 +516,7 @@ void win_drawTailEdge(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
     } else {
         clut = 0x3EA40000;
     }
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     ((SprtWords *)g_primPtr)->rgbc = flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p = (SprtWords *)g_primPtr;
     p->xy = x | (y << 16);
@@ -524,7 +524,7 @@ void win_drawTailEdge(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
     p->wh = g->w | (g->h << 16);
     addPrim(&g_ot[otz], p);
     g_primPtr = (u8 *)(p + 1);
-    setlen(g_primPtr, 1);
+    setlen(g_primPtr, PRIM_LEN(DR_TPAGE));
     t = (DrTpageWords *)g_primPtr;
     t->code = get_mode(1, 1, g->tpage);
     addPrim(&g_ot[otz], t);
@@ -542,13 +542,13 @@ void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     tw.w = g_winFillSprite.w;
     tw.h = g_winFillSprite.h;
 
-    setlen(g_primPtr, 2);
+    setlen(g_primPtr, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&g_noTexWindow);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
 
-    setlen(g_primPtr, 9);
+    setlen(g_primPtr, PRIM_LEN(POLY_FT4));
     o = &g_winTailShapes[shape];
     ((PolyFT4Words *)g_primPtr)->rgbc = GPU_RGBC(GPU_POLY_FT4, GPU_RGB_NEUTRAL);
     ((PolyFT4Words *)g_primPtr)->xy0 = (x + o->x0) | ((y + o->y0) << 16);
@@ -562,7 +562,7 @@ void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(PolyFT4Words);
 
-    setlen(g_primPtr, 2);
+    setlen(g_primPtr, PRIM_LEN(DR_MODE));
     ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&tw);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[otz], g_primPtr);
@@ -572,7 +572,7 @@ void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
 void win_drawHelpTailFill(s32 x, s32 y, s32 otz, s32 idx) {
     PolyF4Words *p;
     Unk80068F48 *t;
-    setlen(g_primPtr, 5);
+    setlen(g_primPtr, PRIM_LEN(POLY_F4));
     p = (PolyF4Words *)g_primPtr;
     p->rgbc = GPU_RGBC(GPU_POLY_F4, 0xA8B078);
     t = &g_winTailShapes[idx];
@@ -595,7 +595,7 @@ void ui_drawEtchedLine(s32 x, s32 y, s32 otz, s32 len) {
 
     for (i = 0; i < 3; i++) {
         p = (LineF2W *)g_primPtr;
-        setlen(p, 3);
+        setlen(p, PRIM_LEN(LINE_F2));
         p->rgbc = col[i];
         if (len < 0) {
             p->xy0 = (x + i) | (y << 16);
@@ -631,14 +631,14 @@ u8 *ui_buildItemIcon(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
     s32 clut;
 
     clut = d->clut + (flag ? e->iconPalette << 6 : 0x3C0);
-    setlen(pkt, 4);
+    setlen(pkt, PRIM_LEN(SPRT));
     ((SprtWords *)pkt)->rgbc = (flag == 0 ? GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
     ((SprtWords *)pkt)->xy = (x & 0xFFFF) | (y << 16);
     ((SprtWords *)pkt)->uvclut = d->u | (d->v << 8) | (clut << 16);
     ((SprtWords *)pkt)->wh = d->w | (d->h << 16);
     addPrim(ot, pkt);
     pkt += sizeof(SprtWords);
-    setlen(pkt, 1);
+    setlen(pkt, PRIM_LEN(DR_TPAGE));
     ((DrTpageWords *)pkt)->code = get_mode(1, 1, d->tpage);
     addPrim(ot, pkt);
     return pkt + sizeof(DrTpageWords);
@@ -731,7 +731,7 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
         } else {
             w = t;
         }
-        setlen(pkt, 3);
+        setlen(pkt, PRIM_LEN(TILE));
         rgbc = GPU_RGBC(GPU_TILE, 0x70A838);
         if (cur >= max) {
             rgbc = GPU_RGBC(GPU_TILE, 0x2838A8);
@@ -769,7 +769,7 @@ u16 win_getClut(s32 baseClut, s32 pal) {
 void win_drawHelpFill(RECT *rect, s32 otz) {
     TileWords *p;
 
-    setlen(g_primPtr, 3);
+    setlen(g_primPtr, PRIM_LEN(TILE));
     p = (TileWords *)g_primPtr;
     p->rgbc = GPU_RGBC(GPU_TILE, 0xA8B078);
     p->xy = (u16)rect->x | (rect->y << 16);
@@ -819,7 +819,7 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *outWidth, void *p
     SprtWords *s = pkt;
     DrTpageWords *t;
     SpriteDef *d;
-    setlen(s, 4);
+    setlen(s, PRIM_LEN(SPRT));
     d = &g_uiSprites[i];
     if (flag) {
         s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
@@ -832,8 +832,7 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *outWidth, void *p
     addPrim(ot, s);
     s++;
     t = (DrTpageWords *)s;
-    setlen(t, 1);
-    t->code = get_mode(1, 1, d->tpage);
+    setDrawTPage(t, 1, 1, d->tpage);
     addPrim(ot, t);
     *outWidth = d->w;
     return (u8 *)(t + 1);
@@ -841,7 +840,7 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *outWidth, void *p
 
 u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidth, SprtWords *s) {
     DrTpageWords *t;
-    setlen(s, 4);
+    setlen(s, PRIM_LEN(SPRT));
     if (flag) {
         s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     } else {
@@ -853,8 +852,7 @@ u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidt
     addPrim(ot, s);
     s++;
     t = (DrTpageWords *)s;
-    setlen(t, 1);
-    t->code = get_mode(1, 1, d->tpage);
+    setDrawTPage(t, 1, 1, d->tpage);
     addPrim(ot, t);
     *outWidth = d->w;
     return (u8 *)(t + 1);
@@ -899,7 +897,7 @@ u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
                     idx = 10;
                 }
             }
-            setlen(p, 4);
+            setlen(p, PRIM_LEN(SPRT));
             p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
             p->xy = (x & 0xFFFF) | (y << 16);
             g = &g_uiSprites[UI_SPRITE_SMALL_DIGITS + idx];
@@ -914,8 +912,7 @@ u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
         x += adv;
     }
     t = (DrTpageWords *)p;
-    setlen(t, 1);
-    t->code = get_mode(1, 1, 0x1F);
+    setDrawTPage(t, 1, 1, 0x1F);
     addPrim(ot, t);
     return (u8 *)(t + 1);
 }
@@ -1082,7 +1079,7 @@ void ui_drawPortraitId(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
             v = ((id - 4) >> 2) * 46;
             tpage = 0x90;
         }
-        setlen(g_primPtr, 4);
+        setlen(g_primPtr, PRIM_LEN(SPRT));
         ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
         ((SprtWords *)g_primPtr)->xy = x | (y << 16);
         ((SprtWords *)g_primPtr)->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
@@ -1119,7 +1116,7 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     clut = GetClut(cx + ((slot & 1) << 7), cy + (slot >> 1));
     u = slot << 5;
     v = 0xE0;
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL);
     p = (SprtWords *)g_primPtr;
     g_primPtr += sizeof(SprtWords);
@@ -1134,7 +1131,7 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
         u = ((slot & 1) << 5) + 0x20;
         v = (slot >> 1) * 14 - 0x20;
         h -= h0;
-        setlen(g_primPtr, 4);
+        setlen(g_primPtr, PRIM_LEN(SPRT));
         ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL) : GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL);
         q = (SprtWords *)g_primPtr;
         g_primPtr += sizeof(SprtWords);

@@ -281,7 +281,7 @@ void opening_titleDrawFading(s32 x, s32 y, s32 z, TitleImage *t, s32 unused) {
     SprtWords *p;
     s32 c = g_titleMenu.fadeFrames;
 
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     p = (SprtWords *)g_primPtr;
     p->rgbc = (c << 1) | (c << 9) | (c << 17) | GPU_CODE(GPU_SPRT | GPU_ABE);
     p->xy = x | (y << 16);

@@ -155,7 +155,7 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
     switch (kind) {
     case BJ_RESULT_WIN:
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-        setlen(p, 4);
+        setlen(p, PRIM_LEN(SPRT));
         p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x;
         p->y0 = y;
@@ -168,12 +168,11 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setlen(t, 1);
-        t->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
+        setDrawTPage(t, 1, 0, GetTPage(1, 1, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-        setlen(p, 4);
+        setlen(p, PRIM_LEN(SPRT));
         p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x;
         p->y0 = y;
@@ -186,15 +185,14 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setlen(t, 1);
-        t->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
+        setDrawTPage(t, 1, 0, GetTPage(1, 2, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
     case BJ_RESULT_LOSE:
         x1 = x - 2;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-        setlen(p, 4);
+        setlen(p, PRIM_LEN(SPRT));
         p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x1;
         p->y0 = y;
@@ -207,12 +205,11 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setlen(t, 1);
-        t->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
+        setDrawTPage(t, 1, 0, GetTPage(1, 1, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-        setlen(p, 4);
+        setlen(p, PRIM_LEN(SPRT));
         p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x1;
         p->y0 = y;
@@ -225,15 +222,14 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setlen(t, 1);
-        t->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
+        setDrawTPage(t, 1, 0, GetTPage(1, 2, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
     case BJ_RESULT_PUSH:
         x2 = x - 0x10;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-        setlen(p, 4);
+        setlen(p, PRIM_LEN(SPRT));
         p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x2;
         p->y0 = y;
@@ -246,12 +242,11 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setlen(t, 1);
-        t->code[0] = get_mode(1, 0, GetTPage(1, 1, 0x280, 0x100));
+        setDrawTPage(t, 1, 0, GetTPage(1, 1, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-        setlen(p, 4);
+        setlen(p, PRIM_LEN(SPRT));
         p->code = GPU_SPRT | GPU_ABE;
         p->x0 = x2;
         p->y0 = y;
@@ -264,8 +259,7 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
-        setlen(t, 1);
-        t->code[0] = get_mode(1, 0, GetTPage(1, 2, 0x280, 0x100));
+        setDrawTPage(t, 1, 0, GetTPage(1, 2, 0x280, 0x100));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
@@ -276,8 +270,7 @@ s32 bj_drawResult(s32 kind, s32 brightness, s32 x, s32 y) {
 s32 bj_drawCardBack(s32 x, s32 y) {
     SPRT *p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
 
-    setlen(p, 4);
-    p->code = GPU_SPRT;
+    setSprt(p);
     setRGB0(p, 0x80, 0x80, 0x80);
     p->x0 = x;
     p->u0 = 0;
@@ -299,8 +292,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     s32 py;
 
     p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-    setlen(p, 4);
-    p->code = GPU_SPRT;
+    setSprt(p);
     setRGB0(p, 0x80, 0x80, 0x80);
     p->x0 = x + 2;
     p->y0 = y + 1;
@@ -313,8 +305,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     g_bjSprtCount++;
 
     p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-    setlen(p, 4);
-    p->code = GPU_SPRT;
+    setSprt(p);
     setRGB0(p, 0x80, 0x80, 0x80);
     p->x0 = x + 0x2C;
     p->y0 = y + 0x38;
@@ -329,8 +320,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     p->x0 = x + 1;
     p->y0 = y + 0xF;
-    setlen(p, 4);
-    p->code = GPU_SPRT;
+    setSprt(p);
     setRGB0(p, 0x80, 0x80, 0x80);
     p->u0 = suit * 12;
     p->v0 = 0xD5;
@@ -342,8 +332,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
 
     p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     p->x0 = x + 0x2B;
-    setlen(p, 4);
-    p->code = GPU_SPRT;
+    setSprt(p);
     setRGB0(p, 0x80, 0x80, 0x80);
     p->u0 = suit * 12;
     p->v0 = 0xCA;
@@ -358,8 +347,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
         f = rank - BJ_RANK_JACK;
         if (rank == BJ_RANK_ACE) {
             p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-            setlen(p, 4);
-            p->code = GPU_SPRT;
+            setSprt(p);
             setRGB0(p, 0x80, 0x80, 0x80);
             p->u0 = suit * 12;
             p->v0 = 0xD5;
@@ -374,8 +362,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
             p->x0 = x + 7;
             p->y0 = y + 0xA;
-            setlen(p, 4);
-            p->code = GPU_SPRT;
+            setSprt(p);
             setRGB0(p, 0x80, 0x80, 0x80);
             if (f & 1) {
                 p->u0 = 0x2C;
@@ -398,8 +385,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             px = g_bjPips[rank][i].x;
             py = g_bjPips[rank][i].y;
             p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-            setlen(p, 4);
-            p->code = GPU_SPRT;
+            setSprt(p);
             setRGB0(p, 0x80, 0x80, 0x80);
             p->u0 = suit * 12;
             p->x0 = x + px;
@@ -418,8 +404,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     }
 
     p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
-    setlen(p, 4);
-    p->code = GPU_SPRT;
+    setSprt(p);
     setRGB0(p, 0x80, 0x80, 0x80);
     p->u0 = 0;
     p->v0 = 0x80;
@@ -1255,8 +1240,7 @@ s32 bj_init(void) {
     setRECT(&g_bjClutRect, 0x20, 0xE4, 0x10, 1);
     LoadImage(&g_bjClutRect, g_bjClut);
     DrawSync(0);
-    setlen(&g_bjTpage, 1);
-    g_bjTpage.code = 0xE1000697;
+    setDrawTPage(&g_bjTpage, 1, 1, getTPage(1, 0, 0x1C0, 0x100));
     if (!(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
         ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
         ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, 0x7F);

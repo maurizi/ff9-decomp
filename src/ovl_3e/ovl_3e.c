@@ -35,7 +35,7 @@ void discChange_drawBackground(void) {
     RECT unused[2];
 
     for (i = 0; i < 2; i++) {
-        setlen(g_primPtr, 4);
+        setlen(g_primPtr, PRIM_LEN(SPRT));
         p = (SprtWords *)g_primPtr;
         p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         p->xy = i * DISC_PICTURE_W;
@@ -53,7 +53,7 @@ void discChange_drawPanel(void) {
     SprtWords *p;
     u32 clut = GetClut(0, 0x1FF) << 16;
 
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     p = (SprtWords *)g_primPtr;
     p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = 0x1C004E;

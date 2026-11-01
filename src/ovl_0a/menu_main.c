@@ -209,7 +209,7 @@ void menuMain_drawMember(s32 slot) {
 void menuMain_drawPortraitShade(RECT *r, s32 otz) {
     TileWords *p;
 
-    setlen(g_primPtr, 3);
+    setlen(g_primPtr, PRIM_LEN(TILE));
     p = (TileWords *)g_primPtr;
     p->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     p->xy = ((r->x + 8) & 0xFFFF) | (r->y << 16);

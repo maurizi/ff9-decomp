@@ -114,7 +114,7 @@ s32 swirl_update(s16 startX, s16 startY) {
         if (g_swirlZoom > 0x1400) {
             g_swirlZoom = 0x1400;
         }
-        setlen(g_swirlPkt, 2);
+        setlen(g_swirlPkt, PRIM_LEN(DR_STP));
         g_swirlPkt[1] = _get_mask(1, 0);
         g_swirlPkt[2] = 0;
         addPrim(g_swirlOt, g_swirlPkt);
@@ -123,7 +123,7 @@ s32 swirl_update(s16 startX, s16 startY) {
     SetDrawEnv((DR_ENV *)g_swirlPkt, &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
     addPrim(g_swirlOt, g_swirlPkt);
     g_swirlPkt += 16;
-    setlen(g_swirlPkt, 2);
+    setlen(g_swirlPkt, PRIM_LEN(DR_STP));
     g_swirlPkt[1] = _get_mask(0, 0);
     g_swirlPkt[2] = 0;
     addPrim(&g_swirlOt[3], g_swirlPkt);
@@ -132,13 +132,12 @@ s32 swirl_update(s16 startX, s16 startY) {
     setaddr(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], g_swirlOt);
     if (g_swirlFrame == 0) {
         DrawSync(0);
-        setlen(g_swirlPkt, 2);
+        setlen(g_swirlPkt, PRIM_LEN(DR_STP));
         g_swirlPkt[1] = _get_mask(1, 0);
         g_swirlPkt[2] = 0;
         DrawPrim(g_swirlPkt);
         g_swirlPkt += 3;
-        setlen(g_swirlPkt, 1);
-        g_swirlPkt[1] = get_mode(0, 0, 0x120);
+        setDrawTPage(g_swirlPkt, 0, 0, 0x120);
         DrawPrim(g_swirlPkt);
         g_swirlPkt += 2;
         g_swirlPkt[0] = 0x03000000;
@@ -147,7 +146,7 @@ s32 swirl_update(s16 startX, s16 startY) {
         g_swirlPkt[3] = (g_gameState->drawEnv->clip.h << 16) | 0x140;
         DrawPrim(g_swirlPkt);
         g_swirlPkt += 4;
-        setlen(g_swirlPkt, 2);
+        setlen(g_swirlPkt, PRIM_LEN(DR_STP));
         g_swirlPkt[1] = _get_mask(0, 0);
         g_swirlPkt[2] = 0;
         DrawPrim(g_swirlPkt);
@@ -168,8 +167,7 @@ void swirl_drawFlash(s32 x, s32 y) {
     c1 = v >> 20;
     c2 = v >> 23;
     g2 = (c2 << 16) | (c2 << 8) | c2;
-    setlen(p, 1);
-    p[1] = get_mode(0, 1, 0x140);
+    setDrawTPage(p, 0, 1, 0x140);
     p += 7;
     for (i = 0; i < 4; i++) {
         p[0] = 0x06000000;

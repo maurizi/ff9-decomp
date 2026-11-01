@@ -4,10 +4,10 @@ void btlui_submitOt(void) {
     RECT *tw;
     Unk80104E68 *p;
 
-    setlen(&g_btluiDrStp[g_btluiBuf], 2);
+    setlen(&g_btluiDrStp[g_btluiBuf], PRIM_LEN(DR_STP));
     g_btluiDrStp[g_btluiBuf].code[0] = GPU_STP(1, 0);
     g_btluiDrStp[g_btluiBuf].code[1] = 0;
-    setlen(&g_btluiDrMode[g_btluiBuf], 2);
+    setlen(&g_btluiDrMode[g_btluiBuf], PRIM_LEN(DR_MODE));
     ((u32 *)&g_btluiDrMode[g_btluiBuf])[1] = get_mode(1, 1, 0);
     tw = &g_btluiTexWindowRect;
     ((u32 *)&g_btluiDrMode[g_btluiBuf])[2] = get_tw(tw);

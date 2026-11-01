@@ -146,7 +146,7 @@ void timer_draw(void) {
         pkt = ui_buildSprite(g_timerRect.x + 0x19, 8, ot, 0xEA, t->running == 0, &w, pkt);
     }
     pkt = win_buildBorder(&g_timerRect, ot, 1, 1, 1, CONFIG_WINDOW_COLOR(), pkt);
-    setlen(pkt, 3);
+    setlen(pkt, PRIM_LEN(TILE));
     ((TileWords *)pkt)->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     ((TileWords *)pkt)->xy = ((g_timerRect.x + 2) & 0xFFFF) | ((g_timerRect.y + 2) << 16);
     ((TileWords *)pkt)->wh = (g_timerRect.w - 4) | ((g_timerRect.h - 4) << 16);

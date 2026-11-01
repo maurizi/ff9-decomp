@@ -4,7 +4,7 @@ void sprAnim_drawCell(s32 x, s32 y, s32 otz, s32 unused, SprCell *d) {
     u32 t = d->clutTpage;
     SprtWords *s;
 
-    setlen(g_primPtr, 4);
+    setlen(g_primPtr, PRIM_LEN(SPRT));
     s = (SprtWords *)g_primPtr;
     s->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     s->xy = ((x + d->x - 0x80) & 0xFFFF) | ((y + d->y - 0x80) << 16);
@@ -30,7 +30,7 @@ void sprAnim_drawScaledCell(s32 x, s32 y, s32 otz, SprAnim *unused, AnimCell *c)
     sh = (c->cell.h * c->scaleY) >> 12;
     x = x + c->cell.x - 0x80 + ((c->cell.w - sw) >> 1);
     y = y + c->cell.y - 0x80 + ((c->cell.h - sh) >> 1);
-    setlen(g_primPtr, 9);
+    setlen(g_primPtr, PRIM_LEN(POLY_FT4));
     p = (PolyFT4Words *)g_primPtr;
     p->rgbc = GPU_RGBC(GPU_POLY_FT4, 0x808080);
     p->xy0 = (x & 0xFFFF) | (y << 16);

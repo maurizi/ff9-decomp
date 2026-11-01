@@ -1419,12 +1419,12 @@ void wm_togglePause(void) {
         }
         ClearOTag(&g_worldPauseOT, 1);
         ui_buildSprite((320 - g_uiSprites[235].w) / 2, (218 - g_uiSprites[235].h) / 2, &g_worldPauseOT, 0xEB, 0, spriteW, g_worldPauseSprite);
-        setlen(&g_worldPauseTile, 3);
+        setlen(&g_worldPauseTile, PRIM_LEN(TILE));
         g_worldPauseTile.code = GPU_TILE | GPU_ABE;
         setRGB0(&g_worldPauseTile, 0x60, 0x60, 0x60);
         setXY0(&g_worldPauseTile, 0, 0);
         setWH(&g_worldPauseTile, 320, 218);
-        setlen(&g_worldPauseTpage, 1);
+        setlen(&g_worldPauseTpage, PRIM_LEN(DR_TPAGE));
         a = getaddr(&g_worldPauseOT);
         g_worldPauseTpage.code[0] = _get_mode(0, 1, getTPage(0, 2, 0, 0));
         setaddr(&g_worldPauseTile, a), setaddr(&g_worldPauseOT, &g_worldPauseTile);

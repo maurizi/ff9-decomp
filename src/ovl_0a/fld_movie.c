@@ -919,7 +919,7 @@ void fld_drawShadow(FieldObjPlace *places, s32 slot) {
         stpPrim = NULL;
         if (g_gameState->gameData->ctx.field->flags & FLD_MAP_SHADOW_MASK) {
             stpPrim = e->prims[g_gameState->gameData->drawBuf][i];
-            setlen(stpPrim, 2);
+            setlen(stpPrim, PRIM_LEN(DR_STP));
             stpPrim[1] = _get_mask(0, 1);
             stpPrim[2] = 0;
             p[i] = (POLY_FT4 *)(stpPrim + 3);
@@ -948,7 +948,7 @@ void fld_drawShadow(FieldObjPlace *places, s32 slot) {
         }
         if (g_gameState->gameData->ctx.field->flags & FLD_MAP_SHADOW_MASK) {
             mk = (u32 *)(p[i] + 1);
-            setlen(mk, 2);
+            setlen(mk, PRIM_LEN(DR_STP));
             mk[1] = _get_mask(0, 1);
             mk[2] = 0;
             MargePrim(p[i], mk);
@@ -1246,7 +1246,7 @@ void fld_movieUpdate(void) {
                 }
             }
             if (done != 0) {
-                setlen(&g_fieldMovieMaskPkt[g_gameState->gameData->drawBuf ^ 1], 2);
+                setlen(&g_fieldMovieMaskPkt[g_gameState->gameData->drawBuf ^ 1], PRIM_LEN(DR_STP));
                 g_fieldMovieMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[0] = _get_mask(0, 1);
                 g_fieldMovieMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[1] = 0;
                 addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1],
@@ -1329,7 +1329,7 @@ void fld_movieRequestStop(void) {
 void fld_beginFrame(void) {
     if (g_gameState->gameData->ctx.field->flags & FLD_MAP_SHADOW_MASK) {
         ClearOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
-        setlen(&g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1], 2);
+        setlen(&g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1], PRIM_LEN(DR_STP));
         g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[0] = _get_mask(0, 0);
         g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[1] = 0;
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1][OT_LAST], &g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1]);
@@ -1467,7 +1467,7 @@ void fld_updateEncounter(void) {
             if (preload_isReady(OVL_KEY(OVL_BATTLE)) != 0) {
                 e = preload_find(OVL_KEY(OVL_BATTLE));
                 ClearOTag(&g_fieldTempOt, 1);
-                setlen(&g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1], 2);
+                setlen(&g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1], PRIM_LEN(DR_STP));
                 g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[0] = _get_mask(0, 0);
                 g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[1] = 0;
                 addPrim(&g_fieldTempOt, &g_fieldMaskPkt[g_gameState->gameData->drawBuf]);
@@ -1577,12 +1577,12 @@ void fld_togglePause(void) {
                              getTPage(0, 2, tpage_getX((s16)g_uiSprites[235].tpage), tpage_getY((s16)g_uiSprites[235].tpage)));
             }
         }
-        setlen(&g_fieldPauseDim, 3);
+        setlen(&g_fieldPauseDim, PRIM_LEN(TILE));
         g_fieldPauseDim.code = GPU_TILE | GPU_ABE;
         setRGB0(&g_fieldPauseDim, 0x60, 0x60, 0x60);
         setWH(&g_fieldPauseDim, SCREEN_W, SCREEN_H);
         setXY0(&g_fieldPauseDim, 0, 0);
-        setlen(&g_fieldPauseTPage, 1);
+        setlen(&g_fieldPauseTPage, PRIM_LEN(DR_TPAGE));
         a = getaddr(&g_fieldTempOt);
         g_fieldPauseTPage.code[0] = _get_mode(0, 1, getTPage(0, 2, 0, 0));
         setaddr(&g_fieldPauseDim, a), setaddr(&g_fieldTempOt, &g_fieldPauseDim);
