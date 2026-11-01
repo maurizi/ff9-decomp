@@ -63,7 +63,7 @@ s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
     setlen(g_primPtr, PRIM_LEN(SPRT));
     w = (g >> 16) & 0xF;
     p = (SprtWords *)g_primPtr;
-    p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
+    p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     p->xy = (x + ((10 - w) >> 1)) | (y << 16);
     p->uvclut = (g & 0x40FFFF) | (g_textPalettes[mode] << 16);
     p->wh = w | 0xD0000;
@@ -92,7 +92,7 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
         g = *(f->glyphs + c);
         setlen(p, PRIM_LEN(SPRT));
         k = (g >> 20) & 3;
-        p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
+        p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         w = g >> 28;
         spacing = 1;
         gx = x + k;
@@ -291,7 +291,7 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
 
     rgbc = GPU_RGBC(GPU_SPRT, 0x404040);
     if (mode == UI_LABEL_NORMAL) {
-        rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
+        rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
     tbl = (SpriteDesc16 *)g_uiSprites;
     clut = tbl[46].clut;
@@ -388,7 +388,7 @@ u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
                 u = 0;
             }
             setlen(p, PRIM_LEN(SPRT_8));
-            p->rgbc = GPU_RGBC(GPU_SPRT_8, 0x808080);
+            p->rgbc = GPU_RGBC(GPU_SPRT_8, GPU_RGB_NEUTRAL);
             q = p;
             if ((u8)(*s + 0x22) < 2) {
                 p->x = x - 7;
@@ -975,7 +975,7 @@ void text_drawBlock(s32 x, s32 y, s32 otz, u8 *s, s32 mode) {
 u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
     SprtWords *p = pkt;
     DrTpageWords *t;
-    u32 rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
+    u32 rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     s32 c;
     s32 u;
 
@@ -1014,7 +1014,7 @@ u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 mode, s32 *out, SprtWo
     s32 h = (glyph >> 16) & 0xF;
     s32 n = glyph >> 28;
     if (mode != TEXT_PAL_PLAIN) {
-        rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
+        rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
     setlen(p, PRIM_LEN(SPRT));
     p->xy = ((x + dx) & 0xFFFF) | (y << 16);

@@ -6,7 +6,7 @@ void pen_nop(void) {
 void pen_beginOt(s32 unused, u32 *ot) {
     msg_beginDraw();
     g_penOt = ot;
-    pen_setColor(0x808080);
+    pen_setColor(GPU_RGB_NEUTRAL);
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/tu_80064BE4", pen_setColorPreset);

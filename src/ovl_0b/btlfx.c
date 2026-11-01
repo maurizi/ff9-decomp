@@ -1258,7 +1258,7 @@ void btlfx_drawBackdrop(BtlBgLayers *bg, s32 frame) {
         if (L->gradOfs != 0) {
             btlfx_sampleGradient((u8 *)bg + L->gradOfs, &col, frame % L->gradFrames);
         } else {
-            *(s32 *)&col = 0x808080;
+            *(s32 *)&col = GPU_RGB_NEUTRAL;
         }
         switch (L->kind) {
         case 0:
