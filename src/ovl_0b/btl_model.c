@@ -372,7 +372,7 @@ void btl_placeParty(void) {
     n = 0;
     b = g_gameState->gameData->ctx.battle;
     flags = &b->scene.flags;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (g_gameState->gameData->party[i] != NULL) {
             n++;
         }

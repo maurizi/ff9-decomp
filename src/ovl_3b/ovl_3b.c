@@ -288,7 +288,7 @@ void menuParty_loadRequest(PartyRequest *req) {
     s32 i;
 
     s_menuParty.size = req->size;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         s_menuParty.slots[0][i] = req->party[i];
     }
     for (i = 0; i < 8; i++) {

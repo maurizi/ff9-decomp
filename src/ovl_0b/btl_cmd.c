@@ -178,7 +178,7 @@ void btl_applyAutoAbilities(BtlUnit *unit) {
 s32 btl_partyHasSupport(s32 word, u32 bits) {
     s32 i;
     GameData *gd = g_gameState->gameData;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (gd->party[i]->supportAbilities[word] & bits) {
             return 1;
         }

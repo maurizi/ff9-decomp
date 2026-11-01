@@ -17,7 +17,7 @@ void menuConfig_init(void) {
     m->primBufs[1] = PSX_RAM(u8 *, 0x801FBF00);
     m->prim = m->primBufs[g_gameState->gameData->drawBuf ^ 1];
     m->charCount = 0;
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < CHR_COUNT; i++) {
         if (g_gameState->gameData->characters[i].info.b.recruited) {
             s_menuConfig.charPortBit[s_menuConfig.charCount] = chr_getClass(g_gameState->gameData->characters[i].info.b.row);
             s_menuConfig.charIdx[s_menuConfig.charCount] = i;

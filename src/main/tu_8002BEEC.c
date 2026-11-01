@@ -74,7 +74,7 @@ void gfx_setTarget(u32 *ot, u8 *prim) {
 void text_uploadPartyNames(s32 work) {
     s32 image = text_initNameImage(work);
     s32 i;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (g_gameState->gameData->party[i] != NULL) {
             text_renderPartyName(i);
         }

@@ -209,7 +209,7 @@ void rewards_drawMembers(void) {
     u32 n;
     u8 *p;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s_rewards.winShown[i + 2] != 0) {
             r = &s_rewards.wins[i + 2].rect;
             c = g_gameState->gameData->party[i];
@@ -879,7 +879,7 @@ void rewards_addAp(s32 slot, u32 ap) {
     c = g_gameState->gameData->party[slot];
     if (ap != 0 && chr_canLearnAbilities(c)) {
         s_rewards.rewards.apGain[slot].cur += ap;
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
             if (c->equip[i] != ITEM_NONE) {
                 e = &g_itemTable[c->equip[i]];
                 for (j = 0; j < 3; j++) {
@@ -987,7 +987,7 @@ void rewards_drawLearnWin(Window *w) {
 void rewards_initLearns(void) {
     s32 i;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s_rewards.getsAp[i] != 0) {
             s_rewards.learns[i] = rewards_willLearn(g_gameState->gameData->party[i], rewards_initApCounter(i));
         } else {
@@ -1081,7 +1081,7 @@ void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
 void rewards_initExp(void) {
     s32 i;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s_rewards.getsExp[i] != 0) {
             s_rewards.levelsUp[i] = rewards_willLevelUp(g_gameState->gameData->party[i], rewards_initExpCounter(i));
         } else {
@@ -1268,7 +1268,7 @@ void rewards_initGil(void) {
     u8 found = 0;
     Character *m;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         m = g_gameState->gameData->party[i];
         if (m != NULL && chr_hasSupportAbility(m->info.b.id, SA_MILLIONAIRE)) {
             found = 1;

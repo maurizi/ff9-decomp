@@ -636,7 +636,7 @@ void menuItem_drawTargetWindow(void) {
     s32 i;
 
     if (s_menuItem.charWinOpen != 0) {
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < PARTY_SIZE; i++) {
             if (g_gameState->gameData->party[i] != NULL) {
                 ui_drawMemberSummary(r->x + 8, r->y + 6 + i * 0x2B, 0x14, i, s_menuItem.targetMode);
             }

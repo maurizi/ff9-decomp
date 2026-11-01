@@ -11491,3 +11491,5 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 # psyq.h PRIM_TAG(type) = PRIM_LEN(type) << 24 (btlfx_addPrim / addPrimLenIn len words); ovl_0b.h BTLFX_ABR_OPAQUE 0xFF;
 #   btlfx.c raw primitive code bytes -> GPU_* | GPU_ABE.
 # psyq.h LINE_F3 (type), GPU_LINE_F3 0x48, GPU_LINE_TERM 0x55555555 (ovl_36 card cursor is a LINE_F3, not a POLY_F4).
+# ff9.h PARTY_SIZE 4, EQUIP_SLOT_COUNT 5 (loops over GameData.party / Character.equip); CHR_COUNT for character loops and
+#   the event ops character-index checks; BTN_TRIANGLE_ALT 0x1000000 (btlui_cmdInput pass turn).

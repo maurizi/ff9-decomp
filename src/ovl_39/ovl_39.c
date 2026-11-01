@@ -162,7 +162,7 @@ void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
     numText[n] = 0;
     ui_drawSmallDigits(r->x + 0x30, r->y + 3, z, "/DISC", TEXT_PAL_WHITE);
     ui_drawSmallDigits(r->x + 0x56, r->y + 3, z, numText, TEXT_PAL_WHITE);
-    for (j = 0; j < 4; j++) {
+    for (j = 0; j < PARTY_SIZE; j++) {
         if (s->party[j].portrait != PORTRAIT_NONE) {
             ui_drawPortraitId(r->x + 6 + j * 0x21, r->y + 0xD, z, s->party[j].portrait, 0x2C, 0);
         }
@@ -1133,7 +1133,7 @@ void menuSave_copyHeader(SaveFile *s, SaveHeader *h) {
     s->windowColor = h->windowColor;
     s->counter = h->counter;
     s->cursor = h->cursor;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         s->party[i] = h->party[i];
     }
 }
@@ -1696,7 +1696,7 @@ void menuSave_storeSavedFile(s32 file, SaveHeader *h) {
     s->windowColor = h->windowColor;
     s->counter = h->counter;
     s->cursor = h->cursor;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         s->party[i] = h->party[i];
     }
 }
@@ -1861,7 +1861,7 @@ void menuSave_buildHeader(SaveBuf *save) {
     h->cursor = s_menuSave.list.cursor;
     h->name = *(SaveName *)g_gameState->gameData->characters[n].name;
     menuSave_getLocation((u8 *)&h->location);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (g_gameState->gameData->party[i] != NULL) {
             h->party[i].present = 1;
             h->party[i].portrait = menuSave_getPortrait(g_gameState->gameData->party[i]);
@@ -2084,7 +2084,7 @@ void menuSave_packParty(SaveParty *s) {
     for (i = 0; i < SAVE_CHARACTERS; i++) {
         s->characters[i] = gd->characters[i];
     }
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (gd->party[i] != NULL) {
             s->party[i] = gd->party[i]->info.b.id;
         } else {
@@ -2107,7 +2107,7 @@ void menuSave_unpackParty(SaveParty *s) {
     for (i = 0; i < SAVE_CHARACTERS; i++) {
         gd->characters[i] = s->characters[i];
     }
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (s->party[i] < SAVE_CHARACTERS) {
             gd->party[i] = &gd->characters[s->party[i]];
         } else {

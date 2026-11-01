@@ -198,7 +198,7 @@ void menuStatus_drawEquipment(void) {
 
     st = &s_menuStatus;
     c = g_gameState->gameData->party[st->slot];
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
         s_menuStatus.prim = ui_buildSprite(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + UI_SPRITE_EQUIP_SLOTS, 0, spriteW, s_menuStatus.prim);
         s_menuStatus.prim = text_buildSmall(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], s_menuStatusColon, TEXT_PAL_WHITE, s_menuStatus.prim);
         id = c->equip[i];

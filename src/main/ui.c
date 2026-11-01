@@ -1009,9 +1009,9 @@ s32 item_countEquipped(s32 id) {
     s32 i, j;
     s32 n = 0;
 
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < CHR_COUNT; i++) {
         if (g_gameState->gameData->characters[i].info.b.recruited) {
-            for (j = 0; j < 5; j++) {
+            for (j = 0; j < EQUIP_SLOT_COUNT; j++) {
                 if (id == g_gameState->gameData->characters[i].equip[j]) {
                     n++;
                 }
@@ -1261,7 +1261,7 @@ void ui_drawPartyPortrait(s32 x, s32 y, s32 otz, s32 slot, u8 flag) {
 void ui_loadPartyPortraits(u8 *portraitData) {
     s32 i;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         GameData *d = g_gameState->gameData;
         Character *p = d->party[i];
 

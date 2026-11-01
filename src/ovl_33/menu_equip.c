@@ -19,7 +19,7 @@ void menuEquip_init(void) {
     setRECT(&s_menuEquip.equipRect, 0x94, 0x26, 0xA0, 0x62);
     setRECT(&s_menuEquip.abilityRect, 0x94, 0x8A, 0xA0, 0x52);
     setRECT(&s_menuEquip.listRect, 0x94, 0x26, 0xA0, 0x62);
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         lv = 0;
         c = g_gameState->gameData->party[i];
         d = (EquipMenu *)((u8 *)&s_menuEquip + i); /* &s_menuEquip.initStones[i] would not match */

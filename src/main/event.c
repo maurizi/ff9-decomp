@@ -1655,7 +1655,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_SET_CHR_NAME:
         a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < 9) {
+        if ((u32)a < CHR_COUNT) {
             u8 *src = msg_getText(evt_getArg16_inline());
             u8 *dst = g_gameState->gameData->characters[a].name;
             u8 *end = dst + 9;
@@ -1669,7 +1669,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_SET_VICTORY_POSE:
         a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < 9) {
+        if ((u32)a < CHR_COUNT) {
             g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~CHR_INFO_VICTORY_POSE) | ((evt_getArg8_inline() & 1) << CHR_INFO_VICTORY_POSE_BIT);
         }
         return 0;
@@ -2032,7 +2032,7 @@ s32 evt_execInstr(void) {
         a = evt_execInstr_chr(evt_getArg8_inline());
         b = evt_getArg8_inline();
         c = evt_getArg8_inline();
-        if ((u32)a < 9) {
+        if ((u32)a < CHR_COUNT) {
             Character *ch = &g_gameState->gameData->characters[a];
             d = evt_getArg8_inline();
             if (d != 0xFF) {
@@ -2050,7 +2050,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_PARTY_REMOVE:
         a = evt_execInstr_chr(evt_getArg8_inline());
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < PARTY_SIZE; i++) {
             Character *ch = g_gameState->gameData->party[i];
             if (ch != NULL && (ch->info.w & CHR_INFO_ID) == a) {
                 break;
@@ -2069,11 +2069,11 @@ s32 evt_execInstr(void) {
             a |= (g_gameState->gameData->characters[i].info.w >> CHR_INFO_RECRUITED_BIT) & 1;
         }
         b = evt_getArg16_inline();
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < CHR_COUNT; i++) {
             g_evtPartyRequest.fixed[i] = b & 1;
             b >>= 1;
         }
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < PARTY_SIZE; i++) {
             Character *ch = g_gameState->gameData->party[i];
             if (ch != NULL) {
                 b = ch->info.w & CHR_INFO_ID;
@@ -2098,7 +2098,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_SET_HP:
         a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < 9) {
+        if ((u32)a < CHR_COUNT) {
             Character *ch = &g_gameState->gameData->characters[a];
             a = evt_getArg16_inline();
             if (ch->maxHp < a) {
@@ -2109,7 +2109,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_SET_MP:
         a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < 9) {
+        if ((u32)a < CHR_COUNT) {
             Character *ch = &g_gameState->gameData->characters[a];
             a = evt_getArg16_inline();
             if (ch->maxMp < a) {
@@ -2132,7 +2132,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_SET_ROW:
         a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < 9) {
+        if ((u32)a < CHR_COUNT) {
             g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~CHR_INFO_BATTLE_ROW) | ((evt_getArg8_inline() & 1) << CHR_INFO_BATTLE_ROW_BIT);
         }
         return 0;

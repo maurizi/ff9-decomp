@@ -495,7 +495,7 @@ s32 evt_joinParty(s32 slot) {
     } else {
         slot = evt_isInParty_key(slot);
         if (slot >= 0 && slot < 9) {
-            for (i = 0; i < 4; i++) {
+            for (i = 0; i < PARTY_SIZE; i++) {
                 if (g_gameState->gameData->party[i] == NULL) {
                     break;
                 }

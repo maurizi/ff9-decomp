@@ -8,8 +8,8 @@ void btl_initEquipElements(Character *c, BtlUnit *u) {
     u->elemHalf = 0;
     u->elemAbsorb = 0;
     u->elemGuard = 0;
-    for (i = 0; i < 5; i++) {
-        if (c->equip[i] != 0xFF) {
+    for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
+        if (c->equip[i] != ITEM_NONE) {
             btl_orElements(&u->elemGuard, g_equipStatBonus[g_itemTable[c->equip[i]].statBonus].elemGuard);
             u->elemBoost |= g_equipStatBonus[g_itemTable[c->equip[i]].statBonus].elemBoost;
         }

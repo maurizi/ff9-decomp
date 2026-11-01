@@ -495,7 +495,7 @@ s32 btl_reloadPartyStep(s32 flags) {
         }
         break;
     case 7:
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < PARTY_SIZE; i++) {
             ch = g_gameState->gameData->party[i];
             if (ch == NULL) {
                 continue;

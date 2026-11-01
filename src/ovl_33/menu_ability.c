@@ -60,7 +60,7 @@ void menuAbility_init(void) {
     tween_start(&s_menuAbility.targetWin, 0, 0);
     menuAbility_loadImages();
     s_menuAbility.partySize = 0;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (g_gameState->gameData->party[i] != NULL) {
             s_menuAbility.partySize++;
         }
@@ -183,7 +183,7 @@ void menuAbility_useOnTarget(void) {
     if (!(s_menuAbility.target >> 7)) {
         ok = item_useOnMember(c, g_gameState->gameData->party[s_menuAbility.target], it, it->effect, 0);
     } else {
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < PARTY_SIZE; i++) {
             if (g_gameState->gameData->party[i] != NULL) {
                 ok |= item_useOnMember(c, g_gameState->gameData->party[i], it, it->effect, 1);
             }
@@ -334,7 +334,7 @@ void menuAbility_drawTargetWindow(void) {
     if (m->targetWinOpen != 0) {
         ui_drawLabel(r->x + 8, r->y - 3, 0x14, g_labelTarget, UI_LABEL_NORMAL);
         win_drawBox(r, 0x14, WIN_STYLE_BEVEL);
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < PARTY_SIZE; i++) {
             if (g_gameState->gameData->party[i] != NULL) {
                 ui_drawMemberSummary(r->x + 8, r->y + 6 + i * 0x2B, 0x13, i, s_menuAbility.targetMode);
             }
@@ -388,7 +388,7 @@ void menuAbility_drawCursor(void) {
         if (s_menuAbility.target & ABILITY_TARGET_ALL) {
             g_menuHelp.otz = 0x12;
             if (blink) {
-                for (i = 0; i < 4; i++) {
+                for (i = 0; i < PARTY_SIZE; i++) {
                     y = i * 0x2B + 0x12;
                     if (g_gameState->gameData->party[i] != NULL) {
                         ui_drawHand(r->x - 10, r->y + y, g_menuHelp.otz);
@@ -457,9 +457,9 @@ void menuAbility_setMember(s32 slot, s32 dir) {
     s_menuAbility.actionCount = nItems;
     s_menuAbility.supportCount = nAbils;
     memset(s_menuAbility.equipSlots, 0, 0x100);
-    for (slot = 0; slot < 5; slot++) {
+    for (slot = 0; slot < EQUIP_SLOT_COUNT; slot++) {
         id = c->equip[slot];
-        if (id != 0xFF) {
+        if (id != ITEM_NONE) {
             it = &g_itemTable[id];
             for (j = 0; j < 3; j++) {
                 s_menuAbility.equipSlots[it->abilities[j]] |= 1 << slot;
@@ -899,7 +899,7 @@ s32 menuAbility_canTargetAll(s32 id) {
     s32 n = 0;
     s32 i;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         if (g_gameState->gameData->party[i] != NULL) {
             n++;
         }

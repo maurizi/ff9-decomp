@@ -415,7 +415,7 @@ void btlui_linkSwdMagAbilities(Unk80104F88Entry *entry) {
                 entry->apNeeded[slot] = rows[apSlot].ap;
             }
         }
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
             itemId = vivi->equip[i];
             if (itemId != ITEM_NONE) {
                 it = &g_itemTable[itemId];
@@ -774,9 +774,9 @@ void btlui_addEquipAbilities(Unk80104F88Entry *entry) {
     s32 i;
     s32 j;
     memset((s32)entry->fromEquip, 0, 0xC0);
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
         u8 item = chr->equip[i];
-        if (item != 0xFF) {
+        if (item != ITEM_NONE) {
             ItemInfo *info = &g_itemTable[item];
             for (j = 0; j < 3; j++) {
                 s32 ability = info->abilities[j];
@@ -885,7 +885,7 @@ void btlui_initHelp(void) {
 }
 
 void btlui_helpInput(void) {
-    if (g_padRepeat & 0x08000000) {
+    if (g_padRepeat & BTN_SELECT) {
         btlui_toggleHelp(g_btluiHelp.open == 0);
     }
 }
@@ -1498,7 +1498,7 @@ void btlui_drawPulseGradient(s32 x, s32 y, s32 ot, s32 w, s32 h, CVECTOR *c) {
 }
 
 void btlui_cmdInput(void) {
-    if (g_padRepeat & 0x01000000) {
+    if (g_padRepeat & BTN_TRIANGLE_ALT) {
         btlui_passTurn();
     } else if (g_padRepeat & BTN_CROSS) {
         btlui_confirmCmd();
@@ -3766,7 +3766,7 @@ u8 btlui_anyOnSecondPort(void) {
     if (f != 1) {
         return 0;
     }
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < PARTY_SIZE; i++) {
         Character *c = g_gameState->gameData->party[i];
         if (c == 0) {
             continue;

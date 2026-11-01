@@ -2147,6 +2147,7 @@ extern s32 g_padPortMask[];
 #define BTN_R1       0x200000
 #define BTN_L2       0x400000
 #define BTN_R2       0x800000
+#define BTN_TRIANGLE_ALT 0x1000000 /* set with BTN_TRIANGLE (runtime); btlui_cmdInput passes the turn on it */
 #define BTN_START    0x4000000  /* raw Start (pad_setMapping in config_applyPadMapping) */
 #define BTN_SELECT   0x8000000  /* raw Select; toggles the help window (help_update) */
 #define PAD_SOFT_RESET (PAD_SELECT | PAD_START | PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1) /* 0xF09: fld/wm_endFrame set GS_RESET when all are held */
@@ -2214,6 +2215,8 @@ extern s32 g_padPortMask[];
 #define GD_BTL_EXIT_PRELOAD 0x40 /* btl_main starts the exit preload (btl_preloadExit) */
 
 /* inventory and character limits */
+#define PARTY_SIZE 4 /* GameData.party slots */
+#define EQUIP_SLOT_COUNT 5 /* Character.equip: weapon, head, arm, body, accessory */
 #define LEVEL_MAX 99
 #define EXP_MAX 9999999
 #define GIL_MAX 9999999
