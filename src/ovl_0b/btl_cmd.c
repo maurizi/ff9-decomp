@@ -523,7 +523,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
         }
         if (g_evtGlobalVars.b[EVT_GB_DAGGER_FALTERS] != 0 && (caster->flags & (BTL_UNIT_INDEX_MASK | BTL_UNIT_PARTY)) == (CHR_DAGGER << BTL_UNIT_INDEX_SHIFT | BTL_UNIT_PARTY) && cmd->cmdNo < BTL_CMD_TABLE_COUNT) {
             if (evt_rollEncounter_rand() < 0x40) {
-                msg = 0x1B;
+                msg = BTL_MSG_CANT_CONCENTRATE;
                 goto fail;
             }
         }
@@ -534,7 +534,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
     switch (cmd->cmdNo) {
     case BTL_CMD_ATTACK:
         if (((battle->scene.flags >> BTL_SCENE_OUT_OF_REACH_BIT) & 1) && (*caster->weapon & 1) && (u16)cmd->targets >= BTL_TARGETS_FIRST_ENEMY) {
-            msg = 0x17;
+            msg = BTL_MSG_CANT_REACH;
             goto fail;
         }
         return 1;
@@ -557,7 +557,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
     case BTL_CMD_THROW:
     case BTL_CMD_AUTO_POTION:
         if (item_getCount(cmd->subNo) == 0) {
-            msg = 0x18;
+            msg = BTL_MSG_NOT_ENOUGH_ITEMS;
             goto fail;
         }
         if (cmd->cmdNo == BTL_CMD_AUTO_POTION) {
@@ -581,7 +581,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
         } else if (cmd->subNo == ABIL_ANGELS_SNACK) {
             have = item_getCount(cmd->ability->power);
             need = btl_countActiveUnits(1);
-            msg = 0x18;
+            msg = BTL_MSG_NOT_ENOUGH_ITEMS;
             if (have >= need) {
                 break;
             }
@@ -595,7 +595,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
         if (cmd->subNo == ABIL_SPARE_CHANGE || cmd->subNo == ABIL_SPARE_CHANGE_ELAN) {
             need = cmd->ability->power * caster->level;
             if (g_gameState->gameData->gil < need) {
-                msg = 0x14;
+                msg = BTL_MSG_NOT_ENOUGH_GIL;
                 goto fail;
             }
             g_gameState->gameData->gil -= need;
@@ -616,7 +616,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
         }
     case BTL_CMD_CHARGE_ATTACK:
         if ((battle->scene.flags >> BTL_SCENE_OUT_OF_REACH_BIT) & 1) {
-            msg = 0x17;
+            msg = BTL_MSG_CANT_REACH;
             if (*caster->weapon & 1) {
             fail:
                 btl_showMessage(msg);

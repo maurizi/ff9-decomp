@@ -771,6 +771,7 @@ typedef struct {
     u8 pad48[0x4C - 0x48];
 } BtlUnitList; /* 0x4C */
 /* BtlUnitList ids beyond the targets (btl_getUnit). Evidence: [code] */
+#define BTLFX_UNIT_BOUNCED 8    /* + i: BtlUnitList.bounced[i]; ids below are BtlUnitList.targets[id] */
 #define BTLFX_UNIT_CASTER  0x10 /* BtlUnitList.caster */
 #define BTLFX_UNIT_PARTNER 0x11 /* BtlUnitList.partner */
 #define BTLFX_UNIT_NONE    0xFF /* no unit: the effect ops skip it or use the targets' centre */

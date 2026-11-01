@@ -1240,22 +1240,22 @@ u8 *btlfx_endPrims(void) {
 }
 
 BtlUnit *btl_getUnit(s32 unitId) {
-    if (unitId == 0x10) {
+    if (unitId == BTLFX_UNIT_CASTER) {
         return g_btlfxEnv->targets->caster;
     }
-    if (unitId == 0x11) {
+    if (unitId == BTLFX_UNIT_PARTNER) {
         return g_btlfxEnv->targets->partner;
     }
-    if (unitId < 8) {
+    if (unitId < BTLFX_UNIT_BOUNCED) {
         if (unitId < 0 || unitId >= g_btlfxEnv->targets->targetCount) {
             SystemError(0x53, 0x136);
         }
         return g_btlfxEnv->targets->targets[unitId];
     }
-    if (unitId - 8 < 0 || unitId - 8 >= g_btlfxEnv->targets->bounceCount) {
+    if (unitId - BTLFX_UNIT_BOUNCED < 0 || unitId - BTLFX_UNIT_BOUNCED >= g_btlfxEnv->targets->bounceCount) {
         SystemError(0x53, 0x136);
     }
-    return g_btlfxEnv->targets->bounced[unitId - 8];
+    return g_btlfxEnv->targets->bounced[unitId - BTLFX_UNIT_BOUNCED];
 }
 
 s32 btl_isModelPart(BtlUnit *unit) {
@@ -1726,7 +1726,7 @@ s32 btlfx_resetIdleMotion(s32 mode, s32 unitId) {
             unit->model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         }
     } else if ((u8)btl_hasStatus(unit, BTL_STATUS_KO) || BTL_UNIT_INDEX(unit->flags) == 4) {
-        btlfx_resetIdleMotion(0, 0x10);
+        btlfx_resetIdleMotion(0, BTLFX_UNIT_CASTER);
         ret = 1;
     } else {
         btlfx_playUnitMotion(BTLFX_UNIT_CASTER, 0x1C);
