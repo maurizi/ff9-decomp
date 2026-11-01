@@ -2620,7 +2620,7 @@ void btlui_drawTargetCursors(void) {
     }
     setlen(g_primPtr, PRIM_LEN(DR_TPAGE));
     t = (DR_TPAGE *)g_primPtr;
-    t->code[0] = get_mode(1, 1, getTPage(0, 0, 0x3C0, 0x100));
+    t->code[0] = get_mode(1, 1, getTPage(0, 0, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y));
     addPrim(&g_ot[17], t);
     g_primPtr = (u8 *)(t + 1);
 }
@@ -3280,7 +3280,7 @@ void btlui_initNamePrims(s32 bufIndex) {
         }
         g_btluiPrims->names[i][bufIndex].v0 = 0xF0;
     }
-    setDrawTPage(&g_btluiPrims->namesTpage[bufIndex], 1, 1, getTPage(0, 0, 0x380, 0x100));
+    setDrawTPage(&g_btluiPrims->namesTpage[bufIndex], 1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
 }
 
 void btlui_initCachedRows(s32 bufIndex) {

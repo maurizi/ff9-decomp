@@ -15,7 +15,7 @@ so codegen doesn't change.
 | DIR_COMMON files | `FILE_*` | named after the one function that loads each |
 | screen | `SCREEN_W`, `SCREEN_H`, `SCREEN_H_NTSC` | `game_setScreenHeight` |
 | ordering tables | `OT_LEN`, `OT_LAST`, `OT_PAD`, `BTL_BG_OT_LEN` | docs/r29/battle-render.md |
-| VRAM | `VRAM_SHADOW_CLUT_*`, `VRAM_MODEL_CLUT_X`, `VRAM_IMAGE_*`, `VRAM_BTLUI_CACHE_*` | only locations several functions share |
+| VRAM | `VRAM_SHADOW_CLUT_*`, `VRAM_MODEL_CLUT_X`, `VRAM_IMAGE_*`, `VRAM_BTLUI_CACHE_*`, `VRAM_FONT_*`, `VRAM_UI_SHEET_*` | only locations several functions share |
 | RAM regions | `RAM_SUB_OVL(type)`, `RAM_BTLFX_MODULE(type)`, `RAM_BTLFX_MODULE_HI(type)`, `RAM_BTLFX_RING(type)` | PSX_RAM pointers; docs/r29/battle-arena-memory.md |
 | GPU (psyq.h) | `GPU_POLY_*`, `GPU_SPRT*`, `GPU_TILE*`, `GPU_ABE`, `GPU_TGE`, `GPU_CODE`, `GPU_RGBC`, `GPU_RGB_NEUTRAL`, `ONE` | libgpu / libgte |
 

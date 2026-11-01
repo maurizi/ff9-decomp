@@ -105,6 +105,10 @@
 #define VRAM_IMAGE_Y 0     /* screens, THE END) */
 #define VRAM_IMAGE_CLUT_X 0 /* their palettes, below the framebuffers */
 #define VRAM_IMAGE_CLUT_Y 0xE0
+#define VRAM_FONT_X 0x380 /* 4-bit page of the menu font's glyphs (text_buildFontTpage, text_draw, text_buildBlock, */
+#define VRAM_FONT_Y 0x100 /* text_buildPlain, btlui names) */
+#define VRAM_UI_SHEET_X 0x3C0 /* 4-bit page next to it: label glyphs, small digits and the hand cursor (ui_buildLabel, */
+#define VRAM_UI_SHEET_Y 0x100 /* text_buildSmall, text_buildDigits, ui_buildDigits, btlui_drawTargetCursors) */
 #define VRAM_BTLUI_CACHE_X 0x3C0 /* 16-bit page where the battle UI caches its command icons, header and rows */
 #define VRAM_BTLUI_CACHE_Y 0x100 /* (btlui_cache* copy them in with DR_MOVE, btlui_initCached* draw from it) */
 /* Battle effect screen captures: a rect of the draw buffer around the target is copied here (DR_MOVE / MoveImage) and

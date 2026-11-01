@@ -1548,7 +1548,7 @@ void menuSave_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     SetTexWindow(g_primPtr, &r);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;
-    SetDrawTPage(g_primPtr, 1, 1, 0x1F);
+    SetDrawTPage(g_primPtr, 1, 1, getTPage(0, 0, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y));
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 8;
 }

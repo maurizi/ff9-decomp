@@ -105,7 +105,7 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
         s++;
     }
     setlen(p, PRIM_LEN(DR_TPAGE));
-    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1E);
+    ((DrTpageWords *)p)->code = get_mode(1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
     addPrim(ot, p);
     g_primPtr = (u8 *)p + 8;
 }
@@ -227,7 +227,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
         s++;
     }
     setlen(pkt, PRIM_LEN(DR_TPAGE));
-    ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
     addPrim(ot, pkt);
     pkt += sizeof(DrTpageWords);
     return pkt;
@@ -273,7 +273,7 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
         s++;
     }
     setlen(pkt, PRIM_LEN(DR_TPAGE));
-    ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
     addPrim(ot, pkt);
     *w = x - x0;
     return pkt + 8;
@@ -332,7 +332,7 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
         x += w - 1;
     }
     setlen(p, PRIM_LEN(DR_TPAGE));
-    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
+    ((DrTpageWords *)p)->code = get_mode(1, 1, getTPage(0, 0, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y));
     addPrim(ot, p);
     return (u8 *)p + 8;
 }
@@ -407,7 +407,7 @@ u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
         }
     }
     setlen(p, PRIM_LEN(DR_TPAGE));
-    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
+    ((DrTpageWords *)p)->code = get_mode(1, 1, getTPage(0, 0, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y));
     hi = getaddr(ot); /* reuses hi as the tag temp */
     setaddr(p, hi), setaddr(ot, p);
     return (u8 *)p + 8;
@@ -1003,7 +1003,7 @@ u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
         x += 7;
     }
     t = (DrTpageWords *)p;
-    setDrawTPage(t, 1, 1, 0x1F);
+    setDrawTPage(t, 1, 1, getTPage(0, 0, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y));
     addPrim(ot, t);
     return (u8 *)(t + 1);
 }
@@ -1074,7 +1074,7 @@ s32 text_measureWidth(s32 s) {
 }
 
 u8 *text_buildFontTpage(u32 *ot, DrTpageWords *p) {
-    setDrawTPage(p, 1, 1, 0x1E);
+    setDrawTPage(p, 1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
     addPrim(ot, p);
     return (u8 *)(p + 1);
 }

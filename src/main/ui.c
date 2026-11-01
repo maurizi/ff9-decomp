@@ -912,7 +912,7 @@ u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
         x += adv;
     }
     t = (DrTpageWords *)p;
-    setDrawTPage(t, 1, 1, 0x1F);
+    setDrawTPage(t, 1, 1, getTPage(0, 0, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y));
     addPrim(ot, t);
     return (u8 *)(t + 1);
 }

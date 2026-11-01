@@ -456,7 +456,7 @@ void menuItem_drawKeyItem(void) {
         ((SprtWords *)g_primPtr)->wh = 0x7A0006;
         addPrim(&g_ot[0x14], g_primPtr);
         g_primPtr += sizeof(SprtWords);
-        SetDrawTPage(g_primPtr, 1, 1, 0x1E);
+        SetDrawTPage(g_primPtr, 1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
         addPrim(&g_ot[0x14], g_primPtr);
         g_primPtr += sizeof(DR_TPAGE);
     }

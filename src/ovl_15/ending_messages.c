@@ -175,7 +175,7 @@ void *ending_drawText(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
         }
         c = *++s;
     }
-    SetDrawTPage(p, 1, 1, 0x1E);
+    SetDrawTPage(p, 1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
     addPrim(ot, p);
     return (DR_TPAGE *)p + 1;
 }
