@@ -213,16 +213,16 @@ void btlfx_toLocalPolar(SVECTOR *pos, SVECTOR *center, SVECTOR *axis, s32 outAxi
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
-/* adds prim to ot with the given code/len word; tpage != 0xFF also adds a DR_TPAGE (semi-trans mode) */
+/* adds prim to ot with the given code/len word; tpage != BTLFX_ABR_OPAQUE also adds a DR_TPAGE (semi-trans mode) */
 void btlfx_linkPrimAbr(u32 code, u32 *ot, void *prim, s32 tpage) {
     DR_TPAGE *p;
 
     addPrimLenIn(ot, prim, code);
-    if (tpage != 0xFF) {
+    if (tpage != BTLFX_ABR_OPAQUE) {
         p = (DR_TPAGE *)g_btlfxEnv->prim;
         g_btlfxEnv->prim = (u8 *)(p + 1);
         p->code[0] = ((tpage & 3) << 5) | 0xE1000200;
-        addPrimLenIn(ot, p, 0x1000000);
+        addPrimLenIn(ot, p, PRIM_TAG(DR_TPAGE));
     }
 }
 
@@ -274,7 +274,7 @@ void btlfx_drawScreenTint(u32 *ot, s32 abr, s32 red, s32 green, s32 blue) {
     t = (TILE *)g_btlfxEnv->prim;
     g_btlfxEnv->prim = (u8 *)(t + 8);
     for (i = 0; i < 8; i++, t++) {
-        t->code = abr == 0xFF ? 0x60 : 0x62;
+        t->code = abr == BTLFX_ABR_OPAQUE ? GPU_TILE : GPU_TILE | GPU_ABE;
         t->w = 0x50;
         t->h = 0x6E;
         t->x0 = (i & 3) * 0x50;
@@ -304,7 +304,7 @@ void btlfx_drawRippleGrid(s32 ot, s32 top, s32 cols, s32 rows, s32 rowH, s32 abr
     if (rows > 0) {
         do {
             curPhase = phase + row * rowStep;
-            rowColor[1].cd = (abr == 0xFF) ? 0x38 : 0x3A;
+            rowColor[1].cd = (abr == BTLFX_ABR_OPAQUE) ? GPU_POLY_G4 : GPU_POLY_G4 | GPU_ABE;
             rowColor[0].cd = rowColor[1].cd;
             for (col = 0; col < cols; col++, p++, curPhase += colStep) {
                 p->x0 = p->x2 = (col * 0x140) / cols;
@@ -349,7 +349,7 @@ void btlfx_drawTrail3D(s32 ring, s32 *anchor, s32 n, s32 texV, s32 texU, s32 tex
     gte_strgb(&c.farColor);
     c.tpage = (((tp & 3) << 5) | tpage) << 16;
     c.clut = clut << 16;
-    c.color.b[3] = (tp == 0xFF) ? 0x3C : 0x3E;
+    c.color.b[3] = (tp == BTLFX_ABR_OPAQUE) ? GPU_POLY_GT4 : GPU_POLY_GT4 | GPU_ABE;
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (n != 0) {
@@ -387,7 +387,7 @@ void btlfx_drawTrailFlat(s32 ring, s32 n, s32 texV, s32 texU, s32 texH, s32 texW
         c.u0 = texU << 8;
         sinYaw = math_sin(-g_btlfxEnv->camera->yaw + 0x400);
         c.mode.sinCos = (sinYaw & 0xFFFF) | (math_cos(-g_btlfxEnv->camera->yaw + 0x400) << 16);
-        c.color.b[3] = (tp != 0xFF) ? 0x3E : 0x3C;
+        c.color.b[3] = (tp != BTLFX_ABR_OPAQUE) ? GPU_POLY_GT4 | GPU_ABE : GPU_POLY_GT4;
         c.tpage = (((tp & 3) << 5) | tpage) << 16;
         c.clut = clut << 16;
         c.v0 = texV;
@@ -396,7 +396,7 @@ void btlfx_drawTrailFlat(s32 ring, s32 n, s32 texV, s32 texU, s32 texH, s32 texW
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + n * 0x1C;
         c.mode.abr = (tp & 3) << 5;
-        c.color.b[3] = (tp == 0xFF) ? 0x50 : 0x52;
+        c.color.b[3] = (tp == BTLFX_ABR_OPAQUE) ? GPU_LINE_G2 : GPU_LINE_G2 | GPU_ABE;
     }
     gte_strgb(&c.farColor);
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
@@ -433,7 +433,7 @@ void btlfx_drawTrailScreen(s32 ring, s32 n, s32 texV, s32 texU, s32 texH, s32 te
     c.u0 = texU << 8;
     c.tpage = (((tp & 3) << 5) | tpage) << 16;
     c.clut = clut << 16;
-    c.color.b[3] = (tp == 0xFF) ? 0x3C : 0x3E;
+    c.color.b[3] = (tp == BTLFX_ABR_OPAQUE) ? GPU_POLY_GT4 : GPU_POLY_GT4 | GPU_ABE;
     gte_strgb(&c.farColor);
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
@@ -581,7 +581,7 @@ void btlfx_drawParticles(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fr
     }
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    c.color |= (abr == 0xFF) ? GPU_CODE(GPU_POLY_FT4) : GPU_CODE(GPU_POLY_FT4 | GPU_ABE);
+    c.color |= (abr == BTLFX_ABR_OPAQUE) ? GPU_CODE(GPU_POLY_FT4) : GPU_CODE(GPU_POLY_FT4 | GPU_ABE);
     c.abr = (abr & 3) << 5;
     c.x = offX;
     c.y = offY;
@@ -635,7 +635,7 @@ void btlfx_drawSprite(u8 *data, SVECTOR *pos, s32 frame, s32 abr, s32 alpha) {
     g_btlfxEnv->prim = prim + c.frame * 20;
     gte_stsxy(&sxy);
     gte_stszotz(&z);
-    c.color |= (abr == 0xFF) ? GPU_CODE(GPU_SPRT) : GPU_CODE(GPU_SPRT | GPU_ABE);
+    c.color |= (abr == BTLFX_ABR_OPAQUE) ? GPU_CODE(GPU_SPRT) : GPU_CODE(GPU_SPRT | GPU_ABE);
     c.abr = (abr & 3) << 5;
     c.x = sxy.vx;
     c.y = sxy.vy;
@@ -687,7 +687,7 @@ void btlfx_drawSpriteAtOt(u32 otIndex, u8 *data, s32 x, s32 y, s32 frame, s32 ab
     c.frame &= BTLFX_SPRF_COUNT;
     prim = g_btlfxEnv->prim;
     g_btlfxEnv->prim = prim + c.frame * 20;
-    c.color |= (abr == 0xFF) ? GPU_CODE(GPU_SPRT) : GPU_CODE(GPU_SPRT | GPU_ABE);
+    c.color |= (abr == BTLFX_ABR_OPAQUE) ? GPU_CODE(GPU_SPRT) : GPU_CODE(GPU_SPRT | GPU_ABE);
     c.abr = (abr & 3) << 5;
     c.x = x;
     c.y = y;
@@ -753,7 +753,7 @@ void btlfx_drawAnimQuads(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fr
     }
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    c.code = (abr == 0xFF) ? 0x2C : 0x2E;
+    c.code = (abr == BTLFX_ABR_OPAQUE) ? GPU_POLY_FT4 : GPU_POLY_FT4 | GPU_ABE;
     c.fade = alpha;
     c.otZ = g_btlfxEnv->otZ;
     if (c.count != 0) {
@@ -830,7 +830,7 @@ void btlfx_drawSprites(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fram
         ScaleMatrix(&m, &s);
     }
     gte_stlvnl(m.t);
-    if (abr != 0xFF) {
+    if (abr != BTLFX_ABR_OPAQUE) {
         z |= 2;
     }
     gte_rtps_nn();
@@ -852,7 +852,7 @@ void btlfx_drawSprites(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fram
         } else {
             btlfx_emitFixedSprites(data, &c, prim, &g_btlfxEnv->ot[z]);
         }
-        addPrimLenIn(&g_btlfxEnv->ot[z], tp, 0x1000000);
+        addPrimLenIn(&g_btlfxEnv->ot[z], tp, PRIM_TAG(DR_TPAGE));
     }
 }
 
@@ -954,7 +954,7 @@ void btlfx_drawRings(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame,
         c.uvAdd = t[frame];
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + w * cnt * 40;
-        ((u8 *)&c.color)[3] = (abr != 0xFF) ? 0x2E : 0x2C;
+        ((u8 *)&c.color)[3] = (abr != BTLFX_ABR_OPAQUE) ? GPU_POLY_FT4 | GPU_ABE : GPU_POLY_FT4;
         c.count = cnt;
         c.last = w;
         c.otZ = g_btlfxEnv->otZ;
@@ -976,7 +976,7 @@ void btlfx_drawRings(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame,
         d.dirs = (u16 *)d.sizes + cnt + 1;
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + w * cnt * 44;
-        d.code = (abr != 0xFF) ? GPU_CODE(GPU_POLY_G4 | GPU_ABE) : GPU_CODE(GPU_POLY_G4);
+        d.code = (abr != BTLFX_ABR_OPAQUE) ? GPU_CODE(GPU_POLY_G4 | GPU_ABE) : GPU_CODE(GPU_POLY_G4);
         d.fade = alpha;
         d.count = cnt;
         d.abr = (abr & 3) << 5;
@@ -1057,7 +1057,7 @@ void btlfx_drawFan(Unk800D2938 *fan, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 
         c1.abr = (abr & 3) << 5;
         c1.count = t;
         c1.z = z;
-        c1.code = (abr != 0xFF) ? GPU_CODE(GPU_POLY_FT4 | GPU_ABE) : GPU_CODE(GPU_POLY_FT4);
+        c1.code = (abr != BTLFX_ABR_OPAQUE) ? GPU_CODE(GPU_POLY_FT4 | GPU_ABE) : GPU_CODE(GPU_POLY_FT4);
         c1.fade = alpha;
         c1.otZ = g_btlfxEnv->otZ;
         prim = g_btlfxEnv->prim;
@@ -1067,7 +1067,7 @@ void btlfx_drawFan(Unk800D2938 *fan, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 
         c2.tpage = (abr & 3) << 5;
         c2.count = t;
         c2.z = z;
-        c2.code = (abr != 0xFF) ? GPU_CODE(GPU_POLY_G3 | GPU_ABE) : GPU_CODE(GPU_POLY_G3);
+        c2.code = (abr != BTLFX_ABR_OPAQUE) ? GPU_CODE(GPU_POLY_G3 | GPU_ABE) : GPU_CODE(GPU_POLY_G3);
         c2.fade = alpha;
         c2.otZ = g_btlfxEnv->otZ;
         prim = g_btlfxEnv->prim;
@@ -1092,9 +1092,9 @@ s32 padW, padH;
 
     p = (POLY_FT4 *)g_btlfxEnv->prim;
     g_btlfxEnv->prim = (u8 *)(p + 1);
-    p->code = (spr->abr != 0xFF) ? 0x2E : 0x2C;
+    p->code = (spr->abr != BTLFX_ABR_OPAQUE) ? GPU_POLY_FT4 | GPU_ABE : GPU_POLY_FT4;
     p->clut = spr->clut;
-    if (spr->abr != 0xFF) {
+    if (spr->abr != BTLFX_ABR_OPAQUE) {
         spr->tpage |= (spr->abr & 3) << 5;
     }
     tp = spr->tpage;
@@ -1125,7 +1125,7 @@ s32 padW, padH;
     p->v2 = c;
     *(u16 *)&p->r0 = *(u16 *)&color->r;
     p->b0 = color->b;
-    btlfx_addPrim(0x09000000, 0xFFE, p);
+    btlfx_addPrim(PRIM_TAG(POLY_FT4), 0xFFE, p);
 }
 
 void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alpha) {
@@ -1175,7 +1175,7 @@ void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alp
     g_btlfxEnv->prim = (u8 *)(mode + 2);
     mode[1] = tpage | 0xE1000000 | ((tp & 3) << 5);
     ctab = (u8 *)(pal + f + 1);
-    col.code = (tp != 0xFF) ? 0x66 : 0x64;
+    col.code = (tp != BTLFX_ABR_OPAQUE) ? GPU_SPRT | GPU_ABE : GPU_SPRT;
     for (i = 0; i < num; i++, prim += 20) {
         ((SPRT *)prim)->x0 = (s8)data[0] + x - (wv >> 1);
         ((SPRT *)prim)->y0 = (s8)data[1] + y - (hv >> 1);
@@ -1190,9 +1190,9 @@ void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alp
         ((SPRT *)prim)->w = wv;
         ((SPRT *)prim)->h = hv;
         gte_strgb(&((SPRT *)prim)->r0);
-        btlfx_addPrim(0x04000000, 0xFFE, prim);
+        btlfx_addPrim(PRIM_TAG(SPRT), 0xFFE, prim);
     }
-    btlfx_addPrim(0x01000000, 0xFFE, mode);
+    btlfx_addPrim(PRIM_TAG(DR_TPAGE), 0xFFE, mode);
 }
 
 void btlfx_drawBackdrop(BtlBgLayers *bg, s32 frame) {
@@ -1247,11 +1247,11 @@ void btlfx_drawBackdrop(BtlBgLayers *bg, s32 frame) {
     SetDrawOffset(&dofs[1], g_btlfxEnv->drawEnv->ofs);
     tp = (DR_TPAGE *)g_btlfxEnv->prim;
     g_btlfxEnv->prim = (u8 *)(tp + 2);
-    tp[0].code[0] = 0xE1000000;
-    tp[1].code[0] = 0xE1000200;
-    btlfx_addPrim(0x01000000, 0xFFE, &tp[1]);
-    btlfx_addPrim(0x02000000, 0xFFE, &da[1]);
-    btlfx_addPrim(0x02000000, 0xFFE, &dofs[1]);
+    tp[0].code[0] = get_mode(0, 0, 0);
+    tp[1].code[0] = get_mode(0, 1, 0);
+    btlfx_addPrim(PRIM_TAG(DR_TPAGE), 0xFFE, &tp[1]);
+    btlfx_addPrim(PRIM_TAG(DR_AREA), 0xFFE, &da[1]);
+    btlfx_addPrim(PRIM_TAG(DR_OFFSET), 0xFFE, &dofs[1]);
     offs = bg->layers;
     for (; i < n; i++) {
         L = (BtlBgLayer *)((u8 *)bg + offs[i]);
@@ -1361,10 +1361,10 @@ void btlfx_drawBackdrop(BtlBgLayers *bg, s32 frame) {
     t->x0 = 0;
     t->w = w;
     t->h = h;
-    btlfx_addPrim(0x03000000, 0xFFE, t);
-    btlfx_addPrim(0x01000000, 0xFFE, tp);
-    btlfx_addPrim(0x02000000, 0xFFE, da);
-    btlfx_addPrim(0x02000000, 0xFFE, dofs);
+    btlfx_addPrim(PRIM_TAG(TILE), 0xFFE, t);
+    btlfx_addPrim(PRIM_TAG(DR_TPAGE), 0xFFE, tp);
+    btlfx_addPrim(PRIM_TAG(DR_AREA), 0xFFE, da);
+    btlfx_addPrim(PRIM_TAG(DR_OFFSET), 0xFFE, dofs);
 }
 
 s32 btlfx_ease(s32 t, s32 duration, s32 mode) {

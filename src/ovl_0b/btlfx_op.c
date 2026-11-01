@@ -1058,12 +1058,12 @@ void btlfx_drawScreenGrid(u32 otz, s32 centerX, s32 centerY, s32 cellW, s32 cell
     ReadGeomOffset(&ox, &oy);
     p = (POLY_FT4 *)g_btlfxEnv->prim;
     g_btlfxEnv->prim = (u8 *)(p + cols * rows);
-    if (abr != 0xFF) {
+    if (abr != BTLFX_ABR_OPAQUE) {
         color->cd = 0x2E;
     } else {
         color->cd = 0x2C;
     }
-    if (abr == 0xFF) {
+    if (abr == BTLFX_ABR_OPAQUE) {
         abr = 0;
     }
     tp0 = GetTPage(2, abr, g_btlfxEnv->dispEnv->disp.x, g_btlfxEnv->dispEnv->disp.y);

@@ -774,6 +774,7 @@ typedef struct {
 #define BTLFX_UNIT_CASTER  0x10 /* BtlUnitList.caster */
 #define BTLFX_UNIT_PARTNER 0x11 /* BtlUnitList.partner */
 #define BTLFX_UNIT_NONE    0xFF /* no unit: the effect ops skip it or use the targets' centre */
+#define BTLFX_ABR_OPAQUE 0xFF /* abr / tpage argument of the btlfx draw helpers: no semi-transparency (code byte without GPU_ABE, no DR_TPAGE) */
 /* effect ids (BtlfxState.effectId) tested by ovl_0b, identities from docs/effect-modules.md */
 #define BTLFX_EFFECT_ROULETTE  0x0ED /* fx_0ed Roulette: btlfx_op does not turn the caster towards its target */
 #define BTLFX_EFFECT_ARK_SHORT 0x1BF /* fx_1bf Ark (short) / Eternal Darkness: the caster returns to its idle motion afterwards */

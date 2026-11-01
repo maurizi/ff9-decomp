@@ -47,6 +47,7 @@ int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 /* A tag's len for primitive TYPE (words after the tag), for code that sets len and then writes the code byte
    or whole words itself: setlen(p, PRIM_LEN(SPRT)). Not a PsyQ macro. */
 #define PRIM_LEN(type) (sizeof(type) / 4 - 1)
+#define PRIM_TAG(type) (PRIM_LEN(type) << 24) /* the same as a tag word's len byte (addPrimLen-style helpers) */
 #define TPAGE_ABR_MASK 0x60 /* texture page word bits 5-6: semi-transparency rate (getTPage's abr << 5) */
 #define GPU_STP(set, check) (0xE6000000 | ((check) << 1) | (set)) /* GP0(E6h) as ovl_0b writes it */
 #define _get_mask(set, chk) (0xE6000000 | ((chk) ? 2 : 0) | ((set) ? 1 : 0)) /* GP0(E6h) mask-bit setting word */
