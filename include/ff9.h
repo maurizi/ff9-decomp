@@ -3222,7 +3222,7 @@ typedef struct {
 u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidth, SprtWords *s);
 u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p);
 /* Inlined copy of ui_buildSpriteDef (SPRT + DR_TPAGE from a sprite descriptor). */
-static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *out, SprtWords *s) {
+static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidth, SprtWords *s) {
     DrTpageWords *t;
     setlen(s, 4);
     if (flag) {
@@ -3239,7 +3239,7 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, 
     setlen(t, 1);
     t->code = (d->tpage & 0x9FF) | 0xE1000600;
     addPrim(ot, t);
-    *out = d->w;
+    *outWidth = d->w;
     s = (SprtWords *)(t + 1);
     return (u8 *)s;
 }
