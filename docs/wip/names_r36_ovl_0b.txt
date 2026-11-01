@@ -32,4 +32,5 @@ BTL_TARGETS_PARTY 0xF, BTL_TARGETS_FIRST_ENEMY 0x10 (ovl_0b.h, BtlCmd.targets ma
 Command-id bounds in btl_setCmd / btl_setEnemyCmd (BTL_CMD_ENEMY_*, BTL_CMD_TABLE_COUNT, BTL_CMD_ENEMY_REACT);
   ITEM_FIRST_USABLE, ITEM_NONE, ABILITY_SUPPORT_FIRST in btlui (incl. the per-ability array sizes).
 BTLFX_STAGE_NONE/DATA/CODE/READY (loader stage), BTLFX_BLOCK_NONE/READING/DONE (summon/summonData/sound/buf states):
-  btlfx_updateLoader, btlfx_resetLoader, btlfx_runScript waits. Battle phase+subPhase u16 test in btl_execCmd.
+  btlfx_updateLoader, btlfx_loadFile, btlfx_loadNextBlock, btlfx_runScript waits. Battle phase+subPhase u16 test in
+  btl_checkCmdUsable.
