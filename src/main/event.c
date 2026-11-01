@@ -3559,7 +3559,7 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
                 g_evtBattleVars[0] = v;
                 a = 0;
                 break;
-            case 0x37:
+            case BTL_CMD_ENEMY_REACT:
                 break;
             }
             g_evtBattleTriggerArg = w;

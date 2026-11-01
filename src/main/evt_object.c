@@ -586,8 +586,8 @@ s32 evt_exprSpecial(s32 op) {
     case EVT_EXPR_UNUSED_6C:
         evt_popResult();
     case EVT_EXPR_UNUSED_5A:
-    case 0x5B:
-    case 0x5C:
+    case EVT_EXPR_UNUSED_5B:
+    case EVT_EXPR_UNUSED_5C:
         evt_popResult();
         break;
     }

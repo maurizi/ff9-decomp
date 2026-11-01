@@ -190,6 +190,7 @@ typedef struct ModelSlot {
  * WM_SLOT_LOADED / WM_SLOT_NO_SHADOW are defined as these. */
 #define MODEL_SLOT_LOADED    0x1  /* the slot has a model (set when it is built, cleared by fld_exit / btl_cleanup / wm exit) */
 #define MODEL_SLOT_NO_SHADOW 0x10 /* no shadow drawn (EVT_OP_JUMP sets it for the jump) */
+#define MODEL_SLOT_SHADOW_FIXED 0x20 /* the shadow uses the fixed placement (EVT_OP_SHADOW_FIXED / EVT_OP_SHADOW_UNFIX; ovl_0a FLD_OBJ_SHADOW_FIXED) */
 
 /* main's and ovl_65's view of ovl_0b BtlFiles (Battle.files) */
 typedef struct {
@@ -227,9 +228,9 @@ typedef struct Unk11C0Slot {
     u32 unk0_0 : 8;
     u32 sizeX : 12; /* EVT_OP_SHADOW_SIZE x * 14 (0xE0 from shadow_initSlots) */
     u32 sizeZ : 12; /* EVT_OP_SHADOW_SIZE z * 12 (0xC0) */
-    u32 fixedAngle : 12; /* EVT_OP_SHADOW_FIXED angle * 16, used with model flag 0x20 */
-    u32 ofsX : 10; /* event op 0x82 x offset */
-    u32 ofsZ : 10; /* event op 0x82 z offset */
+    u32 fixedAngle : 12; /* EVT_OP_SHADOW_FIXED angle * 16, used with MODEL_SLOT_SHADOW_FIXED */
+    u32 ofsX : 10; /* EVT_OP_SHADOW_OFFSET x */
+    u32 ofsZ : 10; /* EVT_OP_SHADOW_OFFSET z */
     POLY_FT4 *prims[2][4]; /* shadow quads per draw buffer, filled by shadow_initSlots (ovl_0c WmObjEnt.prims) */
 } Unk11C0Slot;
 
@@ -4016,7 +4017,8 @@ typedef struct {
 #define EVT_OP_SHADOW_ON 0x7F /* clears MODEL_SLOT_NO_SHADOW (evt_modelOp*) */
 #define EVT_OP_SHADOW_OFF 0x80 /* sets MODEL_SLOT_NO_SHADOW */
 #define EVT_OP_SHADOW_SIZE 0x81 /* u8, u8: evt_modelOpField */
-#define EVT_OP_SHADOW_FIXED 0x83 /* u8: flag 0x20 + placement */
+#define EVT_OP_SHADOW_FIXED 0x83 /* u8: MODEL_SLOT_SHADOW_FIXED + placement */
+#define EVT_OP_SHADOW_OFFSET 0x82 /* s16 x, s16 z: the shadow offset (Unk11C0Slot.ofsX/ofsZ) */
 #define EVT_OP_SHADOW_UNFIX 0x84
 #define EVT_OP_SET_IDLE_SPEEDS 0x86 /* 4 x u8: actor.idleAnimSpeeds */
 #define EVT_OP_SET_DIR_OBJ 0x87 /* obj, dir: 0x36 on another object */
