@@ -17,7 +17,7 @@ void wm_frameTerm(void) {
 
 /* world map start-up */
 void wm_systemInit(void) {
-    RECT r = g_worldVramSaveRect;
+    RECT saveRect = g_worldVramSaveRect;
 
     g_worldStartup = 1;
     if (g_evtGlobalVars.b[0x65] & 1) {
@@ -50,7 +50,7 @@ void wm_systemInit(void) {
     g_worldViewMatrix = &g_gameState->gameData->viewMatrix;
     ResetGraph(1);
     wm_musicInit();
-    StoreImage(&r, (u32 *)g_worldClutBuf);
+    StoreImage(&saveRect, (u32 *)g_worldClutBuf);
     DrawSync(0);
     wm_initBuffers();
     wm_initDiscImage();
@@ -75,7 +75,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", g_worldVramParkRect);
 
 /* world map frame */
 s32 wm_frameMain(void) {
-    s32 t;
+    s32 primUsed;
     s32 busy;
 
     g_worldStartup = 0;
@@ -114,10 +114,10 @@ s32 wm_frameMain(void) {
         wm_updateDraw();
         wm_postDraw();
         g_worldTimeDraw = VSync(1) - g_worldTimeDraw;
-        t = g_worldPrimPtr - g_worldPrimBuffers[*g_worldBufIndex];
+        primUsed = g_worldPrimPtr - g_worldPrimBuffers[*g_worldBufIndex];
         g_worldFrameCount++;
-        g_worldPrimUsed = t;
-        g_worldPrimUsedPercent = (u32)(t * 100) / 155136;
+        g_worldPrimUsed = primUsed;
+        g_worldPrimUsedPercent = (u32)(primUsed * 100) / 155136;
         if (g_worldMapLoaded != 0) {
             g_worldReadyFrameCount++;
         }
@@ -502,22 +502,22 @@ void w_frameSetParameter(u32 param, s32 value) {
 }
 
 s32 w_frameGetParameter(s32 param) {
-    u32 v;
+    u32 attr;
     s32 hi;
     s32 lo;
-    s32 r;
+    s32 roll;
     u8 result;
     s32 k;
 
-    v = g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr;
+    attr = g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr;
     if ((g_worldMapDebugFlags & WM_DEBUG_REQUEST) && param == WM_PARAM_CD_BUSY) {
         printf("Event:CDAccessWait\n");
     }
     switch (param) {
     case WM_PARAM_AREA:
-        return WM_ATTR_AREA(v);
+        return WM_ATTR_AREA(attr);
     case WM_PARAM_TOPOGRAPHY:
-        return WM_ATTR_TOPOGRAPHY(v);
+        return WM_ATTR_TOPOGRAPHY(attr);
     case WM_PARAM_RIDE_Y:
         if (g_worldMoveMode == WM_MOVE_CHOCOBO_FLY) {
             return g_worldActorTypeInfo[g_worldPlayer->actorType].floorY + 400;
@@ -552,13 +552,13 @@ s32 w_frameGetParameter(s32 param) {
             rand_refill();
         }
         lo = *g_randPtr++;
-        r = ((hi << 8) | lo) % (g_worldEventBattleRate + 1);
+        roll = ((hi << 8) | lo) % (g_worldEventBattleRate + 1);
         result = 0;
         if (g_worldPlayerStepped != 0 && g_worldPlayerPosChanged != 0) {
-            k = (s32)(v & 0xFC) >> 2;
+            k = (s32)(attr & 0xFC) >> 2;
             if (k >= 0x24) {
                 if (k < 0x27 && g_worldFrameCount > 400) {
-                    result = r == 1;
+                    result = roll == 1;
                 }
             }
         }
@@ -566,7 +566,7 @@ s32 w_frameGetParameter(s32 param) {
     case WM_PARAM_PLAYER_DIR:
         return ((u16)g_worldPlayer->pos.rotY & 0xFFF) >> 4;
     case WM_PARAM_ZONE:
-        return wm_getAreaZone(WM_ATTR_AREA(v));
+        return wm_getAreaZone(WM_ATTR_AREA(attr));
     case WM_PARAM_TYPE11_RIDE_OFFSET:
         return g_worldActorTypeInfo[11].rideOffset;
     case WM_PARAM_RUNNING:
@@ -634,10 +634,10 @@ void wm_debugAdjustScreen(void) {
 }
 
 void wm_finishLoad(void) {
-    RECT r = g_worldVramParkRect;
+    RECT parkRect = g_worldVramParkRect;
 
     g_gameState->gameData->flags &= ~GD_MUSIC_LEFT_PLAYING;
-    LoadImage(&r, (u32 *)g_worldClutBuf);
+    LoadImage(&parkRect, (u32 *)g_worldClutBuf);
     DrawSync(0);
     w_movementChange();
     w_musicUpdate();
@@ -654,9 +654,9 @@ void w_frameMapDestructor(void) {
 }
 
 void w_frameSystemDestructor(void) {
-    RECT r = g_worldVramParkRect;
+    RECT parkRect = g_worldVramParkRect;
 
-    MoveImage(&r, 0x100, 0xFD);
+    MoveImage(&parkRect, 0x100, 0xFD);
     DrawSync(0);
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf(s_wmStrFrameSystemDestructor);
@@ -683,9 +683,9 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFrameExtructAlready)
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFramePackGetPtrRange);
 
 s32 wm_canCallChocobo(void) {
-    s32 n = g_worldPlayer->actorType;
-    if (n < WM_ACTOR_CHOCOBO0 && n != WM_ACTOR_NONE) {
-        switch ((u8)g_worldActorTypeInfo[n].cellAttr >> 2) {
+    s32 type = g_worldPlayer->actorType;
+    if (type < WM_ACTOR_CHOCOBO0 && type != WM_ACTOR_NONE) {
+        switch ((u8)g_worldActorTypeInfo[type].cellAttr >> 2) {
         case 3:
         case 18:
         case 21:
@@ -711,11 +711,11 @@ s32 wm_lerpS8(s8 from, s8 to, s32 t) {
 
 /* fixed-point lerp of two values with headroom bits of headroom */
 s32 wm_lerpShift(s32 from, s16 to, s32 t, s32 headroom) {
-    s32 s = 16 - headroom;
+    s32 shift = 16 - headroom;
 
-    from = (((from << 16) >> 16 << s) * (0x400 - t / 4)) >> 10;
-    from += ((to << s) * (t / 4)) >> 10;
-    return from >> s;
+    from = (((from << 16) >> 16 << shift) * (0x400 - t / 4)) >> 10;
+    from += ((to << shift) * (t / 4)) >> 10;
+    return from >> shift;
 }
 
 s32 w_frameExtruct(s32 *pack) {
@@ -736,21 +736,21 @@ s32 w_frameExtruct(s32 *pack) {
 }
 
 void *w_framePackGetPtr(void **pack, s32 idx) {
-    s32 n = (s32)pack[0] & 0x7FFFFFFF;
+    s32 count = (s32)pack[0] & 0x7FFFFFFF;
 
-    if ((g_worldMapDebugFlags & WM_DEBUG_PACK) && n < idx) {
-        printf(s_wmStrFramePackGetPtrRange, idx, n);
+    if ((g_worldMapDebugFlags & WM_DEBUG_PACK) && count < idx) {
+        printf(s_wmStrFramePackGetPtrRange, idx, count);
     }
     return pack[idx + 1];
 }
 
 void wm_runEvents(void) {
-    u8 m;
+    u8 state;
 
     g_worldTimeEvents = VSync(1);
-    m = g_worldState;
-    if ((m == 0 || m == 2) && !(g_gameState->gameData->flags & GD_MENU_OPEN) && (m == 0 || m == 2)) {
-        g_worldEventResult = evt_update(m);
+    state = g_worldState;
+    if ((state == 0 || state == 2) && !(g_gameState->gameData->flags & GD_MENU_OPEN) && (state == 0 || state == 2)) {
+        g_worldEventResult = evt_update(state);
     }
     g_worldTimeEvents = VSync(1) - g_worldTimeEvents;
 }

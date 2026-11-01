@@ -57,9 +57,9 @@ void btlcam_playSeq(s32 script) {
 }
 
 void btlcam_focusCaster(void) {
-    BtlUnit *u = g_btlfxEnv->targets->caster;
-    if (u->flags & BTL_UNIT_PARTY) {
-        g_btlCamera.focusUnit = u;
+    BtlUnit *unit = g_btlfxEnv->targets->caster;
+    if (unit->flags & BTL_UNIT_PARTY) {
+        g_btlCamera.focusUnit = unit;
     }
 }
 
@@ -82,9 +82,9 @@ void btlcam_loadScript(s32 arg) {
     u16 *sel;
     u8 *data;
     s32 i;
-    s32 n;
-    s32 r;
-    BtlUnit *u;
+    s32 tmp;
+    s32 val;
+    BtlUnit *unit;
     BtlUnit *target;
     BtlModelHeader *hdr;
 
@@ -121,18 +121,18 @@ void btlcam_loadScript(s32 arg) {
             g_btlCamera.variant = (*sel >> 12) & 3;
             break;
         case 1:
-            r = btlfx_randRange(0, 9);
+            val = btlfx_randRange(0, 9);
             if (!(*sel & 0x3000)) {
-                if (r < ((*sel >> 10) & 3) + 5) {
+                if (val < ((*sel >> 10) & 3) + 5) {
                     g_btlCamera.variant = 0;
                 } else {
                     g_btlCamera.variant = 1;
                 }
             } else {
-                n = ((*sel >> 10) & 3) + 3;
-                if (r < n) {
+                tmp = ((*sel >> 10) & 3) + 3;
+                if (val < tmp) {
                     g_btlCamera.variant = 0;
-                } else if (r < n + 3) {
+                } else if (val < tmp + 3) {
                     g_btlCamera.variant = 1;
                 } else {
                     g_btlCamera.variant = 2;
@@ -142,9 +142,9 @@ void btlcam_loadScript(s32 arg) {
         case 2:
             switch ((*sel >> 12) & 3) {
             case 0:
-                n = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
-                if (n == BTL_AMBUSH_NORMAL) {
-                    g_btlCamera.variant = n;
+                tmp = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
+                if (tmp == BTL_AMBUSH_NORMAL) {
+                    g_btlCamera.variant = tmp;
                 } else {
                     g_btlCamera.variant = btlfx_randRange(0, 1);
                 }
@@ -155,23 +155,23 @@ void btlcam_loadScript(s32 arg) {
                 break;
             case 2:
                 target = g_btlCamTargets.target;
-                n = 0;
-                r = n;
+                tmp = 0;
+                val = tmp;
                 if (target != NULL) {
                     hdr = target->model->header;
-                    r = hdr->height;
-                    n = hdr->radius;
+                    val = hdr->height;
+                    tmp = hdr->radius;
                 }
-                if (n == 0x4D7 || n >= 0xBB8) {
+                if (tmp == 0x4D7 || tmp >= 0xBB8) {
                     g_btlCamera.variant = 2;
-                } else if (n < 0x65) {
+                } else if (tmp < 0x65) {
                     g_btlCamera.variant = 0;
                 } else {
                     g_btlCamera.variant = 1;
-                    if (r < 0x159) {
+                    if (val < 0x159) {
                         g_btlCamera.variant = 0;
                     }
-                    if (r >= 0x3E9) {
+                    if (val >= 0x3E9) {
                         g_btlCamera.variant = 2;
                     }
                 }
@@ -182,25 +182,25 @@ void btlcam_loadScript(s32 arg) {
                 } else if ((g_btlCamera.focusUnit->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) || !((g_btlRewards.expMask >> ((u8)g_btlCamera.focusUnit->flags >> BTL_UNIT_SLOT_SHIFT)) & 1)) {
                     g_btlCamera.variant = 0;
                 } else {
-                    n = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
-                    if (n == BTL_AMBUSH_NORMAL) {
-                        g_btlCamera.variant = n;
+                    tmp = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
+                    if (tmp == BTL_AMBUSH_NORMAL) {
+                        g_btlCamera.variant = tmp;
                     } else {
-                        r = 0;
-                        for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-                            if ((u->flags & BTL_UNIT_PARTY) && !(u->status & (BTL_STATUS_KO | BTL_STATUS_JUMP))) {
-                                r++;
+                        val = 0;
+                        for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
+                            if ((unit->flags & BTL_UNIT_PARTY) && !(unit->status & (BTL_STATUS_KO | BTL_STATUS_JUMP))) {
+                                val++;
                             }
                         }
-                        if (r < 3) {
+                        if (val < 3) {
                             g_btlCamera.variant = btlfx_randRange(0, 1) + 1;
                         } else {
-                            r = btlfx_randRange(0, 5);
+                            val = btlfx_randRange(0, 5);
                             g_btlCamera.variant = 0;
-                            if (r == 4) {
+                            if (val == 4) {
                                 g_btlCamera.variant = 1;
                             }
-                            if (r == 5) {
+                            if (val == 5) {
                                 g_btlCamera.variant = 2;
                             }
                         }
@@ -228,10 +228,10 @@ void btlcam_loadScript(s32 arg) {
 
 void btlcam_finishPaths(void) {
     s32 i;
-    s32 t;
+    s32 running;
     for (i = 0; i < 2; i++) {
-        t = g_btlCamera.paths[i].framesLeft != 0;
-        if (t && (u32)(g_btlCamera.paths[i].mode - 2) < 2) {
+        running = g_btlCamera.paths[i].framesLeft != 0;
+        if (running && (u32)(g_btlCamera.paths[i].mode - 2) < 2) {
             btlcam_evalPath(1, &g_btlCamera.paths[i], g_btlCamera.paths[i].keys[1].pos);
             g_btlCamera.paths[i].mode = BTLCAM_PATH_HOLD;
         }
@@ -248,46 +248,46 @@ void btlcam_update(void) {
 s32 btlcam_step(void) {
     SVECTOR sv;
     SVECTOR sv2;
-    s32 n;
+    s32 cmdIdx;
     s32 flags;
     s32 i;
-    s32 m;
-    s32 v;
-    s32 r;
-    u16 *p;
-    s32 c;
+    s32 pathMode;
+    s32 zoomDist;
+    s32 dist;
+    u16 *cmd;
+    s32 arg;
     s32 j;
-    s32 e;
-    Battle *b;
+    s32 introEnd;
+    Battle *battle;
 
     if (g_btlCamScript.frame != 0) {
         if (g_btlCamScript.pc != NULL) {
-            for (n = 0; n < 10; n++) {
-                p = (u16 *)g_btlCamScript.pc;
-                if (g_btlCamScript.frame != (p[0] & 0x3FF)) {
+            for (cmdIdx = 0; cmdIdx < 10; cmdIdx++) {
+                cmd = (u16 *)g_btlCamScript.pc;
+                if (g_btlCamScript.frame != (cmd[0] & 0x3FF)) {
                     break;
                 }
                 if (!(g_btlCamera.flags & 1)) {
                     g_btlCamera.flags |= 1;
                     g_btlCamera.projDist = 0x200;
                 }
-                flags = p[1] | ((p[0] >> 10) << 16);
+                flags = cmd[1] | ((cmd[0] >> 10) << 16);
                 g_btlCamScript.pc += 4;
                 for (i = 0; i < 2; i++) {
-                    m = (flags >> (i * 3)) & 7;
-                    if ((u32)(m - 2) < 2 && (u32)(g_btlCamera.paths[i].mode - 2) < 2 && g_btlCamera.paths[i].framesLeft != 0) {
+                    pathMode = (flags >> (i * 3)) & 7;
+                    if ((u32)(pathMode - 2) < 2 && (u32)(g_btlCamera.paths[i].mode - 2) < 2 && g_btlCamera.paths[i].framesLeft != 0) {
                         btlcam_evalPath(1, &g_btlCamera.paths[i], g_btlCamera.paths[i].keys[1].pos);
                     }
-                    if (m > 0 && g_btlCamera.paths[i].locked == 0) {
-                        g_btlCamera.paths[i].mode = m;
+                    if (pathMode > 0 && g_btlCamera.paths[i].locked == 0) {
+                        g_btlCamera.paths[i].mode = pathMode;
                     }
-                    if ((u32)(m - 1) < 3) {
+                    if ((u32)(pathMode - 1) < 3) {
                         btlcam_setPathKey(&g_btlCamera.paths[i], (Unk800C3F78 *)g_btlCamScript.pc);
                         g_btlCamScript.pc += 6;
                     }
-                    if ((u32)(m - 2) < 3) {
+                    if ((u32)(pathMode - 2) < 3) {
                         btlcam_setPathTiming(&g_btlCamera.paths[i], g_btlCamScript.pc);
-                        if (m == 4) {
+                        if (pathMode == 4) {
                             g_btlCamera.paths[i].keys[1].pos[2] = g_btlCamScript.pc[1] << 5;
                         }
                         g_btlCamScript.pc += 4;
@@ -316,11 +316,11 @@ s32 btlcam_step(void) {
                     g_btlCamScript.zoomFrames = g_btlCamScript.zoomLeft = g_btlCamScript.pc[0];
                     g_btlCamScript.zoomTarget = g_btlCamScript.pc[1];
                     g_btlCamScript.zoomFrom = g_btlCamera.projDist;
-                    v = ((u16 *)g_btlCamScript.pc)[1];
-                    if (v == 0) {
-                        v = g_btlCamera.baseProjDist;
+                    zoomDist = ((u16 *)g_btlCamScript.pc)[1];
+                    if (zoomDist == 0) {
+                        zoomDist = g_btlCamera.baseProjDist;
                     }
-                    g_btlCamScript.zoomTo = v;
+                    g_btlCamScript.zoomTo = zoomDist;
                     g_btlCamScript.pc += 4;
                 }
                 if (flags & 0x1000) {
@@ -334,9 +334,9 @@ s32 btlcam_step(void) {
                     g_btlCamera.effectPick = g_btlCamera.variant;
                 }
                 if (flags & 0x4000) {
-                    c = *g_btlCamScript.pc;
-                    if (c == 1) {
-                        g_btlCamera.endIntro = c;
+                    arg = *g_btlCamScript.pc;
+                    if (arg == 1) {
+                        g_btlCamera.endIntro = arg;
                     } else {
                         g_gameState->gameData->ctx.battle->subPhase++;
                     }
@@ -389,24 +389,24 @@ s32 btlcam_step(void) {
     }
     if (g_btlCamScript.zoomLeft != 0) {
         g_btlCamScript.zoomLeft--;
-        r = btlfx_lerpRatio(g_btlCamScript.zoomTo, g_btlCamScript.zoomFrom, g_btlCamScript.zoomLeft, g_btlCamScript.zoomFrames);
+        dist = btlfx_lerpRatio(g_btlCamScript.zoomTo, g_btlCamScript.zoomFrom, g_btlCamScript.zoomLeft, g_btlCamScript.zoomFrames);
         if (g_btlCamScript.zoomTarget & 1) {
-            g_btlCamera.baseProjDist = r;
+            g_btlCamera.baseProjDist = dist;
         }
         if (g_btlCamScript.zoomTarget & 2) {
-            g_btlCamera.projDist = r;
+            g_btlCamera.projDist = dist;
         }
     }
     if (g_btlCamera.projFixed == 0) {
         g_gameState->gameData->projDist = g_btlCamera.projDist;
     }
     SetGeomScreen(g_gameState->gameData->projDist);
-    e = g_btlCamera.endIntro;
-    if (e == 1) {
-        b = g_gameState->gameData->ctx.battle;
-        if ((b->loadFlags & BTL_LOAD_READY) == BTL_LOAD_READY) {
-            if ((b->scene.flags >> BTL_SCENE_SCRIPT_START_BIT) & 1) {
-                b->phase = e;
+    introEnd = g_btlCamera.endIntro;
+    if (introEnd == 1) {
+        battle = g_gameState->gameData->ctx.battle;
+        if ((battle->loadFlags & BTL_LOAD_READY) == BTL_LOAD_READY) {
+            if ((battle->scene.flags >> BTL_SCENE_SCRIPT_START_BIT) & 1) {
+                battle->phase = introEnd;
             } else {
                 g_gameState->gameData->ctx.battle->phase = BTL_PHASE_ENTRANCE;
             }
@@ -420,7 +420,7 @@ s32 btlcam_step(void) {
 }
 
 void btlcam_setPathKey(Unk800C412C *path, Unk800C3F78 *key) {
-    BtlUnit *u;
+    BtlUnit *unit;
     Unk800F5758 *preset;
     s32 idx;
     s32 k;
@@ -436,9 +436,9 @@ void btlcam_setPathKey(Unk800C412C *path, Unk800C3F78 *key) {
         if (k != 1 && k != 5) {
             goto other;
         }
-        u = (k == 1) ? g_btlCamTargets.caster : g_btlCamTargets.target;
-        if (u->flags & BTL_UNIT_PARTY) {
-            idx = ((g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F) +
+        unit = (k == 1) ? g_btlCamTargets.caster : g_btlCamTargets.target;
+        if (unit->flags & BTL_UNIT_PARTY) {
+            idx = ((g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F) +
                   (key->preset - 1) * CHR_KIND_COUNT;
             presets = g_btlCamPartyPresets;
             preset = &presets[idx];
@@ -466,7 +466,7 @@ void btlcam_setPathTiming(Unk800C412C *path, u8 *timing) {
 
 void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
     s32 coef[4];
-    SVECTOR v[2];
+    SVECTOR keyPos[2];
     SVECTOR out;
     SVECTOR w[2];
     s32 wa[2];
@@ -475,9 +475,9 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
     s32 i;
     s32 modes;
     s32 k;
-    s32 d;
-    s16 *a;
-    s16 *b;
+    s32 steps;
+    s16 *angA;
+    s16 *angB;
     s32 dx;
     s32 dy;
     s32 dz;
@@ -498,12 +498,12 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
                     wa[i] = (0x10000000 / path->frames * path->framesLeft) >> 16;
                     break;
                 case 1:
-                    d = path->frames - path->framesLeft;
-                    wa[i] = 0x1000 - ((k * d * d) >> 17) - d * g_btlCamScript.accel;
+                    steps = path->frames - path->framesLeft;
+                    wa[i] = 0x1000 - ((k * steps * steps) >> 17) - steps * g_btlCamScript.accel;
                     break;
                 case 2:
-                    d = path->framesLeft;
-                    wa[i] = ((k * d * d) >> 17) + d * g_btlCamScript.accel;
+                    steps = path->framesLeft;
+                    wa[i] = ((k * steps * steps) >> 17) + steps * g_btlCamScript.accel;
                     break;
                 }
             }
@@ -512,48 +512,48 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
         }
     }
     for (i = 0; i < 2; i++) {
-        v[i].vx = path->keys[i].pos[0];
-        v[i].vy = path->keys[i].pos[1];
-        v[i].vz = path->keys[i].pos[2];
-        v[i].pad = path->keys[i].pos[3];
+        keyPos[i].vx = path->keys[i].pos[0];
+        keyPos[i].vy = path->keys[i].pos[1];
+        keyPos[i].vz = path->keys[i].pos[2];
+        keyPos[i].pad = path->keys[i].pos[3];
     }
     if (path->mode >= BTLCAM_PATH_LERP) {
         modes = path->wrapModes;
-        a = &v[0].vx;
-        b = &v[1].vx;
+        angA = &keyPos[0].vx;
+        angB = &keyPos[1].vx;
         for (i = 0; i < 3; i++) {
             switch (modes & 3) {
             case 0:
-                if (*a != *b) {
-                    if ((*a - *b) & 0x800) {
-                        if (*a >= *b) {
-                            *b += 0x1000;
+                if (*angA != *angB) {
+                    if ((*angA - *angB) & 0x800) {
+                        if (*angA >= *angB) {
+                            *angB += 0x1000;
                         }
-                    } else if (*a <= *b) {
-                        *a += 0x1000;
+                    } else if (*angA <= *angB) {
+                        *angA += 0x1000;
                     }
                 }
                 break;
             case 1:
-                if (*a >= *b) {
-                    *b += 0x1000;
+                if (*angA >= *angB) {
+                    *angB += 0x1000;
                 }
                 break;
             case 2:
-                if (*a <= *b) {
-                    *a += 0x1000;
+                if (*angA <= *angB) {
+                    *angA += 0x1000;
                 }
                 break;
             }
-            a++;
-            b++;
+            angA++;
+            angB++;
             modes >>= 2;
         }
     }
-    LoadAverageShort12(&v[0], &v[1], wa[0], wb[0], &out);
+    LoadAverageShort12(&keyPos[0], &keyPos[1], wa[0], wb[0], &out);
     switch (path->mode) {
     case BTLCAM_PATH_LERP:
-        out.pad = btlfx_lerp(v[0].pad, v[1].pad, wb[1]);
+        out.pad = btlfx_lerp(keyPos[0].pad, keyPos[1].pad, wb[1]);
         if (finish != 0) {
             dst[0] = out.vx;
             dst[1] = out.vy;
@@ -566,10 +566,10 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
     case BTLCAM_PATH_ANCHORED:
         if (finish != 0) {
             for (i = 0; i < 2; i++) {
-                btlcam_orbitAnchor(path->keys[i].anchor, path->keys[i].anchorFlags, &v[i].vx, &w[i].vx);
+                btlcam_orbitAnchor(path->keys[i].anchor, path->keys[i].anchorFlags, &keyPos[i].vx, &w[i].vx);
             }
             LoadAverageShort12(&w[0], &w[1], wa[0], wb[0], &w[1]);
-            btlcam_resolveAnchorPair(path->keys[1].anchor, path->keys[1].anchorFlags, &w[0].vx, &v[0].vx, &z);
+            btlcam_resolveAnchorPair(path->keys[1].anchor, path->keys[1].anchorFlags, &w[0].vx, &keyPos[0].vx, &z);
             dx = w[1].vx - w[0].vx;
             dy = w[1].vy - w[0].vy;
             dz = w[1].vz - w[0].vz;
@@ -582,7 +582,7 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
             return;
         }
         for (i = 0; i < 2; i++) {
-            btlcam_orbitAnchor(path->keys[i].anchor, path->keys[i].anchorFlags, &v[i].vx, &w[i].vx);
+            btlcam_orbitAnchor(path->keys[i].anchor, path->keys[i].anchorFlags, &keyPos[i].vx, &w[i].vx);
         }
         LoadAverageShort12(&w[0], &w[1], wa[0], wb[0], (SVECTOR *)dst);
     tail:
@@ -609,8 +609,8 @@ void btlcam_evalPath(s32 finish, Unk800C412C *path, s16 *dst) {
         }
         break;
     default:
-        btlcam_orbitAnchor(path->keys[1].anchor, path->keys[1].anchorFlags, &v[1].vx, dst);
-        dst[3] = v[1].vz;
+        btlcam_orbitAnchor(path->keys[1].anchor, path->keys[1].anchorFlags, &keyPos[1].vx, dst);
+        dst[3] = keyPos[1].vz;
         if ((u32)((path->keys[1].anchor & 0x1F) - 0x19) < 2) {
             g_btlCamera.viewState++;
         }
@@ -657,7 +657,7 @@ void btlcam_orbitAnchor(s32 anchor, s32 anchorFlags, s16 *offset, s16 *out) {
     s32 dist;
     s32 horiz;
     s32 ang;
-    BtlUnit *u;
+    BtlUnit *unit;
 
     btlcam_resolveAnchorPair(anchor, anchorFlags, anchorPos, anchorRot, &dist);
     if (anchorFlags & BTLCAM_AF_ABS_DIST) {
@@ -673,8 +673,8 @@ void btlcam_orbitAnchor(s32 anchor, s32 anchorFlags, s16 *offset, s16 *out) {
     } else {
         horiz = (math_cos(offset[0] + anchorRot[0]) * dist) >> 12;
         ang = offset[1] + anchorRot[1];
-        u = (BtlUnit *)btlcam_getAnchorUnit(anchor & 0x1F);
-        if (u != NULL && (u->flags & BTL_UNIT_PARTY)) {
+        unit = (BtlUnit *)btlcam_getAnchorUnit(anchor & 0x1F);
+        if (unit != NULL && (unit->flags & BTL_UNIT_PARTY)) {
             ang ^= 0xFFF;
         }
         out[0] = (-math_sin(ang) * horiz) >> 12;
@@ -702,7 +702,7 @@ void btlcam_resolveAnchorPair(s32 anchor, s32 anchorFlags, s16 *pos, s16 *rot, s
 
 s32 btlcam_resolveAnchor(s32 anchor, s16 *pos, s16 *rot, s32 *radius) {
     s32 kind;
-    BtlUnit *u;
+    BtlUnit *unit;
     s16 *anchors;
     GameState *gs;
 
@@ -736,54 +736,54 @@ s32 btlcam_resolveAnchor(s32 anchor, s16 *pos, s16 *rot, s32 *radius) {
         return;
     }
     anchors = g_btlCamScript.casterAnchors;
-    u = NULL;
+    unit = NULL;
     if (kind == 1) {
-        u = g_btlCamTargets.caster;
+        unit = g_btlCamTargets.caster;
     }
     if (kind == 0xA) {
         if (g_btlCamera.focusUnit == NULL) {
             return;
         }
-        u = g_btlCamera.focusUnit;
+        unit = g_btlCamera.focusUnit;
     }
     if (kind == 0xC) {
-        u = g_gameState->gameData->ctx.battle->seq.camCaster;
+        unit = g_gameState->gameData->ctx.battle->seq.camCaster;
     }
     if (kind == 0xF) {
-        u = g_btlCamTargets.partner;
+        unit = g_btlCamTargets.partner;
         anchors = g_btlCamScript.partnerAnchors;
     }
-    if (u != NULL) {
+    if (unit != NULL) {
         if (anchor & 0x20) {
-            rot[0] = u->obj->rotX;
-            rot[1] = u->obj->rotY;
-            rot[2] = u->obj->rotZ;
+            rot[0] = unit->obj->rotX;
+            rot[1] = unit->obj->rotY;
+            rot[2] = unit->obj->rotZ;
         } else {
-            rot[0] = u->rot[0];
-            rot[1] = u->rot[1];
-            rot[2] = u->rot[2];
+            rot[0] = unit->rot[0];
+            rot[1] = unit->rot[1];
+            rot[2] = unit->rot[2];
         }
     } else {
         anchors = g_btlCamScript.targetAnchors;
-        u = (BtlUnit *)btlcam_getAnchorUnit(kind);
-        if (u == NULL) {
-            u = g_gameState->gameData->ctx.battle->unitList;
+        unit = (BtlUnit *)btlcam_getAnchorUnit(kind);
+        if (unit == NULL) {
+            unit = g_gameState->gameData->ctx.battle->unitList;
         }
-        rot[0] = u->obj->rotX;
-        rot[2] = u->obj->rotZ;
-        if (u->flags & BTL_UNIT_PARTY) {
+        rot[0] = unit->obj->rotX;
+        rot[2] = unit->obj->rotZ;
+        if (unit->flags & BTL_UNIT_PARTY) {
             rot[1] = 0x800;
         } else {
             rot[1] = 0;
         }
     }
-    if (!((u->flags >> BTL_UNIT_MODEL_PART_BIT) & 1)) {
+    if (!((unit->flags >> BTL_UNIT_MODEL_PART_BIT) & 1)) {
         if (anchor & 0x20) {
-            pos[0] = u->home->pos[0] >> 16;
-            pos[2] = u->home->pos[2] >> 16;
+            pos[0] = unit->home->pos[0] >> 16;
+            pos[2] = unit->home->pos[2] >> 16;
         } else {
-            pos[0] = u->pos[0] >> 16;
-            pos[2] = u->pos[2] >> 16;
+            pos[0] = unit->pos[0] >> 16;
+            pos[2] = unit->pos[2] >> 16;
         }
     } else {
         pos[0] = anchors[3];
@@ -798,7 +798,7 @@ s32 btlcam_resolveAnchor(s32 anchor, s16 *pos, s16 *rot, s32 *radius) {
         pos[0] = gs->gameData->ctx.battle->seq.camCenterX;
         pos[2] = gs->gameData->ctx.battle->seq.camCenterZ;
     }
-    *radius = u->model->header->radius;
+    *radius = unit->model->header->radius;
     pos[1] = 0;
     if (kind != 0xB) {
         anchor &= 0xC0;
@@ -812,40 +812,40 @@ s32 btlcam_resolveAnchor(s32 anchor, s16 *pos, s16 *rot, s32 *radius) {
             pos[1] = anchors[0];
         }
     }
-    if ((u8)btl_hasStatus(u, BTL_STATUS_FLOAT)) {
+    if ((u8)btl_hasStatus(unit, BTL_STATUS_FLOAT)) {
         return (u16)pos[1];
     }
 }
 
 void btlcam_lookAt(MATRIX *view, SVECTOR *eye, SVECTOR *at) {
-    VECTOR d;
+    VECTOR raw;
     VECTOR x;
     VECTOR y;
     VECTOR z;
     VECTOR up;
-    MATRIX m;
-    SVECTOR r;
+    MATRIX rollMtx;
+    SVECTOR rollRot;
 
     up.vx = 0;
     up.vy = -30000;
     up.vz = 0;
-    d.vx = at->vx - eye->vx;
-    d.vy = at->vy - eye->vy;
-    d.vz = at->vz - eye->vz;
-    VectorNormal(&d, &z);
+    raw.vx = at->vx - eye->vx;
+    raw.vy = at->vy - eye->vy;
+    raw.vz = at->vz - eye->vz;
+    VectorNormal(&raw, &z);
     if (z.vz == up.vz) {
         z.vz++;
     }
     gte_ldopv1(&z);
     gte_ldopv2(&up);
     gte_op12();
-    gte_stlvnl(&d);
-    VectorNormal(&d, &x);
+    gte_stlvnl(&raw);
+    VectorNormal(&raw, &x);
     gte_ldopv1(&z);
     gte_ldopv2(&x);
     gte_op12();
-    gte_stlvnl(&d);
-    VectorNormal(&d, &y);
+    gte_stlvnl(&raw);
+    VectorNormal(&raw, &y);
     view->m[0][0] = x.vx;
     view->m[0][1] = x.vy;
     view->m[0][2] = x.vz;
@@ -862,14 +862,14 @@ void btlcam_lookAt(MATRIX *view, SVECTOR *eye, SVECTOR *at) {
     view->t[0] = -view->t[0];
     view->t[1] = -view->t[1];
     view->t[2] = -view->t[2];
-    r.vx = 0;
-    r.vy = 0;
-    r.vz = eye->pad;
-    math_rotMatrixXYZ(&r, &m);
-    m.t[0] = 0;
-    m.t[1] = 0;
-    m.t[2] = 0;
-    CompMatrix(&m, view, view);
+    rollRot.vx = 0;
+    rollRot.vy = 0;
+    rollRot.vz = eye->pad;
+    math_rotMatrixXYZ(&rollRot, &rollMtx);
+    rollMtx.t[0] = 0;
+    rollMtx.t[1] = 0;
+    rollMtx.t[2] = 0;
+    CompMatrix(&rollMtx, view, view);
 }
 
 void btlcam_applyTargetView(SVECTOR *eye, SVECTOR *at) {

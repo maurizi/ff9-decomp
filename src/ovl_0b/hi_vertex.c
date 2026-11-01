@@ -9,13 +9,13 @@ s32 Hi_GetSplitMdlVertex(s32 modelId, s32 meshIndex) {
 }
 
 void GeoSplitVertices(BtlModel *model, s32 meshIndex, s32 vertexBuf) {
-    s32 n;
+    s32 count;
     BtlMesh *meshes;
     s32 i;
 
-    n = model->header->meshCount;
+    count = model->header->meshCount;
     meshes = model->header->meshes;
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < count; i++) {
         if (meshIndex == -1 || meshIndex == i) {
             vertexBuf = btlfx_splitMeshVertices(model, i, vertexBuf);
             if (meshes->vertexCounts[i] >= 0x322) {
@@ -28,10 +28,10 @@ void GeoSplitVertices(BtlModel *model, s32 meshIndex, s32 vertexBuf) {
 
 s32 btlfx_getSplitVertexSize(BtlModel *model, s32 meshIndex) {
     BtlModelHeader *hdr = model->header;
-    s32 n = hdr->meshCount;
+    s32 count = hdr->meshCount;
     s32 vertexCount = 0;
     s32 i;
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < count; i++) {
         if (meshIndex == -1 || meshIndex == i) {
             BtlMesh *mesh = &hdr->meshes[i];
             vertexCount += mesh->nFT4 * 4;
