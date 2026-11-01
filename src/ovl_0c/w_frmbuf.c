@@ -5,40 +5,40 @@ const char s_wmStrFrmbufError[] = "==== ERROR ===== / %s";
 const char s_wmStrFrmbufRequestError[] = "-- w_framebufRequest Error --\n";
 
 s32 w_frmbufRequest(s16 texId) {
-    WmFrmbufSlot *p;
+    WmFrmbufSlot *slot;
     u32 i;
 
     if (texId & 0x3F) {
-        p = g_worldFrmbufHead.next;
+        slot = g_worldFrmbufHead.next;
         i = 0;
         while (1) {
-            if (p->texId == texId) {
-                p->prev->next = p->next;
-                p->next->prev = p->prev;
-                p->next = g_worldFrmbufHead.next;
-                p->prev = &g_worldFrmbufHead;
-                g_worldFrmbufHead.next->prev = p;
-                g_worldFrmbufHead.next = p;
+            if (slot->texId == texId) {
+                slot->prev->next = slot->next;
+                slot->next->prev = slot->prev;
+                slot->next = g_worldFrmbufHead.next;
+                slot->prev = &g_worldFrmbufHead;
+                g_worldFrmbufHead.next->prev = slot;
+                g_worldFrmbufHead.next = slot;
                 break;
             }
-            if (p->texId == -1) {
+            if (slot->texId == -1) {
                 g_worldFrmbufReqCount++;
                 if (g_worldFrmbufReqCount >= 3) {
                     sprintf(g_worldMapErrorMsg, s_wmStrFrmbufReqOver, g_worldFrmbufReqCount, 2);
                     printf(s_wmStrFrmbufError, g_worldMapErrorMsg);
                     g_worldMapError = 1;
                 }
-                p->texId = texId;
-                p->prev->next = p->next;
-                p->next->prev = p->prev;
-                p->next = g_worldFrmbufHead.next;
-                p->prev = &g_worldFrmbufHead;
+                slot->texId = texId;
+                slot->prev->next = slot->next;
+                slot->next->prev = slot->prev;
+                slot->next = g_worldFrmbufHead.next;
+                slot->prev = &g_worldFrmbufHead;
                 g_worldFrmbufDirty++;
-                g_worldFrmbufHead.next->prev = p;
-                g_worldFrmbufHead.next = p;
+                g_worldFrmbufHead.next->prev = slot;
+                g_worldFrmbufHead.next = slot;
                 break;
             }
-            p = p->next;
+            slot = slot->next;
             i++;
             if (i >= 4) {
                 break;
@@ -53,47 +53,47 @@ s32 w_frmbufRequest(s16 texId) {
 }
 
 void wm_frmbufCompact(void) {
-    WmFrmbufSlot *p;
-    WmFrmbufSlot *q;
+    WmFrmbufSlot *src;
+    WmFrmbufSlot *dst;
     u32 i;
 
     g_worldFrmbufReqCount = 0;
     if (g_worldFrmbufDirty != 0) {
-        p = g_worldFrmbufHead.next;
+        src = g_worldFrmbufHead.next;
         i = 0;
         g_worldFrmbufDirty = 0;
-        q = p;
+        dst = src;
         do {
-            p = p->next;
+            src = src->next;
             i++;
         } while (i < 2);
         for (;;) {
-            while ((p != &g_worldFrmbufTail) & (p->vramArea == 0)) {
-                if (((u8)p->vramArea == 0) & (p->texId != -1)) {
-                    p->texId = -1;
+            while ((src != &g_worldFrmbufTail) & (src->vramArea == 0)) {
+                if (((u8)src->vramArea == 0) & (src->texId != -1)) {
+                    src->texId = -1;
                 }
-                p = p->next;
+                src = src->next;
             }
-            if (p == &g_worldFrmbufTail) {
+            if (src == &g_worldFrmbufTail) {
                 break;
             }
-            while (q->vramArea != 0) {
-                q = q->next;
+            while (dst->vramArea != 0) {
+                dst = dst->next;
             }
-            q->vramArea = p->vramArea;
-            p->vramArea = 0;
-            p->transferred = 0;
-            p->texId = -1;
-            p = p->next;
+            dst->vramArea = src->vramArea;
+            src->vramArea = 0;
+            src->transferred = 0;
+            src->texId = -1;
+            src = src->next;
         }
     }
 }
 
 void wm_frmbufTransfer(void) {
-    WmFrmbufSlot *p;
-    u32 n;
+    WmFrmbufSlot *slot;
+    u32 xferCount;
     u32 i;
-    s32 r;
+    s32 texPack;
     s32 id;
     s32 k;
     s16 *px;
@@ -101,21 +101,21 @@ void wm_frmbufTransfer(void) {
     s16 *cx;
     s16 *cy;
 
-    n = 0;
-    p = g_worldFrmbufHead.next;
-    for (i = 0; i < 2; i++, p = p->next) {
-        if (p->texId != -1 && p->vramArea != 0 && p->transferred == 0) {
-            r = wm_readtxFind(p->texId, 1);
-            if (r != 0) {
-                g_worldFrmbufTransfers[n].pack = r;
-                g_worldFrmbufTransfers[n].vramArea = p->vramArea;
-                g_worldFrmbufTransfers[n].area = p->texId & 0x3F;
-                n++;
-                p->transferred = 1;
+    xferCount = 0;
+    slot = g_worldFrmbufHead.next;
+    for (i = 0; i < 2; i++, slot = slot->next) {
+        if (slot->texId != -1 && slot->vramArea != 0 && slot->transferred == 0) {
+            texPack = wm_readtxFind(slot->texId, 1);
+            if (texPack != 0) {
+                g_worldFrmbufTransfers[xferCount].pack = texPack;
+                g_worldFrmbufTransfers[xferCount].vramArea = slot->vramArea;
+                g_worldFrmbufTransfers[xferCount].area = slot->texId & 0x3F;
+                xferCount++;
+                slot->transferred = 1;
             }
         }
     }
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < xferCount; i++) {
         id = g_worldFrmbufTransfers[i].area;
         k = g_worldFrmbufTransfers[i].vramArea - 1;
         if (g_worldMapDebugFlags & WM_DEBUG_TEXTURE) {
@@ -195,32 +195,32 @@ void wm_weatherAuto(void) {
 s32 wm_getWeatherByPos(void) {
     s32 dx;
     s32 dz;
-    s32 r;
-    s32 d;
+    s32 weather;
+    s32 dist;
 
     dx = (g_worldPlayer->pos.vx >> 8) - 0x508;
     dz = (g_worldPlayer->pos.vz >> 8) + 0x3AD;
-    r = SquareRoot0(dx * dx + dz * dz) < 0x56; /* WM_WEATHER_SUNSET or WM_WEATHER_CLEAR */
+    weather = SquareRoot0(dx * dx + dz * dz) < 0x56; /* WM_WEATHER_SUNSET or WM_WEATHER_CLEAR */
     dx = (g_worldPlayer->pos.vx >> 8) - 0x50B;
     dz = (g_worldPlayer->pos.vz >> 8) + 0x3A0;
     if (SquareRoot0(dx * dx + dz * dz) < 0x3B) {
-        r = WM_WEATHER_DARK;
+        weather = WM_WEATHER_DARK;
     }
     dx = (g_worldPlayer->pos.vx >> 8) - 0x1F4;
     dz = (g_worldPlayer->pos.vz >> 8) + 0x316;
     if (SquareRoot0(dx * dx + dz * dz) < 0xB4) {
-        r = WM_WEATHER_SUNSET;
+        weather = WM_WEATHER_SUNSET;
     }
     if (g_worldDataSet == WM_DATASET_DISC4) {
         dx = (g_worldPlayer->pos.vx >> 8) - 0x2FE;
         dz = (g_worldPlayer->pos.vz >> 8) + 0x140;
-        d = SquareRoot0(dx * dx + dz * dz);
-        g_worldWeatherPointDist = d;
-        if (d < 0x65) {
-            r = WM_WEATHER_DARK_PURPLE;
+        dist = SquareRoot0(dx * dx + dz * dz);
+        g_worldWeatherPointDist = dist;
+        if (dist < 0x65) {
+            weather = WM_WEATHER_DARK_PURPLE;
         }
     }
-    return r;
+    return weather;
 }
 
 void wm_setWeather(s32 mode, s32 flag, s32 speed) {
@@ -280,9 +280,9 @@ void wm_setWeather(s32 mode, s32 flag, s32 speed) {
 
 /* blend the sky parameter blocks from -> to by t (0..0x1000) into out */
 void wm_blendWeather(WmSky *out, WmSky *from, WmSky *to, s32 t, s32 unusedT) {
-    s16 *d;
-    s16 *a;
-    s16 *b;
+    s16 *outVals;
+    s16 *fromVals;
+    s16 *toVals;
 
     if (t < 0) {
         t = 0;
@@ -299,61 +299,61 @@ void wm_blendWeather(WmSky *out, WmSky *from, WmSky *to, s32 t, s32 unusedT) {
     out->lightColor[0].vx = wm_lerpShift(from->lightColor[0].vx, to->lightColor[0].vx, t, 0xD);
     out->lightColor[0].vy = wm_lerpShift(from->lightColor[0].vy, to->lightColor[0].vy, t, 0xD);
     out->lightColor[0].vz = wm_lerpShift(from->lightColor[0].vz, to->lightColor[0].vz, t, 0xD);
-    d = &out->lightColor[1].vx;
-    a = &from->lightColor[1].vx;
-    b = &to->lightColor[1].vx;
-    d[0] = wm_lerpShift(a[0], b[0], t, 0xD);
-    d[1] = wm_lerpShift(a[1], b[1], t, 0xD);
-    d[2] = wm_lerpShift(a[2], b[2], t, 0xD);
-    d = &out->lightColor[2].vx;
-    a = &from->lightColor[2].vx;
-    b = &to->lightColor[2].vx;
-    d[0] = wm_lerpShift(a[0], b[0], t, 0xD);
-    d[1] = wm_lerpShift(a[1], b[1], t, 0xD);
-    d[2] = wm_lerpShift(a[2], b[2], t, 0xD);
-    d = &out->backdropLightColor.vx;
-    a = &from->backdropLightColor.vx;
-    b = &to->backdropLightColor.vx;
-    d[0] = wm_lerpShift(a[0], b[0], t, 0xD);
-    d[1] = wm_lerpShift(a[1], b[1], t, 0xD);
-    d[2] = wm_lerpShift(a[2], b[2], t, 0xD);
-    d = out->fxBackColor;
-    a = from->fxBackColor;
-    b = to->fxBackColor;
-    d[0] = wm_lerpShift(a[0], b[0], t, 0xD);
-    d[1] = wm_lerpShift(a[1], b[1], t, 0xD);
-    d[2] = wm_lerpShift(a[2], b[2], t, 0xD);
+    outVals = &out->lightColor[1].vx;
+    fromVals = &from->lightColor[1].vx;
+    toVals = &to->lightColor[1].vx;
+    outVals[0] = wm_lerpShift(fromVals[0], toVals[0], t, 0xD);
+    outVals[1] = wm_lerpShift(fromVals[1], toVals[1], t, 0xD);
+    outVals[2] = wm_lerpShift(fromVals[2], toVals[2], t, 0xD);
+    outVals = &out->lightColor[2].vx;
+    fromVals = &from->lightColor[2].vx;
+    toVals = &to->lightColor[2].vx;
+    outVals[0] = wm_lerpShift(fromVals[0], toVals[0], t, 0xD);
+    outVals[1] = wm_lerpShift(fromVals[1], toVals[1], t, 0xD);
+    outVals[2] = wm_lerpShift(fromVals[2], toVals[2], t, 0xD);
+    outVals = &out->backdropLightColor.vx;
+    fromVals = &from->backdropLightColor.vx;
+    toVals = &to->backdropLightColor.vx;
+    outVals[0] = wm_lerpShift(fromVals[0], toVals[0], t, 0xD);
+    outVals[1] = wm_lerpShift(fromVals[1], toVals[1], t, 0xD);
+    outVals[2] = wm_lerpShift(fromVals[2], toVals[2], t, 0xD);
+    outVals = out->fxBackColor;
+    fromVals = from->fxBackColor;
+    toVals = to->fxBackColor;
+    outVals[0] = wm_lerpShift(fromVals[0], toVals[0], t, 0xD);
+    outVals[1] = wm_lerpShift(fromVals[1], toVals[1], t, 0xD);
+    outVals[2] = wm_lerpShift(fromVals[2], toVals[2], t, 0xD);
     out->shadowShade = wm_lerpShift((s16)from->shadowShade, (s16)to->shadowShade, t, 0xD);
-    d = &out->backColor.v.vx;
-    a = &from->backColor.v.vx;
-    b = &to->backColor.v.vx;
-    d[0] = wm_lerp(a[0] << 12, b[0] << 12, t) >> 12;
-    d[1] = wm_lerp(a[1] << 12, b[1] << 12, t) >> 12;
-    d[2] = wm_lerp(a[2] << 12, b[2] << 12, t) >> 12;
-    d = &out->backdropBackColor.v.vx;
-    a = &from->backdropBackColor.v.vx;
-    b = &to->backdropBackColor.v.vx;
-    d[0] = wm_lerp(a[0] << 12, b[0] << 12, t) >> 12;
-    d[1] = wm_lerp(a[1] << 12, b[1] << 12, t) >> 12;
-    d[2] = wm_lerp(a[2] << 12, b[2] << 12, t) >> 12;
-    d = out->fog[0].color;
-    a = from->fog[0].color;
-    b = to->fog[0].color;
-    d[0] = wm_lerp(a[0], b[0], t);
-    d[1] = wm_lerp(a[1], b[1], t);
-    d[2] = wm_lerp(a[2], b[2], t);
-    d = out->fog[1].color;
-    a = from->fog[1].color;
-    b = to->fog[1].color;
-    d[0] = wm_lerp(a[0], b[0], t);
-    d[1] = wm_lerp(a[1], b[1], t);
-    d[2] = wm_lerp(a[2], b[2], t);
-    d = out->fog[2].color;
-    a = from->fog[2].color;
-    b = to->fog[2].color;
-    d[0] = wm_lerp(a[0], b[0], t);
-    d[1] = wm_lerp(a[1], b[1], t);
-    d[2] = wm_lerp(a[2], b[2], t);
+    outVals = &out->backColor.v.vx;
+    fromVals = &from->backColor.v.vx;
+    toVals = &to->backColor.v.vx;
+    outVals[0] = wm_lerp(fromVals[0] << 12, toVals[0] << 12, t) >> 12;
+    outVals[1] = wm_lerp(fromVals[1] << 12, toVals[1] << 12, t) >> 12;
+    outVals[2] = wm_lerp(fromVals[2] << 12, toVals[2] << 12, t) >> 12;
+    outVals = &out->backdropBackColor.v.vx;
+    fromVals = &from->backdropBackColor.v.vx;
+    toVals = &to->backdropBackColor.v.vx;
+    outVals[0] = wm_lerp(fromVals[0] << 12, toVals[0] << 12, t) >> 12;
+    outVals[1] = wm_lerp(fromVals[1] << 12, toVals[1] << 12, t) >> 12;
+    outVals[2] = wm_lerp(fromVals[2] << 12, toVals[2] << 12, t) >> 12;
+    outVals = out->fog[0].color;
+    fromVals = from->fog[0].color;
+    toVals = to->fog[0].color;
+    outVals[0] = wm_lerp(fromVals[0], toVals[0], t);
+    outVals[1] = wm_lerp(fromVals[1], toVals[1], t);
+    outVals[2] = wm_lerp(fromVals[2], toVals[2], t);
+    outVals = out->fog[1].color;
+    fromVals = from->fog[1].color;
+    toVals = to->fog[1].color;
+    outVals[0] = wm_lerp(fromVals[0], toVals[0], t);
+    outVals[1] = wm_lerp(fromVals[1], toVals[1], t);
+    outVals[2] = wm_lerp(fromVals[2], toVals[2], t);
+    outVals = out->fog[2].color;
+    fromVals = from->fog[2].color;
+    toVals = to->fog[2].color;
+    outVals[0] = wm_lerp(fromVals[0], toVals[0], t);
+    outVals[1] = wm_lerp(fromVals[1], toVals[1], t);
+    outVals[2] = wm_lerp(fromVals[2], toVals[2], t);
     out->fog[0].fogOffset = wm_lerp(from->fog[0].fogOffset, to->fog[0].fogOffset, t);
     out->fog[0].fogOffset2 = wm_lerp((u16)from->fog[0].fogOffset2, (u16)to->fog[0].fogOffset2, t);
     out->fog[1].fogOffset = wm_lerp(from->fog[1].fogOffset, to->fog[1].fogOffset, t);

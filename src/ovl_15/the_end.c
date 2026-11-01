@@ -3,7 +3,7 @@
 s32 ending_theEnd(void) {
     s32 timer;
     s32 wait;
-    s32 n;
+    s32 unused;
 
     timer = -1;
     wait = 0;
@@ -121,10 +121,10 @@ s32 ending_theEnd(void) {
 }
 
 s32 ending_theEndInit(void) {
-    s32 p = (s32)db_lookupRegistered(DB_GET_ADDR, g_endingImage | DB_TIM, 0);
+    s32 timAddr = (s32)db_lookupRegistered(DB_GET_ADDR, g_endingImage | DB_TIM, 0);
 
-    file_setTimPos(p, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
-    file_loadTim(p);
+    file_setTimPos(timAddr, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
+    file_loadTim(timAddr);
     akao_stopMusic(0);
     ending_soundCmd(SND_MUSIC_PLAY, ENDING_MUSIC, 0, 0, 0);
     ending_soundCmd(SND_SONG_VOL_FROM_INTPL, ENDING_MUSIC, 0x5A, 0, 0x7F);
@@ -161,7 +161,7 @@ void ending_theEndSwap(void) {
 }
 
 s32 ending_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
-    GameData *g;
+    GameData *gd;
     s32 kind;
     s32 h;
     s32 id;
@@ -188,9 +188,9 @@ s32 ending_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                 g_gameState->gameData->musicVolume[0] = 0x7F;
             }
             g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
-            g = g_gameState->gameData;
-            if (!(g->flags & GD_MUSIC_PLAYING)) {
-                akao_fadeMusicVolumeFrom(g->musicHandle[0], 0xA, 0, g->musicVolume[0]);
+            gd = g_gameState->gameData;
+            if (!(gd->flags & GD_MUSIC_PLAYING)) {
+                akao_fadeMusicVolumeFrom(gd->musicHandle[0], 0xA, 0, gd->musicVolume[0]);
             }
             g_endingSoundPending = -1;
             g_gameState->gameData->flags |= GD_MUSIC_LOADED | GD_MUSIC_PLAYING;
@@ -340,25 +340,25 @@ void ending_exit(void) {
 }
 
 void ending_loadMusic(void) {
-    s32 a;
-    s32 b;
+    s32 addr;
+    s32 bankSize;
 
     akao_stopMusic(0);
-    a = (s32)db_lookupRegistered(DB_GET_ADDR, ENDING_MUSIC, 0);
-    memmove(g_gameState->gameData->musicSeq, (void *)a, (s32)db_lookupRegistered(DB_GET_SIZE, ENDING_MUSIC, 0));
-    a = (s32)db_lookupRegistered(DB_GET_ADDR, ENDING_MUSIC_BANK, 0);
-    b = (s32)db_lookupRegistered(DB_GET_SIZE, ENDING_MUSIC_BANK, 0);
+    addr = (s32)db_lookupRegistered(DB_GET_ADDR, ENDING_MUSIC, 0);
+    memmove(g_gameState->gameData->musicSeq, (void *)addr, (s32)db_lookupRegistered(DB_GET_SIZE, ENDING_MUSIC, 0));
+    addr = (s32)db_lookupRegistered(DB_GET_ADDR, ENDING_MUSIC_BANK, 0);
+    bankSize = (s32)db_lookupRegistered(DB_GET_SIZE, ENDING_MUSIC_BANK, 0);
     akao_beginBankUpload();
-    akao_uploadBank(a, b, 1);
+    akao_uploadBank(addr, bankSize, 1);
 }
 
 void ending_loadData(void) {
     u8 *data;
-    FileEntry *e;
+    FileEntry *file;
 
     data = g_loadAreaEnd + 0x10000;
-    e = file_find(DIR_COMMON, FILE_ENDING_DATA);
-    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, data, 0, -1, 0);
+    file = file_find(DIR_COMMON, FILE_ENDING_DATA);
+    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, data, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     g_endingData = data;

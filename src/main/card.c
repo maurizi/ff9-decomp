@@ -1,13 +1,13 @@
 #include "ff9.h"
 
 void card_initAll(void) {
-    s32 v = 0xFF;
+    s32 emptyId = 0xFF;
     s32 i;
     g_cards.wins = 0;
     g_cards.losses = 0;
     g_cards.draws = 0;
     for (i = 0x68; i >= 0; i--) {
-        g_cards.cards[i].id = v;
+        g_cards.cards[i].id = emptyId;
     }
 }
 
@@ -76,25 +76,25 @@ void card_addDraw(void) {
     }
 }
 
-s32 card_countOf(a)
-    u8 a;
+s32 card_countOf(cardId)
+    u8 cardId;
 {
-    s32 n = 0;
+    s32 count = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].id == a) {
-            n++;
+        if (g_cards.cards[i].id == cardId) {
+            count++;
         }
     }
-    return n;
+    return count;
 }
 
-CardEntry *card_find(s32 id, s32 n) {
+CardEntry *card_find(s32 id, s32 nth) {
     s32 k = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
         if (g_cards.cards[i].id == (u8)id) {
-            if (n == k) {
+            if (nth == k) {
                 return &g_cards.cards[i];
             }
             k++;
@@ -104,21 +104,21 @@ CardEntry *card_find(s32 id, s32 n) {
 }
 
 s32 card_countAll(void) {
-    s32 n = 0;
+    s32 count = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
         if (g_cards.cards[i].id != CARD_NONE) {
-            n++;
+            count++;
         }
     }
-    return n;
+    return count;
 }
 
 s32 card_countKinds(void) {
     u8 cnt[100];
     u8 *p;
     s32 i;
-    s32 n;
+    s32 kinds;
 
     i = 99;
     p = &cnt[i];
@@ -130,21 +130,21 @@ s32 card_countKinds(void) {
             cnt[g_cards.cards[i].id]++;
         }
     }
-    n = 0;
+    kinds = 0;
     for (i = 0; i < 100; i++) {
         if (cnt[i] != 0) {
-            n++;
+            kinds++;
         }
     }
-    return n;
+    return kinds;
 }
 
-s32 card_remove(s32 id, s32 n) {
+s32 card_remove(s32 id, s32 nth) {
     s32 k = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
         if (g_cards.cards[i].id == (u8)id) {
-            if (k == n) {
+            if (k == nth) {
                 g_cards.cards[i].id = CARD_NONE;
                 return 0;
             }
@@ -155,10 +155,10 @@ s32 card_remove(s32 id, s32 n) {
 }
 
 void card_clearAll(void) {
-    s32 v = 0xFF;
+    s32 emptyId = 0xFF;
     s32 i;
     for (i = 0x68; i >= 0; i--) {
-        g_cards.cards[i].id = v;
+        g_cards.cards[i].id = emptyId;
     }
 }
 
@@ -206,62 +206,62 @@ void *card_getInventory(void) {
 
 void card_rollStats(CardEntry *card, u8 id) {
     Bytes8 bits;
-    u8 v;
-    s32 r;
-    s32 n;
+    u8 base;
+    s32 roll;
+    s32 arrowCount;
     s32 i;
     s32 done;
-    u8 *b;
+    u8 *bit;
     CardInfo *tbl;
 
     bits = g_cardArrowBits;
     tbl = g_cardInfo;
     card->id = id;
-    v = tbl[id].power >> 1;
-    if (v != 0) {
-        card->power = v + rand() % v;
+    base = tbl[id].power >> 1;
+    if (base != 0) {
+        card->power = base + rand() % base;
     } else {
         card->power = 0;
     }
-    v = tbl[id].physDef >> 1;
-    if (v != 0) {
-        card->physDef = v + rand() % v;
+    base = tbl[id].physDef >> 1;
+    if (base != 0) {
+        card->physDef = base + rand() % base;
     } else {
         card->physDef = 0;
     }
-    v = tbl[id].magicDef >> 1;
-    if (v != 0) {
-        card->magicDef = v + rand() % v;
+    base = tbl[id].magicDef >> 1;
+    if (base != 0) {
+        card->magicDef = base + rand() % base;
     } else {
         card->magicDef = 0;
     }
-    r = rand() % 100;
-    if (r <= 0) {
-        n = 0;
-    } else if (r < 9) {
-        n = 1;
-    } else if (r < 0x22) {
-        n = 2;
-    } else if (r < 0x41) {
-        n = 3;
-    } else if (r < 0x53) {
-        n = 4;
-    } else if (r < 0x5C) {
-        n = 5;
-    } else if (r < 0x61) {
-        n = 6;
-    } else if (r < 0x63) {
-        n = 7;
+    roll = rand() % 100;
+    if (roll <= 0) {
+        arrowCount = 0;
+    } else if (roll < 9) {
+        arrowCount = 1;
+    } else if (roll < 0x22) {
+        arrowCount = 2;
+    } else if (roll < 0x41) {
+        arrowCount = 3;
+    } else if (roll < 0x53) {
+        arrowCount = 4;
+    } else if (roll < 0x5C) {
+        arrowCount = 5;
+    } else if (roll < 0x61) {
+        arrowCount = 6;
+    } else if (roll < 0x63) {
+        arrowCount = 7;
     } else {
-        n = 8;
+        arrowCount = 8;
     }
     card->arrows = 0;
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < arrowCount; i++) {
         done = 0;
         do {
-            b = &bits.b[rand() & 7];
-            if (!(card->arrows & *b)) {
-                card->arrows |= *b;
+            bit = &bits.b[rand() & 7];
+            if (!(card->arrows & *bit)) {
+                card->arrows |= *bit;
                 done = 1;
             }
         } while (!done);
