@@ -109,7 +109,7 @@ void wm_cameraFollow(void) {
     s32 h3;
     u32 cell;
     s32 h;
-    s32 res;
+    s32 eyeY;
     s32 x;
     s32 y;
     s32 z;
@@ -122,7 +122,7 @@ void wm_cameraFollow(void) {
     s32 dx, dz, s, r;
     u8 *p;
 
-    res = 0;
+    eyeY = 0;
     if (evt_getWorldCamTargetObj() == 0) {
         y = g_worldPlayer->pos.vy + g_worldCameraTargetHeight;
         x = g_worldPlayer->pos.vx;
@@ -323,7 +323,7 @@ void wm_cameraFollow(void) {
         if (ABS(step) >= 5 && g_worldCameraLookupFix == 0) {
             g_worldCameraEye[1] += step;
         }
-        res = y2;
+        eyeY = y2;
     }
     dx = g_worldCameraEye[0] - 0x2FF77;
     dz = g_worldCameraEye[2] + 0x14031;
@@ -339,7 +339,7 @@ void wm_cameraFollow(void) {
     case 0:
         if (g_worldMapLoaded != 0) {
             g_worldCameraStartPhase = 1;
-            g_worldCameraEye[1] = res;
+            g_worldCameraEye[1] = eyeY;
             g_worldCameraTarget[1] = g_worldPlayer->pos.vy + g_worldCameraTargetHeight;
         }
         break;
@@ -364,7 +364,7 @@ void wm_cameraFollow(void) {
 void wm_updateCameraPreset(void) {
     s32 k;
     s32 m;
-    WmCameraParams tmp;
+    WmCameraParams preset;
 
     k = g_worldAreaCameraGroup[w_frameGetParameter(0xC0)];
     m = g_worldMoveModeInfo->cameraRow;
@@ -390,12 +390,12 @@ void wm_updateCameraPreset(void) {
         if (g_worldCameraBlend > 0x1000) {
             g_worldCameraBlend = 0x1000;
         }
-        wm_calcCameraPreset(-g_worldPlayer->pos.vy, g_worldCameraBlendRow, k, g_worldCamera->viewBlend, &tmp);
-        g_worldCameraParams.projDist = wm_lerpShift(g_worldCameraParamsFrom.projDist, tmp.projDist, g_worldCameraBlend, 9);
-        g_worldCameraParams.distance = wm_lerpShift(g_worldCameraParamsFrom.distance, tmp.distance, g_worldCameraBlend, 0xF);
-        g_worldCameraParams.eyeHeight = wm_lerpShift(g_worldCameraParamsFrom.eyeHeight, tmp.eyeHeight, g_worldCameraBlend, 0xE);
-        g_worldCameraParams.groundClearance = wm_lerpShift(g_worldCameraParamsFrom.groundClearance, tmp.groundClearance, g_worldCameraBlend, 0xE);
-        g_worldCameraParams.targetHeight = wm_lerpShift(g_worldCameraParamsFrom.targetHeight, tmp.targetHeight, g_worldCameraBlend, 0xE);
+        wm_calcCameraPreset(-g_worldPlayer->pos.vy, g_worldCameraBlendRow, k, g_worldCamera->viewBlend, &preset);
+        g_worldCameraParams.projDist = wm_lerpShift(g_worldCameraParamsFrom.projDist, preset.projDist, g_worldCameraBlend, 9);
+        g_worldCameraParams.distance = wm_lerpShift(g_worldCameraParamsFrom.distance, preset.distance, g_worldCameraBlend, 0xF);
+        g_worldCameraParams.eyeHeight = wm_lerpShift(g_worldCameraParamsFrom.eyeHeight, preset.eyeHeight, g_worldCameraBlend, 0xE);
+        g_worldCameraParams.groundClearance = wm_lerpShift(g_worldCameraParamsFrom.groundClearance, preset.groundClearance, g_worldCameraBlend, 0xE);
+        g_worldCameraParams.targetHeight = wm_lerpShift(g_worldCameraParamsFrom.targetHeight, preset.targetHeight, g_worldCameraBlend, 0xE);
         if (g_worldCameraBlend >= 0x1000) {
             g_worldCameraBlendSpeed = 0;
         }
@@ -404,27 +404,27 @@ void wm_updateCameraPreset(void) {
     }
 }
 
-void wm_calcCameraPreset(s32 arg0, s32 arg1, s32 arg2, s32 arg3, WmCameraParams *arg4) {
+void wm_calcCameraPreset(s32 altitude, s32 row, s32 col, s32 viewBlend, WmCameraParams *out) {
     WmCameraParams *a;
     WmCameraParams *b;
     WmCameraParams *c;
     s32 t;
-    s16 tmp[5];
+    s16 blended[5];
 
-    c = &g_worldCameraPresets[g_worldCameraPresetIndex[arg1][arg2][2]];
-    a = &g_worldCameraPresets[g_worldCameraPresetIndex[arg1][arg2][0]];
-    b = &g_worldCameraPresets[g_worldCameraPresetIndex[arg1][arg2][1]];
-    t = wm_cameraAltitudeBlend(arg0) & 0xFFFF;
-    tmp[0] = wm_lerpShift(a->projDist, b->projDist, t, 9);
-    tmp[1] = wm_lerpShift(a->distance, b->distance, t, 0xE);
-    tmp[2] = wm_lerpShift(a->eyeHeight, b->eyeHeight, t, 0xD);
-    tmp[3] = wm_lerpShift(a->groundClearance, b->groundClearance, t, 0xD);
-    tmp[4] = wm_lerpShift(a->targetHeight, b->targetHeight, t, 0xD);
-    arg4->projDist = wm_lerpShift(tmp[0], c->projDist, arg3, 9);
-    arg4->distance = wm_lerpShift(tmp[1], c->distance, arg3, 0xE);
-    arg4->eyeHeight = wm_lerpShift(tmp[2], c->eyeHeight, arg3, 0xD);
-    arg4->groundClearance = wm_lerpShift(tmp[3], c->groundClearance, arg3, 0xD);
-    arg4->targetHeight = wm_lerpShift(tmp[4], c->targetHeight, arg3, 0xD);
+    c = &g_worldCameraPresets[g_worldCameraPresetIndex[row][col][2]];
+    a = &g_worldCameraPresets[g_worldCameraPresetIndex[row][col][0]];
+    b = &g_worldCameraPresets[g_worldCameraPresetIndex[row][col][1]];
+    t = wm_cameraAltitudeBlend(altitude) & 0xFFFF;
+    blended[0] = wm_lerpShift(a->projDist, b->projDist, t, 9);
+    blended[1] = wm_lerpShift(a->distance, b->distance, t, 0xE);
+    blended[2] = wm_lerpShift(a->eyeHeight, b->eyeHeight, t, 0xD);
+    blended[3] = wm_lerpShift(a->groundClearance, b->groundClearance, t, 0xD);
+    blended[4] = wm_lerpShift(a->targetHeight, b->targetHeight, t, 0xD);
+    out->projDist = wm_lerpShift(blended[0], c->projDist, viewBlend, 9);
+    out->distance = wm_lerpShift(blended[1], c->distance, viewBlend, 0xE);
+    out->eyeHeight = wm_lerpShift(blended[2], c->eyeHeight, viewBlend, 0xD);
+    out->groundClearance = wm_lerpShift(blended[3], c->groundClearance, viewBlend, 0xD);
+    out->targetHeight = wm_lerpShift(blended[4], c->targetHeight, viewBlend, 0xD);
 }
 
 void wm_toggleCameraView(void) {
@@ -460,12 +460,12 @@ void wm_updateCameraNoView(void) {
     wm_cameraFollow();
 }
 
-void wm_blendCameraPreset(s16 arg0, s16 arg1) {
+void wm_blendCameraPreset(s16 row, s16 speed) {
     g_worldCameraBlend = 0;
-    g_worldCameraBlendRow = arg0;
+    g_worldCameraBlendRow = row;
     g_worldCameraParamsFrom = g_worldCameraParams;
     if (g_worldMapLoaded != 0) {
-        g_worldCameraBlendSpeed = arg1;
+        g_worldCameraBlendSpeed = speed;
     } else {
         g_worldCameraBlendSpeed = 0;
     }
@@ -496,21 +496,21 @@ void wm_cameraSmooth(void) {
     g_worldCameraSmoothZ = 1;
 }
 
-void wm_lookAt(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2, VECTOR *arg3) {
+void wm_lookAt(MATRIX *out, SVECTOR *eye, SVECTOR *target, VECTOR *up) {
     VECTOR d;
     VECTOR x;
     VECTOR y;
     VECTOR z;
 
-    d.vx = arg2->vx - arg1->vx;
-    d.vy = arg2->vy - arg1->vy;
-    d.vz = arg2->vz - arg1->vz;
+    d.vx = target->vx - eye->vx;
+    d.vy = target->vy - eye->vy;
+    d.vz = target->vz - eye->vz;
     VectorNormal(&d, &z);
-    if (z.vz == arg3->vz) {
+    if (z.vz == up->vz) {
         z.vz++;
     }
     gte_ldopv1(&z);
-    gte_ldopv2(arg3);
+    gte_ldopv2(up);
     gte_op12();
     gte_stlvnl(&d);
     VectorNormal(&d, &x);
@@ -519,34 +519,34 @@ void wm_lookAt(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2, VECTOR *arg3) {
     gte_op12();
     gte_stlvnl(&d);
     VectorNormal(&d, &y);
-    arg0->m[0][0] = x.vx;
-    arg0->m[0][1] = x.vy;
-    arg0->m[0][2] = x.vz;
-    arg0->m[1][0] = y.vx;
-    arg0->m[1][1] = y.vy;
-    arg0->m[1][2] = y.vz;
-    arg0->m[2][0] = z.vx;
-    arg0->m[2][1] = z.vy;
-    arg0->m[2][2] = z.vz;
-    gte_SetRotMatrix(arg0);
-    gte_ldv0(arg1);
+    out->m[0][0] = x.vx;
+    out->m[0][1] = x.vy;
+    out->m[0][2] = x.vz;
+    out->m[1][0] = y.vx;
+    out->m[1][1] = y.vy;
+    out->m[1][2] = y.vz;
+    out->m[2][0] = z.vx;
+    out->m[2][1] = z.vy;
+    out->m[2][2] = z.vz;
+    gte_SetRotMatrix(out);
+    gte_ldv0(eye);
     gte_rtv0();
-    gte_stlvnl(arg0->t);
-    arg0->t[0] = -arg0->t[0];
-    arg0->t[1] = -arg0->t[1];
-    arg0->t[2] = -arg0->t[2];
+    gte_stlvnl(out->t);
+    out->t[0] = -out->t[0];
+    out->t[1] = -out->t[1];
+    out->t[2] = -out->t[2];
 }
 
-s32 wm_cameraAltitudeBlend(s32 arg0) {
-    arg0 = (arg0 - 1000) << 12;
-    arg0 /= 4500;
-    if (arg0 > 0x1000) {
-        arg0 = 0x1000;
+s32 wm_cameraAltitudeBlend(s32 altitude) {
+    altitude = (altitude - 1000) << 12;
+    altitude /= 4500;
+    if (altitude > 0x1000) {
+        altitude = 0x1000;
     }
-    if (arg0 < 0) {
-        arg0 = 0;
+    if (altitude < 0) {
+        altitude = 0;
     }
-    return arg0 & 0xFFFF;
+    return altitude & 0xFFFF;
 }
 
 void wm_initMovement(void) {
@@ -786,7 +786,7 @@ void wm_drawActors(void) {
     SetFarColor(0, 0, 0);
 }
 
-void wm_setActorFog(EvtObject *arg0, s32 arg1) {
+void wm_setActorFog(EvtObject *act, s32 depth) {
     s16 col[3];
     s32 t;
     s32 f;
@@ -797,9 +797,9 @@ void wm_setActorFog(EvtObject *arg0, s32 arg1) {
     WmPalAnim *e;
     RECT *r;
 
-    id = arg0->modelId;
+    id = act->modelId;
     e = g_gameState->gameData->ctx.world->obj->palAnims;
-    t = -arg0->pos.vy;
+    t = -act->pos.vy;
     t -= 0xC1F;
     t <<= 12;
     t /= 2176;
@@ -814,7 +814,7 @@ void wm_setActorFog(EvtObject *arg0, s32 arg1) {
     col[1] = wm_lerp(g_worldWeatherData.work[0].fog[1].color[1], g_worldWeatherData.work[0].fog[0].color[1], t);
     col[2] = wm_lerp(g_worldWeatherData.work[0].fog[1].color[2], g_worldWeatherData.work[0].fog[0].color[2], t);
     SetFarColor((u8)col[0], (u8)col[1], (u8)col[2]);
-    f = (arg1 * 8 + (d = a - 0x8000)) >> 2;
+    f = (depth * 8 + (d = a - 0x8000)) >> 2;
     if (f < 0) {
         f = 0;
     }
@@ -840,7 +840,7 @@ void wm_setActorFog(EvtObject *arg0, s32 arg1) {
     }
 }
 
-s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its caller passes this, unused */
+s32 wm_drawActorModel(EvtObject *act, SVECTOR *pos, s32 unused) { /* its caller passes this, unused */
     WmActorType *c;
     WmObjSlot *s;
     ModelObj *m;
@@ -852,8 +852,8 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
     s32 n;
     s32 i;
 
-    c = &g_worldActorTypeInfo[arg0->actorType];
-    s = (WmObjSlot *)game_getModel(arg0->modelSlot);
+    c = &g_worldActorTypeInfo[act->actorType];
+    s = (WmObjSlot *)game_getModel(act->modelSlot);
     m = s->model;
     memset(&r, 0, 8);
     r.vx = s->actor->pos.rotX;
@@ -861,9 +861,9 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
     r.vz = s->actor->rotZ;
     r2 = r;
     math_rotMatrixYXZ(&r2, &m->worldMatrix);
-    m->worldMatrix.t[0] = arg1->vx;
-    m->worldMatrix.t[1] = arg1->vy;
-    m->worldMatrix.t[2] = arg1->vz;
+    m->worldMatrix.t[0] = pos->vx;
+    m->worldMatrix.t[1] = pos->vy;
+    m->worldMatrix.t[2] = pos->vz;
     wm_applyScale(m);
     m->anim = h = db_lookupRegistered(DB_GET_ADDR, s->actor->anim | DB_ANIM, 0);
     if (h != NULL) {
@@ -875,10 +875,10 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
             }
         }
         wm_calcBoneMatrices(m, s->actor->animFrame);
-        if (arg0->actorType != WM_ACTOR_NO_MODEL) {
+        if (act->actorType != WM_ACTOR_NO_MODEL) {
             n = m->model->groupCount;
             if (c->terrainClass != 0 && c->rideOffset > 0) {
-                m->clipY = arg1->vy - c->rideOffset + 100;
+                m->clipY = pos->vy - c->rideOffset + 100;
                 if (m->parent != NULL) {
                     m->clipY = m->parent->clipY;
                 }
@@ -899,8 +899,8 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
     return 0;
 }
 
-/* shadow under world map object arg0 at arg1; arg2 = distance from the camera */
-void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
+/* shadow under world map object act at pos; depth = distance from the camera */
+void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
     WmActorType *c;
     s32 k;
     s32 d;
@@ -911,13 +911,13 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
     s32 s;
     u32 *ot;
 
-    c = &g_worldActorTypeInfo[arg0->actorType];
-    k = arg0->modelSlot;
+    c = &g_worldActorTypeInfo[act->actorType];
+    k = act->modelSlot;
     sx = 0x1000;
-    if (arg0->actorType != WM_ACTOR_NO_MODEL) {
-        d = c->floorY - arg0->pos.vy;
-        arg1->vy += d;
-        arg1->vy -= d / 8;
+    if (act->actorType != WM_ACTOR_NO_MODEL) {
+        d = c->floorY - act->pos.vy;
+        pos->vy += d;
+        pos->vy -= d / 8;
         sz = sx - d / 2;
         sx -= d / 4;
         g_worldOtBias = -c->shadowWidth * 4 - (s8)c->shadowOtBias;
@@ -926,7 +926,7 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
         }
         sx = (c->shadowWidth * sx) >> 11;
         sz = (c->shadowDepth * sz) >> 12;
-        f = (0x8000 - arg2) >> 3;
+        f = (0x8000 - depth) >> 3;
         f *= g_worldWeatherData.work[0].shadowShade;
         f >>= 12;
         if (f < 0) {
@@ -948,14 +948,14 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
         g_gameState->gameData->ctx.world->obj->shadows[k].shade = sz;
         ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot + g_worldOtBias;
-        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, arg1->vy, c->shadowJoint);
+        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, pos->vy, c->shadowJoint);
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     } else {
         s = 0x7D0;
         if (g_worldFog != 0) {
             s = 0xAF0;
         }
-        f = (0x7060 - arg2) >> 2;
+        f = (0x7060 - depth) >> 2;
         f *= g_worldWeatherData.work[4].shadowShade;
         f >>= 12;
         if (f < 0) {
@@ -979,13 +979,13 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
         ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
         g_worldOtBias = -0x46;
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] -= 0x46;
-        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, arg1->vy, c->shadowJoint);
+        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, pos->vy, c->shadowJoint);
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     }
 }
 
 void wm_updateActors(void) {
-    s32 tmp;
+    s32 polyIdx;
     s32 h;
     s32 cell;
     EvtListNode *e;
@@ -1018,7 +1018,7 @@ void wm_updateActors(void) {
                 wm_movePlayer(cc);
             } else {
                 cc = &g_worldActorTypeInfo[act->actorType];
-                wm_getGroundHeight((VECTOR *)&act->pos, &cc->cellAttr, &tmp, &g_worldPolyCache[cc->polyCache], (u16 *)&h);
+                wm_getGroundHeight((VECTOR *)&act->pos, &cc->cellAttr, &polyIdx, &g_worldPolyCache[cc->polyCache], (u16 *)&h);
                 if (act->actorType == WM_ACTOR_BOAT) {
                     h = 0;
                 }
@@ -1100,7 +1100,7 @@ void wm_updateActors(void) {
     }
 }
 
-void wm_updateActorHeight(EvtObject *arg0) {
+void wm_updateActorHeight(EvtObject *act) {
     u8 flat;
     s32 h;
     WmActorType *c;
@@ -1108,7 +1108,7 @@ void wm_updateActorHeight(EvtObject *arg0) {
     s16 d;
 
     if (g_worldMapLoaded != 0) {
-        c = &g_worldActorTypeInfo[arg0->actorType];
+        c = &g_worldActorTypeInfo[act->actorType];
         if (c->polyCache != 0xA) {
             h = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, &flat);
             if (c->flying == 0) {
@@ -1126,16 +1126,16 @@ void wm_updateActorHeight(EvtObject *arg0) {
                         }
                     }
                 }
-                arg0->pos.vy = c->floorY + c->rideOffset;
+                act->pos.vy = c->floorY + c->rideOffset;
             } else {
                 y = c->floorY + h;
-                if (y < arg0->pos.vy) {
-                    arg0->pos.vy = y;
+                if (y < act->pos.vy) {
+                    act->pos.vy = y;
                 }
                 if (g_worldCameraHold == 0 && g_worldPlayer->pos.vy < -0x2A30 && g_worldCameraLookupFix == 0) {
                     g_worldPlayer->pos.vy = -0x2A30;
                 }
-                d = arg0->pos.vy - c->floorY;
+                d = act->pos.vy - c->floorY;
                 c->rideOffset = d;
                 if (d < 0) {
                     c->rideOffset = 0;
@@ -1323,7 +1323,7 @@ void wm_movePlayer(WmActorType *cc) {
     wm_wrapPos(&g_worldPlayer->pos.vx, &g_worldPlayer->pos.vz);
 }
 
-u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) {
+u8 wm_tryStep(VECTOR *pos, s32 angle, s32 moveMode, s32 speed, u32 *outCell, s32 *outHeight) {
     VECTOR v;
     u32 cell;
     s32 h;
@@ -1338,11 +1338,11 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
     u8 y;
 
     k = g_worldActorTypeInfo[g_worldPlayer->actorType].polyCache;
-    mode = &g_worldMoveModes[arg2];
-    v = *arg0;
+    mode = &g_worldMoveModes[moveMode];
+    v = *pos;
     c = &g_worldPolyCache[k];
-    v.vx += math_sin(g_worldPlayerHeading + (ang = arg1 + 0x800)) * arg3 >> 12;
-    v.vz += math_cos(g_worldPlayerHeading + ang) * arg3 >> 12;
+    v.vx += math_sin(g_worldPlayerHeading + (ang = angle + 0x800)) * speed >> 12;
+    v.vz += math_cos(g_worldPlayerHeading + ang) * speed >> 12;
     if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == WM_TOPO_NO_ENCOUNTER && g_worldMoveModeInfo->controlType != WM_CTRL_FLY) {
         wm_getGroundHeight(&v, &cell, &h, NULL, (u16 *)&v.vy);
     } else {
@@ -1364,14 +1364,14 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
                 }
             }
             if (ok) {
-                if (arg0 != NULL) {
-                    *arg0 = v;
+                if (pos != NULL) {
+                    *pos = v;
                 }
-                if (arg5 != NULL) {
-                    *arg5 = h;
+                if (outHeight != NULL) {
+                    *outHeight = h;
                 }
-                if (arg4 != NULL) {
-                    *arg4 = cell;
+                if (outCell != NULL) {
+                    *outCell = cell;
                 }
                 return 1;
             }
@@ -2036,7 +2036,7 @@ void wm_snapActorsToFloor(void) {
     EvtObject *o;
     WmActorType *c;
     ActorPos pos;
-    s32 tmp;
+    s32 polyIdx;
     u16 h;
 
     n = evt_getObjectList();
@@ -2046,7 +2046,7 @@ void wm_snapActorsToFloor(void) {
             if (o->kind == EVT_KIND_ACTOR) {
                 pos = o->pos;
                 c = &g_worldActorTypeInfo[o->actorType];
-                wm_getGroundHeight((VECTOR *)&pos, &c->cellAttr, &tmp, NULL, &h);
+                wm_getGroundHeight((VECTOR *)&pos, &c->cellAttr, &polyIdx, NULL, &h);
                 c->floorY = h;
                 c->rideOffset = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, 0);
                 wm_updateActorHeight(o);
@@ -2106,11 +2106,11 @@ u8 wm_testCellType(u32 *a, u32 c) {
     return 0;
 }
 
-s32 wm_getLeftStickX(s32 *arg0) {
+s32 wm_getLeftStickX(s32 *outValue) {
     s32 v;
     s32 b;
 
-    *arg0 = 0;
+    *outValue = 0;
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = g_padAnalog[0].b[2] - 0x80;
         if (g_padAnalog[0].b[2] - 0x40U <= 0x80) {
@@ -2123,24 +2123,24 @@ s32 wm_getLeftStickX(s32 *arg0) {
             v = (v + 0x40) * 2;
         }
         if (v != 0) {
-            *arg0 = v;
+            *outValue = v;
             return 1;
         }
     }
     b = wm_getPadHeld();
     if (b & PAD_LEFT) {
-        *arg0 = -0x80;
+        *outValue = -0x80;
     }
     if (b & PAD_RIGHT) {
-        *arg0 = 0x80;
+        *outValue = 0x80;
     }
     return 0;
 }
 
-s32 wm_getLeftStickY(s32 *arg0) {
+s32 wm_getLeftStickY(s32 *outValue) {
     s32 v;
 
-    *arg0 = 0;
+    *outValue = 0;
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = g_padAnalog[0].b[3] - 0x80;
         if (g_padAnalog[0].b[3] - 0x40U <= 0x80) {
@@ -2153,23 +2153,23 @@ s32 wm_getLeftStickY(s32 *arg0) {
             v = (v + 0x40) * 2;
         }
         if (v != 0) {
-            *arg0 = v;
+            *outValue = v;
             return 1;
         }
     }
     if (wm_getPadHeld() & PAD_UP) {
-        *arg0 = -0x80;
+        *outValue = -0x80;
     }
     if (wm_getPadHeld() & PAD_DOWN) {
-        *arg0 = 0x80;
+        *outValue = 0x80;
     }
     return 0;
 }
 
-s32 wm_getRightStickY(s32 *arg0) {
+s32 wm_getRightStickY(s32 *outValue) {
     s32 v;
 
-    *arg0 = 0;
+    *outValue = 0;
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = 0x80 - g_padAnalog[0].b[1];
         if (v + 0x40U <= 0x80) {
@@ -2182,15 +2182,15 @@ s32 wm_getRightStickY(s32 *arg0) {
             v = (v + 0x40) * 2;
         }
         if (v != 0) {
-            *arg0 = v;
+            *outValue = v;
             return 1;
         }
     }
     if (wm_getPadHeld() & BTN_SQUARE) {
-        *arg0 = -0x80;
+        *outValue = -0x80;
     }
     if (wm_getPadHeld() & BTN_CROSS) {
-        *arg0 = 0x80;
+        *outValue = 0x80;
     }
     return 0;
 }
@@ -2216,9 +2216,9 @@ void wm_autoPilotOff(void) {
 void wm_mountPalettePre(void) {
 }
 
-s32 wm_getTerrainHeightOffset(s32 arg0, u32 arg1, u8 *arg2) {
+s32 wm_getTerrainHeightOffset(s32 terrainClass, u32 cellAttr, u8 *outFlat) {
     s32 i;
-    switch ((s32)(arg1 & 0xFC) >> 2) {
+    switch ((s32)(cellAttr & 0xFC) >> 2) {
     case WM_TOPO_FOREST:
     case WM_TOPO_FOREST_2:
     case WM_TOPO_FOREST_3:
@@ -2249,10 +2249,10 @@ s32 wm_getTerrainHeightOffset(s32 arg0, u32 arg1, u8 *arg2) {
         i = 8;
         break;
     }
-    if (arg2 != NULL) {
-        *arg2 = i < 1;
+    if (outFlat != NULL) {
+        *outFlat = i < 1;
     }
-    return g_worldTerrainHeightOffsets[arg0][i];
+    return g_worldTerrainHeightOffsets[terrainClass][i];
 }
 
 void wm_controlPlayer(void) {

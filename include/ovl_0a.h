@@ -1644,8 +1644,8 @@ void fld_beginFrame(void);
 void fld_clearModelQueue(void);
 void fld_clearSoundBankCache(void);
 void fld_compactModelCache(void);
-s32 fld_depFindArea(s32 arg0, s32 *arg1, s32 *arg2);
-s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2);
+s32 fld_depFindArea(s32 fileId, s32 *outSector, s32 *outSectors);
+s32 fld_depFindBackground(s32 fileId, s32 *outSector, s32 *outSectors);
 s32 fld_depFindBattle(); /* (u16, s32 *, s32 *); unprototyped: callers pass the argument unconverted */
 s32 fld_depFindByLink(s32 link);
 s32 fld_depFindField(); /* (u16, s32 *, s32 *); unprototyped: callers pass the argument unconverted */
@@ -1659,12 +1659,12 @@ FieldAnimSfx *fld_findAnimSfx(); /* (FieldObjSlot *, u16, s16); unprototyped: ca
 s32 fld_findAreaItem(); /* (FieldMapObj *, u16); unprototyped: callers pass the argument unconverted */
 s32 fld_findEventScript(); /* (FieldScene *, u16); unprototyped: callers pass the argument unconverted */
 FieldModelLight *fld_findLightColor(); /* (FieldLightSet *, u16); unprototyped: callers pass the argument unconverted */
-s32 fld_findLights(FieldScene *arg0, s32 unused);
+s32 fld_findLights(FieldScene *scene, s32 unused);
 s32 fld_freeModelBundles(void);
 s32 fld_getBgKey(); /* (FieldScene *); unprototyped: some callers pass a second argument it ignores */
 s32 fld_getModelAnimId(s32 modelId);
 s32 fld_getModelTables(s32 modelId, s32 **outTex, s32 **outUv, s32 **outSpr);
-s32 fld_getShadowTexPos(u16 *arg0, u16 *arg1);
+s32 fld_getShadowTexPos(u16 *outX, u16 *outY);
 s32 fld_getSpriteFrameCount(u16 *arg0);
 void fld_initMap(void);
 void fld_initPreload(void);
@@ -1673,9 +1673,9 @@ u8 *fld_initSprites(u8 *heap);
 s32 fld_isDiscChangePending(void);
 s32 fld_isMoviePlaying(void);
 s32 fld_isMusicFading(void);
-void fld_load(s32 arg0);
+void fld_load(s32 fieldId);
 s32 fld_loadCommon(void);
-s32 fld_loadFile(FieldScene *sc, s32 arg1);
+s32 fld_loadFile(FieldScene *sc, s32 fieldId);
 void fld_loadImagePack(s32 *arg0);
 s32 fld_loadModelBundle(s32 modelId);
 s32 fld_loadModelBundlesInCdOrder(void);
@@ -1692,7 +1692,7 @@ void fld_resetSprite(FieldSprite *spr);
 void fld_resumeResidentSfx(void);
 void fld_runDiscChange(void);
 void fld_setMusicVolumeFade(s32 volume, s32 frames);
-s32 fld_setupBackground(FieldScene *arg0, s32 arg1);
+s32 fld_setupBackground(FieldScene *scene, s32 fieldId);
 void fld_showSplashImage(void);
 void fld_startAudio(void);
 void fld_startEncounter(void);

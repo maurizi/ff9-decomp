@@ -8,8 +8,8 @@ void fld_entry(void) {
     fld_quit();
 }
 
-void fld_runArea(s32 arg0) {
-    fld_loadArea(arg0);
+void fld_runArea(s32 areaId) {
+    fld_loadArea(areaId);
     do {
         fld_main((s16)g_gameState->gameData->fieldId);
     } while (!(g_gameState->flags & (GS_RESET | GS_FLD_LEAVE | GS_FLD_NEW_AREA)));
@@ -17,8 +17,8 @@ void fld_runArea(s32 arg0) {
 }
 
 /* field main loop */
-void fld_main(s32 arg0) {
-    fld_load(arg0);
+void fld_main(s32 fieldId) {
+    fld_load(fieldId);
     SetDispMask(1);
     do {
         fld_beginFrame();
@@ -246,7 +246,7 @@ s32 fld_freeCommon(void) {
     return 0;
 }
 
-void fld_loadArea(s32 arg0) {
+void fld_loadArea(s32 areaId) {
     FieldMapObj *o;
 
     g_modeHeap = g_gameState->gameData->ctx.field->loadEnd;
@@ -254,8 +254,8 @@ void fld_loadArea(s32 arg0) {
     o = g_gameState->gameData->ctx.field->area;
     fld_initArea();
     game_freezeScreen();
-    fld_readAreaFile(o, arg0);
-    fld_findAreaItem(o, arg0);
+    fld_readAreaFile(o, areaId);
+    fld_findAreaItem(o, areaId);
     o->loadEnd = g_modeHeap;
 }
 
@@ -292,15 +292,15 @@ void fld_initArea(void) {
     }
 }
 
-s32 fld_findAreaItem(arg0, arg1)
-    FieldMapObj *arg0;
-    u16 arg1;
+s32 fld_findAreaItem(obj, areaId)
+    FieldMapObj *obj;
+    u16 areaId;
 {
-    arg0->msgTable = db_lookupRegistered(DB_GET_ADDR, arg1 | DB_AREA, 0);
+    obj->msgTable = db_lookupRegistered(DB_GET_ADDR, areaId | DB_AREA, 0);
     return 0;
 }
 
-s32 fld_readAreaFile(FieldMapObj *arg0, s32 arg1) {
+s32 fld_readAreaFile(FieldMapObj *obj, s32 areaId) {
     s32 id;
     GameData *gd;
     PreloadEntry *e;
@@ -309,7 +309,7 @@ s32 fld_readAreaFile(FieldMapObj *arg0, s32 arg1) {
     s32 t;
 
     gd = g_gameState->gameData;
-    id = (u16)arg1 | DB_AREA;
+    id = (u16)areaId | DB_AREA;
     cd = gd->cdRead;
     if (preload_isReady(id) != 0) {
         e = preload_find(id);
@@ -331,20 +331,20 @@ s32 fld_readAreaFile(FieldMapObj *arg0, s32 arg1) {
         while (cdRead_update(cd) != 0) {
         }
     }
-    arg0->areaFile = (void *)g_modeHeap;
+    obj->areaFile = (void *)g_modeHeap;
     db_register(g_modeHeap, 0);
-    g_modeHeap += db_getSize((s32)arg0->areaFile);
+    g_modeHeap += db_getSize((s32)obj->areaFile);
     return 0;
 }
 
-s32 fld_freeAreaFile(FieldMapObj *arg0, s16 arg1) {
-    db_unregister(arg0->areaFile);
-    arg0->areaFile = NULL;
+s32 fld_freeAreaFile(FieldMapObj *obj, s16 unused) {
+    db_unregister(obj->areaFile);
+    obj->areaFile = NULL;
     return 0;
 }
 
 /* field start-up: load the map and set up the object slots */
-void fld_load(s32 arg0) {
+void fld_load(s32 fieldId) {
     FieldScene *sc;
     s32 i;
     s32 j;
@@ -368,13 +368,13 @@ void fld_load(s32 arg0) {
     g_gameState->gameData->ctx.field->playerObj = 0;
     fld_clearModelQueue();
     g_gameState->gameData->ctx.field->unk9 = 0;
-    g_gameState->gameData->fieldId = arg0;
-    sc->nextId = arg0;
-    fld_loadFile(sc, arg0);
-    fld_findEventScript(sc, arg0);
-    fld_loadVibration(sc, arg0);
-    fld_setupBackground(sc, arg0);
-    fld_findLights(sc, arg0);
+    g_gameState->gameData->fieldId = fieldId;
+    sc->nextId = fieldId;
+    fld_loadFile(sc, fieldId);
+    fld_findEventScript(sc, fieldId);
+    fld_loadVibration(sc, fieldId);
+    fld_setupBackground(sc, fieldId);
+    fld_findLights(sc, fieldId);
     fld_getShadowTexPos(&g_gameState->gameData->ctx.field->area->scene->shadowTexX, &g_gameState->gameData->ctx.field->area->scene->shadowTexY);
     fld_initPreload();
     fld_startAudio();
@@ -404,7 +404,7 @@ void fld_load(s32 arg0) {
     g_modeHeap = fld_initShadows(g_modeHeap, g_gameState->gameData->npcCount + 9,
                                g_gameState->gameData->ctx.field->area->scene->shadowTexX,
                                g_gameState->gameData->ctx.field->area->scene->shadowTexY);
-    fld_loadSoundBanks(sc, arg0);
+    fld_loadSoundBanks(sc, fieldId);
     fld_resumeResidentSfx();
     sc->heapTop = g_modeHeap;
     sc->loadEnd = g_modeHeap;
@@ -665,46 +665,46 @@ void fld_refindSectors(void) {
     }
 }
 
-s32 fld_findEventScript(arg0, arg1)
-    FieldScene *arg0;
-    u16 arg1;
+s32 fld_findEventScript(scene, fieldId)
+    FieldScene *scene;
+    u16 fieldId;
 {
-    arg0->eventScript = db_lookupRegistered(DB_GET_ADDR, arg1 | DB_FIELD, 0);
+    scene->eventScript = db_lookupRegistered(DB_GET_ADDR, fieldId | DB_FIELD, 0);
     return 0;
 }
 
-s32 fld_loadVibration(arg0, arg1)
-    FieldScene *arg0;
-    u16 arg1;
+s32 fld_loadVibration(scene, fieldId)
+    FieldScene *scene;
+    u16 fieldId;
 {
-    void *p = db_lookupRegistered(DB_GET_ADDR, arg1 | 0x1E0000, 0);
+    void *p = db_lookupRegistered(DB_GET_ADDR, fieldId | 0x1E0000, 0);
 
-    arg0->vibration = p;
+    scene->vibration = p;
     if (p != NULL) {
         vib_init(p);
     }
     return 0;
 }
 
-s32 fld_setupBackground(FieldScene *arg0, s32 arg1) {
+s32 fld_setupBackground(FieldScene *scene, s32 fieldId) {
     GameData *gd = g_gameState->gameData;
     s32 id;
 
     fldbg_setRenderContext(&gd->drawBuf, &gd->projDist, gd->ot[0], gd->ot[1], &gd->viewMatrix, g_modeHeap + 0x400);
     fldbg_setWorkBuffer(g_modeHeap, 0x400);
-    id = fld_getBgKey(arg0, arg1);
-    arg0->bg = db_lookupRegistered(DB_GET_ADDR, id, 0);
-    fldbg_setData(arg0->bg);
+    id = fld_getBgKey(scene, fieldId);
+    scene->bg = db_lookupRegistered(DB_GET_ADDR, id, 0);
+    fldbg_setData(scene->bg);
     g_modeHeap = fldbg_init();
     bgi_clear();
-    arg0->walkmesh = db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_WALKMESH), 0);
-    bgi_init((u8 *)arg0->walkmesh + 4);
+    scene->walkmesh = db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_WALKMESH), 0);
+    bgi_init((u8 *)scene->walkmesh + 4);
     g_modeHeap = fld_initSprites(g_modeHeap);
     return 0;
 }
 
-s32 fld_findLights(FieldScene *arg0, s32 unused) { /* its caller passes this, unused */
-    arg0->lights = db_lookupRegistered(DB_GET_ADDR, (u16)fld_getBgKey(arg0) | DB_LIGHTS, 0);
+s32 fld_findLights(FieldScene *scene, s32 unused) { /* its caller passes this, unused */
+    scene->lights = db_lookupRegistered(DB_GET_ADDR, (u16)fld_getBgKey(scene) | DB_LIGHTS, 0);
     return 0;
 }
 
@@ -751,7 +751,7 @@ s32 fld_loadModelBundlesInCdOrder(void) {
     return 0;
 }
 
-s32 fld_loadFile(FieldScene *sc, s32 arg1) {
+s32 fld_loadFile(FieldScene *sc, s32 fieldId) {
     s32 size;
     s32 id;
     PreloadEntry *e;
@@ -766,7 +766,7 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         size = (s32)(RAM_SUB_OVL(u8 *) - 0x17000) - g_modeHeap;
         size = size / 2048 * 2048;
     }
-    id = (u16)arg1 | DB_FIELD;
+    id = (u16)fieldId | DB_FIELD;
     if (preload_isReady(id)) {
         e = preload_find(id);
         g_gameState->gameData->cdRead[0].end = (u8 *)(e->dest + e->loaded);
@@ -826,49 +826,49 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
     return 0;
 }
 
-s32 fld_getShadowTexPos(u16 *arg0, u16 *arg1) {
+s32 fld_getShadowTexPos(u16 *outX, u16 *outY) {
     FieldVramPos *p = db_lookupRegistered(DB_GET_ADDR, DB_VRAM_ALLOC, 0);
 
-    *arg0 = p->shadowTexX;
-    *arg1 = p->shadowTexY;
+    *outX = p->shadowTexX;
+    *outY = p->shadowTexY;
     return 0;
 }
 
-s32 fld_freeFieldFile(FieldScene *arg0, s16 arg1) {
-    db_unregister(arg0->fieldFile);
-    arg0->fieldFile = NULL;
+s32 fld_freeFieldFile(FieldScene *scene, s16 unused) {
+    db_unregister(scene->fieldFile);
+    scene->fieldFile = NULL;
     return 0;
 }
 
-s32 fld_freeVibration(FieldScene *arg0, s16 arg1) {
+s32 fld_freeVibration(FieldScene *unused0, s16 unused1) {
     vib_clear();
     return 0;
 }
 
 /* old-style definition: some callers pass a second argument */
-s32 fld_getBgKey(arg0)
-    FieldScene *arg0;
+s32 fld_getBgKey(scene)
+    FieldScene *scene;
 {
-    return db_lookup((s32)arg0->fieldFile, DB_GET_KEY_AT, DB_BG, 0);
+    return db_lookup((s32)scene->fieldFile, DB_GET_KEY_AT, DB_BG, 0);
 }
 
-s32 fld_depFindBattle(arg0, arg1, arg2)
-    u16 arg0;
-    s32 *arg1;
-    s32 *arg2;
+s32 fld_depFindBattle(battleId, outSector, outSectors)
+    u16 battleId;
+    s32 *outSector;
+    s32 *outSectors;
 {
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
-    s32 id = arg0 | DB_BATTLE;
+    s32 id = battleId | DB_BATTLE;
     FileEntry *e = t->entries;
 
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
         if (e[i].id == id) {
-            if (arg1 != NULL) {
-                *arg1 = e[i].sector;
+            if (outSector != NULL) {
+                *outSector = e[i].sector;
             }
-            if (arg2 != NULL) {
-                *arg2 = e[i].sectors;
+            if (outSectors != NULL) {
+                *outSectors = e[i].sectors;
             }
             break;
         }
@@ -876,25 +876,25 @@ s32 fld_depFindBattle(arg0, arg1, arg2)
     return id;
 }
 
-s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
+s32 fld_depFindBackground(s32 fileId, s32 *outSector, s32 *outSectors) {
     s32 id = -1;
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
     FileEntry *e = t->entries;
 
     for (i = 0; i < t->count; i++) {
-        if (e[i].id == arg0) {
+        if (e[i].id == fileId) {
             id = e[i].link;
             break;
         }
     }
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
         if (e[i].id == id) {
-            if (arg1 != NULL) {
-                *arg1 = e[i].sector;
+            if (outSector != NULL) {
+                *outSector = e[i].sector;
             }
-            if (arg2 != NULL) {
-                *arg2 = e[i].sectors;
+            if (outSectors != NULL) {
+                *outSectors = e[i].sectors;
             }
             break;
         }
@@ -902,23 +902,23 @@ s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-s32 fld_depFindField(arg0, arg1, arg2)
-    u16 arg0;
-    s32 *arg1;
-    s32 *arg2;
+s32 fld_depFindField(fieldId, outSector, outSectors)
+    u16 fieldId;
+    s32 *outSector;
+    s32 *outSectors;
 {
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
-    s32 id = arg0 | DB_FIELD;
+    s32 id = fieldId | DB_FIELD;
     FileEntry *e = t->entries;
 
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
         if (e[i].id == id) {
-            if (arg1 != NULL) {
-                *arg1 = e[i].sector;
+            if (outSector != NULL) {
+                *outSector = e[i].sector;
             }
-            if (arg2 != NULL) {
-                *arg2 = e[i].sectors;
+            if (outSectors != NULL) {
+                *outSectors = e[i].sectors;
             }
             break;
         }
@@ -926,25 +926,25 @@ s32 fld_depFindField(arg0, arg1, arg2)
     return id;
 }
 
-s32 fld_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
+s32 fld_depFindArea(s32 fileId, s32 *outSector, s32 *outSectors) {
     FileTable *t = g_gameState->gameData->depTable;
     FileEntry *e = t->entries;
     FileEntry *end = e + t->count;
     s32 id = -1;
 
     for (; e < end; e++) {
-        if (e->id == arg0) {
+        if (e->id == fileId) {
             id = e->link;
             break;
         }
     }
     for (e = t->entries; e < end; e++) {
         if (e->id == id) {
-            if (arg1 != NULL) {
-                *arg1 = e->sector;
+            if (outSector != NULL) {
+                *outSector = e->sector;
             }
-            if (arg2 != NULL) {
-                *arg2 = e->sectors;
+            if (outSectors != NULL) {
+                *outSectors = e->sectors;
             }
             break;
         }
