@@ -16,7 +16,6 @@ void timer_enable(u8);
 #define LEVEL_MAX 99
 #define EXP_MAX   9999999
 #define GIL_MAX   9999999
-#define BATTLE_END_GAME_OVER 6   /* GameData.unk56E: party defeated (gameover_main) */
 
 /* sounds of the rewards screen */
 #define SE_EXP_COUNT  0x69  /* loop while exp counts up (snd_startSe / snd_stopSe) */

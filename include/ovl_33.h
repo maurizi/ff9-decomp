@@ -140,7 +140,7 @@ typedef struct {
     unsigned int unk0_4 : 1;
     unsigned int targetMode : 3; /* s_menuAbility.targetMode */
     unsigned int pad0_8 : 24;
-    u8 effect; /* calculation script, item_useOnMember's kind */
+    u8 effect; /* battle formula (BTL_FORMULA_*), item_useOnMember's kind */
     u8 pad5[0xA - 5];
     u8 mpCost; /* menuAbility_getMpCost */
     u8 flags; /* ABILITY_ACT_*; bit 1 clear: ui_drawApGauge's flag argument */

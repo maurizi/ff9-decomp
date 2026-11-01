@@ -11066,3 +11066,128 @@ Unk8006E0E8 WeaponEntry  # ovl_0b and ovl_38 views merged into main's WeaponEntr
 #   SOUND_STATE TALK_ANGLE OBJ_CHAR GIL STEP_COUNT MSG_SYNC_TAG MSG_CHOICE LINE_POINT_X/Z SCREEN_X/Y MOVIE_FRAME MOVIE_STATE
 #   FROG_COUNT TIMER_SECONDS CARD_RESULT CARD_COUNT PLAY_TIME TIMER_ENABLED SOUND_VOLUME SOUND_PAN BATTLE_ID BTLSEQ_BUSY
 #   BATTLE_END BATTLE_RESULT BATTLE_ARG_HI BATTLE_ARG_LO BATTLE_PHASE BATTLE_GROUP
+
+# ===== round 36: names_r36_main =====
+# R36 main constants: new macros (NEW) and renamed macros (OLD NEW). [code] evidence: the handler of each case.
+# text codes (include/ff9.h, docs/text-codes.md)
+NEW TEXT_SPACE_1PX TEXT_WIDE_FIRST TEXT_WIDE_LAST TEXT_PAGE
+NEW TEXT_WAIT_PAGE TEXT_WAIT_CLOSE TEXT_SPEED TEXT_CHOICE_START TEXT_HOLD TEXT_NO_SKIP TEXT_SKIP TEXT_SYNC_TAG TEXT_WAIT
+NEW TEXT_SPEED_DEFAULT TEXT_NO_INPUT TEXT_SYNC_TAG_NEXT
+NEW TEXT_WIN_POS TEXT_BANK TEXT_CHOICES TEXT_NO_OPEN_ANIM TEXT_LINE_WIDTHS TEXT_CHOICES_MASKED TEXT_BALLOON_OFS
+NEW TEXT_WIN_BOTTOM_RIGHT TEXT_WIN_BOTTOM_LEFT TEXT_WIN_TOP_RIGHT TEXT_WIN_TOP_LEFT TEXT_WIN_BOTTOM TEXT_WIN_TOP
+NEW TEXT_WIN_FIXED_BOTTOM_RIGHT TEXT_WIN_FIXED_BOTTOM_LEFT TEXT_WIN_FIXED_TOP_RIGHT TEXT_WIN_FIXED_TOP_LEFT TEXT_WIN_CENTER
+NEW WINLAYOUT_ANCHOR_NONE WINLAYOUT_ANCHOR_POS
+NEW TEXT_BANK_TEXT TEXT_MSG_ITEM_NAME TEXT_CHAR_NAME_CAPS TEXT_CENTER TEXT_TAB TEXT_DPAD TEXT_DPAD_UP TEXT_DPAD_DOWN
+NEW TEXT_DPAD_LEFT TEXT_DPAD_RIGHT TEXT_DPAD_UP_DOWN TEXT_DPAD_LEFT_RIGHT TEXT_PAD_BTN TEXT_FLAG_ICON
+NEW DPAD_ARROW_UP DPAD_ARROW_DOWN DPAD_ARROW_LEFT DPAD_ARROW_RIGHT
+NEW MSG_FLAG_NO_TAIL MSG_FLAG_MOGNET MSG_FLAG_FRAMELESS MSG_FLAG_NO_FOLLOW MSG_FLAG_ATE MSG_FLAG_BALLOON
+# event script ops (evt_execInstr handlers)
+NEW EVT_OP_NOP_46 EVT_OP_NOP_79 EVT_OP_NOP_D2 EVT_OP_NOP_D3 EVT_OP_NOP_A3 EVT_OP_NOP_STRING EVT_OP_END_FRAME
+NEW EVT_OP_BTL_ENEMY_CMD EVT_OP_SET_ROW EVT_OP_PLAYER_TO_LINE_POINT EVT_OP_MOVE_TO_LINE_POINT EVT_OP_LINE_POINT
+NEW EVT_OP_PARTY_MENU EVT_OP_TURN_OBJ EVT_OP_WAIT_TURN_OBJ EVT_OP_SPRITE_CMD_U8 EVT_OP_SET_VICTORY_POSE
+NEW EVT_OP_MOVE_XYZ_NOTURN EVT_OP_PARTY_UPDATE_UIDS EVT_OP_EXT
+NEW EVT_OP_BGI_FLOOR_MOVE_STOP EVT_OP_BGI_FLOOR_MOVE_PLAYING EVT_OP_BGI_FLOOR_MOVE_MODE EVT_OP_BGI_FLOOR_MOVE_FLOOR
+NEW EVT_OP_BGI_FLOOR_MOVE_SPEED EVT_OP_BGI_FLOOR_MOVE_CURVE EVT_OP_BGI_FLOOR_MOVE_RANGE EVT_OP_BGI_FLOOR_MOVE_AXIS
+NEW EVT_OP_BGI_ANIM_FRAME EVT_OP_BGI_ANIM_SHOW_FRAME EVT_OP_BGI_ANIM_PLAYING EVT_OP_BGI_ANIM_MODE EVT_OP_BGI_ANIM_RATE
+NEW EVT_OP_BGI_ANIM_FRAME_VALUES EVT_OP_BGI_ANIM_FRAME_VALUE EVT_OP_BGI_ANIM_RANGE EVT_OP_BGI_ANIM_RESET
+NEW EVT_MOVETO_NO_TURN EVT_MOVETO_3D
+# expression ops (evt_exprSpecial and the evt_exprUnit* helpers; evt_runExpr's jump table 0x8006E718)
+NEW EVT_EXPR_UNIT_POST_INC EVT_EXPR_UNIT_POST_DEC EVT_EXPR_UNIT_PRE_INC EVT_EXPR_UNIT_PRE_DEC EVT_EXPR_UNIT_NOT
+NEW EVT_EXPR_UNIT_LT EVT_EXPR_UNIT_GT EVT_EXPR_UNIT_LE EVT_EXPR_UNIT_GE EVT_EXPR_UNIT_EQ EVT_EXPR_UNIT_NE
+NEW EVT_EXPR_UNIT_ANY_BITS EVT_EXPR_UNIT_NO_BITS EVT_EXPR_UNIT_XOR_NZ EVT_EXPR_UNIT_OR_NZ
+NEW EVT_EXPR_UNIT_ASSIGN EVT_EXPR_UNIT_MUL_ASSIGN EVT_EXPR_UNIT_DIV_ASSIGN EVT_EXPR_UNIT_MOD_ASSIGN EVT_EXPR_UNIT_ADD_ASSIGN
+NEW EVT_EXPR_UNIT_SUB_ASSIGN EVT_EXPR_UNIT_SHL_ASSIGN EVT_EXPR_UNIT_SHR_ASSIGN EVT_EXPR_UNIT_AND_ASSIGN
+NEW EVT_EXPR_UNIT_XOR_ASSIGN EVT_EXPR_UNIT_OR_ASSIGN EVT_EXPR_UNIT_MASK EVT_EXPR_UNIT_MASK_AND EVT_EXPR_UNIT_MASK_XOR
+NEW EVT_EXPR_UNIT_MASK_OR EVT_EXPR_UNIT_MAX EVT_EXPR_UNIT_MIN EVT_EXPR_CHR_HP EVT_EXPR_CHR_MAX_HP EVT_EXPR_CHR_MP
+NEW EVT_EXPR_CHR_MAX_MP EVT_EXPR_UNUSED_5A EVT_EXPR_UNUSED_5B EVT_EXPR_UNUSED_5C EVT_EXPR_ITEM_COUNT
+NEW EVT_EXPR_BGI_ANIM_FRAME EVT_EXPR_UNUSED_6C EVT_EXPR_ACTOR_TRIANGLE EVT_EXPR_ACTOR_FLOOR
+# AKAO sequence (include/snd_ids.h)
+NEW AKAO_NOTE_LENGTHS AKAO_NOTE_TIE AKAO_NOTE_REST AKAO_NOTE_END AKAO_OP_LOOP_START AKAO_OP_LOOP_END AKAO_OP_LOOP_FOREVER
+NEW AKAO_OP_EFFECTS_OFF AKAO_OP_NOP_CD AKAO_OP_NOP_D1 AKAO_OP_PORTAMENTO_OFF AKAO_OP_NOTE_LEN AKAO_OP_TIE_LEN AKAO_OP_REST_LEN
+NEW AKAO_OPFE_LOOP_PASS_JUMP AKAO_OPFE_LOOP_PASS_EXIT
+# character stat classes and ability rows (include/ff9_ids.h; chr_getClass, chr_getClassFlags)
+NEW CHR_STATS_CINNA CHR_STATS_MARCUS CHR_STATS_BLANK CHR_STATS_BEATRIX
+NEW CHR_ROW_CINNA CHR_ROW_CINNA_2 CHR_ROW_MARCUS CHR_ROW_MARCUS_2 CHR_ROW_BLANK CHR_ROW_BLANK_2 CHR_ROW_BEATRIX CHR_ROW_BEATRIX_2 CHR_ROW_EXTRA
+# shadow ops in evt_modelOp* (msg.c), battle trigger
+NEW EVT_OP_SHADOW_OFFSET MODEL_SLOT_SHADOW_FIXED
+(used existing BTL_CMD_ENEMY_REACT in evt_battleTrigger's switch, MODEL_SLOT_NO_SHADOW in evt_modelOp*)
+
+# ===== round 36: names_r36_overlays =====
+# R36 overlay constants (macros added; evidence in the header comments and docs/sound-ids.md)
+
+## snd_ids.h: sound command word fields [code] the five overlay handlers fld_soundCommand, wm_soundCommand,
+## tm_soundCmd, opening_soundCmd, ending_soundCmd (akao_api calls per case)
+SND_TYPE_MUSIC 0, SND_TYPE_SE 1, SND_TYPE_STREAM 2, SND_TYPE_BANK 3
+SND_CMD_PLAY 0, SND_CMD_STOP 1, SND_CMD_SET 2, SND_CMD_FADE 3, SND_CMD_FADE_FROM 4, SND_CMD_SET_ALL 5,
+SND_CMD_FADE_ALL 6, SND_CMD_LOAD 7, SND_CMD_SUSPEND 8, SND_CMD_RESUME 9, SND_CMD_SET_CONDITION 0xA,
+SND_CMD_FADE_ALL_FROM 0xB, SND_CMD_GET_STATE 0xC
+SND_PARAM_VOLUME 1, SND_PARAM_TEMPO 2, SND_PARAM_PITCH 3, SND_PARAM_TEMPO_PITCH 4, SND_PARAM_PAN 5,
+SND_PARAM_CONDITION 6, SND_PARAM_PLAY_COUNT 7, SND_PARAM_ALL_SLOTS 9, SND_PARAM_MOVIE_VOLUME 10
+SND_SLOT1 0x40
+also used (no new macro): (DB_x >> 16) for db key kind compares in ovl_0a / ovl_0c; DB_BATTLE in fld battle music lookup
+
+## ovl_0c.h
+WM_FORM_SGATE 0, WM_FORM_ALEX 2, WM_FORM_HOKORA_HI 3, WM_FORM_LIND 4, WM_FORM_CLAY 5, WM_FORM_CHOCOBO_HEAVEN 7,
+WM_FORM_KUROMA 8, WM_FORM_HOKORA_MIZU 10, WM_FORM_MOG_NET 12, WM_FORM_STATUS(f) [string] wm_applyStoryForms
+"BGI Form : %s" / "- Replace ... -" prints. The debug switch's cases are the g_worldFormFlags indices (same set
+as the apply switch's status values minus 1), so its names belong to the indices.
+WM_PARAM_RIDE_Y 0xC2, WM_PARAM_CHOCOGRAPH 0xC6 [code] w_frameGetParameter
+WM_FX_BOAT_WAKE 15, WM_FX_AIRSHIP_SPRAY 18, WM_FX_WATER_RIPPLE 22 [code] spawn sites + wm_drawEffects
+WM_SE_AIRSHIP_WATER 38 [code] w_movementChange, wm_controlFly, wm_updateLogic
+used existing: WM_STATE_*, WM_MUSIC_*, WM_MOVE_*, WM_ACTOR_CHOCOBO4
+
+## ovl_0a.h
+FLD_MDLCMD_SEMITRANS 0, _CLIP_Y 4, _MIRROR 8, _MIRROR_POINT 9, _MIRROR_NORMAL 10, _MIRROR_TINT 11, _ANIM_SE 16,
+_ANIM_SE_ALT 17, _ANIM_SE_RANDOM_PITCH 18, _ANIM_SE_REMOVE 19 [code] fld_modelCommand cases, fld_playAnimSfx
+FLD_SPRCMD_SET 0x82, _FLAGS 0x83, _POS 0x87, _ROT 0x8C, _SCALE 0x91, _PARENT 0x96, _BRIGHTNESS 0x9B, _ABR 0x9C,
+_SPEED 0xA0, _FRAME 0xA1, _OFFSET 0xA5, _OT_OFFSET 0xAA [code] fld_spriteCommand
+used existing: GS_MODE_FIELD / GS_MODE_WORLD (ovl_0a bgi_move, tu_800B61A4; ovl_14 opening; ovl_64 mbg)
+
+## ovl_0d / ovl_15 / ovl_65 (existing macros applied, none added)
+ovl_0d: TM_RESULT_* in the result switch, TM_SEL_YES/NO in the four Yes/No tasks (tm_taskTryAgain, tm_taskChoice2,
+tm_taskCardAway2, tm_taskGameQuit)
+ovl_15: BJ_RESULT_* in bj_drawResult's switch, BJ_RANK_JACK/ACE in bj_drawCard
+ovl_65: POPUP_HOLD/GAP in rewards_stepPopup and the popup draw
+ovl_14 / ovl_15 sound handlers: covered by the SND_* commit
+
+# ===== round 36: names_r36_ovl_0b =====
+R36 ovl_0b constants (named constants; evidence [code] unless stated)
+
+BTL_FORMULA_* (include/ff9_ids.h, moved from ovl_0b.h so main sees them): btl_calcCmd's (u8)type, BtlCmd8.formula, Unk8006B1F4.formula,
+  weapon record +4; also btl_setPhysParams' multiplier kind (weapon formulas 1-7), btl_tryEscape's Flee call,
+  Phoenix's sub-calculations (REVIVE / MAGIC). 102 macros, 0x01-0x6D. Users cross-checked by dumping the ovl_33
+  action ability table, g_usableItemTable and g_weaponTable +4 against tools/ff9text.py names.
+CHR_KIND_* (include/ff9_ids.h): Character.info.b.kind 0-18, CHR_KIND_COUNT 19, CHR_KIND_NONE (= COUNT, the kind
+  ovl_0b gives a non-party unit), CHR_KIND_TRANCE 0x13 (g_btlCharModelIds offset). Used in main chr_calcAppearance,
+  chr_join; ovl_0b btl_initWeapon, btl_initBattleState, btl_startCmdEffect (Steal), btl_getPartyModelId,
+  btl_checkCmdUsable, btlfx_isUnitKind, the Eiko kind tests, g_btlfxKindTimings, btlcam party presets.
+ITEM_ICON_* (include/ff9_ids.h): ItemInfo.icon weapon kinds 0-12, named from the items carrying them; used in
+  chr_calcAppearance and btl_startCmdEffect (Throw).
+BTL_STATUS_*_BIT (include/ff9_ids.h): the 32 status bit indexes; BTL_STATUS_TIMED_FIRST_BIT (16, statusTimers[bit - it]),
+  BTL_STATUS_TIMED 0xEFFF0000 (timer-driven statuses, btl_addStatus / btl_tickStatusTimers). btl_addStatus' switch
+  and btl_removeStatus' switch (masks), btl_initDotTimer's bit argument, statusInfo[DOOM_BIT]; the add/remove
+  mask literals expanded into BTL_STATUS_* ORs.
+BTLFX_CTL_* (include/ovl_0b.h): effect script control ops 0-15, 20; BTLFX_OP_TASK_FIRST 0x20, BTLFX_OP_MODULE_FIRST 0x80;
+  BTLFX_WAITLD_* (op 6's a), BTLFX_VRAM_* (op 7's a). btlfx_runScript.
+BTL_ATTR_* additions: HIDDEN_MESHES 0x3A, TEXANIM_PLAY/STOP/ONCE 0x3D-0x3F, ROW, SLOT, KIND, CLASS_FLAGS, CATEGORY,
+  WEAK_STANCE, INDEX (0x40-0x46), TERRA_HOMING 0x4E. BTL_GETVAR_EXP 41, BTL_GETVAR_EIKO_REBIRTH 42,
+  BTL_SETVAR_ADD_DRAGON_KILL 39, BTL_SETVAR_FADE_MUSIC 40.
+ABIL_CARBUNCLE (0x44) / _EMERALD / _MOONSTONE / _DIAMOND, ITEM_DIAMOND/EMERALD/MOONSTONE (ff9_ids.h): btlui_resolveAbility.
+GPU_POLY_* / TPAGE_ABR_MASK (psyq.h, existing) in btl_setModelAbr, btl_setModelRgb, btl_fillModelRgb; DIR_* and DB_*
+  >> 16 in btl_findNearestFile (dir 9 -> DB_MUSIC stays a literal: no DIR_ macro).
+BTL_TGT_SINGLE/MULTI/ALL_ANY/PARTY/ENEMY 0-8 (ovl_0b.h, from g_btluiDefaultTargets/g_btluiTargetAllByType); 9-11 left
+  literal (6-8 with targeting 2, no name evidence).
+btl_soundCmd: SND_TYPE_* / SND_CMD_* / SND_PARAM_* (snd_ids.h, from the overlays agent) for its type/command/parameter
+  switches and g_btlSoundLoadKind tests; DB_MUSIC >> 16 for the load key kind.
+BATTLE_END_VICTORY 1 / _DEFEAT 3 / _ESCAPE 4 / _GAME_OVER 6 (ovl_0b.h, candidates for ff9.h; ovl_65.h already has
+  BATTLE_END_GAME_OVER): GameData.battleResult. 2 and 5 left literal. BTL_END_ESCAPE / BTL_END_STOPPED subPhase tests.
+BTL_TARGETS_PARTY 0xF, BTL_TARGETS_FIRST_ENEMY 0x10 (ovl_0b.h, BtlCmd.targets masks).
+Command-id bounds in btl_setCmd / btl_setEnemyCmd (BTL_CMD_ENEMY_*, BTL_CMD_TABLE_COUNT, BTL_CMD_ENEMY_REACT);
+  ITEM_FIRST_USABLE, ITEM_NONE, ABILITY_SUPPORT_FIRST in btlui (incl. the per-ability array sizes).
+BTLFX_STAGE_NONE/DATA/CODE/READY (loader stage), BTLFX_BLOCK_NONE/READING/DONE (summon/summonData/sound/buf states):
+  btlfx_updateLoader, btlfx_loadFile, btlfx_loadNextBlock, btlfx_runScript waits. Battle phase+subPhase u16 test in
+  btl_checkCmdUsable.
+main item_useOnMember: its kind switch is the formula (BTL_FORMULA_MAGIC_HEAL, CURE_STATUS, REVIVE, ITEM_HEAL,
+  ITEM_MP_HEAL, ELIXIR, PHOENIX_DOWN, SOFT, ITEM_CURE_STATUS, TENT); its callers pass the ovl_33/ovl_37 `effect`
+  fields, which are this formula byte.
+# BATTLE_END_* moved from ovl_0b.h/ovl_65.h to ff9.h

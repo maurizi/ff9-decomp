@@ -84,7 +84,7 @@ typedef struct {
     unsigned int unk0_4 : 1;
     unsigned int targetMode : 3;
     unsigned int pad0_8 : 24;
-    u8 effect; /* calculation script, item_useOnMember's kind */
+    u8 effect; /* battle formula (BTL_FORMULA_*), item_useOnMember's kind */
     u8 pad5[3];
     s32 unk8; /* not used by C */
 } Unk8006B1F4; /* 0xC, items 0xE0.. (also in ovl_0b.h) */

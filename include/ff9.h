@@ -4278,6 +4278,13 @@ typedef struct {
 #define EVT_SYSVAR_BTLSEQ_BUSY 25      /* btlseq_isBusy() */
 #define EVT_SYSVAR_BATTLE_END 26       /* g_evtMode == EVT_MODE_BATTLE_END */
 #define EVT_SYSVAR_BATTLE_RESULT 27    /* GameData.battleResult */
+/* GameData.battleResult values Evidence: [code] btl_victory,
+ * btl_setBattleVar, btl_saveParty. 2 (BTL_SETVAR_END's 1 without the scene's victory sequence; ovl_65 gameover turns
+ * it back into 1) and 5 (no fade-out on exit, btl_update) stay unnamed. */
+#define BATTLE_END_VICTORY   1 /* BTL_END_VICTORY / BTL_END_SCRIPT_VICTORY */
+#define BATTLE_END_DEFEAT    3 /* BTL_END_DEFEAT, BTL_SETVAR_DEFEAT */
+#define BATTLE_END_ESCAPE    4 /* BTL_END_ESCAPE: enemies removed now give no rewards (btl_updateKo) */
+#define BATTLE_END_GAME_OVER 6 /* btl_saveParty: a defeat without BTL_SCENE_NO_GAMEOVER */
 #define EVT_SYSVAR_BATTLE_ARG_HI 28    /* g_evtBattleTriggerArg bits 8-15 */
 #define EVT_SYSVAR_BATTLE_ARG_LO 29    /* g_evtBattleTriggerArg bits 0-7 */
 #define EVT_SYSVAR_BATTLE_PHASE 30     /* ovl_0b Battle.phase (BTL_PHASE_*) */
