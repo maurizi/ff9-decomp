@@ -2,23 +2,23 @@
 
 void wm_relocatePack(WmPack *pack) {
     s32 i;
-    WmPackEntry *e;
+    WmPackEntry *entry;
 
     i = 0;
     pack->unk4 += (s32)pack;
     for (; i < pack->count; i++) {
-        e = (WmPackEntry *)((s32)pack->entries[i] + (s32)pack);
-        pack->entries[i] = e;
-        e->verts += (s32)pack;
-        e->polys += (s32)pack;
+        entry = (WmPackEntry *)((s32)pack->entries[i] + (s32)pack);
+        pack->entries[i] = entry;
+        entry->verts += (s32)pack;
+        entry->polys += (s32)pack;
     }
 }
 
 void wm_setupWorldData(void) {
     s32 unused[26];
-    void **f[6]; /* f[6] below overruns into the saved s0 slot, as in the original */
-    void *p;
-    void **t;
+    void **files[6]; /* files[6] below overruns into the saved s0 slot, as in the original */
+    void *formTex;
+    void **formPack;
     WmTexScrollTbl *dst;
     s32 i;
     s32 acc;
@@ -41,21 +41,21 @@ void wm_setupWorldData(void) {
         g_worldDataPack = db_lookupRegistered(DB_GET_ADDR, 0x41B, 0);
         g_worldChunkTable = db_lookupRegistered(DB_GET_ADDR, 0x425, 0);
         g_worldChunkTableT = db_lookupRegistered(DB_GET_ADDR, 0x42F, 0);
-        f[4] = db_lookupRegistered(DB_GET_ADDR, 0x439, 0);
-        f[5] = db_lookupRegistered(DB_GET_ADDR, 0x443, 0);
+        files[4] = db_lookupRegistered(DB_GET_ADDR, 0x439, 0);
+        files[5] = db_lookupRegistered(DB_GET_ADDR, 0x443, 0);
     } else {
         g_worldTexAnimPack = db_lookupRegistered(DB_GET_ADDR, 0x414, 0);
         g_worldDataPack = db_lookupRegistered(DB_GET_ADDR, 0x41E, 0);
         g_worldChunkTable = db_lookupRegistered(DB_GET_ADDR, 0x428, 0);
         g_worldChunkTableT = db_lookupRegistered(DB_GET_ADDR, 0x432, 0);
-        f[4] = db_lookupRegistered(DB_GET_ADDR, 0x43C, 0);
-        f[5] = db_lookupRegistered(DB_GET_ADDR, 0x446, 0);
+        files[4] = db_lookupRegistered(DB_GET_ADDR, 0x43C, 0);
+        files[5] = db_lookupRegistered(DB_GET_ADDR, 0x446, 0);
     }
-    f[0] = db_lookupRegistered(DB_GET_ADDR, 0x5DC, 0);
-    f[1] = db_lookupRegistered(DB_GET_ADDR, 0x5DD, 0);
-    f[2] = db_lookupRegistered(DB_GET_ADDR, 0x5DE, 0);
-    f[3] = db_lookupRegistered(DB_GET_ADDR, 0x5DF, 0);
-    f[6] = db_lookupRegistered(DB_GET_ADDR, 0x5E0, 0);
+    files[0] = db_lookupRegistered(DB_GET_ADDR, 0x5DC, 0);
+    files[1] = db_lookupRegistered(DB_GET_ADDR, 0x5DD, 0);
+    files[2] = db_lookupRegistered(DB_GET_ADDR, 0x5DE, 0);
+    files[3] = db_lookupRegistered(DB_GET_ADDR, 0x5DF, 0);
+    files[6] = db_lookupRegistered(DB_GET_ADDR, 0x5E0, 0);
     w = g_worldChunkTable->width;
     h = g_worldChunkTable->height;
     g_worldChunksW = w;
@@ -64,35 +64,35 @@ void wm_setupWorldData(void) {
     g_worldCellsH = h * 2;
     g_worldWidth = w << 14;
     g_worldDepth = h << 14;
-    *(WmCellMap *)g_worldChunkFlags = *(WmCellMap *)f[0];
+    *(WmCellMap *)g_worldChunkFlags = *(WmCellMap *)files[0];
     wm_applyStoryForms();
     w_frameExtruct(g_worldTexAnimPack);
     w_frameExtruct((s32 *)g_worldDataPack);
-    w_frameExtruct((s32 *)f[1]);
-    w_frameExtruct((s32 *)f[2]);
-    w_frameExtruct((s32 *)f[3]);
-    w_frameExtruct((s32 *)f[4]);
-    wm_loadImagePack(f[6]);
-    t = f[5];
-    w_frameExtruct((s32 *)t);
+    w_frameExtruct((s32 *)files[1]);
+    w_frameExtruct((s32 *)files[2]);
+    w_frameExtruct((s32 *)files[3]);
+    w_frameExtruct((s32 *)files[4]);
+    wm_loadImagePack(files[6]);
+    formPack = files[5];
+    w_frameExtruct((s32 *)formPack);
     for (i = 0; i < 16; i++) {
-        p = w_framePackGetPtr(t, i + g_worldFormFlags[i] * 16);
-        w_frameExtruct(p);
-        wm_loadTimPack(p, 0, 0, 0, 0);
+        formTex = w_framePackGetPtr(formPack, i + g_worldFormFlags[i] * 16);
+        w_frameExtruct(formTex);
+        wm_loadTimPack(formTex, 0, 0, 0, 0);
     }
-    wm_loadTimPack((s32 *)f[4], 0, 0, 0, 0);
-    wm_loadTimPack((s32 *)f[1], 0, 0, 0, 0);
+    wm_loadTimPack((s32 *)files[4], 0, 0, 0, 0);
+    wm_loadTimPack((s32 *)files[1], 0, 0, 0, 0);
     if (g_gameState->gameData->chocograph != 0) {
-        wm_loadTim((u32 *)f[3], g_gameState->gameData->chocograph - 1, 0x318, 0xB0, 0x280, 0xF6, 2);
+        wm_loadTim((u32 *)files[3], g_gameState->gameData->chocograph - 1, 0x318, 0xB0, 0x280, 0xF6, 2);
     }
     if (*g_worldStoryCounterPtr >= 0x1766) {
         g_worldNaviPage = 1;
     } else {
         g_worldNaviPage = 0;
     }
-    wm_loadTim((u32 *)f[2], g_worldNaviPage * 2, 0, 0, 0, 0, 0);
-    wm_loadTim((u32 *)f[2], (g_worldNaviPage << 1) | 1, 0, 0, 0, 0, 1);
-    wm_loadTim((u32 *)f[2], 4, 0, 0, 0, 0, 0);
+    wm_loadTim((u32 *)files[2], g_worldNaviPage * 2, 0, 0, 0, 0, 0);
+    wm_loadTim((u32 *)files[2], (g_worldNaviPage << 1) | 1, 0, 0, 0, 0, 1);
+    wm_loadTim((u32 *)files[2], 4, 0, 0, 0, 0, 0);
     g_worldTitleId = -1;
     switch (*g_worldStoryCounterPtr) {
     case 0x960:
@@ -110,11 +110,11 @@ void wm_setupWorldData(void) {
     }
     if (g_worldTitleId != -1) {
         if (g_worldTitleWide == 0) {
-            wm_loadTim((u32 *)f[2], g_worldTitleId * 2 + 5, 0x300, 0x40, 0x280, 0xF4, 0);
-            wm_loadTim((u32 *)f[2], g_worldTitleId * 2 + 6, 0x320, 0x40, 0x290, 0xF4, 0);
+            wm_loadTim((u32 *)files[2], g_worldTitleId * 2 + 5, 0x300, 0x40, 0x280, 0xF4, 0);
+            wm_loadTim((u32 *)files[2], g_worldTitleId * 2 + 6, 0x320, 0x40, 0x290, 0xF4, 0);
         } else {
-            wm_loadTim((u32 *)f[2], g_worldTitleId * 2 + 5, 0x300, 0x40, 0x280, 0xF4, 0);
-            wm_loadTim((u32 *)f[2], g_worldTitleId * 2 + 6, 0x300, 0x60, 0x290, 0xF4, 0);
+            wm_loadTim((u32 *)files[2], g_worldTitleId * 2 + 5, 0x300, 0x40, 0x280, 0xF4, 0);
+            wm_loadTim((u32 *)files[2], g_worldTitleId * 2 + 6, 0x300, 0x60, 0x290, 0xF4, 0);
         }
     }
     for (i = 0x35; i < 0x43; i++) {
@@ -135,7 +135,7 @@ void wm_applyEncounterEvents(void) {
     u16 (*row)[12];
     s32 enabledBits;
     WmEncounter *tbl;
-    u16 v;
+    u16 encNo;
 
     i = 0;
     tbl = g_worldEncounterTable;
@@ -145,9 +145,9 @@ void wm_applyEncounterEvents(void) {
         if ((enabledBits >> i) & 1) {
             j = 0;
             do {
-                v = (*row)[j];
-                if (v != 0xFFFF) {
-                    tbl[v - 1].battle[3] = tbl[v - 1].battle[2];
+                encNo = (*row)[j];
+                if (encNo != 0xFFFF) {
+                    tbl[encNo - 1].battle[3] = tbl[encNo - 1].battle[2];
                 }
                 j++;
             } while (j < 12);
@@ -169,8 +169,8 @@ void wm_applyEncounterEvents(void) {
 }
 
 void wm_drawMap(void) {
-    WmPack *p;
-    MATRIX *o;
+    WmPack *pack;
+    MATRIX *backdropMat;
 
     SetBackColor(g_worldWeatherData.work[0].backColor.c[0], g_worldWeatherData.work[0].backColor.c[2], g_worldWeatherData.work[0].backColor.c[4]);
     SetLightMatrix(&g_worldMapLightMatrix);
@@ -190,30 +190,30 @@ void wm_drawMap(void) {
         }
         SetLightMatrix(&g_worldBackdropLightMatrix);
         SetColorMatrix(&g_worldBackdropColorMatrix);
-        p = w_framePackGetPtr(g_worldDataPack, 0x3B);
+        pack = w_framePackGetPtr(g_worldDataPack, 0x3B);
         m2.t[0] = 0;
         m2.t[1] = 0;
         m2.t[2] = 0;
-        o = &out;
-        CompMatrix(&m1, &m2, o);
-        SetRotMatrix(o);
-        SetTransMatrix(o);
-        wm_drawBackdrop((s32)p->entries[0], 0);
+        backdropMat = &out;
+        CompMatrix(&m1, &m2, backdropMat);
+        SetRotMatrix(backdropMat);
+        SetTransMatrix(backdropMat);
+        wm_drawBackdrop((s32)pack->entries[0], 0);
     }
 }
 
 void wm_updateMap(void) {
-    s32 m;
+    s32 playerType;
     s32 flags;
     s32 i;
     s32 dx;
     s32 dz;
-    s32 d;
+    s32 shake;
     s32 h;
-    s32 v;
+    s32 dist;
 
-    m = g_worldPlayer->actorType;
-    flags = g_worldActorTypeInfo[m].cellAttr;
+    playerType = g_worldPlayer->actorType;
+    flags = g_worldActorTypeInfo[playerType].cellAttr;
     if (g_worldMusicStarted != 0) {
         wm_updateChunks();
         wm_updateVisibleBlocks();
@@ -225,16 +225,16 @@ void wm_updateMap(void) {
         if (g_worldFormFlags[WM_FORM_CLAY] != 0 && i == 0) {
             g_worldAmbientSeDist[0] = 100;
         }
-        v = g_worldAmbientSeDist[i];
+        dist = g_worldAmbientSeDist[i];
         if (i == 0 && g_worldDataSet == WM_DATASET_DISC4) {
             continue;
         }
-        if (v < 0x3F) {
+        if (dist < 0x3F) {
             if (g_worldAmbientSeOn[i] == 0) {
                 g_worldAmbientSeOn[i] = 1;
                 wm_sePlay(g_worldAmbientSe[i], 0);
             } else {
-                dz = 0x7F - v * 2;
+                dz = 0x7F - dist * 2;
                 if (dz > 0) {
                     wm_seSetVolume(g_worldAmbientSe[i], dz);
                 }
@@ -247,25 +247,25 @@ void wm_updateMap(void) {
         }
     }
     if (g_worldAmbientSeDist[2] < 0x28) {
-        d = 0x78 - g_worldAmbientSeDist[2] * 3;
-        if (d != 0 && g_worldMapLoaded != 0) {
-            g_worldCameraTarget[1] += rand() % d - d / 2;
-            g_worldCameraTarget[0] += rand() % d - d / 2;
-            g_worldCameraTarget[2] += rand() % d - d / 2;
+        shake = 0x78 - g_worldAmbientSeDist[2] * 3;
+        if (shake != 0 && g_worldMapLoaded != 0) {
+            g_worldCameraTarget[1] += rand() % shake - shake / 2;
+            g_worldCameraTarget[0] += rand() % shake - shake / 2;
+            g_worldCameraTarget[2] += rand() % shake - shake / 2;
         }
     }
-    if (g_worldAmbientSeDist[1] < 0x22 && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == 0x17 && m - 1 < 7U) {
+    if (g_worldAmbientSeDist[1] < 0x22 && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == 0x17 && playerType - 1 < 7U) {
         g_worldPlayer->pos.vz += (0x22 - g_worldAmbientSeDist[1]) * 8;
         if (g_worldPlayer->pos.vx == g_worldPlayer->prevPos.vx && g_worldPlayer->pos.vz == g_worldPlayer->prevPos.vz) {
             g_worldPlayer->prevPos.vx++;
         }
     }
-    if (g_evtGlobalVars.b[0x66] == 8 || g_evtGlobalVars.b[0x66] == 0) {
+    if (g_evtGlobalVars.b[EVT_GB_WM_FILE] == 8 || g_evtGlobalVars.b[EVT_GB_WM_FILE] == 0) {
         dx = (g_worldPlayer->pos.vx >> 3) - 0x790A;
         dz = (g_worldPlayer->pos.vz >> 3) + 0x5ACB;
-        v = SquareRoot0(dx * dx + ((g_worldPlayer->pos.vy >> 3) + 0x66) * ((g_worldPlayer->pos.vy >> 3) + 0x66) * 8 + dz * dz);
-        if (v < 0x47C) {
-            h = 0x47C - v;
+        dist = SquareRoot0(dx * dx + ((g_worldPlayer->pos.vy >> 3) + 0x66) * ((g_worldPlayer->pos.vy >> 3) + 0x66) * 8 + dz * dz);
+        if (dist < 0x47C) {
+            h = 0x47C - dist;
             if (h > 0x400) {
                 h = 0x400;
             }
@@ -285,7 +285,7 @@ void wm_updateMap(void) {
 /* mark the map cells changed by the story progress */
 void wm_applyStoryForms(void) {
     s32 i;
-    s32 n;
+    s32 form;
     u8 *p;
 
     i = 15;
@@ -302,8 +302,8 @@ void wm_applyStoryForms(void) {
         printf("Scene:%d / Status:%d\n", *g_worldStoryCounterPtr, i);
     }
     if (i >= 0 && g_worldDataSet == WM_DATASET_DISC1) {
-        for (n = 0; n < 7; n++) {
-            switch (g_worldFormStatusTable[n][i]) {
+        for (form = 0; form < 7; form++) {
+            switch (g_worldFormStatusTable[form][i]) {
             case WM_FORM_STATUS(WM_FORM_SGATE):
                 WM_CELL(18, 14) |= 0x80;
                 WM_CELL(17, 12) |= 0x80;
@@ -350,7 +350,7 @@ void wm_applyStoryForms(void) {
             __asm__(".rdata\n\t.word 0\n\t.text");
             /* the debug print switches on the status value but compares it with the form indices */
             if (g_worldMapDebugFlags & WM_DEBUG_FORM) {
-                switch (g_worldFormStatusTable[n][i]) {
+                switch (g_worldFormStatusTable[form][i]) {
                 case WM_FORM_SGATE:
                     printf("BGI Form : SGATE\n");
                     break;
@@ -400,8 +400,8 @@ WmEncounter *wm_getEncounterEntry(void) {
     s32 lo;
     s32 hi;
     s32 i;
-    u32 t;
-    s32 f;
+    u32 topo;
+    s32 fog;
     s32 add;
 
     area = WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr);
@@ -416,12 +416,12 @@ WmEncounter *wm_getEncounterEntry(void) {
         printf("Topograph:%d\n", (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2);
     }
     for (i = lo; i < hi; i++) {
-        t = g_worldEncounterTable[i].topoPattern >> 2;
-        f = g_worldEncounterTable[i].zoneFog & 1;
+        topo = g_worldEncounterTable[i].topoPattern >> 2;
+        fog = g_worldEncounterTable[i].zoneFog & 1;
         if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
-            printf("Matching:%d  ( T:%d / F:%d )\n", i, t, f);
+            printf("Matching:%d  ( T:%d / F:%d )\n", i, topo, fog);
         }
-        if (t == (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 && f == g_worldFog) {
+        if (topo == (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 && fog == g_worldFog) {
             if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
                 printf("Hit %d encount data\n", i);
             }
@@ -437,30 +437,30 @@ WmEncounter *wm_getEncounterEntry(void) {
 }
 
 s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale) {
-    VECTOR v;
-    s32 s;
+    VECTOR camRel;
+    s32 scale;
 
-    v.vx = pos->vx - g_worldCameraEye[0];
-    v.vy = pos->vy - g_worldCameraEye[1];
-    v.vz = pos->vz - g_worldCameraEye[2];
-    if (v.vx > g_worldWidth - 0x8000) {
-        v.vx -= g_worldWidth;
+    camRel.vx = pos->vx - g_worldCameraEye[0];
+    camRel.vy = pos->vy - g_worldCameraEye[1];
+    camRel.vz = pos->vz - g_worldCameraEye[2];
+    if (camRel.vx > g_worldWidth - 0x8000) {
+        camRel.vx -= g_worldWidth;
     }
-    if (v.vz > g_worldDepth - 0x8000) {
-        v.vz -= g_worldDepth;
+    if (camRel.vz > g_worldDepth - 0x8000) {
+        camRel.vz -= g_worldDepth;
     }
-    if (v.vx < 0x8000 - g_worldWidth) {
-        v.vx = g_worldWidth + v.vx;
+    if (camRel.vx < 0x8000 - g_worldWidth) {
+        camRel.vx = g_worldWidth + camRel.vx;
     }
-    if (v.vz < 0x8000 - g_worldDepth) {
-        v.vz = g_worldDepth + v.vz;
+    if (camRel.vz < 0x8000 - g_worldDepth) {
+        camRel.vz = g_worldDepth + camRel.vz;
     }
-    ApplyMatrixLV(g_worldViewMatrix, &v, outView);
-    s = 0x1000 - ((outView->vz >> 4) + (outView->vz >> 6));
-    v.vy = ((pos->vy * s) >> 12) - g_worldCameraEye[1];
-    ApplyMatrixLV(g_worldViewMatrix, &v, outView);
+    ApplyMatrixLV(g_worldViewMatrix, &camRel, outView);
+    scale = 0x1000 - ((outView->vz >> 4) + (outView->vz >> 6));
+    camRel.vy = ((pos->vy * scale) >> 12) - g_worldCameraEye[1];
+    ApplyMatrixLV(g_worldViewMatrix, &camRel, outView);
     outRel->vx = pos->vx - g_worldCameraTarget[0];
-    outRel->vy = ((pos->vy * s) >> 12) - g_worldCameraTarget[1];
+    outRel->vy = ((pos->vy * scale) >> 12) - g_worldCameraTarget[1];
     outRel->vz = pos->vz - g_worldCameraTarget[2];
     if (outRel->vx > 0xFFFF) {
         outRel->vx -= 0x60000;
@@ -475,7 +475,7 @@ s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale) 
         outRel->vz += 0x50000;
     }
     if (outScale != NULL) {
-        *outScale = s;
+        *outScale = scale;
     }
     if (outRel->vx < -0x8000 || outRel->vx > 0x7FFF || outRel->vz > 0x7FFF || outRel->vz < -0x8000) {
         return 0;
@@ -593,21 +593,21 @@ void wm_chunkListInit(void) {
 }
 
 void wm_updateChunks(void) {
-    s32 t;
-    s32 a;
-    s32 b;
+    s32 speed;
+    s32 cell;
+    s32 chunk;
 
     if (g_worldMoveMode < WM_MOVE_FAST_WALK) {
         if (g_worldMoveMode >= WM_MOVE_HILDA_GARDE) {
-            t = g_worldPlayerSpeed;
-            if (t >= 0x200) {
-                t = 0x1FF;
+            speed = g_worldPlayerSpeed;
+            if (speed >= 0x200) {
+                speed = 0x1FF;
             }
-            if (t < 0x100) {
-                t = 0x100;
+            if (speed < 0x100) {
+                speed = 0x100;
             }
-            g_worldChunkLookPos[0] = g_worldCameraEye[0] + ((g_worldCameraDir[0] * g_worldMoveModeInfo->lookAhead * t) >> 9);
-            g_worldChunkLookPos[2] = g_worldCameraEye[2] + ((g_worldCameraDir[2] * g_worldMoveModeInfo->lookAhead * t) >> 9);
+            g_worldChunkLookPos[0] = g_worldCameraEye[0] + ((g_worldCameraDir[0] * g_worldMoveModeInfo->lookAhead * speed) >> 9);
+            g_worldChunkLookPos[2] = g_worldCameraEye[2] + ((g_worldCameraDir[2] * g_worldMoveModeInfo->lookAhead * speed) >> 9);
         } else {
             g_worldChunkLookPos[0] = g_worldCameraEye[0] + g_worldCameraDir[0] * g_worldMoveModeInfo->lookAhead;
             g_worldChunkLookPos[2] = g_worldCameraEye[2] + g_worldCameraDir[2] * g_worldMoveModeInfo->lookAhead;
@@ -617,13 +617,13 @@ void wm_updateChunks(void) {
         g_worldChunkLookPos[2] = g_worldCameraEye[2] + g_worldCameraDir[2] * g_worldMoveModeInfo->lookAhead;
     }
     wm_wrapPos(&g_worldChunkLookPos[0], &g_worldChunkLookPos[2]);
-    wm_posToCell(g_worldChunkLookPos[0] - 0x6000, g_worldChunkLookPos[2] + 0x6000, &a);
-    wm_cellToChunk(a, &b);
-    if (b != g_worldChunkCenter) {
-        wm_requestChunks(b);
+    wm_posToCell(g_worldChunkLookPos[0] - 0x6000, g_worldChunkLookPos[2] + 0x6000, &cell);
+    wm_cellToChunk(cell, &chunk);
+    if (chunk != g_worldChunkCenter) {
+        wm_requestChunks(chunk);
     }
     wm_readChunks();
-    g_worldChunkCenter = b;
+    g_worldChunkCenter = chunk;
 }
 
 void wm_requestChunks(s32 chunk) {
@@ -631,50 +631,50 @@ void wm_requestChunks(s32 chunk) {
     s32 x;
     s32 z;
     s32 id;
-    s32 n;
+    s32 missCount;
     s32 i;
     s32 j;
     s32 k;
-    WmChunkSlot *p;
+    WmChunkSlot *slot;
     WmChunkSlot *h;
-    u8 c;
+    u8 chunkFlags;
 
-    n = 0;
+    missCount = 0;
     h = &g_worldChunkHead;
     wm_chunkToPos(chunk, &x, &z);
     for (j = 0; j < 4; j++) {
         for (i = 0; i < 4; i++) {
             wm_posToChunk(x + (i << 14), z - (j << 14), &id);
-            p = h->next;
-            for (k = 0; k < 16; k++, p = p->next) {
-                if (p->chunkId == id) {
-                    c = g_worldChunkFlags[p->chunkId];
-                    if (c & 0x3F) {
-                        w_readtxRequest(c);
+            slot = h->next;
+            for (k = 0; k < 16; k++, slot = slot->next) {
+                if (slot->chunkId == id) {
+                    chunkFlags = g_worldChunkFlags[slot->chunkId];
+                    if (chunkFlags & 0x3F) {
+                        w_readtxRequest(chunkFlags);
                     }
-                    p->prev->next = p->next;
-                    p->next->prev = p->prev;
-                    p->next = h->next;
-                    p->prev = h;
-                    h->next->prev = p;
-                    h->next = p;
+                    slot->prev->next = slot->next;
+                    slot->next->prev = slot->prev;
+                    slot->next = h->next;
+                    slot->prev = h;
+                    h->next->prev = slot;
+                    h->next = slot;
                     break;
                 }
             }
             if (k == 16) {
-                missing[n++] = id;
+                missing[missCount++] = id;
             }
         }
     }
-    for (k = 0; k < n; k++) {
+    for (k = 0; k < missCount; k++) {
         if (k == 4) {
             g_worldChunkGeneration++;
     g_worldChunkGeneration %= 4;
         }
         wm_chunkRequest(missing[k]);
-        c = g_worldChunkFlags[missing[k]];
-        if (c & 0x3F) {
-            w_readtxRequest(c);
+        chunkFlags = g_worldChunkFlags[missing[k]];
+        if (chunkFlags & 0x3F) {
+            w_readtxRequest(chunkFlags);
         }
     }
     wm_chunkListCompact();
@@ -686,63 +686,63 @@ void wm_requestChunks(s32 chunk) {
 /* request texture pack chunkId: reuse a free or matching slot and move it behind the loaded ones */
 s32 wm_chunkRequest(s16 chunkId) {
     WmChunkSlot *prev;
-    WmChunkSlot *p;
-    u32 n;
+    WmChunkSlot *slot;
+    u32 slotIdx;
 
-    n = 0;
+    slotIdx = 0;
     prev = &g_worldChunkHead;
     while (prev->next->state == WM_CHUNK_READING) {
         if (prev->next->chunkId == chunkId) {
             return 0;
         }
         prev = prev->next;
-        n++;
+        slotIdx++;
     }
-    p = prev->next;
+    slot = prev->next;
     do {
-        if (p->chunkId == -1) {
-            if (n >= 16) {
-                p->chunkId = chunkId;
-                p->prev->next = p->next;
-                p->next->prev = p->prev;
-                p->next = prev->next;
-                p->prev = prev;
+        if (slot->chunkId == -1) {
+            if (slotIdx >= 16) {
+                slot->chunkId = chunkId;
+                slot->prev->next = slot->next;
+                slot->next->prev = slot->prev;
+                slot->next = prev->next;
+                slot->prev = prev;
                 g_worldChunkListDirty++;
-                prev->next->prev = p;
-                prev->next = p;
+                prev->next->prev = slot;
+                prev->next = slot;
             } else {
-                p->chunkId = chunkId;
-                p->state = WM_CHUNK_WANTED;
+                slot->chunkId = chunkId;
+                slot->state = WM_CHUNK_WANTED;
             }
             break;
         }
-        if (p->chunkId == chunkId) {
-            p->prev->next = p->next;
-            p->next->prev = p->prev;
-            p->next = prev->next;
-            p->prev = prev;
-            prev->next->prev = p;
-            prev->next = p;
+        if (slot->chunkId == chunkId) {
+            slot->prev->next = slot->next;
+            slot->next->prev = slot->prev;
+            slot->next = prev->next;
+            slot->prev = prev;
+            prev->next->prev = slot;
+            prev->next = slot;
             break;
         }
-        p = p->next;
-        n++;
-    } while (p != &g_worldChunkTail);
-    if (p != &g_worldChunkTail) {
-        p->generation = g_worldChunkGeneration;
+        slot = slot->next;
+        slotIdx++;
+    } while (slot != &g_worldChunkTail);
+    if (slot != &g_worldChunkTail) {
+        slot->generation = g_worldChunkGeneration;
     }
-    return n != 32;
+    return slotIdx != 32;
 }
 
 void wm_readChunks(void) {
-    WmChunkEntry a;
-    WmChunkEntry b;
-    WmChunkSlot *n;
+    WmChunkEntry baseEntry;
+    WmChunkEntry formEntry;
+    WmChunkSlot *slot;
     u8 *cell;
     s32 id;
     s16 id2;
     s32 i;
-    s32 r;
+    s32 texBuf;
     s32 base;
     WmChunkSlot *h;
 
@@ -752,48 +752,48 @@ void wm_readChunks(void) {
             goto end;
         }
         for (i = 0; i < g_worldChunkRunCount[g_worldChunkRunSlot]; i++) {
-            n = g_worldChunkRun[i];
+            slot = g_worldChunkRun[i];
             h = &g_worldChunkHead;
-            id2 = n->chunkId;
-            id = n->chunkId;
-            n->prev->next = n->next;
-            n->next->prev = n->prev;
-            n->next = h->next;
-            n->prev = &g_worldChunkHead;
+            id2 = slot->chunkId;
+            id = slot->chunkId;
+            slot->prev->next = slot->next;
+            slot->next->prev = slot->prev;
+            slot->next = h->next;
+            slot->prev = &g_worldChunkHead;
             cell = &g_worldChunkFlags[id];
-            h->next->prev = n;
-            h->next = n;
-            n->state = WM_CHUNK_READING;
+            h->next->prev = slot;
+            h->next = slot;
+            slot->state = WM_CHUNK_READING;
             if (g_worldChunkRunDir[g_worldChunkRunSlot] == 1) {
-                wm_getChunkEntry(id, 0, &a);
-                wm_getChunkEntry(id, 1, &b);
+                wm_getChunkEntry(id, 0, &baseEntry);
+                wm_getChunkEntry(id, 1, &formEntry);
             } else {
-                wm_getChunkEntryT(id, 0, &a);
-                wm_getChunkEntryT(id, 1, &b);
+                wm_getChunkEntryT(id, 0, &baseEntry);
+                wm_getChunkEntryT(id, 1, &formEntry);
             }
-            if ((*cell & 0x80) && b.packSectors == 0) {
+            if ((*cell & 0x80) && formEntry.packSectors == 0) {
                 if (g_worldMapDebugFlags & WM_DEBUG_FORM) {
                     printf(s_wmStrBlockNoForm, id2);
                 }
                 *cell &= 0x7F;
             }
-            r = (*cell & 0x3F) ? wm_readtxFind(*cell, 0) : 0;
-            n->hasData = 1;
+            texBuf = (*cell & 0x3F) ? wm_readtxFind(*cell, 0) : 0;
+            slot->hasData = 1;
             if (!(*cell & 0x80)) {
-                g_worldChunkReadReqs[i * 4 + 0].size = a.packSectors << 11;
-                g_worldChunkReadReqs[i * 4 + 0].dest = n->pack;
-                g_worldChunkReadReqs[i * 4 + 1].size = a.texSectors << 11;
-                g_worldChunkReadReqs[i * 4 + 1].dest = (void *)r;
-                g_worldChunkReadReqs[i * 4 + 2].size = b.packSectors << 11;
+                g_worldChunkReadReqs[i * 4 + 0].size = baseEntry.packSectors << 11;
+                g_worldChunkReadReqs[i * 4 + 0].dest = slot->pack;
+                g_worldChunkReadReqs[i * 4 + 1].size = baseEntry.texSectors << 11;
+                g_worldChunkReadReqs[i * 4 + 1].dest = (void *)texBuf;
+                g_worldChunkReadReqs[i * 4 + 2].size = formEntry.packSectors << 11;
                 g_worldChunkReadReqs[i * 4 + 2].dest = NULL;
-                g_worldChunkReadReqs[i * 4 + 3].size = b.texSectors << 11;
+                g_worldChunkReadReqs[i * 4 + 3].size = formEntry.texSectors << 11;
                 g_worldChunkReadReqs[i * 4 + 3].dest = NULL;
                 if (g_worldChunkReadReqs[i * 4 + 1].size == 0) {
                     g_worldChunkReadReqs[i * 4 + 1].dest = NULL;
                 }
                 if (g_worldChunkReadReqs[i * 4 + 0].size == 0) {
                     g_worldChunkReadReqs[i * 4 + 0].dest = NULL;
-                    n->hasData = 0;
+                    slot->hasData = 0;
                     g_worldChunkRunPacks[i] = NULL;
                     g_worldChunkRunTex[i] = NULL;
                 } else {
@@ -801,20 +801,20 @@ void wm_readChunks(void) {
                     g_worldChunkRunTex[i] = g_worldChunkReadReqs[i * 4 + 1].dest;
                 }
             } else {
-                g_worldChunkReadReqs[i * 4 + 0].size = a.packSectors << 11;
+                g_worldChunkReadReqs[i * 4 + 0].size = baseEntry.packSectors << 11;
                 g_worldChunkReadReqs[i * 4 + 0].dest = NULL;
-                g_worldChunkReadReqs[i * 4 + 1].size = a.texSectors << 11;
+                g_worldChunkReadReqs[i * 4 + 1].size = baseEntry.texSectors << 11;
                 g_worldChunkReadReqs[i * 4 + 1].dest = NULL;
-                g_worldChunkReadReqs[i * 4 + 2].size = b.packSectors << 11;
-                g_worldChunkReadReqs[i * 4 + 2].dest = n->pack;
-                g_worldChunkReadReqs[i * 4 + 3].size = b.texSectors << 11;
-                g_worldChunkReadReqs[i * 4 + 3].dest = (void *)r;
+                g_worldChunkReadReqs[i * 4 + 2].size = formEntry.packSectors << 11;
+                g_worldChunkReadReqs[i * 4 + 2].dest = slot->pack;
+                g_worldChunkReadReqs[i * 4 + 3].size = formEntry.texSectors << 11;
+                g_worldChunkReadReqs[i * 4 + 3].dest = (void *)texBuf;
                 if (g_worldChunkReadReqs[i * 4 + 3].size == 0) {
                     g_worldChunkReadReqs[i * 4 + 3].dest = NULL;
                 }
                 if (g_worldChunkReadReqs[i * 4 + 2].size == 0) {
                     g_worldChunkReadReqs[i * 4 + 2].dest = NULL;
-                    n->hasData = 0;
+                    slot->hasData = 0;
                     g_worldChunkRunPacks[i] = NULL;
                     g_worldChunkRunTex[i] = NULL;
                 } else {
@@ -824,10 +824,10 @@ void wm_readChunks(void) {
             }
         }
         if (g_worldChunkRunDir[g_worldChunkRunSlot] == 1) {
-            wm_getChunkEntry(g_worldChunkRun[0]->chunkId, 0, &a);
+            wm_getChunkEntry(g_worldChunkRun[0]->chunkId, 0, &baseEntry);
             base = g_worldImageSectors[3];
         } else {
-            wm_getChunkEntryT(g_worldChunkRun[0]->chunkId, 0, &a);
+            wm_getChunkEntryT(g_worldChunkRun[0]->chunkId, 0, &baseEntry);
             base = g_worldImageSectors[4];
         }
         g_worldChunkReadCount = 0;
@@ -839,7 +839,7 @@ void wm_readChunks(void) {
         }
         g_worldCdUser = WM_CD_CHUNKS;
         if (g_worldChunkReadCount != 0) {
-            cd_readChunks(a.sector + base, g_worldChunkReadList, g_worldChunkReadCount, 0);
+            cd_readChunks(baseEntry.sector + base, g_worldChunkReadList, g_worldChunkReadCount, 0);
         }
     }
 end:
@@ -850,13 +850,13 @@ end:
 
 u8 wm_findChunkRun(WmChunkSlot **out, s32 *count, s32 *dir) {
     WmChunkSlot *h[10];
-    WmChunkSlot *v[10];
+    WmChunkSlot *vertRun[10];
     s32 hhi;
     s32 hlo;
     s32 vhi;
     s32 vlo;
     s32 i;
-    WmChunkSlot *p;
+    WmChunkSlot *slot;
 
     hhi = 4;
     hlo = 4;
@@ -864,26 +864,26 @@ u8 wm_findChunkRun(WmChunkSlot **out, s32 *count, s32 *dir) {
     *count = 0;
     vhi = 4;
     vlo = 4;
-    for (p = g_worldChunkHead.next; p->pack != NULL; p = p->next) {
-        if (p->state == WM_CHUNK_WANTED && p->chunkId != -1 && p->generation == g_worldChunkRunGeneration) {
-            h[hlo] = p;
-            h[hhi] = p;
-            v[vlo] = p;
-            v[vhi] = p;
+    for (slot = g_worldChunkHead.next; slot->pack != NULL; slot = slot->next) {
+        if (slot->state == WM_CHUNK_WANTED && slot->chunkId != -1 && slot->generation == g_worldChunkRunGeneration) {
+            h[hlo] = slot;
+            h[hhi] = slot;
+            vertRun[vlo] = slot;
+            vertRun[vhi] = slot;
             for (i = 0; i < 4; i++) {
-                for (p = g_worldChunkHead.next; p->pack != NULL; p = p->next) {
-                    if (p->state == WM_CHUNK_WANTED) {
-                        if (h[hlo]->chunkId - 1 == p->chunkId) {
-                            h[--hlo] = p;
+                for (slot = g_worldChunkHead.next; slot->pack != NULL; slot = slot->next) {
+                    if (slot->state == WM_CHUNK_WANTED) {
+                        if (h[hlo]->chunkId - 1 == slot->chunkId) {
+                            h[--hlo] = slot;
                         }
-                        if (h[hhi]->chunkId + 1 == p->chunkId) {
-                            h[++hhi] = p;
+                        if (h[hhi]->chunkId + 1 == slot->chunkId) {
+                            h[++hhi] = slot;
                         }
-                        if (v[vlo]->chunkId - 24 == p->chunkId) {
-                            v[--vlo] = p;
+                        if (vertRun[vlo]->chunkId - 24 == slot->chunkId) {
+                            vertRun[--vlo] = slot;
                         }
-                        if (v[vhi]->chunkId + 24 == p->chunkId) {
-                            v[++vhi] = p;
+                        if (vertRun[vhi]->chunkId + 24 == slot->chunkId) {
+                            vertRun[++vhi] = slot;
                         }
                     }
                 }
@@ -891,7 +891,7 @@ u8 wm_findChunkRun(WmChunkSlot **out, s32 *count, s32 *dir) {
             if (hhi - hlo < vhi - vlo) {
                 *dir = 24;
                 for (i = vlo; i <= vhi; i++) {
-                    out[(*count)++] = v[i];
+                    out[(*count)++] = vertRun[i];
                 }
             } else {
                 *dir = 1;
@@ -948,29 +948,29 @@ void wm_updateTextureLists(void) {
 }
 
 void wm_chunkListCompact(void) {
-    WmChunkSlot *a;
-    WmChunkSlot *b;
+    WmChunkSlot *dst;
+    WmChunkSlot *src;
     u32 i;
 
     if (g_worldChunkListDirty != 0) {
-        b = g_worldChunkHead.next;
+        src = g_worldChunkHead.next;
         g_worldChunkListDirty = 0;
-        a = b;
+        dst = src;
         for (i = 0; i < 16; i++) {
-            b = b->next;
+            src = src->next;
         }
         while (1) {
-            if (b == &g_worldChunkTail) {
+            if (src == &g_worldChunkTail) {
                 break;
             }
-            while (a->pack != 0) {
-                a = a->next;
+            while (dst->pack != 0) {
+                dst = dst->next;
             }
-            a->pack = b->pack;
-            b->pack = 0;
-            b->chunkId = -1;
-            b->state = 0;
-            b = b->next;
+            dst->pack = src->pack;
+            src->pack = 0;
+            src->chunkId = -1;
+            src->state = 0;
+            src = src->next;
         }
     }
 }
@@ -1018,14 +1018,14 @@ void wm_blockListInit(void) {
 }
 
 void wm_drawBlocks(void) {
-    WmBlockNode *n;
+    WmBlockNode *node;
     WmBlockPos *pos;
-    MATRIX m;
+    MATRIX mat;
     WmQuad quad = g_worldBlockBackQuad;
     long sxy[4];
-    VECTOR a;
-    VECTOR b;
-    long p;
+    VECTOR relPos;
+    VECTOR viewPos;
+    long interp;
     long flag;
     long xy3;
     u8 snd;
@@ -1034,21 +1034,21 @@ void wm_drawBlocks(void) {
     u32 *ot;
     POLY_F4 *f4;
 
-    n = g_worldBlockHead.next;
-    while (n->cell != -1) {
-        pos = n->pos;
+    node = g_worldBlockHead.next;
+    while (node->cell != -1) {
+        pos = node->pos;
         g_worldBlockMatrix.t[0] = pos->pos[0] - g_worldCameraTarget[0];
         g_worldBlockMatrix.t[1] = pos->pos[1] - g_worldCameraTarget[1];
         g_worldBlockMatrix.t[2] = pos->pos[2] - g_worldCameraTarget[2];
-        CompMatrix(g_worldViewMatrix, &g_worldBlockMatrix, &m);
-        SetRotMatrix(&m);
-        SetTransMatrix(&m);
-        wm_worldToView((VECTOR *)pos, &a, &b, 0);
-        far = b.vz < -10000 || b.vz > 11000;
-        k = n->cell % g_worldCellsW + n->cell / g_worldCellsW;
-        if (n->state == WM_BLOCK_SET) {
-            wm_drawBlock((u8 *)n->block, (n->cell % g_worldCellsW + n->cell / g_worldCellsW) % 2, far);
-            if (RotTransPers4(&quad.v[0], &quad.v[1], &quad.v[2], &quad.v[3], &sxy[0], &sxy[1], &sxy[2], &sxy[3], &p, &flag) < 7000
+        CompMatrix(g_worldViewMatrix, &g_worldBlockMatrix, &mat);
+        SetRotMatrix(&mat);
+        SetTransMatrix(&mat);
+        wm_worldToView((VECTOR *)pos, &relPos, &viewPos, 0);
+        far = viewPos.vz < -10000 || viewPos.vz > 11000;
+        k = node->cell % g_worldCellsW + node->cell / g_worldCellsW;
+        if (node->state == WM_BLOCK_SET) {
+            wm_drawBlock((u8 *)node->block, (node->cell % g_worldCellsW + node->cell / g_worldCellsW) % 2, far);
+            if (RotTransPers4(&quad.v[0], &quad.v[1], &quad.v[2], &quad.v[3], &sxy[0], &sxy[1], &sxy[2], &sxy[3], &interp, &flag) < 7000
                 && g_worldPlayer->pos.vy > -7000) {
                 f4 = (POLY_F4 *)g_worldPrimPtr;
                 ot = (u32 *)g_worldOt[*g_worldBufIndex];
@@ -1065,13 +1065,13 @@ void wm_drawBlocks(void) {
                 g_worldPrimPtr = (s32)f4;
             }
         }
-        if (n->block != NULL) {
-            snd = n->block->fxId;
+        if (node->block != NULL) {
+            snd = node->block->fxId;
             if (snd != 0) {
                 wm_drawBlockFx(snd);
             }
         }
-        n = n->next;
+        node = node->next;
     }
 }
 
@@ -1081,16 +1081,16 @@ void wm_updateVisibleBlocks(void) {
     s16 sx[20];
     s16 sy[20];
     s32 z[20];
-    VECTOR d;
+    VECTOR delta;
     WmNearCell swap;
-    MATRIX m;
+    MATRIX mat;
     SVECTOR sv;
     VECTOR out;
     s32 cell;
     long flag;
-    long p;
+    long interp;
     long sxy;
-    s32 n;
+    s32 nearCount;
     s32 i;
     s32 j;
     s32 k;
@@ -1099,18 +1099,18 @@ void wm_updateVisibleBlocks(void) {
     s32 cnt2;
     s32 last;
     s32 id;
-    WmBlock *e;
+    WmBlock *cellBlock;
     SVECTOR *verts;
-    WmScrRect *r;
-    WmNearCell *c;
+    WmScrRect *scrRect;
+    WmNearCell *nearCell;
     WmBlockNode *nd;
     s32 lim;
-    s32 t;
+    s32 prevIdx;
 
     pos.vy = 0;
     wm_blockListInit();
     pen_locate(10, 10);
-    n = 0;
+    nearCount = 0;
     if (g_worldMoveMode < WM_MOVE_CHOCOBO_FLY) {
         if (g_worldPlayer->pos.vy >= -0x9C3) {
             g_worldBlockCullRects[1].y0 = g_worldBlockCullRects[0].y0 = -0x3C;
@@ -1122,17 +1122,17 @@ void wm_updateVisibleBlocks(void) {
         for (i = -3; i < 4; i++) {
             wm_posToCell(g_worldCameraTarget[0] + (i << 13) + g_worldCameraDir[0] * 2,
                           g_worldCameraTarget[2] - (j << 13) + g_worldCameraDir[2] * 2, &cell);
-            e = (WmBlock *)wm_getCellBlock(cell, NULL);
-            if (e != NULL) {
+            cellBlock = (WmBlock *)wm_getCellBlock(cell, NULL);
+            if (cellBlock != NULL) {
                 wm_cellToPos(cell, &pos.vx, &pos.vz);
                 g_worldBlockMatrix.t[0] = pos.vx - g_worldCameraTarget[0];
                 g_worldBlockMatrix.t[1] = pos.vy - g_worldCameraTarget[1];
                 g_worldBlockMatrix.t[2] = pos.vz - g_worldCameraTarget[2];
-                CompMatrix(g_worldViewMatrix, &g_worldBlockMatrix, &m);
-                SetRotMatrix(&m);
-                SetTransMatrix(&m);
+                CompMatrix(g_worldViewMatrix, &g_worldBlockMatrix, &mat);
+                SetRotMatrix(&mat);
+                SetTransMatrix(&mat);
                 hit = 0;
-                if (m.t[2] >= -0x1D4B) {
+                if (mat.t[2] >= -0x1D4B) {
                     k = (wm_getCameraViewState() == 0) * 2;
                     if (g_worldMoveModeInfo->controlType == WM_CTRL_FLY) {
                         k += 4;
@@ -1140,12 +1140,12 @@ void wm_updateVisibleBlocks(void) {
                     if (g_worldMoveModeInfo->controlType == WM_CTRL_STEER) {
                         k += 8;
                     }
-                    verts = e->verts;
-                    for (cnt = 0; cnt < e->outlineCount; cnt++) {
-                        sv = verts[e->outline[cnt]];
+                    verts = cellBlock->verts;
+                    for (cnt = 0; cnt < cellBlock->outlineCount; cnt++) {
+                        sv = verts[cellBlock->outline[cnt]];
                         RotTrans(&sv, &out, &flag);
                         sv.vy = sv.vy * (0x1000 - (out.vz >> 4)) >> 12;
-                        z[cnt] = RotTransPers(&sv, &sxy, &p, &flag);
+                        z[cnt] = RotTransPers(&sv, &sxy, &interp, &flag);
                         sy[cnt] = (u32)sxy >> 16;
                         sx[cnt] = sxy;
                         if (z[cnt] < 0x898) {
@@ -1163,35 +1163,35 @@ void wm_updateVisibleBlocks(void) {
                     p2.vx = pos.vx + 0x1000;
                     p2.vy = pos.vy;
                     p2.vz = pos.vz - 0x1000;
-                    d.vx = p2.vx - g_worldCameraEye[0];
-                    d.vz = p2.vz - g_worldCameraEye[2];
-                    if (d.vx > 0xFFFF) {
-                        d.vx -= g_worldWidth;
+                    delta.vx = p2.vx - g_worldCameraEye[0];
+                    delta.vz = p2.vz - g_worldCameraEye[2];
+                    if (delta.vx > 0xFFFF) {
+                        delta.vx -= g_worldWidth;
                     }
-                    if (d.vx < -0xFFFF) {
-                        d.vx += g_worldWidth;
+                    if (delta.vx < -0xFFFF) {
+                        delta.vx += g_worldWidth;
                     }
-                    if (d.vz > 0xFFFF) {
-                        d.vz -= g_worldDepth;
+                    if (delta.vz > 0xFFFF) {
+                        delta.vz -= g_worldDepth;
                     }
-                    if (d.vz < -0xFFFF) {
-                        d.vz += g_worldDepth;
+                    if (delta.vz < -0xFFFF) {
+                        delta.vz += g_worldDepth;
                     }
-                    g_worldNearCells[n].dist = SquareRoot0((d.vx >> 2) * (d.vx >> 2) + (d.vz >> 2) * (d.vz >> 2));
-                    g_worldNearCells[n].block = e;
-                    g_worldNearCells[n].cell = cell;
-                    n++;
+                    g_worldNearCells[nearCount].dist = SquareRoot0((delta.vx >> 2) * (delta.vx >> 2) + (delta.vz >> 2) * (delta.vz >> 2));
+                    g_worldNearCells[nearCount].block = cellBlock;
+                    g_worldNearCells[nearCount].cell = cell;
+                    nearCount++;
                 }
             }
         }
     }
-    for (j = 0; j < n - 1; j++) {
-        for (i = n - 1; j < i; i = t) {
-            t = i - 1;
-            if (g_worldNearCells[t].dist > g_worldNearCells[i].dist) {
+    for (j = 0; j < nearCount - 1; j++) {
+        for (i = nearCount - 1; j < i; i = prevIdx) {
+            prevIdx = i - 1;
+            if (g_worldNearCells[prevIdx].dist > g_worldNearCells[i].dist) {
                 swap = g_worldNearCells[i];
-                g_worldNearCells[i] = g_worldNearCells[t];
-                g_worldNearCells[t] = swap;
+                g_worldNearCells[i] = g_worldNearCells[prevIdx];
+                g_worldNearCells[prevIdx] = swap;
             }
         }
     }
@@ -1202,12 +1202,12 @@ void wm_updateVisibleBlocks(void) {
     if (g_worldFog == 0) {
         lim++;
     }
-    if (lim < n) {
-        n = lim;
+    if (lim < nearCount) {
+        nearCount = lim;
     }
     cnt2 = 0;
     last = -1;
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < nearCount; i++) {
         id = g_worldNearCells[i].block->texArea;
         wm_blockListRequest(g_worldNearCells[i].cell);
         if (id != 0) {
@@ -1230,9 +1230,9 @@ void wm_updateVisibleBlocks(void) {
     g_worldClutAnimFx2 = 0;
     while (nd->cell != -1) {
         {
-            u8 s = nd->block->fxId;
-            if (s != 0) {
-                wm_updateBlockFx(s);
+            u8 fx = nd->block->fxId;
+            if (fx != 0) {
+                wm_updateBlockFx(fx);
             }
         }
         nd = nd->next;
@@ -1240,82 +1240,82 @@ void wm_updateVisibleBlocks(void) {
 }
 
 s32 wm_blockListRequest(s16 cell) {
-    WmBlockNode *n = g_worldBlockHead.next;
+    WmBlockNode *node = g_worldBlockHead.next;
     u32 i = 0;
 
     do {
-        if (n->cell == -1) {
+        if (node->cell == -1) {
             if (i >= 20) {
-                n->cell = cell;
-                n->prev->next = n->next;
-                n->next->prev = n->prev;
-                n->next = g_worldBlockHead.next;
-                n->prev = &g_worldBlockHead;
+                node->cell = cell;
+                node->prev->next = node->next;
+                node->next->prev = node->prev;
+                node->next = g_worldBlockHead.next;
+                node->prev = &g_worldBlockHead;
                 g_worldBlockListDirty++;
-                g_worldBlockHead.next->prev = n;
-                g_worldBlockHead.next = n;
+                g_worldBlockHead.next->prev = node;
+                g_worldBlockHead.next = node;
             } else {
-                n->cell = cell;
-                n->state = WM_BLOCK_NONE;
+                node->cell = cell;
+                node->state = WM_BLOCK_NONE;
             }
             break;
         }
-        if (n->cell == cell) {
-            n->prev->next = n->next;
-            n->next->prev = n->prev;
-            n->next = g_worldBlockHead.next;
-            n->prev = &g_worldBlockHead;
-            g_worldBlockHead.next->prev = n;
-            g_worldBlockHead.next = n;
+        if (node->cell == cell) {
+            node->prev->next = node->next;
+            node->next->prev = node->prev;
+            node->next = g_worldBlockHead.next;
+            node->prev = &g_worldBlockHead;
+            g_worldBlockHead.next->prev = node;
+            g_worldBlockHead.next = node;
             break;
         }
-        n = n->next;
+        node = node->next;
         i++;
     } while (i < 40);
     return i != 40;
 }
 
 void wm_blockListResolve(void) {
-    WmBlockNode *n;
-    WmChunkSlot *p;
+    WmBlockNode *node;
+    WmChunkSlot *slot;
     u32 i;
     u32 j;
     s32 id;
-    s16 m;
+    s16 colParity;
     s32 k;
 
-    n = g_worldBlockHead.next;
-    for (i = 0; i < 20; i++, n = n->next) {
-        if (n->cell < 0) {
+    node = g_worldBlockHead.next;
+    for (i = 0; i < 20; i++, node = node->next) {
+        if (node->cell < 0) {
             return;
         }
-        wm_cellToChunk(n->cell, &id);
-        n->state = WM_BLOCK_NONE;
-        p = g_worldChunkHead.next;
-        for (j = 0; j < 16; j++, p = p->next) {
-            if (id == p->chunkId) {
-                if (p->state == WM_CHUNK_READY) {
-                    n->state = WM_BLOCK_SET;
-                    wm_cellToPos(n->cell, &n->pos->pos[0], &n->pos->pos[2]);
-                    n->pos->pos[1] = 0;
-                    m = n->cell % 2;
-                    k = m + (n->cell / g_worldCellsW) % 2 * 2;
-                    if (p->hasData != 0) {
-                        n->block = p->pack->blocks[k];
-                        n->block->texArea = p->pack->texArea;
+        wm_cellToChunk(node->cell, &id);
+        node->state = WM_BLOCK_NONE;
+        slot = g_worldChunkHead.next;
+        for (j = 0; j < 16; j++, slot = slot->next) {
+            if (id == slot->chunkId) {
+                if (slot->state == WM_CHUNK_READY) {
+                    node->state = WM_BLOCK_SET;
+                    wm_cellToPos(node->cell, &node->pos->pos[0], &node->pos->pos[2]);
+                    node->pos->pos[1] = 0;
+                    colParity = node->cell % 2;
+                    k = colParity + (node->cell / g_worldCellsW) % 2 * 2;
+                    if (slot->hasData != 0) {
+                        node->block = slot->pack->blocks[k];
+                        node->block->texArea = slot->pack->texArea;
                     } else {
-                        n->block = g_worldDefaultBlocks->blocks[k];
-                        n->block->texArea = 0;
+                        node->block = g_worldDefaultBlocks->blocks[k];
+                        node->block->texArea = 0;
                     }
                     break;
                 }
-                n->state = WM_BLOCK_SET;
-                n->pos->pos[1] = 0;
-                m = n->cell % 2;
-                k = m + (n->cell / g_worldCellsW) % 2 * 2;
-                wm_cellToPos(n->cell, &n->pos->pos[0], &n->pos->pos[2]);
-                n->block = g_worldDefaultBlocks->blocks[k];
-                n->block->texArea = 0;
+                node->state = WM_BLOCK_SET;
+                node->pos->pos[1] = 0;
+                colParity = node->cell % 2;
+                k = colParity + (node->cell / g_worldCellsW) % 2 * 2;
+                wm_cellToPos(node->cell, &node->pos->pos[0], &node->pos->pos[2]);
+                node->block = g_worldDefaultBlocks->blocks[k];
+                node->block->texArea = 0;
             }
         }
     }
@@ -1324,21 +1324,21 @@ void wm_blockListResolve(void) {
 s32 wm_getCellBlock(s16 cell, u8 *outMissing) {
     s32 id;
     s32 i;
-    WmChunkSlot *p;
-    s16 m;
+    WmChunkSlot *slot;
+    s16 colParity;
     s32 k;
 
-    p = g_worldChunkHead.next;
+    slot = g_worldChunkHead.next;
     wm_cellToChunk(cell, &id);
-    for (i = 0; i < 16; i++, p = p->next) {
-        if (id == p->chunkId && p->state == WM_CHUNK_READY) {
+    for (i = 0; i < 16; i++, slot = slot->next) {
+        if (id == slot->chunkId && slot->state == WM_CHUNK_READY) {
             if (outMissing != NULL) {
                 *outMissing = 0;
             }
-            m = cell % 2;
-            k = m + (cell / g_worldCellsW) % 2 * 2;
-            if (p->hasData != 0) {
-                return (s32)p->pack->blocks[k];
+            colParity = cell % 2;
+            k = colParity + (cell / g_worldCellsW) % 2 * 2;
+            if (slot->hasData != 0) {
+                return (s32)slot->pack->blocks[k];
             }
             return (s32)g_worldDefaultBlocks->blocks[k];
         }
@@ -1346,8 +1346,8 @@ s32 wm_getCellBlock(s16 cell, u8 *outMissing) {
     if (outMissing != NULL) {
         *outMissing = 1;
     }
-    m = cell % 2;
-    k = m + (cell / g_worldCellsW) % 2 * 2;
+    colParity = cell % 2;
+    k = colParity + (cell / g_worldCellsW) % 2 * 2;
     return (s32)g_worldDefaultBlocks->blocks[k];
 }
 
@@ -1368,27 +1368,27 @@ void wm_initBlockMatrix(void) {
 
 void wm_blockListCompact(void) {
     u32 i;
-    WmBlockNode *a;
-    WmBlockNode *b;
+    WmBlockNode *dst;
+    WmBlockNode *src;
 
     if (g_worldBlockListDirty != 0) {
-        a = g_worldBlockHead.next;
+        dst = g_worldBlockHead.next;
         g_worldBlockListDirty = 0;
-        b = a;
+        src = dst;
         for (i = 0; i < 20; i++) {
-            b = b->next;
+            src = src->next;
         }
         for (i = 0; i < 20; i++) {
-            if (a->pos == 0) {
-                a->block = b->block;
-                a->pos = b->pos;
-                b->block = 0;
-                b->pos = 0;
-                b->cell = -1;
-                b->state = 0;
-                b = b->next;
+            if (dst->pos == 0) {
+                dst->block = src->block;
+                dst->pos = src->pos;
+                src->block = 0;
+                src->pos = 0;
+                src->cell = -1;
+                src->state = 0;
+                src = src->next;
             }
-            a = a->next;
+            dst = dst->next;
         }
     }
 }
@@ -1396,22 +1396,22 @@ void wm_blockListCompact(void) {
 s32 wm_getGroundHeight(VECTOR *inPos, u32 *outAttr, s32 *outIdx, WmPolyCache *cache, u16 *outHeight) {
     VECTOR pos;
     VECTOR rel;
-    VECTOR o;
+    VECTOR cellOrg;
     s32 cell;
     u8 flag;
-    s32 r;
+    s32 cellBlock;
 
     pos = *inPos;
     wm_wrapPos(&pos.vx, &pos.vz);
     wm_posToCell(pos.vx, pos.vz, &cell);
-    r = wm_getCellBlock(cell, &flag);
-    if (flag == 0 && r != 0) {
-        wm_cellToPos(cell, &o.vx, &o.vz);
-        rel.vx = pos.vx - o.vx;
+    cellBlock = wm_getCellBlock(cell, &flag);
+    if (flag == 0 && cellBlock != 0) {
+        wm_cellToPos(cell, &cellOrg.vx, &cellOrg.vz);
+        rel.vx = pos.vx - cellOrg.vx;
         rel.vy = pos.vy;
-        rel.vz = pos.vz - o.vz;
+        rel.vz = pos.vz - cellOrg.vz;
         /* callers pass a 16-bit variable but a word is stored */
-        *(s32 *)outHeight = wm_getBlockHeight(cell, (WmBlock *)r, &rel, outAttr, outIdx, cache);
+        *(s32 *)outHeight = wm_getBlockHeight(cell, (WmBlock *)cellBlock, &rel, outAttr, outIdx, cache);
         if ((u32)((u8)g_worldMoveMode - WM_MOVE_CHOCOBO_REEF) < 2) {
             if (*outAttr - 0x38 < 2) {
                 *outAttr = 0x36;
@@ -1431,7 +1431,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", g_worldBlockBackQuad);
 
 void wm_naviInit(void) {
     s32 i;
-    u8 *b;
+    u8 *globalVars;
 
     g_worldNaviCursorOn = 1;
     g_worldNaviActive = 1;
@@ -1443,7 +1443,7 @@ void wm_naviInit(void) {
     g_worldTitlePhase = 3;
     g_worldNaviCursorDraw = 1;
     g_worldNaviVisible = 1;
-    g_worldNaviMode = (b = g_evtGlobalVars.b)[0x64];
+    g_worldNaviMode = (globalVars = g_evtGlobalVars.b)[0x64];
     i = 0x2E;
     if (*g_worldStoryCounterPtr >= 0x1766) {
         g_evtGlobalVars.h[i] |= 0x7C0;
@@ -1526,14 +1526,14 @@ void wm_naviUpdate(void) {
     s32 pad;
     s32 dir;
     s32 ang;
-    s32 d;
+    s32 speed;
     s32 best;
     s32 bi;
     s32 i;
     s32 ex, ez;
     s32 fx, fz;
-    s32 t;
-    s32 e;
+    s32 stickLen;
+    s32 dist;
     s32 last;
     s32 lim;
 
@@ -1561,14 +1561,14 @@ void wm_naviUpdate(void) {
             stick.vy = -stick.vy;
             ang = (-ratan2(stick.vy, stick.vx) + 0x400) & 0xFFF;
             if (stick.vx | stick.vy) {
-                t = SquareRoot0(stick.vx * stick.vx + stick.vy * stick.vy) << 5;
-                d = t + (t >> 1);
+                stickLen = SquareRoot0(stick.vx * stick.vx + stick.vy * stick.vy) << 5;
+                speed = stickLen + (stickLen >> 1);
             } else {
-                d = 0;
+                speed = 0;
             }
-            if (d != 0) {
-                g_worldNaviCursorX += math_sin(ang) * d >> 12;
-                g_worldNaviCursorY -= math_cos(ang) * d >> 12;
+            if (speed != 0) {
+                g_worldNaviCursorX += math_sin(ang) * speed >> 12;
+                g_worldNaviCursorY -= math_cos(ang) * speed >> 12;
                 if (g_worldNaviCursorX < 0) {
                     g_worldNaviCursorX += 0xF0000;
                 }
@@ -1590,9 +1590,9 @@ void wm_naviUpdate(void) {
                         if ((u8)wm_naviIsPlaceKnown(i)) {
                             fx = ((g_worldNaviPlaces[g_worldNaviPage][i].mapX << 12) - g_worldNaviCursorX) >> 12;
                             fz = ((g_worldNaviPlaces[g_worldNaviPage][i].mapY << 12) - g_worldNaviCursorY) >> 12;
-                            e = SquareRoot0(fx * fx + fz * fz);
-                            if ((g_worldNaviPage != 1 || ((u32)(i - 6) >= 4 && i != 15)) && e < best) {
-                                best = e;
+                            dist = SquareRoot0(fx * fx + fz * fz);
+                            if ((g_worldNaviPage != 1 || ((u32)(i - 6) >= 4 && i != 15)) && dist < best) {
+                                best = dist;
                                 bi = i;
                             }
                         }
@@ -1658,23 +1658,23 @@ void wm_naviUpdate(void) {
 }
 
 void wm_naviDrawMarker(s32 x, s32 y, s32 halfW, s32 halfH, CVECTOR color0, CVECTOR color1, s32 pulseSpeed, s32 offsetX, s32 offsetY, s32 textured) {
-    CVECTOR c;
+    CVECTOR color;
     u32 *ot;
 
     ot = (u32 *)g_worldOt[*g_worldBufIndex];
-    c.r = wm_lerp(color0.r, color1.r, math_cos((g_worldFrameCount * pulseSpeed) & 0xFFF));
-    c.g = wm_lerp(color0.g, color1.g, math_cos((g_worldFrameCount * pulseSpeed) & 0xFFF));
-    c.b = wm_lerp(color0.b, color1.b, math_cos((g_worldFrameCount * pulseSpeed) & 0xFFF));
+    color.r = wm_lerp(color0.r, color1.r, math_cos((g_worldFrameCount * pulseSpeed) & 0xFFF));
+    color.g = wm_lerp(color0.g, color1.g, math_cos((g_worldFrameCount * pulseSpeed) & 0xFFF));
+    color.b = wm_lerp(color0.b, color1.b, math_cos((g_worldFrameCount * pulseSpeed) & 0xFFF));
     if (textured == 0) {
         setXYWH((POLY_F4 *)g_worldPrimPtr, x - halfW + offsetX, y - halfH + offsetY, halfW * 2 + 1, halfH * 2 + 1);
-        setRGB0((POLY_F4 *)g_worldPrimPtr, c.r, c.g, c.b);
+        setRGB0((POLY_F4 *)g_worldPrimPtr, color.r, color.g, color.b);
         setPolyF4((POLY_F4 *)g_worldPrimPtr);
         addPrim(&ot[10], (POLY_F4 *)g_worldPrimPtr);
         g_worldPrimPtr += sizeof(POLY_F4);
     } else {
         setXYWH((POLY_FT4 *)g_worldPrimPtr, x + offsetX - 1, y + offsetY - 1, 4, 4);
         setUV4((POLY_FT4 *)g_worldPrimPtr, 0, 0xFA, 4, 0xFA, 0, 0xFE, 4, 0xFE);
-        setRGB0((POLY_FT4 *)g_worldPrimPtr, c.r, c.g, c.b);
+        setRGB0((POLY_FT4 *)g_worldPrimPtr, color.r, color.g, color.b);
         setPolyFT4((POLY_FT4 *)g_worldPrimPtr);
         ((POLY_FT4 *)g_worldPrimPtr)->tpage = getTPage(0, 1, 704, 0);
         ((POLY_FT4 *)g_worldPrimPtr)->clut = getClut(704, 255);
@@ -1705,20 +1705,20 @@ void wm_naviDrawMarker(s32 x, s32 y, s32 halfW, s32 halfH, CVECTOR color0, CVECT
 
 void wm_naviDrawFullMap(void) {
     WmQuad arrow;
-    VECTOR v[4];
+    VECTOR arrowPts[4];
     SVECTOR rot;
     SVECTOR rot0;
-    MATRIX m;
+    MATRIX rotMat;
     s32 x;
     s32 y;
     s32 *px;
     s32 *py;
     u32 *ot;
     s32 i;
-    s32 c;
-    POLY_FT4 *p;
-    s32 a;
-    s32 b;
+    s32 pulse;
+    POLY_FT4 *poly;
+    s32 coneAng0;
+    s32 coneAng1;
     s32 ax;
     s32 ay;
     s32 bx;
@@ -1733,64 +1733,64 @@ void wm_naviDrawFullMap(void) {
     memset(&rot0, 0, 8);
     rot0.vz = g_worldPlayer->pos.rotY - 0x400;
     rot = rot0;
-    math_rotMatrixXYZ(&rot, &m);
+    math_rotMatrixXYZ(&rot, &rotMat);
     for (i = 0; i < 4; i++) {
-        ApplyMatrix(&m, &arrow.v[i], &v[i]);
+        ApplyMatrix(&rotMat, &arrow.v[i], &arrowPts[i]);
     }
     px = &x;
     py = &y;
     wm_naviWorldToMap(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, px, py, g_worldNaviPage * 2 + 1);
-    c = (math_sin(g_worldFrameCount << 6) >> 7) + 0x80;
-    p = (POLY_FT4 *)g_worldPrimPtr;
-    setRGB0(p, c, c, c);
-    p->x0 = x + v[0].vx + 0x28;
-    p->y0 = y + v[0].vy + 9;
-    p->x1 = x + v[1].vx + 0x28;
-    p->y1 = y + v[1].vy + 9;
-    p->x2 = x + v[2].vx + 0x28;
-    p->y2 = y + v[2].vy + 9;
-    p->x3 = x + v[3].vx + 0x28;
-    p->y3 = y + v[3].vy + 9;
-    setUV4(p, 0x20, 0xD0, 0x40, 0xD0, 0x20, 0xD7, 0x40, 0xD7);
-    p->tpage = GetTPage(0, 0, 0x300, 0xD0);
-    p->clut = GetClut(0x280, 0xF5);
-    setPolyFT4(p);
+    pulse = (math_sin(g_worldFrameCount << 6) >> 7) + 0x80;
+    poly = (POLY_FT4 *)g_worldPrimPtr;
+    setRGB0(poly, pulse, pulse, pulse);
+    poly->x0 = x + arrowPts[0].vx + 0x28;
+    poly->y0 = y + arrowPts[0].vy + 9;
+    poly->x1 = x + arrowPts[1].vx + 0x28;
+    poly->y1 = y + arrowPts[1].vy + 9;
+    poly->x2 = x + arrowPts[2].vx + 0x28;
+    poly->y2 = y + arrowPts[2].vy + 9;
+    poly->x3 = x + arrowPts[3].vx + 0x28;
+    poly->y3 = y + arrowPts[3].vy + 9;
+    setUV4(poly, 0x20, 0xD0, 0x40, 0xD0, 0x20, 0xD7, 0x40, 0xD7);
+    poly->tpage = GetTPage(0, 0, 0x300, 0xD0);
+    poly->clut = GetClut(0x280, 0xF5);
+    setPolyFT4(poly);
     if (g_worldNaviVisible) {
-        addPrim(&ot[10], p);
+        addPrim(&ot[10], poly);
     }
-    p++;
-    setRGB0(p, 0x80, 0x80, 0x80);
-    p->x0 = x + v[0].vx + 0x28;
-    p->y0 = y + v[0].vy + 9;
-    p->x1 = x + v[1].vx + 0x28;
-    p->y1 = y + v[1].vy + 9;
-    p->x2 = x + v[2].vx + 0x28;
-    p->y2 = y + v[2].vy + 9;
-    p->x3 = x + v[3].vx + 0x28;
-    p->y3 = y + v[3].vy + 9;
-    setUV4(p, 0, 0xD0, 0x20, 0xD0, 0, 0xD7, 0x20, 0xD7);
-    p->tpage = GetTPage(0, 0, 0x300, 0xD0);
-    p->clut = GetClut(0x280, 0xF5);
-    setPolyFT4(p);
+    poly++;
+    setRGB0(poly, 0x80, 0x80, 0x80);
+    poly->x0 = x + arrowPts[0].vx + 0x28;
+    poly->y0 = y + arrowPts[0].vy + 9;
+    poly->x1 = x + arrowPts[1].vx + 0x28;
+    poly->y1 = y + arrowPts[1].vy + 9;
+    poly->x2 = x + arrowPts[2].vx + 0x28;
+    poly->y2 = y + arrowPts[2].vy + 9;
+    poly->x3 = x + arrowPts[3].vx + 0x28;
+    poly->y3 = y + arrowPts[3].vy + 9;
+    setUV4(poly, 0, 0xD0, 0x20, 0xD0, 0, 0xD7, 0x20, 0xD7);
+    poly->tpage = GetTPage(0, 0, 0x300, 0xD0);
+    poly->clut = GetClut(0x280, 0xF5);
+    setPolyFT4(poly);
     if (g_worldNaviVisible) {
-        addPrim(&ot[10], p);
+        addPrim(&ot[10], poly);
     }
-    p++;
-    g_worldPrimPtr = (s32)p;
-    a = 0xF00 - g_worldCamera->yaw;
-    b = 0x1100 - g_worldCamera->yaw;
-    if (a < 0) {
-        a += 0x1000;
+    poly++;
+    g_worldPrimPtr = (s32)poly;
+    coneAng0 = 0xF00 - g_worldCamera->yaw;
+    coneAng1 = 0x1100 - g_worldCamera->yaw;
+    if (coneAng0 < 0) {
+        coneAng0 += 0x1000;
     }
-    if (b < 0) {
-        b += 0x1000;
+    if (coneAng1 < 0) {
+        coneAng1 += 0x1000;
     }
-    a %= 0x1000;
-    b %= 0x1000;
-    ax = math_sin(a) * 0x18 >> 12;
-    ay = math_cos(a) * 0x18 >> 12;
-    bx = math_sin(b) * 0x18 >> 12;
-    by = math_cos(b) * 0x18 >> 12;
+    coneAng0 %= 0x1000;
+    coneAng1 %= 0x1000;
+    ax = math_sin(coneAng0) * 0x18 >> 12;
+    ay = math_cos(coneAng0) * 0x18 >> 12;
+    bx = math_sin(coneAng1) * 0x18 >> 12;
+    by = math_cos(coneAng1) * 0x18 >> 12;
     wm_naviWorldToMap(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, px, py, g_worldNaviPage * 2 + 1);
     x1 = x + ax + 0x28;
     y1 = y + ay + 9;
@@ -1841,20 +1841,20 @@ void wm_naviDrawFullMap(void) {
 
 void wm_naviDrawMiniMap(void) {
     WmQuad arrow;
-    VECTOR v[4];
+    VECTOR arrowPts[4];
     SVECTOR rot;
     SVECTOR rot0;
-    MATRIX m;
+    MATRIX rotMat;
     s32 x;
     s32 y;
     s32 *px;
     s32 *py;
     u32 *ot;
     s32 i;
-    s32 c;
-    POLY_FT4 *p;
-    s32 a;
-    s32 b;
+    s32 pulse;
+    POLY_FT4 *poly;
+    s32 coneAng0;
+    s32 coneAng1;
     s32 ax;
     s32 ay;
     s32 bx;
@@ -1869,45 +1869,45 @@ void wm_naviDrawMiniMap(void) {
     memset(&rot0, 0, 8);
     rot0.vz = g_worldPlayer->pos.rotY - 0x400;
     rot = rot0;
-    c = (math_sin(g_worldFrameCount << 6) >> 7) + 0x80;
-    math_rotMatrixXYZ(&rot, &m);
+    pulse = (math_sin(g_worldFrameCount << 6) >> 7) + 0x80;
+    math_rotMatrixXYZ(&rot, &rotMat);
     for (i = 0; i < 4; i++) {
-        ApplyMatrix(&m, &arrow.v[i], &v[i]);
+        ApplyMatrix(&rotMat, &arrow.v[i], &arrowPts[i]);
     }
     px = &x;
     py = &y;
     wm_naviWorldToMap(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, px, py, g_worldNaviPage * 2);
-    p = (POLY_FT4 *)g_worldPrimPtr;
-    setRGB0(p, c, c, c);
-    p->x0 = x + v[0].vx + 200;
-    p->y0 = y + v[0].vy + 130;
-    p->x1 = x + v[1].vx + 200;
-    p->y1 = y + v[1].vy + 130;
-    p->x2 = x + v[2].vx + 200;
-    p->y2 = y + v[2].vy + 130;
-    p->x3 = x + v[3].vx + 200;
-    p->y3 = y + v[3].vy + 130;
-    setUV4(p, 0, 0xD0, 0x20, 0xD0, 0, 0xD7, 0x20, 0xD7);
-    p->tpage = GetTPage(0, 0, 0x300, 0xD0);
-    p->clut = GetClut(0x280, 0xF5);
-    setPolyFT4(p);
-    addPrim(&ot[10], p);
-    p++;
-    g_worldPrimPtr = (s32)p;
-    a = 0xF00 - g_worldCamera->yaw;
-    b = 0x1100 - g_worldCamera->yaw;
-    if (a < 0) {
-        a += 0x1000;
+    poly = (POLY_FT4 *)g_worldPrimPtr;
+    setRGB0(poly, pulse, pulse, pulse);
+    poly->x0 = x + arrowPts[0].vx + 200;
+    poly->y0 = y + arrowPts[0].vy + 130;
+    poly->x1 = x + arrowPts[1].vx + 200;
+    poly->y1 = y + arrowPts[1].vy + 130;
+    poly->x2 = x + arrowPts[2].vx + 200;
+    poly->y2 = y + arrowPts[2].vy + 130;
+    poly->x3 = x + arrowPts[3].vx + 200;
+    poly->y3 = y + arrowPts[3].vy + 130;
+    setUV4(poly, 0, 0xD0, 0x20, 0xD0, 0, 0xD7, 0x20, 0xD7);
+    poly->tpage = GetTPage(0, 0, 0x300, 0xD0);
+    poly->clut = GetClut(0x280, 0xF5);
+    setPolyFT4(poly);
+    addPrim(&ot[10], poly);
+    poly++;
+    g_worldPrimPtr = (s32)poly;
+    coneAng0 = 0xF00 - g_worldCamera->yaw;
+    coneAng1 = 0x1100 - g_worldCamera->yaw;
+    if (coneAng0 < 0) {
+        coneAng0 += 0x1000;
     }
-    if (b < 0) {
-        b += 0x1000;
+    if (coneAng1 < 0) {
+        coneAng1 += 0x1000;
     }
-    a %= 0x1000;
-    b %= 0x1000;
-    ax = math_sin(a) * 12 >> 12;
-    ay = math_cos(a) * 12 >> 12;
-    bx = math_sin(b) * 12 >> 12;
-    by = math_cos(b) * 12 >> 12;
+    coneAng0 %= 0x1000;
+    coneAng1 %= 0x1000;
+    ax = math_sin(coneAng0) * 12 >> 12;
+    ay = math_cos(coneAng0) * 12 >> 12;
+    bx = math_sin(coneAng1) * 12 >> 12;
+    by = math_cos(coneAng1) * 12 >> 12;
     wm_naviWorldToMap(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, px, py, g_worldNaviPage * 2);
     g_worldNaviConePrim = (POLY_G3 *)g_worldPrimPtr;
     x1 = x + ax + 200;
@@ -1950,24 +1950,24 @@ void wm_naviDrawMiniMap(void) {
 
 void wm_drawTitle(void) {
     u32 *ot;
-    POLY_FT4 *p;
-    u32 a;
-    u32 b;
+    POLY_FT4 *poly;
+    u32 fadeOutFrame;
+    u32 endFrame;
 
     ot = (u32 *)g_worldOt[*g_worldBufIndex];
     g_worldTitlePhase = 0;
-    a = g_worldTitleDelay + 0x78;
-    b = g_worldTitleDelay + 0xB4;
+    fadeOutFrame = g_worldTitleDelay + 0x78;
+    endFrame = g_worldTitleDelay + 0xB4;
     if ((u32)g_worldTitleDelay < (u32)g_worldReadyFrameCount) {
         g_worldTitlePhase = 1;
     }
-    if (a < (u32)g_worldReadyFrameCount) {
+    if (fadeOutFrame < (u32)g_worldReadyFrameCount) {
         g_worldTitlePhase = 2;
     }
-    if (b < (u32)g_worldReadyFrameCount) {
+    if (endFrame < (u32)g_worldReadyFrameCount) {
         g_worldTitlePhase = 3;
     }
-    if (b <= (u32)g_worldReadyFrameCount) {
+    if (endFrame <= (u32)g_worldReadyFrameCount) {
         g_padPortMask[0] &= ~0x02080000;
     } else {
         g_padPortMask[0] |= 0x02080000;
@@ -2016,10 +2016,10 @@ void wm_drawTitle(void) {
         g_worldTitlePrim->clut = getClut(640, 244);
         setPolyFT4(g_worldTitlePrim);
         setSemiTrans(g_worldTitlePrim, 1);
-        p = g_worldTitlePrim;
-        setaddr(p, getaddr(&ot[10]));
-        g_worldTitlePrim = p + 1;
-        setaddr(&ot[10], p);
+        poly = g_worldTitlePrim;
+        setaddr(poly, getaddr(&ot[10]));
+        g_worldTitlePrim = poly + 1;
+        setaddr(&ot[10], poly);
     }
     g_worldPrimPtr = (s32)g_worldTitlePrim;
 }
@@ -2027,7 +2027,7 @@ void wm_drawTitle(void) {
 void wm_naviDrawPlaces(void) {
     CVECTOR c0;
     s32 i;
-    u8 f;
+    u8 page0Only;
 
     c0 = wm_naviDrawPlaces_color();
     {
@@ -2035,11 +2035,11 @@ void wm_naviDrawPlaces(void) {
 
         for (i = 0; i < 64; i++) {
             if ((g_worldNaviPlaces[g_worldNaviPage][i].mapX | g_worldNaviPlaces[g_worldNaviPage][i].mapY) != 0) {
-                f = 0;
+                page0Only = 0;
                 if (i >= 7 && (i < 11 || i == 15)) {
-                    f = 1;
+                    page0Only = 1;
                 }
-                if ((g_worldNaviPage == 0 || !f) && (u8)wm_naviIsPlaceKnown(i)) {
+                if ((g_worldNaviPage == 0 || !page0Only) && (u8)wm_naviIsPlaceKnown(i)) {
                     wm_naviDrawMarker(g_worldNaviPlaces[g_worldNaviPage][i].mapX, g_worldNaviPlaces[g_worldNaviPage][i].mapY, 1, 1, c0, c1, 16, 40, 9, 1);
                 }
             }
@@ -2106,35 +2106,35 @@ void wm_naviDrawChocograph(void) {
 
 /* draw the four compass frame pieces at (x, y) */
 void wm_naviDrawFrame(s32 x, s32 y) {
-    POLY_FT4 *p;
+    POLY_FT4 *poly;
     s16 clut;
     u32 *ot;
     s32 i;
 
-    p = (POLY_FT4 *)g_worldPrimPtr;
+    poly = (POLY_FT4 *)g_worldPrimPtr;
     clut = GetClut(0x280, 0xF0);
     ot = (u32 *)g_worldOt[*g_worldBufIndex];
     for (i = 0; i < 4; i++) {
-        SetPolyFT4(p);
+        SetPolyFT4(poly);
         if (i < 2) {
-            setXYWH(p, g_worldNaviFrameParts[i].x + x, g_worldNaviFrameParts[i].y + y, g_worldNaviFrameParts[i].w,
+            setXYWH(poly, g_worldNaviFrameParts[i].x + x, g_worldNaviFrameParts[i].y + y, g_worldNaviFrameParts[i].w,
                     g_worldNaviFrameParts[i].h);
         } else {
             /* rotated a quarter turn */
-            setXY4(p, g_worldNaviFrameParts[i].x + x, g_worldNaviFrameParts[i].y + y + g_worldNaviFrameParts[i].w,
+            setXY4(poly, g_worldNaviFrameParts[i].x + x, g_worldNaviFrameParts[i].y + y + g_worldNaviFrameParts[i].w,
                    g_worldNaviFrameParts[i].x + x, y + g_worldNaviFrameParts[i].y - (i != 2),
                    g_worldNaviFrameParts[i].x + x + g_worldNaviFrameParts[i].h,
                    g_worldNaviFrameParts[i].y + y + g_worldNaviFrameParts[i].w,
                    g_worldNaviFrameParts[i].x + x + g_worldNaviFrameParts[i].h, y + g_worldNaviFrameParts[i].y - (i != 2));
         }
-        setUVWH(p, g_worldNaviFrameParts[i].u, g_worldNaviFrameParts[i].v, g_worldNaviFrameParts[i].w, g_worldNaviFrameParts[i].h);
-        setRGB0(p, 0x80, 0x80, 0x80);
-        p->tpage = getTPage(0, 0, 768, 0);
-        p->clut = clut;
-        addPrim(&ot[10], p);
-        p++;
+        setUVWH(poly, g_worldNaviFrameParts[i].u, g_worldNaviFrameParts[i].v, g_worldNaviFrameParts[i].w, g_worldNaviFrameParts[i].h);
+        setRGB0(poly, 0x80, 0x80, 0x80);
+        poly->tpage = getTPage(0, 0, 768, 0);
+        poly->clut = clut;
+        addPrim(&ot[10], poly);
+        poly++;
     }
-    g_worldPrimPtr = (s32)p;
+    g_worldPrimPtr = (s32)poly;
 }
 
 void wm_naviWorldToMap(s32 worldX, s32 worldZ, s32 *outX, s32 *outY, u8 mapMode) {

@@ -1,17 +1,17 @@
 #include "ovl_64.h"
 
 void mbg_drawStreamDebug(u32 *ot, s32 bufIdx) {
-    POLY_F4 *p;
+    POLY_F4 *poly;
     Ovl64RingHdr *h;
     s32 j;
     u8 i;
-    s32 n;
+    s32 polyIdx;
     u8 r;
     u8 g;
     u8 b;
 
     h = g_mbgStream.ringHdrs;
-    n = 0;
+    polyIdx = 0;
     j = 0;
     for (i = 0; i < g_mbgStream.ringSectors; i++) {
         r = g_mbgDebugRingColors[j].r;
@@ -38,52 +38,52 @@ void mbg_drawStreamDebug(u32 *ot, s32 bufIdx) {
                 b -= 0x20;
             }
         }
-        p = &g_mbgDebugRingPolys[bufIdx][n++];
-        SetPolyF4(p);
-        setRGB0(p, r, g, b);
-        setXY4(p, i * 6 + 0x11, 0xBC, i * 6 + 0x16, 0xBC, i * 6 + 0x11, 0xC4, i * 6 + 0x16, 0xC4);
-        addPrim(ot, p);
+        poly = &g_mbgDebugRingPolys[bufIdx][polyIdx++];
+        SetPolyF4(poly);
+        setRGB0(poly, r, g, b);
+        setXY4(poly, i * 6 + 0x11, 0xBC, i * 6 + 0x16, 0xBC, i * 6 + 0x11, 0xC4, i * 6 + 0x16, 0xC4);
+        addPrim(ot, poly);
         if (((i + 1) & 7) == 0) {
             j++;
             h++;
         }
     }
-    p = &g_mbgDebugRingPolys[bufIdx][n];
-    SetPolyF4(p);
-    setRGB0(p, 0x10, 0x10, 0x10);
-    setXY4(p, 0x10, 0xBB, 0x132, 0xBB, 0x10, 0xC5, 0x132, 0xC5);
-    addPrim(ot, p);
+    poly = &g_mbgDebugRingPolys[bufIdx][polyIdx];
+    SetPolyF4(poly);
+    setRGB0(poly, 0x10, 0x10, 0x10);
+    setXY4(poly, 0x10, 0xBB, 0x132, 0xBB, 0x10, 0xC5, 0x132, 0xC5);
+    addPrim(ot, poly);
 }
 
 void mbg_streamOnVideoSector(void) {
-    Ovl64SectHdr *s;
-    u32 *p;
+    Ovl64SectHdr *sectHdr;
+    u32 *sectData;
     u32 *src;
     u32 *dst;
     u32 i;
     Ovl64RingHdr *h;
 
-    p = (u32 *)(g_mbgStream.ringData +
+    sectData = (u32 *)(g_mbgStream.ringData +
                 (g_mbgStream.writeSlot * g_mbgStream.slotSectors - (g_mbgStream.slotSector + 1 - g_mbgStream.slotSectors)) * 0x8F4);
-    p -= 8;
+    sectData -= 8;
     if (g_mbgStream.slotSector == 0) {
         dst = (u32 *)&g_mbgStream.ringHdrs[g_mbgStream.writeSlot];
-        for (i = 0, src = p; i < 8; i++) {
+        for (i = 0, src = sectData; i < 8; i++) {
             *dst++ = *src++;
         }
-        s = (Ovl64SectHdr *)p;
-        if (s->frame != g_mbgStream.frame) {
+        sectHdr = (Ovl64SectHdr *)sectData;
+        if (sectHdr->frame != g_mbgStream.frame) {
             g_mbgStream.endState = MBG_END_ERROR;
             cd_pause();
         }
-        if (s->type != 4) {
+        if (sectHdr->type != 4) {
             goto end;
         }
     }
-    s = (Ovl64SectHdr *)p;
-    if ((s->maskInfo.w >> 28) & 2) {
-        g_mbgSlotMasks[g_mbgStream.writeSlot].size = s->maskInfo.w & 0xFFFF;
-        g_mbgSlotMasks[g_mbgStream.writeSlot].data = (s32)((u8 *)s + (s->maskInfo.h.hi & 0xFFF));
+    sectHdr = (Ovl64SectHdr *)sectData;
+    if ((sectHdr->maskInfo.w >> 28) & 2) {
+        g_mbgSlotMasks[g_mbgStream.writeSlot].size = sectHdr->maskInfo.w & 0xFFFF;
+        g_mbgSlotMasks[g_mbgStream.writeSlot].data = (s32)((u8 *)sectHdr + (sectHdr->maskInfo.h.hi & 0xFFF));
     }
 end:
     g_mbgStream.sector++;
@@ -117,23 +117,23 @@ end:
 }
 
 void mbg_streamOnAudioSector(void) {
-    Ovl64StreamSect *s;
+    Ovl64StreamSect *sect;
     Ovl64FrameInfo *info;
     Ovl64RingHdr *h;
     u32 cur;
 
     info = (Ovl64FrameInfo *)&g_mbgStream; /* what the callback gets when the sector has no frame info */
     g_mbgStream.sector++;
-    s = (Ovl64StreamSect *)(g_mbgStream.audioBuf + (g_mbgStream.audioWrite << 11));
+    sect = (Ovl64StreamSect *)(g_mbgStream.audioBuf + (g_mbgStream.audioWrite << 11));
     if (++g_mbgStream.cycleSector >= g_mbgStream.cycleLength) {
         g_mbgStream.cycleSector = 0;
     }
     if (g_mbgStream.cycleSector == 2) {
-        if (s->hasCamera == 1) {
+        if (sect->hasCamera == 1) {
             if (g_mbgStream.cameraSel == 1) {
-                info = &s->cameras[1];
+                info = &sect->cameras[1];
             } else {
-                info = &s->cameras[0];
+                info = &sect->cameras[0];
             }
             g_mbgSlotCameras[g_mbgStream.writeSlot].id = info->id;
             g_mbgSlotCameras[g_mbgStream.writeSlot].m00 = info->m00;
@@ -152,13 +152,13 @@ void mbg_streamOnAudioSector(void) {
             g_mbgSlotCameras[g_mbgStream.writeSlot].ofsY = info->ofsY;
             g_mbgStream.hasCamera = 1;
         }
-        if (s->rumble < 0) {
-            if (((u32)s->rumble >> 8 & 0xFF) >= 0x80) {
+        if (sect->rumble < 0) {
+            if (((u32)sect->rumble >> 8 & 0xFF) >= 0x80) {
                 g_mbgSlotRumble[g_mbgStream.writeSlot].on = 1;
             } else {
                 g_mbgSlotRumble[g_mbgStream.writeSlot].on = 0;
             }
-            g_mbgSlotRumble[g_mbgStream.writeSlot].level = s->rumble;
+            g_mbgSlotRumble[g_mbgStream.writeSlot].level = sect->rumble;
         } else {
             g_mbgSlotRumble[g_mbgStream.writeSlot].on = 0;
             g_mbgSlotRumble[g_mbgStream.writeSlot].level = 0;
@@ -198,15 +198,15 @@ void mbg_streamOnAudioSector(void) {
         g_mbgSlotMasks[g_mbgStream.writeSlot].size = 0;
         g_mbgSlotMasks[g_mbgStream.writeSlot].data = 0;
     }
-    if (s->lastFrame != MBG_LAST_FRAME_NONE && s->lastFrame != g_mbgStream.lastFrame) {
-        g_mbgStream.lastFrame = s->lastFrame;
+    if (sect->lastFrame != MBG_LAST_FRAME_NONE && sect->lastFrame != g_mbgStream.lastFrame) {
+        g_mbgStream.lastFrame = sect->lastFrame;
     }
 }
 
 s32 mbg_streamStart(s32 unused, u32 startFrame, s32 lastFrame, void (*frameCallback)(void), s32 unkC) {
     CdlLOC *loc;
     s32 i;
-    Ovl64Pair *p;
+    Ovl64Pair *pair;
 
     CdIntToPos(g_mbgStream.baseSector, &g_mbgStream.startPos);
     g_mbgStream.startSector = CdPosToInt(&g_mbgStream.startPos);
@@ -266,7 +266,7 @@ s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **outCamera
 void mbg_streamReadyCallback(u8 status, u8 *result) {
     u8 hdr[12];
     s32 limit;
-    s32 r;
+    s32 syncResult;
     s32 prev;
     s32 sect;
     u8 *addr;
@@ -280,9 +280,9 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
         return;
     }
     if (g_mbgStreamDeferred == 0 && g_mbgStream.frame >= 2) {
-        r = DecDCToutSync(1);
-        if (r == 1) {
-            g_mbgStreamDeferred = r;
+        syncResult = DecDCToutSync(1);
+        if (syncResult == 1) {
+            g_mbgStreamDeferred = syncResult;
             return;
         }
     }
@@ -368,7 +368,7 @@ s32 mbg_streamStop(void) {
 }
 
 s32 mbg_streamSetRing(Ovl64RingHdr *ring, u32 per, u32 size) {
-    u32 n;
+    u32 slots;
     u32 i;
 
     if (size / per * per != size) {
@@ -377,19 +377,19 @@ s32 mbg_streamSetRing(Ovl64RingHdr *ring, u32 per, u32 size) {
     if (per == 0 || size < per) {
         return 2;
     }
-    n = size / per;
-    if (n > 16) {
+    slots = size / per;
+    if (slots > 16) {
         return 2;
     }
-    g_mbgStream.ringData = (u8 *)ring + (n + 1) * sizeof(Ovl64RingHdr);
+    g_mbgStream.ringData = (u8 *)ring + (slots + 1) * sizeof(Ovl64RingHdr);
     g_mbgStream.ringHdrs = ring;
     g_mbgStream.slotSectors = per;
     g_mbgStream.ringSectors = size;
     g_mbgStream.slotSector = 0;
-    g_mbgStream.writeSlot = n - 1;
-    g_mbgStream.slotCount = n;
-    g_mbgStream.readSlot = n - 1;
-    for (i = 0; i < n; i++) {
+    g_mbgStream.writeSlot = slots - 1;
+    g_mbgStream.slotCount = slots;
+    g_mbgStream.readSlot = slots - 1;
+    for (i = 0; i < slots; i++) {
         ring->status = (ring->status & ~MBG_RING_STATE) | MBG_RING_FREE;
         ring++;
     }
@@ -483,10 +483,10 @@ s32 mbg_streamPeekFrame(u8 **data, Ovl64RingHdr **hdr, s32 *kind) {
 
 s32 mbg_streamCountFree(s32 *count) {
     Ovl64RingHdr *h = g_mbgStream.ringHdrs;
-    s32 n = g_mbgStream.slotCount;
+    s32 slots = g_mbgStream.slotCount;
     s32 i;
 
-    for (i = 0; i < n; i++, h++) {
+    for (i = 0; i < slots; i++, h++) {
         if (h->status & MBG_RING_FREE) {
             (*count)++;
         }
@@ -517,10 +517,10 @@ s32 mbg_streamSetPaused(s32 paused) {
 
 s32 mbg_streamClearRing(void) {
     Ovl64RingHdr *h = g_mbgStream.ringHdrs;
-    s32 n = g_mbgStream.slotCount;
+    s32 slots = g_mbgStream.slotCount;
     s32 i;
 
-    for (i = 0; i < n; i++, h++) {
+    for (i = 0; i < slots; i++, h++) {
         h->status = (h->status & ~MBG_RING_STATE) | MBG_RING_FREE;
     }
     return 0;

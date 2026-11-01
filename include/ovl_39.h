@@ -752,16 +752,16 @@ void menuSave_clearHwCard(void);
 void menuSave_closeCardEvents(void);
 
 /* Inlined copy of menuSave_isSlotReady. */
-static inline u8 menuSave_isSlotReady_inline(s32 slot, u8 allowNew) {
-    s32 st = s_menuSave.cardStatus[slot];
-    s32 r;
+static inline u8 menuSave_isSlotReady_inline(s32 port, u8 allowNew) {
+    s32 st = s_menuSave.cardStatus[port];
+    s32 ready;
 
     if (allowNew) {
-        r = 0;
+        ready = 0;
         if (st == CARD_RES_DONE || st == CARD_RES_NEW) {
-            r = 1;
+            ready = 1;
         }
-        return r;
+        return ready;
     }
     return st == CARD_RES_DONE;
 }

@@ -216,23 +216,23 @@ static inline s32 menuCard_drawInfo_width(u8 *s) {
 
 /* Inlined copy of menuCard_showCachedImage (show a cached card picture), as expanded in menuCard_loadCardImage. The
    x, y, w, h statement order matters there: the w/h constants live in s-registers and their stores
-   go through the &a argument register, so they get output dependences on the x/y stores. */
-static inline void menuCard_showCachedImage_inline(CardSlot *s) {
-    RECT a, b;
-    u32 n = s->vram;
+   go through the &clutRect argument register, so they get output dependences on the x/y stores. */
+static inline void menuCard_showCachedImage_inline(CardSlot *slot) {
+    RECT clutRect, pixRect;
+    u32 vramSlot = slot->vram;
 
-    a.x = 0;
-    a.y = n + 0x1F4;
-    a.w = 0x100;
-    a.h = 1;
-    b.x = (u8)(n % 3) * 0x13;
-    b.y = (u8)(n / 3) * 0x2F + 0x100;
-    b.w = 0x13;
-    b.h = 0x2F;
-    MoveImage(&a, 0, 0x1F2);
-    MoveImage(&b, 0x3C0, 0x1B0);
+    clutRect.x = 0;
+    clutRect.y = vramSlot + 0x1F4;
+    clutRect.w = 0x100;
+    clutRect.h = 1;
+    pixRect.x = (u8)(vramSlot % 3) * 0x13;
+    pixRect.y = (u8)(vramSlot / 3) * 0x2F + 0x100;
+    pixRect.w = 0x13;
+    pixRect.h = 0x2F;
+    MoveImage(&clutRect, 0, 0x1F2);
+    MoveImage(&pixRect, 0x3C0, 0x1B0);
     DrawSync(0);
-    s_menuCard.cache.shown = s->id;
+    s_menuCard.cache.shown = slot->id;
 }
 
 /* Start the CD read of the next requested card picture (s_menuCard.unk1900.unk4).

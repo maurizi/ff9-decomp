@@ -3599,3 +3599,35 @@ Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
 | `BTL_FORMULA_FLEE` comment | "btl_tryEscape" | case calls btl_canFlee + btl_rollFlee | "btl_rollFlee" |
 | fx_0e7 work +0x68 | `fadeInTimer68` | never decremented; >= 0 only enables blend mode 1 | `blend68` (or keep, low confidence) |
 | WM_TOPO_NO_ENCOUNTER 0x34 | code name | no 0x34 cell found on disc 3 | keep, INCONCLUSIVE |
+
+## R37b: world-map vehicles, chocobo digging, Hot and Cold, Moogle choice, Blackjack  (status: reference; details in docs/r32/3ds-requests-7.md)
+- binary: ovl_0c / ovl_15 / main; no new function names. Method: Redux discs 3 and 4; world maps entered with the scratch
+  `build/3ds7/wm_force.py WORLD` (field exit to main's dispatcher, then GameData sceneSector[1]/sceneSectors[1],
+  **GameData.worldId (+0x7DC) = WORLD, worldAreaId = 68**, pokes, GameState.mode 3). `wm_load` looks the world script
+  up by worldId: without that write only the save's own world loaded and other files ran with no script (object uid 0,
+  ip 0); this explains R30b's stalled `wm_enter.py --world 9002`.
+- **g_worldMogChoice (0x800CF440, WM_REQ_MOG_CHOICE 35): CONFIRMED "a world-script choice window is open".** It is 1
+  while the moogle's "Can I help you, kupo? Save / Tent / Cancel" window is up (walking, Square), and also during the
+  chocobo Triangle window ("Open Chocograph menu / Feed him a Dead Pepper / Cancel"), the airship "Go to <place>? Yes /
+  No" prompt (full navi map, Cross on a place, move modes 8/9 only) and the navi "Select navigation method" window
+  (full map, Triangle); 0 after each closes. wm_frameMain passes it to pad_setFlags(0x8000, busy). Keep the name,
+  widen the comment. high.
+- Chocobo dig: GameData.chocograph (+0x844) = 1, b[0xB8] bit 0 clear, riding (b[0xBE] = 5), world 9007 entered at
+  (264058, -255513) (b[2] = 1, b[0x53..0x5B]): Square → "K-KWEHHH!!!", "Found a treasure chest!", 2 Elixir, 3 Hi-Potion,
+  4 Ether, 2 Germinas Boots. The 24 dig spots and radii are in the world chocobo entry 5 tag 14 (table in the R37 doc).
+  The chocograph picture above the minimap is loaded once at world init (tu_800BA528.c:85). high.
+- Vehicles at entry: b[0xBE] 1-5 rides the chocobo (9007), 7 the Blue Narciss (9003, story >= 9400), 8 the Hilda Garde 3
+  (9007, story >= 10400), 9 the Invincible (9008, story >= 11100; works on disc 4, froze in the world init on disc 3).
+  With b[2..3] = 0 the world scripts put walker/vehicle/chocobo at their default spots; b[0x40]/[0x4A]/[0x53] hold the
+  stored walker/vehicle/chocobo positions (x s24, y s16, z s24, dir u8). The boat has no UI of its own (no "Go to"
+  prompt; Triangle opens the main menu). high.
+- Hot and Cold: field 2950 with b[2..3] = 2 and b[0xBE] = 5 (plus Gbit 0x58F, 0x32A) starts the minigame: How to play
+  page, Select → "1:00" timer box, Square → "Kweh." / "Kweh!?" hints. A debug "Error Env Play() Slot=0" box showed in
+  every forced entry (environment sound not preloaded). The points window was not reached. medium-high.
+- Blackjack: GameState.mode 4 on disc 4, ending_playMovie (0x800A7378) returned at once → THE END; code R2 L1 R2 R2 Up X
+  Right O Down Triangle L2 R1 R2 L1 Square Square (g_endingCodePos 16) + hold Start → wager screen (Bankroll 1000,
+  Wager 10) → Cross → Stand/Hit/Double/Split. The real trigger is field 3011 entry 7 GOTO_FIELD 16000. high.
+- States: disc 3 `r37b_wm_chocobo_ride`, `r37b_wm_chocobo_choice`, `r37b_wm_dig_found`, `r37b_wm_chocograph1_spot`,
+  `r37b_wm_hg3_entry`, `r37b_wm_airship_navi_full`, `r37b_wm_airship_navi_place`, `r37b_wm_airship_goto_prompt`,
+  `r37b_wm_boat_entry`, `r37b_wm_moogle_choice`, `r37b_hotcold_howto`, `r37b_hotcold_running`, `r37b_forest_mene_back`;
+  disc 4 `r37b_wm_invincible_entry`, `r37b_the_end`, `r37b_bj_wager`, `r37b_bj_action`.

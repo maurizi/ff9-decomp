@@ -9,30 +9,30 @@ void btlfx_reset(void) {
 s32 btlfx_resolveFirstUse(s32 effectId) {
     s32 id;
     s32 i;
-    u8 *p;
+    u8 *pair;
     s32 bit;
-    GameState *g;
+    GameState *gs;
 
     id = effectId;
     if (btlfx_getScaledRadius(0) >= 0x385) {
-        for (p = g_btlfxLargeTargetFx[0]; *p != 0xFF; p += 2) {
-            if (p[0] == effectId) {
-                id = p[1];
+        for (pair = g_btlfxLargeTargetFx[0]; *pair != 0xFF; pair += 2) {
+            if (pair[0] == effectId) {
+                id = pair[1];
                 break;
             }
         }
     }
     bit = 1;
-    g = g_gameState;
+    gs = g_gameState;
     for (i = 0; i < 16; i++, bit <<= 1) {
-        if (g_btlfxFirstUsePairs[i][0] == id && !(g->gameData->firstUseFxSeen & bit)) {
+        if (g_btlfxFirstUsePairs[i][0] == id && !(gs->gameData->firstUseFxSeen & bit)) {
             id = g_btlfxFirstUsePairs[i][1];
-            g->gameData->firstUseFxSeen |= bit;
+            gs->gameData->firstUseFxSeen |= bit;
             break;
         }
         if (g_btlfxFirstUsePairs[i][1] == id) {
-            if (!(g->gameData->firstUseFxSeen & bit)) {
-                g->gameData->firstUseFxSeen |= bit;
+            if (!(gs->gameData->firstUseFxSeen & bit)) {
+                gs->gameData->firstUseFxSeen |= bit;
             }
             break;
         }
@@ -69,44 +69,44 @@ void btlfx_retryOp(void) {
 
 u8 *btlfx_findScript(s32 scriptId) {
     s32 i;
-    u8 *p;
+    u8 *entry;
     s32 id;
-    for (i = 0, p = RAM_BTLFX_MODULE(u8 *); i < 0x200; i++) {
-        id = p[0];
-        if (p[1] & 0x80) {
+    for (i = 0, entry = RAM_BTLFX_MODULE(u8 *); i < 0x200; i++) {
+        id = entry[0];
+        if (entry[1] & 0x80) {
             id += 0x100;
         }
         if (id == scriptId) {
             break;
         }
-        p += (p[1] & 0x7F) * 3 + 2;
+        entry += (entry[1] & 0x7F) * 3 + 2;
     }
-    return p + 2;
+    return entry + 2;
 }
 
 void btlfx_swapVramPages(s32 mode, u32 *data, s32 pageMask) {
-    RECT r;
+    RECT rect;
     s32 i;
     s32 bit = 1;
-    u32 *p;
+    u32 *pixels;
     if (mode != 2) {
-        p = (u32 *)(g_gameState->gameData->ctx.battle->partyBufs[0] + 0x50000);
+        pixels = (u32 *)(g_gameState->gameData->ctx.battle->partyBufs[0] + 0x50000);
     } else {
         pageMask = 1 << data[0x1FFF];
-        p = data;
+        pixels = data;
     }
-    r.w = 0x40;
-    r.h = 0x80;
+    rect.w = 0x40;
+    rect.h = 0x80;
     btlfx_resetMaskBit();
     for (i = 0; i < 4; i++) {
         if (bit & pageMask) {
-            p -= 0x2000;
-            r.x = (i >> 1) * 64 + 0x380;
-            r.y = (i & 1) << 7;
+            pixels -= 0x2000;
+            rect.x = (i >> 1) * 64 + 0x380;
+            rect.y = (i & 1) << 7;
             if (mode == 0) {
-                StoreImage(&r, p);
+                StoreImage(&rect, pixels);
             } else {
-                LoadImage(&r, p);
+                LoadImage(&rect, pixels);
             }
         }
         if (i & 1) {
@@ -122,11 +122,11 @@ void btlfx_callScript(s32 scriptId) {
 }
 
 void btlfx_runScript(void) {
-    RECT r;
-    u8 *p;
+    RECT rect;
+    u8 *pc;
     s16 op;
-    s16 a;
-    s16 b;
+    s16 operand0; /* pc[1] and pc[2]: their meaning depends on the opcode */
+    s16 operand1;
     s32 cont;
     u16 hdr;
     s32 slot;
@@ -143,12 +143,12 @@ void btlfx_runScript(void) {
     }
     switch (state->phase) {
     case BTLFX_PHASE_SAVE_VRAM:
-        r.x = 0x300;
-        r.y = 0x140;
-        r.w = 0x40;
-        r.h = 0x10;
+        rect.x = 0x300;
+        rect.y = 0x140;
+        rect.w = 0x40;
+        rect.h = 0x10;
         btlfx_resetMaskBit();
-        StoreImage(&r, RAM_BTLFX_MODULE(u32 *));
+        StoreImage(&rect, RAM_BTLFX_MODULE(u32 *));
         g_btlfxInCall = 0;
         state->phase = BTLFX_PHASE_START;
         break;
@@ -160,12 +160,12 @@ void btlfx_runScript(void) {
             btlfx_swapVramPages(0, NULL, (hdr & BTLFX_HDR_VRAM_SWAP) >> BTLFX_HDR_VRAM_SWAP_SHIFT);
         }
         if (hdr & BTLFX_HDR_RESIDENT) {
-            r.x = 0x300;
-            r.y = 0x150;
-            r.w = 0x40;
-            r.h = 0xB0;
+            rect.x = 0x300;
+            rect.y = 0x150;
+            rect.w = 0x40;
+            rect.h = 0xB0;
             btlfx_resetMaskBit();
-            StoreImage(&r, RAM_BTLFX_MODULE(u32 *));
+            StoreImage(&rect, RAM_BTLFX_MODULE(u32 *));
             state->phase = BTLFX_PHASE_RESIDENT;
             state->flags &= ~BTLFX_HDR_CAMERA;
             state->flags &= ~BTLFX_HDR_PARTNER;
@@ -209,11 +209,11 @@ void btlfx_runScript(void) {
                 }
                 state->wait = 0;
             }
-            p = state->pc;
-            op = p[0];
-            a = p[1];
-            b = p[2];
-            state->pc = p + 3;
+            pc = state->pc;
+            op = pc[0];
+            operand0 = pc[1];
+            operand1 = pc[2];
+            state->pc = pc + 3;
             if (op < BTLFX_OP_TASK_FIRST) {
                 switch (op) {
                 case BTLFX_CTL_END:
@@ -246,33 +246,33 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_WAIT:
-                    if (a == 0) {
-                        state->wait = b;
+                    if (operand0 == 0) {
+                        state->wait = operand1;
                         cont = 0;
-                    } else if (state->signals.b[b] == 0) {
+                    } else if (state->signals.b[operand1] == 0) {
                         cont = 0;
                         state->pc -= 3;
-                        state->signals.b[b] = 0;
+                        state->signals.b[operand1] = 0;
                     }
                     break;
                 case BTLFX_CTL_SIGNAL:
-                    state->signals.b[a] = b;
+                    state->signals.b[operand0] = operand1;
                     break;
                 case BTLFX_CTL_LOAD_NEXT:
                     btlfx_loadNextBlock();
                     break;
                 case BTLFX_CTL_WAIT_LOADER:
-                    if (g_btlfxEnv->loader->stage < a) {
+                    if (g_btlfxEnv->loader->stage < operand0) {
                         cont = 0;
                         btlfx_retryOp();
                     }
                     break;
                 case BTLFX_CTL_SET_FILE:
-                    state->fileId = a;
-                    state->file = btlfx_findFileSlot(a);
+                    state->fileId = operand0;
+                    state->file = btlfx_findFileSlot(operand0);
                     break;
                 case BTLFX_CTL_WAIT_LOAD:
-                    switch (a) {
+                    switch (operand0) {
                     case BTLFX_WAITLD_COMMON_TEX:
                         if (g_btlfxEnv->loader->commonTexLoaded == 0) {
                             cont = 0;
@@ -303,7 +303,7 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_WAIT_SOUND_BANK:
-                    if (btlfx_waitSoundBank(a, b)) {
+                    if (btlfx_waitSoundBank(operand0, operand1)) {
                         cont = 0;
                         btlfx_retryOp();
                     }
@@ -315,7 +315,7 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_RELOAD_PARTY:
-                    if (a != 0) {
+                    if (operand0 != 0) {
                         if (state->partyReload != 0) {
                             state->pc -= 3;
                         }
@@ -333,13 +333,13 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_SWAP_MODEL:
-                    if (a != 0) {
+                    if (operand0 != 0) {
                         if (state->modelSwap != 0) {
                             state->pc -= 3;
                         }
                         cont = 0;
                     } else {
-                        slot = btlfx_getUnitSlot(b);
+                        slot = btlfx_getUnitSlot(operand1);
                         btl_swapPartyModel(slot, 1);
                         slot++;
                         state->modelSwap = slot;
@@ -347,15 +347,15 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_VRAM:
-                    switch (a) {
+                    switch (operand0) {
                     case BTLFX_VRAM_SWAP_BACK:
                         btlfx_swapVramPages(1, NULL, (state->flags & BTLFX_HDR_VRAM_SWAP) >> BTLFX_HDR_VRAM_SWAP_SHIFT);
                         break;
                     case BTLFX_VRAM_SWAP_FILE:
-                        btlfx_swapVramPages(2, (u32 *)btlfx_getFileData(-1, b), 0);
+                        btlfx_swapVramPages(2, (u32 *)btlfx_getFileData(-1, operand1), 0);
                         break;
                     case BTLFX_VRAM_WAIT_COMMON_TEX:
-                        if (g_btlfxEnv->loader->commonTexCount < b) {
+                        if (g_btlfxEnv->loader->commonTexCount < operand1) {
                             cont = 0;
                             btlfx_retryOp();
                         }
@@ -369,8 +369,8 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_VIBRATE:
-                    if (b == 0) {
-                        btlfx_copyWords(g_btlfxVibData, (s32 *)btlfx_getFileData(state->file, a), 0x708);
+                    if (operand1 == 0) {
+                        btlfx_copyWords(g_btlfxVibData, (s32 *)btlfx_getFileData(state->file, operand0), 0x708);
                         vib_init(g_btlfxVibData);
                         vib_selectTrack(0, 0, 1);
                         vib_selectTrack(0, 1, 1);
@@ -386,9 +386,9 @@ void btlfx_runScript(void) {
                 }
             } else {
                 if (op < 0x80) {
-                    btlfx_spawnTask(op - 0x20, state->file, a, b);
+                    btlfx_spawnTask(op - 0x20, state->file, operand0, operand1);
                 } else {
-                    btlfx_spawnTask(op, state->file, a, b);
+                    btlfx_spawnTask(op, state->file, operand0, operand1);
                 }
             }
         } while (cont);
@@ -398,13 +398,13 @@ void btlfx_runScript(void) {
 
 void btlfx_initTasks(void) {
     s32 i;
-    Unk80100C78Entry *p;
+    Unk80100C78Entry *task;
     g_btlfxTasks.count = 0;
     btlfx_heapInit(&g_btlfxTaskHeap, 0x1800);
-    p = g_btlfxTasks.tasks;
+    task = g_btlfxTasks.tasks;
     for (i = 10; i >= 0; i--) {
-        p->state.w = 0;
-        p++;
+        task->state.w = 0;
+        task++;
     }
 }
 
@@ -494,15 +494,15 @@ loop:
 s32 btlfx_updateTasks(void) {
     Unk80100C78 *taskList = &g_btlfxTasks;
     Unk80100C78Entry *task;
-    s32 n;
+    s32 active;
     s32 i;
     s32 poolBusy;
 
     task = taskList->tasks;
-    n = 0;
+    active = 0;
     for (i = 0; i < 11; i++, task++) {
         if (task->state.h != 0) {
-            n++;
+            active++;
             g_btlfxEnv->otZ = 0;
             if (task->handler(2, task->work, g_btlfxEnv, task, NULL) != 0) {
                 task->state.h = 2;
@@ -526,7 +526,7 @@ s32 btlfx_updateTasks(void) {
             }
         }
     }
-    return n;
+    return active;
 }
 
 s32 btlfx_moveUnitArc(s32 unitId, s16 *dest, s32 frame, s32 frames, s32 height, s16 *from) {
@@ -812,7 +812,7 @@ s32 btlfx_opArcAtTarget(s32 mode, Unk800D7C9C *work, s32 env, s32 *entry, s32 *a
 }
 
 s32 btlfx_opJumpForward(s32 mode, Unk800D7C9C *work, s32 env, s32 *entry, s32 *args) {
-    s32 v;
+    s32 skip;
     if (mode == 0) {
         *args = 0x1C;
     } else if (mode == 1) {
@@ -821,8 +821,8 @@ s32 btlfx_opJumpForward(s32 mode, Unk800D7C9C *work, s32 env, s32 *entry, s32 *a
         work->arg.skipParty = args[1];
         work->playMotion = 1;
         work->dist = g_btlfxOpArgs.paramA[0] | (g_btlfxOpArgs.paramA[1] << 8);
-        if ((v = work->arg.skipParty) == mode && btlfx_isPartyUnit(work->target) != 0) {
-            g_btlfxState.moveDone = v;
+        if ((skip = work->arg.skipParty) == mode && btlfx_isPartyUnit(work->target) != 0) {
+            g_btlfxState.moveDone = skip;
             return 1;
         }
         g_btlfxState.moveDone = 0;
@@ -833,7 +833,7 @@ s32 btlfx_opJumpForward(s32 mode, Unk800D7C9C *work, s32 env, s32 *entry, s32 *a
 }
 
 s32 btlfx_opJumpHome(s32 mode, Unk800D955C *work, s32 env, s32 *entry, s32 *args) {
-    s32 v;
+    s32 skip;
     if (mode == 0) {
         *args = 0x18;
     } else if (mode == 1) {
@@ -841,8 +841,8 @@ s32 btlfx_opJumpHome(s32 mode, Unk800D955C *work, s32 env, s32 *entry, s32 *args
         work->target = args[0];
         work->skipParty = args[1];
         work->playMotion = 1;
-        if ((v = work->skipParty) == mode && btlfx_isPartyUnit(work->target) != 0) {
-            g_btlfxState.moveDone = v;
+        if ((skip = work->skipParty) == mode && btlfx_isPartyUnit(work->target) != 0) {
+            g_btlfxState.moveDone = skip;
             return 1;
         }
         g_btlfxState.moveDone = 0;
@@ -964,7 +964,7 @@ s32 btlfx_opTurnUnit(s32 mode, u8 *work, s32 env, s32 entry, s32 *args) {
 }
 
 s32 btlfx_opWaitKindTime(s32 mode, u8 *work, s32 env, s32 *entry, s32 *args) {
-    s32 v;
+    s32 waitParam;
     s32 w;
     if (mode == 0) {
         *args = 4;
@@ -976,7 +976,7 @@ s32 btlfx_opWaitKindTime(s32 mode, u8 *work, s32 env, s32 *entry, s32 *args) {
             g_btlfxState.waitDone = mode;
             return 1;
         }
-        if ((v = work[2]) == mode && (w = btlfx_isSameSide(work[0], work[1])) == v) {
+        if ((waitParam = work[2]) == mode && (w = btlfx_isSameSide(work[0], work[1])) == waitParam) {
             g_btlfxState.waitDone = w;
             return 1;
         }
@@ -1007,7 +1007,7 @@ s32 btlfx_opWaitOtherSide(s32 mode, u8 *work, s32 env, s32 *entry, s32 *args) {
 
 s32 btlfx_opWaitSameSide(s32 mode, u8 *work, s32 env, s32 *entry, s32 *args) {
     s32 sameSide;
-    u8 a, b;
+    u8 unusedA, unusedB;
     if (mode == 0) {
         *args = 4;
     } else if (mode == 1) {
@@ -1065,22 +1065,22 @@ void btlfx_setFileMotion(Unk800F78A40 *entry, s32 unitId, s32 dataIndex) {
 }
 
 void btlfx_resetUnitMotion(s32 unitId, u8 resetRot) {
-    BtlUnit *u = btl_getUnit(unitId);
-    btlfx_setUnitMotion(unitId, u->motions[0]);
+    BtlUnit *unit = btl_getUnit(unitId);
+    btlfx_setUnitMotion(unitId, unit->motions[0]);
     if (resetRot) {
-        u->rot[0] = u->obj->rotX;
-        u->rot[1] = u->obj->rotY;
-        u->rot[2] = u->obj->rotZ;
+        unit->rot[0] = unit->obj->rotX;
+        unit->rot[1] = unit->obj->rotY;
+        unit->rot[2] = unit->obj->rotZ;
     }
 }
 
 void btlfx_setUnitMotion(s32 unitId, s32 motion) {
     if (btlfx_isPartyUnit(unitId) != 0) {
-        BtlUnit *u = btl_getUnit(unitId);
-        BtlModel *model = u->model;
+        BtlUnit *unit = btl_getUnit(unitId);
+        BtlModel *model = unit->model;
         if (model != NULL) {
             model->motion = (BtlMotion *)motion;
-            u->obj->frame = 0;
+            unit->obj->frame = 0;
         }
     }
 }
@@ -1090,11 +1090,11 @@ s32 btlfx_getUnitMotion(s32 unitId, s32 motionIndex) {
 }
 
 void btlfx_setMotionFrame(s32 unitId, s32 frame) {
-    BtlUnit *u = btl_getUnit(unitId);
-    if (frame >= u->model->motion->frameCount) {
-        frame = u->model->motion->frameCount;
+    BtlUnit *unit = btl_getUnit(unitId);
+    if (frame >= unit->model->motion->frameCount) {
+        frame = unit->model->motion->frameCount;
     }
-    u->obj->frame = frame;
+    unit->obj->frame = frame;
 }
 
 s32 btlfx_getMotionLength(s32 unitId) {
@@ -1106,13 +1106,13 @@ u8 btlfx_getMotionFrame(s32 unitId) {
 }
 
 void btlfx_turnUnit(s32 unitId, s32 mode) {
-    BtlUnit *u = btl_getUnit(unitId);
+    BtlUnit *unit = btl_getUnit(unitId);
     s16 pos[4];
     s16 origin[4];
     s16 angles[4];
     switch (mode) {
     case 0:
-        u->rot[1] = u->obj->rotY + 0x800;
+        unit->rot[1] = unit->obj->rotY + 0x800;
         break;
     case 1:
         btlfx_getUnitPos(unitId, pos);
@@ -1123,17 +1123,17 @@ void btlfx_turnUnit(s32 unitId, s32 mode) {
         btlfx_setUnitRot(unitId, angles);
         break;
     case 2:
-        u->rot[0] = u->obj->rotX;
-        u->rot[1] = u->obj->rotY;
-        u->rot[2] = u->obj->rotZ;
+        unit->rot[0] = unit->obj->rotX;
+        unit->rot[1] = unit->obj->rotY;
+        unit->rot[2] = unit->obj->rotZ;
         break;
     }
 }
 
 void btlfx_playSwingSound(s32 unitId) {
-    BtlUnit *u = btl_getUnit(unitId);
+    BtlUnit *unit = btl_getUnit(unitId);
     if (btlfx_isPartyUnit(unitId) != 0) {
-        btl_soundCmd(SND_SE_PLAY, btl_getWeaponSound((u8)u->flags >> BTL_UNIT_SLOT_SHIFT, 0), 0, btl_soundPan(unitId), SND_VOL_MAX);
+        btl_soundCmd(SND_SE_PLAY, btl_getWeaponSound((u8)unit->flags >> BTL_UNIT_SLOT_SHIFT, 0), 0, btl_soundPan(unitId), SND_VOL_MAX);
     }
 }
 
@@ -1146,15 +1146,15 @@ void btlfx_playHitSound(s32 attackerId, s32 targetId, s32 param) {
 }
 
 u32 btlfx_holdMotion(s32 unitId) {
-    BtlUnit *u = btl_getUnit(unitId);
-    u32 flags = u->flags;
-    u->flags = flags | BTL_UNIT_MOTION_HELD;
+    BtlUnit *unit = btl_getUnit(unitId);
+    u32 flags = unit->flags;
+    unit->flags = flags | BTL_UNIT_MOTION_HELD;
     return (flags >> BTL_UNIT_MOTION_HELD_BIT) & 1;
 }
 
 void btlfx_setMotionHeld(s32 unitId, s32 held) {
-    BtlUnit *u = btl_getUnit(unitId);
-    u->flags = (u->flags & ~BTL_UNIT_MOTION_HELD) | ((held & 1) << BTL_UNIT_MOTION_HELD_BIT);
+    BtlUnit *unit = btl_getUnit(unitId);
+    unit->flags = (unit->flags & ~BTL_UNIT_MOTION_HELD) | ((held & 1) << BTL_UNIT_MOTION_HELD_BIT);
 }
 
 s32 btlfx_isPartyUnit(s32 unitId) {
@@ -1188,20 +1188,20 @@ s32 btlfx_getUnitWeapon(s32 unitId) {
 }
 
 void btlfx_setUnitVisible(s32 unitId, s32 visible) {
-    BtlUnit *u = btl_getUnit(unitId);
+    BtlUnit *unit = btl_getUnit(unitId);
     if (visible != 0) {
-        u->flags &= ~BTL_UNIT_HIDDEN;
+        unit->flags &= ~BTL_UNIT_HIDDEN;
     } else {
-        u->flags |= BTL_UNIT_HIDDEN;
+        unit->flags |= BTL_UNIT_HIDDEN;
     }
 }
 
 void btlfx_setWeaponVisible(s32 unitId, s32 visible) {
-    BtlUnit *u = btl_getUnit(unitId);
+    BtlUnit *unit = btl_getUnit(unitId);
     if (visible != 0) {
-        btl_showWeapon(u);
+        btl_showWeapon(unit);
     } else {
-        btl_hideWeapon(u);
+        btl_hideWeapon(unit);
     }
 }
 
@@ -1235,13 +1235,13 @@ s32 btlfx_stepHitSound(u8 *work, s32 env, s32 entry) {
 }
 
 s32 btlfx_stepUnitSound(u8 *work, s32 env, s32 entry) {
-    BtlUnit *u = btl_getUnit(work[0]);
+    BtlUnit *unit = btl_getUnit(work[0]);
     switch (work[1]) {
     case 0:
-        btl_playUnitSound(u, 0x456, 0x7F);
+        btl_playUnitSound(unit, 0x456, 0x7F);
         break;
     case 1:
-        btl_playUnitSound(u, 0xAC0, 0x7F);
+        btl_playUnitSound(unit, 0xAC0, 0x7F);
         break;
     }
     return 1;
@@ -1647,16 +1647,16 @@ end:
 
 s32 btlfx_stepFaceHome(Unk800D8124 *work, s32 env, s32 *entry) {
     s16 rot[4];
-    BtlUnit *u;
+    BtlUnit *unit;
     s32 frame = *entry;
     BtlUnitA0 *obj;
 
-    u = btl_getUnit(work->unit);
+    unit = btl_getUnit(work->unit);
     if (work->partyMode == BTLFX_FACE_ALWAYS || btlfx_isPartyUnit(work->target) == 0) {
         if (frame == 0) {
-            work->delta[0] = u->obj->rotX - u->rot[0];
-            work->delta[1] = u->obj->rotY - u->rot[1];
-            work->delta[2] = u->obj->rotZ - u->rot[2];
+            work->delta[0] = unit->obj->rotX - unit->rot[0];
+            work->delta[1] = unit->obj->rotY - unit->rot[1];
+            work->delta[2] = unit->obj->rotZ - unit->rot[2];
         }
         btlfx_getUnitRot(work->unit, rot);
         rot[0] += work->delta[0] / work->frames;
@@ -1669,10 +1669,10 @@ s32 btlfx_stepFaceHome(Unk800D8124 *work, s32 env, s32 *entry) {
         g_btlfxState.turnDone = 1;
         return 1;
     }
-    u->rot[0] = u->obj->rotX;
-    obj = u->obj;
-    u->rot[1] = obj->rotY;
-    *(volatile s16 *)&u->rot[2] = obj->rotZ;
+    unit->rot[0] = unit->obj->rotX;
+    obj = unit->obj;
+    unit->rot[1] = obj->rotY;
+    *(volatile s16 *)&unit->rot[2] = obj->rotZ;
     return g_btlfxState.turnDone = 1;
 end:
     return 0;

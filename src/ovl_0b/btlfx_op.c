@@ -2,38 +2,38 @@
 
 void btlfx_initCommonData(void) {
     u8 primBuf[0x40];
-    RECT r;
+    RECT rect;
     g_btlfxCommonTable = g_btlfxCommonData;
     g_btlfxCommonInit = 1;
     g_btlfxEnv->prim = primBuf;
     btlfx_reloadCommonData(0);
     while (btlfx_reloadCommonData(1) == 0) {
     }
-    r.x = 0;
-    r.y = 0xF0;
-    r.w = 0x100;
-    r.h = 2;
-    LoadImage(&r, PSX_RAM(u32 *, 0x801F7700));
+    rect.x = 0;
+    rect.y = 0xF0;
+    rect.w = 0x100;
+    rect.h = 2;
+    LoadImage(&rect, PSX_RAM(u32 *, 0x801F7700));
     DrawSync(0);
     g_btlfxEnv->prim = 0;
 }
 
 s32 btlfx_reloadCommonData(s32 poll) {
-    RECT r;
+    RECT rect;
     s32 ret = 0;
     s32 i;
     u32 *p = RAM_BTLFX_MODULE(u32 *);
     if (poll == 0) {
-        FileEntry *e = file_find(DIR_COMMON, FILE_BTLFX_COMMON);
-        cd_readAsync(g_gameState->imgSector + e->sector, (e->link - e->sector) << 11, RAM_BTLFX_MODULE(void *), 0);
+        FileEntry *file = file_find(DIR_COMMON, FILE_BTLFX_COMMON);
+        cd_readAsync(g_gameState->imgSector + file->sector, (file->link - file->sector) << 11, RAM_BTLFX_MODULE(void *), 0);
     } else if (cd_getState() == 0) {
         btlfx_resetMaskBit();
-        r.w = 0x40;
-        r.h = 0x80;
+        rect.w = 0x40;
+        rect.h = 0x80;
         for (i = 0; i < 4; i++) {
-            r.x = (i >> 1) * 64 + 0x300;
-            r.y = (i & 1) * 128 + 0x100;
-            LoadImage(&r, p);
+            rect.x = (i >> 1) * 64 + 0x300;
+            rect.y = (i & 1) * 128 + 0x100;
+            LoadImage(&rect, p);
             p += 0x1000;
         }
         ret = 1;
@@ -248,31 +248,31 @@ void btlfx_playSoundSet(s32 set, s32 unit) {
 }
 
 Pool6CEntry *btlfx_startCastEmitter_def(s32 unitId, s32 kind, Unk800E4A3CArgs pos) {
-    Pool6CEntry *e;
-    Unk800E4A3CArgs *p;
+    Pool6CEntry *emitter;
+    Unk800E4A3CArgs *posRef;
 
-    e = NULL;
+    emitter = NULL;
     pos.b = pos.a;
     /* Read back through a pointer: CSE then keeps the load, which reload_cse turns into the original's
        `move v0,a2` for the 0x30 store (a direct `pos.c = pos.b` stores a2 twice). */
-    p = &pos;
-    pos.c = p->b;
+    posRef = &pos;
+    pos.c = posRef->b;
     switch (kind) {
     case 0:
     case 2:
-        e = btlfx_startEmitter(btlfx_getCommonData(5), (s32)pos.a);
+        emitter = btlfx_startEmitter(btlfx_getCommonData(5), (s32)pos.a);
         if (kind == 0) {
-            if (e != NULL) {
-                e->elems[0].tex = btlfx_getCommonData(7);
+            if (emitter != NULL) {
+                emitter->elems[0].tex = btlfx_getCommonData(7);
                 goto common;
             }
         } else {
-            if (e != NULL) {
-                e->elems[0].tex = btlfx_getCommonData(8);
+            if (emitter != NULL) {
+                emitter->elems[0].tex = btlfx_getCommonData(8);
             common:
-                if (e != NULL) {
-                    e->elems[1].tex = btlfx_getCommonData(6);
-                    e->otZ = 8;
+                if (emitter != NULL) {
+                    emitter->elems[1].tex = btlfx_getCommonData(6);
+                    emitter->otZ = 8;
                 }
             }
         }
@@ -284,28 +284,28 @@ Pool6CEntry *btlfx_startCastEmitter_def(s32 unitId, s32 kind, Unk800E4A3CArgs po
     case 1:
     case 7:
         pos.b[1] -= 0x40;
-        e = btlfx_startEmitter(btlfx_getCommonData(1), (s32)pos.a);
-        if (e != NULL) {
-            e->elems[0].tex = btlfx_getCommonData(0x14);
-            e->elems[1].tex = btlfx_getCommonData(6);
-            e->elems[2].tex = btlfx_getCommonData(2);
-            e->target = *(s32 *)&pos.b;
-            e->otZ = 0x20;
+        emitter = btlfx_startEmitter(btlfx_getCommonData(1), (s32)pos.a);
+        if (emitter != NULL) {
+            emitter->elems[0].tex = btlfx_getCommonData(0x14);
+            emitter->elems[1].tex = btlfx_getCommonData(6);
+            emitter->elems[2].tex = btlfx_getCommonData(2);
+            emitter->target = *(s32 *)&pos.b;
+            emitter->otZ = 0x20;
         }
         btlfx_playSoundSet(2, unitId);
         break;
     case 4:
-        e = btlfx_startEmitter(btlfx_getCommonData(4), (s32)pos.a);
-        if (e != NULL) {
-            e->elems[0].tex = btlfx_getCommonData(7);
-            e->elems[1].tex = btlfx_getCommonData(6);
-            e->otZ = 0x80;
+        emitter = btlfx_startEmitter(btlfx_getCommonData(4), (s32)pos.a);
+        if (emitter != NULL) {
+            emitter->elems[0].tex = btlfx_getCommonData(7);
+            emitter->elems[1].tex = btlfx_getCommonData(6);
+            emitter->otZ = 0x80;
         }
     zero:
         btlfx_playSoundSet(0, unitId);
         break;
     }
-    return e;
+    return emitter;
 }
 
 void btlfx_setPartyTexAnim(s32 unitId, s32 mode, s32 second) {
@@ -323,8 +323,10 @@ void btlfx_endCastIfNoBounce(void) {
 s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 *args) {
     s16 targetPos[4];
     s32 step;
-    s32 a;
-    s32 b;
+    s32 noCast;
+    s32 fade;
+    s32 motion;
+    s32 fadeStep;
     s32 *argp;
     s32 level;
     s32 enemy;
@@ -356,17 +358,17 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
         work->castMode = ((u32)g_btlfxState.flags & BTLFX_HDR_CAST_MODE) >> BTLFX_HDR_CAST_MODE_SHIFT;
         g_btlfxState.signals.b[2] = 0;
         g_btlfxState.signals.b[3] = 0;
-        a = env->targets->kind & BTL_FXK_NO_CAST;
+        noCast = env->targets->kind & BTL_FXK_NO_CAST;
         enemy = btlfx_isEnemyUnit(work->unit);
         work->loopFrames = 100;
         btlfx_setPartyTexAnim(work->unit, 1, 0);
-        if ((a != 0 || work->kind == 0xF) && enemy == 0) {
+        if ((noCast != 0 || work->kind == 0xF) && enemy == 0) {
             work->motionMode = 2;
             work->phase = 2;
         } else if (enemy != 0) {
             work->motionMode = 1;
             work->phase = 2;
-            if (a == 0 && work->kind != 0xF) {
+            if (noCast == 0 && work->kind != 0xF) {
                 btlfx_getUnitBodyPos(work->unit, 0, work->pos);
                 work->emitter = btlfx_startCastEmitter(work->unit, 4, work->pos, work->pos2);
             } else {
@@ -383,14 +385,14 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
     switch (work->phase) {
     case 0:
         if (btlfx_stepBack(work->unit, work->target, step) != 0) {
-            b = work->motionMode;
-            if (b != 3) {
+            motion = work->motionMode;
+            if (motion != 3) {
                 btlfx_playUnitMotion(work->unit, 0x1A);
                 work->phase = 1;
                 goto set_t;
             }
             btlfx_playUnitMotion(work->unit, 0x1F);
-            work->phase = b;
+            work->phase = motion;
             btlfx_showCasterCmdName();
             goto set_t;
         }
@@ -420,15 +422,15 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
                 btlfx_startFadeBackground(level, work->kind == 1 ? 0xC : 0x14);
             }
         }
-        b = step - 9;
+        fadeStep = step - 9;
         if (work->kind == 1) {
-            if (b >= 0) {
-                if (b < 16) {
-                    a = (b * 255) >> 4;
+            if (fadeStep >= 0) {
+                if (fadeStep < 16) {
+                    fade = (fadeStep * 255) >> 4;
                 } else {
-                    a = 255;
+                    fade = 255;
                 }
-                if (b == 0) {
+                if (fadeStep == 0) {
                     work->loopFrames = btlfx_getMotionLength(work->unit);
                     if (env->targets->kind & BTL_FXK_NO_CAST) {
                         btlfx_showCasterCmdName();
@@ -436,22 +438,22 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
                 }
                 switch (work->castMode) {
                 case 0:
-                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, a, a, a);
-                    if (b == 16) {
+                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, fade, fade, fade);
+                    if (fadeStep == 16) {
                         btlfx_fadeUnitGroup(2, 0);
                     }
                     break;
                 case 1:
-                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, a, a, a);
-                    if (b == 16) {
+                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, fade, fade, fade);
+                    if (fadeStep == 16) {
                         btlfx_fadeUnitGroup(2, 0);
                     }
                     break;
                 case 2:
-                    btlfx_fadeUnitGroup(2, 0x80 - (a >> 1));
+                    btlfx_fadeUnitGroup(2, 0x80 - (fade >> 1));
                     break;
                 case 3:
-                    btlfx_fadeUnitGroup(0, 0x80 - (a >> 1));
+                    btlfx_fadeUnitGroup(0, 0x80 - (fade >> 1));
                     break;
                 }
             }
@@ -965,84 +967,84 @@ s32 btlfx_opScreenFade(s32 mode, Unk800E6410 *work, s32 env, s32 *entry, s32 *ar
 }
 
 void btlfx_sampleGradient(u8 *p, CVECTOR *out, s32 x) {
-    Grad *g = (Grad *)p;
-    s32 n = g->count;
+    Grad *grad = (Grad *)p;
+    s32 cnt = grad->count;
     s32 i;
-    s32 c;
+    s32 val; /* key length, then the blend ratio (separate locals don't match) */
 
     p += 8;
-    if (g->total == 0) {
-        i = n = 0; /* i: running start */
+    if (grad->total == 0) {
+        i = cnt = 0; /* i: running start */
         p += 4;
     loop:
-        c = p[-1];
-        if (c != 0) {
+        val = p[-1];
+        if (val != 0) {
             ((u16 *)p)[1] = i;
-            i += c;
-            n++;
-            ((u16 *)p)[0] = c;
+            i += val;
+            cnt++;
+            ((u16 *)p)[0] = val;
             p += 8;
             goto loop;
         }
-        p = (u8 *)g + 8;
-        g->total = i;
-        g->count = n;
+        p = (u8 *)grad + 8;
+        grad->total = i;
+        grad->count = cnt;
     }
-    if (g->total < x) {
-        x = g->total;
+    if (grad->total < x) {
+        x = grad->total;
     }
-    p += n * 8 - 8;
-    for (i = 0; i < n; i++, p -= 8) {
+    p += cnt * 8 - 8;
+    for (i = 0; i < cnt; i++, p -= 8) {
         if (x >= ((u16 *)p)[3]) {
             break;
         }
     }
-    c = x - ((u16 *)p)[3];
-    c = (c << 12) / ((u16 *)p)[2];
-    LoadAverageCol(p, p + 8, 0x1000 - c, c, (u8 *)out);
+    val = x - ((u16 *)p)[3];
+    val = (val << 12) / ((u16 *)p)[2];
+    LoadAverageCol(p, p + 8, 0x1000 - val, val, (u8 *)out);
 }
 
 void btlfx_drawScrollMove(s32 scroll, s32 dstX, s32 dstY, s32 width, s32 height, s32 srcX, s32 srcY) {
-    RECT b;
-    RECT a;
-    DR_MOVE *p;
+    RECT tailRect;
+    RECT headRect;
+    DR_MOVE *move;
     s32 split = scroll % height;
     s32 rest;
-    p = (DR_MOVE *)g_btlfxEnv->prim;
-    g_btlfxEnv->prim = (u8 *)(p + 2);
+    move = (DR_MOVE *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(move + 2);
     rest = height - split;
     if (split != 0) {
-        a.x = srcX;
-        a.y = srcY;
-        a.w = width;
-        a.h = split;
-        SetDrawMove(p, &a, dstX, dstY + rest);
-        AddPrim(&g_btlfxEnv->ot[OT_LAST], p);
+        headRect.x = srcX;
+        headRect.y = srcY;
+        headRect.w = width;
+        headRect.h = split;
+        SetDrawMove(move, &headRect, dstX, dstY + rest);
+        AddPrim(&g_btlfxEnv->ot[OT_LAST], move);
     }
-    p++;
+    move++;
     if (rest != 0) {
-        b.x = srcX;
-        b.y = srcY + split;
-        b.w = width;
-        b.h = rest;
-        SetDrawMove(p, &b, dstX, dstY);
-        AddPrim(&g_btlfxEnv->ot[OT_LAST], p);
+        tailRect.x = srcX;
+        tailRect.y = srcY + split;
+        tailRect.w = width;
+        tailRect.h = rest;
+        SetDrawMove(move, &tailRect, dstX, dstY);
+        AddPrim(&g_btlfxEnv->ot[OT_LAST], move);
     }
 }
 
 void btlfx_drawScreenGrid(u32 otz, s32 centerX, s32 centerY, s32 cellW, s32 cellH, s32 cols, s32 rows, s32 ofsX, s32 ofsY,
                    SVECTOR *rot, VECTOR *scale, CVECTOR *color, s32 abr, void (*vertexFn)(SVECTOR *)) {
     XY32 prevRow[2][18];
-    SVECTOR v[4];
+    SVECTOR vert[4];
     SVECTOR uv[4];
-    MATRIX m;
+    MATRIX mat;
     long ox;
     long oy;
     s32 cx;
     s32 cy;
     s32 tp0;
     s32 tp1;
-    POLY_FT4 *p;
+    POLY_FT4 *poly;
     s32 x;
     s32 y;
     s32 row;
@@ -1056,8 +1058,8 @@ void btlfx_drawScreenGrid(u32 otz, s32 centerX, s32 centerY, s32 cellW, s32 cell
     u32 len;
 
     ReadGeomOffset(&ox, &oy);
-    p = (POLY_FT4 *)g_btlfxEnv->prim;
-    g_btlfxEnv->prim = (u8 *)(p + cols * rows);
+    poly = (POLY_FT4 *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(poly + cols * rows);
     if (abr != 0xFF) {
         color->cd = 0x2E;
     } else {
@@ -1074,31 +1076,31 @@ void btlfx_drawScreenGrid(u32 otz, s32 centerX, s32 centerY, s32 cellW, s32 cell
     cx = centerX;
     cy = centerY;
     SetGeomOffset(centerX, centerY);
-    math_rotMatrixYXZ(rot, &m);
+    math_rotMatrixYXZ(rot, &mat);
     scale->vz = 0x1000;
-    ScaleMatrix(&m, scale);
-    m.t[1] = 0;
-    m.t[0] = 0;
-    m.t[2] = ReadGeomScreen();
-    gte_SetRotMatrix(&m);
-    gte_SetTransMatrix(&m);
+    ScaleMatrix(&mat, scale);
+    mat.t[1] = 0;
+    mat.t[0] = 0;
+    mat.t[2] = ReadGeomScreen();
+    gte_SetRotMatrix(&mat);
+    gte_SetTransMatrix(&mat);
     gte_ldvz012_0();
     for (y = 0, row = 0; row <= rows; row++, y += cellH) {
         for (x = 0, col = 0; col <= cols; col++, x += cellW) {
-            ((XY32 *)&v[0])->w = (*prevRow)[col].w;
+            ((XY32 *)&vert[0])->w = (*prevRow)[col].w;
             sx = x - ofsX;
             prevUv = prevRow[1][col].w;
-            uv[1].vx = (v[1].vx = sx) + cx;
-            uv[1].vy = (v[1].vy = y - ofsY) + cy;
+            uv[1].vx = (vert[1].vx = sx) + cx;
+            uv[1].vy = (vert[1].vy = y - ofsY) + cy;
             *(s32 *)&uv[0] = prevUv;
             prevRow[1][col].w = *(s32 *)&uv[1];
             if (vertexFn != NULL) {
-                vertexFn(&v[1]);
+                vertexFn(&vert[1]);
             }
-            prevRow[0][col].w = *(s32 *)&v[1];
+            prevRow[0][col].w = *(s32 *)&vert[1];
             if (col != 0 && row != 0) {
-                gte_ldxy3(&v[1], &v[0], &v[3]);
-                *(u32 *)&p->r0 = *(u32 *)color;
+                gte_ldxy3(&vert[1], &vert[0], &vert[3]);
+                *(u32 *)&poly->r0 = *(u32 *)color;
                 gte_rtpt_b();
                 if (uv[0].vx < 0x100 && uv[1].vx < 0x100 && uv[2].vx < 0x100 && uv[3].vx < 0x100) {
                     shifted = 0;
@@ -1111,28 +1113,28 @@ void btlfx_drawScreenGrid(u32 otz, s32 centerX, s32 centerY, s32 cellW, s32 cell
                     uv[2].vx -= 0x80;
                     uv[3].vx -= 0x80;
                 }
-                gte_stsxy3(&p->x0, &p->x1, &p->x2);
-                gte_ldxy0(&v[2]);
+                gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
+                gte_ldxy0(&vert[2]);
                 if (otz < 0x1000) {
                     len = 0x09000000;
-                    addPrimLen(&g_btlfxEnv->ot[otz], p, len);
+                    addPrimLen(&g_btlfxEnv->ot[otz], poly, len);
                 }
                 gte_rtps_b();
-                *(u32 *)&p->u0 = uv[1].vx | (uv[1].vy << 8);
-                *(u32 *)&p->u1 = uv[0].vx | (uv[0].vy << 8) | tp;
-                *(u32 *)&p->u2 = uv[3].vx | (uv[3].vy << 8);
-                *(u32 *)&p->u3 = uv[2].vx | (uv[2].vy << 8);
-                gte_stsxy(&p->x3);
+                *(u32 *)&poly->u0 = uv[1].vx | (uv[1].vy << 8);
+                *(u32 *)&poly->u1 = uv[0].vx | (uv[0].vy << 8) | tp;
+                *(u32 *)&poly->u2 = uv[3].vx | (uv[3].vy << 8);
+                *(u32 *)&poly->u3 = uv[2].vx | (uv[2].vy << 8);
+                gte_stsxy(&poly->x3);
                 if (shifted) {
                     uv[0].vx += 0x80;
                     uv[1].vx += 0x80;
                     uv[2].vx += 0x80;
                     uv[3].vx += 0x80;
                 }
-                p++;
+                poly++;
             }
-            *(s32 *)&v[2] = *(s32 *)&v[0];
-            *(s32 *)&v[3] = *(s32 *)&v[1];
+            *(s32 *)&vert[2] = *(s32 *)&vert[0];
+            *(s32 *)&vert[3] = *(s32 *)&vert[1];
             *(s32 *)&uv[2] = *(s32 *)&uv[0];
             *(s32 *)&uv[3] = *(s32 *)&uv[1];
         }
@@ -1141,18 +1143,18 @@ void btlfx_drawScreenGrid(u32 otz, s32 centerX, s32 centerY, s32 cellW, s32 cell
 }
 
 void btlfx_pushViewRotation(SVECTOR *rot) {
-    MATRIX m;
-    SVECTOR v;
-    memset((s32)&v, 0, 8);
+    MATRIX mat;
+    SVECTOR zeroRot;
+    memset((s32)&zeroRot, 0, 8);
     if (rot == 0) {
-        rot = &v;
+        rot = &zeroRot;
     }
-    math_rotMatrixYXZ(rot, &m);
-    m.t[1] = 0;
-    m.t[0] = 0;
-    m.t[2] = ReadGeomScreen();
+    math_rotMatrixYXZ(rot, &mat);
+    mat.t[1] = 0;
+    mat.t[0] = 0;
+    mat.t[2] = ReadGeomScreen();
     g_btlfxSavedView = *g_btlfxEnv->viewMatrix;
-    *g_btlfxEnv->viewMatrix = m;
+    *g_btlfxEnv->viewMatrix = mat;
 }
 
 void btlfx_popViewMatrix(void) {
@@ -1160,8 +1162,8 @@ void btlfx_popViewMatrix(void) {
 }
 
 void btlfx_pushGeomScreen(s32 dist) {
-    s32 *p = &g_btlfxSavedGeomScreen;
-    *p = ReadGeomScreen();
+    s32 *saved = &g_btlfxSavedGeomScreen;
+    *saved = ReadGeomScreen();
     SetGeomScreen(dist);
 }
 
@@ -1224,12 +1226,12 @@ void btlfx_initEnv(void) {
 
 void btlfx_beginPrims(u8 *prim, s32 *ot) {
     Unk800F78A4 *env = g_btlfxEnv;
-    GameState *g = g_gameState;
+    GameState *gs = g_gameState;
     env->otZ = 0;
     env->ot = ot;
-    env->dispEnv = &g->dispEnv[g->gameData->drawBuf];
-    env->drawEnv = &g->drawEnv[g->gameData->drawBuf];
-    env->viewMatrix = &g->gameData->viewMatrix;
+    env->dispEnv = &gs->dispEnv[gs->gameData->drawBuf];
+    env->drawEnv = &gs->drawEnv[gs->gameData->drawBuf];
+    env->viewMatrix = &gs->gameData->viewMatrix;
     env->prim = prim;
 }
 
@@ -1266,20 +1268,20 @@ void btlfx_clearTargets(void) {
 
 s32 btlfx_getUnitRadius(s32 unitId) {
     s32 useModel;
-    BtlUnit *u;
-    u32 f;
+    BtlUnit *unit;
+    u32 flags;
     if (unitId & 0x100) {
         unitId &= 0xFF;
         useModel = 1;
     } else {
         useModel = 0;
     }
-    u = btl_getUnit(unitId);
-    f = u->flags;
-    if ((f & BTL_UNIT_PARTY) || useModel != 0) {
-        return u->model->header->radius;
+    unit = btl_getUnit(unitId);
+    flags = unit->flags;
+    if ((flags & BTL_UNIT_PARTY) || useModel != 0) {
+        return unit->model->header->radius;
     }
-    return g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(f)].type->radius;
+    return g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(flags)].type->radius;
 }
 
 s32 btl_getUnitHeight(BtlUnit *unit) {
@@ -1298,15 +1300,15 @@ void btl_getBaseBonePos(BtlUnit *unit, u16 *out) {
 }
 
 void btlfx_getUnitHomePos(s32 unitId, s16 *out) {
-    BtlUnit *u = btl_getUnit(unitId);
-    if (btl_isModelPart(u) != 0) {
-        out[0] = u->pos[0] >> 16;
-        out[1] = u->pos[1] >> 16;
-        out[2] = u->pos[2] >> 16;
+    BtlUnit *unit = btl_getUnit(unitId);
+    if (btl_isModelPart(unit) != 0) {
+        out[0] = unit->pos[0] >> 16;
+        out[1] = unit->pos[1] >> 16;
+        out[2] = unit->pos[2] >> 16;
     } else {
-        out[0] = u->home->pos[0] >> 16;
-        out[1] = u->home->pos[1] >> 16;
-        out[2] = u->home->pos[2] >> 16;
+        out[0] = unit->home->pos[0] >> 16;
+        out[1] = unit->home->pos[1] >> 16;
+        out[2] = unit->home->pos[2] >> 16;
     }
 }
 
@@ -1360,42 +1362,42 @@ void btlfx_getUnitBodyPos(s32 unitId, s32 part, s16 *out) {
 }
 
 void btlfx_setUnitPos(s32 unitId, s16 *pos) {
-    BtlUnit *u = btl_getUnit(unitId);
-    if (btl_isModelPart(u) == 0) {
-        u->pos[0] = pos[0] << 16;
-        u->pos[1] = pos[1] << 16;
-        u->pos[2] = pos[2] << 16;
+    BtlUnit *unit = btl_getUnit(unitId);
+    if (btl_isModelPart(unit) == 0) {
+        unit->pos[0] = pos[0] << 16;
+        unit->pos[1] = pos[1] << 16;
+        unit->pos[2] = pos[2] << 16;
     }
 }
 
 s32 btlfx_getBouncePos(s32 index, s16 *pos, s16 *rot) {
     BtlUnitList *list = g_btlfxEnv->targets;
-    BtlUnit *u = list->bounced[index];
+    BtlUnit *unit = list->bounced[index];
     if (index >= list->bounceCount) {
         return 1;
     }
-    btl_getUnitBodyPos(u, 0, pos);
-    rot[0] = u->rot[0];
-    rot[1] = u->rot[1];
-    rot[2] = u->rot[2];
+    btl_getUnitBodyPos(unit, 0, pos);
+    rot[0] = unit->rot[0];
+    rot[1] = unit->rot[1];
+    rot[2] = unit->rot[2];
     return 0;
 }
 
 void btlfx_getUnitRot(s32 unitId, s16 *out) {
-    BtlUnit *u = btl_getUnit(unitId);
-    s16 *p = u->rot;
-    out[0] = p[0];
-    out[1] = p[1] + 0x800;
-    out[2] = p[2];
+    BtlUnit *unit = btl_getUnit(unitId);
+    s16 *unitRot = unit->rot;
+    out[0] = unitRot[0];
+    out[1] = unitRot[1] + 0x800;
+    out[2] = unitRot[2];
 }
 
 void btlfx_setUnitRot(s32 unitId, s16 *rot) {
-    BtlUnit *u = btl_getUnit(unitId);
-    if (btl_isModelPart(u) == 0) {
-        s16 *p = u->rot;
-        p[0] = rot[0];
-        p[1] = rot[1] - 0x800;
-        p[2] = rot[2];
+    BtlUnit *unit = btl_getUnit(unitId);
+    if (btl_isModelPart(unit) == 0) {
+        s16 *unitRot = unit->rot;
+        unitRot[0] = rot[0];
+        unitRot[1] = rot[1] - 0x800;
+        unitRot[2] = rot[2];
     }
 }
 
@@ -1448,29 +1450,29 @@ void btlfx_turnUnitToward(s32 unitId, s16 *targetPos, s16 *startRot, s32 axes, s
 }
 
 void btlfx_getUnitScale(s32 unitId, VECTOR *out) {
-    BtlUnit *u = btl_getUnit(unitId);
-    BtlModel *m = u->model;
-    if (!(m->flags & BTL_MODEL_SCALED)) {
+    BtlUnit *unit = btl_getUnit(unitId);
+    BtlModel *model = unit->model;
+    if (!(model->flags & BTL_MODEL_SCALED)) {
         out->vz = 0x1000;
         out->vy = 0x1000;
         out->vx = 0x1000;
     } else {
-        out->vx = m->scaleX;
-        out->vy = u->model->scaleY;
-        out->vz = u->model->scaleZ;
+        out->vx = model->scaleX;
+        out->vy = unit->model->scaleY;
+        out->vz = unit->model->scaleZ;
     }
 }
 
 void btlfx_setUnitScale(s32 unitId, s32 *scale) {
-    BtlUnit *u = btl_getUnit(unitId);
-    if (btl_isModelPart(u) == 0) {
+    BtlUnit *unit = btl_getUnit(unitId);
+    if (btl_isModelPart(unit) == 0) {
         if (scale[0] == 0x1000 && scale[1] == scale[0] && scale[2] == scale[1]) {
-            u->model->flags &= ~BTL_MODEL_SCALED;
+            unit->model->flags &= ~BTL_MODEL_SCALED;
         } else {
-            u->model->flags |= BTL_MODEL_SCALED;
-            u->model->scaleX = scale[0];
-            u->model->scaleY = scale[1];
-            u->model->scaleZ = scale[2];
+            unit->model->flags |= BTL_MODEL_SCALED;
+            unit->model->scaleX = scale[0];
+            unit->model->scaleY = scale[1];
+            unit->model->scaleZ = scale[2];
         }
     }
 }
@@ -1511,27 +1513,27 @@ u32 btlfx_getUnitSlot(s32 unitId) {
 }
 
 void btlfx_getWeaponPos(s32 unitId, s32 tip, s16 *out) {
-    BtlUnit *u;
+    BtlUnit *unit;
     s32 bone;
-    MATRIX m;
+    MATRIX mat;
 
-    SVECTOR v;
+    SVECTOR ofs;
 
-    u = btl_getUnit(unitId);
-    bone = (g_gameState->gameData->characters + BTL_UNIT_INDEX(u->flags))->weaponBone;
+    unit = btl_getUnit(unitId);
+    bone = (g_gameState->gameData->characters + BTL_UNIT_INDEX(unit->flags))->weaponBone;
     if (tip == 0) {
         btlfx_getUnitBonePos(unitId, bone, (u16 *)out);
     } else {
-        btlfx_getUnitBoneMatrix(unitId, bone, (BtlBone *)&m);
-        gte_SetRotMatrix(&m);
-        gte_SetTransMatrix(&m);
-        btl_getWeaponOffset((Unk800BC1E0 *)u->weapon, (s16 *)&v);
-        gte_ldv0(&v);
+        btlfx_getUnitBoneMatrix(unitId, bone, (BtlBone *)&mat);
+        gte_SetRotMatrix(&mat);
+        gte_SetTransMatrix(&mat);
+        btl_getWeaponOffset((Unk800BC1E0 *)unit->weapon, (s16 *)&ofs);
+        gte_ldv0(&ofs);
         gte_rtv0tr();
-        gte_stlvnl(m.t);
-        out[0] = m.t[0];
-        out[1] = m.t[1];
-        out[2] = m.t[2];
+        gte_stlvnl(mat.t);
+        out[0] = mat.t[0];
+        out[1] = mat.t[1];
+        out[2] = mat.t[2];
     }
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
@@ -1580,70 +1582,70 @@ void btlfx_fadeUnit(BtlUnit *unit, s32 level) {
 }
 
 void btlfx_fadeUnitById(s32 unitId, s32 level) {
-    BtlUnit *u = btl_getUnit(unitId);
+    BtlUnit *unit = btl_getUnit(unitId);
     if (level < 0) {
         if (level == -1) {
-            btl_hideMeshes(u, 0xFFFF);
+            btl_hideMeshes(unit, 0xFFFF);
         } else {
-            btl_showMeshes(u, 0xFFFF);
+            btl_showMeshes(unit, 0xFFFF);
         }
     } else {
-        btlfx_fadeUnit(u, level);
+        btlfx_fadeUnit(unit, level);
     }
 }
 
 void btlfx_setUnitLight(s32 unitId, s32 level) {
-    BtlUnit *u = btl_getUnit(unitId);
-    if (btl_isModelPart(u) == 0) {
-        BtlModel *m = u->model;
+    BtlUnit *unit = btl_getUnit(unitId);
+    if (btl_isModelPart(unit) == 0) {
+        BtlModel *model = unit->model;
         s16 shade = level - 0x80;
-        if ((*(u32 *)m & 0x30) == 0x20) {
-            btl_setModelRgb(m, shade, shade, shade);
+        if ((*(u32 *)model & 0x30) == 0x20) {
+            btl_setModelRgb(model, shade, shade, shade);
         }
     }
 }
 
 s32 btlfx_fadeUnitGroup(u32 type, s32 level) {
-    BtlUnit *u;
-    s32 n = 0;
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
+    BtlUnit *unit;
+    s32 faded = 0;
+    for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
         switch (type) {
         case 0:
-            if (u->flags & BTL_UNIT_PARTY) {
-                btlfx_fadeUnit(u, level);
-                n++;
+            if (unit->flags & BTL_UNIT_PARTY) {
+                btlfx_fadeUnit(unit, level);
+                faded++;
             }
             break;
         case 1:
-            if (!(u->flags & BTL_UNIT_PARTY)) {
-                btlfx_fadeUnit(u, level);
-                n++;
+            if (!(unit->flags & BTL_UNIT_PARTY)) {
+                btlfx_fadeUnit(unit, level);
+                faded++;
             }
             break;
         case 9:
-            if (u == btl_getUnit(BTLFX_UNIT_CASTER)) {
-                btlfx_fadeUnit(u, level);
-                n++;
+            if (unit == btl_getUnit(BTLFX_UNIT_CASTER)) {
+                btlfx_fadeUnit(unit, level);
+                faded++;
             }
             break;
         case 2:
-            btlfx_fadeUnit(u, level);
-            n++;
+            btlfx_fadeUnit(unit, level);
+            faded++;
             break;
         case 8:
             if (btlfx_isEnemyUnit(BTLFX_UNIT_CASTER)) {
-                if (!(u->flags & BTL_UNIT_PARTY)) {
-                    btlfx_fadeUnit(u, level);
-                    n++;
+                if (!(unit->flags & BTL_UNIT_PARTY)) {
+                    btlfx_fadeUnit(unit, level);
+                    faded++;
                 }
-            } else if (u != btl_getUnit(BTLFX_UNIT_CASTER) && (u->flags & BTL_UNIT_PARTY)) {
-                btlfx_fadeUnit(u, level);
-                n++;
+            } else if (unit != btl_getUnit(BTLFX_UNIT_CASTER) && (unit->flags & BTL_UNIT_PARTY)) {
+                btlfx_fadeUnit(unit, level);
+                faded++;
             }
             break;
         }
     }
-    return n;
+    return faded;
 }
 
 void btlfx_clearUnitStatus(s32 unitId) {
@@ -1655,27 +1657,27 @@ void btlfx_clearUnitStatus(s32 unitId) {
 }
 
 s32 btlfx_nextUnitPos(s32 id, s16 *pos, BtlUnit **iter, s32 *out) {
-    BtlUnit *u;
+    BtlUnit *unit;
     s32 isSelf = 0;
 
     if (*iter == (BtlUnit *)-1) {
-        u = g_gameState->gameData->ctx.battle->unitList;
+        unit = g_gameState->gameData->ctx.battle->unitList;
     } else {
         if (*iter == NULL) {
             return -2;
         }
-        u = *iter;
+        unit = *iter;
     }
-    btl_getUnitBodyPos(u, 0, pos);
-    if (((u8)btl_hasStatus(u, BTL_STATUS_KO) && u != btl_getUnit(id)) || !((u->flags >> BTL_UNIT_TARGETABLE_BIT) & 1)) {
-        *iter = u->next;
+    btl_getUnitBodyPos(unit, 0, pos);
+    if (((u8)btl_hasStatus(unit, BTL_STATUS_KO) && unit != btl_getUnit(id)) || !((unit->flags >> BTL_UNIT_TARGETABLE_BIT) & 1)) {
+        *iter = unit->next;
         return -1;
     }
-    if (u == btl_getUnit(id)) {
+    if (unit == btl_getUnit(id)) {
         isSelf = 1;
     }
-    *out = u->flags & BTL_UNIT_PARTY;
-    *iter = u->next;
+    *out = unit->flags & BTL_UNIT_PARTY;
+    *iter = unit->next;
     return isSelf;
 }
 
@@ -1713,29 +1715,29 @@ s32 btlfx_isCmdPendingOnAutoPotion(s32 unitId) {
 }
 
 s32 btlfx_resetIdleMotion(s32 mode, s32 unitId) {
-    s32 r = 0;
-    BtlUnit *u = btl_getUnit(unitId);
+    s32 ret = 0;
+    BtlUnit *unit = btl_getUnit(unitId);
     if (mode == 0) {
-        if ((u8)btl_hasStatus(u, BTL_STATUS_KO)) {
-            u->model->motion = (BtlMotion *)u->motions[4];
-        } else if ((u->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
-            u->model->motion = (BtlMotion *)u->motions[9];
+        if ((u8)btl_hasStatus(unit, BTL_STATUS_KO)) {
+            unit->model->motion = (BtlMotion *)unit->motions[4];
+        } else if ((unit->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1) {
+            unit->model->motion = (BtlMotion *)unit->motions[9];
         } else {
-            u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+            unit->model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
         }
-    } else if ((u8)btl_hasStatus(u, BTL_STATUS_KO) || BTL_UNIT_INDEX(u->flags) == 4) {
+    } else if ((u8)btl_hasStatus(unit, BTL_STATUS_KO) || BTL_UNIT_INDEX(unit->flags) == 4) {
         btlfx_resetIdleMotion(0, 0x10);
-        r = 1;
+        ret = 1;
     } else {
         btlfx_playUnitMotion(BTLFX_UNIT_CASTER, 0x1C);
     }
-    return r;
+    return ret;
 }
 
 s32 btlfx_isUnitKind(s32 unitId, s32 kindIdx) {
-    u32 f = btl_getUnit(unitId)->flags;
+    u32 flags = btl_getUnit(unitId)->flags;
     u8 kind = g_btlfxUnitKinds[kindIdx];
-    return ((f & BTL_UNIT_PARTY) ? g_gameState->gameData->characters[BTL_UNIT_INDEX(f)].info.b.kind : CHR_KIND_NONE) == kind;
+    return ((flags & BTL_UNIT_PARTY) ? g_gameState->gameData->characters[BTL_UNIT_INDEX(flags)].info.b.kind : CHR_KIND_NONE) == kind;
 }
 
 void btlfx_copyWords(s32 *dst, s32 *src, u32 size) {
@@ -1754,14 +1756,14 @@ void btlfx_copyWords(s32 *dst, s32 *src, u32 size) {
 s32 *btlfx_swapModelData(s32 modelId, s32 *save) {
     s32 id = (modelId & 0xFFFF) | DB_MODEL;
     u32 size = (u32)db_lookupRegistered(DB_GET_SIZE, id, 0);
-    s32 *p = db_lookupRegistered(DB_GET_ADDR, id, 0);
+    s32 *modelData = db_lookupRegistered(DB_GET_ADDR, id, 0);
     if (*save == 0x1234) {
-        btlfx_copyWords(p, save + 1, size);
+        btlfx_copyWords(modelData, save + 1, size);
     } else {
-        btlfx_copyWords(save + 1, p, size);
+        btlfx_copyWords(save + 1, modelData, size);
         *save = 0x1234;
     }
-    return p;
+    return modelData;
 }
 
 void btlfx_moveSummonToHeap(s32 sizeKb) {
@@ -1774,17 +1776,17 @@ void btl_forEachModelVertex(BtlModelHeader *header, void (*fn)(SVECTOR *, s32)) 
     s32 i;
     s32 j;
     s32 k;
-    s32 n;
-    BtlMesh *m;
-    BtlModelHeader *g = header;
-    for (i = 0; i < g->meshCount; i++) {
-        m = &g->meshes[i];
-        n = 0;
-        for (j = 0; j < g->boneCount; j++) {
-            for (k = 0; k < m->vertexCounts[j]; k++) {
-                fn(&m->vertices[n + k], n + k);
+    s32 vtxBase;
+    BtlMesh *mesh;
+    BtlModelHeader *hdr = header;
+    for (i = 0; i < hdr->meshCount; i++) {
+        mesh = &hdr->meshes[i];
+        vtxBase = 0;
+        for (j = 0; j < hdr->boneCount; j++) {
+            for (k = 0; k < mesh->vertexCounts[j]; k++) {
+                fn(&mesh->vertices[vtxBase + k], vtxBase + k);
             }
-            n += m->vertexCounts[j];
+            vtxBase += mesh->vertexCounts[j];
         }
     }
 }
@@ -1794,14 +1796,14 @@ void btlfx_setPartnerByArg(s32 argIndex) {
 }
 
 void btlfx_restorePartyLooks(void) {
-    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
-    while (u != NULL) {
-        if (u->flags & BTL_UNIT_PARTY) {
-            btl_reapplyStatusLook(u);
-            btlfx_reapplyMini(u);
-            btlfx_reapplyVanish(u);
+    BtlUnit *unit = g_gameState->gameData->ctx.battle->unitList;
+    while (unit != NULL) {
+        if (unit->flags & BTL_UNIT_PARTY) {
+            btl_reapplyStatusLook(unit);
+            btlfx_reapplyMini(unit);
+            btlfx_reapplyVanish(unit);
         }
-        u = u->next;
+        unit = unit->next;
     }
     if (g_btlfxEnv->state->effectId == BTLFX_EFFECT_ARK_SHORT) {
         btl_setIdleMotion(btl_getUnit(BTLFX_UNIT_CASTER));
@@ -1809,41 +1811,41 @@ void btlfx_restorePartyLooks(void) {
 }
 
 void btlfx_restoreUnitLook(s32 unitId) {
-    BtlUnit *u = btl_getUnit(unitId);
-    if (u->flags & BTL_UNIT_PARTY) {
-        btl_reapplyStatusLook(u);
-        btlfx_reapplyMini(u);
-        btlfx_reapplyVanish(u);
+    BtlUnit *unit = btl_getUnit(unitId);
+    if (unit->flags & BTL_UNIT_PARTY) {
+        btl_reapplyStatusLook(unit);
+        btlfx_reapplyMini(unit);
+        btlfx_reapplyVanish(unit);
     }
 }
 
 s32 btlfx_countVisibleParty(void) {
-    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
-    s32 n = 0;
-    while (u != NULL) {
-        n += (u->flags & (BTL_UNIT_PARTY | BTL_UNIT_HIDDEN)) == BTL_UNIT_PARTY;
-        u = u->next;
+    BtlUnit *unit = g_gameState->gameData->ctx.battle->unitList;
+    s32 visible = 0;
+    while (unit != NULL) {
+        visible += (unit->flags & (BTL_UNIT_PARTY | BTL_UNIT_HIDDEN)) == BTL_UNIT_PARTY;
+        unit = unit->next;
     }
-    return n;
+    return visible;
 }
 
 /* weapon texture animation: mode 0 = start anim (second ? 1 : 0), 1 = stop anim 2, 2 = start anim 2 */
 void btlfx_setUnitTexAnim(s32 unitId, s32 mode, s32 second) {
-    BtlUnit *u = btl_getUnit(unitId);
+    BtlUnit *unit = btl_getUnit(unitId);
 
     switch (mode) {
     case 0:
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[second ? 1 : 0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[second ? 1 : 0].pos = 0;
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[second ? 1 : 0].lastFrame = 0x1000;
+        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[second ? 1 : 0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[second ? 1 : 0].pos = 0;
+        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[second ? 1 : 0].lastFrame = 0x1000;
         break;
     case 1:
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         break;
     case 2:
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].flags |= BTL_TEXANIM_PLAY;
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].pos = 0;
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].lastFrame = 0x1000;
+        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[2].flags |= BTL_TEXANIM_PLAY;
+        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[2].pos = 0;
+        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[2].lastFrame = 0x1000;
         break;
     }
 }
@@ -1867,14 +1869,14 @@ void btlfx_showCasterCmdName(void) {
 }
 
 s32 btlfx_isResultDeferred(void) {
-    s32 r = 0;
+    s32 deferred = 0;
     if (btlfx_isEnemyUnit(BTLFX_UNIT_CASTER) != 0) {
         if (g_btlfxEnv->targets->fxArgs[0] == 0) {
-            return r;
+            return deferred;
         }
-        r = (u8)(g_btlfxEnv->state->flags >> 8) >> 7;
+        deferred = (u8)(g_btlfxEnv->state->flags >> 8) >> 7;
     }
-    return r;
+    return deferred;
 }
 
 void btlfx_execCmd(s32 unitId) {
@@ -1912,7 +1914,7 @@ void btl_setVsyncMode(s32 mode) {
    return that value (docs/effect-modules.md). */
 void btlfx_registerEffectModel(Unk800E8F50 *data, s32 abr) {
     s32 i;
-    s32 n;
+    s32 texCount;
     Unk800E8F50 *h;
     Unk800E8F50Entry *tex;
     void *model;
@@ -1922,20 +1924,20 @@ void btlfx_registerEffectModel(Unk800E8F50 *data, s32 abr) {
     }
     model = (u8 *)data + h->modelOfs;
     if (h->textured != 0) {
-        n = (data->modelOfs - 8) >> 3;
+        texCount = (data->modelOfs - 8) >> 3;
         tex = h->tex;
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < texCount; i++) {
             tex[i].tpage |= (abr & 3) << 5;
         }
-        Hi_RegisterTexListModel(model, (BtlTexInfo *)tex, (s16 *)((u8 *)h + h->texPosOfs), n);
+        Hi_RegisterTexListModel(model, (BtlTexInfo *)tex, (s16 *)((u8 *)h + h->texPosOfs), texCount);
     } else {
         Hi_RegisterGouEffModel(model);
     }
 }
 
-void btlfx_registerSummonModel(Unk800E9000 *data, s32 *src, s32 n, Unk80100DC054 *e) {
+void btlfx_registerSummonModel(Unk800E9000 *data, s32 *src, s32 motionCount, Unk80100DC054 *slot) {
     Unk800E9000 *h = data;
-    s32 *s;
+    s32 *srcPtr;
     s32 i;
     s32 texCount;
     s32 k2;
@@ -1946,24 +1948,24 @@ void btlfx_registerSummonModel(Unk800E9000 *data, s32 *src, s32 n, Unk80100DC054
         SystemError(0x53, 0x190);
     }
     texCount = (h->modelOfs - 8) >> 3;
-    e->motionCount = n;
-    e->texAnims = NULL;
-    e->texCount = texCount;
-    e->modelHdr = (u8 *)h + h->modelOfs;
-    s = src;
-    for (i = 0; i < n; i++, s++) {
-        e->motions[i] = *s;
+    slot->motionCount = motionCount;
+    slot->texAnims = NULL;
+    slot->texCount = texCount;
+    slot->modelHdr = (u8 *)h + h->modelOfs;
+    srcPtr = src;
+    for (i = 0; i < motionCount; i++, srcPtr++) {
+        slot->motions[i] = *srcPtr;
     }
     texPos = (Unk800E9000Ent *)((u8 *)h + h->texPosOfs);
     tex = h->tex;
     for (i = 0; i < texCount; i++) {
-        e->texTpage[i] = tex[i].tpage;
-        e->texClut[i] = tex[i].clut;
-        e->texY[i] = texPos[i].clut;
+        slot->texTpage[i] = tex[i].tpage;
+        slot->texClut[i] = tex[i].clut;
+        slot->texY[i] = texPos[i].clut;
     }
-    btlfx_initSummonModels(&e->model, 1);
-    g_btlfxLoader.summon = e;
-    g_btlfxLoader.summonModel = Hi_RegisterSummonModel(e, NULL);
+    btlfx_initSummonModels(&slot->model, 1);
+    g_btlfxLoader.summon = slot;
+    g_btlfxLoader.summonModel = Hi_RegisterSummonModel(slot, NULL);
 }
 
 BtlUnit *btlfx_getFirstTarget(void) {
@@ -2003,7 +2005,7 @@ void btlfx_updateCameraEnable(void) {
 void btlfx_playCmdCamera(s32 flags) {
     u32 hi;
     s32 msg;
-    BtlUnit *u;
+    BtlUnit *caster;
     BtlUnit *target;
 
     if (flags == 0xFFFF) {
@@ -2013,17 +2015,17 @@ void btlfx_playCmdCamera(s32 flags) {
     if (g_btlfxCameraOn == 0 || hi == 0xF0 || (g_btlfxEnv->targets->kind & BTL_FXK_ITEM)) {
         return;
     }
-    u = btl_getUnit(BTLFX_UNIT_CASTER);
-    if ((u8)btl_hasStatus(u, BTL_STATUS_MINI) != 0 || (u8)btl_hasStatus(u, BTL_STATUS_VANISH) != 0) {
+    caster = btl_getUnit(BTLFX_UNIT_CASTER);
+    if ((u8)btl_hasStatus(caster, BTL_STATUS_MINI) != 0 || (u8)btl_hasStatus(caster, BTL_STATUS_VANISH) != 0) {
         return;
     }
     target = btlfx_getFirstTarget();
     if (g_btlfxEnv->targets->kind & BTL_FXK_SWD_MAG) {
         msg = btlfx_getCommonData(g_btlfxCmdCameras[4]);
-    } else if (u->flags & BTL_UNIT_PARTY) {
-        if ((u8)btl_hasStatus(u, BTL_STATUS_TRANCE) == 0) {
+    } else if (caster->flags & BTL_UNIT_PARTY) {
+        if ((u8)btl_hasStatus(caster, BTL_STATUS_TRANCE) == 0) {
             if ((hi >> 4) == 1 || (hi >> 4) == 7) {
-                if (BTL_UNIT_INDEX(u->flags) == CHR_DAGGER) {
+                if (BTL_UNIT_INDEX(caster->flags) == CHR_DAGGER) {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[2]);
                 } else {
                     msg = btlfx_getCommonData(g_btlfxCmdCameras[3]);
@@ -2039,7 +2041,7 @@ void btlfx_playCmdCamera(s32 flags) {
             msg = btlfx_getCommonData(g_btlfxCmdCameras[1]);
         }
     } else {
-        msg = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->camera;
+        msg = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(caster->flags)].type->camera;
     }
     if (msg != 0) {
         btlcam_play(msg);
@@ -2067,22 +2069,22 @@ void btlfx_initSounds(void) {
 }
 
 void btlfx_updateSounds(void) {
-    s32 n = 0;
+    s32 playing = 0;
     s32 i;
-    Unk80104E30 *p = &g_btlfxSounds;
-    Unk80104E30Entry *e = p->slots;
-    for (i = 0; i < 6; i++, e++) {
-        if (e->sound != 0) {
-            if (akao_isSePlaying(e->sound) == 0) {
-                e->sound = 0;
+    Unk80104E30 *sounds = &g_btlfxSounds;
+    Unk80104E30Entry *slot = sounds->slots;
+    for (i = 0; i < 6; i++, slot++) {
+        if (slot->sound != 0) {
+            if (akao_isSePlaying(slot->sound) == 0) {
+                slot->sound = 0;
             } else {
-                n++;
-                akao_sendCmdA2(0, e->sound, btl_soundPan(e->unit));
-                e->age++;
+                playing++;
+                akao_sendCmdA2(0, slot->sound, btl_soundPan(slot->unit));
+                slot->age++;
             }
         }
     }
-    p->count = n;
+    sounds->count = playing;
 }
 
 s32 btlfx_allocSound(s32 unit) {
@@ -2090,30 +2092,30 @@ s32 btlfx_allocSound(s32 unit) {
     s32 bestbit = 0;
     s32 max = -1;
     s32 bit = 1;
-    Unk80104E30 *p = &g_btlfxSounds;
-    Unk80104E30Entry *e = p->slots;
+    Unk80104E30 *sounds = &g_btlfxSounds;
+    Unk80104E30Entry *slot = sounds->slots;
     s32 i;
-    for (i = 0; i < 6; i++, e++, bit <<= 1) {
-        if (e->sound == 0) {
+    for (i = 0; i < 6; i++, slot++, bit <<= 1) {
+        if (slot->sound == 0) {
             break;
         }
-        if (max < e->age) {
-            max = e->age;
-            best = e;
+        if (max < slot->age) {
+            max = slot->age;
+            best = slot;
             bestbit = bit;
         }
     }
     if (i >= 6) {
         bit = bestbit;
-        e = best;
+        slot = best;
     }
     if (akao_isSePlaying(bit) != 0) {
         akao_stopSe(0, bit);
     }
-    if (e != NULL) {
-        e->sound = bit;
-        e->unit = unit;
-        e->age = 0;
+    if (slot != NULL) {
+        slot->sound = bit;
+        slot->unit = unit;
+        slot->age = 0;
     }
     return bit;
 }
@@ -2123,13 +2125,13 @@ void btlfx_stopAllSounds(void) {
 }
 
 Unk80104E34 *btlfx_findSound(s32 sound) {
-    Unk80104E34 *p;
+    Unk80104E34 *slot;
     s32 i;
     if (sound != 0) {
-        p = g_btlfxSoundSlots;
-        for (i = 0; i < 6; i++, p++) {
-            if (p->sound == sound) {
-                return p;
+        slot = g_btlfxSoundSlots;
+        for (i = 0; i < 6; i++, slot++) {
+            if (slot->sound == sound) {
+                return slot;
             }
         }
     }
@@ -2138,7 +2140,7 @@ Unk80104E34 *btlfx_findSound(s32 sound) {
 
 s32 btl_soundPan(s32 unit) {
     SVECTOR pos;
-    SVECTOR *v;
+    SVECTOR *posPtr;
     DVECTOR sxy;
     s32 x;
     s32 sign;
@@ -2147,14 +2149,14 @@ s32 btl_soundPan(s32 unit) {
         return 0x80;
     }
     if (unit & 0x90000000) {
-        v = (SVECTOR *)unit;
+        posPtr = (SVECTOR *)unit;
     } else {
-        v = &pos;
-        btlfx_getUnitPos(unit, (s16 *)v);
+        posPtr = &pos;
+        btlfx_getUnitPos(unit, (s16 *)posPtr);
     }
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
-    gte_ldv0(v);
+    gte_ldv0(posPtr);
     gte_rtps();
     gte_stsxy(&sxy);
     x = sxy.vx - 160;
@@ -2167,26 +2169,26 @@ s32 btl_soundPan(s32 unit) {
 }
 
 void btlfx_stopSound(s32 sound) {
-    Unk80104E34 *p = btlfx_findSound(sound);
-    if (p != NULL) {
+    Unk80104E34 *slot = btlfx_findSound(sound);
+    if (slot != NULL) {
         akao_stopSe(0, sound);
-        p->sound = 0;
+        slot->sound = 0;
     }
 }
 
 void btlfx_setSoundUnit(s32 sound, s32 unit) {
-    Unk80104E34 *p = btlfx_findSound(sound);
-    if (p != NULL) {
-        p->unit = unit;
+    Unk80104E34 *slot = btlfx_findSound(sound);
+    if (slot != NULL) {
+        slot->unit = unit;
     }
 }
 
 void btlfx_setAllSoundsUnit(s32 unit) {
-    Unk80104E34 *p = g_btlfxSoundSlots;
+    Unk80104E34 *slot = g_btlfxSoundSlots;
     s32 i;
-    for (i = 0; i < 6; i++, p++) {
-        if (p->sound != 0) {
-            p->unit = unit;
+    for (i = 0; i < 6; i++, slot++) {
+        if (slot->sound != 0) {
+            slot->unit = unit;
         }
     }
 }

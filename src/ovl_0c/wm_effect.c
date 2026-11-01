@@ -60,58 +60,58 @@ void wm_initEffects(void) {
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", g_worldEffectFlatRot);
 
 void wm_drawEffects(void) {
-    WmEffect *o;
-    VECTOR a;
-    VECTOR b;
+    WmEffect *fx;
+    VECTOR rel;
+    VECTOR view;
     SVECTOR pos;
     s32 tex;
     s32 k;
 
-    o = g_worldEffectActive.next;
+    fx = g_worldEffectActive.next;
     SetRotMatrix(g_worldViewMatrix);
     SetTransMatrix(g_worldViewMatrix);
-    while (o->next != NULL) {
-        if ((u8)wm_worldToView((VECTOR *)&o->x, &a, &b, 0)) {
-            pos.vx = a.vx;
-            pos.vy = a.vy;
-            pos.vz = a.vz;
-            if (b.vz > 1000) {
+    while (fx->next != NULL) {
+        if ((u8)wm_worldToView((VECTOR *)&fx->x, &rel, &view, 0)) {
+            pos.vx = rel.vx;
+            pos.vy = rel.vy;
+            pos.vz = rel.vz;
+            if (view.vz > 1000) {
                 tex = g_worldOt[*g_worldBufIndex];
-                switch ((u8)o->type) {
+                switch ((u8)fx->type) {
                 case 2:
                     g_worldOtBias = 0;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, NULL, o->scale = o->frame * 400 + 6000,
-                                               (s16)((s16)(o->frame / 4) % 26), (u8)o->abr, -1, tex, 0, 2);
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, NULL, fx->scale = fx->frame * 400 + 6000,
+                                               (s16)((s16)(fx->frame / 4) % 26), (u8)fx->abr, -1, tex, 0, 2);
                     break;
                 case 3:
                     g_worldOtBias = 0;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, NULL, o->scale = o->frame * 400 + 6000,
-                                               (s16)((s16)(o->frame / 2) % 23), (u8)o->abr, -1, tex, 0, 2);
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, NULL, fx->scale = fx->frame * 400 + 6000,
+                                               (s16)((s16)(fx->frame / 2) % 23), (u8)fx->abr, -1, tex, 0, 2);
                     break;
                 case 8: {
-                    SVECTOR r = g_worldEffectFlatRot;
+                    SVECTOR rot = g_worldEffectFlatRot;
                     g_worldOtBias = 20;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, o->frame, (u8)o->abr,
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, fx->frame, (u8)fx->abr,
                                                -1, tex, 0, 0);
                     break;
                 }
                 case WM_FX_BOAT_WAKE:
                 case WM_FX_WATER_RIPPLE: {
-                    SVECTOR r = g_worldEffectFlatRot;
+                    SVECTOR rot = g_worldEffectFlatRot;
                     g_worldOtBias = 20;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, o->frame, (u8)o->abr,
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, fx->frame, (u8)fx->abr,
                                                g_worldEffectSpeed, tex, 0, 0);
                     break;
                 }
                 case WM_FX_FOREST_LEAVES: {
-                    SVECTOR r = g_worldEffectFlatRot;
+                    SVECTOR rot = g_worldEffectFlatRot;
                     pos.vy -= 400;
-                    o->scale = (8 - o->frame) * 4000;
-                    r.vy = o->frame * 128;
+                    fx->scale = (8 - fx->frame) * 4000;
+                    rot.vy = fx->frame * 128;
                     g_worldOtBias = 0;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, 0, 1, -1, tex, 0, 0);
-                    r.vy = o->frame * 200;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, 0, 2, -1, tex, 0, 0);
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, 0, 1, -1, tex, 0, 0);
+                    rot.vy = fx->frame * 200;
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, 0, 2, -1, tex, 0, 0);
                     break;
                 }
                 case WM_FX_CHOCOBO_SAND:
@@ -127,41 +127,41 @@ void wm_drawEffects(void) {
                     g_worldOtBias = 50;
                     k = g_worldEffectSpeed * g_worldSprayLevel >> 12;
                     if (k >= 25) {
-                        g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, NULL, o->scale, o->frame,
-                                                   (u8)o->abr, k, tex, 0, 0);
+                        g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, NULL, fx->scale, fx->frame,
+                                                   (u8)fx->abr, k, tex, 0, 0);
                     }
                     break;
                 case 25:
                 case 26: {
-                    SVECTOR r;
-                    memset(&r, 0, 8);
-                    r.pad = 1;
-                    r.vy = ratan2(0x30031 - o->x, -0x13F6E - o->z);
+                    SVECTOR rot;
+                    memset(&rot, 0, 8);
+                    rot.pad = 1;
+                    rot.vy = ratan2(0x30031 - fx->x, -0x13F6E - fx->z);
                     g_worldOtBias = 0;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, o->frame, (u8)o->abr,
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, &rot, fx->scale, fx->frame, (u8)fx->abr,
                                                -1, tex, 0, 0);
                     break;
                 }
                 default:
                     g_worldOtBias = 40;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, NULL, o->scale, o->frame, (u8)o->abr,
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)fx->sprite, &pos, NULL, fx->scale, fx->frame, (u8)fx->abr,
                                                -1, tex, 0, 0);
                     break;
                 }
             }
         }
-        o = o->next;
+        fx = fx->next;
     }
 }
 
 void wm_updateEffects(void) {
-    WmEffect *o;
+    WmEffect *fx;
     WmEffect *cur;
     s16 spd;
     u8 flag;
 
     flag = 0;
-    o = g_worldEffectActive.next;
+    fx = g_worldEffectActive.next;
     spd = g_worldMoveModeInfo->speed;
     if (spd != 0) {
         g_worldEffectSpeedTarget = abs((g_worldPlayerSpeed << 12) / spd);
@@ -169,37 +169,37 @@ void wm_updateEffects(void) {
         g_worldEffectSpeedTarget = 0;
     }
     g_worldEffectSpeed += (g_worldEffectSpeedTarget - g_worldEffectSpeed) / 32;
-    while (o->next != NULL) {
+    while (fx->next != NULL) {
         /* dead flag: combine folds the test (flag is only ever 0) and jump2 drops the
          * body after register allocation, which leaves s7 = 0 and its save behind */
         if (flag) {
-            wm_freeEffect(o);
+            wm_freeEffect(fx);
         }
-        switch ((u8)o->type) {
+        switch ((u8)fx->type) {
         case 2:
-            o->y -= 60 + rand8_inline() % 24;
-            o->x -= 30 - rand8_inline() % 60;
-            o->z -= 30 - rand8_inline() % 60;
+            fx->y -= 60 + rand8_inline() % 24;
+            fx->x -= 30 - rand8_inline() % 60;
+            fx->z -= 30 - rand8_inline() % 60;
             break;
         case 3:
-            o->y -= 60 + rand8_inline() % 24;
-            o->x -= 60 - rand8_inline() % 60;
-            o->z -= 30 - rand8_inline() % 60;
+            fx->y -= 60 + rand8_inline() % 24;
+            fx->x -= 60 - rand8_inline() % 60;
+            fx->z -= 30 - rand8_inline() % 60;
             break;
         case 23:
-            o->x = math_sin((o->frame << 6) + o->phase) / 2 + g_worldBlockFx4Pos.vx;
-            o->y -= 80;
-            o->z = math_cos((o->frame << 6) + o->phase) / 2 + g_worldBlockFx4Pos.vz;
+            fx->x = math_sin((fx->frame << 6) + fx->phase) / 2 + g_worldBlockFx4Pos.vx;
+            fx->y -= 80;
+            fx->z = math_cos((fx->frame << 6) + fx->phase) / 2 + g_worldBlockFx4Pos.vz;
             /* fallthrough */
         case 24:
-            o->x -= 40 + rand8_inline() % 130;
-            o->y -= 40 - rand8_inline() % 80;
-            o->z += 300 + rand8_inline() % 300;
+            fx->x -= 40 + rand8_inline() % 130;
+            fx->y -= 40 - rand8_inline() % 80;
+            fx->z += 300 + rand8_inline() % 300;
             break;
         }
-        o->frame++;
-        cur = o;
-        o = o->next;
+        fx->frame++;
+        cur = fx;
+        fx = fx->next;
         switch ((u8)cur->type) {
         case 2:
             if (cur->frame >= 77) {
@@ -232,8 +232,8 @@ void wm_updateEffects(void) {
 }
 
 void wm_drawBlockFx(u8 fxId) {
-    VECTOR v;
-    MATRIX m;
+    VECTOR view;
+    MATRIX mtx;
     s32 i;
     s32 j;
 
@@ -246,32 +246,32 @@ void wm_drawBlockFx(u8 fxId) {
         if (g_worldFormFlags[WM_FORM_CLAY] == 0 && g_worldDataSet == WM_DATASET_DISC1) {
             VECTOR scale;
 
-            math_rotMatrixXYZ(&g_worldBlockFx4Rot, &m);
-            if ((u8)wm_worldToView(&g_worldBlockFx4Pos, (VECTOR *)m.t, &v, 0)) {
+            math_rotMatrixXYZ(&g_worldBlockFx4Rot, &mtx);
+            if ((u8)wm_worldToView(&g_worldBlockFx4Pos, (VECTOR *)mtx.t, &view, 0)) {
                 scale = g_worldBlockFx4Scale;
-                ScaleMatrix(&m, &scale);
-                CompMatrix(g_worldViewMatrix, &m, &m);
-                SetRotMatrix(&m);
-                SetTransMatrix(&m);
+                ScaleMatrix(&mtx, &scale);
+                CompMatrix(g_worldViewMatrix, &mtx, &mtx);
+                SetRotMatrix(&mtx);
+                SetTransMatrix(&mtx);
                 wm_drawModel(WM_PACK0(0x3A), 0x50, 1);
                 wm_drawModel(WM_PACK0(0x35), 0x3C, 0);
                 for (j = 0; j < 3; j++) {
-                    math_rotMatrixXYZ(&g_worldBlockFx4PartRots[j], &m);
-                    wm_worldToView(&g_worldBlockFx4Pos, (VECTOR *)m.t, &v, 0);
-                    CompMatrix(g_worldViewMatrix, &m, &m);
-                    SetRotMatrix(&m);
-                    SetTransMatrix(&m);
+                    math_rotMatrixXYZ(&g_worldBlockFx4PartRots[j], &mtx);
+                    wm_worldToView(&g_worldBlockFx4Pos, (VECTOR *)mtx.t, &view, 0);
+                    CompMatrix(g_worldViewMatrix, &mtx, &mtx);
+                    SetRotMatrix(&mtx);
+                    SetTransMatrix(&mtx);
                     wm_drawModel(WM_PACK0(j + 0x36), 0, 0);
                 }
             }
         }
         break;
     case 7:
-        math_rotMatrixXYZ(&g_worldBlockFx7Rot, &m);
-        wm_worldToView(&g_worldBlockFx7Pos, (VECTOR *)m.t, &v, 0);
-        CompMatrix(g_worldViewMatrix, &m, &m);
-        SetRotMatrix(&m);
-        SetTransMatrix(&m);
+        math_rotMatrixXYZ(&g_worldBlockFx7Rot, &mtx);
+        wm_worldToView(&g_worldBlockFx7Pos, (VECTOR *)mtx.t, &view, 0);
+        CompMatrix(g_worldViewMatrix, &mtx, &mtx);
+        SetRotMatrix(&mtx);
+        SetTransMatrix(&mtx);
         wm_drawModel(WM_PACK0(0x39), 0, 1);
         break;
     case 6:
@@ -279,45 +279,45 @@ void wm_drawBlockFx(u8 fxId) {
             SVECTOR pos;
             u32 *ot;
             WmSprHdr *spr;
-            s32 n;
+            s32 frames;
 
             ot = (u32 *)g_worldOt[*g_worldBufIndex];
-            wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)m.t, &v, 0);
+            wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)mtx.t, &view, 0);
             g_worldOtBias = 0;
-            pos.vx = m.t[0];
-            pos.vy = m.t[1];
-            pos.vz = m.t[2];
+            pos.vx = mtx.t[0];
+            pos.vy = mtx.t[1];
+            pos.vz = mtx.t[2];
             spr = w_framePackGetPtr(g_worldDataPack, 0x25);
-            n = wm_getSpriteFrameCount((u16 *)spr) - 1;
-            if (n != 0) {
-                g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, spr, &pos, NULL, g_worldBlockFx6SpriteSize, g_worldFrameCount / 2 % n, 1, -1,
+            frames = wm_getSpriteFrameCount((u16 *)spr) - 1;
+            if (frames != 0) {
+                g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, spr, &pos, NULL, g_worldBlockFx6SpriteSize, g_worldFrameCount / 2 % frames, 1, -1,
                                            (s32)ot, 0, 0);
             }
-            wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)m.t, &v, 0);
-            CompMatrix(g_worldViewMatrix, &m, &m);
-            math_rotMatrixXYZ(&g_worldBlockFx6CoreRot, &m);
-            SetRotMatrix(&m);
-            SetTransMatrix(&m);
+            wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)mtx.t, &view, 0);
+            CompMatrix(g_worldViewMatrix, &mtx, &mtx);
+            math_rotMatrixXYZ(&g_worldBlockFx6CoreRot, &mtx);
+            SetRotMatrix(&mtx);
+            SetTransMatrix(&mtx);
             wm_drawModel(WM_PACK0(0x3F), g_worldBlockFx6CoreOtOfs, 2);
-            math_rotMatrixXYZ(&g_worldBlockFx6RotA, &m);
-            wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)m.t, &v, 0);
-            CompMatrix(g_worldViewMatrix, &m, &m);
-            SetRotMatrix(&m);
-            SetTransMatrix(&m);
+            math_rotMatrixXYZ(&g_worldBlockFx6RotA, &mtx);
+            wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)mtx.t, &view, 0);
+            CompMatrix(g_worldViewMatrix, &mtx, &mtx);
+            SetRotMatrix(&mtx);
+            SetTransMatrix(&mtx);
             wm_drawModel(WM_PACK0(0x3C), 0, 2);
-            math_rotMatrixXYZ(&g_worldBlockFx6RotB, &m);
-            wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)m.t, &v, 0);
-            CompMatrix(g_worldViewMatrix, &m, &m);
-            SetRotMatrix(&m);
-            SetTransMatrix(&m);
+            math_rotMatrixXYZ(&g_worldBlockFx6RotB, &mtx);
+            wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)mtx.t, &view, 0);
+            CompMatrix(g_worldViewMatrix, &mtx, &mtx);
+            SetRotMatrix(&mtx);
+            SetTransMatrix(&mtx);
             wm_drawModel(WM_PACK0(0x3D), 0, 2);
             for (i = 0; i < 10; i++) {
                 MATRIX m1;
                 MATRIX m2;
-                VECTOR d;
+                VECTOR rel;
                 VECTOR scale;
-                VECTOR s;
-                u8 c;
+                VECTOR scaleVec;
+                u8 bright;
 
                 m1 = g_worldIdentityMatrix;
                 m2 = g_worldIdentityMatrix;
@@ -336,24 +336,24 @@ void wm_drawBlockFx(u8 fxId) {
                     }
                 }
                 if (g_worldBlockFx6FlashTimer[i] != 0) {
-                    c = ~(g_worldBlockFx6FlashTimer[i] * 7);
-                    SetBackColor(c >> 1, c >> 2, c);
+                    bright = ~(g_worldBlockFx6FlashTimer[i] * 7);
+                    SetBackColor(bright >> 1, bright >> 2, bright);
                     m2.t[1] = -700;
                     math_rotMatrixXYZ(&g_worldBlockFx6FlashRot[i], &m1);
-                    gte_CompMatrix(&m1, &m2, &m);
-                    memset(&s, 0, sizeof(VECTOR));
-                    s.vx = 0x2FA0;
-                    s.vy = g_worldBlockFx6FlashLen[i];
-                    s.vz = 0x1830;
-                    scale = s;
-                    ScaleMatrix(&m, &scale);
-                    wm_worldToView(&g_worldBlockFx6Pos, &d, &v, 0);
-                    m.t[0] += d.vx;
-                    m.t[1] += d.vy;
-                    m.t[2] += d.vz;
-                    gte_CompMatrix(g_worldViewMatrix, &m, &m);
-                    SetRotMatrix(&m);
-                    SetTransMatrix(&m);
+                    gte_CompMatrix(&m1, &m2, &mtx);
+                    memset(&scaleVec, 0, sizeof(VECTOR));
+                    scaleVec.vx = 0x2FA0;
+                    scaleVec.vy = g_worldBlockFx6FlashLen[i];
+                    scaleVec.vz = 0x1830;
+                    scale = scaleVec;
+                    ScaleMatrix(&mtx, &scale);
+                    wm_worldToView(&g_worldBlockFx6Pos, &rel, &view, 0);
+                    mtx.t[0] += rel.vx;
+                    mtx.t[1] += rel.vy;
+                    mtx.t[2] += rel.vz;
+                    gte_CompMatrix(g_worldViewMatrix, &mtx, &mtx);
+                    SetRotMatrix(&mtx);
+                    SetTransMatrix(&mtx);
                     switch (rand() % 3) {
                     case 0:
                         wm_drawModel(WM_PACK0(0x40), 0, 2);
@@ -367,34 +367,34 @@ void wm_drawBlockFx(u8 fxId) {
             for (i = 0; i < 10; i++) {
                 MATRIX m1;
                 MATRIX m2;
-                VECTOR d;
+                VECTOR rel;
                 VECTOR scale;
-                s32 c;
+                s32 bright;
 
                 m1 = g_worldIdentityMatrix;
                 m2 = g_worldIdentityMatrix;
-                c = (math_sin(g_worldFrameCount * 16 + i * 400) >> 5) + 0x80;
-                if (c >= 0x100) {
-                    c = 0xFF;
+                bright = (math_sin(g_worldFrameCount * 16 + i * 400) >> 5) + 0x80;
+                if (bright >= 0x100) {
+                    bright = 0xFF;
                 }
-                SetBackColor((u8)c >> 1, (u8)c >> 2, (u8)c);
-                if (c == 0) {
+                SetBackColor((u8)bright >> 1, (u8)bright >> 2, (u8)bright);
+                if (bright == 0) {
                     g_worldBlockFx6RingDist[i] = 0x400;
                 } else {
                     g_worldBlockFx6RingDist[i] += 3;
                 }
                 m2.t[2] = -g_worldBlockFx6RingDist[i];
                 math_rotMatrixZXY(&g_worldBlockFx6RingRot[i], &m1);
-                gte_CompMatrix(&m1, &m2, &m);
+                gte_CompMatrix(&m1, &m2, &mtx);
                 scale = g_worldBlockFx6RingScale;
-                ScaleMatrix(&m, &scale);
-                wm_worldToView(&g_worldBlockFx6Pos, &d, &v, 0);
-                m.t[0] += d.vx;
-                m.t[1] += d.vy;
-                m.t[2] += d.vz;
-                gte_CompMatrix(g_worldViewMatrix, &m, &m);
-                SetRotMatrix(&m);
-                SetTransMatrix(&m);
+                ScaleMatrix(&mtx, &scale);
+                wm_worldToView(&g_worldBlockFx6Pos, &rel, &view, 0);
+                mtx.t[0] += rel.vx;
+                mtx.t[1] += rel.vy;
+                mtx.t[2] += rel.vz;
+                gte_CompMatrix(g_worldViewMatrix, &mtx, &mtx);
+                SetRotMatrix(&mtx);
+                SetTransMatrix(&mtx);
                 wm_drawModel(WM_PACK0(0x3E), 0, 2);
             }
         }
@@ -410,14 +410,14 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", g_worldBlockFx4Scale);
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", g_worldBlockFx6RingScale);
 
 void wm_updateBlockFx(s32 fxId) {
-    WmEmitter *e;
+    WmEmitter *emitter;
     u8 on;
     s32 i;
-    s32 r;
+    s32 unused;
     s32 x;
     s32 y;
     s32 z;
-    u16 t;
+    u16 rotY;
 
     on = 0;
     switch ((u8)fxId) {
@@ -456,8 +456,8 @@ void wm_updateBlockFx(s32 fxId) {
         g_worldBlockFx6RotB.vz -= 0x10;
         g_worldBlockFx6RotB.vy -= 8;
         for (i = 0; i < 10; i++) {
-            t = g_worldBlockFx6RingRot[i].vy - 10;
-            g_worldBlockFx6RingRot[i].vy = t - i / 4;
+            rotY = g_worldBlockFx6RingRot[i].vy - 10;
+            g_worldBlockFx6RingRot[i].vy = rotY - i / 4;
         }
         for (i = 0; i < 10; i++) {
             g_worldBlockFx6FlashRot[i].vx += -6 + rand() % 13;
@@ -466,22 +466,22 @@ void wm_updateBlockFx(s32 fxId) {
         break;
     }
     if (on) {
-        e = w_framePackGetPtr(g_worldDataPack, (u8)fxId + 0x28);
-        for (; e->effect != -1; e++) {
-            if (rand() % 4096 < e->chance) {
-                x = e->x - e->rangeX / 2;
-                y = e->y - e->rangeY / 2;
-                z = e->z - e->rangeZ / 2;
-                if (e->rangeX != 0) {
-                    x += rand16_inline() % e->rangeX;
+        emitter = w_framePackGetPtr(g_worldDataPack, (u8)fxId + 0x28);
+        for (; emitter->effect != -1; emitter++) {
+            if (rand() % 4096 < emitter->chance) {
+                x = emitter->x - emitter->rangeX / 2;
+                y = emitter->y - emitter->rangeY / 2;
+                z = emitter->z - emitter->rangeZ / 2;
+                if (emitter->rangeX != 0) {
+                    x += rand16_inline() % emitter->rangeX;
                 }
-                if (e->rangeY != 0) {
-                    y += rand16_inline() % e->rangeY;
+                if (emitter->rangeY != 0) {
+                    y += rand16_inline() % emitter->rangeY;
                 }
-                if (e->rangeZ != 0) {
-                    z += rand16_inline() % e->rangeZ;
+                if (emitter->rangeZ != 0) {
+                    z += rand16_inline() % emitter->rangeZ;
                 }
-                wm_spawnEffect(x, y, z, e->effect, e->scale);
+                wm_spawnEffect(x, y, z, emitter->effect, emitter->scale);
             }
         }
     }
@@ -491,12 +491,12 @@ void wm_termEffects(void) {
 }
 
 void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
-    WmEffect *p;
-    s32 v;
+    WmEffect *fx;
+    s32 sprite;
     u8 k;
     WmEffect *h;
 
-    p = g_worldEffectFree.next;
+    fx = g_worldEffectFree.next;
     h = &g_worldEffectActive;
     switch (type) {
     case 2:
@@ -537,26 +537,26 @@ void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
         k = 1;
         break;
     }
-    if (p->next != 0) {
-        v = (s32)w_framePackGetPtr(g_worldDataPack, type + 7);
-        p->prev->next = p->next;
-        p->next->prev = p->prev;
-        p->prev = h;
-        p->next = h->next;
-        h->next->prev = p;
-        h->next = p;
-        p->abr = k;
-        p->frame = 0;
-        p->x = x;
-        p->y = y;
-        p->z = z;
-        p->sprite = v;
-        p->scale = scale;
-        p->type = type;
-        p->phase = 0;
-        p->unk24 = 0;
+    if (fx->next != 0) {
+        sprite = (s32)w_framePackGetPtr(g_worldDataPack, type + 7);
+        fx->prev->next = fx->next;
+        fx->next->prev = fx->prev;
+        fx->prev = h;
+        fx->next = h->next;
+        h->next->prev = fx;
+        h->next = fx;
+        fx->abr = k;
+        fx->frame = 0;
+        fx->x = x;
+        fx->y = y;
+        fx->z = z;
+        fx->sprite = sprite;
+        fx->scale = scale;
+        fx->type = type;
+        fx->phase = 0;
+        fx->unk24 = 0;
         if (type == 0x17) {
-            p->phase = rand() & 0xFFF;
+            fx->phase = rand() & 0xFFF;
         }
     }
 }

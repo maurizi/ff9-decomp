@@ -17,13 +17,13 @@ void btlbg_init(BtlBgHeader *header, BtlUnit9C50 *texAnims) {
     if (g_btlbgTexAnimCount != 0) {
         btl_relocTexAnims((TexAnimSet *)texAnims, NULL);
         for (i = 0; i < g_btlbgTexAnimCount; i++) {
-            BtlUnit9C50 *a;
-            BtlUnit9C50 *e;
-            a = g_btlbgTexAnims + i;
-            a->flags |= BTL_TEXANIM_PLAY;
-            e = g_btlbgTexAnims + i;
-            e->pos = 0;
-            e->lastFrame = 0x1000;
+            BtlUnit9C50 *anim;
+            BtlUnit9C50 *animRef;
+            anim = g_btlbgTexAnims + i;
+            anim->flags |= BTL_TEXANIM_PLAY;
+            animRef = g_btlbgTexAnims + i;
+            animRef->pos = 0;
+            animRef->lastFrame = 0x1000;
         }
     }
     g_btlbgScrollCount = g_btlbgHeader->scrollCount;
@@ -36,9 +36,9 @@ void btlbg_init(BtlBgHeader *header, BtlUnit9C50 *texAnims) {
 }
 
 u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
-    MATRIX m;
+    MATRIX mat;
     SVECTOR rot;
-    VECTOR v;
+    VECTOR pivotOfs;
     VECTOR trans;
     MATRIX skyMatrix;
     SVECTOR groupRot;
@@ -47,7 +47,8 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
     u8 *out;
     BtlBgGroup *grp;
     BtlBgRec *rec;
-    s32 a;
+    s32 uvAddr;
+    s32 angle;
     s32 tilt;
     s32 i;
     s32 groupIdx;
@@ -74,15 +75,15 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
     TransMatrix(&skyMatrix, &trans);
     if (g_btlbgScrollPaused == 0) {
         for (i = 0; i < g_btlbgScrollCount; i++) {
-            a = bgData + g_btlbgScrolls[i].uvOfs;
-            ((u8 *)a)[0] += g_btlbgScrolls[i].du;
-            ((u8 *)a)[1] += g_btlbgScrolls[i].dv;
+            uvAddr = bgData + g_btlbgScrolls[i].uvOfs;
+            ((u8 *)uvAddr)[0] += g_btlbgScrolls[i].du;
+            ((u8 *)uvAddr)[1] += g_btlbgScrolls[i].dv;
             g_btlbgScrolls[i].step++;
             if (g_btlbgScrolls[i].step >= g_btlbgScrolls[i].period) {
                 switch (g_btlbgScrolls[i].mode) {
                 case 0:
-                    ((u8 *)a)[0] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].du;
-                    ((u8 *)a)[1] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].dv;
+                    ((u8 *)uvAddr)[0] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].du;
+                    ((u8 *)uvAddr)[1] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].dv;
                     break;
                 case 1:
                     g_btlbgScrolls[i].du = -g_btlbgScrolls[i].du;
@@ -111,10 +112,10 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
                 if (!done) {
                     g_btlbgSkyAngle += g_btlbgSkySpeed;
                     rot.vy = g_btlbgSkyAngle >> 3;
-                    math_rotMatrixXYZ(&rot, &m);
+                    math_rotMatrixXYZ(&rot, &mat);
                     done = 1;
-                    MulMatrix2(view, &m);
-                    SetRotMatrix(&m);
+                    MulMatrix2(view, &mat);
+                    SetRotMatrix(&mat);
                 }
                 if (g_btlbgLayerMask & 8) {
                     if (g_btlbgSkyOwnProj != 0) {
@@ -152,52 +153,52 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
         flag = 0;
         switch (g_btlbgHeader->id) {
         case 0x44:
-            a = math_sin((VSync(-1) * 26) & 0xFFE);
+            angle = math_sin((VSync(-1) * 26) & 0xFFE);
             pivot.vx = 0x429;
             pivot.vy = -0x541;
             pivot.vz = 0xEA6;
-            a /= 5;
-            groupRot.vz = a;
+            angle /= 5;
+            groupRot.vz = angle;
             break;
         case 0x70:
             switch (groupIdx) {
             case 1:
-                a = (VSync(-1) * 5) & 0xFFF;
-                groupRot.vz = 0xFFF - a;
-                a = (VSync(-1) * 3) & 0xFFF;
-                groupRot.vy = 0xFFF - a;
-                a = math_sin(((VSync(-1) + 8) * 22) & 0xFFE);
+                angle = (VSync(-1) * 5) & 0xFFF;
+                groupRot.vz = 0xFFF - angle;
+                angle = (VSync(-1) * 3) & 0xFFF;
+                groupRot.vy = 0xFFF - angle;
+                angle = math_sin(((VSync(-1) + 8) * 22) & 0xFFE);
                 pivot.vx = -0x834;
                 pivot.vz = -0x352;
-                pivot.vy = a / 45 - 250;
+                pivot.vy = angle / 45 - 250;
                 break;
             case 2:
                 groupRot.vy = 0;
                 groupRot.vz = 0;
-                a = math_sin((VSync(-1) * 20) & 0xFFC);
+                angle = math_sin((VSync(-1) * 20) & 0xFFC);
                 pivot.vx = 0x6BD;
-                pivot.vy = a / 64 - 0x5DC;
+                pivot.vy = angle / 64 - 0x5DC;
                 pivot.vz = -0x4B;
                 break;
             case 3:
-                a = (VSync(-1) * 4) & 0xFFF;
-                groupRot.vz = a;
-                a = (VSync(-1) * 3) & 0xFFF;
-                groupRot.vy = a;
-                a = math_sin(((VSync(-1) + 16) * 21) & 0xFFF);
+                angle = (VSync(-1) * 4) & 0xFFF;
+                groupRot.vz = angle;
+                angle = (VSync(-1) * 3) & 0xFFF;
+                groupRot.vy = angle;
+                angle = math_sin(((VSync(-1) + 16) * 21) & 0xFFF);
                 pivot.vx = 0x6D6;
                 pivot.vz = 0x401;
-                pivot.vy = a / 50 - 0x307;
+                pivot.vy = angle / 50 - 0x307;
                 break;
             }
             break;
         case 0x6E:
-            a = math_sin((VSync(-1) * 12) & 0xFFC);
-            a /= 64;
+            angle = math_sin((VSync(-1) * 12) & 0xFFC);
+            angle /= 64;
             groupRot.vy = 0x200;
             pivot.vx = 0x5DC;
             pivot.vy = -0x1B58;
-            groupRot.vz = a;
+            groupRot.vz = angle;
             pivot.vz = 0xEA6;
             break;
         case 0xA8:
@@ -211,17 +212,17 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
             break;
         case 0xAB:
             if (groupIdx == 1) {
-                a = -(VSync(-1) * 12) & 0xFFF;
+                angle = -(VSync(-1) * 12) & 0xFFF;
                 pivot.vy = -0x947;
-                groupRot.vz = a;
+                groupRot.vz = angle;
                 pivot.vx = 0;
                 pivot.vz = 0xEA6;
             } else {
-                a = -(VSync(-1) * 22) & 0xFFF;
+                angle = -(VSync(-1) * 22) & 0xFFF;
                 flag = 1;
                 groupRot.vz = 0xE00;
                 pivot.vy = -0x8CA;
-                groupRot.vy = a;
+                groupRot.vy = angle;
                 pivot.vx = 0;
                 pivot.vz = 0x1DC9;
             }
@@ -246,18 +247,18 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
             groupRot.vy += 3;
             break;
         }
-        ApplyMatrix(view, &pivot, &v);
-        m.t[0] = view->t[0] + v.vx;
-        m.t[1] = view->t[1] + v.vy;
-        m.t[2] = view->t[2] + v.vz;
+        ApplyMatrix(view, &pivot, &pivotOfs);
+        mat.t[0] = view->t[0] + pivotOfs.vx;
+        mat.t[1] = view->t[1] + pivotOfs.vy;
+        mat.t[2] = view->t[2] + pivotOfs.vz;
         if (flag == 0) {
-            math_rotMatrixXYZ(&groupRot, &m);
+            math_rotMatrixXYZ(&groupRot, &mat);
         } else {
-            math_rotMatrixZYX(&groupRot, &m);
+            math_rotMatrixZYX(&groupRot, &mat);
         }
-        MulMatrix2(view, &m);
-        SetRotMatrix(&m);
-        SetTransMatrix(&m);
+        MulMatrix2(view, &mat);
+        SetRotMatrix(&mat);
+        SetTransMatrix(&mat);
     }
 }
 
@@ -270,8 +271,8 @@ void btlbg_stopRain(void) {
 }
 
 u8 *btlbg_drawRain(u8 *prim, u32 *ot, MATRIX *view) {
-    SVECTOR v;
-    MATRIX m;
+    SVECTOR drop;
+    MATRIX mat;
     long interp;
     long flag;
     s32 i;
@@ -282,20 +283,20 @@ u8 *btlbg_drawRain(u8 *prim, u32 *ot, MATRIX *view) {
     SetDrawStp((DR_STP *)prim, 0);
     AddPrim(&ot[2], prim);
     prim += sizeof(DR_STP);
-    m = *view;
-    m.t[0] = 0;
-    m.t[1] = 0;
-    m.t[2] = 1000;
-    SetTransMatrix(&m);
+    mat = *view;
+    mat.t[0] = 0;
+    mat.t[1] = 0;
+    mat.t[2] = 1000;
+    SetTransMatrix(&mat);
     for (; i < g_btlbgRainCount; i++) {
         SetLineG2((LINE_G2 *)prim);
         SetSemiTrans(prim, 1);
-        v.vx = (((rand() & 0x1FF) - 0x100) * 41) / 32;
-        v.vy = ((rand() & 0xFF) * 50) / 32 - 0xDC;
-        v.vz = (((rand() & 0x1FF) - 0x100) * 41) / 32;
-        RotTransPers(&v, (long *)&((LINE_G2 *)prim)->x0, &interp, &flag);
-        v.vy += 0x55 + (rand() & 0x1F);
-        RotTransPers(&v, (long *)&((LINE_G2 *)prim)->x1, &interp, &flag);
+        drop.vx = (((rand() & 0x1FF) - 0x100) * 41) / 32;
+        drop.vy = ((rand() & 0xFF) * 50) / 32 - 0xDC;
+        drop.vz = (((rand() & 0x1FF) - 0x100) * 41) / 32;
+        RotTransPers(&drop, (long *)&((LINE_G2 *)prim)->x0, &interp, &flag);
+        drop.vy += 0x55 + (rand() & 0x1F);
+        RotTransPers(&drop, (long *)&((LINE_G2 *)prim)->x1, &interp, &flag);
         setRGB0((LINE_G2 *)prim, 0x19, 0x19, 0x32);
         setRGB1((LINE_G2 *)prim, 0x50, 0x50, 0x82);
         AddPrim(&ot[2], prim);

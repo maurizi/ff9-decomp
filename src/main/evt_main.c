@@ -8,16 +8,16 @@ void evt_initSystem(void) {
     evt_reset();
 }
 
-s32 evt_update(a)
-u8 a;
+s32 evt_update(unused)
+u8 unused;
 {
-    s32 r = 0;
+    s32 result = 0;
     if (g_evtHalted == 0) {
         msg_update();
         evt_updateIdleTimer();
-        r = evt_updateObjects();
+        result = evt_updateObjects();
         msg_updatePlayerBubble();
         msg_drawAtePrompt();
     }
-    return r;
+    return result;
 }

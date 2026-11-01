@@ -33,7 +33,7 @@ void win_drawAll(void) {
 
 void win_drawFrame(Window *w) {
     s32 abr;
-    RECT t;
+    RECT inner;
 
     abr = g_gameState->config >> CFG_BIT_WINDOW_COLOR;
     abr &= 1;
@@ -43,10 +43,10 @@ void win_drawFrame(Window *w) {
         if (w->active == 0) {
             return;
         }
-        t.x = w->cur.x + 4;
-        t.y = w->cur.y + 4;
-        t.w = w->cur.w - 8;
-        t.h = w->cur.h - 8;
+        inner.x = w->cur.x + 4;
+        inner.y = w->cur.y + 4;
+        inner.w = w->cur.w - 8;
+        inner.h = w->cur.h - 8;
     } else if (w->style == WIN_STYLE_BALLOON) {
         if (w->tailMode != 4) {
             win_drawTail(w);
@@ -55,65 +55,65 @@ void win_drawFrame(Window *w) {
         if (w->active == 0) {
             return;
         }
-        t.x = w->cur.x + 2;
-        t.y = w->cur.y + 2;
-        t.w = w->cur.w - 4;
-        t.h = w->cur.h - 4;
+        inner.x = w->cur.x + 2;
+        inner.y = w->cur.y + 2;
+        inner.w = w->cur.w - 4;
+        inner.h = w->cur.h - 4;
     } else {
         if (w->style == WIN_STYLE_LINE_RULE) {
-            t.x = w->cur.x;
-            t.y = w->cur.y + 4;
-            t.w = w->cur.w;
-            t.h = w->cur.h - 4;
+            inner.x = w->cur.x;
+            inner.y = w->cur.y + 4;
+            inner.w = w->cur.w;
+            inner.h = w->cur.h - 4;
             ui_drawRule(w->cur.x, w->cur.y, w->otz, 0, w->cur.w, abr);
-            win_drawLineBorder(&t, w->otz, 1, abr);
+            win_drawLineBorder(&inner, w->otz, 1, abr);
         } else {
-            t = w->cur;
-            win_drawLineBorder(&t, w->otz, 0, abr);
+            inner = w->cur;
+            win_drawLineBorder(&inner, w->otz, 0, abr);
         }
         if (w->active == 0) {
             return;
         }
         if (w->list.scroll & MENULIST_SCROLL_PAGE) {
-            win_drawSplitFill(&t, w->otz, &w->list, abr);
+            win_drawSplitFill(&inner, w->otz, &w->list, abr);
             return;
         }
     }
-    win_drawFill(&t, w->otz, w->list.fillU, w->list.fillV, abr);
+    win_drawFill(&inner, w->otz, w->list.fillU, w->list.fillV, abr);
 }
 
-void win_drawBoxEx(RECT *r, s32 otz, s32 style, s32 abr) {
-    RECT t;
+void win_drawBoxEx(RECT *rect, s32 otz, s32 style, s32 abr) {
+    RECT inner;
 
     switch (style) {
     case 2:
-        win_drawBorder(r, otz, 1, 0, abr);
-        t.x = r->x + 4;
-        t.y = r->y + 4;
-        t.w = r->w - 8;
-        t.h = r->h - 8;
-        win_drawFill(&t, otz, 0, 0, abr);
+        win_drawBorder(rect, otz, 1, 0, abr);
+        inner.x = rect->x + 4;
+        inner.y = rect->y + 4;
+        inner.w = rect->w - 8;
+        inner.h = rect->h - 8;
+        win_drawFill(&inner, otz, 0, 0, abr);
         break;
     case 1:
-        t.x = r->x;
-        t.y = r->y + 4;
-        t.w = r->w;
-        t.h = r->h - 4;
-        ui_drawRule(r->x, r->y, otz, 0, r->w - 2, abr);
-        win_drawLineBorder(&t, otz, 1, abr);
-        win_drawFill(&t, otz, 0, 0, abr);
+        inner.x = rect->x;
+        inner.y = rect->y + 4;
+        inner.w = rect->w;
+        inner.h = rect->h - 4;
+        ui_drawRule(rect->x, rect->y, otz, 0, rect->w - 2, abr);
+        win_drawLineBorder(&inner, otz, 1, abr);
+        win_drawFill(&inner, otz, 0, 0, abr);
         break;
     case 0:
-        win_drawLineBorder(r, otz, 0, abr);
-        win_drawFill(r, otz, 0, 0, abr);
+        win_drawLineBorder(rect, otz, 0, abr);
+        win_drawFill(rect, otz, 0, 0, abr);
         break;
     case 3:
-        win_drawBalloonBorder(r, otz, 1, 0, abr);
-        t.x = r->x + 2;
-        t.y = r->y + 2;
-        t.w = r->w - 3;
-        t.h = r->h - 3;
-        win_drawFill(&t, otz, 0, 0, abr);
+        win_drawBalloonBorder(rect, otz, 1, 0, abr);
+        inner.x = rect->x + 2;
+        inner.y = rect->y + 2;
+        inner.w = rect->w - 3;
+        inner.h = rect->h - 3;
+        win_drawFill(&inner, otz, 0, 0, abr);
         break;
     }
 }
@@ -170,7 +170,7 @@ void win_setCloseAnim(Window *w, s32 mode) {
 }
 
 void win_setTail(Window *w, s32 mode, s32 off) {
-    RECT *r = (RECT *)w;
+    RECT *rect = (RECT *)w;
 
     if (w->style != WIN_STYLE_FRAMELESS) {
         w->animMode = WIN_ANIM_TAIL;
@@ -180,15 +180,15 @@ void win_setTail(Window *w, s32 mode, s32 off) {
         w->tailMode = mode;
         w->tailX = off;
         w->stepLeft = (off + w->openFrames - 9) / w->openFrames;
-        w->stepRight = (r->w - (off + 0x18) + w->openFrames - 1) / w->openFrames;
-        w->stepH = (w->openFrames + r->h - 0x11) / w->openFrames;
-        w->cur.w = r->w - (w->stepLeft + w->stepRight) * w->openFrames;
-        w->cur.h = r->h - w->stepH * w->openFrames;
-        w->cur.x = r->x + w->stepLeft * w->openFrames;
+        w->stepRight = (rect->w - (off + 0x18) + w->openFrames - 1) / w->openFrames;
+        w->stepH = (w->openFrames + rect->h - 0x11) / w->openFrames;
+        w->cur.w = rect->w - (w->stepLeft + w->stepRight) * w->openFrames;
+        w->cur.h = rect->h - w->stepH * w->openFrames;
+        w->cur.x = rect->x + w->stepLeft * w->openFrames;
         if ((u32)(mode - 2) < 2) {
-            w->cur.y = r->y + r->h - (s16)(w->cur.h + 1);
+            w->cur.y = rect->y + rect->h - (s16)(w->cur.h + 1);
         } else {
-            w->cur.y = r->y;
+            w->cur.y = rect->y;
         }
     }
 }
@@ -224,8 +224,8 @@ void win_stepOpen(Window *w) {
         }
         w->list.fillV = (w->h - w->cur.h) & 0x1F;
     } else if (w->animMode == WIN_ANIM_TAIL) {
-        s16 a = w->stepLeft + w->stepRight;
-        w->cur.w += a;
+        s16 growW = w->stepLeft + w->stepRight;
+        w->cur.w += growW;
         w->cur.h += w->stepH;
         w->cur.x -= w->stepLeft;
         if (w->tailMode >= 2) {
@@ -290,45 +290,45 @@ void win_stepClose(Window *w) {
     }
 }
 
-void win_setClip(RECT *r, s32 otz, s32 style) {
-    RECT t;
+void win_setClip(RECT *rect, s32 otz, s32 style) {
+    RECT area;
     Unk80010CE0 offs;
-    DR_AREA *p;
+    DR_AREA *drArea;
     RECT *clip;
-    s8 *o;
+    s8 *inset;
 
     clip = &g_gameState->dispEnv[g_drawBufs.cur ^ 1].disp;
     offs = g_winClipInsets;
-    p = (DR_AREA *)g_primPtr;
-    o = offs.insets[style];
-    if (r != NULL) {
-        t.x = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vx + (r->x + o[0]);
-        t.y = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vy + (r->y + o[1]);
-        t.w = r->w + o[2];
-        t.h = r->h + o[3];
-        if (t.x < clip->x) {
-            t.w -= clip->x - t.x;
-            t.x = clip->x;
+    drArea = (DR_AREA *)g_primPtr;
+    inset = offs.insets[style];
+    if (rect != NULL) {
+        area.x = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vx + (rect->x + inset[0]);
+        area.y = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vy + (rect->y + inset[1]);
+        area.w = rect->w + inset[2];
+        area.h = rect->h + inset[3];
+        if (area.x < clip->x) {
+            area.w -= clip->x - area.x;
+            area.x = clip->x;
         }
-        if (t.y < clip->y) {
-            t.h -= clip->y - t.y;
-            t.y = clip->y;
+        if (area.y < clip->y) {
+            area.h -= clip->y - area.y;
+            area.y = clip->y;
         }
-        if (t.x + t.w > clip->x + clip->w) {
-            t.w = clip->x + clip->w - t.x;
+        if (area.x + area.w > clip->x + clip->w) {
+            area.w = clip->x + clip->w - area.x;
         }
-        if (t.y + t.h > clip->y + clip->h) {
-            t.h = clip->y + clip->h - t.y;
+        if (area.y + area.h > clip->y + clip->h) {
+            area.h = clip->y + clip->h - area.y;
         }
     } else {
-        t = *clip;
+        area = *clip;
     }
-    SetDrawArea(p, &t);
-    addPrim(&g_ot[otz], p);
+    SetDrawArea(drArea, &area);
+    addPrim(&g_ot[otz], drArea);
     g_primPtr += sizeof(DR_AREA);
 }
 
-Window *win_openFree(RECT *r, s32 otz, s32 style) {
+Window *win_openFree(RECT *rect, s32 otz, s32 style) {
     s32 i;
     Window *w = g_windows;
     Window *win;
@@ -338,17 +338,17 @@ Window *win_openFree(RECT *r, s32 otz, s32 style) {
         }
     }
     if (i < 10) {
-        win = win_init(r, otz, style, w);
+        win = win_init(rect, otz, style, w);
     } else {
         win = NULL;
     }
     return win;
 }
 
-Window *win_open(RECT *r, s32 otz, s32 style, u32 slot) {
+Window *win_open(RECT *rect, s32 otz, s32 style, u32 slot) {
     Window *win;
     if (slot < 10) {
-        win = win_init(r, otz, style, &g_windows[slot]);
+        win = win_init(rect, otz, style, &g_windows[slot]);
     } else {
         win = NULL;
     }
@@ -395,49 +395,49 @@ void win_drawBox(RECT *rect, s32 otz, s32 style) {
     win_drawBoxEx(rect, otz, style, CONFIG_WINDOW_COLOR());
 }
 
-void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
-    RECT t;
+void win_drawHelpFrame(RECT *rect, s32 otz, s32 style, s32 xoff) {
+    RECT inner;
     s32 y;
     if (style != HELP_TAIL_NONE) {
         if (style >= HELP_TAIL_DOWN) {
-            y = r->y + r->h - 2;
+            y = rect->y + rect->h - 2;
         } else {
-            y = r->y - 11;
+            y = rect->y - 11;
         }
-        win_drawHelpTailEdge(r->x + xoff, y, otz, style, 0);
-        win_drawHelpTailFill(r->x + xoff, y, otz, style);
+        win_drawHelpTailEdge(rect->x + xoff, y, otz, style, 0);
+        win_drawHelpTailFill(rect->x + xoff, y, otz, style);
     }
-    win_drawHelpBorder(r, otz, 1, 0, CONFIG_WINDOW_COLOR());
-    t.x = r->x + 2;
-    t.y = r->y + 2;
-    t.w = r->w - 4;
-    t.h = r->h - 4;
-    win_drawHelpFill(&t, otz);
+    win_drawHelpBorder(rect, otz, 1, 0, CONFIG_WINDOW_COLOR());
+    inner.x = rect->x + 2;
+    inner.y = rect->y + 2;
+    inner.w = rect->w - 4;
+    inner.h = rect->h - 4;
+    win_drawHelpFill(&inner, otz);
 }
 
-void win_drawListBox(RECT *r, s32 otz, s32 mode, MenuList *m) {
-    RECT t;
+void win_drawListBox(RECT *rect, s32 otz, s32 mode, MenuList *list) {
+    RECT inner;
     s32 abr;
 
     abr = g_gameState->config >> CFG_BIT_WINDOW_COLOR;
     abr &= 1;
 
     if (mode == 1) {
-        t.x = r->x;
-        t.y = r->y + 4;
-        t.w = r->w;
-        t.h = r->h - 4;
-        win_drawScrollArrows(r, otz, m);
-        ui_drawRule(r->x, r->y, otz, 0, r->w - 2, abr);
-        win_drawLineBorder(&t, otz, 1, abr);
+        inner.x = rect->x;
+        inner.y = rect->y + 4;
+        inner.w = rect->w;
+        inner.h = rect->h - 4;
+        win_drawScrollArrows(rect, otz, list);
+        ui_drawRule(rect->x, rect->y, otz, 0, rect->w - 2, abr);
+        win_drawLineBorder(&inner, otz, 1, abr);
     } else {
-        t = *r;
-        win_drawLineBorder(&t, otz, 0, abr);
+        inner = *rect;
+        win_drawLineBorder(&inner, otz, 0, abr);
     }
-    if (m->scroll & MENULIST_SCROLL_PAGE) {
-        win_drawSplitFill(&t, otz, m, abr);
+    if (list->scroll & MENULIST_SCROLL_PAGE) {
+        win_drawSplitFill(&inner, otz, list, abr);
     } else {
-        win_drawFill(&t, otz, 0, m->fillV, abr);
+        win_drawFill(&inner, otz, 0, list->fillV, abr);
     }
 }
 
@@ -460,12 +460,12 @@ void win_updateAll(void) {
 
 void win_reapClosed(void) {
     s32 i;
-    Window *p = g_windows;
-    for (i = 0; i < 10; p++, i++) {
-        if (p->state == WIN_STATE_CLOSING) {
-            p->state = WIN_STATE_CLOSED;
-            if (p->onClosed != NULL) {
-                p->onClosed(p);
+    Window *win = g_windows;
+    for (i = 0; i < 10; win++, i++) {
+        if (win->state == WIN_STATE_CLOSING) {
+            win->state = WIN_STATE_CLOSED;
+            if (win->onClosed != NULL) {
+                win->onClosed(win);
             }
         }
     }
@@ -550,23 +550,23 @@ void win_initAll(void) {
 
 u8 win_isVisible(Window *w) {
     Unk80010CD0 min = g_winMinWidths;
-    u8 r = 0;
+    u8 ret = 0;
 
     if (w->visible == 0) {
-        return r;
+        return ret;
     }
     if (w->style == WIN_STYLE_BEVEL || w->style == WIN_STYLE_BALLOON) {
         if (w->cur.w >= min.w[w->style] && w->cur.h >= 16) {
-            r = 1;
+            ret = 1;
         }
     } else if ((u16)w->cur.w | (u16)w->cur.h) {
-        r = 1;
+        ret = 1;
     }
-    return r;
+    return ret;
 }
 
 void win_drawTitle(Window *w) {
-    RECT r;
+    RECT clipRect;
     if (w->title == 0) {
         return;
     }
@@ -575,31 +575,31 @@ void win_drawTitle(Window *w) {
     }
     ui_drawLabel(w->x + w->titleX, w->cur.y + w->titleY, w->otz, w->title, w->active ? UI_LABEL_NORMAL : UI_LABEL_DIM);
     if (w->state != WIN_STATE_OPEN) {
-        RECT *s = &w->cur;
-        r.x = s->x;
-        r.y = s->y - 3;
-        r.w = s->w;
-        r.h = 8;
-        win_setClip(&r, w->otz, WIN_STYLE_FRAMELESS);
+        RECT *frame = &w->cur;
+        clipRect.x = frame->x;
+        clipRect.y = frame->y - 3;
+        clipRect.w = frame->w;
+        clipRect.h = 8;
+        win_setClip(&clipRect, w->otz, WIN_STYLE_FRAMELESS);
     }
 }
 
 void win_drawTail(Window *w) {
-    RECT *r = &w->cur;
+    RECT *rect = &w->cur;
     s32 y;
     if (w->tailMode >= 2) {
-        y = r->y + r->h - 2;
+        y = rect->y + rect->h - 2;
     } else {
-        y = r->y - 11;
+        y = rect->y - 11;
     }
     win_drawMsgTailEdge(w->x + w->tailX, y, w->otz, w->tailMode, w->translucent);
     win_drawTailFill(w->x + w->tailX, y, w->otz, w->tailMode, (w->list.fillU + w->tailX) & 0x1F, w->list.fillV);
 }
 
-void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {
+void win_drawScrollArrows(RECT *rect, s32 otz, MenuList *list) {
     s32 blink = ((u32)g_winLastVsync >> 4) & 1;
-    u8 top = m->top;
-    u8 more = top < m->rows - m->visibleRows;
+    u8 top = list->top;
+    u8 more = top < list->rows - list->visibleRows;
     s32 z = otz;
     s32 x;
     s32 y;
@@ -608,61 +608,61 @@ void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {
      * stores and jump2 deletes the then-empty branches, so they emit no code. They exist for the register
      * allocator: the first splits the block between the x and y arguments (as the original's schedule
      * needs) and keeps top live into a second block, the second adds references to more and blink. */
-    ui_drawSprite(r->x + r->w - 6, (top != (u32)m && (x = 0), r->y + 5), z, 0xB8,
+    ui_drawSprite(rect->x + rect->w - 6, (top != (u32)list && (x = 0), rect->y + 5), z, 0xB8,
                   top != 0 ? (more != blink && (x = 0), blink) : 1);
-    y = r->y + r->h - 14;
-    x = r->x + r->w - 6;
+    y = rect->y + rect->h - 14;
+    x = rect->x + rect->w - 6;
     ui_drawSprite(x, y, z, 0xB9, more ? blink : 1);
 }
 
-void win_drawSplitFill(RECT *r, s32 otz, MenuList *m, s32 abr) {
-    RECT t;
+void win_drawSplitFill(RECT *rect, s32 otz, MenuList *list, s32 abr) {
+    RECT part;
 
-    win_drawDivider(r, otz, m, abr);
-    t.x = r->x;
-    t.w = r->w;
-    if (m->scroll & MENULIST_SCROLL_UP) {
-        t.y = r->y;
-        t.h = m->scrollPos + 1;
-        win_drawFill(&t, otz, 0, (m->fillV + (r->h - m->scrollPos)) & 0x1F, abr);
-        t.y = r->y + m->scrollPos - 1;
-        t.h = r->h - m->scrollPos;
-        win_drawFill(&t, otz, 0, (m->fillV + (m->scrollPos - 1)) & 0x1F, abr);
+    win_drawDivider(rect, otz, list, abr);
+    part.x = rect->x;
+    part.w = rect->w;
+    if (list->scroll & MENULIST_SCROLL_UP) {
+        part.y = rect->y;
+        part.h = list->scrollPos + 1;
+        win_drawFill(&part, otz, 0, (list->fillV + (rect->h - list->scrollPos)) & 0x1F, abr);
+        part.y = rect->y + list->scrollPos - 1;
+        part.h = rect->h - list->scrollPos;
+        win_drawFill(&part, otz, 0, (list->fillV + (list->scrollPos - 1)) & 0x1F, abr);
     } else {
-        t.y = r->y;
-        t.h = r->h - m->scrollPos;
-        win_drawFill(&t, otz, 0, m->fillV, abr);
-        t.y = r->y + t.h;
-        t.h = m->scrollPos;
-        win_drawFill(&t, otz, 0, m->fillV, abr);
+        part.y = rect->y;
+        part.h = rect->h - list->scrollPos;
+        win_drawFill(&part, otz, 0, list->fillV, abr);
+        part.y = rect->y + part.h;
+        part.h = list->scrollPos;
+        win_drawFill(&part, otz, 0, list->fillV, abr);
     }
 }
 
-void win_drawDivider(RECT *r, s32 otz, MenuList *m, s32 style) {
-    LineF2Words *p;
-    u32 c;
+void win_drawDivider(RECT *rect, s32 otz, MenuList *list, s32 style) {
+    LineF2Words *line;
+    u32 lineColor;
     s16 y;
 
-    c = g_winLineColors[style][(m->scroll & MENULIST_SCROLL_UP) ? 1 : 0];
-    p = (LineF2Words *)g_primPtr;
-    setlen(p, 3);
-    ((LineF2Words *)g_primPtr)->rgbc = c;
-    p->x0 = r->x + 2;
-    p->x1 = r->x + r->w - 3;
-    if (m->scroll & MENULIST_SCROLL_UP) {
-        y = r->y + m->scrollPos + 4;
+    lineColor = g_winLineColors[style][(list->scroll & MENULIST_SCROLL_UP) ? 1 : 0];
+    line = (LineF2Words *)g_primPtr;
+    setlen(line, 3);
+    ((LineF2Words *)g_primPtr)->rgbc = lineColor;
+    line->x0 = rect->x + 2;
+    line->x1 = rect->x + rect->w - 3;
+    if (list->scroll & MENULIST_SCROLL_UP) {
+        y = rect->y + list->scrollPos + 4;
     } else {
-        y = r->y + r->h - (m->scrollPos + 1) - 2;
+        y = rect->y + rect->h - (list->scrollPos + 1) - 2;
     }
-    p->y1 = y;
-    p->y0 = y;
-    addPrim(&g_ot[otz], p);
+    line->y1 = y;
+    line->y0 = y;
+    addPrim(&g_ot[otz], line);
     g_primPtr += sizeof(LineF2Words);
 }
 
-Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
+Window *win_init(RECT *rect, s32 otz, s32 style, Window *w) {
     w->style = style;
-    *(RECT *)w = *r;
+    *(RECT *)w = *rect;
     w->state = WIN_STATE_OPENING;
     w->openFrames = 7;
     w->closeFrames = 5;
@@ -675,7 +675,7 @@ Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     w->onOpened = 0;
     win_setOpenAnim(w, g_winStyleOpenAnim[style]);
     w->shadow = w->style == WIN_STYLE_BALLOON;
-    menuList_init(&w->list, 0, 0, 0, r->h);
+    menuList_init(&w->list, 0, 0, 0, rect->h);
     w->tailMode = 4;
     w->active = 1;
     w->title = 0;

@@ -145,17 +145,17 @@ void menuName_confirm(void) {
 }
 
 void menuName_drawPortrait(void) {
-    SprtWords *p;
+    SprtWords *sprt;
     u32 clut = (GetClut(0, 0x100) << 16) | 0xB000;
 
     setlen(g_primPtr, 4);
-    p = (SprtWords *)g_primPtr;
-    p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-    p->xy = (s_menuNamePortraitWin->x + 2) | ((s_menuNamePortraitWin->y + 2) << 16);
-    p->uvclut = clut;
-    p->wh = 0x2E0020;
-    addPrim(&g_ot[4], p);
-    g_primPtr = (u8 *)(p + 1);
+    sprt = (SprtWords *)g_primPtr;
+    sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
+    sprt->xy = (s_menuNamePortraitWin->x + 2) | ((s_menuNamePortraitWin->y + 2) << 16);
+    sprt->uvclut = clut;
+    sprt->wh = 0x2E0020;
+    addPrim(&g_ot[4], sprt);
+    g_primPtr = (u8 *)(sprt + 1);
     setlen(g_primPtr, 2);
     SetDrawTPage(g_primPtr, 0, 1, 0x9F);
     addPrim(&g_ot[4], g_primPtr);
@@ -180,7 +180,7 @@ void menuName_drawCommands(void) {
 }
 
 void menuName_drawNameWindow(void) {
-    LINE_F2 *p;
+    LINE_F2 *line;
     s32 cursor;
     s32 i;
     s32 j;
@@ -199,19 +199,19 @@ void menuName_drawNameWindow(void) {
     for (i = 0; i < 7; i++) {
         if (cursor != i || (g_menu.frame & 4)) {
             for (j = 0; j < 2; j++) {
-                p = (LINE_F2 *)g_primPtr;
-                SetLineF2(p);
+                line = (LINE_F2 *)g_primPtr;
+                SetLineF2(line);
                 if (j == 0) {
-                    setRGB0(p, 0xB0, 0xB0, 0xB0);
+                    setRGB0(line, 0xB0, 0xB0, 0xB0);
                 } else {
-                    setRGB0(p, 0x40, 0x40, 0x40);
+                    setRGB0(line, 0x40, 0x40, 0x40);
                 }
                 y = j + 0x15;
-                p->x0 = s_menuNameNameWin->x + (i * 16 + 0x3E) + j;
-                p->y0 = p->y1 = s_menuNameNameWin->y + y;
-                p->x1 = p->x0 + 0xB;
+                line->x0 = s_menuNameNameWin->x + (i * 16 + 0x3E) + j;
+                line->y0 = line->y1 = s_menuNameNameWin->y + y;
+                line->x1 = line->x0 + 0xB;
                 g_primPtr += sizeof(LINE_F2);
-                addPrim(&g_ot[5], p);
+                addPrim(&g_ot[5], line);
             }
         }
     }
@@ -229,7 +229,7 @@ void menuName_drawNameWindow(void) {
 }
 
 void menuName_drawCursor(void) {
-    RECT *r;
+    RECT *gridRect;
     s32 y;
     s32 row;
     u32 idx;
@@ -243,19 +243,19 @@ void menuName_drawCursor(void) {
         y = s_menuName.windows[2].y + s_menuName.menuCursor * 16;
         h->y = s_menuName.menuCursor >= 2 ? y + 0x15 : y + 0xD;
     } else {
-        r = &s_menuName.windows[4];
+        gridRect = &s_menuName.windows[4];
         if (s_menuName.charSet != 0) {
             row = s_menuName.gridCursor / NAME_GRID_COLS;
             idx = s_menuName.gridCursor % NAME_GRID_COLS;
-            g_menuHelp.y = r->y + row * 21 + 0x26;
+            g_menuHelp.y = gridRect->y + row * 21 + 0x26;
             col = (u8)(idx / 5);
             sub = (u8)(idx % 5);
-            g_menuHelp.x = r->x + grp_x(col) + sub * 13 - 0x17;
+            g_menuHelp.x = gridRect->x + grp_x(col) + sub * 13 - 0x17;
         } else {
             row = s_menuName.gridCursor / NAME_GRID_COLS;
             col = s_menuName.gridCursor % NAME_GRID_COLS;
-            g_menuHelp.x = r->x + col * 14 + 0x27;
-            g_menuHelp.y = r->y + row * 21 + 0x26;
+            g_menuHelp.x = gridRect->x + col * 14 + 0x27;
+            g_menuHelp.y = gridRect->y + row * 21 + 0x26;
         }
     }
     g_menuHelp.otz = 3;

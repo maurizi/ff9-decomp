@@ -91,61 +91,61 @@ s32 win_resetClock(void) {
 }
 
 void pad_initRepeat(void) {
-    s32 p;
+    s32 port;
     s32 i;
-    u32 v;
+    u32 held;
     g_padSavedStickFlag = 1;
-    v = g_padPortHeld[0];
-    g_padRepeat = v;
-    g_padPressed = v;
-    g_padHeld = v;
+    held = g_padPortHeld[0];
+    g_padRepeat = held;
+    g_padPressed = held;
+    g_padHeld = held;
     pad_getAnalogThresholds(&g_padSavedThresholds);
-    for (p = 0; p < 2; p++) {
-        pad_disableRepeat(p);
+    for (port = 0; port < 2; port++) {
+        pad_disableRepeat(port);
         for (i = 0; i < 23; i++) {
-            pad_resetRepeat(p, i);
-            pad_setRepeatEnabled(p, i, g_padRepeatDefs[i].enabled);
-            pad_setRepeatMask(p, i, g_padRepeatDefs[i].mask);
-            pad_setRepeatDelay(p, i, g_padRepeatDefs[i].delay);
-            pad_setRepeatInterval(p, i, g_padRepeatDefs[i].interval);
+            pad_resetRepeat(port, i);
+            pad_setRepeatEnabled(port, i, g_padRepeatDefs[i].enabled);
+            pad_setRepeatMask(port, i, g_padRepeatDefs[i].mask);
+            pad_setRepeatDelay(port, i, g_padRepeatDefs[i].delay);
+            pad_setRepeatInterval(port, i, g_padRepeatDefs[i].interval);
         }
     }
 }
 
 void pad_updateRepeat(s32 port) {
     u32 repeat = 0;
-    PadRepeat *e = g_padRepeats[port];
+    PadRepeat *chan = g_padRepeats[port];
     u32 now = VSync(-1);
     s32 i;
-    u32 m;
+    u32 heldBits;
     u32 out;
-    u32 d;
+    u32 elapsed;
 
     g_padHeld = g_padPortHeld[port];
     g_padPressed = g_padPortPressed[port];
-    for (i = 0; i < 23; e++, i++) {
-        if (e->enabled != 0) {
-            m = g_padHeld & e->mask & e->prevHeld;
-            e->prevHeld = g_padHeld;
+    for (i = 0; i < 23; chan++, i++) {
+        if (chan->enabled != 0) {
+            heldBits = g_padHeld & chan->mask & chan->prevHeld;
+            chan->prevHeld = g_padHeld;
             out = 0;
-            if (m != 0) {
-                if (e->armed != 0) {
-                    d = now - e->lastVsync;
-                    if (e->repeating == 0) {
-                        if (d >= e->delay) {
-                            out = m;
-                            e->repeating = 1;
-                            e->lastVsync = now;
+            if (heldBits != 0) {
+                if (chan->armed != 0) {
+                    elapsed = now - chan->lastVsync;
+                    if (chan->repeating == 0) {
+                        if (elapsed >= chan->delay) {
+                            out = heldBits;
+                            chan->repeating = 1;
+                            chan->lastVsync = now;
                         }
-                    } else if (d >= e->interval) {
-                        out = m;
-                        e->lastVsync = now;
+                    } else if (elapsed >= chan->interval) {
+                        out = heldBits;
+                        chan->lastVsync = now;
                     }
                 }
             } else {
-                e->repeating = 0;
-                e->armed = 1;
-                e->lastVsync = now;
+                chan->repeating = 0;
+                chan->armed = 1;
+                chan->lastVsync = now;
             }
             repeat |= out;
         }
@@ -185,11 +185,11 @@ void pad_resetRepeats(s32 port) {
 }
 
 void pad_resetRepeat(s32 port, s32 button) {
-    PadRepeat *e = &g_padRepeats[port][button];
-    e->prevHeld = g_padPortHeld[port];
-    e->lastVsync = VSync(-1);
-    e->armed = 0;
-    e->repeating = 0;
+    PadRepeat *chan = &g_padRepeats[port][button];
+    chan->prevHeld = g_padPortHeld[port];
+    chan->lastVsync = VSync(-1);
+    chan->armed = 0;
+    chan->repeating = 0;
 }
 
 void pad_clearRepeats(s32 port) {
@@ -200,11 +200,11 @@ void pad_clearRepeats(s32 port) {
 }
 
 void pad_clearRepeat(s32 port, s32 button) {
-    PadRepeat *e = &g_padRepeats[port][button];
-    e->prevHeld = 0;
-    e->lastVsync = VSync(-1);
-    e->armed = 0;
-    e->repeating = 0;
+    PadRepeat *chan = &g_padRepeats[port][button];
+    chan->prevHeld = 0;
+    chan->lastVsync = VSync(-1);
+    chan->armed = 0;
+    chan->repeating = 0;
 }
 
 u8 pad_isRepeatEnabled(s32 port, s32 button) {
@@ -212,12 +212,12 @@ u8 pad_isRepeatEnabled(s32 port, s32 button) {
 }
 
 void pad_setRepeatEnabled(s32 port, s32 button, s32 enabled) {
-    PadRepeat *e = &g_padRepeats[port][button];
+    PadRepeat *chan = &g_padRepeats[port][button];
 
-    e->prevHeld = g_padPortHeld[port];
-    e->lastVsync = VSync(-1);
-    e->armed = 0;
-    e->repeating = 0;
+    chan->prevHeld = g_padPortHeld[port];
+    chan->lastVsync = VSync(-1);
+    chan->armed = 0;
+    chan->repeating = 0;
     g_padRepeats[port][button].enabled = enabled;
 }
 
@@ -229,12 +229,12 @@ u16 pad_getRepeatInterval(s32 port, s32 button) {
     return g_padRepeats[port][button].interval;
 }
 
-void pad_setRepeatDelay(s32 port, s32 button, s32 v) {
-    g_padRepeats[port][button].delay = v;
+void pad_setRepeatDelay(s32 port, s32 button, s32 delay) {
+    g_padRepeats[port][button].delay = delay;
 }
 
-void pad_setRepeatInterval(s32 port, s32 button, s32 v) {
-    g_padRepeats[port][button].interval = v;
+void pad_setRepeatInterval(s32 port, s32 button, s32 interval) {
+    g_padRepeats[port][button].interval = interval;
 }
 
 void pad_setRepeatTiming(s32 port, s32 button, s32 delay, s32 interval) {
@@ -246,6 +246,6 @@ s32 pad_getRepeatMask(s32 port, s32 button) {
     return g_padRepeats[port][button].mask;
 }
 
-void pad_setRepeatMask(s32 port, s32 button, s32 v) {
-    g_padRepeats[port][button].mask = v;
+void pad_setRepeatMask(s32 port, s32 button, s32 mask) {
+    g_padRepeats[port][button].mask = mask;
 }

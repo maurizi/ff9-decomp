@@ -21,20 +21,20 @@ void game_quitData(void) {
 
 void game_allocData(void) {
     GameData *gd;
-    u8 *q;
+    u8 *buf;
     s32 i;
     s32 w;
 
     g_gameState->gameData = (GameData *)g_allocTop;
     gd = g_gameState->gameData;
-    q = (u8 *)(gd + 1);
+    buf = (u8 *)(gd + 1);
     for (i = 0; i < 2; i++) {
-        gd->ot[i] = (u32 *)(q + 0x20);
-        q += 0x4040;
+        gd->ot[i] = (u32 *)(buf + 0x20);
+        buf += 0x4040;
     }
-    gd->chrModels = (void *)(q + 0x558);
-    gd->chrModelObjs = (void *)q;
-    gd->packetBuf = (s32)(q + 0x60C);
+    gd->chrModels = (void *)(buf + 0x558);
+    gd->chrModelObjs = (void *)buf;
+    gd->packetBuf = (s32)(buf + 0x60C);
     g_allocTop = gd->packetBuf + 0x8000;
     gd->preloadQueue = (void *)g_allocTop;
     g_allocTop += 0x120;
@@ -155,9 +155,9 @@ s32 game_loadCommonImages(void) {
 }
 
 s32 game_loadCommonDb(void) {
-    FileEntry *f = file_find(DIR_COMMON, FILE_COMMON_DB);
+    FileEntry *file = file_find(DIR_COMMON, FILE_COMMON_DB);
 
-    cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, (void *)g_allocTop, 0,
+    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, (void *)g_allocTop, 0,
                   -1, NULL);
     while (cdRead_update(g_gameState->gameData->cdRead)) {
     }

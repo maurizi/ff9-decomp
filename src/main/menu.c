@@ -51,14 +51,14 @@ void menu_doOpen(s32 type, s32 arg) {
 }
 
 void menu_onFadedOut(void) {
-    GameState *g;
+    GameState *gs;
     s32 i;
 
     g_menu.fadingOut = 0;
-    g = g_gameState;
-    g->gameData->flags |= GD_HIDE_ALL;
-    g_menu.savedVsyncMode = g->vsyncMode;
-    g->vsyncMode = 0;
+    gs = g_gameState;
+    gs->gameData->flags |= GD_HIDE_ALL;
+    g_menu.savedVsyncMode = gs->vsyncMode;
+    gs->vsyncMode = 0;
     g_menu.savedR = g_gameState->drawEnv[0].r0;
     g_menu.savedG = g_gameState->drawEnv[0].g0;
     g_menu.savedB = g_gameState->drawEnv[0].b0;
@@ -143,8 +143,8 @@ void menu_close(void) {
     }
 }
 
-void menu_setOnClose(void (*a)(void)) {
-    g_menuOnClose = (s32)a;
+void menu_setOnClose(void (*onClose)(void)) {
+    g_menuOnClose = (s32)onClose;
 }
 
 void menu_setFadeInOnClose(u8 enable) {
@@ -178,27 +178,27 @@ void menu_loadOverlay(void) {
 }
 
 void menu_readOverlay(void) {
-    FileEntry *f;
+    FileEntry *entry;
     if (cd_getState() == 0) {
         g_menu.state = MENU_STATE_WAITING;
         g_menu.reading = 1;
-        f = file_find(DIR_OVERLAYS, g_menuTypeOvl[g_menu.type]);
-        cd_readAsync(f->sector + g_gameState->imgSector, (f->link - f->sector) << 11, RAM_SUB_OVL(void *), menu_onOverlayRead);
+        entry = file_find(DIR_OVERLAYS, g_menuTypeOvl[g_menu.type]);
+        cd_readAsync(entry->sector + g_gameState->imgSector, (entry->link - entry->sector) << 11, RAM_SUB_OVL(void *), menu_onOverlayRead);
 
     }
 }
 
 void menu_readPortraits(void) {
     s32 busy = cd_getState();
-    FileEntry *f;
+    FileEntry *entry;
 
     if (g_menu.type == MENU_MAIN) {
         if (party_hasChanged() == 0) {
             g_menu.state = MENU_STATE_WAITING;
         } else if (busy == 0 || g_gameState->mode != GS_MODE_WORLD) {
             g_menu.reading = 1;
-            f = file_find(DIR_COMMON, FILE_MENU_PORTRAITS);
-            if (cd_readAsync(g_gameState->imgSector + f->sector, (f->link - f->sector) << 11, RAM_SUB_OVL(void *),
+            entry = file_find(DIR_COMMON, FILE_MENU_PORTRAITS);
+            if (cd_readAsync(g_gameState->imgSector + entry->sector, (entry->link - entry->sector) << 11, RAM_SUB_OVL(void *),
                               menu_onPortraitsRead)) {
                 g_menu.state = MENU_STATE_WAITING;
             }

@@ -19,14 +19,14 @@ void menuParty_inputParty(void) {
 }
 
 void menuParty_inputReserve(void) {
-    Cursor *c;
-    u8 v;
+    Cursor *cur;
+    u8 savedIdx;
 
     if ((g_padPressed & PAD_LEFT) && !(s_menuParty.cursor[s_menuParty.mode].idx & 3)) {
         s_menuParty.cursor[s_menuParty.mode].row = PARTY_ROW_PARTY;
-        v = s_menuParty.partyIdx;
+        savedIdx = s_menuParty.partyIdx;
         s_menuParty.reserveIdx = s_menuParty.cursor[s_menuParty.mode].idx;
-        s_menuParty.cursor[s_menuParty.mode].idx = v;
+        s_menuParty.cursor[s_menuParty.mode].idx = savedIdx;
         snd_playSe(SE_CURSOR);
     } else if ((g_padRepeat & PAD_UP) && s_menuParty.cursor[s_menuParty.mode].idx >= 4) {
         s_menuParty.cursor[s_menuParty.mode].idx -= 4;
@@ -48,7 +48,7 @@ void menuParty_pick(void) {
     s32 y;
     s32 sx;
     s32 sy;
-    u8 t;
+    u8 member;
 
     if (s_menuParty.mode == PARTY_SEL_PICK) {
         s_menuParty.mode = PARTY_SEL_SWAP;
@@ -62,9 +62,9 @@ void menuParty_pick(void) {
         if (menuParty_isFixed(1) && y != sy) {
             snd_playSe(SE_BUZZER);
         } else {
-            t = s_menuParty.slots[y][x];
+            member = s_menuParty.slots[y][x];
             s_menuParty.slots[y][x] = s_menuParty.slots[sy][sx];
-            s_menuParty.slots[sy][sx] = t;
+            s_menuParty.slots[sy][sx] = member;
             s_menuParty.cursor[0] = s_menuParty.cursor[1];
             s_menuParty.mode = PARTY_SEL_PICK;
             snd_playSe(SE_CURSOR);
@@ -75,8 +75,8 @@ void menuParty_pick(void) {
 void menuParty_drawParty(void) {
     s32 i;
     s32 id;
-    s32 t;
-    u8 *s;
+    s32 textId;
+    u8 *label;
 
     ui_drawLabel(s_menuPartyListRect.x + 8, s_menuPartyListRect.y - 3, 7, g_labelParty, UI_LABEL_NORMAL);
     for (i = 0; i < 3; i++) {
@@ -87,12 +87,12 @@ void menuParty_drawParty(void) {
         if (id != PARTY_EMPTY) {
             menuParty_drawMember(s_menuPartyListRect.x + 8, s_menuPartyListRect.y + 6 + i * 0x33, 6, id);
         } else {
-            t = PARTY_TEXT_UNUSED;
+            textId = PARTY_TEXT_UNUSED;
             if (i < s_menuParty.size) {
-                t = i + PARTY_TEXT_SLOT1;
+                textId = i + PARTY_TEXT_SLOT1;
             }
-            s = text_get(t);
-            text_drawBlock(s_menuPartyListRect.x + ((0x8D - text_measureWidth((s32)s)) >> 1), s_menuPartyListRect.y + 0x15 + i * 0x33, 6, s,
+            label = text_get(textId);
+            text_drawBlock(s_menuPartyListRect.x + ((0x8D - text_measureWidth((s32)label)) >> 1), s_menuPartyListRect.y + 0x15 + i * 0x33, 6, label,
                           i >= s_menuParty.size ? TEXT_PAL_GREY : TEXT_PAL_WHITE);
         }
     }
@@ -260,23 +260,23 @@ void menuParty_drawPortrait(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
     Icon *icon;
     s32 yy;
     s32 base;
-    Character *c;
+    Character *chr;
 
     base = y + h;
     yy = base - 8;
     if (id != PARTY_EMPTY) {
-        c = &g_gameState->gameData->characters[id];
-        if (c->status & CHR_STATUS_VENOM) {
+        chr = &g_gameState->gameData->characters[id];
+        if (chr->status & CHR_STATUS_VENOM) {
             icon = &g_venomStatusSprite;
             ui_drawSpriteDef(x + ((0x20 - icon->w) >> 1), yy, otz, icon, 0);
             yy = base - 0xF;
         }
-        if (c->status & CHR_STATUS_PETRIFY) {
+        if (chr->status & CHR_STATUS_PETRIFY) {
             icon = &g_petrifyStatusSprite;
             ui_drawSpriteDef(x + ((0x20 - icon->w) >> 1), yy, otz, icon, 0);
             yy -= 7;
         }
-        if (c->hp == 0) {
+        if (chr->hp == 0) {
             icon = &g_koStatusSprite;
             ui_drawSpriteDef(x + ((0x20 - icon->w) >> 1), yy, otz, icon, 0);
         }
@@ -311,22 +311,22 @@ u8 menuParty_isFixed(s32 i) {
 
 u8 menuParty_isValid(void) {
     s32 i;
-    s32 n;
+    s32 memberCount;
     u32 alive;
     u8 id;
 
     alive = 0;
-    n = 0;
+    memberCount = 0;
     for (i = 0; i < 4; i++) {
         id = s_menuParty.slots[0][i];
         if (id != PARTY_EMPTY) {
-            n++;
+            memberCount++;
             if (g_gameState->gameData->characters[id].hp != 0 && !(g_gameState->gameData->characters[id].status & (CHR_STATUS_PETRIFY | CHR_STATUS_VENOM))) {
                 alive++;
             }
         }
     }
-    return n >= s_menuParty.size ? alive > 0 : 0;
+    return memberCount >= s_menuParty.size ? alive > 0 : 0;
 }
 
 void menuParty_updateHelp(void) {

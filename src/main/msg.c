@@ -1,8 +1,8 @@
 #include "ff9.h"
 
 void msg_init(void) {
-    GameState *s;
-    Font *f;
+    GameState *gs;
+    Font *curFont;
 
     if (g_msgKeepWindows != 0) {
         g_msgKeepWindows = 0;
@@ -10,23 +10,23 @@ void msg_init(void) {
         msg_resetWindows();
         win_closeAll();
     }
-    s = g_gameState;
+    gs = g_gameState;
     g_msgReady = 0;
-    f = s->gameData->font;
+    curFont = gs->gameData->font;
     g_penGlyphDecode.lead = 0;
-    g_penGlyphs = f->glyphs;
-    g_penGlyphDecode.extRange = *(s32 *)&f->extCode;
-    g_msgFontGlyphCount = f->glyphCount;
+    g_penGlyphs = curFont->glyphs;
+    g_penGlyphDecode.extRange = *(s32 *)&curFont->extCode;
+    g_msgFontGlyphCount = curFont->glyphCount;
     g_penGlyphDecode.kanjiCode = -1;
-    switch (s->mode) {
+    switch (gs->mode) {
     case GS_MODE_FIELD:
-        g_msgTable = s->gameData->ctx.ovl65->fieldArea->msgTable;
+        g_msgTable = gs->gameData->ctx.ovl65->fieldArea->msgTable;
         break;
     case GS_MODE_WORLD:
-        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->worldObj->areaData;
+        g_msgTable = (Unk8007B954 *)gs->gameData->ctx.ovl65->worldObj->areaData;
         break;
     case GS_MODE_BATTLE:
-        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->work->texts;
+        g_msgTable = (Unk8007B954 *)gs->gameData->ctx.ovl65->work->texts;
         break;
     }
     g_msgReady = 1;
@@ -39,7 +39,7 @@ static inline void msg_readPad_set(s32 type, u32 bits) {
 }
 
 void msg_readPad(void) {
-    s32 f = 0;
+    s32 isRepeat = 0;
     u32 cur = g_padPortHeld[0] & 0x3FFFFFF;
     u32 x;
 
@@ -54,31 +54,31 @@ void msg_readPad(void) {
     }
     g_msgPadRepeatTimer = g_gameState->vsyncMode != 0 ? g_msgPadRepeatTimer - 2 : g_msgPadRepeatTimer - 1;
     if (g_msgPadRepeatTimer < 0 && !(g_msgPadRepeatTimer & 3)) {
-        f = 1;
+        isRepeat = 1;
         g_msgPadPrev &= ~(PAD_UP | PAD_RIGHT | PAD_DOWN | PAD_LEFT);
     }
     x = cur & ~g_msgPadPrev;
     if (x != 0) {
-        s32 v = 1;
-        if (f) {
-            v = 2;
+        s32 evType = 1;
+        if (isRepeat) {
+            evType = 2;
         }
-        msg_readPad_set(v, x);
+        msg_readPad_set(evType, x);
     }
     g_msgPadPrev = cur;
 }
 
 void msg_beginDraw(void) {
-    GameState *s = g_gameState;
-    GameData *g;
+    GameState *gs = g_gameState;
+    GameData *gd;
     u8 **pp;
     u32 *tbl;
     u8 *cur;
 
-    if (s->mode == GS_MODE_BATTLE || s->mode == 6) {
+    if (gs->mode == GS_MODE_BATTLE || gs->mode == 6) {
         g_msgDrawBufMode = 1;
         pp = &g_msgBattlePktPtr;
-        tbl = &g_msgBattlePktBufs[s->gameData->drawBuf];
+        tbl = &g_msgBattlePktBufs[gs->gameData->drawBuf];
         g_penPktPtr = pp;
         g_msgDrawPktStart = g_msgBattlePktPtr = (u8 *)tbl;
     } else {
@@ -87,27 +87,27 @@ void msg_beginDraw(void) {
         g_penPktPtr = &g_primPtr;
         g_msgDrawPktStart = cur;
     }
-    g = g_gameState->gameData;
-    g_penOt = g->ot[g->drawBuf];
+    gd = g_gameState->gameData;
+    g_penOt = gd->ot[gd->drawBuf];
 }
 
 /* width of an embedded string, up to TEXT_NEWLINE / TEXT_END */
-static inline s32 msg_measureLine_width(u8 *s) {
+static inline s32 msg_measureLine_width(u8 *str) {
     s32 w = 0;
     s32 multi = 0;
-    s32 c;
-    u32 g;
+    s32 code;
+    u32 glyph;
 
     g_penGlyphDecode.lead = 0;
-    c = *s++;
-    while (c != TEXT_NEWLINE && c != TEXT_END) {
+    code = *str++;
+    while (code != TEXT_NEWLINE && code != TEXT_END) {
         do {
-            g = pen_getGlyph(c);
-            if (g != 0) {
-                w += 1 + (g >> 28);
+            glyph = pen_getGlyph(code);
+            if (glyph != 0) {
+                w += 1 + (glyph >> 28);
             }
-            multi = multi ? 0 : (c >= TEXT_WIDE_FIRST ? c <= TEXT_WIDE_LAST : 0);
-            c = *s++;
+            multi = multi ? 0 : (code >= TEXT_WIDE_FIRST ? code <= TEXT_WIDE_LAST : 0);
+            code = *str++;
         } while (multi);
     }
     return w;
@@ -117,38 +117,38 @@ static inline s32 msg_measureLine_width(u8 *s) {
 static inline void msg_measureLine_name(s32 ch) {
     u8 *name = g_gameState->gameData->characters[ch].name;
     s32 k;
-    u32 c;
+    u32 code;
 
     for (k = 0; k < 8; k++) {
-        c = name[k];
-        if (c - 0x30 < 0x1A) {
-            c -= 0x20;
-        } else if (c - 0x64 < 0x14) {
-            c -= 0x14;
-        } else if (c - 0x7A < 2) {
-            c -= 2;
+        code = name[k];
+        if (code - 0x30 < 0x1A) {
+            code -= 0x20;
+        } else if (code - 0x64 < 0x14) {
+            code -= 0x14;
+        } else if (code - 0x7A < 2) {
+            code -= 2;
         }
-        g_msgNameBuf[k] = c;
+        g_msgNameBuf[k] = code;
     }
 }
 
 void msg_measureLine(u8 **pp, s32 *pw) {
-    u8 *s;
-    u8 *t;
+    u8 *text;
+    u8 *bankText;
     u8 *tbl;
     u8 *str;
-    u8 *p;
+    u8 *ofsEntry;
     s32 w;
-    s32 c;
-    s32 n, k;
-    u32 g, i;
+    s32 code;
+    s32 num, k;
+    u32 bank, i;
 
     if (pp != NULL && pw != NULL) {
-        s = *pp;
+        text = *pp;
         w = *pw;
-        c = *s++;
-        while (c != TEXT_END) {
-            switch (c) {
+        code = *text++;
+        while (code != TEXT_END) {
+            switch (code) {
             case TEXT_CHAR_NAME + 0:
             case TEXT_CHAR_NAME + 1:
             case TEXT_CHAR_NAME + 2:
@@ -157,13 +157,13 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case TEXT_CHAR_NAME + 5:
             case TEXT_CHAR_NAME + 6:
             case TEXT_CHAR_NAME + 7:
-                w += msg_measureLine_width(g_gameState->gameData->characters[c - TEXT_CHAR_NAME].name);
+                w += msg_measureLine_width(g_gameState->gameData->characters[code - TEXT_CHAR_NAME].name);
                 break;
             case TEXT_PARTY_NAME + 0:
             case TEXT_PARTY_NAME + 1:
             case TEXT_PARTY_NAME + 2:
             case TEXT_PARTY_NAME + 3:
-                w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(c - TEXT_PARTY_NAME)].name);
+                w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(code - TEXT_PARTY_NAME)].name);
                 break;
             case TEXT_CHAR_NAME_CAPS + 0:
             case TEXT_CHAR_NAME_CAPS + 1:
@@ -173,56 +173,56 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case TEXT_CHAR_NAME_CAPS + 5:
             case TEXT_CHAR_NAME_CAPS + 6:
             case TEXT_CHAR_NAME_CAPS + 7:
-                msg_measureLine_name(c - TEXT_CHAR_NAME_CAPS);
+                msg_measureLine_name(code - TEXT_CHAR_NAME_CAPS);
                 w += msg_measureLine_width(g_msgNameBuf);
                 break;
             case TEXT_MSG_ITEM_NAME:
-                n = g_msgNumbers[*s++];
-                if (n < ITEM_ID_KEY_FIRST) {
-                    str = g_itemNames + g_itemTable[n].name;
-                } else if (n < ITEM_ID_CARD_FIRST) {
-                    str = g_keyItemNames + g_keyItemTable[n - ITEM_ID_KEY_FIRST].name;
+                num = g_msgNumbers[*text++];
+                if (num < ITEM_ID_KEY_FIRST) {
+                    str = g_itemNames + g_itemTable[num].name;
+                } else if (num < ITEM_ID_CARD_FIRST) {
+                    str = g_keyItemNames + g_keyItemTable[num - ITEM_ID_KEY_FIRST].name;
                 } else {
-                    str = (u8 *)card_getName(n - ITEM_ID_CARD_FIRST);
+                    str = (u8 *)card_getName(num - ITEM_ID_CARD_FIRST);
                 }
                 w += msg_measureLine_width(str);
                 break;
             case TEXT_MSG_NUMBER:
-                n = g_msgNumbers[*s++];
-                if (n < 0) {
-                    n = -n;
+                num = g_msgNumbers[*text++];
+                if (num < 0) {
+                    num = -num;
                     w += 9;
                 }
                 do {
-                    n /= 10;
+                    num /= 10;
                     w += 9;
-                } while (n != 0);
+                } while (num != 0);
                 break;
             case TEXT_BANK_TEXT:
-                c = *s++;
-                g = (c >> 4) & 3;
-                i = c & 7;
-                t = NULL;
-                if (g < 4 && i < 8 && (tbl = g_msgTextBanks[g]) != NULL) {
+                code = *text++;
+                bank = (code >> 4) & 3;
+                i = code & 7;
+                bankText = NULL;
+                if (bank < 4 && i < 8 && (tbl = g_msgTextBanks[bank]) != NULL) {
                     k = g_msgNumbers[i];
                     if (k < *tbl) {
                         tbl++;
                         k <<= 1;
-                        p = tbl + k;
-                        t = tbl + (p[0] | (p[1] << 8));
+                        ofsEntry = tbl + k;
+                        bankText = tbl + (ofsEntry[0] | (ofsEntry[1] << 8));
                     }
                 }
-                w += msg_measureLine_width(t);
+                w += msg_measureLine_width(bankText);
                 break;
             case TEXT_FLAG_ICON:
-                if ((u32)g_msgNumbers[0] & (1 << *s++)) {
+                if ((u32)g_msgNumbers[0] & (1 << *text++)) {
                     w += 0x19;
                 }
                 break;
             }
-            c = *s++;
+            code = *text++;
         }
-        *pp = s;
+        *pp = text;
         *pw = w + 9;
     }
 }
@@ -231,19 +231,19 @@ INCLUDE_RODATA("asm/us/main/nonmatchings/msg", g_msgChoiceAnalogThresholds);
 
 /* skip the choices hidden by g_msgChoiceDrawMask once the window reaches the choice line */
 static inline void msg_renderText_skip(s32 id, u8 **pp) {
-    s32 c;
+    s32 code;
 
     if (g_msgChoiceLine >= 0 && g_msgChoiceWindow == id && g_msgLine >= g_msgChoiceLine) {
         if (!(g_msgChoiceDrawMask & 1)) {
             do {
-                while ((c = *(*pp)++) != TEXT_NEWLINE && c != TEXT_END) {
-                    if (c < TEXT_PAGE) {
-                        if (c >= TEXT_ESC) {
+                while ((code = *(*pp)++) != TEXT_NEWLINE && code != TEXT_END) {
+                    if (code < TEXT_PAGE) {
+                        if (code >= TEXT_ESC) {
                             (*pp)++;
                         }
                     }
                 }
-                if (c == TEXT_END) {
+                if (code == TEXT_END) {
                     (*pp)--;
                     break;
                 }
@@ -254,33 +254,33 @@ static inline void msg_renderText_skip(s32 id, u8 **pp) {
     }
 }
 
-/* typewriter: advance the shown character count of an embedded value of n characters */
-static inline void msg_renderText_type(MsgWindow *w, s32 n) {
+/* typewriter: advance the shown character count of an embedded value of charCount characters */
+static inline void msg_renderText_type(MsgWindow *w, s32 charCount) {
     w->typeAccum += w->speed;
     w->pendingChars += w->typeAccum >> 3;
     w->typeAccum &= 7;
-    if (w->pendingChars >= n) {
+    if (w->pendingChars >= charCount) {
         w->pendingChars = 0;
     }
 }
 
-/* text b of message bank a (g_msgTextBanks) */
-static inline u8 *msg_renderText_text(u32 a, u32 b) {
-    u8 *t = NULL;
+/* text slot of message bank bank (g_msgTextBanks) */
+static inline u8 *msg_renderText_text(u32 bank, u32 slot) {
+    u8 *text = NULL;
     u8 *tbl;
-    u8 *q;
+    u8 *ofsEntry;
     s32 k;
 
-    if (a < 4 && b < 8 && (tbl = g_msgTextBanks[a]) != NULL) {
-        k = g_msgNumbers[b];
+    if (bank < 4 && slot < 8 && (tbl = g_msgTextBanks[bank]) != NULL) {
+        k = g_msgNumbers[slot];
         if (k < *tbl) {
             tbl++;
             k <<= 1;
-            q = tbl + k;
-            t = tbl + (q[0] | (q[1] << 8));
+            ofsEntry = tbl + k;
+            text = tbl + (ofsEntry[0] | (ofsEntry[1] << 8));
         }
     }
-    return t;
+    return text;
 }
 
 /* print an embedded value, typewriter-style when it ends the text */
@@ -292,25 +292,25 @@ static inline void msg_renderText_value(MsgWindow *w, s32 arg, s32 (*fn)(), s32 
     }
 }
 
-void msg_renderText(MsgWindow *w, u8 *s) {
-    u8 *p;
+void msg_renderText(MsgWindow *w, u8 *msgText) {
+    u8 *cur;
     u8 *end;
-    s32 c;
+    s32 code;
     s32 last;
-    s32 v;
-    u8 *t;
+    s32 num;
+    u8 *bankText;
     u8 *tbl;
-    u32 b;
+    u32 slot;
     s32 k;
-    u8 *q;
+    u8 *ofsEntry;
 
     g_msgLine = 0;
-    end = s + w->textPos;
-    p = s + w->pageStart;
-    msg_renderText_skip(w->id, &p);
-    while (p < end) {
-        c = *p++;
-        switch (c) {
+    end = msgText + w->textPos;
+    cur = msgText + w->pageStart;
+    msg_renderText_skip(w->id, &cur);
+    while (cur < end) {
+        code = *cur++;
+        switch (code) {
         case TEXT_SPACE_1PX:
             pen_move(1, 0);
             break;
@@ -319,35 +319,35 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             pen_move(0, 14);
             pen_pushPos();
             g_msgLine++;
-            msg_renderText_skip(w->id, &p);
-            if (p >= end) {
-                w->textPos = p - s;
+            msg_renderText_skip(w->id, &cur);
+            if (cur >= end) {
+                w->textPos = cur - msgText;
             }
             break;
         case TEXT_ESC:
             /* padding between the two jump tables in the original rodata */
             __asm__(".section .rodata\n\t.word 0\n\t.section .text");
-            c = *p++;
-            switch (c) {
+            code = *cur++;
+            switch (code) {
             case TEXT_TAB:
                 pen_move(0x12, 0);
                 break;
             case TEXT_X_SET:
                 pen_setX(g_penStackPtr[-1].vx);
             case TEXT_X_ADD:
-                pen_move(*p++, 0);
+                pen_move(*cur++, 0);
                 break;
             case TEXT_Y_DOWN:
-                pen_move(0, *p++);
+                pen_move(0, *cur++);
                 break;
             case TEXT_Y_UP:
-                pen_move(0, -*p++);
+                pen_move(0, -*cur++);
                 break;
             case TEXT_CENTER:
-                c = *p++;
-                c |= *p++ << 8;
-                msg_measureLine(&p, &c);
-                pen_move((w->w - c) >> 1, 0);
+                code = *cur++;
+                code |= *cur++ << 8;
+                msg_measureLine(&cur, &code);
+                pen_move((w->w - code) >> 1, 0);
                 break;
             case TEXT_COLOR + 0:
             case TEXT_COLOR + 1:
@@ -358,23 +358,23 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case TEXT_COLOR + 6:
             case TEXT_COLOR + 7:
             case TEXT_COLOR + 8:
-                pen_setPalette(c - TEXT_COLOR);
+                pen_setPalette(code - TEXT_COLOR);
                 break;
             case TEXT_MSG_NUMBER:
-                last = end - p == 1;
-                v = g_msgNumbers[*p++];
-                msg_renderText_value(w, v, msg_emitNumber, last);
+                last = end - cur == 1;
+                num = g_msgNumbers[*cur++];
+                msg_renderText_value(w, num, msg_emitNumber, last);
                 break;
             case TEXT_BANK_TEXT:
-                c = *p++;
-                last = end - p == 1;
-                t = msg_renderText_text(c, *p++);
-                msg_renderText_value(w, (s32)t, msg_emitString, last);
+                code = *cur++;
+                last = end - cur == 1;
+                bankText = msg_renderText_text(code, *cur++);
+                msg_renderText_value(w, (s32)bankText, msg_emitString, last);
                 break;
             case TEXT_MSG_ITEM_NAME:
-                last = end - p == 1;
+                last = end - cur == 1;
                 pen_setPalette(4);
-                msg_renderText_value(w, g_msgNumbers[*p++], msg_emitItemName, last);
+                msg_renderText_value(w, g_msgNumbers[*cur++], msg_emitItemName, last);
                 pen_setPalette(0);
                 break;
             case TEXT_CHAR_NAME + 0:
@@ -385,14 +385,14 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case TEXT_CHAR_NAME + 5:
             case TEXT_CHAR_NAME + 6:
             case TEXT_CHAR_NAME + 7:
-                msg_renderText_value(w, c - TEXT_CHAR_NAME, msg_emitCharName, end == p);
+                msg_renderText_value(w, code - TEXT_CHAR_NAME, msg_emitCharName, end == cur);
                 break;
             case TEXT_PARTY_NAME + 0:
             case TEXT_PARTY_NAME + 1:
             case TEXT_PARTY_NAME + 2:
             case TEXT_PARTY_NAME + 3:
-                last = end - p == 0;
-                msg_renderText_value(w, evt_getPartyChrIndex(c - TEXT_PARTY_NAME), msg_emitCharName, last);
+                last = end - cur == 0;
+                msg_renderText_value(w, evt_getPartyChrIndex(code - TEXT_PARTY_NAME), msg_emitCharName, last);
                 break;
             case TEXT_CHAR_NAME_CAPS + 0:
             case TEXT_CHAR_NAME_CAPS + 1:
@@ -402,7 +402,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case TEXT_CHAR_NAME_CAPS + 5:
             case TEXT_CHAR_NAME_CAPS + 6:
             case TEXT_CHAR_NAME_CAPS + 7:
-                msg_renderText_value(w, c - TEXT_CHAR_NAME_CAPS, msg_emitCharNameCaps, end == p);
+                msg_renderText_value(w, code - TEXT_CHAR_NAME_CAPS, msg_emitCharNameCaps, end == cur);
                 break;
             case TEXT_BTN_CIRCLE:
             case TEXT_BTN_CROSS:
@@ -415,7 +415,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case TEXT_BTN_START:
             case TEXT_BTN_SELECT:
                 pen_move(0, 1);
-                pen_drawSprite(g_msgIconSprites[c - TEXT_BTN_CIRCLE]);
+                pen_drawSprite(g_msgIconSprites[code - TEXT_BTN_CIRCLE]);
                 pen_move(1, -1);
                 break;
             case TEXT_PAD_BTN + 0:
@@ -427,14 +427,14 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case TEXT_PAD_BTN + 6:
             case TEXT_PAD_BTN + 7:
                 pen_move(0, 1);
-                if (c < TEXT_PAD_BTN + 2) {
-                    c ^= 1;
+                if (code < TEXT_PAD_BTN + 2) {
+                    code ^= 1;
                 }
-                c = (g_gameState->config >> CFG_BIT_CONTROLLER) & 1 ? (g_gameState->padMap >> (c * 4)) & 0xF : c & 0xF;
-                if (c < 2) {
-                    c ^= 1;
+                code = (g_gameState->config >> CFG_BIT_CONTROLLER) & 1 ? (g_gameState->padMap >> (code * 4)) & 0xF : code & 0xF;
+                if (code < 2) {
+                    code ^= 1;
                 }
-                pen_drawSprite(g_msgIconSprites[c]);
+                pen_drawSprite(g_msgIconSprites[code]);
                 pen_move(1, -1);
                 break;
             case TEXT_DPAD_UP:
@@ -471,10 +471,10 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                 pen_move(1, -1);
                 break;
             case TEXT_SPRITE:
-                pen_drawSprite(*p++);
+                pen_drawSprite(*cur++);
                 break;
             case TEXT_FLAG_ICON:
-                if ((u32)g_msgNumbers[0] & (1 << *p++)) {
+                if ((u32)g_msgNumbers[0] & (1 << *cur++)) {
                     pen_move(6, 3);
                     pen_drawSprite(0xB6);
                     if (VSync(-1) % 48 >= 16) {
@@ -487,7 +487,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case TEXT_SPEED:
             case TEXT_SYNC_TAG:
             case TEXT_WAIT:
-                p++;
+                cur++;
                 break;
             }
             break;
@@ -498,52 +498,52 @@ void msg_renderText(MsgWindow *w, u8 *s) {
         case TEXT_WIDE_FIRST + 1:
         case TEXT_WIDE_FIRST + 2:
         case TEXT_WIDE_LAST:
-            pen_putGlyph(c);
-            c = *p++;
+            pen_putGlyph(code);
+            code = *cur++;
         default:
-            pen_putGlyph(c);
+            pen_putGlyph(code);
             break;
         }
     }
 }
 
-void msg_advanceText(MsgWindow *w, u8 *e) {
-    u8 *p;
-    s32 c;
+void msg_advanceText(MsgWindow *w, u8 *msgText) {
+    u8 *cur;
+    s32 code;
     u8 *start;
     Unk4 thresholds;
-    s32 n;
+    s32 choiceLine;
 
-    p = e + w->textPos;
-    start = p;
+    cur = msgText + w->textPos;
+    start = cur;
     while (w->waitFrames == 0 && w->pendingChars == 0 && w->typeAccum >= 8) {
-        start = p;
-        c = *p++;
-        switch (c) {
+        start = cur;
+        code = *cur++;
+        switch (code) {
         case TEXT_ESC:
             /* padding between the two jump tables in the original rodata */
             __asm__(".section .rodata\n\t.word 0\n\t.section .text");
-            c = *p++;
-            switch (c) {
+            code = *cur++;
+            switch (code) {
             case TEXT_CENTER:
-                p += 2;
-                msg_measureLine(&p, &c);
+                cur += 2;
+                msg_measureLine(&cur, &code);
                 break;
             case TEXT_WAIT:
                 if (!(w->flags & MSGW_SKIP)) {
-                    w->waitFrames = *p++;
+                    w->waitFrames = *cur++;
                 } else {
-                    p++;
+                    cur++;
                 }
                 break;
             case TEXT_WAIT_PAGE:
             case TEXT_WAIT_CLOSE:
                 w->flags = (w->flags & ~MSGW_SKIP) | MSGW_NO_SKIP;
             set26:
-                w->waitFrames = *p++;
+                w->waitFrames = *cur++;
                 break;
             case TEXT_SPEED:
-                w->speed = *p++;
+                w->speed = *cur++;
                 break;
             case TEXT_SPEED_DEFAULT:
                 w->speed = g_msgTextSpeeds[(g_gameState->config >> CFG_SHIFT_MSG_SPEED) & 7];
@@ -552,14 +552,14 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 w->flags |= MSGW_SKIP;
                 break;
             case TEXT_CHOICES:
-                p += 2;
+                cur += 2;
                 break;
             case TEXT_CHOICE_START:
                 thresholds = g_msgChoiceAnalogThresholds;
-                n = g_msgLine;
+                choiceLine = g_msgLine;
                 pad_getAnalogThresholds(&g_msgSavedAnalogThresholds);
                 pad_setAnalogThresholds(&thresholds);
-                g_msgChoiceLine = n;
+                g_msgChoiceLine = choiceLine;
                 w->flags |= MSGW_CHOICE;
                 break;
             case TEXT_HOLD:
@@ -571,16 +571,16 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 w->flags |= MSGW_NO_SKIP;
                 break;
             case TEXT_SYNC_TAG:
-                g_msgSyncTag = *p++;
+                g_msgSyncTag = *cur++;
                 break;
             case TEXT_SYNC_TAG_NEXT:
                 g_msgSyncTag++;
                 break;
             case TEXT_BANK_TEXT:
-                p++;
+                cur++;
             case TEXT_MSG_ITEM_NAME:
             case TEXT_MSG_NUMBER:
-                p++;
+                cur++;
             case TEXT_CHAR_NAME + 0:
             case TEXT_CHAR_NAME + 1:
             case TEXT_CHAR_NAME + 2:
@@ -613,7 +613,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
             case TEXT_SPRITE:
             case TEXT_FLAG_ICON:
             skip1:
-                p++;
+                cur++;
                 break;
             }
             break;
@@ -628,7 +628,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
         case TEXT_WIDE_FIRST + 1:
         case TEXT_WIDE_FIRST + 2:
         case TEXT_WIDE_LAST:
-            p++;
+            cur++;
         default:
             if (!(w->flags & MSGW_SKIP)) {
                 w->typeAccum -= 8;
@@ -636,30 +636,30 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
             break;
         }
     }
-    w->textPos = (w->waitFrames != 0 ? start : p) - e;
+    w->textPos = (w->waitFrames != 0 ? start : cur) - msgText;
     if (w->waitFrames == MSGW_WAIT_INPUT) {
         w->flags &= ~MSGW_SKIP;
     }
     w->typeAccum += w->speed;
 }
 
-void msg_stepControl(MsgWindow *w, u8 *e) {
-    u8 *p = e + w->textPos;
-    s32 c;
+void msg_stepControl(MsgWindow *w, u8 *msgText) {
+    u8 *cur = msgText + w->textPos;
+    s32 code;
 
-    c = *p++;
-    switch (c) {
+    code = *cur++;
+    switch (code) {
     case TEXT_ESC:
-        c = *p++;
-        switch (c) {
+        code = *cur++;
+        switch (code) {
         case TEXT_WAIT:
-            w->textPos = p + 1 - e;
+            w->textPos = cur + 1 - msgText;
             break;
         case TEXT_WAIT_CLOSE:
             msg_closeWindow_inline(w);
             break;
         case TEXT_WAIT_PAGE:
-            w->pageStart = p + 1 - e;
+            w->pageStart = cur + 1 - msgText;
             w->flags &= ~MSGW_NO_SKIP;
             break;
         }
@@ -668,20 +668,20 @@ void msg_stepControl(MsgWindow *w, u8 *e) {
         msg_closeWindow_inline(w);
         break;
     case TEXT_PAGE:
-        w->pageStart = p - e;
+        w->pageStart = cur - msgText;
         break;
     }
 }
 
 void msg_drawText(MsgWindow *w) {
-    u8 *e = NULL;
+    u8 *msgText = NULL;
     s32 i = w->msgId;
 
     if (i >= 0 && i < g_msgTable->count) {
-        e = (u8 *)g_msgTable->offsets;
-        e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
+        msgText = (u8 *)g_msgTable->offsets;
+        msgText += *(u16 *)&((u32 *)msgText)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
     }
-    if (e != NULL) {
+    if (msgText != NULL) {
         pen_move(((w->w - w->textWidth) >> 1) + 4, 2);
         pen_pushPos();
         if (w->textPos < w->pageStart) {
@@ -689,10 +689,10 @@ void msg_drawText(MsgWindow *w) {
         }
         g_penGlyphDecode.lead = 0;
         g_msgChoiceDrawMask = g_msgChoiceEnabled;
-        msg_renderText(w, e);
+        msg_renderText(w, msgText);
         if (w->waitFrames == 0) {
             if (w->pendingChars == 0) {
-                msg_advanceText(w, e);
+                msg_advanceText(w, msgText);
             } else if (w->flags & MSGW_SKIP) {
                 w->pendingChars = 0;
                 w->typeAccum = 8;
@@ -703,7 +703,7 @@ void msg_drawText(MsgWindow *w) {
                 w->waitFrames = 0;
             }
             if (w->waitFrames == 0) {
-                msg_stepControl(w, e);
+                msg_stepControl(w, msgText);
             }
         }
         pen_popPos();
@@ -717,11 +717,11 @@ void msg_drawText(MsgWindow *w) {
    last in the chain so its call falls into the shared `return 1` and jump2 cross-jumps the
    0x10/0x40 calls onto its jalr. */
 s32 msg_input(MsgWindow *w, s32 pad) {
-    u8 f;
+    u8 winFlags;
 
     if ((g_evtMode == EVT_MODE_FIELD && (pad & (BTN_CROSS | BTN_SQUARE))) || (g_evtMode != EVT_MODE_FIELD && (pad & BTN_CROSS))) {
-        f = w->flags;
-        if (!(f & MSGW_NO_INPUT)) {
+        winFlags = w->flags;
+        if (!(winFlags & MSGW_NO_INPUT)) {
             if (w->waitFrames == MSGW_WAIT_INPUT) {
                 w->waitFrames = 1;
                 if (g_msgChoiceLine >= 0) {
@@ -729,8 +729,8 @@ s32 msg_input(MsgWindow *w, s32 pad) {
                 }
                 return 1;
             }
-            if (!(f & MSGW_NO_SKIP)) {
-                w->flags = f | MSGW_SKIP;
+            if (!(winFlags & MSGW_NO_SKIP)) {
+                w->flags = winFlags | MSGW_SKIP;
                 return 1;
             }
         }
@@ -764,7 +764,7 @@ s32 msg_input(MsgWindow *w, s32 pad) {
     return 0;
 }
 
-static inline MsgWindow *msg_open_init(s32 id, WinLayout *l) {
+static inline MsgWindow *msg_open_init(s32 id, WinLayout *layout) {
     MsgWindow *w;
     MsgWindow *parent;
 
@@ -778,15 +778,15 @@ static inline MsgWindow *msg_open_init(s32 id, WinLayout *l) {
     w->x = 0;
     w->id = 0;
     w->parent = parent;
-    if (l->x != 0) {
-        w->x = l->x;
-        w->y = (u8)l->y;
+    if (layout->x != 0) {
+        w->x = layout->x;
+        w->y = (u8)layout->y;
     } else {
-        w->x = 0xA0 - (l->w >> 1);
-        w->y = 0x78 - (l->h >> 1);
+        w->x = 0xA0 - (layout->w >> 1);
+        w->y = 0x78 - (layout->h >> 1);
     }
-    w->w = l->w;
-    w->h = l->h;
+    w->w = layout->w;
+    w->h = layout->h;
     w->flags = 0;
     w->msgId = 0;
     w->textPos = 0;
@@ -801,22 +801,22 @@ INCLUDE_RODATA("asm/us/main/nonmatchings/msg", g_msgAteTitle);
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/msg", g_msgMognetTitle);
 
-void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
+void msg_open(s32 msg, s32 id, WinLayout *layout, s32 flags) {
     MsgWindow *w;
-    RECT r;
+    RECT rect;
     s32 style;
-    s32 n;
-    u8 *e;
+    s32 defChoice;
+    u8 *msgText;
 
-    e = NULL;
+    msgText = NULL;
     if (msg >= 0 && msg < g_msgTable->count) {
-        e = (u8 *)g_msgTable->offsets;
-        e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? msg : msg * 2 + 1];
+        msgText = (u8 *)g_msgTable->offsets;
+        msgText += *(u16 *)&((u32 *)msgText)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? msg : msg * 2 + 1];
     }
-    if (e == NULL) {
+    if (msgText == NULL) {
         return;
     }
-    w = msg_open_init(id, l);
+    w = msg_open_init(id, layout);
     w->onInput = msg_input;
     w->waitFrames = 0;
     w->id = id;
@@ -825,31 +825,31 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     w->pageStart = 0;
     w->typeAccum = 8;
     w->pendingChars = 0;
-    w->tailOffset = l->tailOffset;
-    w->tailMode = l->tailMode;
-    w->textWidth = l->w;
+    w->tailOffset = layout->tailOffset;
+    w->tailMode = layout->tailMode;
+    w->textWidth = layout->w;
     w->flags |= MSGW_MESSAGE;
-    if (!(l->flags & WINLAYOUT_NO_FOCUS)) {
+    if (!(layout->flags & WINLAYOUT_NO_FOCUS)) {
         g_msgFocus = w;
     }
-    r.x = w->x;
-    r.y = w->y;
-    r.w = w->w + 3;
-    r.h = w->h + 3;
+    rect.x = w->x;
+    rect.y = w->y;
+    rect.w = w->w + 3;
+    rect.h = w->h + 3;
     style = WIN_STYLE_FRAMELESS;
-    if (!(l->tailMode & MSG_TAIL_FRAMELESS)) {
+    if (!(layout->tailMode & MSG_TAIL_FRAMELESS)) {
         style = WIN_STYLE_BALLOON;
-        if (l->tailOffset == 0 && !(flags & MSG_FLAG_NO_TAIL)) {
+        if (layout->tailOffset == 0 && !(flags & MSG_FLAG_NO_TAIL)) {
             style = WIN_STYLE_BEVEL;
         }
     }
-    w->window = win_open(&r, 2, style, id);
+    w->window = win_open(&rect, 2, style, id);
     if (w->window != NULL) {
         w->window->userData = (s32)w;
         win_setDrawContent(w->window, msg_drawWindowContent);
         win_setDrawOverlay(w->window, msg_drawChoiceCursor);
-        if (l->tailOffset != 0 && !(flags & MSG_FLAG_NO_TAIL)) {
-            win_setTail(w->window, l->tailMode & MSG_TAIL_DIR, l->tailOffset);
+        if (layout->tailOffset != 0 && !(flags & MSG_FLAG_NO_TAIL)) {
+            win_setTail(w->window, layout->tailMode & MSG_TAIL_DIR, layout->tailOffset);
         }
         if (g_msgLayoutAltOpen != 0) {
             win_setOpenAnim(w->window, WIN_ANIM_NONE);
@@ -860,12 +860,12 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
             win_setTitle(w->window, (s32)g_msgMognetTitle);
         }
     }
-    if (!(l->flags & WINLAYOUT_NO_FOCUS)) {
+    if (!(layout->flags & WINLAYOUT_NO_FOCUS)) {
         g_msgChoiceLine = -1;
-        n = g_msgChoiceDefault;
+        defChoice = g_msgChoiceDefault;
         g_msgChoiceDefault = 0;
         g_msgChoiceWindow = id;
-        g_msgChoice = n;
+        g_msgChoice = defChoice;
     }
     g_evtMsgCount++;
     msg_startHereIcon(0);
@@ -873,17 +873,17 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
 
 void msg_resetChoices(void) {
     s32 i;
-    u8 *e;
+    u8 *msgText;
 
     g_msgChoice = 0;
     g_msgChoiceMaskReq = -1;
     g_msgChoiceLine = -1;
     for (i = 0; i < 4; i++) {
-        e = msg_drawText_msg(i);
-        if (e == NULL || e[0] != TEXT_ESC || e[1] != TEXT_BANK) {
+        msgText = msg_drawText_msg(i);
+        if (msgText == NULL || msgText[0] != TEXT_ESC || msgText[1] != TEXT_BANK) {
             break;
         }
-        g_msgTextBanks[i] = e + 2;
+        g_msgTextBanks[i] = msgText + 2;
     }
     g_msgChoiceDefault = 0;
     g_evtMsgCount = 0;
@@ -891,32 +891,32 @@ void msg_resetChoices(void) {
 
 /* Inlined copy of msg_getEntry (message i, its size into out). */
 static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
-    u8 *e = NULL;
-    s32 v;
+    u8 *msgText = NULL;
+    s32 packed;
 
     if (i >= 0 && i < g_msgTable->count) {
-        e = (u8 *)g_msgTable->offsets;
-        v = ((u32 *)e)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
+        msgText = (u8 *)g_msgTable->offsets;
+        packed = ((u32 *)msgText)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
-            out->w = ((v >> 16) & 0xFFF) + 9;
-            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].lines) * 14 + 6;
+            out->w = ((packed >> 16) & 0xFFF) + 9;
+            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? (u32)packed >> 28 : ((MsgEntry8 *)msgText)[i].lines) * 14 + 6;
         }
-        e += v & 0xFFFF;
+        msgText += packed & 0xFFFF;
     }
-    return e;
+    return msgText;
 }
 
 WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
-    u8 *p;
-    s32 v;
+    u8 *cur;
+    s32 lineWidth;
     s32 done;
-    s32 t;
-    s32 n, i;
+    s32 choiceNo;
+    s32 choiceVal, i; /* visible choice count, then the cancel choice index (separate locals don't match) */
     s32 choiceBits;
     s32 cnt;
 
-    p = msg_getEntry_inline(id, &g_msgLayout);
-    if (p != NULL) {
+    cur = msg_getEntry_inline(id, &g_msgLayout);
+    if (cur != NULL) {
         done = 0;
         g_msgLayoutAltOpen = 0;
         g_msgLayout.anchor = WINLAYOUT_ANCHOR_NONE;
@@ -925,41 +925,41 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
         *y = 0;
         *z = 0;
         while (!done) {
-            if (*p++ != TEXT_ESC) {
+            if (*cur++ != TEXT_ESC) {
                 break;
             }
-            switch (*p++) {
+            switch (*cur++) {
             case TEXT_CHOICES:
                 g_msgChoiceEnabled = -1;
-                g_msgChoiceCount = *p++;
-                g_msgChoiceCancel = *p++ - 1;
+                g_msgChoiceCount = *cur++;
+                g_msgChoiceCancel = *cur++ - 1;
                 break;
             case TEXT_CHOICES_MASKED:
                 g_msgChoiceEnabled = g_msgChoiceMaskReq;
-                n = i = *p;
+                choiceVal = i = *cur;
                 choiceBits = g_msgChoiceMaskReq;
                 while (--i != -1) {
-                    n -= (choiceBits ^ 1) & 1;
+                    choiceVal -= (choiceBits ^ 1) & 1;
                     choiceBits >>= 1;
                 }
-                g_msgChoiceCount = n;
-                g_msgLayout.h -= (*p++ - n) * 14;
-                n = -1;
+                g_msgChoiceCount = choiceVal;
+                g_msgLayout.h -= (*cur++ - choiceVal) * 14;
+                choiceVal = -1;
                 choiceBits = g_msgChoiceEnabled;
-                cnt = *p++;
+                cnt = *cur++;
                 while (--cnt != -1) {
-                    n += choiceBits & 1;
+                    choiceVal += choiceBits & 1;
                     choiceBits >>= 1;
                 }
-                if (n >= g_msgChoiceCount) {
-                    n = g_msgChoiceCount - 1;
+                if (choiceVal >= g_msgChoiceCount) {
+                    choiceVal = g_msgChoiceCount - 1;
                 }
-                g_msgChoiceCancel = n;
+                g_msgChoiceCancel = choiceVal;
                 break;
             case TEXT_WIN_POS:
-                g_msgLayout.x = *p++;
-                g_msgLayout.x |= *p++ << 8;
-                g_msgLayout.y = *p++;
+                g_msgLayout.x = *cur++;
+                g_msgLayout.x |= *cur++ << 8;
+                g_msgLayout.y = *cur++;
                 g_msgLayout.anchor = WINLAYOUT_ANCHOR_POS;
                 break;
             case TEXT_WIN_BOTTOM_RIGHT:
@@ -973,16 +973,16 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
             case TEXT_WIN_FIXED_TOP_RIGHT:
             case TEXT_WIN_FIXED_TOP_LEFT:
             case TEXT_WIN_CENTER:
-                g_msgLayout.anchor = p[-1];
+                g_msgLayout.anchor = cur[-1];
                 break;
             case TEXT_BALLOON_OFS:
-                *x = *p;
-                *x |= *(s8 *)++p << 8;
-                *y = *++p;
-                *y |= *(s8 *)++p << 8;
-                *z = *++p;
-                *z |= *(s8 *)++p << 8;
-                p++;
+                *x = *cur;
+                *x |= *(s8 *)++cur << 8;
+                *y = *++cur;
+                *y |= *(s8 *)++cur << 8;
+                *z = *++cur;
+                *z |= *(s8 *)++cur << 8;
+                cur++;
                 break;
             case TEXT_NO_OPEN_ANIM:
                 g_msgLayoutAltOpen = 1;
@@ -992,18 +992,18 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 break;
             case TEXT_LINE_WIDTHS:
                 for (;;) {
-                    v = *p++;
-                    v |= *p++ << 8;
-                    if (v == 0xFFFF) break;
-                    t = (v >> 12) & 0xF;
-                    v &= 0xFFF;
-                    if (t == 0 || ((g_msgChoiceEnabled >> (t - 1)) & 1)) {
-                        msg_measureLine(&p, &v);
-                        if (g_msgLayout.w < v) {
-                            g_msgLayout.w = v;
+                    lineWidth = *cur++;
+                    lineWidth |= *cur++ << 8;
+                    if (lineWidth == 0xFFFF) break;
+                    choiceNo = (lineWidth >> 12) & 0xF;
+                    lineWidth &= 0xFFF;
+                    if (choiceNo == 0 || ((g_msgChoiceEnabled >> (choiceNo - 1)) & 1)) {
+                        msg_measureLine(&cur, &lineWidth);
+                        if (g_msgLayout.w < lineWidth) {
+                            g_msgLayout.w = lineWidth;
                         }
                     } else {
-                        while (*p++ != TEXT_END) {
+                        while (*cur++ != TEXT_END) {
                         }
                     }
                 }
@@ -1018,16 +1018,16 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
 }
 
 void msg_setOtz(s32 otz) {
-    GameData *d = g_gameState->gameData;
-    g_penOt = d->ot[d->drawBuf] + otz;
+    GameData *gd = g_gameState->gameData;
+    g_penOt = gd->ot[gd->drawBuf] + otz;
 }
 
 s32 msg_getPartyMemberId(s32 i) {
-    Character *p = g_gameState->gameData->party[i];
-    if (p == NULL) {
+    Character *chr = g_gameState->gameData->party[i];
+    if (chr == NULL) {
         return -1;
     }
-    return p->info.b.id;
+    return chr->info.b.id;
 }
 
 void msg_resetPad(void) {
@@ -1037,20 +1037,20 @@ void msg_resetPad(void) {
 }
 
 void msg_update(void) {
-    MsgWindow *p = msg_getFocus();
-    s32 a;
+    MsgWindow *win = msg_getFocus();
+    s32 pad;
     msg_readPad();
     if (g_msgPadEvent.type < 3) {
         if (g_msgPadEvent.type > 0) {
-            while (p != NULL) {
-                a = g_msgPadEvent.buttons;
+            while (win != NULL) {
+                pad = g_msgPadEvent.buttons;
                 if (g_msgPadEvent.type == 2) {
-                    a |= 0x80000000;
+                    pad |= 0x80000000;
                 }
-                if (p->onInput(p, a) != 0) {
+                if (win->onInput(win, pad) != 0) {
                     break;
                 }
-                p = p->parent;
+                win = win->parent;
             }
         }
     }
@@ -1075,25 +1075,25 @@ void msg_onTextEnd(void) {
 }
 
 void msg_resetWindows(void) {
-    MsgWindow *p;
-    for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
-        p->open = 0;
+    MsgWindow *win;
+    for (win = g_msgWindows; win < g_msgWindows + 10; win++) {
+        win->open = 0;
     }
     g_msgFocus = NULL;
 }
 
 void msg_closeAll(void) {
-    MsgWindow *p;
-    MsgWindow *q;
-    for (p = g_msgWindows; p < g_msgWindows + 8; p++) {
-        if (p != NULL && p->open != 0) {
-            p->open = 0;
-            if (msg_getFocus() == p) {
-                msg_setFocus(p->parent);
+    MsgWindow *win;
+    MsgWindow *child;
+    for (win = g_msgWindows; win < g_msgWindows + 8; win++) {
+        if (win != NULL && win->open != 0) {
+            win->open = 0;
+            if (msg_getFocus() == win) {
+                msg_setFocus(win->parent);
             }
-            for (q = g_msgWindows; q < g_msgWindows + 10; q++) {
-                if (q->open != 0 && q->parent == p) {
-                    q->parent = NULL;
+            for (child = g_msgWindows; child < g_msgWindows + 10; child++) {
+                if (child->open != 0 && child->parent == win) {
+                    child->parent = NULL;
                 }
             }
         }
@@ -1113,30 +1113,30 @@ void msg_close(s32 i) {
 }
 
 MsgWindow *msg_getLastModal(void) {
-    MsgWindow *p;
-    MsgWindow *r = NULL;
-    for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
-        if (p->open != 0 && (p->flags & MSGW_CHOICE)) {
-            r = p;
+    MsgWindow *win;
+    MsgWindow *modal = NULL;
+    for (win = g_msgWindows; win < g_msgWindows + 10; win++) {
+        if (win->open != 0 && (win->flags & MSGW_CHOICE)) {
+            modal = win;
         }
     }
-    return r;
+    return modal;
 }
 
-s32 msg_overlapsRect(WinLayout *r) {
-    MsgWindow *p;
-    for (p = g_msgWindows; p < g_msgWindows + 8; p++) {
-        if (p->open != 0 && r->x < p->x + p->w && p->x < r->x + r->w &&
-            (u8)r->y < p->y + p->h && p->y < (u8)r->y + r->h) {
+s32 msg_overlapsRect(WinLayout *layout) {
+    MsgWindow *win;
+    for (win = g_msgWindows; win < g_msgWindows + 8; win++) {
+        if (win->open != 0 && layout->x < win->x + win->w && win->x < layout->x + layout->w &&
+            (u8)layout->y < win->y + win->h && win->y < (u8)layout->y + layout->h) {
             return 1;
         }
     }
     return 0;
 }
 
-void msg_setNumber(u32 i, s32 v) {
+void msg_setNumber(u32 i, s32 value) {
     if (i < 8) {
-        g_msgNumbers[i] = v;
+        g_msgNumbers[i] = value;
     }
 }
 
@@ -1146,15 +1146,15 @@ s16 msg_isOpen(s32 i) {
 
 s32 msg_getChoiceIndex(void) {
     s32 i = -1;
-    s32 b = g_msgChoiceEnabled;
-    s32 a = g_msgChoice;
+    s32 enabledMask = g_msgChoiceEnabled;
+    s32 choiceLeft = g_msgChoice;
     for (; i < 15;) {
-        if (a < 0) {
+        if (choiceLeft < 0) {
             break;
         }
-        a -= b & 1;
+        choiceLeft -= enabledMask & 1;
         i++;
-        b >>= 1;
+        enabledMask >>= 1;
     }
     return i;
 }
@@ -1177,56 +1177,56 @@ void msg_setChoiceMask(s32 choiceMask, s32 defaultIdx) {
 }
 
 void msg_clearWindowOtz(void) {
-    MsgWindow *p;
-    for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
-        if (p->open != 0 && p->window != NULL) {
-            p->window->otz = 0;
+    MsgWindow *win;
+    for (win = g_msgWindows; win < g_msgWindows + 10; win++) {
+        if (win->open != 0 && win->window != NULL) {
+            win->window->otz = 0;
         }
     }
 }
 
 Window *msg_getWindow(s32 i) {
-    MsgWindow *e = &g_msgWindows[i];
-    Window *r = NULL;
-    if (e->open != 0) {
-        r = e->window;
+    MsgWindow *win = &g_msgWindows[i];
+    Window *box = NULL;
+    if (win->open != 0) {
+        box = win->window;
     }
-    return r;
+    return box;
 }
 
-MsgWindow *msg_allocWindow(WinLayout *r, MsgWindow *parent, s32 idx, s32 flag) {
-    MsgWindow *e = &g_msgWindows[idx];
-    e->open = 1;
-    e->parent = parent;
-    e->onInput = 0;
-    e->unk10 = 0;
-    e->y = 0;
-    e->x = 0;
-    e->id = 0;
-    if (r->x != 0) {
-        e->x = r->x;
-        e->y = (u8)r->y;
+MsgWindow *msg_allocWindow(WinLayout *layout, MsgWindow *parent, s32 idx, s32 flag) {
+    MsgWindow *win = &g_msgWindows[idx];
+    win->open = 1;
+    win->parent = parent;
+    win->onInput = 0;
+    win->unk10 = 0;
+    win->y = 0;
+    win->x = 0;
+    win->id = 0;
+    if (layout->x != 0) {
+        win->x = layout->x;
+        win->y = (u8)layout->y;
     } else {
-        e->x = 160 - (r->w >> 1);
-        e->y = 120 - (r->h >> 1);
+        win->x = 160 - (layout->w >> 1);
+        win->y = 120 - (layout->h >> 1);
     }
-    e->w = r->w;
-    e->h = r->h;
+    win->w = layout->w;
+    win->h = layout->h;
     if (flag != 0) {
-        e->flags = MSGW_CHOICE;
+        win->flags = MSGW_CHOICE;
     } else {
-        e->flags = 0;
+        win->flags = 0;
     }
-    e->msgId = 0;
-    e->textPos = 0;
-    e->tailOffset = 0;
-    e->tailMode = 0;
-    e->window = NULL;
-    return e;
+    win->msgId = 0;
+    win->textPos = 0;
+    win->tailOffset = 0;
+    win->tailMode = 0;
+    win->window = NULL;
+    return win;
 }
 
-void msg_closeWindow(MsgWindow *p) {
-    msg_closeWindow_inline(p);
+void msg_closeWindow(MsgWindow *win) {
+    msg_closeWindow_inline(win);
 }
 
 void msg_keepWindowsOnInit(void) {
@@ -1238,39 +1238,39 @@ u8 *msg_getEntry(s32 i, WinLayout *out) {
 }
 
 void *msg_getText(s32 i) {
-    u8 *e = NULL;
+    u8 *msgText = NULL;
 
     if (i >= 0 && i < g_msgTable->count) {
-        e = (u8 *)g_msgTable->offsets;
-        e += *(u16 *)&((u32 *)e)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
+        msgText = (u8 *)g_msgTable->offsets;
+        msgText += *(u16 *)&((u32 *)msgText)[(g_evtMode == EVT_MODE_BATTLE || g_evtMode == EVT_MODE_BATTLE_END) ? i : i * 2 + 1];
     }
-    return e;
+    return msgText;
 }
 
-s32 msg_emitNumber(s32 v, s32 n) {
-    s32 d;
+s32 msg_emitNumber(s32 value, s32 maxChars) {
+    s32 place;
     s32 digits;
     s32 i;
-    s32 q;
+    s32 quot;
     s32 ch;
 
-    if (v < 0) {
-        v = 0;
+    if (value < 0) {
+        value = 0;
     }
-    d = 10;
+    place = 10;
     digits = 1;
-    while (v >= d) {
-        d *= 10;
+    while (value >= place) {
+        place *= 10;
         digits++;
     }
-    for (i = 0; i < n; i++) {
-        d /= 10;
-        if (d == 0) {
+    for (i = 0; i < maxChars; i++) {
+        place /= 10;
+        if (place == 0) {
             break;
         }
-        q = v / d;
-        if (d < 2 || q != 0) {
-            ch = q % 10;
+        quot = value / place;
+        if (place < 2 || quot != 0) {
+            ch = quot % 10;
         } else {
             ch = 0xF;
         }
@@ -1279,67 +1279,67 @@ s32 msg_emitNumber(s32 v, s32 n) {
     return digits;
 }
 
-s32 msg_emitString(u8 *s, s32 max) {
-    s32 n = 0;
+s32 msg_emitString(u8 *str, s32 max) {
+    s32 len = 0;
     s32 i;
     u8 *p;
-    u32 c;
-    if (s != NULL) {
-        p = s;
-        c = *p++;
-        while (c != TEXT_NEWLINE) {
-            if (c == TEXT_END) {
+    u32 code;
+    if (str != NULL) {
+        p = str;
+        code = *p++;
+        while (code != TEXT_NEWLINE) {
+            if (code == TEXT_END) {
                 break;
             }
-            if (c - TEXT_ESC < 5) { /* TEXT_ESC or a wide-glyph lead: one more byte */
+            if (code - TEXT_ESC < 5) { /* TEXT_ESC or a wide-glyph lead: one more byte */
                 p++;
-                n++;
+                len++;
             }
-            n++;
-            c = *p++;
+            len++;
+            code = *p++;
         }
-        p = s;
-        if (n < max) {
-            max = n;
+        p = str;
+        if (len < max) {
+            max = len;
         }
         for (i = 0; i < max; i++) {
             pen_putGlyph(*p++);
         }
     }
-    return n;
+    return len;
 }
 
-s32 msg_emitItemName(s32 id, s32 n) {
+s32 msg_emitItemName(s32 id, s32 maxChars) {
     s32 esc = 0;
-    u8 *s;
+    u8 *itemName;
     s32 len;
     s32 i;
-    u8 *t;
+    u8 *str;
 
     if (id < ITEM_ID_KEY_FIRST) {
-        t = g_itemNames + g_itemTable[id].name;
+        str = g_itemNames + g_itemTable[id].name;
     } else if (id < ITEM_ID_CARD_FIRST) {
-        t = g_keyItemNames + g_keyItemTable[id - ITEM_ID_KEY_FIRST].name;
+        str = g_keyItemNames + g_keyItemTable[id - ITEM_ID_KEY_FIRST].name;
     } else {
-        t = (u8 *)card_getName(id - ITEM_ID_CARD_FIRST);
+        str = (u8 *)card_getName(id - ITEM_ID_CARD_FIRST);
     }
-    s = t;
+    itemName = str;
     for (len = 0; len < 32; len++) {
-        if (!esc && s[len] == TEXT_END) {
+        if (!esc && itemName[len] == TEXT_END) {
             break;
         }
-        esc = !esc && s[len] == TEXT_WIDE_FIRST;
+        esc = !esc && itemName[len] == TEXT_WIDE_FIRST;
     }
-    if (len < n) {
-        n = len;
+    if (len < maxChars) {
+        maxChars = len;
     }
-    for (i = 0; i < n; i++) {
-        pen_putGlyph(s[i]);
+    for (i = 0; i < maxChars; i++) {
+        pen_putGlyph(itemName[i]);
     }
     return len;
 }
 
-s32 msg_emitCharName(s32 chr, s32 n) {
+s32 msg_emitCharName(s32 chr, s32 maxChars) {
     u8 *name = g_gameState->gameData->characters[chr].name;
     s32 len;
     s32 i;
@@ -1349,33 +1349,33 @@ s32 msg_emitCharName(s32 chr, s32 n) {
             break;
         }
     }
-    if (len < n) {
-        n = len;
+    if (len < maxChars) {
+        maxChars = len;
     }
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < maxChars; i++) {
         pen_putGlyph(name[i]);
     }
     return len;
 }
 
-s32 msg_emitCharNameCaps(s32 ch, s32 n) {
+s32 msg_emitCharNameCaps(s32 ch, s32 maxChars) {
     s32 i;
     s32 j;
     s32 k;
     u8 *name = g_gameState->gameData->characters[ch].name;
-    u32 c;
+    u32 code;
     u8 *capsName;
 
     for (k = 0; k < 8; k++) {
-        c = name[k];
-        if (c - 0x30 < 0x1A) {
-            c -= 0x20;
-        } else if (c - 0x64 < 0x14) {
-            c -= 0x14;
-        } else if (c - 0x7A < 2) {
-            c -= 2;
+        code = name[k];
+        if (code - 0x30 < 0x1A) {
+            code -= 0x20;
+        } else if (code - 0x64 < 0x14) {
+            code -= 0x14;
+        } else if (code - 0x7A < 2) {
+            code -= 2;
         }
-        g_msgNameBuf[k] = c;
+        g_msgNameBuf[k] = code;
     }
     capsName = g_msgNameBuf;
     for (i = 0; i < 8; i++) {
@@ -1383,34 +1383,34 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
             break;
         }
     }
-    if (i < n) {
-        n = i;
+    if (i < maxChars) {
+        maxChars = i;
     }
-    for (j = 0; j < n; j++) {
+    for (j = 0; j < maxChars; j++) {
         pen_putGlyph(capsName[j]);
     }
     return i;
 }
 
-void msg_drawWindowContent(Window *p) {
-    GameData *g = g_gameState->gameData;
+void msg_drawWindowContent(Window *win) {
+    GameData *gd = g_gameState->gameData;
 
-    g_penOt = g->ot[g->drawBuf] + p->otz;
+    g_penOt = gd->ot[gd->drawBuf] + win->otz;
     pen_begin();
     pen_pushPos();
-    pen_setPos(p->x + 2, p->y + 2);
-    msg_drawText((MsgWindow *)p->userData);
+    pen_setPos(win->x + 2, win->y + 2);
+    msg_drawText((MsgWindow *)win->userData);
     pen_popPos();
     pen_endFont();
 }
 
 void msg_drawChoiceCursor(Window *w) {
-    GameData *g;
+    GameData *gd;
     s32 ofs;
 
     if (g_msgChoiceLine >= 0 && w->state == WIN_STATE_OPEN && (((Window *)w->userData)->animMode & 2)) {
-        g = g_gameState->gameData;
-        g_penOt = g->ot[g->drawBuf] + w->otz;
+        gd = g_gameState->gameData;
+        g_penOt = gd->ot[gd->drawBuf] + w->otz;
         pen_begin();
         pen_pushPos();
         ofs = 8;
@@ -1421,11 +1421,11 @@ void msg_drawChoiceCursor(Window *w) {
     }
 }
 
-void msg_drawHereIcon(EvtObject *o) {
-    POLY_FT4 *p;
-    Unk80068790 *s;
+void msg_drawHereIcon(EvtObject *obj) {
+    POLY_FT4 *poly;
+    Unk80068790 *sprite;
     s32 pos;
-    s32 n;
+    s32 timeLeft;
     s32 x;
     s32 nx;
 
@@ -1434,15 +1434,15 @@ void msg_drawHereIcon(EvtObject *o) {
         g_hereIconActive = 1;
     }
     if (g_hereIconTimer > 0 && g_evtCameraChanged == 0) {
-        n = --g_hereIconTimer;
-        if (n == 0) {
+        timeLeft = --g_hereIconTimer;
+        if (timeLeft == 0) {
             g_hereIconActive = 0;
         }
-        if (g_evtMode == EVT_MODE_FIELD && !(g_gameState->gameData->flags & GD_HIDE_ALL) && n < 58) {
-            s = &g_hereIconSprite;
+        if (g_evtMode == EVT_MODE_FIELD && !(g_gameState->gameData->flags & GD_HIDE_ALL) && timeLeft < 58) {
+            sprite = &g_hereIconSprite;
             pen_begin();
             pen_pushPos();
-            evt_setDrawPosAtObject(o, 0, 0);
+            evt_setDrawPosAtObject(obj, 0, 0);
             if (g_hereIconTimer == 57) {
                 g_hereIconFlipped = g_penPos.s.x < 24;
             }
@@ -1451,23 +1451,23 @@ void msg_drawHereIcon(EvtObject *o) {
                 pen_setPos(pos & 0xFFFF, 16);
             }
             pen_move(0, -((g_hereIconTimer >> 2) % 3));
-            p = pen_addPolyFT4();
-            p->x1 = p->x3 = p->x0;
-            x = p->x0;
+            poly = pen_addPolyFT4();
+            poly->x1 = poly->x3 = poly->x0;
+            x = poly->x0;
             if (g_hereIconFlipped) {
-                nx = x + s->w;
+                nx = x + sprite->w;
             } else {
-                nx = x - s->w;
+                nx = x - sprite->w;
             }
-            p->x2 = p->x0 = nx;
-            p->y2 = p->y3 = p->y0;
-            p->y1 = p->y0 = p->y0 - s->h;
-            p->u0 = p->u2 = s->u;
-            p->v0 = p->v1 = s->v;
-            p->u1 = p->u3 = s->u + s->w - (u8)g_hereIconFlipped;
-            p->v2 = p->v3 = s->v + s->h;
-            p->tpage = 0x5F;
-            p->clut = s->clut;
+            poly->x2 = poly->x0 = nx;
+            poly->y2 = poly->y3 = poly->y0;
+            poly->y1 = poly->y0 = poly->y0 - sprite->h;
+            poly->u0 = poly->u2 = sprite->u;
+            poly->v0 = poly->v1 = sprite->v;
+            poly->u1 = poly->u3 = sprite->u + sprite->w - (u8)g_hereIconFlipped;
+            poly->v2 = poly->v3 = sprite->v + sprite->h;
+            poly->tpage = 0x5F;
+            poly->clut = sprite->clut;
             pen_popPos();
             pen_end();
         }
@@ -1475,61 +1475,61 @@ void msg_drawHereIcon(EvtObject *o) {
 }
 
 void msg_drawPlayerBubble(void) {
-    Unk80068788 *s = &g_bubbleSprite;
-    s32 c = g_bubbleColor;
+    Unk80068788 *sprite = &g_bubbleSprite;
+    s32 shade = g_bubbleColor;
     s32 hw = g_bubbleHalfWidth;
     s32 h = g_bubbleHeight;
-    s32 n;
-    POLY_FT4 *p;
-    POLY_FT4 *q;
+    s32 spriteId;
+    POLY_FT4 *bubble;
+    POLY_FT4 *tail;
     s32 y;
     s32 x;
-    s32 d;
+    s32 tailHw;
 
-    if (c == 0x80) {
-        n = g_bubbleVariant + 0x19;
+    if (shade == 0x80) {
+        spriteId = g_bubbleVariant + 0x19;
         pen_pushPos();
         pen_move(-4, -0x10 - g_bubbleLift);
-        pen_drawSprite(n);
+        pen_drawSprite(spriteId);
         pen_popPos();
     }
-    p = pen_addPolyFT4();
-    q = pen_addPolyFT4();
-    setSemiTrans(p, 1);
-    setSemiTrans(q, 1);
-    p->r0 = p->g0 = p->b0 = c;
-    q->r0 = q->g0 = q->b0 = c;
-    y = p->y0 - g_bubbleLift;
-    x = p->x0;
-    p->y2 = p->y3 = y;
-    p->y0 = y - g_bubbleLift;
-    p->x1 = p->x3 = x + hw;
-    p->x2 = p->x0 = x - hw;
-    p->y1 = p->y0 = y - h;
-    q->y0 = q->y1 = y;
-    q->y2 = q->y3 = y + h / 2;
-    d = hw / 3;
-    q->x0 = q->x2 = x - d;
-    q->x1 = q->x3 = x + d;
-    p->u0 = p->u2 = s->u;
-    p->v0 = p->v1 = s->v;
-    p->u1 = p->u3 = s->u + 0x18;
-    p->v2 = p->v3 = s->v + 0x10;
-    q->u0 = q->u2 = s->u + 8;
+    bubble = pen_addPolyFT4();
+    tail = pen_addPolyFT4();
+    setSemiTrans(bubble, 1);
+    setSemiTrans(tail, 1);
+    bubble->r0 = bubble->g0 = bubble->b0 = shade;
+    tail->r0 = tail->g0 = tail->b0 = shade;
+    y = bubble->y0 - g_bubbleLift;
+    x = bubble->x0;
+    bubble->y2 = bubble->y3 = y;
+    bubble->y0 = y - g_bubbleLift;
+    bubble->x1 = bubble->x3 = x + hw;
+    bubble->x2 = bubble->x0 = x - hw;
+    bubble->y1 = bubble->y0 = y - h;
+    tail->y0 = tail->y1 = y;
+    tail->y2 = tail->y3 = y + h / 2;
+    tailHw = hw / 3;
+    tail->x0 = tail->x2 = x - tailHw;
+    tail->x1 = tail->x3 = x + tailHw;
+    bubble->u0 = bubble->u2 = sprite->u;
+    bubble->v0 = bubble->v1 = sprite->v;
+    bubble->u1 = bubble->u3 = sprite->u + 0x18;
+    bubble->v2 = bubble->v3 = sprite->v + 0x10;
+    tail->u0 = tail->u2 = sprite->u + 8;
     /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
-    if (q) {
-        q->u1 = q->u3 = s->u + 0x10;
+    if (tail) {
+        tail->u1 = tail->u3 = sprite->u + 0x10;
     } else {
-        q->u1 = q->u3 = s->u + 0x10;
+        tail->u1 = tail->u3 = sprite->u + 0x10;
     }
-    q->v0 = q->v1 = s->v + 0x10;
-    q->v2 = q->v3 = s->v + 0x18;
-    q->tpage = p->tpage = 0x5F;
-    q->clut = p->clut = s->clut;
+    tail->v0 = tail->v1 = sprite->v + 0x10;
+    tail->v2 = tail->v3 = sprite->v + 0x18;
+    tail->tpage = bubble->tpage = 0x5F;
+    tail->clut = bubble->clut = sprite->clut;
 }
 
 void msg_updatePlayerBubble(void) {
-    EvtObject *o;
+    EvtObject *obj;
 
     if (g_bubbleRequestPrev == 0 && g_bubbleRequest != 0) {
         g_bubbleScript = g_bubbleVariant ? g_bubbleScriptOpenAlt : g_bubbleScriptOpen;
@@ -1564,10 +1564,10 @@ void msg_updatePlayerBubble(void) {
     }
     draw:
     if (!(g_gameState->gameData->flags & GD_HIDE_ALL)) {
-        o = evt_getObject(g_evtState->playerUid);
-        if (o != NULL && o->kind == EVT_KIND_ACTOR) {
+        obj = evt_getObject(g_evtState->playerUid);
+        if (obj != NULL && obj->kind == EVT_KIND_ACTOR) {
             pen_begin();
-            evt_setDrawPosAtObject(o, -2, 0);
+            evt_setDrawPosAtObject(obj, -2, 0);
             msg_drawPlayerBubble();
             pen_end();
         }
@@ -1649,49 +1649,49 @@ void msg_setAtePrompt(s32 mode) {
     }
 }
 
-s32 evt_modelOpField(EvtObject *o, s32 op) {
-    s32 a;
-    s32 b;
-    u32 *p;
+s32 evt_modelOpField(EvtObject *obj, s32 op) {
+    s32 operand0; /* script operands: their meaning depends on the opcode (per-case locals don't match) */
+    s32 operand1;
+    u32 *slotFlags;
     GameState *gs;
 
     switch (op) {
     case EVT_OP_SHADOW_ON:
-        *(u32 *)game_getModel(o->modelSlot) &= ~MODEL_SLOT_NO_SHADOW;
+        *(u32 *)game_getModel(obj->modelSlot) &= ~MODEL_SLOT_NO_SHADOW;
         return 0;
     case EVT_OP_SHADOW_OFF:
-        *(u32 *)game_getModel(o->modelSlot) |= MODEL_SLOT_NO_SHADOW;
+        *(u32 *)game_getModel(obj->modelSlot) |= MODEL_SLOT_NO_SHADOW;
         return 0;
     case EVT_OP_SHADOW_SIZE:
-        a = evt_getArg8();
-        b = evt_getArg8();
-        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].sizeX = a * 14;
-        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].sizeZ = b * 12;
+        operand0 = evt_getArg8();
+        operand1 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[obj->modelSlot].sizeX = operand0 * 14;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[obj->modelSlot].sizeZ = operand1 * 12;
         return 0;
     case EVT_OP_SHADOW_OFFSET:
-        a = evt_getArg16();
-        b = evt_getArg16();
-        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].ofsX = a;
-        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].ofsZ = b;
+        operand0 = evt_getArg16();
+        operand1 = evt_getArg16();
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[obj->modelSlot].ofsX = operand0;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[obj->modelSlot].ofsZ = operand1;
         return 0;
     case EVT_OP_SHADOW_FIXED:
-        a = evt_getArg8();
-        p = (u32 *)game_getModel(o->modelSlot);
+        operand0 = evt_getArg8();
+        slotFlags = (u32 *)game_getModel(obj->modelSlot);
         gs = g_gameState;
-        *p |= MODEL_SLOT_SHADOW_FIXED;
-        gs->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].fixedAngle = a * 16;
+        *slotFlags |= MODEL_SLOT_SHADOW_FIXED;
+        gs->gameData->ctx.ovl65->fieldArea->scene->shadows[obj->modelSlot].fixedAngle = operand0 * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
-        *(u32 *)game_getModel(o->modelSlot) &= ~MODEL_SLOT_SHADOW_FIXED;
+        *(u32 *)game_getModel(obj->modelSlot) &= ~MODEL_SLOT_SHADOW_FIXED;
         return 0;
     case 0x85:
-        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->shadows[obj->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         fld_enableRain(0, 0, 1);
-        a = evt_getArg8();
-        rain_set(a, evt_getArg8());
-        g_gameState->gameData->rainCount = a;
+        operand0 = evt_getArg8();
+        rain_set(operand0, evt_getArg8());
+        g_gameState->gameData->rainCount = operand0;
         return 0;
     default:
         return 1;
@@ -1699,48 +1699,48 @@ s32 evt_modelOpField(EvtObject *o, s32 op) {
     return 0;
 }
 
-s32 evt_modelOpBattle(EvtObject *o, s32 op) {
-    s32 a;
-    s32 b;
-    u32 *p;
+s32 evt_modelOpBattle(EvtObject *obj, s32 op) {
+    s32 operand0; /* script operands: their meaning depends on the opcode (per-case locals don't match) */
+    s32 operand1;
+    u32 *slotFlags;
     GameState *gs;
 
     switch (op) {
     case EVT_OP_SHADOW_ON:
-        *(u32 *)game_getModel(o->modelSlot) &= ~MODEL_SLOT_NO_SHADOW;
+        *(u32 *)game_getModel(obj->modelSlot) &= ~MODEL_SLOT_NO_SHADOW;
         return 0;
     case EVT_OP_SHADOW_OFF:
-        *(u32 *)game_getModel(o->modelSlot) |= MODEL_SLOT_NO_SHADOW;
+        *(u32 *)game_getModel(obj->modelSlot) |= MODEL_SLOT_NO_SHADOW;
         return 0;
     case EVT_OP_SHADOW_SIZE:
-        a = evt_getArg8();
-        b = evt_getArg8();
-        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].sizeX = a * 14;
-        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].sizeZ = b * 12;
+        operand0 = evt_getArg8();
+        operand1 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->work->shadows[obj->modelSlot].sizeX = operand0 * 14;
+        g_gameState->gameData->ctx.ovl65->work->shadows[obj->modelSlot].sizeZ = operand1 * 12;
         return 0;
     case EVT_OP_SHADOW_OFFSET:
-        a = evt_getArg16();
-        b = evt_getArg16();
-        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].ofsX = a;
-        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].ofsZ = b;
+        operand0 = evt_getArg16();
+        operand1 = evt_getArg16();
+        g_gameState->gameData->ctx.ovl65->work->shadows[obj->modelSlot].ofsX = operand0;
+        g_gameState->gameData->ctx.ovl65->work->shadows[obj->modelSlot].ofsZ = operand1;
         return 0;
     case EVT_OP_SHADOW_FIXED:
-        a = evt_getArg8();
-        p = (u32 *)game_getModel(o->modelSlot);
+        operand0 = evt_getArg8();
+        slotFlags = (u32 *)game_getModel(obj->modelSlot);
         gs = g_gameState;
-        *p |= MODEL_SLOT_SHADOW_FIXED;
-        gs->gameData->ctx.ovl65->work->shadows[o->modelSlot].fixedAngle = a * 16;
+        *slotFlags |= MODEL_SLOT_SHADOW_FIXED;
+        gs->gameData->ctx.ovl65->work->shadows[obj->modelSlot].fixedAngle = operand0 * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
-        *(u32 *)game_getModel(o->modelSlot) &= ~MODEL_SLOT_SHADOW_FIXED;
+        *(u32 *)game_getModel(obj->modelSlot) &= ~MODEL_SLOT_SHADOW_FIXED;
         return 0;
     case 0x85:
-        g_gameState->gameData->ctx.ovl65->work->shadows[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->work->shadows[obj->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
-        a = evt_getArg8();
+        operand0 = evt_getArg8();
         evt_getArg8();
-        g_gameState->gameData->rainCount = a;
+        g_gameState->gameData->rainCount = operand0;
         return 0;
     default:
         return 1;
@@ -1748,48 +1748,48 @@ s32 evt_modelOpBattle(EvtObject *o, s32 op) {
     return 0;
 }
 
-s32 evt_modelOpWorld(EvtObject *o, s32 op) {
-    s32 a;
-    s32 b;
-    u32 *p;
+s32 evt_modelOpWorld(EvtObject *obj, s32 op) {
+    s32 operand0; /* script operands: their meaning depends on the opcode (per-case locals don't match) */
+    s32 operand1;
+    u32 *slotFlags;
     GameState *gs;
 
     switch (op) {
     case EVT_OP_SHADOW_ON:
-        *(u32 *)game_getModel(o->modelSlot) &= ~MODEL_SLOT_NO_SHADOW;
+        *(u32 *)game_getModel(obj->modelSlot) &= ~MODEL_SLOT_NO_SHADOW;
         return 0;
     case EVT_OP_SHADOW_OFF:
-        *(u32 *)game_getModel(o->modelSlot) |= MODEL_SLOT_NO_SHADOW;
+        *(u32 *)game_getModel(obj->modelSlot) |= MODEL_SLOT_NO_SHADOW;
         return 0;
     case EVT_OP_SHADOW_SIZE:
-        a = evt_getArg8();
-        b = evt_getArg8();
-        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].sizeX = a * 14;
-        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].sizeZ = b * 12;
+        operand0 = evt_getArg8();
+        operand1 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[obj->modelSlot].sizeX = operand0 * 14;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[obj->modelSlot].sizeZ = operand1 * 12;
         return 0;
     case EVT_OP_SHADOW_OFFSET:
-        a = evt_getArg16();
-        b = evt_getArg16();
-        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].ofsX = a;
-        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].ofsZ = b;
+        operand0 = evt_getArg16();
+        operand1 = evt_getArg16();
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[obj->modelSlot].ofsX = operand0;
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[obj->modelSlot].ofsZ = operand1;
         return 0;
     case EVT_OP_SHADOW_FIXED:
-        a = evt_getArg8();
-        p = (u32 *)game_getModel(o->modelSlot);
+        operand0 = evt_getArg8();
+        slotFlags = (u32 *)game_getModel(obj->modelSlot);
         gs = g_gameState;
-        *p |= MODEL_SLOT_SHADOW_FIXED;
-        gs->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].fixedAngle = a * 16;
+        *slotFlags |= MODEL_SLOT_SHADOW_FIXED;
+        gs->gameData->ctx.ovl65->worldObj->shadows[obj->modelSlot].fixedAngle = operand0 * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
-        *(u32 *)game_getModel(o->modelSlot) &= ~MODEL_SLOT_SHADOW_FIXED;
+        *(u32 *)game_getModel(obj->modelSlot) &= ~MODEL_SLOT_SHADOW_FIXED;
         return 0;
     case 0x85:
-        g_gameState->gameData->ctx.ovl65->worldObj->shadows[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->worldObj->shadows[obj->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
-        a = evt_getArg8();
-        wrain_set(a, evt_getArg8());
-        g_gameState->gameData->rainCount = a;
+        operand0 = evt_getArg8();
+        wrain_set(operand0, evt_getArg8());
+        g_gameState->gameData->rainCount = operand0;
         return 0;
     default:
         return 1;
@@ -1802,12 +1802,12 @@ void evt_clearGlobalVars(void) {
 }
 
 s32 rain_draw(void) {
-    u8 *r = g_fieldRainPrims;
+    u8 *primBuf = g_fieldRainPrims;
     GameData *gd;
-    s32 n;
+    s32 dropCount;
 
     if (g_gameState->gameData->drawBuf != 0) {
-        r += 0x22B0;
+        primBuf += 0x22B0;
     }
     if (g_fieldRain.stopping < 2) {
         rain_spawn(g_fieldRain.speed == 0xFF0 ? -0x1770 : -0xFA0);
@@ -1815,28 +1815,28 @@ s32 rain_draw(void) {
     if (g_fieldRain.stopping != 0) {
         g_fieldRain.stopping++;
     }
-    n = g_fieldRain.active;
-    if (n != 0) {
+    dropCount = g_fieldRain.active;
+    if (dropCount != 0) {
         fldbg_applyGeomOffset();
         gd = g_gameState->gameData;
         gte_SetRotMatrix(&gd->viewMatrix);
         gte_SetTransMatrix(&gd->viewMatrix);
-        r = (u8 *)rain_drawDrops(n, gd->drawBuf, gd->ot[gd->drawBuf] + 3, (s32)r);
+        primBuf = (u8 *)rain_drawDrops(dropCount, gd->drawBuf, gd->ot[gd->drawBuf] + 3, (s32)primBuf);
         fldbg_resetGeomOffset();
     }
-    return (s32)r;
+    return (s32)primBuf;
 }
 
 u8 *rain_init(RainNode *nodes) {
-    RainNode *p = nodes;
+    RainNode *node = nodes;
     RainNode *end;
     g_fieldRain.freeList = nodes;
     if (nodes != NULL) {
         end = nodes + 222;
-        for (; p < end; p++) {
-            p->next = p + 1;
+        for (; node < end; node++) {
+            node->next = node + 1;
         }
-        p[-1].next = NULL;
+        node[-1].next = NULL;
     }
     g_fieldRain.active = 0;
     SetDrawTPage(&g_fieldRain.tpage, 0, 0, GetTPage(0, 3, 0, 0));
@@ -1845,17 +1845,17 @@ u8 *rain_init(RainNode *nodes) {
     g_fieldRain.speed = 0;
     g_fieldRain.stopping = 0;
     g_fieldRainPrims = (u8 *)(nodes + 222);
-    return (u8 *)p + 0x4560;
+    return (u8 *)node + 0x4560;
 }
 
 void rain_set(s32 count, u32 speed) {
     if (count != 0 && speed != 0) {
-        RainState *p = &g_fieldRain;
+        RainState *rain = &g_fieldRain;
 
         if (count < 0x83) {
-            p->count = count;
+            rain->count = count;
         } else {
-            p->count = 0x82;
+            rain->count = 0x82;
         }
     }
     g_fieldRain.speed = speed * 16;

@@ -466,9 +466,9 @@ extern GameState *g_gameState;
 void file_loadDirTables(); /* game_initState calls it without arguments */
 
 /* Inlined copy of chr_testSupportBit (support ability bit test). */
-static inline u8 chr_testSupportBit_inline(u32 *bits, s32 b) {
-    b -= 0xC0;
-    return (bits[b >> 5] & (1 << (b & 0x1F))) != 0;
+static inline u8 chr_testSupportBit_inline(u32 *bits, s32 ability) {
+    ability -= 0xC0;
+    return (bits[ability >> 5] & (1 << (ability & 0x1F))) != 0;
 }
 
 /* Inlined copy of item_findSlot (item search); the original source inlines it. */
@@ -1774,6 +1774,15 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_GENERAL_CHOCOBO_FORM 0x40  /* the world map uses the replacement Chocobo Heaven form */
 extern u8 g_evtGeneralFlags; /* g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] under its own symbol (ovl_0c reads it that way) */
 #define EVT_GB_NAVI_KNOWN 0x5C  /* u16[4] (h[0x2E..0x31]): navi map places known, bit i&15 of h[0x2E + i/16] (wm_naviDraw) */
+/* world map state, read by the world scripts (docs/r32/3ds-requests-7.md, runtime R37b) */
+#define EVT_GB_WM_WALKER_POS 0x40     /* walker position on the world map (x, y, z, dir) */
+#define EVT_GB_WM_VEHICLE_POS 0x4A    /* parked vehicle position */
+#define EVT_GB_WM_CHOCOBO_POS 0x53    /* chocobo position (x24, y16, z24, dir) */
+#define EVT_GB_NAVI_MODE 0x64         /* navi map display mode (minimap / full map / off) */
+#define EVT_GB_WM_FILE 0x66           /* world file in use (0 and 8 are tested by ovl_0c) */
+#define EVT_GB_CHOCOGRAPH_FOUND 0xB8  /* u24: chocographs found */
+#define EVT_GB_CHOCOGRAPH_OWNED 0xBB  /* u24: chocographs owned */
+#define EVT_GB_CHOCOBO_LEVEL 0xBF     /* chocobo ability count (= world move mode when riding: WM_MOVE_CHOCOBO_*) */
 /* Mognet state, read only by the field scripts (docs/r32/3ds-requests-5-mognet.md) */
 #define EVT_GB_MOGNET_VERSION 0x400     /* u8: Mognet data version (1) */
 #define EVT_GB_MOGNET_GIVE_COUNT 0x408  /* u8: +1 on each "Give a letter" (medium) */
@@ -3245,26 +3254,26 @@ typedef struct {
 u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidth, SprtWords *s);
 u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p);
 /* Inlined copy of ui_buildSpriteDef (SPRT + DR_TPAGE from a sprite descriptor). */
-static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidth, SprtWords *s) {
-    DrTpageWords *t;
-    setlen(s, 4);
+static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *def, u8 flag, s32 *outWidth, SprtWords *sprt) {
+    DrTpageWords *drMode;
+    setlen(sprt, 4);
     if (flag) {
-        s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
+        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     } else {
-        s->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
+        sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
-    s->xy = (x & 0xFFFF) | (y << 16);
-    s->uvclut = d->uvclut;
-    s->wh = d->w | (d->h << 16);
-    addPrim(ot, s);
-    s++;
-    t = (DrTpageWords *)s;
-    setlen(t, 1);
-    t->code = get_mode(1, 1, d->tpage);
-    addPrim(ot, t);
-    *outWidth = d->w;
-    s = (SprtWords *)(t + 1);
-    return (u8 *)s;
+    sprt->xy = (x & 0xFFFF) | (y << 16);
+    sprt->uvclut = def->uvclut;
+    sprt->wh = def->w | (def->h << 16);
+    addPrim(ot, sprt);
+    sprt++;
+    drMode = (DrTpageWords *)sprt;
+    setlen(drMode, 1);
+    drMode->code = get_mode(1, 1, def->tpage);
+    addPrim(ot, drMode);
+    *outWidth = def->w;
+    sprt = (SprtWords *)(drMode + 1);
+    return (u8 *)sprt;
 }
 /* Inlined copy of evt_freeAllocNode (move an object's node to the free list). */
 static inline void evt_freeAllocNode_inline(EvtObject *key) {
@@ -3553,28 +3562,28 @@ typedef struct {
 EquipStatsOut *chr_calcEquipStats(EquipStatsIn *, EquipStatsOut *);
 
 /* Inlined copy of chr_updateStats (recompute a character's stats). */
-static inline void chr_updateStats_inline(Character *c) {
+static inline void chr_updateStats_inline(Character *chr) {
     EquipStatsIn in;
     EquipStatsOut out;
 
-    in.base = *(Bytes8 *)&c->baseMaxHp;
-    in.hp = c->hp;
-    in.mp = c->mp;
-    in.support = *(Words2 *)c->supportAbilities;
-    in.equip = *(Bytes5 *)c->equip;
+    in.base = *(Bytes8 *)&chr->baseMaxHp;
+    in.hp = chr->hp;
+    in.mp = chr->mp;
+    in.support = *(Words2 *)chr->supportAbilities;
+    in.equip = *(Bytes5 *)chr->equip;
     chr_calcEquipStats(&in, &out);
-    c->speed = out.stats[0];
-    c->strength = out.stats[1];
-    c->magic = out.stats[2];
-    c->spirit = out.stats[3];
-    c->defense = out.defs[1];
-    c->evade = out.defs[2];
-    c->magicDef = out.defs[3];
-    c->magicEva = out.defs[4];
-    c->hp = out.hp;
-    c->mp = out.mp;
-    c->maxHp = out.maxHp;
-    c->maxMp = out.maxMp;
+    chr->speed = out.stats[0];
+    chr->strength = out.stats[1];
+    chr->magic = out.stats[2];
+    chr->spirit = out.stats[3];
+    chr->defense = out.defs[1];
+    chr->evade = out.defs[2];
+    chr->magicDef = out.defs[3];
+    chr->magicEva = out.defs[4];
+    chr->hp = out.hp;
+    chr->mp = out.mp;
+    chr->maxHp = out.maxHp;
+    chr->maxMp = out.maxMp;
 }
 extern void (*g_fadeSeekFuncs[])(FadeState *, s32);
 extern s32 g_msgReady;
@@ -4467,35 +4476,35 @@ WinLayout *evt_getMsgLayout(EvtObject *, s32, s32);
 void msg_open(s32, s32, WinLayout *, s32);
 
 static inline s32 evt_getArg16_inline(void) {
-    s32 r;
+    s32 val;
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
-        r = evt_popResult();
+        val = evt_popResult();
     } else {
         EvtObject *pp = g_evtCurObj;
-        r = *pp->ip++;
-        r |= *pp->ip++ << 8;
-        r = (s16)r;
+        val = *pp->ip++;
+        val |= *pp->ip++ << 8;
+        val = (s16)val;
     }
     g_evtArgFlags >>= 1;
     g_evtArgRead = 1;
-    return r;
+    return val;
 }
 
 /* uid of the object the current script runs for */
 #define CUR_UID() (((u8 *)((s32 *)g_evtCurObj + g_evtCurObj->stackOfs) + g_evtCurObj->sp * 4)[-1])
 
 static inline s32 evt_getArg8_inline(void) {
-    s32 r;
+    s32 val;
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
-        r = evt_popResult();
+        val = evt_popResult();
     } else {
-        r = *g_evtCurObj->ip++;
+        val = *g_evtCurObj->ip++;
     }
     g_evtArgFlags >>= 1;
     g_evtArgRead = 1;
-    return r;
+    return val;
 }
 
 extern s32 g_evtPlayerAnimCount;
@@ -4575,16 +4584,16 @@ typedef struct Unk8004AFF0 {
 } Unk8004AFF0;
 
 /* Inlined copy of evt_getObjectModelData. */
-static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *p) {
-    ModelSlot *q;
+static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *obj) {
+    ModelSlot *slot;
 
-    if (p != NULL) {
-        if (p->modelId == EVT_MODEL_NONE) {
+    if (obj != NULL) {
+        if (obj->modelId == EVT_MODEL_NONE) {
             return NULL;
         }
-        q = (ModelSlot *)game_getModel(p->modelSlot);
-        if (q != NULL) {
-            return (Unk8004AFF0 *)q->model;
+        slot = (ModelSlot *)game_getModel(obj->modelSlot);
+        if (slot != NULL) {
+            return (Unk8004AFF0 *)slot->model;
         }
     }
     return NULL;
@@ -4623,20 +4632,20 @@ void chr_clearRecruited(u32);
 
 /* Inlined copy of evt_getArg24 (24-bit script argument). */
 static inline s32 evt_getArg24_inline(void) {
-    s32 v;
+    s32 val;
     EvtObject *pp;
 
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
-        v = evt_popResult();
+        val = evt_popResult();
     } else {
         pp = g_evtCurObj;
-        v = *pp->ip++;
-        v |= *pp->ip++ << 8;
-        v |= *pp->ip++ << 16;
+        val = *pp->ip++;
+        val |= *pp->ip++ << 8;
+        val |= *pp->ip++ << 16;
     }
     g_evtArgFlags >>= (g_evtArgRead = 1);
-    return v;
+    return val;
 }
 
 extern u8 g_evtPartyOrderChars[];
@@ -4694,10 +4703,10 @@ static inline void func_8004B3A8_inline(s32 a, s32 b) {
     evt_createObject(a, b, 0x14, 0x10)->kind = EVT_KIND_CODE;
 }
 
-static inline void evt_createRegion_inline(s32 a, s32 b) {
-    EvtObject *p = evt_createObject(a, b, 0x38, 0x10);
-    p->kind = EVT_KIND_REGION;
-    p->flags = EVT_OBJ_ENABLED;
+static inline void evt_createRegion_inline(s32 scriptIdx, s32 id) {
+    EvtObject *obj = evt_createObject(scriptIdx, id, 0x38, 0x10);
+    obj->kind = EVT_KIND_REGION;
+    obj->flags = EVT_OBJ_ENABLED;
 }
 
 static inline void evt_execInstr_newactor(s32 uid, s32 b) {

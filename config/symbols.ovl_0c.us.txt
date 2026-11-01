@@ -364,7 +364,7 @@ g_worldStartup = 0x800CF47D; // [code] 1 during wm_systemInit - wm_loadTim then 
 g_worldStoryCounterPtr = 0x800CF430; // [code] = g_evtGlobalVars.h, *ptr (story counter) compared with 0x1766/0x2B52 etc. in weather, music, title code
 g_worldReqParams = 0x800CF488; // [string] w_frameSetParameter "SE Param0..3" (16-19, also 6-9), param 0 also "Whather Speed" (14), "Get Getoffpos" stores X/Y/Z, getParam 0xC3-0xC5
 g_worldEventBattleRate = 0x800CF474; // [string] set by case 26 "EventBattleProbability", getParam 0xCD rolls 1 in (rate+1)
-g_worldMogChoice = 0x800CF440; // [string] set by case 35 "Mog choice", while set wm_frameMain reports busy to func_80019160
+g_worldMogChoice = 0x800CF440; // [string] set by case 35 "Mog choice" [runtime] a world-script choice window is open (moogle, chocobo menu, airship Go to, navigation method), wm_frameMain reports busy while set
 g_worldMapJump = 0x800CF4A8; // [string] set by case 41 "Map Jump" (cleared in wm_systemInit)
 g_worldDebugStep = 0x800CCF70; // [code] last update step (10, 0x64-0x6A) written through wm_updateLogic/wm_updateDraw
 g_worldTimeLogic = 0x800CF43C; // [code] VSync(1) delta around the logic step (wm_frameMain)

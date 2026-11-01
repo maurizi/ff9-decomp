@@ -52,7 +52,7 @@ void menuItem_inputTabs(void) {
 
 void menuItem_inputTarget(void) {
     ItemList *it = &s_menuItemTabs[s_menuItem.tab];
-    MenuList *l = it->list;
+    MenuList *list = it->list;
     s32 i;
     u8 cur;
     s32 next;
@@ -64,7 +64,7 @@ void menuItem_inputTarget(void) {
             return;
         }
         if (g_padRepeat & BTN_CROSS) {
-            i = (l->top + l->cursor) * 2 + l->col;
+            i = (list->top + list->cursor) * 2 + list->col;
             menuItem_useOnTarget(g_gameState->gameData->items.slots[i].id);
             if (g_gameState->gameData->items.slots[i].count == 0) {
                 menuItem_closeTarget();
@@ -88,12 +88,12 @@ void menuItem_inputTarget(void) {
 }
 
 void menuItem_inputManualArrange(void) {
-    MenuList *l = s_menuItemTabs[1].list;
+    MenuList *list = s_menuItemTabs[1].list;
     ItemSlot swap;
     s32 i;
     u8 j;
 
-    if (l->scroll == 0) {
+    if (list->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             s_menuItem.state = ITEM_STATE_ARRANGE;
@@ -102,44 +102,44 @@ void menuItem_inputManualArrange(void) {
         if (g_padRepeat & BTN_CROSS) {
             if (s_menuItem.swapPicked == 0) {
                 snd_playSe(SE_CURSOR);
-                j = l->col + (l->cursor + l->top) * 2;
+                j = list->col + (list->cursor + list->top) * 2;
                 s_menuItem.swapPicked = 1;
                 s_menuItem.swapFrom = j;
                 return;
             }
             snd_playSe(SE_CURSOR);
-            i = (l->cursor + l->top) * 2 + l->col;
+            i = (list->cursor + list->top) * 2 + list->col;
             swap = g_gameState->gameData->items.slots[s_menuItem.swapFrom];
             g_gameState->gameData->items.slots[s_menuItem.swapFrom] = g_gameState->gameData->items.slots[i];
             g_gameState->gameData->items.slots[i] = swap;
             s_menuItem.swapPicked = 0;
             return;
         }
-        menuList_input(l, g_padRepeat);
-        menuList_left(l, g_padRepeat);
-        menuList_right(l, g_padRepeat);
+        menuList_input(list, g_padRepeat);
+        menuList_left(list, g_padRepeat);
+        menuList_right(list, g_padRepeat);
     }
 }
 
-void menuItem_selectItem(s32 idx, MenuList *l) {
-    ItemSlot *p;
+void menuItem_selectItem(s32 idx, MenuList *list) {
+    ItemSlot *slot;
     ItemInfo *it;
-    Unk8006B1F4 *e;
+    Unk8006B1F4 *usable;
     u8 ok;
     s32 id;
 
-    p = &g_gameState->gameData->items.slots[idx];
+    slot = &g_gameState->gameData->items.slots[idx];
     ok = 0;
-    if (p->count != 0 && p->id != ITEM_NONE && p->id >= ITEM_FIRST_USABLE) {
-        id = p->id;
+    if (slot->count != 0 && slot->id != ITEM_NONE && slot->id >= ITEM_FIRST_USABLE) {
+        id = slot->id;
         it = &g_itemTable[id];
-        e = &g_usableItemTable[id - ITEM_FIRST_USABLE];
+        usable = &g_usableItemTable[id - ITEM_FIRST_USABLE];
         if (it->slots & ITEM_SLOT_USABLE) {
-            s_menuItem.targetKind = e->targetKind;
+            s_menuItem.targetKind = usable->targetKind;
             ok = 1;
-            s_menuItem.targetMode = p->id != ITEM_GYSAHL_GREENS ? e->targetMode : 0;
+            s_menuItem.targetMode = slot->id != ITEM_GYSAHL_GREENS ? usable->targetMode : 0;
             if (s_menuItem.targetMode == 0) {
-                menuItem_useOnTarget(p->id);
+                menuItem_useOnTarget(slot->id);
             } else {
                 menuItem_openTarget();
             }
@@ -185,15 +185,15 @@ void menuItem_drawList(void) {
 }
 
 void menuItem_drawCursor(void) {
-    MenuList *l;
+    MenuList *list;
     s32 off;
     u8 blink;
-    s32 a;
+    s32 firstRow;
     s32 k;
-    u8 u;
+    u8 swapIdx;
 
     off = 0;
-    l = s_menuItemTabs[s_menuItem.tab].list;
+    list = s_menuItemTabs[s_menuItem.tab].list;
     blink = (g_menuScreenFrame & 3) != 0;
     help_setCursorOnTop(s_menuItem.state != ITEM_STATE_TABS);
     if (fade_isBusy() || s_menuItem.state == ITEM_STATE_BUSY) {
@@ -212,17 +212,17 @@ void menuItem_drawCursor(void) {
         help_drawCursor();
     }
     if (s_menuItem.state >= ITEM_STATE_LIST && s_menuItem.state != ITEM_STATE_ARRANGE && (s_menuItem.state == ITEM_STATE_LIST || blink)) {
-        k = l->col ^ ((l->scroll >> 3) & 1);
+        k = list->col ^ ((list->scroll >> 3) & 1);
         g_menuHelp.otz = 0x19;
         /* Both arms are identical (jump2 merges them after register allocation); the test keeps the
          * hi part of &s_menuItem and the constant 2 live, which the original's registers need. */
         if (s_menuItem.tab == ITEM_TAB_KEY) {
             g_menuHelp.x = k * 0x96;
-            g_menuHelp.y = l->cursor * 15 + 0x34;
+            g_menuHelp.y = list->cursor * 15 + 0x34;
             help_drawCursor();
         } else {
             g_menuHelp.x = k * 0x96;
-            g_menuHelp.y = l->cursor * 15 + 0x34;
+            g_menuHelp.y = list->cursor * 15 + 0x34;
             help_drawCursor();
         }
     }
@@ -233,69 +233,69 @@ void menuItem_drawCursor(void) {
         help_drawCursor();
     }
     if (s_menuItem.state == ITEM_STATE_MANUAL) {
-        if (s_menuItem.swapPicked == 1 && blink && !(l->scroll & MENULIST_SCROLL_PAGE)) {
-            a = l->top;
-            if (s_menuItem.swapFrom >= a * 2 && s_menuItem.swapFrom < (a + 0xB) * 2) {
-                if (l->scroll != 0) {
-                    off = l->scrollPos;
-                    if (!(l->scroll & MENULIST_SCROLL_UP)) {
+        if (s_menuItem.swapPicked == 1 && blink && !(list->scroll & MENULIST_SCROLL_PAGE)) {
+            firstRow = list->top;
+            if (s_menuItem.swapFrom >= firstRow * 2 && s_menuItem.swapFrom < (firstRow + 0xB) * 2) {
+                if (list->scroll != 0) {
+                    off = list->scrollPos;
+                    if (!(list->scroll & MENULIST_SCROLL_UP)) {
                         off = -off;
                     }
                 }
-                u = s_menuItem.swapFrom;
-                g_menuHelp.x = (u & 1) * 0x96 + 2;
-                g_menuHelp.y = ((u >> 1) - l->top) * 15 + (s16)(off + 0x32);
+                swapIdx = s_menuItem.swapFrom;
+                g_menuHelp.x = (swapIdx & 1) * 0x96 + 2;
+                g_menuHelp.y = ((swapIdx >> 1) - list->top) * 15 + (s16)(off + 0x32);
                 g_menuHelp.otz = 0x12;
                 help_drawCursor();
             }
         }
-        k = l->col ^ ((l->scroll >> 3) & 1);
+        k = list->col ^ ((list->scroll >> 3) & 1);
         g_menuHelp.x = k * 0x96;
-        g_menuHelp.y = l->cursor * 15 + 0x34;
+        g_menuHelp.y = list->cursor * 15 + 0x34;
         g_menuHelp.otz = 0x12;
         help_drawCursor();
     }
 }
 
 void menuItem_openTarget(void) {
-    ItemMenu *m;
-    RECT *r;
+    ItemMenu *menu;
+    RECT *rect;
     GameState *gs;
     s32 k = (s_menuItemTabs[s_menuItem.tab].list->col ^ 1) & 1;
 
     s_menuItem.charWin.rect.x = (u8)k == 0 ? 8 : 0xA4;
-    r = &s_menuItem.charWin.rect;
-    r->y = 0x26;
-    r->w = 0x90;
-    r->h = 0xB6;
+    rect = &s_menuItem.charWin.rect;
+    rect->y = 0x26;
+    rect->w = 0x90;
+    rect->h = 0xB6;
     tween_start(&s_menuItem.charWin, s_menuItemTargetOpen[k], 1);
     gs = g_gameState;
-    m = &s_menuItem;
-    m->slot = 0;
+    menu = &s_menuItem;
+    menu->slot = 0;
 loop:
-    if (gs->gameData->party[m->slot] == NULL) {
-        if (++m->slot < 4) {
+    if (gs->gameData->party[menu->slot] == NULL) {
+        if (++menu->slot < 4) {
             goto loop;
         }
     }
-    m->state = ITEM_STATE_BUSY;
-    m->charWinOpen = 1;
+    menu->state = ITEM_STATE_BUSY;
+    menu->charWinOpen = 1;
     snd_playSe(SE_CURSOR);
 }
 
 void menuItem_sortAuto(void) {
-    s32 n;
+    s32 count;
     s32 i;
     s32 j;
 
-    n = 0;
+    count = 0;
     for (i = 0; i < ITEM_SLOT_COUNT; i++) {
         if (g_gameState->gameData->items.slots[i].count != 0 && g_gameState->gameData->items.slots[i].id != ITEM_NONE) {
-            s_menuItemSortBuf[n++] = g_gameState->gameData->items.slots[i];
+            s_menuItemSortBuf[count++] = g_gameState->gameData->items.slots[i];
         }
     }
-    for (i = 0; i < n - 1; i++) {
-        for (j = i + 1; j < n; j++) {
+    for (i = 0; i < count - 1; i++) {
+        for (j = i + 1; j < count; j++) {
             if (g_itemTable[s_menuItemSortBuf[i].id].sortKey > g_itemTable[s_menuItemSortBuf[j].id].sortKey) {
                 s_menuItemSortTmp = s_menuItemSortBuf[i];
                 s_menuItemSortBuf[i] = s_menuItemSortBuf[j];
@@ -308,10 +308,10 @@ void menuItem_sortAuto(void) {
             }
         }
     }
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < count; i++) {
         g_gameState->gameData->items.slots[i] = s_menuItemSortBuf[i];
     }
-    for (i = n; i < ITEM_SLOT_COUNT; i++) {
+    for (i = count; i < ITEM_SLOT_COUNT; i++) {
         g_gameState->gameData->items.slots[i].count = 0;
     }
     s_menuItem.itemList.col = 0;
@@ -320,19 +320,19 @@ void menuItem_sortAuto(void) {
 }
 
 s32 menuItem_callChocobo(void) {
-    ItemMenu *m = &s_menuItem;
+    ItemMenu *menu = &s_menuItem;
 
-    if (g_gameState->mode == GS_MODE_WORLD && g_evtGlobalVars.b[0xBF] != 0 && g_evtGlobalVars.b[0xB5] == 0) {
+    if (g_gameState->mode == GS_MODE_WORLD && g_evtGlobalVars.b[EVT_GB_CHOCOBO_LEVEL] != 0 && g_evtGlobalVars.b[0xB5] == 0) {
         if (wm_canCallChocobo()) {
             g_evtGlobalVars.b[0xB5] = 1;
             wm_callChocobo();
-            m->popup = win_openFree(&s_menuItemKwehRect, 0xF, WIN_STYLE_BEVEL);
-            win_setOnOpened(m->popup, menuItem_onKwehOpened);
-            win_setDrawContent(m->popup, menuItem_drawKweh);
-            win_setTitle(m->popup, (s32)s_menuItemChocoboTitle);
-            win_setShadow(m->popup, 1);
-            m->popupTimer = 1;
-            m->state = ITEM_STATE_BUSY;
+            menu->popup = win_openFree(&s_menuItemKwehRect, 0xF, WIN_STYLE_BEVEL);
+            win_setOnOpened(menu->popup, menuItem_onKwehOpened);
+            win_setDrawContent(menu->popup, menuItem_drawKweh);
+            win_setTitle(menu->popup, (s32)s_menuItemChocoboTitle);
+            win_setShadow(menu->popup, 1);
+            menu->popupTimer = 1;
+            menu->state = ITEM_STATE_BUSY;
             help_setLocked(1);
             return 1;
         }
@@ -342,9 +342,9 @@ s32 menuItem_callChocobo(void) {
 }
 
 void menuItem_updateHelp(void) {
-    RECT r;
-    MenuList *l;
-    ItemSlot *p;
+    RECT bounds;
+    MenuList *list;
+    ItemSlot *slot;
     s32 i;
     s16 x;
     s16 y;
@@ -371,20 +371,20 @@ void menuItem_updateHelp(void) {
             }
             return;
         }
-        l = &s_menuItem.itemList;
+        list = &s_menuItem.itemList;
     } else if (s_menuItem.state == ITEM_STATE_TARGET) {
         if (menuItem_getSlot(&s_menuItem.itemList) & 1) {
-            r.x = 0xC;
-            r.y = 0;
-            r.w = g_gameState->dispEnv->disp.w;
-            r.h = g_gameState->dispEnv->disp.h;
+            bounds.x = 0xC;
+            bounds.y = 0;
+            bounds.w = g_gameState->dispEnv->disp.w;
+            bounds.h = g_gameState->dispEnv->disp.h;
         } else {
-            r.x = 0;
-            r.y = 0;
-            r.w = g_gameState->dispEnv->disp.w >> 1;
-            r.h = g_gameState->dispEnv->disp.h;
+            bounds.x = 0;
+            bounds.y = 0;
+            bounds.w = g_gameState->dispEnv->disp.w >> 1;
+            bounds.h = g_gameState->dispEnv->disp.h;
         }
-        help_setBounds(&r);
+        help_setBounds(&bounds);
         g_menuHelp.text = text_get(ITEM_TEXT_SELECT_CHAR);
         return;
     } else if (s_menuItem.state == ITEM_STATE_ARRANGE) {
@@ -392,13 +392,13 @@ void menuItem_updateHelp(void) {
         h->text = text_get(s_menuItem.arrangeCursor + ITEM_TEXT_ARRANGE_HELP);
         return;
     } else if (s_menuItem.state == ITEM_STATE_MANUAL) {
-        l = s_menuItemTabs[1].list;
+        list = s_menuItemTabs[1].list;
     } else {
         return;
     }
-    p = &g_gameState->gameData->items.slots[menuItem_getSlot(l)];
-    if (p->count != 0) {
-        h->text = &s_menuItemHelp[g_itemTable[p->id].help];
+    slot = &g_gameState->gameData->items.slots[menuItem_getSlot(list)];
+    if (slot->count != 0) {
+        h->text = &s_menuItemHelp[g_itemTable[slot->id].help];
     }
 }
 
@@ -426,15 +426,15 @@ void menuItem_updateKeyItemAnim(void) {
 }
 
 void menuItem_drawKeyItem(void) {
-    ItemMenu *m = &s_menuItem;
+    ItemMenu *menu = &s_menuItem;
     s32 x;
     u8 *name;
 
-    if (m->keyView != 0) {
-        x = m->keyViewX;
-        name = g_keyItemNames + g_keyItemTable[m->keyViewId].name;
+    if (menu->keyView != 0) {
+        x = menu->keyViewX;
+        name = g_keyItemNames + g_keyItemTable[menu->keyViewId].name;
         text_drawBlock(x + ((0xB0 - text_measureWidth((s32)name)) >> 1), 0x50, 0x14, name, TEXT_PAL_HELP);
-        text_drawBlock(x + 0xD, 0x66, 0x14, s_menuItemKeyDesc + g_keyItemTable[m->keyViewId].desc, TEXT_PAL_HELP);
+        text_drawBlock(x + 0xD, 0x66, 0x14, s_menuItemKeyDesc + g_keyItemTable[menu->keyViewId].desc, TEXT_PAL_HELP);
         setlen(g_primPtr, 4);
         ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         ((SprtWords *)g_primPtr)->xy = (x & 0xFFFF) | 0x410000;
@@ -508,9 +508,9 @@ void menuItem_updateAnims(void) {
 
 void menuItem_inputList(void) {
     ItemList *it = &s_menuItemTabs[s_menuItem.tab];
-    MenuList *l = it->list;
+    MenuList *list = it->list;
 
-    if (l->scroll == 0) {
+    if (list->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             s_menuItem.state = ITEM_STATE_TABS;
@@ -520,12 +520,12 @@ void menuItem_inputList(void) {
             menuItem_selectRow();
             return;
         }
-        if (l->count != 0) {
-            menuList_input(l, g_padRepeat);
-            if (l->scroll == 0) {
-                menuList_left(l, g_padRepeat);
-                if (l->scroll == 0) {
-                    menuList_right(l, g_padRepeat);
+        if (list->count != 0) {
+            menuList_input(list, g_padRepeat);
+            if (list->scroll == 0) {
+                menuList_left(list, g_padRepeat);
+                if (list->scroll == 0) {
+                    menuList_right(list, g_padRepeat);
                 }
             }
         }
@@ -567,12 +567,12 @@ void menuItem_inputKeyItem(void) {
 
 void menuItem_selectRow(void) {
     ItemList *it = &s_menuItemTabs[s_menuItem.tab];
-    MenuList *l = it->list;
-    void (*f)(s32, MenuList *) = it->select;
-    s32 idx = (l->top + l->cursor) * 2 + l->col;
+    MenuList *list = it->list;
+    void (*selectFn)(s32, MenuList *) = it->select;
+    s32 idx = (list->top + list->cursor) * 2 + list->col;
 
     do {
-        f(idx, l);
+        selectFn(idx, list);
     } while (0);
 }
 
@@ -586,14 +586,14 @@ void menuItem_selectKeyItem(s32 i) {
 }
 
 void menuItem_useOnTarget(s32 id) {
-    Unk8006B1F4 *e;
-    Character *c;
+    Unk8006B1F4 *usable;
+    Character *chr;
     s32 i;
 
     i = id - ITEM_FIRST_USABLE;
-    e = &g_usableItemTable[i];
-    c = g_gameState->gameData->party[s_menuItem.slot];
-    if (item_useOnMember(c, c, e, e->effect, 0)) {
+    usable = &g_usableItemTable[i];
+    chr = g_gameState->gameData->party[s_menuItem.slot];
+    if (item_useOnMember(chr, chr, usable, usable->effect, 0)) {
         snd_playSe(SE_USE_ITEM);
         item_remove(id, 1);
     } else {
@@ -602,19 +602,19 @@ void menuItem_useOnTarget(s32 id) {
 }
 
 void menuItem_drawTabs(void) {
-    RECT *r;
+    RECT *rect;
     s32 i;
 
-    r = &s_menuItem.cmdRect;
+    rect = &s_menuItem.cmdRect;
     for (i = 0; i < 3; i++) {
-        text_drawBlock(r->x + s_menuItemTabX[i], r->y + 6, 0x1C, text_get(s_menuItemTabText[i]), TEXT_PAL_WHITE);
+        text_drawBlock(rect->x + s_menuItemTabX[i], rect->y + 6, 0x1C, text_get(s_menuItemTabText[i]), TEXT_PAL_WHITE);
     }
-    win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
-    win_drawShadow(r, 0x1D, WIN_STYLE_BEVEL);
+    win_drawBox(rect, 0x1D, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, 0x1D, WIN_STYLE_BEVEL);
 }
 
 void menuItem_drawScrollRows(void) {
-    MenuView v;
+    MenuView view;
     ItemList *it;
     s32 row;
     s32 col;
@@ -622,68 +622,68 @@ void menuItem_drawScrollRows(void) {
 
     it = &s_menuItemTabs[s_menuItem.tab];
     row = 0;
-    menuList_getPageView(it->list, &v);
-    idx = v.first * 2;
-    for (; row < v.rows; row++) {
+    menuList_getPageView(it->list, &view);
+    idx = view.first * 2;
+    for (; row < view.rows; row++) {
         for (col = 0; col < 2; col++) {
-            it->drawRow(col, row, idx++, &v);
+            it->drawRow(col, row, idx++, &view);
         }
     }
 }
 
 void menuItem_drawTargetWindow(void) {
-    RECT *r = &s_menuItem.charWin.rect;
+    RECT *rect = &s_menuItem.charWin.rect;
     s32 i;
 
     if (s_menuItem.charWinOpen != 0) {
         for (i = 0; i < 4; i++) {
             if (g_gameState->gameData->party[i] != NULL) {
-                ui_drawMemberSummary(r->x + 8, r->y + 6 + i * 0x2B, 0x14, i, s_menuItem.targetMode);
+                ui_drawMemberSummary(rect->x + 8, rect->y + 6 + i * 0x2B, 0x14, i, s_menuItem.targetMode);
             }
         }
-        win_drawBox(r, 0x14, WIN_STYLE_BEVEL);
-        win_drawShadow(r, 0x14, WIN_STYLE_BEVEL);
+        win_drawBox(rect, 0x14, WIN_STYLE_BEVEL);
+        win_drawShadow(rect, 0x14, WIN_STYLE_BEVEL);
     }
 }
 
-void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
-    ItemSlot *p = &g_gameState->gameData->items.slots[i];
+void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *view) {
+    ItemSlot *slot = &g_gameState->gameData->items.slots[i];
     ItemInfo *it;
     u8 ok;
     s32 x, y, x2;
     s32 k = 0x2A;
     u8 numText[8];
 
-    if (p->count != 0 && p->id != ITEM_NONE) {
-        it = &g_itemTable[p->id];
+    if (slot->count != 0 && slot->id != ITEM_NONE) {
+        it = &g_itemTable[slot->id];
         ok = it->slots & ITEM_SLOT_USABLE;
         x = col * 0x96;
-        y = row * 0xF + (v->y + k);
-        text_formatNumber(p->count, numText, 2, TEXT_NUM_ASCII);
+        y = row * 0xF + (view->y + k);
+        text_formatNumber(slot->count, numText, 2, TEXT_NUM_ASCII);
         x2 = x + 0x18;
         text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->name, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-        ui_drawItemIcon(x2, y, 0x1C, p->id, ok);
+        ui_drawItemIcon(x2, y, 0x1C, slot->id, ok);
         ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, numText, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
     }
 }
 
-void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
+void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *view) {
     u8 blink = (u32)g_menuFrame % 48 >= 0x10;
     u8 id;
     s32 x, y;
     s32 k = 0x2A;
     u8 *name;
     s32 w;
-    KeyItemInfo *t;
+    KeyItemInfo *info;
     u8 got;
 
     if (i < s_menuItem.keyCount) {
         id = s_menuItem.keyItems[i];
-        t = &g_keyItemTable[id];
+        info = &g_keyItemTable[id];
         got = keyItem_isSeen(id);
         x = col * 0x96 + 0x18;
-        y = row * 0xF + (v->y + k);
-        name = g_keyItemNames + t->name;
+        y = row * 0xF + (view->y + k);
+        name = g_keyItemNames + info->name;
         if (!got) {
             w = x + text_measureWidth((s32)name);
             ui_drawSprite(w + 5, y + 2, 0x1C, 0xB6, blink);
@@ -700,20 +700,20 @@ void menuItem_onKwehOpened(Window *w) {
 }
 
 void menuItem_drawKweh(Window *w) {
-    u8 *s;
+    u8 *msg;
 
-    s = text_get(ITEM_TEXT_KWEH);
-    text_drawBlock(w->x + ((w->w - text_measureWidth((s32)s)) >> 1), w->y + 6, w->otz, s, TEXT_PAL_WHITE);
+    msg = text_get(ITEM_TEXT_KWEH);
+    text_drawBlock(w->x + ((w->w - text_measureWidth((s32)msg)) >> 1), w->y + 6, w->otz, msg, TEXT_PAL_WHITE);
 }
 
 void menuItem_stepKweh(void) {
-    u32 t;
+    u32 timer;
 
     if (s_menuItem.state == ITEM_STATE_BUSY) {
-        t = s_menuItem.popupTimer;
-        if (t != 0) {
-            s_menuItem.popupTimer = t + 1;
-            if (t >= 0x60) {
+        timer = s_menuItem.popupTimer;
+        if (timer != 0) {
+            s_menuItem.popupTimer = timer + 1;
+            if (timer >= 0x60) {
                 s_menuItem.popupTimer = 0;
                 if (g_gameState->mode == GS_MODE_WORLD) {
                     snd_stopSe(SE_CHOCOBO_CALL);
@@ -730,12 +730,12 @@ void menuItem_stepKweh(void) {
 
 void menuItem_closeTarget(void) {
     ItemList *it;
-    ItemMenu *m;
+    ItemMenu *menu;
 
     it = s_menuItemTabs;
-    m = &s_menuItem;
-    tween_start(&m->charWin, s_menuItemTargetClose[it[s_menuItem.tab].list->col & 1], 0);
-    m->state = ITEM_STATE_BUSY;
+    menu = &s_menuItem;
+    tween_start(&menu->charWin, s_menuItemTargetClose[it[s_menuItem.tab].list->col & 1], 0);
+    menu->state = ITEM_STATE_BUSY;
 }
 
 void menuItem_onTargetOpened(void) {
@@ -748,23 +748,23 @@ void menuItem_onTargetClosed(void) {
 }
 
 void menuItem_collectKeyItems(void) {
-    s32 n;
+    s32 count;
     s32 i;
 
-    n = 0;
+    count = 0;
     for (i = 0; i < KEY_ITEM_COUNT; i++) {
         if ((u8)keyItem_has(i)) {
-            s_menuItem.keyItems[n] = i;
-            n++;
+            s_menuItem.keyItems[count] = i;
+            count++;
         }
     }
-    s_menuItem.keyCount = n;
+    s_menuItem.keyCount = count;
 }
 
 void menuItem_openArrange(void) {
-    MenuList *l;
+    MenuList *list;
 
-    l = s_menuItemTabs[1].list;
+    list = s_menuItemTabs[1].list;
     s_menuItem.popup = win_openFree(&s_menuItemArrangeRect, 0x14, WIN_STYLE_BEVEL);
     win_setDrawContent(s_menuItem.popup, menuItem_drawArrangeWindow);
     win_setOnOpened(s_menuItem.popup, menuItem_onArrangeOpened);
@@ -772,7 +772,7 @@ void menuItem_openArrange(void) {
     win_setShadow(s_menuItem.popup, 1);
     win_setTitle(s_menuItem.popup, g_labelArrange);
     s_menuItem.arrangeCursor = 0;
-    s_menuItem.swapFrom = l->col + (l->top + l->cursor) * 2;
+    s_menuItem.swapFrom = list->col + (list->top + list->cursor) * 2;
     s_menuItem.state = ITEM_STATE_BUSY;
 }
 
@@ -781,11 +781,11 @@ void menuItem_closeArrange(void) {
 }
 
 void menuItem_drawArrangeWindow(Window *w) {
-    Window *p = w;
+    Window *win = w;
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        text_drawBlock(p->x + 10, p->y + 6 + i * 15, w->otz, text_get(i + ITEM_TEXT_AUTO), TEXT_PAL_WHITE);
+        text_drawBlock(win->x + 10, win->y + 6 + i * 15, w->otz, text_get(i + ITEM_TEXT_AUTO), TEXT_PAL_WHITE);
     }
 }
 
@@ -798,11 +798,11 @@ void menuItem_onArrangeClosed(Window *w) {
 }
 
 void menuItem_loadImages(void) {
-    u8 *p = s_menuItemKeyImage;
+    u8 *image = s_menuItemKeyImage;
 
-    LoadImage(&s_menuItemKeyClutRect, (u32 *)p);
+    LoadImage(&s_menuItemKeyClutRect, (u32 *)image);
     DrawSync(0);
-    LoadImage(&s_menuItemKeyImageRect, (u32 *)(p + 0x40));
+    LoadImage(&s_menuItemKeyImageRect, (u32 *)(image + 0x40));
     DrawSync(0);
 }
 
@@ -827,20 +827,20 @@ void menuItem_hideKeyItem(void) {
     s_menuItem.keyViewX = 0x48;
 }
 
-s32 menuItem_getSlot(MenuList *l) {
-    s32 r, t;
+s32 menuItem_getSlot(MenuList *list) {
+    s32 curRow, wrapCol;
     s32 step;
 
-    if (l->scroll & MENULIST_SCROLL_WRAP_COL) {
-        t = l->col ^ 1;
+    if (list->scroll & MENULIST_SCROLL_WRAP_COL) {
+        wrapCol = list->col ^ 1;
         step = 1;
-        r = l->cursor;
-        if (l->scroll & MENULIST_SCROLL_UP) {
-            return (l->top + (r - step)) * 2 + t;
+        curRow = list->cursor;
+        if (list->scroll & MENULIST_SCROLL_UP) {
+            return (list->top + (curRow - step)) * 2 + wrapCol;
         }
-        return (l->top + (r + step)) * 2 + t;
+        return (list->top + (curRow + step)) * 2 + wrapCol;
     }
-    return (l->top + l->cursor) * 2 + l->col;
+    return (list->top + list->cursor) * 2 + list->col;
 }
 
 void menuItem_onInit(void) {

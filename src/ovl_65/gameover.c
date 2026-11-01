@@ -3,31 +3,31 @@
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/gameover", s_gameoverClearRect);
 
 void gameover_main(s32 image) {
-    s16 c = 0xFF;
+    s16 shade = 0xFF;
     u8 state = 0;
-    DispBuf b[2];
+    DispBuf bufs[2];
     RECT rect = s_gameoverClearRect;
     DispBuf *cur;
 
-    gameover_initDisp(b);
-    cur = b;
+    gameover_initDisp(bufs);
+    cur = bufs;
     DrawSync(0);
     gameover_loadImage(image);
     while (1) {
-        cur = (cur == &b[0]) ? &b[1] : &b[0];
+        cur = (cur == &bufs[0]) ? &bufs[1] : &bufs[0];
         ClearOTag(cur->ot, 2);
         switch (state) {
         case 0:
             state++;
             break;
         case 1:
-            setRGB0(&cur->fade, c, c, c);
-            c -= 4;
+            setRGB0(&cur->fade, shade, shade, shade);
+            shade -= 4;
             addPrim(&cur->ot[0], &cur->picTpage0);
             addPrim(&cur->ot[0], &cur->picTpage1);
             addPrim(&cur->ot[1], &cur->fadeTpage);
-            if (c < 0) {
-                c = 0;
+            if (shade < 0) {
+                shade = 0;
                 state++;
             }
             break;
@@ -41,15 +41,15 @@ void gameover_main(s32 image) {
             }
             break;
         case 3:
-            c += 4;
-            if (c >= 0x100) {
+            shade += 4;
+            if (shade >= 0x100) {
                 ClearImage(&rect, 0, 0, 0);
                 DrawSync(0);
-                if (c > 0x100) {
+                if (shade > 0x100) {
                     state++;
                 }
             } else {
-                setRGB0(&cur->fade, c, c, c);
+                setRGB0(&cur->fade, shade, shade, shade);
                 addPrim(&cur->ot[0], &cur->picTpage0);
                 addPrim(&cur->ot[0], &cur->picTpage1);
                 addPrim(&cur->ot[1], &cur->fadeTpage);
@@ -68,51 +68,51 @@ void gameover_main(s32 image) {
     }
 }
 
-void gameover_initDisp(DispBuf *b) {
+void gameover_initDisp(DispBuf *bufs) {
     RECT rect = s_gameoverVramRect;
     u32 i;
 
     ClearImage(&rect, 0, 0, 0);
-    SetDefDrawEnv(&b[0].draw, 0, 0, SCREEN_W, SCREEN_H);
-    SetDefDispEnv(&b[0].disp, SCREEN_W, 0, SCREEN_W, SCREEN_H);
-    SetDefDrawEnv(&b[1].draw, SCREEN_W, 0, SCREEN_W, SCREEN_H);
-    SetDefDispEnv(&b[1].disp, 0, 0, SCREEN_W, SCREEN_H);
+    SetDefDrawEnv(&bufs[0].draw, 0, 0, SCREEN_W, SCREEN_H);
+    SetDefDispEnv(&bufs[0].disp, SCREEN_W, 0, SCREEN_W, SCREEN_H);
+    SetDefDrawEnv(&bufs[1].draw, SCREEN_W, 0, SCREEN_W, SCREEN_H);
+    SetDefDispEnv(&bufs[1].disp, 0, 0, SCREEN_W, SCREEN_H);
     for (i = 0; i < 2; i++) {
-        b[i].draw.dtd = 1;
-        b[i].draw.isbg = 1;
-        b[i].disp.isinter = 0;
-        setRECT(&b[i].disp.screen, 0, 8, 256, SCREEN_H);
-        gfx_initTpageSprt(&b[i].picTpage0, GetTPage(2, 0, 0, 256));
-        setXY0(&b[i].pic0, 0, 0);
-        setUV0(&b[i].pic0, 0, 0);
-        setWH(&b[i].pic0, 256, 224);
-        setRGB0(&b[i].pic0, 0x80, 0x80, 0x80);
-        gfx_initTpageSprt(&b[i].picTpage1, GetTPage(2, 0, 256, 256));
-        setXY0(&b[i].pic1, 256, 0);
-        setUV0(&b[i].pic1, 0, 0);
-        setWH(&b[i].pic1, 64, 224);
-        setRGB0(&b[i].pic1, 0x80, 0x80, 0x80);
-        gfx_initTpageTile(&b[i].fadeTpage, GetTPage(0, 2, 0, 0));
-        setXY0(&b[i].fade, 0, 0);
-        setWH(&b[i].fade, SCREEN_W, SCREEN_H);
-        setRGB0(&b[i].fade, 0, 0, 0);
-        SetSemiTrans(&b[i].fade, 1);
+        bufs[i].draw.dtd = 1;
+        bufs[i].draw.isbg = 1;
+        bufs[i].disp.isinter = 0;
+        setRECT(&bufs[i].disp.screen, 0, 8, 256, SCREEN_H);
+        gfx_initTpageSprt(&bufs[i].picTpage0, GetTPage(2, 0, 0, 256));
+        setXY0(&bufs[i].pic0, 0, 0);
+        setUV0(&bufs[i].pic0, 0, 0);
+        setWH(&bufs[i].pic0, 256, 224);
+        setRGB0(&bufs[i].pic0, 0x80, 0x80, 0x80);
+        gfx_initTpageSprt(&bufs[i].picTpage1, GetTPage(2, 0, 256, 256));
+        setXY0(&bufs[i].pic1, 256, 0);
+        setUV0(&bufs[i].pic1, 0, 0);
+        setWH(&bufs[i].pic1, 64, 224);
+        setRGB0(&bufs[i].pic1, 0x80, 0x80, 0x80);
+        gfx_initTpageTile(&bufs[i].fadeTpage, GetTPage(0, 2, 0, 0));
+        setXY0(&bufs[i].fade, 0, 0);
+        setWH(&bufs[i].fade, SCREEN_W, SCREEN_H);
+        setRGB0(&bufs[i].fade, 0, 0, 0);
+        SetSemiTrans(&bufs[i].fade, 1);
     }
 }
 
 void gameover_loadImage(s32 dest) {
-    FileEntry *e = file_find(DIR_COMMON, FILE_GAMEOVER_IMAGE);
+    FileEntry *file = file_find(DIR_COMMON, FILE_GAMEOVER_IMAGE);
 
-    cd_readSync(g_gameState->imgSector + e->sector, (e->link - e->sector) << 11, dest);
+    cd_readSync(g_gameState->imgSector + file->sector, (file->link - file->sector) << 11, dest);
     file_loadTim(dest);
 }
 
 s32 battleEnd_update(void) {
-    GameData *g;
+    GameData *gd;
 
-    g = g_gameState->gameData;
+    gd = g_gameState->gameData;
     msg_beginDraw();
-    switch (g->battleResult) {
+    switch (gd->battleResult) {
     case BATTLE_END_VICTORY:
     case 2:
     case BATTLE_END_DEFEAT:
@@ -120,8 +120,8 @@ s32 battleEnd_update(void) {
     case 5:
     case 7:
         if (!rewards_update()) {
-            if (g->battleResult == 2) {
-                g->battleResult = BATTLE_END_VICTORY;
+            if (gd->battleResult == 2) {
+                gd->battleResult = BATTLE_END_VICTORY;
             }
             btl_termBanner();
             rewards_exit();

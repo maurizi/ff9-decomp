@@ -4158,18 +4158,18 @@ static inline BtlUnit *BtlFindTargetCursor(void) {
 
 /* inlined copy of btlui_getTargeting */
 static inline s32 btlui_getTargeting_inline(void) {
-    BtlUnit *u;
-    s32 n;
+    BtlUnit *unit;
+    s32 count;
     if (g_btlTarget.targetType >= 9 && g_btlTarget.targetType <= 11) {
         return 2;
     }
-    n = 0;
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
-        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-            n++;
+    count = 0;
+    for (unit = g_gameState->gameData->ctx.battle->unitList; unit != 0; unit = unit->next) {
+        if ((unit->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
+            count++;
         }
     }
-    return n >= 2;
+    return count >= 2;
 }
 
 /* Queue-entry validity check inlined into btlui_pruneMenuQueue. */
@@ -4437,10 +4437,10 @@ extern RECT g_btluiTexWindowRect;
 
 /* btl_drawShadow: project one corner of the 3x3 shadow grid */
 #define SHADOW_PT(x, z) \
-    v.vx = (x); \
-    v.vy = 0; \
-    v.vz = (z); \
-    gte_ldv0(&v); \
+    corner.vx = (x); \
+    corner.vy = 0; \
+    corner.vz = (z); \
+    gte_ldv0(&corner); \
     gte_rtps()
 
 /* btl_drawShadow: shadow quad q of `shadow` in the current buffer */
@@ -4997,10 +4997,10 @@ static inline void btl_damageHp_inline(BtlUnit *unit, s32 damage, u8 hitMotion) 
 
 /* Inlined copy of btlui_clearMenuQueue (empty the battle menu's unit queue). */
 static inline void btlui_clearMenuQueue_inline(void) {
-    Unk80104F88 *p = g_btlUi;
-    p->unk12C6 = 0;
-    p->queueHead = 0;
-    p->queueCount = 0;
+    Unk80104F88 *ui = g_btlUi;
+    ui->unk12C6 = 0;
+    ui->queueHead = 0;
+    ui->queueCount = 0;
 }
 
 /* Inlined copy of btlui_queueMenuUnit (append a unit to the battle menu's queue). */
