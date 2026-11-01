@@ -159,10 +159,10 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     }
 }
 
-void fx_0df_recordElemDraw(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7) {
+void fx_0df_recordElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *alpha, s32 blend, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0df_env);
 
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(fx_0df_task->file, 0x10), pos, arg3, *arg4 / 2, arg7, 1, *arg5, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(fx_0df_task->file, 0x10), pos, rot, *scale / 2, frame, 1, *alpha, 0, 0);
     BTLFX_COPY_SVEC(&fx_0df_recentPos[fx_0df_recentNext], pos);
     fx_0df_recentNext = (fx_0df_recentNext + 1) % 24;
 }
@@ -252,7 +252,7 @@ static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk8010
 
 s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     Fx0dfPart *part;
     s32 frame;
     s32 t;
@@ -335,13 +335,13 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->state0 = 2;
                     entry->frame = -1;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0x80, 0x80);
-                    work->emit3C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posC);
-                    if (p != NULL) {
-                        p->otZ = work->otZ8 + 0x46;
+                    work->emit3C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posC);
+                    if (emitter != NULL) {
+                        emitter->otZ = work->otZ8 + 0x46;
                     }
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->posC);
-                    if (p != NULL) {
-                        p->otZ = work->otZ8 + 0x46;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->posC);
+                    if (emitter != NULL) {
+                        emitter->otZ = work->otZ8 + 0x46;
                     }
                     work->yaw38 = (ex->btlfx_rand() % 3 - 1) * 0x9B;
                 }
@@ -440,13 +440,13 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     entry->frame = -1;
                     ex->btlfx_stopEmitter(work->emit3C);
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xAA, 0xAA, 0xAA);
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->posC);
-                    if (p != NULL) {
-                        p->otZ = work->otZ8 + 0x46;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->posC);
+                    if (emitter != NULL) {
+                        emitter->otZ = work->otZ8 + 0x46;
                     }
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->posC);
-                    if (p != NULL) {
-                        p->otZ = work->otZ8 + 0x46;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->posC);
+                    if (emitter != NULL) {
+                        emitter->otZ = work->otZ8 + 0x46;
                     }
                 }
                 break;
@@ -525,7 +525,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
-                   s32 ang, s32 dang, s32 arg9, s32 arg10, s32 pad) {
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     Unk800F78A4 *env = fx_0df_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR p;
@@ -548,12 +548,12 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
-        pt->pad = pad;
+        pt->pad = lineWidth;
         ang += dang + *jitter++;
         pt++;
     }
     env->otZ = 0x200;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0, 0, arg9, 0x1000, arg10 * 2 / 3, 2, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0, 0, frame, 0x1000, fade * 2 / 3, 2, (u8 *)bolt, 0);
     env->otZ = 0;
 }
 
@@ -568,7 +568,7 @@ static s32 fx_0df_op83PoolTask(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk801
     return 0;
 }
 
-s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     Fx0dfArc *arc;
@@ -580,13 +580,13 @@ s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 *tab;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = sizeof(Fx0dfWork83);
-        ((EffInit *)arg4)->elemSize = sizeof(Fx0dfArc);
-        ((EffInit *)arg4)->elemFn = (s32)fx_0df_op83PoolTask;
-        ((EffInit *)arg4)->poolCount = 7;
+        ((EffInit *)args)->workSize = sizeof(Fx0dfWork83);
+        ((EffInit *)args)->elemSize = sizeof(Fx0dfArc);
+        ((EffInit *)args)->elemFn = (s32)fx_0df_op83PoolTask;
+        ((EffInit *)args)->poolCount = 7;
     } else if (mode == 1) {
         fx_0df_env = env;
-        t = *arg4;
+        t = *args;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         work->jitter8 = fx_0df_arcJitter[0];
         p = work->jitter8;
@@ -637,7 +637,7 @@ s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     s32 frame;
@@ -650,7 +650,7 @@ s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 r;
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else {
         if (mode == 1) {
             fx_0df_env = env;

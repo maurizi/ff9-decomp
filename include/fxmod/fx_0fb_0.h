@@ -34,7 +34,7 @@ extern s32 fx_0fb_0_unitsRestored;
 extern Unk800F78A4 *fx_0fb_0_env;
 
 static s32 fx_0fb_0_op80PoolTask(s32 mode, Fx0fb0Rock *r, Unk800F78A4 *env);
-s32 fx_0fb_0_op81(s32 mode, Fx0fb0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0fb_0_op81(s32 mode, Fx0fb0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 typedef struct {
     SVECTOR a0;

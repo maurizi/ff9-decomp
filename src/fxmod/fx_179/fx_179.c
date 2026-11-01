@@ -221,7 +221,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     }
 }
 
-s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
@@ -235,10 +235,10 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } u;
     s32 frame;
     s32 a;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *arg4 = 0x20;
+        *args = 0x20;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -293,40 +293,40 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             u.s.vy = 0;
             u.s.vz = 0;
             fxm_shatterModel(work->model18, &u.s);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
-            if (p != NULL) {
-                p->otZ = 0x20;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+            if (emitter != NULL) {
+                emitter->otZ = 0x20;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos8);
-            if (p != NULL) {
-                p->trails = (s32)fx_179_op80Trails;
-                p->trailSlots = 0xA;
-                p->trailStride = 0x5C;
-                p->otZ = 0x20;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos8);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_179_op80Trails;
+                emitter->trailSlots = 0xA;
+                emitter->trailStride = 0x5C;
+                emitter->otZ = 0x20;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
-            if (p != NULL) {
-                p->otZ = 0x20;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
+            if (emitter != NULL) {
+                emitter->otZ = 0x20;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos8);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos8);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
         }
         break;

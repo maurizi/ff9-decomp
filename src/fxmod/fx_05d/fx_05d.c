@@ -2,7 +2,7 @@
 
 INCLUDE_RODATA("asm/us/fx_05d/nonmatchings/fx_05d", fx_05d_headerPtr);
 
-s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
@@ -13,7 +13,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR p;
 
     if (mode == 0) {
-        *arg4 = 0x68;
+        *args = 0x68;
     } else if (mode == 1) {
         fx_05d_env = env;
         ex->btlfx_initEffModels(fx_05d_effModels, 6);

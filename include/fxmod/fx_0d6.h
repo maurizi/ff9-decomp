@@ -29,7 +29,7 @@ typedef struct {
 extern BtlModelBuf fx_0d6_effModels[];
 extern s32 fx_0d6_trails[];
 extern u16 fx_0d6_texels[];
-s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 /* propagated */
 

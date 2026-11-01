@@ -1,6 +1,6 @@
 #include "fxmod/fx_023.h"
 
-s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     SVECTOR a;
@@ -8,7 +8,7 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR c;
 
     if (mode == 0) {
-        *arg4 = 0x3C;
+        *args = 0x3C;
     } else if (mode == 1) {
         fx_023_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos14);

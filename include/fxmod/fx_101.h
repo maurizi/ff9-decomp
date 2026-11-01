@@ -62,7 +62,7 @@ extern Unk800F78A4 *fx_101_env;
 extern Fx101Bolt fx_101_bolts[8];
 extern s32 fx_101_nextBolt; /* next bolt */
 
-s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 s32 fx_101_op82PoolTask(s32 mode, Fx101Spark *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 void fx_101_resetBolts(void);
 void fx_101_spawnBolt(Unk80100C78Entry *entry, SVECTOR *origin, s32 ang, SVECTOR *from, SVECTOR *to);

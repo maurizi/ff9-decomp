@@ -1,13 +1,13 @@
 #include "fxmod/fx_0c6.h"
 
-s32 fx_0c6_op80(s32 mode, Fx0c6Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0c6_op80(s32 mode, Fx0c6Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x14;
+        *args = 0x14;
     } else if (mode == 1) {
-        s32 n = *arg4;
+        s32 n = *args;
         work->unit10 = n;
         fx_0c6_env = env;
         if (n >= env->targets->targetCount) {

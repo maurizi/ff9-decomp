@@ -30,6 +30,6 @@ extern SVECTOR fx_1a3_motionFrom; /* from */
 extern SVECTOR fx_1a3_motionTo; /* to */
 extern SVECTOR fx_1a3_emitPos;
 
-static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames);
 
 #endif

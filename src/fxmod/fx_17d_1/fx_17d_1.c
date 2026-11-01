@@ -84,36 +84,36 @@ void fx_17d_1_drawTexGrid(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, 
 void fx_17d_1_drawSideFade(u32 *ot, s32 tpage, s32 x, s32 r, s32 g, s32 b) {
     BtlfxExports *ex;
     POLY_G4 *prim;
-    POLY_G4 *p;
+    POLY_G4 *poly;
     s32 i;
     s32 k;
 
     prim = (POLY_G4 *)fx_17d_1_env->prim;
     ex = BTLFX_EXPORTS(fx_17d_1_env);
-    p = prim;
+    poly = prim;
     fx_17d_1_env->prim = (u8 *)(prim + 4);
     for (i = 0; i < 4; i++) {
-        setlen(p, 8);
-        p->code = GPU_POLY_G4 | GPU_ABE;
-        p->x1 = x + (s16)(i * 16 + 0x80);
-        p->r0 = p->r2 = r;
-        p->g0 = p->g2 = g;
-        p->b0 = p->b2 = b;
-        p->r1 = p->r3 = 0;
-        p->g1 = p->g3 = 0;
-        p->b1 = p->b3 = 0;
-        p->x0 = p->x2 = x;
+        setlen(poly, 8);
+        poly->code = GPU_POLY_G4 | GPU_ABE;
+        poly->x1 = x + (s16)(i * 16 + 0x80);
+        poly->r0 = poly->r2 = r;
+        poly->g0 = poly->g2 = g;
+        poly->b0 = poly->b2 = b;
+        poly->r1 = poly->r3 = 0;
+        poly->g1 = poly->g3 = 0;
+        poly->b1 = poly->b3 = 0;
+        poly->x0 = poly->x2 = x;
         k = i + 1;
-        p->x3 = x + (s16)(k * 16 + 0x80);
-        p->y0 = p->y1 = i * 60;
-        p->y2 = p->y3 = i * 60 + 60;
-        p++;
+        poly->x3 = x + (s16)(k * 16 + 0x80);
+        poly->y0 = poly->y1 = i * 60;
+        poly->y2 = poly->y3 = i * 60 + 60;
+        poly++;
         ex->btlfx_linkPrimAbr(0x08000000, ot, prim, tpage);
         prim++;
     }
 }
 
-s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR sc;
     s32 frame;
@@ -123,10 +123,10 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 tint;
     s32 lo;
     s32 hi;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *arg4 = 0x7C;
+        *args = 0x7C;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -196,19 +196,19 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((frame - 12) << 7) / 12, 0, 0);
             }
             if (frame == 8) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9D), (s32)&work->pos10);
-                work->emit74 = p;
-                if (p != NULL) {
-                    p->trails = (s32)fx_17d_1_op80Trails;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9D), (s32)&work->pos10);
+                work->emit74 = emitter;
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_17d_1_op80Trails;
                     work->emit74->trailSlots = 0xE0;
                     work->emit74->trailStride = 0x1C;
                     if (work->emit74 != NULL) {
                         work->emit74->otZ = 0x80;
                     }
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             } else if (frame >= 9) {
                 if (work->emit74 != NULL) {
@@ -253,10 +253,10 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vx = work->pos18.vx;
                 env->camera->points[3].vy = work->pos18.vy;
                 env->camera->points[3].vz = work->pos18.vz;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9F), (s32)&work->pos10);
-                work->emit70 = p;
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9F), (s32)&work->pos10);
+                work->emit70 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
                 work->rot48.vx = 0x400;
                 work->rot48.vy = 0;

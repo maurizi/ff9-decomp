@@ -44,7 +44,7 @@ extern SVECTOR fx_057_headPos; /* particle head position */
 extern Pool6CEntry *fx_057_emitter0;
 extern Unk80100C78Entry *fx_057_task;
 
-static void fx_057_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *e, SVECTOR *pos, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 t,
+static void fx_057_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *e, SVECTOR *pos, s32 rot, s32 scale, s32 alpha, s32 blend, s32 t,
                    s32 n);
 
 #endif

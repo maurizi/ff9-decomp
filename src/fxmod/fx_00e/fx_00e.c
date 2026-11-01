@@ -1,8 +1,8 @@
 #include "fxmod/fx_00e.h"
 
-s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     SVECTOR rot;
     VECTOR scale;
@@ -11,7 +11,7 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 c;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
         work->stop0 = 0;
         fx_00e_env = env;
@@ -22,13 +22,13 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos18[2] = work->pos8.vz;
         ex->btlfx_initEffModels(fx_00e_effModels, 2);
         work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 4), 0x138, 0xFFFF, 0, 0x80);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;

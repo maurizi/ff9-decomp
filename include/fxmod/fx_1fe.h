@@ -24,7 +24,7 @@ extern SVECTOR fx_1fe_basePos0;
 extern SVECTOR fx_1fe_basePos1;
 extern CVECTOR fx_1fe_rippleColor;
 extern u8 fx_1fe_op81Trails[];
-s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 /* propagated */
 
@@ -32,7 +32,7 @@ extern Unk800F78A4 *fx_1fe_env;
 extern s32 fx_1fe_waveAmp;
 extern s32 fx_1fe_wavePhase;
 static void fxm_waveVertexX(s16 *v);
-s32 fx_1fe_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_1fe_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 /* PsyQ gte_stszotz: SZ3 / 4 */
 #define gte_stszotz(r0) __asm__ volatile( \

@@ -128,8 +128,8 @@ extern Fx19fTrail fx_19f_offsetTrail;
 extern BtlModelBuf fx_19f_effModels[];
 extern Fx19fTrail17 fx_19f_stripTrails0[6];
 extern Fx19fTrail13 fx_19f_stripTrails1[3];
-static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,
-                   s32 arg7, s32 arg8, s32 arg9);
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
+                   s32 frame, s32 fade, s32 lineWidth);
 
 /* copied */
 static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *trail, s32 n, s32 *noise, SVECTOR *from,

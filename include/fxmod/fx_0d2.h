@@ -111,7 +111,7 @@ static void fxm_valuePathInit(Fx0d2Path *path, u16 *data);
 static void fxm_vecPathInit(Fx0d2Path *path, u16 *data);
 static s32 fxm_vecPathGet(Fx0d2Path *track, s32 t, VECTOR *out);
 extern Unk800F78A4 *fx_0d2_env;
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
 typedef struct {
     Fx0d2Keys keys;
     s16 start8; /* start */
@@ -143,7 +143,7 @@ extern u8 fx_0d2_streakBufs[9][0x90];
 extern u8 fx_0d2_streakBufs2[11][0x50];
 extern SVECTOR fx_0d2_unitPos[8];
 extern VECTOR fx_0d2_unitScale[8];
-s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
@@ -191,7 +191,7 @@ extern Fx0d2Keys fx_0d2_slicePath;
 extern Fx0d2Keys fx_0d2_emitPath;
 extern SVECTOR fx_0d2_emitPos;
 extern SVECTOR fx_0d2_emitPos2[2];
-s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
@@ -227,6 +227,6 @@ extern Fx0d2Keys fx_0d2_morphCurve2;
 extern Fx0d2Keys fx_0d2_piecePaths[10];
 extern Fx0d2Keys fx_0d2_unitOffsetPath;
 extern Fx0d2Keys fx_0d2_unitScalePath;
-s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

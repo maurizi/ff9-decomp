@@ -1,10 +1,10 @@
 #include "fxmod/fx_1fa.h"
 
-s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1fa_emitPos0.vx = 0;
         fx_1fa_emitPos0.vy = 0;
@@ -23,10 +23,10 @@ s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     fx_1fa_spiralSprites[r][2].sprite8 = (u8 *)ex->btlfx_getFileData(entry->file, b); \
     fx_1fa_spiralSprites[r][3].sprite8 = (u8 *)ex->btlfx_getFileData(entry->file, b);
 
-s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx1faRing *e;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 j;
@@ -35,7 +35,7 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     s32 s;
 
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1fa_timer[0] = 0;
         fx_1fa_env = env;
@@ -69,25 +69,25 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             fx_1fa_timer[0] = 0x20;
             break;
         case 8:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&fx_1fa_emitPos1);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&fx_1fa_emitPos1);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
             break;
         case 0x18:
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_1fa_emitPos2[i]);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_1fa_emitPos2[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_1fa_emitPos2[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1fa_emitPos2[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1fa_emitPos2[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&fx_1fa_emitPos2[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&fx_1fa_emitPos2[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
             }
             break;

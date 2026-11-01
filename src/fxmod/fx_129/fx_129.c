@@ -1,6 +1,6 @@
 #include "fxmod/fx_129.h"
 
-s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s16 tex[4];
     s16 clut[4];
@@ -9,7 +9,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 v;
 
     if (mode == 0) {
-        *arg4 = 0x7C;
+        *args = 0x7C;
     } else if (mode == 1) {
         fx_129_env = env;
         ex->btlfx_initEffModels(fx_129_effModels, 1);

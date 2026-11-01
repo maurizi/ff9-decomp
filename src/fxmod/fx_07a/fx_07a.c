@@ -40,7 +40,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 
 INCLUDE_RODATA("asm/us/fx_07a/nonmatchings/fx_07a", fx_07a_headerPtr);
 
-s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     SVECTOR out;
@@ -57,10 +57,10 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 r;
     s32 a;
     s32 b;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *arg4 = 0x108;
+        *args = 0x108;
     } else if (mode == 1) {
         fx_07a_env = env;
         ex->btlfx_initEffModels(fx_07a_effModels, 3);
@@ -139,9 +139,9 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 36:
             work->timers0[7] = 4;
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_07a_centerPos);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_07a_centerPos);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 40:
@@ -313,7 +313,7 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
     s32 dr;
     s32 dk;
     POLY_FT4 *ft4;
-    POLY_G4 *g4;
+    POLY_G4 *poly;
     s32 a;
     s32 j;
     s32 r;
@@ -332,8 +332,8 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
     gte_ldv0(pos);
     ft4 = (POLY_FT4 *)env->prim;
     tpage |= (abr & 3) << 5;
-    g4 = (POLY_G4 *)(ft4 + 64);
-    env->prim = (u8 *)(g4 + 32);
+    poly = (POLY_G4 *)(ft4 + 64);
+    env->prim = (u8 *)(poly + 32);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(&rot, &m);
     gte_stlvnl(m.t);
@@ -398,18 +398,18 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
                 p[0].vz = -((ex->math_sin(a) * fx_07a_discRadius) >> 16) - 0x20;
                 p[1].vx = (ex->math_cos(a + 0x100) * fx_07a_discRadius) >> 16;
                 p[1].vz = -((ex->math_sin(a + 0x100) * fx_07a_discRadius) >> 16) - 0x20;
-                g4->b1 = 0x80;
-                g4->g1 = 0x80;
-                g4->r1 = 0x80;
-                g4->b0 = 0x80;
-                g4->g0 = 0x80;
-                g4->r0 = 0x80;
-                g4->b3 = 0;
-                g4->g3 = 0;
-                g4->r3 = 0;
-                g4->b2 = 0;
-                g4->g2 = 0;
-                g4->r2 = 0;
+                poly->b1 = 0x80;
+                poly->g1 = 0x80;
+                poly->r1 = 0x80;
+                poly->b0 = 0x80;
+                poly->g0 = 0x80;
+                poly->r0 = 0x80;
+                poly->b3 = 0;
+                poly->g3 = 0;
+                poly->r3 = 0;
+                poly->b2 = 0;
+                poly->g2 = 0;
+                poly->r2 = 0;
             } else {
                 p[2].vx = (ex->math_cos(a) * fx_07a_discRadius) >> 16;
                 p[2].vz = -((ex->math_sin(a) * fx_07a_discRadius) >> 16) - 0x20;
@@ -419,28 +419,28 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
                 p[0].vz = -((ex->math_sin(a) * fx_07a_innerBandRadius) >> 12) - 0x20;
                 p[1].vx = (ex->math_cos(a + 0x100) * fx_07a_innerBandRadius) >> 12;
                 p[1].vz = -((ex->math_sin(a + 0x100) * fx_07a_innerBandRadius) >> 12) - 0x20;
-                g4->b1 = 0;
-                g4->g1 = 0;
-                g4->r1 = 0;
-                g4->b0 = 0;
-                g4->g0 = 0;
-                g4->r0 = 0;
-                g4->b3 = 0xFF;
-                g4->g3 = 0xFF;
-                g4->r3 = 0xFF;
-                g4->b2 = 0xFF;
-                g4->g2 = 0xFF;
-                g4->r2 = 0xFF;
+                poly->b1 = 0;
+                poly->g1 = 0;
+                poly->r1 = 0;
+                poly->b0 = 0;
+                poly->g0 = 0;
+                poly->r0 = 0;
+                poly->b3 = 0xFF;
+                poly->g3 = 0xFF;
+                poly->r3 = 0xFF;
+                poly->b2 = 0xFF;
+                poly->g2 = 0xFF;
+                poly->r2 = 0xFF;
             }
             gte_ldv3c(p);
             gte_rtpt();
-            g4->code = GPU_POLY_G4 | GPU_ABE;
-            gte_stsxy3(&g4->x0, &g4->x1, &g4->x2);
+            poly->code = GPU_POLY_G4 | GPU_ABE;
+            gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
             gte_ldv0(&p[3]);
             gte_rtps();
-            gte_stsxy(&g4->x3);
-            ex->btlfx_addPrim(0x08000000, ot * 4 - 4, g4);
-            g4++;
+            gte_stsxy(&poly->x3);
+            ex->btlfx_addPrim(0x08000000, ot * 4 - 4, poly);
+            poly++;
         }
     }
     ex->btlfx_addPrim(0x01000000, ot * 4 - 4, ex->btlfx_allocDrMode(0, 2));

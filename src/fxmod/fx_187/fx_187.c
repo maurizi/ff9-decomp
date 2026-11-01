@@ -1,16 +1,16 @@
 #include "fxmod/fx_187.h"
 
-s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR a;
     SVECTOR b;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x64;
+        *args = 0x64;
     } else if (mode == 1) {
         work->state0 = 0;
         fx_187_env = env;
@@ -30,39 +30,39 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos24);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos24);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos2C);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos2C);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame >= 0x10) {
                 work->state0 = 1;
                 entry->frame = -1;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos24);
-                if (p != NULL) {
-                    p->trails = (s32)fx_187_op80Trails0;
-                    p->trailSlots = 0x12;
-                    p->trailStride = 0x14;
-                    p->otZ = 0x46;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos24);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_187_op80Trails0;
+                    emitter->trailSlots = 0x12;
+                    emitter->trailStride = 0x14;
+                    emitter->otZ = 0x46;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos24);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos24);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos2C);
-                if (p != NULL) {
-                    p->trails = (s32)fx_187_op80Trails1;
-                    p->trailSlots = 0x12;
-                    p->trailStride = 0x14;
-                    p->otZ = 0x46;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos2C);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_187_op80Trails1;
+                    emitter->trailSlots = 0x12;
+                    emitter->trailStride = 0x14;
+                    emitter->otZ = 0x46;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos2C);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos2C);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             break;
@@ -118,17 +118,17 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 0xE) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos1C);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->trails = (s32)fx_187_op80Trails4;
-                    p->trailSlots = 7;
-                    p->trailStride = 0x6C;
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_187_op80Trails4;
+                    emitter->trailSlots = 7;
+                    emitter->trailStride = 0x6C;
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame >= 0x37) {

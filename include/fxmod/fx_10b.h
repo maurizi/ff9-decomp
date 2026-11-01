@@ -32,6 +32,6 @@ typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* caster body position */
 } Fx10bWork80_0bd;
-s32 fx_10b_op81(s32 mode, Fx10bWork80_0bd *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_10b_op81(s32 mode, Fx10bWork80_0bd *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

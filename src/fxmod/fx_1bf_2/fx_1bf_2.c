@@ -1,6 +1,6 @@
 #include "fxmod/fx_1bf_2.h"
 
-static s32 fx_1bf_2_op80PoolTask(s32 mode, Fx1bf2Obj *w, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1bf2Inst *inst) {
+static s32 fx_1bf_2_op80PoolTask(s32 mode, Fx1bf2Obj *w, Unk800F78A4 *env, s32 entry, s32 frame, s32 pool, Fx1bf2Inst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
@@ -45,7 +45,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     VECTOR vv3;
     Fx1bf2Obj *o;
     Fx1bf2Obj *o2;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 n1;
     s32 n2;
     s32 frame;
@@ -183,10 +183,10 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->target18.vy = work->pos54.vy;
                 work->target18.vz = work->pos54.vz;
                 work->target18.vx -= 0xC00;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x7), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->target = (s32)&work->target18;
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x7), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->target = (s32)&work->target18;
+                    emitter->otZ = 0x80;
                 }
             }
             cv.r = cv.g = cv.b = 0x84;

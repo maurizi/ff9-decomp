@@ -7,7 +7,7 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
     SVECTOR rot;
     VECTOR scale;
     SVECTOR *r;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 a;
     s32 k;
     s32 c;
@@ -17,10 +17,10 @@ static s32 fx_04d_op80PoolTask(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk801
     if (mode == 1) {
         it->state4 = 0;
         it->frame8 = 0;
-        p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos18);
-        it->emit40 = p;
-        if (p != NULL) {
-            p->otZ = 0x20;
+        emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos18);
+        it->emit40 = emitter;
+        if (emitter != NULL) {
+            emitter->otZ = 0x20;
         }
         return 0;
     }

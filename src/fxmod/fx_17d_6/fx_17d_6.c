@@ -1,6 +1,6 @@
 #include "fxmod/fx_17d_6.h"
 
-s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR sc;
     VECTOR pos;
@@ -10,7 +10,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     VECTOR vv;
     VECTOR vv2;
     SVECTOR cam;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 n1;
     s32 frame;
     s32 c;
@@ -18,7 +18,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 u;
 
     if (mode == 0) {
-        *arg4 = 0x84;
+        *args = 0x84;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -61,10 +61,10 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->camera->points[3].vz = work->pos20.vz;
         work->pos58.vx += 0x19F;
         work->pos58.vy -= 0x200;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
-        work->emit78 = p;
-        if (p != NULL) {
-            p->otZ = 0x200;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+        work->emit78 = emitter;
+        if (emitter != NULL) {
+            emitter->otZ = 0x200;
         }
         fx_17d_6_boltState = 0;
     } else {
@@ -132,9 +132,9 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[2].vx = work->pos18.vx;
                 env->camera->points[2].vy = work->pos18.vy;
                 env->camera->points[2].vz = work->pos18.vz;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos30);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos30);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             break;
@@ -160,24 +160,24 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vy = work->pos18.vy;
             env->camera->points[2].vz = work->pos18.vz;
             if (frame == 0x18) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos30);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos30);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame == 0x20) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos30);
-                if (p != NULL) {
-                    p->trails = (s32)fx_17d_6_op80Trails;
-                    p->trailSlots = 0x28;
-                    p->trailStride = 0xAC;
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos30);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_17d_6_op80Trails;
+                    emitter->trailSlots = 0x28;
+                    emitter->trailStride = 0xAC;
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame == 0x32) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos30);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos30);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame >= 0x54) {
@@ -254,9 +254,9 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[1], (u16 *)&work->pos28);
             BTLFX_COPY_SVEC(&fx_17d_6_boltFrom, &work->pos28);
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos28);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos28);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             env->otZ = 0x80;

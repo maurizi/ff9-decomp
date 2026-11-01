@@ -1,31 +1,31 @@
 #include "fxmod/fx_138.h"
 
-s32 fx_138_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint0(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[0], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint1(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[1], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint2(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[2], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint3(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[3], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint4(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[4], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[5], i);
     return 0;
 }
@@ -54,7 +54,7 @@ void fx_138_getPathPoint(SVECTOR *out, Fx138Path *path, s32 i) {
     out->vz = v.vz;
 }
 
-s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx138Ring *r;
     Fx138Ring *q;
@@ -64,7 +64,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0xA0;
+        *args = 0xA0;
     } else if (mode == 1) {
         fx_138_env = env;
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
@@ -144,15 +144,15 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     u16 n;
 
     if (mode == 0) {
-        *arg4 = 0x34;
+        *args = 0x34;
     } else if (mode == 1) {
         fx_138_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);
@@ -175,9 +175,9 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                 }
             }
-            work->emit18 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos20);
-            if (p != NULL) {
-                p->trails = (s32)fx_138_op81Trails;
+            work->emit18 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos20);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_138_op81Trails;
                 work->emit18->trailSlots = 0x18;
                 work->emit18->trailStride = 0x40;
                 if (work->emit18 != NULL) {

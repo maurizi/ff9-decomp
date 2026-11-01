@@ -38,8 +38,8 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
     }
 }
 
-static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,
-                   s32 arg7, s32 arg8, s32 arg9) {
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
+                   s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
     SVECTOR pos;
     SVECTOR rot;
@@ -63,15 +63,15 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVEC
         h = (ex->math_sin(a) * h) >> 12;
         i++;
         h += 0x20 + ((ex->math_sin(a) * amp) >> 12);
-        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg5);
-        p->pad = arg9;
-        arg5 += arg6 + ex->btlfx_randCentered(0x100);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, ang);
+        p->pad = lineWidth;
+        ang += dang + ex->btlfx_randCentered(0x100);
         p++;
     } while (i < 25);
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x20), 0, NULL, arg7, 0x1000, arg8, 1, (u8 *)trail, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x20), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
-s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 alpha;
     s32 base;
@@ -98,7 +98,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx19fKey12 *key;
     Fx19fTrail13 *tc;
     Fx19fKeys *keys;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     SVECTOR *pt;
     s32 frame;
     s32 k;
@@ -142,7 +142,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 spE8;
 
     if (mode == 0) {
-        *arg4 = 0x84;
+        *args = 0x84;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -338,17 +338,17 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                   ex->math_sin(c7 >> 1));
             }
             if (frame == 20) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
-                work->emit6C = p;
-                if (p != NULL) {
-                    p->otZ = 0x96;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
+                work->emit6C = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x96;
                 }
             }
             if (frame == 14) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos8);
-                work->emit68 = p;
-                if (p != NULL) {
-                    p->otZ = -0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos8);
+                work->emit68 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = -0x20;
                 }
             }
             if (frame < 8) {
@@ -430,9 +430,9 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x96;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x96;
                 }
             }
             break;
@@ -615,7 +615,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     Fx19fKeys *k;
@@ -623,7 +623,7 @@ s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     s32 f;
 
     if (mode == 0) {
-        *arg4 = 4;
+        *args = 4;
     } else if (mode == 1) {
         fx_19f_env = env;
     } else {
@@ -758,7 +758,7 @@ static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk8010
     return 0;
 }
 
-static s32 fxm_randStripPoint32(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
+static s32 fxm_randStripPoint32(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
     SVECTOR *p = fx_19f_boltTrailPoints[ex->btlfx_rand() % 32].points0;
 

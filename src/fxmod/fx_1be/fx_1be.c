@@ -38,7 +38,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     return ex->btlfx_lerp(from, to, r);
 }
 
-s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR aim;
     VECTOR sc;
@@ -49,7 +49,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     SVECTOR rot;
     VECTOR scale;
     Fx1beUnit *u;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 r;
@@ -57,7 +57,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     s32 c;
 
     if (mode == 0) {
-        *arg4 = 0xDC;
+        *args = 0xDC;
     } else if (mode == 1) {
         fx_1be_env = env;
         ex->btlfx_initEffModels(fx_1be_effModels, 5);
@@ -147,9 +147,9 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->counters0[5] = 1;
             w->counters0[0x14] = 1;
             w->counters0[0xC] = 0x30;
-            p = w->emit20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->posD4);
-            if (p != NULL) {
-                p->file->m.module.update = fx_1be_op80ParticleMotion;
+            emitter = w->emit20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->posD4);
+            if (emitter != NULL) {
+                emitter->file->m.module.update = fx_1be_op80ParticleMotion;
             }
             break;
         case 0x30:
@@ -170,20 +170,20 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->pos8C.vx = 0;
             w->pos8C.vy = -0x800;
             w->pos8C.vz = 0x418;
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&w->pos8C);
-            if (p != NULL) {
-                p->otZ = 0x400;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&w->pos8C);
+            if (emitter != NULL) {
+                emitter->otZ = 0x400;
             }
             break;
         case 0x50:
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&w->pos8C);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&w->pos8C);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&w->pos8C);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&w->pos8C);
-            if (p != NULL) {
-                p->otZ = 0x100;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&w->pos8C);
+            if (emitter != NULL) {
+                emitter->otZ = 0x100;
             }
             break;
         case 0x54:
@@ -319,9 +319,9 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 ex->btlfx_setUnitPos(i, (s16 *)&fx_1be_units[i].pos18);
                 if (w->counters0[0x10] == 0) {
                     fx_1be_units[i].pos18.vy = 0;
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1be_units[i].pos18);
-                    if (p != NULL) {
-                        p->otZ = -0x100;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1be_units[i].pos18);
+                    if (emitter != NULL) {
+                        emitter->otZ = -0x100;
                     }
                 }
             }
@@ -365,7 +365,7 @@ void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 c
     CVECTOR c1;
     Unk800F78A4 *env;
     BtlfxExports *ex;
-    POLY_GT4 *p;
+    POLY_GT4 *poly;
     s32 i;
     s32 j;
     s32 k0;
@@ -381,9 +381,9 @@ void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 c
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
-    p = (POLY_GT4 *)env->prim;
+    poly = (POLY_GT4 *)env->prim;
     tpage |= (abr & 3) << 5;
-    env->prim = (u8 *)(p + 32);
+    env->prim = (u8 *)(poly + 32);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     gte_stlvnl(m.t);
@@ -415,30 +415,30 @@ void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 c
             v[1].vx = v[3].vx = i * 0x1400 - 0x1400;
             gte_ldv3c(v);
             gte_rtpt();
-            p->code = (abr != 0xFF) ? 0x3E : 0x3C;
-            p->r0 = p->r1 = c0.r;
-            p->g0 = p->g1 = c0.g;
-            p->b0 = p->b1 = c0.b;
-            p->r2 = p->r3 = c1.r;
-            p->g2 = p->g3 = c1.g;
-            p->b2 = p->b3 = c1.b;
-            gte_stsxy3(&p->x0, &p->x1, &p->x2);
+            poly->code = (abr != 0xFF) ? 0x3E : 0x3C;
+            poly->r0 = poly->r1 = c0.r;
+            poly->g0 = poly->g1 = c0.g;
+            poly->b0 = poly->b1 = c0.b;
+            poly->r2 = poly->r3 = c1.r;
+            poly->g2 = poly->g3 = c1.g;
+            poly->b2 = poly->b3 = c1.b;
+            gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
             gte_ldv0(&v[3]);
             gte_rtps();
-            *(u16 *)&p->u0 = *(u16 *)&uv0;
-            *(u16 *)&p->u1 = *(u16 *)&uv1;
-            *(u16 *)&p->u2 = *(u16 *)&uv2;
-            *(u16 *)&p->u3 = *(u16 *)&uv3;
-            p->clut = clut;
-            p->tpage = tpage;
-            gte_stsxy(&p->x3);
-            ex->btlfx_addPrim(0x0C000000, 0, p);
-            p++;
+            *(u16 *)&poly->u0 = *(u16 *)&uv0;
+            *(u16 *)&poly->u1 = *(u16 *)&uv1;
+            *(u16 *)&poly->u2 = *(u16 *)&uv2;
+            *(u16 *)&poly->u3 = *(u16 *)&uv3;
+            poly->clut = clut;
+            poly->tpage = tpage;
+            gte_stsxy(&poly->x3);
+            ex->btlfx_addPrim(0x0C000000, 0, poly);
+            poly++;
         }
     }
 }
 
-static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     SVECTOR v;
     SVECTOR from;
     SVECTOR *key;

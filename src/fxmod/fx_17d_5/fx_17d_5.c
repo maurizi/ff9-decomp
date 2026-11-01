@@ -7,7 +7,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
     VECTOR pos;
     VECTOR scale;
     SVECTOR *p;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 k;
     s32 a;
     s32 t; /* one variable for cases 2 and 3: register allocation */
@@ -105,9 +105,9 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
                 c = (ex->btlfx_rand() & 0x1F) + 0x28;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, c, c, c);
             } else {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&w->pos8);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&w->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             w->pos8.vy = 0;
@@ -198,7 +198,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
     Fx17d5Spark *sp;
     Fx17d5Spark *sq;
     Fx17d5Spark *sr;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     u8 *d;
     s32 frame;
     s32 fade;
@@ -274,15 +274,15 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelAbr(w->model84, 1);
             ex->Hi_ModifyEffModelRGB(w->model84, 0, 0, 0);
             if (frame == 0x1F) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&w->posC);
-                if (e != NULL) {
-                    e->otZ = -0xF0;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&w->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = -0xF0;
                 }
             }
             if (frame == 0x1B) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&w->posC);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&w->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             u = frame - 0x20;

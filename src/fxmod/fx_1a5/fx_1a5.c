@@ -1,13 +1,13 @@
 #include "fxmod/fx_1a5.h"
 
-s32 fx_1a5_op80(s32 mode, Fx1a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1a5_op80(s32 mode, Fx1a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x14;
+        *args = 0x14;
     } else if (mode == 1) {
-        s32 unit = *arg4;
+        s32 unit = *args;
         work->unit10 = unit;
         fx_1a5_env = env;
         if (unit >= env->targets->targetCount) {

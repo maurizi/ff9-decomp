@@ -1,10 +1,10 @@
 #include "fxmod/fx_192.h"
 
-s32 fx_192_op80(s32 mode, u16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_192_op80(s32 mode, u16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 8;
+        *args = 8;
     } else if (mode == 1) {
         fx_192_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0, work);

@@ -1,6 +1,6 @@
 #include "fxmod/fx_01d.h"
 
-s32 fx_01d_op80(s32 mode, Fx01dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_01d_op80(s32 mode, Fx01dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     union { /* one stack area: bone matrix in mode 1, draw arguments afterwards */
@@ -14,7 +14,7 @@ s32 fx_01d_op80(s32 mode, Fx01dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     MATRIX m2;
 
     if (mode == 0) {
-        *arg4 = 0x50;
+        *args = 0x50;
     } else if (mode == 1) {
         fx_01d_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos14);
@@ -92,14 +92,14 @@ s32 fx_01d_op80(s32 mode, Fx01dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_01d_op81(s32 mode, Fx01dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_01d_op81(s32 mode, Fx01dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else if (mode == 1) {
-        s32 n = *arg4;
+        s32 n = *args;
 
         work->targetC = n;
         fx_01d_env = env;

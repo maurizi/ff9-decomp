@@ -2,13 +2,13 @@
 
 INCLUDE_RODATA("asm/us/fx_1ab/nonmatchings/fx_1ab", fx_1ab_headerPtr);
 
-s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 t;
 
     if (mode == 0) {
-        *arg4 = 0x88;
+        *args = 0x88;
     } else if (mode == 1) {
         fx_1ab_env = env;
         ex->btlfx_initEffModels(fx_1ab_effModels, 2);

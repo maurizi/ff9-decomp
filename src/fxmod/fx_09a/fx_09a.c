@@ -99,14 +99,14 @@ static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *ou
     gte_SetTransMatrix(env->viewMatrix);
 }
 
-s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     SVECTOR a;
     SVECTOR b;
     SVECTOR c;
     s32 file;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 k;
     s32 t;
@@ -116,7 +116,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR *sv;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx09aWork);
+        *args = sizeof(Fx09aWork);
     } else if (mode == 1) {
         work->state0 = 1;
         work->frame4 = 0;
@@ -215,13 +215,13 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 27) {
                 s32 ang;
 
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(
                     ex->btlfx_getFileData(entry->file,
                                           *(fx_09a_hitBlocks + (((ang = work->rot1C.vy & 0xFFF) - 0x400U > 0x800) !=
                                                           ((ang = env->camera->yaw & 0xFFF) - 0x400U > 0x800)))),
                     (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(work->unit8, 0x40);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(work->unit8, 0x40);
                 }
                 ex->btlfx_playFileSound(0x15, entry->file, -1);
                 ex->btlfx_playFileSound(0x16, entry->file, -1);
@@ -229,13 +229,13 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             if (frame == 28) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(work->unit8, 0x40);
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(work->unit8, 0x40);
                 }
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(work->unit8, 0x40);
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(work->unit8, 0x40);
                 }
             }
             if (frame == 29) {
@@ -249,12 +249,12 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 3:
             v = (frame << 12) / 6;
             if (frame == 2) {
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos24);
-                if (p != NULL) {
-                    p->trails = (s32)fx_09a_trails;
-                    p->trailSlots = 0x18;
-                    p->trailStride = 0x44;
-                    p->otZ = 0x40;
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos24);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_09a_trails;
+                    emitter->trailSlots = 0x18;
+                    emitter->trailStride = 0x44;
+                    emitter->otZ = 0x40;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos24);
             }

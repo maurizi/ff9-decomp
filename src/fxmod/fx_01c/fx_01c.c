@@ -1,11 +1,11 @@
 #include "fxmod/fx_01c.h"
 
-s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x2C;
+        *args = 0x2C;
     } else if (mode == 1) {
         fx_01c_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);

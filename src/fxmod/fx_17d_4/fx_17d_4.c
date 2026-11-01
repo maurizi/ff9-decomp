@@ -1,6 +1,6 @@
 #include "fxmod/fx_17d_4.h"
 
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_4_env);
     SVECTOR *v;
 
@@ -10,12 +10,12 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 ar
     v[0].vx = a->vx;
     v[0].vy = a->vy;
     v[0].vz = a->vz;
-    v[0].pad = arg6;
+    v[0].pad = lineWidth;
     v[1].vx = b->vx;
     v[1].vy = b->vy;
     v[1].vz = b->vz;
-    v[1].pad = arg6;
-    ex->btlfx_drawTrail(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&fx_17d_4_lineTrail, 0);
+    v[1].pad = lineWidth;
+    ex->btlfx_drawTrail(file, 0, NULL, frame, 0x1000, fade, abr, (u8 *)&fx_17d_4_lineTrail, 0);
 }
 
 void fx_17d_4_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag) {
@@ -158,7 +158,7 @@ INCLUDE_RODATA("asm/us/fx_17d_4/nonmatchings/fx_17d_4", fx_17d_4_headerPtr);
  * and x is declared before flag/f3 (spill slot order 0x78/0x7C/0x80). Case 4's
  * f-update reuses one variable for 0x1000 - cos and f >> 12; case 5's offsets go through k5z/n5z and are copied
  * a -> b; mode 1's copy order and other statement orders were searched (build/s/permhc.py, bperm.py, winperm.py). */
-s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     s32 q6b;
     s32 g5;
     Pool6CEntry *p_c1;
@@ -207,7 +207,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 w3;
 
     if (mode == 0) {
-        *arg4 = 0x84;
+        *args = 0x84;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;

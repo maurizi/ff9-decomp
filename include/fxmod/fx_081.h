@@ -36,7 +36,7 @@ typedef struct {
     Pool6CEntry *emit34;
 } Fx081Work80; /* 0x38 */
 
-static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,
+static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 rot, s32 *scale, s32 alpha, s32 blend, s32 frame,
                    s32 n);
 
 typedef struct {
@@ -50,6 +50,6 @@ typedef struct {
 } Fx081Work81; /* 0x2C */
 
 extern s16 fx_081_ringCounts[10]; /* ring point counts */
-s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

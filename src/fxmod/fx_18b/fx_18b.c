@@ -159,7 +159,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     }
 }
 
-static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 arg3, s16 *out) {
+static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 spoke, s16 *out) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_18b_env);
     s32 s = (ex->math_sin((i << 11) >> 4) * fx_18b_waveAmp) >> 12;
 
@@ -168,15 +168,15 @@ static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 arg3, s16 *out) {
     out[1] = (ex->math_sin(ang) * r) >> 12;
 }
 
-s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     RECT rect;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
 
     if (mode == 0) {
-        *arg4 = 0x1C;
+        *args = 0x1C;
     } else if (mode == 1) {
         fx_18b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
@@ -202,9 +202,9 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fx_18b_waveAmp = ex->math_cos(t >> 2) / 320;
             fx_18b_wavePhase += 0x200;
             if (frame == 1) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame >= 0x28) {

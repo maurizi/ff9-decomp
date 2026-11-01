@@ -1,6 +1,6 @@
 #include "fxmod/fx_110.h"
 
-s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     s32 frame;
@@ -9,7 +9,7 @@ s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 c;
 
     if (mode == 0) {
-        *arg4 = 0xA4;
+        *args = 0xA4;
     } else if (mode == 1) {
         fx_110_env = env;
         ex->btlfx_initEffModels(fx_110_effModels, 2);
@@ -77,11 +77,11 @@ s32 fx_110_op80(s32 mode, Fx110Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_110_op81(s32 mode, Fx110Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_110_op81(s32 mode, Fx110Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
         fx_110_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);

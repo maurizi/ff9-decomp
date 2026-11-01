@@ -21,17 +21,17 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 
 INCLUDE_RODATA("asm/us/fx_1ac/nonmatchings/fx_1ac", fx_1ac_headerPtr);
 
-s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     SVECTOR a;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 t;
 
     if (mode == 0) {
-        *arg4 = 0x60;
+        *args = 0x60;
     } else if (mode == 1) {
         fx_1ac_env = env;
         for (i = 7; i >= 0; i--) {
@@ -66,12 +66,12 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos20);
             ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
-            fx_1ac_emitter = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
-            if (p != NULL) {
-                p->trails = (s32)fx_1ac_op80Trails;
-                p->trailSlots = 4;
-                p->trailStride = 0x9C;
-                p->file->m.module.update = fx_1ac_op80ParticleMotion;
+            fx_1ac_emitter = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_1ac_op80Trails;
+                emitter->trailSlots = 4;
+                emitter->trailStride = 0x9C;
+                emitter->file->m.module.update = fx_1ac_op80ParticleMotion;
             }
             work->timer0[0] = 0xE;
             break;
@@ -200,7 +200,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-static s32 fx_1ac_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1ac_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     SVECTOR v;
 
     switch (e->slot - 1) {

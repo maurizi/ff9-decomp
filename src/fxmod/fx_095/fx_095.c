@@ -88,17 +88,17 @@ static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk8
     return 0;
 }
 
-s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx095Part *part;
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = sizeof(Fx095Work80);
-        ((EffInit *)arg4)->elemSize = sizeof(Fx095Part);
-        ((EffInit *)arg4)->elemFn = (s32)fx_095_op80PoolTask;
-        ((EffInit *)arg4)->poolCount = 0xC;
+        ((EffInit *)args)->workSize = sizeof(Fx095Work80);
+        ((EffInit *)args)->elemSize = sizeof(Fx095Part);
+        ((EffInit *)args)->elemFn = (s32)fx_095_op80PoolTask;
+        ((EffInit *)args)->poolCount = 0xC;
     } else if (mode == 1) {
         fx_095_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&fx_095_bodyPos);
@@ -335,7 +335,7 @@ void fx_095_drawTexDisc(s32 ot, s32 x, s32 y, s32 r, s32 c, RECT *rect) {
     }
 }
 
-s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     DVECTOR xy;
     RECT rect;
@@ -343,7 +343,7 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 c;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx095Work81);
+        *args = sizeof(Fx095Work81);
     } else if (mode == 1) {
         fx_095_env = env;
         work->state0 = 0;

@@ -1,7 +1,7 @@
 #include "fxmod/fx_0e3_1.h"
 
 static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9) {
+                   s32 dang, s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR rot;
@@ -27,11 +27,11 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
-                   s32 arg7, s32 arg8) {
+                   s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR rot;
@@ -57,11 +57,11 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0xC0);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, 0, arg7, 0x1000, arg8, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9, s32 col) {
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR rot;
@@ -83,14 +83,14 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
-        pt->pad = col;
+        pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
-void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 arg3) {
+void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR *a = src->pts4;
@@ -98,11 +98,11 @@ void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *
     a += ex->btlfx_rand() % 56;
 
     ex->btlfx_lerpVec((s16 *)a, (s16 *)(a + 1), 0x4000, (s16 *)&p);
-    fxm_drawOffsetTrail1(entry, dst, a, &p, 0x80, ex->btlfx_rand(), 0x37, 0, arg3);
+    fxm_drawOffsetTrail1(entry, dst, a, &p, 0x80, ex->btlfx_rand(), 0x37, 0, fade);
 }
 
 static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9, s32 col) {
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR rot;
@@ -124,11 +124,11 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
-        pt->pad = col;
+        pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x23), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x23), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
@@ -292,7 +292,7 @@ INCLUDE_RODATA("asm/us/fx_0e3_1/nonmatchings/fx_0e3_1", fx_0e3_1_headerPtr);
  * ya/yb); shared variables split by role (the original reuses registers per role); a dead struct initializer gets
  * the unused spill slot at 0x280; the frame == 0x12 matrix shares s1/r1/a1's stack (union u1); dead divisions keep
  * their magic constant where the original loads it. */
-s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
     MATRIX m2;
@@ -319,7 +319,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     SVECTOR b2;
     SVECTOR r3;
     VECTOR s3;
-    CVECTOR c3;
+    CVECTOR col;
     SVECTOR r4;
     VECTOR s4;
     SVECTOR a4;
@@ -426,7 +426,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     Pool6CEntry *p;
 
     if (mode == 0) {
-        *arg4 = 0xE4;
+        *args = 0xE4;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -828,14 +828,14 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos30);
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos30);
             }
-            c3.r = c3.g = c3.b = 0x37;
+            col.r = col.g = col.b = 0x37;
             s4.vx = 0x1400;
             s4.vy = 0x1400;
             s4.vz = 0x1000;
             r4.vx = 0;
             r4.vy = 0;
             r4.vz = 0;
-            ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r4, &s4, &c3, 1, NULL);
+            ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r4, &s4, &col, 1, NULL);
             BTLFX_COPY_SVEC(&a4, &work->pos30);
             ex->btlfx_pointAhead(&a4.vx, &work->rotBC.vx, t - 0x2800, &b4.vx);
             w2 = (t >> 2) + 0x400;

@@ -1,6 +1,6 @@
 #include "fxmod/fx_186.h"
 
-static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame) {
+static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
@@ -312,14 +312,14 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 2: {
             s32 c;
-            Pool6CEntry *p;
+            Pool6CEntry *emitter;
 
             t = (frame << 12) / 40;
             tint = 0x89;
             if (frame == 1) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x100;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x100;
                 }
             }
             env->camera->points[3].vx = work->pos8.vx;
@@ -359,7 +359,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR p;
     SVECTOR rot;
@@ -371,7 +371,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 w1;
 
     if (mode == 0) {
-        *arg4 = 0x10C;
+        *args = 0x10C;
     } else if (mode == 1) {
         fx_186_env = env;
         {

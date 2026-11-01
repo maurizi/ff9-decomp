@@ -167,36 +167,36 @@ static void fxm_camKeyUpdate(void) {
 }
 
 void fx_105_drawScreenBand(s32 z, s32 tpage, s32 y0, s32 y1, CVECTOR *rgb) {
-    POLY_G4 *p = (POLY_G4 *)fx_105_env->prim;
+    POLY_G4 *poly = (POLY_G4 *)fx_105_env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_105_env);
 
-    fx_105_env->prim = (u8 *)(p + 1);
-    p->code = (tpage != 0xFF) ? 0x3A : 0x38;
-    p->r0 = rgb[0].r;
-    p->g0 = rgb[0].g;
-    p->b0 = rgb[0].b;
-    p->r1 = rgb[1].r;
-    p->g1 = rgb[1].g;
-    p->b1 = rgb[1].b;
-    p->r2 = rgb[2].r;
-    p->g2 = rgb[2].g;
-    p->b2 = rgb[2].b;
-    p->r3 = rgb[3].r;
-    p->g3 = rgb[3].g;
-    p->b3 = rgb[3].b;
-    p->x2 = 0;
-    p->x0 = 0;
-    p->x3 = 0x140;
-    p->x1 = 0x140;
-    p->y1 = y0;
-    p->y0 = y0;
-    p->y3 = y1;
-    p->y2 = y1;
-    ex->btlfx_addPrim(0x08000000, z * 4, p);
+    fx_105_env->prim = (u8 *)(poly + 1);
+    poly->code = (tpage != 0xFF) ? 0x3A : 0x38;
+    poly->r0 = rgb[0].r;
+    poly->g0 = rgb[0].g;
+    poly->b0 = rgb[0].b;
+    poly->r1 = rgb[1].r;
+    poly->g1 = rgb[1].g;
+    poly->b1 = rgb[1].b;
+    poly->r2 = rgb[2].r;
+    poly->g2 = rgb[2].g;
+    poly->b2 = rgb[2].b;
+    poly->r3 = rgb[3].r;
+    poly->g3 = rgb[3].g;
+    poly->b3 = rgb[3].b;
+    poly->x2 = 0;
+    poly->x0 = 0;
+    poly->x3 = 0x140;
+    poly->x1 = 0x140;
+    poly->y1 = y0;
+    poly->y0 = y0;
+    poly->y3 = y1;
+    poly->y2 = y1;
+    ex->btlfx_addPrim(0x08000000, z * 4, poly);
     ex->btlfx_addPrim(0x01000000, z * 4, ex->btlfx_allocDrMode(0, tpage));
 }
 
-s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     BtlBone bone1;
     BtlBone bone2;
@@ -221,7 +221,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 k8;
 
     if (mode == 0) {
-        *arg4 = 0x1D8;
+        *args = 0x1D8;
     } else if (mode == 1) {
         fx_105_env = env;
         ex->btlfx_initEffModels(fx_105_effModels, 0xF);
@@ -831,7 +831,7 @@ void fx_105_drawWindStreaks(s32 c) {
     SVECTOR rot;
     u8 uv[4][8];
     s32 otz;
-    POLY_FT4 *p;
+    POLY_FT4 *poly;
     s32 i;
     s32 w;
     s32 abr;
@@ -847,9 +847,9 @@ void fx_105_drawWindStreaks(s32 c) {
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(&env->camera->points[2]);
-    p = (POLY_FT4 *)env->prim;
+    poly = (POLY_FT4 *)env->prim;
     tp = 0x3A;
-    env->prim = (u8 *)(p + 32);
+    env->prim = (u8 *)(poly + 32);
     gte_rtv0tr_b();
     rot.vx = 0;
     rot.vy = 0;
@@ -870,25 +870,25 @@ void fx_105_drawWindStreaks(s32 c) {
         gte_ldv3c(v);
         gte_rtpt();
         if (abr == 0xFF) {
-            p->code = GPU_POLY_FT4;
+            poly->code = GPU_POLY_FT4;
         } else {
-            p->code = GPU_POLY_FT4 | GPU_ABE;
+            poly->code = GPU_POLY_FT4 | GPU_ABE;
         }
-        p->r0 = p->g0 = p->b0 = (c * 0x70) >> 12;
-        gte_stsxy3(&p->x0, &p->x1, &p->x2);
+        poly->r0 = poly->g0 = poly->b0 = (c * 0x70) >> 12;
+        gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
         gte_avsz3();
-        *(u16 *)&p->u0 = *(u16 *)uv[0];
-        *(u16 *)&p->u1 = *(u16 *)uv[1];
-        *(u16 *)&p->u2 = *(u16 *)uv[2];
-        *(u16 *)&p->u3 = *(u16 *)uv[3];
+        *(u16 *)&poly->u0 = *(u16 *)uv[0];
+        *(u16 *)&poly->u1 = *(u16 *)uv[1];
+        *(u16 *)&poly->u2 = *(u16 *)uv[2];
+        *(u16 *)&poly->u3 = *(u16 *)uv[3];
         gte_stszotz(&otz);
         gte_ldv0(&v[3]);
         gte_rtps();
-        p->clut = clut;
-        p->tpage = tp;
-        gte_stsxy(&p->x3);
-        ex->btlfx_addPrim(0x09000000, otz >> 1, p);
-        p++;
+        poly->clut = clut;
+        poly->tpage = tp;
+        gte_stsxy(&poly->x3);
+        ex->btlfx_addPrim(0x09000000, otz >> 1, poly);
+        poly++;
         fx_105_windStreaks[i].vz -= (fx_105_windStreaks[i].vx + 0x3000) >> 6;
         if (fx_105_windStreaks[i].vz < env->camera->points[2].vz - 0x1000) {
             fx_105_windStreaks[i].vz = 0x2000;

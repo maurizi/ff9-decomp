@@ -57,13 +57,13 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     return ex->btlfx_lerp(from, to, r);
 }
 
-s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     SVECTOR rot;
     VECTOR scale;
     Fx1f0Unit *u;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 t;
@@ -71,7 +71,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 n;
 
     if (mode == 0) {
-        *arg4 = 0xB8;
+        *args = 0xB8;
     } else if (mode == 1) {
         fx_1f0_env = env;
         ex->btlfx_initEffModels(fx_1f0_effModels, 4);
@@ -185,9 +185,9 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         if (fx_1f0_units[i].emit28 != NULL) {
                             fx_1f0_units[i].emit28->otZ = 0x80;
                         }
-                        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_1f0_units[i].pos20);
-                        if (p != NULL) {
-                            p->otZ = 0x80;
+                        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_1f0_units[i].pos20);
+                        if (emitter != NULL) {
+                            emitter->otZ = 0x80;
                         }
                     }
                     if (fx_1f0_units[i].delay0 < 8 && fx_1f0_units[i].emit28 != NULL) {

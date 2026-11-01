@@ -1,6 +1,6 @@
 #include "fxmod/fx_0c1.h"
 
-static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_0c1_env)->btlfx_lerpVec((s16 *)&fx_0c1_pathFrom, (s16 *)&fx_0c1_pathTo, (frame << 12) / 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
@@ -11,13 +11,13 @@ static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s3
     return 0;
 }
 
-s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     BtlBone bone; /* also holds angles at frame 0x24 */
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x50;
+        *args = 0x50;
     } else if (mode == 1) {
         fx_0c1_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);

@@ -182,7 +182,7 @@ void fxm_updateShatterPieces(void) {
     }
 }
 
-static s32 fx_1a2_op80PoolTask(s32 mode, Fx1a2Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1a2Inst *inst) {
+static s32 fx_1a2_op80PoolTask(s32 mode, Fx1a2Rock *o, Unk800F78A4 *env, s32 entry, s32 frame, s32 pool, Fx1a2Inst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR scale;
     VECTOR pos;
@@ -262,7 +262,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     MATRIX m;
     SVECTOR sv;
     Fx1a2Rock *o;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     SVECTOR *tbl;
     s32 frame;
     s32 t;
@@ -330,9 +330,9 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         ((s32 *)&w->pos18)[0] = ((s32 *)&c)[0];
         ((s32 *)&w->pos18)[1] = ((s32 *)&c)[1];
         if (frame == 0) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&w->pos18);
-            if (p != NULL) {
-                p->otZ = 0x40;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&w->pos18);
+            if (emitter != NULL) {
+                emitter->otZ = 0x40;
             }
         }
         if (frame >= 0x5D) {
@@ -351,13 +351,13 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             rot.vy = frame << 5;
             rot.vz = 0;
             if (frame == 4) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->pos8);
-                if (p != NULL) {
-                    p->otZ = -0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = -0x40;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&w->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&w->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
             }
             if (frame < 7) {
@@ -401,9 +401,9 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             ((s32 *)&w->pos18)[0] = ((s32 *)&sv)[0];
             ((s32 *)&w->pos18)[1] = ((s32 *)&sv)[1];
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&w->pos18);
-                if (p != NULL) {
-                    p->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&w->pos18);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
             }
             ex->btlfx_drawScrollMove(0, 0x280, 0x1E0, 0x40, 0x20, 0x2C0, ((frame & 7) << 5) + 0x100);
@@ -423,31 +423,31 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     case 3:
         t = (frame << 12) / 29;
         if (frame == 0) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&w->pos8);
-            if (p != NULL) {
-                p->trails = (s32)fx_1a2_op80Trails0;
-                p->trailSlots = 0x10;
-                p->trailStride = 0x4C;
-                p->otZ = 0x40;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&w->pos8);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_1a2_op80Trails0;
+                emitter->trailSlots = 0x10;
+                emitter->trailStride = 0x4C;
+                emitter->otZ = 0x40;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&w->pos8);
-            if (p != NULL) {
-                p->trails = (s32)fx_1a2_op80Trails1;
-                p->trailSlots = 8;
-                p->trailStride = 0x4C;
-                p->otZ = 0x40;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&w->pos8);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_1a2_op80Trails1;
+                emitter->trailSlots = 8;
+                emitter->trailStride = 0x4C;
+                emitter->otZ = 0x40;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)(q = &w->pos8));
-            if (p != NULL) {
-                p->otZ = 0x40;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)(q = &w->pos8));
+            if (emitter != NULL) {
+                emitter->otZ = 0x40;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)q);
-            if (p != NULL) {
-                p->otZ = 0x40;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)q);
+            if (emitter != NULL) {
+                emitter->otZ = 0x40;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&w->pos8);
-            if (p != NULL) {
-                p->otZ = 0x40;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&w->pos8);
+            if (emitter != NULL) {
+                emitter->otZ = 0x40;
             }
             /* Dead load (flow deletes it): q's last use comes after the 0x17 spawn's, so cse makes q the class
              * head for the 7/0xF spawns and keeps the single-set copy (sched1 places it after the call). */
@@ -592,13 +592,13 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     return 0;
 }
 
-s32 fx_1a2_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1a2_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 a;
 
     if (mode == 0) {
-        *arg4 = 8;
+        *args = 8;
     } else if (mode == 1) {
         fx_1a2_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)work);

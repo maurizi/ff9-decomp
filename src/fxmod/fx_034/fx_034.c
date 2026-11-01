@@ -121,18 +121,18 @@ void fx_034_calcPrimCentres(s32 kind, s32 count, SVECTOR *v) {
     }
 }
 
-s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR p;
     SVECTOR a;
-    Pool6CEntry *q;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 d;
     s32 v;
     s32 early;
 
     if (mode == 0) {
-        *arg4 = 0x74;
+        *args = 0x74;
     } else if (mode == 1) {
         fx_034_env = env;
         ex->btlfx_initEffModels(fx_034_effModels, 2);
@@ -177,9 +177,9 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 15:
-            work->emit4 = q = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos64);
-            if (q != NULL) {
-                q->otZ = 0x80;
+            work->emit4 = emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos64);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
             break;
         case 28:

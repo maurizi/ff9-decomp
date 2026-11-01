@@ -1,6 +1,6 @@
 #include "fxmod/fx_085.h"
 
-s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     SVECTOR rot2;
@@ -8,7 +8,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     VECTOR scale;
     SVECTOR ang;
     SVECTOR p;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
     s32 t_2;
@@ -22,7 +22,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 u;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx085Work80);
+        *args = sizeof(Fx085Work80);
     } else if (mode == 1) {
         work->pos0.vx = env->targets->centerX;
         work->pos0.vy = env->targets->centerY;
@@ -42,15 +42,15 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->state10) {
         case 0:
             if (frame == 0) {
-                work->emit1C = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->pos8);
-                if (e != NULL) {
-                    e->otZ = 0x46;
+                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x46;
                 }
             }
             if (frame == 5) {
-                work->emit20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->pos8);
-                if (e != NULL) {
-                    e->otZ = 0x46;
+                work->emit20 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x46;
                 }
             }
             if (frame == 0x1C) {
@@ -64,9 +64,9 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 ex->btlfx_stopEmitter(work->emit1C);
                 ex->btlfx_stopEmitter(work->emit20);
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos8);
-                if (e != NULL) {
-                    e->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x20;
                 }
             }
             break;
@@ -89,13 +89,13 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 2) {
                 work->state10 = 2;
                 entry->frame = -1;
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&work->pos8);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                work->emit1C = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             break;
@@ -155,9 +155,9 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x25), &work->pos8, &rot2,
                               ex->math_sin(u >> 2) * 7, 0, 1, ex->math_cos(u >> 2));
             if (frame == 1) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos8);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame < 24) {
@@ -204,7 +204,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
-                   s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind) {
+                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_085_env);
     SVECTOR v;
     SVECTOR ang;
@@ -226,21 +226,21 @@ static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx085Strip *strip, s3
         s = (ex->math_sin(t >> 1) * s) >> 12;
         s += ex->btlfx_lerp(from1, to1, t);
         ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
-        p->pad = arg11;
+        p->pad = lineWidth;
         width += dwidth + *tbl++;
         p++;
     }
     if (kind < FX_085_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip15Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip15Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip15Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip15Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
                           (u8 *)strip, 2);
     }
 }
 
 static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
-                   s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind) {
+                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_085_env);
     SVECTOR v;
     SVECTOR ang;
@@ -263,20 +263,20 @@ static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx085Strip *strip, s32
         s = (ex->math_sin(t) * s) >> 12;
         s += (ex->math_sin(t) * amp) >> 12;
         ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
-        p->pad = arg10;
+        p->pad = lineWidth;
         width += dwidth + *tbl++ / 2;
         p++;
     }
     if (kind < FX_085_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip3Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip3Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip3Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip3Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
                           (u8 *)strip, 2);
     }
 }
 
-static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx085Strip *strip, Fx085Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
+static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx085Strip *strip, Fx085Strip *out, s32 *tbl, s32 i, s32 fade, s32 lineWidth,
                    s32 kind) {
     BtlfxExports *ex;
     SVECTOR *p = strip->pts4;
@@ -285,7 +285,7 @@ static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx085Strip *strip, Fx
     p += i;
     ex = BTLFX_EXPORTS(fx_085_env);
     ex->btlfx_lerpVec((s16 *)p, (s16 *)(p + 1), 0x4000, (s16 *)&v);
-    fxm_drawJaggedStrip3(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x33, 0, arg5, arg6, kind);
+    fxm_drawJaggedStrip3(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x33, 0, fade, lineWidth, kind);
 }
 
 static s32 fxm_jaggedStripTask(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
@@ -341,7 +341,7 @@ static s32 fxm_jaggedStripTask(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk801
     return 0;
 }
 
-static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
+static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_085_env);
     SVECTOR *p = FX_085_STRIPS[ex->btlfx_rand() % 16].pts4;
 
@@ -374,7 +374,7 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 r4;
     Fx085Bolt *it5;
     Fx085Bolt *it6;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 *q;
     s32 frame;
     s32 kind;
@@ -529,11 +529,11 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 2:
             fx_085_fastBolts = 1;
             if (frame == 0) {
-                p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos0);
-                if (p != NULL) {
-                    p->tail->shape = -1;
-                    p->tail->s.module.spawnFn = fxm_randStripPoint;
-                    p->otZ = 0x20;
+                emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos0);
+                if (emitter != NULL) {
+                    emitter->tail->shape = -1;
+                    emitter->tail->s.module.spawnFn = fxm_randStripPoint;
+                    emitter->otZ = 0x20;
                 }
             }
             if (frame < 31) {

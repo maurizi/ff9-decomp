@@ -1,14 +1,14 @@
 #include "fxmod/fx_134.h"
 
 static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
-    POLY_FT4 *p = (POLY_FT4 *)fx_134_env->prim;
+    POLY_FT4 *poly = (POLY_FT4 *)fx_134_env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_134_env);
     u8 col[4];
     s32 u1;
     s32 v1;
     s32 y1;
 
-    fx_134_env->prim = (u8 *)(p + 2);
+    fx_134_env->prim = (u8 *)(poly + 2);
     col[0] = col[1] = col[2] = c;
     if (abr != 0xFF) {
         col[3] = 0x2E;
@@ -17,38 +17,38 @@ static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 
     }
     tpage |= (abr & 3) << 5;
     v1 = v + h - 1;
-    p->u0 = p->u2 = u;
-    p->u1 = p->u3 = u1 = u + w - 1;
-    p->v0 = p->v1 = v;
-    p->v2 = p->v3 = v1;
-    p->x0 = p->x2 = x - w;
-    p->x1 = p->x3 = x;
-    p->y0 = p->y1 = y;
-    p->clut = clut;
-    p->tpage = tpage;
-    *(u32 *)&p->r0 = *(u32 *)col;
+    poly->u0 = poly->u2 = u;
+    poly->u1 = poly->u3 = u1 = u + w - 1;
+    poly->v0 = poly->v1 = v;
+    poly->v2 = poly->v3 = v1;
+    poly->x0 = poly->x2 = x - w;
+    poly->x1 = poly->x3 = x;
+    poly->y0 = poly->y1 = y;
+    poly->clut = clut;
+    poly->tpage = tpage;
+    *(u32 *)&poly->r0 = *(u32 *)col;
     y1 = y + h * 7 / 6;
-    p->y2 = p->y3 = y1;
-    ex->btlfx_addPrim(0x09000000, ot, p);
-    p++;
-    p->x0 = p->x2 = x;
-    p->u0 = p->u2 = u1;
-    p->u1 = p->u3 = u;
-    p->v0 = p->v1 = v;
-    p->v2 = p->v3 = v1;
-    p->x1 = p->x3 = x + w;
-    p->y0 = p->y1 = y;
-    p->y2 = p->y3 = y1;
-    p->clut = clut;
-    p->tpage = tpage;
-    *(u32 *)&p->r0 = *(u32 *)col;
-    ex->btlfx_addPrim(0x09000000, ot, p);
+    poly->y2 = poly->y3 = y1;
+    ex->btlfx_addPrim(0x09000000, ot, poly);
+    poly++;
+    poly->x0 = poly->x2 = x;
+    poly->u0 = poly->u2 = u1;
+    poly->u1 = poly->u3 = u;
+    poly->v0 = poly->v1 = v;
+    poly->v2 = poly->v3 = v1;
+    poly->x1 = poly->x3 = x + w;
+    poly->y0 = poly->y1 = y;
+    poly->y2 = poly->y3 = y1;
+    poly->clut = clut;
+    poly->tpage = tpage;
+    *(u32 *)&poly->r0 = *(u32 *)col;
+    ex->btlfx_addPrim(0x09000000, ot, poly);
 }
 
 static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr, s32 flip) {
     s32 dx;
     s32 w2;
-    POLY_FT4 *p;
+    POLY_FT4 *poly;
     BtlfxExports *ex;
     u8 col[4];
     s32 n;
@@ -62,8 +62,8 @@ static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tp
     if (flip != 0) {
         n = 4;
     }
-    p = (POLY_FT4 *)fx_134_env->prim;
-    fx_134_env->prim = (u8 *)(p + n);
+    poly = (POLY_FT4 *)fx_134_env->prim;
+    fx_134_env->prim = (u8 *)(poly + n);
     col[0] = col[1] = col[2] = c;
     if (abr != 0xFF) {
         col[3] = 0x2E;
@@ -80,24 +80,24 @@ static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tp
         w2 = 0xA0;
     }
     for (i = 0; i < n; i++) {
-        p->x0 = p->x2 = x;
-        p->x1 = p->x3 = x + w2;
-        p->y0 = p->y1 = y;
-        p->y2 = p->y3 = y + h;
+        poly->x0 = poly->x2 = x;
+        poly->x1 = poly->x3 = x + w2;
+        poly->y0 = poly->y1 = y;
+        poly->y2 = poly->y3 = y + h;
         if (flip != 0) {
-            p->u0 = p->u2 = u;
-            p->u1 = p->u3 = u + w - 1;
+            poly->u0 = poly->u2 = u;
+            poly->u1 = poly->u3 = u + w - 1;
         } else {
-            p->u0 = p->u2 = u + w - 1;
-            p->u1 = p->u3 = u;
+            poly->u0 = poly->u2 = u + w - 1;
+            poly->u1 = poly->u3 = u;
         }
-        p->v0 = p->v1 = v;
-        p->v2 = p->v3 = v + h - 1;
-        p->clut = clut;
-        p->tpage = tpage;
-        *(u32 *)&p->r0 = *(u32 *)col;
-        ex->btlfx_addPrim(0x09000000, ot, p);
-        p++;
+        poly->v0 = poly->v1 = v;
+        poly->v2 = poly->v3 = v + h - 1;
+        poly->clut = clut;
+        poly->tpage = tpage;
+        *(u32 *)&poly->r0 = *(u32 *)col;
+        ex->btlfx_addPrim(0x09000000, ot, poly);
+        poly++;
         x += dx;
     }
 }
@@ -110,7 +110,7 @@ static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 t
     SVECTOR vtx[4];
     u8 col[4];
     s32 otz;
-    POLY_FT4 *p;
+    POLY_FT4 *poly;
     s32 code;
     s32 a;
     s32 b;
@@ -123,8 +123,8 @@ static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 t
     gte_SetRotMatrix(fx_134_env->viewMatrix);
     gte_SetTransMatrix(fx_134_env->viewMatrix);
     gte_ldv0(pos);
-    p = (POLY_FT4 *)fx_134_env->prim;
-    fx_134_env->prim = (u8 *)(p + 1);
+    poly = (POLY_FT4 *)fx_134_env->prim;
+    fx_134_env->prim = (u8 *)(poly + 1);
     col[0] = col[1] = col[2] = c >> 5;
     col[3] = (abr != 0xFF) ? 0x2E : 0x2C;
     tpage |= (abr & 3) << 5;
@@ -150,22 +150,22 @@ static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 t
     gte_ldv3c(vtx);
     gte_rtpt();
     gte_nclip();
-    p->tpage = tpage;
-    p->clut = clut;
+    poly->tpage = tpage;
+    poly->clut = clut;
     gte_stopz(&otz);
     if (otz != 0) {
-        gte_stsxy3(&p->x0, &p->x1, &p->x2);
+        gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
         gte_avsz3();
         gte_stszotz(&otz);
         gte_ldv0(&vtx[3]);
         gte_rtps();
-        p->u1 = p->u3 = u + w - 1;
-        p->u0 = p->u2 = u;
-        p->v0 = p->v1 = v;
-        p->v2 = p->v3 = v + h - 1;
-        *(u32 *)&p->r0 = *(u32 *)col;
-        gte_stsxy(&p->x3);
-        ex->btlfx_addPrim(0x09000000, otz, p);
+        poly->u1 = poly->u3 = u + w - 1;
+        poly->u0 = poly->u2 = u;
+        poly->v0 = poly->v1 = v;
+        poly->v2 = poly->v3 = v + h - 1;
+        *(u32 *)&poly->r0 = *(u32 *)col;
+        gte_stsxy(&poly->x3);
+        ex->btlfx_addPrim(0x09000000, otz, poly);
     }
 }
 
@@ -179,7 +179,7 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
     s32 i;
     s32 code;
     BtlfxExports *ex;
-    POLY_GT4 *p;
+    POLY_GT4 *poly;
     s32 d0;
     s32 d1;
     s32 d2;
@@ -197,9 +197,9 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
     gte_SetRotMatrix(fx_134_env->viewMatrix);
     gte_SetTransMatrix(fx_134_env->viewMatrix);
     gte_ldv0(pos);
-    p = (POLY_GT4 *)fx_134_env->prim;
+    poly = (POLY_GT4 *)fx_134_env->prim;
     code = 0x3C;
-    fx_134_env->prim = (u8 *)(p + 576);
+    fx_134_env->prim = (u8 *)(poly + 576);
     if (abr != 0xFF) {
         code = 0x3E;
     }
@@ -249,29 +249,29 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
             if (r < 0) {
                 r = 0;
             }
-            p->code = code;
-            p->r0 = p->g0 = p->b0 = r;
+            poly->code = code;
+            poly->r0 = poly->g0 = poly->b0 = r;
             r = c - (vtx[1].vz >> 4);
             if (r < 0) {
                 r = 0;
             }
-            p->r1 = p->g1 = p->b1 = r;
+            poly->r1 = poly->g1 = poly->b1 = r;
             r = c - (vtx[2].vz >> 4);
             if (r < 0) {
                 r = 0;
             }
-            p->r2 = p->g2 = p->b2 = r;
+            poly->r2 = poly->g2 = poly->b2 = r;
             r = c - (vtx[3].vz >> 4);
             if (r < 0) {
                 r = 0;
             }
-            p->r3 = p->g3 = p->b3 = r;
+            poly->r3 = poly->g3 = poly->b3 = r;
             gte_nclip();
-            p->tpage = tpage;
-            p->clut = clut;
+            poly->tpage = tpage;
+            poly->clut = clut;
             gte_stopz(&otz);
             if (otz != 0) {
-                gte_stsxy3(&p->x0, &p->x1, &p->x2);
+                gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
                 gte_avsz3();
                 gte_stszotz(&otz);
                 gte_ldv0(&vtx[3]);
@@ -287,20 +287,20 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
                 if (iv != 0) {
                     v1 = v0 + 0x2F;
                 }
-                p->u0 = p->u2 = u0;
-                p->u1 = p->u3 = u1;
-                p->v0 = p->v1 = v0;
-                p->v2 = p->v3 = v1;
-                ex->btlfx_addPrim(0x0C000000, 2, p);
-                gte_stsxy(&p->x3);
-                p++;
+                poly->u0 = poly->u2 = u0;
+                poly->u1 = poly->u3 = u1;
+                poly->v0 = poly->v1 = v0;
+                poly->v2 = poly->v3 = v1;
+                ex->btlfx_addPrim(0x0C000000, 2, poly);
+                gte_stsxy(&poly->x3);
+                poly++;
             }
         }
     }
 }
 
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx134Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9, s32 pad) {
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_134_env);
     SVECTOR p;
     SVECTOR rot;
@@ -322,11 +322,11 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx134Bolt *bolt, SVECTO
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
-        pt->pad = pad;
+        pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 INCLUDE_RODATA("asm/us/fx_134/nonmatchings/fx_134", fx_134_headerPtr);
@@ -341,7 +341,7 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
     SVECTOR old;
     SVECTOR t;
     SVECTOR pad;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 k;
     s32 a;
     s32 c;
@@ -388,9 +388,9 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
                 if (d.vx * d.vx + d.vy * d.vy + d.vz * d.vz < fx_134_catchRadius * fx_134_catchRadius * fx_134_catchRadius) {
                     it->phase2 = 1;
                     ((s16 *)it)[-1] = -1;
-                    it->emit20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&it->posC);
-                    if (e != NULL) {
-                        e->otZ = 0x20;
+                    it->emit20 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&it->posC);
+                    if (emitter != NULL) {
+                        emitter->otZ = 0x20;
                     }
                 }
                 break;
@@ -573,7 +573,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 i_c8;
     s32 k_c9;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
     s32 c;
@@ -606,9 +606,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos8.vx = fx_134_origin.vx;
         work->pos8.vy = fx_134_origin.vy - 0x3000;
         work->pos8.vz = fx_134_origin.vz;
-        work->emit7C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
-        if (p != NULL) {
-            p->trails = (s32)fx_134_op80Trails;
+        work->emit7C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->trails = (s32)fx_134_op80Trails;
             work->emit7C->trailSlots = 0x40;
             work->emit7C->trailStride = 0xCC;
         }

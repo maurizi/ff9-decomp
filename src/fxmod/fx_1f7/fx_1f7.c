@@ -1,11 +1,11 @@
 #include "fxmod/fx_1f7.h"
 
-s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR a;
     SVECTOR b;
     MATRIX m;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     Fx1f7Trail *tr;
     Fx1f7Spark *sp;
     s32 frame;
@@ -22,7 +22,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx1f7Trail *tc;
 
     if (mode == 0) {
-        *arg4 = 0x14;
+        *args = 0x14;
     } else if (mode == 1) {
         work->active0 = 0;
         work->active4 = 0;
@@ -48,13 +48,13 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x18) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
             }
         }
         if (frame == 0x19) {

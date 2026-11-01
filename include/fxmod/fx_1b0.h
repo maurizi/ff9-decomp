@@ -35,7 +35,7 @@ static s32 fxm_splitModelAdd(s32 model);
 Fx1b0Piece *fx_1b0_findFreePiece(void);
 s32 fx_1b0_launchPieces(SVECTOR *center);
 void fx_1b0_updatePieces(void);
-static s32 fx_1b0_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1b0_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames);
 
 typedef struct {
     SVECTOR angle0; /* angles */
@@ -67,7 +67,7 @@ typedef struct {
     CVECTOR color38; /* model colour */
     s32 model3C[8]; /* split models */
 } Fx1b0Work80; /* 0x5C */
-s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 extern u8 fx_1b0_colorGradient[]; /* colour fade table */
 extern s16 fx_1b0_modelFileIds[8]; /* model files */

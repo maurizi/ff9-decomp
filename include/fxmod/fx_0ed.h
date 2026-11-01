@@ -17,7 +17,7 @@ typedef struct {
 
 extern Unk800F78A4 *fx_0ed_env;
 
-s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 typedef struct {
     SVECTOR a0;

@@ -310,7 +310,7 @@ static s32 fxm_nextRingPoint(SVECTOR *v) {
     return 0;
 }
 
-s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 t;
@@ -322,7 +322,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
     VECTOR sc2;
 
     if (mode == 0) {
-        *arg4 = 0x4C;
+        *args = 0x4C;
     } else if (mode == 1) {
         fx_196_env = env;
         work->state0 = 0;
@@ -416,7 +416,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->otZ = 0;
             }
             if (frame == 0x32) {
-                Pool6CEntry *e;
+                Pool6CEntry *emitter;
 
                 v0.vx = env->camera->points[0].vx;
                 v0.vy = env->camera->points[0].vy;
@@ -427,9 +427,9 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos10.vx = (v0.vx + v1.vx) / 2;
                 work->pos10.vy = (v0.vy + v1.vy) / 2;
                 work->pos10.vz = (v0.vz + v1.vz) / 2;
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
-                if (e != NULL) {
-                    e->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
             }
             if (frame >= 0x2B) {
@@ -516,13 +516,13 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x44;
+        *args = 0x44;
     } else if (mode == 1) {
         fx_196_env = env;
         work->count40 = env->targets->targetCount;
@@ -531,9 +531,9 @@ s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->pos0[i]);
                 work->pos0[i].vz -= ex->btlfx_getUnitRadius(i);
                 work->pos0[i].vy -= 0x200;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos0[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos0[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
                 }
             }
         }
@@ -545,16 +545,16 @@ s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_196_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_196_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     s32 frame;
     s32 n;
 
     if (mode == 0) {
-        *arg4 = 4;
+        *args = 4;
     } else if (mode == 1) {
-        n = *arg4;
+        n = *args;
         fx_196_env = env;
         *work = n;
     } else {

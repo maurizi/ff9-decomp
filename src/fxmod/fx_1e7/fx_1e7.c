@@ -1,10 +1,10 @@
 #include "fxmod/fx_1e7.h"
 
-static s32 fx_1e7_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_1e7_op80ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1e7_posPath0[0], frame, n);
 }
 
-static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1e7_posPath0[1], frame, n);
 }
 
@@ -39,27 +39,27 @@ static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path,
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint0(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[0], i);
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint1(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[1], i);
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint2(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[2], i);
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint3(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[3], i);
     return 0;
 }
 
-s32 fx_1e7_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_1e7_op81SpawnPoint4(SVECTOR *out, s32 dir, s32 i) {
     fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[4], i);
     return 0;
 }
@@ -76,12 +76,12 @@ void fx_1e7_getSpawnPos(SVECTOR *out, Fx1e7Path *path, s32 t) {
     out->vz = v.vz;
 }
 
-s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x14;
+        *args = 0x14;
     } else if (mode == 1) {
         fx_1e7_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -133,13 +133,13 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x38;
+        *args = 0x38;
     } else if (mode == 1) {
         fx_1e7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);

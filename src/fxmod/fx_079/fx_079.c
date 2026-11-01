@@ -21,7 +21,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 
 INCLUDE_RODATA("asm/us/fx_079/nonmatchings/fx_079", fx_079_headerPtr);
 
-s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR scale;
     SVECTOR pos;
@@ -29,7 +29,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     VECTOR d;
     Fx079Strip *tr;
     Fx079Pt *pt;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 i;
     s32 frame;
     s32 j;
@@ -42,7 +42,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 w2;
 
     if (mode == 0) {
-        *arg4 = 0xA8;
+        *args = 0xA8;
     } else if (mode == 1) {
         fx_079_env = env;
         fx_079_emitter = NULL;
@@ -109,9 +109,9 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timers0[7] = 0x10;
             break;
         case 40:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_079_bodyPos);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_079_bodyPos);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 44:

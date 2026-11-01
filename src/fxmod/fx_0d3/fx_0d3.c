@@ -354,7 +354,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
                    Fx0d3Seg *buf, s32 abr, s32 phase) {
     Unk800F78A4 *env = fx_0d3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    CVECTOR c;
+    CVECTOR col;
     s32 otz;
     POLY_GT4 *prim;
     Fx0d3Seg *s;
@@ -391,7 +391,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
     n = i;
     prim = (POLY_GT4 *)env->prim;
     env->prim = (u8 *)(prim + n);
-    c.cd = abr == 0xFF ? 0x3C : 0x3E;
+    col.cd = abr == 0xFF ? 0x3C : 0x3E;
     w--;
     h--;
     tpage |= (abr & 3) << 5;
@@ -401,13 +401,13 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
     for (i = 0; i < n; i = j, buf++, prim++, phase++) {
         gte_ldv3c(buf);
         t = (i << 12) / n;
-        c.r = c.g = c.b = p;
+        col.r = col.g = col.b = p;
         gte_rtpt_b();
         t = ((0x1000 - t) * p) >> 12;
-        c.r = c.g = c.b = t;
-        *(s32 *)&prim->r0 = *(s32 *)&prim->r1 = *(s32 *)&c;
-        c.r = c.g = c.b = t;
-        *(s32 *)&prim->r2 = *(s32 *)&prim->r3 = *(s32 *)&c;
+        col.r = col.g = col.b = t;
+        *(s32 *)&prim->r0 = *(s32 *)&prim->r1 = *(s32 *)&col;
+        col.r = col.g = col.b = t;
+        *(s32 *)&prim->r2 = *(s32 *)&prim->r3 = *(s32 *)&col;
         j = i + 1;
         gte_stopz(&otz);
         if (otz != 0) {
@@ -435,32 +435,32 @@ static void fx_0d3_op80GridVertex(s32 a0, s32 frame, s32 a2, s32 a3, s16 *v) {
     v[1] = (v[1] * frame) >> 3;
 }
 
-s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     VECTOR pos;
     VECTOR scale;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
     s32 k;
     s32 c;
-    s32 m;
+    s32 model;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx0d3Work80);
+        *args = sizeof(Fx0d3Work80);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
         fx_0d3_env = env;
         ex->btlfx_initEffModels(fx_0d3_effModels, 7);
         fx_0d3_sharedModel = work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x16), 1);
-        m = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x26), 1);
+        model = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x26), 1);
         work->rot28.vy = 0x800;
         work->summonScale1C.vx = 0x1000;
         work->summonScale1C.vy = 0x1000;
         work->summonScale1C.vz = 0x1000;
-        work->model64 = m;
+        work->model64 = model;
         work->rot28.vx = 0;
         work->rot28.vz = 0;
         work->summonPos10.vx = fx_0d3_summonPos.vx;
@@ -473,7 +473,7 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[3].vx = work->summonPos10.vx;
         env->camera->points[3].vy = work->summonPos10.vy;
         env->camera->points[3].vz = work->summonPos10.vz;
-        fx_0d3_sharedModel = m;
+        fx_0d3_sharedModel = model;
         work->emit30 = NULL;
         work->emit34 = NULL;
         work->scroll68 = 0;
@@ -482,32 +482,32 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->state0 == 0) {
             t = (frame << 12) / 75;
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x100;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x100;
                 }
             }
             if (frame == 0x28) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->trails = (s32)fx_0d3_trails;
-                    p->trailSlots = 0xC0;
-                    p->trailStride = 0x1C;
-                    p->otZ = 0x100;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_0d3_trails;
+                    emitter->trailSlots = 0xC0;
+                    emitter->trailStride = 0x1C;
+                    emitter->otZ = 0x100;
                 }
             }
             if (frame == 0x32) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos8);
-                work->emit30 = p;
-                if (p != NULL) {
-                    p->otZ = 0x100;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos8);
+                work->emit30 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x100;
                 }
             }
             if (frame == 0x1E) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
-                work->emit34 = p;
-                if (p != NULL) {
-                    p->otZ = 0x100;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+                work->emit34 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x100;
                 }
             }
             if (frame == 0x3C) {
@@ -584,7 +584,7 @@ static void fxm_waveVertexX(s16 *v) {
 
 INCLUDE_RODATA("asm/us/fx_0d3/nonmatchings/fx_0d3", fx_0d3_headerPtr);
 
-s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     VECTOR pos;
@@ -642,7 +642,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u8 *f;
 
     if (mode == 0) {
-        *arg4 = 0x64;
+        *args = 0x64;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -1110,9 +1110,9 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_0d3_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0d3_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_0d3_env = env;
         env->camera->paused = 0;
@@ -1122,12 +1122,12 @@ s32 fx_0d3_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     return 0;
 }
 
-s32 fx_0d3_op87(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0d3_op87(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else if (mode == 1) {
         fx_0d3_env = env;
     } else {

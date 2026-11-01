@@ -2,9 +2,9 @@
 
 INCLUDE_RODATA("asm/us/fx_12c/nonmatchings/fx_12c", fx_12c_headerPtr);
 
-s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     CVECTOR col;
     SVECTOR rot;
     VECTOR sc;
@@ -17,7 +17,7 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x30;
+        *args = 0x30;
     } else if (mode == 1) {
         fx_12c_env = env;
         ex->btlfx_initEffModels(fx_12c_effModels, 10);
@@ -56,16 +56,16 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 1:
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos28);
             work->pos28.vy = 0;
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos28);
-            if (p != NULL) {
-                p->otZ = -0x100;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos28);
+            if (emitter != NULL) {
+                emitter->otZ = -0x100;
             }
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos28);
             break;
         case 9:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos20);
-            if (p != NULL) {
-                p->otZ = 0x100;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos20);
+            if (emitter != NULL) {
+                emitter->otZ = 0x100;
             }
             work->timer0[3] = 0x40;
             work->timer0[1] = 0x10;

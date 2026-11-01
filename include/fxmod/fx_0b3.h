@@ -166,6 +166,6 @@ typedef struct {
 extern CVECTOR fx_0b3_rippleColor;
 static void fxm_drawWaterSheet(SVECTOR *a, SVECTOR *b, VECTOR *c, s32 r, s32 k, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9, s32 a10,
                    s32 a11, s32 a12, s32 a13, s32 a14);
-s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

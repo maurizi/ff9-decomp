@@ -4,7 +4,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
                    Fx0e30Seg *buf, s32 abr, s32 phase) {
     Unk800F78A4 *env = fx_0e3_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    CVECTOR c;
+    CVECTOR col;
     s32 otz;
     POLY_GT4 *prim;
     Fx0e30Seg *s;
@@ -40,7 +40,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
     n = i;
     prim = (POLY_GT4 *)env->prim;
     env->prim = (u8 *)(prim + n);
-    c.cd = abr == 0xFF ? 0x3C : 0x3E;
+    col.cd = abr == 0xFF ? 0x3C : 0x3E;
     w--;
     h--;
     tpage |= (abr & 3) << 5;
@@ -52,13 +52,13 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
         t = (i << 12) / n;
         gte_rtpt_b();
         if (i != 0) {
-            c.r = c.g = c.b = ((0x1000 - t) * p) >> 12;
+            col.r = col.g = col.b = ((0x1000 - t) * p) >> 12;
         } else {
-            c.r = c.g = c.b = 0;
+            col.r = col.g = col.b = 0;
         }
-        *(s32 *)&prim->r0 = *(s32 *)&prim->r1 = *(s32 *)&c;
-        c.r = c.g = c.b = ((0x1000 - t) * p) >> 12;
-        *(s32 *)&prim->r2 = *(s32 *)&prim->r3 = *(s32 *)&c;
+        *(s32 *)&prim->r0 = *(s32 *)&prim->r1 = *(s32 *)&col;
+        col.r = col.g = col.b = ((0x1000 - t) * p) >> 12;
+        *(s32 *)&prim->r2 = *(s32 *)&prim->r3 = *(s32 *)&col;
         gte_stopz(&otz);
         if (otz != 0) {
             gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
@@ -80,7 +80,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
 }
 
 static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9) {
+                   s32 dang, s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_0_env);
     SVECTOR p;
     SVECTOR rot;
@@ -106,11 +106,11 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVEC
         pt++;
         ang += dang + ex->btlfx_randCentered(fx_0e3_0_angleJitter);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
-static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9) {
+static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 anchor, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang,
+                   s32 dang, s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_0_env);
     SVECTOR p;
     SVECTOR rot;
@@ -136,7 +136,7 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), 0, (s32 *)arg1, arg8, 0x1000, arg9, 1, (u8 *)bolt, 1);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), 0, (s32 *)anchor, frame, 0x1000, fade, 1, (u8 *)bolt, 1);
 }
 
 static s32 fx_0e3_0_op80PoolTask(s32 mode, Fx0e30Puff *p, Unk800F78A4 *env, Unk80100C78Entry *entry) {
@@ -227,7 +227,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 f2;
     s32 f3;
     s32 f4;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     Fx0e30Puff *q;
 
     if (mode == 0) {
@@ -713,15 +713,15 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         work->rot88.vz += 2;
         if (frame == 7) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x83), (s32)&work->pos40);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x83), (s32)&work->pos40);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
         }
         if (frame == 0xC) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos40);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos40);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
         }
         ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, 0x3D, (BtlBone *)&ba);

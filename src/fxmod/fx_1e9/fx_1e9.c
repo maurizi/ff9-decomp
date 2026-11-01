@@ -1,6 +1,6 @@
 #include "fxmod/fx_1e9.h"
 
-s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     VECTOR scale;
@@ -15,10 +15,10 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 a;
     s32 c;
     s32 n;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
         work->state0 = 0;
         fx_1e9_env = env;
@@ -85,13 +85,13 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->paused = 0;
             ex->btlfx_fadeUnitById(0x10, 0x80);
             ex->btlfx_stopEmitter(work->emit8);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->posC);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->posC);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->posC);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->posC);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
         }
         break;

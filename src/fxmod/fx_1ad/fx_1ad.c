@@ -1,6 +1,6 @@
 #include "fxmod/fx_1ad.h"
 
-static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     s32 t = (frame << 12) / frames;
     s32 row = (e->slot - 1) % 6;
     s32 v = t * fx_1ad_boneChains[row][0];
@@ -26,13 +26,13 @@ static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
     return 0;
 }
 
-s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     VECTOR pos;
     VECTOR scale;
     MATRIX m;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 c;
     s32 t;
@@ -40,7 +40,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 n;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
         work->done0 = 0;
         work->frame4 = 0;
@@ -72,12 +72,12 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->emit20 != NULL) {
                     work->emit20->file->m.module.update = fx_1ad_op80ParticleMotion;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->trails = (s32)fx_1ad_op80Trails1;
-                    p->trailSlots = 0x10;
-                    p->trailStride = 0x6C;
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_1ad_op80Trails1;
+                    emitter->trailSlots = 0x10;
+                    emitter->trailStride = 0x6C;
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame >= 0xC) {

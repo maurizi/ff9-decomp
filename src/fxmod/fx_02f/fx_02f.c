@@ -1,16 +1,16 @@
 #include "fxmod/fx_02f.h"
 
-s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
     SVECTOR rot;
     SVECTOR v;
     MATRIX m;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
-        *arg4 = 0x24;
+        *args = 0x24;
     } else if (mode == 1) {
         fx_02f_env = env;
         for (i = 0; i < env->targets->targetCount; i++) {
@@ -52,9 +52,9 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame == 0x10) {
             for (i = 0; i < env->targets->targetCount; i++) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_02f_targetPos[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x40);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_02f_targetPos[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x40);
                 }
             }
         }

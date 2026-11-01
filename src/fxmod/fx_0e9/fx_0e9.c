@@ -1,6 +1,6 @@
 #include "fxmod/fx_0e9.h"
 
-static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e9_env);
     SVECTOR v;
     SVECTOR rot;
@@ -45,14 +45,14 @@ static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 ar
     return 0;
 }
 
-s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     SVECTOR d;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x20;
+        *args = 0x20;
     } else if (mode == 1) {
         fx_0e9_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos8);

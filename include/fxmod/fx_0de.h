@@ -16,7 +16,7 @@ typedef struct {
 extern Unk800F78A4 *fx_0de_env;
 extern s32 fx_0de_jumpScale; /* jump scale */
 
-s32 fx_0de_op81(s32 mode, Fx0deWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0de_op81(s32 mode, Fx0deWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 /* propagated */
 
@@ -25,7 +25,7 @@ typedef struct {
     s32 frame4; /* frame counter */
     SVECTOR pos8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0deWork84;
-s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 typedef struct {
     s32 stop0; /* dead early-out flag, cleared at init and never set (see Fx046Work.stop0) */

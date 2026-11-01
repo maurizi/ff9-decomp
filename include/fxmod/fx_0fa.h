@@ -31,6 +31,6 @@ extern Fx0faFlash fx_0fa_scrollSrc1[];
 extern Unk800F78A4 *fx_0fa_env;
 extern BtlModelBuf fx_0fa_effModels[];
 
-s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

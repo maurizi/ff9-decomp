@@ -76,7 +76,7 @@ extern SVECTOR fx_0d3_summonPos;
 extern s32 fx_0d3_sharedModel;
 extern u8 fx_0d3_trails[];
 extern BtlModelBuf fx_0d3_effModels[];
-s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 typedef struct {
     s32 state0; /* state */
@@ -121,7 +121,7 @@ extern u8 fx_0d3_trails2[];
 extern u8 fx_0d3_trails3[];
 extern Fx0d3Seg fx_0d3_ribbonSegs[6][12];
 extern u16 fx_0d3_texels[];
-s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 /* propagated */
 /* VZ0 = VZ1 = VZ2 = 0 */

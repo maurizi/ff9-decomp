@@ -3,18 +3,18 @@
 static void fxm_captureScreen(s32 x, s32 y, s32 w, s32 h, s32 dx, s32 dy) {
     Unk800F78A4 *env = fx_112_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    RECT r;
+    RECT rect;
 
-    r.x = env->dispEnv->disp.x + x - (w >> 1);
-    r.y = env->dispEnv->disp.y + y - (h >> 1);
-    r.w = w;
-    r.h = h;
-    ex->MoveImage(&r, dx, dy);
+    rect.x = env->dispEnv->disp.x + x - (w >> 1);
+    rect.y = env->dispEnv->disp.y + y - (h >> 1);
+    rect.w = w;
+    rect.h = h;
+    ex->MoveImage(&rect, dx, dy);
 }
 
 INCLUDE_RODATA("asm/us/fx_112/nonmatchings/fx_112", fx_112_headerPtr);
 
-s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 k;
@@ -25,7 +25,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx112Locals u;
 
     if (mode == 0) {
-        *arg4 = 0x54;
+        *args = 0x54;
     } else if (mode == 1) {
         fx_112_env = env;
         ex->btlfx_initEffModels(fx_112_effModels, 1);
