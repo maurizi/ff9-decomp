@@ -51,8 +51,8 @@ s16 card_getWins(void) {
 }
 
 void card_addWin(void) {
-    if (++g_cards.wins == 10000) {
-        g_cards.wins = 9999;
+    if (++g_cards.wins == RECORD_MAX + 1) {
+        g_cards.wins = RECORD_MAX;
     }
 }
 
@@ -61,8 +61,8 @@ s16 card_getLosses(void) {
 }
 
 void card_addLoss(void) {
-    if (++g_cards.losses == 10000) {
-        g_cards.losses = 9999;
+    if (++g_cards.losses == RECORD_MAX + 1) {
+        g_cards.losses = RECORD_MAX;
     }
 }
 
@@ -71,8 +71,8 @@ s16 card_getDraws(void) {
 }
 
 void card_addDraw(void) {
-    if (++g_cards.draws == 10000) {
-        g_cards.draws = 9999;
+    if (++g_cards.draws == RECORD_MAX + 1) {
+        g_cards.draws = RECORD_MAX;
     }
 }
 

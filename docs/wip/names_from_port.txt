@@ -11475,3 +11475,6 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 #   setDrawTPage(p, dfe, dtd, tpage); otherwise setlen(p, PRIM_LEN(T)) with T the primitive written next
 #   (SPRT/TILE/... from the code byte, DR_STP for GPU_STP/_get_mask, DR_MODE for get_mode + get_tw).
 #   Left: three setlen(p, 2) right before a SetDrawTPage() library call (ui.c, ovl_39, ovl_3a).
+# ff9.h limits: HP_MAX 9999, MP_MAX 999 (chr_calcMaxHp/Mp, chr_calcEquipStats), DAMAGE_MAX 9999 (every HP/MP change
+#   cap in btl_calcCmd's formulas and the fieldCalc_* item formulas; `>= 10000` written `> DAMAGE_MAX`),
+#   RECORD_MAX 9999 (card wins/losses/draws, stealCount, dragonKills).

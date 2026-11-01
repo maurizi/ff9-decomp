@@ -321,7 +321,7 @@ void btl_updateKo(BtlUnit *u) {
             return;
         case BTL_KO_ENEMY_REMOVE:
             if (btl_hasEnemyFlag(u, BTL_ENEMY_DRAGON) != 0) {
-                if (g_gameState->gameData->dragonKills < 9999) {
+                if (g_gameState->gameData->dragonKills < RECORD_MAX) {
                     g_gameState->gameData->dragonKills++;
                 }
             }

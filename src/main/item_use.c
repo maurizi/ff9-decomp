@@ -163,8 +163,8 @@ void fieldCalc_multiTargetHalf(MainCalc *c) {
 
 void fieldCalc_calcHpGain(MainCalc *calc) {
     u16 v = calc->power * calc->multiplier;
-    if ((s16)v >= 10000) {
-        v = 9999;
+    if ((s16)v > DAMAGE_MAX) {
+        v = DAMAGE_MAX;
     }
     calc->hpChange = v;
 }
@@ -178,16 +178,16 @@ void fieldCalc_calcReviveHp(MainCalc *c) {
     } else {
         v /= 100;
     }
-    if (v >= 10000) {
-        v = 9999;
+    if (v > DAMAGE_MAX) {
+        v = DAMAGE_MAX;
     }
     c->hpChange = v;
 }
 
 void fieldCalc_calcMpGain(MainCalc *calc) {
     u16 v = calc->power * calc->multiplier;
-    if ((s16)v >= 10000) {
-        v = 9999;
+    if ((s16)v > DAMAGE_MAX) {
+        v = DAMAGE_MAX;
     }
     calc->mpChange = v;
 }

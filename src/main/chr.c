@@ -134,11 +134,11 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
             out->defs[i] = 999;
         }
     }
-    if (out->maxHp >= 10000) {
-        out->maxHp = 9999;
+    if (out->maxHp > HP_MAX) {
+        out->maxHp = HP_MAX;
     }
-    if (out->maxMp >= 1000) {
-        out->maxMp = 999;
+    if (out->maxMp > MP_MAX) {
+        out->maxMp = MP_MAX;
     }
     if (out->maxHp < out->hp) {
         out->hp = out->maxHp;
@@ -787,16 +787,16 @@ s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
 
 s32 chr_calcMaxHp(s32 lv, s32 mult) {
     s32 hp = g_levelHpMp[lv - 1].hp * mult / 50;
-    if (hp >= 10000) {
-        hp = 9999;
+    if (hp > HP_MAX) {
+        hp = HP_MAX;
     }
     return hp;
 }
 
 s32 chr_calcMaxMp(s32 lv, s32 mult) {
     s32 mp = g_levelHpMp[lv - 1].mp * mult / 100;
-    if (mp >= 1000) {
-        mp = 999;
+    if (mp > MP_MAX) {
+        mp = MP_MAX;
     }
     return mp;
 }

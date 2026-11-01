@@ -673,7 +673,7 @@ void btl_setBattleVar(s32 var, s32 value) {
         }
         break;
     case BTL_SETVAR_ADD_DRAGON_KILL:
-        if (g_gameState->gameData->dragonKills < 9999) {
+        if (g_gameState->gameData->dragonKills < RECORD_MAX) {
             g_gameState->gameData->dragonKills++;
         }
         break;

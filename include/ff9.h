@@ -2217,6 +2217,10 @@ extern s32 g_padPortMask[];
 #define LEVEL_MAX 99
 #define EXP_MAX 9999999
 #define GIL_MAX 9999999
+#define HP_MAX 9999 /* max HP (chr_calcMaxHp, chr_calcEquipStats) */
+#define MP_MAX 999 /* max MP (chr_calcMaxMp, chr_calcEquipStats) */
+#define DAMAGE_MAX 9999 /* cap on one HP or MP change, damage or healing (btl_calcCmd, the fieldCalc_* item formulas) */
+#define RECORD_MAX 9999 /* tallies: card wins/losses/draws, GameData.stealCount, GameData.dragonKills */
 
 /* main-menu screens (g_menuScreen.screen, menuScreen_open/switch; runtime field/menu campaign) */
 #define MENU_SCREEN_MAIN 0

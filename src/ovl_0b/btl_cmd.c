@@ -1467,8 +1467,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                         c.multiplier = 1;
                     }
                     v = d * c.multiplier;
-                    if (v >= 10000) {
-                        v = 9999;
+                    if (v > DAMAGE_MAX) {
+                        v = DAMAGE_MAX;
                     }
                     c.casterHpChange = v;
                     c.targetHpChange = v;
@@ -1539,8 +1539,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                         } else {
                             v = v / 100;
                         }
-                        if (v >= 10000) {
-                            v = 9999;
+                        if (v > DAMAGE_MAX) {
+                            v = DAMAGE_MAX;
                         }
                         c.targetHpChange = v;
                         c.targetResult |= (BTL_POPUP_HP | BTL_POPUP_HEAL);
@@ -1583,8 +1583,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                         c.multiplier = 1;
                     }
                     v = d * c.multiplier >> 2;
-                    if (v >= 10000) {
-                        v = 9999;
+                    if (v > DAMAGE_MAX) {
+                        v = DAMAGE_MAX;
                     }
                 }
                 if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) != 0) {
@@ -1618,8 +1618,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                         c.multiplier = 1;
                     }
                     v = d * c.multiplier;
-                    if (v >= 10000) {
-                        v = 9999;
+                    if (v > DAMAGE_MAX) {
+                        v = DAMAGE_MAX;
                     }
                     c.casterHpChange = v;
                     c.targetHpChange = v;
@@ -1646,8 +1646,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                                 c.multiplier = 100;
                             }
                             v = target->hp * c.multiplier / 100;
-                            if (v >= 10000) {
-                                v = 9999;
+                            if (v > DAMAGE_MAX) {
+                                v = DAMAGE_MAX;
                             }
                             c.targetResult |= BTL_POPUP_HP;
                             if (c.flags & BTL_CALC_ABSORB) {
@@ -1785,8 +1785,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         if (target->mp != 0) {
             RAND_REFILL2();
             c.targetMpChange = RAND16() % target->mp;
-            if (c.targetMpChange >= 10000) {
-                c.targetMpChange = 9999;
+            if (c.targetMpChange > DAMAGE_MAX) {
+                c.targetMpChange = DAMAGE_MAX;
             }
         }
         break;
@@ -1806,8 +1806,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                     v = d * c.multiplier;
                     c.casterResult |= BTL_POPUP_HP;
                     c.casterHpChange = caster->max->maxHp >> 3;
-                    if (v >= 10000) {
-                        v = 9999;
+                    if (v > DAMAGE_MAX) {
+                        v = DAMAGE_MAX;
                     }
                     if (c.flags & BTL_CALC_ABSORB) {
                         c.targetResult |= BTL_POPUP_HEAL;
@@ -1857,10 +1857,10 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             if (cmd->cmdNo == BTL_CMD_ELAN) {
                 v = v / btl_countActiveUnits(0);
             }
-            if (v < 10000) {
+            if (v <= DAMAGE_MAX) {
                 c.targetHpChange = v;
             } else {
-                c.targetHpChange = 9999;
+                c.targetHpChange = DAMAGE_MAX;
             }
             break;
         }
@@ -1878,8 +1878,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                     c.multiplier = 1;
                 }
                 v = d * c.multiplier;
-                if (v >= 10000) {
-                    v = 9999;
+                if (v > DAMAGE_MAX) {
+                    v = DAMAGE_MAX;
                 }
                 c.targetHpChange = v;
                 c.targetMpChange = v >> 4;
@@ -1892,8 +1892,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             BtlUnit *u;
             v = target->max->maxHp - target->hp;
             c.targetResult |= BTL_POPUP_HP;
-            if (v >= 10000) {
-                v = 9999;
+            if (v > DAMAGE_MAX) {
+                v = DAMAGE_MAX;
             }
             c.targetHpChange = v;
             for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
@@ -2011,8 +2011,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                     c.multiplier = 4;
                 }
                 v = (u32)(d * c.multiplier) / btl_countActiveUnits(0);
-                if (v >= 10000) {
-                    v = 9999;
+                if (v > DAMAGE_MAX) {
+                    v = DAMAGE_MAX;
                 }
                 c.targetHpChange = v;
             }
@@ -2270,8 +2270,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             v = g_gameState->gameData->frogCount;
             if (v != 0) {
                 v = v * caster->level;
-                if (v >= 10000) {
-                    c.targetHpChange = 9999;
+                if (v > DAMAGE_MAX) {
+                    c.targetHpChange = DAMAGE_MAX;
                 } else {
                     c.targetHpChange = v;
                 }
@@ -2285,8 +2285,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             s32 v;
             c.targetResult |= BTL_POPUP_HP;
             v = g_gameState->gameData->stealCount * caster->speed / 2;
-            if (v >= 10000) {
-                c.targetHpChange = 9999;
+            if (v > DAMAGE_MAX) {
+                c.targetHpChange = DAMAGE_MAX;
             } else {
                 c.targetHpChange = v;
             }
@@ -2295,10 +2295,10 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case BTL_FORMULA_DRAGONS_CREST:
         {
             c.targetResult |= BTL_POPUP_HP;
-            if (g_gameState->gameData->dragonKills * g_gameState->gameData->dragonKills < 10000) {
+            if (g_gameState->gameData->dragonKills * g_gameState->gameData->dragonKills <= DAMAGE_MAX) {
                 c.targetHpChange = (u16)g_gameState->gameData->dragonKills * (u16)g_gameState->gameData->dragonKills;
             } else {
-                c.targetHpChange = 9999;
+                c.targetHpChange = DAMAGE_MAX;
             }
             break;
         }
@@ -2316,8 +2316,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 btl_calcHeal(&c);
             } else {
                 v = c.power * c.multiplier;
-                if (v >= 10000) {
-                    v = 9999;
+                if (v > DAMAGE_MAX) {
+                    v = DAMAGE_MAX;
                 }
                 c.targetResult |= BTL_POPUP_MP;
                 if (!(target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) == 0) {
@@ -2376,7 +2376,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         break;
     case BTL_FORMULA_9999_DAMAGE:
         if (btl_checkTargetAlive(&c)) {
-            c.targetHpChange = 9999;
+            c.targetHpChange = DAMAGE_MAX;
             c.targetResult |= BTL_POPUP_HP;
         }
         break;
@@ -2464,8 +2464,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_killUnit(caster);
         }
         c.targetHpChange = caster->hpChange;
-        if (c.targetHpChange >= 10000) {
-            c.targetHpChange = 9999;
+        if (c.targetHpChange > DAMAGE_MAX) {
+            c.targetHpChange = DAMAGE_MAX;
         }
         break;
     case BTL_FORMULA_SWAP_HP:
@@ -2585,7 +2585,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case BTL_FORMULA_EVT_POWER_DAMAGE:
         c.targetResult |= BTL_POPUP_HP;
         if (g_evtGlobalVars.b[0xC0] >= 14) {
-            c.targetHpChange = 9999;
+            c.targetHpChange = DAMAGE_MAX;
         } else {
             c.targetHpChange = 1 << (g_evtGlobalVars.b[0xC0] - 1);
         }
@@ -2694,15 +2694,15 @@ void btl_applyCalcResult(BtlCalc *c) {
                             n++;
                         }
                     }
-                    if (c->targetHpChange * n >= 10000) {
-                        c->targetHpChange = 9999;
+                    if (c->targetHpChange * n > DAMAGE_MAX) {
+                        c->targetHpChange = DAMAGE_MAX;
                     } else {
                         c->targetHpChange = c->targetHpChange * n;
                     }
                     if ((s32)*s->support < 0) {
                         c->targetHpChange *= 2;
-                        if (c->targetHpChange >= 10000) {
-                            c->targetHpChange = 9999;
+                        if (c->targetHpChange > DAMAGE_MAX) {
+                            c->targetHpChange = DAMAGE_MAX;
                         }
                     }
                 }
@@ -2776,7 +2776,7 @@ void btl_calcSteal(BtlCalc *calc, Unk800B7F20 *enemy, s32 slot) {
     if (itemId != 0xFF) {
         enemy->steal[slot] = 0xFF;
         g = g_gameState->gameData;
-        if (g->stealCount < 9999) {
+        if (g->stealCount < RECORD_MAX) {
             g->stealCount++;
         }
         btl_addItem(itemId);
@@ -3043,8 +3043,8 @@ void btl_finishPhysDamage(BtlCalc *calc) {
         calc->multiplier = 1;
     }
     damage = base * calc->multiplier;
-    if (damage >= 10000) {
-        damage = 9999;
+    if (damage > DAMAGE_MAX) {
+        damage = DAMAGE_MAX;
     }
     if (!(calc->flags & BTL_CALC_ABSORB)) {
         u = calc->caster;
@@ -3577,8 +3577,8 @@ void btl_applyInvertedPower(Unk800BA938 *calc) {
 void btl_calcHeal(BtlCalc *calc) {
     s32 heal = calc->power * calc->multiplier;
     BtlUnit *target;
-    if (heal >= 10000) {
-        heal = 9999;
+    if (heal > DAMAGE_MAX) {
+        heal = DAMAGE_MAX;
     }
     target = calc->target;
     calc->targetResult |= BTL_POPUP_HP;
@@ -3602,8 +3602,8 @@ void btl_finishMagicDamage(BtlCalc *calc) {
     if ((calc->cmd->flags >> BTL_CMDINFO_SHORT_SUMMON_BIT) & 1) {
         damage = damage * 2 / 3;
     }
-    if (damage >= 10000) {
-        damage = 9999;
+    if (damage > DAMAGE_MAX) {
+        damage = DAMAGE_MAX;
     }
     if (calc->flags & BTL_CALC_ABSORB) {
         calc->targetResult |= BTL_POPUP_HEAL;
@@ -3621,8 +3621,8 @@ void btl_calcPercentDamage(BtlCalc *calc) {
     if ((calc->cmd->flags >> BTL_CMDINFO_SHORT_SUMMON_BIT) & 1) {
         damage = damage * 2 / 3;
     }
-    if (damage >= 10000) {
-        damage = 9999;
+    if (damage > DAMAGE_MAX) {
+        damage = DAMAGE_MAX;
     }
     result = calc->targetResult;
     calc->targetResult = result | BTL_POPUP_HP;
