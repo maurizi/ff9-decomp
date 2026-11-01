@@ -381,12 +381,12 @@ void btlfx_runScript(void) {
                     }
                     vib_play(1);
                     break;
-                case 20:
+                case BTLFX_CTL_NOP:
                     break;
                 }
             } else {
-                if (op < 0x80) {
-                    btlfx_spawnTask(op - 0x20, state->file, operand0, operand1);
+                if (op < BTLFX_OP_MODULE_FIRST) {
+                    btlfx_spawnTask(op - BTLFX_OP_TASK_FIRST, state->file, operand0, operand1);
                 } else {
                     btlfx_spawnTask(op, state->file, operand0, operand1);
                 }
@@ -455,13 +455,13 @@ loop:
     task->sharedHeap = 1;
     task->frame = 0;
     task->file = file;
-    if (op >= 0x80) {
-        task->handler = g_btlfxModuleOps[file][op - 0x80];
+    if (op >= BTLFX_OP_MODULE_FIRST) {
+        task->handler = g_btlfxModuleOps[file][op - BTLFX_OP_MODULE_FIRST];
     } else {
-        if (op < 0x30) {
+        if (op < BTLFX_OP_UNIT_FIRST - BTLFX_OP_TASK_FIRST) {
             task->handler = g_btlfxResidentOps[op];
         } else {
-            task->handler = g_btlfxUnitOps[op - 0x30];
+            task->handler = g_btlfxUnitOps[op - (BTLFX_OP_UNIT_FIRST - BTLFX_OP_TASK_FIRST)];
         }
     }
     init.poolCount = 0;

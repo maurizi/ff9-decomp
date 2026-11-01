@@ -232,12 +232,12 @@ s32 btlfx_opBounce(s32 mode, Unk800E4634 *work, Unk800E4634Arg2 *env, s32 *entry
 }
 
 void btlfx_startCasterTask(s32 casterKind) {
-    s32 target = 0xFF;
+    s32 target = BTLFX_UNIT_NONE;
     s32 kindArg = casterKind * 16;
     if (g_btlfxEnv->targets->targetCount == 1) {
         target = 0;
     }
-    btlfx_spawnTask(7, -1, target, kindArg);
+    btlfx_spawnTask(BTLFX_RES_CAST, -1, target, kindArg);
 }
 
 void btlfx_playSoundSet(s32 set, s32 unit) {
@@ -756,7 +756,7 @@ void btlfx_spawnDrawOnUnit(s8 unit, s8 otBias, s8 emitterId, s32 dataId, s32 sca
     g_btlfxResArgs2.otBias = otBias;
     g_btlfxResArgs.data = emitterId;
     g_btlfxResArgs.mode = frames | (BTLFX_DRAWON_EMITTER << 6);
-    btlfx_spawnTask(1, g_btlfxEnv->state->file, dataId, scale);
+    btlfx_spawnTask(BTLFX_RES_DRAW_ON_UNIT, g_btlfxEnv->state->file, dataId, scale);
 }
 
 s32 btlfx_opApplyResult(s32 mode, void *work, Unk800F78A4 *env, void *entry, s32 *args) {
@@ -847,7 +847,7 @@ void btlfx_startFadeBackground(s32 level, s32 frames) {
     } else {
         brightness = g_btlfxCastBgBrightness[level];
     }
-    btlfx_spawnTask(0xA, -1, brightness, frames);
+    btlfx_spawnTask(BTLFX_RES_FADE_BACKGROUND, -1, brightness, frames);
 }
 
 s32 btlfx_opFadeBackground(s32 mode, Unk800E6270 *work, s32 env, s32 *entry, s32 *args) {
@@ -884,7 +884,7 @@ s32 btlfx_opFadeBackground(s32 mode, Unk800E6270 *work, s32 env, s32 *entry, s32
 }
 
 void btlfx_startFadeUnits(s32 frames, s32 flags) {
-    btlfx_spawnTask(4, -1, frames & 0xFF, flags & 0xFF);
+    btlfx_spawnTask(BTLFX_RES_FADE_UNITS, -1, frames & 0xFF, flags & 0xFF);
 }
 
 s32 btlfx_opFadeUnits(s32 mode, Unk800E6270 *work, s32 env, s32 *entry, s32 *args) {
@@ -931,7 +931,7 @@ s32 btlfx_opPlaySound(s32 mode, s32 work, s32 env, Unk800F78A40 *entry, s32 *arg
 }
 
 void btlfx_startScreenFade(s32 mode, s32 frames) {
-    btlfx_spawnTask(0xE, -1, mode, frames);
+    btlfx_spawnTask(BTLFX_RES_SCREEN_FADE, -1, mode, frames);
 }
 
 s32 btlfx_opScreenFade(s32 mode, Unk800E6410 *work, s32 env, s32 *entry, s32 *args) {

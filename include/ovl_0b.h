@@ -1021,7 +1021,25 @@ typedef struct {
 #define BTLFX_CTL_VIBRATE         15 /* b = 0: start the vibration data at file offset a; else stop */
 #define BTLFX_CTL_NOP             20
 #define BTLFX_OP_TASK_FIRST       0x20 /* ops from here spawn a task */
+#define BTLFX_OP_UNIT_FIRST       0x50 /* g_btlfxUnitOps covers 0x50-0x7F, g_btlfxResidentOps 0x20-0x2F */
 #define BTLFX_OP_MODULE_FIRST     0x80 /* ops from here are the module's op handlers */
+/* resident task ops: g_btlfxResidentOps index (script op BTLFX_OP_TASK_FIRST + n, btlfx_spawnTask), named after the handler */
+#define BTLFX_RES_SET_ARGS_A 0
+#define BTLFX_RES_DRAW_ON_UNIT 1
+#define BTLFX_RES_SET_ARGS_C 2
+#define BTLFX_RES_ADD_CAMERA_CHOICE 3
+#define BTLFX_RES_FADE_UNITS 4
+#define BTLFX_RES_APPLY_RESULT 5
+#define BTLFX_RES_SET_ARGS_B 6
+#define BTLFX_RES_CAST 7
+#define BTLFX_RES_RETURN_HOME 8
+#define BTLFX_RES_PLAY_CAMERA 9
+#define BTLFX_RES_FADE_BACKGROUND 10
+#define BTLFX_RES_BOUNCE 11
+#define BTLFX_RES_SET_FRAME_RATE 12
+#define BTLFX_RES_PLAY_SOUND 13
+#define BTLFX_RES_SCREEN_FADE 14
+#define BTLFX_RES_SET_SPRITE_CLUT 15
 /* BTLFX_CTL_WAIT_LOAD's a */
 #define BTLFX_WAITLD_SUMMON       0 /* loader summonState 2 */
 #define BTLFX_WAITLD_SUMMON_DATA  1 /* loader summonDataState 2 */
