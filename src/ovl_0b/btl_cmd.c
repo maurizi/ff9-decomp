@@ -2143,7 +2143,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             enemy = &g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(target->flags)];
             hasLoot = 0;
             for (k = 0; k < 4; k++) {
-                if (enemy->steal.b[k] != 0xFF) {
+                if (enemy->steal.b[k] != ITEM_NONE) {
                     hasLoot = 1;
                 }
             }
@@ -2164,11 +2164,11 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 }
             }
             if (caster->support[0] & SA_BIT(SA_MASTER_THIEF)) {
-                if (enemy->steal.b[3] != 0xFF && RAND8() < 32) {
+                if (enemy->steal.b[3] != ITEM_NONE && RAND8() < 32) {
                     btl_calcSteal(&calc, (Unk800B7F20 *)enemy, 3);
-                } else if (enemy->steal.b[2] != 0xFF && RAND8() < 32) {
+                } else if (enemy->steal.b[2] != ITEM_NONE && RAND8() < 32) {
                     btl_calcSteal(&calc, (Unk800B7F20 *)enemy, 2);
-                } else if (enemy->steal.b[1] != 0xFF && RAND8() < 64) {
+                } else if (enemy->steal.b[1] != ITEM_NONE && RAND8() < 64) {
                     btl_calcSteal(&calc, (Unk800B7F20 *)enemy, 1);
                 } else {
                     btl_calcSteal(&calc, (Unk800B7F20 *)enemy, 0);
@@ -2775,8 +2775,8 @@ void btl_calcSteal(BtlCalc *calc, Unk800B7F20 *enemy, s32 slot) {
     GameData *game;
     u32 roll;
 
-    if (itemId != 0xFF) {
-        enemy->steal[slot] = 0xFF;
+    if (itemId != ITEM_NONE) {
+        enemy->steal[slot] = ITEM_NONE;
         game = g_gameState->gameData;
         if (game->stealCount < RECORD_MAX) {
             game->stealCount++;

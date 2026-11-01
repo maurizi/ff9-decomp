@@ -81,13 +81,13 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
     out->stats[2] = in->base.b[6];
     out->stats[3] = in->base.b[7];
     id = in->equip.b[0];
-    if (id != 0xFF) {
+    if (id != ITEM_NONE) {
         out->defs[0] = g_weaponTable[id].attack;
     }
     for (i = 0; i < 4; i++) {
         id = (&in->equip.b[1])[i];
-        if (id != 0xFF) {
-            if ((u32)(id - 0x58) < 0x88) {
+        if (id != ITEM_NONE) {
+            if ((u32)(id - ITEM_FIRST_ARMOR) < ITEM_FIRST_USABLE - ITEM_FIRST_ARMOR) {
                 armor = g_armorDefs[id];
                 out->defs[1] += armor[0];
                 out->defs[2] += armor[1];
@@ -96,9 +96,9 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
             }
         }
     }
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
         id = in->equip.b[i];
-        if (id != 0xFF) {
+        if (id != ITEM_NONE) {
             bonus = g_equipStatBonus[g_itemTable[id].statBonus].stats;
             out->stats[0] += bonus[0];
             out->stats[1] += bonus[1];

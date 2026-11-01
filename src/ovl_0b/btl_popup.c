@@ -662,7 +662,7 @@ void btl_updateDetect(void) {
     }
     while ((slot = g_gameState->gameData->ctx.battle->popups.detectSlot++) < 4) {
         id = g_gameState->gameData->ctx.battle->popups.detectEnemy->steal.b[3 - slot];
-        if (id != 0xFF) {
+        if (id != ITEM_NONE) {
             g_gameState->gameData->ctx.battle->popups.detectDelay = btl_getBannerDuration() - 1;
             text_copy(line, (u8 *)text_getFrom(g_btlScanTexts, BTL_SCAN_TEXT_CARRIES));
             text_append(line, btl_getItemName(id));
