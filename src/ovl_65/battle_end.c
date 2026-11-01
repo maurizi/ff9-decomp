@@ -199,7 +199,7 @@ void rewards_drawInfo(void) {
 }
 
 void rewards_drawMembers(void) {
-    u8 buf[16];
+    u8 numText[16];
     RECT *r;
     Character *c;
     u32 i;
@@ -223,9 +223,9 @@ void rewards_drawMembers(void) {
                 ui_drawPartyPortrait(r->x + 4, r->y + 4, 0xB, i, dim);
                 rewards_drawLevelUp(r->x + 0x24, r->y + 0x12, 0xB, &s_rewards.levelPopups[i]);
                 s_rewards.prim = text_buildBlock(r->x + 0x29, r->y + 4, g_ot + 0xB, c->name, col, s_rewards.prim);
-                text_formatNumber(c->level, buf, 2, TEXT_NUM_ASCII);
+                text_formatNumber(c->level, numText, 2, TEXT_NUM_ASCII);
                 ui_drawSprite(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
-                p = buf;
+                p = numText;
                 s_rewards.prim = text_buildDigits(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, s_rewards.prim);
                 ui_drawStatusIcons(r->x + 0x28, r->y + 0x13, 0xB, c->status, dim);
                 text_drawBlock(r->x + 0x29, r->y + 0x1C, 0xB, text_get(REWARDS_TEXT_EXP), col);
@@ -236,8 +236,8 @@ void rewards_drawMembers(void) {
                 } else {
                     n = c->exp;
                 }
-                text_formatNumber(n - c->exp, buf, 6, TEXT_NUM_ASCII);
-                ui_drawSmallDigits(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
+                text_formatNumber(n - c->exp, numText, 6, TEXT_NUM_ASCII);
+                ui_drawSmallDigits(r->x + 0x69, r->y + 0x2A, 0xB, numText, col);
                 text_drawBlock(r->x + 0x29, r->y + 0x26, 0xB, text_get(REWARDS_TEXT_NEXT), col);
             }
             win_drawBox(r, 0xB, WIN_STYLE_LINE);
@@ -248,43 +248,43 @@ void rewards_drawMembers(void) {
 
 void rewards_drawExp(void) {
     RECT *r = &s_rewards.wins[6].rect;
-    u8 buf[16];
+    u8 numText[16];
     s32 x, y;
 
     if (s_rewards.winShown[6] != 0) {
         win_drawBox(r, 0xB, WIN_STYLE_BEVEL);
         win_drawShadow(r, 0xC, WIN_STYLE_BEVEL);
-        text_formatNumber(s_rewards.rewards.expEach, buf, 6, TEXT_NUM_ASCII);
+        text_formatNumber(s_rewards.rewards.expEach, numText, 6, TEXT_NUM_ASCII);
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
                                           text_get(REWARDS_TEXT_EXP), TEXT_PAL_WHITE, s_rewards.prim);
         s_rewards.prim = text_buildSmall(r->x + 0x5A, r->y + 9, g_ot + 10,
-                                          buf, TEXT_PAL_WHITE, s_rewards.prim);
+                                          numText, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
 void rewards_drawAp(void) {
     RECT *r = &s_rewards.wins[7].rect;
-    u8 buf[16];
+    u8 numText[16];
     s32 x, y;
 
     if (s_rewards.winShown[7] != 0) {
         win_drawBox(r, 0xB, WIN_STYLE_BEVEL);
         win_drawShadow(r, 0xC, WIN_STYLE_BEVEL);
-        text_formatNumber(s_rewards.rewards.ap, buf, 3, TEXT_NUM_ASCII);
+        text_formatNumber(s_rewards.rewards.ap, numText, 3, TEXT_NUM_ASCII);
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
                                           text_get(REWARDS_TEXT_AP), TEXT_PAL_WHITE, s_rewards.prim);
         s_rewards.prim = text_buildSmall(r->x + 0x6F, r->y + 9, g_ot + 10,
-                                          buf, TEXT_PAL_WHITE, s_rewards.prim);
+                                          numText, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
 void rewards_drawReceivedGil(void) {
     RECT *r = &s_rewards.wins[8].rect;
-    u8 buf[16];
+    u8 numText[16];
     s32 x, y;
     u32 gil = s_rewards.rewards.gil.target - s_rewards.rewards.gil.cur;
 
@@ -294,20 +294,20 @@ void rewards_drawReceivedGil(void) {
     if (s_rewards.winShown[8] != 0) {
         win_drawBox(r, 0xE, WIN_STYLE_BEVEL);
         win_drawShadow(r, 0xF, WIN_STYLE_BEVEL);
-        text_formatNumber(gil, buf, 6, TEXT_NUM_ASCII);
-        strcat(buf, s_rewardsGilUnit);
+        text_formatNumber(gil, numText, 6, TEXT_NUM_ASCII);
+        strcat(numText, s_rewardsGilUnit);
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 13,
                                           text_get(REWARDS_TEXT_RECEIVED_GIL), TEXT_PAL_WHITE, s_rewards.prim);
         s_rewards.prim = text_buildSmall(r->x + 0x54, r->y + 9, g_ot + 13,
-                                          buf, TEXT_PAL_WHITE, s_rewards.prim);
+                                          numText, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
 void rewards_drawCurrentGil(void) {
     RECT *r = &s_rewards.wins[9].rect;
-    u8 buf[16];
+    u8 numText[16];
     s32 x, y;
     u32 gil = g_gameState->gameData->gil;
 
@@ -317,14 +317,14 @@ void rewards_drawCurrentGil(void) {
     if (s_rewards.winShown[9] != 0) {
         win_drawBox(r, 0xE, WIN_STYLE_BEVEL);
         win_drawShadow(r, 0xF, WIN_STYLE_BEVEL);
-        text_formatNumber(gil, buf, 7, TEXT_NUM_ASCII);
-        strcat(buf, s_rewardsGilUnit2);
+        text_formatNumber(gil, numText, 7, TEXT_NUM_ASCII);
+        strcat(numText, s_rewardsGilUnit2);
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 13,
                                           text_get(REWARDS_TEXT_CURRENT_GIL), TEXT_PAL_WHITE, s_rewards.prim);
         s_rewards.prim = text_buildSmall(r->x + 0x4D, r->y + 9, g_ot + 13,
-                                          buf, TEXT_PAL_WHITE, s_rewards.prim);
+                                          numText, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
@@ -538,12 +538,12 @@ void rewards_compute(void) {
     }
 }
 
-void rewards_drawSmallText(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    s_rewards.prim = text_buildSmall(arg0, arg1, g_ot + arg2, arg3, arg4, s_rewards.prim);
+void rewards_drawSmallText(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
+    s_rewards.prim = text_buildSmall(x, y, g_ot + otz, s, pal, s_rewards.prim);
 }
 
-void rewards_drawText(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    s_rewards.prim = text_buildBlock(arg0, arg1, g_ot + arg2, arg3, arg4, s_rewards.prim);
+void rewards_drawText(s32 x, s32 y, s32 otz, u8 *s, s32 mode) {
+    s_rewards.prim = text_buildBlock(x, y, g_ot + otz, s, mode, s_rewards.prim);
 }
 
 void rewards_init(void) {
@@ -605,17 +605,17 @@ void rewards_requestClose(void) {
 
 s32 rewards_getKind(void) {
     u8 mode = g_gameState->gameData->battleResult;
-    s32 ret = 0;
+    s32 kind = 0;
 
     if (mode == BATTLE_END_ESCAPE) {
-        ret = g_btlRewards.fleeGil != 0;
+        kind = g_btlRewards.fleeGil != 0;
     } else if (mode != 7) {
-        ret = 1;
+        kind = 1;
         if (g_btlRewards.hasPostEvent != 0) {
-            ret = 2;
+            kind = 2;
         }
     }
-    return ret;
+    return kind;
 }
 
 void rewards_skip(void) {
@@ -691,12 +691,12 @@ void rewards_initPrimBufs(void) {
     s_rewards.primBufs[1] = s_rewardsPrimBufs[1];
 }
 
-void rewards_clearWinSlot(WinSlot *arg0) {
-    arg0->queued = 0;
-    arg0->shown = 0;
-    arg0->timer = 0;
-    arg0->delay = 0;
-    arg0->win = 0;
+void rewards_clearWinSlot(WinSlot *slot) {
+    slot->queued = 0;
+    slot->shown = 0;
+    slot->timer = 0;
+    slot->delay = 0;
+    slot->win = 0;
 }
 
 void rewards_closeMemberWins(void) {
@@ -801,11 +801,11 @@ void rewards_onItemsFaded(void) {
     fade_in(0xC);
 }
 
-u8 rewards_isRewarded(Character *arg0, s32 arg1) {
-    if (!func_801F_alive(arg0)) {
+u8 rewards_isRewarded(Character *c, s32 slot) {
+    if (!func_801F_alive(c)) {
         return 0;
     }
-    return (g_btlRewards.expMask >> arg1) & 1;
+    return (g_btlRewards.expMask >> slot) & 1;
 }
 
 void rewards_onWindowsOpened(void) {
@@ -822,8 +822,8 @@ void rewards_onClosed(void) {
     win_closeAllNow();
 }
 
-void rewards_drawDigits(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    s_rewards.prim = text_buildDigits(arg0, arg1, g_ot + arg2, arg3, arg4, s_rewards.prim);
+void rewards_drawDigits(s32 x, s32 y, s32 otz, u8 *s, s32 style) {
+    s_rewards.prim = text_buildDigits(x, y, g_ot + otz, s, style, s_rewards.prim);
 }
 
 void rewards_updateLearnWins(void) {
@@ -867,7 +867,7 @@ void rewards_updateLearnWins(void) {
     }
 }
 
-void rewards_addAp(s32 arg0, u32 arg1) {
+void rewards_addAp(s32 slot, u32 ap) {
     Character *c;
     s32 i;
     s32 j;
@@ -876,9 +876,9 @@ void rewards_addAp(s32 arg0, u32 arg1) {
     s32 need;
     s32 have;
 
-    c = g_gameState->gameData->party[arg0];
-    if (arg1 != 0 && chr_canLearnAbilities(c)) {
-        s_rewards.rewards.apGain[arg0].cur += arg1;
+    c = g_gameState->gameData->party[slot];
+    if (ap != 0 && chr_canLearnAbilities(c)) {
+        s_rewards.rewards.apGain[slot].cur += ap;
         for (i = 0; i < 5; i++) {
             if (c->equip[i] != ITEM_NONE) {
                 e = &g_itemTable[c->equip[i]];
@@ -889,11 +889,11 @@ void rewards_addAp(s32 arg0, u32 arg1) {
                             need = g_abilityRows[c->info.b.row][k].ap;
                             have = c->ap[k];
                             if (have < need) {
-                                if (arg1 >= need - have) {
+                                if (ap >= need - have) {
                                     c->ap[k] = need;
-                                    rewards_addLearned(arg0, e->abilities[j]);
+                                    rewards_addLearned(slot, e->abilities[j]);
                                 } else {
-                                    c->ap[k] = have + arg1;
+                                    c->ap[k] = have + ap;
                                 }
                             }
                         }
@@ -904,8 +904,8 @@ void rewards_addAp(s32 arg0, u32 arg1) {
     }
 }
 
-u8 rewards_willLearn(Character *c, s32 arg1) {
-    u8 ret;
+u8 rewards_willLearn(Character *c, s32 ap) {
+    u8 learns;
     s32 i;
     s32 j;
     s32 ch;
@@ -914,7 +914,7 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
     ItemInfo *e;
     s32 have;
 
-    ret = 0;
+    learns = 0;
     eq = c->equip;
     ch = c->info.b.id;
     memset(s_rewardsAbilityItems, 0, 0x30);
@@ -937,13 +937,13 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
     for (i = 0; i < 0x30; i++) {
         if (s_rewardsAbilityItems[i] != 0) {
             have = c->ap[i];
-            if (s_rewardsAbilityItems[i] * arg1 >= g_abilityRows[c->info.b.row][i].ap - have) {
-                ret = 1;
+            if (s_rewardsAbilityItems[i] * ap >= g_abilityRows[c->info.b.row][i].ap - have) {
+                learns = 1;
                 break;
             }
         }
     }
-    return ret;
+    return learns;
 }
 
 void rewards_drawLearnWin(Window *w) {
@@ -1029,15 +1029,15 @@ void rewards_stepAp(void) {
     }
 }
 
-void rewards_addLearned(s32 arg0, u8 arg1) {
-    s_rewards.learnWins[arg0].ids[s_rewards.learnWins[arg0].queued] = arg1;
-    s_rewards.learnWins[arg0].queued++;
-    s_rewards.learned[arg0].ids[s_rewards.learned[arg0].count] = arg1;
-    s_rewards.learned[arg0].count++;
+void rewards_addLearned(s32 slot, u8 abilityId) {
+    s_rewards.learnWins[slot].ids[s_rewards.learnWins[slot].queued] = abilityId;
+    s_rewards.learnWins[slot].queued++;
+    s_rewards.learned[slot].ids[s_rewards.learned[slot].count] = abilityId;
+    s_rewards.learned[slot].count++;
 }
 
-void rewards_onLearnWinClosed(Window *arg0) {
-    s_rewards.learnWins[arg0->userData].win = 0;
+void rewards_onLearnWinClosed(Window *win) {
+    s_rewards.learnWins[win->userData].win = 0;
 }
 
 void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
@@ -1118,8 +1118,8 @@ void rewards_addExp(s32 i, u32 exp) {
     }
 }
 
-void rewards_showLevelUp(s32 arg0) {
-    Popup *p = &s_rewards.levelPopups[arg0];
+void rewards_showLevelUp(s32 slot) {
+    Popup *p = &s_rewards.levelPopups[slot];
 
     if (p->pending != 0 || p->active != 0) {
         p->phase = POPUP_HOLD;
@@ -1130,10 +1130,10 @@ void rewards_showLevelUp(s32 arg0) {
     }
 }
 
-u32 rewards_initExpCounter(s32 arg0) {
+u32 rewards_initExpCounter(s32 slot) {
     u32 exp = s_rewards.rewards.expEach;
-    Character *m = g_gameState->gameData->party[arg0];
-    Counter *c = &s_rewards.rewards.exp[arg0];
+    Character *m = g_gameState->gameData->party[slot];
+    Counter *c = &s_rewards.rewards.exp[slot];
     u32 step;
 
     c->target = exp;
@@ -1155,11 +1155,11 @@ u32 rewards_initExpCounter(s32 arg0) {
     return c->target;
 }
 
-s32 rewards_willLevelUp(Character *arg0, s32 arg1) {
-    if (arg0->level >= LEVEL_MAX) {
+s32 rewards_willLevelUp(Character *c, s32 exp) {
+    if (c->level >= LEVEL_MAX) {
         return 0;
     }
-    return arg0->exp + arg1 >= g_levelExp[arg0->level];
+    return c->exp + exp >= g_levelExp[c->level];
 }
 
 void rewards_stepExp(void) {
@@ -1200,66 +1200,66 @@ void rewards_updateLevelUps(void) {
     }
 }
 
-void rewards_levelUp(s32 arg0) {
-    Character *m = g_gameState->gameData->party[arg0];
+void rewards_levelUp(s32 slot) {
+    Character *m = g_gameState->gameData->party[slot];
 
     chr_levelUp(m->info.b.id, m->level + 1);
-    s_rewards.levelWins[arg0].queued++;
-    s_rewards.levelPopups[arg0].pending++;
+    s_rewards.levelWins[slot].queued++;
+    s_rewards.levelPopups[slot].pending++;
 }
 
-void rewards_initPopup(Popup *arg0) {
-    arg0->active = 0;
-    arg0->pending = 0;
-    arg0->y = 0;
-    arg0->timer = 0;
-    arg0->phase = 0;
-    arg0->enabled = 1;
+void rewards_initPopup(Popup *popup) {
+    popup->active = 0;
+    popup->pending = 0;
+    popup->y = 0;
+    popup->timer = 0;
+    popup->phase = 0;
+    popup->enabled = 1;
 }
 
-void rewards_startPopup(Popup *arg0) {
-    arg0->timer = 0;
-    arg0->y = 0;
-    arg0->phase = POPUP_RISE;
-    arg0->active = 1;
-    arg0->pending--;
+void rewards_startPopup(Popup *popup) {
+    popup->timer = 0;
+    popup->y = 0;
+    popup->phase = POPUP_RISE;
+    popup->active = 1;
+    popup->pending--;
     snd_playSe(SE_LEVEL_UP);
 }
 
-void rewards_endPopup(Popup *arg0) {
-    arg0->active = 0;
-    arg0->timer = 0;
-    arg0->y = 0;
-    arg0->count++;
+void rewards_endPopup(Popup *popup) {
+    popup->active = 0;
+    popup->timer = 0;
+    popup->y = 0;
+    popup->count++;
 }
 
-s32 rewards_stepPopup(Popup *arg0) {
-    switch (arg0->phase) {
+s32 rewards_stepPopup(Popup *popup) {
+    switch (popup->phase) {
     case POPUP_RISE:
-        arg0->y += s_rewardsPopupRise[arg0->timer];
-        if (++arg0->timer >= 10) {
-            arg0->phase = POPUP_HOLD;
-            arg0->timer = 0;
+        popup->y += s_rewardsPopupRise[popup->timer];
+        if (++popup->timer >= 10) {
+            popup->phase = POPUP_HOLD;
+            popup->timer = 0;
         }
         break;
     case POPUP_HOLD:
-        if (++arg0->timer >= 0x40) {
-            arg0->timer = 0;
-            if (arg0->pending != 0) {
-                arg0->phase = POPUP_GAP;
+        if (++popup->timer >= 0x40) {
+            popup->timer = 0;
+            if (popup->pending != 0) {
+                popup->phase = POPUP_GAP;
             } else {
-                arg0->phase = POPUP_DONE;
+                popup->phase = POPUP_DONE;
             }
         }
         break;
     case POPUP_GAP:
-        if (++arg0->timer >= 4) {
-            arg0->phase = POPUP_DONE;
-            arg0->timer = 0;
+        if (++popup->timer >= 4) {
+            popup->phase = POPUP_DONE;
+            popup->timer = 0;
         }
         break;
     }
-    return arg0->phase;
+    return popup->phase;
 }
 
 void rewards_initGil(void) {
@@ -1294,17 +1294,17 @@ void rewards_stepGil(void) {
     }
 }
 
-void rewards_addGil(s32 arg0) {
+void rewards_addGil(s32 amount) {
     u32 gil;
 
-    if (arg0 != 0) {
-        s_rewards.rewards.gil.cur += arg0;
+    if (amount != 0) {
+        s_rewards.rewards.gil.cur += amount;
         gil = g_gameState->gameData->gil;
-        if (gil + arg0 > GIL_MAX) {
-            arg0 = GIL_MAX - gil;
+        if (gil + amount > GIL_MAX) {
+            amount = GIL_MAX - gil;
             s_rewards.rewards.gil.cur = s_rewards.rewards.gil.target;
         }
-        g_gameState->gameData->gil += arg0;
+        g_gameState->gameData->gil += amount;
     }
 }
 
@@ -1415,26 +1415,26 @@ void rewards_stepGilStub(void) {
 }
 
 u8 rewards_tryAddItems(void) {
-    u8 ret = 0;
+    u8 done = 0;
 
     if (s_rewardsFullShown != 1) {
         if (!rewards_addItems()) {
             snd_playSe(SE_MESSAGE);
             s_rewardsFullShown = 1;
         } else {
-            ret = 1;
+            done = 1;
         }
     } else {
         win_setCloseAnim(s_rewards.fullWin.win, WIN_ANIM_ZOOM);
         win_close(s_rewards.fullWin.win);
-        ret = 1;
+        done = 1;
     }
-    if (ret) {
+    if (done) {
         if (s_rewards.rewards.itemCount != 0 || s_rewards.rewards.card != ITEM_NONE) {
             snd_playSe(SE_ITEMS);
         }
     }
-    return ret;
+    return done;
 }
 
 void rewards_openItemsWin(void) {
@@ -1453,8 +1453,8 @@ void rewards_drawItemsLabels(Window *w) {
     ui_drawLabel(w->x - (n - k), w->y - 3, w->otz - 1, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
 }
 
-void rewards_drawFullWarning(Window *arg0) {
-    text_drawBlock(arg0->x + 8, arg0->y + 8, arg0->otz, text_get(REWARDS_TEXT_ITEMS_FULL), TEXT_PAL_WHITE);
+void rewards_drawFullWarning(Window *win) {
+    text_drawBlock(win->x + 8, win->y + 8, win->otz, text_get(REWARDS_TEXT_ITEMS_FULL), TEXT_PAL_WHITE);
 }
 
 void rewards_onFullWarningClosed(void) {

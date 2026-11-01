@@ -1647,7 +1647,7 @@ void fld_compactModelCache(void);
 s32 fld_depFindArea(s32 arg0, s32 *arg1, s32 *arg2);
 s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2);
 s32 fld_depFindBattle(); /* (u16, s32 *, s32 *); unprototyped: callers pass the argument unconverted */
-s32 fld_depFindByLink(s32 arg0);
+s32 fld_depFindByLink(s32 link);
 s32 fld_depFindField(); /* (u16, s32 *, s32 *); unprototyped: callers pass the argument unconverted */
 s32 fld_depGetFileSector(s32 fileId, s32 *outSize);
 s32 fld_depGetLink(s32 fileId);
@@ -1662,14 +1662,14 @@ FieldModelLight *fld_findLightColor(); /* (FieldLightSet *, u16); unprototyped: 
 s32 fld_findLights(FieldScene *arg0, s32 unused);
 s32 fld_freeModelBundles(void);
 s32 fld_getBgKey(); /* (FieldScene *); unprototyped: some callers pass a second argument it ignores */
-s32 fld_getModelAnimId(s32 arg0);
-s32 fld_getModelTables(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3);
+s32 fld_getModelAnimId(s32 modelId);
+s32 fld_getModelTables(s32 modelId, s32 **outTex, s32 **outUv, s32 **outSpr);
 s32 fld_getShadowTexPos(u16 *arg0, u16 *arg1);
 s32 fld_getSpriteFrameCount(u16 *arg0);
 void fld_initMap(void);
 void fld_initPreload(void);
 void fld_initScene(void);
-u8 *fld_initSprites(u8 *arg0);
+u8 *fld_initSprites(u8 *heap);
 s32 fld_isDiscChangePending(void);
 s32 fld_isMoviePlaying(void);
 s32 fld_isMusicFading(void);
@@ -1677,18 +1677,18 @@ void fld_load(s32 arg0);
 s32 fld_loadCommon(void);
 s32 fld_loadFile(FieldScene *sc, s32 arg1);
 void fld_loadImagePack(s32 *arg0);
-s32 fld_loadModelBundle(s32 arg0);
+s32 fld_loadModelBundle(s32 modelId);
 s32 fld_loadModelBundlesInCdOrder(void);
 s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2);
 s32 fld_loadVibration(); /* (FieldScene *, u16); unprototyped: callers pass the argument unconverted */
-void fld_movieStart(s32 arg0, s32 arg1, s32 arg2);
+void fld_movieStart(s32 list, s32 entry, s32 rgb24);
 void fld_movieUpdate(void);
 s32 fld_needsSplashImage(void);
 s32 fld_readSoundBank(void);
 void fld_refindSectors(void);
-s32 fld_remapModelId(s32 arg0);
+s32 fld_remapModelId(s32 modelId);
 s32 fld_removeAnimSfx(); /* (FieldObjSlot *, u16, s16); unprototyped: callers pass the argument unconverted */
-void fld_resetSprite(FieldSprite *arg0);
+void fld_resetSprite(FieldSprite *spr);
 void fld_resumeResidentSfx(void);
 void fld_runDiscChange(void);
 void fld_setMusicVolumeFade(s32 volume, s32 frames);
