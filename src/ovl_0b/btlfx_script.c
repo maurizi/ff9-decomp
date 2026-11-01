@@ -214,9 +214,9 @@ void btlfx_runScript(void) {
             a = p[1];
             b = p[2];
             d->pc = p + 3;
-            if (op < 0x20) {
+            if (op < BTLFX_OP_TASK_FIRST) {
                 switch (op) {
-                case 0:
+                case BTLFX_CTL_END:
                     cont = 0;
                     d->pc -= 3;
                     if (btl_areMarkersVisible() == 0) {
@@ -245,7 +245,7 @@ void btlfx_runScript(void) {
                         }
                     }
                     break;
-                case 1:
+                case BTLFX_CTL_WAIT:
                     if (a == 0) {
                         d->wait = b;
                         cont = 0;
@@ -255,37 +255,37 @@ void btlfx_runScript(void) {
                         d->signals.b[b] = 0;
                     }
                     break;
-                case 2:
+                case BTLFX_CTL_SIGNAL:
                     d->signals.b[a] = b;
                     break;
-                case 3:
+                case BTLFX_CTL_LOAD_NEXT:
                     btlfx_loadNextBlock();
                     break;
-                case 4:
+                case BTLFX_CTL_WAIT_LOADER:
                     if (g_btlfxEnv->loader->stage < a) {
                         cont = 0;
                         btlfx_retryOp();
                     }
                     break;
-                case 5:
+                case BTLFX_CTL_SET_FILE:
                     d->fileId = a;
                     d->file = btlfx_findFileSlot(a);
                     break;
-                case 6:
+                case BTLFX_CTL_WAIT_LOAD:
                     switch (a) {
-                    case 2:
+                    case BTLFX_WAITLD_COMMON_TEX:
                         if (g_btlfxEnv->loader->commonTexLoaded == 0) {
                             cont = 0;
                             btlfx_retryOp();
                         }
                         break;
-                    case 1:
+                    case BTLFX_WAITLD_SUMMON_DATA:
                         if (g_btlfxEnv->loader->summonDataState != 2) {
                             cont = 0;
                             btlfx_retryOp();
                         }
                         break;
-                    case 0:
+                    case BTLFX_WAITLD_SUMMON:
                         if (g_btlfxEnv->loader->summonState != 2) {
                             cont = 0;
                             btlfx_retryOp();
@@ -293,7 +293,7 @@ void btlfx_runScript(void) {
                         break;
                     }
                     break;
-                case 8:
+                case BTLFX_CTL_SEQ_SYNC:
                     if (btlfx_isEnemyUnit(BTLFX_UNIT_CASTER) != 0) {
                         g_btlfxState.seqSync = 1;
                         if (!(g_btlfxEnv->targets->kind & BTL_FXK_BOUNCE) && d->seqRelease == 0) {
@@ -302,19 +302,19 @@ void btlfx_runScript(void) {
                         }
                     }
                     break;
-                case 9:
+                case BTLFX_CTL_WAIT_SOUND_BANK:
                     if (btlfx_waitSoundBank(a, b)) {
                         cont = 0;
                         btlfx_retryOp();
                     }
                     break;
-                case 10:
+                case BTLFX_CTL_LOAD_SOUND_BANK:
                     if (btlfx_loadSoundBank(0)) {
                         cont = 0;
                         btlfx_retryOp();
                     }
                     break;
-                case 11:
+                case BTLFX_CTL_RELOAD_PARTY:
                     if (a != 0) {
                         if (d->partyReload != 0) {
                             d->pc -= 3;
@@ -326,13 +326,13 @@ void btlfx_runScript(void) {
                         cont = 0;
                     }
                     break;
-                case 12:
+                case BTLFX_CTL_WAIT_BUF:
                     if (g_btlfxEnv->loader->bufState != 2) {
                         cont = 0;
                         d->pc -= 3;
                     }
                     break;
-                case 13:
+                case BTLFX_CTL_SWAP_MODEL:
                     if (a != 0) {
                         if (d->modelSwap != 0) {
                             d->pc -= 3;
@@ -346,15 +346,15 @@ void btlfx_runScript(void) {
                         cont = 0;
                     }
                     break;
-                case 7:
+                case BTLFX_CTL_VRAM:
                     switch (a) {
-                    case 0:
+                    case BTLFX_VRAM_SWAP_BACK:
                         btlfx_swapVramPages(1, NULL, (d->flags & BTLFX_HDR_VRAM_SWAP) >> BTLFX_HDR_VRAM_SWAP_SHIFT);
                         break;
-                    case 1:
+                    case BTLFX_VRAM_SWAP_FILE:
                         btlfx_swapVramPages(2, (u32 *)btlfx_getFileData(-1, b), 0);
                         break;
-                    case 2:
+                    case BTLFX_VRAM_WAIT_COMMON_TEX:
                         if (g_btlfxEnv->loader->commonTexCount < b) {
                             cont = 0;
                             btlfx_retryOp();
@@ -362,13 +362,13 @@ void btlfx_runScript(void) {
                         break;
                     }
                     break;
-                case 14:
+                case BTLFX_CTL_RETURN:
                     if (g_btlfxInCall != 0) {
                         g_btlfxInCall = 0;
                         d->pc = g_btlfxReturnPc;
                     }
                     break;
-                case 15:
+                case BTLFX_CTL_VIBRATE:
                     if (b == 0) {
                         btlfx_copyWords(g_btlfxVibData, (s32 *)btlfx_getFileData(d->file, a), 0x708);
                         vib_init(g_btlfxVibData);

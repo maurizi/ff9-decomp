@@ -14,3 +14,5 @@ BTL_STATUS_*_BIT (include/ff9_ids.h): the 32 status bit indexes; BTL_STATUS_TIME
   BTL_STATUS_TIMED 0xEFFF0000 (timer-driven statuses, btl_addStatus / btl_tickStatusTimers). btl_addStatus' switch
   and btl_removeStatus' switch (masks), btl_initDotTimer's bit argument, statusInfo[DOOM_BIT]; the add/remove
   mask literals expanded into BTL_STATUS_* ORs.
+BTLFX_CTL_* (include/ovl_0b.h): effect script control ops 0-15, 20; BTLFX_OP_TASK_FIRST 0x20, BTLFX_OP_MODULE_FIRST 0x80;
+  BTLFX_WAITLD_* (op 6's a), BTLFX_VRAM_* (op 7's a). btlfx_runScript.

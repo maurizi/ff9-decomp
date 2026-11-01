@@ -937,6 +937,37 @@ typedef struct {
 #define BTLFX_SIG_TURN   6 /* Unk800FEC40.turnDone */
 #define BTLFX_SIG_WAIT   7 /* Unk800FEC40.waitDone; runtime: Mighty Guard's module sets it, the script's `01 01 07` waits */
 
+/* Effect script ops (3 bytes: op, a, b; btlfx_runScript phase BTLFX_PHASE_RUN). Below BTLFX_OP_TASK_FIRST they are
+ * control ops run inline; 0x20-0x7F spawn task kind op - 0x20, 0x80 and up spawn the module's op handler op.
+ * Evidence: [code] btlfx_runScript. */
+#define BTLFX_CTL_END             0  /* stays on the op until no task runs, then ends the effect (reloading common VRAM first) */
+#define BTLFX_CTL_WAIT            1  /* a = 0: wait b frames; else wait for signal b (BTLFX_SIG_*) and clear it */
+#define BTLFX_CTL_SIGNAL          2  /* signals[a] = b */
+#define BTLFX_CTL_LOAD_NEXT       3  /* btlfx_loadNextBlock */
+#define BTLFX_CTL_WAIT_LOADER     4  /* wait until the loader stage reaches a */
+#define BTLFX_CTL_SET_FILE        5  /* fileId = a, file = its slot */
+#define BTLFX_CTL_WAIT_LOAD       6  /* wait for the load picked by a (BTLFX_WAITLD_*) */
+#define BTLFX_CTL_VRAM            7  /* a: BTLFX_VRAM_* */
+#define BTLFX_CTL_SEQ_SYNC        8  /* enemy caster: sync with the enemy sequence (waits for seqRelease unless a bounce) */
+#define BTLFX_CTL_WAIT_SOUND_BANK 9  /* btlfx_waitSoundBank(a, b) */
+#define BTLFX_CTL_LOAD_SOUND_BANK 10 /* btlfx_loadSoundBank */
+#define BTLFX_CTL_RELOAD_PARTY    11 /* a = 0: start btl_reloadParty; else wait for it */
+#define BTLFX_CTL_WAIT_BUF        12 /* wait for the loader's load buffer (bufState 2) */
+#define BTLFX_CTL_SWAP_MODEL      13 /* a = 0: btl_swapPartyModel on unit b's slot; else wait for it */
+#define BTLFX_CTL_RETURN          14 /* return from btlfx_callScript */
+#define BTLFX_CTL_VIBRATE         15 /* b = 0: start the vibration data at file offset a; else stop */
+#define BTLFX_CTL_NOP             20
+#define BTLFX_OP_TASK_FIRST       0x20 /* ops from here spawn a task */
+#define BTLFX_OP_MODULE_FIRST     0x80 /* ops from here are the module's op handlers */
+/* BTLFX_CTL_WAIT_LOAD's a */
+#define BTLFX_WAITLD_SUMMON       0 /* loader summonState 2 */
+#define BTLFX_WAITLD_SUMMON_DATA  1 /* loader summonDataState 2 */
+#define BTLFX_WAITLD_COMMON_TEX   2 /* loader commonTexLoaded */
+/* BTLFX_CTL_VRAM's a */
+#define BTLFX_VRAM_SWAP_BACK       0 /* btlfx_swapVramPages(1) with the header's BTLFX_HDR_VRAM_SWAP mode */
+#define BTLFX_VRAM_SWAP_FILE       1 /* btlfx_swapVramPages(2) from file data b */
+#define BTLFX_VRAM_WAIT_COMMON_TEX 2 /* wait until b common texture blocks are loaded */
+
 /* Unk800FEC40.flags (g_btlfxState): the effect's header word (RAM_BTLFX_MODULE u16 table, btlfx_runScript phase 1)
  * without bit 0. Evidence: [code] */
 #define BTLFX_HDR_COMMON_VRAM  0x0001 /* runtime: a block overwrote the common textures (btlfx_markCommonVram); the end op reloads them */
