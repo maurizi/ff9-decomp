@@ -1,7 +1,7 @@
 #include "ovl_64.h"
 
 u8 *mbg_readFrame(Ovl64Dec *out) {
-    RECT r;
+    RECT clearRect;
     u8 *data;
     Ovl64RingHdr *hdr;
     Ovl64FrameInfo *info;
@@ -77,10 +77,10 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
     if (g_mbgPlayer.width != hdr->width || g_mbgPlayer.height != hdr->height) {
         hi = g_mbgRgb24;
         if (hi) {
-            r.x = 0;
-            r.y = 0;
-            r.w = 0x3C0;
-            r.h = 0xE0;
+            clearRect.x = 0;
+            clearRect.y = 0;
+            clearRect.w = 0x3C0;
+            clearRect.h = 0xE0;
         }
         g_mbgPlayer.width = hdr->width;
         g_mbgPlayer.height = hdr->height;
@@ -171,7 +171,7 @@ void mbg_mdecOutCallback(void) {
 INCLUDE_RODATA("asm/us/ovl_64/nonmatchings/mbg", s_mbgTestMoviePaths);
 
 s32 MBG_init(s32 mode, u8 **buf) {
-    u8 *b;
+    u8 *base;
     s32 off;
 
     if (g_mbgState != 0) {
@@ -180,32 +180,32 @@ s32 MBG_init(s32 mode, u8 **buf) {
     }
     switch (mode) {
     case 1:
-        b = buf[0];
-        g_mbgPlayer.mdecIn0 = b;
+        base = buf[0];
+        g_mbgPlayer.mdecIn0 = base;
         off = 0x10000;
-        g_mbgPlayer.mdecIn1 = b + off;
+        g_mbgPlayer.mdecIn1 = base + off;
         off = 0x20000;
-        g_mbgPlayer.ringBuf = b + off;
+        g_mbgPlayer.ringBuf = base + off;
         off = 0x43E20;
-        g_mbgPlayer.audioBuf = b + off;
+        g_mbgPlayer.audioBuf = base + off;
         off = 0x49E20;
-        g_mbgPlayer.mdecOut0 = b + off;
+        g_mbgPlayer.mdecOut0 = base + off;
         off = 0x4CB20;
-        g_mbgPlayer.mdecOut1 = b + off;
+        g_mbgPlayer.mdecOut1 = base + off;
         break;
     case 2:
-        b = buf[0];
-        g_mbgPlayer.mdecIn0 = b;
+        base = buf[0];
+        g_mbgPlayer.mdecIn0 = base;
         off = 0x10000;
-        g_mbgPlayer.mdecIn1 = b + off;
+        g_mbgPlayer.mdecIn1 = base + off;
         off = 0x20000;
-        g_mbgPlayer.mdecOut0 = b + off;
+        g_mbgPlayer.mdecOut0 = base + off;
         off = 0x22D00;
-        g_mbgPlayer.mdecOut1 = b + off;
-        b = buf[1];
-        g_mbgPlayer.ringBuf = b;
+        g_mbgPlayer.mdecOut1 = base + off;
+        base = buf[1];
+        g_mbgPlayer.ringBuf = base;
         off = 0x23E20;
-        g_mbgPlayer.audioBuf = b + off;
+        g_mbgPlayer.audioBuf = base + off;
         break;
     }
     SetGraphDebug(0);
@@ -366,11 +366,11 @@ s32 mbg_play(u32 movie, s32 idx) {
 }
 
 static inline void func_8019_wait_frame(Ovl64Dec *dec) {
-    volatile s32 n;
+    volatile s32 timeout;
 
-    n = 0x800000;
+    timeout = 0x800000;
     while (dec->frameDone == 0) {
-        if (--n == 0) {
+        if (--timeout == 0) {
             dec->frameDone = 1;
             dec->slice.x = dec->frameRect[g_gameState->gameData->drawBuf].x;
             dec->slice.y = dec->frameRect[g_gameState->gameData->drawBuf].y;
@@ -382,7 +382,7 @@ static inline void func_8019_wait_frame(Ovl64Dec *dec) {
 
 s32 mbg_update(s32 putDisp) {
     Ovl64State *st;
-    Ovl64Dec *dec, *d;
+    Ovl64Dec *dec, *decCur;
     s32 tries;
     s32 result;
     u8 *data;
@@ -420,10 +420,10 @@ s32 mbg_update(s32 putDisp) {
     g_mbgMaskCursor.size = g_mbgMaskSize[g_gameState->gameData->drawBuf];
     g_mbgMaskCursor.cursor = g_mbgMaskCursor.data = (s32)&g_mbgMaskData[g_gameState->gameData->drawBuf];
     if (g_mbgRgb24 == 0 && g_mbgMaskCursor.size != 0) {
-        Ovl64Stp *p = &g_mbgMaskStp[g_gameState->gameData->drawBuf];
-        p->len = 2;
-        p->code[0] = 0xE6000002;
-        p->code[1] = 0;
+        Ovl64Stp *stp = &g_mbgMaskStp[g_gameState->gameData->drawBuf];
+        stp->len = 2;
+        stp->code[0] = 0xE6000002;
+        stp->code[1] = 0;
     }
     dec = &g_mbgDecode;
     dec->slice.x = dec->frameRect[g_gameState->gameData->drawBuf].x;
@@ -431,11 +431,11 @@ s32 mbg_update(s32 putDisp) {
     DecDCTin(dec->mdecIn[dec->inIdx], (s8)g_mbgPlayer.rgb24);
     DecDCTout(dec->mdecOut[dec->outIdx], (dec->slice.w * dec->slice.h) >> 1);
     while (1) {
-        d = &g_mbgDecode;
+        decCur = &g_mbgDecode;
         tries = 1000;
         result = -1;
         do {
-            data = (u8 *)mbg_readFrame(d);
+            data = (u8 *)mbg_readFrame(decCur);
             if (data != NULL) {
                 goto found;
             }
@@ -447,12 +447,12 @@ s32 mbg_update(s32 putDisp) {
         goto check;
     found:
         g_mbgFrame++;
-        d->inIdx ^= 1;
+        decCur->inIdx ^= 1;
         if (DecDCTBufSize((u16 *)data) > 0x4000) {
             mbg_streamFreeFrame(data);
             result = -1;
         } else {
-            mbg_vlcDecode(data, d->mdecIn[d->inIdx], g_mbgPlayer.vlcTable);
+            mbg_vlcDecode(data, decCur->mdecIn[decCur->inIdx], g_mbgPlayer.vlcTable);
             if (g_mbgPaused) {
                 mbg_streamUngetFrame();
                 result = 0;
@@ -663,10 +663,10 @@ void mbg_setVolume(s32 delay, s32 fade, s32 volume) {
 }
 
 s32 mbg_getCameraSelect(void) {
-    s32 v;
+    s32 camera;
 
-    mbg_streamGetCameraSelect(&v);
-    return v;
+    mbg_streamGetCameraSelect(&camera);
+    return camera;
 }
 
 void mbg_setCameraSelect(u32 camera) {
@@ -704,13 +704,13 @@ s32 mbg_getEntryName(s32 outName, u32 list, s32 entry) {
 }
 
 s32 mbg_getLastFrame(void) {
-    s32 v;
+    s32 lastFrame;
 
     if (g_mbgState < 2) {
         return -1;
     }
-    mbg_streamGetLastFrame(&v);
-    return v;
+    mbg_streamGetLastFrame(&lastFrame);
+    return lastFrame;
 }
 
 s32 mbg_getStartCamera(Ovl64Header *out, u16 *outCameraId) {

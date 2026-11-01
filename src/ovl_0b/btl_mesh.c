@@ -11,10 +11,10 @@ void btl_projectMesh(BtlModel *model, u8 meshIndex) {
     s32 *sz;
     s32 k;
     u32 i;
-    s32 n;
+    s32 vtxLeft;
     u32 cnt;
-    MATRIX *b;
-    SVECTOR *v;
+    MATRIX *curBone;
+    SVECTOR *vtxCur;
     s16 *c1;
     s16 *c2;
 
@@ -26,14 +26,14 @@ void btl_projectMesh(BtlModel *model, u8 meshIndex) {
     cnt = model->header->boneCount;
     bone = (MATRIX *)model->bones;
     for (i = 0; i < cnt; bone++) {
-        n = mesh->vertexCounts[i++];
-        if (n != 0) {
+        vtxLeft = mesh->vertexCounts[i++];
+        if (vtxLeft != 0) {
             gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
             gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
-            b = bone;
-            gte_ldclmv(b);
-            c1 = &b->m[0][1];
-            c2 = &b->m[0][2];
+            curBone = bone;
+            gte_ldclmv(curBone);
+            c1 = &curBone->m[0][1];
+            c2 = &curBone->m[0][2];
             gte_rtir_b();
             sxy = &g_vtxScreenXY[k];
             gte_stclmv(&boneView);
@@ -42,28 +42,28 @@ void btl_projectMesh(BtlModel *model, u8 meshIndex) {
             sz = &g_vtxScreenZ[k];
             gte_stclmv(&boneView.m[0][1]);
             gte_ldclmv(c2);
-            c1 = (s16 *)b->t;
+            c1 = (s16 *)curBone->t;
             gte_rtir_n1();
             vtx = &mesh->vertices[k];
             gte_stclmv(&boneView.m[0][2]);
             gte_ldlv0(c1);
-            k += n;
+            k += vtxLeft;
             gte_rtv0tr_n1();
             gte_ldv3c(vtx);
             gte_stlvnl(boneView.t);
             gte_SetRotMatrix(&boneView);
             gte_SetTransMatrix(&boneView);
-            v = vtx;
+            vtxCur = vtx;
             do {
-                v += 3;
-                n -= 3;
+                vtxCur += 3;
+                vtxLeft -= 3;
                 gte_rtpt_b();
-                gte_ldv3c(v);
+                gte_ldv3c(vtxCur);
                 gte_stsxy3c(sxy);
                 gte_stsz3c(sz);
                 sxy += 3;
                 sz += 3;
-            } while (n > 0);
+            } while (vtxLeft > 0);
         }
     }
 }
@@ -76,12 +76,12 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
     u8 (*col)[4];
     u32 *ot;
     u32 *tex;
-    u32 n;
+    u32 primCount;
     u32 i;
     s32 xy0, xy1, xy2;
     u32 *cp;
     u32 i0, i1, i2, i3;
-    u32 t;
+    u32 texWord;
     u32 hi;
     WmSrcFT4 *sFT4;
     POLY_FT4 *pFT4;
@@ -114,8 +114,8 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
     ot -= mesh->otBias;
 
-    n = mesh->nFT4;
-    for (i = 0; i < n; sFT4++) {
+    primCount = mesh->nFT4;
+    for (i = 0; i < primCount; sFT4++) {
         pFT4 = (POLY_FT4 *)prim;
         i0 = *(u32 *)&sFT4->vtx[0];
         i2 = *(u32 *)&sFT4->vtx[2];
@@ -145,15 +145,15 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
         i0 = *(u32 *)&sFT4->uv[0];
         i2 = *(u32 *)&sFT4->uv[2];
-        t = tex[sFT4->tex];
-        hi = t & 0xFFFF0000;
-        t <<= 16;
+        texWord = tex[sFT4->tex];
+        hi = texWord & 0xFFFF0000;
+        texWord <<= 16;
         i1 = i0 >> 16;
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
         *(u32 *)&pFT4->u0 = *(u16 *)uv[i0] | hi;
-        *(u32 *)&pFT4->u1 = *(u16 *)uv[i1] | t;
+        *(u32 *)&pFT4->u1 = *(u16 *)uv[i1] | texWord;
         *(u16 *)&pFT4->u2 = *(u16 *)uv[i2];
         *(u16 *)&pFT4->u3 = *(u16 *)uv[i3];
         if (sFT4->flags & WMSRC_SEMITRANS) {
@@ -165,9 +165,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         prim += sizeof(POLY_FT4);
     }
 
-    n = mesh->nFT3;
+    primCount = mesh->nFT3;
     sFT3 = (WmSrcFT3 *)sFT4;
-    for (i = 0; i < n; sFT3++) {
+    for (i = 0; i < primCount; sFT3++) {
         pFT3 = (POLY_FT3 *)prim;
         i0 = *(u32 *)&sFT3->vtx[0];
         i2 = *(u32 *)&sFT3->vtx[2];
@@ -193,9 +193,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         *(s32 *)&pFT3->x2 = xy2;
         setcode(pFT3, GPU_POLY_FT3);
         gte_ldsz3(g_vtxScreenZ[i0], g_vtxScreenZ[i1], g_vtxScreenZ[i2]);
-        t = tex[sFT3->tex];
-        hi = t & 0xFFFF0000;
-        t <<= 16;
+        texWord = tex[sFT3->tex];
+        hi = texWord & 0xFFFF0000;
+        texWord <<= 16;
         gte_avsz3_b();
         i0 = *(u32 *)&sFT3->uv[0];
         i2 = *(u32 *)&sFT3->uv[2];
@@ -203,7 +203,7 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
         *(u32 *)&pFT3->u0 = *(u16 *)uv[i0] | hi;
-        *(u32 *)&pFT3->u1 = *(u16 *)uv[i1] | t;
+        *(u32 *)&pFT3->u1 = *(u16 *)uv[i1] | texWord;
         *(u16 *)&pFT3->u2 = *(u16 *)uv[i2];
         gte_stotz(&otz);
         if (sFT3->flags & WMSRC_SEMITRANS) {
@@ -215,9 +215,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         prim += sizeof(POLY_FT3);
     }
 
-    n = mesh->nGT4;
+    primCount = mesh->nGT4;
     sGT4 = (WmSrcGT4 *)sFT3;
-    for (i = 0; i < n; sGT4++) {
+    for (i = 0; i < primCount; sGT4++) {
         pGT4 = (POLY_GT4 *)prim;
         i0 = *(u32 *)&sGT4->vtx[0];
         i2 = *(u32 *)&sGT4->vtx[2];
@@ -248,9 +248,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        t = tex[sGT4->tex];
-        hi = t & 0xFFFF0000;
-        t <<= 16;
+        texWord = tex[sGT4->tex];
+        hi = texWord & 0xFFFF0000;
+        texWord <<= 16;
         cp = (u32 *)col[i0];
         *(u32 *)&pGT4->r0 = *cp;
         cp = (u32 *)col[i1];
@@ -268,7 +268,7 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
         *(u32 *)&pGT4->u0 = *(u16 *)uv[i0] | hi;
-        *(u32 *)&pGT4->u1 = *(u16 *)uv[i1] | t;
+        *(u32 *)&pGT4->u1 = *(u16 *)uv[i1] | texWord;
         *(u16 *)&pGT4->u2 = *(u16 *)uv[i2];
         *(u16 *)&pGT4->u3 = *(u16 *)uv[i3];
         if (sGT4->flags & WMSRC_SEMITRANS) {
@@ -280,9 +280,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         prim += sizeof(POLY_GT4);
     }
 
-    n = mesh->nGT3;
+    primCount = mesh->nGT3;
     sGT3 = (WmSrcGT3 *)sGT4;
-    for (i = 0; i < n; sGT3++) {
+    for (i = 0; i < primCount; sGT3++) {
         pGT3 = (POLY_GT3 *)prim;
         i0 = *(u32 *)&sGT3->vtx[0];
         i2 = *(u32 *)&sGT3->vtx[2];
@@ -306,9 +306,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         *(s32 *)&pGT3->x1 = xy1;
         *(s32 *)&pGT3->x2 = xy2;
         gte_avsz3_b();
-        t = tex[sGT3->tex];
-        hi = t & 0xFFFF0000;
-        t <<= 16;
+        texWord = tex[sGT3->tex];
+        hi = texWord & 0xFFFF0000;
+        texWord <<= 16;
         gte_stotz(&otz);
         i0 = *(u32 *)&sGT3->col[0];
         i2 = *(u32 *)&sGT3->col[2];
@@ -328,7 +328,7 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         i2 = i1 >> 16;
         i1 &= 0xFFFF;
         *(u32 *)&pGT3->u0 = *(u16 *)uv[i0] | hi;
-        *(u32 *)&pGT3->u1 = *(u16 *)uv[i1] | t;
+        *(u32 *)&pGT3->u1 = *(u16 *)uv[i1] | texWord;
         *(u16 *)&pGT3->u2 = *(u16 *)uv[i2];
         if (sGT3->flags & WMSRC_SEMITRANS) {
             pGT3->tpage |= sGT3->flags & WMSRC_TPAGE_BITS;
@@ -339,9 +339,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         prim += sizeof(POLY_GT3);
     }
 
-    n = mesh->nG4;
+    primCount = mesh->nG4;
     sG4 = (WmSrcG4 *)sGT3;
-    for (i = 0; i < n; sG4++) {
+    for (i = 0; i < primCount; sG4++) {
         pG4 = (POLY_G4 *)prim;
         i0 = *(u32 *)&sG4->vtx[0];
         i2 = *(u32 *)&sG4->vtx[2];
@@ -387,9 +387,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         prim += sizeof(POLY_G4);
     }
 
-    n = mesh->nG3;
+    primCount = mesh->nG3;
     sG3 = (WmSrcG3 *)sG4;
-    for (i = 0; i < n; sG3++) {
+    for (i = 0; i < primCount; sG3++) {
         pG3 = (POLY_G3 *)prim;
         i0 = *(u32 *)&sG3->vtx[0];
         i2 = *(u32 *)&sG3->vtx[2];
@@ -432,9 +432,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         prim += sizeof(POLY_G3);
     }
 
-    n = mesh->nF4;
+    primCount = mesh->nF4;
     sF4 = (WmSrcF4 *)sG3;
-    for (i = 0; i < n; sF4++) {
+    for (i = 0; i < primCount; sF4++) {
         pF4 = (POLY_F4 *)prim;
         i0 = *(u32 *)&sF4->vtx[0];
         i2 = *(u32 *)&sF4->vtx[2];
@@ -467,9 +467,9 @@ u8 *btl_buildMeshPrims(BtlModel *model, u8 meshIndex, u8 *prim) {
         prim += sizeof(POLY_F4);
     }
 
-    n = mesh->nF3;
+    primCount = mesh->nF3;
     sF3 = (WmSrcF3 *)sF4;
-    for (i = 0; i < n; sF3++) {
+    for (i = 0; i < primCount; sF3++) {
         pF3 = (POLY_F3 *)prim;
         i0 = *(u32 *)&sF3->vtx[0];
         i2 = *(u32 *)&sF3->vtx[2];
@@ -670,71 +670,71 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh", btl_calcBoneMatrices);
 
 void btl_setModelRgb(BtlModel *model, s32 r, s32 g, s32 b) {
     u32 i;
-    BtlPrim *p;
+    BtlPrim *prim;
     u8 code;
 
     if (!(model->flags & BTL_MODEL_OFFSCREEN)) {
     i = 0;
-    p = (BtlPrim *)model->prims;
+    prim = (BtlPrim *)model->prims;
     if (model->header->meshCount != 0) {
     do {
         if (!(model->hiddenMeshes & (1 << i))) {
         do {
-            code = p->tag.code;
+            code = prim->tag.code;
             if (code == 0xFF || code == 0xE1) {
-                p = (BtlPrim *)&p->w[2];
+                prim = (BtlPrim *)&prim->w[2];
                 continue;
             }
             switch (code & 0x3C) {
             case GPU_POLY_FT4:
-                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[10];
+                prim->w[1] = btl_addRgbClamped(prim->w[1], (s16)r, (s16)g, (s16)b);
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[10];
                 break;
             case GPU_POLY_FT3:
-                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[8];
+                prim->w[1] = btl_addRgbClamped(prim->w[1], (s16)r, (s16)g, (s16)b);
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[8];
                 break;
             case GPU_POLY_GT4:
-                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->w[4] = btl_addRgbClamped(p->w[4], (s16)r, (s16)g, (s16)b);
-                p->w[7] = btl_addRgbClamped(p->w[7], (s16)r, (s16)g, (s16)b);
-                p->w[10] = btl_addRgbClamped(p->w[10], (s16)r, (s16)g, (s16)b);
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[13];
+                prim->w[1] = btl_addRgbClamped(prim->w[1], (s16)r, (s16)g, (s16)b);
+                prim->w[4] = btl_addRgbClamped(prim->w[4], (s16)r, (s16)g, (s16)b);
+                prim->w[7] = btl_addRgbClamped(prim->w[7], (s16)r, (s16)g, (s16)b);
+                prim->w[10] = btl_addRgbClamped(prim->w[10], (s16)r, (s16)g, (s16)b);
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[13];
                 break;
             case GPU_POLY_GT3:
-                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->w[4] = btl_addRgbClamped(p->w[4], (s16)r, (s16)g, (s16)b);
-                p->w[7] = btl_addRgbClamped(p->w[7], (s16)r, (s16)g, (s16)b);
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[10];
+                prim->w[1] = btl_addRgbClamped(prim->w[1], (s16)r, (s16)g, (s16)b);
+                prim->w[4] = btl_addRgbClamped(prim->w[4], (s16)r, (s16)g, (s16)b);
+                prim->w[7] = btl_addRgbClamped(prim->w[7], (s16)r, (s16)g, (s16)b);
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[10];
                 break;
             case GPU_POLY_G4:
-                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->w[3] = btl_addRgbClamped(p->w[3], (s16)r, (s16)g, (s16)b);
-                p->w[5] = btl_addRgbClamped(p->w[5], (s16)r, (s16)g, (s16)b);
-                p->w[7] = btl_addRgbClamped(p->w[7], (s16)r, (s16)g, (s16)b);
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[9];
+                prim->w[1] = btl_addRgbClamped(prim->w[1], (s16)r, (s16)g, (s16)b);
+                prim->w[3] = btl_addRgbClamped(prim->w[3], (s16)r, (s16)g, (s16)b);
+                prim->w[5] = btl_addRgbClamped(prim->w[5], (s16)r, (s16)g, (s16)b);
+                prim->w[7] = btl_addRgbClamped(prim->w[7], (s16)r, (s16)g, (s16)b);
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[9];
                 break;
             case GPU_POLY_G3:
-                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->w[3] = btl_addRgbClamped(p->w[3], (s16)r, (s16)g, (s16)b);
-                p->w[5] = btl_addRgbClamped(p->w[5], (s16)r, (s16)g, (s16)b);
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[7];
+                prim->w[1] = btl_addRgbClamped(prim->w[1], (s16)r, (s16)g, (s16)b);
+                prim->w[3] = btl_addRgbClamped(prim->w[3], (s16)r, (s16)g, (s16)b);
+                prim->w[5] = btl_addRgbClamped(prim->w[5], (s16)r, (s16)g, (s16)b);
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[7];
                 break;
             case GPU_POLY_F4:
-                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[6];
+                prim->w[1] = btl_addRgbClamped(prim->w[1], (s16)r, (s16)g, (s16)b);
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[6];
                 break;
             case GPU_POLY_F3:
-                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[5];
+                prim->w[1] = btl_addRgbClamped(prim->w[1], (s16)r, (s16)g, (s16)b);
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[5];
                 break;
             }
         } while (code != 0xFF);
@@ -746,73 +746,73 @@ void btl_setModelRgb(BtlModel *model, s32 r, s32 g, s32 b) {
 
 void btl_fillModelRgb(BtlModel *model, s32 r, s32 g, s32 b) {
     u32 i;
-    BtlPrim *p;
+    BtlPrim *prim;
     u32 col;
     u8 code;
 
     i = 0;
     if (!(model->flags & BTL_MODEL_OFFSCREEN)) {
     col = (b << 16) | ((g << 16) >> 8) | (s16)r;
-    p = (BtlPrim *)model->prims;
+    prim = (BtlPrim *)model->prims;
     if (model->header->meshCount != 0) {
     do {
         if (!(model->hiddenMeshes & (1 << i))) {
         do {
-            code = p->tag.code;
+            code = prim->tag.code;
             if (code == 0xFF || code == 0xE1) {
-                p = (BtlPrim *)&p->w[2];
+                prim = (BtlPrim *)&prim->w[2];
                 continue;
             }
             switch (code & 0x3C) {
             case GPU_POLY_FT4:
-                p->w[1] = col;
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[10];
+                prim->w[1] = col;
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[10];
                 break;
             case GPU_POLY_FT3:
-                p->w[1] = col;
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[8];
+                prim->w[1] = col;
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[8];
                 break;
             case GPU_POLY_GT4:
-                p->w[1] = col;
-                p->w[4] = col;
-                p->w[7] = col;
-                p->w[10] = col;
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[13];
+                prim->w[1] = col;
+                prim->w[4] = col;
+                prim->w[7] = col;
+                prim->w[10] = col;
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[13];
                 break;
             case GPU_POLY_GT3:
-                p->w[1] = col;
-                p->w[4] = col;
-                p->w[7] = col;
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[10];
+                prim->w[1] = col;
+                prim->w[4] = col;
+                prim->w[7] = col;
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[10];
                 break;
             case GPU_POLY_G4:
-                p->w[1] = col;
-                p->w[3] = col;
-                p->w[5] = col;
-                p->w[7] = col;
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[9];
+                prim->w[1] = col;
+                prim->w[3] = col;
+                prim->w[5] = col;
+                prim->w[7] = col;
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[9];
                 break;
             case GPU_POLY_G3:
-                p->w[1] = col;
-                p->w[3] = col;
-                p->w[5] = col;
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[7];
+                prim->w[1] = col;
+                prim->w[3] = col;
+                prim->w[5] = col;
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[7];
                 break;
             case GPU_POLY_F4:
-                p->w[1] = col;
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[6];
+                prim->w[1] = col;
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[6];
                 break;
             case GPU_POLY_F3:
-                p->w[1] = col;
-                p->tag.code = code;
-                p = (BtlPrim *)&p->w[5];
+                prim->w[1] = col;
+                prim->tag.code = code;
+                prim = (BtlPrim *)&prim->w[5];
                 break;
             }
         } while (code != 0xFF);
