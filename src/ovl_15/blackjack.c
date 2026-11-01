@@ -465,10 +465,7 @@ s32 bj_shoeShuffle(BjShoe *shoe) {
 
     for (pass = 0; pass < BJ_SHUFFLE_PASSES; pass++) {
         for (i = 0, n = BJ_SHOE_SIZE; n > 0; n--, i++) {
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            j = (*g_randPtr++ * 2) % n;
+            j = (rand8_inline() * 2) % n;
             t = shoe->cards[i];
             shoe->cards[i] = shoe->cards[i + j];
             shoe->cards[i + j] = t;

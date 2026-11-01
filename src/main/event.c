@@ -8,10 +8,7 @@ s32 evt_getSysVar(s32 op) {
 
     switch ((u32)op) {
     case EVT_SYSVAR_RAND:
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-        r = *g_randPtr++;
+        r = rand8_inline();
         break;
     case EVT_SYSVAR_CAMERA:
         fldbg_getCamera(camera);
@@ -479,7 +476,7 @@ s32 evt_rollEncounter(EvtObject *p) {
     if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > 0x3C0) {
         g_evtEncounterDist = 0;
         g_evtEncounterChance += g_evtState->encounterRate;
-        if (evt_rollEncounter_rand() < (g_evtEncounterChance >> 3)) {
+        if (rand8_inline() < (g_evtEncounterChance >> 3)) {
             g_evtEncounterChance = 0;
             id = evt_rollEncounter_pick();
             if (id == g_evtLastEncounter) {
@@ -1413,10 +1410,7 @@ s32 evt_execInstr(void) {
         msg_startHereIcon(1);
         e = g_evtState;
         if (e->idleTimer >= 0) {
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            e->idleTimer = (*g_randPtr++ + 0xC8) * 4;
+            e->idleTimer = (rand8_inline() + 0xC8) * 4;
         }
         return 0;
     }
@@ -2736,10 +2730,7 @@ void evt_updateIdleTimer(void) {
     }
     e2 = g_evtState;
     if (e2->idleTimer >= 0) {
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-        e2->idleTimer = (*g_randPtr++ + 0xC8) * 2;
+        e2->idleTimer = (rand8_inline() + 0xC8) * 2;
     }
     if (p->idleAnim != 0 && !(p->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD))) {
         evt_updateIdleTimer_idle(p);
@@ -2924,7 +2915,7 @@ s32 evt_updateObjects(void) {
                     if (g_evtPlayerMoved != 0) {
                         s = g_evtState;
                         if (s->idleTimer >= 0) {
-                            s->idleTimer = (evt_rollEncounter_rand() + 200) * 4;
+                            s->idleTimer = (rand8_inline() + 200) * 4;
                         }
                     }
                 } else {
@@ -3117,6 +3108,7 @@ void evt_onAnimEnd(EvtObject *p) {
             p->animSpeed = p->defaultAnimSpeed;
         }
         p->animFrame = 0;
+        /* rand8_inline() written out: calling it changes the register allocation here */
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
@@ -3262,6 +3254,7 @@ void evt_stepAnim(EvtObject *p) {
         if (t3 >= p->animFrames) {
             p->animFrame = 0;
             if (p->anim == (u16)p->standAnim) {
+                /* rand8_inline() written out: calling it changes the register allocation here */
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
@@ -3702,10 +3695,7 @@ void evt_resetIdleTimer(s32 halfDelay) {
     EvtState *p = g_evtState;
     s32 v;
     if (p->idleTimer >= 0) {
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-        v = *g_randPtr++ + 200;
+        v = rand8_inline() + 200;
         if (halfDelay == 0) {
             p->idleTimer = v * 4;
         } else {
@@ -3778,6 +3768,7 @@ s32 evt_popRandomBit(void) {
         bits >>= 1;
     }
     if (n != 0) {
+        /* rand8_inline() written out: calling it changes the register allocation here */
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }

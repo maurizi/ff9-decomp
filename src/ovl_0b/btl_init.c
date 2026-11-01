@@ -132,13 +132,8 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     } else if (ambush == BTL_AMBUSH_PREEMPTIVE) {
         u->atb = u->max->maxAtb - 1;
     } else {
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-        }
-        u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
+        RAND_REFILL2();
+        u->atb = RAND16() % u->max->maxAtb;
     }
     u->weaponModel = &g_gameState->gameData->ctx.battle->weaponModels[n].model;
     btl_loadPartyMotions(u, (c->info.w >> CHR_INFO_KIND_SHIFT) & 0x1F, n);
@@ -187,13 +182,8 @@ u32 *btl_initEnemyState(Battle *battle, u32 *prim) {
             u->level = type->level;
             u->max->maxAtb = (0x3C - u->speed) * 160;
             btl_resetAtbSpeed((Unk800BD8F0 *)u);
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-                if (g_randPtr >= g_randTableEnd) {
-                    rand_refill();
-                }
-            }
-            u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
+            RAND_REFILL2();
+            u->atb = RAND16() % u->max->maxAtb;
             u->weapon = NULL;
             btl_initDoomCount((Unk800C09D8 *)u);
             btl_hideMeshes(u, u->hiddenMeshes);
@@ -226,6 +216,7 @@ u32 *btl_initEnemyState(Battle *battle, u32 *prim) {
                 u->home->pos[1] = u->obj->y;
                 u->home->pos[2] = u->obj->z;
                 obj = u->obj;
+                /* rand8_inline() written out: calling it changes the register allocation here */
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }

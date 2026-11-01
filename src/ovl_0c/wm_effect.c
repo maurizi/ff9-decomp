@@ -177,14 +177,14 @@ void wm_updateEffects(void) {
         }
         switch ((u8)o->type) {
         case 2:
-            o->y -= 60 + wm_rand8() % 24;
-            o->x -= 30 - wm_rand8() % 60;
-            o->z -= 30 - wm_rand8() % 60;
+            o->y -= 60 + rand8_inline() % 24;
+            o->x -= 30 - rand8_inline() % 60;
+            o->z -= 30 - rand8_inline() % 60;
             break;
         case 3:
-            o->y -= 60 + wm_rand8() % 24;
-            o->x -= 60 - wm_rand8() % 60;
-            o->z -= 30 - wm_rand8() % 60;
+            o->y -= 60 + rand8_inline() % 24;
+            o->x -= 60 - rand8_inline() % 60;
+            o->z -= 30 - rand8_inline() % 60;
             break;
         case 23:
             o->x = math_sin((o->frame << 6) + o->phase) / 2 + g_worldBlockFx4Pos.vx;
@@ -192,9 +192,9 @@ void wm_updateEffects(void) {
             o->z = math_cos((o->frame << 6) + o->phase) / 2 + g_worldBlockFx4Pos.vz;
             /* fallthrough */
         case 24:
-            o->x -= 40 + wm_rand8() % 130;
-            o->y -= 40 - wm_rand8() % 80;
-            o->z += 300 + wm_rand8() % 300;
+            o->x -= 40 + rand8_inline() % 130;
+            o->y -= 40 - rand8_inline() % 80;
+            o->z += 300 + rand8_inline() % 300;
             break;
         }
         o->frame++;

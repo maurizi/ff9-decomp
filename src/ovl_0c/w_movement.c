@@ -1637,23 +1637,11 @@ void wm_controlWalk(void) {
             }
         }
         if (!(g_worldFrameCount & 1) && (u32)(((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) - WM_TOPO_FOREST) < 3) {
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            rx = g_worldPlayer->prevPos.vx + *g_randPtr++ - 0x80;
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            lo = *g_randPtr++;
+            rx = g_worldPlayer->prevPos.vx + rand8_inline() - 0x80;
+            lo = rand8_inline();
             wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, WM_FX_FOREST_LEAVES, 0x6D80);
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            rx = g_worldPlayer->prevPos.vx + *g_randPtr++ - 0x80;
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            lo = *g_randPtr++;
+            rx = g_worldPlayer->prevPos.vx + rand8_inline() - 0x80;
+            lo = rand8_inline();
             wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, WM_FX_FOREST_LEAVES, 0x6D80);
         }
     }

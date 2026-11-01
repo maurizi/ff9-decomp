@@ -262,18 +262,6 @@ typedef struct {
     DRAWENV prev; /* previous */
 } DrawEnvPair; /* 0xB8 */
 
-/* same as a GNU statement expression: the operand order around it differs
- * from the inline function (btl_applyReflect) */
-#define RAND8() ({ if (g_randPtr >= g_randTableEnd) { rand_refill(); } (s32)*g_randPtr++; })
-
-/* next byte of the random table, refilling it when exhausted (inlined) */
-static inline s32 rand8_inline(void) {
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-    }
-    return *g_randPtr++;
-}
-
 /* one primitive in a model's packed GPU packet buffer (BtlModel.prims) */
 typedef union {
     P_TAG tag;

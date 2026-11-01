@@ -2926,6 +2926,19 @@ extern u8 g_randTable[]; /* random byte table */
 extern u8 g_randTableEnd[];
 void rand_refill(void);
 
+/* Next byte of the random table, refilling it when exhausted. Square's code inlines this everywhere (field, world
+ * map, battle, mini-games); there's no out-of-line copy. */
+static inline s32 rand8_inline(void) {
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+    }
+    return *g_randPtr++;
+}
+
+/* rand8_inline as a GNU statement expression. Same logic, but gcc orders the operands around it differently
+ * (btl_applyReflect needs this form). */
+#define RAND8() ({ if (g_randPtr >= g_randTableEnd) { rand_refill(); } (s32)*g_randPtr++; })
+
 /* ---- hoisted for menu overlays ---- */
 void ui_initMemberSwitch(MemberSwitch *, s32, void (*)(void));
 void ui_startMemberSwitch(MemberSwitch *, s32, s32, s32);
@@ -4864,13 +4877,6 @@ extern s32 g_evtEncounterDist;
 extern u8 g_encounterSlotThresholds[][4];
 EncounterTable *wm_getEncounterEntry();
 
-static inline s32 evt_rollEncounter_rand(void) {
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-    }
-    return *g_randPtr++;
-}
-
 static inline u16 evt_rollEncounter_pick(void) {
     EncounterTable *t;
     s32 r;
@@ -4882,7 +4888,7 @@ static inline u16 evt_rollEncounter_pick(void) {
     } else {
         t = &g_evtEncounterTable;
     }
-    r = evt_rollEncounter_rand();
+    r = rand8_inline();
     tbl = g_encounterSlotThresholds[t->pattern & 3];
     if (r >= tbl[0]) {
         if (r >= tbl[1]) {

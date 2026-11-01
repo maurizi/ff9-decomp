@@ -544,6 +544,7 @@ s32 w_frameGetParameter(s32 param) {
     case WM_PARAM_WEATHER_POINT_DIST:
         return g_worldWeatherPointDist;
     case WM_PARAM_EVENT_BATTLE:
+        /* two rand8_inline() written out: calling it changes the register allocation here */
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }

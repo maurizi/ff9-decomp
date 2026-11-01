@@ -668,10 +668,7 @@ void fld_playAnimSfx(FieldObjSlot **slots, s32 count) {
                 ch = (0x10000 << ch) & 0xF0000;
                 snd = t->sound[(c >> 4) & 1] | DB_SE;
                 if (t->randomPitch != 0) {
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                    }
-                    v = *g_randPtr++;
+                    v = rand8_inline();
                     r = (v >> 4) - 8;
                 }
                 fld_getSoundPanVolume(ctx->actor->pos.vx, ctx->actor->pos.vy, ctx->actor->pos.vz, &vol, &pan);

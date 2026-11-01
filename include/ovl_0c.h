@@ -1465,14 +1465,6 @@ static inline u32 wm_debugAdjustScreen_trg(void) {
 void wm_freeEffect(WmEffect *);
 s32 wm_getSpriteFrameCount(u16 *);
 
-/* random byte from the main exe's table (rand_refill refills it) */
-static inline s32 wm_rand8(void) {
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-    }
-    return *g_randPtr++;
-}
-
 /* Inlined copy of wm_testCellType, taking the topography index already extracted (WM_ATTR_TOPOGRAPHY). */
 static inline u8 wm_testCellType_inline(u32 *a, u32 c) {
     if (c >= 32) {

@@ -201,10 +201,7 @@ void fieldCalc_reviveRandom(MainCalc *c) {
     Character *t = c->target;
     s32 r;
 
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-    }
-    r = *g_randPtr++;
+    r = rand8_inline();
     t->hp = r % 10 + 1;
 }
 
