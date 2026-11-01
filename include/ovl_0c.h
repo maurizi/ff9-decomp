@@ -1664,7 +1664,7 @@ void w_movementChangeSP1(void);
 void w_movementChangeSP2(void);
 s32 w_readtxRequest(); /* (s16); unprototyped: callers pass the argument unconverted */
 void wm_autoPilotOn(void);
-void wm_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]);
+void wm_buildPackets(ModelObj *mdl, WmTexInfo *texInfo, s16 (*uvOffsets)[2]);
 void wm_calcCameraPreset(s32 altitude, s32 row, s32 col, s32 viewBlend, WmCameraParams *out);
 void wm_callChocobo(void);
 s32 wm_cameraAltitudeBlend(s32 altitude);
@@ -1674,10 +1674,10 @@ void wm_cameraSmooth(void);
 void wm_chunkListCompact(void);
 s32 wm_drawActorModel(EvtObject *act, SVECTOR *pos, s32 unused);
 void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth);
-void wm_drawBlock(u8 *arg0, s32 arg1, s32 arg2);
+void wm_drawBlock(u8 *block, s32 parity, s32 far);
 void wm_drawBlockFx(u8 arg0);
 void wm_drawBlocks(void);
-void wm_drawModel(s32 arg0, s32 arg1, u32 arg2);
+void wm_drawModel(s32 model, s32 otz, u32 mode);
 void wm_drawTitle(void);
 void wm_fetchParkedSound(void);
 s32 wm_findAreaData(); /* (WorldMapObj *, u16); unprototyped: callers pass the argument unconverted */
@@ -1694,13 +1694,13 @@ void wm_initDiscImage(void);
 void wm_initEffects(void);
 void wm_initLighting(void);
 void wm_initMapState(void);
-void wm_initModel(ModelObj *arg0, u8 *arg1);
+void wm_initModel(ModelObj *mdl, u8 *work);
 void wm_initMovement(void);
 s32 wm_isMapSongPlaying(void);
 s32 wm_lerp(s32 arg0, s32 arg1, s32 arg2);
 s32 wm_lerpShift(s32 arg0, s16 arg1, s32 arg2, s32 arg3);
 s32 wm_loadFile(WorldMapObj *obj, s32 unused);
-void wm_loadTimPack(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void wm_loadTimPack(s32 *pack, s32 imgDx, s32 imgDy, s32 clutDx, s32 clutDy);
 void wm_lookAt(MATRIX *out, SVECTOR *eye, SVECTOR *target, VECTOR *up);
 void wm_movePlayer(WmActorType *cc);
 void wm_musicFade(); /* (void); unprototyped: w_frame.c passes an argument it ignores (splat writes the empty body itself) */

@@ -1,6 +1,6 @@
 #include "ovl_0c.h"
 
-s32 w_memorymanHeapAlloc(s32 arg0) {
+s32 w_memorymanHeapAlloc(s32 size) {
     s32 *p = &g_worldHeapStack[g_worldHeapDepth++];
 
     if (g_worldHeapDepth >= 0x19U) {
@@ -9,11 +9,11 @@ s32 w_memorymanHeapAlloc(s32 arg0) {
         printf("w_memorymanHeapAlloc: [%d]  =  %x - ", g_worldHeapDepth - 1, g_worldHeapTop);
     }
     *p = g_worldHeapTop;
-    g_worldHeapLastSize = arg0;
-    g_worldHeapTop += arg0;
-    g_worldHeapUsed += arg0;
+    g_worldHeapLastSize = size;
+    g_worldHeapTop += size;
+    g_worldHeapUsed += size;
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
-        printf("%x (%x/%x)[%x]\n", g_worldHeapTop, g_worldHeapUsed, 0x24800, arg0);
+        printf("%x (%x/%x)[%x]\n", g_worldHeapTop, g_worldHeapUsed, 0x24800, size);
     }
     return *p;
 }
@@ -120,8 +120,8 @@ void wm_initClutAnims(void) {
     }
 }
 
-/* upload TIM arg1 of table arg0, offset by (arg2, arg3) (image) and (arg4, arg5) (clut) */
-void wm_loadTim(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s8 arg6) {
+/* upload TIM idx of table table, offset by (imgDx, imgDy) (image) and (clutDx, clutDy) (clut) */
+void wm_loadTim(u32 *table, s32 idx, s32 imgDx, s32 imgDy, s32 clutDx, s32 clutDy, s8 mode) {
     u32 *tim;
     RECT *clut;
     u32 *cdata;
@@ -136,9 +136,9 @@ void wm_loadTim(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s8 
     RECT *rect;
     u32 *data;
 
-    tim = (u32 *)arg0[arg1 + 1];
-    if ((arg2 | arg3 | arg4 | arg5) == 0) {
-        if (arg6 != 0) {
+    tim = (u32 *)table[idx + 1];
+    if ((imgDx | imgDy | clutDx | clutDy) == 0) {
+        if (mode != 0) {
             file_loadTim((s32)tim);
             return;
         }
@@ -157,33 +157,33 @@ void wm_loadTim(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s8 
     data = (u32 *)(rect + 1);
     if (g_worldStartup != 0) {
         r = *rect;
-        r.x += arg2;
-        r.y += arg3;
+        r.x += imgDx;
+        r.y += imgDy;
         LoadImage(&r, data);
     } else {
         q = (RECT *)g_worldPrimPtr;
-        q->x = rect->x + arg2;
-        q->y = rect->y + arg3;
+        q->x = rect->x + imgDx;
+        q->y = rect->y + imgDy;
         q->w = rect->w;
         q->h = rect->h;
         LoadImage(q, data);
         q++;
         g_worldPrimPtr = (s32)q;
     }
-    if (arg6 != 2) {
+    if (mode != 2) {
         if (has) {
             if (g_worldStartup != 0) {
                 r2 = *clut;
-                r2.x += arg4;
-                r2.y += arg5;
+                r2.x += clutDx;
+                r2.y += clutDy;
                 if (r2.w == 0x100) {
                     r2.w = 0xF0;
                 }
                 LoadImage(&r2, cdata);
             } else {
                 q2 = (RECT *)g_worldPrimPtr;
-                q2->x = clut->x + arg4;
-                q2->y = clut->y + arg5;
+                q2->x = clut->x + clutDx;
+                q2->y = clut->y + clutDy;
                 q2->w = clut->w;
                 q2->h = clut->h;
                 if (q2->w == 0x100) {
@@ -306,20 +306,20 @@ void wm_animCluts(void) {
     }
 }
 
-/* advance the palette animations arg0..arg1 and upload the new frames (y offset arg2) */
-void wm_stepClutAnims(s32 arg0, s32 arg1, s32 arg2) {
+/* advance the palette animations first..last and upload the new frames (y offset dy) */
+void wm_stepClutAnims(s32 first, s32 last, s32 dy) {
     RECT *r;
     s32 i;
     s32 n;
 
-    for (i = arg0; i <= arg1; i++) {
+    for (i = first; i <= last; i++) {
         g_worldClutAnimAcc[i] += g_worldClutAnims[i].speed;
         n = g_worldClutAnimAcc[i] / 256;
         g_worldClutAnimAcc[i] &= 0xFF;
         if (n != 0) {
             r = (RECT *)g_worldPrimPtr;
             r->x = g_worldClutAnims[i].x + g_worldClutAnims[i].start;
-            r->y = g_worldClutAnims[i].y + arg2;
+            r->y = g_worldClutAnims[i].y + dy;
             r->w = g_worldClutAnims[i].count;
             r->h = 1;
             g_worldClutAnimFrame[i] += n;
@@ -336,12 +336,12 @@ void wm_updateVramAnims(void) {
     wm_animCluts();
 }
 
-void wm_loadTimPack(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 n = *arg0 & 0x7FFFFFFF;
+void wm_loadTimPack(s32 *pack, s32 imgDx, s32 imgDy, s32 clutDx, s32 clutDy) {
+    s32 n = *pack & 0x7FFFFFFF;
     s32 i;
 
     for (i = 0; i < n; i++) {
-        wm_loadTim(arg0, i, arg1, arg2, arg3, arg4, 0);
+        wm_loadTim(pack, i, imgDx, imgDy, clutDx, clutDy, 0);
     }
 }
 
@@ -616,49 +616,49 @@ void wm_initMapState(void) {
 void wm_memUnusedStub(void) {
 }
 
-void wm_drawBlock(u8 *arg0, s32 arg1, s32 arg2) {
+void wm_drawBlock(u8 *block, s32 parity, s32 far) {
     s32 t;
     s32 unused[2];
 
     t = g_worldOt[*g_worldBufIndex];
-    g_worldCurTexArea = &g_worldTexAreas[arg0[1]];
+    g_worldCurTexArea = &g_worldTexAreas[block[1]];
     if (g_worldFog != 0) {
-        wm_blockVertsFog(arg0);
-    } else if (arg2 == 0) {
-        wm_blockVertsNear(arg0);
+        wm_blockVertsFog(block);
+    } else if (far == 0) {
+        wm_blockVertsNear(block);
     } else {
-        wm_blockVertsFar(arg0);
+        wm_blockVertsFar(block);
     }
     if (g_worldFog != 0) {
-        g_worldPrimPtr = wm_blockFacesFog(arg0, g_worldPrimPtr, t);
-    } else if (arg2 == 0) {
-        g_worldPrimPtr = wm_blockFacesNear(arg0, g_worldPrimPtr, t);
+        g_worldPrimPtr = wm_blockFacesFog(block, g_worldPrimPtr, t);
+    } else if (far == 0) {
+        g_worldPrimPtr = wm_blockFacesNear(block, g_worldPrimPtr, t);
     } else {
-        g_worldPrimPtr = wm_blockFacesFar(arg0, g_worldPrimPtr, t);
+        g_worldPrimPtr = wm_blockFacesFar(block, g_worldPrimPtr, t);
     }
 }
 
-void wm_drawBackdrop(s32 arg0, s32 arg1) {
+void wm_drawBackdrop(s32 model, s32 unused) {
     s32 ot = g_worldOt[*g_worldBufIndex];
 
-    wm_backdropVerts(arg0);
-    g_worldPrimPtr = wm_backdropFaces(arg0, g_worldPrimPtr, ot);
+    wm_backdropVerts(model);
+    g_worldPrimPtr = wm_backdropFaces(model, g_worldPrimPtr, ot);
 }
 
-void wm_drawModel(s32 arg0, s32 arg1, u32 arg2) {
-    s32 p = g_worldOt[*g_worldBufIndex] + arg1 * 4;
+void wm_drawModel(s32 model, s32 otz, u32 mode) {
+    s32 p = g_worldOt[*g_worldBufIndex] + otz * 4;
 
-    if (arg2 < 2) {
-        wm_modelVerts(arg0);
+    if (mode < 2) {
+        wm_modelVerts(model);
     }
-    if (arg2 == 2) {
-        wm_modelVertsFlat(arg0);
+    if (mode == 2) {
+        wm_modelVertsFlat(model);
     }
-    if (arg2 == 0 || arg2 == 2) {
-        g_worldPrimPtr = wm_modelFaces(arg0, g_worldPrimPtr, p);
+    if (mode == 0 || mode == 2) {
+        g_worldPrimPtr = wm_modelFaces(model, g_worldPrimPtr, p);
     }
-    if (arg2 == 1) {
-        g_worldPrimPtr = wm_modelFacesFog(arg0, g_worldPrimPtr, p);
+    if (mode == 1) {
+        g_worldPrimPtr = wm_modelFacesFog(model, g_worldPrimPtr, p);
     }
 }
 
