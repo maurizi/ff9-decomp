@@ -325,12 +325,12 @@ void btl_updateKo(BtlUnit *u) {
                     g_gameState->gameData->dragonKills++;
                 }
             }
-            if (g_gameState->gameData->battleResult != 4) {
+            if (g_gameState->gameData->battleResult != BATTLE_END_ESCAPE) {
                 btl_addEnemyRewards(e->type);
             }
             u->koState++;
             if (g_gameState->gameData->ctx.battle->phase != BTL_PHASE_END ||
-                (u32)(g_gameState->gameData->ctx.battle->subPhase - 2) >= 2) {
+                (u32)(g_gameState->gameData->ctx.battle->subPhase - BTL_END_STOPPED) >= 2) /* not STOPPED or ESCAPE */ {
                 btl_checkSideDefeated(u);
             }
             btl_unlinkUnit(u);

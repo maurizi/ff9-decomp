@@ -44,7 +44,7 @@ s32 btl_update(void) {
     case BTL_PHASE_END:
         btlui_setAtbEnabled(0);
         btl_victory(g, b);
-        if (b->subPhase != 3) {
+        if (b->subPhase != BTL_END_ESCAPE) {
             b->escapeHeld = 0;
         }
         break;
@@ -216,7 +216,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         case BTL_END_VICTORY:
         case BTL_END_SCRIPT_VICTORY:
             arg0->battleFlags |= GD_BTL_EXIT_PRELOAD;
-            arg0->battleResult = 1;
+            arg0->battleResult = BATTLE_END_VICTORY;
             if ((arg1->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1) {
                 if ((u8)btl_playVictoryMusic(arg0, 0x1E, MUSIC_VICTORY) == 0) {
                     break;
@@ -248,7 +248,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             arg1->phase = BTL_PHASE_EXIT;
             break;
         case BTL_END_DEFEAT:
-            arg0->battleResult = 3;
+            arg0->battleResult = BATTLE_END_DEFEAT;
             arg1->phase = BTL_PHASE_EXIT_DEFEAT;
             break;
         case BTL_END_STOPPED:
@@ -277,7 +277,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             if ((arg1->scene.flags & (BTL_SCENE_KEEP_MUSIC | BTL_SCENE_VICTORY)) == BTL_SCENE_KEEP_MUSIC) {
                 arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
-            arg0->battleResult = 4;
+            arg0->battleResult = BATTLE_END_ESCAPE;
             arg1->phase = BTL_PHASE_EXIT_OTHER;
             btl_clearRewards();
             if (arg0->battleFlags & GD_BTL_FLED) {

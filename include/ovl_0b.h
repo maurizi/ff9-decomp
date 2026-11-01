@@ -255,6 +255,13 @@ extern u8 g_btlSwdMagSourceAbilities[]; /* character 1 ability ids per Sword Mag
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+/* GameData.battleResult values (ovl_65.h also defines BATTLE_END_GAME_OVER). Evidence: [code] btl_victory,
+ * btl_setBattleVar, btl_saveParty. 2 (BTL_SETVAR_END's 1 without the scene's victory sequence; ovl_65 gameover turns
+ * it back into 1) and 5 (no fade-out on exit, btl_update) stay unnamed. */
+#define BATTLE_END_VICTORY   1 /* BTL_END_VICTORY / BTL_END_SCRIPT_VICTORY */
+#define BATTLE_END_DEFEAT    3 /* BTL_END_DEFEAT, BTL_SETVAR_DEFEAT */
+#define BATTLE_END_ESCAPE    4 /* BTL_END_ESCAPE: enemies removed now give no rewards (btl_updateKo) */
+#define BATTLE_END_GAME_OVER 6 /* btl_saveParty: a defeat without BTL_SCENE_NO_GAMEOVER */
 
 /* draw environment pair built in the primitive buffer by btlfx_drawBgOffscreen */
 typedef struct {

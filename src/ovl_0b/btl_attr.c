@@ -628,11 +628,11 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
     case BTL_SETVAR_END:
         if (b->phase == BTL_PHASE_SCRIPT) {
             g_gameState->gameData->battleResult = arg1;
-            if (arg1 == 1 && ((b->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1)) {
+            if (arg1 == BATTLE_END_VICTORY && ((b->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1)) {
                 b->phase = BTL_PHASE_END;
                 b->subPhase = BTL_END_SCRIPT_VICTORY;
             } else {
-                if (g_gameState->gameData->battleResult == 1) {
+                if (g_gameState->gameData->battleResult == BATTLE_END_VICTORY) {
                     g_gameState->gameData->battleResult = 2;
                 }
                 b->phase = BTL_PHASE_EXIT_OTHER;
@@ -644,7 +644,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         if (b->phase == BTL_PHASE_SCRIPT) {
             b->phase = BTL_PHASE_EXIT_DEFEAT;
             b->subPhase = 0;
-            g_gameState->gameData->battleResult = 3;
+            g_gameState->gameData->battleResult = BATTLE_END_DEFEAT;
         }
         break;
     case BTL_SETVAR_RESUME:

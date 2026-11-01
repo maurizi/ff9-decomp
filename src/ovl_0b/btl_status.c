@@ -982,8 +982,8 @@ void btl_checkEnemiesKO(void) {
 s32 btl_saveParty(Battle *arg0) {
     GameData *gd = g_gameState->gameData;
     u8 v = gd->battleResult;
-    if ((v == 3 || v == 6) && !((arg0->scene.flags >> BTL_SCENE_NO_GAMEOVER_BIT) & 1)) {
-        gd->battleResult = 6;
+    if ((v == BATTLE_END_DEFEAT || v == BATTLE_END_GAME_OVER) && !((arg0->scene.flags >> BTL_SCENE_NO_GAMEOVER_BIT) & 1)) {
+        gd->battleResult = BATTLE_END_GAME_OVER;
     } else {
         BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
         while (u != NULL) {

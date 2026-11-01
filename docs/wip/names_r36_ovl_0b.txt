@@ -26,3 +26,5 @@ BTL_TGT_SINGLE/MULTI/ALL_ANY/PARTY/ENEMY 0-8 (ovl_0b.h, from g_btluiDefaultTarge
   literal (6-8 with targeting 2, no name evidence).
 btl_soundCmd: SND_TYPE_* / SND_CMD_* / SND_PARAM_* (snd_ids.h, from the overlays agent) for its type/command/parameter
   switches and g_btlSoundLoadKind tests; DB_MUSIC >> 16 for the load key kind.
+BATTLE_END_VICTORY 1 / _DEFEAT 3 / _ESCAPE 4 / _GAME_OVER 6 (ovl_0b.h, candidates for ff9.h; ovl_65.h already has
+  BATTLE_END_GAME_OVER): GameData.battleResult. 2 and 5 left literal. BTL_END_ESCAPE / BTL_END_STOPPED subPhase tests.
