@@ -1221,12 +1221,14 @@ FieldLight *fld_findFloorLight(FieldLightSet *set, FieldObjSlot *obj, s16 *outFl
     return NULL;
 }
 
-s32 fld_enableRain(s32 arg0, s32 arg1, s32 enable) {
+/* kind/variant: the body only runs for (0, 0), rain, and every caller passes 0, 0; other values look like weather
+ * kinds that were never implemented (the JP build is the same). */
+s32 fld_enableRain(s32 kind, s32 variant, s32 enable) {
     s32 start;
     s32 size;
     s32 end;
 
-    if (arg0 == 0 && arg1 == 0) {
+    if (kind == 0 && variant == 0) {
         if (enable != 0) {
             if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_RAIN_ALLOC)) {
                 start = g_gameState->gameData->ctx.field->area->scene->heapTop;
