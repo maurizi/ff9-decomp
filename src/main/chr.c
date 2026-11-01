@@ -24,13 +24,13 @@ void chr_init(s32 ch) {
     c->stones = c->maxStones;
 }
 
-void chr_setLevel(s32 ch, s32 lv, u32 *heal, u8 f) {
+void chr_setLevel(s32 ch, s32 lv, u32 *heal, u8 keepExp) {
     Character *c = &g_gameState->gameData->characters[ch];
     s32 hp;
     s32 mp;
     s32 d;
 
-    if (!f && c->level != lv) {
+    if (!keepExp && c->level != lv) {
         c->exp = g_levelExp[lv - 1];
     }
     hp = c->hp;
@@ -40,13 +40,13 @@ void chr_setLevel(s32 ch, s32 lv, u32 *heal, u8 f) {
     memset(&c->hp, 0, 8);
     memset(&c->maxHp, 0, 8);
     c->unk16 = 10;
-    c->baseSpeed = chr_calcBaseSpeed(ch, c->level, f);
-    c->baseStrength = chr_calcBaseStrength(ch, c->level, f);
-    c->baseMagic = chr_calcBaseMagic(ch, c->level, f);
-    c->baseSpirit = chr_calcBaseSpirit(ch, c->level, f);
+    c->baseSpeed = chr_calcBaseSpeed(ch, c->level, keepExp);
+    c->baseStrength = chr_calcBaseStrength(ch, c->level, keepExp);
+    c->baseMagic = chr_calcBaseMagic(ch, c->level, keepExp);
+    c->baseSpirit = chr_calcBaseSpirit(ch, c->level, keepExp);
     c->maxHp = c->baseMaxHp = chr_calcMaxHp(c->level, c->baseStrength);
     c->maxMp = c->baseMaxMp = chr_calcMaxMp(c->level, c->baseMagic);
-    c->maxStones = chr_calcMaxStones(ch, c->level, f);
+    c->maxStones = chr_calcMaxStones(ch, c->level, keepExp);
     c->hp = (hp < c->maxHp) ? hp : c->maxHp;
     c->mp = (mp < c->maxMp) ? mp : c->maxMp;
     c->stones = c->maxStones - d;
@@ -56,7 +56,7 @@ void chr_setLevel(s32 ch, s32 lv, u32 *heal, u8 f) {
         c->stones = c->maxStones;
     }
     chr_updateStats(c);
-    if (f) {
+    if (keepExp) {
         c->hp = (hp < c->maxHp) ? hp : c->maxHp;
         c->mp = (mp < c->maxMp) ? mp : c->maxMp;
     }
@@ -362,8 +362,8 @@ s32 chr_getClass(u32 x) {
     return -1;
 }
 
-u8 chr_getAppearanceType(s32 a, u8 b) {
-    return g_chrAppearanceTypes[a][b != 0];
+u8 chr_getAppearanceType(s32 chr, u8 alt) {
+    return g_chrAppearanceTypes[chr][alt != 0];
 }
 
 s32 chr_getDefaultSet(Character *c) {
@@ -453,27 +453,27 @@ void chr_clearRecruited(u32 i) {
     }
 }
 
-s32 chr_resetToLevel(s32 ch, s32 b, u8 flag) {
+s32 chr_resetToLevel(s32 ch, s32 level, u8 refill) {
     Character *c = &g_gameState->gameData->characters[ch];
     s32 lv = c->level;
     c->level = 0;
-    chr_setLevel(ch, b, 0, 0);
-    if (flag) {
+    chr_setLevel(ch, level, 0, 0);
+    if (refill) {
         c->hp = c->maxHp;
         c->mp = c->maxMp;
     }
     return lv;
 }
 
-s32 chr_levelUp(s32 ch, s32 b) {
+s32 chr_levelUp(s32 ch, s32 level) {
     Character *c = &g_gameState->gameData->characters[ch];
-    s32 r = c->level;
-    chr_setLevel(ch, b, 0, 1);
-    return r;
+    s32 oldLevel = c->level;
+    chr_setLevel(ch, level, 0, 1);
+    return oldLevel;
 }
 
-void party_setChanged(u8 a) {
-    g_partyChanged = a;
+void party_setChanged(u8 changed) {
+    g_partyChanged = changed;
 }
 
 u8 party_hasChanged(void) {
@@ -488,10 +488,10 @@ void chr_setDefaultName(u8 *dst, s32 id) {
     text_copy(dst, (u8 *)text_getFrom((u8 *)g_chrDefaultNames, id));
 }
 
-void chr_setDefaultEquip(u8 *dst, s32 b) {
+void chr_setDefaultEquip(u8 *dst, s32 set) {
     s32 i;
     for (i = 0; i < 5; i++) {
-        dst[i] = g_chrDefaultEquip[b][i];
+        dst[i] = g_chrDefaultEquip[set][i];
     }
 }
 
@@ -572,9 +572,9 @@ void chr_clearAllSupport(void) {
     }
 }
 
-void chr_clearAbilities(s32 a) {
-    chr_clearAp(a);
-    chr_clearSupport(a);
+void chr_clearAbilities(s32 ch) {
+    chr_clearAp(ch);
+    chr_clearSupport(ch);
 }
 
 void chr_clearAp(s32 ch) {
@@ -677,16 +677,16 @@ u8 chr_hasSupportAbility(s32 ch, s32 id) {
     return chr_testSupportBit_inline(g_gameState->gameData->characters[ch].supportAbilities, id);
 }
 
-u8 chr_testSupportBit(u32 *bits, s32 b) {
-    b -= 0xC0;
-    return (bits[b >> 5] & (1 << (b & 0x1F))) != 0;
+u8 chr_testSupportBit(u32 *bits, s32 ability) {
+    ability -= 0xC0;
+    return (bits[ability >> 5] & (1 << (ability & 0x1F))) != 0;
 }
 
-u8 chr_canLearnAbilities(Character *a) {
-    if (a->classFlags & CHR_CLASS_GUEST) {
+u8 chr_canLearnAbilities(Character *c) {
+    if (c->classFlags & CHR_CLASS_GUEST) {
         return 0;
     }
-    return (s32)a->info.b.row < CHR_ROW_CINNA; /* not a guest row */
+    return (s32)c->info.b.row < CHR_ROW_CINNA; /* not a guest row */
 }
 
 s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
@@ -785,20 +785,20 @@ s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
     return r;
 }
 
-s32 chr_calcMaxHp(s32 lv, s32 m) {
-    s32 r = g_levelHpMp[lv - 1].hp * m / 50;
-    if (r >= 10000) {
-        r = 9999;
+s32 chr_calcMaxHp(s32 lv, s32 mult) {
+    s32 hp = g_levelHpMp[lv - 1].hp * mult / 50;
+    if (hp >= 10000) {
+        hp = 9999;
     }
-    return r;
+    return hp;
 }
 
-s32 chr_calcMaxMp(s32 lv, s32 m) {
-    s32 r = g_levelHpMp[lv - 1].mp * m / 100;
-    if (r >= 1000) {
-        r = 999;
+s32 chr_calcMaxMp(s32 lv, s32 mult) {
+    s32 mp = g_levelHpMp[lv - 1].mp * mult / 100;
+    if (mp >= 1000) {
+        mp = 999;
     }
-    return r;
+    return mp;
 }
 
 s32 chr_sumEquipBonus(u8 *eq, s32 k) {

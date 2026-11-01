@@ -17,8 +17,8 @@ void db_clear(void) {
     }
 }
 
-s32 db_register(s32 a, s32 b) {
-    g_dbList.dbs[g_dbList.count] = a;
+s32 db_register(s32 db, s32 unused) {
+    g_dbList.dbs[g_dbList.count] = db;
     g_dbList.count++;
     return 0;
 }
@@ -135,8 +135,8 @@ s32 db_lookup(s32 db, s32 mode, s32 key, s32 subKey) {
     return -1;
 }
 
-s32 db_getSize(s32 a) {
-    u8 *p = (u8 *)a;
+s32 db_getSize(s32 db) {
+    u8 *p = (u8 *)db;
     u32 *q;
     u8 *e;
     u32 *r;

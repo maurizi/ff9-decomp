@@ -1,8 +1,8 @@
 #include "ff9.h"
 
-u8 fade_setActive(u8 a) {
+u8 fade_setActive(u8 active) {
     u8 old = g_fade.active;
-    g_fade.active = a;
+    g_fade.active = active;
     return old;
 }
 
@@ -60,12 +60,12 @@ u8 fade_isEased(void) {
     return g_fade.eased;
 }
 
-s32 fade_setOtz(s32 a) {
+s32 fade_setOtz(s32 otz) {
     s32 old = g_fade.otz;
-    if (a == 0) {
-        a = 1;
+    if (otz == 0) {
+        otz = 1;
     }
-    g_fade.otz = a;
+    g_fade.otz = otz;
     return old;
 }
 
@@ -73,9 +73,9 @@ s32 fade_getOtz(void) {
     return g_fade.otz;
 }
 
-u8 fade_setCovered(u8 a) {
+u8 fade_setCovered(u8 covered) {
     u8 old = g_fade.covered;
-    g_fade.covered = a;
+    g_fade.covered = covered;
     return old;
 }
 
@@ -83,9 +83,9 @@ u8 fade_isCovered(void) {
     return g_fade.covered;
 }
 
-u16 fade_setAngle(u16 a) {
+u16 fade_setAngle(u16 angle) {
     u16 old = g_fade.angle;
-    g_fade.angle = a;
+    g_fade.angle = angle;
     return old;
 }
 
@@ -93,18 +93,18 @@ u16 fade_getAngle(void) {
     return g_fade.angle;
 }
 
-void fade_setEndColor(u8 a, u8 b, u8 c) {
+void fade_setEndColor(u8 r, u8 g, u8 b) {
     FadeState *p = &g_fade;
     FadeState *q;
-    s32 r = 0;
-    p->endR = a;
-    p->endG = b;
-    p->endB = c;
+    s32 covered = 0;
+    p->endR = r;
+    p->endG = g;
+    p->endB = b;
     q = p;
-    if (a != 0 || b != 0 || c != 0) {
-        r = 1;
+    if (r != 0 || g != 0 || b != 0) {
+        covered = 1;
     }
-    q->covered = r;
+    q->covered = covered;
 }
 
 Unk4 fade_getColor(void) {
@@ -127,32 +127,32 @@ void fade_outAdditiveDefault(void) {
     fade_outAdditive(0xC);
 }
 
-void fade_in(s32 a) {
+void fade_in(s32 frames) {
     fade_setAngle(0);
     fade_clearEase(1);
     fade_start(1, 1, 0, 0xFFFFFF);
-    fade_start(1, 1, a, 0);
+    fade_start(1, 1, frames, 0);
 }
 
-void fade_out(s32 a) {
+void fade_out(s32 frames) {
     fade_setAngle(0);
     fade_clearEase(1);
     fade_start(1, 1, 0, 0);
-    fade_start(1, 1, a, 0xFFFFFF);
+    fade_start(1, 1, frames, 0xFFFFFF);
 }
 
-void fade_inAdditive(s32 a) {
+void fade_inAdditive(s32 frames) {
     fade_setAngle(0);
     fade_clearEase(1);
     fade_start(1, 0, 0, 0xFFFFFF);
-    fade_start(1, 0, a, 0);
+    fade_start(1, 0, frames, 0);
 }
 
-void fade_outAdditive(s32 a) {
+void fade_outAdditive(s32 frames) {
     fade_setAngle(0);
     fade_clearEase(1);
     fade_start(1, 0, 0, 0);
-    fade_start(1, 0, a, 0xFFFFFF);
+    fade_start(1, 0, frames, 0xFFFFFF);
 }
 
 u32 *fade_getOt(s32 i) {
@@ -162,8 +162,8 @@ u32 *fade_getOt(s32 i) {
     return &g_fadeBattleOt[i];
 }
 
-void fade_getWipeColors(void *a) {
-    fadeWipe_getColors(a);
+void fade_getWipeColors(void *out) {
+    fadeWipe_getColors(out);
 }
 
 void fade_initField(void) {
@@ -182,70 +182,70 @@ void fade_init(void) {
     fade_init_clear3(&g_fade.endR);
 }
 
-void fade_start(s32 a, s32 b, s32 c, s32 col) {
+void fade_start(s32 type, s32 subtract, s32 frames, s32 col) {
     u8 old;
     void (*fn)(FadeState *);
 
-    if (c == 0) {
+    if (frames == 0) {
         g_fade.color = *(Unk4 *)&col;
     } else {
         g_fade.startColor = g_fade.color;
         old = g_fade.type;
-        g_fade.type = a;
-        g_fade.subtract = b;
+        g_fade.type = type;
+        g_fade.subtract = subtract;
         g_fade.frame = 0;
-        g_fade.frames = c;
+        g_fade.frames = frames;
         g_fade.prevType = old;
         *(Unk4 *)&g_fade.endR = *(Unk4 *)&col;
         g_fade.active = 1;
         g_fade.onDone = 0;
         g_fade.covered = (*(s32 *)&g_fade.endR & 0xFFFFFF) != 0;
-        fn = g_fadeTypes[a].start;
+        fn = g_fadeTypes[type].start;
         if (fn != NULL) {
             fn(&g_fade);
         }
     }
 }
 
-s32 fade_stepClamp(s32 a, s32 b, s32 lim) {
-    a += b;
-    if (b < 0) {
-        if (a < lim) {
-            a = lim;
+s32 fade_stepClamp(s32 value, s32 step, s32 lim) {
+    value += step;
+    if (step < 0) {
+        if (value < lim) {
+            value = lim;
         }
     } else {
-        if (a > lim) {
-            a = lim;
+        if (value > lim) {
+            value = lim;
         }
     }
-    return a;
+    return value;
 }
 
-s32 fade_divRoundOut(s32 a, s32 b) {
+s32 fade_divRoundOut(s32 num, s32 den) {
     s32 t;
 
-    if (a >= 0) {
-        t = a - 1;
-        t += b;
-        b = t / b;
+    if (num >= 0) {
+        t = num - 1;
+        t += den;
+        den = t / den;
     } else {
-        t = a + 1;
-        t -= b;
-        b = t / b;
+        t = num + 1;
+        t -= den;
+        den = t / den;
     }
-    return b;
+    return den;
 }
 
-s32 fade_ease(s32 x, s32 a, s32 b) {
+s32 fade_ease(s32 x, s32 from, s32 range) {
     s32 t;
 
-    if (b != 0) {
-        if (b < 0) {
-            t = x - a - b;
-            x = a + (b - t * t / b);
+    if (range != 0) {
+        if (range < 0) {
+            t = x - from - range;
+            x = from + (range - t * t / range);
         } else {
-            t = x - a - b;
-            x = a + (b - t * t / b);
+            t = x - from - range;
+            x = from + (range - t * t / range);
         }
     }
     return x;
@@ -325,17 +325,17 @@ void fadeWipe_update(FadeState *p) {
     p->color.b[2] = g_fadeWipe.out.b;
 }
 
-void fadeWipe_seek(FadeState *p, s32 n) {
-    if (n < (s32)g_fadeWipe.frames) {
-        g_fadeWipe.color.r = fade_stepClamp(g_fadeWipe.color.r, g_fadeWipe.stepR * n, g_fadeWipe.endR);
-        g_fadeWipe.color.g = fade_stepClamp(g_fadeWipe.color.g, g_fadeWipe.stepG * n, g_fadeWipe.endG);
-        g_fadeWipe.color.b = fade_stepClamp(g_fadeWipe.color.b, g_fadeWipe.stepB * n, g_fadeWipe.endB);
+void fadeWipe_seek(FadeState *p, s32 frames) {
+    if (frames < (s32)g_fadeWipe.frames) {
+        g_fadeWipe.color.r = fade_stepClamp(g_fadeWipe.color.r, g_fadeWipe.stepR * frames, g_fadeWipe.endR);
+        g_fadeWipe.color.g = fade_stepClamp(g_fadeWipe.color.g, g_fadeWipe.stepG * frames, g_fadeWipe.endG);
+        g_fadeWipe.color.b = fade_stepClamp(g_fadeWipe.color.b, g_fadeWipe.stepB * frames, g_fadeWipe.endB);
         g_fadeWipe.out = g_fadeWipe.color;
     } else {
-        n -= g_fadeWipe.frames;
-        g_fadeWipe.color2.r = fade_stepClamp(g_fadeWipe.color2.r, g_fadeWipe.step2R * n, g_fadeWipe.endR);
-        g_fadeWipe.color2.g = fade_stepClamp(g_fadeWipe.color2.g, g_fadeWipe.step2G * n, g_fadeWipe.endG);
-        g_fadeWipe.color2.b = fade_stepClamp(g_fadeWipe.color2.b, g_fadeWipe.step2B * n, g_fadeWipe.endB);
+        frames -= g_fadeWipe.frames;
+        g_fadeWipe.color2.r = fade_stepClamp(g_fadeWipe.color2.r, g_fadeWipe.step2R * frames, g_fadeWipe.endR);
+        g_fadeWipe.color2.g = fade_stepClamp(g_fadeWipe.color2.g, g_fadeWipe.step2G * frames, g_fadeWipe.endG);
+        g_fadeWipe.color2.b = fade_stepClamp(g_fadeWipe.color2.b, g_fadeWipe.step2B * frames, g_fadeWipe.endB);
         g_fadeWipe.out = g_fadeWipe.color2;
     }
     p->color.b[0] = g_fadeWipe.out.r;

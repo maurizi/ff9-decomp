@@ -8,8 +8,8 @@ void game_updateFade(void) {
     fade_update();
 }
 
-void game_startFade(s32 a, s32 b, s32 c, s32 d) {
-    fade_start(a, b, c, d);
+void game_startFade(s32 type, s32 subtract, s32 frames, s32 color) {
+    fade_start(type, subtract, frames, color);
 }
 
 void menu_init(void) {
@@ -21,17 +21,17 @@ void menu_update(void) {
     menu_dispatch();
 }
 
-void menu_open(s32 a, s32 b) {
-    menu_doOpen(a, b);
+void menu_open(s32 type, s32 arg) {
+    menu_doOpen(type, arg);
 }
 
-void menu_doOpen(s32 a, s32 b) {
+void menu_doOpen(s32 type, s32 arg) {
     GameState *st = g_gameState;
 
-    if (!(st->gameData->flags & GD_MENU_DISABLED) && g_menu.open == 0 && g_menu.state == MENU_STATE_CLOSED && (u32)a < 9) {
+    if (!(st->gameData->flags & GD_MENU_DISABLED) && g_menu.open == 0 && g_menu.state == MENU_STATE_CLOSED && (u32)type < 9) {
         g_menu.open = 1;
-        g_menu.type = a;
-        g_menu.arg = b;
+        g_menu.type = type;
+        g_menu.arg = arg;
         g_menu.result = 0;
         g_menu.reading = 0;
         g_menu.fadingOut = 0;
@@ -147,12 +147,12 @@ void menu_setOnClose(void (*a)(void)) {
     g_menuOnClose = (s32)a;
 }
 
-void menu_setFadeInOnClose(u8 a) {
-    g_menuFadeInOnClose = a;
+void menu_setFadeInOnClose(u8 enable) {
+    g_menuFadeInOnClose = enable;
 }
 
-void menu_setFadeOutOnClose(u8 a) {
-    g_menuFadeOutOnClose = a;
+void menu_setFadeOutOnClose(u8 enable) {
+    g_menuFadeOutOnClose = enable;
 }
 
 void menu_clearCardSlot(void) {
@@ -250,14 +250,14 @@ void menu_startFadeOut(void) {
     }
 }
 
-void menu_onOverlayRead(u8 *a) {
-    if (*a == 0) {
+void menu_onOverlayRead(u8 *result) {
+    if (*result == 0) {
         g_menuReading = 0;
     }
 }
 
-void menu_onPortraitsRead(u8 *a) {
-    if (*a == 0) {
+void menu_onPortraitsRead(u8 *result) {
+    if (*result == 0) {
         g_menuReading = 0;
     }
 }

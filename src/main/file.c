@@ -59,28 +59,28 @@ void file_setTimPos(s32 addr, s32 cx, s32 cy, s32 px, s32 py) {
     }
 }
 
-u32 tpage_getTp(u32 a) {
-    return (a >> 7) & 3;
+u32 tpage_getTp(u32 tpage) {
+    return (tpage >> 7) & 3;
 }
 
-u32 tpage_getAbr(u32 a) {
-    return (a >> 5) & 3;
+u32 tpage_getAbr(u32 tpage) {
+    return (tpage >> 5) & 3;
 }
 
-s32 tpage_getX(s32 a) {
-    return (a << 6) & 0x3C0;
+s32 tpage_getX(s32 tpage) {
+    return (tpage << 6) & 0x3C0;
 }
 
 s32 tpage_getY(s16 tpage) {
     return ((tpage << 4) & 0x100) | (s16)((tpage >> 2) & 0x200);
 }
 
-s32 clut_getX(s32 a) {
-    return (a & 0x3F) << 4;
+s32 clut_getX(s32 clut) {
+    return (clut & 0x3F) << 4;
 }
 
-s32 clut_getY(s32 a) {
-    return (s16)a >> 6;
+s32 clut_getY(s32 clut) {
+    return (s16)clut >> 6;
 }
 
 void file_advanceLoadPtr(u8 **ptr, s32 size) {
@@ -289,8 +289,8 @@ void file_loadDirTables(void) {
     gs->flags &= ~GS_RELOAD_FILE_TABLES;
 }
 
-FileEntry *file_find(s32 a, s32 id) {
-    DirInfo *d = g_gameState->dirs + a;
+FileEntry *file_find(s32 dir, s32 id) {
+    DirInfo *d = g_gameState->dirs + dir;
     FileIdEntry *base;
     FileIdEntry *e;
 
@@ -298,7 +298,7 @@ FileEntry *file_find(s32 a, s32 id) {
         return (FileEntry *)((u16 *)g_gameState->dirTables[13] + id);
     }
     id &= 0xFFFF;
-    base = g_gameState->dirTables[a];
+    base = g_gameState->dirTables[dir];
     e = base + d->count - 1;
 loop:
     if (e->id == id) {
@@ -332,10 +332,10 @@ s32 game_getModel(s32 slot) {
     return (s32)&g_gameState->gameData->npcModels[slot - 9];
 }
 
-void game_clearModelSlot(ModelSlot *a) {
-    a->flags = 0;
-    a->modelId = -1;
-    a->model = NULL;
-    a->actor = NULL;
-    a->unit = NULL;
+void game_clearModelSlot(ModelSlot *slot) {
+    slot->flags = 0;
+    slot->modelId = -1;
+    slot->model = NULL;
+    slot->actor = NULL;
+    slot->unit = NULL;
 }

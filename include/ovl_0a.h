@@ -1635,7 +1635,7 @@ s32 evt_getModelSlot(s32 id); /* main */
 u8 *evt_loadScripts(u8 *p); /* main */
 Unk4 fade_getColor(void); /* main */
 s32 fade_getType(void); /* main */
-void fade_getWipeColors(void *a); /* main */
+void fade_getWipeColors(void *out); /* main */
 s32 *fld_addPreloadExclude(s32 fileId);
 s32 *fld_addPreloadRequest(s32 fileId);
 void fld_allocMap(void);
@@ -1723,7 +1723,7 @@ void fld_drawRain(void);
 void game_resumeClock(u8 resume); /* main */
 s32 mbg_shutdown(void); /* ovl_64 */
 s32 preload_update(void); /* main */
-s32 tpage_getX(s32 a); /* main */
+s32 tpage_getX(s32 tpage); /* main */
 s32 tpage_getY(s16 tpage); /* main */
 s32 vib_update(void); /* main */
 

@@ -220,16 +220,16 @@ u8 cd_syncAsync(void (*a)(u8 *)) {
     return cd_submit(&r);
 }
 
-s32 cd_seekSync(s32 a) {
-    CdRequest r;
-    r.flags = CDREQ_SEEK;
-    r.syncCallback = cd_onSync;
-    r.sector = a;
-    r.size = 0;
-    r.chunks = NULL;
-    r.readyCallback = cd_onDataReady;
-    r.doneCallback = NULL;
-    if (cd_submit(&r) == 0) {
+s32 cd_seekSync(s32 sector) {
+    CdRequest req;
+    req.flags = CDREQ_SEEK;
+    req.syncCallback = cd_onSync;
+    req.sector = sector;
+    req.size = 0;
+    req.chunks = NULL;
+    req.readyCallback = cd_onDataReady;
+    req.doneCallback = NULL;
+    if (cd_submit(&req) == 0) {
         return 0;
     }
     while (cd_getState() != 0) {
@@ -237,14 +237,14 @@ s32 cd_seekSync(s32 a) {
     return 1;
 }
 
-s32 cd_readSync(s32 a, s32 b, void *c) {
+s32 cd_readSync(s32 sector, s32 size, void *dest) {
     g_cdReadRequest.flags = CDREQ_SEEK | CDREQ_READ;
     g_cdReadRequest.chunks = (CdChunk *)-1;
     g_cdReadRequest.syncCallback = cd_onSync;
-    g_cdReadRequest.sector = a;
-    g_cdReadRequest.size = b;
-    g_cdReadRequest.chunk.size = b;
-    g_cdReadRequest.chunk.dest = c;
+    g_cdReadRequest.sector = sector;
+    g_cdReadRequest.size = size;
+    g_cdReadRequest.chunk.size = size;
+    g_cdReadRequest.chunk.dest = dest;
     g_cdReadRequest.readyCallback = cd_onDataReady;
     g_cdReadRequest.doneCallback = NULL;
     if (cd_submit(&g_cdReadRequest) == 0) {
@@ -272,16 +272,16 @@ s32 cd_sync(void) {
     return 1;
 }
 
-u8 cd_seekStreamAsync(s32 a) {
-    CdRequest r;
-    r.flags = CDREQ_SEEK | CDREQ_STREAM;
-    r.sector = a;
-    r.size = 0;
-    r.chunks = NULL;
-    r.doneCallback = NULL;
-    r.syncCallback = cd_onSync;
-    r.readyCallback = 0;
-    return cd_submit(&r);
+u8 cd_seekStreamAsync(s32 sector) {
+    CdRequest req;
+    req.flags = CDREQ_SEEK | CDREQ_STREAM;
+    req.sector = sector;
+    req.size = 0;
+    req.chunks = NULL;
+    req.doneCallback = NULL;
+    req.syncCallback = cd_onSync;
+    req.readyCallback = 0;
+    return cd_submit(&req);
 }
 
 u8 cd_readStreamAsync(s32 a, void (*b)()) {
@@ -296,10 +296,10 @@ u8 cd_readStreamAsync(s32 a, void (*b)()) {
     return cd_submit(&r);
 }
 
-s32 cd_restartAt(s32 a) {
+s32 cd_restartAt(s32 sector) {
     if (g_cdLoad.state != CD_RESTART) {
         CdReadyCallback(NULL);
-        g_cdLoad.cur.sector = a;
+        g_cdLoad.cur.sector = sector;
         g_cdLoad.state = CD_RESTART;
         cd_controlF(CdlPause, NULL);
     }

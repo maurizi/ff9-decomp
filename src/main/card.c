@@ -15,7 +15,7 @@ void card_resetGameResult(void) {
     g_cardGameResult = 1;
 }
 
-s32 card_add(s32 a) {
+s32 card_add(s32 cardId) {
     s32 i;
 
     if (card_countAll() >= 100) {
@@ -23,23 +23,23 @@ s32 card_add(s32 a) {
     }
     for (i = 0; i < 100; i++) {
         if (g_cards.cards[i].id == CARD_NONE) {
-            card_rollStats(&g_cards.cards[i], a);
-            return card_countOf(a) == 1;
+            card_rollStats(&g_cards.cards[i], cardId);
+            return card_countOf(cardId) == 1;
         }
     }
     return -1;
 }
 
-s32 card_addWithStats(u8 id, u8 a, u8 b, u8 c, u8 d, u8 e) {
+s32 card_addWithStats(u8 id, u8 arrows, u8 power, u8 type, u8 physDef, u8 magicDef) {
     s32 i;
     for (i = 0; i < 0x69; i++) {
         if (g_cards.cards[i].id == CARD_NONE) {
             g_cards.cards[i].id = id;
-            g_cards.cards[i].arrows = a;
-            g_cards.cards[i].power = b;
-            g_cards.cards[i].type = c;
-            g_cards.cards[i].physDef = d;
-            g_cards.cards[i].magicDef = e;
+            g_cards.cards[i].arrows = arrows;
+            g_cards.cards[i].power = power;
+            g_cards.cards[i].type = type;
+            g_cards.cards[i].physDef = physDef;
+            g_cards.cards[i].magicDef = magicDef;
             return card_countOf(id) == 1;
         }
     }
@@ -162,20 +162,20 @@ void card_clearAll(void) {
     }
 }
 
-void card_setGameResult(s32 a) {
-    g_cardGameResult = a;
+void card_setGameResult(s32 result) {
+    g_cardGameResult = result;
 }
 
 s32 card_getGameResult(void) {
     return g_cardGameResult;
 }
 
-s32 card_getName(s32 a) {
-    return text_getFrom(g_cardNames, a);
+s32 card_getName(s32 cardId) {
+    return text_getFrom(g_cardNames, cardId);
 }
 
-s32 card_getNameWidth(s32 a) {
-    return text_measureWidth(card_getName(a));
+s32 card_getNameWidth(s32 cardId) {
+    return text_measureWidth(card_getName(cardId));
 }
 
 s32 card_getRarity(s32 x) {

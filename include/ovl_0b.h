@@ -4948,7 +4948,7 @@ s32 btlui_resolveAbility(s32 arg0);
 void btlui_startLabelSlide(Unk800F412C *arg0, Unk800F3F10 *arg1);
 void btlui_targetMove(void);
 void btlui_updatePanelRowColor(s32 arg0);
-s32 clut_getX(s32 a); /* main */
+s32 clut_getX(s32 clut); /* main */
 void btl_setMusicVolumeFade(s32 arg0, s32 arg1);
 void btl_cancelTranceEidolon(BtlUnit *arg0);
 void btl_applyInvertedPower(Unk800BA938 *arg0);
