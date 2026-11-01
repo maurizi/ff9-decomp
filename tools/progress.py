@@ -207,7 +207,13 @@ def main():
 
     if a.unnamed:
         refs = placeholder_refs()
-        rows = sorted(((c, b, n) for (b, n), c in refs.items() if not a.bin or b == a.bin), reverse=True)
+        # PsyQ library code isn't named here: skip listed library functions and data referenced only from psyq_*.c
+        game_text = " ".join(open(f, errors="replace").read() for f in glob.glob("src/*/*.c")
+                             if not os.path.basename(f).startswith("psyq_"))
+        def is_lib(n):
+            return n in lib or (n.startswith("D_") and not re.search(r"\b%s\b" % n, game_text))
+        rows = sorted(((c, b, n) for (b, n), c in refs.items()
+                       if (not a.bin or b == a.bin) and (is_fx(b) or not is_lib(n))), reverse=True)
         for c, b, n in rows[:200]:
             print(f"{n:14} {b:7} {c:5d} refs")
         return
