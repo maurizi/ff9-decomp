@@ -273,7 +273,7 @@ void wm_animCluts(void) {
     WmFrmbufSlot *n;
 
     if (g_worldClutAnimFx2 != 0) {
-        if (g_worldFormFlags[3] == 0) {
+        if (g_worldFormFlags[WM_FORM_HOKORA_HI] == 0) {
             a = 0xC;
             b = 0xD;
             c = 0xF;

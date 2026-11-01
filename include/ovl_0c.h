@@ -52,9 +52,11 @@
  * (main evt_getSysVar's default branch) */
 #define WM_PARAM_AREA 0xC0 /* area of the cell under the player ("Now Area" in wm_getEncounterEntry) */
 #define WM_PARAM_TOPOGRAPHY 0xC1 /* topography of that cell ("Topograph") */
+#define WM_PARAM_RIDE_Y 0xC2 /* the player's floorY + rideOffset (floorY + 400 in WM_MOVE_CHOCOBO_FLY); get-off height check */
 #define WM_PARAM_REQ0 0xC3 /* g_worldReqParams[0..2], e.g. the WM_REQ_GET_GETOFF_POS result */
 #define WM_PARAM_REQ1 0xC4
 #define WM_PARAM_REQ2 0xC5
+#define WM_PARAM_CHOCOGRAPH 0xC6 /* GameData.chocograph */
 #define WM_PARAM_CAMERA_YAW 0xC7 /* g_worldCamera->yaw >> 4 */
 #define WM_PARAM_CD_BUSY 0xC8 /* "Event:CDAccessWait": g_worldCdUser | music request pending */
 #define WM_PARAM_PLAYER_X 0xC9
@@ -225,6 +227,12 @@ typedef struct WmEffect {
     s32 phase;
     s32 unk24; /* write-only (cleared) */
 } WmEffect; /* 0x28 */
+/* WmEffect.type, wm_spawnEffect's fourth argument (sprite = data pack entry type + 7). Only kinds whose use the code shows. */
+#define WM_FX_BOAT_WAKE 15 /* wm_controlSteer: behind the boat at the water surface while it moves fast; flat, drawn with g_worldEffectSpeed */
+#define WM_FX_AIRSHIP_SPRAY 18 /* airship low over water cells, drawn at g_worldSprayLevel (14 and 19 are drawn the same way) */
+#define WM_FX_WATER_RIPPLE 22 /* under the moving player on a water cell, at the surface; flat, drawn with g_worldEffectSpeed */
+/* world-map sound numbers (w_musicGetID) */
+#define WM_SE_AIRSHIP_WATER 38 /* the airships' loop over water: started with the Hilda Garde / Invincible move modes, volume follows speed and height over water (w_movementChange, wm_controlFly) */
 
 /* frame pack slot list: g_worldReadtxHead (head) -> g_worldReadtxSlots[6] -> g_worldReadtxTail (tail) */
 typedef struct WmReadtxSlot {
@@ -1133,7 +1141,19 @@ extern u8 g_worldAmbientSeOn[3];
 extern s32 g_worldAmbientSeX[3]; /* sound source x */
 extern s32 g_worldAmbientSeZ[3]; /* sound source z */
 extern u8 g_worldAmbientSe[3]; /* sound ids */
-extern u8 g_worldFormFlags[]; /* flags (wm_applyStoryForms) */
+extern u8 g_worldFormFlags[]; /* flags (wm_applyStoryForms), indexed by WM_FORM_* */
+/* g_worldFormFlags indices: the map forms wm_applyStoryForms switches to. Names from its "BGI Form : %s" debug
+ * prints, whose cases are these indices; the status table holds index + 1 (0 = no change), see WM_FORM_STATUS. */
+#define WM_FORM_SGATE 0 /* "SGATE" */
+#define WM_FORM_ALEX 2 /* "ALEX" */
+#define WM_FORM_HOKORA_HI 3 /* "HOKORA(HI)": also picks other CLUT animation rows (w_memoryman) */
+#define WM_FORM_LIND 4 /* "LIND" */
+#define WM_FORM_CLAY 5 /* "CLAY": block effect 4 is no longer drawn, ambient sound 0 goes quiet */
+#define WM_FORM_CHOCOBO_HEAVEN 7 /* "- Replace Chocobo Heaven -" (D_8007AF55 & 0x40) */
+#define WM_FORM_KUROMA 8 /* "KUROMA" */
+#define WM_FORM_HOKORA_MIZU 10 /* "HOKORA(MIZU)": turns block effect 10 on */
+#define WM_FORM_MOG_NET 12 /* "- Replace Mog Net -" (D_8007AF55 & 0x80) */
+#define WM_FORM_STATUS(f) ((f) + 1) /* g_worldFormStatusTable value that applies form f */
 extern u8 g_worldBlockFx7Spin;
 extern u8 g_worldClutAnimFx2;
 extern u8 g_worldCdUser;

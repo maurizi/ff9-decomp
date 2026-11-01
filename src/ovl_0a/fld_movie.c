@@ -517,7 +517,7 @@ void fld_drawModels(void) {
     }
 }
 
-/* object command arg1 for object arg0 (palette, mirror, triggers) */
+/* model command arg1 (FLD_MDLCMD_*) for model slot arg0: semi-transparency, Y clip, mirror, animation sounds */
 s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     FieldActorInfo *info;
     FieldObjSlot *c;
@@ -536,7 +536,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[arg0];
     c = (FieldObjSlot *)game_getModel(arg0);
     switch (arg1) {
-    case 0:
+    case FLD_MDLCMD_SEMITRANS:
         if ((u8)arg2 == 0xFF) {
             c->flags &= ~FLD_OBJ_SEMITRANS;
         } else {
@@ -547,7 +547,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         info->abr = arg2;
         break;
-    case 4:
+    case FLD_MDLCMD_CLIP_Y:
         if (arg2 != 0) {
             ((ModelObj *)c->model)->clipY = arg3;
             c->flags |= FLD_OBJ_CLIP_Y;
@@ -555,10 +555,10 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             c->flags &= ~FLD_OBJ_CLIP_Y;
         }
         break;
-    case 8:
-    case 9:
-    case 10:
-    case 11:
+    case FLD_MDLCMD_MIRROR:
+    case FLD_MDLCMD_MIRROR_POINT:
+    case FLD_MDLCMD_MIRROR_NORMAL:
+    case FLD_MDLCMD_MIRROR_TINT:
         x = info->mirror;
         if (x == NULL) {
             x = info->mirror = (FieldActorExt *)g_gameState->gameData->ctx.field->area->scene->heapTop;
@@ -607,7 +607,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             x->flags |= 0x02000000 | FLD_EXT_BUILT;
         }
         switch (arg1) {
-        case 8:
+        case FLD_MDLCMD_MIRROR:
             if (arg2 != 0) {
                 y->model->mirrorSrc = (ModelObj *)c->model;
                 y->model->mirrorNormal.w[0] = x->mirrorNormal.w[0];
@@ -619,17 +619,17 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 x->flags &= ~FLD_EXT_MIRROR;
             }
             break;
-        case 9:
+        case FLD_MDLCMD_MIRROR_POINT:
             x->mirrorPoint.v.vx = arg2;
             x->mirrorPoint.v.vy = arg3;
             x->mirrorPoint.v.vz = arg4;
             break;
-        case 10:
+        case FLD_MDLCMD_MIRROR_NORMAL:
             x->mirrorNormal.v.vx = arg2;
             x->mirrorNormal.v.vy = arg3;
             x->mirrorNormal.v.vz = arg4;
             break;
-        case 11:
+        case FLD_MDLCMD_MIRROR_TINT:
             x->tint.c[0] = arg2;
             x->tint.c[1] = arg3;
             x->tint.c[2] = arg4;
@@ -637,25 +637,25 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             break;
         }
         break;
-    case 16:
-    case 17:
-    case 18:
-    case 19:
+    case FLD_MDLCMD_ANIM_SE:
+    case FLD_MDLCMD_ANIM_SE_ALT:
+    case FLD_MDLCMD_ANIM_SE_RANDOM_PITCH:
+    case FLD_MDLCMD_ANIM_SE_REMOVE:
         t = fld_findAnimSfx(c, arg2, arg3);
-        if (t == NULL && arg1 != 19) {
+        if (t == NULL && arg1 != FLD_MDLCMD_ANIM_SE_REMOVE) {
             t = fld_addAnimSfx(c, arg2, arg3);
         }
         switch (arg1) {
-        case 16:
+        case FLD_MDLCMD_ANIM_SE:
             t->sound[0] = arg4;
             break;
-        case 17:
+        case FLD_MDLCMD_ANIM_SE_ALT:
             t->sound[1] = arg4;
             break;
-        case 18:
+        case FLD_MDLCMD_ANIM_SE_RANDOM_PITCH:
             t->randomPitch = arg4 != 0;
             break;
-        case 19:
+        case FLD_MDLCMD_ANIM_SE_REMOVE:
             fld_removeAnimSfx(c, arg2, arg3);
             break;
         }
@@ -1603,7 +1603,7 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         return;
     }
     e = &h->entries[arg0];
-    if (arg1 == 0x82) {
+    if (arg1 == FLD_SPRCMD_SET) {
         if (arg2 != -1) {
             fld_resetSprite(e);
             e->spriteId = arg2;
@@ -1612,38 +1612,38 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         } else {
             e->sprite = NULL;
         }
-    } else if (arg1 == 0x83) {
+    } else if (arg1 == FLD_SPRCMD_FLAGS) {
         if (arg3 != 0) {
             e->flags |= arg2;
         } else {
             e->flags &= ~arg2;
         }
-    } else if (arg1 == 0x87) {
+    } else if (arg1 == FLD_SPRCMD_POS) {
         e->pos[0] = arg2;
         e->pos[1] = arg3;
         e->pos[2] = arg4;
-    } else if (arg1 == 0x8C) {
+    } else if (arg1 == FLD_SPRCMD_ROT) {
         e->rot[0] = arg2;
         e->rot[1] = arg3;
         e->rot[2] = arg4;
-    } else if (arg1 == 0x91) {
+    } else if (arg1 == FLD_SPRCMD_SCALE) {
         e->scale = arg2;
-    } else if (arg1 == 0x96) {
+    } else if (arg1 == FLD_SPRCMD_PARENT) {
         e->parent = evt_getModelSlot(arg2);
         e->bone = arg3;
-    } else if (arg1 == 0x9B) {
+    } else if (arg1 == FLD_SPRCMD_BRIGHTNESS) {
         e->brightness = arg2;
-    } else if (arg1 == 0x9C) {
+    } else if (arg1 == FLD_SPRCMD_ABR) {
         e->abr = arg2;
-    } else if (arg1 == 0xA0) {
+    } else if (arg1 == FLD_SPRCMD_SPEED) {
         e->speed = arg2;
-    } else if (arg1 == 0xA1) {
+    } else if (arg1 == FLD_SPRCMD_FRAME) {
         e->frame = arg2 * 16;
-    } else if (arg1 == 0xA5) {
+    } else if (arg1 == FLD_SPRCMD_OFFSET) {
         e->offset[0] = arg2;
         e->offset[1] = arg3;
         e->offset[2] = arg4;
-    } else if (arg1 == 0xAA) {
+    } else if (arg1 == FLD_SPRCMD_OT_OFFSET) {
         e->otOffset = arg2;
     }
 }

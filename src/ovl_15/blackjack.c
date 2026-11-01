@@ -153,7 +153,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
     s32 x2;
 
     switch (kind) {
-    case 0:
+    case BJ_RESULT_WIN:
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
         p->code = GPU_SPRT | GPU_ABE;
@@ -191,7 +191,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
-    case 1:
+    case BJ_RESULT_LOSE:
         x1 = x - 2;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
@@ -230,7 +230,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
-    case 2:
+    case BJ_RESULT_PUSH:
         x2 = x - 0x10;
         p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
@@ -354,9 +354,9 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
 
-    if (rank >= 9) {
-        f = rank - 9;
-        if (rank == 12) {
+    if (rank >= BJ_RANK_JACK) {
+        f = rank - BJ_RANK_JACK;
+        if (rank == BJ_RANK_ACE) {
             p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
             setlen(p, 4);
             p->code = GPU_SPRT;

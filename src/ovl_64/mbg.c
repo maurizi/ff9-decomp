@@ -410,7 +410,7 @@ s32 mbg_update(s32 arg0) {
     }
     st->streamPos = st->startPos;
     mode = g_gameState->mode;
-    if (mode == 1 || mode == 5) {
+    if (mode == GS_MODE_FIELD || mode == 5) {
         fldbg_getCamera(&st->savedCameraId);
         st->savedOtBias = ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->otBias;
         ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->otBias = 0;
@@ -468,7 +468,7 @@ s32 mbg_update(s32 arg0) {
         if ((s8)g_mbgPlayer.ended != 0) {
             func_8019_wait_frame(&g_mbgDecode);
             mode = g_gameState->mode;
-            if (mode == 1 || mode == 5) {
+            if (mode == GS_MODE_FIELD || mode == 5) {
                 ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->otBias = g_mbgPlayer.savedOtBias;
                 fldbg_setCamera((s8)g_mbgPlayer.savedCameraId);
             }

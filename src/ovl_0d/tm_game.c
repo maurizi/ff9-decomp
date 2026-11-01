@@ -866,13 +866,13 @@ void tm_taskResult(TmState *s) {
         s->showScore = 0;
         s->showBlocks = 0;
         switch (s->result) {
-        case 0:
+        case TM_RESULT_WIN:
             tm_startCardMove(s);
             break;
-        case 1:
+        case TM_RESULT_LOSE:
             tm_startCardMove(s);
             break;
-        case 2:
+        case TM_RESULT_DRAW:
             tm_returnHand(s);
             tm_hideCards(s);
             if ((u32)(s->opponent - TM_OPP_FORCED) < 4) {
@@ -949,7 +949,7 @@ void tm_taskTryAgain(TmState *s) {
         pad = g_padRepeat;
         if (pad & BTN_CROSS) {
             win_close(s->msgWin);
-            if (s->cursor == 0) {
+            if (s->cursor == TM_SEL_YES) {
                 if (card_countAll() < 5) {
                     r.w = text_measureWidth(text_get(TM_TEXT_LESS_5)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
@@ -969,29 +969,29 @@ void tm_taskTryAgain(TmState *s) {
             }
             tm_playSe(TM_SE_CURSOR);
         }
-        if ((pad & BTN_CIRCLE) && s->cursor != 1) {
+        if ((pad & BTN_CIRCLE) && s->cursor != TM_SEL_NO) {
             tm_playSe(TM_SE_CANCEL);
-            s->cursor = 1;
+            s->cursor = TM_SEL_NO;
         }
         if (pad & PAD_UP) {
-            if (s->cursor != 0) {
+            if (s->cursor != TM_SEL_YES) {
                 tm_playSe(TM_SE_CURSOR);
-                s->cursor = 0;
+                s->cursor = TM_SEL_YES;
             } else {
                 tm_playSe(TM_SE_CURSOR);
-                s->cursor = 1;
+                s->cursor = TM_SEL_NO;
             }
         }
         if (pad & PAD_DOWN) {
-            if (s->cursor != 1) {
+            if (s->cursor != TM_SEL_NO) {
                 tm_playSe(TM_SE_CURSOR);
-                s->cursor = 1;
+                s->cursor = TM_SEL_NO;
             } else {
                 tm_playSe(TM_SE_CURSOR);
-                s->cursor = 0;
+                s->cursor = TM_SEL_YES;
             }
         }
-        if (s->cursor == 0) {
+        if (s->cursor == TM_SEL_YES) {
             g_menuHelp.x = 0x7D;
             g_menuHelp.y = 0x6B;
             g_menuHelp.text = text_get(TM_HELP_PLAY_AGAIN);
@@ -1168,7 +1168,7 @@ void tm_taskChoice2(TmState *s) {
     if (g_tmWindowOpening == 0) {
         pad = g_padRepeat;
         if (pad & BTN_CROSS) {
-            if (s->cursor == 0) {
+            if (s->cursor == TM_SEL_YES) {
                 s->timer = 0;
                 s->task = TM_TASK_FIELD_FADE;
             } else {
@@ -1180,27 +1180,27 @@ void tm_taskChoice2(TmState *s) {
             win_close(s->msgWin);
             tm_playSe(TM_SE_CURSOR);
         }
-        if ((pad & BTN_CIRCLE) && s->cursor != 1) {
-            s->cursor = 1;
+        if ((pad & BTN_CIRCLE) && s->cursor != TM_SEL_NO) {
+            s->cursor = TM_SEL_NO;
             tm_playSe(TM_SE_CANCEL);
         }
         if (pad & PAD_UP) {
-            if (s->cursor != 0) {
-                s->cursor = 0;
+            if (s->cursor != TM_SEL_YES) {
+                s->cursor = TM_SEL_YES;
             } else {
-                s->cursor = 1;
+                s->cursor = TM_SEL_NO;
             }
             tm_playSe(TM_SE_CURSOR);
         }
         if (pad & PAD_DOWN) {
-            if (s->cursor != 1) {
-                s->cursor = 1;
+            if (s->cursor != TM_SEL_NO) {
+                s->cursor = TM_SEL_NO;
             } else {
-                s->cursor = 0;
+                s->cursor = TM_SEL_YES;
             }
             tm_playSe(TM_SE_CURSOR);
         }
-        if (s->cursor == 0) {
+        if (s->cursor == TM_SEL_YES) {
             g_menuHelp.x = 0x7B;
             g_menuHelp.y = 0x6C;
             g_menuHelp.text = text_get(TM_HELP_BEGIN);
@@ -1277,7 +1277,7 @@ void tm_taskCardAway2(TmState *s) {
     if (g_tmWindowOpening == 0) {
         pad = g_padRepeat;
         if (pad & BTN_CROSS) {
-            if (s->cursor == 0) {
+            if (s->cursor == TM_SEL_YES) {
                 card_remove(tm_getStockCursorId(s), s->copyIdx);
                 if (card_countAll() > 100) {
                     s->copyIdx = 0;
@@ -1292,27 +1292,27 @@ void tm_taskCardAway2(TmState *s) {
             win_close(s->infoWin);
             tm_playSe(TM_SE_CURSOR);
         }
-        if ((pad & BTN_CIRCLE) && s->cursor != 1) {
-            s->cursor = 1;
+        if ((pad & BTN_CIRCLE) && s->cursor != TM_SEL_NO) {
+            s->cursor = TM_SEL_NO;
             tm_playSe(TM_SE_CANCEL);
         }
         if (pad & PAD_UP) {
-            if (s->cursor != 0) {
-                s->cursor = 0;
+            if (s->cursor != TM_SEL_YES) {
+                s->cursor = TM_SEL_YES;
             } else {
-                s->cursor = 1;
+                s->cursor = TM_SEL_NO;
             }
             tm_playSe(TM_SE_CURSOR);
         }
         if (pad & PAD_DOWN) {
-            if (s->cursor != 1) {
-                s->cursor = 1;
+            if (s->cursor != TM_SEL_NO) {
+                s->cursor = TM_SEL_NO;
             } else {
-                s->cursor = 0;
+                s->cursor = TM_SEL_YES;
             }
             tm_playSe(TM_SE_CURSOR);
         }
-        if (s->cursor == 0) {
+        if (s->cursor == TM_SEL_YES) {
             g_menuHelp.x = 0xBC;
             g_menuHelp.y = 0x4D;
             g_menuHelp.text = text_get(TM_HELP_DISCARD_YES);
@@ -1526,28 +1526,28 @@ void tm_taskGameQuit(TmState *s) {
     if (g_tmWindowOpening == 0) {
         pad = g_padRepeat;
         if (pad & PAD_UP) {
-            if (s->quitChoice != 0) {
-                s->quitChoice = 0;
+            if (s->quitChoice != TM_SEL_YES) {
+                s->quitChoice = TM_SEL_YES;
             } else {
-                s->quitChoice = 1;
+                s->quitChoice = TM_SEL_NO;
             }
             tm_playSe(TM_SE_CURSOR);
         }
         if (pad & PAD_DOWN) {
-            if (s->quitChoice != 1) {
-                s->quitChoice = 1;
+            if (s->quitChoice != TM_SEL_NO) {
+                s->quitChoice = TM_SEL_NO;
             } else {
-                s->quitChoice = 0;
+                s->quitChoice = TM_SEL_YES;
             }
             tm_playSe(TM_SE_CURSOR);
         }
         if (pad & BTN_CIRCLE) {
-            if (s->quitChoice != 1) {
-                s->quitChoice = 1;
+            if (s->quitChoice != TM_SEL_NO) {
+                s->quitChoice = TM_SEL_NO;
                 tm_playSe(TM_SE_CANCEL);
             }
         } else if (pad & BTN_CROSS) {
-            if (s->quitChoice == 0) {
+            if (s->quitChoice == TM_SEL_YES) {
                 for (i = 0; i < s->handCount; i++) {
                     c = &s->cards[i];
                     card_addWithStats(c->id, c->arrows, c->power, c->type,
@@ -1563,7 +1563,7 @@ void tm_taskGameQuit(TmState *s) {
             win_close(s->quitWin);
             tm_playSe(TM_SE_CURSOR);
         }
-        if (s->quitChoice == 0) {
+        if (s->quitChoice == TM_SEL_YES) {
             g_menuHelp.x = 0x7B;
             g_menuHelp.y = 0x6C;
             g_menuHelp.text = text_get(TM_HELP_QUIT_YES);

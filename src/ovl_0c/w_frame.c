@@ -176,15 +176,15 @@ s32 wm_frameMain(void) {
 
 void wm_updateLogic(void) {
     switch (g_worldState) {
-    case 0:
+    case WM_STATE_START:
         g_gameState->vsyncMode = 0;
         wm_runEvents();
         if (evt_getPlayer() != NULL) {
             g_worldPlayer = evt_getPlayer();
         }
         break;
-    case 1:
-    case 2:
+    case WM_STATE_SETUP:
+    case WM_STATE_RUNNING:
         if (g_worldNaviMode != WM_NAVI_FULL) {
             g_gameState->vsyncMode = 3;
             g_gameState->gameData->ctx.world->flags &= ~WM_MAP_NAVI_SCREEN;
@@ -203,7 +203,7 @@ void wm_updateLogic(void) {
         } else {
             g_gameState->vsyncMode = 0;
             g_gameState->gameData->ctx.world->flags |= WM_MAP_NAVI_SCREEN;
-            wm_seFadeVolume(0x26, 0x14, 0);
+            wm_seFadeVolume(WM_SE_AIRSHIP_WATER, 0x14, 0);
             wm_runEvents();
             wm_naviUpdate();
         }
@@ -225,8 +225,8 @@ void wm_updateLogic(void) {
 void wm_updateDraw(void) {
     u8 mode = g_worldState;
 
-    if (mode == 2) {
-        if (g_worldNaviMode != mode) {
+    if (mode == WM_STATE_RUNNING) {
+        if (g_worldNaviMode != mode) { /* mode is 2 here: WM_NAVI_FULL */
             g_worldDebugStep = 0x64;
             SetGeomScreen(g_gameState->gameData->projDist);
             g_worldTimeActorDraw = VSync(1);
@@ -518,7 +518,7 @@ s32 w_frameGetParameter(s32 arg0) {
         return WM_ATTR_AREA(v);
     case WM_PARAM_TOPOGRAPHY:
         return WM_ATTR_TOPOGRAPHY(v);
-    case 0xC2:
+    case WM_PARAM_RIDE_Y:
         if (g_worldMoveMode == WM_MOVE_CHOCOBO_FLY) {
             return g_worldActorTypeInfo[g_worldPlayer->actorType].floorY + 400;
         }
@@ -529,7 +529,7 @@ s32 w_frameGetParameter(s32 arg0) {
         return g_worldReqParams[1];
     case WM_PARAM_REQ2:
         return g_worldReqParams[2];
-    case 0xC6:
+    case WM_PARAM_CHOCOGRAPH:
         return g_gameState->gameData->chocograph;
     case WM_PARAM_CAMERA_YAW:
         return g_worldCamera->yaw >> 4;
