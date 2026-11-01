@@ -17,11 +17,11 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     s32 m;
     s32 room;
 
-    kind = (cmd >> 8) & 0xF;
+    kind = SND_CMD(cmd);
     if (kind == SND_CMD_GET_STATE && g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
         goto state;
     }
-    switch ((cmd >> 12) & 3) {
+    switch (SND_TYPE(cmd)) {
     case SND_TYPE_MUSIC:
         t = -1;
         id = (soundId & 0xFFFF) | DB_MUSIC;
@@ -98,7 +98,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             g_gameState->gameData->savedMusicFileSector = g_gameState->gameData->musicFileSector;
             g_gameState->gameData->savedMusicFileSectors = g_gameState->gameData->musicFileSectors;
         case SND_CMD_STOP:
-            if ((cmd & 0x3F) == SND_PARAM_VOLUME) {
+            if (SND_PARAM(cmd) == SND_PARAM_VOLUME) {
                 akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 g_gameState->gameData->musicVolume[0] = 0x7F;
                 g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
@@ -109,12 +109,12 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             return 0;
         case SND_CMD_SET:
-            if ((cmd & 0x3F) == 8) {
+            if (SND_PARAM(cmd) == 8) {
                 return 0;
             }
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME ... SND_PARAM_PITCH:
-                switch (cmd & 0x3F) {
+                switch (SND_PARAM(cmd)) {
                 case SND_PARAM_VOLUME:
                     akao_setMusicVolume(g_gameState->gameData->musicHandle[0], param1);
                     g_gameState->gameData->musicVolume[0] = param1;
@@ -137,7 +137,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             break;
         case SND_CMD_FADE:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], param1, param2);
                 fld_setMusicVolumeFade(param2, param1);
@@ -154,7 +154,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             break;
         case SND_CMD_FADE_FROM:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], param1, param2, param3);
                 fld_setMusicVolumeFade(param3, param1);
@@ -171,21 +171,21 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             break;
         case SND_CMD_FADE_ALL:
-            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
+            if (SND_PARAM(cmd) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolume(0, param1, param2);
             fld_setMusicVolumeFade(param2, param1);
             return 0;
         case SND_CMD_FADE_ALL_FROM:
-            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
+            if (SND_PARAM(cmd) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolumeFrom(0, param1, param2, param3);
             fld_setMusicVolumeFade(param3, param1);
             return 0;
         case SND_CMD_SET_CONDITION:
-            if ((cmd & 0x3F) != SND_PARAM_CONDITION) {
+            if (SND_PARAM(cmd) != SND_PARAM_CONDITION) {
                 break;
             }
             akao_setCondition(soundId);
@@ -263,7 +263,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             g_gameState->gameData->sfxSlotSuspendField[slot] = g_gameState->gameData->fieldId;
         case SND_CMD_STOP:
-            if ((cmd & 0x3F) == SND_PARAM_ALL_SLOTS && fp) {
+            if (SND_PARAM(cmd) == SND_PARAM_ALL_SLOTS && fp) {
                 if (g_gameState->gameData->flags & GD_SFX0_PLAYING) {
                     akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[0], 0x100000);
                 }
@@ -279,7 +279,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             return 0;
         case SND_CMD_SET:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_setSeVolume(h, param1, param2);
                 if (fp) {
@@ -300,7 +300,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             return -1;
         case SND_CMD_FADE:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_fadeSeVolume(h, param1, param2, param3);
                 if (fp) {
@@ -319,7 +319,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             return -1;
         case SND_CMD_SET_ALL:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_setAllSeVolume(param1);
                 if (fp) {
@@ -338,7 +338,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             return -1;
         case SND_CMD_FADE_ALL:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_fadeAllSeVolume(param1, param2);
                 if (fp) {
@@ -374,7 +374,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             akao_sendCmdE2();
             return 0;
         case SND_CMD_SET:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 SCENE->sndVolume = param1;
                 if (fld_isMoviePlaying() == 0) {

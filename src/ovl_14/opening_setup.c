@@ -122,8 +122,8 @@ s32 opening_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     s32 h;
     s32 id;
 
-    kind = (cmd >> 8) & 0xF;
-    switch ((cmd >> 12) & 3) {
+    kind = SND_CMD(cmd);
+    switch (SND_TYPE(cmd)) {
     case SND_TYPE_MUSIC:
         id = (soundId & 0xFFFF) | DB_MUSIC;
         switch (kind) {
@@ -159,35 +159,35 @@ s32 opening_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             return 0;
         case SND_CMD_SET:
-            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
+            if (SND_PARAM(cmd) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_setMusicVolume(g_gameState->gameData->musicHandle[0], param1);
             g_gameState->gameData->musicVolume[0] = param1;
             return 0;
         case SND_CMD_FADE:
-            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
+            if (SND_PARAM(cmd) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], param1, param2);
             opening_setMusicVolume(param2, param1);
             return 0;
         case SND_CMD_FADE_FROM:
-            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
+            if (SND_PARAM(cmd) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], param1, param2, param3);
             opening_setMusicVolume(param3, param1);
             return 0;
         case SND_CMD_FADE_ALL:
-            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
+            if (SND_PARAM(cmd) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolume(0, param1, param2);
             opening_setMusicVolume(param2, param1);
             return 0;
         case SND_CMD_FADE_ALL_FROM:
-            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
+            if (SND_PARAM(cmd) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolumeFrom(0, param1, param2, param3);
@@ -209,7 +209,7 @@ s32 opening_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             akao_stopSe(h, param1);
             return 0;
         case SND_CMD_SET:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_setSeVolume(h, param1, param2);
                 return 0;
@@ -222,7 +222,7 @@ s32 opening_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             return -1;
         case SND_CMD_FADE:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_fadeSeVolume(h, param1, param2, param3);
                 return 0;
@@ -235,7 +235,7 @@ s32 opening_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             return -1;
         case SND_CMD_SET_ALL:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_setAllSeVolume(param1);
                 return 0;
@@ -248,7 +248,7 @@ s32 opening_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             }
             return -1;
         case SND_CMD_FADE_ALL:
-            switch (cmd & 0x3F) {
+            switch (SND_PARAM(cmd)) {
             case SND_PARAM_VOLUME:
                 akao_fadeAllSeVolume(param1, param2);
                 return -1;

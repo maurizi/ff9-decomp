@@ -147,12 +147,15 @@
 #define SND_RESIDENT 0x80
 /* Fields of a sound command word, as every handler decodes them (fld_soundCommand, wm_soundCommand, tm_soundCmd,
  * opening_soundCmd, ending_soundCmd). The event script's sound ops pass the word through unchanged. */
-/* type: (w >> 12) & 3 */
+#define SND_TYPE(w) (((w) >> 12) & 3) /* SND_TYPE_* */
+#define SND_CMD(w) (((w) >> 8) & 0xF) /* SND_CMD_* */
+#define SND_PARAM(w) ((w) & 0x3F) /* SND_PARAM_* */
+/* type: SND_TYPE(w) */
 #define SND_TYPE_MUSIC  0 /* id | DB_MUSIC */
 #define SND_TYPE_SE     1 /* id | DB_SE */
 #define SND_TYPE_STREAM 2 /* id | 0x180000, akao_sendCmdE0..E6 (field only) */
 #define SND_TYPE_BANK   3 /* id | DB_SOUND_BANK (field, world map) */
-/* command: (w >> 8) & 0xF. A set/fade command picks the property with SND_PARAM_*. */
+/* command: SND_CMD(w). A set/fade command picks the property with SND_PARAM_*. */
 #define SND_CMD_PLAY          0x0 /* akao_playMusic / akao_playSe / akao_sendCmdE0 */
 #define SND_CMD_STOP          0x1 /* akao_stopMusic / akao_stopSe / akao_sendCmdE2 */
 #define SND_CMD_SET           0x2 /* set a property at once (akao_setMusicVolume, akao_setSeVolume, ...) */
@@ -166,7 +169,7 @@
 #define SND_CMD_SET_CONDITION 0xA /* music, with SND_PARAM_CONDITION: akao_setCondition(id) */
 #define SND_CMD_FADE_ALL_FROM 0xB /* music: akao_fadeMusicVolumeFrom on handle 0 */
 #define SND_CMD_GET_STATE     0xC /* steps a pending load; non-zero until done (6: music still fading out) */
-/* parameter of SND_CMD_SET / FADE / FADE_FROM / SET_ALL / FADE_ALL / FADE_ALL_FROM: w & 0x3F */
+/* parameter of SND_CMD_SET / FADE / FADE_FROM / SET_ALL / FADE_ALL / FADE_ALL_FROM: SND_PARAM(w) */
 #define SND_PARAM_VOLUME      1
 #define SND_PARAM_TEMPO       2 /* music: akao_setTempoScale / akao_fadeTempoScale(From) (field only) */
 #define SND_PARAM_PITCH       3 /* music: akao_setPitchScale ...; SE: akao_sendCmdA4/A5/AC/AD (AKAO_CMD_*_SE_PITCH) */

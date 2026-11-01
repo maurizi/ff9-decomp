@@ -24,9 +24,9 @@ script and pass it unchanged, so script data uses the same encoding. The handler
 
 | field | bits | macros | values |
 |---|---|---|---|
-| type | `(w >> 12) & 3` | `SND_TYPE_*` | 0 music (`DB_MUSIC`), 1 SE (`DB_SE`), 2 stream (key 0x18xxxx, field only), 3 bank (`DB_SOUND_BANK`) |
-| command | `(w >> 8) & 0xF` | `SND_CMD_*` | 0 play, 1 stop, 2 set, 3 fade, 4 fade from, 5 set all, 6 fade all, 7 load, 8 suspend, 9 resume, 10 set condition, 11 fade all from, 12 get state |
-| parameter | `w & 0x3F` | `SND_PARAM_*` | 1 volume, 2 tempo, 3 pitch, 4 tempo+pitch, 5 pan, 6 condition, 7 play count, 9 all resident slots, 10 movie volume |
+| type | `SND_TYPE(w)`, `(w >> 12) & 3` | `SND_TYPE_*` | 0 music (`DB_MUSIC`), 1 SE (`DB_SE`), 2 stream (key 0x18xxxx, field only), 3 bank (`DB_SOUND_BANK`) |
+| command | `SND_CMD(w)`, `(w >> 8) & 0xF` | `SND_CMD_*` | 0 play, 1 stop, 2 set, 3 fade, 4 fade from, 5 set all, 6 fade all, 7 load, 8 suspend, 9 resume, 10 set condition, 11 fade all from, 12 get state |
+| parameter | `SND_PARAM(w)`, `w & 0x3F` | `SND_PARAM_*` | 1 volume, 2 tempo, 3 pitch, 4 tempo+pitch, 5 pan, 6 condition, 7 play count, 9 all resident slots, 10 movie volume |
 
 Evidence is the akao_api call each case makes: set/fade/fade-from call `akao_set*`/`akao_fade*`/`akao_fade*From`
 with (frames, target) or (frames, from, to); parameter 3 on an SE goes to `akao_sendCmdA4`/`A5`/`AC`/`AD`
