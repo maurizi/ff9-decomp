@@ -1804,6 +1804,18 @@ extern u8 g_evtGeneralFlags; /* g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] under it
 #define EVT_GB_CHOCOGRAPH_FOUND 0xB8  /* u24: chocographs found */
 #define EVT_GB_CHOCOGRAPH_OWNED 0xBB  /* u24: chocographs owned */
 #define EVT_GB_CHOCOBO_LEVEL 0xBF     /* chocobo ability count (= world move mode when riding: WM_MOVE_CHOCOBO_*) */
+/* field environment sound and minigame state, read by the field scripts (docs/r32/3ds-requests-8.md, runtime R38) */
+#define EVT_GB_ENV_SOUND0_ID 0x09     /* s16: environment sound id of slot 0 (< 0 = the field has none) */
+#define EVT_GB_ENV_SOUND1_ID 0x0B     /* s16: slot 1 */
+#define EVT_GB_ENV_SOUND0_STATE 0x0D  /* u8: 0 none, 1 start, 2 playing, 9 error: the init shows area message 0x44 */
+#define EVT_GB_ENV_SOUND1_STATE 0x0E  /* u8: slot 1, same values */
+#define EVT_GB_STELLAZZIO_GIVEN 0x163 /* u16: bit k = Stellazzio coin item 304 + k given to Queen Stella */
+#define EVT_GB_FROG_UNLOCK 0x18F      /* frog catching available (medium) */
+#define EVT_GB_FROG_LEFT 0x1A2        /* frogs left (medium) */
+#define EVT_GB_CANARY_BEST 0x1DB      /* u8: best "nobles impressed" in the Prima Vista sword fight */
+#define EVT_GB_HIPPAUL_LEVEL 0x1EB    /* u8: Hippaul's race level 0..100 */
+#define EVT_GB_JUMPROPE_BEST 0x1F0    /* 3 x s24: jump-rope top scores */
+#define EVT_GB_FROG_POP 0x311         /* 4 ponds x 4 bytes: frog populations, one nibble per spawn slot (medium) */
 /* Mognet state, read only by the field scripts (docs/r32/3ds-requests-5-mognet.md) */
 #define EVT_GB_MOGNET_VERSION 0x400     /* u8: Mognet data version (1) */
 #define EVT_GB_MOGNET_GIVE_COUNT 0x408  /* u8: +1 on each "Give a letter" (medium) */
