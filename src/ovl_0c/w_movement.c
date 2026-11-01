@@ -1887,7 +1887,7 @@ void wm_controlFly(void) {
     }
     if (g_worldFrameCount & 1) {
         t = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
-        f = wm_testCellType_inline2(g_worldWaterCellTypes, t);
+        f = wm_testCellType_inline(g_worldWaterCellTypes, t);
         switch (g_worldPlayer->actorType) {
         case WM_ACTOR_AIRSHIP:
         case WM_ACTOR_AIRSHIP2:
@@ -2094,6 +2094,8 @@ void w_movementChangeSP2(void) {
     }
 }
 
+/* Same logic as wm_testCellType_inline (ovl_0c.h) after WM_ATTR_TOPOGRAPHY. Written out because a call of the inline
+   compiles differently. */
 u8 wm_testCellType(u32 *allowed, u32 cellAttr) {
     cellAttr = WM_ATTR_TOPOGRAPHY(cellAttr);
     if (cellAttr >= 32) {

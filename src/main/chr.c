@@ -587,6 +587,8 @@ u8 *chr_getApPtr(s32 ch, s32 id) {
     return &g_gameState->gameData->characters[ch].ap[i];
 }
 
+/* Same logic as chr_findAbilitySlot_ap_inline (ff9.h). Written out because a call of the inline lays out the i < 0
+   branch the other way round. */
 s32 chr_getAp(s32 ch, s32 id) {
     s32 i = chr_findAbilitySlot_inline(ch, id);
     if (i < 0) {
@@ -595,6 +597,8 @@ s32 chr_getAp(s32 ch, s32 id) {
     return g_gameState->gameData->characters[ch].ap[i];
 }
 
+/* Same logic as chr_setAp_inline (below). Written out because a call of the inline lays out the i < 0 branch
+   differently. */
 s32 chr_setAp(s32 ch, s32 id, u8 v) {
     s32 i = chr_findAbilitySlot_inline(ch, id);
     s32 old;
@@ -622,6 +626,8 @@ s32 chr_resetAp(s32 ch, s32 id) {
     return r;
 }
 
+/* Same logic as chr_getApNeeded_inline (ff9.h). Written out because a call of the inline lays out the i < 0 branch
+   the other way round. */
 u8 chr_getApNeeded(s32 ch, s32 id) {
     s32 i = chr_findAbilitySlot_inline(ch, id);
     Character *c = g_gameState->gameData->characters + ch;

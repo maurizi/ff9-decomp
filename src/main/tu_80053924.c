@@ -14,6 +14,8 @@ void gamedata_resetEventFlags(void) {
     d->darkBattle = 0;
 }
 
+/* Same logic as chr_cureStatusBit_inline (below). Written out because a call of the inline lays out the status test
+   the other way round. */
 s32 chr_cureStatusBit(Unk800539FC *c, s32 bit) {
     if (c->status & bit) {
         c->status &= ~bit;

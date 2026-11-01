@@ -973,6 +973,8 @@ s32 item_remove(s32 id, s32 count) {
     return 0;
 }
 
+/* Same logic as item_findSlot_inline (ff9.h). Written out because a call of the inline compiles the loop exit
+   differently. */
 ItemSlot *item_findSlot(s32 id) {
     s32 i;
     ItemSlot *e = g_gameState->gameData->items.slots;
