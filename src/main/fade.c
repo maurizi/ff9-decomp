@@ -357,10 +357,10 @@ void fadeWipe_draw(FadeState *fade) {
     POLY_G4 *poly;
     DR_TPAGE *tp;
 
-    tpage = 64;
+    tpage = getTPage(0, 2, 0, 0);
     ot = fade_getOt(g_gameState->gameData->drawBuf);
     if (fade->subtract == 0) {
-        tpage = 32;
+        tpage = getTPage(0, 1, 0, 0);
     }
     ReadGeomOffset(&ofx, &ofy);
     SetGeomOffset(g_gameState->dispEnv->disp.w >> 1, g_gameState->dispEnv->disp.h >> 1);

@@ -2269,7 +2269,7 @@ void *tm_drawCards(u32 *ot, void *prim, TmState *tm) {
             ((POLY_FT4 *)prim)->v2 = 0x73;
             ((POLY_FT4 *)prim)->u3 = 0x32;
             ((POLY_FT4 *)prim)->v3 = 0x73;
-            ((POLY_FT4 *)prim)->tpage = 0x9C;
+            ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, 0x300, 0x100);
             ((POLY_FT4 *)prim)->r0 = faceBright;
             ((POLY_FT4 *)prim)->g0 = faceBright;
             ((POLY_FT4 *)prim)->b0 = faceBright;
@@ -3581,7 +3581,7 @@ void *tm_drawBlocks(u32 *ot, void *prim, TmState *tm) {
             ((POLY_FT4 *)prim)->r0 = bright;
             ((POLY_FT4 *)prim)->g0 = bright;
             ((POLY_FT4 *)prim)->b0 = bright;
-            ((POLY_FT4 *)prim)->tpage = 0x9C;
+            ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, 0x300, 0x100);
             ((POLY_FT4 *)prim)->clut = getClut(0, 0xEA);
             AddPrim(ot + 99, prim);
             prim = (POLY_FT4 *)prim + 1;
@@ -4076,7 +4076,7 @@ void *tm_drawCursor(u32 *ot, void *prim, TmState *tm, s32 x, s32 y, s32 mode) {
         setUV4((POLY_FT4 *)prim, u2, 0x80, u, 0x80, u2, 0x90, u, 0x90);
         ((POLY_FT4 *)prim)->clut = getClut(0, 0xEB);
         setRGB0((POLY_FT4 *)prim, 0x80, 0x80, 0x80);
-        ((POLY_FT4 *)prim)->tpage = 0x9C;
+        ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, 0x300, 0x100);
         AddPrim(ot + 3, prim);
         prim = (POLY_FT4 *)prim + 1;
         SetPolyFT4((POLY_FT4 *)prim);
@@ -4084,7 +4084,7 @@ void *tm_drawCursor(u32 *ot, void *prim, TmState *tm, s32 x, s32 y, s32 mode) {
         setUV4((POLY_FT4 *)prim, u2, 0x80, u, 0x80, u2, 0x90, u, 0x90);
         ((POLY_FT4 *)prim)->clut = getClut(0, 0xEB);
         setRGB0((POLY_FT4 *)prim, 0, 0, 0);
-        ((POLY_FT4 *)prim)->tpage = 0x9C;
+        ((POLY_FT4 *)prim)->tpage = getTPage(1, 0, 0x300, 0x100);
         setSemiTrans((POLY_FT4 *)prim, 1);
         AddPrim(ot + 3, prim);
         prim = (POLY_FT4 *)prim + 1;

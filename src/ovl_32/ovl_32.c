@@ -358,7 +358,7 @@ void menuChocograph_drawFrame(s32 x, s32 y, s32 otz, u8 dim) {
         ((Ft4W *)g_primPtr)->v2 = s_menuChocographFramePieces[i].v + s_menuChocographFramePieces[i].h;
         ((Ft4W *)g_primPtr)->u3 = s_menuChocographFramePieces[i].u + s_menuChocographFramePieces[i].w;
         ((Ft4W *)g_primPtr)->v3 = s_menuChocographFramePieces[i].v + s_menuChocographFramePieces[i].h;
-        ((Ft4W *)g_primPtr)->tpage = 0x1F;
+        ((Ft4W *)g_primPtr)->tpage = getTPage(0, 0, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y);
         ((Ft4W *)g_primPtr)->clut = clut;
         addPrim(&g_ot[otz], (Ft4W *)g_primPtr);
         g_primPtr += sizeof(Ft4W);
@@ -396,7 +396,7 @@ void menuChocograph_drawFrame(s32 x, s32 y, s32 otz, u8 dim) {
         ((Ft4W *)g_primPtr)->v2 = s_menuChocographFramePieces[k].v + s_menuChocographFramePieces[k].h;
         ((Ft4W *)g_primPtr)->u3 = s_menuChocographFramePieces[k].u + s_menuChocographFramePieces[k].w;
         ((Ft4W *)g_primPtr)->v3 = s_menuChocographFramePieces[k].v + s_menuChocographFramePieces[k].h;
-        ((Ft4W *)g_primPtr)->tpage = 0x1F;
+        ((Ft4W *)g_primPtr)->tpage = getTPage(0, 0, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y);
         ((Ft4W *)g_primPtr)->clut = clut + 0x40;
         addPrim(&g_ot[otz], (Ft4W *)g_primPtr);
         g_primPtr += sizeof(Ft4W);

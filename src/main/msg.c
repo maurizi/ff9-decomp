@@ -1480,7 +1480,7 @@ void msg_drawHereIcon(EvtObject *obj) {
             poly->v0 = poly->v1 = sprite->v;
             poly->u1 = poly->u3 = sprite->u + sprite->w - (u8)g_hereIconFlipped;
             poly->v2 = poly->v3 = sprite->v + sprite->h;
-            poly->tpage = 0x5F;
+            poly->tpage = getTPage(0, 2, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y);
             poly->clut = sprite->clut;
             pen_popPos();
             pen_end();
@@ -1538,7 +1538,7 @@ void msg_drawPlayerBubble(void) {
     }
     tail->v0 = tail->v1 = sprite->v + 0x10;
     tail->v2 = tail->v3 = sprite->v + 0x18;
-    tail->tpage = bubble->tpage = 0x5F;
+    tail->tpage = bubble->tpage = getTPage(0, 2, VRAM_UI_SHEET_X, VRAM_UI_SHEET_Y);
     tail->clut = bubble->clut = sprite->clut;
 }
 
