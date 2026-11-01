@@ -19,18 +19,18 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx059Rot rot;
     SVECTOR pos;
     s32 frame;
-    s32 r;
-    SVECTOR *p;
+    s32 radius;
+    SVECTOR *trailPt;
     void (*fn)(SVECTOR *);
 
     if (mode == 0) {
         *args = 0x1C;
     } else if (mode == 1) {
-        s32 n = *args;
+        s32 kind = *args;
         work->state0 = 0;
         work->depthZ4 = -0x20;
-        work->kindC = n - 1;
-        work->angle8 = (n << 10) - 0x400;
+        work->kindC = kind - 1;
+        work->angle8 = (kind << 10) - 0x400;
         fx_059_env = env;
         work->angleStep10 = (ex->btlfx_rand() & 0x1F) + 0x100;
         work->viewRot18 = 0;
@@ -46,16 +46,16 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fn((SVECTOR *)&rot);
         switch (work->state0) {
         case 0:
-            r = 0xA0 - frame * 0xA0 / 6;
-            pos.vx = (ex->math_cos(work->angle8) * r) >> 12;
-            pos.vy = (ex->math_sin(work->angle8) * r) >> 12;
+            radius = 0xA0 - frame * 0xA0 / 6;
+            pos.vx = (ex->math_cos(work->angle8) * radius) >> 12;
+            pos.vy = (ex->math_sin(work->angle8) * radius) >> 12;
             pos.vz = work->depthZ4;
             work->depthZ4 += 0xC8;
             work->angle8 += work->angleStep10;
-            p = ex->btlfx_poolSpawn((s16 *)work->pool14);
-            if (p != NULL) {
-                ((s32 *)p)[0] = ((s32 *)&pos)[0];
-                ((s32 *)p)[1] = ((s32 *)&pos)[1];
+            trailPt = ex->btlfx_poolSpawn((s16 *)work->pool14);
+            if (trailPt != NULL) {
+                ((s32 *)trailPt)[0] = ((s32 *)&pos)[0];
+                ((s32 *)trailPt)[1] = ((s32 *)&pos)[1];
             }
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_059_headBlocks[work->kindC]), &pos, 0, 0x1000, 0,
                               1, -1, 0, 0);

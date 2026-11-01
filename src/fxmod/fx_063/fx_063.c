@@ -24,20 +24,20 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR home;
     SVECTOR ang;
     SVECTOR start;
-    VECTOR b;
+    VECTOR weights;
     s32 frame;
     u8 *strip;
-    s32 n;
+    s32 strand;
     Fx063Strip *tr;
     Fx063Pt *pt;
     s32 i;
     s32 j;
-    s32 r;
-    s32 s;
+    s32 radius;
+    s32 reach;
     s32 t;
     s32 u;
-    s32 k;
-    s32 c;
+    s32 bob;
+    s32 tint;
 
     if (mode == 0) {
         *args = 0xDC;
@@ -161,10 +161,10 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelAbr(work->models40[0].model0, 1);
         }
         if (work->timers0[3] != 0) {
-            c = -((8 - work->timers0[3]) << 5);
-            ex->Hi_ModifyEffModelRGB(work->models40[1].model0, c, c, c);
-            ex->Hi_ModifyEffModelRGB(work->models40[2].model0, c, c, c);
-            ex->Hi_ModifyEffModelRGB(work->models40[0].model0, c, c, c);
+            tint = -((8 - work->timers0[3]) << 5);
+            ex->Hi_ModifyEffModelRGB(work->models40[1].model0, tint, tint, tint);
+            ex->Hi_ModifyEffModelRGB(work->models40[2].model0, tint, tint, tint);
+            ex->Hi_ModifyEffModelRGB(work->models40[0].model0, tint, tint, tint);
         }
         if (work->timers0[4] != 0) {
             ex->Hi_DrawEffModel(&work->rotB0, &work->posB8, (s32)&work->scaleC8, work->modelAC);
@@ -179,8 +179,8 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                 ((ex->math_sin(fx_063_unitBob[i].phase4) * fx_063_unitBob[i].timer0) >> 10);
                         }
                         if (fx_063_unitBob[i].timer0 >= 0x10 && fx_063_unitBob[i].timer0 < 0x20) {
-                            k = ((ex->math_sin(fx_063_unitBob[i].phase4) * 16) >> 10) - 0x80;
-                            fx_063_unitBob[i].pos14.vy = fx_063_unitBob[i].homeC.vy + k;
+                            bob = ((ex->math_sin(fx_063_unitBob[i].phase4) * 16) >> 10) - 0x80;
+                            fx_063_unitBob[i].pos14.vy = fx_063_unitBob[i].homeC.vy + bob;
                         }
                         if (fx_063_unitBob[i].timer0 >= 0x20 && fx_063_unitBob[i].timer0 < 0x30) {
                             fx_063_unitBob[i].pos14.vy = fx_063_unitBob[i].homeC.vy + fxm_easeLerp(2, 0x10, fx_063_unitBob[i].timer0 - 0x20, 0, -0x80) +
@@ -196,20 +196,20 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->timers0[0] != 0) {
             work->timers0[0]--;
-            for (n = 0; n < 10; n++) {
-                tr = &fx_063_strips[n];
+            for (strand = 0; strand < 10; strand++) {
+                tr = &fx_063_strips[strand];
                 if (tr->timer100 != 0) {
                     tr->timer100--;
                     tr->lastSlot0 = tr->count2 = 10;
                     tr->head1 = 0;
                     tr->angleEC += tr->spinF4;
                     tr->angleF0 += tr->spinF8;
-                    s = work->models40[0].scaleC.vx;
+                    reach = work->models40[0].scaleC.vx;
                     pt = tr->pts4;
-                    r = (ex->math_sin(tr->angleEC) * s) >> 12;
-                    pt->vy = start.vy = work->pos94.vy + ((ex->math_cos(tr->angleEC) * s) >> 12);
-                    pt->vx = start.vx = work->pos94.vx + ((ex->math_cos(tr->angleF0) * r) >> 12);
-                    pt->vz = start.vz = work->pos94.vz + ((ex->math_sin(tr->angleF0) * r) >> 12);
+                    radius = (ex->math_sin(tr->angleEC) * reach) >> 12;
+                    pt->vy = start.vy = work->pos94.vy + ((ex->math_cos(tr->angleEC) * reach) >> 12);
+                    pt->vx = start.vx = work->pos94.vx + ((ex->math_cos(tr->angleF0) * radius) >> 12);
+                    pt->vz = start.vz = work->pos94.vz + ((ex->math_sin(tr->angleF0) * radius) >> 12);
                     strip = (u8 *)tr;
                     pt->halfWidth6 = tr->widthFC;
                     ex->btlfx_aimAngles((s16 *)&work->posA4, (s16 *)&start, (s16 *)&ang);
@@ -217,17 +217,17 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     for (j = 0; j < 9; j++, pt++) {
                         t = ((j + 1) * 0x2E8BA) >> 12;
                         u = 0x200 - t;
-                        b.vx = (u * u) >> 6;
-                        b.vy = (t * u) >> 4;
-                        b.vz = (t * t) >> 6;
+                        weights.vx = (u * u) >> 6;
+                        weights.vy = (t * u) >> 4;
+                        weights.vz = (t * t) >> 6;
                         tr->jitter5C[j].vx += tr->jitterVelA4[j];
                         tr->jitter5C[j].vz += tr->jitterVelC8[j];
                         pt->vx = tr->jitter5C[j].vx +
-                            ((start.vx * b.vx + start.vx * b.vz +
-                              (work->pos94.vx + ((ex->math_sin(ang.vy) * r) >> 11)) * b.vy) >> 12);
+                            ((start.vx * weights.vx + start.vx * weights.vz +
+                              (work->pos94.vx + ((ex->math_sin(ang.vy) * radius) >> 11)) * weights.vy) >> 12);
                         pt->vz = tr->jitter5C[j].vz +
-                            ((start.vz * b.vx + start.vz * b.vz +
-                              (work->pos94.vz + ((ex->math_cos(ang.vy) * r) >> 11)) * b.vy) >> 12);
+                            ((start.vz * weights.vx + start.vz * weights.vz +
+                              (work->pos94.vz + ((ex->math_cos(ang.vy) * radius) >> 11)) * weights.vy) >> 12);
                         pt->vy = ex->btlfx_lerpRatio(start.vy, 0, j + 1, 11);
                         pt->halfWidth6 = tr->widthFC;
                     }

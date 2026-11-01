@@ -1,22 +1,22 @@
 #include "fxmod/fx_041.h"
 
-static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
-    SVECTOR v;
+static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_041_path, t, &v);
-    v.vy = -300;
+    fxm_posPathGet(&fx_041_path, frame, &pathPos);
+    pathPos.vy = -300;
     fx_041_lastPathPos.vy = -300;
-    fx_041_lastPathPos.vx = v.vx;
-    fx_041_lastPathPos.vz = v.vz;
-    v.vx += fx_041_targetPos.vx;
-    v.vz += fx_041_targetPos.vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
+    fx_041_lastPathPos.vx = pathPos.vx;
+    fx_041_lastPathPos.vz = pathPos.vz;
+    pathPos.vx += fx_041_targetPos.vx;
+    pathPos.vz += fx_041_targetPos.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
-    if (t >= n) {
+    if (frame >= n) {
         return -1;
     }
     return 0;

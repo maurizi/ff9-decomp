@@ -1,11 +1,11 @@
 #include "fxmod/fx_034.h"
 
 void fx_034_explodeModel(s32 model, s32 scale, u8 *buf) {
-    s32 n;
+    s32 meshCount;
     s32 j = 0;
 
-    n = BTLFX_EXPORTS(fx_034_env)->btlfx_getEffModelMeshCount(model & 0xFFFF);
-    for (; j < n; j++) {
+    meshCount = BTLFX_EXPORTS(fx_034_env)->btlfx_getEffModelMeshCount(model & 0xFFFF);
+    for (; j < meshCount; j++) {
         for (model = 0; model < 8; model++) {
             fx_034_pushPrims(model, fx_034_primCounts[model], scale, fx_034_primVerts[model]);
         }
@@ -14,11 +14,11 @@ void fx_034_explodeModel(s32 model, s32 scale, u8 *buf) {
 
 INCLUDE_RODATA("asm/us/fx_034/nonmatchings/fx_034", fx_034_headerPtr);
 
-void fx_034_pushPrims(s32 kind, s32 count, s32 scale, SVECTOR *v) {
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR c;
-    s32 n;
+void fx_034_pushPrims(s32 kind, s32 count, s32 scale, SVECTOR *verts) {
+    SVECTOR moved;
+    SVECTOR centre;
+    SVECTOR offset;
+    s32 vertsPerPrim;
     s32 k;
     s32 m;
 
@@ -27,57 +27,57 @@ void fx_034_pushPrims(s32 kind, s32 count, s32 scale, SVECTOR *v) {
     case 2:
     case 4:
     case 6:
-        n = 4;
+        vertsPerPrim = 4;
         break;
     case 1:
     case 3:
     case 5:
     case 7:
-        n = 3;
+        vertsPerPrim = 3;
         break;
     default:
-        n = 3;
+        vertsPerPrim = 3;
         break;
     }
     for (k = 0; k < count; k++) {
-        a.vx = fx_034_primCentres[k].x;
-        a.vy = fx_034_primCentres[k].y;
-        a.vz = fx_034_primCentres[k].z;
-        b.vx = fx_034_primCentres[k].x;
-        b.vy = fx_034_primCentres[k].y;
-        b.vz = fx_034_primCentres[k].z;
-        c.vx = scale * a.vx / 200;
-        a.vx += c.vx;
-        c.vy = scale * a.vy / 200;
-        a.vy += c.vy;
-        c.vz = scale * a.vz / 200;
-        a.vz += c.vz;
-        for (m = 0; m < n; m++, v++) {
-            v->vx -= b.vx;
-            v->vy -= b.vy;
-            v->vz -= b.vz;
-            v->vx += a.vx;
-            v->vy += a.vy;
-            v->vz += a.vz;
+        moved.vx = fx_034_primCentres[k].x;
+        moved.vy = fx_034_primCentres[k].y;
+        moved.vz = fx_034_primCentres[k].z;
+        centre.vx = fx_034_primCentres[k].x;
+        centre.vy = fx_034_primCentres[k].y;
+        centre.vz = fx_034_primCentres[k].z;
+        offset.vx = scale * moved.vx / 200;
+        moved.vx += offset.vx;
+        offset.vy = scale * moved.vy / 200;
+        moved.vy += offset.vy;
+        offset.vz = scale * moved.vz / 200;
+        moved.vz += offset.vz;
+        for (m = 0; m < vertsPerPrim; m++, verts++) {
+            verts->vx -= centre.vx;
+            verts->vy -= centre.vy;
+            verts->vz -= centre.vz;
+            verts->vx += moved.vx;
+            verts->vy += moved.vy;
+            verts->vz += moved.vz;
         }
     }
 }
 
 void fx_034_splitModel(s32 model, u8 *buf) {
     BtlfxExports *ex;
-    s32 n;
+    s32 meshCount;
     s32 i;
     s32 j;
-    s32 m;
+    s32 handle;
     s32 mdl;
 
     ex = BTLFX_EXPORTS(fx_034_env);
     mdl = model;
     j = 0;
-    m = mdl & 0xFFFF;
-    ex->Hi_SplitMdlVertex(m, -1, (s32)buf);
-    n = ex->btlfx_getEffModelMeshCount(m);
-    for (; j < n; j++) {
+    handle = mdl & 0xFFFF;
+    ex->Hi_SplitMdlVertex(handle, -1, (s32)buf);
+    meshCount = ex->btlfx_getEffModelMeshCount(handle);
+    for (; j < meshCount; j++) {
         for (i = 0; i < 8; i++) {
             fx_034_primCounts[i] = ex->Hi_GetMdlVertexPtr(mdl & 0xFFFF, j, (s32)buf, (s32 *)&fx_034_primVerts[i], i);
             fx_034_calcPrimCentres(i, fx_034_primCounts[i], fx_034_primVerts[i]);
@@ -85,9 +85,9 @@ void fx_034_splitModel(s32 model, u8 *buf) {
     }
 }
 
-void fx_034_calcPrimCentres(s32 kind, s32 count, SVECTOR *v) {
+void fx_034_calcPrimCentres(s32 kind, s32 count, SVECTOR *verts) {
     SVECTOR sum;
-    s32 n;
+    s32 vertsPerPrim;
     s32 k;
     s32 m;
 
@@ -96,39 +96,39 @@ void fx_034_calcPrimCentres(s32 kind, s32 count, SVECTOR *v) {
     case 2:
     case 4:
     case 6:
-        n = 4;
+        vertsPerPrim = 4;
         break;
     case 1:
     case 3:
     case 5:
     case 7:
     default:
-        n = 3;
+        vertsPerPrim = 3;
         break;
     }
     for (k = 0; k < count; k++) {
         sum.vx = 0;
         sum.vy = 0;
         sum.vz = 0;
-        for (m = 0; m < n; m++, v++) {
-            sum.vx += v->vx;
-            sum.vy += v->vy;
-            sum.vz += v->vz;
+        for (m = 0; m < vertsPerPrim; m++, verts++) {
+            sum.vx += verts->vx;
+            sum.vy += verts->vy;
+            sum.vz += verts->vz;
         }
-        fx_034_primCentres[k].x = sum.vx / n;
-        fx_034_primCentres[k].y = sum.vy / n;
-        fx_034_primCentres[k].z = sum.vz / n;
+        fx_034_primCentres[k].x = sum.vx / vertsPerPrim;
+        fx_034_primCentres[k].y = sum.vy / vertsPerPrim;
+        fx_034_primCentres[k].z = sum.vz / vertsPerPrim;
     }
 }
 
 s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR p;
-    SVECTOR a;
+    SVECTOR landPos;
+    SVECTOR backAim;
     Pool6CEntry *emitter;
     s32 frame;
-    s32 d;
-    s32 v;
+    s32 elapsed;
+    s32 size;
     s32 early;
 
     if (mode == 0) {
@@ -150,22 +150,22 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         ex->btlfx_aimAngles((s16 *)&work->pos4C, (s16 *)&work->pos44, (s16 *)&work->aim54);
-        a.vx = work->aim54.vx;
-        a.vy = work->aim54.vy;
-        a.vz = work->aim54.vz;
-        a.vy += 0x800;
-        ex->btlfx_pointAhead((s16 *)&work->pos44, (s16 *)&a, 0x320, (s16 *)&p);
-        ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&p, (s16 *)&work->aim5C);
+        backAim.vx = work->aim54.vx;
+        backAim.vy = work->aim54.vy;
+        backAim.vz = work->aim54.vz;
+        backAim.vy += 0x800;
+        ex->btlfx_pointAhead((s16 *)&work->pos44, (s16 *)&backAim, 0x320, (s16 *)&landPos);
+        ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&landPos, (s16 *)&work->aim5C);
         work->aim5C.vy += 0x800;
-        work->pos64.vx = p.vx;
-        work->pos64.vy = p.vy;
-        work->pos64.vz = p.vz;
+        work->pos64.vx = landPos.vx;
+        work->pos64.vy = landPos.vy;
+        work->pos64.vz = landPos.vz;
         work->rot8.vx = 0;
         work->rot8.vz = 0;
         work->rot8.vy = work->aim54.vy;
-        work->pos10.vx = p.vx;
-        work->pos10.vy = p.vy;
-        work->pos10.vz = p.vz;
+        work->pos10.vx = landPos.vx;
+        work->pos10.vy = landPos.vy;
+        work->pos10.vz = landPos.vz;
         work->scale20.vx = 0x800;
         work->scale20.vy = 0x800;
         work->scale20.vz = 0x800;
@@ -206,13 +206,13 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4->rot.vz = work->aim5C.vz;
             }
         }
-        d = frame - 15;
-        if (d >= 0 && d < 30) {
-            if (d < 4) {
-                v = (d << 11) / 3;
-                work->scale20.vx = v;
-                work->scale20.vy = v;
-                work->scale20.vz = v;
+        elapsed = frame - 15;
+        if (elapsed >= 0 && elapsed < 30) {
+            if (elapsed < 4) {
+                size = (elapsed << 11) / 3;
+                work->scale20.vx = size;
+                work->scale20.vy = size;
+                work->scale20.vz = size;
             }
             early = frame < 28;
             if (!early) {

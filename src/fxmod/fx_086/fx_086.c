@@ -231,14 +231,14 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR rot;
     Pool6CEntry *emitter;
     s32 frame;
-    s32 c41b;
-    s32 a41;
-    s32 cc;
-    s32 c20;
+    s32 glow;
+    s32 pulseAng;
+    s32 spriteAlpha;
+    s32 shake;
     s32 py;
     s32 px;
-    s32 c25;
-    s32 c41;
+    s32 tintT;
+    s32 glowT;
 
     if (mode == 0) {
         *args = 0x48;
@@ -267,25 +267,25 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->state0) {
         case 1: {
         {
-            SVECTOR v;
+            SVECTOR streakDir;
             CVECTOR col;
-            s32 t;
-            s32 c;
-            s32 a;
-            s32 s;
-            s32 k;
-            s32 z;
+            s32 travel;
+            s32 unused0;
+            s32 unused1;
+            s32 fadeIn;
+            s32 jitter;
+            s32 otz;
 
             pos.vx = 0;
-            t = (frame << 11) / 49;
-            pos.vz = 0x800 - t;
-            pos.vy = t - 0x800;
-            s = (frame << 12) / 49;
+            travel = (frame << 11) / 49;
+            pos.vz = 0x800 - travel;
+            pos.vy = travel - 0x800;
+            fadeIn = (frame << 12) / 49;
             if (frame >= 8) {
-                k = (frame - 8) * 2;
+                jitter = (frame - 8) * 2;
                 pos.vx += ex->btlfx_randCentered((frame - 8) * 3);
-                pos.vy += ex->btlfx_randCentered(k);
-                pos.vz += ex->btlfx_randCentered(k);
+                pos.vy += ex->btlfx_randCentered(jitter);
+                pos.vz += ex->btlfx_randCentered(jitter);
             }
             rot.vx = 0x200;
             rot.vy = 0;
@@ -307,28 +307,28 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vz = scale.vz * 3 / 2;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model40);
             scale.vz = scale.vz * 2 / 3;
-            ex->Hi_ModifyEffModelRGB(work->model40, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model40, (travel >> 5) - 0x80, (travel >> 5) - 0x80, (travel >> 5) - 0x80);
             if (frame >= 8) {
-                c41 = ((frame - 8) << 12) / 41;
+                glowT = ((frame - 8) << 12) / 41;
                 rot.vx = 0x200;
                 rot.vy = 0;
                 rot.vz = 0;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
                 ex->Hi_ModifyEffModelAbr(work->model28, 1);
-                ex->Hi_ModifyEffModelRGB(work->model28, (c41 >> 5) - 0x80, (c41 >> 5) - 0x80, (c41 >> 5) - 0x80);
+                ex->Hi_ModifyEffModelRGB(work->model28, (glowT >> 5) - 0x80, (glowT >> 5) - 0x80, (glowT >> 5) - 0x80);
                 ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->frame4);
             }
-            z = -0x64;
+            otz = -0x64;
             col.r = 0x20;
             col.b = 0xFF;
             col.g = 0x80;
-            v.vx = 0x200;
-            v.vy = -0x400;
-            v.vz = 0;
+            streakDir.vx = 0x200;
+            streakDir.vy = -0x400;
+            streakDir.vz = 0;
             if (frame < 0x18) {
-                z = -0x46;
+                otz = -0x46;
             }
-            fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, z, &v, fx_086_streakPts, &col,
+            fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, otz, &streakDir, fx_086_streakPts, &col,
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
                 work->emit44 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);
@@ -341,9 +341,9 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 SVECTOR rot2;
                 VECTOR sc2;
 
-                c25 = ((frame - 24) << 12) / 25;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, (c25 << 6) >> 12, 0, 0);
-                col2.r = col2.g = col2.b = ((ex->math_sin(c25 >> 2) << 5) >> 12) + 0x10;
+                tintT = ((frame - 24) << 12) / 25;
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, (tintT << 6) >> 12, 0, 0);
+                col2.r = col2.g = col2.b = ((ex->math_sin(tintT >> 2) << 5) >> 12) + 0x10;
                 sc2.vx = 0x1080;
                 sc2.vy = 0x1080;
                 sc2.vz = 0x1000;
@@ -352,10 +352,10 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             px = 0x1B8 - (frame & 7) * 60;
             py = 0x140 - (frame & 7) * 60;
-            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), px + 0x64, py + 0x78, 0, 1, s);
+            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), px + 0x64, py + 0x78, 0, 1, fadeIn);
             px = 0x1B8 - (frame + 5) % 10 * 60;
             py = 0x140 - (frame + 5) % 10 * 60;
-            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0xE), px - 0x40, py + 0x78, 0, 1, s);
+            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0xE), px - 0x40, py + 0x78, 0, 1, fadeIn);
             if (frame >= 49) {
                 ex->btlfx_stopEmitter(work->emit44);
                 BTLFX_COPY_SVEC(&work->pos1C, &env->targets->centerX);
@@ -373,40 +373,40 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         case 2: {
         {
-            SVECTOR v0;
-            SVECTOR v1;
-            SVECTOR v2;
+            SVECTOR camFrom;
+            SVECTOR camTo;
+            SVECTOR camPos;
             VECTOR unused; /* never used: keeps the original stack layout */
-            s32 t;
-            s32 c;
-            s32 s;
-            s32 k;
+            s32 ang;
+            s32 bright;
+            s32 size;
+            s32 dist;
             s32 i;
 
-            t = ((frame << 12) / 14) >> 2;
-            pos.vz = work->pos1C.vx + ex->math_cos(t) * 3 / 2;
-            pos.vy = work->pos1C.vy - ex->math_cos(t) * 3 / 2;
+            ang = ((frame << 12) / 14) >> 2;
+            pos.vz = work->pos1C.vx + ex->math_cos(ang) * 3 / 2;
+            pos.vy = work->pos1C.vy - ex->math_cos(ang) * 3 / 2;
             pos.vx = 0;
             rot.vx = 0x200;
             rot.vy = 0;
             rot.vz = -frame * 0x40;
-            s = 0x3800 - ex->math_cos(t);
-            scale.vx = s;
-            scale.vy = s;
-            scale.vz = s;
+            size = 0x3800 - ex->math_cos(ang);
+            scale.vx = size;
+            scale.vy = size;
+            scale.vz = size;
             work->pos14.vx = pos.vx;
             work->pos14.vy = pos.vy;
             work->pos14.vz = pos.vz;
             if (frame < 11) {
-                v0.vx = pos.vx;
-                v0.vy = pos.vy;
-                v0.vz = pos.vz;
-                BTLFX_COPY_SVEC(&v1, &work->pos1C);
-                v1.vy -= 0x200;
-                ex->btlfx_lerpVec((s16 *)&v0, (s16 *)&v1, (frame << 12) / 10, (s16 *)&v2);
-                env->camera->points[3].vx = v2.vx;
-                env->camera->points[3].vy = v2.vy;
-                env->camera->points[3].vz = v2.vz;
+                camFrom.vx = pos.vx;
+                camFrom.vy = pos.vy;
+                camFrom.vz = pos.vz;
+                BTLFX_COPY_SVEC(&camTo, &work->pos1C);
+                camTo.vy -= 0x200;
+                ex->btlfx_lerpVec((s16 *)&camFrom, (s16 *)&camTo, (frame << 12) / 10, (s16 *)&camPos);
+                env->camera->points[3].vx = camPos.vx;
+                env->camera->points[3].vy = camPos.vy;
+                env->camera->points[3].vz = camPos.vz;
             }
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
@@ -415,10 +415,10 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 SVECTOR rot2;
                 VECTOR sc2;
 
-                c = ((ex->math_sin(((frame - 6) << 12) / 6 >> 2) << 6) >> 12) + 0x20;
-                col.r = c;
-                col.g = c >> 1;
-                col.b = c >> 2;
+                bright = ((ex->math_sin(((frame - 6) << 12) / 6 >> 2) << 6) >> 12) + 0x20;
+                col.r = bright;
+                col.g = bright >> 1;
+                col.b = bright >> 2;
                 sc2.vx = 0x1200;
                 sc2.vy = 0x1200;
                 sc2.vz = 0x1000;
@@ -428,7 +428,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             {
             VECTOR sc;
 
-            sc.vx = sc.vy = sc.vz = s / 2;
+            sc.vx = sc.vy = sc.vz = size / 2;
             fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x398, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
                           -(work->frame4 * 0x180), 0x2000, 1, 1);
             fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x400, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
@@ -443,17 +443,17 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                           (work->frame4 << 9) + 0xAA0, 0x2000, 1, -1);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->frame4);
             if (frame >= 12) {
-                SVECTOR d;
+                SVECTOR dir;
                 SVECTOR out;
 
                 work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xC8, 0xC8, 0x64);
-                d.vx = 0x4E0;
-                d.vy = 0x800;
-                d.vz = 0x700;
-                for (i = 0, k = 0; i < 64; i++, k += 0x30) {
-                    ex->btlfx_pointAhead((s16 *)&work->pos1C, (s16 *)&d, k, (s16 *)&out);
+                dir.vx = 0x4E0;
+                dir.vy = 0x800;
+                dir.vz = 0x700;
+                for (i = 0, dist = 0; i < 64; i++, dist += 0x30) {
+                    ex->btlfx_pointAhead((s16 *)&work->pos1C, (s16 *)&dir, dist, (s16 *)&out);
                     out.vx += ex->btlfx_randCentered(0x180);
                     out.vy += ex->btlfx_randCentered(0x180);
                     out.vz += ex->btlfx_randCentered(0x180);
@@ -467,20 +467,20 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         case 3: {
         {
-            SVECTOR v;
+            SVECTOR spritePos;
             CVECTOR col;
             SVECTOR rot2;
             VECTOR sc2;
             s32 sx;
             s32 cs;
             s32 cs2;
-            s32 a6;
-            s32 t6;
+            s32 burstAng;
+            s32 burstT;
             s32 t;
-            s32 c;
-            s32 a;
-            s32 s;
-            s32 k;
+            s32 bright;
+            s32 ang;
+            s32 size;
+            s32 elapsed;
             s32 i;
 
             if (frame == 0) {
@@ -490,9 +490,9 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vx = work->pos1C.vx;
                 env->camera->points[3].vy = work->pos1C.vy - 0x200;
                 env->camera->points[3].vz = work->pos1C.vz;
-                c20 = ((0x1000 - (frame << 12) / 20) << 9) >> 12;
-                env->camera->points[3].vy += ex->btlfx_randCentered(c20);
-                env->camera->points[3].vz += ex->btlfx_randCentered(c20);
+                shake = ((0x1000 - (frame << 12) / 20) << 9) >> 12;
+                env->camera->points[3].vy += ex->btlfx_randCentered(shake);
+                env->camera->points[3].vz += ex->btlfx_randCentered(shake);
             }
             if (frame == 12) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos1C);
@@ -507,13 +507,13 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame < 7) {
-                t6 = (frame << 12) / 6;
-                a6 = t6 >> 2;
-                s = (ex->math_cos(a6) + 0x800) * 2;
-                c = ex->math_cos(a6);
-                scale.vx = s;
-                scale.vy = s;
-                scale.vz = s >> 1;
+                burstT = (frame << 12) / 6;
+                burstAng = burstT >> 2;
+                size = (ex->math_cos(burstAng) + 0x800) * 2;
+                bright = ex->math_cos(burstAng);
+                scale.vx = size;
+                scale.vy = size;
+                scale.vz = size >> 1;
                 pos.vx = work->pos1C.vx;
                 pos.vy = work->pos1C.vy;
                 pos.vz = work->pos1C.vz;
@@ -521,10 +521,10 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vy = 0x6C0;
                 rot.vz = 0x700;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model34);
-                ex->Hi_ModifyEffModelRGB(work->model34, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+                ex->Hi_ModifyEffModelRGB(work->model34, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
                 env->otZ = 0x80;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x12), &work->pos1C, NULL,
-                                  ((ex->math_sin(t6 >> 1) + 0x1000) * 3) >> 1, 0, 1, 0x1000);
+                                  ((ex->math_sin(burstT >> 1) + 0x1000) * 3) >> 1, 0, 1, 0x1000);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x12), &work->pos1C, NULL, 0x1C00, 0, 1,
                                   0x1000);
                 env->otZ = 0;
@@ -538,90 +538,90 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenGrid(1, 0xA0, 0x78, 0x20, 0x18, 0xA, 0xA, 5, 5, &rot2, &sc2, &col, 1, NULL);
             }
             if (frame < 13) {
-                cc = ex->math_cos((frame << 10) / 12);
+                spriteAlpha = ex->math_cos((frame << 10) / 12);
                 for (i = 0; i < 20; i++) {
                     fx_086_spritePos[i * 3].pad++;
-                    BTLFX_COPY_SVEC(&v, &fx_086_spritePos[i * 3]);
-                    v.pad = 0;
-                    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &v, NULL, 0x3000,
-                                          fx_086_spritePos[i * 3].pad, 1, cc);
+                    BTLFX_COPY_SVEC(&spritePos, &fx_086_spritePos[i * 3]);
+                    spritePos.pad = 0;
+                    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &spritePos, NULL, 0x3000,
+                                          fx_086_spritePos[i * 3].pad, 1, spriteAlpha);
                 }
             }
             if (frame >= 4) {
-                k = frame - 4;
-                if (k == 0) {
+                elapsed = frame - 4;
+                if (elapsed == 0) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0xFF);
-                } else if (k < 24) {
-                    c = ex->math_cos((k << 10) / 24) * 0xFF / 4096;
-                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c, c, c >> 1);
+                } else if (elapsed < 24) {
+                    bright = ex->math_cos((elapsed << 10) / 24) * 0xFF / 4096;
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, bright, bright, bright >> 1);
                 }
-                t = k << 7;
-                if (k < 32) {
-                    a = t >> 2;
-                    s = ((ex->math_sin(a) >> 1) + 0x1000) * 2 / 3;
-                    c = ex->math_cos(a);
-                    scale.vx = s;
-                    scale.vy = s;
-                    scale.vz = s;
+                t = elapsed << 7;
+                if (elapsed < 32) {
+                    ang = t >> 2;
+                    size = ((ex->math_sin(ang) >> 1) + 0x1000) * 2 / 3;
+                    bright = ex->math_cos(ang);
+                    scale.vx = size;
+                    scale.vy = size;
+                    scale.vz = size;
                     pos.vx = work->pos1C.vx;
                     pos.vy = work->pos1C.vy;
                     pos.vz = work->pos1C.vz;
                     rot.vx = 0;
-                    rot.vy = ex->math_sin(a) >> 1;
+                    rot.vy = ex->math_sin(ang) >> 1;
                     rot.vz = 0;
-                    if (k < 3) {
-                        c = 0x1C00;
+                    if (elapsed < 3) {
+                        bright = 0x1C00;
                     }
                     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model3C);
-                    ex->Hi_ModifyEffModelRGB(work->model3C, ((c * 2 - 0x1000) >> 5) - 0x80,
-                                             ((c * 2 - 0x1000) >> 5) - 0x80, ((c * 2 - 0x1000) >> 5) - 0x80);
-                    if (k != 0) {
+                    ex->Hi_ModifyEffModelRGB(work->model3C, ((bright * 2 - 0x1000) >> 5) - 0x80,
+                                             ((bright * 2 - 0x1000) >> 5) - 0x80, ((bright * 2 - 0x1000) >> 5) - 0x80);
+                    if (elapsed != 0) {
                         sx = scale.vx;
-                        scale.vy = ex->math_cos(a) + 0x800;
+                        scale.vy = ex->math_cos(ang) + 0x800;
                         scale.vx = scale.vz = t * 3 / 4 + 0xC00;
-                        pos.vy += -0x370 - k * 24;
+                        pos.vy += -0x370 - elapsed * 24;
                         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model30);
                         ex->Hi_ModifyEffModelAbr(work->model30, 2);
-                        cs = (c >> 5) - 0x80;
+                        cs = (bright >> 5) - 0x80;
                         ex->Hi_ModifyEffModelRGB(work->model30, cs, cs, cs);
-                        pos.vy += k * 24;
-                        pos.vy += 0xB4 - k * 20;
-                        scale.vy = ex->math_cos(a) + 0x1000;
+                        pos.vy += elapsed * 24;
+                        pos.vy += 0xB4 - elapsed * 20;
+                        scale.vy = ex->math_cos(ang) + 0x1000;
                         scale.vx = scale.vz = t + 0x1000;
                         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model30);
                         ex->Hi_ModifyEffModelAbr(work->model30, 1);
                         ex->Hi_ModifyEffModelRGB(work->model30, cs, cs, cs);
-                        pos.vy += 0x2BC + k * 20;
-                        cs2 = 0xA00; /* a variable: a literal 0xA00 gets folded into the s >> 2 term */
-                        scale.vy = (s >> 2) + (((0x1000 - ex->math_cos(a)) >> 1) + cs2);
-                        scale.vx = scale.vz = sx + (0x1000 - ex->math_cos(a)) / 3;
+                        pos.vy += 0x2BC + elapsed * 20;
+                        cs2 = 0xA00; /* a variable: a literal 0xA00 gets folded into the size >> 2 term */
+                        scale.vy = (size >> 2) + (((0x1000 - ex->math_cos(ang)) >> 1) + cs2);
+                        scale.vx = scale.vz = sx + (0x1000 - ex->math_cos(ang)) / 3;
                         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model38);
                         ex->Hi_ModifyEffModelRGB(work->model38, cs, cs, cs);
                     }
                 }
-                if (k < 41) {
-                    t = (k << 12) / 41;
-                    a41 = t >> 2;
-                    s = ((ex->math_sin(a41) >> 1) + 0x1000) * 2 / 3;
-                    c41b = ex->math_cos(a41);
-                    scale.vx = s;
-                    scale.vy = s;
-                    scale.vz = s;
+                if (elapsed < 41) {
+                    t = (elapsed << 12) / 41;
+                    pulseAng = t >> 2;
+                    size = ((ex->math_sin(pulseAng) >> 1) + 0x1000) * 2 / 3;
+                    glow = ex->math_cos(pulseAng);
+                    scale.vx = size;
+                    scale.vy = size;
+                    scale.vz = size;
                     pos.vx = work->pos1C.vx;
                     pos.vy = work->pos1C.vy;
                     pos.vz = work->pos1C.vz;
                     rot.vx = 0;
-                    rot.vy = ex->math_cos(a41) >> 2;
+                    rot.vy = ex->math_cos(pulseAng) >> 2;
                     rot.vz = 0;
                     ex->btlfx_drawScrollMove(work->frame4 * 8, 0x240, 0x100, 0x40, 0x80, 0x300, 0x100);
-                    if (k < 3) {
-                        c41b = 0x1C00;
+                    if (elapsed < 3) {
+                        glow = 0x1C00;
                     }
                     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model2C);
-                    ex->Hi_ModifyEffModelRGB(work->model2C, (c41b >> 5) - 0x80, (c41b >> 5) - 0x80, (c41b >> 5) - 0x80);
+                    ex->Hi_ModifyEffModelRGB(work->model2C, (glow >> 5) - 0x80, (glow >> 5) - 0x80, (glow >> 5) - 0x80);
                     env->otZ = 0x300;
                     ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x12), &work->pos1C, NULL,
-                                      (ex->math_cos(a41) + 0x1000) * 2, 0, 1, c41b);
+                                      (ex->math_cos(pulseAng) + 0x1000) * 2, 0, 1, glow);
                     env->otZ = 0;
                 }
             }

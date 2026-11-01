@@ -3,9 +3,9 @@
 s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR c;
+    SVECTOR risePos;
+    SVECTOR holdPos;
+    SVECTOR fallPos;
 
     if (mode == 0) {
         *args = 0x3C;
@@ -44,25 +44,25 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (work->rise34 >= 0) {
-            ex->btlfx_getUnitPos(0, (s16 *)&a);
-            a.vy = fxm_lerpRatio(work->pos1C.vy, -1000, 0x1E - work->rise34, 0x1E);
-            ex->btlfx_setUnitPos(0, (s16 *)&a);
+            ex->btlfx_getUnitPos(0, (s16 *)&risePos);
+            risePos.vy = fxm_lerpRatio(work->pos1C.vy, -1000, 0x1E - work->rise34, 0x1E);
+            ex->btlfx_setUnitPos(0, (s16 *)&risePos);
             if (--work->rise34 == 0) {
                 work->held38 = 1;
             }
         }
         if (work->held38 != 0) {
-            ex->btlfx_getUnitPos(0, (s16 *)&b);
-            b.vy = -1000;
-            ex->btlfx_setUnitPos(0, (s16 *)&b);
+            ex->btlfx_getUnitPos(0, (s16 *)&holdPos);
+            holdPos.vy = -1000;
+            ex->btlfx_setUnitPos(0, (s16 *)&holdPos);
         }
         if (work->fall36 >= 0) {
-            ex->btlfx_getUnitPos(0, (s16 *)&c);
+            ex->btlfx_getUnitPos(0, (s16 *)&fallPos);
             ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos1C);
-            work->pos1C.vx = c.vx;
-            work->pos1C.vz = c.vz;
-            c.vy = fxm_lerpRatio(-1000, work->pos1C.vy, 3 - work->fall36, 3);
-            ex->btlfx_setUnitPos(0, (s16 *)&c);
+            work->pos1C.vx = fallPos.vx;
+            work->pos1C.vz = fallPos.vz;
+            fallPos.vy = fxm_lerpRatio(-1000, work->pos1C.vy, 3 - work->fall36, 3);
+            ex->btlfx_setUnitPos(0, (s16 *)&fallPos);
             if (--work->fall36 == 0) {
                 ex->btlfx_setUnitPos(0, (s16 *)&work->pos14);
                 ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos1C);

@@ -5,11 +5,11 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     VECTOR scale;
     Pool6CEntry *emitter;
     s32 frame;
-    s32 s;
+    s32 fade;
     s32 t;
     s32 sxz;
     s32 sy;
-    s32 c;
+    s32 tint;
 
     if (mode == 0) {
         *args = 0x34;
@@ -42,7 +42,7 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             t = (frame << 12) / 41;
-            s = ex->math_sin(t >> 1);
+            fade = ex->math_sin(t >> 1);
             sy = ex->math_sin(t >> 2) * 3;
             sxz = t + 0x1800;
             scale.vx = sxz;
@@ -55,15 +55,15 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->Hi_DrawEffModel(&work->rot24, (VECTOR *)work->modelPos18, (s32)&scale, work->model2C);
             ex->Hi_ModifyEffModelAbr(work->model2C, 1);
-            c = (s >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->model2C, c, c, c);
+            tint = (fade >> 5) - 0x80;
+            ex->Hi_ModifyEffModelRGB(work->model2C, tint, tint, tint);
             scale.vx = sxz;
             scale.vy = sy;
             scale.vz = sxz;
             work->rot24.vy = frame * 0x18;
             ex->Hi_DrawEffModel(&work->rot24, (VECTOR *)work->modelPos18, (s32)&scale, work->model30);
             ex->Hi_ModifyEffModelAbr(work->model30, 1);
-            ex->Hi_ModifyEffModelRGB(work->model30, c, c, c);
+            ex->Hi_ModifyEffModelRGB(work->model30, tint, tint, tint);
             if (frame == 0xC) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
                 if (emitter != NULL) {

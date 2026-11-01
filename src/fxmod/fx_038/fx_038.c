@@ -5,14 +5,14 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR d;
+    SVECTOR fallPos;
+    SVECTOR trailPos;
+    SVECTOR ringRot;
     s32 t;
-    s32 k;
-    s32 k1;
-    s32 q;
-    s32 v;
+    s32 fade;
+    s32 spinAng;
+    s32 growAng;
+    s32 size;
 
     if (mode == 1) {
         it->state0 = 0;
@@ -29,10 +29,10 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, -1, 0x1000, 0, 1,
                               (u8 *)&fx_038_strips[it->strip20], 0);
         }
-        BTLFX_COPY_SVEC(&a, &it->pos18);
-        a.vy -= (0x1000 - t) * 2;
-        a.vz += 0x1000 - t;
-        BTLFX_COPY_SVEC(&it->pos4, &a);
+        BTLFX_COPY_SVEC(&fallPos, &it->pos18);
+        fallPos.vy -= (0x1000 - t) * 2;
+        fallPos.vz += 0x1000 - t;
+        BTLFX_COPY_SVEC(&it->pos4, &fallPos);
         pos.vx = it->pos4.vx;
         pos.vy = it->pos4.vy;
         pos.vz = it->pos4.vz;
@@ -44,10 +44,10 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         scale.vx = 0x199;
         ex->Hi_DrawEffModel(&it->rotC, &pos, (s32)&scale, work->model10);
         env->otZ = 0x100;
-        BTLFX_COPY_SVEC(&b, &it->pos4);
-        b.vy += 0x140;
-        b.vz -= 0xA0;
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), (s32)&b, NULL, 0, 0x6000, ex->math_cos(t >> 2) * 2 / 3 + 0x555, 1,
+        BTLFX_COPY_SVEC(&trailPos, &it->pos4);
+        trailPos.vy += 0x140;
+        trailPos.vz -= 0xA0;
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), (s32)&trailPos, NULL, 0, 0x6000, ex->math_cos(t >> 2) * 2 / 3 + 0x555, 1,
                           (u8 *)&fx_038_strips[it->strip20], 0);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &it->pos4, NULL, 0x1000, 0, 1, -1, 0, 0);
         env->otZ = 0;
@@ -79,55 +79,55 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
     case 1:
         t = (frame << 12) / 18;
         if (frame < 4) {
-            s32 c = 0x46 - frame * 0x46 / 4;
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c, c, c);
+            s32 tint = 0x46 - frame * 0x46 / 4;
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
         }
-        k1 = t >> 2;
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &it->pos4, NULL, (t << 1) + 0x1800, 0, 1, ex->math_cos(k1), 0, 0);
-        BTLFX_COPY_SVEC(&b, &it->pos4);
-        b.vy += 0x140;
-        b.vz -= 0xA0;
+        spinAng = t >> 2;
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &it->pos4, NULL, (t << 1) + 0x1800, 0, 1, ex->math_cos(spinAng), 0, 0);
+        BTLFX_COPY_SVEC(&trailPos, &it->pos4);
+        trailPos.vy += 0x140;
+        trailPos.vz -= 0xA0;
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), (s32)&it->pos4, NULL, 0, 0, 0x555, 1,
                           (u8 *)&fx_038_strips[it->strip20], 0);
-        it->rotC.vy += ex->math_cos(k1) >> 7;
+        it->rotC.vy += ex->math_cos(spinAng) >> 7;
         pos.vx = it->pos4.vx;
         pos.vy = it->pos4.vy;
         pos.vz = it->pos4.vz;
         if (frame < 8) {
-            s32 w;
+            s32 flashAng;
 
             t = frame << 9;
-            w = t >> 2;
-            k = ex->math_cos(w);
-            v = (ex->math_sin(w) / 2 + 0x800) / 3;
-            scale.vz = v;
-            scale.vx = v;
-            scale.vy = (v * 9) >> 3;
+            flashAng = t >> 2;
+            fade = ex->math_cos(flashAng);
+            size = (ex->math_sin(flashAng) / 2 + 0x800) / 3;
+            scale.vz = size;
+            scale.vx = size;
+            scale.vy = (size * 9) >> 3;
             ex->Hi_DrawEffModel(&it->rotC, &pos, (s32)&scale, work->model14);
-            ex->Hi_ModifyEffModelRGB(work->model14, ((k * 2 - 0x1000) >> 5) - 0x80, ((k * 2 - 0x1000) >> 5) - 0x80,
-                                     ((k * 2 - 0x1000) >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model14, ((fade * 2 - 0x1000) >> 5) - 0x80, ((fade * 2 - 0x1000) >> 5) - 0x80,
+                                     ((fade * 2 - 0x1000) >> 5) - 0x80);
         }
         t = (frame << 12) / 18;
-        k = 0x1000 - t;
-        q = t >> 2;
-        scale.vx = scale.vz = (ex->math_sin(q) / 3 + 0xAAA) * 3 / 4;
-        scale.vy = ex->math_cos(q) * 2 / 3 + 0x800;
+        fade = 0x1000 - t;
+        growAng = t >> 2;
+        scale.vx = scale.vz = (ex->math_sin(growAng) / 3 + 0xAAA) * 3 / 4;
+        scale.vy = ex->math_cos(growAng) * 2 / 3 + 0x800;
         ex->Hi_DrawEffModel(&it->rotC, &pos, (s32)&scale, work->model18);
-        ex->Hi_ModifyEffModelRGB(work->model18, (k >> 5) - 0x80, (k >> 5) - 0x80, (k >> 5) - 0x80);
-        d.pad = 1;
-        d.vx = 0x400;
-        d.vz = 0;
-        d.vy = 0;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &it->pos4, &d, ex->math_sin(q) + 0xAAA, 8, 1, k);
+        ex->Hi_ModifyEffModelRGB(work->model18, (fade >> 5) - 0x80, (fade >> 5) - 0x80, (fade >> 5) - 0x80);
+        ringRot.pad = 1;
+        ringRot.vx = 0x400;
+        ringRot.vz = 0;
+        ringRot.vy = 0;
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &it->pos4, &ringRot, ex->math_sin(growAng) + 0xAAA, 8, 1, fade);
         if (frame < 12) {
-            s32 r;
+            s32 burstT;
 
-            d.pad = 1;
-            d.vx = 0x400;
-            d.vz = 0;
-            d.vy = 0;
-            r = (frame << 12) / 12;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 5), &it->pos4, &d, ex->math_cos(r >> 2) * 3, 6, 1, ex->math_cos(r >> 2), 0, 0);
+            ringRot.pad = 1;
+            ringRot.vx = 0x400;
+            ringRot.vz = 0;
+            ringRot.vy = 0;
+            burstT = (frame << 12) / 12;
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 5), &it->pos4, &ringRot, ex->math_cos(burstT >> 2) * 3, 6, 1, ex->math_cos(burstT >> 2), 0, 0);
         }
         if (frame >= 18) {
             return 1;

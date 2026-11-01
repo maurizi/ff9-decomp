@@ -4,7 +4,7 @@ s32 fx_046_op80(s32 mode, Fx046Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *emitter;
     s32 frame;
-    s32 t;
+    s32 zWord;
 
     if (mode == 0) {
         *args = 0xC;
@@ -12,9 +12,9 @@ s32 fx_046_op80(s32 mode, Fx046Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->stop0 = 0;
         fx_046_env = env;
         ((s32 *)&work->pos4)[0] = ((s32 *)&env->targets->centerX)[0];
-        t = ((s32 *)&env->targets->centerX)[1];
+        zWord = ((s32 *)&env->targets->centerX)[1];
         work->pos4.vy = 0;
-        ((s32 *)&work->pos4)[1] = t;
+        ((s32 *)&work->pos4)[1] = zWord;
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);

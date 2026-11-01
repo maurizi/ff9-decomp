@@ -79,7 +79,7 @@ s32 fx_03d_op81(s32 mode, Fx03dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 s;
+    s32 scale;
 
     if (mode == 0) {
         *args = 0x44;
@@ -114,21 +114,21 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0 && frame < 0x28) {
             if (frame >= 0 && frame < 0xF) {
-                s = fxm_lerpRatio(0, 0x1800, frame, 0xF);
-                work->scale18.vx = s;
-                work->scale18.vy = s;
-                work->scale18.vz = s;
-                work->scale28.vx = s;
-                work->scale28.vy = s;
-                work->scale28.vz = s;
+                scale = fxm_lerpRatio(0, 0x1800, frame, 0xF);
+                work->scale18.vx = scale;
+                work->scale18.vy = scale;
+                work->scale18.vz = scale;
+                work->scale28.vx = scale;
+                work->scale28.vy = scale;
+                work->scale28.vz = scale;
             }
             if (frame >= 0xF && frame < 0x28) {
-                s = fxm_lerpRatio(0x1800, 0x2000, frame - 0xF, 0x19);
-                work->scale18.vx = s;
-                work->scale18.vz = s;
-                s = fxm_lerpRatio(0x1800, 0x2800, frame - 0xF, 0x19);
-                work->scale28.vx = s;
-                work->scale28.vz = s;
+                scale = fxm_lerpRatio(0x1800, 0x2000, frame - 0xF, 0x19);
+                work->scale18.vx = scale;
+                work->scale18.vz = scale;
+                scale = fxm_lerpRatio(0x1800, 0x2800, frame - 0xF, 0x19);
+                work->scale28.vx = scale;
+                work->scale28.vz = scale;
             }
             ex->Hi_DrawEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->model40);
             ex->Hi_DrawEffModel(&work->rot0, &work->pos8, (s32)&work->scale28, work->model42);
