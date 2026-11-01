@@ -125,8 +125,8 @@ void btlfx_runScript(void) {
     RECT rect;
     u8 *pc;
     s16 op;
-    s16 a;
-    s16 b;
+    s16 operand0; /* pc[1] and pc[2]: their meaning depends on the opcode */
+    s16 operand1;
     s32 cont;
     u16 hdr;
     s32 slot;
@@ -211,8 +211,8 @@ void btlfx_runScript(void) {
             }
             pc = state->pc;
             op = pc[0];
-            a = pc[1];
-            b = pc[2];
+            operand0 = pc[1];
+            operand1 = pc[2];
             state->pc = pc + 3;
             if (op < BTLFX_OP_TASK_FIRST) {
                 switch (op) {
@@ -246,33 +246,33 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_WAIT:
-                    if (a == 0) {
-                        state->wait = b;
+                    if (operand0 == 0) {
+                        state->wait = operand1;
                         cont = 0;
-                    } else if (state->signals.b[b] == 0) {
+                    } else if (state->signals.b[operand1] == 0) {
                         cont = 0;
                         state->pc -= 3;
-                        state->signals.b[b] = 0;
+                        state->signals.b[operand1] = 0;
                     }
                     break;
                 case BTLFX_CTL_SIGNAL:
-                    state->signals.b[a] = b;
+                    state->signals.b[operand0] = operand1;
                     break;
                 case BTLFX_CTL_LOAD_NEXT:
                     btlfx_loadNextBlock();
                     break;
                 case BTLFX_CTL_WAIT_LOADER:
-                    if (g_btlfxEnv->loader->stage < a) {
+                    if (g_btlfxEnv->loader->stage < operand0) {
                         cont = 0;
                         btlfx_retryOp();
                     }
                     break;
                 case BTLFX_CTL_SET_FILE:
-                    state->fileId = a;
-                    state->file = btlfx_findFileSlot(a);
+                    state->fileId = operand0;
+                    state->file = btlfx_findFileSlot(operand0);
                     break;
                 case BTLFX_CTL_WAIT_LOAD:
-                    switch (a) {
+                    switch (operand0) {
                     case BTLFX_WAITLD_COMMON_TEX:
                         if (g_btlfxEnv->loader->commonTexLoaded == 0) {
                             cont = 0;
@@ -303,7 +303,7 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_WAIT_SOUND_BANK:
-                    if (btlfx_waitSoundBank(a, b)) {
+                    if (btlfx_waitSoundBank(operand0, operand1)) {
                         cont = 0;
                         btlfx_retryOp();
                     }
@@ -315,7 +315,7 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_RELOAD_PARTY:
-                    if (a != 0) {
+                    if (operand0 != 0) {
                         if (state->partyReload != 0) {
                             state->pc -= 3;
                         }
@@ -333,13 +333,13 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_SWAP_MODEL:
-                    if (a != 0) {
+                    if (operand0 != 0) {
                         if (state->modelSwap != 0) {
                             state->pc -= 3;
                         }
                         cont = 0;
                     } else {
-                        slot = btlfx_getUnitSlot(b);
+                        slot = btlfx_getUnitSlot(operand1);
                         btl_swapPartyModel(slot, 1);
                         slot++;
                         state->modelSwap = slot;
@@ -347,15 +347,15 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_VRAM:
-                    switch (a) {
+                    switch (operand0) {
                     case BTLFX_VRAM_SWAP_BACK:
                         btlfx_swapVramPages(1, NULL, (state->flags & BTLFX_HDR_VRAM_SWAP) >> BTLFX_HDR_VRAM_SWAP_SHIFT);
                         break;
                     case BTLFX_VRAM_SWAP_FILE:
-                        btlfx_swapVramPages(2, (u32 *)btlfx_getFileData(-1, b), 0);
+                        btlfx_swapVramPages(2, (u32 *)btlfx_getFileData(-1, operand1), 0);
                         break;
                     case BTLFX_VRAM_WAIT_COMMON_TEX:
-                        if (g_btlfxEnv->loader->commonTexCount < b) {
+                        if (g_btlfxEnv->loader->commonTexCount < operand1) {
                             cont = 0;
                             btlfx_retryOp();
                         }
@@ -369,8 +369,8 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_VIBRATE:
-                    if (b == 0) {
-                        btlfx_copyWords(g_btlfxVibData, (s32 *)btlfx_getFileData(state->file, a), 0x708);
+                    if (operand1 == 0) {
+                        btlfx_copyWords(g_btlfxVibData, (s32 *)btlfx_getFileData(state->file, operand0), 0x708);
                         vib_init(g_btlfxVibData);
                         vib_selectTrack(0, 0, 1);
                         vib_selectTrack(0, 1, 1);
@@ -386,9 +386,9 @@ void btlfx_runScript(void) {
                 }
             } else {
                 if (op < 0x80) {
-                    btlfx_spawnTask(op - 0x20, state->file, a, b);
+                    btlfx_spawnTask(op - 0x20, state->file, operand0, operand1);
                 } else {
-                    btlfx_spawnTask(op, state->file, a, b);
+                    btlfx_spawnTask(op, state->file, operand0, operand1);
                 }
             }
         } while (cont);
