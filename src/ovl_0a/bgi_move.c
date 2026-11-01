@@ -1,22 +1,22 @@
 #include "ovl_0a.h"
 
-/* does the segment from arg0 to arg1 cross the edge arg2-arg3 (on axes x, z)? */
-s32 bgi_segmentsCross(s16 *arg0, s16 *arg1, s16 *arg2, s16 *arg3, u8 x, u8 z) {
+/* does the segment from a0 to a1 cross the edge b0-b1 (on axes x, z)? */
+s32 bgi_segmentsCross(s16 *a0, s16 *a1, s16 *b0, s16 *b1, u8 x, u8 z) {
     s32 t2;
     s32 t3;
     s32 t4;
     s32 ex;
     s32 ez;
 
-    t2 = (arg1[x] - arg0[x]) * (ez = arg3[z] - arg2[z]);
-    ex = arg3[x] - arg2[x];
-    t3 = (arg0[z] - arg2[z]) * ex;
-    t2 -= (arg1[z] - arg0[z]) * ex;
-    t3 -= (arg0[x] - arg2[x]) * ez;
+    t2 = (a1[x] - a0[x]) * (ez = b1[z] - b0[z]);
+    ex = b1[x] - b0[x];
+    t3 = (a0[z] - b0[z]) * ex;
+    t2 -= (a1[z] - a0[z]) * ex;
+    t3 -= (a0[x] - b0[x]) * ez;
     if (ABS(t3) <= ABS(t2)) {
         if ((t3 >= 0 && t2 >= 0) || (t3 <= 0 && t2 < 0)) {
-            t4 = (arg0[z] - arg2[z]) * (arg1[x] - arg0[x]);
-            t4 -= (arg0[x] - arg2[x]) * (arg1[z] - arg0[z]);
+            t4 = (a0[z] - b0[z]) * (a1[x] - a0[x]);
+            t4 -= (a0[x] - b0[x]) * (a1[z] - a0[z]);
             if ((t4 >= 0 && t2 >= 0) || (t4 <= 0 && t2 < 0)) {
                 return 1;
             }
@@ -25,14 +25,14 @@ s32 bgi_segmentsCross(s16 *arg0, s16 *arg1, s16 *arg2, s16 *arg3, u8 x, u8 z) {
     return 0;
 }
 
-BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2) {
+BgiTriangle *bgi_getPassableNeighbor(BgiActor *actor, BgiTriangle *tri, s32 edge) {
     BgiTriangle *n;
     EvtObject *a;
     s16 id;
     u8 m;
     u8 mode;
 
-    id = arg1->neighbors[arg2];
+    id = tri->neighbors[edge];
     if (id == -1) {
         goto fail;
     }
@@ -49,7 +49,7 @@ BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2
         } else {
             a = NULL;
         }
-        if (arg0->actor == a) {
+        if (actor->actor == a) {
             if (m & BGI_MASK_NO_PLAYER) {
             fail:
                 return NULL;
@@ -63,8 +63,8 @@ BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2
     return n;
 }
 
-/* closest point to arg0 on segment arg1-arg2 -> arg3; returns squared distance */
-s32 bgi_closestPointOnSegment(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, SVECTOR *arg3, s16 *arg4) {
+/* closest point to pt on segment a-b -> out; returns squared distance */
+s32 bgi_closestPointOnSegment(SVECTOR *pt, SVECTOR *a, SVECTOR *b, SVECTOR *out, s16 *outInside) {
     SVECTOR c;
     s32 ta;
     s32 tb;
@@ -82,39 +82,39 @@ s32 bgi_closestPointOnSegment(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, SVECT
     s16 by;
     s16 bz;
 
-    px = arg0->vx;
-    ax = arg1->vx;
-    bx = arg2->vx;
-    py = arg0->vy;
-    ay = arg1->vy;
-    by = arg2->vy;
-    pz = arg0->vz;
-    az = arg1->vz;
-    bz = arg2->vz;
+    px = pt->vx;
+    ax = a->vx;
+    bx = b->vx;
+    py = pt->vy;
+    ay = a->vy;
+    by = b->vy;
+    pz = pt->vz;
+    az = a->vz;
+    bz = b->vz;
     ta = (px - ax) * (bx - ax);
     ta += (py - ay) * (by - ay);
     ta += (pz - az) * (bz - az);
     if (ta <= 0) {
-        c.vx = arg1->vx;
-        c.vy = arg1->vy;
-        c.vz = arg1->vz;
+        c.vx = a->vx;
+        c.vy = a->vy;
+        c.vz = a->vz;
         if (ta == 0) {
-            *arg4 = 1;
+            *outInside = 1;
         } else {
-            *arg4 = 0;
+            *outInside = 0;
         }
     } else {
         tb = (px - bx) * (ax - bx);
         tb += (py - by) * (ay - by);
         tb += (pz - bz) * (az - bz);
         if (tb <= 0) {
-            c.vx = arg2->vx;
-            c.vy = arg2->vy;
-            c.vz = arg2->vz;
+            c.vx = b->vx;
+            c.vy = b->vy;
+            c.vz = b->vz;
             if (tb == 0) {
-                *arg4 = 1;
+                *outInside = 1;
             } else {
-                *arg4 = 0;
+                *outInside = 0;
             }
         } else {
             while (ta > 0x10000 || tb > 0x10000) {
@@ -122,56 +122,56 @@ s32 bgi_closestPointOnSegment(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, SVECT
                 tb = tb >> 1;
             }
             s = ta + tb;
-            c.vx = arg1->vx + (arg2->vx - arg1->vx) * ta / s;
-            c.vy = arg1->vy + (arg2->vy - arg1->vy) * ta / s;
-            c.vz = arg1->vz + (arg2->vz - arg1->vz) * ta / s;
-            *arg4 = 1;
+            c.vx = a->vx + (b->vx - a->vx) * ta / s;
+            c.vy = a->vy + (b->vy - a->vy) * ta / s;
+            c.vz = a->vz + (b->vz - a->vz) * ta / s;
+            *outInside = 1;
         }
     }
-    dx = c.vx - arg0->vx;
-    dy = c.vy - arg0->vy;
-    dz = c.vz - arg0->vz;
-    arg3->vx = c.vx;
-    arg3->vy = c.vy;
+    dx = c.vx - pt->vx;
+    dy = c.vy - pt->vy;
+    dz = c.vz - pt->vz;
+    out->vx = c.vx;
+    out->vy = c.vy;
     s = dx * dx;
     s += dy * dy;
-    arg3->vz = c.vz;
+    out->vz = c.vz;
     return s + dz * dz;
 }
 
-s32 bgi_projectOnPlane(VECTOR *arg0, SVECTOR *arg1, s32 arg2, VECTOR *arg3) {
+s32 bgi_projectOnPlane(VECTOR *normal, SVECTOR *dir, s32 unused, VECTOR *outAxis) {
     VECTOR a;
     VECTOR v;
 
-    v.vx = arg1->vx << 16;
-    v.vy = arg1->vy << 16;
-    v.vz = arg1->vz << 16;
+    v.vx = dir->vx << 16;
+    v.vy = dir->vy << 16;
+    v.vz = dir->vz << 16;
     a.vy = 0;
     a.vz = v.vx;
     a.vx = -v.vz;
-    arg3->vx = -arg1->vz;
-    arg3->vy = 0;
-    arg3->vz = arg1->vx;
-    if (arg0->vy >= 0) {
-        v.vx = fld_fixMul(arg0->vy, a.vz);
-        v.vy = fld_fixMul(arg0->vz, a.vx) - fld_fixMul(arg0->vx, a.vz);
-        v.vz = -fld_fixMul(arg0->vy, a.vx);
+    outAxis->vx = -dir->vz;
+    outAxis->vy = 0;
+    outAxis->vz = dir->vx;
+    if (normal->vy >= 0) {
+        v.vx = fld_fixMul(normal->vy, a.vz);
+        v.vy = fld_fixMul(normal->vz, a.vx) - fld_fixMul(normal->vx, a.vz);
+        v.vz = -fld_fixMul(normal->vy, a.vx);
     } else {
-        v.vx = -fld_fixMul(arg0->vy, a.vz);
-        v.vy = fld_fixMul(arg0->vx, a.vz) - fld_fixMul(arg0->vz, a.vx);
-        v.vz = fld_fixMul(arg0->vy, a.vx);
+        v.vx = -fld_fixMul(normal->vy, a.vz);
+        v.vy = fld_fixMul(normal->vx, a.vz) - fld_fixMul(normal->vz, a.vx);
+        v.vz = fld_fixMul(normal->vy, a.vx);
     }
     v.vx = (v.vx + 0x8000) & 0xFFFF0000;
     v.vy = (v.vy + 0x8000) & 0xFFFF0000;
     v.vz = (v.vz + 0x8000) & 0xFFFF0000;
-    arg1->vx = v.vx >> 16;
-    arg1->vy = v.vy >> 16;
-    arg1->vz = v.vz >> 16;
+    dir->vx = v.vx >> 16;
+    dir->vy = v.vy >> 16;
+    dir->vz = v.vz >> 16;
     return 1;
 }
 
 /* push a position out of the walkmesh triangle edges (recurses into neighbours) */
-s32 bgi_pushOutOfEdges(BgiActor *arg0, SVECTOR *arg1, BgiTriangle *arg2, s16 *arg3) {
+s32 bgi_pushOutOfEdges(BgiActor *actor, SVECTOR *pos, BgiTriangle *tri, s16 *outEdge) {
     BgiVertex *e[2];
     SVECTOR p;
     BgiVertex v[3];
@@ -185,28 +185,28 @@ s32 bgi_pushOutOfEdges(BgiActor *arg0, SVECTOR *arg1, BgiTriangle *arg2, s16 *ar
     s16 n;
     BgiVertex *vt;
 
-    t = &g_fieldBgi.floors[arg2->floor];
+    t = &g_fieldBgi.floors[tri->floor];
     p.vx = g_fieldBgi.header->curPos[0] + t->curPos[0];
     p.vy = g_fieldBgi.header->curPos[1] + t->curPos[1];
     p.vz = g_fieldBgi.header->curPos[2] + t->curPos[2];
     vt = g_fieldBgi.vertices;
     for (i = 0; i < 3; i++) {
-        v[i].vx = p.vx + vt[arg2->vertices[i]].vx;
-        v[i].vy = p.vy + vt[arg2->vertices[i]].vy;
-        v[i].vz = p.vz + vt[arg2->vertices[i]].vz;
+        v[i].vx = p.vx + vt[tri->vertices[i]].vx;
+        v[i].vy = p.vy + vt[tri->vertices[i]].vy;
+        v[i].vz = p.vz + vt[tri->vertices[i]].vz;
     }
     e[0] = &v[2];
     hit = 0;
     for (i = 0; i < 3; i++) {
         e[1] = &v[i];
-        d = bgi_closestPointOnSegment(arg1, (SVECTOR *)e[0], (SVECTOR *)e[1], &p, &on);
-        if ((u32)arg0->radiusSq >= d) {
-            nb = bgi_getPassableNeighbor(arg0, arg2, i);
+        d = bgi_closestPointOnSegment(pos, (SVECTOR *)e[0], (SVECTOR *)e[1], &p, &on);
+        if ((u32)actor->radiusSq >= d) {
+            nb = bgi_getPassableNeighbor(actor, tri, i);
             if (nb != NULL) {
                 if (!(nb->flags & BGI_TRI_VISITED)) {
                     nb->flags |= BGI_TRI_VISITED;
-                    if (bgi_pushOutOfEdges(arg0, arg1, nb, arg3) == 0) {
-                        *arg3 = i;
+                    if (bgi_pushOutOfEdges(actor, pos, nb, outEdge) == 0) {
+                        *outEdge = i;
                         hit = 1;
                     }
                 }
@@ -216,20 +216,20 @@ s32 bgi_pushOutOfEdges(BgiActor *arg0, SVECTOR *arg1, BgiTriangle *arg2, s16 *ar
                 } while (0);
                 if (d != 0) {
                     d = (s16)SquareRoot0(d);
-                    if (p.vx == arg1->vx) {
+                    if (p.vx == pos->vx) {
                         push.vx = 0;
                     } else {
-                        push.vx = (s16)((arg1->vx - p.vx) * arg0->radius / d);
+                        push.vx = (s16)((pos->vx - p.vx) * actor->radius / d);
                     }
-                    if (p.vz == arg1->vz) {
+                    if (p.vz == pos->vz) {
                         push.vz = 0;
                     } else {
-                        push.vz = (s16)((arg1->vz - p.vz) * arg0->radius / d);
+                        push.vz = (s16)((pos->vz - p.vz) * actor->radius / d);
                     }
                     n = g_fieldBgiPushCount;
                     if (n + 1 < 16) {
-                        push.vx = p.vx - arg1->vx + push.vx;
-                        push.vz = p.vz - arg1->vz + push.vz;
+                        push.vx = p.vx - pos->vx + push.vx;
+                        push.vz = p.vz - pos->vz + push.vz;
                         g_fieldBgiPushVecs[n][0] = push.vx;
                         g_fieldBgiPushCount++;
                         g_fieldBgiPushVecs[n][2] = push.vz;
@@ -237,8 +237,8 @@ s32 bgi_pushOutOfEdges(BgiActor *arg0, SVECTOR *arg1, BgiTriangle *arg2, s16 *ar
                         g_fieldBgiPushDist[n] = d;
                     }
                     hit = 1;
-                    arg2->flags |= BGI_TRI_VISITED;
-                    *arg3 = i;
+                    tri->flags |= BGI_TRI_VISITED;
+                    *outEdge = i;
                 }
             }
         }
@@ -247,33 +247,33 @@ s32 bgi_pushOutOfEdges(BgiActor *arg0, SVECTOR *arg1, BgiTriangle *arg2, s16 *ar
     return hit ^ 1;
 }
 
-u16 bgi_findTriangleNear(BgiActor *arg0, BgiTriangle **arg1, s32 arg2, s32 arg3) {
+u16 bgi_findTriangleNear(BgiActor *actor, BgiTriangle **triInOut, s32 pos, s32 depth) {
     BgiTriangle *p[2];
     u16 i;
 
-    if (arg3 < 9) {
-        p[0] = *arg1;
-        if ((u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[p[0]->floor], p[0], (s16 *)arg2)) {
+    if (depth < 9) {
+        p[0] = *triInOut;
+        if ((u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[p[0]->floor], p[0], (s16 *)pos)) {
             return 1;
         }
         for (i = 0; i < 3; i++) {
-            p[1] = bgi_getPassableNeighbor(arg0, p[0], i);
-            if (p[1] != NULL && (u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[p[1]->floor], p[1], (s16 *)arg2)) {
-                arg0->triangle = p[0]->neighbors[i];
-                if (arg0->triangle >= 0) {
-                    p[1] = &g_fieldBgi.triangles[arg0->triangle];
-                    arg0->floor = p[1]->floor;
-                    *arg1 = p[1];
+            p[1] = bgi_getPassableNeighbor(actor, p[0], i);
+            if (p[1] != NULL && (u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[p[1]->floor], p[1], (s16 *)pos)) {
+                actor->triangle = p[0]->neighbors[i];
+                if (actor->triangle >= 0) {
+                    p[1] = &g_fieldBgi.triangles[actor->triangle];
+                    actor->floor = p[1]->floor;
+                    *triInOut = p[1];
                     return 1;
                 }
             }
         }
         for (i = 0; i < 3; i++) {
-            p[1] = bgi_getPassableNeighbor(arg0, p[0], i);
+            p[1] = bgi_getPassableNeighbor(actor, p[0], i);
             if (p[1] != NULL && !(p[1]->flags & BGI_TRI_VISITED)) {
                 p[1]->flags |= BGI_TRI_VISITED;
-                if (bgi_findTriangleNear(arg0, &p[1], arg2, arg3 + 1) == 1) {
-                    *arg1 = p[1];
+                if (bgi_findTriangleNear(actor, &p[1], pos, depth + 1) == 1) {
+                    *triInOut = p[1];
                     return 1;
                 }
             }
@@ -282,8 +282,8 @@ u16 bgi_findTriangleNear(BgiActor *arg0, BgiTriangle **arg1, s32 arg2, s32 arg3)
     return 0;
 }
 
-/* slide a position along the walkmesh from arg2 towards arg3, following neighbour triangles */
-s32 bgi_slide(BgiActor *arg0, BgiTriangle **arg1, s16 *arg2, SVECTOR *arg3, s16 arg4, s16 arg5, s32 arg6, s32 arg7) {
+/* slide a position along the walkmesh from `from` towards `to`, following neighbour triangles */
+s32 bgi_slide(BgiActor *actor, BgiTriangle **triInOut, s16 *from, SVECTOR *to, s16 unusedFlag, s16 depth, s32 fracX, s32 fracZ) {
     SVECTOR p;
     SVECTOR *pp;
     VECTOR n;
@@ -303,42 +303,42 @@ s32 bgi_slide(BgiActor *arg0, BgiTriangle **arg1, s16 *arg2, SVECTOR *arg3, s16 
     BgiTriangle *q;
     u8 r;
 
-    cur = *arg1;
+    cur = *triInOut;
     prev = -1;
-    p.vx = arg2[0];
-    p.vy = arg2[1];
-    p.vz = arg2[2];
-    save.vx = arg3->vx;
-    save.vy = arg3->vy;
+    p.vx = from[0];
+    p.vy = from[1];
+    p.vz = from[2];
+    save.vx = to->vx;
+    save.vy = to->vy;
     done = 0;
     pp = &p;
-    save.vz = arg3->vz;
+    save.vz = to->vz;
     edge = -1;
-    saved = arg0->triangle;
-    off = arg0->triangle * sizeof(BgiTriangle);
+    saved = actor->triangle;
+    off = actor->triangle * sizeof(BgiTriangle);
     do {
-        d.vx = arg3->vx - p.vx;
-        d.vy = arg3->vy - pp->vy;
-        d.vz = arg3->vz - pp->vz;
+        d.vx = to->vx - p.vx;
+        d.vy = to->vy - pp->vy;
+        d.vz = to->vz - pp->vz;
         if (cur->normal >= 0) {
             bgi_projectOnPlane((VECTOR *)&g_fieldBgi.normals[cur->normal], &d, (s32)pp, &n);
         } else {
             bgi_projectOnPlane(&g_fieldBgiDefaultNormal, &d, (s32)pp, &n);
         }
-        arg3->vx = pp->vx + d.vx;
-        arg3->vy = pp->vy + d.vy;
-        arg3->vz = pp->vz + d.vz;
-        if ((u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[cur->floor], cur, (s16 *)arg3)) {
+        to->vx = pp->vx + d.vx;
+        to->vy = pp->vy + d.vy;
+        to->vz = pp->vz + d.vz;
+        if ((u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[cur->floor], cur, (s16 *)to)) {
             done = 1;
-        } else if ((r = bgi_findEdgeCrossing(g_fieldBgi.header, &g_fieldBgi.floors[cur->floor], cur, (s16 *)arg3, arg2, pp, &edge, edge))) {
-            if (bgi_getPassableNeighbor(arg0, cur, edge) != NULL) {
+        } else if ((r = bgi_findEdgeCrossing(g_fieldBgi.header, &g_fieldBgi.floors[cur->floor], cur, (s16 *)to, from, pp, &edge, edge))) {
+            if (bgi_getPassableNeighbor(actor, cur, edge) != NULL) {
                 if (cur->normal >= 0) {
-                    e.vx = arg3->vx - p.vx;
-                    e.vy = arg3->vy - pp->vy;
-                    e.vz = arg3->vz - pp->vz;
+                    e.vx = to->vx - p.vx;
+                    e.vy = to->vy - pp->vy;
+                    e.vz = to->vz - pp->vz;
                     s = SquareRoot0(n.vx * n.vx + n.vz * n.vz);
                     if (s == 0) {
-                        arg3->vy = pp->vy;
+                        to->vy = pp->vy;
                     } else {
                         l = SquareRoot0(e.vx * e.vx + e.vy * e.vy + e.vz * e.vz);
                         f.vz = n.vz * l / s;
@@ -347,75 +347,75 @@ s32 bgi_slide(BgiActor *arg0, BgiTriangle **arg1, s16 *arg2, SVECTOR *arg3, s16 
                         e.vy = 0;
                         e.vx = f.vz;
                         e.vz = -f.vx;
-                        arg3->vx = p.vx + e.vx;
-                        arg3->vy = pp->vy + e.vy;
-                        arg3->vz = pp->vz + e.vz;
+                        to->vx = p.vx + e.vx;
+                        to->vy = pp->vy + e.vy;
+                        to->vz = pp->vz + e.vz;
                     }
                 }
                 nb = cur->neighbors[edge];
                 if (nb == prev) {
-                    arg0->triangle = saved;
+                    actor->triangle = saved;
                     cur = (BgiTriangle *)((u8 *)g_fieldBgi.triangles + off);
-                    arg0->floor = cur->floor;
-                    *arg1 = cur;
+                    actor->floor = cur->floor;
+                    *triInOut = cur;
                     return 1;
                 }
-                prev = arg0->triangle;
-                arg0->triangle = cur->neighbors[edge];
+                prev = actor->triangle;
+                actor->triangle = cur->neighbors[edge];
                 q = &g_fieldBgi.triangles[nb];
                 {
                     BgiEdge *ee = &g_fieldBgi.edges[cur->edges[edge]];
-                    arg0->floor = q->floor;
+                    actor->floor = q->floor;
                     edge = ee->clone;
                 }
                 cur = q;
                 if (edge == -1) {
-                    arg0->triangle = saved;
+                    actor->triangle = saved;
                     cur = (BgiTriangle *)((u8 *)g_fieldBgi.triangles + off);
-                    arg0->floor = cur->floor;
-                    *arg1 = cur;
+                    actor->floor = cur->floor;
+                    *triInOut = cur;
                     return 1;
                 }
             } else {
-                arg0->triangle = saved;
+                actor->triangle = saved;
                 cur = (BgiTriangle *)((u8 *)g_fieldBgi.triangles + off);
-                arg0->floor = cur->floor;
-                *arg1 = cur;
+                actor->floor = cur->floor;
+                *triInOut = cur;
                 return 1;
             }
         } else {
             bgi_slide_clear();
-            if ((u8)bgi_findTriangleNear(arg0, &cur, (s32)arg3, 0)) {
+            if ((u8)bgi_findTriangleNear(actor, &cur, (s32)to, 0)) {
                 done = 1;
             } else {
-                if (arg5 < 6) {
-                    arg3->vx = save.vx;
-                    arg3->vy = save.vy;
-                    arg3->vz = save.vz;
-                    bgi_slide_push(arg3, arg2, &arg6, &arg7);
-                    arg0->actor->pos.vx = arg3->vx;
-                    arg0->actor->pos.vy = arg3->vy;
-                    arg0->actor->pos.vz = arg3->vz;
-                    arg0->triangle = saved;
+                if (depth < 6) {
+                    to->vx = save.vx;
+                    to->vy = save.vy;
+                    to->vz = save.vz;
+                    bgi_slide_push(to, from, &fracX, &fracZ);
+                    actor->actor->pos.vx = to->vx;
+                    actor->actor->pos.vy = to->vy;
+                    actor->actor->pos.vz = to->vz;
+                    actor->triangle = saved;
                     cur = (BgiTriangle *)((u8 *)g_fieldBgi.triangles + off);
-                    arg0->floor = cur->floor;
-                    if (bgi_slide(arg0, &cur, arg2, arg3, arg4, arg5 + 1, arg6, arg7) == 0) {
+                    actor->floor = cur->floor;
+                    if (bgi_slide(actor, &cur, from, to, unusedFlag, depth + 1, fracX, fracZ) == 0) {
                         break;
                     }
                 }
-                arg0->triangle = saved;
+                actor->triangle = saved;
                 cur = (BgiTriangle *)((u8 *)g_fieldBgi.triangles + off);
-                arg0->floor = cur->floor;
-                *arg1 = cur;
+                actor->floor = cur->floor;
+                *triInOut = cur;
                 return 1;
             }
         }
     } while (!done);
-    *arg1 = cur;
+    *triInOut = cur;
     return 0;
 }
 
-s32 bgi_applyPushes(BgiActor *arg0, SVECTOR *arg1, BgiTriangle **arg2, s16 *arg3) {
+s32 bgi_applyPushes(BgiActor *actor, SVECTOR *pos, BgiTriangle **triInOut, s16 *unused) {
     VECTOR sum;
     SVECTOR prev;
     u8 i;
@@ -427,14 +427,14 @@ s32 bgi_applyPushes(BgiActor *arg0, SVECTOR *arg1, BgiTriangle **arg2, s16 *arg3
     if (g_fieldBgiPushCount == 0) {
         return 1;
     }
-    prev.vx = arg1->vx;
-    prev.vy = arg1->vy;
-    prev.vz = arg1->vz;
+    prev.vx = pos->vx;
+    prev.vy = pos->vy;
+    prev.vz = pos->vz;
     if (g_fieldBgiPushCount == 1) {
-        arg1->vx += g_fieldBgiPushVecs[0][0];
-        arg1->vz += g_fieldBgiPushVecs[0][2];
-        arg0->actor->pos.vx = arg1->vx;
-        arg0->actor->pos.vz = arg1->vz;
+        pos->vx += g_fieldBgiPushVecs[0][0];
+        pos->vz += g_fieldBgiPushVecs[0][2];
+        actor->actor->pos.vx = pos->vx;
+        actor->actor->pos.vz = pos->vz;
     } else {
         any = 0;
         i = 0;
@@ -482,13 +482,13 @@ s32 bgi_applyPushes(BgiActor *arg0, SVECTOR *arg1, BgiTriangle **arg2, s16 *arg3
                 sum.vy /= n;
             }
         }
-        arg1->vx += sum.vx;
-        arg1->vz += sum.vz;
-        arg0->actor->pos.vx = arg1->vx;
-        arg0->actor->pos.vz = arg1->vz;
+        pos->vx += sum.vx;
+        pos->vz += sum.vz;
+        actor->actor->pos.vx = pos->vx;
+        actor->actor->pos.vz = pos->vz;
     }
     g_fieldBgiPushCount = 0;
-    return bgi_slide(arg0, arg2, &prev, arg1, 0, 0, 0, 0) == 0;
+    return bgi_slide(actor, triInOut, &prev, pos, 0, 0, 0, 0) == 0;
 }
 
 /* clears the visited flag of every walkmesh triangle first */
@@ -508,12 +508,12 @@ static inline s32 bgi_pushOutOfEdges_inline(BgiActor *e, SVECTOR *pos, BgiTriang
     return bgi_pushOutOfEdges(e, pos, nd, edge);
 }
 
-s32 bgi_moveActor(BgiActor *arg0) {
+s32 bgi_moveActor(BgiActor *actor) {
     SVECTOR cur;
     SVECTOR prev;
     BgiTriangle *node;
     s16 edge;
-    s32 ret;
+    s32 result;
     s32 id;
     s16 save;
     s32 k;
@@ -522,7 +522,7 @@ s32 bgi_moveActor(BgiActor *arg0) {
     s32 a;
     BgiFloor *t;
 
-    ret = BGI_MOVE_OK;
+    result = BGI_MOVE_OK;
     g_fieldBgiMoveTriCount = 0;
     for (k = 0; k < 10; k++) {
         g_fieldBgiMoveTris[k] = -1;
@@ -531,101 +531,101 @@ s32 bgi_moveActor(BgiActor *arg0) {
     for (k = 0; k < 10; k++) {
         g_fieldBgiMoveEdges[k] = -1;
     }
-    cur.vx = arg0->actor->pos.vx;
-    cur.vy = arg0->actor->pos.vy;
-    cur.vz = arg0->actor->pos.vz;
-    prev.vx = arg0->actor->prevPos.vx;
-    prev.vy = arg0->actor->prevPos.vy;
-    prev.vz = arg0->actor->prevPos.vz;
+    cur.vx = actor->actor->pos.vx;
+    cur.vy = actor->actor->pos.vy;
+    cur.vz = actor->actor->pos.vz;
+    prev.vx = actor->actor->prevPos.vx;
+    prev.vy = actor->actor->prevPos.vy;
+    prev.vz = actor->actor->prevPos.vz;
     if (cur.vx == prev.vx && cur.vy == prev.vy && cur.vz == prev.vz) {
-        arg0->lastFloor = arg0->floor;
-        arg0->lastTriangle = arg0->triangle;
-        return ret | BGI_MOVE_STILL;
+        actor->lastFloor = actor->floor;
+        actor->lastTriangle = actor->triangle;
+        return result | BGI_MOVE_STILL;
     }
-    id = arg0->triangle;
+    id = actor->triangle;
     node = &g_fieldBgi.triangles[id];
-    save = arg0->triangle;
-    if (bgi_slide(arg0, &node, (s16 *)&prev, &cur, 1, 0, 0, 0) != 0) {
-        arg0->triangle = save;
+    save = actor->triangle;
+    if (bgi_slide(actor, &node, (s16 *)&prev, &cur, 1, 0, 0, 0) != 0) {
+        actor->triangle = save;
         if (id >= 0) {
-            arg0->floor = g_fieldBgi.triangles[id].floor;
+            actor->floor = g_fieldBgi.triangles[id].floor;
         } else {
-            arg0->floor = -1;
+            actor->floor = -1;
         }
-        arg0->actor->pos.vx = arg0->actor->prevPos.vx;
-        arg0->actor->pos.vy = arg0->actor->prevPos.vy;
-        arg0->actor->pos.vz = arg0->actor->prevPos.vz;
-        ret |= BGI_MOVE_BLOCKED;
-        if (arg0->lastTriangle >= 0) {
-            if (!(u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[arg0->lastFloor], &g_fieldBgi.triangles[arg0->lastTriangle], &prev.vx)) {
-                arg0->lastFloor = arg0->floor;
-                arg0->lastTriangle = arg0->triangle;
+        actor->actor->pos.vx = actor->actor->prevPos.vx;
+        actor->actor->pos.vy = actor->actor->prevPos.vy;
+        actor->actor->pos.vz = actor->actor->prevPos.vz;
+        result |= BGI_MOVE_BLOCKED;
+        if (actor->lastTriangle >= 0) {
+            if (!(u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[actor->lastFloor], &g_fieldBgi.triangles[actor->lastTriangle], &prev.vx)) {
+                actor->lastFloor = actor->floor;
+                actor->lastTriangle = actor->triangle;
             }
         }
-        return ret;
+        return result;
     }
-    if (!(u8)bgi_pushOutOfEdges_inline(arg0, &cur, node, &edge)) {
-        if ((u8)bgi_applyPushes(arg0, &cur, &node, &edge)) {
-            ret |= BGI_MOVE_PUSHED | BGI_MOVE_BLOCKED;
+    if (!(u8)bgi_pushOutOfEdges_inline(actor, &cur, node, &edge)) {
+        if ((u8)bgi_applyPushes(actor, &cur, &node, &edge)) {
+            result |= BGI_MOVE_PUSHED | BGI_MOVE_BLOCKED;
         } else {
-            arg0->triangle = save;
+            actor->triangle = save;
             if (save >= 0) {
-                arg0->floor = g_fieldBgiTriangles[save].floor;
+                actor->floor = g_fieldBgiTriangles[save].floor;
             } else {
-                arg0->floor = -1;
+                actor->floor = -1;
             }
-            arg0->actor->pos.vx = arg0->actor->prevPos.vx;
-            arg0->actor->pos.vy = arg0->actor->prevPos.vy;
-            arg0->actor->pos.vz = arg0->actor->prevPos.vz;
-            ret |= BGI_MOVE_BLOCKED;
-            if (arg0->lastTriangle >= 0 && arg0->lastFloor >= 0) {
-            if (!(u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[arg0->lastFloor], &g_fieldBgi.triangles[arg0->lastTriangle], &prev.vx)) {
-                arg0->lastFloor = arg0->floor;
-                arg0->lastTriangle = arg0->triangle;
+            actor->actor->pos.vx = actor->actor->prevPos.vx;
+            actor->actor->pos.vy = actor->actor->prevPos.vy;
+            actor->actor->pos.vz = actor->actor->prevPos.vz;
+            result |= BGI_MOVE_BLOCKED;
+            if (actor->lastTriangle >= 0 && actor->lastFloor >= 0) {
+            if (!(u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[actor->lastFloor], &g_fieldBgi.triangles[actor->lastTriangle], &prev.vx)) {
+                actor->lastFloor = actor->floor;
+                actor->lastTriangle = actor->triangle;
             }
             }
-            return ret;
+            return result;
         }
     }
-    if (cur.vx != arg0->actor->pos.vx || cur.vz != arg0->actor->pos.vz) {
-        arg0->actor->pos.vx = cur.vx;
-        ret |= BGI_MOVE_CORRECTED;
-        arg0->actor->pos.vz = cur.vz;
+    if (cur.vx != actor->actor->pos.vx || cur.vz != actor->actor->pos.vz) {
+        actor->actor->pos.vx = cur.vx;
+        result |= BGI_MOVE_CORRECTED;
+        actor->actor->pos.vz = cur.vz;
     }
     if (node->normal >= 0) {
         pl = &g_fieldBgi.normals[node->normal];
         if ((u32)(pl->ny + 0x50F4) > 0xA1E8) {
-            a = fld_fixMul(pl->nx, arg0->actor->pos.vx << 16);
-            arg0->actor->pos.vy = fld_fixMul(node->d - a - fld_fixMul(pl->nz, arg0->actor->pos.vz << 16), pl->invNy) >> 16;
-            arg0->actor->pos.vy += (s16)g_fieldBgi.floors[node->floor].curPos[1] - g_fieldBgi.floors[node->floor].orgPos[1];
+            a = fld_fixMul(pl->nx, actor->actor->pos.vx << 16);
+            actor->actor->pos.vy = fld_fixMul(node->d - a - fld_fixMul(pl->nz, actor->actor->pos.vz << 16), pl->invNy) >> 16;
+            actor->actor->pos.vy += (s16)g_fieldBgi.floors[node->floor].curPos[1] - g_fieldBgi.floors[node->floor].orgPos[1];
         } else {
-            arg0->actor->pos.vy = cur.vy;
+            actor->actor->pos.vy = cur.vy;
         }
     } else {
         t = g_fieldBgi.floors + node->floor;
         vt = g_fieldBgi.vertices + node->vertices[0];
-        arg0->actor->pos.vy = (s16)(vt->vy + (g_fieldBgi.header->curPos[1] + t->curPos[1]));
+        actor->actor->pos.vy = (s16)(vt->vy + (g_fieldBgi.header->curPos[1] + t->curPos[1]));
     }
-    arg0->lastTriangle = save;
+    actor->lastTriangle = save;
     if (save >= 0) {
-        arg0->lastFloor = g_fieldBgiTriangles[save].floor;
+        actor->lastFloor = g_fieldBgiTriangles[save].floor;
     } else {
-        arg0->lastFloor = -1;
+        actor->lastFloor = -1;
     }
-    return ret;
+    return result;
 }
 
-s32 bgi_init(BgiHeader *arg0) {
+s32 bgi_init(BgiHeader *bgi) {
     u16 i;
     BgiAnim *p;
 
-    g_fieldBgi.header = arg0;
-    g_fieldBgi.vertices = (BgiVertex *)((u8 *)arg0 + arg0->vertexOffset);
-    g_fieldBgi.triangles = (BgiTriangle *)((u8 *)arg0 + arg0->triangleOffset);
-    g_fieldBgi.normals = (BgiNormal *)((u8 *)arg0 + arg0->normalOffset);
-    g_fieldBgi.edges = (u8 *)arg0 + arg0->edgeOffset;
-    g_fieldBgi.floors = (BgiFloor *)((u8 *)arg0 + arg0->floorOffset);
-    p = (BgiAnim *)((u8 *)arg0 + arg0->animOffset);
+    g_fieldBgi.header = bgi;
+    g_fieldBgi.vertices = (BgiVertex *)((u8 *)bgi + bgi->vertexOffset);
+    g_fieldBgi.triangles = (BgiTriangle *)((u8 *)bgi + bgi->triangleOffset);
+    g_fieldBgi.normals = (BgiNormal *)((u8 *)bgi + bgi->normalOffset);
+    g_fieldBgi.edges = (u8 *)bgi + bgi->edgeOffset;
+    g_fieldBgi.floors = (BgiFloor *)((u8 *)bgi + bgi->floorOffset);
+    p = (BgiAnim *)((u8 *)bgi + bgi->animOffset);
     g_fieldBgi.maskFilter = 0xFF;
     g_fieldBgi.actorCount = 9;
     g_fieldBgi.actors = g_fieldBgiActors;
@@ -649,12 +649,12 @@ s32 bgi_init(BgiHeader *arg0) {
     return 1;
 }
 
-BgiActor *bgi_findPlayerActor(s32 *arg0) {
+BgiActor *bgi_findPlayerActor(s32 *outIndex) {
     EvtObject *a;
     s32 i;
     u8 mode;
 
-    *arg0 = 0;
+    *outIndex = 0;
     mode = g_gameState->mode;
     if (mode == 5) {
         a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
@@ -666,7 +666,7 @@ BgiActor *bgi_findPlayerActor(s32 *arg0) {
     if (a != NULL) {
         for (i = 0; i < g_fieldBgi.actorCount; i++) {
             if (g_fieldBgi.actors[i].actor == a) {
-                *arg0 = i;
+                *outIndex = i;
                 return &g_fieldBgi.actors[i];
             }
         }
@@ -674,24 +674,24 @@ BgiActor *bgi_findPlayerActor(s32 *arg0) {
     return NULL;
 }
 
-s32 bgi_setActorActive(s32 arg0, s32 arg1) {
-    if (arg1 != 0) {
-        g_fieldBgi.actors[arg0].flags |= BGI_FLAG_ACTIVE;
+s32 bgi_setActorActive(s32 actorId, s32 active) {
+    if (active != 0) {
+        g_fieldBgi.actors[actorId].flags |= BGI_FLAG_ACTIVE;
     } else {
-        g_fieldBgi.actors[arg0].flags &= ~BGI_FLAG_ACTIVE;
-        g_fieldBgi.actors[arg0].floor = -1;
-        g_fieldBgi.actors[arg0].triangle = -1;
-        g_fieldBgi.actors[arg0].lastFloor = -1;
-        g_fieldBgi.actors[arg0].lastTriangle = -1;
+        g_fieldBgi.actors[actorId].flags &= ~BGI_FLAG_ACTIVE;
+        g_fieldBgi.actors[actorId].floor = -1;
+        g_fieldBgi.actors[actorId].triangle = -1;
+        g_fieldBgi.actors[actorId].lastFloor = -1;
+        g_fieldBgi.actors[actorId].lastTriangle = -1;
     }
     return 1;
 }
 
-/* put entry arg0 on the floor below (arg1, arg2, arg3) */
-s32 bgi_placeActor(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
+/* put actor actorId on the floor below (x, y, z) */
+s32 bgi_placeActor(s32 actorId, s16 x, s16 y, s16 z) {
     SVECTOR pos;
     VECTOR v;
-    s16 tmp;
+    s16 edge;
     BgiTriangle *n;
     BgiHeader *b;
     BgiActor *a;
@@ -716,12 +716,12 @@ s32 bgi_placeActor(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
     bt = -1;
     found = 0;
     i = 0;
-    pos.vx = arg1;
-    pos.vy = arg2;
-    pos.vz = arg3;
+    pos.vx = x;
+    pos.vy = y;
+    pos.vz = z;
     n = g_fieldBgi.triangles;
     b = g_fieldBgi.header;
-    a = &g_fieldBgi.actors[arg0];
+    a = &g_fieldBgi.actors[actorId];
     for (; i < b->triangleCount; i++, n++) {
         hit = 0;
         if ((u8)bgi_pointInTriangleXZ(b, &g_fieldBgi.floors[n->floor], n, &pos)) {
@@ -733,7 +733,7 @@ s32 bgi_placeActor(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
                 p++;
             }
             g_fieldBgiPushCount = 0;
-            if (bgi_pushOutOfEdges(a, &pos, n, &tmp) || bgi_applyPushes(a, &pos, &n, &tmp)) {
+            if (bgi_pushOutOfEdges(a, &pos, n, &edge) || bgi_applyPushes(a, &pos, &n, &edge)) {
                 hit = 1;
             }
             if (hit) {
@@ -752,7 +752,7 @@ s32 bgi_placeActor(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
                     vt = g_fieldBgi.vertices + n->vertices[0];
                     pos.vy = vt->vy + (g_fieldBgi.header->curPos[1] + tri->curPos[1]);
                 }
-                if (pos.vy >= arg2 && pos.vy < ymin) {
+                if (pos.vy >= y && pos.vy < ymin) {
                     found = 1;
                     ymin = pos.vy;
                     bi = i;
@@ -764,80 +764,80 @@ s32 bgi_placeActor(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
     if (found) {
         a->floor = bt;
         a->triangle = bi;
-        a->actor->pos.vx = arg1;
+        a->actor->pos.vx = x;
         a->actor->pos.vy = ymin;
-        a->actor->pos.vz = arg3;
+        a->actor->pos.vz = z;
         return 1;
     }
     return 0;
 }
 
-s32 bgi_setActorTriangle(s32 arg0, s16 arg1) {
+s32 bgi_setActorTriangle(s32 actorId, s16 triId) {
     BgiTriangle *n;
     BgiFloor *t;
     SVECTOR v;
 
-    n = &g_fieldBgi.triangles[(u16)arg1];
+    n = &g_fieldBgi.triangles[(u16)triId];
     t = &g_fieldBgi.floors[n->floor];
     v.vx = g_fieldBgi.header->curPos[0] + t->curPos[0];
     v.vy = g_fieldBgi.header->curPos[1] + t->curPos[1];
     v.vz = g_fieldBgi.header->curPos[2] + t->curPos[2];
-    g_fieldBgi.actors[arg0].floor = n->floor;
-    g_fieldBgi.actors[arg0].triangle = arg1;
-    g_fieldBgi.actors[arg0].actor->pos.vx = v.vx + n->centerX;
-    g_fieldBgi.actors[arg0].actor->pos.vy = v.vy + n->centerY;
-    g_fieldBgi.actors[arg0].actor->pos.vz = v.vz + n->centerZ;
-    g_fieldBgi.actors[arg0].actor->prevPos.vx = v.vx + n->centerX;
-    g_fieldBgi.actors[arg0].actor->prevPos.vy = v.vy + n->centerY;
-    g_fieldBgi.actors[arg0].actor->prevPos.vz = v.vz + n->centerZ;
+    g_fieldBgi.actors[actorId].floor = n->floor;
+    g_fieldBgi.actors[actorId].triangle = triId;
+    g_fieldBgi.actors[actorId].actor->pos.vx = v.vx + n->centerX;
+    g_fieldBgi.actors[actorId].actor->pos.vy = v.vy + n->centerY;
+    g_fieldBgi.actors[actorId].actor->pos.vz = v.vz + n->centerZ;
+    g_fieldBgi.actors[actorId].actor->prevPos.vx = v.vx + n->centerX;
+    g_fieldBgi.actors[actorId].actor->prevPos.vy = v.vy + n->centerY;
+    g_fieldBgi.actors[actorId].actor->prevPos.vz = v.vz + n->centerZ;
     return 1;
 }
 
-s32 bgi_setActorFloorTriangle(s32 arg0, u16 arg1, u16 arg2) {
+s32 bgi_setActorFloorTriangle(s32 actorId, u16 floorId, u16 triIdx) {
     BgiFloor *t;
     BgiTriangle *n;
     s32 *ids;
     s32 id;
     SVECTOR v;
 
-    t = &g_fieldBgi.floors[arg1];
+    t = &g_fieldBgi.floors[floorId];
     ids = (s32 *)((u8 *)g_fieldBgi.header + t->triangleOffset);
-    id = ids[arg2];
+    id = ids[triIdx];
     v.vx = g_fieldBgi.header->curPos[0] + t->curPos[0];
     v.vy = g_fieldBgi.header->curPos[1] + t->curPos[1];
     v.vz = g_fieldBgi.header->curPos[2] + t->curPos[2];
     n = &g_fieldBgi.triangles[id];
-    g_fieldBgi.actors[arg0].floor = arg1;
-    g_fieldBgi.actors[arg0].triangle = ids[arg2];
-    g_fieldBgi.actors[arg0].actor->pos.vx = v.vx + n->centerX;
-    g_fieldBgi.actors[arg0].actor->pos.vy = v.vy + n->centerY;
-    g_fieldBgi.actors[arg0].actor->pos.vz = v.vz + n->centerZ;
-    g_fieldBgi.actors[arg0].actor->prevPos.vx = v.vx + n->centerX;
-    g_fieldBgi.actors[arg0].actor->prevPos.vy = v.vy + n->centerY;
-    g_fieldBgi.actors[arg0].actor->prevPos.vz = v.vz + n->centerZ;
+    g_fieldBgi.actors[actorId].floor = floorId;
+    g_fieldBgi.actors[actorId].triangle = ids[triIdx];
+    g_fieldBgi.actors[actorId].actor->pos.vx = v.vx + n->centerX;
+    g_fieldBgi.actors[actorId].actor->pos.vy = v.vy + n->centerY;
+    g_fieldBgi.actors[actorId].actor->pos.vz = v.vz + n->centerZ;
+    g_fieldBgi.actors[actorId].actor->prevPos.vx = v.vx + n->centerX;
+    g_fieldBgi.actors[actorId].actor->prevPos.vy = v.vy + n->centerY;
+    g_fieldBgi.actors[actorId].actor->prevPos.vz = v.vz + n->centerZ;
     return 1;
 }
 
-s32 bgi_updateActor(u32 arg0) {
+s32 bgi_updateActor(u32 actorId) {
     BgiActor *e;
 
     if (g_fieldBgi.loaded == 0) {
         return BGI_ERR_NO_MESH;
     }
-    if (arg0 >= g_fieldBgi.actorCount) {
+    if (actorId >= g_fieldBgi.actorCount) {
         return BGI_ERR_BAD_ACTOR;
     }
-    e = &g_fieldBgi.actors[arg0];
+    e = &g_fieldBgi.actors[actorId];
     if (e->flags & BGI_FLAG_ACTIVE) {
         if (e->floor == -1 || e->triangle == -1) {
-            return (bgi_placeActor(arg0, e->actor->pos.vx, e->actor->pos.vy, e->actor->pos.vz) != 0) * 2;
+            return (bgi_placeActor(actorId, e->actor->pos.vx, e->actor->pos.vy, e->actor->pos.vz) != 0) * 2;
         }
         return bgi_moveActor(e);
     }
     return 0;
 }
 
-s16 bgi_findTriangleBelow(s16 arg0, s16 arg1, s16 arg2, s16 *arg3, BgiTriangle **arg4) {
+s16 bgi_findTriangleBelow(s16 posX, s16 posY, s16 posZ, s16 *outTriId, BgiTriangle **outTri) {
     SVECTOR p;
     VECTOR v;
     s16 y0;
@@ -854,16 +854,16 @@ s16 bgi_findTriangleBelow(s16 arg0, s16 arg1, s16 arg2, s16 *arg3, BgiTriangle *
     BgiVertex *vx;
 
     best = 0x7FFF;
-    *arg3 = -1;
-    *arg4 = NULL;
+    *outTriId = -1;
+    *outTri = NULL;
     n = g_fieldBgi.triangles;
     b = g_fieldBgi.header;
     found = 0;
-    p.vx = arg0;
-    p.vy = arg1;
-    p.vz = arg2;
+    p.vx = posX;
+    p.vy = posY;
+    p.vz = posZ;
     i = 0;
-    y0 = arg1;
+    y0 = posY;
     for (; i < b->triangleCount; n++, i++) {
         if ((u8)bgi_pointInTriangleXZ(b, &g_fieldBgi.floors[n->floor], n, &p)) {
             k = n->normal;
@@ -884,23 +884,23 @@ s16 bgi_findTriangleBelow(s16 arg0, s16 arg1, s16 arg2, s16 *arg3, BgiTriangle *
             y = p.vy;
             if (y >= y0 && y < best) {
                 found = 1;
-                *arg3 = i;
+                *outTriId = i;
                 best = y;
-                *arg4 = n;
+                *outTri = n;
             }
         }
     }
     return found;
 }
 
-s32 bgi_setFloorActive(s32 arg0, s32 arg1) {
+s32 bgi_setFloorActive(s32 floorId, s32 active) {
     BgiHeader *b = g_fieldBgi.header;
-    BgiFloor *t = &((BgiFloor *)((u8 *)b + b->floorOffset))[arg0];
+    BgiFloor *t = &((BgiFloor *)((u8 *)b + b->floorOffset))[floorId];
     s32 *ids;
     s32 i;
     BgiTriangle *n;
 
-    if (arg1 != 0) {
+    if (active != 0) {
         ids = (s32 *)((u8 *)b + t->triangleOffset);
         t->flags |= BGI_FLAG_ACTIVE;
         n = g_fieldBgi.triangles;
@@ -918,7 +918,7 @@ s32 bgi_setFloorActive(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s16 bgi_getHeight(s16 arg0, s16 arg1) {
+s16 bgi_getHeight(s16 x, s16 z) {
     SVECTOR p;
     VECTOR v;
     u16 i;
@@ -951,9 +951,9 @@ plane:
     p.vy = v.vy;
     return p.vy;
 start:
-    p.vx = arg0;
+    p.vx = x;
     p.vy = -0x5CD7;
-    p.vz = arg1;
+    p.vz = z;
     n = g_fieldBgi.triangles;
     for (i = 0; i < g_fieldBgi.header->triangleCount; i++, n++) {
         if ((u8)bgi_pointInTriangleXZ(g_fieldBgi.header, &g_fieldBgi.floors[n->floor], n, &p)) {

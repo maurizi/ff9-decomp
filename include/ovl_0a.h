@@ -1619,15 +1619,15 @@ FieldAnimSfx *fld_addAnimSfx(FieldObjSlot *, s32, s32); /* returns the new entry
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 void akao_resume(u32 x); /* main */
 void akao_pause(u32 x); /* main */
-s32 bgi_addActor(FieldObjSlot *arg0);
-s32 bgi_bindActor(s32 arg0, FieldObjSlot *arg1);
+s32 bgi_addActor(FieldObjSlot *slot);
+s32 bgi_bindActor(s32 actorId, FieldObjSlot *slot);
 s32 bgi_clear(void);
-s32 bgi_getTriangleFlags(s16 arg0, u16 *arg1);
-s32 bgi_init(BgiHeader *arg0);
-s32 bgi_remapActors(u8 *arg0, BgiAnim *arg1, BgiKeyframe *arg2, s16 arg3, s32 unused);
-s32 bgi_segmentsCross(s16 *arg0, s16 *arg1, s16 *arg2, s16 *arg3, u8 x, u8 z);
-s32 bgi_setActorActive(s32 arg0, s32 arg1);
-s32 bgi_setAnimRate(u32 arg0, s16 arg1);
+s32 bgi_getTriangleFlags(s16 triId, u16 *outFlags);
+s32 bgi_init(BgiHeader *bgi);
+s32 bgi_remapActors(u8 *bgi, BgiAnim *anim, BgiKeyframe *frame, s16 oldFrame, s32 unused);
+s32 bgi_segmentsCross(s16 *a0, s16 *a1, s16 *b0, s16 *b1, u8 x, u8 z);
+s32 bgi_setActorActive(s32 actorId, s32 active);
+s32 bgi_setAnimRate(u32 animId, s16 rate);
 s32 bgi_updateAnims(void);
 s32 bgi_updateFloorMoves(void);
 void evt_createModels(void); /* main */

@@ -146,7 +146,7 @@ s32 bgi_pointInTriangleXZ(BgiHeader *b, BgiFloor *t, BgiTriangle *n, SVECTOR *sv
     return r;
 }
 
-s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *arg3, s16 *arg4, SVECTOR *arg5, s16 *arg6, s32 arg7) {
+s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *to, s16 *from, SVECTOR *hitOut, s16 *edgeOut, s32 skipEdge) {
     s16 o[3];
     BgiVertexArr *pv[3];
     BgiVertexArr v[3];
@@ -172,7 +172,7 @@ s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *arg3, s
     s32 ex;
     s32 ez;
 
-    edge = arg7;
+    edge = skipEdge;
     x = 0;
     z = 2;
     y = 1;
@@ -206,14 +206,14 @@ s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *arg3, s
     for (i = 0; i < 3; i++) {
         pv[1] = &v[i];
         if (i != edge) {
-            d = (pv[1]->xyz[x] - pv[0]->xyz[x]) * (ez = arg3[z] - arg4[z]);
-            ex = arg3[x] - arg4[x];
-            e = (pv[0]->xyz[z] - arg4[z]) * ex;
+            d = (pv[1]->xyz[x] - pv[0]->xyz[x]) * (ez = to[z] - from[z]);
+            ex = to[x] - from[x];
+            e = (pv[0]->xyz[z] - from[z]) * ex;
             d -= (pv[1]->xyz[z] - pv[0]->xyz[z]) * ex;
-            e -= (pv[0]->xyz[x] - arg4[x]) * ez;
+            e -= (pv[0]->xyz[x] - from[x]) * ez;
             if (ABS(e) <= ABS(d)) {
-                f = (pv[0]->xyz[z] - arg4[z]) * (pv[1]->xyz[x] - pv[0]->xyz[x]);
-                f -= (pv[0]->xyz[x] - arg4[x]) * (pv[1]->xyz[z] - pv[0]->xyz[z]);
+                f = (pv[0]->xyz[z] - from[z]) * (pv[1]->xyz[x] - pv[0]->xyz[x]);
+                f -= (pv[0]->xyz[x] - from[x]) * (pv[1]->xyz[z] - pv[0]->xyz[z]);
                 if (ABS(f) <= ABS(d)) {
                     if ((e >= 0 && d >= 0) || (e <= 0 && d < 0)) {
                         if ((f >= 0 && d >= 0) || (f <= 0 && d < 0)) {
@@ -244,12 +244,12 @@ s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *arg3, s
         pv[0] = pv[1];
     }
     if (cnt == 1) {
-        *arg6 = idx[0];
-        arg5->vx = hit[0][0];
-        arg5->vy = hit[0][1];
-        arg5->vz = hit[0][2];
+        *edgeOut = idx[0];
+        hitOut->vx = hit[0][0];
+        hitOut->vy = hit[0][1];
+        hitOut->vz = hit[0][2];
     } else if (cnt < 2) {
-        *arg6 = -1;
+        *edgeOut = -1;
         return 0;
     } else switch (cnt) {
     case 2:
@@ -270,16 +270,16 @@ s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *arg3, s
             pv[2] = &v[1];
             break;
         }
-        if (bgi_segmentsCross(pv[0]->xyz, arg3, pv[2]->xyz, pv[1]->xyz, x, z)) {
-            *arg6 = idx[0];
-            arg5->vx = hit[0][0];
-            arg5->vy = hit[0][1];
-            arg5->vz = hit[0][2];
+        if (bgi_segmentsCross(pv[0]->xyz, to, pv[2]->xyz, pv[1]->xyz, x, z)) {
+            *edgeOut = idx[0];
+            hitOut->vx = hit[0][0];
+            hitOut->vy = hit[0][1];
+            hitOut->vz = hit[0][2];
         } else {
-            *arg6 = idx[1];
-            arg5->vx = hit[1][0];
-            arg5->vy = hit[1][1];
-            arg5->vz = hit[1][2];
+            *edgeOut = idx[1];
+            hitOut->vx = hit[1][0];
+            hitOut->vy = hit[1][1];
+            hitOut->vz = hit[1][2];
         }
         break;
     case 3:
@@ -292,20 +292,20 @@ s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *arg3, s
                 min = m;
             }
         }
-        *arg6 = best;
-        arg5->vx = hit[best][0];
-        arg5->vy = hit[best][1];
-        arg5->vz = hit[best][2];
+        *edgeOut = best;
+        hitOut->vx = hit[best][0];
+        hitOut->vy = hit[best][1];
+        hitOut->vz = hit[best][2];
         break;
     default:
-        *arg6 = -1;
+        *edgeOut = -1;
         return 0;
     }
     return 1;
 }
 
 /* debug: print a walkmesh */
-void bgi_dumpText(BgiHeader *arg0) {
+void bgi_dumpText(BgiHeader *bgi) {
     BgiTriangle *tri;
     BgiEdgeView *edge;
     BgiAnim *anim;
@@ -318,23 +318,23 @@ void bgi_dumpText(BgiHeader *arg0) {
     s32 j;
     s32 k;
 
-    if (arg0 == NULL) {
+    if (bgi == NULL) {
         return;
     }
     printf("BGI Text Dump\n");
     printf("=============\n");
-    printf("Data Size\t\t : %d [+4 for file magic]\n", arg0->dataSize);
-    printf("Original Position: (%6d,%6d,%6d)\n", arg0->orgX, arg0->orgY, arg0->orgZ);
-    printf("Current Position : (%6d,%6d,%6d)\n", arg0->curPos[0], arg0->curPos[1], arg0->curPos[2]);
-    printf("Minimum Values   : (%6d,%6d,%6d)\n", arg0->minX, arg0->minY, arg0->minZ);
-    printf("Maximum Values   : (%6d,%6d,%6d)\n", arg0->maxX, arg0->maxY, arg0->maxZ);
-    printf("Default Char Pos : (%6d,%6d,%6d)\n", arg0->charX, arg0->charY, arg0->charZ);
-    printf("Active Floor\t : %d\n", arg0->activeFloor);
-    printf("Active Triangle  : %d\n", arg0->activeTriangle);
-    printf("Triangle Count   : %d\n", arg0->triangleCount);
-    printf("Triangle Offset  : %d\n", arg0->triangleOffset);
-    tri = (BgiTriangle *)((u8 *)arg0 + arg0->triangleOffset);
-    for (i = 0; i < arg0->triangleCount; tri++, i++) {
+    printf("Data Size\t\t : %d [+4 for file magic]\n", bgi->dataSize);
+    printf("Original Position: (%6d,%6d,%6d)\n", bgi->orgX, bgi->orgY, bgi->orgZ);
+    printf("Current Position : (%6d,%6d,%6d)\n", bgi->curPos[0], bgi->curPos[1], bgi->curPos[2]);
+    printf("Minimum Values   : (%6d,%6d,%6d)\n", bgi->minX, bgi->minY, bgi->minZ);
+    printf("Maximum Values   : (%6d,%6d,%6d)\n", bgi->maxX, bgi->maxY, bgi->maxZ);
+    printf("Default Char Pos : (%6d,%6d,%6d)\n", bgi->charX, bgi->charY, bgi->charZ);
+    printf("Active Floor\t : %d\n", bgi->activeFloor);
+    printf("Active Triangle  : %d\n", bgi->activeTriangle);
+    printf("Triangle Count   : %d\n", bgi->triangleCount);
+    printf("Triangle Offset  : %d\n", bgi->triangleOffset);
+    tri = (BgiTriangle *)((u8 *)bgi + bgi->triangleOffset);
+    for (i = 0; i < bgi->triangleCount; tri++, i++) {
         printf("  %4d: Flags\t\t\t= 0x%04X\n", i, tri->flags);
         printf("\t\tData\t\t\t = %d\n", tri->data);
         printf("\t\tFloor Index \t = %d\n", tri->floor);
@@ -347,39 +347,39 @@ void bgi_dumpText(BgiHeader *arg0) {
         printf("\t\tEdge Indices\t = (%6d,%6d,%6d)\n", tri->edges[0], tri->edges[1], tri->edges[2]);
         printf("\t\tNeighbor Indices = (%6d,%6d,%6d)\n", tri->neighbors[0], tri->neighbors[1], tri->neighbors[2]);
     }
-    printf("Edge Count  \t : %d\n", arg0->edgeCount);
-    printf("Edge Offset \t : %d\n", arg0->edgeOffset);
-    edge = (BgiEdgeView *)((u8 *)arg0 + arg0->edgeOffset);
-    for (i = 0; i < arg0->edgeCount; edge++, i++) {
+    printf("Edge Count  \t : %d\n", bgi->edgeCount);
+    printf("Edge Offset \t : %d\n", bgi->edgeOffset);
+    edge = (BgiEdgeView *)((u8 *)bgi + bgi->edgeOffset);
+    for (i = 0; i < bgi->edgeCount; edge++, i++) {
         printf("  %4d: Flags\t   = 0x%04X\n", i, edge->flags);
         printf("\t\tEdge Clone  = %d\n", edge->clone);
     }
-    printf("Keyframe Animation Count  : %d\n", arg0->animCount);
-    printf("Keyframe Animation Offset : %d\n", arg0->animOffset);
-    anim = (BgiAnim *)((u8 *)arg0 + arg0->animOffset);
-    for (i = 0; i < arg0->animCount; anim++, i++) {
+    printf("Keyframe Animation Count  : %d\n", bgi->animCount);
+    printf("Keyframe Animation Offset : %d\n", bgi->animOffset);
+    anim = (BgiAnim *)((u8 *)bgi + bgi->animOffset);
+    for (i = 0; i < bgi->animCount; anim++, i++) {
         printf("  %4d: Flags\t\t  = 0x%04X\n", i, anim->flags);
         printf("\t\tFrame Count    = %d\n", anim->frameCount);
         printf("\t\tCurrent Frame  = %ld\n", anim->curFrame);
         printf("\t\tFrame Rate     = %d\n", anim->frameRate);
         printf("\t\tCounter \t   = %d\n", (u16)anim->counter);
         printf("\t\tFrame Offset   = %ld\n", anim->frameOffset);
-        frame = (BgiKeyframe *)((u8 *)arg0 + anim->frameOffset);
+        frame = (BgiKeyframe *)((u8 *)bgi + anim->frameOffset);
         for (j = 0; j < anim->frameCount; frame++, j++) {
             printf("\t\t%4d: Frame Flags     = 0x%04X\n", j, frame->flags);
             printf("              Value           = %d\n", frame->value);
             printf("              Triangle Count  = %d\n", frame->triangleCount);
             printf("\t\t\t  Triangle Offset = %d\n", frame->triangleOffset);
-            ids = (s32 *)((u8 *)arg0 + frame->triangleOffset);
+            ids = (s32 *)((u8 *)bgi + frame->triangleOffset);
             for (k = 0; k < frame->triangleCount; ids++, k++) {
                 printf("\t\t\t\t%4d: Triangle Ndx = %ld\n", j, *ids);
             }
         }
     }
-    printf("Floor Count \t : %d\n", arg0->floorCount);
-    printf("Floor Offset\t : %d\n", arg0->floorOffset);
-    floor = (BgiFloor *)((u8 *)arg0 + arg0->floorOffset);
-    for (i = 0; i < arg0->floorCount; floor++, i++) {
+    printf("Floor Count \t : %d\n", bgi->floorCount);
+    printf("Floor Offset\t : %d\n", bgi->floorOffset);
+    floor = (BgiFloor *)((u8 *)bgi + bgi->floorOffset);
+    for (i = 0; i < bgi->floorCount; floor++, i++) {
         printf("  %4d: Flags\t\t\t\t= %d\n", i, floor->flags);
         printf("\t\tFloor Index \t\t  = %d\n", floor->floorIndex);
         printf("\t\tOriginal Position\t  = (%6d,%6d,%6d)\n", floor->orgPos[0], floor->orgPos[1], floor->orgPos[2]);
@@ -388,21 +388,21 @@ void bgi_dumpText(BgiHeader *arg0) {
         printf("\t\tMaximum Values  \t  = (%6d,%6d,%6d)\n", floor->max[0], floor->max[1], floor->max[2]);
         printf("\t\tTriangle Count  \t  = %d\n", floor->triangleCount);
         printf("\t\tTriangle Index Offset = %d\n", floor->triangleOffset);
-        ids = (s32 *)((u8 *)arg0 + floor->triangleOffset);
+        ids = (s32 *)((u8 *)bgi + floor->triangleOffset);
         for (j = 0; j < floor->triangleCount; ids++, j++) {
             printf("\t\t  %4d: Triangle Ndx = %ld\n", j, *ids);
         }
     }
-    printf("Vertex Count\t : %d\n", arg0->vertexCount);
-    printf("Vertex Offset\t : %d\n", arg0->vertexOffset);
-    vtx = (BgiVertex *)((u8 *)arg0 + arg0->vertexOffset);
-    for (i = 0; i < arg0->vertexCount; vtx++, i++) {
+    printf("Vertex Count\t : %d\n", bgi->vertexCount);
+    printf("Vertex Offset\t : %d\n", bgi->vertexOffset);
+    vtx = (BgiVertex *)((u8 *)bgi + bgi->vertexOffset);
+    for (i = 0; i < bgi->vertexCount; vtx++, i++) {
         printf("  %4d: (%d,%d,%d)\n", i, vtx->vx, vtx->vy, vtx->vz);
     }
-    printf("Normal Count\t : %d\n", arg0->normalCount);
-    printf("Normal Offset\t : %d\n", arg0->normalOffset);
-    nrm = (BgiNormal *)((u8 *)arg0 + arg0->normalOffset);
-    for (i = 0; i < arg0->normalCount; nrm++, i++) {
+    printf("Normal Count\t : %d\n", bgi->normalCount);
+    printf("Normal Offset\t : %d\n", bgi->normalOffset);
+    nrm = (BgiNormal *)((u8 *)bgi + bgi->normalOffset);
+    for (i = 0; i < bgi->normalCount; nrm++, i++) {
         printf("  %4d: (%lx,%lx,%lx)\n", i, nrm->nx, nrm->ny, nrm->nz);
         printf(s_bgiStrInvNy, nrm->invNy);
     }
@@ -498,7 +498,7 @@ s32 bgi_updateAnims(void) {
     return 1;
 }
 
-s32 bgi_showAnimFrame(u32 arg0, u32 arg1) {
+s32 bgi_showAnimFrame(u32 animId, u32 frame) {
     BgiHeader *b;
     BgiAnim *e;
     BgiKeyframe *pt;
@@ -510,12 +510,12 @@ s32 bgi_showAnimFrame(u32 arg0, u32 arg1) {
     u16 f;
 
     b = g_fieldBgi.header;
-    if (arg0 >= b->animCount) {
+    if (animId >= b->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
+    e = &g_fieldBgi.anims[animId];
     old = -1;
-    if (arg1 >= e->frameCount) {
+    if (frame >= e->frameCount) {
         return 0;
     }
     pt = (BgiKeyframe *)((u8 *)b + e->frameOffset);
@@ -532,17 +532,17 @@ s32 bgi_showAnimFrame(u32 arg0, u32 arg1) {
         }
     }
     pt = (BgiKeyframe *)((u8 *)b + e->frameOffset);
-    pt += arg1;
+    pt += frame;
     ids = (s32 *)((u8 *)b + pt->triangleOffset);
     for (i = 0; i < pt->triangleCount; ids++, i++) {
         n = &g_fieldBgi.triangles[*ids];
         n->flags |= BGI_FLAG_ACTIVE;
     }
-    if (arg1 != old) {
-        bgi_remapActors(b, e, pt, old, arg1 & 0xFFFF);
+    if (frame != old) {
+        bgi_remapActors(b, e, pt, old, frame & 0xFFFF);
         bgi_linkFrameNeighbors(b, e, pt);
     }
-    e->curFrame = arg1 << 8;
+    e->curFrame = frame << 8;
     return 1;
 }
 
@@ -625,7 +625,7 @@ s32 bgi_transferActorPos(BgiHeader *b, BgiActor *a, BgiTriangle *n0, BgiTriangle
     return 1;
 }
 
-s32 bgi_remapActors(u8 *arg0, BgiAnim *arg1, BgiKeyframe *arg2, s16 arg3, s32 unused) { /* the callers pass a 5th argument */
+s32 bgi_remapActors(u8 *bgi, BgiAnim *anim, BgiKeyframe *frame, s16 oldFrame, s32 unused) { /* the callers pass a 5th argument */
     BgiKeyframe *e;
     s32 *tbl;
     s32 *ids;
@@ -633,19 +633,19 @@ s32 bgi_remapActors(u8 *arg0, BgiAnim *arg1, BgiKeyframe *arg2, s16 arg3, s32 un
     u16 i;
     u16 j;
 
-    if (arg3 == -1) {
+    if (oldFrame == -1) {
         return 0;
     }
-    e = (BgiKeyframe *)(arg0 + arg1->frameOffset);
-    e += arg3;
-    tbl = (s32 *)(arg0 + arg2->triangleOffset);
+    e = (BgiKeyframe *)(bgi + anim->frameOffset);
+    e += oldFrame;
+    tbl = (s32 *)(bgi + frame->triangleOffset);
     a = g_fieldBgi.actors;
     for (i = 0; i < g_fieldBgi.actorCount; a++, i++) {
         if (a->flags & BGI_FLAG_ACTIVE) {
-            ids = (s32 *)(arg0 + e->triangleOffset);
+            ids = (s32 *)(bgi + e->triangleOffset);
             for (j = 0; j < e->triangleCount; j++, ids++) {
                 if (a->triangle == *ids) {
-                    bgi_transferActorPos(arg0, a, &g_fieldBgi.triangles[a->triangle], &g_fieldBgi.triangles[tbl[j]]);
+                    bgi_transferActorPos(bgi, a, &g_fieldBgi.triangles[a->triangle], &g_fieldBgi.triangles[tbl[j]]);
                     a->triangle = tbl[j];
                     a->floor = g_fieldBgi.triangles[tbl[j]].floor;
                 }
@@ -656,8 +656,8 @@ s32 bgi_remapActors(u8 *arg0, BgiAnim *arg1, BgiKeyframe *arg2, s16 arg3, s32 un
 }
 
 /* link the neighbour edges between the nodes of different triangles */
-s32 bgi_linkFrameNeighbors(BgiHeader *arg0, BgiAnim *arg1, BgiKeyframe *arg2) {
-    s32 *ids = (s32 *)((u8 *)arg0 + arg2->triangleOffset);
+s32 bgi_linkFrameNeighbors(BgiHeader *bgi, BgiAnim *anim, BgiKeyframe *frame) {
+    s32 *ids = (s32 *)((u8 *)bgi + frame->triangleOffset);
     BgiTriangle *n;
     BgiTriangle *m;
     BgiEdge *e;
@@ -666,7 +666,7 @@ s32 bgi_linkFrameNeighbors(BgiHeader *arg0, BgiAnim *arg1, BgiKeyframe *arg2) {
     u16 j;
     u16 k;
 
-    for (i = 0; i < arg2->triangleCount; i++, ids++) {
+    for (i = 0; i < frame->triangleCount; i++, ids++) {
         n = &g_fieldBgi.triangles[*ids];
         for (j = 0; j < 3; j++) {
             nb = n->neighbors[j];
@@ -707,15 +707,15 @@ s32 bgi_resetFloorMoves(void) {
 }
 
 /* old-style definition: bgi_startFloorMove/bgi_setFloorMovePlaying call it without arguments */
-s32 bgi_stepFloorMove(arg0)
-s32 arg0;
+s32 bgi_stepFloorMove(moveId)
+s32 moveId;
 {
     BgiFloorMove *e;
     s32 step;
     s16 range;
     s16 v;
 
-    e = &g_fieldBgiFloorMoves[arg0];
+    e = &g_fieldBgiFloorMoves[moveId];
     e->accum += e->speed;
     step = e->accum >> 8;
     range = e->max - e->min;
@@ -798,16 +798,16 @@ s32 bgi_updateFloorMoves(void) {
     return 1;
 }
 
-s32 bgi_setMesh(BgiHeader *arg0) {
+s32 bgi_setMesh(BgiHeader *bgi) {
     s32 i;
 
-    g_fieldBgi.header = arg0;
-    g_fieldBgi.vertices = (BgiVertex *)((u8 *)arg0 + arg0->vertexOffset);
-    g_fieldBgi.triangles = (BgiTriangle *)((u8 *)arg0 + arg0->triangleOffset);
-    g_fieldBgi.normals = (BgiNormal *)((u8 *)arg0 + arg0->normalOffset);
-    g_fieldBgi.edges = (u8 *)arg0 + arg0->edgeOffset;
-    g_fieldBgi.floors = (BgiFloor *)((u8 *)arg0 + arg0->floorOffset);
-    g_fieldBgi.anims = (BgiAnim *)((u8 *)arg0 + arg0->animOffset);
+    g_fieldBgi.header = bgi;
+    g_fieldBgi.vertices = (BgiVertex *)((u8 *)bgi + bgi->vertexOffset);
+    g_fieldBgi.triangles = (BgiTriangle *)((u8 *)bgi + bgi->triangleOffset);
+    g_fieldBgi.normals = (BgiNormal *)((u8 *)bgi + bgi->normalOffset);
+    g_fieldBgi.edges = (u8 *)bgi + bgi->edgeOffset;
+    g_fieldBgi.floors = (BgiFloor *)((u8 *)bgi + bgi->floorOffset);
+    g_fieldBgi.anims = (BgiAnim *)((u8 *)bgi + bgi->animOffset);
     for (i = 0; i < g_fieldBgi.header->animCount; i++) {
         bgi_initAnim(i);
     }
@@ -842,89 +842,89 @@ s32 bgi_okStub(void) {
     return 1;
 }
 
-void bgi_setOneStub(s32 *arg0) {
-    *arg0 = 1;
+void bgi_setOneStub(s32 *out) {
+    *out = 1;
 }
 
-s32 bgi_setMaskFilter(u8 arg0) {
-    g_fieldBgi.maskFilter = arg0;
+s32 bgi_setMaskFilter(u8 filter) {
+    g_fieldBgi.maskFilter = filter;
     return 1;
 }
 
-s32 bgi_getMaskFilter(u8 *arg0) {
-    *arg0 = g_fieldBgi.maskFilter;
+s32 bgi_getMaskFilter(u8 *outFilter) {
+    *outFilter = g_fieldBgi.maskFilter;
     return 1;
 }
 
-BgiActor *bgi_getActor(s32 arg0) {
-    return &g_fieldBgi.actors[arg0];
+BgiActor *bgi_getActor(s32 actorId) {
+    return &g_fieldBgi.actors[actorId];
 }
 
-s32 bgi_bindActor(s32 arg0, FieldObjSlot *arg1) {
-    g_fieldBgi.actors[arg0].flags = 0;
-    g_fieldBgi.actors[arg0].unk2 = 0;
-    g_fieldBgi.actors[arg0].actor = arg1->actor;
+s32 bgi_bindActor(s32 actorId, FieldObjSlot *slot) {
+    g_fieldBgi.actors[actorId].flags = 0;
+    g_fieldBgi.actors[actorId].unk2 = 0;
+    g_fieldBgi.actors[actorId].actor = slot->actor;
     return 1;
 }
 
-s32 bgi_addActor(FieldObjSlot *arg0) {
+s32 bgi_addActor(FieldObjSlot *slot) {
     g_fieldBgi.actors[g_fieldBgi.actorCount].flags = 0;
     g_fieldBgi.actors[g_fieldBgi.actorCount].unk2 = 0;
-    g_fieldBgi.actors[g_fieldBgi.actorCount].actor = arg0->actor;
+    g_fieldBgi.actors[g_fieldBgi.actorCount].actor = slot->actor;
     g_fieldBgi.actorCount++;
     return 1;
 }
 
-s32 bgi_setActorRadius(s32 arg0, u16 arg1) {
-    g_fieldBgi.actors[arg0].radius = arg1;
-    g_fieldBgi.actors[arg0].radiusSq = arg1 * arg1;
+s32 bgi_setActorRadius(s32 actorId, u16 radius) {
+    g_fieldBgi.actors[actorId].radius = radius;
+    g_fieldBgi.actors[actorId].radiusSq = radius * radius;
     return 1;
 }
 
-s32 bgi_getActorRadius(s32 arg0, s32 *arg1) {
-    *arg1 = g_fieldBgi.actors[arg0].radius;
+s32 bgi_getActorRadius(s32 actorId, s32 *outRadius) {
+    *outRadius = g_fieldBgi.actors[actorId].radius;
     return 1;
 }
 
-s32 bgi_getActorRadiusSq(s32 arg0, s32 *arg1) {
-    *arg1 = g_fieldBgi.actors[arg0].radiusSq;
+s32 bgi_getActorRadiusSq(s32 actorId, s32 *outRadiusSq) {
+    *outRadiusSq = g_fieldBgi.actors[actorId].radiusSq;
     return 1;
 }
 
-s32 bgi_getActorNormal(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
+s32 bgi_getActorNormal(s32 actorId, s32 *outNx, s32 *outNy, s32 *outNz, s32 *outInvNy) {
     BgiNormal *e;
     BgiTriangle *n;
     struct BgiActor *a;
 
-    a = g_fieldBgi.actors + arg0;
+    a = g_fieldBgi.actors + actorId;
     n = g_fieldBgi.triangles + a->triangle;
     e = g_fieldBgi.normals + n->normal;
-    *arg1 = e->nx;
-    *arg2 = e->ny;
-    *arg3 = e->nz;
-    *arg4 = e->invNy;
+    *outNx = e->nx;
+    *outNy = e->ny;
+    *outNz = e->nz;
+    *outInvNy = e->invNy;
     return 1;
 }
 
-s32 bgi_getActorTilt(s32 arg0, s16 *arg1, u16 *arg2) {
-    BgiActor *a = &g_fieldBgi.actors[arg0];
+s32 bgi_getActorTilt(s32 actorId, s16 *outThetaZ, u16 *outThetaX) {
+    BgiActor *a = &g_fieldBgi.actors[actorId];
     BgiTriangle *e = &g_fieldBgi.triangles[a->triangle];
 
-    *arg1 = -e->thetaZ;
-    *arg2 = e->thetaX;
+    *outThetaZ = -e->thetaZ;
+    *outThetaX = e->thetaX;
     return 1;
 }
 
-s32 bgi_getActorTriangle(s32 arg0, u16 *arg1, u16 *arg2) {
-    BgiActor *e = &g_fieldBgi.actors[arg0];
+s32 bgi_getActorTriangle(s32 actorId, u16 *outTriangle, u16 *outFloor) {
+    BgiActor *e = &g_fieldBgi.actors[actorId];
 
-    *arg1 = e->triangle;
-    *arg2 = e->floor;
+    *outTriangle = e->triangle;
+    *outFloor = e->floor;
     return 1;
 }
 
-s32 bgi_revertActor(s32 arg0) {
-    BgiActor *e = &g_fieldBgi.actors[arg0];
+s32 bgi_revertActor(s32 actorId) {
+    BgiActor *e = &g_fieldBgi.actors[actorId];
 
     e->actor->pos.vx = e->actor->prevPos.vx;
     e->actor->pos.vy = e->actor->prevPos.vy;
@@ -934,11 +934,11 @@ s32 bgi_revertActor(s32 arg0) {
     return 1;
 }
 
-s32 bgi_setTriangleActive(s32 arg0, s32 arg1) {
-    BgiTriangle *n = bgi_trianglePtr(arg0);
+s32 bgi_setTriangleActive(s32 triId, s32 active) {
+    BgiTriangle *n = bgi_trianglePtr(triId);
     u16 v;
 
-    if (arg1 != 0) {
+    if (active != 0) {
         v = n->flags | BGI_FLAG_ACTIVE;
     } else {
         v = n->flags & ~BGI_FLAG_ACTIVE;
@@ -947,55 +947,55 @@ s32 bgi_setTriangleActive(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 bgi_getMoveTris(u16 *arg0, s16 **arg1) {
-    *arg0 = g_fieldBgiMoveTriCount;
-    *arg1 = g_fieldBgiMoveTris;
+s32 bgi_getMoveTris(u16 *outCount, s16 **outTris) {
+    *outCount = g_fieldBgiMoveTriCount;
+    *outTris = g_fieldBgiMoveTris;
     return 1;
 }
 
-s32 bgi_getTriangleFlags(s16 arg0, u16 *arg1) {
-    *arg1 = bgi_trianglePtr(arg0)->flags & ((g_fieldBgi.maskFilter << 8) | 0xFF);
+s32 bgi_getTriangleFlags(s16 triId, u16 *outFlags) {
+    *outFlags = bgi_trianglePtr(triId)->flags & ((g_fieldBgi.maskFilter << 8) | 0xFF);
     return 1;
 }
 
-s32 bgi_setTriangleMask(s16 arg0, s32 arg1) {
-    BgiTriangle *n = bgi_trianglePtr(arg0);
+s32 bgi_setTriangleMask(s16 triId, s32 triMask) {
+    BgiTriangle *n = bgi_trianglePtr(triId);
 
-    n->flags = ((arg1 & 0xFF) << 8) | (n->flags & 0xFF);
+    n->flags = ((triMask & 0xFF) << 8) | (n->flags & 0xFF);
     return 1;
 }
 
-s32 bgi_getTriangleMask(s16 arg0, u8 *arg1) {
-    *arg1 = (bgi_trianglePtr(arg0)->flags >> 8) & g_fieldBgi.maskFilter;
+s32 bgi_getTriangleMask(s16 triId, u8 *outMask) {
+    *outMask = (bgi_trianglePtr(triId)->flags >> 8) & g_fieldBgi.maskFilter;
     return 1;
 }
 
-s32 bgi_getTriangleFloor(s16 arg0, u16 *arg1) {
-    *arg1 = bgi_trianglePtr(arg0)->floor;
+s32 bgi_getTriangleFloor(s16 triId, u16 *outFloor) {
+    *outFloor = bgi_trianglePtr(triId)->floor;
     return 1;
 }
 
-s32 bgi_getMoveEdges(u16 *arg0, s16 **arg1) {
-    *arg0 = g_fieldBgiMoveEdgeCount;
-    *arg1 = g_fieldBgiMoveEdges;
+s32 bgi_getMoveEdges(u16 *outCount, s16 **outEdges) {
+    *outCount = g_fieldBgiMoveEdgeCount;
+    *outEdges = g_fieldBgiMoveEdges;
     return 1;
 }
 
-s32 bgi_getEdgeFlags(s16 arg0, u16 *arg1) {
-    *arg1 = bgi_edgePtr(arg0)->flags;
+s32 bgi_getEdgeFlags(s16 edgeId, u16 *outFlags) {
+    *outFlags = bgi_edgePtr(edgeId)->flags;
     return 1;
 }
 
-s32 bgi_getFloorPosition(s32 arg0, u16 *arg1, u16 *arg2, u16 *arg3) {
-    BgiFloor *t = bgi_floorPtr(arg0);
+s32 bgi_getFloorPosition(s32 floorId, u16 *outX, u16 *outY, u16 *outZ) {
+    BgiFloor *t = bgi_floorPtr(floorId);
 
-    *arg1 = t->curPos[0];
-    *arg2 = t->curPos[1];
-    *arg3 = t->curPos[2];
+    *outX = t->curPos[0];
+    *outY = t->curPos[1];
+    *outZ = t->curPos[2];
     return 1;
 }
 
-s32 bgi_initAnim(u32 arg0) {
+s32 bgi_initAnim(u32 animId) {
     BgiHeader *b;
     BgiAnim *e;
     BgiKeyframe *pt;
@@ -1005,10 +1005,10 @@ s32 bgi_initAnim(u32 arg0) {
     BgiTriangle *n;
 
     b = g_fieldBgi.header;
-    if (arg0 >= b->animCount) {
+    if (animId >= b->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
+    e = &g_fieldBgi.anims[animId];
     pt = (BgiKeyframe *)((u8 *)b + e->frameOffset);
     for (i = 0; i < e->frameCount; pt++, i++) {
         ids = (s32 *)((u8 *)b + pt->triangleOffset);
@@ -1026,30 +1026,30 @@ s32 bgi_initAnim(u32 arg0) {
     return 1;
 }
 
-s32 bgi_setAnimFrame(u32 arg0, u32 arg1) {
+s32 bgi_setAnimFrame(u32 animId, u32 frame) {
     BgiAnim *e;
 
-    if (arg0 >= g_fieldBgi.header->animCount) {
+    if (animId >= g_fieldBgi.header->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
-    if (arg1 >= e->frameCount) {
+    e = &g_fieldBgi.anims[animId];
+    if (frame >= e->frameCount) {
         return 0;
     }
-    e->curFrame = arg1 << 8;
+    e->curFrame = frame << 8;
     e->counter = 0;
     e->flags |= BGI_FLAG_ACTIVE;
     return 1;
 }
 
-s32 bgi_setAnimPlaying(u32 arg0, s32 arg1) {
+s32 bgi_setAnimPlaying(u32 animId, s32 playing) {
     BgiAnim *e;
 
-    if (arg0 >= g_fieldBgi.header->animCount) {
+    if (animId >= g_fieldBgi.header->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
-    if (arg1 != 0) {
+    e = &g_fieldBgi.anims[animId];
+    if (playing != 0) {
         e->flags |= BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING;
     } else {
         e->flags &= ~(BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING);
@@ -1057,90 +1057,90 @@ s32 bgi_setAnimPlaying(u32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 bgi_setAnimRate(u32 arg0, s16 arg1) {
+s32 bgi_setAnimRate(u32 animId, s16 rate) {
     BgiAnim *e;
 
-    if (arg0 >= g_fieldBgi.header->animCount) {
+    if (animId >= g_fieldBgi.header->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
-    e->frameRate = arg1;
+    e = &g_fieldBgi.anims[animId];
+    e->frameRate = rate;
     return 1;
 }
 
-s32 bgi_setAnimFrameValues(u32 arg0, s16 arg1) {
+s32 bgi_setAnimFrameValues(u32 animId, s16 value) {
     BgiHeader *b = g_fieldBgi.header;
     BgiAnim *e;
     BgiKeyframe *pt;
     s32 i;
 
-    if (arg0 >= b->animCount) {
+    if (animId >= b->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
+    e = &g_fieldBgi.anims[animId];
     pt = (BgiKeyframe *)((u8 *)b + e->frameOffset);
     for (i = 0; i < e->frameCount; pt++, i++) {
-        pt->value = arg1;
+        pt->value = value;
     }
     return 1;
 }
 
-s32 bgi_setAnimFrameValue(u32 arg0, u32 arg1, s16 arg2) {
+s32 bgi_setAnimFrameValue(u32 animId, u32 frame, s16 value) {
     BgiHeader *b = g_fieldBgi.header;
     BgiAnim *e;
     BgiKeyframe *pt;
 
-    if (arg0 >= b->animCount) {
+    if (animId >= b->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
-    if (arg1 >= e->frameCount) {
+    e = &g_fieldBgi.anims[animId];
+    if (frame >= e->frameCount) {
         return 0;
     }
-    pt = &((BgiKeyframe *)((u8 *)b + e->frameOffset))[arg1];
-    pt->value = arg2;
+    pt = &((BgiKeyframe *)((u8 *)b + e->frameOffset))[frame];
+    pt->value = value;
     return 1;
 }
 
-s32 bgi_setAnimMode(u32 arg0, s32 arg1) {
+s32 bgi_setAnimMode(u32 animId, s32 mode) {
     BgiAnim *e;
 
-    if (arg0 >= g_fieldBgi.header->animCount) {
+    if (animId >= g_fieldBgi.header->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
-    e->flags = (e->flags & ~BGI_ANIM_MODE) | (arg1 & BGI_ANIM_MODE);
+    e = &g_fieldBgi.anims[animId];
+    e->flags = (e->flags & ~BGI_ANIM_MODE) | (mode & BGI_ANIM_MODE);
     return 1;
 }
 
-s32 bgi_playAnimRange(u32 arg0, u32 arg1, u32 arg2) {
+s32 bgi_playAnimRange(u32 animId, u32 first, u32 last) {
     BgiHeader *b = g_fieldBgi.header;
     BgiAnim *e;
     BgiKeyframe *pt;
 
-    if (arg0 >= b->animCount) {
+    if (animId >= b->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
-    if (arg1 >= e->frameCount) {
+    e = &g_fieldBgi.anims[animId];
+    if (first >= e->frameCount) {
         return 0;
     }
-    if (arg2 >= e->frameCount) {
+    if (last >= e->frameCount) {
         return 0;
     }
     pt = (BgiKeyframe *)((u8 *)b + e->frameOffset);
-    e->curFrame = arg1 << 8;
+    e->curFrame = first << 8;
     e->counter = 0;
     e->flags |= BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING;
-    pt += arg2;
+    pt += last;
     pt->value = -1;
-    if ((e->frameRate > 0 && arg2 < arg1) || (e->frameRate < 0 && arg1 < arg2)) {
+    if ((e->frameRate > 0 && last < first) || (e->frameRate < 0 && first < last)) {
         e->frameRate = -e->frameRate;
     }
     return 1;
 }
 
-s32 bgi_resetAnim(u32 arg0, s32 arg1) {
+s32 bgi_resetAnim(u32 animId, s32 activateFirst) {
     BgiHeader *b = g_fieldBgi.header;
     BgiAnim *e;
     BgiKeyframe *pt;
@@ -1149,10 +1149,10 @@ s32 bgi_resetAnim(u32 arg0, s32 arg1) {
     s32 j;
     BgiTriangle *n;
 
-    if (arg0 >= b->animCount) {
+    if (animId >= b->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
+    e = &g_fieldBgi.anims[animId];
     e->frameRate = 0x100;
     e->flags = 2;
     e->curFrame = 0;
@@ -1162,7 +1162,7 @@ s32 bgi_resetAnim(u32 arg0, s32 arg1) {
         ids = (s32 *)((u8 *)b + pt->triangleOffset);
         for (j = 0; j < pt->triangleCount; ids++, j++) {
             n = &g_fieldBgi.triangles[*ids];
-            if (arg1 != 0 && i == 0) {
+            if (activateFirst != 0 && i == 0) {
                 n->flags |= BGI_FLAG_ACTIVE;
             } else {
                 n->flags &= ~BGI_FLAG_ACTIVE;
@@ -1172,88 +1172,88 @@ s32 bgi_resetAnim(u32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 bgi_getAnimFrame(u32 arg0, s32 *arg1) {
+s32 bgi_getAnimFrame(u32 animId, s32 *outFrame) {
     BgiAnim *e;
 
-    if (arg0 >= g_fieldBgi.header->animCount) {
+    if (animId >= g_fieldBgi.header->animCount) {
         return 0;
     }
-    e = &g_fieldBgi.anims[arg0];
-    *arg1 = e->curFrame >> 8;
+    e = &g_fieldBgi.anims[animId];
+    *outFrame = e->curFrame >> 8;
     return 1;
 }
 
-s32 bgi_startFloorMove(s32 arg0, s32 arg1) {
-    BgiFloorMove *e = &g_fieldBgiFloorMoves[arg0];
+s32 bgi_startFloorMove(s32 moveId, s32 pos) {
+    BgiFloorMove *e = &g_fieldBgiFloorMoves[moveId];
 
-    e->accum = arg1 << 8;
+    e->accum = pos << 8;
     e->flags |= BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING;
-    bgi_stepFloorMove(arg0);
+    bgi_stepFloorMove(moveId);
     return 1;
 }
 
-s32 bgi_stopFloorMove(s32 arg0, s32 arg1) {
-    BgiFloorMove *e = bgi_getFloorMove_inline(arg0);
+s32 bgi_stopFloorMove(s32 moveId, s32 pos) {
+    BgiFloorMove *e = bgi_getFloorMove_inline(moveId);
 
-    arg1 <<= 8;
-    e->accum = arg1;
+    pos <<= 8;
+    e->accum = pos;
     e->flags = 0;
-    bgi_stepFloorMove(arg0);
+    bgi_stepFloorMove(moveId);
     return 1;
 }
 
-s32 bgi_setFloorMovePlaying(s32 arg0, s32 arg1) {
-    BgiFloorMove *e = bgi_getFloorMove_inline(arg0);
+s32 bgi_setFloorMovePlaying(s32 moveId, s32 playing) {
+    BgiFloorMove *e = bgi_getFloorMove_inline(moveId);
     u16 v;
 
-    if (arg1 != 0) {
+    if (playing != 0) {
         v = e->flags | BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING;
     } else {
         v = e->flags & ~(BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING);
     }
     e->flags = v;
-    bgi_stepFloorMove(arg0);
+    bgi_stepFloorMove(moveId);
     return 1;
 }
 
-s32 bgi_setFloorMoveMode(s32 arg0, s32 arg1) {
-    BgiFloorMove *e = bgi_getFloorMove_inline(arg0);
+s32 bgi_setFloorMoveMode(s32 moveId, s32 mode) {
+    BgiFloorMove *e = bgi_getFloorMove_inline(moveId);
 
-    e->flags = (e->flags & ~BGI_ANIM_MODE) | (arg1 & BGI_ANIM_MODE);
+    e->flags = (e->flags & ~BGI_ANIM_MODE) | (mode & BGI_ANIM_MODE);
     return 1;
 }
 
-s32 bgi_setFloorMoveFloor(s32 arg0, s16 arg1) {
-    bgi_getFloorMove_inline(arg0)->floor = arg1;
+s32 bgi_setFloorMoveFloor(s32 moveId, s16 floor) {
+    bgi_getFloorMove_inline(moveId)->floor = floor;
     return 1;
 }
 
-s32 bgi_setFloorMoveSpeed(s32 arg0, s16 arg1) {
-    bgi_getFloorMove_inline(arg0)->speed = arg1;
+s32 bgi_setFloorMoveSpeed(s32 moveId, s16 speed) {
+    bgi_getFloorMove_inline(moveId)->speed = speed;
     return 1;
 }
 
-s32 bgi_setFloorMoveCurve(s32 arg0, s16 arg1) {
-    bgi_getFloorMove_inline(arg0)->curve = arg1;
+s32 bgi_setFloorMoveCurve(s32 moveId, s16 curve) {
+    bgi_getFloorMove_inline(moveId)->curve = curve;
     return 1;
 }
 
-s32 bgi_setFloorMoveRange(s32 arg0, s16 arg1, s16 arg2) {
-    BgiFloorMove *e = bgi_getFloorMove_inline(arg0);
+s32 bgi_setFloorMoveRange(s32 moveId, s16 min, s16 max) {
+    BgiFloorMove *e = bgi_getFloorMove_inline(moveId);
 
-    e->min = arg1;
-    e->max = arg2;
+    e->min = min;
+    e->max = max;
     e->range = e->max - e->min;
     return 1;
 }
 
-s32 bgi_setFloorMoveAxis(s32 arg0, s16 arg1) {
-    bgi_getFloorMove_inline(arg0)->axis = arg1;
+s32 bgi_setFloorMoveAxis(s32 moveId, s16 axis) {
+    bgi_getFloorMove_inline(moveId)->axis = axis;
     return 1;
 }
 
-BgiFloorMove *bgi_getFloorMove(s32 arg0) {
-    return &g_fieldBgiFloorMoves[arg0];
+BgiFloorMove *bgi_getFloorMove(s32 moveId) {
+    return &g_fieldBgiFloorMoves[moveId];
 }
 
 INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/bgi", s_bgiStrInvNy);
