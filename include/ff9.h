@@ -1761,10 +1761,12 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_AI_EFFECT_CUE 0x10       /* EVT_GB_BATTLE_AI_FLAGS bit set by btlfx_signalScriptCue, the AI waits for it to end the battle */
 /* script-only globals, set and read by field scripts (docs/r32/3ds-requests.md); byte offsets into g_evtGlobalVars like
  * the flags above, wider values stored little-endian at that offset (the scripts' s16/u16 variable types) */
-#define EVT_GB_ARRIVAL_POINT 0x02       /* s16 (h[1]): entrance the next field's init places the player at; exits set it before GOTO_FIELD */
+#define EVT_GB_ARRIVAL_POINT 0x02       /* s16 (h[1]): entrance the next field's init places the player at; exits set it before GOTO_FIELD (also the entry code the destination init branches on, e.g. 1 = play the end-of-disc-1 FMV in field 70; R36) */
 #define EVT_GB_ATE_BITS 0xEC            /* u16 (h[0x76]): available-ATE bits, copied to EVT_GB_ATE_CHOICE_MASK */
 #define EVT_GB_ATE_AVAILABLE 0xEE       /* s8: 1 = an ATE can be viewed (the field script opens the ATE window on Select) */
 #define EVT_GB_ATE_CHOICE_MASK 0xF1     /* s16 (unaligned): enabled choices of the ATE window (EVT_OP_MSG_CHOICE_MASK) */
+#define EVT_GB_ATE_RETURN_FIELD 0xEF  /* s16: field to return to after an ATE (medium, docs/r32/3ds-requests-6.md) */
+#define EVT_GB_ATE_ANNOUNCED 0xFB      /* u16: ATEs already announced (medium) */
 #define EVT_GB_NAVI_PLACE 0x67  /* u8: navi map place under the cursor + 1, 0 = none (wm_naviUpdate; the world script names it, wm autopilot reads it) */
 #define EVT_GB_NAVI_KNOWN 0x5C  /* u16[4] (h[0x2E..0x31]): navi map places known, bit i&15 of h[0x2E + i/16] (wm_naviDraw) */
 /* Mognet state, read only by the field scripts (docs/r32/3ds-requests-5-mognet.md) */
