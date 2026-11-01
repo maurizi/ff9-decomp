@@ -3,7 +3,7 @@
 s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 t;
+    s32 elapsed;
 
     if (mode == 0) {
         *args = 0x5C;
@@ -60,7 +60,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (frame >= 0x11 && frame < 0x25) {
-            t = frame - 0x11;
+            elapsed = frame - 0x11;
             ex->Hi_DrawEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, work->model58);
             ex->Hi_ModifyEffModelAbr(work->model58, 1);
             if (work->fadeInTimer54 >= 0 || work->fadeOutTimer56 >= 0) {
@@ -76,7 +76,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->pos10.vz += work->speed34;
             work->scale20.vz += 0x100;
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), t);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), elapsed);
         }
         if (frame >= 0x3C) {
             ex->btlfx_clearEffModels();

@@ -34,7 +34,7 @@ static s32 fxm_arcParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *to, s32 frame
 s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    u16 n;
+    u16 lineFrame;
 
     if (mode == 0) {
         *args = 0x1C;
@@ -64,11 +64,11 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->lineAlpha1A -= 0x200;
             }
             work->lineFrame18++;
-            n = work->lineFrame18;
-            if (n >= 6) {
-                n = 5;
+            lineFrame = work->lineFrame18;
+            if (lineFrame >= 6) {
+                lineFrame = 5;
             }
-            work->lineFrame18 = n;
+            work->lineFrame18 = lineFrame;
         }
         return frame >= 0x32;
     }
@@ -78,15 +78,15 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 n;
+    s32 target;
 
     if (mode == 0) {
         *args = 0x24;
     } else if (mode == 1) {
-        n = *args;
-        work->target20 = n;
+        target = *args;
+        work->target20 = target;
         fx_0ea_env = env;
-        if (n >= env->targets->targetCount || ex->btl_getUnit(0x10) == ex->btl_getUnit(work->target20)) {
+        if (target >= env->targets->targetCount || ex->btl_getUnit(0x10) == ex->btl_getUnit(work->target20)) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }

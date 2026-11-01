@@ -4,7 +4,7 @@ s32 fx_0e8_op80(s32 mode, Fx0e8Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR scale;
     s32 frame;
-    s32 i;
+    s32 step;
 
     if (mode == 0) {
         *args = 0x44;
@@ -43,17 +43,17 @@ s32 fx_0e8_op80(s32 mode, Fx0e8Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (frame >= 0x12 && frame < 0x17) {
-            i = frame - 0x12;
-            if (i == 4) {
+            step = frame - 0x12;
+            if (step == 4) {
                 scale.vx = 0;
                 scale.vy = 0;
                 scale.vz = 0;
                 ex->btlfx_fadeUnitById(0x10, 0);
             } else {
                 ex->btlfx_getUnitScale(0x10, &scale);
-                scale.vx = work->scale2C.vx - work->scale2C.vx / 4 * i;
+                scale.vx = work->scale2C.vx - work->scale2C.vx / 4 * step;
                 scale.vy += 0x190;
-                scale.vz = work->scale2C.vz - work->scale2C.vz / 4 * i;
+                scale.vz = work->scale2C.vz - work->scale2C.vz / 4 * step;
             }
             ex->btlfx_setUnitScale(0x10, (s32 *)&scale);
         }

@@ -2,12 +2,12 @@
 
 s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR headPos;
     Pool6CEntry *emitter;
     s32 state;
     s32 frame;
     s32 t;
-    s32 d;
+    s32 offset;
 
     if (mode == 0) {
         *args = 0x28;
@@ -23,27 +23,27 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (state) {
         case 0:
             t = (frame << 12) / 12;
-            BTLFX_COPY_SVEC(&v, &work->pos8);
+            BTLFX_COPY_SVEC(&headPos, &work->pos8);
             switch (work->variant4) {
             case 0:
-                v.vy += (t - 0x800) * 2;
+                headPos.vy += (t - 0x800) * 2;
                 break;
             case 1:
-                d = t - 0x800;
-                d *= 2;
-                v.vx -= d;
-                v.vz += d;
-                v.vy -= (0x1000 - ex->math_sin(t >> 1)) * 2 / 3;
+                offset = t - 0x800;
+                offset *= 2;
+                headPos.vx -= offset;
+                headPos.vz += offset;
+                headPos.vy -= (0x1000 - ex->math_sin(t >> 1)) * 2 / 3;
                 break;
             case 2:
-                d = t - 0x800;
-                d *= 2;
-                v.vx += d;
-                v.vz += d;
-                v.vy -= (0x1000 - ex->math_sin(t >> 1)) * 2 / 3;
+                offset = t - 0x800;
+                offset *= 2;
+                headPos.vx += offset;
+                headPos.vz += offset;
+                headPos.vy -= (0x1000 - ex->math_sin(t >> 1)) * 2 / 3;
                 break;
             }
-            BTLFX_COPY_SVEC(&work->headPos10, &v);
+            BTLFX_COPY_SVEC(&work->headPos10, &headPos);
             if (frame == 0) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), (s32)&work->headPos10, 0, -1, 0, 0, 1,
                                   fx_0f3_strips[work->variant4], 0);

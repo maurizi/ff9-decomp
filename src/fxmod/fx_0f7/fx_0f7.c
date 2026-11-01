@@ -2,11 +2,11 @@
 
 s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Fx0f7Spark *p;
+    Fx0f7Spark *spark;
     s32 frame;
     s32 i;
-    s32 a;
-    s32 d;
+    s32 alpha;
+    s32 unusedD;
 
     if (mode == 0) {
         *args = 0x18;
@@ -56,26 +56,26 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->timer0 != 0) {
             work->timer0--;
             for (i = 0; i < 4; i++) {
-                p = &fx_0f7_sparks[i];
-                if (p->delay0 == 0) {
-                    a = 0x1000;
-                    p->x10 += p->speedX18;
-                    p->age1C++;
-                    if (p->age1C < 8) {
-                        a = (p->alphaC * p->age1C) >> 3;
+                spark = &fx_0f7_sparks[i];
+                if (spark->delay0 == 0) {
+                    alpha = 0x1000;
+                    spark->x10 += spark->speedX18;
+                    spark->age1C++;
+                    if (spark->age1C < 8) {
+                        alpha = (spark->alphaC * spark->age1C) >> 3;
                     }
                     if (work->timer0 < 8) {
-                        a = (p->alphaC * work->timer0) >> 3;
+                        alpha = (spark->alphaC * work->timer0) >> 3;
                     }
-                    if (p->kind4 == 0) {
-                        ex->btlfx_drawSpriteAtOt(p->ot8, (u8 *)ex->btlfx_getFileData(entry->file, 5), p->x10, p->y14, 0,
-                                          1, a);
+                    if (spark->kind4 == 0) {
+                        ex->btlfx_drawSpriteAtOt(spark->ot8, (u8 *)ex->btlfx_getFileData(entry->file, 5), spark->x10, spark->y14, 0,
+                                          1, alpha);
                     } else {
-                        ex->btlfx_drawSpriteAtOt(p->ot8, (u8 *)ex->btlfx_getFileData(entry->file, 0xC), p->x10, p->y14,
-                                          0, 1, a);
+                        ex->btlfx_drawSpriteAtOt(spark->ot8, (u8 *)ex->btlfx_getFileData(entry->file, 0xC), spark->x10, spark->y14,
+                                          0, 1, alpha);
                     }
                 } else {
-                    p->delay0--;
+                    spark->delay0--;
                 }
             }
         }

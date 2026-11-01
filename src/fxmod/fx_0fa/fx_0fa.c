@@ -41,7 +41,7 @@ static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out
 s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *emitter;
-    s32 *q;
+    s32 *timer;
     s32 frame;
     s32 i;
 
@@ -51,8 +51,8 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->emit74 = NULL;
         fx_0fa_env = env;
         ex->btlfx_initEffModels(fx_0fa_effModels, 2);
-        for (i = 9, q = &work->timers0[9]; i >= 0; i--) {
-            *q-- = 0;
+        for (i = 9, timer = &work->timers0[9]; i >= 0; i--) {
+            *timer-- = 0;
         }
         work->model38 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0xFA, 0x3DC0, 0x80, 0x80);
         work->scale5C.vx = 0x333;

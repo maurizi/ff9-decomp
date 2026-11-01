@@ -5,11 +5,11 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR pos;
     s32 frame;
     s32 i;
-    s32 m;
+    s32 model;
     s32 t;
-    s16 n;
-    s32 f;
-    s32 d;
+    s16 ringScale;
+    s32 tick;
+    s32 morph;
 
     if (mode == 0) {
         *args = 0x70;
@@ -51,7 +51,7 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->fadeTimer62 = 0x10;
         }
         if (frame >= 0 && frame < 0x1C) {
-            f = frame;
+            tick = frame;
             if (work->dropTimer60 >= 0) {
                 work->pos10.vy = fxm_lerpRatio(-0xFA0, 0, 8 - work->dropTimer60, 8);
                 if (--work->dropTimer60 == 0) {
@@ -64,46 +64,46 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             work->ringScale5C += 0x200;
-            n = work->ringScale5C;
-            if (n > 0x1000) {
-                n = 0x1000;
+            ringScale = work->ringScale5C;
+            if (ringScale > 0x1000) {
+                ringScale = 0x1000;
             }
-            work->ringScale5C = n;
+            work->ringScale5C = ringScale;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->ringPos4C, &work->ringRot54, work->ringScale5C,
-                              f, 2, work->ringAlpha5E);
+                              tick, 2, work->ringAlpha5E);
             switch (work->state64) {
             case 0:
-                if (f < 6) {
-                    m = 0;
-                    ex->Hi_DrawEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, m);
-                } else if (f >= 6 && f < 9) {
-                    d = 0x1000 - ((f - 6) << 12) / 3;
-                    t = d > 0x1000 ? 0x1000 : d;
+                if (tick < 6) {
+                    model = 0;
+                    ex->Hi_DrawEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, model);
+                } else if (tick >= 6 && tick < 9) {
+                    morph = 0x1000 - ((tick - 6) << 12) / 3;
+                    t = morph > 0x1000 ? 0x1000 : morph;
                     ex->Hi_DrawMorphEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, work->model68[0],
                                              work->model68[1], t);
                 } else {
-                    m = 1;
-                    ex->Hi_SetEffModelSlice(m, work->pos10.vy);
-                    ex->Hi_DrawSliceEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, m);
+                    model = 1;
+                    ex->Hi_SetEffModelSlice(model, work->pos10.vy);
+                    ex->Hi_DrawSliceEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, model);
                 }
                 env->camera->points[0].vx = work->pos10.vx;
                 env->camera->points[0].vy = work->pos10.vy;
                 env->camera->points[0].vz = work->pos10.vz;
-                if (f >= 4 && frame < 0xC) {
+                if (tick >= 4 && frame < 0xC) {
                     work->scale20.vy -= 0x400;
                 }
                 break;
             case 1:
-                m = 2;
-                ex->Hi_SetEffModelSlice(m, work->pos10.vy);
-                ex->Hi_DrawSliceEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, m);
+                model = 2;
+                ex->Hi_SetEffModelSlice(model, work->pos10.vy);
+                ex->Hi_DrawSliceEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, model);
                 break;
             }
             if (work->fadeTimer62 >= 0) {
                 work->rgb30 = fxm_lerpRatio(0, -0x80, 0x10 - work->fadeTimer62, 0x10);
                 work->fadeTimer62--;
-                ex->Hi_ModifyEffModelAbr(m, 1);
-                ex->Hi_ModifyEffModelRGB(m, work->rgb30, work->rgb30, work->rgb30);
+                ex->Hi_ModifyEffModelAbr(model, 1);
+                ex->Hi_ModifyEffModelRGB(model, work->rgb30, work->rgb30, work->rgb30);
                 work->pos10.vy += 0xA;
                 work->scale20.vy -= 0x100;
                 work->ringAlpha5E -= 0x100;

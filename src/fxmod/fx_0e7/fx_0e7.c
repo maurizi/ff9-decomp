@@ -3,7 +3,7 @@
 s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    u16 n;
+    u16 lineFrame;
 
     if (mode == 0) {
         *args = 0x18;
@@ -25,11 +25,11 @@ s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->lineAlpha16 -= 0x200;
             }
             work->lineFrame14++;
-            n = work->lineFrame14;
-            if (n >= 6) {
-                n = 5;
+            lineFrame = work->lineFrame14;
+            if (lineFrame >= 6) {
+                lineFrame = 5;
             }
-            work->lineFrame14 = n;
+            work->lineFrame14 = lineFrame;
         }
         return frame >= 0x32;
     }

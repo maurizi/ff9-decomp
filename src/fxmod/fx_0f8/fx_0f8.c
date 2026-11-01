@@ -38,8 +38,8 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
     s32 i;
     s32 j;
-    Fx0f8Spawn *t;
-    Fx0f8Spawn *u;
+    Fx0f8Spawn *initSpawn;
+    Fx0f8Spawn *spawn;
 
     if (mode == 0) {
         *args = 0x50;
@@ -48,11 +48,11 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos28.vy = env->targets->centerY;
         work->pos28.vz = env->targets->centerZ;
         fx_0f8_env = env;
-        for (t = fx_0f8_spawns, i = 0; i < 4; i++, t++) {
+        for (initSpawn = fx_0f8_spawns, i = 0; i < 4; i++, initSpawn++) {
             (work->emitPos30 + i)->vx = work->pos28.vx;
             (work->emitPos30 + i)->vy = work->pos28.vy;
             (work->emitPos30 + i)->vz = work->pos28.vz;
-            t->frame2 = i * 4;
+            initSpawn->frame2 = i * 4;
             rot.vx = 0;
             rot.vy = i << 10;
             rot.vz = 0;
@@ -64,9 +64,9 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos28);
             work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos28);
         }
-        for (u = fx_0f8_spawns, j = 0; j < 4; j++, u++) {
-            if (frame == u->frame2) {
-                work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, u->block0), (s32)&work->emitPos30[j]);
+        for (spawn = fx_0f8_spawns, j = 0; j < 4; j++, spawn++) {
+            if (frame == spawn->frame2) {
+                work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, spawn->block0), (s32)&work->emitPos30[j]);
                 work->emit10[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->emitPos30[j]);
             }
         }
