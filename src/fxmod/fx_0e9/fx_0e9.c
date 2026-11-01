@@ -2,7 +2,7 @@
 
 static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e9_env);
-    SVECTOR v;
+    SVECTOR newPos;
     SVECTOR rot;
     s32 rad;
 
@@ -10,13 +10,13 @@ static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 t
         rot.vx = 0;
         rot.vz = 0;
         rot.vy = fx_0e9_orbit.angle6 + 0x800;
-        ex->btlfx_pointAhead((s16 *)&fx_0e9_startPos, (s16 *)&rot, frame * 40, (s16 *)&v);
+        ex->btlfx_pointAhead((s16 *)&fx_0e9_startPos, (s16 *)&rot, frame * 40, (s16 *)&newPos);
     } else {
         rad = fx_0e9_orbit.radius2 = fxm_lerpRatio(fx_0e9_orbit.radius0, 0, 0x6E - fx_0e9_orbit.timerA, 0x6E);
         rad += (fx_0e9_orbit.timerA + fx_0e9_orbit.timerA / 2) * ex->math_sin(fx_0e9_orbit.wobble8) / 4096;
-        v.vx = rad * ex->math_sin(fx_0e9_orbit.angle6) / 4096;
-        v.vy = 0;
-        v.vz = rad * ex->math_cos(fx_0e9_orbit.angle6) / 4096;
+        newPos.vx = rad * ex->math_sin(fx_0e9_orbit.angle6) / 4096;
+        newPos.vy = 0;
+        newPos.vz = rad * ex->math_cos(fx_0e9_orbit.angle6) / 4096;
         switch (fx_0e9_orbit.dir4) {
         case 0:
             fx_0e9_orbit.angle6 -= 0x60;
@@ -29,13 +29,13 @@ static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 t
         if (fx_0e9_orbit.timerA > 0) {
             fx_0e9_orbit.timerA--;
         }
-        v.vx += fx_0e9_orbitCenter.vx;
-        v.vy += fx_0e9_orbitCenter.vy;
-        v.vz += fx_0e9_orbitCenter.vz;
+        newPos.vx += fx_0e9_orbitCenter.vx;
+        newPos.vy += fx_0e9_orbitCenter.vy;
+        newPos.vz += fx_0e9_orbitCenter.vz;
     }
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
+    pos->vx = newPos.vx;
+    pos->vy = newPos.vy;
+    pos->vz = newPos.vz;
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
@@ -48,7 +48,7 @@ static s32 fx_0e9_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 t
 s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
-    SVECTOR d;
+    SVECTOR delta;
     s32 frame;
 
     if (mode == 0) {
@@ -64,10 +64,10 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_0e9_orbitCenter.vy = work->pos18.vy;
         fx_0e9_orbitCenter.vz = work->pos18.vz;
         ex->btlfx_aimAngles((s16 *)&fx_0e9_orbitCenter, (s16 *)&fx_0e9_orbitStart, (s16 *)&rot);
-        d.vx = fx_0e9_orbitCenter.vx - fx_0e9_orbitStart.vx;
-        d.vy = fx_0e9_orbitCenter.vy - fx_0e9_orbitStart.vy;
-        d.vz = fx_0e9_orbitCenter.vz - fx_0e9_orbitStart.vz;
-        fx_0e9_orbit.radius0 = fx_0e9_orbit.radius2 = ex->btlfx_sqrt(d.vx * d.vx + d.vz * d.vz, 0x14);
+        delta.vx = fx_0e9_orbitCenter.vx - fx_0e9_orbitStart.vx;
+        delta.vy = fx_0e9_orbitCenter.vy - fx_0e9_orbitStart.vy;
+        delta.vz = fx_0e9_orbitCenter.vz - fx_0e9_orbitStart.vz;
+        fx_0e9_orbit.radius0 = fx_0e9_orbit.radius2 = ex->btlfx_sqrt(delta.vx * delta.vx + delta.vz * delta.vz, 0x14);
         fx_0e9_orbit.dir4 = ex->btlfx_rand() % 2;
         fx_0e9_orbit.wobble8 = 0;
         fx_0e9_orbit.timerA = 0x6E;

@@ -6,7 +6,7 @@ s32 fx_10b_op80(s32 mode, Fx10bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
     s32 t;
     s32 i;
-    s32 c;
+    s32 rgb;
 
     if (mode == 0) {
         *args = 0x74;
@@ -39,10 +39,10 @@ s32 fx_10b_op80(s32 mode, Fx10bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model70);
         for (i = 0; i < 2; i++) {
             if (frame >= i + 1) {
-                c = -(i * 16);
+                rgb = -(i * 16);
                 ex->Hi_DrawEffModel(&work->rot40[i], &work->pos50[i], (s32)&work->scale30, work->model72);
                 ex->Hi_ModifyEffModelAbr(work->model72, 3);
-                ex->Hi_ModifyEffModelRGB(work->model72, c, c, c);
+                ex->Hi_ModifyEffModelRGB(work->model72, rgb, rgb, rgb);
             }
         }
         work->rot40[1].vx = work->rot40[0].vx;

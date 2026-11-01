@@ -4,7 +4,7 @@ static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     s32 t;
-    u8 *d;
+    u8 *data;
 
     if (mode != 1) {
         t = (frame << 12) / 6;
@@ -12,8 +12,8 @@ static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
         rot.vy = 0;
         rot.vz = 0;
         rot.pad = 1;
-        d = (u8 *)ex->btlfx_getFileData(entry->file, 6);
-        ex->btlfx_drawParticles(d, pos, &rot, (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0x1000 - t, 0, 0);
+        data = (u8 *)ex->btlfx_getFileData(entry->file, 6);
+        ex->btlfx_drawParticles(data, pos, &rot, (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0x1000 - t, 0, 0);
         if (frame >= 6) {
             return 1;
         }
@@ -24,11 +24,11 @@ static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
 void fx_0ec_spawnImpact(SVECTOR *pos) {
     Unk800F78A4 *env = fx_0ec_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR *p = ex->btlfx_poolSpawn((s16 *)fx_0ec_task->pool10);
+    SVECTOR *spot = ex->btlfx_poolSpawn((s16 *)fx_0ec_task->pool10);
     MATRIX m;
-    VECTOR v;
+    VECTOR world;
 
-    if (p != NULL) {
+    if (spot != NULL) {
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
         ex->math_rotMatrixYXZ(&fx_0ec_modelRot, &m);
@@ -40,11 +40,11 @@ void fx_0ec_spawnImpact(SVECTOR *pos) {
         gte_SetTransMatrix(&m);
         gte_ldv0(pos);
         gte_rtv0tr();
-        gte_stlvnl(&v);
-        v.vy = 0;
-        p->vx = v.vx;
-        p->vy = v.vy;
-        p->vz = v.vz;
+        gte_stlvnl(&world);
+        world.vy = 0;
+        spot->vx = world.vx;
+        spot->vy = world.vy;
+        spot->vz = world.vz;
     }
 }
 
@@ -346,21 +346,21 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     VECTOR sc;
     MATRIX m;
     VECTOR out;
-    SVECTOR c[2]; /* [1] unused: the original's frame has 8 more bytes of locals */
+    SVECTOR center[2]; /* [1] unused: the original's frame has 8 more bytes of locals */
     Pool6CEntry *emitter;
     s32 frame;
     s32 t;
-    s32 h;
-    s32 r;
+    s32 rise;
+    s32 dist;
     s32 i;
-    s32 j0; /* model index per case: block-local, so local-alloc gives it s0 */
-    s32 j1;
-    s32 j2;
-    s32 x;
-    s32 x2;
+    s32 flicker0; /* model index per case: block-local, so local-alloc gives it s0 */
+    s32 flicker1;
+    s32 flicker2;
+    s32 dispX;
+    s32 otherX;
     s32 tp0;
     s32 tp1;
-    s32 k;
+    s32 unitScale;
 
     if (mode == 0) {
         init->workSize = 0x64;
@@ -370,7 +370,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_0ec_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
-        r = ex->btlfx_getUnitRadius(0) + 0xF0;
+        dist = ex->btlfx_getUnitRadius(0) + 0xF0;
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot10);
         work->rot10.vy &= 0xFFF;
         if (work->rot10.vy - 0x400U > 0x800) {
@@ -378,7 +378,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } else {
             work->rot10.vy = 0x800;
         }
-        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot10, r, (s16 *)&work->pos18);
+        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->rot10, dist, (s16 *)&work->pos18);
         if (ex->btlfx_isEnemyUnit(0) != 0 && work->pos18.vz < -0x200) {
             work->pos18.vz = -0x200;
         }
@@ -411,27 +411,27 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model54 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x10), 0x119,
                                                       0xFFFF, 0, 0x90);
         work->model58 = (s16)ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x13));
-        x = env->dispEnv->disp.x;
-        if (x < 0x100) {
-            x2 = x + 0x140;
+        dispX = env->dispEnv->disp.x;
+        if (dispX < 0x100) {
+            otherX = dispX + 0x140;
         } else {
-            x2 = x - 0x140;
+            otherX = dispX - 0x140;
         }
-        tp0 = getTPage(2, 0, x, env->dispEnv->disp.y);
-        tp1 = getTPage(2, 0, x2, env->dispEnv->disp.y);
+        tp0 = getTPage(2, 0, dispX, env->dispEnv->disp.y);
+        tp1 = getTPage(2, 0, otherX, env->dispEnv->disp.y);
         work->model40[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp0 | 0x20,
                                                          0xFFFF, 0x40, 0);
         work->model40[2] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp1 | 0x20,
                                                          0xFFFF, 0x40, 0);
         fx_0ec_task = (Fx0ecWork *)entry; /* the shard callbacks spawn into entry->pool */
-        k = (ex->btlfx_getUnitRadius(0) << 12) / 390;
-        if (k < 0x1400) {
-            k = 0x1400;
+        unitScale = (ex->btlfx_getUnitRadius(0) << 12) / 390;
+        if (unitScale < 0x1400) {
+            unitScale = 0x1400;
         }
-        if (k > 0x1755) {
-            k = 0x1755;
+        if (unitScale > 0x1755) {
+            unitScale = 0x1755;
         }
-        work->scale5C = k;
+        work->scale5C = unitScale;
         emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos18);
         if (emitter != NULL) {
             emitter->otZ = -0x40;
@@ -455,8 +455,8 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         pos.vx = work->pos18.vx;
         pos.vy = work->pos18.vy;
         pos.vz = work->pos18.vz;
-        h = (ex->math_cos(t >> 2) * 0x514) >> 12;
-        pos.vy += h;
+        rise = (ex->math_cos(t >> 2) * 0x514) >> 12;
+        pos.vy += rise;
         work->pos20.vx = work->pos18.vx;
         work->pos20.vy = work->pos18.vy;
         work->pos20.vz = work->pos18.vz;
@@ -469,16 +469,16 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[0].vx = sv.vx;
         env->camera->points[0].vy = sv.vy;
         env->camera->points[0].vz = sv.vz;
-        ex->Hi_SetEffModelSlice(work->model38, h);
+        ex->Hi_SetEffModelSlice(work->model38, rise);
         ex->Hi_DrawSliceEffModel(&rot, &pos, (s32)&sc, work->model38);
-        ex->Hi_SetEffModelSlice(work->model3C, h);
+        ex->Hi_SetEffModelSlice(work->model3C, rise);
         ex->Hi_DrawSliceEffModel(&rot, &pos, (s32)&sc, work->model3C);
-        j0 = (work->frame4 & 1) + 1;
-        ex->Hi_SetEffModelSlice(work->model40[j0], h);
-        ex->Hi_DrawSliceEffModel(&rot, &pos, (s32)&sc, work->model40[j0]);
-        ex->Hi_ModifyEffModelRGB(work->model40[j0], ((t / 2 + 0x800) >> 5) - 0x80, ((t / 2 + 0x800) >> 5) - 0x80,
+        flicker0 = (work->frame4 & 1) + 1;
+        ex->Hi_SetEffModelSlice(work->model40[flicker0], rise);
+        ex->Hi_DrawSliceEffModel(&rot, &pos, (s32)&sc, work->model40[flicker0]);
+        ex->Hi_ModifyEffModelRGB(work->model40[flicker0], ((t / 2 + 0x800) >> 5) - 0x80, ((t / 2 + 0x800) >> 5) - 0x80,
                                  ((t / 2 + 0x800) >> 5) - 0x80);
-        ex->Hi_SetEffModelSlice(work->model54, h);
+        ex->Hi_SetEffModelSlice(work->model54, rise);
         ex->Hi_DrawSliceEffModel(&rot, &pos, (s32)&sc, work->model54);
         ex->Hi_ModifyEffModelRGB(work->model54, -0x60, -0x60, -0x60);
         if (frame >= 22) {
@@ -503,9 +503,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model54);
         ex->Hi_ModifyEffModelRGB(work->model54, ((t * 3 / 4 + 0x400) >> 5) - 0x80, ((t * 3 / 4 + 0x400) >> 5) - 0x80,
                                  ((t * 3 / 4 + 0x400) >> 5) - 0x80);
-        j1 = (work->frame4 & 1) + 1;
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model40[j1]);
-        ex->Hi_ModifyEffModelRGB(work->model40[j1], ((0x1000 - t / 2) >> 5) - 0x80, ((0x1000 - t / 2) >> 5) - 0x80,
+        flicker1 = (work->frame4 & 1) + 1;
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model40[flicker1]);
+        ex->Hi_ModifyEffModelRGB(work->model40[flicker1], ((0x1000 - t / 2) >> 5) - 0x80, ((0x1000 - t / 2) >> 5) - 0x80,
                                  ((0x1000 - t / 2) >> 5) - 0x80);
         if (frame >= 20) {
             work->state0 = 2;
@@ -534,15 +534,15 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_SetEffModelOffset(work->model54, 0x27);
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model54);
         {
-            s32 q = t >> 2;
+            s32 ang = t >> 2;
 
-            ex->Hi_ModifyEffModelRGB(work->model54, ((0x1000 - ex->math_sin(q)) >> 5) - 0x80,
-                                     ((0x1000 - ex->math_sin(q)) >> 5) - 0x80, ((0x1000 - ex->math_sin(q)) >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model54, ((0x1000 - ex->math_sin(ang)) >> 5) - 0x80,
+                                     ((0x1000 - ex->math_sin(ang)) >> 5) - 0x80, ((0x1000 - ex->math_sin(ang)) >> 5) - 0x80);
         }
         if (frame < 16) {
-            j2 = (work->frame4 & 1) + 1;
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model40[j2]);
-            ex->Hi_ModifyEffModelRGB(work->model40[j2], ((0x1000 - (frame << 8)) >> 6) - 0x80,
+            flicker2 = (work->frame4 & 1) + 1;
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model40[flicker2]);
+            ex->Hi_ModifyEffModelRGB(work->model40[flicker2], ((0x1000 - (frame << 8)) >> 6) - 0x80,
                                      ((0x1000 - (frame << 8)) >> 6) - 0x80, ((0x1000 - (frame << 8)) >> 6) - 0x80);
         }
         if (frame == 20) {
@@ -582,10 +582,10 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_splitModelInit(fx_0ec_splitBuf);
             fxm_splitModelAdd(work->model38);
             fxm_splitModelAdd(work->model3C);
-            c[0].vx = 0;
-            c[0].vy = 0;
-            c[0].vz = 0;
-            fxm_shatterModel(work->model4C, c);
+            center[0].vx = 0;
+            center[0].vy = 0;
+            center[0].vz = 0;
+            fxm_shatterModel(work->model4C, center);
         }
         break;
     case 3:
@@ -644,14 +644,14 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_ModifyEffModelRGB(work->model3C, 0, 0, 0);
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model4C);
         {
-            s32 a;
+            s32 bright;
 
             if (frame < 8) {
-                a = (frame << 8) + 0x800;
+                bright = (frame << 8) + 0x800;
             } else {
-                a = 0x1000;
+                bright = 0x1000;
             }
-            ex->Hi_ModifyEffModelRGB(work->model4C, (a >> 5) - 0x80, (a >> 5) - 0x80, (a >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model4C, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
         }
         if (frame < 47) {
             fxm_splitRelease(1000 - (((0x1000 - ex->math_cos((frame << 10) / 47)) * 1000) >> 12), &sv);

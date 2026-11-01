@@ -184,11 +184,11 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR rot;
     s32 frame;
     s32 t;
-    s32 r;
-    s32 a;
-    s32 d;
-    s32 c;
-    s32 k;
+    s32 radius;
+    s32 ang;
+    s32 spread;
+    s32 fadeRgb;
+    s32 growRgb;
     Pool6CEntry *emitter;
 
     if (mode == 0) {
@@ -204,11 +204,11 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot18.vy = 0x20;
         work->rot18.vz = 0;
     } else {
-        r = (work->frame4 << 9) / 72;
+        radius = (work->frame4 << 9) / 72;
         frame = entry->frame;
-        a = 0x1000 - ex->math_cos((work->frame4 << 10) / 72);
-        work->pos10.vx = work->center8.vx + ((ex->math_cos(a) * r) >> 12);
-        work->pos10.vz = work->center8.vz + ((ex->math_sin(a) * r) >> 12);
+        ang = 0x1000 - ex->math_cos((work->frame4 << 10) / 72);
+        work->pos10.vx = work->center8.vx + ((ex->math_cos(ang) * radius) >> 12);
+        work->pos10.vz = work->center8.vz + ((ex->math_sin(ang) * radius) >> 12);
         work->pos10.vy = work->center8.vy;
         rot.vz = 0;
         rot.vx = 0;
@@ -230,8 +230,8 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pos.vy = work->pos10.vy;
             pos.vz = work->pos10.vz;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
-            k = (t >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->model20, k, k, k);
+            growRgb = (t >> 5) - 0x80;
+            ex->Hi_ModifyEffModelRGB(work->model20, growRgb, growRgb, growRgb);
             if (frame >= 12) {
                 work->state0 = 1;
                 entry->frame = -1;
@@ -263,11 +263,11 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 2:
             t = frame << 7;
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
-            d = (t >> 5) + 0xC0;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, d,
+            spread = (t >> 5) + 0xC0;
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, spread,
                           work->frame4 * 40, 300, (t >> 5) + 0xA0, 1, 0);
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
-            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->frame4 * 40,
+            fxm_drawTexCylinder(&work->pos10, &work->rot18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, spread, work->frame4 * 40,
                           300, 0x80, 1, 1);
             pos.vx = work->pos10.vx;
             pos.vy = work->pos10.vy;
@@ -293,8 +293,8 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pos.vy = work->pos10.vy;
             pos.vz = work->pos10.vz;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
-            c = ((0x1000 - t) >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->model20, c, c, c);
+            fadeRgb = ((0x1000 - t) >> 5) - 0x80;
+            ex->Hi_ModifyEffModelRGB(work->model20, fadeRgb, fadeRgb, fadeRgb);
             if (frame >= 0x10) {
                 ex->btlfx_clearEffModels();
                 return 1;

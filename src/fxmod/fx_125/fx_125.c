@@ -7,11 +7,11 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     VECTOR pos;
     Pool6CEntry *emitter;
     s32 frame;
-    s32 x;
-    s32 x2;
+    s32 dispX;
+    s32 otherX;
     s32 tp1;
     s32 tp2;
-    s32 s;
+    s32 size;
 
     if (mode == 0) {
         *args = 0x30;
@@ -31,14 +31,14 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(fx_125_effModels, 3);
         work->model24 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), 0xB3,
                                                       0x3D40, 0, 0);
-        x = env->dispEnv->disp.x;
-        if (x < 0x100) {
-            x2 = x + 0x140;
+        dispX = env->dispEnv->disp.x;
+        if (dispX < 0x100) {
+            otherX = dispX + 0x140;
         } else {
-            x2 = x - 0x140;
+            otherX = dispX - 0x140;
         }
-        tp1 = getTPage(2, 3, x, env->dispEnv->disp.y);
-        tp2 = getTPage(2, 3, x2, env->dispEnv->disp.y);
+        tp1 = getTPage(2, 3, dispX, env->dispEnv->disp.y);
+        tp2 = getTPage(2, 3, otherX, env->dispEnv->disp.y);
         work->model28[0] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), tp1,
                                                          0xFFFF, 0, 0);
         work->model28[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), tp2,
@@ -58,14 +58,14 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vx = 0;
             rot.vz = 0;
             if (frame >= 0x3C) {
-                s = (((frame - 0x3C) << 12) / 10);
-                s = ex->math_cos(s >> 2) / 3;
+                size = (((frame - 0x3C) << 12) / 10);
+                size = ex->math_cos(size >> 2) / 3;
             } else {
-                s = 0x555;
+                size = 0x555;
             }
-            scale.vz = s;
-            scale.vy = s;
-            scale.vx = s;
+            scale.vz = size;
+            scale.vy = size;
+            scale.vx = size;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
             ex->Hi_ModifyEffModelAbr(work->model24, 1);
             ex->Hi_ModifyEffModelRGB(work->model24, -0x56, -0x56, -0x56);
@@ -74,47 +74,47 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelRGB(work->model28[frame & 1], 0x40, 0x40, 0x40);
         }
         if (frame == 0x10) {
-            Pool6CEntry *p;
+            Pool6CEntry *burst;
 
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos4);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x46);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos4);
+            if (burst != NULL) {
+                burst->otZ = ex->btlfx_addRadiusSixth(0, 0x46);
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+            if (burst != NULL) {
+                burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
         if (frame == 0x13) {
-            Pool6CEntry *p;
+            Pool6CEntry *burst;
 
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
+            if (burst != NULL) {
+                burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4);
+            if (burst != NULL) {
+                burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
         if (frame == 0x1A) {
-            Pool6CEntry *p;
+            Pool6CEntry *burst;
 
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
+            if (burst != NULL) {
+                burst->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
         if (frame == 0x28) {
-            Pool6CEntry *p;
+            Pool6CEntry *burst;
 
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x32);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
+            if (burst != NULL) {
+                burst->otZ = ex->btlfx_addRadiusSixth(0, 0x32);
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos14);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x32);
+            burst = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos14);
+            if (burst != NULL) {
+                burst->otZ = ex->btlfx_addRadiusSixth(0, 0x32);
             }
         }
         if (frame >= 0x46) {

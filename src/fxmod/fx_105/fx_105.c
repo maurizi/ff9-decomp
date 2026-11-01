@@ -200,25 +200,25 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     BtlBone bone1;
     BtlBone bone2;
-    CVECTOR c1[4];
-    CVECTOR c2[4];
-    CVECTOR c3[4];
-    CVECTOR c4[4];
+    CVECTOR nightBand[4];
+    CVECTOR flashBand[4];
+    CVECTOR dimBand[4];
+    CVECTOR lightBand[4];
     s32 frame;
     s32 i;
-    s32 a;
-    s32 z;
+    s32 bright;
+    s32 bandZ;
     s32 tp;
-    s32 ka;
-    s32 s4;
-    s32 vC;
-    s32 v1C;
-    s32 w1C;
-    s32 v20;
-    s32 w20;
-    s32 w2C;
-    s32 m14;
-    s32 k8;
+    s32 flat;
+    s32 ribbonFade;
+    s32 nightBlue;
+    s32 flashRight;
+    s32 flashLeft;
+    s32 dimLeft;
+    s32 dimRight;
+    s32 ribbonLen;
+    s32 morphStep;
+    s32 rgb;
 
     if (mode == 0) {
         *args = 0x1D8;
@@ -595,17 +595,17 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->timer28 >= 7) {
                 fx_105_drawCamRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x18), 0x80, 0x20, (8 - work->timer28) * 8);
             } else {
-                a = ex->btlfx_lerpRatio(0, 0x80, work->timer28, 6);
-                fx_105_drawCamRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x18), a, 0x20, 0x10);
+                bright = ex->btlfx_lerpRatio(0, 0x80, work->timer28, 6);
+                fx_105_drawCamRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x18), bright, 0x20, 0x10);
             }
         }
         if (work->timer14 != 0) {
             work->timer14--;
             ex->btlfx_aimAngles((s16 *)&env->camera->points[0], (s16 *)&env->camera->points[1], (s16 *)&work->rot190);
             work->pos198[1] = env->camera->points[0].vy - ((ex->math_sin(work->rot190.vx) * 8) >> 12);
-            ka = abs((ex->math_cos(work->rot190.vx) * 8) >> 12);
-            work->pos198[0] = env->camera->points[0].vx + ((ex->math_sin(work->rot190.vy) * ka) >> 12);
-            work->pos198[2] = env->camera->points[0].vz + ((ex->math_cos(work->rot190.vy) * ka) >> 12);
+            flat = abs((ex->math_cos(work->rot190.vx) * 8) >> 12);
+            work->pos198[0] = env->camera->points[0].vx + ((ex->math_sin(work->rot190.vy) * flat) >> 12);
+            work->pos198[2] = env->camera->points[0].vz + ((ex->math_cos(work->rot190.vy) * flat) >> 12);
             work->scale1A8[0] = 0x333;
             work->scale1A8[1] = 0x333;
             work->scale1A8[2] = 0x333;
@@ -618,14 +618,14 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->timer14 == 0x10) {
                 ex->Hi_DrawEffModel(&work->rot190, (VECTOR *)work->pos198, (s32)work->scale1A8, work->model184);
             }
-            m14 = work->timer14;
-            if (m14 < 0x10) {
+            morphStep = work->timer14;
+            if (morphStep < 0x10) {
                 ex->Hi_DrawMorphEffModel(&work->rot190, (VECTOR *)work->pos198, (s32)work->scale1A8, work->model188, work->model18C,
-                                         m14 << 8);
+                                         morphStep << 8);
             }
             if (work->timer14 < 8) {
-                k8 = -((8 - work->timer14) << 5);
-                ex->Hi_ModifyEffModelRGB(work->model188, k8, k8, k8);
+                rgb = -((8 - work->timer14) << 5);
+                ex->Hi_ModifyEffModelRGB(work->model188, rgb, rgb, rgb);
             }
         }
         if (work->visible0 != 0) {
@@ -640,11 +640,11 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_matrixPointAhead((MATRIX *)&bone1, 0x80, (s32)&work->pos10C);
             ex->Hi_GetSummonBoneMatrix(SUMMON105(env)->summonModel60, 0x27, &bone2);
             ex->btlfx_matrixPointAhead((MATRIX *)&bone2, 0x384, (s32)&work->pos114);
-            s4 = 0x1000;
+            ribbonFade = 0x1000;
             if (work->timer4 < 4) {
-                s4 = work->timer4 << 10;
+                ribbonFade = work->timer4 << 10;
             }
-            fxm_drawRibbonTrail(&work->pos10C, &work->pos114, 0x10, &work->color11C, &work->color120, s4, fx_105_ribbonSegs, 1);
+            fxm_drawRibbonTrail(&work->pos10C, &work->pos114, 0x10, &work->color11C, &work->color120, ribbonFade, fx_105_ribbonSegs, 1);
         }
         if (work->flag10 != 0) {
             work->pos158[0] = env->camera->points[3].vx;
@@ -682,40 +682,40 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->timerC != 0) {
             work->timerC--;
-            a = 0x1000;
+            bright = 0x1000;
             tp = 0xFF;
-            z = 0xFFF;
+            bandZ = 0xFFF;
             if (work->timerC >= 0x84) {
-                a = (0x93 - work->timerC) << 8;
+                bright = (0x93 - work->timerC) << 8;
             }
             if (work->timerC < 8) {
-                a = work->timerC << 9;
+                bright = work->timerC << 9;
                 tp = 1;
-                z = 0;
+                bandZ = 0;
             }
-            vC = (a * 0x30) >> 12;
-            c1[2].b = c1[3].b = vC;
-            c1[0].b = c1[1].b = 0;
-            c1[0].g = c1[1].g = 0;
-            c1[0].r = c1[1].r = 0;
-            c1[2].r = c1[3].r = 0;
-            c1[2].g = c1[3].g = 0;
-            fx_105_drawScreenBand(z, tp, 0, 0xF0, c1);
+            nightBlue = (bright * 0x30) >> 12;
+            nightBand[2].b = nightBand[3].b = nightBlue;
+            nightBand[0].b = nightBand[1].b = 0;
+            nightBand[0].g = nightBand[1].g = 0;
+            nightBand[0].r = nightBand[1].r = 0;
+            nightBand[2].r = nightBand[3].r = 0;
+            nightBand[2].g = nightBand[3].g = 0;
+            fx_105_drawScreenBand(bandZ, tp, 0, 0xF0, nightBand);
         }
         if (work->timer30 != 0) {
             work->timer30--;
             for (i = 0; i < 32; i++) {
-                a = 0xFFF;
+                bright = 0xFFF;
                 if (fx_105_stars[i].flicker10 == 0) {
                     if (!(ex->btlfx_rand() & 0x1F)) {
                         fx_105_stars[i].flicker10 = (ex->btlfx_rand() & 7) + 1;
                     }
                 } else {
                     fx_105_stars[i].flicker10--;
-                    a = (ex->btlfx_rand() & 0x3FF) + 0x800;
+                    bright = (ex->btlfx_rand() & 0x3FF) + 0x800;
                 }
                 fx_105_stars[i].flicker10 = ex->btlfx_rand() & 0x1F;
-                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), fx_105_stars[i].posX0, fx_105_stars[i].posY4, 0, 1, a);
+                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), fx_105_stars[i].posX0, fx_105_stars[i].posY4, 0, 1, bright);
                 if (work->timer30 < 0x28) {
                     fx_105_stars[i].posX0 -= fx_105_stars[i].speed8;
                     if (fx_105_stars[i].posX0 < 0) {
@@ -732,72 +732,72 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->timer1C != 0) {
             work->timer1C--;
             if (work->timer1C >= 9) {
-                v1C = ex->btlfx_lerpRatio(0xFF, 0, work->timer1C - 8, 8);
-                c2[1].b = c2[3].b = v1C;
-                c2[1].g = c2[3].g = v1C;
-                c2[1].r = c2[3].r = v1C;
+                flashRight = ex->btlfx_lerpRatio(0xFF, 0, work->timer1C - 8, 8);
+                flashBand[1].b = flashBand[3].b = flashRight;
+                flashBand[1].g = flashBand[3].g = flashRight;
+                flashBand[1].r = flashBand[3].r = flashRight;
             } else {
-                c2[1].b = c2[3].b = 0xFF;
-                c2[1].g = c2[3].g = 0xFF;
-                c2[1].r = c2[3].r = 0xFF;
+                flashBand[1].b = flashBand[3].b = 0xFF;
+                flashBand[1].g = flashBand[3].g = 0xFF;
+                flashBand[1].r = flashBand[3].r = 0xFF;
             }
-            w1C = ex->btlfx_lerpRatio(0xFF, 0, work->timer1C, 0x10);
-            c2[0].b = c2[2].b = w1C;
-            c2[0].g = c2[2].g = w1C;
-            c2[0].r = c2[2].r = w1C;
-            fx_105_drawScreenBand(0, 1, 0, 0xF0, c2);
+            flashLeft = ex->btlfx_lerpRatio(0xFF, 0, work->timer1C, 0x10);
+            flashBand[0].b = flashBand[2].b = flashLeft;
+            flashBand[0].g = flashBand[2].g = flashLeft;
+            flashBand[0].r = flashBand[2].r = flashLeft;
+            fx_105_drawScreenBand(0, 1, 0, 0xF0, flashBand);
         }
         if (work->timer20 != 0) {
             work->timer20--;
             if (work->timer20 >= 0x21) {
-                v20 = ex->btlfx_lerpRatio(0, 0x7F, work->timer20 - 0x20, 0x10);
-                c3[0].b = c3[2].b = v20;
-                c3[0].g = c3[2].g = v20;
-                c3[0].r = c3[2].r = v20;
+                dimLeft = ex->btlfx_lerpRatio(0, 0x7F, work->timer20 - 0x20, 0x10);
+                dimBand[0].b = dimBand[2].b = dimLeft;
+                dimBand[0].g = dimBand[2].g = dimLeft;
+                dimBand[0].r = dimBand[2].r = dimLeft;
             } else {
-                c3[0].b = c3[2].b = 0;
-                c3[0].g = c3[2].g = 0;
-                c3[0].r = c3[2].r = 0;
+                dimBand[0].b = dimBand[2].b = 0;
+                dimBand[0].g = dimBand[2].g = 0;
+                dimBand[0].r = dimBand[2].r = 0;
             }
-            w20 = ex->btlfx_lerpRatio(0, 0x7F, work->timer20, 0x30);
-            c3[1].b = c3[3].b = w20;
-            c3[1].g = c3[3].g = w20;
-            c3[1].r = c3[3].r = w20;
-            fx_105_drawScreenBand(0, 1, 0, 0xF0, c3);
+            dimRight = ex->btlfx_lerpRatio(0, 0x7F, work->timer20, 0x30);
+            dimBand[1].b = dimBand[3].b = dimRight;
+            dimBand[1].g = dimBand[3].g = dimRight;
+            dimBand[1].r = dimBand[3].r = dimRight;
+            fx_105_drawScreenBand(0, 1, 0, 0xF0, dimBand);
         }
         if (work->timer18 != 0) {
             work->timer18--;
-            c4[2].b = c4[3].b = 0xFF;
-            c4[2].g = c4[3].g = 0xFF;
-            c4[2].r = c4[3].r = 0xFF;
-            c4[0].b = c4[1].b = 0;
-            c4[0].g = c4[1].g = 0;
-            c4[0].r = c4[1].r = 0;
-            fx_105_drawScreenBand(0, 2, 0xA0, 0xF0, c4);
+            lightBand[2].b = lightBand[3].b = 0xFF;
+            lightBand[2].g = lightBand[3].g = 0xFF;
+            lightBand[2].r = lightBand[3].r = 0xFF;
+            lightBand[0].b = lightBand[1].b = 0;
+            lightBand[0].g = lightBand[1].g = 0;
+            lightBand[0].r = lightBand[1].r = 0;
+            fx_105_drawScreenBand(0, 2, 0xA0, 0xF0, lightBand);
         }
         if (work->timer24 != 0) {
             work->timer24--;
-            a = 0x1000;
+            bright = 0x1000;
             if (work->timer24 >= 0x31) {
-                a = (0x30 - work->timer24) << 10;
+                bright = (0x30 - work->timer24) << 10;
             }
             if (work->timer24 < 4) {
-                a = work->timer24 << 10;
+                bright = work->timer24 << 10;
             }
-            fx_105_drawWindStreaks(a);
+            fx_105_drawWindStreaks(bright);
         }
         if (work->timer2C != 0) {
             work->timer2C--;
-            w2C = ex->btlfx_lerpRatio(0x3F, 0, work->timer2C, 0x1C);
-            a = 0x80;
+            ribbonLen = ex->btlfx_lerpRatio(0x3F, 0, work->timer2C, 0x1C);
+            bright = 0x80;
             if (work->timer2C < 0x10) {
-                a = work->timer2C * 8;
+                bright = work->timer2C * 8;
             }
-            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x20), a, a, w2C);
-            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x22), a, a, w2C);
-            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x23), a, a, w2C);
-            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x14), a, a, w2C);
-            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x25), a, a, w2C);
+            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x20), bright, bright, ribbonLen);
+            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x22), bright, bright, ribbonLen);
+            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x23), bright, bright, ribbonLen);
+            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x14), bright, bright, ribbonLen);
+            fx_105_drawWorldRibbon((s16 *)ex->btlfx_getFileData(entry->file, 0x25), bright, bright, ribbonLen);
         }
         fxm_camKeyUpdate();
     }
@@ -807,33 +807,33 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 void fx_105_initWindStreaks(void) {
     Unk800F78A4 *env = fx_105_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Fx105Spark *p;
-    s32 t;
+    Fx105Spark *streak;
+    s32 offX;
     s32 i;
 
     for (i = 0; i < 0x20; i++) {
-        t = ex->btlfx_randRange(-((i + 1) * 0x180), -(i * 0x180));
-        p = &fx_105_windStreaks[i];
-        p->vx = t;
-        p->vz = ex->btlfx_randRange(-0x1000, 0x2000);
-        p->vy = p->vx >> 4;
-        p->vx += env->camera->points[2].vx;
-        p->vz += env->camera->points[2].vz;
-        p->vy += env->camera->points[2].vy;
+        offX = ex->btlfx_randRange(-((i + 1) * 0x180), -(i * 0x180));
+        streak = &fx_105_windStreaks[i];
+        streak->vx = offX;
+        streak->vz = ex->btlfx_randRange(-0x1000, 0x2000);
+        streak->vy = streak->vx >> 4;
+        streak->vx += env->camera->points[2].vx;
+        streak->vz += env->camera->points[2].vz;
+        streak->vy += env->camera->points[2].vy;
     }
 }
 
-void fx_105_drawWindStreaks(s32 c) {
+void fx_105_drawWindStreaks(s32 bright) {
     Unk800F78A4 *env = fx_105_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
-    SVECTOR v[4];
+    SVECTOR quad[4];
     SVECTOR rot;
     u8 uv[4][8];
     s32 otz;
     POLY_FT4 *poly;
     s32 i;
-    s32 w;
+    s32 halfDepth;
     s32 abr;
     s32 tp;
     s32 clut;
@@ -860,21 +860,21 @@ void fx_105_drawWindStreaks(s32 c) {
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
     for (i = 0; i < 32; i++) {
-        w = i * 16 - 0x5E8;
-        v[0].vx = v[2].vx = fx_105_windStreaks[i].vx - 0x400;
-        v[1].vx = v[3].vx = fx_105_windStreaks[i].vx;
-        v[0].vz = v[1].vz = fx_105_windStreaks[i].vz + w;
-        v[2].vz = v[3].vz = fx_105_windStreaks[i].vz - w;
-        v[0].vy = v[2].vy = fx_105_windStreaks[i].vy - 0x600;
-        v[1].vy = v[3].vy = fx_105_windStreaks[i].vy;
-        gte_ldv3c(v);
+        halfDepth = i * 16 - 0x5E8;
+        quad[0].vx = quad[2].vx = fx_105_windStreaks[i].vx - 0x400;
+        quad[1].vx = quad[3].vx = fx_105_windStreaks[i].vx;
+        quad[0].vz = quad[1].vz = fx_105_windStreaks[i].vz + halfDepth;
+        quad[2].vz = quad[3].vz = fx_105_windStreaks[i].vz - halfDepth;
+        quad[0].vy = quad[2].vy = fx_105_windStreaks[i].vy - 0x600;
+        quad[1].vy = quad[3].vy = fx_105_windStreaks[i].vy;
+        gte_ldv3c(quad);
         gte_rtpt();
         if (abr == 0xFF) {
             poly->code = GPU_POLY_FT4;
         } else {
             poly->code = GPU_POLY_FT4 | GPU_ABE;
         }
-        poly->r0 = poly->g0 = poly->b0 = (c * 0x70) >> 12;
+        poly->r0 = poly->g0 = poly->b0 = (bright * 0x70) >> 12;
         gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
         gte_avsz3();
         *(u16 *)&poly->u0 = *(u16 *)uv[0];
@@ -882,7 +882,7 @@ void fx_105_drawWindStreaks(s32 c) {
         *(u16 *)&poly->u2 = *(u16 *)uv[2];
         *(u16 *)&poly->u3 = *(u16 *)uv[3];
         gte_stszotz(&otz);
-        gte_ldv0(&v[3]);
+        gte_ldv0(&quad[3]);
         gte_rtps();
         poly->clut = clut;
         poly->tpage = tp;
@@ -896,63 +896,63 @@ void fx_105_drawWindStreaks(s32 c) {
     }
 }
 
-void fx_105_drawCamRibbon(s16 *data, s32 c, s32 h, s32 n) {
+void fx_105_drawCamRibbon(s16 *data, s32 bright, s32 halfWidth, s32 n) {
     Unk800F78A4 *env = fx_105_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR cen;
     SVECTOR ang;
-    SVECTOR a;
-    SVECTOR b;
+    SVECTOR edgeA;
+    SVECTOR edgeB;
     MATRIX m;
     POLY_FT4 *prim;
-    s32 r;
+    s32 dist;
     s32 tp;
     s32 i;
     s32 (*fsin)(s32);
     s32 av;
 
-    a.vx = a.vz = b.vx = b.vz = 0;
-    a.vy = -h;
-    b.vy = h;
+    edgeA.vx = edgeA.vz = edgeB.vx = edgeB.vz = 0;
+    edgeA.vy = -halfWidth;
+    edgeB.vy = halfWidth;
     ex->btlfx_aimAngles(&env->camera->points[0].vx, &env->camera->points[1].vx, &ang.vx);
     i = 0;
     cen.vy = env->camera->points[0].vy - ((ex->math_sin(ang.vx) * 0x800) >> 12);
     data += 2;
-    r = ex->math_cos(ang.vx) * 0x800;
-    r >>= 12;
-    /* The do-while only raises r's reference count so global-alloc puts it ahead of data; the sin pointer and
+    dist = ex->math_cos(ang.vx) * 0x800;
+    dist >>= 12;
+    /* The do-while only raises dist's reference count so global-alloc puts it ahead of data; the sin pointer and
      * argument are loaded before the abs() branch in the original. */
     do {
         av = ang.vy;
         fsin = ex->math_sin;
-        if (r < 0) {
-            r = -r;
+        if (dist < 0) {
+            dist = -dist;
         }
     } while (0);
-    cen.vx = env->camera->points[0].vx + ((fsin(av) * r) >> 12);
-    cen.vz = env->camera->points[0].vz + ((ex->math_cos(ang.vy) * r) >> 12);
+    cen.vx = env->camera->points[0].vx + ((fsin(av) * dist) >> 12);
+    cen.vz = env->camera->points[0].vz + ((ex->math_cos(ang.vy) * dist) >> 12);
     for (; i < 0x11; i++) {
-        v.vx = -*data++ + cen.vx;
-        v.vy = *data++ + cen.vy;
-        v.vz = -*data++ + cen.vz;
+        pos.vx = -*data++ + cen.vx;
+        pos.vy = *data++ + cen.vy;
+        pos.vz = -*data++ + cen.vz;
         rot.vx = *data++ + ang.vx;
         rot.vy = *data++ + ang.vy;
         rot.vz = *data++ + ang.vz;
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
-        gte_ldv0(&v);
+        gte_ldv0(&pos);
         gte_rtv0tr();
         gte_stlvnl(m.t);
         ex->math_rotMatrixYXZ(&rot, &m);
         ex->MulRotMatrix(&m);
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);
-        gte_ldv0(&a);
+        gte_ldv0(&edgeA);
         gte_rtps();
         gte_stsxy(&fx_105_camRibbonPts[i].xy0);
-        gte_ldv0(&b);
+        gte_ldv0(&edgeB);
         gte_rtps();
         gte_stsxy(&fx_105_camRibbonPts[i].xy1);
     }
@@ -963,9 +963,9 @@ void fx_105_drawCamRibbon(s16 *data, s32 c, s32 h, s32 n) {
             tp = 0xB8;
             prim->clut = 0x3D80;
             prim->tpage = tp;
-            prim->b0 = c;
-            prim->g0 = c;
-            prim->r0 = c;
+            prim->b0 = bright;
+            prim->g0 = bright;
+            prim->r0 = bright;
             prim->code = GPU_POLY_FT4 | GPU_ABE;
             prim->x0 = fx_105_camRibbonPts[i].xy0.vx;
             prim->y0 = fx_105_camRibbonPts[i].xy0.vy;
@@ -987,46 +987,46 @@ void fx_105_drawCamRibbon(s16 *data, s32 c, s32 h, s32 n) {
     }
 }
 
-void fx_105_drawWorldRibbon(s16 *data, s32 c, s32 c2, s32 n) {
+void fx_105_drawWorldRibbon(s16 *data, s32 bright, s32 unused, s32 n) {
     Unk800F78A4 *env;
     BtlfxExports *ex;
-    SVECTOR v;
-    SVECTOR r;
-    SVECTOR a;
-    SVECTOR b;
+    SVECTOR pos;
+    SVECTOR rot;
+    SVECTOR edgeA;
+    SVECTOR edgeB;
     MATRIX m;
     POLY_FT4 *prim;
     Fx105RibbonPt *cur;
-    s16 *p;
+    s16 *src;
     s32 i;
     s32 tp;
 
-    p = data + 2;
+    src = data + 2;
     env = fx_105_env;
     ex = BTLFX_EXPORTS(env);
-    a.vy = -0xC0;
-    a.vx = a.vz = b.vx = b.vz = 0;
-    b.vy = 0xC0;
+    edgeA.vy = -0xC0;
+    edgeA.vx = edgeA.vz = edgeB.vx = edgeB.vz = 0;
+    edgeB.vy = 0xC0;
     for (i = 0; i < 0x40; i++) {
-        v.vx = *p++;
-        v.vy = *p++;
-        v.vz = *p++ + env->targets->centerZ;
-        r.vx = *p++;
-        r.vy = *p++;
-        r.vz = *p++;
+        pos.vx = *src++;
+        pos.vy = *src++;
+        pos.vz = *src++ + env->targets->centerZ;
+        rot.vx = *src++;
+        rot.vy = *src++;
+        rot.vz = *src++;
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
-        gte_ldv0(&v);
+        gte_ldv0(&pos);
         gte_rtv0tr();
         gte_stlvnl(m.t);
-        ex->math_rotMatrixYXZ(&r, &m);
+        ex->math_rotMatrixYXZ(&rot, &m);
         ex->MulRotMatrix(&m);
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);
-        gte_ldv0(&a);
+        gte_ldv0(&edgeA);
         gte_rtps();
         gte_stsxy(&fx_105_worldRibbonPts[i].xy0);
-        gte_ldv0(&b);
+        gte_ldv0(&edgeB);
         gte_rtps();
         gte_stsxy(&fx_105_worldRibbonPts[i].xy1);
         gte_stszotz(&fx_105_worldRibbonPts[i].z);
@@ -1039,9 +1039,9 @@ void fx_105_drawWorldRibbon(s16 *data, s32 c, s32 c2, s32 n) {
             cur = &fx_105_worldRibbonPts[i];
             prim->clut = 0x3DC0;
             prim->tpage = tp;
-            prim->b0 = c;
-            prim->g0 = c;
-            prim->r0 = c;
+            prim->b0 = bright;
+            prim->g0 = bright;
+            prim->r0 = bright;
             prim->code = GPU_POLY_FT4 | GPU_ABE;
             prim->x0 = cur->xy0.vx;
             prim->y0 = cur->xy0.vy;

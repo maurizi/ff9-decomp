@@ -4,7 +4,7 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *emitter;
     s32 frame;
-    s32 t;
+    s32 elapsed;
 
     if (mode == 0) {
         *args = 0x70;
@@ -65,8 +65,8 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if ((u32)(frame - 0x32) < 0x30) {
-            t = frame - 0x32;
-            if (t >= 4) {
+            elapsed = frame - 0x32;
+            if (elapsed >= 4) {
                 ex->Hi_DrawEffModel(&work->rot14, &work->pos1C, (s32)&work->scale2C, work->model6C);
                 ex->Hi_ModifyEffModelAbr(work->model6C, 1);
             }
@@ -81,15 +81,15 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->rgb3C = fxm_lerpRatio(0, -0x100, 0x10 - work->fadeOutTimer6A, 0x10);
                     work->fadeOutTimer6A--;
                 }
-                if (t >= 4) {
+                if (elapsed >= 4) {
                     ex->Hi_ModifyEffModelRGB(work->model6C, work->rgb3C, work->rgb3C, work->rgb3C);
                 }
                 ex->Hi_ModifyEffModelRGB(work->model6E, work->rgb3C, work->rgb3C, work->rgb3C);
             }
-            if (t >= 4) {
+            if (elapsed >= 4) {
                 work->scale2C.vx += 0x40;
                 work->scale2C.vz += 0x40;
-                if (t >= 0x10) {
+                if (elapsed >= 0x10) {
                     work->scale2C.vy -= 8;
                 } else {
                     work->scale2C.vy += 0x40;
@@ -97,7 +97,7 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->scale48.vx += 0x40;
             work->scale48.vz += 0x40;
-            if (t >= 0xC) {
+            if (elapsed >= 0xC) {
                 work->scale48.vy -= 8;
             } else {
                 work->scale48.vy += 0x55;

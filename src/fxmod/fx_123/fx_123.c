@@ -66,7 +66,7 @@ INCLUDE_RODATA("asm/us/fx_123/nonmatchings/fx_123", fx_123_headerPtr);
 s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     BtlBone m;
-    Fx123Bone *b;
+    Fx123Bone *bone;
     Pool6CEntry *emitter;
     s32 frame;
     s32 i;
@@ -115,10 +115,10 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     }
     if (frame >= 0 && frame < 0x12) {
-        b = fx_123_op80Bones;
-        for (i = 0; i < 6; i++, b++) {
-            ex->btlfx_getUnitBoneMatrix(0x10, b->bone0, &m);
-            ex->btlfx_matrixPointAhead((MATRIX *)&m, b->dist2, (s32)&work->pos5C[i]);
+        bone = fx_123_op80Bones;
+        for (i = 0; i < 6; i++, bone++) {
+            ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, &m);
+            ex->btlfx_matrixPointAhead((MATRIX *)&m, bone->dist2, (s32)&work->pos5C[i]);
             if (work->emit0[i] != NULL && work->emit0[i]->state == BTLFX_EMIT_DONE) {
                 work->emit0[i] = NULL;
             }
@@ -126,10 +126,10 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     }
     if (frame >= 0x14 && frame < 0x26) {
-        b = fx_123_op80Bones;
-        for (i = 0; i < 6; i++, b++) {
-            ex->btlfx_getUnitBoneMatrix(0x10, b->bone0, &m);
-            ex->btlfx_matrixPointAhead((MATRIX *)&m, b->dist2, (s32)&work->pos5C[i]);
+        bone = fx_123_op80Bones;
+        for (i = 0; i < 6; i++, bone++) {
+            ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, &m);
+            ex->btlfx_matrixPointAhead((MATRIX *)&m, bone->dist2, (s32)&work->pos5C[i]);
             if (work->emit18[i] != NULL && work->emit18[i]->state == BTLFX_EMIT_DONE) {
                 work->emit18[i] = NULL;
             }
@@ -137,10 +137,10 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     }
     if (frame >= 0x1E && frame < 0x37) {
-        b = fx_123_op80Bones;
-        for (i = 0; i < 6; i++, b++) {
-            ex->btlfx_getUnitBoneMatrix(0x10, b->bone0, &m);
-            ex->btlfx_matrixPointAhead((MATRIX *)&m, b->dist2, (s32)&work->pos5C[i]);
+        bone = fx_123_op80Bones;
+        for (i = 0; i < 6; i++, bone++) {
+            ex->btlfx_getUnitBoneMatrix(0x10, bone->bone0, &m);
+            ex->btlfx_matrixPointAhead((MATRIX *)&m, bone->dist2, (s32)&work->pos5C[i]);
             if (work->emit30[i] != NULL && work->emit30[i]->state == BTLFX_EMIT_DONE) {
                 work->emit30[i] = NULL;
             }
@@ -158,13 +158,13 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     VECTOR pos;
     Pool6CEntry *emitter;
     s32 frame;
-    Fx123Shot *s;
+    Fx123Shot *shot;
     s32 j;
     s32 i;
-    s32 k;
-    s32 t;
-    s32 f;
-    s32 n;
+    s32 shotFrame;
+    s32 flyFrame;
+    s32 pathFrame;
+    s32 path;
 
     if (mode == 0) {
         *args = 0x188;
@@ -172,11 +172,11 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_123_env = env;
         ex->btlfx_initEffModels(fx_123_effModels, 7);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos64);
-        for (n = 0; n < 6; n++) {
-            fxm_rotPosPathInit((Fx123Path *)&fx_123_rotPosPath[n], (u16 *)ex->btlfx_getFileData(entry->file, fx_123_pathFileIds[n]));
-            setVector(&work->rot6C[n], 0, 0, 0);
-            setVector(&work->pos9C[n], 0, 0, 0);
-            work->model17A[n] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 7), 0x97, 0x3D40, 0x80, 0);
+        for (path = 0; path < 6; path++) {
+            fxm_rotPosPathInit((Fx123Path *)&fx_123_rotPosPath[path], (u16 *)ex->btlfx_getFileData(entry->file, fx_123_pathFileIds[path]));
+            setVector(&work->rot6C[path], 0, 0, 0);
+            setVector(&work->pos9C[path], 0, 0, 0);
+            work->model17A[path] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 7), 0x97, 0x3D40, 0x80, 0);
         }
         setVector(&work->scaleFC, 0x1000, 0x1000, 0x1000);
         work->model186 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0x97, 0x3D40, 0x80, 0);
@@ -199,21 +199,21 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 19:
-            for (s = fx_123_op81Shots, j = 0; j < 6; j++, s++) {
-                s->pos0.vx = env->targets->centerX;
-                s->pos0.vy = work->pos9C[j].vy;
-                s->pos0.vz = env->targets->centerZ;
-                s->pos0.vx += ex->math_sin(s->angle20) * 350 / 4096;
-                s->pos0.vz += ex->math_cos(s->angle20) * 350 / 4096;
-                s->rot8.vx = work->rot6C[j].vx;
-                s->rot8.vy = work->rot6C[j].vy;
-                s->rot8.vz = work->rot6C[j].vz;
-                s->pos10.vx = ex->math_sin(s->angle20) * 1400 / 4096;
-                s->pos10.vy = 500;
-                s->pos10.vz = ex->math_cos(s->angle20) * 1400 / 4096;
-                s->pos10.vx += env->targets->centerX;
-                s->pos10.vy += env->targets->centerY;
-                s->pos10.vz += env->targets->centerZ;
+            for (shot = fx_123_op81Shots, j = 0; j < 6; j++, shot++) {
+                shot->pos0.vx = env->targets->centerX;
+                shot->pos0.vy = work->pos9C[j].vy;
+                shot->pos0.vz = env->targets->centerZ;
+                shot->pos0.vx += ex->math_sin(shot->angle20) * 350 / 4096;
+                shot->pos0.vz += ex->math_cos(shot->angle20) * 350 / 4096;
+                shot->rot8.vx = work->rot6C[j].vx;
+                shot->rot8.vy = work->rot6C[j].vy;
+                shot->rot8.vz = work->rot6C[j].vz;
+                shot->pos10.vx = ex->math_sin(shot->angle20) * 1400 / 4096;
+                shot->pos10.vy = 500;
+                shot->pos10.vz = ex->math_cos(shot->angle20) * 1400 / 4096;
+                shot->pos10.vx += env->targets->centerX;
+                shot->pos10.vy += env->targets->centerY;
+                shot->pos10.vz += env->targets->centerZ;
             }
             break;
         case 17:
@@ -224,7 +224,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[0].vy = work->pos64.vy;
         env->camera->points[0].vz = work->pos64.vz - 0x5F5;
         if (frame >= 0 && frame < 0x32) {
-            k = frame;
+            shotFrame = frame;
             if (frame >= 3 && frame < 11) {
                 pos.vx = work->pos64.vx;
                 pos.vy = work->pos64.vy - 0x1013;
@@ -237,24 +237,24 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             } else {
                 if (frame >= 11) {
-                    k = frame - 8;
+                    shotFrame = frame - 8;
                 }
-                for (s = fx_123_op81Shots, i = 0; i < 6; i++, s++) {
-                    if (s->active18 == 0) {
+                for (shot = fx_123_op81Shots, i = 0; i < 6; i++, shot++) {
+                    if (shot->active18 == 0) {
                         continue;
                     }
-                    if (k >= 0 && k < 11) {
-                        f = frame >= 11 ? frame - 8 : frame;
-                        fxm_rotPosPathGet(&fx_123_rotPosPath[i], f, &work->rot6C[i], &work->pos148[i]);
+                    if (shotFrame >= 0 && shotFrame < 11) {
+                        pathFrame = frame >= 11 ? frame - 8 : frame;
+                        fxm_rotPosPathGet(&fx_123_rotPosPath[i], pathFrame, &work->rot6C[i], &work->pos148[i]);
                         copyVector(&work->pos9C[i], &work->pos148[i]);
                         addVector(&work->pos9C[i], &work->pos64);
                         addVector(&work->pos148[i], &work->pos64);
-                    } else if (k >= s->frame1A + 13 && k < s->frame1A + 17) {
-                        t = k - 13;
-                        if (t < s->frame1A) {
+                    } else if (shotFrame >= shot->frame1A + 13 && shotFrame < shot->frame1A + 17) {
+                        flyFrame = shotFrame - 13;
+                        if (flyFrame < shot->frame1A) {
                             continue;
                         }
-                        if (s->frame1A == t) {
+                        if (shot->frame1A == flyFrame) {
                             work->emit30[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_123_emitFileIds[i]), (s32)&fx_123_emitPos3[i]);
                             if (emitter != NULL) {
                                 emitter->otZ = 0x80;
@@ -268,12 +268,12 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                 }
                             }
                         }
-                        t -= s->frame1A;
-                        copyVector(&work->rot6C[i], &s->rot8);
-                        ex->btlfx_lerpVec((s16 *)&s->pos0, (s16 *)&s->pos10, t << 10, (s16 *)&work->pos148[i]);
+                        flyFrame -= shot->frame1A;
+                        copyVector(&work->rot6C[i], &shot->rot8);
+                        ex->btlfx_lerpVec((s16 *)&shot->pos0, (s16 *)&shot->pos10, flyFrame << 10, (s16 *)&work->pos148[i]);
                         copyVector(&work->pos9C[i], &work->pos148[i]);
                     }
-                    if (k == s->frame1A + 17) {
+                    if (shotFrame == shot->frame1A + 17) {
                         copyVector(&work->pos110[i], &work->pos148[i]);
                         work->pos110[i].vy += 0x154;
                         work->emit48[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos110[i]);
@@ -282,21 +282,21 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         }
                     }
                     copyVector(&fx_123_pinPos0[i], &work->pos9C[i]);
-                    if (k == s->frame1A + 21) {
-                        s->timer1E = 4;
+                    if (shotFrame == shot->frame1A + 21) {
+                        shot->timer1E = 4;
                     }
-                    if (k >= s->frame1A + 16) {
+                    if (shotFrame >= shot->frame1A + 16) {
                         ex->Hi_SetEffModelSlice(work->model17A[i], work->pos9C[i].vy - 100);
                         ex->Hi_DrawSliceEffModel(&work->rot6C[i], &work->pos9C[i], (s32)&work->scaleFC, work->model17A[i]);
                     } else {
                         ex->Hi_DrawEffModel(&work->rot6C[i], &work->pos9C[i], (s32)&work->scaleFC, work->model17A[i]);
                     }
-                    if (s->timer1E >= 0) {
-                        work->fade10C = fxm_lerpRatio(0, -0x80, 4 - s->timer1E, 4);
-                        if (s->timer1E == 0) {
-                            s->active18 = 0;
+                    if (shot->timer1E >= 0) {
+                        work->fade10C = fxm_lerpRatio(0, -0x80, 4 - shot->timer1E, 4);
+                        if (shot->timer1E == 0) {
+                            shot->active18 = 0;
                         } else {
-                            s->timer1E--;
+                            shot->timer1E--;
                         }
                         ex->Hi_ModifyEffModelAbr(work->model17A[i], 1);
                         ex->Hi_ModifyEffModelRGB(work->model17A[i], work->fade10C, work->fade10C, work->fade10C);

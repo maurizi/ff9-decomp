@@ -3,11 +3,11 @@
 s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 id;
-    s32 r;
+    s32 height;
+    s32 radius;
     s32 i;
     s32 fade;
-    Fx122Offset *o;
+    Fx122Offset *ofs;
 
     if (mode == 0) {
         *args = 0x50;
@@ -23,23 +23,23 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale1C.vz = 0x2000;
         work->rot4.vy = work->rot38.vy + 0x800;
         if (ex->btlfx_isEnemyUnit(0)) {
-            id = ex->btlfx_getUnitHeight(0);
-            r = ex->btlfx_getUnitRadius(0x100);
-            o = fx_122_offsets;
-            for (i = 0; i < 0x11; i++, o++) {
-                if (o->height0 == id && o->radius2 == r) {
-                    if (o->offset4 & 0x8000) {
+            height = ex->btlfx_getUnitHeight(0);
+            radius = ex->btlfx_getUnitRadius(0x100);
+            ofs = fx_122_offsets;
+            for (i = 0; i < 0x11; i++, ofs++) {
+                if (ofs->height0 == height && ofs->radius2 == radius) {
+                    if (ofs->offset4 & 0x8000) {
                         goto forward;
                     }
                     work->posC.vx = work->pos30.vx;
-                    work->posC.vy = work->pos30.vy - o->offset4;
+                    work->posC.vy = work->pos30.vy - ofs->offset4;
                     work->posC.vz = work->pos30.vz;
                     goto found;
                 }
             }
-            if (id >= 0x258 || r >= 0x2EE) {
+            if (height >= 0x258 || radius >= 0x2EE) {
                 work->posC.vx = work->pos30.vx;
-                work->posC.vy = work->pos30.vy - id;
+                work->posC.vy = work->pos30.vy - height;
                 work->posC.vz = work->pos30.vz;
                 goto found;
             }
@@ -48,7 +48,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->posC.vx = work->pos30.vx;
             work->posC.vy = work->pos30.vy;
             work->posC.vz = work->pos30.vz;
-            work->posC.vz -= o->offset4 ^ 0x8000;
+            work->posC.vz -= ofs->offset4 ^ 0x8000;
             goto found;
         }
     unit:

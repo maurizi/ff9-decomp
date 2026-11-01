@@ -15,9 +15,9 @@ extern Fx105Spark fx_105_windStreaks[];
 
 void fx_105_drawScreenBand(s32 z, s32 tpage, s32 y0, s32 y1, CVECTOR *rgb);
 void fx_105_initWindStreaks(void);
-void fx_105_drawWindStreaks(s32 c);
-void fx_105_drawWorldRibbon(s16 *data, s32 c, s32 c2, s32 n);
-void fx_105_drawCamRibbon(s16 *data, s32 c, s32 h, s32 n);
+void fx_105_drawWindStreaks(s32 bright);
+void fx_105_drawWorldRibbon(s16 *data, s32 bright, s32 unused, s32 n);
+void fx_105_drawCamRibbon(s16 *data, s32 bright, s32 halfWidth, s32 n);
 
 typedef struct {
     DVECTOR xy0;

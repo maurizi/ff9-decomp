@@ -4,8 +4,8 @@ s32 fx_0f6_op80(s32 mode, Fx0f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
-    Fx0f6Layer *p;
-    Fx0f6Layer *q;
+    Fx0f6Layer *line;
+    Fx0f6Layer *lineRef;
 
     if (mode == 0) {
         *args = 0x18;
@@ -23,17 +23,17 @@ s32 fx_0f6_op80(s32 mode, Fx0f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        q = fx_0f6_lines;
-        p = fx_0f6_lines;
-        for (i = 0; i < 4; i++, p++, q++) {
-            if (p->done2 == 0 && frame >= p->start4 && frame < p->end6) {
-                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, q->block0), &work->linePos10, p->frame8,
-                                  p->alphaA);
-                p->alphaA -= 0x1000 / (p->end6 - p->start4);
-                if (frame == p->end6 - 1) {
-                    p->done2 = 1;
+        lineRef = fx_0f6_lines;
+        line = fx_0f6_lines;
+        for (i = 0; i < 4; i++, line++, lineRef++) {
+            if (line->done2 == 0 && frame >= line->start4 && frame < line->end6) {
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, lineRef->block0), &work->linePos10, line->frame8,
+                                  line->alphaA);
+                line->alphaA -= 0x1000 / (line->end6 - line->start4);
+                if (frame == line->end6 - 1) {
+                    line->done2 = 1;
                 }
-                p->frame8++;
+                line->frame8++;
             }
         }
         if (frame == 0x14) {
