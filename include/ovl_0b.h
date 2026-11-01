@@ -4963,4 +4963,36 @@ static inline void btl_resetEidolon_inline(Battle *b) {
     b->cmdFlags &= ~(BTL_CMDF_EIDOLON_TIMER | BTL_CMDF_EIDOLON_QUEUED);
 }
 
+/* Inlined copy of btl_damageHp (subtract damage from a unit's hp, turn it to face front, hit motion or death);
+ * btl_spreadTroubleDamage expands it per ally. */
+static inline void btl_damageHp_inline(BtlUnit *unit, s32 damage, u8 hitMotion) {
+    s32 facing;
+    if (unit->status & BTL_STATUS_KO) {
+        unit->popupFlags = BTL_POPUP_MISS;
+        return;
+    }
+    if (unit->status & BTL_STATUS_PETRIFY) {
+        unit->hpChange = 0;
+        return;
+    }
+    if (unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+        facing = (unit->flags & BTL_UNIT_PARTY) << 11;
+        unit->obj->rotY = facing;
+        unit->rot[1] = facing;
+    }
+    if (damage < unit->hp) {
+        unit->hp -= damage;
+    } else {
+        unit->hp = 0;
+    }
+    unit->hpChange = damage;
+    if (hitMotion) {
+        btl_startHitMotion(unit);
+        return;
+    }
+    if (unit->hp == 0) {
+        btl_killUnit(unit);
+    }
+}
+
 #endif
