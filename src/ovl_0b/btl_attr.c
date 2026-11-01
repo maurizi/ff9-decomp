@@ -61,34 +61,34 @@ void btl_loadPartyMotions(BtlUnit *unit, s32 kind, s32 slot) {
 }
 
 void btl_spreadTroubleDamage(BtlUnit *source) {
-    BtlUnit *u;
+    BtlUnit *unit;
     s32 damage;
     s32 facing;
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
-        if ((u->flags & BTL_UNIT_PARTY) == (source->flags & BTL_UNIT_PARTY) && u != source && ((u->flags >> BTL_UNIT_TARGETABLE_BIT) & 1)) {
-            u->popupFlags = BTL_POPUP_HP;
+    for (unit = g_gameState->gameData->ctx.battle->unitList; unit != 0; unit = unit->next) {
+        if ((unit->flags & BTL_UNIT_PARTY) == (source->flags & BTL_UNIT_PARTY) && unit != source && ((unit->flags >> BTL_UNIT_TARGETABLE_BIT) & 1)) {
+            unit->popupFlags = BTL_POPUP_HP;
             damage = source->hpChange >> 1;
-            if (u->status & BTL_STATUS_KO) {
-                u->popupFlags = BTL_POPUP_MISS;
-            } else if (u->status & BTL_STATUS_PETRIFY) {
-                u->hpChange = 0;
+            if (unit->status & BTL_STATUS_KO) {
+                unit->popupFlags = BTL_POPUP_MISS;
+            } else if (unit->status & BTL_STATUS_PETRIFY) {
+                unit->hpChange = 0;
             } else {
-                if (u != g_gameState->gameData->ctx.battle->curCmd->caster) {
-                    facing = (u->flags & BTL_UNIT_PARTY) << 11;
-                    u->obj->rotY = facing;
-                    u->rot[1] = facing;
+                if (unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+                    facing = (unit->flags & BTL_UNIT_PARTY) << 11;
+                    unit->obj->rotY = facing;
+                    unit->rot[1] = facing;
                 }
-                if (damage < u->hp) {
-                    u->hp -= damage;
+                if (damage < unit->hp) {
+                    unit->hp -= damage;
                 } else {
-                    u->hp = 0;
+                    unit->hp = 0;
                 }
-                u->hpChange = damage;
-                if (u->hp == 0) {
-                    btl_killUnit(u);
+                unit->hpChange = damage;
+                if (unit->hp == 0) {
+                    btl_killUnit(unit);
                 }
             }
-            btl_spawnPopups(u);
+            btl_spawnPopups(unit);
         }
     }
 }
@@ -544,62 +544,62 @@ void btl_setUnitAttr(BtlUnit *unit, s32 attr, u32 value) {
 }
 
 s32 btl_getBattleVar(s32 var) {
-    Battle *b = g_gameState->gameData->ctx.battle;
+    Battle *battle = g_gameState->gameData->ctx.battle;
     s32 value = -1;
-    BtlUnit *u;
+    BtlUnit *unit;
     s32 kind;
     switch (var) {
     case BTL_GETVAR_AMBUSH:
-        value = b->scene.flags & BTL_SCENE_AMBUSH;
+        value = battle->scene.flags & BTL_SCENE_AMBUSH;
         break;
     case BTL_GETVAR_GIL:
         value = g_gameState->gameData->gil;
         break;
     case BTL_GETVAR_PHASE:
-        value = b->phase;
+        value = battle->phase;
         break;
     case BTL_GETVAR_SUB_PHASE:
-        value = b->subPhase;
+        value = battle->subPhase;
         break;
     case BTL_GETVAR_ATTACKER:
-        if (b->curCmd != NULL && b->curCmd->caster != NULL) {
-            value = b->curCmd->caster->unitBit;
+        if (battle->curCmd != NULL && battle->curCmd->caster != NULL) {
+            value = battle->curCmd->caster->unitBit;
         }
         break;
     case BTL_GETVAR_TARGETS:
-        if (b->curCmd != NULL) {
-            value = (u16)b->curCmd->targets;
+        if (battle->curCmd != NULL) {
+            value = (u16)battle->curCmd->targets;
         }
         break;
     case BTL_GETVAR_WEAPON_ELEMENT:
-        if (b->curCmd != NULL && b->curCmd->caster != NULL && b->curCmd->caster->weapon != NULL) {
-            value = b->curCmd->caster->weapon[6];
+        if (battle->curCmd != NULL && battle->curCmd->caster != NULL && battle->curCmd->caster->weapon != NULL) {
+            value = battle->curCmd->caster->weapon[6];
         }
         break;
     case BTL_GETVAR_ABILITY_ELEMENT:
-        if (b->curCmd != NULL && b->curCmd->caster != NULL) {
+        if (battle->curCmd != NULL && battle->curCmd->caster != NULL) {
             value = 0;
-            if (!(b->curCmd->caster->support[1] & SA_BIT(SA_MAG_ELEM_NULL))) {
-                value = b->curCmd->ability->element;
+            if (!(battle->curCmd->caster->support[1] & SA_BIT(SA_MAG_ELEM_NULL))) {
+                value = battle->curCmd->ability->element;
             }
         }
         break;
     case BTL_GETVAR_LOAD_FLAGS:
-        value = b->loadFlags;
+        value = battle->loadFlags;
         break;
     case BTL_GETVAR_EXP:
         value = g_btlRewards.exp;
         break;
     case BTL_GETVAR_EIKO_REBIRTH:
         value = 0;
-        for (u = b->unitList; u != NULL; u = u->next) {
-            if (u->flags & BTL_UNIT_PARTY) {
-                kind = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind;
+        for (unit = battle->unitList; unit != NULL; unit = unit->next) {
+            if (unit->flags & BTL_UNIT_PARTY) {
+                kind = g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.b.kind;
             } else {
                 kind = CHR_KIND_NONE;
             }
             if ((u32)(kind - CHR_KIND_EIKO) < 2) {
-                value = btl_isCmdQueued(u, BTL_CMD_REBIRTH_FLAME);
+                value = btl_isCmdQueued(unit, BTL_CMD_REBIRTH_FLAME);
                 break;
             }
         }
@@ -609,56 +609,56 @@ s32 btl_getBattleVar(s32 var) {
 }
 
 void btl_setBattleVar(s32 var, s32 value) {
-    Battle *b = g_gameState->gameData->ctx.battle;
-    BtlUnit *u;
+    Battle *battle = g_gameState->gameData->ctx.battle;
+    BtlUnit *unit;
     u32 sceneFlags;
 
     switch (var) {
     case BTL_SETVAR_STOP_COMBAT:
         btlui_setAtbEnabled(0);
-        b->phase = BTL_PHASE_END;
-        b->escapeHeld = 0;
-        b->subPhase = BTL_END_STOPPED;
-        b->cmdFlags &= ~BTL_CMDF_ESCAPE;
-        btl_clearCmdQueue(b);
-        for (u = b->unitList; u != NULL; u = u->next) {
-            u->flags &= ~BTL_UNIT_CMD_WAITING;
+        battle->phase = BTL_PHASE_END;
+        battle->escapeHeld = 0;
+        battle->subPhase = BTL_END_STOPPED;
+        battle->cmdFlags &= ~BTL_CMDF_ESCAPE;
+        btl_clearCmdQueue(battle);
+        for (unit = battle->unitList; unit != NULL; unit = unit->next) {
+            unit->flags &= ~BTL_UNIT_CMD_WAITING;
         }
         break;
     case BTL_SETVAR_END:
-        if (b->phase == BTL_PHASE_SCRIPT) {
+        if (battle->phase == BTL_PHASE_SCRIPT) {
             g_gameState->gameData->battleResult = value;
-            if (value == BATTLE_END_VICTORY && ((b->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1)) {
-                b->phase = BTL_PHASE_END;
-                b->subPhase = BTL_END_SCRIPT_VICTORY;
+            if (value == BATTLE_END_VICTORY && ((battle->scene.flags >> BTL_SCENE_VICTORY_BIT) & 1)) {
+                battle->phase = BTL_PHASE_END;
+                battle->subPhase = BTL_END_SCRIPT_VICTORY;
             } else {
                 if (g_gameState->gameData->battleResult == BATTLE_END_VICTORY) {
                     g_gameState->gameData->battleResult = 2;
                 }
-                b->phase = BTL_PHASE_EXIT_OTHER;
-                b->subPhase = 0;
+                battle->phase = BTL_PHASE_EXIT_OTHER;
+                battle->subPhase = 0;
             }
         }
         break;
     case BTL_SETVAR_DEFEAT:
-        if (b->phase == BTL_PHASE_SCRIPT) {
-            b->phase = BTL_PHASE_EXIT_DEFEAT;
-            b->subPhase = 0;
+        if (battle->phase == BTL_PHASE_SCRIPT) {
+            battle->phase = BTL_PHASE_EXIT_DEFEAT;
+            battle->subPhase = 0;
             g_gameState->gameData->battleResult = BATTLE_END_DEFEAT;
         }
         break;
     case BTL_SETVAR_RESUME:
-        if (b->phase == BTL_PHASE_SCRIPT) {
-            sceneFlags = b->scene.flags;
-            b->phase = BTL_PHASE_ENTRANCE;
-            b->subPhase = 0;
+        if (battle->phase == BTL_PHASE_SCRIPT) {
+            sceneFlags = battle->scene.flags;
+            battle->phase = BTL_PHASE_ENTRANCE;
+            battle->subPhase = 0;
             if ((sceneFlags & 0xC) != 0xC) {
-                b->scene.flags = (sceneFlags & ~BTL_SCENE_AMBUSH) | BTL_AMBUSH_NORMAL;
+                battle->scene.flags = (sceneFlags & ~BTL_SCENE_AMBUSH) | BTL_AMBUSH_NORMAL;
             }
         }
         break;
     case BTL_SETVAR_PLAY_CAMERA:
-        if (b->phase == BTL_PHASE_SCRIPT) {
+        if (battle->phase == BTL_PHASE_SCRIPT) {
             btlcam_playScene(btl_getSceneData(value));
         }
         break;

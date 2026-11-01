@@ -4,57 +4,57 @@ void game_onReset(void) {
 }
 
 void gamedata_resetEventFlags(void) {
-    GameData *d = g_gameState->gameData;
-    d->frogCount = 0;
-    d->stealCount = 0;
-    d->dragonKills = 0;
-    d->battleResult = 0;
-    d->battleFlags = 0;
-    d->rainCount = 0;
-    d->darkBattle = 0;
+    GameData *gd = g_gameState->gameData;
+    gd->frogCount = 0;
+    gd->stealCount = 0;
+    gd->dragonKills = 0;
+    gd->battleResult = 0;
+    gd->battleFlags = 0;
+    gd->rainCount = 0;
+    gd->darkBattle = 0;
 }
 
-s32 chr_cureStatusBit(Unk800539FC *c, s32 bit) {
-    if (c->status & bit) {
-        c->status &= ~bit;
+s32 chr_cureStatusBit(Unk800539FC *chr, s32 bit) {
+    if (chr->status & bit) {
+        chr->status &= ~bit;
         return 2;
     }
     return 1;
 }
 
-static inline s32 chr_cureStatusBit_inline(Unk800539FC *c, s32 bit) {
-    if (c->status & bit) {
-        c->status &= ~bit;
+static inline s32 chr_cureStatusBit_inline(Unk800539FC *chr, s32 bit) {
+    if (chr->status & bit) {
+        chr->status &= ~bit;
         return 2;
     }
     return 1;
 }
 
-s32 chr_cureStatusMask(Character *c, s32 mask) {
-    s32 r = 1;
+s32 chr_cureStatusMask(Character *chr, s32 mask) {
+    s32 result = 1;
     u32 i;
 
     for (i = 0; i < 8; i++) {
-        u8 m = mask & (1 << i);
-        if (m) {
-            if (chr_cureStatusBit_inline(c, 1 << i) == 2) {
-                r = 2;
+        u8 hit = mask & (1 << i);
+        if (hit) {
+            if (chr_cureStatusBit_inline(chr, 1 << i) == 2) {
+                result = 2;
             }
         }
     }
-    return r;
+    return result;
 }
 
-u8 chr_hasStatus(Character *c, s32 bits) {
-    return (c->status & bits) != 0;
+u8 chr_hasStatus(Character *chr, s32 bits) {
+    return (chr->status & bits) != 0;
 }
 
 s32 swirl_update(s16 startX, s16 startY) {
     s16 y;
     s16 x;
-    s32 c;
+    s32 wobble;
     u8 i;
-    s16 a, b;
+    s16 startAngle, startStep;
     GameState *gs;
 
     x = startX;
@@ -70,12 +70,12 @@ s32 swirl_update(s16 startX, s16 startY) {
             *(u32 *)&gs->drawEnv[0].isbg = *(u32 *)&gs->drawEnv[1].isbg = 1;
             g_swirlFlash = 0;
             g_swirlFade = g_swirlParams->fade;
-            g_swirlAngle = a = g_swirlParams->angle;
+            g_swirlAngle = startAngle = g_swirlParams->angle;
             g_swirlZoom = g_swirlParams->zoom;
-            g_swirlAngleStep = b = g_swirlParams->angleStep;
+            g_swirlAngleStep = startStep = g_swirlParams->angleStep;
             if ((startX ^ startY) & 1) {
-                g_swirlAngle = -a;
-                g_swirlAngleStep = -b;
+                g_swirlAngle = -startAngle;
+                g_swirlAngleStep = -startStep;
             }
             fade_clear();
         }
@@ -86,9 +86,9 @@ s32 swirl_update(s16 startX, s16 startY) {
             y += y < g_gameState->drawEnv->clip.h / 2 ? 1 : -1;
         }
         if (g_swirlVariant) {
-            c = math_sin(g_swirlFrame * 8);
-            x += c * (160 - x) / 4096;
-            y += c * (g_gameState->drawEnv->clip.h / 2 - y) / 4096;
+            wobble = math_sin(g_swirlFrame * 8);
+            x += wobble * (160 - x) / 4096;
+            y += wobble * (g_gameState->drawEnv->clip.h / 2 - y) / 4096;
         }
         g_swirlPkt = swirl_buildMesh(g_swirlPkt, x, y);
         i = g_gameState->gameData->drawBuf;
@@ -158,15 +158,15 @@ s32 swirl_update(s16 startX, s16 startY) {
 void swirl_drawFlash(s32 x, s32 y) {
     u32 *p;
     s32 i;
-    u32 v;
+    u32 flash;
     u8 c1, c2;
     u32 xy;
     u32 g2;
 
     p = g_swirlPkt;
-    v = g_swirlFlash << 16;
-    c1 = v >> 20;
-    c2 = v >> 23;
+    flash = g_swirlFlash << 16;
+    c1 = flash >> 20;
+    c2 = flash >> 23;
     g2 = (c2 << 16) | (c2 << 8) | c2;
     setlen(p, 1);
     p[1] = get_mode(0, 1, 0x140);
@@ -191,14 +191,14 @@ u32 *swirl_buildMesh(u32 *work, s32 x, s32 y) {
     s16 xs[9];
     s16 ys[9];
     SVECTOR sv;
-    VECTOR v;
-    MATRIX m;
+    VECTOR vec;
+    MATRIX mat;
     s32 i;
     s32 dx, dy;
     s32 t;
     s32 ex, ey;
     s16 *py;
-    s16 *q;
+    s16 *col;
     DVECTOR *pts;
     WarpVert *p;
 
@@ -231,26 +231,26 @@ u32 *swirl_buildMesh(u32 *work, s32 x, s32 y) {
     sv.vy = 0;
     sv.vx = 0;
     sv.vz = (s16)g_swirlAngle >> 4;
-    math_rotMatrixXYZ(&sv, &m);
-    v.vx = v.vy = g_swirlParams->scale;
-    v.vz = 0;
-    ScaleMatrix(&m, &v);
-    m.t[0] = x;
-    m.t[1] = y;
-    m.t[2] = 0;
-    gte_SetRotMatrix(&m);
-    gte_SetTransMatrix(&m);
+    math_rotMatrixXYZ(&sv, &mat);
+    vec.vx = vec.vy = g_swirlParams->scale;
+    vec.vz = 0;
+    ScaleMatrix(&mat, &vec);
+    mat.t[0] = x;
+    mat.t[1] = y;
+    mat.t[2] = 0;
+    gte_SetRotMatrix(&mat);
+    gte_SetTransMatrix(&mat);
     p = g_swirlMesh;
     for (ex = 0; ex < 9; ex++) {
-        q = py;
+        col = py;
         sv.vx = xs[ex] - x;
         for (ey = 0; ey < 9; ey++) {
-            sv.vy = q[ey] - y;
+            sv.vy = col[ey] - y;
             gte_ldv0(&sv);
             gte_rtv0tr();
-            gte_stlvnl(&v);
-            p->x = v.vx;
-            p->y = v.vy;
+            gte_stlvnl(&vec);
+            p->x = vec.vx;
+            p->y = vec.vy;
             p++;
         }
     }
@@ -259,38 +259,38 @@ u32 *swirl_buildMesh(u32 *work, s32 x, s32 y) {
 
 void swirl_drawMesh(void) {
     u32 *p;
-    WarpVert *v;
+    WarpVert *vert;
     s32 i;
     s32 j;
-    s32 c;
+    s32 shade;
     u32 rgbc;
     s32 u0;
     s32 u1;
     u32 tp;
 
     p = g_swirlPkt;
-    c = (g_swirlFade >> 4) & 0xFF;
-    rgbc = (c << 16) | (c << 8) | c | GPU_CODE(GPU_POLY_FT4 | GPU_ABE);
+    shade = (g_swirlFade >> 4) & 0xFF;
+    rgbc = (shade << 16) | (shade << 8) | shade | GPU_CODE(GPU_POLY_FT4 | GPU_ABE);
     p += 10;
     for (i = 0; i < 8; i++) {
-        v = &g_swirlMesh[i * 9];
+        vert = &g_swirlMesh[i * 9];
         tp = ((((g_swirlColumns[i].vx + g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
         u0 = g_swirlColumns[i].vx & 0x3F;
         u1 = u0 + (g_swirlColumns[i + 1].vx - g_swirlColumns[i].vx) - 1;
         for (j = 0; j < 8; j++) {
             p[0] = 0x09000000;
             p[1] = rgbc;
-            p[2] = (v->y << 16) | (u16)v->x;
+            p[2] = (vert->y << 16) | (u16)vert->x;
             p[3] = (g_swirlColumns[j].vy << 8) | (u8)u0;
-            p[4] = (v[9].y << 16) | (u16)v[9].x;
+            p[4] = (vert[9].y << 16) | (u16)vert[9].x;
             p[5] = (g_swirlColumns[j].vy << 8) | (u8)u1 | tp;
-            p[6] = (v[1].y << 16) | (u16)v[1].x;
+            p[6] = (vert[1].y << 16) | (u16)vert[1].x;
             p[7] = ((g_swirlColumns[j + 1].vy - 1) << 8) | (u8)u0;
-            p[8] = (v[10].y << 16) | (u16)v[10].x;
+            p[8] = (vert[10].y << 16) | (u16)vert[10].x;
             p[9] = ((g_swirlColumns[j + 1].vy - 1) << 8) | (u8)u1;
             setaddr(p - 10, p);
             p += 10;
-            v++;
+            vert++;
         }
     }
     setaddr(p - 10, getaddr(&g_swirlOt[1]));
