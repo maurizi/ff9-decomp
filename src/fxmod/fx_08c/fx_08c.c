@@ -6,8 +6,8 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     VECTOR scale;
     Pool6CEntry *emitter;
     s32 frame;
-    s32 a;
-    s32 c;
+    s32 ang;
+    s32 bright;
 
     if (mode == 0) {
         *args = 0x28;
@@ -38,21 +38,21 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (work->state0) {
         case 0:
-            a = (frame << 7) >> 1;
+            ang = (frame << 7) >> 1;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            c = ex->math_sin(a);
-            scale.vx = ((a + 0x2800) * 4) / 3;
+            bright = ex->math_sin(ang);
+            scale.vx = ((ang + 0x2800) * 4) / 3;
             scale.vz = scale.vx;
             scale.vy = ((frame << 9) + 0x2000) / 3;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)work->modelPos18, (s32)&scale, work->model24);
             ex->Hi_ModifyEffModelAbr(work->model24, 1);
-            ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model24, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
             scale.vy >>= 1;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)work->modelPos18, (s32)&scale, work->model24);
             ex->Hi_ModifyEffModelAbr(work->model24, 1);
-            ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model24, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
             if (frame >= 0x20) {
                 ex->btlfx_clearEffModels();
                 return 1;

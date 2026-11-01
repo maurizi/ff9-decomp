@@ -1,12 +1,12 @@
 #include "fxmod/fx_096.h"
 
 void fx_096_explodeModel(u16 model, s32 idx, s32 t, u16 *verts, Fx096Vec3 *centers) {
-    s32 n;
+    s32 meshCount;
     s32 i;
     s32 j;
 
-    n = BTLFX_EXPORTS(fx_096_env)->btlfx_getEffModelMeshCount(model);
-    for (j = 0; j < n; j++) {
+    meshCount = BTLFX_EXPORTS(fx_096_env)->btlfx_getEffModelMeshCount(model);
+    for (j = 0; j < meshCount; j++) {
         for (i = 0; i < 8; i++) {
             fx_096_explodePolys(i, fx_096_polyCounts[idx][i], t, (SVECTOR *)fx_096_polyVerts[idx][i], centers);
         }
@@ -16,13 +16,13 @@ void fx_096_explodeModel(u16 model, s32 idx, s32 t, u16 *verts, Fx096Vec3 *cente
 INCLUDE_RODATA("asm/us/fx_096/nonmatchings/fx_096", fx_096_headerPtr);
 
 void fx_096_explodePolys(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *centers) {
-    Fx096Vec3 d;
+    Fx096Vec3 offset;
     Fx096Vec3 to;
     Fx096Vec3 from;
     s32 nv;
     s32 k;
     s32 j;
-    s32 m;
+    s32 scaled;
 
     switch (kind) {
     case 0:
@@ -48,15 +48,15 @@ void fx_096_explodePolys(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *
         from.vx = centers[k].vx;
         from.vy = centers[k].vy;
         from.vz = centers[k].vz;
-        m = to.vx * 100;
-        d.vx = t * m / 200;
-        to.vx += d.vx;
-        m = to.vy * 100;
-        d.vy = t * m / 200;
-        to.vy += d.vy;
-        m = to.vz * 100;
-        d.vz = t * m / 200;
-        to.vz += d.vz;
+        scaled = to.vx * 100;
+        offset.vx = t * scaled / 200;
+        to.vx += offset.vx;
+        scaled = to.vy * 100;
+        offset.vy = t * scaled / 200;
+        to.vy += offset.vy;
+        scaled = to.vz * 100;
+        offset.vz = t * scaled / 200;
+        to.vz += offset.vz;
         for (j = 0; j < nv; j++, verts++) {
             verts->vx -= from.vx;
             verts->vy -= from.vy;
@@ -70,17 +70,17 @@ void fx_096_explodePolys(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *
 
 void fx_096_splitModel(u16 model, s32 idx, u16 *verts, Fx096Vec3 *centers) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_096_env);
-    s32 c;
-    s32 n;
+    s32 polyCount;
+    s32 meshCount;
     s32 i;
     s32 j;
 
     ex->Hi_SplitMdlVertex(model, -1, (s32)verts);
-    n = ex->btlfx_getEffModelMeshCount(model);
-    for (j = 0; j < n; j++) {
+    meshCount = ex->btlfx_getEffModelMeshCount(model);
+    for (j = 0; j < meshCount; j++) {
         for (i = 0; i < 8; i++) {
-            c = ex->Hi_GetMdlVertexPtr(model, j, (s32)verts, &fx_096_polyVerts[idx][i], i);
-            fx_096_polyCounts[idx][i] = c;
+            polyCount = ex->Hi_GetMdlVertexPtr(model, j, (s32)verts, &fx_096_polyVerts[idx][i], i);
+            fx_096_polyCounts[idx][i] = polyCount;
             fx_096_calcPolyCenters(i, fx_096_polyCounts[idx][i], (SVECTOR *)fx_096_polyVerts[idx][i], centers);
         }
     }
@@ -145,7 +145,7 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
     u32 i;
     s32 t;
-    s32 c;
+    s32 size;
 
     if (mode == 0) {
         *args = 0x68;
@@ -196,9 +196,9 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0 && frame < 0x28) {
             if (frame >= 7) {
-                c = ((frame - 7) << 9) / 3;
-                work->scale44.vx = c;
-                work->scale44.vz = c;
+                size = ((frame - 7) << 9) / 3;
+                work->scale44.vx = size;
+                work->scale44.vz = size;
                 work->scale44.vx = (work->scale44.vx > 0x200) ? 0x200 : work->scale44.vx;
                 work->scale44.vz = (work->scale44.vz > 0x200) ? 0x200 : work->scale44.vz;
             }

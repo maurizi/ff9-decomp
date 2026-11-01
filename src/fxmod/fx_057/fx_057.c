@@ -55,7 +55,7 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 scale;
     s32 t;
     s32 tint;
-    s32 ringScale;
+    s32 swell;
 
     if (mode == 0) {
         *args = 0x38;
@@ -219,21 +219,21 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ang.vz = 0;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->pos10, &ang, 0x16000, 0, 1,
                               fx_057_fade);
-            ringScale = ex->math_cos(((work->frame4 - 22) << 10) / 42);
+            swell = ex->math_cos(((work->frame4 - 22) << 10) / 42);
             ang.vx = -0x180;
             ang.vy = work->frame4 * 32 + 0x180;
             ang.vz = work->frame4 * 0x18;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), &work->pos10, &ang, ringScale * 4, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), &work->pos10, &ang, swell * 4, 0, 1,
                               fx_057_fade);
             ang.vx = 0x200;
             ang.vy = 0x200 - work->frame4 * 32;
             ang.vz = -work->frame4 * 0x10;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), &work->pos10, &ang, (ringScale * 8 + ringScale * 4) >> 1, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), &work->pos10, &ang, (swell * 8 + swell * 4) >> 1, 0, 1,
                               fx_057_fade);
             ang.vx = 0x100;
             ang.vy = -0x180 - work->frame4 * 0x18;
             ang.vz = -work->frame4 * 0x10;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), &work->pos10, &ang, (ringScale * 16 + ringScale * 4) >> 1, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), &work->pos10, &ang, (swell * 16 + swell * 4) >> 1, 0, 1,
                               fx_057_fade);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x1F), work->frame4);
         }

@@ -39,7 +39,7 @@ typedef struct {
 } Fx097Work;
 
 extern SVECTOR fx_097_shardRot[];
-static s32 fx_097_op80PoolTask(s32 mode, Fx097Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
+static s32 fx_097_op80PoolTask(s32 mode, Fx097Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 pool,
                   Fx097Work *work);
 
 typedef struct {

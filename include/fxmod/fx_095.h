@@ -33,9 +33,9 @@ typedef struct {
 extern Unk800F78A4 *fx_095_env;
 extern SVECTOR fx_095_bodyPos;
 
-static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx095Ctl *ctl);
-void fx_095_greyScreenCopy(s32 n, s32 x, s32 y, u16 *buf, RECT *r);
-void fx_095_drawTexDisc(s32 ot, s32 x, s32 y, s32 r, s32 c, RECT *rect);
+static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 pool, Fx095Ctl *ctl);
+void fx_095_greyScreenCopy(s32 step, s32 x, s32 y, u16 *buf, RECT *area);
+void fx_095_drawTexDisc(s32 ot, s32 x, s32 y, s32 outerR, s32 bright, RECT *rect);
 
 extern s32 fx_095_markBlocks[]; /* file ids */
 extern s32 fx_095_glowBlocks[]; /* file ids */

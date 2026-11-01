@@ -3,17 +3,17 @@
 static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_084_env);
     s32 t = frame << 8;
-    s32 a;
+    s32 arcAng;
 
     ex->btlfx_lerpVec((s16 *)&fx_084_pathFrom, (s16 *)&fx_084_pathTo, t, (s16 *)pos);
-    a = t >> 1;
-    pos->vy -= (ex->math_sin(a) * 0x180) >> 12;
+    arcAng = t >> 1;
+    pos->vy -= (ex->math_sin(arcAng) * 0x180) >> 12;
     switch (pt->slot) {
     case 1:
-        pos->vy -= (ex->math_sin(a) << 9) >> 12;
+        pos->vy -= (ex->math_sin(arcAng) << 9) >> 12;
         break;
     case 3:
-        pos->vy += (ex->math_sin(a) << 9) >> 12;
+        pos->vy += (ex->math_sin(arcAng) << 9) >> 12;
         break;
     }
     pt->pos.vx = pos->vx << 12;

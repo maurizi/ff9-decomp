@@ -80,9 +80,9 @@ s32 fx_08e_op80(s32 mode, Fx08eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelRGB(work->model68, work->bright44, work->bright44, work->bright44);
         }
         if (frame >= 0x16) {
-            s16 *p = fx_08e_texAnimSrc[frame % 15];
-            rect.x = p[0];
-            rect.y = p[1];
+            s16 *texXY = fx_08e_texAnimSrc[frame % 15];
+            rect.x = texXY[0];
+            rect.y = texXY[1];
             rect.w = 0x20;
             rect.h = 0x80;
             ex->MoveImage(&rect, 0x2C0, 0x100);
