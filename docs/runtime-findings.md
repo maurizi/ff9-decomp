@@ -2392,7 +2392,7 @@ Disc-1 examples: 0xB3
 | FC | VIB_RANGE | 2 x u8 | vib_setRange | not seen |
 | FD | GD8BC_CALL | u8, u16 | GameData.unk8BC(a, b) | 13 calls / 13 fields |
 | FE | PARTY_JOIN |  | chr_join | 1 calls / 1 fields |
-| FF 00 | BGI_FLOOR_MOVE_START | u8, u8 | bgi_startFloorMove | 16 calls / 1 fields; field 404 |
+| FF 00 | BGI_FLOOR_MOVE_START | u8, u8 | bgi_startFloorMove | 16 calls / 1 fields; field 404 (corrected by docs/r32/3ds-requests-9.md: that table lumped every FF sub-op under FF 00; field 404 uses FF 0A BGI_ANIM_SHOW_FRAME, floor moves FF 00-08 occur only in fields 1609, 1610, 1652, 1658, 1759, 2952) |
 | FF 01 | BGI_FLOOR_MOVE_STOP |  | bgi_stopFloorMove | not seen |
 | FF 02 | BGI_FLOOR_MOVE_PLAYING |  | bgi_setFloorMovePlaying | not seen |
 | FF 03 | BGI_FLOOR_MOVE_MODE |  | bgi_setFloorMoveMode | not seen |
