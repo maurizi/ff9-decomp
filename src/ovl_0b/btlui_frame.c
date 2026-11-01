@@ -44,11 +44,11 @@ void btlui_beginFrame(void) {
     btlui_clearOtLinked(g_ot, 0x18);
 }
 
-void btlui_clearOtLinked(u32 *arg0, u32 arg1) {
+void btlui_clearOtLinked(u32 *ot, u32 count) {
     u32 i;
-    ClearOTag(arg0, 1);
-    for (i = 1; i < arg1; i++) {
-        arg0[i] = (u32)&arg0[i - 1] & 0xFFFFFF;
+    ClearOTag(ot, 1);
+    for (i = 1; i < count; i++) {
+        ot[i] = (u32)&ot[i - 1] & 0xFFFFFF;
     }
 }
 
@@ -57,57 +57,57 @@ void btlui_frameUnusedStub(void) {
 
 void btl_initBanner(void) {
     RECT *r;
-    s32 v;
+    s32 duration;
     g_btlBanner.priority = 0;
     g_btlBanner.active = 0;
     g_btlBanner.timer = 0;
     g_btlBanner.text = 0xFF;
-    v = g_btlBannerDurations[(g_gameState->config >> CFG_SHIFT_BTL_MSG_SPEED) & 7];
+    duration = g_btlBannerDurations[(g_gameState->config >> CFG_SHIFT_BTL_MSG_SPEED) & 7];
     r = &g_btlBanner.rect;
     r->x = 0x60;
     r->y = 8;
     r->w = 0x80;
     r->h = 0x15;
-    g_btlBanner.duration = v;
+    g_btlBanner.duration = duration;
 }
 
 void btl_bannerExitStub(void) {
 }
 
-u8 *btl_drawBanner(u8 *arg0) {
+u8 *btl_drawBanner(u8 *pkt) {
     if (g_btlBanner.active != 0) {
         g_btlBanner.ot = (u32 *)btl_getBannerOt(g_gameState->gameData->drawBuf);
-        arg0 = btl_buildBanner(arg0);
+        pkt = btl_buildBanner(pkt);
         if ((u32)++g_btlBanner.timer >= (u32)g_btlBanner.duration) {
             g_btlBanner.active = 0;
             g_btlBanner.priority = 0;
         }
     }
-    return arg0;
+    return pkt;
 }
 
-void btl_setBanner(s32 arg0, s32 arg1) {
-    if (arg1 >= g_btlBanner.priority) {
-        g_btlBanner.priority = arg1;
+void btl_setBanner(s32 text, s32 priority) {
+    if (priority >= g_btlBanner.priority) {
+        g_btlBanner.priority = priority;
         g_btlBanner.useRect = 0;
-        btl_setBannerText(arg0);
+        btl_setBannerText(text);
     }
 }
 
-void btl_setBannerAt(s32 arg0, s32 arg1) {
-    if (arg1 >= g_btlBanner.priority) {
-        g_btlBanner.priority = arg1;
+void btl_setBannerAt(s32 text, s32 priority) {
+    if (priority >= g_btlBanner.priority) {
+        g_btlBanner.priority = priority;
         g_btlBanner.useRect = 1;
-        btl_setBannerText(arg0);
+        btl_setBannerText(text);
     }
 }
 
-void btl_setBannerRect(RECT *arg0) {
-    g_btlBanner.rect = *arg0;
+void btl_setBannerRect(RECT *rect) {
+    g_btlBanner.rect = *rect;
 }
 
-s32 *btl_getBannerOt(s32 arg0) {
-    return &g_btlBannerOt[arg0];
+s32 *btl_getBannerOt(s32 drawBuf) {
+    return &g_btlBannerOt[drawBuf];
 }
 
 s32 btl_getBannerDuration(void) {
@@ -118,13 +118,13 @@ u8 btl_isBannerActive(void) {
     return g_btlBanner.active;
 }
 
-void btl_setBannerText(s32 arg0) {
-    if (arg0 == 0) {
+void btl_setBannerText(s32 text) {
+    if (text == 0) {
         g_btlBanner.text = 0xFF;
         g_btlBanner.active = 0;
         g_btlBanner.priority = 0;
     } else {
-        text_copy(&g_btlBanner.text, (u8 *)arg0);
+        text_copy(&g_btlBanner.text, (u8 *)text);
         g_btlBanner.active = 1;
         g_btlBanner.timer = 0;
         g_btlBanner.size = text_measure((u8 *)&g_btlBanner);
@@ -132,7 +132,7 @@ void btl_setBannerText(s32 arg0) {
 }
 
 /* draws the battle help text (g_btlBanner starts with the text buffer) centred in its window */
-u8 *btl_buildBanner(u8 *arg0) {
+u8 *btl_buildBanner(u8 *pkt) {
     RECT *r;
     RECT *t;
 
@@ -144,19 +144,19 @@ u8 *btl_buildBanner(u8 *arg0) {
             t->h = g_btlBanner.size.h + 6;
             r = t;
         }
-        arg0 = btl_buildBannerFrame(text_buildBlock(r->x + ((r->w - g_btlBanner.size.w) >> 1), r->y + 3,
-                                           g_btlBanner.ot, &g_btlBanner.text, TEXT_PAL_WHITE, arg0),
+        pkt = btl_buildBannerFrame(text_buildBlock(r->x + ((r->w - g_btlBanner.size.w) >> 1), r->y + 3,
+                                           g_btlBanner.ot, &g_btlBanner.text, TEXT_PAL_WHITE, pkt),
                              r);
     }
-    return arg0;
+    return pkt;
 }
 
-u8 *btl_buildBannerFrame(u8 *arg0, RECT *arg1) {
+u8 *btl_buildBannerFrame(u8 *pkt, RECT *rect) {
     RECT r;
-    u8 *v = win_buildBorder((s32)arg1, g_btlBanner.ot, 1, 0, 1, CONFIG_WINDOW_COLOR(), arg0);
-    r.x = arg1->x + 2;
-    r.y = arg1->y + 2;
-    r.w = arg1->w - 3;
-    r.h = arg1->h - 3;
-    return win_buildFill((s32)&r, g_btlBanner.ot, 0, 0, CONFIG_WINDOW_COLOR(), v);
+    u8 *next = win_buildBorder((s32)rect, g_btlBanner.ot, 1, 0, 1, CONFIG_WINDOW_COLOR(), pkt);
+    r.x = rect->x + 2;
+    r.y = rect->y + 2;
+    r.w = rect->w - 3;
+    r.h = rect->h - 3;
+    return win_buildFill((s32)&r, g_btlBanner.ot, 0, 0, CONFIG_WINDOW_COLOR(), next);
 }
