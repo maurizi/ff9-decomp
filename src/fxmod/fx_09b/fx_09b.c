@@ -41,13 +41,13 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *args = 0x74;
     } else if (mode == 1) {
-        s32 n = *args;
+        s32 shot = *args;
         fx_09b_env = env;
-        work->instance6C = n;
-        if (n >= FX_09B_SHOTS) {
+        work->instance6C = shot;
+        if (shot >= FX_09B_SHOTS) {
             return 1;
         }
-        if (n == 0) {
+        if (shot == 0) {
             ex->btlfx_initEffModels(fx_09b_effModels, 5);
         }
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos54);

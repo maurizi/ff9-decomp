@@ -102,18 +102,18 @@ static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *ou
 s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR c;
+    SVECTOR ptA;
+    SVECTOR ptB;
+    SVECTOR ptC;
     s32 file;
     Pool6CEntry *emitter;
     s32 frame;
-    s32 k;
+    s32 ribbonT;
     s32 t;
     s32 i;
-    s32 v;
+    s32 fade;
     s32 rgb;
-    SVECTOR *sv;
+    SVECTOR *seg0;
 
     if (mode == 0) {
         *args = sizeof(Fx09aWork);
@@ -129,7 +129,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->state->signals[0] = 0;
     } else {
         frame = entry->frame;
-        k = 0;
+        ribbonT = 0;
         switch (work->state0) {
         case 1:
             work->unitsDoneC++;
@@ -147,30 +147,30 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             } else {
                 work->rot1C.vy = 0x800;
             }
-            ex->btlfx_rotateOffset(&work->rot1C, ex->btlfx_getUnitRadius(work->unit8) + 0x78, (s32)&a);
-            work->pos24.vx = work->pos14.vx + a.vx;
-            work->pos24.vy = work->pos14.vy + a.vy;
-            work->pos24.vz = work->pos14.vz + a.vz;
+            ex->btlfx_rotateOffset(&work->rot1C, ex->btlfx_getUnitRadius(work->unit8) + 0x78, (s32)&ptA);
+            work->pos24.vx = work->pos14.vx + ptA.vx;
+            work->pos24.vy = work->pos14.vy + ptA.vy;
+            work->pos24.vz = work->pos14.vz + ptA.vz;
             ex->btlfx_getUnitBodyPos(work->unit8, 0, (s16 *)&work->pos14);
-            BTLFX_COPY_SVEC(&b, &work->pos24);
-            b.vy -= 0x140;
-            env->camera->points[0].vx = b.vx;
-            env->camera->points[0].vy = b.vy;
-            env->camera->points[0].vz = b.vz;
-            ex->btlfx_rotateOffset(&work->rot1C, -0xD2, (s32)&a);
-            b.vx = work->pos24.vx + a.vx;
-            b.vy = work->pos24.vy + a.vy - 0x140;
-            b.vz = work->pos24.vz + a.vz;
-            env->camera->points[1].vx = b.vx;
-            env->camera->points[1].vy = b.vy;
-            env->camera->points[1].vz = b.vz;
-            ex->btlfx_rotateOffset(&work->rot1C, -ex->btlfx_getUnitRadius(0), (s32)&a);
-            b.vx = work->pos14.vx + a.vx;
-            b.vy = a.vy - 0x140;
-            b.vz = work->pos14.vz + a.vz;
-            env->camera->points[2].vx = b.vx;
-            env->camera->points[2].vy = b.vy;
-            env->camera->points[2].vz = b.vz;
+            BTLFX_COPY_SVEC(&ptB, &work->pos24);
+            ptB.vy -= 0x140;
+            env->camera->points[0].vx = ptB.vx;
+            env->camera->points[0].vy = ptB.vy;
+            env->camera->points[0].vz = ptB.vz;
+            ex->btlfx_rotateOffset(&work->rot1C, -0xD2, (s32)&ptA);
+            ptB.vx = work->pos24.vx + ptA.vx;
+            ptB.vy = work->pos24.vy + ptA.vy - 0x140;
+            ptB.vz = work->pos24.vz + ptA.vz;
+            env->camera->points[1].vx = ptB.vx;
+            env->camera->points[1].vy = ptB.vy;
+            env->camera->points[1].vz = ptB.vz;
+            ex->btlfx_rotateOffset(&work->rot1C, -ex->btlfx_getUnitRadius(0), (s32)&ptA);
+            ptB.vx = work->pos14.vx + ptA.vx;
+            ptB.vy = ptA.vy - 0x140;
+            ptB.vz = work->pos14.vz + ptA.vz;
+            env->camera->points[2].vx = ptB.vx;
+            env->camera->points[2].vy = ptB.vy;
+            env->camera->points[2].vz = ptB.vz;
             ex->Hi_SetSummonMotion(((Fx09aSummon *)env->loader)->summon54->motion180, ((Fx09aSummon *)env->loader)->model60);
             ex->Hi_SetSummonMotFrame(((Fx09aSummon *)env->loader)->model60, 6);
             work->scale3C[2] = 0x1000;
@@ -192,17 +192,17 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawSummonModel(&work->rot34, &pos, (s32)work->scale3C, ((Fx09aSummon *)env->loader)->model60, 1);
             t = frame << 12;
             /* Dead store: only its sign word survives. */
-            k = t / 30;
+            ribbonT = t / 30;
             if (frame < 6) {
                 rgb = (t / 6 >> 5) - 0x80;
                 ex->Hi_ModifySummonModelRGB(((Fx09aSummon *)env->loader)->model60, rgb, rgb, rgb);
             }
             if (frame == 0) {
-                k = -1;
+                ribbonT = -1;
             } else if (frame < 22) {
-                k = t / 22;
+                ribbonT = t / 22;
             } else {
-                k = 0x1000;
+                ribbonT = 0x1000;
             }
             if (frame == 24) {
                 ex->btlfx_playFileSound(0x12, entry->file, -1);
@@ -247,7 +247,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 3:
-            v = (frame << 12) / 6;
+            fade = (frame << 12) / 6;
             if (frame == 2) {
                 emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos24);
                 if (emitter != NULL) {
@@ -258,15 +258,15 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos24);
             }
-            work->scale3C[0] = work->scale3C[2] = ((0x1000 - ex->math_sin(v >> 2)) << 12) >> 12;
+            work->scale3C[0] = work->scale3C[2] = ((0x1000 - ex->math_sin(fade >> 2)) << 12) >> 12;
             pos.vx = work->pos24.vx;
             pos.vy = work->pos24.vy;
             pos.vz = work->pos24.vz;
             ex->Hi_SetSummonMotFrame(((Fx09aSummon *)env->loader)->model60, 41 - frame);
             ex->Hi_DrawSummonModel(&work->rot34, &pos, (s32)work->scale3C, ((Fx09aSummon *)env->loader)->model60, 1);
-            k = ex->math_cos(v >> 2);
-            ex->Hi_ModifySummonModelRGB(((Fx09aSummon *)env->loader)->model60, (k >> 5) - 0x80, (k >> 5) - 0x80,
-                                        (k >> 5) - 0x80);
+            ribbonT = ex->math_cos(fade >> 2);
+            ex->Hi_ModifySummonModelRGB(((Fx09aSummon *)env->loader)->model60, (ribbonT >> 5) - 0x80, (ribbonT >> 5) - 0x80,
+                                        (ribbonT >> 5) - 0x80);
             if (frame >= 6) {
                 work->state0 = 1;
                 entry->frame = -1;
@@ -279,33 +279,33 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        if (k != 0) {
-            fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->model60, 9, &fx_09a_bonePtA, &a);
-            fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->model60, 9, &fx_09a_bonePtB, &b);
-            fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->model60, 9, &fx_09a_bonePtC, &c);
-            if (k < 0) {
-                fxm_drawRibbonTrail(&a, &b, 0x3F8, (CVECTOR *)&fx_09a_ribbonColA, (CVECTOR *)&fx_09a_ribbonColB, 0, fx_09a_ribbon0, 1);
-                fxm_drawRibbonTrail(&b, &c, 0x3F8, (CVECTOR *)&fx_09a_ribbonColB, (CVECTOR *)&fx_09a_ribbonColC, 0, fx_09a_ribbon1, 1);
+        if (ribbonT != 0) {
+            fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->model60, 9, &fx_09a_bonePtA, &ptA);
+            fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->model60, 9, &fx_09a_bonePtB, &ptB);
+            fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->model60, 9, &fx_09a_bonePtC, &ptC);
+            if (ribbonT < 0) {
+                fxm_drawRibbonTrail(&ptA, &ptB, 0x3F8, (CVECTOR *)&fx_09a_ribbonColA, (CVECTOR *)&fx_09a_ribbonColB, 0, fx_09a_ribbon0, 1);
+                fxm_drawRibbonTrail(&ptB, &ptC, 0x3F8, (CVECTOR *)&fx_09a_ribbonColB, (CVECTOR *)&fx_09a_ribbonColC, 0, fx_09a_ribbon1, 1);
             } else {
-                fxm_drawRibbonTrail(&a, &b, 0x10, (CVECTOR *)&fx_09a_ribbonColA, (CVECTOR *)&fx_09a_ribbonColB, k, fx_09a_ribbon0, 1);
-                fxm_drawRibbonTrail(&b, &c, 0x10, (CVECTOR *)&fx_09a_ribbonColB, (CVECTOR *)&fx_09a_ribbonColC, k, fx_09a_ribbon1, 1);
-                BTLFX_COPY_SVEC(&work->ribbonHead2C, &a);
+                fxm_drawRibbonTrail(&ptA, &ptB, 0x10, (CVECTOR *)&fx_09a_ribbonColA, (CVECTOR *)&fx_09a_ribbonColB, ribbonT, fx_09a_ribbon0, 1);
+                fxm_drawRibbonTrail(&ptB, &ptC, 0x10, (CVECTOR *)&fx_09a_ribbonColB, (CVECTOR *)&fx_09a_ribbonColC, ribbonT, fx_09a_ribbon1, 1);
+                BTLFX_COPY_SVEC(&work->ribbonHead2C, &ptA);
                 {
-                    s32 o;
-                    s32 p2;
-                    SVECTOR *sv2;
+                    s32 off0;
+                    s32 off1;
+                    SVECTOR *seg1;
 
-                    sv = (SVECTOR *)fx_09a_ribbon0;
-                    for (i = 0, o = 8; i < 17; o += 16, i++) {
-                        sv[i * 2].vy -= sv[i * 2].vy >> 6;
-                        ((SVECTOR *)(o + (s32)sv))->vy -= ((SVECTOR *)(o + (s32)sv))->vy >> 4;
+                    seg0 = (SVECTOR *)fx_09a_ribbon0;
+                    for (i = 0, off0 = 8; i < 17; off0 += 16, i++) {
+                        seg0[i * 2].vy -= seg0[i * 2].vy >> 6;
+                        ((SVECTOR *)(off0 + (s32)seg0))->vy -= ((SVECTOR *)(off0 + (s32)seg0))->vy >> 4;
                     }
-                    sv2 = (SVECTOR *)fx_09a_ribbon1;
+                    seg1 = (SVECTOR *)fx_09a_ribbon1;
                     i = 0;
-                    p2 = 8;
-                    for (; i < 17; p2 += 16, i++) {
-                        sv2[i * 2].vy -= sv2[i * 2].vy >> 4;
-                        ((SVECTOR *)(p2 + (s32)sv2))->vy -= ((SVECTOR *)(p2 + (s32)sv2))->vy >> 3;
+                    off1 = 8;
+                    for (; i < 17; off1 += 16, i++) {
+                        seg1[i * 2].vy -= seg1[i * 2].vy >> 4;
+                        ((SVECTOR *)(off1 + (s32)seg1))->vy -= ((SVECTOR *)(off1 + (s32)seg1))->vy >> 3;
                     }
                 }
             }

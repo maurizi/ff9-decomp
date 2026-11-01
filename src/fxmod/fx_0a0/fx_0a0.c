@@ -7,7 +7,7 @@ void fx_0a0_drawGouraudLine(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s3
     LINE_G2 *prim;
     CVECTOR col0;
     CVECTOR col1;
-    s32 z;
+    s32 otz;
 
     if (p < 0) {
         p = 0x1000;
@@ -25,8 +25,8 @@ void fx_0a0_drawGouraudLine(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s3
     *(u32 *)&prim->r1 = *(u32 *)&col1;
     gte_stsxy01(&prim->x0, &prim->x1);
     gte_avsz3();
-    gte_stszotz(&z);
-    ex->btlfx_addPrimAbr(0x4000000, z, prim, abr);
+    gte_stszotz(&otz);
+    ex->btlfx_addPrimAbr(0x4000000, otz, prim, abr);
 }
 
 static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
@@ -50,22 +50,22 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 frame, s32 f
 static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 rot, s32 *scale, s32 alpha, s32 blend, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0a0_env);
     Unk80100C78Entry *entry = fx_0a0_task;
-    CVECTOR c0;
-    CVECTOR c1;
-    s32 r;
-    s32 s;
+    CVECTOR col0;
+    CVECTOR col1;
+    s32 trail;
+    s32 fade;
 
-    r = ex->btlfx_getParticleTrail(pt, p);
+    trail = ex->btlfx_getParticleTrail(pt, p);
     if (frame == 0) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 2);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)trail, 2);
     }
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, (s32 *)p->origin, frame, *scale, fx_0a0_trailAlpha, 1,
-                      (u8 *)r, 2);
+                      (u8 *)trail, 2);
     if (frame < 0x28) {
-        s = ex->math_cos((frame << 10) / 40);
-        c0.r = c0.g = c0.b = 0x80;
-        c1.r = c1.g = c1.b = 0x31;
-        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 6), pos, &fx_0a0_bonePos, 0, s, 1, 0x40);
+        fade = ex->math_cos((frame << 10) / 40);
+        col0.r = col0.g = col0.b = 0x80;
+        col1.r = col1.g = col1.b = 0x31;
+        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 6), pos, &fx_0a0_bonePos, 0, fade, 1, 0x40);
     }
 }
 
