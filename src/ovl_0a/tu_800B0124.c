@@ -18,15 +18,15 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 d;
 
     kind = (arg0 >> 8) & 0xF;
-    if (kind == 12 && g_gameState->gameData->soundLoadState != 0) {
+    if (kind == SND_CMD_GET_STATE && g_gameState->gameData->soundLoadState != 0) {
         goto state;
     }
     switch ((arg0 >> 12) & 3) {
-    case 0:
+    case SND_TYPE_MUSIC:
         t = -1;
         id = (arg1 & 0xFFFF) | DB_MUSIC;
         switch (kind) {
-        case 9:
+        case SND_CMD_RESUME:
             ok = 0;
             if (g_gameState->gameData->savedMusicId != MUSIC_NONE && g_gameState->gameData->savedMusicField == (s16)g_gameState->gameData->fieldId) {
                 GameData *p;
@@ -49,15 +49,15 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (!ok) {
                 return 0;
             }
-        case 0:
-        case 7:
+        case SND_CMD_PLAY:
+        case SND_CMD_LOAD:
             if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
             if (g_fieldMusicRequest == -1) {
                 g_fieldMusicRequest = kind;
             }
-            if (g_fieldMusicRequest != 9) {
+            if (g_fieldMusicRequest != SND_CMD_RESUME) {
                 t = fld_depGetLink(id);
             }
             if (g_gameState->gameData->musicId[0] != arg1 || g_gameState->gameData->musicBank[0] != (u16)t) {
@@ -72,7 +72,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->gameData->soundLoadState = 1;
                 return g_gameState->gameData->soundLoadState;
             }
-            if (g_fieldMusicRequest == 7) {
+            if (g_fieldMusicRequest == SND_CMD_LOAD) {
                 goto done;
             }
         start:
@@ -84,12 +84,12 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         done:
             g_fieldMusicRequest = -1;
             return 0;
-        case 12:
+        case SND_CMD_GET_STATE:
             if (g_gameState->gameData->soundLoadState != 0) {
                 goto state;
             }
             return fld_isMusicFading() ? 6 : 0;
-        case 8:
+        case SND_CMD_SUSPEND:
             akao_saveMusic();
             g_gameState->gameData->savedMusicId = g_gameState->gameData->musicId[0];
             g_gameState->gameData->savedMusicBank = g_gameState->gameData->musicBank[0];
@@ -97,8 +97,8 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_gameState->gameData->savedMusicField = g_gameState->gameData->fieldId;
             g_gameState->gameData->savedMusicFileSector = g_gameState->gameData->musicFileSector;
             g_gameState->gameData->savedMusicFileSectors = g_gameState->gameData->musicFileSectors;
-        case 1:
-            if ((arg0 & 0x3F) == 1) {
+        case SND_CMD_STOP:
+            if ((arg0 & 0x3F) == SND_PARAM_VOLUME) {
                 akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 g_gameState->gameData->musicVolume[0] = 0x7F;
                 g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
@@ -108,91 +108,91 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_gameState->gameData->musicVolume[0] = 0x7F;
             g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             return 0;
-        case 2:
+        case SND_CMD_SET:
             if ((arg0 & 0x3F) == 8) {
                 return 0;
             }
             switch (arg0 & 0x3F) {
-            case 1 ... 3:
+            case SND_PARAM_VOLUME ... SND_PARAM_PITCH:
                 switch (arg0 & 0x3F) {
-                case 1:
+                case SND_PARAM_VOLUME:
                     akao_setMusicVolume(g_gameState->gameData->musicHandle[0], arg2);
                     g_gameState->gameData->musicVolume[0] = arg2;
                     return 0;
-                case 2:
+                case SND_PARAM_TEMPO:
                     akao_setTempoScale(arg2);
                     return 0;
-                case 3:
+                case SND_PARAM_PITCH:
                     akao_setPitchScale(arg2);
                     return 0;
-                case 4:
+                case SND_PARAM_TEMPO_PITCH:
                     akao_setTempoPitchScale(arg2);
                     return 0;
                 }
                 break;
-            case 7:
+            case SND_PARAM_PLAY_COUNT:
                 g_gameState->gameData->musicHandle[0] = akao_playMusicCount(g_gameState->gameData->musicSeq, arg2);
                 g_gameState->gameData->flags |= GD_MUSIC_PLAYING;
                 return 0;
             }
             break;
-        case 3:
+        case SND_CMD_FADE:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], arg2, arg3);
                 fld_setMusicVolumeFade(arg3, arg2);
                 return 0;
-            case 2:
+            case SND_PARAM_TEMPO:
                 akao_fadeTempoScale(arg2, arg3);
                 return 0;
-            case 3:
+            case SND_PARAM_PITCH:
                 akao_fadePitchScale(arg2, arg3);
                 return 0;
-            case 4:
+            case SND_PARAM_TEMPO_PITCH:
                 akao_fadeTempoPitchScale(arg2, arg3);
                 return 0;
             }
             break;
-        case 4:
+        case SND_CMD_FADE_FROM:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], arg2, arg3, arg4);
                 fld_setMusicVolumeFade(arg4, arg2);
                 return 0;
-            case 2:
+            case SND_PARAM_TEMPO:
                 akao_fadeTempoScaleFrom(arg2, arg3, arg4);
                 return 0;
-            case 3:
+            case SND_PARAM_PITCH:
                 akao_fadePitchScaleFrom(arg2, arg3, arg4);
                 return 0;
-            case 4:
+            case SND_PARAM_TEMPO_PITCH:
                 akao_fadeTempoPitchScaleFrom(arg2, arg3, arg4);
                 return 0;
             }
             break;
-        case 6:
-            if ((arg0 & 0x3F) != 1) {
+        case SND_CMD_FADE_ALL:
+            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolume(0, arg2, arg3);
             fld_setMusicVolumeFade(arg3, arg2);
             return 0;
-        case 11:
-            if ((arg0 & 0x3F) != 1) {
+        case SND_CMD_FADE_ALL_FROM:
+            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolumeFrom(0, arg2, arg3, arg4);
             fld_setMusicVolumeFade(arg4, arg2);
             return 0;
-        case 10:
-            if ((arg0 & 0x3F) != 6) {
+        case SND_CMD_SET_CONDITION:
+            if ((arg0 & 0x3F) != SND_PARAM_CONDITION) {
                 break;
             }
             akao_setCondition(arg1);
             return 0;
         }
         return -1;
-    case 1:
+    case SND_TYPE_SE:
         /* rodata pad between the kind switches' jump tables */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         fp = 0;
@@ -200,10 +200,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         mask = 0;
         h = 0;
         id = (arg1 & 0xFFFF) | DB_SE;
-        if (kind != 5 && kind != 6) {
+        if (kind != SND_CMD_SET_ALL && kind != SND_CMD_FADE_ALL) {
             fp = (arg0 >> 7) & 1;
             if (fp != 0) {
-                if (kind == 0 || kind == 8 || kind == 9) {
+                if (kind == SND_CMD_PLAY || kind == SND_CMD_SUSPEND || kind == SND_CMD_RESUME) {
                     slot = (arg0 >> 6) & 1;
                 } else {
                     for (slot = 0; slot < 2; slot++) {
@@ -218,7 +218,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 arg2 = (0x100000 << slot) & 0x300000;
                 mask = GD_SFX0_PLAYING << (slot * 2);
                 mask2 = mask >> 1;
-                if (kind == 0 && g_gameState->gameData->sfxSlotId[slot] != arg1) {
+                if (kind == SND_CMD_PLAY && g_gameState->gameData->sfxSlotId[slot] != arg1) {
                     if (g_gameState->gameData->flags & mask) {
                         akao_stopSe(SFXH(slot), arg2);
                         g_gameState->gameData->flags ^= mask | mask2;
@@ -235,7 +235,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
         }
         switch (kind) {
-        case 9:
+        case SND_CMD_RESUME:
             t = 0;
             if (g_gameState->gameData->sfxSlotId[slot] != SE_NONE && g_gameState->gameData->sfxSlotSuspendField[slot] == (s16)g_gameState->gameData->fieldId) {
                 arg2 = (0x100000 << slot) & 0x300000;
@@ -247,7 +247,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (!t) {
                 return 0;
             }
-        case 0:
+        case SND_CMD_PLAY:
             if (!fp || !(g_gameState->gameData->flags & mask)) {
                 akao_playSe(h, arg2, arg3, arg4);
             }
@@ -257,13 +257,13 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->gameData->flags |= mask;
             }
             return 0;
-        case 8:
+        case SND_CMD_SUSPEND:
             if (!(g_gameState->gameData->flags & mask)) {
                 return 0;
             }
             g_gameState->gameData->sfxSlotSuspendField[slot] = g_gameState->gameData->fieldId;
-        case 1:
-            if ((arg0 & 0x3F) == 9 && fp) {
+        case SND_CMD_STOP:
+            if ((arg0 & 0x3F) == SND_PARAM_ALL_SLOTS && fp) {
                 if (g_gameState->gameData->flags & GD_SFX0_PLAYING) {
                     akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[0], 0x100000);
                 }
@@ -278,90 +278,90 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 }
             }
             return 0;
-        case 2:
+        case SND_CMD_SET:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_setSeVolume(h, arg2, arg3);
                 if (fp) {
                     g_gameState->gameData->sfxSlotVolume[slot] = arg3;
                 }
                 return 0;
-            case 5:
+            case SND_PARAM_PAN:
                 akao_sendCmdA2(h, arg2, arg3);
                 if (fp) {
                     g_gameState->gameData->sfxSlotPan[slot] = arg3;
                 }
                 return 0;
-            case 3:
+            case SND_PARAM_PITCH:
                 akao_sendCmdA4(h, arg2, arg3);
                 return 0;
             case 8:
                 return 0;
             }
             return -1;
-        case 3:
+        case SND_CMD_FADE:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_fadeSeVolume(h, arg2, arg3, arg4);
                 if (fp) {
                     g_gameState->gameData->sfxSlotVolume[slot] = arg4;
                 }
                 return 0;
-            case 5:
+            case SND_PARAM_PAN:
                 akao_sendCmdA3(h, arg2, arg3, arg4);
                 if (fp) {
                     g_gameState->gameData->sfxSlotPan[slot] = arg4;
                 }
                 return 0;
-            case 3:
+            case SND_PARAM_PITCH:
                 akao_sendCmdA5(h, arg2, arg3, arg4);
                 return 0;
             }
             return -1;
-        case 5:
+        case SND_CMD_SET_ALL:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_setAllSeVolume(arg2);
                 if (fp) {
                     g_gameState->gameData->sfxSlotVolume[0] = g_gameState->gameData->sfxSlotVolume[1] = arg2;
                 }
                 return 0;
-            case 5:
+            case SND_PARAM_PAN:
                 akao_sendCmdAA(arg2);
                 if (fp) {
                     g_gameState->gameData->sfxSlotPan[0] = g_gameState->gameData->sfxSlotPan[1] = arg2;
                 }
                 return 0;
-            case 3:
+            case SND_PARAM_PITCH:
                 akao_sendCmdAC(arg2);
                 return 0;
             }
             return -1;
-        case 6:
+        case SND_CMD_FADE_ALL:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_fadeAllSeVolume(arg2, arg3);
                 if (fp) {
                     g_gameState->gameData->sfxSlotVolume[0] = g_gameState->gameData->sfxSlotVolume[1] = arg3;
                 }
                 return -1;
-            case 5:
+            case SND_PARAM_PAN:
                 akao_sendCmdAB(arg2, arg3);
                 if (fp) {
                     g_gameState->gameData->sfxSlotPan[0] = g_gameState->gameData->sfxSlotPan[1] = arg3;
                 }
                 return -1;
-            case 3:
+            case SND_PARAM_PITCH:
                 akao_sendCmdAD(arg2, arg3);
                 return -1;
             }
             return -1;
         }
         return -1;
-    case 2:
+    case SND_TYPE_STREAM:
         id = (arg1 & 0xFFFF) | 0x180000;
         switch (kind) {
-        case 0:
+        case SND_CMD_PLAY:
             slot = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
             if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
@@ -370,24 +370,24 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             akao_sendCmdE0((s32 *)slot, arg2, arg3);
             SCENE->unk5F = 0;
             return 0;
-        case 1:
+        case SND_CMD_STOP:
             akao_sendCmdE2();
             return 0;
-        case 2:
+        case SND_CMD_SET:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 SCENE->sndVolume = arg2;
                 if (fld_isMoviePlaying() == 0) {
                     akao_sendCmdE4(arg2);
                 }
                 return 0;
-            case 10:
+            case SND_PARAM_MOVIE_VOLUME:
                 SCENE->movieSndVolume = arg2;
                 if (fld_isMoviePlaying() != 0) {
                     akao_sendCmdE4(arg2);
                 }
                 return 0;
-            case 5:
+            case SND_PARAM_PAN:
                 akao_sendCmdE6(arg2);
                 return 0;
             case 12:
@@ -399,10 +399,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             return -1;
         }
         return -1;
-    case 3:
+    case SND_TYPE_BANK:
         id = (arg1 & 0xFFFF) | DB_SOUND_BANK;
         switch (kind) {
-        case 7:
+        case SND_CMD_LOAD:
             SCENE->flags &= ~FLD_SCN_BANK_SLOT;
             if (arg2 == 4) {
                 SCENE->soundBankSlot = arg3;
@@ -412,7 +412,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_fieldSoundLoadId = id;
             g_gameState->gameData->soundLoadState = 1;
             return g_gameState->gameData->soundLoadState;
-        case 12:
+        case SND_CMD_GET_STATE:
             goto state;
         }
         return -1;
@@ -431,17 +431,17 @@ state:
         }
         break;
     case 2:
-        if (((g_fieldSoundLoadId >> 16) & 0xFF) == 7) {
+        if (((g_fieldSoundLoadId >> 16) & 0xFF) == (DB_MUSIC >> 16)) {
             g_gameState->gameData->soundLoadBank = g_gameState->gameData->musicBank[0];
         } else {
             g_gameState->gameData->soundLoadBank = g_fieldSoundLoadId;
         }
-        if (g_fieldMusicRequest == 9) {
+        if (g_fieldMusicRequest == SND_CMD_RESUME) {
             g_fieldSoundLoadSector = g_gameState->gameData->musicFileSector;
             sz = g_gameState->gameData->musicFileSectors << 11;
         } else {
             g_fieldSoundLoadSector = fld_depGetFileSector(g_fieldSoundLoadId, &sz);
-            if (((g_fieldSoundLoadId >> 16) & 0xFF) == 7) {
+            if (((g_fieldSoundLoadId >> 16) & 0xFF) == (DB_MUSIC >> 16)) {
                 g_gameState->gameData->musicFileSector = g_fieldSoundLoadSector;
                 g_gameState->gameData->musicFileSectors = sz >> 11;
             }
@@ -476,7 +476,7 @@ state:
                 cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
                               g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, d, fld_soundBankReadCallback);
             } else if (g_fieldSoundLoadKind == 7) {
-                if (g_fieldMusicRequest != 9) {
+                if (g_fieldMusicRequest != SND_CMD_RESUME) {
                     g_gameState->gameData->musicVolume[0] = 0x7F;
                 }
                 g_gameState->gameData->soundLoadState = 4;
@@ -508,7 +508,7 @@ state:
                 fld_unpackMusicSeq((s32)g_gameState->gameData->musicSeq);
                 g_gameState->gameData->flags |= GD_MUSIC_LOADED;
                 g_gameState->gameData->soundLoadState = 0;
-                if (g_fieldMusicRequest != 7) {
+                if (g_fieldMusicRequest != SND_CMD_LOAD) {
                     goto start;
                 }
                 g_fieldMusicRequest = -1;
@@ -775,16 +775,16 @@ void fld_findBattleMusic(void) {
     key = (u16)o->nextId;
     g_gameState->gameData->ctx.field->area->scene->battleMusicBank = g_gameState->gameData->musicBank[0];
     base = g_gameState->gameData->depTable->entries;
-    key |= 0x110000;
+    key |= DB_BATTLE;
     w = key;
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
         id = base[i].link;
-        if (base[i].id == w && ((id >> 16) & 0xFF) == 7) {
+        if (base[i].id == w && ((id >> 16) & 0xFF) == (DB_MUSIC >> 16)) {
             g_gameState->gameData->ctx.field->area->scene->battleMusic = id;
             for (j = 0; j < g_gameState->gameData->depTable->count; j++) {
                 w = base[j].link;
                 v = base[j].id;
-                if (((base[j].id >> 16) & 0xFF) == 9 && w == id) {
+                if (((base[j].id >> 16) & 0xFF) == (DB_SOUND_BANK >> 16) && w == id) {
                     g_gameState->gameData->ctx.field->area->scene->battleMusicBank = v;
                     return;
                 }
@@ -828,9 +828,9 @@ s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2) { /* its caller passes t
     }
     for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
         x = e[i].id;
-        if (((x >> 16) & 0xFF) == 9) {
+        if (((x >> 16) & 0xFF) == (DB_SOUND_BANK >> 16)) {
             found = 0;
-            if (((e[i].link >> 16) & 0xFF) == 8) {
+            if (((e[i].link >> 16) & 0xFF) == (DB_SE >> 16)) {
                 s = -1;
                 for (j = 4; j >= 0; j--) {
                     if (g_fieldSoundBankIds[j] == x) {
@@ -1396,12 +1396,12 @@ s32 fld_isEncounterPreloadExcluded(void) {
     return fld_findPreloadExclude(OVL_KEY(OVL_BATTLE)) != 0;
 }
 
-/* is any active entry of category 5? */
+/* is any active preload request a field file (DB_FIELD)? */
 s32 fld_hasFieldPreloadRequest(void) {
     s32 i;
 
     for (i = g_fieldPreloadRequestCount - 1; i >= 0; i--) {
-        if (((g_fieldPreloadRequests[i] >> 16) & 0xFF) == 5) {
+        if (((g_fieldPreloadRequests[i] >> 16) & 0xFF) == (DB_FIELD >> 16)) {
             return 1;
         }
     }
@@ -1544,7 +1544,7 @@ void fld_queueFieldPreloads(void) {
             cnt = 1;
         } else {
             for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
-                if (((tbl[i].id >> 16) & 0xFF) == 0x11) {
+                if (((tbl[i].id >> 16) & 0xFF) == (DB_BATTLE >> 16)) {
                     cnt = 1;
                     break;
                 }
@@ -1562,7 +1562,7 @@ void fld_queueFieldPreloads(void) {
     if (fld_hasFieldPreloadRequest() != 0) {
         for (i = 0; i < g_fieldPreloadRequestCount; i++) {
             key = g_fieldPreloadRequests[i];
-            if (((g_fieldPreloadRequests[i] >> 16) & 0xFF) == 5) {
+            if (((g_fieldPreloadRequests[i] >> 16) & 0xFF) == (DB_FIELD >> 16)) {
                 e = dep_find(g_gameState->gameData->depTable, key);
                 if (e != NULL) {
                     if ((e->link & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
@@ -1582,7 +1582,7 @@ void fld_queueFieldPreloads(void) {
         cur = -1;
         for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
             x = tbl[i].id;
-            if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
+            if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
                 if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
                     fld_queueFieldPreloads_grp(x & 0xFFFF) == fld_queueFieldPreloads_grp(g_gameState->gameData->fieldId) && best < tbl[i].sectors) {
                     best = tbl[i].sectors;
@@ -1593,7 +1593,7 @@ void fld_queueFieldPreloads(void) {
         if (sel == -1) {
             for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                 x = tbl[i].id;
-                if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
+                if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
                     if ((x & 0xFFFF) < 9000 && fld_findPreloadExclude(x) == NULL && (x & 0xFFFF) == g_gameState->gameData->ctx.field->prevFieldId) {
                         best = tbl[i].sectors;
                         sel = i;
@@ -1605,7 +1605,7 @@ void fld_queueFieldPreloads(void) {
         if (sel == -1) {
             for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                 x = tbl[i].id;
-                if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
+                if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
                     if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
                         best < tbl[i].sectors) {
                         sel = i;
@@ -1632,7 +1632,7 @@ void fld_queueFieldPreloads(void) {
             sel = -1;
             for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                 x = tbl[i].id;
-                if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
+                if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
                     key = x & 0xFFFF;
                     if (key < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
                         fld_findPreloadExclude(x) == NULL && fld_queueFieldPreloads_grp(key) == fld_queueFieldPreloads_grp(g_gameState->gameData->fieldId) &&
@@ -1646,7 +1646,7 @@ void fld_queueFieldPreloads(void) {
             if (sel == -1) {
                 for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                     x = tbl[i].id;
-                    if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
+                    if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
                         if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != (cur & 0xFFFF) && fld_findPreloadExclude(x) == NULL &&
                             (x & 0xFFFF) == g_gameState->gameData->ctx.field->prevFieldId) {
                             best = tbl[i].sectors;
@@ -1659,7 +1659,7 @@ void fld_queueFieldPreloads(void) {
             if (sel == -1) {
                 for (i = g_gameState->gameData->depTable->count - 1; i >= 0; i--) {
                     x = tbl[i].id;
-                    if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == 5) {
+                    if (tbl[i].sectors != 0 && ((x >> 16) & 0xFF) == (DB_FIELD >> 16)) {
                         if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->gameData->ctx.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
                             fld_findPreloadExclude(x) == NULL && best < tbl[i].sectors) {
                             sel = i;

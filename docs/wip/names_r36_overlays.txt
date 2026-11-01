@@ -1,0 +1,12 @@
+# R36 overlay constants (macros added; evidence in the header comments and docs/sound-ids.md)
+
+## snd_ids.h: sound command word fields [code] the five overlay handlers fld_soundCommand, wm_soundCommand,
+## tm_soundCmd, opening_soundCmd, ending_soundCmd (akao_api calls per case)
+SND_TYPE_MUSIC 0, SND_TYPE_SE 1, SND_TYPE_STREAM 2, SND_TYPE_BANK 3
+SND_CMD_PLAY 0, SND_CMD_STOP 1, SND_CMD_SET 2, SND_CMD_FADE 3, SND_CMD_FADE_FROM 4, SND_CMD_SET_ALL 5,
+SND_CMD_FADE_ALL 6, SND_CMD_LOAD 7, SND_CMD_SUSPEND 8, SND_CMD_RESUME 9, SND_CMD_SET_CONDITION 0xA,
+SND_CMD_FADE_ALL_FROM 0xB, SND_CMD_GET_STATE 0xC
+SND_PARAM_VOLUME 1, SND_PARAM_TEMPO 2, SND_PARAM_PITCH 3, SND_PARAM_TEMPO_PITCH 4, SND_PARAM_PAN 5,
+SND_PARAM_CONDITION 6, SND_PARAM_PLAY_COUNT 7, SND_PARAM_ALL_SLOTS 9, SND_PARAM_MOVIE_VOLUME 10
+SND_SLOT1 0x40
+also used (no new macro): (DB_x >> 16) for db key kind compares in ovl_0a / ovl_0c; DB_BATTLE in fld battle music lookup
