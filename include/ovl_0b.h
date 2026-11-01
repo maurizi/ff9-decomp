@@ -3421,8 +3421,8 @@ s32 btl_uploadModelTextures(Unk800AA958 *, Unk800AA958Req *, s32, s32);
 s32 btl_getPartyModelId(s32, s32);
 
 
-s32 btlfx_stepJumpHome(Unk800D955C *arg0, s32 arg1, s32 *arg2);
-s32 btlfx_moveUnitLinear(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32 arg5);
+s32 btlfx_stepJumpHome(Unk800D955C *work, s32 env, s32 *entry);
+s32 btlfx_moveUnitLinear(s32 unitId, s16 *dest, s32 frame, s32 frames, s16 *from, s32 fromMode);
 void btlfx_lerpVec(s16 *, s16 *, s32, s16 *);
 u16 Hi_RegisterTexListModel(BtlModelHeader *, BtlTexInfo *, s16 *, s32);
 u16 Hi_RegisterGouEffModel(BtlModelHeader *);
@@ -4928,12 +4928,12 @@ s32 btlfx_getScaledRadius(s32 unitId);
 void btlfx_getStrikePos(s32 strikerId, s32 targetId, s16 *out);
 void btlfx_getUnitBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2);
 void btlfx_getUnitBonePos(s32 arg0, s32 arg1, u16 *arg2);
-s32 btlfx_heapWrapIfFull(Heap *arg0, s32 arg1);
+s32 btlfx_heapWrapIfFull(Heap *heap, s32 bytes);
 void btlfx_rotateOffset(SVECTOR *rot, s32 dist, s32 out);
 void btlfx_setTargets(BtlUnitList *list);
 s32 btlfx_start(s32 effectId);
-s32 btlfx_stepWaitSameSide(u8 *arg0, s32 arg1, s32 *arg2);
-void btlfx_stopEmitter(Pool6CEntry *arg0);
+s32 btlfx_stepWaitSameSide(u8 *work, s32 env, s32 *entry);
+void btlfx_stopEmitter(Pool6CEntry *emitter);
 void btlfx_turnToward(s16 *target, s16 *rot, s32 rate);
 void btlui_buildAbilityList(Unk80104F88Entry *arg0);
 void btlui_clearCursor(Unk800EB518 *arg0);

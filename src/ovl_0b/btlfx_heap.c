@@ -1,27 +1,27 @@
 #include "ovl_0b.h"
 
-void btlfx_initParticles(s32 arg0, Pool30Entry *arg1, Pool30 *arg2) {
+void btlfx_initParticles(s32 bytes, Pool30Entry *buf, Pool30 *pool) {
     s32 i = 0;
-    arg2->capacity = arg0 / (s32)sizeof(Pool30Entry);
-    arg2->entries = arg1;
-    arg2->live = 0;
-    arg2->maxUsed = 0;
-    for (; i < arg2->capacity;) {
+    pool->capacity = bytes / (s32)sizeof(Pool30Entry);
+    pool->entries = buf;
+    pool->live = 0;
+    pool->maxUsed = 0;
+    for (; i < pool->capacity;) {
         i++;
-        arg1->slot = 0;
-        arg1++;
+        buf->slot = 0;
+        buf++;
     }
 }
 
-s32 btlfx_getParticleTrail(Pool30Entry *arg0, Pool6CEntry *arg1) {
-    s32 p = arg1->trails;
-    s32 t;
-    if (p == 0) {
+s32 btlfx_getParticleTrail(Pool30Entry *particle, Pool6CEntry *emitter) {
+    s32 trails = emitter->trails;
+    s32 ofs;
+    if (trails == 0) {
         return 0;
     }
-    t = arg0->slot;
-    t = (t - 1) * arg1->trailStride;
-    return p + t;
+    ofs = particle->slot;
+    ofs = (ofs - 1) * emitter->trailStride;
+    return trails + ofs;
 }
 
 s32 btlfx_updateParticles(Pool30 *pool) {
@@ -474,21 +474,21 @@ s32 btlfx_updateParticles(Pool30 *pool) {
     return pool->live;
 }
 
-void btlfx_initEmitters(u32 arg0, Pool6C *arg1) {
+void btlfx_initEmitters(u32 bytes, Pool6C *list) {
     s32 i;
-    Pool6CEntry *e = arg1->buf;
-    arg1->capacity = (arg0 - 0x10) / sizeof(Pool6CEntry);
-    arg1->entries = e;
-    arg1->live = 0;
-    arg1->maxUsed = 0;
-    for (i = 0; i < arg1->capacity;) {
+    Pool6CEntry *e = list->buf;
+    list->capacity = (bytes - 0x10) / sizeof(Pool6CEntry);
+    list->entries = e;
+    list->live = 0;
+    list->maxUsed = 0;
+    for (i = 0; i < list->capacity;) {
         i++;
         e->state = BTLFX_EMIT_FREE;
         e++;
     }
 }
 
-Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) {
+Pool6CEntry *btlfx_spawnEmitter(Pool30 *pool, Pool6C *list, u8 *data, s32 pos) {
     Pool6CEntry *e;
     s32 i;
     u32 k;
@@ -496,15 +496,15 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) 
     EffElemHdr *h;
     EffElem *el;
     s32 *q;
-    s32 v;
+    s32 shape;
 
-    e = arg1->entries;
-    for (i = 0; i < arg1->capacity; i++, e++) {
+    e = list->entries;
+    for (i = 0; i < list->capacity; i++, e++) {
         if (e->state == BTLFX_EMIT_FREE) {
-            if (arg1->maxUsed < i) {
-                arg1->maxUsed = i;
+            if (list->maxUsed < i) {
+                list->maxUsed = i;
             }
-            p = arg2;
+            p = data;
             for (k = 0; k < 0x6C; k += 4) {
                 *(s32 *)((u8 *)e + k) = 0;
             }
@@ -539,25 +539,25 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) 
             for (; i < h->elemCount; i++, el++) {
                 if (el->kind != BTLFX_ELEMK_CALLBACK) {
                     if (el->tex != -1 && !(el->tex & 0x80000000)) {
-                        el->tex = (s32)arg2 + el->tex;
+                        el->tex = (s32)data + el->tex;
                     }
                 }
                 if (el->kind2 != BTLFX_ELEMK_NONE) {
                     if (el->tex2 != -1 && !(el->tex2 & 0x80000000)) {
-                        el->tex2 = (s32)arg2 + el->tex2;
+                        el->tex2 = (s32)data + el->tex2;
                     }
                 }
             }
             /* tail, origin, target written through one pointer */
             q = (s32 *)&e->tail;
             q[0] = (s32)p;
-            v = *(s32 *)p;
+            shape = *(s32 *)p;
             k = (u32)p;
-            if (v == BTLFX_SHAPE_MODULE) {
+            if (shape == BTLFX_SHAPE_MODULE) {
                 ((EffTail *)k)->s.module.spawnFn = NULL;
             }
-            q[1] = arg3;
-            q[2] = arg3;
+            q[1] = pos;
+            q[2] = pos;
             do {
             } while (0);
             return e;
@@ -566,48 +566,48 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) 
     return NULL;
 }
 
-void btlfx_moveEmitter(Pool30 *arg0, s32 arg1, s32 arg2) {
-    Pool6CEntry *m = (Pool6CEntry *)arg1;
-    SVECTOR *v = (SVECTOR *)arg2;
-    VECTOR d;
+void btlfx_moveEmitter(Pool30 *pool, s32 handle, s32 newPos) {
+    Pool6CEntry *emitter = (Pool6CEntry *)handle;
+    SVECTOR *pos = (SVECTOR *)newPos;
+    VECTOR delta;
     Pool30Entry *e;
     s32 i;
-    d.vx = (v->vx - m->origin->vx) << 12;
-    d.vy = (v->vy - m->origin->vy) << 12;
-    d.vz = (v->vz - m->origin->vz) << 12;
-    e = arg0->entries;
-    for (i = 0; i < arg0->capacity; i++, e++) {
-        if (e->slot != 0 && e->owner == m) {
-            e->pos.vx += d.vx;
-            e->pos.vy += d.vy;
-            e->pos.vz += d.vz;
+    delta.vx = (pos->vx - emitter->origin->vx) << 12;
+    delta.vy = (pos->vy - emitter->origin->vy) << 12;
+    delta.vz = (pos->vz - emitter->origin->vz) << 12;
+    e = pool->entries;
+    for (i = 0; i < pool->capacity; i++, e++) {
+        if (e->slot != 0 && e->owner == emitter) {
+            e->pos.vx += delta.vx;
+            e->pos.vy += delta.vy;
+            e->pos.vz += delta.vz;
         }
     }
-    *(s32 *)&m->origin->vx = *(s32 *)&v->vx;
-    m->origin->vz = v->vz;
+    *(s32 *)&emitter->origin->vx = *(s32 *)&pos->vx;
+    emitter->origin->vz = pos->vz;
 }
 
-void btlfx_killEmitter(Pool30 *arg0, Pool6CEntry *arg1) {
+void btlfx_killEmitter(Pool30 *pool, Pool6CEntry *emitter) {
     s32 i = 0;
-    Pool30Entry *p = arg0->entries;
-    if (i < arg0->capacity) {
+    Pool30Entry *p = pool->entries;
+    if (i < pool->capacity) {
         do {
-            if (p->slot != 0 && p->owner == arg1) {
+            if (p->slot != 0 && p->owner == emitter) {
                 p->frame = p->frames;
             }
             i++;
             p++;
-        } while (i < arg0->capacity);
+        } while (i < pool->capacity);
     }
-    arg1->state = BTLFX_EMIT_DONE;
+    emitter->state = BTLFX_EMIT_DONE;
 }
 
-s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
+s32 btlfx_updateEmitters(Pool30 *pool, Pool6C *list) {
     union {
         s16 h[4];
         s32 w;
-    } a;
-    s16 b[4];
+    } cur;
+    s16 end[4];
     s32 i;
     s32 last;
     Pool6CEntry *e;
@@ -623,14 +623,14 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
     s32 v;
     s32 y;
     s32 x;
-    Pool6C *p = arg1;
+    Pool6C *emitters = list;
 
     last = 0;
-    e = p->entries;
+    e = emitters->entries;
     v = 0;
     i = 0;
-    p->live = 0;
-    for (; i <= p->maxUsed; i++, e++) {
+    emitters->live = 0;
+    for (; i <= emitters->maxUsed; i++, e++) {
         if (e->state == BTLFX_EMIT_FREE) {
             continue;
         }
@@ -638,7 +638,7 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
             e->state = BTLFX_EMIT_FREE;
             continue;
         }
-        p->live++;
+        emitters->live++;
         def = e->tail;
         frame = e->frame;
         an = &def->anim;
@@ -706,76 +706,76 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
                 hdr->weights.b[v] = 0x80;
             }
         }
-        a.h[0] = hdr->scaleStart;
-        a.h[1] = hdr->alphaStart;
-        a.h[2] = an->gravityStart;
-        b[0] = hdr->scaleEnd;
-        b[1] = hdr->alphaEnd;
-        b[2] = an->gravityEnd;
-        btlfx_lerpVec(a.h, b, t, a.h);
+        cur.h[0] = hdr->scaleStart;
+        cur.h[1] = hdr->alphaStart;
+        cur.h[2] = an->gravityStart;
+        end[0] = hdr->scaleEnd;
+        end[1] = hdr->alphaEnd;
+        end[2] = an->gravityEnd;
+        btlfx_lerpVec(cur.h, end, t, cur.h);
         gte_lddp(0x1000 - t);
         gte_ldsv(an->accelStart);
         gte_gpf12();
-        e->scale = a.h[0];
-        e->alpha = a.h[1];
-        e->gravity = a.h[2];
+        e->scale = cur.h[0];
+        e->alpha = cur.h[1];
+        e->gravity = cur.h[2];
         gte_lddp(t);
         gte_ldsv(an->accelEnd);
         gte_gpl12();
         gte_stsv(e->accel);
         if (an->fieldMode != 0) {
-            btlfx_lerpVec(an->fieldStart, an->fieldEnd, t, a.h);
-            e->field.w = a.w;
+            btlfx_lerpVec(an->fieldStart, an->fieldEnd, t, cur.h);
+            e->field.w = cur.w;
         }
         if (e->sub != NULL) {
             sub = e->sub - 1;
             btlfx_lerpVec(sub->accelStart, sub->accelEnd, t, e->subAccel);
             e->subGravity = btlfx_lerp(sub->gravityStart, sub->gravityEnd, t);
             if (sub->fieldMode != 0) {
-                btlfx_lerpVec(sub->fieldStart, sub->fieldEnd, t, a.h);
-                e->subField.w = a.w;
+                btlfx_lerpVec(sub->fieldStart, sub->fieldEnd, t, cur.h);
+                e->subField.w = cur.w;
             }
         }
         d2 = e->tail;
         switch (d2->shape) {
         case BTLFX_SHAPE_SPHERE:
-            a.h[0] = d2->s.sphere.radiusMinStart;
-            a.h[1] = d2->s.sphere.radiusMaxStart;
-            b[0] = d2->s.sphere.radiusMinEnd;
-            b[1] = d2->s.sphere.radiusMaxEnd;
-            btlfx_lerpVec(a.h, b, t, a.h);
-            e->radiusMin = a.h[0];
-            e->radiusMax = a.h[1];
+            cur.h[0] = d2->s.sphere.radiusMinStart;
+            cur.h[1] = d2->s.sphere.radiusMaxStart;
+            end[0] = d2->s.sphere.radiusMinEnd;
+            end[1] = d2->s.sphere.radiusMaxEnd;
+            btlfx_lerpVec(cur.h, end, t, cur.h);
+            e->radiusMin = cur.h[0];
+            e->radiusMax = cur.h[1];
             break;
         case BTLFX_SHAPE_CYLINDER:
         case BTLFX_SHAPE_AXIS:
         case BTLFX_SHAPE_TUBE:
-            a.h[0] = d2->s.cylinder.radiusStart[0];
-            a.h[1] = d2->s.cylinder.radiusStart[1];
-            b[0] = d2->s.cylinder.radiusEnd[0];
-            b[1] = d2->s.cylinder.radiusEnd[1];
-            btlfx_lerpVec(a.h, b, t, a.h);
-            e->radiusMin = a.h[0];
-            e->radiusMax = a.h[1];
-            a.h[0] = d2->s.cylinder.spanStart[0];
-            a.h[1] = d2->s.cylinder.spanStart[1];
-            b[0] = d2->s.cylinder.spanEnd[0];
-            b[1] = d2->s.cylinder.spanEnd[1];
-            btlfx_lerpVec(a.h, b, t, a.h);
-            e->shape.span.min = a.h[0];
-            e->shape.span.max = a.h[1];
+            cur.h[0] = d2->s.cylinder.radiusStart[0];
+            cur.h[1] = d2->s.cylinder.radiusStart[1];
+            end[0] = d2->s.cylinder.radiusEnd[0];
+            end[1] = d2->s.cylinder.radiusEnd[1];
+            btlfx_lerpVec(cur.h, end, t, cur.h);
+            e->radiusMin = cur.h[0];
+            e->radiusMax = cur.h[1];
+            cur.h[0] = d2->s.cylinder.spanStart[0];
+            cur.h[1] = d2->s.cylinder.spanStart[1];
+            end[0] = d2->s.cylinder.spanEnd[0];
+            end[1] = d2->s.cylinder.spanEnd[1];
+            btlfx_lerpVec(cur.h, end, t, cur.h);
+            e->shape.span.min = cur.h[0];
+            e->shape.span.max = cur.h[1];
             break;
         case BTLFX_SHAPE_CONE:
-            a.h[0] = d2->s.cone.radiusMinStart;
-            a.h[1] = d2->s.cone.radiusMaxStart;
-            a.h[2] = d2->s.cone.lengthStart;
-            b[0] = d2->s.cone.radiusMinEnd;
-            b[1] = d2->s.cone.radiusMaxEnd;
-            b[2] = d2->s.cone.lengthEnd;
-            btlfx_lerpVec(a.h, b, t, a.h);
-            e->radiusMin = a.h[0];
-            e->radiusMax = a.h[1];
-            e->shape.cone.length = a.h[2];
+            cur.h[0] = d2->s.cone.radiusMinStart;
+            cur.h[1] = d2->s.cone.radiusMaxStart;
+            cur.h[2] = d2->s.cone.lengthStart;
+            end[0] = d2->s.cone.radiusMinEnd;
+            end[1] = d2->s.cone.radiusMaxEnd;
+            end[2] = d2->s.cone.lengthEnd;
+            btlfx_lerpVec(cur.h, end, t, cur.h);
+            e->radiusMin = cur.h[0];
+            e->radiusMax = cur.h[1];
+            e->shape.cone.length = cur.h[2];
             break;
         }
         switch (e->file->kind) {
@@ -799,22 +799,22 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
         frame++;
         e->frame = frame;
     }
-    p->maxUsed = last;
-    return p->live;
+    emitters->maxUsed = last;
+    return emitters->live;
 }
 
-Pool30Entry *btlfx_allocParticle(Pool30 *arg0) {
+Pool30Entry *btlfx_allocParticle(Pool30 *pool) {
     s32 i;
-    Pool30Entry *p = arg0->entries;
-    for (i = 0; i < arg0->capacity; i++, p++) {
+    Pool30Entry *p = pool->entries;
+    for (i = 0; i < pool->capacity; i++, p++) {
         if (p->slot == 0) {
-            if (arg0->maxUsed < i) {
-                arg0->maxUsed = i;
+            if (pool->maxUsed < i) {
+                pool->maxUsed = i;
             }
             break;
         }
     }
-    if (i >= arg0->capacity) {
+    if (i >= pool->capacity) {
         p = 0;
     }
     return p;
@@ -823,7 +823,7 @@ Pool30Entry *btlfx_allocParticle(Pool30 *arg0) {
 void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
     SVECTOR off;
     SVECTOR rot;
-    SVECTOR tmp;
+    SVECTOR scratch;
     SVECTOR ang;
     CVECTOR col;
     s32 k;
@@ -1025,15 +1025,15 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
                     rot.vx += 0x800;
                 } else {
-                    *(s32 *)&tmp.vx = 0;
-                    *(s32 *)&tmp.vz = 0;
-                    btlfx_offsetPoint(&tmp, (s32)&tmp, 0, (XY32 *)&ang, d58, n);
+                    *(s32 *)&scratch.vx = 0;
+                    *(s32 *)&scratch.vz = 0;
+                    btlfx_offsetPoint(&scratch, (s32)&scratch, 0, (XY32 *)&ang, d58, n);
                     *(s32 *)&rot.vx = 0;
                     *(s32 *)&rot.vz = 0;
                     btlfx_offsetPoint(&rot, (s32)&rot, e->shape.cone.length, (XY32 *)&ang, y4, n);
                     ((XY32 *)&ang)[0].w = ((XY32 *)&rot)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)&rot)[1].w;
-                    btlfx_aimAngles(&tmp.vx, &ang.vx, &rot.vx);
+                    btlfx_aimAngles(&scratch.vx, &ang.vx, &rot.vx);
                 }
                 base = e->origin;
                 break;
@@ -1044,9 +1044,9 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                     anim->duration = 0;
                 }
                 if (off.pad != 0) {
-                    base = &tmp;
-                    *(s32 *)&tmp.vx = 0;
-                    *(s32 *)&tmp.vz = 0;
+                    base = &scratch;
+                    *(s32 *)&scratch.vx = 0;
+                    *(s32 *)&scratch.vz = 0;
                 } else {
                     base = e->origin;
                 }
@@ -1098,13 +1098,13 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
             case BTLFX_MOTION_SPIRAL: {
                 EffEmit *mot = e->file;
                 p->motB.spiral.axis.w = *(s32 *)&rot.vx;
-                btlfx_lerpVec(&mot->m.spiral.radiusSpeedStart, &mot->m.spiral.radiusSpeedEnd, t, &tmp.vx);
-                p->motA.spin.speed = tmp.vy + btlfx_randCentered(mot->m.spiral.spinSpeedSpread);
-                p->motB.spiral.radiusSpeed = tmp.vx + btlfx_randCentered(mot->m.spiral.radiusSpeedSpread);
+                btlfx_lerpVec(&mot->m.spiral.radiusSpeedStart, &mot->m.spiral.radiusSpeedEnd, t, &scratch.vx);
+                p->motA.spin.speed = scratch.vy + btlfx_randCentered(mot->m.spiral.spinSpeedSpread);
+                p->motB.spiral.radiusSpeed = scratch.vx + btlfx_randCentered(mot->m.spiral.radiusSpeedSpread);
                 p->motB.spiral.axialSpeed = e->cur.spiral.axialSpeed + btlfx_randCentered(mot->m.spiral.axialSpeedSpread);
-                *(s32 *)&tmp.vx = 0;
-                *(s32 *)&tmp.vz = 0;
-                btlfx_toLocalPolar(&off, &tmp, &rot, (s32)&k, (s32)&r, &d58);
+                *(s32 *)&scratch.vx = 0;
+                *(s32 *)&scratch.vz = 0;
+                btlfx_toLocalPolar(&off, &scratch, &rot, (s32)&k, (s32)&r, &d58);
                 p->motA.spin.angle = d58;
                 p->motB.spiral.axial = k;
                 p->motB.spiral.radius = r;
@@ -1128,9 +1128,9 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
             case BTLFX_MOTION_HELIX: {
                 EffEmit *mot = e->file;
                 p->motB.helix.axis.w = *(s32 *)&rot.vx;
-                btlfx_lerpVec(&mot->m.helix.radiusStart, &mot->m.helix.radiusEnd, t, &tmp.vx);
-                p->motA.spin.speed = tmp.vy + btlfx_randCentered(mot->m.helix.spinSpeedSpread);
-                p->motB.helix.radius = tmp.vx + btlfx_randCentered(mot->m.helix.radiusSpread);
+                btlfx_lerpVec(&mot->m.helix.radiusStart, &mot->m.helix.radiusEnd, t, &scratch.vx);
+                p->motA.spin.speed = scratch.vy + btlfx_randCentered(mot->m.helix.spinSpeedSpread);
+                p->motB.helix.radius = scratch.vx + btlfx_randCentered(mot->m.helix.radiusSpread);
                 p->motB.helix.axialSpeed = e->cur.spiral.axialSpeed + btlfx_randCentered(mot->m.helix.axialSpeedSpread);
                 p->motA.spin.angle = btlfx_rand();
                 p->motB.helix.axial = 0;
@@ -1151,10 +1151,10 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
             }
             }
             if (el != NULL && ((u32)(el->kind - BTLFX_ELEMK_TRAIL_3D) < 2 || el->kind == BTLFX_ELEMK_TRAIL_SCREEN || el->kind2 == BTLFX_ELEMK_TRAIL_3D || el->kind2 == BTLFX_ELEMK_TRAIL_FLAT || el->kind2 == BTLFX_ELEMK_TRAIL_SCREEN)) {
-                tmp.vx = p->pos.vx >> 12;
-                tmp.vy = p->pos.vy >> 12;
-                tmp.vz = p->pos.vz >> 12;
-                btlfx_drawTrail((u8 *)el->tex, (s32)&tmp, NULL, -1, 0, 0, 0, (u8 *)btlfx_getParticleTrail(p, e), 0);
+                scratch.vx = p->pos.vx >> 12;
+                scratch.vy = p->pos.vy >> 12;
+                scratch.vz = p->pos.vz >> 12;
+                btlfx_drawTrail((u8 *)el->tex, (s32)&scratch, NULL, -1, 0, 0, 0, (u8 *)btlfx_getParticleTrail(p, e), 0);
             }
         }
     }
@@ -1406,11 +1406,11 @@ void btlfx_runSubEmitter(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *ro
     }
 }
 
-void btlfx_heapInit(Heap *arg0, s32 arg1) {
-    s32 size = btlfx_align4(arg1) - 0xC;
-    arg0->cursor = arg0->data;
-    arg0->free = size;
-    arg0->size = size;
+void btlfx_heapInit(Heap *heap, s32 bytes) {
+    s32 size = btlfx_align4(bytes) - 0xC;
+    heap->cursor = heap->data;
+    heap->free = size;
+    heap->size = size;
 }
 
 s32 btlfx_heapAlloc(Heap *h, s32 size) {
@@ -1434,19 +1434,19 @@ s32 btlfx_heapAlloc(Heap *h, s32 size) {
     return (s32)p;
 }
 
-s32 btlfx_heapWrapIfFull(Heap *arg0, s32 arg1) {
-    s32 size = btlfx_align4(arg1);
-    s32 ret = 1;
-    if (arg0->free < size) {
-        arg0->cursor = arg0->data;
-        arg0->free = arg0->size;
+s32 btlfx_heapWrapIfFull(Heap *heap, s32 bytes) {
+    s32 size = btlfx_align4(bytes);
+    s32 wrapped = 1;
+    if (heap->free < size) {
+        heap->cursor = heap->data;
+        heap->free = heap->size;
     } else {
-        ret = 0;
+        wrapped = 0;
     }
-    return ret;
+    return wrapped;
 }
 
-void btlfx_heapFree(void *arg0) {
+void btlfx_heapFree(void *mem) {
 }
 
 void btlfx_initParticleSystem(void) {
@@ -1460,19 +1460,19 @@ void btlfx_updateParticleSystem(void) {
     btlfx_updateEmitters(&g_btlfxParticles, &g_btlfxEmitters);
 }
 
-Pool6CEntry *btlfx_startEmitter(s32 arg0, s32 arg1) {
-    return btlfx_spawnEmitter(&g_btlfxParticles, &g_btlfxEmitters, (u8 *)arg0, arg1);
+Pool6CEntry *btlfx_startEmitter(s32 data, s32 pos) {
+    return btlfx_spawnEmitter(&g_btlfxParticles, &g_btlfxEmitters, (u8 *)data, pos);
 }
 
-void btlfx_moveEmitterTo(s32 arg0, s32 arg1) {
-    if (arg0 != 0) {
-        btlfx_moveEmitter(&g_btlfxParticles, arg0, arg1);
+void btlfx_moveEmitterTo(s32 emitter, s32 pos) {
+    if (emitter != 0) {
+        btlfx_moveEmitter(&g_btlfxParticles, emitter, pos);
     }
 }
 
-void btlfx_stopEmitter(Pool6CEntry *arg0) {
-    if (arg0 != NULL) {
-        btlfx_killEmitter(&g_btlfxParticles, arg0);
+void btlfx_stopEmitter(Pool6CEntry *emitter) {
+    if (emitter != NULL) {
+        btlfx_killEmitter(&g_btlfxParticles, emitter);
     }
 }
 
