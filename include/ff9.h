@@ -1432,7 +1432,7 @@ typedef struct EvtObject {
     u8 turnSpeed; /* op 0x99, default 16 */
     u16 idleAnim; /* op 0x52 (runtime: 55) */
     u16 jumpAnim; /* op 0x94 */
-    s32 moveDistSq; /* squared distance to the walk target, 0x7FFFFFFF when done */
+    s32 moveDistSq; /* squared distance to the walk target, EVT_MOVE_DIST_NONE when done */
     union { u32 w; u8 b[4]; } idleAnimSpeeds; /* op 0x86 (runtime: Zidane 14/16/18/20) */
     u16 turnStartDir; /* rotY when the turn started */
     u16 turnStep; /* per-frame turn step */
@@ -1456,6 +1456,7 @@ typedef struct EvtObject {
     u16 jumpStartZ;
     s16 jumpTargetY; /* op 0xE2 */
 } EvtObject;
+#define EVT_MOVE_DIST_NONE 0x7FFFFFFF /* EvtObject.moveDistSq: no walk running */
 #define EVT_TURN_DIRECT_DOWN 0x7FFE /* EvtObject.turnRate: turning to a lower angle without a turn animation, turnStep per frame (evt_execInstr turn, evt_updateObjects) */
 #define EVT_TURN_DIRECT_UP   0x7FFF /* EvtObject.turnRate: the same towards a higher angle */
 /* Object property numbers of the script expression's object variables (evt_popValue -> evt_getObjectProp,
@@ -4251,6 +4252,8 @@ typedef struct {
 #define EVT_OP_BG_LIMITS_ON 0x73 /* fldbg_enableScrollLimits */
 #define EVT_OP_MSG_CHOICE_MASK 0x7C /* u16, u8: msg_setChoiceMask */
 #define EVT_OP_TIMER_RUN 0x7D /* u8: timer_setRunning */
+#define EVT_BATTLE_DARK_BIT 15 /* EVT_OP_BATTLE_EX battle word: GameData.darkBattle */
+#define EVT_BATTLE_ID_MASK 0x7FFF
 #define EVT_OP_BATTLE_EX 0x8C /* u8 swirl, u8 enemy group, u16 battle | 0x8000 dark: GameData.darkBattle, evt_setNextBattle; result 3 */
 #define EVT_OP_TIMER_ENABLE 0x8D /* u8: timer_enable */
 #define EVT_OP_MSG_CLEAR_OTZ 0x8E /* msg_clearWindowOtz */

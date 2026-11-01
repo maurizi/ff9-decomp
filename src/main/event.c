@@ -457,12 +457,12 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
     if (dist < speed * speed || ((actor->moveFlags & EVT_MOVE_APPROACHING) && actor->moveDistSq < dist)) {
         moving = 0;
     }
-    if (actor->moveDistSq < 0x7FFFFFFF && dist < actor->moveDistSq) {
+    if (actor->moveDistSq < EVT_MOVE_DIST_NONE && dist < actor->moveDistSq) {
         actor->moveFlags |= EVT_MOVE_APPROACHING;
     }
     actor->moveDistSq = dist;
     if (moving == 0) {
-        actor->moveDistSq = 0x7FFFFFFF;
+        actor->moveDistSq = EVT_MOVE_DIST_NONE;
         actor->pitch = 0;
         actor->moveFlags &= ~(EVT_MOVE_FACING_SET | EVT_MOVE_APPROACHING);
     }
@@ -1015,7 +1015,7 @@ s32 evt_execInstr(void) {
             bgi_setActorActive(po->modelSlot, 1);
         }
         if (po->kind == EVT_KIND_ACTOR) {
-            po->moveDistSq = 0x7FFFFFFF;
+            po->moveDistSq = EVT_MOVE_DIST_NONE;
             po->pitch = 0;
             po->moveFlags &= ~(EVT_MOVE_FACING_SET | EVT_MOVE_APPROACHING);
         }
@@ -1035,7 +1035,7 @@ s32 evt_execInstr(void) {
         po->pos.vy = po->prevPos.vy = operand1;
         po->pos.vz = po->prevPos.vz = operand2;
         if (po->kind == EVT_KIND_ACTOR) {
-            po->moveDistSq = 0x7FFFFFFF;
+            po->moveDistSq = EVT_MOVE_DIST_NONE;
             po->pitch = 0;
             po->moveFlags &= ~(EVT_MOVE_FACING_SET | EVT_MOVE_APPROACHING);
         }
@@ -1164,7 +1164,7 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_MOVE_RESET:
         actor->animLoops = EVT_ANIM_FOREVER;
-        actor->moveDistSq = 0x7FFFFFFF;
+        actor->moveDistSq = EVT_MOVE_DIST_NONE;
         actor->pitch = 0;
         actor->moveFlags &= ~(EVT_MOVE_FACING_SET | EVT_MOVE_APPROACHING);
         return 0;
@@ -1377,15 +1377,15 @@ s32 evt_execInstr(void) {
         g_swirlVariant = evt_getArg8_inline();
         g_gameState->gameData->enemyGroup = -1;
         operand0 = evt_getArg16_inline();
-        g_gameState->gameData->darkBattle = (operand0 >> 15) & 1;
-        evt_setNextBattle(operand0 & 0x7FFF);
+        g_gameState->gameData->darkBattle = (operand0 >> EVT_BATTLE_DARK_BIT) & 1;
+        evt_setNextBattle(operand0 & EVT_BATTLE_ID_MASK);
         return EVT_UPD_BATTLE;
     case EVT_OP_BATTLE_EX:
         g_swirlVariant = evt_getArg8_inline();
         g_gameState->gameData->enemyGroup = evt_getArg8_inline();
         operand0 = evt_getArg16_inline();
-        g_gameState->gameData->darkBattle = (operand0 >> 15) & 1;
-        evt_setNextBattle(operand0 & 0x7FFF);
+        g_gameState->gameData->darkBattle = (operand0 >> EVT_BATTLE_DARK_BIT) & 1;
+        evt_setNextBattle(operand0 & EVT_BATTLE_ID_MASK);
         return EVT_UPD_BATTLE;
     case EVT_OP_ENCOUNTER_RATE:
         if ((g_evtState->encounterRate = evt_getArg8_inline()) == 0) {
