@@ -226,7 +226,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 wave;
     s32 summonRgb;
     s32 pillarSin;
-    s32 unusedLocal;
+    s32 unused;
     Pool6CEntry *emitter;
     Fx0e30Puff *puff;
 

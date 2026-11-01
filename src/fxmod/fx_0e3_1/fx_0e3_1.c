@@ -353,7 +353,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 kk;
     s32 k2k;
     s32 spinRingScale;
-    s32 unusedQ4;
+    s32 unused;
     s32 discCos;
     s32 x2k;
     s32 flareScale;
@@ -369,7 +369,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 boltAmp;
     s32 spreadRadius;
     s32 ringScale;
-    s32 unusedX20;
+    s32 unused2;
     s32 shakeTint;
     s32 flareFade;
     s32 burstCos;
@@ -386,7 +386,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 rndAng;
     s32 sparkRing;
     s32 waveAng;
-    s32 k4;
+    s32 unused3;
     s32 haloAng;
     s32 quake;
     s32 ringFrame;
@@ -409,7 +409,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 chargeAmp;
     s32 burstAmp;
     s32 pillarWidth;
-    s32 w4;
+    s32 unused4;
     s32 t_s2;
     s32 i;
     s32 boltIdx;

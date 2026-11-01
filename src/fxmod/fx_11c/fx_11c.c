@@ -33,8 +33,8 @@ s32 fx_11c_op80(s32 mode, Fx11cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 s32 fx_11c_op81(s32 mode, Fx11cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Fx11cBurst *o;
-    Fx11cBurst *q;
+    Fx11cBurst *initBurst;
+    Fx11cBurst *burst;
     s32 frame;
     s32 i;
     s32 j;
@@ -49,38 +49,38 @@ s32 fx_11c_op81(s32 mode, Fx11cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos20);
         work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos20);
         work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos20);
-        o = fx_11c_op81Bursts;
-        for (i = 0; i < 5; i++, o++) {
-            o->active10 = 0;
-            o->frame12 = 0;
-            o->startFrame14 = i * 2;
-            o->pos0.vx = work->pos20.vx;
-            o->pos0.vy = work->pos20.vy;
-            o->pos0.vz = work->pos20.vz;
-            o->pos8.vx = work->pos20.vx;
-            o->pos8.vy = work->pos20.vy;
-            o->pos8.vz = work->pos20.vz;
+        initBurst = fx_11c_op81Bursts;
+        for (i = 0; i < 5; i++, initBurst++) {
+            initBurst->active10 = 0;
+            initBurst->frame12 = 0;
+            initBurst->startFrame14 = i * 2;
+            initBurst->pos0.vx = work->pos20.vx;
+            initBurst->pos0.vy = work->pos20.vy;
+            initBurst->pos0.vz = work->pos20.vz;
+            initBurst->pos8.vx = work->pos20.vx;
+            initBurst->pos8.vy = work->pos20.vy;
+            initBurst->pos8.vz = work->pos20.vz;
             if (ex->btlfx_rand() & 1) {
-                o->pos8.vx += ex->btlfx_rand() % 800;
+                initBurst->pos8.vx += ex->btlfx_rand() % 800;
             } else {
-                o->pos8.vx -= ex->btlfx_rand() % 800;
+                initBurst->pos8.vx -= ex->btlfx_rand() % 800;
             }
             if (ex->btlfx_rand() & 1) {
-                o->pos8.vz += ex->btlfx_rand() % 800;
+                initBurst->pos8.vz += ex->btlfx_rand() % 800;
             } else {
-                o->pos8.vz -= ex->btlfx_rand() % 800;
+                initBurst->pos8.vz -= ex->btlfx_rand() % 800;
             }
         }
     } else {
         frame = entry->frame;
-        q = fx_11c_op81Bursts;
-        for (j = 0; j < 5; j++, q++) {
-            if (q->startFrame14 == frame) {
-                work->emit4[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, q->fileId16),
-                                                  (s32)&q->pos0);
-                q->active10 = 1;
-            } else if (q->active10 != 0) {
-                q->frame12++;
+        burst = fx_11c_op81Bursts;
+        for (j = 0; j < 5; j++, burst++) {
+            if (burst->startFrame14 == frame) {
+                work->emit4[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, burst->fileId16),
+                                                  (s32)&burst->pos0);
+                burst->active10 = 1;
+            } else if (burst->active10 != 0) {
+                burst->frame12++;
             }
         }
         return frame >= 0x32;

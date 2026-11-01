@@ -7,11 +7,11 @@ s32 fx_0ff_op80(s32 mode, Fx0ffWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
     s32 i;
     s32 j;
-    s32 r;
-    s32 m;
-    Fx0ffOrbit *o;
-    Fx0ffOrbit *q;
-    Fx0ffOrbit *p;
+    s32 radius;
+    s32 model;
+    Fx0ffOrbit *orbit;
+    Fx0ffOrbit *initOrbit;
+    Fx0ffOrbit *unused;
 
     if (mode == 0) {
         *args = 0xCC;
@@ -26,13 +26,13 @@ s32 fx_0ff_op80(s32 mode, Fx0ffWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale98.vx = 0x8000;
         work->scale98.vy = 0x8000;
         work->scale98.vz = 0x8000;
-        r = ex->btlfx_getUnitRadius(0x100);
-        r = (r >= 0x899) ? 0x898 : r;
-        q = fx_0ff_orbits;
-        for (i = 0; i < 6; i++, q++) {
-            q->radius0 = r;
-            q->angle2 = i * 0x2AA;
-            q->spin4 = i * 0x2AA;
+        radius = ex->btlfx_getUnitRadius(0x100);
+        radius = (radius >= 0x899) ? 0x898 : radius;
+        initOrbit = fx_0ff_orbits;
+        for (i = 0; i < 6; i++, initOrbit++) {
+            initOrbit->radius0 = radius;
+            initOrbit->angle2 = i * 0x2AA;
+            initOrbit->spin4 = i * 0x2AA;
             (work->rot8 + i)->vx = 0;
             (work->rot8 + i)->vy = 0;
             (work->rot8 + i)->vz = 0;
@@ -75,27 +75,27 @@ s32 fx_0ff_op80(s32 mode, Fx0ffWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->fadeOutTimerC0--;
                 }
             }
-            o = fx_0ff_orbits;
-            m = work->modelC4[0];
-            for (j = 0; j < 6; j++, o++) {
+            orbit = fx_0ff_orbits;
+            model = work->modelC4[0];
+            for (j = 0; j < 6; j++, orbit++) {
                 rot.vx = 0;
-                rot.vy = o->angle2;
+                rot.vy = orbit->angle2;
                 rot.vz = 0;
-                ex->btlfx_pointAhead((s16 *)&work->posAC, (s16 *)&rot, o->radius0, (s16 *)&pos);
+                ex->btlfx_pointAhead((s16 *)&work->posAC, (s16 *)&rot, orbit->radius0, (s16 *)&pos);
                 (work->pos38 + j)->vx = pos.vx;
                 (work->pos38 + j)->vy = pos.vy;
                 (work->pos38 + j)->vz = pos.vz;
-                ex->Hi_DrawEffModel(&work->rot8[j], &work->pos38[j], (s32)&work->scale98, m);
+                ex->Hi_DrawEffModel(&work->rot8[j], &work->pos38[j], (s32)&work->scale98, model);
                 if (work->fadeInTimerBC >= 0 || work->fadeOutTimerC0 >= 0) {
-                    ex->Hi_ModifyEffModelAbr(m, 1);
-                    ex->Hi_ModifyEffModelRGB(m, work->rgbA8, work->rgbA8, work->rgbA8);
+                    ex->Hi_ModifyEffModelAbr(model, 1);
+                    ex->Hi_ModifyEffModelRGB(model, work->rgbA8, work->rgbA8, work->rgbA8);
                 }
-                m++;
-                if (m > work->modelC4[2]) {
-                    m = work->modelC4[0];
+                model++;
+                if (model > work->modelC4[2]) {
+                    model = work->modelC4[0];
                 }
-                o->angle2 += 0x55;
-                o->spin4 += 0x200;
+                orbit->angle2 += 0x55;
+                orbit->spin4 += 0x200;
                 work->rot8[j].vy += 0x80;
             }
         }

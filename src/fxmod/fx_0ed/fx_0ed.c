@@ -112,7 +112,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
     s32 ratio;
     s32 phase;
-    s32 unusedK;
+    s32 unused;
     s32 i;
     Pool6CEntry *emitter;
     SVECTOR *sv;

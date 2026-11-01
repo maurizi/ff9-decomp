@@ -6,7 +6,7 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
     s32 i;
     s32 alpha;
-    s32 unusedD;
+    s32 unused;
 
     if (mode == 0) {
         *args = 0x18;
