@@ -159,13 +159,13 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     }
 }
 
-static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 spoke, s16 *out) {
+static void fx_18b_op80GridVertex(s32 radius, s32 ring, s32 ang, s32 spoke, s16 *out) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_18b_env);
-    s32 s = (ex->math_sin((i << 11) >> 4) * fx_18b_waveAmp) >> 12;
+    s32 wave = (ex->math_sin((ring << 11) >> 4) * fx_18b_waveAmp) >> 12;
 
-    r += (s * ex->math_sin(fx_18b_wavePhase + (i << 10))) >> 12;
-    out[0] = (ex->math_cos(ang) * r) >> 12;
-    out[1] = (ex->math_sin(ang) * r) >> 12;
+    radius += (wave * ex->math_sin(fx_18b_wavePhase + (ring << 10))) >> 12;
+    out[0] = (ex->math_cos(ang) * radius) >> 12;
+    out[1] = (ex->math_sin(ang) * radius) >> 12;
 }
 
 s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {

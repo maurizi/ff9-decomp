@@ -2,7 +2,7 @@
 
 s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR dropPos;
     s32 frame;
 
     if (mode == 0) {
@@ -26,10 +26,10 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame < 6) {
-            ex->btlfx_lerpVec((s16 *)&work->pos10, (s16 *)&work->pos8, frame << 10, (s16 *)&v);
-            work->pos20.vx = v.vx;
-            work->pos20.vy = v.vy;
-            work->pos20.vz = v.vz;
+            ex->btlfx_lerpVec((s16 *)&work->pos10, (s16 *)&work->pos8, frame << 10, (s16 *)&dropPos);
+            work->pos20.vx = dropPos.vx;
+            work->pos20.vy = dropPos.vy;
+            work->pos20.vz = dropPos.vz;
         }
         ex->Hi_SetEffModelSlice(work->model40, work->pos20.vy);
         ex->Hi_DrawSliceEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model40);
