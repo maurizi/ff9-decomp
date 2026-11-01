@@ -18,6 +18,28 @@ for each one. Sound-effect ids are only named where their meaning is known; othe
    `akao_streamStart`/`Stop`/`PlayOneShot`/`PlayResident`. 0x98/0x99 and 0xD8-0xDA are combined commands that
    `akao_command` expands into two handler calls.
 
+## Sound command word fields
+The event script's sound ops (`EVT_OP_SOUND`, `EVT_OP_SOUND_ARG*` in main event.c) read the 16-bit word from the
+script and pass it unchanged, so script data uses the same encoding. The handlers switch on three fields:
+
+| field | bits | macros | values |
+|---|---|---|---|
+| type | `(w >> 12) & 3` | `SND_TYPE_*` | 0 music (`DB_MUSIC`), 1 SE (`DB_SE`), 2 stream (key 0x18xxxx, field only), 3 bank (`DB_SOUND_BANK`) |
+| command | `(w >> 8) & 0xF` | `SND_CMD_*` | 0 play, 1 stop, 2 set, 3 fade, 4 fade from, 5 set all, 6 fade all, 7 load, 8 suspend, 9 resume, 10 set condition, 11 fade all from, 12 get state |
+| parameter | `w & 0x3F` | `SND_PARAM_*` | 1 volume, 2 tempo, 3 pitch, 4 tempo+pitch, 5 pan, 6 condition, 7 play count, 9 all resident slots, 10 movie volume |
+
+Evidence is the akao_api call each case makes: set/fade/fade-from call `akao_set*`/`akao_fade*`/`akao_fade*From`
+with (frames, target) or (frames, from, to); parameter 3 on an SE goes to `akao_sendCmdA4`/`A5`/`AC`/`AD`
+(`AKAO_CMD_*_SE_PITCH`), parameter 5 to `akao_sendCmdA2`/`A3`/`AA`/`AB` (`AKAO_CMD_*_SE_PAN`). "All" on an SE
+means every SE channel (no id lookup); on music it is handle 0, which the driver applies to the main song
+whatever its id (akao_cmdFadeMusicVolume). Suspend/resume save the song (field: also its bank and file sectors)
+or the resident SE slot, and resume only replays it on the same field or world. Get state steps the pending
+bank/song load and returns non-zero until it is done (6: the music is still fading out). Bit 7
+(`SND_RESIDENT`) plays the SE from a resident slot (field only), bit 6 (`SND_SLOT1`) picks slot 1 for play,
+suspend and resume; other commands find the slot by id. Parameter 8 (always a no-op returning 0) and the
+field stream's parameter 12 (stores `FieldScene.unk5F`) are left raw. `btl_soundCmd` (ovl_0b) decodes the same
+fields; its switches are the ovl_0b owner's.
+
 ## Sequence opcodes
 `AKAO_OP_*` / `AKAO_OPFE_*` cover only the sequence opcodes whose handler in `g_akaoOps` / `g_akaoOpsFE` has a name
 (end, program, octave, tempo, jump, conditional jump, call, return). The others stay literals until their

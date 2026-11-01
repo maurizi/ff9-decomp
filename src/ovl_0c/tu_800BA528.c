@@ -222,7 +222,7 @@ void wm_updateMap(void) {
         dx = (g_worldPlayer->pos.vx >> 8) - (g_worldAmbientSeX[i] >> 8);
         dz = (g_worldPlayer->pos.vz >> 8) - (g_worldAmbientSeZ[i] >> 8);
         g_worldAmbientSeDist[i] = SquareRoot0(dx * dx + dz * dz);
-        if (g_worldFormFlags[5] != 0 && i == 0) {
+        if (g_worldFormFlags[WM_FORM_CLAY] != 0 && i == 0) {
             g_worldAmbientSeDist[0] = 100;
         }
         v = g_worldAmbientSeDist[i];
@@ -304,71 +304,72 @@ void wm_applyStoryForms(void) {
     if (i >= 0 && g_worldDataSet == WM_DATASET_DISC1) {
         for (n = 0; n < 7; n++) {
             switch (g_worldFormStatusTable[n][i]) {
-            case 1:
+            case WM_FORM_STATUS(WM_FORM_SGATE):
                 WM_CELL(18, 14) |= 0x80;
                 WM_CELL(17, 12) |= 0x80;
-                g_worldFormFlags[0] = 1;
+                g_worldFormFlags[WM_FORM_SGATE] = 1;
                 break;
-            case 6:
+            case WM_FORM_STATUS(WM_FORM_CLAY):
                 WM_CELL(13, 12) |= 0x80;
                 WM_CELL(14, 12) |= 0x80;
-                g_worldFormFlags[5] = 1;
+                g_worldFormFlags[WM_FORM_CLAY] = 1;
                 break;
-            case 5:
+            case WM_FORM_STATUS(WM_FORM_LIND):
                 WM_CELL(13, 16) |= 0x80;
                 WM_CELL(13, 17) |= 0x80;
                 WM_CELL(14, 16) |= 0x80;
                 WM_CELL(14, 17) |= 0x80;
-                g_worldFormFlags[4] = 1;
+                g_worldFormFlags[WM_FORM_LIND] = 1;
                 break;
-            case 9:
+            case WM_FORM_STATUS(WM_FORM_KUROMA):
                 WM_CELL(14, 6) |= 0x80;
                 WM_CELL(21, 10) |= 0x80;
                 WM_CELL(22, 14) |= 0x80;
-                g_worldFormFlags[8] = 1;
+                g_worldFormFlags[WM_FORM_KUROMA] = 1;
                 break;
-            case 3:
+            case WM_FORM_STATUS(WM_FORM_ALEX):
                 WM_CELL(19, 10) |= 0x80;
                 WM_CELL(19, 11) |= 0x80;
                 WM_CELL(20, 10) |= 0x80;
                 WM_CELL(20, 11) |= 0x80;
-                g_worldFormFlags[2] = 1;
+                g_worldFormFlags[WM_FORM_ALEX] = 1;
                 break;
-            case 11:
+            case WM_FORM_STATUS(WM_FORM_HOKORA_MIZU):
                 WM_CELL(3, 9) |= 0x80;
                 WM_CELL(9, 1) |= 0x80;
-                g_worldFormFlags[10] = 1;
+                g_worldFormFlags[WM_FORM_HOKORA_MIZU] = 1;
                 break;
-            case 4:
+            case WM_FORM_STATUS(WM_FORM_HOKORA_HI):
                 WM_CELL(7, 1) |= 0x80;
                 WM_CELL(8, 1) |= 0x80;
                 WM_CELL(14, 15) |= 0x80;
-                g_worldFormFlags[3] = 1;
+                g_worldFormFlags[WM_FORM_HOKORA_HI] = 1;
                 break;
             }
             /* the original second jump table is 8-aligned */
             __asm__(".rdata\n\t.word 0\n\t.text");
+            /* the debug print switches on the status value but compares it with the form indices */
             if (g_worldMapDebugFlags & WM_DEBUG_FORM) {
                 switch (g_worldFormStatusTable[n][i]) {
-                case 0:
+                case WM_FORM_SGATE:
                     printf("BGI Form : SGATE\n");
                     break;
-                case 5:
+                case WM_FORM_CLAY:
                     printf("BGI Form : CLAY\n");
                     break;
-                case 4:
+                case WM_FORM_LIND:
                     printf("BGI Form : LIND\n");
                     break;
-                case 8:
+                case WM_FORM_KUROMA:
                     printf("BGI Form : KUROMA\n");
                     break;
-                case 2:
+                case WM_FORM_ALEX:
                     printf("BGI Form : ALEX\n");
                     break;
-                case 10:
+                case WM_FORM_HOKORA_MIZU:
                     printf("BGI Form : HOKORA(MIZU)\n");
                     break;
-                case 3:
+                case WM_FORM_HOKORA_HI:
                     printf("BGI Form : HOKORA(HI)\n");
                     break;
                 }
@@ -381,14 +382,14 @@ void wm_applyStoryForms(void) {
         WM_CELL(16, 1) |= 0x80;
         WM_CELL(13, 4) |= 0x80;
         WM_CELL(14, 5) |= 0x80;
-        g_worldFormFlags[12] = 1;
+        g_worldFormFlags[WM_FORM_MOG_NET] = 1;
     }
     if (D_8007AF55 & 0x40) {
         printf("- Replace Chocobo Heaven -\n");
         WM_CELL(0, 0) |= 0x80;
         WM_CELL(16, 14) |= 0x80;
         WM_CELL(9, 17) |= 0x80;
-        g_worldFormFlags[7] = 1;
+        g_worldFormFlags[WM_FORM_CHOCOBO_HEAVEN] = 1;
     }
 }
 
