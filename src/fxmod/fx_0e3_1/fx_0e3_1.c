@@ -11,7 +11,7 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     s32 a;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    pt = bolt->unk4;
+    pt = bolt->pts4;
     bolt->count2 = 0xC;
     bolt->lastSlot0 = 0xC;
     bolt->head1 = 0;
@@ -41,7 +41,7 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     s32 a;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    pt = bolt->unk4;
+    pt = bolt->pts4;
     bolt->count2 = 4;
     bolt->lastSlot0 = 4;
     bolt->head1 = 0;
@@ -71,7 +71,7 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     s32 a;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    pt = bolt->unk4;
+    pt = bolt->pts4;
     bolt->count2 = 56;
     bolt->lastSlot0 = 56;
     bolt->head1 = 0;
@@ -93,7 +93,7 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 arg3) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
-    SVECTOR *a = src->unk4;
+    SVECTOR *a = src->pts4;
 
     a += ex->btlfx_rand() % 56;
 
@@ -112,7 +112,7 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     s32 a;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    pt = bolt->unk4;
+    pt = bolt->pts4;
     bolt->count2 = 12;
     bolt->lastSlot0 = 12;
     bolt->head1 = 0;

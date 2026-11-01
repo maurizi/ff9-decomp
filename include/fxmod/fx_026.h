@@ -130,7 +130,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    Fx026Pt unk4[32];
+    Fx026Pt pts4[32]; /* ring points (btlfx_pushTrailPoint) */
 } Fx026Strip32; /* 0x104 */
 
 typedef struct {
@@ -138,7 +138,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    Fx026Pt unk4[40];
+    Fx026Pt pts4[40]; /* ring points (btlfx_pushTrailPoint) */
 } Fx026Strip40; /* 0x144 */
 
 extern Fx026Strip32 fx_026_strips0[];

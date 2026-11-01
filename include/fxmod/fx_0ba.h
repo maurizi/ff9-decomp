@@ -11,8 +11,8 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[1];
+    u8 pad3;
+    SVECTOR pts4[1]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0baStrip;
 
 typedef struct {
@@ -32,8 +32,8 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[17];
+    u8 pad3;
+    SVECTOR pts4[17]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0baTrail; /* 0x8C */
 
 typedef struct {
@@ -60,8 +60,8 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[4];
+    u8 pad3;
+    SVECTOR pts4[4]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0baStrip4; /* 0x24 */
 
 extern s32 fx_0ba_preOrb; /* 1 from the data until the orb appears (fx_0ba_op80 frame 0x3C clears it): bolts spawn every
@@ -164,7 +164,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR unk4[1];
+    SVECTOR pts4[1]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0baPTrail;
 
 typedef struct {
@@ -182,7 +182,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR unk4[17];
+    SVECTOR pts4[17]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0baPTrail17; /* 0x8C */
 
 typedef struct {
@@ -213,7 +213,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR unk4[13];
+    SVECTOR pts4[13]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0baPTrail13; /* 0x6C */
 
 #define FX0BAP_W(v, i) (((s32 *)&(v))[i])

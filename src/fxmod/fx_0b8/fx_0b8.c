@@ -451,7 +451,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     b->lastSlot0 = b->count2 = 8;
                     b->head1 = 0;
                     dy = ((work->pos13C.vz + 0x1000) << 12) / 9;
-                    for (d = b->unk4, y_2 = -0x1000 << 12, j = 0; j < 9; d++, j++) {
+                    for (d = b->pts4, y_2 = -0x1000 << 12, j = 0; j < 9; d++, j++) {
                         d->vx = b->x4C[j];
                         d->vy = b->y70[j];
                         d->vz = y_2 >> 12;

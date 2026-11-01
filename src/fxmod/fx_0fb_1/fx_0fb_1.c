@@ -897,7 +897,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                                     -1, h, ex->math_cos(t >> 2), 1, (u8 *)&fx_0fb_1_strips[m], 1);
             }
             {
-                SVECTOR *pp = fx_0fb_1_strips[m].unk4;
+                SVECTOR *pp = fx_0fb_1_strips[m].pts4;
 
                 for (k = 0; k < 0x40; k++) {
                     pp->vy -= 0x40;

@@ -12,7 +12,7 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
+    u8 pad3;
     SVECTOR pts4[15];
 } Fx085Strip; /* 0x7C */
 extern u16 fx_085_strip15Blocks[];
@@ -32,7 +32,7 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
+    u8 pad3;
     SVECTOR pts4[3];
     u8 pad1C[0x1C];
 } Fx085Branch; /* 0x38 */

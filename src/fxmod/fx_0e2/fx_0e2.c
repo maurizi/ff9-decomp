@@ -14,7 +14,7 @@ void fx_0e2_stripFromTrackBlend(void *trackA, void *trackB, s32 t, Fx0e2Trail *t
     s32 r;
 
     n = (size - 4) / 8;
-    pt = trail->unk4;
+    pt = trail->pts4;
     trail->lastSlot0 = trail->count2 = n - 1;
     trail->head1 = 0;
     r = t;
@@ -56,7 +56,7 @@ void fx_0e2_stripFromTrack(void *track, Fx0e2Trail *trail, s32 size, s32 base, s
     s32 i;
 
     n = (size - 4) / 8;
-    pt = trail->unk4;
+    pt = trail->pts4;
     trail->lastSlot0 = trail->count2 = n - 1;
     trail->head1 = 0;
     for (i = 0; i < n; i++, pt++) {
@@ -95,7 +95,7 @@ void fx_0e2_stripFromPosPath(void *track, Fx0e2Trail *trail, s32 size, s32 base,
     s32 i;
 
     n = (size - 4) / 8;
-    pt = trail->unk4;
+    pt = trail->pts4;
     trail->lastSlot0 = trail->count2 = n - 1;
     trail->head1 = 0;
     if (count < n) {
@@ -136,7 +136,7 @@ void fx_0e2_stripFromTrackBlendRot(void *trackA, void *trackB, Fx0e2Trail *trail
     s32 k;
 
     n = (size - 4) / 8;
-    pt = trail->unk4;
+    pt = trail->pts4;
     trail->lastSlot0 = trail->count2 = n - 1;
     trail->head1 = 0;
     if (count < n) {

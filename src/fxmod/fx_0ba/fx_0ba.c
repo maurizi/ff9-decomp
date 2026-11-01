@@ -305,7 +305,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTO
     s32 h;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    v = buf->unk4;
+    v = buf->pts4;
     buf->lastSlot0 = buf->count2 = 24;
     buf->head1 = 0;
     for (i = 0; i < 25; i++, v++) {
@@ -806,13 +806,13 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                     }
                 }
                 ta = &fx_0ba_ribbons[k * 2];
-                pt = ta->unk4;
+                pt = ta->pts4;
                 ta->lastSlot0 = ta->count2 = 0x10;
                 ta->head1 = 0;
                 tb = &fx_0ba_ribbons[k * 2 + 1];
                 tb->lastSlot0 = tb->count2 = 0x10;
                 tb->head1 = 0;
-                pb = tb->unk4;
+                pb = tb->pts4;
                 for (j = n = 0; j < 34; j++, n++) {
                     if (j == 17) {
                         pt = pb;
@@ -843,7 +843,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 tc = &fx_0ba_ribbons13[k2];
                 tc->lastSlot0 = tc->count2 = 0xC;
                 tc->head1 = 0;
-                pt2 = tc->unk4;
+                pt2 = tc->pts4;
                 for (j2 = 0; j2 < 13; j2++) {
                     i2 = arr70[k2] - j2;
                     if (i2 < 0) {
@@ -924,7 +924,7 @@ static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0ba
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
     n = (size - 4) / 8;
-    v = buf->unk4;
+    v = buf->pts4;
     buf->lastSlot0 = buf->count2 = n - 1;
     buf->head1 = 0;
     for (i = 0; i < n; i++, v++) {
@@ -952,7 +952,7 @@ static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 a2,
     BtlfxExports *ex;
     SVECTOR to;
 
-    v = path->unk4;
+    v = path->pts4;
     v += i;
     ex = BTLFX_EXPORTS(fx_0ba_env);
     ex->btlfx_lerpVec((s16 *)(v + 1), (s16 *)v, 0x4000, (s16 *)&to);
@@ -1310,7 +1310,7 @@ static void fxm_arcTrailReset(void) {
 
 static void fxm_arcTrailSpawn(Unk80100C78Entry *entry, SVECTOR *center, s32 r, SVECTOR *from, SVECTOR *to) {
     Fx0baTrail *trail = &fx_0ba_arcTrails[fx_0ba_arcTrailNext];
-    SVECTOR *p = &trail->unk4[16];
+    SVECTOR *p = &trail->pts4[16];
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0ba_env);
     SVECTOR v;
     Fx0baPart *part;

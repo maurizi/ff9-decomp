@@ -11212,3 +11212,12 @@ R37 world map (ovl_0c.h; evidence R37 in docs/runtime-findings.md): WM_WEATHER_C
   CHOCOBO_SAND 14, FOREST_LEAVES 16, AIRSHIP_SAND 19, WATERFALL_MIST 20, SAND_DUST 27 (wm_spawnEffect,
   wm_drawEffects, wm_updateEffects and the spawn sites); WM_BLOCKFX_WATERFALLS 5, WATER_SHRINE 10 (wm_updateBlockFx);
   WM_CAM_HOLD/LOWER/RAISE 0-2 (wm_cameraFollow dir). WM_EVT_BATTLE/FIELD/WORLD now alias EVT_UPD_*.
+# ===== R38 fxmod =====
+# Round 38: the remaining unkXX members, compare literals and placeholders in the effect modules. Evidence [code];
+# the reason sits next to the member in include/fxmod/fx_XXX.h.
+
+## Batch 1: trail ring headers (btlfx_pushTrailPoint / btlfx_emitTrail* never read byte 3; points at +4)
+fx_003 fx_005 fx_018 fx_042 fx_049 fx_0ba fx_0d7 fx_0d8 fx_0d9 fx_0df fx_0e0 fx_0e2 fx_0e3_0 fx_0e3_1 fx_0e6
+  fx_085 fx_07d fx_101 fx_134 (ring structs): unk3 -> pad3
+fx_003 fx_005 fx_018 fx_026 fx_042 fx_049 fx_062 fx_063 fx_0b8 fx_0ba fx_0d7 fx_0d8 fx_0d9 fx_0df fx_0e0 fx_0e2
+  fx_0e3_0 fx_0e3_1 fx_0e6 fx_0fb_1 (ring structs): unk4[] -> pts4[] (ring points; SVECTOR pad = width * 2)

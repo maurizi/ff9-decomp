@@ -90,7 +90,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR unk4[9]; /* trail points */
+    SVECTOR pts4[9]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
     s32 x4C[9]; /* x */
     s32 y70[9]; /* y */
     s32 dx94[9]; /* x speed */

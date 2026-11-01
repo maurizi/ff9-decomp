@@ -90,7 +90,7 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVEC
     s32 a;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    pt = bolt->unk4;
+    pt = bolt->pts4;
     bolt->count2 = 0xC;
     bolt->lastSlot0 = 0xC;
     bolt->head1 = 0;
@@ -120,7 +120,7 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *
     s32 a;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    pt = bolt->unk4;
+    pt = bolt->pts4;
     bolt->count2 = 0x30;
     bolt->lastSlot0 = 0x30;
     bolt->head1 = 0;

@@ -105,8 +105,8 @@ typedef struct {
 } Fx0fb1Op80Work; /* 0xE8 */
 
 typedef struct {
-    u8 pad0[4];
-    SVECTOR unk4[0x40];
+    u8 pad0[4]; /* ring header (lastSlot0, head1, count2; btlfx_drawTrail) */
+    SVECTOR pts4[0x40]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
     u8 pad204[8];
 } Fx0fb1Ring; /* 0x20C */
 

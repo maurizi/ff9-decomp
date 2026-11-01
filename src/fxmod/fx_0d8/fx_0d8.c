@@ -11,7 +11,7 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d8Strip *strip, s3
     s32 s;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    p = strip->unk4;
+    p = strip->pts4;
     strip->count2 = 0xF;
     strip->lastSlot0 = 0xF;
     strip->head1 = 0;
@@ -47,7 +47,7 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32
     s32 s;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    p = strip->unk4;
+    p = strip->pts4;
     strip->count2 = 3;
     strip->lastSlot0 = 3;
     strip->head1 = 0;
@@ -76,7 +76,7 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32
 static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
                    s32 kind) {
     BtlfxExports *ex;
-    SVECTOR *p = strip->unk4;
+    SVECTOR *p = strip->pts4;
     SVECTOR v;
 
     p += i;
