@@ -70,11 +70,11 @@ extern Fx018Strip fx_018_strips[];
 extern Fx018Branch fx_018_branches[];
 extern s32 fx_018_fastBolts; /* faster bolts */
 
-static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx018Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
+static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx018Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 ampFrom, s32 ampTo,
                    s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind);
 static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx018Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
                    s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind);
-static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx018Strip *strip, Fx018Strip *out, s32 *tbl, s32 i, s32 fade, s32 lineWidth,
+static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx018Strip *strip, Fx018Strip *out, s32 *tbl, s32 branchAt, s32 fade, s32 lineWidth,
                    s32 kind);
 static s32 fxm_jaggedStripTask(s32 mode, Fx018Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n);

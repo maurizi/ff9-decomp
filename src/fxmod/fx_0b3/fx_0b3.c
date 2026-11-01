@@ -61,32 +61,32 @@ static s32 fxm_keyGetValue(Fx0b3Track *track, s32 t) {
 }
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
-    s32 m = x % w;
+    s32 wrapW = x % w;
     Unk800F78A4 *env = fx_0b3_env;
-    u32 *p = (u32 *)env->prim;
+    u32 *move = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 n;
-    RECT r2;
-    RECT r;
+    s32 restW;
+    RECT rectRest;
+    RECT rectWrap;
 
-    env->prim = (u8 *)(p + 12);
-    n = w - m;
-    if (m != 0) {
-        r.x = sx;
-        r.y = sy;
-        r.w = m;
-        r.h = h;
-        ex->SetDrawMove(p, &r, dx + n, dy);
-        addPrim(env->ot + OT_LAST, p);
+    env->prim = (u8 *)(move + 12);
+    restW = w - wrapW;
+    if (wrapW != 0) {
+        rectWrap.x = sx;
+        rectWrap.y = sy;
+        rectWrap.w = wrapW;
+        rectWrap.h = h;
+        ex->SetDrawMove(move, &rectWrap, dx + restW, dy);
+        addPrim(env->ot + OT_LAST, move);
     }
-    p += 6;
-    if (n != 0) {
-        r2.x = sx + m;
-        r2.y = sy;
-        r2.w = n;
-        r2.h = h;
-        ex->SetDrawMove(p, &r2, dx, dy);
-        addPrim(env->ot + OT_LAST, p);
+    move += 6;
+    if (restW != 0) {
+        rectRest.x = sx + wrapW;
+        rectRest.y = sy;
+        rectRest.w = restW;
+        rectRest.h = h;
+        ex->SetDrawMove(move, &rectRest, dx, dy);
+        addPrim(env->ot + OT_LAST, move);
     }
 }
 

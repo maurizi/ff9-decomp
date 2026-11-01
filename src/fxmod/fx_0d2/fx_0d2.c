@@ -877,10 +877,10 @@ static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
 
 static void fxm_camChanReset(void) {
     s32 i;
-    s32 m = FX_0D2_KEY_FREE;
+    s32 freeMark = FX_0D2_KEY_FREE;
 
     for (i = 63; i >= 0; i--) {
-        fx_0d2_camChans[i].left6 = m;
+        fx_0d2_camChans[i].left6 = freeMark;
     }
     for (i = 3; i >= 0; i--) {
         fx_0d2_camChanFrame[i] = 0;
@@ -889,10 +889,10 @@ static void fxm_camChanReset(void) {
 
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     s32 i;
-    s32 c;
+    s32 count;
 
     data++;
-    c = *data;
+    count = *data;
     for (i = 0; i < 64; i++) {
         if (fx_0d2_camChans[i].left6 == FX_0D2_KEY_FREE) {
             fx_0d2_camChans[i].left6 = 0;
@@ -900,7 +900,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
             fx_0d2_camChans[i].start4 = start;
             fx_0d2_camChans[i].dstA = dst;
             fx_0d2_camChans[i].keyC = 0;
-            fx_0d2_camChans[i].keyCountE = c;
+            fx_0d2_camChans[i].keyCountE = count;
             fx_0d2_camChans[i].chan8 = ch;
             return;
         }
@@ -911,7 +911,7 @@ static void fxm_camChanUpdate(s32 ch) {
     Unk800F78A4 *env = fx_0d2_env;
     s32 i;
     s32 k;
-    s32 d;
+    s32 dstSlot;
 
     for (i = 0; i < 64; i++) {
         if (fx_0d2_camChans[i].chan8 == ch) {
@@ -922,11 +922,11 @@ static void fxm_camChanUpdate(s32 ch) {
             if (fx_0d2_camChans[i].left6 > 0) {
                 fx_0d2_camChans[i].left6--;
                 for (k = 0; k < 3; k++) {
-                    d = ((fx_0d2_camChans[i].dstA >> (k * 4)) & 0xF) - 1;
-                    if (d >= 0) {
-                        ((SVECTOR *)env->camera)[d].vx = fx_0d2_camChans[i].data0[0];
-                        ((SVECTOR *)env->camera)[d].vy = fx_0d2_camChans[i].data0[1];
-                        ((SVECTOR *)env->camera)[d].vz = fx_0d2_camChans[i].data0[2];
+                    dstSlot = ((fx_0d2_camChans[i].dstA >> (k * 4)) & 0xF) - 1;
+                    if (dstSlot >= 0) {
+                        ((SVECTOR *)env->camera)[dstSlot].vx = fx_0d2_camChans[i].data0[0];
+                        ((SVECTOR *)env->camera)[dstSlot].vy = fx_0d2_camChans[i].data0[1];
+                        ((SVECTOR *)env->camera)[dstSlot].vz = fx_0d2_camChans[i].data0[2];
                         if (fx_0d2_camChans[i].keyC < fx_0d2_camChans[i].keyCountE) {
                             fx_0d2_camChans[i].data0 += 3;
                             fx_0d2_camChans[i].keyC++;

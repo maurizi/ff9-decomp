@@ -2,12 +2,12 @@
 
 static void fxm_camKeyReset(void) {
     s32 i;
-    s32 m;
+    s32 freeMark;
 
     fx_0b1_camKeyFrame = 0;
-    m = -1;
+    freeMark = -1;
     for (i = 15; i >= 0; i--) {
-        fx_0b1_camKeys[i].framesLeft4 = m;
+        fx_0b1_camKeys[i].framesLeft4 = freeMark;
     }
 }
 
@@ -32,10 +32,10 @@ static void fxm_camKeyUpdate(void) {
     Unk800F78A4 *env = fx_0b1_env;
     s32 frame = fx_0b1_camKeyFrame;
     s32 k;
-    s32 d;
-    s32 s;
+    s32 dstSlot;
+    s32 srcSlot;
     s32 x, y, z;
-    s32 j;
+    s32 extIdx;
 
     for (i = 0; i < 16; i++) {
         if (fx_0b1_camKeys[i].framesLeft4 == 0 && fx_0b1_camKeys[i].start0 == frame) {
@@ -45,37 +45,37 @@ static void fxm_camKeyUpdate(void) {
         if (fx_0b1_camKeys[i].framesLeft4 > 0) {
             fx_0b1_camKeys[i].framesLeft4--;
             for (k = 0; k < 3; k++) {
-                d = ((fx_0b1_camKeys[i].dst8 >> (k * 4)) & 0xF) - 1;
-                s = ((fx_0b1_camKeys[i].srcC >> (k * 4)) & 0xF) - 1;
-                if (d >= 0) {
+                dstSlot = ((fx_0b1_camKeys[i].dst8 >> (k * 4)) & 0xF) - 1;
+                srcSlot = ((fx_0b1_camKeys[i].srcC >> (k * 4)) & 0xF) - 1;
+                if (dstSlot >= 0) {
                     x = *fx_0b1_camKeys[i].data10;
                     fx_0b1_camKeys[i].data10++;
                     y = *fx_0b1_camKeys[i].data10;
                     fx_0b1_camKeys[i].data10++;
                     z = *fx_0b1_camKeys[i].data10;
                     fx_0b1_camKeys[i].data10++;
-                    if (s >= 0) {
+                    if (srcSlot >= 0) {
                         /* each branch adds its own source; jump2's cross-jumping merges the identical tails */
-                        if (s >= 10) {
-                            j = s - 10;
-                            x += ext[j].vx;
-                            y += ext[j].vy;
-                            z += ext[j].vz;
+                        if (srcSlot >= 10) {
+                            extIdx = srcSlot - 10;
+                            x += ext[extIdx].vx;
+                            y += ext[extIdx].vy;
+                            z += ext[extIdx].vz;
                         } else {
-                            x += ((SVECTOR *)env->camera)[s].vx;
-                            y += ((SVECTOR *)env->camera)[s].vy;
-                            z += ((SVECTOR *)env->camera)[s].vz;
+                            x += ((SVECTOR *)env->camera)[srcSlot].vx;
+                            y += ((SVECTOR *)env->camera)[srcSlot].vy;
+                            z += ((SVECTOR *)env->camera)[srcSlot].vz;
                         }
                     }
-                    if (d >= 10) {
-                        j = d - 10;
-                        ext[j].vx = x;
-                        ext[j].vy = y;
-                        ext[j].vz = z;
+                    if (dstSlot >= 10) {
+                        extIdx = dstSlot - 10;
+                        ext[extIdx].vx = x;
+                        ext[extIdx].vy = y;
+                        ext[extIdx].vz = z;
                     } else {
-                        ((SVECTOR *)env->camera)[d].vx = x;
-                        ((SVECTOR *)env->camera)[d].vy = y;
-                        ((SVECTOR *)env->camera)[d].vz = z;
+                        ((SVECTOR *)env->camera)[dstSlot].vx = x;
+                        ((SVECTOR *)env->camera)[dstSlot].vy = y;
+                        ((SVECTOR *)env->camera)[dstSlot].vz = z;
                     }
                 }
             }
@@ -86,21 +86,21 @@ static void fxm_camKeyUpdate(void) {
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0b1_env);
-    s32 k = 0x20000000 / (n * n);
-    s32 r = 0;
+    s32 invSq = 0x20000000 / (n * n);
+    s32 ratio = 0;
 
     switch (curve) {
     case 0:
-        r = 0x1000 - (((0x10000000 / n) * t) >> 16);
+        ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
     case 1:
-        r = (k * (n - t) * (n - t)) >> 17;
+        ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
-        r = 0x1000 - ((k * t * t) >> 17);
+        ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
-    return ex->btlfx_lerp(from, to, r);
+    return ex->btlfx_lerp(from, to, ratio);
 }
 
 s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {

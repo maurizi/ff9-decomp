@@ -49,7 +49,7 @@ typedef struct {
 extern BtlModelBuf fx_086_effModels[];
 extern SVECTOR fx_086_streakPts[];
 extern SVECTOR fx_086_spritePos[64];
-static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 bright, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang);
 
 #endif

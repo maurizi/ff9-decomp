@@ -87,50 +87,50 @@ void fxm_updateShatterPieces(void) {
     }
 }
 
-static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 bright, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_179_env);
-    Fx179Rgbc c0;
-    Fx179Rgbc c1;
-    Fx179Rgbc c2;
+    Fx179Rgbc colFlat;
+    Fx179Rgbc colLit;
+    Fx179Rgbc colDark;
     MATRIX m;
-    SVECTOR vv[4];
-    s32 z;
+    SVECTOR quad[4];
+    s32 otz;
     POLY_GT4 *gt4;
     POLY_FT4 *ft4;
-    s32 k;
+    s32 seg;
     s32 j;
     s32 row;
-    s32 h;
+    s32 rowY;
     s32 y0;
     s32 y1;
-    s32 s0;
-    s32 s1;
-    s32 ra;
-    s32 rb;
-    s32 a;
+    s32 bulge0;
+    s32 bulge1;
+    s32 rad0;
+    s32 rad1;
+    s32 ang1;
     s32 ft;
-    s32 t;
+    s32 tile;
     s32 u0;
     s32 u1;
     s32 v0;
     s32 v1;
-    s32 jn;
-    s32 kn;
+    s32 nextJ;
+    s32 nextSeg;
 
     gte_SetRotMatrix(fx_179_env->viewMatrix);
     gte_SetTransMatrix(fx_179_env->viewMatrix);
     gte_ldv0(pos);
     gt4 = (POLY_GT4 *)fx_179_env->prim;
-    *(s32 *)&c2 = 0;
+    *(s32 *)&colDark = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
     fx_179_env->prim = (u8 *)(ft4 + 14);
-    c0.r = c0.g = c0.b = c;
-    c1.r = c1.g = c1.b = c;
-    c0.code = abr != 0xFF ? 0x2E : 0x2C;
-    c2.code = abr != 0xFF ? 0x3E : 0x3C;
+    colFlat.r = colFlat.g = colFlat.b = bright;
+    colLit.r = colLit.g = colLit.b = bright;
+    colFlat.code = abr != 0xFF ? 0x2E : 0x2C;
+    colDark.code = abr != 0xFF ? 0x3E : 0x3C;
     tpage |= (abr & 3) << 5;
-    c1.code = c2.code;
+    colLit.code = colDark.code;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
@@ -138,54 +138,54 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     ex->MulRotMatrix(&m);
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    k = 0;
-    h = 0;
+    seg = 0;
+    rowY = 0;
     w0 >>= 1;
     w1 >>= 1;
-    for (row = 0; row < 1; row++, h += dy) {
-        for (j = 0; j < 16; j++, k++, ang += dang << 8) {
-            jn = (j + 1) << 8;
-            kn = (k + 1) << 8;
-            y0 = h + (((j << 8) * dy) >> 12);
-            y1 = h + ((jn * dy) >> 12);
-            s0 = ex->math_sin((k << 8) >> 2);
-            s1 = ex->math_sin(kn >> 2);
-            ra = ex->btlfx_lerp(r0, r1, s0);
-            rb = ex->btlfx_lerp(r0, r1, s1);
-            vv[0].vx = vv[1].vx = (ex->math_cos(ang) * ra) >> 12;
-            vv[0].vy = vv[1].vy = (ex->math_sin(ang) * ra) >> 12;
-            vv[0].vz = y0 - ex->btlfx_lerp(w0, w1, s0);
-            vv[1].vz = y0 + ex->btlfx_lerp(w0, w1, s1);
-            a = ang + (dang << 8);
-            vv[2].vx = vv[3].vx = (ex->math_cos(a) * rb) >> 12;
-            vv[2].vy = vv[3].vy = (ex->math_sin(a) * rb) >> 12;
-            vv[2].vz = y1 - ex->btlfx_lerp(w0, w1, s0);
-            vv[3].vz = y1 + ex->btlfx_lerp(w0, w1, s1);
-            gte_ldv3c(vv);
+    for (row = 0; row < 1; row++, rowY += dy) {
+        for (j = 0; j < 16; j++, seg++, ang += dang << 8) {
+            nextJ = (j + 1) << 8;
+            nextSeg = (seg + 1) << 8;
+            y0 = rowY + (((j << 8) * dy) >> 12);
+            y1 = rowY + ((nextJ * dy) >> 12);
+            bulge0 = ex->math_sin((seg << 8) >> 2);
+            bulge1 = ex->math_sin(nextSeg >> 2);
+            rad0 = ex->btlfx_lerp(r0, r1, bulge0);
+            rad1 = ex->btlfx_lerp(r0, r1, bulge1);
+            quad[0].vx = quad[1].vx = (ex->math_cos(ang) * rad0) >> 12;
+            quad[0].vy = quad[1].vy = (ex->math_sin(ang) * rad0) >> 12;
+            quad[0].vz = y0 - ex->btlfx_lerp(w0, w1, bulge0);
+            quad[1].vz = y0 + ex->btlfx_lerp(w0, w1, bulge1);
+            ang1 = ang + (dang << 8);
+            quad[2].vx = quad[3].vx = (ex->math_cos(ang1) * rad1) >> 12;
+            quad[2].vy = quad[3].vy = (ex->math_sin(ang1) * rad1) >> 12;
+            quad[2].vz = y1 - ex->btlfx_lerp(w0, w1, bulge0);
+            quad[3].vz = y1 + ex->btlfx_lerp(w0, w1, bulge1);
+            gte_ldv3c(quad);
             gte_rtpt();
-            t = k & 0xF;
-            u0 = u + t * 8;
+            tile = seg & 0xF;
+            u0 = u + tile * 8;
             u1 = u0 + 8;
-            if (t == 15) {
+            if (tile == 15) {
                 u1 = u0 + 7;
             }
             v0 = v;
             v1 = v0 + 0x1F;
             gte_nclip();
-            if (k == 0) {
+            if (seg == 0) {
                 ft = 0;
-                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&c2;
-                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&c1;
-            } else if (k >= 15) {
+                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colDark;
+                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colLit;
+            } else if (seg >= 15) {
                 ft = 0;
-                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&c2;
-                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&c1;
+                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colDark;
+                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colLit;
             } else {
                 ft = 1;
-                *(s32 *)&ft4->r0 = *(s32 *)&c0;
+                *(s32 *)&ft4->r0 = *(s32 *)&colFlat;
             }
-            gte_stopz(&z);
-            if (z != 0) {
+            gte_stopz(&otz);
+            if (otz != 0) {
                 if (ft) {
                     ft4->u0 = ft4->u1 = u0;
                     ft4->u2 = ft4->u3 = u1;
@@ -204,15 +204,15 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                     gte_stsxy3(&gt4->x0, &gt4->x1, &gt4->x2);
                 }
                 gte_avsz3();
-                gte_stszotz(&z);
-                gte_ldv0(&vv[3]);
+                gte_stszotz(&otz);
+                gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, z, ft4);
+                    ex->btlfx_addPrim(0x09000000, otz, ft4);
                     gte_stsxy(&ft4->x3);
                     ft4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, z, gt4);
+                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
                     gte_stsxy(&gt4->x3);
                     gt4++;
                 }

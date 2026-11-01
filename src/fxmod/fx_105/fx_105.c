@@ -1,19 +1,19 @@
 #include "fxmod/fx_105.h"
 
-static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx105Seg *buf, s32 abr) {
+static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *colorA, CVECTOR *colorB, s32 fade, Fx105Seg *buf, s32 abr) {
     Unk800F78A4 *env = fx_105_env;
-    CVECTOR c0;
-    CVECTOR c1;
+    CVECTOR colA;
+    CVECTOR colB;
     s32 otz;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     POLY_G4 *prim;
-    Fx105Seg *s;
+    Fx105Seg *seg;
     u32 i;
-    s32 p0;
-    s32 p1;
+    s32 fadeNear;
+    s32 fadeFar;
 
-    if (p < 0) {
-        p = 0x1000;
+    if (fade < 0) {
+        fade = 0x1000;
     }
     if (n >= 1000) {
         n -= 999;
@@ -22,45 +22,45 @@ static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVEC
         }
         return;
     }
-    s = &buf[(s32)(n - 1)];
+    seg = &buf[(s32)(n - 1)];
     for (i = 0; i < n; i++) {
-        BTLFX_COPY_SVEC(&s[1].pos0, &s[0].pos0);
-        BTLFX_COPY_SVEC(&s[1].pos8, &s[0].pos8);
-        s--;
+        BTLFX_COPY_SVEC(&seg[1].pos0, &seg[0].pos0);
+        BTLFX_COPY_SVEC(&seg[1].pos8, &seg[0].pos8);
+        seg--;
     }
-    s = buf;
-    for (i = 0; i < n; i++, s++) {
-        if (!(s[0].pos0.pad & s[1].pos0.pad)) {
+    seg = buf;
+    for (i = 0; i < n; i++, seg++) {
+        if (!(seg[0].pos0.pad & seg[1].pos0.pad)) {
             break;
         }
     }
-    BTLFX_COPY_SVEC(&buf->pos0, a);
+    BTLFX_COPY_SVEC(&buf->pos0, posA);
     buf->pos0.pad = 1;
-    BTLFX_COPY_SVEC(&buf->pos8, b);
+    BTLFX_COPY_SVEC(&buf->pos8, posB);
     n = i;
     prim = (POLY_G4 *)env->prim;
     env->prim = (s32)(prim + n);
-    if (ca == NULL) {
-        c0.r = c0.g = c0.b = 0;
+    if (colorA == NULL) {
+        colA.r = colA.g = colA.b = 0;
     } else {
-        gte_DpqColorFar_nst(ca, p);
-        gte_strgb(&c0);
+        gte_DpqColorFar_nst(colorA, fade);
+        gte_strgb(&colA);
     }
-    if (cb == NULL) {
-        c1.r = c1.g = c1.b = 0;
+    if (colorB == NULL) {
+        colB.r = colB.g = colB.b = 0;
     } else {
-        gte_DpqColorFar_nst(cb, p);
-        gte_strgb(&c1);
+        gte_DpqColorFar_nst(colorB, fade);
+        gte_strgb(&colB);
     }
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    c0.cd = abr != 0xFF ? 0x3A : 0x38;
-    c1.cd = abr != 0xFF ? 0x3A : 0x38;
+    colA.cd = abr != 0xFF ? 0x3A : 0x38;
+    colB.cd = abr != 0xFF ? 0x3A : 0x38;
     for (i = 0; i < n; i++, buf++, prim++) {
         gte_ldv3c(buf);
-        p0 = 0x1000 - (i << 12) / n;
+        fadeNear = 0x1000 - (i << 12) / n;
         gte_rtpt_b();
-        p1 = 0x1000 - ((i + 1) << 12) / n;
+        fadeFar = 0x1000 - ((i + 1) << 12) / n;
         gte_stopz(&otz);
         if (otz != 0) {
             gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
@@ -70,13 +70,13 @@ static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVEC
             gte_rtps();
             ex->btlfx_addPrimAbr(0x8000000, otz, prim, abr);
             gte_stsxy(&prim->x3);
-            gte_DpqColorFar_nst(&c0, p0);
+            gte_DpqColorFar_nst(&colA, fadeNear);
             gte_strgb(&prim->r0);
-            gte_DpqColorFar_nst(&c1, p0);
+            gte_DpqColorFar_nst(&colB, fadeNear);
             gte_strgb(&prim->r1);
-            gte_DpqColorFar_nst(&c0, p1);
+            gte_DpqColorFar_nst(&colA, fadeFar);
             gte_strgb(&prim->r2);
-            gte_DpqColorFar_nst(&c1, p1);
+            gte_DpqColorFar_nst(&colB, fadeFar);
             gte_strgb(&prim->r3);
         }
     }
@@ -84,12 +84,12 @@ static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVEC
 
 static void fxm_camKeyReset(void) {
     s32 i;
-    s32 m;
+    s32 freeMark;
 
     fx_105_camFrame = 0;
-    m = FX_105_KEY_FREE;
+    freeMark = FX_105_KEY_FREE;
     for (i = 15; i >= 0; i--) {
-        fx_105_camKeys[i].timer4 = m;
+        fx_105_camKeys[i].timer4 = freeMark;
     }
 }
 
@@ -114,10 +114,10 @@ static void fxm_camKeyUpdate(void) {
     Unk800F78A4 *env = fx_105_env;
     s32 frame = fx_105_camFrame;
     s32 k;
-    s32 d;
-    s32 s;
+    s32 dstSlot;
+    s32 srcSlot;
     s32 x, y, z;
-    s32 j;
+    s32 extIdx;
 
     for (i = 0; i < 16; i++) {
         if (fx_105_camKeys[i].timer4 == 0 && fx_105_camKeys[i].frame0 == frame) {
@@ -127,37 +127,37 @@ static void fxm_camKeyUpdate(void) {
         if (fx_105_camKeys[i].timer4 > 0) {
             fx_105_camKeys[i].timer4--;
             for (k = 0; k < 3; k++) {
-                d = ((fx_105_camKeys[i].dstSlots8 >> (k * 4)) & 0xF) - 1;
-                s = ((fx_105_camKeys[i].srcSlotsC >> (k * 4)) & 0xF) - 1;
-                if (d >= 0) {
+                dstSlot = ((fx_105_camKeys[i].dstSlots8 >> (k * 4)) & 0xF) - 1;
+                srcSlot = ((fx_105_camKeys[i].srcSlotsC >> (k * 4)) & 0xF) - 1;
+                if (dstSlot >= 0) {
                     x = *fx_105_camKeys[i].keys10;
                     fx_105_camKeys[i].keys10++;
                     y = *fx_105_camKeys[i].keys10;
                     fx_105_camKeys[i].keys10++;
                     z = *fx_105_camKeys[i].keys10;
                     fx_105_camKeys[i].keys10++;
-                    if (s >= 0) {
+                    if (srcSlot >= 0) {
                         /* each branch adds its own source; jump2's cross-jumping merges the identical tails */
-                        if (s >= 10) {
-                            j = s - 10;
-                            x += ext[j].vx;
-                            y += ext[j].vy;
-                            z += ext[j].vz;
+                        if (srcSlot >= 10) {
+                            extIdx = srcSlot - 10;
+                            x += ext[extIdx].vx;
+                            y += ext[extIdx].vy;
+                            z += ext[extIdx].vz;
                         } else {
-                            x += ((SVECTOR *)env->camera)[s].vx;
-                            y += ((SVECTOR *)env->camera)[s].vy;
-                            z += ((SVECTOR *)env->camera)[s].vz;
+                            x += ((SVECTOR *)env->camera)[srcSlot].vx;
+                            y += ((SVECTOR *)env->camera)[srcSlot].vy;
+                            z += ((SVECTOR *)env->camera)[srcSlot].vz;
                         }
                     }
-                    if (d >= 10) {
-                        j = d - 10;
-                        ext[j].vx = x;
-                        ext[j].vy = y;
-                        ext[j].vz = z;
+                    if (dstSlot >= 10) {
+                        extIdx = dstSlot - 10;
+                        ext[extIdx].vx = x;
+                        ext[extIdx].vy = y;
+                        ext[extIdx].vz = z;
                     } else {
-                        ((SVECTOR *)env->camera)[d].vx = x;
-                        ((SVECTOR *)env->camera)[d].vy = y;
-                        ((SVECTOR *)env->camera)[d].vz = z;
+                        ((SVECTOR *)env->camera)[dstSlot].vx = x;
+                        ((SVECTOR *)env->camera)[dstSlot].vy = y;
+                        ((SVECTOR *)env->camera)[dstSlot].vz = z;
                     }
                 }
             }

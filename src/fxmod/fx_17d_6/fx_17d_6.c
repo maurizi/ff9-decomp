@@ -291,42 +291,42 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     return 0;
 }
 
-static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *trail, s32 n, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip) {
+static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx17d6Trail *trail, s32 size, s32 *noise, SVECTOR *from,
+                   SVECTOR *to, s32 ampFrom, s32 ampTo, s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 dip) {
     Unk800F78A4 *env = fx_17d_6_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     SVECTOR rot;
     s32 i;
-    s32 cnt;
+    s32 count;
     s32 t;
-    s32 h;
+    s32 offset;
     SVECTOR *pt;
-    s32 a;
+    s32 numPts;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    cnt = (n - 4) / 8;
-    a = cnt;
-    trail->lastSlot0 = trail->count2 = a - 1;
+    count = (size - 4) / 8;
+    numPts = count;
+    trail->lastSlot0 = trail->count2 = numPts - 1;
     trail->head1 = 0;
     pt = trail->points4;
-    for (i = 0; i < a; i++, pt++) {
-        t = 0x1000 - (i << 12) / (a - 1);
+    for (i = 0; i < numPts; i++, pt++) {
+        t = 0x1000 - (i << 12) / (numPts - 1);
         t += *noise++ / 2;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
-        h = *noise++ / 3;
-        h = (ex->math_sin((t >> 1) >> 1) * h) >> 12;
+        offset = *noise++ / 3;
+        offset = (ex->math_sin((t >> 1) >> 1) * offset) >> 12;
         t >>= 1;
-        h += ex->btlfx_lerp(h0, h1, ex->math_sin(t));
-        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
+        offset += ex->btlfx_lerp(ampFrom, ampTo, ex->math_sin(t));
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, width);
         if (dip != 0) {
             pt->vy -= (ex->math_sin(t) * dip) >> 12;
         }
-        pt->pad = pad;
-        ang += dang + *noise++;
+        pt->pad = lineWidth;
+        width += dwidth + *noise++;
     }
     env->otZ = 0x80;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, type, 0x1000, alpha, 1, (u8 *)trail, ot);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, mode);
     env->otZ = 0;
 }
 

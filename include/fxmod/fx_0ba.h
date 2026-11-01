@@ -101,10 +101,10 @@ extern SVECTOR fx_0ba_orbPos;
 static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b);
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTOR *from, SVECTOR *to, s32 amp, s32 s, s32 step,
                    s32 a7, s32 a8, s32 pad);
-static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s32 size, s32 *tab, SVECTOR *from,
-                   SVECTOR *to, s32 r0, s32 r1, s32 s, s32 step, s32 a12, s32 a13, s32 pad, s32 wave);
-static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *path, Fx0baStrip *buf, s32 size, s32 *tab,
-                   s32 i, s32 a12, s32 a13, s32 pad);
+static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx0baStrip *trail, s32 size, s32 *noise, SVECTOR *from,
+                   SVECTOR *to, s32 ampFrom, s32 ampTo, s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 dip);
+static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 mode, Fx0baStrip *path, Fx0baStrip *trail, s32 size, s32 *noise,
+                   s32 branchAt, s32 frame, s32 fade, s32 lineWidth);
 static s32 fxm_randStripPoint32(SVECTOR *v);
 static s32 fx_0ba_op85PoolTask(s32 mode, Fx0baPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 static s32 fx_0ba_op83PoolTask(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);

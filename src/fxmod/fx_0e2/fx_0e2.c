@@ -1543,10 +1543,10 @@ static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
 
 static void fxm_camChanReset(void) {
     s32 i;
-    s32 m = FX_0E2_KEY_FREE;
+    s32 freeMark = FX_0E2_KEY_FREE;
 
     for (i = 63; i >= 0; i--) {
-        fx_0e2_camTracks[i].left6 = m;
+        fx_0e2_camTracks[i].left6 = freeMark;
     }
     for (i = 3; i >= 0; i--) {
         fx_0e2_camChanFrame[i] = 0;
@@ -1555,10 +1555,10 @@ static void fxm_camChanReset(void) {
 
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     s32 i;
-    s32 c;
+    s32 count;
 
     data++;
-    c = *data;
+    count = *data;
     for (i = 0; i < 64; i++) {
         if (fx_0e2_camTracks[i].left6 == FX_0E2_KEY_FREE) {
             fx_0e2_camTracks[i].left6 = 0;
@@ -1566,7 +1566,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
             fx_0e2_camTracks[i].start4 = start;
             fx_0e2_camTracks[i].dstA = dst;
             fx_0e2_camTracks[i].stepC = 0;
-            fx_0e2_camTracks[i].stepsE = c;
+            fx_0e2_camTracks[i].stepsE = count;
             fx_0e2_camTracks[i].chan8 = ch;
             return;
         }
@@ -1577,7 +1577,7 @@ static void fxm_camChanUpdate(s32 ch) {
     Unk800F78A4 *env = fx_0e2_env;
     s32 i;
     s32 k;
-    s32 d;
+    s32 dstSlot;
 
     for (i = 0; i < 64; i++) {
         if (fx_0e2_camTracks[i].chan8 == ch) {
@@ -1588,11 +1588,11 @@ static void fxm_camChanUpdate(s32 ch) {
             if (fx_0e2_camTracks[i].left6 > 0) {
                 fx_0e2_camTracks[i].left6--;
                 for (k = 0; k < 3; k++) {
-                    d = ((fx_0e2_camTracks[i].dstA >> (k * 4)) & 0xF) - 1;
-                    if (d >= 0) {
-                        ((SVECTOR *)env->camera)[d].vx = fx_0e2_camTracks[i].data0[0];
-                        ((SVECTOR *)env->camera)[d].vy = fx_0e2_camTracks[i].data0[1];
-                        ((SVECTOR *)env->camera)[d].vz = fx_0e2_camTracks[i].data0[2];
+                    dstSlot = ((fx_0e2_camTracks[i].dstA >> (k * 4)) & 0xF) - 1;
+                    if (dstSlot >= 0) {
+                        ((SVECTOR *)env->camera)[dstSlot].vx = fx_0e2_camTracks[i].data0[0];
+                        ((SVECTOR *)env->camera)[dstSlot].vy = fx_0e2_camTracks[i].data0[1];
+                        ((SVECTOR *)env->camera)[dstSlot].vz = fx_0e2_camTracks[i].data0[2];
                         if (fx_0e2_camTracks[i].stepC < fx_0e2_camTracks[i].stepsE) {
                             fx_0e2_camTracks[i].data0 += 3;
                             fx_0e2_camTracks[i].stepC++;
@@ -1606,31 +1606,31 @@ static void fxm_camChanUpdate(s32 ch) {
 }
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
-    s32 m = x % w;
+    s32 wrapW = x % w;
     Unk800F78A4 *env = fx_0e2_env;
-    u32 *p = (u32 *)env->prim;
+    u32 *move = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 n;
-    RECT r2;
-    RECT r;
+    s32 restW;
+    RECT rectRest;
+    RECT rectWrap;
 
-    env->prim = (u8 *)(p + 12);
-    n = w - m;
-    if (m != 0) {
-        r.x = sx;
-        r.y = sy;
-        r.w = m;
-        r.h = h;
-        ex->SetDrawMove(p, &r, dx + n, dy);
-        addPrim(env->ot + OT_LAST, p);
+    env->prim = (u8 *)(move + 12);
+    restW = w - wrapW;
+    if (wrapW != 0) {
+        rectWrap.x = sx;
+        rectWrap.y = sy;
+        rectWrap.w = wrapW;
+        rectWrap.h = h;
+        ex->SetDrawMove(move, &rectWrap, dx + restW, dy);
+        addPrim(env->ot + OT_LAST, move);
     }
-    p += 6;
-    if (n != 0) {
-        r2.x = sx + m;
-        r2.y = sy;
-        r2.w = n;
-        r2.h = h;
-        ex->SetDrawMove(p, &r2, dx, dy);
-        addPrim(env->ot + OT_LAST, p);
+    move += 6;
+    if (restW != 0) {
+        rectRest.x = sx + wrapW;
+        rectRest.y = sy;
+        rectRest.w = restW;
+        rectRest.h = h;
+        ex->SetDrawMove(move, &rectRest, dx, dy);
+        addPrim(env->ot + OT_LAST, move);
     }
 }
