@@ -3,10 +3,10 @@
 s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
-    Pool6CEntry *p;
-    Pool6CEntry *q;
+    Pool6CEntry *emitter;
+    Pool6CEntry *trailEmitter;
     s32 frame;
-    s32 s;
+    s32 ringScale;
     s32 t;
 
     if (mode == 0) {
@@ -16,9 +16,9 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0d5_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
-        if (p != NULL) {
-            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+        if (emitter != NULL) {
+            emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;
@@ -27,41 +27,41 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 0x2C) {
                 t = (frame << 12) / 44;
                 if (frame < 0x17) {
-                    s = ex->math_sin(frame << 6) / 4 + 0x800;
+                    ringScale = ex->math_sin(frame << 6) / 4 + 0x800;
                 } else {
-                    s = ex->math_sin(((frame - 0x17) << 10) / 21) * 2 / 3 + 0xC00;
+                    ringScale = ex->math_sin(((frame - 0x17) << 10) / 21) * 2 / 3 + 0xC00;
                 }
                 rot.vx = 0x400;
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->pos4, &rot, s * 2 / 3, 0xC, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->pos4, &rot, ringScale * 2 / 3, 0xC, 1,
                                   ex->math_sin(t >> 1));
             }
             if (frame == 5) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame == 0x12) {
-                q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
-                if (q != NULL) {
-                    q->otZ = 0x80;
-                    q->trails = (s32)fx_0d5_trails;
-                    q->trailSlots = 0x15;
-                    q->trailStride = 0xAC;
+                trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
+                if (trailEmitter != NULL) {
+                    trailEmitter->otZ = 0x80;
+                    trailEmitter->trails = (s32)fx_0d5_trails;
+                    trailEmitter->trailSlots = 0x15;
+                    trailEmitter->trailStride = 0xAC;
                 }
-                q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posC);
-                if (q != NULL) {
-                    q->otZ = 0x80;
+                trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posC);
+                if (trailEmitter != NULL) {
+                    trailEmitter->otZ = 0x80;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos4);
             }
             if (frame == 0x17) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posC);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posC);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame >= 0x32) {
@@ -77,13 +77,13 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     s32 frame;
-    s32 a;
-    s32 b;
-    s32 c;
+    s32 alpha;
+    s32 scale0;
+    s32 scale1;
+    s32 ang;
     s32 t;
-    s32 u;
-    s32 k;
-    s32 v;
+    s32 flicker;
+    s32 grow;
     u16 ry;
 
     if (mode == 0) {
@@ -93,44 +93,44 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->state0 = 0;
         work->frame4 = 0;
     } else {
-        a = 0;
-        b = 0;
-        c = 0;
+        alpha = 0;
+        scale0 = 0;
+        scale1 = 0;
         frame = entry->frame;
         ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->pos8);
         ry = 0;
         switch (work->state0) {
         case 0:
             ry = 0x200;
-            a = (frame << 12) / 3;
-            u = ex->math_sin(a >> 2);
-            b = u >> 1;
-            c = ((0x1000 - a) >> 1) + 0x800;
+            alpha = (frame << 12) / 3;
+            t = ex->math_sin(alpha >> 2);
+            scale0 = t >> 1;
+            scale1 = ((0x1000 - alpha) >> 1) + 0x800;
             if (frame >= 3) {
                 work->state0 = 1;
                 entry->frame = -1;
             }
             break;
         case 1:
-            u = (frame << 12) / 9;
-            k = (frame & 1) << 8;
-            c = k + 0x1000;
-            v = (u >> 1) + 0x800;
-            a = k + v;
-            ry = (u >> 3) + 0x200;
-            b = c;
+            t = (frame << 12) / 9;
+            flicker = (frame & 1) << 8;
+            scale1 = flicker + 0x1000;
+            grow = (t >> 1) + 0x800;
+            alpha = flicker + grow;
+            ry = (t >> 3) + 0x200;
+            scale0 = scale1;
             if (frame >= 9) {
                 work->state0 = 2;
                 entry->frame = -1;
             }
             break;
         case 2:
-            u = (frame << 12) / 9;
-            t = u >> 2;
-            ry = 0x400 - t;
-            a = ex->math_cos(t);
-            b = ex->math_sin(t) + 0x1000;
-            c = ex->math_sin(t) * 3 / 2 + 0x1000;
+            t = (frame << 12) / 9;
+            ang = t >> 2;
+            ry = 0x400 - ang;
+            alpha = ex->math_cos(ang);
+            scale0 = ex->math_sin(ang) + 0x1000;
+            scale1 = ex->math_sin(ang) * 3 / 2 + 0x1000;
             if (frame >= 9) {
                 return 1;
             }
@@ -141,8 +141,8 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->otZ = 0x80;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xE), &work->pos8, NULL, b / 3, 0, 1, a / 2);
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->pos8, &rot, c / 2, 0, 1, a * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xE), &work->pos8, NULL, scale0 / 3, 0, 1, alpha / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->pos8, &rot, scale1 / 2, 0, 1, alpha * 2 / 3);
         env->otZ = 0;
         work->frame4++;
     }
