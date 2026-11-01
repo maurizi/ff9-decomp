@@ -71,8 +71,8 @@ s32 tpage_getX(s32 a) {
     return (a << 6) & 0x3C0;
 }
 
-s32 tpage_getY(s16 arg0) {
-    return ((arg0 << 4) & 0x100) | (s16)((arg0 >> 2) & 0x200);
+s32 tpage_getY(s16 tpage) {
+    return ((tpage << 4) & 0x100) | (s16)((tpage >> 2) & 0x200);
 }
 
 s32 clut_getX(s32 a) {
@@ -83,11 +83,11 @@ s32 clut_getY(s32 a) {
     return (s16)a >> 6;
 }
 
-void file_advanceLoadPtr(u8 **arg0, s32 arg1) {
-    *arg0 += arg1 + 0xC;
-    if (arg1 & 3) {
-        *arg0 += 4;
-        *arg0 -= arg1 & 3;
+void file_advanceLoadPtr(u8 **ptr, s32 size) {
+    *ptr += size + 0xC;
+    if (size & 3) {
+        *ptr += 4;
+        *ptr -= size & 3;
     }
 }
 
@@ -176,7 +176,7 @@ void file_initImg(void) {
 
 void file_loadDirTables(void) {
     GameState *gs;
-    u8 *buf;
+    u8 *tables;
     DirInfo *dir;
     s32 base;
     s32 size;
@@ -197,7 +197,7 @@ void file_loadDirTables(void) {
         return;
     }
     cnt = 0;
-    buf = g_loadAreaEnd + 0x14C700;
+    tables = g_loadAreaEnd + 0x14C700;
     size = (gs->dirs[13].tableSector << 11) + gs->dirs[13].count * 2;
     base = gs->dirs[0].tableSector;
     t = size & 0x800;
@@ -205,17 +205,17 @@ void file_loadDirTables(void) {
         size += 0x800 - t;
     }
 
-    cd_readAsync(gs->imgSector, size, buf, NULL);
+    cd_readAsync(gs->imgSector, size, tables, NULL);
     while (cd_getState() != 0) {
     }
-    dir = (DirInfo *)(buf + 0x10);
-    buf += base << 11;
+    dir = (DirInfo *)(tables + 0x10);
+    tables += base << 11;
     do { } while (0); /* empty macro residue: ends cse1's block so the data copy below is kept */
 
     size = (dir[0].count + 1) * 8;
-    /* data == buf; the redundant +/- keeps CSE from folding the copy (the
-       original passes a copy of buf in s0 to the first two memmoves) */
-    data = buf + (base << 11) - (base << 11);
+    /* data == tables; the redundant +/- keeps CSE from folding the copy (the
+       original passes a copy of tables in s0 to the first two memmoves) */
+    data = tables + (base << 11) - (base << 11);
     top = (u8 *)g_gameState - size;
     gs->dirTables[0] = top;
     memmove(gs->dirTables[0], data, size);
@@ -228,16 +228,16 @@ void file_loadDirTables(void) {
     size = (dir[10].count + 1) * 8;
     top -= size;
     gs->dirTables[10] = top;
-    memmove(gs->dirTables[10], buf + ((dir[10].tableSector - base) << 11), size);
+    memmove(gs->dirTables[10], tables + ((dir[10].tableSector - base) << 11), size);
 
     size = (dir[8].count + 1) * 8;
     top -= size;
     gs->dirTables[8] = top;
-    memmove(gs->dirTables[8], buf + ((gs->dirs[8].tableSector - base) << 11), size);
+    memmove(gs->dirTables[8], tables + ((gs->dirs[8].tableSector - base) << 11), size);
 
-    list8 = buf + ((dir[8].tableSector - base) << 11);
+    list8 = tables + ((dir[8].tableSector - base) << 11);
     s = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
-    list11 = buf + ((dir[11].tableSector - base) << 11);
+    list11 = tables + ((dir[11].tableSector - base) << 11);
     do {
         key = s->link;
         e = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
@@ -280,12 +280,12 @@ void file_loadDirTables(void) {
     size = (dir[12].count + 1) * 8;
     top -= size;
     gs->dirTables[12] = top;
-    memmove(gs->dirTables[12], buf + ((dir[12].tableSector - base) << 11), size);
+    memmove(gs->dirTables[12], tables + ((dir[12].tableSector - base) << 11), size);
 
     size = dir[13].count * 2;
     top -= size;
     gs->dirTables[13] = top;
-    memmove(gs->dirTables[13], buf + ((dir[13].tableSector - base) << 11), size);
+    memmove(gs->dirTables[13], tables + ((dir[13].tableSector - base) << 11), size);
     gs->flags &= ~GS_RELOAD_FILE_TABLES;
 }
 
@@ -311,25 +311,25 @@ loop:
     return NULL;
 }
 
-void game_setNextScene(u16 arg0) {
+void game_setNextScene(u16 sceneId) {
     switch (g_gameState->mode) {
     case GS_MODE_FIELD:
-        g_gameState->gameData->ctx.ovl65->fieldArea->scene->nextId = arg0;
+        g_gameState->gameData->ctx.ovl65->fieldArea->scene->nextId = sceneId;
         break;
     case GS_MODE_BATTLE:
-        g_gameState->gameData->ctx.ovl65->work->returnId = arg0;
+        g_gameState->gameData->ctx.ovl65->work->returnId = sceneId;
         break;
     case GS_MODE_WORLD:
-        g_gameState->gameData->ctx.ovl65->worldObj->sceneId = arg0;
+        g_gameState->gameData->ctx.ovl65->worldObj->sceneId = sceneId;
         break;
     }
 }
 
-s32 game_getModel(s32 arg0) {
-    if (arg0 < 9) {
-        return (s32)&g_gameState->gameData->chrModels[arg0];
+s32 game_getModel(s32 slot) {
+    if (slot < 9) {
+        return (s32)&g_gameState->gameData->chrModels[slot];
     }
-    return (s32)&g_gameState->gameData->npcModels[arg0 - 9];
+    return (s32)&g_gameState->gameData->npcModels[slot - 9];
 }
 
 void game_clearModelSlot(ModelSlot *a) {

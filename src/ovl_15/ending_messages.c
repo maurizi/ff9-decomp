@@ -152,8 +152,8 @@ void ending_messagesSwap(void) {
     g_messagesFrame++;
 }
 
-u8 *ending_getMessage(u8 *arg0, s32 arg1) {
-    return arg0 + (arg0[arg1 * 4 + 4] + 4);
+u8 *ending_getMessage(u8 *bank, s32 idx) {
+    return bank + (bank[idx * 4 + 4] + 4);
 }
 
 void *ending_drawText(s32 x, s32 y, u32 *ot, u8 *s, void *p) {

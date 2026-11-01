@@ -37,12 +37,12 @@ s32 scene_get(void) {
     return g_scene.cur;
 }
 
-void scene_set(s32 arg0) {
-    if (arg0 != g_scene.cur) {
+void scene_set(s32 scene) {
+    if (scene != g_scene.cur) {
         if (g_sceneModes[g_scene.cur].leave != NULL) {
             g_sceneModes[g_scene.cur].leave();
         }
-        g_scene.cur = arg0;
+        g_scene.cur = scene;
         if (g_sceneModes[g_scene.cur].enter != NULL) {
             g_sceneModes[g_scene.cur].enter();
         }
@@ -63,22 +63,22 @@ s32 scene_checkDisc(void) {
     return DISC_NONE;
 }
 
-s32 scene_discIndex(s32 arg0) {
+s32 scene_discIndex(s32 discMask) {
     s32 i;
-    s32 mask;
+    s32 bit;
 
     for (i = 0; i < 4; i++) {
-        mask = 1 << i;
-        if (arg0 & mask) {
+        bit = 1 << i;
+        if (discMask & bit) {
             return i;
         }
     }
     return 0;
 }
 
-u8 scene_isDiscGone(s32 arg0, s32 arg1) {
-    s32 a = arg0 & 0xF;
-    s32 b = arg1 & 0xF;
+u8 scene_isDiscGone(s32 needMask, s32 discMask) {
+    s32 a = needMask & 0xF;
+    s32 b = discMask & 0xF;
     return (b & a) != a;
 }
 
@@ -90,8 +90,8 @@ s32 scene_isMenuIdle(void) {
     return 0;
 }
 
-void scene_setFadeScreen(s8 arg0) {
-    g_scene.fadeScreen = arg0;
+void scene_setFadeScreen(s8 fade) {
+    g_scene.fadeScreen = fade;
 }
 
 u8 scene_getFadeScreen(void) {

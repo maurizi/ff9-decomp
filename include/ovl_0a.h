@@ -1724,7 +1724,7 @@ void game_resumeClock(u8 arg0); /* main */
 s32 mbg_shutdown(void); /* ovl_64 */
 s32 preload_update(void); /* main */
 s32 tpage_getX(s32 a); /* main */
-s32 tpage_getY(s16 arg0); /* main */
+s32 tpage_getY(s16 tpage); /* main */
 s32 vib_update(void); /* main */
 
 #endif

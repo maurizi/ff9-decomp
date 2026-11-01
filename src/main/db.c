@@ -23,11 +23,11 @@ s32 db_register(s32 a, s32 b) {
     return 0;
 }
 
-s32 db_unregister(void *arg0) {
+s32 db_unregister(void *db) {
     s32 i;
 
     for (i = g_dbList.count - 1; i >= 0; i--) {
-        if (g_dbList.dbs[i] == arg0) {
+        if (g_dbList.dbs[i] == db) {
             g_dbList.dbs[i] = g_dbList.dbs[g_dbList.count - 1];
             g_dbList.count--;
             return 0;
@@ -39,7 +39,7 @@ s32 db_unregister(void *arg0) {
 void *db_lookupRegistered(s32 mode, s32 a1, s32 a2) {
     s32 i;
     s32 r = -1;
-    void *ret;
+    void *result;
 
     for (i = g_dbList.count - 1; i >= 0; i--) {
         r = db_lookup((s32)g_dbList.dbs[i], mode, a1, a2);
@@ -47,19 +47,19 @@ void *db_lookupRegistered(s32 mode, s32 a1, s32 a2) {
             return (void *)r;
         }
     }
-    ret = (void *)-1;
+    result = (void *)-1;
     if (r == -1) {
         r = mode & 1;
-        ret = NULL;
+        result = NULL;
         if (r != 0) {
-            ret = (void *)-1;
+            result = (void *)-1;
         }
     }
-    return ret;
+    return result;
 }
 
-s32 db_lookup(s32 arg0, s32 mode, s32 key, s32 arg3) {
-    u8 *base = (u8 *)arg0;
+s32 db_lookup(s32 db, s32 mode, s32 key, s32 subKey) {
+    u8 *base = (u8 *)db;
     u32 *ent;
     s32 i;
     s32 n;
@@ -115,13 +115,13 @@ s32 db_lookup(s32 arg0, s32 mode, s32 key, s32 arg3) {
                     case DB_GET_SIZE:
                         return (ofs[1] & 0xFFFFFF) - (ofs[0] & 0xFFFFFF) + 4;
                     case DB_GET_KEY_AT_IN:
-                        r = db_lookup(arg0, DB_GET_KEY_AT, arg3, 0);
+                        r = db_lookup(db, DB_GET_KEY_AT, subKey, 0);
                         return r;
                     case DB_GET_AT_IN:
-                        r = db_lookup(arg0, DB_GET_AT, arg3, 0);
+                        r = db_lookup(db, DB_GET_AT, subKey, 0);
                         return r;
                     case DB_GET_COUNT_IN:
-                        r = db_lookup(arg0, DB_GET_COUNT, arg3, 0);
+                        r = db_lookup(db, DB_GET_COUNT, subKey, 0);
                         return r;
                     default:
                         return -1;

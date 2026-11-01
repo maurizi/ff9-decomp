@@ -49,7 +49,7 @@ u8 chr_hasStatus(Character *a, s32 b) {
     return (a->status & b) != 0;
 }
 
-s32 swirl_update(s16 arg0, s16 arg1) {
+s32 swirl_update(s16 startX, s16 startY) {
     s16 y;
     s16 x;
     s32 c;
@@ -57,8 +57,8 @@ s32 swirl_update(s16 arg0, s16 arg1) {
     s16 a, b;
     GameState *gs;
 
-    x = arg0;
-    y = arg1;
+    x = startX;
+    y = startY;
     g_swirlParams = g_swirlVariant ? &g_swirlParamSets[1] : &g_swirlParamSets[0];
     g_swirlOt = g_swirlPkt = g_swirlBuf + (g_gameState->gameData->drawBuf << 10);
     ClearOTag(g_swirlOt, 5);
@@ -73,7 +73,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
             g_swirlAngle = a = g_swirlParams->angle;
             g_swirlZoom = g_swirlParams->zoom;
             g_swirlAngleStep = b = g_swirlParams->angleStep;
-            if ((arg0 ^ arg1) & 1) {
+            if ((startX ^ startY) & 1) {
                 g_swirlAngle = -a;
                 g_swirlAngleStep = -b;
             }
@@ -187,7 +187,7 @@ void swirl_drawFlash(s32 x, s32 y) {
     g_swirlPkt = p;
 }
 
-u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
+u32 *swirl_buildMesh(u32 *work, s32 x, s32 y) {
     s16 xs[9];
     s16 ys[9];
     SVECTOR sv;
@@ -202,9 +202,9 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
     DVECTOR *pts;
     WarpVert *p;
 
-    g_swirlColumns = (DVECTOR *)buf;
-    g_swirlMesh = (WarpVert *)((u8 *)buf + 0x24);
-    buf = (u32 *)((u8 *)buf + 0x2AC);
+    g_swirlColumns = (DVECTOR *)work;
+    g_swirlMesh = (WarpVert *)((u8 *)work + 0x24);
+    work = (u32 *)((u8 *)work + 0x2AC);
     dx = g_gameState->dispEnv->disp.w - x;
     dy = g_gameState->dispEnv->disp.h - y;
     for (i = 0; i < 5; i++) {
@@ -254,7 +254,7 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
             p++;
         }
     }
-    return buf;
+    return work;
 }
 
 void swirl_drawMesh(void) {

@@ -1,8 +1,8 @@
 #include "ff9.h"
 
-void tween_start(void *arg0, void *arg1, s32 jump) {
-    WinDef *w = arg0;
-    TweenDef *t = arg1;
+void tween_start(void *win, void *tween, s32 jump) {
+    WinDef *w = win;
+    TweenDef *t = tween;
 
     w->anim = t;
     w->frame = 0;

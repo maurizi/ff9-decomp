@@ -141,23 +141,23 @@ void menuList_down(MenuList *m, u32 pad) {
     }
 }
 
-void menuList_left(MenuList *arg0, s32 arg1) {
-    arg1 &= PAD_LEFT;
-    if (arg1 != 0) {
-        if (arg0->col == 0) {
-            if (arg0->cursor != 0) {
-                arg0->col = arg0->cols - 1;
-                arg0->cursor = arg0->cursor - 1;
+void menuList_left(MenuList *list, s32 pressed) {
+    pressed &= PAD_LEFT;
+    if (pressed != 0) {
+        if (list->col == 0) {
+            if (list->cursor != 0) {
+                list->col = list->cols - 1;
+                list->cursor = list->cursor - 1;
                 snd_playSe(SE_CURSOR);
                 return;
             }
-            if (arg0->top != 0) {
+            if (list->top != 0) {
                 snd_playSe(SE_CURSOR);
-                arg0->scroll = MENULIST_SCROLL_UP | MENULIST_SCROLL_WRAP_COL;
+                list->scroll = MENULIST_SCROLL_UP | MENULIST_SCROLL_WRAP_COL;
             }
         } else {
             snd_playSe(SE_CURSOR);
-            arg0->col--;
+            list->col--;
         }
     }
 }
@@ -182,44 +182,44 @@ void menuList_right(MenuList *m, s32 pad) {
     }
 }
 
-void menuList_pageUp(MenuList *arg0, s32 arg1) {
+void menuList_pageUp(MenuList *list, s32 pressed) {
     s32 t;
     s32 c;
 
-    if (!(g_padPortHeld[0] & BTN_R1) && (arg1 & BTN_L1) && arg0->top != 0) {
-        t = arg0->height - 6;
-        arg0->scrollPos = t >> 2;
-        t -= arg0->scrollPos;
-        arg0->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_UP | MENULIST_SCROLL_PAGE;
-        c = arg0->top - arg0->visibleRows;
-        arg0->pageStep = (t + 14) / 15;
+    if (!(g_padPortHeld[0] & BTN_R1) && (pressed & BTN_L1) && list->top != 0) {
+        t = list->height - 6;
+        list->scrollPos = t >> 2;
+        t -= list->scrollPos;
+        list->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_UP | MENULIST_SCROLL_PAGE;
+        c = list->top - list->visibleRows;
+        list->pageStep = (t + 14) / 15;
         if (c < 0) {
             c = 0;
         }
-        arg0->pageTop = c;
+        list->pageTop = c;
         snd_playSe(SE_PAGE);
     }
 }
 
-void menuList_pageDown(MenuList *arg0, s32 arg1) {
+void menuList_pageDown(MenuList *list, s32 pressed) {
     s32 t;
     s32 a;
     s32 c;
     s32 u3;
 
-    if ((arg1 & BTN_R1) && arg0->top < arg0->rows - arg0->visibleRows) {
-        t = arg0->height - 6;
-        arg0->scrollPos = t >> 2;
-        t -= arg0->scrollPos;
-        u3 = arg0->visibleRows;
-        a = arg0->rows - u3;
-        arg0->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_PAGE;
-        c = arg0->top + u3;
-        arg0->pageStep = (t + 14) / 15;
+    if ((pressed & BTN_R1) && list->top < list->rows - list->visibleRows) {
+        t = list->height - 6;
+        list->scrollPos = t >> 2;
+        t -= list->scrollPos;
+        u3 = list->visibleRows;
+        a = list->rows - u3;
+        list->scroll = MENULIST_SCROLL_DOWN | MENULIST_SCROLL_PAGE;
+        c = list->top + u3;
+        list->pageStep = (t + 14) / 15;
         if (c < a) {
             a = c;
         }
-        arg0->pageTop = a;
+        list->pageTop = a;
         snd_playSe(SE_PAGE);
     }
 }
@@ -289,14 +289,14 @@ s32 fade_reverse(void (*fn)(void)) {
 }
 
 void fade_update(void) {
-    u8 *buf = g_fadePktBufs[0];
+    u8 *pkt = g_fadePktBufs[0];
     FadeState *f = &g_fade;
     FadeFn fn;
 
     if (g_gameState->gameData->drawBuf != 0) {
-        buf = g_fadePktBufs[1];
+        pkt = g_fadePktBufs[1];
     }
-    f->pkt = buf;
+    f->pkt = pkt;
     if (f->active != 0) {
         fn = (FadeFn)g_fadeTypes[f->type].update;
         if (fn != NULL) {

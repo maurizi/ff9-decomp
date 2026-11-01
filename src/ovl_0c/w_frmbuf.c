@@ -4,15 +4,15 @@ const char s_wmStrFrmbufReqOver[] = "w_frmbufRequest:reqover [%d/%d]\n";
 const char s_wmStrFrmbufError[] = "==== ERROR ===== / %s";
 const char s_wmStrFrmbufRequestError[] = "-- w_framebufRequest Error --\n";
 
-s32 w_frmbufRequest(s16 arg0) {
+s32 w_frmbufRequest(s16 texId) {
     WmFrmbufSlot *p;
     u32 i;
 
-    if (arg0 & 0x3F) {
+    if (texId & 0x3F) {
         p = g_worldFrmbufHead.next;
         i = 0;
         while (1) {
-            if (p->texId == arg0) {
+            if (p->texId == texId) {
                 p->prev->next = p->next;
                 p->next->prev = p->prev;
                 p->next = g_worldFrmbufHead.next;
@@ -28,7 +28,7 @@ s32 w_frmbufRequest(s16 arg0) {
                     printf(s_wmStrFrmbufError, g_worldMapErrorMsg);
                     g_worldMapError = 1;
                 }
-                p->texId = arg0;
+                p->texId = texId;
                 p->prev->next = p->next;
                 p->next->prev = p->prev;
                 p->next = g_worldFrmbufHead.next;
@@ -223,7 +223,7 @@ s32 wm_getWeatherByPos(void) {
     return r;
 }
 
-void wm_setWeather(s32 mode, s32 flag, s32 arg2) {
+void wm_setWeather(s32 mode, s32 flag, s32 speed) {
     if (mode == WM_WEATHER_KEEP) {
         mode = g_worldWeatherMode;
     }
@@ -232,7 +232,7 @@ void wm_setWeather(s32 mode, s32 flag, s32 arg2) {
     }
     g_worldWeatherMode = mode;
     g_worldFog = flag;
-    g_worldWeatherSpeed = arg2;
+    g_worldWeatherSpeed = speed;
     g_worldWeatherBlend = 0;
     g_worldWeatherData.work[3] = g_worldWeatherData.work[1];
     g_worldWeatherData.work[5] = g_worldWeatherData.work[2];
@@ -278,94 +278,94 @@ void wm_setWeather(s32 mode, s32 flag, s32 arg2) {
     printf(s_wmStrIllegalWeatherMode, mode);
 }
 
-/* blend the sky parameter blocks arg1 -> arg2 by arg3 (0..0x1000) into arg0 */
-void wm_blendWeather(WmSky *arg0, WmSky *arg1, WmSky *arg2, s32 arg3, s32 arg4) {
+/* blend the sky parameter blocks from -> to by t (0..0x1000) into out */
+void wm_blendWeather(WmSky *out, WmSky *from, WmSky *to, s32 t, s32 unusedT) {
     s16 *d;
     s16 *a;
     s16 *b;
 
-    if (arg3 < 0) {
-        arg3 = 0;
+    if (t < 0) {
+        t = 0;
     }
-    if (arg3 > 0x1000) {
-        arg3 = 0x1000;
+    if (t > 0x1000) {
+        t = 0x1000;
     }
-    if (arg4 < 0) {
-        arg4 = 0;
+    if (unusedT < 0) {
+        unusedT = 0;
     }
-    if (arg4 > 0x1000) {
-        arg4 = 0x1000;
+    if (unusedT > 0x1000) {
+        unusedT = 0x1000;
     }
-    arg0->lightColor[0].vx = wm_lerpShift(arg1->lightColor[0].vx, arg2->lightColor[0].vx, arg3, 0xD);
-    arg0->lightColor[0].vy = wm_lerpShift(arg1->lightColor[0].vy, arg2->lightColor[0].vy, arg3, 0xD);
-    arg0->lightColor[0].vz = wm_lerpShift(arg1->lightColor[0].vz, arg2->lightColor[0].vz, arg3, 0xD);
-    d = &arg0->lightColor[1].vx;
-    a = &arg1->lightColor[1].vx;
-    b = &arg2->lightColor[1].vx;
-    d[0] = wm_lerpShift(a[0], b[0], arg3, 0xD);
-    d[1] = wm_lerpShift(a[1], b[1], arg3, 0xD);
-    d[2] = wm_lerpShift(a[2], b[2], arg3, 0xD);
-    d = &arg0->lightColor[2].vx;
-    a = &arg1->lightColor[2].vx;
-    b = &arg2->lightColor[2].vx;
-    d[0] = wm_lerpShift(a[0], b[0], arg3, 0xD);
-    d[1] = wm_lerpShift(a[1], b[1], arg3, 0xD);
-    d[2] = wm_lerpShift(a[2], b[2], arg3, 0xD);
-    d = &arg0->backdropLightColor.vx;
-    a = &arg1->backdropLightColor.vx;
-    b = &arg2->backdropLightColor.vx;
-    d[0] = wm_lerpShift(a[0], b[0], arg3, 0xD);
-    d[1] = wm_lerpShift(a[1], b[1], arg3, 0xD);
-    d[2] = wm_lerpShift(a[2], b[2], arg3, 0xD);
-    d = arg0->fxBackColor;
-    a = arg1->fxBackColor;
-    b = arg2->fxBackColor;
-    d[0] = wm_lerpShift(a[0], b[0], arg3, 0xD);
-    d[1] = wm_lerpShift(a[1], b[1], arg3, 0xD);
-    d[2] = wm_lerpShift(a[2], b[2], arg3, 0xD);
-    arg0->shadowShade = wm_lerpShift((s16)arg1->shadowShade, (s16)arg2->shadowShade, arg3, 0xD);
-    d = &arg0->backColor.v.vx;
-    a = &arg1->backColor.v.vx;
-    b = &arg2->backColor.v.vx;
-    d[0] = wm_lerp(a[0] << 12, b[0] << 12, arg3) >> 12;
-    d[1] = wm_lerp(a[1] << 12, b[1] << 12, arg3) >> 12;
-    d[2] = wm_lerp(a[2] << 12, b[2] << 12, arg3) >> 12;
-    d = &arg0->backdropBackColor.v.vx;
-    a = &arg1->backdropBackColor.v.vx;
-    b = &arg2->backdropBackColor.v.vx;
-    d[0] = wm_lerp(a[0] << 12, b[0] << 12, arg3) >> 12;
-    d[1] = wm_lerp(a[1] << 12, b[1] << 12, arg3) >> 12;
-    d[2] = wm_lerp(a[2] << 12, b[2] << 12, arg3) >> 12;
-    d = arg0->fog[0].color;
-    a = arg1->fog[0].color;
-    b = arg2->fog[0].color;
-    d[0] = wm_lerp(a[0], b[0], arg3);
-    d[1] = wm_lerp(a[1], b[1], arg3);
-    d[2] = wm_lerp(a[2], b[2], arg3);
-    d = arg0->fog[1].color;
-    a = arg1->fog[1].color;
-    b = arg2->fog[1].color;
-    d[0] = wm_lerp(a[0], b[0], arg3);
-    d[1] = wm_lerp(a[1], b[1], arg3);
-    d[2] = wm_lerp(a[2], b[2], arg3);
-    d = arg0->fog[2].color;
-    a = arg1->fog[2].color;
-    b = arg2->fog[2].color;
-    d[0] = wm_lerp(a[0], b[0], arg3);
-    d[1] = wm_lerp(a[1], b[1], arg3);
-    d[2] = wm_lerp(a[2], b[2], arg3);
-    arg0->fog[0].fogOffset = wm_lerp(arg1->fog[0].fogOffset, arg2->fog[0].fogOffset, arg3);
-    arg0->fog[0].fogOffset2 = wm_lerp((u16)arg1->fog[0].fogOffset2, (u16)arg2->fog[0].fogOffset2, arg3);
-    arg0->fog[1].fogOffset = wm_lerp(arg1->fog[1].fogOffset, arg2->fog[1].fogOffset, arg3);
-    arg0->fog[1].fogOffset2 = wm_lerp((u16)arg1->fog[1].fogOffset2, (u16)arg2->fog[1].fogOffset2, arg3);
-    arg0->fog[2].fogOffset = wm_lerp(arg1->fog[2].fogOffset, arg2->fog[2].fogOffset, arg3);
-    arg0->fog[2].fogOffset2 = wm_lerp((u16)arg1->fog[2].fogOffset2, (u16)arg2->fog[2].fogOffset2, arg3);
-    arg0->fog[0].fogOffset &= 0xFFFE;
-    arg0->fog[0].fogOffset2 = (u16)arg0->fog[0].fogOffset2 & 0xFFFE;
-    arg0->fog[1].fogOffset &= 0xFFFE;
-    arg0->fog[1].fogOffset2 = (u16)arg0->fog[1].fogOffset2 & 0xFFFE;
-    arg0->fog[2].fogOffset &= 0xFFFE;
-    arg0->fog[2].fogOffset2 = (u16)arg0->fog[2].fogOffset2 & 0xFFFE;
+    out->lightColor[0].vx = wm_lerpShift(from->lightColor[0].vx, to->lightColor[0].vx, t, 0xD);
+    out->lightColor[0].vy = wm_lerpShift(from->lightColor[0].vy, to->lightColor[0].vy, t, 0xD);
+    out->lightColor[0].vz = wm_lerpShift(from->lightColor[0].vz, to->lightColor[0].vz, t, 0xD);
+    d = &out->lightColor[1].vx;
+    a = &from->lightColor[1].vx;
+    b = &to->lightColor[1].vx;
+    d[0] = wm_lerpShift(a[0], b[0], t, 0xD);
+    d[1] = wm_lerpShift(a[1], b[1], t, 0xD);
+    d[2] = wm_lerpShift(a[2], b[2], t, 0xD);
+    d = &out->lightColor[2].vx;
+    a = &from->lightColor[2].vx;
+    b = &to->lightColor[2].vx;
+    d[0] = wm_lerpShift(a[0], b[0], t, 0xD);
+    d[1] = wm_lerpShift(a[1], b[1], t, 0xD);
+    d[2] = wm_lerpShift(a[2], b[2], t, 0xD);
+    d = &out->backdropLightColor.vx;
+    a = &from->backdropLightColor.vx;
+    b = &to->backdropLightColor.vx;
+    d[0] = wm_lerpShift(a[0], b[0], t, 0xD);
+    d[1] = wm_lerpShift(a[1], b[1], t, 0xD);
+    d[2] = wm_lerpShift(a[2], b[2], t, 0xD);
+    d = out->fxBackColor;
+    a = from->fxBackColor;
+    b = to->fxBackColor;
+    d[0] = wm_lerpShift(a[0], b[0], t, 0xD);
+    d[1] = wm_lerpShift(a[1], b[1], t, 0xD);
+    d[2] = wm_lerpShift(a[2], b[2], t, 0xD);
+    out->shadowShade = wm_lerpShift((s16)from->shadowShade, (s16)to->shadowShade, t, 0xD);
+    d = &out->backColor.v.vx;
+    a = &from->backColor.v.vx;
+    b = &to->backColor.v.vx;
+    d[0] = wm_lerp(a[0] << 12, b[0] << 12, t) >> 12;
+    d[1] = wm_lerp(a[1] << 12, b[1] << 12, t) >> 12;
+    d[2] = wm_lerp(a[2] << 12, b[2] << 12, t) >> 12;
+    d = &out->backdropBackColor.v.vx;
+    a = &from->backdropBackColor.v.vx;
+    b = &to->backdropBackColor.v.vx;
+    d[0] = wm_lerp(a[0] << 12, b[0] << 12, t) >> 12;
+    d[1] = wm_lerp(a[1] << 12, b[1] << 12, t) >> 12;
+    d[2] = wm_lerp(a[2] << 12, b[2] << 12, t) >> 12;
+    d = out->fog[0].color;
+    a = from->fog[0].color;
+    b = to->fog[0].color;
+    d[0] = wm_lerp(a[0], b[0], t);
+    d[1] = wm_lerp(a[1], b[1], t);
+    d[2] = wm_lerp(a[2], b[2], t);
+    d = out->fog[1].color;
+    a = from->fog[1].color;
+    b = to->fog[1].color;
+    d[0] = wm_lerp(a[0], b[0], t);
+    d[1] = wm_lerp(a[1], b[1], t);
+    d[2] = wm_lerp(a[2], b[2], t);
+    d = out->fog[2].color;
+    a = from->fog[2].color;
+    b = to->fog[2].color;
+    d[0] = wm_lerp(a[0], b[0], t);
+    d[1] = wm_lerp(a[1], b[1], t);
+    d[2] = wm_lerp(a[2], b[2], t);
+    out->fog[0].fogOffset = wm_lerp(from->fog[0].fogOffset, to->fog[0].fogOffset, t);
+    out->fog[0].fogOffset2 = wm_lerp((u16)from->fog[0].fogOffset2, (u16)to->fog[0].fogOffset2, t);
+    out->fog[1].fogOffset = wm_lerp(from->fog[1].fogOffset, to->fog[1].fogOffset, t);
+    out->fog[1].fogOffset2 = wm_lerp((u16)from->fog[1].fogOffset2, (u16)to->fog[1].fogOffset2, t);
+    out->fog[2].fogOffset = wm_lerp(from->fog[2].fogOffset, to->fog[2].fogOffset, t);
+    out->fog[2].fogOffset2 = wm_lerp((u16)from->fog[2].fogOffset2, (u16)to->fog[2].fogOffset2, t);
+    out->fog[0].fogOffset &= 0xFFFE;
+    out->fog[0].fogOffset2 = (u16)out->fog[0].fogOffset2 & 0xFFFE;
+    out->fog[1].fogOffset &= 0xFFFE;
+    out->fog[1].fogOffset2 = (u16)out->fog[1].fogOffset2 & 0xFFFE;
+    out->fog[2].fogOffset &= 0xFFFE;
+    out->fog[2].fogOffset2 = (u16)out->fog[2].fogOffset2 & 0xFFFE;
 }
 
 void wm_weatherInit(void) {

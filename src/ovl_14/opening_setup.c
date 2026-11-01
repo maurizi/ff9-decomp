@@ -99,16 +99,16 @@ void opening_loadMusic(void) {
 }
 
 void opening_loadData(void) {
-    u8 *buf;
+    u8 *data;
     FileEntry *e;
 
-    buf = g_loadAreaEnd + 0x10000;
+    data = g_loadAreaEnd + 0x10000;
     e = file_find(DIR_COMMON, FILE_OPENING_DATA);
-    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, buf, 0, -1, 0);
+    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, data, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    g_openingData = buf;
-    db_register((s32)buf, 0);
+    g_openingData = data;
+    db_register((s32)data, 0);
 }
 
 void opening_freeData(void) {
@@ -266,12 +266,12 @@ s32 opening_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     return -1;
 }
 
-void opening_setMusicVolume(s32 arg0, s32 arg1) {
+void opening_setMusicVolume(s32 volume, s32 frames) {
     GameData *ctx = g_gameState->gameData;
 
-    ctx->musicVolume[0] = arg0;
-    if (arg0 == 0) {
-        ctx->musicFadeFrames = arg1;
+    ctx->musicVolume[0] = volume;
+    if (volume == 0) {
+        ctx->musicFadeFrames = frames;
         ctx->musicFadeStart = VSync(-1);
     }
 }

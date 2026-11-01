@@ -1658,7 +1658,7 @@ void wm_naviDrawChocograph(void);
 void game_updateWindows(void); /* main */
 void menu_update(void); /* main */
 void msg_setOtz(s32 a); /* main */
-s32 swirl_update(s16 arg0, s16 arg1); /* main */
+s32 swirl_update(s16 startX, s16 startY); /* main */
 void *w_framePackGetPtr(void **pack, s32 idx);
 void w_movementChangeSP1(void);
 void w_movementChangeSP2(void);

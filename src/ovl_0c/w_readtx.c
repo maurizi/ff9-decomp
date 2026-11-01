@@ -1,7 +1,7 @@
 #include "ovl_0c.h"
 
-s32 w_readtxRequest(arg0)
-    s16 arg0;
+s32 w_readtxRequest(texId)
+    s16 texId;
 {
     WmReadtxSlot *p;
     u32 i;
@@ -9,7 +9,7 @@ s32 w_readtxRequest(arg0)
     p = g_worldReadtxHead.next;
     i = 0;
     while (1) {
-        if (p->texId == arg0) {
+        if (p->texId == texId) {
             p->prev->next = p->next;
             p->next->prev = p->prev;
             p->next = g_worldReadtxHead.next;
@@ -25,7 +25,7 @@ s32 w_readtxRequest(arg0)
                 printf("==== ERROR ===== / %s", g_worldMapErrorMsg);
                 g_worldMapError = 1;
             }
-            p->texId = arg0;
+            p->texId = texId;
             p->prev->next = p->next;
             p->next->prev = p->prev;
             p->next = g_worldReadtxHead.next;
@@ -92,29 +92,29 @@ void wm_readtxUpdate(void) {
 }
 
 /* find the loaded frame pack for (id, variant) */
-s32 wm_readtxFind(s32 arg0, s32 arg1) {
+s32 wm_readtxFind(s32 texId, s32 variant) {
     WmReadtxSlot *p = g_worldReadtxHead.next;
     s32 i;
 
     for (i = 0; i < 3; i++, p = p->next) {
-        if ((p->texId & 0x3F) == (arg0 & 0x3F) && p->extracted == (arg1 & 0xFF)) {
+        if ((p->texId & 0x3F) == (texId & 0x3F) && p->extracted == (variant & 0xFF)) {
             return (s32)p->pack;
         }
     }
     return 0;
 }
 
-void wm_readtxDone(s32 *arg0) {
+void wm_readtxDone(s32 *pack) {
     WmReadtxSlot *p;
     s32 i;
 
     if (g_worldMapDebugFlags & WM_DEBUG_TEXTURE) {
-        printf(s_wmStrReadtxDone, arg0);
+        printf(s_wmStrReadtxDone, pack);
     }
-    w_frameExtruct(arg0);
+    w_frameExtruct(pack);
     p = g_worldReadtxHead.next;
     for (i = 0; i < 3;) {
-        if (p->pack == arg0) {
+        if (p->pack == pack) {
             p->extracted = 1;
             return;
         }

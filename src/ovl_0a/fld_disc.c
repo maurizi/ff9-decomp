@@ -1,9 +1,9 @@
 #include "ovl_0a.h"
 
-void fld_requestDiscChange(s32 arg0, s16 arg1) {
-    g_fieldDiscChange.discMask = 1 << arg0;
-    g_fieldDiscChange.disc = arg0;
-    g_fieldDiscChange.fieldId = arg1;
+void fld_requestDiscChange(s32 disc, s16 fieldId) {
+    g_fieldDiscChange.discMask = 1 << disc;
+    g_fieldDiscChange.disc = disc;
+    g_fieldDiscChange.fieldId = fieldId;
     g_fieldDiscChange.areaId = -1;
     g_gameState->gameData->ctx.field->flags |= FLD_MAP_DISC_CHANGE;
     g_gameState->flags |= GS_FLD_NEW_FIELD;
@@ -95,12 +95,12 @@ void fld_discChangeEndFrame(void) {
     gfx_setBuffer(g_gameState->gameData->drawBuf);
 }
 
-void fld_discChangeSetMode(s32 arg0) {
-    if (arg0 != g_fieldDiscChange.mode) {
+void fld_discChangeSetMode(s32 mode) {
+    if (mode != g_fieldDiscChange.mode) {
         if (g_fieldDiscChangeModes[g_fieldDiscChange.mode].leave != NULL) {
             g_fieldDiscChangeModes[g_fieldDiscChange.mode].leave();
         }
-        g_fieldDiscChange.mode = arg0;
+        g_fieldDiscChange.mode = mode;
         if (g_fieldDiscChangeModes[g_fieldDiscChange.mode].enter != NULL) {
             g_fieldDiscChangeModes[g_fieldDiscChange.mode].enter();
         }

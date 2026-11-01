@@ -1,14 +1,14 @@
 #include "ovl_15.h"
 
-s32 ending_playMovie(s32 arg0, s32 arg1) {
-    u8 *buf;
+s32 ending_playMovie(s32 list, s32 entry) {
+    u8 *mbgWork;
     s32 timer;
     s32 i;
     s32 r;
 
-    buf = g_loadAreaEnd + 0x106700;
+    mbgWork = g_loadAreaEnd + 0x106700;
     timer = -1;
-    ending_movieInit(arg0, arg1);
+    ending_movieInit(list, entry);
     do {
         ending_movieClearOt();
         pad_update();
@@ -31,10 +31,10 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             g_movieFlagQueue[0][i] = MOVIE_PLAYING;
             g_gameState->vsyncMode = 4;
             DrawSync(0);
-            MBG_init(1, &buf);
+            MBG_init(1, &mbgWork);
             mbg_setRgb24(1);
             mbg_setEndCallback(ending_movieOnEnd);
-            mbg_play(arg0, arg1);
+            mbg_play(list, entry);
             g_movieState = MOVIE_ST_PLAY;
             break;
         case MOVIE_ST_PLAY:
@@ -67,7 +67,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
     return 0;
 }
 
-s32 ending_movieInit(s32 arg0, s32 arg1) {
+s32 ending_movieInit(s32 list, s32 entry) {
     FileEntry *e;
     s32 h;
     s32 i;
@@ -83,7 +83,7 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
     FlushCache();
     ExitCriticalSection();
     if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_4)) {
-        h = cd_findFile(g_mbgMovieLists[arg0].movies[arg1].path);
+        h = cd_findFile(g_mbgMovieLists[list].movies[entry].path);
         cd_seekStreamAsync(h);
         while (cd_getState() != 0) {
         }
@@ -559,15 +559,15 @@ end:
 }
 
 s32 bj_handOptions(BjHand *hand) {
-    s32 ret = 0;
+    s32 options = 0;
 
     if (hand->count == 2) {
-        ret = BJ_CAN_DOUBLE;
+        options = BJ_CAN_DOUBLE;
         if ((u32)hand->cards[0] >> 2 == (u32)hand->cards[1] >> 2) {
-            ret = BJ_CAN_DOUBLE | BJ_CAN_SPLIT;
+            options = BJ_CAN_DOUBLE | BJ_CAN_SPLIT;
         }
     }
-    return ret;
+    return options;
 }
 
 s32 bj_drawHand(BjHand *hand, s32 dx, s32 dy, s32 count) {
@@ -629,7 +629,7 @@ INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjStrDouble);
 INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjStrSplit);
 
 s32 bj_main(void) {
-    char buf[16];
+    char text[16];
     s32 ofsX[3];
     s32 ofsY[3];
     BjHand dealer;
@@ -640,7 +640,7 @@ s32 bj_main(void) {
     s32 nsplit;
     s32 cnt;
     s32 i;
-    s32 res;
+    s32 result;
     s32 x;
     s32 y;
     s32 dx;
@@ -656,7 +656,7 @@ s32 bj_main(void) {
     g_bjWager = BJ_MIN_BET;
     bj_handInit(&player, BJ_HAND_X, BJ_PLAYER_Y);
     bj_handInit(&dealer, BJ_HAND_X, BJ_DEALER_Y);
-    res = BJ_RESULT_WIN;
+    result = BJ_RESULT_WIN;
     i = 0;
     cur = &player;
     nsplit = 0;
@@ -965,34 +965,34 @@ s32 bj_main(void) {
             if (t == -1) {
                 if (nsplit == 1) {
                     if (player.value >= BJ_BUST) {
-                        res = BJ_RESULT_LOSE;
+                        result = BJ_RESULT_LOSE;
                         snd_playSe(BJ_SE_LOSE);
                         g_bjBankroll -= (player.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                     } else if (dealer.value >= BJ_BUST || dealer.value < player.value) {
-                        res = BJ_RESULT_WIN;
+                        result = BJ_RESULT_WIN;
                         snd_playSe(BJ_SE_WIN);
                         g_bjBankroll += (player.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                     } else {
-                        res = BJ_RESULT_PUSH;
+                        result = BJ_RESULT_PUSH;
                         if (player.value != dealer.value) {
-                            res = BJ_RESULT_LOSE;
+                            result = BJ_RESULT_LOSE;
                             snd_playSe(BJ_SE_LOSE);
                             g_bjBankroll -= (player.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                         }
                     }
                 } else {
                     if (split.value >= BJ_BUST) {
-                        res = BJ_RESULT_LOSE;
+                        result = BJ_RESULT_LOSE;
                         snd_playSe(BJ_SE_LOSE);
                         g_bjBankroll -= (split.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                     } else if (dealer.value >= BJ_BUST || dealer.value < split.value) {
-                        res = BJ_RESULT_WIN;
+                        result = BJ_RESULT_WIN;
                         snd_playSe(BJ_SE_WIN);
                         g_bjBankroll += (split.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                     } else {
-                        res = BJ_RESULT_PUSH;
+                        result = BJ_RESULT_PUSH;
                         if (split.value != dealer.value) {
-                            res = BJ_RESULT_LOSE;
+                            result = BJ_RESULT_LOSE;
                             snd_playSe(BJ_SE_LOSE);
                             g_bjBankroll -= (split.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                         }
@@ -1010,7 +1010,7 @@ s32 bj_main(void) {
                 } else {
                     a = (BJ_RESULT_FRAMES - t) * 16;
                 }
-                bj_drawResult(res, a, 0x6C, nsplit == 1 ? player.y + 12 : split.y + 12);
+                bj_drawResult(result, a, 0x6C, nsplit == 1 ? player.y + 12 : split.y + 12);
                 t--;
             } else {
                 t = -1;
@@ -1155,59 +1155,59 @@ s32 bj_main(void) {
         if (g_bjState >= BJ_ST_PLAYER) {
             bj_drawHand(&dealer, ofsX[0], ofsY[0], -1);
             if (dealer.count != 0 && g_bjState >= BJ_ST_DEALER) {
-                sprintf(buf, g_bjFmt2d, dealer.value);
-                ui_drawSmallDigits(10, dealer.y + 0x20, 0x10, buf, TEXT_PAL_WHITE);
+                sprintf(text, g_bjFmt2d, dealer.value);
+                ui_drawSmallDigits(10, dealer.y + 0x20, 0x10, text, TEXT_PAL_WHITE);
             }
             if (nsplit == 2) {
                 bj_drawHand(&split, ofsX[2], ofsY[2], -1);
                 if (split.count != 0) {
-                    sprintf(buf, g_bjFmt2d, split.value);
-                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, TEXT_PAL_WHITE);
+                    sprintf(text, g_bjFmt2d, split.value);
+                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, text, TEXT_PAL_WHITE);
                     if (split.value != BJ_BLACKJACK && (split.flags & BJ_HAND_SOFT)) {
-                        sprintf(buf, g_bjFmt2d, split.hardValue);
-                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, TEXT_PAL_CYAN);
+                        sprintf(text, g_bjFmt2d, split.hardValue);
+                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, text, TEXT_PAL_CYAN);
                     }
                 }
             }
             bj_drawHand(&player, ofsX[1], ofsY[1], -1);
             if (player.count != 0) {
-                sprintf(buf, g_bjFmt2d, player.value);
-                ui_drawSmallDigits(10, player.y + 0x20, 0x10, buf, TEXT_PAL_WHITE);
+                sprintf(text, g_bjFmt2d, player.value);
+                ui_drawSmallDigits(10, player.y + 0x20, 0x10, text, TEXT_PAL_WHITE);
                 if (player.value != BJ_BLACKJACK && (player.flags & BJ_HAND_SOFT)) {
-                    sprintf(buf, g_bjFmt2d, player.hardValue);
-                    ui_drawSmallDigits(10, player.y + 0x2A, 0x10, buf, TEXT_PAL_CYAN);
+                    sprintf(text, g_bjFmt2d, player.hardValue);
+                    ui_drawSmallDigits(10, player.y + 0x2A, 0x10, text, TEXT_PAL_CYAN);
                 }
             }
             if (nsplit == 1) {
                 bj_drawHand(&split, ofsX[2], ofsY[2], -1);
                 if (split.count != 0) {
-                    sprintf(buf, g_bjFmt2d, split.value);
-                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, TEXT_PAL_WHITE);
+                    sprintf(text, g_bjFmt2d, split.value);
+                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, text, TEXT_PAL_WHITE);
                     if (split.value != BJ_BLACKJACK && (split.flags & BJ_HAND_SOFT)) {
-                        sprintf(buf, g_bjFmt2d, split.hardValue);
-                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, TEXT_PAL_CYAN);
+                        sprintf(text, g_bjFmt2d, split.hardValue);
+                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, text, TEXT_PAL_CYAN);
                     }
                 }
             }
         }
         bj_drawShoe(BJ_SHOE_X, BJ_SHOE_Y);
         addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + BJ_OTZ, &g_bjTpage);
-        sprintf(buf, g_bjStrBankroll);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x58, 0x10, buf, TEXT_PAL_YELLOW);
-        sprintf(buf, g_bjFmtLong, g_bjBankroll);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x64, 0x10, buf, TEXT_PAL_CYAN);
-        sprintf(buf, g_bjStrWager);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x70, 0x10, buf, TEXT_PAL_YELLOW);
-        sprintf(buf, g_bjFmtLong, g_bjWager);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x7C, 0x10, buf, TEXT_PAL_WHITE);
-        sprintf(buf, g_bjStrStand);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x90, 0x10, buf, TEXT_PAL_WHITE);
-        sprintf(buf, g_bjStrHit);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xA0, 0x10, buf, TEXT_PAL_WHITE);
-        sprintf(buf, g_bjStrDouble);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xB0, 0x10, buf, g_bjCanDouble ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-        sprintf(buf, g_bjStrSplit);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xC0, 0x10, buf, g_bjCanSplit ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+        sprintf(text, g_bjStrBankroll);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x58, 0x10, text, TEXT_PAL_YELLOW);
+        sprintf(text, g_bjFmtLong, g_bjBankroll);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x64, 0x10, text, TEXT_PAL_CYAN);
+        sprintf(text, g_bjStrWager);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x70, 0x10, text, TEXT_PAL_YELLOW);
+        sprintf(text, g_bjFmtLong, g_bjWager);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x7C, 0x10, text, TEXT_PAL_WHITE);
+        sprintf(text, g_bjStrStand);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0x90, 0x10, text, TEXT_PAL_WHITE);
+        sprintf(text, g_bjStrHit);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0xA0, 0x10, text, TEXT_PAL_WHITE);
+        sprintf(text, g_bjStrDouble);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0xB0, 0x10, text, g_bjCanDouble ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+        sprintf(text, g_bjStrSplit);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(text) >> 1), 0xC0, 0x10, text, g_bjCanSplit ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
         g_padActuator[0].smallMotor = 0;
         if (cnt > 0) {
             cnt--;
