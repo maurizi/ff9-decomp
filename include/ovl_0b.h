@@ -738,15 +738,15 @@ typedef struct {
     BtlUnit *caster; /* id 0x10 */
     BtlUnit *targets[8]; /* ids 0..7 */
     u8 targetCount; /* count of targets */
-    u8 fxArgs[2]; /* btl_playCmdEffect arg2[0-1] - unit ids (btlfx_setPartnerByArg) or bone numbers (btlfx_getUnitArgBone*) */
+    u8 fxArgs[2]; /* btl_playCmdEffect fxArgs[0-1] - unit ids (btlfx_setPartnerByArg) or bone numbers (btlfx_getUnitArgBone*) */
     u8 bounceCount; /* count of bounced */
     BtlUnit *bounced[4]; /* ids 8..: units a reflected spell bounces to (btl_playCmdEffect) */
     s16 centerX; /* average target position (btl_playCmdEffect) */
     s16 centerY;
     s16 centerZ;
     u8 pad3E[0x40 - 0x3E];
-    u16 kind; /* BTL_FXK_* (btl_playCmdEffect: from the command, or arg2[3]) */
-    u16 fxParam; /* btl_playCmdEffect arg2[2] (fx_031: distance ahead of the fxArgs bones) */
+    u16 kind; /* BTL_FXK_* (btl_playCmdEffect: from the command, or fxArgs[3]) */
+    u16 fxParam; /* btl_playCmdEffect fxArgs[2] (fx_031: distance ahead of the fxArgs bones) */
     BtlUnit *partner; /* id 0x11: the Swd Mag partner (character kind 2) */
     u8 pad48[0x4C - 0x48];
 } BtlUnitList; /* 0x4C */
