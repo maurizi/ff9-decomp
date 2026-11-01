@@ -22,3 +22,4 @@ fx_0fb_0_ribbons = 0x801EB40C; // [code] four 12-step ribbon histories (Fx0fb0Se
 fx_0fb_0_strips = 0x801EB70C; // [code] ten 16-point strip buffers drawn with btlfx_drawTrail mode 2 at the fx_0fb_0_trailBones
 fx_0fb_0_drawWaveSheet = 0x801E7B90; // type:func [code] 32 rows of 16 textured quads (POLY_FT4, POLY_GT4 fading at both side columns) at pos rotated and scaled, rows swayed sideways by a sine (amp, phase step)
 fx_0fb_0_drawWaveCurtain = 0x801E809C; // type:func [code] 44 textured POLY_GT4 in a band along x hanging dy below pos, swayed in z by sines (amp, phase steps), fading downward
+fx_0fb_0_ribbonRgb1 = 0x801EB35C; // [code] fx_0fb_0_ribbonRgb from entry 1 on, the b edge colours fx_0fb_0_op80 passes to fxm_drawRibbonTrail

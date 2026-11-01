@@ -27,7 +27,7 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx049Strip *strip, s3
         width += dwidth + *tbl++;
         p++;
     }
-    if (kind < 2) {
+    if (kind < FX_049_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip16Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
                           (u8 *)strip, 0);
     } else {
@@ -64,7 +64,7 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx049Strip *strip, s32
         width += dwidth + *tbl++ / 2;
         p++;
     }
-    if (kind < 2) {
+    if (kind < FX_049_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_049_strip4Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
                           (u8 *)strip, 0);
     } else {
@@ -119,12 +119,12 @@ static s32 fx_049_op83PoolTask(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk801
     switch (it->state11) {
     case 0:
         t = frame << 9;
-        if (it->kind14 < 2) {
+        if (it->kind14 < FX_049_STRIP_FLAT) {
             c = ex->math_cos(t >> 2);
             strip = &fx_049_strips[it->strip10];
             br = (Fx049Strip *)&fx_049_branches[it->strip10];
             w = it->width15;
-            if (w == 0xFF) {
+            if (w == FX_049_WIDTH_DEFAULT) {
                 w = -0x20;
             }
             fxm_drawJaggedStrip16(entry, strip, it->jitter18, &it->pos0, &it->pos8, 0, 0x200, frame * 0x97, 0x186, frame, c,
@@ -136,7 +136,7 @@ static s32 fx_049_op83PoolTask(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk801
                 if (it->emit1C != NULL) {
                     it->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
-                if ((it->strip10 & 1) && it->width15 != 0xFF) {
+                if ((it->strip10 & 1) && it->width15 != FX_049_WIDTH_DEFAULT) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0xC, 0x46);
                     p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&it->pos0);
                     if (p != NULL) {
@@ -220,25 +220,25 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (kind > 0) {
             work->boltCountC++;
             BTLFX_COPY_SVEC(&a, &work->pos0);
-            if (kind != 2) {
+            if (kind != FX_049_BOLT_STRIKE) {
                 a.vx += ex->btlfx_randCentered(0x200);
                 a.vy += ex->btlfx_randCentered(0x300);
                 a.vz += ex->btlfx_randCentered(0x200);
             }
-            if (kind != 3) {
+            if (kind != FX_049_BOLT_PAIR) {
                 it = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (it != NULL) {
                     BTLFX_COPY_SVEC(&it->pos0, &a);
                     BTLFX_COPY_SVEC(&b, &a);
                     b.vy -= 0xC00;
                     r = ex->btlfx_randCentered(0x100) + 0x640;
-                    if (kind != 2) {
+                    if (kind != FX_049_BOLT_STRIKE) {
                         r = r * 3 / 8;
                     }
                     ang = (work->boltCountC << 10) - 0x200 + ex->btlfx_randCentered(0x100);
                     b.vx += (ex->math_cos(ang) * r) >> 12;
                     b.vz += (ex->math_sin(ang) * r) >> 12;
-                    if (kind != 2) {
+                    if (kind != FX_049_BOLT_STRIKE) {
                         it->pos0.vx = b.vx;
                         it->pos0.vz = b.vz;
                     }
@@ -248,9 +248,9 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     it->branchAt12 = ex->btlfx_rand() % 14;
                     it->branchAt13 = ex->btlfx_rand() % 14;
                     it->width15 = 0;
-                    if (kind == 1) {
-                        it->kind14 = 2;
-                    } else if (kind == 2) {
+                    if (kind == FX_049_BOLT_FLAT) {
+                        it->kind14 = FX_049_STRIP_FLAT;
+                    } else if (kind == FX_049_BOLT_STRIKE) {
                         it->kind14 = ex->btlfx_rand() & 1;
                     }
                 }
@@ -305,7 +305,7 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 it->branchAt12 = ex->btlfx_rand() % 14;
                 it->branchAt13 = ex->btlfx_rand() % 14;
                 it->kind14 = ex->btlfx_rand() & 1;
-                it->width15 = 0xFF;
+                it->width15 = FX_049_WIDTH_DEFAULT;
             }
         }
         if (frame >= 0x30) {

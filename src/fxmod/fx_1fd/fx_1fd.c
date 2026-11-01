@@ -720,7 +720,7 @@ static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
 
 static void fxm_camChanReset(void) {
     s32 i;
-    s32 m = -1;
+    s32 m = FX_1FD_KEY_FREE;
 
     for (i = 63; i >= 0; i--) {
         fx_1fd_camKeys[i].timer6 = m;
@@ -737,7 +737,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     data++;
     c = *data;
     for (i = 0; i < 64; i++) {
-        if (fx_1fd_camKeys[i].timer6 == -1) {
+        if (fx_1fd_camKeys[i].timer6 == FX_1FD_KEY_FREE) {
             fx_1fd_camKeys[i].timer6 = 0;
             fx_1fd_camKeys[i].keys0 = data;
             fx_1fd_camKeys[i].startFrame4 = start;

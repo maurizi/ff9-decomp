@@ -56,6 +56,12 @@ typedef struct {
     Pool6CEntry *emit20;
     Pool6CEntry *emit24;
 } Fx0fb1Rock; /* 0x28 */
+/* Fx0fb1Rock.kind0 */
+#define FX_0FB_1_ROCK_BIG 0 /* model4C; bursts into three shards near the model */
+#define FX_0FB_1_ROCK_SMALL 1 /* model50 */
+#define FX_0FB_1_ROCK_SHARD 2 /* model50, from a burst */
+#define FX_0FB_1_ROCK_PASS 3 /* as BIG, but flies past and ends off screen */
+#define FX_0FB_1_SPARK 4 /* particles, no model or spin */
 
 typedef struct {
     u8 pad0[0x4C];
@@ -127,6 +133,5 @@ extern u8 fx_0fb_1_gradient[];
 extern s16 fx_0fb_1_modelBlocks[2];
 extern s16 fx_0fb_1_rockOffsets[];
 extern Fx0fb1Ring fx_0fb_1_strips[2];
-extern BtlModelBuf D_801F0D3C[];
 
 #endif

@@ -22,13 +22,14 @@ typedef struct {
     u8 state11; /* state */
     u8 branchAt12;
     u8 branchAt13;
-    u8 kind14; /* kind */
+    u8 kind14; /* strip kind: file block, and < FX_0D8_STRIP_FLAT screen-space */
     u8 width15;
     s16 unk16; /* unused */
     s32 *jitter18;
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;
 } Fx0d8Part; /* pool entry data */
+#define FX_0D8_STRIP_FLAT 2 /* kind14 from here on: the strips draw flat (btlfx_drawTrail mode 2, else mode 0) */
 
 /* fx_003 copies (asm) */
 static s32 fx_0d8_op83PoolTask(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);

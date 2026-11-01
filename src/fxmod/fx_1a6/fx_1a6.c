@@ -39,7 +39,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 n = *arg4;
         fx_1a6_env = env;
         work->index48 = n;
-        if (n >= 3) {
+        if (n >= FX_1A6_SHOTS) {
             return 1;
         }
         ex->btlfx_playFileSound(2, entry->file, -1);
@@ -91,7 +91,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 6:
-            if (work->index48 != 2) {
+            if (work->index48 != FX_1A6_LAST_SHOT) {
                 fxm_startHitMotionIfActive(0);
             }
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);

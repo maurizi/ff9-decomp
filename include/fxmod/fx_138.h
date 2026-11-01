@@ -56,7 +56,7 @@ typedef struct {
     u8 pad10[0x18 - 0x10];
 } Fx138Ring; /* 0x18 */
 
-extern Fx138Ring D_801E8408[3]; /* set up from a fx_138_randSets row, never read (runtime watch, round 33): slot reels that were never drawn? */
+extern Fx138Ring fx_138_reels[3]; /* set up from a fx_138_randSets row, never read (runtime watch, round 33): slot reels that were never drawn? */
 extern u16 fx_138_randSets[6][4];
 extern u16 fx_138_modelFileIds[3];
 extern u16 fx_138_pathFileIds[6];

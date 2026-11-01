@@ -11,7 +11,7 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 n = *arg4;
         fx_185_env = env;
         work->index38 = n;
-        if (n >= 0x10) {
+        if (n >= FX_185_SPEARS) {
             return 1;
         }
         if (n == 0) {
@@ -47,7 +47,7 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_SetEffModelSlice(work->model3C, work->pos18.vy);
         ex->Hi_DrawSliceEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model3C);
         if (frame >= 4) {
-            if (work->index38 == 0xF) {
+            if (work->index38 == FX_185_LAST_SPEAR) {
                 ex->btlfx_clearEffModels();
             }
             return 1;

@@ -14,6 +14,8 @@ typedef struct {
     s32 index38; /* index */
     u16 model3C; /* model */
 } Fx185Work80;
+#define FX_185_SPEARS 0x10 /* instances, one per spear */
+#define FX_185_LAST_SPEAR (FX_185_SPEARS - 1) /* clears the models when done */
 
 typedef struct {
     Pool6CEntry *emit0;

@@ -72,7 +72,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         fx_1be_scrollPos = 8;
         fx_1be_scrollSpeed = 8;
-        D_801E95D0 = 2;
+        fx_1be_unusedScroll = 2;
         for (i = 0; i < env->targets->targetCount; i++) {
             fx_1be_units[i].timer34 = ex->btlfx_rand() & 7;
             fx_1be_units[i].timer30 = 0x28;

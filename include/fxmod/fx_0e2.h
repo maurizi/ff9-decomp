@@ -283,6 +283,7 @@ typedef struct {
     u16 stepsE;
 } Fx0e2Track; /* 0x10 */
 extern Fx0e2Track fx_0e2_camTracks[];
+#define FX_0E2_KEY_FREE (-1) /* left6: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 extern s32 fx_0e2_camChanFrame[];
 static void fxm_camChanReset(void);
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);

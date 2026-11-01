@@ -92,6 +92,7 @@ typedef struct {
     u16 countE;
 } Fx1bdTrack; /* 0x10 */
 extern Fx1bdTrack fx_1bd_camKeys[];
+#define FX_1BD_KEY_FREE (-1) /* timer6: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 extern s32 fx_1bd_camChanFrames[];
 static void fxm_camChanReset(void);
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);

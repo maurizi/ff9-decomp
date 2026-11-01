@@ -24,6 +24,8 @@ typedef struct {
     SVECTOR angle40;
     s32 index48; /* index */
 } Fx1a6Work80; /* 0x4C */
+#define FX_1A6_SHOTS 3 /* instances, one per shot */
+#define FX_1A6_LAST_SHOT (FX_1A6_SHOTS - 1) /* starts no hit motion */
 
 extern u16 fx_1a6_emitFileIds[3]; /* files */
 extern s32 (*fx_1a6_op80ParticleMotions[3])();

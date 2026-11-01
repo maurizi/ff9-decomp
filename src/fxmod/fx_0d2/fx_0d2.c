@@ -877,7 +877,7 @@ static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
 
 static void fxm_camChanReset(void) {
     s32 i;
-    s32 m = -1;
+    s32 m = FX_0D2_KEY_FREE;
 
     for (i = 63; i >= 0; i--) {
         fx_0d2_camChans[i].left6 = m;
@@ -894,7 +894,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     data++;
     c = *data;
     for (i = 0; i < 64; i++) {
-        if (fx_0d2_camChans[i].left6 == -1) {
+        if (fx_0d2_camChans[i].left6 == FX_0D2_KEY_FREE) {
             fx_0d2_camChans[i].left6 = 0;
             fx_0d2_camChans[i].data0 = data;
             fx_0d2_camChans[i].start4 = start;

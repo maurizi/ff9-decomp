@@ -87,7 +87,7 @@ static void fxm_camKeyReset(void) {
     s32 m;
 
     fx_105_camFrame = 0;
-    m = -1;
+    m = FX_105_KEY_FREE;
     for (i = 15; i >= 0; i--) {
         fx_105_camKeys[i].timer4 = m;
     }
@@ -97,7 +97,7 @@ static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data) {
     s32 i;
 
     for (i = 0; i < 16; i++) {
-        if (fx_105_camKeys[i].timer4 == -1) {
+        if (fx_105_camKeys[i].timer4 == FX_105_KEY_FREE) {
             fx_105_camKeys[i].timer4 = 0;
             fx_105_camKeys[i].keys10 = data + 1;
             fx_105_camKeys[i].frame0 = start;

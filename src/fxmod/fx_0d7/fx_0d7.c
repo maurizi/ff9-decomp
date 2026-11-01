@@ -27,7 +27,7 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d7Strip *strip, s3
         width += dwidth + *tbl++;
         p++;
     }
-    if (kind < 2) {
+    if (kind < FX_0D7_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d7_strip16Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
                           (u8 *)strip, 0);
     } else {
@@ -64,7 +64,7 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d7Strip *strip, s32
         width += dwidth + *tbl++ / 2;
         p++;
     }
-    if (kind < 2) {
+    if (kind < FX_0D7_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d7_strip4Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
                           (u8 *)strip, 0);
     } else {
@@ -98,7 +98,7 @@ static s32 fx_0d7_op83PoolTask(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk801
     }
     switch (it->state11) {
     case 0:
-        if (it->kind14 < 2) {
+        if (it->kind14 < FX_0D7_STRIP_FLAT) {
             t = (frame << 12) / 6;
             c = ex->math_cos(t >> 2);
             strip = &fx_0d7_strips[it->strip10];

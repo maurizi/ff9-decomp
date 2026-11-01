@@ -25,6 +25,8 @@ typedef struct {
     s32 instance6C; /* instance (0..4) */
     u16 model70; /* model */
 } Fx09bWork;
+#define FX_09B_SHOTS 5 /* instances, one per shot */
+#define FX_09B_LAST_SHOT (FX_09B_SHOTS - 1) /* no hit motion; clears the models when done */
 
 extern s32 fx_09b_shotBlocks[5]; /* particle files */
 extern s32 (*fx_09b_pinParticles[5])(); /* motion callbacks */

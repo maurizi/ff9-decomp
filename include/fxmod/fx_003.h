@@ -33,11 +33,12 @@ typedef struct {
     u8 state11; /* state */
     u8 branchAt12; /* branch points */
     u8 branchAt13;
-    s16 kind14; /* kind */
+    s16 kind14; /* strip kind: file block, and < FX_003_STRIP_FLAT screen-space */
     s32 *jitter18; /* jitter table (fx_003_jitter) */
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;
 } Fx003Bolt; /* 0x24 */
+#define FX_003_STRIP_FLAT 2 /* kind14 from here on: the strips draw flat (btlfx_drawTrail mode 2, else mode 0) */
 
 typedef struct {
     SVECTOR pos0; /* target body position */

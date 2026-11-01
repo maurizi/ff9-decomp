@@ -47,6 +47,10 @@ typedef struct {
     s16 targetZ20; /* target z */
     s16 width22; /* trail width */
 } Fx17d5Spark; /* 0x24 */
+/* Fx17d5Spark.angle10 at spawn (state 1 on): how the spark hits */
+#define FX_17D_5_HIT_BURST 0 /* emitter burst */
+#define FX_17D_5_HIT_RING 1 /* rings and a random screen tint */
+#define FX_17D_5_HIT_FINAL 2 /* the last one: wide trail, grey tint, state 3 */
 
 /* the summon slot behind env->unk4 */
 typedef struct {

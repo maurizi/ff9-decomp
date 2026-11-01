@@ -51,11 +51,12 @@ typedef struct {
     u8 state11; /* state */
     u8 branchAt12; /* branch points */
     u8 branchAt13;
-    u8 kind14; /* kind */
+    u8 kind14; /* strip kind: file block, and < FX_0D9_STRIP_FLAT screen-space */
     s8 width15; /* extra width */
     u8 pad16[2];
     s32 *jitter18; /* jitter table */
 } Fx0d9Bolt;
+#define FX_0D9_STRIP_FLAT 2 /* kind14 from here on: the strips draw flat (btlfx_drawTrail mode 2, else mode 0) */
 
 extern Fx0d9Strip fx_0d9_strips[];
 extern Fx0d9Branch fx_0d9_branches[];

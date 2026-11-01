@@ -44,7 +44,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         s32 n = *arg4;
         fx_09b_env = env;
         work->instance6C = n;
-        if (n >= 5) {
+        if (n >= FX_09B_SHOTS) {
             return 1;
         }
         if (n == 0) {
@@ -133,12 +133,12 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos1C.vy = fx_09b_shotPos[work->instance6C].vy;
             work->pos1C.vz = fx_09b_shotPos[work->instance6C].vz;
             ex->Hi_DrawEffModel(&work->rot14, &work->pos1C, (s32)&work->scale2C, work->model70);
-            if (frame == 5 && work->instance6C != 4) {
+            if (frame == 5 && work->instance6C != FX_09B_LAST_SHOT) {
                 fxm_startHitMotionIfActive(0);
             }
         }
         if (frame >= 0x28) {
-            if (work->instance6C == 4) {
+            if (work->instance6C == FX_09B_LAST_SHOT) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }

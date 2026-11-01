@@ -114,7 +114,6 @@ extern s16 fx_0fb_0_rockOrder[25];
 extern s16 fx_0fb_0_rockOffsets[];
 extern CVECTOR fx_0fb_0_rippleRgb[];
 extern CVECTOR fx_0fb_0_ribbonRgb[];
-extern CVECTOR D_801EB35C[];
 extern SVECTOR fx_0fb_0_bonePts[10];
 extern SVECTOR fx_0fb_0_bonePts1[];
 extern Fx0fb0SegBuf fx_0fb_0_ribbons[4];

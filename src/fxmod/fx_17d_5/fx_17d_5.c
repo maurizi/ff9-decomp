@@ -91,17 +91,17 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
         m = 0x1800;
         w->pos8.vz += 0x300;
         w->pos8.vy += 0x300;
-        if (w->angle10 == 2) {
+        if (w->angle10 == FX_17D_5_HIT_FINAL) {
             m = 0x5000;
         }
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&w->pos8, NULL, 0, m, 0x1000, 1, w->trail18, 0);
         if (frame >= 7) {
             w->state0 = 2;
             ((s16 *)w)[-1] = -1;
-            if (w->angle10 == 2) {
+            if (w->angle10 == FX_17D_5_HIT_FINAL) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0x40, 0x40, 0x40);
                 w->state0 = 3;
-            } else if (w->angle10 != 0) {
+            } else if (w->angle10 != FX_17D_5_HIT_BURST) {
                 c = (ex->btlfx_rand() & 0x1F) + 0x28;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, c, c, c);
             } else {
@@ -120,7 +120,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
                                 w->trail18, 0);
         }
         env->otZ = 0x140;
-        if (w->angle10 != 0) {
+        if (w->angle10 != FX_17D_5_HIT_BURST) {
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 4), &w->pos8, NULL, 0x1000, frame, 1, 0xAAA);
             env->otZ = 0;
         } else {
@@ -128,7 +128,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
                                     0, 0);
             env->otZ = 0;
         }
-        if (w->angle10 != 0) {
+        if (w->angle10 != FX_17D_5_HIT_BURST) {
             ang.vz = 0;
             ang.vx = 0;
             ang.vy = frame * 8;

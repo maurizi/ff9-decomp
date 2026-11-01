@@ -127,6 +127,7 @@ typedef struct {
     u16 countE;
 } Fx114Track; /* 0x10 */
 extern Fx114Track fx_114_camKeys[];
+#define FX_114_KEY_FREE (-1) /* timer6: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 extern s32 fx_114_camChanFrames[];
 static void fxm_camChanReset(void);
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);

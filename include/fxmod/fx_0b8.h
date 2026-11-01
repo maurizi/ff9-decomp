@@ -139,7 +139,7 @@ typedef struct {
 
 extern Fx0b8Band fx_0b8_bands[4];
 extern BtlModelBuf fx_0b8_effModels[];
-extern s32 D_801EC1B0;
+extern s32 fx_0b8_unusedScroll;
 extern Fx0b8Bolt fx_0b8_bolts[8];
 extern Fx0b8Unit fx_0b8_units[];
 extern s32 fx_0b8_trails[];

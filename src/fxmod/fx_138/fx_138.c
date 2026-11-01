@@ -85,9 +85,9 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk34.vx = 0x800;
         work->unk34.vy = 0x800;
         work->unk34.vz = 0x800;
-        r = D_801E8408;
+        r = fx_138_reels;
         sel = fx_138_randSets[ex->btlfx_rand() % 6];
-        for (i = 0, q = D_801E8408; i < 3; i++, r++, q++) {
+        for (i = 0, q = fx_138_reels; i < 3; i++, r++, q++) {
             q->unk8 = 0x200;
             q->unkE = sel[i];
             r->rot0.vx = fx_138_pathRot.vx;

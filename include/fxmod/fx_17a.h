@@ -19,6 +19,7 @@ typedef struct {
     s32 unk20; /* write-only (cleared at spawn) */
     s32 unk24; /* write-only (cleared at spawn) */
 } Fx17aPart;
+#define FX_17A_PART_SPARK 4 /* Fx17aPart.state0 of the drifting sparks (fx_0fb_1 FX_0FB_1_SPARK) */
 
 typedef struct {
     s32 vx;

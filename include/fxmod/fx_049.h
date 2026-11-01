@@ -33,12 +33,14 @@ typedef struct {
     u8 state11; /* state */
     u8 branchAt12;
     u8 branchAt13;
-    u8 kind14; /* kind */
+    u8 kind14; /* strip kind: file block, and < FX_049_STRIP_FLAT screen-space */
     u8 width15;
     s16 pad16;
     s32 *jitter18; /* jitter table */
     Pool6CEntry *emit1C;
 } Fx049Bolt;
+#define FX_049_STRIP_FLAT 2 /* kind14 from here on: the strips draw flat (btlfx_drawTrail mode 2, else mode 0) */
+#define FX_049_WIDTH_DEFAULT 0xFF /* width15 of the late bolts: drawn as -0x20, no screen tint */
 
 typedef struct {
     SVECTOR pos0; /* target body */
@@ -46,7 +48,10 @@ typedef struct {
     s32 boltCountC; /* bolts spawned */
 } Fx049Work; /* 0x10 */
 
-extern s16 fx_049_boltSchedule[];
+extern s16 fx_049_boltSchedule[]; /* per frame: 0 none or an FX_049_BOLT_* */
+#define FX_049_BOLT_FLAT 1 /* scattered vertical bolt, flat strip */
+#define FX_049_BOLT_STRIKE 2 /* from the target point, slanted, longer, screen-space strip */
+#define FX_049_BOLT_PAIR 3 /* two short bolts */
 extern s32 fx_049_jitter[];
 extern Fx049Strip fx_049_strips[];
 extern Fx049Branch fx_049_branches[];

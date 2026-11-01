@@ -67,6 +67,7 @@ extern u16 fx_0d2_sliceBlocks[6];
 extern SVECTOR fx_0d2_spawnRot;
 extern Fx0d2Spawn fx_0d2_spawns[7];
 extern Fx0d2Track fx_0d2_camChans[64];
+#define FX_0D2_KEY_FREE (-1) /* left6: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 extern s32 fx_0d2_camChanFrame[4];
 
 static void fxm_buildPathTrail(Fx0d2Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);

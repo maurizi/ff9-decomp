@@ -1103,7 +1103,7 @@ static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot)
 
 static void fxm_camChanReset(void) {
     s32 i;
-    s32 m = -1;
+    s32 m = FX_114_KEY_FREE;
 
     for (i = 63; i >= 0; i--) {
         fx_114_camKeys[i].timer6 = m;
@@ -1120,7 +1120,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     data++;
     c = *data;
     for (i = 0; i < 64; i++) {
-        if (fx_114_camKeys[i].timer6 == -1) {
+        if (fx_114_camKeys[i].timer6 == FX_114_KEY_FREE) {
             fx_114_camKeys[i].timer6 = 0;
             fx_114_camKeys[i].keys0 = data;
             fx_114_camKeys[i].frame4 = start;
