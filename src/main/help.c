@@ -2,7 +2,7 @@
 
 void help_draw(void) {
     s32 otz;
-    HelpLayout r;
+    HelpLayout layout;
 
     otz = 1;
     if (g_menuHelp.cursorOnTop == 0) {
@@ -18,73 +18,73 @@ void help_draw(void) {
     }
     help_onDraw();
     if (g_menuHelp.textShown != 0) {
-        help_layout(&r);
-        ui_drawSprite(r.rect.x + 8, r.rect.y, otz, UI_SPRITE_HELP_TAG, 0);
-        text_drawBlock(r.rect.x + 6, r.rect.y + 8, otz, g_menuHelp.text, TEXT_PAL_HELP);
-        win_drawHelpFrame(&r.rect, otz, r.style, r.tailX);
+        help_layout(&layout);
+        ui_drawSprite(layout.rect.x + 8, layout.rect.y, otz, UI_SPRITE_HELP_TAG, 0);
+        text_drawBlock(layout.rect.x + 6, layout.rect.y + 8, otz, g_menuHelp.text, TEXT_PAL_HELP);
+        win_drawHelpFrame(&layout.rect, otz, layout.style, layout.tailX);
     }
 }
 
 void help_layout(HelpLayout *w) {
-    RECT *r = &w->rect;
-    RECT *c = &g_menuHelp.bounds;
-    HelpState *m = &g_menuHelp;
+    RECT *box = &w->rect;
+    RECT *bounds = &g_menuHelp.bounds;
+    HelpState *help = &g_menuHelp;
     TextSize sz;
     s32 x;
-    s32 v;
+    s32 cursorPos;
     s32 d1;
     s32 d2;
-    s32 t;
+    s32 edge;
 
-    sz = text_measure(m->text);
+    sz = text_measure(help->text);
     w->rect.w = sz.w + 12;
     w->rect.h = sz.h + 12;
-    if (w->rect.w >= c->w) {
-        w->rect.w = c->w;
+    if (w->rect.w >= bounds->w) {
+        w->rect.w = bounds->w;
     }
-    if (w->rect.h >= c->h) {
-        w->rect.h = c->h;
+    if (w->rect.h >= bounds->h) {
+        w->rect.h = bounds->h;
     }
-    if (m->follow == 0) {
+    if (help->follow == 0) {
         w->style = HELP_TAIL_NONE;
-        w->rect.x = m->x;
-        w->rect.y = m->y;
+        w->rect.x = help->x;
+        w->rect.y = help->y;
         return;
     }
-    v = m->y;
-    t = c->y + 16;
-    d2 = v - t;
-    d1 = c->y + c->h - 10;
-    d1 -= v;
+    cursorPos = help->y;
+    edge = bounds->y + 16;
+    d2 = cursorPos - edge;
+    d1 = bounds->y + bounds->h - 10;
+    d1 -= cursorPos;
     if (d1 < d2) {
         w->style = HELP_TAIL_DOWN;
-        w->rect.y = m->y - (s16)(w->rect.h + 16);
+        w->rect.y = help->y - (s16)(w->rect.h + 16);
     } else {
         w->style = HELP_TAIL_UP;
-        w->rect.y = m->y + 10;
+        w->rect.y = help->y + 10;
     }
-    v = g_menuHelp.x;
-    t = c->x + 19;
-    d2 = v - t;
-    d1 = c->x + c->w - 18;
-    d1 -= v;
+    cursorPos = g_menuHelp.x;
+    edge = bounds->x + 19;
+    d2 = cursorPos - edge;
+    d1 = bounds->x + bounds->w - 18;
+    d1 -= cursorPos;
     if (d1 < d2) {
         w->style |= HELP_TAIL_RIGHT;
         x = g_menuHelp.x - 19;
     } else {
-        x = v + 18;
+        x = cursorPos + 18;
     }
-    r->x = x - (r->w >> 1);
-    if (r->x < c->x) {
-        r->x = c->x;
+    box->x = x - (box->w >> 1);
+    if (box->x < bounds->x) {
+        box->x = bounds->x;
     }
-    if (r->x + r->w > c->x + c->w) {
-        r->x = c->x + c->w - r->w;
+    if (box->x + box->w > bounds->x + bounds->w) {
+        box->x = bounds->x + bounds->w - box->w;
     }
-    if (x - r->x < 8) {
+    if (x - box->x < 8) {
         w->tailX = 8;
     } else {
-        w->tailX = x - r->x;
+        w->tailX = x - box->x;
     }
 }
 
@@ -102,14 +102,14 @@ void help_init(void) {
 }
 
 void help_update(void) {
-    HelpState *p;
+    HelpState *help;
     if (g_menuHelp.locked == 0 && fade_isBusy() == 0 && (g_padRepeat & BTN_SELECT)) {
         help_toggle();
     }
-    p = &g_menuHelp;
-    if (p->isOpen != 0 && fade_isBusy() == 0 && p->callback != NULL) {
-        p->callback();
-        if (p->text != NULL && *p->text != TEXT_END) {
+    help = &g_menuHelp;
+    if (help->isOpen != 0 && fade_isBusy() == 0 && help->callback != NULL) {
+        help->callback();
+        if (help->text != NULL && *help->text != TEXT_END) {
             help_draw();
         }
     }
@@ -119,19 +119,19 @@ void help_update(void) {
 void help_nop(void) {
 }
 
-void help_setCallback(void (*a)(void)) {
+void help_setCallback(void (*fn)(void)) {
     g_menuHelp.text = 0;
-    g_menuHelp.callback = a;
+    g_menuHelp.callback = fn;
 }
 
-void help_setBounds(RECT *r) {
-    if (r == NULL) {
+void help_setBounds(RECT *bounds) {
+    if (bounds == NULL) {
         g_menuHelp.bounds.x = 8;
         g_menuHelp.bounds.y = 8;
         g_menuHelp.bounds.w = 0x131;
         g_menuHelp.bounds.h = 0xD1;
     } else {
-        g_menuHelp.bounds = *r;
+        g_menuHelp.bounds = *bounds;
     }
 }
 

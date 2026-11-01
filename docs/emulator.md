@@ -306,3 +306,10 @@ Start the game (same X display lookup as `emu.py`):
 then call the `connect` tool (127.0.0.1:19000). Window capture and pad input tools don't work on Linux.
 Addresses are the usual KSEG0 ones (`0x8006794C`).
 - `tools/rt/enter_tm.py OPPONENT FRAMES` forces a Tetra Master match from a field state (cardOpponent at GameData+0x8B2, GameState.mode 9), `tools/rt/tmdump.py` decodes the TmState at 0x801FF9E0 (docs/r32/3ds-requests-4.md).
+
+- `tools/rt/wm_force.py WORLD [--disc N] [--poke ADDR=HEX ...]` forces a world-map entry with any world file, story and
+  vehicle state from a field state (writes the world file's sector/length, GameData.worldId/area at +0x7DC/+0x7DE and
+  fieldId; recipes in docs/r32/3ds-requests-7.md). `wm_enter.py --world` now writes worldId too (without it wm_load
+  ran the save's own world script, which is why R30b's `--world 9002` stalled).
+- `tools/rt/bj_force.py` reaches Blackjack: forces the ending mode (GameState.mode 4) on disc 4, skips FMV059 by making
+  ending_playMovie return at once, and enters the THE END button code.

@@ -1,50 +1,50 @@
 #include "ovl_14.h"
 
 void opening_bootScreen(void) {
-    RECT *r;
-    s32 t;
+    RECT *imgRect;
+    s32 framesLeft;
 
-    t = 0xD2;
+    framesLeft = 0xD2;
     opening_bootScreenLoad();
-    file_getTimRects((void *)g_bootScreenImage, NULL, &r);
-    r->w *= 4;
+    file_getTimRects((void *)g_bootScreenImage, NULL, &imgRect);
+    imgRect->w *= 4;
     do {
         opening_bootClearOt();
         pad_update();
-        if (t == 0xD2) {
+        if (framesLeft == 0xD2) {
             game_startFade(1, 1, 0x3C, 0);
-        } else if (t == 0x3C) {
+        } else if (framesLeft == 0x3C) {
             game_startFade(1, 1, 0x3C, 0xFFFFFF);
         }
         setSprt(&g_bootScreenSprite[g_gameState->gameData->drawBuf]);
         g_bootScreenSprite[g_gameState->gameData->drawBuf].r0 = 0x80;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].g0 = 0x80;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].b0 = 0x80;
-        g_bootScreenSprite[g_gameState->gameData->drawBuf].x0 = (0x140 - r->w) / 2;
-        g_bootScreenSprite[g_gameState->gameData->drawBuf].y0 = (0xE0 - r->h) / 2;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].x0 = (0x140 - imgRect->w) / 2;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].y0 = (0xE0 - imgRect->h) / 2;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].u0 = 0;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].v0 = 0;
-        g_bootScreenSprite[g_gameState->gameData->drawBuf].w = r->w;
-        g_bootScreenSprite[g_gameState->gameData->drawBuf].h = r->h;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].w = imgRect->w;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].h = imgRect->h;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].clut = 0x3800;
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_bootScreenSprite[g_gameState->gameData->drawBuf]);
         setDrawTPage(&g_bootScreenTpage[g_gameState->gameData->drawBuf], 1, 1, 0xA);
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_bootScreenTpage[g_gameState->gameData->drawBuf]);
-        t--;
+        framesLeft--;
         game_updateFade();
         opening_bootSwap();
-    } while (t > 0);
+    } while (framesLeft > 0);
     opening_bootScreenFree();
 }
 
 void opening_bootScreenLoad(void) {
     u8 *data;
-    FileEntry *e;
+    FileEntry *file;
 
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    e = file_find(DIR_COMMON, FILE_BOOT_SCREEN);
-    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
+    file = file_find(DIR_COMMON, FILE_BOOT_SCREEN);
+    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     data = g_loadAreaEnd + 0x10000;

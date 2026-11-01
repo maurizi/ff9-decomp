@@ -1,18 +1,18 @@
 #include "ovl_0a.h"
 
 void menuMain_initPanels(void) {
-    u8 *s;
-    u8 *p;
+    u8 *name;
+    u8 *locName;
     s32 w;
     s32 i;
 
-    p = g_gameState->gameData->locationName;
-    if (p != NULL && *p != 0xFF) {
-        s = p;
+    locName = g_gameState->gameData->locationName;
+    if (locName != NULL && *locName != 0xFF) {
+        name = locName;
     } else {
-        s = text_get(1);
+        name = text_get(1);
     }
-    w = text_measureStyle(s, 0) + 0x10;
+    w = text_measureStyle(name, 0) + 0x10;
     if (w < 0x44) {
         w = 0x44;
     }
@@ -46,7 +46,7 @@ void menuMain_inputCommand(void) {
 }
 
 void menuMain_inputMember(void) {
-    MenuScreen *m;
+    MenuScreen *screen;
     s32 old;
     s32 new;
 
@@ -59,12 +59,12 @@ void menuMain_inputMember(void) {
         menuScreen_open(s_menuMain.cursor + 1);
         return;
     } else if (g_padRepeat & PAD_UP) {
-        m = &g_menuScreen;
-        old = m->member;
+        screen = &g_menuScreen;
+        old = screen->member;
         new = party_getPrevMember(old);
     } else if (g_padRepeat & PAD_DOWN) {
-        m = &g_menuScreen;
-        old = m->member;
+        screen = &g_menuScreen;
+        old = screen->member;
         new = party_getNextMember(old);
     } else {
         return;
@@ -72,7 +72,7 @@ void menuMain_inputMember(void) {
     if (old != new) {
         snd_playSe(SE_CURSOR);
         old = new;
-        m->member = old;
+        screen->member = old;
     }
 }
 
@@ -113,18 +113,18 @@ void menuMain_inputOrder(void) {
 }
 
 void menuMain_reorder(s32 from, s32 to) {
-    Character *c;
-    Character *t;
+    Character *chr;
+    Character *swapped;
 
     if (from == to) {
-        c = g_gameState->gameData->party[to];
-        if (c != NULL) {
-            c->info.b.battleRow ^= 1;
+        chr = g_gameState->gameData->party[to];
+        if (chr != NULL) {
+            chr->info.b.battleRow ^= 1;
         }
     } else {
-        t = g_gameState->gameData->party[s_menuMain.orderCursor];
+        swapped = g_gameState->gameData->party[s_menuMain.orderCursor];
         g_gameState->gameData->party[s_menuMain.orderCursor] = g_gameState->gameData->party[s_menuMain.orderTarget];
-        g_gameState->gameData->party[s_menuMain.orderTarget] = t;
+        g_gameState->gameData->party[s_menuMain.orderTarget] = swapped;
         menuMain_swapPortraits(from, to);
         if (g_gameState->gameData->party[g_menuScreen.member] == NULL) {
             g_menuScreen.member = party_getFirstMember();
@@ -168,54 +168,54 @@ void menuMain_swapPortraits(s32 slotA, s32 slotB) {
 
 void menuMain_drawMember(s32 slot) {
     u8 numText[16];
-    RECT *r;
-    Character *c;
+    RECT *panelRect;
+    Character *chr;
     s32 x;
     s32 color;
     s16 maxmp;
 
-    c = g_gameState->gameData->party[slot];
-    r = &s_menuMain.panels[slot].rect;
-    x = r->x + 8;
-    if (!c->info.b.battleRow) {
-        x = r->x + 0x16;
+    chr = g_gameState->gameData->party[slot];
+    panelRect = &s_menuMain.panels[slot].rect;
+    x = panelRect->x + 8;
+    if (!chr->info.b.battleRow) {
+        x = panelRect->x + 0x16;
     }
-    ui_drawPortrait(x, r->y + 1, 0x14, slot, 0x2D, c->hp == 0);
-    text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->name, TEXT_PAL_WHITE);
-    ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->status, 0);
-    text_formatNumber(c->level, numText, 2, TEXT_NUM_ASCII);
-    ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, UI_SPRITE_LV, 0);
-    ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, numText, TEXT_PAL_WHITE);
-    ui_drawSprite(r->x + 0x3C, r->y + 0x1B, 0x14, UI_SPRITE_HP, 0);
-    text_formatNumber(c->hp, numText, 4, TEXT_NUM_ASCII);
+    ui_drawPortrait(x, panelRect->y + 1, 0x14, slot, 0x2D, chr->hp == 0);
+    text_drawBlock(panelRect->x + 0x3C, panelRect->y + 3, 0x14, chr->name, TEXT_PAL_WHITE);
+    ui_drawStatusIcons(panelRect->x + 0x86, panelRect->y + 4, 0x14, chr->status, 0);
+    text_formatNumber(chr->level, numText, 2, TEXT_NUM_ASCII);
+    ui_drawSprite(panelRect->x + 0x3C, panelRect->y + 0x12, 0x14, UI_SPRITE_LV, 0);
+    ui_drawSmallDigits(panelRect->x + 0x60, panelRect->y + 0x12, 0x14, numText, TEXT_PAL_WHITE);
+    ui_drawSprite(panelRect->x + 0x3C, panelRect->y + 0x1B, 0x14, UI_SPRITE_HP, 0);
+    text_formatNumber(chr->hp, numText, 4, TEXT_NUM_ASCII);
     numText[4] = '/';
-    if (c->hp != 0) {
-        color = ((u16)(c->maxHp / 6) >= c->hp) * TEXT_PAL_YELLOW;
+    if (chr->hp != 0) {
+        color = ((u16)(chr->maxHp / 6) >= chr->hp) * TEXT_PAL_YELLOW;
     } else {
         color = TEXT_PAL_RED;
     }
-    text_formatNumber(c->maxHp, &numText[5], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x52, r->y + 0x1B, 0x14, numText, color);
-    ui_drawSprite(r->x + 0x3C, r->y + 0x24, 0x14, UI_SPRITE_MP, 0);
-    text_formatNumber(c->mp, numText, 3, TEXT_NUM_ASCII);
+    text_formatNumber(chr->maxHp, &numText[5], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(panelRect->x + 0x52, panelRect->y + 0x1B, 0x14, numText, color);
+    ui_drawSprite(panelRect->x + 0x3C, panelRect->y + 0x24, 0x14, UI_SPRITE_MP, 0);
+    text_formatNumber(chr->mp, numText, 3, TEXT_NUM_ASCII);
     numText[3] = '/';
-    maxmp = c->maxMp;
-    color = ((s16)(maxmp / 6) >= c->mp) * TEXT_PAL_YELLOW;
+    maxmp = chr->maxMp;
+    color = ((s16)(maxmp / 6) >= chr->mp) * TEXT_PAL_YELLOW;
     text_formatNumber(maxmp, &numText[4], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x59, r->y + 0x24, 0x14, numText, color);
-    ui_drawStones(r->x + 0x9B, r->y + 0x14, 0x14, c->stones, c->maxStones);
+    ui_drawSmallDigits(panelRect->x + 0x59, panelRect->y + 0x24, 0x14, numText, color);
+    ui_drawStones(panelRect->x + 0x9B, panelRect->y + 0x14, 0x14, chr->stones, chr->maxStones);
 }
 
-void menuMain_drawPortraitShade(RECT *r, s32 otz) {
-    TileWords *p;
+void menuMain_drawPortraitShade(RECT *rect, s32 otz) {
+    TileWords *tile;
 
     setlen(g_primPtr, PRIM_LEN(TILE));
-    p = (TileWords *)g_primPtr;
-    p->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
-    p->xy = ((r->x + 8) & 0xFFFF) | (r->y << 16);
-    p->wh = 0x30002E;
-    g_primPtr = (u8 *)(p + 1);
-    addPrim(&g_ot[otz], p);
+    tile = (TileWords *)g_primPtr;
+    tile->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
+    tile->xy = ((rect->x + 8) & 0xFFFF) | (rect->y << 16);
+    tile->wh = 0x30002E;
+    g_primPtr = (u8 *)(tile + 1);
+    addPrim(&g_ot[otz], tile);
     SetDrawTPage(g_primPtr, 1, 1, 0);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 8;
@@ -223,12 +223,12 @@ void menuMain_drawPortraitShade(RECT *r, s32 otz) {
 
 void menuMain_drawTimeGil(void) {
     u8 numText[16];
-    s32 v;
+    s32 playTime;
 
-    v = game_getPlayTime();
+    playTime = game_getPlayTime();
     ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 8, 0x13, UI_SPRITE_TIME, 0);
     ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 0x15, 0x13, UI_SPRITE_GIL, 0);
-    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 9, 0x13, numText, text_formatTime(v, numText, 1));
+    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 9, 0x13, numText, text_formatTime(playTime, numText, 1));
     text_formatNumber(g_gameState->gameData->gil, numText, 7, TEXT_NUM_ASCII);
     strcat(numText, s_menuMainGilSuffix);
     ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 0x16, 0x13, numText, TEXT_PAL_WHITE);
@@ -295,11 +295,11 @@ void menuMain_updateHelp(void) {
         if (s_menuMain.cursor + 1 == MENU_SCREEN_EQUIP) {
             menuMain_setEquipHelp(s_menuMain.cursor);
         } else {
-            s32 a = s_menuMain.cursor + 2;
+            s32 textId = s_menuMain.cursor + 2;
             if (s_menuMain.cursor + 1 == MENU_SCREEN_STATUS) {
-                menuMain_setExpHelp(a);
+                menuMain_setExpHelp(textId);
             } else {
-                g_menuHelp.text = text_get(a);
+                g_menuHelp.text = text_get(textId);
             }
         }
     } else if (s_menuMain.state == MENUMAIN_ORDER) {
@@ -308,26 +308,26 @@ void menuMain_updateHelp(void) {
 }
 
 void menuMain_setExpHelp(s32 unused) {
-    Character *c;
+    Character *chr;
     u32 next;
 
-    c = g_gameState->gameData->party[g_menuScreenMember];
-    if (c != NULL) {
-        if (c->level >= 99) {
-            next = c->exp;
+    chr = g_gameState->gameData->party[g_menuScreenMember];
+    if (chr != NULL) {
+        if (chr->level >= 99) {
+            next = chr->exp;
         } else {
-            next = g_levelExp[c->level];
+            next = g_levelExp[chr->level];
         }
-        text_setStringArg(0, c->name);
-        text_formatNumber(c->exp, s_menuMainExpText, 7, TEXT_NUM_ASCII);
-        text_formatNumber(next - c->exp, s_menuMainNextText, 7, TEXT_NUM_ASCII);
+        text_setStringArg(0, chr->name);
+        text_formatNumber(chr->exp, s_menuMainExpText, 7, TEXT_NUM_ASCII);
+        text_formatNumber(next - chr->exp, s_menuMainNextText, 7, TEXT_NUM_ASCII);
         text_setStringArg(1, s_menuMainExpLabel);
         text_setStringArg(2, s_menuMainExpText);
         text_setStringArg(3, s_menuMainNextLabel);
         text_setStringArg(4, s_menuMainUntilLabel);
         text_setStringArg(5, s_menuMainNextText);
         text_setStringArg(6, s_menuMainStatusLabel);
-        text_setStringArg(7, c->status != 0 ? s_menuMainStatusAbnormal : s_menuMainStatusNormal);
+        text_setStringArg(7, chr->status != 0 ? s_menuMainStatusAbnormal : s_menuMainStatusNormal);
         g_menuHelpText = text_get(5);
     }
 }
@@ -353,15 +353,15 @@ void menuMain_onSlideInDone(void) {
 void menuMain_setEquipHelp(u8 unused) {
     s32 i;
     s32 j;
-    Character *c;
+    Character *chr;
     s32 id;
 
     i = 0;
     j = 5;
-    c = g_gameState->gameData->party[g_menuScreenMember];
+    chr = g_gameState->gameData->party[g_menuScreenMember];
     do {
         text_setStringArg(i, s_menuMainEquipLabels[i]);
-        id = c->equip[i];
+        id = chr->equip[i];
         if (id != 0xFF) {
             text_setStringArg(j, g_itemNames + g_itemTable[id].name);
         } else {
@@ -375,7 +375,7 @@ void menuMain_setEquipHelp(u8 unused) {
 }
 
 void menuMain_init(void) {
-    RECT r;
+    RECT rect;
 
     if (g_menuScreen.slideIn != 0) {
         s_menuMain.cursor = 0;
@@ -384,11 +384,11 @@ void menuMain_init(void) {
     s_menuMain.state = MENUMAIN_COMMAND;
     text_setBank(s_menuMainText);
     menuMain_initPanels();
-    r.x = 8;
-    r.y = 8;
-    r.w = 0xE8;
-    r.h = g_gameState->dispEnv->disp.h - 0xF;
-    help_setBounds(&r);
+    rect.x = 8;
+    rect.y = 8;
+    rect.w = 0xE8;
+    rect.h = g_gameState->dispEnv->disp.h - 0xF;
+    help_setBounds(&rect);
     help_setCallback(menuMain_updateHelp);
     help_setCursorOnTop(1);
     if (g_gameState->gameData->party[g_menuScreen.member] == NULL) {
@@ -440,26 +440,26 @@ void menuMain_updatePanels(void) {
 }
 
 void menuMain_drawParty(void) {
-    RECT r;
+    RECT boxRect;
     s16 y;
     s32 i;
-    RECT *p;
+    RECT *panelRect;
 
     i = 0;
     do {
-        p = &s_menuMain.panels[i].rect;
-        r.x = p->x + 0x82;
-        y = p->y;
-        r.w = 0x72;
-        r.h = 0x12;
-        r.y = y;
+        panelRect = &s_menuMain.panels[i].rect;
+        boxRect.x = panelRect->x + 0x82;
+        y = panelRect->y;
+        boxRect.w = 0x72;
+        boxRect.h = 0x12;
+        boxRect.y = y;
         if (g_gameState->gameData->party[i] != NULL) {
             menuMain_drawMember(i);
         }
-        menuMain_drawPortraitShade(p, 0x14);
-        win_drawBox(&r, 0x14, WIN_STYLE_LINE);
-        win_drawBox(p, 0x14, WIN_STYLE_LINE);
-        win_drawShadow(p, 0x15, WIN_STYLE_LINE);
+        menuMain_drawPortraitShade(panelRect, 0x14);
+        win_drawBox(&boxRect, 0x14, WIN_STYLE_LINE);
+        win_drawBox(panelRect, 0x14, WIN_STYLE_LINE);
+        win_drawShadow(panelRect, 0x15, WIN_STYLE_LINE);
         i++;
     } while (i < 4);
 }
@@ -470,100 +470,100 @@ s32 fld_getSpriteFrameCount(u16 *spr) {
 
 u8 *fld_drawSprite3D(u8 *pkt, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame, s32 abr, s32 fade,
                   u32 *ot) {
-    VECTOR s;
+    VECTOR scaleVec;
     SVECTOR zero;
-    MATRIX m;
-    FieldSprArgs c;
-    u16 *p;
-    u8 *b;
-    s32 n;
-    s32 f;
-    u16 *o;
+    MATRIX mat;
+    FieldSprArgs args;
+    u16 *uvPtr;
+    u8 *body;
+    s32 tmp; /* frame count, then the header size, then the frame data offset (separate locals don't match) */
+    s32 val; /* frame index, then the UV entry count (separate locals don't match) */
+    u16 *frameOfs;
 
     if (rot == NULL) {
         rot = &zero;
         ((s32 *)&zero)[0] = 0;
         ((s32 *)&zero)[1] = 0;
     }
-    n = h->frameCount & 0x7FFF;
-    f = frame;
-    if (f >= n) {
-        f = frame % n;
+    tmp = h->frameCount & 0x7FFF;
+    val = frame;
+    if (val >= tmp) {
+        val = frame % tmp;
     }
-    o = &h->frameOffsets[f];
-    n = n * 2 + 8;
-    b = (u8 *)h + n;
-    p = (u16 *)b;
-    f = *p++;
-    c.uvs = p;
-    c.colors = (u8 *)(p + f + 1);
-    c.tpage = h->tpage | ((abr & 3) << 5);
-    c.clut = h->clut;
-    c.halfH = (h->height - 1) * 2;
-    c.halfW = (h->width - 1) * 2;
-    n = *o;
-    c.quadCount = ((u8 *)h)[n++];
-    h = (FieldSprHdr *)((u8 *)h + n);
+    frameOfs = &h->frameOffsets[val];
+    tmp = tmp * 2 + 8;
+    body = (u8 *)h + tmp;
+    uvPtr = (u16 *)body;
+    val = *uvPtr++;
+    args.uvs = uvPtr;
+    args.colors = (u8 *)(uvPtr + val + 1);
+    args.tpage = h->tpage | ((abr & 3) << 5);
+    args.clut = h->clut;
+    args.halfH = (h->height - 1) * 2;
+    args.halfW = (h->width - 1) * 2;
+    tmp = *frameOfs;
+    args.quadCount = ((u8 *)h)[tmp++];
+    h = (FieldSprHdr *)((u8 *)h + tmp);
     gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
     gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     gte_ldv0(pos);
     gte_rtv0tr();
-    math_rotMatrixYXZ(rot, &m);
+    math_rotMatrixYXZ(rot, &mat);
     if (scale >= 0) {
-        s.vx = s.vy = s.vz = scale;
-        ScaleMatrix(&m, &s);
+        scaleVec.vx = scaleVec.vy = scaleVec.vz = scale;
+        ScaleMatrix(&mat, &scaleVec);
     }
-    gte_stlvnl(m.t);
+    gte_stlvnl(mat.t);
     if (rot->pad != 0) {
-        MulRotMatrix(&m);
+        MulRotMatrix(&mat);
     }
-    gte_SetRotMatrix(&m);
-    gte_SetTransMatrix(&m);
-    c.primCode = (abr == 0xFF) ? 0x2C : 0x2E;
-    c.fade = fade;
-    return fld_emitSprite3D((u8 *)h, &c, pkt, ot);
+    gte_SetRotMatrix(&mat);
+    gte_SetTransMatrix(&mat);
+    args.primCode = (abr == 0xFF) ? 0x2C : 0x2E;
+    args.fade = fade;
+    return fld_emitSprite3D((u8 *)h, &args, pkt, ot);
 }
 
 /* upload the images and palettes of a texture file to VRAM */
 void fld_loadImagePack(s32 *pack) {
-    RECT r;
-    RECT *q;
+    RECT rect;
+    RECT *clutRect;
     u16 *p;
     u8 *data;
-    s32 n;
+    s32 imgCount;
     s32 i;
     s32 sz;
-    s32 m;
+    s32 clutCount;
     s32 ofs;
 
     ofs = pack[0];
-    q = (RECT *)((u8 *)pack + ofs);
+    clutRect = (RECT *)((u8 *)pack + ofs);
     ofs = pack[1];
     i = 0;
     p = (u16 *)((u8 *)pack + ofs);
-    ofs = *(s32 *)q;
-    n = pack[2];
+    ofs = *(s32 *)clutRect;
+    imgCount = pack[2];
     data = (u8 *)pack + ofs;
-    for (; i < n; i++) {
-        r.x = p[0];
-        r.y = p[1];
-        r.w = p[2];
-        r.h = p[3];
-        sz = r.w * r.h * 2;
+    for (; i < imgCount; i++) {
+        rect.x = p[0];
+        rect.y = p[1];
+        rect.w = p[2];
+        rect.h = p[3];
+        sz = rect.w * rect.h * 2;
         p += 4;
-        LoadImage(&r, (u32 *)p);
+        LoadImage(&rect, (u32 *)p);
         p = (u16 *)((u8 *)p + sz);
     }
-    m = ((s32 *)q)[1];
-    q++;
-    for (i = 0; i < m; i++) {
-        r.x = q->x;
-        r.y = q->y;
-        r.w = q->w;
-        r.h = q->h;
-        LoadImage(&r, (u32 *)data);
-        q++;
-        data += r.w * r.h * 2;
+    clutCount = ((s32 *)clutRect)[1];
+    clutRect++;
+    for (i = 0; i < clutCount; i++) {
+        rect.x = clutRect->x;
+        rect.y = clutRect->y;
+        rect.w = clutRect->w;
+        rect.h = clutRect->h;
+        LoadImage(&rect, (u32 *)data);
+        clutRect++;
+        data += rect.w * rect.h * 2;
     }
 }
 

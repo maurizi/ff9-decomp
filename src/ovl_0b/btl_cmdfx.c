@@ -24,18 +24,18 @@ void btl_setUnitFade(BtlUnit *unit, s32 level) {
 }
 
 void btl_playCmdEffect(BtlCmd *cmd, s32 effectId, s16 *fxArgs) {
-    Battle *b = g_gameState->gameData->ctx.battle;
+    Battle *battle = g_gameState->gameData->ctx.battle;
     s32 sum[4];
     BtlUnitList *list;
-    BtlUnit *u;
+    BtlUnit *unit;
     BtlUnit *caster;
     s32 bounceMask;
     u8 cmdNo;
 
     memset(sum, 0, 0x10);
     bounceMask = 0;
-    b->fxTargets.caster = cmd->caster;
-    list = &b->fxTargets;
+    battle->fxTargets.caster = cmd->caster;
+    list = &battle->fxTargets;
     if (fxArgs != NULL) {
         list->fxArgs[0] = fxArgs[0];
         list->fxArgs[1] = fxArgs[1];
@@ -70,20 +70,20 @@ void btl_playCmdEffect(BtlCmd *cmd, s32 effectId, s16 *fxArgs) {
         }
         list->kind = (BTL_FXK_NO_CAST | BTL_FXK_BOUNCE);
     }
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if (u->unitBit & (u16)cmd->targets) {
-            list->targets[list->targetCount++] = u;
-            u->popupFlags = 0;
-            u->mpChange = 0;
-            u->hpChange = 0;
-            sum[0] += u->home->pos[0] >> 16;
-            sum[2] += u->home->pos[2] >> 16;
+    for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
+        if (unit->unitBit & (u16)cmd->targets) {
+            list->targets[list->targetCount++] = unit;
+            unit->popupFlags = 0;
+            unit->mpChange = 0;
+            unit->hpChange = 0;
+            sum[0] += unit->home->pos[0] >> 16;
+            sum[2] += unit->home->pos[2] >> 16;
         }
-        if (u->unitBit & bounceMask) {
-            list->bounced[list->bounceCount++] = u;
+        if (unit->unitBit & bounceMask) {
+            list->bounced[list->bounceCount++] = unit;
         }
-        if (cmd->cmdNo == BTL_CMD_SWD_MAG && (u->flags & BTL_UNIT_PARTY) && g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind == CHR_KIND_VIVI) {
-            list->partner = u;
+        if (cmd->cmdNo == BTL_CMD_SWD_MAG && (unit->flags & BTL_UNIT_PARTY) && g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.b.kind == CHR_KIND_VIVI) {
+            list->partner = unit;
         }
     }
     list->centerX = sum[0] / (s8)list->targetCount;
@@ -95,25 +95,25 @@ void btl_playCmdEffect(BtlCmd *cmd, s32 effectId, s16 *fxArgs) {
 }
 
 void btl_startCmdEffect(BtlCmd *cmd) {
-    BtlUnit *u = cmd->caster;
+    BtlUnit *caster = cmd->caster;
     s32 id;
     s32 k;
-    u16 t;
+    u16 cover;
 
     switch (cmd->cmdNo) {
     case BTL_CMD_ATTACK:
     case BTL_CMD_COUNTER:
     case BTL_CMD_CHARGE_ATTACK:
-        if (u->flags & BTL_UNIT_PARTY) {
-            id = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind + BTLFX_EFFECT_ATTACK;
+        if (caster->flags & BTL_UNIT_PARTY) {
+            id = g_gameState->gameData->characters[BTL_UNIT_INDEX(caster->flags)].info.b.kind + BTLFX_EFFECT_ATTACK;
         } else {
             id = BTLFX_EFFECT_ATTACK_ENEMY;
         }
         btl_playCmdEffect(cmd, id, 0);
         break;
     case BTL_CMD_STEAL:
-        if (u->flags & BTL_UNIT_PARTY) {
-            k = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind;
+        if (caster->flags & BTL_UNIT_PARTY) {
+            k = g_gameState->gameData->characters[BTL_UNIT_INDEX(caster->flags)].info.b.kind;
         } else {
             k = CHR_KIND_NONE;
         }
@@ -137,13 +137,13 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         break;
     case BTL_CMD_DEFEND:
         btl_showCmdName(cmd);
-        u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_DEFEND];
-        u->obj->frame = 0;
-        btl_execCmd(u);
+        caster->model->motion = (BtlMotion *)caster->motions[BTL_MOTION_DEFEND];
+        caster->obj->frame = 0;
+        btl_execCmd(caster);
         return;
     case BTL_CMD_CHANGE:
         btl_showCmdName(cmd);
-        u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_READY];
+        caster->model->motion = (BtlMotion *)caster->motions[BTL_MOTION_READY];
         return;
     case BTL_CMD_ITEM:
     case BTL_CMD_AUTO_POTION:
@@ -187,9 +187,9 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         break;
     case BTL_CMD_ENEMY_TURN:
         if ((u16)cmd->targets < BTL_TARGETS_FIRST_ENEMY && (cmd->ability->flags & BTL_ABIL_PHYSICAL) && !cmd->info.b.targeting) {
-            t = btl_findCover((u16)cmd->targets);
-            if (t) {
-                cmd->targets = t;
+            cover = btl_findCover((u16)cmd->targets);
+            if (cover) {
+                cmd->targets = cover;
                 cmd->info.b.covered = 1;
             }
         }
@@ -200,7 +200,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         return;
     case BTL_CMD_TRANCE:
         id = BTLFX_EFFECT_TRANCE_CMD;
-        if (u->status & BTL_STATUS_TRANCE) {
+        if (caster->status & BTL_STATUS_TRANCE) {
             id = BTLFX_EFFECT_TRANCE;
         }
         btl_playCmdEffect(cmd, id, 0);

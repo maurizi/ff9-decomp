@@ -63,9 +63,9 @@ EvtObject *evt_allocObject(s32 words) {
 }
 
 EvtObject *evt_createObject(s32 scriptIdx, s32 id, s32 objBytes, s32 stackWords) {
-    EvtObject *o;
-    EvtListNode *n;
-    EvtState *d;
+    EvtObject *obj;
+    EvtListNode *node;
+    EvtState *evt;
     s32 nw, nv;
     u32 *p;
     u32 *end;
@@ -73,85 +73,85 @@ EvtObject *evt_createObject(s32 scriptIdx, s32 id, s32 objBytes, s32 stackWords)
     if (id == 0) {
         id = scriptIdx;
     }
-    o = evt_getObject(id);
-    if (o != NULL) {
-        evt_deleteObject(o);
+    obj = evt_getObject(id);
+    if (obj != NULL) {
+        evt_deleteObject(obj);
     }
     nw = (objBytes + 3) >> 2;
     nv = (((ScriptEntry *)g_evtScripts)[scriptIdx].varBytes + 3) >> 2;
-    o = evt_allocObject(nw + nv + stackWords);
-    end = (u32 *)o + nw + nv;
-    for (p = (u32 *)o; p < end; p++) {
+    obj = evt_allocObject(nw + nv + stackWords);
+    end = (u32 *)obj + nw + nv;
+    for (p = (u32 *)obj; p < end; p++) {
         *p = 0;
     }
-    d = g_evtState;
-    n = d->listFree;
-    d->listFree = n->next;
-    if (d->objectsTail != NULL) {
-        d->objectsTail->next = n;
-        d->objectsTail = n;
+    evt = g_evtState;
+    node = evt->listFree;
+    evt->listFree = node->next;
+    if (evt->objectsTail != NULL) {
+        evt->objectsTail->next = node;
+        evt->objectsTail = node;
     } else {
-        d->objects = n;
-        d->objectsTail = n;
+        evt->objects = node;
+        evt->objectsTail = node;
     }
-    n->next = NULL;
-    n->obj = o;
-    o->scriptIdx = scriptIdx;
-    o->uid = id;
-    o->kind = 0;
+    node->next = NULL;
+    node->obj = obj;
+    obj->scriptIdx = scriptIdx;
+    obj->uid = id;
+    obj->kind = 0;
     {
         u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[scriptIdx].offset;
-        s32 c = *(u16 *)h >> 8;
-        u16 *q = (u16 *)(h + 2);
+        s32 tagsLeft = *(u16 *)h >> 8;
+        u16 *tag = (u16 *)(h + 2);
 
-        while (c != 0) {
-            if (*q++ == 0) {
+        while (tagsLeft != 0) {
+            if (*tag++ == 0) {
                 break;
             }
-            c--;
-            q++;
+            tagsLeft--;
+            tag++;
         }
-        if (c != 0) {
-            h += *q + 2;
+        if (tagsLeft != 0) {
+            h += *tag + 2;
         } else {
             h = NULL;
         }
-        o->ip = h;
+        obj->ip = h;
     }
-    o->stackOfs = nw + nv;
-    o->varsOfs = nw;
-    o->stackWords = stackWords;
-    o->state = EVT_STATE_NEW;
-    o->windowId = 0xFF;
-    return o;
+    obj->stackOfs = nw + nv;
+    obj->varsOfs = nw;
+    obj->stackWords = stackWords;
+    obj->state = EVT_STATE_NEW;
+    obj->windowId = 0xFF;
+    return obj;
 }
 
 EvtListNode *evt_deleteObject(EvtObject *obj) {
-    EvtListNode *n;
+    EvtListNode *node;
     EvtListNode *prev;
     EvtListNode *next = NULL;
 
     prev = NULL;
-    for (n = g_evtState->objects; n != NULL; n = n->next) {
-        if (n->obj == obj) {
+    for (node = g_evtState->objects; node != NULL; node = node->next) {
+        if (node->obj == obj) {
             break;
         }
-        prev = n;
+        prev = node;
     }
-    if (n != NULL) {
-        next = n->next;
+    if (node != NULL) {
+        next = node->next;
         if (prev != NULL) {
             prev->next = next;
         } else {
             g_evtState->objects = next;
         }
-        if (g_evtState->objectsTail == n) {
+        if (g_evtState->objectsTail == node) {
             g_evtState->objectsTail = prev;
         }
-        n->next = g_evtState->listFree;
-        g_evtState->listFree = n;
+        node->next = g_evtState->listFree;
+        g_evtState->listFree = node;
         evt_freeAllocNode_inline(obj);
-        if (g_evtState->playerUid == n->obj->uid) {
+        if (g_evtState->playerUid == node->obj->uid) {
             g_evtState->playerUid = 0;
         }
     }
@@ -159,7 +159,7 @@ EvtListNode *evt_deleteObject(EvtObject *obj) {
 }
 
 s32 evt_exprUnitIncDec(s32 op) {
-    s32 r = 0;
+    s32 result = 0;
     s32 w = g_evtExprSp[-2];
     s32 unitMask;
     s32 i;
@@ -176,24 +176,24 @@ s32 evt_exprUnitIncDec(s32 op) {
             g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case EVT_EXPR_UNIT_POST_INC:
-                r = evt_popResult();
+                result = evt_popResult();
                 g_evtExprSp++;
-                evt_assignResult(r + 1);
+                evt_assignResult(result + 1);
                 break;
             case EVT_EXPR_UNIT_POST_DEC:
-                r = evt_popResult();
+                result = evt_popResult();
                 g_evtExprSp++;
-                evt_assignResult(r - 1);
+                evt_assignResult(result - 1);
                 break;
             case EVT_EXPR_UNIT_PRE_INC:
-                r = evt_popResult() + 1;
+                result = evt_popResult() + 1;
                 g_evtExprSp++;
-                evt_assignResult(r);
+                evt_assignResult(result);
                 break;
             case EVT_EXPR_UNIT_PRE_DEC:
-                r = evt_popResult() - 1;
+                result = evt_popResult() - 1;
                 g_evtExprSp++;
-                evt_assignResult(r);
+                evt_assignResult(result);
                 break;
             }
             g_evtExprSp++;
@@ -201,14 +201,14 @@ s32 evt_exprUnitIncDec(s32 op) {
         unitMask >>= 1;
     }
     g_evtExprSp -= 2;
-    return r;
+    return result;
 }
 
 s32 evt_exprUnitAssign(s32 op) {
-    s32 r = 0;
+    s32 result = 0;
     s32 w = g_evtExprSp[-3];
     s32 unitMask;
-    s32 v;
+    s32 operand;
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
@@ -218,75 +218,75 @@ s32 evt_exprUnitAssign(s32 op) {
         unitMask = evt_popResult();
         g_evtExprSp += 3;
     }
-    v = evt_popResult();
+    operand = evt_popResult();
     for (i = 0; i < 8; i++) {
         if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case EVT_EXPR_UNIT_ASSIGN:
-                r = v;
+                result = operand;
                 break;
             case EVT_EXPR_UNIT_MUL_ASSIGN:
-                r = evt_popResult() * v;
+                result = evt_popResult() * operand;
                 g_evtExprSp++;
                 break;
             case EVT_EXPR_UNIT_DIV_ASSIGN:
-                if (v != 0) {
-                    r = evt_popResult() / v;
+                if (operand != 0) {
+                    result = evt_popResult() / operand;
                 } else {
-                    r = evt_popResult();
+                    result = evt_popResult();
                 }
                 g_evtExprSp++;
                 break;
             case EVT_EXPR_UNIT_MOD_ASSIGN:
-                if (v != 0) {
-                    r = evt_popResult() % v;
+                if (operand != 0) {
+                    result = evt_popResult() % operand;
                 } else {
-                    r = evt_popResult();
+                    result = evt_popResult();
                 }
                 g_evtExprSp++;
                 break;
             case EVT_EXPR_UNIT_ADD_ASSIGN:
-                r = evt_popResult() + v;
+                result = evt_popResult() + operand;
                 g_evtExprSp++;
                 break;
             case EVT_EXPR_UNIT_SUB_ASSIGN:
-                r = evt_popResult() - v;
+                result = evt_popResult() - operand;
                 g_evtExprSp++;
                 break;
             case EVT_EXPR_UNIT_SHL_ASSIGN:
-                r = evt_popResult() << v;
+                result = evt_popResult() << operand;
                 g_evtExprSp++;
                 break;
             case EVT_EXPR_UNIT_SHR_ASSIGN:
-                r = evt_popResult() >> v;
+                result = evt_popResult() >> operand;
                 g_evtExprSp++;
                 break;
             case EVT_EXPR_UNIT_AND_ASSIGN:
-                r = evt_popResult() & v;
+                result = evt_popResult() & operand;
                 g_evtExprSp++;
                 break;
             case EVT_EXPR_UNIT_XOR_ASSIGN:
-                r = evt_popResult() ^ v;
+                result = evt_popResult() ^ operand;
                 g_evtExprSp++;
                 break;
             case EVT_EXPR_UNIT_OR_ASSIGN:
-                r = evt_popResult() | v;
+                result = evt_popResult() | operand;
                 g_evtExprSp++;
                 break;
             }
-            evt_assignResult(r);
+            evt_assignResult(result);
             g_evtExprSp++;
         }
         unitMask >>= 1;
     }
     g_evtExprSp -= 2;
-    return r;
+    return result;
 }
 
 s32 evt_exprUnitSelect(s32 op) {
-    s32 r = 0;
-    s32 idx = r;
+    s32 result = 0;
+    s32 idx = result;
     s32 w = g_evtExprSp[-2];
     s32 unitMask;
     s32 i;
@@ -302,11 +302,11 @@ s32 evt_exprUnitSelect(s32 op) {
     switch (op) {
     case EVT_EXPR_UNIT_NOT:
         for (i = 0; i < 8; i++) {
-            r >>= 1;
+            result >>= 1;
             if (unitMask & 1) {
                 g_evtExprObj = g_evtUnitObjects[i];
                 if (evt_popResult() == 0) {
-                    r |= 0x80;
+                    result |= 0x80;
                 }
                 g_evtExprSp++;
             }
@@ -314,48 +314,48 @@ s32 evt_exprUnitSelect(s32 op) {
         }
         break;
     case EVT_EXPR_UNIT_MAX:
-        r = -0x8000;
+        result = -0x8000;
         for (i = 0; i < 8; i++) {
             if (unitMask & 1) {
                 g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
-                if (r < x) {
-                    r = x;
+                if (result < x) {
+                    result = x;
                     idx = i;
                 }
             }
             unitMask >>= 1;
         }
-        r = 1 << idx;
+        result = 1 << idx;
         break;
     case EVT_EXPR_UNIT_MIN:
-        r = 0x7FFF;
+        result = 0x7FFF;
         for (i = 0; i < 8; i++) {
             if (unitMask & 1) {
                 g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
-                if (x < r) {
-                    r = x;
+                if (x < result) {
+                    result = x;
                     idx = i;
                 }
             }
             unitMask >>= 1;
         }
-        r = 1 << idx;
+        result = 1 << idx;
         break;
     }
     g_evtExprSp -= 2;
-    return r;
+    return result;
 }
 
 s32 evt_exprUnitCompare(s32 op) {
-    s32 r = 0;
-    s32 c = r;
+    s32 result = 0;
+    s32 hit = result;
     s32 w = g_evtExprSp[-3];
     s32 unitMask;
-    s32 v;
+    s32 operand;
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
@@ -365,54 +365,54 @@ s32 evt_exprUnitCompare(s32 op) {
         unitMask = evt_popResult();
         g_evtExprSp += 3;
     }
-    v = evt_popResult();
+    operand = evt_popResult();
     for (i = 0; i < 8; i++) {
-        r >>= 1;
+        result >>= 1;
         if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case EVT_EXPR_UNIT_LT:
-                c = evt_popResult() < v;
+                hit = evt_popResult() < operand;
                 break;
             case EVT_EXPR_UNIT_GT:
-                c = evt_popResult() > v;
+                hit = evt_popResult() > operand;
                 break;
             case EVT_EXPR_UNIT_LE:
-                c = evt_popResult() <= v;
+                hit = evt_popResult() <= operand;
                 break;
             case EVT_EXPR_UNIT_GE:
-                c = evt_popResult() >= v;
+                hit = evt_popResult() >= operand;
                 break;
             case EVT_EXPR_UNIT_EQ:
-                c = evt_popResult() == v;
+                hit = evt_popResult() == operand;
                 break;
             case EVT_EXPR_UNIT_NE:
-                c = evt_popResult() != v;
+                hit = evt_popResult() != operand;
                 break;
             case EVT_EXPR_UNIT_ANY_BITS:
-                c = (evt_popResult() & v) != 0;
+                hit = (evt_popResult() & operand) != 0;
                 break;
             case EVT_EXPR_UNIT_NO_BITS:
-                c = (evt_popResult() & v) == 0;
+                hit = (evt_popResult() & operand) == 0;
                 break;
             case EVT_EXPR_UNIT_XOR_NZ:
-                c = (evt_popResult() ^ v) != 0;
+                hit = (evt_popResult() ^ operand) != 0;
                 break;
             case EVT_EXPR_UNIT_OR_NZ:
-                c = (evt_popResult() | v) != 0;
+                hit = (evt_popResult() | operand) != 0;
                 break;
             }
-            r |= c << 7;
+            result |= hit << 7;
             g_evtExprSp++;
         }
         unitMask >>= 1;
     }
     g_evtExprSp -= 2;
-    return r;
+    return result;
 }
 
 s32 evt_exprUnitLogic(s32 op) {
-    s32 r = 0;
+    s32 result = 0;
     s32 w = g_evtExprSp[-2];
     s32 unitMask;
     s32 i;
@@ -425,11 +425,11 @@ s32 evt_exprUnitLogic(s32 op) {
         g_evtExprSp += 2;
     }
     for (i = 0; i < 8; i++) {
-        r >>= 1;
+        result >>= 1;
         if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
             if (evt_popResult() != 0) {
-                r |= 0x80;
+                result |= 0x80;
             }
             g_evtExprSp++;
         }
@@ -438,24 +438,24 @@ s32 evt_exprUnitLogic(s32 op) {
     g_evtExprSp -= 2;
     switch (op) {
     case EVT_EXPR_UNIT_MASK_AND:
-        r &= evt_popResult();
+        result &= evt_popResult();
         g_evtExprSp++;
         break;
     case EVT_EXPR_UNIT_MASK_XOR:
-        r ^= evt_popResult();
+        result ^= evt_popResult();
         g_evtExprSp++;
         break;
     case EVT_EXPR_UNIT_MASK_OR:
-        r |= evt_popResult();
+        result |= evt_popResult();
         g_evtExprSp++;
         break;
     }
-    evt_assignResult(r);
-    return r;
+    evt_assignResult(result);
+    return result;
 }
 
 s32 evt_exprUnitFirst(void) {
-    s32 r = 0;
+    s32 result = 0;
     s32 w = g_evtExprSp[-2];
     s32 unitMask;
     s32 i;
@@ -478,20 +478,20 @@ s32 evt_exprUnitFirst(void) {
     }
     if (i < 8) {
         g_evtExprObj = g_evtUnitObjects[i];
-        r = evt_popResult();
+        result = evt_popResult();
     } else {
         g_evtExprSp--;
     }
     g_evtExprSp--;
-    return r;
+    return result;
 }
 
 s32 evt_joinParty(s32 slot) {
     s32 i;
-    s32 r;
+    s32 result;
 
     if (evt_isInParty_find(evt_isInParty_key(slot), slot)) {
-        r = 1;
+        result = 1;
     } else {
         slot = evt_isInParty_key(slot);
         if (slot >= 0 && slot < 9) {
@@ -500,88 +500,88 @@ s32 evt_joinParty(s32 slot) {
                     break;
                 }
             }
-            r = i >= 4;
-            if (r == 0) {
+            result = i >= 4;
+            if (result == 0) {
                 party_setMember(i, slot);
                 evt_execInstr_party();
             }
         } else {
-            r = 1;
+            result = 1;
         }
     }
-    return r;
+    return result;
 }
 
 s32 evt_exprSpecial(s32 op) {
-    s32 r = 0;
+    s32 result = 0;
     s16 px;
     s16 py;
     s32 x;
     GameData *gd;
-    EvtObject *o;
+    EvtObject *obj;
 
     switch (op) {
     case EVT_EXPR_UNIT_POST_INC:
     case EVT_EXPR_UNIT_POST_DEC:
     case EVT_EXPR_UNIT_PRE_INC:
     case EVT_EXPR_UNIT_PRE_DEC:
-        r = evt_exprUnitIncDec(op);
+        result = evt_exprUnitIncDec(op);
         break;
     case EVT_EXPR_UNIT_NOT:
     case EVT_EXPR_UNIT_MAX:
     case EVT_EXPR_UNIT_MIN:
-        r = evt_exprUnitSelect(op);
+        result = evt_exprUnitSelect(op);
         break;
     case EVT_EXPR_UNIT_MASK:
     case EVT_EXPR_UNIT_MASK_AND:
     case EVT_EXPR_UNIT_MASK_XOR:
     case EVT_EXPR_UNIT_MASK_OR:
-        r = evt_exprUnitLogic(op);
+        result = evt_exprUnitLogic(op);
         break;
     case EVT_EXPR_ITEM_COUNT:
         x = evt_popResult();
         if (x < ITEM_ID_KEY_FIRST) {
-            r = item_getCount(x);
+            result = item_getCount(x);
         } else if (x < ITEM_ID_CARD_FIRST) {
-            r = (u8)keyItem_has(x - ITEM_ID_KEY_FIRST);
+            result = (u8)keyItem_has(x - ITEM_ID_KEY_FIRST);
         } else {
-            r = card_countOf(x - ITEM_ID_CARD_FIRST);
+            result = card_countOf(x - ITEM_ID_CARD_FIRST);
         }
         break;
     case EVT_EXPR_BGI_ANIM_FRAME:
-        bgi_getAnimFrame(evt_popResult(), &r);
+        bgi_getAnimFrame(evt_popResult(), &result);
         break;
     case EVT_EXPR_CHR_HP:
         gd = g_gameState->gameData;
-        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].hp;
+        result = gd->characters[evt_exprSpecial_chr(evt_popResult())].hp;
         break;
     case EVT_EXPR_CHR_MAX_HP:
         gd = g_gameState->gameData;
-        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxHp;
+        result = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxHp;
         break;
     case EVT_EXPR_CHR_MP:
         gd = g_gameState->gameData;
-        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].mp;
+        result = gd->characters[evt_exprSpecial_chr(evt_popResult())].mp;
         break;
     case EVT_EXPR_CHR_MAX_MP:
         gd = g_gameState->gameData;
-        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxMp;
+        result = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxMp;
         break;
     case EVT_EXPR_ACTOR_TRIANGLE:
         px = -1;
-        o = (EvtObject *)evt_popResult();
-        if (o != NULL && o->kind == EVT_KIND_ACTOR) {
-            bgi_getActorTriangle(o->modelSlot, (u16 *)&px, (u16 *)&py);
+        obj = (EvtObject *)evt_popResult();
+        if (obj != NULL && obj->kind == EVT_KIND_ACTOR) {
+            bgi_getActorTriangle(obj->modelSlot, (u16 *)&px, (u16 *)&py);
         }
-        r = px;
+        result = px;
         break;
     case EVT_EXPR_ACTOR_FLOOR:
         py = -1;
-        o = (EvtObject *)evt_popResult();
-        if (o != NULL && o->kind == EVT_KIND_ACTOR) {
-            bgi_getActorTriangle(o->modelSlot, (u16 *)&px, (u16 *)&py);
+        obj = (EvtObject *)evt_popResult();
+        if (obj != NULL && obj->kind == EVT_KIND_ACTOR) {
+            bgi_getActorTriangle(obj->modelSlot, (u16 *)&px, (u16 *)&py);
         }
-        r = py;
+        result = py;
         break;
     case EVT_EXPR_UNUSED_6C:
         evt_popResult();
@@ -591,5 +591,5 @@ s32 evt_exprSpecial(s32 op) {
         evt_popResult();
         break;
     }
-    return r;
+    return result;
 }

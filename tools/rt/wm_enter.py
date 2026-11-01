@@ -3,7 +3,7 @@
 Disc 1: walk out of a field onto the world map (hold a direction until main's dispatcher 0x80012834 breaks after the
 field cleanup), apply the pokes there (story counter, event bytes: nothing of the field reacts to them any more),
 then let ovl_0c's wm_init run. Logs func_800C45D8's return value (bp at wm_init+0x10C) and GameData.flags."""
-import argparse, os, subprocess, sys
+import argparse, struct, os, subprocess, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, ROOT + '/tools/rt')
 from emu_lib import *
@@ -27,6 +27,8 @@ if a.world is not None:
     from encounter_catalog import Img
     f = Img(ROOT + '/disks/us/disc1/FF9.IMG').files(3)[a.world - 9000]
     w32(gd() + 0x800, f[1]); w32(gd() + 0x808, f[2]); print('world file', hex(f[0]), f[1], f[2])
+    # wm_load picks the world script by GameData.worldId (+0x7DC) and area (+0x7DE, 68 for every world file), not the sector
+    wr(gd() + 0x7DC, struct.pack('<hH', a.world, 68))
 for pk in a.poke:
     ad, h = pk.split('='); wr(emu.parse_addr(ad), bytes.fromhex(h))
 lg = B('addBp', 0x800A8C20, 'Exec', 4, 'log', 4, 'wm_init_ret')

@@ -2,60 +2,60 @@
 
 void file_loadTim(s32 addr) {
     TimHeader *tim = (TimHeader *)addr;
-    TimBlock *b = &tim->clut;
+    TimBlock *blk = &tim->clut;
 
     if (tim->flag & 8) {
         LoadImage((RECT *)&tim->clut.x, (u32 *)(&tim->clut + 1));
-        b = (TimBlock *)((u32 *)b + (b->bnum >> 2));
+        blk = (TimBlock *)((u32 *)blk + (blk->bnum >> 2));
     }
-    LoadImage((RECT *)&b->x, (u32 *)(b + 1));
+    LoadImage((RECT *)&blk->x, (u32 *)(blk + 1));
 }
 
 void file_getTimRects(TimHeader *tim, RECT **clut, RECT **image) {
-    TimBlock *b;
+    TimBlock *blk;
 
     if (tim != NULL) {
-        b = &tim->clut;
+        blk = &tim->clut;
         if (tim->flag & 8) {
             if (clut != NULL) {
                 *clut = (RECT *)&tim->clut.x;
             }
-            b = (TimBlock *)((u32 *)b + (b->bnum >> 2));
+            blk = (TimBlock *)((u32 *)blk + (blk->bnum >> 2));
         }
         if (image != NULL) {
-            *image = (RECT *)&b->x;
+            *image = (RECT *)&blk->x;
         }
     }
 }
 
 void file_getTimPos(TimHeader *tim, s32 *cx, s32 *cy, s32 *px, s32 *py) {
-    TimBlock *b;
+    TimBlock *blk;
 
     if (tim != NULL) {
-        b = &tim->clut;
+        blk = &tim->clut;
         if (tim->flag & 8) {
             *cx = tim->clut.x;
             *cy = tim->clut.y;
-            b = (TimBlock *)((u32 *)b + (b->bnum >> 2));
+            blk = (TimBlock *)((u32 *)blk + (blk->bnum >> 2));
         }
-        *px = b->x;
-        *py = b->y;
+        *px = blk->x;
+        *py = blk->y;
     }
 }
 
 void file_setTimPos(s32 addr, s32 cx, s32 cy, s32 px, s32 py) {
     TimHeader *tim = (TimHeader *)addr;
-    TimBlock *b;
+    TimBlock *blk;
 
     if (tim != NULL) {
-        b = &tim->clut;
+        blk = &tim->clut;
         if (tim->flag & 8) {
             tim->clut.x = cx;
             tim->clut.y = cy;
-            b = (TimBlock *)((u32 *)b + (b->bnum >> 2));
+            blk = (TimBlock *)((u32 *)blk + (blk->bnum >> 2));
         }
-        b->x = px;
-        b->y = py;
+        blk->x = px;
+        blk->y = py;
     }
 }
 
@@ -93,10 +93,10 @@ void file_advanceLoadPtr(u8 **ptr, s32 size) {
 
 s32 file_copyViaVram(s32 dst, s32 src, s32 size, RECT *rc) {
     s32 done = 0;
-    RECT *r;
+    RECT *rect;
     u32 left;
     u32 h;
-    u32 n;
+    u32 cols;
     u32 i;
 
     if (size != 0) {
@@ -104,38 +104,38 @@ s32 file_copyViaVram(s32 dst, s32 src, s32 size, RECT *rc) {
             left = size - done;
             i = g_vramCopyRectIdx;
             g_vramCopyRectIdx = i + 1;
-            r = &g_vramCopyRects[i];
+            rect = &g_vramCopyRects[i];
             if (i >= 5) {
                 g_vramCopyRectIdx = 0;
             }
             if (rc != NULL) {
-                r->x = rc->x;
-                r->y = rc->y;
-                r->w = rc->w;
-                r->h = rc->h;
+                rect->x = rc->x;
+                rect->y = rc->y;
+                rect->w = rc->w;
+                rect->h = rc->h;
             } else {
-                r->x = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.x;
-                r->y = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.y;
-                r->w = 320;
-                r->h = 218;
+                rect->x = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.x;
+                rect->y = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.y;
+                rect->w = 320;
+                rect->h = 218;
             }
             h = left >> 1;
-            n = h / r->h;
-            if (n == 0 && left != 0) {
-                n = 1;
-                r->h = h;
+            cols = h / rect->h;
+            if (cols == 0 && left != 0) {
+                cols = 1;
+                rect->h = h;
                 if ((s16)h == 0) {
-                    r->h = h + 1;
+                    rect->h = h + 1;
                 }
-            } else if (r->w < (s32)n) {
-                n = r->w;
+            } else if (rect->w < (s32)cols) {
+                cols = rect->w;
             }
-            r->w = n;
-            LoadImage(r, (u32 *)(src + done));
+            rect->w = cols;
+            LoadImage(rect, (u32 *)(src + done));
             while (cd_getState() != 0) {
             }
-            StoreImage(r, (u32 *)(dst + done));
-            done += r->w * r->h * 2;
+            StoreImage(rect, (u32 *)(dst + done));
+            done += rect->w * rect->h * 2;
         }
     }
     return done;
@@ -181,13 +181,13 @@ void file_loadDirTables(void) {
     s32 base;
     s32 size;
     s32 cnt;
-    s32 t;
+    s32 partial;
     u8 *top;
     u8 *data;
     u8 *list8;
     u8 *list11;
-    Unk8001DE50 *s;
-    Unk8001DE50 *e;
+    Unk8001DE50 *ent8;
+    Unk8001DE50 *ent11;
     Unk8001DE50b *dst;
     u16 key;
     s32 key2; /* s32, unlike key: no zero_extend in the second inner loop, so loop.c can still hoist the constant 2 */
@@ -200,9 +200,9 @@ void file_loadDirTables(void) {
     tables = g_loadAreaEnd + 0x14C700;
     size = (gs->dirs[13].tableSector << 11) + gs->dirs[13].count * 2;
     base = gs->dirs[0].tableSector;
-    t = size & 0x800;
-    if (t != 0) {
-        size += 0x800 - t;
+    partial = size & 0x800;
+    if (partial != 0) {
+        size += 0x800 - partial;
     }
 
     cd_readAsync(gs->imgSector, size, tables, NULL);
@@ -236,45 +236,45 @@ void file_loadDirTables(void) {
     memmove(gs->dirTables[8], tables + ((gs->dirs[8].tableSector - base) << 11), size);
 
     list8 = tables + ((dir[8].tableSector - base) << 11);
-    s = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
+    ent8 = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
     list11 = tables + ((dir[11].tableSector - base) << 11);
     do {
-        key = s->link;
-        e = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
+        key = ent8->link;
+        ent11 = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
         do {
-            if (e->id == key) {
-                if (e->link == 0) {
-                    e->link = 1;
+            if (ent11->id == key) {
+                if (ent11->link == 0) {
+                    ent11->link = 1;
                     cnt++;
                 }
                 break;
             }
-            e--;
-        } while ((u8 *)e >= list11);
-        s--;
-    } while ((u8 *)s >= list8);
+            ent11--;
+        } while ((u8 *)ent11 >= list11);
+        ent8--;
+    } while ((u8 *)ent8 >= list8);
     size = cnt * 0x10;
     top -= size;
     gs->dirTables[11] = top;
-    s = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
+    ent8 = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
     dst = gs->dirTables[11];
     do {
-        key2 = s->link;
-        e = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
+        key2 = ent8->link;
+        ent11 = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
         do {
-            if (e->id == key2) {
-                if (e->link == 1) {
-                    memmove(dst, e, 0x10);
+            if (ent11->id == key2) {
+                if (ent11->link == 1) {
+                    memmove(dst, ent11, 0x10);
                     dst->unk8 = 0xFFFF;
                     dst++;
-                    e->link = 2;
+                    ent11->link = 2;
                 }
                 break;
             }
-            e--;
-        } while ((u8 *)e >= list11);
-        s--;
-    } while ((u8 *)s >= list8);
+            ent11--;
+        } while ((u8 *)ent11 >= list11);
+        ent8--;
+    } while ((u8 *)ent8 >= list8);
     gs->dirs[11].count = cnt * 2;
 
     size = (dir[12].count + 1) * 8;
@@ -290,22 +290,22 @@ void file_loadDirTables(void) {
 }
 
 FileEntry *file_find(s32 dir, s32 id) {
-    DirInfo *d = g_gameState->dirs + dir;
+    DirInfo *dirInfo = g_gameState->dirs + dir;
     FileIdEntry *base;
-    FileIdEntry *e;
+    FileIdEntry *ent;
 
-    if (d->type == 3) {
+    if (dirInfo->type == 3) {
         return (FileEntry *)((u16 *)g_gameState->dirTables[13] + id);
     }
     id &= 0xFFFF;
     base = g_gameState->dirTables[dir];
-    e = base + d->count - 1;
+    ent = base + dirInfo->count - 1;
 loop:
-    if (e->id == id) {
-        return (FileEntry *)e;
+    if (ent->id == id) {
+        return (FileEntry *)ent;
     }
-    e--;
-    if (e >= base) {
+    ent--;
+    if (ent >= base) {
         goto loop;
     }
     return NULL;

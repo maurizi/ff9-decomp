@@ -3,39 +3,39 @@
 s32 w_readtxRequest(texId)
     s16 texId;
 {
-    WmReadtxSlot *p;
+    WmReadtxSlot *slot;
     u32 i;
 
-    p = g_worldReadtxHead.next;
+    slot = g_worldReadtxHead.next;
     i = 0;
     while (1) {
-        if (p->texId == texId) {
-            p->prev->next = p->next;
-            p->next->prev = p->prev;
-            p->next = g_worldReadtxHead.next;
-            p->prev = &g_worldReadtxHead;
-            g_worldReadtxHead.next->prev = p;
-            g_worldReadtxHead.next = p;
+        if (slot->texId == texId) {
+            slot->prev->next = slot->next;
+            slot->next->prev = slot->prev;
+            slot->next = g_worldReadtxHead.next;
+            slot->prev = &g_worldReadtxHead;
+            g_worldReadtxHead.next->prev = slot;
+            g_worldReadtxHead.next = slot;
             break;
         }
-        if (p->texId == -1) {
+        if (slot->texId == -1) {
             g_worldReadtxReqCount++;
             if (g_worldReadtxReqCount >= 4) {
                 sprintf(g_worldMapErrorMsg, "w_readtxRequest/reqover[%d/%d]\n", g_worldReadtxReqCount, 3);
                 printf("==== ERROR ===== / %s", g_worldMapErrorMsg);
                 g_worldMapError = 1;
             }
-            p->texId = texId;
-            p->prev->next = p->next;
-            p->next->prev = p->prev;
-            p->next = g_worldReadtxHead.next;
-            p->prev = &g_worldReadtxHead;
+            slot->texId = texId;
+            slot->prev->next = slot->next;
+            slot->next->prev = slot->prev;
+            slot->next = g_worldReadtxHead.next;
+            slot->prev = &g_worldReadtxHead;
             g_worldReadtxDirty++;
-            g_worldReadtxHead.next->prev = p;
-            g_worldReadtxHead.next = p;
+            g_worldReadtxHead.next->prev = slot;
+            g_worldReadtxHead.next = slot;
             break;
         }
-        p = p->next;
+        slot = slot->next;
         i++;
         if (i >= 6) {
             break;
@@ -49,38 +49,38 @@ s32 w_readtxRequest(texId)
 }
 
 void wm_readtxCompact(void) {
-    WmReadtxSlot *p;
-    WmReadtxSlot *q;
+    WmReadtxSlot *srcSlot;
+    WmReadtxSlot *dstSlot;
     u32 i;
 
     g_worldReadtxReqCount = 0;
     if (g_worldReadtxDirty != 0) {
-        p = g_worldReadtxHead.next;
+        srcSlot = g_worldReadtxHead.next;
         i = 0;
         g_worldReadtxDirty = 0;
-        q = p;
+        dstSlot = srcSlot;
         do {
-            p = p->next;
+            srcSlot = srcSlot->next;
             i++;
         } while (i < 3);
         for (;;) {
-            while ((p != &g_worldReadtxTail) & (p->pack == NULL)) {
-                if ((p->pack == NULL) & (p->texId != -1)) {
-                    p->texId = -1;
+            while ((srcSlot != &g_worldReadtxTail) & (srcSlot->pack == NULL)) {
+                if ((srcSlot->pack == NULL) & (srcSlot->texId != -1)) {
+                    srcSlot->texId = -1;
                 }
-                p = p->next;
+                srcSlot = srcSlot->next;
             }
-            if (p == &g_worldReadtxTail) {
+            if (srcSlot == &g_worldReadtxTail) {
                 break;
             }
-            while (q->pack != NULL) {
-                q = q->next;
+            while (dstSlot->pack != NULL) {
+                dstSlot = dstSlot->next;
             }
-            q->pack = p->pack;
-            p->pack = NULL;
-            p->extracted = 0;
-            p->texId = -1;
-            p = p->next;
+            dstSlot->pack = srcSlot->pack;
+            srcSlot->pack = NULL;
+            srcSlot->extracted = 0;
+            srcSlot->texId = -1;
+            srcSlot = srcSlot->next;
         }
     }
 }
@@ -93,33 +93,33 @@ void wm_readtxUpdate(void) {
 
 /* find the loaded frame pack for (id, variant) */
 s32 wm_readtxFind(s32 texId, s32 variant) {
-    WmReadtxSlot *p = g_worldReadtxHead.next;
+    WmReadtxSlot *slot = g_worldReadtxHead.next;
     s32 i;
 
-    for (i = 0; i < 3; i++, p = p->next) {
-        if ((p->texId & 0x3F) == (texId & 0x3F) && p->extracted == (variant & 0xFF)) {
-            return (s32)p->pack;
+    for (i = 0; i < 3; i++, slot = slot->next) {
+        if ((slot->texId & 0x3F) == (texId & 0x3F) && slot->extracted == (variant & 0xFF)) {
+            return (s32)slot->pack;
         }
     }
     return 0;
 }
 
 void wm_readtxDone(s32 *pack) {
-    WmReadtxSlot *p;
+    WmReadtxSlot *slot;
     s32 i;
 
     if (g_worldMapDebugFlags & WM_DEBUG_TEXTURE) {
         printf(s_wmStrReadtxDone, pack);
     }
     w_frameExtruct(pack);
-    p = g_worldReadtxHead.next;
+    slot = g_worldReadtxHead.next;
     for (i = 0; i < 3;) {
-        if (p->pack == pack) {
-            p->extracted = 1;
+        if (slot->pack == pack) {
+            slot->extracted = 1;
             return;
         }
         i++;
-        p = p->next;
+        slot = slot->next;
     }
 }
 

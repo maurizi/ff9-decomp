@@ -1,43 +1,43 @@
 #include "ovl_0b.h"
 
 void btl_initParty(Battle *battle) {
-    s16 n;
+    s16 count;
     s16 i;
     EvtListNode *node;
     Character *chr;
-    BtlUnit *u;
+    BtlUnit *unit;
     s32 ambush;
 
-    i = n = 0;
+    i = count = 0;
     node = evt_getObjectList()->next;
     for (; i < 4; i++) {
         chr = g_gameState->gameData->party[i];
         if (chr != NULL) {
-            u = &battle->units[n];
-            u->modelId = g_btlCharModelIds[(chr->info.w >> CHR_INFO_KIND_SHIFT) & 0x1F];
-            btl_createObjModel(node->obj, u->modelId);
-            btl_initPartyUnit(chr, u, i, n);
-            n++;
+            unit = &battle->units[count];
+            unit->modelId = g_btlCharModelIds[(chr->info.w >> CHR_INFO_KIND_SHIFT) & 0x1F];
+            btl_createObjModel(node->obj, unit->modelId);
+            btl_initPartyUnit(chr, unit, i, count);
+            count++;
             node = node->next;
-            btl_insertUnit(u);
+            btl_insertUnit(unit);
         }
     }
-    for (; n < 4; n++) {
-        battle->units[n].unitBit = 0;
+    for (; count < 4; count++) {
+        battle->units[count].unitBit = 0;
     }
     battle->loadFlags |= BTL_LOAD_PARTY_INIT;
     btl_placeParty();
     ambush = battle->scene.flags & BTL_SCENE_AMBUSH;
     if (ambush == BTL_AMBUSH_BACK) {
-        for (u = battle->unitList; u != NULL; u = u->next) {
-            if (u->flags & BTL_UNIT_PARTY) {
-                u->atb = 0;
+        for (unit = battle->unitList; unit != NULL; unit = unit->next) {
+            if (unit->flags & BTL_UNIT_PARTY) {
+                unit->atb = 0;
             }
         }
     } else if (ambush == BTL_AMBUSH_PREEMPTIVE) {
-        for (u = battle->unitList; u != NULL; u = u->next) {
-            if (!(u->flags & BTL_UNIT_PARTY)) {
-                u->atb = 0;
+        for (unit = battle->unitList; unit != NULL; unit = unit->next) {
+            if (!(unit->flags & BTL_UNIT_PARTY)) {
+                unit->atb = 0;
             }
         }
     }
@@ -45,19 +45,19 @@ void btl_initParty(Battle *battle) {
 
 void btl_initEnemies(Battle *battle) {
     s16 i = 0;
-    s16 n = 4;
+    s16 slot = 4;
     EvtListNode *node = evt_getBattleObjects()->next;
     BtlUnit *prev = NULL;
     BtlEnemy *enemy;
-    BtlUnit *u;
+    BtlUnit *unit;
     s16 modelId;
     s32 index;
 
-    for (; i < g_gameState->gameData->ctx.battle->scene.group->enemyCount; i++, n++) {
+    for (; i < g_gameState->gameData->ctx.battle->scene.group->enemyCount; i++, slot++) {
         enemy = &battle->enemies[i];
         enemy->flags = (enemy->flags & ~BTL_ENEMYF_FADE) | BTL_ENEMYF_FADE_OPAQUE;
-        u = &battle->units[n];
-        u->modelId = modelId = btl_getEnemyModelId(i);
+        unit = &battle->units[slot];
+        unit->modelId = modelId = btl_getEnemyModelId(i);
         if (modelId < 0) {
             enemy->flags |= BTL_ENEMYF_NO_MODEL;
         } else {
@@ -66,24 +66,24 @@ void btl_initEnemies(Battle *battle) {
             node = node->next;
         }
         index = i;
-        u->unitBit = 0x10 << index;
-        u->flags &= ~BTL_UNIT_PARTY;
-        u->flags = (u->flags & ~BTL_UNIT_INDEX_MASK) | ((index & 0xF) << BTL_UNIT_INDEX_SHIFT);
-        u->flags = (u->flags & ~BTL_UNIT_SLOT_MASK) | (((index + 4) & 7) << BTL_UNIT_SLOT_SHIFT);
-        u->flags &= ~BTL_UNIT_TRANCE_ENABLED;
-        u->flags = (u->flags & ~BTL_UNIT_MODEL_PART) | (((enemy->flags >> BTL_ENEMYF_NO_MODEL_BIT) & 1) << BTL_UNIT_MODEL_PART_BIT);
-        btl_resetUnit(u, &g_gameState->gameData->npcModels[index]);
-        u->home = (struct BtlUnit98 *)&enemy->home;
-        u->weaponModel = NULL;
-        u->support = (u32 *)g_btlEnemySupport;
-        u->flags &= ~BTL_UNIT_WEAK_STANCE;
+        unit->unitBit = 0x10 << index;
+        unit->flags &= ~BTL_UNIT_PARTY;
+        unit->flags = (unit->flags & ~BTL_UNIT_INDEX_MASK) | ((index & 0xF) << BTL_UNIT_INDEX_SHIFT);
+        unit->flags = (unit->flags & ~BTL_UNIT_SLOT_MASK) | (((index + 4) & 7) << BTL_UNIT_SLOT_SHIFT);
+        unit->flags &= ~BTL_UNIT_TRANCE_ENABLED;
+        unit->flags = (unit->flags & ~BTL_UNIT_MODEL_PART) | (((enemy->flags >> BTL_ENEMYF_NO_MODEL_BIT) & 1) << BTL_UNIT_MODEL_PART_BIT);
+        btl_resetUnit(unit, &g_gameState->gameData->npcModels[index]);
+        unit->home = (struct BtlUnit98 *)&enemy->home;
+        unit->weaponModel = NULL;
+        unit->support = (u32 *)g_btlEnemySupport;
+        unit->flags &= ~BTL_UNIT_WEAK_STANCE;
         if (prev != NULL) {
-            prev->next = u;
+            prev->next = unit;
         }
-        prev = u;
+        prev = unit;
     }
-    for (; n < 8; n++) {
-        battle->units[n].unitBit = 0;
+    for (; slot < 8; slot++) {
+        battle->units[slot].unitBit = 0;
     }
     prev->next = NULL;
     battle->unitList = &battle->units[4];
@@ -92,45 +92,45 @@ void btl_initEnemies(Battle *battle) {
     btlseq_init();
 }
 
-void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
+void btl_initPartyUnit(Character *chr, BtlUnit *unit, u16 slot, u16 unitNo) {
     s32 ambush;
-    s32 s;
+    s32 slotNo;
     s32 i;
 
-    u->unitBit = 1 << n;
-    g_btlRewards.expMask |= 1 << (s = slot);
-    u->flags |= BTL_UNIT_PARTY;
-    u->flags = (u->flags & ~BTL_UNIT_INDEX_MASK) | ((c->info.w & CHR_INFO_ID) << BTL_UNIT_INDEX_SHIFT);
-    u->flags |= BTL_UNIT_TARGETABLE;
-    u->flags = (u->flags & ~BTL_UNIT_SLOT_MASK) | ((s & 7) << BTL_UNIT_SLOT_SHIFT);
-    u->flags &= ~BTL_UNIT_MODEL_PART;
-    if (g_evtGlobalVars.b[EVT_GB_TRANCE_ENABLED] == 0 || (c->classFlags & CHR_CLASS_GUEST) ||
-        (BTL_UNIT_INDEX(u->flags) == CHR_DAGGER && g_evtGlobalVars.b[EVT_GB_DAGGER_FALTERS] != 0)) {
-        u->trance = 0;
-        u->flags &= ~BTL_UNIT_TRANCE_ENABLED;
+    unit->unitBit = 1 << unitNo;
+    g_btlRewards.expMask |= 1 << (slotNo = slot);
+    unit->flags |= BTL_UNIT_PARTY;
+    unit->flags = (unit->flags & ~BTL_UNIT_INDEX_MASK) | ((chr->info.w & CHR_INFO_ID) << BTL_UNIT_INDEX_SHIFT);
+    unit->flags |= BTL_UNIT_TARGETABLE;
+    unit->flags = (unit->flags & ~BTL_UNIT_SLOT_MASK) | ((slotNo & 7) << BTL_UNIT_SLOT_SHIFT);
+    unit->flags &= ~BTL_UNIT_MODEL_PART;
+    if (g_evtGlobalVars.b[EVT_GB_TRANCE_ENABLED] == 0 || (chr->classFlags & CHR_CLASS_GUEST) ||
+        (BTL_UNIT_INDEX(unit->flags) == CHR_DAGGER && g_evtGlobalVars.b[EVT_GB_DAGGER_FALTERS] != 0)) {
+        unit->trance = 0;
+        unit->flags &= ~BTL_UNIT_TRANCE_ENABLED;
     } else {
-        u->flags |= BTL_UNIT_TRANCE_ENABLED;
-        u->trance = c->trance;
+        unit->flags |= BTL_UNIT_TRANCE_ENABLED;
+        unit->trance = chr->trance;
     }
-    u->baseBone = 0;
-    u->support = c->supportAbilities;
-    u->speed = c->speed;
-    u->strength = c->strength;
-    u->magic = c->magic;
-    u->spirit = c->spirit;
-    u->level = c->level;
-    u->max = (BtlUnit24 *)&c->maxHp;
-    btl_copyStats((Unk800BD8C0 *)&u->hp, (Unk800BD8C0 *)&c->hp);
-    btl_resetUnit(u, &g_gameState->gameData->chrModels[c->info.w & CHR_INFO_ID]);
-    u->vanishMeshes = 0xFFFF;
-    btl_initDoomCount((Unk800C09D8 *)u);
-    u->max->maxAtb = (0x3C - u->speed) * 160;
-    btl_resetAtbSpeed((Unk800BD8F0 *)u);
+    unit->baseBone = 0;
+    unit->support = chr->supportAbilities;
+    unit->speed = chr->speed;
+    unit->strength = chr->strength;
+    unit->magic = chr->magic;
+    unit->spirit = chr->spirit;
+    unit->level = chr->level;
+    unit->max = (BtlUnit24 *)&chr->maxHp;
+    btl_copyStats((Unk800BD8C0 *)&unit->hp, (Unk800BD8C0 *)&chr->hp);
+    btl_resetUnit(unit, &g_gameState->gameData->chrModels[chr->info.w & CHR_INFO_ID]);
+    unit->vanishMeshes = 0xFFFF;
+    btl_initDoomCount((Unk800C09D8 *)unit);
+    unit->max->maxAtb = (0x3C - unit->speed) * 160;
+    btl_resetAtbSpeed((Unk800BD8F0 *)unit);
     ambush = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
     if (ambush == BTL_AMBUSH_BACK) {
-        u->atb = 0;
+        unit->atb = 0;
     } else if (ambush == BTL_AMBUSH_PREEMPTIVE) {
-        u->atb = u->max->maxAtb - 1;
+        unit->atb = unit->max->maxAtb - 1;
     } else {
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
@@ -138,42 +138,42 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
                 rand_refill();
             }
         }
-        u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
+        unit->atb = ((*g_randPtr << 8) | *g_randPtr++) % unit->max->maxAtb;
     }
-    u->weaponModel = &g_gameState->gameData->ctx.battle->weaponModels[n].model;
-    btl_loadPartyMotions(u, (c->info.w >> CHR_INFO_KIND_SHIFT) & 0x1F, n);
-    btl_initWeapon(c, u);
-    u->defense = c->defense;
-    u->evade = c->evade;
-    u->magicDef = c->magicDef;
-    u->magicEva = c->magicEva;
-    btl_initEquipElements(c, u);
-    for (i = 0; i < u->weaponModel->header->meshCount; i++) {
-        btl_setMeshRgb(u->weaponModel, i, 0, 0, 0);
+    unit->weaponModel = &g_gameState->gameData->ctx.battle->weaponModels[unitNo].model;
+    btl_loadPartyMotions(unit, (chr->info.w >> CHR_INFO_KIND_SHIFT) & 0x1F, unitNo);
+    btl_initWeapon(chr, unit);
+    unit->defense = chr->defense;
+    unit->evade = chr->evade;
+    unit->magicDef = chr->magicDef;
+    unit->magicEva = chr->magicEva;
+    btl_initEquipElements(chr, unit);
+    for (i = 0; i < unit->weaponModel->header->meshCount; i++) {
+        btl_setMeshRgb(unit->weaponModel, i, 0, 0, 0);
     }
-    if (u->hp * 6 < u->max->maxHp) {
-        u->status |= BTL_STATUS_LOW_HP;
+    if (unit->hp * 6 < unit->max->maxHp) {
+        unit->status |= BTL_STATUS_LOW_HP;
     }
-    btl_addStatuses(u, c->status & 0xFE);
-    if (c->status & CHR_STATUS_PETRIFY) {
-        btl_addStatus(u, BTL_STATUS_PETRIFY);
+    btl_addStatuses(unit, chr->status & 0xFE);
+    if (chr->status & CHR_STATUS_PETRIFY) {
+        btl_addStatus(unit, BTL_STATUS_PETRIFY);
     }
-    btl_applyAutoAbilities(u);
-    u->home = (struct BtlUnit98 *)&u->obj->x;
-    if (u->hp == 0 && btl_addStatus(u, BTL_STATUS_KO) == 2) {
-        u->koState = BTL_KO_PARTY_SET;
-        btl_setKoMotion(u);
+    btl_applyAutoAbilities(unit);
+    unit->home = (struct BtlUnit98 *)&unit->obj->x;
+    if (unit->hp == 0 && btl_addStatus(unit, BTL_STATUS_KO) == 2) {
+        unit->koState = BTL_KO_PARTY_SET;
+        btl_setKoMotion(unit);
         return;
     }
-    u->flags = (u->flags & ~BTL_UNIT_WEAK_STANCE) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << BTL_UNIT_WEAK_STANCE_BIT);
-    u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
-    u->obj->frame = 0;
+    unit->flags = (unit->flags & ~BTL_UNIT_WEAK_STANCE) | ((btl_hasStatus(unit, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << BTL_UNIT_WEAK_STANCE_BIT);
+    unit->model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+    unit->obj->frame = 0;
 }
 
 u32 *btl_initEnemyState(Battle *battle, u32 *prim) {
     SVECTOR r2;
-    SVECTOR r;
-    BtlUnit *u;
+    SVECTOR rot;
+    BtlUnit *unit;
     BtlMotion *motion;
     s32 rotKeysLo;
     BtlUnitA0 *obj;
@@ -183,53 +183,53 @@ u32 *btl_initEnemyState(Battle *battle, u32 *prim) {
     for (i = 0; i < g_gameState->gameData->ctx.battle->scene.group->enemyCount; i++) {
         {
             type = battle->enemies[i].type;
-            u = &battle->units[i + 4];
-            u->level = type->level;
-            u->max->maxAtb = (0x3C - u->speed) * 160;
-            btl_resetAtbSpeed((Unk800BD8F0 *)u);
+            unit = &battle->units[i + 4];
+            unit->level = type->level;
+            unit->max->maxAtb = (0x3C - unit->speed) * 160;
+            btl_resetAtbSpeed((Unk800BD8F0 *)unit);
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
             }
-            u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
-            u->weapon = NULL;
-            btl_initDoomCount((Unk800C09D8 *)u);
-            btl_hideMeshes(u, u->hiddenMeshes);
-            if ((u->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
-                u->atb = 0;
-                u->atbSpeed = 0;
-                memset(&r, 0, 8);
-                r.vx = u->rot[0];
-                r.vy = u->rot[1];
-                r.vz = u->rot[2];
-                r2 = r;
-                math_rotMatrixZYX(&r2, &u->model->matrix);
-                u->model->matrix.t[0] = u->obj->x >> 16;
-                u->model->matrix.t[1] = u->obj->y >> 16;
-                u->model->matrix.t[2] = u->obj->z >> 16;
-                motion = u->model->motion;
+            unit->atb = ((*g_randPtr << 8) | *g_randPtr++) % unit->max->maxAtb;
+            unit->weapon = NULL;
+            btl_initDoomCount((Unk800C09D8 *)unit);
+            btl_hideMeshes(unit, unit->hiddenMeshes);
+            if ((unit->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
+                unit->atb = 0;
+                unit->atbSpeed = 0;
+                memset(&rot, 0, 8);
+                rot.vx = unit->rot[0];
+                rot.vy = unit->rot[1];
+                rot.vz = unit->rot[2];
+                r2 = rot;
+                math_rotMatrixZYX(&r2, &unit->model->matrix);
+                unit->model->matrix.t[0] = unit->obj->x >> 16;
+                unit->model->matrix.t[1] = unit->obj->y >> 16;
+                unit->model->matrix.t[2] = unit->obj->z >> 16;
+                motion = unit->model->motion;
                 if (IS_OFFSET(motion->rotKeys)) {
                     rotKeysLo = motion->rotKeysLo;
                     motion->rotKeys = (s32)motion + motion->rotKeys;
                     if (rotKeysLo != 0) {
-                        motion->rotKeysLo = (s32)u->model->motion + rotKeysLo;
+                        motion->rotKeysLo = (s32)unit->model->motion + rotKeysLo;
                     }
                 }
-                prim = (u32 *)btl_calcBoneMatrices(u->model, 0, (u8 *)prim);
-                u->home->pos[0] = u->model->bones[u->baseBone].tx << 16;
-                u->home->pos[1] = 0;
-                u->home->pos[2] = u->model->bones[u->baseBone].tz << 16;
+                prim = (u32 *)btl_calcBoneMatrices(unit->model, 0, (u8 *)prim);
+                unit->home->pos[0] = unit->model->bones[unit->baseBone].tx << 16;
+                unit->home->pos[1] = 0;
+                unit->home->pos[2] = unit->model->bones[unit->baseBone].tz << 16;
             } else {
-                u->home->pos[0] = u->obj->x;
-                u->home->pos[1] = u->obj->y;
-                u->home->pos[2] = u->obj->z;
-                obj = u->obj;
+                unit->home->pos[0] = unit->obj->x;
+                unit->home->pos[1] = unit->obj->y;
+                unit->home->pos[2] = unit->obj->z;
+                obj = unit->obj;
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
-                obj->frame = *g_randPtr++ % u->model->motion->frameCount;
+                obj->frame = *g_randPtr++ % unit->model->motion->frameCount;
             }
         }
     }

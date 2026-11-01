@@ -77,10 +77,10 @@ void opening_titleTick(void) {
 }
 
 void opening_titleLoadImages(void) {
-    FileEntry *e;
+    FileEntry *file;
 
-    e = file_find(DIR_COMMON, FILE_TITLE_IMAGES);
-    cd_readSync(g_gameState->imgSector + e->sector, (e->link - e->sector) << 11, TITLE_PACK_BUF, e->sector);
+    file = file_find(DIR_COMMON, FILE_TITLE_IMAGES);
+    cd_readSync(g_gameState->imgSector + file->sector, (file->link - file->sector) << 11, TITLE_PACK_BUF, file->sector);
     opening_titleLoadTims((s32 *)TITLE_PACK_BUF);
 }
 
@@ -89,7 +89,7 @@ void opening_titleLoadTims(s32 *pack) {
     RECT *img;
     TmTimLike *tim;
     s32 i;
-    s32 n;
+    s32 count;
     u32 mode;
     s32 sh;
     s32 u;
@@ -97,12 +97,12 @@ void opening_titleLoadTims(s32 *pack) {
     s32 yb;
     s32 xb;
     s32 y2;
-    s32 *p;
+    s32 *ofs;
 
-    n = pack[0];
-    p = pack + 1;
-    for (i = 0; i < n; i++) {
-        tim = (TmTimLike *)((u8 *)pack + p[i]);
+    count = pack[0];
+    ofs = pack + 1;
+    for (i = 0; i < count; i++) {
+        tim = (TmTimLike *)((u8 *)pack + ofs[i]);
         file_loadTim((s32)tim);
         file_getTimRects(tim, &clut, &img);
         u = img->x & 0x3F;
@@ -208,15 +208,15 @@ void opening_titleCloseCardEvents(void) {
 }
 
 void opening_titlePollCard(void) {
-    s32 r;
+    s32 event;
 
     if (g_titleMenu.cardPolling == 0) {
         opening_titleStartCardInfo();
         g_titleMenu.cardPolling = 1;
     }
-    r = opening_titleTestCardEvents();
-    if (r != -1) {
-        g_titleMenu.cardIn[g_titleMenu.cardPort] = (r == 0 || r == 3) ? 1 : 0;
+    event = opening_titleTestCardEvents();
+    if (event != -1) {
+        g_titleMenu.cardIn[g_titleMenu.cardPort] = (event == 0 || event == 3) ? 1 : 0;
         g_titleMenu.cardPolling = 0;
         g_titleMenu.cardPort ^= 1;
     }
@@ -224,12 +224,12 @@ void opening_titlePollCard(void) {
 
 u8 opening_titleHasCard(void) {
     s32 i;
-    u8 r = 0;
+    u8 any = 0;
 
     for (i = 0; i < 2; i++) {
-        r |= g_titleMenu.cardIn[i];
+        any |= g_titleMenu.cardIn[i];
     }
-    return r;
+    return any;
 }
 
 void opening_titleStartCardInfo(void) {
@@ -245,15 +245,15 @@ void opening_titleStartCardInfo(void) {
 
 s32 opening_titleTestCardEvents(void) {
     s32 i;
-    s32 r = -1;
+    s32 event = -1;
 
     for (i = 0; i < 4; i++) {
         if (TestEvent(g_titleMenu.cardEvents[i]) == 1) {
-            r = i;
+            event = i;
             break;
         }
     }
-    return r;
+    return event;
 }
 
 void opening_titleOnFadeOut(void) {
@@ -277,32 +277,32 @@ void opening_titleStartFadeIn(void) {
     }
 }
 
-void opening_titleDrawFading(s32 x, s32 y, s32 z, TitleImage *t, s32 unused) {
-    SprtWords *p;
-    s32 c = g_titleMenu.fadeFrames;
+void opening_titleDrawFading(s32 x, s32 y, s32 z, TitleImage *image, s32 unused) {
+    SprtWords *sprt;
+    s32 level = g_titleMenu.fadeFrames;
 
     setlen(g_primPtr, PRIM_LEN(SPRT));
-    p = (SprtWords *)g_primPtr;
-    p->rgbc = (c << 1) | (c << 9) | (c << 17) | GPU_CODE(GPU_SPRT | GPU_ABE);
-    p->xy = x | (y << 16);
-    p->uvclut = t->uvClut.w;
-    p->wh = t->w | (t->h << 16);
-    g_primPtr = (u8 *)(p + 1);
-    addPrim(&g_ot[z], p);
-    SetDrawTPage(g_primPtr, 1, 1, t->tpage | 0x20);
+    sprt = (SprtWords *)g_primPtr;
+    sprt->rgbc = (level << 1) | (level << 9) | (level << 17) | GPU_CODE(GPU_SPRT | GPU_ABE);
+    sprt->xy = x | (y << 16);
+    sprt->uvclut = image->uvClut.w;
+    sprt->wh = image->w | (image->h << 16);
+    g_primPtr = (u8 *)(sprt + 1);
+    addPrim(&g_ot[z], sprt);
+    SetDrawTPage(g_primPtr, 1, 1, image->tpage | 0x20);
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += sizeof(SprtWords); /* sic: the DR_TPAGE is only 8 bytes */
 }
 
 void opening_titleConfirm(void) {
-    s32 r;
+    s32 discNeeded;
 
     switch (g_titleMenu.cursor) {
     case TITLE_NEW_GAME:
         g_gameState->disc = DISC_1;
-        r = scene_checkDisc();
-        if (r != DISC_NONE) {
-            menu_open(MENU_DISC, ((r & 3) << 14) | 0x3A98);
+        discNeeded = scene_checkDisc();
+        if (discNeeded != DISC_NONE) {
+            menu_open(MENU_DISC, ((discNeeded & 3) << 14) | 0x3A98);
             scene_set(SCENE_DISC);
         } else {
             scene_set(SCENE_START);

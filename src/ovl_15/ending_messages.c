@@ -1,14 +1,14 @@
 #include "ovl_15.h"
 
 s32 ending_messages(void) {
-    s32 t;
+    s32 timer;
     s32 page;
     u32 *ot;
     u8 *msg;
     s32 x;
 
     page = 1;
-    t = -1;
+    timer = -1;
     ending_messagesInit();
     do {
         ending_messagesClearOt();
@@ -16,98 +16,98 @@ s32 ending_messages(void) {
         switch (g_messagesState) {
         case MESSAGES_ST_START:
             page = 1;
-            t = -1;
+            timer = -1;
             g_messagesState = MESSAGES_ST_PAGE1;
             break;
         case MESSAGES_ST_PAGE1:
-            if (t == -1) {
-                t = 0xA0;
+            if (timer == -1) {
+                timer = 0xA0;
                 game_startFade(1, 1, 0x14, 0);
-            } else if (t != 0) {
+            } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 0);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
-                if (t == 0x14) {
+                if (timer == 0x14) {
                     game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
-                t--;
+                timer--;
             } else {
-                t = -1;
+                timer = -1;
                 g_messagesState = MESSAGES_ST_PAUSE;
             }
             break;
         case MESSAGES_ST_PAGE2:
-            if (t == -1) {
-                t = 0xDC;
+            if (timer == -1) {
+                timer = 0xDC;
                 game_startFade(1, 1, 0x14, 0);
-            } else if (t != 0) {
+            } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 1);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x5F, ot, msg, g_messagesPrim);
-                if (t < 0x8C) {
+                if (timer < 0x8C) {
                     msg = ending_getMessage(g_endingMessages, 2);
                     x = 0xA0 - (ending_textWidth(msg) >> 1);
                     g_messagesPrim = ending_drawText(x, 0x7D, ot, msg, g_messagesPrim);
                 }
-                if (t == 0x14) {
+                if (timer == 0x14) {
                     game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
-                t--;
+                timer--;
             } else {
-                t = -1;
+                timer = -1;
                 g_messagesState = MESSAGES_ST_PAUSE;
             }
             break;
         case MESSAGES_ST_PAGE3:
-            if (t == -1) {
-                t = 0xA0;
+            if (timer == -1) {
+                timer = 0xA0;
                 game_startFade(1, 1, 0x14, 0);
-            } else if (t != 0) {
+            } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 3);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
-                if (t == 0x14) {
+                if (timer == 0x14) {
                     game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
-                t--;
+                timer--;
             } else {
-                t = -1;
+                timer = -1;
                 g_messagesState = MESSAGES_ST_PAUSE;
             }
             break;
         case MESSAGES_ST_PAGE4:
-            if (t == -1) {
-                t = 0x118;
+            if (timer == -1) {
+                timer = 0x118;
                 game_startFade(1, 1, 0x14, 0);
-            } else if (t != 0) {
+            } else if (timer != 0) {
                 ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 4);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x5F, ot, msg, g_messagesPrim);
-                if (t < 0x8C) {
+                if (timer < 0x8C) {
                     msg = ending_getMessage(g_endingMessages, 5);
                     x = 0xA0 - (ending_textWidth(msg) >> 1);
                     g_messagesPrim = ending_drawText(x, 0x7D, ot, msg, g_messagesPrim);
                 }
-                if (t == 0x14) {
+                if (timer == 0x14) {
                     game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
-                t--;
+                timer--;
             } else {
-                t = -1;
+                timer = -1;
                 g_messagesState = MESSAGES_ST_DONE;
             }
             break;
         case MESSAGES_ST_PAUSE:
-            if (t == -1) {
-                t = 0x3C;
-            } else if (t != 0) {
-                t--;
+            if (timer == -1) {
+                timer = 0x3C;
+            } else if (timer != 0) {
+                timer--;
             } else {
-                t = -1;
+                timer = -1;
                 g_messagesState = page + 1;
                 page++;
             }
@@ -156,69 +156,69 @@ u8 *ending_getMessage(u8 *bank, s32 idx) {
     return bank + (bank[idx * 4 + 4] + 4);
 }
 
-void *ending_drawText(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
-    Font *f = g_gameState->gameData->font;
+void *ending_drawText(s32 x, s32 y, u32 *ot, u8 *str, void *prim) {
+    Font *font = g_gameState->gameData->font;
     s32 w;
-    s32 c;
-    s32 hi = f->extCode >> 8;
+    s32 ch;
+    s32 hi = font->extCode >> 8;
 
-    c = *s;
-    while (c != 0xFF) {
-        if (c >= hi) {
-            c = (c << 8) + s[1] - f->extCode + f->extBase;
-            s++;
-            p = ending_drawGlyph(x, y, ot, *(f->glyphs + c), &w, p);
+    ch = *str;
+    while (ch != 0xFF) {
+        if (ch >= hi) {
+            ch = (ch << 8) + str[1] - font->extCode + font->extBase;
+            str++;
+            prim = ending_drawGlyph(x, y, ot, *(font->glyphs + ch), &w, prim);
             x += w;
         } else {
-            p = ending_drawGlyph(x, y, ot, *(f->glyphs + c), &w, p);
+            prim = ending_drawGlyph(x, y, ot, *(font->glyphs + ch), &w, prim);
             x += w;
         }
-        c = *++s;
+        ch = *++str;
     }
-    SetDrawTPage(p, 1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
-    addPrim(ot, p);
-    return (DR_TPAGE *)p + 1;
+    SetDrawTPage(prim, 1, 1, getTPage(0, 0, VRAM_FONT_X, VRAM_FONT_Y));
+    addPrim(ot, prim);
+    return (DR_TPAGE *)prim + 1;
 }
 
-s32 ending_textWidth(u8 *s) {
-    Font *f;
-    s32 n;
-    s32 c;
+s32 ending_textWidth(u8 *str) {
+    Font *font;
+    s32 width;
+    s32 ch;
     u8 hi;
-    u32 *g;
+    u32 *glyph;
 
-    n = 0;
-    f = g_gameState->gameData->font;
-    hi = f->extCode >> 8;
-    while ((c = *s) != 0xFF) {
-        if (c >= hi) {
-            c = (c << 8) + s[1] - f->extCode + f->extBase;
-            s++;
-            n += (f->glyphs[c] >> 28) + 1;
+    width = 0;
+    font = g_gameState->gameData->font;
+    hi = font->extCode >> 8;
+    while ((ch = *str) != 0xFF) {
+        if (ch >= hi) {
+            ch = (ch << 8) + str[1] - font->extCode + font->extBase;
+            str++;
+            width += (font->glyphs[ch] >> 28) + 1;
         } else {
-            g = &f->glyphs[c];
-            n += (*g >> 28) + 1;
+            glyph = &font->glyphs[ch];
+            width += (*glyph >> 28) + 1;
         }
-        s++;
+        str++;
     }
-    return n;
+    return width;
 }
 
-void *ending_drawGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 *out, SprtWords *p) {
-    u32 n;
+void *ending_drawGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 *out, SprtWords *sprt) {
+    u32 glyphW;
 
-    setlen(p, PRIM_LEN(SPRT));
-    p->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-    p->xy = ((x + ((glyph >> 20) & 3)) & 0xFFFF) | (y << 16);
-    p->uvclut = (glyph & 0x40FFFF) + 0x38270000;
-    p->wh = ((glyph >> 16) & 0xF) | 0xD0000;
-    addPrim(ot, p);
-    p++;
-    n = glyph >> 28;
+    setlen(sprt, PRIM_LEN(SPRT));
+    sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
+    sprt->xy = ((x + ((glyph >> 20) & 3)) & 0xFFFF) | (y << 16);
+    sprt->uvclut = (glyph & 0x40FFFF) + 0x38270000;
+    sprt->wh = ((glyph >> 16) & 0xF) | 0xD0000;
+    addPrim(ot, sprt);
+    sprt++;
+    glyphW = glyph >> 28;
     if (out != NULL) {
-        *out = n + 1;
+        *out = glyphW + 1;
     }
-    return p;
+    return sprt;
 }
 
 INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ending_messages", g_endingMessages);

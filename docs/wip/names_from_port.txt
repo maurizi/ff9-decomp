@@ -11496,3 +11496,6 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 # res_ids.h VRAM_FONT_X/Y (0x380,0x100) and VRAM_UI_SHEET_X/Y (0x3C0,0x100): the 4-bit pages behind tpage words 0x1E / 0x1F.
 # snd_ids.h SND_SE_GROUP_MENU 0x800000, SND_SE_GROUP_SLOT(n) / SND_SE_GROUP_SLOTS (seMask groups), AKAO_SE_CH_BIT(i) (0x100 << i,
 #   activeMask bits); SND_VOL_MAX for btl_playUnitSound and the music fade-in targets.
+
+# ===== R37b world map script variables =====
+# new: EVT_GB_WM_WALKER_POS/VEHICLE_POS/CHOCOBO_POS, EVT_GB_NAVI_MODE, EVT_GB_WM_FILE, EVT_GB_CHOCOGRAPH_FOUND/OWNED, EVT_GB_CHOCOBO_LEVEL

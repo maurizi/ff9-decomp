@@ -133,12 +133,12 @@ void fld_gameOver(void) {
 }
 
 void fld_init(void) {
-    FieldMap *f;
+    FieldMap *fieldMap;
     GameData *gd;
     GameData *gd2;
 
     fld_allocMap();
-    f = g_gameState->gameData->ctx.field;
+    fieldMap = g_gameState->gameData->ctx.field;
     fld_initMap();
     g_gameState->vsyncMode = 2;
     game_setScreenHeight(SCREEN_H);
@@ -165,7 +165,7 @@ void fld_init(void) {
         fld_soundCommand(SND_MUSIC_VOL_INTPL, 0, 0x78, 0, 0);
     }
     fade_initField();
-    f->loadEnd = g_modeHeap;
+    fieldMap->loadEnd = g_modeHeap;
 }
 
 void fld_quit(void) {
@@ -217,17 +217,17 @@ s32 fld_readSoundBank(void) {
 }
 
 s32 fld_loadCommon(void) {
-    PreloadEntry *p;
-    FileEntry *f;
+    PreloadEntry *preload;
+    FileEntry *file;
 
     if (preload_isReady(FILE_FLD_COMMON) != 0) {
-        p = preload_find(FILE_FLD_COMMON);
-        file_copyViaVram(g_modeHeap, p->dest, p->loaded, NULL);
+        preload = preload_find(FILE_FLD_COMMON);
+        file_copyViaVram(g_modeHeap, preload->dest, preload->loaded, NULL);
         preload_remove(FILE_FLD_COMMON);
         DrawSync(0);
     } else {
-        f = file_find(DIR_COMMON, FILE_FLD_COMMON);
-        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
+        file = file_find(DIR_COMMON, FILE_FLD_COMMON);
+        cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
@@ -237,26 +237,26 @@ s32 fld_loadCommon(void) {
 }
 
 s32 fld_freeCommon(void) {
-    void *p = g_gameState->gameData->ctx.field->commonFile;
+    void *common = g_gameState->gameData->ctx.field->commonFile;
 
-    if (p != NULL) {
-        db_unregister(p);
+    if (common != NULL) {
+        db_unregister(common);
         g_gameState->gameData->ctx.field->commonFile = NULL;
     }
     return 0;
 }
 
 void fld_loadArea(s32 areaId) {
-    FieldMapObj *o;
+    FieldMapObj *obj;
 
     g_modeHeap = g_gameState->gameData->ctx.field->loadEnd;
     fld_allocArea();
-    o = g_gameState->gameData->ctx.field->area;
+    obj = g_gameState->gameData->ctx.field->area;
     fld_initArea();
     game_freezeScreen();
-    fld_readAreaFile(o, areaId);
-    fld_findAreaItem(o, areaId);
-    o->loadEnd = g_modeHeap;
+    fld_readAreaFile(obj, areaId);
+    fld_findAreaItem(obj, areaId);
+    obj->loadEnd = g_modeHeap;
 }
 
 void fld_unloadArea(void) {
@@ -268,10 +268,10 @@ void fld_unloadArea(void) {
 }
 
 void fld_allocArea(void) {
-    FieldMapObj *p = (FieldMapObj *)g_modeHeap;
+    FieldMapObj *obj = (FieldMapObj *)g_modeHeap;
 
-    g_modeHeap = (s32)(p + 1);
-    g_gameState->gameData->ctx.field->area = p;
+    g_modeHeap = (s32)(obj + 1);
+    g_gameState->gameData->ctx.field->area = obj;
 }
 
 void fld_initArea(void) {
@@ -303,26 +303,26 @@ s32 fld_findAreaItem(obj, areaId)
 s32 fld_readAreaFile(FieldMapObj *obj, s32 areaId) {
     s32 id;
     GameData *gd;
-    PreloadEntry *e;
+    PreloadEntry *preload;
     CdReadCtx *cd;
-    GameData *g;
-    s32 t;
+    GameData *gd2;
+    s32 bytesRead;
 
     gd = g_gameState->gameData;
     id = (u16)areaId | DB_AREA;
     cd = gd->cdRead;
     if (preload_isReady(id) != 0) {
-        e = preload_find(id);
-        g_gameState->gameData->cdRead->end = (u8 *)(e->dest + e->loaded);
-        g_gameState->gameData->cdRead->chunk = e->loaded;
-        g_gameState->gameData->cdRead->size = e->readSize;
-        file_copyViaVram(g_modeHeap, e->dest, e->loaded, NULL);
+        preload = preload_find(id);
+        g_gameState->gameData->cdRead->end = (u8 *)(preload->dest + preload->loaded);
+        g_gameState->gameData->cdRead->chunk = preload->loaded;
+        g_gameState->gameData->cdRead->size = preload->readSize;
+        file_copyViaVram(g_modeHeap, preload->dest, preload->loaded, NULL);
         preload_remove(id);
         DrawSync(0);
-        g = g_gameState->gameData;
-        t = g->cdRead->chunk;
-        if (t < g->cdRead->size) {
-            cdRead_init(g->cdRead, g->sceneSector[0], g->sceneSectors[0] << 11, (void *)(g_modeHeap + t), t, -1, NULL);
+        gd2 = g_gameState->gameData;
+        bytesRead = gd2->cdRead->chunk;
+        if (bytesRead < gd2->cdRead->size) {
+            cdRead_init(gd2->cdRead, gd2->sceneSector[0], gd2->sceneSectors[0] << 11, (void *)(g_modeHeap + bytesRead), bytesRead, -1, NULL);
             while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
             }
         }
@@ -516,8 +516,8 @@ void fld_initScene(void) {
     s32 i;
     FieldActorInfo *info;
     u8 *base;
-    FieldAnimSfx *t;
-    u8 *c;
+    FieldAnimSfx *sfx;
+    u8 *rgb;
     u8 *c2;
 
     sc = g_gameState->gameData->ctx.field->area->scene;
@@ -547,16 +547,16 @@ void fld_initScene(void) {
         info->abr = 0;
         info->unk7 = 0;
         info->unk6 = 0;
-        c = info->color.c;
-        c[2] = 0;
-        c[1] = 0;
-        c[0] = 0;
+        rgb = info->color.c;
+        rgb[2] = 0;
+        rgb[1] = 0;
+        rgb[0] = 0;
         info->color.c[3] = 0;
         c2 = info->nextColor.c;
-        c = c2;
-        c[2] = 0;
-        c[1] = 0;
-        c[0] = 0;
+        rgb = c2;
+        rgb[2] = 0;
+        rgb[1] = 0;
+        rgb[0] = 0;
         info->nextColor.c[3] = 0;
         info->mirror = NULL;
     }
@@ -580,14 +580,14 @@ void fld_initScene(void) {
     sc->exitReason = FLD_EXIT_FIELD;
     sc->animSfxCount = 0;
     for (i = 15; i >= 0; i--) {
-        t = &sc->animSfx[i];
-        t->modelSlot = 0xFF;
-        t->randomPitch = 0;
-        t->modelId = 0xFFFF;
-        t->anim = 0xFFFF;
-        t->frame = -1;
-        t->sound[1] = 0xFFFF;
-        t->sound[0] = 0xFFFF;
+        sfx = &sc->animSfx[i];
+        sfx->modelSlot = 0xFF;
+        sfx->randomPitch = 0;
+        sfx->modelId = 0xFFFF;
+        sfx->anim = 0xFFFF;
+        sfx->frame = -1;
+        sfx->sound[1] = 0xFFFF;
+        sfx->sound[0] = 0xFFFF;
     }
     sc->soundBankSlot = 0;
     sc->modelQueueCount = 0;
@@ -607,59 +607,59 @@ void fld_refindSectors(void) {
     GameData *gd;
     GameData *gd2;
     s32 key;
-    FieldMap *f;
-    DirInfo *g;
+    FieldMap *fieldMap;
+    DirInfo *dirTbl;
     s32 id;
-    s32 t;
+    s32 firstSector;
     u8 *base;
     FieldDirEnt *start;
-    FieldDirEnt *e;
+    FieldDirEnt *dirEnt;
 
     gs = g_gameState;
     gd = gs->gameData;
-    f = gd->ctx.field;
+    fieldMap = gd->ctx.field;
     id = -1;
-    if (f->flags & FLD_MAP_REFIND_SECTORS) {
+    if (fieldMap->flags & FLD_MAP_REFIND_SECTORS) {
         gs2 = gs;
         gd2 = gd;
-        g = gs2->dirs;
-        t = g[0].tableSector;
-        base = g_loadAreaEnd + ((t << 11) + 0x14C700);
-        start = (FieldDirEnt *)(base + ((g[4].tableSector - t) << 11));
-        e = &start[g[4].count] - 1;
-        key = f->area->scene->nextId;
+        dirTbl = gs2->dirs;
+        firstSector = dirTbl[0].tableSector;
+        base = g_loadAreaEnd + ((firstSector << 11) + 0x14C700);
+        start = (FieldDirEnt *)(base + ((dirTbl[4].tableSector - firstSector) << 11));
+        dirEnt = &start[dirTbl[4].count] - 1;
+        key = fieldMap->area->scene->nextId;
         do {
-            if (e->id == key) {
-                id = e->areaId;
-                gd2->sceneSector[1] = e->sector;
-                gd2->sceneSectors[1] = e[1].sector - e->sector;
+            if (dirEnt->id == key) {
+                id = dirEnt->areaId;
+                gd2->sceneSector[1] = dirEnt->sector;
+                gd2->sceneSectors[1] = dirEnt[1].sector - dirEnt->sector;
                 break;
             }
-            e--;
-        } while (e >= start);
-        start = (FieldDirEnt *)(base + ((gs2->dirs[2].tableSector - t) << 11));
-        e = &start[gs2->dirs[2].count] - 1;
+            dirEnt--;
+        } while (dirEnt >= start);
+        start = (FieldDirEnt *)(base + ((gs2->dirs[2].tableSector - firstSector) << 11));
+        dirEnt = &start[gs2->dirs[2].count] - 1;
         do {
-            if (e->id == id) {
-                gd2->sceneSector[0] = e->sector;
-                gd2->sceneSectors[0] = e[1].sector - e->sector;
+            if (dirEnt->id == id) {
+                gd2->sceneSector[0] = dirEnt->sector;
+                gd2->sceneSectors[0] = dirEnt[1].sector - dirEnt->sector;
                 break;
             }
-            e--;
-        } while (e >= start);
+            dirEnt--;
+        } while (dirEnt >= start);
         g_gameState->gameData->ctx.field->area->areaId = id;
         g_gameState->gameData->musicFileSector = -1;
         g_gameState->gameData->musicFileSectors = 0xFFFF;
-        start = (FieldDirEnt *)(base + ((gs2->dirs[9].tableSector - t) << 11));
-        e = &start[gs2->dirs[9].count] - 1;
+        start = (FieldDirEnt *)(base + ((gs2->dirs[9].tableSector - firstSector) << 11));
+        dirEnt = &start[gs2->dirs[9].count] - 1;
         do {
-            if (e->id == g_gameState->gameData->musicId[0]) {
-                g_gameState->gameData->musicFileSector = e->sector;
-                g_gameState->gameData->musicFileSectors = e[1].sector - e->sector;
+            if (dirEnt->id == g_gameState->gameData->musicId[0]) {
+                g_gameState->gameData->musicFileSector = dirEnt->sector;
+                g_gameState->gameData->musicFileSectors = dirEnt[1].sector - dirEnt->sector;
                 break;
             }
-            e--;
-        } while (e >= start);
+            dirEnt--;
+        } while (dirEnt >= start);
         fld_clearModelCache();
         preload_discardRange((s32)g_gameState->gameData->cdRead[0].dest, g_gameState->gameData->cdRead[0].chunk);
     }
@@ -677,11 +677,11 @@ s32 fld_loadVibration(scene, fieldId)
     FieldScene *scene;
     u16 fieldId;
 {
-    void *p = db_lookupRegistered(DB_GET_ADDR, fieldId | 0x1E0000, 0);
+    void *vibData = db_lookupRegistered(DB_GET_ADDR, fieldId | 0x1E0000, 0);
 
-    scene->vibration = p;
-    if (p != NULL) {
-        vib_init(p);
+    scene->vibration = vibData;
+    if (vibData != NULL) {
+        vib_init(vibData);
     }
     return 0;
 }
@@ -726,7 +726,7 @@ s32 fld_loadModelBundlesInCdOrder(void) {
     s32 best;
     s32 i;
     s32 min;
-    s32 v;
+    s32 fileSector;
 
     if (g_gameState->gameData->ctx.field->area->scene->modelQueueCount != 0) {
         while (1) {
@@ -734,10 +734,10 @@ s32 fld_loadModelBundlesInCdOrder(void) {
             min = 0x7FFFFFFF;
             for (i = g_gameState->gameData->ctx.field->area->scene->modelQueueCount - 1; i >= 0; i--) {
                 if (g_fieldModelQueue[i] != -1) {
-                    v = file_find(DIR_CHAR_MODELS, g_fieldModelQueue[i])->sector;
-                    if (v < min) {
+                    fileSector = file_find(DIR_CHAR_MODELS, g_fieldModelQueue[i])->sector;
+                    if (fileSector < min) {
                         best = i;
-                        min = v;
+                        min = fileSector;
                     }
                 }
             }
@@ -754,10 +754,10 @@ s32 fld_loadModelBundlesInCdOrder(void) {
 s32 fld_loadFile(FieldScene *sc, s32 fieldId) {
     s32 size;
     s32 id;
-    PreloadEntry *e;
+    PreloadEntry *preload;
     s32 base;
     s32 i;
-    s32 r;
+    s32 packSize;
     s32 rest;
     s32 k;
 
@@ -768,11 +768,11 @@ s32 fld_loadFile(FieldScene *sc, s32 fieldId) {
     }
     id = (u16)fieldId | DB_FIELD;
     if (preload_isReady(id)) {
-        e = preload_find(id);
-        g_gameState->gameData->cdRead[0].end = (u8 *)(e->dest + e->loaded);
-        g_gameState->gameData->cdRead[0].chunk = e->loaded;
-        g_gameState->gameData->cdRead[0].size = e->readSize;
-        file_copyViaVram(g_modeHeap, e->dest, e->loaded, NULL);
+        preload = preload_find(id);
+        g_gameState->gameData->cdRead[0].end = (u8 *)(preload->dest + preload->loaded);
+        g_gameState->gameData->cdRead[0].chunk = preload->loaded;
+        g_gameState->gameData->cdRead[0].size = preload->readSize;
+        file_copyViaVram(g_modeHeap, preload->dest, preload->loaded, NULL);
         preload_remove(id);
         DrawSync(0);
     } else {
@@ -786,8 +786,8 @@ s32 fld_loadFile(FieldScene *sc, s32 fieldId) {
     g_gameState->gameData->depTable = (FileTable *)db_lookup(base, DB_GET_ADDR, DB_DEP_TABLE, 0);
     id = db_lookup(base, DB_GET_AT, DB_PACK, 0);
     if (id != 0) {
-        r = db_lookup(base, DB_GET_SIZE, DB_PACK, 0);
-        if ((u32)(g_modeHeap + g_gameState->gameData->cdRead[0].chunk) < (u32)(id + r)) {
+        packSize = db_lookup(base, DB_GET_SIZE, DB_PACK, 0);
+        if ((u32)(g_modeHeap + g_gameState->gameData->cdRead[0].chunk) < (u32)(id + packSize)) {
             rest = g_gameState->gameData->cdRead[0].chunk;
             cdRead_init(g_gameState->gameData->cdRead, g_gameState->gameData->sceneSector[1], g_gameState->gameData->sceneSectors[1] << 11,
                           (void *)(g_modeHeap + rest), rest, size - g_gameState->gameData->cdRead[0].chunk, NULL);
@@ -827,10 +827,10 @@ s32 fld_loadFile(FieldScene *sc, s32 fieldId) {
 }
 
 s32 fld_getShadowTexPos(u16 *outX, u16 *outY) {
-    FieldVramPos *p = db_lookupRegistered(DB_GET_ADDR, DB_VRAM_ALLOC, 0);
+    FieldVramPos *vramPos = db_lookupRegistered(DB_GET_ADDR, DB_VRAM_ALLOC, 0);
 
-    *outX = p->shadowTexX;
-    *outY = p->shadowTexY;
+    *outX = vramPos->shadowTexX;
+    *outY = vramPos->shadowTexY;
     return 0;
 }
 
@@ -858,17 +858,17 @@ s32 fld_depFindBattle(battleId, outSector, outSectors)
     s32 *outSectors;
 {
     s32 i;
-    FileTable *t = g_gameState->gameData->depTable;
+    FileTable *depTbl = g_gameState->gameData->depTable;
     s32 id = battleId | DB_BATTLE;
-    FileEntry *e = t->entries;
+    FileEntry *file = depTbl->entries;
 
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
-        if (e[i].id == id) {
+        if (file[i].id == id) {
             if (outSector != NULL) {
-                *outSector = e[i].sector;
+                *outSector = file[i].sector;
             }
             if (outSectors != NULL) {
-                *outSectors = e[i].sectors;
+                *outSectors = file[i].sectors;
             }
             break;
         }
@@ -878,23 +878,23 @@ s32 fld_depFindBattle(battleId, outSector, outSectors)
 
 s32 fld_depFindBackground(s32 fileId, s32 *outSector, s32 *outSectors) {
     s32 id = -1;
-    FileTable *t = g_gameState->gameData->depTable;
+    FileTable *depTbl = g_gameState->gameData->depTable;
     s32 i;
-    FileEntry *e = t->entries;
+    FileEntry *file = depTbl->entries;
 
-    for (i = 0; i < t->count; i++) {
-        if (e[i].id == fileId) {
-            id = e[i].link;
+    for (i = 0; i < depTbl->count; i++) {
+        if (file[i].id == fileId) {
+            id = file[i].link;
             break;
         }
     }
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
-        if (e[i].id == id) {
+        if (file[i].id == id) {
             if (outSector != NULL) {
-                *outSector = e[i].sector;
+                *outSector = file[i].sector;
             }
             if (outSectors != NULL) {
-                *outSectors = e[i].sectors;
+                *outSectors = file[i].sectors;
             }
             break;
         }
@@ -908,17 +908,17 @@ s32 fld_depFindField(fieldId, outSector, outSectors)
     s32 *outSectors;
 {
     s32 i;
-    FileTable *t = g_gameState->gameData->depTable;
+    FileTable *depTbl = g_gameState->gameData->depTable;
     s32 id = fieldId | DB_FIELD;
-    FileEntry *e = t->entries;
+    FileEntry *file = depTbl->entries;
 
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
-        if (e[i].id == id) {
+        if (file[i].id == id) {
             if (outSector != NULL) {
-                *outSector = e[i].sector;
+                *outSector = file[i].sector;
             }
             if (outSectors != NULL) {
-                *outSectors = e[i].sectors;
+                *outSectors = file[i].sectors;
             }
             break;
         }
@@ -927,24 +927,24 @@ s32 fld_depFindField(fieldId, outSector, outSectors)
 }
 
 s32 fld_depFindArea(s32 fileId, s32 *outSector, s32 *outSectors) {
-    FileTable *t = g_gameState->gameData->depTable;
-    FileEntry *e = t->entries;
-    FileEntry *end = e + t->count;
+    FileTable *depTbl = g_gameState->gameData->depTable;
+    FileEntry *file = depTbl->entries;
+    FileEntry *end = file + depTbl->count;
     s32 id = -1;
 
-    for (; e < end; e++) {
-        if (e->id == fileId) {
-            id = e->link;
+    for (; file < end; file++) {
+        if (file->id == fileId) {
+            id = file->link;
             break;
         }
     }
-    for (e = t->entries; e < end; e++) {
-        if (e->id == id) {
+    for (file = depTbl->entries; file < end; file++) {
+        if (file->id == id) {
             if (outSector != NULL) {
-                *outSector = e->sector;
+                *outSector = file->sector;
             }
             if (outSectors != NULL) {
-                *outSectors = e->sectors;
+                *outSectors = file->sectors;
             }
             break;
         }

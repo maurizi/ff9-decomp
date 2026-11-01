@@ -1,9 +1,9 @@
 #include "ff9.h"
 
 s32 evt_getSysVar(s32 op) {
-    s32 r;
+    s32 result;
     u8 camera[8];
-    EvtObject *o;
+    EvtObject *obj;
     s32 id;
 
     switch ((u32)op) {
@@ -11,119 +11,119 @@ s32 evt_getSysVar(s32 op) {
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
-        r = *g_randPtr++;
+        result = *g_randPtr++;
         break;
     case EVT_SYSVAR_CAMERA:
         fldbg_getCamera(camera);
-        r = camera[0];
+        result = camera[0];
         break;
     case EVT_SYSVAR_CONTROL_ENABLED:
-        r = g_evtState->controlEnabled;
+        result = g_evtState->controlEnabled;
         break;
     case EVT_SYSVAR_SOUND_STATE:
-        r = fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0);
+        result = fld_soundCommand(SND_GET_STATE, -1, 0, 0, 0);
         break;
     case EVT_SYSVAR_TALK_ANGLE:
-        r = g_evtTalkAngle;
+        result = g_evtTalkAngle;
         break;
     case EVT_SYSVAR_OBJ_CHAR:
         id = ((u8 *)&((u32 *)g_evtCurObj + g_evtCurObj->stackOfs)[g_evtCurObj->sp])[-1];
-        o = evt_getObject_inline(id);
-        r = -1;
-        if (o != NULL) {
-            r = o->scriptIdx - (g_evtScriptCount - 9);
+        obj = evt_getObject_inline(id);
+        result = -1;
+        if (obj != NULL) {
+            result = obj->scriptIdx - (g_evtScriptCount - 9);
         }
         break;
     case EVT_SYSVAR_GIL:
-        r = g_gameState->gameData->gil;
+        result = g_gameState->gameData->gil;
         break;
     case EVT_SYSVAR_STEP_COUNT:
-        r = g_evtStepCount;
+        result = g_evtStepCount;
         break;
     case EVT_SYSVAR_MSG_SYNC_TAG:
-        r = g_msgSyncTag;
+        result = g_msgSyncTag;
         break;
     case EVT_SYSVAR_MSG_CHOICE:
-        r = msg_getChoiceIndex();
+        result = msg_getChoiceIndex();
         break;
     case EVT_SYSVAR_LINE_POINT_X:
-        r = g_evtLinePointX;
+        result = g_evtLinePointX;
         break;
     case EVT_SYSVAR_LINE_POINT_Z:
-        r = g_evtLinePointZ;
+        result = g_evtLinePointZ;
         break;
     case EVT_SYSVAR_SCREEN_X:
-        r = g_evtScreenX;
+        result = g_evtScreenX;
         break;
     case EVT_SYSVAR_SCREEN_Y:
-        r = g_evtScreenY;
+        result = g_evtScreenY;
         break;
     case EVT_SYSVAR_MOVIE_FRAME:
-        r = fld_movieCommand(4, 0, 0);
+        result = fld_movieCommand(4, 0, 0);
         break;
     case EVT_SYSVAR_MOVIE_STATE:
-        r = fld_movieCommand(3, 0, 0);
+        result = fld_movieCommand(3, 0, 0);
         break;
     case EVT_SYSVAR_FROG_COUNT:
-        r = g_gameState->gameData->frogCount;
+        result = g_gameState->gameData->frogCount;
         break;
     case EVT_SYSVAR_TIMER_SECONDS:
-        r = timer_getSeconds();
+        result = timer_getSeconds();
         break;
     case EVT_SYSVAR_CARD_RESULT:
-        r = card_getGameResult();
+        result = card_getGameResult();
         break;
     case EVT_SYSVAR_CARD_COUNT:
-        r = card_countAll();
+        result = card_countAll();
         break;
     case EVT_SYSVAR_PLAY_TIME:
-        r = game_getPlayTimeSeconds();
-        if (r > 0x7FFFFF) {
-            r = 0x7FFFFF;
+        result = game_getPlayTimeSeconds();
+        if (result > 0x7FFFFF) {
+            result = 0x7FFFFF;
         }
         break;
     case EVT_SYSVAR_TIMER_ENABLED:
-        r = timer_isEnabled();
+        result = timer_isEnabled();
         break;
     case EVT_SYSVAR_SOUND_VOLUME:
-        r = g_evtSoundVolume;
+        result = g_evtSoundVolume;
         break;
     case EVT_SYSVAR_SOUND_PAN:
-        r = g_evtSoundPan;
+        result = g_evtSoundPan;
         break;
     case EVT_SYSVAR_BATTLE_ID:
-        r = (s16)g_gameState->gameData->battleId;
+        result = (s16)g_gameState->gameData->battleId;
         break;
     case EVT_SYSVAR_BTLSEQ_BUSY:
-        r = (u8)btlseq_isBusy();
+        result = (u8)btlseq_isBusy();
         break;
     case EVT_SYSVAR_BATTLE_END:
-        r = g_evtMode == EVT_MODE_BATTLE_END;
+        result = g_evtMode == EVT_MODE_BATTLE_END;
         break;
     case EVT_SYSVAR_BATTLE_RESULT:
-        r = g_gameState->gameData->battleResult;
+        result = g_gameState->gameData->battleResult;
         break;
     case EVT_SYSVAR_BATTLE_ARG_HI:
-        r = (g_evtBattleTriggerArg >> 8) & 0xFF;
+        result = (g_evtBattleTriggerArg >> 8) & 0xFF;
         break;
     case EVT_SYSVAR_BATTLE_ARG_LO:
-        r = (u8)g_evtBattleTriggerArg;
+        result = (u8)g_evtBattleTriggerArg;
         break;
     case EVT_SYSVAR_BATTLE_PHASE:
-        r = g_gameState->gameData->ctx.ovl65->phase;
+        result = g_gameState->gameData->ctx.ovl65->phase;
         break;
     case EVT_SYSVAR_BATTLE_GROUP:
-        r = g_gameState->gameData->ctx.ovl65->groupNo;
+        result = g_gameState->gameData->ctx.ovl65->groupNo;
         break;
     default:
         if (op >= EVT_SYSVAR_WORLD_FIRST) {
-            r = w_frameGetParameter(op);
+            result = w_frameGetParameter(op);
         } else {
-            r = btl_getBattleVar(op);
+            result = btl_getBattleVar(op);
         }
         break;
     }
-    return r;
+    return result;
 }
 
 EvtObject *evt_getObjectArg(void) {
@@ -133,94 +133,94 @@ EvtObject *evt_getObjectArg(void) {
 /* Find the entry point for `key` in script `idx`. */
 static inline u8 *evt_callObjectFunc_find(s32 idx, s32 key) {
     u8 *h = g_evtScripts + *(u16 *)(g_evtScripts + idx * 8);
-    s32 n = *(u16 *)h >> 8;
-    u16 *p = (u16 *)(h + 2);
+    s32 count = *(u16 *)h >> 8;
+    u16 *entry = (u16 *)(h + 2);
 
-    while (n != 0) {
-        if (*p++ == key) {
+    while (count != 0) {
+        if (*entry++ == key) {
             break;
         }
-        n--;
-        p++;
+        count--;
+        entry++;
     }
-    return n != 0 ? h + (*p + 2) : NULL;
+    return count != 0 ? h + (*entry + 2) : NULL;
 }
 
-void evt_returnFromFunc(EvtObject *o) {
-    s32 v;
-    EvtListNode *n;
-    EvtListNode *m;
-    EvtObject *t;
-    EvtObject *q;
+void evt_returnFromFunc(EvtObject *obj) {
+    s32 saved;
+    EvtListNode *node;
+    EvtListNode *iter;
+    EvtObject *other;
+    EvtObject *caller;
     u32 *base;
-    u32 *p;
+    u32 *slot;
 
-    if (o->sp >= 2) {
-        p = (u32 *)o + o->stackOfs + o->sp;
-        p--;
-        v = p[0];
-        if (!(*(u32 *)&o->level & 0xFF0000FF)) {
-            for (m = g_evtState->objects; m != NULL; m = m->next) {
-                t = m->obj;
-                if (t->uid != 0) {
-                    t->state = t->savedState;
+    if (obj->sp >= 2) {
+        slot = (u32 *)obj + obj->stackOfs + obj->sp;
+        slot--;
+        saved = slot[0];
+        if (!(*(u32 *)&obj->level & 0xFF0000FF)) {
+            for (iter = g_evtState->objects; iter != NULL; iter = iter->next) {
+                other = iter->obj;
+                if (other->uid != 0) {
+                    other->state = other->savedState;
                 }
             }
         }
-        o->ip = g_evtState->scriptBase + p[-1];
-        o->wait = v;
-        o->sp -= 2;
-        o->level = v >> 8;
-        if (((v >> 16) & 0xFF) != 0xFF) {
-            for (n = g_evtState->objects; n != NULL; n = n->next) {
-                if (n->obj->uid == (u32)v >> 24) {
+        obj->ip = g_evtState->scriptBase + slot[-1];
+        obj->wait = saved;
+        obj->sp -= 2;
+        obj->level = saved >> 8;
+        if (((saved >> 16) & 0xFF) != 0xFF) {
+            for (node = g_evtState->objects; node != NULL; node = node->next) {
+                if (node->obj->uid == (u32)saved >> 24) {
                     break;
                 }
             }
-            q = NULL;
-            if (n != NULL) {
-                q = n->obj;
+            caller = NULL;
+            if (node != NULL) {
+                caller = node->obj;
             }
-            if (q != NULL) {
-                if (q->wait == EVT_WAIT_CALL) {
-                    q->wait = 0;
+            if (caller != NULL) {
+                if (caller->wait == EVT_WAIT_CALL) {
+                    caller->wait = 0;
                     return;
                 }
-                base = (u32 *)q + q->stackOfs;
-                p = base + (q->sp - 1);
-                while (base < p) {
-                    if (*(u8 *)p == 0xFF) {
+                base = (u32 *)caller + caller->stackOfs;
+                slot = base + (caller->sp - 1);
+                while (base < slot) {
+                    if (*(u8 *)slot == 0xFF) {
                         break;
                     }
-                    p -= 2;
+                    slot -= 2;
                 }
-                if (base < p) {
-                    *p &= ~0xFF;
+                if (base < slot) {
+                    *slot &= ~0xFF;
                 }
             }
         }
-    } else if (o->state == EVT_STATE_INIT) {
-        o->state = EVT_STATE_RUNNING;
-        o->ip = evt_callObjectFunc_find(o->scriptIdx, EVT_FUNC_LOOP);
-        o->level = 7;
+    } else if (obj->state == EVT_STATE_INIT) {
+        obj->state = EVT_STATE_RUNNING;
+        obj->ip = evt_callObjectFunc_find(obj->scriptIdx, EVT_FUNC_LOOP);
+        obj->level = 7;
     } else {
-        o->ip = NULL;
+        obj->ip = NULL;
     }
 }
 
-s32 evt_callObjectFunc(EvtObject *o, s32 lv, s32 key, s32 save) {
-    u8 *e = NULL;
+s32 evt_callObjectFunc(EvtObject *obj, s32 lv, s32 key, s32 save) {
+    u8 *entry = NULL;
     u32 *slot;
     u16 w;
     u32 hi;
     u32 x;
 
-    if (o != NULL && lv < o->level) {
-        e = evt_callObjectFunc_find(o->scriptIdx, key);
-        if (e != NULL) {
-            slot = &((u32 *)o + o->stackOfs)[o->sp];
-            slot[0] = o->ip - g_evtState->scriptBase;
-            w = o->wait | (o->level << 8);
+    if (obj != NULL && lv < obj->level) {
+        entry = evt_callObjectFunc_find(obj->scriptIdx, key);
+        if (entry != NULL) {
+            slot = &((u32 *)obj + obj->stackOfs)[obj->sp];
+            slot[0] = obj->ip - g_evtState->scriptBase;
+            w = obj->wait | (obj->level << 8);
             hi = g_evtCurObj->uid << 24;
             if (save) {
                 x = (g_evtCurObj->level << 16);
@@ -234,82 +234,84 @@ s32 evt_callObjectFunc(EvtObject *o, s32 lv, s32 key, s32 save) {
             if (save) {
                 g_evtCurObj->wait = EVT_WAIT_CALL;
             }
-            o->ip = e;
-            o->level = lv;
-            o->wait = 0;
-            o->sp += 2;
+            obj->ip = entry;
+            obj->level = lv;
+            obj->wait = 0;
+            obj->sp += 2;
         }
     }
-    return e != NULL;
+    return entry != NULL;
 }
 
-void *evt_findNearestObject(EvtObject *o, s32 flags, s32 *dist) {
+void *evt_findNearestObject(EvtObject *obj, s32 flags, s32 *dist) {
     EvtObject *best = NULL;
     s32 bestd = 0;
     s32 x, y, z;
     s32 back;
-    s32 r;
-    EvtListNode *n;
-    EvtObject *q;
-    s32 a;
-    s32 b;
+    s32 radius;
+    EvtListNode *node;
+    EvtObject *other;
+    s32 selfSkip;
+    s32 otherSkip;
     s32 dx, dz;
     s32 rr;
-    s32 d;
-    s32 s;
-    u8 f;
-    u8 g;
+    s32 distSq;
+    s32 flagByte;
+    s32 cosA;
+    s32 angleDiff;
+    u8 otherFlags;
+    u8 objFlags;
     s32 key;
 
-    x = o->pos.vx;
-    y = o->pos.vy;
+    x = obj->pos.vx;
+    y = obj->pos.vy;
     back = flags & 4;
-    z = o->pos.vz;
+    z = obj->pos.vz;
     if (back) {
-        r = o->talkRadius * 4;
+        radius = obj->talkRadius * 4;
     } else {
-        r = o->collisionRadius * 4;
+        radius = obj->collisionRadius * 4;
     }
-    for (n = g_evtState->objects; n != NULL; n = n->next) {
-        q = n->obj;
-        a = 0;
+    for (node = g_evtState->objects; node != NULL; node = node->next) {
+        other = node->obj;
+        selfSkip = 0;
         if (back) {
-            a = 1;
+            selfSkip = 1;
         } else {
-            g = o->flags;
-            if (q->uid == g_evtState->playerUid ? (g & EVT_OBJ_NO_PLAYER_COLLISION) : (g & EVT_OBJ_NO_NPC_COLLISION)) {
-                a = 1;
+            objFlags = obj->flags;
+            if (other->uid == g_evtState->playerUid ? (objFlags & EVT_OBJ_NO_PLAYER_COLLISION) : (objFlags & EVT_OBJ_NO_NPC_COLLISION)) {
+                selfSkip = 1;
             }
         }
-        s = q->flags;
+        flagByte = other->flags;
         if (best) {
-            f = s;
+            otherFlags = flagByte;
         } else {
-            f = q->flags;
+            otherFlags = other->flags;
         }
         if (back) {
-            b = f & EVT_OBJ_NO_TALK;
-        } else if (o->uid == g_evtState->playerUid) {
-            b = f & EVT_OBJ_NO_PLAYER_COLLISION;
+            otherSkip = otherFlags & EVT_OBJ_NO_TALK;
+        } else if (obj->uid == g_evtState->playerUid) {
+            otherSkip = otherFlags & EVT_OBJ_NO_PLAYER_COLLISION;
         } else {
-            b = f & EVT_OBJ_NO_NPC_COLLISION;
+            otherSkip = otherFlags & EVT_OBJ_NO_NPC_COLLISION;
         }
-        if (q == o || (a && b)) {
+        if (other == obj || (selfSkip && otherSkip)) {
             continue;
         }
-        if ((flags & 6) && evt_callObjectFunc_find(q->scriptIdx, back ? EVT_FUNC_TALK : EVT_FUNC_RANGE) == NULL) {
+        if ((flags & 6) && evt_callObjectFunc_find(other->scriptIdx, back ? EVT_FUNC_TALK : EVT_FUNC_RANGE) == NULL) {
             continue;
         }
-        if (q->kind != EVT_KIND_ACTOR) {
+        if (other->kind != EVT_KIND_ACTOR) {
             continue;
         }
         {
-            EvtObject *p = q;
-        if ((u32)(p->pos.vy - y + 399) >= 799) {
+            EvtObject *cand = other;
+        if ((u32)(cand->pos.vy - y + 399) >= 799) {
             continue;
         }
-        dx = p->pos.vx - x;
-        dz = p->pos.vz - z;
+        dx = cand->pos.vx - x;
+        dz = cand->pos.vz - z;
         if ((dx < 0 ? -dx : dx) >= 0x800) {
             continue;
         }
@@ -317,37 +319,37 @@ void *evt_findNearestObject(EvtObject *o, s32 flags, s32 *dist) {
             continue;
         }
         if (back) {
-            rr = p->talkRadius * 4;
+            rr = cand->talkRadius * 4;
         } else {
-            if (a) {
-                rr = p->collisionRadius * 4;
+            if (selfSkip) {
+                rr = cand->collisionRadius * 4;
             } else {
-                rr = p->collisionRadius * 4;
+                rr = cand->collisionRadius * 4;
             }
         }
-        if (p->collisionEllipse != 0) {
-            s = math_cos(evt_angleToObject(p, o, p->pos.rotY));
-            rr = (rr * math_isqrt(((s * s) >> 4) * p->collisionEllipse + 0x1000000)) >> 12;
+        if (cand->collisionEllipse != 0) {
+            cosA = math_cos(evt_angleToObject(cand, obj, cand->pos.rotY));
+            rr = (rr * math_isqrt(((cosA * cosA) >> 4) * cand->collisionEllipse + 0x1000000)) >> 12;
         }
-        rr += r;
+        rr += radius;
         if (flags & 6) {
-            rr += 0x3C + p->speed;
+            rr += 0x3C + cand->speed;
         }
-        d = math_distSq2(dx, dz, rr);
+        distSq = math_distSq2(dx, dz, rr);
         if (back) {
-            s = evt_angleToObject(o, p, o->pos.rotY);
-            if (s < 0) {
-                s = -s;
+            angleDiff = evt_angleToObject(obj, cand, obj->pos.rotY);
+            if (angleDiff < 0) {
+                angleDiff = -angleDiff;
             }
-            s -= 640;
-            d += s;
-            if (s >= 0) {
+            angleDiff -= 640;
+            distSq += angleDiff;
+            if (angleDiff >= 0) {
                 continue;
             }
         }
-        if (d < bestd) {
-            bestd = d;
-            best = p;
+        if (distSq < bestd) {
+            bestd = distSq;
+            best = cand;
         }
         }
     }
@@ -358,122 +360,122 @@ void *evt_findNearestObject(EvtObject *o, s32 flags, s32 *dist) {
 }
 
 s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
-    EvtObject *p;
+    EvtObject *actor;
     s32 dz;
     s32 dx;
     s32 dy;
     s32 speed;
-    s16 v[4];
+    s16 delta[4];
     s32 dist;
     s32 ry;
     s32 rx;
     s32 cur;
-    s32 d;
+    s32 diff;
     s32 step;
     s32 hit;
-    s32 r;
+    s32 moving;
 
-    p = g_evtActor;
+    actor = g_evtActor;
     /* g_evtActor is NULL when a move op runs in a script that has no actor (seen in d1_f0801); the PS1 then reads and
      * writes these fields in low RAM. Harmless on the PS1; a native port must check for NULL (ff9-ds F39). */
-    speed = p->speed;
-    dx = x - p->pos.vx;
-    dz = z - p->pos.vz;
-    if (p->moveFlags & EVT_MOVE_FACING_SET) {
-        ry = p->pos.rotY & 0xFFF;
+    speed = actor->speed;
+    dx = x - actor->pos.vx;
+    dz = z - actor->pos.vz;
+    if (actor->moveFlags & EVT_MOVE_FACING_SET) {
+        ry = actor->pos.rotY & 0xFFF;
     } else {
         ry = math_atan2(dx, dz);
         if (!(flags & EVT_MOVETO_NO_TURN)) {
-            cur = p->pos.rotY & 0xFFF;
-            d = ry - cur;
-            if (d < -0x800) {
-                d += 0x1000;
-            } else if (d >= 0x800) {
-                d -= 0x1000;
+            cur = actor->pos.rotY & 0xFFF;
+            diff = ry - cur;
+            if (diff < -0x800) {
+                diff += 0x1000;
+            } else if (diff >= 0x800) {
+                diff -= 0x1000;
             }
-            if (d == 0) {
-                p->moveFlags |= EVT_MOVE_FACING_SET;
+            if (diff == 0) {
+                actor->moveFlags |= EVT_MOVE_FACING_SET;
             }
-            step = p->moveTurnRate * 8;
-            if (d > 0) {
-                if (step < d) {
+            step = actor->moveTurnRate * 8;
+            if (diff > 0) {
+                if (step < diff) {
                     ry = cur + step;
                 }
             } else {
-                if (d < -step) {
+                if (diff < -step) {
                     ry = cur - step;
                 }
             }
             ry &= 0xFFF;
-            p->pos.rotY = ry;
+            actor->pos.rotY = ry;
         }
     }
     if (flags & EVT_MOVETO_3D) {
-        dy = y - p->pos.vy;
+        dy = y - actor->pos.vy;
         rx = math_atan2(-dy, -math_length3(dx, 0, dz)) & 0xFFF;
-        cur = p->pitch & 0xFFF;
-        d = rx - cur;
-        if (d < -0x800) {
-            d += 0x1000;
-        } else if (d >= 0x800) {
-            d -= 0x1000;
+        cur = actor->pitch & 0xFFF;
+        diff = rx - cur;
+        if (diff < -0x800) {
+            diff += 0x1000;
+        } else if (diff >= 0x800) {
+            diff -= 0x1000;
         }
-        step = p->moveTurnRate * 8;
-        if (d > 0) {
-            if (step < d) {
+        step = actor->moveTurnRate * 8;
+        if (diff > 0) {
+            if (step < diff) {
                 rx = cur + step;
             }
         } else {
-            if (d < -step) {
+            if (diff < -step) {
                 rx = cur - step;
             }
         }
         rx &= 0xFFF;
-        p->pitch = rx;
+        actor->pitch = rx;
     } else {
         rx = 0;
         dy = 0;
     }
-    math_dirVector(v, rx, ry, speed);
-    p->pos.vx += v[0];
-    p->pos.vy += v[1];
-    p->pos.vz += v[2];
-    hit = evt_findNearestObject(p, 0, &dist);
+    math_dirVector(delta, rx, ry, speed);
+    actor->pos.vx += delta[0];
+    actor->pos.vy += delta[1];
+    actor->pos.vz += delta[2];
+    hit = evt_findNearestObject(actor, 0, &dist);
     if (hit != 0 && dist <= 0) {
-        p->pos.vx -= v[0];
-        p->pos.vy -= v[1];
-        p->pos.vz -= v[2];
+        actor->pos.vx -= delta[0];
+        actor->pos.vy -= delta[1];
+        actor->pos.vz -= delta[2];
     }
-    if (p->animLoops != 0 && p->animLoops != EVT_ANIM_FOREVER) {
-        p->animLoops--;
+    if (actor->animLoops != 0 && actor->animLoops != EVT_ANIM_FOREVER) {
+        actor->animLoops--;
     }
-    r = p->animLoops != 0;
+    moving = actor->animLoops != 0;
     if (flags < 0) {
-        r = 0;
+        moving = 0;
         if (hit != flags || dist > 0) {
-            r = 1;
+            moving = 1;
         }
     }
     dist = math_dist2(dx, dy, dz);
-    if (dist < speed * speed || ((p->moveFlags & EVT_MOVE_APPROACHING) && p->moveDistSq < dist)) {
-        r = 0;
+    if (dist < speed * speed || ((actor->moveFlags & EVT_MOVE_APPROACHING) && actor->moveDistSq < dist)) {
+        moving = 0;
     }
-    if (p->moveDistSq < 0x7FFFFFFF && dist < p->moveDistSq) {
-        p->moveFlags |= EVT_MOVE_APPROACHING;
+    if (actor->moveDistSq < 0x7FFFFFFF && dist < actor->moveDistSq) {
+        actor->moveFlags |= EVT_MOVE_APPROACHING;
     }
-    p->moveDistSq = dist;
-    if (r == 0) {
-        p->moveDistSq = 0x7FFFFFFF;
-        p->pitch = 0;
-        p->moveFlags &= ~(EVT_MOVE_FACING_SET | EVT_MOVE_APPROACHING);
+    actor->moveDistSq = dist;
+    if (moving == 0) {
+        actor->moveDistSq = 0x7FFFFFFF;
+        actor->pitch = 0;
+        actor->moveFlags &= ~(EVT_MOVE_FACING_SET | EVT_MOVE_APPROACHING);
     }
-    if (p->uid == g_evtState->playerUid) {
+    if (actor->uid == g_evtState->playerUid) {
         g_evtPlayerAnimCount++;
     }
-    return r;
+    return moving;
 }
 
-s32 evt_rollEncounter(EvtObject *p) {
+s32 evt_rollEncounter(EvtObject *obj) {
     s32 id = 0;
 
     if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > 0x3C0) {
@@ -510,7 +512,7 @@ static inline void evt_placeBalloon_pos(EvtObject *obj, s32 *x, s32 *y) {
 
 static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx) {
     s32 width = w->w;
-    s32 tx, l, r;
+    s32 tx, lo, hi;
 
     if (right) {
         tx = sx - 6;
@@ -520,8 +522,8 @@ static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx)
         if (tx > 304) {
             tx = 304;
         }
-        l = tx + 8 - width;
-        r = tx - 24;
+        lo = tx + 8 - width;
+        hi = tx - 24;
     } else {
         tx = sx + 6;
         if (tx > 288) {
@@ -530,17 +532,17 @@ static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx)
         if (tx < 16) {
             tx = 16;
         }
-        l = tx + 24 - width;
-        r = tx - 8;
+        lo = tx + 24 - width;
+        hi = tx - 8;
     }
     *ptx = tx;
-    if (l < 8) {
-        l = 8;
+    if (lo < 8) {
+        lo = 8;
     }
-    if (r > 312 - width) {
-        r = 312 - width;
+    if (hi > 312 - width) {
+        hi = 312 - width;
     }
-    w->x = (l + r) >> 1;
+    w->x = (lo + hi) >> 1;
 }
 
 static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *below, s32 fixed) {
@@ -617,7 +619,7 @@ void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
 
 /* bubble x/y targets for evt_followBalloon (evt_placeBalloon_x/_y without the flip logic) */
 static inline s32 evt_followBalloon_x(s32 width, s32 sx, s32 right, s32 *ptx) {
-    s32 tx, l, r;
+    s32 tx, lo, hi;
 
     if (right) {
         tx = sx - 6;
@@ -627,8 +629,8 @@ static inline s32 evt_followBalloon_x(s32 width, s32 sx, s32 right, s32 *ptx) {
         if (tx > 304) {
             tx = 304;
         }
-        l = tx + 8 - width;
-        r = tx - 24;
+        lo = tx + 8 - width;
+        hi = tx - 24;
     } else {
         tx = sx + 6;
         if (tx > 288) {
@@ -637,17 +639,17 @@ static inline s32 evt_followBalloon_x(s32 width, s32 sx, s32 right, s32 *ptx) {
         if (tx < 16) {
             tx = 16;
         }
-        l = tx + 24 - width;
-        r = tx - 8;
+        lo = tx + 24 - width;
+        hi = tx - 8;
     }
     *ptx = tx;
-    if (l < 8) {
-        l = 8;
+    if (lo < 8) {
+        lo = 8;
     }
-    if (r > 312 - width) {
-        r = 312 - width;
+    if (hi > 312 - width) {
+        hi = 312 - width;
     }
-    return (l + r) >> 1;
+    return (lo + hi) >> 1;
 }
 
 static inline s32 evt_followBalloon_y(s32 h, s32 *sy, s32 below) {
@@ -767,7 +769,7 @@ void evt_turnObject(EvtObject *obj, s32 angle, s32 wrap, s32 speed) {
     s32 cur;
     s32 rate;
     s32 frames;
-    s16 a;
+    s16 dir;
 
     obj->turnTarget = angle & 0xFFF;
     cur = obj->pos.rotY & 0xFFF;
@@ -806,11 +808,11 @@ void evt_turnObject(EvtObject *obj, s32 angle, s32 wrap, s32 speed) {
             obj->animSpeed = frames * 16 / rate;
         } else {
             obj->turnRate = EVT_TURN_DIRECT_DOWN;
-            a = cur;
+            dir = cur;
             if (obj->turnTarget >= cur) {
-                a = cur | 0x1000;
+                dir = cur | 0x1000;
             }
-            obj->pos.rotY = a;
+            obj->pos.rotY = dir;
         }
     } else {
         frames = evt_getAnimFrameCount(obj->modelId, (u16)obj->prevPos.rotY);
@@ -828,11 +830,11 @@ void evt_turnObject(EvtObject *obj, s32 angle, s32 wrap, s32 speed) {
             obj->animSpeed = frames * 16 / rate;
         } else {
             obj->turnRate = EVT_TURN_DIRECT_UP;
-            a = cur;
+            dir = cur;
             if (cur >= obj->turnTarget) {
-                a = cur | 0xF000;
+                dir = cur | 0xF000;
             }
-            obj->pos.rotY = a;
+            obj->pos.rotY = dir;
         }
     }
     if (rate <= 0) {
@@ -845,13 +847,15 @@ s32 evt_execInstr(void) {
     EvtObject *po = g_evtActor;
     EvtObject *actor = po;
     EvtObject *obj;
-    EvtObject *o;
-    EvtListNode *n;
+    EvtObject *argObj;
+    EvtListNode *node;
     s32 op;
-    s32 a, b, c, d, e, f, i;
+    /* decoded script operands; their meaning depends on the opcode. Per-case locals change the register
+       allocation of this function, so the cases share these. */
+    s32 operand0, operand1, operand2, operand3, operand4, operand5, i;
     SVECTOR sv;
     EvtRegionPt *pt;
-    Unk8004AFF0 *m, *m2;
+    Unk8004AFF0 *mdl, *m2;
     u8 *str;
 
     g_evtInstrStart = g_evtCurObj->ip;
@@ -869,12 +873,12 @@ s32 evt_execInstr(void) {
         g_evtArgRead = 1;
         return 0;
     case EVT_OP_NEW_ACTOR:
-        a = g_evtArgFlags;
-        b = *g_evtCurObj->ip++;
-        if ((u32)(a - 0xFB) < 4) {
-            a = g_evtState->partyUids[a - 0xFB];
+        operand0 = g_evtArgFlags;
+        operand1 = *g_evtCurObj->ip++;
+        if ((u32)(operand0 - 0xFB) < 4) {
+            operand0 = g_evtState->partyUids[operand0 - 0xFB];
         }
-        evt_execInstr_newactor(a, b);
+        evt_execInstr_newactor(operand0, operand1);
         g_evtArgRead = 1;
         return 0;
     case EVT_OP_NOP_46:
@@ -883,52 +887,52 @@ s32 evt_execInstr(void) {
     case EVT_OP_NOP_D3:
         return 0;
     case EVT_OP_CALL:
-        a = evt_getArg8_inline();
+        operand0 = evt_getArg8_inline();
         obj = evt_getObjectArg(); /* reads the script before the key byte */
-        evt_callObjectFunc(obj, a, *g_evtCurObj->ip++, 0);
+        evt_callObjectFunc(obj, operand0, *g_evtCurObj->ip++, 0);
         return 0;
     case EVT_OP_CALL_WAIT_FREE:
-        a = evt_getArg8_inline();
+        operand0 = evt_getArg8_inline();
         obj = evt_getObjectArg();
-        c = *g_evtCurObj->ip++;
-        if (obj != NULL && a < obj->level) {
-            evt_callObjectFunc(obj, a, c, 0);
+        operand2 = *g_evtCurObj->ip++;
+        if (obj != NULL && operand0 < obj->level) {
+            evt_callObjectFunc(obj, operand0, operand2, 0);
             return 0;
         }
         g_evtCurObj->ip = g_evtInstrStart;
         g_evtArgRead = 1;
         return 1;
     case EVT_OP_CALL_SYNC:
-        a = evt_getArg8_inline();
+        operand0 = evt_getArg8_inline();
         obj = evt_getObjectArg();
-        c = *g_evtCurObj->ip++;
-        if (obj != NULL && a < obj->level) {
-            evt_callObjectFunc(obj, a, c, 1);
+        operand2 = *g_evtCurObj->ip++;
+        if (obj != NULL && operand0 < obj->level) {
+            evt_callObjectFunc(obj, operand0, operand2, 1);
         } else {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
         }
         return 1;
     case EVT_OP_CALL_CALLER:
-        a = evt_getArg8_inline();
-        o = evt_getObject_inline(CUR_UID());
-        evt_callObjectFunc(o, a, *g_evtCurObj->ip++, 0);
+        operand0 = evt_getArg8_inline();
+        argObj = evt_getObject_inline(CUR_UID());
+        evt_callObjectFunc(argObj, operand0, *g_evtCurObj->ip++, 0);
         return 0;
     case EVT_OP_CALL_CALLER_WAIT_FREE:
-        a = evt_getArg8_inline();
-        if (evt_getObject_inline(CUR_UID()) != NULL && a < evt_getObject_inline(CUR_UID())->level) {
-            o = evt_getObject_inline(CUR_UID());
-            evt_callObjectFunc(o, a, *g_evtCurObj->ip++, 0);
+        operand0 = evt_getArg8_inline();
+        if (evt_getObject_inline(CUR_UID()) != NULL && operand0 < evt_getObject_inline(CUR_UID())->level) {
+            argObj = evt_getObject_inline(CUR_UID());
+            evt_callObjectFunc(argObj, operand0, *g_evtCurObj->ip++, 0);
             return 0;
         }
         g_evtCurObj->ip = g_evtInstrStart;
         g_evtArgRead = 1;
         return 1;
     case EVT_OP_CALL_CALLER_SYNC:
-        a = evt_getArg8_inline();
-        if (evt_getObject_inline(CUR_UID()) != NULL && a < evt_getObject_inline(CUR_UID())->level) {
-            o = evt_getObject_inline(CUR_UID());
-            evt_callObjectFunc(o, a, *g_evtCurObj->ip++, 1);
+        operand0 = evt_getArg8_inline();
+        if (evt_getObject_inline(CUR_UID()) != NULL && operand0 < evt_getObject_inline(CUR_UID())->level) {
+            argObj = evt_getObject_inline(CUR_UID());
+            evt_callObjectFunc(argObj, operand0, *g_evtCurObj->ip++, 1);
         } else {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
@@ -953,30 +957,30 @@ s32 evt_execInstr(void) {
         g_evtState->walkOnly = 0;
         return 0;
     case EVT_OP_DISABLE_ACTORS:
-        for (n = g_evtState->objects; n != NULL; n = n->next) {
-            EvtObject *o = n->obj;
-            if (o->kind == EVT_KIND_ACTOR) {
-                o->savedFlags = o->flags;
-                if (!(o->flags & EVT_OBJ_KEEP_ENABLED)) {
-                    o->flags &= ~EVT_OBJ_ENABLED;
+        for (node = g_evtState->objects; node != NULL; node = node->next) {
+            EvtObject *listObj = node->obj;
+            if (listObj->kind == EVT_KIND_ACTOR) {
+                listObj->savedFlags = listObj->flags;
+                if (!(listObj->flags & EVT_OBJ_KEEP_ENABLED)) {
+                    listObj->flags &= ~EVT_OBJ_ENABLED;
                 }
             }
         }
         return 0;
     case EVT_OP_RESTORE_ACTORS:
-        for (n = g_evtState->objects; n != NULL; n = n->next) {
-            EvtObject *o = n->obj;
-            if (o->kind == EVT_KIND_ACTOR) {
-                o->flags &= ~EVT_OBJ_ENABLED;
-                o->flags |= o->savedFlags & 1;
+        for (node = g_evtState->objects; node != NULL; node = node->next) {
+            EvtObject *listObj = node->obj;
+            if (listObj->kind == EVT_KIND_ACTOR) {
+                listObj->flags &= ~EVT_OBJ_ENABLED;
+                listObj->flags |= listObj->savedFlags & 1;
             }
         }
         return 0;
     case EVT_OP_SET_RADIUS:
         if (g_evtActor->kind == EVT_KIND_ACTOR) {
-            a = evt_getArg8_inline();
+            operand0 = evt_getArg8_inline();
             if (g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE) {
-                bgi_setActorRadius(po->modelSlot, (a << 2) & 0xFFFC);
+                bgi_setActorRadius(po->modelSlot, (operand0 << 2) & 0xFFFC);
             }
             po->collisionRadius = evt_getArg8_inline();
             po->talkRadius = evt_getArg8_inline();
@@ -1001,16 +1005,16 @@ s32 evt_execInstr(void) {
     case EVT_OP_SET_POS_XZ_OBJ:
         po = evt_getObjectArg();
     case EVT_OP_SET_POS_XZ:
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        c = g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE;
-        if (c) {
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE;
+        if (operand2) {
             bgi_setActorActive(po->modelSlot, 0);
         }
-        po->pos.vx = po->prevPos.vx = a;
+        po->pos.vx = po->prevPos.vx = operand0;
         po->pos.vy = po->prevPos.vy = -0x8000;
-        po->pos.vz = po->prevPos.vz = b;
-        if (c) {
+        po->pos.vz = po->prevPos.vz = operand1;
+        if (operand2) {
             bgi_setActorActive(po->modelSlot, 1);
         }
         if (po->kind == EVT_KIND_ACTOR) {
@@ -1023,16 +1027,16 @@ s32 evt_execInstr(void) {
     case EVT_OP_SET_POS_OBJ:
         po = evt_getObjectArg();
     case EVT_OP_SET_POS:
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg16_inline();
-        d = g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE;
-        if (d) {
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg16_inline();
+        operand3 = g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE;
+        if (operand3) {
             bgi_setActorActive(po->modelSlot, 0);
         }
-        po->pos.vx = po->prevPos.vx = a;
-        po->pos.vy = po->prevPos.vy = b;
-        po->pos.vz = po->prevPos.vz = c;
+        po->pos.vx = po->prevPos.vx = operand0;
+        po->pos.vy = po->prevPos.vy = operand1;
+        po->pos.vz = po->prevPos.vz = operand2;
         if (po->kind == EVT_KIND_ACTOR) {
             po->moveDistSq = 0x7FFFFFFF;
             po->pitch = 0;
@@ -1069,24 +1073,24 @@ s32 evt_execInstr(void) {
     case EVT_OP_TURN_OBJ:
         actor = evt_getObjectArg();
     case EVT_OP_TURN:
-        a = evt_getArg8_inline() << 4;
-        evt_turnObject(actor, a, 1, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline() << 4;
+        evt_turnObject(actor, operand0, 1, evt_getArg8_inline());
         return 0;
     case EVT_OP_TURN_TO_ANGLE:
         evt_turnObject(actor, evt_getArg8_inline() << 4, 1, actor->turnSpeed);
         return 0;
     case EVT_OP_TURN_TO_POINT:
-        a = evt_getArg16_inline() - actor->pos.vx;
-        b = evt_getArg16_inline() - actor->pos.vz;
-        if (a | b) {
-            evt_turnObject(actor, math_atan2(a, b), 1, actor->turnSpeed);
+        operand0 = evt_getArg16_inline() - actor->pos.vx;
+        operand1 = evt_getArg16_inline() - actor->pos.vz;
+        if (operand0 | operand1) {
+            evt_turnObject(actor, math_atan2(operand0, operand1), 1, actor->turnSpeed);
         }
         return 0;
     case EVT_OP_TURN_TO_OBJ:
         obj = evt_getObjectArg();
-        a = evt_getArg8_inline();
+        operand0 = evt_getArg8_inline();
         if (obj != NULL) {
-            evt_turnObject(actor, math_atan2(obj->pos.vx - actor->pos.vx, obj->pos.vz - actor->pos.vz), 1, a);
+            evt_turnObject(actor, math_atan2(obj->pos.vx - actor->pos.vx, obj->pos.vz - actor->pos.vz), 1, operand0);
         }
         return 0;
     case EVT_OP_WAIT_TURN_OBJ:
@@ -1098,54 +1102,54 @@ s32 evt_execInstr(void) {
         }
         return 1;
     case EVT_OP_MSG_NUMBER:
-        a = evt_getArg8_inline();
-        msg_setNumber(a, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        msg_setNumber(operand0, evt_getArg16_inline());
         return 0;
     case EVT_OP_MSG_SYNC_TAG:
         g_msgSyncTag = evt_getArg8_inline();
         return 0;
     case EVT_OP_MSG_CHOICE_MASK:
-        a = evt_getArg16_inline();
-        msg_setChoiceMask(a, evt_getArg8_inline());
+        operand0 = evt_getArg16_inline();
+        msg_setChoiceMask(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_MSG_KEEP_WINDOWS:
         msg_keepWindowsOnInit();
         return 0;
     case EVT_OP_MSG_WAIT:
         g_evtActor->windowId = evt_getArg8_inline();
-        c = evt_getArg8_inline();
-        evt_execInstr_window(g_evtActor, c, g_evtActor->windowId);
-        b = evt_getArg16_inline();
-        msg_open(b, g_evtActor->windowId, evt_getMsgLayout(g_evtActor, b, c), c);
+        operand2 = evt_getArg8_inline();
+        evt_execInstr_window(g_evtActor, operand2, g_evtActor->windowId);
+        operand1 = evt_getArg16_inline();
+        msg_open(operand1, g_evtActor->windowId, evt_getMsgLayout(g_evtActor, operand1, operand2), operand2);
         g_evtActor->wait = EVT_WAIT_WINDOW;
         return 1;
     case EVT_OP_MSG:
         g_evtActor->windowId = evt_getArg8_inline();
-        c = evt_getArg8_inline();
-        evt_execInstr_window(g_evtActor, c, g_evtActor->windowId);
-        b = evt_getArg16_inline();
-        msg_open(b, g_evtActor->windowId, evt_getMsgLayout(g_evtActor, b, c), c);
+        operand2 = evt_getArg8_inline();
+        evt_execInstr_window(g_evtActor, operand2, g_evtActor->windowId);
+        operand1 = evt_getArg16_inline();
+        msg_open(operand1, g_evtActor->windowId, evt_getMsgLayout(g_evtActor, operand1, operand2), operand2);
         return 0;
     case EVT_OP_MSG_OBJ_WAIT:
         po = evt_getObjectArg();
         g_evtActor->windowId = evt_getArg8_inline();
-        c = evt_getArg8_inline();
-        evt_execInstr_window(po, c, g_evtActor->windowId);
-        b = evt_getArg16_inline();
-        msg_open(b, g_evtActor->windowId, evt_getMsgLayout(po, b, c), c);
+        operand2 = evt_getArg8_inline();
+        evt_execInstr_window(po, operand2, g_evtActor->windowId);
+        operand1 = evt_getArg16_inline();
+        msg_open(operand1, g_evtActor->windowId, evt_getMsgLayout(po, operand1, operand2), operand2);
         g_evtActor->wait = EVT_WAIT_WINDOW;
         return 1;
     case EVT_OP_MSG_OBJ:
         po = evt_getObjectArg();
         g_evtActor->windowId = evt_getArg8_inline();
-        c = evt_getArg8_inline();
-        evt_execInstr_window(po, c, g_evtActor->windowId);
-        b = evt_getArg16_inline();
-        msg_open(b, g_evtActor->windowId, evt_getMsgLayout(po, b, c), c);
+        operand2 = evt_getArg8_inline();
+        evt_execInstr_window(po, operand2, g_evtActor->windowId);
+        operand1 = evt_getArg16_inline();
+        msg_open(operand1, g_evtActor->windowId, evt_getMsgLayout(po, operand1, operand2), operand2);
         return 0;
     case EVT_OP_MSG_CLOSE:
-        a = evt_getArg8_inline();
-        msg_close(a);
+        operand0 = evt_getArg8_inline();
+        msg_close(operand0);
         return 0;
     case EVT_OP_MSG_CLOSE_ALL:
         msg_resetWindows();
@@ -1171,15 +1175,15 @@ s32 evt_execInstr(void) {
         actor->animLoops = evt_getArg8_inline();
         return 0;
     case EVT_OP_MOVE_XZ:
-        a = evt_getArg16_inline();
-        if (evt_moveObjectTo(a, 0, evt_getArg16_inline(), 0)) {
+        operand0 = evt_getArg16_inline();
+        if (evt_moveObjectTo(operand0, 0, evt_getArg16_inline(), 0)) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
         }
         return 1;
     case EVT_OP_MOVE_XZ_NOTURN:
-        a = evt_getArg16_inline();
-        if (evt_moveObjectTo(a, 0, evt_getArg16_inline(), EVT_MOVETO_NO_TURN)) {
+        operand0 = evt_getArg16_inline();
+        if (evt_moveObjectTo(operand0, 0, evt_getArg16_inline(), EVT_MOVETO_NO_TURN)) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
         }
@@ -1199,29 +1203,29 @@ s32 evt_execInstr(void) {
         }
         return 1;
     case EVT_OP_MOVE_XYZ:
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg16_inline();
-        if (evt_moveObjectTo(a, b, c, EVT_MOVETO_3D)) {
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg16_inline();
+        if (evt_moveObjectTo(operand0, operand1, operand2, EVT_MOVETO_3D)) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
         }
         return 1;
     case EVT_OP_MOVE_XYZ_NOTURN:
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg16_inline();
-        if (evt_moveObjectTo(a, b, c, EVT_MOVETO_NO_TURN | EVT_MOVETO_3D)) {
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg16_inline();
+        if (evt_moveObjectTo(operand0, operand1, operand2, EVT_MOVETO_NO_TURN | EVT_MOVETO_3D)) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
         }
         return 1;
     case EVT_OP_SET_MOVE_TURN:
-        a = evt_getArg8_inline();
-        if (a == 0) {
-            a = 0xFF;
+        operand0 = evt_getArg8_inline();
+        if (operand0 == 0) {
+            operand0 = 0xFF;
         }
-        actor->moveTurnRate = a;
+        actor->moveTurnRate = operand0;
         return 0;
     case EVT_OP_SET_WALK_SPEED:
         actor->speed = evt_getArg8_inline();
@@ -1252,9 +1256,9 @@ s32 evt_execInstr(void) {
         actor->jumpTargetX = evt_getArg16_inline();
         actor->jumpTargetY = evt_getArg16_inline();
         actor->jumpTargetZ = evt_getArg16_inline();
-        a = evt_getArg8_inline();
-        if (a == 0) {
-            a = 8;
+        operand0 = evt_getArg8_inline();
+        if (operand0 == 0) {
+            operand0 = 8;
         }
         actor->moveFlags |= EVT_MOVE_JUMPING;
         ((ModelSlot *)game_getModel(actor->modelSlot))->flags |= MODEL_SLOT_NO_SHADOW;
@@ -1265,22 +1269,22 @@ s32 evt_execInstr(void) {
             g_evtPlayerAnimCount++;
         }
         actor->jumpFrame = 0;
-        actor->jumpFrames = a;
+        actor->jumpFrames = operand0;
         actor->jumpStartX = actor->pos.vx;
         actor->jumpStartY = actor->pos.vy;
         actor->jumpStartZ = actor->pos.vz;
-        actor->animSpeed = ((actor->animEnd - actor->animStart) << 4) / a;
+        actor->animSpeed = ((actor->animEnd - actor->animStart) << 4) / operand0;
         if (g_evtMode == EVT_MODE_FIELD && po->modelId != EVT_MODEL_NONE) {
             bgi_setActorActive(po->modelSlot, 0);
         }
         return 0;
     case EVT_OP_JUMP_STEP:
-        b = actor->jumpFrames;
-        a = ++actor->jumpFrame;
-        actor->pos.vx = ((s16)actor->jumpStartX * (b - a) + actor->jumpTargetX * a) / b;
-        actor->pos.vy = (s16)actor->jumpStartY + a * a * 8 + a * (actor->jumpTargetY - (s16)actor->jumpStartY) / b - a * (b << 3);
-        actor->pos.vz = ((s16)actor->jumpStartZ * (b - a) + actor->jumpTargetZ * a) / b;
-        if (a >= b) {
+        operand1 = actor->jumpFrames;
+        operand0 = ++actor->jumpFrame;
+        actor->pos.vx = ((s16)actor->jumpStartX * (operand1 - operand0) + actor->jumpTargetX * operand0) / operand1;
+        actor->pos.vy = (s16)actor->jumpStartY + operand0 * operand0 * 8 + operand0 * (actor->jumpTargetY - (s16)actor->jumpStartY) / operand1 - operand0 * (operand1 << 3);
+        actor->pos.vz = ((s16)actor->jumpStartZ * (operand1 - operand0) + actor->jumpTargetZ * operand0) / operand1;
+        if (operand0 >= operand1) {
             return 0;
         }
         g_evtCurObj->ip = g_evtInstrStart;
@@ -1300,20 +1304,20 @@ s32 evt_execInstr(void) {
     case EVT_OP_LINE_POINT:
         po = evt_getObject_inline(g_evtState->playerUid);
         if (po != NULL) {
-            EvtRegionPt *p = ((EvtRegion *)g_evtActor)->pts;
-            s32 dx = p[1].x - p[0].x;
-            s32 dz = p[1].z - p[0].z;
+            EvtRegionPt *seg = ((EvtRegion *)g_evtActor)->pts;
+            s32 dx = seg[1].x - seg[0].x;
+            s32 dz = seg[1].z - seg[0].z;
             s32 t = (dx * dx + dz * dz) >> 8;
             if (t != 0) {
-                t = (dx * (po->pos.vx - p[0].x) + dz * (po->pos.vz - p[0].z)) / t;
+                t = (dx * (po->pos.vx - seg[0].x) + dz * (po->pos.vz - seg[0].z)) / t;
                 if (t < 0) {
                     t = 0;
                 } else if (t > 0x100) {
                     t = 0x100;
                 }
             }
-            g_evtLinePointX = ((t * dx) >> 8) + p[0].x;
-            g_evtLinePointZ = ((t * dz) >> 8) + p[0].z;
+            g_evtLinePointX = ((t * dx) >> 8) + seg[0].x;
+            g_evtLinePointZ = ((t * dz) >> 8) + seg[0].z;
         } else {
             g_evtLinePointZ = 0;
             g_evtLinePointX = 0;
@@ -1337,27 +1341,27 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_REGION_START: {
-        EvtRegion *q = (EvtRegion *)g_evtActor;
-        q->count = 2;
-        q->pts[0].x = q->pts[1].x = evt_getArg16_inline();
-        q->pts[0].z = q->pts[1].z = evt_getArg16_inline();
+        EvtRegion *region = (EvtRegion *)g_evtActor;
+        region->count = 2;
+        region->pts[0].x = region->pts[1].x = evt_getArg16_inline();
+        region->pts[0].z = region->pts[1].z = evt_getArg16_inline();
         return 0;
     }
     case EVT_OP_REGION_MOVE_LAST: {
-        EvtRegion *q = (EvtRegion *)g_evtActor;
-        EvtRegionPt *p;
-        a = q->count;
-        p = &q->pts[(a > 0 ? a : 1) - 1];
-        p->x = evt_getArg16_inline();
-        p->z = evt_getArg16_inline();
+        EvtRegion *region = (EvtRegion *)g_evtActor;
+        EvtRegionPt *last;
+        operand0 = region->count;
+        last = &region->pts[(operand0 > 0 ? operand0 : 1) - 1];
+        last->x = evt_getArg16_inline();
+        last->z = evt_getArg16_inline();
         return 0;
     }
     case EVT_OP_REGION_DUP_LAST: {
-        EvtRegion *q = (EvtRegion *)g_evtActor;
-        s32 k = q->count;
+        EvtRegion *region = (EvtRegion *)g_evtActor;
+        s32 k = region->count;
         if (k >= 1 && k < 8) {
-            q->pts[k] = q->pts[k - 1];
-            q->count++;
+            region->pts[k] = region->pts[k - 1];
+            region->count++;
         }
         return 0;
     }
@@ -1375,16 +1379,16 @@ s32 evt_execInstr(void) {
     case EVT_OP_BATTLE:
         g_swirlVariant = evt_getArg8_inline();
         g_gameState->gameData->enemyGroup = -1;
-        a = evt_getArg16_inline();
-        g_gameState->gameData->darkBattle = (a >> 15) & 1;
-        evt_setNextBattle(a & 0x7FFF);
+        operand0 = evt_getArg16_inline();
+        g_gameState->gameData->darkBattle = (operand0 >> 15) & 1;
+        evt_setNextBattle(operand0 & 0x7FFF);
         return EVT_UPD_BATTLE;
     case EVT_OP_BATTLE_EX:
         g_swirlVariant = evt_getArg8_inline();
         g_gameState->gameData->enemyGroup = evt_getArg8_inline();
-        a = evt_getArg16_inline();
-        g_gameState->gameData->darkBattle = (a >> 15) & 1;
-        evt_setNextBattle(a & 0x7FFF);
+        operand0 = evt_getArg16_inline();
+        g_gameState->gameData->darkBattle = (operand0 >> 15) & 1;
+        evt_setNextBattle(operand0 & 0x7FFF);
         return EVT_UPD_BATTLE;
     case EVT_OP_ENCOUNTER_RATE:
         if ((g_evtState->encounterRate = evt_getArg8_inline()) == 0) {
@@ -1408,15 +1412,15 @@ s32 evt_execInstr(void) {
         g_evtMsgCount = 0;
         return 0;
     case EVT_OP_ENABLE_CONTROL: {
-        EvtState *e;
+        EvtState *evt;
         g_evtState->controlEnabled = 1;
         msg_startHereIcon(1);
-        e = g_evtState;
-        if (e->idleTimer >= 0) {
+        evt = g_evtState;
+        if (evt->idleTimer >= 0) {
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
-            e->idleTimer = (*g_randPtr++ + 0xC8) * 4;
+            evt->idleTimer = (*g_randPtr++ + 0xC8) * 4;
         }
         return 0;
     }
@@ -1427,74 +1431,74 @@ s32 evt_execInstr(void) {
         po->height = -(evt_getArg8_inline() << 2);
         return 0;
     case EVT_OP_ATTACH_OFFSET:
-        m = evt_getObjectModelData_inline(g_evtActor);
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg16_inline();
-        if (m != NULL) {
-            m->attachX = a;
-            m->attachY = b;
-            m->attachZ = c;
+        mdl = evt_getObjectModelData_inline(g_evtActor);
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg16_inline();
+        if (mdl != NULL) {
+            mdl->attachX = operand0;
+            mdl->attachY = operand1;
+            mdl->attachZ = operand2;
         }
         return 0;
     case EVT_OP_ATTACH:
-        o = evt_getObjectArg();
-        m = evt_getObjectModelData_inline(o);
-        o = evt_getObjectArg();
-        m2 = evt_getObjectModelData_inline(o);
-        a = evt_getArg8_inline();
-        if (m != NULL && m2 != NULL) {
-            m->parent = m2;
-            m->parentBone = a;
+        argObj = evt_getObjectArg();
+        mdl = evt_getObjectModelData_inline(argObj);
+        argObj = evt_getObjectArg();
+        m2 = evt_getObjectModelData_inline(argObj);
+        operand0 = evt_getArg8_inline();
+        if (mdl != NULL && m2 != NULL) {
+            mdl->parent = m2;
+            mdl->parentBone = operand0;
         }
         return 0;
     case EVT_OP_DETACH:
-        o = evt_getObjectArg();
-        m = evt_getObjectModelData_inline(o);
-        if (m != NULL) {
-            m->parent = NULL;
+        argObj = evt_getObjectArg();
+        mdl = evt_getObjectModelData_inline(argObj);
+        if (mdl != NULL) {
+            mdl->parent = NULL;
         }
         return 0;
     case EVT_OP_MODEL_SCALE:
         po = evt_getObjectArg();
-        m = evt_getObjectModelData_inline(po);
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        c = evt_getArg8_inline();
-        if (m != NULL) {
-            m->scaleX = (s8)a << 6;
-            m->scaleY = (s8)b << 6;
-            m->scaleZ = (s8)c << 6;
-            m->flags |= MDL_SCALED;
+        mdl = evt_getObjectModelData_inline(po);
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        operand2 = evt_getArg8_inline();
+        if (mdl != NULL) {
+            mdl->scaleX = (s8)operand0 << 6;
+            mdl->scaleY = (s8)operand1 << 6;
+            mdl->scaleZ = (s8)operand2 << 6;
+            mdl->flags |= MDL_SCALED;
         }
-        po->scale = b;
+        po->scale = operand1;
         return 0;
     case EVT_OP_TEX_ANIM_PLAY:
-        o = evt_getObjectArg();
-        m = evt_getObjectModelData_inline(o);
-        b = evt_getArg8_inline();
-        if (m != NULL) {
-            m->texAnims->unk0[b].flags |= TEXANIM_ACTIVE;
-            m->texAnims->unk0[b].pos = 0;
-            m->texAnims->unk0[b].lastFrame = 0x1000;
+        argObj = evt_getObjectArg();
+        mdl = evt_getObjectModelData_inline(argObj);
+        operand1 = evt_getArg8_inline();
+        if (mdl != NULL) {
+            mdl->texAnims->unk0[operand1].flags |= TEXANIM_ACTIVE;
+            mdl->texAnims->unk0[operand1].pos = 0;
+            mdl->texAnims->unk0[operand1].lastFrame = 0x1000;
         }
         return 0;
     case EVT_OP_TEX_ANIM_PLAY_ONCE:
-        o = evt_getObjectArg();
-        m = evt_getObjectModelData_inline(o);
-        b = evt_getArg8_inline();
-        if (m != NULL) {
-            m->texAnims->unk0[b].flags |= TEXANIM_ACTIVE | TEXANIM_ONESHOT;
-            m->texAnims->unk0[b].pos = 0;
-            m->texAnims->unk0[b].lastFrame = 0x1000;
+        argObj = evt_getObjectArg();
+        mdl = evt_getObjectModelData_inline(argObj);
+        operand1 = evt_getArg8_inline();
+        if (mdl != NULL) {
+            mdl->texAnims->unk0[operand1].flags |= TEXANIM_ACTIVE | TEXANIM_ONESHOT;
+            mdl->texAnims->unk0[operand1].pos = 0;
+            mdl->texAnims->unk0[operand1].lastFrame = 0x1000;
         }
         return 0;
     case EVT_OP_TEX_ANIM_STOP:
-        o = evt_getObjectArg();
-        m = evt_getObjectModelData_inline(o);
-        b = evt_getArg8_inline();
-        if (m != NULL) {
-            m->texAnims->unk0[b].flags &= ~(TEXANIM_ACTIVE | TEXANIM_ONESHOT);
+        argObj = evt_getObjectArg();
+        mdl = evt_getObjectModelData_inline(argObj);
+        operand1 = evt_getArg8_inline();
+        if (mdl != NULL) {
+            mdl->texAnims->unk0[operand1].flags &= ~(TEXANIM_ACTIVE | TEXANIM_ONESHOT);
         }
         return 0;
     case EVT_OP_MODEL_FLAGS_SET: {
@@ -1590,13 +1594,13 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_RUN_THREAD: {
-        EvtObject *o;
-        a = g_evtCurObj->uid + 0x40;
-        o = evt_getObject_inline(a);
-        if (o != NULL) {
-            evt_deleteObject(o);
+        EvtObject *oldThread;
+        operand0 = g_evtCurObj->uid + 0x40;
+        oldThread = evt_getObject_inline(operand0);
+        if (oldThread != NULL) {
+            evt_deleteObject(oldThread);
         }
-        evt_createObject(evt_getArg8_inline(), a, 0x14, 0)->kind = EVT_KIND_THREAD;
+        evt_createObject(evt_getArg8_inline(), operand0, 0x14, 0)->kind = EVT_KIND_THREAD;
         return 0;
     }
     case EVT_OP_WAIT_THREAD:
@@ -1607,9 +1611,9 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_KILL_THREAD: {
-        EvtObject *o = evt_getObject_inline(g_evtCurObj->uid + 0x40);
-        if (o != NULL) {
-            evt_deleteObject(o);
+        EvtObject *thread = evt_getObject_inline(g_evtCurObj->uid + 0x40);
+        if (thread != NULL) {
+            evt_deleteObject(thread);
         }
         return 0;
     }
@@ -1639,8 +1643,8 @@ s32 evt_execInstr(void) {
         return 0;
     }
     case EVT_OP_SET_BATTLE_VAR:
-        a = evt_getArg8_inline();
-        btl_setBattleVar(a, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        btl_setBattleVar(operand0, evt_getArg16_inline());
         return 0;
     case EVT_OP_BTL_KEEP_MUSIC:
         if (evt_getArg8_inline()) {
@@ -1654,10 +1658,10 @@ s32 evt_execInstr(void) {
         g_evtHalted = 1;
         return 0;
     case EVT_OP_SET_CHR_NAME:
-        a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < CHR_COUNT) {
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
+        if ((u32)operand0 < CHR_COUNT) {
             u8 *src = msg_getText(evt_getArg16_inline());
-            u8 *dst = g_gameState->gameData->characters[a].name;
+            u8 *dst = g_gameState->gameData->characters[operand0].name;
             u8 *end = dst + 9;
             while (dst < end) {
                 *dst++ = *src++;
@@ -1668,9 +1672,9 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_SET_VICTORY_POSE:
-        a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < CHR_COUNT) {
-            g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~CHR_INFO_VICTORY_POSE) | ((evt_getArg8_inline() & 1) << CHR_INFO_VICTORY_POSE_BIT);
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
+        if ((u32)operand0 < CHR_COUNT) {
+            g_gameState->gameData->characters[operand0].info.w = (g_gameState->gameData->characters[operand0].info.w & ~CHR_INFO_VICTORY_POSE) | ((evt_getArg8_inline() & 1) << CHR_INFO_VICTORY_POSE_BIT);
         }
         return 0;
     case EVT_OP_SET_DIR_OFFSETS:
@@ -1678,33 +1682,33 @@ s32 evt_execInstr(void) {
         g_evtState->padDirOfs = evt_getArg8_inline() << 4;
         return 0;
     case EVT_OP_CLEAR_COLOR:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        game_setClearColor(a, b, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        game_setClearColor(operand0, operand1, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_MOVE_ORIGIN:
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        fldbg_moveOrigin(a, b, evt_getArg16_inline());
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        fldbg_moveOrigin(operand0, operand1, evt_getArg16_inline());
         return 0;
     case EVT_OP_BG_SCROLL_TO:
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg8_inline();
-        fldbg_scrollTo(a, b, c, evt_getArg8_inline());
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg8_inline();
+        fldbg_scrollTo(operand0, operand1, operand2, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_SCROLL_TO_PLAYER:
-        a = evt_getArg8_inline();
-        fldbg_scrollToPlayer(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_scrollToPlayer(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_FOLLOW:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        fldbg_setFollow(a, b, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        fldbg_setFollow(operand0, operand1, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_FOLLOW_HEIGHT:
-        a = evt_getArg16_inline();
-        fldbg_setFollowHeight(a);
+        operand0 = evt_getArg16_inline();
+        fldbg_setFollowHeight(operand0);
         return 0;
     case EVT_OP_BG_LIMITS_ON:
         fldbg_enableScrollLimits();
@@ -1713,138 +1717,138 @@ s32 evt_execInstr(void) {
         fldbg_disableScrollLimits();
         return 0;
     case EVT_OP_BG_LAYER_COLOR:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        c = evt_getArg8_inline();
-        fldbg_setOverlayColor(a, b, c, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        operand2 = evt_getArg8_inline();
+        fldbg_setOverlayColor(operand0, operand1, operand2, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_LAYER_MOVE:
-        a = evt_getArg8_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg16_inline();
-        fldbg_moveOverlay(a, b, c, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg16_inline();
+        fldbg_moveOverlay(operand0, operand1, operand2, evt_getArg16_inline());
         return 0;
     case EVT_OP_BG_LAYER_SHOW:
-        a = evt_getArg8_inline();
-        fldbg_showOverlay(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_showOverlay(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_LAYER_LOOP:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        c = evt_getArg16_inline();
-        fldbg_setOverlayLoop(a, b, c, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        operand2 = evt_getArg16_inline();
+        fldbg_setOverlayLoop(operand0, operand1, operand2, evt_getArg16_inline());
         return 0;
     case EVT_OP_BG_LAYER_PARALLAX:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        c = evt_getArg16_inline();
-        fldbg_setOverlayParallax(a, b, c, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        operand2 = evt_getArg16_inline();
+        fldbg_setOverlayParallax(operand0, operand1, operand2, evt_getArg16_inline());
         return 0;
     case EVT_OP_BG_LAYER_POS:
-        a = evt_getArg8_inline();
-        b = evt_getArg16_inline();
-        fldbg_setOverlayPos(a, b, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg16_inline();
+        fldbg_setOverlayPos(operand0, operand1, evt_getArg16_inline());
         return 0;
     case EVT_OP_BG_FOLLOW_LAYER:
-        a = evt_getArg8_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg8_inline();
-        f = evt_getArg8_inline();
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg8_inline();
+        operand5 = evt_getArg8_inline();
         {
-            s32 g = evt_getArg8_inline();
-            e = evt_getArg8_inline();
-            fldbg_addFollowOverlay(a, b, c, f, g, e, evt_getArg8_inline());
+            s32 red = evt_getArg8_inline();
+            operand4 = evt_getArg8_inline();
+            fldbg_addFollowOverlay(operand0, operand1, operand2, operand5, red, operand4, evt_getArg8_inline());
         }
         return 0;
     case EVT_OP_BG_OVERLAY_SCREEN:
-        a = evt_getArg8_inline();
-        fldbg_setOverlayScreen(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_setOverlayScreen(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_ANIM_FRAME:
-        a = evt_getArg8_inline();
-        fldbg_setAnimFrame(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_setAnimFrame(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_ANIM_PLAY:
-        a = evt_getArg8_inline();
-        fldbg_playAnim(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_playAnim(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_ANIM_SPEED:
-        a = evt_getArg8_inline();
-        fldbg_setAnimSpeed(a, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_setAnimSpeed(operand0, evt_getArg16_inline());
         return 0;
     case EVT_OP_BG_ANIM_DELAY:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        fldbg_setAnimStepDelay(a, b, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        fldbg_setAnimStepDelay(operand0, operand1, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_ANIM_FLAGS:
-        a = evt_getArg8_inline();
-        fldbg_setAnimFlags(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_setAnimFlags(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_ANIM_RANGE:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        fldbg_playAnimRange(a, b, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        fldbg_playAnimRange(operand0, operand1, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_ANIM_RESET:
-        a = evt_getArg8_inline();
-        fldbg_resetAnim(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_resetAnim(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_ANIM_SHOW_FRAME:
-        a = evt_getArg8_inline();
-        fldbg_showAnimFrame(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_showAnimFrame(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BGI_TRI_ACTIVE:
-        a = evt_getArg16_inline();
-        bgi_setTriangleActive(a, evt_getArg8_inline());
+        operand0 = evt_getArg16_inline();
+        bgi_setTriangleActive(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BGI_FLOOR_ACTIVE:
-        a = evt_getArg8_inline();
-        bgi_setFloorActive(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        bgi_setFloorActive(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BGI_ACTOR_ACTIVE:
-        a = evt_getArg8_inline();
+        operand0 = evt_getArg8_inline();
         if (po->modelId != EVT_MODEL_NONE) {
-            bgi_setActorActive(po->modelSlot, a);
+            bgi_setActorActive(po->modelSlot, operand0);
         }
         return 0;
     case EVT_OP_BG_MASK_FILTER:
-        a = evt_getArg8_inline();
-        bgi_setMaskFilter(a);
+        operand0 = evt_getArg8_inline();
+        bgi_setMaskFilter(operand0);
         return 0;
     case EVT_OP_BG_SCROLL_LIMITS:
-        a = evt_getArg8_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg16_inline();
-        d = evt_getArg16_inline();
-        fldbg_setScrollLimits(a, b, c, d, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg16_inline();
+        operand3 = evt_getArg16_inline();
+        fldbg_setScrollLimits(operand0, operand1, operand2, operand3, evt_getArg16_inline());
         return 0;
     case EVT_OP_BG_LAYER_VIEWPORT:
-        a = evt_getArg8_inline();
-        fldbg_setOverlayViewport(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        fldbg_setOverlayViewport(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_VIEWPORT:
-        a = evt_getArg8_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg16_inline();
-        d = evt_getArg16_inline();
-        fldbg_setViewport(a, b, c, d, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg16_inline();
+        operand3 = evt_getArg16_inline();
+        fldbg_setViewport(operand0, operand1, operand2, operand3, evt_getArg16_inline());
         return 0;
     case EVT_OP_BG_VIEWPORT_RATE:
-        a = evt_getArg8_inline();
-        b = evt_getArg16_inline();
-        fldbg_setViewportScrollRate(a, b, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg16_inline();
+        fldbg_setViewportScrollRate(operand0, operand1, evt_getArg16_inline());
         return 0;
     case EVT_OP_BG_LAYER_SKEW:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        c = evt_getArg16_inline();
-        d = evt_getArg16_inline();
-        fldbg_setOverlaySkewLoop(a, b, c, d, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        operand2 = evt_getArg16_inline();
+        operand3 = evt_getArg16_inline();
+        fldbg_setOverlaySkewLoop(operand0, operand1, operand2, operand3, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_CAMERA:
-        a = evt_getArg8_inline();
-        fldbg_setCamera(a);
+        operand0 = evt_getArg8_inline();
+        fldbg_setCamera(operand0);
         return 0;
     case EVT_OP_GET_SCROLL: {
         s16 x, z;
@@ -1855,34 +1859,34 @@ s32 evt_execInstr(void) {
     }
     case EVT_OP_OBJ_COLOR:
         obj = evt_getObjectArg();
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        if (fld_setObjectColor(obj->modelSlot, a, b, evt_getArg8_inline())) {
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        if (fld_setObjectColor(obj->modelSlot, operand0, operand1, evt_getArg8_inline())) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
             return 1;
         }
         return 0;
     case EVT_OP_MODEL_CMD:
-        a = evt_getArg8_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg16_inline();
-        fld_modelCommand(po->modelSlot, a, b, c, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg16_inline();
+        fld_modelCommand(po->modelSlot, operand0, operand1, operand2, evt_getArg16_inline());
         return 0;
     case EVT_OP_MESH_HIDE:
-        o = evt_getObjectArg();
-        m = evt_getObjectModelData_inline(o);
-        a = evt_getArg8_inline();
-        if (m != NULL) {
-            m->hiddenGroups |= 1 << a;
+        argObj = evt_getObjectArg();
+        mdl = evt_getObjectModelData_inline(argObj);
+        operand0 = evt_getArg8_inline();
+        if (mdl != NULL) {
+            mdl->hiddenGroups |= 1 << operand0;
         }
         return 0;
     case EVT_OP_MESH_SHOW:
-        o = evt_getObjectArg();
-        m = evt_getObjectModelData_inline(o);
-        a = evt_getArg8_inline();
-        if (m != NULL) {
-            m->hiddenGroups &= ~(1 << a);
+        argObj = evt_getObjectArg();
+        mdl = evt_getObjectModelData_inline(argObj);
+        operand0 = evt_getArg8_inline();
+        if (mdl != NULL) {
+            mdl->hiddenGroups &= ~(1 << operand0);
         }
         return 0;
     case EVT_OP_PLAYER_BUBBLE:
@@ -1901,41 +1905,41 @@ s32 evt_execInstr(void) {
         g_evtState->idleTimer = 0;
         return 0;
     case EVT_OP_PAD_MASK_SET:
-        a = evt_getArg8_inline();
-        g_padPortMask[a] |= evt_getArg16_inline();
+        operand0 = evt_getArg8_inline();
+        g_padPortMask[operand0] |= evt_getArg16_inline();
         return 0;
     case EVT_OP_PAD_MASK_CLEAR:
-        a = evt_getArg8_inline();
-        g_padPortMask[a] &= ~evt_getArg16_inline();
+        operand0 = evt_getArg8_inline();
+        g_padPortMask[operand0] &= ~evt_getArg16_inline();
         return 0;
     case EVT_OP_SOUND:
-        a = evt_getArg16_inline();
-        g_gameState->gameData->soundHook(a, evt_getArg16_inline(), 0, 0, 0);
+        operand0 = evt_getArg16_inline();
+        g_gameState->gameData->soundHook(operand0, evt_getArg16_inline(), 0, 0, 0);
         return 0;
     case EVT_OP_SOUND_ARG:
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg24_inline();
-        g_gameState->gameData->soundHook(a, b, c, 0, 0);
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg24_inline();
+        g_gameState->gameData->soundHook(operand0, operand1, operand2, 0, 0);
         return 0;
     case EVT_OP_SOUND_ARG_PAN:
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg24_inline();
-        g_gameState->gameData->soundHook(a, b, c, evt_getArg8_inline(), 0);
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg24_inline();
+        g_gameState->gameData->soundHook(operand0, operand1, operand2, evt_getArg8_inline(), 0);
         return 0;
     case EVT_OP_SOUND_ARG_PAN_VOL:
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        c = evt_getArg24_inline();
-        d = evt_getArg8_inline();
-        g_gameState->gameData->soundHook(a, b, c, d, evt_getArg8_inline());
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        operand2 = evt_getArg24_inline();
+        operand3 = evt_getArg8_inline();
+        g_gameState->gameData->soundHook(operand0, operand1, operand2, operand3, evt_getArg8_inline());
         return 0;
     case EVT_OP_SOUND_POS: {
         u8 vol, pan;
-        a = evt_getArg16_inline();
-        b = evt_getArg16_inline();
-        fld_getSoundPanVolume(a, b, evt_getArg16_inline(), &vol, &pan);
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
+        fld_getSoundPanVolume(operand0, operand1, evt_getArg16_inline(), &vol, &pan);
         g_evtSoundVolume = vol;
         g_evtSoundPan = (pan * evt_getArg8_inline()) >> 7;
         if (g_evtSoundPan >= 0x80) {
@@ -1955,27 +1959,27 @@ s32 evt_execInstr(void) {
         return 0;
     }
     case EVT_OP_SPRITE_CMD:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        c = evt_getArg16_inline();
-        d = evt_getArg16_inline();
-        fld_spriteCommand(a, b, c, d, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        operand2 = evt_getArg16_inline();
+        operand3 = evt_getArg16_inline();
+        fld_spriteCommand(operand0, operand1, operand2, operand3, evt_getArg16_inline());
         return 0;
     case EVT_OP_SPRITE_CMD_U8:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        c = evt_getArg8_inline();
-        d = evt_getArg16_inline();
-        fld_spriteCommand(a, b, c, d, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        operand2 = evt_getArg8_inline();
+        operand3 = evt_getArg16_inline();
+        fld_spriteCommand(operand0, operand1, operand2, operand3, evt_getArg16_inline());
         return 0;
     case EVT_OP_MENU:
-        a = evt_getArg8_inline();
-        menu_open(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        menu_open(operand0, evt_getArg8_inline());
         evt_onMenuOpen();
         return 1;
     case EVT_OP_DISC_CHANGE:
-        a = evt_getArg16_inline();
-        fld_requestDiscChange((a >> 14) & 3, a & 0x3FFF);
+        operand0 = evt_getArg16_inline();
+        fld_requestDiscChange((operand0 >> 14) & 3, operand0 & 0x3FFF);
         return 1;
     case EVT_OP_PAD_UNLOCK_MENU:
         g_padPortMask[0] &= ~0x40000;
@@ -1984,25 +1988,25 @@ s32 evt_execInstr(void) {
         g_padPortMask[0] |= 0x40000;
         return 1;
     case EVT_OP_ADD_ITEM:
-        a = evt_getArg16_inline();
-        b = evt_getArg8_inline();
-        if (a < ITEM_ID_KEY_FIRST) {
-            item_add(a, b);
-        } else if (a < ITEM_ID_CARD_FIRST) {
-            keyItem_add(a - ITEM_ID_KEY_FIRST);
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg8_inline();
+        if (operand0 < ITEM_ID_KEY_FIRST) {
+            item_add(operand0, operand1);
+        } else if (operand0 < ITEM_ID_CARD_FIRST) {
+            keyItem_add(operand0 - ITEM_ID_KEY_FIRST);
         } else {
-            while (--b != -1) {
-                card_add(a - ITEM_ID_CARD_FIRST);
+            while (--operand1 != -1) {
+                card_add(operand0 - ITEM_ID_CARD_FIRST);
             }
         }
         return 0;
     case EVT_OP_REMOVE_ITEM:
-        a = evt_getArg16_inline();
-        b = evt_getArg8_inline();
-        if (a < ITEM_ID_KEY_FIRST) {
-            item_remove(a, b);
-        } else if (a < ITEM_ID_CARD_FIRST) {
-            keyItem_remove(a - ITEM_ID_KEY_FIRST);
+        operand0 = evt_getArg16_inline();
+        operand1 = evt_getArg8_inline();
+        if (operand0 < ITEM_ID_KEY_FIRST) {
+            item_remove(operand0, operand1);
+        } else if (operand0 < ITEM_ID_CARD_FIRST) {
+            keyItem_remove(operand0 - ITEM_ID_KEY_FIRST);
         }
         return 0;
     case EVT_OP_ADD_GIL:
@@ -2016,43 +2020,43 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_SET_RECRUITED:
-        a = evt_getArg16_inline();
-        a |= (a >> 4) & 0xE0;
+        operand0 = evt_getArg16_inline();
+        operand0 |= (operand0 >> 4) & 0xE0;
         for (i = 0; i < 9; i++) {
             chr_clearRecruited(i);
         }
         for (i = 0; i < 9; i++) {
-            if (a & 1) {
+            if (operand0 & 1) {
                 chr_setRecruited(i);
             }
-            a >>= 1;
+            operand0 >>= 1;
         }
         return 0;
     case EVT_OP_PARTY_JOIN:
-        a = evt_execInstr_chr(evt_getArg8_inline());
-        b = evt_getArg8_inline();
-        c = evt_getArg8_inline();
-        if ((u32)a < CHR_COUNT) {
-            Character *ch = &g_gameState->gameData->characters[a];
-            d = evt_getArg8_inline();
-            if (d != 0xFF) {
-                ch->classFlags = d;
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
+        operand1 = evt_getArg8_inline();
+        operand2 = evt_getArg8_inline();
+        if ((u32)operand0 < CHR_COUNT) {
+            Character *ch = &g_gameState->gameData->characters[operand0];
+            operand3 = evt_getArg8_inline();
+            if (operand3 != 0xFF) {
+                ch->classFlags = operand3;
             }
-            d = evt_getArg8_inline();
-            if (d != 0xFF) {
-                ch->info.w = (ch->info.w & ~CHR_INFO_ROW) | ((d & 0x1F) << CHR_INFO_ROW_SHIFT);
+            operand3 = evt_getArg8_inline();
+            if (operand3 != 0xFF) {
+                ch->info.w = (ch->info.w & ~CHR_INFO_ROW) | ((operand3 & 0x1F) << CHR_INFO_ROW_SHIFT);
             }
-            chr_join(a, b & 0xFF, c);
+            chr_join(operand0, operand1 & 0xFF, operand2);
         } else {
             evt_getArg8_inline();
             evt_getArg8_inline();
         }
         return 0;
     case EVT_OP_PARTY_REMOVE:
-        a = evt_execInstr_chr(evt_getArg8_inline());
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
         for (i = 0; i < PARTY_SIZE; i++) {
             Character *ch = g_gameState->gameData->party[i];
-            if (ch != NULL && (ch->info.w & CHR_INFO_ID) == a) {
+            if (ch != NULL && (ch->info.w & CHR_INFO_ID) == operand0) {
                 break;
             }
         }
@@ -2063,33 +2067,33 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_PARTY_MENU:
         g_evtPartyRequest.size = evt_getArg8_inline();
-        a = 0;
+        operand0 = 0;
         for (i = 8; i >= 0; i--) {
-            a <<= 1;
-            a |= (g_gameState->gameData->characters[i].info.w >> CHR_INFO_RECRUITED_BIT) & 1;
+            operand0 <<= 1;
+            operand0 |= (g_gameState->gameData->characters[i].info.w >> CHR_INFO_RECRUITED_BIT) & 1;
         }
-        b = evt_getArg16_inline();
+        operand1 = evt_getArg16_inline();
         for (i = 0; i < CHR_COUNT; i++) {
-            g_evtPartyRequest.fixed[i] = b & 1;
-            b >>= 1;
+            g_evtPartyRequest.fixed[i] = operand1 & 1;
+            operand1 >>= 1;
         }
         for (i = 0; i < PARTY_SIZE; i++) {
             Character *ch = g_gameState->gameData->party[i];
             if (ch != NULL) {
-                b = ch->info.w & CHR_INFO_ID;
-                a &= ~(1 << b);
-                g_evtPartyRequest.party[i] = b;
+                operand1 = ch->info.w & CHR_INFO_ID;
+                operand0 &= ~(1 << operand1);
+                g_evtPartyRequest.party[i] = operand1;
             } else {
                 g_evtPartyRequest.party[i] = 0xFF;
             }
         }
-        for (b = 0, i = 0; i < 9 && b < 8 && a != 0; i++, a >>= 1) {
-            if (a & 1) {
-                g_evtPartyRequest.reserve[b++] = i;
+        for (operand1 = 0, i = 0; i < 9 && operand1 < 8 && operand0 != 0; i++, operand0 >>= 1) {
+            if (operand0 & 1) {
+                g_evtPartyRequest.reserve[operand1++] = i;
             }
         }
-        for (; b < 8; b++) {
-            g_evtPartyRequest.reserve[b] = 0xFF;
+        for (; operand1 < 8; operand1++) {
+            g_evtPartyRequest.reserve[operand1] = 0xFF;
         }
         menu_open(MENU_PARTY, (s32)&g_evtPartyRequest);
         return 1;
@@ -2097,43 +2101,43 @@ s32 evt_execInstr(void) {
         evt_execInstr_party();
         return 0;
     case EVT_OP_SET_HP:
-        a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < CHR_COUNT) {
-            Character *ch = &g_gameState->gameData->characters[a];
-            a = evt_getArg16_inline();
-            if (ch->maxHp < a) {
-                a = ch->maxHp;
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
+        if ((u32)operand0 < CHR_COUNT) {
+            Character *ch = &g_gameState->gameData->characters[operand0];
+            operand0 = evt_getArg16_inline();
+            if (ch->maxHp < operand0) {
+                operand0 = ch->maxHp;
             }
-            ch->hp = a;
+            ch->hp = operand0;
         }
         return 0;
     case EVT_OP_SET_MP:
-        a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < CHR_COUNT) {
-            Character *ch = &g_gameState->gameData->characters[a];
-            a = evt_getArg16_inline();
-            if (ch->maxMp < a) {
-                a = ch->maxMp;
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
+        if ((u32)operand0 < CHR_COUNT) {
+            Character *ch = &g_gameState->gameData->characters[operand0];
+            operand0 = evt_getArg16_inline();
+            if (ch->maxMp < operand0) {
+                operand0 = ch->maxMp;
             }
-            ch->mp = a;
+            ch->mp = operand0;
         }
         return 0;
     case EVT_OP_RESET_AP:
-        a = evt_execInstr_chr(evt_getArg8_inline());
-        chr_resetAp(a, evt_getArg8_inline());
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
+        chr_resetAp(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_LEARN_ABILITY:
-        a = evt_execInstr_chr(evt_getArg8_inline());
-        chr_learnAbility(a, evt_getArg8_inline());
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
+        chr_learnAbility(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_CURE_STATUS:
-        a = evt_execInstr_chr(evt_getArg8_inline());
-        chr_cureStatusBit(&g_gameState->gameData->characters[a], evt_getArg8_inline() & 0xFF);
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
+        chr_cureStatusBit(&g_gameState->gameData->characters[operand0], evt_getArg8_inline() & 0xFF);
         return 0;
     case EVT_OP_SET_ROW:
-        a = evt_execInstr_chr(evt_getArg8_inline());
-        if ((u32)a < CHR_COUNT) {
-            g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~CHR_INFO_BATTLE_ROW) | ((evt_getArg8_inline() & 1) << CHR_INFO_BATTLE_ROW_BIT);
+        operand0 = evt_execInstr_chr(evt_getArg8_inline());
+        if ((u32)operand0 < CHR_COUNT) {
+            g_gameState->gameData->characters[operand0].info.w = (g_gameState->gameData->characters[operand0].info.w & ~CHR_INFO_BATTLE_ROW) | ((evt_getArg8_inline() & 1) << CHR_INFO_BATTLE_ROW_BIT);
         }
         return 0;
     case EVT_OP_ADD_FROG:
@@ -2165,14 +2169,14 @@ s32 evt_execInstr(void) {
         timer_setRunning(evt_getArg8_inline());
         return 0;
     case EVT_OP_FADE:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        fade_clearEase(a & 1);
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        fade_clearEase(operand0 & 1);
         fade_setAngle(((0x80 - evt_getArg8_inline()) << 4) & 0xFFF0);
-        c = evt_getArg8_inline();
-        d = evt_getArg8_inline();
+        operand2 = evt_getArg8_inline();
+        operand3 = evt_getArg8_inline();
         fade_setOtz(1);
-        game_startFade(((a >> 2) & 1) + 1, (a >> 1) & 1, b, c | (d << 8) | (evt_getArg8_inline() << 16));
+        game_startFade(((operand0 >> 2) & 1) + 1, (operand0 >> 1) & 1, operand1, operand2 | (operand3 << 8) | (evt_getArg8_inline() << 16));
         return 0;
     case EVT_OP_OBJ_SCREEN_POS:
         obj = evt_getObjectArg();
@@ -2184,31 +2188,31 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_MOVIE:
-        a = evt_getArg8_inline();
-        b = evt_getArg16_inline();
-        fld_movieCommand(a, b, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg16_inline();
+        fld_movieCommand(operand0, operand1, evt_getArg8_inline());
         return 0;
     case EVT_OP_WM_CAMERA_EYE_ACTOR:
         if (g_evtMode == EVT_MODE_WORLD) {
-            VECTOR *v = wm_getCameraEye();
-            actor->pos.vx = v->vx;
-            actor->pos.vy = v->vy;
-            actor->pos.vz = v->vz;
+            VECTOR *camEye = wm_getCameraEye();
+            actor->pos.vx = camEye->vx;
+            actor->pos.vy = camEye->vy;
+            actor->pos.vz = camEye->vz;
             actor->moveFlags |= EVT_MOVE_WM_CAMERA_EYE;
         }
         return 0;
     case EVT_OP_WM_CAMERA_TARGET_ACTOR:
         if (g_evtMode == EVT_MODE_WORLD) {
-            VECTOR *v = wm_getCameraTarget();
-            actor->pos.vx = v->vx;
-            actor->pos.vy = v->vy;
-            actor->pos.vz = v->vz;
+            VECTOR *camTarget = wm_getCameraTarget();
+            actor->pos.vx = camTarget->vx;
+            actor->pos.vy = camTarget->vy;
+            actor->pos.vz = camTarget->vz;
             actor->moveFlags |= EVT_MOVE_WM_CAMERA_TARGET;
         }
         return 0;
     case EVT_OP_WM_SET_PARAM:
-        a = evt_getArg8_inline();
-        w_frameSetParameter(a, evt_getArg16_inline());
+        operand0 = evt_getArg8_inline();
+        w_frameSetParameter(operand0, evt_getArg16_inline());
         return 0;
     case EVT_OP_CLEAR_GLOBALS:
         evt_clearGlobalVars();
@@ -2220,14 +2224,14 @@ s32 evt_execInstr(void) {
         vib_setPlaying(evt_getArg8_inline());
         return 0;
     case EVT_OP_VIB_TRACK:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        vib_selectTrack(a, b, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        vib_selectTrack(operand0, operand1, evt_getArg8_inline());
         return 0;
     case EVT_OP_VIB_TRACK_ENABLE:
-        a = evt_getArg8_inline();
-        b = evt_getArg8_inline();
-        vib_setTrackEnabled(a, b, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        operand1 = evt_getArg8_inline();
+        vib_setTrackEnabled(operand0, operand1, evt_getArg8_inline());
         return 0;
     case EVT_OP_VIB_RATE:
         vib_setRate(evt_getArg16_inline());
@@ -2236,12 +2240,12 @@ s32 evt_execInstr(void) {
         vib_setLoopMode(evt_getArg8_inline());
         return 0;
     case EVT_OP_VIB_RANGE:
-        a = evt_getArg8_inline();
-        vib_setRange(a, evt_getArg8_inline());
+        operand0 = evt_getArg8_inline();
+        vib_setRange(operand0, evt_getArg8_inline());
         return 0;
     case EVT_OP_PRELOAD:
-        a = evt_getArg8_inline();
-        ((s32 (*)(s32, s32))g_gameState->gameData->preloadRequest)(a & 0xFF, evt_getArg16_inline() & 0xFFFF);
+        operand0 = evt_getArg8_inline();
+        ((s32 (*)(s32, s32))g_gameState->gameData->preloadRequest)(operand0 & 0xFF, evt_getArg16_inline() & 0xFFFF);
         return 0;
     case EVT_OP_EXT:
         /* padding between the two jump tables in the original rodata */
@@ -2250,79 +2254,79 @@ s32 evt_execInstr(void) {
         g_evtArgFlags = *g_evtCurObj->ip++;
         switch (op) {
         case EVT_OP_BGI_FLOOR_MOVE_START:
-            a = evt_getArg8_inline();
-            bgi_startFloorMove(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_startFloorMove(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_FLOOR_MOVE_STOP:
-            a = evt_getArg8_inline();
-            bgi_stopFloorMove(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_stopFloorMove(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_FLOOR_MOVE_PLAYING:
-            a = evt_getArg8_inline();
-            bgi_setFloorMovePlaying(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setFloorMovePlaying(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_FLOOR_MOVE_MODE:
-            a = evt_getArg8_inline();
-            bgi_setFloorMoveMode(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setFloorMoveMode(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_FLOOR_MOVE_FLOOR:
-            a = evt_getArg8_inline();
-            bgi_setFloorMoveFloor(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setFloorMoveFloor(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_FLOOR_MOVE_SPEED:
-            a = evt_getArg8_inline();
-            bgi_setFloorMoveSpeed(a, evt_getArg16_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setFloorMoveSpeed(operand0, evt_getArg16_inline());
             return 0;
         case EVT_OP_BGI_FLOOR_MOVE_CURVE:
-            a = evt_getArg8_inline();
-            bgi_setFloorMoveCurve(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setFloorMoveCurve(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_FLOOR_MOVE_RANGE:
-            a = evt_getArg8_inline();
-            b = evt_getArg16_inline();
-            bgi_setFloorMoveRange(a, b, evt_getArg16_inline());
+            operand0 = evt_getArg8_inline();
+            operand1 = evt_getArg16_inline();
+            bgi_setFloorMoveRange(operand0, operand1, evt_getArg16_inline());
             return 0;
         case EVT_OP_BGI_FLOOR_MOVE_AXIS:
-            a = evt_getArg8_inline();
-            bgi_setFloorMoveAxis(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setFloorMoveAxis(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_ANIM_FRAME:
-            a = evt_getArg8_inline();
-            bgi_setAnimFrame(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setAnimFrame(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_ANIM_SHOW_FRAME:
-            a = evt_getArg8_inline();
-            bgi_showAnimFrame(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_showAnimFrame(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_ANIM_PLAYING:
-            a = evt_getArg8_inline();
-            bgi_setAnimPlaying(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setAnimPlaying(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_ANIM_MODE:
-            a = evt_getArg8_inline();
-            bgi_setAnimMode(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setAnimMode(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_ANIM_RATE:
-            a = evt_getArg8_inline();
-            bgi_setAnimRate(a, evt_getArg16_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setAnimRate(operand0, evt_getArg16_inline());
             return 0;
         case EVT_OP_BGI_ANIM_FRAME_VALUES:
-            a = evt_getArg8_inline();
-            bgi_setAnimFrameValues(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_setAnimFrameValues(operand0, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_ANIM_FRAME_VALUE:
-            a = evt_getArg8_inline();
-            b = evt_getArg8_inline();
-            bgi_setAnimFrameValue(a, b, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            operand1 = evt_getArg8_inline();
+            bgi_setAnimFrameValue(operand0, operand1, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_ANIM_RANGE:
-            a = evt_getArg8_inline();
-            b = evt_getArg8_inline();
-            bgi_playAnimRange(a, b, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            operand1 = evt_getArg8_inline();
+            bgi_playAnimRange(operand0, operand1, evt_getArg8_inline());
             return 0;
         case EVT_OP_BGI_ANIM_RESET:
-            a = evt_getArg8_inline();
-            bgi_resetAnim(a, evt_getArg8_inline());
+            operand0 = evt_getArg8_inline();
+            bgi_resetAnim(operand0, evt_getArg8_inline());
             return 0;
         }
         return 0;
@@ -2340,7 +2344,7 @@ s32 evt_execInstr(void) {
 }
 
 void evt_movePlayer(EvtObject *obj) {
-    SVECTOR v;
+    SVECTOR step;
     u8 dz[4];
     s32 dist;
     s32 speed;
@@ -2349,16 +2353,16 @@ void evt_movePlayer(EvtObject *obj) {
     s32 pad;
     s32 x, y;
     s32 run;
-    s32 cur, d;
-    s32 c, k;
-    EvtObject *o;
-    s32 m;
+    s32 cur, diff;
+    s32 hitAngle, k;
+    EvtObject *hit;
+    s32 magSq;
 
-    o = NULL;
+    hit = NULL;
     speed = 30;
     dir = 0x8000;
     analog = 0;
-    memset(&v, 0, 8);
+    memset(&step, 0, 8);
     pad = msg_getPadHeld();
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
         x = g_padAnalog[0].b[2];
@@ -2380,11 +2384,11 @@ void evt_movePlayer(EvtObject *obj) {
             y = 0x80 - y;
             dir = math_atan2(x, y);
             x *= x;
-            m = y * y;
-            if (m < x) {
-                m = x;
+            magSq = y * y;
+            if (magSq < x) {
+                magSq = x;
             }
-            speed = (m * 16 - m) * 4 >> 14;
+            speed = (magSq * 16 - magSq) * 4 >> 14;
         }
     }
     if (!analog) {
@@ -2422,10 +2426,10 @@ void evt_movePlayer(EvtObject *obj) {
         }
         dir &= 0xFFF;
         cur = obj->pos.rotY & 0xFFF;
-        d = dir - cur;
-        if (d < -0x7FF) {
+        diff = dir - cur;
+        if (diff < -0x7FF) {
             cur -= 0x1000;
-        } else if (d >= 0x800) {
+        } else if (diff >= 0x800) {
             cur += 0x1000;
         }
         obj->pos.rotY = ((cur + dir) >> 1) & 0xFFF;
@@ -2438,42 +2442,42 @@ void evt_movePlayer(EvtObject *obj) {
             g_evtStepCount += 1;
         }
         obj->speed = speed;
-        v.vz = -speed;
-        math_rotateSVector(&v, 0, dir);
-        obj->pos.vx += v.vx;
-        obj->pos.vz += v.vz;
-        o = evt_findNearestObject(obj, 0, &dist);
-        g_evtPushable = ((o->flags >> 4) ^ 1) & 1;
+        step.vz = -speed;
+        math_rotateSVector(&step, 0, dir);
+        obj->pos.vx += step.vx;
+        obj->pos.vz += step.vz;
+        hit = evt_findNearestObject(obj, 0, &dist);
+        g_evtPushable = ((hit->flags >> 4) ^ 1) & 1;
         if (g_evtPushable == 0) {
             g_evtPushFrames = 0;
         }
-        if (o != NULL && dist <= 0 && g_evtPushFrames >= 0) {
-            obj->collidedObject = o;
+        if (hit != NULL && dist <= 0 && g_evtPushFrames >= 0) {
+            obj->collidedObject = hit;
             obj->collisionDepth = dist;
-            c = evt_angleToObject(obj, o, dir);
-            if ((u32)(c + 0x400) <= 0x800) {
-                obj->pos.vx -= v.vx;
-                obj->pos.vz -= v.vz;
-                k = math_sin(c);
-                v.vx = (v.vx * k) >> 13;
-                v.vz = (v.vz * k) >> 13;
-                math_rotateSVector(&v, 0, 0x400);
-                obj->pos.vx += v.vx;
-                obj->pos.vz += v.vz;
+            hitAngle = evt_angleToObject(obj, hit, dir);
+            if ((u32)(hitAngle + 0x400) <= 0x800) {
+                obj->pos.vx -= step.vx;
+                obj->pos.vz -= step.vz;
+                k = math_sin(hitAngle);
+                step.vx = (step.vx * k) >> 13;
+                step.vz = (step.vz * k) >> 13;
+                math_rotateSVector(&step, 0, 0x400);
+                obj->pos.vx += step.vx;
+                obj->pos.vz += step.vz;
                 if (evt_findNearestObject(obj, 0, &dist) != NULL && dist <= 0) {
-                    obj->pos.vx -= v.vx;
-                    obj->pos.vz -= v.vz;
+                    obj->pos.vx -= step.vx;
+                    obj->pos.vz -= step.vz;
                 }
                 g_evtPlayerBlocked = 2;
             }
         }
     } else {
         /* No code: flow deletes the dead store and jump2 the empty test, but the test keeps
-           o = NULL live up to here (the s3 zero that analog and memset's argument copy), and
-           its loop-weighted references put o ahead of obj in global-alloc order. */
+           hit = NULL live up to here (the s3 zero that analog and memset's argument copy), and
+           its loop-weighted references put hit ahead of obj in global-alloc order. */
         do {
-            if (o != NULL && o != obj) {
-                o = NULL;
+            if (hit != NULL && hit != obj) {
+                hit = NULL;
             }
         } while (0);
     }
@@ -2510,155 +2514,156 @@ s32 evt_callTurnScript(EvtObject *obj, s32 angle) {
     return 1;
 }
 
-/* point 500 units ahead of o at angle a, at head height */
-static inline void evt_updateLookAt_ahead(EvtObject *o, s32 angle, VECTOR *out) {
-    SVECTOR v;
-    MATRIX m;
+/* point 500 units ahead of obj at angle a, at head height */
+static inline void evt_updateLookAt_ahead(EvtObject *obj, s32 angle, VECTOR *out) {
+    SVECTOR ofs;
+    MATRIX mtx;
 
-    m.m[0][2] = math_sin(angle);
-    m.m[1][1] = ONE;
-    m.m[2][2] = math_cos(angle);
-    m.m[0][0] = m.m[0][1] = m.m[1][0] = m.m[1][2] = m.m[2][0] = m.m[2][1] = 0;
-    m.t[0] = o->pos.vx;
-    m.t[1] = o->pos.vy;
-    m.t[2] = o->pos.vz;
-    SetRotMatrix(&m);
-    SetTransMatrix(&m);
-    v.vx = 0;
-    v.vy = (o->height * (s8)o->scale) >> 6;
-    v.vz = -500;
-    gte_ldv0(&v);
+    mtx.m[0][2] = math_sin(angle);
+    mtx.m[1][1] = ONE;
+    mtx.m[2][2] = math_cos(angle);
+    mtx.m[0][0] = mtx.m[0][1] = mtx.m[1][0] = mtx.m[1][2] = mtx.m[2][0] = mtx.m[2][1] = 0;
+    mtx.t[0] = obj->pos.vx;
+    mtx.t[1] = obj->pos.vy;
+    mtx.t[2] = obj->pos.vz;
+    SetRotMatrix(&mtx);
+    SetTransMatrix(&mtx);
+    ofs.vx = 0;
+    ofs.vy = (obj->height * (s8)obj->scale) >> 6;
+    ofs.vz = -500;
+    gte_ldv0(&ofs);
     gte_rtv0tr();
     gte_stlvnl(out);
 }
 
-void evt_relaxLookAt(EvtObject *o, Unk8004AFF0 *m) {
+void evt_relaxLookAt(EvtObject *obj, Unk8004AFF0 *mdl) {
     VECTOR out;
-    s32 d;
+    s32 dist;
 
-    evt_updateLookAt_ahead(o, o->pos.rotY, &out);
-    d = math_length3(out.vx - o->lookAtX, out.vy - o->lookAtY, out.vz - o->lookAtZ);
-    if (d < 100) {
-        d = 100;
-        o->moveFlags &= ~(EVT_MOVE_LOOK_RELEASED | EVT_MOVE_LOOKED_AT_SPEAKER | EVT_MOVE_LOOKING);
+    evt_updateLookAt_ahead(obj, obj->pos.rotY, &out);
+    dist = math_length3(out.vx - obj->lookAtX, out.vy - obj->lookAtY, out.vz - obj->lookAtZ);
+    if (dist < 100) {
+        dist = 100;
+        obj->moveFlags &= ~(EVT_MOVE_LOOK_RELEASED | EVT_MOVE_LOOKED_AT_SPEAKER | EVT_MOVE_LOOKING);
     }
-    o->lookAtX += (out.vx - o->lookAtX) * 100 / d;
-    o->lookAtY += (out.vy - o->lookAtY) * 100 / d;
-    o->lookAtZ += (out.vz - o->lookAtZ) * 100 / d;
-    m->flags |= MDL_LOOK_AT;
-    m->lookAtX = o->lookAtX;
-    m->lookAtY = o->lookAtY;
-    m->lookAtZ = o->lookAtZ;
-}
-
-/* move the look-at point towards t */
-static inline void evt_updateLookAt_approach(EvtObject *o, Unk8004AFF0 *mdl, VECTOR *t) {
-    s32 d;
-
-    d = math_length3(t->vx - o->lookAtX, t->vy - o->lookAtY, t->vz - o->lookAtZ);
-    if (d < 100) {
-        d = 100;
-    }
-    o->lookAtX += (t->vx - o->lookAtX) * 100 / d;
-    o->lookAtY += (t->vy - o->lookAtY) * 100 / d;
-    o->lookAtZ += (t->vz - o->lookAtZ) * 100 / d;
+    obj->lookAtX += (out.vx - obj->lookAtX) * 100 / dist;
+    obj->lookAtY += (out.vy - obj->lookAtY) * 100 / dist;
+    obj->lookAtZ += (out.vz - obj->lookAtZ) * 100 / dist;
     mdl->flags |= MDL_LOOK_AT;
-    mdl->lookAtX = o->lookAtX;
-    mdl->lookAtY = o->lookAtY;
-    mdl->lookAtZ = o->lookAtZ;
+    mdl->lookAtX = obj->lookAtX;
+    mdl->lookAtY = obj->lookAtY;
+    mdl->lookAtZ = obj->lookAtZ;
 }
 
-/* is the look-at point still in front of o (within ~80 degrees)? */
-static inline s32 evt_updateLookAt_infront(EvtObject *o) {
-    s32 ok = 1;
-    s32 d;
+/* move the look-at point towards target */
+static inline void evt_updateLookAt_approach(EvtObject *obj, Unk8004AFF0 *mdl, VECTOR *target) {
+    s32 dist;
 
-    if (!(o->moveFlags & EVT_MOVE_LOOK_RELEASED)) {
-        d = (math_atan2(o->lookAtX - o->pos.vx, o->lookAtZ - o->pos.vz) - o->pos.rotY) & 0xFFF;
-        if (d > 0x800) {
-            d -= 0x1000;
+    dist = math_length3(target->vx - obj->lookAtX, target->vy - obj->lookAtY, target->vz - obj->lookAtZ);
+    if (dist < 100) {
+        dist = 100;
+    }
+    obj->lookAtX += (target->vx - obj->lookAtX) * 100 / dist;
+    obj->lookAtY += (target->vy - obj->lookAtY) * 100 / dist;
+    obj->lookAtZ += (target->vz - obj->lookAtZ) * 100 / dist;
+    mdl->flags |= MDL_LOOK_AT;
+    mdl->lookAtX = obj->lookAtX;
+    mdl->lookAtY = obj->lookAtY;
+    mdl->lookAtZ = obj->lookAtZ;
+}
+
+/* is the look-at point still in front of obj (within ~80 degrees)? */
+static inline s32 evt_updateLookAt_infront(EvtObject *obj) {
+    s32 ok = 1;
+    s32 diff;
+
+    if (!(obj->moveFlags & EVT_MOVE_LOOK_RELEASED)) {
+        diff = (math_atan2(obj->lookAtX - obj->pos.vx, obj->lookAtZ - obj->pos.vz) - obj->pos.rotY) & 0xFFF;
+        if (diff > 0x800) {
+            diff -= 0x1000;
         }
-        ok = (u32)(d + 0x37F) < 0x6FF;
+        ok = (u32)(diff + 0x37F) < 0x6FF;
         if (!ok) {
-            o->moveFlags &= ~EVT_MOVE_LOOKING;
+            obj->moveFlags &= ~EVT_MOVE_LOOKING;
         }
     }
     return ok;
 }
 
-static inline s32 evt_updateLookAt_infront2(EvtObject *o, s32 *pa) {
+static inline s32 evt_updateLookAt_infront2(EvtObject *obj, s32 *pa) {
     s32 ok = 1;
-    s32 a;
-    s32 d;
+    s32 angle;
+    s32 diff;
 
-    if (!(o->moveFlags & EVT_MOVE_LOOK_RELEASED)) {
-        a = math_atan2(o->lookAtX - o->pos.vx, o->lookAtZ - o->pos.vz);
-        d = (a - o->pos.rotY) & 0xFFF;
-        if (d > 0x800) {
-            d -= 0x1000;
+    if (!(obj->moveFlags & EVT_MOVE_LOOK_RELEASED)) {
+        angle = math_atan2(obj->lookAtX - obj->pos.vx, obj->lookAtZ - obj->pos.vz);
+        diff = (angle - obj->pos.rotY) & 0xFFF;
+        if (diff > 0x800) {
+            diff -= 0x1000;
         }
-        ok = (u32)(d + 0x37F) < 0x6FF;
+        ok = (u32)(diff + 0x37F) < 0x6FF;
         if (!ok) {
-            o->moveFlags &= ~EVT_MOVE_LOOKING;
+            obj->moveFlags &= ~EVT_MOVE_LOOKING;
         }
-        *pa = a;
+        *pa = angle;
     }
     return ok;
 }
 
-void evt_updateLookAt(EvtObject *o) {
-    VECTOR t;
+void evt_updateLookAt(EvtObject *obj) {
+    VECTOR point;
     s32 ang;
     s32 save;
     s32 x, y, z;
     Unk8004AFF0 *mdl;
     EvtObject *tgt;
     EvtObject *best;
-    EvtObject *q;
-    EvtListNode *n;
+    EvtObject *other;
+    EvtListNode *node;
     u8 lookMask;
     s32 bestd;
-    s32 d;
-    s32 a;
+    s32 score;
+    s32 relAngle;
+    s32 angle;
     s32 ok;
 
     save = 0;
-    mdl = (Unk8004AFF0 *)((ModelSlot *)game_getModel(o->modelSlot))->model;
+    mdl = (Unk8004AFF0 *)((ModelSlot *)game_getModel(obj->modelSlot))->model;
     tgt = NULL;
-    if ((o->moveFlags & EVT_MOVE_LOOK_AT_SPEAKER) && g_evtLookTarget != NULL && g_evtLookTarget != o &&
-        math_dist2(o->pos.vx - g_evtLookTarget->pos.vx, o->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {
+    if ((obj->moveFlags & EVT_MOVE_LOOK_AT_SPEAKER) && g_evtLookTarget != NULL && g_evtLookTarget != obj &&
+        math_dist2(obj->pos.vx - g_evtLookTarget->pos.vx, obj->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {
         tgt = g_evtLookTarget;
-        o->moveFlags |= EVT_MOVE_LOOKED_AT_SPEAKER;
+        obj->moveFlags |= EVT_MOVE_LOOKED_AT_SPEAKER;
     }
-    if (tgt != NULL || ((o->moveFlags & EVT_MOVE_LOOK_AT_ACTORS) && !(o->animFlags & EVT_ANIM_IDLE))) {
-        if (o->flags & EVT_OBJ_TURNING) {
-            save = o->pos.rotY;
-            o->pos.rotY = o->turnStartDir;
+    if (tgt != NULL || ((obj->moveFlags & EVT_MOVE_LOOK_AT_ACTORS) && !(obj->animFlags & EVT_ANIM_IDLE))) {
+        if (obj->flags & EVT_OBJ_TURNING) {
+            save = obj->pos.rotY;
+            obj->pos.rotY = obj->turnStartDir;
         }
         if (tgt == NULL) {
             best = NULL;
-            x = o->pos.vx;
-            y = o->pos.vy;
-            z = o->pos.vz;
-            lookMask = o->lookParam1;
+            x = obj->pos.vx;
+            y = obj->pos.vy;
+            z = obj->pos.vz;
+            lookMask = obj->lookParam1;
             bestd = 0;
-            for (n = g_evtState->objects; n != NULL; n = n->next) {
-                q = n->obj;
-                if (q != o && q->kind == EVT_KIND_ACTOR && (u32)(q->pos.vy - y + 399) < 799 && (q->moveFlags & EVT_MOVE_LOOK_TARGET) &&
-                    (lookMask & q->lookParam0)) {
-                    d = math_distSq2(q->pos.vx - x, q->pos.vz - z, 0);
-                    if (d >= 1000) {
-                        a = evt_angleToObject(o, q, o->pos.rotY);
-                        d -= 4000000;
-                        if (a < 0) {
-                            a = -a;
+            for (node = g_evtState->objects; node != NULL; node = node->next) {
+                other = node->obj;
+                if (other != obj && other->kind == EVT_KIND_ACTOR && (u32)(other->pos.vy - y + 399) < 799 && (other->moveFlags & EVT_MOVE_LOOK_TARGET) &&
+                    (lookMask & other->lookParam0)) {
+                    score = math_distSq2(other->pos.vx - x, other->pos.vz - z, 0);
+                    if (score >= 1000) {
+                        angle = evt_angleToObject(obj, other, obj->pos.rotY);
+                        score -= 4000000;
+                        if (angle < 0) {
+                            angle = -angle;
                         }
-                        a -= 640;
-                        if (a < 0) {
-                            d += a;
-                            if (d < bestd) {
-                                bestd = d;
-                                best = q;
+                        angle -= 640;
+                        if (angle < 0) {
+                            score += angle;
+                            if (score < bestd) {
+                                bestd = score;
+                                best = other;
                             }
                         }
                     }
@@ -2667,71 +2672,71 @@ void evt_updateLookAt(EvtObject *o) {
             tgt = best;
         }
         if (tgt != NULL) {
-            if (!(o->moveFlags & EVT_MOVE_LOOKING)) {
-                if (!(o->flags & EVT_OBJ_TURNING)) {
-                    o->moveFlags |= EVT_MOVE_LOOKING;
-                    evt_updateLookAt_ahead(o, o->pos.rotY, &t);
-                    o->lookAtX = t.vx;
-                    o->lookAtY = t.vy;
-                    o->lookAtZ = t.vz;
+            if (!(obj->moveFlags & EVT_MOVE_LOOKING)) {
+                if (!(obj->flags & EVT_OBJ_TURNING)) {
+                    obj->moveFlags |= EVT_MOVE_LOOKING;
+                    evt_updateLookAt_ahead(obj, obj->pos.rotY, &point);
+                    obj->lookAtX = point.vx;
+                    obj->lookAtY = point.vy;
+                    obj->lookAtZ = point.vz;
                 }
             }
-            if ((o->moveFlags & EVT_MOVE_LOOKING) && evt_updateLookAt_infront(o)) {
+            if ((obj->moveFlags & EVT_MOVE_LOOKING) && evt_updateLookAt_infront(obj)) {
                 {
-                    t.vx = tgt->pos.vx;
-                    t.vy = tgt->pos.vy;
-                    t.vz = tgt->pos.vz;
-                    ang = math_atan2(t.vx - o->pos.vx, t.vz - o->pos.vz);
-                    d = (ang - o->pos.rotY) & 0xFFF;
-                    if (d > 0x800) {
-                        d -= 0x1000;
+                    point.vx = tgt->pos.vx;
+                    point.vy = tgt->pos.vy;
+                    point.vz = tgt->pos.vz;
+                    ang = math_atan2(point.vx - obj->pos.vx, point.vz - obj->pos.vz);
+                    relAngle = (ang - obj->pos.rotY) & 0xFFF;
+                    if (relAngle > 0x800) {
+                        relAngle -= 0x1000;
                     }
-                    if ((u32)(d + 0x27F) < 0x4FF) {
-                        t.vy = (((o->pos.vy << 6) + o->height * (s8)o->scale) * 3 + (t.vy << 6) +
+                    if ((u32)(relAngle + 0x27F) < 0x4FF) {
+                        point.vy = (((obj->pos.vy << 6) + obj->height * (s8)obj->scale) * 3 + (point.vy << 6) +
                                 tgt->height * (s8)tgt->scale) >> 8;
-                        evt_updateLookAt_approach(o, mdl, &t);
-                    } else if (evt_callTurnScript(o, ang)) {
-                        a = d > 0x280 ? 0x280 : -0x280;
-                        evt_updateLookAt_ahead(o, a + o->pos.rotY, &t);
-                        evt_updateLookAt_approach(o, mdl, &t);
+                        evt_updateLookAt_approach(obj, mdl, &point);
+                    } else if (evt_callTurnScript(obj, ang)) {
+                        angle = relAngle > 0x280 ? 0x280 : -0x280;
+                        evt_updateLookAt_ahead(obj, angle + obj->pos.rotY, &point);
+                        evt_updateLookAt_approach(obj, mdl, &point);
                     }
                 }
             }
-        } else if ((o->moveFlags & EVT_MOVE_LOOKING) && evt_updateLookAt_infront2(o, &ang) && evt_callTurnScript(o, ang)) {
+        } else if ((obj->moveFlags & EVT_MOVE_LOOKING) && evt_updateLookAt_infront2(obj, &ang) && evt_callTurnScript(obj, ang)) {
             {
-                evt_relaxLookAt(o, mdl);
+                evt_relaxLookAt(obj, mdl);
             }
         }
-        if (o->flags & EVT_OBJ_TURNING) {
-            o->pos.rotY = save;
+        if (obj->flags & EVT_OBJ_TURNING) {
+            obj->pos.rotY = save;
         }
-    } else if ((o->moveFlags & EVT_MOVE_LOOKING) && evt_updateLookAt_infront(o)) {
-        evt_relaxLookAt(o, mdl);
+    } else if ((obj->moveFlags & EVT_MOVE_LOOKING) && evt_updateLookAt_infront(obj)) {
+        evt_relaxLookAt(obj, mdl);
     }
-    if (!(o->moveFlags & EVT_MOVE_LOOKING)) {
+    if (!(obj->moveFlags & EVT_MOVE_LOOKING)) {
         mdl->flags &= ~MDL_LOOK_AT;
     }
 }
 
 void evt_updateIdleTimer(void) {
-    EvtState *e = g_evtState;
-    EvtObject *p;
-    EvtObject *o;
+    EvtState *evt = g_evtState;
+    EvtObject *player;
+    EvtObject *obj;
     EvtState *e2;
 
-    if (e == NULL || e->controlEnabled == 0) {
+    if (evt == NULL || evt->controlEnabled == 0) {
         return;
     }
-    e->idleTimer -= e->idleTimer > 0;
-    if (e->idleTimer != 0) {
+    evt->idleTimer -= evt->idleTimer > 0;
+    if (evt->idleTimer != 0) {
         return;
     }
-    o = evt_getObject_inline(e->playerUid);
-    if (o == NULL || o->kind != EVT_KIND_ACTOR) {
+    obj = evt_getObject_inline(evt->playerUid);
+    if (obj == NULL || obj->kind != EVT_KIND_ACTOR) {
         return;
     }
-    p = o;
-    if (p->animFrame != p->animFrames - 1) {
+    player = obj;
+    if (player->animFrame != player->animFrames - 1) {
         return;
     }
     e2 = g_evtState;
@@ -2741,319 +2746,319 @@ void evt_updateIdleTimer(void) {
         }
         e2->idleTimer = (*g_randPtr++ + 0xC8) * 2;
     }
-    if (p->idleAnim != 0 && !(p->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD))) {
-        evt_updateIdleTimer_idle(p);
-        if (p->uid == g_evtState->playerUid) {
+    if (player->idleAnim != 0 && !(player->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD))) {
+        evt_updateIdleTimer_idle(player);
+        if (player->uid == g_evtState->playerUid) {
             g_evtPlayerAnimCount++;
         }
-        p->animFlags |= EVT_ANIM_IDLE;
+        player->animFlags |= EVT_ANIM_IDLE;
     }
 }
 
 /* Nearest kind-3 object whose script has entry `key` and that evt_isInRegion
- * accepts for p's position. */
-static inline EvtObject *evt_checkPlayerAction_find(EvtObject *p, s32 key) {
+ * accepts for player's position. */
+static inline EvtObject *evt_checkPlayerAction_find(EvtObject *player, s32 key) {
     EvtObject *found = NULL;
-    s32 x = p->pos.vx;
-    EvtListNode *n = g_evtState->objects;
-    s32 z = p->pos.vz;
-    EvtObject *o;
+    s32 x = player->pos.vx;
+    EvtListNode *node = g_evtState->objects;
+    s32 z = player->pos.vz;
+    EvtObject *obj;
 
-    for (; n != NULL; n = n->next) {
-        o = n->obj;
-        if (o->kind == EVT_KIND_REGION && evt_callObjectFunc_find(o->scriptIdx, key) != NULL && evt_isInRegion(o, x, z)) {
-            found = o;
+    for (; node != NULL; node = node->next) {
+        obj = node->obj;
+        if (obj->kind == EVT_KIND_REGION && evt_callObjectFunc_find(obj->scriptIdx, key) != NULL && evt_isInRegion(obj, x, z)) {
+            found = obj;
             break;
         }
     }
     return found;
 }
 
-void evt_checkPlayerAction(EvtObject *p) {
+void evt_checkPlayerAction(EvtObject *player) {
     s32 btn;
-    s32 t;
-    EvtObject *o;
+    s32 pressed;
+    EvtObject *target;
 
-    t = msg_getPadPressed();
-    btn = t & (g_evtMode == EVT_MODE_FIELD ? (BTN_CROSS | BTN_SQUARE) : BTN_CROSS);
-    if (btn && (o = evt_findNearestObject(p, 4, NULL)) != NULL) {
-        g_evtTalkAngle = evt_angleToObject(p, o, p->pos.rotY);
+    pressed = msg_getPadPressed();
+    btn = pressed & (g_evtMode == EVT_MODE_FIELD ? (BTN_CROSS | BTN_SQUARE) : BTN_CROSS);
+    if (btn && (target = evt_findNearestObject(player, 4, NULL)) != NULL) {
+        g_evtTalkAngle = evt_angleToObject(player, target, player->pos.rotY);
         if ((u32)(g_evtTalkAngle + 0x3FF) < 0x7FF) {
-            p->talkTarget = o->uid;
-            if (btn == BTN_SQUARE && evt_callObjectFunc(o, 1, EVT_FUNC_SQUARE, 0)) {
+            player->talkTarget = target->uid;
+            if (btn == BTN_SQUARE && evt_callObjectFunc(target, 1, EVT_FUNC_SQUARE, 0)) {
                 return;
             }
-            if (evt_callObjectFunc(o, 1, EVT_FUNC_TALK, 0)) {
+            if (evt_callObjectFunc(target, 1, EVT_FUNC_TALK, 0)) {
                 return;
             }
         }
-        o = NULL;
+        target = NULL;
     } else {
-        o = evt_findNearestObject(p, 2, NULL);
+        target = evt_findNearestObject(player, 2, NULL);
     }
-    if (o != NULL) {
-        evt_callObjectFunc(o, 1, EVT_FUNC_RANGE, 0);
+    if (target != NULL) {
+        evt_callObjectFunc(target, 1, EVT_FUNC_RANGE, 0);
     }
     if (btn) {
-        o = evt_checkPlayerAction_find(p, EVT_FUNC_TALK);
-        if (o != NULL) {
-            if (btn == BTN_SQUARE && evt_callObjectFunc(o, 1, EVT_FUNC_SQUARE, 0)) {
+        target = evt_checkPlayerAction_find(player, EVT_FUNC_TALK);
+        if (target != NULL) {
+            if (btn == BTN_SQUARE && evt_callObjectFunc(target, 1, EVT_FUNC_SQUARE, 0)) {
                 return;
             }
-            evt_callObjectFunc(o, 1, EVT_FUNC_TALK, 0);
-            o = NULL;
+            evt_callObjectFunc(target, 1, EVT_FUNC_TALK, 0);
+            target = NULL;
         } else {
-            o = evt_checkPlayerAction_find(p, EVT_FUNC_RANGE);
+            target = evt_checkPlayerAction_find(player, EVT_FUNC_RANGE);
         }
     } else {
-        o = evt_checkPlayerAction_find(p, EVT_FUNC_RANGE);
+        target = evt_checkPlayerAction_find(player, EVT_FUNC_RANGE);
     }
-    if (o != NULL) {
-        evt_callObjectFunc(o, 1, EVT_FUNC_RANGE, 0);
+    if (target != NULL) {
+        evt_callObjectFunc(target, 1, EVT_FUNC_RANGE, 0);
     }
 }
 
 void evt_updateBattleObjects(void) {
     s32 i;
-    s32 m;
-    EvtObject *o;
+    s32 unitMask;
+    EvtObject *obj;
 
     if (g_gameState->gameData->ctx.ovl65->phase != 0) {
         i = 3;
         g_evtBattleVars[i] = btl_getUnitMask(1);
-        m = (u16)g_evtBattleVars[i];
+        unitMask = (u16)g_evtBattleVars[i];
         for (i = 4; i < 8; i++) {
-            o = g_evtUnitObjects[i];
-            if (o != NULL) {
-                switch (o->state) {
+            obj = g_evtUnitObjects[i];
+            if (obj != NULL) {
+                switch (obj->state) {
                 case EVT_STATE_RUNNING:
-                    if (!(m & 0x10)) {
-                        o->state = EVT_STATE_SUSPENDED;
+                    if (!(unitMask & 0x10)) {
+                        obj->state = EVT_STATE_SUSPENDED;
                     }
                     break;
                 case EVT_STATE_SUSPENDED:
-                    if (m & 0x10) {
-                        o->state = EVT_STATE_RUNNING;
+                    if (unitMask & 0x10) {
+                        obj->state = EVT_STATE_RUNNING;
                     }
                     break;
                 }
             }
-            m >>= 1;
+            unitMask >>= 1;
         }
     }
 }
 
 /* turn towards turnTarget by turnStep per frame (EVT_TURN_DIRECT_DOWN / UP: direction) */
-static inline void evt_updateObjects_turn(EvtObject *p) {
-    s32 a;
+static inline void evt_updateObjects_turn(EvtObject *obj) {
+    s32 dir;
 
-    if ((s16)p->turnRate == EVT_TURN_DIRECT_DOWN) {
-        a = p->pos.rotY + (s16)p->turnStep;
-        if (p->turnTarget < a) {
-            p->pos.rotY = a;
+    if ((s16)obj->turnRate == EVT_TURN_DIRECT_DOWN) {
+        dir = obj->pos.rotY + (s16)obj->turnStep;
+        if (obj->turnTarget < dir) {
+            obj->pos.rotY = dir;
         } else {
-            p->pos.rotY = p->turnTarget;
-            p->flags &= ~EVT_OBJ_TURNING;
+            obj->pos.rotY = obj->turnTarget;
+            obj->flags &= ~EVT_OBJ_TURNING;
         }
-    } else if ((s16)p->turnRate == EVT_TURN_DIRECT_UP) {
-        a = p->pos.rotY + (s16)p->turnStep;
-        if (a >= p->turnTarget) {
-            p->pos.rotY = p->turnTarget;
-            p->flags &= ~EVT_OBJ_TURNING;
+    } else if ((s16)obj->turnRate == EVT_TURN_DIRECT_UP) {
+        dir = obj->pos.rotY + (s16)obj->turnStep;
+        if (dir >= obj->turnTarget) {
+            obj->pos.rotY = obj->turnTarget;
+            obj->flags &= ~EVT_OBJ_TURNING;
         } else {
-            p->pos.rotY = a;
+            obj->pos.rotY = dir;
         }
     }
 }
 
 /* remember the position at the start of the frame */
-static inline void evt_updateObjects_save(EvtObject *p) {
-    p->prevPos.vx = p->pos.vx;
-    p->prevPos.vy = p->pos.vy;
-    p->prevPos.vz = p->pos.vz;
+static inline void evt_updateObjects_save(EvtObject *obj) {
+    obj->prevPos.vx = obj->pos.vx;
+    obj->prevPos.vy = obj->pos.vy;
+    obj->prevPos.vz = obj->pos.vz;
 }
 
 s32 evt_updateObjects(void) {
-    EvtListNode *n;
-    EvtObject *o;
-    EvtObject *p;
-    EvtObject *t;
+    EvtListNode *node;
+    EvtObject *obj;
+    EvtObject *actor;
+    EvtObject *blocker;
     EvtObject *t1;
     EvtObject *x;
     EvtListNode *y;
     EvtObject *z;
-    Unk800C748C *q;
+    Unk800C748C *bgiActor;
     s32 world;
-    s32 r;
+    s32 result;
     s32 dist;
-    u8 b;
+    u8 camera;
     s32 h;
     s32 moved;
     s32 dx, dy, dz;
-    s32 f;
+    s32 walkResult;
     u32 anim;
     Window *w;
-    EvtListNode *l;
-    EvtListNode *m;
-    EvtState *s;
+    EvtListNode *start;
+    EvtListNode *saveNode;
+    EvtState *evt;
 
     g_evtPlayerMoved = 0;
     world = g_evtMode == EVT_MODE_BATTLE;
-    for (n = g_evtState->objects; n != NULL; n = n->next) {
-        o = n->obj;
-        if (o->kind == EVT_KIND_ACTOR) {
-            z = o;
-            if (o->uid == g_evtState->playerUid && o->state == EVT_STATE_RUNNING) {
+    for (node = g_evtState->objects; node != NULL; node = node->next) {
+        obj = node->obj;
+        if (obj->kind == EVT_KIND_ACTOR) {
+            z = obj;
+            if (obj->uid == g_evtState->playerUid && obj->state == EVT_STATE_RUNNING) {
                 if (g_evtState->controlEnabled != 0) {
                     if (g_evtMode == EVT_MODE_FIELD) {
-                        o->prevPos.vx = o->pos.vx;
-                        o->prevPos.vy = o->pos.vy;
-                        o->prevPos.vz = o->pos.vz;
-                        evt_movePlayer(o);
+                        obj->prevPos.vx = obj->pos.vx;
+                        obj->prevPos.vy = obj->pos.vy;
+                        obj->prevPos.vz = obj->pos.vz;
+                        evt_movePlayer(obj);
                     } else if (g_evtMode == EVT_MODE_WORLD) {
                         g_evtPlayerMoved = g_worldPlayerStepped;
-                        evt_checkPlayerAction(o);
-                        t1 = evt_findNearestObject(o, 0, &dist);
+                        evt_checkPlayerAction(obj);
+                        t1 = evt_findNearestObject(obj, 0, &dist);
                         if (t1 != NULL && dist <= 0 &&
-                            (u32)(evt_angleToObject(o, t1, math_atan2(o->pos.vx - o->prevPos.vx, o->pos.vz - o->prevPos.vz)) + 0x400) <= 0x800) {
-                            o->pos.vx = o->prevPos.vx;
-                            o->pos.vy = o->prevPos.vy;
-                            o->pos.vz = o->prevPos.vz;
+                            (u32)(evt_angleToObject(obj, t1, math_atan2(obj->pos.vx - obj->prevPos.vx, obj->pos.vz - obj->prevPos.vz)) + 0x400) <= 0x800) {
+                            obj->pos.vx = obj->prevPos.vx;
+                            obj->pos.vy = obj->prevPos.vy;
+                            obj->pos.vz = obj->prevPos.vz;
                         }
                     }
                     if (g_evtPlayerMoved != 0) {
-                        s = g_evtState;
-                        if (s->idleTimer >= 0) {
-                            s->idleTimer = (evt_rollEncounter_rand() + 200) * 4;
+                        evt = g_evtState;
+                        if (evt->idleTimer >= 0) {
+                            evt->idleTimer = (evt_rollEncounter_rand() + 200) * 4;
                         }
                     }
                 } else {
-                    evt_updateObjects_save(o);
+                    evt_updateObjects_save(obj);
                 }
             } else {
                 evt_updateObjects_save(z);
             }
-            if (o->state == EVT_STATE_RUNNING && !world) {
-                evt_stepAnim(o);
+            if (obj->state == EVT_STATE_RUNNING && !world) {
+                evt_stepAnim(obj);
             }
         }
     }
     if (world) {
         evt_updateBattleObjects();
     }
-    l = (EvtListNode *)g_evtResumeNode;
+    start = (EvtListNode *)g_evtResumeNode;
     g_evtPosSetThisFrame = 0;
-    if (l == NULL) {
-        l = g_evtState->objects;
+    if (start == NULL) {
+        start = g_evtState->objects;
     }
-    r = evt_runScripts(l);
-    if (r == EVT_UPD_END_FRAME) {
-        r = 0;
+    result = evt_runScripts(start);
+    if (result == EVT_UPD_END_FRAME) {
+        result = 0;
     } else {
         g_evtResumeNode = 0;
     }
     g_evtWorldCamTargetObj = NULL;
     g_evtWorldCamEyeObj = NULL;
     if (g_evtMode == EVT_MODE_FIELD) {
-        fldbg_getCamera(&b);
-        g_evtCameraChanged = b != g_evtCamera;
-        g_evtCamera = b;
+        fldbg_getCamera(&camera);
+        g_evtCameraChanged = camera != g_evtCamera;
+        g_evtCamera = camera;
     }
     if (world) {
-        for (n = g_evtState->objects; n != NULL; n = n->next) {
-            o = n->obj;
-            if (o->battleTurnState == 2 && evt_callObjectFunc(o, 3, 5, 0)) {
-                o->battleTurnState = 1;
+        for (node = g_evtState->objects; node != NULL; node = node->next) {
+            obj = node->obj;
+            if (obj->battleTurnState == 2 && evt_callObjectFunc(obj, 3, 5, 0)) {
+                obj->battleTurnState = 1;
             }
         }
     } else {
-        for (n = g_evtState->objects; n != NULL; n = n->next) {
-            o = n->obj;
-            if (o->kind == EVT_KIND_ACTOR) {
-                p = o;
+        for (node = g_evtState->objects; node != NULL; node = node->next) {
+            obj = node->obj;
+            if (obj->kind == EVT_KIND_ACTOR) {
+                actor = obj;
                 if (g_evtMode == EVT_MODE_FIELD) {
-                    f = evt_updateActorWalkmesh(p);
-                    if ((p->uid != g_evtState->playerUid || g_evtPushFrames >= 0) && (f & 1) &&
-                        (t = evt_findNearestObject(p, 0, NULL)) != NULL) {
-                        bgi_revertActor(p->modelSlot);
-                        if (t->flags & EVT_OBJ_NOT_PUSHABLE) {
+                    walkResult = evt_updateActorWalkmesh(actor);
+                    if ((actor->uid != g_evtState->playerUid || g_evtPushFrames >= 0) && (walkResult & 1) &&
+                        (blocker = evt_findNearestObject(actor, 0, NULL)) != NULL) {
+                        bgi_revertActor(actor->modelSlot);
+                        if (blocker->flags & EVT_OBJ_NOT_PUSHABLE) {
                             g_evtPushFrames = 0;
                         }
-                        if (o->uid == g_evtState->playerUid) {
+                        if (obj->uid == g_evtState->playerUid) {
                             g_evtPlayerBlocked = 2;
                         }
                     }
-                    if (o->uid == g_evtState->playerUid) {
-                        msg_drawHereIcon(p);
+                    if (obj->uid == g_evtState->playerUid) {
+                        msg_drawHereIcon(actor);
                         if (g_evtState->controlEnabled != 0) {
-                            evt_checkPlayerAction(p);
+                            evt_checkPlayerAction(actor);
                         }
                     }
                 } else if (g_evtMode == EVT_MODE_WORLD) {
-                    if (p->moveFlags & EVT_MOVE_WM_CAMERA_EYE) {
-                        VECTOR *v = wm_getCameraEye();
-                        v->vx = p->pos.vx;
-                        v->vy = p->pos.vy;
-                        g_evtWorldCamEyeObj = p;
-                        v->vz = p->pos.vz;
-                    } else if (p->moveFlags & EVT_MOVE_WM_CAMERA_TARGET) {
-                        VECTOR *v = wm_getCameraTarget();
-                        v->vx = p->pos.vx;
-                        v->vy = p->pos.vy;
-                        g_evtWorldCamTargetObj = p;
-                        v->vz = p->pos.vz;
+                    if (actor->moveFlags & EVT_MOVE_WM_CAMERA_EYE) {
+                        VECTOR *camEye = wm_getCameraEye();
+                        camEye->vx = actor->pos.vx;
+                        camEye->vy = actor->pos.vy;
+                        g_evtWorldCamEyeObj = actor;
+                        camEye->vz = actor->pos.vz;
+                    } else if (actor->moveFlags & EVT_MOVE_WM_CAMERA_TARGET) {
+                        VECTOR *camTarget = wm_getCameraTarget();
+                        camTarget->vx = actor->pos.vx;
+                        camTarget->vy = actor->pos.vy;
+                        g_evtWorldCamTargetObj = actor;
+                        camTarget->vz = actor->pos.vz;
                     }
                 }
-                if (p->balloonWindow != EVT_BALLOON_NONE) {
-                    w = msg_getWindow(p->balloonWindow);
+                if (actor->balloonWindow != EVT_BALLOON_NONE) {
+                    w = msg_getWindow(actor->balloonWindow);
                     if (w != NULL) {
-                        evt_followBalloon(p, w);
+                        evt_followBalloon(actor, w);
                     } else {
-                        p->balloonWindow = 0xFF;
-                        if (g_evtLookTarget == p) {
+                        actor->balloonWindow = 0xFF;
+                        if (g_evtLookTarget == actor) {
                             g_evtLookReleaseTimer = 30;
                         }
                     }
                 }
                 moved = 0;
-                dx = p->pos.vx - p->prevPos.vx;
-                dy = p->pos.vy - p->prevPos.vy;
-                dz = p->pos.vz - p->prevPos.vz;
+                dx = actor->pos.vx - actor->prevPos.vx;
+                dy = actor->pos.vy - actor->prevPos.vy;
+                dz = actor->pos.vz - actor->prevPos.vz;
                 if (dx != 0 || dz != 0) {
                     moved = 1;
                 }
                 if (g_evtMode == EVT_MODE_FIELD) {
-                    if (p->flags & EVT_OBJ_TURNING) {
-                        evt_updateObjects_turn(p);
+                    if (actor->flags & EVT_OBJ_TURNING) {
+                        evt_updateObjects_turn(actor);
                     }
-                    if (p->modelId != EVT_MODEL_NONE) {
-                        evt_updateLookAt(p);
+                    if (actor->modelId != EVT_MODEL_NONE) {
+                        evt_updateLookAt(actor);
                     }
                 }
-                if (g_evtMode == EVT_MODE_WORLD && (p->flags & EVT_OBJ_TURNING)) {
-                    evt_updateObjects_turn(p);
+                if (g_evtMode == EVT_MODE_WORLD && (actor->flags & EVT_OBJ_TURNING)) {
+                    evt_updateObjects_turn(actor);
                 }
                 if (moved) {
-                    if ((p->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD | EVT_ANIM_IDLE)) == 0 ||
-                        (p->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD | EVT_ANIM_IDLE)) == (EVT_ANIM_SCRIPTED | EVT_ANIM_IDLE)) {
-                        p->animFlags &= ~(EVT_ANIM_SCRIPTED | EVT_ANIM_IDLE);
-                        anim = p->speed >= p->runSpeed ? (u16)p->runAnim : (u16)p->walkAnim;
+                    if ((actor->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD | EVT_ANIM_IDLE)) == 0 ||
+                        (actor->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD | EVT_ANIM_IDLE)) == (EVT_ANIM_SCRIPTED | EVT_ANIM_IDLE)) {
+                        actor->animFlags &= ~(EVT_ANIM_SCRIPTED | EVT_ANIM_IDLE);
+                        anim = actor->speed >= actor->runSpeed ? (u16)actor->runAnim : (u16)actor->walkAnim;
                         goto set_anim;
                     }
-                } else if (!(p->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD)) && (g_evtPlayerBlocked == 0 || o->uid != g_evtState->playerUid)) {
-                    anim = (u16)p->standAnim;
+                } else if (!(actor->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD)) && (g_evtPlayerBlocked == 0 || obj->uid != g_evtState->playerUid)) {
+                    anim = (u16)actor->standAnim;
                 set_anim:
-                    if (anim != p->anim) {
-                        p->anim = anim;
-                        p->animFrame = 0;
-                        p->animSubFrame = 0;
-                        p->animFrames = evt_getAnimFrameCount(p->modelId, anim);
-                        p->animSpeed = p->defaultAnimSpeed;
+                    if (anim != actor->anim) {
+                        actor->anim = anim;
+                        actor->animFrame = 0;
+                        actor->animSubFrame = 0;
+                        actor->animFrames = evt_getAnimFrameCount(actor->modelId, anim);
+                        actor->animSpeed = actor->defaultAnimSpeed;
                     }
                 }
-                if (moved && o->uid == g_evtState->playerUid && g_evtPlayerMoved != 0) {
+                if (moved && obj->uid == g_evtState->playerUid && g_evtPlayerMoved != 0) {
                     g_evtEncounterDist += math_length3(dx, dy, dz);
-                    if (evt_rollEncounter(p)) {
+                    if (evt_rollEncounter(actor)) {
                         g_evtEncounterPending = 1;
                     }
                 }
@@ -3074,241 +3079,241 @@ s32 evt_updateObjects(void) {
     }
     if (g_evtEncounterPending != 0 && g_evtPosSetThisFrame == 0) {
         g_evtEncounterPending = 0;
-        r = 3;
+        result = 3;
     }
-    if (r == 3 || r == 7) {
+    if (result == 3 || result == 7) {
         if (g_evtMode == EVT_MODE_FIELD) {
-            for (m = g_evtState->objects; m != NULL; m = m->next) {
-                p = m->obj;
-                if (p->kind == EVT_KIND_ACTOR && p->modelId != EVT_MODEL_NONE) {
-                    q = bgi_getActor(p->modelSlot);
-                    bgi_getActorRadius(p->modelSlot, &h);
-                    p->savedWalkRadius = h / 4;
-                    if (q != NULL) {
-                        p->pos.vx = p->prevPos.vx;
-                        p->pos.vy = p->prevPos.vy;
-                        p->pos.vz = p->prevPos.vz;
-                        p->savedWalkFloor = q->walkFloor;
-                        p->savedWalkTri = q->walkTri;
-                        p->savedWalkFlags = q->walkFlags;
+            for (saveNode = g_evtState->objects; saveNode != NULL; saveNode = saveNode->next) {
+                actor = saveNode->obj;
+                if (actor->kind == EVT_KIND_ACTOR && actor->modelId != EVT_MODEL_NONE) {
+                    bgiActor = bgi_getActor(actor->modelSlot);
+                    bgi_getActorRadius(actor->modelSlot, &h);
+                    actor->savedWalkRadius = h / 4;
+                    if (bgiActor != NULL) {
+                        actor->pos.vx = actor->prevPos.vx;
+                        actor->pos.vy = actor->prevPos.vy;
+                        actor->pos.vz = actor->prevPos.vz;
+                        actor->savedWalkFloor = bgiActor->walkFloor;
+                        actor->savedWalkTri = bgiActor->walkTri;
+                        actor->savedWalkFlags = bgiActor->walkFlags;
                     }
                 }
             }
             fld_enableRain(0, 0, 0);
         }
-        if (r == 7) {
+        if (result == 7) {
             g_evtSavedState = g_evtStateData;
         }
     }
-    return r;
+    return result;
 }
 
-void evt_onAnimEnd(EvtObject *p) {
-    s32 v;
-    u32 *q;
+void evt_onAnimEnd(EvtObject *obj) {
+    s32 animId;
+    u32 *slot;
 
-    if (!(p->animFlags & EVT_ANIM_HOLD)) {
-        v = (u16)p->standAnim;
-        if (v != p->anim) {
-            p->anim = v;
-            p->animFrame = 0;
-            p->animSubFrame = 0;
-            p->animFrames = evt_getAnimFrameCount(p->modelId, v);
-            p->animSpeed = p->defaultAnimSpeed;
+    if (!(obj->animFlags & EVT_ANIM_HOLD)) {
+        animId = (u16)obj->standAnim;
+        if (animId != obj->anim) {
+            obj->anim = animId;
+            obj->animFrame = 0;
+            obj->animSubFrame = 0;
+            obj->animFrames = evt_getAnimFrameCount(obj->modelId, animId);
+            obj->animSpeed = obj->defaultAnimSpeed;
         }
-        p->animFrame = 0;
+        obj->animFrame = 0;
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
-        p->animSpeed = p->idleAnimSpeeds.b[*g_randPtr++ & 3];
-        p->animFlags &= ~(EVT_ANIM_SCRIPTED | EVT_ANIM_REVERSE | EVT_ANIM_HELD | EVT_ANIM_IDLE);
-        if (p->flags & EVT_OBJ_TURNING) {
-            evt_finishTurn_inline(p);
+        obj->animSpeed = obj->idleAnimSpeeds.b[*g_randPtr++ & 3];
+        obj->animFlags &= ~(EVT_ANIM_SCRIPTED | EVT_ANIM_REVERSE | EVT_ANIM_HELD | EVT_ANIM_IDLE);
+        if (obj->flags & EVT_OBJ_TURNING) {
+            evt_finishTurn_inline(obj);
         }
-        if (p->moveFlags & EVT_MOVE_JUMPING) {
-            p->moveFlags &= ~EVT_MOVE_JUMPING;
-            q = (u32 *)game_getModel(p->modelSlot);
-            *q &= ~0x10;
-            p->animStart = 0;
-            p->animEnd = 0xFF;
+        if (obj->moveFlags & EVT_MOVE_JUMPING) {
+            obj->moveFlags &= ~EVT_MOVE_JUMPING;
+            slot = (u32 *)game_getModel(obj->modelSlot);
+            *slot &= ~0x10;
+            obj->animStart = 0;
+            obj->animEnd = 0xFF;
         }
     } else {
-        p->animFlags = (p->animFlags | EVT_ANIM_HELD) & ~(EVT_ANIM_SCRIPTED | EVT_ANIM_IDLE);
-        p->animFrame = p->animPrevFrame;
+        obj->animFlags = (obj->animFlags | EVT_ANIM_HELD) & ~(EVT_ANIM_SCRIPTED | EVT_ANIM_IDLE);
+        obj->animFrame = obj->animPrevFrame;
     }
 }
 
-static inline void evt_onAnimLimit_bounce(EvtObject *o, u8 f) {
-    u8 t;
+static inline void evt_onAnimLimit_bounce(EvtObject *obj, u8 mode) {
+    u8 oldStart;
     u8 pos;
 
-    if (f & EVT_ANIM_BOUNCE) {
-        pos = o->animFrame;
-        if (!(f & EVT_ANIM_REVERSE)) {
-            o->animFrame = pos - 2;
+    if (mode & EVT_ANIM_BOUNCE) {
+        pos = obj->animFrame;
+        if (!(mode & EVT_ANIM_REVERSE)) {
+            obj->animFrame = pos - 2;
         } else {
-            o->animFrame = pos + 2;
+            obj->animFrame = pos + 2;
         }
-        o->animFlags ^= EVT_ANIM_REVERSE;
-        t = o->animStart;
-        o->animStart = o->animEnd;
-        o->animEnd = t;
-    } else if (f & EVT_ANIM_LOOP) {
-        o->animFrame = o->animStart;
+        obj->animFlags ^= EVT_ANIM_REVERSE;
+        oldStart = obj->animStart;
+        obj->animStart = obj->animEnd;
+        obj->animEnd = oldStart;
+    } else if (mode & EVT_ANIM_LOOP) {
+        obj->animFrame = obj->animStart;
     }
 }
 
-void evt_onAnimLimit(EvtObject *o) {
-    u8 f = o->animFlags;
+void evt_onAnimLimit(EvtObject *obj) {
+    u8 mode = obj->animFlags;
 
-    if (f & (EVT_ANIM_LOOP | EVT_ANIM_BOUNCE)) {
-        if (o->animLoops != 0) {
-            o->animLoops--;
-            if (o->animLoops != 0) {
-                evt_onAnimLimit_bounce(o, f);
+    if (mode & (EVT_ANIM_LOOP | EVT_ANIM_BOUNCE)) {
+        if (obj->animLoops != 0) {
+            obj->animLoops--;
+            if (obj->animLoops != 0) {
+                evt_onAnimLimit_bounce(obj, mode);
             } else {
-                evt_onAnimEnd(o);
+                evt_onAnimEnd(obj);
             }
         } else {
-            evt_onAnimLimit_bounce(o, f);
+            evt_onAnimLimit_bounce(obj, mode);
         }
     } else {
-        evt_onAnimEnd(o);
+        evt_onAnimEnd(obj);
     }
 }
 
-void evt_stepAnim(EvtObject *p) {
-    EvtObject *q;
-    u8 f;
+void evt_stepAnim(EvtObject *obj) {
+    EvtObject *src;
+    u8 mode;
     s32 last;
-    s32 t;
+    s32 frame16;
     s32 lo;
     u8 old;
     s32 t2, lo2, t3, lo3;
     u8 old2, old3;
 
-    f = p->animFlags;
-    if (f & EVT_ANIM_HELD) {
+    mode = obj->animFlags;
+    if (mode & EVT_ANIM_HELD) {
         return;
     }
-    if (f & EVT_ANIM_SCRIPTED) {
-        if (p->animSyncSource != NULL) {
-            q = p->animSyncSource;
-            if (q->anim == (u16)q->standAnim) {
-                p->anim = p->standAnim;
-            } else if (q->anim == (u16)q->walkAnim) {
-                p->anim = p->walkAnim;
-            } else if (q->anim == (u16)q->runAnim) {
-                p->anim = p->runAnim;
+    if (mode & EVT_ANIM_SCRIPTED) {
+        if (obj->animSyncSource != NULL) {
+            src = obj->animSyncSource;
+            if (src->anim == (u16)src->standAnim) {
+                obj->anim = obj->standAnim;
+            } else if (src->anim == (u16)src->walkAnim) {
+                obj->anim = obj->walkAnim;
+            } else if (src->anim == (u16)src->runAnim) {
+                obj->anim = obj->runAnim;
             }
-            p->animFrame = q->animFrame;
-        } else if (!(f & EVT_ANIM_REVERSE)) {
-            last = p->animEnd;
-            if (p->animFrames - 1 < last) {
-                last = p->animFrames - 1;
+            obj->animFrame = src->animFrame;
+        } else if (!(mode & EVT_ANIM_REVERSE)) {
+            last = obj->animEnd;
+            if (obj->animFrames - 1 < last) {
+                last = obj->animFrames - 1;
             }
-            t = p->animFrame * 16 + (s8)p->animSubFrame + p->animSpeed;
-            lo = t & 0xF;
-            p->animSubFrame = lo;
-            if (p->animFlags & EVT_ANIM_REVERSE) {
-                p->animSubFrame = lo - 0xF;
+            frame16 = obj->animFrame * 16 + (s8)obj->animSubFrame + obj->animSpeed;
+            lo = frame16 & 0xF;
+            obj->animSubFrame = lo;
+            if (obj->animFlags & EVT_ANIM_REVERSE) {
+                obj->animSubFrame = lo - 0xF;
             }
-            old = p->animFrame;
-            t >>= 4;
-            p->animFrame = t;
-            p->animPrevFrame = old;
-            if (last < t) {
-                evt_onAnimLimit(p);
+            old = obj->animFrame;
+            frame16 >>= 4;
+            obj->animFrame = frame16;
+            obj->animPrevFrame = old;
+            if (last < frame16) {
+                evt_onAnimLimit(obj);
             }
-            if (p->flags & EVT_OBJ_TURNING) {
-                p->pos.rotY = (p->pos.rotY + p->turnRate) & 0xFFF;
-                p->turnStartDir = (p->turnStartDir + p->turnStep) & 0xFFF;
+            if (obj->flags & EVT_OBJ_TURNING) {
+                obj->pos.rotY = (obj->pos.rotY + obj->turnRate) & 0xFFF;
+                obj->turnStartDir = (obj->turnStartDir + obj->turnStep) & 0xFFF;
             }
         } else {
-            t2 = p->animFrame * 16 + (s8)p->animSubFrame - p->animSpeed;
+            t2 = obj->animFrame * 16 + (s8)obj->animSubFrame - obj->animSpeed;
             t2 += 0xF;
             lo2 = t2 & 0xF;
-            p->animSubFrame = lo2;
-            if (p->animFlags & EVT_ANIM_REVERSE) {
-                p->animSubFrame = lo2 - 0xF;
+            obj->animSubFrame = lo2;
+            if (obj->animFlags & EVT_ANIM_REVERSE) {
+                obj->animSubFrame = lo2 - 0xF;
             }
-            old2 = p->animFrame;
+            old2 = obj->animFrame;
             t2 >>= 4;
-            p->animFrame = t2;
-            p->animPrevFrame = old2;
-            if (t2 < p->animEnd) {
-                evt_onAnimLimit(p);
+            obj->animFrame = t2;
+            obj->animPrevFrame = old2;
+            if (t2 < obj->animEnd) {
+                evt_onAnimLimit(obj);
             }
         }
     } else {
-        lo3 = p->animFrame * 16 + (s8)p->animSubFrame;
-        if (f & EVT_ANIM_REVERSE) {
-            t3 = lo3 - p->animSpeed;
+        lo3 = obj->animFrame * 16 + (s8)obj->animSubFrame;
+        if (mode & EVT_ANIM_REVERSE) {
+            t3 = lo3 - obj->animSpeed;
         } else {
-            t3 = lo3 + p->animSpeed;
+            t3 = lo3 + obj->animSpeed;
         }
-        if (p->animFlags & EVT_ANIM_REVERSE) {
+        if (obj->animFlags & EVT_ANIM_REVERSE) {
             t3 += 0xF;
         }
         lo3 = t3 & 0xF;
-        p->animSubFrame = lo3;
-        if (p->animFlags & EVT_ANIM_REVERSE) {
-            p->animSubFrame = lo3 - 0xF;
+        obj->animSubFrame = lo3;
+        if (obj->animFlags & EVT_ANIM_REVERSE) {
+            obj->animSubFrame = lo3 - 0xF;
         }
-        old3 = p->animFrame;
+        old3 = obj->animFrame;
         t3 >>= 4;
-        p->animFrame = t3;
-        p->animPrevFrame = old3;
-        if (t3 >= p->animFrames) {
-            p->animFrame = 0;
-            if (p->anim == (u16)p->standAnim) {
+        obj->animFrame = t3;
+        obj->animPrevFrame = old3;
+        if (t3 >= obj->animFrames) {
+            obj->animFrame = 0;
+            if (obj->anim == (u16)obj->standAnim) {
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
-                p->animSpeed = p->idleAnimSpeeds.b[*g_randPtr++ & 3];
+                obj->animSpeed = obj->idleAnimSpeeds.b[*g_randPtr++ & 3];
             }
         }
     }
 }
 
-u8 *evt_loadScripts(u8 *p) {
+u8 *evt_loadScripts(u8 *data) {
     s32 charMask = 0;
     s32 i = 0;
-    s32 c;
-    s32 n;
+    s32 chr;
+    s32 count;
     u8 *dst;
-    ScriptEntry *e;
+    ScriptEntry *entry;
     u16 *sz;
     s32 bit;
     u8 *src;
 
     for (; i < 4; i++) {
-        c = msg_getPartyMemberId(i);
-        if (c >= 0) {
-            charMask |= 1 << c;
+        chr = msg_getPartyMemberId(i);
+        if (chr >= 0) {
+            charMask |= 1 << chr;
         }
     }
-    n = p[3];
-    g_evtScripts = p + 0x80;
-    g_evtScriptCount = n;
+    count = data[3];
+    g_evtScripts = data + 0x80;
+    g_evtScriptCount = count;
     if (g_evtScriptCount >= 10) {
         dst = g_evtScripts + ((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9].offset;
     } else {
         dst = g_evtScripts + g_evtScriptCount * 8;
     }
     bit = 1;
-    for (e = &((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9]; e < &((ScriptEntry *)g_evtScripts)[g_evtScriptCount]; e++) {
-        if (!(e->flags & 1)) {
+    for (entry = &((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9]; entry < &((ScriptEntry *)g_evtScripts)[g_evtScriptCount]; entry++) {
+        if (!(entry->flags & 1)) {
             charMask |= bit;
         }
         if (charMask & bit) {
-            if (e->offset != 0) {
-                src = g_evtScripts + e->offset;
-                if (src != dst && e->size != 0) {
-                    memmove(dst, src, e->size);
-                    e->offset = dst - g_evtScripts;
+            if (entry->offset != 0) {
+                src = g_evtScripts + entry->offset;
+                if (src != dst && entry->size != 0) {
+                    memmove(dst, src, entry->size);
+                    entry->offset = dst - g_evtScripts;
                 }
-                dst += e->size & ~3;
+                dst += entry->size & ~3;
             }
         }
         bit <<= 1;
@@ -3318,22 +3323,22 @@ u8 *evt_loadScripts(u8 *p) {
 }
 
 void evt_init(u8 *data) {
-    Unk4 t;
+    Unk4 thresholds;
     s32 k;
     u8 mode;
-    EvtAllocNode *n;
-    EvtListNode *m;
-    EvtListNode *q;
-    EvtListNode *l;
+    EvtAllocNode *allocNode;
+    EvtListNode *listNode;
+    EvtListNode *node;
+    EvtListNode *iter;
     s32 i;
-    s32 r;
-    s32 d;
-    EvtObject *o;
-    EvtState *p;
+    s32 chr;
+    s32 ipDelta;
+    EvtObject *obj;
+    EvtState *evt;
     GameState *gs;
 
-    t = g_evtDefaultAnalogThresholds;
-    pad_setAnalogThresholds(&t);
+    thresholds = g_evtDefaultAnalogThresholds;
+    pad_setAnalogThresholds(&thresholds);
     k = data[3];
     g_evtScripts = data + 0x80;
     gs = g_gameState;
@@ -3360,16 +3365,16 @@ void evt_init(u8 *data) {
         g_evtSavedState = g_evtStateData;
     }
     g_evtState = &g_evtStateData;
-    for (n = g_evtState->allocNodes; n < &g_evtState->allocNodes[31]; n++) {
-        n->next = n + 1;
+    for (allocNode = g_evtState->allocNodes; allocNode < &g_evtState->allocNodes[31]; allocNode++) {
+        allocNode->next = allocNode + 1;
     }
-    n->next = NULL;
+    allocNode->next = NULL;
     g_evtState->allocFree = g_evtState->allocNodes;
     g_evtState->allocUsed = NULL;
-    for (m = g_evtState->listNodes; m < &g_evtState->listNodes[31]; m++) {
-        m->next = m + 1;
+    for (listNode = g_evtState->listNodes; listNode < &g_evtState->listNodes[31]; listNode++) {
+        listNode->next = listNode + 1;
     }
-    m->next = NULL;
+    listNode->next = NULL;
     g_evtState->listFree = g_evtState->listNodes;
     g_evtState->objectsTail = NULL;
     g_evtState->objects = NULL;
@@ -3392,12 +3397,12 @@ void evt_init(u8 *data) {
     g_evtCameraChanged = 0;
     g_evtCamera = 0;
     g_evtEncounterDist = -0x5A0;
-    p = g_evtState;
-    p->encounterRate = 0;
+    evt = g_evtState;
+    evt->encounterRate = 0;
     g_evtEncounterChance = 0;
     g_evtEncounterPending = 0;
-    p->analogDirOfs = 0;
-    p->padDirOfs = 0;
+    evt->analogDirOfs = 0;
+    evt->padDirOfs = 0;
     g_swirlVariant = 0;
     func_8004B3A8_inline(0, 0);
     g_evtState->objects->obj->state = EVT_STATE_INIT;
@@ -3408,9 +3413,9 @@ void evt_init(u8 *data) {
     g_evtUnitObjectCount = 0;
     if (g_evtMode == EVT_MODE_BATTLE) {
         for (i = 0; i < 4; i++) {
-            r = msg_getPartyMemberId(i);
-            if (r >= 0) {
-                evt_execInstr_newactor(r + g_evtScriptCount - 9, 0);
+            chr = msg_getPartyMemberId(i);
+            if (chr >= 0) {
+                evt_execInstr_newactor(chr + g_evtScriptCount - 9, 0);
             }
         }
         g_evtState->battleObjectsTail = (s32)g_evtState->objectsTail;
@@ -3421,23 +3426,23 @@ void evt_init(u8 *data) {
     if ((g_evtMode == EVT_MODE_FIELD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
         (g_evtMode == EVT_MODE_WORLD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->worldId) ||
         (g_gameState->prevMode == GS_MODE_TETRA_MASTER && g_evtModelsPending != 0)) {
-        d = data - g_evtSavedState.scriptBase;
+        ipDelta = data - g_evtSavedState.scriptBase;
         g_evtStateData = g_evtSavedState;
-        for (q = g_evtState->objects; q != NULL; q = q->next) {
-            o = q->obj;
-            if (o->ip != NULL) {
-                o->ip += d;
+        for (node = g_evtState->objects; node != NULL; node = node->next) {
+            obj = node->obj;
+            if (obj->ip != NULL) {
+                obj->ip += ipDelta;
             }
-            if (o->kind == EVT_KIND_ACTOR && g_evtMode == EVT_MODE_FIELD) {
-                fld_queueModelBundle(o->scriptIdx);
+            if (obj->kind == EVT_KIND_ACTOR && g_evtMode == EVT_MODE_FIELD) {
+                fld_queueModelBundle(obj->scriptIdx);
             }
         }
         evt_callObjectFunc(evt_getObject_inline(0), 0, 10, 0);
-        for (l = g_evtState->objects; l != NULL; l = l->next) {
-            o = l->obj;
-            if (o->uid != 0) {
-                o->savedState = o->state;
-                o->state = EVT_STATE_SUSPENDED;
+        for (iter = g_evtState->objects; iter != NULL; iter = iter->next) {
+            obj = iter->obj;
+            if (obj->uid != 0) {
+                obj->savedState = obj->state;
+                obj->state = EVT_STATE_SUSPENDED;
             }
         }
     } else {
@@ -3451,22 +3456,22 @@ void evt_init(u8 *data) {
 }
 
 void evt_createModels(void) {
-    EvtListNode *n;
-    EvtObject *o;
-    s16 *q;
+    EvtListNode *node;
+    EvtObject *obj;
+    s16 *bgiActor;
 
     if ((g_evtMode == EVT_MODE_FIELD || g_evtMode == EVT_MODE_WORLD || g_gameState->prevMode == GS_MODE_TETRA_MASTER) && g_evtModelsPending != 0) {
-        for (n = g_evtState->objects; n != NULL; n = n->next) {
-            o = n->obj;
-            if (o->kind == EVT_KIND_ACTOR && o->modelId != EVT_MODEL_NONE) {
-                o->modelSlot = evt_createModel(o);
+        for (node = g_evtState->objects; node != NULL; node = node->next) {
+            obj = node->obj;
+            if (obj->kind == EVT_KIND_ACTOR && obj->modelId != EVT_MODEL_NONE) {
+                obj->modelSlot = evt_createModel(obj);
                 if (g_evtMode == EVT_MODE_FIELD) {
-                    q = (s16 *)bgi_getActor(o->modelSlot);
-                    bgi_setActorRadius(o->modelSlot, o->savedWalkRadius * 4);
-                    if (q != NULL) {
-                        q[4] = q[2] = o->savedWalkFloor;
-                        q[5] = q[3] = o->savedWalkTri;
-                        q[0] = o->savedWalkFlags;
+                    bgiActor = (s16 *)bgi_getActor(obj->modelSlot);
+                    bgi_setActorRadius(obj->modelSlot, obj->savedWalkRadius * 4);
+                    if (bgiActor != NULL) {
+                        bgiActor[4] = bgiActor[2] = obj->savedWalkFloor;
+                        bgiActor[5] = bgiActor[3] = obj->savedWalkTri;
+                        bgiActor[0] = obj->savedWalkFlags;
                     }
                 }
             }
@@ -3476,60 +3481,60 @@ void evt_createModels(void) {
 }
 
 void evt_onMenuOpen(void) {
-    u8 *s;
-    s32 n;
+    u8 *name;
+    s32 skip;
     msg_closeAll();
     msg_startHereIcon(0);
     if (g_evtMode == EVT_MODE_WORLD) {
-        s = g_worldAreaNames;
-        n = (evt_getSysVar(WM_PARAM_AREA) * 2) & 0x7F;
-        while (n != 0) {
-            while (*s++ != 0) {
+        name = g_worldAreaNames;
+        skip = (evt_getSysVar(WM_PARAM_AREA) * 2) & 0x7F;
+        while (skip != 0) {
+            while (*name++ != 0) {
             }
-            n--;
+            skip--;
         }
-        g_gameState->gameData->locationName = s;
-        while (*s++ != 0) {
+        g_gameState->gameData->locationName = name;
+        while (*name++ != 0) {
         }
-        g_gameState->gameData->debugLocationName = s;
+        g_gameState->gameData->debugLocationName = name;
         evt_callObjectFunc(evt_getObject_inline(0), 1, 4, 0);
     }
 }
 
 s32 evt_countNpcActors(s32 unused) { /* the overlays pass 0 */
-    EvtState *p = g_evtState;
-    EvtListNode *n;
+    EvtState *evt = g_evtState;
+    EvtListNode *node;
     s32 lim;
     s32 cnt = 0;
-    if (p != NULL) {
-        n = p->objects;
-        if (n != NULL) {
+    if (evt != NULL) {
+        node = evt->objects;
+        if (node != NULL) {
             lim = g_evtScriptCount - 9;
             do {
-                EvtObject *e = n->obj;
-                s32 t = 0;
-                if (e->scriptIdx < lim) {
-                    t = e->kind == EVT_KIND_ACTOR;
+                EvtObject *obj = node->obj;
+                s32 isActor = 0;
+                if (obj->scriptIdx < lim) {
+                    isActor = obj->kind == EVT_KIND_ACTOR;
                 }
-                cnt += t;
-                n = n->next;
-            } while (n != NULL);
+                cnt += isActor;
+                node = node->next;
+            } while (node != NULL);
         }
     }
     return cnt;
 }
 
-s32 evt_getObjectChrIndex(EvtObject *a) {
-    s32 t = a->scriptIdx + 9;
-    return t - g_evtScriptCount;
+s32 evt_getObjectChrIndex(EvtObject *obj) {
+    s32 idx = obj->scriptIdx + 9;
+    return idx - g_evtScriptCount;
 }
 
-s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
-    s32 r = 0;
+s32 evt_battleTrigger(s32 op, s32 bits, s32 value, s32 w) {
+    s32 result = 0;
     s32 i;
-    EvtObject *o;
-    s32 a;
-    s32 b;
+    EvtObject *obj;
+    s32 lv;
+    s32 key;
 
     i = 0;
     if (!(bits & 1)) {
@@ -3541,34 +3546,34 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
         }
     }
     if (i < 8) {
-        o = g_evtUnitObjects[i];
+        obj = g_evtUnitObjects[i];
         if (op == BTL_CMD_ENEMY_TURN) {
-            if (o->level >= 4) {
-                o->battleTurnState = 2;
-                r = 1;
+            if (obj->level >= 4) {
+                obj->battleTurnState = 2;
+                result = 1;
             }
         } else {
-            a = 2;
-            b = 7;
+            lv = 2;
+            key = 7;
             switch (op) {
             case BTL_CMD_ENEMY_COUNTER:
-                b = 6;
-                g_evtBattleVars[0] = v;
-                a = 1;
+                key = 6;
+                g_evtBattleVars[0] = value;
+                lv = 1;
                 break;
             case BTL_CMD_ENEMY_DEATH:
-                b = 9;
-                g_evtBattleVars[0] = v;
-                a = 0;
+                key = 9;
+                g_evtBattleVars[0] = value;
+                lv = 0;
                 break;
             case BTL_CMD_ENEMY_REACT:
                 break;
             }
             g_evtBattleTriggerArg = w;
-            r = evt_callObjectFunc(o, a, b, 0);
+            result = evt_callObjectFunc(obj, lv, key, 0);
         }
     }
-    return r;
+    return result;
 }
 
 void evt_reset(void) {
@@ -3578,16 +3583,16 @@ void evt_reset(void) {
     g_evtModelsPending = 0;
 }
 
-void evt_setDrawPosAtObject(EvtObject *o, s32 dx, s32 dy) {
-    SVECTOR v;
-    SVECTOR *pv = &v;
-    s32 p[2];
+void evt_setDrawPosAtObject(EvtObject *obj, s32 dx, s32 dy) {
+    SVECTOR vec;
+    SVECTOR *pv = &vec;
+    s32 screen[2];
     volatile s32 sxy;
     GameData *gd;
 
-    v.vx = o->pos.vx;
-    v.vy = o->pos.vy + ((o->height * (s8)o->scale) >> 6) - 50;
-    v.vz = o->pos.vz;
+    vec.vx = obj->pos.vx;
+    vec.vy = obj->pos.vy + ((obj->height * (s8)obj->scale) >> 6) - 50;
+    vec.vz = obj->pos.vz;
     if (g_evtMode == EVT_MODE_FIELD) {
         fldbg_applyGeomOffset();
     }
@@ -3600,26 +3605,26 @@ void evt_setDrawPosAtObject(EvtObject *o, s32 dx, s32 dy) {
     if (g_evtMode == EVT_MODE_FIELD) {
         fldbg_resetGeomOffset();
     }
-    p[0] = *(s16 *)&sxy;
-    p[1] = sxy >> 16;
+    screen[0] = *(s16 *)&sxy;
+    screen[1] = sxy >> 16;
     pen_begin();
-    pen_setPos(p[0] + dx, p[1] + dy);
+    pen_setPos(screen[0] + dx, screen[1] + dy);
     pen_end();
 }
 
 EvtObject *evt_getPlayer(void) {
-    EvtObject *p = NULL;
-    EvtObject *r;
+    EvtObject *obj = NULL;
+    EvtObject *player;
 
     if (g_evtState != NULL) {
-        p = evt_getObject_inline(g_evtState->playerUid);
+        obj = evt_getObject_inline(g_evtState->playerUid);
     }
-    if (p != NULL && p->kind == EVT_KIND_ACTOR) {
-        r = p;
+    if (obj != NULL && obj->kind == EVT_KIND_ACTOR) {
+        player = obj;
     } else {
-        r = NULL;
+        player = NULL;
     }
-    return r;
+    return player;
 }
 
 s32 evt_isControlEnabled(void) {
@@ -3627,62 +3632,62 @@ s32 evt_isControlEnabled(void) {
 }
 
 EvtListNode *evt_getObjectList(void) {
-    EvtState *p = g_evtState;
-    EvtListNode *r = NULL;
-    if (p != NULL) {
-        r = p->objects;
+    EvtState *evt = g_evtState;
+    EvtListNode *list = NULL;
+    if (evt != NULL) {
+        list = evt->objects;
     }
-    return r;
+    return list;
 }
 
 EvtListNode *evt_getBattleObjects(void) {
-    EvtState *p = g_evtState;
-    EvtListNode *r = NULL;
-    if (p != NULL) {
-        r = p->battleObjectsTail;
+    EvtState *evt = g_evtState;
+    EvtListNode *list = NULL;
+    if (evt != NULL) {
+        list = evt->battleObjectsTail;
     }
-    return r;
+    return list;
 }
 
 s32 evt_getArg8(void) {
-    s32 r;
+    s32 val;
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
-        r = evt_popResult();
+        val = evt_popResult();
     } else {
-        r = *g_evtCurObj->ip++;
+        val = *g_evtCurObj->ip++;
     }
     g_evtArgFlags >>= 1;
     g_evtArgRead = 1;
-    return r;
+    return val;
 }
 
 s32 evt_getArg16(void) {
-    s32 r;
+    s32 val;
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
-        r = evt_popResult();
+        val = evt_popResult();
     } else {
         EvtObject *pp = g_evtCurObj;
-        r = *pp->ip++;
-        r |= *pp->ip++ << 8;
-        r = (s16)r;
+        val = *pp->ip++;
+        val |= *pp->ip++ << 8;
+        val = (s16)val;
     }
     g_evtArgFlags >>= 1;
     g_evtArgRead = 1;
-    return r;
+    return val;
 }
 
-s32 evt_getObjectModelData(EvtObject *p) {
-    s32 *q;
+s32 evt_getObjectModelData(EvtObject *obj) {
+    s32 *slot;
 
-    if (p != NULL) {
-        if (p->modelId == EVT_MODEL_NONE) {
+    if (obj != NULL) {
+        if (obj->modelId == EVT_MODEL_NONE) {
             return 0;
         }
-        q = (s32 *)game_getModel(p->modelSlot);
-        if (q != NULL) {
-            return q[2];
+        slot = (s32 *)game_getModel(obj->modelSlot);
+        if (slot != NULL) {
+            return slot[2];
         }
     }
     return 0;
@@ -3693,33 +3698,33 @@ EvtObject *evt_getObject(s32 id) {
 }
 
 s32 evt_getModelSlot(s32 id) {
-    EvtObject *p = evt_getObject_inline(id);
-    s32 r;
+    EvtObject *obj = evt_getObject_inline(id);
+    s32 slot;
 
-    if (p != NULL) {
-        if (p->kind == EVT_KIND_ACTOR) {
-            r = p->modelSlot;
+    if (obj != NULL) {
+        if (obj->kind == EVT_KIND_ACTOR) {
+            slot = obj->modelSlot;
         } else {
-            r = -1;
+            slot = -1;
         }
     } else {
-        r = -1;
+        slot = -1;
     }
-    return r;
+    return slot;
 }
 
 s32 evt_getPartyChrIndex(s32 i) {
-    s32 t = g_evtState->partyUids[i] + 9;
-    u32 r = t - g_evtScriptCount;
+    s32 biased = g_evtState->partyUids[i] + 9;
+    u32 chrIdx = biased - g_evtScriptCount;
     s32 idx = 0;
-    if (r < 9) {
-        idx = r;
+    if (chrIdx < 9) {
+        idx = chrIdx;
     }
     return idx;
 }
 
-void evt_callWorldCellTrigger(s32 a, s32 b, s32 c) {
-    evt_callObjectFunc(evt_getObject_inline(0), 1, 0x8000 | ((b << 8) & 0x3F00) | ((a << 2) & 0xFC) | (c & 3), 0);
+void evt_callWorldCellTrigger(s32 cellX, s32 cellZ, s32 kind) {
+    evt_callObjectFunc(evt_getObject_inline(0), 1, 0x8000 | ((cellZ << 8) & 0x3F00) | ((cellX << 2) & 0xFC) | (kind & 3), 0);
 }
 
 s32 evt_getWorldCamEyeObj(void) {
@@ -3731,27 +3736,27 @@ s32 evt_getWorldCamTargetObj(void) {
 }
 
 void evt_resetIdleTimer(s32 halfDelay) {
-    EvtState *p = g_evtState;
-    s32 v;
-    if (p->idleTimer >= 0) {
+    EvtState *evt = g_evtState;
+    s32 delay;
+    if (evt->idleTimer >= 0) {
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
-        v = *g_randPtr++ + 200;
+        delay = *g_randPtr++ + 200;
         if (halfDelay == 0) {
-            p->idleTimer = v * 4;
+            evt->idleTimer = delay * 4;
         } else {
-            p->idleTimer = v * 2;
+            evt->idleTimer = delay * 2;
         }
     }
 }
 
 void evt_initAllocNodes(void) {
-    EvtAllocNode *p = g_evtState->allocNodes;
-    for (; p < &g_evtState->allocNodes[31]; p++) {
-        p->next = p + 1;
+    EvtAllocNode *node = g_evtState->allocNodes;
+    for (; node < &g_evtState->allocNodes[31]; node++) {
+        node->next = node + 1;
     }
-    p->next = NULL;
+    node->next = NULL;
     g_evtState->allocFree = g_evtState->allocNodes;
     g_evtState->allocUsed = NULL;
 }
@@ -3761,11 +3766,11 @@ void evt_freeAllocNode(EvtObject *key) {
 }
 
 void evt_initObjectList(void) {
-    EvtListNode *p = g_evtState->listNodes;
-    for (; p < &g_evtState->listNodes[31]; p++) {
-        p->next = p + 1;
+    EvtListNode *node = g_evtState->listNodes;
+    for (; node < &g_evtState->listNodes[31]; node++) {
+        node->next = node + 1;
     }
-    p->next = NULL;
+    node->next = NULL;
     g_evtState->listFree = g_evtState->listNodes;
     g_evtState->objectsTail = NULL;
     g_evtState->objects = NULL;
@@ -3781,8 +3786,8 @@ u16 evt_getBattleVar(s32 var) {
     return evt_getBattleVar_inline(var);
 }
 
-void evt_setBattleVar(s32 i, s16 v) {
-    g_evtBattleVars[i & 7] = v;
+void evt_setBattleVar(s32 i, s16 value) {
+    g_evtBattleVars[i & 7] = value;
 }
 
 EvtObject *evt_resolveObjectId(s32 id) {
@@ -3790,80 +3795,80 @@ EvtObject *evt_resolveObjectId(s32 id) {
 }
 
 s32 evt_popBitCount(void) {
-    s32 n = 0;
-    s32 v = evt_popResult();
+    s32 count = 0;
+    s32 bits = evt_popResult();
     s16 bit;
     for (bit = 1; bit != 0; bit <<= 1) {
-        n += (v & bit) != 0;
+        count += (bits & bit) != 0;
     }
-    return n;
+    return count;
 }
 
 s32 evt_popRandomBit(void) {
     u8 setBitIdx[8];
     s32 bits = evt_popResult();
-    s32 n = 0;
+    s32 count = 0;
     s32 i;
 
     for (i = 0; i < 8; i++) {
         if (bits & 1) {
-            setBitIdx[n++] = i;
+            setBitIdx[count++] = i;
         }
         bits >>= 1;
     }
-    if (n != 0) {
+    if (count != 0) {
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
-        return 1 << setBitIdx[(n * *g_randPtr++) >> 8];
+        return 1 << setBitIdx[(count * *g_randPtr++) >> 8];
     }
     return 0;
 }
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/event", g_evtDefaultAnalogThresholds);
 
-s32 evt_getObjectProp(EvtObject *o, s32 prop) {
-    s32 r;
+s32 evt_getObjectProp(EvtObject *obj, s32 prop) {
+    s32 result;
     s32 i;
-    void *u;
+    void *unit;
 
     switch (prop) {
     case EVT_GETPROP_X:
-        return o->pos.vx;
+        return obj->pos.vx;
     case EVT_GETPROP_Y:
-        return o->pos.vy;
+        return obj->pos.vy;
     case EVT_GETPROP_Z:
-        return o->pos.vz;
+        return obj->pos.vz;
     case EVT_GETPROP_ROT:
-        return (u8)((u16)o->pos.rotY >> 4);
+        return (u8)((u16)obj->pos.rotY >> 4);
     case EVT_GETPROP_FLAGS:
-        return o->flags;
+        return obj->flags;
     case EVT_GETPROP_UID:
-        return o->uid;
+        return obj->uid;
     case EVT_GETPROP_LEVEL:
-        return o->level;
+        return obj->level;
     case EVT_GETPROP_ANIM_FRAME:
-        return o->animFrame;
+        return obj->animFrame;
     }
-    r = 0;
+    result = 0;
     for (i = 0; i < 8; i++) {
-        if (g_evtUnitObjects[i] == o) {
+        if (g_evtUnitObjects[i] == obj) {
             break;
         }
     }
     if (i < 8) {
-        u = btl_getUnitById(1 << i);
-        if (u != NULL) {
-            r = btl_getUnitAttr(u, prop);
+        unit = btl_getUnitById(1 << i);
+        if (unit != NULL) {
+            result = btl_getUnitAttr(unit, prop);
         }
     }
-    return r;
+    return result;
 }
 
 void evt_setObjectProp(EvtObject *obj, s32 prop, s32 value) {
     s32 i;
     struct BtlUnit *(*fn)(u16);
-    struct BtlUnit *r;
+    struct BtlUnit *unit;
 
     if (obj != NULL) {
         i = 0;
@@ -3882,9 +3887,9 @@ void evt_setObjectProp(EvtObject *obj, s32 prop, s32 value) {
             } else {
                 fn = btl_getUnitById;
             }
-            r = fn(1 << i);
-            if (r != NULL) {
-                btl_setUnitAttr(r, prop, value);
+            unit = fn(1 << i);
+            if (unit != NULL) {
+                btl_setUnitAttr(unit, prop, value);
             }
         }
     }
@@ -3895,28 +3900,28 @@ s32 evt_isInParty(s32 slot) {
 }
 
 s32 evt_getArg24(void) {
-    s32 v;
+    s32 val;
     EvtObject *pp;
 
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
-        v = evt_popResult();
+        val = evt_popResult();
     } else {
         pp = g_evtCurObj;
-        v = *pp->ip++;
-        v |= *pp->ip++ << 8;
-        v |= *pp->ip++ << 16;
+        val = *pp->ip++;
+        val |= *pp->ip++ << 8;
+        val |= *pp->ip++ << 16;
     }
     g_evtArgFlags >>= (g_evtArgRead = 1);
-    return v;
+    return val;
 }
 
-void evt_finishTurn(EvtObject *p) {
-    evt_finishTurn_inline(p);
+void evt_finishTurn(EvtObject *obj) {
+    evt_finishTurn_inline(obj);
 }
 
-void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
-    DVECTOR s;
+void evt_projectToScreen(SVECTOR *pos, s32 *x, s32 *y) {
+    DVECTOR screen;
     GameData *gd;
 
     if (x != NULL && y != NULL) {
@@ -3926,22 +3931,22 @@ void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
         gd = g_gameState->gameData;
         gte_SetRotMatrix(&gd->viewMatrix);
         gte_SetTransMatrix(&gd->viewMatrix);
-        gte_ldv0(v);
+        gte_ldv0(pos);
         gte_rtps();
-        gte_stsxy(&s);
+        gte_stsxy(&screen);
         if (g_evtMode == EVT_MODE_FIELD) {
             fldbg_resetGeomOffset();
         }
-        *x = s.vx;
-        *y = s.vy;
+        *x = screen.vx;
+        *y = screen.vy;
     }
 }
 
-void evt_setCurUnit(void *p) {
+void evt_setCurUnit(void *obj) {
     s32 i;
     s32 bit;
     for (i = 0; i < 8; i++) {
-        if (g_evtUnitObjects[i] == p) {
+        if (g_evtUnitObjects[i] == obj) {
             break;
         }
     }

@@ -52,7 +52,7 @@ void fld_discChangeEnter(void) {
 
 /* leave the current field mode */
 void fld_discChangeLeave(void) {
-    FieldMap *f;
+    FieldMap *map;
     s32 i;
 
     if (g_fieldDiscChangeModes[g_fieldDiscChange.mode].leave != NULL) {
@@ -62,9 +62,9 @@ void fld_discChangeLeave(void) {
     for (i = 0; i < 2; i++) {
         g_padPortMask[i] = g_fieldDiscChange.savedFlags[i];
     }
-    f = g_gameState->gameData->ctx.field;
-    f->flags |= FLD_MAP_REFIND_SECTORS;
-    file_loadDirTables((GameState *)f);
+    map = g_gameState->gameData->ctx.field;
+    map->flags |= FLD_MAP_REFIND_SECTORS;
+    file_loadDirTables((GameState *)map);
     fld_refindSectors();
 }
 
@@ -153,20 +153,20 @@ INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/fld_disc", g_fieldDiscChangeLabel);
 
 void fld_discPromptDraw(void) {
     s32 y;
-    HelpState *m;
+    HelpState *help;
 
     ui_drawLabel(g_fieldDiscChangeRect.x + 8, g_fieldDiscChangeRect.y - 3, 0xA, g_fieldDiscChangeLabel, UI_LABEL_NORMAL);
     text_drawBlock(g_fieldDiscChangeRect.x + 0xE, g_fieldDiscChangeRect.y + 0xA, 0xA, text_get(0), TEXT_PAL_WHITE);
     text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x2E, 0xA, text_get(1), TEXT_PAL_WHITE);
     text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x3D, 0xA, text_get(2), TEXT_PAL_WHITE);
     if (!fade_isBusy()) {
-        m = &g_menuHelp;
-        m->x = g_fieldDiscChangeRect.x + 0x16;
+        help = &g_menuHelp;
+        help->x = g_fieldDiscChangeRect.x + 0x16;
         y = g_fieldDiscChangeRect.y;
         if (g_fieldDiscChange.cursor == 0) {
-            m->y = y + 0x32;
+            help->y = y + 0x32;
         } else {
-            m->y = y + 0x41;
+            help->y = y + 0x41;
         }
         g_menuHelp.otz = 9;
         help_drawCursor();
@@ -183,24 +183,24 @@ void fld_discPromptSelect(void) {
 }
 
 void fld_discPromptHelp(void) {
-    RECT r;
+    RECT bounds;
     s32 id;
-    HelpState *m = &g_menuHelp;
+    HelpState *help = &g_menuHelp;
 
-    m->text = NULL;
+    help->text = NULL;
     if (!fade_isBusy()) {
         if (g_fieldDiscChange.cursor == 0) {
             help_setBounds(NULL);
             id = 3;
         } else {
-            r.x = 0;
-            r.y = m->y;
-            r.w = g_gameState->dispEnv->disp.w;
-            r.h = g_gameState->dispEnv->disp.h - m->y;
-            help_setBounds(&r);
+            bounds.x = 0;
+            bounds.y = help->y;
+            bounds.w = g_gameState->dispEnv->disp.w;
+            bounds.h = g_gameState->dispEnv->disp.h - help->y;
+            help_setBounds(&bounds);
             id = 4;
         }
-        m->text = text_get(id);
+        help->text = text_get(id);
     }
 }
 

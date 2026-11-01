@@ -45,12 +45,12 @@ void btl_main(s32 battleId) {
 
 void btl_updatePause(void) {
     GameData *gd = g_gameState->gameData;
-    u16 f = gd->ctx.battle->flags;
+    u16 btlFlags = gd->ctx.battle->flags;
     s32 i;
     s32 w;
 
-    if (!(f & BTL_FLAG_OVER)) {
-        if (!(gd->flags & GD_PAUSED) || (f & BTL_FLAG_DISC_COVER_OPEN)) {
+    if (!(btlFlags & BTL_FLAG_OVER)) {
+        if (!(gd->flags & GD_PAUSED) || (btlFlags & BTL_FLAG_DISC_COVER_OPEN)) {
             gd->flags |= GD_PAUSED;
             akao_pause(0);
             game_resumeClock(1);
@@ -92,7 +92,7 @@ void btl_updatePause(void) {
             btlui_setPauseRequest(0);
             return;
         }
-    } else if (f & BTL_FLAG_DISC_COVER_OPEN) {
+    } else if (btlFlags & BTL_FLAG_DISC_COVER_OPEN) {
         return;
     }
     game_resumeClock(0);
@@ -105,20 +105,20 @@ void btl_updatePause(void) {
 }
 
 void btl_checkDiscCover(void) {
-    volatile u8 a;
-    volatile s32 b;
-    u16 f;
-    a = cd_isShellOpen();
-    f = g_gameState->gameData->ctx.battle->flags;
-    if (f & BTL_FLAG_UI_STARTED) {
-        if (!(f & BTL_FLAG_DISC_COVER_OPEN)) {
-            if (a != 0) {
+    volatile u8 shellOpen;
+    volatile s32 cdState;
+    u16 btlFlags;
+    shellOpen = cd_isShellOpen();
+    btlFlags = g_gameState->gameData->ctx.battle->flags;
+    if (btlFlags & BTL_FLAG_UI_STARTED) {
+        if (!(btlFlags & BTL_FLAG_DISC_COVER_OPEN)) {
+            if (shellOpen != 0) {
                 btlui_setPauseRequest(1);
                 g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_DISC_COVER_OPEN;
             }
         } else {
-            b = cd_getState();
-            if (b == 0) {
+            cdState = cd_getState();
+            if (cdState == 0) {
                 btlui_setPauseRequest(1);
                 g_gameState->gameData->ctx.battle->flags &= ~BTL_FLAG_DISC_COVER_OPEN;
             }
@@ -127,23 +127,23 @@ void btl_checkDiscCover(void) {
 }
 
 void btl_initMode(void) {
-    GameData *g = g_gameState->gameData;
-    Battle *b;
+    GameData *gd = g_gameState->gameData;
+    Battle *battle;
     btl_allocBattle();
-    b = g->ctx.battle;
+    battle = gd->ctx.battle;
     btl_clearBattle();
     g_gameState->vsyncMode = 4;
     game_setScreenHeight(0xDA);
     game_freezeScreen();
     SetDispMask(1);
-    g->modelHook = btl_registerModel;
-    g->soundHook = btl_soundCmd;
+    gd->modelHook = btl_registerModel;
+    gd->soundHook = btl_soundCmd;
     g_gameState->gameData->preloadRequest = btl_preloadRequest;
     preload_init();
-    g->npcModelSlots = 0;
-    g->npcCount = 0;
-    g->kanjiFont = 0;
-    b->dataSector = g_gameState->imgSector + g_gameState->dirs[13].firstSector;
+    gd->npcModelSlots = 0;
+    gd->npcCount = 0;
+    gd->kanjiFont = 0;
+    battle->dataSector = g_gameState->imgSector + g_gameState->dirs[13].firstSector;
     btl_loadCommonData();
     btl_loadKanjiFont();
     btl_loadResidentMusic();
@@ -151,7 +151,7 @@ void btl_initMode(void) {
     btl_loadShadowTexture();
     btl_initPartyNames();
     btl_initBattleState();
-    b->savedHeap = g_modeHeap;
+    battle->savedHeap = g_modeHeap;
 }
 
 void btl_exitMode(void) {
@@ -164,32 +164,32 @@ void btl_exitMode(void) {
 }
 
 void btl_allocBattle(void) {
-    BattleMem *m;
+    BattleMem *mem;
     g_modeHeap = g_loadAreaEnd + 0x61800;
-    m = (BattleMem *)g_modeHeap;
-    g_gameState->gameData->ctx.battle = &m->battle;
-    g_modeHeap = (s32)m->heap;
-    m->battle.files = (BtlFiles *)m->filesBuf;
-    m->battle.partyBufEnds = (struct Battle1538 **)m->partyBufEndsBuf;
+    mem = (BattleMem *)g_modeHeap;
+    g_gameState->gameData->ctx.battle = &mem->battle;
+    g_modeHeap = (s32)mem->heap;
+    mem->battle.files = (BtlFiles *)mem->filesBuf;
+    mem->battle.partyBufEnds = (struct Battle1538 **)mem->partyBufEndsBuf;
 }
 
 void btl_clearBattle(void) {
-    Battle *b = g_gameState->gameData->ctx.battle;
+    Battle *battle = g_gameState->gameData->ctx.battle;
     s32 i;
-    b->flags = 0;
-    b->savedHeap = 0;
+    battle->flags = 0;
+    battle->savedHeap = 0;
     for (i = 0; i < 16; i++) {
-        *(b->files->data + i) = 0;
+        *(battle->files->data + i) = 0;
     }
     for (i = 0; i < 4; i++) {
-        b->partyBufs[i] = 0;
-        b->partyBufEnds[i] = 0;
+        battle->partyBufs[i] = 0;
+        battle->partyBufEnds[i] = 0;
     }
-    b->unk1530 = 0;
-    b->dataSector = -1;
-    b->work = 0;
+    battle->unk1530 = 0;
+    battle->dataSector = -1;
+    battle->work = 0;
     for (i = 0; (u32)i < 2; i++) {
-        b->unk2[i] = 0;
+        battle->unk2[i] = 0;
     }
 }
 
@@ -198,8 +198,8 @@ s32 btl_loadKanjiFont(void) {
 }
 
 s32 btl_loadResidentMusic(void) {
-    s32 a = (s32)db_lookupRegistered(DB_GET_ADDR, 0x70005, 0);
-    file_copyViaVram(g_gameState->gameData->musicSeq2, a, (s32)db_lookupRegistered(DB_GET_SIZE, 0x70005, 0), NULL);
+    s32 seqAddr = (s32)db_lookupRegistered(DB_GET_ADDR, 0x70005, 0);
+    file_copyViaVram(g_gameState->gameData->musicSeq2, seqAddr, (s32)db_lookupRegistered(DB_GET_SIZE, 0x70005, 0), NULL);
     DrawSync(0);
     return 0;
 }
@@ -208,18 +208,18 @@ s32 btl_loadSoundBanks(void) {
     s32 i;
     for (i = 1; i >= 0; i--) {
         s32 id = g_btlSoundBankIds[i] | DB_SOUND_BANK;
-        s32 a = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
-        s32 b = (s32)db_lookupRegistered(DB_GET_SIZE, id, 0);
+        s32 bankAddr = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
+        s32 bankSize = (s32)db_lookupRegistered(DB_GET_SIZE, id, 0);
         akao_beginBankUpload();
-        akao_uploadBank(a, b, 1);
+        akao_uploadBank(bankAddr, bankSize, 1);
     }
     return 0;
 }
 
 s32 btl_loadShadowTexture(void) {
-    s32 p = (s32)db_lookupRegistered(DB_GET_ADDR, DB_SHADOW_TIM, 0);
-    file_setTimPos(p, VRAM_SHADOW_CLUT_X, VRAM_SHADOW_CLUT_Y, 0x200, 0xE0);
-    file_loadTim(p);
+    s32 tim = (s32)db_lookupRegistered(DB_GET_ADDR, DB_SHADOW_TIM, 0);
+    file_setTimPos(tim, VRAM_SHADOW_CLUT_X, VRAM_SHADOW_CLUT_Y, 0x200, 0xE0);
+    file_loadTim(tim);
     DrawSync(0);
     return 0;
 }
@@ -230,28 +230,28 @@ s32 btl_initPartyNames(void) {
 }
 
 s32 btl_loadCommonData(void) {
-    s32 p = g_modeHeap;
-    Battle *b = g_gameState->gameData->ctx.battle;
-    FileEntry *f = file_find(DIR_COMMON, FILE_BTL_COMMON);
-    s32 s = f->sector;
+    s32 buf = g_modeHeap;
+    Battle *battle = g_gameState->gameData->ctx.battle;
+    FileEntry *file = file_find(DIR_COMMON, FILE_BTL_COMMON);
+    s32 startSector = file->sector;
     void *ctx = g_gameState->gameData->cdRead;
-    cdRead_init(ctx, s, (f->link - s) << 11, (void *)p, 0, -1, NULL);
+    cdRead_init(ctx, startSector, (file->link - startSector) << 11, (void *)buf, 0, -1, NULL);
     while (cdRead_update(ctx) != 0) {
     }
-    b->files->data[0] = (void *)p;
-    db_register(p, 0);
-    file_copyViaVram((s32)b->statusInfo, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F4, 0), 0x180, NULL);
-    file_copyViaVram((s32)b->abilities, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F5, 0), 0xC00, NULL);
-    file_copyViaVram((s32)b->statusSets, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F6, 0), 0x100, NULL);
+    battle->files->data[0] = (void *)buf;
+    db_register(buf, 0);
+    file_copyViaVram((s32)battle->statusInfo, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F4, 0), 0x180, NULL);
+    file_copyViaVram((s32)battle->abilities, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F5, 0), 0xC00, NULL);
+    file_copyViaVram((s32)battle->statusSets, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F6, 0), 0x100, NULL);
     DrawSync(0);
-    g_modeHeap = db_lookup(p, DB_GET_ADDR, 0x1E, 0);
+    g_modeHeap = db_lookup(buf, DB_GET_ADDR, 0x1E, 0);
     return 0;
 }
 
 s32 btl_unloadCommonData(void) {
-    BtlFiles *p = g_gameState->gameData->ctx.battle->files;
-    db_unregister(p->data[0]);
-    p->data[0] = NULL;
+    BtlFiles *btlFiles = g_gameState->gameData->ctx.battle->files;
+    db_unregister(btlFiles->data[0]);
+    btlFiles->data[0] = NULL;
     return 0;
 }
 
@@ -295,12 +295,12 @@ void btl_load(s32 battleId) {
 }
 
 void btl_cleanup(void) {
-    Battle11C0 *s;
+    Battle11C0 *work;
     s32 i;
-    s32 v;
+    s32 sectorCount;
     s32 w;
 
-    s = g_gameState->gameData->ctx.battle->work;
+    work = g_gameState->gameData->ctx.battle->work;
     DrawSync(0);
     btlui_exit();
     vib_clear();
@@ -318,20 +318,20 @@ void btl_cleanup(void) {
             g_gameState->gameData->chrModels[i].flags &= ~MODEL_SLOT_LOADED;
         }
     }
-    switch (s->returnMode) {
+    switch (work->returnMode) {
     case 1:
     case 3:
     case 5:
         for (i = 1; i >= 0; i--) {
             w = g_gameState->gameData->returnSector[i];
             g_gameState->gameData->sceneSector[i] = w;
-            v = g_gameState->gameData->returnSectors[i];
-            g_gameState->gameData->sceneSectors[i] = v;
+            sectorCount = g_gameState->gameData->returnSectors[i];
+            g_gameState->gameData->sceneSectors[i] = sectorCount;
         }
-        if (s->returnMode == 3) {
-            g_gameState->gameData->worldId = s->returnId;
+        if (work->returnMode == 3) {
+            g_gameState->gameData->worldId = work->returnId;
         } else {
-            g_gameState->gameData->fieldId = s->returnId;
+            g_gameState->gameData->fieldId = work->returnId;
         }
         break;
     case 8:
@@ -343,55 +343,55 @@ void btl_cleanup(void) {
 }
 
 void btl_allocBuffers(void) {
-    Battle11C0 *p;
+    Battle11C0 *work;
     s32 i;
     g_gameState->gameData->ctx.battle->work = (Battle11C0 *)g_modeHeap;
-    p = (Battle11C0 *)g_modeHeap;
-    g_modeHeap = (s32)(p + 1);
-    p->bundle = (u16 *)((s32)g_gameState->gameData->ctx.battle + 0x5800);
-    p->bgData = (s32)p->bundle + 0x2800;
-    p->heapStart = (u8 *)(p->bgData + 0x6000);
-    g_modeHeap = (s32)p->heapStart + 0x35800;
+    work = (Battle11C0 *)g_modeHeap;
+    g_modeHeap = (s32)(work + 1);
+    work->bundle = (u16 *)((s32)g_gameState->gameData->ctx.battle + 0x5800);
+    work->bgData = (s32)work->bundle + 0x2800;
+    work->heapStart = (u8 *)(work->bgData + 0x6000);
+    g_modeHeap = (s32)work->heapStart + 0x35800;
     for (i = 0; i < 4; i++) {
         g_gameState->gameData->ctx.battle->partyBufs[i] = g_modeHeap;
         g_modeHeap += 0x13000;
         g_gameState->gameData->ctx.battle->partyBufEnds[i] = (Battle1538 *)(g_modeHeap - 0x28);
     }
-    p->weaponBufs = (s32 *)(p + 1);
+    work->weaponBufs = (s32 *)(work + 1);
     for (i = 0; i < 4; i++) {
-        p->weaponBufs[i] = g_modeHeap;
+        work->weaponBufs[i] = g_modeHeap;
         g_modeHeap += 0x1000;
     }
-    p->ot[1] = g_modeHeap + 0x400;
-    p->ot[0] = g_modeHeap;
-    p->prims[0] = g_modeHeap + 0x800;
-    p->prims[1] = p->prims[0] + 0x20000;
-    g_modeHeap = p->prims[1] + 0x20000;
-    p->loadBuf = (s32 *)(g_loadAreaEnd + 0x136700);
+    work->ot[1] = g_modeHeap + 0x400;
+    work->ot[0] = g_modeHeap;
+    work->prims[0] = g_modeHeap + 0x800;
+    work->prims[1] = work->prims[0] + 0x20000;
+    g_modeHeap = work->prims[1] + 0x20000;
+    work->loadBuf = (s32 *)(g_loadAreaEnd + 0x136700);
 }
 
 void btl_initReturnInfo(void) {
-    Battle11C0 *p = g_gameState->gameData->ctx.battle->work;
+    Battle11C0 *work = g_gameState->gameData->ctx.battle->work;
     s32 i;
-    p->unk0 = 0;
-    p->freeHeap = 0;
-    p->returnMode = g_gameState->prevMode;
+    work->unk0 = 0;
+    work->freeHeap = 0;
+    work->returnMode = g_gameState->prevMode;
     if (g_gameState->prevMode == GS_MODE_FIELD) {
-        p->returnId = g_gameState->gameData->fieldId;
+        work->returnId = g_gameState->gameData->fieldId;
     } else if (g_gameState->prevMode == GS_MODE_WORLD) {
-        p->returnId = g_gameState->gameData->worldId;
+        work->returnId = g_gameState->gameData->worldId;
     } else {
-        p->returnId = -1;
+        work->returnId = -1;
     }
-    p->encounter = NULL;
-    p->script = NULL;
-    p->texts = NULL;
-    p->bgHeader = 0;
-    p->bgTexAnims = NULL;
-    p->shadows = NULL;
-    p->heap = p->heapStart;
-    for (i = 0; i < sizeof(p->unk7); i++) {
-        p->unk7[i] = 0;
+    work->encounter = NULL;
+    work->script = NULL;
+    work->texts = NULL;
+    work->bgHeader = 0;
+    work->bgTexAnims = NULL;
+    work->shadows = NULL;
+    work->heap = work->heapStart;
+    for (i = 0; i < sizeof(work->unk7); i++) {
+        work->unk7[i] = 0;
     }
     for (i = 0; i < 4; i++) {
         g_gameState->gameData->ctx.battle->partyBufEnds[i]->base = g_gameState->gameData->ctx.battle->partyBufEnds[i]->cursor = g_gameState->gameData->ctx.battle->partyBufs[i];
@@ -413,7 +413,7 @@ s32 btl_initEncounter(Battle11C0 *work, s32 battleId) {
 s32 btl_setupBackground(Battle11C0 *work, s32 battleId) {
     s32 id = btl_findBackgroundId();
     s32 i;
-    RECT r;
+    RECT rect;
     work->bgData = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
     work->bgHeader = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_BTL_BG_HEADER), 0);
     if (db_lookupRegistered(DB_GET_COUNT_IN, id, DB_TEX_ANIM) != 0) {
@@ -423,10 +423,10 @@ s32 btl_setupBackground(Battle11C0 *work, s32 battleId) {
         file_loadTim((s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, (i & 0xFFFF) | DB_TIM), 0));
     }
     if (work->bgTexAnims != NULL) {
-        r.y = 0;
-        r.x = 0;
-        r.h = 0;
-        r.w = 0;
+        rect.y = 0;
+        rect.x = 0;
+        rect.h = 0;
+        rect.w = 0;
         btl_relocTexAnims((TexAnimSet *)work->bgTexAnims, NULL);
     }
     DrawSync(0);
@@ -435,14 +435,14 @@ s32 btl_setupBackground(Battle11C0 *work, s32 battleId) {
 }
 
 s32 btl_reloadPartyStep(s32 flags) {
-    Battle *b = g_gameState->gameData->ctx.battle;
-    s16 *state = (s16 *)&b->work->loadBuf[0x9FD8 / 4];
+    Battle *battle = g_gameState->gameData->ctx.battle;
+    s16 *state = (s16 *)&battle->work->loadBuf[0x9FD8 / 4];
     Unk800AA958 *ld = (Unk800AA958 *)state - 1;
     s32 i;
     Character *ch;
     s32 cid;
     ModelSlot *slot;
-    BtlUnit *u;
+    BtlUnit *unit;
     s32 id;
     s32 texKey;
     s32 weaponModelId;
@@ -451,11 +451,11 @@ s32 btl_reloadPartyStep(s32 flags) {
     s32 *pc;
     s32 animKey;
     s32 texAnims;
-    BtlModel *m;
+    BtlModel *wpnModel;
     u8 parentBone;
 
     if (flags & 0x8000) {
-        b->flags &= ~BTL_FLAG_PARTY_LOADED;
+        battle->flags &= ~BTL_FLAG_PARTY_LOADED;
         *state = 1;
     }
     switch (*state) {
@@ -502,8 +502,8 @@ s32 btl_reloadPartyStep(s32 flags) {
             }
             cid = ch->info.b.id;
             slot = &g_gameState->gameData->chrModels[cid];
-            u = btl_getUnitBySlot(i);
-            if (u == NULL) {
+            unit = btl_getUnitBySlot(i);
+            if (unit == NULL) {
                 continue;
             }
             id = btl_getPartyModelId(i, flags & ~0x10);
@@ -523,29 +523,29 @@ s32 btl_reloadPartyStep(s32 flags) {
             if (texAnims != 0) {
                 btl_relocTexAnims((TexAnimSet *)slot->model->texAnims, (u16 (*)[4])pc);
             }
-            btl_loadPartyMotions(u, g_gameState->gameData->party[i]->info.b.kind, u - g_gameState->gameData->ctx.battle->units);
-            if (u->status & BTL_STATUS_KO) {
-                if (u != g_gameState->gameData->ctx.battle->curCmd->caster) {
-                    u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_KO];
+            btl_loadPartyMotions(unit, g_gameState->gameData->party[i]->info.b.kind, unit - g_gameState->gameData->ctx.battle->units);
+            if (unit->status & BTL_STATUS_KO) {
+                if (unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+                    unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_KO];
                 } else {
                     goto use9;
                 }
-            } else if (u == g_gameState->gameData->ctx.battle->curCmd->caster || ((u->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1)) {
+            } else if (unit == g_gameState->gameData->ctx.battle->curCmd->caster || ((unit->flags >> BTL_UNIT_CMD_WAITING_BIT) & 1)) {
             use9:
-                u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_READY];
+                unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_READY];
             } else {
-                u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+                unit->model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
             }
             slot->actor->frame = 0;
-            m = u->weaponModel;
-            parentBone = m->parentBone;
-            weaponModelId = ((WeaponEntry *)u->weapon)->modelId | DB_MODEL;
-            m->header = (BtlModelHeader *)btl_getWeaponModelHeader(i);
+            wpnModel = unit->weaponModel;
+            parentBone = wpnModel->parentBone;
+            weaponModelId = ((WeaponEntry *)unit->weapon)->modelId | DB_MODEL;
+            wpnModel->header = (BtlModelHeader *)btl_getWeaponModelHeader(i);
             btl_getWeaponTexInfo(weaponModelId, i, &pa, &pb, &pc);
-            btl_applyModelTextures(m, (s16 *)pa, (s16 *)pb);
-            m->motion = 0;
-            m->parent = slot->model;
-            m->parentBone = parentBone;
+            btl_applyModelTextures(wpnModel, (s16 *)pa, (s16 *)pb);
+            wpnModel->motion = 0;
+            wpnModel->parent = slot->model;
+            wpnModel->parentBone = parentBone;
         }
     done:
         g_gameState->gameData->ctx.battle->flags |= BTL_FLAG_PARTY_LOADED;
@@ -559,11 +559,11 @@ s32 btl_loadEncounterFile(Battle11C0 *work, s32 battleId) {
     s32 bundle = (s32)work->bundle;
     GameData *gd = g_gameState->gameData;
     u8 *cd = gd->cdRead;
-    Battle *b = gd->ctx.battle;
+    Battle *battle = gd->ctx.battle;
     cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, work->bundle, 0, 0x2800, 0);
     while (cdRead_update(cd) != 0) {
     }
-    b->files->data[2] = (void *)bundle;
+    battle->files->data[2] = (void *)bundle;
     db_register(bundle, 0);
     gd->depTable = (FileTable *)db_lookup(bundle, DB_GET_AT, DB_DEP_TABLE, 0);
     return 0;
@@ -571,14 +571,14 @@ s32 btl_loadEncounterFile(Battle11C0 *work, s32 battleId) {
 
 s32 btl_loadBackgroundStep(Battle11C0 *work, s32 battleId, Unk800AA08C *task) {
     GameData *gd = g_gameState->gameData;
-    Battle *b = gd->ctx.battle;
+    Battle *battle = gd->ctx.battle;
     u8 *cd = gd->cdRead;
     Unk800AA08C *st;
-    s32 v;
+    s32 bgData;
     GameData *gd2;
     st = task;
     if (battleId == -1) {
-        b->flags &= ~BTL_FLAG_BG_LOADED;
+        battle->flags &= ~BTL_FLAG_BG_LOADED;
         st->state = 2;
     }
     if (st->state == 1) {
@@ -592,10 +592,10 @@ s32 btl_loadBackgroundStep(Battle11C0 *work, s32 battleId, Unk800AA08C *task) {
         st->nextState = 4;
         st->state = 1;
     } else if (st->state == 4) {
-        v = work->bgData;
-        b->files->data[3] = (void *)v;
-        db_register(v, 0);
-        b->flags |= BTL_FLAG_BG_LOADED;
+        bgData = work->bgData;
+        battle->files->data[3] = (void *)bgData;
+        db_register(bgData, 0);
+        battle->flags |= BTL_FLAG_BG_LOADED;
         st->state = 0;
     }
     return st->state;
@@ -604,20 +604,20 @@ s32 btl_loadBackgroundStep(Battle11C0 *work, s32 battleId, Unk800AA08C *task) {
 s32 btl_loadSoundsStep(s16 battleId, s32 flags, Unk800AA24C *task) {
     Unk800AA24C *st;
     GameData *gd;
-    Battle *b;
+    Battle *battle;
     CdReadCtx *cd;
     s16 *ids;
-    s32 n;
-    s16 *p;
+    s32 sector;
+    s16 *found;
     s32 sz;
     s32 bank;
 
     st = task;
     gd = g_gameState->gameData;
-    b = gd->ctx.battle;
+    battle = gd->ctx.battle;
     cd = gd->cdRead;
     if (flags & 0x8000) {
-        b->flags &= ~BTL_FLAG_ENEMIES_LOADED;
+        battle->flags &= ~BTL_FLAG_ENEMIES_LOADED;
         st->state = 2;
     }
 loop:
@@ -630,7 +630,7 @@ loop:
         st->state = task->nextState;
         goto loop;
     case 2:
-        task->buf = b->partyBufs[0];
+        task->buf = battle->partyBufs[0];
         task->fileIds.w[0] = -1;
         task->fileIds.w[1] = -1;
         task->fileIds.w[2] = -1;
@@ -643,15 +643,15 @@ loop:
         goto loop;
     case 5:
         ids = task->fileIds.h;
-        n = btl_findNearestFile(DIR_SOUND_BANKS, (u16 *)ids, (u16 *)&task->fileIds.h[6], (u16 **)&p, &sz);
-        if (n != -1) {
-            cdRead_init(cd, n, sz << 11, (void *)task->buf, 0, -1, 0);
-            if (*p == 0x201) {
+        sector = btl_findNearestFile(DIR_SOUND_BANKS, (u16 *)ids, (u16 *)&task->fileIds.h[6], (u16 **)&found, &sz);
+        if (sector != -1) {
+            cdRead_init(cd, sector, sz << 11, (void *)task->buf, 0, -1, 0);
+            if (*found == 0x201) {
                 task->bank = -1;
             } else {
-                task->bank = p - ids;
+                task->bank = found - ids;
             }
-            *p = -1;
+            *found = -1;
             task->nextState = 6;
             st->state = 1;
             break;
@@ -682,27 +682,27 @@ loop:
 
 s32 btl_loadEnemyModelsStep(s32 battleId, s32 flags, Unk800AA504 *task) {
     Unk800AA504 *st;
-    Battle *b;
+    Battle *battle;
     Unk800AA958Req *req;
-    FileTable *t;
+    FileTable *table;
     FileEntryX *first;
-    FileEntryX *e;
-    s16 *s;
+    FileEntryX *entry;
+    s16 *dup;
     u32 w;
     u32 best;
     s16 *bp;
     FileEntry *bf;
-    s16 *p;
-    FileEntry *f;
+    s16 *cur;
+    FileEntry *file;
     s32 pack;
     s32 dst;
     Unk800AA504Tbl *tbl;
     Unk800AA504Ent *te;
-    ModelTexWord *a;
-    ModelTexPos *r;
+    ModelTexWord *pages;
+    ModelTexPos *texPos;
     Unk800AA504Ent *tf;
     ModelTexWord *bb;
-    s32 n;
+    s32 texCount;
     s32 clutX;
     s32 tim;
     u16 id;
@@ -711,10 +711,10 @@ s32 btl_loadEnemyModelsStep(s32 battleId, s32 flags, Unk800AA504 *task) {
     s32 cnt;
 
     st = task;
-    b = g_gameState->gameData->ctx.battle;
-    req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
+    battle = g_gameState->gameData->ctx.battle;
+    req = (Unk800AA958Req *)&battle->work->loadBuf[0x9FA0 / 4];
     if (flags & 0x8000) {
-        b->flags &= ~BTL_FLAG_ENEMIES_LOADED;
+        battle->flags &= ~BTL_FLAG_ENEMIES_LOADED;
         st->state = 2;
     }
 loop:
@@ -726,31 +726,31 @@ loop:
         st->state = task->nextState;
         goto loop;
     case 2:
-        t = g_gameState->gameData->depTable;
+        table = g_gameState->gameData->depTable;
         ids = task->fileIds.h;
         cnt = 0;
         task->loaded = 0;
-        task->dst = b->partyBufs[0];
+        task->dst = battle->partyBufs[0];
         task->fileIds.w[0] = -1;
         task->fileIds.w[1] = -1;
-        first = (FileEntryX *)t->entries;
-        e = &first[t->count] - 1;
+        first = (FileEntryX *)table->entries;
+        entry = &first[table->count] - 1;
         do {
-            w = e->id.w;
-            if (e->id.b.type == 2) {
+            w = entry->id.w;
+            if (entry->id.b.type == 2) {
                 w &= 0xFFFF;
-                s = &ids[cnt] - 1;
+                dup = &ids[cnt] - 1;
                 do {
-                    if (*s == w) {
+                    if (*dup == w) {
                         goto next;
                     }
-                    s--;
-                } while (s >= ids);
+                    dup--;
+                } while (dup >= ids);
                 ids[cnt++] = w;
             }
         next:
-            e--;
-        } while (e >= first);
+            entry--;
+        } while (entry >= first);
         st->state = 4;
         goto loop;
     case 4:
@@ -758,24 +758,24 @@ loop:
         bp = NULL;
         bf = NULL;
         lo = task->fileIds.h;
-        p = &task->fileIds.h[2];
+        cur = &task->fileIds.h[2];
         do {
-            id = *p;
+            id = *cur;
             if (id != 0xFFFF) {
-                f = dep_find(g_gameState->gameData->depTable, id | DB_MODEL);
-                if ((u32)f->sector < best) {
-                    best = f->sector;
-                    bf = f;
-                    bp = p;
+                file = dep_find(g_gameState->gameData->depTable, id | DB_MODEL);
+                if ((u32)file->sector < best) {
+                    best = file->sector;
+                    bf = file;
+                    bp = cur;
                 }
             }
-            p--;
-        } while (p >= lo);
+            cur--;
+        } while (cur >= lo);
         if (bp != NULL) {
             task->fileId = *bp;
             *bp = -1;
             req->size0 = bf->link << 11;
-            req->dst0 = (s32)b->work->heap;
+            req->dst0 = (s32)battle->work->heap;
             req->size1 = (bf->sectors - bf->link) << 11;
             req->dst1 = task->dst;
             cd_readChunks(g_gameState->imgSector + best, req, 2, 0);
@@ -786,22 +786,22 @@ loop:
         }
         break;
     case 6:
-        pack = db_lookup((s32)b->work->heap, DB_GET_AT, DB_PACK, 0);
+        pack = db_lookup((s32)battle->work->heap, DB_GET_AT, DB_PACK, 0);
         dst = task->dst;
-        tbl = (Unk800AA504Tbl *)db_lookup((s32)b->files->data[2], DB_GET_AT, DB_MODEL_INFO, 0);
+        tbl = (Unk800AA504Tbl *)db_lookup((s32)battle->files->data[2], DB_GET_AT, DB_MODEL_INFO, 0);
         tf = tbl->entries;
         te = &tf[tbl->count] - 1;
         do {
             if (te->modelId == task->fileId) {
-                n = te->tex.b[3];
-                a = (ModelTexWord *)((u8 *)te + (te->tex.w & 0xFFFFFF));
-                bb = a + n;
-                r = (ModelTexPos *)(bb + n);
-                while (n > 0) {
-                    n--;
-                    tim = db_lookup(dst, DB_GET_AT, (n & 0xFFFF) | DB_TIM, 0);
-                    clutX = clut_getX(a[n].clut);
-                    file_setTimPos(tim, clutX, clut_getY(a[n].clut), r[n].x, r[n].y);
+                texCount = te->tex.b[3];
+                pages = (ModelTexWord *)((u8 *)te + (te->tex.w & 0xFFFFFF));
+                bb = pages + texCount;
+                texPos = (ModelTexPos *)(bb + texCount);
+                while (texCount > 0) {
+                    texCount--;
+                    tim = db_lookup(dst, DB_GET_AT, (texCount & 0xFFFF) | DB_TIM, 0);
+                    clutX = clut_getX(pages[texCount].clut);
+                    file_setTimPos(tim, clutX, clut_getY(pages[texCount].clut), texPos[texCount].x, texPos[texCount].y);
                     file_loadTim(tim);
                 }
                 break;
@@ -809,15 +809,15 @@ loop:
             te--;
         } while (te >= tf);
         g_modeHeap = pack + db_getSize(pack);
-        b->work->heap = (u8 *)g_modeHeap;
+        battle->work->heap = (u8 *)g_modeHeap;
         task->dst += db_getSize(dst);
-        *(b->files->enemyModels + task->loaded) = (void *)pack;
+        *(battle->files->enemyModels + task->loaded) = (void *)pack;
         db_register(pack, 0);
         task->loaded++;
         st->state = 4;
         goto loop;
     case 7:
-        b->flags |= BTL_FLAG_ENEMIES_LOADED;
+        battle->flags |= BTL_FLAG_ENEMIES_LOADED;
         st->state = 0;
         break;
     }
@@ -826,25 +826,25 @@ loop:
 
 s32 btl_loadWeaponModelsStep(s32 flags, Unk800AA958 *task) {
     Unk800AA958 *st;
-    Battle *b;
+    Battle *battle;
     Unk800AA958Req *req;
-    u16 *p;
-    u16 *q;
-    s32 n;
+    u16 *found;
+    u16 *dstId;
+    s32 sector;
     s32 sz;
     s32 i;
     s16 j;
     void **pp;
     s32 pack;
-    Character **c;
-    Character **e;
+    Character **chr;
+    Character **first;
     GameData *gd;
 
     st = task;
-    b = g_gameState->gameData->ctx.battle;
-    req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
+    battle = g_gameState->gameData->ctx.battle;
+    req = (Unk800AA958Req *)&battle->work->loadBuf[0x9FA0 / 4];
     if (flags & 0x8000) {
-        b->flags &= ~BTL_FLAG_PARTY_LOADED;
+        battle->flags &= ~BTL_FLAG_PARTY_LOADED;
         st->state = 2;
     }
 loop:
@@ -859,30 +859,30 @@ loop:
             task->fileIds.w[0] = -1;
             task->fileIds.w[1] = -1;
             gd = g_gameState->gameData;
-            e = gd->party;
-            c = &gd->party[3];
-            q = &task->fileIds.h[3];
+            first = gd->party;
+            chr = &gd->party[3];
+            dstId = &task->fileIds.h[3];
             do {
-                if (*c != NULL) {
-                    *q = g_weaponTable[(*c)->equip[0]].modelId;
+                if (*chr != NULL) {
+                    *dstId = g_weaponTable[(*chr)->equip[0]].modelId;
                 }
-                c--;
-                q--;
-            } while (c >= e);
+                chr--;
+                dstId--;
+            } while (chr >= first);
             st->state = 5;
             goto loop;
         case 5:
-            n = btl_findNearestFile(DIR_WEAPON_MODELS, task->fileIds.h, &task->fileIds.h[3], &p, &sz);
-            if (n != -1) {
-                *(s16 *)p = -1;
-                i = p - task->fileIds.h;
+            sector = btl_findNearestFile(DIR_WEAPON_MODELS, task->fileIds.h, &task->fileIds.h[3], &found, &sz);
+            if (sector != -1) {
+                *(s16 *)found = -1;
+                i = found - task->fileIds.h;
                 task->slot = i;
-                task->buf = b->work->weaponBufs[i];
+                task->buf = battle->work->weaponBufs[i];
                 req->size0 = 0x1000;
                 req->dst0 = task->buf;
                 req->size1 = (sz << 11) - 0x1000;
-                req->dst1 = b->partyBufs[i];
-                cd_readChunks(g_gameState->imgSector + n, req, 2, 0);
+                req->dst1 = battle->partyBufs[i];
+                cd_readChunks(g_gameState->imgSector + sector, req, 2, 0);
                 task->nextState = 7;
                 st->state = 1;
             } else {
@@ -892,7 +892,7 @@ loop:
         case 7:
             j = task->slot;
             pack = btl_uploadModelTextures(task, req, j, 0);
-            pp = &b->files->weaponFiles[j];
+            pp = &battle->files->weaponFiles[j];
             *pp = (void *)pack;
             db_register(pack, 0);
             st->state = 5;
@@ -909,26 +909,26 @@ end:
 s32 btl_loadPartyModelsStep(s32 flags, Unk800AA958 *task) {
     s32 i;
     Unk800AA958 *st;
-    Battle *b;
+    Battle *battle;
     Unk800AA958Req *req;
     s16 *h;
-    s16 *p;
-    s16 *q;
+    s16 *match;
+    s16 *cur;
     s16 *p2;
     s32 k;
     s32 sz;
     s32 sz2;
-    s32 n;
+    s32 sector;
     s16 j;
     s32 pack;
     void **pp;
-    FileEntry16 *f;
+    FileEntry16 *file;
 
     st = task;
-    b = g_gameState->gameData->ctx.battle;
-    req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
+    battle = g_gameState->gameData->ctx.battle;
+    req = (Unk800AA958Req *)&battle->work->loadBuf[0x9FA0 / 4];
     if (flags & 0x8000) {
-        b->flags &= ~BTL_FLAG_PARTY_LOADED;
+        battle->flags &= ~BTL_FLAG_PARTY_LOADED;
         st->state = 1;
     }
 loop:
@@ -941,54 +941,54 @@ loop:
         goto loop;
     case 1:
         h = (s16 *)task->fileIds.h;
-        q = (s16 *)&task->fileIds.h[3];
+        cur = (s16 *)&task->fileIds.h[3];
         task->fileIds.w[0] = -1;
         task->fileIds.w[1] = -1;
         task->fileIds.w[2] = 0;
         task->fileIds.w[3] = 0;
         do {
-            *q = btl_getPartyModelId(q - h, flags & ~0x10);
-            q--;
-        } while (q >= h);
+            *cur = btl_getPartyModelId(cur - h, flags & ~0x10);
+            cur--;
+        } while (cur >= h);
         st->state = 5;
         goto loop;
     found:
-        req->dst1 = b->partyBufs[k];
+        req->dst1 = battle->partyBufs[k];
         goto done;
     case 5:
         h = (s16 *)task->fileIds.h;
-        q = (s16 *)&task->fileIds.h[3];
-        n = btl_findNearestFile(DIR_CHAR_MODELS, (u16 *)h, (u16 *)q, (u16 **)&p, &sz);
-        if (n != -1) {
+        cur = (s16 *)&task->fileIds.h[3];
+        sector = btl_findNearestFile(DIR_CHAR_MODELS, (u16 *)h, (u16 *)cur, (u16 **)&match, &sz);
+        if (sector != -1) {
             i = -1;
-            f = (FileEntry16 *)file_find(DIR_CHAR_MODELS, *p);
-            p[0] = i;
-            p[4] = i;
-            task->slot = p - h;
-            task->buf = b->partyBufs[task->slot];
+            file = (FileEntry16 *)file_find(DIR_CHAR_MODELS, *match);
+            match[0] = i;
+            match[4] = i;
+            task->slot = match - h;
+            task->buf = battle->partyBufs[task->slot];
             req->dst1 = 0;
-            if (btl_findNearestFile(DIR_CHAR_MODELS, (u16 *)h, (u16 *)q, (u16 **)&p2, &sz2) != i) {
-                q = (s16 *)&task->fileIds.h[7];
+            if (btl_findNearestFile(DIR_CHAR_MODELS, (u16 *)h, (u16 *)cur, (u16 **)&p2, &sz2) != i) {
+                cur = (s16 *)&task->fileIds.h[7];
                 i = p2 - h;
                 h = (s16 *)&task->fileIds.h[4];
                 do {
-                    if (*q != -1) {
-                        k = q - h;
+                    if (*cur != -1) {
+                        k = cur - h;
                         if (k != i) {
                             goto found;
                         }
                     }
-                    q--;
-                } while (q >= h);
+                    cur--;
+                } while (cur >= h);
             }
         done:
             if (req->dst1 == 0) {
-                req->dst1 = (s32)b->work->loadBuf;
+                req->dst1 = (s32)battle->work->loadBuf;
             }
-            req->size0 = f->idHi << 11;
+            req->size0 = file->idHi << 11;
             req->dst0 = task->buf;
-            req->size1 = (sz - f->idHi) << 11;
-            cd_readChunks(g_gameState->imgSector + n, req, 2, 0);
+            req->size1 = (sz - file->idHi) << 11;
+            cd_readChunks(g_gameState->imgSector + sector, req, 2, 0);
             task->nextState = 7;
             st->state = 2;
         } else {
@@ -1019,16 +1019,16 @@ u32 btl_findNearestFile(u32 dir, u16 *first, u16 *last, u16 **outFound, s32 *out
     u32 start;
     s32 sectors;
     s32 dbKind;
-    FileEntry *f;
+    FileEntry *file;
     do {
         id = *last;
         start = -1;
         if (id != 0xFFFF) {
             sectors = 0;
-            f = file_find(dir, id);
-            if (f != NULL) {
-                start = f->sector;
-                sectors = f->link - start;
+            file = file_find(dir, id);
+            if (file != NULL) {
+                start = file->sector;
+                sectors = file->link - start;
             } else {
                 dbKind = 0;
                 switch (dir) {
@@ -1063,10 +1063,10 @@ u32 btl_findNearestFile(u32 dir, u16 *first, u16 *last, u16 **outFound, s32 *out
                     dbKind = DB_MUSIC >> 16;
                     break;
                 }
-                f = dep_find(g_gameState->gameData->depTable, (dbKind << 16) | id);
-                if (f != NULL) {
-                    start = f->sector;
-                    sectors = f->sectors;
+                file = dep_find(g_gameState->gameData->depTable, (dbKind << 16) | id);
+                if (file != NULL) {
+                    start = file->sector;
+                    sectors = file->sectors;
                 }
             }
             if (start < best) {
@@ -1086,10 +1086,10 @@ s32 btl_uploadModelTextures(Unk800AA958 *task, Unk800AA958Req *req, s32 slot, s3
     s32 dst;
     Unk800AA504Tbl *tbl;
     Unk800AA504Ent *te;
-    s32 n;
-    ModelTexWord *a;
-    ModelTexWord *b;
-    ModelTexPos *r;
+    s32 texCount;
+    ModelTexWord *pages;
+    ModelTexWord *uvs;
+    ModelTexPos *texPos;
     s32 x;
     s32 y;
     s32 clutY;
@@ -1100,69 +1100,69 @@ s32 btl_uploadModelTextures(Unk800AA958 *task, Unk800AA958Req *req, s32 slot, s3
     dst = req->dst1;
     tbl = (Unk800AA504Tbl *)db_lookup(pack, DB_GET_AT, DB_MODEL_INFO, 0);
     te = tbl->entries;
-    n = te->tex.b[3];
-    a = (ModelTexWord *)((u8 *)te + (te->tex.w & 0xFFFFFF));
-    b = a + n;
-    r = (ModelTexPos *)(b + n);
-    if (n > 0) {
+    texCount = te->tex.b[3];
+    pages = (ModelTexWord *)((u8 *)te + (te->tex.w & 0xFFFFFF));
+    uvs = pages + texCount;
+    texPos = (ModelTexPos *)(uvs + texCount);
+    if (texCount > 0) {
         do {
-            n--;
+            texCount--;
             x = slot * 64 + 0xC0;
             y = slot * 3;
-            tim = db_lookup(dst, DB_GET_AT, (n & 0xFFFF) | DB_TIM, 0);
+            tim = db_lookup(dst, DB_GET_AT, (texCount & 0xFFFF) | DB_TIM, 0);
             if (isParty) {
-                clutY = y + 0xE5 + r[n].y;
-                texY = (r[n].y << 7) + 0x80;
+                clutY = y + 0xE5 + texPos[texCount].y;
+                texY = (texPos[texCount].y << 7) + 0x80;
             } else {
                 clutY = y + 0xE8;
                 texY = 0x1D0;
             }
             file_setTimPos(tim, VRAM_MODEL_CLUT_X, clutY, x, texY);
             file_loadTim(tim);
-            a[n].tpage = getTPage(1, 0, x, texY);
-            a[n].clut = getClut(VRAM_MODEL_CLUT_X, clutY);
-            b[n].tpage = 0;
-            b[n].clut = texY % 256 - texY % 128;
-            r[n].w = x;
-            r[n].x = x;
-            r[n].h = texY;
-            r[n].y = texY;
-        } while (n > 0);
+            pages[texCount].tpage = getTPage(1, 0, x, texY);
+            pages[texCount].clut = getClut(VRAM_MODEL_CLUT_X, clutY);
+            uvs[texCount].tpage = 0;
+            uvs[texCount].clut = texY % 256 - texY % 128;
+            texPos[texCount].w = x;
+            texPos[texCount].x = x;
+            texPos[texCount].h = texY;
+            texPos[texCount].y = texY;
+        } while (texCount > 0);
     }
     return pack;
 }
 
 s32 btl_unregisterFiles(void **files, s32 last) {
-    void **p = &files[last];
+    void **cur = &files[last];
     do {
-        if (*p != NULL) {
-            db_unregister(*p);
+        if (*cur != NULL) {
+            db_unregister(*cur);
         }
-        *p = NULL;
-        p--;
-    } while (p >= files);
+        *cur = NULL;
+        cur--;
+    } while (cur >= files);
     return 0;
 }
 
 s32 btl_findBackgroundId(void) {
-    FileTable *t = g_gameState->gameData->depTable;
-    FileEntry *base = t->entries;
-    FileEntry *e = &base[t->count] - 1;
-    s32 v;
+    FileTable *table = g_gameState->gameData->depTable;
+    FileEntry *base = table->entries;
+    FileEntry *entry = &base[table->count] - 1;
+    s32 fileId;
     do {
-        v = e->id;
-        if ((u8)(e->id >> 16) == 0xC) {
-            return v;
+        fileId = entry->id;
+        if ((u8)(entry->id >> 16) == 0xC) {
+            return fileId;
         }
-        e--;
-    } while (e >= base);
+        entry--;
+    } while (entry >= base);
     return -1;
 }
 
 s32 btl_getDepSectors(s32 fileId, s32 *outSector, s32 *outSectors) {
-    FileEntry *e = dep_find(g_gameState->gameData->depTable, fileId);
-    *outSector = e->sector;
-    *outSectors = e->sectors;
+    FileEntry *entry = dep_find(g_gameState->gameData->depTable, fileId);
+    *outSector = entry->sector;
+    *outSectors = entry->sectors;
     return fileId;
 }
 
@@ -1187,27 +1187,27 @@ s32 btl_reloadParty(s32 begin) {
 }
 
 void btl_unloadPartyModels(void) {
-    Battle *b = g_gameState->gameData->ctx.battle;
-    BtlFiles *p = b->files;
-    btl_unregisterFiles(p->weaponFiles, 3);
-    btl_unregisterFiles(p->partyModels, 3);
+    Battle *battle = g_gameState->gameData->ctx.battle;
+    BtlFiles *btlFiles = battle->files;
+    btl_unregisterFiles(btlFiles->weaponFiles, 3);
+    btl_unregisterFiles(btlFiles->partyModels, 3);
     btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->partyModels, 3);
     btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->weaponFiles, 3);
-    b->flags &= ~BTL_FLAG_PARTY_LOADED;
+    battle->flags &= ~BTL_FLAG_PARTY_LOADED;
 }
 
 void btl_unloadEnemyModels(void) {
-    Battle *b = g_gameState->gameData->ctx.battle;
-    btl_unregisterFiles(b->files->enemyModels, 2);
+    Battle *battle = g_gameState->gameData->ctx.battle;
+    btl_unregisterFiles(battle->files->enemyModels, 2);
     btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->enemyModels, 2);
-    b->flags &= ~BTL_FLAG_ENEMIES_LOADED;
+    battle->flags &= ~BTL_FLAG_ENEMIES_LOADED;
 }
 
 s16 btl_loadModelsStep(s32 begin) {
-    GameData *g = g_gameState->gameData;
-    s16 *state = (s16 *)&g->ctx.battle->work->loadBuf[0x9FD8 / 4];
+    GameData *gd = g_gameState->gameData;
+    s16 *state = (s16 *)&gd->ctx.battle->work->loadBuf[0x9FD8 / 4];
     s16 *st;
-    s32 battleId = (s16)g->battleId;
+    s32 battleId = (s16)gd->battleId;
     Unk800AA958 *ld;
     s16 step;
 
@@ -1250,12 +1250,12 @@ s32 btl_findWeaponModel(s32 modelId, s32 slot) {
 void btl_getWeaponTexInfo(s32 modelId, s32 slot, s32 **outTexPages, s32 **outUvOffsets, s32 **outTexPos) {
     s32 weaponBuf = g_gameState->gameData->ctx.battle->work->weaponBufs[slot];
     Unk800AB758 *h = (Unk800AB758 *)(db_lookup(db_lookup(weaponBuf, DB_GET_AT, DB_PACK, 0), DB_GET_AT, DB_MODEL_INFO, 0) + 4);
-    s32 *p = (s32 *)((u8 *)h + h->tablesOfs);
-    s32 n = h->count;
-    *outTexPages = p;
-    p += n;
-    *outUvOffsets = p;
-    *outTexPos = p + n;
+    s32 *tables = (s32 *)((u8 *)h + h->tablesOfs);
+    s32 texCount = h->count;
+    *outTexPages = tables;
+    tables += texCount;
+    *outUvOffsets = tables;
+    *outTexPos = tables + texCount;
 }
 
 u32 btl_registerModel(s32 modelId, s32 obj) {
@@ -1313,7 +1313,7 @@ u32 btl_registerModel(s32 modelId, s32 obj) {
 }
 
 s32 btl_getPartyModelId(s32 slot, s32 flags) {
-    BtlUnit *u;
+    BtlUnit *unit;
     s32 tranceFlag;
     s32 idx;
 
@@ -1322,9 +1322,9 @@ s32 btl_getPartyModelId(s32 slot, s32 flags) {
         return -1;
     }
     if (!(flags & 0x20)) {
-        u = btl_getUnitBySlot(slot);
-        if (u != NULL) {
-            tranceFlag = ((s16)u->modelId != g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F : CHR_KIND_NONE]) << 4;
+        unit = btl_getUnitBySlot(slot);
+        if (unit != NULL) {
+            tranceFlag = ((s16)unit->modelId != g_btlCharModelIds[(unit->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F : CHR_KIND_NONE]) << 4;
         }
     }
     idx = g_gameState->gameData->party[slot]->info.w >> CHR_INFO_KIND_SHIFT;
@@ -1347,31 +1347,31 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
     s16 *state;
     Unk800AA958Req *req;
     s32 k;
-    void *v;
-    FileEntry16 *f;
+    void *partyBuf;
+    FileEntry16 *file;
     s32 id;
     s32 id2;
     s32 model;
     s32 img;
-    Unk800ABBC4Tbl *t;
-    Unk800ABBC4Ent *e;
-    Unk800ABBC4Tex *a;
-    Unk800ABBC4Tex *b;
-    Unk800ABBC4Rect *r;
+    Unk800ABBC4Tbl *table;
+    Unk800ABBC4Ent *entry;
+    Unk800ABBC4Tex *pages;
+    Unk800ABBC4Tex *uvs;
+    Unk800ABBC4Rect *texPos;
     s32 i;
     s32 j;
-    s32 n;
+    s32 texCount;
     s32 x;
     s32 y;
     s32 h;
-    s32 s;
+    s32 clutRow;
     s32 cid;
     ModelSlot *ent;
-    BtlUnit *u;
+    BtlUnit *unit;
     u8 *pa;
     u8 *pb;
     u8 *pc;
-    s32 p;
+    s32 animKey;
     s32 w;
     u8 *src;
     s32 sz;
@@ -1386,14 +1386,14 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
     switch (*state) {
     case 1:
         k = slot;
-        v = (void *)g_gameState->gameData->ctx.battle->partyBufs[k];
+        partyBuf = (void *)g_gameState->gameData->ctx.battle->partyBufs[k];
         st->nextState = 0;
         st->unk4 = 0;
         st->unk6 = 0;
         st->unk8 = -1;
         st->unkE = 0;
-        st->buf = (s32)v;
-        st->unk20 = (s32)v;
+        st->buf = (s32)partyBuf;
+        st->unk20 = (s32)partyBuf;
         if (*(g_gameState->gameData->ctx.battle->files->partyModels + k) != NULL) {
             db_unregister(*(g_gameState->gameData->ctx.battle->files->partyModels + k));
             *(g_gameState->gameData->ctx.battle->files->partyModels + k) = NULL;
@@ -1406,12 +1406,12 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
         }
         break;
     case 3:
-        f = (FileEntry16 *)file_find(DIR_CHAR_MODELS, btl_getPartyModelId(slot, flags & ~0x10));
-        src = g_gameState->imgSector + f->sector;
-        sz = f->endSector - f->sector;
-        req->size0 = f->idHi << 11;
+        file = (FileEntry16 *)file_find(DIR_CHAR_MODELS, btl_getPartyModelId(slot, flags & ~0x10));
+        src = g_gameState->imgSector + file->sector;
+        sz = file->endSector - file->sector;
+        req->size0 = file->idHi << 11;
         req->dst0 = st->buf;
-        req->size1 = (sz - f->idHi) << 11;
+        req->size1 = (sz - file->idHi) << 11;
         req->dst1 = (s32)g_gameState->gameData->ctx.battle->work->loadBuf;
         cd_readChunks((s32)src, req, 2, 0);
         st->nextState = 5;
@@ -1421,31 +1421,31 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
         id = btl_getPartyModelId(slot, flags & ~0x10);
         model = db_lookup(st->buf, DB_GET_AT, DB_PACK, 0);
         img = (s32)g_gameState->gameData->ctx.battle->work->loadBuf;
-        t = (Unk800ABBC4Tbl *)db_lookup(model, DB_GET_AT, DB_MODEL_INFO, 0);
-        e = t->entries;
-        for (i = 0; i < t->count; i++) {
-            if (e[i].modelId == (u16)id) {
-                e = &e[i];
-                n = e->tex.b[3];
-                a = (Unk800ABBC4Tex *)((u8 *)e + (e->tex.w & 0xFFFFFF));
-                b = a + n;
-                r = (Unk800ABBC4Rect *)(b + n);
-                for (j = 0; j < n; j++) {
+        table = (Unk800ABBC4Tbl *)db_lookup(model, DB_GET_AT, DB_MODEL_INFO, 0);
+        entry = table->entries;
+        for (i = 0; i < table->count; i++) {
+            if (entry[i].modelId == (u16)id) {
+                entry = &entry[i];
+                texCount = entry->tex.b[3];
+                pages = (Unk800ABBC4Tex *)((u8 *)entry + (entry->tex.w & 0xFFFFFF));
+                uvs = pages + texCount;
+                texPos = (Unk800ABBC4Rect *)(uvs + texCount);
+                for (j = 0; j < texCount; j++) {
                     w = db_lookup(img, DB_GET_AT, (j & 0xFFFF) | DB_TIM, 0);
-                    s = r[j].y + 0xE5;
-                    y = slot * 3 + s;
-                    h = (r[j].y << 7) + 0x80;
+                    clutRow = texPos[j].y + 0xE5;
+                    y = slot * 3 + clutRow;
+                    h = (texPos[j].y << 7) + 0x80;
                     x = (slot << 6) + 0xC0;
                     file_setTimPos(w, VRAM_MODEL_CLUT_X, y, x, h);
                     file_loadTim(w);
-                    a[j].tpage = ((h & 0x100) >> 4) | (s16)(((x & 0x3FF) >> 6) | 0x80) | ((h & 0x200) << 2);
-                    a[j].clut = (y << 6) | 0x10;
-                    b[j].tpage = 0;
-                    b[j].clut = h % 256 - h % 128;
-                    r[j].w = x;
-                    r[j].x = x;
-                    r[j].h = h;
-                    r[j].y = h;
+                    pages[j].tpage = ((h & 0x100) >> 4) | (s16)(((x & 0x3FF) >> 6) | 0x80) | ((h & 0x200) << 2);
+                    pages[j].clut = (y << 6) | 0x10;
+                    uvs[j].tpage = 0;
+                    uvs[j].clut = h % 256 - h % 128;
+                    texPos[j].w = x;
+                    texPos[j].x = x;
+                    texPos[j].h = h;
+                    texPos[j].y = h;
                 }
                 break;
             }
@@ -1457,8 +1457,8 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
     case 6:
         cid = g_gameState->gameData->party[slot]->info.b.id;
         ent = &g_gameState->gameData->chrModels[cid];
-        u = btl_getUnitBySlot(slot);
-        if (u != NULL) {
+        unit = btl_getUnitBySlot(slot);
+        if (unit != NULL) {
             id2 = btl_getPartyModelId(slot, flags & ~0x10);
             ent->model->header = db_lookupRegistered(DB_GET_ADDR, id2, 0);
             k = (id2 & 0xFFFFFF) | (cid << 24);
@@ -1466,9 +1466,9 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
             pb = db_getModelUvOffsets(k);
             pc = db_getModelTexPos(k);
             btl_applyModelTextures(ent->model, (s16 *)pa, (s16 *)pb);
-            p = (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id2, DB_TEX_ANIM);
-            if (p != -1) {
-                anim = (s32)db_lookupRegistered(DB_GET_ADDR, p, 0);
+            animKey = (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id2, DB_TEX_ANIM);
+            if (animKey != -1) {
+                anim = (s32)db_lookupRegistered(DB_GET_ADDR, animKey, 0);
             } else {
                 anim = 0;
             }
@@ -1476,15 +1476,15 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
             if (anim != 0) {
                 btl_relocTexAnims((TexAnimSet *)ent->model->texAnims, (u16 (*)[4])pc);
             }
-            btl_loadPartyMotions(u, g_gameState->gameData->party[slot]->info.b.kind,
-                          u - g_gameState->gameData->ctx.battle->units);
-            if (u->status & BTL_STATUS_KO) {
-                u->model->motion = (BtlMotion *)u->motions[BTL_MOTION_KO];
+            btl_loadPartyMotions(unit, g_gameState->gameData->party[slot]->info.b.kind,
+                          unit - g_gameState->gameData->ctx.battle->units);
+            if (unit->status & BTL_STATUS_KO) {
+                unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_KO];
             } else {
-                u->model->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+                unit->model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
             }
             ent->actor->frame = 0;
-            u->weaponModel->parent = ent->model;
+            unit->weaponModel->parent = ent->model;
         }
         *state = 0;
         break;
@@ -1503,26 +1503,26 @@ s32 btl_getAnimFileId(s32 modelId) {
 s32 btl_getModelTexInfo(u32 key, s32 **outTexPages, s32 **outUvOffsets, s32 **outTexPos) {
     Unk800AB758 *h;
     u8 *dst;
-    s32 n;
+    s32 size;
 
     h = (Unk800AB758 *)db_findModelInfo(key);
     *outTexPages = (s32 *)((u8 *)h + h->tablesOfs);
     *outUvOffsets = *outTexPages + h->count;
     *outTexPos = *outUvOffsets + h->count;
     if ((s32)(key >> 24) >= 9) {
-        n = h->count * 4;
+        size = h->count * 4;
         dst = g_gameState->gameData->ctx.battle->work->heap;
-        memcpy(dst, (u8 *)*outTexPages, n);
+        memcpy(dst, (u8 *)*outTexPages, size);
         *outTexPages = (s32 *)dst;
-        g_gameState->gameData->ctx.battle->work->heap += n;
+        g_gameState->gameData->ctx.battle->work->heap += size;
     }
     return 0;
 }
 
 u8 *btl_drawShadow(BtlShadow *shadows, s32 slot, s32 groundY, s32 bones, u8 *prim) {
-    MATRIX m;
+    MATRIX mtx;
     s32 pad;
-    SVECTOR v;
+    SVECTOR corner;
     s32 z[9];
     BtlShadow *shadow;
     BtlObj *obj;
@@ -1536,7 +1536,7 @@ u8 *btl_drawShadow(BtlShadow *shadows, s32 slot, s32 groundY, s32 bones, u8 *pri
     if (obj->flags & MODEL_SLOT_NO_SHADOW) {
         return prim;
     }
-    btl_calcShadowMatrix((Unk800AD4E4 *)shadow, obj, &m, groundY, bones & 0xFF, (bones >> 8) & 0xFF);
+    btl_calcShadowMatrix((Unk800AD4E4 *)shadow, obj, &mtx, groundY, bones & 0xFF, (bones >> 8) & 0xFF);
     for (i = 0; i < 4; i++) {
         SHADOW_QUAD(i) = (POLY_FT4 *)prim;
         setPolyFT4(SHADOW_QUAD(i));
@@ -1548,13 +1548,13 @@ u8 *btl_drawShadow(BtlShadow *shadows, s32 slot, s32 groundY, s32 bones, u8 *pri
     }
     tu = 0;
     tv = 0xE0;
-    gte_MulMatrix0(&g_gameState->gameData->viewMatrix, &m, &m);
+    gte_MulMatrix0(&g_gameState->gameData->viewMatrix, &mtx, &mtx);
     gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
-    gte_ldlv0(m.t);
+    gte_ldlv0(mtx.t);
     gte_rtv0tr();
-    gte_stir(m.t);
-    gte_SetRotMatrix(&m);
-    gte_SetTransMatrix(&m);
+    gte_stir(mtx.t);
+    gte_SetRotMatrix(&mtx);
+    gte_SetTransMatrix(&mtx);
     SHADOW_PT(-0x1000, 0x1000);
     gte_stsxy(&SHADOW_QUAD(0)->x0);
     gte_stsz(&z[0]);
@@ -1655,22 +1655,22 @@ void btl_calcShadowMatrix(Unk800AD4E4 *shadow, BtlObj *obj, MATRIX *out, s32 gro
     VECTOR up;
     VECTOR fwd;
     VECTOR dir;
-    MATRIX m;
-    SVECTOR v;
+    MATRIX boneMtx;
+    SVECTOR downVec;
     s32 *p0;
     s32 *p1;
 
     if (bone == dirBone) {
-        COPY_MATRIX(&m, &((MATRIX *)obj->model->bones)[bone]);
-        m.t[2] = 0;
-        m.t[1] = 0;
-        m.t[0] = 0;
-        v.vx = 0;
-        v.vy = -0x1000;
-        v.vz = 0;
-        gte_SetRotMatrix(&m);
-        gte_SetTransMatrix(&m);
-        gte_ldv0(&v);
+        COPY_MATRIX(&boneMtx, &((MATRIX *)obj->model->bones)[bone]);
+        boneMtx.t[2] = 0;
+        boneMtx.t[1] = 0;
+        boneMtx.t[0] = 0;
+        downVec.vx = 0;
+        downVec.vy = -0x1000;
+        downVec.vz = 0;
+        gte_SetRotMatrix(&boneMtx);
+        gte_SetTransMatrix(&boneMtx);
+        gte_ldv0(&downVec);
         gte_rtv0tr();
         gte_stlvnl(&dir);
         dir.vy = 0;
@@ -1719,7 +1719,7 @@ void btl_calcShadowMatrix(Unk800AD4E4 *shadow, BtlObj *obj, MATRIX *out, s32 gro
 s32 btl_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     s32 size;
     GameData *gx, *ga, *gb, *gc, *gd, *ge, *gf, *gg, *gh, *gi, *gj;
-    Battle1538 *e;
+    Battle1538 *bufEnd;
     s32 kind;
     s32 id;
     s32 bank;
@@ -1885,9 +1885,9 @@ s32 btl_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
         case SND_CMD_LOAD:
             if (param1 >= 4) {
                 gc = g_gameState->gameData;
-                e = gc->ctx.battle->partyBufEnds[param1 % 4];
-                gc->soundLoadDest = e->cursor;
-                g_gameState->gameData->soundLoadChunk = 0x12FD8 - (e->cursor - e->base);
+                bufEnd = gc->ctx.battle->partyBufEnds[param1 % 4];
+                gc->soundLoadDest = bufEnd->cursor;
+                g_gameState->gameData->soundLoadChunk = 0x12FD8 - (bufEnd->cursor - bufEnd->base);
                 gx = g_gameState->gameData;
             } else {
                 g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->ctx.battle->work->heap;
@@ -1986,24 +1986,24 @@ stream:
 }
 
 s32 btl_getWeaponSound(s32 slot, u16 index) {
-    void **p;
-    GameData *g = g_gameState->gameData;
-    s32 f;
-    if (g->party[slot] == 0) {
+    void **fileSlot;
+    GameData *gd = g_gameState->gameData;
+    s32 pack;
+    if (gd->party[slot] == 0) {
         return -1;
     }
-    p = &g->ctx.battle->files->weaponFiles[slot];
-    f = (s32)*p;
-    if (f == 0) {
+    fileSlot = &gd->ctx.battle->files->weaponFiles[slot];
+    pack = (s32)*fileSlot;
+    if (pack == 0) {
         return -1;
     }
-    return db_lookup(f, DB_GET_KEY_AT, index | DB_SE, 0);
+    return db_lookup(pack, DB_GET_KEY_AT, index | DB_SE, 0);
 }
 
 s32 btl_getWeaponSoundBank(s32 slot) {
-    Character *c = g_gameState->gameData->party[slot];
+    Character *chr = g_gameState->gameData->party[slot];
 
-    if (c == NULL) {
+    if (chr == NULL) {
         /* two nested do-while(0) wrappers (macros?): they change the block structure enough to load the table base after the NULL check */
         do {
             do {
@@ -2011,43 +2011,43 @@ s32 btl_getWeaponSoundBank(s32 slot) {
             } while (0);
         } while (0);
     }
-    return ((FileEntry16 *)file_find(DIR_WEAPON_MODELS, g_weaponTable[c->equip[0]].modelId))->idHi | DB_SOUND_BANK;
+    return ((FileEntry16 *)file_find(DIR_WEAPON_MODELS, g_weaponTable[chr->equip[0]].modelId))->idHi | DB_SOUND_BANK;
 }
 
 s32 btl_getSoundFileSectors(s32 fileId, s32 *outSize) {
-    FileEntry *e;
-    FileEntry *f;
+    FileEntry *depEntry;
+    FileEntry *file;
     if (((fileId >> 16) & 0xFF) == 7) {
-        e = dep_find(g_gameState->gameData->depTable, fileId);
+        depEntry = dep_find(g_gameState->gameData->depTable, fileId);
         if (outSize != 0) {
-            *outSize = e->sectors << 11;
+            *outSize = depEntry->sectors << 11;
         }
-        return e->sector;
+        return depEntry->sector;
     } else {
-        f = file_find(DIR_SOUND_BANKS, fileId);
+        file = file_find(DIR_SOUND_BANKS, fileId);
         if (outSize != 0) {
-            *outSize = (f->link - f->sector) << 11;
+            *outSize = (file->link - file->sector) << 11;
         }
-        return f->sector;
+        return file->sector;
     }
 }
 
 s16 btl_loadWeaponSoundStep(s32 slot, BtlStepTask *task) {
-    BtlAnimEvtList *l;
+    BtlAnimEvtList *evtList;
     s32 i;
-    BtlAnimEvt *e;
-    void **m;
+    BtlAnimEvt *evts;
+    void **fileSlot;
 
     switch (task->step) {
     case 1:
         return ++task->step;
     case 2:
-        m = &g_gameState->gameData->ctx.battle->files->weaponFiles[slot];
-        l = (BtlAnimEvtList *)db_lookup((s32)*m, DB_GET_AT, DB_DEP_TABLE, 0);
-        e = l->events;
-        for (i = l->count - 1; i >= 0; i--) {
-            if (e[i].data.b.kind == 9) {
-                btl_soundCmd(SND_BANK_LOAD, e[i].data.w, slot + 4, 0, 0);
+        fileSlot = &g_gameState->gameData->ctx.battle->files->weaponFiles[slot];
+        evtList = (BtlAnimEvtList *)db_lookup((s32)*fileSlot, DB_GET_AT, DB_DEP_TABLE, 0);
+        evts = evtList->events;
+        for (i = evtList->count - 1; i >= 0; i--) {
+            if (evts[i].data.b.kind == 9) {
+                btl_soundCmd(SND_BANK_LOAD, evts[i].data.w, slot + 4, 0, 0);
                 break;
             }
         }
@@ -2062,12 +2062,12 @@ s16 btl_loadWeaponSoundStep(s32 slot, BtlStepTask *task) {
 }
 
 s32 btl_getDepLink(s32 fileId) {
-    FileTable *t = g_gameState->gameData->depTable;
-    FileEntry *e = t->entries;
+    FileTable *table = g_gameState->gameData->depTable;
+    FileEntry *ents = table->entries;
     s32 i;
-    for (i = t->count - 1; i >= 0; i--) {
-        if (e[i].id == fileId) {
-            return e[i].link;
+    for (i = table->count - 1; i >= 0; i--) {
+        if (ents[i].id == fileId) {
+            return ents[i].link;
         }
     }
     return -1;
@@ -2083,28 +2083,28 @@ s32 btl_unpackMusic(s32 seq) {
 void btl_onSoundRead(Unk800AE844 *progress) {
     s32 addr = progress->addr;
     s32 id = g_gameState->gameData->soundLoadBank | DB_SOUND_BANK;
-    s32 f;
+    s32 pack;
     s32 base;
-    s32 n;
+    s32 len;
 
     if (progress->done == 0) {
-        f = db_lookup(addr, DB_GET_AT, DB_PACK, 0);
+        pack = db_lookup(addr, DB_GET_AT, DB_PACK, 0);
         base = addr;
-        if (f == -1) {
+        if (pack == -1) {
             addr = db_lookup(addr, DB_GET_ADDR, id, 0);
             g_gameState->gameData->soundBankSize = db_getSize(base);
         } else {
-            addr = db_lookup(f, DB_GET_ADDR, id, 0);
+            addr = db_lookup(pack, DB_GET_ADDR, id, 0);
             g_gameState->gameData->soundBankSize = db_lookup(base, DB_GET_AT, 0x1B0001, 0) - g_gameState->gameData->soundLoadDest;
         }
     }
-    n = g_gameState->gameData->soundBankSize - progress->done;
-    if (progress->chunk < n) {
-        n = progress->chunk;
+    len = g_gameState->gameData->soundBankSize - progress->done;
+    if (progress->chunk < len) {
+        len = progress->chunk;
     }
-    n = progress->addr + n - addr;
+    len = progress->addr + len - addr;
     if (g_btlSoundLoadSlot == -1) {
-        akao_uploadBank(addr, n, 0);
+        akao_uploadBank(addr, len, 0);
     } else {
         akao_loadBankInSlot(addr, g_btlSoundLoadSlot, 0);
     }
@@ -2171,19 +2171,19 @@ s32 btl_preloadRequest(void) {
 }
 
 void btl_preloadExit(void) {
-    Battle11C0 *b;
-    FileEntry *f;
+    Battle11C0 *work;
+    FileEntry *file;
     s32 size;
     s32 *dst;
 
-    b = g_gameState->gameData->ctx.battle->work;
+    work = g_gameState->gameData->ctx.battle->work;
     preload_init();
     g_gameState->gameData->preloadRequest = NULL;
-    f = file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE_END));
-    size = (f->link - f->sector) << 11;
-    preload_setEntry(preload_add(), PRELOAD_KIND_READ, OVL_KEY(OVL_BATTLE_END), (s32)RAM_SUB_OVL(u8 *), size, size, f->sector, size);
-    f = file_find(DIR_COMMON, FILE_BTL_END_DB);
-    dst = b->loadBuf;
-    size = (f->link - f->sector) << 11;
-    preload_setEntry(preload_add(), PRELOAD_KIND_READ, FILE_BTL_END_DB, (s32)dst, size, size, f->sector, size);
+    file = file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE_END));
+    size = (file->link - file->sector) << 11;
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, OVL_KEY(OVL_BATTLE_END), (s32)RAM_SUB_OVL(u8 *), size, size, file->sector, size);
+    file = file_find(DIR_COMMON, FILE_BTL_END_DB);
+    dst = work->loadBuf;
+    size = (file->link - file->sector) << 11;
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, FILE_BTL_END_DB, (s32)dst, size, size, file->sector, size);
 }

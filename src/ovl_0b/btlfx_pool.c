@@ -46,17 +46,17 @@ void btlfx_poolClear(Unk800DA1B8 *pool) {
 void *btlfx_poolSpawn(s16 *p) {
     Unk800DA1B8 *pool;
     Unk800DA1B8 *x;
-    s16 *e;
+    s16 *slot;
     s32 i;
     s32 stride;
-    u8 *d;
+    u8 *data;
 
     x = (Unk800DA1B8 *)p;
     pool = (Unk800DA1B8 *)p;
     p = (s16 *)((Unk800DA1B8 *)p)->elems;
     stride = x->stride;
     for (i = 0; i < pool->count; i++) {
-        e = p;
+        slot = p;
         if (*p == 0) {
             break;
         }
@@ -65,28 +65,28 @@ void *btlfx_poolSpawn(s16 *p) {
     if (i >= pool->count) {
         return NULL;
     }
-    d = (u8 *)(p + 2);
-    e[0] = 1;
-    e[1] = 0;
-    pool->elemFn(1, d, g_btlfxEnv, pool->task, 0, pool, pool->task->work);
+    data = (u8 *)(p + 2);
+    slot[0] = 1;
+    slot[1] = 0;
+    pool->elemFn(1, data, g_btlfxEnv, pool->task, 0, pool, pool->task->work);
     /* Probably macro residue: a dead store that flow deletes (no code). Its only effect is that p is
        mentioned last, which keeps p (not pool) the CSE class head so `p += 12` and the header reads stay
        on the original registers. */
     p = NULL;
-    return d;
+    return data;
 }
 
 s32 btlfx_poolUpdate(Unk800DA1B8 *poolArg) {
     Unk800DA1B8 *pool = poolArg;
     s16 *p = (s16 *)pool->elems;
     s32 i = 0;
-    s32 n = i;
+    s32 live = i;
     s32 (*fn)(s32, void *, Unk800F78A4 *, Unk800DA1B88 *, s32, struct Unk800DA1B8 *, s32) = pool->elemFn;
     s32 stride = pool->stride;
     for (; i < pool->count; i++, p = (s16 *)((u8 *)p + stride)) {
         if (p[0] != 0) {
             g_btlfxEnv->otZ = 0;
-            n++;
+            live++;
             if (fn(2, p + 2, g_btlfxEnv, pool->task, p[1], pool, pool->task->work) != 0) {
                 *(s32 *)p = 0;
             } else {
@@ -94,7 +94,7 @@ s32 btlfx_poolUpdate(Unk800DA1B8 *poolArg) {
             }
         }
     }
-    return n;
+    return live;
 }
 
 s32 btlfx_findFileSlot(s32 block) {
@@ -132,11 +132,11 @@ s32 btlfx_getFileDataSize(s32 slot, s32 index) {
 
 /* takes size bytes from the effect work area (g_btlfxLoader.workCursor/workLeft), returns the old pointer */
 s32 btlfx_takeWork(s32 size) {
-    Unk80100DC0 *d = &g_btlfxLoader;
-    s32 old = d->workCursor;
+    Unk80100DC0 *loader = &g_btlfxLoader;
+    s32 old = loader->workCursor;
 
-    d->workLeft -= size;
-    d->workCursor = old + size;
+    loader->workLeft -= size;
+    loader->workCursor = old + size;
     return old;
 }
 
@@ -225,26 +225,26 @@ void btlfx_markCommonVram(RECT *rect) {
 
 void btlfx_uploadTextures(RECT *rect, u32 *pixels, Unk800DA790 *loader) {
     s32 i;
-    s32 n = loader->cmdArg;
-    Unk800DA790 *e;
-    RECT *r;
+    s32 count = loader->cmdArg;
+    Unk800DA790 *ldr;
+    RECT *texRect;
     rect->w = 0x40;
     rect->h = 0x80;
     btlfx_resetMaskBit();
-    for (i = 0; i < n; i++) {
-        e = loader;
-        r = e->texRects;
-        if (++e->texIndex >= 2) {
-            rect->x = r->x;
-            rect->y = r->y + 0x80;
+    for (i = 0; i < count; i++) {
+        ldr = loader;
+        texRect = ldr->texRects;
+        if (++ldr->texIndex >= 2) {
+            rect->x = texRect->x;
+            rect->y = texRect->y + 0x80;
             goto next;
         }
-        rect->x = r->x;
-        rect->y = r->y;
-        if ((u16)r->h == 0x80) {
+        rect->x = texRect->x;
+        rect->y = texRect->y;
+        if ((u16)texRect->h == 0x80) {
         next:
-            e->texIndex = 0;
-            e->texRects++;
+            ldr->texIndex = 0;
+            ldr->texRects++;
         }
         LoadImage(rect, pixels);
         btlfx_markCommonVram(rect);
@@ -283,22 +283,22 @@ void btlfx_updateLoader(void) {
     union {
         RECT r;
         s32 w;
-    } r;
-    Unk80100DC0 *d = &g_btlfxLoader;
+    } rect;
+    Unk80100DC0 *loader = &g_btlfxLoader;
     s32 cont;
     s16 stateIdx;
-    u16 *p;
+    u16 *cmdPtr;
     u8 *dst;
     u32 readSize;
     s32 dataSize;
     s32 k;
     s32 imageCount;
     s32 ringOfs;
-    s32 m;
+    s32 tmp; /* heap block size, then the common-texture bit (separate locals don't match) */
     u8 *src;
     Unk80100DC054 *dataSummon;
     s32 i;
-    s32 n;
+    s32 pixelCount;
     s32 texIdx;
     s32 *hdr;
     u16 *img;
@@ -310,105 +310,105 @@ void btlfx_updateLoader(void) {
     u8 *modHdr;
     Unk800DA92CFn fn;
 
-    if (d->state != 0) {
+    if (loader->state != 0) {
         do {
-            stateIdx = d->state - 1;
+            stateIdx = loader->state - 1;
             cont = 0;
             switch (stateIdx) {
             case BTLFX_LD_READ_HEADER - 1:
-                cd_readAsync(d->sector, 0x800, g_btlfxFileHeader, NULL);
-                d->state = BTLFX_LD_WAIT_HEADER;
-                d->sector++;
+                cd_readAsync(loader->sector, 0x800, g_btlfxFileHeader, NULL);
+                loader->state = BTLFX_LD_WAIT_HEADER;
+                loader->sector++;
                 break;
             case BTLFX_LD_WAIT_HEADER - 1:
                 if (cd_getState() == 0) {
-                    p = g_btlfxFileHeader;
+                    cmdPtr = g_btlfxFileHeader;
                     cont = 1;
-                    d->cmd = p + 1;
-                    d->state = BTLFX_LD_NEXT_BLOCK;
-                    d->blockCount = p[0];
+                    loader->cmd = cmdPtr + 1;
+                    loader->state = BTLFX_LD_NEXT_BLOCK;
+                    loader->blockCount = cmdPtr[0];
                 }
                 break;
             case BTLFX_LD_NEXT_BLOCK - 1:
-                if (d->block < d->blockCount) {
-p = d->cmd; cont = 1; d->blockType = p[0]; d->cmdsLeft = p[1]; d->cmd += 2; d->state = BTLFX_LD_NEXT_CMD;
+                if (loader->block < loader->blockCount) {
+cmdPtr = loader->cmd; cont = 1; loader->blockType = cmdPtr[0]; loader->cmdsLeft = cmdPtr[1]; loader->cmd += 2; loader->state = BTLFX_LD_NEXT_CMD;
                 } else {
-                    d->state = BTLFX_LD_IDLE;
+                    loader->state = BTLFX_LD_IDLE;
                 }
                 break;
             case BTLFX_LD_NEXT_CMD - 1:
                 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
-                p = d->cmd;
-                d->cmdKind = ((u8 *)p)[0];
-                d->cmdArg = ((u8 *)p)[1];
+                cmdPtr = loader->cmd;
+                loader->cmdKind = ((u8 *)cmdPtr)[0];
+                loader->cmdArg = ((u8 *)cmdPtr)[1];
                 if (g_btlfxEnv->targets->kind & BTL_FXK_PARTY_UNLOAD) {
-                    if (d->cmdKind == BTLFX_LDCMD_SUMMON_TEX || d->cmdKind == BTLFX_LDCMD_COMMON_TEX) {
+                    if (loader->cmdKind == BTLFX_LDCMD_SUMMON_TEX || loader->cmdKind == BTLFX_LDCMD_COMMON_TEX) {
                         if (btlfx_countVisibleParty() != 0) {
                             break;
                         }
                     }
                 }
                 dst = RAM_BTLFX_MODULE(u8 *);
-                if (d->blockType == 1 && d->slot != 0) {
+                if (loader->blockType == 1 && loader->slot != 0) {
                     dst = RAM_BTLFX_MODULE_HI(u8 *);
                 }
-                readSize = p[1] << 11;
-                p += 2;
-                switch (d->cmdKind) {
+                readSize = cmdPtr[1] << 11;
+                cmdPtr += 2;
+                switch (loader->cmdKind) {
                 case BTLFX_LDCMD_DATA:
                     dataSize = readSize;
-                    d->stage = BTLFX_STAGE_DATA;
-                    if (d->cmdArg != 0) {
-ringOfs = *p++ << 11; readSize += ringOfs; d->ringBase = RAM_BTLFX_RING(u8 *) + ringOfs; dst = RAM_BTLFX_RING(u8 *);
-                        d->ringSize = 0xC800 - ringOfs;
-                        d->data[d->slot] = d->ringCursor = d->ringBase;
+                    loader->stage = BTLFX_STAGE_DATA;
+                    if (loader->cmdArg != 0) {
+ringOfs = *cmdPtr++ << 11; readSize += ringOfs; loader->ringBase = RAM_BTLFX_RING(u8 *) + ringOfs; dst = RAM_BTLFX_RING(u8 *);
+                        loader->ringSize = 0xC800 - ringOfs;
+                        loader->data[loader->slot] = loader->ringCursor = loader->ringBase;
                     } else {
-                        dst = d->data[d->slot] = d->ringCursor;
+                        dst = loader->data[loader->slot] = loader->ringCursor;
                     }
-                    d->ringCursor += dataSize;
-                    if (d->ringCursor >= d->ringBase + d->ringSize) {
-                        d->ringCursor = d->ringBase;
+                    loader->ringCursor += dataSize;
+                    if (loader->ringCursor >= loader->ringBase + loader->ringSize) {
+                        loader->ringCursor = loader->ringBase;
                     }
                     break;
                 case BTLFX_LDCMD_RING:
-                    dst = d->ringCursor;
-                    d->ringCursor = dst + readSize;
+                    dst = loader->ringCursor;
+                    loader->ringCursor = dst + readSize;
                     break;
                 case BTLFX_LDCMD_TEX_MORE:
-                    dst = (u8 *)d->texData;
+                    dst = (u8 *)loader->texData;
                     break;
                 case BTLFX_LDCMD_CODE:
-                    d->stage = BTLFX_STAGE_CODE;
+                    loader->stage = BTLFX_STAGE_CODE;
                     break;
                 case BTLFX_LDCMD_SUMMON_TEX:
-                    d->summonState = BTLFX_BLOCK_READING;
+                    loader->summonState = BTLFX_BLOCK_READING;
                     btl_unloadPartyModels();
                     dst = (u8 *)g_gameState->gameData->ctx.battle->partyBufs[0];
-                    d->summon = (Unk80100DC054 *)dst;
+                    loader->summon = (Unk80100DC054 *)dst;
                     ((Unk80100DC054 *)dst)->unk4C = 0;
                     for (i = 0; i < 16; i++) {
-                        d->summon->data[i] = 0;
+                        loader->summon->data[i] = 0;
                     }
                     break;
                 case BTLFX_LDCMD_SUMMON_MODEL:
-                    dst = (u8 *)d->summon + d->summon->dataOfs;
+                    dst = (u8 *)loader->summon + loader->summon->dataOfs;
                     break;
                 case BTLFX_LDCMD_SUMMON_DATA:
-                    d->summonDataState = BTLFX_BLOCK_READING;
-                    dataSummon = d->summon;
-                    d->workCursor = (s32)dataSummon->work;
-                    d->workLeft = dataSummon->workSize;
-                    dst = (u8 *)d->workCursor;
+                    loader->summonDataState = BTLFX_BLOCK_READING;
+                    dataSummon = loader->summon;
+                    loader->workCursor = (s32)dataSummon->work;
+                    loader->workLeft = dataSummon->workSize;
+                    dst = (u8 *)loader->workCursor;
                     dataSummon->data[0] = (s32 *)dst;
-                    d->workLeft -= readSize;
-                    d->workCursor += readSize;
+                    loader->workLeft -= readSize;
+                    loader->workCursor += readSize;
                     break;
                 case BTLFX_LDCMD_SOUND:
-                    d->soundState = BTLFX_BLOCK_READING;
+                    loader->soundState = BTLFX_BLOCK_READING;
                     dst = (u8 *)g_gameState->gameData->ctx.battle->work->loadBuf;
                     break;
                 case BTLFX_LDCMD_LOADBUF:
-                    d->bufState = BTLFX_BLOCK_READING;
+                    loader->bufState = BTLFX_BLOCK_READING;
                     dst = (u8 *)g_gameState->gameData->ctx.battle->work->loadBuf;
                     break;
                 case BTLFX_LDCMD_COMMON_TEX:
@@ -420,38 +420,38 @@ ringOfs = *p++ << 11; readSize += ringOfs; d->ringBase = RAM_BTLFX_RING(u8 *) + 
                     }
                     break;
                 }
-                d->cmd = p;
-                cd_readAsync(d->sector, readSize, dst, NULL);
-                d->state = BTLFX_LD_WAIT_CMD;
-                d->sector += readSize >> 11;
+                loader->cmd = cmdPtr;
+                cd_readAsync(loader->sector, readSize, dst, NULL);
+                loader->state = BTLFX_LD_WAIT_CMD;
+                loader->sector += readSize >> 11;
                 break;
             case BTLFX_LD_WAIT_CMD - 1:
                 if (cd_getState() != 0) {
                     break;
                 }
-                if (d->cmdKind == BTLFX_LDCMD_COMMON_TEX && (d->cmdArg & 0xF) && g_btlfxState.castEnded == 0) {
+                if (loader->cmdKind == BTLFX_LDCMD_COMMON_TEX && (loader->cmdArg & 0xF) && g_btlfxState.castEnded == 0) {
                     break;
                 }
-                if (d->cmdKind == BTLFX_LDCMD_CODE && btlfx_drawSyncStep() == 0) {
+                if (loader->cmdKind == BTLFX_LDCMD_CODE && btlfx_drawSyncStep() == 0) {
                     break;
                 }
-                switch (d->cmdKind) {
+                switch (loader->cmdKind) {
                 case BTLFX_LDCMD_DATA:
-                    if (d->cmdArg != 0 && btlfx_getFileDataSize(0, 0x40) != 0) {
-                        d->modArg = btlfx_getFileData(0, 0x40);
+                    if (loader->cmdArg != 0 && btlfx_getFileDataSize(0, 0x40) != 0) {
+                        loader->modArg = btlfx_getFileData(0, 0x40);
                     }
-                    m = btlfx_getFileDataSize(d->slot, 0);
-                    if (m != 0) {
-                        heap = (Heap *)btlfx_getFileData(d->slot, 0);
-                        d->heaps[d->slot] = heap;
-                        btlfx_heapInit(heap, m);
+                    tmp = btlfx_getFileDataSize(loader->slot, 0);
+                    if (tmp != 0) {
+                        heap = (Heap *)btlfx_getFileData(loader->slot, 0);
+                        loader->heaps[loader->slot] = heap;
+                        btlfx_heapInit(heap, tmp);
                     } else {
-                        d->heaps[d->slot] = NULL;
+                        loader->heaps[loader->slot] = NULL;
                     }
                     break;
                 case BTLFX_LDCMD_TEX:
                     dst = RAM_BTLFX_MODULE(u8 *);
-                    if (d->blockType == 1 && d->slot != 0) {
+                    if (loader->blockType == 1 && loader->slot != 0) {
                         dst = RAM_BTLFX_MODULE_HI(u8 *);
                     }
                     hdr = (s32 *)dst;
@@ -460,61 +460,61 @@ ringOfs = *p++ << 11; readSize += ringOfs; d->ringBase = RAM_BTLFX_RING(u8 *) + 
                     imageCount = hdr[2];
                     btlfx_resetMaskBit();
                     for (i = 0; i < imageCount; i++) {
-                        r.r.x = img[0];
-                        r.r.y = img[1];
-                        r.r.w = img[2];
-                        r.r.h = img[3];
-                        n = img[2] * img[3];
+                        rect.r.x = img[0];
+                        rect.r.y = img[1];
+                        rect.r.w = img[2];
+                        rect.r.h = img[3];
+                        pixelCount = img[2] * img[3];
                         img += 4;
-                        LoadImage(&r.r, (u32 *)img);
-                        img += n;
+                        LoadImage(&rect.r, (u32 *)img);
+                        img += pixelCount;
                     }
                     hdr = (s32 *)(dst + k);
                     img = (u16 *)(dst + hdr[0]);
-                    d->texRects = (RECT *)(hdr + 2);
-                    d->texIndex = 0;
-                    d->texData = (u32 *)img;
-                    btlfx_uploadTextures(&r.r, (u32 *)img, (Unk800DA790 *)d);
+                    loader->texRects = (RECT *)(hdr + 2);
+                    loader->texIndex = 0;
+                    loader->texData = (u32 *)img;
+                    btlfx_uploadTextures(&rect.r, (u32 *)img, (Unk800DA790 *)loader);
                     break;
                 case BTLFX_LDCMD_TEX_MORE:
-                    btlfx_uploadTextures(&r.r, d->texData, (Unk800DA790 *)d);
+                    btlfx_uploadTextures(&rect.r, loader->texData, (Unk800DA790 *)loader);
                     break;
                 case BTLFX_LDCMD_CODE:
                     dst = RAM_BTLFX_MODULE(u8 *);
-                    if (d->blockType == 1 && d->slot != 0) {
+                    if (loader->blockType == 1 && loader->slot != 0) {
                         dst = RAM_BTLFX_MODULE_HI(u8 *);
                     }
                     modHdr = *(u8 **)dst;
-                    g_btlfxModuleOps[d->slot] = (EffFn *)(modHdr + 8);
+                    g_btlfxModuleOps[loader->slot] = (EffFn *)(modHdr + 8);
                     fn = ((Unk800DA92CFn *)modHdr)[1];
                     if (fn != NULL) {
-                        fn(d->modArg, g_btlfxEnv, g_btlfxEnv->exports);
+                        fn(loader->modArg, g_btlfxEnv, g_btlfxEnv->exports);
                     }
-                    d->stage = BTLFX_STAGE_READY;
-                    d->slotBlock.h[d->slot] = d->block;
+                    loader->stage = BTLFX_STAGE_READY;
+                    loader->slotBlock.h[loader->slot] = loader->block;
                     break;
                 case BTLFX_LDCMD_SUMMON_TEX:
                     texIdx = 0;
-                    summon = d->summon;
+                    summon = loader->summon;
                     dst = (u8 *)summon + summon->dataOfs;
-                    r.r.x = 0x100;
-                    r.r.y = 0xE6;
-                    r.r.w = 0x100;
-                    r.r.h = summon->clutRows;
+                    rect.r.x = 0x100;
+                    rect.r.y = 0xE6;
+                    rect.r.w = 0x100;
+                    rect.r.h = summon->clutRows;
                     btlfx_resetMaskBit();
-                    LoadImage(&r.r, (u32 *)(dst + summon->clutOfs));
+                    LoadImage(&rect.r, (u32 *)(dst + summon->clutOfs));
                     k = summon->texCount;
                     for (src = dst; texIdx < k; src += 0x4000, texIdx++) {
-                        r.r.x = (summon->texTpage[texIdx] & 0xF) << 6;
-                        r.r.y = summon->texY[texIdx] + ((summon->texTpage[texIdx] & 0x10) << 4);
-                        r.r.w = 0x40;
-                        r.r.h = 0x80;
-                        LoadImage(&r.r, (u32 *)src);
-                        ((s32 *)g_btlfxSummonTexPos)[texIdx * 2] = ((s32 *)g_btlfxSummonTexPos)[texIdx * 2 + 1] = r.w;
+                        rect.r.x = (summon->texTpage[texIdx] & 0xF) << 6;
+                        rect.r.y = summon->texY[texIdx] + ((summon->texTpage[texIdx] & 0x10) << 4);
+                        rect.r.w = 0x40;
+                        rect.r.h = 0x80;
+                        LoadImage(&rect.r, (u32 *)src);
+                        ((s32 *)g_btlfxSummonTexPos)[texIdx * 2] = ((s32 *)g_btlfxSummonTexPos)[texIdx * 2 + 1] = rect.w;
                     }
                     break;
                 case BTLFX_LDCMD_SUMMON_MODEL:
-                    summon = d->summon;
+                    summon = loader->summon;
                     dst = (u8 *)summon;
                     summon->modelHdr = dst + summon->dataOfs;
                     summon->texAnims = (BtlUnit9C50 *)(dst + summon->texAnimOfs);
@@ -522,89 +522,89 @@ ringOfs = *p++ << 11; readSize += ringOfs; d->ringBase = RAM_BTLFX_RING(u8 *) + 
                         summon->motions[ni] += (s32)dst;
                     }
                     summon->work = dst + summon->workOfs;
-                    d->workCursor = (s32)summon->work;
+                    loader->workCursor = (s32)summon->work;
                     summon->workSize = 0x50000 - summon->workOfs;
-                    d->workLeft = summon->workSize;
+                    loader->workLeft = summon->workSize;
                     btlfx_initSummonModels(&summon->model, 1);
-                    d->summonModel = Hi_RegisterSummonModel(summon, summon->motions[0] != (s32)summon->texAnims ? (s16 *)g_btlfxSummonTexPos : NULL);
-                    d->summonState = BTLFX_BLOCK_DONE;
+                    loader->summonModel = Hi_RegisterSummonModel(summon, summon->motions[0] != (s32)summon->texAnims ? (s16 *)g_btlfxSummonTexPos : NULL);
+                    loader->summonState = BTLFX_BLOCK_DONE;
                     break;
                 case BTLFX_LDCMD_SUMMON_DATA:
-                    d->summonDataState = BTLFX_BLOCK_DONE;
+                    loader->summonDataState = BTLFX_BLOCK_DONE;
                     break;
                 case BTLFX_LDCMD_SOUND:
-                    d->soundState = BTLFX_BLOCK_DONE;
-                    d->soundUploading = 1;
-                    if (d->soundBlocks == 0) {
+                    loader->soundState = BTLFX_BLOCK_DONE;
+                    loader->soundUploading = 1;
+                    if (loader->soundBlocks == 0) {
                         btlfx_loadSoundBank(1);
                     }
                     break;
                 case BTLFX_LDCMD_LOADBUF:
-                    d->bufState = BTLFX_BLOCK_DONE;
+                    loader->bufState = BTLFX_BLOCK_DONE;
                     break;
                 case BTLFX_LDCMD_COMMON_TEX:
-                    m = 1;
-                    d->commonTexLoaded = 1;
+                    tmp = 1;
+                    loader->commonTexLoaded = 1;
                     if (g_btlfxEnv->targets->kind & BTL_FXK_PARTY_UNLOAD) {
                         btl_unloadPartyModels();
                         base = (void *)g_gameState->gameData->ctx.battle->partyBufs[0];
                     } else {
                         base = (void *)g_gameState->gameData->ctx.battle->work->loadBuf;
                     }
-                    r.r.w = 0x40;
-                    r.r.h = 0x80;
+                    rect.r.w = 0x40;
+                    rect.r.h = 0x80;
                     btlfx_resetMaskBit();
                     for (i = 0; i < 8; i++) {
-                        if (m & d->cmdArg) {
+                        if (tmp & loader->cmdArg) {
                             if (i < 4) {
-                                r.r.x = ((i >> 1) << 6) + 0x300;
+                                rect.r.x = ((i >> 1) << 6) + 0x300;
                             } else {
-                                r.r.x = (((i - 4) >> 1) << 6) + 0x140;
+                                rect.r.x = (((i - 4) >> 1) << 6) + 0x140;
                             }
-                            r.r.y = ((i & 1) << 7) + 0x100;
-                            LoadImage(&r.r, (u32 *)base);
-                            btlfx_markCommonVram(&r.r);
+                            rect.r.y = ((i & 1) << 7) + 0x100;
+                            LoadImage(&rect.r, (u32 *)base);
+                            btlfx_markCommonVram(&rect.r);
                             base += 0x4000;
                         }
                         if (i >= 4 || (i & 1)) {
-                            m <<= 1;
+                            tmp <<= 1;
                         }
                     }
-                    d->commonTexCount++;
+                    loader->commonTexCount++;
                     break;
                 }
-                if (--d->cmdsLeft <= 0) {
-                    d->state = BTLFX_LD_IDLE;
+                if (--loader->cmdsLeft <= 0) {
+                    loader->state = BTLFX_LD_IDLE;
                     break;
                 }
-                if (d->cmdKind == BTLFX_LDCMD_SOUND) {
-                    if (d->soundBlocks == 0) {
-                        d->state = BTLFX_LD_WAIT_SPU;
+                if (loader->cmdKind == BTLFX_LDCMD_SOUND) {
+                    if (loader->soundBlocks == 0) {
+                        loader->state = BTLFX_LD_WAIT_SPU;
                     } else {
-                        d->state = BTLFX_LD_WAIT_SOUND;
+                        loader->state = BTLFX_LD_WAIT_SOUND;
                     }
                     cont = 0;
-                    d->soundBlocks++;
+                    loader->soundBlocks++;
                 } else {
                     cont = 0;
-                    if (d->cmdKind < BTLFX_LDCMD_DATA || d->cmdKind == BTLFX_LDCMD_SUMMON_TEX || d->cmdKind == BTLFX_LDCMD_COMMON_TEX) {
+                    if (loader->cmdKind < BTLFX_LDCMD_DATA || loader->cmdKind == BTLFX_LDCMD_SUMMON_TEX || loader->cmdKind == BTLFX_LDCMD_COMMON_TEX) {
                         cont = 0;
                     } else {
                         cont = 1;
                     }
-                    d->state = BTLFX_LD_NEXT_CMD;
+                    loader->state = BTLFX_LD_NEXT_CMD;
                 }
                 break;
             case BTLFX_LD_WAIT_SPU - 1:
                 if (akao_getSpuTransferState() == 0) {
-                    d->state = BTLFX_LD_NEXT_CMD;
+                    loader->state = BTLFX_LD_NEXT_CMD;
                     cont = 1;
                 }
                 break;
             case BTLFX_LD_WAIT_SOUND - 1:
-                if (d->soundUploaded != 0) {
-                    d->state = BTLFX_LD_WAIT_SPU;
-                    d->soundUploaded = 0;
+                if (loader->soundUploaded != 0) {
+                    loader->state = BTLFX_LD_WAIT_SPU;
+                    loader->soundUploaded = 0;
                 }
                 break;
             }

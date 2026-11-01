@@ -1463,10 +1463,10 @@ s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
 
 /* fld_drawShadow: project one corner of the 3x3 shadow grid */
 #define FIELD_SHADOW_PT(x, z) \
-    v.vx = (x); \
-    v.vy = 0; \
-    v.vz = (z); \
-    gte_ldv0(&v); \
+    corner.vx = (x); \
+    corner.vy = 0; \
+    corner.vz = (z); \
+    gte_ldv0(&corner); \
     gte_rtps()
 
 /* fld_drawShadow: link shadow quad q at its deepest corner */
@@ -1474,7 +1474,7 @@ s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
     k = (k >> 2) + bias; \
     if (-g_gameState->gameData->ctx.field->area->scene->otBias < k \
         && k < 0x1000 - g_gameState->gameData->ctx.field->area->scene->otBias) { \
-        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k], e->prims[g_gameState->gameData->drawBuf][q]); \
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k], place->prims[g_gameState->gameData->drawBuf][q]); \
     }
 
 void fld_calcShadowMatrix(FieldObjEnt *, FieldObjSlot *, MATRIX *);

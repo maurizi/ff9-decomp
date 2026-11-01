@@ -87,24 +87,24 @@ void opening_exit(void) {
 }
 
 void opening_loadMusic(void) {
-    s32 a;
-    s32 b;
+    s32 addr;
+    s32 bankSize;
 
-    a = (s32)db_lookupRegistered(DB_GET_ADDR, TITLE_MUSIC, 0);
-    memmove(g_gameState->gameData->musicSeq, (void *)a, (s32)db_lookupRegistered(DB_GET_SIZE, TITLE_MUSIC, 0));
-    a = (s32)db_lookupRegistered(DB_GET_ADDR, TITLE_MUSIC_BANK, 0);
-    b = (s32)db_lookupRegistered(DB_GET_SIZE, TITLE_MUSIC_BANK, 0);
+    addr = (s32)db_lookupRegistered(DB_GET_ADDR, TITLE_MUSIC, 0);
+    memmove(g_gameState->gameData->musicSeq, (void *)addr, (s32)db_lookupRegistered(DB_GET_SIZE, TITLE_MUSIC, 0));
+    addr = (s32)db_lookupRegistered(DB_GET_ADDR, TITLE_MUSIC_BANK, 0);
+    bankSize = (s32)db_lookupRegistered(DB_GET_SIZE, TITLE_MUSIC_BANK, 0);
     akao_beginBankUpload();
-    akao_uploadBank(a, b, 1);
+    akao_uploadBank(addr, bankSize, 1);
 }
 
 void opening_loadData(void) {
     u8 *data;
-    FileEntry *e;
+    FileEntry *file;
 
     data = g_loadAreaEnd + 0x10000;
-    e = file_find(DIR_COMMON, FILE_OPENING_DATA);
-    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, data, 0, -1, 0);
+    file = file_find(DIR_COMMON, FILE_OPENING_DATA);
+    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, data, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     g_openingData = data;
@@ -117,7 +117,7 @@ void opening_freeData(void) {
 }
 
 s32 opening_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
-    GameData *g;
+    GameData *gd;
     s32 kind;
     s32 h;
     s32 id;
@@ -144,9 +144,9 @@ s32 opening_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                 g_gameState->gameData->musicVolume[0] = 0x7F;
             }
             g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
-            g = g_gameState->gameData;
-            if (!(g->flags & GD_MUSIC_PLAYING)) {
-                akao_fadeMusicVolumeFrom(g->musicHandle[0], 0xA, 0, g->musicVolume[0]);
+            gd = g_gameState->gameData;
+            if (!(gd->flags & GD_MUSIC_PLAYING)) {
+                akao_fadeMusicVolumeFrom(gd->musicHandle[0], 0xA, 0, gd->musicVolume[0]);
             }
             g_openingSoundPending = -1;
             g_gameState->gameData->flags |= GD_MUSIC_LOADED | GD_MUSIC_PLAYING;

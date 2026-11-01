@@ -4,7 +4,7 @@ s32 opening_movieThenTitle(void) {
     u8 *mbgWork;
     s32 timer;
     s32 i;
-    s32 r;
+    s32 mbgStatus;
     s32 end;
 
     mbgWork = g_loadAreaEnd + 0x106700;
@@ -49,9 +49,9 @@ s32 opening_movieThenTitle(void) {
             break;
         case MOVIE_ST_PLAY:
             if ((g_movieFlags & MOVIE_PLAYING) && (mbg_getStatus() & 2)) {
-                r = mbg_update(0);
+                mbgStatus = mbg_update(0);
                 end = mbg_getLastFrame();
-                if (r != 0) {
+                if (mbgStatus != 0) {
                     DrawOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1] + OT_LAST);
                 } else if (timer == -1 && g_gameState->gameData->drawBuf == 0 && !(g_movieFlags & MOVIE_SKIPPING)) {
                     g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x = 0x1E0;
@@ -139,14 +139,14 @@ s32 opening_movieThenTitle(void) {
 }
 
 s32 opening_movieInit(void) {
-    FileEntry *f;
+    FileEntry *file;
     s32 h;
     s32 i, j;
 
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    f = file_find(DIR_OVERLAYS, OVL_MOVIE);
-    cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, NULL);
+    file = file_find(DIR_OVERLAYS, OVL_MOVIE);
+    cdRead_init(g_gameState->gameData->cdRead, file->sector, (file->link - file->sector) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, NULL);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     EnterCriticalSection();
@@ -181,7 +181,7 @@ void opening_movieClearOt(void) {
 
 void opening_movieSwap(void) {
     s32 i, j;
-    GameData *g;
+    GameData *gd;
 
     DrawSync(0);
     if (mbg_getStatus() & 2) {
@@ -199,8 +199,8 @@ void opening_movieSwap(void) {
     if (g_movieFlags & MOVIE_NO_OT) {
         PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
     } else {
-        g = g_gameState->gameData;
-        DrawOTagEnv(g->ot[g->drawBuf] + OT_LAST, &g_gameState->drawEnv[g->drawBuf]);
+        gd = g_gameState->gameData;
+        DrawOTagEnv(gd->ot[gd->drawBuf] + OT_LAST, &g_gameState->drawEnv[gd->drawBuf]);
     }
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);

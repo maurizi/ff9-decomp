@@ -1,7 +1,7 @@
 #include "ff9.h"
 
 void menuScreen_init(void) {
-    MenuScreenDef *t;
+    MenuScreenDef *defs;
 
     printf("path=%s\n", "f:/code/dms/loc_us/ff9db.h");
     g_menuScreen.screen = 0;
@@ -19,13 +19,13 @@ void menuScreen_init(void) {
     g_menuScreenSwitch.switching = 0;
     g_menuScreenSwitch.fadingOut = 0;
     g_menuScreenSwitch.screens = g_gameState->mode != GS_MODE_WORLD ? g_menuScreensField : g_menuScreensWorld;
-    t = g_menuScreenSwitch.screens;
-    t[g_menuScreenCur].init();
+    defs = g_menuScreenSwitch.screens;
+    defs[g_menuScreenCur].init();
 }
 
 void menuScreen_drawCommands(void) {
     u8 all = 0;
-    RECT *r = &g_menuScreenSwitch.cmdRect;
+    RECT *rect = &g_menuScreenSwitch.cmdRect;
     s32 sel;
     s32 i;
     s32 y;
@@ -42,13 +42,13 @@ void menuScreen_drawCommands(void) {
     for (i = 0; i < 7; i++) {
         y = i * 15 + 6;
         if (all || i == sel) {
-            text_drawBlock(r->x + 10, r->y + y + g_menuScreenSwitch.titleScroll, 2,
+            text_drawBlock(rect->x + 10, rect->y + y + g_menuScreenSwitch.titleScroll, 2,
                           (u8 *)text_getFrom(g_menuScreenStrings, i), TEXT_PAL_WHITE);
         }
     }
-    win_setClip(r, 2, WIN_STYLE_BEVEL);
-    win_drawBox(r, 2, WIN_STYLE_BEVEL);
-    win_drawShadow(r, 2, WIN_STYLE_BEVEL);
+    win_setClip(rect, 2, WIN_STYLE_BEVEL);
+    win_drawBox(rect, 2, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, 2, WIN_STYLE_BEVEL);
 }
 
 void menuScreen_updateOpen(void) {
@@ -95,11 +95,11 @@ void menuScreen_stepTitleScroll(void) {
 
 void menuScreen_update(void) {
     void (*fn)(void);
-    MenuScreenDef *t;
+    MenuScreenDef *defs;
     menuScreen_drawCommands();
     menuScreen_updateOpen();
-    t = g_menuScreenSwitch.screens;
-    fn = t[g_menuScreen.screen].update;
+    defs = g_menuScreenSwitch.screens;
+    fn = defs[g_menuScreen.screen].update;
     if (fn != NULL) {
         fn();
     }
@@ -175,23 +175,23 @@ void menuScreen_stepTitleResize(void) {
 }
 
 void menuScreen_startTitleAnim(void) {
-    s32 v;
-    s32 d;
-    s32 q;
-    s32 t = g_menuScreenSwitch.target;
-    if (t != 0) {
-        v = (1 - t) * 15;
+    s32 endScroll;
+    s32 dist;
+    s32 step;
+    s32 targetScreen = g_menuScreenSwitch.target;
+    if (targetScreen != 0) {
+        endScroll = (1 - targetScreen) * 15;
     } else {
-        v = 0;
+        endScroll = 0;
     }
-    d = v - g_menuScreenSwitch.titleScroll;
-    if (d >= 0) {
-        q = (d + 11) / 12;
+    dist = endScroll - g_menuScreenSwitch.titleScroll;
+    if (dist >= 0) {
+        step = (dist + 11) / 12;
     } else {
-        q = (d - 11) / 12;
+        step = (dist - 11) / 12;
     }
-    g_menuScreenSwitch.titleScrollStep = q;
-    g_menuScreenSwitch.titleScrollEnd = v;
+    g_menuScreenSwitch.titleScrollStep = step;
+    g_menuScreenSwitch.titleScrollEnd = endScroll;
     g_menuScreenSwitch.titleScrollFrame = 0;
     g_menuScreenSwitch.titleScrolling = 1;
 }
@@ -204,13 +204,13 @@ void menuScreen_requestOverlay(void) {
 
 void menuScreen_loadOverlay(void) {
     s32 id = g_menuScreenOvl[g_menuScreenSwitch.target];
-    FileEntry *f;
+    FileEntry *file;
 
     if (id != 0xFF && id != g_menuScreenSwitch.loadedOverlay) {
         g_menuScreenSwitch.overlayRetry = 1;
         g_menuScreenSwitch.loadedOverlay = id;
-        f = file_find(DIR_OVERLAYS, id);
-        if (cd_readAsync(g_gameState->imgSector + f->sector, (f->link - f->sector) << 11, RAM_SUB_OVL(void *), menuScreen_onOverlayRead)) {
+        file = file_find(DIR_OVERLAYS, id);
+        if (cd_readAsync(g_gameState->imgSector + file->sector, (file->link - file->sector) << 11, RAM_SUB_OVL(void *), menuScreen_onOverlayRead)) {
             g_menuScreenSwitch.overlayLoading = 1;
             g_menuScreenSwitch.overlayRetry = 0;
         }

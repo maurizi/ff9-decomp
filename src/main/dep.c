@@ -1,9 +1,9 @@
 #include "ff9.h"
 
-s32 shadow_initSlots(s32 prim, s32 cx, s32 cy, s32 u, s32 v, s32 n, s32 flags) {
-    Unk11C0Slot *s;
-    Unk11C0Slot *q;
-    POLY_FT4 *p;
+s32 shadow_initSlots(s32 prim, s32 cx, s32 cy, s32 u, s32 v, s32 count, s32 flags) {
+    Unk11C0Slot *slots;
+    Unk11C0Slot *slot;
+    POLY_FT4 *poly;
     s32 clut;
     s32 i, j, k;
 
@@ -12,93 +12,93 @@ s32 shadow_initSlots(s32 prim, s32 cx, s32 cy, s32 u, s32 v, s32 n, s32 flags) {
     cx = getTPage(1, 2, u, v);
     u = (u % 64) * 2;
     v = v % 256;
-    s = (Unk11C0Slot *)prim;
-    prim += n * (s32)sizeof(Unk11C0Slot);
-    for (i = 0; i < n; i++) {
-        q = &s[i];
-        q->fixedAngle = 0;
-        q->sizeX = 0xE0;
-        q->sizeZ = 0xC0;
-        q->unk0_0 = 0x80;
-        q->ofsX = 0;
-        q->ofsZ = 0;
+    slots = (Unk11C0Slot *)prim;
+    prim += count * (s32)sizeof(Unk11C0Slot);
+    for (i = 0; i < count; i++) {
+        slot = &slots[i];
+        slot->fixedAngle = 0;
+        slot->sizeX = 0xE0;
+        slot->sizeZ = 0xC0;
+        slot->unk0_0 = 0x80;
+        slot->ofsX = 0;
+        slot->ofsZ = 0;
         for (j = 0; j < 2; j++) {
             for (k = 0; k < 4; k++) {
                 if (!(flags & 1)) {
-                    q->prims[j][k] = NULL;
+                    slot->prims[j][k] = NULL;
                     continue;
                 }
-                q->prims[j][k] = (POLY_FT4 *)prim;
+                slot->prims[j][k] = (POLY_FT4 *)prim;
                 if (flags & 2) {
                     prim += 0xC;
                 }
-                p = (POLY_FT4 *)prim;
+                poly = (POLY_FT4 *)prim;
                 prim += (s32)sizeof(POLY_FT4);
                 if (flags & 2) {
                     prim += 0xC;
                 }
-                setlen(p, PRIM_LEN(POLY_FT4));
-                setcode(p, GPU_POLY_FT4 | GPU_ABE);
+                setlen(poly, PRIM_LEN(POLY_FT4));
+                setcode(poly, GPU_POLY_FT4 | GPU_ABE);
                 switch (k) {
                 case 0:
-                    p->u0 = u;
-                    p->v0 = v;
-                    p->u1 = u + 0x1F;
-                    p->v1 = v;
-                    p->u2 = u;
-                    p->v2 = v + 0x1F;
-                    p->u3 = u + 0x1F;
-                    p->v3 = v + 0x1F;
+                    poly->u0 = u;
+                    poly->v0 = v;
+                    poly->u1 = u + 0x1F;
+                    poly->v1 = v;
+                    poly->u2 = u;
+                    poly->v2 = v + 0x1F;
+                    poly->u3 = u + 0x1F;
+                    poly->v3 = v + 0x1F;
                     break;
                 case 1:
-                    p->u0 = u + 0x1F;
-                    p->v0 = v;
-                    p->u1 = u;
-                    p->v1 = v;
-                    p->u2 = u + 0x1F;
-                    p->v2 = v + 0x1F;
-                    p->u3 = u;
-                    p->v3 = v + 0x1F;
+                    poly->u0 = u + 0x1F;
+                    poly->v0 = v;
+                    poly->u1 = u;
+                    poly->v1 = v;
+                    poly->u2 = u + 0x1F;
+                    poly->v2 = v + 0x1F;
+                    poly->u3 = u;
+                    poly->v3 = v + 0x1F;
                     break;
                 case 2:
-                    p->u0 = u;
-                    p->v0 = v + 0x1F;
-                    p->u1 = u + 0x1F;
-                    p->v1 = v + 0x1F;
-                    p->u2 = u;
-                    p->v2 = v;
-                    p->u3 = u + 0x1F;
-                    p->v3 = v;
+                    poly->u0 = u;
+                    poly->v0 = v + 0x1F;
+                    poly->u1 = u + 0x1F;
+                    poly->v1 = v + 0x1F;
+                    poly->u2 = u;
+                    poly->v2 = v;
+                    poly->u3 = u + 0x1F;
+                    poly->v3 = v;
                     break;
                 case 3:
-                    p->u0 = u + 0x1F;
-                    p->v0 = v + 0x1F;
-                    p->u1 = u;
-                    p->v1 = v + 0x1F;
-                    p->u2 = u + 0x1F;
-                    p->v2 = v;
-                    p->u3 = u;
-                    p->v3 = v;
+                    poly->u0 = u + 0x1F;
+                    poly->v0 = v + 0x1F;
+                    poly->u1 = u;
+                    poly->v1 = v + 0x1F;
+                    poly->u2 = u + 0x1F;
+                    poly->v2 = v;
+                    poly->u3 = u;
+                    poly->v3 = v;
                     break;
                 }
-                p->tpage = cx;
-                p->clut = clut;
+                poly->tpage = cx;
+                poly->clut = clut;
             }
         }
     }
     return prim;
 }
 
-FileEntry *dep_find(FileTable *t, s32 id) {
-    FileEntry *e;
+FileEntry *dep_find(FileTable *table, s32 id) {
+    FileEntry *entry;
     FileEntry *end;
 
     id &= 0xFFFFFF;
-    e = t->entries;
-    end = e + t->count;
-    for (; e < end; e++) {
-        if ((e->id & 0xFFFFFF) == id) {
-            return e;
+    entry = table->entries;
+    end = entry + table->count;
+    for (; entry < end; entry++) {
+        if ((entry->id & 0xFFFFFF) == id) {
+            return entry;
         }
     }
     return NULL;

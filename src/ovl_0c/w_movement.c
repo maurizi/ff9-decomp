@@ -1,10 +1,10 @@
 #include "ovl_0c.h"
 
 void wm_initCamera(void) {
-    void *p = &g_gameState->gameData->worldCamera;
+    void *cam = &g_gameState->gameData->worldCamera;
 
-    g_worldCameraFlags = p;
-    g_worldCamera = p;
+    g_worldCameraFlags = cam;
+    g_worldCamera = cam;
     g_gameState->gameData->projDist = 0xDC;
     SetGeomOffset(0xA0, 0x70);
     g_worldCameraUp.vx = 0;
@@ -38,11 +38,11 @@ void wm_initCamera(void) {
 }
 
 void wm_updateCamera(void) {
-    SVECTOR r;
-    VECTOR v;
-    MATRIX m;
-    s32 t;
-    s32 a;
+    SVECTOR rot;
+    VECTOR upVec;
+    MATRIX rotMat;
+    s32 altitude;
+    s32 angle;
 
     if (g_worldCameraHold == 0) {
         wm_updateCameraPreset();
@@ -51,8 +51,8 @@ void wm_updateCamera(void) {
     g_worldCamera->yaw &= 0xFFF;
     g_worldCameraTargetHeight = g_worldCameraParams.targetHeight;
     if ((u8)g_worldMoveMode == WM_MOVE_HILDA_GARDE || (u8)g_worldMoveMode == WM_MOVE_INVINCIBLE) {
-        t = g_worldPlayer->pos.vy + 0x1518;
-        g_worldCameraTargetHeight = g_worldCameraParams.targetHeight - (t > 0 ? t >> 3 : t / 6);
+        altitude = g_worldPlayer->pos.vy + 0x1518;
+        g_worldCameraTargetHeight = g_worldCameraParams.targetHeight - (altitude > 0 ? altitude >> 3 : altitude / 6);
     }
     g_worldCameraEyeOffset.vx = math_sin(g_worldCamera->yaw) * (g_worldCameraParams.distance * g_worldCameraDistScale / 4096) >> 12;
     g_worldCameraEyeOffset.vy = g_worldCameraParams.eyeHeight;
@@ -63,15 +63,15 @@ void wm_updateCamera(void) {
     g_worldCameraEyeRel.vx = g_worldCameraEye[0] - g_worldCameraTarget[0];
     g_worldCameraEyeRel.vy = g_worldCameraEye[1] - g_worldCameraTarget[1];
     g_worldCameraEyeRel.vz = g_worldCameraEye[2] - g_worldCameraTarget[2];
-    memset(&r, 0, 8);
-    r.vz = g_worldCameraRoll;
-    r.vy = g_worldCamera->yaw;
-    math_rotMatrixXYZ(&r, &m);
-    m.t[0] = 0;
-    m.t[1] = 0;
-    m.t[2] = 0;
-    ApplyMatrixLV(&m, &g_worldCameraUp, &v);
-    wm_lookAt(g_worldViewMatrix, &g_worldCameraEyeRel, &g_worldCameraLookAt, &v);
+    memset(&rot, 0, 8);
+    rot.vz = g_worldCameraRoll;
+    rot.vy = g_worldCamera->yaw;
+    math_rotMatrixXYZ(&rot, &rotMat);
+    rotMat.t[0] = 0;
+    rotMat.t[1] = 0;
+    rotMat.t[2] = 0;
+    ApplyMatrixLV(&rotMat, &g_worldCameraUp, &upVec);
+    wm_lookAt(g_worldViewMatrix, &g_worldCameraEyeRel, &g_worldCameraLookAt, &upVec);
     g_worldCameraDir[1] = 0;
     g_worldCameraDir[0] = g_worldCameraTarget[0] - g_worldCameraEye[0];
     g_worldCameraDir[2] = g_worldCameraTarget[2] - g_worldCameraEye[2];
@@ -87,9 +87,9 @@ void wm_updateCamera(void) {
     if (g_worldCameraDir[2] < -0xFFFF) {
         g_worldCameraDir[2] += 0x50000;
     }
-    a = ratan2(g_worldCameraDir[2], g_worldCameraDir[0]);
-    g_worldCameraDir[0] = math_cos(a);
-    g_worldCameraDir[2] = math_sin(a);
+    angle = ratan2(g_worldCameraDir[2], g_worldCameraDir[0]);
+    g_worldCameraDir[0] = math_cos(angle);
+    g_worldCameraDir[2] = math_sin(angle);
     VectorNormal((VECTOR *)g_worldCameraDir, (VECTOR *)g_worldCameraDir);
     if (*g_worldStoryCounterPtr < 0x137E && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) == 0xC) {
         g_worldCamera->viewForceNormal = 1;
@@ -119,8 +119,8 @@ void wm_cameraFollow(void) {
     s32 ease;
     s32 k;
     s32 x2, y2, z2, d2, step2, dir2;
-    s32 dx, dz, s, r;
-    u8 *p;
+    s32 dx, dz, distSq, domeY;
+    u8 *flagByte;
 
     eyeY = 0;
     if (evt_getWorldCamTargetObj() == 0) {
@@ -328,11 +328,11 @@ void wm_cameraFollow(void) {
     dx = g_worldCameraEye[0] - 0x2FF77;
     dz = g_worldCameraEye[2] + 0x14031;
     if (ABS(dx) < 0x36B0 && ABS(dz) < 0x36B0) {
-        s = 0xBAEB900 - dx * dx;
-        s -= dz * dz;
-        r = -SquareRoot0(s) + 0x898;
-        if (s > 0 && r < g_worldCameraEye[1]) {
-            g_worldCameraEye[1] = r;
+        distSq = 0xBAEB900 - dx * dx;
+        distSq -= dz * dz;
+        domeY = -SquareRoot0(distSq) + 0x898;
+        if (distSq > 0 && domeY < g_worldCameraEye[1]) {
+            g_worldCameraEye[1] = domeY;
         }
     }
     switch (g_worldCameraStartPhase) {
@@ -345,8 +345,8 @@ void wm_cameraFollow(void) {
         break;
     case 1:
         g_worldCameraStartPhase = 2;
-        p = &g_evtGlobalVars.b[0x65];
-        if (*p & 1) {
+        flagByte = &g_evtGlobalVars.b[0x65];
+        if (*flagByte & 1) {
             fade_inAdditiveDefault();
             g_evtGlobalVars.b[0x65] &= ~1;
         } else {
@@ -363,11 +363,11 @@ void wm_cameraFollow(void) {
 
 void wm_updateCameraPreset(void) {
     s32 k;
-    s32 m;
+    s32 row;
     WmCameraParams preset;
 
     k = g_worldAreaCameraGroup[w_frameGetParameter(0xC0)];
-    m = g_worldMoveModeInfo->cameraRow;
+    row = g_worldMoveModeInfo->cameraRow;
     if (g_worldCameraGroupOverride != -1) {
         k = g_worldCameraGroupOverride;
     }
@@ -400,48 +400,48 @@ void wm_updateCameraPreset(void) {
             g_worldCameraBlendSpeed = 0;
         }
     } else {
-        wm_calcCameraPreset(-g_worldPlayer->pos.vy, m, k, math_sin(g_worldCamera->viewBlend / 4), &g_worldCameraParams);
+        wm_calcCameraPreset(-g_worldPlayer->pos.vy, row, k, math_sin(g_worldCamera->viewBlend / 4), &g_worldCameraParams);
     }
 }
 
 void wm_calcCameraPreset(s32 altitude, s32 row, s32 col, s32 viewBlend, WmCameraParams *out) {
-    WmCameraParams *a;
-    WmCameraParams *b;
-    WmCameraParams *c;
+    WmCameraParams *lowPreset;
+    WmCameraParams *highPreset;
+    WmCameraParams *viewPreset;
     s32 t;
     s16 blended[5];
 
-    c = &g_worldCameraPresets[g_worldCameraPresetIndex[row][col][2]];
-    a = &g_worldCameraPresets[g_worldCameraPresetIndex[row][col][0]];
-    b = &g_worldCameraPresets[g_worldCameraPresetIndex[row][col][1]];
+    viewPreset = &g_worldCameraPresets[g_worldCameraPresetIndex[row][col][2]];
+    lowPreset = &g_worldCameraPresets[g_worldCameraPresetIndex[row][col][0]];
+    highPreset = &g_worldCameraPresets[g_worldCameraPresetIndex[row][col][1]];
     t = wm_cameraAltitudeBlend(altitude) & 0xFFFF;
-    blended[0] = wm_lerpShift(a->projDist, b->projDist, t, 9);
-    blended[1] = wm_lerpShift(a->distance, b->distance, t, 0xE);
-    blended[2] = wm_lerpShift(a->eyeHeight, b->eyeHeight, t, 0xD);
-    blended[3] = wm_lerpShift(a->groundClearance, b->groundClearance, t, 0xD);
-    blended[4] = wm_lerpShift(a->targetHeight, b->targetHeight, t, 0xD);
-    out->projDist = wm_lerpShift(blended[0], c->projDist, viewBlend, 9);
-    out->distance = wm_lerpShift(blended[1], c->distance, viewBlend, 0xE);
-    out->eyeHeight = wm_lerpShift(blended[2], c->eyeHeight, viewBlend, 0xD);
-    out->groundClearance = wm_lerpShift(blended[3], c->groundClearance, viewBlend, 0xD);
-    out->targetHeight = wm_lerpShift(blended[4], c->targetHeight, viewBlend, 0xD);
+    blended[0] = wm_lerpShift(lowPreset->projDist, highPreset->projDist, t, 9);
+    blended[1] = wm_lerpShift(lowPreset->distance, highPreset->distance, t, 0xE);
+    blended[2] = wm_lerpShift(lowPreset->eyeHeight, highPreset->eyeHeight, t, 0xD);
+    blended[3] = wm_lerpShift(lowPreset->groundClearance, highPreset->groundClearance, t, 0xD);
+    blended[4] = wm_lerpShift(lowPreset->targetHeight, highPreset->targetHeight, t, 0xD);
+    out->projDist = wm_lerpShift(blended[0], viewPreset->projDist, viewBlend, 9);
+    out->distance = wm_lerpShift(blended[1], viewPreset->distance, viewBlend, 0xE);
+    out->eyeHeight = wm_lerpShift(blended[2], viewPreset->eyeHeight, viewBlend, 0xD);
+    out->groundClearance = wm_lerpShift(blended[3], viewPreset->groundClearance, viewBlend, 0xD);
+    out->targetHeight = wm_lerpShift(blended[4], viewPreset->targetHeight, viewBlend, 0xD);
 }
 
 void wm_toggleCameraView(void) {
-    u8 r;
+    u8 atEnd;
 
     if (g_worldCamera->viewForceNormal == 0
         && (*g_worldStoryCounterPtr >= 0x137E || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) != 0xC)) {
-        r = 0;
+        atEnd = 0;
         if (g_worldCamera->viewBlend == 0) {
-            r = 1;
+            atEnd = 1;
             g_worldCamera->viewBlendSpeed = 0x100;
         }
         if (g_worldCamera->viewBlend == 0x1000) {
-            r = 1;
+            atEnd = 1;
             g_worldCamera->viewBlendSpeed = -0x100;
         }
-        if (r == 0) {
+        if (atEnd == 0) {
             g_worldCamera->viewBlendSpeed = -g_worldCamera->viewBlendSpeed;
         }
     }
@@ -472,12 +472,12 @@ void wm_blendCameraPreset(s16 row, s16 speed) {
 }
 
 s32 wm_getCameraViewState() {
-    s16 v = g_worldCamera->viewBlend;
+    s16 blend = g_worldCamera->viewBlend;
 
-    if (v == 0) {
+    if (blend == 0) {
         return 0;
     }
-    if (v == 0x1000) {
+    if (blend == 0x1000) {
         return 2;
     }
     return 1;
@@ -497,28 +497,28 @@ void wm_cameraSmooth(void) {
 }
 
 void wm_lookAt(MATRIX *out, SVECTOR *eye, SVECTOR *target, VECTOR *up) {
-    VECTOR d;
+    VECTOR raw;
     VECTOR x;
     VECTOR y;
     VECTOR z;
 
-    d.vx = target->vx - eye->vx;
-    d.vy = target->vy - eye->vy;
-    d.vz = target->vz - eye->vz;
-    VectorNormal(&d, &z);
+    raw.vx = target->vx - eye->vx;
+    raw.vy = target->vy - eye->vy;
+    raw.vz = target->vz - eye->vz;
+    VectorNormal(&raw, &z);
     if (z.vz == up->vz) {
         z.vz++;
     }
     gte_ldopv1(&z);
     gte_ldopv2(up);
     gte_op12();
-    gte_stlvnl(&d);
-    VectorNormal(&d, &x);
+    gte_stlvnl(&raw);
+    VectorNormal(&raw, &x);
     gte_ldopv1(&z);
     gte_ldopv2(&x);
     gte_op12();
-    gte_stlvnl(&d);
-    VectorNormal(&d, &y);
+    gte_stlvnl(&raw);
+    VectorNormal(&raw, &y);
     out->m[0][0] = x.vx;
     out->m[0][1] = x.vy;
     out->m[0][2] = x.vz;
@@ -603,26 +603,26 @@ void wm_initMovement(void) {
 void wm_setMountPalette(void) {
     s32 id;
     s32 k;
-    WmPalAnim *e;
+    WmPalAnim *palAnim;
     u16 *pal;
     u16 *dst;
-    EvtListNode *n;
-    EvtObject *a;
-    s32 c;
+    EvtListNode *node;
+    EvtObject *obj;
+    s32 matched;
     s32 i;
     s32 j;
 
     id = 0;
     k = 0;
-    e = g_gameState->gameData->ctx.world->obj->palAnims;
+    palAnim = g_gameState->gameData->ctx.world->obj->palAnims;
     pal = w_framePackGetPtr(g_worldDataPack, 1);
     wm_mountPalettePre();
-    for (n = evt_getObjectList(); n != NULL; n = n->next) {
-        a = n->obj;
-        if (a->state == EVT_STATE_RUNNING && (a->flags & EVT_OBJ_ENABLED) && a->kind == EVT_KIND_ACTOR) {
-            if ((a->actorType >= WM_ACTOR_CHOCOBO0 && a->actorType <= WM_ACTOR_CHOCOBO4)) {
-                id = a->modelId;
-                switch (a->actorType) {
+    for (node = evt_getObjectList(); node != NULL; node = node->next) {
+        obj = node->obj;
+        if (obj->state == EVT_STATE_RUNNING && (obj->flags & EVT_OBJ_ENABLED) && obj->kind == EVT_KIND_ACTOR) {
+            if ((obj->actorType >= WM_ACTOR_CHOCOBO0 && obj->actorType <= WM_ACTOR_CHOCOBO4)) {
+                id = obj->modelId;
+                switch (obj->actorType) {
                 case WM_ACTOR_CHOCOBO0:
                     k = 0;
                     break;
@@ -645,11 +645,11 @@ void wm_setMountPalette(void) {
             }
         }
     }
-    c = 0;
-    for (i = 0; i < g_gameState->gameData->ctx.world->obj->palAnimCount; i++, e++) {
-        if (e->modelId == id) {
-            dst = e->srcPal;
-            switch (c) {
+    matched = 0;
+    for (i = 0; i < g_gameState->gameData->ctx.world->obj->palAnimCount; i++, palAnim++) {
+        if (palAnim->modelId == id) {
+            dst = palAnim->srcPal;
+            switch (matched) {
             case 0:
                 for (j = 0; j < 16; j++) {
                     *dst++ = pal[k * 48 + j + 32];
@@ -666,51 +666,51 @@ void wm_setMountPalette(void) {
                 }
                 break;
             }
-            c++;
+            matched++;
         }
     }
 }
 
 /* find the world map actors (vehicles) and sync the camera with the player */
 void wm_findVehicles(void) {
-    EvtListNode *n;
-    EvtObject *a;
+    EvtListNode *node;
+    EvtObject *obj;
 
-    for (n = evt_getObjectList(); n != NULL; n = n->next) {
-        if (n->obj->kind == EVT_KIND_ACTOR) {
-            a = n->obj;
-            switch (a->actorType) {
+    for (node = evt_getObjectList(); node != NULL; node = node->next) {
+        if (node->obj->kind == EVT_KIND_ACTOR) {
+            obj = node->obj;
+            switch (obj->actorType) {
             case WM_ACTOR_WALKER:
             case WM_ACTOR_WALKER_ALT:
-                g_worldWalkerActor = a;
+                g_worldWalkerActor = obj;
                 break;
             case WM_ACTOR_CHOCOBO0:
             case WM_ACTOR_CHOCOBO1:
             case WM_ACTOR_CHOCOBO2:
             case WM_ACTOR_CHOCOBO3:
             case WM_ACTOR_CHOCOBO4:
-                g_worldMountActor = a;
+                g_worldMountActor = obj;
                 break;
             case WM_ACTOR_BOAT:
-                g_worldVehicleActor = a;
+                g_worldVehicleActor = obj;
                 break;
             case WM_ACTOR_AIRSHIP:
-                g_worldVehicleActor = a;
+                g_worldVehicleActor = obj;
                 break;
             case WM_ACTOR_AIRSHIP2:
-                g_worldVehicleActor = a;
+                g_worldVehicleActor = obj;
                 break;
             }
-            if (a == evt_getPlayer()) {
+            if (obj == evt_getPlayer()) {
                 if (g_gameState->prevMode == GS_MODE_FIELD && g_gameState->gameData->inWorldFrame == 0) {
                     if (g_worldMoveModeInfo->cameraInFront != 0) {
                         g_worldCamera->yawOffset = 0x800;
                     } else {
                         g_worldCamera->yawOffset = 0;
                     }
-                    g_worldCamera->yaw = a->pos.rotY + g_worldCamera->yawOffset;
+                    g_worldCamera->yaw = obj->pos.rotY + g_worldCamera->yawOffset;
                 }
-                g_worldPlayerHeading = a->pos.rotY;
+                g_worldPlayerHeading = obj->pos.rotY;
             }
         }
     }
@@ -719,28 +719,28 @@ void wm_findVehicles(void) {
 }
 
 void wm_drawActors(void) {
-    SVECTOR n;
-    VECTOR a;
-    VECTOR b;
+    SVECTOR camDir;
+    VECTOR relPos;
+    VECTOR viewPos;
     VECTOR dv;
-    SVECTOR s;
+    SVECTOR drawPos;
     s32 z;
     s32 base;
-    s32 d;
+    s32 angDiff;
     s32 ang;
-    EvtListNode *e;
+    EvtListNode *node;
     EvtObject *act;
-    u8 f;
+    u8 showShadow;
 
-    VectorNormalS((VECTOR *)g_worldCameraDir, &n);
-    base = (-ratan2(n.vz, n.vx) + 0x400) % 4096;
+    VectorNormalS((VECTOR *)g_worldCameraDir, &camDir);
+    base = (-ratan2(camDir.vz, camDir.vx) + 0x400) % 4096;
     pen_locate(10, 100);
-    for (e = evt_getObjectList(); e != NULL; e = e->next) {
-        act = e->obj;
-        if (act->kind == EVT_KIND_ACTOR && act->state == EVT_STATE_RUNNING && (act->flags & EVT_OBJ_ENABLED) && (u8)wm_worldToView((VECTOR *)&act->pos, &a, &b, &z)) {
-            f = 1;
-            dv.vx = act->pos.vx - (g_worldCameraEye[0] - n.vx);
-            dv.vz = act->pos.vz - (g_worldCameraEye[2] - n.vz);
+    for (node = evt_getObjectList(); node != NULL; node = node->next) {
+        act = node->obj;
+        if (act->kind == EVT_KIND_ACTOR && act->state == EVT_STATE_RUNNING && (act->flags & EVT_OBJ_ENABLED) && (u8)wm_worldToView((VECTOR *)&act->pos, &relPos, &viewPos, &z)) {
+            showShadow = 1;
+            dv.vx = act->pos.vx - (g_worldCameraEye[0] - camDir.vx);
+            dv.vz = act->pos.vz - (g_worldCameraEye[2] - camDir.vz);
             if (dv.vx > g_worldWidth - 0x8000) {
                 dv.vx -= g_worldWidth;
             }
@@ -754,30 +754,30 @@ void wm_drawActors(void) {
                 dv.vz = g_worldDepth + dv.vz;
             }
             ang = -ratan2(dv.vz, dv.vx) + 0x400;
-            d = ang % 4096;
-            d = d - base;
-            if (d < -0x800) {
-                d += 0x1000;
+            angDiff = ang % 4096;
+            angDiff = angDiff - base;
+            if (angDiff < -0x800) {
+                angDiff += 0x1000;
             }
-            if (d > 0x800) {
-                d -= 0x1000;
+            if (angDiff > 0x800) {
+                angDiff -= 0x1000;
             }
-            if (((d < 0 ? -d : d) < 400 || wm_getCameraViewState(ang) != 0) && (b.vz >= 2001 && b.vz < 29000) && b.vx > -20000 && b.vx < 20000 && b.vy > -20000 && b.vy < 20000 && a.vx > -29000 && a.vx < 29000 && a.vz > -29000 && a.vz < 29000) {
-                s.vx = a.vx;
-                s.vy = a.vy;
-                s.vz = a.vz;
-                wm_setActorFog(act, b.vz >> 3);
-                wm_drawActorModel(act, &s, z);
+            if (((angDiff < 0 ? -angDiff : angDiff) < 400 || wm_getCameraViewState(ang) != 0) && (viewPos.vz >= 2001 && viewPos.vz < 29000) && viewPos.vx > -20000 && viewPos.vx < 20000 && viewPos.vy > -20000 && viewPos.vy < 20000 && relPos.vx > -29000 && relPos.vx < 29000 && relPos.vz > -29000 && relPos.vz < 29000) {
+                drawPos.vx = relPos.vx;
+                drawPos.vy = relPos.vy;
+                drawPos.vz = relPos.vz;
+                wm_setActorFog(act, viewPos.vz >> 3);
+                wm_drawActorModel(act, &drawPos, z);
                 if (act->actorType == WM_ACTOR_BOAT) {
-                    f = 0;
+                    showShadow = 0;
                 }
                 if (act->actorType == WM_ACTOR_WALKER || act->actorType == WM_ACTOR_WALKER_ALT) {
                     if ((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO_FIELD && (u8)g_worldMoveMode <= WM_MOVE_CHOCOBO_FLY) {
-                        f = 0;
+                        showShadow = 0;
                     }
                 }
-                if (g_worldActorTypeInfo[act->actorType].rideOffset < 4 && f) {
-                    wm_drawActorShadow(act, &s, b.vz);
+                if (g_worldActorTypeInfo[act->actorType].rideOffset < 4 && showShadow) {
+                    wm_drawActorShadow(act, &drawPos, viewPos.vz);
                 }
             }
         }
@@ -789,16 +789,16 @@ void wm_drawActors(void) {
 void wm_setActorFog(EvtObject *act, s32 depth) {
     s16 col[3];
     s32 t;
-    s32 f;
-    s32 a;
-    s32 d;
+    s32 cue;
+    s32 fogOff;
+    s32 fogBase;
     s32 i;
     s32 id;
-    WmPalAnim *e;
-    RECT *r;
+    WmPalAnim *palAnim;
+    RECT *rect;
 
     id = act->modelId;
-    e = g_gameState->gameData->ctx.world->obj->palAnims;
+    palAnim = g_gameState->gameData->ctx.world->obj->palAnims;
     t = -act->pos.vy;
     t -= 0xC1F;
     t <<= 12;
@@ -809,87 +809,87 @@ void wm_setActorFog(EvtObject *act, s32 depth) {
     if (t < 0) {
         t = 0;
     }
-    a = wm_lerp(g_worldWeatherData.work[0].fog[1].fogOffset, g_worldWeatherData.work[0].fog[0].fogOffset, t);
+    fogOff = wm_lerp(g_worldWeatherData.work[0].fog[1].fogOffset, g_worldWeatherData.work[0].fog[0].fogOffset, t);
     col[0] = wm_lerp(g_worldWeatherData.work[0].fog[1].color[0], g_worldWeatherData.work[0].fog[0].color[0], t);
     col[1] = wm_lerp(g_worldWeatherData.work[0].fog[1].color[1], g_worldWeatherData.work[0].fog[0].color[1], t);
     col[2] = wm_lerp(g_worldWeatherData.work[0].fog[1].color[2], g_worldWeatherData.work[0].fog[0].color[2], t);
     SetFarColor((u8)col[0], (u8)col[1], (u8)col[2]);
-    f = (depth * 8 + (d = a - 0x8000)) >> 2;
-    if (f < 0) {
-        f = 0;
+    cue = (depth * 8 + (fogBase = fogOff - 0x8000)) >> 2;
+    if (cue < 0) {
+        cue = 0;
     }
-    if (f >= 0x1000) {
-        f = 0xFFF;
+    if (cue >= 0x1000) {
+        cue = 0xFFF;
     }
-    for (i = 0; i < g_gameState->gameData->ctx.world->obj->palAnimCount; i++, e++) {
-        if (e->modelId == id) {
-            r = (RECT *)g_worldPrimPtr;
-            if (f < 0) {
-                f = 0;
+    for (i = 0; i < g_gameState->gameData->ctx.world->obj->palAnimCount; i++, palAnim++) {
+        if (palAnim->modelId == id) {
+            rect = (RECT *)g_worldPrimPtr;
+            if (cue < 0) {
+                cue = 0;
             }
-            if (f > 0x1000) {
-                f = 0x1000;
+            if (cue > 0x1000) {
+                cue = 0x1000;
             }
-            wm_depthCueClut(e->srcPal, e->workPal[*g_worldBufIndex], f, g_worldWeatherData.work[0].fxBackColor);
-            r->x = e->clutX;
-            r->y = e->clutY;
-            r->w = 16;
-            r->h = 1;
-            LoadImage(r, (u32 *)e->workPal[*g_worldBufIndex]);
+            wm_depthCueClut(palAnim->srcPal, palAnim->workPal[*g_worldBufIndex], cue, g_worldWeatherData.work[0].fxBackColor);
+            rect->x = palAnim->clutX;
+            rect->y = palAnim->clutY;
+            rect->w = 16;
+            rect->h = 1;
+            LoadImage(rect, (u32 *)palAnim->workPal[*g_worldBufIndex]);
         }
     }
 }
 
 s32 wm_drawActorModel(EvtObject *act, SVECTOR *pos, s32 unused) { /* its caller passes this, unused */
-    WmActorType *c;
-    WmObjSlot *s;
-    ModelObj *m;
+    WmActorType *typeInfo;
+    WmObjSlot *objSlot;
+    ModelObj *obj;
     WmAnimHdr *h;
     SVECTOR r2;
-    SVECTOR r;
-    s32 t;
+    SVECTOR rot;
+    s32 keysLo;
     void *t2;
-    s32 n;
+    s32 groups;
     s32 i;
 
-    c = &g_worldActorTypeInfo[act->actorType];
-    s = (WmObjSlot *)game_getModel(act->modelSlot);
-    m = s->model;
-    memset(&r, 0, 8);
-    r.vx = s->actor->pos.rotX;
-    r.vy = s->actor->pos.rotY;
-    r.vz = s->actor->rotZ;
-    r2 = r;
-    math_rotMatrixYXZ(&r2, &m->worldMatrix);
-    m->worldMatrix.t[0] = pos->vx;
-    m->worldMatrix.t[1] = pos->vy;
-    m->worldMatrix.t[2] = pos->vz;
-    wm_applyScale(m);
-    m->anim = h = db_lookupRegistered(DB_GET_ADDR, s->actor->anim | DB_ANIM, 0);
+    typeInfo = &g_worldActorTypeInfo[act->actorType];
+    objSlot = (WmObjSlot *)game_getModel(act->modelSlot);
+    obj = objSlot->model;
+    memset(&rot, 0, 8);
+    rot.vx = objSlot->actor->pos.rotX;
+    rot.vy = objSlot->actor->pos.rotY;
+    rot.vz = objSlot->actor->rotZ;
+    r2 = rot;
+    math_rotMatrixYXZ(&r2, &obj->worldMatrix);
+    obj->worldMatrix.t[0] = pos->vx;
+    obj->worldMatrix.t[1] = pos->vy;
+    obj->worldMatrix.t[2] = pos->vz;
+    wm_applyScale(obj);
+    obj->anim = h = db_lookupRegistered(DB_GET_ADDR, objSlot->actor->anim | DB_ANIM, 0);
     if (h != NULL) {
         if (IS_OFFSET(h->rotKeys)) {
-            t = h->rotKeysLo;
+            keysLo = h->rotKeysLo;
             h->rotKeys = (s32)h + h->rotKeys;
-            if (t != 0) {
-                h->rotKeysLo = (s32)m->anim + t;
+            if (keysLo != 0) {
+                h->rotKeysLo = (s32)obj->anim + keysLo;
             }
         }
-        wm_calcBoneMatrices(m, s->actor->animFrame);
+        wm_calcBoneMatrices(obj, objSlot->actor->animFrame);
         if (act->actorType != WM_ACTOR_NO_MODEL) {
-            n = m->model->groupCount;
-            if (c->terrainClass != 0 && c->rideOffset > 0) {
-                m->clipY = pos->vy - c->rideOffset + 100;
-                if (m->parent != NULL) {
-                    m->clipY = m->parent->clipY;
+            groups = obj->model->groupCount;
+            if (typeInfo->terrainClass != 0 && typeInfo->rideOffset > 0) {
+                obj->clipY = pos->vy - typeInfo->rideOffset + 100;
+                if (obj->parent != NULL) {
+                    obj->clipY = obj->parent->clipY;
                 }
-                for (i = 0; i < n; i++) {
-                    wm_projectMeshClipY(m, i);
-                    wm_drawMeshClipY(m, i);
+                for (i = 0; i < groups; i++) {
+                    wm_projectMeshClipY(obj, i);
+                    wm_drawMeshClipY(obj, i);
                 }
             } else {
-                for (i = 0; i < n; i++) {
-                    wm_projectMesh(m, i);
-                    wm_drawMesh(m, i);
+                for (i = 0; i < groups; i++) {
+                    wm_projectMesh(obj, i);
+                    wm_drawMesh(obj, i);
                 }
             }
         }
@@ -901,41 +901,41 @@ s32 wm_drawActorModel(EvtObject *act, SVECTOR *pos, s32 unused) { /* its caller 
 
 /* shadow under world map object act at pos; depth = distance from the camera */
 void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
-    WmActorType *c;
+    WmActorType *typeInfo;
     s32 k;
-    s32 d;
+    s32 lift;
     s32 sx;
     s32 sz;
-    s32 f;
-    s32 a;
-    s32 s;
+    s32 fade;
+    s32 alpha;
+    s32 size;
     u32 *ot;
 
-    c = &g_worldActorTypeInfo[act->actorType];
+    typeInfo = &g_worldActorTypeInfo[act->actorType];
     k = act->modelSlot;
     sx = 0x1000;
     if (act->actorType != WM_ACTOR_NO_MODEL) {
-        d = c->floorY - act->pos.vy;
-        pos->vy += d;
-        pos->vy -= d / 8;
-        sz = sx - d / 2;
-        sx -= d / 4;
-        g_worldOtBias = -c->shadowWidth * 4 - (s8)c->shadowOtBias;
-        if (c->shadowWidth == 0) {
+        lift = typeInfo->floorY - act->pos.vy;
+        pos->vy += lift;
+        pos->vy -= lift / 8;
+        sz = sx - lift / 2;
+        sx -= lift / 4;
+        g_worldOtBias = -typeInfo->shadowWidth * 4 - (s8)typeInfo->shadowOtBias;
+        if (typeInfo->shadowWidth == 0) {
             return;
         }
-        sx = (c->shadowWidth * sx) >> 11;
-        sz = (c->shadowDepth * sz) >> 12;
-        f = (0x8000 - depth) >> 3;
-        f *= g_worldWeatherData.work[0].shadowShade;
-        f >>= 12;
-        if (f < 0) {
-            f = 0;
+        sx = (typeInfo->shadowWidth * sx) >> 11;
+        sz = (typeInfo->shadowDepth * sz) >> 12;
+        fade = (0x8000 - depth) >> 3;
+        fade *= g_worldWeatherData.work[0].shadowShade;
+        fade >>= 12;
+        if (fade < 0) {
+            fade = 0;
         }
-        if (f >= 0x1000) {
-            f = 0xFFF;
+        if (fade >= 0x1000) {
+            fade = 0xFFF;
         }
-        sz *= f;
+        sz *= fade;
         sz >>= 12;
         if (sz >= 0x100) {
             sz = 0xFF;
@@ -948,38 +948,38 @@ void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth) {
         g_gameState->gameData->ctx.world->obj->shadows[k].shade = sz;
         ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot + g_worldOtBias;
-        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, pos->vy, c->shadowJoint);
+        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, pos->vy, typeInfo->shadowJoint);
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     } else {
-        s = 0x7D0;
+        size = 0x7D0;
         if (g_worldFog != 0) {
-            s = 0xAF0;
+            size = 0xAF0;
         }
-        f = (0x7060 - depth) >> 2;
-        f *= g_worldWeatherData.work[4].shadowShade;
-        f >>= 12;
-        if (f < 0) {
-            f = 0;
+        fade = (0x7060 - depth) >> 2;
+        fade *= g_worldWeatherData.work[4].shadowShade;
+        fade >>= 12;
+        if (fade < 0) {
+            fade = 0;
         }
-        if (f >= 0x1000) {
-            f = 0xFFF;
+        if (fade >= 0x1000) {
+            fade = 0xFFF;
         }
-        a = (c->shadowDepth * s) >> 12;
-        a *= f;
-        a >>= 12;
-        if (a >= 0x100) {
-            a = 0xFF;
+        alpha = (typeInfo->shadowDepth * size) >> 12;
+        alpha *= fade;
+        alpha >>= 12;
+        if (alpha >= 0x100) {
+            alpha = 0xFF;
         }
-        if (a < 0) {
-            a = 0;
+        if (alpha < 0) {
+            alpha = 0;
         }
         g_gameState->gameData->ctx.world->obj->shadows[k].scaleX = 0x302;
         g_gameState->gameData->ctx.world->obj->shadows[k].scaleZ = 0x294;
-        g_gameState->gameData->ctx.world->obj->shadows[k].shade = a;
+        g_gameState->gameData->ctx.world->obj->shadows[k].shade = alpha;
         ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
         g_worldOtBias = -0x46;
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] -= 0x46;
-        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, pos->vy, c->shadowJoint);
+        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, pos->vy, typeInfo->shadowJoint);
         g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     }
 }
@@ -988,7 +988,7 @@ void wm_updateActors(void) {
     s32 polyIdx;
     s32 h;
     s32 cell;
-    EvtListNode *e;
+    EvtListNode *node;
     EvtObject *act;
     WmActorType *cc;
 
@@ -1002,8 +1002,8 @@ void wm_updateActors(void) {
         g_worldPlayer->prevPos.vy = g_worldPlayer->pos.vy;
         g_worldPlayer->prevPos.vz = g_worldPlayer->pos.vz;
     }
-    for (e = evt_getObjectList(); e != NULL; e = e->next) {
-        act = e->obj;
+    for (node = evt_getObjectList(); node != NULL; node = node->next) {
+        act = node->obj;
         cc = &g_worldActorTypeInfo[act->actorType];
         if (act->kind == EVT_KIND_ACTOR && act->state == EVT_STATE_RUNNING && (act->flags & EVT_OBJ_ENABLED)) {
             switch (act->actorType) {
@@ -1103,42 +1103,42 @@ void wm_updateActors(void) {
 void wm_updateActorHeight(EvtObject *act) {
     u8 flat;
     s32 h;
-    WmActorType *c;
+    WmActorType *typeInfo;
     s32 y;
-    s16 d;
+    s16 lift;
 
     if (g_worldMapLoaded != 0) {
-        c = &g_worldActorTypeInfo[act->actorType];
-        if (c->polyCache != 0xA) {
-            h = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, &flat);
-            if (c->flying == 0) {
-                if (c->terrainClass != 0) {
-                    if (c->rideMode == WM_MOVE_BOAT) {
-                        c->rideOffset = 0x118;
+        typeInfo = &g_worldActorTypeInfo[act->actorType];
+        if (typeInfo->polyCache != 0xA) {
+            h = wm_getTerrainHeightOffset(typeInfo->terrainClass, typeInfo->cellAttr, &flat);
+            if (typeInfo->flying == 0) {
+                if (typeInfo->terrainClass != 0) {
+                    if (typeInfo->rideMode == WM_MOVE_BOAT) {
+                        typeInfo->rideOffset = 0x118;
                     } else if (flat != 0 || h == 0) {
-                        c->rideOffset = h;
+                        typeInfo->rideOffset = h;
                     } else {
-                        if (c->rideOffset < h - 0x15) {
-                            c->rideOffset += 0x14;
+                        if (typeInfo->rideOffset < h - 0x15) {
+                            typeInfo->rideOffset += 0x14;
                         }
-                        if (c->rideOffset > h + 0x15) {
-                            c->rideOffset -= 0x14;
+                        if (typeInfo->rideOffset > h + 0x15) {
+                            typeInfo->rideOffset -= 0x14;
                         }
                     }
                 }
-                act->pos.vy = c->floorY + c->rideOffset;
+                act->pos.vy = typeInfo->floorY + typeInfo->rideOffset;
             } else {
-                y = c->floorY + h;
+                y = typeInfo->floorY + h;
                 if (y < act->pos.vy) {
                     act->pos.vy = y;
                 }
                 if (g_worldCameraHold == 0 && g_worldPlayer->pos.vy < -0x2A30 && g_worldCameraLookupFix == 0) {
                     g_worldPlayer->pos.vy = -0x2A30;
                 }
-                d = act->pos.vy - c->floorY;
-                c->rideOffset = d;
-                if (d < 0) {
-                    c->rideOffset = 0;
+                lift = act->pos.vy - typeInfo->floorY;
+                typeInfo->rideOffset = lift;
+                if (lift < 0) {
+                    typeInfo->rideOffset = 0;
                 }
             }
         }
@@ -1146,8 +1146,8 @@ void wm_updateActorHeight(EvtObject *act) {
 }
 
 void wm_movePlayer(WmActorType *cc) {
-    ActorPos p;
-    ActorPos q;
+    ActorPos probe;
+    ActorPos stepPos;
     u32 cell;
     s32 h;
     u32 cell2;
@@ -1160,7 +1160,7 @@ void wm_movePlayer(WmActorType *cc) {
     s32 ex, ez;
     s32 k;
     s32 dist;
-    s32 m;
+    s32 climb;
     s32 off, lim, y, zz, wz, r1, r2;
 
     if (g_worldMoveModeInfo->countsSteps != 0 && g_worldPlayerPosChanged != 0 && w_frameGetParameter(WM_PARAM_TOPOGRAPHY) != WM_TOPO_NO_ENCOUNTER && g_worldTitleId == -1) {
@@ -1185,12 +1185,12 @@ void wm_movePlayer(WmActorType *cc) {
             j = i;
             cell = -1;
             h = -1;
-            p = g_worldPlayer->pos;
-            if (wm_tryStep((VECTOR *)&p, i, g_worldMoveMode, spd, &cell, &h) ||
-                wm_tryStep((VECTOR *)&p, j = -i, g_worldMoveMode, spd, &cell, &h)) {
-                dx = p.vx - g_worldPlayer->prevPos.vx;
-                dy = p.vy - g_worldPlayer->prevPos.vy;
-                dz = p.vz - g_worldPlayer->prevPos.vz;
+            probe = g_worldPlayer->pos;
+            if (wm_tryStep((VECTOR *)&probe, i, g_worldMoveMode, spd, &cell, &h) ||
+                wm_tryStep((VECTOR *)&probe, j = -i, g_worldMoveMode, spd, &cell, &h)) {
+                dx = probe.vx - g_worldPlayer->prevPos.vx;
+                dy = probe.vy - g_worldPlayer->prevPos.vy;
+                dz = probe.vz - g_worldPlayer->prevPos.vz;
                 if (wm_getTerrainHeightOffset(cc->terrainClass, cell, 0) != 0) {
                     dist = SquareRoot0(dx * dx + dz * dz);
                 } else {
@@ -1204,11 +1204,11 @@ void wm_movePlayer(WmActorType *cc) {
                 } else {
                     k = 0;
                 }
-                q = g_worldPlayer->pos;
-                if (wm_tryStep((VECTOR *)&q, j, g_worldMoveMode, k, &cell, &h)) {
-                    g_worldPlayer->pos = q;
+                stepPos = g_worldPlayer->pos;
+                if (wm_tryStep((VECTOR *)&stepPos, j, g_worldMoveMode, k, &cell, &h)) {
+                    g_worldPlayer->pos = stepPos;
                     cc->cellAttr = cell;
-                    cc->floorY = q.vy;
+                    cc->floorY = stepPos.vy;
                     g_worldPlayerFloorPoly = h;
                     break;
                 }
@@ -1219,20 +1219,20 @@ void wm_movePlayer(WmActorType *cc) {
             g_worldMoveMode = saved;
         }
     } else {
-        q = g_worldPlayer->pos;
-        if (wm_tryStep((VECTOR *)&q, 0, g_worldMoveMode, spd, &cell2, &h2)) {
-            g_worldPlayer->pos.vx = q.vx;
-            g_worldPlayer->pos.vz = q.vz;
+        stepPos = g_worldPlayer->pos;
+        if (wm_tryStep((VECTOR *)&stepPos, 0, g_worldMoveMode, spd, &cell2, &h2)) {
+            g_worldPlayer->pos.vx = stepPos.vx;
+            g_worldPlayer->pos.vz = stepPos.vz;
             g_worldCeilingGap = g_worldPlayer->pos.vy + 0x2A30;
             if (g_worldCeilingGap < 0x7E8 && g_worldCameraHold == 0 && g_worldCameraLookupFix == 0 && g_worldPlayerClimbSpeed < 0) {
-                m = (g_worldPlayerClimbSpeed << 1) * g_worldCeilingGap;
-                m >>= 12;
-                g_worldPlayer->pos.vy += m;
+                climb = (g_worldPlayerClimbSpeed << 1) * g_worldCeilingGap;
+                climb >>= 12;
+                g_worldPlayer->pos.vy += climb;
             } else {
                 g_worldPlayer->pos.vy += g_worldPlayerClimbSpeed;
             }
             cc->cellAttr = cell2;
-            cc->floorY = q.vy;
+            cc->floorY = stepPos.vy;
             g_worldPlayerFloorPoly = h2;
         }
         off = 0x1C20;
@@ -1324,48 +1324,48 @@ void wm_movePlayer(WmActorType *cc) {
 }
 
 u8 wm_tryStep(VECTOR *pos, s32 angle, s32 moveMode, s32 speed, u32 *outCell, s32 *outHeight) {
-    VECTOR v;
+    VECTOR newPos;
     u32 cell;
     s32 h;
     WmMoveMode *mode;
-    WmPolyCache *c;
+    WmPolyCache *cache;
     u8 ok;
     s32 k;
     s32 ang;
-    u8 a;
-    u8 b;
+    u8 toWater;
+    u8 toLand;
     u8 x;
     u8 y;
 
     k = g_worldActorTypeInfo[g_worldPlayer->actorType].polyCache;
     mode = &g_worldMoveModes[moveMode];
-    v = *pos;
-    c = &g_worldPolyCache[k];
-    v.vx += math_sin(g_worldPlayerHeading + (ang = angle + 0x800)) * speed >> 12;
-    v.vz += math_cos(g_worldPlayerHeading + ang) * speed >> 12;
+    newPos = *pos;
+    cache = &g_worldPolyCache[k];
+    newPos.vx += math_sin(g_worldPlayerHeading + (ang = angle + 0x800)) * speed >> 12;
+    newPos.vz += math_cos(g_worldPlayerHeading + ang) * speed >> 12;
     if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == WM_TOPO_NO_ENCOUNTER && g_worldMoveModeInfo->controlType != WM_CTRL_FLY) {
-        wm_getGroundHeight(&v, &cell, &h, NULL, (u16 *)&v.vy);
+        wm_getGroundHeight(&newPos, &cell, &h, NULL, (u16 *)&newPos.vy);
     } else {
-        wm_getGroundHeight(&v, &cell, &h, c, (u16 *)&v.vy);
+        wm_getGroundHeight(&newPos, &cell, &h, cache, (u16 *)&newPos.vy);
     }
     if (h >= 0) {
         ok = wm_testCellType(mode->allowedCells, cell);
         if (ok) {
             if (mode->checkTransitions != 0) {
-                a = wm_testCellType(g_worldWaterCellTypes, cell);
-                b = wm_testCellType(g_worldLandCellTypes, cell);
+                toWater = wm_testCellType(g_worldWaterCellTypes, cell);
+                toLand = wm_testCellType(g_worldLandCellTypes, cell);
                 x = wm_testCellType(g_worldWaterCellTypes, g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr);
                 y = wm_testCellType(g_worldLandCellTypes, g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr);
-                if (b & x) {
+                if (toLand & x) {
                     ok = 0;
                 }
-                if (y & a) {
+                if (y & toWater) {
                     ok = 0;
                 }
             }
             if (ok) {
                 if (pos != NULL) {
-                    *pos = v;
+                    *pos = newPos;
                 }
                 if (outHeight != NULL) {
                     *outHeight = h;
@@ -1382,20 +1382,21 @@ u8 wm_tryStep(VECTOR *pos, s32 angle, s32 moveMode, s32 speed, u32 *outCell, s32
 
 u8 wm_findGetoffPos(ActorPos *out) {
     EvtObject *act;
-    s32 d[2];
-    ActorPos v;
+    s32 dirs[2];
+    ActorPos tryPos;
     u32 cell;
     u8 ok;
-    u8 r;
-    s32 a;
+    u8 allOk;
+    s32 angOff;
     s32 i;
     s32 j;
-    s32 t;
+    s32 topo;
+    s32 dist;
     s32 k;
     s32 x;
     s32 z;
 
-    memset(&v, 0, sizeof(v));
+    memset(&tryPos, 0, sizeof(tryPos));
     ok = 0;
     if (g_worldAmbientSeDist[1] < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == 0x17) {
         return 0;
@@ -1403,7 +1404,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
     g_worldFlyTurning = 0;
     act = g_worldPlayer;
     g_worldGetoffSearching = 1;
-    v = act->pos;
+    tryPos = act->pos;
     switch (g_worldMoveMode) {
     case WM_MOVE_HILDA_GARDE:
     case WM_MOVE_INVINCIBLE:
@@ -1412,16 +1413,16 @@ u8 wm_findGetoffPos(ActorPos *out) {
         if (SquareRoot0(x * x + z * z) < 0xB4) {
             return 0;
         }
-        if (!wm_tryStep((VECTOR *)&v, 0, 0, 0, &cell, 0)) {
+        if (!wm_tryStep((VECTOR *)&tryPos, 0, 0, 0, &cell, 0)) {
             return 0;
         }
-        t = (u8)cell >> 2;
-        if (t >= 0x2D && (t < 0x2F || t == WM_TOPO_NO_ENCOUNTER)) {
+        topo = (u8)cell >> 2;
+        if (topo >= 0x2D && (topo < 0x2F || topo == WM_TOPO_NO_ENCOUNTER)) {
             return 0;
         }
         break;
     case WM_MOVE_BOAT:
-        if (!wm_tryStep((VECTOR *)&v, 0, 10, 0, &cell, 0)) {
+        if (!wm_tryStep((VECTOR *)&tryPos, 0, 10, 0, &cell, 0)) {
             return 0;
         }
         if (((u8)cell >> 2) != WM_TOPO_SHALLOWS) {
@@ -1429,7 +1430,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
         }
         break;
     default:
-        if (!wm_tryStep((VECTOR *)&v, 0, 0, 0, &cell, 0)) {
+        if (!wm_tryStep((VECTOR *)&tryPos, 0, 0, 0, &cell, 0)) {
             return 0;
         }
         if (((u8)cell >> 2) == WM_TOPO_NO_ENCOUNTER) {
@@ -1438,24 +1439,24 @@ u8 wm_findGetoffPos(ActorPos *out) {
         break;
     }
     g_worldGetoffSearching = 0;
-    for (a = 0; a < 0x800; a += 0x100) {
-        d[0] = (a + 0xC00) % 0x1000;
-        d[1] = -a + 0xC00;
+    for (angOff = 0; angOff < 0x800; angOff += 0x100) {
+        dirs[0] = (angOff + 0xC00) % 0x1000;
+        dirs[1] = -angOff + 0xC00;
         for (i = 0; i < 2; i++) {
-            r = 1;
+            allOk = 1;
             if (ok) {
                 continue;
             }
             for (j = 1; j < 9; j++) {
-                t = g_worldMoveModeInfo->getoffDist * j / 8;
-                v = g_worldPlayer->pos;
-                r &= wm_tryStep((VECTOR *)&v, d[i], 0, t, &cell, 0);
+                dist = g_worldMoveModeInfo->getoffDist * j / 8;
+                tryPos = g_worldPlayer->pos;
+                allOk &= wm_tryStep((VECTOR *)&tryPos, dirs[i], 0, dist, &cell, 0);
             }
-            ok = r;
+            ok = allOk;
             if (ok) {
                 switch (g_worldMoveMode) {
                 case WM_MOVE_WALK:
-                    if (abs(v.vy - g_worldPlayer->pos.vy) >= 0x1F5) {
+                    if (abs(tryPos.vy - g_worldPlayer->pos.vy) >= 0x1F5) {
                         ok = 0;
                     }
                     break;
@@ -1466,7 +1467,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
                     break;
                 case WM_MOVE_HILDA_GARDE:
                 case WM_MOVE_INVINCIBLE:
-                    if (abs(v.vy - w_frameGetParameter(WM_PARAM_RIDE_Y)) >= 0x15F) {
+                    if (abs(tryPos.vy - w_frameGetParameter(WM_PARAM_RIDE_Y)) >= 0x15F) {
                         ok = 0;
                     }
                     break;
@@ -1506,8 +1507,8 @@ u8 wm_findGetoffPos(ActorPos *out) {
                 k = 8;
                 break;
             }
-            v.vy += g_worldTerrainHeightOffsets[1][k];
-            *out = v;
+            tryPos.vy += g_worldTerrainHeightOffsets[1][k];
+            *out = tryPos;
             return 1;
         }
     }
@@ -1516,7 +1517,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
 
 void w_movementChange(void) {
     s8 old;
-    WmMoveMode *p;
+    WmMoveMode *info;
     WmMoveMode *prev;
 
     evt_resetIdleTimer(0);
@@ -1526,22 +1527,22 @@ void w_movementChange(void) {
     old = g_worldMoveMode;
     prev = g_worldMoveModeInfo;
     g_worldMoveMode = g_evtGlobalVars.b[0xBE];
-    g_worldMoveModeInfo = p = &g_worldMoveModes[g_worldMoveMode];
+    g_worldMoveModeInfo = info = &g_worldMoveModes[g_worldMoveMode];
     if (old == WM_MOVE_BOAT) {
         wm_seStop(prev->loopSe);
     }
-    if (p->loopSe != 0) {
-        wm_sePlay(p->loopSe, 0);
+    if (info->loopSe != 0) {
+        wm_sePlay(info->loopSe, 0);
         if (g_worldMoveMode != WM_MOVE_BOAT) {
-            wm_seFadeVolume(p->loopSe, 0x3C, 0x3F);
+            wm_seFadeVolume(info->loopSe, 0x3C, 0x3F);
         }
         if ((u8)(g_worldMoveMode - WM_MOVE_HILDA_GARDE) < 2) {
             wm_sePlay(WM_SE_AIRSHIP_WATER, 0);
         }
         g_worldCamera->viewForceNormal = 1;
     }
-    if (prev == NULL || prev->music != p->music) {
-        w_musicRequestSend(p->music);
+    if (prev == NULL || prev->music != info->music) {
+        w_musicRequestSend(info->music);
     }
     if (g_worldMoveMode == WM_MOVE_WALK && (u8)(old - WM_MOVE_CHOCOBO_FIELD) < 6) {
         g_worldPlayerHeading = (g_worldMountActor->pos.rotY + 0x400) & 0xFFF;
@@ -1550,9 +1551,9 @@ void w_movementChange(void) {
         g_worldPlayerHeading = g_worldMountActor->pos.rotY & 0xFFF;
     }
     if (g_worldMoveModes[old].airborne == g_worldMoveModes[g_worldMoveMode].airborne) {
-        wm_blendCameraPreset(p->cameraRow, 0x200);
+        wm_blendCameraPreset(info->cameraRow, 0x200);
     } else {
-        wm_blendCameraPreset(p->cameraRow, 0x40);
+        wm_blendCameraPreset(info->cameraRow, 0x40);
     }
     g_worldCameraFourProbes = g_worldMoveModeInfo->airborne == 0;
     wm_updateActors();
@@ -1566,19 +1567,19 @@ void wm_controlWalk(void) {
     s32 z;
     s32 ang;
     u16 mv;
-    s32 a;
+    s32 turn;
     s16 cur;
     u32 k;
     s32 rx;
     s32 lo;
-    s32 t;
+    s32 rawAng;
 
     wm_getLeftStickX(&x);
     wm_getLeftStickY(&z);
     z = -z;
-    t = -ratan2(z, x) + 0x400;
+    rawAng = -ratan2(z, x) + 0x400;
     g_worldCameraTurning = 0;
-    ang = t & 0xFFF;
+    ang = rawAng & 0xFFF;
     g_worldCameraFastRise = 0;
     g_worldFlyTurning = 0;
     mv = ((x | z) != 0) << 12;
@@ -1611,17 +1612,17 @@ void wm_controlWalk(void) {
             g_worldPlayerSpeed = mv * g_worldMoveModeInfo->speed >> 12;
         }
     }
-    a = g_worldPlayerHeading;
+    turn = g_worldPlayerHeading;
     cur = g_worldPlayer->pos.rotY;
-    if (a - cur > 0x800) {
-        a -= 0x1000;
+    if (turn - cur > 0x800) {
+        turn -= 0x1000;
     }
-    if (a - cur < -0x800) {
-        a += 0x1000;
+    if (turn - cur < -0x800) {
+        turn += 0x1000;
     }
-    a -= cur;
+    turn -= cur;
     if ((x | z) != 0) {
-        g_worldPlayer->pos.rotY = (g_worldPlayer->pos.rotY + a / 3) & 0xFFF;
+        g_worldPlayer->pos.rotY = (g_worldPlayer->pos.rotY + turn / 3) & 0xFFF;
     }
     if (g_worldPlayerPosChanged != 0 && mv != 0) {
         if (wm_testCellType_inline(g_worldWaterCellTypes, (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2)) {
@@ -1663,12 +1664,12 @@ void wm_controlSteer(void) {
     s32 lx;
     s32 rx;
     s32 ly;
-    s16 v;
+    s16 smoothSpeed;
     s32 sp;
     s32 vol;
-    s32 a;
+    s32 turn;
     s32 ang;
-    WmMoveMode *m;
+    WmMoveMode *info;
     s32 dx;
     s32 dz;
 
@@ -1684,9 +1685,9 @@ void wm_controlSteer(void) {
     if (lx < 0 && lx < ly) {
         ly = lx;
     }
-    a = g_worldMoveModeInfo->turnSpeed * rx >> 7;
+    turn = g_worldMoveModeInfo->turnSpeed * rx >> 7;
     g_worldCameraTurnedByHand = 0;
-    g_worldPlayerTurn = a;
+    g_worldPlayerTurn = turn;
     if (wm_getPadHeld() & BTN_L1) {
         g_worldCameraTurnedByHand = 1;
         g_worldCamera->yaw -= 0x20;
@@ -1697,16 +1698,16 @@ void wm_controlSteer(void) {
     }
     g_worldCamera->yawOffset = 0;
     g_worldCamera->yaw &= 0xFFF;
-    m = g_worldMoveModeInfo;
-    v = g_worldSpeedSmooth + (m->speed * ly / g_worldStickDiv - g_worldSpeedSmooth) / g_worldSpeedSmoothDiv;
-    g_worldSpeedSmooth = v;
-    sp = v / g_worldSpeedScaleDiv;
+    info = g_worldMoveModeInfo;
+    smoothSpeed = g_worldSpeedSmooth + (info->speed * ly / g_worldStickDiv - g_worldSpeedSmooth) / g_worldSpeedSmoothDiv;
+    g_worldSpeedSmooth = smoothSpeed;
+    sp = smoothSpeed / g_worldSpeedScaleDiv;
     g_worldPlayerSpeed = sp;
     vol = ABS(sp) / 8 + 0x14;
     if (vol >= 0x80) {
         vol = 0x7F;
     }
-    wm_seFadeVolume(m->loopSe, 0x3C, vol);
+    wm_seFadeVolume(info->loopSe, 0x3C, vol);
     g_worldPlayerHeading = g_worldPlayer->pos.rotY = (g_worldPlayer->pos.rotY + g_worldPlayerTurn) & 0xFFF;
     if (ABS(g_worldPlayerSpeed) > 80 && g_worldPlayerPosChanged != 0) {
         ang = (g_worldPlayerSpeed <= 0) << 11;
@@ -1732,16 +1733,16 @@ void wm_controlFly(void) {
     s32 btn;
     s32 dx;
     s32 dz;
-    s32 d;
+    s32 unused;
     s32 k;
-    s32 r;
+    s32 dist;
     s32 h;
-    u32 t;
-    u8 f;
-    s32 q;
+    u32 topo;
+    u8 onWater;
+    s32 smoothDiv;
     u32 w;
-    s32 a;
-    s32 b;
+    s32 speedStep;
+    s32 climbStep;
     s16 sa;
     s16 sb;
     s32 ex;
@@ -1785,14 +1786,14 @@ void wm_controlFly(void) {
         }
     }
     g_worldCamera->yawOffset = 0;
-    a = g_worldMoveModeInfo->speed * z / g_worldStickDiv;
+    speedStep = g_worldMoveModeInfo->speed * z / g_worldStickDiv;
     g_worldPlayerTurn = g_worldMoveModeInfo->turnSpeed * x >> 7;
-    q = g_worldSpeedSmoothDiv;
-    b = g_worldMoveModeInfo->climbSpeed * y / g_worldStickDiv;
-    a = (a - g_worldSpeedSmooth) / q;
-    b = (b - g_worldClimbSmooth) / q;
-    sa = g_worldSpeedSmooth + a;
-    sb = g_worldClimbSmooth + b;
+    smoothDiv = g_worldSpeedSmoothDiv;
+    climbStep = g_worldMoveModeInfo->climbSpeed * y / g_worldStickDiv;
+    speedStep = (speedStep - g_worldSpeedSmooth) / smoothDiv;
+    climbStep = (climbStep - g_worldClimbSmooth) / smoothDiv;
+    sa = g_worldSpeedSmooth + speedStep;
+    sb = g_worldClimbSmooth + climbStep;
     g_worldSpeedSmooth = sa;
     g_worldClimbSmooth = sb;
     g_worldPlayerSpeed = sa / g_worldSpeedScaleDiv;
@@ -1814,8 +1815,8 @@ void wm_controlFly(void) {
     case 1:
         ex = (g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].worldX - g_worldPlayer->pos.vx) >> 5;
         ez = (g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].worldZ - g_worldPlayer->pos.vz) >> 5;
-        r = SquareRoot0(ex * ex + ez * ez);
-        g_worldPlayerSpeed = r;
+        dist = SquareRoot0(ex * ex + ez * ez);
+        g_worldPlayerSpeed = dist;
         if (g_worldPlayerSpeed > 400) {
             g_worldPlayerSpeed = 400;
         }
@@ -1886,12 +1887,12 @@ void wm_controlFly(void) {
         g_worldPlayer->rotZ = -(s8)g_worldMoveModeInfo->maxRoll * 2;
     }
     if (g_worldFrameCount & 1) {
-        t = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
-        f = wm_testCellType_inline2(g_worldWaterCellTypes, t);
+        topo = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
+        onWater = wm_testCellType_inline2(g_worldWaterCellTypes, topo);
         switch (g_worldPlayer->actorType) {
         case WM_ACTOR_AIRSHIP:
         case WM_ACTOR_AIRSHIP2:
-            if (f && abs(g_worldPlayerSpeed) > 60) {
+            if (onWater && abs(g_worldPlayerSpeed) > 60) {
                 h = g_worldPlayer->pos.vy;
                 if (h >= -0x800) {
                     g_worldSprayTarget = 0x1000 - abs(h + 400) * 2;
@@ -1913,17 +1914,17 @@ void wm_controlFly(void) {
             } else {
                 wm_seFadeVolume(WM_SE_AIRSHIP_WATER, 30, 0);
             }
-            if (t == WM_TOPO_SAND && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
+            if (topo == WM_TOPO_SAND && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
                 g_worldSprayTarget = 0x1000 - (g_worldPlayer->pos.vy - 0x514) * 2;
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy + 100, g_worldPlayer->pos.vz, WM_FX_AIRSHIP_SAND, 32000);
             }
             break;
         case WM_ACTOR_CHOCOBO4:
-            if (f && abs(g_worldPlayerSpeed) > 30 && g_worldPlayer->pos.vy >= -100) {
+            if (onWater && abs(g_worldPlayerSpeed) > 30 && g_worldPlayer->pos.vy >= -100) {
                 g_worldSprayTarget = 0x1000 - abs(g_worldPlayer->pos.vy + 100) * 2;
                 wm_spawnEffect(g_worldPlayer->pos.vx, -200, g_worldPlayer->pos.vz, WM_FX_CHOCOBO_SPRAY, 19200);
             }
-            if (t == WM_TOPO_SAND && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
+            if (topo == WM_TOPO_SAND && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
                 g_worldSprayTarget = 0x1000 - abs(g_worldPlayer->pos.vy + 0x708) * 2;
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy + 100, g_worldPlayer->pos.vz, WM_FX_CHOCOBO_SAND, 25600);
             }
@@ -1933,24 +1934,24 @@ void wm_controlFly(void) {
 }
 
 void wm_cameraAutoTurnWalk(void) {
-    s32 a;
+    s32 camYaw;
     s32 cam;
-    s32 d;
-    s32 t;
-    s32 q;
+    s32 yawDiff;
+    s32 boost;
+    s32 turnStep;
 
-    a = (g_worldCamera->yaw + g_worldCamera->yawOffset) & 0xFFF;
+    camYaw = (g_worldCamera->yaw + g_worldCamera->yawOffset) & 0xFFF;
     cam = g_worldPlayerHeading & 0xFFF;
-    if (a - cam >= 0x800) {
-        a -= 0x1000;
+    if (camYaw - cam >= 0x800) {
+        camYaw -= 0x1000;
     }
-    if (a - cam < -0x800) {
-        a += 0x1000;
+    if (camYaw - cam < -0x800) {
+        camYaw += 0x1000;
     }
-    d = (g_worldPlayerHeading - a) * 0xC00 / 4096;
+    yawDiff = (g_worldPlayerHeading - camYaw) * 0xC00 / 4096;
     g_worldAutoTurnDeadZone = abs(g_worldCamera->stickSide) >> 3;
-    if (abs(d) < g_worldAutoTurnDeadZone) {
-        d = 0;
+    if (abs(yawDiff) < g_worldAutoTurnDeadZone) {
+        yawDiff = 0;
     }
     if (g_worldPlayerSpeed != 0) {
         g_worldCameraTurnGain = 0x1000;
@@ -1961,115 +1962,115 @@ void wm_cameraAutoTurnWalk(void) {
         }
     }
     if (g_worldCameraTurnedByHand == 0 && g_worldCameraFlags->autoTurnOff == 0 && g_worldState == WM_STATE_RUNNING) {
-        g_worldAutoTurnDiv = abs(d);
-        if (abs(d) < g_worldAutoTurnDivMin) {
+        g_worldAutoTurnDiv = abs(yawDiff);
+        if (abs(yawDiff) < g_worldAutoTurnDivMin) {
             g_worldAutoTurnDiv = g_worldAutoTurnDivMin;
         }
         if (g_worldAutoTurnDiv > g_worldAutoTurnDivMax) {
             g_worldAutoTurnDiv = g_worldAutoTurnDivMax;
         }
-        t = (((0x800 - abs(d)) * g_worldAutoTurnBoost >> 12) + 0x800) * (2 * g_worldCameraTurnGain);
-        q = (d * 256 / g_worldAutoTurnDiv) * (t / 4096);
-        g_worldCamera->yaw += q / 4096;
+        boost = (((0x800 - abs(yawDiff)) * g_worldAutoTurnBoost >> 12) + 0x800) * (2 * g_worldCameraTurnGain);
+        turnStep = (yawDiff * 256 / g_worldAutoTurnDiv) * (boost / 4096);
+        g_worldCamera->yaw += turnStep / 4096;
     }
     g_worldCamera->yaw &= 0xFFF;
 }
 
 void wm_cameraAutoTurnVehicle(void) {
-    s32 a;
+    s32 yaw; /* camera yaw, then the heading minus yaw difference (separate locals don't match) */
     s32 step;
-    s32 q;
+    s32 turnStep;
     s32 cur;
 
-    a = g_worldCamera->yaw;
-    if (a - g_worldPlayer->pos.rotY > 0x800) {
-        g_worldCamera->yaw = a - 0x1000;
+    yaw = g_worldCamera->yaw;
+    if (yaw - g_worldPlayer->pos.rotY > 0x800) {
+        g_worldCamera->yaw = yaw - 0x1000;
     }
     if (g_worldCamera->yaw - g_worldPlayer->pos.rotY < -0x800) {
         g_worldCamera->yaw += 0x1000;
     }
-    if (a < 0) {
-        a += 0x1000;
+    if (yaw < 0) {
+        yaw += 0x1000;
     }
-    a %= 4096;
+    yaw %= 4096;
     cur = g_worldPlayer->pos.rotY;
-    if (a - cur > 0x800) {
-        a -= 0x1000;
+    if (yaw - cur > 0x800) {
+        yaw -= 0x1000;
     }
-    if (a - cur < -0x800) {
-        a += 0x1000;
+    if (yaw - cur < -0x800) {
+        yaw += 0x1000;
     }
-    a = cur - a;
-    a %= 4096;
+    yaw = cur - yaw;
+    yaw %= 4096;
     if (g_worldCameraTurnedByHand == 0 && g_worldCameraFlags->autoTurnOff == 0) {
         step = 16;
         if (g_worldCameraRecenter != 0) {
-            step = ABS(a) * 256 >> 12;
+            step = ABS(yaw) * 256 >> 12;
             if (step == 0) {
                 step = 1;
             }
         }
-        q = a % 4096 / step;
-        if (q != 0) {
-            g_worldCamera->yaw += q;
+        turnStep = yaw % 4096 / step;
+        if (turnStep != 0) {
+            g_worldCamera->yaw += turnStep;
         } else if (step >= 2) {
             do {
                 step /= 2;
                 if (step == 0) {
                     break;
                 }
-                q = a % 4096 / step;
-            } while (q == 0);
-            g_worldCamera->yaw += q;
+                turnStep = yaw % 4096 / step;
+            } while (turnStep == 0);
+            g_worldCamera->yaw += turnStep;
         } else {
             g_worldCamera->yaw = g_worldPlayer->pos.rotY;
         }
         g_worldCamera->yaw &= 0xFFF;
-        if (ABS(a) < 100) {
+        if (ABS(yaw) < 100) {
             g_worldCameraRecenter = 0;
         }
     }
 }
 
 void wm_snapActorsToFloor(void) {
-    EvtListNode *n;
-    EvtObject *o;
-    WmActorType *c;
+    EvtListNode *node;
+    EvtObject *obj;
+    WmActorType *typeInfo;
     ActorPos pos;
     s32 polyIdx;
     u16 h;
 
-    n = evt_getObjectList();
-    if (n != NULL) {
+    node = evt_getObjectList();
+    if (node != NULL) {
         do {
-            o = n->obj;
-            if (o->kind == EVT_KIND_ACTOR) {
-                pos = o->pos;
-                c = &g_worldActorTypeInfo[o->actorType];
-                wm_getGroundHeight((VECTOR *)&pos, &c->cellAttr, &polyIdx, NULL, &h);
-                c->floorY = h;
-                c->rideOffset = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, 0);
-                wm_updateActorHeight(o);
-                o->prevPos = o->pos;
+            obj = node->obj;
+            if (obj->kind == EVT_KIND_ACTOR) {
+                pos = obj->pos;
+                typeInfo = &g_worldActorTypeInfo[obj->actorType];
+                wm_getGroundHeight((VECTOR *)&pos, &typeInfo->cellAttr, &polyIdx, NULL, &h);
+                typeInfo->floorY = h;
+                typeInfo->rideOffset = wm_getTerrainHeightOffset(typeInfo->terrainClass, typeInfo->cellAttr, 0);
+                wm_updateActorHeight(obj);
+                obj->prevPos = obj->pos;
             }
-            n = n->next;
-        } while (n != NULL);
+            node = node->next;
+        } while (node != NULL);
     }
 }
 
 void w_movementChangeSP1(void) {
     s8 old;
-    WmMoveMode *p;
+    WmMoveMode *info;
 
     wm_autoPilotOff();
     g_worldSpeedSmooth = 0;
     g_worldClimbSmooth = 0;
     old = g_worldMoveMode;
-    p = &g_worldMoveModes[0];
+    info = &g_worldMoveModes[0];
     wm_seFadeVolume(g_worldMoveModeInfo->loopSe, 0x7F, 0);
     wm_seFadeVolume(WM_SE_AIRSHIP_WATER, 0x7F, 0);
-    w_musicRequestSend(p->music);
-    wm_blendCameraPreset(p->cameraRow, 0x40);
+    w_musicRequestSend(info->music);
+    wm_blendCameraPreset(info->cameraRow, 0x40);
     if (g_worldMapDebugFlags & WM_DEBUG_MOVEMENT) {
         printf("w_movementChange SP1 : %d -> %d\n", old, 0);
     }
@@ -2107,53 +2108,53 @@ u8 wm_testCellType(u32 *allowed, u32 cellAttr) {
 }
 
 s32 wm_getLeftStickX(s32 *outValue) {
-    s32 v;
-    s32 b;
+    s32 stick;
+    s32 held;
 
     *outValue = 0;
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
-        v = g_padAnalog[0].b[2] - 0x80;
+        stick = g_padAnalog[0].b[2] - 0x80;
         if (g_padAnalog[0].b[2] - 0x40U <= 0x80) {
-            v = 0;
+            stick = 0;
         }
-        if (v > 0x40) {
-            v = (v - 0x40) * 2;
+        if (stick > 0x40) {
+            stick = (stick - 0x40) * 2;
         }
-        if (v < -0x40) {
-            v = (v + 0x40) * 2;
+        if (stick < -0x40) {
+            stick = (stick + 0x40) * 2;
         }
-        if (v != 0) {
-            *outValue = v;
+        if (stick != 0) {
+            *outValue = stick;
             return 1;
         }
     }
-    b = wm_getPadHeld();
-    if (b & PAD_LEFT) {
+    held = wm_getPadHeld();
+    if (held & PAD_LEFT) {
         *outValue = -0x80;
     }
-    if (b & PAD_RIGHT) {
+    if (held & PAD_RIGHT) {
         *outValue = 0x80;
     }
     return 0;
 }
 
 s32 wm_getLeftStickY(s32 *outValue) {
-    s32 v;
+    s32 stick;
 
     *outValue = 0;
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
-        v = g_padAnalog[0].b[3] - 0x80;
+        stick = g_padAnalog[0].b[3] - 0x80;
         if (g_padAnalog[0].b[3] - 0x40U <= 0x80) {
-            v = 0;
+            stick = 0;
         }
-        if (v > 0x40) {
-            v = (v - 0x40) * 2;
+        if (stick > 0x40) {
+            stick = (stick - 0x40) * 2;
         }
-        if (v < -0x40) {
-            v = (v + 0x40) * 2;
+        if (stick < -0x40) {
+            stick = (stick + 0x40) * 2;
         }
-        if (v != 0) {
-            *outValue = v;
+        if (stick != 0) {
+            *outValue = stick;
             return 1;
         }
     }
@@ -2167,22 +2168,22 @@ s32 wm_getLeftStickY(s32 *outValue) {
 }
 
 s32 wm_getRightStickY(s32 *outValue) {
-    s32 v;
+    s32 stick;
 
     *outValue = 0;
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
-        v = 0x80 - g_padAnalog[0].b[1];
-        if (v + 0x40U <= 0x80) {
-            v = 0;
+        stick = 0x80 - g_padAnalog[0].b[1];
+        if (stick + 0x40U <= 0x80) {
+            stick = 0;
         }
-        if (v > 0x40) {
-            v = (v - 0x40) * 2;
+        if (stick > 0x40) {
+            stick = (stick - 0x40) * 2;
         }
-        if (v < -0x40) {
-            v = (v + 0x40) * 2;
+        if (stick < -0x40) {
+            stick = (stick + 0x40) * 2;
         }
-        if (v != 0) {
-            *outValue = v;
+        if (stick != 0) {
+            *outValue = stick;
             return 1;
         }
     }

@@ -1265,7 +1265,7 @@ void game_resumeClock(s32);
 void akao_pause(s32);
 void akao_resume(s32);
 extern s32 g_worldFrameCount;
-extern u8 g_worldMogChoice;
+extern u8 g_worldMogChoice; /* a world-script choice window is open (WM_REQ_MOG_CHOICE): moogle, chocobo menu, airship Go to, navigation method */
 extern s16 g_worldOtBias;
 extern u8 g_worldSysInitFlag;
 extern u8 g_worldSuspended;
@@ -1567,17 +1567,17 @@ void wm_calcShadowMatrix(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 
 /* wm_drawShadow: project one corner of the 3x3 shadow grid */
 #define SHADOW_PT(x, z) \
-    v.vx = (x); \
-    v.vy = 0; \
-    v.vz = (z); \
-    gte_ldv0(&v); \
+    corner.vx = (x); \
+    corner.vy = 0; \
+    corner.vz = (z); \
+    gte_ldv0(&corner); \
     gte_rtps()
 
 /* wm_drawShadow: link shadow quad q at its deepest corner */
 #define SHADOW_ADD(k, q) \
     k >>= 3; \
     if (-g_worldOtBias < k && k < 0x1000 - g_worldOtBias) { \
-        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k], e->prims[g_gameState->gameData->drawBuf][q]); \
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k], shadow->prims[g_gameState->gameData->drawBuf][q]); \
     }
 
 /* main exe: candidates for ff9.h */

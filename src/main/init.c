@@ -15,18 +15,18 @@ void game_initLibraries(void) {
 }
 
 void game_reset(void) {
-    RECT r;
+    RECT rect;
     s32 i;
 
     SetDispMask(0);
     VSyncCallback(NULL);
     DrawSyncCallback(NULL);
     SetGeomOffset(0xA0, 0x70);
-    r.w = 0x3FF;
-    r.x = 0;
-    r.y = 0;
-    r.h = 0x1FF;
-    ClearImage(&r, 0, 0, 0);
+    rect.w = 0x3FF;
+    rect.x = 0;
+    rect.y = 0;
+    rect.h = 0x1FF;
+    ClearImage(&rect, 0, 0, 0);
     DrawSync(0);
     cd_resetState();
     db_init();

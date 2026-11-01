@@ -54,7 +54,7 @@ void pad_setFlags(u16 flags, s32 set) {
 void pad_update(void) {
     s32 i, j;
     s32 state;
-    s32 b;
+    s32 flagBit;
     u32 buttons;
 
     for (i = 0; i < 2; i++) {
@@ -71,24 +71,24 @@ void pad_update(void) {
                     g_padFlags &= ~(1 << (i * 4));
                 } else if (g_padPortState[i] == 6) {
                     if (PadInfoMode(i << 4, 2, 0)) {
-                        b = 2 << (i * 4);
-                        if (!(g_padFlags & b)) {
+                        flagBit = 2 << (i * 4);
+                        if (!(g_padFlags & flagBit)) {
                             PadSetMainMode(i << 4, 1, 0);
-                            g_padFlags |= b;
+                            g_padFlags |= flagBit;
                         } else {
                             PadSetAct(i << 4, &g_padActuator[i].smallMotor, 2);
                             PadSetActAlign(i << 4, g_padActAlign);
-                            g_padFlags = g_padFlags & ~((1 << (i * 4)) | b) & ~(4 << (i * 4));
+                            g_padFlags = g_padFlags & ~((1 << (i * 4)) | flagBit) & ~(4 << (i * 4));
                         }
                     }
                 }
             }
-            b = 4 << (i * 4);
-            if ((g_padFlags & b) && g_padPortState[i] == 6) {
+            flagBit = 4 << (i * 4);
+            if ((g_padFlags & flagBit) && g_padPortState[i] == 6) {
                 PadSetAct(i << 4, &g_padActuator[i].smallMotor, 2);
                 PadSetActAlign(i << 4, g_padActAlign);
                 g_padPortState[i] = 4;
-                g_padFlags &= ~b;
+                g_padFlags &= ~flagBit;
             }
             j = 0;
             buttons = ~PADBUF(i)->buttons;
@@ -145,13 +145,13 @@ void pad_update(void) {
 }
 
 void pad_setMapping(s32 port, u32 button, s32 mapped) {
-    s32 n = 31;
+    s32 bitIndex = 31;
     gte_ldlzc(button);
     if (button != 0x80000000) {
         gte_stlzc(&button);
-        n -= button;
+        bitIndex -= button;
     }
-    g_padMapping[port][n] = mapped;
+    g_padMapping[port][bitIndex] = mapped;
 }
 
 void pad_getAnalogThresholds(Unk4 *out) {

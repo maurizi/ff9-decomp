@@ -35,140 +35,140 @@ void w_musicUpdate(void) {
 
 /* sound effect ids of world-map sound sound */
 s32 w_musicGetID(s32 sound, WmSeIds *out) {
-    WmSeIds s;
+    WmSeIds se;
 
-    s.seIds[0] = -1;
+    se.seIds[0] = -1;
     switch (sound) {
     case 0:
-        s.seIds[0] = 0x68;
+        se.seIds[0] = 0x68;
         break;
     case 1:
-        s.seIds[0] = SE_BUZZER;
+        se.seIds[0] = SE_BUZZER;
         break;
     case 2:
-        s.seIds[0] = 0x6C;
+        se.seIds[0] = 0x6C;
         break;
     case 3:
-        s.seIds[0] = 0x27D;
+        se.seIds[0] = 0x27D;
         break;
     case 4:
-        s.seIds[0] = 0x27E;
+        se.seIds[0] = 0x27E;
         break;
     case 5:
-        s.seIds[0] = SE_HELP_OPEN;
+        se.seIds[0] = SE_HELP_OPEN;
         break;
     case 39:
-        s.seIds[0] = SE_CURSOR;
+        se.seIds[0] = SE_CURSOR;
         break;
     }
-    if (s.seIds[0] != -1) {
-        s.channelMask = SND_SE_GROUP_MENU;
-        s.count = 1;
-        *out = s;
+    if (se.seIds[0] != -1) {
+        se.channelMask = SND_SE_GROUP_MENU;
+        se.count = 1;
+        *out = se;
         return 1;
     } else {
         switch (sound) {
         case 30:
-            s.seIds[0] = 0x44B;
+            se.seIds[0] = 0x44B;
             break;
         case 31:
-            s.seIds[0] = 0x4CF;
+            se.seIds[0] = 0x4CF;
             break;
         case 32:
-            s.seIds[0] = 0x596;
+            se.seIds[0] = 0x596;
             break;
         case 34:
-            s.seIds[0] = 0x44C;
+            se.seIds[0] = 0x44C;
             break;
         case 35:
-            s.seIds[0] = 0x37C;
+            se.seIds[0] = 0x37C;
             break;
         case 36:
-            s.seIds[0] = SE_CHOCOBO_CALL;
+            se.seIds[0] = SE_CHOCOBO_CALL;
             break;
         case 37:
-            s.seIds[0] = 0x37A;
+            se.seIds[0] = 0x37A;
             break;
         case WM_SE_AIRSHIP_WATER:
-            s.seIds[0] = 0x5DB;
+            se.seIds[0] = 0x5DB;
             break;
         case 40:
-            s.seIds[0] = 0x37B;
+            se.seIds[0] = 0x37B;
             break;
         case 41:
-            s.seIds[0] = 0xA47;
+            se.seIds[0] = 0xA47;
             break;
         case 42:
-            s.seIds[0] = 0xC26;
+            se.seIds[0] = 0xC26;
             break;
         }
-        if (s.seIds[0] != -1) {
-            s.channelMask = 0;
-            s.count = 1;
-            *out = s;
+        if (se.seIds[0] != -1) {
+            se.channelMask = 0;
+            se.count = 1;
+            *out = se;
             return 1;
         } else {
             switch (sound) {
             case 6:
-                s.seIds[0] = 0x552;
+                se.seIds[0] = 0x552;
                 break;
             case 7:
-                s.seIds[0] = 0x553;
+                se.seIds[0] = 0x553;
                 break;
             }
-            if (s.seIds[0] != -1) {
-                s.channelMask = 0x8000;
-                s.count = 1;
-                *out = s;
+            if (se.seIds[0] != -1) {
+                se.channelMask = 0x8000;
+                se.count = 1;
+                *out = se;
                 return 1;
             } else {
                 /* the original third jump table is 8-aligned */
                 __asm__(".rdata\n\t.word 0\n\t.text");
                 switch (sound) {
                 case 33:
-                    s.seIds[0] = 0x37A;
-                    s.channelMask = 0;
-                    s.seIds[1] = 0x37B;
+                    se.seIds[0] = 0x37A;
+                    se.channelMask = 0;
+                    se.seIds[1] = 0x37B;
                     break;
                 case 20:
-                    s.channelMask = 0x8000;
-                    s.seIds[0] = 0x374;
-                    s.seIds[1] = 0x375;
+                    se.channelMask = 0x8000;
+                    se.seIds[0] = 0x374;
+                    se.seIds[1] = 0x375;
                     break;
                 case 21:
-                    s.channelMask = 0x8000;
-                    s.seIds[0] = 0x376;
-                    s.seIds[1] = 0x377;
+                    se.channelMask = 0x8000;
+                    se.seIds[0] = 0x376;
+                    se.seIds[1] = 0x377;
                     break;
                 case 22:
-                    s.channelMask = 0x8000;
-                    s.seIds[0] = 0x378;
-                    s.seIds[1] = 0x379;
+                    se.channelMask = 0x8000;
+                    se.seIds[0] = 0x378;
+                    se.seIds[1] = 0x379;
                     break;
                 case 23:
-                    s.channelMask = 0x8000;
-                    s.seIds[0] = 0x554;
-                    s.seIds[1] = 0x555;
+                    se.channelMask = 0x8000;
+                    se.seIds[0] = 0x554;
+                    se.seIds[1] = 0x555;
                     break;
                 case 24:
-                    s.channelMask = 0x8000;
-                    s.seIds[0] = 0x5D9;
-                    s.seIds[1] = 0x5DA;
+                    se.channelMask = 0x8000;
+                    se.seIds[0] = 0x5D9;
+                    se.seIds[1] = 0x5DA;
                     break;
                 case 25:
-                    s.channelMask = 0x800;
-                    s.seIds[0] = 0x37D;
-                    s.seIds[1] = 0x37E;
+                    se.channelMask = 0x800;
+                    se.seIds[0] = 0x37D;
+                    se.seIds[1] = 0x37E;
                     break;
                 case 26:
-                    s.channelMask = 0x800;
-                    s.seIds[0] = 0x37F;
-                    s.seIds[1] = 0x380;
+                    se.channelMask = 0x800;
+                    se.seIds[0] = 0x37F;
+                    se.seIds[1] = 0x380;
                     break;
                 }
-                if (s.seIds[0] != -1) {
-                    s.count = 2;
-                    *out = s;
+                if (se.seIds[0] != -1) {
+                    se.count = 2;
+                    *out = se;
                     return 1;
                 }
                 printf("w_musicGetID : Illigal SE Number #%d\n", sound);
@@ -233,7 +233,7 @@ void w_musicRequestSend(u32 request) {
 }
 
 void wm_stopAllSe(void) {
-    WmSeIds s;
+    WmSeIds se;
     s32 i;
     s32 j0;
     s32 m0;
@@ -243,28 +243,28 @@ void wm_stopAllSe(void) {
     s32 m2;
 
     for (i = 0; i < 7; i++) {
-        if (w_musicGetID(i, &s) & 0xFF) {
-            m0 = s.channelMask;
-            for (j0 = 0; j0 < s.count; j0++) {
-                wm_soundCommand(SND_SE_STOP, s.seIds[j0], m0, 0, 0);
+        if (w_musicGetID(i, &se) & 0xFF) {
+            m0 = se.channelMask;
+            for (j0 = 0; j0 < se.count; j0++) {
+                wm_soundCommand(SND_SE_STOP, se.seIds[j0], m0, 0, 0);
                 m0 >>= 1;
             }
         }
     }
     for (i = 20; i < 26; i++) {
-        if (w_musicGetID(i, &s) & 0xFF) {
-            m1 = s.channelMask;
-            for (j1 = 0; j1 < s.count; j1++) {
-                wm_soundCommand(SND_SE_STOP, s.seIds[j1], m1, 0, 0);
+        if (w_musicGetID(i, &se) & 0xFF) {
+            m1 = se.channelMask;
+            for (j1 = 0; j1 < se.count; j1++) {
+                wm_soundCommand(SND_SE_STOP, se.seIds[j1], m1, 0, 0);
                 m1 >>= 1;
             }
         }
     }
     for (i = 30; i < 42; i++) {
-        if (w_musicGetID(i, &s) & 0xFF) {
-            m2 = s.channelMask;
-            for (j2 = 0; j2 < s.count; j2++) {
-                wm_soundCommand(SND_SE_STOP, s.seIds[j2], m2, 0, 0);
+        if (w_musicGetID(i, &se) & 0xFF) {
+            m2 = se.channelMask;
+            for (j2 = 0; j2 < se.count; j2++) {
+                wm_soundCommand(SND_SE_STOP, se.seIds[j2], m2, 0, 0);
                 m2 >>= 1;
             }
         }
@@ -276,7 +276,7 @@ void wm_stopAllSe(void) {
 
 s32 wm_keepEntryMusic(void) {
     u16 sc = g_evtGlobalVars.h[0];
-    u8 v = g_evtGlobalVars.b[0xBE];
+    u8 moveMode = g_evtGlobalVars.b[0xBE];
 
     if (sc - 0x2580U < 0x122) {
         return 1;
@@ -284,7 +284,7 @@ s32 wm_keepEntryMusic(void) {
     if (sc - 0x26A2U < 0x14) {
         return 1;
     }
-    return (u32)(v - WM_MOVE_HILDA_GARDE) < 2;
+    return (u32)(moveMode - WM_MOVE_HILDA_GARDE) < 2;
 }
 
 void wm_musicInit(void) {
@@ -302,15 +302,15 @@ void wm_musicTerm(void) {
 }
 
 void wm_musicPlay(u16 song) {
-    u8 v = g_evtGlobalVars.b[0x68];
+    u8 volume = g_evtGlobalVars.b[0x68];
 
     g_worldMusicId = wm_getSongMusicId(song);
     g_worldMusicStarted = 1;
     wm_soundCommand(SND_MUSIC_PLAY, g_worldMusicId, 0, 0, 0);
-    if (v == 0) {
-        v = 0x7D;
+    if (volume == 0) {
+        volume = 0x7D;
     }
-    wm_soundCommand(SND_MUSIC_VOL_INTPL, 0, 0x3C, v, 0);
+    wm_soundCommand(SND_MUSIC_VOL_INTPL, 0, 0x3C, volume, 0);
 }
 
 void wm_musicStop(u16 song) {
@@ -321,57 +321,57 @@ void wm_musicFade(void) {
 }
 
 void wm_sePlay(s32 sound, u8 volume) {
-    WmSeIds s;
+    WmSeIds se;
     s32 i;
-    s32 v;
+    s32 chanMask;
 
-    if (w_musicGetID(sound, &s) & 0xFF) {
-        v = s.channelMask;
-        for (i = 0; i < s.count; i++) {
-            wm_soundCommand(SND_SE_PLAY, s.seIds[i], v, 0x7F, volume);
-            v >>= 1;
+    if (w_musicGetID(sound, &se) & 0xFF) {
+        chanMask = se.channelMask;
+        for (i = 0; i < se.count; i++) {
+            wm_soundCommand(SND_SE_PLAY, se.seIds[i], chanMask, 0x7F, volume);
+            chanMask >>= 1;
         }
     }
 }
 
 void wm_seSetVolume(s32 sound, u8 volume) {
-    WmSeIds s;
+    WmSeIds se;
     s32 i;
-    s32 v;
+    s32 chanMask;
 
-    if (g_worldMusicState == WM_MUSIC_READY && (w_musicGetID(sound, &s) & 0xFF)) {
-        v = s.channelMask;
-        for (i = 0; i < s.count; i++) {
-            wm_soundCommand(SND_SE_VOL, s.seIds[i], v, volume, 0);
-            v >>= 1;
+    if (g_worldMusicState == WM_MUSIC_READY && (w_musicGetID(sound, &se) & 0xFF)) {
+        chanMask = se.channelMask;
+        for (i = 0; i < se.count; i++) {
+            wm_soundCommand(SND_SE_VOL, se.seIds[i], chanMask, volume, 0);
+            chanMask >>= 1;
         }
     }
 }
 
 void wm_seFadeVolume(s32 sound, u16 frames, u8 volume) {
-    WmSeIds s;
+    WmSeIds se;
     s32 i;
-    s32 v;
+    s32 chanMask;
 
-    if (w_musicGetID(sound, &s) & 0xFF) {
-        v = s.channelMask;
-        for (i = 0; i < s.count; i++) {
-            wm_soundCommand(SND_SE_VOL_INTPL, s.seIds[i], v, frames, volume);
-            v >>= 1;
+    if (w_musicGetID(sound, &se) & 0xFF) {
+        chanMask = se.channelMask;
+        for (i = 0; i < se.count; i++) {
+            wm_soundCommand(SND_SE_VOL_INTPL, se.seIds[i], chanMask, frames, volume);
+            chanMask >>= 1;
         }
     }
 }
 
 void wm_seStop(s32 sound) {
-    WmSeIds s;
+    WmSeIds se;
     s32 i;
-    s32 v;
+    s32 chanMask;
 
-    if (w_musicGetID(sound, &s) & 0xFF) {
-        v = s.channelMask;
-        for (i = 0; i < s.count; i++) {
-            wm_soundCommand(SND_SE_STOP, s.seIds[i], v, 0, 0);
-            v >>= 1;
+    if (w_musicGetID(sound, &se) & 0xFF) {
+        chanMask = se.channelMask;
+        for (i = 0; i < se.count; i++) {
+            wm_soundCommand(SND_SE_STOP, se.seIds[i], chanMask, 0, 0);
+            chanMask >>= 1;
         }
     }
 }
@@ -395,18 +395,18 @@ s32 wm_getSongMusicId(u16 song) {
 }
 
 s32 wm_isMapSongPlaying(void) {
-    u8 r = g_worldMusicId == g_worldSongMusicIds[0];
+    u8 playing = g_worldMusicId == g_worldSongMusicIds[0];
 
     if (g_worldMusicId == g_worldSongMusicIds[1]) {
-        r = 1;
+        playing = 1;
     }
     if (g_worldMoveMode == WM_MOVE_WALK) {
         if (g_worldMusicId == g_worldSongMusicIds[3]) {
-            r = 1;
+            playing = 1;
         }
         if (g_worldMusicId == g_worldSongMusicIds[4]) {
-            r = 1;
+            playing = 1;
         }
     }
-    return r;
+    return playing;
 }

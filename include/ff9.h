@@ -1774,6 +1774,15 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_GENERAL_CHOCOBO_FORM 0x40  /* the world map uses the replacement Chocobo Heaven form */
 extern u8 g_evtGeneralFlags; /* g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] under its own symbol (ovl_0c reads it that way) */
 #define EVT_GB_NAVI_KNOWN 0x5C  /* u16[4] (h[0x2E..0x31]): navi map places known, bit i&15 of h[0x2E + i/16] (wm_naviDraw) */
+/* world map state, read by the world scripts (docs/r32/3ds-requests-7.md, runtime R37b) */
+#define EVT_GB_WM_WALKER_POS 0x40     /* walker position on the world map (x, y, z, dir) */
+#define EVT_GB_WM_VEHICLE_POS 0x4A    /* parked vehicle position */
+#define EVT_GB_WM_CHOCOBO_POS 0x53    /* chocobo position (x24, y16, z24, dir) */
+#define EVT_GB_NAVI_MODE 0x64         /* navi map display mode (minimap / full map / off) */
+#define EVT_GB_WM_FILE 0x66           /* world file in use (0 and 8 are tested by ovl_0c) */
+#define EVT_GB_CHOCOGRAPH_FOUND 0xB8  /* u24: chocographs found */
+#define EVT_GB_CHOCOGRAPH_OWNED 0xBB  /* u24: chocographs owned */
+#define EVT_GB_CHOCOBO_LEVEL 0xBF     /* chocobo ability count (= world move mode when riding: WM_MOVE_CHOCOBO_*) */
 /* Mognet state, read only by the field scripts (docs/r32/3ds-requests-5-mognet.md) */
 #define EVT_GB_MOGNET_VERSION 0x400     /* u8: Mognet data version (1) */
 #define EVT_GB_MOGNET_GIVE_COUNT 0x408  /* u8: +1 on each "Give a letter" (medium) */
@@ -2746,7 +2755,7 @@ s32 math_length3(s32, s32, s32);
 s32 evt_updateActorWalkmesh(EvtObject *);
 s32 evt_rollEncounter(EvtObject *);
 #if !defined(OVL_0A_H) /* field overlay functions; ovl_0a has the definitions */
-s32 fld_enableRain(s32, s32, s32);
+s32 fld_enableRain(s32 kind, s32 variant, s32 enable); /* only kind 0 variant 0 (rain) is implemented */
 /* field walkmesh actor entry returned by ovl_0a bgi_getActor (ovl_0a calls it BgiActor) */
 typedef struct {
     s16 walkFlags; /* EvtObject.savedWalkFlags (evt_updateObjects) */

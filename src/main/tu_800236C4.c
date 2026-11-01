@@ -1,24 +1,24 @@
 #include "ff9.h"
 
 void config_reset(void) {
-    GameConfig *p = (GameConfig *)&g_gameState->config;
+    GameConfig *cfg = (GameConfig *)&g_gameState->config;
     s32 i;
 
-    p->soundMono = 0;
-    p->padCustom = 0;
-    p->cursorMemory = 0;
-    p->atbWait = 1;
-    p->battleCameraFixed = 0;
-    p->battleControlCustom = 0;
-    p->movementRun = 0;
-    p->vibration = 1;
-    p->battleSpeed = 1;
-    p->battleMsgSpeed = 3;
-    p->messageSpeed = 3;
-    p->unk0_17 = 0;
-    p->buttonMap = 0;
+    cfg->soundMono = 0;
+    cfg->padCustom = 0;
+    cfg->cursorMemory = 0;
+    cfg->atbWait = 1;
+    cfg->battleCameraFixed = 0;
+    cfg->battleControlCustom = 0;
+    cfg->movementRun = 0;
+    cfg->vibration = 1;
+    cfg->battleSpeed = 1;
+    cfg->battleMsgSpeed = 3;
+    cfg->messageSpeed = 3;
+    cfg->unk0_17 = 0;
+    cfg->buttonMap = 0;
     for (i = 0; i < 8; i++) {
-        p->buttonMap |= i << (i * 4);
+        cfg->buttonMap |= i << (i * 4);
     }
     config_apply();
 }
@@ -53,12 +53,12 @@ void config_init(void) {
 s32 config_remapButton(button)
 s32 button;
 {
-    GameConfig *p = (GameConfig *)&g_gameState->config;
+    GameConfig *cfg = (GameConfig *)&g_gameState->config;
 
-    if (p->padCustom != 1) {
+    if (cfg->padCustom != 1) {
         return button;
     }
-    return (p->buttonMap >> (button * 4)) & 0xF;
+    return (cfg->buttonMap >> (button * 4)) & 0xF;
 }
 
 void config_apply(void) {
@@ -71,8 +71,8 @@ void config_applySound(void) {
 }
 
 void game_initGfx(void) {
-    GameData *d = g_gameState->gameData;
-    gfx_init(d->ot[0], d->ot[1], d->packetBuf, d->packetBuf + 0x4000);
+    GameData *gd = g_gameState->gameData;
+    gfx_init(gd->ot[0], gd->ot[1], gd->packetBuf, gd->packetBuf + 0x4000);
 }
 
 void game_updateWindows(void) {
@@ -88,62 +88,62 @@ void game_updateTimer(void) {
 }
 
 void timer_draw(void) {
-    EvtTimer *t;
+    EvtTimer *timer;
     u8 blink;
     u8 *pkt;
     u32 *ot;
     u8 shown;
     u8 colon;
     s32 w;
-    s32 d;
-    s32 v;
+    s32 elapsed;
+    s32 subSec;
     s32 dg;
     s32 hr;
     s32 min;
 
-    t = &g_clock.timer;
-    d = g_clock.lastVsync - t->startVsync;
+    timer = &g_clock.timer;
+    elapsed = g_clock.lastVsync - timer->startVsync;
     blink = 0;
-    min = t->remaining / 60;
+    min = timer->remaining / 60;
     hr = min / 60;
     ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + 1;
     g_timerRect.x = 4;
     pkt = g_clock.pktPtr;
     min %= 60;
-    if (d < 8) {
-        g_timerRect.x = d * 8 - 0x3C;
+    if (elapsed < 8) {
+        g_timerRect.x = elapsed * 8 - 0x3C;
         blink = 1;
     }
-    if (t->running == 0) {
-        v = VSync(-1) % 60;
+    if (timer->running == 0) {
+        subSec = VSync(-1) % 60;
         colon = 0;
-        if (blink || v >= 30) {
+        if (blink || subSec >= 30) {
             colon = 1;
         }
         shown = colon;
     } else if (hr != 0 || min != 0) {
-        v = t->remaining % 60;
+        subSec = timer->remaining % 60;
         shown = 1;
-        colon = v >= 30;
+        colon = subSec >= 30;
     } else {
-        v = VSync(-1) % 60;
-        colon = v >= 30;
+        subSec = VSync(-1) % 60;
+        colon = subSec >= 30;
         shown = colon;
     }
     if (shown) {
         dg = hr / 10;
         if (dg != 0) {
-            pkt = ui_buildSprite(g_timerRect.x + 5, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, t->running == 0, &w, pkt);
+            pkt = ui_buildSprite(g_timerRect.x + 5, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
         }
         dg = hr - dg * 10;
-        pkt = ui_buildSprite(g_timerRect.x + 0xF, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, t->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + 0xF, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
         dg = min / 10;
-        pkt = ui_buildSprite(g_timerRect.x + 0x23, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, t->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + 0x23, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
         dg = min - dg * 10;
-        pkt = ui_buildSprite(g_timerRect.x + 0x2D, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, t->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + 0x2D, 8, ot, dg + UI_SPRITE_TIMER_DIGITS, timer->running == 0, &w, pkt);
     }
     if (colon) {
-        pkt = ui_buildSprite(g_timerRect.x + 0x19, 8, ot, UI_SPRITE_TIMER_COLON, t->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + 0x19, 8, ot, UI_SPRITE_TIMER_COLON, timer->running == 0, &w, pkt);
     }
     pkt = win_buildBorder(&g_timerRect, ot, 1, 1, 1, CONFIG_WINDOW_COLOR(), pkt);
     setlen(pkt, PRIM_LEN(TILE));
@@ -173,18 +173,18 @@ void timer_update(void) {
 
 void game_resumeClock(u8 resume) {
     s32 now = VSync(-1);
-    s32 d;
-    EvtTimer *t = &g_clock.timer;
+    s32 elapsed;
+    EvtTimer *timer = &g_clock.timer;
 
     if (resume) {
-        d = now - g_clock.lastVsync;
-        if (t->enabled != 0 && t->running != 0 && t->remaining != 0) {
-            t->remaining -= d;
-            if (t->remaining <= 0) {
-                t->remaining = 0;
+        elapsed = now - g_clock.lastVsync;
+        if (timer->enabled != 0 && timer->running != 0 && timer->remaining != 0) {
+            timer->remaining -= elapsed;
+            if (timer->remaining <= 0) {
+                timer->remaining = 0;
             }
         }
-        g_gameState->playTime += d;
+        g_gameState->playTime += elapsed;
     } else {
         g_clock.lastVsync = now;
     }
@@ -232,11 +232,11 @@ u8 timer_isRunning(void) {
 }
 
 void timer_setSeconds(s32 seconds) {
-    ClockState *p = &g_clock;
-    s32 t = seconds * 60;
+    ClockState *clock = &g_clock;
+    s32 frames = seconds * 60;
 
-    p->timer.remaining = t;
-    p->timer.initial = t;
+    clock->timer.remaining = frames;
+    clock->timer.initial = frames;
 }
 
 s32 timer_getSeconds(void) {
@@ -246,15 +246,15 @@ s32 timer_getSeconds(void) {
 void game_tickClock(void) {
     s32 now;
     s32 dt;
-    EvtTimer *t;
+    EvtTimer *timer;
 
     now = VSync(-1);
     dt = now - g_clock.lastVsync;
-    t = &g_clock.timer;
-    if (t->enabled != 0 && t->running != 0 && t->remaining != 0) {
-        t->remaining -= dt;
-        if (t->remaining <= 0) {
-            t->remaining = 0;
+    timer = &g_clock.timer;
+    if (timer->enabled != 0 && timer->running != 0 && timer->remaining != 0) {
+        timer->remaining -= dt;
+        if (timer->remaining <= 0) {
+            timer->remaining = 0;
         }
     }
     g_gameState->playTime += dt;

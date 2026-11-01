@@ -58,27 +58,27 @@ void game_loadModeOverlay(s32 mode) {
     u8 files[10] = { OVL_OPENING, OVL_FIELD, OVL_BATTLE, OVL_WORLD, OVL_ENDING, 0xFF, 0xFF, OVL_BATTLE_END, OVL_BATTLE_END, OVL_TETRA_MASTER };
     LoadAddrs addrs = g_modeOverlayAddrs;
     s32 id;
-    PreloadEntry *e;
-    FileEntry *f;
+    PreloadEntry *preload;
+    FileEntry *file;
 
     game_freezeScreen();
     id = OVL_KEY(files[mode]);
     while (cd_getState()) {
     }
     if (preload_isReady(id)) {
-        e = preload_find(id);
-        if (preload_isInVram(e)) {
-            StoreImage((RECT *)&e->vramX, addrs.addr[mode]);
-        } else if ((s32)addrs.addr[mode] != e->dest) {
-            file_copyViaVram((s32)addrs.addr[mode], e->dest, e->loaded, NULL);
+        preload = preload_find(id);
+        if (preload_isInVram(preload)) {
+            StoreImage((RECT *)&preload->vramX, addrs.addr[mode]);
+        } else if ((s32)addrs.addr[mode] != preload->dest) {
+            file_copyViaVram((s32)addrs.addr[mode], preload->dest, preload->loaded, NULL);
         }
-        loaded = e->loaded >> 11;
+        loaded = preload->loaded >> 11;
         preload_remove(id);
         DrawSync(0);
     }
-    f = file_find(DIR_OVERLAYS, id);
-    if (loaded < f->link - f->sector) {
-        cd_readSync(g_gameState->imgSector + f->sector + loaded, (f->link - (f->sector + loaded)) << 11,
+    file = file_find(DIR_OVERLAYS, id);
+    if (loaded < file->link - file->sector) {
+        cd_readSync(g_gameState->imgSector + file->sector + loaded, (file->link - (file->sector + loaded)) << 11,
                       (u8 *)addrs.addr[mode] + (loaded << 11));
     }
     EnterCriticalSection();
@@ -89,27 +89,27 @@ void game_loadModeOverlay(s32 mode) {
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", g_modeOverlayAddrs);
 
 s32 mbg_getStatus(void) {
-    s32 r = 0;
+    s32 status = 0;
 
     if (g_mbgState == 1) {
         return 1;
     }
     if (g_mbgState >= 2) {
-        r = 1;
+        status = 1;
         if (g_mbgFrame > 0) {
-            r = 3;
+            status = 3;
         }
         if (g_mbgPaused != 0) {
-            r |= 0x10;
+            status |= 0x10;
         }
         if (g_mbgRgb24 != 0) {
-            r |= 4;
+            status |= 4;
         }
         if (g_mbgIsBackground == 1) {
-            r |= 8;
+            status |= 8;
         }
     }
-    return r;
+    return status;
 }
 
 s8 mbg_getState(void) {

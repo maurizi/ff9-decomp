@@ -1,16 +1,16 @@
 #include "ff9.h"
 
-void akao_relocInstruments(s32 *src, AkaoInstrument *dst, u32 base, s32 n) {
-    s32 *d = (s32 *)dst;
+void akao_relocInstruments(s32 *src, AkaoInstrument *dst, u32 base, s32 count) {
+    s32 *out = (s32 *)dst;
 
     do {
-        d[0] = src[0] + base;
-        d[1] = src[1] + base;
-        d[2] = src[2];
-        d[3] = src[3];
+        out[0] = src[0] + base;
+        out[1] = src[1] + base;
+        out[2] = src[2];
+        out[3] = src[3];
         src += 4;
-        d += 4;
-    } while (--n != 0);
+        out += 4;
+    } while (--count != 0);
 }
 
 s32 akao_checkHeader(s32 *data) {
@@ -39,13 +39,13 @@ s32 akao_spuRead(s32 data, s32 size) {
 }
 
 void akao_waitSpuTransfer(void) {
-    s32 a[2];
+    s32 busy[2];
     do {
         do {
-            a[0] = g_akaoSpuBusy;
-            a[1] = g_akaoSpuBusy;
-        } while (a[0] != a[1]);
-    } while (a[0] == 1);
+            busy[0] = g_akaoSpuBusy;
+            busy[1] = g_akaoSpuBusy;
+        } while (busy[0] != busy[1]);
+    } while (busy[0] == 1);
 }
 
 s32 akao_loadBank(s32 bank, s32 wait) {
@@ -78,13 +78,13 @@ s32 akao_loadBankAt(s32 *buf, s32 wait, s32 slot, u32 addr) {
 void akao_initState(void) {
     u16 i;
     u16 *cnt;
-    AkaoChannel *c;
-    u8 *p; /* &channel->unk88: the original's first-loop pointer is biased by 0x88 */
-    s32 v;
+    AkaoChannel *chan;
+    u8 *biasedChan; /* &channel->unk88: the original's first-loop pointer is biased by 0x88 */
+    s32 voiceVal;
 
     g_akaoSeq = &g_akaoMainSeq;
     cnt = (u16 *)SPU_CTRL;
-    v = 0x18;
+    voiceVal = 0x18;
     g_akaoSubSeq = NULL;
     g_akaoChannelsPtr = g_akaoChannels;
     g_akaoSubChannels = NULL;
@@ -118,7 +118,7 @@ void akao_initState(void) {
     g_akaoTempoScaleLen = 0;
     g_akaoTempoScale = 0;
     g_akaoCdVolumeFadeTicks = 0;
-    p = (u8 *)g_akaoChannels + 0x88;
+    biasedChan = (u8 *)g_akaoChannels + 0x88;
     i = *cnt;
     g_akaoSeState.noiseMask = 0;
     g_akaoMainSeq.noiseMask = 0;
@@ -153,28 +153,28 @@ void akao_initState(void) {
     } while (0); } while (0); } while (0); } while (0); } while (0);
 loop1:
     i++;
-    ((AkaoChannel *)(p - 0x88))->flags = 0;
-    v &= 0x7FFFFFFF; /* no code: combine turns it into a self-move, so v stays multi-set (no sched1 boost) */
-    ((AkaoChannel *)(p - 0x88))->voice = v;
-    ((AkaoChannel *)(p - 0x88))->isSe = 0;
-    ((AkaoChannel *)(p - 0x88))->age = 0;
-    p += sizeof(AkaoChannel);
+    ((AkaoChannel *)(biasedChan - 0x88))->flags = 0;
+    voiceVal &= 0x7FFFFFFF; /* no code: combine turns it into a self-move, so voiceVal stays multi-set (no sched1 boost) */
+    ((AkaoChannel *)(biasedChan - 0x88))->voice = voiceVal;
+    ((AkaoChannel *)(biasedChan - 0x88))->isSe = 0;
+    ((AkaoChannel *)(biasedChan - 0x88))->age = 0;
+    biasedChan += sizeof(AkaoChannel);
     if (i < 32) {
         goto loop1;
     }
-    c = g_akaoSeChannels;
+    chan = g_akaoSeChannels;
     for (i = 8; i < 24;) {
-        c->flags = 0;
-        c->voice = i;
+        chan->flags = 0;
+        chan->voice = i;
         i++;
-        c->isSe = 1;
-        c->age = 0;
-        c->seVolume = 0x7F00;
-        c->seVolumeSlideLen = 0;
-        c->sePitchSlideLen = 0;
-        c->sePitch = 0;
-        c->noteVolumeSlideLen = 0;
-        c++;
+        chan->isSe = 1;
+        chan->age = 0;
+        chan->seVolume = 0x7F00;
+        chan->seVolumeSlideLen = 0;
+        chan->sePitchSlideLen = 0;
+        chan->sePitch = 0;
+        chan->noteVolumeSlideLen = 0;
+        chan++;
     }
     g_akaoSeq->keyOffMask = 0;
     g_akaoSeq->playingMask = 0;

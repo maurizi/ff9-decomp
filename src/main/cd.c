@@ -1,23 +1,23 @@
 #include "ff9.h"
 
-void cd_startRequest(CdRequest *r) {
+void cd_startRequest(CdRequest *req) {
     volatile s32 st = g_cdLoad.state;
-    u32 n;
+    u32 sectors;
 
     g_cdLoad.hasQueued = 0;
     g_cdLoad.error = 0;
-    g_cdLoad.cur = *r;
+    g_cdLoad.cur = *req;
     g_cdLoad.state = CD_SETLOC;
-    n = (u32)(r->size + 0x7FF) >> 11;
+    sectors = (u32)(req->size + 0x7FF) >> 11;
     g_cdLoad.chunkIndex = 0;
     g_cdLoad.chunkOfs = 0;
     g_cdLoad.bytesRead = 0;
-    g_cdLoad.sectorsLeft = n;
+    g_cdLoad.sectorsLeft = sectors;
     CdReadyCallback(NULL);
-    CdSyncCallback(r->syncCallback);
-    if (r->flags & CDREQ_SEEK) {
+    CdSyncCallback(req->syncCallback);
+    if (req->flags & CDREQ_SEEK) {
         g_cdLoad.state = CD_SETLOC;
-        CdIntToPos(r->sector, &g_cdLoad.pos);
+        CdIntToPos(req->sector, &g_cdLoad.pos);
         cd_controlF(CdlSetloc, (u8 *)&g_cdLoad.pos);
     } else if (st != CD_PAUSING) {
         g_cdLoad.state = CD_PAUSING;
@@ -34,26 +34,26 @@ void cd_onDataReady(u8 intr, u8 *result) {
     u8 err = 0;
     u32 pos[3];
     s32 prev;
-    s32 n;
+    s32 sector;
 
     if (result != NULL) {
         g_cdResult = *(Unk8 *)result;
     }
     if (intr == CdlDataReady) {
         CdGetSector(pos, 3);
-        n = CdPosToInt((CdlLOC *)pos);
+        sector = CdPosToInt((CdlLOC *)pos);
         prev = g_cdLoad.lastSector;
         if (prev == 0) {
-            if (n != g_cdLoad.cur.sector) {
+            if (sector != g_cdLoad.cur.sector) {
                 err = 1;
             }
         } else {
-            if (n != prev + 1) {
+            if (sector != prev + 1) {
                 err = 1;
             }
         }
         if (err == 0) {
-            g_cdLoad.lastSector = n;
+            g_cdLoad.lastSector = sector;
             cd_onSectorReady();
             if (g_cdLoad.sectorsLeft == 0 || g_cdLoad.hasQueued != 0) {
                 CdReadyCallback(0);
@@ -74,24 +74,24 @@ void cd_onDataReady(u8 intr, u8 *result) {
 }
 
 void cd_onSectorReady(void) {
-    CdChunk *c;
+    CdChunk *chunks;
 
     if (g_cdLoad.cur.chunks == (CdChunk *)-1) {
-        c = &g_cdLoad.cur.chunk;
+        chunks = &g_cdLoad.cur.chunk;
     } else {
-        c = g_cdLoad.cur.chunks;
+        chunks = g_cdLoad.cur.chunks;
     }
-    if (c[g_cdLoad.chunkIndex].dest != NULL) {
-        CdGetSector((u32 *)c[g_cdLoad.chunkIndex].dest + g_cdLoad.chunkOfs / 4, 0x200);
+    if (chunks[g_cdLoad.chunkIndex].dest != NULL) {
+        CdGetSector((u32 *)chunks[g_cdLoad.chunkIndex].dest + g_cdLoad.chunkOfs / 4, 0x200);
     }
     g_cdLoad.chunkOfs += 0x800;
     g_cdLoad.bytesRead += 0x800;
     g_cdLoad.sectorsLeft--;
-    if (g_cdLoad.chunkOfs >= c[g_cdLoad.chunkIndex].size) {
+    if (g_cdLoad.chunkOfs >= chunks[g_cdLoad.chunkIndex].size) {
         g_cdLoad.chunkOfs = 0;
         g_cdLoad.chunkIndex++;
         if (g_cdLoad.sectorsLeft != 0) {
-            while (c[g_cdLoad.chunkIndex].size == 0) {
+            while (chunks[g_cdLoad.chunkIndex].size == 0) {
                 g_cdLoad.chunkIndex++;
             }
         }
@@ -99,16 +99,16 @@ void cd_onSectorReady(void) {
 }
 
 s32 cd_init(void) {
-    s32 v = 1;
+    s32 val = 1; /* CdInit success flag, then the CdlSetmode mode (separate locals don't match) */
     s32 ok;
 
     while (CdInit() == 0) {
     }
-    ok = v;
+    ok = val;
     if (ok) {
         CdSetDebug(0);
-        v = CdlModeSpeed; /* passed as the param pointer itself */
-        CdControlB(CdlSetmode, (u8 *)v, 0);
+        val = CdlModeSpeed; /* passed as the param pointer itself */
+        CdControlB(CdlSetmode, (u8 *)val, 0);
         VSync(3);
     }
     return ok;
@@ -122,15 +122,15 @@ void cd_resetState(void) {
 }
 
 s32 cd_findFile(char *name) {
-    CdlFILE f;
-    s32 r;
-    if (CdSearchFile(&f, name) != NULL) {
-        r = CdPosToInt(&f.pos);
+    CdlFILE file;
+    s32 sector;
+    if (CdSearchFile(&file, name) != NULL) {
+        sector = CdPosToInt(&file.pos);
     } else {
         printf("Cannot find file. (%s)\n", name);
-        r = -1;
+        sector = -1;
     }
-    return r;
+    return sector;
 }
 
 s32 cd_getState(void) {
@@ -139,8 +139,8 @@ s32 cd_getState(void) {
 
 s32 cd_cancel(void) {
     u8 result[8];
-    s32 r = g_cdLoad.state;
-    if (r != 0) {
+    s32 prevState = g_cdLoad.state;
+    if (prevState != 0) {
         CdReadyCallback(NULL);
         CdSyncCallback(0);
         g_cdLoad.hasQueued = 0;
@@ -149,7 +149,7 @@ s32 cd_cancel(void) {
         while (CdControlB(CdlPause, NULL, result) == 0) {
         }
     }
-    return r;
+    return prevState;
 }
 
 void cd_abort(void) {
@@ -165,59 +165,59 @@ void cd_stopMotor(void) {
     CdControlB(CdlStop, NULL, NULL);
 }
 
-u8 cd_seekAsync(s32 a, void (*b)(u8 *)) {
-    CdRequest r;
-    r.flags = CDREQ_SEEK;
-    r.syncCallback = cd_onSync;
-    r.sector = a;
-    r.size = 0;
-    r.chunks = NULL;
-    r.readyCallback = cd_onDataReady;
-    r.doneCallback = b;
-    return cd_submit(&r);
+u8 cd_seekAsync(s32 sector, void (*doneCb)(u8 *)) {
+    CdRequest req;
+    req.flags = CDREQ_SEEK;
+    req.syncCallback = cd_onSync;
+    req.sector = sector;
+    req.size = 0;
+    req.chunks = NULL;
+    req.readyCallback = cd_onDataReady;
+    req.doneCallback = doneCb;
+    return cd_submit(&req);
 }
 
-u8 cd_readAsync(s32 a, s32 b, void *c, void (*d)(u8 *)) {
+u8 cd_readAsync(s32 sector, s32 size, void *dest, void (*doneCb)(u8 *)) {
     g_cdReadRequest.flags = CDREQ_SEEK | CDREQ_READ;
     g_cdReadRequest.chunks = (CdChunk *)-1;
     g_cdReadRequest.syncCallback = cd_onSync;
-    g_cdReadRequest.sector = a;
-    g_cdReadRequest.size = b;
-    g_cdReadRequest.chunk.size = b;
-    g_cdReadRequest.chunk.dest = c;
+    g_cdReadRequest.sector = sector;
+    g_cdReadRequest.size = size;
+    g_cdReadRequest.chunk.size = size;
+    g_cdReadRequest.chunk.dest = dest;
     g_cdReadRequest.readyCallback = cd_onDataReady;
-    g_cdReadRequest.doneCallback = d;
+    g_cdReadRequest.doneCallback = doneCb;
     return cd_submit(&g_cdReadRequest);
 }
 
-u8 cd_readChunks(s32 sector, CdChunk *chunks, s32 n, void (*cb)(u8 *)) {
-    CdRequest r;
+u8 cd_readChunks(s32 sector, CdChunk *chunks, s32 count, void (*cb)(u8 *)) {
+    CdRequest req;
     s32 i;
     s32 total = 0;
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < count; i++) {
         total += chunks[i].size;
     }
-    r.flags = CDREQ_SEEK | CDREQ_READ;
-    r.syncCallback = cd_onSync;
-    r.sector = sector;
-    r.size = total;
-    r.chunks = chunks;
-    r.readyCallback = cd_onDataReady;
-    r.doneCallback = cb;
-    return cd_submit(&r);
+    req.flags = CDREQ_SEEK | CDREQ_READ;
+    req.syncCallback = cd_onSync;
+    req.sector = sector;
+    req.size = total;
+    req.chunks = chunks;
+    req.readyCallback = cd_onDataReady;
+    req.doneCallback = cb;
+    return cd_submit(&req);
 }
 
-u8 cd_syncAsync(void (*a)(u8 *)) {
-    CdRequest r;
-    r.flags = CDREQ_PAUSE;
-    r.doneCallback = a;
-    r.sector = 0;
-    r.size = 0;
-    r.chunks = NULL;
-    r.syncCallback = cd_onSync;
-    r.readyCallback = 0;
-    return cd_submit(&r);
+u8 cd_syncAsync(void (*doneCb)(u8 *)) {
+    CdRequest req;
+    req.flags = CDREQ_PAUSE;
+    req.doneCallback = doneCb;
+    req.sector = 0;
+    req.size = 0;
+    req.chunks = NULL;
+    req.syncCallback = cd_onSync;
+    req.readyCallback = 0;
+    return cd_submit(&req);
 }
 
 s32 cd_seekSync(s32 sector) {
@@ -256,15 +256,15 @@ s32 cd_readSync(s32 sector, s32 size, void *dest) {
 }
 
 s32 cd_sync(void) {
-    CdRequest r;
-    r.flags = CDREQ_PAUSE;
-    r.sector = 0;
-    r.size = 0;
-    r.chunks = NULL;
-    r.syncCallback = cd_onSync;
-    r.readyCallback = 0;
-    r.doneCallback = NULL;
-    if (cd_submit(&r) == 0) {
+    CdRequest req;
+    req.flags = CDREQ_PAUSE;
+    req.sector = 0;
+    req.size = 0;
+    req.chunks = NULL;
+    req.syncCallback = cd_onSync;
+    req.readyCallback = 0;
+    req.doneCallback = NULL;
+    if (cd_submit(&req) == 0) {
         return 0;
     }
     while (cd_getState() != 0) {
@@ -284,16 +284,16 @@ u8 cd_seekStreamAsync(s32 sector) {
     return cd_submit(&req);
 }
 
-u8 cd_readStreamAsync(s32 a, void (*b)()) {
-    CdRequest r;
-    r.flags = CDREQ_SEEK | CDREQ_READ | CDREQ_STREAM;
-    r.sector = a;
-    r.size = 0;
-    r.chunks = NULL;
-    r.syncCallback = cd_onSync;
-    r.readyCallback = b;
-    r.doneCallback = NULL;
-    return cd_submit(&r);
+u8 cd_readStreamAsync(s32 sector, void (*readyCb)()) {
+    CdRequest req;
+    req.flags = CDREQ_SEEK | CDREQ_READ | CDREQ_STREAM;
+    req.sector = sector;
+    req.size = 0;
+    req.chunks = NULL;
+    req.syncCallback = cd_onSync;
+    req.readyCallback = readyCb;
+    req.doneCallback = NULL;
+    return cd_submit(&req);
 }
 
 s32 cd_restartAt(s32 sector) {
@@ -306,16 +306,16 @@ s32 cd_restartAt(s32 sector) {
     return 1;
 }
 
-u8 cd_pauseAsync(void (*a)(u8 *)) {
-    CdRequest r;
-    r.flags = CDREQ_PAUSE;
-    r.doneCallback = a;
-    r.sector = 0;
-    r.size = 0;
-    r.chunks = NULL;
-    r.syncCallback = cd_onSync;
-    r.readyCallback = 0;
-    return cd_submit(&r);
+u8 cd_pauseAsync(void (*doneCb)(u8 *)) {
+    CdRequest req;
+    req.flags = CDREQ_PAUSE;
+    req.doneCallback = doneCb;
+    req.sector = 0;
+    req.size = 0;
+    req.chunks = NULL;
+    req.syncCallback = cd_onSync;
+    req.readyCallback = 0;
+    return cd_submit(&req);
 }
 
 s32 cd_pause(void) {
@@ -339,24 +339,24 @@ s32 cd_isShellOpen(void) {
     return (g_cdResult.b[0] >> 4) & 1; /* CdlStatShellOpen */
 }
 
-u8 cd_submit(CdRequest *r) {
+u8 cd_submit(CdRequest *req) {
     volatile s32 st = g_cdLoad.state;
     g_cdLoad.errorCount = 0;
     if (st == CD_IDLE) {
-        if (!(r->flags & CDREQ_PAUSE)) {
+        if (!(req->flags & CDREQ_PAUSE)) {
             goto run;
         }
-        if (r->doneCallback != NULL) {
-            r->doneCallback(&g_cdLoad);
+        if (req->doneCallback != NULL) {
+            req->doneCallback(&g_cdLoad);
         }
         return 1;
     }
     if (g_cdLoad.hasQueued == 0) {
-        g_cdLoad.queued = *r;
+        g_cdLoad.queued = *req;
         g_cdLoad.hasQueued = 1;
         if (g_cdLoad.state == CD_IDLE) {
         run:
-            cd_startRequest(r);
+            cd_startRequest(req);
         }
         return 1;
     }

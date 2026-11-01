@@ -1,116 +1,116 @@
 #include "ovl_0b.h"
 
 void btlseq_init(void) {
-    Battle *b = g_gameState->gameData->ctx.battle;
+    Battle *battle = g_gameState->gameData->ctx.battle;
     u16 i = 0;
-    u16 *header = b->scene.seqTable;
-    Battle11C4 *seq = &b->seq;
+    u16 *header = battle->scene.seqTable;
+    Battle11C4 *seq = &battle->seq;
     u16 *p = header + 2;
-    u32 *q;
+    u32 *motionPtr;
     BtlMotion *motion;
-    u16 n = header[0];
-    for (; i < n; i++) {
+    u16 count = header[0];
+    for (; i < count; i++) {
         seq->seqs[i] = (s32)header + *p++;
     }
     for (; i < 0x12; i++) {
         seq->seqs[i] = 0;
     }
-    q = (u32 *)p;
-    seq->anims = (BtlMotion **)q;
-    n = header[1];
-    for (i = 0; i < n; i++, q++) {
-        motion = db_lookupRegistered(DB_GET_ADDR, (*q & 0xFFFF) | DB_ANIM, 0);
-        *q = (u32)motion;
+    motionPtr = (u32 *)p;
+    seq->anims = (BtlMotion **)motionPtr;
+    count = header[1];
+    for (i = 0; i < count; i++, motionPtr++) {
+        motion = db_lookupRegistered(DB_GET_ADDR, (*motionPtr & 0xFFFF) | DB_ANIM, 0);
+        *motionPtr = (u32)motion;
         if (IS_OFFSET(motion->rotKeys)) {
             motion->rotKeys = (s32)motion + motion->rotKeys;
             if (motion->rotKeysLo != 0) {
-                motion->rotKeysLo = *q + motion->rotKeysLo;
+                motion->rotKeysLo = *motionPtr + motion->rotKeysLo;
             }
         }
     }
-    seq->seqFlags = (u8 *)q;
+    seq->seqFlags = (u8 *)motionPtr;
     {
-        Battle122C *c = seq->slots;
+        Battle122C *slot = seq->slots;
         for (i = 4; i-- != 0;) {
-            c->cmd = 0;
-            c++;
+            slot->cmd = 0;
+            slot++;
         }
     }
 }
 
 void btl_startEnemySeq(BtlCmd *cmd) {
     if (g_gameState->gameData->ctx.battle->seq.seqs[cmd->subNo] != 0 && btlseq_start(cmd) != NULL) {
-        BtlUnit *u = cmd->caster;
-        if (!(u->flags & BTL_UNIT_PARTY)) {
-            u->rot[1] = 0;
+        BtlUnit *caster = cmd->caster;
+        if (!(caster->flags & BTL_UNIT_PARTY)) {
+            caster->rot[1] = 0;
         }
     }
 }
 
 Battle122C *btlseq_start(BtlCmd *cmd) {
-    Battle122C *e = g_gameState->gameData->ctx.battle->seq.slots;
-    GameState *g;
+    Battle122C *slot = g_gameState->gameData->ctx.battle->seq.slots;
+    GameState *gs;
     s16 i;
-    for (i = 0; i < 4; i++, e++) {
-        if (e->cmd == NULL) {
+    for (i = 0; i < 4; i++, slot++) {
+        if (slot->cmd == NULL) {
             break;
         }
     }
     if (i < 0) {
         return NULL;
     }
-    g = g_gameState;
-    e->flags = 0;
-    e->cmd = cmd;
-    e->pc = g->gameData->ctx.battle->seq.seqs[cmd->subNo];
-    e->prevPc = 0;
-    e->opFrame = 0;
-    e->waitLeft = 0;
-    e->frame = 0;
-    e->seqFlags = g->gameData->ctx.battle->seq.seqFlags[cmd->subNo];
-    e->soundDelay = 0;
-    e->turnFrames = 0;
-    e->fxDelay = 0;
-    e->fadeFrames = 0;
+    gs = g_gameState;
+    slot->flags = 0;
+    slot->cmd = cmd;
+    slot->pc = gs->gameData->ctx.battle->seq.seqs[cmd->subNo];
+    slot->prevPc = 0;
+    slot->opFrame = 0;
+    slot->waitLeft = 0;
+    slot->frame = 0;
+    slot->seqFlags = gs->gameData->ctx.battle->seq.seqFlags[cmd->subNo];
+    slot->soundDelay = 0;
+    slot->turnFrames = 0;
+    slot->fxDelay = 0;
+    slot->fadeFrames = 0;
     g_gameState->gameData->ctx.battle->cameraNo = 0;
-    return e;
+    return slot;
 }
 
 void btlseq_startDirect(u16 unitMask, s16 targets, u16 id) {
-    Battle *b;
-    BtlUnit *u;
-    BtlCmd *c;
-    Battle122C *e;
+    Battle *battle;
+    BtlUnit *unit;
+    BtlCmd *cmd;
+    Battle122C *slot;
 
-    b = g_gameState->gameData->ctx.battle;
-    if (b->seq.seqs[id] == 0) {
+    battle = g_gameState->gameData->ctx.battle;
+    if (battle->seq.seqs[id] == 0) {
         return;
     }
-    for (u = b->unitList; u != NULL; u = u->next) {
-        if (u->unitBit & unitMask) {
+    for (unit = battle->unitList; unit != NULL; unit = unit->next) {
+        if (unit->unitBit & unitMask) {
             break;
         }
     }
-    if (u != NULL) {
-        c = u->cmd;
-        c->cmdNo = 0;
-        c->subNo = id;
-        c->targets = targets;
-        c->caster = u;
-        c->ability = &g_gameState->gameData->ctx.battle->enemyAbilities[id];
-        c->info.w = 0;
-        e = btlseq_start(c);
-        if (e != NULL) {
-            e->flags |= BTLSEQ_F_DIRECT;
+    if (unit != NULL) {
+        cmd = unit->cmd;
+        cmd->cmdNo = 0;
+        cmd->subNo = id;
+        cmd->targets = targets;
+        cmd->caster = unit;
+        cmd->ability = &g_gameState->gameData->ctx.battle->enemyAbilities[id];
+        cmd->info.w = 0;
+        slot = btlseq_start(cmd);
+        if (slot != NULL) {
+            slot->flags |= BTLSEQ_F_DIRECT;
         }
     }
 }
 
 s32 btlseq_isBusy(void) {
     s16 i;
-    Battle122C *p = g_gameState->gameData->ctx.battle->seq.slots;
-    for (i = 0; i < 4; i++, p++) {
-        if (p->cmd != 0) {
+    Battle122C *slot = g_gameState->gameData->ctx.battle->seq.slots;
+    for (i = 0; i < 4; i++, slot++) {
+        if (slot->cmd != 0) {
             return 1;
         }
     }
@@ -120,7 +120,7 @@ s32 btlseq_isBusy(void) {
 void btlseq_update(void) {
     s16 i = 3;
     BtlScript *script = (BtlScript *)g_gameState->gameData->ctx.battle->seq.slots;
-    BtlUnit *u;
+    BtlUnit *unit;
     u8 op;
     s16 fxArgs[4];
 
@@ -129,7 +129,7 @@ void btlseq_update(void) {
             script->opFrame++;
             script->waitLeft--;
             script->frame++;
-            u = script->cmd->caster;
+            unit = script->cmd->caster;
             do {
                 op = *script->pc;
                 if (op >= 0x23) {
@@ -139,19 +139,19 @@ void btlseq_update(void) {
                     script->flags = (script->flags | BTLSEQ_F_HIT) & ~BTLSEQ_F_WAIT_HIT;
                 }
                 if (script->pc != script->prevPc && g_btlseqOps[op].enter != NULL) {
-                    g_btlseqOps[op].enter(script, u);
+                    g_btlseqOps[op].enter(script, unit);
                 }
                 script->prevPc = script->pc;
-            } while ((u16)g_btlseqOps[op].step(script, u));
+            } while ((u16)g_btlseqOps[op].step(script, unit));
             if (script->turnFrames != 0) {
-                u->rot[1] = script->turnFrom + script->turnBy * script->turnFrame / script->turnFrames;
+                unit->rot[1] = script->turnFrom + script->turnBy * script->turnFrame / script->turnFrames;
                 if (script->turnFrame++ >= script->turnFrames) {
                     script->turnFrames = 0;
                 }
             }
             if (script->soundDelay != 0) {
                 if (--script->soundDelay == 0) {
-                    btl_playUnitSound(u, script->sound, script->soundVol);
+                    btl_playUnitSound(unit, script->sound, script->soundVol);
                 }
             }
             if (script->fxDelay != 0) {
@@ -166,7 +166,7 @@ void btlseq_update(void) {
             }
             if (script->fadeFrames != 0) {
                 script->fadeLeft--;
-                btl_setUnitFade(u, (script->fadeLeft << 5) / script->fadeFrames);
+                btl_setUnitFade(unit, (script->fadeLeft << 5) / script->fadeFrames);
                 if (script->fadeLeft == 0) {
                     script->fadeFrames = 0;
                 }
@@ -227,53 +227,53 @@ s32 btlseq_stepWait(BtlScript *script) {
 }
 
 s32 btlseq_opExecCmd(BtlScript *script) {
-    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
+    BtlUnit *unit = g_gameState->gameData->ctx.battle->unitList;
     u16 targets = script->cmd->targets;
-    while (u != NULL) {
-        if (u->unitBit & targets) {
-            btl_execCmd(u);
+    while (unit != NULL) {
+        if (unit->unitBit & targets) {
+            btl_execCmd(unit);
         }
-        u = u->next;
+        unit = unit->next;
     }
     script->pc += 1;
     return 1;
 }
 
 void btlseq_opMoveToTarget(BtlScript *script, BtlUnit *unit) {
-    s16 *p = script->work;
+    s16 *move = script->work;
     s16 i;
     s16 dist;
     s32 angle;
-    p[7] = 4;
+    move[7] = 4;
     script->opFrame = 1;
-    p[6] = script->pc[1];
+    move[6] = script->pc[1];
     for (i = 0; i < 3; i++) {
-        s16 *q = p + i;
-        *q = unit->pos[i] >> 16;
+        s16 *axis = move + i;
+        *axis = unit->pos[i] >> 16;
     }
-    p[4] = p[1];
-    btlseq_getTargetCenter(script->cmd->targets, (u16 *)&p[3], (u16 *)&p[5]);
+    move[4] = move[1];
+    btlseq_getTargetCenter(script->cmd->targets, (u16 *)&move[3], (u16 *)&move[5]);
     dist = script->pc[2] | (script->pc[3] << 8);
-    if (p[0] != p[3] || p[2] != p[5]) {
+    if (move[0] != move[3] || move[2] != move[5]) {
         if (script->pc[0] == 0x1E) {
-            p[5] -= dist;
+            move[5] -= dist;
         } else {
-            angle = ratan2(p[3] - p[0], p[5] - p[2]) & 0xFFF;
-            p[3] += (math_sin(angle) * dist) >> 12;
-            p[5] += (math_cos(angle) * dist) >> 12;
+            angle = ratan2(move[3] - move[0], move[5] - move[2]) & 0xFFF;
+            move[3] += (math_sin(angle) * dist) >> 12;
+            move[5] += (math_cos(angle) * dist) >> 12;
         }
     }
 }
 
 s32 btlseq_stepMove(BtlScript *script, BtlUnit *unit) {
-    s16 *p = script->work;
+    s16 *move = script->work;
     s16 i;
     for (i = 0; i < 3; i++) {
-        s16 *q = p + i;
-        unit->pos[i] = ((q[3] - q[0]) * script->opFrame / p[6] + q[0]) << 16;
+        s16 *axis = move + i;
+        unit->pos[i] = ((axis[3] - axis[0]) * script->opFrame / move[6] + axis[0]) << 16;
     }
-    if (script->opFrame >= p[6]) {
-        script->pc += (u16)p[7];
+    if (script->opFrame >= move[6]) {
+        script->pc += (u16)move[7];
     }
     return 0;
 }
@@ -281,28 +281,28 @@ s32 btlseq_stepMove(BtlScript *script, BtlUnit *unit) {
 void btlseq_opMoveHome(BtlScript *script, BtlUnit *unit) {
     s32 *homePos;
     s16 i;
-    s16 *p = script->work;
-    p[7] = 2;
+    s16 *move = script->work;
+    move[7] = 2;
     script->opFrame = 1;
-    p[6] = script->pc[1];
+    move[6] = script->pc[1];
     for (i = 0; i < 3; i++) {
-        s16 *q = p + i;
-        q[0] = unit->pos[i] >> 16;
+        s16 *axis = move + i;
+        axis[0] = unit->pos[i] >> 16;
         homePos = unit->home->pos;
-        q[3] = homePos[i] >> 16;
+        axis[3] = homePos[i] >> 16;
     }
 }
 
 void btlseq_opMoveTo(BtlScript *script, BtlUnit *unit) {
-    s16 *p = script->work;
+    s16 *move = script->work;
     s16 i;
-    p[7] = 8;
+    move[7] = 8;
     script->opFrame = 1;
-    p[6] = script->pc[1];
+    move[6] = script->pc[1];
     for (i = 0; i < 3; i++) {
-        s16 *q = p + i;
-        q[0] = unit->pos[i] >> 16;
-        q[3] = script->pc[i * 2 + 2] | (script->pc[i * 2 + 3] << 8);
+        s16 *axis = move + i;
+        axis[0] = unit->pos[i] >> 16;
+        axis[3] = script->pc[i * 2 + 2] | (script->pc[i * 2 + 3] << 8);
     }
 }
 
@@ -316,56 +316,56 @@ s32 btlseq_stepMoveSetHome(s32 script, Unk800CB090 *unit) {
 }
 
 void btlseq_opMoveBy(BtlScript *script, BtlUnit *unit) {
-    s16 *p = script->work;
+    s16 *move = script->work;
     s16 i;
-    p[7] = 8;
+    move[7] = 8;
     script->opFrame = 1;
-    p[6] = script->pc[1];
+    move[6] = script->pc[1];
     for (i = 0; i < 3; i++) {
-        s16 *q = p + i;
+        s16 *axis = move + i;
         s16 start = unit->pos[i] >> 16;
-        q[0] = start;
-        q[3] = start + (script->pc[i * 2 + 2] | (script->pc[i * 2 + 3] << 8));
+        axis[0] = start;
+        axis[3] = start + (script->pc[i * 2 + 2] | (script->pc[i * 2 + 3] << 8));
     }
 }
 
 BtlUnit *btlseq_findUnit(u16 unitMask) {
-    BtlUnit *u;
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if (u->unitBit & unitMask) {
+    BtlUnit *unit;
+    for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
+        if (unit->unitBit & unitMask) {
             break;
         }
     }
-    return u;
+    return unit;
 }
 
 void btlseq_getTargetCenter(u16 targets, u16 *outX, u16 *outZ) {
-    BtlUnit *u;
-    s32 n = 0;
+    BtlUnit *unit;
+    s32 count = 0;
     *outX = 0;
     *outZ = 0;
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
-        if (u->unitBit & targets) {
-            *outX += u->pos[0] >> 16;
-            n++;
-            *outZ += u->pos[2] >> 16;
+    for (unit = g_gameState->gameData->ctx.battle->unitList; unit != 0; unit = unit->next) {
+        if (unit->unitBit & targets) {
+            *outX += unit->pos[0] >> 16;
+            count++;
+            *outZ += unit->pos[2] >> 16;
         }
     }
-    if (n >= 2) {
-        *outX = (s16)*outX / n;
-        *outZ = (s16)*outZ / n;
+    if (count >= 2) {
+        *outX = (s16)*outX / count;
+        *outZ = (s16)*outZ / count;
     }
 }
 
 s32 btlseq_opPlayAnim(BtlScript *script, BtlUnit *unit) {
     u32 flags;
-    u8 *p = script->pc;
+    u8 *pc = script->pc;
     s32 idx;
-    if (p[1] == 0xFF) {
+    if (pc[1] == 0xFF) {
         flags = unit->flags;
         unit->model->motion = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(flags)].type->motions[(flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
     } else {
-        idx = script->seqFlags + p[1];
+        idx = script->seqFlags + pc[1];
         unit->model->motion = g_gameState->gameData->ctx.battle->seq.anims[idx];
     }
     unit->obj->frame = 0;
@@ -450,19 +450,19 @@ s32 btlseq_opShowMeshes(BtlScript *script, BtlUnit *unit) {
 
 s32 btlseq_opShowName(BtlScript *script, BtlUnit *unit) {
     u8 *pc;
-    Battle *b;
+    Battle *battle;
     u8 *txt;
     u16 idx;
     u16 ofs;
 
     pc = script->pc;
     idx = pc[1];
-    b = g_gameState->gameData->ctx.battle;
-    txt = b->work->texts;
+    battle = g_gameState->gameData->ctx.battle;
+    txt = battle->work->texts;
     if (idx & 0x80) {
         btl_setBannerAt((s32)(txt + script->cmd->ability->nameOfs), 1);
     } else {
-        idx += b->enemies[BTL_UNIT_INDEX(unit->flags)].type->firstAbility;
+        idx += battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->firstAbility;
         ofs = ((u16 *)txt)[idx * 2 + 2] + 4;
         if (pc[0] == 0x21) {
             btl_setBannerAt((s32)(txt + ofs), 3);
@@ -487,9 +487,9 @@ s32 btlseq_opSetCamera(BtlScript *script) {
 }
 
 s32 btlseq_opPlayCamera(BtlScript *script, BtlUnit *unit) {
-    Battle *b = g_gameState->gameData->ctx.battle;
-    Battle11C4 *seq = &b->seq;
-    BtlUnit *u;
+    Battle *battle = g_gameState->gameData->ctx.battle;
+    Battle11C4 *seq = &battle->seq;
+    BtlUnit *tgt;
     u32 status;
     s32 roll;
     s8 one;
@@ -498,9 +498,9 @@ s32 btlseq_opPlayCamera(BtlScript *script, BtlUnit *unit) {
             goto end;
         }
         status = unit->status;
-        for (u = b->unitList; u != NULL; u = u->next) {
-            if (u->unitBit & script->cmd->targets) {
-                status |= u->status;
+        for (tgt = battle->unitList; tgt != NULL; tgt = tgt->next) {
+            if (tgt->unitBit & script->cmd->targets) {
+                status |= tgt->status;
             }
         }
         if (status & (BTL_STATUS_VANISH | BTL_STATUS_MINI)) {
@@ -576,30 +576,30 @@ s32 btlseq_opTurn(BtlScript *script, BtlUnit *unit) {
 }
 
 void btlseq_opScale(BtlScript *script, BtlUnit *unit) {
-    s16 *p = script->work;
+    s16 *scaleWork = script->work;
     s16 curScale = unit->model->scaleX;
     s16 factor;
     s16 targetScale;
-    p[0] = curScale;
+    scaleWork[0] = curScale;
     factor = script->pc[1] | (script->pc[2] << 8);
     if (factor == -1) {
         targetScale = 0x1000;
     } else {
         targetScale = curScale * factor / 0x1000;
     }
-    p[1] = targetScale - p[0];
+    scaleWork[1] = targetScale - scaleWork[0];
     script->opFrame = 1;
-    p[2] = script->pc[3];
+    scaleWork[2] = script->pc[3];
 }
 
 s32 btlseq_stepScale(BtlScript *script, BtlUnit *unit) {
-    s16 *p = script->work;
-    u16 scale = script->work[0] + p[1] * script->opFrame / p[2];
+    s16 *scaleWork = script->work;
+    u16 scale = script->work[0] + scaleWork[1] * script->opFrame / scaleWork[2];
     btl_setUnitAttr((s32)unit, BTL_ATTR_SCALE, scale);
     if (scale == 0x1000) {
         unit->model->flags &= ~BTL_MODEL_SCALED;
     }
-    if (script->opFrame >= p[2]) {
+    if (script->opFrame >= scaleWork[2]) {
         script->pc += 4;
         return 1;
     }
@@ -607,34 +607,34 @@ s32 btlseq_stepScale(BtlScript *script, BtlUnit *unit) {
 }
 
 s32 btlseq_opPlayTexAnim(BtlScript *script, BtlUnit *unit) {
-    BtlUnit9C50 *g;
-    BtlUnit9C50 *e = &unit->model->texAnims[script->pc[1]];
-    e->flags |= BTL_TEXANIM_PLAY;
-    g = &unit->model->texAnims[script->pc[1]];
-    g->pos = 0;
-    e = &unit->model->texAnims[script->pc[1]];
-    e->lastFrame = 0x1000;
+    BtlUnit9C50 *texAnim2;
+    BtlUnit9C50 *texAnim = &unit->model->texAnims[script->pc[1]];
+    texAnim->flags |= BTL_TEXANIM_PLAY;
+    texAnim2 = &unit->model->texAnims[script->pc[1]];
+    texAnim2->pos = 0;
+    texAnim = &unit->model->texAnims[script->pc[1]];
+    texAnim->lastFrame = 0x1000;
     script->pc += 2;
     return 1;
 }
 
 s32 btlseq_opLoopTexAnim(BtlScript *script, BtlUnit *unit) {
-    BtlUnit9C50 *g;
-    BtlUnit9C50 *e = &unit->model->texAnims[script->pc[1]];
-    e->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
-    g = &unit->model->texAnims[script->pc[1]];
-    g->pos = 0;
-    e = &unit->model->texAnims[script->pc[1]];
-    e->lastFrame = 0x1000;
+    BtlUnit9C50 *texAnim2;
+    BtlUnit9C50 *texAnim = &unit->model->texAnims[script->pc[1]];
+    texAnim->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+    texAnim2 = &unit->model->texAnims[script->pc[1]];
+    texAnim2->pos = 0;
+    texAnim = &unit->model->texAnims[script->pc[1]];
+    texAnim->lastFrame = 0x1000;
     script->pc += 2;
     return 1;
 }
 
 s32 btlseq_opStopTexAnim(BtlScript *script, BtlUnit *unit) {
     u8 i = script->pc[1];
-    BtlModel *m = unit->model;
-    BtlUnit9C50 *e;
-    (*(e = m->texAnims + i)).flags &= 0xFC;
+    BtlModel *model = unit->model;
+    BtlUnit9C50 *texAnim;
+    (*(texAnim = model->texAnims + i)).flags &= 0xFC;
     script->pc += 2;
     return 1;
 }
@@ -667,14 +667,14 @@ s32 btlseq_opShowShadow(BtlScript *script, BtlUnit *unit) {
 
 void btl_clearPopups(void) {
     s16 i;
-    BtlPopup *p;
+    BtlPopup *popup;
     g_gameState->gameData->ctx.battle->popups.last = 0;
     g_gameState->gameData->ctx.battle->popups.tick = 0;
     g_gameState->gameData->ctx.battle->popups.hiddenMask = 0xFF;
-    p = g_gameState->gameData->ctx.battle->popups.entries;
+    popup = g_gameState->gameData->ctx.battle->popups.entries;
     for (i = 15; i != -1; i--) {
-        p->unit = NULL;
-        p++;
+        popup->unit = NULL;
+        popup++;
     }
     g_gameState->gameData->ctx.battle->popups.scanUnit = 0;
     g_gameState->gameData->ctx.battle->popups.detectEnemy = 0;

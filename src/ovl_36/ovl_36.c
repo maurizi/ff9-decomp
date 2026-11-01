@@ -113,94 +113,94 @@ void menuCard_openDiscard(void) {
 
 void menuCard_drawGrid(void) {
     u8 numText[8];
-    RECT *r;
-    s32 a;
-    s32 b;
-    s32 n;
+    RECT *rect;
+    s32 total;
+    s32 kinds;
+    s32 cardId;
     s32 i;
     s32 j;
     s32 x;
     s32 y;
-    u8 *s;
+    u8 *label;
     s32 w;
     s32 k = 8;
     s32 k2 = 0x80;
 
-    r = &s_menuCard.gridRect;
-    a = card_countAll();
-    b = card_countKinds();
-    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelCard, UI_LABEL_NORMAL);
-    win_drawBox(r, 0x1E, WIN_STYLE_LINE_RULE);
-    win_drawShadow(r, 0x1E, WIN_STYLE_LINE_RULE);
-    s = text_get(CARD_TEXT_STOCK);
-    w = text_measureWidth(s);
-    text_formatNumber(a, numText, 3, TEXT_NUM_ASCII);
-    text_drawBlock(r->x + 8, r->y + 0xA2, 0x14, s, TEXT_PAL_WHITE);
-    ui_drawDigits(r->x + (w + k), r->y + 0xA4, 0x14, numText, DIGITS_WHITE);
-    s = text_get(CARD_TEXT_TYPE);
-    w = text_measureWidth(s);
-    text_formatNumber(b, numText, 3, TEXT_NUM_ASCII);
-    ui_drawDigits(r->x + 0x80, r->y + 0xA4, 0x14, numText, DIGITS_WHITE);
-    text_drawBlock(r->x - (w - k2), r->y + 0xA2, 0x14, s, TEXT_PAL_WHITE);
-    for (n = 0, i = 0, x = 4; i < CARD_GRID_COLS; i++, x += 15) {
+    rect = &s_menuCard.gridRect;
+    total = card_countAll();
+    kinds = card_countKinds();
+    ui_drawLabel(rect->x + 8, rect->y - 3, 0x1E, g_labelCard, UI_LABEL_NORMAL);
+    win_drawBox(rect, 0x1E, WIN_STYLE_LINE_RULE);
+    win_drawShadow(rect, 0x1E, WIN_STYLE_LINE_RULE);
+    label = text_get(CARD_TEXT_STOCK);
+    w = text_measureWidth(label);
+    text_formatNumber(total, numText, 3, TEXT_NUM_ASCII);
+    text_drawBlock(rect->x + 8, rect->y + 0xA2, 0x14, label, TEXT_PAL_WHITE);
+    ui_drawDigits(rect->x + (w + k), rect->y + 0xA4, 0x14, numText, DIGITS_WHITE);
+    label = text_get(CARD_TEXT_TYPE);
+    w = text_measureWidth(label);
+    text_formatNumber(kinds, numText, 3, TEXT_NUM_ASCII);
+    ui_drawDigits(rect->x + 0x80, rect->y + 0xA4, 0x14, numText, DIGITS_WHITE);
+    text_drawBlock(rect->x - (w - k2), rect->y + 0xA2, 0x14, label, TEXT_PAL_WHITE);
+    for (cardId = 0, i = 0, x = 4; i < CARD_GRID_COLS; i++, x += 15) {
         for (j = 0, y = 10; j < CARD_GRID_ROWS; j++, y += 15) {
-            menuCard_drawCell(r->x + x, r->y + y, 0x14, n);
-            n++;
+            menuCard_drawCell(rect->x + x, rect->y + y, 0x14, cardId);
+            cardId++;
         }
     }
 }
 
 void menuCard_drawInfo(void) {
     u8 numText[8];
-    RECT *r;
-    s32 a;
-    s32 b;
-    s32 c;
+    RECT *rect;
+    s32 winCount;
+    s32 lossCount;
+    s32 drawCount;
     s32 rank;
     s32 w;
 
-    r = &s_menuCard.infoRect;
+    rect = &s_menuCard.infoRect;
     if (card_getWins() <= 99999) {
-        a = card_getWins();
+        winCount = card_getWins();
     } else {
-        a = 99999;
+        winCount = 99999;
     }
     if (card_getLosses() <= 99999) {
-        b = card_getLosses();
+        lossCount = card_getLosses();
     } else {
-        b = 99999;
+        lossCount = 99999;
     }
     if (card_getDraws() <= 99999) {
-        c = card_getDraws();
+        drawCount = card_getDraws();
     } else {
-        c = 99999;
+        drawCount = 99999;
     }
     rank = s_menuCard.rank;
-    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelInfo, UI_LABEL_NORMAL);
-    win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
-    win_drawShadow(r, 0x1F, WIN_STYLE_BEVEL);
-    ui_drawEtchedLine(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
+    ui_drawLabel(rect->x + 8, rect->y - 3, 0x1E, g_labelInfo, UI_LABEL_NORMAL);
+    win_drawBox(rect, 0x1E, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, 0x1F, WIN_STYLE_BEVEL);
+    ui_drawEtchedLine(rect->x + 4, rect->y + 0x24, 0x14, rect->w - 9);
     text_formatNumber(s_menuCard.points[CARD_PTS_TOTAL], numText, 4, TEXT_NUM_ASCII);
-    text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(CARD_TEXT_COLLECTORS), TEXT_PAL_WHITE);
-    text_drawBlock(r->x + 0xA, r->y + 0x14, 0x14, text_get(rank), TEXT_PAL_WHITE);
-    text_drawBlock(r->x + 0xA, r->y + 0x26, 0x14, text_get(CARD_TEXT_WIN), TEXT_PAL_WHITE);
-    text_drawBlock(r->x + 0xA, r->y + 0x30, 0x14, text_get(CARD_TEXT_LOSE), TEXT_PAL_WHITE);
-    text_drawBlock(r->x + 0xA, r->y + 0x3A, 0x14, text_get(CARD_TEXT_DRAW), TEXT_PAL_WHITE);
-    ui_drawSmallDigits(r->x + 0x5A, r->y + 9, 0x14, numText, TEXT_PAL_WHITE);
-    ui_drawSmallDigits(r->x + 0x78, r->y + 0xB, 0x14, s_menuCardPointsUnit, TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + 0xA, rect->y + 5, 0x14, text_get(CARD_TEXT_COLLECTORS), TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + 0xA, rect->y + 0x14, 0x14, text_get(rank), TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + 0xA, rect->y + 0x26, 0x14, text_get(CARD_TEXT_WIN), TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + 0xA, rect->y + 0x30, 0x14, text_get(CARD_TEXT_LOSE), TEXT_PAL_WHITE);
+    text_drawBlock(rect->x + 0xA, rect->y + 0x3A, 0x14, text_get(CARD_TEXT_DRAW), TEXT_PAL_WHITE);
+    ui_drawSmallDigits(rect->x + 0x5A, rect->y + 9, 0x14, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(rect->x + 0x78, rect->y + 0xB, 0x14, s_menuCardPointsUnit, TEXT_PAL_WHITE);
     w = menuCard_drawInfo_width(text_get(CARD_TEXT_DRAW));
-    text_formatNumber(a, numText, 5, TEXT_NUM_ASCII);
+    text_formatNumber(winCount, numText, 5, TEXT_NUM_ASCII);
     w += 0xB;
-    ui_drawSmallDigits(r->x + w, r->y + 0x2A, 0x14, numText, TEXT_PAL_WHITE);
-    text_formatNumber(b, numText, 5, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + w, r->y + 0x34, 0x14, numText, TEXT_PAL_WHITE);
-    text_formatNumber(c, numText, 5, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + w, r->y + 0x3E, 0x14, numText, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(rect->x + w, rect->y + 0x2A, 0x14, numText, TEXT_PAL_WHITE);
+    text_formatNumber(lossCount, numText, 5, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(rect->x + w, rect->y + 0x34, 0x14, numText, TEXT_PAL_WHITE);
+    text_formatNumber(drawCount, numText, 5, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(rect->x + w, rect->y + 0x3E, 0x14, numText, TEXT_PAL_WHITE);
 }
 
 void menuCard_drawCardStack(s32 id) {
     u8 numText[8];
-    RECT *r;
+    RECT *rect;
     CardFlip *turn;
     CardCache *cache;
     u8 *name;
@@ -210,16 +210,16 @@ void menuCard_drawCardStack(s32 id) {
     s32 x;
     s32 y;
     s32 dy;
-    s32 a;
-    s32 b;
-    s32 n;
+    s32 prevBtn;
+    s32 nextBtn;
+    s32 stackDepth;
     s32 cnt;
 
-    r = &s_menuCard.cardInfoRect;
-    n = s_menuCard.count[id];
-    cnt = n;
-    if (n >= 6) {
-        n = 5;
+    rect = &s_menuCard.cardInfoRect;
+    stackDepth = s_menuCard.count[id];
+    cnt = stackDepth;
+    if (stackDepth >= 6) {
+        stackDepth = 5;
     }
     turn = &s_menuCard.flip;
     cache = &s_menuCard.cache;
@@ -230,21 +230,21 @@ void menuCard_drawCardStack(s32 id) {
             text_formatNumber(s_menuCard.shown[id] + 1, numText, 3, TEXT_NUM_ASCII);
             text_formatNumber(cnt, numText + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
             numText[3] = '/';
-            ui_drawSmallDigits(r->x + 0x2B, r->y + 0x43, 0x14, numText, TEXT_PAL_WHITE);
-            a = text_getButtonSprite(4);
-            b = text_getButtonSprite(5);
-            ui_drawSprite(r->x + 0x1E, r->y + 0x41, 0x14, a, 0);
-            ui_drawSprite(r->x + 0x5E, r->y + 0x41, 0x14, b, 0);
+            ui_drawSmallDigits(rect->x + 0x2B, rect->y + 0x43, 0x14, numText, TEXT_PAL_WHITE);
+            prevBtn = text_getButtonSprite(4);
+            nextBtn = text_getButtonSprite(5);
+            ui_drawSprite(rect->x + 0x1E, rect->y + 0x41, 0x14, prevBtn, 0);
+            ui_drawSprite(rect->x + 0x5E, rect->y + 0x41, 0x14, nextBtn, 0);
         }
         i = 0;
-        menuCard_drawSprite(r->x + 0x10, r->y + 0x50, 0x14, CARD_SPR_NAME_ICON, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
-        text_drawBlock(r->x + 0x20, r->y + 0x50, 0x14, name, TEXT_PAL_WHITE);
+        menuCard_drawSprite(rect->x + 0x10, rect->y + 0x50, 0x14, CARD_SPR_NAME_ICON, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
+        text_drawBlock(rect->x + 0x20, rect->y + 0x50, 0x14, name, TEXT_PAL_WHITE);
 
-        while (i < n) {
+        while (i < stackDepth) {
             dx = i * 4 + 0x2E;
-            x = r->x + dx;
+            x = rect->x + dx;
             dy = i + 9;
-            y = r->y + dy;
+            y = rect->y + dy;
             if (i != 0 && turn->active != 0) {
                 if (turn->dir == 0) {
                     x += turn->ticks - 4;
@@ -257,24 +257,24 @@ void menuCard_drawCardStack(s32 id) {
 
         }
     }
-    win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
-    win_drawShadow(r, 0x1F, WIN_STYLE_BEVEL);
+    win_drawBox(rect, 0x1E, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, 0x1F, WIN_STYLE_BEVEL);
 }
 
 void menuCard_drawCellHighlight(void) {
-    RECT *r = &s_menuCard.gridRect;
-    s32 a;
+    RECT *rect = &s_menuCard.gridRect;
+    s32 pulse;
     s32 x, y;
     u32 rgbc;
 
-    a = g_menuFrame & 0x3F;
-    if (a >= 0x20) {
-        a = 0x3F - a;
+    pulse = g_menuFrame & 0x3F;
+    if (pulse >= 0x20) {
+        pulse = 0x3F - pulse;
     }
-    x = r->x + (s16)(s_menuCard.col * 15 + 4);
-    y = r->y + (s16)(s_menuCard.row * 15 + 10);
+    x = rect->x + (s16)(s_menuCard.col * 15 + 4);
+    y = rect->y + (s16)(s_menuCard.row * 15 + 10);
     setlen(g_primPtr, PRIM_LEN(LINE_F3));
-    rgbc = (a * 8) | GPU_CODE(GPU_LINE_F3);
+    rgbc = (pulse * 8) | GPU_CODE(GPU_LINE_F3);
     ((PolyF4Words *)g_primPtr)->rgbc = rgbc;
     ((PolyF4Words *)g_primPtr)->xy0 = x | (y << 16);
     ((PolyF4Words *)g_primPtr)->xy1 = (x + 13) | (y << 16);
@@ -313,11 +313,11 @@ void menuCard_drawCursor(void) {
 }
 
 void menuCard_loadCardImage(void) {
-    RECT a, b;
+    RECT clutRect, pixRect;
     CardCache *cc;
-    CardSlot *s;
+    CardSlot *slot;
     s32 *ofs;
-    s32 n;
+    s32 clutLen;
     u32 k;
 
     cc = &s_menuCard.cache;
@@ -327,66 +327,66 @@ void menuCard_loadCardImage(void) {
         cc->used++;
         cc->oldest = (cc->oldest + 1) % CARD_CACHE_SLOTS;
     }
-    s = &cc->slots[cc->next];
+    slot = &cc->slots[cc->next];
     {
         u8 id = s_menuCard.loadingId;
-        s->used = 1;
-        s->id = id;
+        slot->used = 1;
+        slot->id = id;
     }
     cc->used++;
     cc->next = (cc->next + 1) % CARD_CACHE_SLOTS;
-    n = menuCard_decodeRle(s_menuCard.sectorBuf, s_menuCard.clutBuf);
+    clutLen = menuCard_decodeRle(s_menuCard.sectorBuf, s_menuCard.clutBuf);
     if (ofs[s_menuCard.loadingId + 1] != ofs[s_menuCard.loadingId]) {
-        menuCard_decodeRle((u8 *)s_menuCardImageOffsets - 4 + ofs[s_menuCard.loadingId], s_menuCard.clutBuf + n);
+        menuCard_decodeRle((u8 *)s_menuCardImageOffsets - 4 + ofs[s_menuCard.loadingId], s_menuCard.clutBuf + clutLen);
     }
-    k = s->vram;
-    a.x = 0;
-    a.w = 0x100;
-    a.h = 1;
-    b.w = 0x13;
-    b.h = 0x2F;
-    a.y = k + 0x1F4;
-    b.x = (u8)(k % 3) * 0x13;
-    b.y = (u8)(k / 3) * 0x2F + 0x100;
-    LoadImage(&a, (u32 *)s_menuCard.clutBuf);
-    LoadImage(&b, (u32 *)s_menuCard.pixelBuf);
+    k = slot->vram;
+    clutRect.x = 0;
+    clutRect.w = 0x100;
+    clutRect.h = 1;
+    pixRect.w = 0x13;
+    pixRect.h = 0x2F;
+    clutRect.y = k + 0x1F4;
+    pixRect.x = (u8)(k % 3) * 0x13;
+    pixRect.y = (u8)(k / 3) * 0x2F + 0x100;
+    LoadImage(&clutRect, (u32 *)s_menuCard.clutBuf);
+    LoadImage(&pixRect, (u32 *)s_menuCard.pixelBuf);
     DrawSync(0);
-    if (s->id == cc->cur) {
-        menuCard_showCachedImage_inline(s);
+    if (slot->id == cc->cur) {
+        menuCard_showCachedImage_inline(slot);
     }
 }
 
 void menuCard_updateImageLoad(void) {
-    CardCache *c = &s_menuCard.cache;
+    CardCache *imgCache = &s_menuCard.cache;
 
-    if (c->reading != 0) {
+    if (imgCache->reading != 0) {
         if (cd_getState() != 0) {
             return;
         }
-        c->reading = 0;
+        imgCache->reading = 0;
         menuCard_loadCardImage();
-        menuCard_updateImageLoad_read(c);
+        menuCard_updateImageLoad_read(imgCache);
     } else {
-        menuCard_updateImageLoad_read(c);
+        menuCard_updateImageLoad_read(imgCache);
     }
 }
 
 void menuCard_drawFace(s32 x, s32 y, s32 z, s32 dim) {
-    SprtWords *p;
+    SprtWords *sprt;
     u32 clut = (GetClut(0, 0x1F2) << 16) | 0xB000;
-    s32 c;
+    s32 shade;
     u32 rgbc;
 
     setlen(g_primPtr, PRIM_LEN(SPRT));
-    c = 0x80 - dim * 0x16;
-    rgbc = c | (c << 8) | (c << 16) | GPU_CODE(GPU_SPRT);
-    p = (SprtWords *)g_primPtr;
-    p->rgbc = rgbc;
-    p->wh = 0x2F0026;
-    p->xy = (x + 2) | ((y + 2) << 16);
-    p->uvclut = clut;
-    g_primPtr = (u8 *)(p + 1);
-    addPrim(&g_ot[z], p);
+    shade = 0x80 - dim * 0x16;
+    rgbc = shade | (shade << 8) | (shade << 16) | GPU_CODE(GPU_SPRT);
+    sprt = (SprtWords *)g_primPtr;
+    sprt->rgbc = rgbc;
+    sprt->wh = 0x2F0026;
+    sprt->xy = (x + 2) | ((y + 2) << 16);
+    sprt->uvclut = clut;
+    g_primPtr = (u8 *)(sprt + 1);
+    addPrim(&g_ot[z], sprt);
     SetDrawTPage(g_primPtr, 1, 1, 0xBF);
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += 8;
@@ -395,49 +395,49 @@ void menuCard_drawFace(s32 x, s32 y, s32 z, s32 dim) {
 
 void menuCard_refresh(void) {
     s32 i;
-    u8 n;
-    CardMenu *m;
+    u8 owned;
+    CardMenu *menu;
 
     help_setCallback(card_countAll() ? menuCard_updateHelp : NULL);
     for (i = 0; i < CARD_COUNT; i++) {
-        n = card_countOf(i);
-        s_menuCard.count[i] = n;
-        if (s_menuCard.shown[i] >= n) {
-            s_menuCard.shown[i] = n - 1;
+        owned = card_countOf(i);
+        s_menuCard.count[i] = owned;
+        if (s_menuCard.shown[i] >= owned) {
+            s_menuCard.shown[i] = owned - 1;
         }
     }
     menuCard_calcCollectorPoints(s_menuCard.points);
-    m = &s_menuCard;
-    m->rank = CARD_RANK_COUNT;
+    menu = &s_menuCard;
+    menu->rank = CARD_RANK_COUNT;
     for (i = 1; i < CARD_RANK_COUNT; i++) {
-        if (m->points[CARD_PTS_TOTAL] < s_menuCardRankPoints[i]) {
-            m->rank = i - 1;
+        if (menu->points[CARD_PTS_TOTAL] < s_menuCardRankPoints[i]) {
+            menu->rank = i - 1;
             return;
         }
     }
 }
 
 void menuCard_drawSprite(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
-    SprtWords *p;
-    Ovl36Sprite *t;
+    SprtWords *sprt;
+    Ovl36Sprite *sprDef;
 
     setlen(g_primPtr, PRIM_LEN(SPRT));
-    p = (SprtWords *)g_primPtr;
-    t = &s_menuCardSprites[idx];
-    p->rgbc = rgbc;
-    p->xy = x | (y << 16);
-    p->uvclut = t->uvclut;
-    p->wh = t->w | (t->h << 16);
-    g_primPtr = (u8 *)(p + 1);
-    addPrim(&g_ot[z], p);
-    SetDrawTPage(g_primPtr, 1, 1, t->tpage | 0x20);
+    sprt = (SprtWords *)g_primPtr;
+    sprDef = &s_menuCardSprites[idx];
+    sprt->rgbc = rgbc;
+    sprt->xy = x | (y << 16);
+    sprt->uvclut = sprDef->uvclut;
+    sprt->wh = sprDef->w | (sprDef->h << 16);
+    g_primPtr = (u8 *)(sprt + 1);
+    addPrim(&g_ot[z], sprt);
+    SetDrawTPage(g_primPtr, 1, 1, sprDef->tpage | 0x20);
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += 8;
 }
 
 void menuCard_saveVram(u8 *backup) {
-    RECT a = s_menuCardSlotClutRect;
-    RECT b = s_menuCardSlotRect;
+    RECT clutRect = s_menuCardSlotClutRect;
+    RECT pixRect = s_menuCardSlotRect;
     s32 i;
 
     StoreImage(&s_menuCardSaveClutRect0, (u32 *)backup);
@@ -448,20 +448,20 @@ void menuCard_saveVram(u8 *backup) {
     backup += 0x200;
     DrawSync(0);
     for (i = 0; i < CARD_CACHE_SLOTS; i++) {
-        a.y = i + 0x1F4;
-        b.x = (i % 3) * 0x13;
-        b.y = (i / 3) * 0x2F + 0x100;
-        StoreImage(&a, (u32 *)backup);
+        clutRect.y = i + 0x1F4;
+        pixRect.x = (i % 3) * 0x13;
+        pixRect.y = (i / 3) * 0x2F + 0x100;
+        StoreImage(&clutRect, (u32 *)backup);
         DrawSync(0);
-        StoreImage(&b, (u32 *)(backup + 0x200));
+        StoreImage(&pixRect, (u32 *)(backup + 0x200));
         DrawSync(0);
         backup += 0x8FC;
     }
 }
 
 void menuCard_restoreVram(u8 *backup) {
-    RECT a = s_menuCardSlotClutRect;
-    RECT b = s_menuCardSlotRect;
+    RECT clutRect = s_menuCardSlotClutRect;
+    RECT pixRect = s_menuCardSlotRect;
     s32 i;
 
     LoadImage(&s_menuCardRestoreClutRect0, (u32 *)backup);
@@ -473,12 +473,12 @@ void menuCard_restoreVram(u8 *backup) {
     backup += 0x200;
     DrawSync(0);
     for (i = 0; i < CARD_CACHE_SLOTS; i++) {
-        a.y = i + 0x1F4;
-        b.x = (i % 3) * 0x13;
-        b.y = (i / 3) * 0x2F + 0x100;
-        LoadImage(&a, (u32 *)backup);
+        clutRect.y = i + 0x1F4;
+        pixRect.x = (i % 3) * 0x13;
+        pixRect.y = (i / 3) * 0x2F + 0x100;
+        LoadImage(&clutRect, (u32 *)backup);
         DrawSync(0);
-        LoadImage(&b, (u32 *)(backup + 0x200));
+        LoadImage(&pixRect, (u32 *)(backup + 0x200));
         DrawSync(0);
         backup += 0x8FC;
     }
@@ -490,24 +490,24 @@ void menuCard_calcCollectorPoints(s32 *out) {
     s32 arrowPts;
     s32 i;
     s32 j;
-    CardInfo *e;
-    CardEntry *c;
+    CardInfo *infoTbl;
+    CardEntry *card;
 
-    e = card_getInfoTable();
+    infoTbl = card_getInfoTable();
     kinds = 0;
     typePts = 0;
     arrowPts = 0;
     for (i = 0; i < CARD_COUNT; i++) {
         if (s_menuCard.count[i] != 0) {
-            kinds += e[i].points;
+            kinds += infoTbl[i].points;
         }
     }
     memset(s_menuCardArrowsSeen, 0, 0x100);
     for (i = 0; i < CARD_COUNT; i++) {
         for (j = 0; j < s_menuCard.count[i]; j++) {
-            c = card_find(i, j);
-            s_menuCardArrowsSeen[c->arrows] = 1;
-            typePts += s_menuCardTypePoints[c->type];
+            card = card_find(i, j);
+            s_menuCardArrowsSeen[card->arrows] = 1;
+            typePts += s_menuCardTypePoints[card->type];
         }
     }
     for (i = 0; i < 0x100; i++) {
@@ -522,23 +522,23 @@ void menuCard_calcCollectorPoints(s32 *out) {
 }
 
 void menuCard_updateHelp(void) {
-    RECT r;
-    u8 n;
+    RECT bounds;
+    u8 owned;
 
     g_menuHelp.text = NULL;
     help_setBounds(NULL);
     if (s_menuCard.state == CARD_ST_GRID) {
-        n = s_menuCard.count[s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row];
-        if (n != 0) {
-            g_menuHelp.text = text_get(n >= 2 ? CARD_TEXT_HELP_STACK : CARD_TEXT_HELP_CARD);
+        owned = s_menuCard.count[s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row];
+        if (owned != 0) {
+            g_menuHelp.text = text_get(owned >= 2 ? CARD_TEXT_HELP_STACK : CARD_TEXT_HELP_CARD);
         }
     } else if (s_menuCard.state == CARD_ST_DISCARD) {
         if (s_menuCard.discardCursor == CARD_DISCARD_NO) {
-            r.x = 0;
-            r.y = 0x8C;
-            r.w = g_gameState->dispEnv->disp.w;
-            r.h = g_gameState->dispEnv->disp.h - 0x8C;
-            help_setBounds(&r);
+            bounds.x = 0;
+            bounds.y = 0x8C;
+            bounds.w = g_gameState->dispEnv->disp.w;
+            bounds.h = g_gameState->dispEnv->disp.h - 0x8C;
+            help_setBounds(&bounds);
         }
         g_menuHelp.text = text_get(s_menuCard.discardCursor + CARD_TEXT_HELP_DISCARD);
     }
@@ -564,12 +564,12 @@ void menuCard_exit(void) {
 }
 
 void menuCard_input(void) {
-    void (*f)();
+    void (*handler)();
 
     if (!fade_isBusy() && s_menuCard.flip.active == 0) {
-        f = s_menuCardInputFuncs[s_menuCard.state];
-        if (f != NULL) {
-            f();
+        handler = s_menuCardInputFuncs[s_menuCard.state];
+        if (handler != NULL) {
+            handler();
         }
     }
 }
@@ -611,28 +611,28 @@ void menuCard_inputDiscard(void) {
 }
 
 void menuCard_drawCardInfo(void) {
-    RECT *r = &s_menuCard.cardInfoRect;
-    CardCache *c = &s_menuCard.cache;
+    RECT *rect = &s_menuCard.cardInfoRect;
+    CardCache *imgCache = &s_menuCard.cache;
     s32 cur;
 
     cur = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
-    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelCardInfo, UI_LABEL_NORMAL);
-    if (c->shown != CARD_NONE) {
-        if (c->shown != cur && c->fading != 0) {
-            menuCard_drawCardStack(c->prev);
+    ui_drawLabel(rect->x + 8, rect->y - 3, 0x1E, g_labelCardInfo, UI_LABEL_NORMAL);
+    if (imgCache->shown != CARD_NONE) {
+        if (imgCache->shown != cur && imgCache->fading != 0) {
+            menuCard_drawCardStack(imgCache->prev);
         } else {
             do {
                 menuCard_drawCardStack(cur);
             } while (0);
         }
     }
-    win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
-    win_drawShadow(r, 0x1F, WIN_STYLE_BEVEL);
+    win_drawBox(rect, 0x1E, WIN_STYLE_BEVEL);
+    win_drawShadow(rect, 0x1F, WIN_STYLE_BEVEL);
 }
 
 void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
     CardEntry *card;
-    s32 c;
+    s32 shade;
 
     if (flag) {
         if (dim == 0) {
@@ -643,33 +643,33 @@ void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
         menuCard_drawFace(x, y, 0x14, dim);
         return;
     }
-    c = 0x80 - dim * 0x16;
-    menuCard_drawSprite(x, y, 0x14, CARD_SPR_BACK, c | (c << 8) | (c << 16) | GPU_CODE(GPU_SPRT));
+    shade = 0x80 - dim * 0x16;
+    menuCard_drawSprite(x, y, 0x14, CARD_SPR_BACK, shade | (shade << 8) | (shade << 16) | GPU_CODE(GPU_SPRT));
 }
 
 void menuCard_drawCell(s32 x, s32 y, s32 z, s32 id) {
-    s32 n;
+    s32 owned;
     s32 icon;
-    s32 q;
-    s32 d;
+    s32 tens;
+    s32 digit;
 
-    n = s_menuCard.count[id];
-    if (n == 0) {
+    owned = s_menuCard.count[id];
+    if (owned == 0) {
         icon = CARD_SPR_EMPTY_CELL;
-    } else if (n < 2) {
+    } else if (owned < 2) {
         icon = card_getRarity(id) + CARD_SPR_CELL;
     } else {
         icon = card_getRarity(id) + CARD_SPR_CELL_STACK;
-        d = n % 10;
-        q = n / 10;
-        menuCard_drawSprite(x + 9, y + 7, 0x14, d + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
-        if (n >= 10) {
-            d = q % 10;
-            menuCard_drawSprite(x + 5, y + 7, 0x14, d + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
+        digit = owned % 10;
+        tens = owned / 10;
+        menuCard_drawSprite(x + 9, y + 7, 0x14, digit + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
+        if (owned >= 10) {
+            digit = tens % 10;
+            menuCard_drawSprite(x + 5, y + 7, 0x14, digit + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
         }
-        if (n >= 100) {
-            d = n / 100;
-            menuCard_drawSprite(x + 1, y + 7, 0x14, d + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
+        if (owned >= 100) {
+            digit = owned / 100;
+            menuCard_drawSprite(x + 1, y + 7, 0x14, digit + CARD_SPR_DIGIT, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
         }
     }
     menuCard_drawSprite(x, y, 0x14, icon, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
@@ -688,130 +688,130 @@ void menuCard_drawArrows(s32 x, s32 y, s32 otz, CardEntry *card) {
 }
 
 void menuCard_drawStats(s32 x, s32 y, s32 otz, CardEntry *card) {
-    u8 s[4];
+    u8 statSpr[4];
     u32 color;
     s32 i;
     s32 dx;
 
     color = menuCard_getStatsColor();
-    s[0] = (card->power >> 4) + CARD_SPR_HEX;
-    s[1] = card->type + CARD_SPR_TYPE;
-    s[2] = (card->physDef >> 4) + CARD_SPR_HEX;
-    s[3] = (card->magicDef >> 4) + CARD_SPR_HEX;
+    statSpr[0] = (card->power >> 4) + CARD_SPR_HEX;
+    statSpr[1] = card->type + CARD_SPR_TYPE;
+    statSpr[2] = (card->physDef >> 4) + CARD_SPR_HEX;
+    statSpr[3] = (card->magicDef >> 4) + CARD_SPR_HEX;
     for (i = 0; i < 4; i++) {
-        menuCard_drawSprite(x + 9 + i * 6, y + 0x26, otz, s[i], color);
+        menuCard_drawSprite(x + 9 + i * 6, y + 0x26, otz, statSpr[i], color);
     }
 }
 
 void menuCard_updateFlip(void) {
-    CardFlip *t;
+    CardFlip *turn;
 
-    t = &s_menuCard.flip;
-    if (t->active != 0) {
-        if (++t->ticks >= CARD_FLIP_FRAMES) {
-            if (t->dir == CARD_FLIP_NEXT) {
-                s_menuCard.shown[t->id] = s_menuCard.shown[t->id] >= s_menuCard.count[t->id] - 1 ? 0 : s_menuCard.shown[t->id] + 1;
+    turn = &s_menuCard.flip;
+    if (turn->active != 0) {
+        if (++turn->ticks >= CARD_FLIP_FRAMES) {
+            if (turn->dir == CARD_FLIP_NEXT) {
+                s_menuCard.shown[turn->id] = s_menuCard.shown[turn->id] >= s_menuCard.count[turn->id] - 1 ? 0 : s_menuCard.shown[turn->id] + 1;
             }
-            t->ticks = 0;
-            t->active = 0;
+            turn->ticks = 0;
+            turn->active = 0;
         }
     }
 }
 
 void menuCard_updateFade(void) {
-    CardCache *c = &s_menuCard.cache;
+    CardCache *imgCache = &s_menuCard.cache;
 
-    if (c->fading != 0) {
-        if (++c->fadeTicks >= 4) {
-            c->fading = 0;
-            c->fadeTicks = 0;
+    if (imgCache->fading != 0) {
+        if (++imgCache->fadeTicks >= 4) {
+            imgCache->fading = 0;
+            imgCache->fadeTicks = 0;
         }
     }
 }
 
 void menuCard_selectCard(s32 id) {
-    CardCache *c;
-    CardSlot *s;
+    CardCache *imgCache;
+    CardSlot *slot;
     u8 prev;
     s32 owned;
 
     owned = s_menuCard.count[id];
-    c = &s_menuCard.cache;
-    prev = c->cur;
-    c->fading = 1;
-    c->fadeTicks = 0;
-    c->cur = id;
-    c->prev = prev;
+    imgCache = &s_menuCard.cache;
+    prev = imgCache->cur;
+    imgCache->fading = 1;
+    imgCache->fadeTicks = 0;
+    imgCache->cur = id;
+    imgCache->prev = prev;
     if (owned != 0) {
-        s = menuCard_findCachedImage(id);
-        if (s == NULL) {
-            c->pending = id;
+        slot = menuCard_findCachedImage(id);
+        if (slot == NULL) {
+            imgCache->pending = id;
             return;
         }
-        menuCard_showCachedImage(s);
+        menuCard_showCachedImage(slot);
     }
 }
 
 void menuCard_initImageCache(void) {
-    CardCache *c = &s_menuCard.cache;
+    CardCache *imgCache = &s_menuCard.cache;
     s32 i;
 
-    c->next = 0;
-    c->oldest = 0;
-    c->used = 0;
-    c->prev = CARD_NONE;
-    c->cur = CARD_NONE;
-    c->loading = CARD_NONE;
-    c->pending = CARD_NONE;
-    c->reading = 0;
-    c->fadeTicks = 0;
-    c->shown = CARD_NONE;
+    imgCache->next = 0;
+    imgCache->oldest = 0;
+    imgCache->used = 0;
+    imgCache->prev = CARD_NONE;
+    imgCache->cur = CARD_NONE;
+    imgCache->loading = CARD_NONE;
+    imgCache->pending = CARD_NONE;
+    imgCache->reading = 0;
+    imgCache->fadeTicks = 0;
+    imgCache->shown = CARD_NONE;
     for (i = 0; i < CARD_CACHE_SLOTS; i++) {
-        c->slots[i].used = 0;
-        c->slots[i].id = 0;
-        c->slots[i].vram = i;
+        imgCache->slots[i].used = 0;
+        imgCache->slots[i].id = 0;
+        imgCache->slots[i].vram = i;
     }
 }
 
 CardSlot *menuCard_findCachedImage(s32 id) {
-    CardCache *c = &s_menuCard.cache;
+    CardCache *imgCache = &s_menuCard.cache;
     s32 i;
 
     for (i = 0; i < CARD_CACHE_SLOTS; i++) {
-        if (c->slots[i].used != 0 && c->slots[i].id == id) {
-            return &c->slots[i];
+        if (imgCache->slots[i].used != 0 && imgCache->slots[i].id == id) {
+            return &imgCache->slots[i];
         }
     }
     return NULL;
 }
 
-void menuCard_showCachedImage(CardSlot *s) {
-    RECT a, b;
-    u32 n = s->vram;
+void menuCard_showCachedImage(CardSlot *slot) {
+    RECT clutRect, pixRect;
+    u32 vramSlot = slot->vram;
 
-    a.x = 0;
-    a.w = 0x100;
-    a.h = 1;
-    b.w = 0x13;
-    b.h = 0x2F;
-    a.y = n + 0x1F4;
-    b.x = (u8)(n % 3) * 0x13;
-    b.y = (u8)(n / 3) * 0x2F + 0x100;
-    MoveImage(&a, 0, 0x1F2);
-    MoveImage(&b, 0x3C0, 0x1B0);
+    clutRect.x = 0;
+    clutRect.w = 0x100;
+    clutRect.h = 1;
+    pixRect.w = 0x13;
+    pixRect.h = 0x2F;
+    clutRect.y = vramSlot + 0x1F4;
+    pixRect.x = (u8)(vramSlot % 3) * 0x13;
+    pixRect.y = (u8)(vramSlot / 3) * 0x2F + 0x100;
+    MoveImage(&clutRect, 0, 0x1F2);
+    MoveImage(&pixRect, 0x3C0, 0x1B0);
     DrawSync(0);
-    s_menuCard.cache.shown = s->id;
+    s_menuCard.cache.shown = slot->id;
 }
 
 void menuCard_loadImages(void) {
-    u8 *a = s_menuCardImage1;
-    u8 *b = s_menuCardImage2;
+    u8 *image1 = s_menuCardImage1;
+    u8 *image2 = s_menuCardImage2;
 
     menuCard_saveVram(CARD_VRAM_SAVE_BUF);
-    LoadImage(&s_menuCardImage1ClutRect, (u32 *)a);
-    LoadImage(&s_menuCardImage1Rect, (u32 *)(a + 0x200));
-    LoadImage(&s_menuCardImage2ClutRect, (u32 *)b);
-    LoadImage(&s_menuCardImage2Rect, (u32 *)(b + 0x200));
+    LoadImage(&s_menuCardImage1ClutRect, (u32 *)image1);
+    LoadImage(&s_menuCardImage1Rect, (u32 *)(image1 + 0x200));
+    LoadImage(&s_menuCardImage2ClutRect, (u32 *)image2);
+    LoadImage(&s_menuCardImage2Rect, (u32 *)(image2 + 0x200));
     DrawSync(0);
 }
 
@@ -835,25 +835,25 @@ void menuCard_drawDiscardWindow(Window *w) {
 }
 
 void menuCard_initFlip(void) {
-    CardFlip *t = &s_menuCard.flip;
+    CardFlip *turn = &s_menuCard.flip;
 
-    t->active = 0;
-    t->ticks = 0;
+    turn->active = 0;
+    turn->ticks = 0;
 }
 
 void menuCard_flipCopy(s32 card, s32 dir) {
-    CardFlip *t;
+    CardFlip *turn;
 
-    t = &s_menuCard.flip;
-    t->active = 1;
-    t->ticks = 0;
-    t->dir = dir;
-    t->id = card;
+    turn = &s_menuCard.flip;
+    turn->active = 1;
+    turn->ticks = 0;
+    turn->dir = dir;
+    turn->id = card;
     if (dir == CARD_FLIP_PREV) {
-        if (s_menuCard.shown[t->id] != 0) {
-            s_menuCard.shown[t->id]--;
+        if (s_menuCard.shown[turn->id] != 0) {
+            s_menuCard.shown[turn->id]--;
         } else {
-            s_menuCard.shown[t->id] = s_menuCard.count[t->id] - 1;
+            s_menuCard.shown[turn->id] = s_menuCard.count[turn->id] - 1;
         }
     }
 }
@@ -863,7 +863,7 @@ s32 menuCard_decodeRle(u8 *src, u8 *dst) {
     u8 *start = dst;
     u8 *end;
     u8 key;
-    s32 n, i;
+    s32 runLen, i;
 
     key = ~h->notKey;
     src += 4;
@@ -872,8 +872,8 @@ s32 menuCard_decodeRle(u8 *src, u8 *dst) {
         if (*src <= key) {
             *dst++ = *src++;
         } else {
-            n = *src++ - key;
-            for (i = 0; i < n; i++) {
+            runLen = *src++ - key;
+            for (i = 0; i < runLen; i++) {
                 *dst++ = *src;
             }
             src++;

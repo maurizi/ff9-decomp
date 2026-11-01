@@ -44,9 +44,9 @@ void fade_clear(void) {
     g_fade.onDone = 0;
 }
 
-s32 fade_setOnDone(void (*a)(void)) {
+s32 fade_setOnDone(void (*fn)(void)) {
     s32 old = g_fade.onDone;
-    g_fade.onDone = (s32)a;
+    g_fade.onDone = (s32)fn;
     return old;
 }
 
@@ -94,17 +94,17 @@ u16 fade_getAngle(void) {
 }
 
 void fade_setEndColor(u8 r, u8 g, u8 b) {
-    FadeState *p = &g_fade;
-    FadeState *q;
+    FadeState *fade = &g_fade;
+    FadeState *fadeCopy;
     s32 covered = 0;
-    p->endR = r;
-    p->endG = g;
-    p->endB = b;
-    q = p;
+    fade->endR = r;
+    fade->endG = g;
+    fade->endB = b;
+    fadeCopy = fade;
     if (r != 0 || g != 0 || b != 0) {
         covered = 1;
     }
-    q->covered = covered;
+    fadeCopy->covered = covered;
 }
 
 Unk4 fade_getColor(void) {
@@ -222,30 +222,30 @@ s32 fade_stepClamp(s32 value, s32 step, s32 lim) {
 }
 
 s32 fade_divRoundOut(s32 num, s32 den) {
-    s32 t;
+    s32 biased;
 
     if (num >= 0) {
-        t = num - 1;
-        t += den;
-        den = t / den;
+        biased = num - 1;
+        biased += den;
+        den = biased / den;
     } else {
-        t = num + 1;
-        t -= den;
-        den = t / den;
+        biased = num + 1;
+        biased -= den;
+        den = biased / den;
     }
     return den;
 }
 
 s32 fade_ease(s32 x, s32 from, s32 range) {
-    s32 t;
+    s32 dist;
 
     if (range != 0) {
         if (range < 0) {
-            t = x - from - range;
-            x = from + (range - t * t / range);
+            dist = x - from - range;
+            x = from + (range - dist * dist / range);
         } else {
-            t = x - from - range;
-            x = from + (range - t * t / range);
+            dist = x - from - range;
+            x = from + (range - dist * dist / range);
         }
     }
     return x;
@@ -261,55 +261,55 @@ void fade_reverseNoCallback(void) {
     fade_reverse(0);
 }
 
-void fadeWipe_start(FadeState *p) {
+void fadeWipe_start(FadeState *fade) {
     s32 half;
-    s32 n;
-    FadeWipe *d;
+    s32 firstFrames;
+    FadeWipe *wipe;
 
-    if (p->frames == 0) {
-        p->frames = 0x10;
+    if (fade->frames == 0) {
+        fade->frames = 0x10;
     }
-    g_fadeWipe.startR = p->color.b[0];
+    g_fadeWipe.startR = fade->color.b[0];
     g_fadeWipe.color2.r = g_fadeWipe.startR;
     g_fadeWipe.color.r = g_fadeWipe.startR;
-    g_fadeWipe.startG = p->color.b[1];
+    g_fadeWipe.startG = fade->color.b[1];
     g_fadeWipe.color2.g = g_fadeWipe.startG;
     g_fadeWipe.color.g = g_fadeWipe.startG;
-    g_fadeWipe.startB = p->color.b[2];
+    g_fadeWipe.startB = fade->color.b[2];
     g_fadeWipe.color2.b = g_fadeWipe.startB;
     g_fadeWipe.color.b = g_fadeWipe.startB;
-    g_fadeWipe.endR = p->endR;
-    g_fadeWipe.endG = p->endG;
-    g_fadeWipe.endB = p->endB;
+    g_fadeWipe.endR = fade->endR;
+    g_fadeWipe.endG = fade->endG;
+    g_fadeWipe.endB = fade->endB;
     g_fadeWipe.deltaR = g_fadeWipe.endR - g_fadeWipe.startR;
     g_fadeWipe.deltaG = g_fadeWipe.endG - g_fadeWipe.startG;
     g_fadeWipe.deltaB = g_fadeWipe.endB - g_fadeWipe.startB;
-    half = p->frames >> 1;
-    n = 1;
+    half = fade->frames >> 1;
+    firstFrames = 1;
     if (half > 0) {
-        n = half;
+        firstFrames = half;
     }
-    g_fadeWipe.frames = n;
-    d = &g_fadeWipe;
-    d->frames2 = p->frames - n;
-    d->stepR = fade_divRoundOut(d->deltaR, d->frames);
-    d->stepG = fade_divRoundOut(d->deltaG, d->frames);
-    d->stepB = fade_divRoundOut(d->deltaB, d->frames);
-    if (d->frames2 != 0) {
-        d->step2R = fade_divRoundOut(d->deltaR, d->frames2);
-        d->step2G = fade_divRoundOut(d->deltaG, d->frames2);
-        d->step2B = fade_divRoundOut(d->deltaB, d->frames2);
+    g_fadeWipe.frames = firstFrames;
+    wipe = &g_fadeWipe;
+    wipe->frames2 = fade->frames - firstFrames;
+    wipe->stepR = fade_divRoundOut(wipe->deltaR, wipe->frames);
+    wipe->stepG = fade_divRoundOut(wipe->deltaG, wipe->frames);
+    wipe->stepB = fade_divRoundOut(wipe->deltaB, wipe->frames);
+    if (wipe->frames2 != 0) {
+        wipe->step2R = fade_divRoundOut(wipe->deltaR, wipe->frames2);
+        wipe->step2G = fade_divRoundOut(wipe->deltaG, wipe->frames2);
+        wipe->step2B = fade_divRoundOut(wipe->deltaB, wipe->frames2);
     } else {
         do {
         } while (0); /* empty macro in the original; needed for the s0/s1 split */
-        d->step2B = 0;
-        d->step2G = 0;
-        d->step2R = 0;
+        wipe->step2B = 0;
+        wipe->step2G = 0;
+        wipe->step2R = 0;
     }
 }
 
-void fadeWipe_update(FadeState *p) {
-    if ((u32)p->frame < g_fadeWipe.frames) {
+void fadeWipe_update(FadeState *fade) {
+    if ((u32)fade->frame < g_fadeWipe.frames) {
         g_fadeWipe.color.r = fade_stepClamp(g_fadeWipe.color.r, g_fadeWipe.stepR, g_fadeWipe.endR);
         g_fadeWipe.color.g = fade_stepClamp(g_fadeWipe.color.g, g_fadeWipe.stepG, g_fadeWipe.endG);
         g_fadeWipe.color.b = fade_stepClamp(g_fadeWipe.color.b, g_fadeWipe.stepB, g_fadeWipe.endB);
@@ -320,12 +320,12 @@ void fadeWipe_update(FadeState *p) {
         g_fadeWipe.color2.b = fade_stepClamp(g_fadeWipe.color2.b, g_fadeWipe.step2B, g_fadeWipe.endB);
         g_fadeWipe.out = g_fadeWipe.color2;
     }
-    p->color.b[0] = g_fadeWipe.out.r;
-    p->color.b[1] = g_fadeWipe.out.g;
-    p->color.b[2] = g_fadeWipe.out.b;
+    fade->color.b[0] = g_fadeWipe.out.r;
+    fade->color.b[1] = g_fadeWipe.out.g;
+    fade->color.b[2] = g_fadeWipe.out.b;
 }
 
-void fadeWipe_seek(FadeState *p, s32 frames) {
+void fadeWipe_seek(FadeState *fade, s32 frames) {
     if (frames < (s32)g_fadeWipe.frames) {
         g_fadeWipe.color.r = fade_stepClamp(g_fadeWipe.color.r, g_fadeWipe.stepR * frames, g_fadeWipe.endR);
         g_fadeWipe.color.g = fade_stepClamp(g_fadeWipe.color.g, g_fadeWipe.stepG * frames, g_fadeWipe.endG);
@@ -338,21 +338,21 @@ void fadeWipe_seek(FadeState *p, s32 frames) {
         g_fadeWipe.color2.b = fade_stepClamp(g_fadeWipe.color2.b, g_fadeWipe.step2B * frames, g_fadeWipe.endB);
         g_fadeWipe.out = g_fadeWipe.color2;
     }
-    p->color.b[0] = g_fadeWipe.out.r;
-    p->color.b[1] = g_fadeWipe.out.g;
-    p->color.b[2] = g_fadeWipe.out.b;
+    fade->color.b[0] = g_fadeWipe.out.r;
+    fade->color.b[1] = g_fadeWipe.out.g;
+    fade->color.b[2] = g_fadeWipe.out.b;
 }
 
 void fadeWipe_draw(FadeState *fade) {
     DVECTOR xy[4];
-    MATRIX m;
+    MATRIX mat;
     long ofx, ofy;
-    long p, flag;
+    long interp, flag;
     s32 tpage;
     u32 *ot;
     s32 h;
     s32 hw, hh;
-    s32 r;
+    s32 radius;
     s32 i, j;
     POLY_G4 *poly;
     DR_TPAGE *tp;
@@ -371,24 +371,24 @@ void fadeWipe_draw(FadeState *fade) {
     g_fadeWipeRot.vx = 0;
     g_fadeWipeRot.vy = 0;
     g_fadeWipeRot.vz = fade->angle;
-    math_rotMatrixXYZ(&g_fadeWipeRot, &m);
-    m.t[2] = 0;
-    m.t[1] = 0;
-    m.t[0] = 0;
-    SetRotMatrix(&m);
-    SetTransMatrix(&m);
-    r = SquareRoot0(hw * hw + hh * hh);
-    setVector(&g_fadeWipeQuads[0][0], -r, -r, h);
-    setVector(&g_fadeWipeQuads[0][1], 0, -r, h);
-    setVector(&g_fadeWipeQuads[0][2], -r, r, h);
-    setVector(&g_fadeWipeQuads[0][3], 0, r, h);
-    setVector(&g_fadeWipeQuads[1][0], 0, -r, h);
-    setVector(&g_fadeWipeQuads[1][1], r, -r, h);
-    setVector(&g_fadeWipeQuads[1][2], 0, r, h);
-    setVector(&g_fadeWipeQuads[1][3], r, r, h);
+    math_rotMatrixXYZ(&g_fadeWipeRot, &mat);
+    mat.t[2] = 0;
+    mat.t[1] = 0;
+    mat.t[0] = 0;
+    SetRotMatrix(&mat);
+    SetTransMatrix(&mat);
+    radius = SquareRoot0(hw * hw + hh * hh);
+    setVector(&g_fadeWipeQuads[0][0], -radius, -radius, h);
+    setVector(&g_fadeWipeQuads[0][1], 0, -radius, h);
+    setVector(&g_fadeWipeQuads[0][2], -radius, radius, h);
+    setVector(&g_fadeWipeQuads[0][3], 0, radius, h);
+    setVector(&g_fadeWipeQuads[1][0], 0, -radius, h);
+    setVector(&g_fadeWipeQuads[1][1], radius, -radius, h);
+    setVector(&g_fadeWipeQuads[1][2], 0, radius, h);
+    setVector(&g_fadeWipeQuads[1][3], radius, radius, h);
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 4; j++) {
-            RotTransPers(&g_fadeWipeQuads[i][j], (long *)&xy[j], &p, &flag);
+            RotTransPers(&g_fadeWipeQuads[i][j], (long *)&xy[j], &interp, &flag);
         }
         poly = (POLY_G4 *)g_fade.pkt;
         SetPolyG4(poly);

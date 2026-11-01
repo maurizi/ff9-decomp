@@ -1,158 +1,158 @@
 #include "ff9.h"
 
 s32 akao_isqrt(s32 x) {
-    s32 n = 5;
+    s32 digitsLeft = 5;
     u32 xs = x << 8;
-    u32 r = 0;
-    u32 q = 0;
+    u32 root = 0;
+    u32 divisor = 0;
     u32 rem = 0;
-    u32 d;
+    u32 digit;
 
     do {
         rem |= xs >> 24;
-        q <<= 4;
-        r <<= 4;
-        if (rem >= (q | 1)) {
-            if ((q | 12) * 12 < rem) {
-                d = 15;
-            } else if ((q | 8) * 8 < rem) {
-                d = 12;
-            } else if ((q | 4) * 4 < rem) {
-                d = 8;
+        divisor <<= 4;
+        root <<= 4;
+        if (rem >= (divisor | 1)) {
+            if ((divisor | 12) * 12 < rem) {
+                digit = 15;
+            } else if ((divisor | 8) * 8 < rem) {
+                digit = 12;
+            } else if ((divisor | 4) * 4 < rem) {
+                digit = 8;
             } else {
-                d = 4;
+                digit = 4;
             }
-            while (rem < (q | d) * d) {
-                d--;
+            while (rem < (divisor | digit) * digit) {
+                digit--;
             }
-            q |= d;
-            rem -= q * d;
-            q += d;
-            r |= d;
+            divisor |= digit;
+            rem -= divisor * digit;
+            divisor += digit;
+            root |= digit;
         }
         xs <<= 8;
         rem <<= 8;
-        if (--n == 0) {
+        if (--digitsLeft == 0) {
             goto end;
         }
     } while (rem | xs);
-    r <<= n * 4;
+    root <<= digitsLeft * 4;
 end:
-    return r;
+    return root;
 }
 
 s32 akao_lfoSine(u32 x) {
-    s32 v = x & 0xFF;
-    s32 r;
+    s32 frac = x & 0xFF;
+    s32 amp;
 
     x >>= 8;
     if (!(x & 1)) {
-        v = 0x100 - v;
+        frac = 0x100 - frac;
     }
-    r = akao_isqrt(0x10000 - v * v);
+    amp = akao_isqrt(0x10000 - frac * frac);
     if (x & 2) {
-        r = ~r;
-        r++;
+        amp = ~amp;
+        amp++;
     }
-    return r;
+    return amp;
 }
 
-static inline s32 akao_lfoSquareScaled_curve(s32 r, u32 x) {
+static inline s32 akao_lfoSquareScaled_curve(s32 amp, u32 x) {
     if (x < 3) {
         switch (x) {
         case 1:
-            r /= 2;
+            amp /= 2;
             break;
         case 2:
-            r = r * 3 / 4;
+            amp = amp * 3 / 4;
             break;
         default:
-            r /= 4;
+            amp /= 4;
             break;
         }
     }
-    return r;
+    return amp;
 }
 
 s32 akao_lfoSineScaled(u32 x) {
-    s32 v = x & 0xFF;
-    s32 r;
+    s32 frac = x & 0xFF;
+    s32 amp;
 
     x >>= 8;
     if (!(x & 1)) {
-        v = 0x100 - v;
+        frac = 0x100 - frac;
     }
-    r = akao_isqrt(0x10000 - v * v);
+    amp = akao_isqrt(0x10000 - frac * frac);
     if (x & 2) {
-        r = ~r;
-        r++;
+        amp = ~amp;
+        amp++;
     }
     x >>= 2;
-    return akao_lfoSquareScaled_curve(r, x);
+    return akao_lfoSquareScaled_curve(amp, x);
 }
 
 s32 akao_lfoTriangle(u32 x) {
-    s32 v = (x & 0xFF) << 8;
+    s32 amp = (x & 0xFF) << 8;
 
     switch ((x >> 8) & 3) {
     case 3:
-        v -= 0x10000;
+        amp -= 0x10000;
         break;
     case 2:
-        v = -v;
+        amp = -amp;
         break;
     case 1:
-        v = 0x10000 - v;
+        amp = 0x10000 - amp;
         break;
     }
-    return v;
+    return amp;
 }
 
 s32 akao_lfoTriangleScaled(u32 x) {
-    s32 v = (x & 0xFF) << 8;
+    s32 amp = (x & 0xFF) << 8;
 
     x >>= 8;
     switch (x & 3) {
     case 3:
-        v -= 0x10000;
+        amp -= 0x10000;
         break;
     case 2:
-        v = -v;
+        amp = -amp;
         break;
     case 1:
-        v = 0x10000 - v;
+        amp = 0x10000 - amp;
         break;
     }
     x >>= 2;
-    return akao_lfoSquareScaled_curve(v, x);
+    return akao_lfoSquareScaled_curve(amp, x);
 }
 
 s32 akao_lfoSquare(s32 phase) {
-    s32 r = 0x10000;
+    s32 amp = 0x10000;
     if (phase & 0x100) {
-        r = 0xFFFF0000;
+        amp = 0xFFFF0000;
     }
-    return r;
+    return amp;
 }
 
 s32 akao_lfoSquareScaled(u32 x) {
-    s32 r = (x & 0x100) ? -0x10000 : 0x10000;
+    s32 amp = (x & 0x100) ? -0x10000 : 0x10000;
 
     x >>= 9;
     if (x < 3) {
         switch (x) {
         case 1:
-            r /= 2;
+            amp /= 2;
             break;
         case 2:
-            r = r * 3 / 4;
+            amp = amp * 3 / 4;
             break;
         default:
-            r /= 4;
+            amp /= 4;
             break;
         }
     }
-    return r;
+    return amp;
 }
 
 static inline s32 akao_lfoTable_inline(s32 x) {
@@ -165,28 +165,28 @@ s32 akao_lfoTable(s32 x) {
 }
 
 s32 akao_lfoTableScaled(u32 code) {
-    s32 v;
+    s32 amp;
     u32 sel;
 
-    v = code & 0xFF;
-    v = g_akaoLfoTableData[v] << 8;
+    amp = code & 0xFF;
+    amp = g_akaoLfoTableData[amp] << 8;
 
     sel = code >> 9;
     if (sel < 3) {
         switch (sel) {
         case 1:
-            v /= 2;
+            amp /= 2;
             break;
         case 2:
-            v = v * 3 / 4;
+            amp = amp * 3 / 4;
             break;
         default:
-            v /= 4;
+            amp /= 4;
             break;
         }
     }
 
-    return v;
+    return amp;
 }
 
 void akao_keyOn(u32 x) {
@@ -214,184 +214,184 @@ void akao_setPitchModVoices(u32 x) {
     SPU_REG16(SPU_PITCH_MOD_HI) = x >> 16;
 }
 
-void akao_setVoiceVolume(s32 v, u32 volL, u32 volR, s32 vol) {
+void akao_setVoiceVolume(s32 voice, u32 volL, u32 volR, s32 vol) {
     if (vol != 0) {
         volL *= vol;
         volR *= vol;
         volL >>= 7;
         volR >>= 7;
     }
-    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volL = volL & 0x7FFF;
-    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volR = volR & 0x7FFF;
+    ((SpuVoiceReg *)SPU_VOICE_BASE)[voice].volL = volL & 0x7FFF;
+    ((SpuVoiceReg *)SPU_VOICE_BASE)[voice].volR = volR & 0x7FFF;
 }
 
-void akao_setVoicePitch(s32 v, s32 pitch) {
-    SPU_VOICE_REG(v, SPU_VOICE_PITCH) = pitch;
+void akao_setVoicePitch(s32 voice, s32 pitch) {
+    SPU_VOICE_REG(voice, SPU_VOICE_PITCH) = pitch;
 }
 
-void akao_setVoiceStartAddr(s32 v, s32 addr) {
-    SPU_VOICE_REG(v, SPU_VOICE_START_ADDR) = (u32)addr >> 3;
+void akao_setVoiceStartAddr(s32 voice, s32 addr) {
+    SPU_VOICE_REG(voice, SPU_VOICE_START_ADDR) = (u32)addr >> 3;
 }
 
-void akao_setVoiceLoopAddr(s32 v, s32 addr) {
-    SPU_VOICE_REG(v, SPU_VOICE_LOOP_ADDR) = (u32)addr >> 3;
+void akao_setVoiceLoopAddr(s32 voice, s32 addr) {
+    SPU_VOICE_REG(voice, SPU_VOICE_LOOP_ADDR) = (u32)addr >> 3;
 }
 
-void akao_setVoiceAdsr1(s32 v, u16 adsr1) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = adsr1;
+void akao_setVoiceAdsr1(s32 voice, u16 adsr1) {
+    SPU_VOICE_REG(voice, SPU_VOICE_ADSR1) = adsr1;
 }
 
-void akao_setVoiceAdsr2(s32 v, u16 adsr2) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = adsr2;
+void akao_setVoiceAdsr2(s32 voice, u16 adsr2) {
+    SPU_VOICE_REG(voice, SPU_VOICE_ADSR2) = adsr2;
 }
 
-void akao_setVoiceAttack(s32 v, s32 rate, s32 mode) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = SPU_VOICE_REG8(v, SPU_VOICE_ADSR1) | ((((u32)mode >> 2) << 15) | (rate << 8));
+void akao_setVoiceAttack(s32 voice, s32 rate, s32 mode) {
+    SPU_VOICE_REG(voice, SPU_VOICE_ADSR1) = SPU_VOICE_REG8(voice, SPU_VOICE_ADSR1) | ((((u32)mode >> 2) << 15) | (rate << 8));
 }
 
-void akao_setVoiceDecay(s32 v, s32 rate) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR1) & ~SPU_ADSR1_DECAY_RATE) | (rate << 4);
+void akao_setVoiceDecay(s32 voice, s32 rate) {
+    SPU_VOICE_REG(voice, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(voice, SPU_VOICE_ADSR1) & ~SPU_ADSR1_DECAY_RATE) | (rate << 4);
 }
 
-void akao_setVoiceSustainLevel(s32 v, s32 level) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR1) & ~SPU_ADSR1_SUSTAIN_LEVEL) | level;
+void akao_setVoiceSustainLevel(s32 voice, s32 level) {
+    SPU_VOICE_REG(voice, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(voice, SPU_VOICE_ADSR1) & ~SPU_ADSR1_SUSTAIN_LEVEL) | level;
 }
 
-void akao_setVoiceSustain(s32 v, s32 rate, s32 mode) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR2) & (SPU_ADSR2_RELEASE_EXP | SPU_ADSR2_RELEASE_RATE)) | ((((u32)mode >> 1) << 14) | (rate << 6));
+void akao_setVoiceSustain(s32 voice, s32 rate, s32 mode) {
+    SPU_VOICE_REG(voice, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(voice, SPU_VOICE_ADSR2) & (SPU_ADSR2_RELEASE_EXP | SPU_ADSR2_RELEASE_RATE)) | ((((u32)mode >> 1) << 14) | (rate << 6));
 }
 
-void akao_setVoiceRelease(s32 v, s32 rate, s32 mode) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR2) & ~(SPU_ADSR2_RELEASE_EXP | SPU_ADSR2_RELEASE_RATE)) | ((((u32)mode >> 2) << 5) | rate);
+void akao_setVoiceRelease(s32 voice, s32 rate, s32 mode) {
+    SPU_VOICE_REG(voice, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(voice, SPU_VOICE_ADSR2) & ~(SPU_ADSR2_RELEASE_EXP | SPU_ADSR2_RELEASE_RATE)) | ((((u32)mode >> 2) << 5) | rate);
 }
 
-void akao_writeVoice(s32 v, AkaoVoiceRegs *p, s32 vol) {
-    u16 *r;
-    s32 a;
-    s32 b;
+void akao_writeVoice(s32 voice, AkaoVoiceRegs *regs, s32 vol) {
+    u16 *reg;
+    s32 outL;
+    s32 outR;
 
-    p->dirty = 0;
-    r = (u16 *)(SPU_VOICE_BASE + v * 16);
+    regs->dirty = 0;
+    reg = (u16 *)(SPU_VOICE_BASE + voice * 16);
     if (vol == 0) {
-        a = p->volL;
-        b = p->volR;
+        outL = regs->volL;
+        outR = regs->volR;
     } else {
-        a = p->volL * vol;
-        a >>= 7;
-        b = p->volR * vol;
-        b >>= 7;
+        outL = regs->volL * vol;
+        outL >>= 7;
+        outR = regs->volR * vol;
+        outR >>= 7;
     }
-    *r = a & 0x7FFF;
-    *++r = b & 0x7FFF;
-    *++r = p->pitch;
-    *++r = p->startAddr >> 3;
-    *++r = p->adsr1;
-    *++r = p->adsr2;
-    r[2] = p->loopAddr >> 3;
+    *reg = outL & 0x7FFF;
+    *++reg = outR & 0x7FFF;
+    *++reg = regs->pitch;
+    *++reg = regs->startAddr >> 3;
+    *++reg = regs->adsr1;
+    *++reg = regs->adsr2;
+    reg[2] = regs->loopAddr >> 3;
 }
 
-void akao_flushVoice(s32 v, AkaoVoiceRegs *p) {
-    s32 f = p->dirty;
+void akao_flushVoice(s32 voice, AkaoVoiceRegs *regs) {
+    s32 dirtyBits = regs->dirty;
 
-    if (f == 0) {
+    if (dirtyBits == 0) {
         return;
     }
-    p->dirty = 0;
-    if (f & AKAO_VD_PITCH) {
-        f &= ~AKAO_VD_PITCH;
-        akao_setVoicePitch(v, p->pitch);
-        if (f == 0) {
+    regs->dirty = 0;
+    if (dirtyBits & AKAO_VD_PITCH) {
+        dirtyBits &= ~AKAO_VD_PITCH;
+        akao_setVoicePitch(voice, regs->pitch);
+        if (dirtyBits == 0) {
             return;
         }
     }
-    if (f & AKAO_VD_VOL) {
-        f &= ~AKAO_VD_VOL;
-        akao_setVoiceVolume(v, p->volL, p->volR, p->volScale);
-        if (f == 0) {
+    if (dirtyBits & AKAO_VD_VOL) {
+        dirtyBits &= ~AKAO_VD_VOL;
+        akao_setVoiceVolume(voice, regs->volL, regs->volR, regs->volScale);
+        if (dirtyBits == 0) {
             return;
         }
     }
-    if (f & AKAO_VD_START_ADDR) {
-        f &= ~AKAO_VD_START_ADDR;
-        akao_setVoiceStartAddr(v, p->startAddr);
-        if (f == 0) {
+    if (dirtyBits & AKAO_VD_START_ADDR) {
+        dirtyBits &= ~AKAO_VD_START_ADDR;
+        akao_setVoiceStartAddr(voice, regs->startAddr);
+        if (dirtyBits == 0) {
             return;
         }
     }
-    if (f & AKAO_VD_LOOP_ADDR) {
-        f &= ~AKAO_VD_LOOP_ADDR;
-        akao_setVoiceLoopAddr(v, p->loopAddr);
-        if (f == 0) {
+    if (dirtyBits & AKAO_VD_LOOP_ADDR) {
+        dirtyBits &= ~AKAO_VD_LOOP_ADDR;
+        akao_setVoiceLoopAddr(voice, regs->loopAddr);
+        if (dirtyBits == 0) {
             return;
         }
     }
-    if (f & AKAO_VD_ADSR2) {
-        f &= ~AKAO_VD_ADSR2;
-        akao_setVoiceAdsr2(v, p->adsr2);
-        if (f == 0) {
+    if (dirtyBits & AKAO_VD_ADSR2) {
+        dirtyBits &= ~AKAO_VD_ADSR2;
+        akao_setVoiceAdsr2(voice, regs->adsr2);
+        if (dirtyBits == 0) {
             return;
         }
     }
-    if (f & AKAO_VD_ADSR1) {
-        akao_setVoiceAdsr1(v, p->adsr1);
+    if (dirtyBits & AKAO_VD_ADSR1) {
+        akao_setVoiceAdsr1(voice, regs->adsr1);
     }
 }
 
-void akao_stepChannelSlides(AkaoChannel *c, u32 chBit, s32 kind) {
+void akao_stepChannelSlides(AkaoChannel *chan, u32 chBit, s32 kind) {
     s32 nw;
-    if ((u16)c->volumeSlideLen != 0) {
+    if ((u16)chan->volumeSlideLen != 0) {
         s32 old;
-        c->volumeSlideLen = (u16)c->volumeSlideLen - 1;
-        old = c->volume;
-        nw = old + c->volumeStep;
+        chan->volumeSlideLen = (u16)chan->volumeSlideLen - 1;
+        old = chan->volume;
+        nw = old + chan->volumeStep;
         if ((nw & 0xFFE00000) != (old & 0xFFE00000)) {
-            c->voiceDirty |= AKAO_VD_VOL;
+            chan->voiceDirty |= AKAO_VD_VOL;
         }
-        c->volume = nw;
+        chan->volume = nw;
     }
-    if (kind == 0 && c->expressionSlideLen != 0) {
+    if (kind == 0 && chan->expressionSlideLen != 0) {
         u16 old;
-        c->expressionSlideLen--;
-        old = c->expression;
-        nw = old + c->expressionStep;
+        chan->expressionSlideLen--;
+        old = chan->expression;
+        nw = old + chan->expressionStep;
         if ((nw & 0x7F00) != (old & 0x7F00)) {
-            c->voiceDirty |= AKAO_VD_VOL;
+            chan->voiceDirty |= AKAO_VD_VOL;
         }
-        c->expression = nw;
+        chan->expression = nw;
     }
-    if (c->panSlideLen != 0) {
+    if (chan->panSlideLen != 0) {
         u16 old;
-        c->panSlideLen--;
-        old = c->pan;
-        nw = old + c->panStep;
+        chan->panSlideLen--;
+        old = chan->pan;
+        nw = old + chan->panStep;
         if ((nw & 0xFF00) != (old & 0xFF00)) {
-            c->voiceDirty |= AKAO_VD_VOL;
+            chan->voiceDirty |= AKAO_VD_VOL;
         }
-        c->pan = nw;
+        chan->pan = nw;
     }
-    if (c->vibratoDelayLeft != 0) {
-        c->vibratoDelayLeft--;
+    if (chan->vibratoDelayLeft != 0) {
+        chan->vibratoDelayLeft--;
     }
-    if (c->tremoloDelayLeft != 0) {
-        c->tremoloDelayLeft--;
+    if (chan->tremoloDelayLeft != 0) {
+        chan->tremoloDelayLeft--;
     }
-    if ((u16)c->vibratoPeriodSlideLen != 0) {
-        c->vibratoPeriodSlideLen = (u16)c->vibratoPeriodSlideLen - 1;
-        c->vibratoPeriod += c->vibratoPeriodStep;
-        c->vibratoRate = 0x1000000 / ((u32)c->vibratoPeriod >> 12);
+    if ((u16)chan->vibratoPeriodSlideLen != 0) {
+        chan->vibratoPeriodSlideLen = (u16)chan->vibratoPeriodSlideLen - 1;
+        chan->vibratoPeriod += chan->vibratoPeriodStep;
+        chan->vibratoRate = 0x1000000 / ((u32)chan->vibratoPeriod >> 12);
     }
-    if ((u16)c->tremoloPeriodSlideLen != 0) {
-        c->tremoloPeriodSlideLen = (u16)c->tremoloPeriodSlideLen - 1;
-        c->tremoloPeriod += c->tremoloPeriodStep;
-        c->tremoloRate = 0x1000000 / ((u32)c->tremoloPeriod >> 12);
+    if ((u16)chan->tremoloPeriodSlideLen != 0) {
+        chan->tremoloPeriodSlideLen = (u16)chan->tremoloPeriodSlideLen - 1;
+        chan->tremoloPeriod += chan->tremoloPeriodStep;
+        chan->tremoloRate = 0x1000000 / ((u32)chan->tremoloPeriod >> 12);
     }
-    if (c->panLfoPeriodSlideLen != 0) {
-        c->panLfoPeriodSlideLen--;
-        c->panLfoPeriod += c->panLfoPeriodStep;
-        c->panLfoRate = 0x1000000 / ((u32)c->panLfoPeriod >> 12);
+    if (chan->panLfoPeriodSlideLen != 0) {
+        chan->panLfoPeriodSlideLen--;
+        chan->panLfoPeriod += chan->panLfoPeriodStep;
+        chan->panLfoRate = 0x1000000 / ((u32)chan->panLfoPeriod >> 12);
     }
-    if (c->noiseTimer != 0) {
-        if (--c->noiseTimer == 0) {
+    if (chan->noiseTimer != 0) {
+        if (--chan->noiseTimer == 0) {
             if (kind == 0) {
                 g_akaoSeq->noiseMask ^= chBit;
             } else {
@@ -400,8 +400,8 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 chBit, s32 kind) {
             g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_VOICE_MODES;
         }
     }
-    if (c->pitchModTimer != 0) {
-        if (--c->pitchModTimer == 0) {
+    if (chan->pitchModTimer != 0) {
+        if (--chan->pitchModTimer == 0) {
             if (kind == 0) {
                 g_akaoSeq->pitchModMask ^= chBit;
             } else {
@@ -410,91 +410,91 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 chBit, s32 kind) {
             g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
         }
     }
-    if ((u16)c->vibratoDepthSlideLen != 0) {
-        u32 v;
-        u32 n;
-        c->vibratoDepthSlideLen = (u16)c->vibratoDepthSlideLen - 1;
-        v = c->vibratoDepthParam + (u16)c->vibratoDepthStep;
-        c->vibratoDepthParam = v;
-        n = (v & 0x7F00) >> 8;
-        if (v & 0x8000) {
-            c->vibratoDepth = (n * c->pitch) >> 7;
+    if ((u16)chan->vibratoDepthSlideLen != 0) {
+        u32 depthParam;
+        u32 depth;
+        chan->vibratoDepthSlideLen = (u16)chan->vibratoDepthSlideLen - 1;
+        depthParam = chan->vibratoDepthParam + (u16)chan->vibratoDepthStep;
+        chan->vibratoDepthParam = depthParam;
+        depth = (depthParam & 0x7F00) >> 8;
+        if (depthParam & 0x8000) {
+            chan->vibratoDepth = (depth * chan->pitch) >> 7;
         } else {
-            c->vibratoDepth = (n * ((c->pitch * 15) >> 8)) >> 7;
+            chan->vibratoDepth = (depth * ((chan->pitch * 15) >> 8)) >> 7;
         }
     }
-    if ((u16)c->tremoloDepthSlideLen != 0) {
-        c->tremoloDepthSlideLen = (u16)c->tremoloDepthSlideLen - 1;
-        c->tremoloDepth += c->tremoloDepthStep;
+    if ((u16)chan->tremoloDepthSlideLen != 0) {
+        chan->tremoloDepthSlideLen = (u16)chan->tremoloDepthSlideLen - 1;
+        chan->tremoloDepth += chan->tremoloDepthStep;
     }
-    if ((u16)c->panLfoDepthSlideLen != 0) {
-        c->panLfoDepthSlideLen = (u16)c->panLfoDepthSlideLen - 1;
-        c->panLfoDepth += c->panLfoDepthStep;
+    if ((u16)chan->panLfoDepthSlideLen != 0) {
+        chan->panLfoDepthSlideLen = (u16)chan->panLfoDepthSlideLen - 1;
+        chan->panLfoDepth += chan->panLfoDepthStep;
     }
-    if ((u16)c->pitchSlideLeft != 0) {
+    if ((u16)chan->pitchSlideLeft != 0) {
         s32 old;
-        c->pitchSlideLeft = (u16)c->pitchSlideLeft - 1;
-        old = c->pitchSlide;
-        nw = old + c->pitchSlideStep;
+        chan->pitchSlideLeft = (u16)chan->pitchSlideLeft - 1;
+        old = chan->pitchSlide;
+        nw = old + chan->pitchSlideStep;
         if ((nw & 0xFFFF0000) != (old & 0xFFFF0000)) {
-            c->voiceDirty |= AKAO_VD_PITCH;
+            chan->voiceDirty |= AKAO_VD_PITCH;
         }
-        c->pitchSlide = nw;
+        chan->pitchSlide = nw;
     }
 }
 
-void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
-    u32 f;
+void akao_calcChannelVoice(AkaoChannel *chan, u32 bit) {
+    u32 chFlags;
     s32 vol;
-    s32 t;
+    s32 lfo;
     s32 x;
     s32 pan;
     s32 pitch;
 
-    f = c->flags;
-    vol = ((c->volume >> 16) * (c->expression >> 8)) >> 7;
-    if ((f & AKAO_CH_VIBRATO) && c->vibratoDelayLeft == 0) {
-        c->vibratoPhase += c->vibratoRate;
-        t = c->vibratoWave((u32)c->vibratoPhase >> 16);
-        pan = (s16)((u32)(c->vibratoDepth * t) >> 16);
+    chFlags = chan->flags;
+    vol = ((chan->volume >> 16) * (chan->expression >> 8)) >> 7;
+    if ((chFlags & AKAO_CH_VIBRATO) && chan->vibratoDelayLeft == 0) {
+        chan->vibratoPhase += chan->vibratoRate;
+        lfo = chan->vibratoWave((u32)chan->vibratoPhase >> 16);
+        pan = (s16)((u32)(chan->vibratoDepth * lfo) >> 16);
         x = pan;
         if (pan < 0) {
             x = pan >> 1;
         }
-        c->vibratoOut = x;
-        c->voiceDirty |= AKAO_VD_PITCH;
+        chan->vibratoOut = x;
+        chan->voiceDirty |= AKAO_VD_PITCH;
     }
-    if ((f & AKAO_CH_TREMOLO) && c->tremoloDelayLeft == 0) {
-        c->tremoloPhase += c->tremoloRate;
-        t = c->tremoloWave((u32)c->tremoloPhase >> 16);
-        pan = (vol * (c->tremoloDepth >> 8)) << 9 >> 16;
-        c->voiceDirty |= AKAO_VD_VOL;
-        c->tremoloOut = (pan * t) >> 16;
+    if ((chFlags & AKAO_CH_TREMOLO) && chan->tremoloDelayLeft == 0) {
+        chan->tremoloPhase += chan->tremoloRate;
+        lfo = chan->tremoloWave((u32)chan->tremoloPhase >> 16);
+        pan = (vol * (chan->tremoloDepth >> 8)) << 9 >> 16;
+        chan->voiceDirty |= AKAO_VD_VOL;
+        chan->tremoloOut = (pan * lfo) >> 16;
     }
-    if (f & AKAO_CH_PAN_LFO) {
-        c->panLfoPhase += c->panLfoRate;
-        t = c->panLfoWave((u32)c->panLfoPhase >> 16);
-        c->voiceDirty |= AKAO_VD_VOL;
-        c->panLfoOut = ((c->panLfoDepth >> 8) * t) >> 16;
+    if (chFlags & AKAO_CH_PAN_LFO) {
+        chan->panLfoPhase += chan->panLfoRate;
+        lfo = chan->panLfoWave((u32)chan->panLfoPhase >> 16);
+        chan->voiceDirty |= AKAO_VD_VOL;
+        chan->panLfoOut = ((chan->panLfoDepth >> 8) * lfo) >> 16;
     }
-    if (f & AKAO_CH_VOL_FROM_PREV) {
-        c->voiceDirty |= AKAO_VD_VOL;
-        vol = ((s16)(c[-1].voicePitch << 1) * (c->expression >> 8)) >> 7;
+    if (chFlags & AKAO_CH_VOL_FROM_PREV) {
+        chan->voiceDirty |= AKAO_VD_VOL;
+        vol = ((s16)(chan[-1].voicePitch << 1) * (chan->expression >> 8)) >> 7;
     }
-    if (c->voiceDirty & AKAO_VD_VOL) {
-        vol += c->tremoloOut;
+    if (chan->voiceDirty & AKAO_VD_VOL) {
+        vol += chan->tremoloOut;
         vol = (vol * (s32)(((u32)g_akaoSeq->volume >> 16) & 0x7F)) >> 7;
-        pan = (c->pan >> 8) + c->panLfoOut;
+        pan = (chan->pan >> 8) + chan->panLfoOut;
         pan = (pan + (g_akaoSeq->pan >> 16) - 0x40) & 0xFF;
         if (g_akaoOutputFlags & AKAO_MODE_MONO) {
-            c->voiceVolL = c->voiceVolR = (vol * g_akaoMonoGain) >> 15;
+            chan->voiceVolL = chan->voiceVolR = (vol * g_akaoMonoGain) >> 15;
         } else {
-            c->voiceVolL = (vol * g_akaoPanCurve[pan]) >> 15;
-            c->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
+            chan->voiceVolL = (vol * g_akaoPanCurve[pan]) >> 15;
+            chan->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
         }
     }
-    if (f & AKAO_CH_PITCH_FROM_PREV) {
-        pitch = c[-1].voicePitch + c->vibratoOut + (c->pitchSlide >> 16);
+    if (chFlags & AKAO_CH_PITCH_FROM_PREV) {
+        pitch = chan[-1].voicePitch + chan->vibratoOut + (chan->pitchSlide >> 16);
         pan = g_akaoPitchScale & 0xFF0000;
         if (pan != 0) {
             pan >>= 16;
@@ -504,10 +504,10 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
                 pitch = (pitch * pan) >> 8;
             }
         }
-        c->voicePitch = ((u16)c->fineTuneOfs + pitch) & 0x3FFF;
-        c->voiceDirty |= AKAO_VD_PITCH;
-    } else if (c->voiceDirty & AKAO_VD_PITCH) {
-        pitch = c->pitch + c->vibratoOut + (c->pitchSlide >> 16);
+        chan->voicePitch = ((u16)chan->fineTuneOfs + pitch) & 0x3FFF;
+        chan->voiceDirty |= AKAO_VD_PITCH;
+    } else if (chan->voiceDirty & AKAO_VD_PITCH) {
+        pitch = chan->pitch + chan->vibratoOut + (chan->pitchSlide >> 16);
         pan = g_akaoPitchScale & 0xFF0000;
         if (pan != 0) {
             pan >>= 16;
@@ -517,69 +517,69 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
                 pitch = (pitch * pan) >> 8;
             }
         }
-        c->voicePitch = ((u16)c->fineTuneOfs + pitch) & 0x3FFF;
+        chan->voicePitch = ((u16)chan->fineTuneOfs + pitch) & 0x3FFF;
     }
 }
 
-void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
-    u32 f;
+void akao_calcSeChannelVoice(AkaoChannel *chan, u32 bit) {
+    u32 chFlags;
     s32 vol;
-    s32 t;
+    s32 lfo;
     s32 x;
     s32 pan;
     s32 pitch;
     s32 k;
 
-    f = c->flags;
-    vol = ((c->volume >> 16) * (c->expression >> 8)) >> 7;
-    if (f & AKAO_CH_VIBRATO) {
-        c->vibratoPhase += c->vibratoRate;
-        t = c->vibratoWave((u32)c->vibratoPhase >> 16);
-        pan = (s16)((u32)(c->vibratoDepth * t) >> 16);
+    chFlags = chan->flags;
+    vol = ((chan->volume >> 16) * (chan->expression >> 8)) >> 7;
+    if (chFlags & AKAO_CH_VIBRATO) {
+        chan->vibratoPhase += chan->vibratoRate;
+        lfo = chan->vibratoWave((u32)chan->vibratoPhase >> 16);
+        pan = (s16)((u32)(chan->vibratoDepth * lfo) >> 16);
         x = pan;
         if (pan < 0) {
             x = pan >> 1;
         }
-        c->vibratoOut = x;
-        c->voiceDirty |= AKAO_VD_PITCH;
+        chan->vibratoOut = x;
+        chan->voiceDirty |= AKAO_VD_PITCH;
     }
-    if (f & AKAO_CH_TREMOLO) {
-        c->tremoloPhase += c->tremoloRate;
-        t = c->tremoloWave((u32)c->tremoloPhase >> 16);
-        pan = (vol * (c->tremoloDepth >> 8)) << 9 >> 16;
-        c->voiceDirty |= AKAO_VD_VOL;
-        c->tremoloOut = (pan * t) >> 16;
+    if (chFlags & AKAO_CH_TREMOLO) {
+        chan->tremoloPhase += chan->tremoloRate;
+        lfo = chan->tremoloWave((u32)chan->tremoloPhase >> 16);
+        pan = (vol * (chan->tremoloDepth >> 8)) << 9 >> 16;
+        chan->voiceDirty |= AKAO_VD_VOL;
+        chan->tremoloOut = (pan * lfo) >> 16;
     }
-    if (f & AKAO_CH_PAN_LFO) {
-        c->panLfoPhase += c->panLfoRate;
-        t = c->panLfoWave((u32)c->panLfoPhase >> 16);
-        c->voiceDirty |= AKAO_VD_VOL;
-        c->panLfoOut = ((c->panLfoDepth >> 8) * t) >> 16;
+    if (chFlags & AKAO_CH_PAN_LFO) {
+        chan->panLfoPhase += chan->panLfoRate;
+        lfo = chan->panLfoWave((u32)chan->panLfoPhase >> 16);
+        chan->voiceDirty |= AKAO_VD_VOL;
+        chan->panLfoOut = ((chan->panLfoDepth >> 8) * lfo) >> 16;
     }
-    if (f & AKAO_CH_VOL_FROM_PREV) {
-        c->voiceDirty |= AKAO_VD_VOL;
-        vol = ((s16)(c[-1].voicePitch << 1) * (c->expression >> 8)) >> 7;
+    if (chFlags & AKAO_CH_VOL_FROM_PREV) {
+        chan->voiceDirty |= AKAO_VD_VOL;
+        vol = ((s16)(chan[-1].voicePitch << 1) * (chan->expression >> 8)) >> 7;
     }
-    if (c->voiceDirty & AKAO_VD_VOL) {
-        vol += c->tremoloOut;
-        if (!(c->seMask & AKAO_SE_DEFAULT)) {
-            vol = (vol * ((s16)c->seVolume >> 8)) >> 7;
-            pan = ((c->pan + c->sePan) >> 8) + c->panLfoOut + 0x80;
+    if (chan->voiceDirty & AKAO_VD_VOL) {
+        vol += chan->tremoloOut;
+        if (!(chan->seMask & AKAO_SE_DEFAULT)) {
+            vol = (vol * ((s16)chan->seVolume >> 8)) >> 7;
+            pan = ((chan->pan + chan->sePan) >> 8) + chan->panLfoOut + 0x80;
             pan &= 0xFF;
         } else {
             pan = 0x80;
         }
         if (g_akaoOutputFlags & AKAO_MODE_MONO) {
-            c->voiceVolL = c->voiceVolR = (vol * g_akaoMonoGain) >> 15;
+            chan->voiceVolL = chan->voiceVolR = (vol * g_akaoMonoGain) >> 15;
         } else {
-            c->voiceVolL = (vol * g_akaoPanCurve[pan]) >> 15;
-            c->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
+            chan->voiceVolL = (vol * g_akaoPanCurve[pan]) >> 15;
+            chan->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
         }
     }
-    if (f & AKAO_CH_PITCH_FROM_PREV) {
-        pitch = c[-1].voicePitch + c->vibratoOut + (c->pitchSlide >> 16);
-        k = c->sePitch & 0xFF00;
-        if (!(c->seMask & AKAO_SE_DEFAULT) && k != 0) {
+    if (chFlags & AKAO_CH_PITCH_FROM_PREV) {
+        pitch = chan[-1].voicePitch + chan->vibratoOut + (chan->pitchSlide >> 16);
+        k = chan->sePitch & 0xFF00;
+        if (!(chan->seMask & AKAO_SE_DEFAULT) && k != 0) {
             k >>= 8;
             if (k < 0x80) {
                 pitch += (pitch * k) >> 7;
@@ -587,12 +587,12 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
                 pitch = (pitch * k) >> 8;
             }
         }
-        c->voicePitch = ((u16)c->fineTuneOfs + pitch) & 0x3FFF;
-        c->voiceDirty |= AKAO_VD_PITCH;
-    } else if (c->voiceDirty & AKAO_VD_PITCH) {
-        pitch = c->pitch + c->vibratoOut + (c->pitchSlide >> 16);
-        k = c->sePitch & 0xFF00;
-        if (!(c->seMask & AKAO_SE_DEFAULT) && k != 0) {
+        chan->voicePitch = ((u16)chan->fineTuneOfs + pitch) & 0x3FFF;
+        chan->voiceDirty |= AKAO_VD_PITCH;
+    } else if (chan->voiceDirty & AKAO_VD_PITCH) {
+        pitch = chan->pitch + chan->vibratoOut + (chan->pitchSlide >> 16);
+        k = chan->sePitch & 0xFF00;
+        if (!(chan->seMask & AKAO_SE_DEFAULT) && k != 0) {
             k >>= 8;
             if (k < 0x80) {
                 pitch += (pitch * k) >> 7;
@@ -600,7 +600,7 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
                 pitch = (pitch * k) >> 8;
             }
         }
-        c->voicePitch = ((u16)c->fineTuneOfs + pitch) & 0x3FFF;
+        chan->voicePitch = ((u16)chan->fineTuneOfs + pitch) & 0x3FFF;
     }
 }
 
@@ -608,8 +608,8 @@ s32 akao_stealVoice(s32 allVoices) {
     s32 i;
     s32 min;
     s32 best;
-    u32 m;
-    AkaoVoiceEnv *e;
+    u32 envLevel;
+    AkaoVoiceEnv *env;
 
     if (allVoices != 0) {
         i = 0;
@@ -618,15 +618,15 @@ s32 akao_stealVoice(s32 allVoices) {
     }
     min = 0x7FFF;
     best = 24;
-    e = &g_akaoVoiceEnv[i];
+    env = &g_akaoVoiceEnv[i];
     do {
-        m = (u16)e->envelope;
-        if (e->envelope < (s16)min) {
-            min = m;
+        envLevel = (u16)env->envelope;
+        if (env->envelope < (s16)min) {
+            min = envLevel;
             best = i;
         }
         i++;
-        e++;
+        env++;
     } while (i < 24);
     if ((s16)min == 0x7FFF) {
         return 24;
@@ -636,13 +636,13 @@ s32 akao_stealVoice(s32 allVoices) {
 }
 
 s32 akao_findFreeVoice(s32 allVoices) {
-    AkaoVoiceEnv *p;
+    AkaoVoiceEnv *env;
     if (allVoices != 0) {
         allVoices = 0;
     } else {
         allVoices = g_akaoSeq->firstVoice;
     }
-    while ((p = &g_akaoVoiceEnv[allVoices])->envelope != 0) {
+    while ((env = &g_akaoVoiceEnv[allVoices])->envelope != 0) {
         allVoices++;
         if (allVoices >= 0x18) {
             break;
@@ -655,8 +655,8 @@ void akao_assignVoices(AkaoChannel *ch, u32 chMask, u32 keep, u32 *used) {
     u32 bit;
     s32 i;
     u32 on;
-    s32 f;
-    s32 v;
+    s32 priority;
+    s32 voiceIdx;
 
     bit = 1;
     i = 0;
@@ -677,19 +677,19 @@ void akao_assignVoices(AkaoChannel *ch, u32 chMask, u32 keep, u32 *used) {
                         } while (0);
                         ch->voice = i;
                     } else {
-                        f = (g_akaoSeq->priorityMask & bit) != 0;
-                        v = akao_findFreeVoice(f);
-                        if (v == 24) {
+                        priority = (g_akaoSeq->priorityMask & bit) != 0;
+                        voiceIdx = akao_findFreeVoice(priority);
+                        if (voiceIdx == 24) {
                             g_akaoSeq->flags |= AKAO_SEQ_VOICE_STOLEN;
-                            v = akao_stealVoice(f);
+                            voiceIdx = akao_stealVoice(priority);
                         }
-                        if (v == 24) {
-                            ch->voice = v;
+                        if (voiceIdx == 24) {
+                            ch->voice = voiceIdx;
                             g_akaoSeq->flags |= AKAO_SEQ_NO_VOICE;
                         } else {
-                            *used |= 1 << v;
-                            ch->voice = v;
-                            g_akaoVoiceEnv[v].envelope = 0x7FFF;
+                            *used |= 1 << voiceIdx;
+                            ch->voice = voiceIdx;
+                            g_akaoVoiceEnv[voiceIdx].envelope = 0x7FFF;
                         }
                     }
                     if (ch->voice < 24) {
@@ -715,41 +715,41 @@ void akao_assignVoices(AkaoChannel *ch, u32 chMask, u32 keep, u32 *used) {
 }
 
 /* K&R definition: callers pass two or three arguments */
-void akao_detachVoice(c, voice)
-    AkaoChannel *c;
+void akao_detachVoice(ch, voice)
+    AkaoChannel *ch;
     s32 voice;
 {
     u32 i;
     for (i = 0; i < 32; i++) {
-        if (voice == c->voice) {
-            c->voice = 0x18;
+        if (voice == ch->voice) {
+            ch->voice = 0x18;
         }
-        c++;
+        ch++;
     }
     if (g_akaoSubSeq != NULL) {
-        c = g_akaoSubChannels;
+        ch = g_akaoSubChannels;
         for (i = 0; i < 32; i++) {
-            if (voice == c->voice) {
-                c->voice = 0x18;
+            if (voice == ch->voice) {
+                ch->voice = 0x18;
             }
-            c++;
+            ch++;
         }
     }
 }
 
 void akao_readEnvelopes(u32 extra) {
-    u32 m = (g_akaoSeq->activeMask & g_akaoSeq->keepVoiceMask) | extra;
+    u32 heldMask = (g_akaoSeq->activeMask & g_akaoSeq->keepVoiceMask) | extra;
     u32 i;
-    AkaoVoiceEnv *p;
+    AkaoVoiceEnv *env;
     if (g_akaoSubSeq != NULL) {
-        m |= g_akaoSubSeq->activeMask & g_akaoSubSeq->keepVoiceMask;
+        heldMask |= g_akaoSubSeq->activeMask & g_akaoSubSeq->keepVoiceMask;
     }
-    for (i = 0, p = g_akaoVoiceEnv; i < 24; i++, p++) {
-        if (m & (1 << i)) {
-            p->envelope = 0x7FFF;
+    for (i = 0, env = g_akaoVoiceEnv; i < 24; i++, env++) {
+        if (heldMask & (1 << i)) {
+            env->envelope = 0x7FFF;
         } else {
-            SpuGetVoiceEnvelope(i, &p->envelope);
-            if (p->envelope == 0) {
+            SpuGetVoiceEnvelope(i, &env->envelope);
+            if (env->envelope == 0) {
                 akao_detachVoice(g_akaoChannels, i);
             }
         }
@@ -757,23 +757,23 @@ void akao_readEnvelopes(u32 extra) {
 }
 
 /* K&R definition: akao_updateVoices also passes the channel array */
-void akao_applyCrossfadeVolume(s)
-    AkaoSeq *s;
+void akao_applyCrossfadeVolume(seq)
+    AkaoSeq *seq;
 {
-    s32 v;
-    g_akaoCrossfade.savedVolume = v = s->volume;
-    v >>= 16;
-    v *= g_akaoCrossfade.volume >> 8;
-    v /= 127;
-    v <<= 8;
-    s->volume = v;
+    s32 vol;
+    g_akaoCrossfade.savedVolume = vol = seq->volume;
+    vol >>= 16;
+    vol *= g_akaoCrossfade.volume >> 8;
+    vol /= 127;
+    vol <<= 8;
+    seq->volume = vol;
 }
 
 /* K&R definition: akao_updateVoices also passes the channel array */
-void akao_restoreCrossfadeVolume(s)
-    AkaoSeq *s;
+void akao_restoreCrossfadeVolume(seq)
+    AkaoSeq *seq;
 {
-    s->volume = g_akaoCrossfade.savedVolume;
+    seq->volume = g_akaoCrossfade.savedVolume;
 }
 
 void akao_updateVoices(void) {
@@ -785,8 +785,8 @@ void akao_updateVoices(void) {
     u32 b2;
     u32 bit;
     AkaoChannel *ch;
-    AkaoSeq *s;
-    AkaoSeq *t;
+    AkaoSeq *mainSeq;
+    AkaoSeq *subSeq;
 
     ex = g_akaoSeState.activeMask | g_akaoSeState.pausedMask | g_akaoStreamVoices;
     keyon = 0;
@@ -798,19 +798,19 @@ void akao_updateVoices(void) {
         if (g_akaoFlags.mode & AKAO_MODE_CROSSFADE) {
             akao_applyCrossfadeVolume(g_akaoSubSeq, g_akaoSubChannels);
         }
-        t = g_akaoSubSeq;
-        m1 = t->activeMask & t->playingMask & ~(t->keepVoiceMask & ex);
-        b1 = m1 & t->keepVoiceMask & ~ex;
-        g_akaoSeq = t;
+        subSeq = g_akaoSubSeq;
+        m1 = subSeq->activeMask & subSeq->playingMask & ~(subSeq->keepVoiceMask & ex);
+        b1 = m1 & subSeq->keepVoiceMask & ~ex;
+        g_akaoSeq = subSeq;
         if (m1 & g_akaoSeq->priorityMask) {
             akao_assignVoices(g_akaoSubChannels, m1 & g_akaoSeq->priorityMask, b1, &keyon);
             g_akaoSeq->keyOnMask &= ~g_akaoSeq->priorityMask;
             m1 &= ~g_akaoSeq->priorityMask;
         }
-        s = &g_akaoMainSeq;
-        g_akaoSeq = s;
-        m2 = s->activeMask & s->playingMask & ~(s->keepVoiceMask & (b1 | ex));
-        b2 = m2 & s->keepVoiceMask & ~(b1 | ex);
+        mainSeq = &g_akaoMainSeq;
+        g_akaoSeq = mainSeq;
+        m2 = mainSeq->activeMask & mainSeq->playingMask & ~(mainSeq->keepVoiceMask & (b1 | ex));
+        b2 = m2 & mainSeq->keepVoiceMask & ~(b1 | ex);
         if (m2 & g_akaoSeq->priorityMask) {
             akao_assignVoices(g_akaoChannels, m2 & g_akaoSeq->priorityMask, b2, &keyon);
             g_akaoSeq->keyOnMask &= ~g_akaoSeq->priorityMask;
@@ -821,7 +821,7 @@ void akao_updateVoices(void) {
             b1 &= ~b2;
             akao_assignVoices(g_akaoSubChannels, m1, b1, &keyon);
             g_akaoSeq->keyOnMask = 0;
-            g_akaoSeq = s;
+            g_akaoSeq = mainSeq;
         }
         if (m2) {
             akao_assignVoices(g_akaoChannels, m2, b2, &keyon);
@@ -886,16 +886,16 @@ void akao_updateVoices(void) {
     }
 }
 
-void akao_channelsToVoiceMask(AkaoChannel *c, u32 *out, u32 chMask, u32 keep) {
+void akao_channelsToVoiceMask(AkaoChannel *chan, u32 *out, u32 chMask, u32 keep) {
     u32 bit = 1;
     do {
         if (chMask & bit) {
-            if (c->voice < 0x18) {
-                *out |= 1 << c->voice;
+            if (chan->voice < 0x18) {
+                *out |= 1 << chan->voice;
             }
         }
         chMask &= ~bit;
-        c++;
+        chan++;
         bit <<= 1;
     } while (chMask != 0);
     *out &= keep;
@@ -904,35 +904,35 @@ void akao_channelsToVoiceMask(AkaoChannel *c, u32 *out, u32 chMask, u32 keep) {
 void akao_flushKeyOffs(void) {
     u32 out;
     u32 keep;
-    u32 m;
-    u32 a;
-    u32 b;
+    u32 prioMask;
+    u32 subOffMask;
+    u32 mainOffMask;
 
-    a = 0;
+    subOffMask = 0;
     out = 0;
     keep = ~((g_akaoSeState.activeMask | g_akaoSeState.pausedMask) | g_akaoStreamVoices);
     if (g_akaoSubSeq != NULL) {
-        a = g_akaoSubSeq->keyOffMask;
-        m = a & g_akaoSubSeq->priorityMask;
-        if (m != 0) {
-            akao_channelsToVoiceMask(g_akaoSubChannels, &out, m, keep);
+        subOffMask = g_akaoSubSeq->keyOffMask;
+        prioMask = subOffMask & g_akaoSubSeq->priorityMask;
+        if (prioMask != 0) {
+            akao_channelsToVoiceMask(g_akaoSubChannels, &out, prioMask, keep);
             g_akaoSubSeq->keyOffMask &= ~g_akaoSubSeq->priorityMask;
-            a &= ~g_akaoSubSeq->priorityMask;
+            subOffMask &= ~g_akaoSubSeq->priorityMask;
         }
     }
-    b = g_akaoSeq->keyOffMask;
-    m = b & g_akaoSeq->priorityMask;
-    if (m != 0) {
-        akao_channelsToVoiceMask(g_akaoChannels, &out, m, keep);
+    mainOffMask = g_akaoSeq->keyOffMask;
+    prioMask = mainOffMask & g_akaoSeq->priorityMask;
+    if (prioMask != 0) {
+        akao_channelsToVoiceMask(g_akaoChannels, &out, prioMask, keep);
         g_akaoSeq->keyOffMask &= ~g_akaoSeq->priorityMask;
-        b &= ~g_akaoSeq->priorityMask;
+        mainOffMask &= ~g_akaoSeq->priorityMask;
     }
-    if (g_akaoSubSeq != NULL && a != 0) {
-        akao_channelsToVoiceMask(g_akaoSubChannels, &out, a, keep);
+    if (g_akaoSubSeq != NULL && subOffMask != 0) {
+        akao_channelsToVoiceMask(g_akaoSubChannels, &out, subOffMask, keep);
         g_akaoSubSeq->keyOffMask = 0;
     }
-    if (b != 0) {
-        akao_channelsToVoiceMask(g_akaoChannels, &out, b, keep);
+    if (mainOffMask != 0) {
+        akao_channelsToVoiceMask(g_akaoChannels, &out, mainOffMask, keep);
         g_akaoSeq->keyOffMask = 0;
     }
     out |= g_akaoSeState.keyOffMask;
@@ -943,34 +943,34 @@ void akao_flushKeyOffs(void) {
 }
 
 void akao_buildVoiceModeMask(u32 *out, u32 m1, u32 m2, u32 extra) {
-    u32 a;
-    u32 r;
+    u32 subMask;
+    u32 voiceMask;
     u32 keep;
-    u32 b;
-    AkaoSeq *s;
+    u32 mainMask;
+    AkaoSeq *subSeq;
 
     keep = ~((g_akaoSeState.activeMask | g_akaoSeState.pausedMask) | g_akaoStreamVoices);
-    a = 0;
-    r = 0;
-    s = g_akaoSubSeq;
-    if (s != NULL) {
-        a = s->activeMask & m1;
-        if (a & s->priorityMask) {
-            akao_channelsToVoiceMask(g_akaoSubChannels, &r, a & s->priorityMask, keep);
-            a &= ~g_akaoSubSeq->priorityMask;
+    subMask = 0;
+    voiceMask = 0;
+    subSeq = g_akaoSubSeq;
+    if (subSeq != NULL) {
+        subMask = subSeq->activeMask & m1;
+        if (subMask & subSeq->priorityMask) {
+            akao_channelsToVoiceMask(g_akaoSubChannels, &voiceMask, subMask & subSeq->priorityMask, keep);
+            subMask &= ~g_akaoSubSeq->priorityMask;
         }
     }
-    b = g_akaoSeq->activeMask & m2;
-    if (b & g_akaoSeq->priorityMask) {
-        akao_channelsToVoiceMask(g_akaoChannels, &r, b & g_akaoSeq->priorityMask, keep);
-        b &= ~g_akaoSeq->priorityMask;
+    mainMask = g_akaoSeq->activeMask & m2;
+    if (mainMask & g_akaoSeq->priorityMask) {
+        akao_channelsToVoiceMask(g_akaoChannels, &voiceMask, mainMask & g_akaoSeq->priorityMask, keep);
+        mainMask &= ~g_akaoSeq->priorityMask;
     }
-    if (g_akaoSubSeq != NULL && a != 0) {
-        akao_channelsToVoiceMask(g_akaoSubChannels, &r, a, keep);
+    if (g_akaoSubSeq != NULL && subMask != 0) {
+        akao_channelsToVoiceMask(g_akaoSubChannels, &voiceMask, subMask, keep);
     }
-    if (b != 0) {
-        akao_channelsToVoiceMask(g_akaoChannels, &r, b, keep);
+    if (mainMask != 0) {
+        akao_channelsToVoiceMask(g_akaoChannels, &voiceMask, mainMask, keep);
     }
-    *out = r |= extra;
+    *out = voiceMask |= extra;
     g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
 }
