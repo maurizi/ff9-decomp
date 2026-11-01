@@ -1,6 +1,6 @@
 R36 ovl_0b constants (named constants; evidence [code] unless stated)
 
-BTL_FORMULA_* (include/ovl_0b.h, next to BtlCmd8): btl_calcCmd's (u8)type, BtlCmd8.formula, Unk8006B1F4.formula,
+BTL_FORMULA_* (include/ff9_ids.h, moved from ovl_0b.h so main sees them): btl_calcCmd's (u8)type, BtlCmd8.formula, Unk8006B1F4.formula,
   weapon record +4; also btl_setPhysParams' multiplier kind (weapon formulas 1-7), btl_tryEscape's Flee call,
   Phoenix's sub-calculations (REVIVE / MAGIC). 102 macros, 0x01-0x6D. Users cross-checked by dumping the ovl_33
   action ability table, g_usableItemTable and g_weaponTable +4 against tools/ff9text.py names.
@@ -34,3 +34,6 @@ Command-id bounds in btl_setCmd / btl_setEnemyCmd (BTL_CMD_ENEMY_*, BTL_CMD_TABL
 BTLFX_STAGE_NONE/DATA/CODE/READY (loader stage), BTLFX_BLOCK_NONE/READING/DONE (summon/summonData/sound/buf states):
   btlfx_updateLoader, btlfx_loadFile, btlfx_loadNextBlock, btlfx_runScript waits. Battle phase+subPhase u16 test in
   btl_checkCmdUsable.
+main item_useOnMember: its kind switch is the formula (BTL_FORMULA_MAGIC_HEAL, CURE_STATUS, REVIVE, ITEM_HEAL,
+  ITEM_MP_HEAL, ELIXIR, PHOENIX_DOWN, SOFT, ITEM_CURE_STATUS, TENT); its callers pass the ovl_33/ovl_37 `effect`
+  fields, which are this formula byte.

@@ -11,7 +11,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
     c.mpChange = 0;
     c.hpChange = 0;
     switch (kind) {
-    case 10:
+    case BTL_FORMULA_MAGIC_HEAL:
         if (fieldCalc_checkAlive(&c)) {
             if (t->hp == t->maxHp) {
                 goto full;
@@ -23,15 +23,15 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
             fieldCalc_calcHpGain(&c);
         }
         break;
-    case 12:
+    case BTL_FORMULA_CURE_STATUS:
         fieldCalc_cureStatusType(&c);
         break;
-    case 13:
+    case BTL_FORMULA_REVIVE:
         if (fieldCalc_checkDead(&c)) {
             fieldCalc_calcReviveHp(&c);
         }
         break;
-    case 69:
+    case BTL_FORMULA_ITEM_HEAL:
         if (fieldCalc_checkAlive(&c)) {
             if (t->hp == t->maxHp) {
                 goto full;
@@ -40,7 +40,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
             fieldCalc_calcHpGain(&c);
         }
         break;
-    case 70:
+    case BTL_FORMULA_ITEM_MP_HEAL:
         if (fieldCalc_checkAlive(&c)) {
             if (t->mp == t->maxMp) {
                 goto full;
@@ -49,7 +49,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
             fieldCalc_calcMpGain(&c);
         }
         break;
-    case 71:
+    case BTL_FORMULA_ELIXIR:
         if (fieldCalc_checkAlive(&c)) {
             if (*(u32 *)&t->hp == *(u32 *)&t->maxHp) { /* hp and mp both full */
             full:
@@ -59,19 +59,19 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
             fieldCalc_restoreAll(&c);
         }
         break;
-    case 72:
+    case BTL_FORMULA_PHOENIX_DOWN:
         if (fieldCalc_checkDead(&c)) {
             fieldCalc_reviveRandom(&c);
         }
         break;
-    case 62:
-    case 73:
+    case BTL_FORMULA_SOFT:
+    case BTL_FORMULA_ITEM_CURE_STATUS:
         if (((cmd->info >> 8) & 0x1FF) == 0x121) {
             return menuItem_callChocobo();
         }
         fieldCalc_cureStatus(&c);
         break;
-    case 76:
+    case BTL_FORMULA_TENT:
         if (fieldCalc_checkAlive(&c)) {
             fieldCalc_restoreHalf(&c);
         }
