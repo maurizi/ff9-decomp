@@ -72,38 +72,38 @@ void btl_setModelAbr(BtlModel *arg0, s32 arg1) {
                         code &= 0x3C;
                     }
                     switch (code) {
-                    case 0x2C:
+                    case GPU_POLY_FT4:
                         setSemiTrans(p, 1);
-                        ((POLY_FT4 *)p)->tpage = arg1 | (((POLY_FT4 *)p)->tpage & ~0x60);
+                        ((POLY_FT4 *)p)->tpage = arg1 | (((POLY_FT4 *)p)->tpage & ~TPAGE_ABR_MASK);
                         p += sizeof(POLY_FT4);
                         break;
-                    case 0x24:
+                    case GPU_POLY_FT3:
                         setSemiTrans(p, 1);
-                        ((POLY_FT3 *)p)->tpage = arg1 | (((POLY_FT3 *)p)->tpage & ~0x60);
+                        ((POLY_FT3 *)p)->tpage = arg1 | (((POLY_FT3 *)p)->tpage & ~TPAGE_ABR_MASK);
                         p += sizeof(POLY_FT3);
                         break;
-                    case 0x3C:
+                    case GPU_POLY_GT4:
                         setSemiTrans(p, 1);
-                        ((POLY_GT4 *)p)->tpage = arg1 | (((POLY_GT4 *)p)->tpage & ~0x60);
+                        ((POLY_GT4 *)p)->tpage = arg1 | (((POLY_GT4 *)p)->tpage & ~TPAGE_ABR_MASK);
                         p += sizeof(POLY_GT4);
                         break;
-                    case 0x34:
+                    case GPU_POLY_GT3:
                         setSemiTrans(p, 1);
-                        ((POLY_GT3 *)p)->tpage = arg1 | (((POLY_GT3 *)p)->tpage & ~0x60);
+                        ((POLY_GT3 *)p)->tpage = arg1 | (((POLY_GT3 *)p)->tpage & ~TPAGE_ABR_MASK);
                         p += sizeof(POLY_GT3);
                         break;
-                    case 0x38:
+                    case GPU_POLY_G4:
                         setSemiTrans(p, 1);
                         p += sizeof(POLY_G4);
                         break;
-                    case 0x30:
+                    case GPU_POLY_G3:
                         setSemiTrans(p, 1);
                         p += sizeof(POLY_G3);
                         break;
-                    case 0x28:
+                    case GPU_POLY_F4:
                         p += sizeof(POLY_F4);
                         break;
-                    case 0x20:
+                    case GPU_POLY_F3:
                         p += sizeof(POLY_F3);
                         break;
                     }

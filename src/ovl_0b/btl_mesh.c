@@ -686,17 +686,17 @@ void btl_setModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
                 continue;
             }
             switch (code & 0x3C) {
-            case 0x2C:
+            case GPU_POLY_FT4:
                 p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[10];
                 break;
-            case 0x24:
+            case GPU_POLY_FT3:
                 p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[8];
                 break;
-            case 0x3C:
+            case GPU_POLY_GT4:
                 p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->w[4] = btl_addRgbClamped(p->w[4], (s16)r, (s16)g, (s16)b);
                 p->w[7] = btl_addRgbClamped(p->w[7], (s16)r, (s16)g, (s16)b);
@@ -704,14 +704,14 @@ void btl_setModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[13];
                 break;
-            case 0x34:
+            case GPU_POLY_GT3:
                 p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->w[4] = btl_addRgbClamped(p->w[4], (s16)r, (s16)g, (s16)b);
                 p->w[7] = btl_addRgbClamped(p->w[7], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[10];
                 break;
-            case 0x38:
+            case GPU_POLY_G4:
                 p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->w[3] = btl_addRgbClamped(p->w[3], (s16)r, (s16)g, (s16)b);
                 p->w[5] = btl_addRgbClamped(p->w[5], (s16)r, (s16)g, (s16)b);
@@ -719,19 +719,19 @@ void btl_setModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[9];
                 break;
-            case 0x30:
+            case GPU_POLY_G3:
                 p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->w[3] = btl_addRgbClamped(p->w[3], (s16)r, (s16)g, (s16)b);
                 p->w[5] = btl_addRgbClamped(p->w[5], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[7];
                 break;
-            case 0x28:
+            case GPU_POLY_F4:
                 p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[6];
                 break;
-            case 0x20:
+            case GPU_POLY_F3:
                 p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[5];
@@ -764,17 +764,17 @@ void btl_fillModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
                 continue;
             }
             switch (code & 0x3C) {
-            case 0x2C:
+            case GPU_POLY_FT4:
                 p->w[1] = col;
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[10];
                 break;
-            case 0x24:
+            case GPU_POLY_FT3:
                 p->w[1] = col;
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[8];
                 break;
-            case 0x3C:
+            case GPU_POLY_GT4:
                 p->w[1] = col;
                 p->w[4] = col;
                 p->w[7] = col;
@@ -782,14 +782,14 @@ void btl_fillModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[13];
                 break;
-            case 0x34:
+            case GPU_POLY_GT3:
                 p->w[1] = col;
                 p->w[4] = col;
                 p->w[7] = col;
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[10];
                 break;
-            case 0x38:
+            case GPU_POLY_G4:
                 p->w[1] = col;
                 p->w[3] = col;
                 p->w[5] = col;
@@ -797,19 +797,19 @@ void btl_fillModelRgb(BtlModel *arg0, s32 r, s32 g, s32 b) {
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[9];
                 break;
-            case 0x30:
+            case GPU_POLY_G3:
                 p->w[1] = col;
                 p->w[3] = col;
                 p->w[5] = col;
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[7];
                 break;
-            case 0x28:
+            case GPU_POLY_F4:
                 p->w[1] = col;
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[6];
                 break;
-            case 0x20:
+            case GPU_POLY_F3:
                 p->w[1] = col;
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[5];

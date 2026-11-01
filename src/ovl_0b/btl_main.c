@@ -644,7 +644,7 @@ loop:
         goto loop;
     case 5:
         hb = arg2->fileIds.h;
-        n = btl_findNearestFile(0xB, (u16 *)hb, (u16 *)&arg2->fileIds.h[6], (u16 **)&p, &sz);
+        n = btl_findNearestFile(DIR_SOUND_BANKS, (u16 *)hb, (u16 *)&arg2->fileIds.h[6], (u16 **)&p, &sz);
         if (n != -1) {
             cdRead_init(cd, n, sz << 11, (void *)arg2->buf, 0, -1, 0);
             if (*p == 0x201) {
@@ -873,7 +873,7 @@ loop:
             st->state = 5;
             goto loop;
         case 5:
-            n = btl_findNearestFile(8, arg1->fileIds.h, &arg1->fileIds.h[3], &p, &sz);
+            n = btl_findNearestFile(DIR_WEAPON_MODELS, arg1->fileIds.h, &arg1->fileIds.h[3], &p, &sz);
             if (n != -1) {
                 *(s16 *)p = -1;
                 i = p - arg1->fileIds.h;
@@ -959,7 +959,7 @@ loop:
     case 5:
         h = (s16 *)arg1->fileIds.h;
         q = (s16 *)&arg1->fileIds.h[3];
-        n = btl_findNearestFile(0xA, (u16 *)h, (u16 *)q, (u16 **)&p, &sz);
+        n = btl_findNearestFile(DIR_CHAR_MODELS, (u16 *)h, (u16 *)q, (u16 **)&p, &sz);
         if (n != -1) {
             i = -1;
             f = (FileEntry16 *)file_find(DIR_CHAR_MODELS, *p);
@@ -968,7 +968,7 @@ loop:
             arg1->slot = p - h;
             arg1->buf = b->partyBufs[arg1->slot];
             req->dst1 = 0;
-            if (btl_findNearestFile(0xA, (u16 *)h, (u16 *)q, (u16 **)&p2, &sz2) != i) {
+            if (btl_findNearestFile(DIR_CHAR_MODELS, (u16 *)h, (u16 *)q, (u16 **)&p2, &sz2) != i) {
                 q = (s16 *)&arg1->fileIds.h[7];
                 i = p2 - h;
                 h = (s16 *)&arg1->fileIds.h[4];
@@ -1033,35 +1033,35 @@ u32 btl_findNearestFile(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
             } else {
                 k = 0;
                 switch (arg0) {
-                case 0:
-                    k = 1;
+                case DIR_OVERLAYS:
+                    k = DB_OVERLAY >> 16;
                     break;
-                case 1:
+                case DIR_COMMON:
                     k = 0;
                     break;
-                case 3:
-                case 4:
-                    k = 5;
+                case DIR_WORLDS:
+                case DIR_FIELDS:
+                    k = DB_FIELD >> 16;
                     break;
-                case 5:
-                    k = 0x11;
+                case DIR_ENCOUNTERS:
+                    k = DB_BATTLE >> 16;
                     break;
-                case 7:
-                case 8:
-                case 10:
-                    k = 2;
+                case DIR_ENEMY_MODELS:
+                case DIR_WEAPON_MODELS:
+                case DIR_CHAR_MODELS:
+                    k = DB_MODEL >> 16;
                     break;
-                case 2:
-                    k = 6;
+                case DIR_AREAS:
+                    k = DB_AREA >> 16;
                     break;
-                case 6:
-                    k = 0xC;
+                case DIR_BTL_BGS:
+                    k = DB_BTL_BG >> 16;
                     break;
-                case 11:
-                    k = 9;
+                case DIR_SOUND_BANKS:
+                    k = DB_SOUND_BANK >> 16;
                     break;
                 case 9:
-                    k = 7;
+                    k = DB_MUSIC >> 16;
                     break;
                 }
                 f = dep_find(g_gameState->gameData->depTable, (k << 16) | id);
