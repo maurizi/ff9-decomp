@@ -25,14 +25,14 @@ s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 
 s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Fx1faRing *e;
+    Fx1faRing *sprite;
     Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 j;
-    s32 n;
-    s32 r;
-    s32 s;
+    s32 fade;
+    s32 scale;
+    s32 offX;
 
     if (mode == 0) {
         *args = 0;
@@ -97,18 +97,18 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             env->otZ = 0x200;
             for (i = 0; i < 12; i++) {
                 for (j = 0; j < 4; j++) {
-                    e = (Fx1faRing *)(i * 0x50 + j * 0x14 + (s32)fx_1fa_spiralSprites);
-                    if (e->delay0 != 0) {
-                        e->delay0--;
-                    } else if (e->timer4 != 0) {
-                        e->angleC -= 0x40;
-                        e->radius10 -= 2;
-                        e->timer4--;
-                        r = (e->radius10 << 8) + 0x4000;
-                        n = e->timer4 << 9;
-                        s = (ex->math_sin(e->angleC) * e->radius10) >> 12;
-                        ex->btlfx_drawParticles(e->sprite8, &fx_1fa_emitPos1, NULL, r, 0, 1, n, s,
-                                                (ex->math_cos(e->angleC) * e->radius10) >> 12);
+                    sprite = (Fx1faRing *)(i * 0x50 + j * 0x14 + (s32)fx_1fa_spiralSprites);
+                    if (sprite->delay0 != 0) {
+                        sprite->delay0--;
+                    } else if (sprite->timer4 != 0) {
+                        sprite->angleC -= 0x40;
+                        sprite->radius10 -= 2;
+                        sprite->timer4--;
+                        scale = (sprite->radius10 << 8) + 0x4000;
+                        fade = sprite->timer4 << 9;
+                        offX = (ex->math_sin(sprite->angleC) * sprite->radius10) >> 12;
+                        ex->btlfx_drawParticles(sprite->sprite8, &fx_1fa_emitPos1, NULL, scale, 0, 1, fade, offX,
+                                                (ex->math_cos(sprite->angleC) * sprite->radius10) >> 12);
                     }
                 }
             }

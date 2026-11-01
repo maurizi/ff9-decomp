@@ -1,85 +1,85 @@
 #include "fxmod/fx_1ea.h"
 
 void fx_1ea_buildTrail(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 start, s32 pad) {
-    SVECTOR v;
-    SVECTOR *p;
-    s32 n;
+    SVECTOR pathPos;
+    SVECTOR *pt;
+    s32 count;
     s32 i;
 
-    n = (size - 4) / 8;
-    p = trail->pos4;
-    trail->lastSlot0 = trail->count2 = n - 1;
+    count = (size - 4) / 8;
+    pt = trail->pos4;
+    trail->lastSlot0 = trail->count2 = count - 1;
     trail->head1 = 0;
-    if (start < n) {
-        for (i = 0; i < n - start; i++) {
-            p->pad = 0;
-            p++;
+    if (start < count) {
+        for (i = 0; i < count - start; i++) {
+            pt->pad = 0;
+            pt++;
         }
     } else {
-        start = n;
+        start = count;
     }
     for (i = 0; i < start;) {
         i++;
-        fxm_posPathGet(path, start - i + base, &v);
-        v.vx += v.vx / 10;
-        v.vy += v.vy / 10;
-        v.vz += v.vz / 10;
-        v.vx += fx_1ea_trailOrigin.vx;
-        v.vy += fx_1ea_trailOrigin.vy;
-        v.vz += fx_1ea_trailOrigin.vz;
-        p->vx = v.vx;
-        p->vy = v.vy;
-        p->vz = v.vz;
-        p->pad = pad;
-        p++;
+        fxm_posPathGet(path, start - i + base, &pathPos);
+        pathPos.vx += pathPos.vx / 10;
+        pathPos.vy += pathPos.vy / 10;
+        pathPos.vz += pathPos.vz / 10;
+        pathPos.vx += fx_1ea_trailOrigin.vx;
+        pathPos.vy += fx_1ea_trailOrigin.vy;
+        pathPos.vz += fx_1ea_trailOrigin.vz;
+        pt->vx = pathPos.vx;
+        pt->vy = pathPos.vy;
+        pt->vz = pathPos.vz;
+        pt->pad = pad;
+        pt++;
     }
 }
 
 void fx_1ea_buildTrailRotY(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 start, s32 pad, s32 ang) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1ea_env);
     MATRIX m;
-    VECTOR o;
+    VECTOR world;
     SVECTOR rot;
-    SVECTOR v;
-    SVECTOR *p;
-    s32 n;
+    SVECTOR pathPos;
+    SVECTOR *pt;
+    s32 count;
     s32 i;
 
-    n = (size - 4) / 8;
-    p = trail->pos4;
-    trail->lastSlot0 = trail->count2 = n - 1;
+    count = (size - 4) / 8;
+    pt = trail->pos4;
+    trail->lastSlot0 = trail->count2 = count - 1;
     trail->head1 = 0;
-    if (start < n) {
-        for (i = 0; i < n - start; i++) {
-            p->pad = 0;
-            p++;
+    if (start < count) {
+        for (i = 0; i < count - start; i++) {
+            pt->pad = 0;
+            pt++;
         }
     } else {
-        start = n;
+        start = count;
     }
     for (i = 0; i < start;) {
         i++;
-        fxm_posPathGet(path, start - i + base, &v);
+        fxm_posPathGet(path, start - i + base, &pathPos);
         rot.vx = 0;
         rot.vy = ang;
         rot.vz = 0;
-        v.vx += v.vx / 10;
-        v.vy += v.vy / 10;
-        v.vz += v.vz / 10;
+        pathPos.vx += pathPos.vx / 10;
+        pathPos.vy += pathPos.vy / 10;
+        pathPos.vz += pathPos.vz / 10;
         ex->math_rotMatrixYXZ(&rot, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
-        gte_ldv0(&v);
+        gte_ldv0(&pathPos);
         gte_rtv0tr();
-        gte_stlvnl(&o);
-        o.vx += fx_1ea_trailOrigin.vx;
-        o.vy += fx_1ea_trailOrigin.vy;
-        o.vz += fx_1ea_trailOrigin.vz;
-        p->vx = o.vx;
-        p->vy = o.vy;
-        p->vz = o.vz;
-        p->pad = pad;
-        p++;
+        gte_stlvnl(&world);
+        world.vx += fx_1ea_trailOrigin.vx;
+        world.vy += fx_1ea_trailOrigin.vy;
+        world.vz += fx_1ea_trailOrigin.vz;
+        pt->vx = world.vx;
+        pt->vy = world.vy;
+        pt->vz = world.vz;
+        pt->pad = pad;
+        pt++;
     }
 }
 
@@ -136,14 +136,14 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR pos2;
     s32 frame;
     s32 i;
-    s32 i2;
-    s32 i3;
-    s32 i4;
-    s32 k;
-    s32 a;
-    s32 b;
-    s32 n;
-    s32 t;
+    s32 slice;
+    s32 ribbon;
+    s32 strand;
+    s32 pathFrame;
+    s32 fromModel;
+    s32 toModel;
+    s32 morphLen;
+    s32 morph;
     s32 ang;
 
     if (mode == 0) {
@@ -227,12 +227,12 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0x1E && frame < 0x45) {
-            k = frame - 0x1E;
+            pathFrame = frame - 0x1E;
             if (work->timer98 >= 0) {
                 work->rgb54 = fxm_lerpRatio(0, -0x80, 8 - work->timer98, 8);
                 work->timer98--;
             }
-            switch (k) {
+            switch (pathFrame) {
             case 0:
             case 9:
             case 0x18:
@@ -240,35 +240,35 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->frame94 = 0;
                 break;
             }
-            if (k < 9) {
-                a = 0;
-                b = 1;
-                n = 9;
-            } else if (k < 0x18) {
-                a = 1;
-                b = 2;
-                n = 0xF;
-            } else if (k < 0x1B) {
-                a = 2;
-                b = 3;
-                n = 3;
-            } else if (k < 0x27) {
-                a = 3;
-                b = 4;
-                n = 0xC;
+            if (pathFrame < 9) {
+                fromModel = 0;
+                toModel = 1;
+                morphLen = 9;
+            } else if (pathFrame < 0x18) {
+                fromModel = 1;
+                toModel = 2;
+                morphLen = 0xF;
+            } else if (pathFrame < 0x1B) {
+                fromModel = 2;
+                toModel = 3;
+                morphLen = 3;
+            } else if (pathFrame < 0x27) {
+                fromModel = 3;
+                toModel = 4;
+                morphLen = 0xC;
             } else {
-                a = 4;
-                b = 4;
-                n = 0;
+                fromModel = 4;
+                toModel = 4;
+                morphLen = 0;
             }
-            t = 0x1000;
-            if (a != b) {
-                t = 0;
-                if (work->frame94 <= n) {
-                    t = 0x1000 - (work->frame94 << 12) / n;
+            morph = 0x1000;
+            if (fromModel != toModel) {
+                morph = 0;
+                if (work->frame94 <= morphLen) {
+                    morph = 0x1000 - (work->frame94 << 12) / morphLen;
                 }
             }
-            fxm_rotPosPathGet(&fx_1ea_rotPosPath0, k, &work->rot2C, &pos);
+            fxm_rotPosPathGet(&fx_1ea_rotPosPath0, pathFrame, &work->rot2C, &pos);
             work->pos34.vx = pos.vx;
             work->pos34.vy = pos.vy;
             work->pos34.vz = pos.vz;
@@ -276,13 +276,13 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot2C.vy = 0x800;
             work->pos34.vy += work->pos84.vy;
             work->pos34.vz += work->pos84.vz;
-            ex->Hi_DrawMorphEffModel(&work->rot2C, (VECTOR *)&work->pos34, (s32)&work->scale44, work->modelA4[a],
-                                     work->modelA4[b], t);
+            ex->Hi_DrawMorphEffModel(&work->rot2C, (VECTOR *)&work->pos34, (s32)&work->scale44, work->modelA4[fromModel],
+                                     work->modelA4[toModel], morph);
             if (work->timer98 >= 0) {
-                ex->Hi_ModifyEffModelRGB(work->modelA4[a], work->rgb54, work->rgb54, work->rgb54);
+                ex->Hi_ModifyEffModelRGB(work->modelA4[fromModel], work->rgb54, work->rgb54, work->rgb54);
             }
-            for (i2 = 0; i2 < 5; i2++) {
-                fxm_rotPosPathGet(&fx_1ea_rotPosPath1[i2], k, &work->rot2C, &pos2);
+            for (slice = 0; slice < 5; slice++) {
+                fxm_rotPosPathGet(&fx_1ea_rotPosPath1[slice], pathFrame, &work->rot2C, &pos2);
                 work->pos34.vx = pos2.vx;
                 work->pos34.vy = pos2.vy;
                 work->pos34.vz = pos2.vz;
@@ -290,10 +290,10 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->rot2C.vy = 0x800;
                 work->pos34.vy += work->pos84.vy;
                 work->pos34.vz += work->pos84.vz;
-                ex->Hi_SetEffModelSlice(work->modelA4[i2 + 5], work->pos34.vy);
-                ex->Hi_DrawSliceEffModel(&work->rot2C, (VECTOR *)&work->pos34, (s32)&work->scale44, work->modelA4[i2 + 5]);
+                ex->Hi_SetEffModelSlice(work->modelA4[slice + 5], work->pos34.vy);
+                ex->Hi_DrawSliceEffModel(&work->rot2C, (VECTOR *)&work->pos34, (s32)&work->scale44, work->modelA4[slice + 5]);
                 if (work->timer98 >= 0) {
-                    ex->Hi_ModifyEffModelRGB(work->modelA4[i2 + 5], work->rgb54, work->rgb54, work->rgb54);
+                    ex->Hi_ModifyEffModelRGB(work->modelA4[slice + 5], work->rgb54, work->rgb54, work->rgb54);
                 }
             }
             work->frame94++;
@@ -307,12 +307,12 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit0[1]->alpha = 0x1000 - fx_1ea_ribbon0.alphaC;
                 }
             }
-            for (i3 = 0; i3 < 2; i3++) {
-                fxm_posPathInit(&fx_1ea_ribbon0.path0, (u16 *)ex->btlfx_getFileData(entry->file, fx_1ea_trailPathFileIds0[i3]));
-                fx_1ea_buildTrail(&fx_1ea_ribbon0.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails0[i3], 0x100, fx_1ea_ribbon0.index8, fx_1ea_ribbon0.countA,
+            for (ribbon = 0; ribbon < 2; ribbon++) {
+                fxm_posPathInit(&fx_1ea_ribbon0.path0, (u16 *)ex->btlfx_getFileData(entry->file, fx_1ea_trailPathFileIds0[ribbon]));
+                fx_1ea_buildTrail(&fx_1ea_ribbon0.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails0[ribbon], 0x100, fx_1ea_ribbon0.index8, fx_1ea_ribbon0.countA,
                               fx_1ea_ribbon0.width10);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x20), 0, NULL, 0, fx_1ea_ribbon0.scaleE,
-                                    fx_1ea_ribbon0.alphaC, 1, fx_1ea_ribbonTrails0[i3], 0);
+                                    fx_1ea_ribbon0.alphaC, 1, fx_1ea_ribbonTrails0[ribbon], 0);
             }
         }
         if (frame >= 0 && frame < 0x1E) {
@@ -322,31 +322,31 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fx_1ea_ribbon1.alphaC = 0x1000 - (frame - 0xF) * 0x111;
             }
             ang = 0;
-            for (i4 = 0; i4 < 6; i4++) {
-                fxm_posPathInit(&fx_1ea_ribbon1.path0, (u16 *)ex->btlfx_getFileData(entry->file, fx_1ea_trailPathFileIds1[i4]));
-                fx_1ea_buildTrailRotY(&fx_1ea_ribbon1.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails1[i4], 0x88, fx_1ea_ribbon1.index8, fx_1ea_ribbon1.countA,
+            for (strand = 0; strand < 6; strand++) {
+                fxm_posPathInit(&fx_1ea_ribbon1.path0, (u16 *)ex->btlfx_getFileData(entry->file, fx_1ea_trailPathFileIds1[strand]));
+                fx_1ea_buildTrailRotY(&fx_1ea_ribbon1.path0, (Fx1eaTrail *)fx_1ea_ribbonTrails1[strand], 0x88, fx_1ea_ribbon1.index8, fx_1ea_ribbon1.countA,
                               fx_1ea_ribbon1.width10, ang);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x21), 0, NULL, 0, fx_1ea_ribbon1.scaleE,
-                                    fx_1ea_ribbon1.alphaC, 1, fx_1ea_ribbonTrails1[i4], 0);
-                if (i4 & 1) {
+                                    fx_1ea_ribbon1.alphaC, 1, fx_1ea_ribbonTrails1[strand], 0);
+                if (strand & 1) {
                     ang += 0x555;
                 }
             }
         }
         if (work->timer9C >= 0) {
-            s32 c = fxm_lerpRatio(0, 0x1000, 8 - work->timer9C, 8);
+            s32 alpha = fxm_lerpRatio(0, 0x1000, 8 - work->timer9C, 8);
 
             work->timer9C--;
             if (work->emit0[8] != NULL) {
-                work->emit0[8]->alpha = c;
+                work->emit0[8]->alpha = alpha;
             }
         }
         if (work->timerA0 >= 0) {
-            s32 c = fxm_lerpRatio(0x1000, 0, 0xF - work->timerA0, 0xF);
+            s32 alpha = fxm_lerpRatio(0x1000, 0, 0xF - work->timerA0, 0xF);
 
             work->timerA0--;
             if (work->emit0[8] != NULL) {
-                work->emit0[8]->alpha = c;
+                work->emit0[8]->alpha = alpha;
             }
         }
         if (frame >= 0x64) {

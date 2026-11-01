@@ -1,25 +1,25 @@
 #include "fxmod/fx_1bf_2.h"
 
-static s32 fx_1bf_2_op80PoolTask(s32 mode, Fx1bf2Obj *w, Unk800F78A4 *env, s32 entry, s32 frame, s32 pool, Fx1bf2Inst *inst) {
+static s32 fx_1bf_2_op80PoolTask(s32 mode, Fx1bf2Obj *obj, Unk800F78A4 *env, s32 entry, s32 frame, s32 pool, Fx1bf2Inst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
-    s32 a;
-    s32 c;
+    s32 ang;
+    s32 drift;
 
     if (mode == 1) {
-        w->unk0 = 0;
+        obj->unk0 = 0;
     } else {
-        a = (frame << 7) >> 2;
-        c = (0x1000 - ex->math_cos(a)) * fx_1bf_2_particleDrift;
-        pos.vx = w->posX4;
-        pos.vy = w->posY6;
-        pos.vz = w->posZ8;
-        pos.vx -= c >> 12;
-        scale.vx = scale.vy = scale.vz = ((0x1080 - ex->math_sin(a)) * w->scale2) >> 12;
-        ex->Hi_DrawEffModel(&w->rotC, &pos, (s32)&scale, inst->model78);
-        ex->Hi_ModifyEffModelRGB(inst->model78, (ex->math_sin(a) >> 5) - 0x80, (ex->math_sin(a) >> 5) - 0x80,
-                                 (ex->math_sin(a) >> 5) - 0x80);
+        ang = (frame << 7) >> 2;
+        drift = (0x1000 - ex->math_cos(ang)) * fx_1bf_2_particleDrift;
+        pos.vx = obj->posX4;
+        pos.vy = obj->posY6;
+        pos.vz = obj->posZ8;
+        pos.vx -= drift >> 12;
+        scale.vx = scale.vy = scale.vz = ((0x1080 - ex->math_sin(ang)) * obj->scale2) >> 12;
+        ex->Hi_DrawEffModel(&obj->rotC, &pos, (s32)&scale, inst->model78);
+        ex->Hi_ModifyEffModelRGB(inst->model78, (ex->math_sin(ang) >> 5) - 0x80, (ex->math_sin(ang) >> 5) - 0x80,
+                                 (ex->math_sin(ang) >> 5) - 0x80);
         if (frame >= 0x20) {
             return 1;
         }
@@ -43,19 +43,19 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     SVECTOR sv2;
     VECTOR vv2;
     VECTOR vv3;
-    Fx1bf2Obj *o;
-    Fx1bf2Obj *o2;
+    Fx1bf2Obj *obj;
+    Fx1bf2Obj *obj2;
     Pool6CEntry *emitter;
-    s32 n1;
-    s32 n2;
+    s32 spriteX;
+    s32 ang;
     s32 frame;
     s32 t;
-    s32 h2;
-    s32 g2;
-    s32 h3;
-    s32 g3;
-    s32 c;
-    s32 v;
+    s32 fade2;
+    s32 shade2;
+    s32 fade3;
+    s32 shade3;
+    s32 bright;
+    s32 slideX;
 
     if (mode == 0) {
         init->workSize = 0xBC;
@@ -98,8 +98,8 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t = frame << 7;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             ex->Hi_ModifyEffModelRGB(work->model64, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
-            n1 = (((0x1000 - ex->math_sin(t >> 3)) << 6) >> 12) - 0x2C;
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0xb), n1, 0x78, 0, 0xFF, t);
+            spriteX = (((0x1000 - ex->math_sin(t >> 3)) << 6) >> 12) - 0x2C;
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0xb), spriteX, 0x78, 0, 0xFF, t);
             work->camPos20.vx -= 0x2E;
             env->camera->points[2].vx = work->camPos20.vx;
             env->camera->points[2].vy = work->camPos20.vy;
@@ -127,22 +127,22 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vz = work->camPos20.vz;
             fx_1bf_2_particleDrift = 0x400;
             if (frame % 3 == 0) {
-                o = ex->btlfx_poolSpawn((s16 *)entry->pool);
-                if (o != NULL) {
-                    o->rotC.vx = 0x400;
-                    o->rotC.vy = 0x400;
-                    o->rotC.vz = 0;
-                    o->posX4 = work->pos48.vx;
-                    o->posY6 = work->pos48.vy;
-                    o->posZ8 = work->pos48.vz;
-                    o->scale2 = 0x1000;
+                obj = ex->btlfx_poolSpawn((s16 *)entry->pool);
+                if (obj != NULL) {
+                    obj->rotC.vx = 0x400;
+                    obj->rotC.vy = 0x400;
+                    obj->rotC.vz = 0;
+                    obj->posX4 = work->pos48.vx;
+                    obj->posY6 = work->pos48.vy;
+                    obj->posZ8 = work->pos48.vz;
+                    obj->scale2 = 0x1000;
                 }
             }
             env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->pos54, NULL, t >> 1, 0, 1, t);
             env->otZ = 0;
-            v = (((0x1000 - ex->math_sin((t >> 3) + 0x200)) << 6) >> 12) - 0x2C;
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0xb), v, 0x78, 0, 0xFF, 0x1000);
+            slideX = (((0x1000 - ex->math_sin((t >> 3) + 0x200)) << 6) >> 12) - 0x2C;
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0xb), slideX, 0x78, 0, 0xFF, 0x1000);
             if (frame >= 0x20) {
                 work->state0 = 2;
                 entry->frame = -1;
@@ -151,12 +151,12 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 2:
             t = (frame << 12) / 24;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
-            h2 = t / 2;
-            ex->Hi_ModifyEffModelRGB(work->model68, ((0x800 - h2) >> 5) - 0x80, ((0x800 - h2) >> 5) - 0x80,
-                                     ((0x800 - h2) >> 5) - 0x80);
+            fade2 = t / 2;
+            ex->Hi_ModifyEffModelRGB(work->model68, ((0x800 - fade2) >> 5) - 0x80, ((0x800 - fade2) >> 5) - 0x80,
+                                     ((0x800 - fade2) >> 5) - 0x80);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model6C);
-            g2 = ((0x1000 - h2) >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->model6C, g2, g2, g2);
+            shade2 = ((0x1000 - fade2) >> 5) - 0x80;
+            ex->Hi_ModifyEffModelRGB(work->model6C, shade2, shade2, shade2);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             sc.vx = sc.vy = (0x1000 - ex->math_sin(t >> 2)) / 3 + 0xF5;
             sc.vz = 0x800;
@@ -164,15 +164,15 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model74);
             fx_1bf_2_particleDrift = (t >> 1) + 0x400;
             if (frame % 3 == 0) {
-                o2 = ex->btlfx_poolSpawn((s16 *)entry->pool);
-                if (o2 != NULL) {
-                    o2->rotC.vx = 0x400;
-                    o2->rotC.vy = 0x400;
-                    o2->rotC.vz = 0;
-                    o2->posX4 = work->pos48.vx;
-                    o2->posY6 = work->pos48.vy;
-                    o2->posZ8 = work->pos48.vz;
-                    o2->scale2 = 0x1000;
+                obj2 = ex->btlfx_poolSpawn((s16 *)entry->pool);
+                if (obj2 != NULL) {
+                    obj2->rotC.vx = 0x400;
+                    obj2->rotC.vy = 0x400;
+                    obj2->rotC.vz = 0;
+                    obj2->posX4 = work->pos48.vx;
+                    obj2->posY6 = work->pos48.vy;
+                    obj2->posZ8 = work->pos48.vz;
+                    obj2->scale2 = 0x1000;
                 }
             }
             if (frame == 1) {
@@ -209,28 +209,28 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 3:
             t = (frame << 12) / 24;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model68);
-            h3 = t / 2;
-            ex->Hi_ModifyEffModelRGB(work->model68, (-h3 >> 5) - 0x80, (-h3 >> 5) - 0x80, (-h3 >> 5) - 0x80);
+            fade3 = t / 2;
+            ex->Hi_ModifyEffModelRGB(work->model68, (-fade3 >> 5) - 0x80, (-fade3 >> 5) - 0x80, (-fade3 >> 5) - 0x80);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model6C);
-            g3 = ((0x800 - h3) >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->model6C, g3, g3, g3);
+            shade3 = ((0x800 - fade3) >> 5) - 0x80;
+            ex->Hi_ModifyEffModelRGB(work->model6C, shade3, shade3, shade3);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
-            n2 = t >> 2;
-            sc.vx = sc.vy = ((0x1000 - ex->math_sin(n2)) * 0xF5) >> 12;
+            ang = t >> 2;
+            sc.vx = sc.vy = ((0x1000 - ex->math_sin(ang)) * 0xF5) >> 12;
             sc.vz = 0x800;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model70);
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos48, (s32)&sc, work->model74);
-            fx_1bf_2_particleDrift = n2 + 0xC00;
+            fx_1bf_2_particleDrift = ang + 0xC00;
             if (!(frame & 3) && frame < 0x18) {
-                o = ex->btlfx_poolSpawn((s16 *)entry->pool);
-                if (o != NULL) {
-                    o->rotC.vx = 0x400;
-                    o->rotC.vy = 0x400;
-                    o->rotC.vz = 0;
-                    o->posX4 = work->pos48.vx;
-                    o->posY6 = work->pos48.vy;
-                    o->posZ8 = work->pos48.vz;
-                    o->scale2 = 0x1000 - t;
+                obj = ex->btlfx_poolSpawn((s16 *)entry->pool);
+                if (obj != NULL) {
+                    obj->rotC.vx = 0x400;
+                    obj->rotC.vy = 0x400;
+                    obj->rotC.vz = 0;
+                    obj->posX4 = work->pos48.vx;
+                    obj->posY6 = work->pos48.vy;
+                    obj->posZ8 = work->pos48.vz;
+                    obj->scale2 = 0x1000 - t;
                 }
             }
             if (frame == 0x16) {
@@ -319,8 +319,8 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t = (frame << 12) / 20;
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)&work->pos28, (s32)&work->scale3C, work->model64);
             ex->Hi_ModifyEffModelAbr(work->model64, 1);
-            c = 0x1000 - t;
-            ex->Hi_ModifyEffModelRGB(work->model64, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            bright = 0x1000 - t;
+            ex->Hi_ModifyEffModelRGB(work->model64, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
             w0 = ((s32 *)&work->viewMtx9C)[0];
             w1 = ((s32 *)&work->viewMtx9C)[1];
             w2 = ((s32 *)&work->viewMtx9C)[2];
@@ -344,7 +344,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             vv3.vy = vv3.vx = 0x1020;
             vv3.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv2, &vv3, &cv2, 0, NULL);
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0xb), -0x2C, 0x78, 0, 1, c);
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0xb), -0x2C, 0x78, 0, 1, bright);
             if (frame >= 0x14) {
                 ex->btlfx_poolClear(entry->pool);
                 ex->btlfx_clearEffModels();

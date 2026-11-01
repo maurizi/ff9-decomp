@@ -4,7 +4,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
-    s32 t;
+    s32 pathFrame;
 
     if (mode == 0) {
         *args = 0x70;
@@ -70,21 +70,21 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->timer5C >= 0) {
-            t = 0xB - work->timer5C;
-            if (t == 8) {
+            pathFrame = 0xB - work->timer5C;
+            if (pathFrame == 8) {
                 work->timer60 = 4;
             }
             if (work->timer60 >= 0) {
                 work->fade38 = fxm_lerpRatio(0, -0x80, 4 - work->timer60, 4);
                 work->timer60--;
             }
-            fxm_vecPathGet(&fx_1b2_vecPath, t, &work->scale28);
+            fxm_vecPathGet(&fx_1b2_vecPath, pathFrame, &work->scale28);
             ex->Hi_DrawEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model6C);
             ex->Hi_ModifyEffModelAbr(work->model6C, 1);
             if (work->timer60 >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->model6C, work->fade38, work->fade38, work->fade38);
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), t);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), pathFrame);
             for (i = 0; i < env->targets->targetCount; i++) {
                 if (fxm_isMotionDone(i) != 0) {
                     fxm_startUnitMotion(i, 0);
@@ -158,7 +158,7 @@ s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 c;
+    s32 bright;
 
     if (mode == 0) {
         *args = 0x38;
@@ -198,8 +198,8 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->model34);
             ex->Hi_ModifyEffModelAbr(work->model34, 1);
             if (work->timer2C > 0 || work->timer30 >= 0) {
-                c = work->fade28 + 6;
-                ex->Hi_ModifyEffModelRGB(work->model34, c, c, c);
+                bright = work->fade28 + 6;
+                ex->Hi_ModifyEffModelRGB(work->model34, bright, bright, bright);
             } else {
                 ex->Hi_ModifyEffModelRGB(work->model34, 6, 6, 6);
             }

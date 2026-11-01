@@ -58,17 +58,17 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR *sv;
     s32 i;
     s32 j;
-    s32 a;
-    s32 r;
-    s32 c;
+    s32 link;
+    s32 radius;
+    s32 side;
     s32 lo;
-    s32 hi;
+    s32 offZ;
     s32 alpha;
     s32 n;
     s32 tint;
     s32 j_m1s;
-    s32 lo_m1s;
-    s32 a_m1s;
+    s32 offX;
+    s32 ang;
     s32 lo_r0;
     s32 lo_md;
     Fx1f2Model *md_r28;
@@ -84,11 +84,11 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 a_u58;
     SVECTOR *sv_u58;
     s32 n_u58;
-    s32 k8;
+    s32 lastSlot;
     s32 fd;
     Fx1f2Model *mm;
-    VECTOR *q;
-    VECTOR *q2;
+    VECTOR *unused0;
+    VECTOR *unused1;
 
     if (mode == 0) {
         *args = 0x128;
@@ -126,19 +126,19 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fx_1f2_trails[i].timer4C = ex->btlfx_rand() & 0xF;
             for (j_m1s = 0; j_m1s < 0x10;) {
                 if (i & 1) {
-                    a_m1s = j_m1s << 8;
-                    c = 1;
-                    r = (ex->btlfx_rand() & 0xFF) + 0x17E;
+                    ang = j_m1s << 8;
+                    side = 1;
+                    radius = (ex->btlfx_rand() & 0xFF) + 0x17E;
                 } else {
-                    a_m1s = 0x1000 - (j_m1s << 8);
-                    c = 0;
-                    r = (ex->btlfx_rand() & 0xFF) + 0x200;
+                    ang = 0x1000 - (j_m1s << 8);
+                    side = 0;
+                    radius = (ex->btlfx_rand() & 0xFF) + 0x200;
                 }
-                lo_m1s = (ex->math_sin(a_m1s) * r) >> 12;
-                hi = ex->math_cos(a_m1s) * r;
-                fx_1f2_trails[i].pos50[j_m1s].vx = work->bonePos110[c].vx - lo_m1s;
-                fx_1f2_trails[i].pos50[j_m1s].vz = work->bonePos110[c].vz - (hi >> 12);
-                fx_1f2_trails[i].pos50[j_m1s].vy = work->bonePos110[c].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
+                offX = (ex->math_sin(ang) * radius) >> 12;
+                offZ = ex->math_cos(ang) * radius;
+                fx_1f2_trails[i].pos50[j_m1s].vx = work->bonePos110[side].vx - offX;
+                fx_1f2_trails[i].pos50[j_m1s].vz = work->bonePos110[side].vz - (offZ >> 12);
+                fx_1f2_trails[i].pos50[j_m1s].vy = work->bonePos110[side].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
                 fx_1f2_trails[i].pos50[j_m1s].pad = j_m1s + 1;
                 j_m1s++;
             }
@@ -510,12 +510,12 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 8), 1, tint, tint, tint);
         }
         if (work->timer20 != 0) {
-            s32 k;
+            s32 fade;
 
             work->timer20--;
-            k = work->timer20;
-            scale.vz = scale.vy = scale.vx = k * 3 + 0x1000;
-            col.r = col.g = col.b = k * 2;
+            fade = work->timer20;
+            scale.vz = scale.vy = scale.vx = fade * 3 + 0x1000;
+            col.r = col.g = col.b = fade * 2;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
@@ -661,18 +661,18 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
                     n = 9;
                     sv = tp->points4;
-                    a = fx_1f2_trails[i].timer4C;
-                    fx_1f2_trails[i].timer4C = fx_1f2_trails[i].pos50[a].pad;
+                    link = fx_1f2_trails[i].timer4C;
+                    fx_1f2_trails[i].timer4C = fx_1f2_trails[i].pos50[link].pad;
                     pt = &fx_1f2_trails[i];
                     pt->lastSlot0 = pt->count2 = 8;
                     pt->head1 = 0;
                     for (j_u4ce = 0; j_u4ce < n; j_u4ce++) {
-                        sv->vx = fx_1f2_trails[i].pos50[a].vx;
-                        sv->vy = fx_1f2_trails[i].pos50[a].vy;
-                        sv->vz = fx_1f2_trails[i].pos50[a].vz;
+                        sv->vx = fx_1f2_trails[i].pos50[link].vx;
+                        sv->vy = fx_1f2_trails[i].pos50[link].vy;
+                        sv->vz = fx_1f2_trails[i].pos50[link].vz;
                         sv->pad = 0x80;
                         sv++;
-                        a = fx_1f2_trails[i].pos50[a].pad;
+                        link = fx_1f2_trails[i].pos50[link].pad;
                     }
                     env->otZ = 0x80;
                     alpha_u4cn = 0xFFF;
@@ -689,14 +689,14 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->timer58 != 0) {
             work->timer58--;
             env->otZ = 0x40;
-            k8 = 8;
+            lastSlot = 8;
             for (i = 0; i < env->targets->targetCount; i++) {
                 tr = &fx_1f2_unitTrails[i];
                 if (tr->timer4C != 0) {
                     if (--tr->timer4C < 8) {
                         n_u58 = 9;
                         sv_u58 = tr->points4;
-                        tr->lastSlot0 = tr->count2 = k8;
+                        tr->lastSlot0 = tr->count2 = lastSlot;
                         tr->head1 = 0;
                         for (j_u58 = 0; j_u58 < n_u58; j_u58++) {
                             tr->pos50[j_u58].vx += tr->velD0[j_u58].vx;
@@ -716,7 +716,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                             (u8 *)tr, 0);
                     }
                 } else {
-                    tr->timer4C = k8;
+                    tr->timer4C = lastSlot;
                     ((SVECTOR *)out)[1].vx = fx_1f2_unitPos[i].vx + ex->btlfx_randRange(-0x40, 0x40);
                     ((SVECTOR *)out)[1].vz = fx_1f2_unitPos[i].vz + ex->btlfx_randRange(-0x40, 0x40);
                     for (j_u58 = 0; j_u58 < 9; j_u58++) {

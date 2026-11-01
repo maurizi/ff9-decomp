@@ -26,7 +26,7 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 frame, s32 f
 
 extern s16 fx_1bf_0_strandParams[18 * 4]; /* per strand: file, start, stride, width */
 extern Fx1bf0Line *fx_1bf_0_strandTrails[18];
-void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag);
+void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 reach, s32 lineWidth, s32 alpha, s32 fade, s32 flag);
 extern s16 fx_1bf_0_pointFileIds[];
 
 typedef struct {

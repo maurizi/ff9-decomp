@@ -3,52 +3,52 @@
 void fx_1e6_buildTrail(Fx1e6Trail *trail, s32 size, s32 start) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1e6_env);
     MATRIX m;
-    VECTOR o;
-    SVECTOR v;
-    SVECTOR *p;
-    s32 n;
+    VECTOR world;
+    SVECTOR pathPos;
+    SVECTOR *pt;
+    s32 count;
     s32 i;
     s32 j;
 
-    n = (size - 4) / 8;
-    p = trail->pos4;
-    trail->lastSlot0 = trail->count2 = n - 1;
+    count = (size - 4) / 8;
+    pt = trail->pos4;
+    trail->lastSlot0 = trail->count2 = count - 1;
     trail->head1 = 0;
-    if (start < n) {
-        for (i = 0; i < n - start; i++) {
-        fxm_posPathGet(&fx_1e6_posPath, 0, &v);
-        v.vx += fx_1e6_trailOrigin.vx;
-        v.vy += fx_1e6_trailOrigin.vy;
-        v.vz += fx_1e6_trailOrigin.vz;
-        p->vx = v.vx;
-        p->vy = v.vy;
-        p->vz = v.vz;
-        p->pad = 0;
-        p++;
+    if (start < count) {
+        for (i = 0; i < count - start; i++) {
+        fxm_posPathGet(&fx_1e6_posPath, 0, &pathPos);
+        pathPos.vx += fx_1e6_trailOrigin.vx;
+        pathPos.vy += fx_1e6_trailOrigin.vy;
+        pathPos.vz += fx_1e6_trailOrigin.vz;
+        pt->vx = pathPos.vx;
+        pt->vy = pathPos.vy;
+        pt->vz = pathPos.vz;
+        pt->pad = 0;
+        pt++;
         }
     } else {
-        start = n;
+        start = count;
     }
     for (i = 0; i < start;) {
         j = i + 1;
-        fxm_posPathGet(&fx_1e6_posPath, start - j, &v);
-        v.vx = v.vx * 6 / 10;
-        v.vy = v.vy * 6 / 10;
-        v.vz = v.vz * 6 / 10;
+        fxm_posPathGet(&fx_1e6_posPath, start - j, &pathPos);
+        pathPos.vx = pathPos.vx * 6 / 10;
+        pathPos.vy = pathPos.vy * 6 / 10;
+        pathPos.vz = pathPos.vz * 6 / 10;
         ex->math_rotMatrixYXZ(&fx_1e6_trailRot, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
-        gte_ldv0(&v);
+        gte_ldv0(&pathPos);
         gte_rtv0tr();
-        gte_stlvnl(&o);
-        o.vx += fx_1e6_trailOrigin.vx;
-        o.vy += fx_1e6_trailOrigin.vy;
-        o.vz += fx_1e6_trailOrigin.vz;
-        p->vx = o.vx;
-        p->vy = o.vy;
-        p->vz = o.vz;
-        p->pad = 0x80;
-        p++;
+        gte_stlvnl(&world);
+        world.vx += fx_1e6_trailOrigin.vx;
+        world.vy += fx_1e6_trailOrigin.vy;
+        world.vz += fx_1e6_trailOrigin.vz;
+        pt->vx = world.vx;
+        pt->vy = world.vy;
+        pt->vz = world.vz;
+        pt->pad = 0x80;
+        pt++;
         i = j;
     }
 }
@@ -90,9 +90,9 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR rot;
     VECTOR pos;
     s32 frame;
-    s32 w;
-    s32 t;
-    s32 k;
+    s32 morph;
+    s32 shakeFrame;
+    s32 shakeStep;
 
     if (mode == 0) {
         *args = 0x68;
@@ -169,16 +169,16 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if ((u32)frame < 0x23) {
-            t = frame;
+            shakeFrame = frame;
             if (frame >= 9) {
                 if (work->frame58 >= 4) {
-                    w = 0;
+                    morph = 0;
                 } else {
-                    w = 0x1000 - (work->frame58 << 12) / 3;
+                    morph = 0x1000 - (work->frame58 << 12) / 3;
                 }
                 work->frame58++;
             } else {
-                w = 0x1000;
+                morph = 0x1000;
             }
             rot.vx = work->rot1C.vx;
             rot.vy = work->rot1C.vy;
@@ -186,10 +186,10 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pos.vx = work->pos24.vx;
             pos.vy = work->pos24.vy;
             pos.vz = work->pos24.vz;
-            if ((u32)t < 8) {
+            if ((u32)shakeFrame < 8) {
                 pos.vy += frame * 4;
                 work->pos24.vy = pos.vy;
-                k = t % 8; switch (k) {
+                shakeStep = shakeFrame % 8; switch (shakeStep) {
                 case 0:
                 case 4:
                     break;
@@ -213,7 +213,7 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     break;
                 }
             }
-            ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&work->scale34, work->model64, work->model66, w);
+            ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&work->scale34, work->model64, work->model66, morph);
             if (work->timer5C >= 0 || work->timer60 >= 0) {
                 if (work->timer5C >= 0) {
                     work->rgb44 = fxm_lerpRatio(-0x80, 0, 4 - work->timer5C, 4);

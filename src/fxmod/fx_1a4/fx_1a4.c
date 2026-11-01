@@ -2,12 +2,12 @@
 
 s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    SVECTOR w;
+    SVECTOR risePos;
+    SVECTOR hopPos;
     s32 frame;
-    s32 d;
-    s32 e;
-    s32 c;
+    s32 hopFrame;
+    s32 riseFrame;
+    s32 alpha;
 
     if (mode == 0) {
         *args = 0x44;
@@ -54,27 +54,27 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->timer3C >= 0) {
             work->timer3C--;
-            e = 0x60 - work->timer3C;
-            v.vx = work->pos24.vx;
-            v.vy = work->pos24.vy + e * e;
-            v.vz = work->pos24.vz;
-            ex->btlfx_setUnitPos(0x10, (s16 *)&v);
+            riseFrame = 0x60 - work->timer3C;
+            risePos.vx = work->pos24.vx;
+            risePos.vy = work->pos24.vy + riseFrame * riseFrame;
+            risePos.vz = work->pos24.vz;
+            ex->btlfx_setUnitPos(0x10, (s16 *)&risePos);
         }
         if (work->timer3E >= 0) {
             work->timer3E--;
-            d = 0x10 - work->timer3E;
-            w.vx = work->pos2C.vx;
-            w.vy = work->pos2C.vy - (d * 0x50 - d * 5 * d);
-            w.vz = work->pos2C.vz;
-            ex->btlfx_setUnitPos(0x10, (s16 *)&w);
+            hopFrame = 0x10 - work->timer3E;
+            hopPos.vx = work->pos2C.vx;
+            hopPos.vy = work->pos2C.vy - (hopFrame * 0x50 - hopFrame * 5 * hopFrame);
+            hopPos.vz = work->pos2C.vz;
+            ex->btlfx_setUnitPos(0x10, (s16 *)&hopPos);
         }
         if (work->timer40 >= 0) {
             work->fade34 = fxm_lerpRatio(0, -0x80, 0x20 - work->timer40, 0x20);
-            c = work->fade34 + 0x80;
-            if (c < 0x46) {
+            alpha = work->fade34 + 0x80;
+            if (alpha < 0x46) {
                 ex->btlfx_fadeUnitById(0x10, 0x46);
             } else {
-                ex->btlfx_fadeUnitById(0x10, c);
+                ex->btlfx_fadeUnitById(0x10, alpha);
             }
             work->timer40--;
         }

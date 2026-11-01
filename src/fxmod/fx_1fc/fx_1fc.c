@@ -55,21 +55,21 @@ INCLUDE_RODATA("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_headerPtr);
 s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR sum;
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR c;
-    SVECTOR d;
-    VECTOR e;
-    s32 t;
+    SVECTOR slicePos;
+    SVECTOR morphPos;
+    SVECTOR piecePos;
+    SVECTOR unitOfs;
+    VECTOR scaleMul;
+    s32 morph;
     s32 frame;
     s32 i;
-    s32 j;
-    s32 k;
-    s32 q;
-    s32 k2;
-    s32 f;
-    s32 m0;
-    s32 m1;
+    s32 modelIdx;
+    s32 pathFrame;
+    s32 unit;
+    s32 pieceFrame;
+    s32 unused0;
+    s32 fromModel;
+    s32 toModel;
     u16 model;
 
     if (mode == 0) {
@@ -142,10 +142,10 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sum.vx = 0;
             sum.vy = 0;
             sum.vz = 0;
-            for (q = 0; q < env->targets->targetCount; q++) {
-                sum.vx += work->pos58[q].vx;
-                sum.vy += (&work->pos58[q])->vy;
-                sum.vz += (&work->pos58[q])->vz;
+            for (unit = 0; unit < env->targets->targetCount; unit++) {
+                sum.vx += work->pos58[unit].vx;
+                sum.vy += (&work->pos58[unit])->vy;
+                sum.vz += (&work->pos58[unit])->vz;
             }
             work->pos120.vx = sum.vx / env->targets->targetCount;
             work->pos120.vy = sum.vy / env->targets->targetCount;
@@ -161,26 +161,26 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 42:
             work->timer132 = 0x10;
             work->active134 = 0;
-            for (q = 0; q < env->targets->targetCount; q++) {
-                ex->btlfx_setUnitScale(q, (s32 *)&fx_1fc_unitScale[q]);
+            for (unit = 0; unit < env->targets->targetCount; unit++) {
+                ex->btlfx_setUnitScale(unit, (s32 *)&fx_1fc_unitScale[unit]);
             }
             env->camera->points[0].vx = 0;
             env->camera->points[0].vy = 0;
             env->camera->points[0].vz = 0x4B0;
             break;
         }
-        k = frame - 1;
-        if ((u32)k < 0x18) {
-            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath0, k, &work->rot8, &a);
-            work->pos10.vx = a.vx;
-            work->pos10.vy = a.vy;
-            work->pos10.vz = a.vz;
+        pathFrame = frame - 1;
+        if ((u32)pathFrame < 0x18) {
+            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath0, pathFrame, &work->rot8, &slicePos);
+            work->pos10.vx = slicePos.vx;
+            work->pos10.vy = slicePos.vy;
+            work->pos10.vz = slicePos.vz;
             work->rot8.vz = -work->rot8.vz;
             ex->Hi_SetEffModelSlice(work->model136[0], work->pos10.vy);
             ex->Hi_DrawSliceEffModel(&work->rot8, (VECTOR *)&work->pos10, (s32)&work->scale20, work->model136[0]);
         }
-        if ((u32)k < 0x28) {
-            switch (k) {
+        if ((u32)pathFrame < 0x28) {
+            switch (pathFrame) {
             case 0:
                 fxm_valuePathInit((Fx1fcPath *)&fx_1fc_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, 0x1A));
                 break;
@@ -188,49 +188,49 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_valuePathInit((Fx1fcPath *)&fx_1fc_valuePath, (u16 *)ex->btlfx_getFileData(entry->file, 0x1B));
                 break;
             }
-            if (k < 4) {
-                m0 = 1;
-                m1 = 2;
+            if (pathFrame < 4) {
+                fromModel = 1;
+                toModel = 2;
             } else {
-                m0 = 2;
-                m1 = 3;
+                fromModel = 2;
+                toModel = 3;
             }
-            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath1, k, &work->rot8, &b);
-            work->pos10.vx = b.vx;
-            work->pos10.vy = b.vy;
-            work->pos10.vz = b.vz;
+            fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath1, pathFrame, &work->rot8, &morphPos);
+            work->pos10.vx = morphPos.vx;
+            work->pos10.vy = morphPos.vy;
+            work->pos10.vz = morphPos.vz;
             work->rot8.vz = -work->rot8.vz;
-            fxm_valuePathGet(&fx_1fc_valuePath, k, &t);
-            ex->Hi_DrawMorphEffModel(&work->rot8, (VECTOR *)&work->pos10, (s32)&work->scale20, work->model136[m0],
-                                     work->model136[m1], t);
+            fxm_valuePathGet(&fx_1fc_valuePath, pathFrame, &morph);
+            ex->Hi_DrawMorphEffModel(&work->rot8, (VECTOR *)&work->pos10, (s32)&work->scale20, work->model136[fromModel],
+                                     work->model136[toModel], morph);
         }
         if ((u32)(frame - 1) < 0x18) {
-            k2 = frame - 1;
-            j = 4;
+            pieceFrame = frame - 1;
+            modelIdx = 4;
             for (i = 0; i < 10; i++) {
-                fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath2[i], k2, &work->rot30, &c);
-                work->pos38.vx = c.vx;
-                work->pos38.vy = c.vy;
-                work->pos38.vz = c.vz;
-                ex->Hi_DrawEffModel(&work->rot30, (VECTOR *)&work->pos38, (s32)&work->scale48, work->model136[j]);
-                j++;
-                if (j >= 9) {
-                    j = 4;
+                fxm_rotPosPathGet((Fx1fcPath_0b4 *)&fx_1fc_rotPosPath2[i], pieceFrame, &work->rot30, &piecePos);
+                work->pos38.vx = piecePos.vx;
+                work->pos38.vy = piecePos.vy;
+                work->pos38.vz = piecePos.vz;
+                ex->Hi_DrawEffModel(&work->rot30, (VECTOR *)&work->pos38, (s32)&work->scale48, work->model136[modelIdx]);
+                modelIdx++;
+                if (modelIdx >= 9) {
+                    modelIdx = 4;
                 }
             }
         }
         if ((u32)frame < 0x1C) {
-            fxm_posPathGet((Fx1fcPath *)&fx_1fc_posPath, frame, &d);
-            fxm_vecPathGet((Fx1fcTrack6 *)&fx_1fc_vecPath, frame, &e);
-            for (q = 0; q < env->targets->targetCount; q++) {
-                work->pos58[q].vx = fx_1fc_unitPos[q].vx + d.vx;
-                work->pos58[q].vy = fx_1fc_unitPos[q].vy + d.vy;
-                work->pos58[q].vz = fx_1fc_unitPos[q].vz + d.vz;
-                ex->btlfx_setUnitPos(q, (s16 *)&work->pos58[q]);
-                work->scale98[q].vx = (fx_1fc_unitScale[q].vx * e.vx) / 4096;
-                work->scale98[q].vy = (fx_1fc_unitScale[q].vy * e.vy) / 4096;
-                work->scale98[q].vz = (fx_1fc_unitScale[q].vz * e.vz) / 4096;
-                ex->btlfx_setUnitScale(q, (s32 *)&work->scale98[q]);
+            fxm_posPathGet((Fx1fcPath *)&fx_1fc_posPath, frame, &unitOfs);
+            fxm_vecPathGet((Fx1fcTrack6 *)&fx_1fc_vecPath, frame, &scaleMul);
+            for (unit = 0; unit < env->targets->targetCount; unit++) {
+                work->pos58[unit].vx = fx_1fc_unitPos[unit].vx + unitOfs.vx;
+                work->pos58[unit].vy = fx_1fc_unitPos[unit].vy + unitOfs.vy;
+                work->pos58[unit].vz = fx_1fc_unitPos[unit].vz + unitOfs.vz;
+                ex->btlfx_setUnitPos(unit, (s16 *)&work->pos58[unit]);
+                work->scale98[unit].vx = (fx_1fc_unitScale[unit].vx * scaleMul.vx) / 4096;
+                work->scale98[unit].vy = (fx_1fc_unitScale[unit].vy * scaleMul.vy) / 4096;
+                work->scale98[unit].vz = (fx_1fc_unitScale[unit].vz * scaleMul.vz) / 4096;
+                ex->btlfx_setUnitScale(unit, (s32 *)&work->scale98[unit]);
             }
         }
         if ((u32)(frame - 3) < 0x23 && work->emit0 != NULL) {
@@ -266,8 +266,8 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
     s32 i;
     s32 j;
-    SVECTOR *a;
-    SVECTOR *b;
+    SVECTOR *homePos;
+    SVECTOR *emitPos;
 
     if (mode == 0) {
         *args = 0xB0;
@@ -286,11 +286,11 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->doneA0[i] = 1;
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->pos20[i]);
                 ex->btlfx_setUnitPos(i, (s16 *)&work->pos20[i]);
-                a = (SVECTOR *)((u8 *)work + i * 8 + 0x20);
-                b = (SVECTOR *)((u8 *)work + i * 8 + 0x60);
-                b->vx = a->vx;
-                b->vy = a->vy;
-                b->vz = a->vz;
+                homePos = (SVECTOR *)((u8 *)work + i * 8 + 0x20);
+                emitPos = (SVECTOR *)((u8 *)work + i * 8 + 0x60);
+                emitPos->vx = homePos->vx;
+                emitPos->vy = homePos->vy;
+                emitPos->vz = homePos->vz;
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->emitPos60[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->otZ = 0x80;

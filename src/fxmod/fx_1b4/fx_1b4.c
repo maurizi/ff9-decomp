@@ -51,7 +51,7 @@ static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path,
 s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *emitter;
-    SVECTOR *v;
+    SVECTOR *pathPos;
     s32 frame;
     s32 i;
 
@@ -76,10 +76,10 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 8; i++) {
                 fxm_posPathInit(&fx_1b4_posPath[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_1b4_pathFileIds[i]));
                 fxm_posPathGet(&fx_1b4_posPath[i], 0, &work->pos4C[i]);
-                v = (SVECTOR *)((u8 *)work + i * 8 + 0x4C);
-                v->vx += work->pos44.vx;
-                v->vy += work->pos44.vy;
-                v->vz += work->pos44.vz;
+                pathPos = (SVECTOR *)((u8 *)work + i * 8 + 0x4C);
+                pathPos->vx += work->pos44.vx;
+                pathPos->vy += work->pos44.vy;
+                pathPos->vz += work->pos44.vz;
                 work->emit0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1b4_emitFileIds0[i]), (s32)&work->pos4C[i]);
                 if (work->emit0[i] != NULL) {
                     work->emit0[i]->trails = (s32)fx_1b4_op80Trails0[i];
@@ -122,7 +122,7 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     DrMode2Words *dm;
     DrMode2Words *dm2;
     s32 frame;
-    s32 t;
+    s32 elapsed;
 
     if (mode == 0) {
         *args = 0x18;
@@ -180,15 +180,15 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
         }
-        t = frame - 0x5B;
-        if ((u32)t < 0xF) {
+        elapsed = frame - 0x5B;
+        if ((u32)elapsed < 0xF) {
             dm2 = (DrMode2Words *)env->prim;
             env->prim += sizeof(DrMode2Words);
             setlen(dm2, 2);
             dm2->code[0] = 0xE6000001;
             dm2->code[1] = 0;
             addPrim(&env->ot[1], dm2);
-            scale2.vz = scale2.vy = scale2.vx = (t << 7) + 0x1000;
+            scale2.vz = scale2.vy = scale2.vx = (elapsed << 7) + 0x1000;
             col2.r = col2.g = col2.b = 0x28;
             rot2.vx = 0;
             rot2.vy = 0;

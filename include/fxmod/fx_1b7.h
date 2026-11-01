@@ -29,7 +29,7 @@ typedef struct {
 extern Fx1b7Piece *fx_1b7_pieces;
 extern s32 fx_1b7_sweepLine;
 
-void fx_1b7_initSplit(Fx1b7Split *s, SVECTOR (*faces)[3]);
+void fx_1b7_initSplit(Fx1b7Split *split, SVECTOR (*faces)[3]);
 static s32 fxm_splitModelAdd(s32 model);
 Fx1b7Piece *fx_1b7_findFreePiece(void);
 s32 fx_1b7_launchPieces(void);

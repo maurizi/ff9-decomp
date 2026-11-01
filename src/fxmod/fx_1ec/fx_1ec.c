@@ -1,34 +1,34 @@
 #include "fxmod/fx_1ec.h"
 
-static s32 fx_1ec_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fx_1ec_op80ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_1ec_posPath0[(s16)(e->slot - 1)], frame, &v);
-    v.vy = v.vy * 4 / 5;
-    v.vz = v.vz * 3 / 4;
-    v.vx += fx_1ec_op80Origin.vx;
-    v.vy += fx_1ec_op80Origin.vy;
-    v.vz += fx_1ec_op80Origin.vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    if (frame >= frames) {
+    fxm_posPathGet(&fx_1ec_posPath0[(s16)(pt->slot - 1)], frame, &pathPos);
+    pathPos.vy = pathPos.vy * 4 / 5;
+    pathPos.vz = pathPos.vz * 3 / 4;
+    pathPos.vx += fx_1ec_op80Origin.vx;
+    pathPos.vy += fx_1ec_op80Origin.vy;
+    pathPos.vz += fx_1ec_op80Origin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
+    if (frame >= n) {
         return -1;
     }
     return 0;
 }
 
-static s32 fx_1ec_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fx_1ec_op81ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_1ec_posPath1[(s16)(e->slot - 1)], frame, &v);
-    v.vx += fx_1ec_op81Origin.vx;
-    v.vy += fx_1ec_op81Origin.vy;
-    v.vz += fx_1ec_op81Origin.vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    if (frame >= frames) {
+    fxm_posPathGet(&fx_1ec_posPath1[(s16)(pt->slot - 1)], frame, &pathPos);
+    pathPos.vx += fx_1ec_op81Origin.vx;
+    pathPos.vy += fx_1ec_op81Origin.vy;
+    pathPos.vz += fx_1ec_op81Origin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
+    if (frame >= n) {
         return -1;
     }
     return 0;
@@ -236,8 +236,8 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 t;
-    s32 w;
+    s32 elapsed;
+    s32 morph;
     s32 i;
 
     if (mode == 0) {
@@ -320,16 +320,16 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->timer64 = 8;
             break;
         }
-        t = frame - 0x1E;
-        if ((u32)t < 0x14) {
-            if (t < 0) {
-                w = 0x1000;
-            } else if (t >= 0x14) {
-                w = 0;
+        elapsed = frame - 0x1E;
+        if ((u32)elapsed < 0x14) {
+            if (elapsed < 0) {
+                morph = 0x1000;
+            } else if (elapsed >= 0x14) {
+                morph = 0;
             } else {
-                w = 0x1000 - (t << 12) / 20;
+                morph = 0x1000 - (elapsed << 12) / 20;
             }
-            ex->Hi_DrawMorphEffModel(&work->rot20, &work->pos28, (s32)&work->scale38, work->model6C, work->model6E, w);
+            ex->Hi_DrawMorphEffModel(&work->rot20, &work->pos28, (s32)&work->scale38, work->model6C, work->model6E, morph);
             if (work->timer64 >= 0) {
                 work->rgb48 = fxm_lerpRatio(0, -0xFF, 8 - work->timer64, 8);
                 work->timer64--;

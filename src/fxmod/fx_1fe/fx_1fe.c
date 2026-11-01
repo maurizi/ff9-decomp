@@ -145,12 +145,12 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     VECTOR scale;
     s32 frame;
     s32 t;
-    s32 r;
-    s32 c;
-    s32 d;
+    s32 spin;
+    s32 shade;
+    s32 rise;
     s32 k;
-    s32 f1;
-    s32 f2;
+    s32 grow;
+    s32 unused0;
     Pool6CEntry *emitter;
 
     if (mode == 0) {
@@ -177,7 +177,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (work->state0) {
         case 1:
-            d = (frame << 12) / 37;
+            rise = (frame << 12) / 37;
             if (frame == 0) {
                 BTLFX_COPY_SVEC(&work->pos10, &fx_1fe_basePos0);
                 work->pos10.vy -= 0x1000;
@@ -193,7 +193,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->camTarget20.vx = fx_1fe_basePos0.vx;
             work->camTarget20.vy = fx_1fe_basePos0.vy;
             work->camTarget20.vz = fx_1fe_basePos0.vz;
-            work->camTarget20.vy = (s16)(work->camTarget20.vy - 0x200) - (ex->math_sin(d >> 2) >> 1);
+            work->camTarget20.vy = (s16)(work->camTarget20.vy - 0x200) - (ex->math_sin(rise >> 2) >> 1);
             env->camera->points[3].vx = work->camTarget20.vx;
             env->camera->points[3].vy = work->camTarget20.vy;
             env->camera->points[3].vz = work->camTarget20.vz;
@@ -239,47 +239,47 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 pos.vx = fx_1fe_basePos0.vx;
                 pos.vy = fx_1fe_basePos0.vy;
                 pos.vz = fx_1fe_basePos0.vz;
-                f1 = ((frame - 7) << 12) / 25;
-                scale.vx = scale.vz = (f1 >> 4) + scale.vy;
+                grow = ((frame - 7) << 12) / 25;
+                scale.vx = scale.vz = (grow >> 4) + scale.vy;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model34);
-                r = frame * 7;
-                rot.vy = r;
-                scale.vx = scale.vz = (f1 >> 4) + 0x400;
+                spin = frame * 7;
+                rot.vy = spin;
+                scale.vx = scale.vz = (grow >> 4) + 0x400;
                 scale.vy = 0x800;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model34);
                 ex->Hi_ModifyEffModelRGB(work->model34, -0x20, -0x20, -0x20);
-                rot.vy = r;
+                rot.vy = spin;
                 scale.vx = scale.vz = 0x400;
-                scale.vy = ((ex->math_sin(f1 >> 2) / 2) + 0x800) >> 2;
+                scale.vy = ((ex->math_sin(grow >> 2) / 2) + 0x800) >> 2;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model38);
                 ex->btlfx_drawScrollMove(1000 - frame * 9, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-                ex->btlfx_drawScrollMove(1000 - r, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
-                ex->math_cos(f1);
-                ex->math_cos(f1 * 2);
+                ex->btlfx_drawScrollMove(1000 - spin, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+                ex->math_cos(grow);
+                ex->math_cos(grow * 2);
                 ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, &fx_1fe_rippleColor, 0x18, frame * 400, 0x186, 0x100);
             }
             if ((u32)(frame - 7) < 0x14) {
-                s32 u;
-                s32 a;
-                s32 b;
+                s32 pulse;
+                s32 ang;
+                s32 fade;
 
                 rot.vx = 0x400;
                 pos.vx = fx_1fe_basePos0.vx;
                 pos.vy = fx_1fe_basePos0.vy;
                 pos.vz = fx_1fe_basePos0.vz;
-                u = ((frame - 7) << 12) / 20;
-                a = u >> 2;
-                b = 0xC00 - u;
-                rot.vy = ex->math_sin(a) / 3;
+                pulse = ((frame - 7) << 12) / 20;
+                ang = pulse >> 2;
+                fade = 0xC00 - pulse;
+                rot.vy = ex->math_sin(ang) / 3;
                 rot.vz = 0;
-                scale.vx = scale.vy = (ex->math_sin(a) >> 6) + 0x249;
+                scale.vx = scale.vy = (ex->math_sin(ang) >> 6) + 0x249;
                 scale.vz = 0x555;
-                d = (ex->math_sin(a) / 15) + 2;
-                c = (b >> 5) - 0x80;
+                rise = (ex->math_sin(ang) / 15) + 2;
+                shade = (fade >> 5) - 0x80;
                 for (k = 0; k < 7; k++) {
                     ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model3C);
-                    ex->Hi_ModifyEffModelRGB(work->model3C, c, c, c);
-                    pos.vy -= d;
+                    ex->Hi_ModifyEffModelRGB(work->model3C, shade, shade, shade);
+                    pos.vy -= rise;
                     rot.vy = ((rot.vy * 5) >> 2) + (k << 10);
                     scale.vx = scale.vy = (scale.vx * 9) >> 3;
                 }
@@ -291,12 +291,12 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0, 0x80, 0xFF);
             }
             if ((u32)(frame - 7) < 8) {
-                s32 v = 0xF0 - (((frame - 7) * 0xF0) >> 3);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, v, v, v >> 1);
+                s32 tint = 0xF0 - (((frame - 7) * 0xF0) >> 3);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint >> 1);
             }
             if (frame >= 0x18) {
-                s32 v = ((frame - 0x18) * 0xFF) >> 3;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, v, v, v);
+                s32 tint = ((frame - 0x18) * 0xFF) >> 3;
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
             }
             if (frame >= 0x20) {
                 work->state0 = 6;
@@ -313,8 +313,8 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 6:
             t = (frame << 12) / 87;
             if (frame < 0x18) {
-                s32 v = 0xFF - (frame * 0xFF) / 24;
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, v, v, v);
+                s32 tint = 0xFF - (frame * 0xFF) / 24;
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, tint, tint, tint);
             }
             work->camTarget20.vx = fx_1fe_basePos1.vx;
             work->camTarget20.vy = fx_1fe_basePos1.vy;

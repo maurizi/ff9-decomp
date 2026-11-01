@@ -80,7 +80,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     DrMode2Words *dm;
     s32 frame;
     s32 i;
-    s32 t;
+    s32 elapsed;
 
     if (mode == 0) {
         *args = 0x6C;
@@ -165,22 +165,22 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 26 && frame < 30) {
-            t = frame - 26;
+            elapsed = frame - 26;
             dm = (DrMode2Words *)env->prim;
             env->prim += sizeof(DrMode2Words);
             setlen(dm, 2);
             dm->code[0] = 0xE6000001;
             dm->code[1] = 0;
             addPrim(&env->ot[1], dm);
-            scale.vx = (t << 7) + 0x1000;
-            scale.vy = (t << 7) + 0x1000;
-            scale.vz = (t << 7) + 0x1000;
+            scale.vx = (elapsed << 7) + 0x1000;
+            scale.vy = (elapsed << 7) + 0x1000;
+            scale.vz = (elapsed << 7) + 0x1000;
             col.r = col.g = col.b = 0x3C;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
-            env->camera->projDist = 0x208 - t * t * 4;
+            env->camera->projDist = 0x208 - elapsed * elapsed * 4;
         }
         work->unk64++;
         return frame >= 0x32;
@@ -190,17 +190,17 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    SVECTOR d;
-    Fx1bdRock *r;
+    SVECTOR rockPos;
+    SVECTOR trackOfs;
+    Fx1bdRock *rock;
     s16 *tex;
     s16 *clut;
-    u16 *a;
-    u16 *b;
+    u16 *modelData;
+    u16 *trackData;
     s32 frame;
     s32 i;
     s32 j;
-    s32 t;
+    s32 trackFrame;
     s32 dist;
 
     if (mode == 0) {
@@ -244,11 +244,11 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 tex = fx_1bd_texInfo1;
                 clut = fx_1bd_texPos1;
             }
-            a = fxm_offsetTableEntry((u16 *)ex->btlfx_getFileData(entry->file, 0x29), j);
-            b = fxm_offsetTableEntry((u16 *)ex->btlfx_getFileData(entry->file, 0x28), j);
-            work->model118[j + 1] = ((s32(*)())ex->Hi_RegisterTexListModel)(a, tex, clut);
+            modelData = fxm_offsetTableEntry((u16 *)ex->btlfx_getFileData(entry->file, 0x29), j);
+            trackData = fxm_offsetTableEntry((u16 *)ex->btlfx_getFileData(entry->file, 0x28), j);
+            work->model118[j + 1] = ((s32(*)())ex->Hi_RegisterTexListModel)(modelData, tex, clut);
             ex->Hi_SetEffModelOffset(work->model118[j + 1], 0x6E);
-            fxm_rotPosTrackInit(&fx_1bd_rotPosTrack[j], b);
+            fxm_rotPosTrackInit(&fx_1bd_rotPosTrack[j], trackData);
         }
         work->xform70.rot0.vx = 0;
         work->xform70.rot0.vy = 0;
@@ -330,87 +330,87 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 6 && frame < 20) {
             ex->Hi_DrawEffModel(&work->xform20.rot0, &work->xform20.pos8, (s32)&work->xform20.scale18, work->model118[0]);
             ex->Hi_ModifyEffModelRGB(work->model118[0], 6, 6, 6);
-            for (i = 0, r = fx_1bd_op83Pieces; i < 23; i++, r++) {
-                t = frame - 2;
-                if (r->done2) {
-                    t = 0;
+            for (i = 0, rock = fx_1bd_op83Pieces; i < 23; i++, rock++) {
+                trackFrame = frame - 2;
+                if (rock->done2) {
+                    trackFrame = 0;
                 }
-                if (t == r->frame0) {
-                    v.vx = r->pos18.vx;
-                    v.vy = r->pos18.vy;
-                    v.vz = r->pos18.vz - 400;
-                    ex->btlfx_aimAngles((s16 *)&work->xform48.pos8, (s16 *)&v, (s16 *)&r->angle8);
-                    dist = ex->btlfx_distance(&v, (SVECTOR *)&work->xform48.pos8);
-                    r->vel6 = 200;
-                    r->speed4 = dist / 30;
-                    r->vel6 += ex->btlfx_rand() % 100;
-                    r->speed4 += ex->btlfx_rand() % 50;
-                    r->vel6 /= 2;
-                    r->angle8.vx &= 0xFFF;
-                    r->angle8.vy &= 0xFFF;
-                    r->angle8.vz &= 0xFFF;
-                    r->speed4 /= 2;
-                    if (r->angle8.vy < 0x800) {
-                        r->flag1 |= 1;
+                if (trackFrame == rock->frame0) {
+                    rockPos.vx = rock->pos18.vx;
+                    rockPos.vy = rock->pos18.vy;
+                    rockPos.vz = rock->pos18.vz - 400;
+                    ex->btlfx_aimAngles((s16 *)&work->xform48.pos8, (s16 *)&rockPos, (s16 *)&rock->angle8);
+                    dist = ex->btlfx_distance(&rockPos, (SVECTOR *)&work->xform48.pos8);
+                    rock->vel6 = 200;
+                    rock->speed4 = dist / 30;
+                    rock->vel6 += ex->btlfx_rand() % 100;
+                    rock->speed4 += ex->btlfx_rand() % 50;
+                    rock->vel6 /= 2;
+                    rock->angle8.vx &= 0xFFF;
+                    rock->angle8.vy &= 0xFFF;
+                    rock->angle8.vz &= 0xFFF;
+                    rock->speed4 /= 2;
+                    if (rock->angle8.vy < 0x800) {
+                        rock->flag1 |= 1;
                     } else {
-                        r->flag1 |= 2;
+                        rock->flag1 |= 2;
                     }
-                    if (r->angle8.vy < 0x800) {
-                        r->flag1 |= 4;
+                    if (rock->angle8.vy < 0x800) {
+                        rock->flag1 |= 4;
                     } else {
-                        r->flag1 |= 8;
+                        rock->flag1 |= 8;
                     }
                 }
-                if (t >= r->frame0) {
-                    v.vx = r->pos18.vx;
-                    v.vy = r->pos18.vy;
-                    v.vz = r->pos18.vz;
-                    ex->btlfx_pointAhead((s16 *)&v, (s16 *)&r->angle8, r->speed4, (s16 *)&v);
-                    r->pos18.vx = v.vx;
-                    r->pos18.vy = v.vy;
-                    r->pos18.vz = v.vz;
-                    r->pos18.vy -= r->vel6;
-                    if (t < r->frame0 + 2) {
-                        if (r->flag1 & 1) {
-                            r->rot10.vx += 0x40;
+                if (trackFrame >= rock->frame0) {
+                    rockPos.vx = rock->pos18.vx;
+                    rockPos.vy = rock->pos18.vy;
+                    rockPos.vz = rock->pos18.vz;
+                    ex->btlfx_pointAhead((s16 *)&rockPos, (s16 *)&rock->angle8, rock->speed4, (s16 *)&rockPos);
+                    rock->pos18.vx = rockPos.vx;
+                    rock->pos18.vy = rockPos.vy;
+                    rock->pos18.vz = rockPos.vz;
+                    rock->pos18.vy -= rock->vel6;
+                    if (trackFrame < rock->frame0 + 2) {
+                        if (rock->flag1 & 1) {
+                            rock->rot10.vx += 0x40;
                         } else {
-                            r->rot10.vx -= 0x40;
+                            rock->rot10.vx -= 0x40;
                         }
-                        if (r->flag1 & 4) {
-                            r->rot10.vz += 0x40;
+                        if (rock->flag1 & 4) {
+                            rock->rot10.vz += 0x40;
                         } else {
-                            r->rot10.vz -= 0x40;
+                            rock->rot10.vz -= 0x40;
                         }
                     }
-                    work->xform48.rot0.vx = r->rot10.vx;
-                    work->xform48.rot0.vy = r->rot10.vy;
-                    work->xform48.rot0.vz = r->rot10.vz;
-                    r->vel6 -= 20;
-                    if (r->vel6 >= 4) {
-                        r->vel6 -= t * 5;
+                    work->xform48.rot0.vx = rock->rot10.vx;
+                    work->xform48.rot0.vy = rock->rot10.vy;
+                    work->xform48.rot0.vz = rock->rot10.vz;
+                    rock->vel6 -= 20;
+                    if (rock->vel6 >= 4) {
+                        rock->vel6 -= trackFrame * 5;
                     }
-                    if (r->pos18.vy >= 50) {
-                        r->done2 = 1;
+                    if (rock->pos18.vy >= 50) {
+                        rock->done2 = 1;
                         continue;
                     }
                 } else {
-                    fxm_rotPosTrackGet(&fx_1bd_rotPosTrack[i], t, &work->xform48.rot0, &v);
-                    v.vx = -v.vx;
+                    fxm_rotPosTrackGet(&fx_1bd_rotPosTrack[i], trackFrame, &work->xform48.rot0, &rockPos);
+                    rockPos.vx = -rockPos.vx;
                     work->xform48.pos8.vx = 0;
                     work->xform48.pos8.vy = 0;
                     work->xform48.pos8.vz = 0x320;
                     work->xform48.rot0.vz = -work->xform48.rot0.vz;
-                    work->xform48.pos8.vx += v.vx;
-                    work->xform48.pos8.vy += v.vy;
-                    work->xform48.pos8.vz += v.vz;
-                    r->pos18.vx = work->xform48.pos8.vx;
-                    r->pos18.vy = work->xform48.pos8.vy;
-                    r->pos18.vz = work->xform48.pos8.vz;
+                    work->xform48.pos8.vx += rockPos.vx;
+                    work->xform48.pos8.vy += rockPos.vy;
+                    work->xform48.pos8.vz += rockPos.vz;
+                    rock->pos18.vx = work->xform48.pos8.vx;
+                    rock->pos18.vy = work->xform48.pos8.vy;
+                    rock->pos18.vz = work->xform48.pos8.vz;
                     work->xform48.pos8.vx = 0;
                     work->xform48.pos8.vy = 0;
                     work->xform48.pos8.vz = 0x320;
                 }
-                ex->Hi_DrawEffModel(&work->xform48.rot0, &r->pos18, (s32)&work->xform48.scale18, work->model118[i + 1]);
+                ex->Hi_DrawEffModel(&work->xform48.rot0, &rock->pos18, (s32)&work->xform48.scale18, work->model118[i + 1]);
                 ex->Hi_ModifyEffModelRGB(work->model118[i + 1], 6, 6, 6);
             }
         }
@@ -443,10 +443,10 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->xformCC.pos8.vx = 0;
             work->xformCC.pos8.vy = 0;
             work->xformCC.pos8.vz = 0x320;
-            fxm_posTrackGet(&fx_1bd_posTrack, frame - 4, &d);
-            work->xformCC.pos8.vx += d.vx;
-            work->xformCC.pos8.vy += d.vy;
-            work->xformCC.pos8.vz += d.vz;
+            fxm_posTrackGet(&fx_1bd_posTrack, frame - 4, &trackOfs);
+            work->xformCC.pos8.vx += trackOfs.vx;
+            work->xformCC.pos8.vy += trackOfs.vy;
+            work->xformCC.pos8.vz += trackOfs.vz;
             fxm_vecTrackGet(&fx_1bd_vecTrack2, frame - 4, &work->xformCC.scale18);
             ex->Hi_DrawEffModel(&work->xformCC.rot0, &work->xformCC.pos8, (s32)&work->xformCC.scale18, work->model14C);
             ex->Hi_ModifyEffModelAbr(work->model14C, 1);
