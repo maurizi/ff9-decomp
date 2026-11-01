@@ -39,7 +39,7 @@ typedef struct {
 extern BtlModelBuf fx_08f_effModels[];
 extern SVECTOR fx_08f_streakPts[];
 extern u8 fx_08f_trail[];
-static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);
+static void fxm_randDiscPoints(s32 n, s32 radius, SVECTOR *pts);
 s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

@@ -32,16 +32,16 @@ s32 fx_1b4_op80ParticleMotion7(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 tra
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[7], frame, n);
 }
 
-static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(path, frame, &v);
-    v.vx += fx_1b4_pathOrigin.vx;
-    v.vy += fx_1b4_pathOrigin.vy;
-    v.vz += fx_1b4_pathOrigin.vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
+    fxm_posPathGet(path, frame, &pathPos);
+    pathPos.vx += fx_1b4_pathOrigin.vx;
+    pathPos.vy += fx_1b4_pathOrigin.vy;
+    pathPos.vz += fx_1b4_pathOrigin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
     if (frame >= frames) {
         return -1;
     }

@@ -8,31 +8,31 @@ static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, 
     return fxm_followPathParticle(pt, pos, &fx_1e7_posPath0[1], frame, n);
 }
 
-static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames) {
+static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1e7_env);
     MATRIX m;
-    VECTOR o;
-    SVECTOR v;
+    VECTOR world;
+    SVECTOR pathPos;
 
-    fxm_posPathGet(path, frame * 4, &v);
+    fxm_posPathGet(path, frame * 4, &pathPos);
     if (path == fx_1e7_posPath0) {
-        v.vx += 0x50;
+        pathPos.vx += 0x50;
     }
     ex->math_rotMatrixYXZ(&fx_1e7_op80PathRot, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
-    gte_ldv0(&v);
+    gte_ldv0(&pathPos);
     gte_rtv0tr();
-    gte_stlvnl(&o);
-    o.vx += fx_1e7_op80Origin.vx;
-    o.vy += fx_1e7_op80Origin.vy;
-    o.vz += fx_1e7_op80Origin.vz;
-    pos->vx = o.vx;
-    pos->vy = o.vy;
-    pos->vz = o.vz;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    gte_stlvnl(&world);
+    world.vx += fx_1e7_op80Origin.vx;
+    world.vy += fx_1e7_op80Origin.vy;
+    world.vz += fx_1e7_op80Origin.vz;
+    pos->vx = world.vx;
+    pos->vy = world.vy;
+    pos->vz = world.vz;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -217,14 +217,14 @@ static void fxm_startUnitMotion(s32 unit, s32 motion) {
 static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1e7_env);
 
-    s32 r;
+    s32 done;
 
     if (ex->btlfx_isUnitActive(unit)) {
-        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+        done = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    return r;
+    return done;
 }
 
 static void fxm_startHitMotionIfActive(s32 unit) {

@@ -22,7 +22,7 @@ typedef struct {
 } Fx1bf0Line;
 
 extern Fx1bf0Line fx_1bf_0_lineTrail;
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 frame, s32 fade, s32 abr, s32 lineWidth);
+static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth);
 
 extern s16 fx_1bf_0_strandParams[18 * 4]; /* per strand: file, start, stride, width */
 extern Fx1bf0Line *fx_1bf_0_strandTrails[18];

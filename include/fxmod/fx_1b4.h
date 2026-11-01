@@ -54,7 +54,7 @@ extern s32 fx_1b4_op82Trails1[];
 extern SVECTOR fx_1b4_pathOrigin; /* origin */
 extern SVECTOR fx_1b4_emitPos;
 
-static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames);
+static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames);
 static void fxm_posPathInit(Fx1b4Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx1b4Path *path, s32 t, SVECTOR *out);
 

@@ -140,23 +140,23 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     }
 }
 
-static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
-    SVECTOR *p;
-    s32 *prev;
+static void fxm_randDiscPoints(s32 n, s32 radius, SVECTOR *pts) {
+    SVECTOR *pt;
+    s32 *last;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_086_env);
     s32 i;
     s32 rad;
-    s32 a;
+    s32 ang;
 
-    p = pts;
-    prev = (s32 *)&p[n];
-    for (i = 0; i < n; i++, prev++, p++) {
-        *prev = 0x7F7F7F7F;
-        rad = ex->btlfx_randRange(r >> 2, r >> 1);
-        a = ex->btlfx_rand() & 0xFFF;
-        p->vx = (ex->math_cos(a) * rad) >> 12;
-        p->vy = (ex->math_sin(a) * rad) >> 12;
-        p->vz = ex->btlfx_rand() % 1280 - 0x100;
+    pt = pts;
+    last = (s32 *)&pt[n];
+    for (i = 0; i < n; i++, last++, pt++) {
+        *last = 0x7F7F7F7F;
+        rad = ex->btlfx_randRange(radius >> 2, radius >> 1);
+        ang = ex->btlfx_rand() & 0xFFF;
+        pt->vx = (ex->math_cos(ang) * rad) >> 12;
+        pt->vy = (ex->math_sin(ang) * rad) >> 12;
+        pt->vz = ex->btlfx_rand() % 1280 - 0x100;
     }
 }
 

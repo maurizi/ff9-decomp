@@ -63,12 +63,12 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
@@ -78,11 +78,11 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     for (i = 0; i < 56 + 1; i++) {
         t = 0x1000 - (i << 12) / 56;
         t += ex->btlfx_randCentered(0x100);
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = ex->btlfx_randCentered(0xA0);
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = ex->btlfx_randCentered(0xA0);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
@@ -92,24 +92,24 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
 void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
-    SVECTOR *a = src->pts4;
+    SVECTOR mid;
+    SVECTOR *base = src->pts4;
 
-    a += ex->btlfx_rand() % 56;
+    base += ex->btlfx_rand() % 56;
 
-    ex->btlfx_lerpVec((s16 *)a, (s16 *)(a + 1), 0x4000, (s16 *)&p);
-    fxm_drawOffsetTrail1(entry, dst, a, &p, 0x80, ex->btlfx_rand(), 0x37, 0, fade);
+    ex->btlfx_lerpVec((s16 *)base, (s16 *)(base + 1), 0x4000, (s16 *)&mid);
+    fxm_drawOffsetTrail1(entry, dst, base, &mid, 0x80, ex->btlfx_rand(), 0x37, 0, fade);
 }
 
 static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
@@ -119,11 +119,11 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     for (i = 0; i < 12 + 1; i++) {
         t = 0x1000 - (i << 12) / 12;
         t += ex->btlfx_randCentered(0x100);
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = ex->btlfx_randCentered(0xA0);
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = ex->btlfx_randCentered(0xA0);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
@@ -274,15 +274,15 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
 void fxm_rollTowardEye(VECTOR *pos, SVECTOR *rot) {
     Unk800F78A4 *env = fx_0e3_1_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    s32 tmp;
-    s32 a;
+    SVECTOR pt;
+    s32 ignored;
+    s32 roll;
 
-    v.vx = pos->vx;
-    v.vy = pos->vy;
-    v.vz = pos->vz;
-    ex->btlfx_toLocalPolar(&env->camera->eye, &v, rot, (s32)&tmp, (s32)&tmp, &a);
-    rot->vz = -a + 0x400;
+    pt.vx = pos->vx;
+    pt.vy = pos->vy;
+    pt.vz = pos->vz;
+    ex->btlfx_toLocalPolar(&env->camera->eye, &pt, rot, (s32)&ignored, (s32)&ignored, &roll);
+    rot->vz = -roll + 0x400;
 }
 
 INCLUDE_RODATA("asm/us/fx_0e3_1/nonmatchings/fx_0e3_1", fx_0e3_1_headerPtr);

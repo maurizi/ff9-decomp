@@ -90,13 +90,13 @@ static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32
     }
 }
 
-s32 fxm_sinHalfNeg(s32 a) {
-    s32 v = BTLFX_EXPORTS(fx_196_env)->math_sin(a);
+s32 fxm_sinHalfNeg(s32 ang) {
+    s32 sinv = BTLFX_EXPORTS(fx_196_env)->math_sin(ang);
 
-    if (v < 0) {
-        v >>= 1;
+    if (sinv < 0) {
+        sinv >>= 1;
     }
-    return v;
+    return sinv;
 }
 
 void fx_196_drawWaveMesh(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2, s32 tpage, s32 clut, s32 u, s32 v,
@@ -295,18 +295,18 @@ void fx_196_drawWaveMesh(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32
     }
 }
 
-static s32 fxm_nextRingPoint(SVECTOR *v) {
-    s32 i = fx_196_nextWavePoint;
+static s32 fxm_nextRingPoint(SVECTOR *out) {
+    s32 slot = fx_196_nextWavePoint;
 
-    v->pad = 1;
-    v->vx = fx_196_wavePoints[i].vx;
-    v->vy = fx_196_wavePoints[i].vy;
-    v->vz = fx_196_wavePoints[i].vz;
-    i++;
-    if (i >= 16) {
-        i = 0;
+    out->pad = 1;
+    out->vx = fx_196_wavePoints[slot].vx;
+    out->vy = fx_196_wavePoints[slot].vy;
+    out->vz = fx_196_wavePoints[slot].vz;
+    slot++;
+    if (slot >= 16) {
+        slot = 0;
     }
-    fx_196_nextWavePoint = i;
+    fx_196_nextWavePoint = slot;
     return 0;
 }
 

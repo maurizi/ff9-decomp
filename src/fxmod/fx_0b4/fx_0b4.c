@@ -26,20 +26,20 @@ s32 fx_0b4_op80ParticleMotion5(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 tra
 
 static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx0b4Timer *timer, Fx0b4Path *path, s32 frame, s32 n) {
     SVECTOR rot;
-    SVECTOR p;
+    SVECTOR pathPos;
 
-    fxm_rotPosPathGet(path, frame, &rot, &p);
-    p.vx /= 2;
-    p.vz /= 2;
-    p.vx = p.vx * 12 / 10;
-    p.vy = p.vy * 12 / 10;
-    p.vz = p.vz * 12 / 10;
-    p.vx += fx_0b4_pathOrigin.vx;
-    p.vy += fx_0b4_pathOrigin.vy;
-    p.vz += fx_0b4_pathOrigin.vz;
-    pos->vx = p.vx;
-    pos->vy = p.vy;
-    pos->vz = p.vz;
+    fxm_rotPosPathGet(path, frame, &rot, &pathPos);
+    pathPos.vx /= 2;
+    pathPos.vz /= 2;
+    pathPos.vx = pathPos.vx * 12 / 10;
+    pathPos.vy = pathPos.vy * 12 / 10;
+    pathPos.vz = pathPos.vz * 12 / 10;
+    pathPos.vx += fx_0b4_pathOrigin.vx;
+    pathPos.vy += fx_0b4_pathOrigin.vy;
+    pathPos.vz += fx_0b4_pathOrigin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;

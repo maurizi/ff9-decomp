@@ -857,13 +857,13 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static s32 fxm_sinHalfNeg(s32 a) {
-    s32 v = BTLFX_EXPORTS(fx_0b3_env)->math_sin(a);
+static s32 fxm_sinHalfNeg(s32 ang) {
+    s32 sinv = BTLFX_EXPORTS(fx_0b3_env)->math_sin(ang);
 
-    if (v < 0) {
-        v >>= 1;
+    if (sinv < 0) {
+        sinv >>= 1;
     }
-    return v;
+    return sinv;
 }
 
 static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 bright, s32 brightShade, s32 tpage, s32 clut, s32 u, s32 v,
@@ -1066,18 +1066,18 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 br
     }
 }
 
-static s32 fxm_nextRingPoint(SVECTOR *v) {
-    s32 i = fx_0b3_edgePtIdx;
+static s32 fxm_nextRingPoint(SVECTOR *out) {
+    s32 slot = fx_0b3_edgePtIdx;
 
-    v->pad = 1;
-    v->vx = fx_0b3_edgePts[i].vx;
-    v->vy = fx_0b3_edgePts[i].vy;
-    v->vz = fx_0b3_edgePts[i].vz;
-    i++;
-    if (i >= 16) {
-        i = 0;
+    out->pad = 1;
+    out->vx = fx_0b3_edgePts[slot].vx;
+    out->vy = fx_0b3_edgePts[slot].vy;
+    out->vz = fx_0b3_edgePts[slot].vz;
+    slot++;
+    if (slot >= 16) {
+        slot = 0;
     }
-    fx_0b3_edgePtIdx = i;
+    fx_0b3_edgePtIdx = slot;
     return 0;
 }
 

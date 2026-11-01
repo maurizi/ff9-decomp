@@ -1,20 +1,20 @@
 #include "fxmod/fx_1bf_0.h"
 
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
+static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
-    SVECTOR *v;
+    SVECTOR *pts;
 
     fx_1bf_0_lineTrail.lastSlot0 = fx_1bf_0_lineTrail.count2 = 1;
     fx_1bf_0_lineTrail.head1 = 0;
-    v = fx_1bf_0_lineTrail.points4;
-    v[0].vx = a->vx;
-    v[0].vy = a->vy;
-    v[0].vz = a->vz;
-    v[0].pad = lineWidth;
-    v[1].vx = b->vx;
-    v[1].vy = b->vy;
-    v[1].vz = b->vz;
-    v[1].pad = lineWidth;
+    pts = fx_1bf_0_lineTrail.points4;
+    pts[0].vx = from->vx;
+    pts[0].vy = from->vy;
+    pts[0].vz = from->vz;
+    pts[0].pad = lineWidth;
+    pts[1].vx = to->vx;
+    pts[1].vy = to->vy;
+    pts[1].vz = to->vz;
+    pts[1].pad = lineWidth;
     ex->btlfx_drawTrail(file, 0, NULL, frame, 0x1000, fade, abr, (u8 *)&fx_1bf_0_lineTrail, 0);
 }
 
@@ -88,21 +88,21 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
     SVECTOR ang;
     s32 k = 0;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
-    Fx1bf0Pt *p;
+    Fx1bf0Pt *pt;
     s32 i;
-    s32 a;
+    s32 orbitAng;
 
     rot.vx = 0x400;
     rot.vy = 0;
     rot.pad = 1;
     for (; k < 3; k++) {
-        p = (Fx1bf0Pt *)ex->btlfx_getFileData(entry->file, fx_1bf_0_pointFileIds[k]);
-        p = (Fx1bf0Pt *)((u8 *)p + 4);
-        for (i = 0; i < 20; i++, p++) {
+        pt = (Fx1bf0Pt *)ex->btlfx_getFileData(entry->file, fx_1bf_0_pointFileIds[k]);
+        pt = (Fx1bf0Pt *)((u8 *)pt + 4);
+        for (i = 0; i < 20; i++, pt++) {
             if (i < n) {
-                pos.vx = from->vx + p->x * 2;
-                pos.vy = from->vy + p->y * 2;
-                pos.vz = from->vz + p->z * 2;
+                pos.vx = from->vx + pt->x * 2;
+                pos.vy = from->vy + pt->y * 2;
+                pos.vz = from->vz + pt->z * 2;
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i & 7]), &pos, &rot, 0x3000,
@@ -113,10 +113,10 @@ void fxm_drawPatternParticles(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32
     for (k = 0; k < 3; k++) {
         for (i = 0; i < 27; i++) {
             if (i <= n * 27 / 20) {
-                a = ((i + k * 27) << 12) / 81;
-                pos.vx = from->vx + ((ex->math_cos(a) * 1600) >> 12);
+                orbitAng = ((i + k * 27) << 12) / 81;
+                pos.vx = from->vx + ((ex->math_cos(orbitAng) * 1600) >> 12);
                 pos.vy = from->vy;
-                pos.vz = from->vz + ((ex->math_sin(a) * 1600) >> 12);
+                pos.vz = from->vz + ((ex->math_sin(orbitAng) * 1600) >> 12);
                 ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
                 rot.vz = -ang.vy;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i & 7]), &pos, &rot, 0x1800,
@@ -130,7 +130,7 @@ void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
     SVECTOR pos;
     SVECTOR rot;
     SVECTOR ang;
-    SVECTOR *d = fx_1bf_0_particleOffsets;
+    SVECTOR *ofs = fx_1bf_0_particleOffsets;
     s32 i = 0;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
 
@@ -138,13 +138,13 @@ void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
     rot.vy = 0;
     rot.pad = 1;
     do {
-        pos.vx = from->vx + d->vx * 2;
-        pos.vy = from->vy + d->vy * 2;
-        pos.vz = from->vz + d->vz * 2;
+        pos.vx = from->vx + ofs->vx * 2;
+        pos.vy = from->vy + ofs->vy * 2;
+        pos.vz = from->vz + ofs->vz * 2;
         ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
         rot.vz = -ang.vy;
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, fx_1bf_0_particleFileIds[i + 8]), &pos, &rot, 0x2AF8, 0, 1, ot, 0, 0);
-        d++;
+        ofs++;
         i++;
     } while (i < 3);
 }

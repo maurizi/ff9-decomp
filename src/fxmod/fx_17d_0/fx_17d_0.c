@@ -39,21 +39,21 @@ void fx_17d_0_drawCenterBandY(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b) {
     }
 }
 
-static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
-    SVECTOR *q;
-    u32 *col = (u32 *)(pts + n);
+static void fxm_randDiscPoints(s32 n, s32 radius, SVECTOR *pts) {
+    SVECTOR *cur;
+    u32 *last = (u32 *)(pts + n);
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_0_env);
     s32 i;
     s32 rad;
-    s32 a;
+    s32 ang;
 
-    for (i = 0, q = pts; i < n; i++, col++, q++, pts++) {
-        *col = 0x7F7F7F7F;
-        rad = ex->btlfx_randRange(r >> 2, r >> 1);
-        a = ex->btlfx_rand() & 0xFFF;
-        pts->vx = (ex->math_cos(a) * rad) >> 12;
-        q->vy = (ex->math_sin(a) * rad) >> 12;
-        q->vz = ex->btlfx_rand() % 640 - 0x80;
+    for (i = 0, cur = pts; i < n; i++, last++, cur++, pts++) {
+        *last = 0x7F7F7F7F;
+        rad = ex->btlfx_randRange(radius >> 2, radius >> 1);
+        ang = ex->btlfx_rand() & 0xFFF;
+        pts->vx = (ex->math_cos(ang) * rad) >> 12;
+        cur->vy = (ex->math_sin(ang) * rad) >> 12;
+        cur->vz = ex->btlfx_rand() % 640 - 0x80;
     }
 }
 

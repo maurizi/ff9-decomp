@@ -134,42 +134,42 @@ void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale,
     }
 }
 
-void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
-    Fx1fdEdge *e = fx_1fd_ribbonEdges;
+void fxm_drawEdgeQuads(s32 n, s32 bright, s32 tpage, s32 clut, u16 v0, u16 v1) {
+    Fx1fdEdge *edge = fx_1fd_ribbonEdges;
     POLY_GT4 *poly;
     BtlfxExports *ex;
     u16 tp;
     u16 cl;
     s32 i;
-    s32 k;
+    s32 tile;
     s32 ua;
     s32 ub;
     s32 ca;
     s32 cb;
-    s32 z;
+    s32 unused;
 
     tp = tpage | 0x20;
     poly = (POLY_GT4 *)fx_1fd_env->prim;
     fx_1fd_env->prim = (u8 *)(poly + n);
     cl = clut;
     ex = BTLFX_EXPORTS(fx_1fd_env);
-    for (i = 0; i < n - 1; i++, poly++, e++) {
+    for (i = 0; i < n - 1; i++, poly++, edge++) {
         poly->tpage = tp;
         poly->clut = cl;
         poly->code = GPU_POLY_GT4 | GPU_ABE;
-        poly->x0 = e[0].sxy0.vx;
-        poly->y0 = e[0].sxy0.vy;
-        poly->x1 = e[0].sxy4.vx;
-        poly->y1 = e[0].sxy4.vy;
-        poly->x2 = e[1].sxy0.vx;
-        poly->y2 = e[1].sxy0.vy;
-        poly->x3 = e[1].sxy4.vx;
-        poly->y3 = e[1].sxy4.vy;
+        poly->x0 = edge[0].sxy0.vx;
+        poly->y0 = edge[0].sxy0.vy;
+        poly->x1 = edge[0].sxy4.vx;
+        poly->y1 = edge[0].sxy4.vy;
+        poly->x2 = edge[1].sxy0.vx;
+        poly->y2 = edge[1].sxy0.vy;
+        poly->x3 = edge[1].sxy4.vx;
+        poly->y3 = edge[1].sxy4.vy;
         poly->v0 = poly->v2 = v0;
         poly->v1 = poly->v3 = v1;
-        k = i % 8;
-        ua = k << 5;
-        ub = (k + 1) << 5;
+        tile = i % 8;
+        ua = tile << 5;
+        ub = (tile + 1) << 5;
         if (ua == 0x100) ua = 0xFF;
         if (ub == 0x100) ub = 0xFF;
         poly->u2 = poly->u3 = ub;
@@ -177,11 +177,11 @@ void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
         if (i < 8) {
             ca = i * 16;
             cb = (i + 1) * 16;
-            if (c < ca) {
-                ca = c;
+            if (bright < ca) {
+                ca = bright;
             }
-            if (c < cb) {
-                cb = c;
+            if (bright < cb) {
+                cb = bright;
             }
             setRGB0(poly, ca, ca, ca);
             setRGB1(poly, ca, ca, ca);
@@ -190,26 +190,26 @@ void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
         } else if (i >= 0x35) {
             cb = 0x80 - (i - 0x34) * 16;
             ca = 0x80 - (i - 0x33) * 16;
-            if (c < cb) {
-                cb = c;
+            if (bright < cb) {
+                cb = bright;
             }
-            if (c < ca) {
-                ca = c;
+            if (bright < ca) {
+                ca = bright;
             }
             setRGB0(poly, cb, cb, cb);
             setRGB1(poly, cb, cb, cb);
             setRGB2(poly, ca, ca, ca);
             setRGB3(poly, ca, ca, ca);
         } else {
-            setRGB0(poly, c, c, c);
-            setRGB1(poly, c, c, c);
-            setRGB2(poly, c, c, c);
-            setRGB3(poly, c, c, c);
+            setRGB0(poly, bright, bright, bright);
+            setRGB1(poly, bright, bright, bright);
+            setRGB2(poly, bright, bright, bright);
+            setRGB3(poly, bright, bright, bright);
         }
-        if (e[0].sxy0.vx < e[1].sxy0.vx) {
+        if (edge[0].sxy0.vx < edge[1].sxy0.vx) {
             ex->btlfx_addPrim(0x0C000000, 0, poly);
         } else {
-            ex->btlfx_addPrim(0x0C000000, (e[0].otz8 + e[1].otz8) >> 1, poly);
+            ex->btlfx_addPrim(0x0C000000, (edge[0].otz8 + edge[1].otz8) >> 1, poly);
         }
     }
 }
@@ -707,14 +707,14 @@ static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) 
     BTLFX_EXPORTS(fx_1fd_env)->btlfx_drawScreenTint((u32 *)(fx_1fd_env->ot + ot), abr, bright, bright, bright);
 }
 
-static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
+static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1fd_env);
-    SVECTOR a;
+    SVECTOR home;
     SVECTOR out;
 
-    ex->btlfx_getUnitHomePos(a0, (s16 *)&a);
-    fxm_lerpSvec(b, &a, (t << 12) / n, &out);
-    ex->btlfx_setUnitPos(a0, (s16 *)&out);
+    ex->btlfx_getUnitHomePos(unit, (s16 *)&home);
+    fxm_lerpSvec(start, &home, (t << 12) / n, &out);
+    ex->btlfx_setUnitPos(unit, (s16 *)&out);
     return t >= n;
 }
 

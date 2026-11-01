@@ -126,7 +126,7 @@ typedef struct {
 extern BtlModelBuf fx_1bf_1_effModels[];
 extern SVECTOR fx_1bf_1_origin;
 extern s16 fx_1bf_1_spawnOffsets[];
-static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot);
+static s32 fxm_randRingPoint(SVECTOR *out, SVECTOR *rot);
 static s32 fx_1bf_1_op80PoolTask(s32 mode, Fx1bf1Rock *o, Unk800F78A4 *env, s32 entry, s32 frame, s32 pool, Fx1bf1RockInst *inst);
 
 #endif

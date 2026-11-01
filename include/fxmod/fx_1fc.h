@@ -69,7 +69,7 @@ typedef struct {
     s16 *keys4;
 } Fx1fcKeys;
 static s32 fxm_valuePathGet(Fx1fcKeys *keys, s32 t, s32 *out);
-static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b);
+static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start);
 
 typedef struct {
     s16 *keys0;

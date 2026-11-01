@@ -168,20 +168,20 @@ static void fx_07d_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s
     fx_07d_sparkPosIdx = (fx_07d_sparkPosIdx + 1) % 24;
 }
 
-static void fxm_twistVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
+static void fxm_twistVertex(s32 radius, s32 unused1, s32 ang, s32 unused2, s16 *out) {
     BtlfxExports *ex;
     s32 t;
     s32 x;
     s32 y;
 
-    t = ((0x6C - r) << 12) / 108;
+    t = ((0x6C - radius) << 12) / 108;
     t = (t * fx_07d_twist) >> 12;
-    r = (r * 9) >> 3;
+    radius = (radius * 9) >> 3;
     ex = BTLFX_EXPORTS(fx_07d_env);
-    a += 0x9B;
-    a += t;
-    x = (ex->math_cos(a) * r) >> 12;
-    y = (ex->math_sin(a) * r) >> 12;
+    ang += 0x9B;
+    ang += t;
+    x = (ex->math_cos(ang) * radius) >> 12;
+    y = (ex->math_sin(ang) * radius) >> 12;
     out[0] = x;
     out[1] = y;
 }

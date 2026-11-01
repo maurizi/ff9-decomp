@@ -135,8 +135,8 @@ extern u16 fx_0b3_morphBlocks[6]; /* morph model file ids */
 extern s32 fx_0b3_morphModels[6]; /* morph models */
 
 
-static s32 fxm_sinHalfNeg(s32 a);
-static s32 fxm_nextRingPoint(SVECTOR *v);
+static s32 fxm_sinHalfNeg(s32 ang);
+static s32 fxm_nextRingPoint(SVECTOR *out);
 typedef struct {
     s16 pad0; /* always 0 in the effect file blocks (runtime, round 33) */
     s16 count2; /* count */

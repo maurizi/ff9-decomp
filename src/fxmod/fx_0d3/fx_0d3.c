@@ -575,11 +575,11 @@ static s32 fx_0d3_op81SpawnPoint(SVECTOR *v) {
     return 0;
 }
 
-static void fxm_waveVertexX(s16 *v) {
-    s32 t = (BTLFX_EXPORTS(fx_0d3_env)->math_sin(fx_0d3_wavePhase + (v[1] << 8)) * fx_0d3_waveAmp) >> 12;
-    s32 x = v[0];
+static void fxm_waveVertexX(s16 *vert) {
+    s32 wave = (BTLFX_EXPORTS(fx_0d3_env)->math_sin(fx_0d3_wavePhase + (vert[1] << 8)) * fx_0d3_waveAmp) >> 12;
+    s32 x = vert[0];
 
-    v[0] = x + t;
+    vert[0] = x + wave;
 }
 
 INCLUDE_RODATA("asm/us/fx_0d3/nonmatchings/fx_0d3", fx_0d3_headerPtr);

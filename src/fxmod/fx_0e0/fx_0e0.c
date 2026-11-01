@@ -1,6 +1,6 @@
 #include "fxmod/fx_0e0.h"
 
-static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
+static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 bright, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
     POLY_FT4 *poly = (POLY_FT4 *)fx_0e0_env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e0_env);
     u8 col[4];
@@ -9,7 +9,7 @@ static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 
     s32 y1;
 
     fx_0e0_env->prim = (u8 *)(poly + 2);
-    col[0] = col[1] = col[2] = c;
+    col[0] = col[1] = col[2] = bright;
     if (abr != 0xFF) {
         col[3] = 0x2E;
     } else {
@@ -102,7 +102,7 @@ static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 bright, s
     }
 }
 
-static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 abr) {
+static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 bright, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 abr) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e0_env);
     MATRIX m;
     VECTOR sc;
@@ -112,8 +112,8 @@ static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 t
     s32 otz;
     POLY_FT4 *poly;
     s32 code;
-    s32 a;
-    s32 b;
+    s32 half;
+    s32 negHalf;
 
     if (rot == NULL) {
         rot = &zero;
@@ -125,7 +125,7 @@ static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 t
     gte_ldv0(pos);
     poly = (POLY_FT4 *)fx_0e0_env->prim;
     fx_0e0_env->prim = (u8 *)(poly + 1);
-    col[0] = col[1] = col[2] = c >> 5;
+    col[0] = col[1] = col[2] = bright >> 5;
     col[3] = (abr != 0xFF) ? 0x2E : 0x2C;
     tpage |= (abr & 3) << 5;
     gte_rtv0tr_b();
@@ -138,15 +138,15 @@ static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 t
     }
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    a = w << 6;
-    b = -a;
-    vtx[1].vx = vtx[3].vx = a;
-    vtx[0].vx = vtx[2].vx = b;
-    a = h << 6;
-    b = -a;
-    vtx[2].vy = vtx[3].vy = a;
+    half = w << 6;
+    negHalf = -half;
+    vtx[1].vx = vtx[3].vx = half;
+    vtx[0].vx = vtx[2].vx = negHalf;
+    half = h << 6;
+    negHalf = -half;
+    vtx[2].vy = vtx[3].vy = half;
     vtx[0].vz = vtx[1].vz = vtx[2].vz = vtx[3].vz = 0;
-    vtx[0].vy = vtx[1].vy = b;
+    vtx[0].vy = vtx[1].vy = negHalf;
     gte_ldv3c(vtx);
     gte_rtpt();
     gte_nclip();

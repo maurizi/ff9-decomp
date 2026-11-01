@@ -1,14 +1,14 @@
 #include "fxmod/fx_17d_7.h"
 
-static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot) {
+static s32 fxm_randRingPoint(SVECTOR *out, SVECTOR *rot) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_7_env);
-    s32 a = ex->btlfx_rand();
+    s32 ang = ex->btlfx_rand();
 
-    v->pad = 0;
-    v->vy = 0;
-    v->vx = (ex->math_cos(a) * fx_17d_7_ringRadius) >> 12;
-    v->vz = (ex->math_sin(a) * fx_17d_7_ringRadius) >> 12;
-    rot->vy = a;
+    out->pad = 0;
+    out->vy = 0;
+    out->vx = (ex->math_cos(ang) * fx_17d_7_ringRadius) >> 12;
+    out->vz = (ex->math_sin(ang) * fx_17d_7_ringRadius) >> 12;
+    rot->vy = ang;
     return 0;
 }
 

@@ -137,6 +137,6 @@ static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx1
 /* end copied */
 
 /* propagated */
-static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b);
+static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 width, s32 r, s32 g, s32 b);
 
 #endif

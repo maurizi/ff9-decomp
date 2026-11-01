@@ -864,14 +864,14 @@ static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) 
     BTLFX_EXPORTS(fx_0d2_env)->btlfx_drawScreenTint((u32 *)(fx_0d2_env->ot + ot), abr, bright, bright, bright);
 }
 
-static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
+static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0d2_env);
-    SVECTOR a;
+    SVECTOR home;
     SVECTOR out;
 
-    ex->btlfx_getUnitHomePos(a0, (s16 *)&a);
-    fxm_lerpSvec(b, &a, (t << 12) / n, &out);
-    ex->btlfx_setUnitPos(a0, (s16 *)&out);
+    ex->btlfx_getUnitHomePos(unit, (s16 *)&home);
+    fxm_lerpSvec(start, &home, (t << 12) / n, &out);
+    ex->btlfx_setUnitPos(unit, (s16 *)&out);
     return t >= n;
 }
 

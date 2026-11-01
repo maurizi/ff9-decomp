@@ -52,7 +52,7 @@ void fx_0e2_stripFromTrackBlendRot(void *trackA, void *trackB, Fx0e2Trail *trail
                    s32 rotY);
 void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLength, SVECTOR *scale, s32 width, s32 t, s32 rotY, s32 twist);
 void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale, s32 width, s32 rotY);
-void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1);
+void fxm_drawEdgeQuads(s32 n, s32 bright, s32 tpage, s32 clut, u16 v0, u16 v1);
 typedef struct {
     Pool6CEntry *emit0[5];
     SVECTOR rot14; /* tower rotation */
@@ -271,7 +271,7 @@ typedef struct {
 } Fx0e2Path_0b4;
 static s32 fxm_rotPosPathGet(Fx0e2Path_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 static s32 fxm_offsetTableEntry(u8 *base, u16 i);
-static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b);
+static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start);
 
 typedef struct {
     s16 *data0;

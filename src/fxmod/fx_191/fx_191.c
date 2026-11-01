@@ -40,23 +40,23 @@ s32 fx_191_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
     return fxm_lerpParticle(e, pos, &fx_191_op80Offsets[3], &fx_191_op80Targets[3], frame, frames);
 }
 
-static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 frame, s32 frames) {
+static s32 fxm_lerpParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_191_env);
-    SVECTOR a;
-    SVECTOR b;
+    SVECTOR start;
+    SVECTOR cur;
     s32 t;
 
-    a.vx = fx_191_op80Origin.vx + base->vx;
+    start.vx = fx_191_op80Origin.vx + base->vx;
     t = (fx_191_op80Frame << 12) / 12;
-    a.vy = fx_191_op80Origin.vy + base->vy;
-    a.vz = fx_191_op80Origin.vz + base->vz;
-    ex->btlfx_lerpVec((s16 *)&a, (s16 *)to, t, (s16 *)&b);
-    pos->vx = b.vx;
-    pos->vy = b.vy;
-    pos->vz = b.vz;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    start.vy = fx_191_op80Origin.vy + base->vy;
+    start.vz = fx_191_op80Origin.vz + base->vz;
+    ex->btlfx_lerpVec((s16 *)&start, (s16 *)to, t, (s16 *)&cur);
+    pos->vx = cur.vx;
+    pos->vy = cur.vy;
+    pos->vz = cur.vz;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -81,44 +81,44 @@ static s32 fx_191_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTO
     return fxm_followPathParticle1(e, pos, &z, frame, frames);
 }
 
-static s32 fxm_followPathParticle0(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fxm_followPathParticle0(Pool30Entry *pt, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_191_posPath0, fx_191_op81Frame * 3, &v);
-    v.vx += fx_191_op81PathOrigin.vx;
-    v.vy += fx_191_op81PathOrigin.vy;
-    v.vz += fx_191_op81PathOrigin.vz;
-    v.vx += ofs->vx;
-    v.vy += ofs->vy;
-    v.vz += ofs->vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    fxm_posPathGet(&fx_191_posPath0, fx_191_op81Frame * 3, &pathPos);
+    pathPos.vx += fx_191_op81PathOrigin.vx;
+    pathPos.vy += fx_191_op81PathOrigin.vy;
+    pathPos.vz += fx_191_op81PathOrigin.vz;
+    pathPos.vx += ofs->vx;
+    pathPos.vy += ofs->vy;
+    pathPos.vz += ofs->vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
     return 0;
 }
 
-static s32 fxm_followPathParticle1(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fxm_followPathParticle1(Pool30Entry *pt, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(&fx_191_posPath1, (fx_191_op81Frame - 5) * 3, &v);
-    v.vx += fx_191_op81PathOrigin.vx;
-    v.vy += fx_191_op81PathOrigin.vy;
-    v.vz += fx_191_op81PathOrigin.vz;
-    v.vx += ofs->vx;
-    v.vy += ofs->vy;
-    v.vz += ofs->vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    fxm_posPathGet(&fx_191_posPath1, (fx_191_op81Frame - 5) * 3, &pathPos);
+    pathPos.vx += fx_191_op81PathOrigin.vx;
+    pathPos.vy += fx_191_op81PathOrigin.vy;
+    pathPos.vz += fx_191_op81PathOrigin.vz;
+    pathPos.vx += ofs->vx;
+    pathPos.vy += ofs->vy;
+    pathPos.vz += ofs->vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }

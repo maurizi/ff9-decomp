@@ -131,11 +131,11 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     ex->StoreImage(&rect, (u32 *)colors);
 }
 
-static void fxm_waveVertexX(s16 *v) {
-    s32 t = (BTLFX_EXPORTS(fx_1fe_env)->math_sin(fx_1fe_wavePhase + (v[1] << 8)) * fx_1fe_waveAmp) >> 12;
-    s32 x = v[0];
+static void fxm_waveVertexX(s16 *vert) {
+    s32 wave = (BTLFX_EXPORTS(fx_1fe_env)->math_sin(fx_1fe_wavePhase + (vert[1] << 8)) * fx_1fe_waveAmp) >> 12;
+    s32 x = vert[0];
 
-    v[0] = x + t;
+    vert[0] = x + wave;
 }
 
 s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {

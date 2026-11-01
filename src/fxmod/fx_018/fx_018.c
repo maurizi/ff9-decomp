@@ -340,13 +340,13 @@ static s32 fxm_jaggedStripTask(s32 mode, Fx018Bolt *it, Unk800F78A4 *env, Unk801
 
 static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_018_env);
-    SVECTOR *p = fx_018_strips[ex->btlfx_rand() % 16].pts4;
+    SVECTOR *src = fx_018_strips[ex->btlfx_rand() % 16].pts4;
 
-    p += ex->btlfx_rand() % 15;
+    src += ex->btlfx_rand() % 15;
 
-    out->vx = p->vx;
-    out->vy = p->vy;
-    out->vz = p->vz;
+    out->vx = src->vx;
+    out->vy = src->vy;
+    out->vz = src->vz;
     out->pad = 1;
     return 0;
 }

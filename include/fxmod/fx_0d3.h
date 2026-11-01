@@ -15,7 +15,7 @@ extern s32 fx_0d3_wavePhase;
 
 static void fx_0d3_op80GridVertex(s32 a0, s32 frame, s32 a2, s32 a3, s16 *v);
 static s32 fx_0d3_op81SpawnPoint(SVECTOR *v);
-static void fxm_waveVertexX(s16 *v);
+static void fxm_waveVertexX(s16 *vert);
 typedef struct {
     s16 unk0; /* not read by the module */
     s16 count2; /* count */

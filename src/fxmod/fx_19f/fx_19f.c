@@ -1,12 +1,12 @@
 #include "fxmod/fx_19f.h"
 
-static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
+static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 width, s32 r, s32 g, s32 b) {
     Unk800F78A4 *env = fx_19f_env;
     POLY_G4 *prim;
     BtlfxExports *ex;
     s32 i;
 
-    w >>= 1;
+    width >>= 1;
     prim = (POLY_G4 *)env->prim;
     ex = BTLFX_EXPORTS(env);
     env->prim = (u8 *)(prim + 4);
@@ -20,7 +20,7 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
             prim->r1 = prim->r3 = r;
             prim->g1 = prim->g3 = g;
             prim->b1 = prim->b3 = b;
-            prim->x0 = prim->x2 = 0xA0 - w;
+            prim->x0 = prim->x2 = 0xA0 - width;
             prim->x1 = prim->x3 = 0xA0;
         } else {
             prim->r1 = prim->r3 = 0;
@@ -30,7 +30,7 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
             prim->g0 = prim->g2 = g;
             prim->b0 = prim->b2 = b;
             prim->x0 = prim->x2 = 0xA0;
-            prim->x1 = prim->x3 = w + 0xA0;
+            prim->x1 = prim->x3 = width + 0xA0;
         }
         prim->y0 = prim->y1 = (i >> 1) * 0x78;
         prim->y2 = prim->y3 = prim->y0 + 0x78;
@@ -760,13 +760,13 @@ static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk8010
 
 static s32 fxm_randStripPoint32(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
-    SVECTOR *p = fx_19f_boltTrailPoints[ex->btlfx_rand() % 32].points0;
+    SVECTOR *src = fx_19f_boltTrailPoints[ex->btlfx_rand() % 32].points0;
 
-    p += ex->btlfx_rand() % 17;
+    src += ex->btlfx_rand() % 17;
 
-    out->vx = p->vx;
-    out->vy = p->vy;
-    out->vz = p->vz;
+    out->vx = src->vx;
+    out->vy = src->vy;
+    out->vz = src->vz;
     out->pad = 1;
     return 0;
 }

@@ -235,15 +235,15 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
 void fxm_rollTowardEye(VECTOR *pos, SVECTOR *rot) {
     Unk800F78A4 *env = fx_195_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    s32 tmp;
-    s32 a;
+    SVECTOR pt;
+    s32 ignored;
+    s32 roll;
 
-    v.vx = pos->vx;
-    v.vy = pos->vy;
-    v.vz = pos->vz;
-    ex->btlfx_toLocalPolar(&env->camera->eye, &v, rot, (s32)&tmp, (s32)&tmp, &a);
-    rot->vz = -a + 0x400;
+    pt.vx = pos->vx;
+    pt.vy = pos->vy;
+    pt.vz = pos->vz;
+    ex->btlfx_toLocalPolar(&env->camera->eye, &pt, rot, (s32)&ignored, (s32)&ignored, &roll);
+    rot->vz = -roll + 0x400;
 }
 
 s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {

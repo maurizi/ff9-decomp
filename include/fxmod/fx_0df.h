@@ -58,7 +58,7 @@ s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 /* propagated */
 extern s32 fx_0df_twist;
-static void fxm_twistVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out);
+static void fxm_twistVertex(s32 radius, s32 unused1, s32 ang, s32 unused2, s16 *out);
 static void fxm_anglesFromEye(SVECTOR *a, SVECTOR *b);
 
 typedef struct {

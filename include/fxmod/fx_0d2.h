@@ -75,7 +75,7 @@ static s32 fxm_offsetTableEntry(u8 *base, u16 i);
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static s32 fxm_valuePathGet(Fx0d2Keys *keys, s32 t, s32 *out);
-static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b);
+static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start);
 static void fxm_camChanReset(void);
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);
 static void fxm_camChanUpdate(s32 ch);
