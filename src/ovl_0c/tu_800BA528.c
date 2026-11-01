@@ -490,18 +490,7 @@ void wm_mapSystemTerm(void) {
 }
 
 void wm_wrapPos(s32 *x, s32 *z) {
-    if (*x < 0) {
-        *x += g_worldWidth;
-    }
-    if (*x >= g_worldWidth) {
-        *x -= g_worldWidth;
-    }
-    if (*z > 0) {
-        *z -= g_worldDepth;
-    }
-    if (*z <= -g_worldDepth) {
-        *z += g_worldDepth;
-    }
+    wm_wrapPos_inline(x, z);
 }
 
 void wm_posToCell(s32 posX, s32 posZ, s32 *outCell) {

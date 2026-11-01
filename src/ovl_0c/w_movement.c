@@ -1638,23 +1638,11 @@ void wm_controlWalk(void) {
             }
         }
         if (!(g_worldFrameCount & 1) && (u32)(((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) - WM_TOPO_FOREST) < 3) {
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            rx = g_worldPlayer->prevPos.vx + *g_randPtr++ - 0x80;
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            lo = *g_randPtr++;
+            rx = g_worldPlayer->prevPos.vx + rand8_inline() - 0x80;
+            lo = rand8_inline();
             wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, WM_FX_FOREST_LEAVES, 0x6D80);
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            rx = g_worldPlayer->prevPos.vx + *g_randPtr++ - 0x80;
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            lo = *g_randPtr++;
+            rx = g_worldPlayer->prevPos.vx + rand8_inline() - 0x80;
+            lo = rand8_inline();
             wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, WM_FX_FOREST_LEAVES, 0x6D80);
         }
     }
@@ -1888,7 +1876,7 @@ void wm_controlFly(void) {
     }
     if (g_worldFrameCount & 1) {
         topo = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
-        onWater = wm_testCellType_inline2(g_worldWaterCellTypes, topo);
+        onWater = wm_testCellType_inline(g_worldWaterCellTypes, topo);
         switch (g_worldPlayer->actorType) {
         case WM_ACTOR_AIRSHIP:
         case WM_ACTOR_AIRSHIP2:
@@ -2095,6 +2083,8 @@ void w_movementChangeSP2(void) {
     }
 }
 
+/* Same logic as wm_testCellType_inline (ovl_0c.h) after WM_ATTR_TOPOGRAPHY. Written out because a call of the inline
+   compiles differently. */
 u8 wm_testCellType(u32 *allowed, u32 cellAttr) {
     cellAttr = WM_ATTR_TOPOGRAPHY(cellAttr);
     if (cellAttr >= 32) {

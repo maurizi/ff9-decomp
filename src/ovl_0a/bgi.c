@@ -1253,7 +1253,7 @@ s32 bgi_setFloorMoveAxis(s32 moveId, s16 axis) {
 }
 
 BgiFloorMove *bgi_getFloorMove(s32 moveId) {
-    return &g_fieldBgiFloorMoves[moveId];
+    return bgi_getFloorMove_inline(moveId);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/bgi", s_bgiStrInvNy);

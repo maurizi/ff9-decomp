@@ -839,23 +839,7 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *outWidth, void *p
 }
 
 u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *def, u8 flag, s32 *outWidth, SprtWords *sprt) {
-    DrTpageWords *drMode;
-    setlen(sprt, PRIM_LEN(SPRT));
-    if (flag) {
-        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
-    } else {
-        sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-    }
-    sprt->xy = (x & 0xFFFF) | (y << 16);
-    sprt->uvclut = def->uvclut;
-    sprt->wh = def->w | (def->h << 16);
-    addPrim(ot, sprt);
-    sprt++;
-    drMode = (DrTpageWords *)sprt;
-    setDrawTPage(drMode, 1, 1, def->tpage);
-    addPrim(ot, drMode);
-    *outWidth = def->w;
-    return (u8 *)(drMode + 1);
+    return ui_buildSpriteDef_inline(x, y, ot, def, flag, outWidth, sprt);
 }
 
 void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
@@ -987,6 +971,8 @@ s32 item_remove(s32 id, s32 count) {
     return 0;
 }
 
+/* Same logic as item_findSlot_inline (ff9.h). Written out because a call of the inline compiles the loop exit
+   differently. */
 ItemSlot *item_findSlot(s32 id) {
     s32 i;
     ItemSlot *slot = g_gameState->gameData->items.slots;

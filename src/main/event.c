@@ -8,10 +8,7 @@ s32 evt_getSysVar(s32 op) {
 
     switch ((u32)op) {
     case EVT_SYSVAR_RAND:
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-        result = *g_randPtr++;
+        result = rand8_inline();
         break;
     case EVT_SYSVAR_CAMERA:
         fldbg_getCamera(camera);
@@ -127,7 +124,7 @@ s32 evt_getSysVar(s32 op) {
 }
 
 EvtObject *evt_getObjectArg(void) {
-    return evt_resolveObjectId_inline(evt_getArg8_inline2());
+    return evt_resolveObjectId_inline(evt_getArg8_inline());
 }
 
 /* Find the entry point for `key` in script `idx`. */
@@ -481,7 +478,7 @@ s32 evt_rollEncounter(EvtObject *obj) {
     if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > 0x3C0) {
         g_evtEncounterDist = 0;
         g_evtEncounterChance += g_evtState->encounterRate;
-        if (evt_rollEncounter_rand() < (g_evtEncounterChance >> 3)) {
+        if (rand8_inline() < (g_evtEncounterChance >> 3)) {
             g_evtEncounterChance = 0;
             id = evt_rollEncounter_pick();
             if (id == g_evtLastEncounter) {
@@ -1417,10 +1414,7 @@ s32 evt_execInstr(void) {
         msg_startHereIcon(1);
         evt = g_evtState;
         if (evt->idleTimer >= 0) {
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            evt->idleTimer = (*g_randPtr++ + 0xC8) * 4;
+            evt->idleTimer = (rand8_inline() + 0xC8) * 4;
         }
         return 0;
     }
@@ -2741,10 +2735,7 @@ void evt_updateIdleTimer(void) {
     }
     e2 = g_evtState;
     if (e2->idleTimer >= 0) {
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-        e2->idleTimer = (*g_randPtr++ + 0xC8) * 2;
+        e2->idleTimer = (rand8_inline() + 0xC8) * 2;
     }
     if (player->idleAnim != 0 && !(player->animFlags & (EVT_ANIM_SCRIPTED | EVT_ANIM_HELD))) {
         evt_updateIdleTimer_idle(player);
@@ -2929,7 +2920,7 @@ s32 evt_updateObjects(void) {
                     if (g_evtPlayerMoved != 0) {
                         evt = g_evtState;
                         if (evt->idleTimer >= 0) {
-                            evt->idleTimer = (evt_rollEncounter_rand() + 200) * 4;
+                            evt->idleTimer = (rand8_inline() + 200) * 4;
                         }
                     }
                 } else {
@@ -3122,6 +3113,7 @@ void evt_onAnimEnd(EvtObject *obj) {
             obj->animSpeed = obj->defaultAnimSpeed;
         }
         obj->animFrame = 0;
+        /* rand8_inline() written out: calling it changes the register allocation here */
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
@@ -3267,6 +3259,7 @@ void evt_stepAnim(EvtObject *obj) {
         if (t3 >= obj->animFrames) {
             obj->animFrame = 0;
             if (obj->anim == (u16)obj->standAnim) {
+                /* rand8_inline() written out: calling it changes the register allocation here */
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
@@ -3650,47 +3643,15 @@ EvtListNode *evt_getBattleObjects(void) {
 }
 
 s32 evt_getArg8(void) {
-    s32 val;
-    if (g_evtArgFlags & 1) {
-        evt_evalExpr();
-        val = evt_popResult();
-    } else {
-        val = *g_evtCurObj->ip++;
-    }
-    g_evtArgFlags >>= 1;
-    g_evtArgRead = 1;
-    return val;
+    return evt_getArg8_inline();
 }
 
 s32 evt_getArg16(void) {
-    s32 val;
-    if (g_evtArgFlags & 1) {
-        evt_evalExpr();
-        val = evt_popResult();
-    } else {
-        EvtObject *pp = g_evtCurObj;
-        val = *pp->ip++;
-        val |= *pp->ip++ << 8;
-        val = (s16)val;
-    }
-    g_evtArgFlags >>= 1;
-    g_evtArgRead = 1;
-    return val;
+    return evt_getArg16_inline();
 }
 
 s32 evt_getObjectModelData(EvtObject *obj) {
-    s32 *slot;
-
-    if (obj != NULL) {
-        if (obj->modelId == EVT_MODEL_NONE) {
-            return 0;
-        }
-        slot = (s32 *)game_getModel(obj->modelSlot);
-        if (slot != NULL) {
-            return slot[2];
-        }
-    }
-    return 0;
+    return (s32)evt_getObjectModelData_inline(obj);
 }
 
 EvtObject *evt_getObject(s32 id) {
@@ -3739,10 +3700,7 @@ void evt_resetIdleTimer(s32 halfDelay) {
     EvtState *evt = g_evtState;
     s32 delay;
     if (evt->idleTimer >= 0) {
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-        delay = *g_randPtr++ + 200;
+        delay = rand8_inline() + 200;
         if (halfDelay == 0) {
             evt->idleTimer = delay * 4;
         } else {
@@ -3777,9 +3735,7 @@ void evt_initObjectList(void) {
 }
 
 void evt_createRegion(s32 scriptIdx, s32 id) {
-    EvtObject *obj = evt_createObject(scriptIdx, id, 0x38, 0x10);
-    obj->kind = EVT_KIND_REGION;
-    obj->flags = EVT_OBJ_ENABLED;
+    evt_createRegion_inline(scriptIdx, id);
 }
 
 u16 evt_getBattleVar(s32 var) {
@@ -3817,6 +3773,7 @@ s32 evt_popRandomBit(void) {
         bits >>= 1;
     }
     if (count != 0) {
+        /* rand8_inline() written out: calling it changes the register allocation here */
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
@@ -3900,20 +3857,7 @@ s32 evt_isInParty(s32 slot) {
 }
 
 s32 evt_getArg24(void) {
-    s32 val;
-    EvtObject *pp;
-
-    if (g_evtArgFlags & 1) {
-        evt_evalExpr();
-        val = evt_popResult();
-    } else {
-        pp = g_evtCurObj;
-        val = *pp->ip++;
-        val |= *pp->ip++ << 8;
-        val |= *pp->ip++ << 16;
-    }
-    g_evtArgFlags >>= (g_evtArgRead = 1);
-    return val;
+    return evt_getArg24_inline();
 }
 
 void evt_finishTurn(EvtObject *obj) {

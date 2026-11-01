@@ -74,13 +74,8 @@ s32 btl_tryCounter(BtlUnit *unit, BtlUnit *attacker, BtlCmd *cmd) {
         if (unit->support[1] & SA_BIT(SA_EYE_4_EYE)) {
             chance *= 2;
         }
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-        }
-        if (((*g_randPtr << 8) | *g_randPtr++) % 100 < chance) {
+        RAND_REFILL2();
+        if (RAND16() % 100 < chance) {
             btl_queueAutoCmd(unit, BTL_CMD_COUNTER, ABIL_ATTACK, attacker->unitBit);
             return 1;
         }
@@ -522,7 +517,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
             caster->rot[1] = facing;
         }
         if (g_evtGlobalVars.b[EVT_GB_DAGGER_FALTERS] != 0 && (caster->flags & (BTL_UNIT_INDEX_MASK | BTL_UNIT_PARTY)) == (CHR_DAGGER << BTL_UNIT_INDEX_SHIFT | BTL_UNIT_PARTY) && cmd->cmdNo < BTL_CMD_TABLE_COUNT) {
-            if (evt_rollEncounter_rand() < 0x40) {
+            if (rand8_inline() < 0x40) {
                 msg = BTL_MSG_CANT_CONCENTRATE;
                 goto fail;
             }
@@ -577,7 +572,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
         return 1;
     case BTL_CMD_BLU_MAG:
         if (cmd->subNo == ABIL_ROULETTE) {
-            cmd->targets = btl_pickRandomUnit(evt_rollEncounter_rand() & 1);
+            cmd->targets = btl_pickRandomUnit(rand8_inline() & 1);
         } else if (cmd->subNo == ABIL_ANGELS_SNACK) {
             have = item_getCount(cmd->ability->power);
             need = btl_countActiveUnits(1);
@@ -601,7 +596,7 @@ s32 btl_checkCmdUsable(Battle *battle, BtlCmd *cmd) {
             g_gameState->gameData->gil -= need;
         } else if (cmd->subNo == ABIL_CURSE || cmd->subNo == ABIL_CURSE_ELAN) {
             ability = cmd->ability;
-            roll = evt_rollEncounter_rand();
+            roll = rand8_inline();
             ability->element = 1 << (roll % 8);
         } else {
             return 1;
@@ -982,6 +977,8 @@ void btl_flushCmdQueue(Battle *battle) {
     }
 }
 
+/* Same loop as btl_flushCmdQueue with a different cmdNo test. Not shared through an inline helper: moving the
+   per-command body into one swaps two temporaries (t0/t1) in both functions. */
 void btl_clearCmdQueue(Battle *battle) {
     BtlCmd *node = &battle->cmdQueue;
     BtlCmd *cmd;
@@ -1009,9 +1006,7 @@ void btl_clearCmdQueue(Battle *battle) {
             node = cmd;
         }
     }
-    battle->eidolonTimer = 0;
-    battle->eidolonAbility = 0;
-    battle->cmdFlags &= ~(BTL_CMDF_EIDOLON_TIMER | BTL_CMDF_EIDOLON_QUEUED);
+    btl_resetEidolon_inline(battle);
 }
 
 void btl_enqueueCmd(BtlCmd *cmd) {
@@ -1163,6 +1158,7 @@ void btl_drawActiveMarker(GameData *gd, Battle *battle, BtlUnit *unit) {
 void btl_autoAttack(BtlUnit *unit) {
     s32 side;
     if (unit->status & BTL_STATUS_CONFUSE) {
+        /* rand8_inline() written out: calling it changes the register allocation here */
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
@@ -1194,20 +1190,7 @@ void btl_onCmdEffectDone(void) {
 }
 
 void btl_clearCmd(BtlCmd *cmd) {
-    cmd->next = 0;
-    cmd->ability = 0;
-    cmd->targets = 0;
-    cmd->cmdNo = 0;
-    cmd->subNo = 0;
-    cmd->info.b.targeting = 0;
-    cmd->info.b.unk0_2 = 0;
-    cmd->info.b.automatic = 0;
-    cmd->info.b.covered = 0;
-    cmd->info.b.dodged = 0;
-    cmd->info.b.reflect = 0;
-    cmd->info.b.magicFailed = 0;
-    cmd->info.b.shortSummon = 0;
-    cmd->info.b.enemyBounce = 0;
+    btl_clearCmd_inline(cmd);
 }
 
 void btl_queueAutoCmd(BtlUnit *unit, s32 cmdNo, s32 subNo, s32 targets) {
@@ -1227,9 +1210,7 @@ void btl_cancelTranceEidolon(BtlUnit *unit) {
                 break;
             }
         }
-        battle->eidolonTimer = 0;
-        battle->eidolonAbility = 0;
-        battle->cmdFlags &= ~(BTL_CMDF_EIDOLON_TIMER | BTL_CMDF_EIDOLON_QUEUED);
+        btl_resetEidolon_inline(battle);
     }
 }
 
@@ -2785,24 +2766,14 @@ void btl_calcSteal(BtlCalc *calc, Unk800B7F20 *enemy, s32 slot) {
         btl_showMessage(BTL_MSG_STOLE, btl_getItemName(itemId));
         if (calc->caster->support[1] & SA_BIT(SA_MUG)) {
             calc->targetResult |= BTL_POPUP_HP;
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-                if (g_randPtr >= g_randTableEnd) {
-                    rand_refill();
-                }
-            }
-            calc->targetHpChange = ((*g_randPtr << 8) | *g_randPtr++) % ((calc->caster->level * calc->target->level) >> 1);
+            RAND_REFILL2();
+            calc->targetHpChange = RAND16() % ((calc->caster->level * calc->target->level) >> 1);
         }
         if (calc->caster->support[0] & SA_BIT(SA_STEAL_GIL)) {
             gd = g_gameState->gameData;
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-                if (g_randPtr >= g_randTableEnd) {
-                    rand_refill();
-                }
-            }
+            RAND_REFILL2();
             gd->gil = g_gameState->gameData->gil +
-                         ((*g_randPtr << 8) | *g_randPtr++) % ((calc->caster->level * calc->target->level) / 4 + 1);
+                         RAND16() % ((calc->caster->level * calc->target->level) / 4 + 1);
             if (g_gameState->gameData->gil > GIL_MAX) {
                 g_gameState->gameData->gil = GIL_MAX;
             }
@@ -2825,13 +2796,8 @@ void btl_gainTrance(BtlCalc *calc, u8 countered) {
             if (target->support[1] & SA_BIT(SA_HIGH_TIDE)) {
                 gain = target->spirit;
             } else {
-                if (g_randPtr >= g_randTableEnd) {
-                    rand_refill();
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                    }
-                }
-                gain = ((*g_randPtr << 8) | *g_randPtr++) % calc->target->spirit;
+                RAND_REFILL2();
+                gain = RAND16() % calc->target->spirit;
             }
             target = calc->target;
             if (gain + target->trance < 0xFF) {
@@ -2863,23 +2829,13 @@ u8 btl_rollHit(BtlCalc *calc) {
     if (calc->target->status & BTL_STATUS_VANISH) {
         calc->hitRate = 0;
     }
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
-    if (((*g_randPtr << 8) | *g_randPtr++) % 100 >= calc->hitRate) {
+    RAND_REFILL2();
+    if (RAND16() % 100 >= calc->hitRate) {
         calc->flags |= BTL_CALC_MISS;
         return 0;
     }
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
-    if (((*g_randPtr << 8) | *g_randPtr++) % 100 < calc->evade) {
+    RAND_REFILL2();
+    if (RAND16() % 100 < calc->evade) {
         if (calc->target != calc->caster) {
             calc->flags |= BTL_CALC_MISS;
             if (!((calc->target->flags >> BTL_UNIT_COVERING_BIT) & 1)) {
@@ -2892,20 +2848,10 @@ u8 btl_rollHit(BtlCalc *calc) {
 }
 
 u8 btl_rollStatusHit(BtlCalc *calc) {
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
-    if (((*g_randPtr << 8) | *g_randPtr++) % 100 < calc->hitRate) {
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-        }
-        if (((*g_randPtr << 8) | *g_randPtr++) % 100 >= calc->evade) {
+    RAND_REFILL2();
+    if (RAND16() % 100 < calc->hitRate) {
+        RAND_REFILL2();
+        if (RAND16() % 100 >= calc->evade) {
             return 1;
         }
     }
@@ -2916,13 +2862,8 @@ u8 btl_rollStatusHit(BtlCalc *calc) {
 void btl_setPhysParams(BtlCalc *calc, u8 formula) {
     s32 bonus;
 
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
-    bonus = ((*g_randPtr << 8) | *g_randPtr++) % (((calc->caster->level + calc->caster->strength) >> 3) + 1);
+    RAND_REFILL2();
+    bonus = RAND16() % (((calc->caster->level + calc->caster->strength) >> 3) + 1);
     calc->power = calc->caster->weapon[5];
     calc->defense = calc->target->defense;
     switch (formula) {
@@ -2941,13 +2882,8 @@ void btl_setPhysParams(BtlCalc *calc, u8 formula) {
         calc->multiplier = ((calc->caster->strength + calc->caster->magic) >> 1) + bonus;
         break;
     case BTL_FORMULA_WEAPON_RANDOM:
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-        }
-        calc->multiplier = ((*g_randPtr << 8) | *g_randPtr++) % calc->caster->strength + bonus;
+        RAND_REFILL2();
+        calc->multiplier = RAND16() % calc->caster->strength + bonus;
         break;
     }
 }
@@ -2982,19 +2918,9 @@ void btl_rollCritical(BtlCalc *calc) {
     u8 critRange = calc->caster->spirit >> 2;
     s32 roll;
     if (critRange != 0) {
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-                if (g_randPtr >= g_randTableEnd) {
-                    rand_refill();
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                    }
-                }
-            }
-        }
-        roll = (*g_randPtr << 8) | *g_randPtr++;
+        RAND_REFILL2();
+        RAND_REFILL2();
+        roll = RAND16();
         if (roll % 100 < roll % critRange) {
             calc->multiplier *= 2;
             calc->targetResult |= BTL_POPUP_CRITICAL;
@@ -3065,8 +2991,6 @@ void btl_finishPhysDamage(BtlCalc *calc) {
 
 void btl_setTargetHp(BtlCalc *calc) {
     BtlUnit *target;
-    BtlUnit *killed;
-    BtlModel *model;
     if (calc->cmd->ability->power != 0) {
         if (calc->target->status & BTL_STATUS_KO) {
             calc->flags |= BTL_CALC_MISS;
@@ -3078,17 +3002,7 @@ void btl_setTargetHp(BtlCalc *calc) {
         target->rot[1] = target->obj->rotY = (target->flags & BTL_UNIT_PARTY) * 0x800;
         return;
     }
-    killed = calc->target;
-    killed->hp = 0;
-    killed->flags |= BTL_UNIT_KILLED;
-    if (!(killed->flags & BTL_UNIT_PARTY)) {
-        btl_playDeathCry(killed, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(killed->flags)].type->deathCry);
-    }
-    model = killed->model;
-    if ((s32)model->motion != killed->motions[(killed->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(killed->flags & BTL_UNIT_PARTY) || (s32)model->motion != killed->motions[BTL_MOTION_READY]) && killed != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        model->motion = (BtlMotion *)killed->motions[(killed->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
-        killed->obj->frame = 0;
-    }
+    btl_killUnit_inline(calc->target);
 }
 
 void btl_rollFlee(BtlCalc *calc) {
@@ -3127,35 +3041,18 @@ void btl_rollFlee(BtlCalc *calc) {
         partyLevels = 1;
     }
     chance = (200 / (enemyLevels / enemyCount)) * (partyLevels / partyCount) / 16;
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
-    if (chance > ((*g_randPtr << 8) | *g_randPtr++) % 100 && (cmd == NULL || (cmd->caster->flags & BTL_UNIT_PARTY))) {
+    RAND_REFILL2();
+    if (chance > RAND16() % 100 && (cmd == NULL || (cmd->caster->flags & BTL_UNIT_PARTY))) {
         btl_setCmd((s32)&g_gameState->gameData->ctx.battle->escapeCmd, BTL_CMD_ESCAPE, 1, BTL_TARGETS_PARTY, 1);
     }
 }
 
 u8 btl_checkFrozenShatter(BtlCalc *calc) {
-    BtlUnit *target;
-    BtlModel *model;
     if ((calc->target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_FREEZE)) != 0x02000000) {
         return 1;
     }
     btl_removeQueuedCmd(calc->target, BTL_CMD_PETRIFY);
-    target = calc->target;
-    target->hp = 0;
-    target->flags |= BTL_UNIT_KILLED;
-    if (!(target->flags & BTL_UNIT_PARTY)) {
-        btl_playDeathCry(target, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(target->flags)].type->deathCry);
-    }
-    model = target->model;
-    if ((s32)model->motion != target->motions[(target->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(target->flags & BTL_UNIT_PARTY) || (s32)model->motion != target->motions[BTL_MOTION_READY]) && target != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        model->motion = (BtlMotion *)target->motions[(target->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
-        target->obj->frame = 0;
-    }
+    btl_killUnit_inline(calc->target);
     btl_showMessage(BTL_MSG_IMPACT_CRUSHES);
     return 0;
 }
@@ -3175,13 +3072,8 @@ s32 btl_consumeMp(BtlUnit *unit, s16 mp) {
 }
 
 void btl_rollMagicFail(BtlCmd *cmd) {
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
-    if ((cmd->caster->level >> 1) + cmd->caster->spirit < ((*g_randPtr << 8) | *g_randPtr++) % 100) {
+    RAND_REFILL2();
+    if ((cmd->caster->level >> 1) + cmd->caster->spirit < RAND16() % 100) {
         cmd->info.b.magicFailed = 1;
     }
 }
@@ -3205,36 +3097,16 @@ s32 btl_checkSwdMagUsable(BtlUnit *unit, s16 mpCost) {
 }
 
 void btl_killUnit(BtlUnit *unit) {
-    BtlModel *model;
-    unit->hp = 0;
-    unit->flags |= BTL_UNIT_KILLED;
-    if (!(unit->flags & BTL_UNIT_PARTY)) {
-        btl_playDeathCry(unit, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->deathCry);
-    }
-    model = unit->model;
-    if ((s32)model->motion != unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(unit->flags & BTL_UNIT_PARTY) || (s32)model->motion != unit->motions[BTL_MOTION_READY]) && unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
-        unit->obj->frame = 0;
-    }
+    btl_killUnit_inline(unit);
 }
 
 void btl_rollShortSummon(BtlCmd *cmd) {
     s32 roll;
     if (!(cmd->caster->support[1] & SA_BIT(SA_BOOST))) {
         if (cmd->ability->mpCost * 2 < cmd->caster->mp) {
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            roll = *g_randPtr;
-            g_randPtr++;
-            roll = roll < 0xE6;
+            roll = rand8_inline() < 0xE6;
         } else {
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            roll = *g_randPtr;
-            g_randPtr++;
-            roll = roll < 0xAA;
+            roll = rand8_inline() < 0xAA;
         }
         if (roll) {
             cmd->info.b.shortSummon = 1;
@@ -3267,27 +3139,13 @@ void btl_initHitRates(BtlCalc *calc) {
 }
 
 void btl_initStatusHitRate(BtlCalc *calc) {
-    BtlUnit *caster = calc->caster;
-    calc->hitRate = caster->level + (calc->cmd->ability->rate + (caster->magic >> 2)) - calc->target->level;
-    if (calc->hitRate > 100) {
-        calc->hitRate = 100;
-    } else if (calc->hitRate <= 0) {
-        calc->hitRate = 1;
-    }
-    calc->evade = calc->target->magicEva;
+    btl_initStatusHitRate_inline(calc);
 }
 
 u8 btl_initUndeadHitRate(BtlCalc *calc) {
     BtlUnit *target = calc->target;
     if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) != 0) {
-        BtlUnit *caster = calc->caster;
-        calc->hitRate = caster->level + (calc->cmd->ability->rate + (caster->magic >> 2)) - calc->target->level;
-        if (calc->hitRate > 100) {
-            calc->hitRate = 100;
-        } else if (calc->hitRate <= 0) {
-            calc->hitRate = 1;
-        }
-        calc->evade = calc->target->magicEva;
+        btl_initStatusHitRate_inline(calc);
         return 0;
     }
     return 1;
@@ -3371,12 +3229,7 @@ void btl_setAbilityPhysParams(BtlCalc *calc) {
     u8 roll;
     s32 strength;
     BtlUnit *caster;
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
+    RAND_REFILL2();
     roll = *g_randPtr;
     caster = calc->caster;
     strength = caster->strength;
@@ -3390,12 +3243,7 @@ void btl_setMagicParams(BtlCalc *calc) {
     u8 roll;
     s32 magic;
     BtlUnit *caster;
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
+    RAND_REFILL2();
     roll = *g_randPtr;
     caster = calc->caster;
     magic = caster->magic;
@@ -3411,14 +3259,9 @@ void btl_setMultiplierFromPower(BtlCalc *calc) {
 
 void btl_setWeaponAbilityParams(BtlCalc *calc) {
     s32 strength;
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
+    RAND_REFILL2();
     strength = calc->caster->strength;
-    calc->multiplier = strength + ((*g_randPtr << 8) | *g_randPtr++) % (((calc->caster->level + strength) >> 3) + 1);
+    calc->multiplier = strength + RAND16() % (((calc->caster->level + strength) >> 3) + 1);
     calc->power = calc->caster->weapon[5] * calc->cmd->ability->power / 10;
     calc->defense = calc->target->defense;
 }
@@ -3427,12 +3270,7 @@ void btl_setEnemyAttackParams(BtlCalc *calc) {
     u8 roll;
     s32 strength;
     BtlUnit *caster;
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
+    RAND_REFILL2();
     roll = *g_randPtr;
     caster = calc->caster;
     strength = caster->strength;
@@ -3452,17 +3290,8 @@ void btl_applyCasterStatusMod(BtlCalc *calc) {
 }
 
 void btl_randomizeDefense(BtlCalc *calc) {
-    s32 roll;
     if ((calc->target->support[0] & SA_BIT(SA_GAMBLE_DEFENSE)) && calc->defense != 0) {
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-        }
-        roll = *g_randPtr;
-        g_randPtr++;
-        calc->defense = ((roll << 8) | roll) % (calc->defense * 2);
+        calc->defense = rand16_inline() % (calc->defense * 2);
     }
 }
 
@@ -3637,12 +3466,7 @@ void btl_calcPercentDamage(BtlCalc *calc) {
 void btl_rollAbilityStatus(BtlCalc *calc) {
     s32 roll;
     s32 rate;
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-    }
+    RAND_REFILL2();
     roll = *g_randPtr;
     rate = calc->cmd->ability->rate;
     g_randPtr++;

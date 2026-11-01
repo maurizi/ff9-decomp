@@ -506,6 +506,7 @@ s32 btl_reloadPartyStep(s32 flags) {
             if (unit == NULL) {
                 continue;
             }
+            /* model/texture/motion reload: same steps as btl_swapPartyModelStep case 6, which does it for one slot */
             id = btl_getPartyModelId(i, flags & ~0x10);
             slot->model->header = db_lookupRegistered(DB_GET_ADDR, id, 0);
             texKey = (id & 0xFFFFFF) | (cid << 24);
@@ -733,6 +734,7 @@ loop:
         task->dst = battle->partyBufs[0];
         task->fileIds.w[0] = -1;
         task->fileIds.w[1] = -1;
+        /* same walk as btl_loadSoundsStep_collect, but testing the type only and appending through ids[cnt] */
         first = (FileEntryX *)table->entries;
         entry = &first[table->count] - 1;
         do {
@@ -1459,6 +1461,7 @@ s32 btl_swapPartyModelStep(s32 slot, s32 flags) {
         ent = &g_gameState->gameData->chrModels[cid];
         unit = btl_getUnitBySlot(slot);
         if (unit != NULL) {
+            /* same steps as btl_reloadPartyStep case 7 (there per party slot, with pa/pb/pc reused for the weapon) */
             id2 = btl_getPartyModelId(slot, flags & ~0x10);
             ent->model->header = db_lookupRegistered(DB_GET_ADDR, id2, 0);
             k = (id2 & 0xFFFFFF) | (cid << 24);

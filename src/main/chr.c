@@ -301,27 +301,7 @@ s32 party_getNextMember(s32 i) {
 }
 
 void chr_updateStats(Character *chr) {
-    EquipStatsIn in;
-    EquipStatsOut out;
-
-    in.base = *(Bytes8 *)&chr->baseMaxHp;
-    in.hp = chr->hp;
-    in.mp = chr->mp;
-    in.support = *(Words2 *)chr->supportAbilities;
-    in.equip = *(Bytes5 *)chr->equip;
-    chr_calcEquipStats(&in, &out);
-    chr->speed = out.stats[0];
-    chr->strength = out.stats[1];
-    chr->magic = out.stats[2];
-    chr->spirit = out.stats[3];
-    chr->defense = out.defs[1];
-    chr->evade = out.defs[2];
-    chr->magicDef = out.defs[3];
-    chr->magicEva = out.defs[4];
-    chr->hp = out.hp;
-    chr->mp = out.mp;
-    chr->maxHp = out.maxHp;
-    chr->maxMp = out.maxMp;
+    chr_updateStats_inline(chr);
 }
 
 s32 chr_getClass(u32 x) {
@@ -607,6 +587,8 @@ u8 *chr_getApPtr(s32 ch, s32 id) {
     return &g_gameState->gameData->characters[ch].ap[i];
 }
 
+/* Same logic as chr_findAbilitySlot_ap_inline (ff9.h). Written out because a call of the inline lays out the i < 0
+   branch the other way round. */
 s32 chr_getAp(s32 ch, s32 id) {
     s32 i = chr_findAbilitySlot_inline(ch, id);
     if (i < 0) {
@@ -615,6 +597,8 @@ s32 chr_getAp(s32 ch, s32 id) {
     return g_gameState->gameData->characters[ch].ap[i];
 }
 
+/* Same logic as chr_setAp_inline (below). Written out because a call of the inline lays out the i < 0 branch
+   differently. */
 s32 chr_setAp(s32 ch, s32 id, u8 ap) {
     s32 i = chr_findAbilitySlot_inline(ch, id);
     s32 old;
@@ -642,6 +626,8 @@ s32 chr_resetAp(s32 ch, s32 id) {
     return old;
 }
 
+/* Same logic as chr_getApNeeded_inline (ff9.h). Written out because a call of the inline lays out the i < 0 branch
+   the other way round. */
 u8 chr_getApNeeded(s32 ch, s32 id) {
     s32 i = chr_findAbilitySlot_inline(ch, id);
     Character *chr = g_gameState->gameData->characters + ch;
@@ -678,8 +664,7 @@ u8 chr_hasSupportAbility(s32 ch, s32 id) {
 }
 
 u8 chr_testSupportBit(u32 *bits, s32 ability) {
-    ability -= 0xC0;
-    return (bits[ability >> 5] & (1 << (ability & 0x1F))) != 0;
+    return chr_testSupportBit_inline(bits, ability);
 }
 
 u8 chr_canLearnAbilities(Character *chr) {

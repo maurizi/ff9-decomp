@@ -843,6 +843,8 @@ u8 menuAbility_findCommand(s32 id, Character *chr) {
     return 0;
 }
 
+/* Same logic as menuAbility_getSupportState_inline (above). Written out because a call of the inline compiles
+   differently. */
 u32 menuAbility_getSupportState(s32 id, Character *chr) {
     Unk8006D128 *sup;
     s32 slot;

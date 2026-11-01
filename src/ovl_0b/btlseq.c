@@ -506,10 +506,7 @@ s32 btlseq_opPlayCamera(BtlScript *script, BtlUnit *unit) {
         if (status & (BTL_STATUS_VANISH | BTL_STATUS_MINI)) {
             goto end;
         }
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-        roll = *g_randPtr++;
+        roll = rand8_inline();
         if (roll >= 0x80) {
             goto end;
         }

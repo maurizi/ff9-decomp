@@ -504,7 +504,6 @@ void btlui_checkSwdMagPartner(void) {
 
 BtlUnit *btlui_popMenuUnit(void) {
     BtlUnit *unit;
-    u8 ok;
     for (;;) {
         if (g_btlUi->queueCount == 0 || g_btlUi->menuState != BTLUI_MENU_NONE) {
             return NULL;
@@ -512,12 +511,7 @@ BtlUnit *btlui_popMenuUnit(void) {
         unit = g_btlUi->queue[g_btlUi->queueHead];
         g_btlUi->queueCount--;
         g_btlUi->queueHead = (g_btlUi->queueHead + 1) & 3;
-        if (unit == NULL || unit->hp == 0 || (btl_hasStatus(unit, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) & 0xFF) || !((g_btlRewards.expMask >> ((u8)unit->flags >> BTL_UNIT_SLOT_SHIFT)) & 1)) {
-            ok = 0;
-        } else {
-            ok = 1;
-        }
-        if (ok) {
+        if (BtlUnitCanAct(unit)) {
             return unit;
         }
         unit->inMenuQueue = 0;
@@ -532,9 +526,6 @@ void btlui_pruneMenuQueue(void) {
     s32 cnt = g_btlUi->queueCount;
     BtlUnit *unit;
     s32 i;
-    Unk80104F88 *ui;
-    BtlUnit *kept;
-    Unk80104F88 *queueUi;
     memset(seen, 0, 4);
     while (cnt != 0) {
         unit = g_btlUi->queue[head];
@@ -546,19 +537,12 @@ void btlui_pruneMenuQueue(void) {
         cnt--;
         head = (head + 1) & 3;
     }
-    ui = g_btlUi;
-    if (keepCount != ui->queueCount) {
-        ui->unk12C6 = 0;
-        ui->queueHead = 0;
-        ui->queueCount = 0;
+    if (keepCount != g_btlUi->queueCount) {
+        btlui_clearMenuQueue_inline();
         for (i = 0; i < keepCount; i++) {
             if (seen[(u8)list[i]->flags >> BTL_UNIT_SLOT_SHIFT] == 0) {
                 seen[(u8)list[i]->flags >> BTL_UNIT_SLOT_SHIFT] = 1;
-                kept = list[i];
-                queueUi = g_btlUi;
-                kept->inMenuQueue = 1;
-                g_btlUi->queue[(queueUi->queueHead + queueUi->queueCount) & 3] = kept;
-                queueUi->queueCount++;
+                btlui_queueMenuUnit_inline(list[i]);
             }
         }
     }
@@ -635,14 +619,10 @@ s32 btlui_setMenuState(s32 state) {
 }
 
 void btlui_clearMenuQueue(void) {
-    Unk80104F88 *ui = g_btlUi;
-    ui->unk12C6 = 0;
-    ui->queueHead = 0;
-    ui->queueCount = 0;
+    btlui_clearMenuQueue_inline();
 }
 
 void btlui_flushMenuQueue(void) {
-    Unk80104F88 *ui;
     s32 remaining = g_btlUi->queueCount;
     s32 i = g_btlUi->queueHead;
     while (remaining != 0) {
@@ -650,17 +630,11 @@ void btlui_flushMenuQueue(void) {
         g_btlUi->queue[i]->inMenuQueue = 0;
         i = (i + 1) & 3;
     }
-    ui = g_btlUi;
-    ui->unk12C6 = 0;
-    ui->queueHead = 0;
-    ui->queueCount = 0;
+    btlui_clearMenuQueue_inline();
 }
 
 void btlui_queueMenuUnit(BtlUnit *unit) {
-    Unk80104F88 *ui = g_btlUi;
-    unit->inMenuQueue = 1;
-    g_btlUi->queue[(ui->queueHead + ui->queueCount) & 3] = unit;
-    ui->queueCount++;
+    btlui_queueMenuUnit_inline(unit);
 }
 
 void btlui_resetMenuQueue(void) {
@@ -789,6 +763,8 @@ void btlui_addEquipAbilities(Unk80104F88Entry *entry) {
     }
 }
 
+/* Same logic as BtlUnitCanAct (ovl_0b.h). Written out because a call of the inline schedules the prologue
+   differently. */
 s32 btlui_canOpenMenu(BtlUnit *unit) {
     if (unit == NULL) {
         return 0;
@@ -2248,7 +2224,6 @@ s32 btlui_cycleTarget(s32 forward) {
 
 s32 btlui_switchTargetSide(u8 newSide) {
     BtlUnit *cur;
-    BtlUnit *unit;
     BtlUnit *sideUnit;
     BtlUnit *list[4];
     s32 count;
@@ -2256,14 +2231,7 @@ s32 btlui_switchTargetSide(u8 newSide) {
     u8 side;
     s32 k;
 
-    for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
-        if ((unit->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-            cur = unit;
-            goto found;
-        }
-    }
-    cur = NULL;
-found:
+    cur = BtlFindTargetCursor();
     /* cur stays NULL when no unit is both targetable and targeted (seen in d3_f1759's battle); the PS1 then reads
      * cur->flags, and clears BTL_UNIT_TARGETED in it below, through low RAM. Harmless on the PS1; a native port must
      * check for NULL (ff9-ds F38). */
@@ -2429,25 +2397,13 @@ void btlui_confirmTarget(void) {
 }
 
 s32 btlui_confirmDoubleCast(s32 targets) {
-    BtlUnit *unit;
-    s32 count;
     s8 targeting;
     s32 done = 0;
     if (g_btlTarget.doubleCast == 0) {
         g_btlTarget.firstTargets = targets;
         g_btlTarget.firstCmdNo = g_btlTarget.cmdNo;
         g_btlTarget.firstSubNo = g_btlTarget.subNo;
-        if ((u32)(g_btlTarget.targetType - 9) < 3) {
-            targeting = 2;
-        } else {
-            count = 0;
-            for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
-                if ((unit->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-                    count++;
-                }
-            }
-            targeting = count >= 2;
-        }
+        targeting = btlui_getTargeting_inline();
         g_btlTarget.firstTargeting = targeting;
         btlui_cancelTarget();
         btlui_nextDoubleCast();
@@ -2455,17 +2411,7 @@ s32 btlui_confirmDoubleCast(s32 targets) {
         g_btlTarget.unit->inMenuQueue = 0;
         g_btlTarget.unit->cmdIssued = 1;
         btl_setCmd((s32)g_btlTarget.unit->delayedCmd, g_btlTarget.firstCmdNo, g_btlTarget.firstSubNo, (u16)g_btlTarget.firstTargets, g_btlTarget.firstTargeting);
-        if ((u32)(g_btlTarget.targetType - 9) < 3) {
-            targeting = 2;
-        } else {
-            count = 0;
-            for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
-                if ((unit->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-                    count++;
-                }
-            }
-            targeting = count >= 2;
-        }
+        targeting = btlui_getTargeting_inline();
         btl_setCmd((s32)g_btlTarget.unit->cmd, g_btlTarget.cmdNo, g_btlTarget.subNo, targets & 0xFFFF, targeting);
         done = 1;
     }
@@ -2500,20 +2446,10 @@ void btlui_updateTargetWindow(void) {
     if ((g_btlTarget.windowOpen == 0 || (u32)(g_btlUi->windows[0]->state - 1) >= 2) && g_btlTarget.windowOpen != g_btluiTargetWindow) {
         if (g_btluiTargetWindow != 0) {
             if (g_btlTarget.windowOpen == 0) {
-                btlui_setMenuState(BTLUI_MENU_CLOSING);
-                g_btlUi->windows[0] = win_open(&g_btluiTargetWindowRect, 5, WIN_STYLE_BEVEL, 0);
-                win_setOpenAnim(g_btlUi->windows[0], WIN_ANIM_ZOOM_X);
-                win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
-                win_setDrawContent(g_btlUi->windows[0], btlui_drawTargetList);
-                win_setDrawOverlay(g_btlUi->windows[0], btlui_drawTargetListOverlay);
-                g_btlTarget.openState = 3;
-                g_btlTarget.windowOpen = 1;
+                btlui_openTargetWindow_inline(3);
             }
-        } else if (g_btlTarget.windowOpen != 0) {
-            g_btlTarget.closeState = 3;
-            btlui_setMenuState(BTLUI_MENU_CLOSING);
-            win_setOnClosed(g_btlUi->windows[0], btlui_onTargetWindowClosed);
-            win_close(g_btlUi->windows[0]);
+        } else {
+            btlui_closeTargetWindow_inline(3);
         }
     }
 }
@@ -2633,7 +2569,7 @@ void *btlui_getTargetHelpText(void) {
     s32 k;
 
     if (g_btlTarget.targetType < BTL_TGT_MULTI_ANY) {
-        target = find_target();
+        target = BtlFindTargetCursor();
         if (target == NULL) {
             return NULL;
         }
@@ -2648,7 +2584,7 @@ void *btlui_getTargetHelpText(void) {
             }
         }
         if (count < 2) {
-            target = find_target();
+            target = BtlFindTargetCursor();
             if (target == NULL) {
                 return NULL;
             }
@@ -2889,25 +2825,11 @@ BtlUnit *btlui_findKoUnit(u8 side) {
 }
 
 void btlui_openTargetWindow(s8 openState) {
-    Window *w;
-    btlui_setMenuState(BTLUI_MENU_CLOSING);
-    w = win_open(&g_btluiTargetWindowRect, 5, WIN_STYLE_BEVEL, 0);
-    g_btlUi->windows[0] = w;
-    win_setOpenAnim(w, WIN_ANIM_ZOOM_X);
-    win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
-    win_setDrawContent(g_btlUi->windows[0], btlui_drawTargetList);
-    win_setDrawOverlay(g_btlUi->windows[0], btlui_drawTargetListOverlay);
-    g_btlTarget.openState = openState;
-    g_btlTarget.windowOpen = 1;
+    btlui_openTargetWindow_inline(openState);
 }
 
 void btlui_closeTargetWindow(s32 closeState) {
-    if (g_btlTarget.windowOpen != 0) {
-        g_btlTarget.closeState = closeState;
-        btlui_setMenuState(BTLUI_MENU_CLOSING);
-        win_setOnClosed(g_btlUi->windows[0], btlui_onTargetWindowClosed);
-        win_close(g_btlUi->windows[0]);
-    }
+    btlui_closeTargetWindow_inline(closeState);
 }
 
 void btlui_onTargetWindowOpened(Window *win) {
@@ -2929,18 +2851,7 @@ void btlui_onTargetWindowClosed(Window *win) {
 }
 
 s32 btlui_getTargeting(void) {
-    BtlUnit *unit;
-    s32 count;
-    if (g_btlTarget.targetType >= 9 && g_btlTarget.targetType <= 11) {
-        return 2;
-    }
-    count = 0;
-    for (unit = g_gameState->gameData->ctx.battle->unitList; unit != 0; unit = unit->next) {
-        if ((unit->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-            count++;
-        }
-    }
-    return count >= 2;
+    return btlui_getTargeting_inline();
 }
 
 void btlui_drawListCursors(Window *win) {

@@ -1472,32 +1472,8 @@ static inline u32 wm_debugAdjustScreen_trg(void) {
 void wm_freeEffect(WmEffect *);
 s32 wm_getSpriteFrameCount(u16 *);
 
-/* random byte from the main exe's table (rand_refill refills it) */
-static inline s32 wm_rand8(void) {
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-    }
-    return *g_randPtr++;
-}
-
-/* Inlined copy of wm_testCellType (cell type bit test). */
-static inline u8 wm_testCellType_inline(u32 *a, u32 k) {
-    u32 w;
-
-    if (k >= 32) {
-        w = a[0];
-        k -= 32;
-    } else {
-        w = a[1];
-    }
-    if ((w >> k) & 1) {
-        return 1;
-    }
-    return 0;
-}
-
-/* Inlined copy of wm_testCellType with the index already shifted (wm_controlFly). */
-static inline u8 wm_testCellType_inline2(u32 *a, u32 c) {
+/* Inlined copy of wm_testCellType, taking the topography index already extracted (WM_ATTR_TOPOGRAPHY). */
+static inline u8 wm_testCellType_inline(u32 *a, u32 c) {
     if (c >= 32) {
         if ((a[0] >> (c - 32)) & 1) {
             return 1;

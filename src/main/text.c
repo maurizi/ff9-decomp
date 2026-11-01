@@ -1079,6 +1079,8 @@ u8 *text_buildFontTpage(u32 *ot, DrTpageWords *tpage) {
     return (u8 *)(tpage + 1);
 }
 
+/* Same logic as text_formatNumber_inline (ff9.h). Written out because a call of the inline saves s0 later in the
+   prologue. */
 void text_formatNumber(s32 value, u8 *out, s32 width, u8 ascii) {
     s32 base = 0;
     s32 fill;

@@ -815,6 +815,7 @@ void btl_checkSideDefeated(BtlUnit *unit) {
                 if (btl_isCmdQueued(other, BTL_CMD_REBIRTH_FLAME)) {
                     return;
                 }
+                /* rand8_inline() split around item_getCount: the refill check comes before the call */
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
@@ -846,20 +847,14 @@ s32 btl_rollAmbush(u32 *sceneFlags) {
         } else if ((*sceneFlags >> 3) & 1) {
             threshold = 0xFF;
         }
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-        if (*g_randPtr++ < threshold) {
+        if (rand8_inline() < threshold) {
             result = 0;
         } else {
             threshold = 0x10;
             if ((u8)btl_partyHasSupport(1, SA_BIT(SA_INITIATIVE))) {
                 threshold = 0x55;
             }
-            if (g_randPtr >= g_randTableEnd) {
-                rand_refill();
-            }
-            if (*g_randPtr++ < threshold) {
+            if (rand8_inline() < threshold) {
                 result = 1;
             }
         }
@@ -1179,6 +1174,7 @@ s32 btl_pickRandomUnit(s32 isParty) {
     if (count == 0) {
         return 0;
     }
+    /* rand8_inline() written out: calling it changes the register allocation here */
     if (g_randPtr >= g_randTableEnd) {
         rand_refill();
     }

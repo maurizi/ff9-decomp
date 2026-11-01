@@ -1408,8 +1408,8 @@ other:
 }
 
 /* Inlined copy of bgi_getFloorMove. */
-static inline BgiFloorMove *bgi_getFloorMove_inline(s32 i) {
-    return &g_fieldBgiFloorMoves[i];
+static inline BgiFloorMove *bgi_getFloorMove_inline(s32 moveId) {
+    return &g_fieldBgiFloorMoves[moveId];
 }
 
 /* tables inside the g_fieldBgData block (stored as offsets from its start) */

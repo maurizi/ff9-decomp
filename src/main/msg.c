@@ -1234,21 +1234,7 @@ void msg_keepWindowsOnInit(void) {
 }
 
 u8 *msg_getEntry(s32 i, WinLayout *out) {
-    u8 *msgText = NULL;
-    u16 *ofsTbl;
-    s32 packed;
-    u32 k;
-
-    if (i >= 0 && i < g_msgTable->count) {
-        msgText = (u8 *)g_msgTable->offsets;
-        packed = ((u32 *)msgText)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
-        if (out != NULL) {
-            out->w = ((packed >> 16) & 0xFFF) + 9;
-            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? (u32)packed >> 28 : ((MsgEntry8 *)msgText)[i].lines) * 14 + 6;
-        }
-        msgText += packed & 0xFFFF;
-    }
-    return msgText;
+    return msg_getEntry_inline(i, out);
 }
 
 void *msg_getText(s32 i) {

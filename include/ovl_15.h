@@ -382,7 +382,7 @@ s32 bj_init(void);
 s32 bj_drawShoe(s32, s32);
 
 /* Random 0..2 from the main exe's random byte stream. */
-#define RND3() (({ s32 r_; if (g_randPtr >= g_randTableEnd) { rand_refill(); } r_ = *g_randPtr++; r_; }) % 3)
+#define RND3() (RAND8() % 3)
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 s32 bj_actionGetCursor(void);

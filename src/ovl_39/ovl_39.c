@@ -334,17 +334,7 @@ u8 menuSave_isLoaded(void) {
 }
 
 u8 menuSave_isSlotReady(s32 port, u8 allowNew) {
-    s32 st = s_menuSave.cardStatus[port];
-    s32 ready;
-
-    if (allowNew) {
-        ready = 0;
-        if (st == CARD_RES_DONE || st == CARD_RES_NEW) {
-            ready = 1;
-        }
-        return ready;
-    }
-    return st == CARD_RES_DONE;
+    return menuSave_isSlotReady_inline(port, allowNew);
 }
 
 void menuSave_backToSlots(void) {
@@ -1107,16 +1097,7 @@ void menuSave_onFileListFadedIn(void) {
 }
 
 void menuSave_readHeader(s32 file) {
-    s32 fd;
-
-    s_menuSaveCheck.file = file;
-    fd = menuSave_openFile(CARD_CHAN(g_menu.cardSlot), (char *)s_menuSave.files[file].fileName.name.v);
-    s_menuSaveCheck.fd = fd;
-    if (fd < 0) {
-        menuSave_checkError(SAVE_TEXT_CHECK_FAILED);
-        return;
-    }
-    menuSave_readAsync(fd, (s32)s_menuSaveCheck.buf, CHECK_HEADER_SIZE, menuSave_onHeaderRead);
+    menuSave_readHeader_inline(file);
 }
 
 void menuSave_copyHeader(SaveFile *entry, SaveHeader *h) {

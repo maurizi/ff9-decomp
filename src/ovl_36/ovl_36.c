@@ -786,21 +786,7 @@ CardSlot *menuCard_findCachedImage(s32 id) {
 }
 
 void menuCard_showCachedImage(CardSlot *slot) {
-    RECT clutRect, pixRect;
-    u32 vramSlot = slot->vram;
-
-    clutRect.x = 0;
-    clutRect.w = 0x100;
-    clutRect.h = 1;
-    pixRect.w = 0x13;
-    pixRect.h = 0x2F;
-    clutRect.y = vramSlot + 0x1F4;
-    pixRect.x = (u8)(vramSlot % 3) * 0x13;
-    pixRect.y = (u8)(vramSlot / 3) * 0x2F + 0x100;
-    MoveImage(&clutRect, 0, 0x1F2);
-    MoveImage(&pixRect, 0x3C0, 0x1B0);
-    DrawSync(0);
-    s_menuCard.cache.shown = slot->id;
+    menuCard_showCachedImage_inline(slot);
 }
 
 void menuCard_loadImages(void) {

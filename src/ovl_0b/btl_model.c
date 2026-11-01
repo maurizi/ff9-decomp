@@ -154,13 +154,8 @@ void btl_updateTexAnims(TexAnimSet *set) {
             if ((pos >> 12) < anim->frameCount) {
                 anim->pos = pos;
             } else if (anim->waitRand != 0) {
-                if (g_randPtr >= g_randTableEnd) {
-                    rand_refill();
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                    }
-                }
-                anim->pos = -((anim->waitMin + (anim->waitRand + 1) * ((*g_randPtr << 8) | *g_randPtr++) / 0x10000) << 12);
+                RAND_REFILL2();
+                anim->pos = -((anim->waitMin + (anim->waitRand + 1) * RAND16() / 0x10000) << 12);
             } else if (anim->flags & BTL_TEXANIM_ONCE) {
                 anim->flags &= 0xFC;
             } else {
@@ -244,10 +239,7 @@ Battle11C020 *btl_initScene(void) {
     groupCam = sc->group->cameraNo;
     battle = g_gameState->gameData->ctx.battle;
     if (groupCam >= 3) {
-        if (g_randPtr >= g_randTableEnd) {
-            rand_refill();
-        }
-        rnd = *g_randPtr++;
+        rnd = rand8_inline();
         cam = rnd % 3;
     } else {
         cam = groupCam;
@@ -262,10 +254,7 @@ Battle1330 *btl_pickEnemyGroup(Battle11C020 *encounter) {
     u16 sum;
     u16 i;
     s8 forced;
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-    }
-    roll = (*g_randPtr++ * 100) / 256;
+    roll = (rand8_inline() * 100) / 256;
     group = encounter->groups;
     sum = group->weight;
     i = 0;

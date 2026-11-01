@@ -262,18 +262,6 @@ typedef struct {
     DRAWENV prev; /* previous */
 } DrawEnvPair; /* 0xB8 */
 
-/* same as a GNU statement expression: the operand order around it differs
- * from the inline function (btl_applyReflect) */
-#define RAND8() ({ if (g_randPtr >= g_randTableEnd) { rand_refill(); } (s32)*g_randPtr++; })
-
-/* next byte of the random table, refilling it when exhausted (inlined) */
-static inline s32 rand8_inline(void) {
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-    }
-    return *g_randPtr++;
-}
-
 /* one primitive in a model's packed GPU packet buffer (BtlModel.prims) */
 typedef union {
     P_TAG tag;
@@ -3819,19 +3807,6 @@ void btl_startScan(s32);
 void btl_startDetect(BtlUnit *);
 u8 *btl_getAbilityName(s32);
 
-/* random table: two refill checks, then one byte read as (b << 8 | b). RAND16 reads g_randPtr in both operands
- * and increments it in one, which C leaves unsequenced: gcc 2.8 reads the byte once and stores the increment
- * after the enclosing expression (a statement expression that sequences it moves the store and breaks the match).
- * A port must read the byte before the increment. */
-#define RAND_REFILL2()                         \
-    if (g_randPtr >= g_randTableEnd) {            \
-        rand_refill();                       \
-        if (g_randPtr >= g_randTableEnd) {        \
-            rand_refill();                   \
-        }                                      \
-    }
-#define RAND16() ((*g_randPtr << 8) | *g_randPtr++)
-
 /* main exe: candidates for ff9.h */
 u8 chr_isAbilityLearned(s32, s32);
 void btl_damageHp(BtlUnit *, s32, u8);
@@ -4129,17 +4104,6 @@ s32 btlfx_poolUpdate(Unk800DA1B8 *);
 void btlui_targetDefault(u8, u8);
 BtlUnit *btlui_findKoUnit(u8);
 
-/* first unit flagged as the current target (bits 28 and 29 of BtlUnit.flags) */
-static inline BtlUnit *find_target(void) {
-    BtlUnit *u;
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-            return u;
-        }
-    }
-    return NULL;
-}
-
 extern u8 g_btluiDefaultTargets[][2];
 void btlui_closeTargetWindow(s32);
 s32 clut_getY(s16);
@@ -4261,7 +4225,8 @@ void text_draw(s32, s32, s32, u8 *, s32);
 void win_closeAll(void);
 s32 chr_getDefaultSet(Character *);
 
-/* battle menu: unit under the target cursor (inlined by its callers) */
+/* battle menu: unit under the target cursor, the first one flagged both TARGETABLE and TARGETED (inlined by its
+ * callers) */
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
     for (p = g_gameState->gameData->ctx.battle->unitList; p != NULL; p = p->next) {
@@ -4274,18 +4239,18 @@ static inline BtlUnit *BtlFindTargetCursor(void) {
 
 /* inlined copy of btlui_getTargeting */
 static inline s32 btlui_getTargeting_inline(void) {
-    BtlUnit *u;
-    s32 n;
+    BtlUnit *unit;
+    s32 count;
     if (g_btlTarget.targetType >= 9 && g_btlTarget.targetType <= 11) {
         return 2;
     }
-    n = 0;
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
-        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-            n++;
+    count = 0;
+    for (unit = g_gameState->gameData->ctx.battle->unitList; unit != 0; unit = unit->next) {
+        if ((unit->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
+            count++;
         }
     }
-    return n >= 2;
+    return count >= 2;
 }
 
 /* Queue-entry validity check inlined into btlui_pruneMenuQueue. */
@@ -5046,5 +5011,112 @@ void btlfx_offsetPoint(SVECTOR *origin, s32 out, s32 axial, XY32 *axis, s32 radi
 void btlfx_forwardAngles(s16 *outRot, XY32 *axis, s32 spin);
 void btlfx_toLocalPolar(SVECTOR *pos, SVECTOR *center, SVECTOR *axis, s32 outAxial, s32 outRadius, s32 *outAngle);
 void btlui_updateTargetFlags(void);
+
+
+/* Inlined copy of btl_killUnit (hp 0, KILLED flag, death cry, back to the idle motion); btl_setTargetHp and
+ * btl_checkFrozenShatter expand it. */
+static inline void btl_killUnit_inline(BtlUnit *unit) {
+    BtlModel *model;
+    unit->hp = 0;
+    unit->flags |= BTL_UNIT_KILLED;
+    if (!(unit->flags & BTL_UNIT_PARTY)) {
+        btl_playDeathCry(unit, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->deathCry);
+    }
+    model = unit->model;
+    if ((s32)model->motion != unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(unit->flags & BTL_UNIT_PARTY) || (s32)model->motion != unit->motions[BTL_MOTION_READY]) && unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+        model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+        unit->obj->frame = 0;
+    }
+}
+
+/* Inlined copy of btl_initStatusHitRate (status hit rate from level, ability rate and magic); btl_initUndeadHitRate
+ * expands it. */
+static inline void btl_initStatusHitRate_inline(BtlCalc *calc) {
+    BtlUnit *caster = calc->caster;
+    calc->hitRate = caster->level + (calc->cmd->ability->rate + (caster->magic >> 2)) - calc->target->level;
+    if (calc->hitRate > 100) {
+        calc->hitRate = 100;
+    } else if (calc->hitRate <= 0) {
+        calc->hitRate = 1;
+    }
+    calc->evade = calc->target->magicEva;
+}
+
+/* Forget a pending Dagger trance eidolon (btl_clearCmdQueue, btl_cancelTranceEidolon). */
+static inline void btl_resetEidolon_inline(Battle *b) {
+    b->eidolonTimer = 0;
+    b->eidolonAbility = 0;
+    b->cmdFlags &= ~(BTL_CMDF_EIDOLON_TIMER | BTL_CMDF_EIDOLON_QUEUED);
+}
+
+/* Inlined copy of btl_damageHp (subtract damage from a unit's hp, turn it to face front, hit motion or death);
+ * btl_spreadTroubleDamage expands it per ally. */
+static inline void btl_damageHp_inline(BtlUnit *unit, s32 damage, u8 hitMotion) {
+    s32 facing;
+    if (unit->status & BTL_STATUS_KO) {
+        unit->popupFlags = BTL_POPUP_MISS;
+        return;
+    }
+    if (unit->status & BTL_STATUS_PETRIFY) {
+        unit->hpChange = 0;
+        return;
+    }
+    if (unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+        facing = (unit->flags & BTL_UNIT_PARTY) << 11;
+        unit->obj->rotY = facing;
+        unit->rot[1] = facing;
+    }
+    if (damage < unit->hp) {
+        unit->hp -= damage;
+    } else {
+        unit->hp = 0;
+    }
+    unit->hpChange = damage;
+    if (hitMotion) {
+        btl_startHitMotion(unit);
+        return;
+    }
+    if (unit->hp == 0) {
+        btl_killUnit(unit);
+    }
+}
+
+/* Inlined copy of btlui_clearMenuQueue (empty the battle menu's unit queue). */
+static inline void btlui_clearMenuQueue_inline(void) {
+    Unk80104F88 *ui = g_btlUi;
+    ui->unk12C6 = 0;
+    ui->queueHead = 0;
+    ui->queueCount = 0;
+}
+
+/* Inlined copy of btlui_queueMenuUnit (append a unit to the battle menu's queue). */
+static inline void btlui_queueMenuUnit_inline(BtlUnit *unit) {
+    Unk80104F88 *ui = g_btlUi;
+    unit->inMenuQueue = 1;
+    g_btlUi->queue[(ui->queueHead + ui->queueCount) & 3] = unit;
+    ui->queueCount++;
+}
+
+/* Inlined copy of btlui_openTargetWindow (open the target list window). */
+static inline void btlui_openTargetWindow_inline(s8 openState) {
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
+    g_btlUi->windows[0] = win_open(&g_btluiTargetWindowRect, 5, WIN_STYLE_BEVEL, 0);
+    win_setOpenAnim(g_btlUi->windows[0], WIN_ANIM_ZOOM_X);
+    win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
+    win_setDrawContent(g_btlUi->windows[0], btlui_drawTargetList);
+    win_setDrawOverlay(g_btlUi->windows[0], btlui_drawTargetListOverlay);
+    g_btlTarget.openState = openState;
+    g_btlTarget.windowOpen = 1;
+}
+
+/* Inlined copy of btlui_closeTargetWindow (close the target list window if it is open). */
+static inline void btlui_closeTargetWindow_inline(s32 closeState) {
+    if (g_btlTarget.windowOpen != 0) {
+        g_btlTarget.closeState = closeState;
+        btlui_setMenuState(BTLUI_MENU_CLOSING);
+        win_setOnClosed(g_btlUi->windows[0], btlui_onTargetWindowClosed);
+        win_close(g_btlUi->windows[0]);
+    }
+}
 
 #endif

@@ -466,9 +466,9 @@ extern GameState *g_gameState;
 void file_loadDirTables(); /* game_initState calls it without arguments */
 
 /* Inlined copy of chr_testSupportBit (support ability bit test). */
-static inline u8 chr_testSupportBit_inline(u32 *bits, s32 b) {
-    b -= 0xC0;
-    return (bits[b >> 5] & (1 << (b & 0x1F))) != 0;
+static inline u8 chr_testSupportBit_inline(u32 *bits, s32 ability) {
+    ability -= 0xC0;
+    return (bits[ability >> 5] & (1 << (ability & 0x1F))) != 0;
 }
 
 /* Inlined copy of item_findSlot (item search); the original source inlines it. */
@@ -2860,19 +2860,6 @@ extern CdRequest g_cdRetryRequest;
 extern CdRequest g_cdRestartRequest;
 extern EvtObject *g_evtActor;
 
-/* Same as evt_getArg8_inline, but written as `>>= (g_evtArgRead = 1)` (srav). */
-static inline s32 evt_getArg8_inline2(void) {
-    s32 r;
-    if (g_evtArgFlags & 1) {
-        evt_evalExpr();
-        r = evt_popResult();
-    } else {
-        r = *g_evtCurObj->ip++;
-    }
-    g_evtArgFlags >>= (g_evtArgRead = 1);
-    return r;
-}
-
 /* Inlined copy of evt_resolveObjectId (resolve a script object reference). */
 static inline EvtObject *evt_resolveObjectId_inline(s32 id) {
     if (id == 0xFF) {
@@ -3020,6 +3007,42 @@ extern u8 g_randTable[]; /* random byte table */
 
 extern u8 g_randTableEnd[];
 void rand_refill(void);
+
+/* Next byte of the random table, refilling it when exhausted. Square's code inlines this everywhere (field, world
+ * map, battle, mini-games); there's no out-of-line copy. */
+static inline s32 rand8_inline(void) {
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+    }
+    return *g_randPtr++;
+}
+
+/* rand8_inline as a GNU statement expression. Same logic, but gcc orders the operands around it differently
+ * (btl_applyReflect needs this form). */
+#define RAND8() ({ if (g_randPtr >= g_randTableEnd) { rand_refill(); } (s32)*g_randPtr++; })
+
+/* random table: two refill checks, then one byte read as (b << 8 | b). RAND16 reads g_randPtr in both operands
+ * and increments it in one, which C leaves unsequenced: gcc 2.8 reads the byte once and stores the increment
+ * after the enclosing expression (a statement expression that sequences it moves the store and breaks the match).
+ * A port must read the byte before the increment. */
+#define RAND_REFILL2()                         \
+    if (g_randPtr >= g_randTableEnd) {            \
+        rand_refill();                       \
+        if (g_randPtr >= g_randTableEnd) {        \
+            rand_refill();                   \
+        }                                      \
+    }
+#define RAND16() ((*g_randPtr << 8) | *g_randPtr++)
+
+/* 16-bit roll (b << 8 | b) from one random byte, with the double refill check of RAND_REFILL2. The sequenced
+ * form of RAND16 (field, world map, battle). */
+static inline s32 rand16_inline(void) {
+    s32 b;
+
+    RAND_REFILL2();
+    b = *g_randPtr++;
+    return (b << 8) | b;
+}
 
 /* ---- hoisted for menu overlays ---- */
 void ui_initMemberSwitch(MemberSwitch *, s32, void (*)(void));
@@ -3304,26 +3327,25 @@ typedef struct {
 u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidth, SprtWords *s);
 u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p);
 /* Inlined copy of ui_buildSpriteDef (SPRT + DR_TPAGE from a sprite descriptor). */
-static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidth, SprtWords *s) {
-    DrTpageWords *t;
-    setlen(s, 4);
+static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *def, u8 flag, s32 *outWidth, SprtWords *sprt) {
+    DrTpageWords *drMode;
+    setlen(sprt, PRIM_LEN(SPRT));
     if (flag) {
-        s->rgbc = 0x66606060;
+        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     } else {
-        s->rgbc = 0x64808080;
+        sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
-    s->xy = (x & 0xFFFF) | (y << 16);
-    s->uvclut = d->uvclut;
-    s->wh = d->w | (d->h << 16);
-    addPrim(ot, s);
-    s++;
-    t = (DrTpageWords *)s;
-    setlen(t, 1);
-    t->code = (d->tpage & 0x9FF) | 0xE1000600;
-    addPrim(ot, t);
-    *outWidth = d->w;
-    s = (SprtWords *)(t + 1);
-    return (u8 *)s;
+    sprt->xy = (x & 0xFFFF) | (y << 16);
+    sprt->uvclut = def->uvclut;
+    sprt->wh = def->w | (def->h << 16);
+    addPrim(ot, sprt);
+    sprt++;
+    drMode = (DrTpageWords *)sprt;
+    setDrawTPage(drMode, 1, 1, def->tpage);
+    addPrim(ot, drMode);
+    *outWidth = def->w;
+    sprt = (SprtWords *)(drMode + 1);
+    return (u8 *)sprt;
 }
 /* Inlined copy of evt_freeAllocNode (move an object's node to the free list). */
 static inline void evt_freeAllocNode_inline(EvtObject *key) {
@@ -3612,28 +3634,28 @@ typedef struct {
 EquipStatsOut *chr_calcEquipStats(EquipStatsIn *, EquipStatsOut *);
 
 /* Inlined copy of chr_updateStats (recompute a character's stats). */
-static inline void chr_updateStats_inline(Character *c) {
+static inline void chr_updateStats_inline(Character *chr) {
     EquipStatsIn in;
     EquipStatsOut out;
 
-    in.base = *(Bytes8 *)&c->baseMaxHp;
-    in.hp = c->hp;
-    in.mp = c->mp;
-    in.support = *(Words2 *)c->supportAbilities;
-    in.equip = *(Bytes5 *)c->equip;
+    in.base = *(Bytes8 *)&chr->baseMaxHp;
+    in.hp = chr->hp;
+    in.mp = chr->mp;
+    in.support = *(Words2 *)chr->supportAbilities;
+    in.equip = *(Bytes5 *)chr->equip;
     chr_calcEquipStats(&in, &out);
-    c->speed = out.stats[0];
-    c->strength = out.stats[1];
-    c->magic = out.stats[2];
-    c->spirit = out.stats[3];
-    c->defense = out.defs[1];
-    c->evade = out.defs[2];
-    c->magicDef = out.defs[3];
-    c->magicEva = out.defs[4];
-    c->hp = out.hp;
-    c->mp = out.mp;
-    c->maxHp = out.maxHp;
-    c->maxMp = out.maxMp;
+    chr->speed = out.stats[0];
+    chr->strength = out.stats[1];
+    chr->magic = out.stats[2];
+    chr->spirit = out.stats[3];
+    chr->defense = out.defs[1];
+    chr->evade = out.defs[2];
+    chr->magicDef = out.defs[3];
+    chr->magicEva = out.defs[4];
+    chr->hp = out.hp;
+    chr->mp = out.mp;
+    chr->maxHp = out.maxHp;
+    chr->maxMp = out.maxMp;
 }
 extern void (*g_fadeSeekFuncs[])(FadeState *, s32);
 extern s32 g_msgReady;
@@ -4526,35 +4548,35 @@ WinLayout *evt_getMsgLayout(EvtObject *, s32, s32);
 void msg_open(s32, s32, WinLayout *, s32);
 
 static inline s32 evt_getArg16_inline(void) {
-    s32 r;
+    s32 val;
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
-        r = evt_popResult();
+        val = evt_popResult();
     } else {
         EvtObject *pp = g_evtCurObj;
-        r = *pp->ip++;
-        r |= *pp->ip++ << 8;
-        r = (s16)r;
+        val = *pp->ip++;
+        val |= *pp->ip++ << 8;
+        val = (s16)val;
     }
     g_evtArgFlags >>= 1;
     g_evtArgRead = 1;
-    return r;
+    return val;
 }
 
 /* uid of the object the current script runs for */
 #define CUR_UID() (((u8 *)((s32 *)g_evtCurObj + g_evtCurObj->stackOfs) + g_evtCurObj->sp * 4)[-1])
 
 static inline s32 evt_getArg8_inline(void) {
-    s32 r;
+    s32 val;
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
-        r = evt_popResult();
+        val = evt_popResult();
     } else {
-        r = *g_evtCurObj->ip++;
+        val = *g_evtCurObj->ip++;
     }
     g_evtArgFlags >>= 1;
     g_evtArgRead = 1;
-    return r;
+    return val;
 }
 
 extern s32 g_evtPlayerAnimCount;
@@ -4634,16 +4656,16 @@ typedef struct Unk8004AFF0 {
 } Unk8004AFF0;
 
 /* Inlined copy of evt_getObjectModelData. */
-static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *p) {
-    ModelSlot *q;
+static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *obj) {
+    ModelSlot *slot;
 
-    if (p != NULL) {
-        if (p->modelId == EVT_MODEL_NONE) {
+    if (obj != NULL) {
+        if (obj->modelId == EVT_MODEL_NONE) {
             return NULL;
         }
-        q = (ModelSlot *)game_getModel(p->modelSlot);
-        if (q != NULL) {
-            return (Unk8004AFF0 *)q->model;
+        slot = (ModelSlot *)game_getModel(obj->modelSlot);
+        if (slot != NULL) {
+            return (Unk8004AFF0 *)slot->model;
         }
     }
     return NULL;
@@ -4682,20 +4704,20 @@ void chr_clearRecruited(u32);
 
 /* Inlined copy of evt_getArg24 (24-bit script argument). */
 static inline s32 evt_getArg24_inline(void) {
-    s32 v;
+    s32 val;
     EvtObject *pp;
 
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
-        v = evt_popResult();
+        val = evt_popResult();
     } else {
         pp = g_evtCurObj;
-        v = *pp->ip++;
-        v |= *pp->ip++ << 8;
-        v |= *pp->ip++ << 16;
+        val = *pp->ip++;
+        val |= *pp->ip++ << 8;
+        val |= *pp->ip++ << 16;
     }
     g_evtArgFlags >>= (g_evtArgRead = 1);
-    return v;
+    return val;
 }
 
 extern u8 g_evtPartyOrderChars[];
@@ -4753,10 +4775,10 @@ static inline void func_8004B3A8_inline(s32 a, s32 b) {
     evt_createObject(a, b, 0x14, 0x10)->kind = EVT_KIND_CODE;
 }
 
-static inline void evt_createRegion_inline(s32 a, s32 b) {
-    EvtObject *p = evt_createObject(a, b, 0x38, 0x10);
-    p->kind = EVT_KIND_REGION;
-    p->flags = EVT_OBJ_ENABLED;
+static inline void evt_createRegion_inline(s32 scriptIdx, s32 id) {
+    EvtObject *obj = evt_createObject(scriptIdx, id, 0x38, 0x10);
+    obj->kind = EVT_KIND_REGION;
+    obj->flags = EVT_OBJ_ENABLED;
 }
 
 static inline void evt_execInstr_newactor(s32 uid, s32 b) {
@@ -4959,13 +4981,6 @@ extern s32 g_evtEncounterDist;
 extern u8 g_encounterSlotThresholds[][4];
 EncounterTable *wm_getEncounterEntry();
 
-static inline s32 evt_rollEncounter_rand(void) {
-    if (g_randPtr >= g_randTableEnd) {
-        rand_refill();
-    }
-    return *g_randPtr++;
-}
-
 static inline u16 evt_rollEncounter_pick(void) {
     EncounterTable *t;
     s32 r;
@@ -4977,7 +4992,7 @@ static inline u16 evt_rollEncounter_pick(void) {
     } else {
         t = &g_evtEncounterTable;
     }
-    r = evt_rollEncounter_rand();
+    r = rand8_inline();
     tbl = g_encounterSlotThresholds[t->pattern & 3];
     if (r >= tbl[0]) {
         if (r >= tbl[1]) {

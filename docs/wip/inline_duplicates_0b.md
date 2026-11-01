@@ -1,42 +1,58 @@
-# ovl_0b: functions that repeat a static inline helper by hand
+# ovl_0b: functions that repeated a static inline helper by hand
 
-Found while naming ovl_0b's parameters and locals. Nothing here was restructured. Some of these open-coded forms may
-be needed for the match (statement order around the refill check); try the helper with ccprobe before changing one.
+Found while naming ovl_0b's parameters and locals; all entries are now dealt with. "Uses the helper" means the copy
+was replaced by a call and `make verify` still matches; "commented" means the copy stays, with a comment above it
+naming the helper and saying why. The helpers named here live in `include/ovl_0b.h` unless noted.
 
-## rand8_inline (include/ovl_0b.h): `if (g_randPtr >= g_randTableEnd) rand_refill(); r = *g_randPtr++;`
-- btlseq.c btlseq_opPlayCamera
-- btl_cmd.c btl_autoAttack
-- btl_cmd.c btl_rollShortSummon (twice; refill check, read, and increment as separate statements)
-- btl_status.c btl_rollAmbush (twice)
-- btl_status.c btl_checkSideDefeated (an item_getCount call sits between refill check and read)
-- btl_status.c btl_pickRandomUnit (`*g_randPtr++ % n`)
-- btl_model.c btl_initScene (camera roll)
-- btl_model.c btl_pickEnemyGroup (`*g_randPtr++ * 100 / 256`)
-- btl_init.c btl_initEnemyState (second roll, `% frameCount` for obj->frame)
+## rand8_inline (now in include/ff9.h, shared with main and the other overlays)
 
-The double-refill 16-bit rolls (btl_cmd.c, btl_updateTexAnims, btl_initPartyUnit, btl_initEnemyState) spell out the
-RAND16() macro; there's no inline helper for them.
+- btlseq.c btlseq_opPlayCamera: uses the helper
+- btl_cmd.c btl_rollShortSummon (twice): uses the helper (`roll = rand8_inline() < 0xE6;`)
+- btl_status.c btl_rollAmbush (twice): uses the helper
+- btl_model.c btl_initScene (camera roll), btl_pickEnemyGroup (`* 100 / 256`): use the helper
+- btl_cmd.c btl_autoAttack, btl_status.c btl_pickRandomUnit (`% n`), btl_init.c btl_initEnemyState (`% frameCount`):
+  commented. Both `rand8_inline()` and `RAND8()` change the register allocation there (a `u8`-returning variant too)
+- btl_status.c btl_checkSideDefeated: commented. Square's code does the refill check, then calls item_getCount, then
+  reads the byte; a helper call would move the check after the call
+
+`RAND8()` (the statement-expression form) moved to ff9.h next to `rand8_inline`.
+
+The hand-written double-refill 16-bit rolls in btl_cmd.c (19 refill blocks), btl_init.c btl_initPartyUnit /
+btl_initEnemyState and btl_model.c btl_updateTexAnims now use the `RAND_REFILL2()` / `RAND16()` macros (moved to
+ff9.h); they expand to the same tokens. btl_rollCritical's four nested refill checks are `RAND_REFILL2();
+RAND_REFILL2();`, as btl_cmd.c already writes them for Steal. btl_randomizeDefense uses the new `rand16_inline()`
+(sequenced form). The rolls that read `*g_randPtr`, compute, and increment it statements later (btl_setPhysicalParams,
+btl_setMagicParams and others) stay as written.
 
 ## btl_clearCmd_inline
-- btl_cmd.c btl_clearCmd: the same 14 stores. It's the out-of-line copy of the helper, so it could be written as a call.
 
-## btlui (include/ovl_0b.h helpers)
-- btlui.c btlui_switchTargetSide: repeats BtlFindTargetCursor / find_target (scan for a targetable and targeted unit,
-  written with `goto found`)
-- btlui.c btlui_confirmDoubleCast: repeats btlui_getTargeting_inline twice, once per branch (targetType 9..11 -> 2,
-  else count targetable+targeted units >= 2)
-- btlui.c btlui_popMenuUnit: repeats BtlUnitCanAct (NULL / hp == 0 / cant-act status mask / g_btlRewards.expMask
-  slot bit) as an ok flag
-- btlui.c btlui_canOpenMenu: repeats BtlUnitCanAct (returns the expMask bit directly)
+- btl_cmd.c btl_clearCmd: calls the inline
 
-## Repeated bodies of non-inline functions (for reference)
-- btl_cmd.c btl_setTargetHp, btl_checkFrozenShatter: repeat btl_killUnit (hp = 0, KILLED, death cry, idle motion)
-- btl_cmd.c btl_initUndeadHitRate: repeats btl_initStatusHitRate
-- btl_cmd.c btl_flushCmdQueue / btl_clearCmdQueue: same loop, differing only in the cmdNo test;
-  btl_cancelTranceEidolon repeats btl_clearCmdQueue's eidolon reset tail
-- btl_main.c btl_loadEnemyModelsStep case 2: repeats btl_loadSoundsStep_collect's walk (type test only, no kind test)
-- btl_main.c btl_reloadPartyStep case 7 / btl_swapPartyModelStep case 6: same per-slot model/texture/motion reload
-- btl_attr.c btl_spreadTroubleDamage: repeats btl_damageHp per ally
-- btlui.c btlui_flushMenuQueue, btlui_pruneMenuQueue: repeat btlui_clearMenuQueue's three stores; btlui_pruneMenuQueue
-  also repeats btlui_queueMenuUnit's enqueue
-- btlui.c btlui_updateTargetWindow: repeats the open/close sequences of btlui_openTargetWindow / btlui_closeTargetWindow
+## btlui helpers
+
+- `find_target` and `BtlFindTargetCursor` were two identical inlines; `find_target` is gone and its two users
+  (btlui.c) call `BtlFindTargetCursor`
+- btlui.c btlui_switchTargetSide: uses `BtlFindTargetCursor` (the `goto found` scan is gone)
+- btlui.c btlui_confirmDoubleCast: uses `btlui_getTargeting_inline` in both branches
+- btlui.c btlui_getTargeting (the out-of-line copy): calls `btlui_getTargeting_inline`
+- btlui.c btlui_popMenuUnit: uses `BtlUnitCanAct`
+- btlui.c btlui_canOpenMenu: commented. A call of `BtlUnitCanAct` schedules the prologue differently
+
+## Repeated bodies of non-inline functions
+
+- btl_cmd.c btl_setTargetHp, btl_checkFrozenShatter: new `btl_killUnit_inline`; both call it, and btl_killUnit is
+  written as a call of it
+- btl_cmd.c btl_initUndeadHitRate: new `btl_initStatusHitRate_inline`, also behind btl_initStatusHitRate
+- btl_cmd.c btl_cancelTranceEidolon / btl_clearCmdQueue: the eidolon reset tail is the new `btl_resetEidolon_inline`
+- btl_cmd.c btl_flushCmdQueue / btl_clearCmdQueue: commented (above btl_clearCmdQueue). Moving the per-command body
+  into an inline helper (with any declaration order of its four locals, or passing `&p->next`) swaps t0/t1 in both
+- btl_attr.c btl_spreadTroubleDamage: new `btl_damageHp_inline`; btl_damageHp calls it, btl_spreadTroubleDamage calls
+  `btl_damageHp_inline(unit, source->hpChange >> 1, 0)` per ally
+- btlui.c btlui_flushMenuQueue, btlui_pruneMenuQueue: new `btlui_clearMenuQueue_inline` and
+  `btlui_queueMenuUnit_inline`; btlui_clearMenuQueue / btlui_queueMenuUnit call them, the other two use them
+- btlui.c btlui_updateTargetWindow: new `btlui_openTargetWindow_inline` / `btlui_closeTargetWindow_inline`;
+  btlui_openTargetWindow / btlui_closeTargetWindow call them and btlui_updateTargetWindow uses them
+- btl_main.c btl_loadEnemyModelsStep case 2: commented. Its walk tests the type only and appends through `ids[cnt]`,
+  so it is not btl_loadSoundsStep_collect with different arguments
+- btl_main.c btl_reloadPartyStep case 7 / btl_swapPartyModelStep case 6: commented at both. btl_reloadPartyStep
+  takes `&pa` for the weapon afterwards, so the locals live on the stack there and a shared helper can't reproduce both

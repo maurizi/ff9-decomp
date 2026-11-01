@@ -62,32 +62,10 @@ void btl_loadPartyMotions(BtlUnit *unit, s32 kind, s32 slot) {
 
 void btl_spreadTroubleDamage(BtlUnit *source) {
     BtlUnit *unit;
-    s32 damage;
-    s32 facing;
     for (unit = g_gameState->gameData->ctx.battle->unitList; unit != 0; unit = unit->next) {
         if ((unit->flags & BTL_UNIT_PARTY) == (source->flags & BTL_UNIT_PARTY) && unit != source && ((unit->flags >> BTL_UNIT_TARGETABLE_BIT) & 1)) {
             unit->popupFlags = BTL_POPUP_HP;
-            damage = source->hpChange >> 1;
-            if (unit->status & BTL_STATUS_KO) {
-                unit->popupFlags = BTL_POPUP_MISS;
-            } else if (unit->status & BTL_STATUS_PETRIFY) {
-                unit->hpChange = 0;
-            } else {
-                if (unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
-                    facing = (unit->flags & BTL_UNIT_PARTY) << 11;
-                    unit->obj->rotY = facing;
-                    unit->rot[1] = facing;
-                }
-                if (damage < unit->hp) {
-                    unit->hp -= damage;
-                } else {
-                    unit->hp = 0;
-                }
-                unit->hpChange = damage;
-                if (unit->hp == 0) {
-                    btl_killUnit(unit);
-                }
-            }
+            btl_damageHp_inline(unit, source->hpChange >> 1, 0);
             btl_spawnPopups(unit);
         }
     }
@@ -160,33 +138,7 @@ void btl_orElements(u8 *dst, u8 *src) {
 }
 
 void btl_damageHp(BtlUnit *unit, s32 damage, u8 hitMotion) {
-    s32 facing;
-    if (unit->status & BTL_STATUS_KO) {
-        unit->popupFlags = BTL_POPUP_MISS;
-        return;
-    }
-    if (unit->status & BTL_STATUS_PETRIFY) {
-        unit->hpChange = 0;
-        return;
-    }
-    if (unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        facing = (unit->flags & BTL_UNIT_PARTY) << 11;
-        unit->obj->rotY = facing;
-        unit->rot[1] = facing;
-    }
-    if (damage < unit->hp) {
-        unit->hp -= damage;
-    } else {
-        unit->hp = 0;
-    }
-    unit->hpChange = damage;
-    if (hitMotion) {
-        btl_startHitMotion(unit);
-        return;
-    }
-    if (unit->hp == 0) {
-        btl_killUnit(unit);
-    }
+    btl_damageHp_inline(unit, damage, hitMotion);
 }
 
 void btl_healHp(BtlUnit *unit, s32 amount) {

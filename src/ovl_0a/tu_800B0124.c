@@ -670,10 +670,7 @@ void fld_playAnimSfx(FieldObjSlot **slots, s32 count) {
                 ch = (0x10000 << ch) & 0xF0000;
                 snd = sfx->sound[(triFlags >> 4) & 1] | DB_SE;
                 if (sfx->randomPitch != 0) {
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                    }
-                    rnd = *g_randPtr++;
+                    rnd = rand8_inline();
                     pitch = (rnd >> 4) - 8;
                 }
                 fld_getSoundPanVolume(ctx->actor->pos.vx, ctx->actor->pos.vy, ctx->actor->pos.vz, &vol, &pan);

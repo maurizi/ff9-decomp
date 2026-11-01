@@ -177,14 +177,14 @@ void wm_updateEffects(void) {
         }
         switch ((u8)fx->type) {
         case 2:
-            fx->y -= 60 + wm_rand8() % 24;
-            fx->x -= 30 - wm_rand8() % 60;
-            fx->z -= 30 - wm_rand8() % 60;
+            fx->y -= 60 + rand8_inline() % 24;
+            fx->x -= 30 - rand8_inline() % 60;
+            fx->z -= 30 - rand8_inline() % 60;
             break;
         case 3:
-            fx->y -= 60 + wm_rand8() % 24;
-            fx->x -= 60 - wm_rand8() % 60;
-            fx->z -= 30 - wm_rand8() % 60;
+            fx->y -= 60 + rand8_inline() % 24;
+            fx->x -= 60 - rand8_inline() % 60;
+            fx->z -= 30 - rand8_inline() % 60;
             break;
         case 23:
             fx->x = math_sin((fx->frame << 6) + fx->phase) / 2 + g_worldBlockFx4Pos.vx;
@@ -192,9 +192,9 @@ void wm_updateEffects(void) {
             fx->z = math_cos((fx->frame << 6) + fx->phase) / 2 + g_worldBlockFx4Pos.vz;
             /* fallthrough */
         case 24:
-            fx->x -= 40 + wm_rand8() % 130;
-            fx->y -= 40 - wm_rand8() % 80;
-            fx->z += 300 + wm_rand8() % 300;
+            fx->x -= 40 + rand8_inline() % 130;
+            fx->y -= 40 - rand8_inline() % 80;
+            fx->z += 300 + rand8_inline() % 300;
             break;
         }
         fx->frame++;
@@ -417,7 +417,6 @@ void wm_updateBlockFx(s32 fxId) {
     s32 x;
     s32 y;
     s32 z;
-    s32 rnd;
     u16 rotY;
 
     on = 0;
@@ -474,34 +473,13 @@ void wm_updateBlockFx(s32 fxId) {
                 y = emitter->y - emitter->rangeY / 2;
                 z = emitter->z - emitter->rangeZ / 2;
                 if (emitter->rangeX != 0) {
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                        if (g_randPtr >= g_randTableEnd) {
-                            rand_refill();
-                        }
-                    }
-                    rnd = *g_randPtr++;
-                    x += ((rnd << 8) | rnd) % emitter->rangeX;
+                    x += rand16_inline() % emitter->rangeX;
                 }
                 if (emitter->rangeY != 0) {
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                        if (g_randPtr >= g_randTableEnd) {
-                            rand_refill();
-                        }
-                    }
-                    rnd = *g_randPtr++;
-                    y += ((rnd << 8) | rnd) % emitter->rangeY;
+                    y += rand16_inline() % emitter->rangeY;
                 }
                 if (emitter->rangeZ != 0) {
-                    if (g_randPtr >= g_randTableEnd) {
-                        rand_refill();
-                        if (g_randPtr >= g_randTableEnd) {
-                            rand_refill();
-                        }
-                    }
-                    rnd = *g_randPtr++;
-                    z += ((rnd << 8) | rnd) % emitter->rangeZ;
+                    z += rand16_inline() % emitter->rangeZ;
                 }
                 wm_spawnEffect(x, y, z, emitter->effect, emitter->scale);
             }
