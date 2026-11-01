@@ -154,7 +154,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         return 0;
     }
     if ((u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || ((u->flags >> BTL_UNIT_HIT_MOTION_BIT) & 1)
-        || ((u->flags & BTL_UNIT_PARTY) && g->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind == 2 && cmd->cmdNo == BTL_CMD_SWD_MAG)) {
+        || ((u->flags & BTL_UNIT_PARTY) && g->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind == CHR_KIND_VIVI && cmd->cmdNo == BTL_CMD_SWD_MAG)) {
         return 0;
     }
     {

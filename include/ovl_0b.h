@@ -1448,7 +1448,19 @@ typedef struct BtlCmd8 {
 /* BtlCmd8.flags2. Evidence: [code] */
 #define BTL_ABIL2_SUMMON 0x04 /* costs 4x MP while EVT_GB_SUMMON_MP_X4 is set (btl_payMpCost, btl_getMpCost) */
 
-/* BtlCmd8.targetType / Battle16CC.targetType values. Evidence: [code] */
+/* BtlCmd8.targetType / Battle16CC.targetType values. Evidence: [code] g_btluiDefaultTargets (side 0xFF = the
+ * ability's defaultSide with side switching, 1 party, 0 enemies; targetAll) and g_btluiTargetAllByType, rows 0-13;
+ * btlui_startTargetSelect (canSwitchSide for 0/3/6/9, canToggleAll for 3-5). 9-11 are 6-8 again, but the command's
+ * targeting is 2 instead of the target count (btlui_getTargeting, btlui_confirmDoubleCast; Charge!, Spear). */
+#define BTL_TGT_SINGLE_ANY  0x0 /* one unit, either side (Life, Esuna, Scan, Haste) */
+#define BTL_TGT_SINGLE_PARTY 0x1 /* one party member (Vanish, Auto-Life, Chakra) */
+#define BTL_TGT_SINGLE_ENEMY 0x2 /* one enemy (Fire, Comet, Goblin Punch) */
+#define BTL_TGT_MULTI_ANY   0x3 /* one or all of a side, spread halves it (Cure, Fire, Sleep) */
+#define BTL_TGT_MULTI_PARTY 0x4
+#define BTL_TGT_MULTI_ENEMY 0x5
+#define BTL_TGT_ALL_ANY     0x6 /* a whole side, either */
+#define BTL_TGT_ALL_PARTY   0x7 /* the party (Carbuncle, Mighty Guard, White Wind) */
+#define BTL_TGT_ALL_ENEMY   0x8 /* every enemy (the summons, LV5 Death) */
 #define BTL_TGT_EVERYONE 0xC /* every targetable unit is marked (btlui_setDefaultTargets) */
 #define BTL_TGT_SELF     0xD /* the user only: no cursor (btlui_setDefaultTargets, btlui_cycleTarget) */
 

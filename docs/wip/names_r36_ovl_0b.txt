@@ -22,3 +22,5 @@ BTL_ATTR_* additions: HIDDEN_MESHES 0x3A, TEXANIM_PLAY/STOP/ONCE 0x3D-0x3F, ROW,
 ABIL_CARBUNCLE (0x44) / _EMERALD / _MOONSTONE / _DIAMOND, ITEM_DIAMOND/EMERALD/MOONSTONE (ff9_ids.h): btlui_resolveAbility.
 GPU_POLY_* / TPAGE_ABR_MASK (psyq.h, existing) in btl_setModelAbr, btl_setModelRgb, btl_fillModelRgb; DIR_* and DB_*
   >> 16 in btl_findNearestFile (dir 9 -> DB_MUSIC stays a literal: no DIR_ macro).
+BTL_TGT_SINGLE/MULTI/ALL_ANY/PARTY/ENEMY 0-8 (ovl_0b.h, from g_btluiDefaultTargets/g_btluiTargetAllByType); 9-11 left
+  literal (6-8 with targeting 2, no name evidence).

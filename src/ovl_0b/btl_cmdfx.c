@@ -233,7 +233,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
             break;
         }
     default:
-        if ((cmd->ability->targetType == 3 && !cmd->info.b.targeting) || (cmd->info.w & (BTL_CMDINFO_MAGIC_FAILED | BTL_CMDINFO_SHORT_SUMMON)) ||
+        if ((cmd->ability->targetType == BTL_TGT_MULTI_ANY && !cmd->info.b.targeting) || (cmd->info.w & (BTL_CMDINFO_MAGIC_FAILED | BTL_CMDINFO_SHORT_SUMMON)) ||
             cmd->cmdNo == BTL_CMD_SEIKEN || cmd->cmdNo == BTL_CMD_SEIKEN2) {
             btl_playCmdEffect(cmd, cmd->ability->altEffect, 0);
         } else {

@@ -2157,9 +2157,9 @@ void btlui_startTargetSelect(Unk800EF80C *arg0) {
     g_btlTarget.windowOpen = 0;
     g_btlTarget.halfMp = chr_hasSupportAbility(BTL_UNIT_INDEX(g_btlTarget.unit->flags), SA_HALF_MP);
     g_btlTarget.trance = arg0->trance;
-    g_btlTarget.unk7 = (u32)(arg0->targetType - 6) < 3;
-    g_btlTarget.canSwitchSide = arg0->targetType == 0 || arg0->targetType == 3 || arg0->targetType == 9 || arg0->targetType == 6;
-    g_btlTarget.canToggleAll = (u32)(arg0->targetType - 3) < 3;
+    g_btlTarget.unk7 = (u32)(arg0->targetType - BTL_TGT_ALL_ANY) < 3;
+    g_btlTarget.canSwitchSide = arg0->targetType == BTL_TGT_SINGLE_ANY || arg0->targetType == BTL_TGT_MULTI_ANY || arg0->targetType == 9 || arg0->targetType == BTL_TGT_ALL_ANY;
+    g_btlTarget.canToggleAll = (u32)(arg0->targetType - BTL_TGT_MULTI_ANY) < 3;
     g_btluiCursors.partyCount = 0;
     g_btluiCursors.count = 0;
     btlui_clearTargeted();
@@ -2629,16 +2629,16 @@ void *btlui_getTargetHelpText(void) {
     s32 n;
     s32 k;
 
-    if (g_btlTarget.targetType < 3) {
+    if (g_btlTarget.targetType < BTL_TGT_MULTI_ANY) {
         t = find_target();
         if (t == NULL) {
             return NULL;
         }
         text_copy(g_btluiHelpText, text_get(g_btlTarget.targetType + 5));
         text_append(g_btluiHelpText, btl_getUnitName(t));
-    } else if ((u8)(g_btlTarget.targetType - 3) < 3) {
+    } else if ((u8)(g_btlTarget.targetType - BTL_TGT_MULTI_ANY) < 3) {
         n = 0;
-        k = g_btlTarget.targetType - 3;
+        k = g_btlTarget.targetType - BTL_TGT_MULTI_ANY;
         for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
             if ((u->flags >> BTL_UNIT_TARGETED_BIT) & 1) {
                 n++;

@@ -395,7 +395,7 @@ fail:
     c->targets = arg1;
     c->cmdNo = arg2;
     c->subNo = arg3;
-    if ((u32)(c->ability->targetType - 6) < 7) {
+    if ((u32)(c->ability->targetType - BTL_TGT_ALL_ANY) < 7) { /* ALL_ANY .. EVERYONE */
         c->info.b.targeting = 1;
     } else {
         c->info.b.targeting = 0;
@@ -3303,7 +3303,7 @@ void btl_halveHitForShell(BtlCalc *arg0) {
 
 void btl_halveHitForSpread(BtlCalc *arg0) {
     BtlCalc8 *c = arg0->cmd;
-    if ((c->flags & BTL_CMDINFO_TARGETING) == 1 && (u32)((*(u32 *)c->ability & 0xF) - 3) < 3) {
+    if ((c->flags & BTL_CMDINFO_TARGETING) == 1 && (u32)((*(u32 *)c->ability & 0xF) - BTL_TGT_MULTI_ANY) < 3) {
         arg0->hitRate /= 2;
     }
 }
@@ -3554,7 +3554,7 @@ u8 btl_missIfAirborne(BtlCalc *arg0) {
 
 void btl_halveForSpread(BtlCalc *arg0) {
     BtlCalc8 *c = arg0->cmd;
-    if ((c->flags & BTL_CMDINFO_TARGETING) == 1 && (u32)((*(u32 *)c->ability & 0xF) - 3) < 3 && btl_countActiveUnits(c->targets < 0x10) >= 2) {
+    if ((c->flags & BTL_CMDINFO_TARGETING) == 1 && (u32)((*(u32 *)c->ability & 0xF) - BTL_TGT_MULTI_ANY) < 3 && btl_countActiveUnits(c->targets < 0x10) >= 2) {
         arg0->multiplier /= 2;
     }
 }
