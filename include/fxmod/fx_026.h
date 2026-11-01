@@ -6,7 +6,7 @@
 
 /* keyframe track read from the effect file: count, then the keys */
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     s16 count2; /* count */
     s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx026Track;
@@ -52,7 +52,7 @@ typedef struct {
     u16 posTrack0;
     u16 targetTrack2;
     u16 length4;
-    u16 unk6;
+    u16 unk6; /* not read by the module */
 } Fx026CamPath;
 
 typedef struct {
@@ -102,7 +102,7 @@ typedef struct {
 
 /* op82: the barrier model */
 typedef struct {
-    s32 unk0;
+    s32 unk0; /* cleared at init and tested for 0, never set (always 0) */
     s32 frame4; /* frame */
     SVECTOR pos8; /* position */
     s32 model10; /* model */
@@ -110,11 +110,11 @@ typedef struct {
 
 /* pool item of fx_026_op82PoolTask */
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared at spawn) */
     s16 strip2; /* index */
     s16 kind4; /* type */
     s16 pad6;
-    s32 unk8;
+    s32 unk8; /* write-only (cleared at spawn) */
 } Fx026Item82;
 
 /* line strip passed to btlfx_drawTrail */

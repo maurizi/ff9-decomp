@@ -24,7 +24,7 @@ typedef struct {
     u8 branchAt13;
     u8 kind14; /* kind */
     u8 width15;
-    s16 unk16;
+    s16 unk16; /* unused */
     s32 *jitter18;
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;

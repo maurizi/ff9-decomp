@@ -252,15 +252,15 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         fx_0d2_streak.lengthA = 6;
         fx_0d2_streak.start8 = 0;
-        fx_0d2_streak.unkC = 0x1000;
+        fx_0d2_streak.fadeC = 0x1000;
         fx_0d2_streak.from10 = 0x40;
-        fx_0d2_streak.unkE = 0x1000;
+        fx_0d2_streak.scaleE = 0x1000;
         fx_0d2_streak.to12 = 0x20;
         fx_0d2_streak2.from10 = 0x80;
         fx_0d2_streak2.start8 = 0;
         fx_0d2_streak2.lengthA = 0;
-        fx_0d2_streak2.unkC = 0x1000;
-        fx_0d2_streak2.unkE = 0x1000;
+        fx_0d2_streak2.fadeC = 0x1000;
+        fx_0d2_streak2.scaleE = 0x1000;
         fx_0d2_streak2.to12 = 0x60;
     } else {
         frame = entry->frame;
@@ -326,8 +326,8 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     i5 = 0;
                 }
                 fxm_buildPathTrail(&fx_0d2_streak.keys, fx_0d2_streakBufs[i], 0x90, fx_0d2_streak.start8, n, fx_0d2_streak.from10, fx_0d2_streak.to12, 1);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0, NULL, 0, fx_0d2_streak.unkE,
-                                    fx_0d2_streak.unkC, 1, fx_0d2_streakBufs[i], 0);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0, NULL, 0, fx_0d2_streak.scaleE,
+                                    fx_0d2_streak.fadeC, 1, fx_0d2_streakBufs[i], 0);
             }
         }
         if ((u32)(frame - 0x43) < 0xF) {
@@ -338,8 +338,8 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                               (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x81), j));
                 fxm_buildPathTrail(&fx_0d2_streak2.keys, fx_0d2_streakBufs2[j], 0x50, fx_0d2_streak2.start8, fx_0d2_streak2.lengthA, fx_0d2_streak2.from10,
                               fx_0d2_streak2.to12, 0);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x25), 0, NULL, 0, fx_0d2_streak2.unkE,
-                                    fx_0d2_streak2.unkC, 1, fx_0d2_streakBufs2[j], 0);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x25), 0, NULL, 0, fx_0d2_streak2.scaleE,
+                                    fx_0d2_streak2.fadeC, 1, fx_0d2_streakBufs2[j], 0);
             }
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 5), frame);

@@ -20,7 +20,7 @@ typedef struct {
 typedef struct {
     s32 state0; /* state */
     s16 kind4; /* kind */
-    s16 unk6; /* bob height, then phase */
+    s16 bob6; /* bob height, then phase */
     s32 frame8; /* frame */
     SVECTOR posC; /* position */
     SVECTOR rot14; /* rotation */

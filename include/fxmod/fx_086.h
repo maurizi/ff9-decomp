@@ -32,7 +32,7 @@ static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTO
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* counter */
-    s16 unk8[6];
+    s16 unk8[6]; /* write-only: three screen points (0xA0,0x78), (0,0x78), (0xC8,0x78) */
     SVECTOR pos14; /* position */
     SVECTOR pos1C; /* target position */
     s32 model24; /* models */

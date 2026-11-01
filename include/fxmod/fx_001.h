@@ -7,7 +7,7 @@
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    s32 unk8;
+    s32 unk8; /* unused */
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
     Pool6CEntry *emit14;

@@ -26,9 +26,9 @@ typedef struct {
     s32 endZ64;
     s32 pad68;
     s32 offsetY6C[11]; /* y offset */
-    s32 unk98[11];
+    s32 unk98[11]; /* unused */
     s32 speedYC4[11]; /* y speed */
-    s32 unkF0[11];
+    s32 unkF0[11]; /* unused */
     s32 timer11C; /* timer */
 } Fx079Strip; /* 0x120 */
 

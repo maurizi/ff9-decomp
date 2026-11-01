@@ -313,7 +313,7 @@ static s32 fx_0fb_0_op80PoolTask(s32 mode, Fx0fb0Rock *r, Unk800F78A4 *env) {
     if (mode == 1) {
         r->state0 = 0;
         r->frame8 = 0;
-        r->unk6 = ex->btlfx_randCentered(0x1800) - 0x3000;
+        r->bob6 = ex->btlfx_randCentered(0x1800) - 0x3000;
         r->rot14.vx = 0;
         r->rot14.vy = 0;
         r->rot14.vz = 0;
@@ -339,16 +339,16 @@ static s32 fx_0fb_0_op80PoolTask(s32 mode, Fx0fb0Rock *r, Unk800F78A4 *env) {
     switch (r->state0) {
     case 0:
         mode = (r->frame8 << 12) / 40; /* reuses the parameter */
-        pos.vy += (ex->math_sin(mode >> 2) * r->unk6) >> 12;
+        pos.vy += (ex->math_sin(mode >> 2) * r->bob6) >> 12;
         if (++r->frame8 >= 0x28) {
             r->state0 = 1;
             r->frame8 = 0;
             r->posC.vy = pos.vy;
-            r->unk6 = ex->btlfx_rand();
+            r->bob6 = ex->btlfx_rand();
         }
         break;
     case 1:
-        pos.vy += ex->math_sin((r->frame8 << 7) + r->unk6) >> 3;
+        pos.vy += ex->math_sin((r->frame8 << 7) + r->bob6) >> 3;
         r->frame8++;
         break;
     }

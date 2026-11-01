@@ -10,7 +10,7 @@ typedef struct {
 
 /* point list read from the effect file */
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx041Point *points4;
 } Fx041Path;

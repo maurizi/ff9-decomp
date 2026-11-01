@@ -22,7 +22,7 @@ typedef struct {
     s16 velXC; /* velocity */
     s16 velYE;
     s16 velZ10;
-    s16 unk12;
+    s16 unk12; /* write-only (0x1080 +- 0x20) */
     s16 trail14; /* trail index */
     s16 pointIdx16; /* point index */
     u8 *point18; /* strip point */
@@ -50,7 +50,7 @@ typedef struct {
     u8 kind11; /* state */
     u8 branchAt12;
     u8 branchAt13;
-    u8 unk14;
+    u8 unk14; /* write-only (cleared) */
     u8 amp15; /* amplitude */
     u8 pad16[2];
     s32 *jitter18; /* arc profile */
@@ -74,7 +74,7 @@ extern SVECTOR fx_0ba_summonPos;
 
 typedef struct {
     SVECTOR points0[17];
-    s32 unk88;
+    s32 unk88; /* unused */
 } Fx0baPath; /* 0x8C */
 
 extern Unk800F78A4 *fx_0ba_env;
@@ -150,10 +150,10 @@ typedef struct {
     s32 model88;
     s32 model8C;
     s32 model90;
-    s16 unk94;
-    s16 unk96;
-    s16 unk98;
-    s16 unk9A;
+    s16 unk94; /* write-only (cleared at init) */
+    s16 unk96; /* write-only (cleared at init) */
+    s16 unk98; /* write-only (cleared at init) */
+    s16 unk9A; /* write-only (cleared at init) */
     u8 pad9C[4];
 } Fx0baWork80; /* 0xA0 */
 extern BtlModelBuf fx_0ba_effModels0[];
@@ -172,9 +172,9 @@ typedef struct {
 } Fx0baPKey;
 
 typedef struct {
-    s16 unk0;
-    s16 unk2; /* count */
-    Fx0baPKey unk4[1];
+    s16 unk0; /* read only through a pointer moved onto a key (then the key's x) */
+    s16 unk2; /* count, not read by the module */
+    Fx0baPKey unk4[1]; /* not read as a member: the keys are reached by byte offsets */
 } Fx0baPKeys;
 
 typedef struct {

@@ -45,9 +45,9 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
 typedef struct {
     s16 kind0; /* kind */
     s16 state2; /* state */
-    s16 unk4; /* velocity */
-    s16 unk6;
-    s16 unk8;
+    s16 velX4; /* velocity */
+    s16 velY6;
+    s16 velZ8;
     s16 speedA; /* speed */
     SVECTOR posC; /* position */
     SVECTOR rot14; /* rotation */

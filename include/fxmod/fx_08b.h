@@ -11,7 +11,7 @@ typedef struct {
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
-    s32 unk10;
+    s32 unk10; /* unused */
     Pool6CEntry *emit14;
     SVECTOR pos18; /* unit 0x10 position */
     SVECTOR rot20; /* unit 0x10 rotation */

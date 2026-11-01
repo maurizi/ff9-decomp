@@ -16,7 +16,7 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x38;
     } else if (mode == 1) {
         fx_0de_env = env;
-        work->unk0 = 0;
+        work->stop0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, &work->pos4.vx);
         ex->btlfx_getUnitPos(0, &work->posC.vx);
         ex->btlfx_initEffModels(fx_0de_effModels, 8);
@@ -39,7 +39,7 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale34 = v;
     } else {
         frame = entry->frame;
-        if (work->unk0 != 0) {
+        if (work->stop0 != 0) {
             return 0;
         }
         if (frame < 0x18) {

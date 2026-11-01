@@ -45,7 +45,7 @@ typedef struct {
     s32 otZ8; /* priority base */
     SVECTOR posC; /* target position */
     SVECTOR pos14;
-    Fx081Vec3 unk1C;
+    Fx081Vec3 unk1C; /* write-only (copy of posC) */
     s32 model28; /* model */
 } Fx081Work81; /* 0x2C */
 

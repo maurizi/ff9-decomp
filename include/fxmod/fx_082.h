@@ -9,7 +9,7 @@
 
 typedef struct {
     s32 state0; /* state */
-    s32 unk4;
+    s32 unk4; /* write-only (cleared at init) */
     SVECTOR pos8; /* caster body position */
     SVECTOR pos10;
     SVECTOR pos18; /* pos8 moved 0x226 along rot20, raised by 0x145 */

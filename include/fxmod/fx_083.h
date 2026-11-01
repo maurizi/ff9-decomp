@@ -18,7 +18,7 @@ typedef struct {
     SVECTOR ringRot38[4]; /* ring rotations */
     VECTOR ringPos58[4]; /* ring positions */
     Fx083Vec3 ringScale98; /* ring scale */
-    s32 unkA4;
+    s32 unkA4; /* unused */
     s32 ringOffsetA8; /* ring radius offset */
     s32 ringHeightAC; /* ring height */
     s32 modelB0[5]; /* pillar models */
@@ -28,7 +28,7 @@ typedef struct {
     s32 fade13C; /* fade */
     SVECTOR rot140; /* pillar rotation */
     Fx083Vec3 pillarScale148; /* pillar scale */
-    s32 unk154;
+    s32 unk154; /* unused */
     SVECTOR center158; /* center */
     SVECTOR pos160; /* caster position */
     s32 radius168; /* radius */

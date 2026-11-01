@@ -873,8 +873,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (work->trailReset50 != 0) {
             work->trailReset50 = 0;
             for (j = 0; j < 4; j++) {
-                ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].unk0, (u16 *)&v0);
-                ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].unk2, (u16 *)&v1);
+                ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeA0, (u16 *)&v0);
+                ex->Hi_GetSummonBonePos(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeB2, (u16 *)&v1);
                 fxm_drawTexRibbonTrail(&v0, &v1, 0x3F6, 0, 0, 0, 0, 0, 0, 0, fx_0e3_0_ribbons[j], 1, 0);
             }
             for (j = 0; j < 4; j++) {
@@ -884,10 +884,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
         }
         for (j = 0; j < 4; j++) {
-            ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].unk0, (BtlBone *)&m);
-            ex->btlfx_matrixPointAhead(&m, (fx_0e3_0_ribbonBones[j + 4].unk0 * work->summonScale1C.vy) >> 12, (s32)&v0);
-            ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].unk2, (BtlBone *)&m2);
-            ex->btlfx_matrixPointAhead(&m2, (fx_0e3_0_ribbonBones[j + 4].unk2 * work->summonScale1C.vy) >> 12, (s32)&v1);
+            ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeA0, (BtlBone *)&m);
+            ex->btlfx_matrixPointAhead(&m, (fx_0e3_0_ribbonBones[j + 4].edgeA0 * work->summonScale1C.vy) >> 12, (s32)&v0);
+            ex->Hi_GetSummonBoneMatrix(SUMMON(env)->summonModel60, fx_0e3_0_ribbonBones[j].edgeB2, (BtlBone *)&m2);
+            ex->btlfx_matrixPointAhead(&m2, (fx_0e3_0_ribbonBones[j + 4].edgeB2 * work->summonScale1C.vy) >> 12, (s32)&v1);
             fxm_drawTexRibbonTrail(&v0, &v1, 0xE, 0x9D, 0x3D40, 0, 0x80, 0x40, 0x80, trail >> 5, fx_0e3_0_ribbons[j], 1,
                           10000 - work->frame4);
         }

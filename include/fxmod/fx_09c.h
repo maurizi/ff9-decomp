@@ -7,8 +7,8 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* pos10 + random */
-    SVECTOR unk8; /* pos10 + random */
+    SVECTOR unk0; /* write-only: pos10 + random */
+    SVECTOR unk8; /* write-only: pos10 + random */
     SVECTOR pos10; /* caster body position */
     SVECTOR pos18; /* caster body position */
     Pool6CEntry *emit20;

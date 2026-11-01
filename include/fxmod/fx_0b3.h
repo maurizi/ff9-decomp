@@ -19,7 +19,7 @@ typedef struct {
     u16 point0Keys0; /* file id, track 0 */
     u16 point1Keys2; /* file id, track 1 */
     u16 endFrame4; /* end frame */
-    u16 unk6;
+    u16 unk6; /* not read by the module */
 } Fx0b3Track87;
 
 extern Fx0b3Track87 fx_0b3_camShots[];

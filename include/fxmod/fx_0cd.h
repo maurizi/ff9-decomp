@@ -17,7 +17,7 @@ typedef struct {
     s32 timer0; /* model C countdown */
     s32 timer4; /* model A countdown */
     s32 timer8; /* model B countdown */
-    s32 unkC[5];
+    s32 unkC[5]; /* unused */
     Fx0cdModel model20; /* A */
     Fx0cdModel model4C; /* B */
     Fx0cdModel model78; /* C */

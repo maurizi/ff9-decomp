@@ -11221,3 +11221,16 @@ fx_003 fx_005 fx_018 fx_042 fx_049 fx_0ba fx_0d7 fx_0d8 fx_0d9 fx_0df fx_0e0 fx_
   fx_085 fx_07d fx_101 fx_134 (ring structs): unk3 -> pad3
 fx_003 fx_005 fx_018 fx_026 fx_042 fx_049 fx_062 fx_063 fx_0b8 fx_0ba fx_0d7 fx_0d8 fx_0d9 fx_0df fx_0e0 fx_0e2
   fx_0e3_0 fx_0e3_1 fx_0e6 fx_0fb_1 (ring structs): unk4[] -> pts4[] (ring points; SVECTOR pad = width * 2)
+
+## Batch 2: fx_001..fx_0fb_1 members
+fx_059: unk0 -> rotXY0
+fx_0b8: unk0 -> flags0
+fx_0d2: unkC -> fadeC, unkE -> scaleE
+fx_0dc: unk0 -> state0, unk7C -> scrollFrame7C, unk80 -> scroll80
+fx_0de: unk0 -> stop0
+fx_0e3_0: unk0 -> edgeA0, unk2 -> edgeB2
+fx_0ec: unk6 -> split6, unk1A -> delayOrTri1A, unk0 -> verts0
+fx_0fa: unk0 -> timers0
+fx_0fb_0: unk6 -> bob6
+fx_0fb_1: unk4 -> velX4, unk6 -> velY6, unk8 -> velZ8
+commented (unused / write-only / not read): fx_001 unk8; fx_026 unk0 unk6 unk0 unk0 unk8; fx_041 unk0; fx_059 unk6; fx_078 unk40; fx_079 unk98 unkF0; fx_07d unk0 unk14 unk18 unk1C; fx_081 unk1C; fx_082 unk4; fx_083 unkA4 unk154; fx_086 unk8; fx_087 unk0; fx_08b unk10; fx_08c unk10; fx_08f unk8; fx_090 unk4 unk8; fx_095 unk4; fx_096 unk4 unk10; fx_09a unk30; fx_09c unk0 unk8; fx_0a1 unk4; fx_0a7 unk8; fx_0a8 unk14 unk1C; fx_0b3 unk6; fx_0b8 unk1B4 unk1C4 unk20 unk1C; fx_0ba unk12 unk14 unk88 unk94 unk96 unk98 unk9A unk0 unk2 unk4; fx_0cb unk0 unk28; fx_0cd unkC; fx_0d2 unk0 unkC unk0 unk0; fx_0d3 unk0; fx_0d8 unk16; fx_0db unk30; fx_0dd unk58; fx_0df unk0 unk14 unk18 unk1C; fx_0e0 unk2 unkA unk12; fx_0e2 unk0 unk10 unkC unkE unk18 unk10 unk0; fx_0ef unk0

@@ -24,7 +24,7 @@ typedef struct {
     SVECTOR rot1C; /* unit rotation */
     SVECTOR pos24; /* summon position */
     s32 ribbonHead2C; /* ribbon head */
-    s32 unk30;
+    s32 unk30; /* unused */
     SVECTOR rot34; /* summon rotation */
     s32 scale3C[3]; /* summon scale */
 } Fx09aWork; /* 0x48 */

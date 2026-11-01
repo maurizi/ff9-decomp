@@ -83,8 +83,8 @@ typedef struct {
 } Fx0e30Summon;
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
+    s16 edgeA0; /* a edge: summon bone (entries 0-3) or its distance ahead (entries 4-7) */
+    s16 edgeB2; /* b edge: summon bone (entries 0-3) or its distance ahead (entries 4-7) */
 } Fx0e30BonePair;
 
 typedef struct {

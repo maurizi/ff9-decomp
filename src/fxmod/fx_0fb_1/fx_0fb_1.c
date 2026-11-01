@@ -171,7 +171,7 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
                             q->spinX1C = ex->btlfx_randCentered(0x84);
                             q->spinY1E = ex->btlfx_randCentered(0x84);
                             ex->btlfx_forwardAngles((s16 *)&v, (XY32 *)&work->rot6C, a);
-                            ex->btlfx_rotateOffset(&v, (it->speedA << 16) >> 21, (s32)&q->unk4);
+                            ex->btlfx_rotateOffset(&v, (it->speedA << 16) >> 21, (s32)&q->velX4);
                         }
                     }
                     it->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&it->posC);
@@ -309,9 +309,9 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
     case 2:
         it->posC.vz += 0x32;
         it->posC.vy -= 0x19;
-        it->posC.vx += it->unk4;
-        it->posC.vy += it->unk6;
-        it->posC.vz += it->unk8;
+        it->posC.vx += it->velX4;
+        it->posC.vy += it->velY6;
+        it->posC.vz += it->velZ8;
         pos.vx = it->posC.vx;
         pos.vy = it->posC.vy;
         pos.vz = it->posC.vz;
@@ -329,7 +329,7 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
         break;
     case 4:
         it->posC.vx = (s16)(it->posC.vx - 0x80) - it->speedA;
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &it->posC, NULL, (it->unk4 * 3) >> 1, 0,
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &it->posC, NULL, (it->velX4 * 3) >> 1, 0,
                                 1, -1, 0, 0);
         if (frame >= 0x11) {
             return 1;
@@ -931,7 +931,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                     q->posC.vy += (ex->math_cos(e) * d) >> 12;
                     q->posC.vz += (ex->math_sin(e) * d) >> 12;
                     q->speedA = ex->btlfx_rand() % 70;
-                    q->unk4 = (ex->btlfx_rand() & 0xFFF) + 0x1000;
+                    q->velX4 = (ex->btlfx_rand() & 0xFFF) + 0x1000;
                 }
             }
         }

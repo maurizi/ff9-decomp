@@ -7,7 +7,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    u16 unk0;
+    u16 unk0; /* not read by the module */
     u16 count2; /* count */
     s16 *keys4;
 } Fx0d2Keys;
@@ -50,7 +50,7 @@ typedef struct {
     u16 frame2; /* start frame */
     u16 done4; /* released */
     s16 pos6[3]; /* position */
-    u16 unkC;
+    u16 unkC; /* not read by the module */
 } Fx0d2Spawn; /* 0xE */
 
 typedef struct {
@@ -82,7 +82,7 @@ typedef struct {
     s16 x, y, z;
 } Fx0d2Point;
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx0d2Point *points4;
 } Fx0d2Path;
@@ -91,7 +91,7 @@ typedef struct {
     s16 rot6[3]; /* rotation */
 } Fx0d2Key; /* 0xC */
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* keys */
     Fx0d2Key *keys4;
 } Fx0d2KeyPath;
@@ -115,8 +115,8 @@ typedef struct {
     Fx0d2Keys keys;
     s16 start8; /* start */
     s16 lengthA; /* points */
-    s16 unkC;
-    s16 unkE;
+    s16 fadeC; /* btlfx_drawTrail fade (depth cue toward the far colour), 0x1000 */
+    s16 scaleE; /* btlfx_drawTrail width scale, 0x1000 (ignored: these calls push no point) */
     s16 from10;
     s16 to12;
 } Fx0d2Trail;

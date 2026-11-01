@@ -20,9 +20,9 @@ typedef struct {
 } Fx059Work81;
 
 typedef struct {
-    s32 unk0;
+    s32 rotXY0; /* rotation x and y as one word, both 0 (btlfx_pushViewRotation reads it as an SVECTOR) */
     s16 rotZ4;
-    s16 unk6;
+    s16 unk6; /* SVECTOR pad, unused */
 } Fx059Rot;
 
 extern s16 fx_059_headBlocks[];

@@ -62,10 +62,10 @@ static void fxm_shatterModel(s32 model, SVECTOR *center) {
     p = fx_0ec_shatterShards;
     for (i = 0; i < 0x70; p++) {
         p->age18 = 0;
-        p->pos0.vx = ((t->unk0[0].vx + u->unk0[1].vx + u->unk0[2].vx) / 3) << 12;
-        p->pos0.vy = ((u->unk0[0].vy + u->unk0[1].vy + u->unk0[2].vy) / 3) << 12;
-        p->pos0.vz = ((u->unk0[0].vz + u->unk0[1].vz + u->unk0[2].vz) / 3) << 12;
-        p->unk1A = 0;
+        p->pos0.vx = ((t->verts0[0].vx + u->verts0[1].vx + u->verts0[2].vx) / 3) << 12;
+        p->pos0.vy = ((u->verts0[0].vy + u->verts0[1].vy + u->verts0[2].vy) / 3) << 12;
+        p->pos0.vz = ((u->verts0[0].vz + u->verts0[1].vz + u->verts0[2].vz) / 3) << 12;
+        p->delayOrTri1A = 0;
         i++;
         p->velC.pad = 0x1000;
         p->spinX14 = ex->btlfx_randCentered(0x100);
@@ -109,16 +109,16 @@ void fxm_shatterModelUpdate(void) {
     sc.vx = sc.vy = sc.vz = 0xF80;
     for (i = 0; i < 0x70; i++, s++, t++) {
         if (s->age18 >= 0) {
-            if (s->age18 < s->unk1A) {
+            if (s->age18 < s->delayOrTri1A) {
                 s->age18++;
             } else {
                 c.vx = s->pos0.vx >> 12;
                 c.vy = s->pos0.vy >> 12;
                 c.vz = s->pos0.vz >> 12;
                 for (j = 0; j < 3; j++) {
-                    loc[j].vx = t->unk0[j].vx - c.vx;
-                    loc[j].vy = t->unk0[j].vy - c.vy;
-                    loc[j].vz = t->unk0[j].vz - c.vz;
+                    loc[j].vx = t->verts0[j].vx - c.vx;
+                    loc[j].vy = t->verts0[j].vy - c.vy;
+                    loc[j].vz = t->verts0[j].vz - c.vz;
                 }
                 if (s->age18 >= 8) {
                     ex->btlfx_stepModuleParticle((Pool6CEntry *)s, -10, (SVECTOR *)bias, &out);
@@ -152,23 +152,23 @@ void fxm_shatterModelUpdate(void) {
                     gte_ldv0(&loc[j]);
                     gte_rtv0tr();
                     gte_stlvnl(&v);
-                    t->unk0[j].vx = v.vx;
-                    t->unk0[j].vy = v.vy;
-                    t->unk0[j].vz = v.vz;
+                    t->verts0[j].vx = v.vx;
+                    t->verts0[j].vy = v.vy;
+                    t->verts0[j].vz = v.vz;
                 }
                 if (++s->age18 >= 0x47) {
                 kill:
                     s->age18 = -1;
-                    t->unk0[2].vz = 0;
-                    *(s32 *)&t->unk0[2] = 0;
-                    t->unk0[1].vz = 0;
-                    *(s32 *)&t->unk0[1] = 0;
-                    t->unk0[0].vz = 0;
+                    t->verts0[2].vz = 0;
+                    *(s32 *)&t->verts0[2] = 0;
+                    t->verts0[1].vz = 0;
+                    *(s32 *)&t->verts0[1] = 0;
+                    t->verts0[0].vz = 0;
                     /* the nested do-while(0)s weight t's refs by loop depth, which puts t ahead of ex in
                      * global-alloc (t in s3, ex in s4) */
                     do {
                         do {
-                            *(s32 *)&t->unk0[0] = 0;
+                            *(s32 *)&t->verts0[0] = 0;
                         } while (0);
                     } while (0);
                 }
@@ -209,7 +209,7 @@ static s32 fxm_splitModelAdd(s32 model) {
     sp->triCount2 += n;
     fx_0ec_split.modelCount0++;
     for (i = 0; i < n; i++) {
-        v->unk6 = 0;
+        v->split6 = 0;
         v++;
     }
     return sp->triCount2;
@@ -245,15 +245,15 @@ s32 fxm_splitRelease(s32 y, SVECTOR *center) {
     u = t;
     ex = BTLFX_EXPORTS(fx_0ec_env);
     for (n = k; i < sp->triCount2; i++, u++, t++, k++) {
-        if (y < (u->unk0[0].vy + u->unk0[1].vy + u->unk0[2].vy) / 3 && u->unk0[0].pad == 0) {
+        if (y < (u->verts0[0].vy + u->verts0[1].vy + u->verts0[2].vy) / 3 && u->verts0[0].pad == 0) {
             p = fxm_splitFreeShard();
             if (p != NULL) {
-                u->unk0[0].pad = 1;
-                p->pos0.vx = ((t->unk0[0].vx + u->unk0[1].vx + u->unk0[2].vx) / 3) << 12;
-                p->pos0.vy = ((u->unk0[0].vy + u->unk0[1].vy + u->unk0[2].vy) / 3) << 12;
-                p->pos0.vz = ((u->unk0[0].vz + u->unk0[1].vz + u->unk0[2].vz) / 3) << 12;
+                u->verts0[0].pad = 1;
+                p->pos0.vx = ((t->verts0[0].vx + u->verts0[1].vx + u->verts0[2].vx) / 3) << 12;
+                p->pos0.vy = ((u->verts0[0].vy + u->verts0[1].vy + u->verts0[2].vy) / 3) << 12;
+                p->pos0.vz = ((u->verts0[0].vz + u->verts0[1].vz + u->verts0[2].vz) / 3) << 12;
                 p->age18 = 0;
-                p->unk1A = k;
+                p->delayOrTri1A = k;
                 p->velC.pad = 0x1000;
                 p->spinX14 = ex->btlfx_randCentered(0x100);
                 p->spinY16 = ex->btlfx_randCentered(0x200);
@@ -292,14 +292,14 @@ void fxm_splitUpdate(void) {
     sc.vx = sc.vy = sc.vz = 0xEC0;
     for (i = 0; i < 300; i++, s++) {
         if (s->age18 >= 0) {
-            t = (Fx0ecTri *)sp->trisC + s->unk1A;
+            t = (Fx0ecTri *)sp->trisC + s->delayOrTri1A;
             c.vx = s->pos0.vx >> 12;
             c.vy = s->pos0.vy >> 12;
             c.vz = s->pos0.vz >> 12;
             for (j = 0; j < 3; j++) {
-                loc[j].vx = t->unk0[j].vx - c.vx;
-                loc[j].vy = t->unk0[j].vy - c.vy;
-                loc[j].vz = t->unk0[j].vz - c.vz;
+                loc[j].vx = t->verts0[j].vx - c.vx;
+                loc[j].vy = t->verts0[j].vy - c.vy;
+                loc[j].vz = t->verts0[j].vz - c.vz;
             }
             ex->btlfx_stepModuleParticle((Pool6CEntry *)s, -10, (SVECTOR *)bias, &out);
             if (s->velC.vy < 0 && s->pos0.vy < 0) {
@@ -320,19 +320,19 @@ void fxm_splitUpdate(void) {
                 gte_ldv0(&loc[j]);
                 gte_rtv0tr();
                 gte_stlvnl(&v);
-                t->unk0[j].vx = v.vx;
-                t->unk0[j].vy = v.vy;
-                t->unk0[j].vz = v.vz;
+                t->verts0[j].vx = v.vx;
+                t->verts0[j].vy = v.vy;
+                t->verts0[j].vz = v.vz;
             }
             if (++s->age18 >= 0x20) {
             kill:
                 s->age18 = -1;
-                t->unk0[2].vz = 0;
-                *(s32 *)&t->unk0[2] = 0;
-                t->unk0[1].vz = 0;
-                *(s32 *)&t->unk0[1] = 0;
-                t->unk0[0].vz = 0;
-                *(s32 *)&t->unk0[0] = 0;
+                t->verts0[2].vz = 0;
+                *(s32 *)&t->verts0[2] = 0;
+                t->verts0[1].vz = 0;
+                *(s32 *)&t->verts0[1] = 0;
+                t->verts0[0].vz = 0;
+                *(s32 *)&t->verts0[0] = 0;
             }
         }
     }

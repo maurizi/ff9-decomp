@@ -87,15 +87,15 @@ typedef struct {
 
 typedef struct {
     s16 state0; /* state */
-    s16 unk2;
+    s16 unk2; /* unused */
     s16 velX4;
     s16 velY6;
     s16 velZ8;
-    s16 unkA;
+    s16 unkA; /* write-only */
     s16 posXC;
     s16 posYE;
     s16 posZ10;
-    s16 unk12;
+    s16 unk12; /* unused */
     s16 rotX14;
     s16 rotY16;
     s16 rotZ18;
