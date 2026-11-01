@@ -186,7 +186,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         }
         break;
     case BTL_CMD_ENEMY_TURN:
-        if ((u16)cmd->targets < 0x10 && (cmd->ability->flags & BTL_ABIL_PHYSICAL) && !cmd->info.b.targeting) {
+        if ((u16)cmd->targets < BTL_TARGETS_FIRST_ENEMY && (cmd->ability->flags & BTL_ABIL_PHYSICAL) && !cmd->info.b.targeting) {
             t = btl_findCover((u16)cmd->targets);
             if (t) {
                 cmd->targets = t;

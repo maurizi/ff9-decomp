@@ -533,7 +533,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     }
     switch (arg1->cmdNo) {
     case BTL_CMD_ATTACK:
-        if (((arg0->scene.flags >> BTL_SCENE_OUT_OF_REACH_BIT) & 1) && (*u->weapon & 1) && (u16)arg1->targets >= 0x10) {
+        if (((arg0->scene.flags >> BTL_SCENE_OUT_OF_REACH_BIT) & 1) && (*u->weapon & 1) && (u16)arg1->targets >= BTL_TARGETS_FIRST_ENEMY) {
             msg = 0x17;
             goto fail;
         }
@@ -1064,7 +1064,7 @@ s32 btl_applyReflect(BtlCmd *arg0) {
         n = 0;
         m = 0;
         v = g_gameState->gameData->ctx.battle->unitList;
-        side = (u16)arg0->targets >= 0x10;
+        side = (u16)arg0->targets >= BTL_TARGETS_FIRST_ENEMY;
         for (; v != NULL; v = v->next) {
             if (v->unitBit & (u16)arg0->targets) {
                 if (!(v->status & BTL_STATUS_PETRIFY) && (u8)btl_hasStatus(v, BTL_STATUS_REFLECT)) {
@@ -2129,7 +2129,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case BTL_FORMULA_FLEE_SKILL:
         btl_tryEscape(0);
         if (btl_canFlee(&c)) {
-            btl_setCmd(&g_gameState->gameData->ctx.battle->escapeCmd, BTL_CMD_ESCAPE, 0, 0xF, 1);
+            btl_setCmd(&g_gameState->gameData->ctx.battle->escapeCmd, BTL_CMD_ESCAPE, 0, BTL_TARGETS_PARTY, 1);
         }
         break;
     case BTL_FORMULA_STEAL:
@@ -3132,7 +3132,7 @@ void btl_rollFlee(BtlCalc *arg0) {
         }
     }
     if (r > ((*g_randPtr << 8) | *g_randPtr++) % 100 && (c == NULL || (c->caster->flags & BTL_UNIT_PARTY))) {
-        btl_setCmd((s32)&g_gameState->gameData->ctx.battle->escapeCmd, BTL_CMD_ESCAPE, 1, 0xF, 1);
+        btl_setCmd((s32)&g_gameState->gameData->ctx.battle->escapeCmd, BTL_CMD_ESCAPE, 1, BTL_TARGETS_PARTY, 1);
     }
 }
 
@@ -3554,7 +3554,7 @@ u8 btl_missIfAirborne(BtlCalc *arg0) {
 
 void btl_halveForSpread(BtlCalc *arg0) {
     BtlCalc8 *c = arg0->cmd;
-    if ((c->flags & BTL_CMDINFO_TARGETING) == 1 && (u32)((*(u32 *)c->ability & 0xF) - BTL_TGT_MULTI_ANY) < 3 && btl_countActiveUnits(c->targets < 0x10) >= 2) {
+    if ((c->flags & BTL_CMDINFO_TARGETING) == 1 && (u32)((*(u32 *)c->ability & 0xF) - BTL_TGT_MULTI_ANY) < 3 && btl_countActiveUnits(c->targets < BTL_TARGETS_FIRST_ENEMY) >= 2) {
         arg0->multiplier /= 2;
     }
 }

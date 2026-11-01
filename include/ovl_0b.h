@@ -1494,6 +1494,10 @@ typedef struct BtlCmd {
     } info;
 } BtlCmd;
 
+/* BtlCmd.targets / BtlUnit.unitBit masks. Evidence: [code] (unit bit = 1 << slot) */
+#define BTL_TARGETS_PARTY       0x000F /* the four party slots (the escape command targets them) */
+#define BTL_TARGETS_FIRST_ENEMY 0x0010 /* unit bit of enemy slot 4: targets >= it hit an enemy */
+
 /* BtlCmd.info.b as a word (info.w; BtlCalc8.flags) */
 #define BTL_CMDINFO_TARGETING         0x003 /* info.b.targeting */
 #define BTL_CMDINFO_AUTOMATIC         0x010 /* info.b.automatic */

@@ -28,3 +28,4 @@ btl_soundCmd: SND_TYPE_* / SND_CMD_* / SND_PARAM_* (snd_ids.h, from the overlays
   switches and g_btlSoundLoadKind tests; DB_MUSIC >> 16 for the load key kind.
 BATTLE_END_VICTORY 1 / _DEFEAT 3 / _ESCAPE 4 / _GAME_OVER 6 (ovl_0b.h, candidates for ff9.h; ovl_65.h already has
   BATTLE_END_GAME_OVER): GameData.battleResult. 2 and 5 left literal. BTL_END_ESCAPE / BTL_END_STOPPED subPhase tests.
+BTL_TARGETS_PARTY 0xF, BTL_TARGETS_FIRST_ENEMY 0x10 (ovl_0b.h, BtlCmd.targets masks).
