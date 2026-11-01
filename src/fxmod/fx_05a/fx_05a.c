@@ -1,6 +1,6 @@
 #include "fxmod/fx_05a.h"
 
-s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 s;
@@ -9,7 +9,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 t;
 
     if (mode == 0) {
-        *arg4 = 0x48;
+        *args = 0x48;
     } else if (mode == 1) {
         fx_05a_env = env;
         ex->btlfx_initEffModels(fx_05a_effModels, 1);

@@ -96,8 +96,8 @@ extern Fx114Track6 fx_114_vecTrack3; /* scale keys */
 extern u32 fx_114_bgOt[];
 extern u8 fx_114_op82Trails[13][0x50];
 
-s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
+s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 static void fxm_posPathInit(Fx114Path *path, u16 *data);
 static void fxm_vecTrackInit(Fx114Track6 *track, u16 *data);
 static s32 fxm_vecTrackGet(Fx114Track6 *track, s32 t, VECTOR *out);

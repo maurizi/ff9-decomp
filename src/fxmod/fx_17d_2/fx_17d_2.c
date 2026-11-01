@@ -31,7 +31,7 @@ static s32 fx_17d_2_op80PoolTask(s32 mode, Fx17d2Elem *e, Unk800F78A4 *env, Unk8
     return 0;
 }
 
-s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *arg4) {
+s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR s3;
     CVECTOR col;
@@ -46,10 +46,10 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
     s32 y;
 
     if (mode == 0) {
-        arg4->workSize = 0x80;
-        arg4->elemSize = 0x18;
-        arg4->elemFn = (s32)fx_17d_2_op80PoolTask;
-        arg4->poolCount = 0x14;
+        init->workSize = 0x80;
+        init->elemSize = 0x18;
+        init->elemFn = (s32)fx_17d_2_op80PoolTask;
+        init->poolCount = 0x14;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;

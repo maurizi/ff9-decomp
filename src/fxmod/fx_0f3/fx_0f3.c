@@ -1,6 +1,6 @@
 #include "fxmod/fx_0f3.h"
 
-s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     Pool6CEntry *p;
@@ -10,9 +10,9 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 d;
 
     if (mode == 0) {
-        *arg4 = 0x28;
+        *args = 0x28;
     } else if (mode == 1) {
-        work->variant4 = *arg4;
+        work->variant4 = *args;
         work->state0 = 0;
         fx_0f3_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);

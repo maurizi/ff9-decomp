@@ -1,11 +1,11 @@
 #include "fxmod/fx_0f9.h"
 
-s32 fx_0f9_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0f9_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *p;
 
     if (mode == 0) {
-        *arg4 = 8;
+        *args = 8;
     } else if (mode == 1) {
         work->vx = env->targets->centerX;
         work->vy = 0;

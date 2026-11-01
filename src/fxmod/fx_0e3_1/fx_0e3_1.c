@@ -292,7 +292,7 @@ INCLUDE_RODATA("asm/us/fx_0e3_1/nonmatchings/fx_0e3_1", fx_0e3_1_headerPtr);
  * ya/yb); shared variables split by role (the original reuses registers per role); a dead struct initializer gets
  * the unused spill slot at 0x280; the frame == 0x12 matrix shares s1/r1/a1's stack (union u1); dead divisions keep
  * their magic constant where the original loads it. */
-s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
     MATRIX m2;
@@ -426,7 +426,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     Pool6CEntry *p;
 
     if (mode == 0) {
-        *arg4 = 0xE4;
+        *args = 0xE4;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;

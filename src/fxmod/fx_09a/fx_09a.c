@@ -99,7 +99,7 @@ static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *ou
     gte_SetTransMatrix(env->viewMatrix);
 }
 
-s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     SVECTOR a;
@@ -116,7 +116,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR *sv;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx09aWork);
+        *args = sizeof(Fx09aWork);
     } else if (mode == 1) {
         work->state0 = 1;
         work->frame4 = 0;

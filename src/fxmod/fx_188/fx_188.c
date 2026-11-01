@@ -46,7 +46,7 @@ static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk8010
     return 0;
 }
 
-s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *arg4) {
+s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx188Elem *e;
     SVECTOR v;
@@ -57,10 +57,10 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 n;
 
     if (mode == 0) {
-        arg4->workSize = 0x20;
-        arg4->elemSize = 0x28;
-        arg4->elemFn = (s32)fx_188_op80PoolTask;
-        arg4->poolCount = 0xC;
+        init->workSize = 0x20;
+        init->elemSize = 0x28;
+        init->elemFn = (s32)fx_188_op80PoolTask;
+        init->poolCount = 0xC;
     } else if (mode == 1) {
         work->state0 = 0;
         work->count1C = 0;

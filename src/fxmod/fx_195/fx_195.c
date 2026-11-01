@@ -246,7 +246,7 @@ void fxm_rollTowardEye(VECTOR *pos, SVECTOR *rot) {
     rot->vz = -a + 0x400;
 }
 
-s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     VECTOR sc;
@@ -263,7 +263,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *p;
 
     if (mode == 0) {
-        *arg4 = 0x98;
+        *args = 0x98;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;

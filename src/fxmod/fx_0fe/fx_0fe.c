@@ -1,6 +1,6 @@
 #include "fxmod/fx_0fe.h"
 
-s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     SVECTOR pos;
@@ -14,7 +14,7 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx0feOrbit *p;
 
     if (mode == 0) {
-        *arg4 = 0xC0;
+        *args = 0xC0;
     } else if (mode == 1) {
         fx_0fe_env = env;
         ex->btlfx_initEffModels(fx_0fe_effModels, 3);

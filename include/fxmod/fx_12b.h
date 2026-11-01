@@ -81,7 +81,7 @@ static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 static void fxm_posPathInit(Fx12bPath *path, u16 *data);
-s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 
 /* propagated */

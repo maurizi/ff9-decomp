@@ -1,12 +1,12 @@
 #include "fxmod/fx_0f2.h"
 
-s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 t;
 
     if (mode == 0) {
-        *arg4 = 0x5C;
+        *args = 0x5C;
     } else if (mode == 1) {
         fx_0f2_env = env;
         ex->btlfx_initEffModels(fx_0f2_effModels, 1);

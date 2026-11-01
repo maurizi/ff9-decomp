@@ -231,7 +231,7 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
     return 0;
 }
 
-s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx07ePart *part;
     s32 frame;
@@ -239,13 +239,13 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 r;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = sizeof(Fx07eWork80);
-        ((EffInit *)arg4)->elemSize = sizeof(Fx07ePart);
-        ((EffInit *)arg4)->elemFn = (s32)fx_07e_op80PoolTask;
-        ((EffInit *)arg4)->poolCount = 0xB;
+        ((EffInit *)args)->workSize = sizeof(Fx07eWork80);
+        ((EffInit *)args)->elemSize = sizeof(Fx07ePart);
+        ((EffInit *)args)->elemFn = (s32)fx_07e_op80PoolTask;
+        ((EffInit *)args)->poolCount = 0xB;
     } else if (mode == 1) {
         fx_07e_env = env;
-        arg4 = (s32 *)*arg4;
+        args = (s32 *)*args;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         work->radius1C = 0x2EE;
         work->spawnCount4 = 0;
@@ -253,7 +253,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame8 = 0;
         work->shrinkDone24 = 0;
         work->scale20 = 0x8000;
-        if (arg4 != NULL) {
+        if (args != NULL) {
             work->ringRot14.vx = 0x200;
         } else {
             work->ringRot14.vx = -0x200;
@@ -321,7 +321,7 @@ static void fx_07e_op81GridVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
     out[1] = y;
 }
 
-s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     DVECTOR xy;
     RECT r1;
@@ -334,7 +334,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 c;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx07eWork81);
+        *args = sizeof(Fx07eWork81);
     } else if (mode == 1) {
         fx_07e_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);

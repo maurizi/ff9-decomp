@@ -209,7 +209,7 @@ static s32 fx_0cb_op80PoolTask(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk8010
     return 0;
 }
 
-s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     SVECTOR off;
@@ -225,10 +225,10 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 q;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = sizeof(Fx0cbWork);
-        ((EffInit *)arg4)->elemSize = sizeof(Fx0cbPart);
-        ((EffInit *)arg4)->elemFn = (s32)fx_0cb_op80PoolTask;
-        ((EffInit *)arg4)->poolCount = 6;
+        ((EffInit *)args)->workSize = sizeof(Fx0cbWork);
+        ((EffInit *)args)->elemSize = sizeof(Fx0cbPart);
+        ((EffInit *)args)->elemFn = (s32)fx_0cb_op80PoolTask;
+        ((EffInit *)args)->poolCount = 6;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;

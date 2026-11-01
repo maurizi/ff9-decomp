@@ -39,7 +39,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
  * hoisted fx_1f2_trails in the tr register and copies it to the base register. */
 #define FX1F2_DRAW(m) ex->Hi_DrawEffModel(&(m).rot8, &(m).pos10, (s32)&(m).scale20, (m).model0)
 
-s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     SVECTOR rot;
@@ -91,7 +91,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     VECTOR *q2;
 
     if (mode == 0) {
-        *arg4 = 0x128;
+        *args = 0x128;
     } else if (mode == 1) {
         env->camera->points[1].vx = 0;
         env->camera->points[1].vz = -0x4000;

@@ -1,13 +1,13 @@
 #include "fxmod/fx_12f.h"
 
-s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *p;
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0x44;
+        *args = 0x44;
     } else if (mode == 1) {
         fx_12f_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);

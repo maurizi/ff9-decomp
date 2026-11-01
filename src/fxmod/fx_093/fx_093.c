@@ -1,13 +1,13 @@
 #include "fxmod/fx_093.h"
 
-s32 fx_093_op80(s32 mode, Fx093Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_093_op80(s32 mode, Fx093Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     BtlBone bone;
     Pool6CEntry *p;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x2C;
+        *args = 0x2C;
     } else if (mode == 1) {
         fx_093_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos0);

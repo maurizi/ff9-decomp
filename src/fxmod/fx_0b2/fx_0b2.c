@@ -179,7 +179,7 @@ void fx_0b2_drawFunnel(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32
     }
 }
 
-s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR scale;
     s32 frame;
@@ -192,7 +192,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 one = 1; /* a variable, not a literal: the original reloads it for `mode == 1` and `return 1` */
 
     if (mode == 0) {
-        *arg4 = 0x20;
+        *args = 0x20;
     } else if (mode == one) {
         work->state0 = 0;
         work->frame4 = 0;

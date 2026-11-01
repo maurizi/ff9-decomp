@@ -1,6 +1,6 @@
 #include "fxmod/fx_0cd.h"
 
-s32 fx_0cd_op80(s32 mode, Fx0cdWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0cd_op80(s32 mode, Fx0cdWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *p;
     s32 frame;
@@ -10,7 +10,7 @@ s32 fx_0cd_op80(s32 mode, Fx0cdWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 c;
 
     if (mode == 0) {
-        *arg4 = 0xB4;
+        *args = 0xB4;
     } else if (mode == 1) {
         fx_0cd_env = env;
         for (i = 7, q = &((s32 *)work)[7]; i >= 0; i--, q--) {

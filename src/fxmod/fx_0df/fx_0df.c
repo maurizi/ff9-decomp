@@ -568,7 +568,7 @@ static s32 fx_0df_op83PoolTask(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk801
     return 0;
 }
 
-s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     Fx0dfArc *arc;
@@ -580,13 +580,13 @@ s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 *tab;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = sizeof(Fx0dfWork83);
-        ((EffInit *)arg4)->elemSize = sizeof(Fx0dfArc);
-        ((EffInit *)arg4)->elemFn = (s32)fx_0df_op83PoolTask;
-        ((EffInit *)arg4)->poolCount = 7;
+        ((EffInit *)args)->workSize = sizeof(Fx0dfWork83);
+        ((EffInit *)args)->elemSize = sizeof(Fx0dfArc);
+        ((EffInit *)args)->elemFn = (s32)fx_0df_op83PoolTask;
+        ((EffInit *)args)->poolCount = 7;
     } else if (mode == 1) {
         fx_0df_env = env;
-        t = *arg4;
+        t = *args;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         work->jitter8 = fx_0df_arcJitter[0];
         p = work->jitter8;
@@ -637,7 +637,7 @@ s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     s32 frame;
@@ -650,7 +650,7 @@ s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 r;
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else {
         if (mode == 1) {
             fx_0df_env = env;

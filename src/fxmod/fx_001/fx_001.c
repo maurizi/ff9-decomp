@@ -2,13 +2,13 @@
 
 INCLUDE_RODATA("asm/us/fx_001/nonmatchings/fx_001", fx_001_headerPtr);
 
-s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     RECT r;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0x70;
+        *args = 0x70;
     } else if (mode == 1) {
         fx_001_env = env;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos4C);

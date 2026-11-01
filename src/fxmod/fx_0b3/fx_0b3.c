@@ -90,7 +90,7 @@ static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32
     }
 }
 
-s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     SVECTOR ang;
@@ -103,7 +103,7 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 x;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx0b3Work80);
+        *args = sizeof(Fx0b3Work80);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -206,7 +206,7 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR a;
     SVECTOR b;
@@ -223,7 +223,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx0b3Work81);
+        *args = sizeof(Fx0b3Work81);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -369,7 +369,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR a;
     Fx0b3Vec3 scale;
@@ -392,7 +392,7 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 y;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx0b3Work83);
+        *args = sizeof(Fx0b3Work83);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -704,7 +704,7 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
     }
 }
 
-s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR a;
     SVECTOR rot;
@@ -726,7 +726,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 z;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx0b3Work84);
+        *args = sizeof(Fx0b3Work84);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -1081,7 +1081,7 @@ static s32 fxm_nextRingPoint(SVECTOR *v) {
     return 0;
 }
 
-s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR q;
     SVECTOR a;
@@ -1113,7 +1113,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 j;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx0b3Work85);
+        *args = sizeof(Fx0b3Work85);
     } else if (mode == 1) {
         work->rot40.vy = 0x800;
         work->state0 = 0;
@@ -1305,13 +1305,13 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_0b3_op86(s32 mode, Fx0b3Work86 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b3_op86(s32 mode, Fx0b3Work86 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *e;
     s32 i;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx0b3Work86);
+        *args = sizeof(Fx0b3Work86);
     } else if (mode == 1) {
         fx_0b3_env = env;
         work->unitCount40 = env->targets->targetCount;
@@ -1332,16 +1332,16 @@ s32 fx_0b3_op86(s32 mode, Fx0b3Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_0b3_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b3_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     s32 frame;
     s32 t;
 
     if (mode == 0) {
-        *arg4 = 4;
+        *args = 4;
     } else if (mode == 1) {
-        t = *arg4;
+        t = *args;
         fx_0b3_env = env;
         *work = t;
         if (*work >= 10) {

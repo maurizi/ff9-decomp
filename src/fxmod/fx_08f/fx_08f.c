@@ -84,7 +84,7 @@ static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTO
     gte_SetGeomScreen(hsave);
 }
 
-s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;
@@ -119,7 +119,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 w;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx08fWork80);
+        *args = sizeof(Fx08fWork80);
     } else if (mode == 1) {
         fx_08f_env = env;
         work->state0 = 1;

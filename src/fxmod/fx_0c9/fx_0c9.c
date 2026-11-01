@@ -1,10 +1,10 @@
 #include "fxmod/fx_0c9.h"
 
-s32 fx_0c9_op80(s32 mode, Fx0c9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0c9_op80(s32 mode, Fx0c9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0x18;
+        *args = 0x18;
     } else if (mode == 1) {
         fx_0c9_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
@@ -33,14 +33,14 @@ static s32 fx_0c9_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s3
     return 0;
 }
 
-s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 f;
     s32 t;
 
     if (mode == 0) {
-        *arg4 = 0x58;
+        *args = 0x58;
     } else if (mode == 1) {
         fx_0c9_env = env;
         ex->btlfx_initEffModels(fx_0c9_effModels, 1);

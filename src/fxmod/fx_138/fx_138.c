@@ -54,7 +54,7 @@ void fx_138_getPathPoint(SVECTOR *out, Fx138Path *path, s32 i) {
     out->vz = v.vz;
 }
 
-s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx138Ring *r;
     Fx138Ring *q;
@@ -64,7 +64,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 0xA0;
+        *args = 0xA0;
     } else if (mode == 1) {
         fx_138_env = env;
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
@@ -144,7 +144,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *p;
     s32 frame;
@@ -152,7 +152,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 n;
 
     if (mode == 0) {
-        *arg4 = 0x34;
+        *args = 0x34;
     } else if (mode == 1) {
         fx_138_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);

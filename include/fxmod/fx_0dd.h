@@ -63,6 +63,6 @@ extern Fx0ddTrack6 fx_0dd_scaleKeys;
 extern Fx0ddTrack6 fx_0dd_scaleKeys2;
 extern SVECTOR fx_0dd_emitPos;
 
-s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif

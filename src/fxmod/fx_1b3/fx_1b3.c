@@ -43,7 +43,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
  * as the original stack offsets show; the trail file buffers are carved with one incremented local (buf); the trail
  * tables are read twice instead of through a selected pointer (cross-jumped calls); the draw loop writes the drawn
  * points through a pointer biv (pt) and bounds the loop with a local (n), with the drawTrail alpha precomputed. */
-s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v[3]; /* texture list, trail points */
     SVECTOR w[3]; /* clut list, trail step, flash colour and rotation */
@@ -59,7 +59,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 zz3;
 
     if (mode == 0) {
-        *arg4 = 0x264;
+        *args = 0x264;
     } else if (mode == 1) {
         s32 buf;
 

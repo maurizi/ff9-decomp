@@ -167,7 +167,7 @@ static s32 fx_0db_op80PoolTask(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk801
     return 0;
 }
 
-s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     Fx0dbItem *part;
@@ -179,10 +179,10 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s16 *b;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = 0x34;
-        ((EffInit *)arg4)->elemSize = 0x44;
-        ((EffInit *)arg4)->elemFn = (s32)fx_0db_op80PoolTask;
-        ((EffInit *)arg4)->poolCount = 0xA;
+        ((EffInit *)args)->workSize = 0x34;
+        ((EffInit *)args)->elemSize = 0x44;
+        ((EffInit *)args)->elemFn = (s32)fx_0db_op80PoolTask;
+        ((EffInit *)args)->poolCount = 0xA;
     } else if (mode == 1) {
         fx_0db_env = env;
         ex->btlfx_initEffModels(fx_0db_effModels, 6);
@@ -281,7 +281,7 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     s32 frame;
@@ -295,7 +295,7 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     u16 ry;
 
     if (mode == 0) {
-        *arg4 = 0x10;
+        *args = 0x10;
     } else if (mode == 1) {
         fx_0db_env = env;
         work->state0 = 0;

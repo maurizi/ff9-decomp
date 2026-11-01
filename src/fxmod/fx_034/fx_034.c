@@ -121,7 +121,7 @@ void fx_034_calcPrimCentres(s32 kind, s32 count, SVECTOR *v) {
     }
 }
 
-s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR p;
     SVECTOR a;
@@ -132,7 +132,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 early;
 
     if (mode == 0) {
-        *arg4 = 0x74;
+        *args = 0x74;
     } else if (mode == 1) {
         fx_034_env = env;
         ex->btlfx_initEffModels(fx_034_effModels, 2);

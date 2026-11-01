@@ -1,12 +1,12 @@
 #include "fxmod/fx_0a9.h"
 
-s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *p;
     s32 frame;
 
     if (mode == 0) {
-        *arg4 = 0xC;
+        *args = 0xC;
     } else if (mode == 1) {
         work->state0 = 0;
         fx_0a9_env = env;
@@ -113,17 +113,17 @@ static void fxm_spawnBolt(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
     fx_0a9_nextBolt = fx_0a9_nextBolt % 16;
 }
 
-s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     s32 frame;
     s32 i;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = 0x10;
-        ((EffInit *)arg4)->elemSize = 0x1C;
-        ((EffInit *)arg4)->elemFn = (s32)fx_0a9_op83PoolTask;
-        ((EffInit *)arg4)->poolCount = 0xB0;
+        ((EffInit *)args)->workSize = 0x10;
+        ((EffInit *)args)->elemSize = 0x1C;
+        ((EffInit *)args)->elemFn = (s32)fx_0a9_op83PoolTask;
+        ((EffInit *)args)->poolCount = 0xB0;
     } else if (mode == 1) {
         fx_0a9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);

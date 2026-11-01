@@ -38,7 +38,7 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
     }
 }
 
-s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR mpos;
@@ -60,7 +60,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 key;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx0baWork80);
+        *args = sizeof(Fx0baWork80);
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -322,7 +322,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTO
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0, NULL, a7, 0x1000, a8, 1, (u8 *)buf, 0);
 }
 
-s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 alpha;
     s32 base;
@@ -393,7 +393,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
     s32 spE8;
 
     if (mode == 0) {
-        *arg4 = 0x84;
+        *args = 0x84;
     } else if (mode == 1) {
         work->state0 = 0;
         work->frame4 = 0;
@@ -866,7 +866,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
     return 0;
 }
 
-s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s16 *keys;
     SVECTOR v;
@@ -874,7 +874,7 @@ s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     s32 i;
 
     if (mode == 0) {
-        *arg4 = 4;
+        *args = 4;
     } else if (mode == 1) {
         fx_0ba_env = env;
     } else {
@@ -1077,7 +1077,7 @@ static s32 fxm_randStripPoint32(SVECTOR *v) {
     return 0;
 }
 
-s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR base;
     SVECTOR a;
@@ -1100,12 +1100,12 @@ s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 n;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = sizeof(Fx0baWork83);
-        ((EffInit *)arg4)->elemSize = sizeof(Fx0baBolt);
-        ((EffInit *)arg4)->elemFn = (s32)fx_0ba_op83PoolTask;
-        ((EffInit *)arg4)->poolCount = 0x20;
+        ((EffInit *)args)->workSize = sizeof(Fx0baWork83);
+        ((EffInit *)args)->elemSize = sizeof(Fx0baBolt);
+        ((EffInit *)args)->elemFn = (s32)fx_0ba_op83PoolTask;
+        ((EffInit *)args)->poolCount = 0x20;
     } else if (mode == 1) {
-        n = *arg4;
+        n = *args;
         fx_0ba_env = env;
         work->jitter0 = fx_0ba_boltJitter;
         tab = work->jitter0;
@@ -1345,16 +1345,16 @@ static void fxm_arcTrailSpawn(Unk80100C78Entry *entry, SVECTOR *center, s32 r, S
     fx_0ba_arcTrailNext = (fx_0ba_arcTrailNext + 1) % 5;
 }
 
-s32 fx_0ba_op85(s32 mode, Fx0baWork85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0ba_op85(s32 mode, Fx0baWork85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR from;
     SVECTOR c;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->workSize = sizeof(Fx0baWork85);
-        ((EffInit *)arg4)->elemSize = sizeof(Fx0baPart);
-        ((EffInit *)arg4)->elemFn = (s32)fx_0ba_op85PoolTask;
-        ((EffInit *)arg4)->poolCount = 0x55;
+        ((EffInit *)args)->workSize = sizeof(Fx0baWork85);
+        ((EffInit *)args)->elemSize = sizeof(Fx0baPart);
+        ((EffInit *)args)->elemFn = (s32)fx_0ba_op85PoolTask;
+        ((EffInit *)args)->poolCount = 0x55;
     } else if (mode == 1) {
         fx_0ba_env = env;
         fxm_arcTrailReset();

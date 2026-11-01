@@ -2,7 +2,7 @@
 
 INCLUDE_RODATA("asm/us/fx_083/nonmatchings/fx_083", fx_083_headerPtr);
 
-s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s16 tex[8];
     Pool6CEntry *e;
@@ -13,7 +13,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 t;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx083Work);
+        *args = sizeof(Fx083Work);
     } else if (mode == 1) {
         fx_083_env = env;
         ex->btlfx_initEffModels(fx_083_effModels, 0x14);

@@ -19,7 +19,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     return ex->btlfx_lerp(from, to, r);
 }
 
-s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     VECTOR sc;
@@ -54,7 +54,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 hi;
 
     if (mode == 0) {
-        *arg4 = 0x1EC;
+        *args = 0x1EC;
     } else if (mode == 1) {
         fx_0b8_env = env;
         ex->btlfx_initEffModels(fx_0b8_effModels, 0x20);

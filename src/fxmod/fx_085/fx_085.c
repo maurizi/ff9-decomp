@@ -1,6 +1,6 @@
 #include "fxmod/fx_085.h"
 
-s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     SVECTOR rot2;
@@ -22,7 +22,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 u;
 
     if (mode == 0) {
-        *arg4 = sizeof(Fx085Work80);
+        *args = sizeof(Fx085Work80);
     } else if (mode == 1) {
         work->pos0.vx = env->targets->centerX;
         work->pos0.vy = env->targets->centerY;

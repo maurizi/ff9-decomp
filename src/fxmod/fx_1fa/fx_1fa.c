@@ -1,10 +1,10 @@
 #include "fxmod/fx_1fa.h"
 
-s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1fa_emitPos0.vx = 0;
         fx_1fa_emitPos0.vy = 0;
@@ -23,7 +23,7 @@ s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     fx_1fa_spiralSprites[r][2].sprite8 = (u8 *)ex->btlfx_getFileData(entry->file, b); \
     fx_1fa_spiralSprites[r][3].sprite8 = (u8 *)ex->btlfx_getFileData(entry->file, b);
 
-s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx1faRing *e;
     Pool6CEntry *p;
@@ -35,7 +35,7 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     s32 s;
 
     if (mode == 0) {
-        *arg4 = 0;
+        *args = 0;
     } else if (mode == 1) {
         fx_1fa_timer[0] = 0;
         fx_1fa_env = env;

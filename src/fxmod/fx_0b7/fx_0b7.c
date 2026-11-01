@@ -1,11 +1,11 @@
 #include "fxmod/fx_0b7.h"
 
-s32 fx_0b7_op80(s32 mode, Fx0b7Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_0b7_op80(s32 mode, Fx0b7Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *p;
 
     if (mode == 0) {
-        *arg4 = 8;
+        *args = 8;
     } else if (mode == 1) {
         fx_0b7_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos0);

@@ -1,13 +1,13 @@
 #include "fxmod/fx_126.h"
 
-s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *p;
     s32 frame;
     s32 k;
 
     if (mode == 0) {
-        *arg4 = 0xAC;
+        *args = 0xAC;
     } else if (mode == 1) {
         fx_126_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0x30, (u16 *)&work->pos60);

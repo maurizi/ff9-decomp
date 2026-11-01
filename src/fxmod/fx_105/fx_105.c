@@ -196,7 +196,7 @@ void fx_105_drawScreenBand(s32 z, s32 tpage, s32 y0, s32 y1, CVECTOR *rgb) {
     ex->btlfx_addPrim(0x01000000, z * 4, ex->btlfx_allocDrMode(0, tpage));
 }
 
-s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     BtlBone bone1;
     BtlBone bone2;
@@ -221,7 +221,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 k8;
 
     if (mode == 0) {
-        *arg4 = 0x1D8;
+        *args = 0x1D8;
     } else if (mode == 1) {
         fx_105_env = env;
         ex->btlfx_initEffModels(fx_105_effModels, 0xF);

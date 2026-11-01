@@ -50,6 +50,6 @@ typedef struct {
 } Fx081Work81; /* 0x2C */
 
 extern s16 fx_081_ringCounts[10]; /* ring point counts */
-s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 #endif
