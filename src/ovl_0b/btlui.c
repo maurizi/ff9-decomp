@@ -2064,21 +2064,21 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
 
 s32 btlui_resolveAbility(s32 arg0) {
     s32 t;
-    if (arg0 == 0x44) {
+    if (arg0 == ABIL_CARBUNCLE) {
         switch (g_btluiList.unit->menu->chr->equip[4]) {
-        case 0xE4:
-            arg0 = 0x45;
+        case ITEM_EMERALD:
+            arg0 = ABIL_CARBUNCLE_EMERALD;
             break;
-        case 0xE5:
-            arg0 = 0x46;
+        case ITEM_MOONSTONE:
+            arg0 = ABIL_CARBUNCLE_MOONSTONE;
             break;
-        case 0xE3:
-            arg0 = 0x47;
+        case ITEM_DIAMOND:
+            arg0 = ABIL_CARBUNCLE_DIAMOND;
             break;
         }
-    } else if (arg0 == 0x42) {
+    } else if (arg0 == ABIL_FENRIR) {
         t = g_btluiList.unit->menu->chr->equip[4] == ITEM_MAIDEN_PRAYER;
-        arg0 = t + 0x42;
+        arg0 = t + ABIL_FENRIR; /* ABIL_FENRIR2 with ITEM_MAIDEN_PRAYER */
     }
     return arg0;
 }

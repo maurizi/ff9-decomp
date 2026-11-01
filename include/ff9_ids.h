@@ -70,6 +70,9 @@
 #define ITEM_GARNET         0xE0 /* [text items] "Garnet" */
 #define ITEM_AMETHYST       0xE1 /* [text items] "Amethyst" */
 #define ITEM_AQUAMARINE     0xE2 /* [text items] "Aquamarine" */
+#define ITEM_DIAMOND        0xE3 /* [text items] "Diamond" */
+#define ITEM_EMERALD        0xE4 /* [text items] "Emerald" */
+#define ITEM_MOONSTONE      0xE5 /* [text items] "Moonstone" */
 #define ITEM_PERIDOT        0xE7 /* [text items] "Peridot" */
 #define ITEM_SAPPHIRE       0xE8 /* [text items] "Sapphire" */
 #define ITEM_OPAL           0xE9 /* [text items] "Opal" */
@@ -104,7 +107,12 @@
 #define ABIL_BAHAMUT           0x3E /* [text abilities] "Bahamut" */
 #define ABIL_ARK               0x40 /* [text abilities] "Ark" */
 #define ABIL_FENRIR            0x42 /* [text abilities] "Fenrir"; Summon2 list */
-#define ABIL_FENRIR2           0x43 /* [text abilities] "Fenrir"; second entry, in no command list */
+#define ABIL_FENRIR2           0x43 /* [text abilities] "Fenrir"; second entry, in no command list: Fenrir with
+                                    * ITEM_MAIDEN_PRAYER equipped (btlui_resolveAbility) */
+#define ABIL_CARBUNCLE         0x44 /* [text abilities] "Carbuncle"; Summon list */
+#define ABIL_CARBUNCLE_EMERALD 0x45 /* [text abilities] "Carbuncle"; Carbuncle with ITEM_EMERALD equipped (btlui_resolveAbility) */
+#define ABIL_CARBUNCLE_MOONSTONE 0x46 /* [text abilities] "Carbuncle"; with ITEM_MOONSTONE equipped */
+#define ABIL_CARBUNCLE_DIAMOND 0x47 /* [text abilities] "Carbuncle"; with ITEM_DIAMOND equipped */
 #define ABIL_PHOENIX           0x48 /* [text abilities] "Phoenix" */
 #define ABIL_REBIRTH_FLAME     0x49 /* [text abilities] "Rebirth Flame" */
 #define ABIL_MADEEN            0x4A /* [text abilities] "Madeen" */
