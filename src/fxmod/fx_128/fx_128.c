@@ -1,6 +1,6 @@
 #include "fxmod/fx_128.h"
 
-static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_128_env)->btlfx_lerpVec((s16 *)&fx_128_lerpFrom, (s16 *)&fx_128_lerpTo, (frame << 12) / 12, (s16 *)pos);
     out->pos0.vx = pos->vx << 12;
     out->pos0.vy = pos->vy << 12;
@@ -11,7 +11,7 @@ static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 arg1, SVECTOR *pos
     return 0;
 }
 
-static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_128_env)->btlfx_lerpVec((s16 *)&fx_128_lerpFrom, (s16 *)((u8 *)fx_128_lerpToRand + (out->index1F - 1) * 8),
                                              (frame << 12) / 12, (s16 *)pos);
     out->pos0.vx = pos->vx << 12;

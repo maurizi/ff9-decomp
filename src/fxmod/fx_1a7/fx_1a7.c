@@ -1,38 +1,38 @@
 #include "fxmod/fx_1a7.h"
 
-s32 fx_1a7_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[0], fx_1a7_op80Radii[0], frame, frames);
 }
 
-s32 fx_1a7_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[1], fx_1a7_op80Radii[1], frame, frames);
 }
 
-s32 fx_1a7_op80ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op80ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[2], fx_1a7_op80Radii[2], frame, frames);
 }
 
-s32 fx_1a7_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[3], fx_1a7_op80Radii[3], frame, frames);
 }
 
-s32 fx_1a7_op80ParticleMotion4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op80ParticleMotion4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[4], fx_1a7_op80Radii[4], frame, frames);
 }
 
-s32 fx_1a7_op80ParticleMotion5(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op80ParticleMotion5(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[5], fx_1a7_op80Radii[5], frame, frames);
 }
 
-s32 fx_1a7_op80ParticleMotion6(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op80ParticleMotion6(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[6], fx_1a7_op80Radii[6], frame, frames);
 }
 
-s32 fx_1a7_op80ParticleMotion7(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op80ParticleMotion7(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[7], fx_1a7_op80Radii[7], frame, frames);
 }
 
-s32 fx_1a7_op80ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op80ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[8], fx_1a7_op80Radii[8], frame, frames);
 }
 
@@ -51,39 +51,39 @@ static s32 fxm_lineOrbitParticle0(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 r
     return 0;
 }
 
-s32 fx_1a7_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[0], fx_1a7_op81Radii[0], frame, frames);
 }
 
-s32 fx_1a7_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[1], fx_1a7_op81Radii[1], frame, frames);
 }
 
-s32 fx_1a7_op81ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op81ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[2], fx_1a7_op81Radii[2], frame, frames);
 }
 
-s32 fx_1a7_op81ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op81ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[3], fx_1a7_op81Radii[3], frame, frames);
 }
 
-s32 fx_1a7_op81ParticleMotion4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op81ParticleMotion4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[4], fx_1a7_op81Radii[4], frame, frames);
 }
 
-s32 fx_1a7_op81ParticleMotion5(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op81ParticleMotion5(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[5], fx_1a7_op81Radii[5], frame, frames);
 }
 
-s32 fx_1a7_op81ParticleMotion6(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op81ParticleMotion6(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[6], fx_1a7_op81Radii[6], frame, frames);
 }
 
-s32 fx_1a7_op81ParticleMotion7(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op81ParticleMotion7(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[7], fx_1a7_op81Radii[7], frame, frames);
 }
 
-s32 fx_1a7_op81ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a7_op81ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[8], fx_1a7_op81Radii[8], frame, frames);
 }
 

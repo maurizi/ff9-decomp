@@ -1,6 +1,6 @@
 #include "fxmod/fx_127.h"
 
-static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_127_env);
     s32 ret = fxm_lerpParticle(out, pos, &fx_127_lerpFrom, &fx_127_lerpTo, 5, frame, n);
 
@@ -16,7 +16,7 @@ static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 a
     return ret;
 }
 
-static s32 fx_127_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_127_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_lerpParticle(out, pos, &fx_127_lerpFrom, &fx_127_lerpTo, 5, frame, n);
 }
 

@@ -1,6 +1,6 @@
 #include "fxmod/fx_081.h"
 
-static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,
+static void fx_081_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 rot, s32 *scale, s32 alpha, s32 blend, s32 frame,
                    s32 n) {
     Unk800F78A4 *env = fx_081_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);

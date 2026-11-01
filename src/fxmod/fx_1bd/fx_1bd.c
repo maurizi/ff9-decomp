@@ -577,10 +577,10 @@ static u16 *fxm_offsetTableEntry(u16 *base, u16 i) {
     return (u16 *)((s32)base + ((s32 *)base)[(u16)i + 1]);
 }
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_1bd_env)->btlfx_drawScreenTint((u32 *)(fx_1bd_env->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_1bd_env)->btlfx_drawScreenTint((u32 *)(fx_1bd_env->ot + ot), abr, c, c, c);
 }
 
 static void fxm_camChanReset(void) {

@@ -1,7 +1,7 @@
 #include "fxmod/fx_0e3_1.h"
 
 static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9) {
+                   s32 dang, s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR rot;
@@ -27,11 +27,11 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
-                   s32 arg7, s32 arg8) {
+                   s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR rot;
@@ -57,11 +57,11 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         ang += dang + ex->btlfx_randCentered(0xC0);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, 0, arg7, 0x1000, arg8, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9, s32 col) {
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR rot;
@@ -83,14 +83,14 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
-        pt->pad = col;
+        pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
-void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 arg3) {
+void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR *a = src->pts4;
@@ -98,11 +98,11 @@ void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *
     a += ex->btlfx_rand() % 56;
 
     ex->btlfx_lerpVec((s16 *)a, (s16 *)(a + 1), 0x4000, (s16 *)&p);
-    fxm_drawOffsetTrail1(entry, dst, a, &p, 0x80, ex->btlfx_rand(), 0x37, 0, arg3);
+    fxm_drawOffsetTrail1(entry, dst, a, &p, 0x80, ex->btlfx_rand(), 0x37, 0, fade);
 }
 
 static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9, s32 col) {
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
     SVECTOR rot;
@@ -124,11 +124,11 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
-        pt->pad = col;
+        pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x23), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x23), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,

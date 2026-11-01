@@ -58,12 +58,12 @@ static void fxm_startHeavyHitMotionIfActive(s32 unit);
 
 /* propagated */
 extern Fx1e7Path fx_1e7_posPath0[];
-static s32 fx_1e7_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-s32 fx_1e7_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i);
-s32 fx_1e7_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i);
-s32 fx_1e7_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i);
-s32 fx_1e7_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i);
-s32 fx_1e7_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i);
+static s32 fx_1e7_op80ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+s32 fx_1e7_op81SpawnPoint0(SVECTOR *out, s32 dir, s32 i);
+s32 fx_1e7_op81SpawnPoint1(SVECTOR *out, s32 dir, s32 i);
+s32 fx_1e7_op81SpawnPoint2(SVECTOR *out, s32 dir, s32 i);
+s32 fx_1e7_op81SpawnPoint3(SVECTOR *out, s32 dir, s32 i);
+s32 fx_1e7_op81SpawnPoint4(SVECTOR *out, s32 dir, s32 i);
 
 #endif

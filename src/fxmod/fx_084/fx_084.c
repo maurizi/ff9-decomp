@@ -1,6 +1,6 @@
 #include "fxmod/fx_084.h"
 
-static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame) {
+static s32 fx_084_op80ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_084_env);
     s32 t = frame << 8;
     s32 a;

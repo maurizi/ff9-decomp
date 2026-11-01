@@ -1,34 +1,34 @@
 #include "fxmod/fx_1b4.h"
 
-s32 fx_1b4_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[0], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[1], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[2], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[3], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion4(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[4], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion5(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion5(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[5], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion6(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion6(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[6], frame, n);
 }
 
-s32 fx_1b4_op80ParticleMotion7(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1b4_op80ParticleMotion7(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_followPathParticle(pt, pos, &fx_1b4_op80ParticlePaths[7], frame, n);
 }
 

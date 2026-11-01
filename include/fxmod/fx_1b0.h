@@ -35,7 +35,7 @@ static s32 fxm_splitModelAdd(s32 model);
 Fx1b0Piece *fx_1b0_findFreePiece(void);
 s32 fx_1b0_launchPieces(SVECTOR *center);
 void fx_1b0_updatePieces(void);
-static s32 fx_1b0_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1b0_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames);
 
 typedef struct {
     SVECTOR angle0; /* angles */

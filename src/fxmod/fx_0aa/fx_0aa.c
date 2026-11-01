@@ -1,10 +1,10 @@
 #include "fxmod/fx_0aa.h"
 
-static s32 fx_0aa_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0aa_op80ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_lerpParticle(pt, pos, &fx_0aa_pathFrom0, &fx_0aa_pathTo0, frame, n);
 }
 
-static s32 fx_0aa_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0aa_op80ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_lerpParticle(pt, pos, &fx_0aa_pathFrom1, &fx_0aa_pathTo1, frame, n);
 }
 

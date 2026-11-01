@@ -49,11 +49,11 @@ extern Unk80100C78Entry *fx_0df_task;
 
 /* Never called: no reference in the module or effect file 0xDF, no hit on an exec breakpoint (runtime, round 33),
  * so fx_0df_recentPos keeps its data image. */
-void fx_0df_recordElemDraw(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7);
+void fx_0df_recordElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *alpha, s32 blend, s32 frame);
 static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0dfWork *work);
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
-                   s32 ang, s32 dang, s32 arg9, s32 arg10, s32 pad);
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth);
 s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 /* propagated */

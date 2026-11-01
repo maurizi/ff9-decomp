@@ -438,7 +438,7 @@ void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 c
     }
 }
 
-static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     SVECTOR v;
     SVECTOR from;
     SVECTOR *key;

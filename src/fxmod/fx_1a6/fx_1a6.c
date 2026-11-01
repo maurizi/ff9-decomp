@@ -1,14 +1,14 @@
 #include "fxmod/fx_1a6.h"
 
-s32 fx_1a6_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1a6_op80ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_lerpParticle(pt, pos, &fx_1a6_motionFrom[0], &fx_1a6_motionTo[0], frame, n);
 }
 
-s32 fx_1a6_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1a6_op80ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_lerpParticle(pt, pos, &fx_1a6_motionFrom[1], &fx_1a6_motionTo[1], frame, n);
 }
 
-s32 fx_1a6_op80ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_1a6_op80ParticleMotion2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_lerpParticle(pt, pos, &fx_1a6_motionFrom[2], &fx_1a6_motionTo[2], frame, n);
 }
 

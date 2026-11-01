@@ -1,6 +1,6 @@
 #include "fxmod/fx_043.h"
 
-static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
+static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_043_env);
     s32 r = t << 10;
 

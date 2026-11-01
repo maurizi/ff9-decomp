@@ -57,7 +57,7 @@ s32 fx_088_op81(s32 mode, Fx088Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
+static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *unused, SVECTOR *delta) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_088_env);
     SVECTOR rot;
     SVECTOR pos;

@@ -1,6 +1,6 @@
 #include "fxmod/fx_036.h"
 
-static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
+static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_036_env);
 
     out->vx = fx_036_spawnX[fx_036_spawnCount];

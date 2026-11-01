@@ -27,6 +27,6 @@ extern SVECTOR fx_1ac_emitPos4;
 extern SVECTOR fx_1ac_targetPos;
 extern SVECTOR fx_1ac_lastParticlePos;
 
-static s32 fx_1ac_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1ac_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames);
 
 #endif

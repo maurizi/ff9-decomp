@@ -20,7 +20,7 @@ s32 fx_0c2_op80(s32 mode, Fx0c2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_0c2_env)->btlfx_lerpVec((s16 *)&fx_0c2_pathFrom, (s16 *)&fx_0c2_pathTo, (frame << 12) / 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
@@ -165,7 +165,7 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
+static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *unused, SVECTOR *delta) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0c2_env);
     SVECTOR rot;
     SVECTOR pos;

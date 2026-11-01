@@ -1,18 +1,18 @@
 #include "fxmod/fx_0ea.h"
 
-s32 fx_0ea_op81ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_arcParticle(pt, pos, &fx_0ea_arcTo[0], frame, n);
 }
 
-s32 fx_0ea_op81ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_arcParticle(pt, pos, &fx_0ea_arcTo[1], frame, n);
 }
 
-s32 fx_0ea_op81ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_arcParticle(pt, pos, &fx_0ea_arcTo[2], frame, n);
 }
 
-s32 fx_0ea_op81ParticleMotion3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fx_0ea_op81ParticleMotion3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_arcParticle(pt, pos, &fx_0ea_arcTo[3], frame, n);
 }
 

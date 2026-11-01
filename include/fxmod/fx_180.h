@@ -83,10 +83,10 @@ extern SVECTOR fx_180_op81PathOrigin;
 extern SVECTOR fx_180_emitPos0;
 extern SVECTOR fx_180_emitPos1;
 
-static s32 fx_180_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
-static s32 fx_180_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_180_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames);
+static s32 fx_180_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
 static void fxm_posPathInit(Fx180Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx180Path *path, s32 t, SVECTOR *out);
 static void fxm_startUnitMotion(s32 unit, s32 motion);

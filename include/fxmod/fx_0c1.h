@@ -25,6 +25,6 @@ extern SVECTOR fx_0c1_pathFrom; /* particle path start */
 extern SVECTOR fx_0c1_pathTo; /* particle path end */
 extern SVECTOR fx_0c1_emitPos;
 
-static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 
 #endif

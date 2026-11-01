@@ -279,7 +279,7 @@ void fx_1cc_piecePos(s16 *from, s16 *to, s32 i, s16 *out) {
     BTLFX_EXPORTS(fx_1cc_env)->btlfx_pointAhead(from, to, -(fx_1cc_pieceDists[i] * 4), out);
 }
 
-static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
+static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 pool,
                   Fx1ccInst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 t;

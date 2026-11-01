@@ -159,10 +159,10 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     }
 }
 
-void fx_0df_recordElemDraw(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7) {
+void fx_0df_recordElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *alpha, s32 blend, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0df_env);
 
-    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(fx_0df_task->file, 0x10), pos, arg3, *arg4 / 2, arg7, 1, *arg5, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(fx_0df_task->file, 0x10), pos, rot, *scale / 2, frame, 1, *alpha, 0, 0);
     BTLFX_COPY_SVEC(&fx_0df_recentPos[fx_0df_recentNext], pos);
     fx_0df_recentNext = (fx_0df_recentNext + 1) % 24;
 }
@@ -525,7 +525,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
-                   s32 ang, s32 dang, s32 arg9, s32 arg10, s32 pad) {
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     Unk800F78A4 *env = fx_0df_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR p;
@@ -548,12 +548,12 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
-        pt->pad = pad;
+        pt->pad = lineWidth;
         ang += dang + *jitter++;
         pt++;
     }
     env->otZ = 0x200;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0, 0, arg9, 0x1000, arg10 * 2 / 3, 2, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0, 0, frame, 0x1000, fade * 2 / 3, 2, (u8 *)bolt, 0);
     env->otZ = 0;
 }
 

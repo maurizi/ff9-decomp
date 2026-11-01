@@ -1,7 +1,7 @@
 #include "fxmod/fx_0b2.h"
 
-static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
-                   s32 arg7, s32 arg8, s32 arg9, s32 arg10) {
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0b2_env);
     SVECTOR pos;
     SVECTOR rot;
@@ -22,17 +22,17 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVEC
         h = ex->btlfx_randCentered(0xA0);
         i++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
-        h += ex->btlfx_lerp(arg4, arg5, t);
-        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
-        p->pad = arg10;
-        arg6 += arg7 + ex->btlfx_randCentered(0x80);
+        h += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, ang);
+        p->pad = lineWidth;
+        ang += dang + ex->btlfx_randCentered(0x80);
         p++;
     } while (i < 25);
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, arg8, 0x1000, arg9, 1, (u8 *)trail, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
-void fx_0b2_drawFunnel(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
-                   s32 arg9, s32 arg10, s32 arg11, s32 arg12, s32 arg13, s32 arg14, s32 arg15) {
+void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s32 radius1, s32 bright, s32 tpage, s32 clut, s32 texU,
+                   s32 texV, s32 drift, s32 driftAng, s32 driftStep, s32 twist, s32 abr, s32 segs) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0b2_env);
     Fx0b2Rgbc c0;
     Fx0b2Rgbc c1;
@@ -64,20 +64,20 @@ void fx_0b2_drawFunnel(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32
 
     gte_SetRotMatrix(fx_0b2_env->viewMatrix);
     gte_SetTransMatrix(fx_0b2_env->viewMatrix);
-    gte_ldv0(arg0);
+    gte_ldv0(pos);
     gt4 = (POLY_GT4 *)fx_0b2_env->prim;
     *(s32 *)&c2 = 0;
-    ft4 = (POLY_FT4 *)((u8 *)gt4 + arg15 * 0x68);
-    fx_0b2_env->prim = (u8 *)ft4 + arg15 * 0xC8;
-    c0.r = c0.g = c0.b = arg5;
-    c1.r = c1.g = c1.b = arg5;
-    c0.code = arg14 != 0xFF ? 0x2E : 0x2C;
-    c2.code = arg14 != 0xFF ? 0x3E : 0x3C;
-    arg6 |= (arg14 & 3) << 5;
+    ft4 = (POLY_FT4 *)((u8 *)gt4 + segs * 0x68);
+    fx_0b2_env->prim = (u8 *)ft4 + segs * 0xC8;
+    c0.r = c0.g = c0.b = bright;
+    c1.r = c1.g = c1.b = bright;
+    c0.code = abr != 0xFF ? 0x2E : 0x2C;
+    c2.code = abr != 0xFF ? 0x3E : 0x3C;
+    tpage |= (abr & 3) << 5;
     c1.code = c2.code;
     gte_rtv0tr_b();
-    ex->math_rotMatrixYXZ(arg1, &m);
-    ex->ScaleMatrix(&m, arg2);
+    ex->math_rotMatrixYXZ(rot, &m);
+    ex->ScaleMatrix(&m, scale);
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);
     gte_SetRotMatrix(&m);
@@ -88,25 +88,25 @@ void fx_0b2_drawFunnel(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32
     for (row = 0; row < 7; row++) {
         h1 = row * 0x90;
         h0 = (row + 1) * 0x90;
-        ang += arg13;
-        arg11 += arg12;
-        r0 = ex->btlfx_lerp(arg3, arg4, (row << 12) / 7);
-        r1 = ex->btlfx_lerp(arg3, arg4, ((row + 1) << 12) / 7);
-        for (j = 0; j < arg15; j++) {
-            ang += arg13;
-            x = (ex->math_cos(arg11 + arg12) * ((row + 1) * arg10 / 7)) >> 12;
-            y = (ex->math_sin(arg11 + arg12) * ((row + 1) * arg10 / 7)) >> 12;
+        ang += twist;
+        driftAng += driftStep;
+        r0 = ex->btlfx_lerp(radius0, radius1, (row << 12) / 7);
+        r1 = ex->btlfx_lerp(radius0, radius1, ((row + 1) << 12) / 7);
+        for (j = 0; j < segs; j++) {
+            ang += twist;
+            x = (ex->math_cos(driftAng + driftStep) * ((row + 1) * drift / 7)) >> 12;
+            y = (ex->math_sin(driftAng + driftStep) * ((row + 1) * drift / 7)) >> 12;
             v[0].vx = x + ((ex->math_cos(ang) * r1) >> 12);
             v[0].vy = y + ((ex->math_sin(ang) * r1) >> 12);
-            d = 0x1000 / arg15;
+            d = 0x1000 / segs;
             a = ang + d;
             v[1].vx = x + ((ex->math_cos(a) * r1) >> 12);
             v[1].vy = y + ((ex->math_sin(a) * r1) >> 12);
             v[0].vz = v[1].vz = h0;
-            ang -= arg13;
+            ang -= twist;
             e = ang + d; /* a new variable keeps (plus ang d) in that operand order */
-            x = (ex->math_cos(arg11) * (row * arg10 / 7)) >> 12;
-            y = (ex->math_sin(arg11) * (row * arg10 / 7)) >> 12;
+            x = (ex->math_cos(driftAng) * (row * drift / 7)) >> 12;
+            y = (ex->math_sin(driftAng) * (row * drift / 7)) >> 12;
             v[2].vx = x + ((ex->math_cos(ang) * r0) >> 12);
             v[2].vy = y + ((ex->math_sin(ang) * r0) >> 12);
             v[3].vx = x + ((ex->math_cos(e) * r0) >> 12);
@@ -116,9 +116,9 @@ void fx_0b2_drawFunnel(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32
             gte_rtpt();
             /* j & 3 and row & 3 in variables: the original computes each once, across the first ternary's label */
             ju = j & 3;
-            u0 = arg8 + (ju * 7 * 16 >> 2);
+            u0 = texU + (ju * 7 * 16 >> 2);
             rv = row & 3;
-            v0 = arg9 + (rv * 7 * 16 >> 2);
+            v0 = texV + (rv * 7 * 16 >> 2);
             /* a default and an override, not a ternary: the order global-alloc sees puts v1 before u1 */
             u1 = u0 + 0x1C;
             if (ju == 3) {
@@ -148,16 +148,16 @@ void fx_0b2_drawFunnel(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32
                     ft4->u1 = ft4->u3 = u1;
                     ft4->v2 = ft4->v3 = v0;
                     ft4->v0 = ft4->v1 = v1;
-                    ft4->tpage = arg6;
-                    ft4->clut = arg7;
+                    ft4->tpage = tpage;
+                    ft4->clut = clut;
                     gte_stsxy3(&ft4->x0, &ft4->x1, &ft4->x2);
                 } else {
                     gt4->u0 = gt4->u2 = u0;
                     gt4->u1 = gt4->u3 = u1;
                     gt4->v2 = gt4->v3 = v0;
                     gt4->v0 = gt4->v1 = v1;
-                    gt4->tpage = arg6;
-                    gt4->clut = arg7;
+                    gt4->tpage = tpage;
+                    gt4->clut = clut;
                     gte_stsxy3(&gt4->x0, &gt4->x1, &gt4->x2);
                 }
                 gte_avsz3();
@@ -174,7 +174,7 @@ void fx_0b2_drawFunnel(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32
                     gt4++;
                 }
             }
-            ang += 0x1000 / arg15;
+            ang += 0x1000 / segs;
         }
     }
 }

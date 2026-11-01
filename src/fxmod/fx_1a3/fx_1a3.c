@@ -1,6 +1,6 @@
 #include "fxmod/fx_1a3.h"
 
-static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     s32 t = (frame - 4) << 9;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a3_env);
 

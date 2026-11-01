@@ -1,43 +1,43 @@
 #include "fxmod/fx_040.h"
 
-s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
+s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
     SVECTOR v;
 
     v.vx = fx_040_aboveTarget.vx;
     v.vy = fx_040_aboveTarget.vy;
     v.vz = fx_040_aboveTarget.vz;
     v.vx -= 0x190;
-    return fx_040_flyToTarget(out, arg2, &v, t, n);
+    return fx_040_flyToTarget(out, pos, &v, t, n);
 }
 
-s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
+s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
     SVECTOR v;
 
     v.vx = fx_040_aboveTarget.vx;
     v.vy = fx_040_aboveTarget.vy;
     v.vz = fx_040_aboveTarget.vz;
     v.vx -= 0xC8;
-    return fx_040_flyToTarget(out, arg2, &v, t, n);
+    return fx_040_flyToTarget(out, pos, &v, t, n);
 }
 
-s32 fx_040_op80ParticleMotion2(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
+s32 fx_040_op80ParticleMotion2(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
     SVECTOR v;
 
     v.vx = fx_040_aboveTarget.vx;
     v.vy = fx_040_aboveTarget.vy;
     v.vz = fx_040_aboveTarget.vz;
     v.vx += 0xC8;
-    return fx_040_flyToTarget(out, arg2, &v, t, n);
+    return fx_040_flyToTarget(out, pos, &v, t, n);
 }
 
-s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 arg1, SVECTOR *arg2, s32 arg3, s32 t, s32 n) {
+s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
     SVECTOR v;
 
     v.vx = fx_040_aboveTarget.vx;
     v.vy = fx_040_aboveTarget.vy;
     v.vz = fx_040_aboveTarget.vz;
     v.vx += 0x190;
-    return fx_040_flyToTarget(out, arg2, &v, t, n);
+    return fx_040_flyToTarget(out, pos, &v, t, n);
 }
 
 s32 fx_040_flyToTarget(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 t, s32 n) {

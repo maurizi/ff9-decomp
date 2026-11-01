@@ -1,6 +1,6 @@
 #include "fxmod/fx_1a8.h"
 
-static void fx_1a8_op80ElemDraw0(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 arg5, s32 arg6, s32 t, s32 n) {
+static void fx_1a8_op80ElemDraw0(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 alpha, s32 blend, s32 t, s32 n) {
     s32 r = (t << 12) / n;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a8_env);
     VECTOR p;
@@ -25,7 +25,7 @@ static void fx_1a8_op80ElemDraw0(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot,
     }
 }
 
-static void fx_1a8_op80ElemDraw1(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 arg5, s32 arg6, s32 t, s32 n) {
+static void fx_1a8_op80ElemDraw1(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 alpha, s32 blend, s32 t, s32 n) {
     s32 r = (t << 12) / n;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a8_env);
     VECTOR p;

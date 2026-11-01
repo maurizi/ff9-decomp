@@ -1,50 +1,50 @@
 #include "fxmod/fx_123.h"
 
-static s32 fxm_pinParticle0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[0], frame, n);
 }
 
-static s32 fxm_pinParticle1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[1], frame, n);
 }
 
-static s32 fxm_pinParticle2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[2], frame, n);
 }
 
-static s32 fxm_pinParticle3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[3], frame, n);
 }
 
-static s32 fxm_pinParticle4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle4(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[4], frame, n);
 }
 
-static s32 fxm_pinParticle5(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle5(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos1[0], frame, n);
 }
 
-s32 fxm_pinParticle6(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle6(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[0], frame, n);
 }
 
-s32 fxm_pinParticle7(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle7(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[1], frame, n);
 }
 
-s32 fxm_pinParticle8(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle8(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[2], frame, n);
 }
 
-s32 fxm_pinParticle9(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle9(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[3], frame, n);
 }
 
-s32 fxm_pinParticle10(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle10(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos0[4], frame, n);
 }
 
-s32 fxm_pinParticle11(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+s32 fxm_pinParticle11(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_123_pinPos1[0], frame, n);
 }
 
@@ -420,8 +420,8 @@ static s32 fxm_rotPosPathGet(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *
     return r;
 }
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_123_env)->btlfx_drawScreenTint((u32 *)(fx_123_env->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_123_env)->btlfx_drawScreenTint((u32 *)(fx_123_env->ot + ot), abr, c, c, c);
 }

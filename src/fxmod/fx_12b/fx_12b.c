@@ -1,6 +1,6 @@
 #include "fxmod/fx_12b.h"
 
-static s32 fx_12b_op80ParticleMotion0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op80ParticleMotion0(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     s32 i = p->index1F - 1;
     Fx12bShard *s = &fx_12b_op80Shards0[i];
     Fx12bPath *path = &fx_12b_op80PosPaths0[i];
@@ -15,7 +15,7 @@ static s32 fx_12b_op80ParticleMotion0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, 
     return 0;
 }
 
-static s32 fx_12b_op80ParticleMotion1(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op80ParticleMotion1(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     s32 i = p->index1F - 1;
     Fx12bShard *s = &fx_12b_op80Shards1[i];
     Fx12bPath *path = &fx_12b_op80PosPaths1[i];
@@ -30,7 +30,7 @@ static s32 fx_12b_op80ParticleMotion1(Fx12bParticle *p, s32 arg1, SVECTOR *pos, 
     return 0;
 }
 
-static s32 fx_12b_op81ParticleMotion0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op81ParticleMotion0(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     s32 i = p->index1F - 1;
     Fx12bShard *s = &fx_12b_op81Shards0[i];
     Fx12bPath *path = &fx_12b_op81PosPath0;
@@ -42,7 +42,7 @@ static s32 fx_12b_op81ParticleMotion0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, 
     return fx_12b_arcParticle0(p, pos, s, frame, n);
 }
 
-static s32 fx_12b_op81ParticleMotion1(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op81ParticleMotion1(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     s32 i = p->index1F - 1;
     Fx12bShard *s = &fx_12b_op81Shards1[i];
     Fx12bPath *path = &fx_12b_op81PosPath1;
@@ -129,7 +129,7 @@ s32 fx_12b_arcParticle1(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, s32 frame
     return 0;
 }
 
-static s32 fx_12b_op80ParticleMotion2(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op80ParticleMotion2(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     SVECTOR v;
     SVECTOR *o = (SVECTOR *)((u8 *)fx_12b_bonePoints0 + (p->index1F - 1) * 8);
 
@@ -143,7 +143,7 @@ static s32 fx_12b_op80ParticleMotion2(Fx12bParticle *p, s32 arg1, SVECTOR *pos, 
     return fxm_pinParticle(p, pos, &v, frame, n);
 }
 
-static s32 fx_12b_op80ParticleMotion3(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op80ParticleMotion3(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     SVECTOR v;
     SVECTOR *o = (SVECTOR *)((u8 *)fx_12b_bonePoints1 + (p->index1F - 1) * 8);
 
@@ -157,7 +157,7 @@ static s32 fx_12b_op80ParticleMotion3(Fx12bParticle *p, s32 arg1, SVECTOR *pos, 
     return fxm_pinParticle(p, pos, &v, frame, n);
 }
 
-static s32 fx_12b_op81ParticleMotion2(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op81ParticleMotion2(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     SVECTOR v;
     SVECTOR *o = (SVECTOR *)((u8 *)fx_12b_bonePoints0 + (p->index1F - 1) * 8);
 
@@ -171,7 +171,7 @@ static s32 fx_12b_op81ParticleMotion2(Fx12bParticle *p, s32 arg1, SVECTOR *pos, 
     return fxm_pinParticle(p, pos, &v, frame, n);
 }
 
-static s32 fx_12b_op81ParticleMotion3(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_12b_op81ParticleMotion3(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     SVECTOR v;
     SVECTOR *o = (SVECTOR *)((u8 *)fx_12b_bonePoints1 + (p->index1F - 1) * 8);
 

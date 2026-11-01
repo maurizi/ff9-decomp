@@ -1,6 +1,6 @@
 #include "fxmod/fx_0c1.h"
 
-static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0c1_op80ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_0c1_env)->btlfx_lerpVec((s16 *)&fx_0c1_pathFrom, (s16 *)&fx_0c1_pathTo, (frame << 12) / 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;

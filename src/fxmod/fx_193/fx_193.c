@@ -1,10 +1,10 @@
 #include "fxmod/fx_193.h"
 
-static s32 fx_193_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_193_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_wobbleParticle(e, pos, &fx_193_op80From0, &fx_193_op80To0, -0x320, frame, frames);
 }
 
-static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     return fxm_wobbleParticle(e, pos, &fx_193_op80From1, &fx_193_op80To1, 0x320, frame, frames);
 }
 

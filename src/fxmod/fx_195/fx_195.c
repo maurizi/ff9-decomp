@@ -1,7 +1,7 @@
 #include "fxmod/fx_195.h"
 
-void fx_195_buildOffsetTrail(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
-                   s32 arg7) {
+void fx_195_buildOffsetTrail(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+                   s32 dang) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     SVECTOR pos;
     SVECTOR rot;
@@ -22,16 +22,16 @@ void fx_195_buildOffsetTrail(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR
         h = ex->btlfx_randCentered(0x80);
         i++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
-        h += ex->btlfx_lerp(arg4, arg5, t);
-        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
+        h += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, ang);
         p->pad = 0x1A;
-        arg6 += arg7 + ex->btlfx_randCentered(0x100);
+        ang += dang + ex->btlfx_randCentered(0x100);
         p++;
     } while (i < 13);
 }
 
-static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx195Trail57 *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5,
-                   s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10) {
+static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx195Trail57 *trail, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     SVECTOR pos;
     SVECTOR rot;
@@ -52,17 +52,17 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx195Trail57 *trail, S
         h = ex->btlfx_randCentered(0xA0);
         i++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
-        h += ex->btlfx_lerp(arg4, arg5, t);
-        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
-        p->pad = arg10;
-        arg6 += arg7 + ex->btlfx_randCentered(0x80);
+        h += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, ang);
+        p->pad = lineWidth;
+        ang += dang + ex->btlfx_randCentered(0x80);
         p++;
     } while (i < 57);
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x18), 0, NULL, arg8, 0x1000, arg9, 1, (u8 *)trail, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x18), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
-static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
-                   s32 arg7, s32 arg8, s32 arg9, s32 arg10) {
+static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     SVECTOR pos;
     SVECTOR rot;
@@ -83,13 +83,13 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx195Trail *trail, SVE
         h = ex->btlfx_randCentered(0xA0);
         i++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
-        h += ex->btlfx_lerp(arg4, arg5, t);
-        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
-        p->pad = arg10;
-        arg6 += arg7 + ex->btlfx_randCentered(0x80);
+        h += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, ang);
+        p->pad = lineWidth;
+        ang += dang + ex->btlfx_randCentered(0x80);
         p++;
     } while (i < 13);
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x19), 0, NULL, arg8, 0x1000, arg9, 1, (u8 *)trail, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x19), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
 static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,

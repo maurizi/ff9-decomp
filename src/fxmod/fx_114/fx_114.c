@@ -1,18 +1,18 @@
 #include "fxmod/fx_114.h"
 
-static s32 fxm_pinParticle0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle0(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_114_pinPoints[0], frame, n);
 }
 
-static s32 fxm_pinParticle1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle1(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_114_pinPoints[1], frame, n);
 }
 
-static s32 fxm_pinParticle2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_114_pinPoints[2], frame, n);
 }
 
-static s32 fxm_pinParticle3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &fx_114_pinPoints[3], frame, n);
 }
 
@@ -1095,10 +1095,10 @@ static s32 fxm_offsetTableEntry(s32 base, s32 i) {
     return (s32)base + ((s32 *)base)[(u16)i + 1];
 }
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_114_env)->btlfx_drawScreenTint((u32 *)(fx_114_env->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_114_env)->btlfx_drawScreenTint((u32 *)(fx_114_env->ot + ot), abr, c, c, c);
 }
 
 static void fxm_camChanReset(void) {

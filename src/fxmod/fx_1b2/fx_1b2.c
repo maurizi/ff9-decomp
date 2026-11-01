@@ -261,10 +261,10 @@ static s32 fxm_vecPathGet(Fx1b2Track6 *track, s32 t, VECTOR *out) {
     return done;
 }
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_1b2_env)->btlfx_drawScreenTint((u32 *)(fx_1b2_env->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_1b2_env)->btlfx_drawScreenTint((u32 *)(fx_1b2_env->ot + ot), abr, c, c, c);
 }
 
 static void fxm_startUnitMotion(s32 unit, s32 motion) {

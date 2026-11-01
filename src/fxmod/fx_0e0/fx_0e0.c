@@ -300,7 +300,7 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
 }
 
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9, s32 pad) {
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e0_env);
     SVECTOR p;
     SVECTOR rot;
@@ -322,16 +322,16 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTO
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
         ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
-        pt->pad = pad;
+        pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1D), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1D), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
 INCLUDE_RODATA("asm/us/fx_0e0/nonmatchings/fx_0e0", fx_0e0_headerPtr);
 
-static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
+static s32 fx_0e0_op80PoolTask(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 pool,
                   Fx0e0Inst *parent) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;

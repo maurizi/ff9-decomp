@@ -41,8 +41,8 @@ extern SVECTOR fx_0c2_pathFrom; /* particle path start */
 extern SVECTOR fx_0c2_pathTo; /* particle path end */
 extern SVECTOR fx_0c2_emitPos;
 
-static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta);
+static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *unused, SVECTOR *delta);
 static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang);
 static void fxm_startHitMotionIfActive(s32 unit);
 static void fxm_startUnitMotion(s32 unit, s32 motion);

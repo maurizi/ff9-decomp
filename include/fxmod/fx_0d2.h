@@ -111,7 +111,7 @@ static void fxm_valuePathInit(Fx0d2Path *path, u16 *data);
 static void fxm_vecPathInit(Fx0d2Path *path, u16 *data);
 static s32 fxm_vecPathGet(Fx0d2Path *track, s32 t, VECTOR *out);
 extern Unk800F78A4 *fx_0d2_env;
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
 typedef struct {
     Fx0d2Keys keys;
     s16 start8; /* start */

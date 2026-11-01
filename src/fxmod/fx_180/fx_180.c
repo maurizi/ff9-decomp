@@ -1,6 +1,6 @@
 #include "fxmod/fx_180.h"
 
-static s32 fx_180_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_180_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     SVECTOR v;
 
     fxm_posPathGet(&fx_180_posPath0[(s16)(e->slot - 1)], frame, &v);
@@ -18,7 +18,7 @@ static s32 fx_180_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
     return 0;
 }
 
-static s32 fx_180_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_180_op81ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     SVECTOR v;
 
     fxm_posPathGet(&fx_180_posPath1[(s16)(e->slot - 1)], frame, &v);
@@ -421,10 +421,10 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_180_env)->btlfx_drawScreenTint((u32 *)(fx_180_env->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_180_env)->btlfx_drawScreenTint((u32 *)(fx_180_env->ot + ot), abr, c, c, c);
 }
 
 static void fxm_posPathInit(Fx180Path *path, u16 *data) {

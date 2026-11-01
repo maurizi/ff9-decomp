@@ -24,8 +24,8 @@ extern SVECTOR fx_128_lerpFrom; /* path start */
 extern SVECTOR fx_128_lerpTo; /* path end */
 extern SVECTOR fx_128_lerpToRand[]; /* path ends */
 
-static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+static s32 fx_128_op81ParticleMotion0(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
+static s32 fx_128_op81ParticleMotion1(Fx128Particle *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 
 typedef struct {
     s16 x, y, z;

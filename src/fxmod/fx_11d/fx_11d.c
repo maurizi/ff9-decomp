@@ -1,13 +1,13 @@
 #include "fxmod/fx_11d.h"
 
-static s32 fx_11d_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_11d_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     if (frame >= 4) {
         frame = 3;
     }
     return fxm_boneLerpParticle(out, pos, &fx_11d_boneKeys0[frame], frame, n);
 }
 
-static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     if (frame >= 4) {
         frame = 3;
     }

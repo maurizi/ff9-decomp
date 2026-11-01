@@ -333,7 +333,7 @@ static s32 fx_0e1_0_op80SpawnPoint(SVECTOR *out) {
     return 0;
 }
 
-void fx_0e1_0_scaleXY(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s16 *v) {
+void fx_0e1_0_scaleXY(s32 unused0, s32 unused1, s32 unused2, s32 unused3, s16 *v) {
     v[0] = (v[0] * 5) >> 2;
     v[1] = (v[1] * 5) >> 2;
 }

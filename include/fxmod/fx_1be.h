@@ -55,6 +55,6 @@ extern s32 fx_1be_scrollSpeed;
 extern Fx1beUnit fx_1be_units[];
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 step, s32 tpage, s32 clut, s32 abr);
-static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
+static s32 fx_1be_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames);
 
 #endif

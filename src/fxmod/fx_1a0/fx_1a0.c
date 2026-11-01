@@ -1,36 +1,36 @@
 #include "fxmod/fx_1a0.h"
 
-s32 fx_1a0_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     s32 t = fx_1a0_pathFrames[0] * 2;
 
     return fxm_followPathParticle(e, pos, &fx_1a0_posPaths[0], t, frame, frames);
 }
 
-s32 fx_1a0_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     s32 t = fx_1a0_pathFrames[1] * 2;
 
     return fxm_followPathParticle(e, pos, &fx_1a0_posPaths[1], t, frame, frames);
 }
 
-s32 fx_1a0_op81ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     s32 t = fx_1a0_pathFrames[2] * 2;
 
     return fxm_followPathParticle(e, pos, &fx_1a0_posPaths[2], t, frame, frames);
 }
 
-s32 fx_1a0_op81ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     s32 t = fx_1a0_pathFrames[3] * 2;
 
     return fxm_followPathParticle(e, pos, &fx_1a0_posPaths[3], t, frame, frames);
 }
 
-s32 fx_1a0_op81ParticleMotion4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     s32 t = fx_1a0_pathFrames[4] * 2;
 
     return fxm_followPathParticle(e, pos, &fx_1a0_posPaths[4], t, frame, frames);
 }
 
-s32 fx_1a0_op81ParticleMotion5(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+s32 fx_1a0_op81ParticleMotion5(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     s32 t = fx_1a0_pathFrames[5] * 2;
 
     return fxm_followPathParticle(e, pos, &fx_1a0_posPaths[5], t, frame, frames);

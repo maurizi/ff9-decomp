@@ -66,7 +66,7 @@ static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height,
     return frame >= n;
 }
 
-static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
+static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *unused, SVECTOR *delta) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19e_env);
     SVECTOR rot;
     SVECTOR pos;

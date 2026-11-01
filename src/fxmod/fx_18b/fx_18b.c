@@ -159,7 +159,7 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     }
 }
 
-static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 arg3, s16 *out) {
+static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 spoke, s16 *out) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_18b_env);
     s32 s = (ex->math_sin((i << 11) >> 4) * fx_18b_waveAmp) >> 12;
 

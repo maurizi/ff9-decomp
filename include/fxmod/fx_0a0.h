@@ -37,7 +37,7 @@ extern s32 fx_0a0_trailAlpha;
     : : "r"(r0), "r"(r1) : "memory")
 
 void fx_0a0_drawGouraudLine(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s32 p, s32 abr);
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
-static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame);
+static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 frame, s32 fade, s32 abr, s32 lineWidth);
+static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 rot, s32 *scale, s32 alpha, s32 blend, s32 frame);
 
 #endif

@@ -89,7 +89,7 @@ extern s32 fx_1f3_op80Trails[];
 extern Fx1f3Rock fx_1f3_spinModels[8];
 extern Fx1f3Ring fx_1f3_rings[16];
 extern Fx1f3Line fx_1f3_ringTrails;
-static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot);
+static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 abr, s32 ot);
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

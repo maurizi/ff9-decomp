@@ -1,6 +1,6 @@
 #include "fxmod/fx_041.h"
 
-static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n) {
+static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
     SVECTOR v;
 
     fxm_posPathGet(&fx_041_path, t, &v);

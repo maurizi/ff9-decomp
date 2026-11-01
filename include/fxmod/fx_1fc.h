@@ -134,7 +134,7 @@ static void fxm_rotPosPathInit(Fx1fcPath *path, u16 *data);
 static void fxm_valuePathInit(Fx1fcPath *path, u16 *data);
 static void fxm_vecPathInit(Fx1fcPath *path, u16 *data);
 static s32 fxm_vecPathGet(Fx1fcTrack6 *track, s32 t, VECTOR *out);
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
 
 s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 

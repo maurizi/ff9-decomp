@@ -175,7 +175,7 @@ void fx_0e2_stripFromTrackBlendRot(void *trackA, void *trackB, Fx0e2Trail *trail
     }
 }
 
-void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist) {
+void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLength, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist) {
     Unk800F78A4 *env = fx_0e2_env;
     Fx0e2Edge *e = fx_0e2_edges;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -253,7 +253,7 @@ void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECT
     }
 }
 
-void fxm_projectEdges(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY) {
+void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale, s32 w, s32 rotY) {
     Unk800F78A4 *env = fx_0e2_env;
     Fx0e2Edge *e = fx_0e2_edges;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -1524,10 +1524,10 @@ static s32 fxm_rotPosPathGet(Fx0e2Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *
     return r;
 }
 
-static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_0e2_env)->btlfx_drawScreenTint((u32 *)(fx_0e2_env->ot + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(fx_0e2_env)->btlfx_drawScreenTint((u32 *)(fx_0e2_env->ot + ot), abr, c, c, c);
 }
 
 static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {

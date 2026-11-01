@@ -1,31 +1,31 @@
 #include "fxmod/fx_138.h"
 
-s32 fx_138_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint0(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[0], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint1(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[1], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint2(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[2], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint3(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[3], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint4(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[4], i);
     return 0;
 }
 
-s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 arg1, s32 i) {
+s32 fx_138_op81SpawnPoint5(SVECTOR *out, s32 dir, s32 i) {
     fx_138_getPathPoint(out, &fx_138_posPaths[5], i);
     return 0;
 }

@@ -80,7 +80,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
 }
 
 static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9) {
+                   s32 dang, s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_0_env);
     SVECTOR p;
     SVECTOR rot;
@@ -106,11 +106,11 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVEC
         pt++;
         ang += dang + ex->btlfx_randCentered(fx_0e3_0_angleJitter);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
-static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang,
-                   s32 dang, s32 arg8, s32 arg9) {
+static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 anchor, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang,
+                   s32 dang, s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_0_env);
     SVECTOR p;
     SVECTOR rot;
@@ -136,7 +136,7 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), 0, (s32 *)arg1, arg8, 0x1000, arg9, 1, (u8 *)bolt, 1);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), 0, (s32 *)anchor, frame, 0x1000, fade, 1, (u8 *)bolt, 1);
 }
 
 static s32 fx_0e3_0_op80PoolTask(s32 mode, Fx0e30Puff *p, Unk800F78A4 *env, Unk80100C78Entry *entry) {

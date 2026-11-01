@@ -174,7 +174,7 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
-                   s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind) {
+                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0d9_env);
     SVECTOR v;
     SVECTOR ang;
@@ -196,21 +196,21 @@ static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s3
         s = (ex->math_sin(t >> 1) * s) >> 12;
         s += ex->btlfx_lerp(from1, to1, t);
         ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
-        p->pad = arg11;
+        p->pad = lineWidth;
         width += dwidth + *tbl++;
         p++;
     }
     if (kind < FX_0D9_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip15Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip15Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip15Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip15Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
                           (u8 *)strip, 2);
     }
 }
 
 static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
-                   s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind) {
+                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0d9_env);
     SVECTOR v;
     SVECTOR ang;
@@ -233,20 +233,20 @@ static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32
         s = (ex->math_sin(t) * s) >> 12;
         s += (ex->math_sin(t) * amp) >> 12;
         ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
-        p->pad = arg10;
+        p->pad = lineWidth;
         width += dwidth + *tbl++ / 2;
         p++;
     }
     if (kind < FX_0D9_STRIP_FLAT) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip3Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip3Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip3Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip3Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
                           (u8 *)strip, 2);
     }
 }
 
-static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx0d9Strip *strip, Fx0d9Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
+static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx0d9Strip *strip, Fx0d9Strip *out, s32 *tbl, s32 i, s32 fade, s32 lineWidth,
                    s32 kind) {
     BtlfxExports *ex;
     SVECTOR *p = strip->pts4;
@@ -255,7 +255,7 @@ static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx0d9Strip *strip, Fx
     p += i;
     ex = BTLFX_EXPORTS(fx_0d9_env);
     ex->btlfx_lerpVec((s16 *)p, (s16 *)(p + 1), 0x4000, (s16 *)&v);
-    fxm_drawJaggedStrip3(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x33, 0, arg5, arg6, kind);
+    fxm_drawJaggedStrip3(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x33, 0, fade, lineWidth, kind);
 }
 
 static s32 fxm_jaggedStripTask(s32 mode, Fx0d9Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
@@ -311,7 +311,7 @@ static s32 fxm_jaggedStripTask(s32 mode, Fx0d9Bolt *it, Unk800F78A4 *env, Unk801
     return 0;
 }
 
-static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
+static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0d9_env);
     SVECTOR *p = FX_0D9_STRIPS[ex->btlfx_rand() % 16].pts4;
 

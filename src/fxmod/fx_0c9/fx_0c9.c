@@ -20,7 +20,7 @@ s32 fx_0c9_op80(s32 mode, Fx0c9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static s32 fx_0c9_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fx_0c9_op81ParticleMotion(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     pos->vx = fx_0c9_particlePos.vx;
     pos->vy = fx_0c9_particlePos.vy;
     pos->vz = fx_0c9_particlePos.vz;

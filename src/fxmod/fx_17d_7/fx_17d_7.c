@@ -12,7 +12,7 @@ static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot) {
     return 0;
 }
 
-static s32 fx_17d_7_op80PoolTask(s32 mode, Fx17d7Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx17d7RockInst *inst) {
+static s32 fx_17d_7_op80PoolTask(s32 mode, Fx17d7Rock *o, Unk800F78A4 *env, s32 entry, s32 frame, s32 pool, Fx17d7RockInst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
     VECTOR scale;

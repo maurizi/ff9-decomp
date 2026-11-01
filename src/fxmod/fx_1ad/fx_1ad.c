@@ -1,6 +1,6 @@
 #include "fxmod/fx_1ad.h"
 
-static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+static s32 fx_1ad_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
     s32 t = (frame << 12) / frames;
     s32 row = (e->slot - 1) % 6;
     s32 v = t * fx_1ad_boneChains[row][0];

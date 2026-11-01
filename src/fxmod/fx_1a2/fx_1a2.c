@@ -182,7 +182,7 @@ void fxm_updateShatterPieces(void) {
     }
 }
 
-static s32 fx_1a2_op80PoolTask(s32 mode, Fx1a2Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1a2Inst *inst) {
+static s32 fx_1a2_op80PoolTask(s32 mode, Fx1a2Rock *o, Unk800F78A4 *env, s32 entry, s32 frame, s32 pool, Fx1a2Inst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR scale;
     VECTOR pos;

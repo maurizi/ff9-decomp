@@ -1,6 +1,6 @@
 #include "fxmod/fx_1bf_0.h"
 
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1bf_0_env);
     SVECTOR *v;
 
@@ -10,12 +10,12 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 ar
     v[0].vx = a->vx;
     v[0].vy = a->vy;
     v[0].vz = a->vz;
-    v[0].pad = arg6;
+    v[0].pad = lineWidth;
     v[1].vx = b->vx;
     v[1].vy = b->vy;
     v[1].vz = b->vz;
-    v[1].pad = arg6;
-    ex->btlfx_drawTrail(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&fx_1bf_0_lineTrail, 0);
+    v[1].pad = lineWidth;
+    ex->btlfx_drawTrail(file, 0, NULL, frame, 0x1000, fade, abr, (u8 *)&fx_1bf_0_lineTrail, 0);
 }
 
 void fx_1bf_0_drawStrands(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag) {
