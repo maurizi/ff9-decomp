@@ -2004,13 +2004,13 @@ void akao_cmdSetStreamVolume(s32 *a) {
     }
 }
 
-void akao_cmdFadeStreamVolume(AkaoArgs *p) {
+void akao_cmdFadeStreamVolume(AkaoArgs *args) {
     s16 n = 1;
 
-    if (p->arg0 != 0) {
-        n = p->arg0;
+    if (args->arg0 != 0) {
+        n = args->arg0;
     }
-    g_akaoStream.volumeStep = (s16)((s16)((u16)p->arg1 - (u16)g_akaoStream.volume) / n);
+    g_akaoStream.volumeStep = (s16)((s16)((u16)args->arg1 - (u16)g_akaoStream.volume) / n);
     g_akaoStream.volumeFadeLen = n;
 }
 

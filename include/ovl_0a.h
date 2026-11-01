@@ -1617,8 +1617,8 @@ s32 fld_initShadows(s32, s32, s32, s32); /* returns shadow_initSlots's result (t
 FieldAnimSfx *fld_addAnimSfx(FieldObjSlot *, s32, s32); /* returns the new entry */
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
-void akao_resume(u32 x); /* main */
-void akao_pause(u32 x); /* main */
+void akao_resume(u32 kind); /* main */
+void akao_pause(u32 kind); /* main */
 s32 bgi_addActor(FieldObjSlot *slot);
 s32 bgi_bindActor(s32 actorId, FieldObjSlot *slot);
 s32 bgi_clear(void);

@@ -4819,7 +4819,7 @@ typedef struct {
     s32 fadeIn; /* nonzero: akao_sendCmdE5 fades the volume in over it (akao_streamStartRing) */
 } StreamHeader;
 
-void akao_sendCmdE5(s32 a, s32 b);
+void akao_sendCmdE5(s32 frames, s32 volume);
 void akao_streamStartRingVoices(void);
 
 /* AKAO sample stream state, akao_uploadBank */

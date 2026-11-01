@@ -10,26 +10,26 @@ s32 snd_quit(void) {
     return 0;
 }
 
-s32 akao_setSeTables(u8 *a) {
+s32 akao_setSeTables(u8 *data) {
     s32 r;
     u8 *p;
 
-    r = akao_checkHeader((s32 *)a);
+    r = akao_checkHeader((s32 *)data);
     if (r == 0) {
-        p = a + 0x10;
+        p = data + 0x10;
         g_akaoSeTrackOfs = (u16 *)p;
-        p = a + 0x210;
+        p = data + 0x210;
         g_akaoSeBankIds = (u16 *)p;
-        p = a + 0x310;
+        p = data + 0x310;
         g_akaoSeExtraCounts = (u16 *)p;
-        p = a + 0x410;
+        p = data + 0x410;
         g_akaoSeData = p;
     }
     return r;
 }
 
-s32 akao_playMusic(void *a) {
-    g_akaoArgs.arg0 = (s32)a;
+s32 akao_playMusic(void *seq) {
+    g_akaoArgs.arg0 = (s32)seq;
     return akao_command(AKAO_CMD_PLAY_MUSIC);
 }
 
@@ -68,38 +68,38 @@ void akao_crossfadeMusic(s32 a, s32 b, s32 c) {
     akao_command(AKAO_CMD_CROSSFADE_MUSIC);
 }
 
-s32 akao_playMusicCount(void *a, s32 b) {
-    g_akaoArgs.arg0 = (s32)a;
-    g_akaoArgs.arg1 = b;
+s32 akao_playMusicCount(void *seq, s32 count) {
+    g_akaoArgs.arg0 = (s32)seq;
+    g_akaoArgs.arg1 = count;
     return akao_command(AKAO_CMD_PLAY_MUSIC_COUNT);
 }
 
-s32 akao_playSe(s32 a, s32 b, s32 c, s32 d) {
+s32 akao_playSe(s32 handle, s32 chMask, s32 pan, s32 volume) {
     s32 r;
 
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFFFFFF;
-    g_akaoArgs.arg2 = c & 0xFF;
-    g_akaoArgs.arg3 = d & 0x7F;
-    if ((u32)a >= 0x400) {
-        r = akao_checkHeader((s32 *)a);
+    g_akaoArgs.arg0 = handle;
+    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg2 = pan & 0xFF;
+    g_akaoArgs.arg3 = volume & 0x7F;
+    if ((u32)handle >= 0x400) {
+        r = akao_checkHeader((s32 *)handle);
         if (r != 0) {
             return r;
         }
         akao_command(AKAO_CMD_PLAY_SE_BANK);
-        return a;
+        return handle;
     }
     return akao_command(AKAO_CMD_PLAY_SE);
 }
 
-void akao_stopSe(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFFFFFF;
+void akao_stopSe(s32 handle, s32 chMask) {
+    g_akaoArgs.arg0 = handle;
+    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
     akao_command(AKAO_CMD_STOP_SE);
 }
 
-void akao_playSeDefault(s32 a) {
-    g_akaoArgs.arg0 = a & 0x3FF;
+void akao_playSeDefault(s32 seId) {
+    g_akaoArgs.arg0 = seId & 0x3FF;
     akao_command(AKAO_CMD_PLAY_SE_DEFAULT);
 }
 
@@ -145,28 +145,28 @@ s32 akao_isSePlaying(u32 id) {
     return 0;
 }
 
-void akao_setOutputMode(s32 a) {
-    if (a == 1) {
-        a = AKAO_CMD_SET_OUTPUT_MODE2;
+void akao_setOutputMode(s32 mode) {
+    if (mode == 1) {
+        mode = AKAO_CMD_SET_OUTPUT_MODE2;
     } else {
-        a = AKAO_CMD_SET_OUTPUT_MODE1;
+        mode = AKAO_CMD_SET_OUTPUT_MODE1;
     }
-    akao_command(a);
+    akao_command(mode);
 }
 
-void akao_setMuteMask(s32 a) {
-    g_akaoArgs.arg0 = a;
+void akao_setMuteMask(s32 muteMask) {
+    g_akaoArgs.arg0 = muteMask;
     akao_command(AKAO_CMD_SET_MUTE_MASK);
 }
 
-void akao_setCondition(s32 a) {
-    g_akaoArgs.arg0 = a;
+void akao_setCondition(s32 condition) {
+    g_akaoArgs.arg0 = condition;
     akao_command(AKAO_CMD_SET_CONDITION);
 }
 
-void akao_pause(u32 x) {
+void akao_pause(u32 kind) {
     s32 cmd;
-    switch (x) {
+    switch (kind) {
     case 1:
         cmd = AKAO_CMD_PAUSE_MUSIC;
         break;
@@ -183,9 +183,9 @@ void akao_pause(u32 x) {
     akao_command(cmd);
 }
 
-void akao_resume(u32 x) {
+void akao_resume(u32 kind) {
     s32 cmd;
-    switch (x) {
+    switch (kind) {
     case 1:
         cmd = AKAO_CMD_RESUME_MUSIC;
         break;
@@ -202,187 +202,187 @@ void akao_resume(u32 x) {
     akao_command(cmd);
 }
 
-void akao_setAllSeVolume(s32 a) {
-    g_akaoArgs.arg0 = a & 0x7F;
+void akao_setAllSeVolume(s32 volume) {
+    g_akaoArgs.arg0 = volume & 0x7F;
     akao_command(AKAO_CMD_SET_ALL_SE_VOLUME);
 }
 
-void akao_fadeAllSeVolume(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0x7F;
+void akao_fadeAllSeVolume(s32 frames, s32 volume) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = volume & 0x7F;
     akao_command(AKAO_CMD_FADE_ALL_SE_VOLUME);
 }
 
-void akao_setSeVolume(s32 a, s32 b, s32 c) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFFFFFF;
-    g_akaoArgs.arg2 = c & 0x7F;
+void akao_setSeVolume(s32 handle, s32 chMask, s32 volume) {
+    g_akaoArgs.arg0 = handle;
+    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg2 = volume & 0x7F;
     akao_command(AKAO_CMD_SET_SE_VOLUME);
 }
 
-void akao_fadeSeVolume(s32 a, s32 b, s32 c, s32 d) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFFFFFF;
-    g_akaoArgs.arg2 = c;
-    g_akaoArgs.arg3 = d & 0x7F;
+void akao_fadeSeVolume(s32 handle, s32 chMask, s32 frames, s32 volume) {
+    g_akaoArgs.arg0 = handle;
+    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg2 = frames;
+    g_akaoArgs.arg3 = volume & 0x7F;
     akao_command(AKAO_CMD_FADE_SE_VOLUME);
 }
 
-void akao_sendCmdAA(s32 a) {
-    g_akaoArgs.arg0 = a & 0xFF;
+void akao_sendCmdAA(s32 pan) {
+    g_akaoArgs.arg0 = pan & 0xFF;
     akao_command(AKAO_CMD_SET_ALL_SE_PAN);
 }
 
-void akao_sendCmdAB(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFF;
+void akao_sendCmdAB(s32 frames, s32 pan) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = pan & 0xFF;
     akao_command(AKAO_CMD_FADE_ALL_SE_PAN);
 }
 
-void akao_sendCmdA2(s32 a, s32 b, u8 c) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFFFFFF;
-    g_akaoArgs.arg2 = c;
+void akao_sendCmdA2(s32 handle, s32 chMask, u8 pan) {
+    g_akaoArgs.arg0 = handle;
+    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg2 = pan;
     akao_command(AKAO_CMD_SET_SE_PAN);
 }
 
-void akao_sendCmdA3(s32 a, s32 b, s32 c, u8 d) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFFFFFF;
-    g_akaoArgs.arg2 = c;
-    g_akaoArgs.arg3 = d;
+void akao_sendCmdA3(s32 handle, s32 chMask, s32 frames, u8 pan) {
+    g_akaoArgs.arg0 = handle;
+    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg2 = frames;
+    g_akaoArgs.arg3 = pan;
     akao_command(AKAO_CMD_FADE_SE_PAN);
 }
 
-void akao_sendCmdAC(s32 a) {
-    g_akaoArgs.arg0 = a & 0xFF;
+void akao_sendCmdAC(s32 pitch) {
+    g_akaoArgs.arg0 = pitch & 0xFF;
     akao_command(AKAO_CMD_SET_ALL_SE_PITCH);
 }
 
-void akao_sendCmdAD(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFF;
+void akao_sendCmdAD(s32 frames, s32 pitch) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = pitch & 0xFF;
     akao_command(AKAO_CMD_FADE_ALL_SE_PITCH);
 }
 
-void akao_sendCmdA4(s32 a, s32 b, u8 c) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFFFFFF;
-    g_akaoArgs.arg2 = c;
+void akao_sendCmdA4(s32 handle, s32 chMask, u8 pitch) {
+    g_akaoArgs.arg0 = handle;
+    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg2 = pitch;
     akao_command(AKAO_CMD_SET_SE_PITCH);
 }
 
-void akao_sendCmdA5(s32 a, s32 b, s32 c, u8 d) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFFFFFF;
-    g_akaoArgs.arg2 = c;
-    g_akaoArgs.arg3 = d;
+void akao_sendCmdA5(s32 handle, s32 chMask, s32 frames, u8 pitch) {
+    g_akaoArgs.arg0 = handle;
+    g_akaoArgs.arg1 = chMask & 0xFFFFFF;
+    g_akaoArgs.arg2 = frames;
+    g_akaoArgs.arg3 = pitch;
     akao_command(AKAO_CMD_FADE_SE_PITCH);
 }
 
-void akao_setMusicVolume(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0x7F;
+void akao_setMusicVolume(s32 musicId, s32 volume) {
+    g_akaoArgs.arg0 = musicId;
+    g_akaoArgs.arg1 = volume & 0x7F;
     akao_command(AKAO_CMD_SET_MUSIC_VOLUME);
 }
 
-void akao_fadeMusicVolume(s32 a, s32 b, s32 c) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b;
-    g_akaoArgs.arg2 = c & 0x7F;
+void akao_fadeMusicVolume(s32 musicId, s32 frames, s32 volume) {
+    g_akaoArgs.arg0 = musicId;
+    g_akaoArgs.arg1 = frames;
+    g_akaoArgs.arg2 = volume & 0x7F;
     akao_command(AKAO_CMD_FADE_MUSIC_VOLUME);
 }
 
-void akao_fadeMusicVolumeFrom(s32 a, s32 b, s32 c, s32 d) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b;
-    g_akaoArgs.arg2 = c & 0x7F;
-    g_akaoArgs.arg3 = d & 0x7F;
+void akao_fadeMusicVolumeFrom(s32 musicId, s32 frames, s32 from, s32 to) {
+    g_akaoArgs.arg0 = musicId;
+    g_akaoArgs.arg1 = frames;
+    g_akaoArgs.arg2 = from & 0x7F;
+    g_akaoArgs.arg3 = to & 0x7F;
     akao_command(AKAO_CMD_FADE_MUSIC_VOLUME_FROM);
 }
 
-void akao_sendCmdC4(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0x7F;
+void akao_sendCmdC4(s32 musicId, s32 pan) {
+    g_akaoArgs.arg0 = musicId;
+    g_akaoArgs.arg1 = pan & 0x7F;
     akao_command(AKAO_CMD_SET_MUSIC_PAN);
 }
 
-void akao_sendCmdC5(s32 a, s32 b, s32 c) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b;
-    g_akaoArgs.arg2 = c & 0x7F;
+void akao_sendCmdC5(s32 musicId, s32 frames, s32 pan) {
+    g_akaoArgs.arg0 = musicId;
+    g_akaoArgs.arg1 = frames;
+    g_akaoArgs.arg2 = pan & 0x7F;
     akao_command(AKAO_CMD_FADE_MUSIC_PAN);
 }
 
-void akao_setCdVolume(s32 a) {
-    g_akaoArgs.arg0 = a;
+void akao_setCdVolume(s32 volume) {
+    g_akaoArgs.arg0 = volume;
     akao_command(AKAO_CMD_SET_CD_VOLUME);
 }
 
-void akao_fadeCdVolume(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b;
+void akao_fadeCdVolume(s32 frames, s32 volume) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = volume;
     akao_command(AKAO_CMD_FADE_CD_VOLUME);
 }
 
-void akao_fadeCdVolumeFrom(s32 a, s32 b, s32 c) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b;
-    g_akaoArgs.arg2 = c;
+void akao_fadeCdVolumeFrom(s32 frames, s32 from, s32 to) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = from;
+    g_akaoArgs.arg2 = to;
     akao_command(AKAO_CMD_FADE_CD_VOLUME_FROM);
 }
 
-void akao_setTempoScale(s32 a) {
-    g_akaoArgs.arg0 = a & 0xFF;
+void akao_setTempoScale(s32 scale) {
+    g_akaoArgs.arg0 = scale & 0xFF;
     akao_command(AKAO_CMD_SET_TEMPO_SCALE);
 }
 
-void akao_fadeTempoScale(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFF;
+void akao_fadeTempoScale(s32 frames, s32 scale) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = scale & 0xFF;
     akao_command(AKAO_CMD_FADE_TEMPO_SCALE);
 }
 
-void akao_fadeTempoScaleFrom(s32 a, s32 b, s32 c) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFF;
-    g_akaoArgs.arg2 = c & 0xFF;
+void akao_fadeTempoScaleFrom(s32 frames, s32 from, s32 to) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = from & 0xFF;
+    g_akaoArgs.arg2 = to & 0xFF;
     akao_command(AKAO_CMD_FADE_TEMPO_SCALE_FROM);
 }
 
-void akao_setPitchScale(s32 a) {
-    g_akaoArgs.arg0 = a & 0xFF;
+void akao_setPitchScale(s32 scale) {
+    g_akaoArgs.arg0 = scale & 0xFF;
     akao_command(AKAO_CMD_SET_PITCH_SCALE);
 }
 
-void akao_fadePitchScale(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFF;
+void akao_fadePitchScale(s32 frames, s32 scale) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = scale & 0xFF;
     akao_command(AKAO_CMD_FADE_PITCH_SCALE);
 }
 
-void akao_fadePitchScaleFrom(s32 a, s32 b, s32 c) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFF;
-    g_akaoArgs.arg2 = c & 0xFF;
+void akao_fadePitchScaleFrom(s32 frames, s32 from, s32 to) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = from & 0xFF;
+    g_akaoArgs.arg2 = to & 0xFF;
     akao_command(AKAO_CMD_FADE_PITCH_SCALE_FROM);
 }
 
-void akao_setTempoPitchScale(s32 a) {
-    g_akaoArgs.arg0 = a & 0xFF;
+void akao_setTempoPitchScale(s32 scale) {
+    g_akaoArgs.arg0 = scale & 0xFF;
     akao_command(AKAO_CMD_SET_TEMPO_PITCH_SCALE);
 }
 
-void akao_fadeTempoPitchScale(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFF;
+void akao_fadeTempoPitchScale(s32 frames, s32 scale) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = scale & 0xFF;
     akao_command(AKAO_CMD_FADE_TEMPO_PITCH_SCALE);
 }
 
-void akao_fadeTempoPitchScaleFrom(s32 a, s32 b, s32 c) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = b & 0xFF;
-    g_akaoArgs.arg2 = c & 0xFF;
+void akao_fadeTempoPitchScaleFrom(s32 frames, s32 from, s32 to) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = from & 0xFF;
+    g_akaoArgs.arg2 = to & 0xFF;
     akao_command(AKAO_CMD_FADE_TEMPO_PITCH_SCALE_FROM);
 }
 
@@ -394,18 +394,18 @@ void akao_stopAllSe(void) {
     akao_command(AKAO_CMD_STOP_ALL_SE);
 }
 
-void akao_loadBankRetry(s32 a, s32 b) {
-    while (akao_loadBank(a, b) == 1) {
+void akao_loadBankRetry(s32 bank, s32 wait) {
+    while (akao_loadBank(bank, wait) == 1) {
     }
 }
 
 s32 akao_getSpuTransferState(void) {
-    s32 a[2];
+    s32 reads[2];
     do {
-        a[0] = g_akaoSpuBusy;
-        a[1] = g_akaoSpuBusy;
-    } while (a[0] != a[1]);
-    return a[0];
+        reads[0] = g_akaoSpuBusy;
+        reads[1] = g_akaoSpuBusy;
+    } while (reads[0] != reads[1]);
+    return reads[0];
 }
 
 s32 akao_beginBankUpload(void) {
@@ -479,12 +479,12 @@ s32 akao_uploadBank(s32 *data, u32 size, s32 wait) {
     return g_akaoUpload.sampleLeft;
 }
 
-void akao_loadBankRetryAlias(s32 a, s32 b) {
-    akao_loadBankRetry(a, b);
+void akao_loadBankRetryAlias(s32 bank, s32 wait) {
+    akao_loadBankRetry(bank, wait);
 }
 
-s32 akao_loadBankInSlot(s32 *a, s32 b, s32 c) {
-    AkaoBankHeader *h = (AkaoBankHeader *)a;
+s32 akao_loadBankInSlot(s32 *data, s32 slot, s32 wait) {
+    AkaoBankHeader *h = (AkaoBankHeader *)data;
     s32 y;
     s32 id;
     u32 i;
@@ -494,21 +494,21 @@ s32 akao_loadBankInSlot(s32 *a, s32 b, s32 c) {
             g_akaoLoadedBanks[i] = 0;
         }
     }
-    i = h->slot + b * 8;
+    i = h->slot + slot * 8;
     y = h->spuAddr;
-    if (b != 0) {
+    if (slot != 0) {
         id = h->id;
         if ((u32)(id - 500) < 100) {
-            y += b << 12;
+            y += slot << 12;
         } else if ((u32)(id - 200) < 100) {
-            y += (b * 5) << 12;
+            y += (slot * 5) << 12;
         } else if ((u32)(id - 300) < 200) {
-            y += b << 14;
-            b += 4;
+            y += slot << 14;
+            slot += 4;
         }
     }
-    g_akaoLoadedBanks[b] = h->id;
-    akao_loadBankAt(a, c, i, y);
+    g_akaoLoadedBanks[slot] = h->id;
+    akao_loadBankAt(data, wait, i, y);
     return 0;
 }
 
@@ -533,11 +533,11 @@ s32 akao_setCdMix(s32 vol) {
     return 0;
 }
 
-void akao_sendCmdE0(s32 *a, s32 b, s32 c) {
-    if (akao_checkHeader(a) == 0) {
-        g_akaoArgs.arg0 = (s32)a;
-        g_akaoArgs.arg1 = (b & 0xFF) << 8;
-        g_akaoArgs.arg2 = c;
+void akao_sendCmdE0(s32 *data, s32 volume, s32 flag) {
+    if (akao_checkHeader(data) == 0) {
+        g_akaoArgs.arg0 = (s32)data;
+        g_akaoArgs.arg1 = (volume & 0xFF) << 8;
+        g_akaoArgs.arg2 = flag;
         akao_command(AKAO_CMD_STREAM_START);
     }
 }
@@ -546,37 +546,37 @@ void akao_sendCmdE2(void) {
     akao_command(AKAO_CMD_STREAM_STOP);
 }
 
-void akao_sendCmdE4(s32 a) {
-    g_akaoArgs.arg0 = (a & 0x7F) << 8;
+void akao_sendCmdE4(s32 volume) {
+    g_akaoArgs.arg0 = (volume & 0x7F) << 8;
     akao_command(AKAO_CMD_SET_STREAM_VOLUME);
 }
 
-void akao_sendCmdE5(s32 a, s32 b) {
-    g_akaoArgs.arg0 = a;
-    g_akaoArgs.arg1 = (b & 0x7F) << 8;
+void akao_sendCmdE5(s32 frames, s32 volume) {
+    g_akaoArgs.arg0 = frames;
+    g_akaoArgs.arg1 = (volume & 0x7F) << 8;
     akao_command(AKAO_CMD_FADE_STREAM_VOLUME);
 }
 
-void akao_sendCmdE6(s32 a) {
-    g_akaoArgs.arg0 = (a & 0xFF) << 8;
+void akao_sendCmdE6(s32 pan) {
+    g_akaoArgs.arg0 = (pan & 0xFF) << 8;
     akao_command(AKAO_CMD_SET_STREAM_PAN);
 }
 
-s32 akao_uploadSeBank(s32 *a, s32 b) {
-    s32 r = akao_checkHeader(a);
+s32 akao_uploadSeBank(s32 *data, s32 upper) {
+    s32 r = akao_checkHeader(data);
     s32 addr;
     s32 *h;
 
     if (r == 0) {
         akao_waitSpuTransfer();
         addr = 0x59100;
-        if (b == 0) {
+        if (upper == 0) {
             addr = 0x4F100;
         }
-        h = a;
-        a += 0x10;
+        h = data;
+        data += 0x10;
         SpuSetTransferStartAddr(addr);
-        akao_spuWrite(a, h[4]);
+        akao_spuWrite(data, h[4]);
         h[8] = addr;
         akao_copy(h, g_akaoResidentStream, 0x70);
     } else {
@@ -585,23 +585,23 @@ s32 akao_uploadSeBank(s32 *a, s32 b) {
     return r;
 }
 
-void akao_sendCmdED(s32 a, s32 b) {
-    g_akaoArgs.arg0 = (a & 0xFF) << 8;
-    g_akaoArgs.arg1 = b;
+void akao_sendCmdED(s32 volume, s32 flag) {
+    g_akaoArgs.arg0 = (volume & 0xFF) << 8;
+    g_akaoArgs.arg1 = flag;
     akao_command(AKAO_CMD_STREAM_PLAY_RESIDENT);
 }
 
-void akao_sendCmdEC(s32 *a, s32 b, s32 c, s32 d) {
+void akao_sendCmdEC(s32 *data, s32 volume, s32 upper, s32 loop) {
     s32 x;
-    if (akao_checkHeader(a) == 0) {
+    if (akao_checkHeader(data) == 0) {
         x = 0x59100;
-        if (c == 0) {
+        if (upper == 0) {
             x = 0x4F100;
         }
-        g_akaoArgs.arg0 = (s32)a;
-        g_akaoArgs.arg1 = (b & 0xFF) << 8;
+        g_akaoArgs.arg0 = (s32)data;
+        g_akaoArgs.arg1 = (volume & 0xFF) << 8;
         g_akaoArgs.arg2 = x;
-        g_akaoArgs.arg3 = d;
+        g_akaoArgs.arg3 = loop;
         akao_command(AKAO_CMD_STREAM_PLAY_ONE_SHOT);
     }
 }
