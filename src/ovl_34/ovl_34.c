@@ -681,8 +681,8 @@ void menuConfig_drawScrollArrows(void) {
 
     l = &s_menuConfig.list;
     blink = (((u32)g_menuFrame >> 4) ^ 1) & 1;
-    ui_drawSprite(0x12E, 0x2C, 0x14, 0xB8, l->top != 0 ? blink : 1);
-    ui_drawSprite(0x12E, 0xCF, 0x14, 0xB9, l->top < l->rows - l->visibleRows ? blink : 1);
+    ui_drawSprite(0x12E, 0x2C, 0x14, UI_SPRITE_SCROLL_UP, l->top != 0 ? blink : 1);
+    ui_drawSprite(0x12E, 0xCF, 0x14, UI_SPRITE_SCROLL_DOWN, l->top < l->rows - l->visibleRows ? blink : 1);
 }
 
 void menuConfig_drawChoice(RECT *r, s32 otz, s32 sel, s32 item) {

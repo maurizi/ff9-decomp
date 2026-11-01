@@ -1521,7 +1521,7 @@ void wm_naviDraw(void) {
                 msg_setOtz(5);
                 pen_begin();
                 pen_setPos((g_worldNaviCursorX >> 12) + 18, (g_worldNaviCursorY >> 12) + 6);
-                pen_drawSprite(1);
+                pen_drawSprite(UI_SPRITE_HAND);
                 pen_endSmall();
                 msg_setOtz(2);
             }

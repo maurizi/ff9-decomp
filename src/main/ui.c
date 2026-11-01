@@ -10,9 +10,9 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
     text_formatNumber(c->level, numText, 2, TEXT_NUM_ASCII);
     text_drawBlock(x, y, otz, c->name, TEXT_PAL_WHITE);
     ui_drawSmallDigits(x + 0x24, y + 0xE, otz, numText, TEXT_PAL_WHITE);
-    ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
-    ui_drawSprite(x, y + 0x17, otz, 0xAF, 0);
-    ui_drawSprite(x, y + 0x20, otz, 0xB0, 0);
+    ui_drawSprite(x, y + 0xE, otz, UI_SPRITE_LV, 0);
+    ui_drawSprite(x, y + 0x17, otz, UI_SPRITE_HP, 0);
+    ui_drawSprite(x, y + 0x20, otz, UI_SPRITE_MP, 0);
     if (c->hp != 0) {
         col = ((u16)(c->maxHp / 6) >= c->hp) * TEXT_PAL_YELLOW;
     } else {
@@ -495,7 +495,7 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
         addPrim(&g_ot[otz], p);
         g_primPtr = (u8 *)(p + 1);
     }
-    ui_drawSprite(x, y, otz, 2, 0);
+    ui_drawSprite(x, y, otz, UI_SPRITE_GAUGE, 0);
     setlen(g_primPtr, PRIM_LEN(TILE));
     t = (TileWords *)g_primPtr;
     t->rgbc = *(u32 *)&e->c[0];
@@ -698,7 +698,7 @@ void win_drawFill(RECT *rect, s32 otz, u8 u, u8 v, s32 pal) {
 }
 
 void ui_drawHand(s32 x, s32 y, s32 otz) {
-    ui_drawSprite(x, y, otz, 1, 0);
+    ui_drawSprite(x, y, otz, UI_SPRITE_HAND, 0);
 }
 
 void ui_drawApGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, u8 show, u8 flag) {
@@ -717,11 +717,11 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
         cur = max;
     }
     if (cur != 0 && cur >= max) {
-        pkt = ui_buildSprite(x + 4, y, ot, 0xC0, flag, spriteW, pkt);
+        pkt = ui_buildSprite(x + 4, y, ot, UI_SPRITE_AP_MASTERED, flag, spriteW, pkt);
     } else if (show) {
         text_formatNumber(cur, numText, 3, TEXT_NUM_ASCII);
         text_formatNumber(max, numText + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-        numText[3] = 0x2F;
+        numText[3] = '/';
         pkt = ui_buildDigits(x + 3, y + 2, ot, numText, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060) : GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL), (SprtWords *)pkt);
     }
     if (cur != 0) {
@@ -754,7 +754,7 @@ void ui_drawStones(s32 x, s32 y, s32 otz, s32 cur, s32 max) {
     text_formatNumber(cur, &numText[0], 2, TEXT_NUM_ASCII);
     text_formatNumber(max, &numText[3], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     numText[2] = '/';
-    ui_drawSprite(x, y, otz, 0xC1, 0);
+    ui_drawSprite(x, y, otz, UI_SPRITE_STONES, 0);
     ui_drawDigits(x + 15, y + 1, otz, numText, cur == 0 ? DIGITS_YELLOW : DIGITS_WHITE);
 }
 
@@ -869,7 +869,7 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
     text_formatNumber(c->level, numText, 2, TEXT_NUM_ASCII);
     text_drawBlock(x, y, otz, c->name, TEXT_PAL_WHITE);
     ui_drawSmallDigits(x + 0x26, y + 0xE, otz, numText, TEXT_PAL_WHITE);
-    ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
+    ui_drawSprite(x, y + 0xE, otz, UI_SPRITE_LV, 0);
     ui_drawStatusIcons(x, y + 0x1C, otz, c->status, 0);
     r.x = x - 4;
     r.y = y + 0x18;

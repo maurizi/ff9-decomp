@@ -859,7 +859,7 @@ void btlui_drawHelpWindow(void) {
         btlui_getHelpRect(&g_btluiHelpRect, &r);
         win_setClip(NULL, 2, WIN_STYLE_FRAMELESS);
         if (g_btluiHelp.opening == 0) {
-            ui_drawSprite(r.x + 8, r.y, 2, 0xB7, 0);
+            ui_drawSprite(r.x + 8, r.y, 2, UI_SPRITE_HELP_TAG, 0);
         }
         btlui_updateHelpText();
         if (g_btluiHelp.text != 0) {
@@ -3009,7 +3009,7 @@ void btlui_drawHpList(Window *win) {
         if (u->hp != 0) {
             c = ((u->status & BTL_STATUS_LOW_HP) != 0) * DIGITS_YELLOW;
         }
-        maxText[0] = 0x2F;
+        maxText[0] = '/';
         text_formatNumber(u->hp, hpText, 4, TEXT_NUM_ASCII);
         text_formatNumber(u->max->maxHp, maxText + 1, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
         ui_drawDigits(w->x + 4, y, win->otz, hpText, c);
@@ -3031,7 +3031,7 @@ void btlui_drawMpList(Window *win) {
         if (u->flags & BTL_UNIT_PARTY) {
             yy = y - dy;
             c = (u->mp < (s16)(u->max->maxMp / 6)) * DIGITS_YELLOW;
-            maxText[0] = 0x2F;
+            maxText[0] = '/';
             text_formatNumber(u->mp, mpText, 3, TEXT_NUM_ASCII);
             y += 0xC;
             text_formatNumber((s16)u->max->maxMp, &maxText[1], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);

@@ -961,13 +961,13 @@ void rewards_drawLearnWin(Window *w) {
     id = s->ids[s->shown];
     if (id < ABILITY_SUPPORT_FIRST) {
         name = s_rewardsActionNames + s_rewardsActionTable[id].nameOffset;
-        ui_drawSprite(w->x + 6, w->y + 7, w->otz, 0xBC, 0);
+        ui_drawSprite(w->x + 6, w->y + 7, w->otz, UI_SPRITE_ABIL_ACTION, 0);
     } else {
         name = s_rewardsSupportNames + g_supportAbilities[id - ABILITY_SUPPORT_FIRST].name;
         if (chr_testSupportBit(g_gameState->gameData->party[slot]->supportAbilities, id)) {
-            icon = 0xBD;
+            icon = UI_SPRITE_ABIL_SUPPORT_ON;
         } else {
-            icon = 0xF4;
+            icon = UI_SPRITE_ABIL_SUPPORT_OFF;
         }
         ui_drawSprite(w->x + 6, w->y + 7, w->otz, icon, 0);
     }

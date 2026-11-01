@@ -184,11 +184,11 @@ void menuMain_drawMember(s32 slot) {
     text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->name, TEXT_PAL_WHITE);
     ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->status, 0);
     text_formatNumber(c->level, numText, 2, TEXT_NUM_ASCII);
-    ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
+    ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, UI_SPRITE_LV, 0);
     ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, numText, TEXT_PAL_WHITE);
-    ui_drawSprite(r->x + 0x3C, r->y + 0x1B, 0x14, 0xAF, 0);
+    ui_drawSprite(r->x + 0x3C, r->y + 0x1B, 0x14, UI_SPRITE_HP, 0);
     text_formatNumber(c->hp, numText, 4, TEXT_NUM_ASCII);
-    numText[4] = 0x2F;
+    numText[4] = '/';
     if (c->hp != 0) {
         color = ((u16)(c->maxHp / 6) >= c->hp) * TEXT_PAL_YELLOW;
     } else {
@@ -196,9 +196,9 @@ void menuMain_drawMember(s32 slot) {
     }
     text_formatNumber(c->maxHp, &numText[5], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x52, r->y + 0x1B, 0x14, numText, color);
-    ui_drawSprite(r->x + 0x3C, r->y + 0x24, 0x14, 0xB0, 0);
+    ui_drawSprite(r->x + 0x3C, r->y + 0x24, 0x14, UI_SPRITE_MP, 0);
     text_formatNumber(c->mp, numText, 3, TEXT_NUM_ASCII);
-    numText[3] = 0x2F;
+    numText[3] = '/';
     maxmp = c->maxMp;
     color = ((s16)(maxmp / 6) >= c->mp) * TEXT_PAL_YELLOW;
     text_formatNumber(maxmp, &numText[4], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
@@ -226,8 +226,8 @@ void menuMain_drawTimeGil(void) {
     s32 v;
 
     v = game_getPlayTime();
-    ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 8, 0x13, 0xB1, 0);
-    ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 0x15, 0x13, 0xB2, 0);
+    ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 8, 0x13, UI_SPRITE_TIME, 0);
+    ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 0x15, 0x13, UI_SPRITE_GIL, 0);
     ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 9, 0x13, numText, text_formatTime(v, numText, 1));
     text_formatNumber(g_gameState->gameData->gil, numText, 7, TEXT_NUM_ASCII);
     strcat(numText, s_menuMainGilSuffix);

@@ -443,8 +443,8 @@ void menuSave_drawScrollArrows(void) {
     s32 blink = (((u32)g_menu.frame >> 4) ^ 1) & 1;
     MenuList *l = &s_menuSave.list;
 
-    ui_drawSprite(0x12E, 0x2C, 0x2A, 0xB8, l->top != 0 ? blink : 1);
-    ui_drawSprite(0x12E, 0xCF, 0x2A, 0xB9, l->top < l->rows - l->visibleRows ? blink : 1);
+    ui_drawSprite(0x12E, 0x2C, 0x2A, UI_SPRITE_SCROLL_UP, l->top != 0 ? blink : 1);
+    ui_drawSprite(0x12E, 0xCF, 0x2A, UI_SPRITE_SCROLL_DOWN, l->top < l->rows - l->visibleRows ? blink : 1);
 }
 
 void menuSave_drawEmptyFile(RECT *r, s32 otz) {

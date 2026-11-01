@@ -617,7 +617,7 @@ void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {
                   top != 0 ? (more != blink && (x = 0), blink) : 1);
     y = r->y + r->h - 14;
     x = r->x + r->w - 6;
-    ui_drawSprite(x, y, z, 0xB9, more ? blink : 1);
+    ui_drawSprite(x, y, z, UI_SPRITE_SCROLL_DOWN, more ? blink : 1);
 }
 
 void win_drawSplitFill(RECT *r, s32 otz, MenuList *m, s32 abr) {

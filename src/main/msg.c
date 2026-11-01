@@ -439,35 +439,35 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                 break;
             case TEXT_DPAD_UP:
                 pen_move(4, 2);
-                pen_drawSprite(13);
+                pen_drawSprite(UI_SPRITE_DPAD_UP);
                 pen_move(-8, -1);
-                pen_drawSprite(12);
+                pen_drawSprite(UI_SPRITE_DPAD);
                 pen_move(1, -1);
                 break;
             case TEXT_DPAD_DOWN:
                 pen_move(4, 7);
-                pen_drawSprite(14);
+                pen_drawSprite(UI_SPRITE_DPAD_DOWN);
                 pen_move(-8, -6);
-                pen_drawSprite(12);
+                pen_drawSprite(UI_SPRITE_DPAD);
                 pen_move(1, -1);
                 break;
             case TEXT_DPAD_LEFT:
                 pen_move(1, 5);
-                pen_drawSprite(15);
+                pen_drawSprite(UI_SPRITE_DPAD_LEFT);
                 pen_move(-5, -4);
-                pen_drawSprite(12);
+                pen_drawSprite(UI_SPRITE_DPAD);
                 pen_move(1, -1);
                 break;
             case TEXT_DPAD_RIGHT:
                 pen_move(6, 5);
-                pen_drawSprite(16);
+                pen_drawSprite(UI_SPRITE_DPAD_RIGHT);
                 pen_move(-10, -4);
-                pen_drawSprite(12);
+                pen_drawSprite(UI_SPRITE_DPAD);
                 pen_move(1, -1);
                 break;
             case TEXT_DPAD:
                 pen_move(0, 1);
-                pen_drawSprite(12);
+                pen_drawSprite(UI_SPRITE_DPAD);
                 pen_move(1, -1);
                 break;
             case TEXT_SPRITE:
@@ -476,12 +476,12 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case TEXT_FLAG_ICON:
                 if ((u32)g_msgNumbers[0] & (1 << *p++)) {
                     pen_move(6, 3);
-                    pen_drawSprite(0xB6);
+                    pen_drawSprite(UI_SPRITE_NEW_BLINK);
                     if (VSync(-1) % 48 >= 16) {
                         pen_setLastSemiTrans();
                     }
                     pen_move(-24, -3);
-                    pen_drawSprite(0xB5);
+                    pen_drawSprite(UI_SPRITE_NEW);
                 }
                 break;
             case TEXT_SPEED:
@@ -1429,7 +1429,7 @@ void msg_drawChoiceCursor(Window *w) {
         pen_pushPos();
         ofs = 8;
         pen_setPos(w->x - 3, w->y + ((g_msgChoiceLine + g_msgChoice) * 14 + ofs));
-        pen_drawSprite(1);
+        pen_drawSprite(UI_SPRITE_HAND);
         pen_popPos();
         pen_endSmall();
     }
@@ -1615,7 +1615,7 @@ void msg_drawAtePrompt(void) {
             pen_move(-2, 0);
             pen_drawSprite(0x53);
             pen_move(2, 0);
-            pen_drawSprite(0x12);
+            pen_drawSprite(UI_SPRITE_SELECT);
             pen_drawSprite(0x54);
         }
     } else if ((g_atePromptTimer / 15) & 1) {

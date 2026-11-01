@@ -181,7 +181,7 @@ void menuEquip_drawEquipment(void) {
         if (s_menuEquip.tab == grey) {
             sel = (i == 0);
         }
-        ui_drawSprite(r->x + 10, r->y + y10, 0x1D, i + 0xF9, sel);
+        ui_drawSprite(r->x + 10, r->y + y10, 0x1D, i + UI_SPRITE_EQUIP_SLOTS, sel);
         ui_drawSmallDigits(r->x + 0x19, r->y + y12, 0x1D, s_menuEquipColon, sel ? grey : TEXT_PAL_WHITE);
         if (c->equip[i] != ITEM_NONE) {
             it = &g_itemTable[c->equip[i]];
@@ -218,7 +218,7 @@ void menuEquip_drawAbilities(void) {
     if (s_menuEquip.state < EQUIP_STATE_SLOT) {
         return;
     }
-    ui_drawSprite(r->x + 0xA, r->y + 9, 0x1D, s_menuEquip.equipSlot + 0xF9, 0);
+    ui_drawSprite(r->x + 0xA, r->y + 9, 0x1D, s_menuEquip.equipSlot + UI_SPRITE_EQUIP_SLOTS, 0);
     ui_drawSmallDigits(r->x + 0x19, r->y + 0xB, 0x1D, s_menuEquipColon, TEXT_PAL_WHITE);
     if (s_menuEquip.state == EQUIP_STATE_SLOT) {
         id = c->equip[s_menuEquip.equipSlot];
@@ -248,17 +248,17 @@ void menuEquip_drawAbilities(void) {
             ap = chr_getApNeeded(c->info.b.id, ab);
             if (ok) {
                 if (ab < ABILITY_SUPPORT_FIRST) {
-                    icon = 0xBC;
+                    icon = UI_SPRITE_ABIL_ACTION;
                 } else if (chr_testSupportBit(c->supportAbilities, ab)) {
-                    icon = 0xBD;
+                    icon = UI_SPRITE_ABIL_SUPPORT_ON;
                 } else {
-                    icon = 0xF4;
+                    icon = UI_SPRITE_ABIL_SUPPORT_OFF;
                 }
             } else {
                 if (ab < ABILITY_SUPPORT_FIRST) {
-                    icon = 0xBE;
+                    icon = UI_SPRITE_ABIL_ACTION_NA;
                 } else {
-                    icon = 0xBF;
+                    icon = UI_SPRITE_ABIL_SUPPORT_NA;
                 }
             }
             if (ok) {

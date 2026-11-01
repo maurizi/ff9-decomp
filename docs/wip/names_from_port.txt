@@ -11480,3 +11480,7 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 #   RECORD_MAX 9999 (card wins/losses/draws, stealCount, dragonKills).
 # snd_ids.h: SND_TYPE(w), SND_CMD(w), SND_PARAM(w), the three fields of a sound command word, used in the six mode
 #   sound handlers (fld_soundCommand, wm_soundCommand, btl_soundCmd, tm_soundCmd, opening_soundCmd, ending_soundCmd).
+# ff9.h UI_SPRITE_*: DPAD_UP..RIGHT (13-16, msg_renderText), HAND 1, GAUGE 2, HP 0xAF, MP 0xB0, TIME 0xB1, GIL 0xB2,
+#   LV 0xB4, NEW 0xB5, NEW_BLINK 0xB6, HELP_TAG 0xB7, SCROLL_UP/DOWN 0xB8/0xB9, ABIL_ACTION 0xBC, ABIL_SUPPORT_ON 0xBD,
+#   ABIL_ACTION_NA 0xBE, ABIL_SUPPORT_NA 0xBF, AP_MASTERED 0xC0, STONES 0xC1, TIMER_DIGITS 0xE0, TIMER_COLON 0xEA,
+#   ABIL_SUPPORT_OFF 0xF4, EQUIP_SLOTS 0xF9 (+ slot). [code]: what each caller draws beside them.

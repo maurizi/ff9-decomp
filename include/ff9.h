@@ -2498,8 +2498,35 @@ typedef struct {
 #define UI_SPRITE_R1       10
 #define UI_SPRITE_R2       11
 #define UI_SPRITE_DPAD     12 /* the d-pad; 13-16 are its small direction arrows (g_dpadArrowSprites) */
+#define UI_SPRITE_DPAD_UP    13 /* msg_renderText TEXT_DPAD_UP .. TEXT_DPAD_RIGHT */
+#define UI_SPRITE_DPAD_DOWN  14
+#define UI_SPRITE_DPAD_LEFT  15
+#define UI_SPRITE_DPAD_RIGHT 16
 #define UI_SPRITE_START    17
 #define UI_SPRITE_SELECT   18
+/* g_uiSprites ids the menus draw by number. Evidence [code]: what each caller draws next to them. */
+#define UI_SPRITE_HAND 1 /* the pointing hand cursor (ui_drawHand) */
+#define UI_SPRITE_GAUGE 2 /* frame of ui_drawGauge's bar */
+#define UI_SPRITE_HP 0xAF /* left of the HP digits (ui_drawCharStatus) */
+#define UI_SPRITE_MP 0xB0 /* left of the MP digits */
+#define UI_SPRITE_TIME 0xB1 /* left of the play time (main menu) */
+#define UI_SPRITE_GIL 0xB2 /* left of the gil */
+#define UI_SPRITE_LV 0xB4 /* left of the level digits (ui_drawCharStatus, ui_drawCharStatuses) */
+#define UI_SPRITE_NEW 0xB5 /* marks an unseen key item (ovl_37) and a message's TEXT_FLAG_ICON */
+#define UI_SPRITE_NEW_BLINK 0xB6 /* drawn over UI_SPRITE_NEW, blinking */
+#define UI_SPRITE_HELP_TAG 0xB7 /* on the top edge of the help window (help_draw, btlui_drawHelpWindow) */
+#define UI_SPRITE_SCROLL_UP 0xB8 /* list scroll arrows: shown while rows are hidden above / below */
+#define UI_SPRITE_SCROLL_DOWN 0xB9
+#define UI_SPRITE_ABIL_ACTION 0xBC /* ability list icons (ovl_33 equip, ovl_38 status, ovl_65 rewards) */
+#define UI_SPRITE_ABIL_SUPPORT_ON 0xBD /* support ability, equipped (chr_testSupportBit) */
+#define UI_SPRITE_ABIL_ACTION_NA 0xBE /* not in the character's ability list (chr_findAbilitySlot < 0) */
+#define UI_SPRITE_ABIL_SUPPORT_NA 0xBF
+#define UI_SPRITE_AP_MASTERED 0xC0 /* replaces the AP gauge once cur >= max (ui_buildApGauge) */
+#define UI_SPRITE_STONES 0xC1 /* left of the magic stone count (ui_drawStones) */
+#define UI_SPRITE_TIMER_DIGITS 0xE0 /* '0'-'9' of the event timer (tu_800236C4) */
+#define UI_SPRITE_TIMER_COLON 0xEA
+#define UI_SPRITE_ABIL_SUPPORT_OFF 0xF4 /* support ability, not equipped */
+#define UI_SPRITE_EQUIP_SLOTS 0xF9 /* + Character.equip slot: the slot icons (ovl_33 equip, ovl_38 status) */
 /* ui_drawLabel / ui_buildLabel mode */
 #define UI_LABEL_NORMAL 0 /* full brightness */
 #define UI_LABEL_MASK   1 /* glyphs black and semi-transparent, CLUT 0x40 rows down: only the gradient behind shows

@@ -19,7 +19,7 @@ void help_draw(void) {
     help_onDraw();
     if (g_menuHelp.textShown != 0) {
         help_layout(&r);
-        ui_drawSprite(r.rect.x + 8, r.rect.y, otz, 0xB7, 0);
+        ui_drawSprite(r.rect.x + 8, r.rect.y, otz, UI_SPRITE_HELP_TAG, 0);
         text_drawBlock(r.rect.x + 6, r.rect.y + 8, otz, g_menuHelp.text, TEXT_PAL_HELP);
         win_drawHelpFrame(&r.rect, otz, r.style, r.tailX);
     }
