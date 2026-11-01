@@ -5017,7 +5017,7 @@ void fieldCalc_setItemHeal(MainCalc *c);
 void fieldCalc_setMagicHeal(MainCalc *c);
 void fieldCalc_supportBoost(MainCalc *a);
 void fld_entry(void); /* ovl_0a */
-s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4); /* ovl_0a */
+s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3); /* ovl_0a */
 s32 fldbg_scrollToPlayer(s32 frames, s32 scrollMode); /* ovl_0a */
 void help_drawStub(void);
 void rain_set(s32 a, u32 b);

@@ -404,29 +404,29 @@ void tm_setup(TmState *s) {
     }
 }
 
-void tm_taskInit(TmState *arg0) {
-    arg0->cursor = 0;
-    arg0->boardX = 0;
-    arg0->boardY = 0;
-    arg0->brightness = 0x80;
-    arg0->unk554 = 0;
-    arg0->scrollTimer = 0;
-    arg0->valuesTimer = 0;
-    arg0->msgWin = NULL;
-    arg0->quitWin = 0;
-    arg0->infoWin = NULL;
-    arg0->less5Win = NULL;
-    arg0->comboTimer = 0;
-    arg0->showBoard = 0;
-    arg0->showBlocks = 0;
-    arg0->showScore = 0;
+void tm_taskInit(TmState *s) {
+    s->cursor = 0;
+    s->boardX = 0;
+    s->boardY = 0;
+    s->brightness = 0x80;
+    s->unk554 = 0;
+    s->scrollTimer = 0;
+    s->valuesTimer = 0;
+    s->msgWin = NULL;
+    s->quitWin = 0;
+    s->infoWin = NULL;
+    s->less5Win = NULL;
+    s->comboTimer = 0;
+    s->showBoard = 0;
+    s->showBlocks = 0;
+    s->showScore = 0;
     tm_setWindowOpening(0);
-    tm_resetStockCursor(arg0);
-    tm_initHands(arg0);
-    tm_initBoard(arg0);
-    arg0->unk4BC = 0;
-    arg0->unk4C0 = 1;
-    tm_openStock(arg0);
+    tm_resetStockCursor(s);
+    tm_initHands(s);
+    tm_initBoard(s);
+    s->unk4BC = 0;
+    s->unk4C0 = 1;
+    tm_openStock(s);
 }
 
 void tm_debugPrint(TmState *s, char *msg) {
@@ -446,11 +446,11 @@ u8 *tm_getFileEntry(s32 i) {
     return TM_IMAGE_FILE + *p * 0x800;
 }
 
-void tm_copyFileEntry(u8 *arg0, s32 arg1, s32 arg2) {
+void tm_copyFileEntry(u8 *dst, s32 entry, s32 len) {
     s32 i;
-    u8 *src = tm_getFileEntry(arg1);
-    for (i = 0; i < arg2; i++) {
-        *arg0++ = *src++;
+    u8 *src = tm_getFileEntry(entry);
+    for (i = 0; i < len; i++) {
+        *dst++ = *src++;
     }
 }
 
@@ -895,18 +895,18 @@ void tm_taskResult(TmState *s) {
     }
 }
 
-void tm_taskExtension(TmState *arg0) {
+void tm_taskExtension(TmState *s) {
     if (g_tmWindowOpening == 0 && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
-        win_close(arg0->infoWin);
-        arg0->task = TM_TASK_INIT;
+        win_close(s->infoWin);
+        s->task = TM_TASK_INIT;
     }
 }
 
-void tm_drawDrawWin(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_DRAW), TEXT_PAL_WHITE);
+void tm_drawDrawWin(Window *win) {
+    text_drawBlock(win->x + 9, win->y + 7, win->otz, text_get(TM_TEXT_DRAW), TEXT_PAL_WHITE);
 }
 
-void tm_autoPlace(TmState *arg0) {
+void tm_autoPlace(TmState *s) {
     s32 x;
     s32 y;
     s32 px;
@@ -914,30 +914,30 @@ void tm_autoPlace(TmState *arg0) {
     TmCell *cell;
     TmCard *card;
 
-    if (tm_countInHand(arg0, TM_PLAYER) != 0) {
+    if (tm_countInHand(s, TM_PLAYER) != 0) {
         do {
             x = rand() & 3;
             y = rand() & 3;
-            cell = tm_getCell(arg0, x, y);
+            cell = tm_getCell(s, x, y);
         } while (cell->state != TM_CELL_EMPTY);
         px = x * TM_SQUARE_W + TM_BOARD_X;
         py = y * TM_SQUARE_H + TM_BOARD_Y;
-        card = tm_getHandCard(arg0, TM_PLAYER, 0);
+        card = tm_getHandCard(s, TM_PLAYER, 0);
         card->x = px;
         card->y = py;
         card->small = 0;
         card->onBoard = 1;
         cell->state = TM_CELL_CARD;
         cell->card = card;
-        arg0->srcX = x;
-        arg0->srcY = y;
-        tm_checkBattles(arg0);
+        s->srcX = x;
+        s->srcY = y;
+        tm_checkBattles(s);
     }
 }
 
-void tm_taskTrade(TmState *arg0) {
+void tm_taskTrade(TmState *s) {
     if (g_tmWindowOpening == 0 && (g_padRepeat & (BTN_CROSS | BTN_SQUARE))) {
-        tm_endTrade(arg0);
+        tm_endTrade(s);
     }
 }
 
@@ -1215,12 +1215,12 @@ void tm_taskChoice2(TmState *s) {
     }
 }
 
-void tm_drawConfirmWin(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_CONFIRM), TEXT_PAL_WHITE);
+void tm_drawConfirmWin(Window *win) {
+    text_drawBlock(win->x + 9, win->y + 7, win->otz, text_get(TM_TEXT_CONFIRM), TEXT_PAL_WHITE);
 }
 
-void tm_drawLess5Win(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_LESS_5), TEXT_PAL_WHITE);
+void tm_drawLess5Win(Window *win) {
+    text_drawBlock(win->x + 9, win->y + 7, win->otz, text_get(TM_TEXT_LESS_5), TEXT_PAL_WHITE);
 }
 
 void tm_taskStageSelect(TmState *s) {
@@ -1264,10 +1264,10 @@ void tm_taskStageSelect(TmState *s) {
     s->aiLevel = g_tmOpponents[s->opponent].aiLevel;
 }
 
-void tm_taskAwayInfo(TmState *arg0) {
+void tm_taskAwayInfo(TmState *s) {
     if (g_tmWindowOpening == 0 && (g_padRepeat & (BTN_CROSS | BTN_SQUARE))) {
-        win_close(arg0->infoWin);
-        arg0->task = TM_TASK_CARD_AWAY;
+        win_close(s->infoWin);
+        s->task = TM_TASK_CARD_AWAY;
     }
 }
 
@@ -1330,8 +1330,8 @@ void tm_taskCardAway2(TmState *s) {
     }
 }
 
-void tm_drawDiscardWin(Window *arg0) {
-    text_drawBlock(arg0->x + 0xA, arg0->y + 6, arg0->otz, text_get(TM_TEXT_DISCARD_ASK), TEXT_PAL_WHITE);
+void tm_drawDiscardWin(Window *win) {
+    text_drawBlock(win->x + 0xA, win->y + 6, win->otz, text_get(TM_TEXT_DISCARD_ASK), TEXT_PAL_WHITE);
 }
 
 void *tm_taskBattleSelect(u32 *ot, void *p, TmState *s) {
@@ -1398,15 +1398,15 @@ void *tm_taskBattleSelect(u32 *ot, void *p, TmState *s) {
     return p;
 }
 
-void tm_taskCardLess5(TmState *arg0) {
+void tm_taskCardLess5(TmState *s) {
     if (g_padRepeat & (BTN_CIRCLE | BTN_CROSS)) {
-        win_close(arg0->less5Win);
-        tm_startEndFade(arg0);
+        win_close(s->less5Win);
+        tm_startEndFade(s);
     }
 }
 
-void tm_waitWindow(Window *arg0) {
-    win_setOnOpened(arg0, (void (*)(Window *))tm_onWindowOpened);
+void tm_waitWindow(Window *win) {
+    win_setOnOpened(win, (void (*)(Window *))tm_onWindowOpened);
     tm_setWindowOpening(1);
 }
 
@@ -1414,15 +1414,15 @@ void tm_onWindowOpened(void) {
     tm_setWindowOpening(0);
 }
 
-void tm_setWindowOpening(s32 arg0) {
-    g_tmWindowOpening = arg0;
+void tm_setWindowOpening(s32 opening) {
+    g_tmWindowOpening = opening;
 }
 
-void tm_setHelpArea(s16 arg0) {
+void tm_setHelpArea(s16 width) {
     RECT r;
     r.x = 0;
     r.y = 0;
-    r.w = arg0;
+    r.w = width;
     r.h = 0xF0;
     help_setBounds(&r);
 }
@@ -1430,7 +1430,7 @@ void tm_setHelpArea(s16 arg0) {
 void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
     RECT r;
     RECT r2;
-    u8 buf[64];
+    u8 msg[64];
     u8 num[16];
     s32 pad;
     TmCard *sel;
@@ -1506,14 +1506,14 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
         }
     }
     text_formatNumber(n, num, TEXT_NUM_NO_PAD, TEXT_NUM_CODES);
-    text_copy(buf, text_get(TM_TEXT_STOCK));
-    text_append(buf, num);
-    text_append(buf, text_get(TM_TEXT_STOCK_END));
-    r2.w = text_measureWidth((s32)buf) + 0x10;
+    text_copy(msg, text_get(TM_TEXT_STOCK));
+    text_append(msg, num);
+    text_append(msg, text_get(TM_TEXT_STOCK_END));
+    r2.w = text_measureWidth((s32)msg) + 0x10;
     r2.x = 0x52;
     r2.y = sel->y - 9;
     r2.h = 0x19;
-    text_drawBlock(0x5A, r2.y + 6, 3, buf, TEXT_PAL_WHITE);
+    text_drawBlock(0x5A, r2.y + 6, 3, msg, TEXT_PAL_WHITE);
     win_drawBox(&r2, 3, WIN_STYLE_BEVEL);
     return p;
 }
@@ -1580,8 +1580,8 @@ void tm_taskGameQuit(TmState *s) {
     }
 }
 
-void tm_drawQuitWin(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 6, arg0->otz, text_get(TM_TEXT_QUIT_ASK), TEXT_PAL_WHITE);
+void tm_drawQuitWin(Window *win) {
+    text_drawBlock(win->x + 9, win->y + 6, win->otz, text_get(TM_TEXT_QUIT_ASK), TEXT_PAL_WHITE);
 }
 
 void *tm_drawBattleSelect(u32 *ot, void *p, TmState *s) {
@@ -1801,34 +1801,34 @@ void tm_getBattleValues(s32 unused, TmBattle *out, TmCard *a, TmCard *b) {
     out->def = def;
 }
 
-void tm_taskBattleWin(TmState *arg0) {
-    if (tm_evalPlacement(arg0, arg0->turn, arg0->dstX, arg0->dstY, (TmCard *)-1) != 0) {
-        tm_setFlips(arg0, arg0->turn, arg0->dstX, arg0->dstY, -1, TM_FLIP_COMBO);
+void tm_taskBattleWin(TmState *s) {
+    if (tm_evalPlacement(s, s->turn, s->dstX, s->dstY, (TmCard *)-1) != 0) {
+        tm_setFlips(s, s->turn, s->dstX, s->dstY, -1, TM_FLIP_COMBO);
     } else {
-        tm_checkBattles(arg0);
+        tm_checkBattles(s);
     }
 }
 
-void tm_taskBattleLose(TmState *arg0) {
-    s32 who = arg0->turn == TM_PLAYER;
-    if (tm_evalPlacement(arg0, who, arg0->srcX, arg0->srcY, (TmCard *)-1) != 0) {
-        tm_setFlips(arg0, who, arg0->srcX, arg0->srcY, TM_TASK_TURN, TM_FLIP_COMBO);
+void tm_taskBattleLose(TmState *s) {
+    s32 who = s->turn == TM_PLAYER;
+    if (tm_evalPlacement(s, who, s->srcX, s->srcY, (TmCard *)-1) != 0) {
+        tm_setFlips(s, who, s->srcX, s->srcY, TM_TASK_TURN, TM_FLIP_COMBO);
     } else {
-        arg0->task = TM_TASK_TURN;
+        s->task = TM_TASK_TURN;
     }
 }
 
-void tm_taskTurn(TmState *arg0) {
-    if (arg0->turn == TM_PLAYER) {
-        arg0->turn = TM_ENEMY;
-        arg0->timer = 0;
-        arg0->phase = 0;
-        arg0->thinkDelay = (rand() & 0xF) + 0xF;
-        arg0->task = TM_TASK_ENEMY_THINK;
+void tm_taskTurn(TmState *s) {
+    if (s->turn == TM_PLAYER) {
+        s->turn = TM_ENEMY;
+        s->timer = 0;
+        s->phase = 0;
+        s->thinkDelay = (rand() & 0xF) + 0xF;
+        s->task = TM_TASK_ENEMY_THINK;
     } else {
-        arg0->nameSlide = 0;
-        arg0->turn = TM_PLAYER;
-        arg0->task = TM_TASK_PLAYER_SELECT;
+        s->nameSlide = 0;
+        s->turn = TM_PLAYER;
+        s->task = TM_TASK_PLAYER_SELECT;
     }
 }
 
@@ -2038,19 +2038,19 @@ void *tm_drawFlash2(u32 *ot, TILE *p, TmState *s) {
     return p;
 }
 
-void tm_taskFlashArrow(TmState *arg0) {
-    if (arg0->timer >= 0x15) {
-        arg0->timer = 0;
-        arg0->task = TM_TASK_FLASH;
+void tm_taskFlashArrow(TmState *s) {
+    if (s->timer >= 0x15) {
+        s->timer = 0;
+        s->task = TM_TASK_FLASH;
         tm_playSe(TM_SE_FLASH);
     }
 }
 
-void tm_clearFlips(TmState *arg0) {
+void tm_clearFlips(TmState *s) {
     s32 i;
-    TmFlip *p = arg0->flips;
-    arg0->timer = 0;
-    arg0->phase = 0;
+    TmFlip *p = s->flips;
+    s->timer = 0;
+    s->phase = 0;
     for (i = 0; i < 10; i++) {
         p[i].mode = TM_FLIP_NONE;
         p[i].x = 0;
@@ -2300,9 +2300,9 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
     return p;
 }
 
-void tm_startCardMove(TmState *arg0) {
+void tm_startCardMove(TmState *s) {
     s32 i;
-    TmCard *c = arg0->cards;
+    TmCard *c = s->cards;
     for (i = 0; i < TM_NUM_CARDS; i++) {
         c[i].fromX = c[i].x << 8;
         c[i].fromY = c[i].y << 8;
@@ -2314,9 +2314,9 @@ void tm_startCardMove(TmState *arg0) {
             c[i].toY = (i - 5) * 0x2000 + 0x1900;
         }
     }
-    arg0->moveFrames = 0x14;
-    arg0->timer = 0;
-    arg0->task = TM_TASK_CARD_MOVE;
+    s->moveFrames = 0x14;
+    s->timer = 0;
+    s->task = TM_TASK_CARD_MOVE;
 }
 
 void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
@@ -2426,11 +2426,11 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
     return p;
 }
 
-s32 tm_countCapturedBeforeLost(TmState *arg0) {
+s32 tm_countCapturedBeforeLost(TmState *s) {
     s32 n = 0;
     s32 i;
-    TmCard *c = arg0->cards;
-    for (i = 0; i < arg0->lostSlot; i++) {
+    TmCard *c = s->cards;
+    for (i = 0; i < s->lostSlot; i++) {
         if (c[i + 5].owner == TM_PLAYER) {
             n++;
         }
@@ -2438,18 +2438,18 @@ s32 tm_countCapturedBeforeLost(TmState *arg0) {
     return n;
 }
 
-s32 tm_countKept(TmState *arg0, s32 arg1) {
+s32 tm_countKept(TmState *s, s32 owner) {
     s32 i;
     s32 n;
     TmCard *c;
-    if (arg1 == 0) {
-        c = &arg0->cards[0];
+    if (owner == 0) {
+        c = &s->cards[0];
     } else {
-        c = &arg0->cards[TM_HAND_SIZE];
+        c = &s->cards[TM_HAND_SIZE];
     }
     n = 0;
     for (i = 0; i < TM_HAND_SIZE; i++) {
-        if (c[i].owner == arg1) {
+        if (c[i].owner == owner) {
             n++;
         }
     }
@@ -2510,17 +2510,17 @@ void tm_nextTrade(TmState *s) {
     }
 }
 
-void tm_drawOver100Win(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_OVER_100), TEXT_PAL_WHITE);
+void tm_drawOver100Win(Window *win) {
+    text_drawBlock(win->x + 9, win->y + 7, win->otz, text_get(TM_TEXT_OVER_100), TEXT_PAL_WHITE);
 }
 
-void tm_drawDiscardTitle(Window *arg0) {
-    text_drawBlock(0x82, 0x10, arg0->otz, text_get(TM_TEXT_DISCARD), TEXT_PAL_WHITE);
+void tm_drawDiscardTitle(Window *win) {
+    text_drawBlock(0x82, 0x10, win->otz, text_get(TM_TEXT_DISCARD), TEXT_PAL_WHITE);
 }
 
 void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
     RECT r;
-    u8 buf[64];
+    u8 msg[64];
     TmCard *c;
     TmCard *found;
     TmCard *cards;
@@ -2569,14 +2569,14 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
     c->y = 0x55;
     g_tmTradeLost = n;
     g_tmTradeCardId = id = c->id;
-    text_copy(buf, (u8 *)card_getName(id));
+    text_copy(msg, (u8 *)card_getName(id));
     if (g_tmTradeLost == 0) {
-        text_append(buf, text_get(TM_TEXT_RECEIVED));
+        text_append(msg, text_get(TM_TEXT_RECEIVED));
     } else {
-        text_append(buf, text_get(TM_TEXT_LOST));
+        text_append(msg, text_get(TM_TEXT_LOST));
     }
-    text_append(buf, text_get(TM_TEXT_TRADE_END));
-    w = text_measureWidth(buf) + 0x10;
+    text_append(msg, text_get(TM_TEXT_TRADE_END));
+    w = text_measureWidth(msg) + 0x10;
     r.x = 0xA0 - w / 2;
     r.y = 0x96;
     r.w = w;
@@ -2625,28 +2625,28 @@ void *tm_drawTradeBadge(u32 *ot, SPRT *p, TmState *s) {
 }
 
 void tm_drawTradeWin(Window *w) {
-    u8 buf[64];
+    u8 msg[64];
     Window *v;
 
     v = w;
     if (g_tmTradeLost == 0) {
-        text_copy(buf, text_get(TM_TEXT_RECEIVED));
+        text_copy(msg, text_get(TM_TEXT_RECEIVED));
     } else {
-        text_copy(buf, text_get(TM_TEXT_LOST));
+        text_copy(msg, text_get(TM_TEXT_LOST));
     }
-    text_append(buf, (u8 *)card_getName(g_tmTradeCardId));
-    text_append(buf, text_get(TM_TEXT_TRADE_END));
-    text_drawBlock(0x9F - text_measureWidth((s32)buf) / 2, v->y + 6, w->otz, buf, TEXT_PAL_WHITE);
+    text_append(msg, (u8 *)card_getName(g_tmTradeCardId));
+    text_append(msg, text_get(TM_TEXT_TRADE_END));
+    text_drawBlock(0x9F - text_measureWidth((s32)msg) / 2, v->y + 6, w->otz, msg, TEXT_PAL_WHITE);
 }
 
-void tm_endTrade(TmState *arg0) {
-    TmCard *c = arg0->tradeCard;
+void tm_endTrade(TmState *s) {
+    TmCard *c = s->tradeCard;
     c->depth = 0x28;
     c->fromX = c->x << 8;
     c->fromY = c->y << 8;
-    arg0->timer = 0;
-    arg0->task = TM_TASK_CHANGE2;
-    win_close(arg0->msgWin);
+    s->timer = 0;
+    s->task = TM_TASK_CHANGE2;
+    win_close(s->msgWin);
 }
 
 void *tm_taskChange2(u32 *ot, void *p, TmState *s) {
@@ -2732,34 +2732,34 @@ void tm_stackHands(TmState *s, s32 flag) {
     }
 }
 
-s32 tm_countInHand(TmState *arg0, s32 arg1) {
+s32 tm_countInHand(TmState *s, s32 owner) {
     s32 n = 0;
     s32 i;
-    TmCard *c = arg0->cards;
+    TmCard *c = s->cards;
     for (i = 0; i < TM_NUM_CARDS; i++) {
-        if (c[i].owner == arg1 && c[i].onBoard == 0) {
+        if (c[i].owner == owner && c[i].onBoard == 0) {
             n++;
         }
     }
     return n;
 }
 
-s32 tm_countPlayerHand(TmState *arg0, s32 arg1) {
+s32 tm_countPlayerHand(TmState *s, s32 owner) {
     s32 n = 0;
     s32 i;
-    TmCard *c = arg0->cards;
+    TmCard *c = s->cards;
     for (i = 0; i < TM_HAND_SIZE; i++) {
-        if (c[i].visible != 0 && c[i].owner == arg1 && c[i].onBoard == 0) {
+        if (c[i].visible != 0 && c[i].owner == owner && c[i].onBoard == 0) {
             n++;
         }
     }
     return n;
 }
 
-s32 tm_countCaptured(TmState *arg0) {
+s32 tm_countCaptured(TmState *s) {
     s32 n = 0;
     s32 i;
-    TmCard *c = arg0->cards + 5;
+    TmCard *c = s->cards + 5;
     for (i = 0; i < TM_HAND_SIZE; i++) {
         if (c[i].owner == TM_PLAYER) {
             n++;
@@ -2768,54 +2768,54 @@ s32 tm_countCaptured(TmState *arg0) {
     return n;
 }
 
-TmCard *tm_getCaptured(TmState *arg0, s32 arg1) {
+TmCard *tm_getCaptured(TmState *s, s32 idx) {
     s32 i;
     TmCard *base;
     TmCard *c;
     i = 0;
-    c = base = &arg0->cards[TM_HAND_SIZE];
+    c = base = &s->cards[TM_HAND_SIZE];
     for (; i < TM_HAND_SIZE; i++, c++) {
         if (c->owner == TM_PLAYER) {
-            if (arg1 == 0) {
+            if (idx == 0) {
                 return c;
             }
-            arg1--;
+            idx--;
         }
     }
     return base;
 }
 
-s32 tm_countOnBoard(TmState *arg0, s32 arg1) {
+s32 tm_countOnBoard(TmState *s, s32 owner) {
     s32 n = 0;
     s32 i;
-    TmCard *c = arg0->cards;
+    TmCard *c = s->cards;
     for (i = 0; i < TM_NUM_CARDS; i++) {
-        if (c[i].onBoard == 1 && c[i].owner == arg1) {
+        if (c[i].onBoard == 1 && c[i].owner == owner) {
             n++;
         }
     }
     return n;
 }
 
-s32 tm_countOwned(TmState *arg0, s32 arg1) {
+s32 tm_countOwned(TmState *s, s32 owner) {
     s32 n = 0;
     s32 i;
-    TmCard *c = arg0->cards;
+    TmCard *c = s->cards;
     for (i = 0; i < TM_NUM_CARDS; i++) {
-        if (c[i].owner == arg1) {
+        if (c[i].owner == owner) {
             n++;
         }
     }
     return n;
 }
 
-TmCard *tm_getHandCard(TmState *arg0, s32 arg1, s32 arg2) {
+TmCard *tm_getHandCard(TmState *s, s32 owner, s32 idx) {
     s32 n = 0;
     s32 i;
-    TmCard *c = arg0->cards;
+    TmCard *c = s->cards;
     for (i = 0; i < TM_NUM_CARDS; i++) {
-        if (c[i].owner == arg1 && c[i].onBoard == 0) {
-            if (arg2 == n) {
+        if (c[i].owner == owner && c[i].onBoard == 0) {
+            if (idx == n) {
                 return &c[i];
             }
             n++;
@@ -2952,8 +2952,8 @@ void tm_dealEnemyHand(TmState *s) {
     }
 }
 
-TmCard *tm_getCardAt(TmState *arg0, s32 arg1, s32 arg2) {
-    return tm_getCell(arg0, arg1, arg2)->card;
+TmCard *tm_getCardAt(TmState *s, s32 x, s32 y) {
+    return tm_getCell(s, x, y)->card;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmFlashBars);
@@ -2962,7 +2962,7 @@ INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmFlashBars);
 INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmNoLabel);
 
 void tm_showStockCard(TmState *s) {
-    u8 buf[0x20];
+    u8 numText[0x20];
     TmCard *c;
     TmCard *c0;
     TmCard *p;
@@ -2993,11 +2993,11 @@ void tm_showStockCard(TmState *s) {
         n = card_countOf((s32)c0);
         if (n != 0) {
             c0 = (TmCard *)tm_getStockCursorId(s);
-            text_formatNumber((s32)c0 + 1, buf, TEXT_NUM_NO_PAD, 3);
-            i = text_measureDigits(buf) + 0xE;
+            text_formatNumber((s32)c0 + 1, numText, TEXT_NUM_NO_PAD, 3);
+            i = text_measureDigits(numText) + 0xE;
             w = i / 2;
             ui_drawSmallDigits(0xD8 - w, 0x78, 0xFFA, g_tmNoLabel, TEXT_PAL_WHITE);
-            ui_drawDigits(0xE6 - w, 0x76, 0xFFA, buf, DIGITS_WHITE);
+            ui_drawDigits(0xE6 - w, 0x76, 0xFFA, numText, DIGITS_WHITE);
             m = n;
             k = s->copyIdx;
             c0 = &s->cards[TM_HAND_SIZE];
@@ -3052,9 +3052,9 @@ void tm_showStockCard(TmState *s) {
     }
 }
 
-void tm_returnKept(TmState *arg0) {
+void tm_returnKept(TmState *s) {
     s32 i;
-    TmCard *c = arg0->cards;
+    TmCard *c = s->cards;
     for (i = 0; i < TM_HAND_SIZE; i++) {
         if (c[i].owner == TM_PLAYER) {
             card_addWithStats(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
@@ -3062,44 +3062,44 @@ void tm_returnKept(TmState *arg0) {
     }
 }
 
-void tm_returnHand(TmState *arg0) {
+void tm_returnHand(TmState *s) {
     s32 i;
-    TmCard *c = arg0->cards;
+    TmCard *c = s->cards;
     for (i = 0; i < TM_HAND_SIZE; i++) {
-        if (arg0->result == TM_RESULT_WIN) {
-            tm_levelUpRandom(arg0, &c[i]);
+        if (s->result == TM_RESULT_WIN) {
+            tm_levelUpRandom(s, &c[i]);
         }
         card_addWithStats(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
     }
 }
 
-void tm_addRandomCard(arg0, arg1)
-    TmState *arg0;
-    u8 arg1;
+void tm_addRandomCard(s, cardId)
+    TmState *s;
+    u8 cardId;
 {
     TmCard c;
     if (card_countAll() < 0x64) {
-        tm_makeCard(arg0, &c, arg1, 1);
-        card_addWithStats(arg1, c.arrows, c.power, c.type, c.pdef, c.mdef);
+        tm_makeCard(s, &c, cardId, 1);
+        card_addWithStats(cardId, c.arrows, c.power, c.type, c.pdef, c.mdef);
     }
 }
 
-s32 tm_getStockCursorId(TmState *arg0) {
-    return arg0->stockCol * 10 + arg0->stockRow;
+s32 tm_getStockCursorId(TmState *s) {
+    return s->stockCol * 10 + s->stockRow;
 }
 
-void tm_hideCards(TmState *arg0) {
+void tm_hideCards(TmState *s) {
     s32 i;
     for (i = 9; i >= 0; i--) {
-        arg0->cards[i].visible = 0;
+        s->cards[i].visible = 0;
     }
 }
 
-void tm_showCards(TmState *arg0) {
+void tm_showCards(TmState *s) {
     s32 i;
     s32 one = 1;
     for (i = 9; i >= 0; i--) {
-        arg0->cards[i].visible = one;
+        s->cards[i].visible = one;
     }
 }
 
@@ -3123,7 +3123,7 @@ void tm_levelUpRandom(TmState *s, TmCard *c) {
     tm_levelUpStat(s, c, rand() % 3);
 }
 
-void tm_makeCard(TmState *s, TmCard *c, s32 arg2, s32 random) {
+void tm_makeCard(TmState *s, TmCard *c, s32 cardId, s32 random) {
     TmDirMask dirs;
     TmCardData *tbl;
     u8 v;
@@ -3137,8 +3137,8 @@ void tm_makeCard(TmState *s, TmCard *c, s32 arg2, s32 random) {
 
     dirs = g_tmArrowBits;
     tbl = g_tmCardData;
-    c->id = arg2;
-    id = arg2;
+    c->id = cardId;
+    id = cardId;
     if (random == 0) {
         c->power = tbl[(u8)id].power;
         c->pdef = tbl[(u8)id].pdef;
@@ -3530,30 +3530,30 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
     return p;
 }
 
-void tm_playSe(s32 arg0) {
-    tm_soundCmd(SND_SE_PLAY, g_tmSeIds[arg0], 0, SND_PAN_CENTER, SND_VOL_MAX);
+void tm_playSe(s32 se) {
+    tm_soundCmd(SND_SE_PLAY, g_tmSeIds[se], 0, SND_PAN_CENTER, SND_VOL_MAX);
 }
 
-void tm_stopSe(s32 arg0) {
-    tm_soundCmd(SND_SE_STOP, g_tmSeIds[arg0], 0, 0, 0);
+void tm_stopSe(s32 se) {
+    tm_soundCmd(SND_SE_STOP, g_tmSeIds[se], 0, 0, 0);
 }
 
-void tm_revealBlocks(TmState *arg0) {
-    if (arg0->blocksDone == 0) {
-        if (arg0->numBlocks != 0) {
-            arg0->blocks[arg0->blockIdx].hidden = 0;
-            if (arg0->blockTimer >= 9) {
+void tm_revealBlocks(TmState *s) {
+    if (s->blocksDone == 0) {
+        if (s->numBlocks != 0) {
+            s->blocks[s->blockIdx].hidden = 0;
+            if (s->blockTimer >= 9) {
                 tm_playSe(TM_SE_BLOCK);
-                arg0->blockTimer = 0;
-                if (++arg0->blockIdx == arg0->numBlocks) {
-                    arg0->blocksDone = 1;
+                s->blockTimer = 0;
+                if (++s->blockIdx == s->numBlocks) {
+                    s->blocksDone = 1;
                 }
             }
         } else {
-            arg0->blocksDone = 1;
+            s->blocksDone = 1;
         }
     }
-    arg0->blockTimer++;
+    s->blockTimer++;
 }
 
 void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
@@ -3708,7 +3708,7 @@ void *tm_taskEnemyThink(u32 *ot, void *p, TmState *s) {
 
 void tm_enemySelect(TmState *s) {
     s32 score[80];
-    TmBattle res;
+    TmBattle battle;
     s32 bc;
     s32 by;
     s32 bx;
@@ -3768,8 +3768,8 @@ void tm_enemySelect(TmState *s) {
                         score[k] += v * wgt;
                     }
                     if (v < 0) {
-                        tm_getBattleValues((s32)s, &res, card, tm_findDefender(s, x, y, card));
-                        r = res.atk * 100 / (res.atk + res.def);
+                        tm_getBattleValues((s32)s, &battle, card, tm_findDefender(s, x, y, card));
+                        r = battle.atk * 100 / (battle.atk + battle.def);
                         if (s->aiLevel == 3) {
                             mul = 1;
                             if (r < 0x3C) {
@@ -3828,12 +3828,12 @@ void tm_enemySelect(TmState *s) {
     tm_checkBattles(s);
 }
 
-s32 tm_setCellOwner(TmState *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    TmCell *cell = tm_getCell(arg0, arg2, arg3);
+s32 tm_setCellOwner(TmState *s, s32 owner, s32 x, s32 y) {
+    TmCell *cell = tm_getCell(s, x, y);
     if (cell->state == TM_CELL_CARD) {
         TmCard *c = cell->card;
-        if (c->owner != arg1) {
-            c->owner = arg1;
+        if (c->owner != owner) {
+            c->owner = owner;
         }
     }
     return 0;
@@ -3908,7 +3908,7 @@ TmCard *tm_findDefender(TmState *s, s32 x, s32 y, TmCard *c) {
     return (TmCard *)-1;
 }
 
-s32 tm_setFlips(TmState *s, s32 owner, s32 x, s32 y, s32 arg4, s32 mode) {
+s32 tm_setFlips(TmState *s, s32 owner, s32 x, s32 y, s32 nextTask, s32 mode) {
     TmPos p;
     TmCell *cell;
     TmCard *c;
@@ -3952,7 +3952,7 @@ s32 tm_setFlips(TmState *s, s32 owner, s32 x, s32 y, s32 arg4, s32 mode) {
         i++;
     } while (i < 8);
     s->flipOwner = owner;
-    s->flashNext = arg4;
+    s->flashNext = nextTask;
     s->flashMode = mode;
     if (mode != TM_FLIP_COMBO) {
         s->task = TM_TASK_FLASH;
@@ -4004,7 +4004,7 @@ void tm_stepDir(TmPos *p, s32 dir) {
     }
 }
 
-void *tm_drawArrows(u32 *ot, SPRT_16 *p, TmState *s, s32 x, s32 y, u8 mask, s32 flip, u8 c, s32 blink) {
+void *tm_drawArrows(u32 *ot, SPRT_16 *p, TmState *s, s32 x, s32 y, u8 arrowMask, s32 flip, u8 c, s32 blink) {
     TmArrowTbl tbl;
     s32 i;
     u8 bits;
@@ -4013,7 +4013,7 @@ void *tm_drawArrows(u32 *ot, SPRT_16 *p, TmState *s, s32 x, s32 y, u8 mask, s32 
     tbl = g_tmArrowSprites;
     bits = s->comboDirs;
     for (i = 0; i < 8; i++) {
-        if (mask & 1) {
+        if (arrowMask & 1) {
             setlen(p, 3);
             p->code = GPU_SPRT_8;
             if (flip == 0) {
@@ -4043,7 +4043,7 @@ void *tm_drawArrows(u32 *ot, SPRT_16 *p, TmState *s, s32 x, s32 y, u8 mask, s32 
             AddPrim(ot, p);
             p = (SPRT_16 *)((DR_TPAGE *)p + 1);
         }
-        mask >>= 1;
+        arrowMask >>= 1;
         bits >>= 1;
     }
     return p;
@@ -4126,33 +4126,33 @@ void *tm_drawCursor(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
     return p;
 }
 
-TmCell *tm_getCell(TmState *arg0, s32 arg1, s32 arg2) {
-    TmCell(*board)[4] = arg0->board;
-    if (arg1 < 0) {
+TmCell *tm_getCell(TmState *s, s32 x, s32 y) {
+    TmCell(*board)[4] = s->board;
+    if (x < 0) {
         return &g_tmOffBoardCell;
     }
-    if (arg1 >= 4) {
+    if (x >= 4) {
         return &g_tmOffBoardCell;
     }
-    if (arg2 < 0) {
+    if (y < 0) {
         return &g_tmOffBoardCell;
     }
-    if (arg2 >= 4) {
+    if (y >= 4) {
         return &g_tmOffBoardCell;
     }
-    return &board[arg2][arg1];
+    return &board[y][x];
 }
 
-void tm_initBoard(TmState *arg0) {
+void tm_initBoard(TmState *s) {
     s32 x, y;
-    TmCell(*b)[4] = arg0->board;
+    TmCell(*b)[4] = s->board;
     g_tmOffBoardCell.state = TM_CELL_OFFBOARD;
     for (y = 0; y < 4; y++) {
         for (x = 3; x >= 0; x--) {
             b[y][x].state = TM_CELL_EMPTY;
         }
     }
-    tm_placeBlocks(arg0);
+    tm_placeBlocks(s);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmArrowBits);
@@ -4162,7 +4162,7 @@ INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmBackArrowBits);
 INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmArrowSprites);
 
 void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
-    u8 buf[0x20];
+    u8 numText[0x20];
     s32 i;
     s32 n;
     s32 m;
@@ -4409,23 +4409,23 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     p = (SPRT *)((DR_TPAGE *)p + 1);
 
     ui_drawSmallDigits(0x19, 0xCB, 0xFFA, "Stock:", TEXT_PAL_GREEN);
-    text_formatNumber(g_tmStockCount, buf, 3, 3);
-    ui_drawDigits(0x43, 0xC9, 0xFFA, buf, DIGITS_WHITE);
+    text_formatNumber(g_tmStockCount, numText, 3, 3);
+    ui_drawDigits(0x43, 0xC9, 0xFFA, numText, DIGITS_WHITE);
     ui_drawSmallDigits(0x65, 0xCB, 0xFFA, "Type:", TEXT_PAL_GREEN);
-    text_formatNumber(g_tmStockTypes, buf, 3, 3);
-    ui_drawDigits(0x89, 0xC9, 0xFFA, buf, DIGITS_WHITE);
+    text_formatNumber(g_tmStockTypes, numText, 3, 3);
+    ui_drawDigits(0x89, 0xC9, 0xFFA, numText, DIGITS_WHITE);
 
     if ((u32)(s->task - TM_TASK_CHOICE) < 2 || s->task == TM_TASK_GAME_QUIT || s->task == TM_TASK_END_FADE) {
 
         ui_drawSmallDigits(0xBC, 0x42, 0xFFA, "WIN", TEXT_PAL_GREEN);
-        text_formatNumber(card_getWins(), buf, 4, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDC, 0x42, 0xFFA, buf, TEXT_PAL_WHITE);
+        text_formatNumber(card_getWins(), numText, 4, TEXT_NUM_ASCII);
+        ui_drawSmallDigits(0xDC, 0x42, 0xFFA, numText, TEXT_PAL_WHITE);
         ui_drawSmallDigits(0xBC, 0x4C, 0xFFA, "LOSE", TEXT_PAL_GREEN);
-        text_formatNumber(card_getLosses(), buf, 4, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDC, 0x4C, 0xFFA, buf, TEXT_PAL_WHITE);
+        text_formatNumber(card_getLosses(), numText, 4, TEXT_NUM_ASCII);
+        ui_drawSmallDigits(0xDC, 0x4C, 0xFFA, numText, TEXT_PAL_WHITE);
         ui_drawSmallDigits(0xBC, 0x56, 0xFFA, "DRAW", TEXT_PAL_GREEN);
-        text_formatNumber(card_getDraws(), buf, 4, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDC, 0x56, 0xFFA, buf, TEXT_PAL_WHITE);
+        text_formatNumber(card_getDraws(), numText, 4, TEXT_NUM_ASCII);
+        ui_drawSmallDigits(0xDC, 0x56, 0xFFA, numText, TEXT_PAL_WHITE);
 
         setlen(p, 3);
         ((SPRT_8 *)p)->code = GPU_SPRT_8;
@@ -4544,11 +4544,11 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         p = (SPRT *)((DR_TPAGE *)p + 1);
     }
     if (s->handCount != TM_HAND_SIZE && s->task != TM_TASK_AWAY_INFO && card_countOf(tm_getStockCursorId(s)) >= 2) {
-        text_formatNumber(s->copyIdx + 1, buf, 3, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, buf, TEXT_PAL_WHITE);
+        text_formatNumber(s->copyIdx + 1, numText, 3, TEXT_NUM_ASCII);
+        ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, numText, TEXT_PAL_WHITE);
         ui_drawSmallDigits(0xD4, 0xBA, 0xFFA, g_tmSlash, TEXT_PAL_WHITE);
-        text_formatNumber(card_countOf(tm_getStockCursorId(s)), buf, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, buf, TEXT_PAL_WHITE);
+        text_formatNumber(card_countOf(tm_getStockCursorId(s)), numText, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
+        ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, numText, TEXT_PAL_WHITE);
         text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_L1), TEXT_PAL_WHITE);
         text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_R1), TEXT_PAL_WHITE);
     }
@@ -4559,21 +4559,21 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     return p;
 }
 
-void tm_openStock(TmState *arg0) {
+void tm_openStock(TmState *s) {
     g_tmStockTypes = card_countKinds();
     g_tmStockCount = card_countAll();
-    arg0->task = TM_TASK_CHOICE;
+    s->task = TM_TASK_CHOICE;
 }
 
-void tm_drawSelectTitle(Window *arg0) {
-    text_drawBlock(0x8A, 0x10, arg0->otz, text_get(TM_TEXT_SELECT_CARDS), TEXT_PAL_WHITE);
+void tm_drawSelectTitle(Window *win) {
+    text_drawBlock(0x8A, 0x10, win->otz, text_get(TM_TEXT_SELECT_CARDS), TEXT_PAL_WHITE);
 }
 
-void tm_resetStockCursor(TmState *arg0) {
-    arg0->stockCol = 0;
-    arg0->stockRow = 0;
-    arg0->handCount = 0;
-    arg0->copyIdx = 0;
+void tm_resetStockCursor(TmState *s) {
+    s->stockCol = 0;
+    s->stockRow = 0;
+    s->handCount = 0;
+    s->copyIdx = 0;
 }
 
 void *tm_drawCardFace(u32 *ot, void *prim, TmState *s, TmCard *card, u8 c, s32 flip) {
@@ -4860,42 +4860,42 @@ void *tm_drawTryAgain(u32 *ot, void *p, TmState *s) {
     return p;
 }
 
-void tm_askRematch(TmState *arg0) {
+void tm_askRematch(TmState *s) {
     RECT r;
 
-    if ((u32)(arg0->opponent - TM_OPP_FORCED) >= 4) {
+    if ((u32)(s->opponent - TM_OPP_FORCED) >= 4) {
         r.w = text_measureWidth((s32)text_get(TM_TEXT_REMATCH)) + 0x12;
         r.x = 0xA0 - r.w / 2;
         r.y = 0x54;
         r.h = 0x39;
-        arg0->msgWin = win_openFree(&r, 5, WIN_STYLE_BEVEL);
-        win_setDrawContent(arg0->msgWin, tm_drawRematchWin);
-        win_setShadow(arg0->msgWin, 1);
-        tm_waitWindow(arg0->msgWin);
-        arg0->cursor = 0;
-        arg0->task = TM_TASK_TRY_AGAIN;
+        s->msgWin = win_openFree(&r, 5, WIN_STYLE_BEVEL);
+        win_setDrawContent(s->msgWin, tm_drawRematchWin);
+        win_setShadow(s->msgWin, 1);
+        tm_waitWindow(s->msgWin);
+        s->cursor = 0;
+        s->task = TM_TASK_TRY_AGAIN;
         return;
     }
-    tm_startEndFade(arg0);
+    tm_startEndFade(s);
 }
 
-void tm_drawRematchWin(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 6, arg0->otz, text_get(TM_TEXT_REMATCH), TEXT_PAL_WHITE);
+void tm_drawRematchWin(Window *win) {
+    text_drawBlock(win->x + 9, win->y + 6, win->otz, text_get(TM_TEXT_REMATCH), TEXT_PAL_WHITE);
 }
 
-void tm_taskEndFade(TmState *arg0) {
-    fade_setAngle((arg0->timer * 0x88) & 0xFF8);
-    if (arg0->timer >= 0x1F) {
-        arg0->task = TM_TASK_EXIT;
+void tm_taskEndFade(TmState *s) {
+    fade_setAngle((s->timer * 0x88) & 0xFF8);
+    if (s->timer >= 0x1F) {
+        s->task = TM_TASK_EXIT;
     }
 }
 
-void tm_startEndFade(TmState *arg0) {
-    arg0->timer = 0;
+void tm_startEndFade(TmState *s) {
+    s->timer = 0;
     game_startFade(2, 1, 0x1E, 0xFFFFFF);
     fade_setAngle(0);
     tm_soundCmd(SND_SONG_VOL_FROM_INTPL, MUSIC_TETRA_MASTER, 0x1E, 0x7F, 0);
-    arg0->task = TM_TASK_END_FADE;
+    s->task = TM_TASK_END_FADE;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmSlash);

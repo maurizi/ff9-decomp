@@ -1,7 +1,7 @@
 #include "ovl_0a.h"
 
 /* field music/sound request handler (GameData.unk83C); field version of ovl_0c wm_soundCommand */
-s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     GameData *g;
     s32 kind;
     s32 id;
@@ -17,14 +17,14 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 m;
     s32 d;
 
-    kind = (arg0 >> 8) & 0xF;
+    kind = (cmd >> 8) & 0xF;
     if (kind == SND_CMD_GET_STATE && g_gameState->gameData->soundLoadState != SND_LOAD_IDLE) {
         goto state;
     }
-    switch ((arg0 >> 12) & 3) {
+    switch ((cmd >> 12) & 3) {
     case SND_TYPE_MUSIC:
         t = -1;
-        id = (arg1 & 0xFFFF) | DB_MUSIC;
+        id = (soundId & 0xFFFF) | DB_MUSIC;
         switch (kind) {
         case SND_CMD_RESUME:
             ok = 0;
@@ -34,7 +34,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_fieldMusicRequest = kind;
                 p = g_gameState->gameData;
                 p->musicVolume[0] = p->savedMusicVolume;
-                arg1 = p->savedMusicId;
+                soundId = p->savedMusicId;
                 id = p->savedMusicId | DB_MUSIC;
                 t = p->savedMusicBank | DB_SOUND_BANK;
                 g_gameState->gameData->musicFileSector = g_gameState->gameData->savedMusicFileSector;
@@ -60,7 +60,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (g_fieldMusicRequest != SND_CMD_RESUME) {
                 t = fld_depGetLink(id);
             }
-            if (g_gameState->gameData->musicId[0] != arg1 || g_gameState->gameData->musicBank[0] != (u16)t) {
+            if (g_gameState->gameData->musicId[0] != soundId || g_gameState->gameData->musicBank[0] != (u16)t) {
                 if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                     g_gameState->gameData->flags |= GD_MUSIC_STOP_PENDING;
                 }
@@ -68,7 +68,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 SCENE->flags &= ~FLD_SCN_BANK_SLOT;
                 g_gameState->gameData->musicBank[0] = t;
                 g_fieldSoundLoadId = id;
-                g_gameState->gameData->musicId[0] = arg1;
+                g_gameState->gameData->musicId[0] = soundId;
                 g_gameState->gameData->soundLoadState = SND_LOAD_WAIT_FADE;
                 return g_gameState->gameData->soundLoadState;
             }
@@ -98,7 +98,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_gameState->gameData->savedMusicFileSector = g_gameState->gameData->musicFileSector;
             g_gameState->gameData->savedMusicFileSectors = g_gameState->gameData->musicFileSectors;
         case SND_CMD_STOP:
-            if ((arg0 & 0x3F) == SND_PARAM_VOLUME) {
+            if ((cmd & 0x3F) == SND_PARAM_VOLUME) {
                 akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 g_gameState->gameData->musicVolume[0] = 0x7F;
                 g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
@@ -109,86 +109,86 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             return 0;
         case SND_CMD_SET:
-            if ((arg0 & 0x3F) == 8) {
+            if ((cmd & 0x3F) == 8) {
                 return 0;
             }
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME ... SND_PARAM_PITCH:
-                switch (arg0 & 0x3F) {
+                switch (cmd & 0x3F) {
                 case SND_PARAM_VOLUME:
-                    akao_setMusicVolume(g_gameState->gameData->musicHandle[0], arg2);
-                    g_gameState->gameData->musicVolume[0] = arg2;
+                    akao_setMusicVolume(g_gameState->gameData->musicHandle[0], param1);
+                    g_gameState->gameData->musicVolume[0] = param1;
                     return 0;
                 case SND_PARAM_TEMPO:
-                    akao_setTempoScale(arg2);
+                    akao_setTempoScale(param1);
                     return 0;
                 case SND_PARAM_PITCH:
-                    akao_setPitchScale(arg2);
+                    akao_setPitchScale(param1);
                     return 0;
                 case SND_PARAM_TEMPO_PITCH:
-                    akao_setTempoPitchScale(arg2);
+                    akao_setTempoPitchScale(param1);
                     return 0;
                 }
                 break;
             case SND_PARAM_PLAY_COUNT:
-                g_gameState->gameData->musicHandle[0] = akao_playMusicCount(g_gameState->gameData->musicSeq, arg2);
+                g_gameState->gameData->musicHandle[0] = akao_playMusicCount(g_gameState->gameData->musicSeq, param1);
                 g_gameState->gameData->flags |= GD_MUSIC_PLAYING;
                 return 0;
             }
             break;
         case SND_CMD_FADE:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], arg2, arg3);
-                fld_setMusicVolumeFade(arg3, arg2);
+                akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], param1, param2);
+                fld_setMusicVolumeFade(param2, param1);
                 return 0;
             case SND_PARAM_TEMPO:
-                akao_fadeTempoScale(arg2, arg3);
+                akao_fadeTempoScale(param1, param2);
                 return 0;
             case SND_PARAM_PITCH:
-                akao_fadePitchScale(arg2, arg3);
+                akao_fadePitchScale(param1, param2);
                 return 0;
             case SND_PARAM_TEMPO_PITCH:
-                akao_fadeTempoPitchScale(arg2, arg3);
+                akao_fadeTempoPitchScale(param1, param2);
                 return 0;
             }
             break;
         case SND_CMD_FADE_FROM:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], arg2, arg3, arg4);
-                fld_setMusicVolumeFade(arg4, arg2);
+                akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], param1, param2, param3);
+                fld_setMusicVolumeFade(param3, param1);
                 return 0;
             case SND_PARAM_TEMPO:
-                akao_fadeTempoScaleFrom(arg2, arg3, arg4);
+                akao_fadeTempoScaleFrom(param1, param2, param3);
                 return 0;
             case SND_PARAM_PITCH:
-                akao_fadePitchScaleFrom(arg2, arg3, arg4);
+                akao_fadePitchScaleFrom(param1, param2, param3);
                 return 0;
             case SND_PARAM_TEMPO_PITCH:
-                akao_fadeTempoPitchScaleFrom(arg2, arg3, arg4);
+                akao_fadeTempoPitchScaleFrom(param1, param2, param3);
                 return 0;
             }
             break;
         case SND_CMD_FADE_ALL:
-            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
+            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
-            akao_fadeMusicVolume(0, arg2, arg3);
-            fld_setMusicVolumeFade(arg3, arg2);
+            akao_fadeMusicVolume(0, param1, param2);
+            fld_setMusicVolumeFade(param2, param1);
             return 0;
         case SND_CMD_FADE_ALL_FROM:
-            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
+            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
-            akao_fadeMusicVolumeFrom(0, arg2, arg3, arg4);
-            fld_setMusicVolumeFade(arg4, arg2);
+            akao_fadeMusicVolumeFrom(0, param1, param2, param3);
+            fld_setMusicVolumeFade(param3, param1);
             return 0;
         case SND_CMD_SET_CONDITION:
-            if ((arg0 & 0x3F) != SND_PARAM_CONDITION) {
+            if ((cmd & 0x3F) != SND_PARAM_CONDITION) {
                 break;
             }
-            akao_setCondition(arg1);
+            akao_setCondition(soundId);
             return 0;
         }
         return -1;
@@ -199,15 +199,15 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         slot = 0;
         mask = 0;
         h = 0;
-        id = (arg1 & 0xFFFF) | DB_SE;
+        id = (soundId & 0xFFFF) | DB_SE;
         if (kind != SND_CMD_SET_ALL && kind != SND_CMD_FADE_ALL) {
-            fp = (arg0 >> 7) & 1;
+            fp = (cmd >> 7) & 1;
             if (fp != 0) {
                 if (kind == SND_CMD_PLAY || kind == SND_CMD_SUSPEND || kind == SND_CMD_RESUME) {
-                    slot = (arg0 >> 6) & 1;
+                    slot = (cmd >> 6) & 1;
                 } else {
                     for (slot = 0; slot < 2; slot++) {
-                        if (g_gameState->gameData->sfxSlotId[slot] == arg1) {
+                        if (g_gameState->gameData->sfxSlotId[slot] == soundId) {
                             break;
                         }
                     }
@@ -215,16 +215,16 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                         return -1;
                     }
                 }
-                arg2 = (0x100000 << slot) & 0x300000;
+                param1 = (0x100000 << slot) & 0x300000;
                 mask = GD_SFX0_PLAYING << (slot * 2);
                 mask2 = mask >> 1;
-                if (kind == SND_CMD_PLAY && g_gameState->gameData->sfxSlotId[slot] != arg1) {
+                if (kind == SND_CMD_PLAY && g_gameState->gameData->sfxSlotId[slot] != soundId) {
                     if (g_gameState->gameData->flags & mask) {
-                        akao_stopSe(SFXH(slot), arg2);
+                        akao_stopSe(SFXH(slot), param1);
                         g_gameState->gameData->flags ^= mask | mask2;
                     }
                     memcpy((void *)SFXH(slot), db_lookupRegistered(DB_GET_ADDR, id, 0), (s32)db_lookupRegistered(DB_GET_SIZE, id, 0));
-                    g_gameState->gameData->sfxSlotId[slot] = arg1;
+                    g_gameState->gameData->sfxSlotId[slot] = soundId;
                     g_gameState->gameData->sfxSlotVolume[slot] = 0x7F;
                     g_gameState->gameData->sfxSlotPan[slot] = 0x80;
                     g_gameState->gameData->flags |= mask2;
@@ -238,10 +238,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case SND_CMD_RESUME:
             t = 0;
             if (g_gameState->gameData->sfxSlotId[slot] != SE_NONE && g_gameState->gameData->sfxSlotSuspendField[slot] == (s16)g_gameState->gameData->fieldId) {
-                arg2 = (0x100000 << slot) & 0x300000;
+                param1 = (0x100000 << slot) & 0x300000;
                 t = 1;
-                arg3 = g_gameState->gameData->sfxSlotPan[slot];
-                arg4 = g_gameState->gameData->sfxSlotVolume[slot];
+                param2 = g_gameState->gameData->sfxSlotPan[slot];
+                param3 = g_gameState->gameData->sfxSlotVolume[slot];
             }
             g_gameState->gameData->sfxSlotSuspendField[slot] = 0xFFFF;
             if (!t) {
@@ -249,11 +249,11 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
         case SND_CMD_PLAY:
             if (!fp || !(g_gameState->gameData->flags & mask)) {
-                akao_playSe(h, arg2, arg3, arg4);
+                akao_playSe(h, param1, param2, param3);
             }
             if (fp) {
-                g_gameState->gameData->sfxSlotPan[slot] = arg3;
-                g_gameState->gameData->sfxSlotVolume[slot] = arg4;
+                g_gameState->gameData->sfxSlotPan[slot] = param2;
+                g_gameState->gameData->sfxSlotVolume[slot] = param3;
                 g_gameState->gameData->flags |= mask;
             }
             return 0;
@@ -263,7 +263,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             g_gameState->gameData->sfxSlotSuspendField[slot] = g_gameState->gameData->fieldId;
         case SND_CMD_STOP:
-            if ((arg0 & 0x3F) == SND_PARAM_ALL_SLOTS && fp) {
+            if ((cmd & 0x3F) == SND_PARAM_ALL_SLOTS && fp) {
                 if (g_gameState->gameData->flags & GD_SFX0_PLAYING) {
                     akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[0], 0x100000);
                 }
@@ -272,94 +272,94 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 }
                 g_gameState->gameData->flags &= ~(GD_SFX0_PLAYING | GD_SFX1_PLAYING);
             } else {
-                akao_stopSe(h, arg2);
+                akao_stopSe(h, param1);
                 if (fp) {
                     g_gameState->gameData->flags &= ~mask;
                 }
             }
             return 0;
         case SND_CMD_SET:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_setSeVolume(h, arg2, arg3);
+                akao_setSeVolume(h, param1, param2);
                 if (fp) {
-                    g_gameState->gameData->sfxSlotVolume[slot] = arg3;
+                    g_gameState->gameData->sfxSlotVolume[slot] = param2;
                 }
                 return 0;
             case SND_PARAM_PAN:
-                akao_sendCmdA2(h, arg2, arg3);
+                akao_sendCmdA2(h, param1, param2);
                 if (fp) {
-                    g_gameState->gameData->sfxSlotPan[slot] = arg3;
+                    g_gameState->gameData->sfxSlotPan[slot] = param2;
                 }
                 return 0;
             case SND_PARAM_PITCH:
-                akao_sendCmdA4(h, arg2, arg3);
+                akao_sendCmdA4(h, param1, param2);
                 return 0;
             case 8:
                 return 0;
             }
             return -1;
         case SND_CMD_FADE:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_fadeSeVolume(h, arg2, arg3, arg4);
+                akao_fadeSeVolume(h, param1, param2, param3);
                 if (fp) {
-                    g_gameState->gameData->sfxSlotVolume[slot] = arg4;
+                    g_gameState->gameData->sfxSlotVolume[slot] = param3;
                 }
                 return 0;
             case SND_PARAM_PAN:
-                akao_sendCmdA3(h, arg2, arg3, arg4);
+                akao_sendCmdA3(h, param1, param2, param3);
                 if (fp) {
-                    g_gameState->gameData->sfxSlotPan[slot] = arg4;
+                    g_gameState->gameData->sfxSlotPan[slot] = param3;
                 }
                 return 0;
             case SND_PARAM_PITCH:
-                akao_sendCmdA5(h, arg2, arg3, arg4);
+                akao_sendCmdA5(h, param1, param2, param3);
                 return 0;
             }
             return -1;
         case SND_CMD_SET_ALL:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_setAllSeVolume(arg2);
+                akao_setAllSeVolume(param1);
                 if (fp) {
-                    g_gameState->gameData->sfxSlotVolume[0] = g_gameState->gameData->sfxSlotVolume[1] = arg2;
+                    g_gameState->gameData->sfxSlotVolume[0] = g_gameState->gameData->sfxSlotVolume[1] = param1;
                 }
                 return 0;
             case SND_PARAM_PAN:
-                akao_sendCmdAA(arg2);
+                akao_sendCmdAA(param1);
                 if (fp) {
-                    g_gameState->gameData->sfxSlotPan[0] = g_gameState->gameData->sfxSlotPan[1] = arg2;
+                    g_gameState->gameData->sfxSlotPan[0] = g_gameState->gameData->sfxSlotPan[1] = param1;
                 }
                 return 0;
             case SND_PARAM_PITCH:
-                akao_sendCmdAC(arg2);
+                akao_sendCmdAC(param1);
                 return 0;
             }
             return -1;
         case SND_CMD_FADE_ALL:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_fadeAllSeVolume(arg2, arg3);
+                akao_fadeAllSeVolume(param1, param2);
                 if (fp) {
-                    g_gameState->gameData->sfxSlotVolume[0] = g_gameState->gameData->sfxSlotVolume[1] = arg3;
+                    g_gameState->gameData->sfxSlotVolume[0] = g_gameState->gameData->sfxSlotVolume[1] = param2;
                 }
                 return -1;
             case SND_PARAM_PAN:
-                akao_sendCmdAB(arg2, arg3);
+                akao_sendCmdAB(param1, param2);
                 if (fp) {
-                    g_gameState->gameData->sfxSlotPan[0] = g_gameState->gameData->sfxSlotPan[1] = arg3;
+                    g_gameState->gameData->sfxSlotPan[0] = g_gameState->gameData->sfxSlotPan[1] = param2;
                 }
                 return -1;
             case SND_PARAM_PITCH:
-                akao_sendCmdAD(arg2, arg3);
+                akao_sendCmdAD(param1, param2);
                 return -1;
             }
             return -1;
         }
         return -1;
     case SND_TYPE_STREAM:
-        id = (arg1 & 0xFFFF) | 0x180000;
+        id = (soundId & 0xFFFF) | 0x180000;
         switch (kind) {
         case SND_CMD_PLAY:
             slot = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
@@ -367,31 +367,31 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 return -1;
             }
             akao_sendCmdE4(fld_isMoviePlaying() ? SCENE->movieSndVolume : SCENE->sndVolume);
-            akao_sendCmdE0((s32 *)slot, arg2, arg3);
+            akao_sendCmdE0((s32 *)slot, param1, param2);
             SCENE->unk5F = 0;
             return 0;
         case SND_CMD_STOP:
             akao_sendCmdE2();
             return 0;
         case SND_CMD_SET:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                SCENE->sndVolume = arg2;
+                SCENE->sndVolume = param1;
                 if (fld_isMoviePlaying() == 0) {
-                    akao_sendCmdE4(arg2);
+                    akao_sendCmdE4(param1);
                 }
                 return 0;
             case SND_PARAM_MOVIE_VOLUME:
-                SCENE->movieSndVolume = arg2;
+                SCENE->movieSndVolume = param1;
                 if (fld_isMoviePlaying() != 0) {
-                    akao_sendCmdE4(arg2);
+                    akao_sendCmdE4(param1);
                 }
                 return 0;
             case SND_PARAM_PAN:
-                akao_sendCmdE6(arg2);
+                akao_sendCmdE6(param1);
                 return 0;
             case 12:
-                SCENE->unk5F = arg2;
+                SCENE->unk5F = param1;
                 return 0;
             case 8:
                 return 0;
@@ -400,12 +400,12 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         return -1;
     case SND_TYPE_BANK:
-        id = (arg1 & 0xFFFF) | DB_SOUND_BANK;
+        id = (soundId & 0xFFFF) | DB_SOUND_BANK;
         switch (kind) {
         case SND_CMD_LOAD:
             SCENE->flags &= ~FLD_SCN_BANK_SLOT;
-            if (arg2 == 4) {
-                SCENE->soundBankSlot = arg3;
+            if (param1 == 4) {
+                SCENE->soundBankSlot = param2;
                 SCENE->flags |= FLD_SCN_BANK_SLOT;
             }
             g_fieldMusicRequest = kind;

@@ -80,14 +80,14 @@ s32 tm_freeDataCopy(void) {
     return 0;
 }
 
-s32 tm_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+s32 tm_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     GameData *g;
     s32 kind;
     s32 h;
     s32 id;
 
-    kind = (arg0 >> 8) & 0xF;
-    switch ((arg0 >> 12) & 3) {
+    kind = (cmd >> 8) & 0xF;
+    switch ((cmd >> 12) & 3) {
     case SND_TYPE_MUSIC:
         switch (kind) {
         case SND_CMD_PLAY:
@@ -97,13 +97,13 @@ s32 tm_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (g_tmMusicRequest == -1) {
                 g_tmMusicRequest = kind;
             }
-            if (g_gameState->gameData->musicId[0] != arg1) {
+            if (g_gameState->gameData->musicId[0] != soundId) {
                 if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                     akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 }
                 g_gameState->gameData->flags &= ~(GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
                 g_gameState->gameData->musicBank[0] = 0xE2;
-                g_gameState->gameData->musicId[0] = arg1;
+                g_gameState->gameData->musicId[0] = soundId;
                 g_gameState->gameData->musicVolume[0] = 0x7F;
             }
             g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
@@ -120,92 +120,92 @@ s32 tm_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             return 0;
         case SND_CMD_SET:
-            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
+            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
-            akao_setMusicVolume(g_gameState->gameData->musicHandle[0], arg2);
-            g_gameState->gameData->musicVolume[0] = arg2;
+            akao_setMusicVolume(g_gameState->gameData->musicHandle[0], param1);
+            g_gameState->gameData->musicVolume[0] = param1;
             return 0;
         case SND_CMD_FADE:
-            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
+            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
-            akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], arg2, arg3);
-            g_gameState->gameData->musicVolume[0] = arg3;
+            akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], param1, param2);
+            g_gameState->gameData->musicVolume[0] = param2;
             return 0;
         case SND_CMD_FADE_FROM:
-            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
+            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
-            akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], arg2, arg3, arg4);
-            g_gameState->gameData->musicVolume[0] = arg4;
+            akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], param1, param2, param3);
+            g_gameState->gameData->musicVolume[0] = param3;
             return 0;
         case SND_CMD_FADE_ALL:
-            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
+            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
-            akao_fadeMusicVolume(0, arg2, arg3);
-            g_gameState->gameData->musicVolume[0] = arg3;
+            akao_fadeMusicVolume(0, param1, param2);
+            g_gameState->gameData->musicVolume[0] = param2;
             return 0;
         case SND_CMD_FADE_ALL_FROM:
-            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
+            if ((cmd & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
-            akao_fadeMusicVolumeFrom(0, arg2, arg3, arg4);
-            g_gameState->gameData->musicVolume[0] = arg4;
+            akao_fadeMusicVolumeFrom(0, param1, param2, param3);
+            g_gameState->gameData->musicVolume[0] = param3;
             return 0;
         }
         return -1;
     case SND_TYPE_SE:
-        id = (arg1 & 0xFFFF) | DB_SE;
+        id = (soundId & 0xFFFF) | DB_SE;
         h = 0;
         if (kind != SND_CMD_SET_ALL && kind != SND_CMD_FADE_ALL) {
             h = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
         }
         switch (kind) {
         case SND_CMD_PLAY:
-            akao_playSe(h, arg2, arg3, arg4);
+            akao_playSe(h, param1, param2, param3);
             return 0;
         case SND_CMD_STOP:
-            akao_stopSe(h, arg2);
+            akao_stopSe(h, param1);
             return 0;
         case SND_CMD_SET:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_setSeVolume(h, arg2, arg3);
+                akao_setSeVolume(h, param1, param2);
                 return 0;
             case SND_PARAM_PAN:
-                akao_sendCmdA2(h, arg2, arg3);
+                akao_sendCmdA2(h, param1, param2);
                 return 0;
             }
             return -1;
         case SND_CMD_FADE:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_fadeSeVolume(h, arg2, arg3, arg4);
+                akao_fadeSeVolume(h, param1, param2, param3);
                 return 0;
             case SND_PARAM_PAN:
-                akao_sendCmdA3(h, arg2, arg3, arg4);
+                akao_sendCmdA3(h, param1, param2, param3);
                 return 0;
             }
             return -1;
         case SND_CMD_SET_ALL:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_setAllSeVolume(arg2);
+                akao_setAllSeVolume(param1);
                 return 0;
             case SND_PARAM_PAN:
-                akao_sendCmdAA(arg2);
+                akao_sendCmdAA(param1);
                 return 0;
             }
             return -1;
         case SND_CMD_FADE_ALL:
-            switch (arg0 & 0x3F) {
+            switch (cmd & 0x3F) {
             case SND_PARAM_VOLUME:
-                akao_fadeAllSeVolume(arg2, arg3);
+                akao_fadeAllSeVolume(param1, param2);
                 return -1;
             case SND_PARAM_PAN:
-                akao_sendCmdAB(arg2, arg3);
+                akao_sendCmdAB(param1, param2);
                 return -1;
             }
             return -1;
