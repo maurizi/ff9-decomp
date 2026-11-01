@@ -525,9 +525,6 @@ void btlui_pruneMenuQueue(void) {
     s32 cnt = g_btlUi->queueCount;
     BtlUnit *u;
     s32 i;
-    Unk80104F88 *q;
-    BtlUnit *v;
-    Unk80104F88 *r;
     memset(seen, 0, 4);
     while (cnt != 0) {
         u = g_btlUi->queue[head];
@@ -539,19 +536,12 @@ void btlui_pruneMenuQueue(void) {
         cnt--;
         head = (head + 1) & 3;
     }
-    q = g_btlUi;
-    if (n != q->queueCount) {
-        q->unk12C6 = 0;
-        q->queueHead = 0;
-        q->queueCount = 0;
+    if (n != g_btlUi->queueCount) {
+        btlui_clearMenuQueue_inline();
         for (i = 0; i < n; i++) {
             if (seen[(u8)list[i]->flags >> BTL_UNIT_SLOT_SHIFT] == 0) {
                 seen[(u8)list[i]->flags >> BTL_UNIT_SLOT_SHIFT] = 1;
-                v = list[i];
-                r = g_btlUi;
-                v->inMenuQueue = 1;
-                g_btlUi->queue[(r->queueHead + r->queueCount) & 3] = v;
-                r->queueCount++;
+                btlui_queueMenuUnit_inline(list[i]);
             }
         }
     }
@@ -628,14 +618,10 @@ s32 btlui_setMenuState(s32 state) {
 }
 
 void btlui_clearMenuQueue(void) {
-    Unk80104F88 *p = g_btlUi;
-    p->unk12C6 = 0;
-    p->queueHead = 0;
-    p->queueCount = 0;
+    btlui_clearMenuQueue_inline();
 }
 
 void btlui_flushMenuQueue(void) {
-    Unk80104F88 *p;
     s32 n = g_btlUi->queueCount;
     s32 i = g_btlUi->queueHead;
     while (n != 0) {
@@ -643,17 +629,11 @@ void btlui_flushMenuQueue(void) {
         g_btlUi->queue[i]->inMenuQueue = 0;
         i = (i + 1) & 3;
     }
-    p = g_btlUi;
-    p->unk12C6 = 0;
-    p->queueHead = 0;
-    p->queueCount = 0;
+    btlui_clearMenuQueue_inline();
 }
 
 void btlui_queueMenuUnit(BtlUnit *unit) {
-    Unk80104F88 *ui = g_btlUi;
-    unit->inMenuQueue = 1;
-    g_btlUi->queue[(ui->queueHead + ui->queueCount) & 3] = unit;
-    ui->queueCount++;
+    btlui_queueMenuUnit_inline(unit);
 }
 
 void btlui_resetMenuQueue(void) {

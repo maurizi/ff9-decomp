@@ -4995,4 +4995,20 @@ static inline void btl_damageHp_inline(BtlUnit *unit, s32 damage, u8 hitMotion) 
     }
 }
 
+/* Inlined copy of btlui_clearMenuQueue (empty the battle menu's unit queue). */
+static inline void btlui_clearMenuQueue_inline(void) {
+    Unk80104F88 *p = g_btlUi;
+    p->unk12C6 = 0;
+    p->queueHead = 0;
+    p->queueCount = 0;
+}
+
+/* Inlined copy of btlui_queueMenuUnit (append a unit to the battle menu's queue). */
+static inline void btlui_queueMenuUnit_inline(BtlUnit *unit) {
+    Unk80104F88 *ui = g_btlUi;
+    unit->inMenuQueue = 1;
+    g_btlUi->queue[(ui->queueHead + ui->queueCount) & 3] = unit;
+    ui->queueCount++;
+}
+
 #endif
