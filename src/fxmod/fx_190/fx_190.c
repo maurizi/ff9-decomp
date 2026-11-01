@@ -4,7 +4,7 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
     s32 i;
-    SVECTOR *v;
+    SVECTOR *aim;
 
     if (mode == 0) {
         *args = 0x74;
@@ -54,16 +54,16 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit64[i] = NULL;
             }
             if (work->emit54[i] != NULL) {
-                v = (SVECTOR *)((u8 *)work + i * 8 + 0x14);
-                work->emit54[i]->rot.vx = v->vx;
-                work->emit54[i]->rot.vy = v->vy;
-                work->emit54[i]->rot.vz = v->vz;
+                aim = (SVECTOR *)((u8 *)work + i * 8 + 0x14);
+                work->emit54[i]->rot.vx = aim->vx;
+                work->emit54[i]->rot.vy = aim->vy;
+                work->emit54[i]->rot.vz = aim->vz;
             }
             if (work->emit64[i] != NULL) {
-                v = (SVECTOR *)((u8 *)work + i * 8 + 0x14);
-                work->emit64[i]->rot.vx = v->vx;
-                work->emit64[i]->rot.vy = v->vy;
-                work->emit64[i]->rot.vz = v->vz;
+                aim = (SVECTOR *)((u8 *)work + i * 8 + 0x14);
+                work->emit64[i]->rot.vx = aim->vx;
+                work->emit64[i]->rot.vy = aim->vy;
+                work->emit64[i]->rot.vz = aim->vz;
             }
         }
         return frame >= 0x60;

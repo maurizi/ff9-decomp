@@ -1,43 +1,43 @@
 #include "fxmod/fx_191.h"
 
-s32 fx_191_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    SVECTOR z;
+s32 fx_191_op80ParticleMotion0(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
     fx_191_op80Offsets[0].vx -= 0x96;
-    return fxm_lerpParticle(e, pos, &fx_191_op80Offsets[0], &fx_191_op80Targets[0], frame, frames);
+    return fxm_lerpParticle(pt, pos, &fx_191_op80Offsets[0], &fx_191_op80Targets[0], frame, frames);
 }
 
-s32 fx_191_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    SVECTOR z;
+s32 fx_191_op80ParticleMotion1(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
     fx_191_op80Offsets[1].vx += 0x96;
-    return fxm_lerpParticle(e, pos, &fx_191_op80Offsets[1], &fx_191_op80Targets[1], frame, frames);
+    return fxm_lerpParticle(pt, pos, &fx_191_op80Offsets[1], &fx_191_op80Targets[1], frame, frames);
 }
 
-s32 fx_191_op80ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    SVECTOR z;
+s32 fx_191_op80ParticleMotion2(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
     fx_191_op80Offsets[2].vx -= 0x32;
-    return fxm_lerpParticle(e, pos, &fx_191_op80Offsets[2], &fx_191_op80Targets[2], frame, frames);
+    return fxm_lerpParticle(pt, pos, &fx_191_op80Offsets[2], &fx_191_op80Targets[2], frame, frames);
 }
 
-s32 fx_191_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    SVECTOR z;
+s32 fx_191_op80ParticleMotion3(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
     fx_191_op80Offsets[3].vx += 0x32;
-    return fxm_lerpParticle(e, pos, &fx_191_op80Offsets[3], &fx_191_op80Targets[3], frame, frames);
+    return fxm_lerpParticle(pt, pos, &fx_191_op80Offsets[3], &fx_191_op80Targets[3], frame, frames);
 }
 
 static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 frame, s32 frames) {
@@ -63,22 +63,22 @@ static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *base, SVECTOR
     return 0;
 }
 
-static s32 fx_191_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    SVECTOR z;
+static s32 fx_191_op81ParticleMotion0(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
-    return fxm_followPathParticle0(e, pos, &z, frame, frames);
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
+    return fxm_followPathParticle0(pt, pos, &zero, frame, frames);
 }
 
-static s32 fx_191_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
-    SVECTOR z;
+static s32 fx_191_op81ParticleMotion1(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+    SVECTOR zero;
 
-    z.vx = 0;
-    z.vy = 0;
-    z.vz = 0;
-    return fxm_followPathParticle1(e, pos, &z, frame, frames);
+    zero.vx = 0;
+    zero.vy = 0;
+    zero.vz = 0;
+    return fxm_followPathParticle1(pt, pos, &zero, frame, frames);
 }
 
 static s32 fxm_followPathParticle0(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
