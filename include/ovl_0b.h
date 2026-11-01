@@ -4926,4 +4926,34 @@ void btlfx_forwardAngles(s16 *outRot, XY32 *axis, s32 spin);
 void btlfx_toLocalPolar(SVECTOR *pos, SVECTOR *center, SVECTOR *axis, s32 outAxial, s32 outRadius, s32 *outAngle);
 void btlui_updateTargetFlags(void);
 
+
+/* Inlined copy of btl_killUnit (hp 0, KILLED flag, death cry, back to the idle motion); btl_setTargetHp and
+ * btl_checkFrozenShatter expand it. */
+static inline void btl_killUnit_inline(BtlUnit *unit) {
+    BtlModel *model;
+    unit->hp = 0;
+    unit->flags |= BTL_UNIT_KILLED;
+    if (!(unit->flags & BTL_UNIT_PARTY)) {
+        btl_playDeathCry(unit, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->deathCry);
+    }
+    model = unit->model;
+    if ((s32)model->motion != unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(unit->flags & BTL_UNIT_PARTY) || (s32)model->motion != unit->motions[9]) && unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+        model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
+        unit->obj->frame = 0;
+    }
+}
+
+/* Inlined copy of btl_initStatusHitRate (status hit rate from level, ability rate and magic); btl_initUndeadHitRate
+ * expands it. */
+static inline void btl_initStatusHitRate_inline(BtlCalc *calc) {
+    BtlUnit *caster = calc->caster;
+    calc->hitRate = caster->level + (calc->cmd->ability->rate + (caster->magic >> 2)) - calc->target->level;
+    if (calc->hitRate > 100) {
+        calc->hitRate = 100;
+    } else if (calc->hitRate <= 0) {
+        calc->hitRate = 1;
+    }
+    calc->evade = calc->target->magicEva;
+}
+
 #endif

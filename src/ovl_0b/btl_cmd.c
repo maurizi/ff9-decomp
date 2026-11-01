@@ -2991,8 +2991,6 @@ void btl_finishPhysDamage(BtlCalc *calc) {
 
 void btl_setTargetHp(BtlCalc *calc) {
     BtlUnit *t;
-    BtlUnit *u;
-    BtlModel *m;
     if (calc->cmd->ability->power != 0) {
         if (calc->target->status & BTL_STATUS_KO) {
             calc->flags |= BTL_CALC_MISS;
@@ -3004,17 +3002,7 @@ void btl_setTargetHp(BtlCalc *calc) {
         t->rot[1] = t->obj->rotY = (t->flags & BTL_UNIT_PARTY) * 0x800;
         return;
     }
-    u = calc->target;
-    u->hp = 0;
-    u->flags |= BTL_UNIT_KILLED;
-    if (!(u->flags & BTL_UNIT_PARTY)) {
-        btl_playDeathCry(u, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->deathCry);
-    }
-    m = u->model;
-    if ((s32)m->motion != u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(u->flags & BTL_UNIT_PARTY) || (s32)m->motion != u->motions[9]) && u != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        m->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
-        u->obj->frame = 0;
-    }
+    btl_killUnit_inline(calc->target);
 }
 
 void btl_rollFlee(BtlCalc *calc) {
@@ -3060,23 +3048,11 @@ void btl_rollFlee(BtlCalc *calc) {
 }
 
 u8 btl_checkFrozenShatter(BtlCalc *calc) {
-    BtlUnit *u;
-    BtlModel *m;
     if ((calc->target->status & (BTL_STATUS_PETRIFY | BTL_STATUS_FREEZE)) != 0x02000000) {
         return 1;
     }
     btl_removeQueuedCmd(calc->target, BTL_CMD_PETRIFY);
-    u = calc->target;
-    u->hp = 0;
-    u->flags |= BTL_UNIT_KILLED;
-    if (!(u->flags & BTL_UNIT_PARTY)) {
-        btl_playDeathCry(u, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->deathCry);
-    }
-    m = u->model;
-    if ((s32)m->motion != u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(u->flags & BTL_UNIT_PARTY) || (s32)m->motion != u->motions[9]) && u != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        m->motion = (BtlMotion *)u->motions[(u->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
-        u->obj->frame = 0;
-    }
+    btl_killUnit_inline(calc->target);
     btl_showMessage(BTL_MSG_IMPACT_CRUSHES);
     return 0;
 }
@@ -3121,17 +3097,7 @@ s32 btl_checkSwdMagUsable(BtlUnit *unit, s16 mpCost) {
 }
 
 void btl_killUnit(BtlUnit *unit) {
-    BtlModel *model;
-    unit->hp = 0;
-    unit->flags |= BTL_UNIT_KILLED;
-    if (!(unit->flags & BTL_UNIT_PARTY)) {
-        btl_playDeathCry(unit, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->deathCry);
-    }
-    model = unit->model;
-    if ((s32)model->motion != unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1] && (!(unit->flags & BTL_UNIT_PARTY) || (s32)model->motion != unit->motions[9]) && unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
-        model->motion = (BtlMotion *)unit->motions[(unit->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1];
-        unit->obj->frame = 0;
-    }
+    btl_killUnit_inline(unit);
 }
 
 void btl_rollShortSummon(BtlCmd *cmd) {
@@ -3173,27 +3139,13 @@ void btl_initHitRates(BtlCalc *calc) {
 }
 
 void btl_initStatusHitRate(BtlCalc *calc) {
-    BtlUnit *caster = calc->caster;
-    calc->hitRate = caster->level + (calc->cmd->ability->rate + (caster->magic >> 2)) - calc->target->level;
-    if (calc->hitRate > 100) {
-        calc->hitRate = 100;
-    } else if (calc->hitRate <= 0) {
-        calc->hitRate = 1;
-    }
-    calc->evade = calc->target->magicEva;
+    btl_initStatusHitRate_inline(calc);
 }
 
 u8 btl_initUndeadHitRate(BtlCalc *calc) {
     BtlUnit *target = calc->target;
     if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) != 0) {
-        BtlUnit *caster = calc->caster;
-        calc->hitRate = caster->level + (calc->cmd->ability->rate + (caster->magic >> 2)) - calc->target->level;
-        if (calc->hitRate > 100) {
-            calc->hitRate = 100;
-        } else if (calc->hitRate <= 0) {
-            calc->hitRate = 1;
-        }
-        calc->evade = calc->target->magicEva;
+        btl_initStatusHitRate_inline(calc);
         return 0;
     }
     return 1;
