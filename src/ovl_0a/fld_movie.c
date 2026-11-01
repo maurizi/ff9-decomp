@@ -604,7 +604,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 fldmdl_initTexAnims((TexAnimRelocSet *)y->model->texAnims, (ModelTexOfs *)spr);
             }
             fld_trimModelCache();
-            x->flags |= 0x02000000 | FLD_EXT_BUILT;
+            x->flags |= FLD_EXT_BUILT_UNREAD | FLD_EXT_BUILT;
         }
         switch (arg1) {
         case FLD_MDLCMD_MIRROR:

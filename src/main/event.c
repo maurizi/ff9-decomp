@@ -805,7 +805,7 @@ void evt_turnObject(EvtObject *p, s32 d, s32 wrap, s32 speed) {
             }
             p->animSpeed = frames * 16 / rate;
         } else {
-            p->turnRate = 0x7FFE;
+            p->turnRate = EVT_TURN_DIRECT_DOWN;
             a = cur;
             if (p->turnTarget >= cur) {
                 a = cur | 0x1000;
@@ -827,7 +827,7 @@ void evt_turnObject(EvtObject *p, s32 d, s32 wrap, s32 speed) {
             }
             p->animSpeed = frames * 16 / rate;
         } else {
-            p->turnRate = 0x7FFF;
+            p->turnRate = EVT_TURN_DIRECT_UP;
             a = cur;
             if (cur >= p->turnTarget) {
                 a = cur | 0xF000;
@@ -2843,11 +2843,11 @@ void evt_updateBattleObjects(void) {
     }
 }
 
-/* turn towards unk52 by unk82 per frame (unk6C 0x7FFE / 0x7FFF: direction) */
+/* turn towards turnTarget by turnStep per frame (EVT_TURN_DIRECT_DOWN / UP: direction) */
 static inline void evt_updateObjects_turn(EvtObject *p) {
     s32 a;
 
-    if ((s16)p->turnRate == 0x7FFE) {
+    if ((s16)p->turnRate == EVT_TURN_DIRECT_DOWN) {
         a = p->pos.rotY + (s16)p->turnStep;
         if (p->turnTarget < a) {
             p->pos.rotY = a;
@@ -2855,7 +2855,7 @@ static inline void evt_updateObjects_turn(EvtObject *p) {
             p->pos.rotY = p->turnTarget;
             p->flags &= ~EVT_OBJ_TURNING;
         }
-    } else if ((s16)p->turnRate == 0x7FFF) {
+    } else if ((s16)p->turnRate == EVT_TURN_DIRECT_UP) {
         a = p->pos.rotY + (s16)p->turnStep;
         if (a >= p->turnTarget) {
             p->pos.rotY = p->turnTarget;

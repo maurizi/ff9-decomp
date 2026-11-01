@@ -753,6 +753,10 @@ typedef struct {
 /* BtlUnitList ids beyond the targets (btl_getUnit). Evidence: [code] */
 #define BTLFX_UNIT_CASTER  0x10 /* BtlUnitList.caster */
 #define BTLFX_UNIT_PARTNER 0x11 /* BtlUnitList.partner */
+#define BTLFX_UNIT_NONE    0xFF /* no unit: the effect ops skip it or use the targets' centre */
+/* effect ids (BtlfxState.effectId) tested by ovl_0b, identities from docs/effect-modules.md */
+#define BTLFX_EFFECT_ROULETTE  0x0ED /* fx_0ed Roulette: btlfx_op does not turn the caster towards its target */
+#define BTLFX_EFFECT_ARK_SHORT 0x1BF /* fx_1bf Ark (short) / Eternal Darkness: the caster returns to its idle motion afterwards */
 
 /* BtlUnitList.kind. Evidence: [code] */
 #define BTL_FXK_NO_CAST 0x01 /* the caster doesn't step out and cast (btlfx caster task), no command camera: BTL_CMD_TRANCE_EIDOLON, BTL_CMD_REBIRTH_FLAME, bounces, btlseq op 0x1A */
@@ -1350,21 +1354,6 @@ typedef struct BtlCmd8 {
 /* BtlCmd8.flags2. Evidence: [code] */
 #define BTL_ABIL2_SUMMON 0x04 /* costs 4x MP while EVT_GB_SUMMON_MP_X4 is set (btl_payMpCost, btl_getMpCost) */
 
-/* BtlCmd8.targetType / Battle16CC.targetType values. Evidence: [code] g_btluiDefaultTargets (side 0xFF = the
- * ability's defaultSide with side switching, 1 party, 0 enemies; targetAll) and g_btluiTargetAllByType, rows 0-13;
- * btlui_startTargetSelect (canSwitchSide for 0/3/6/9, canToggleAll for 3-5). 9-11 are 6-8 again, but the command's
- * targeting is 2 instead of the target count (btlui_getTargeting, btlui_confirmDoubleCast; Charge!, Spear). */
-#define BTL_TGT_SINGLE_ANY  0x0 /* one unit, either side (Life, Esuna, Scan, Haste) */
-#define BTL_TGT_SINGLE_PARTY 0x1 /* one party member (Vanish, Auto-Life, Chakra) */
-#define BTL_TGT_SINGLE_ENEMY 0x2 /* one enemy (Fire, Comet, Goblin Punch) */
-#define BTL_TGT_MULTI_ANY   0x3 /* one or all of a side, spread halves it (Cure, Fire, Sleep) */
-#define BTL_TGT_MULTI_PARTY 0x4
-#define BTL_TGT_MULTI_ENEMY 0x5
-#define BTL_TGT_ALL_ANY     0x6 /* a whole side, either */
-#define BTL_TGT_ALL_PARTY   0x7 /* the party (Carbuncle, Mighty Guard, White Wind) */
-#define BTL_TGT_ALL_ENEMY   0x8 /* every enemy (the summons, LV5 Death) */
-#define BTL_TGT_EVERYONE 0xC /* every targetable unit is marked (btlui_setDefaultTargets) */
-#define BTL_TGT_SELF     0xD /* the user only: no cursor (btlui_setDefaultTargets, btlui_cycleTarget) */
 
 typedef struct BtlCmd {
     struct BtlCmd *next; /* queue link */
@@ -1481,9 +1470,10 @@ typedef struct BtlPopup {
         u32 w; /* packed digits (btl_packDigits) */
         Unk800F6A54 *p; /* text popup: animation and glyph */
     } data;
-    u16 clut;
+    u16 clut; /* palette offset added to the glyphs' clut (0 damage, BTL_POPCLUT_HEAL) */
     u8 pad1A[0x1C - 0x1A];
 } BtlPopup; /* 0x1C */
+#define BTL_POPCLUT_HEAL 0xC0 /* BtlPopup.clut of heal numbers (BTL_POPUP_HEAL, BTL_POPUP_MP_HEAL, regen); btl_drawNumberPopup bounces them with g_btlPopupBounceHeal */
 
 /* BtlPopup.info.b.kind: g_btlPopupDrawFns index */
 #define BTL_POPKIND_HP   0 /* btl_popupHp */
@@ -1641,7 +1631,8 @@ typedef struct Battle {
 #define BTL_FLAG_UI_STARTED      0x10 /* btlui_init ran (btl_main, once loadFlags is BTL_LOAD_READY); the disc cover check runs from here on */
 #define BTL_FLAG_DISC_COVER_OPEN 0x20 /* btl_checkDiscCover: shell open, the pause screen shows "Disc Cover Open" */
 #define BTL_FLAG_EXIT_PRELOADED  0x40 /* btl_preloadExit ran (btl_main) */
-/* 0x100: tested before PutDispEnv (btl_putDispEnvNoUi, btlui_putDispEnvIfReady), never set by the C */
+#define BTL_FLAG_NO_DISPENV      0x100 /* btl_putDispEnvNoUi and btlui_putDispEnvIfReady skip PutDispEnv; never set by game C */
+#define BTL_FLAG_NO_DRAW         0x200 /* btl_endFrame skips the background and main OT draws; never set by game C */
 #define BTL_FLAG_OVER            0x1000 /* btl_update returned 1: btl_main leaves (mode 8) */
 
 /* Battle.loadFlags: battle start steps (btl_updateIntro). Evidence: [code] */
@@ -1696,7 +1687,7 @@ typedef struct {
 typedef struct {
     s16 pos[4]; /* x, y, z, and the fourth value (distance / roll) */
     u8 anchor; /* bits 0-4 anchor kind (btlcam_resolveAnchor: 1 caster, 5 target, 0xA focusUnit, 0xF partner, 0x15+ points), 0x20 use the unit's rotation */
-    u8 anchorFlags;
+    u8 anchorFlags; /* bits 0-4 second anchor averaged in (btlcam_resolveAnchorPair), BTLCAM_AF_* */
     u8 padA[0xC - 0xA];
 } Unk800C412C0; /* 0xC */
 
@@ -4232,6 +4223,9 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
 
 /* -O1 unit (ovl_0b_o1.c) */
 s32 btl_getSceneData(s32);
+/* Unk800C412C0.anchorFlags bits (btlcam_orbitAnchor). Evidence: [code] */
+#define BTLCAM_AF_ABS_ANGLES 0x40 /* the key's angles are absolute: the anchor's rotation is not added (no party flip) */
+#define BTLCAM_AF_ABS_DIST   0x80 /* the key's distance is absolute: the anchor's distance is not added */
 void btlcam_evalPath(s32, Unk800C412C *, s16 *);
 s32 btlfx_lerp(s32, s32, s32);
 

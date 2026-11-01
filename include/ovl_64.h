@@ -177,8 +177,9 @@ typedef struct {
     u16 hasCamera; /* 1: cameras[] valid */
     Ovl64FrameInfo cameras[2]; /* selected by g_mbgStream.cameraSel */
     s32 rumble; /* negative: vibration, bits 8-15 >= 0x80 on, low byte the level (g_mbgSlotRumble) */
-    u32 lastFrame; /* 0xEEEEEEEE: none */
+    u32 lastFrame; /* MBG_LAST_FRAME_NONE: none */
 } Ovl64StreamSect;
+#define MBG_LAST_FRAME_NONE 0xEEEEEEEE /* sector header lastFrame: no end frame given (mbg_stream keeps the previous one) */
 
 /* per ring slot: the pad vibration of the frame (frame header +0x5C), copied to the actuator bytes g_padActuator
  * (which ovl_34's vibration test also writes) while the frame shows */

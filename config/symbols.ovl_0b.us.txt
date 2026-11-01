@@ -1278,3 +1278,4 @@ btlui_unusedStub = 0x800F2A58; // type:func [code] empty, no callers
 btlui_resetStub = 0x800F48DC; // type:func [code] empty, called by btlui_reset after btlui_initHeap
 btlui_frameUnusedStub = 0x800F4DF4; // type:func [code] empty, no callers, after btlui_clearOtLinked
 btl_bannerExitStub = 0x800F4E68; // type:func [code] empty, after btl_initBanner, called by ovl_65 when the battle result screen ends (rewards done or game over)
+g_btlfxEnvData = 0x800F7870; // [code] the BtlfxEnv block g_btlfxEnv points at (g_btlfxState, g_btlfxLoader, g_btlfxTasks, g_btlfxModuleExports pointers)

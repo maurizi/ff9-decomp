@@ -11304,3 +11304,11 @@ D_8007AF55 g_evtGeneralFlags  # [string] g_evtGlobalVars.b[0x65] (EVT_GB_GENERAL
 # D_8007954E (g_evtStateData + 0x16EE) is now g_evtStateData.mode (evt_reset); D_80068EEE is g_listCursorSprites[0].tpage
 # FIELDS ovl_0a FieldBgState.unk78=unusedDistSq; ovl_0b BtluiState.unk9=unusedLatched, unk14=unusedValue; btlfx_mod.h export slots renamed with their functions
 # comment refs updated: func_80023A0C game_updateWindows, func_80050CA8 rain_set, func_800B3444 fld_enableRain, func_80053A10 swirl_update, func_800B7F14/func_800C96AC/func_800BB508/func_800C9FCC
+D_800F7870 g_btlfxEnvData  # [code] the BtlfxEnv block g_btlfxEnv points at
+# CONSTANTS (R38): BTL_FLAG_NO_DISPENV 0x100, BTL_FLAG_NO_DRAW 0x200 (Battle.flags, never set by game C); FLD_EXT_BUILT_UNREAD
+#   0x02000000; BTLCAM_AF_ABS_ANGLES 0x40 / BTLCAM_AF_ABS_DIST 0x80 (camera key anchorFlags, btlcam_orbitAnchor);
+#   EVT_TURN_DIRECT_DOWN 0x7FFE / UP 0x7FFF (EvtObject.turnRate); FLDBG_OVL_NO_SCROLL 0x7FFF (BgOverlay.scrollX/Y);
+#   ITEM_NONE / CARD_NONE in btl_addEnemyRewards and btl_clearRewards; BTLFX_UNIT_NONE 0xFF (effect op unit/target);
+#   BTLFX_EFFECT_ROULETTE 0xED, BTLFX_EFFECT_ARK_SHORT 0x1BF (docs/effect-modules.md); BTL_TGT_* moved to ff9.h for
+#   fieldCalc_multiTargetHalf; BTL_POPCLUT_HEAL 0xC0; AKAO_DRUM_REVERB 0x80 (AkaoDrumKey.pan), AKAO_VIB_FULL_SCALE 0x8000;
+#   MBG_LAST_FRAME_NONE 0xEEEEEEEE.

@@ -486,6 +486,7 @@ typedef struct {
 #define FLDBG_OVL_ANIM_GROUP 0x20 /* flipbook step layer: fldbg_initEffectList skips the group's steps */
 #define FLDBG_OVL_ANIMATED 0x40 /* fldbg_initEffectList adds an effect entry */
 #define FLDBG_OVL_SKEW_LOOP 0x80 /* fldbg_setOverlaySkewLoop */
+#define FLDBG_OVL_NO_SCROLL 0x7FFF /* BgOverlay.scrollX/scrollY: no loop scrolling on that axis (fldbg_updateOverlayScroll) */
 
 /* BgOverlay's unk24/unk25/unk25_1 bitfield word as a plain u32 (fldbg_buildOverlaySprites masks it by hand) */
 typedef struct {
@@ -969,6 +970,7 @@ typedef struct FieldActorExt {
 } FieldActorExt; /* 0x110 */
 /* FieldActorExt.flags */
 #define FLD_EXT_BUILT 0x1 /* fld_modelCommand 8-11 built the mirrored copy of the model */
+#define FLD_EXT_BUILT_UNREAD 0x02000000 /* set together with FLD_EXT_BUILT by fld_modelCommand 8-11, never tested */
 #define FLD_EXT_MIRROR 0x01000000 /* fld_modelCommand 8: fld_applyModelCommands reflects and draws the copy */
 
 /* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */

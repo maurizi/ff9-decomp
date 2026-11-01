@@ -26,7 +26,7 @@ void btl_spawnPopups(BtlUnit *arg0) {
                     n = 2;
                 }
                 if (f & BTL_POPUP_HEAL) {
-                    btl_popupHp((s32)arg0, arg0->hpChange, 0xC0, n);
+                    btl_popupHp((s32)arg0, arg0->hpChange, BTL_POPCLUT_HEAL, n);
                 } else {
                     btl_popupHp((s32)arg0, arg0->hpChange, 0, n);
                 }
@@ -34,7 +34,7 @@ void btl_spawnPopups(BtlUnit *arg0) {
             }
             if (f & BTL_POPUP_MP) {
                 if (f & BTL_POPUP_MP_HEAL) {
-                    btl_popupMp((s32)arg0, arg0->mpChange, 0xC0, n);
+                    btl_popupMp((s32)arg0, arg0->mpChange, BTL_POPCLUT_HEAL, n);
                 } else {
                     btl_popupMp((s32)arg0, arg0->mpChange, 0, n);
                 }
@@ -53,7 +53,7 @@ void btl_spawnTickPopups(BtlUnit *arg0) {
     u8 n = 0;
     if (!((arg0->flags >> BTL_UNIT_HIDDEN_BIT) & 1)) {
         if (f & BTL_TICK_REGEN) {
-            btl_popupHp((s32)arg0, arg0->tickHeal, (f & BTL_TICK_REGEN_HURTS) ? 0 : 0xC0, 0)->info.b.noClamp = 1;
+            btl_popupHp((s32)arg0, arg0->tickHeal, (f & BTL_TICK_REGEN_HURTS) ? 0 : BTL_POPCLUT_HEAL, 0)->info.b.noClamp = 1;
             n = 4;
         }
         if (f & BTL_TICK_POISON) {
@@ -218,7 +218,7 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
     u32 w;
     s16 x;
 
-    if (arg0->clut == 0xC0) {
+    if (arg0->clut == BTL_POPCLUT_HEAL) {
         anim = g_btlPopupBounceHeal;
     } else {
         anim = g_btlPopupBounce;

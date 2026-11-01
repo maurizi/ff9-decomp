@@ -3115,13 +3115,13 @@ s32 fldbg_updateOverlayScroll(BgFile *arg0) {
     for (i = 0; i < n; i++) {
         o = &objs[i];
         if (o->flags & FLDBG_OVL_LOOP) {
-            if (o->scrollX != 0 && o->scrollX != 0x7FFF) {
+            if (o->scrollX != 0 && o->scrollX != FLDBG_OVL_NO_SCROLL) {
                 v = (o->x << 8) | (o->fracX & 0xFF);
                 v = v + o->scrollX;
                 o->fracX = v & 0xFF;
                 o->x = (v >> 8) % o->width;
             }
-            if (o->scrollY != 0 && o->scrollY != 0x7FFF) {
+            if (o->scrollY != 0 && o->scrollY != FLDBG_OVL_NO_SCROLL) {
                 v = (o->y << 8) | (o->fracY & 0xFF);
                 v = v + o->scrollY;
                 o->fracY = v & 0xFF;
@@ -3130,13 +3130,13 @@ s32 fldbg_updateOverlayScroll(BgFile *arg0) {
         }
         if (o->flags & FLDBG_OVL_SKEW_LOOP) {
             if (o->skewVertical) {
-                if (o->scrollY != 0x7FFF) {
+                if (o->scrollY != FLDBG_OVL_NO_SCROLL) {
                     v = (o->y << 8) | (o->fracY & 0xFF);
                     v = v + o->scrollY;
                     o->fracY = v & 0xFF;
                     o->y = (v >> 8) % o->height;
                 }
-            } else if (o->scrollX != 0x7FFF) {
+            } else if (o->scrollX != FLDBG_OVL_NO_SCROLL) {
                 v = (o->x << 8) | (o->fracX & 0xFF);
                 v = v + o->scrollX;
                 o->fracX = v & 0xFF;

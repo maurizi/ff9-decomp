@@ -198,7 +198,7 @@ void mbg_streamOnAudioSector(void) {
         g_mbgSlotMasks[g_mbgStream.writeSlot].size = 0;
         g_mbgSlotMasks[g_mbgStream.writeSlot].data = 0;
     }
-    if (s->lastFrame != 0xEEEEEEEE && s->lastFrame != g_mbgStream.lastFrame) {
+    if (s->lastFrame != MBG_LAST_FRAME_NONE && s->lastFrame != g_mbgStream.lastFrame) {
         g_mbgStream.lastFrame = s->lastFrame;
     }
 }

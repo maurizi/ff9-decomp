@@ -341,7 +341,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         if (arg2->state->flags & BTLFX_HDR_CAMERA) {
             btl_setMarkersVisible(0);
         }
-        if (arg2->targets->bounceCount != 0 && arg1->target != 0xFF) {
+        if (arg2->targets->bounceCount != 0 && arg1->target != BTLFX_UNIT_NONE) {
             if (arg2->targets->bounceCount == 1) {
                 arg1->target += 8;
             } else {
@@ -396,7 +396,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         }
         break;
     case 1:
-        if (arg1->target != 0xFF && g_btlfxState.effectId != 0xED) {
+        if (arg1->target != BTLFX_UNIT_NONE && g_btlfxState.effectId != BTLFX_EFFECT_ROULETTE) {
             btlfx_getUnitPos(arg1->target, v);
             btlfx_turnUnitTowardFast(arg1->unit, v, (s32)arg1->startRot, t, 0);
         }
@@ -515,7 +515,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             btlfx_endCastIfNoBounce();
         } else {
             g_btlfxState.signals.b[3] = 1;
-            if (arg1->target != 0xFF) {
+            if (arg1->target != BTLFX_UNIT_NONE) {
                 btlfx_getUnitPos(arg1->target, v);
                 btlfx_turnUnitTowardFast(arg1->unit, v, (s32)arg1->startRot, t, 0);
             }
@@ -637,7 +637,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
         arg1->unit = g_btlfxResArgs2.unit;
         arg1->otBias = g_btlfxResArgs2.otBias * 8;
         arg1->frame = 0;
-        if (arg1->unit != 0xFF) {
+        if (arg1->unit != BTLFX_UNIT_NONE) {
             btlfx_getUnitBodyPos(arg1->unit, 0, &arg1->pos.vx);
         } else {
             *(s32 *)&arg1->pos.vx = *(s32 *)&arg2->targets->centerX;
@@ -679,7 +679,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
             return 0;
         }
     } else {
-        if (arg1->unit != 0xFF) {
+        if (arg1->unit != BTLFX_UNIT_NONE) {
             arg2->otZ = btlfx_addRadiusSixth(arg1->unit, arg1->otBias);
             rot.vy = btlfx_compareDepth(BTLFX_UNIT_CASTER, arg1->unit) << 11;
             rot.pad = 0;
@@ -695,7 +695,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
             break;
         case BTLFX_DRAWON_EMITTER:
             if (arg1->frame == arg1->frames) {
-                if (arg1->unit != 0xFF) {
+                if (arg1->unit != BTLFX_UNIT_NONE) {
                     if (arg1->unit == BTLFX_UNIT_CASTER) {
                         btlfx_getWeaponPos(arg1->unit, 1, &arg1->pos.vx);
                         btlfx_getUnitBodyPos(0, 0, v);
@@ -1803,7 +1803,7 @@ void btlfx_restorePartyLooks(void) {
         }
         u = u->next;
     }
-    if (g_btlfxEnv->state->effectId == 0x1BF) {
+    if (g_btlfxEnv->state->effectId == BTLFX_EFFECT_ARK_SHORT) {
         btl_setIdleMotion(btl_getUnit(BTLFX_UNIT_CASTER));
     }
 }

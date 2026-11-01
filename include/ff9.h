@@ -254,7 +254,7 @@ typedef struct {
  * that are read through it */
 typedef struct {
     u32 flags; /* the mode's flags word: FieldMap.flags (FLD_MAP_NO_PRELOAD from menu_doOpen; ovl_64 sets
-                * FLD_MAP_NO_WINDOWS | FLD_MAP_NO_BGI_ANIM), WorldMap.flags, Battle.flags (ovl_0b btl_main tests 0x200) */
+                * FLD_MAP_NO_WINDOWS | FLD_MAP_NO_BGI_ANIM), WorldMap.flags, Battle.flags (ovl_0b btl_endFrame tests BTL_FLAG_NO_DRAW) */
     u8 pad4[4];
     WmObjView *worldObj; /* WorldMap.obj */
     Unk8E4C *fieldArea; /* FieldMap.area */
@@ -1078,7 +1078,7 @@ typedef struct {
     u16 vibratoDelayLeft;
     s16 vibratoPeriodSlideLen;
     u16 vibratoDepth; /* depth in pitch units, from vibratoDepthParam and pitch */
-    u16 vibratoDepthParam; /* op B5 (<< 8; 0x8000 = full scale) */
+    u16 vibratoDepthParam; /* op B5 (<< 8): bits 8-14 depth, AKAO_VIB_FULL_SCALE */
     s16 vibratoDepthSlideLen; /* (op DD) */
     s16 vibratoDepthStep;
     u16 tremoloDelay; /* (op B8) */
@@ -1122,6 +1122,7 @@ typedef struct {
     s16 voiceVolL; /* volume left */
     s16 voiceVolR; /* volume right */
 } AkaoChannel; /* 0x134 */
+#define AKAO_VIB_FULL_SCALE 0x8000 /* AkaoChannel.vibratoDepthParam: the depth scales the full pitch instead of 15/256 of it (akao_opB5) */
 /* AkaoChannel.legato (runtime: op D0 only runs on SE channels) */
 #define AKAO_LEGATO      1 /* legato on (ops CC, DA); copied to AKAO_LEGATO_TIED after each note */
 #define AKAO_LEGATO_TIED 2 /* the previous note is tied into this one: no vibrato/tremolo restart */
@@ -1411,7 +1412,7 @@ typedef struct EvtObject {
     u8 defaultAnimSpeed; /* op 0x3E, copied to animSpeed on each anim change */
     u8 lookParam0; /* op 0x8B */
     u8 lookParam1; /* op 0x8B */
-    u16 turnRate; /* rotation y step, 0x7FFF turns without a turn animation */
+    u16 turnRate; /* rotation y step per frame, or EVT_TURN_DIRECT_DOWN/UP (turn without a turn animation) */
     s16 talkTurnScript; /* EVT_OP_TURN_TO_ANGLE: turn toward the talker before the talk function (op 0x91), EVT_OP_RETURN: don't; the script "A7 00 angle 50 04" (EVT_OP_TURN_TO_ANGLE, EVT_OP_WAIT_TURN, EVT_OP_RETURN) starts here */
     u8 talkTurnAngle; /* its angle byte (evt_callTurnScript) */
     u8 talkTurnWaitOp; /* EVT_OP_WAIT_TURN, set at object creation */
@@ -1443,6 +1444,8 @@ typedef struct EvtObject {
     u16 jumpStartZ;
     s16 jumpTargetY; /* op 0xE2 */
 } EvtObject;
+#define EVT_TURN_DIRECT_DOWN 0x7FFE /* EvtObject.turnRate: turning to a lower angle without a turn animation, turnStep per frame (evt_execInstr turn, evt_updateObjects) */
+#define EVT_TURN_DIRECT_UP   0x7FFF /* EvtObject.turnRate: the same towards a higher angle */
 /* Object property numbers of the script expression's object variables (evt_popValue -> evt_getObjectProp,
  * evt_popAssign -> evt_setObjectProp). The two number them differently; any other property goes to the battle unit
  * of a battle object (btl_getUnitAttr / btl_setUnitAttr, BTL_ATTR_*). Evidence: [code] the two functions. */
@@ -1947,8 +1950,9 @@ typedef struct {
     u8 sustainMode; /* 3/5/7 set ADSR2 bits 14-15 */
     u8 releaseRate; /* ADSR2 release (low 5 bits) */
     u8 volume; /* voiceVolScale */
-    u8 pan; /* pan, bit 7: flag = reverb on */
+    u8 pan; /* bits 0-6 pan, AKAO_DRUM_REVERB */
 } AkaoDrumKey;
+#define AKAO_DRUM_REVERB 0x80 /* AkaoDrumKey.pan: akao_playDrumNote adds the voice to the reverb mask */
 void akao_setChannelInstrument(AkaoChannel *, AkaoInstrument *, s32);
 
 typedef struct {
@@ -3819,6 +3823,21 @@ typedef struct {
     s16 hpChange; /* chr_addHp amount */
     s16 mpChange; /* chr_addMp amount */
 } MainCalc;
+/* BtlCmd8.targetType (bits 0-3 of MainCalc.cmd->info) / Battle16CC.targetType values. Evidence: [code] g_btluiDefaultTargets (side 0xFF = the
+ * ability's defaultSide with side switching, 1 party, 0 enemies; targetAll) and g_btluiTargetAllByType, rows 0-13;
+ * btlui_startTargetSelect (canSwitchSide for 0/3/6/9, canToggleAll for 3-5). 9-11 are 6-8 again, but the command's
+ * targeting is 2 instead of the target count (btlui_getTargeting, btlui_confirmDoubleCast; Charge!, Spear). */
+#define BTL_TGT_SINGLE_ANY  0x0 /* one unit, either side (Life, Esuna, Scan, Haste) */
+#define BTL_TGT_SINGLE_PARTY 0x1 /* one party member (Vanish, Auto-Life, Chakra) */
+#define BTL_TGT_SINGLE_ENEMY 0x2 /* one enemy (Fire, Comet, Goblin Punch) */
+#define BTL_TGT_MULTI_ANY   0x3 /* one or all of a side, spread halves it (Cure, Fire, Sleep) */
+#define BTL_TGT_MULTI_PARTY 0x4
+#define BTL_TGT_MULTI_ENEMY 0x5
+#define BTL_TGT_ALL_ANY     0x6 /* a whole side, either */
+#define BTL_TGT_ALL_PARTY   0x7 /* the party (Carbuncle, Mighty Guard, White Wind) */
+#define BTL_TGT_ALL_ENEMY   0x8 /* every enemy (the summons, LV5 Death) */
+#define BTL_TGT_EVERYONE 0xC /* every targetable unit is marked (btlui_setDefaultTargets) */
+#define BTL_TGT_SELF     0xD /* the user only: no cursor (btlui_setDefaultTargets, btlui_cycleTarget) */
 #define MAINCALC_RESULT_MISS 0x20 /* MainCalc.result: set by fieldCalc_apply on MAINCALC_MISS (the battle's BTL_POPUP_MISS bit) */
 #define MAINCALC_MISS 0x1 /* MainCalc.flags: nothing happens (full hp, dead target, cure failed); fieldCalc_apply then changes nothing */
 

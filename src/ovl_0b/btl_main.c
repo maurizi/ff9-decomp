@@ -2158,7 +2158,7 @@ void btl_endFrame(void) {
     ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp)[2] = 0;
     addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].bgStp);
     btl_putDispEnvNoUi();
-    if (!(g_gameState->gameData->flags & GD_PAUSED) && !(g_gameState->gameData->ctx.ovl65->flags & 0x200)) {
+    if (!(g_gameState->gameData->flags & GD_PAUSED) && !(g_gameState->gameData->ctx.ovl65->flags & BTL_FLAG_NO_DRAW)) {
         btlui_drawOTagEnv(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[BTL_BG_OT_LEN - 1], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
         DrawOTag(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][OT_LAST]);
     }

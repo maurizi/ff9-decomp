@@ -234,7 +234,7 @@ u8 btlui_isSecondPortUsed(void) {
 void btl_putDispEnvNoUi(void) {
     if (g_btluiState.started == 0) {
         GameData *gd = g_gameState->gameData;
-        if (!(gd->ctx.battle->flags & 0x100)) {
+        if (!(gd->ctx.battle->flags & BTL_FLAG_NO_DISPENV)) {
             PutDispEnv(&g_gameState->dispEnv[gd->drawBuf]);
         }
     }
@@ -330,7 +330,7 @@ void btlui_applyEnable(void) {
 void btlui_putDispEnvIfReady(void) {
     if (g_btluiState.frameReady != 0 && g_btluiState.started != 0) {
         GameData *gd = g_gameState->gameData;
-        if (!(gd->ctx.battle->flags & 0x100)) {
+        if (!(gd->ctx.battle->flags & BTL_FLAG_NO_DISPENV)) {
             PutDispEnv(&g_gameState->dispEnv[gd->drawBuf]);
         }
     }

@@ -578,7 +578,7 @@ void btlcam_evalPath(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
             arg2[0] = (ratan2(dy, btlfx_sqrt(h, 0x14)) + 0x1000) & 0xFFF;
             arg2[2] = out.vz;
             arg2[3] = btlfx_sqrt(h + dy * dy, 0x14);
-            arg1->keys[1].anchorFlags |= 0xC0;
+            arg1->keys[1].anchorFlags |= BTLCAM_AF_ABS_ANGLES | BTLCAM_AF_ABS_DIST;
             return;
         }
         for (i = 0; i < 2; i++) {
@@ -660,12 +660,12 @@ void btlcam_orbitAnchor(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3) {
     BtlUnit *u;
 
     btlcam_resolveAnchorPair(arg0, arg1, a, b, &c);
-    if (arg1 & 0x80) {
+    if (arg1 & BTLCAM_AF_ABS_DIST) {
         c = arg2[3];
     } else {
         c += arg2[3];
     }
-    if (arg1 & 0x40) {
+    if (arg1 & BTLCAM_AF_ABS_ANGLES) {
         t = (math_cos(arg2[0]) * c) >> 12;
         arg3[0] = (-math_sin(arg2[1]) * t) >> 12;
         arg3[2] = (-math_cos(arg2[1]) * t) >> 12;

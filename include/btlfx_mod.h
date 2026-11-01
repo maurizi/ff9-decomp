@@ -234,7 +234,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_clearUnitStatus)(s32); /* 0x354 */
     s32 (*btlfx_moveSummonToHeap)(s32); /* 0x358 */
     s32 (*btlfx_getCasterTexInfo)(BtlTexInfo *, BtlTexInfo *, s32); /* 0x35C */
-} BtlfxExports; /* followed in ovl_0b by the g_btlfxEnv block (D_800F7870) */
+} BtlfxExports; /* followed in ovl_0b by the g_btlfxEnv block (g_btlfxEnvData) */
 
 #define BTLFX_EXPORTS(env) ((BtlfxExports *)(env)->exports)
 

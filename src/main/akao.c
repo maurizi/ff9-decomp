@@ -659,7 +659,7 @@ s32 akao_playDrumNote(AkaoChannel *c, u32 mask, s32 key) {
     r = ((s32 (*)())akao_calcPitch)(p, e->note, c->fineTune, &c->fineTuneOfs);
     c->voiceVolScale = e->volume;
     c->pan = ((e->pan & 0x7F) + 0x40) << 8;
-    if (e->pan & 0x80) {
+    if (e->pan & AKAO_DRUM_REVERB) {
         g_akaoSeq->reverbMask |= mask;
     } else {
         g_akaoSeq->reverbMask &= ~mask;
@@ -799,7 +799,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         c->voiceDirty |= AKAO_VD_VOL | AKAO_VD_PITCH;
         if (op & AKAO_CH_VIBRATO) {
             v = (c->vibratoDepthParam & 0x7F00) >> 8;
-            if (!(c->vibratoDepthParam & 0x8000)) {
+            if (!(c->vibratoDepthParam & AKAO_VIB_FULL_SCALE)) {
                 v = (v * ((u32)(vel * 15) >> 8)) >> 7;
             } else {
                 v = (v * vel) >> 7;
@@ -1226,7 +1226,7 @@ void akao_opB4(AkaoChannel *c) {
     v = c->vibratoDepthParam;
     k = (u16)c->pitch;
     n = (v & 0x7F00) >> 8;
-    if (!(v & 0x8000)) {
+    if (!(v & AKAO_VIB_FULL_SCALE)) {
         r = (n * ((s32)(k * 15) >> 8)) >> 7;
     } else {
         r = (n * k) >> 7;
@@ -1248,7 +1248,7 @@ void akao_opB5(AkaoChannel *c) {
     k = c->pitch;
     v = c->vibratoDepthParam;
     n = (v & 0x7F00) >> 8;
-    if (!(v & 0x8000)) {
+    if (!(v & AKAO_VIB_FULL_SCALE)) {
         r = n * ((s32)(k * 15) >> 8);
     } else {
         r = n * k;

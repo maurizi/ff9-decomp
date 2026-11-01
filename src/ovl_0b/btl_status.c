@@ -877,26 +877,26 @@ void btl_addEnemyRewards(BtlEnemyType *arg0) {
     d->gil += arg0->gil;
     d->exp += arg0->exp;
     for (; n < 16; n++) {
-        if (d->items[n] == 0xFF) {
+        if (d->items[n] == ITEM_NONE) {
             break;
         }
     }
     if (n < 16) {
-        if (rand8_inline() < 1 && (it = arg0->drops.b[3]) != 0xFF) {
+        if (rand8_inline() < 1 && (it = arg0->drops.b[3]) != ITEM_NONE) {
             d->items[n++] = it;
-            arg0->drops.b[3] = 0xFF;
-        } else if (rand8_inline() < 0x20 && (it = arg0->drops.b[2]) != 0xFF) {
+            arg0->drops.b[3] = ITEM_NONE;
+        } else if (rand8_inline() < 0x20 && (it = arg0->drops.b[2]) != ITEM_NONE) {
             d->items[n++] = it;
-            arg0->drops.b[2] = 0xFF;
-        } else if (rand8_inline() < 0x60 && (it = arg0->drops.b[1]) != 0xFF) {
+            arg0->drops.b[2] = ITEM_NONE;
+        } else if (rand8_inline() < 0x60 && (it = arg0->drops.b[1]) != ITEM_NONE) {
             d->items[n++] = it;
-            arg0->drops.b[1] = 0xFF;
+            arg0->drops.b[1] = ITEM_NONE;
         }
-        if ((it = arg0->drops.b[0]) != 0xFF) {
+        if ((it = arg0->drops.b[0]) != ITEM_NONE) {
             d->items[n] = it;
         }
     }
-    if (d->card == 0xFF && (u32)arg0->card < 100) {
+    if (d->card == CARD_NONE && (u32)arg0->card < 100) {
         if (rand8_inline() < 0x20) {
             d->card = arg0->card;
         }
@@ -937,7 +937,7 @@ void btl_clearRewards(void) {
         p[12] = c; /* unkC[i] */
         p--;
     }
-    g_btlRewards.card = 0xFF;
+    g_btlRewards.card = CARD_NONE;
     g_btlRewards.fleeGil = 0;
 }
 

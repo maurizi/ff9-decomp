@@ -1605,7 +1605,7 @@ s32 btlfx_stepFaceTarget(Unk800D805C *arg0, s32 arg1, s32 *arg2) {
         btl_getUnit(arg0->unit);
         if (v == 0) {
             btlfx_getUnitPos(arg0->unit, pos);
-            if (arg0->target == 0xFF) {
+            if (arg0->target == BTLFX_UNIT_NONE) {
                 tgt[0] = ((Unk800F78A4 *)arg1)->targets->centerX;
                 tgt[1] = ((Unk800F78A4 *)arg1)->targets->centerY;
                 tgt[2] = ((Unk800F78A4 *)arg1)->targets->centerZ;
@@ -1629,7 +1629,7 @@ s32 btlfx_stepFaceTarget(Unk800D805C *arg0, s32 arg1, s32 *arg2) {
         g_btlfxState.turnDone = 1;
         return 1;
     }
-    if (arg0->target == 0xFF) {
+    if (arg0->target == BTLFX_UNIT_NONE) {
         tgt[0] = ((Unk800F78A4 *)arg1)->targets->centerX;
         tgt[1] = ((Unk800F78A4 *)arg1)->targets->centerY;
         tgt[2] = ((Unk800F78A4 *)arg1)->targets->centerZ;
