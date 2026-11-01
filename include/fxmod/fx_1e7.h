@@ -10,7 +10,7 @@ typedef struct {
 } Fx1e7Point;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx1e7Point *keys4;
 } Fx1e7Path;
@@ -19,7 +19,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8; /* target position */
-    s16 unk10;
+    s16 unk10; /* write-only (0x1000) */
 } Fx1e7Work80; /* 0x14 */
 
 typedef struct {
@@ -29,7 +29,7 @@ typedef struct {
     Pool6CEntry *emit1C;
     SVECTOR pos20; /* target body position */
     SVECTOR pos28; /* target position */
-    s32 unk30;
+    s32 unk30; /* write-only (cleared at init) */
     s32 flag34; /* waiting for the motion to end */
 } Fx1e7Work81; /* 0x38 */
 

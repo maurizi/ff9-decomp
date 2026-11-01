@@ -28,7 +28,7 @@ typedef struct {
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */
-    SVECTOR unk8;
+    SVECTOR unk8; /* read once (copied into pos18), never written */
     SVECTOR pos10; /* particle position */
     SVECTOR pos18; /* camera target */
     u8 pad20[8];

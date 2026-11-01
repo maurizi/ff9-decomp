@@ -8,8 +8,8 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[57];
+    u8 pad3;
+    SVECTOR pts4[57]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0e31Bolt;
 
 extern Unk800F78A4 *fx_0e3_1_env;
@@ -90,16 +90,16 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[13];
+    u8 pad3;
+    SVECTOR pts4[13]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0e31Bolt13; /* 0x6C */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[5];
+    u8 pad3;
+    SVECTOR pts4[5]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0e31Bolt5; /* 0x2C */
 
 typedef struct {

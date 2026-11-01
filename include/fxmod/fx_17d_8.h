@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared at spawn) */
     s16 scale2; /* scale */
     s16 posX4; /* position */
     s16 posY6;
@@ -35,7 +35,7 @@ typedef struct {
     SVECTOR target18; /* particle target */
     SVECTOR camPos20; /* camera position */
     Fx17d8Vec3 pos28; /* model position */
-    SVECTOR unk34;
+    SVECTOR unk34; /* write-only (cleared at init) */
     Fx17d8Vec3 scale3C; /* model scale */
     Fx17d8Vec3 pos48; /* spawn position */
     SVECTOR pos54;

@@ -111,7 +111,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1bd_pathTrail.start8 = 0;
         fx_1bd_pathTrail.countA = 0;
         fx_1bd_pathTrail.alphaC = 0x1000;
-        fx_1bd_pathTrail.unkE = 0x1000;
+        fx_1bd_pathTrail.scaleE = 0x1000;
         fx_1bd_pathTrail.alpha12 = 0x30;
         work->timer60 = -1;
         work->timer62 = -1;
@@ -160,7 +160,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_posPathInit(&fx_1bd_pathTrail.path0, fxm_offsetTableEntry((u16 *)ex->btlfx_getFileData(entry->file, 0x16), i));
                 fxm_buildPathTrail(&fx_1bd_pathTrail.path0, fx_1bd_op82Trails[i], 0x50, fx_1bd_pathTrail.start8, fx_1bd_pathTrail.countA, fx_1bd_pathTrail.alpha10,
                               fx_1bd_pathTrail.alpha12, 0);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x17), 0, NULL, 0, fx_1bd_pathTrail.unkE,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x17), 0, NULL, 0, fx_1bd_pathTrail.scaleE,
                                     fx_1bd_pathTrail.alphaC, 1, fx_1bd_op82Trails[i], 0);
             }
         }
@@ -210,9 +210,9 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkC.vy = 0;
         work->unkC.vz = 0;
         work->unkC.pad = 1;
-        work->unk14.vx = 0;
-        work->unk14.vy = -0x78;
-        work->unk14.vz = 0x320;
+        work->pos14.vx = 0;
+        work->pos14.vy = -0x78;
+        work->pos14.vz = 0x320;
         work->unk1C = 0x1800;
         work->xform20.rot0.vx = 0;
         work->xform20.rot0.vy = 0;
@@ -286,9 +286,9 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fxm_vecTrackInit((Fx1bdTrack12 *)&fx_1bd_vecTrack1, (u16 *)ex->btlfx_getFileData(entry->file, 9));
         fxm_vecTrackInit((Fx1bdTrack12 *)&fx_1bd_vecTrack2, (u16 *)ex->btlfx_getFileData(entry->file, 7));
         work->frame10C = 0;
-        work->unk104.vx = work->unk14.vx;
-        work->unk104.vy = work->unk14.vy;
-        work->unk104.vz = work->unk14.vz;
+        work->unk104.vx = work->pos14.vx;
+        work->unk104.vy = work->pos14.vy;
+        work->unk104.vz = work->pos14.vz;
         work->timer10E = -1;
         work->timer110 = -1;
         work->timer112 = -1;
@@ -585,7 +585,7 @@ static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot)
 
 static void fxm_camChanReset(void) {
     s32 i;
-    s32 m = -1;
+    s32 m = FX_1BD_KEY_FREE;
 
     for (i = 63; i >= 0; i--) {
         fx_1bd_camKeys[i].timer6 = m;
@@ -602,7 +602,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     data++;
     c = *data;
     for (i = 0; i < 64; i++) {
-        if (fx_1bd_camKeys[i].timer6 == -1) {
+        if (fx_1bd_camKeys[i].timer6 == FX_1BD_KEY_FREE) {
             fx_1bd_camKeys[i].timer6 = 0;
             fx_1bd_camKeys[i].keys0 = data;
             fx_1bd_camKeys[i].frame4 = start;

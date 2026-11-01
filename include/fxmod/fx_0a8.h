@@ -19,9 +19,9 @@ typedef struct {
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
-    s32 unk14;
+    s32 unk14; /* unused */
     Pool6CEntry *emit18;
-    s32 unk1C;
+    s32 unk1C; /* unused */
     SVECTOR pos20; /* position: env->targets->centerX..Z */
 } Fx0a8Work81;
 

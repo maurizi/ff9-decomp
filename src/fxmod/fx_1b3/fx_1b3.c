@@ -66,7 +66,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1b3_env = env;
         ex->btlfx_initEffModels(fx_1b3_effModels, 0x14);
         for (i = 0; i < 32; i++) {
-            work->unk0[i] = 0;
+            work->timers0[i] = 0;
             work->emit80[i] = NULL;
         }
         buf = (s32)ex->btlfx_getFileData(entry->file, 0x93);
@@ -225,7 +225,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0:
             ex->btlfx_signalScriptCue();
-            work->unk0[0] = 0x10;
+            work->timers0[0] = 0x10;
             break;
         case 8:
             p = work->emit80[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos100);
@@ -238,16 +238,16 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x10:
-            work->unk0[1] = 0x90;
+            work->timers0[1] = 0x90;
             p = work->emit80[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos100);
             if (p != NULL) {
                 p->otZ = 0x400;
             }
             break;
         case 0x30:
-            work->unk0[1] = 0;
-            work->unk0[2] = 0x40;
-            work->unk0[3] = 0;
+            work->timers0[1] = 0;
+            work->timers0[2] = 0x40;
+            work->timers0[3] = 0;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
@@ -265,12 +265,12 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x60:
-            work->unk0[2] = 0;
+            work->timers0[2] = 0;
             ex->btlfx_stopEmitter(work->emit80[0]);
             ex->btlfx_stopEmitter(work->emit80[1]);
             ex->btlfx_stopEmitter(work->emit80[2]);
             ex->btlfx_stopEmitter(work->emit80[3]);
-            work->unk0[13] = 0x20;
+            work->timers0[13] = 0x20;
             fx_1b3_splitBufPtr = fx_1b3_splitBuf;
             for (i = 0; i < 3; i++) {
                 fx_1b3_splitModel(&fx_1b3_splits0[i]);
@@ -278,8 +278,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1b3_splitTrigger.mode0 = 0;
             fx_1b3_splitTrigger.angle10 = 0;
             fx_1b3_splitTrigger.spin14 = -0xA;
-            work->unk0[4] = 0x3C;
-            work->unk0[5] = 0;
+            work->timers0[4] = 0x3C;
+            work->timers0[5] = 0;
             p = work->emit80[16] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos110);
             if (p != NULL) {
                 p->otZ = 0x200;
@@ -290,10 +290,10 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x9C:
-            work->unk0[4] = 0;
+            work->timers0[4] = 0;
             ex->btlfx_stopEmitter(work->emit80[16]);
             ex->btlfx_stopEmitter(work->emit80[17]);
-            work->unk0[13] = 0x20;
+            work->timers0[13] = 0x20;
             fx_1b3_splitBufPtr = fx_1b3_splitBuf;
             for (i = 0; i < 3; i++) {
                 fx_1b3_splitModel(&fx_1b3_splits0[3 + i]);
@@ -301,8 +301,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1b3_splitTrigger.mode0 = 0;
             fx_1b3_splitTrigger.angle10 = -0x800;
             fx_1b3_splitTrigger.spin14 = 0xA;
-            work->unk0[4] = 0x3C;
-            work->unk0[5] = 3;
+            work->timers0[4] = 0x3C;
+            work->timers0[5] = 3;
             p = work->emit80[18] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos110);
             if (p != NULL) {
                 p->otZ = 0x200;
@@ -313,10 +313,10 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0xD8:
-            work->unk0[4] = 0;
+            work->timers0[4] = 0;
             ex->btlfx_stopEmitter(work->emit80[18]);
             ex->btlfx_stopEmitter(work->emit80[19]);
-            work->unk0[13] = 0x20;
+            work->timers0[13] = 0x20;
             fx_1b3_splitBufPtr = fx_1b3_splitBuf;
             for (i = 0; i < 3; i++) {
                 fx_1b3_splitModel(&fx_1b3_splits0[6 + i]);
@@ -324,8 +324,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1b3_splitTrigger.mode0 = 1;
             fx_1b3_splitTrigger.angle10 = 0;
             fx_1b3_splitTrigger.spin14 = 0xE;
-            work->unk0[4] = 0x4B;
-            work->unk0[5] = 6;
+            work->timers0[4] = 0x4B;
+            work->timers0[5] = 6;
             p = work->emit80[20] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos110);
             if (p != NULL) {
                 p->otZ = 0x200;
@@ -336,8 +336,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0xFE:
-            work->unk0[2] = 0x48;
-            work->unk0[3] = 1;
+            work->timers0[2] = 0x48;
+            work->timers0[3] = 1;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
@@ -352,7 +352,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x11E:
-            work->unk0[4] = 0;
+            work->timers0[4] = 0;
             ex->btlfx_stopEmitter(work->emit80[20]);
             ex->btlfx_stopEmitter(work->emit80[21]);
             p = work->emit80[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos118);
@@ -366,7 +366,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x11F:
             ex->btlfx_stopEmitter(work->emit80[4]);
-            work->unk0[11] = 0x10;
+            work->timers0[11] = 0x10;
             fx_1b3_splitBufPtr = fx_1b3_splitBuf;
             fx_1b3_splitModel(&fx_1b3_splits1[0]);
             work->pos19C.vx = work->pos108.vx;
@@ -375,7 +375,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1b3_splitTrigger.posY6 = 0x990;
             fx_1b3_splitTrigger.posX4 = 0x3CF;
             fx_1b3_splitTrigger.posZ8 = 0;
-            work->unk0[6] = 0x80;
+            work->timers0[6] = 0x80;
             break;
         case 0x136:
             ex->btlfx_getUnitBonePos(0x10, 0x3A, (u16 *)&work->pos118);
@@ -401,8 +401,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot138.vz = 0;
             break;
         case 0x14F:
-            work->unk0[2] = 0x48;
-            work->unk0[3] = 2;
+            work->timers0[2] = 0x48;
+            work->timers0[3] = 2;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
@@ -417,7 +417,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x16F:
-            work->unk0[6] = 0;
+            work->timers0[6] = 0;
             ex->btlfx_stopEmitter(work->emit80[4]);
             ex->btlfx_stopEmitter(work->emit80[5]);
             ex->btlfx_stopEmitter(work->emit80[6]);
@@ -432,11 +432,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x170:
             ex->btlfx_stopEmitter(work->emit80[10]);
-            work->unk0[11] = 0x10;
+            work->timers0[11] = 0x10;
             fx_1b3_splitBufPtr = fx_1b3_splitBuf;
             fx_1b3_splitModel(&fx_1b3_splits1[1]);
             fx_1b3_splitModel(&fx_1b3_splits2);
-            work->unk0[7] = 0x80;
+            work->timers0[7] = 0x80;
             work->pos1AC.vx = work->pos108.vx;
             work->pos1AC.vy = work->pos108.vy;
             work->pos1AC.vz = work->pos108.vz;
@@ -471,8 +471,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->rot150.vz = 0;
             break;
         case 0x1A8:
-            work->unk0[2] = 0x30;
-            work->unk0[3] = 3;
+            work->timers0[2] = 0x30;
+            work->timers0[3] = 3;
             for (i = 0; i < 16; i++) {
                 fx_1b3_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
@@ -480,7 +480,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x1C0:
-            work->unk0[7] = 0;
+            work->timers0[7] = 0;
             ex->btlfx_getUnitBonePos(0x10, 0x18, (u16 *)&work->pos120);
             ex->btlfx_stopEmitter(work->emit80[10]);
             ex->btlfx_stopEmitter(work->emit80[11]);
@@ -488,7 +488,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_1b3_splitBufPtr = fx_1b3_splitBuf;
             fx_1b3_splitModel(&fx_1b3_splits3[0]);
             fx_1b3_splitModel(&fx_1b3_splits3[1]);
-            work->unk0[8] = 0x3C;
+            work->timers0[8] = 0x3C;
             work->pos20C.vx = work->pos108.vx;
             work->pos20C.vy = work->pos108.vy;
             work->pos20C.vz = work->pos108.vz;
@@ -510,8 +510,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x1C2:
-            work->unk0[11] = 0x10;
-            work->unk0[9] = 0x22;
+            work->timers0[11] = 0x10;
+            work->timers0[9] = 0x22;
             break;
         case 0x1E2:
             for (i = 0; i < 3; i++) {
@@ -537,8 +537,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x1E4:
-            work->unk0[8] = 0;
-            work->unk0[10] = 0xE0;
+            work->timers0[8] = 0;
+            work->timers0[10] = 0xE0;
             break;
         case 0x1E5:
             ex->btlfx_fadeUnitById(0x10, 0);
@@ -547,7 +547,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&fx_1b3_emitPos0);
             break;
         case 0x27C:
-            work->unk0[12] = 0x20;
+            work->timers0[12] = 0x20;
             break;
         case 0x29C:
             ex->btlfx_signalScriptCue();
@@ -575,27 +575,27 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emit80[9] != NULL || work->emit80[15] != NULL) {
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xA), frame);
         }
-        if (work->unk0[0] != 0) {
-            work->unk0[0]--;
-            zz3 = ex->btlfx_lerpRatio(0x40, 0, work->unk0[0], 0x10);
+        if (work->timers0[0] != 0) {
+            work->timers0[0]--;
+            zz3 = ex->btlfx_lerpRatio(0x40, 0, work->timers0[0], 0x10);
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, zz3, zz3, zz3);
         }
-        if (work->unk0[12] != 0) {
-            work->unk0[12]--;
-            zz3 = ex->btlfx_lerpRatio(0xFF, 0, work->unk0[12], 0x20);
+        if (work->timers0[12] != 0) {
+            work->timers0[12]--;
+            zz3 = ex->btlfx_lerpRatio(0xFF, 0, work->timers0[12], 0x20);
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, zz3, zz3, zz3);
         }
-        if (work->unk0[1] != 0) {
-            work->unk0[1]--;
+        if (work->timers0[1] != 0) {
+            work->timers0[1]--;
             zz3 = 0x40;
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, zz3, zz3, zz3);
         }
-        if (work->unk0[2] != 0) {
-            work->unk0[2]--;
-            switch (work->unk0[3]) {
+        if (work->timers0[2] != 0) {
+            work->timers0[2]--;
+            switch (work->timers0[3]) {
             case 0:
                 for (i = 0; i < 16; i++) {
-                    if (fx_1b3_trails[i].timer4C == 0 && work->unk0[2] >= 0xD) {
+                    if (fx_1b3_trails[i].timer4C == 0 && work->timers0[2] >= 0xD) {
 
                         ex->btlfx_getUnitBonePos(0x10, fx_1b3_trailBones0[ex->btlfx_rand() & 0xF], (u16 *)&v[0]);
                         fx_1b3_trails[i].timer4C = (ex->btlfx_rand() & 7) + 4;
@@ -619,12 +619,12 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             case 1:
             case 2:
                 for (i = 0; i < 5; i++) {
-                    if (fx_1b3_trails[i].timer4C == 0 && work->unk0[2] >= 0xD) {
+                    if (fx_1b3_trails[i].timer4C == 0 && work->timers0[2] >= 0xD) {
 
                         fx_1b3_trails[i].timer4C = (ex->btlfx_rand() & 3) + 4;
                         for (zz2 = 0; zz2 < 4; zz2++) {
 
-                            if (work->unk0[3] == 1) {
+                            if (work->timers0[3] == 1) {
                                 ex->btlfx_getUnitBonePos(0x10, fx_1b3_trailBones1[zz2], (u16 *)&v[1]);
                                 ex->btlfx_getUnitBonePos(0x10, fx_1b3_trailBones1[zz2 + 1], (u16 *)&v[2]);
                             } else {
@@ -660,7 +660,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 break;
             case 3:
                 for (i = 0; i < 6; i++) {
-                    if (fx_1b3_trails[i].timer4C == 0 && work->unk0[2] >= 0xD) {
+                    if (fx_1b3_trails[i].timer4C == 0 && work->timers0[2] >= 0xD) {
                         s32 ang;
 
                         fx_1b3_trails[i].timer4C = (ex->btlfx_rand() & 3) + 4;
@@ -721,8 +721,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             env->otZ = 0;
         }
-        if (work->unk0[4] != 0) {
-            work->unk0[4]--;
+        if (work->timers0[4] != 0) {
+            work->timers0[4]--;
             fx_1b3_splitTrigger.radiusC = 0x80;
             fx_1b3_splitTrigger.posX4 = (u32)(ex->math_sin(fx_1b3_splitTrigger.angle10) * 0x341) >> 9;
             fx_1b3_splitTrigger.posZ8 = -(ex->math_cos(fx_1b3_splitTrigger.angle10) * 0x1A08) >> 12;
@@ -731,7 +731,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos110.vx = fx_1b3_splitTrigger.posX4;
             work->pos110.vy = fx_1b3_splitTrigger.posY6;
             work->pos110.vz = -fx_1b3_splitTrigger.posZ8;
-            for (i = work->unk0[5]; i < work->unk0[5] + 3; i++) {
+            for (i = work->timers0[5]; i < work->timers0[5] + 3; i++) {
                 if (fx_1b3_splits0[i].timer4 != 0) {
                     fx_1b3_splits0[i].timer4--;
                     fx_1b3_updateSplitPieces(&fx_1b3_splits0[i]);
@@ -739,8 +739,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        if (work->unk0[6] != 0) {
-            work->unk0[6]--;
+        if (work->timers0[6] != 0) {
+            work->timers0[6]--;
             fx_1b3_splitTrigger.mode0 = 2;
             fx_1b3_splitTrigger.radiusC = 0x80;
             fx_1b3_splitTrigger.posY6 -= 0x80;
@@ -750,11 +750,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&work->rot18C, &work->pos19C, (s32)&work->scale1BC, fx_1b3_splits1[0].model0);
             }
         }
-        if (work->unk0[7] != 0) {
-            work->unk0[7]--;
+        if (work->timers0[7] != 0) {
+            work->timers0[7]--;
             fx_1b3_splitTrigger.mode0 = 2;
             fx_1b3_splitTrigger.radiusC = 0x80;
-            fx_1b3_splitTrigger.posY6 = 0x990 - (0x80 - work->unk0[7]) * 0x80;
+            fx_1b3_splitTrigger.posY6 = 0x990 - (0x80 - work->timers0[7]) * 0x80;
             fx_1b3_splitTrigger.posX4 = -0x3CF;
             fx_1b3_splitTrigger.posZ8 = 0;
             if (fx_1b3_splits1[1].timer4 != 0) {
@@ -764,7 +764,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             fx_1b3_splitTrigger.mode0 = 3;
             fx_1b3_splitTrigger.radiusC = 0x100;
-            fx_1b3_splitTrigger.posX4 = (0x80 - work->unk0[7]) * 0x80 - 0x600;
+            fx_1b3_splitTrigger.posX4 = (0x80 - work->timers0[7]) * 0x80 - 0x600;
             fx_1b3_splitTrigger.posY6 = 0;
             fx_1b3_splitTrigger.posZ8 = 0;
             if (fx_1b3_splits2.timer4 != 0) {
@@ -773,14 +773,14 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&work->rot1CC, &work->pos1D4, (s32)&work->scale1E4, fx_1b3_splits2.model0);
             }
         }
-        if (work->unk0[8] != 0) {
-            work->unk0[8]--;
-            if (work->unk0[9] != 0) {
-                work->unk0[9]--;
+        if (work->timers0[8] != 0) {
+            work->timers0[8]--;
+            if (work->timers0[9] != 0) {
+                work->timers0[9]--;
                 fx_1b3_splitTrigger.mode0 = 4;
                 fx_1b3_splitTrigger.radiusC = 0x100;
                 fx_1b3_splitTrigger.posY6 = 0x331;
-                fx_1b3_splitTrigger.posX4 = 0x2BC - (0x22 - work->unk0[9]) * 0x100;
+                fx_1b3_splitTrigger.posX4 = 0x2BC - (0x22 - work->timers0[9]) * 0x100;
                 fx_1b3_splitTrigger.posZ8 = 0;
                 fx_1b3_updateSplitPieces(&fx_1b3_splits3[0]);
                 fx_1b3_updateSplitPieces(&fx_1b3_splits3[1]);
@@ -788,13 +788,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rot1FC, &work->pos20C, (s32)&work->scale22C, fx_1b3_splits3[0].model0);
             ex->Hi_DrawEffModel(&work->rot204, &work->pos21C, (s32)&work->scale22C, fx_1b3_splits3[1].model0);
         }
-        if (work->unk0[10] != 0) {
-            work->unk0[10]--;
+        if (work->timers0[10] != 0) {
+            work->timers0[10]--;
             fx_1b3_splitTrigger.mode0 = 5;
-            if (work->unk0[10] < 0x80) {
+            if (work->timers0[10] < 0x80) {
                 fx_1b3_splitTrigger.radiusC = 0;
             } else {
-                fx_1b3_splitTrigger.radiusC = (work->unk0[10] - 0x80) * 16;
+                fx_1b3_splitTrigger.radiusC = (work->timers0[10] - 0x80) * 16;
             }
             fx_1b3_splitTrigger.posY6 = 0x514;
             fx_1b3_splitTrigger.posX4 = 0;
@@ -804,9 +804,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&work->rot23C, &work->pos244, (s32)&work->scale254, fx_1b3_splits4[i].model0);
             }
         }
-        if (work->unk0[13] != 0) {
-            work->unk0[13]--;
-            switch (work->unk0[13]) {
+        if (work->timers0[13] != 0) {
+            work->timers0[13]--;
+            switch (work->timers0[13]) {
             case 0x1F:
                 ex->btlfx_drawScrollMove(0, 0x380, 0, 0x28, 0x50, 0x380, 0x50);
                 break;
@@ -821,11 +821,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 break;
             }
         }
-        if (work->unk0[11] != 0) {
+        if (work->timers0[11] != 0) {
 
-            work->unk0[11]--;
-            ((CVECTOR *)&w[0])->r = ((CVECTOR *)&w[0])->g = ((CVECTOR *)&w[0])->b = work->unk0[11] * 7;
-            sc.vz = sc.vy = sc.vx = work->unk0[11] * 10 + 0x1000;
+            work->timers0[11]--;
+            ((CVECTOR *)&w[0])->r = ((CVECTOR *)&w[0])->g = ((CVECTOR *)&w[0])->b = work->timers0[11] * 7;
+            sc.vz = sc.vy = sc.vx = work->timers0[11] * 10 + 0x1000;
             w[1].vx = 0;
             w[1].vy = 0;
             w[1].vz = 0;

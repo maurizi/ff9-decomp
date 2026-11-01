@@ -28,7 +28,6 @@ typedef struct {
 
 extern BtlModelBuf fx_130_effModels[];
 extern Fx130Unit fx_130_units[4];
-extern SVECTOR D_801E812C; /* fx_130_units[0].unk8 */
 
 s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

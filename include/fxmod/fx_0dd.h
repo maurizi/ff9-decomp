@@ -36,7 +36,7 @@ typedef struct {
     SVECTOR pos44; /* model position (16 bit) */
     SVECTOR pos4C; /* effect position */
     s32 morphTime54; /* morph time */
-    s32 unk58;
+    s32 unk58; /* write-only (-1 at init) */
     u16 model5C[6]; /* models */
 } Fx0ddWork80; /* 0x68 */
 

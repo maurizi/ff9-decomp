@@ -16,8 +16,8 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[25];
+    u8 pad3;
+    SVECTOR pts4[25]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0e0Bolt;
 
 extern Unk800F78A4 *fx_0e0_env;
@@ -87,15 +87,15 @@ typedef struct {
 
 typedef struct {
     s16 state0; /* state */
-    s16 unk2;
+    s16 unk2; /* unused */
     s16 velX4;
     s16 velY6;
     s16 velZ8;
-    s16 unkA;
+    s16 unkA; /* write-only */
     s16 posXC;
     s16 posYE;
     s16 posZ10;
-    s16 unk12;
+    s16 unk12; /* unused */
     s16 rotX14;
     s16 rotY16;
     s16 rotZ18;

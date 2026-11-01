@@ -6,7 +6,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0;
+    s32 unk0; /* unused */
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     SVECTOR posC;
@@ -14,20 +14,20 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    s32 unk4;
+    s32 unk4; /* unused */
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
     SVECTOR pos10;
-    s16 unk18;
-    s16 unk1A;
-    s16 unk1C;
+    s16 unk18; /* unused */
+    s16 unk1A; /* unused */
+    s16 unk1C; /* write-only (-1 at init) */
 } Fx12dWork81;
 
 typedef struct {
     SVECTOR rot0; /* model rotation */
     VECTOR pos8; /* model position */
     VECTOR scale18; /* model scale */
-    s32 unk28;
+    s32 unk28; /* unused */
     SVECTOR pos2C; /* caster position */
     u16 model34; /* model */
 } Fx12dWork82;

@@ -98,10 +98,10 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit14->trailStride = 0x40;
             }
             if (work->emit10 != NULL) {
-                ((Fx127EffHdr *)work->emit10->file)->unk8 = fx_127_op80ParticleMotion0;
+                ((Fx127EffHdr *)work->emit10->file)->motionFn8 = fx_127_op80ParticleMotion0;
             }
             if (work->emit14 != NULL) {
-                ((Fx127EffHdr *)work->emit14->file)->unk8 = fx_127_op80ParticleMotion1;
+                ((Fx127EffHdr *)work->emit14->file)->motionFn8 = fx_127_op80ParticleMotion1;
             }
             if (work->emit10 != NULL) {
                 work->emit10->otZ = ex->btlfx_addRadiusSixth(0, 0x20);

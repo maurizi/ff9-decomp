@@ -32,7 +32,7 @@ typedef struct {
 } Fx128Point;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx128Point *keys4;
 } Fx128Path;
@@ -52,14 +52,14 @@ typedef struct {
 } Fx128Key; /* 0xC */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* keys */
     Fx128Key *keys4;
 } Fx128Path_0b4;
 static s32 fxm_rotPosPathGet(Fx128Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 
 typedef struct {
-    u16 unk0;
+    u16 unk0; /* not read by the module */
     u16 count2; /* count */
     s16 *values4;
 } Fx128Keys;

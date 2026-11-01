@@ -20,9 +20,9 @@ typedef struct {
 } Fx19fKey;
 
 typedef struct {
-    s16 unk0;
-    s16 unk2; /* count */
-    Fx19fKey unk4[1];
+    s16 unk0; /* read only through a pointer moved onto a key (then the key's x) */
+    s16 unk2; /* count; through a pointer moved onto a key: the key's y */
+    Fx19fKey unk4[1]; /* not read as a member: the keys are reached by byte offsets */
 } Fx19fKeys;
 typedef struct {
     SVECTOR points0[17]; /* points of a 17-point trail (its 4-byte header precedes them) */
@@ -53,9 +53,9 @@ typedef struct {
     u8 index10; /* trail index */
     u8 kind11; /* kind */
     u8 index12;
-    u8 unk13;
-    u8 unk14;
-    u8 unk15;
+    u8 unk13; /* write-only (rand % 15) */
+    u8 unk14; /* write-only (cleared) */
+    u8 alpha15; /* brightness at t = 0 (fxm_drawJaggedTrail alpha, fades with t) */
     u8 pad16[2];
     s32 *noise18; /* noise */
 } Fx19fBolt;
@@ -97,7 +97,7 @@ typedef struct {
     s32 frame4; /* frame counter */
     SVECTOR pos8; /* base position */
     SVECTOR pos10;
-    SVECTOR unk18;
+    SVECTOR camPoint18; /* camera point 3: pos8 raised by 0x1EA */
     u8 pad20[0x28];
     s32 pos48[3]; /* model position */
     s32 scale54[3]; /* model scale */

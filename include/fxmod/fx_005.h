@@ -12,16 +12,16 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[16];
+    u8 pad3;
+    SVECTOR pts4[16]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx005Strip; /* 0x84 */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[8];
+    u8 pad3;
+    SVECTOR pts4[8]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
     u8 pad44[4];
 } Fx005Branch; /* 0x48 */
 
@@ -33,12 +33,13 @@ typedef struct {
     u8 state11; /* state */
     u8 branchAt12;
     u8 branchAt13;
-    u8 kind14; /* kind */
+    u8 kind14; /* strip kind: file block, and < FX_005_STRIP_FLAT screen-space */
     u8 width15;
     s16 pad16;
     s32 *jitter18; /* jitter table */
     Pool6CEntry *emit1C;
 } Fx005Bolt;
+#define FX_005_STRIP_FLAT 2 /* kind14 from here on: the strips draw flat (btlfx_drawTrail mode 2, else mode 0) */
 
 typedef struct {
     SVECTOR pos0; /* target body */
@@ -47,7 +48,10 @@ typedef struct {
     s32 boltCount14; /* bolts spawned */
 } Fx005Work; /* 0x18 */
 
-extern s16 fx_005_boltSchedule[];
+extern s16 fx_005_boltSchedule[]; /* per frame: 0 none or an FX_005_BOLT_* */
+#define FX_005_BOLT_FLAT 1 /* scattered vertical bolt, flat strip */
+#define FX_005_BOLT_STRIKE 2 /* from the target point, slanted, longer, screen-space strip */
+#define FX_005_BOLT_PAIR 3 /* two short bolts */
 extern Fx005Strip fx_005_strips[];
 extern Fx005Branch fx_005_branches[];
 extern s32 fx_005_jitter[];

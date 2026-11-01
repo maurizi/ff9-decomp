@@ -12,16 +12,16 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[15];
+    u8 pad3;
+    SVECTOR pts4[15]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx018Strip; /* 0x7C */
 
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[3];
+    u8 pad3;
+    SVECTOR pts4[3]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
     u8 pad1C[0x1C];
 } Fx018Branch; /* 0x38 */
 
@@ -33,11 +33,12 @@ typedef struct {
     u8 state11; /* state */
     u8 branchAt12; /* branch points */
     u8 branchAt13;
-    u8 kind14; /* kind */
+    u8 kind14; /* strip kind: file block, and < FX_018_STRIP_FLAT screen-space */
     s8 width15; /* extra width */
     u8 pad16[2];
     s32 *jitter18; /* jitter table */
 } Fx018Bolt;
+#define FX_018_STRIP_FLAT 2 /* kind14 from here on: the strips draw flat (btlfx_drawTrail mode 2, else mode 0) */
 
 typedef struct {
     SVECTOR pos0; /* target body */

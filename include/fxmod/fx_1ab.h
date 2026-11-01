@@ -16,7 +16,7 @@ typedef struct {
     SVECTOR rot38; /* model 2 rotation */
     VECTOR pos40; /* model 2 position */
     VECTOR scale50; /* model 2 scale */
-    VECTOR unk60;
+    VECTOR unk60; /* write-only (cleared at init) */
     SVECTOR pos70; /* target position */
     SVECTOR pos78;
     s16 timer80; /* fade-in countdown */

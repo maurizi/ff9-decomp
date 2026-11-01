@@ -127,15 +127,15 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
         it->emit24 = NULL;
         it->emit20 = NULL;
     } else {
-    if (it->kind0 != 4) {
+    if (it->kind0 != FX_0FB_1_SPARK) {
         it->rot14.vx += it->spinX1C;
         it->rot14.vy += it->spinY1E;
         BTLFX_COPY_SVEC(&rot, &work->rot6C);
         rot.pad = 1;
     }
     switch (it->kind0) {
-    case 0:
-    case 3: {
+    case FX_0FB_1_ROCK_BIG:
+    case FX_0FB_1_ROCK_PASS: {
         SVECTOR v;
 
         state = it->state2;
@@ -156,7 +156,7 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
                 c -= 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model4C, c, c, c);
             }
-            if (it->kind0 == 0) {
+            if (it->kind0 == FX_0FB_1_ROCK_BIG) {
                 if (pos.vz < work->modelZ5C + 0x20) {
                     it->state2 = 1;
                     ((s16 *)it)[-1] = -1;
@@ -164,14 +164,14 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
                     for (k = 0; k < 3; k++, a += 0x555) {
                         q = ex->btlfx_poolSpawn(entry->pool);
                         if (q != NULL) {
-                            q->kind0 = 2;
+                            q->kind0 = FX_0FB_1_ROCK_SHARD;
                             BTLFX_COPY_SVEC(&q->posC, &it->posC);
                             q->posC.vx += ex->btlfx_randCentered(0x100);
                             q->posC.vy += ex->btlfx_randCentered(0x100);
                             q->spinX1C = ex->btlfx_randCentered(0x84);
                             q->spinY1E = ex->btlfx_randCentered(0x84);
                             ex->btlfx_forwardAngles((s16 *)&v, (XY32 *)&work->rot6C, a);
-                            ex->btlfx_rotateOffset(&v, (it->speedA << 16) >> 21, (s32)&q->unk4);
+                            ex->btlfx_rotateOffset(&v, (it->speedA << 16) >> 21, (s32)&q->velX4);
                         }
                     }
                     it->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&it->posC);
@@ -235,7 +235,7 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
         }
         break;
     }
-    case 1:
+    case FX_0FB_1_ROCK_SMALL:
         state = it->state2;
         switch (state) {
         case 0:
@@ -306,12 +306,12 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
             return 0;
         }
         break;
-    case 2:
+    case FX_0FB_1_ROCK_SHARD:
         it->posC.vz += 0x32;
         it->posC.vy -= 0x19;
-        it->posC.vx += it->unk4;
-        it->posC.vy += it->unk6;
-        it->posC.vz += it->unk8;
+        it->posC.vx += it->velX4;
+        it->posC.vy += it->velY6;
+        it->posC.vz += it->velZ8;
         pos.vx = it->posC.vx;
         pos.vy = it->posC.vy;
         pos.vz = it->posC.vz;
@@ -327,9 +327,9 @@ static s32 fx_0fb_1_op80PoolTask(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk
             return 1;
         }
         break;
-    case 4:
+    case FX_0FB_1_SPARK:
         it->posC.vx = (s16)(it->posC.vx - 0x80) - it->speedA;
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &it->posC, NULL, (it->unk4 * 3) >> 1, 0,
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &it->posC, NULL, (it->velX4 * 3) >> 1, 0,
                                 1, -1, 0, 0);
         if (frame >= 0x11) {
             return 1;
@@ -480,7 +480,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             zz7->posC.vy = work->pos54.vy;
             zz7->posC.vz = work->pos54.vz;
             if (zz7->kind0 == 2) {
-                zz7->kind0 = 3;
+                zz7->kind0 = FX_0FB_1_ROCK_PASS;
                 f4 = ex->btlfx_rand();
                 zz7->posC.vx += (ex->math_sin(f4) * 2) / 3;
                 c = ex->math_cos(f4);
@@ -897,7 +897,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                                     -1, h, ex->math_cos(t >> 2), 1, (u8 *)&fx_0fb_1_strips[m], 1);
             }
             {
-                SVECTOR *pp = fx_0fb_1_strips[m].unk4;
+                SVECTOR *pp = fx_0fb_1_strips[m].pts4;
 
                 for (k = 0; k < 0x40; k++) {
                     pp->vy -= 0x40;
@@ -923,7 +923,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                 if (q != NULL) {
                     s32 d;
                     s32 e;
-                    q->kind0 = 4;
+                    q->kind0 = FX_0FB_1_SPARK;
                     BTLFX_COPY_SVEC(&q->posC, &work->centerC);
                     e = ex->btlfx_rand();
                     d = (ex->btlfx_rand() & 0x1FF) + 0x180;
@@ -931,7 +931,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                     q->posC.vy += (ex->math_cos(e) * d) >> 12;
                     q->posC.vz += (ex->math_sin(e) * d) >> 12;
                     q->speedA = ex->btlfx_rand() % 70;
-                    q->unk4 = (ex->btlfx_rand() & 0xFFF) + 0x1000;
+                    q->velX4 = (ex->btlfx_rand() & 0xFFF) + 0x1000;
                 }
             }
         }

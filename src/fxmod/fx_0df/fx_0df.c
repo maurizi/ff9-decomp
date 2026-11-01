@@ -536,7 +536,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *j
     s32 a;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    pt = bolt->unk4;
+    pt = bolt->pts4;
     bolt->count2 = 0xE;
     bolt->lastSlot0 = 0xE;
     bolt->head1 = 0;

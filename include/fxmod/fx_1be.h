@@ -19,7 +19,7 @@ extern Unk800F78A4 *fx_1be_env;
 /* end copied */
 
 typedef struct {
-    u8 unk0[0x20]; /* counters */
+    u8 counters0[0x20]; /* counters and flags, by index (cleared at init) */
     Pool6CEntry *emit20[16];
     s32 model60; /* model */
     VECTOR pos64; /* position */
@@ -34,7 +34,7 @@ typedef struct {
     VECTOR scaleAC;
     SVECTOR posBC;
     SVECTOR posC4;
-    SVECTOR unkCC;
+    SVECTOR unkCC; /* write-only (0, -0x2000, 0x418) */
     SVECTOR posD4;
 } Fx1beWork80; /* 0xDC */
 
@@ -49,7 +49,7 @@ typedef struct {
 } Fx1beUnit; /* 0x38 */
 
 extern BtlModelBuf fx_1be_effModels[];
-extern s32 D_801E95D0;
+extern s32 fx_1be_unusedScroll;
 extern s32 fx_1be_scrollPos;
 extern s32 fx_1be_scrollSpeed;
 extern Fx1beUnit fx_1be_units[];

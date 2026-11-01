@@ -64,9 +64,9 @@ s32 fx_039_op81(s32 mode, Fx039Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (d < 0x10) {
                 t = (d << 12) / 15;
                 ex->btlfx_lerpVec((s16 *)&work->pos10, (s16 *)&work->pos8, t, (s16 *)&work->pos18);
-                if (work->proj20 == 1) {
+                if (work->proj20 == FX_039_PROJ_ARC_NEG_X) {
                     work->pos18.vx -= (ex->math_sin(t >> 1) * 0x4B0) >> 12;
-                } else if (work->proj20 == 2) {
+                } else if (work->proj20 == FX_039_PROJ_ARC_POS_X) {
                     work->pos18.vx += (ex->math_sin(t >> 1) * 0x4B0) >> 12;
                 }
                 work->pos18.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;

@@ -219,7 +219,7 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     s = work->models40[0].scaleC.vx;
                     tr->angle104 += tr->spinB4;
                     tr->angle108 += tr->spinB8;
-                    pt = tr->unk4;
+                    pt = tr->pts4;
                     r = (ex->math_sin(tr->angle104) * s) >> 12;
                     tr->x10C = (ex->math_cos(tr->angle108) * r) >> 12;
                     tr->z110 = (ex->math_sin(tr->angle108) * r) >> 12;

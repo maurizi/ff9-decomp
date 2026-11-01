@@ -31,7 +31,7 @@ typedef struct {
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
-    s32 unk8;
+    s32 unk8; /* unused */
     Pool6CEntry *emitC;
     SVECTOR pos10; /* target body position */
     SVECTOR rot18;
@@ -44,7 +44,7 @@ typedef struct {
 /* effect file header as the particle path callback sees it */
 typedef struct {
     u8 pad0[8];
-    s32 (*unk8)(VECTOR *, s32, SVECTOR *, s32, s32, s32);
+    s32 (*motionFn8)(VECTOR *, s32, SVECTOR *, s32, s32, s32); /* particle motion callback, installed by the module */
 } Fx127EffHdr;
 
 extern SVECTOR fx_127_aimRot;

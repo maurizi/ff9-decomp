@@ -13,7 +13,7 @@ typedef struct {
 
 typedef struct {
     s32 state0; /* state */
-    s32 unk4;
+    s32 unk4; /* write-only (cleared at init) */
     u16 pixels8[0x3000]; /* captured screen strip */
 } Fx095Work81; /* 0x6008 */
 

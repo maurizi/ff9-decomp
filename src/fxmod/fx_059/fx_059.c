@@ -42,7 +42,7 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.rotZ4 = work->viewRot18;
         work->viewRot18 += 0x10;
         fn = ex->btlfx_pushViewRotation;
-        rot.unk0 = 0;
+        rot.rotXY0 = 0;
         fn((SVECTOR *)&rot);
         switch (work->state0) {
         case 0:

@@ -20,7 +20,7 @@ typedef struct {
 typedef struct {
     s32 state0; /* state */
     s16 kind4; /* kind */
-    s16 unk6; /* bob height, then phase */
+    s16 bob6; /* bob height, then phase */
     s32 frame8; /* frame */
     SVECTOR posC; /* position */
     SVECTOR rot14; /* rotation */
@@ -114,7 +114,6 @@ extern s16 fx_0fb_0_rockOrder[25];
 extern s16 fx_0fb_0_rockOffsets[];
 extern CVECTOR fx_0fb_0_rippleRgb[];
 extern CVECTOR fx_0fb_0_ribbonRgb[];
-extern CVECTOR D_801EB35C[];
 extern SVECTOR fx_0fb_0_bonePts[10];
 extern SVECTOR fx_0fb_0_bonePts1[];
 extern Fx0fb0SegBuf fx_0fb_0_ribbons[4];

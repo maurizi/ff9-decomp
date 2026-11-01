@@ -28,7 +28,7 @@ typedef struct {
 
 /* one shard, a pool item */
 typedef struct {
-    s16 unk0; /* state */
+    s16 state0; /* state; flying shards: piece index (< 6 picks the scale) */
     s16 flying2; /* flying */
     s32 shard4; /* index */
     s32 frame8; /* frame */
@@ -68,8 +68,8 @@ typedef struct {
     SVECTOR pos70;
     s16 split78;
     s16 spawnCount7A; /* shards spawned */
-    s32 unk7C;
-    s32 unk80;
+    s32 scrollFrame7C; /* frames of screen scroll (it slows over the first 11) */
+    s32 scroll80; /* btlfx_drawScrollMove offset */
     Pool6CEntry *emit84;
 } Fx0dcWork80; /* 0x88 */
 

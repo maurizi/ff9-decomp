@@ -10,7 +10,7 @@ typedef struct {
 } Fx1fcKey6;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx1fcKey6 *keys4;
 } Fx1fcTrack6;
@@ -20,7 +20,7 @@ typedef struct {
 } Fx1fcPoint;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx1fcPoint *keys4;
 } Fx1fcPath;
@@ -56,7 +56,7 @@ typedef struct {
 } Fx1fcKey; /* 0xC */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* keys */
     Fx1fcKey *keys4;
 } Fx1fcPath_0b4;
@@ -64,7 +64,7 @@ static s32 fxm_rotPosPathGet(Fx1fcPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *
 static s32 fxm_offsetTableEntry(u8 *base, u16 i);
 
 typedef struct {
-    u16 unk0;
+    u16 unk0; /* not read by the module */
     u16 count2; /* count */
     s16 *keys4;
 } Fx1fcKeys;
@@ -81,6 +81,7 @@ typedef struct {
     u16 countE;
 } Fx1fcTrack; /* 0x10 */
 extern Fx1fcTrack fx_1fc_camKeys[];
+#define FX_1FC_KEY_FREE (-1) /* timer6: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 extern s32 fx_1fc_camChanFrames[];
 static void fxm_camChanReset(void);
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);

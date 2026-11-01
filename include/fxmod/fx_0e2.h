@@ -11,8 +11,8 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[1]; /* (size - 4) / 8 points */
+    u8 pad3;
+    SVECTOR pts4[1]; /* ring points (btlfx_pushTrailPoint; pad: width * 2); (size - 4) / 8 of them */
 } Fx0e2Trail;
 
 typedef struct {
@@ -86,7 +86,7 @@ typedef struct {
 } Fx0e2Point;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx0e2Point *keys4;
 } Fx0e2Path;
@@ -152,7 +152,7 @@ typedef struct {
 typedef struct {
     Fx0e2Path pathA0;
     Fx0e2Path pathB8;
-    s16 unk10;
+    s16 unk10; /* write-only (cleared at init) */
     s16 fade12;
     s16 scale14;
     s16 width16;
@@ -162,8 +162,8 @@ typedef struct {
     Fx0e2Path path0;
     s16 base8;
     s16 countA;
-    s16 unkC;
-    s16 unkE;
+    s16 unkC; /* write-only (0x1000) */
+    s16 unkE; /* write-only (0x1000) */
     s16 width10;
 } Fx0e2Path80;
 
@@ -206,7 +206,7 @@ typedef struct {
     Fx0e2Path pathA0;
     Fx0e2Path pathB8;
     SVECTOR scale10; /* scale */
-    s16 unk18;
+    s16 unk18; /* passed to fxm_projectEdgesBlend, which ignores that argument (cleared at init) */
     s16 length1A; /* length */
     s16 bright1C; /* brightness */
     s16 width1E; /* width */
@@ -218,7 +218,7 @@ typedef struct {
 typedef struct {
     Fx0e2Path path0;
     SVECTOR scale8; /* scale */
-    s16 unk10;
+    s16 unk10; /* passed to fxm_projectEdges, which ignores that argument (cleared at init) */
     s16 length12; /* length */
     s16 bright14; /* brightness */
     s16 width16; /* width */
@@ -265,7 +265,7 @@ typedef struct {
 } Fx0e2Key; /* 0xC */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* keys */
     Fx0e2Key *keys4;
 } Fx0e2Path_0b4;
@@ -283,6 +283,7 @@ typedef struct {
     u16 stepsE;
 } Fx0e2Track; /* 0x10 */
 extern Fx0e2Track fx_0e2_camTracks[];
+#define FX_0E2_KEY_FREE (-1) /* left6: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 extern s32 fx_0e2_camChanFrame[];
 static void fxm_camChanReset(void);
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);

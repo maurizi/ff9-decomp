@@ -675,12 +675,12 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x150;
     } else if (mode == 1) {
         work->unkC.vx = 0x400;
-        work->unk14.vy = -0x78;
-        work->unk14.vz = 0x320;
+        work->pos14.vy = -0x78;
+        work->pos14.vz = 0x320;
         work->unkC.vy = 0;
         work->unkC.vz = 0;
         work->unkC.pad = 1;
-        work->unk14.vx = 0;
+        work->pos14.vx = 0;
         work->unk1C = 0x1800;
         work->rot20.vx = 0;
         work->rot20.vy = 0;
@@ -757,14 +757,14 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fxm_vecTrackInit(&fx_114_vecTrack4, (u16 *)ex->btlfx_getFileData(entry->file, 0x24));
         fxm_vecTrackInit(&fx_114_vecTrack5, (u16 *)ex->btlfx_getFileData(entry->file, 0x25));
         work->frame10C = 0;
-        work->unk104.vy = work->unk14.vy;
+        work->unk104.vy = work->pos14.vy;
         work->timer10E = -1;
         work->timer110 = -1;
         work->timer112 = -1;
         work->timer114 = -1;
         work->timer116 = -1;
-        work->unk104.vx = work->unk14.vx;
-        work->unk104.vz = work->unk14.vz;
+        work->unk104.vx = work->pos14.vx;
+        work->unk104.vz = work->pos14.vz;
         work->unk104.vy -= 0xF0;
     } else {
         frame = entry->frame;
@@ -1103,7 +1103,7 @@ static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot)
 
 static void fxm_camChanReset(void) {
     s32 i;
-    s32 m = -1;
+    s32 m = FX_114_KEY_FREE;
 
     for (i = 63; i >= 0; i--) {
         fx_114_camKeys[i].timer6 = m;
@@ -1120,7 +1120,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     data++;
     c = *data;
     for (i = 0; i < 64; i++) {
-        if (fx_114_camKeys[i].timer6 == -1) {
+        if (fx_114_camKeys[i].timer6 == FX_114_KEY_FREE) {
             fx_114_camKeys[i].timer6 = 0;
             fx_114_camKeys[i].keys0 = data;
             fx_114_camKeys[i].frame4 = start;

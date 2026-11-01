@@ -9,7 +9,7 @@
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* counter */
-    s32 unk8;
+    s32 unk8; /* write-only (btlfx_addRadiusSixth(0, 0x20)) */
     SVECTOR posC; /* target body position */
     SVECTOR pos14; /* caster body position */
 } Fx18bWork; /* 0x1C */

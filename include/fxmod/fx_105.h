@@ -7,7 +7,8 @@
 
 extern Unk800F78A4 *fx_105_env;
 typedef struct {
-    s16 vx, vy, vz, pad, unk8, unkA;
+    s16 vx, vy, vz;
+    s16 pad, unk8, unkA; /* unused */
 } Fx105Spark; /* 0xC */
 
 extern Fx105Spark fx_105_windStreaks[];
@@ -157,6 +158,7 @@ typedef struct {
 
 extern s32 fx_105_camFrame; /* frame */
 extern Fx105Track fx_105_camKeys[];
+#define FX_105_KEY_FREE (-1) /* timer4: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 static void fxm_camKeyReset(void);
 static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data);
 extern SVECTOR fx_105_camKeyPoints[];

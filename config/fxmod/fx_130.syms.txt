@@ -5,3 +5,4 @@ fxm_easeLerp = 0x801E7704; // type:func [code] btlfx_lerp from to over n frames 
 fx_130_env = 0x801E7DF4; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_130_effModels = 0x801E7E04; // [code] effect model buffers given to btlfx_initEffModels (BtlModelBuf per slot)
 fx_130_units = 0x801E8124; // [code] op80 table of 4 Fx130Unit states, one per target (position, rotation, delays, model)
+fx_130_unit0Rot = 0x801E812C; // [code] fx_130_units[0].rot8, a label the original code addressed on its own (the C reaches it through fx_130_units)

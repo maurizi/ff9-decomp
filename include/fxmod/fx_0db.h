@@ -27,7 +27,7 @@ typedef struct {
     s16 spawnCount26; /* particles spawned */
     s32 frame28; /* frame counter */
     s32 scroll2C;
-    s32 unk30;
+    s32 unk30; /* unused */
 } Fx0dbWork80;
 
 typedef struct {

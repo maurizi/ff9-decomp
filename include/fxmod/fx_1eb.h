@@ -10,7 +10,7 @@ typedef struct {
 } Fx1ebPoint;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx1ebPoint *keys4;
 } Fx1ebPath;
@@ -21,7 +21,7 @@ typedef struct {
 } Fx1ebKey; /* 0xC */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* keys */
     Fx1ebKey *keys4;
 } Fx1ebKeyPath;

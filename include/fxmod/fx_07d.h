@@ -18,7 +18,7 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
+    u8 pad3;
     SVECTOR pts4[15];
 } Fx07dStrip; /* 0x7C */
 
@@ -31,7 +31,7 @@ extern Fx07dStrip fx_07d_strips[];
 extern s32 fx_07d_jitter[64][3]; /* random arc profile */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared at spawn) */
     s16 scale2; /* scale */
     SVECTOR pos4; /* position */
     SVECTOR rotC; /* glow rotation */
@@ -44,9 +44,9 @@ typedef struct {
     s32 frame4; /* frame counter */
     s32 otZ8; /* ordering-table offset */
     SVECTOR posC; /* caster body position */
-    s32 unk14; /* caster body position, words */
-    s32 unk18;
-    s32 unk1C;
+    s32 unk14; /* write-only: caster body position, words */
+    s32 unk18; /* write-only */
+    s32 unk1C; /* write-only */
     s32 model20; /* glow model */
     s32 model24; /* model */
     s32 model28; /* model */

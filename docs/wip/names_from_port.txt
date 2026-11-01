@@ -11315,3 +11315,66 @@ D_800F7870 g_btlfxEnvData  # [code] the BtlfxEnv block g_btlfxEnv points at
 # FIELDS (R38): WmAnimKey (ovl_0a, ovl_0c) unk0=xy, unk4=zFlags [code] gte_ldrotkey; BgOverlayFlags.unk24=cameraWord
 #   (mask clears viewport); BtlModelHeader(Unk800AA08C).unk6=lookAtBone (ovl_0a WmModel.lookAtBone); comments added to
 #   ovl_0b WmSrcFT4.unk14, BtlBoneDef.unk2, Unk800AA958.unk6/8/E/20 (write-only)
+# ===== R38 fxmod =====
+# Round 38: the remaining unkXX members, compare literals and placeholders in the effect modules. Evidence [code];
+# the reason sits next to the member in include/fxmod/fx_XXX.h.
+
+## Batch 1: trail ring headers (btlfx_pushTrailPoint / btlfx_emitTrail* never read byte 3; points at +4)
+fx_003 fx_005 fx_018 fx_042 fx_049 fx_0ba fx_0d7 fx_0d8 fx_0d9 fx_0df fx_0e0 fx_0e2 fx_0e3_0 fx_0e3_1 fx_0e6
+  fx_085 fx_07d fx_101 fx_134 (ring structs): unk3 -> pad3
+fx_003 fx_005 fx_018 fx_026 fx_042 fx_049 fx_062 fx_063 fx_0b8 fx_0ba fx_0d7 fx_0d8 fx_0d9 fx_0df fx_0e0 fx_0e2
+  fx_0e3_0 fx_0e3_1 fx_0e6 fx_0fb_1 (ring structs): unk4[] -> pts4[] (ring points; SVECTOR pad = width * 2)
+
+## Batch 2: fx_001..fx_0fb_1 members
+fx_059: unk0 -> rotXY0
+fx_0b8: unk0 -> flags0
+fx_0d2: unkC -> fadeC, unkE -> scaleE
+fx_0dc: unk0 -> state0, unk7C -> scrollFrame7C, unk80 -> scroll80
+fx_0de: unk0 -> stop0
+fx_0e3_0: unk0 -> edgeA0, unk2 -> edgeB2
+fx_0ec: unk6 -> split6, unk1A -> delayOrTri1A, unk0 -> verts0
+fx_0fa: unk0 -> timers0
+fx_0fb_0: unk6 -> bob6
+fx_0fb_1: unk4 -> velX4, unk6 -> velY6, unk8 -> velZ8
+commented (unused / write-only / not read): fx_001 unk8; fx_026 unk0 unk6 unk0 unk0 unk8; fx_041 unk0; fx_059 unk6; fx_078 unk40; fx_079 unk98 unkF0; fx_07d unk0 unk14 unk18 unk1C; fx_081 unk1C; fx_082 unk4; fx_083 unkA4 unk154; fx_086 unk8; fx_087 unk0; fx_08b unk10; fx_08c unk10; fx_08f unk8; fx_090 unk4 unk8; fx_095 unk4; fx_096 unk4 unk10; fx_09a unk30; fx_09c unk0 unk8; fx_0a1 unk4; fx_0a7 unk8; fx_0a8 unk14 unk1C; fx_0b3 unk6; fx_0b8 unk1B4 unk1C4 unk20 unk1C; fx_0ba unk12 unk14 unk88 unk94 unk96 unk98 unk9A unk0 unk2 unk4; fx_0cb unk0 unk28; fx_0cd unkC; fx_0d2 unk0 unkC unk0 unk0; fx_0d3 unk0; fx_0d8 unk16; fx_0db unk30; fx_0dd unk58; fx_0df unk0 unk14 unk18 unk1C; fx_0e0 unk2 unkA unk12; fx_0e2 unk0 unk10 unkC unkE unk18 unk10 unk0; fx_0ef unk0
+
+## Batch 3: fx_104..fx_1fe members
+fx_114: unk14 -> pos14
+fx_125: unk0 -> stop0
+fx_127: unk8 -> motionFn8
+fx_17d_5: unk10 -> angle10, unk1E -> targetY1E, unk20 -> targetZ20
+fx_186: unk6 -> bobVelY6
+fx_198: unk0 -> x0, unk2 -> y2, unk4 -> z4
+fx_19f: unk15 -> alpha15, unk18 -> camPoint18
+fx_1b0: unk50 -> workBuf50
+fx_1b6: unk50 -> workBuf50
+fx_1b7: unk50 -> workBuf50
+fx_1b3: unk0 -> timers0
+fx_1bd: unkE -> scaleE, unk14 -> pos14
+fx_1cc: unk0 -> state0, unk18 -> velX18, unk1A -> velY1A, unk1C -> velZ1C
+fx_1ea: unk10 -> width10
+fx_1f2: unk4C -> timer4C
+fx_1be: unk0 -> counters0
+commented (unused / write-only / not read): fx_104 unk4; fx_10b unk4; fx_10c unk4; fx_114 unk2C unk34 unk44 unk0 unkC unk1C unk94 unk104 unk144; fx_115 unk4; fx_123 unk0 unk0 unk178 unk1C unk22; fx_127 unk8; fx_128 unk0 unk0 unk0; fx_129 unk48 unk5C; fx_12a unk4; fx_12b unk14 unk22 unk0; fx_12d unk0 unk4 unk18 unk1A unk1C unk28; fx_138 unk0 unk34 unk8A unk8C unk8E unk8 unkA unkC unkE; fx_179 unk12; fx_17a unk2 unk6 unk8 unk14 unk1C unk1E unk20 unk24; fx_17d_0 unk0 unk10 unk30; fx_17d_1 unk8; fx_17d_2 unk0; fx_17d_3 unk60; fx_17d_5 unk16; fx_17d_6 unk13; fx_17d_7 unk13; fx_17d_8 unk0 unk34; fx_180 unk0 unk4C; fx_183 unk0; fx_184 unk8; fx_186 unk0 unk4; fx_18a unk20; fx_18b unk8; fx_191 unk0; fx_195 unk8 unk44; fx_196 unk0 unk6; fx_197 unk12 unk0 unk6 unk8; fx_198 unk14 unk16 unk18 unk20; fx_19f unk0 unk2 unk4 unk13 unk14; fx_1a0 unk0; fx_1a2 unk12 unk26; fx_1ab unk60; fx_1b0 unk30; fx_1b2 unk0 unk0; fx_1b3 unkA unkC; fx_1b4 unk0; fx_1b6 unk4; fx_1b7 unk4; fx_1bd unk0 unk2C unk34 unk44 unk64 unkC unk1C unk104; fx_1be unkCC; fx_1bf_0 unk4 unk10; fx_1bf_1 unk13 unk4; fx_1bf_2 unk0 unk34; fx_1cc unk1E; fx_1e6 unk0 unk0 unkE; fx_1e7 unk0 unk10 unk30; fx_1e9 unk20; fx_1ea unk0 unk0; fx_1eb unk0 unk0; fx_1ec unk0; fx_1f1 unk14; fx_1f2 unk1C unk30; fx_1f3 unk8; fx_1fc unk0 unk0 unk0 unk0; fx_1fd unk0 unk0 unk18 unk10 unk50; fx_1fe unk8
+fx_105: Fx105Spark pad, unk8, unkA commented unused (split off the vx, vy, vz line)
+
+## Batch 4: literals -> module macros (include/fxmod/fx_XXX.h)
+FX_0D2_KEY_FREE, FX_0E2_KEY_FREE, FX_105_KEY_FREE, FX_114_KEY_FREE, FX_1BD_KEY_FREE, FX_1ED_KEY_FREE, FX_1EE_KEY_FREE,
+  FX_1EF_KEY_FREE, FX_1FC_KEY_FREE, FX_1FD_KEY_FREE (-1): camera key / channel slot not in use (the fxm_cam*Reset fill,
+  the fxm_cam*Add search).
+FX_003/005/018/042/049/085/0D7/0D8/0D9_STRIP_FLAT 2: kind14 from here on, the jagged strips draw flat
+  (btlfx_drawTrail mode 2, below it mode 0) in fxm_drawJaggedStrip16/4 and the bolt pool task.
+FX_005/049_BOLT_FLAT 1, _BOLT_STRIKE 2, _BOLT_PAIR 3: fx_XXX_boltSchedule values (op80 spawn shape).
+FX_039_PROJ_ARC_NEG_X 1 / _ARC_POS_X 2 (proj20); FX_049_WIDTH_DEFAULT 0xFF (width15);
+FX_09B_SHOTS 5 / FX_09B_LAST_SHOT; FX_1A6_SHOTS 3 / FX_1A6_LAST_SHOT; FX_185_SPEARS 0x10 / FX_185_LAST_SPEAR
+  (instance counts from the op argument, the last one skips the hit motion or clears the models);
+FX_0FB_1_ROCK_BIG 0, _ROCK_SMALL 1, _ROCK_SHARD 2, _ROCK_PASS 3, FX_0FB_1_SPARK 4 (Fx0fb1Rock.kind0, its switch);
+FX_17A_PART_SPARK 4 (Fx17aPart.state0); FX_17D_5_HIT_BURST 0, _HIT_RING 1, _HIT_FINAL 2 (Fx17d5Spark.angle10 after spawn).
+Left as numbers: counts (targetCount == 1, boltCountC == 3, count64 != 2), spark / slot indexes (index6 == 1,
+  Pool6CEntry slot == 1: no ovl_0b macro), work state machines, fade4 0x80 (neutral brightness), timeline frames.
+
+## Batch 5: placeholders
+fx_138: D_801E8408 -> fx_138_reels; fx_1bf_0: D_801EA1FC -> fx_1bf_0_unusedBuf; fx_0b8: D_801EC1B0 -> fx_0b8_unusedScroll;
+fx_1be: D_801E95D0 -> fx_1be_unusedScroll; fx_130: D_801E812C -> fx_130_unit0Rot; fx_0fb_0: D_801EB35C -> fx_0fb_0_ribbonRgb1
+(reasons in the syms files). Removed the unused externs fx_130_unit0Rot, fx_0fb_0_ribbonRgb1 and fx_0fb_1 D_801F0D3C (no
+label or user anywhere). fx_0d3 comment: fx_0e1_0 func_801E7CB4 -> fxm_drawTexRibbonTrail.

@@ -62,7 +62,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         fx_1be_env = env;
         ex->btlfx_initEffModels(fx_1be_effModels, 5);
         {
-            u8 *b = &w->unk0[31];
+            u8 *b = &w->counters0[31];
             for (i = 31; i >= 0; i--, b--) {
                 *b = 0;
             }
@@ -72,7 +72,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         fx_1be_scrollPos = 8;
         fx_1be_scrollSpeed = 8;
-        D_801E95D0 = 2;
+        fx_1be_unusedScroll = 2;
         for (i = 0; i < env->targets->targetCount; i++) {
             fx_1be_units[i].timer34 = ex->btlfx_rand() & 7;
             fx_1be_units[i].timer30 = 0x28;
@@ -127,11 +127,11 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         env->camera->points[3].vz = w->pos64.vz;
         switch (frame) {
         case 0:
-            w->unk0[1] = 0x28;
-            w->unk0[0xD] = 0x20;
-            w->unk0[0] = 1;
-            w->unk0[0x14] = 1;
-            w->unk0[4] = 0x10;
+            w->counters0[1] = 0x28;
+            w->counters0[0xD] = 0x20;
+            w->counters0[0] = 1;
+            w->counters0[0x14] = 1;
+            w->counters0[4] = 0x10;
             break;
         case 0x18:
             w->emit20[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&w->posBC);
@@ -142,24 +142,24 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             if (w->emit20[1] != NULL) {
                 w->emit20[1]->otZ = 0x200;
             }
-            w->unk0[0xF] = 0x20;
-            w->unk0[7] = 0x10;
-            w->unk0[5] = 1;
-            w->unk0[0x14] = 1;
-            w->unk0[0xC] = 0x30;
+            w->counters0[0xF] = 0x20;
+            w->counters0[7] = 0x10;
+            w->counters0[5] = 1;
+            w->counters0[0x14] = 1;
+            w->counters0[0xC] = 0x30;
             p = w->emit20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->posD4);
             if (p != NULL) {
                 p->file->m.module.update = fx_1be_op80ParticleMotion;
             }
             break;
         case 0x30:
-            w->unk0[0xE] = 0x10;
+            w->counters0[0xE] = 0x10;
             break;
         case 0x40:
-            w->unk0[9] = 0x3C;
-            w->unk0[0xA] = 0x10;
-            w->unk0[0x12] = frame;
-            w->unk0[6] = 1;
+            w->counters0[9] = 0x3C;
+            w->counters0[0xA] = 0x10;
+            w->counters0[0x12] = frame;
+            w->counters0[6] = 1;
             ex->btlfx_stopEmitter(w->emit20[2]);
             w->scale74.vx = 0x555;
             w->scale74.vy = 0x555;
@@ -187,22 +187,22 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             }
             break;
         case 0x54:
-            w->unk0[3] = 8;
+            w->counters0[3] = 8;
             break;
         case 0x5C:
-            w->unk0[0] = 0;
-            w->unk0[5] = 0;
-            w->unk0[0x14] = 0;
+            w->counters0[0] = 0;
+            w->counters0[5] = 0;
+            w->counters0[0x14] = 0;
             break;
         case 0x2C:
-            w->unk0[0xB] = 0x10;
+            w->counters0[0xB] = 0x10;
             break;
         case 0x7C:
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_setUnitScale(i, (s32 *)&fx_1be_units[i].scale8);
                 ex->btlfx_setUnitRot(i, (s16 *)&fx_1be_units[i].rot0);
             }
-            w->unk0[0x10] = 8;
+            w->counters0[0x10] = 8;
             break;
         case 0xAC:
             return 1;
@@ -212,63 +212,63 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 w->emit20[i] = NULL;
             }
         }
-        if (w->unk0[1] != 0) {
-            w->unk0[1]--;
-            w->pos64.vy = fxm_easeLerp(2, 0x28, w->unk0[1], -0x2000, -0x1000);
+        if (w->counters0[1] != 0) {
+            w->counters0[1]--;
+            w->pos64.vy = fxm_easeLerp(2, 0x28, w->counters0[1], -0x2000, -0x1000);
             w->pos8C.vy = w->pos64.vy;
         }
-        if (w->unk0[3] != 0) {
-            w->unk0[3]--;
-            w->scale74.vx = w->scale74.vz = w->scale74.vy = fxm_easeLerp(1, 8, w->unk0[3], 0x555, 0);
+        if (w->counters0[3] != 0) {
+            w->counters0[3]--;
+            w->scale74.vx = w->scale74.vz = w->scale74.vy = fxm_easeLerp(1, 8, w->counters0[3], 0x555, 0);
         }
-        if (w->unk0[0] != 0) {
+        if (w->counters0[0] != 0) {
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), frame);
             ex->Hi_DrawEffModel(&w->rot84, &w->pos64, (s32)&w->scale74, w->model60);
         }
-        if (w->unk0[0xD] != 0) {
-            w->unk0[0xD]--;
+        if (w->counters0[0xD] != 0) {
+            w->counters0[0xD]--;
             ex->Hi_DrawEffModel(&w->rot84, &w->pos64, (s32)&w->scaleAC, w->modelA8);
-            if (w->unk0[0xD] < 0x10) {
-                a = (w->unk0[0xD] - 0x10) * 0x10;
+            if (w->counters0[0xD] < 0x10) {
+                a = (w->counters0[0xD] - 0x10) * 0x10;
                 ex->Hi_ModifyEffModelRGB(w->modelA8, a, a, a);
             }
         }
-        if (w->unk0[0xF] != 0) {
-            w->unk0[0xF]--;
+        if (w->counters0[0xF] != 0) {
+            w->counters0[0xF]--;
             ex->btlfx_moveEmitterTo((s32)w->emit20[0], (s32)&w->pos8C);
             ex->btlfx_moveEmitterTo((s32)w->emit20[1], (s32)&w->pos8C);
         }
-        if (w->unk0[0xE] != 0) {
-            if (--w->unk0[0xE] != 0) {
+        if (w->counters0[0xE] != 0) {
+            if (--w->counters0[0xE] != 0) {
                 if (w->emit20[0] != NULL) {
-                    w->emit20[0]->alpha = w->unk0[0xE] << 8;
+                    w->emit20[0]->alpha = w->counters0[0xE] << 8;
                 }
                 if (w->emit20[1] != NULL) {
-                    w->emit20[1]->alpha = w->unk0[0xE] << 8;
+                    w->emit20[1]->alpha = w->counters0[0xE] << 8;
                 }
             } else {
                 ex->btlfx_stopEmitter(w->emit20[0]);
                 ex->btlfx_stopEmitter(w->emit20[1]);
             }
         }
-        if (w->unk0[5] != 0) {
+        if (w->counters0[5] != 0) {
             aim.vx = w->pos64.vx;
             aim.vy = w->pos64.vy;
             aim.vz = w->pos64.vz;
             ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&aim, (s16 *)&w->rot9C);
             ex->Hi_DrawEffModel(&w->rot9C, &w->pos64, (s32)&w->scale74, w->model94);
-            if (w->unk0[6] != 0) {
+            if (w->counters0[6] != 0) {
                 ex->Hi_DrawEffModel(&w->rot9C, &w->pos64, (s32)&w->scale74, w->model98);
                 ex->Hi_DrawEffModel(&w->rot84, &w->pos64, (s32)&w->scale74, w->modelA4);
             }
         }
-        if (w->unk0[7] != 0) {
-            w->unk0[7]--;
-            a = -(w->unk0[7] * 0x10);
+        if (w->counters0[7] != 0) {
+            w->counters0[7]--;
+            a = -(w->counters0[7] * 0x10);
             ex->Hi_ModifyEffModelRGB(w->model94, a, a, a);
         }
-        if (w->unk0[0xC] != 0) {
-            w->unk0[0xC]--;
+        if (w->counters0[0xC] != 0) {
+            w->counters0[0xC]--;
             for (i = 0; i < env->targets->targetCount; i++) {
                 u = &fx_1be_units[i];
                 if (u->timer34 == 0) {
@@ -288,16 +288,16 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 }
             }
         }
-        if (w->unk0[9] != 0) {
+        if (w->counters0[9] != 0) {
             a = 0xFFF;
-            w->unk0[9]--;
-            if (w->unk0[0xA] != 0) {
-                w->unk0[0xA]--;
-                a = (0x10 - w->unk0[0xA]) << 8;
+            w->counters0[9]--;
+            if (w->counters0[0xA] != 0) {
+                w->counters0[0xA]--;
+                a = (0x10 - w->counters0[0xA]) << 8;
             }
-            if (w->unk0[0xB] != 0) {
-                w->unk0[0xB]--;
-                a = w->unk0[0xB] << 8;
+            if (w->counters0[0xB] != 0) {
+                w->counters0[0xB]--;
+                a = w->counters0[0xB] << 8;
             }
             ex->btlfx_aimAngles((s16 *)&w->pos8C, (s16 *)&env->camera->eye, (s16 *)&rot2);
             pos.vz = 0xC18;
@@ -311,13 +311,13 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             rot2.vx -= 0x140;
             fx_1be_drawGradientGrid(&pos, &rot2, a, 0x19, 0x3D03, 1);
         }
-        if (w->unk0[0x10] != 0) {
-            w->unk0[0x10]--;
+        if (w->counters0[0x10] != 0) {
+            w->counters0[0x10]--;
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitHomePos(i, (s16 *)&fx_1be_units[i].pos18);
-                fx_1be_units[i].pos18.vy -= ex->math_sin(w->unk0[0x10] << 7) >> 1;
+                fx_1be_units[i].pos18.vy -= ex->math_sin(w->counters0[0x10] << 7) >> 1;
                 ex->btlfx_setUnitPos(i, (s16 *)&fx_1be_units[i].pos18);
-                if (w->unk0[0x10] == 0) {
+                if (w->counters0[0x10] == 0) {
                     fx_1be_units[i].pos18.vy = 0;
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1be_units[i].pos18);
                     if (p != NULL) {
@@ -326,24 +326,24 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 }
             }
         }
-        if (w->unk0[0x12] != 0) {
-            w->unk0[0x12]--;
-            fx_1be_scrollSpeed = fxm_easeLerp(1, 0x40, w->unk0[0x12], 4, 0x14);
+        if (w->counters0[0x12] != 0) {
+            w->counters0[0x12]--;
+            fx_1be_scrollSpeed = fxm_easeLerp(1, 0x40, w->counters0[0x12], 4, 0x14);
         }
         fx_1be_scrollPos += fx_1be_scrollSpeed;
-        if (w->unk0[5] != 0) {
+        if (w->counters0[5] != 0) {
             ex->btlfx_drawScrollMove(fx_1be_scrollPos, 0x2C0, 0x100, 0x38, 0x70, 0x2C0, 0x170);
         }
-        if (w->unk0[0x14] != 0) {
+        if (w->counters0[0x14] != 0) {
             ex->btlfx_drawScrollMove(0x2710 - fx_1be_scrollPos, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
         }
-        if (w->unk0[9] != 0) {
+        if (w->counters0[9] != 0) {
             ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x140, 0x18, 0x60, 0x240, 0x1A0);
         }
-        if (w->unk0[4] != 0) {
-            w->unk0[4]--;
-            col.r = col.g = col.b = w->unk0[4] * 8;
-            scale.vz = scale.vy = scale.vx = w->unk0[4] * 0x10 + 0x1000;
+        if (w->counters0[4] != 0) {
+            w->counters0[4]--;
+            col.r = col.g = col.b = w->counters0[4] * 8;
+            scale.vz = scale.vy = scale.vx = w->counters0[4] * 0x10 + 0x1000;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;

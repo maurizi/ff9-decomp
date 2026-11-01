@@ -286,7 +286,7 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
     s32 k;
 
     if (mode == 1) {
-        o->unk0 = 0;
+        o->state0 = 0;
         o->frame8 = 0;
     } else if (o->kind2 == 0) {
         SVECTOR a;
@@ -309,10 +309,10 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
         s32 u;
 
         tab = &fx_1cc_dirRots[o->index4];
-        switch (o->unk0) {
+        switch (o->state0) {
         case 0:
             if (o->frame8 == 0) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&o->unk18);
+                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&o->velX18);
                 o->emit34 = e;
                 if (e != NULL) {
                     e->otZ = 0x80;
@@ -327,7 +327,7 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
                 o->emit34->rot.vz = a.vz;
             }
             if (++o->frame8 > 0) {
-                o->unk0 = 1;
+                o->state0 = 1;
                 o->frame8 = 0;
             }
             break;
@@ -343,7 +343,7 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
                 o->emit34->rot.vz = a.vz;
             }
             if (++o->frame8 >= 4) {
-                o->unk0 = 2;
+                o->state0 = 2;
                 o->frame8 = 0;
             }
             break;
@@ -373,7 +373,7 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
                 if (o->index4 < 3) {
                     n = 10;
                 }
-                BTLFX_COPY_SVEC(&c, &o->unk18);
+                BTLFX_COPY_SVEC(&c, &o->velX18);
                 for (i = 0, m = 0; i < 4; m += 0x29, i++, n++) {
                     ch = o;
                     if (i != 0) {
@@ -381,7 +381,7 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
                     }
                     if (ch != NULL) {
                         ch->kind2 = 1;
-                        ch->unk0 = n;
+                        ch->state0 = n;
                         ch->index4 = i;
                         ch->frame8 = 0;
                         ch->model2C = inst->model20[n];
@@ -396,10 +396,10 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
                         r = (x - m) << 4;
                         BTLFX_COPY_SVEC(&d, tab);
                         d.vx += 0x80;
-                        ex->btlfx_rotateOffset(&d, -r, (s32)&ch->unk18);
-                        ch->unk18 += ex->btlfx_randCentered(0x200);
-                        ch->unk1A += ex->btlfx_randCentered(0x200);
-                        ch->unk1C += ex->btlfx_randCentered(0x200);
+                        ex->btlfx_rotateOffset(&d, -r, (s32)&ch->velX18);
+                        ch->velX18 += ex->btlfx_randCentered(0x200);
+                        ch->velY1A += ex->btlfx_randCentered(0x200);
+                        ch->velZ1C += ex->btlfx_randCentered(0x200);
                     }
                 }
             }
@@ -420,14 +420,14 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
 
         t = ((o->frame8 << 12) / 22) >> 2;
         c = ex->math_cos(t);
-        o->posXC += o->unk18;
-        o->posY10 += o->unk1A;
-        o->posZ14 += o->unk1C;
-        o->unk1A += 0x40;
+        o->posXC += o->velX18;
+        o->posY10 += o->velY1A;
+        o->posZ14 += o->velZ1C;
+        o->velY1A += 0x40;
         o->rot20.vx += o->spin28;
         o->rot20.vy += o->spin2A;
         c = (c * 3) >> 1;
-        if (o->unk0 < 6) {
+        if (o->state0 < 6) {
             sc.vx = sc.vy = (ex->math_cos(t) * 0x3000) >> 12;
             sc.vz = (ex->math_cos(t) * 0x2000) >> 12;
         } else {
@@ -605,9 +605,9 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rad = 0x1DD;
                     ch3->posXC += (ex->math_sin(tab->vy + 0x800) * rad) >> 12;
                     ch3->posZ14 += (ex->math_cos(tab->vy + 0x800) * rad) >> 12;
-                    ch3->unk18 = ch3->posXC;
-                    ch3->unk1A = ch3->posY10;
-                    ch3->unk1C = ch3->posZ14;
+                    ch3->velX18 = ch3->posXC;
+                    ch3->velY1A = ch3->posY10;
+                    ch3->velZ1C = ch3->posZ14;
                     work->index7A++;
                 }
             }
@@ -674,7 +674,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ch = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (ch != NULL) {
                         ch->kind2 = 1;
-                        ch->unk0 = j;
+                        ch->state0 = j;
                         ch->index4 = j;
                         ch->frame8 = 0;
                         ch->model2C = work->model20[j];
@@ -687,9 +687,9 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         ch->spin28 = ex->btlfx_randCentered(0x5C);
                         ch->spin2A = ex->btlfx_randCentered(0x80);
                         rnd = (ex->btlfx_rand() & 0xF) + 0x5C;
-                        ex->btlfx_rotateOffset(&rot, -((rnd - j * 8) << 4), (s32)&ch->unk18);
-                        ch->unk18 += ex->btlfx_randCentered(0x3E0);
-                        ch->unk1C += ex->btlfx_randCentered(0x3E0);
+                        ex->btlfx_rotateOffset(&rot, -((rnd - j * 8) << 4), (s32)&ch->velX18);
+                        ch->velX18 += ex->btlfx_randCentered(0x3E0);
+                        ch->velZ1C += ex->btlfx_randCentered(0x3E0);
                     }
                 }
             }

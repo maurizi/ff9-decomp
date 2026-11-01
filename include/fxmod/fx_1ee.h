@@ -90,6 +90,7 @@ typedef struct {
 
 extern s32 fx_1ee_camFrame; /* frame */
 extern Fx1eeTrack fx_1ee_camKeys[];
+#define FX_1EE_KEY_FREE (-1) /* timer4: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 static void fxm_camKeyReset(void);
 static void fxm_camKeyAdd(s32 start, u32 dst, u32 src, s16 *data);
 extern SVECTOR fx_1ee_camKeyPoints[];

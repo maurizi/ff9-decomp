@@ -6,7 +6,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
+    s32 stop0; /* dead early-out flag, cleared at init and never set (see Fx046Work.stop0) */
     SVECTOR pos4; /* target position */
     SVECTOR posC;
     SVECTOR pos14; /* target body position */

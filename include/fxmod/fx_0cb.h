@@ -8,7 +8,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared at spawn) */
     s16 scale2; /* scale */
     SVECTOR pos4; /* position */
     SVECTOR rotC; /* rotation */
@@ -30,7 +30,7 @@ typedef struct {
     Fx0cbVec3 pos14;
     s32 model20; /* model */
     s32 model24; /* model */
-    s32 unk28;
+    s32 unk28; /* unused */
 } Fx0cbWork; /* 0x2C */
 
 extern BtlModelBuf fx_0cb_effModels[];

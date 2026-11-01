@@ -20,12 +20,12 @@ typedef struct {
     s32 height3C;
     s32 height40; /* height offset */
     s32 frame44; /* phase time */
-    s32 unk48;
+    s32 unk48; /* unused */
     s32 fade4C; /* fade time */
     s32 color50; /* brightness */
     s32 timer54; /* squash countdown */
     s32 count58; /* landings */
-    s32 unk5C;
+    s32 unk5C; /* write-only (cleared at init) */
     s32 timer60; /* shake countdown */
     Fx129Vec3 scale64; /* target scale */
     Fx129Vec3 scale70;

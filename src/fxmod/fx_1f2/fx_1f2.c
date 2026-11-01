@@ -30,7 +30,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 /* Matching levers: variables shared between distant blocks become long global pseudos that take callee-saved
  * registers, so most blocks use their own copies of i, j, tr, sv, alpha, lo, md and tint. Trail point stores go
  * through an SVECTOR pointer (sv->vx ... sv->pad; sv++) so loop.c combines the vy/vz/pad stores onto one giv.
- * The unk4C block: the GTE path's header pointer pt is assigned in both paths, so it is no giv (find_givs wants
+ * The timer4C block: the GTE path's header pointer pt is assigned in both paths, so it is no giv (find_givs wants
  * a single set): it stays off + base, with sv = pt + 4, as in the original. The loop's insn count decides
  * move_movables' threshold test (threshold * savings * lifetime >= insn_count, threshold 29 - 3 per move,
  * insn_count doubled for a register already moved by an inner loop); the GTE x offset written j * 0x60 (a giv
@@ -118,12 +118,12 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_1f2_emitPos1.vy = 0;
         fx_1f2_emitPos1.vz = 0;
         for (i = 0; i < 0x10; i++) {
-            fx_1f2_trails[i].unk4C = 0;
+            fx_1f2_trails[i].timer4C = 0;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&fx_1f2_trails[i], 0);
         }
         for (i = 0; i < 8; i++) {
-            fx_1f2_trails[i].unk4C = ex->btlfx_rand() & 0xF;
+            fx_1f2_trails[i].timer4C = ex->btlfx_rand() & 0xF;
             for (j_m1s = 0; j_m1s < 0x10;) {
                 if (i & 1) {
                     a_m1s = j_m1s << 8;
@@ -248,7 +248,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x5F:
             work->timer4C = 0;
             for (i = 0; i < 0x10; i++) {
-                fx_1f2_trails[i].unk4C = 0;
+                fx_1f2_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), 0, NULL, -1, 0x1000, 0x1000, 1,
                                     (u8 *)&fx_1f2_trails[i], 0);
             }
@@ -326,7 +326,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x18F:
             work->timer14 = 0x10;
             for (i = 0; i < 0x10; i++) {
-                fx_1f2_unitTrails[i].unk4C = 0;
+                fx_1f2_unitTrails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), 0, NULL, -1, 0x1000, 0x1000, 1,
                                     (u8 *)&fx_1f2_unitTrails[i], 0);
             }
@@ -525,7 +525,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer34--;
             for (i = 0; i < 0x10; i++) {
                 tr_sp = &fx_1f2_trails[i];
-                if (tr_sp->unk4C == 0 && work->timer34 >= 0xD) {
+                if (tr_sp->timer4C == 0 && work->timer34 >= 0xD) {
                     ex->math_rotMatrixYXZ(&fx_1f2_sparkRot, &m);
                     m.t[0] = fx_1f2_emitPos0.vx;
                     m.t[1] = fx_1f2_emitPos0.vy;
@@ -545,7 +545,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         gte_stlvnl(&out[j]);
                         gte_stflg(&flag);
                     }
-                    tr_sp->unk4C = (ex->btlfx_rand() & 3) + 8;
+                    tr_sp->timer4C = (ex->btlfx_rand() & 3) + 8;
                     step.vx = (out[0].vx - out[1].vx) / 9;
                     step.vy = (out[0].vy - out[1].vy) / 9;
                     step.vz = (out[0].vz - out[1].vz) / 9;
@@ -565,8 +565,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->otZ = 0x80;
             for (i = 0; i < 0x10; i++) {
                 tr_sp2 = &fx_1f2_trails[i];
-                if (tr_sp2->unk4C != 0) {
-                    if (--tr_sp2->unk4C < 8) {
+                if (tr_sp2->timer4C != 0) {
+                    if (--tr_sp2->timer4C < 8) {
                         s32 n = 9;
 
                         tr_sp2->lastSlot0 = tr_sp2->count2 = 8;
@@ -582,7 +582,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             sv_sp2->pad = work->halfWidth38;
                             sv_sp2++;
                         }
-                        alpha = tr_sp2->unk4C << 9;
+                        alpha = tr_sp2->timer4C << 9;
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), 0, NULL, frame, 0x1000, alpha, 1,
                                             (u8 *)&fx_1f2_trails[i], 0);
                     }
@@ -599,8 +599,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 Fx1f2Trail *pt;
 
                 if (i >= 8) {
-                    if (fx_1f2_trails[i].unk4C != 0) {
-                        if (--fx_1f2_trails[i].unk4C < 8) {
+                    if (fx_1f2_trails[i].timer4C != 0) {
+                        if (--fx_1f2_trails[i].timer4C < 8) {
                             if (i & 1) {
                                 ex->btlfx_getUnitBoneMatrix(0x10, 5, (BtlBone *)&m);
                                 m.t[0] = work->bonePos110[0].vx;
@@ -646,7 +646,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             }
                         }
                     } else {
-                        fx_1f2_trails[i].unk4C = (ex->btlfx_rand() & 3) + 8;
+                        fx_1f2_trails[i].timer4C = (ex->btlfx_rand() & 3) + 8;
                         for (j_u4ce = 0; j_u4ce < 9; j_u4ce++) {
                             fx_1f2_trails[i].pos50[j_u4ce].vx = 0;
                             fx_1f2_trails[i].pos50[j_u4ce].vy = 0;
@@ -661,8 +661,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
                     n = 9;
                     sv = tp->points4;
-                    a = fx_1f2_trails[i].unk4C;
-                    fx_1f2_trails[i].unk4C = fx_1f2_trails[i].pos50[a].pad;
+                    a = fx_1f2_trails[i].timer4C;
+                    fx_1f2_trails[i].timer4C = fx_1f2_trails[i].pos50[a].pad;
                     pt = &fx_1f2_trails[i];
                     pt->lastSlot0 = pt->count2 = 8;
                     pt->head1 = 0;
@@ -692,8 +692,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             k8 = 8;
             for (i = 0; i < env->targets->targetCount; i++) {
                 tr = &fx_1f2_unitTrails[i];
-                if (tr->unk4C != 0) {
-                    if (--tr->unk4C < 8) {
+                if (tr->timer4C != 0) {
+                    if (--tr->timer4C < 8) {
                         n_u58 = 9;
                         sv_u58 = tr->points4;
                         tr->lastSlot0 = tr->count2 = k8;
@@ -716,7 +716,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                             (u8 *)tr, 0);
                     }
                 } else {
-                    tr->unk4C = k8;
+                    tr->timer4C = k8;
                     ((SVECTOR *)out)[1].vx = fx_1f2_unitPos[i].vx + ex->btlfx_randRange(-0x40, 0x40);
                     ((SVECTOR *)out)[1].vz = fx_1f2_unitPos[i].vz + ex->btlfx_randRange(-0x40, 0x40);
                     for (j_u58 = 0; j_u58 < 9; j_u58++) {

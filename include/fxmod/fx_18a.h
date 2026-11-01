@@ -54,7 +54,7 @@ typedef struct {
     SVECTOR posC; /* caster position */
     SVECTOR pos14; /* caster body position */
     s32 frame1C; /* charge counter */
-    s32 unk20;
+    s32 unk20; /* write-only (cleared at init) */
     s32 model24; /* model */
 } Fx18aWork80; /* 0x28 */
 

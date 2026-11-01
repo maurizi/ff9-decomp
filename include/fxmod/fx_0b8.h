@@ -23,7 +23,7 @@ void fx_0b8_drawGradientPlane(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 typedef struct {
-    u8 unk0[0x28]; /* flags and timers */
+    u8 flags0[0x28]; /* per-step flags and countdowns, by index (cleared at init) */
     s32 model28; /* model */
     SVECTOR rot2C; /* rotation */
     VECTOR scale34; /* scale */
@@ -74,10 +74,10 @@ typedef struct {
     SVECTOR pos1A0;
     SVECTOR pos1A8;
     Pool6CEntry *emit1B0;
-    s32 unk1B4;
+    s32 unk1B4; /* unused */
     Pool6CEntry *emit1B8;
     SVECTOR pos1BC;
-    SVECTOR unk1C4;
+    SVECTOR unk1C4; /* write-only (0, -0x2500, -0xE00) */
     SVECTOR pos1CC;
     SVECTOR pos1D4;
     SVECTOR pos1DC;
@@ -90,7 +90,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    SVECTOR unk4[9]; /* trail points */
+    SVECTOR pts4[9]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
     s32 x4C[9]; /* x */
     s32 y70[9]; /* y */
     s32 dx94[9]; /* x speed */
@@ -110,7 +110,7 @@ typedef struct {
     SVECTOR pos14; /* home position */
     s16 pitch1C;
     s16 yaw1E;
-    s16 unk20;
+    s16 unk20; /* write-only (cleared at init) */
     s16 pad22;
     SVECTOR rot24; /* rotation */
     s16 spinX2C; /* rotation speed */
@@ -127,7 +127,7 @@ typedef struct {
     s32 color10;
     s32 dx14; /* x speed */
     s32 dy18; /* y speed */
-    s32 unk1C;
+    s32 unk1C; /* unused */
 } Fx0b8Band; /* 0x20 */
 
 typedef struct {
@@ -139,7 +139,7 @@ typedef struct {
 
 extern Fx0b8Band fx_0b8_bands[4];
 extern BtlModelBuf fx_0b8_effModels[];
-extern s32 D_801EC1B0;
+extern s32 fx_0b8_unusedScroll;
 extern Fx0b8Bolt fx_0b8_bolts[8];
 extern Fx0b8Unit fx_0b8_units[];
 extern s32 fx_0b8_trails[];

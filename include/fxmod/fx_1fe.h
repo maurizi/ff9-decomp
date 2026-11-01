@@ -9,7 +9,7 @@
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */
-    SVECTOR unk8;
+    SVECTOR unk8; /* write-only (copy of fx_1fe_basePos0) */
     SVECTOR pos10;
     SVECTOR pos18;
     SVECTOR camTarget20; /* camera target */

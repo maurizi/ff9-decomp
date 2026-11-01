@@ -397,7 +397,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
     tpage |= (abr & 3) << 5;
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    /* the twin of fx_0e1_0 func_801E7CB4: i = j in the increment, and the last uv store (u1) is the giv base */
+    /* the twin of fx_0e1_0 fxm_drawTexRibbonTrail: i = j in the increment, and the last uv store (u1) is the giv base */
     for (i = 0; i < n; i = j, buf++, prim++, phase++) {
         gte_ldv3c(buf);
         t = (i << 12) / n;

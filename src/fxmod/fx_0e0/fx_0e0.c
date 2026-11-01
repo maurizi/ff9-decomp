@@ -310,7 +310,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTO
     s32 a;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    pt = bolt->unk4;
+    pt = bolt->pts4;
     bolt->count2 = 0x18;
     bolt->lastSlot0 = 0x18;
     bolt->head1 = 0;

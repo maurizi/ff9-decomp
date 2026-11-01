@@ -11,7 +11,7 @@ typedef struct {
 } Fx1bdPoint;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx1bdPoint *keys4;
 } Fx1bdPath;
@@ -43,7 +43,7 @@ typedef struct {
     s16 start8;
     s16 countA;
     s16 alphaC; /* alpha */
-    s16 unkE;
+    s16 scaleE; /* btlfx_drawTrail width scale, 0x1000 (ignored: the call pushes no point) */
     s16 alpha10;
     s16 alpha12;
 } Fx1bdLine;
@@ -53,14 +53,14 @@ typedef struct {
     SVECTOR rot4; /* rotation */
     VECTOR posC; /* position */
     VECTOR scale1C; /* scale */
-    SVECTOR unk2C;
-    VECTOR unk34;
-    VECTOR unk44;
+    SVECTOR unk2C; /* write-only (0, 0, 0) */
+    VECTOR unk34; /* write-only (0, 0, 0x320) */
+    VECTOR unk44; /* write-only (0x1000 each) */
     u8 pad54[4];
     SVECTOR pos58;
     s16 timer60; /* fade-in countdown */
     s16 timer62; /* fade-out countdown */
-    u16 unk64; /* frame */
+    u16 unk64; /* write-only: frame counter */
     u16 model66; /* model */
     u16 model68; /* model */
 } Fx1bdWork82; /* 0x6C */
@@ -92,6 +92,7 @@ typedef struct {
     u16 countE;
 } Fx1bdTrack; /* 0x10 */
 extern Fx1bdTrack fx_1bd_camKeys[];
+#define FX_1BD_KEY_FREE (-1) /* timer6: slot not in use (fxm_*Reset sets it, fxm_*Add takes such a slot) */
 extern s32 fx_1bd_camChanFrames[];
 static void fxm_camChanReset(void);
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);
@@ -107,9 +108,9 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
-    SVECTOR unkC;
-    SVECTOR unk14;
-    s32 unk1C;
+    SVECTOR unkC; /* write-only: rotation */
+    SVECTOR pos14; /* position (only copied into unk104) */
+    s32 unk1C; /* write-only (0x1800) */
     Fx1bdModel xform20;
     Fx1bdModel xform48;
     Fx1bdModel xform70;
@@ -120,7 +121,7 @@ typedef struct {
     Fx1bdModel xformCC;
     SVECTOR posF4;
     SVECTOR posFC;
-    SVECTOR unk104;
+    SVECTOR unk104; /* write-only: pos14 raised by 0xF0 */
     s16 frame10C; /* frame */
     s16 timer10E; /* fade countdowns */
     s16 timer110;

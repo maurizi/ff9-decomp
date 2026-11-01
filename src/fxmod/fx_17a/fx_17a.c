@@ -115,7 +115,7 @@ static s32 fx_17a_op80PoolTask(s32 mode, Fx17aPart *p, Unk800F78A4 *env, Unk8010
         p->unk1E = 0xC0 - ex->btlfx_rand() % 32;
         p->unk24 = 0;
         p->unk20 = 0;
-    } else if (p->state0 == 4) {
+    } else if (p->state0 == FX_17A_PART_SPARK) {
         p->posC.vx += -0x80 - p->speedA;
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 2), &p->posC, NULL, p->scale4 * 3 >> 1, 0, 1, -1, 0, 0);
         if (frame >= 0x11) {
@@ -503,7 +503,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (q != NULL) {
                         s32 d;
                         s32 e;
-                        q->state0 = 4;
+                        q->state0 = FX_17A_PART_SPARK;
                         BTLFX_COPY_SVEC(&q->posC, &work->posC);
                         e = ex->btlfx_rand();
                         d = (ex->btlfx_rand() & 0x1FF) + 0x180;

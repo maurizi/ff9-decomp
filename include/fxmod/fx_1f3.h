@@ -47,7 +47,7 @@ typedef struct {
 typedef struct {
     s32 bone0; /* bone */
     s32 radius4; /* radius */
-    s32 unk8;
+    s32 unk8; /* not read by the module */
 } Fx1f3RingDef;
 
 typedef struct {

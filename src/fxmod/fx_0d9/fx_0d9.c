@@ -184,7 +184,7 @@ static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s3
     s32 s;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    p = strip->unk4;
+    p = strip->pts4;
     strip->count2 = 0xE;
     strip->lastSlot0 = 0xE;
     strip->head1 = 0;
@@ -200,7 +200,7 @@ static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx0d9Strip *strip, s3
         width += dwidth + *tbl++;
         p++;
     }
-    if (kind < 2) {
+    if (kind < FX_0D9_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip15Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
                           (u8 *)strip, 0);
     } else {
@@ -220,7 +220,7 @@ static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32
     s32 s;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    p = strip->unk4;
+    p = strip->pts4;
     strip->count2 = 2;
     strip->lastSlot0 = 2;
     strip->head1 = 0;
@@ -237,7 +237,7 @@ static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32
         width += dwidth + *tbl++ / 2;
         p++;
     }
-    if (kind < 2) {
+    if (kind < FX_0D9_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d9_strip3Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
                           (u8 *)strip, 0);
     } else {
@@ -249,7 +249,7 @@ static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx0d9Strip *strip, s32
 static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx0d9Strip *strip, Fx0d9Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
                    s32 kind) {
     BtlfxExports *ex;
-    SVECTOR *p = strip->unk4;
+    SVECTOR *p = strip->pts4;
     SVECTOR v;
 
     p += i;
@@ -270,7 +270,7 @@ static s32 fxm_jaggedStripTask(s32 mode, Fx0d9Bolt *it, Unk800F78A4 *env, Unk801
     if (mode == 1) {
         it->state11 = 0;
     } else if (it->state11 == 0) {
-        if (it->kind14 < 2) {
+        if (it->kind14 < FX_0D9_STRIP_FLAT) {
             n = 8;
             if (fx_0d9_fastBolts != 0) {
                 n = 6;
@@ -313,7 +313,7 @@ static s32 fxm_jaggedStripTask(s32 mode, Fx0d9Bolt *it, Unk800F78A4 *env, Unk801
 
 static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0d9_env);
-    SVECTOR *p = FX_0D9_STRIPS[ex->btlfx_rand() % 16].unk4;
+    SVECTOR *p = FX_0D9_STRIPS[ex->btlfx_rand() % 16].pts4;
 
     p += ex->btlfx_rand() % 15;
 

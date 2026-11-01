@@ -10,7 +10,7 @@ typedef struct {
     s32 state0; /* state */
     s32 bgFrame4; /* frame for btlfx_drawBackdrop */
     SVECTOR pos8; /* position: env->targets->centerX..Z */
-    SVECTOR unk10; /* pos8 raised by 0x100 */
+    SVECTOR unk10; /* write-only: pos8 raised by 0x100 */
     s32 modelPos18[3]; /* model position (VECTOR without its pad word) */
     s32 model24; /* model */
 } Fx08cWork;

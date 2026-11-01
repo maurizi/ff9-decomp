@@ -9,8 +9,8 @@
 
 typedef struct {
     Pool6CEntry *emit0;
-    s32 unk4;
-    s32 unk8;
+    s32 unk4; /* unused */
+    s32 unk8; /* unused */
     Pool6CEntry *emitC;
     Pool6CEntry *emit10;
     Pool6CEntry *emit14;

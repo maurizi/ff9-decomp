@@ -26,7 +26,7 @@ typedef struct {
     s32 scale3C[3]; /* model scale */
     s32 pos48[3]; /* summon position */
     s32 scale54[3]; /* summon scale */
-    SVECTOR unk60;
+    SVECTOR unk60; /* write-only (cleared at init) */
     s32 model68; /* models */
     s32 model6C;
     s32 model70;

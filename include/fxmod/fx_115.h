@@ -20,7 +20,7 @@ typedef struct {
 
 typedef struct {
     Pool6CEntry *emit0;
-    SVECTOR unk4;
+    SVECTOR unk4; /* unused */
 } Fx115Work81;
 
 extern Unk800F78A4 *fx_115_env;

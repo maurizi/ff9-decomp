@@ -230,7 +230,7 @@ static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx085Strip *strip, s3
         width += dwidth + *tbl++;
         p++;
     }
-    if (kind < 2) {
+    if (kind < FX_085_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip15Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
                           (u8 *)strip, 0);
     } else {
@@ -267,7 +267,7 @@ static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx085Strip *strip, s32
         width += dwidth + *tbl++ / 2;
         p++;
     }
-    if (kind < 2) {
+    if (kind < FX_085_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_085_strip3Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
                           (u8 *)strip, 0);
     } else {
@@ -300,7 +300,7 @@ static s32 fxm_jaggedStripTask(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk801
     if (mode == 1) {
         it->state11 = 0;
     } else if (it->state11 == 0) {
-        if (it->kind14 < 2) {
+        if (it->kind14 < FX_085_STRIP_FLAT) {
             n = 8;
             if (fx_085_fastBolts != 0) {
                 n = 6;

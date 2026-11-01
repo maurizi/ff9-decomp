@@ -9,7 +9,7 @@
 static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out);
 
 typedef struct {
-    s32 unk0[10]; /* countdowns and flags */
+    s32 timers0[10]; /* countdowns and flags, by index (cleared at init) */
     SVECTOR homePos28; /* model home position */
     SVECTOR pos30; /* target position */
     s32 model38; /* model */

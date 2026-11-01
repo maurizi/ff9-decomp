@@ -10,7 +10,7 @@ typedef struct {
 } Fx1eaPoint;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* count */
     Fx1eaPoint *keys4;
 } Fx1eaPath;
@@ -53,7 +53,7 @@ typedef struct {
 } Fx1eaKey; /* 0xC */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     u16 count2; /* keys */
     Fx1eaKey *keys4;
 } Fx1eaPath_0b4;
@@ -89,7 +89,7 @@ typedef struct {
     s16 countA; /* count */
     s16 alphaC; /* alpha */
     s16 scaleE;
-    s16 unk10; /* pad */
+    s16 width10; /* point pad fx_1ea_buildTrail writes: ribbon width (0x40) */
     u8 pad12[0x18 - 0x12];
 } Fx1eaRibbon; /* 0x18 */
 

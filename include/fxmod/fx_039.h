@@ -19,6 +19,8 @@ typedef struct {
     SVECTOR pos18; /* projectile position */
     s32 proj20; /* projectile index (0..2) */
 } Fx039Work81; /* 0x24 */
+#define FX_039_PROJ_ARC_NEG_X 1 /* proj20: the shot arcs toward -x */
+#define FX_039_PROJ_ARC_POS_X 2 /* proj20: the shot arcs toward +x (0 flies straight) */
 
 extern Unk800F78A4 *fx_039_env;
 extern s32 fx_039_trails[][0x318];

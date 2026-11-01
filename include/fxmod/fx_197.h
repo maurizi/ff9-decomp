@@ -26,7 +26,7 @@ typedef struct {
     s16 velC; /* velocity */
     s16 velE;
     s16 vel10;
-    s16 unk12;
+    s16 unk12; /* write-only (0x1000) */
     s16 spin14; /* spin */
     s16 spin16;
     s16 frame18; /* frame, -1 = free */
@@ -34,7 +34,7 @@ typedef struct {
 } Fx197Shard; /* 0x1C */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* not read by the module */
     s16 count2; /* count */
     s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx197Track;
@@ -50,7 +50,7 @@ typedef struct {
     u16 fileId0;
     u16 fileId2;
     u16 duration4;
-    u16 unk6;
+    u16 unk6; /* not read by the module */
 } Fx197CamPath;
 
 extern Fx197CamPath fx_197_camPaths[];
@@ -70,7 +70,7 @@ typedef struct {
     s16 state0; /* state */
     s16 index2; /* piece */
     s32 pad4;
-    s32 unk8;
+    s32 unk8; /* write-only (cleared at spawn) */
     SVECTOR posC; /* position */
 } Fx197Item81;
 

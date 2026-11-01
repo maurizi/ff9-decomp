@@ -18,7 +18,7 @@ typedef struct {
 } Fx0dfVec3;
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared at spawn) */
     s16 size2; /* size */
     SVECTOR pos4; /* position */
     SVECTOR rotC; /* rotation */
@@ -38,8 +38,8 @@ typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
-    u8 unk3;
-    SVECTOR unk4[15];
+    u8 pad3;
+    SVECTOR pts4[15]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
 } Fx0dfBolt;
 
 extern Unk800F78A4 *fx_0df_env;
@@ -87,9 +87,9 @@ typedef struct {
     s32 frame4; /* frame counter */
     s32 otZ8; /* ordering-table offset */
     SVECTOR posC; /* caster body position */
-    s32 unk14; /* caster body position, words */
-    s32 unk18;
-    s32 unk1C;
+    s32 unk14; /* write-only: caster body position, words */
+    s32 unk18; /* write-only */
+    s32 unk1C; /* write-only */
     s32 model20; /* models */
     s32 model24;
     s32 model28;

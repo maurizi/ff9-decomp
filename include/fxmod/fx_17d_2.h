@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 unk0; /* state */
+    s16 unk0; /* write-only: state (cleared at spawn) */
     s16 spin2; /* spin */
     s32 scale4; /* size */
     SVECTOR pos8; /* position */

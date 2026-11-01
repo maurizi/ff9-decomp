@@ -17,7 +17,7 @@ typedef struct {
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
     u8 count2; /* points pushed, capped at lastSlot0 */
     u8 pad3;
-    Fx063Pt unk4[11];
+    Fx063Pt pts4[11]; /* ring points (btlfx_pushTrailPoint) */
     SVECTOR jitter5C[9]; /* jitter */
     s32 jitterVelA4[9]; /* jitter speed x */
     s32 jitterVelC8[9]; /* jitter speed z */

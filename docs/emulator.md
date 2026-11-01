@@ -81,6 +81,12 @@ Disc 1 menu states from the field/menu campaign (2026-10-24; boot with `frames 1
   (three chocographs and three chocobo abilities poked into the event variables), `menu_disc_change` (ovl_3e,
   "Change to DISC"). These menus were opened outside their story context; closing them returns to the Dali inn.
 
+R36 states (docs/r32/3ds-requests-6.md): disc 1 `r36_lindblum_552_ate` (Lindblum field 552, ATE prompt up),
+`r36_lindblum_552_ate_window` (Select pressed), `r36_disc1_end_fmv` (field 70 ending FMV), `r36_disc1_discchange_op`,
+`r36_disc1_discchange_prompt` ("Do you want to save your game?"), `r36_disc1_change_to_disc2` (ovl_3e picture). A
+disc-1 state copied into `SLUS01295/` and loaded under `start --disc 2` behaves as if the disc had been swapped:
+`r36_x_change_to_disc2` (Cross there reaches disc 2 field 800), `r36_disc2_field800_start`, `r36_x_direct_open_disc2`.
+
 Disc 3 (`start --disc 3`; boot first with `frames 1800`, a state loaded straight after a cold start can hang in the
 BIOS): `disc3_pandemonium_lv99_field` (= `disc3_scenario_field_ready`: card 1 FILE04 loaded, Pandemonium field 2714),
 `disc3_malboro_lv99_start`, `disc3_malboro_lv99_calm` (Zidane's command menu, party Zidane/Vivi/Dagger/Eiko Lv 99),

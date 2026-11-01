@@ -374,7 +374,7 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         strip->count2 = 0x1F;
         strip->lastSlot0 = 0x1F;
         strip->head1 = 0;
-        pt = strip->unk4;
+        pt = strip->pts4;
         for (i = 0; i < 32; i++, pt++, t--) {
             if (t >= 0) {
                 fxm_keyGetVec((Fx026Track *)track, t, &v);
@@ -411,7 +411,7 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         strip->count2 = 0x1F;
         strip->lastSlot0 = 0x1F;
         strip->head1 = 0;
-        pt = strip->unk4;
+        pt = strip->pts4;
         if (t > 32) {
             t = 32;
         }
@@ -457,7 +457,7 @@ static s32 fx_026_op82PoolTask(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk8
         strip->count2 = 0x27;
         strip->lastSlot0 = 0x27;
         strip->head1 = 0;
-        pt = strip->unk4;
+        pt = strip->pts4;
         if (t > 40) {
             t = 40;
         }

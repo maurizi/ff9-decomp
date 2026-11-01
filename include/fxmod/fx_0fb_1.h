@@ -45,9 +45,9 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
 typedef struct {
     s16 kind0; /* kind */
     s16 state2; /* state */
-    s16 unk4; /* velocity */
-    s16 unk6;
-    s16 unk8;
+    s16 velX4; /* velocity */
+    s16 velY6;
+    s16 velZ8;
     s16 speedA; /* speed */
     SVECTOR posC; /* position */
     SVECTOR rot14; /* rotation */
@@ -56,6 +56,12 @@ typedef struct {
     Pool6CEntry *emit20;
     Pool6CEntry *emit24;
 } Fx0fb1Rock; /* 0x28 */
+/* Fx0fb1Rock.kind0 */
+#define FX_0FB_1_ROCK_BIG 0 /* model4C; bursts into three shards near the model */
+#define FX_0FB_1_ROCK_SMALL 1 /* model50 */
+#define FX_0FB_1_ROCK_SHARD 2 /* model50, from a burst */
+#define FX_0FB_1_ROCK_PASS 3 /* as BIG, but flies past and ends off screen */
+#define FX_0FB_1_SPARK 4 /* particles, no model or spin */
 
 typedef struct {
     u8 pad0[0x4C];
@@ -105,8 +111,8 @@ typedef struct {
 } Fx0fb1Op80Work; /* 0xE8 */
 
 typedef struct {
-    u8 pad0[4];
-    SVECTOR unk4[0x40];
+    u8 pad0[4]; /* ring header (lastSlot0, head1, count2; btlfx_drawTrail) */
+    SVECTOR pts4[0x40]; /* ring points (btlfx_pushTrailPoint; pad: width * 2) */
     u8 pad204[8];
 } Fx0fb1Ring; /* 0x20C */
 
@@ -127,6 +133,5 @@ extern u8 fx_0fb_1_gradient[];
 extern s16 fx_0fb_1_modelBlocks[2];
 extern s16 fx_0fb_1_rockOffsets[];
 extern Fx0fb1Ring fx_0fb_1_strips[2];
-extern BtlModelBuf D_801F0D3C[];
 
 #endif

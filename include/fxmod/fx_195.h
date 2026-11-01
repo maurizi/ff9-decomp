@@ -51,7 +51,7 @@ typedef struct {
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* counter */
-    SVECTOR unk8;
+    SVECTOR unk8; /* write-only (copy of fx_195_basePos) */
     SVECTOR pos10; /* position */
     SVECTOR pos18;
     SVECTOR camPos20; /* camera */
@@ -59,7 +59,7 @@ typedef struct {
     s16 sound30;
     s16 sound32;
     u8 pad34[0x44 - 0x34];
-    s32 unk44;
+    s32 unk44; /* write-only (cleared at init) */
     u8 pad48[0x54 - 0x48];
     Pool6CEntry *emit54;
     Pool6CEntry *emit58;

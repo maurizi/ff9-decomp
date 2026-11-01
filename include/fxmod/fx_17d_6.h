@@ -36,7 +36,7 @@ typedef struct {
     u8 slot10; /* trail index */
     u8 kind11;
     u8 index12;
-    u8 unk13;
+    u8 unk13; /* write-only (rand % 15) */
     u8 angle14; /* angle */
     u8 width15;
     u8 pad16[2];

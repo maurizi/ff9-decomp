@@ -15,7 +15,7 @@ typedef struct {
 
 typedef struct {
     u8 pad0[6];
-    s16 unk6;
+    s16 split6; /* vertex 0's pad: split off (fxm_splitUpdate sets it; cleared here) */
     u8 pad8[0x18 - 8];
 } Fx0ecVertex; /* 0x18 */
 
@@ -29,11 +29,11 @@ typedef struct {
     s16 spinX14; /* spin */
     s16 spinY16;
     s16 age18; /* age, < 0: free */
-    s16 unk1A; /* start delay (fxm_shatterModelUpdate) or triangle (fxm_splitUpdate) */
+    s16 delayOrTri1A; /* start delay (fxm_shatterModelUpdate) or triangle (fxm_splitUpdate) */
 } Fx0ecShard; /* 0x1C */
 
 typedef struct {
-    SVECTOR unk0[3];
+    SVECTOR verts0[3]; /* vertices; verts0[0].pad: split off */
 } Fx0ecTri;
 
 extern Fx0ecTri fx_0ec_shatterTris[0x70];
