@@ -95,8 +95,8 @@ void wm_drawEffects(void) {
                                                -1, tex, 0, 0);
                     break;
                 }
-                case 15:
-                case 22: {
+                case WM_FX_BOAT_WAKE:
+                case WM_FX_WATER_RIPPLE: {
                     SVECTOR r = g_worldEffectFlatRot;
                     g_worldOtBias = 20;
                     g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, o->frame, (u8)o->abr,
@@ -115,7 +115,7 @@ void wm_drawEffects(void) {
                     break;
                 }
                 case 14:
-                case 18:
+                case WM_FX_AIRSHIP_SPRAY:
                 case 19:
                     if (g_worldSprayTarget >= 0x1000) {
                         g_worldSprayTarget = 0xFFF;
@@ -243,7 +243,7 @@ void wm_drawBlockFx(u8 arg0) {
                  (u8)((u16)g_worldWeatherData.work[0].fxBackColor[2] >> 5));
     switch (arg0) {
     case 4:
-        if (g_worldFormFlags[5] == 0 && g_worldDataSet == WM_DATASET_DISC1) {
+        if (g_worldFormFlags[WM_FORM_CLAY] == 0 && g_worldDataSet == WM_DATASET_DISC1) {
             VECTOR scale;
 
             math_rotMatrixXYZ(&g_worldBlockFx4Rot, &m);
@@ -430,7 +430,7 @@ void wm_updateBlockFx(s32 arg0) {
         on = 1;
         break;
     case 10:
-        if (g_worldFormFlags[10] != 0) {
+        if (g_worldFormFlags[WM_FORM_HOKORA_MIZU] != 0) {
             on = 1;
         }
         break;
@@ -539,13 +539,13 @@ void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     case 12:
     case 13:
     case 14:
-    case 15:
+    case WM_FX_BOAT_WAKE:
     case 17:
-    case 18:
+    case WM_FX_AIRSHIP_SPRAY:
     case 19:
     case 20:
     case 21:
-    case 22:
+    case WM_FX_WATER_RIPPLE:
     case 23:
     case 24:
     case 25:

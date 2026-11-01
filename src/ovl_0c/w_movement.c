@@ -1405,8 +1405,8 @@ u8 wm_findGetoffPos(ActorPos *out) {
     D_800D30C4 = 1;
     v = act->pos;
     switch (g_worldMoveMode) {
-    case 8:
-    case 9:
+    case WM_MOVE_HILDA_GARDE:
+    case WM_MOVE_INVINCIBLE:
         x = (g_worldPlayer->pos.vx >> 3) - 0x17FC;
         z = (g_worldPlayer->pos.vz >> 3) + 0x3B48;
         if (SquareRoot0(x * x + z * z) < 0xB4) {
@@ -1420,7 +1420,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
             return 0;
         }
         break;
-    case 7:
+    case WM_MOVE_BOAT:
         if (!wm_tryStep((VECTOR *)&v, 0, 10, 0, &cell, 0)) {
             return 0;
         }
@@ -1454,19 +1454,19 @@ u8 wm_findGetoffPos(ActorPos *out) {
             ok = r;
             if (ok) {
                 switch (g_worldMoveMode) {
-                case 0:
+                case WM_MOVE_WALK:
                     if (abs(v.vy - g_worldPlayer->pos.vy) >= 0x1F5) {
                         ok = 0;
                     }
                     break;
-                case 7:
+                case WM_MOVE_BOAT:
                     if (wm_testCellType(g_worldLandCellTypes, cell)) {
                         ok = 0;
                     }
                     break;
-                case 8:
-                case 9:
-                    if (abs(v.vy - w_frameGetParameter(0xC2)) >= 0x15F) {
+                case WM_MOVE_HILDA_GARDE:
+                case WM_MOVE_INVINCIBLE:
+                    if (abs(v.vy - w_frameGetParameter(WM_PARAM_RIDE_Y)) >= 0x15F) {
                         ok = 0;
                     }
                     break;
@@ -1536,7 +1536,7 @@ void w_movementChange(void) {
             wm_seFadeVolume(p->loopSe, 0x3C, 0x3F);
         }
         if ((u8)(g_worldMoveMode - WM_MOVE_HILDA_GARDE) < 2) {
-            wm_sePlay(0x26, 0);
+            wm_sePlay(WM_SE_AIRSHIP_WATER, 0);
         }
         g_worldCamera->viewForceNormal = 1;
     }
@@ -1625,7 +1625,7 @@ void wm_controlWalk(void) {
     }
     if (g_worldPlayerPosChanged != 0 && mv != 0) {
         if (wm_testCellType_inline(g_worldWaterCellTypes, (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2)) {
-            wm_spawnEffect(g_worldPlayer->pos.vx, -100, g_worldPlayer->pos.vz, 22, 24000);
+            wm_spawnEffect(g_worldPlayer->pos.vx, -100, g_worldPlayer->pos.vz, WM_FX_WATER_RIPPLE, 24000);
         }
         if (!(g_worldFrameCount & 3)) {
             k = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
@@ -1712,7 +1712,7 @@ void wm_controlSteer(void) {
         ang = (g_worldPlayerSpeed <= 0) << 11;
         dx = math_sin(ang + g_worldPlayer->pos.rotY) >> 2;
         dz = math_cos(ang + g_worldPlayer->pos.rotY) >> 2;
-        wm_spawnEffect(g_worldPlayer->pos.vx + dx, -100, g_worldPlayer->pos.vz + dz, 15, 15000);
+        wm_spawnEffect(g_worldPlayer->pos.vx + dx, -100, g_worldPlayer->pos.vz + dz, WM_FX_BOAT_WAKE, 15000);
         if (g_worldFrameCount & 1) {
             dx = math_sin(ang + g_worldPlayer->pos.rotY + 0x80) >> 3;
             dz = math_cos(ang + g_worldPlayer->pos.rotY + 0x80) >> 3;
@@ -1895,7 +1895,7 @@ void wm_controlFly(void) {
                 h = g_worldPlayer->pos.vy;
                 if (h >= -0x800) {
                     g_worldSprayTarget = 0x1000 - abs(h + 400) * 2;
-                    wm_spawnEffect(g_worldPlayer->pos.vx, -200, g_worldPlayer->pos.vz, 18, 32000);
+                    wm_spawnEffect(g_worldPlayer->pos.vx, -200, g_worldPlayer->pos.vz, WM_FX_AIRSHIP_SPRAY, 32000);
                     h = abs(g_worldPlayerSpeed);
                     if (h >= 0x200) {
                         h = 0x1FF;
@@ -1906,19 +1906,19 @@ void wm_controlFly(void) {
                     }
                     dx = 48 - dx;
                     dx *= h;
-                    wm_seFadeVolume(0x26, 20, (dx >> 9) & 0xFF);
+                    wm_seFadeVolume(WM_SE_AIRSHIP_WATER, 20, (dx >> 9) & 0xFF);
                 } else {
-                    wm_seFadeVolume(0x26, 30, 0);
+                    wm_seFadeVolume(WM_SE_AIRSHIP_WATER, 30, 0);
                 }
             } else {
-                wm_seFadeVolume(0x26, 30, 0);
+                wm_seFadeVolume(WM_SE_AIRSHIP_WATER, 30, 0);
             }
             if (t == 0x29 && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
                 g_worldSprayTarget = 0x1000 - (g_worldPlayer->pos.vy - 0x514) * 2;
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy + 100, g_worldPlayer->pos.vz, 19, 32000);
             }
             break;
-        case 7:
+        case WM_ACTOR_CHOCOBO4:
             if (f && abs(g_worldPlayerSpeed) > 30 && g_worldPlayer->pos.vy >= -100) {
                 g_worldSprayTarget = 0x1000 - abs(g_worldPlayer->pos.vy + 100) * 2;
                 wm_spawnEffect(g_worldPlayer->pos.vx, -200, g_worldPlayer->pos.vz, 6, 19200);
@@ -2067,7 +2067,7 @@ void w_movementChangeSP1(void) {
     old = g_worldMoveMode;
     p = &g_worldMoveModes[0];
     wm_seFadeVolume(g_worldMoveModeInfo->loopSe, 0x7F, 0);
-    wm_seFadeVolume(0x26, 0x7F, 0);
+    wm_seFadeVolume(WM_SE_AIRSHIP_WATER, 0x7F, 0);
     w_musicRequestSend(p->music);
     wm_blendCameraPreset(p->cameraRow, 0x40);
     if (g_worldMapDebugFlags & WM_DEBUG_MOVEMENT) {
@@ -2080,7 +2080,7 @@ const char s_wmStrMovementChangeSP2[0x1C] = "w_movementChange SP2\n";
 
 void w_movementChangeSP2(void) {
     evt_resetIdleTimer(0);
-    wm_seStop(0x26);
+    wm_seStop(WM_SE_AIRSHIP_WATER);
     wm_seStop(g_worldMoveModeInfo->loopSe);
     g_worldMoveMode = g_evtGlobalVars.b[0xBE];
     g_worldMoveModeInfo = &g_worldMoveModes[g_worldMoveMode];

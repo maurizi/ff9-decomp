@@ -10,3 +10,13 @@ SND_PARAM_VOLUME 1, SND_PARAM_TEMPO 2, SND_PARAM_PITCH 3, SND_PARAM_TEMPO_PITCH 
 SND_PARAM_CONDITION 6, SND_PARAM_PLAY_COUNT 7, SND_PARAM_ALL_SLOTS 9, SND_PARAM_MOVIE_VOLUME 10
 SND_SLOT1 0x40
 also used (no new macro): (DB_x >> 16) for db key kind compares in ovl_0a / ovl_0c; DB_BATTLE in fld battle music lookup
+
+## ovl_0c.h
+WM_FORM_SGATE 0, WM_FORM_ALEX 2, WM_FORM_HOKORA_HI 3, WM_FORM_LIND 4, WM_FORM_CLAY 5, WM_FORM_CHOCOBO_HEAVEN 7,
+WM_FORM_KUROMA 8, WM_FORM_HOKORA_MIZU 10, WM_FORM_MOG_NET 12, WM_FORM_STATUS(f) [string] wm_applyStoryForms
+"BGI Form : %s" / "- Replace ... -" prints. The debug switch's cases are the g_worldFormFlags indices (same set
+as the apply switch's status values minus 1), so its names belong to the indices.
+WM_PARAM_RIDE_Y 0xC2, WM_PARAM_CHOCOGRAPH 0xC6 [code] w_frameGetParameter
+WM_FX_BOAT_WAKE 15, WM_FX_AIRSHIP_SPRAY 18, WM_FX_WATER_RIPPLE 22 [code] spawn sites + wm_drawEffects
+WM_SE_AIRSHIP_WATER 38 [code] w_movementChange, wm_controlFly, wm_updateLogic
+used existing: WM_STATE_*, WM_MUSIC_*, WM_MOVE_*, WM_ACTOR_CHOCOBO4

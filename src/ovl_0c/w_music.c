@@ -4,7 +4,7 @@ void w_musicUpdate(void) {
     s32 st;
 
     switch (g_worldMusicState) {
-    case 1:
+    case WM_MUSIC_REQUESTED:
         if (g_worldCdUser == WM_CD_FREE) {
             if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
                 printf("w_musicUpdate : Play\n");
@@ -18,7 +18,7 @@ void w_musicUpdate(void) {
             g_worldMusicSong = g_worldMusicRequest;
         }
         break;
-    case 2:
+    case WM_MUSIC_WAITING:
         st = wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0);
         if (st == 0) {
             g_worldCdUser = WM_CD_FREE;
@@ -89,7 +89,7 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
         case 37:
             s.seIds[0] = 0x37A;
             break;
-        case 38:
+        case WM_SE_AIRSHIP_WATER:
             s.seIds[0] = 0x5DB;
             break;
         case 40:
