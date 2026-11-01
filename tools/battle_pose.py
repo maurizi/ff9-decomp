@@ -17,8 +17,8 @@ Module use (the DS port's tools/simplify_battle_models.py imports it):
 - `motion` is an index into the enemy type's six motionIds (0 = idle; see docs/battle-models.md "Idle stance"),
   found from the first encounter on the disc whose enemy type uses this model; or pass `key=0x03xxxx` (any motion
   in the model file, e.g. a party member's motion) instead.
-- `base=(R, T)` replaces the model matrix (BtlUnit9C.matrix; default identity, T 0: model space). With the unit's
-  own matrix the result is what btl_calcBoneMatrices leaves in BtlUnit9C.bones (world space).
+- `base=(R, T)` replaces the model matrix (BtlModel.matrix; default identity, T 0: model space). With the unit's
+  own matrix the result is what btl_calcBoneMatrices leaves in BtlModel.bones (world space).
 - Lower level: `load_model(model_id, disc, img)` -> Model (bones, meshes, motions), `Model.bone_matrices(key,
   frame, base)`, `Model.vertices(bones)`, `decode_frame(motion bytes, boneCount, frame)` -> root translation and
   per-bone SVECTOR angles, `rot_matrix_zyx(vx, vy, vz)` (math_rotMatrixZYX_gte bit-exact).
@@ -137,7 +137,7 @@ def mvmva_tr(R, T, v):
 
 
 def bone_matrices(anim, bonedefs, frame, base=None):
-    """btl_calcBoneMatrices for a model without a parent model: [(R, T)] per bone, `base` = BtlUnit9C.matrix
+    """btl_calcBoneMatrices for a model without a parent model: [(R, T)] per bone, `base` = BtlModel.matrix
     (default identity). bonedefs: [(length, unk2, parent)] per bone."""
     n = len(bonedefs)
     rootT, angles = decode_frame(anim, n, frame)
