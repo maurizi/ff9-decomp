@@ -561,7 +561,7 @@ typedef struct BtlUnit {
 
 /* BtlUnit.motions slots (party: 0x22, btl_loadPartyMotions; enemies: BtlEnemyType.motionIds). Runtime: Zidane's model
  * poked to slots 2 and 3; 0x17 / 0x19 seen in Attack. The rest [code]: what btl_setIdleMotion, btl_endPartyHitMotion,
- * btl_setCmd and the command code switch between (docs/battle-models.md). Slots 8, 0x12, 0x13 and 0x1A-0x20
+ * btl_setCmd and the command code switch between (docs/battle-models.md). Slots 8, 0x12, 0x13, 0x1D, 0x1E and 0x20
  * are still numbers (docs/wip/literals_runtime.md). */
 #define BTL_MOTION_IDLE      0
 #define BTL_MOTION_IDLE_WEAK 1 /* idle in weak stance (BTL_UNIT_WEAK_STANCE): Venom, Low HP, Poison, Sleep */
@@ -582,6 +582,10 @@ typedef struct BtlUnit {
 #define BTL_MOTION_DODGE     16 /* party target dodged (BTL_CALC_DODGED) */
 #define BTL_MOTION_FLEE      17 /* Flee command, or escape held */
 #define BTL_MOTION_ATTACK    0x17 /* run in and strike (btlfx_opPlayAttackMotion) */
+#define BTL_MOTION_CAST_START 0x1A /* btlfx_opCast, BTLFX_CAST_PARTY: after stepping forward */
+#define BTL_MOTION_CAST_LOOP  0x1B /* when CAST_START ends, while the cast emitter runs */
+#define BTL_MOTION_CAST_END   0x1C /* once the effect signals (signal 2), then READY */
+#define BTL_MOTION_ITEM       0x1F /* btlfx_opCast, BTLFX_CAST_ITEM */
 #define BTL_MOTION_ATTACK_RETURN 0x19 /* jump back after attacking an enemy (btlfx_opPlayAttackReturnMotion) */
 #define BTL_MOTION_CHANGE_ROW 29 /* + BTL_UNIT_ROW: the Change command */
 
@@ -4841,7 +4845,7 @@ typedef struct {
     u8 unit; /* unit id (0x10 + n) */
     u8 target; /* unit id of the target (+8 when bounced, 0xFF none) */
     u8 castMode; /* effect flags bits 12-13 */
-    u8 motionMode; /* cast motion handling (0-3) */
+    u8 motionMode; /* BTLFX_CAST_*: cast motion handling */
     u16 frame; /* frames run */
     s32 loopFrames; /* cast motion length */
     s16 pos[4]; /* emitter position */
@@ -4849,6 +4853,11 @@ typedef struct {
     s16 startRot[4];
     Pool6CEntry *emitter; /* cast emitter */
 } Unk800E4C88; /* 0x28 */
+/* btlfx_opCast motionMode [code] */
+#define BTLFX_CAST_PARTY 0 /* party caster: CAST_START, CAST_LOOP, CAST_END, then READY */
+#define BTLFX_CAST_ENEMY 1 /* enemy caster: no motions, a cast emitter on the body */
+#define BTLFX_CAST_NONE  2 /* party command without a cast (BTL_FXK_NO_CAST or kind 0xF) */
+#define BTLFX_CAST_ITEM  3 /* party item use (BTL_FXK_ITEM): BTL_MOTION_ITEM, then READY */
 
 /* btlfx_opDrawOnUnit effect state (sprite sheet on a unit) */
 typedef struct {

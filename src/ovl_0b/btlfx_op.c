@@ -363,10 +363,10 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
         work->loopFrames = 100;
         btlfx_setPartyTexAnim(work->unit, 1, 0);
         if ((noCast != 0 || work->kind == 0xF) && enemy == 0) {
-            work->motionMode = 2;
+            work->motionMode = BTLFX_CAST_NONE;
             work->phase = 2;
         } else if (enemy != 0) {
-            work->motionMode = 1;
+            work->motionMode = BTLFX_CAST_ENEMY;
             work->phase = 2;
             if (noCast == 0 && work->kind != 0xF) {
                 btlfx_getUnitBodyPos(work->unit, 0, work->pos);
@@ -375,10 +375,10 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
                 work->emitter = NULL;
             }
         } else if (env->targets->kind & BTL_FXK_ITEM) {
-            work->motionMode = 3;
+            work->motionMode = BTLFX_CAST_ITEM;
             work->phase = 2;
         } else {
-            work->motionMode = 0;
+            work->motionMode = BTLFX_CAST_PARTY;
         }
     } else {
     step = *entry;
@@ -386,12 +386,12 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
     case 0:
         if (btlfx_stepBack(work->unit, work->target, step) != 0) {
             motion = work->motionMode;
-            if (motion != 3) {
-                btlfx_playUnitMotion(work->unit, 0x1A);
+            if (motion != BTLFX_CAST_ITEM) {
+                btlfx_playUnitMotion(work->unit, BTL_MOTION_CAST_START);
                 work->phase = 1;
                 goto set_t;
             }
-            btlfx_playUnitMotion(work->unit, 0x1F);
+            btlfx_playUnitMotion(work->unit, BTL_MOTION_ITEM);
             work->phase = motion;
             btlfx_showCasterCmdName();
             goto set_t;
@@ -403,7 +403,7 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
             btlfx_turnUnitTowardFast(work->unit, targetPos, (s32)work->startRot, step, 0);
         }
         if (step >= btlfx_getMotionLength(work->unit) - 1) {
-            btlfx_playUnitMotion(work->unit, 0x1B);
+            btlfx_playUnitMotion(work->unit, BTL_MOTION_CAST_LOOP);
             step = -1;
             work->phase = 2;
             btlfx_getUnitPos(work->unit, work->pos);
@@ -465,19 +465,19 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
                 btlfx_setPartyTexAnim(work->unit, 2, 0);
                 return 1;
             }
-        } else if (work->motionMode == 0) {
+        } else if (work->motionMode == BTLFX_CAST_PARTY) {
             if (step % btlfx_getMotionLength(work->unit) == 0 && step > 0 && work->frame >= 27 && g_btlfxState.signals.b[2] != 0) {
-                btlfx_playUnitMotion(work->unit, 0x1C);
+                btlfx_playUnitMotion(work->unit, BTL_MOTION_CAST_END);
                 step = -1;
                 work->phase = 3;
             }
-        } else if (work->motionMode == 1) {
+        } else if (work->motionMode == BTLFX_CAST_ENEMY) {
             if (g_btlfxState.signals.b[2] != 0 && work->frame >= 27) {
                 work->phase = 3;
             set_t:
                 step = -1;
             }
-        } else if (work->motionMode == 3) {
+        } else if (work->motionMode == BTLFX_CAST_ITEM) {
             if (g_btlfxState.signals.b[2] != 0) {
                 work->phase = 0;
                 goto set_t;
@@ -492,11 +492,11 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
         }
         break;
     case 3:
-        if (step == 0 && work->motionMode != 1) {
+        if (step == 0 && work->motionMode != BTLFX_CAST_ENEMY) {
             env->camera->paused = 0;
             btlfx_setPartyTexAnim(work->unit, 0, 1);
         }
-        if (work->motionMode != 3) {
+        if (work->motionMode != BTLFX_CAST_ITEM) {
             if (work->emitter != NULL) {
                 if (work->emitter->state == BTLFX_EMIT_DONE) {
                     work->emitter = NULL;
@@ -523,14 +523,14 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
             }
         }
     skip:
-        if (work->motionMode == 1) {
+        if (work->motionMode == BTLFX_CAST_ENEMY) {
             if (step >= 5) {
                 return 1;
             }
             break;
         }
         if (step >= btlfx_getMotionLength(work->unit) - 1) {
-            if (work->motionMode == 0 || work->motionMode == 3) {
+            if (work->motionMode == BTLFX_CAST_PARTY || work->motionMode == BTLFX_CAST_ITEM) {
                 btlfx_playUnitMotion(work->unit, BTL_MOTION_READY);
             }
             btlfx_setPartyTexAnim(work->unit, 2, 0);

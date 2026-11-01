@@ -11,9 +11,8 @@ Named so far: `BTL_MOTION_*` in include/ovl_0b.h. Still numbers:
 - **0x13**: btl_update.c, the exit phase with a victory pose: played after the current motion ends (victory loop?).
 - **0x20 (32)**: btl_cmd.c btl_execCmdPhase phase 0: a READY member whose command can't be used (no MP, no target)
   plays it. READY back to idle?
-- **0x1A, 0x1B, 0x1C, 0x1F**: btlfx_opCast: 0x1A starts the cast (motionMode != 3), 0x1F instead for mode 3, 0x1B once
-  the start motion ends, 0x1C repeats while signal 2 is set (frame >= 27). Watch a Black Magic cast (Vivi) and a
-  White Magic cast, screenshot each change.
+- **0x1A, 0x1B, 0x1C, 0x1F**: named from btlfx_opCast's sequencing (`BTL_MOTION_CAST_START/LOOP/END`, `BTL_MOTION_ITEM`).
+  Screenshots of a Black Magic cast and an item use would confirm the names.
 - **0x1D, 0x1E, 0x20**: btlfx_stepBack (target an enemy, frame 0), btlfx_moveUnitHome (moving), btlfx_opReturnHome
   (arrived and not stopped). Step forward / run back / land?
 
