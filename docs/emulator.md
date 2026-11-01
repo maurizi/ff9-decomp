@@ -189,6 +189,14 @@ every hit of a traced address with the registers in `r`, `--patch CMD,ABILITY[,T
   stalls with the Lv 50 save. States: `r30b_wm_story2600` (story counter 0x2600), `r30b_wm_moogle` (Square pressed at
   the Ice Cavern exit, the world-map moogle flying in). `tools/rt/actors.lua` (`tools/emu.py lua -f`) lists the
   script objects (uid, kind, flags, actorType, modelId, position).
+- **World map anywhere (disc 3)**: from `cpass_wm_hadris` (walker) or `cpass_wm_airship9` (airship), write the
+  player object's x/z (`*0x800CE3DC` + 20 / + 28) and run ~90 frames; walking then snaps y. Zero EvtState+0x16EF
+  (encounterRate) and g_evtEncounterChance (0x8007AE50) before every step, or a battle starts. Teleporting onto a
+  location's entrance cell enters that field. Force a weather preset by breaking at wm_setWeather after writing
+  g_worldWeatherAutoMode (0x800D3F8C) = -1 and setting a0. To see what effects draw, run the same input twice from a
+  state, the second time with wm_drawEffects (0x800C4DD8) patched to `jr ra`, and diff the screenshots. Scripts and
+  states (`r37_wm_sand`, `r37_wm_shore`, `r37_wm_waterfall`, ...): R37 in `docs/runtime-findings.md`. A per-vsync Lua
+  recorder on the airship hung Redux after ~15000 frames ("Unknown error in event listener").
 - **VRAM dumps**: `tools/rt/vram.lua` (`tools/emu.py lua -f`) defines `DumpVram(path)`, which writes the whole 1 MB
   VRAM (1024x512 halfwords) to a file in ~1 s.
 - **What plays effect id N**: `python3 tools/effect_labels.py --id N` (party abilities, items, fixed ids and every
