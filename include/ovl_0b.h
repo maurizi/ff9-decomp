@@ -1017,7 +1017,7 @@ typedef struct {
     s32 effectId; /* effect file being loaded (btlfx_loadFile) */
     s32 slot; /* buffer slot 0/1 of the current block */
     s16 state; /* BTLFX_LD_* (btlfx_updateLoader) */
-    s16 stage; /* 1 data read, 2 textures read, 3 module ready (control op 4 waits for it) */
+    s16 stage; /* BTLFX_STAGE_* (control op 4 waits for it) */
     s16 blockType; /* block header word 0: 1 loads into the second module buffer in slot 1 */
     s16 cmdsLeft; /* commands left in the current block */
     u8 pad14[0x16 - 0x14];
@@ -1040,21 +1040,31 @@ typedef struct {
     s16 texIndex;
     u8 pad4A[0x4C - 0x4A];
     u32 *texData;
-    s16 summonState; /* kind 4: 1 reading, 2 summon model registered */
-    u8 summonDataState; /* kind 6: 1 reading, 2 read */
+    s16 summonState; /* BTLFX_BLOCK_*: kind 4 reading, kind 5 done (summon model registered) */
+    u8 summonDataState; /* BTLFX_BLOCK_* of kind 6 */
     u8 commonTexLoaded; /* kind 9 loaded (control op 6 a=2 waits for it) */
     struct Unk80100DC054 *summon; /* summon file in Battle.partyBufs[0] */
     s32 workCursor; /* summon work area (btlfx_takeWork) */
     s32 workLeft;
     s32 summonModel; /* Hi_RegisterSummonModel result */
-    u8 soundState; /* kind 7: 1 reading, 2 read */
+    u8 soundState; /* BTLFX_BLOCK_* of kind 7 */
     u8 soundBlocks; /* kind 7 blocks read */
     u8 soundUploading; /* sound bank upload running (btlfx_waitSoundBank) */
     u8 soundUploaded; /* btlfx_loadSoundBank ran: the loader may continue */
-    u8 bufState; /* kind 8: 1 reading, 2 read (control op 12 waits for it) */
+    u8 bufState; /* BTLFX_BLOCK_* of kind 8 (control op 12 waits for it) */
     u8 commonTexCount; /* kind 9 blocks loaded (control op 7 a=2 waits for b) */
 } Unk80100DC0;
 extern Unk80100DC0 g_btlfxLoader;
+
+/* Unk80100DC0.stage, set as the commands start (btlfx_updateLoader). Evidence: [code] */
+#define BTLFX_STAGE_NONE  0
+#define BTLFX_STAGE_DATA  1 /* a BTLFX_LDCMD_DATA block is being read */
+#define BTLFX_STAGE_CODE  2 /* the BTLFX_LDCMD_CODE module is being read */
+#define BTLFX_STAGE_READY 3 /* the module is in and its init ran: BTLFX_PHASE_LOADING ends */
+/* Unk80100DC0.summonState / summonDataState / soundState / bufState */
+#define BTLFX_BLOCK_NONE    0
+#define BTLFX_BLOCK_READING 1 /* its command started */
+#define BTLFX_BLOCK_DONE    2 /* its command finished (summonState: the summon model is registered) */
 
 /* Unk80100DC0.state (btlfx_updateLoader switches on state - 1). Evidence: [code] */
 #define BTLFX_LD_IDLE        0

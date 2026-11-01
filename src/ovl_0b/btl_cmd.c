@@ -649,7 +649,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
                 arg0->subPhase = BTL_END_ESCAPE;
             }
         }
-        if (*(u16 *)&arg0->phase == 0x305) {
+        if (*(u16 *)&arg0->phase == ((BTL_END_ESCAPE << 8) | BTL_PHASE_END)) { /* phase and subPhase at once */
             btlui_setAtbEnabled(0);
             g_gameState->gameData->escapeCount++;
             if (arg1->subNo == 0) {

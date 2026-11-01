@@ -158,13 +158,13 @@ s32 btlfx_loadFile(s32 arg0) {
     g_btlfxLoader.slot = 0;
     g_btlfxLoader.block = 0;
     g_btlfxLoader.state = BTLFX_LD_READ_HEADER;
-    g_btlfxLoader.stage = 0;
-    g_btlfxLoader.summonState = 0;
-    g_btlfxLoader.summonDataState = 0;
+    g_btlfxLoader.stage = BTLFX_STAGE_NONE;
+    g_btlfxLoader.summonState = BTLFX_BLOCK_NONE;
+    g_btlfxLoader.summonDataState = BTLFX_BLOCK_NONE;
     g_btlfxLoader.commonTexLoaded = 0;
-    g_btlfxLoader.bufState = 0;
+    g_btlfxLoader.bufState = BTLFX_BLOCK_NONE;
     g_btlfxLoader.commonTexCount = 0;
-    g_btlfxLoader.soundState = 0;
+    g_btlfxLoader.soundState = BTLFX_BLOCK_NONE;
     g_btlfxLoader.soundUploading = 0;
     g_btlfxLoader.soundBlocks = 0;
     g_btlfxLoader.soundUploaded = 0;
@@ -180,10 +180,10 @@ s32 btlfx_loadNextBlock(void) {
         return -1;
     }
     g_btlfxLoader.state = BTLFX_LD_NEXT_BLOCK;
-    g_btlfxLoader.stage = 0;
-    g_btlfxLoader.summonState = 0;
-    g_btlfxLoader.bufState = 0;
-    g_btlfxLoader.soundState = 0;
+    g_btlfxLoader.stage = BTLFX_STAGE_NONE;
+    g_btlfxLoader.summonState = BTLFX_BLOCK_NONE;
+    g_btlfxLoader.bufState = BTLFX_BLOCK_NONE;
+    g_btlfxLoader.soundState = BTLFX_BLOCK_NONE;
     g_btlfxLoader.soundBlocks = 0;
     g_btlfxLoader.soundUploaded = 0;
     g_btlfxLoader.block++;
@@ -357,7 +357,7 @@ p = d->cmd; cont = 1; d->blockType = p[0]; d->cmdsLeft = p[1]; d->cmd += 2; d->s
                 switch (d->cmdKind) {
                 case BTLFX_LDCMD_DATA:
                     sz = rd;
-                    d->stage = 1;
+                    d->stage = BTLFX_STAGE_DATA;
                     if (d->cmdArg != 0) {
 x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX_RING(u8 *);
                         d->ringSize = 0xC800 - x;
@@ -378,10 +378,10 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     dst = (u8 *)d->texData;
                     break;
                 case BTLFX_LDCMD_CODE:
-                    d->stage = 2;
+                    d->stage = BTLFX_STAGE_CODE;
                     break;
                 case BTLFX_LDCMD_SUMMON_TEX:
-                    d->summonState = 1;
+                    d->summonState = BTLFX_BLOCK_READING;
                     btl_unloadPartyModels();
                     dst = (u8 *)g_gameState->gameData->ctx.battle->partyBufs[0];
                     d->summon = (Unk80100DC054 *)dst;
@@ -394,7 +394,7 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     dst = (u8 *)d->summon + d->summon->dataOfs;
                     break;
                 case BTLFX_LDCMD_SUMMON_DATA:
-                    d->summonDataState = 1;
+                    d->summonDataState = BTLFX_BLOCK_READING;
                     e2 = d->summon;
                     d->workCursor = (s32)e2->work;
                     d->workLeft = e2->workSize;
@@ -404,11 +404,11 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     d->workCursor += rd;
                     break;
                 case BTLFX_LDCMD_SOUND:
-                    d->soundState = 1;
+                    d->soundState = BTLFX_BLOCK_READING;
                     dst = (u8 *)g_gameState->gameData->ctx.battle->work->loadBuf;
                     break;
                 case BTLFX_LDCMD_LOADBUF:
-                    d->bufState = 1;
+                    d->bufState = BTLFX_BLOCK_READING;
                     dst = (u8 *)g_gameState->gameData->ctx.battle->work->loadBuf;
                     break;
                 case BTLFX_LDCMD_COMMON_TEX:
@@ -490,7 +490,7 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     if (fn != NULL) {
                         fn(d->modArg, g_btlfxEnv, g_btlfxEnv->exports);
                     }
-                    d->stage = 3;
+                    d->stage = BTLFX_STAGE_READY;
                     d->slotBlock.h[d->slot] = d->block;
                     break;
                 case BTLFX_LDCMD_SUMMON_TEX:
@@ -527,20 +527,20 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     d->workLeft = e->workSize;
                     btlfx_initSummonModels(&e->model, 1);
                     d->summonModel = Hi_RegisterSummonModel(e, e->motions[0] != (s32)e->texAnims ? (s16 *)g_btlfxSummonTexPos : NULL);
-                    d->summonState = 2;
+                    d->summonState = BTLFX_BLOCK_DONE;
                     break;
                 case BTLFX_LDCMD_SUMMON_DATA:
-                    d->summonDataState = 2;
+                    d->summonDataState = BTLFX_BLOCK_DONE;
                     break;
                 case BTLFX_LDCMD_SOUND:
-                    d->soundState = 2;
+                    d->soundState = BTLFX_BLOCK_DONE;
                     d->soundUploading = 1;
                     if (d->soundBlocks == 0) {
                         btlfx_loadSoundBank(1);
                     }
                     break;
                 case BTLFX_LDCMD_LOADBUF:
-                    d->bufState = 2;
+                    d->bufState = BTLFX_BLOCK_DONE;
                     break;
                 case BTLFX_LDCMD_COMMON_TEX:
                     m = 1;

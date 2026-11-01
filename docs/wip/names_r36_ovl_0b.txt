@@ -2,7 +2,7 @@ R36 ovl_0b constants (named constants; evidence [code] unless stated)
 
 BTL_FORMULA_* (include/ovl_0b.h, next to BtlCmd8): btl_calcCmd's (u8)type, BtlCmd8.formula, Unk8006B1F4.formula,
   weapon record +4; also btl_setPhysParams' multiplier kind (weapon formulas 1-7), btl_tryEscape's Flee call,
-  Phoenix's sub-calculations (REVIVE / MAGIC). 103 macros, 0x01-0x6D. Users cross-checked by dumping the ovl_33
+  Phoenix's sub-calculations (REVIVE / MAGIC). 102 macros, 0x01-0x6D. Users cross-checked by dumping the ovl_33
   action ability table, g_usableItemTable and g_weaponTable +4 against tools/ff9text.py names.
 CHR_KIND_* (include/ff9_ids.h): Character.info.b.kind 0-18, CHR_KIND_COUNT 19, CHR_KIND_NONE (= COUNT, the kind
   ovl_0b gives a non-party unit), CHR_KIND_TRANCE 0x13 (g_btlCharModelIds offset). Used in main chr_calcAppearance,
@@ -31,3 +31,5 @@ BATTLE_END_VICTORY 1 / _DEFEAT 3 / _ESCAPE 4 / _GAME_OVER 6 (ovl_0b.h, candidate
 BTL_TARGETS_PARTY 0xF, BTL_TARGETS_FIRST_ENEMY 0x10 (ovl_0b.h, BtlCmd.targets masks).
 Command-id bounds in btl_setCmd / btl_setEnemyCmd (BTL_CMD_ENEMY_*, BTL_CMD_TABLE_COUNT, BTL_CMD_ENEMY_REACT);
   ITEM_FIRST_USABLE, ITEM_NONE, ABILITY_SUPPORT_FIRST in btlui (incl. the per-ability array sizes).
+BTLFX_STAGE_NONE/DATA/CODE/READY (loader stage), BTLFX_BLOCK_NONE/READING/DONE (summon/summonData/sound/buf states):
+  btlfx_updateLoader, btlfx_resetLoader, btlfx_runScript waits. Battle phase+subPhase u16 test in btl_execCmd.

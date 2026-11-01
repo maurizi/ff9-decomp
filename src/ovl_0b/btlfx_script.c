@@ -188,7 +188,7 @@ void btlfx_runScript(void) {
         }
         break;
     case BTLFX_PHASE_LOADING:
-        if (g_btlfxEnv->loader->stage == 3) {
+        if (g_btlfxEnv->loader->stage == BTLFX_STAGE_READY) {
             d->phase = BTLFX_PHASE_RUN;
             g_btlfxEnv->camera->flags |= BTLCAM_F_EFFECT_RUNNING;
         }
@@ -280,13 +280,13 @@ void btlfx_runScript(void) {
                         }
                         break;
                     case BTLFX_WAITLD_SUMMON_DATA:
-                        if (g_btlfxEnv->loader->summonDataState != 2) {
+                        if (g_btlfxEnv->loader->summonDataState != BTLFX_BLOCK_DONE) {
                             cont = 0;
                             btlfx_retryOp();
                         }
                         break;
                     case BTLFX_WAITLD_SUMMON:
-                        if (g_btlfxEnv->loader->summonState != 2) {
+                        if (g_btlfxEnv->loader->summonState != BTLFX_BLOCK_DONE) {
                             cont = 0;
                             btlfx_retryOp();
                         }
@@ -327,7 +327,7 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case BTLFX_CTL_WAIT_BUF:
-                    if (g_btlfxEnv->loader->bufState != 2) {
+                    if (g_btlfxEnv->loader->bufState != BTLFX_BLOCK_DONE) {
                         cont = 0;
                         d->pc -= 3;
                     }
