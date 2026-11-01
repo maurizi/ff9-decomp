@@ -104,18 +104,18 @@ void akao_playSeDefault(s32 a) {
 }
 
 u32 akao_getActiveSe(void) {
-    u32 mask = g_akaoSeState.activeMask;
+    u32 active = g_akaoSeState.activeMask;
     AkaoChannel *c;
     u32 r;
     u32 bit;
 
-    if (mask == 0) {
+    if (active == 0) {
         return 0;
     }
     c = g_akaoSeChannels;
     r = 0;
     for (bit = 0x100; bit & 0xFFFFFF; bit <<= 1) {
-        if (mask & bit) {
+        if (active & bit) {
             r |= c->seMask;
         }
         c++;
@@ -125,19 +125,19 @@ u32 akao_getActiveSe(void) {
 }
 
 s32 akao_isSePlaying(u32 id) {
-    u32 mask;
+    u32 active;
     u32 bit;
     AkaoChannel *c;
     if (id == 0) {
         return 0;
     }
-    mask = g_akaoSeState.activeMask;
-    if (mask == 0) {
+    active = g_akaoSeState.activeMask;
+    if (active == 0) {
         return 0;
     }
     c = g_akaoSeChannels;
     for (bit = 0x100; bit & 0xFFFFFF; bit <<= 1) {
-        if ((mask & bit) && id == c->seMask) {
+        if ((active & bit) && id == c->seMask) {
             return 1;
         }
         c++;
@@ -414,16 +414,16 @@ s32 akao_beginBankUpload(void) {
     return 0;
 }
 
-s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
+s32 akao_uploadBank(s32 *data, u32 size, s32 wait) {
     u32 n;
     u32 m;
     s32 slot;
 
     if (g_akaoFlags.bankUpload & 1) {
         if (g_akaoUpload.spuAddr == 0) {
-            if (buf[0] == AKAO_MAGIC) {
-                akao_copy(buf, (u32 *)&g_akaoBankHeader, sizeof(AkaoBankHeader));
-                buf += 16;
+            if (data[0] == AKAO_MAGIC) {
+                akao_copy(data, (u32 *)&g_akaoBankHeader, sizeof(AkaoBankHeader));
+                data += 16;
                 size -= sizeof(AkaoBankHeader);
                 g_akaoUpload.spuAddr = g_akaoBankHeader.spuAddr;
                 g_akaoBankHeader.slot = slot = g_akaoBankHeader.slot;
@@ -444,8 +444,8 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
             if (n >= size) {
                 n = size;
             }
-            akao_copy(buf, g_akaoUpload.instrDest, n);
-            buf += n >> 2;
+            akao_copy(data, g_akaoUpload.instrDest, n);
+            data += n >> 2;
             size -= n;
             g_akaoUpload.instrDest = (AkaoInstrument *)((s32 *)g_akaoUpload.instrDest + (n >> 2));
             g_akaoUpload.instrLeft -= n;
@@ -463,7 +463,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
             }
             size = m;
             SpuSetTransferStartAddr(g_akaoUpload.spuAddr);
-            akao_spuWrite(buf, size);
+            akao_spuWrite(data, size);
             g_akaoUpload.spuAddr += size;
             g_akaoUpload.sampleLeft -= size;
             if (wait != 0) {

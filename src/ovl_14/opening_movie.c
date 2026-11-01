@@ -1,13 +1,13 @@
 #include "ovl_14.h"
 
 s32 opening_movieThenTitle(void) {
-    u8 *buf;
+    u8 *mbgWork;
     s32 timer;
     s32 i;
     s32 r;
     s32 end;
 
-    buf = g_loadAreaEnd + 0x106700;
+    mbgWork = g_loadAreaEnd + 0x106700;
     timer = -1;
     opening_movieInit();
     do {
@@ -40,7 +40,7 @@ s32 opening_movieThenTitle(void) {
             g_movieFlagQueue[0][i] = MOVIE_PLAYING;
             g_gameState->vsyncMode = 4;
             DrawSync(0);
-            MBG_init(1, &buf);
+            MBG_init(1, &mbgWork);
             mbg_setRgb24(1);
             mbg_setEndCallback(opening_movieOnEnd);
             g_movieLastFrame = g_mbgFrame;

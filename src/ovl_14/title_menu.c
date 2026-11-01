@@ -277,7 +277,7 @@ void opening_titleStartFadeIn(void) {
     }
 }
 
-void opening_titleDrawFading(s32 x, s32 y, s32 z, TitleImage *t, s32 arg4) {
+void opening_titleDrawFading(s32 x, s32 y, s32 z, TitleImage *t, s32 unused) {
     SprtWords *p;
     s32 c = g_titleMenu.fadeFrames;
 

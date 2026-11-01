@@ -343,7 +343,7 @@ void fadeWipe_seek(FadeState *p, s32 n) {
     p->color.b[2] = g_fadeWipe.out.b;
 }
 
-void fadeWipe_draw(FadeState *arg0) {
+void fadeWipe_draw(FadeState *fade) {
     DVECTOR xy[4];
     MATRIX m;
     long ofx, ofy;
@@ -359,7 +359,7 @@ void fadeWipe_draw(FadeState *arg0) {
 
     tpage = 64;
     ot = fade_getOt(g_gameState->gameData->drawBuf);
-    if (arg0->subtract == 0) {
+    if (fade->subtract == 0) {
         tpage = 32;
     }
     ReadGeomOffset(&ofx, &ofy);
@@ -370,7 +370,7 @@ void fadeWipe_draw(FadeState *arg0) {
     PushMatrix();
     g_fadeWipeRot.vx = 0;
     g_fadeWipeRot.vy = 0;
-    g_fadeWipeRot.vz = arg0->angle;
+    g_fadeWipeRot.vz = fade->angle;
     math_rotMatrixXYZ(&g_fadeWipeRot, &m);
     m.t[2] = 0;
     m.t[1] = 0;
@@ -392,7 +392,7 @@ void fadeWipe_draw(FadeState *arg0) {
         }
         poly = (POLY_G4 *)g_fade.pkt;
         SetPolyG4(poly);
-        if ((u32)arg0->frame < g_fadeWipe.frames) {
+        if ((u32)fade->frame < g_fadeWipe.frames) {
             setRGB0(poly, g_fadeWipe.out.r, g_fadeWipe.out.g, g_fadeWipe.out.b);
             setRGB1(poly, g_fadeWipe.out.r, g_fadeWipe.out.g, g_fadeWipe.out.b);
             setRGB2(poly, g_fadeWipe.startR, g_fadeWipe.startG, g_fadeWipe.startB);
@@ -423,20 +423,20 @@ void fadeWipe_draw(FadeState *arg0) {
     SetGeomOffset(ofx, ofy);
 }
 
-void fadeWipe_getColors(u8 *arg0) {
+void fadeWipe_getColors(u8 *out) {
     if ((u32)g_fade.frame < g_fadeWipe.frames) {
-        arg0[0] = g_fadeWipe.out.r;
-        arg0[1] = g_fadeWipe.out.g;
-        arg0[2] = g_fadeWipe.out.b;
-        arg0[4] = g_fadeWipe.startR;
-        arg0[5] = g_fadeWipe.startG;
-        arg0[6] = g_fadeWipe.startB;
+        out[0] = g_fadeWipe.out.r;
+        out[1] = g_fadeWipe.out.g;
+        out[2] = g_fadeWipe.out.b;
+        out[4] = g_fadeWipe.startR;
+        out[5] = g_fadeWipe.startG;
+        out[6] = g_fadeWipe.startB;
         return;
     }
-    arg0[0] = g_fadeWipe.endR;
-    arg0[1] = g_fadeWipe.endG;
-    arg0[2] = g_fadeWipe.endB;
-    arg0[4] = g_fadeWipe.out.r;
-    arg0[5] = g_fadeWipe.out.g;
-    arg0[6] = g_fadeWipe.out.b;
+    out[0] = g_fadeWipe.endR;
+    out[1] = g_fadeWipe.endG;
+    out[2] = g_fadeWipe.endB;
+    out[4] = g_fadeWipe.out.r;
+    out[5] = g_fadeWipe.out.g;
+    out[6] = g_fadeWipe.out.b;
 }

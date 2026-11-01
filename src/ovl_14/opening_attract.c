@@ -1,6 +1,6 @@
 #include "ovl_14.h"
 
-s32 opening_attract(s32 arg0) {
+s32 opening_attract(s32 idx) {
     s32 timer;
     s32 i;
     s32 tim;
@@ -11,7 +11,7 @@ s32 opening_attract(s32 arg0) {
 
     i = 0;
     timer = -1;
-    opening_attractInit(arg0);
+    opening_attractInit(idx);
     do {
         opening_attractClearOt();
         pad_update();
@@ -24,7 +24,7 @@ s32 opening_attract(s32 arg0) {
             break;
         case ATTRACT_ST_IMAGES:
             if (i < ATTRACT_IMAGES) {
-                k = arg0 * ATTRACT_IMAGES + i;
+                k = idx * ATTRACT_IMAGES + i;
                 id = g_attractImages[k] | DB_TIM;
                 if (timer == -1) {
                     tim = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
@@ -128,12 +128,12 @@ s32 opening_attract(s32 arg0) {
         game_updateFade();
         opening_attractSwap();
     } while ((u32)g_attractState < ATTRACT_ST_TIMEOUT);
-    opening_attractFree(arg0);
+    opening_attractFree(idx);
     return g_attractState == ATTRACT_ST_STARTED;
 }
 
 s32 opening_attractInit(s32 idx) {
-    u8 *buf;
+    u8 *data;
     FileEntry *e;
 
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
@@ -142,9 +142,9 @@ s32 opening_attractInit(s32 idx) {
     cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    buf = g_loadAreaEnd + 0x10000;
-    g_attractData = buf;
-    db_register((s32)buf, 0);
+    data = g_loadAreaEnd + 0x10000;
+    g_attractData = data;
+    db_register((s32)data, 0);
     game_startFade(1, 1, 0, 0xFFFFFF);
     g_attractState = ATTRACT_ST_START;
     g_attractFlags.bits = 0;
@@ -152,7 +152,7 @@ s32 opening_attractInit(s32 idx) {
     return 0;
 }
 
-s32 opening_attractFree(s32 arg0) {
+s32 opening_attractFree(s32 unused) {
     db_unregister(g_attractData);
     g_attractData = NULL;
     return 0;

@@ -337,7 +337,7 @@ void akao_flushVoice(s32 v, AkaoVoiceRegs *p) {
     }
 }
 
-void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
+void akao_stepChannelSlides(AkaoChannel *c, u32 chBit, s32 kind) {
     s32 nw;
     if ((u16)c->volumeSlideLen != 0) {
         s32 old;
@@ -393,9 +393,9 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
     if (c->noiseTimer != 0) {
         if (--c->noiseTimer == 0) {
             if (kind == 0) {
-                g_akaoSeq->noiseMask ^= mask;
+                g_akaoSeq->noiseMask ^= chBit;
             } else {
-                g_akaoSeState.noiseMask ^= mask;
+                g_akaoSeState.noiseMask ^= chBit;
             }
             g_akaoFlags.dirty |= AKAO_DIRTY_NOISE_CLOCK | AKAO_DIRTY_VOICE_MODES;
         }
@@ -403,9 +403,9 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
     if (c->pitchModTimer != 0) {
         if (--c->pitchModTimer == 0) {
             if (kind == 0) {
-                g_akaoSeq->pitchModMask ^= mask;
+                g_akaoSeq->pitchModMask ^= chBit;
             } else {
-                g_akaoSeState.pitchModMask ^= mask;
+                g_akaoSeState.pitchModMask ^= chBit;
             }
             g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;
         }
@@ -604,14 +604,14 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
     }
 }
 
-s32 akao_stealVoice(s32 arg0) {
+s32 akao_stealVoice(s32 allVoices) {
     s32 i;
     s32 min;
     s32 best;
     u32 m;
     AkaoVoiceEnv *e;
 
-    if (arg0 != 0) {
+    if (allVoices != 0) {
         i = 0;
     } else {
         i = g_akaoSeq->firstVoice;
@@ -651,7 +651,7 @@ s32 akao_findFreeVoice(s32 a) {
     return a;
 }
 
-void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
+void akao_assignVoices(AkaoChannel *ch, u32 chMask, u32 keep, u32 *used) {
     u32 bit;
     s32 i;
     u32 on;
@@ -660,10 +660,10 @@ void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
 
     bit = 1;
     i = 0;
-    on = mask & g_akaoSeq->keyOnMask;
+    on = chMask & g_akaoSeq->keyOnMask;
 
     do {
-        if (mask & bit) {
+        if (chMask & bit) {
             akao_calcChannelVoice(ch, bit);
             if (ch->voiceDirty != 0) {
                 if (g_akaoMuteMask & bit) {
@@ -699,19 +699,19 @@ void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                     }
                 } else if (ch->voice < 24) {
                     /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
-                    if (mask) {
+                    if (chMask) {
                         ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->flags);
                     } else {
                         ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->flags);
                     }
                 }
             }
-            mask &= ~bit;
+            chMask &= ~bit;
         }
         bit <<= 1;
         ch++;
         i++;
-    } while (mask != 0);
+    } while (chMask != 0);
 }
 
 /* K&R definition: callers pass two or three arguments */
@@ -886,18 +886,18 @@ void akao_updateVoices(void) {
     }
 }
 
-void akao_channelsToVoiceMask(AkaoChannel *c, u32 *out, u32 mask, u32 keep) {
+void akao_channelsToVoiceMask(AkaoChannel *c, u32 *out, u32 chMask, u32 keep) {
     u32 bit = 1;
     do {
-        if (mask & bit) {
+        if (chMask & bit) {
             if (c->voice < 0x18) {
                 *out |= 1 << c->voice;
             }
         }
-        mask &= ~bit;
+        chMask &= ~bit;
         c++;
         bit <<= 1;
-    } while (mask != 0);
+    } while (chMask != 0);
     *out &= keep;
 }
 

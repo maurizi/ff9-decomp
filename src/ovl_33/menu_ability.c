@@ -412,7 +412,7 @@ void menuAbility_drawCursor(void) {
     }
 }
 
-void menuAbility_setMember(s32 slot, s32 arg1) {
+void menuAbility_setMember(s32 slot, s32 dir) {
     AbilityMenu *m;
     AbilityMenu *m2;
     MemberSwitch *b;
@@ -429,8 +429,8 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
     m = &s_menuAbility;
     nItems = 0;
     nAbils = 0;
-    ui_startMemberSwitch(b, m->slot, slot, arg1);
-    if (arg1 != 0) {
+    ui_startMemberSwitch(b, m->slot, slot, dir);
+    if (dir != 0) {
         m->state = ABILITY_STATE_SWITCH;
     }
     m->slot = slot;
@@ -580,17 +580,17 @@ void menuAbility_updateHelp(void) {
     s32 i;
     s32 id;
     s32 t;
-    u8 *buf;
+    u8 *help;
 
     l = &s_menuAbility.lists[s_menuAbility.tab];
     c = g_gameState->gameData->party[s_menuAbility.slot];
     g_menuHelp.text = NULL;
     help_setBounds(NULL);
     if (s_menuAbility.state == ABILITY_STATE_TABS || s_menuAbility.state == ABILITY_STATE_SWITCH) {
-        buf = s_menuAbilityHelpBuf;
-        g_menuHelp.text = buf;
+        help = s_menuAbilityHelpBuf;
+        g_menuHelp.text = help;
         text_setStringArg(0, s_menuAbilityHelpArg);
-        text_copy(buf, text_get(s_menuAbility.tab + ABILITY_TEXT_TAB_HELP));
+        text_copy(help, text_get(s_menuAbility.tab + ABILITY_TEXT_TAB_HELP));
         if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
             if (g_evtGlobalVars.b[EVT_GB_NO_ACTION_ABILITIES]) {
                 t = ABILITY_TEXT_NOT_HERE;
@@ -609,7 +609,7 @@ void menuAbility_updateHelp(void) {
                 t = ABILITY_TEXT_CANNOT_EQUIP_NOW;
             }
         }
-        text_append(buf, text_get(t));
+        text_append(help, text_get(t));
     end:
         text_append(s_menuAbilityHelpBuf, text_get(ABILITY_TEXT_TO_EQUIP));
     } else if (s_menuAbility.state == ABILITY_STATE_LIST) {
@@ -778,7 +778,7 @@ void menuAbility_drawRow(s32 col, s32 row, s32 z, MenuView *v) {
 }
 
 void menuAbility_drawActionRow(s32 x, s32 y, s32 idx, Character *c) {
-    u8 buf[8];
+    u8 numText[8];
     u8 id;
     Unk801F34EC *info;
     s32 st;
@@ -791,14 +791,14 @@ void menuAbility_drawActionRow(s32 x, s32 y, s32 idx, Character *c) {
         col = s_menuAbilityStateColor[st];
         text_drawBlock(x + 8, y, 0x1C, s_menuAbilityActionNames + info->nameOffset, col);
         if (info->mpCost != 0) {
-            text_formatNumber(menuAbility_getMpCost(info), buf, 3, TEXT_NUM_ASCII);
-            ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
+            text_formatNumber(menuAbility_getMpCost(info), numText, 3, TEXT_NUM_ASCII);
+            ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, numText, col);
         }
     }
 }
 
 void menuAbility_drawSupportRow(s32 x, s32 y, s32 i, Character *c) {
-    u8 buf[0x10];
+    u8 numText[0x10];
     Unk8006D128 *sup;
     s32 id;
     u32 st;
@@ -818,8 +818,8 @@ void menuAbility_drawSupportRow(s32 x, s32 y, s32 i, Character *c) {
             menuAbility_drawIcon(x + 8, y, 0x1C, st >= ABILITY_USABLE ? 7 : 8);
         }
         text_drawBlock(x + 0x18, y, 0x1C, s_menuAbilitySupportNames + sup->name, col);
-        text_formatNumber(sup->stones, buf, 3, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
+        text_formatNumber(sup->stones, numText, 3, TEXT_NUM_ASCII);
+        ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, numText, col);
     }
 }
 

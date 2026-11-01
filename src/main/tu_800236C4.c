@@ -50,15 +50,15 @@ void config_init(void) {
 }
 
 /* K&R: text_getButtonSprite calls it without an argument */
-s32 config_remapButton(arg0)
-s32 arg0;
+s32 config_remapButton(button)
+s32 button;
 {
     GameConfig *p = (GameConfig *)&g_gameState->config;
 
     if (p->padCustom != 1) {
-        return arg0;
+        return button;
     }
-    return (p->buttonMap >> (arg0 * 4)) & 0xF;
+    return (p->buttonMap >> (button * 4)) & 0xF;
 }
 
 void config_apply(void) {
@@ -171,12 +171,12 @@ void timer_update(void) {
     game_tickClock();
 }
 
-void game_resumeClock(u8 arg0) {
+void game_resumeClock(u8 resume) {
     s32 now = VSync(-1);
     s32 d;
     EvtTimer *t = &g_clock.timer;
 
-    if (arg0) {
+    if (resume) {
         d = now - g_clock.lastVsync;
         if (t->enabled != 0 && t->running != 0 && t->remaining != 0) {
             t->remaining -= d;
@@ -190,8 +190,8 @@ void game_resumeClock(u8 arg0) {
     }
 }
 
-void game_setPlayTime(s32 arg0) {
-    g_gameState->playTime = arg0;
+void game_setPlayTime(s32 playTime) {
+    g_gameState->playTime = playTime;
     g_clock.lastVsync = VSync(-1);
 }
 
@@ -211,8 +211,8 @@ void timer_clear(void) {
     g_timer.startVsync = VSync(-1);
 }
 
-void timer_enable(u8 arg0) {
-    g_timer.enabled = arg0;
+void timer_enable(u8 enabled) {
+    g_timer.enabled = enabled;
     g_timer.running = 0;
     g_timer.startVsync = VSync(-1);
 }
@@ -221,9 +221,9 @@ u8 timer_isEnabled(void) {
     return g_timer.enabled;
 }
 
-void timer_setRunning(u8 arg0) {
+void timer_setRunning(u8 running) {
     if (g_clock.timer.enabled != 0) {
-        g_clock.timer.running = arg0;
+        g_clock.timer.running = running;
     }
 }
 
@@ -231,9 +231,9 @@ u8 timer_isRunning(void) {
     return g_timer.running;
 }
 
-void timer_setSeconds(s32 arg0) {
+void timer_setSeconds(s32 seconds) {
     ClockState *p = &g_clock;
-    s32 t = arg0 * 60;
+    s32 t = seconds * 60;
 
     p->timer.remaining = t;
     p->timer.initial = t;

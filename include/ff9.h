@@ -4977,7 +4977,7 @@ void akao_setNoiseVoices(u32 x);
 void akao_setPitchModVoices(u32 x);
 void akao_flushVoice(s32 v, AkaoVoiceRegs *p);
 void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit);
-void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used);
+void akao_assignVoices(AkaoChannel *ch, u32 chMask, u32 keep, u32 *used);
 void akao_readEnvelopes(u32 extra);
 void akao_applyCrossfadeVolume(); /* (AkaoSeq *): saves the sequence volume in g_akaoCrossfade.savedVolume and scales it by the crossfade volume */
 void akao_restoreCrossfadeVolume(); /* (AkaoSeq *) */

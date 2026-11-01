@@ -89,7 +89,7 @@ void menuItem_inputTarget(void) {
 
 void menuItem_inputManualArrange(void) {
     MenuList *l = s_menuItemTabs[1].list;
-    ItemSlot tmp;
+    ItemSlot swap;
     s32 i;
     u8 j;
 
@@ -109,9 +109,9 @@ void menuItem_inputManualArrange(void) {
             }
             snd_playSe(SE_CURSOR);
             i = (l->cursor + l->top) * 2 + l->col;
-            tmp = g_gameState->gameData->items.slots[s_menuItem.swapFrom];
+            swap = g_gameState->gameData->items.slots[s_menuItem.swapFrom];
             g_gameState->gameData->items.slots[s_menuItem.swapFrom] = g_gameState->gameData->items.slots[i];
-            g_gameState->gameData->items.slots[i] = tmp;
+            g_gameState->gameData->items.slots[i] = swap;
             s_menuItem.swapPicked = 0;
             return;
         }
@@ -652,18 +652,18 @@ void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
     u8 ok;
     s32 x, y, x2;
     s32 k = 0x2A;
-    u8 buf[8];
+    u8 numText[8];
 
     if (p->count != 0 && p->id != ITEM_NONE) {
         it = &g_itemTable[p->id];
         ok = it->slots & ITEM_SLOT_USABLE;
         x = col * 0x96;
         y = row * 0xF + (v->y + k);
-        text_formatNumber(p->count, buf, 2, TEXT_NUM_ASCII);
+        text_formatNumber(p->count, numText, 2, TEXT_NUM_ASCII);
         x2 = x + 0x18;
         text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->name, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
         ui_drawItemIcon(x2, y, 0x1C, p->id, ok);
-        ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, buf, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
+        ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, numText, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
     }
 }
 

@@ -138,7 +138,7 @@ s32 cd_getState(void) {
 }
 
 s32 cd_cancel(void) {
-    u8 buf[8];
+    u8 result[8];
     s32 r = g_cdLoad.state;
     if (r != 0) {
         CdReadyCallback(NULL);
@@ -146,7 +146,7 @@ s32 cd_cancel(void) {
         g_cdLoad.hasQueued = 0;
         g_cdLoad.error = 0;
         g_cdLoad.state = CD_IDLE;
-        while (CdControlB(CdlPause, NULL, buf) == 0) {
+        while (CdControlB(CdlPause, NULL, result) == 0) {
         }
     }
     return r;
@@ -385,8 +385,8 @@ void cd_onSync(u8 com, u8 *param) {
     }
 }
 
-void cd_onSyncQueued(u8 arg0) {
-    if (arg0 == CdlDiskError || arg0 == CdlComplete) {
+void cd_onSyncQueued(u8 status) {
+    if (status == CdlDiskError || status == CdlComplete) {
         if (g_cdLoad.state != CD_READING) {
             if (g_cdLoad.cur.doneCallback != NULL) {
                 g_cdLoad.cur.doneCallback(&g_cdLoad);
@@ -409,20 +409,20 @@ void cd_onDiskError(s32 unused) {
     }
 }
 
-void cd_onSetloc(u8 a) {
-    u8 buf[8];
+void cd_onSetloc(u8 status) {
+    u8 param[8];
     s32 st;
     s32 k;
 
     k = CdlModeSpeed | CdlModeSize1;
     if (CdMode() != k) {
         st = CD_SETMODE;
-        buf[0] = k;
+        param[0] = k;
         k = CdlSetmode;
         g_cdLoad.state = st;
-        cd_controlF(k, buf);
+        cd_controlF(k, param);
     } else {
-        cd_startTransfer(a);
+        cd_startTransfer(status);
     }
 }
 

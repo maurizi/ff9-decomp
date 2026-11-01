@@ -145,7 +145,7 @@ void menuChocograph_drawList(void) {
 }
 
 void menuChocograph_drawCounts(void) {
-    u8 buf[8];
+    u8 numText[8];
     RECT *r = &s_menuChocograph.countRect;
     ChocographMenu *st;
 
@@ -154,10 +154,10 @@ void menuChocograph_drawCounts(void) {
     text_drawBlock(r->x + 9, r->y + 3, 0x1C, text_get(CHOCO_TEXT_INVENTORY), TEXT_PAL_WHITE);
     text_drawBlock(r->x + 9, r->y + 0xF, 0x1C, text_get(CHOCO_TEXT_FOUND), TEXT_PAL_WHITE);
     st = &s_menuChocograph;
-    text_formatNumber(st->ownedCount, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x5E, r->y + 7, 0x1C, buf, TEXT_PAL_WHITE);
-    text_formatNumber(st->foundCount, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x5E, r->y + 0x13, 0x1C, buf, TEXT_PAL_WHITE);
+    text_formatNumber(st->ownedCount, numText, 2, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x5E, r->y + 7, 0x1C, numText, TEXT_PAL_WHITE);
+    text_formatNumber(st->foundCount, numText, 2, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x5E, r->y + 0x13, 0x1C, numText, TEXT_PAL_WHITE);
 }
 
 void menuChocograph_drawHint(void) {
@@ -511,10 +511,10 @@ void menuChocograph_drawRow(s32 col, s32 row, s32 id, MenuView *v) {
     }
 }
 
-void menuChocograph_drawIcon(s32 x, s32 y, s32 z, s32 icon, u8 arg4) {
+void menuChocograph_drawIcon(s32 x, s32 y, s32 z, s32 icon, u8 flag) {
     IconTable rects = s_menuChocographIcons;
 
-    ui_drawSpriteDef(x, y, z, &rects.r[icon], arg4);
+    ui_drawSpriteDef(x, y, z, &rects.r[icon], flag);
 }
 
 s32 menuChocograph_getRequiredAbility(s32 id) {

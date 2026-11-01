@@ -1720,7 +1720,7 @@ void fldmdl_setSemiTrans(ModelObj *mdl, u16 force);
 void fade_fieldInitStub(void); /* main */
 s32 evt_countNpcActors(s32 unused); /* main */
 void fld_drawRain(void);
-void game_resumeClock(u8 arg0); /* main */
+void game_resumeClock(u8 resume); /* main */
 s32 mbg_shutdown(void); /* ovl_64 */
 s32 preload_update(void); /* main */
 s32 tpage_getX(s32 a); /* main */

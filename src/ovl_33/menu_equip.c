@@ -312,7 +312,7 @@ void menuEquip_drawList(void) {
 }
 
 void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
-    u8 buf[16];
+    u8 numText[16];
     RECT *r;
     s32 i;
     s32 y;
@@ -324,8 +324,8 @@ void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
     blink = ((u32)g_menuFrame >> 4) & 1;
     for (i = 0, y = r->y + 0x44; i < 4; y += 0xC, i++) {
         menuEquip_drawStatLabel(r->x + 8, y, 0x1D, s_menuEquipBaseStatText[i], TEXT_PAL_WHITE);
-        text_formatNumber(cur->stats[i], buf, 2, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(r->x + 0x4A, y, 0x1D, buf, TEXT_PAL_WHITE);
+        text_formatNumber(cur->stats[i], numText, 2, TEXT_NUM_ASCII);
+        ui_drawSmallDigits(r->x + 0x4A, y, 0x1D, numText, TEXT_PAL_WHITE);
         if (new != NULL) {
             diff = cur->stats[i] != new->stats[i];
             if (new->stats[i] >= cur->stats[i]) {
@@ -337,15 +337,15 @@ void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
             } else {
                 col = TEXT_PAL_RED;
             }
-            text_formatNumber(new->stats[i], buf, 2, TEXT_NUM_ASCII);
+            text_formatNumber(new->stats[i], numText, 2, TEXT_NUM_ASCII);
             ui_drawSmallDigits(r->x + 0x5C, y, 0x1D, s_menuEquipArrow, (diff && blink) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-            ui_drawSmallDigits(r->x + 0x6D, y, 0x1D, buf, col);
+            ui_drawSmallDigits(r->x + 0x6D, y, 0x1D, numText, col);
         }
     }
     for (i = 0, y = r->y + 0x78; i < 5; y += 0xC, i++) {
         menuEquip_drawStatLabel(r->x + 8, y, 0x1D, s_menuEquipBattleStatText[i], TEXT_PAL_WHITE);
-        text_formatNumber(cur->defs[i], buf, 3, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(r->x + 0x43, y, 0x1D, buf, TEXT_PAL_WHITE);
+        text_formatNumber(cur->defs[i], numText, 3, TEXT_NUM_ASCII);
+        ui_drawSmallDigits(r->x + 0x43, y, 0x1D, numText, TEXT_PAL_WHITE);
         if (new != NULL) {
             diff = cur->defs[i] != new->defs[i];
             if (new->defs[i] >= cur->defs[i]) {
@@ -357,9 +357,9 @@ void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
             } else {
                 col = TEXT_PAL_RED;
             }
-            text_formatNumber(new->defs[i], buf, 3, TEXT_NUM_ASCII);
+            text_formatNumber(new->defs[i], numText, 3, TEXT_NUM_ASCII);
             ui_drawSmallDigits(r->x + 0x5C, y, 0x1D, s_menuEquipArrow, (diff && blink) ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
-            ui_drawSmallDigits(r->x + 0x66, y, 0x1D, buf, col);
+            ui_drawSmallDigits(r->x + 0x66, y, 0x1D, numText, col);
         }
     }
 }
@@ -481,12 +481,12 @@ void menuEquip_dropUnlearnedSupport(Character *c) {
 }
 
 void menuEquip_buildItemList(void) {
-    ItemSlot tmp;
+    ItemSlot swap;
     ItemInfo *it;
     s32 n;
     s32 i;
     s32 j;
-    u16 mask;
+    u16 charMask;
     u8 slot;
     u8 a;
     u8 b;
@@ -494,14 +494,14 @@ void menuEquip_buildItemList(void) {
     u8 rb;
 
     n = 0;
-    mask = s_menuEquipCharMask[chr_getDefaultSet(g_gameState->gameData->party[s_menuEquip.slot])];
+    charMask = s_menuEquipCharMask[chr_getDefaultSet(g_gameState->gameData->party[s_menuEquip.slot])];
     slot = s_menuEquipSlotMask[s_menuEquip.equipSlot];
     s_menuEquip.items[0].id = ITEM_NONE;
     for (i = 0; i < ITEM_SLOT_COUNT; i++) {
 
         if (g_gameState->gameData->items.slots[i].count != 0) {
             it = &g_itemTable[g_gameState->gameData->items.slots[i].id];
-            if ((it->equipMask & mask) && (it->slots & slot)) {
+            if ((it->equipMask & charMask) && (it->slots & slot)) {
                 s_menuEquip.items[n] = g_gameState->gameData->items.slots[i];
                 n++;
             }
@@ -514,9 +514,9 @@ void menuEquip_buildItemList(void) {
             ra = g_itemTable[a].rank;
             rb = g_itemTable[b].rank;
             if ((ra == rb && b < a) || rb < ra) {
-                tmp = s_menuEquip.items[i];
+                swap = s_menuEquip.items[i];
                 s_menuEquip.items[i] = s_menuEquip.items[j];
-                s_menuEquip.items[j] = tmp;
+                s_menuEquip.items[j] = swap;
             }
         }
     }
@@ -525,7 +525,7 @@ void menuEquip_buildItemList(void) {
 
 void menuEquip_updateHelp(void) {
     Character *c;
-    u8 *buf;
+    u8 *help;
     s32 id;
     ItemSlot *e;
     MenuList *l;
@@ -533,8 +533,8 @@ void menuEquip_updateHelp(void) {
     c = g_gameState->gameData->party[s_menuEquip.slot];
     g_menuHelp.text = NULL;
     if (s_menuEquip.state == EQUIP_STATE_TABS) {
-        buf = s_menuEquipHelpBuf;
-        g_menuHelp.text = buf;
+        help = s_menuEquipHelpBuf;
+        g_menuHelp.text = help;
         text_setStringArg(0, s_menuEquipHelpArg);
         text_copy(g_menuHelp.text, text_get(s_menuEquip.tab + EQUIP_TEXT_TAB_HELP));
         text_append(g_menuHelp.text, text_get(EQUIP_TEXT_TO_ABILITY));
@@ -643,7 +643,7 @@ void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *v) {
     ItemSlot *p;
     s32 x;
     s32 y;
-    u8 buf[16];
+    u8 numText[16];
 
     p = s_menuEquip.items + i;
     x = s_menuEquip.listWin.rect.x;
@@ -651,8 +651,8 @@ void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *v) {
     y = w->rect.y + row * 0xF + v->y;
     ui_drawItemIcon(x + 0xB, y, 0x13, p->id, 1);
     text_drawBlock(x + 0x1B, y, 0x13, g_itemNames + g_itemTable[p->id].name, TEXT_PAL_WHITE);
-    text_formatNumber(p->count, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(x + 0x8A, y + 4, 0x13, buf, TEXT_PAL_WHITE);
+    text_formatNumber(p->count, numText, 2, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(x + 0x8A, y + 4, 0x13, numText, TEXT_PAL_WHITE);
 }
 
 void menuEquip_openList(void) {

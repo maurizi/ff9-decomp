@@ -110,7 +110,7 @@ void menuStatus_drawCommands(void) {
 }
 
 void menuStatus_drawStats(void) {
-    u8 buf[16];
+    u8 numText[16];
     RECT *r;
     StatusMenu *m;
     Character *c;
@@ -128,28 +128,28 @@ void menuStatus_drawStats(void) {
     for (i = 0; i < 5; i++) {
         s_menuStatus.prim = text_buildBlock(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(s_menuStatusBattleStatText[i]), TEXT_PAL_WHITE, s_menuStatus.prim);
     }
-    text_formatNumber(c->speed, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x58, r->y + 0x3D, 0x1D, buf, TEXT_PAL_WHITE);
-    text_formatNumber(c->strength, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x58, r->y + 0x4A, 0x1D, buf, TEXT_PAL_WHITE);
-    text_formatNumber(c->magic, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x58, r->y + 0x57, 0x1D, buf, TEXT_PAL_WHITE);
-    text_formatNumber(c->spirit, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x58, r->y + 0x64, 0x1D, buf, TEXT_PAL_WHITE);
-    text_formatNumber(g_weaponTable[c->equip[0]].attack, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0x72, 0x1D, buf, TEXT_PAL_WHITE);
-    text_formatNumber(c->defense, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0x7F, 0x1D, buf, TEXT_PAL_WHITE);
-    text_formatNumber(c->evade, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0x8C, 0x1D, buf, TEXT_PAL_WHITE);
-    text_formatNumber(c->magicDef, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0x99, 0x1D, buf, TEXT_PAL_WHITE);
-    text_formatNumber(c->magicEva, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0xA6, 0x1D, buf, TEXT_PAL_WHITE);
+    text_formatNumber(c->speed, numText, 2, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x3D, 0x1D, numText, TEXT_PAL_WHITE);
+    text_formatNumber(c->strength, numText, 2, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x4A, 0x1D, numText, TEXT_PAL_WHITE);
+    text_formatNumber(c->magic, numText, 2, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x57, 0x1D, numText, TEXT_PAL_WHITE);
+    text_formatNumber(c->spirit, numText, 2, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x64, 0x1D, numText, TEXT_PAL_WHITE);
+    text_formatNumber(g_weaponTable[c->equip[0]].attack, numText, 3, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x72, 0x1D, numText, TEXT_PAL_WHITE);
+    text_formatNumber(c->defense, numText, 3, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x7F, 0x1D, numText, TEXT_PAL_WHITE);
+    text_formatNumber(c->evade, numText, 3, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x8C, 0x1D, numText, TEXT_PAL_WHITE);
+    text_formatNumber(c->magicDef, numText, 3, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x99, 0x1D, numText, TEXT_PAL_WHITE);
+    text_formatNumber(c->magicEva, numText, 3, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0xA6, 0x1D, numText, TEXT_PAL_WHITE);
 }
 
 void menuStatus_drawExp(void) {
-    u8 buf[16];
+    u8 numText[16];
     RECT *r;
     StatusMenu *st;
     Character *c;
@@ -171,15 +171,15 @@ void menuStatus_drawExp(void) {
     }
     text_drawBlock(r->x + 0x74, r->y + 0x46, 0x1D, text_get(STATUS_TEXT_EXP), TEXT_PAL_WHITE);
     text_drawBlock(r->x + 0x74, r->y + 0x53, 0x1D, text_get(STATUS_TEXT_NEXT), TEXT_PAL_WHITE);
-    text_formatNumber(c->exp, buf, 7, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0xAC, r->y + 0x4A, 0x1D, buf, TEXT_PAL_WHITE);
+    text_formatNumber(c->exp, numText, 7, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0xAC, r->y + 0x4A, 0x1D, numText, TEXT_PAL_WHITE);
     if (c->level >= 99) {
         next = c->exp;
     } else {
         next = g_levelExp[c->level];
     }
-    text_formatNumber(next - c->exp, buf, 6, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0xB3, r->y + 0x57, 0x1D, buf, TEXT_PAL_WHITE);
+    text_formatNumber(next - c->exp, numText, 6, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0xB3, r->y + 0x57, 0x1D, numText, TEXT_PAL_WHITE);
 }
 
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", s_menuStatusCmdTable);
@@ -194,12 +194,12 @@ void menuStatus_drawEquipment(void) {
     Character *c;
     s32 i;
     u8 id;
-    u8 buf[8];
+    u8 spriteW[8];
 
     st = &s_menuStatus;
     c = g_gameState->gameData->party[st->slot];
     for (i = 0; i < 5; i++) {
-        s_menuStatus.prim = ui_buildSprite(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, buf, s_menuStatus.prim);
+        s_menuStatus.prim = ui_buildSprite(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, spriteW, s_menuStatus.prim);
         s_menuStatus.prim = text_buildSmall(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], s_menuStatusColon, TEXT_PAL_WHITE, s_menuStatus.prim);
         id = c->equip[i];
         if (id != ITEM_NONE) {

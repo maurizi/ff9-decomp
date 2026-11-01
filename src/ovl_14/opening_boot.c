@@ -39,7 +39,7 @@ void opening_bootScreen(void) {
 }
 
 void opening_bootScreenLoad(void) {
-    u8 *buf;
+    u8 *data;
     FileEntry *e;
 
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
@@ -48,9 +48,9 @@ void opening_bootScreenLoad(void) {
     cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    buf = g_loadAreaEnd + 0x10000;
-    g_bootScreenData = buf;
-    db_register((s32)buf, 0);
+    data = g_loadAreaEnd + 0x10000;
+    g_bootScreenData = data;
+    db_register((s32)data, 0);
     g_bootScreenImage = (s32)db_lookupRegistered(DB_GET_ADDR, 0x44FB0, 0);
     file_setTimPos(g_bootScreenImage, VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y, VRAM_IMAGE_X, VRAM_IMAGE_Y);
     file_loadTim(g_bootScreenImage);

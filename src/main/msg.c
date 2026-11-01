@@ -511,7 +511,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
     u8 *p;
     s32 c;
     u8 *start;
-    Unk4 tmp;
+    Unk4 thresholds;
     s32 n;
 
     p = e + w->textPos;
@@ -555,10 +555,10 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 p += 2;
                 break;
             case TEXT_CHOICE_START:
-                tmp = g_msgChoiceAnalogThresholds;
+                thresholds = g_msgChoiceAnalogThresholds;
                 n = g_msgLine;
                 pad_getAnalogThresholds(&g_msgSavedAnalogThresholds);
-                pad_setAnalogThresholds(&tmp);
+                pad_setAnalogThresholds(&thresholds);
                 g_msgChoiceLine = n;
                 w->flags |= MSGW_CHOICE;
                 break;
@@ -912,7 +912,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
     s32 done;
     s32 t;
     s32 n, i;
-    s32 mask;
+    s32 choiceBits;
     s32 cnt;
 
     p = msg_getEntry_inline(id, &g_msgLayout);
@@ -937,19 +937,19 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
             case TEXT_CHOICES_MASKED:
                 g_msgChoiceEnabled = g_msgChoiceMaskReq;
                 n = i = *p;
-                mask = g_msgChoiceMaskReq;
+                choiceBits = g_msgChoiceMaskReq;
                 while (--i != -1) {
-                    n -= (mask ^ 1) & 1;
-                    mask >>= 1;
+                    n -= (choiceBits ^ 1) & 1;
+                    choiceBits >>= 1;
                 }
                 g_msgChoiceCount = n;
                 g_msgLayout.h -= (*p++ - n) * 14;
                 n = -1;
-                mask = g_msgChoiceEnabled;
+                choiceBits = g_msgChoiceEnabled;
                 cnt = *p++;
                 while (--cnt != -1) {
-                    n += mask & 1;
-                    mask >>= 1;
+                    n += choiceBits & 1;
+                    choiceBits >>= 1;
                 }
                 if (n >= g_msgChoiceCount) {
                     n = g_msgChoiceCount - 1;
@@ -1353,8 +1353,8 @@ s32 msg_emitItemName(s32 id, s32 n) {
     return len;
 }
 
-s32 msg_emitCharName(s32 arg0, s32 n) {
-    u8 *name = g_gameState->gameData->characters[arg0].name;
+s32 msg_emitCharName(s32 chr, s32 n) {
+    u8 *name = g_gameState->gameData->characters[chr].name;
     s32 len;
     s32 i;
 
@@ -1378,7 +1378,7 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
     s32 k;
     u8 *name = g_gameState->gameData->characters[ch].name;
     u32 c;
-    u8 *buf;
+    u8 *capsName;
 
     for (k = 0; k < 8; k++) {
         c = name[k];
@@ -1391,9 +1391,9 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
         }
         g_msgNameBuf[k] = c;
     }
-    buf = g_msgNameBuf;
+    capsName = g_msgNameBuf;
     for (i = 0; i < 8; i++) {
-        if (buf[i] == TEXT_END) {
+        if (capsName[i] == TEXT_END) {
             break;
         }
     }
@@ -1401,7 +1401,7 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
         n = i;
     }
     for (j = 0; j < n; j++) {
-        pen_putGlyph(buf[j]);
+        pen_putGlyph(capsName[j]);
     }
     return i;
 }
@@ -1628,18 +1628,18 @@ void msg_drawAtePrompt(void) {
     pen_end();
 }
 
-void msg_startHereIcon(s32 arg0) {
+void msg_startHereIcon(s32 request) {
     s32 mode;
 
-    if (arg0 == 0) {
+    if (request == 0) {
         g_hereIconActive = 0;
         g_hereIconTimer = 0;
         return;
     }
     mode = (g_gameState->config >> CFG_BIT_HERE_ICON) & 1;
     mode = mode == 0;
-    if (arg0 >= 3 || (g_evtState->controlEnabled != 0 &&
-                      (mode >= 2 || (mode == 1 && (arg0 == 2 || g_evtMsgCount >= 3 || g_evtPlayerAnimCount != 0))))) {
+    if (request >= 3 || (g_evtState->controlEnabled != 0 &&
+                      (mode >= 2 || (mode == 1 && (request == 2 || g_evtMsgCount >= 3 || g_evtPlayerAnimCount != 0))))) {
         g_hereIconTimer = 60;
     }
 }
@@ -1841,12 +1841,12 @@ s32 rain_draw(void) {
     return (s32)r;
 }
 
-u8 *rain_init(RainNode *buf) {
-    RainNode *p = buf;
+u8 *rain_init(RainNode *nodes) {
+    RainNode *p = nodes;
     RainNode *end;
-    g_fieldRain.freeList = buf;
-    if (buf != NULL) {
-        end = buf + 222;
+    g_fieldRain.freeList = nodes;
+    if (nodes != NULL) {
+        end = nodes + 222;
         for (; p < end; p++) {
             p->next = p + 1;
         }
@@ -1858,7 +1858,7 @@ u8 *rain_init(RainNode *buf) {
     g_fieldRain.count = 0;
     g_fieldRain.speed = 0;
     g_fieldRain.stopping = 0;
-    g_fieldRainPrims = (u8 *)(buf + 222);
+    g_fieldRainPrims = (u8 *)(nodes + 222);
     return (u8 *)p + 0x4560;
 }
 

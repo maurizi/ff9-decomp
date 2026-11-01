@@ -718,14 +718,14 @@ void menuConfig_drawSliderRow(RECT *r, s32 otz, s32 v, s32 n, s32 item) {
     menuConfig_drawSlider(x + 0x9E, y, otz, pos, 0x5A);
 }
 
-void menuConfig_drawSmallText(s32 x, s32 y, s32 otz, u8 *s, s32 arg4) {
-    s_menuConfig.prim = text_buildSmall(x, y, &g_ot[otz], s, arg4, s_menuConfig.prim);
+void menuConfig_drawSmallText(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
+    s_menuConfig.prim = text_buildSmall(x, y, &g_ot[otz], s, pal, s_menuConfig.prim);
 }
 
-void menuConfig_drawIcon(s32 x, s32 y, s32 otz, s32 n, u8 arg4) {
-    s32 buf[2];
+void menuConfig_drawIcon(s32 x, s32 y, s32 otz, s32 n, u8 flag) {
+    s32 spriteW[2];
 
-    s_menuConfig.prim = ui_buildSprite(x, y, &g_ot[otz], n, arg4, buf, s_menuConfig.prim);
+    s_menuConfig.prim = ui_buildSprite(x, y, &g_ot[otz], n, flag, spriteW, s_menuConfig.prim);
 }
 
 void menuConfig_drawText(s32 x, s32 y, s32 otz, s32 text, s32 color) {

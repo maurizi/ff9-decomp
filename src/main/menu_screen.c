@@ -111,11 +111,11 @@ void menuScreen_exit(void) {
     g_menuScreen.active = 0;
 }
 
-void menuScreen_open(s32 arg0) {
+void menuScreen_open(s32 screen) {
     s32 prev = g_menuScreenCur;
 
-    if (g_menuScreenSwitch.screens[arg0].update != 0) {
-        g_menuScreenSwitch.target = arg0;
+    if (g_menuScreenSwitch.screens[screen].update != 0) {
+        g_menuScreenSwitch.target = screen;
         g_menuScreenSwitch.busy = 1;
         g_menuScreenSwitch.titleResizing = 1;
         g_menuScreenSwitch.fadingOut = 1;

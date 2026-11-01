@@ -41,9 +41,9 @@ void win_runFrame(void) {
 void gfx_unusedStub(void) {
 }
 
-void gfx_setUiMode(s32 arg0) {
-    g_drawBufs.uiMode = arg0;
-    if (arg0 == 2) {
+void gfx_setUiMode(s32 mode) {
+    g_drawBufs.uiMode = mode;
+    if (mode == 2) {
         g_drawBufs.lastVsync = 0;
     }
 }
@@ -71,15 +71,15 @@ void gfx_setTarget(u32 *a, u8 *b) {
     g_primPtr = b;
 }
 
-void text_uploadPartyNames(s32 a) {
-    s32 buf = text_initNameImage(a);
+void text_uploadPartyNames(s32 work) {
+    s32 image = text_initNameImage(work);
     s32 i;
     for (i = 0; i < 4; i++) {
         if (g_gameState->gameData->party[i] != NULL) {
             text_renderPartyName(i);
         }
     }
-    LoadImage(&g_partyNameRect, (u32 *)buf);
+    LoadImage(&g_partyNameRect, (u32 *)image);
     DrawSync(0);
 }
 
@@ -113,7 +113,7 @@ void pad_initRepeat(void) {
 }
 
 void pad_updateRepeat(s32 port) {
-    u32 res = 0;
+    u32 repeat = 0;
     PadRepeat *e = g_padRepeats[port];
     u32 now = VSync(-1);
     s32 i;
@@ -147,10 +147,10 @@ void pad_updateRepeat(s32 port) {
                 e->armed = 1;
                 e->lastVsync = now;
             }
-            res |= out;
+            repeat |= out;
         }
     }
-    g_padRepeat = res | g_padPressed;
+    g_padRepeat = repeat | g_padPressed;
 }
 
 s32 pad_isAnalog(s32 i) {

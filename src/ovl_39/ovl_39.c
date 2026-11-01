@@ -146,7 +146,7 @@ void menuSave_drawFile(RECT *r, s32 otz, s32 file) {
 }
 
 void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
-    u8 buf[16];
+    u8 numText[16];
     RECT rr;
     SaveFile *s;
     s32 j;
@@ -156,28 +156,28 @@ void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
     n = 0;
     for (j = n; j < 4; j++) {
         if ((s->discs >> j) & 1) {
-            buf[n++] = j + '1';
+            numText[n++] = j + '1';
         }
     }
-    buf[n] = 0;
+    numText[n] = 0;
     ui_drawSmallDigits(r->x + 0x30, r->y + 3, z, "/DISC", TEXT_PAL_WHITE);
-    ui_drawSmallDigits(r->x + 0x56, r->y + 3, z, buf, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(r->x + 0x56, r->y + 3, z, numText, TEXT_PAL_WHITE);
     for (j = 0; j < 4; j++) {
         if (s->party[j].portrait != PORTRAIT_NONE) {
             ui_drawPortraitId(r->x + 6 + j * 0x21, r->y + 0xD, z, s->party[j].portrait, 0x2C, 0);
         }
     }
-    text_formatNumber(s->level, buf, 2, TEXT_NUM_ASCII);
+    text_formatNumber(s->level, numText, 2, TEXT_NUM_ASCII);
     text_drawBlock(r->x + 0x90, r->y + 6, z, s->name.v, TEXT_PAL_WHITE);
     ui_drawSprite(r->x + 0x90, r->y + 0x17, z, 0xB4, 0);
-    ui_drawDigits(r->x + 0xA2, r->y + 0x15, z, buf, DIGITS_WHITE);
+    ui_drawDigits(r->x + 0xA2, r->y + 0x15, z, numText, DIGITS_WHITE);
     ui_drawSprite(r->x + 0xD8, r->y + 9, z, 0xB1, 0);
     ui_drawSprite(r->x + 0xD8, r->y + 0x16, z, 0xB2, 0);
-    ui_drawSmallDigits(r->x + 0xE4, r->y + 0xA, z, buf, text_formatTime(s->playTime, buf, 0));
-    text_formatNumber(s->gil, buf, 7, TEXT_NUM_ASCII);
-    buf[7] = 0xA4;
-    buf[8] = 0;
-    ui_drawSmallDigits(r->x + 0xE4, r->y + 0x17, z, buf, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(r->x + 0xE4, r->y + 0xA, z, numText, text_formatTime(s->playTime, numText, 0));
+    text_formatNumber(s->gil, numText, 7, TEXT_NUM_ASCII);
+    numText[7] = 0xA4;
+    numText[8] = 0;
+    ui_drawSmallDigits(r->x + 0xE4, r->y + 0x17, z, numText, TEXT_PAL_WHITE);
     rr.x = r->x + 0x8E;
     rr.y = r->y + 0x25;
     rr.w = 0x9C;
@@ -524,7 +524,7 @@ void menuSave_drawBookIcon(s32 x, s32 y, s32 z, s32 idx) {
 void menuSave_saveVram(void) {
     RECT r;
     u8 *img = s_menuSaveBookImage;
-    u8 *buf = s_menuSaveVramBackup;
+    u8 *backup = s_menuSaveVramBackup;
     u8 *src = img;
     s32 i;
 
@@ -532,11 +532,11 @@ void menuSave_saveVram(void) {
     r.x = 0;
     r.w = 0x100;
     r.h = 1;
-    StoreImage(&r, (u32 *)buf);
+    StoreImage(&r, (u32 *)backup);
     DrawSync(0);
     LoadImage(&r, (u32 *)img);
     DrawSync(0);
-    buf += BOOK_CLUT_SIZE;
+    backup += BOOK_CLUT_SIZE;
     img += BOOK_CLUT_SIZE;
     r.x = BOOK_X;
     r.w = BOOK_W;
@@ -546,7 +546,7 @@ void menuSave_saveVram(void) {
        uploaded before it, the first one into s_menuSaveVramBackup */
     for (i = 0; i < BOOK_STRIPS; i++) {
         if (i == 0) {
-            StoreImage(&r, (u32 *)buf);
+            StoreImage(&r, (u32 *)backup);
         } else {
             StoreImage(&r, (u32 *)src);
             src += BOOK_STRIP_SIZE;
@@ -562,25 +562,25 @@ void menuSave_saveVram(void) {
 void menuSave_restoreVram(void) {
     RECT r;
     u8 *img;
-    u8 *buf;
+    u8 *backup;
     s32 i;
 
     img = s_menuSaveBookImage;
-    buf = s_menuSaveVramBackup;
+    backup = s_menuSaveVramBackup;
     r.x = 0;
     r.y = BOOK_CLUT_Y;
     r.w = 0x100;
     r.h = 1;
-    LoadImage(&r, (u32 *)buf);
+    LoadImage(&r, (u32 *)backup);
     DrawSync(0);
-    buf += BOOK_CLUT_SIZE;
+    backup += BOOK_CLUT_SIZE;
     r.x = BOOK_X;
     r.w = BOOK_W;
     r.y = BOOK_Y;
     r.h = BOOK_STRIP_H;
     for (i = 0; i < BOOK_STRIPS; i++) {
         if (i == 0) {
-            LoadImage(&r, (u32 *)buf);
+            LoadImage(&r, (u32 *)backup);
         } else {
             LoadImage(&r, (u32 *)img);
             img += BOOK_STRIP_SIZE;
@@ -1831,16 +1831,16 @@ void menuSave_pageDown(MenuList *l, s32 pad) {
     }
 }
 
-void menuSave_buildHeader(SaveBuf *buf) {
+void menuSave_buildHeader(SaveBuf *save) {
     SaveHeader *h;
     EvtObject *o;
     s32 t;
     s32 i;
     u8 n;
 
-    h = &buf->hdr;
+    h = &save->hdr;
     t = game_getPlayTime();
-    menuSave_buildCardHeader(&buf->card, t);
+    menuSave_buildCardHeader(&save->card, t);
     n = 0;
     o = evt_getPlayer();
     if (o != NULL) {
@@ -1898,7 +1898,7 @@ void menuSave_getLocation(u8 *dst) {
     }
 }
 
-void menuSave_buildCardHeader(CardFileHeader *buf, s32 t) {
+void menuSave_buildCardHeader(CardFileHeader *hdr, s32 t) {
     u8 *title;
     IconTmpl *icon;
     s32 sec;
@@ -1906,11 +1906,11 @@ void menuSave_buildCardHeader(CardFileHeader *buf, s32 t) {
     s32 hour;
     s32 n;
 
-    buf->magic = CARD_MAGIC;
-    buf->iconFlag = CARD_ICON_1FRAME;
-    buf->blocks = 1;
-    title = buf->title;
-    memset(buf->pad44, 0, sizeof(buf->pad44));
+    hdr->magic = CARD_MAGIC;
+    hdr->iconFlag = CARD_ICON_1FRAME;
+    hdr->blocks = 1;
+    title = hdr->title;
+    memset(hdr->pad44, 0, sizeof(hdr->pad44));
     sec = (u32)t / 60;
     min = sec / 60;
     hour = min / 60;
@@ -1919,7 +1919,7 @@ void menuSave_buildCardHeader(CardFileHeader *buf, s32 t) {
     if (hour >= 100) {
         hour %= 100;
     }
-    memset(title, 0, sizeof(buf->title));
+    memset(title, 0, sizeof(hdr->title));
     /* "ＦＦ９／ＦＩＬＥ００／００：００／" in 2-byte SJIS: bump the low bytes of the digits,
        file number at 0x11/0x13, hours at 0x17/0x19, minutes at 0x1D/0x1F; 0x20 cuts the last "／" */
     *(TitleTmpl *)title = s_menuSaveTitleTemplate;
@@ -1942,7 +1942,7 @@ void menuSave_buildCardHeader(CardFileHeader *buf, s32 t) {
     } else {
         icon = &s_menuSaveIconEven;
     }
-    buf->icon = *icon;
+    hdr->icon = *icon;
 }
 
 void menuSave_saveFile(s32 file, s32 unused) {
@@ -2028,7 +2028,7 @@ u16 menuSave_crc16(u8 *p, s32 n) {
     return c.w;
 }
 
-void menuSave_loadFile(s32 file, s32 arg1) {
+void menuSave_loadFile(s32 file, s32 unused) {
     SaveFile *s;
 
     s = s_menuSave.files;
@@ -2048,9 +2048,9 @@ void menuSave_loadFile(s32 file, s32 arg1) {
 
 u8 menuSave_applyLoaded(void) {
     SaveHeader *h;
-    u8 ret;
+    u8 ok;
 
-    ret = 1;
+    ok = 1;
     menuSave_initCrcTable();
     if (SAVE_BUF->crc == menuSave_crc16((u8 *)SAVE_BUF, SAVE_CRC_LEN)) {
         h = &SAVE_BUF->hdr;
@@ -2064,9 +2064,9 @@ u8 menuSave_applyLoaded(void) {
         menuSave_unpackCards(SAVE_BUF->data.cards);
     } else {
         menuSave_showError(SAVE_TEXT_CORRUPTED);
-        ret = 0;
+        ok = 0;
     }
-    return ret;
+    return ok;
 }
 
 void menuSave_startLoad(void) {

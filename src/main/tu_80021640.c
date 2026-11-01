@@ -43,24 +43,24 @@ void mbg_resetState(void) {
     g_mbgState = 0;
 }
 
-CdReadCtx *cdRead_init(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, void (*f)(CdReadCtx *)) {
-    CdReadCtx *p = arg0;
+CdReadCtx *cdRead_init(void *ctx, s32 sector, s32 size, void *dest, s32 offset, s32 chunk, void (*onDone)(CdReadCtx *)) {
+    CdReadCtx *p = ctx;
     if (p != NULL) {
-        p->sector = a;
-        p->size = b;
-        p->dest = c;
-        p->offset = d;
-        p->end = c;
-        p->chunk = e;
-        p->onDone = f;
-        p->unk18 = b;
+        p->sector = sector;
+        p->size = size;
+        p->dest = dest;
+        p->offset = offset;
+        p->end = dest;
+        p->chunk = chunk;
+        p->onDone = onDone;
+        p->unk18 = size;
         p->state = CDREAD_WAIT_CD;
     }
     return p;
 }
 
-s32 cdRead_update(void *arg0) {
-    CdReadCtx *p = arg0;
+s32 cdRead_update(void *ctx) {
+    CdReadCtx *p = ctx;
     s32 n;
 
     if (p != NULL) {

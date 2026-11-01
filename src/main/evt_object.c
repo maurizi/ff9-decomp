@@ -161,18 +161,18 @@ EvtListNode *evt_deleteObject(EvtObject *obj) {
 s32 evt_exprUnitIncDec(s32 op) {
     s32 r = 0;
     s32 w = g_evtExprSp[-2];
-    s32 mask;
+    s32 unitMask;
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = evt_getBattleVar_inline(w);
+        unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
-        mask = evt_popResult();
+        unitMask = evt_popResult();
         g_evtExprSp += 2;
     }
     for (i = 0; i < 8; i++) {
-        if (mask & 1) {
+        if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case EVT_EXPR_UNIT_POST_INC:
@@ -198,7 +198,7 @@ s32 evt_exprUnitIncDec(s32 op) {
             }
             g_evtExprSp++;
         }
-        mask >>= 1;
+        unitMask >>= 1;
     }
     g_evtExprSp -= 2;
     return r;
@@ -207,20 +207,20 @@ s32 evt_exprUnitIncDec(s32 op) {
 s32 evt_exprUnitAssign(s32 op) {
     s32 r = 0;
     s32 w = g_evtExprSp[-3];
-    s32 mask;
+    s32 unitMask;
     s32 v;
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = evt_getBattleVar_inline(w);
+        unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp -= 2;
-        mask = evt_popResult();
+        unitMask = evt_popResult();
         g_evtExprSp += 3;
     }
     v = evt_popResult();
     for (i = 0; i < 8; i++) {
-        if (mask & 1) {
+        if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case EVT_EXPR_UNIT_ASSIGN:
@@ -278,7 +278,7 @@ s32 evt_exprUnitAssign(s32 op) {
             evt_assignResult(r);
             g_evtExprSp++;
         }
-        mask >>= 1;
+        unitMask >>= 1;
     }
     g_evtExprSp -= 2;
     return r;
@@ -288,35 +288,35 @@ s32 evt_exprUnitSelect(s32 op) {
     s32 r = 0;
     s32 idx = r;
     s32 w = g_evtExprSp[-2];
-    s32 mask;
+    s32 unitMask;
     s32 i;
     s32 x;
 
     if (((w >> 26) & 7) == 5) {
-        mask = evt_getBattleVar_inline(w);
+        unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
-        mask = evt_popResult();
+        unitMask = evt_popResult();
         g_evtExprSp += 2;
     }
     switch (op) {
     case EVT_EXPR_UNIT_NOT:
         for (i = 0; i < 8; i++) {
             r >>= 1;
-            if (mask & 1) {
+            if (unitMask & 1) {
                 g_evtExprObj = g_evtUnitObjects[i];
                 if (evt_popResult() == 0) {
                     r |= 0x80;
                 }
                 g_evtExprSp++;
             }
-            mask >>= 1;
+            unitMask >>= 1;
         }
         break;
     case EVT_EXPR_UNIT_MAX:
         r = -0x8000;
         for (i = 0; i < 8; i++) {
-            if (mask & 1) {
+            if (unitMask & 1) {
                 g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
@@ -325,14 +325,14 @@ s32 evt_exprUnitSelect(s32 op) {
                     idx = i;
                 }
             }
-            mask >>= 1;
+            unitMask >>= 1;
         }
         r = 1 << idx;
         break;
     case EVT_EXPR_UNIT_MIN:
         r = 0x7FFF;
         for (i = 0; i < 8; i++) {
-            if (mask & 1) {
+            if (unitMask & 1) {
                 g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
@@ -341,7 +341,7 @@ s32 evt_exprUnitSelect(s32 op) {
                     idx = i;
                 }
             }
-            mask >>= 1;
+            unitMask >>= 1;
         }
         r = 1 << idx;
         break;
@@ -354,21 +354,21 @@ s32 evt_exprUnitCompare(s32 op) {
     s32 r = 0;
     s32 c = r;
     s32 w = g_evtExprSp[-3];
-    s32 mask;
+    s32 unitMask;
     s32 v;
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = evt_getBattleVar_inline(w);
+        unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp -= 2;
-        mask = evt_popResult();
+        unitMask = evt_popResult();
         g_evtExprSp += 3;
     }
     v = evt_popResult();
     for (i = 0; i < 8; i++) {
         r >>= 1;
-        if (mask & 1) {
+        if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case EVT_EXPR_UNIT_LT:
@@ -405,7 +405,7 @@ s32 evt_exprUnitCompare(s32 op) {
             r |= c << 7;
             g_evtExprSp++;
         }
-        mask >>= 1;
+        unitMask >>= 1;
     }
     g_evtExprSp -= 2;
     return r;
@@ -414,26 +414,26 @@ s32 evt_exprUnitCompare(s32 op) {
 s32 evt_exprUnitLogic(s32 op) {
     s32 r = 0;
     s32 w = g_evtExprSp[-2];
-    s32 mask;
+    s32 unitMask;
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = evt_getBattleVar_inline(w);
+        unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
-        mask = evt_popResult();
+        unitMask = evt_popResult();
         g_evtExprSp += 2;
     }
     for (i = 0; i < 8; i++) {
         r >>= 1;
-        if (mask & 1) {
+        if (unitMask & 1) {
             g_evtExprObj = g_evtUnitObjects[i];
             if (evt_popResult() != 0) {
                 r |= 0x80;
             }
             g_evtExprSp++;
         }
-        mask >>= 1;
+        unitMask >>= 1;
     }
     g_evtExprSp -= 2;
     switch (op) {
@@ -457,22 +457,22 @@ s32 evt_exprUnitLogic(s32 op) {
 s32 evt_exprUnitFirst(void) {
     s32 r = 0;
     s32 w = g_evtExprSp[-2];
-    s32 mask;
+    s32 unitMask;
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = evt_getBattleVar_inline(w);
+        unitMask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
-        mask = evt_popResult();
+        unitMask = evt_popResult();
         g_evtExprSp += 2;
     }
     i = 0;
-    if (!(mask & 1)) {
+    if (!(unitMask & 1)) {
         i = 1;
-        mask >>= 1;
-        while (i < 8 && !(mask & 1)) {
-            mask >>= 1;
+        unitMask >>= 1;
+        while (i < 8 && !(unitMask & 1)) {
+            unitMask >>= 1;
             i++;
         }
     }

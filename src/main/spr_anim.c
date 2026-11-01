@@ -74,16 +74,16 @@ void sprAnim_reset(SprAnim *a) {
     a->onDone = 0;
 }
 
-void sprAnim_update(SprAnim *arg0) {
-    SprAnimFrame *f = &arg0->frames[arg0->frame];
+void sprAnim_update(SprAnim *anim) {
+    SprAnimFrame *f = &anim->frames[anim->frame];
 
-    if (arg0->playing != 0) {
-        if (++arg0->tick >= f->ticks - 1) {
-            arg0->tick = 0;
-            if (++arg0->frame >= arg0->frameCount - 1) {
-                arg0->playing = 0;
-                if (arg0->onDone != NULL) {
-                    arg0->onDone(arg0);
+    if (anim->playing != 0) {
+        if (++anim->tick >= f->ticks - 1) {
+            anim->tick = 0;
+            if (++anim->frame >= anim->frameCount - 1) {
+                anim->playing = 0;
+                if (anim->onDone != NULL) {
+                    anim->onDone(anim);
                 }
             }
         }

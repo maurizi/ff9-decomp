@@ -23,7 +23,7 @@ void akao_freeSubSeqVoices(void) {
     AkaoSeq *seq;
     u32 seq8, a8, seqC, aC;
     u32 seqBoth, aBoth;
-    u32 mask;
+    u32 freeBits;
     u32 found;
     u32 bit;
     u32 lim;
@@ -42,11 +42,11 @@ void akao_freeSubSeqVoices(void) {
         seqBoth = seq8 & seqC;
         aBoth = a8 & aC;
         v = ~seqBoth | aBoth;
-        mask = ~(aC & v);
-        mask &= seqC;
-        mask &= lim;
-        for (v = 0; mask != 0; v++) {
-            if (mask & (1 << v)) {
+        freeBits = ~(aC & v);
+        freeBits &= seqC;
+        freeBits &= lim;
+        for (v = 0; freeBits != 0; v++) {
+            if (freeBits & (1 << v)) {
                 n = 0x20;
                 bit = 1 << v;
                 ch = g_akaoSubChannels;
@@ -57,7 +57,7 @@ void akao_freeSubSeqVoices(void) {
                     }
                     ch++;
                 }
-                mask &= ~(1 << v);
+                freeBits &= ~(1 << v);
             }
         }
         g_akaoSeState.keyOffMask |= found & ~(g_akaoSeState.activeMask | g_akaoStreamVoices);

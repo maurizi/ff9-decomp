@@ -69,12 +69,12 @@ void discChange_drawPanel(void) {
 u8 discChange_checkDisc(void) {
     CdlLOC loc;
     u8 result[8];
-    s32 mask;
+    s32 discBit;
     s32 i;
-    s32 ret;
+    s32 ready;
     s32 type;
 
-    mask = 1 << s_discChange.disc;
+    discBit = 1 << s_discChange.disc;
     CdControlB(CdlNop, NULL, result);
     i = 0;
     if (result[0] & CdlStatShellOpen) {
@@ -90,8 +90,8 @@ u8 discChange_checkDisc(void) {
         i++;
     } while (!(result[0] & CdlStatStandby));
 
-    ret = CdDiskReady(0);
-    switch (ret) {
+    ready = CdDiskReady(0);
+    switch (ready) {
     case CdlDiskError:
         return DISC_CHECK_OTHER_FORMAT;
     case CdlComplete:
@@ -130,7 +130,7 @@ u8 discChange_checkDisc(void) {
             break;
         }
     }
-    if (g_gameState->disc == DISC_NONE || !(g_gameState->disc & mask)) {
+    if (g_gameState->disc == DISC_NONE || !(g_gameState->disc & discBit)) {
         cd_stopMotor();
         return DISC_CHECK_WRONG_DISC;
     }
@@ -188,7 +188,7 @@ void discChange_updateState(void) {
 }
 
 void discChange_loadPicture(void) {
-    u32 *buf = DISC_PICTURE_BUF;
+    u32 *picture = DISC_PICTURE_BUF;
     s32 size;
     u32 *clut = s_discChangeClut;
     s32 i;
@@ -197,8 +197,8 @@ void discChange_loadPicture(void) {
     sector = g_gameState->imgSector + file_find(DIR_COMMON, s_discChangePictureFiles[s_discChange.disc & 3])->sector;
     size = DISC_PICTURE_HALF_BYTES;
     for (i = 0; i < 2; i++) {
-        cd_readSync(sector, size, buf);
-        discChange_loadPictureHalf(buf, i);
+        cd_readSync(sector, size, picture);
+        discChange_loadPictureHalf(picture, i);
         sector += DISC_PICTURE_HALF_SECTORS;
     }
     LoadImage(&s_discChangeClutRect, clut);

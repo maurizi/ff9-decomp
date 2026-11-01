@@ -2,7 +2,7 @@
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/gameover", s_gameoverClearRect);
 
-void gameover_main(s32 arg0) {
+void gameover_main(s32 image) {
     s16 c = 0xFF;
     u8 state = 0;
     DispBuf b[2];
@@ -12,7 +12,7 @@ void gameover_main(s32 arg0) {
     gameover_initDisp(b);
     cur = b;
     DrawSync(0);
-    gameover_loadImage(arg0);
+    gameover_loadImage(image);
     while (1) {
         cur = (cur == &b[0]) ? &b[1] : &b[0];
         ClearOTag(cur->ot, 2);
@@ -100,11 +100,11 @@ void gameover_initDisp(DispBuf *b) {
     }
 }
 
-void gameover_loadImage(s32 arg0) {
+void gameover_loadImage(s32 dest) {
     FileEntry *e = file_find(DIR_COMMON, FILE_GAMEOVER_IMAGE);
 
-    cd_readSync(g_gameState->imgSector + e->sector, (e->link - e->sector) << 11, arg0);
-    file_loadTim(arg0);
+    cd_readSync(g_gameState->imgSector + e->sector, (e->link - e->sector) << 11, dest);
+    file_loadTim(dest);
 }
 
 s32 battleEnd_update(void) {

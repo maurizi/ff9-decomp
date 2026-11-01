@@ -181,7 +181,7 @@ s32 preload_startRead(void) {
     PreloadEntry *e = &g_gameState->gameData->preloadQueue->entries[6];
     PreloadEntry *p = preload_getCurrent();
     u8 r;
-    s32 ret;
+    s32 started;
 
     if (p == NULL) {
         return 0;
@@ -202,9 +202,9 @@ s32 preload_startRead(void) {
         }
     done:
         p->flags |= PRELOAD_BUSY;
-        ret = 0;
+        started = 0;
     } while (0);
-    return ret;
+    return started;
 }
 
 s32 preload_poll(void) {
@@ -302,7 +302,7 @@ s32 preload_overlaps(u32 addr, s32 size) {
 s32 preload_discardRange(u32 addr, s32 size) {
     PreloadQueue *q = g_gameState->gameData->preloadQueue;
     PreloadEntry *e;
-    s32 ret = 0;
+    s32 discarded = 0;
     s32 i;
     u32 end = addr + size;
 
@@ -311,12 +311,12 @@ s32 preload_discardRange(u32 addr, s32 size) {
         if (e->fileId != -1 && (*(u32 *)&e->flags & (PRELOAD_IN_VRAM | PRELOAD_STARTED)) == PRELOAD_STARTED && e->dest != 0 && e->loaded != 0 &&
             e->dest < end && addr < e->dest + e->loaded) {
             if (preload_wait(e)) {
-                ret = 1;
+                discarded = 1;
             }
             preload_clearEntry(e);
         }
     }
-    return ret;
+    return discarded;
 }
 
 void preload_remove(s32 id) {
@@ -392,14 +392,14 @@ s32 preload_update(void) {
     }
 }
 
-void preload_onReadDone(u8 *arg0) {
+void preload_onReadDone(u8 *result) {
     PreloadQueue *p = g_gameState->gameData->preloadQueue;
     PreloadEntry *e;
 
     if (p != NULL) {
         e = preload_getCurrent();
         if (e != NULL) {
-            if (preload_isUsed(e) && *arg0 == 0) {
+            if (preload_isUsed(e) && *result == 0) {
                 PreloadEntry *x = &p->entries[6];
                 if (e->kind == PRELOAD_KIND_READ) {
                     e->loaded += x->readSize;

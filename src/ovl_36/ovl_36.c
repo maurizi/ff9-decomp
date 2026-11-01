@@ -112,7 +112,7 @@ void menuCard_openDiscard(void) {
 }
 
 void menuCard_drawGrid(void) {
-    u8 buf[8];
+    u8 numText[8];
     RECT *r;
     s32 a;
     s32 b;
@@ -134,13 +134,13 @@ void menuCard_drawGrid(void) {
     win_drawShadow(r, 0x1E, WIN_STYLE_LINE_RULE);
     s = text_get(CARD_TEXT_STOCK);
     w = text_measureWidth(s);
-    text_formatNumber(a, buf, 3, TEXT_NUM_ASCII);
+    text_formatNumber(a, numText, 3, TEXT_NUM_ASCII);
     text_drawBlock(r->x + 8, r->y + 0xA2, 0x14, s, TEXT_PAL_WHITE);
-    ui_drawDigits(r->x + (w + k), r->y + 0xA4, 0x14, buf, DIGITS_WHITE);
+    ui_drawDigits(r->x + (w + k), r->y + 0xA4, 0x14, numText, DIGITS_WHITE);
     s = text_get(CARD_TEXT_TYPE);
     w = text_measureWidth(s);
-    text_formatNumber(b, buf, 3, TEXT_NUM_ASCII);
-    ui_drawDigits(r->x + 0x80, r->y + 0xA4, 0x14, buf, DIGITS_WHITE);
+    text_formatNumber(b, numText, 3, TEXT_NUM_ASCII);
+    ui_drawDigits(r->x + 0x80, r->y + 0xA4, 0x14, numText, DIGITS_WHITE);
     text_drawBlock(r->x - (w - k2), r->y + 0xA2, 0x14, s, TEXT_PAL_WHITE);
     for (n = 0, i = 0, x = 4; i < CARD_GRID_COLS; i++, x += 15) {
         for (j = 0, y = 10; j < CARD_GRID_ROWS; j++, y += 15) {
@@ -151,7 +151,7 @@ void menuCard_drawGrid(void) {
 }
 
 void menuCard_drawInfo(void) {
-    u8 buf[8];
+    u8 numText[8];
     RECT *r;
     s32 a;
     s32 b;
@@ -180,26 +180,26 @@ void menuCard_drawInfo(void) {
     win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
     win_drawShadow(r, 0x1F, WIN_STYLE_BEVEL);
     ui_drawEtchedLine(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
-    text_formatNumber(s_menuCard.points[CARD_PTS_TOTAL], buf, 4, TEXT_NUM_ASCII);
+    text_formatNumber(s_menuCard.points[CARD_PTS_TOTAL], numText, 4, TEXT_NUM_ASCII);
     text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(CARD_TEXT_COLLECTORS), TEXT_PAL_WHITE);
     text_drawBlock(r->x + 0xA, r->y + 0x14, 0x14, text_get(rank), TEXT_PAL_WHITE);
     text_drawBlock(r->x + 0xA, r->y + 0x26, 0x14, text_get(CARD_TEXT_WIN), TEXT_PAL_WHITE);
     text_drawBlock(r->x + 0xA, r->y + 0x30, 0x14, text_get(CARD_TEXT_LOSE), TEXT_PAL_WHITE);
     text_drawBlock(r->x + 0xA, r->y + 0x3A, 0x14, text_get(CARD_TEXT_DRAW), TEXT_PAL_WHITE);
-    ui_drawSmallDigits(r->x + 0x5A, r->y + 9, 0x14, buf, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(r->x + 0x5A, r->y + 9, 0x14, numText, TEXT_PAL_WHITE);
     ui_drawSmallDigits(r->x + 0x78, r->y + 0xB, 0x14, s_menuCardPointsUnit, TEXT_PAL_WHITE);
     w = menuCard_drawInfo_width(text_get(CARD_TEXT_DRAW));
-    text_formatNumber(a, buf, 5, TEXT_NUM_ASCII);
+    text_formatNumber(a, numText, 5, TEXT_NUM_ASCII);
     w += 0xB;
-    ui_drawSmallDigits(r->x + w, r->y + 0x2A, 0x14, buf, TEXT_PAL_WHITE);
-    text_formatNumber(b, buf, 5, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + w, r->y + 0x34, 0x14, buf, TEXT_PAL_WHITE);
-    text_formatNumber(c, buf, 5, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + w, r->y + 0x3E, 0x14, buf, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(r->x + w, r->y + 0x2A, 0x14, numText, TEXT_PAL_WHITE);
+    text_formatNumber(b, numText, 5, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + w, r->y + 0x34, 0x14, numText, TEXT_PAL_WHITE);
+    text_formatNumber(c, numText, 5, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + w, r->y + 0x3E, 0x14, numText, TEXT_PAL_WHITE);
 }
 
 void menuCard_drawCardStack(s32 id) {
-    u8 buf[8];
+    u8 numText[8];
     RECT *r;
     CardFlip *turn;
     CardCache *cache;
@@ -227,10 +227,10 @@ void menuCard_drawCardStack(s32 id) {
         same = id == cache->shown;
         name = (u8 *)card_getName(id);
         if (cnt >= 2) {
-            text_formatNumber(s_menuCard.shown[id] + 1, buf, 3, TEXT_NUM_ASCII);
-            text_formatNumber(cnt, buf + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-            buf[3] = '/';
-            ui_drawSmallDigits(r->x + 0x2B, r->y + 0x43, 0x14, buf, TEXT_PAL_WHITE);
+            text_formatNumber(s_menuCard.shown[id] + 1, numText, 3, TEXT_NUM_ASCII);
+            text_formatNumber(cnt, numText + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
+            numText[3] = '/';
+            ui_drawSmallDigits(r->x + 0x2B, r->y + 0x43, 0x14, numText, TEXT_PAL_WHITE);
             a = text_getButtonSprite(4);
             b = text_getButtonSprite(5);
             ui_drawSprite(r->x + 0x1E, r->y + 0x41, 0x14, a, 0);
@@ -435,52 +435,52 @@ void menuCard_drawSprite(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
     g_primPtr += 8;
 }
 
-void menuCard_saveVram(u8 *buf) {
+void menuCard_saveVram(u8 *backup) {
     RECT a = s_menuCardSlotClutRect;
     RECT b = s_menuCardSlotRect;
     s32 i;
 
-    StoreImage(&s_menuCardSaveClutRect0, (u32 *)buf);
-    buf += 0x200;
-    StoreImage(&s_menuCardSaveClutRect1, (u32 *)buf);
-    buf += 0x200;
-    StoreImage(&s_menuCardSaveRect, (u32 *)buf);
-    buf += 0x200;
+    StoreImage(&s_menuCardSaveClutRect0, (u32 *)backup);
+    backup += 0x200;
+    StoreImage(&s_menuCardSaveClutRect1, (u32 *)backup);
+    backup += 0x200;
+    StoreImage(&s_menuCardSaveRect, (u32 *)backup);
+    backup += 0x200;
     DrawSync(0);
     for (i = 0; i < CARD_CACHE_SLOTS; i++) {
         a.y = i + 0x1F4;
         b.x = (i % 3) * 0x13;
         b.y = (i / 3) * 0x2F + 0x100;
-        StoreImage(&a, (u32 *)buf);
+        StoreImage(&a, (u32 *)backup);
         DrawSync(0);
-        StoreImage(&b, (u32 *)(buf + 0x200));
+        StoreImage(&b, (u32 *)(backup + 0x200));
         DrawSync(0);
-        buf += 0x8FC;
+        backup += 0x8FC;
     }
 }
 
-void menuCard_restoreVram(u8 *buf) {
+void menuCard_restoreVram(u8 *backup) {
     RECT a = s_menuCardSlotClutRect;
     RECT b = s_menuCardSlotRect;
     s32 i;
 
-    LoadImage(&s_menuCardRestoreClutRect0, (u32 *)buf);
-    buf += 0x200;
-    LoadImage(&s_menuCardRestoreClutRect1, (u32 *)buf);
-    buf += 0x200;
+    LoadImage(&s_menuCardRestoreClutRect0, (u32 *)backup);
+    backup += 0x200;
+    LoadImage(&s_menuCardRestoreClutRect1, (u32 *)backup);
+    backup += 0x200;
     DrawSync(0);
-    LoadImage(&s_menuCardRestoreRect, (u32 *)buf);
-    buf += 0x200;
+    LoadImage(&s_menuCardRestoreRect, (u32 *)backup);
+    backup += 0x200;
     DrawSync(0);
     for (i = 0; i < CARD_CACHE_SLOTS; i++) {
         a.y = i + 0x1F4;
         b.x = (i % 3) * 0x13;
         b.y = (i / 3) * 0x2F + 0x100;
-        LoadImage(&a, (u32 *)buf);
+        LoadImage(&a, (u32 *)backup);
         DrawSync(0);
-        LoadImage(&b, (u32 *)(buf + 0x200));
+        LoadImage(&b, (u32 *)(backup + 0x200));
         DrawSync(0);
-        buf += 0x8FC;
+        backup += 0x8FC;
     }
 }
 
