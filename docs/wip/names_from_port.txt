@@ -11466,3 +11466,6 @@ D_8007BBD0 g_penKanjiGlyphs  # [jp] JP msg_init sets it to GameData.kanjiFont + 
 # ===== verification pass fixes =====
 # FIELDS fxmod work +0 (22 modules): stop0=hold0
 # FIELDS include/fxmod/fx_0e7.h Fx0e7Work: fadeInTimer68=blend68
+
+# ===== R37b world map script variables =====
+# new: EVT_GB_WM_WALKER_POS/VEHICLE_POS/CHOCOBO_POS, EVT_GB_NAVI_MODE, EVT_GB_WM_FILE, EVT_GB_CHOCOGRAPH_FOUND/OWNED, EVT_GB_CHOCOBO_LEVEL

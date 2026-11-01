@@ -322,7 +322,7 @@ void menuItem_sortAuto(void) {
 s32 menuItem_callChocobo(void) {
     ItemMenu *menu = &s_menuItem;
 
-    if (g_gameState->mode == GS_MODE_WORLD && g_evtGlobalVars.b[0xBF] != 0 && g_evtGlobalVars.b[0xB5] == 0) {
+    if (g_gameState->mode == GS_MODE_WORLD && g_evtGlobalVars.b[EVT_GB_CHOCOBO_LEVEL] != 0 && g_evtGlobalVars.b[0xB5] == 0) {
         if (wm_canCallChocobo()) {
             g_evtGlobalVars.b[0xB5] = 1;
             wm_callChocobo();
