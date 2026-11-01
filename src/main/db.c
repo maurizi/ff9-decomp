@@ -38,20 +38,20 @@ s32 db_unregister(void *db) {
 
 void *db_lookupRegistered(s32 mode, s32 key, s32 subKey) {
     s32 i;
-    s32 r = -1;
+    s32 val = -1;
     void *result;
 
     for (i = g_dbList.count - 1; i >= 0; i--) {
-        r = db_lookup((s32)g_dbList.dbs[i], mode, key, subKey);
-        if (r != -1) {
-            return (void *)r;
+        val = db_lookup((s32)g_dbList.dbs[i], mode, key, subKey);
+        if (val != -1) {
+            return (void *)val;
         }
     }
     result = (void *)-1;
-    if (r == -1) {
-        r = mode & 1;
+    if (val == -1) {
+        val = mode & 1;
         result = NULL;
-        if (r != 0) {
+        if (val != 0) {
             result = (void *)-1;
         }
     }
@@ -62,26 +62,26 @@ s32 db_lookup(s32 db, s32 mode, s32 key, s32 subKey) {
     u8 *base = (u8 *)db;
     u32 *ent;
     s32 i;
-    s32 n;
+    s32 typeCount;
     s32 j;
     s32 cnt;
     s32 type;
     u8 *blk;
     u16 *ids;
     u32 *ofs;
-    u32 *p;
+    u32 *ofsEnt;
     s32 hi;
     s32 lo;
-    s32 r;
+    s32 subResult;
 
     if (base == NULL) {
         return 0;
     }
     ent = (u32 *)(base + 4);
     hi = (key >> 16) & 0xFF;
-    n = base[1];
+    typeCount = base[1];
     lo = key & 0xFFFF;
-    for (i = 0; i < n; i++, ent++) {
+    for (i = 0; i < typeCount; i++, ent++) {
         blk = (u8 *)*ent;
         type = ((u32)blk >> 24) & 0x7F;
         if (type == hi) {
@@ -102,8 +102,8 @@ s32 db_lookup(s32 db, s32 mode, s32 key, s32 subKey) {
                 return (type << 16) | ids[lo];
             }
             if (mode == DB_GET_AT) {
-                p = &ofs[lo];
-                return (s32)p + (*p & 0xFFFFFF);
+                ofsEnt = &ofs[lo];
+                return (s32)ofsEnt + (*ofsEnt & 0xFFFFFF);
             }
             for (j = 0; j < cnt; j++) {
                 if (*ids == lo) {
@@ -115,14 +115,14 @@ s32 db_lookup(s32 db, s32 mode, s32 key, s32 subKey) {
                     case DB_GET_SIZE:
                         return (ofs[1] & 0xFFFFFF) - (ofs[0] & 0xFFFFFF) + 4;
                     case DB_GET_KEY_AT_IN:
-                        r = db_lookup(db, DB_GET_KEY_AT, subKey, 0);
-                        return r;
+                        subResult = db_lookup(db, DB_GET_KEY_AT, subKey, 0);
+                        return subResult;
                     case DB_GET_AT_IN:
-                        r = db_lookup(db, DB_GET_AT, subKey, 0);
-                        return r;
+                        subResult = db_lookup(db, DB_GET_AT, subKey, 0);
+                        return subResult;
                     case DB_GET_COUNT_IN:
-                        r = db_lookup(db, DB_GET_COUNT, subKey, 0);
-                        return r;
+                        subResult = db_lookup(db, DB_GET_COUNT, subKey, 0);
+                        return subResult;
                     default:
                         return -1;
                     }
@@ -136,31 +136,31 @@ s32 db_lookup(s32 db, s32 mode, s32 key, s32 subKey) {
 }
 
 s32 db_getSize(s32 db) {
-    u8 *p = (u8 *)db;
-    u32 *q;
-    u8 *e;
-    u32 *r;
+    u8 *base = (u8 *)db;
+    u32 *lastEnt;
+    u8 *blk;
+    u32 *endEnt;
     s32 k;
-    s32 n;
-    s32 m;
+    s32 tmp;
+    s32 misalign;
 
-    if (p == NULL || p[0] != 0xDB) {
+    if (base == NULL || base[0] != 0xDB) {
         return -1;
     }
-    n = p[1];
-    if (n <= 0) {
+    tmp = base[1];
+    if (tmp <= 0) {
         return 4;
     }
-    q = (u32 *)p + n;
-    e = (u8 *)q + (*q & 0xFFFFFF);
-    k = e[1];
-    n = k * 2 + 4;
-    m = n & 3;
-    if (m != 0) {
-        n += 4 - m;
+    lastEnt = (u32 *)base + tmp;
+    blk = (u8 *)lastEnt + (*lastEnt & 0xFFFFFF);
+    k = blk[1];
+    tmp = k * 2 + 4;
+    misalign = tmp & 3;
+    if (misalign != 0) {
+        tmp += 4 - misalign;
     }
-    r = (u32 *)(e + n + k * 4);
-    return (u8 *)r + (*r & 0xFFFFFF) - p;
+    endEnt = (u32 *)(blk + tmp + k * 4);
+    return (u8 *)endEnt + (*endEnt & 0xFFFFFF) - base;
 }
 
 void game_initState(void) {
@@ -234,7 +234,7 @@ void game_setClearColor(s32 r, s32 g, s32 b) {
 void game_setScreenHeight(s32 h) {
     Unk4 fade_getColor(void);
     Unk4 col;
-    RECT r;
+    RECT rect;
     s32 fade;
     s32 busy;
     DRAWENV *draw;
@@ -256,11 +256,11 @@ void game_setScreenHeight(s32 h) {
         col.b[2] = g_gameState->drawEnv->b0;
     }
     if (g_gameState->dispEnv->disp.h < h) {
-        r.x = 0;
-        r.y = g_gameState->dispEnv->disp.h;
-        r.w = 0x280;
-        r.h = h - g_gameState->dispEnv->disp.h;
-        ClearImage(&r, col.b[0], col.b[1], col.b[2]);
+        rect.x = 0;
+        rect.y = g_gameState->dispEnv->disp.h;
+        rect.w = 0x280;
+        rect.h = h - g_gameState->dispEnv->disp.h;
+        ClearImage(&rect, col.b[0], col.b[1], col.b[2]);
         DrawSync(0);
     }
     SetDefDispEnv(&g_gameState->dispEnv[0], SCREEN_W, 0, SCREEN_W, h);

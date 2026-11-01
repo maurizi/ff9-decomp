@@ -24,10 +24,10 @@ void pen_locate(u16 x, u16 y) {
 
 void tim_uploadBuffer(void) {
     TimHeader *tim = &g_timBuffer;
-    TimBlock *b;
+    TimBlock *blk;
     LoadImage((RECT *)&tim->clut.x, (u32 *)(tim + 1));
-    b = &tim->clut;
-    b = (TimBlock *)((u8 *)b + tim->clut.bnum);
-    LoadImage((RECT *)&b->x, (u32 *)(b + 1));
+    blk = &tim->clut;
+    blk = (TimBlock *)((u8 *)blk + tim->clut.bnum);
+    LoadImage((RECT *)&blk->x, (u32 *)(blk + 1));
     DrawSync(0);
 }

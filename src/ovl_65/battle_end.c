@@ -1,18 +1,18 @@
 #include "ovl_65.h"
 
 void battleEnd_main(void) {
-    Unk11C0 *s;
+    Unk11C0 *work;
     GameData *ctx;
     u8 i;
 
-    s = g_gameState->gameData->ctx.ovl65->work;
+    work = g_gameState->gameData->ctx.ovl65->work;
     battleEnd_init();
     do {
         ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], OT_LEN);
         pad_update();
         switch (battleEnd_update()) {
         case 1:
-            g_gameState->mode = s->returnMode;
+            g_gameState->mode = work->returnMode;
             break;
         case 2:
             g_gameState->mode = GS_MODE_OPENING;
@@ -36,8 +36,8 @@ void battleEnd_main(void) {
 }
 
 void battleEnd_init(void) {
-    Unk11C0 *s = g_gameState->gameData->ctx.ovl65->work;
-    FileEntry *e;
+    Unk11C0 *work = g_gameState->gameData->ctx.ovl65->work;
+    FileEntry *entry;
 
     game_freezeScreen();
     preload_setHook(0);
@@ -45,22 +45,22 @@ void battleEnd_init(void) {
     battleEnd_loadDb();
     battleEnd_loadPortraits();
     battleEnd_unloadDb();
-    if (s->eventScript != 0 && g_btlRewards.hasPostEvent != 0) {
-        evt_init((u8 *)s->eventScript);
-        if (s->texts != 0) {
+    if (work->eventScript != 0 && g_btlRewards.hasPostEvent != 0) {
+        evt_init((u8 *)work->eventScript);
+        if (work->texts != 0) {
             msg_init();
         }
     }
     if (g_gameState->gameData->battleFlags & GD_BTL_NEXT_LOCATION) {
-        e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | DB_FIELD);
-        if (e != NULL) {
-            g_gameState->gameData->fieldAreaId = e->link;
-            g_gameState->gameData->sceneSector[1] = e->sector;
-            g_gameState->gameData->sceneSectors[1] = e->sectors;
-            e = dep_find(g_gameState->gameData->depTable, e->link);
-            if (e != NULL) {
-                g_gameState->gameData->sceneSector[0] = e->sector;
-                g_gameState->gameData->sceneSectors[0] = e->sectors;
+        entry = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | DB_FIELD);
+        if (entry != NULL) {
+            g_gameState->gameData->fieldAreaId = entry->link;
+            g_gameState->gameData->sceneSector[1] = entry->sector;
+            g_gameState->gameData->sceneSectors[1] = entry->sectors;
+            entry = dep_find(g_gameState->gameData->depTable, entry->link);
+            if (entry != NULL) {
+                g_gameState->gameData->sceneSector[0] = entry->sector;
+                g_gameState->gameData->sceneSectors[0] = entry->sectors;
             }
         }
     }
@@ -68,11 +68,11 @@ void battleEnd_init(void) {
 }
 
 void battleEnd_exit(void) {
-    GameData *g = g_gameState->gameData;
+    GameData *gd = g_gameState->gameData;
     s32 i;
 
-    if (!(g->battleFlags & GD_BTL_KEEP_MUSIC) && (g->flags & GD_MUSIC_PLAYING) && g->musicId[0] != MUSIC_NONE) {
-        g->flags |= GD_MUSIC_LEFT_PLAYING;
+    if (!(gd->battleFlags & GD_BTL_KEEP_MUSIC) && (gd->flags & GD_MUSIC_PLAYING) && gd->musicId[0] != MUSIC_NONE) {
+        gd->flags |= GD_MUSIC_LEFT_PLAYING;
     }
     g_gameState->gameData->depTable = (FileTable *)-1;
     if (g_gameState->mode == GS_MODE_OPENING) {
@@ -80,9 +80,9 @@ void battleEnd_exit(void) {
         for (i = 29; i >= 0; i--) {
             VSync(0);
         }
-        g = g_gameState->gameData;
-        g->flags &= ~GD_MUSIC_LEFT_PLAYING;
-        snd_quit(g);
+        gd = g_gameState->gameData;
+        gd->flags &= ~GD_MUSIC_LEFT_PLAYING;
+        snd_quit(gd);
         g_resetCount++;
         g_gameState->gameData->flags |= GD_SOUND_REINIT;
     }
@@ -94,17 +94,17 @@ s32 battleEnd_loadPortraits(void) {
 }
 
 s32 battleEnd_loadDb(void) {
-    FileEntry *e;
-    PreloadEntry *f;
+    FileEntry *entry;
+    PreloadEntry *preloaded;
 
     if (preload_isReady(FILE_BTL_END_DB)) {
-        f = preload_find(FILE_BTL_END_DB);
-        file_copyViaVram(g_modeHeap, f->dest, f->loaded, 0);
+        preloaded = preload_find(FILE_BTL_END_DB);
+        file_copyViaVram(g_modeHeap, preloaded->dest, preloaded->loaded, 0);
         preload_remove(FILE_BTL_END_DB);
         DrawSync(0);
     } else {
-        e = file_find(DIR_COMMON, FILE_BTL_END_DB);
-        cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->link - e->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
+        entry = file_find(DIR_COMMON, FILE_BTL_END_DB);
+        cdRead_init(g_gameState->gameData->cdRead, entry->sector, (entry->link - entry->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead)) {
         }
     }
@@ -114,18 +114,18 @@ s32 battleEnd_loadDb(void) {
 }
 
 s32 battleEnd_unloadDb(void) {
-    Unk1354 *p = g_gameState->gameData->ctx.ovl65->files;
-    if (p->data1 != 0) {
-        db_unregister((void *)p->data1);
+    Unk1354 *files = g_gameState->gameData->ctx.ovl65->files;
+    if (files->data1 != 0) {
+        db_unregister((void *)files->data1);
         g_gameState->gameData->ctx.ovl65->files->data1 = 0;
     }
     return 0;
 }
 
 void battleEnd_preloadScene(void) {
-    Unk11C0 *b;
-    FileEntry *f;
-    GameData *g;
+    Unk11C0 *work;
+    FileEntry *entry;
+    GameData *gd;
     s32 id;
     s32 size;
     s32 at;
@@ -133,36 +133,36 @@ void battleEnd_preloadScene(void) {
     s32 sector;
     s32 k;
 
-    b = g_gameState->gameData->ctx.ovl65->work;
+    work = g_gameState->gameData->ctx.ovl65->work;
     preload_init();
     g_gameState->gameData->preloadRequest = NULL;
     if (g_gameState->gameData->battleResult == BATTLE_END_GAME_OVER) {
         return;
     }
     id = OVL_KEY(OVL_WORLD);
-    if (b->returnMode == GS_MODE_FIELD) {
+    if (work->returnMode == GS_MODE_FIELD) {
         id = OVL_KEY(OVL_FIELD);
     }
-    f = file_find(DIR_OVERLAYS, id);
-    dst = b->bgData;
-    size = (f->link - f->sector) << 11;
-    preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, size, size, f->sector, size);
+    entry = file_find(DIR_OVERLAYS, id);
+    dst = work->bgData;
+    size = (entry->link - entry->sector) << 11;
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, size, size, entry->sector, size);
     dst += size;
-    if (b->returnMode == GS_MODE_FIELD) {
+    if (work->returnMode == GS_MODE_FIELD) {
         id = FILE_FLD_COMMON;
     } else if (g_evtGlobalVars.h[0] >= 0x2B52) {
         id = FILE_WM_DATA_LATE;
     } else {
         id = FILE_WM_DATA;
     }
-    f = file_find(DIR_COMMON, id);
+    entry = file_find(DIR_COMMON, id);
     k = -0x146F00;
-    size = (f->link - f->sector) << 11;
+    size = (entry->link - entry->sector) << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
-    preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, at, size, f->sector, size);
+    preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, at, size, entry->sector, size);
     dst += size;
-    if (b->returnMode != GS_MODE_FIELD) {
+    if (work->returnMode != GS_MODE_FIELD) {
         return;
     }
     sector = g_gameState->gameData->sceneSector[0];
@@ -178,112 +178,112 @@ void battleEnd_preloadScene(void) {
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), PRELOAD_KIND_READ, id, (s32)dst, at, size, sector, size);
-    g = g_gameState->gameData;
-    if ((s16)g->fieldId == g->savedMusicField && g->savedMusicFileSector != -1) {
-        sector = g->savedMusicFileSector;
-        id = g->savedMusicId | DB_MUSIC;
+    gd = g_gameState->gameData;
+    if ((s16)gd->fieldId == gd->savedMusicField && gd->savedMusicFileSector != -1) {
+        sector = gd->savedMusicFileSector;
+        id = gd->savedMusicId | DB_MUSIC;
         preload_setEntry(preload_add(), PRELOAD_KIND_SEEK, id, 0, 0, 0, sector, -1);
     }
 }
 
 void rewards_drawInfo(void) {
-    RECT *r = &s_rewards.wins[0].rect;
+    RECT *rect = &s_rewards.wins[0].rect;
     s32 x, y;
-    ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelInfo, UI_LABEL_NORMAL);
-    win_drawBox(r, 0xB, WIN_STYLE_LINE_RULE);
-    win_drawShadow(r, 0xC, WIN_STYLE_LINE_RULE);
-    x = r->x;
-    y = r->y;
+    ui_drawLabel(rect->x + 6, rect->y - 3, 0xB, g_labelInfo, UI_LABEL_NORMAL);
+    win_drawBox(rect, 0xB, WIN_STYLE_LINE_RULE);
+    win_drawShadow(rect, 0xC, WIN_STYLE_LINE_RULE);
+    x = rect->x;
+    y = rect->y;
     s_rewards.prim = text_buildBlock(x + 0x13, y + 6, g_ot + 10,
                                       text_get(s_rewardsTitleText[s_rewards.screen]), TEXT_PAL_WHITE, s_rewards.prim);
 }
 
 void rewards_drawMembers(void) {
     u8 numText[16];
-    RECT *r;
-    Character *c;
+    RECT *rect;
+    Character *chr;
     u32 i;
     u8 dim;
     s32 col;
     u8 alive;
-    u32 n;
-    u8 *p;
+    u32 nextExp;
+    u8 *numStr;
 
     for (i = 0; i < 4; i++) {
         if (s_rewards.winShown[i + 2] != 0) {
-            r = &s_rewards.wins[i + 2].rect;
-            c = g_gameState->gameData->party[i];
-            if (c != NULL) {
-                alive = rewards_isRewarded(c, i);
+            rect = &s_rewards.wins[i + 2].rect;
+            chr = g_gameState->gameData->party[i];
+            if (chr != NULL) {
+                alive = rewards_isRewarded(chr, i);
                 dim = !alive;
                 col = dim * 2;
                 if (!alive) {
-                    rewards_drawPanelShade(r);
+                    rewards_drawPanelShade(rect);
                 }
-                ui_drawPartyPortrait(r->x + 4, r->y + 4, 0xB, i, dim);
-                rewards_drawLevelUp(r->x + 0x24, r->y + 0x12, 0xB, &s_rewards.levelPopups[i]);
-                s_rewards.prim = text_buildBlock(r->x + 0x29, r->y + 4, g_ot + 0xB, c->name, col, s_rewards.prim);
-                text_formatNumber(c->level, numText, 2, TEXT_NUM_ASCII);
-                ui_drawSprite(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
-                p = numText;
-                s_rewards.prim = text_buildDigits(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, s_rewards.prim);
-                ui_drawStatusIcons(r->x + 0x28, r->y + 0x13, 0xB, c->status, dim);
-                text_drawBlock(r->x + 0x29, r->y + 0x1C, 0xB, text_get(REWARDS_TEXT_EXP), col);
-                text_formatNumber(c->exp, p, 7, TEXT_NUM_ASCII);
-                ui_drawSmallDigits(r->x + 0x62, r->y + 0x20, 0xB, p, col);
-                if (c->level < LEVEL_MAX) {
-                    n = g_levelExp[c->level];
+                ui_drawPartyPortrait(rect->x + 4, rect->y + 4, 0xB, i, dim);
+                rewards_drawLevelUp(rect->x + 0x24, rect->y + 0x12, 0xB, &s_rewards.levelPopups[i]);
+                s_rewards.prim = text_buildBlock(rect->x + 0x29, rect->y + 4, g_ot + 0xB, chr->name, col, s_rewards.prim);
+                text_formatNumber(chr->level, numText, 2, TEXT_NUM_ASCII);
+                ui_drawSprite(rect->x + 0x72, rect->y + 7, 0xB, 0xB4, dim);
+                numStr = numText;
+                s_rewards.prim = text_buildDigits(rect->x + 0x84, rect->y + 5, g_ot + 0xB, numStr, col, s_rewards.prim);
+                ui_drawStatusIcons(rect->x + 0x28, rect->y + 0x13, 0xB, chr->status, dim);
+                text_drawBlock(rect->x + 0x29, rect->y + 0x1C, 0xB, text_get(REWARDS_TEXT_EXP), col);
+                text_formatNumber(chr->exp, numStr, 7, TEXT_NUM_ASCII);
+                ui_drawSmallDigits(rect->x + 0x62, rect->y + 0x20, 0xB, numStr, col);
+                if (chr->level < LEVEL_MAX) {
+                    nextExp = g_levelExp[chr->level];
                 } else {
-                    n = c->exp;
+                    nextExp = chr->exp;
                 }
-                text_formatNumber(n - c->exp, numText, 6, TEXT_NUM_ASCII);
-                ui_drawSmallDigits(r->x + 0x69, r->y + 0x2A, 0xB, numText, col);
-                text_drawBlock(r->x + 0x29, r->y + 0x26, 0xB, text_get(REWARDS_TEXT_NEXT), col);
+                text_formatNumber(nextExp - chr->exp, numText, 6, TEXT_NUM_ASCII);
+                ui_drawSmallDigits(rect->x + 0x69, rect->y + 0x2A, 0xB, numText, col);
+                text_drawBlock(rect->x + 0x29, rect->y + 0x26, 0xB, text_get(REWARDS_TEXT_NEXT), col);
             }
-            win_drawBox(r, 0xB, WIN_STYLE_LINE);
-            win_drawShadow(r, 0xC, WIN_STYLE_LINE);
+            win_drawBox(rect, 0xB, WIN_STYLE_LINE);
+            win_drawShadow(rect, 0xC, WIN_STYLE_LINE);
         }
     }
 }
 
 void rewards_drawExp(void) {
-    RECT *r = &s_rewards.wins[6].rect;
+    RECT *rect = &s_rewards.wins[6].rect;
     u8 numText[16];
     s32 x, y;
 
     if (s_rewards.winShown[6] != 0) {
-        win_drawBox(r, 0xB, WIN_STYLE_BEVEL);
-        win_drawShadow(r, 0xC, WIN_STYLE_BEVEL);
+        win_drawBox(rect, 0xB, WIN_STYLE_BEVEL);
+        win_drawShadow(rect, 0xC, WIN_STYLE_BEVEL);
         text_formatNumber(s_rewards.rewards.expEach, numText, 6, TEXT_NUM_ASCII);
-        x = r->x;
-        y = r->y;
+        x = rect->x;
+        y = rect->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
                                           text_get(REWARDS_TEXT_EXP), TEXT_PAL_WHITE, s_rewards.prim);
-        s_rewards.prim = text_buildSmall(r->x + 0x5A, r->y + 9, g_ot + 10,
+        s_rewards.prim = text_buildSmall(rect->x + 0x5A, rect->y + 9, g_ot + 10,
                                           numText, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
 void rewards_drawAp(void) {
-    RECT *r = &s_rewards.wins[7].rect;
+    RECT *rect = &s_rewards.wins[7].rect;
     u8 numText[16];
     s32 x, y;
 
     if (s_rewards.winShown[7] != 0) {
-        win_drawBox(r, 0xB, WIN_STYLE_BEVEL);
-        win_drawShadow(r, 0xC, WIN_STYLE_BEVEL);
+        win_drawBox(rect, 0xB, WIN_STYLE_BEVEL);
+        win_drawShadow(rect, 0xC, WIN_STYLE_BEVEL);
         text_formatNumber(s_rewards.rewards.ap, numText, 3, TEXT_NUM_ASCII);
-        x = r->x;
-        y = r->y;
+        x = rect->x;
+        y = rect->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
                                           text_get(REWARDS_TEXT_AP), TEXT_PAL_WHITE, s_rewards.prim);
-        s_rewards.prim = text_buildSmall(r->x + 0x6F, r->y + 9, g_ot + 10,
+        s_rewards.prim = text_buildSmall(rect->x + 0x6F, rect->y + 9, g_ot + 10,
                                           numText, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
 void rewards_drawReceivedGil(void) {
-    RECT *r = &s_rewards.wins[8].rect;
+    RECT *rect = &s_rewards.wins[8].rect;
     u8 numText[16];
     s32 x, y;
     u32 gil = s_rewards.rewards.gil.target - s_rewards.rewards.gil.cur;
@@ -292,21 +292,21 @@ void rewards_drawReceivedGil(void) {
         gil = 999999;
     }
     if (s_rewards.winShown[8] != 0) {
-        win_drawBox(r, 0xE, WIN_STYLE_BEVEL);
-        win_drawShadow(r, 0xF, WIN_STYLE_BEVEL);
+        win_drawBox(rect, 0xE, WIN_STYLE_BEVEL);
+        win_drawShadow(rect, 0xF, WIN_STYLE_BEVEL);
         text_formatNumber(gil, numText, 6, TEXT_NUM_ASCII);
         strcat(numText, s_rewardsGilUnit);
-        x = r->x;
-        y = r->y;
+        x = rect->x;
+        y = rect->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 13,
                                           text_get(REWARDS_TEXT_RECEIVED_GIL), TEXT_PAL_WHITE, s_rewards.prim);
-        s_rewards.prim = text_buildSmall(r->x + 0x54, r->y + 9, g_ot + 13,
+        s_rewards.prim = text_buildSmall(rect->x + 0x54, rect->y + 9, g_ot + 13,
                                           numText, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
 void rewards_drawCurrentGil(void) {
-    RECT *r = &s_rewards.wins[9].rect;
+    RECT *rect = &s_rewards.wins[9].rect;
     u8 numText[16];
     s32 x, y;
     u32 gil = g_gameState->gameData->gil;
@@ -315,32 +315,32 @@ void rewards_drawCurrentGil(void) {
         gil = GIL_MAX;
     }
     if (s_rewards.winShown[9] != 0) {
-        win_drawBox(r, 0xE, WIN_STYLE_BEVEL);
-        win_drawShadow(r, 0xF, WIN_STYLE_BEVEL);
+        win_drawBox(rect, 0xE, WIN_STYLE_BEVEL);
+        win_drawShadow(rect, 0xF, WIN_STYLE_BEVEL);
         text_formatNumber(gil, numText, 7, TEXT_NUM_ASCII);
         strcat(numText, s_rewardsGilUnit2);
-        x = r->x;
-        y = r->y;
+        x = rect->x;
+        y = rect->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 13,
                                           text_get(REWARDS_TEXT_CURRENT_GIL), TEXT_PAL_WHITE, s_rewards.prim);
-        s_rewards.prim = text_buildSmall(r->x + 0x4D, r->y + 9, g_ot + 13,
+        s_rewards.prim = text_buildSmall(rect->x + 0x4D, rect->y + 9, g_ot + 13,
                                           numText, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
-void rewards_drawPanelShade(RECT *r) {
-    u8 *p = s_rewards.prim;
+void rewards_drawPanelShade(RECT *rect) {
+    u8 *pkt = s_rewards.prim;
 
-    setlen(p, 3);
-    ((TileWords *)p)->rgbc = GPU_RGBC(GPU_TILE | GPU_ABE, 0x202020);
-    ((TileWords *)p)->xy = ((r->x + 2) & 0xFFFF) | ((r->y + 2) << 16);
-    ((TileWords *)p)->wh = (r->w - 4) | ((r->h - 4) << 16);
-    addPrim(g_ot + 11, p);
-    p += 0x10;
-    SetDrawTPage(p, 1, 1, 0);
-    addPrim(g_ot + 11, p);
-    p += 8;
-    s_rewards.prim = p;
+    setlen(pkt, 3);
+    ((TileWords *)pkt)->rgbc = GPU_RGBC(GPU_TILE | GPU_ABE, 0x202020);
+    ((TileWords *)pkt)->xy = ((rect->x + 2) & 0xFFFF) | ((rect->y + 2) << 16);
+    ((TileWords *)pkt)->wh = (rect->w - 4) | ((rect->h - 4) << 16);
+    addPrim(g_ot + 11, pkt);
+    pkt += 0x10;
+    SetDrawTPage(pkt, 1, 1, 0);
+    addPrim(g_ot + 11, pkt);
+    pkt += 8;
+    s_rewards.prim = pkt;
 }
 
 void rewards_initWindows(void) {
@@ -365,8 +365,8 @@ void rewards_moveMemberWins(void) {
     s32 dy;
     s32 tx;
     s32 ty;
-    TweenDef *t;
-    WinDef *d;
+    TweenDef *tween;
+    WinDef *winDef;
 
     for (i = 0; i < 4; i++) {
         if (s_rewards.getsExp[i] != 0) {
@@ -384,17 +384,17 @@ void rewards_moveMemberWins(void) {
         }
         if (s_rewards.getsAp[i] != 0) {
             w2 = s_rewards.learnWins[i].win;
-            d = &s_rewards.wins[i + 2];
+            winDef = &s_rewards.wins[i + 2];
             if (w2 != NULL && w2->state != 0) {
-                t = d->anim;
-                if (t != NULL && d->frame >= 2) {
-                    if (t->dx != NULL) {
-                        w2->x += t->dx[d->frame];
-                        s_rewards.learnWins[i].win->cur.x += t->dx[d->frame];
+                tween = winDef->anim;
+                if (tween != NULL && winDef->frame >= 2) {
+                    if (tween->dx != NULL) {
+                        w2->x += tween->dx[winDef->frame];
+                        s_rewards.learnWins[i].win->cur.x += tween->dx[winDef->frame];
                     }
-                    if (t->dy != NULL) {
-                        s_rewards.learnWins[i].win->y += t->dy[d->frame];
-                        s_rewards.learnWins[i].win->cur.y += t->dy[d->frame];
+                    if (tween->dy != NULL) {
+                        s_rewards.learnWins[i].win->y += tween->dy[winDef->frame];
+                        s_rewards.learnWins[i].win->cur.y += tween->dy[winDef->frame];
                     }
                 }
             }
@@ -428,12 +428,12 @@ void rewards_stateGil(void) {
 }
 
 void rewards_finishExp(void) {
-    Rewards *r = &s_rewards.rewards;
+    Rewards *rw = &s_rewards.rewards;
     s32 i;
 
     for (i = 0; i < 4; i++) {
         if (s_rewards.getsExp[i] != 0) {
-            rewards_addExp(i, r->exp[i].target - r->exp[i].cur);
+            rewards_addExp(i, rw->exp[i].target - rw->exp[i].cur);
             rewards_showLevelUp(i);
         }
     }
@@ -474,7 +474,7 @@ void rewards_onExpWindowsClosed(void) {
 
 void rewards_findMembers(void) {
     s32 i;
-    Character *c;
+    Character *chr;
 
     for (i = 0; i < 4; i++) {
         s_rewards.getsAp[i] = 0;
@@ -500,17 +500,17 @@ void rewards_compute(void) {
     u32 j;
     u8 found;
     s32 i;
-    u32 q;
+    u32 share;
 
     rw = &s_rewards.rewards;
     memset(rw, 0, sizeof(Rewards));
     rewards_findMembers();
     if (s_rewards.expMembers != 0) {
-        q = g_btlRewards.exp / s_rewards.expMembers;
+        share = g_btlRewards.exp / s_rewards.expMembers;
     } else {
-        q = 0;
+        share = 0;
     }
-    rw->expEach = q;
+    rw->expEach = share;
     rw->itemCount = 0;
     rw->ap = g_btlRewards.ap;
     rw->gil.target = g_btlRewards.gil;
@@ -538,12 +538,12 @@ void rewards_compute(void) {
     }
 }
 
-void rewards_drawSmallText(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
-    s_rewards.prim = text_buildSmall(x, y, g_ot + otz, s, pal, s_rewards.prim);
+void rewards_drawSmallText(s32 x, s32 y, s32 otz, u8 *str, s32 pal) {
+    s_rewards.prim = text_buildSmall(x, y, g_ot + otz, str, pal, s_rewards.prim);
 }
 
-void rewards_drawText(s32 x, s32 y, s32 otz, u8 *s, s32 mode) {
-    s_rewards.prim = text_buildBlock(x, y, g_ot + otz, s, mode, s_rewards.prim);
+void rewards_drawText(s32 x, s32 y, s32 otz, u8 *str, s32 mode) {
+    s_rewards.prim = text_buildBlock(x, y, g_ot + otz, str, mode, s_rewards.prim);
 }
 
 void rewards_init(void) {
@@ -676,12 +676,12 @@ void rewards_updateState(void) {
 
 void rewards_drawHelp(void) {
     s32 x, y;
-    RECT *r = &s_rewards.wins[1].rect;
-    ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelHelp, UI_LABEL_NORMAL);
-    win_drawBox(r, 0xB, WIN_STYLE_LINE_RULE);
-    win_drawShadow(r, 0xC, WIN_STYLE_LINE_RULE);
-    x = r->x;
-    y = r->y;
+    RECT *rect = &s_rewards.wins[1].rect;
+    ui_drawLabel(rect->x + 6, rect->y - 3, 0xB, g_labelHelp, UI_LABEL_NORMAL);
+    win_drawBox(rect, 0xB, WIN_STYLE_LINE_RULE);
+    win_drawShadow(rect, 0xC, WIN_STYLE_LINE_RULE);
+    x = rect->x;
+    y = rect->y;
     s_rewards.prim = text_buildBlock(x + 0x13, y + 6, g_ot + 10,
                                       text_get(REWARDS_TEXT_CONFIRM), TEXT_PAL_WHITE, s_rewards.prim);
 }
@@ -750,13 +750,13 @@ void rewards_stateItems(void) {
 }
 
 void rewards_giveAp(void) {
-    Rewards *r = &s_rewards.rewards;
+    Rewards *rw = &s_rewards.rewards;
     s32 i;
     u8 any = 0;
 
     for (i = 0; i < 4; i++) {
         if (s_rewards.getsAp[i] != 0) {
-            rewards_addAp(i, r->apGain[i].target);
+            rewards_addAp(i, rw->apGain[i].target);
         }
         if (s_rewards.getsExp[i] != 0) {
             any = 1;
@@ -783,11 +783,11 @@ void rewards_takeItems(void) {
 }
 
 void rewards_finishGil(void) {
-    Rewards *r = &s_rewards.rewards;
+    Rewards *rw = &s_rewards.rewards;
 
-    if (r->gil.target != r->gil.cur) {
-        rewards_addGil(r->gil.target - r->gil.cur);
-        r->gil.cur = r->gil.target;
+    if (rw->gil.target != rw->gil.cur) {
+        rewards_addGil(rw->gil.target - rw->gil.cur);
+        rw->gil.cur = rw->gil.target;
         snd_stopSe(SE_GIL_COUNT);
         s_rewards.timer = 0;
     } else {
@@ -801,8 +801,8 @@ void rewards_onItemsFaded(void) {
     fade_in(0xC);
 }
 
-u8 rewards_isRewarded(Character *c, s32 slot) {
-    if (!func_801F_alive(c)) {
+u8 rewards_isRewarded(Character *chr, s32 slot) {
+    if (!func_801F_alive(chr)) {
         return 0;
     }
     return (g_btlRewards.expMask >> slot) & 1;
@@ -822,13 +822,13 @@ void rewards_onClosed(void) {
     win_closeAllNow();
 }
 
-void rewards_drawDigits(s32 x, s32 y, s32 otz, u8 *s, s32 style) {
-    s_rewards.prim = text_buildDigits(x, y, g_ot + otz, s, style, s_rewards.prim);
+void rewards_drawDigits(s32 x, s32 y, s32 otz, u8 *str, s32 style) {
+    s_rewards.prim = text_buildDigits(x, y, g_ot + otz, str, style, s_rewards.prim);
 }
 
 void rewards_updateLearnWins(void) {
     WinSlot *w;
-    RECT *r;
+    RECT *panel;
     s32 i;
     RECT *rr;
 
@@ -838,10 +838,10 @@ void rewards_updateLearnWins(void) {
             if (w->delay == 0) {
                 if (w->win == NULL) {
                     if (w->queued != 0) {
-                        s_rewardsLearnPanel = r = &s_rewards.wins[i + 2].rect;
-                        s_rewardsLearnRect.x = r->x + 0x26;
+                        s_rewardsLearnPanel = panel = &s_rewards.wins[i + 2].rect;
+                        s_rewardsLearnRect.x = panel->x + 0x26;
                         rr = &s_rewardsLearnRect;
-                        rr->y = r->y + 0x1B;
+                        rr->y = panel->y + 0x1B;
                         rr->w = 0x70;
                         rr->h = 0x19;
                         w->win = win_openFree(rr, 6, WIN_STYLE_BEVEL);
@@ -868,32 +868,32 @@ void rewards_updateLearnWins(void) {
 }
 
 void rewards_addAp(s32 slot, u32 ap) {
-    Character *c;
+    Character *chr;
     s32 i;
     s32 j;
-    ItemInfo *e;
+    ItemInfo *item;
     s32 k;
     s32 need;
     s32 have;
 
-    c = g_gameState->gameData->party[slot];
-    if (ap != 0 && chr_canLearnAbilities(c)) {
+    chr = g_gameState->gameData->party[slot];
+    if (ap != 0 && chr_canLearnAbilities(chr)) {
         s_rewards.rewards.apGain[slot].cur += ap;
         for (i = 0; i < 5; i++) {
-            if (c->equip[i] != ITEM_NONE) {
-                e = &g_itemTable[c->equip[i]];
+            if (chr->equip[i] != ITEM_NONE) {
+                item = &g_itemTable[chr->equip[i]];
                 for (j = 0; j < 3; j++) {
-                    if (e->abilities[j] != 0) {
-                        k = chr_findAbilitySlot(c->info.b.id, e->abilities[j]);
+                    if (item->abilities[j] != 0) {
+                        k = chr_findAbilitySlot(chr->info.b.id, item->abilities[j]);
                         if (k >= 0) {
-                            need = g_abilityRows[c->info.b.row][k].ap;
-                            have = c->ap[k];
+                            need = g_abilityRows[chr->info.b.row][k].ap;
+                            have = chr->ap[k];
                             if (have < need) {
                                 if (ap >= need - have) {
-                                    c->ap[k] = need;
-                                    rewards_addLearned(slot, e->abilities[j]);
+                                    chr->ap[k] = need;
+                                    rewards_addLearned(slot, item->abilities[j]);
                                 } else {
-                                    c->ap[k] = have + ap;
+                                    chr->ap[k] = have + ap;
                                 }
                             }
                         }
@@ -904,29 +904,29 @@ void rewards_addAp(s32 slot, u32 ap) {
     }
 }
 
-u8 rewards_willLearn(Character *c, s32 ap) {
+u8 rewards_willLearn(Character *chr, s32 ap) {
     u8 learns;
     s32 i;
     s32 j;
     s32 ch;
     s32 k;
     u8 *eq;
-    ItemInfo *e;
+    ItemInfo *item;
     s32 have;
 
     learns = 0;
-    eq = c->equip;
-    ch = c->info.b.id;
+    eq = chr->equip;
+    ch = chr->info.b.id;
     memset(s_rewardsAbilityItems, 0, 0x30);
     for (i = 0; i < 5; i++) {
         if (eq[i] != ITEM_NONE) {
-            e = &g_itemTable[eq[i]];
+            item = &g_itemTable[eq[i]];
             for (j = 0; j < 3; j++) {
-                if (e->abilities[j] != 0) {
-                    k = chr_findAbilitySlot(ch & 0xFF, e->abilities[j]);
+                if (item->abilities[j] != 0) {
+                    k = chr_findAbilitySlot(ch & 0xFF, item->abilities[j]);
                     if (k >= 0) {
-                        have = c->ap[k];
-                        if (have < g_abilityRows[c->info.b.row][k].ap) {
+                        have = chr->ap[k];
+                        if (have < g_abilityRows[chr->info.b.row][k].ap) {
                             s_rewardsAbilityItems[k]++;
                         }
                     }
@@ -936,8 +936,8 @@ u8 rewards_willLearn(Character *c, s32 ap) {
     }
     for (i = 0; i < 0x30; i++) {
         if (s_rewardsAbilityItems[i] != 0) {
-            have = c->ap[i];
-            if (s_rewardsAbilityItems[i] * ap >= g_abilityRows[c->info.b.row][i].ap - have) {
+            have = chr->ap[i];
+            if (s_rewardsAbilityItems[i] * ap >= g_abilityRows[chr->info.b.row][i].ap - have) {
                 learns = 1;
                 break;
             }
@@ -947,18 +947,18 @@ u8 rewards_willLearn(Character *c, s32 ap) {
 }
 
 void rewards_drawLearnWin(Window *w) {
-    Window *v;
-    WinSlot *s;
-    TileWords *t;
+    Window *win;
+    WinSlot *ws;
+    TileWords *tile;
     u8 *name;
     s32 slot;
     s32 icon;
     s32 id;
 
-    v = w;
+    win = w;
     slot = w->userData;
-    s = &s_rewards.learnWins[slot];
-    id = s->ids[s->shown];
+    ws = &s_rewards.learnWins[slot];
+    id = ws->ids[ws->shown];
     if (id < ABILITY_SUPPORT_FIRST) {
         name = s_rewardsActionNames + s_rewardsActionTable[id].nameOffset;
         ui_drawSprite(w->x + 6, w->y + 7, w->otz, 0xBC, 0);
@@ -971,13 +971,13 @@ void rewards_drawLearnWin(Window *w) {
         }
         ui_drawSprite(w->x + 6, w->y + 7, w->otz, icon, 0);
     }
-    text_drawBlock(v->x + 0x16, v->y + 6, w->otz, name, TEXT_PAL_WHITE);
+    text_drawBlock(win->x + 0x16, win->y + 6, w->otz, name, TEXT_PAL_WHITE);
     setlen(g_primPtr, 3);
-    t = (TileWords *)g_primPtr;
-    t->rgbc = GPU_RGBC(GPU_TILE | GPU_ABE, 0x101010);
-    t->xy = (v->x + 4) | ((v->y + 4) << 16);
-    t->wh = (v->w - 4) | ((v->h - 4) << 16);
-    addPrim(&g_ot[w->otz], t);
+    tile = (TileWords *)g_primPtr;
+    tile->rgbc = GPU_RGBC(GPU_TILE | GPU_ABE, 0x101010);
+    tile->xy = (win->x + 4) | ((win->y + 4) << 16);
+    tile->wh = (win->w - 4) | ((win->h - 4) << 16);
+    addPrim(&g_ot[w->otz], tile);
     g_primPtr += sizeof(TileWords);
     SetDrawTPage(g_primPtr, 1, 1, 0x20);
     addPrim(&g_ot[w->otz], g_primPtr);
@@ -1003,27 +1003,27 @@ void rewards_updateAp(void) {
 
 s32 rewards_initApCounter(s32 i) {
     u32 ap = s_rewards.rewards.ap;
-    Counter *c = &s_rewards.rewards.apGain[i];
+    Counter *counter = &s_rewards.rewards.apGain[i];
 
     if (chr_hasSupportAbility(g_gameState->gameData->party[i]->info.b.id, SA_ABILITY_UP)) {
-        c->target = ap * 2;
+        counter->target = ap * 2;
     } else {
-        c->target = ap;
+        counter->target = ap;
     }
-    c->step = 1;
-    c->cur = 0;
-    return c->target;
+    counter->step = 1;
+    counter->cur = 0;
+    return counter->target;
 }
 
 void rewards_stepAp(void) {
     s32 i;
-    Counter *c;
+    Counter *counter;
 
     for (i = 0; i < 4; i++) {
         if (s_rewards.getsAp[i] != 0) {
-            c = &s_rewards.rewards.apGain[i];
-            if (c->cur < c->target) {
-                rewards_addAp(i, Counter_step(c));
+            counter = &s_rewards.rewards.apGain[i];
+            if (counter->cur < counter->target) {
+                rewards_addAp(i, Counter_step(counter));
             }
         }
     }
@@ -1040,38 +1040,38 @@ void rewards_onLearnWinClosed(Window *win) {
     s_rewards.learnWins[win->userData].win = 0;
 }
 
-void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
-    SprtWords *s;
+void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *popup) {
+    SprtWords *sprt;
     u8 *pkt;
     u32 clut;
     u32 xy;
-    DR_TPAGE *t;
+    DR_TPAGE *tpage;
 
-    if (p->active != 0 && p->phase != POPUP_GAP) {
-        y += p->y;
+    if (popup->active != 0 && popup->phase != POPUP_GAP) {
+        y += popup->y;
         clut = GetClut(0, 0x1FF) << 16;
         setlen(g_primPtr, 4);
         xy = (x & 0xFFFF) | (y << 16);
         pkt = g_primPtr;
-        s = (SprtWords *)pkt;
-        s->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-        s->xy = xy;
-        s->uvclut = clut | 0xB000;
-        s->wh = 0x14004C;
-        g_primPtr = (u8 *)(s + 1);
-        addPrim(&g_ot[otz], s);
-        t = (DR_TPAGE *)g_primPtr;
-        SetDrawTPage(t, 1, 1, 0x9F);
+        sprt = (SprtWords *)pkt;
+        sprt->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
+        sprt->xy = xy;
+        sprt->uvclut = clut | 0xB000;
+        sprt->wh = 0x14004C;
+        g_primPtr = (u8 *)(sprt + 1);
+        addPrim(&g_ot[otz], sprt);
+        tpage = (DR_TPAGE *)g_primPtr;
+        SetDrawTPage(tpage, 1, 1, 0x9F);
         addPrim(&g_ot[otz], g_primPtr);
         g_primPtr += sizeof(DR_TPAGE);
         setlen(g_primPtr, 4);
-        s = (SprtWords *)g_primPtr;
-        s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL);
-        s->xy = xy;
-        s->uvclut = clut | 0xC400;
-        s->wh = 0x14004C;
-        g_primPtr = (u8 *)(s + 1);
-        addPrim(&g_ot[otz], s);
+        sprt = (SprtWords *)g_primPtr;
+        sprt->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, GPU_RGB_NEUTRAL);
+        sprt->xy = xy;
+        sprt->uvclut = clut | 0xC400;
+        sprt->wh = 0x14004C;
+        g_primPtr = (u8 *)(sprt + 1);
+        addPrim(&g_ot[otz], sprt);
         SetDrawTPage((DR_TPAGE *)g_primPtr, 1, 1, 0xDF);
         addPrim(&g_ot[otz], g_primPtr);
         g_primPtr += sizeof(DR_TPAGE);
@@ -1098,81 +1098,81 @@ void rewards_updateExp(void) {
 
 void rewards_addExp(s32 i, u32 exp) {
     u32 need;
-    Character *c = g_gameState->gameData->party[i];
+    Character *chr = g_gameState->gameData->party[i];
 
     if (exp != 0) {
-        if (c->exp >= EXP_MAX) {
-            c->exp = EXP_MAX;
+        if (chr->exp >= EXP_MAX) {
+            chr->exp = EXP_MAX;
             return;
         }
         s_rewards.rewards.exp[i].cur += exp;
-        c->exp += exp;
-        if (c->exp >= EXP_MAX) {
-            c->exp = EXP_MAX;
+        chr->exp += exp;
+        if (chr->exp >= EXP_MAX) {
+            chr->exp = EXP_MAX;
         }
-        if (c->level < LEVEL_MAX && (need = g_levelExp[c->level]) <= c->exp) {
+        if (chr->level < LEVEL_MAX && (need = g_levelExp[chr->level]) <= chr->exp) {
             do {
                 rewards_levelUp(i);
-            } while (c->level < LEVEL_MAX && (need = g_levelExp[c->level]) <= c->exp);
+            } while (chr->level < LEVEL_MAX && (need = g_levelExp[chr->level]) <= chr->exp);
         }
     }
 }
 
 void rewards_showLevelUp(s32 slot) {
-    Popup *p = &s_rewards.levelPopups[slot];
+    Popup *popup = &s_rewards.levelPopups[slot];
 
-    if (p->pending != 0 || p->active != 0) {
-        p->phase = POPUP_HOLD;
-        p->y = -0x11;
-        p->timer = 0;
-        p->enabled = 0;
-        p->active = 1;
+    if (popup->pending != 0 || popup->active != 0) {
+        popup->phase = POPUP_HOLD;
+        popup->y = -0x11;
+        popup->timer = 0;
+        popup->enabled = 0;
+        popup->active = 1;
     }
 }
 
 u32 rewards_initExpCounter(s32 slot) {
     u32 exp = s_rewards.rewards.expEach;
-    Character *m = g_gameState->gameData->party[slot];
-    Counter *c = &s_rewards.rewards.exp[slot];
+    Character *chr = g_gameState->gameData->party[slot];
+    Counter *counter = &s_rewards.rewards.exp[slot];
     u32 step;
 
-    c->target = exp;
-    if (chr_hasSupportAbility(m->info.b.id, SA_LEVEL_UP)) {
-        c->target += exp >> 1;
+    counter->target = exp;
+    if (chr_hasSupportAbility(chr->info.b.id, SA_LEVEL_UP)) {
+        counter->target += exp >> 1;
     }
     if (exp < 16) {
-        c->step = 1;
+        counter->step = 1;
     } else if (exp < 512) {
-        c->step = (exp + 15) >> 4;
+        counter->step = (exp + 15) >> 4;
     } else {
         step = 32;
-        c->step = step;
+        counter->step = step;
         if (exp / step > 192) {
-            c->step = (exp + 191) / 192;
+            counter->step = (exp + 191) / 192;
         }
     }
-    c->cur = 0;
-    return c->target;
+    counter->cur = 0;
+    return counter->target;
 }
 
-s32 rewards_willLevelUp(Character *c, s32 exp) {
-    if (c->level >= LEVEL_MAX) {
+s32 rewards_willLevelUp(Character *chr, s32 exp) {
+    if (chr->level >= LEVEL_MAX) {
         return 0;
     }
-    return c->exp + exp >= g_levelExp[c->level];
+    return chr->exp + exp >= g_levelExp[chr->level];
 }
 
 void rewards_stepExp(void) {
     s32 i;
-    Counter *c;
+    Counter *counter;
     s32 step;
     u8 done = 1;
 
     for (i = 0; i < 4; i++) {
         if (s_rewards.getsExp[i] != 0) {
-            c = &s_rewards.rewards.exp[i];
-            if (c->cur < c->target) {
-            step = Counter_step(c);
+            counter = &s_rewards.rewards.exp[i];
+            if (counter->cur < counter->target) {
+            step = Counter_step(counter);
             rewards_addExp(i, step);
             done = 0;
             }
@@ -1184,26 +1184,26 @@ void rewards_stepExp(void) {
 }
 
 void rewards_updateLevelUps(void) {
-    Popup *p;
+    Popup *popup;
     s32 i;
 
-    for (p = s_rewards.levelPopups, i = 0; i < 4; p++, i++) {
+    for (popup = s_rewards.levelPopups, i = 0; i < 4; popup++, i++) {
         if (s_rewards.getsExp[i] != 0) {
-            if (p->active == 0) {
-                if (p->pending != 0) {
-                    rewards_startPopup(p);
+            if (popup->active == 0) {
+                if (popup->pending != 0) {
+                    rewards_startPopup(popup);
                 }
-            } else if (p->enabled != 0 && rewards_stepPopup(p) == POPUP_DONE) {
-                rewards_endPopup(p);
+            } else if (popup->enabled != 0 && rewards_stepPopup(popup) == POPUP_DONE) {
+                rewards_endPopup(popup);
             }
         }
     }
 }
 
 void rewards_levelUp(s32 slot) {
-    Character *m = g_gameState->gameData->party[slot];
+    Character *chr = g_gameState->gameData->party[slot];
 
-    chr_levelUp(m->info.b.id, m->level + 1);
+    chr_levelUp(chr->info.b.id, chr->level + 1);
     s_rewards.levelWins[slot].queued++;
     s_rewards.levelPopups[slot].pending++;
 }
@@ -1263,32 +1263,32 @@ s32 rewards_stepPopup(Popup *popup) {
 }
 
 void rewards_initGil(void) {
-    Counter *c = &s_rewards.rewards.gil;
+    Counter *counter = &s_rewards.rewards.gil;
     s32 i;
     u8 found = 0;
-    Character *m;
+    Character *chr;
 
     for (i = 0; i < 4; i++) {
-        m = g_gameState->gameData->party[i];
-        if (m != NULL && chr_hasSupportAbility(m->info.b.id, SA_MILLIONAIRE)) {
+        chr = g_gameState->gameData->party[i];
+        if (chr != NULL && chr_hasSupportAbility(chr->info.b.id, SA_MILLIONAIRE)) {
             found = 1;
         }
     }
     if (found) {
-        c->target += c->target >> 1;
+        counter->target += counter->target >> 1;
     }
-    c->step = 1;
-    c->cur = 0;
+    counter->step = 1;
+    counter->cur = 0;
 }
 
 void rewards_stepGil(void) {
-    Counter *c = &s_rewards.rewards.gil;
+    Counter *counter = &s_rewards.rewards.gil;
     s32 step;
 
-    if (c->cur < c->target) {
-        step = Counter_step(c);
+    if (counter->cur < counter->target) {
+        step = Counter_step(counter);
         rewards_addGil(step);
-        if (c->cur >= c->target) {
+        if (counter->cur >= counter->target) {
             snd_stopSe(SE_GIL_COUNT);
         }
     }
@@ -1331,26 +1331,26 @@ u8 rewards_addItems(void) {
     RECT rr;
     u32 i;
     u8 full;
-    u8 f;
+    u8 wasFull;
     Rewards *rw;
     WinSlot *ws;
-    s32 n;
+    s32 qty;
     s32 k;
 
     full = 0;
     rw = &s_rewards.rewards;
     ws = &s_rewards.fullWin;
     for (i = 0; i < rw->itemCount; i++) {
-        n = rw->items[i][1];
-        if (n != item_add(rw->items[i][0], n)) {
+        qty = rw->items[i][1];
+        if (qty != item_add(rw->items[i][0], qty)) {
             full = 1;
         }
     }
-    f = full;
+    wasFull = full;
     if (rw->card != ITEM_NONE) {
         card_add(rw->card);
     }
-    if (f) {
+    if (wasFull) {
         k = 0x10;
         ts = text_measure(text_get(REWARDS_TEXT_ITEMS_FULL));
         rr.x = s_rewards.itemsWin->x + ((s_rewards.itemsWin->w - k - ts.w) >> 1);
@@ -1364,13 +1364,13 @@ u8 rewards_addItems(void) {
         win_setShadow(ws->win, 1);
         win_setTitle(ws->win, g_labelWarning);
     }
-    return !f;
+    return !wasFull;
 }
 
 void rewards_drawItems(Window *w) {
-    Window *r;
+    Window *win;
     ItemInfo *it;
-    u8 *s;
+    u8 *msg;
     u32 i;
     s32 off;
     s32 y;
@@ -1380,31 +1380,31 @@ void rewards_drawItems(Window *w) {
     s32 k3;
     Rewards *rw;
 
-    r = w;
+    win = w;
     i = 0;
     rw = &s_rewards.rewards;
-    off = r->h - r->cur.h;
+    off = win->h - win->cur.h;
     for (; i < rw->itemCount; i++) {
         it = &g_itemTable[rw->items[i][0]];
         y = i * 15 + 7;
         y2 = i * 15 + 10;
         text_formatNumber(rw->items[i][1], s_rewardsTextBuf, 2, TEXT_NUM_ASCII);
-        ui_drawItemIcon(r->x + 7, r->y + y - off, w->otz, rw->items[i][0], 1);
-        text_drawBlock(r->x + 0x16, r->y + y - off, w->otz, g_itemNames + it->name, TEXT_PAL_WHITE);
-        ui_drawSmallDigits(r->x + 0x88, r->y + y2 - off, w->otz, s_rewardsTextBuf, TEXT_PAL_WHITE);
+        ui_drawItemIcon(win->x + 7, win->y + y - off, w->otz, rw->items[i][0], 1);
+        text_drawBlock(win->x + 0x16, win->y + y - off, w->otz, g_itemNames + it->name, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(win->x + 0x88, win->y + y2 - off, w->otz, s_rewardsTextBuf, TEXT_PAL_WHITE);
     }
     if (rw->itemCount == 0) {
-        s = text_get(REWARDS_TEXT_NO_ITEM);
-        text_drawBlock(r->x + ((r->w - (text_getInfo(REWARDS_TEXT_NO_ITEM) & 0xFFF)) >> 1), r->y - (k1 = off - 0x28), w->otz, s, TEXT_PAL_WHITE);
+        msg = text_get(REWARDS_TEXT_NO_ITEM);
+        text_drawBlock(win->x + ((win->w - (text_getInfo(REWARDS_TEXT_NO_ITEM) & 0xFFF)) >> 1), win->y - (k1 = off - 0x28), w->otz, msg, TEXT_PAL_WHITE);
     }
     if (rw->card != ITEM_NONE) {
         k = off - 0x66;
-        ui_drawSpriteDef(r->x + 8, r->y - k, w->otz, &s_rewardsCardIcon, 0);
+        ui_drawSpriteDef(win->x + 8, win->y - k, w->otz, &s_rewardsCardIcon, 0);
         text_copy(s_rewardsTextBuf, (u8 *)card_getName(rw->card));
         text_append(s_rewardsTextBuf, text_get(REWARDS_TEXT_CARD));
-        text_drawBlock(r->x + 0x16, r->y - k, w->otz, s_rewardsTextBuf, TEXT_PAL_WHITE);
+        text_drawBlock(win->x + 0x16, win->y - k, w->otz, s_rewardsTextBuf, TEXT_PAL_WHITE);
     }
-    ui_drawEtchedLine(r->x + 2, r->y - (k3 = off - 0x61), w->otz, r->w - 5);
+    ui_drawEtchedLine(win->x + 2, win->y - (k3 = off - 0x61), w->otz, win->w - 5);
 }
 
 void rewards_resetFullWarning(void) {
@@ -1446,11 +1446,11 @@ void rewards_openItemsWin(void) {
 }
 
 void rewards_drawItemsLabels(Window *w) {
-    s32 n = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
+    s32 labelW = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
     s32 k = 0x97;
 
     ui_drawLabel(w->x + 8, w->y - 3, w->otz - 1, g_winLabelStrings.itemList, UI_LABEL_NORMAL);
-    ui_drawLabel(w->x - (n - k), w->y - 3, w->otz - 1, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
+    ui_drawLabel(w->x - (labelW - k), w->y - 3, w->otz - 1, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
 }
 
 void rewards_drawFullWarning(Window *win) {
