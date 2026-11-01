@@ -65,15 +65,15 @@ s32 fx_1e7_op81SpawnPoint4(SVECTOR *out, s32 dir, s32 i) {
 }
 
 void fx_1e7_getSpawnPos(SVECTOR *out, Fx1e7Path *path, s32 t) {
-    SVECTOR v;
+    SVECTOR pathPos;
 
-    fxm_posPathGet(path, t, &v);
-    v.vx += fx_1e7_op81Origin.vx;
-    v.vy += fx_1e7_op81Origin.vy;
-    v.vz += fx_1e7_op81Origin.vz;
-    out->vx = v.vx;
-    out->vy = v.vy;
-    out->vz = v.vz;
+    fxm_posPathGet(path, t, &pathPos);
+    pathPos.vx += fx_1e7_op81Origin.vx;
+    pathPos.vy += fx_1e7_op81Origin.vy;
+    pathPos.vz += fx_1e7_op81Origin.vz;
+    out->vx = pathPos.vx;
+    out->vy = pathPos.vy;
+    out->vz = pathPos.vz;
 }
 
 s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {

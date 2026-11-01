@@ -60,12 +60,12 @@ INCLUDE_RODATA("asm/us/fx_1eb/nonmatchings/fx_1eb", fx_1eb_headerPtr);
 
 s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    s32 m;
+    SVECTOR pathPos;
+    s32 morph;
     s32 frame;
     s32 i;
     s32 j;
-    s32 t;
+    s32 pathFrame;
 
     if (mode == 0) {
         *args = 0x60;
@@ -119,23 +119,23 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0 && frame < 0x28) {
-            t = frame;
+            pathFrame = frame;
             if (work->timer4C >= 0) {
                 work->rgb40 = fxm_lerpRatio(0, -0x80, 0xA - work->timer4C, 0xA);
                 work->timer4C--;
             }
             for (i = 0; i < 3; i++) {
-                fxm_rotPosPathGet(&fx_1eb_rotPosPath[i], t, &work->rot18, &v);
-                work->pos20.vx = v.vx;
-                work->pos20.vy = v.vy;
-                work->pos20.vz = v.vz;
+                fxm_rotPosPathGet(&fx_1eb_rotPosPath[i], pathFrame, &work->rot18, &pathPos);
+                work->pos20.vx = pathPos.vx;
+                work->pos20.vy = pathPos.vy;
+                work->pos20.vz = pathPos.vz;
                 work->pos20.vx += work->pos44.vx;
                 work->pos20.vy += work->pos44.vy;
                 work->pos20.vz += work->pos44.vz;
-                if (i == 0 && t >= 0x16) {
-                    fxm_valuePathGet(&fx_1eb_valuePath, t - 0x16, &m);
+                if (i == 0 && pathFrame >= 0x16) {
+                    fxm_valuePathGet(&fx_1eb_valuePath, pathFrame - 0x16, &morph);
                     ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model52[i],
-                                             work->model58, m);
+                                             work->model58, morph);
                 } else {
                     ex->Hi_SetEffModelSlice(work->model52[i], work->pos20.vy);
                     ex->Hi_DrawSliceEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model52[i]);
