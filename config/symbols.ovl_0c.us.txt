@@ -142,7 +142,7 @@ wm_streamSoundChunk = 0x800AC424; // type:func [code] CD-read chunk callback of 
 wm_clearOT = 0x800AC580; // type:func [code] ClearOTagR of this frame's OT (GameData.unk10[unk8] - 8, 0x1010 entries), first call of every wm_main frame
 wm_endFrame = 0x800AC5C8; // type:func [code] end of every wm_main frame - soft reset on L1+L2+R1+R2+Start+Select (0xF09), DrawSync/VSync, PutDispEnv, DrawOTag, swaps draw buffers
 wm_startBattleTransition = 0x800AC7D4; // type:func [code] when the world frame returns 3 (encounter) - swirl centre from the player's screen pos, battle music, SEs 0x27A-0x27C, flags 0x2F / 0x300
-wm_updateBattleTransition = 0x800ACAFC; // type:func [code] runs while WorldMap flag 0x400 is clear - swirl (func_80053A10) until done, seeks/loads the battle music, then sets gameState 0x1000 to leave
+wm_updateBattleTransition = 0x800ACAFC; // type:func [code] runs while WorldMap flag 0x400 is clear - swirl (swirl_update) until done, seeks/loads the battle music, then sets gameState 0x1000 to leave
 wm_findBattleMusic = 0x800ACE24; // type:func [code] WorldMapObj.unk26 = link of kind 7 (music) of dependency entry 0x110000|battle, default the current music GameData.unk81C[0]
 wm_togglePause = 0x800ACEEC; // type:func [code] pad 0x04000000 toggles GameData flag 0x100 (wm_main skips updates, wm_endFrame skips DrawOTag), stops sound, draws a grey 320x218 tile and text 235
 wm_copyViaVram = 0x800AD114; // type:func [code] func_8001DAA4 copy, through VRAM rect 0x280,0 320x218 while WorldMap flag 0x400 is clear (battle transition), else the default rect
@@ -282,7 +282,7 @@ wm_relocatePack = 0x800BA528; // type:func [code] turns a WmPack's offsets (unk4
 wm_setupWorldData = 0x800BA58C; // type:func [code] db_lookupRegistered of the world data items 0x411../0x414.. by g_worldDataSet, sets map size, extracts packs, uploads TIMs, sets the encounter tables (pack entries 3, 4) and weather data (5)
 wm_drawMap = 0x800BAEC0; // type:func [code] sets light/colour matrices, draws the visible blocks (func_800BD78C) and, when D_800CF46D, pack entry 0x3B's model around the camera, timed as D_800CF4A0 in wm_updateDraw
 wm_updateMap = 0x800BB07C; // type:func [code] per frame - map streaming (wm_updateChunks, wm_updateVisibleBlocks) once music started, 3 positional ambient SEs, camera shake near source 2, push near source 1, screen effect near a fixed point
-wm_applyStoryForms = 0x800BB508; // type:func [string] marks chunks 0x80 (replacement form) by story counter vs D_800CD060 and global flag D_8007AF55, debug prints "BGI Form  ...", "- Replace Mog Net -", "- Replace Chocobo Heaven -"
+wm_applyStoryForms = 0x800BB508; // type:func [string] marks chunks 0x80 (replacement form) by story counter vs g_worldFormStoryThresholds and global flag byte g_evtGlobalVars.b[0x65], debug prints "BGI Form  ...", "- Replace Mog Net -", "- Replace Chocobo Heaven -"
 wm_worldToView = 0x800BBE24; // type:func [code] world pos -> camera-relative pos with map wrap and the curvature factor s (returned through arg3), returns 1 when within +-0x8000, used by every world-object draw
 wm_wrapPos = 0x800BC0A8; // type:func [code] wraps x into [0, width) and z into (-depth, 0] (D_800D32D8/D_800D32DC)
 wm_posToCell = 0x800BC130; // type:func [code] wrapped x/z -> cell index (0x2000 units, row width D_800D32F0)
@@ -479,7 +479,7 @@ g_worldChunkReadCount = 0x800D3728; // [code] number of entries in g_worldChunkR
 g_worldChunkRunPacks = 0x800D3740; // [code] block pack destination per run chunk, wm_relocatePack'd by wm_chunksLoaded
 g_worldChunkRunTex = 0x800D3310; // [code] w_readtx slot per run chunk, passed to wm_readtxDone by wm_chunksLoaded
 g_worldLoadedFrames = 0x800D30C5; // [code] set to 1 when all 16 chunks are loaded (wm_chunksLoaded), counts to 200 in wm_updateLogic, wm_getBlockHeight reports "no polygon" only once it is >= 2
-wm_initMapState = 0x800BA29C; // type:func [code] called by wm_systemInit - wm_initTexPages, g_worldUsePolyCache = 1, clears g_worldLoadedFrames and D_800D30C4
+wm_initMapState = 0x800BA29C; // type:func [code] called by wm_systemInit - wm_initTexPages, g_worldUsePolyCache = 1, clears g_worldLoadedFrames and g_worldGetoffSearching
 g_worldTexAreas = 0x800D2FF8; // [string] "Texture Transfer Area" (s_wmStrFrmbufTransfer, wm_frmbufTransfer) indexes it, 17 {tpage, clut, u, v, frmbuf tpage, frmbuf clut}, filled by wm_initTexPages and wm_frmbufTransfer, selected per block in wm_drawBlock
 g_worldCurTexArea = 0x800D27F0; // [code] = &g_worldTexAreas[block[1]] set by wm_drawBlock before the asm vertex/face passes
 g_worldNearCells = 0x800D3C10; // [code] WmNearCell {cell, block, distance} of on-screen cells, sorted nearest first and requested with wm_blockListRequest (wm_updateVisibleBlocks)
@@ -659,3 +659,17 @@ g_worldAreaNames = 0x800CF478; // [runtime] world data pack entry 0, read by mai
 wm_keepEntryMusic = 0x800C45D8; // type:func [runtime] returns 1 for story 0x2600/0x26A5 or b[0xBE] 8/9, then wm_init doesn't fade the playing music out (docs/runtime-findings.md R30b)
 g_worldWalkerActor = 0x800CE3D8; // [runtime] on-foot leader actor (actorType 1/2), equals g_worldPlayer at the Ice Cavern exit (docs/runtime-findings.md R30b)
 g_worldMoogleActor = 0x800CE270; // [runtime] actorType 11 moogle called with Square on the world map (docs/runtime-findings.md R30b)
+g_worldEffectPos = 0x800D4960; // [code] 9 VECTORs wm_initEffects clears then fills with three world positions, docs/runtime-findings.md R30 unread
+g_worldEffectRot = 0x800D49F0; // [code] 9 SVECTORs wm_initEffects clears, docs/runtime-findings.md R30 unread
+g_worldActorHideLevel = 0x800CCE49; // [code] data 0, wm_updateDraw draws the actors only while it is below 2, docs/runtime-findings.md R30 never written
+g_worldPlayerControlOff = 0x800CCE4A; // [code] data 0, wm_movePlayer calls wm_controlPlayer only while it is 0, docs/runtime-findings.md R30 never written
+g_worldStepFlagOn = 0x800CCE55; // [code] data 1, the value wm_movePlayer stores into g_worldPlayerStepped on a counted step, docs/runtime-findings.md R30 never written
+g_worldCameraUnusedFlag = 0x800CE1E1; // [code] wm_initCamera clears it, docs/runtime-findings.md R30 unread
+g_worldMoveUnusedWord = 0x800CE284; // [code] wm_initMovement clears it with the player speed state, docs/runtime-findings.md R30 unread
+g_worldUnusedBuffer = 0x800CE3F8; // [code] wm_initBuffers points it at 0x80100800 with the other buffers, docs/runtime-findings.md R30 unread
+g_worldSysUnusedFlag = 0x800CF47E; // [code] wm_systemInit clears it, docs/runtime-findings.md R30 unread
+g_worldGetoffSearching = 0x800D30C4; // [code] wm_findGetoffPos sets 1 during the vehicle-position checks and 0 when they pass, wm_initMapState clears it, docs/runtime-findings.md R30 unread
+wm_movementUnusedStub = 0x800B383C; // type:func [code] empty, no callers (w_movement)
+wm_getSubOvlBase = 0x800B8568; // type:func [code] returns RAM_SUB_OVL (0x801EDF00), no callers
+wm_memUnusedStub = 0x800BA2D4; // type:func [code] empty, no callers, after wm_initMapState (w_memoryman)
+wm_chunkUnusedStub = 0x800BD66C; // type:func [code] empty, no callers, between wm_chunkListCompact and wm_blockListInit

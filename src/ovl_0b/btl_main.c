@@ -146,7 +146,7 @@ void btl_initMode(void) {
     g->kanjiFont = 0;
     b->dataSector = g_gameState->imgSector + g_gameState->dirs[13].firstSector;
     btl_loadCommonData();
-    func_800A8F10();
+    btl_initModeStub();
     btl_loadResidentMusic();
     btl_loadSoundBanks();
     btl_loadShadowTexture();
@@ -194,7 +194,7 @@ void btl_clearBattle(void) {
     }
 }
 
-s32 func_800A8F10(void) {
+s32 btl_initModeStub(void) {
     return 0;
 }
 

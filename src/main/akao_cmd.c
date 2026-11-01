@@ -81,7 +81,7 @@ void akao_startSeq(s32 addr, s32 mask) {
     g_akaoSeq->priorityMask = seq->priorityMask;
     g_akaoSeq->keepVoiceMask = seq->keepVoiceMask;
     g_akaoSeq->flags &= ~(AKAO_SEQ_NO_VOICE | AKAO_SEQ_VOICE_STOLEN | AKAO_SEQ_INSTR_MAIN | AKAO_SEQ_INSTR_ALT);
-    g_akaoSeq->flags = seq->instrumentSet == D_8007F8DC ? g_akaoSeq->flags | AKAO_SEQ_INSTR_ALT : g_akaoSeq->flags | AKAO_SEQ_INSTR_MAIN;
+    g_akaoSeq->flags = seq->instrumentSet == g_akaoAltInstrumentSet ? g_akaoSeq->flags | AKAO_SEQ_INSTR_ALT : g_akaoSeq->flags | AKAO_SEQ_INSTR_MAIN;
     p = (u8 *)seq + (seq->regionTableOfs + 0x30);
     g_akaoSeq->regionTable = seq->regionTableOfs != 0 ? (u16 *)p : NULL;
     p = (u8 *)seq + (seq->drumKitOfs + 0x34);
@@ -480,7 +480,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
     }
     flags = g_akaoSeq->flags & ~(AKAO_SEQ_INSTR_MAIN | AKAO_SEQ_INSTR_ALT);
     g_akaoSeq->flags = flags;
-    g_akaoSeq->flags = seq->instrumentSet == D_8007F8DC ? flags | AKAO_SEQ_INSTR_ALT : flags | AKAO_SEQ_INSTR_MAIN;
+    g_akaoSeq->flags = seq->instrumentSet == g_akaoAltInstrumentSet ? flags | AKAO_SEQ_INSTR_ALT : flags | AKAO_SEQ_INSTR_MAIN;
     c = g_akaoChannels;
     n = 32;
     old = g_akaoSeq->data;

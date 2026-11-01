@@ -610,10 +610,10 @@ void wm_initMapState(void) {
     wm_initTexPages();
     g_worldUsePolyCache = 1;
     g_worldLoadedFrames = 0;
-    D_800D30C4 = 0;
+    g_worldGetoffSearching = 0;
 }
 
-void func_800BA2D4(void) {
+void wm_memUnusedStub(void) {
 }
 
 void wm_drawBlock(u8 *arg0, s32 arg1, s32 arg2) {

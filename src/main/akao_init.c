@@ -86,10 +86,10 @@ void akao_initState(void) {
     cnt = (u16 *)SPU_CTRL;
     v = 0x18;
     g_akaoSubSeq = NULL;
-    D_800809EC = g_akaoChannels;
+    g_akaoChannelsPtr = g_akaoChannels;
     g_akaoSubChannels = NULL;
-    D_8007F8D8[1] = 0;
-    D_8007F8D8[0] = 0;
+    g_akaoInstrumentSets[1] = 0;
+    g_akaoInstrumentSets[0] = 0;
     g_akaoLoadedBanks[5] = 0;
     g_akaoLoadedBanks[4] = 0;
     g_akaoLoadedBanks[3] = 0;
@@ -97,7 +97,7 @@ void akao_initState(void) {
     g_akaoLoadedBanks[1] = 0;
     g_akaoRandIndex = 0;
     g_akaoLoadedBanks[0] = 0;
-    D_8007F8E0 = 1;
+    g_akaoInitDone = 1;
     g_akaoFlags.bankUpload = 0;
     g_akaoFlags.mode = AKAO_MODE_STEREO;
     g_akaoSeState.activeMask = 0;
@@ -142,7 +142,7 @@ void akao_initState(void) {
     g_akaoVoiceModeMasks[2] = 0;
     g_akaoVoiceModeMasks[1] = 0;
     g_akaoVoiceModeMasks[0] = 0;
-    D_80080A20 = 0;
+    g_akaoUnusedWord = 0;
     /* The nested do-while(0)s emit no code. flow weights references inside loop notes by depth, so they
      * raise cnt's reference count until local-alloc ranks it above &g_akaoChannels and gives it a2. The
      * notes are also scheduling barriers, which is why the loop below is a goto loop with an explicit

@@ -111,7 +111,7 @@ u16 Hi_RegisterTexPtrModel(BtlModelHeader *arg0, s16 *arg1, s16 *arg2) {
     return p->id;
 }
 
-s32 func_800DB8D8(void) {
+s32 btlfx_modelUnusedStub1(void) {
     return 0;
 }
 
@@ -363,10 +363,10 @@ Unk8010141C *btlfx_allocSummonModel(void) {
     return NULL;
 }
 
-void func_800DC500(void) {
+void btlfx_modelUnusedStub2(void) {
 }
 
-void func_800DC508(void) {
+void btlfx_modelUnusedStub3(void) {
 }
 
 void btlfx_halt(char *arg0) {

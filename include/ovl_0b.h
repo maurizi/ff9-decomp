@@ -890,7 +890,7 @@ typedef struct {
     u8 started; /* btlui_init ran */
     u8 pad7;
     u8 hideWindows; /* Select (pad bit 19) held: btlui_drawWindows skips the windows */
-    u8 unk9; /* set once by func_800EA1D0 (no callers), with unk14 */
+    u8 unusedLatched; /* set once by btlui_latchUnusedValue (no callers), with unusedValue */
     u8 padA;
     s8 pauseReq; /* pause requested (Start, btlui_readPad; btlui_isPauseRequested) */
     u8 skipFrames; /* frames the vsync callback skips drawing (btlui_resumeFromPause sets 2) */
@@ -901,7 +901,7 @@ typedef struct {
     u8 pad11;
     u8 enableReq; /* btlui_enable(1): btlui_applyEnable enables the UI next frame */
     u8 escapeFrames; /* frames L1+R1 held (btlui_pollEscape: btl_tryEscape(1) every 0x3E) */
-    s8 unk14; /* written only by func_800EA1D0 (no callers) */
+    s8 unusedValue; /* written only by btlui_latchUnusedValue (no callers) */
     u8 port; /* controller port of the last command menu (btlui_onCmdMenuOpened, pad_updateRepeat) */
     u8 pad16[0x18 - 0x16];
     s32 vsyncTick; /* btlui_vsync calls (blinks the port icon, btlui_drawPortIcons) */
@@ -2868,13 +2868,13 @@ typedef struct {
 s32 btlfx_fadeUnitGroup(u32, s32);
 
 /* main exe: candidates for ff9.h */
-extern UiSprite D_80068E78[3];
+extern UiSprite g_sideFrameSprites[3];
 s32 win_getPalClut(s32);
 void SetTexWindow(void *, RECT *); /* PsyQ */
 void win_reapClosed(void);
 u8 chr_getAppearanceType(s32, u8);
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
-extern u32 D_800686D8;
+extern u32 g_targetCursorSprite;
 void math_rotMatrixYXZ(void *, void *);
 void gfx_selectBuffer(s32);
 void pad_setRepeatEnabled(s32, s32, s32);
@@ -3026,7 +3026,7 @@ void btlui_initPanel(void);
 void btlui_saveKeyRepeat(void);
 void btlui_restoreKeyRepeat(void);
 void btlui_initPrims(void);
-void func_800F48DC(void);
+void btlui_resetStub(void);
 void btlui_initDrawBufs(void);
 void btlui_clearDfe(void);
 void btl_execCmd(BtlUnit *);
@@ -3523,12 +3523,12 @@ void btl_updateDetect(void);
 extern u8 g_btlPopupBounce[];
 extern u8 g_btlPopupBounceHeal[];
 /* main exe: candidates for ff9.h */
-extern SpriteDef D_80068BE8;
+extern SpriteDef g_popupMpSprite;
 s32 evt_battleTrigger(s32, s32, s32, s32);
 void math_rotMatrixXYZ(void *, void *); /* rotation -> matrix */
 s32 btlfx_transformPolar(SVECTOR *, s32, s32);
 void btlfx_transformPoint(s32, s32, s32);
-extern SpriteDef D_80068BF0[]; /* digits */
+extern SpriteDef g_popupDigitSprites[]; /* digits */
 
 typedef struct {
     u8 *pc; /* camera script pointer (btlcam_step reads its commands) */
@@ -3625,12 +3625,11 @@ typedef struct {
     u8 h; /* h */
     u16 tpage; /* tpage */
 } Unk80068EE8; /* sprite descriptor */
-extern Unk80068EE8 D_80068EE8[];
-extern u16 D_80068EEE; /* D_80068EE8[0].unk6 */
-extern Unk80068EE8 D_80068E90;
-extern Unk80068EE8 D_80068ED0;
-extern Unk80068EE8 D_80068ED8;
-extern Unk80068EE8 D_80068EE0;
+extern Unk80068EE8 g_listCursorSprites[];
+extern Unk80068EE8 g_portIconSprite1;
+extern Unk80068EE8 g_portIconSprite2;
+extern Unk80068EE8 g_portBlinkSprite1;
+extern Unk80068EE8 g_portBlinkSprite2;
 extern u8 g_btluiPort;
 extern SprtWords g_btluiPortIconSprt;
 extern SprtWords g_btluiPortBlinkSprt;
@@ -4015,7 +4014,7 @@ typedef struct {
 
 void btl_allocBattle(void);
 void btl_clearBattle(void);
-s32 func_800A8F10(void);
+s32 btl_initModeStub(void);
 s32 btl_loadResidentMusic(void);
 s32 btl_loadSoundBanks(void);
 s32 btl_loadShadowTexture(void);
@@ -4039,9 +4038,9 @@ void btl_removeQueuedCmd(BtlUnit *, u8);
 void btlui_frameUpdate(void);
 s32 btlui_isEnabled(void);
 void btlui_putDispEnvIfReady(void);
-void func_800EA548(void);
+void btlui_vsyncStub(void);
 void btlui_readPad(void);
-void func_800EB578(s32);
+void btlui_vsyncMarkStub(s32);
 void btlui_beginFrame(void);
 void btlui_cacheFrame(void);
 void btlui_input(void);

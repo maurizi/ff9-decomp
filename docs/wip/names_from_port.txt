@@ -11212,3 +11212,95 @@ R37 world map (ovl_0c.h; evidence R37 in docs/runtime-findings.md): WM_WEATHER_C
   CHOCOBO_SAND 14, FOREST_LEAVES 16, AIRSHIP_SAND 19, WATERFALL_MIST 20, SAND_DUST 27 (wm_spawnEffect,
   wm_drawEffects, wm_updateEffects and the spawn sites); WM_BLOCKFX_WATERFALLS 5, WATER_SHRINE 10 (wm_updateBlockFx);
   WM_CAM_HOLD/LOWER/RAISE 0-2 (wm_cameraFollow dir). WM_EVT_BATTLE/FIELD/WORLD now alias EVT_UPD_*.
+
+# ===== R38 game =====
+D_800686D8 g_targetCursorSprite  # [code] g_uiSprites[1], the SPRT uv/clut btlui_drawTargetCursors draws at each target
+D_800687C0 g_venomStatusSprite  # [code] g_uiSprites[30], drawn by menuParty_drawPortrait over a character with CHR_STATUS_VENOM
+D_80068E30 g_koStatusSprite  # [code] g_uiSprites[236], drawn by menuParty_drawPortrait over a character with 0 HP
+D_80068E38 g_petrifyStatusSprite  # [code] g_uiSprites[237], drawn by menuParty_drawPortrait over a character with CHR_STATUS_PETRIFY
+D_80068988 g_sliderGaugeSprites  # [code] three 8-byte records: left cap, middle, right cap of the slider gauge (ovl_34 config sliders, ovl_39 menuSave_drawGauge)
+D_80068BE8 g_popupMpSprite  # [code] g_uiSprites[163], glyph btl_drawNumberPopup appends after the digits of an MP popup (kind != BTL_POPKIND_HP)
+D_80068BF0 g_popupDigitSprites  # [code] g_uiSprites[164..], one per hex digit, btl_drawPopupDigits
+D_80068E78 g_sideFrameSprites  # [code] g_uiSprites[245..247] left piece, middle (texture-window tiled), right piece of btlui_drawSideFrame
+D_80068E90 g_portIconSprite1  # [code] g_uiSprites[248], controller-port icon btlui_drawPortIcons draws while g_btluiPort is 0
+D_80068ED0 g_portIconSprite2  # [code] g_uiSprites[256], controller-port icon btlui_drawPortIcons draws while g_btluiPort is 1
+D_80068ED8 g_portBlinkSprite1  # [code] g_uiSprites[257], blinking port icon (vsyncTick & 0x20) btlui_drawPortIcons draws for port 0
+D_80068EE0 g_portBlinkSprite2  # [code] g_uiSprites[258], blinking port icon for port 1, btlui_drawPortIcons
+D_80068EE8 g_listCursorSprites  # [code] g_uiSprites[259..260], two sprites stacked 6 px apart that btlui_drawListCursors draws left of each targeted party row
+D_8006E658 g_evtPlayerToLinePointScript  # [code] script (EVT_OP_MOVE_RESET, EVT_OP_MOVE_TO_LINE_POINT, EVT_OP_RETURN) pushed onto the player by EVT_OP_PLAYER_TO_LINE_POINT, evt_execInstr
+D_80077DB4 g_menuFlagsWord  # [code] g_menu bytes 4-7 (unk4, open, reading, fadingOut) as one word, menu_updateWait starts the menu once its upper half is 0
+func_80032A34 menu_getUnusedWord1C  # [code] returns g_menu.unk1C, docs/runtime-findings.md R33 (0 calls, menu open/close, shop, save screen)
+D_8007AE04 g_evtUnitObjectCount  # [code] next free g_evtUnitObjects slot, evt_init clears it and sets 4 after the party, evt_execInstr_newactor appends battle objects, docs/runtime-findings.md (no reads outside battle)
+D_8007B94C g_msgFontUnusedParam  # [code] msg_init copies Font.unk8 here, docs/runtime-findings.md R33 never read
+D_8007B994 g_msgPadCopySrc  # [code] only read by msg_readPad (copied into g_msgPadCopyDst), docs/runtime-findings.md R33 never written
+D_8007B998 g_msgPadCopyDst  # [code] only written by msg_readPad from g_msgPadCopySrc, docs/runtime-findings.md R33 never read
+D_8007B9A0 g_msgDrawBufMode  # [code] msg_beginDraw sets 1 (battle, own packet buffers) or 0x4000 (g_primPtr), docs/runtime-findings.md R33 write-only
+D_8007B9A4 g_msgDrawPktStart  # [code] packet pointer at the start of message drawing (msg_beginDraw), docs/runtime-findings.md R33 write-only
+D_8007B9A8 g_msgBattlePktPtr  # [code] packet pointer g_penPktPtr points at in battle (msg_beginDraw)
+D_8007B9B0 g_msgBattlePktBufs  # [code] per draw buffer start of the battle message packets (msg_beginDraw)
+D_8007F8D8 g_akaoInstrumentSets  # [code] two words akao_init clears, [1] is g_akaoAltInstrumentSet
+D_8007F8DC g_akaoAltInstrumentSet  # [code] akao_startSeq/akao_resumeSeq give a sequence with this instrumentSet AKAO_SEQ_INSTR_ALT, else AKAO_SEQ_INSTR_MAIN; docs/runtime-findings.md R33 never written after init
+D_8007F8E0 g_akaoInitDone  # [code] akao_init sets it to 1, docs/runtime-findings.md R33 no reads
+D_800809EC g_akaoChannelsPtr  # [code] akao_init stores g_akaoChannels here (next to g_akaoSubChannels = NULL), docs/runtime-findings.md R33 no reads
+D_80080A20 g_akaoUnusedWord  # [code] akao_init clears it, docs/runtime-findings.md R33 no reads
+D_800834D0 g_timBuffer  # [code] 0x800-byte TIM buffer (zero in the exe) that tim_uploadBuffer uploads
+func_80064D28 tim_uploadBuffer  # [code] LoadImage of g_timBuffer's CLUT block then its image block, DrawSync, no callers
+func_80064BE4 tim_unusedStub  # [code] empty, no callers, first function of the tim_uploadBuffer file
+func_8002C05C gfx_unusedStub  # [code] empty, no callers, between win_runFrame and gfx_setUiMode
+func_8002C1E4 pad_repeatStub  # [code] empty, called by ovl_3c shopBuy_update while g_padRepeat bit 3 is set
+func_8002FC30 fade_fieldInitStub  # [code] empty, last call of ovl_0a fld_init, sits before fade_init
+func_8002FEA4 fade_unusedStub1  # [code] empty, no callers
+func_8002FEAC fade_unusedStub2  # [code] empty, no callers
+func_8003431C chr_newGameStub  # [code] empty, called by game_newGame between item_initNew and party_initNewGame
+func_80035564 help_unusedStub  # [code] empty, no callers
+func_8003573C help_drawStub  # [code] empty, called by help_draw before the help text
+func_8004E91C msg_endTextStub  # [code] empty, called by the evt_expr_asm text emitter func_80051B58 after pen_endBuffered
+func_80053924 game_resetStub  # [code] empty, called by game_reset after evt_initSystem
+func_80056028 akao_loadBankRetryAlias  # [code] calls akao_loadBankRetry(a, b), no callers
+D_800D4960 g_worldEffectPos  # [code] 9 VECTORs wm_initEffects clears then fills with three world positions, docs/runtime-findings.md R33 unread
+D_800D49F0 g_worldEffectRot  # [code] 9 SVECTORs wm_initEffects clears, docs/runtime-findings.md R33 unread
+D_800CCE49 g_worldActorHideLevel  # [code] data 0, wm_updateDraw draws the actors only while it is below 2, docs/runtime-findings.md R33 never written
+D_800CCE4A g_worldPlayerControlOff  # [code] data 0, wm_movePlayer calls wm_controlPlayer only while it is 0, docs/runtime-findings.md R33 never written
+D_800CCE55 g_worldStepFlagOn  # [code] data 1, the value wm_movePlayer stores into g_worldPlayerStepped on a counted step, docs/runtime-findings.md R33 never written
+D_800CE1E1 g_worldCameraUnusedFlag  # [code] wm_initCamera clears it, docs/runtime-findings.md R33 unread
+D_800CE284 g_worldMoveUnusedWord  # [code] wm_initMovement clears it with the player speed state, docs/runtime-findings.md R33 unread
+D_800CE3F8 g_worldUnusedBuffer  # [code] wm_initBuffers points it at 0x80100800 with the other buffers, docs/runtime-findings.md R33 unread
+D_800CF47E g_worldSysUnusedFlag  # [code] wm_systemInit clears it, docs/runtime-findings.md R33 unread
+D_800D30C4 g_worldGetoffSearching  # [code] wm_findGetoffPos sets 1 during the vehicle-position checks and 0 when they pass, wm_initMapState clears it, docs/runtime-findings.md R33 unread
+func_800B383C wm_movementUnusedStub  # [code] empty, no callers (w_movement)
+func_800B8568 wm_getSubOvlBase  # [code] returns RAM_SUB_OVL (0x801EDF00), no callers
+func_800BA2D4 wm_memUnusedStub  # [code] empty, no callers, after wm_initMapState (w_memoryman)
+func_800BD66C wm_chunkUnusedStub  # [code] empty, no callers, between wm_chunkListCompact and wm_blockListInit
+func_800C0D38 fldbg_unusedStub  # [code] empty, no callers, after fldbg_setCamera, docs/runtime-findings.md R31
+func_800C0FF4 fldbg_setUnusedDistSq  # [code] stores arg*arg (3600 for -1) into the write-only g_fieldBgState.unusedDistSq and returns 1, no callers, docs/runtime-findings.md R31
+func_800C1D08 fldbg_okStub1  # [code] returns 1, no callers, docs/runtime-findings.md R31
+func_800C1DAC fldbg_okStub2  # [code] returns 1, no callers, docs/runtime-findings.md R31
+func_800C1DB4 fldbg_okStub3  # [code] returns 1, no callers, docs/runtime-findings.md R31
+func_800C1DBC fldbg_okStub4  # [code] returns 1, no callers, docs/runtime-findings.md R31
+func_800C7450 bgi_okStub  # [code] returns 1, no callers, docs/runtime-findings.md R31
+func_800C7458 bgi_setOneStub  # [code] stores 1 through its argument, no callers, docs/runtime-findings.md R31
+func_800A73B8 opening_startField0  # [code] black clear colour, game mode GS_MODE_FIELD with field 0 / area 1, docs/runtime-findings.md R33 uncalled
+func_800A8F10 btl_initModeStub  # [code] returns 0, called by btl_initMode after btl_loadCommonData
+func_800D8C9C btlfx_exportStub090  # [code] returns 0, effect-module export slot 0x090 (BtlfxExports)
+func_800D8CA4 btlfx_exportStub094  # [code] returns -1, effect-module export slot 0x094 (BtlfxExports)
+func_800D8CAC btlfx_exportStub0A4  # [code] empty, effect-module export slot 0x0A4 (BtlfxExports)
+func_800DF938 btlfx_exportStub29C  # [code] empty, effect-module export slot 0x29C (BtlfxExports)
+func_800DF928 btlfx_exportStub300  # [code] returns 0, effect-module export slot 0x300 (BtlfxExports)
+func_800DF920 btlfx_exportStub308  # [code] empty, effect-module export slot 0x308 (BtlfxExports)
+func_800DF930 btlfx_exportStub30C  # [code] returns 0, effect-module export slot 0x30C (BtlfxExports)
+func_800DA0FC btlfx_poolUnusedStub  # [code] returns 0, no callers (btlfx_pool)
+func_800DB8D8 btlfx_modelUnusedStub1  # [code] returns 0, no callers, between Hi_RegisterTexPtrModel and Hi_RegisterSummonModel
+func_800DC500 btlfx_modelUnusedStub2  # [code] empty, no callers, after btlfx_allocSummonModel
+func_800DC508 btlfx_modelUnusedStub3  # [code] empty, no callers, before btlfx_halt
+func_800EA1D0 btlui_latchUnusedValue  # [code] sets g_btluiState.unusedLatched and stores its argument in unusedValue once, docs/runtime-findings.md R33 no callers
+func_800EA548 btlui_vsyncStub  # [code] empty, called by btlui_vsync after btlui_putDispEnvIfReady
+func_800EB578 btlui_vsyncMarkStub  # [code] empty, btlui_vsync calls it with 0xBA before and 0xBB after the frame's UI work
+func_800F2A58 btlui_unusedStub  # [code] empty, no callers
+func_800F48DC btlui_resetStub  # [code] empty, called by btlui_reset after btlui_initHeap
+func_800F4DF4 btlui_frameUnusedStub  # [code] empty, no callers, after btlui_clearOtLinked
+func_800F4E68 btl_bannerExitStub  # [code] empty, after btl_initBanner, called by ovl_65 when the battle result screen ends (rewards done or game over)
+func_80016568 setjmp  # [bios A(13h)] BIOS A(13h) stub, called by the libetc interrupt manager func_8001603C
+D_8007AF55 g_evtGeneralFlags  # [string] g_evtGlobalVars.b[0x65] (EVT_GB_GENERAL_FLAGS), "General Global Flag" in wm_applyStoryForms
+# D_8007954E (g_evtStateData + 0x16EE) is now g_evtStateData.mode (evt_reset); D_80068EEE is g_listCursorSprites[0].tpage
+# FIELDS ovl_0a FieldBgState.unk78=unusedDistSq; ovl_0b BtluiState.unk9=unusedLatched, unk14=unusedValue; btlfx_mod.h export slots renamed with their functions
+# comment refs updated: func_80023A0C game_updateWindows, func_80050CA8 rain_set, func_800B3444 fld_enableRain, func_80053A10 swirl_update, func_800B7F14/func_800C96AC/func_800BB508/func_800C9FCC

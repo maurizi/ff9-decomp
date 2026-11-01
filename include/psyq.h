@@ -694,7 +694,7 @@ long NormalClip(long sxy0, long sxy1, long sxy2);
         gte_rtir(); \
         gte_stclmv((s16 *)(r3) + 2); \
     }
-/* GTE sequences hand-written by Square (field func_800BB508, world map func_800C9FCC) */
+/* GTE sequences hand-written by Square (field fldmdl_projectMeshClipY, world map wm_projectMeshClipY) */
 /* store the transformed vertex: x, y clamped to arg2 (flagging the depth) and z */
 #define gte_stsvclamp(r0, r1, r2) __asm__ volatile( \
     "mfc2\t$12, $9;" \
@@ -742,7 +742,7 @@ long NormalClip(long sxy0, long sxy1, long sxy2);
     "sh\t$14, 4(%0)" \
     : : "r"(r0) : "$12", "$13", "$14", "memory")
 
-/* Square's bone rotation decoder (field func_800B7F14, world map func_800C96AC):
+/* Square's bone rotation decoder (field fldmdl_calcBoneMatrices, world map wm_calcBoneMatrices):
  * r0 -> two words holding three 16-bit offsets/constants and their flags,
  * r1 = animation base, r2 = frame, r3 -> SVECTOR result (x | y << 16, z).
  * The first form reads one signed byte per axis (<< 4); the second adds the

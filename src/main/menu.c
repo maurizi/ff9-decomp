@@ -213,7 +213,7 @@ void menu_updateLoad(void) {
 }
 
 void menu_updateWait(void) {
-    if ((D_80077DB4 & 0xFFFF0000) == 0) {
+    if ((g_menuFlagsWord & 0xFFFF0000) == 0) {
         menu_start();
     }
 }
@@ -262,7 +262,7 @@ void menu_onPortraitsRead(u8 *a) {
     }
 }
 
-s32 func_80032A34(void) {
+s32 menu_getUnusedWord1C(void) {
     return g_menu.unk1C;
 }
 

@@ -16,7 +16,7 @@ void msg_init(void) {
     g_penGlyphDecode.lead = 0;
     g_penGlyphs = f->glyphs;
     g_penGlyphDecode.extRange = *(s32 *)&f->extCode;
-    D_8007B94C = f->unk8;
+    g_msgFontUnusedParam = f->unk8;
     g_penGlyphDecode.kanjiCode = -1;
     switch (s->mode) {
     case GS_MODE_FIELD:
@@ -76,16 +76,16 @@ void msg_beginDraw(void) {
     u8 *cur;
 
     if (s->mode == GS_MODE_BATTLE || s->mode == 6) {
-        D_8007B9A0 = 1;
-        pp = &D_8007B9A8;
-        tbl = &D_8007B9B0[s->gameData->drawBuf];
+        g_msgDrawBufMode = 1;
+        pp = &g_msgBattlePktPtr;
+        tbl = &g_msgBattlePktBufs[s->gameData->drawBuf];
         g_penPktPtr = pp;
-        D_8007B9A4 = D_8007B9A8 = (u8 *)tbl;
+        g_msgDrawPktStart = g_msgBattlePktPtr = (u8 *)tbl;
     } else {
-        D_8007B9A0 = 0x4000;
+        g_msgDrawBufMode = 0x4000;
         cur = g_primPtr;
         g_penPktPtr = &g_primPtr;
-        D_8007B9A4 = cur;
+        g_msgDrawPktStart = cur;
     }
     g = g_gameState->gameData;
     g_penOt = g->ot[g->drawBuf];
@@ -1056,7 +1056,7 @@ void msg_update(void) {
     }
     g_msgPadEvent.type = 0;
     g_msgPadEvent.buttons = 0;
-    D_8007B998 = D_8007B994;
+    g_msgPadCopyDst = g_msgPadCopySrc;
 }
 
 u32 msg_getPadHeld(void) {
@@ -1071,7 +1071,7 @@ u32 msg_getPadReleased(void) {
     return g_msgPadReleased & 0x3FFFFFF;
 }
 
-void func_8004E91C(void) {
+void msg_endTextStub(void) {
 }
 
 void msg_resetWindows(void) {

@@ -535,7 +535,7 @@ typedef struct {
     u8 h; /* height */
     u8 pad6[2];
 } GaugeIcon;
-extern GaugeIcon D_80068988[3];
+extern GaugeIcon g_sliderGaugeSprites[3];
 void SetTexWindow(void *p, RECT *r);
 /* LINE_F2 written as whole words */
 typedef struct {

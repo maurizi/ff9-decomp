@@ -492,7 +492,7 @@ void shopBuy_openQuantity(void) {
 
 void shopBuy_update(void) {
     if (g_padRepeat & 8) {
-        func_8002C1E4();
+        pad_repeatStub();
     }
     shopBuy_input();
     shopBuy_draw();

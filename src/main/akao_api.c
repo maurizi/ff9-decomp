@@ -479,7 +479,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
     return g_akaoUpload.sampleLeft;
 }
 
-void func_80056028(s32 a, s32 b) {
+void akao_loadBankRetryAlias(s32 a, s32 b) {
     akao_loadBankRetry(a, b);
 }
 

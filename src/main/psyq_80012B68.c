@@ -187,7 +187,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", func_800164CC);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", func_80016544);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", func_80016568);
+INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", setjmp);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/psyq_80012B68", _96_remove);
 

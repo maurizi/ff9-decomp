@@ -1,6 +1,6 @@
 #include "ovl_0b.h"
 
-s32 func_800DA0FC(void) {
+s32 btlfx_poolUnusedStub(void) {
     return 0;
 }
 

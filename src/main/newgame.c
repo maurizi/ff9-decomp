@@ -2,6 +2,6 @@
 
 void game_newGame(void) {
     item_initNew();
-    func_8003431C();
+    chr_newGameStub();
     party_initNewGame();
 }

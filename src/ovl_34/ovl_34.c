@@ -378,7 +378,7 @@ void menuConfig_drawSlider(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     RECT r;
     s32 i;
 
-    ic = D_80068988;
+    ic = g_sliderGaugeSprites;
     mid = &ic[1];
     ec = &ic[2];
     width = w + 8;

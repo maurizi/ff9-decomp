@@ -88,7 +88,7 @@ void opening_swapBuffers(void) {
     gfx_setBuffer(g_gameState->gameData->drawBuf);
 }
 
-void func_800A73B8(void) {
+void opening_startField0(void) {
     GameData *ctx = g_gameState->gameData;
     game_setClearColor(0, 0, 0);
     g_gameState->mode = GS_MODE_FIELD;

@@ -164,7 +164,7 @@ void fld_init(void) {
     if (g_gameState->gameData->flags & GD_MUSIC_LEFT_PLAYING) {
         fld_soundCommand(SND_MUSIC_VOL_INTPL, 0, 0x78, 0, 0);
     }
-    func_8002FC30();
+    fade_fieldInitStub();
     f->loadEnd = g_modeHeap;
 }
 

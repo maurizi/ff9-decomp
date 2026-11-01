@@ -183,7 +183,7 @@ typedef struct {
     u8 animSfxBuf[0x330 - 0x270]; /* FieldAnimSfx[16] (fld_allocScene) */
 } FieldScene;
 /* FieldScene.flags */
-#define FLD_SCN_ENCOUNTER_DONE 0x1 /* encounter screen effect (func_80053A10) finished */
+#define FLD_SCN_ENCOUNTER_DONE 0x1 /* encounter screen effect (swirl_update) finished */
 #define FLD_SCN_ENCOUNTER_LOADED 0x2 /* fld_updateEncounter uploaded file 0x1000B and played its SEs */
 #define FLD_SCN_BANK_SLOT 0x10 /* fld_soundBankReadCallback uploads to soundBankSlot */
 #define FLD_SCN_RAIN_ALLOC 0x100 /* fld_enableRain allocated the main rain_init node buffer */
@@ -351,7 +351,7 @@ typedef struct {
     u8 unk74; /* write-only (set to 0x40) */
     u8 cameraId;
     s16 followHeight;
-    s32 unk78; /* write-only: a squared distance, 60 * 60 by default, func_800C0FF4 sets arg * arg */
+    s32 unusedDistSq; /* write-only: a squared distance, 60 * 60 by default, fldbg_setUnusedDistSq sets arg * arg */
     u8 pad7C[0x9C - 0x7C];
     s16 unk9C; /* write-only (cleared) */
     u8 pad9E[2];
@@ -1715,7 +1715,7 @@ void fldmdl_reflectModel(ModelObj *arg0);
 void fldmdl_setAbr(ModelObj *arg0, u16 arg1);
 void fldmdl_setGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4);
 void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1);
-void func_8002FC30(void); /* main */
+void fade_fieldInitStub(void); /* main */
 s32 evt_countNpcActors(s32 unused); /* main */
 void fld_drawRain(void);
 void game_resumeClock(u8 arg0); /* main */

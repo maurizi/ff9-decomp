@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void func_80064BE4(void) {
+void tim_unusedStub(void) {
 }
 
 void pen_beginOt(s32 a, u32 *b) {
@@ -22,8 +22,8 @@ void pen_locate(u16 a, u16 b) {
     pen_end();
 }
 
-void func_80064D28(void) {
-    TimHeader *tim = &D_800834D0;
+void tim_uploadBuffer(void) {
+    TimHeader *tim = &g_timBuffer;
     TimBlock *b;
     LoadImage((RECT *)&tim->clut.x, (u32 *)(tim + 1));
     b = &tim->clut;

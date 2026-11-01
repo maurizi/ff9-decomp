@@ -376,15 +376,15 @@ void wm_applyStoryForms(void) {
             }
         }
     }
-    printf("General Global Flag = %x\n", D_8007AF55);
-    if (D_8007AF55 & 0x80) {
+    printf("General Global Flag = %x\n", g_evtGeneralFlags);
+    if (g_evtGeneralFlags & EVT_GB_GENERAL_MOGNET_FORM) {
         printf("- Replace Mog Net -\n");
         WM_CELL(16, 1) |= 0x80;
         WM_CELL(13, 4) |= 0x80;
         WM_CELL(14, 5) |= 0x80;
         g_worldFormFlags[WM_FORM_MOG_NET] = 1;
     }
-    if (D_8007AF55 & 0x40) {
+    if (g_evtGeneralFlags & EVT_GB_GENERAL_CHOCOBO_FORM) {
         printf("- Replace Chocobo Heaven -\n");
         WM_CELL(0, 0) |= 0x80;
         WM_CELL(16, 14) |= 0x80;
@@ -986,7 +986,7 @@ void wm_chunkListCompact(void) {
     }
 }
 
-void func_800BD66C(void) {
+void wm_chunkUnusedStub(void) {
 }
 
 /* initialise the texture list */

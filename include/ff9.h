@@ -91,7 +91,7 @@ typedef struct {
     u8 pad2[2];
     u16 extCode; /* high byte: first text code that takes an extra byte (text_draw: (c << 8) + next byte - extCode + extBase) */
     u16 extBase; /* glyph index of the first two-byte code */
-    s16 unk8; /* copied to D_8007B94C by msg_init, not read otherwise */
+    s16 unk8; /* copied to g_msgFontUnusedParam by msg_init, not read otherwise */
     u8 padA[2];
     u32 glyphs[1]; /* glyph info, width in the top 4 bits */
 } Font;
@@ -268,7 +268,7 @@ typedef struct {
     Unk1354 *files; /* ovl_0b Battle.files */
 } Unk8E4;
 /* Unk8E4.flags in field mode (FieldMap.flags; the other FLD_MAP_* bits are in ovl_0a.h) */
-#define FLD_MAP_NO_WINDOWS 0x1 /* fld_main skips func_80023A0C (win_updateAll/win_drawAll) */
+#define FLD_MAP_NO_WINDOWS 0x1 /* fld_main skips game_updateWindows (win_updateAll/win_drawAll) */
 #define FLD_MAP_NO_BGI_ANIM 0x8 /* fld_main skips bgi_updateAnims/bgi_updateFloorMoves */
 #define FLD_MAP_NO_PRELOAD 0x1000 /* fld_main skips preload_update (fld_movieStart, main menu_doOpen) */
 
@@ -691,7 +691,7 @@ typedef struct {
     s32 frame; /* frame counter */
     s32 savedVsyncMode;
     s32 savedPadMask;
-    s32 unk1C; /* cleared on open/reset; only read by func_80032A34, which nothing calls */
+    s32 unk1C; /* cleared on open/reset; only read by menu_getUnusedWord1C, which nothing calls */
     u8 savedR; /* saved background colour */
     u8 savedG;
     u8 savedB;
@@ -1311,7 +1311,7 @@ typedef struct {
 /* AkaoSeq.flags */
 #define AKAO_SEQ_NO_VOICE 0x1 /* akao_assignVoices found no voice for a channel */
 #define AKAO_SEQ_VOICE_STOLEN 0x2 /* akao_assignVoices had to steal a voice (akao_stealVoice) */
-#define AKAO_SEQ_INSTR_MAIN 0x10 /* the sequence's instrument set isn't D_8007F8DC (akao_startSeq) */
+#define AKAO_SEQ_INSTR_MAIN 0x10 /* the sequence's instrument set isn't g_akaoAltInstrumentSet (akao_startSeq) */
 #define AKAO_SEQ_INSTR_ALT 0x20 /* it is: programs 0x20-0x7F use the instruments 0x30 up (akao_remapInstrument, akao_shiftInstrumentUp/Down) */
 extern AkaoSeq *g_akaoSeq;
 extern AkaoSeq g_akaoMainSeq; /* main sequencer state */
@@ -1321,12 +1321,12 @@ extern s32 g_akaoTickTimes[4]; /* recent tick timings */
 void akao_flushKeyOffs(void);
 void akao_updateVoices(void);
 void akao_tickCrossfade(AkaoSeq *, AkaoChannel *);
-extern AkaoChannel *D_800809EC;
-extern s32 D_8007F8D8[2];
+extern AkaoChannel *g_akaoChannelsPtr;
+extern s32 g_akaoInstrumentSets[2];
 extern s32 g_akaoRandIndex;
-extern s32 D_8007F8E0;
+extern s32 g_akaoInitDone;
 extern s32 g_akaoVoiceModeMasks[3];
-extern s32 D_80080A20;
+extern s32 g_akaoUnusedWord;
 extern s32 g_akaoVsyncs[2];
 extern s32 g_akaoTickPhase;
 
@@ -1586,8 +1586,8 @@ typedef struct {
     s32 buttons;
 } Unk8007B988;
 extern Unk8007B988 g_msgPadEvent;
-extern s32 D_8007B994;
-extern s32 D_8007B998;
+extern s32 g_msgPadCopySrc;
+extern s32 g_msgPadCopyDst;
 
 extern s32 g_textBank;
 extern s32 g_evtScriptCount;
@@ -1618,7 +1618,7 @@ typedef struct {
     u8 pad6[2];
     u16 reverbMode; /* passed to akao_setReverbMode when the music starts */
     u8 padA[0x14 - 0xA];
-    s32 instrumentSet; /* compared with D_8007F8DC: equal selects AkaoSeq.flags 0x20 (programs 0x20-0x7F remapped), else 0x10 */
+    s32 instrumentSet; /* compared with g_akaoAltInstrumentSet: equal selects AkaoSeq.flags 0x20 (programs 0x20-0x7F remapped), else 0x10 */
     u8 pad18[0x20 - 0x18];
     u32 channelMask; /* channel mask */
     s32 priorityMask; /* AkaoSeq.priorityMask */
@@ -1632,7 +1632,7 @@ typedef struct {
 void akao_resumeSeq(s32, s32);
 void akao_startSeq(s32, s32);
 extern s16 g_akaoSavedSeqMusicId;
-extern s32 D_8007F8DC;
+extern s32 g_akaoAltInstrumentSet;
 typedef struct {
     s32 bankUpload; /* 1 while a sound bank upload runs (akao_beginBankUpload / akao_uploadBank) */
     s32 mode; /* AKAO_MODE_STEREO / AKAO_MODE_MONO (akao_cmdSetOutputMode1/2), | AKAO_MODE_CROSSFADE */
@@ -1657,7 +1657,6 @@ typedef struct {
 extern MenuScreen g_menuScreen;
 extern u8 g_menuScreenMember;
 extern s32 g_evtLastEncounter;
-extern u8 D_8007954E;
 extern u8 g_evtModelsPending;
 extern s32 g_msgNumbers[8];
 extern u8 *g_bubbleScript; /* help-arrow animation script */
@@ -1766,6 +1765,10 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_ATE_AVAILABLE 0xEE       /* s8: 1 = an ATE can be viewed (the field script opens the ATE window on Select) */
 #define EVT_GB_ATE_CHOICE_MASK 0xF1     /* s16 (unaligned): enabled choices of the ATE window (EVT_OP_MSG_CHOICE_MASK) */
 #define EVT_GB_NAVI_PLACE 0x67  /* u8: navi map place under the cursor + 1, 0 = none (wm_naviUpdate; the world script names it, wm autopilot reads it) */
+#define EVT_GB_GENERAL_FLAGS 0x65 /* u8: printed as "General Global Flag" by wm_applyStoryForms (ovl_0c): */
+#define EVT_GB_GENERAL_MOGNET_FORM 0x80   /* the world map uses the replacement Mog Net form ("- Replace Mog Net -") */
+#define EVT_GB_GENERAL_CHOCOBO_FORM 0x40  /* the world map uses the replacement Chocobo Heaven form */
+extern u8 g_evtGeneralFlags; /* g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] under its own symbol (ovl_0c reads it that way) */
 #define EVT_GB_NAVI_KNOWN 0x5C  /* u16[4] (h[0x2E..0x31]): navi map places known, bit i&15 of h[0x2E + i/16] (wm_naviDraw) */
 /* Mognet state, read only by the field scripts (docs/r32/3ds-requests-5-mognet.md) */
 #define EVT_GB_MOGNET_VERSION 0x400     /* u8: Mognet data version (1) */
@@ -1901,12 +1904,12 @@ typedef struct {
 } Unk8006573C;
 
 extern s16 g_resetCount;
-extern u32 D_80077DB4;
+extern u32 g_menuFlagsWord;
 extern u8 g_chrDefaultSets[][2];
 
 u16 *db_findModelInfo(s32);
 void item_initNew(void);
-void func_8003431C(void);
+void chr_newGameStub(void);
 void party_initNewGame(void);
 s32 snd_quit(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
 void db_quit(void);
@@ -2869,10 +2872,10 @@ u8 sprAnim_setPlaying(SprAnim *, u8);
 void sprAnim_setOnDone(SprAnim *, void (*)());
 void sprAnim_reset(SprAnim *);
 void help_onIconAnimDone(void);
-extern s32 D_8007B9A0;
-extern u8 *D_8007B9A4;
-extern u8 *D_8007B9A8;
-extern u32 D_8007B9B0[];
+extern s32 g_msgDrawBufMode;
+extern u8 *g_msgDrawPktStart;
+extern u8 *g_msgBattlePktPtr;
+extern u32 g_msgBattlePktBufs[];
 extern u8 **g_penPktPtr;
 void pen_putGlyph(s32);
 extern u8 g_msgNameBuf[8]; /* name text being converted */
@@ -3001,9 +3004,9 @@ typedef struct {
     u8 w; /* width */
     u8 pad5[3];
 } Icon; /* sprite drawn by ui_drawSpriteDef */
-extern Icon D_800687C0;
-extern Icon D_80068E30;
-extern Icon D_80068E38;
+extern Icon g_venomStatusSprite;
+extern Icon g_koStatusSprite;
+extern Icon g_petrifyStatusSprite;
 extern s32 g_labelParty;
 void ui_drawHand(s32, s32, s32);
 void pad_setRepeatDelay(s32, s32, s32);
@@ -3057,7 +3060,7 @@ extern s32 g_labelConfig;
 void chr_updateStats(Character *);
 s32 chr_calcAppearance(s32, s32, u8 *);
 void ui_loadPortraits(void *, s32);
-void func_8002C1E4(void);
+void pad_repeatStub(void);
 s32 nextfile(s32);
 s32 close(s32);
 s32 _card_load(s32);
@@ -3548,7 +3551,7 @@ static inline void chr_updateStats_inline(Character *c) {
 extern void (*g_fadeSeekFuncs[])(FadeState *, s32);
 extern s32 g_msgReady;
 extern u32 *g_penGlyphs;
-extern s32 D_8007B94C;
+extern s32 g_msgFontUnusedParam;
 void win_closeAll(void);
 void msg_resetChoices(void);
 extern u8 *g_evtScripts; /* script data */
@@ -3753,7 +3756,7 @@ void cd_resetState(void);
 void db_init(void);
 void mbg_resetState(void);
 void menu_init(void);
-void func_80053924(void);
+void game_resetStub(void);
 
 #define ARRAY_COUNT(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -3839,7 +3842,7 @@ typedef struct {
     u32 unk8; /* not read by C */
 } DbEntry12;
 
-extern TimHeader D_800834D0;
+extern TimHeader g_timBuffer;
 extern s32 g_penLineStart;
 
 void text_formatInt(s32, u8 *, s32);
@@ -4094,7 +4097,7 @@ typedef struct {
 #define EVT_OP_MODEL_FLAGS_SET 0xCC /* u16 */
 #define EVT_OP_MODEL_FLAGS_CLEAR 0xCD /* u16 */
 #define EVT_OP_ATE_PROMPT 0xD7 /* mode: msg_setAtePrompt */
-#define EVT_OP_RAIN 0xD8 /* count, speed: func_800B3444(0,0,1) + func_80050CA8, GameData.rainCount */
+#define EVT_OP_RAIN 0xD8 /* count, speed: fld_enableRain(0,0,1) + rain_set, GameData.rainCount */
 #define EVT_OP_CURE_STATUS 0xD9 /* chr, bits: chr_cureStatusBit */
 #define EVT_OP_JUMP_STEP 0xDC /* one jump frame, retries until done */
 #define EVT_OP_PARTY_REMOVE 0xDD /* chr */
@@ -4179,7 +4182,7 @@ typedef struct {
 #define EVT_OP_BTL_ENEMY_CMD 0x38 /* u8: btl_setEnemyCmd for the battle vars' unit, by the function level: 0 BTL_CMD_ENEMY_DEATH,
                                    * 1 BTL_CMD_ENEMY_COUNTER, 3 BTL_CMD_ENEMY_TURN */
 #define EVT_OP_SET_ROW 0x62 /* u8 character, u8: CHR_INFO_BATTLE_ROW */
-#define EVT_OP_PLAYER_TO_LINE_POINT 0x9E /* the player runs D_8006E658 (EVT_OP_MOVE_RESET, EVT_OP_MOVE_TO_LINE_POINT, EVT_OP_RETURN)
+#define EVT_OP_PLAYER_TO_LINE_POINT 0x9E /* the player runs g_evtPlayerToLinePointScript (EVT_OP_MOVE_RESET, EVT_OP_MOVE_TO_LINE_POINT, EVT_OP_RETURN)
                                           * as a pushed call; control off, every object's collisions off */
 #define EVT_OP_MOVE_TO_LINE_POINT 0xA0 /* evt_moveObjectTo(g_evtLinePointX, 0, g_evtLinePointZ), repeats until there */
 #define EVT_OP_LINE_POINT 0xA4 /* g_evtLinePointX/Z = the point of the region's line pts[0]-pts[1] nearest the player */
@@ -4399,7 +4402,7 @@ s32 bgi_playAnimRange(u32, u32, u32);
 s32 fld_queueModelBundle(s32); /* uid; queues the actor's model */
 
 extern u8 *g_evtInstrStart;
-extern s32 D_8007AE04;
+extern s32 g_evtUnitObjectCount;
 EvtObject *evt_getObjectArg(void);
 void evt_returnFromFunc(EvtObject *);
 s32 evt_modelOpField(EvtObject *, s32);
@@ -4554,7 +4557,7 @@ typedef struct {
     u8 pattern; /* & 3 selects the slot thresholds */
 } EncounterTable;
 extern EncounterTable g_evtEncounterTable;
-extern u8 D_8006E658[];
+extern u8 g_evtPlayerToLinePointScript[];
 void evt_setNextBattle(u16);
 void evt_setCardOpponent();
 void msg_startHereIcon(s32);
@@ -4682,7 +4685,7 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
         fld_queueModelBundle(uid);
         break;
     case EVT_MODE_BATTLE:
-        g_evtUnitObjects[D_8007AE04++] = p;
+        g_evtUnitObjects[g_evtUnitObjectCount++] = p;
         break;
     }
 }
@@ -4995,7 +4998,7 @@ void fieldCalc_supportBoost(MainCalc *a);
 void fld_entry(void); /* ovl_0a */
 s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4); /* ovl_0a */
 s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1); /* ovl_0a */
-void func_8003573C(void);
+void help_drawStub(void);
 void rain_set(s32 a, u32 b);
 void wrain_set(s32 a, u32 b);
 void game_initData(void);

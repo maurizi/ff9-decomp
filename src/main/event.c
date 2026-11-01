@@ -1329,7 +1329,7 @@ s32 evt_execInstr(void) {
             po->level = 0;
             po->wait = 0;
             po->sp += 2;
-            po->ip = D_8006E658;
+            po->ip = g_evtPlayerToLinePointScript;
             g_evtState->controlEnabled = 0;
             for (nn = g_evtState->objects; nn != NULL; nn = nn->next) {
                 nn->obj->flags |= EVT_OBJ_NO_NPC_COLLISION | EVT_OBJ_NO_PLAYER_COLLISION;
@@ -3405,7 +3405,7 @@ void evt_init(u8 *data) {
     for (i = 7; i >= 0; i--) {
         g_evtUnitObjects[i] = NULL;
     }
-    D_8007AE04 = 0;
+    g_evtUnitObjectCount = 0;
     if (g_evtMode == EVT_MODE_BATTLE) {
         for (i = 0; i < 4; i++) {
             r = msg_getPartyMemberId(i);
@@ -3417,7 +3417,7 @@ void evt_init(u8 *data) {
     } else {
         g_gameState->gameData->rainCount = 0;
     }
-    D_8007AE04 = 4;
+    g_evtUnitObjectCount = 4;
     if ((g_evtMode == EVT_MODE_FIELD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
         (g_evtMode == EVT_MODE_WORLD && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->worldId) ||
         (g_gameState->prevMode == GS_MODE_TETRA_MASTER && g_evtModelsPending != 0)) {
@@ -3574,7 +3574,7 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
 void evt_reset(void) {
     g_evtState = NULL;
     g_evtLastEncounter = 0;
-    D_8007954E = 0;
+    g_evtStateData.mode = 0;
     g_evtModelsPending = 0;
 }
 

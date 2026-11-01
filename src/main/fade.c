@@ -166,7 +166,7 @@ void fade_getWipeColors(void *a) {
     fadeWipe_getColors(a);
 }
 
-void func_8002FC30(void) {
+void fade_fieldInitStub(void) {
 }
 
 void fade_init(void) {
@@ -251,10 +251,10 @@ s32 fade_ease(s32 x, s32 a, s32 b) {
     return x;
 }
 
-void func_8002FEA4(void) {
+void fade_unusedStub1(void) {
 }
 
-void func_8002FEAC(void) {
+void fade_unusedStub2(void) {
 }
 
 void fade_reverseNoCallback(void) {

@@ -191,7 +191,7 @@ u8 *btl_drawPopups(u8 *arg0) {
     }
     btl_drawStatusCountdown(&c);
     ((u8 *)c.prim)[3] = 1;
-    c.prim[1] = get_mode(0, 0, D_80068BF0[0].tpage);
+    c.prim[1] = get_mode(0, 0, g_popupDigitSprites[0].tpage);
     addPrim(c.ot, c.prim);
     c.prim += 2;
     e = g_btlfxEnv->state;
@@ -234,7 +234,7 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
         if (arg0->info.b.noClamp == 0) {
             x = w;
             if (arg0->info.b.kind != BTL_POPKIND_HP) {
-                x = D_80068BE8.w + w;
+                x = g_popupMpSprite.w + w;
             }
             btl_clampPopup(arg0, arg1, x, 10);
         } else {
@@ -244,7 +244,7 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
         if (arg0->info.b.kind != BTL_POPKIND_HP) {
             arg1->xy.s.x += (n >> 16) * 8;
             arg1->xy.s.y += 3;
-            btl_drawPopupGlyph(arg1, &D_80068BE8);
+            btl_drawPopupGlyph(arg1, &g_popupMpSprite);
         }
     }
     if (anim[++arg0->frame] == 0xFF) {
@@ -309,7 +309,7 @@ void btl_drawPopupDigits(Unk800CCD00 *arg0, u32 arg1) {
         arg0->prim[0] = 0x04000000;
         arg0->prim[1] = arg0->rgb | GPU_CODE(GPU_SPRT);
         arg0->prim[2] = *(s32 *)&xy;
-        g = &D_80068BF0[arg1 & 0xF];
+        g = &g_popupDigitSprites[arg1 & 0xF];
         arg0->prim[3] = g->uvclut + (arg0->clut << 16);
         arg0->prim[4] = (g->h << 16) | g->w;
         addPrim(arg0->ot, arg0->prim);

@@ -48,7 +48,7 @@ void game_reset(void) {
         VSync(0);
     }
     evt_initSystem();
-    func_80053924();
+    game_resetStub();
     menu_init();
     game_initFade();
     mbg_resetState();

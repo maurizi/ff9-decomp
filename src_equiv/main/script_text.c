@@ -63,7 +63,7 @@ s32 evt_exprUnitFirst(void);
 s16 msg_isOpen(s32 i);
 void evt_setCurUnit(void *p);
 void math_rotMatrixZYX(void *a, void *b);
-void func_8004E91C(void);
+void msg_endTextStub(void);
 s32 evt_execInstr(void);
 
 /* ---- the register file ---- */
@@ -654,7 +654,7 @@ void func_80051B58(const char *fmt, ...) {
         }
     }
     pen_endBuffered();
-    func_8004E91C();
+    msg_endTextStub();
     va_end(ap);
 }
 

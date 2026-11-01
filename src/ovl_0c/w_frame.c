@@ -8,7 +8,7 @@ void wm_initBuffers(void) {
     g_worldTexBuffers[0] = PSX_RAM(s32 *, 0x80180800);
     g_worldTexBuffers[1] = PSX_RAM(s32 *, 0x8018A000);
     g_worldTexBuffers[2] = PSX_RAM(s32 *, 0x80193800);
-    D_800CE3F8 = (s32)PSX_RAM(u8 *, 0x80100800);
+    g_worldUnusedBuffer = (s32)PSX_RAM(u8 *, 0x80100800);
     g_worldPrimPtr = g_worldPrimBuffers[*g_worldBufIndex];
 }
 
@@ -41,7 +41,7 @@ void wm_systemInit(void) {
     g_worldMogChoice = 0;
     g_worldVehiclesFound = 0;
     g_worldOtBias = 0;
-    D_800CF47E = 0;
+    g_worldSysUnusedFlag = 0;
     g_worldSuspended = 0;
     g_worldMapJump = 0;
     g_worldBufIndex = &g_gameState->gameData->drawBuf;
@@ -230,7 +230,7 @@ void wm_updateDraw(void) {
             g_worldDebugStep = 0x64;
             SetGeomScreen(g_gameState->gameData->projDist);
             g_worldTimeActorDraw = VSync(1);
-            if (D_800CCE49 < 2 && g_worldDrawActors != 0) {
+            if (g_worldActorHideLevel < 2 && g_worldDrawActors != 0) {
                 wm_drawActors();
             }
             g_worldTimeActorDraw = VSync(1) - g_worldTimeActorDraw;
@@ -788,7 +788,7 @@ s32 wm_isDarkWeather(void) {
 void wm_postDraw(void) {
 }
 
-s32 func_800B8568(void) {
+s32 wm_getSubOvlBase(void) {
     return (s32)RAM_SUB_OVL(u8 *);
 }
 

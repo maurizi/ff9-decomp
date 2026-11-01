@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void func_80053924(void) {
+void game_resetStub(void) {
 }
 
 void gamedata_resetEventFlags(void) {

@@ -838,11 +838,11 @@ s32 bgi_clear(void) {
     return 1;
 }
 
-s32 func_800C7450(void) {
+s32 bgi_okStub(void) {
     return 1;
 }
 
-void func_800C7458(s32 *arg0) {
+void bgi_setOneStub(s32 *arg0) {
     *arg0 = 1;
 }
 

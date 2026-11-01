@@ -15,22 +15,22 @@ void wm_initEffects(void) {
         g_worldBlockFx6FlashRot[i].vz = 0;
     }
     for (i = 0; i < 9; i++) {
-        D_800D4960[i].vx = 0;
-        D_800D4960[i].vy = 0;
-        D_800D4960[i].vz = 0;
-        D_800D49F0[i].vx = 0;
-        D_800D49F0[i].vy = 0;
-        D_800D49F0[i].vz = 0;
+        g_worldEffectPos[i].vx = 0;
+        g_worldEffectPos[i].vy = 0;
+        g_worldEffectPos[i].vz = 0;
+        g_worldEffectRot[i].vx = 0;
+        g_worldEffectRot[i].vy = 0;
+        g_worldEffectRot[i].vz = 0;
     }
-    setVector(&D_800D4960[0], 0x4464C, -0x1E68, -0x32681);
-    setVector(&D_800D4960[1], 0x3805B, 0x1F4, -0x30847);
-    setVector(&D_800D4960[6], 0x2FFFA, -0x2A82, -0x14052);
-    D_800D4960[2] = D_800D4960[1];
-    D_800D4960[3] = D_800D4960[1];
-    D_800D4960[4] = D_800D4960[1];
-    D_800D4960[5] = D_800D4960[1];
-    D_800D4960[7] = D_800D4960[6];
-    D_800D4960[8] = D_800D4960[6];
+    setVector(&g_worldEffectPos[0], 0x4464C, -0x1E68, -0x32681);
+    setVector(&g_worldEffectPos[1], 0x3805B, 0x1F4, -0x30847);
+    setVector(&g_worldEffectPos[6], 0x2FFFA, -0x2A82, -0x14052);
+    g_worldEffectPos[2] = g_worldEffectPos[1];
+    g_worldEffectPos[3] = g_worldEffectPos[1];
+    g_worldEffectPos[4] = g_worldEffectPos[1];
+    g_worldEffectPos[5] = g_worldEffectPos[1];
+    g_worldEffectPos[7] = g_worldEffectPos[6];
+    g_worldEffectPos[8] = g_worldEffectPos[6];
     g_worldEffectFree.prev = NULL;
     g_worldEffectFree.next = &g_worldEffectNodes[0];
     g_worldEffectNodes[0].prev = &g_worldEffectFree;

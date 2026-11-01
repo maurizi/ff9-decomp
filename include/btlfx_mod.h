@@ -53,12 +53,12 @@ typedef struct BtlfxExports {
     s32 (*btlfx_getUnitArgBonePos)(s32, s32, u16 *); /* 0x084 */
     s32 (*btlfx_setUnitMotion)(s32, s32); /* 0x088 */
     s32 (*btlfx_getUnitMotion)(s32, s32); /* 0x08C */
-    s32 (*func_800D8C9C)(void); /* 0x090 */
-    s32 (*func_800D8CA4)(void); /* 0x094 */
+    s32 (*btlfx_exportStub090)(void); /* 0x090 */
+    s32 (*btlfx_exportStub094)(void); /* 0x094 */
     s32 (*btlfx_setMotionFrame)(s32, s32); /* 0x098 */
     s32 (*btlfx_getMotionFrame)(s32); /* 0x09C */
     s32 (*btlfx_playUnitMotion)(s32, s32); /* 0x0A0 */
-    s32 (*func_800D8CAC)(void); /* 0x0A4 */
+    s32 (*btlfx_exportStub0A4)(void); /* 0x0A4 */
     s32 (*btlfx_resetUnitMotion)(s32, s32); /* 0x0A8 */
     s32 (*btlfx_align4)(s32); /* 0x0AC */
     s32 (*btlfx_sqrt)(s32, s32); /* 0x0B0 */
@@ -185,7 +185,7 @@ typedef struct BtlfxExports {
     s32 (*Hi_GetSummonBoneMatrix)(s32, s32, BtlBone *); /* 0x290 */
     s32 (*ClearImage)(void); /* 0x294 (main exe) */
     int (*MoveImage)(RECT *, int, int); /* 0x298 */
-    s32 (*func_800DF938)(void); /* 0x29C */
+    s32 (*btlfx_exportStub29C)(void); /* 0x29C */
     s32 (*btlfx_getUnitScale)(s32, VECTOR *); /* 0x2A0 */
     s32 (*btlfx_setUnitScale)(s32, s32 *); /* 0x2A4 */
     s32 (*btlfx_setUnitRot)(s32, s16 *); /* 0x2A8 */
@@ -210,10 +210,10 @@ typedef struct BtlfxExports {
     s32 (*btlfx_drawBgOffscreen)(s32, s32, s32, s32, u32 *, s32, s32, s32); /* 0x2F4 */
     BtlUnit * (*btl_getUnit)(s32); /* 0x2F8 */
     s32 (*Hi_GetSplitMdlVertex)(s32, s32); /* 0x2FC */
-    s32 (*func_800DF928)(void); /* 0x300 */
+    s32 (*btlfx_exportStub300)(void); /* 0x300 */
     s32 (*Hi_SplitMdlVertex)(s32, s32, s32); /* 0x304 */
-    s32 (*func_800DF920)(void); /* 0x308 */
-    s32 (*func_800DF930)(void); /* 0x30C */
+    s32 (*btlfx_exportStub308)(void); /* 0x308 */
+    s32 (*btlfx_exportStub30C)(void); /* 0x30C */
     s32 (*Hi_GetMdlVertexPtr)(s32, s32, s32, s32 *, s32); /* 0x310 */
     s32 (*btlfx_getUnitMeshCount)(s32); /* 0x314 */
     s32 (*btlfx_getEffModelMeshCount)(s32); /* 0x318 */

@@ -16,7 +16,7 @@ void help_draw(void) {
         }
         sprAnim_draw(g_menuHelp.x + 5, g_menuHelp.y + 2, otz, &g_menuHelp.iconAnim);
     }
-    func_8003573C();
+    help_drawStub();
     if (g_menuHelp.textShown != 0) {
         help_layout(&r);
         ui_drawSprite(r.rect.x + 8, r.rect.y, otz, 0xB7, 0);
@@ -116,7 +116,7 @@ void help_update(void) {
     sprAnim_update(&g_menuHelp.iconAnim);
 }
 
-void func_80035564(void) {
+void help_unusedStub(void) {
 }
 
 void help_setCallback(void (*a)(void)) {
@@ -189,7 +189,7 @@ void help_toggle(void) {
     }
 }
 
-void func_8003573C(void) {
+void help_drawStub(void) {
 }
 
 void help_onIconAnimDone(void) {

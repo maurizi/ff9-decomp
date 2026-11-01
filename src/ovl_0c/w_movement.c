@@ -13,7 +13,7 @@ void wm_initCamera(void) {
     g_worldCameraHold = 1;
     g_worldCameraLookupFix = 0;
     g_worldCameraRoll = 0;
-    D_800CE1E1 = 0;
+    g_worldCameraUnusedFlag = 0;
     if (g_gameState->prevMode == GS_MODE_FIELD && g_gameState->gameData->worldCamKeep == 0) {
         g_worldCamera->viewBlend = 0;
         g_worldCamera->viewBlendSpeed = 0;
@@ -568,7 +568,7 @@ void wm_initMovement(void) {
     g_worldSpeedSmooth = 0;
     g_worldClimbSmooth = 0;
     g_worldPlayerHeading = 0;
-    D_800CE284 = 0;
+    g_worldMoveUnusedWord = 0;
     g_worldCameraTurnGain = 0x1000;
     g_worldCeilingGap = 0;
     g_worldDrawActors = 1;
@@ -1164,9 +1164,9 @@ void wm_movePlayer(WmActorType *cc) {
     s32 off, lim, y, zz, wz, r1, r2;
 
     if (g_worldMoveModeInfo->countsSteps != 0 && g_worldPlayerPosChanged != 0 && w_frameGetParameter(WM_PARAM_TOPOGRAPHY) != WM_TOPO_NO_ENCOUNTER && g_worldTitleId == -1) {
-        g_worldPlayerStepped = D_800CCE55;
+        g_worldPlayerStepped = g_worldStepFlagOn;
     }
-    if (D_800CCE4A == 0 && g_worldNaviMode != WM_NAVI_FULL && g_worldMusicState == WM_MUSIC_READY && g_worldMapLoaded != 0 && g_worldCameraSmoothing == 0) {
+    if (g_worldPlayerControlOff == 0 && g_worldNaviMode != WM_NAVI_FULL && g_worldMusicState == WM_MUSIC_READY && g_worldMapLoaded != 0 && g_worldCameraSmoothing == 0) {
         wm_controlPlayer();
     }
     spd = g_worldPlayerSpeed;
@@ -1402,7 +1402,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
     }
     g_worldFlyTurning = 0;
     act = g_worldPlayer;
-    D_800D30C4 = 1;
+    g_worldGetoffSearching = 1;
     v = act->pos;
     switch (g_worldMoveMode) {
     case WM_MOVE_HILDA_GARDE:
@@ -1437,7 +1437,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
         }
         break;
     }
-    D_800D30C4 = 0;
+    g_worldGetoffSearching = 0;
     for (a = 0; a < 0x800; a += 0x100) {
         d[0] = (a + 0xC00) % 0x1000;
         d[1] = -a + 0xC00;
@@ -2275,5 +2275,5 @@ void wm_controlPlayer(void) {
     }
 }
 
-void func_800B383C(void) {
+void wm_movementUnusedStub(void) {
 }

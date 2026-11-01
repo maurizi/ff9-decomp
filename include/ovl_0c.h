@@ -953,7 +953,7 @@ extern RECT g_worldVramParkRect;
 extern char s_wmStrFrameSystemDestructor[]; /* "w_frameSystemDestructor:\n" */
 extern WmNaviPlace g_worldNaviPlaces[][64];
 extern s32 *g_worldTexBuffers[3];
-extern s32 D_800CE3F8;
+extern s32 g_worldUnusedBuffer;
 extern u8 g_worldPointFxBuf[];
 extern u8 *g_worldPointFxBufPtr;
 extern s32 g_worldPrimBuffers[];
@@ -1065,8 +1065,8 @@ extern s16 g_worldBlockFx6RingDist[10];
 extern s16 g_worldBlockFx6FlashLen[10];
 extern s8 g_worldBlockFx6FlashTimer[10];
 extern SVECTOR g_worldBlockFx6FlashRot[10];
-extern VECTOR D_800D4960[9];
-extern SVECTOR D_800D49F0[9];
+extern VECTOR g_worldEffectPos[9];
+extern SVECTOR g_worldEffectRot[9];
 extern SVECTOR g_worldBlockFx7Rot;
 extern SVECTOR g_worldBlockFx4Rot;
 extern SVECTOR g_worldBlockFx6RotA;
@@ -1087,7 +1087,7 @@ extern s32 g_worldCameraDir[];
 extern s32 g_worldChunkLookPos[];
 extern s32 g_worldCameraRecenter;
 extern s32 g_worldChunkBuffer;
-extern u8 D_800D30C4;
+extern u8 g_worldGetoffSearching;
 extern u8 g_worldLoadedFrames;
 extern u8 g_worldUsePolyCache;
 extern u8 g_worldChunkGeneration;
@@ -1095,7 +1095,6 @@ extern u8 g_worldChunkFlags[]; /* map cells, g_worldChunksW per row */
 #define WM_CELL(x, y) g_worldChunkFlags[(y) * g_worldChunksW + (x)]
 extern u16 g_worldFormStoryThresholds[11]; /* story progress thresholds (wm_applyStoryForms) */
 extern u8 g_worldFormStatusTable[][11];
-extern u8 D_8007AF55; /* = g_evtGlobalVars.b[0x65], general global flags */
 extern u32 g_worldLandCellTypes[2]; /* cell type masks */
 extern u32 g_worldWaterCellTypes[2];
 u8 wm_testCellType(u32 *, u32);
@@ -1183,10 +1182,10 @@ extern u8 g_worldFormFlags[]; /* flags (wm_applyStoryForms), indexed by WM_FORM_
 #define WM_FORM_HOKORA_HI 3 /* "HOKORA(HI)": also picks other CLUT animation rows (w_memoryman) */
 #define WM_FORM_LIND 4 /* "LIND" */
 #define WM_FORM_CLAY 5 /* "CLAY": block effect 4 is no longer drawn, ambient sound 0 goes quiet */
-#define WM_FORM_CHOCOBO_HEAVEN 7 /* "- Replace Chocobo Heaven -" (D_8007AF55 & 0x40) */
+#define WM_FORM_CHOCOBO_HEAVEN 7 /* "- Replace Chocobo Heaven -" (EVT_GB_GENERAL_CHOCOBO_FORM) */
 #define WM_FORM_KUROMA 8 /* "KUROMA" */
 #define WM_FORM_HOKORA_MIZU 10 /* "HOKORA(MIZU)": turns block effect 10 on */
-#define WM_FORM_MOG_NET 12 /* "- Replace Mog Net -" (D_8007AF55 & 0x80) */
+#define WM_FORM_MOG_NET 12 /* "- Replace Mog Net -" (EVT_GB_GENERAL_MOGNET_FORM) */
 #define WM_FORM_STATUS(f) ((f) + 1) /* g_worldFormStatusTable value that applies form f */
 extern u8 g_worldBlockFx7Spin;
 extern u8 g_worldClutAnimFx2;
@@ -1244,7 +1243,7 @@ extern EvtObject *g_worldMoogleActor;
 extern u8 g_worldFastFly;
 extern s32 g_worldPlayerClimbSpeed;
 extern s32 g_worldMountPaletteOverride;
-extern s32 D_800CE284;
+extern s32 g_worldMoveUnusedWord;
 extern u8 g_worldCameraTurnedByHand;
 extern s32 g_worldPlayerSpeed;
 extern u16 g_worldPlayerHeading;
@@ -1253,7 +1252,7 @@ extern s32 g_worldCameraTurnGain;
 extern EvtObject *g_worldWalkerActor;
 extern s32 g_worldPlayerTurn;
 
-extern u8 D_800CCE49;
+extern u8 g_worldActorHideLevel;
 extern s32 g_worldDebugStep; /* debug: last update step */
 extern s32 g_worldDrawActors;
 extern u8 g_worldPointFxOn;
@@ -1268,7 +1267,7 @@ void akao_resume(s32);
 extern s32 g_worldFrameCount;
 extern u8 g_worldMogChoice;
 extern s16 g_worldOtBias;
-extern u8 D_800CF47E;
+extern u8 g_worldSysUnusedFlag;
 extern u8 g_worldSuspended;
 extern u8 g_worldMapJump;
 extern u8 g_worldVehiclesFound;
@@ -1325,7 +1324,7 @@ extern SVECTOR g_worldCameraEyeOffset;
 extern s32 g_worldCameraTargetHeight;
 extern s32 g_worldCameraDistScale;
 extern s16 g_worldCameraRoll;
-extern u8 D_800CE1E1;
+extern u8 g_worldCameraUnusedFlag;
 extern u8 g_worldCameraStartPhase;
 
 /* main exe: candidates for ff9.h */
@@ -1595,8 +1594,8 @@ extern char s_wmStrMemorymanError[];
 
 /* wm_movePlayer (walkmesh movement) */
 void wm_controlPlayer(void);
-extern u8 D_800CCE4A;
-extern u8 D_800CCE55;
+extern u8 g_worldPlayerControlOff;
+extern u8 g_worldStepFlagOn;
 extern u8 g_worldFastWalk;
 extern u8 g_worldPlayerFloorPoly;
 
