@@ -2446,20 +2446,10 @@ void btlui_updateTargetWindow(void) {
     if ((g_btlTarget.windowOpen == 0 || (u32)(g_btlUi->windows[0]->state - 1) >= 2) && g_btlTarget.windowOpen != g_btluiTargetWindow) {
         if (g_btluiTargetWindow != 0) {
             if (g_btlTarget.windowOpen == 0) {
-                btlui_setMenuState(BTLUI_MENU_CLOSING);
-                g_btlUi->windows[0] = win_open(&g_btluiTargetWindowRect, 5, WIN_STYLE_BEVEL, 0);
-                win_setOpenAnim(g_btlUi->windows[0], WIN_ANIM_ZOOM_X);
-                win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
-                win_setDrawContent(g_btlUi->windows[0], btlui_drawTargetList);
-                win_setDrawOverlay(g_btlUi->windows[0], btlui_drawTargetListOverlay);
-                g_btlTarget.openState = 3;
-                g_btlTarget.windowOpen = 1;
+                btlui_openTargetWindow_inline(3);
             }
-        } else if (g_btlTarget.windowOpen != 0) {
-            g_btlTarget.closeState = 3;
-            btlui_setMenuState(BTLUI_MENU_CLOSING);
-            win_setOnClosed(g_btlUi->windows[0], btlui_onTargetWindowClosed);
-            win_close(g_btlUi->windows[0]);
+        } else {
+            btlui_closeTargetWindow_inline(3);
         }
     }
 }
@@ -2835,25 +2825,11 @@ BtlUnit *btlui_findKoUnit(u8 side) {
 }
 
 void btlui_openTargetWindow(s8 openState) {
-    Window *w;
-    btlui_setMenuState(BTLUI_MENU_CLOSING);
-    w = win_open(&g_btluiTargetWindowRect, 5, WIN_STYLE_BEVEL, 0);
-    g_btlUi->windows[0] = w;
-    win_setOpenAnim(w, WIN_ANIM_ZOOM_X);
-    win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
-    win_setDrawContent(g_btlUi->windows[0], btlui_drawTargetList);
-    win_setDrawOverlay(g_btlUi->windows[0], btlui_drawTargetListOverlay);
-    g_btlTarget.openState = openState;
-    g_btlTarget.windowOpen = 1;
+    btlui_openTargetWindow_inline(openState);
 }
 
 void btlui_closeTargetWindow(s32 closeState) {
-    if (g_btlTarget.windowOpen != 0) {
-        g_btlTarget.closeState = closeState;
-        btlui_setMenuState(BTLUI_MENU_CLOSING);
-        win_setOnClosed(g_btlUi->windows[0], btlui_onTargetWindowClosed);
-        win_close(g_btlUi->windows[0]);
-    }
+    btlui_closeTargetWindow_inline(closeState);
 }
 
 void btlui_onTargetWindowOpened(Window *win) {

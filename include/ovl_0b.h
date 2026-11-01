@@ -5011,4 +5011,26 @@ static inline void btlui_queueMenuUnit_inline(BtlUnit *unit) {
     ui->queueCount++;
 }
 
+/* Inlined copy of btlui_openTargetWindow (open the target list window). */
+static inline void btlui_openTargetWindow_inline(s8 openState) {
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
+    g_btlUi->windows[0] = win_open(&g_btluiTargetWindowRect, 5, WIN_STYLE_BEVEL, 0);
+    win_setOpenAnim(g_btlUi->windows[0], WIN_ANIM_ZOOM_X);
+    win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
+    win_setDrawContent(g_btlUi->windows[0], btlui_drawTargetList);
+    win_setDrawOverlay(g_btlUi->windows[0], btlui_drawTargetListOverlay);
+    g_btlTarget.openState = openState;
+    g_btlTarget.windowOpen = 1;
+}
+
+/* Inlined copy of btlui_closeTargetWindow (close the target list window if it is open). */
+static inline void btlui_closeTargetWindow_inline(s32 closeState) {
+    if (g_btlTarget.windowOpen != 0) {
+        g_btlTarget.closeState = closeState;
+        btlui_setMenuState(BTLUI_MENU_CLOSING);
+        win_setOnClosed(g_btlUi->windows[0], btlui_onTargetWindowClosed);
+        win_close(g_btlUi->windows[0]);
+    }
+}
+
 #endif
