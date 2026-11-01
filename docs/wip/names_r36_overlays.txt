@@ -27,3 +27,10 @@ _ANIM_SE_ALT 17, _ANIM_SE_RANDOM_PITCH 18, _ANIM_SE_REMOVE 19 [code] fld_modelCo
 FLD_SPRCMD_SET 0x82, _FLAGS 0x83, _POS 0x87, _ROT 0x8C, _SCALE 0x91, _PARENT 0x96, _BRIGHTNESS 0x9B, _ABR 0x9C,
 _SPEED 0xA0, _FRAME 0xA1, _OFFSET 0xA5, _OT_OFFSET 0xAA [code] fld_spriteCommand
 used existing: GS_MODE_FIELD / GS_MODE_WORLD (ovl_0a bgi_move, tu_800B61A4; ovl_14 opening; ovl_64 mbg)
+
+## ovl_0d / ovl_15 / ovl_65 (existing macros applied, none added)
+ovl_0d: TM_RESULT_* in the result switch, TM_SEL_YES/NO in the four Yes/No tasks (tm_taskTryAgain, tm_taskChoice2,
+tm_taskCardAway2, tm_taskGameQuit)
+ovl_15: BJ_RESULT_* in bj_drawResult's switch, BJ_RANK_JACK/ACE in bj_drawCard
+ovl_65: POPUP_HOLD/GAP in rewards_stepPopup and the popup draw
+ovl_14 / ovl_15 sound handlers: covered by the SND_* commit

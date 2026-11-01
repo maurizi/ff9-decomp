@@ -1047,7 +1047,7 @@ void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
     u32 xy;
     DR_TPAGE *t;
 
-    if (p->active != 0 && p->phase != 3) {
+    if (p->active != 0 && p->phase != POPUP_GAP) {
         y += p->y;
         clut = GetClut(0, 0x1FF) << 16;
         setlen(g_primPtr, 4);
@@ -1242,7 +1242,7 @@ s32 rewards_stepPopup(Popup *arg0) {
             arg0->timer = 0;
         }
         break;
-    case 2:
+    case POPUP_HOLD:
         if (++arg0->timer >= 0x40) {
             arg0->timer = 0;
             if (arg0->pending != 0) {
@@ -1252,7 +1252,7 @@ s32 rewards_stepPopup(Popup *arg0) {
             }
         }
         break;
-    case 3:
+    case POPUP_GAP:
         if (++arg0->timer >= 4) {
             arg0->phase = POPUP_DONE;
             arg0->timer = 0;
