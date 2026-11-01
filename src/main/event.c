@@ -700,16 +700,16 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
             w->w = 0x1D;
         }
         switch (w->anchor) {
-        case 0x50:
-        case 0x51:
-        case 0x52:
-        case 0x53:
+        case TEXT_WIN_BOTTOM_RIGHT:
+        case TEXT_WIN_BOTTOM_LEFT:
+        case TEXT_WIN_TOP_RIGHT:
+        case TEXT_WIN_TOP_LEFT:
             evt_placeBalloon(obj, w, w->anchor & 3, 0);
             break;
-        case 0x58:
-        case 0x59:
-        case 0x5A:
-        case 0x5B:
+        case TEXT_WIN_FIXED_BOTTOM_RIGHT:
+        case TEXT_WIN_FIXED_BOTTOM_LEFT:
+        case TEXT_WIN_FIXED_TOP_RIGHT:
+        case TEXT_WIN_FIXED_TOP_LEFT:
             evt_placeBalloon(obj, w, w->anchor & 3, 1);
             break;
         default:
@@ -720,35 +720,35 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
         ww = w->w;
         wh = w->h;
         switch (w->anchor) {
-        case 0x53:
+        case TEXT_WIN_TOP_LEFT:
             w->x = 12;
             w->y = 12;
             break;
-        case 0x55:
+        case TEXT_WIN_TOP:
             w->x = 160 - (ww >> 1);
             w->y = 12;
             break;
-        case 0x52:
+        case TEXT_WIN_TOP_RIGHT:
             w->x = 308 - ww;
             w->y = 12;
             break;
-        case 0x5C:
+        case TEXT_WIN_CENTER:
             w->x = 160 - (ww >> 1);
             w->y = 74 - (wh >> 1);
             break;
-        case 0x51:
+        case TEXT_WIN_BOTTOM_LEFT:
             w->x = 12;
             w->y = -48 - wh;
             break;
-        case 0x54:
+        case TEXT_WIN_BOTTOM:
             w->x = 160 - (ww >> 1);
             w->y = -48 - wh;
             break;
-        case 0x50:
+        case TEXT_WIN_BOTTOM_RIGHT:
             w->x = 308 - ww;
             w->y = -48 - wh;
             break;
-        case 0:
+        case WINLAYOUT_ANCHOR_NONE:
             w->x = 160 - (ww >> 1);
             w->y = 110 - (wh >> 1);
             break;

@@ -787,22 +787,71 @@ s32 config_remapButton(); /* (s32 index); unprototyped, as the original's caller
 void win_drawAll(void);
 void win_updateAll(void);
 
-/* Text encoding (font codes, 0xFF-terminated). Control codes as text_buildBlock/text_measure handle them;
- * 0xF9 is followed by one escape byte (TEXT_X_ADD/TEXT_X_SET/TEXT_Y_* and the argument codes take one more). */
-#define TEXT_END 0xFF
-#define TEXT_NEWLINE 0xF7 /* x back to the start, y += 15 */
+/* Text encoding (font codes, 0xFF-terminated), shared by the menu text (text_buildBlock / text_measure) and the
+ * message windows (msg_renderText / msg_advanceText / msg_getLayout). docs/text-codes.md lists every code.
+ * Plain bytes from 0xF7 up are control codes; TEXT_ESC is followed by one escape byte (below), some of which
+ * take arguments. Escape bytes the menu renderer doesn't handle go to text_buildCode / text_getCodeWidth. */
+#define TEXT_NEWLINE 0xF7 /* x back to the start, y += 15 (message windows: += 14, the next line) */
+#define TEXT_SPACE_1PX 0xF8 /* message windows: x += 1 */
 #define TEXT_ESC 0xF9
-/* escape bytes after TEXT_ESC */
+#define TEXT_WIDE_FIRST 0xFA /* message windows: 0xFA-0xFD lead a two-byte glyph */
+#define TEXT_WIDE_LAST 0xFD
+#define TEXT_PAGE 0xFE /* message windows: wait for Cross, then a new page */
+#define TEXT_END 0xFF /* message windows: wait for Cross, then close */
+/* escape bytes after TEXT_ESC. Message timing and flow (msg_advanceText, msg_stepControl): */
+#define TEXT_WAIT_PAGE 0x00 /* + frames: pause (Cross can't skip, MSGW_NO_SKIP), then a new page */
+#define TEXT_WAIT_CLOSE 0x01 /* + frames: the same, then close the window */
+#define TEXT_SPEED 0x02 /* + typing speed (MsgWindow.speed) */
+#define TEXT_CHOICE_START 0x08 /* the choice lines start at the next line (MSGW_CHOICE) */
+#define TEXT_HOLD 0x09 /* wait with Cross ignored (MSGW_WAIT_INPUT, MSGW_NO_INPUT): the script closes the window */
+#define TEXT_NO_SKIP 0x0A /* Cross doesn't skip the rest of the page (MSGW_NO_SKIP) */
+#define TEXT_SKIP 0x0C /* the rest of the page shows at once (MSGW_SKIP) */
+#define TEXT_SYNC_TAG 0x0F /* + tag: g_msgSyncTag (EVT_SYSVAR_MSG_SYNC_TAG) */
+#define TEXT_WAIT 0x41 /* + frames: pause (skipped while MSGW_SKIP), then go on */
+#define TEXT_SPEED_DEFAULT 0x42 /* typing speed back to the config's (g_msgTextSpeeds) */
+#define TEXT_NO_INPUT 0x45 /* Cross is ignored (MSGW_NO_INPUT); in the layout header: WINLAYOUT_NO_FOCUS */
+#define TEXT_SYNC_TAG_NEXT 0x46 /* g_msgSyncTag++ */
+/* message header codes, read by msg_getLayout from the start of the message (msg_advanceText skips them) */
+#define TEXT_WIN_POS 0x03 /* + u16 x, u8 y: window position (anchor WINLAYOUT_ANCHOR_POS) */
+#define TEXT_BANK 0x04 /* the message is a text bank (g_msgTextBanks, msg_resetChoices), not shown */
+#define TEXT_CHOICES 0x07 /* + count, cancel choice + 1 (0: none): the message ends in choices */
+#define TEXT_NO_OPEN_ANIM 0x0B /* the window opens without its animation (g_msgLayoutAltOpen, WIN_ANIM_NONE) */
+#define TEXT_LINE_WIDTHS 0x0D /* {u16 choice << 12 | width, text up to TEXT_END}..., 0xFFFF: the window width is the
+                               * widest line, counting only enabled choices (msg_measureLine adds the embedded values) */
+#define TEXT_CHOICES_MASKED 0x4F /* + lines, cancel line: choices, some hidden by g_msgChoiceMaskReq (EVT_OP_MSG_CHOICE_MASK) */
+#define TEXT_BALLOON_OFS 0x5F /* + 3 x s16: g_evtBalloonOfsX/Y/Z, the speaker point the balloon points at */
+/* window anchors (WinLayout.anchor, evt_getMsgLayout). As a balloon the low 2 bits are its side of the speaker
+ * (MSG_TAIL_DIR inverted: 0 = below right); without one, the fixed screen position given */
+#define TEXT_WIN_BOTTOM_RIGHT 0x50
+#define TEXT_WIN_BOTTOM_LEFT 0x51
+#define TEXT_WIN_TOP_RIGHT 0x52
+#define TEXT_WIN_TOP_LEFT 0x53
+#define TEXT_WIN_BOTTOM 0x54 /* centred; a balloon is placed automatically */
+#define TEXT_WIN_TOP 0x55 /* centred; a balloon is placed automatically */
+#define TEXT_WIN_FIXED_BOTTOM_RIGHT 0x58 /* balloon only: that side even near the screen edge (evt_placeBalloon fixed) */
+#define TEXT_WIN_FIXED_BOTTOM_LEFT 0x59
+#define TEXT_WIN_FIXED_TOP_RIGHT 0x5A
+#define TEXT_WIN_FIXED_TOP_LEFT 0x5B
+#define TEXT_WIN_CENTER 0x5C /* x centred, y centred on 74 (no anchor: on 110); a balloon is placed automatically */
+/* embedded values */
+#define TEXT_BANK_TEXT 0x06 /* + bank, number slot: text g_msgNumbers[slot] of text bank g_msgTextBanks[bank] */
+#define TEXT_MSG_ITEM_NAME 0x0E /* + number slot: name of item / key item / card g_msgNumbers[slot], in yellow */
 #define TEXT_CHAR_NAME 0x10 /* + character 0-7 */
 #define TEXT_PARTY_NAME 0x18 /* + party slot 0-3 */
-#define TEXT_COLOR 0x20 /* + palette 0-9 (g_textColor) */
+#define TEXT_COLOR 0x20 /* + palette 0-9 (g_textColor; message windows: 0-8, pen_setPalette) */
 #define TEXT_MSG_NUMBER 0x40 /* + index: number from the message system (g_msgNumbers) */
+#define TEXT_CHAR_NAME_CAPS 0x80 /* + character 0-7: the name in capitals (msg_emitCharNameCaps) */
+/* layout */
 #define TEXT_X_ADD 0x43 /* + s8 */
 #define TEXT_X_SET 0x44 /* + x from the line start */
+#define TEXT_CENTER 0x48 /* + u16 width, codes up to TEXT_END whose values add to it (msg_measureLine): message
+                         * windows: the line is centred */
 #define TEXT_Y_DOWN 0x49 /* + pixels */
 #define TEXT_Y_UP 0x4A /* + pixels */
+#define TEXT_TAB 0x71 /* message windows: x += 18 */
 #define TEXT_SPRITE 0x4B /* + sprite id */
 /* button glyph escape bytes (text_buildCode / text_getCodeWidth draw these UI sprites; runtime pass) */
+#define TEXT_DPAD 0x2F /* UI_SPRITE_DPAD (message windows only) */
 #define TEXT_BTN_CIRCLE   0x30 /* UI_SPRITE_CIRCLE */
 #define TEXT_BTN_CROSS    0x31 /* UI_SPRITE_CROSS */
 #define TEXT_BTN_TRIANGLE 0x32 /* UI_SPRITE_TRIANGLE */
@@ -813,6 +862,16 @@ void win_updateAll(void);
 #define TEXT_BTN_R2       0x37 /* UI_SPRITE_R2 */
 #define TEXT_BTN_START    0x38 /* UI_SPRITE_START */
 #define TEXT_BTN_SELECT   0x39 /* UI_SPRITE_SELECT */
+/* the d-pad with arrows (text_buildDpad mask, g_dpadArrowSprites order: up, down, left, right) */
+#define TEXT_DPAD_UP 0x3A
+#define TEXT_DPAD_DOWN 0x3B
+#define TEXT_DPAD_LEFT 0x3C
+#define TEXT_DPAD_RIGHT 0x3D
+#define TEXT_DPAD_UP_DOWN 0x3E /* menu text only */
+#define TEXT_DPAD_LEFT_RIGHT 0x3F /* menu text only */
+#define TEXT_PAD_BTN 0x60 /* + 0-7 in TEXT_BTN_* order (circle .. R2): that button as remapped by the controller
+                           * config (text_getButtonSprite / GameState.padMap) */
+#define TEXT_FLAG_ICON 0x70 /* + bit: message windows: a blinking two-sprite icon (0xB5, 0xB6) when g_msgNumbers[0] has the bit */
 #define TEXT_ITEM_ICON 0x4C /* + item id */
 #define TEXT_ARG_SPRITE 0x4D /* + arg index (g_textIconArgs) */
 #define TEXT_ARG_ITEM_ICON 0x4E /* + arg index (g_textIconArgs) */
@@ -1770,12 +1829,12 @@ typedef struct MsgWindow {
 #define MSG_TAIL_FRAMELESS 0x10 /* msg_open opens the window WIN_STYLE_FRAMELESS (no balloon or bevel) */
 extern MsgWindow g_msgWindows[];
 /* MsgWindow.flags */
-#define MSGW_WAIT_INPUT 0xFF /* MsgWindow.waitFrames: waiting for Cross (msg_input); text codes FE/FF/F9 09 */
-#define MSGW_CHOICE 0x02 /* has a choice (text code F9 08, or msg_allocWindow's flag); msg_getLastModal finds it */
-#define MSGW_SKIP 0x04 /* Cross pressed: the rest of the page shows at once (text code F9 0C sets it too); cleared at the next wait for Cross */
-#define MSGW_NO_SKIP 0x08 /* Cross doesn't skip the text (text codes F9 00/01/0A); cleared at the next page */
+#define MSGW_WAIT_INPUT 0xFF /* MsgWindow.waitFrames: waiting for Cross (msg_input); TEXT_PAGE / TEXT_END / TEXT_HOLD */
+#define MSGW_CHOICE 0x02 /* has a choice (TEXT_CHOICE_START, or msg_allocWindow's flag); msg_getLastModal finds it */
+#define MSGW_SKIP 0x04 /* Cross pressed: the rest of the page shows at once (TEXT_SKIP sets it too); cleared at the next wait for Cross */
+#define MSGW_NO_SKIP 0x08 /* Cross doesn't skip the text (TEXT_WAIT_PAGE / TEXT_WAIT_CLOSE / TEXT_NO_SKIP); cleared at the next page */
 #define MSGW_MESSAGE 0x10 /* opened by msg_open */
-#define MSGW_NO_INPUT 0x40 /* Cross is ignored (text codes F9 09/45) */
+#define MSGW_NO_INPUT 0x40 /* Cross is ignored (TEXT_HOLD / TEXT_NO_INPUT) */
 
 
 void menuScreen_loadOverlay(void);
@@ -2942,6 +3001,11 @@ extern s32 g_padPortState[];
 u8 *ui_buildSprite(s32, s32, u32 *, s32, u8, s32 *, void *);
 u8 *text_buildPlain(s32, s32, u32 *, Character *, s32 *, u8 *);
 u8 *text_buildDpad(s32, s32, u32 *, u32, u8, s32 *, u8 *);
+/* text_buildDpad mask: the arrows drawn (bit i = g_dpadArrowSprites[i]) */
+#define DPAD_ARROW_UP 0x1
+#define DPAD_ARROW_DOWN 0x2
+#define DPAD_ARROW_LEFT 0x4
+#define DPAD_ARROW_RIGHT 0x8
 u8 *text_buildCode(s32, s32, u32 *, s32, s32 *, u8 *); /* draw a text control icon */
 #if !defined(OVL_3A_H)
 u8 *text_buildFontTpage(u32 *, DrTpageWords *);
@@ -3811,7 +3875,10 @@ typedef struct {
     u8 anchor; /* anchor: evt_getMsgLayout placement, & 3 = balloon side */
     u8 flags; /* WINLAYOUT_* */
 } WinLayout;
-#define WINLAYOUT_NO_FOCUS 0x1 /* msg_open doesn't make the window g_msgFocus (text code F9 45 in the layout) */
+#define WINLAYOUT_NO_FOCUS 0x1 /* msg_open doesn't make the window g_msgFocus (TEXT_NO_INPUT in the message header) */
+/* WinLayout.anchor: TEXT_WIN_* or */
+#define WINLAYOUT_ANCHOR_NONE 0x00 /* no header code: centred on the screen, or a balloon placed automatically */
+#define WINLAYOUT_ANCHOR_POS 0xFF /* TEXT_WIN_POS */
 s32 msg_overlapsRect(WinLayout *r);
 extern s32 g_msgLayoutAltOpen;
 s32 msg_input(MsgWindow *, s32);

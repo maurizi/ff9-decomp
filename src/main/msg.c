@@ -91,7 +91,7 @@ void msg_beginDraw(void) {
     g_penOt = g->ot[g->drawBuf];
 }
 
-/* width of an embedded string, up to 0xF7 / 0xFF */
+/* width of an embedded string, up to TEXT_NEWLINE / TEXT_END */
 static inline s32 msg_measureLine_width(u8 *s) {
     s32 w = 0;
     s32 multi = 0;
@@ -100,13 +100,13 @@ static inline s32 msg_measureLine_width(u8 *s) {
 
     g_penGlyphDecode.lead = 0;
     c = *s++;
-    while (c != 0xF7 && c != 0xFF) {
+    while (c != TEXT_NEWLINE && c != TEXT_END) {
         do {
             g = pen_getGlyph(c);
             if (g != 0) {
                 w += 1 + (g >> 28);
             }
-            multi = multi ? 0 : (c >= 0xFA ? c < 0xFE : 0);
+            multi = multi ? 0 : (c >= TEXT_WIDE_FIRST ? c <= TEXT_WIDE_LAST : 0);
             c = *s++;
         } while (multi);
     }
@@ -147,36 +147,36 @@ void msg_measureLine(u8 **pp, s32 *pw) {
         s = *pp;
         w = *pw;
         c = *s++;
-        while (c != 0xFF) {
+        while (c != TEXT_END) {
             switch (c) {
-            case 0x10:
-            case 0x11:
-            case 0x12:
-            case 0x13:
-            case 0x14:
-            case 0x15:
-            case 0x16:
-            case 0x17:
-                w += msg_measureLine_width(g_gameState->gameData->characters[c - 0x10].name);
+            case TEXT_CHAR_NAME + 0:
+            case TEXT_CHAR_NAME + 1:
+            case TEXT_CHAR_NAME + 2:
+            case TEXT_CHAR_NAME + 3:
+            case TEXT_CHAR_NAME + 4:
+            case TEXT_CHAR_NAME + 5:
+            case TEXT_CHAR_NAME + 6:
+            case TEXT_CHAR_NAME + 7:
+                w += msg_measureLine_width(g_gameState->gameData->characters[c - TEXT_CHAR_NAME].name);
                 break;
-            case 0x18:
-            case 0x19:
-            case 0x1A:
-            case 0x1B:
-                w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(c - 0x18)].name);
+            case TEXT_PARTY_NAME + 0:
+            case TEXT_PARTY_NAME + 1:
+            case TEXT_PARTY_NAME + 2:
+            case TEXT_PARTY_NAME + 3:
+                w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(c - TEXT_PARTY_NAME)].name);
                 break;
-            case 0x80:
-            case 0x81:
-            case 0x82:
-            case 0x83:
-            case 0x84:
-            case 0x85:
-            case 0x86:
-            case 0x87:
-                msg_measureLine_name(c - 0x80);
+            case TEXT_CHAR_NAME_CAPS + 0:
+            case TEXT_CHAR_NAME_CAPS + 1:
+            case TEXT_CHAR_NAME_CAPS + 2:
+            case TEXT_CHAR_NAME_CAPS + 3:
+            case TEXT_CHAR_NAME_CAPS + 4:
+            case TEXT_CHAR_NAME_CAPS + 5:
+            case TEXT_CHAR_NAME_CAPS + 6:
+            case TEXT_CHAR_NAME_CAPS + 7:
+                msg_measureLine_name(c - TEXT_CHAR_NAME_CAPS);
                 w += msg_measureLine_width(g_msgNameBuf);
                 break;
-            case 0xE:
+            case TEXT_MSG_ITEM_NAME:
                 n = g_msgNumbers[*s++];
                 if (n < ITEM_ID_KEY_FIRST) {
                     str = g_itemNames + g_itemTable[n].name;
@@ -187,7 +187,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 }
                 w += msg_measureLine_width(str);
                 break;
-            case 0x40:
+            case TEXT_MSG_NUMBER:
                 n = g_msgNumbers[*s++];
                 if (n < 0) {
                     n = -n;
@@ -198,7 +198,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                     w += 9;
                 } while (n != 0);
                 break;
-            case 0x6:
+            case TEXT_BANK_TEXT:
                 c = *s++;
                 g = (c >> 4) & 3;
                 i = c & 7;
@@ -214,7 +214,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 }
                 w += msg_measureLine_width(t);
                 break;
-            case 0x70:
+            case TEXT_FLAG_ICON:
                 if ((u32)g_msgNumbers[0] & (1 << *s++)) {
                     w += 0x19;
                 }
@@ -236,14 +236,14 @@ static inline void msg_renderText_skip(s32 id, u8 **pp) {
     if (g_msgChoiceLine >= 0 && g_msgChoiceWindow == id && g_msgLine >= g_msgChoiceLine) {
         if (!(g_msgChoiceDrawMask & 1)) {
             do {
-                while ((c = *(*pp)++) != 0xF7 && c != 0xFF) {
-                    if (c < 0xFE) {
-                        if (c >= 0xF9) {
+                while ((c = *(*pp)++) != TEXT_NEWLINE && c != TEXT_END) {
+                    if (c < TEXT_PAGE) {
+                        if (c >= TEXT_ESC) {
                             (*pp)++;
                         }
                     }
                 }
-                if (c == 0xFF) {
+                if (c == TEXT_END) {
                     (*pp)--;
                     break;
                 }
@@ -311,10 +311,10 @@ void msg_renderText(MsgWindow *w, u8 *s) {
     while (p < end) {
         c = *p++;
         switch (c) {
-        case 0xF8:
+        case TEXT_SPACE_1PX:
             pen_move(1, 0);
             break;
-        case 0xF7:
+        case TEXT_NEWLINE:
             pen_popPos();
             pen_move(0, 14);
             pen_pushPos();
@@ -324,110 +324,110 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                 w->textPos = p - s;
             }
             break;
-        case 0xF9:
+        case TEXT_ESC:
             /* padding between the two jump tables in the original rodata */
             __asm__(".section .rodata\n\t.word 0\n\t.section .text");
             c = *p++;
             switch (c) {
-            case 0x71:
+            case TEXT_TAB:
                 pen_move(0x12, 0);
                 break;
-            case 0x44:
+            case TEXT_X_SET:
                 pen_setX(g_penStackPtr[-1].vx);
-            case 0x43:
+            case TEXT_X_ADD:
                 pen_move(*p++, 0);
                 break;
-            case 0x49:
+            case TEXT_Y_DOWN:
                 pen_move(0, *p++);
                 break;
-            case 0x4A:
+            case TEXT_Y_UP:
                 pen_move(0, -*p++);
                 break;
-            case 0x48:
+            case TEXT_CENTER:
                 c = *p++;
                 c |= *p++ << 8;
                 msg_measureLine(&p, &c);
                 pen_move((w->w - c) >> 1, 0);
                 break;
-            case 0x20:
-            case 0x21:
-            case 0x22:
-            case 0x23:
-            case 0x24:
-            case 0x25:
-            case 0x26:
-            case 0x27:
-            case 0x28:
-                pen_setPalette(c - 0x20);
+            case TEXT_COLOR + 0:
+            case TEXT_COLOR + 1:
+            case TEXT_COLOR + 2:
+            case TEXT_COLOR + 3:
+            case TEXT_COLOR + 4:
+            case TEXT_COLOR + 5:
+            case TEXT_COLOR + 6:
+            case TEXT_COLOR + 7:
+            case TEXT_COLOR + 8:
+                pen_setPalette(c - TEXT_COLOR);
                 break;
-            case 0x40:
+            case TEXT_MSG_NUMBER:
                 last = end - p == 1;
                 v = g_msgNumbers[*p++];
                 msg_renderText_value(w, v, msg_emitNumber, last);
                 break;
-            case 0x6:
+            case TEXT_BANK_TEXT:
                 c = *p++;
                 last = end - p == 1;
                 t = msg_renderText_text(c, *p++);
                 msg_renderText_value(w, (s32)t, msg_emitString, last);
                 break;
-            case 0xE:
+            case TEXT_MSG_ITEM_NAME:
                 last = end - p == 1;
                 pen_setPalette(4);
                 msg_renderText_value(w, g_msgNumbers[*p++], msg_emitItemName, last);
                 pen_setPalette(0);
                 break;
-            case 0x10:
-            case 0x11:
-            case 0x12:
-            case 0x13:
-            case 0x14:
-            case 0x15:
-            case 0x16:
-            case 0x17:
-                msg_renderText_value(w, c - 0x10, msg_emitCharName, end == p);
+            case TEXT_CHAR_NAME + 0:
+            case TEXT_CHAR_NAME + 1:
+            case TEXT_CHAR_NAME + 2:
+            case TEXT_CHAR_NAME + 3:
+            case TEXT_CHAR_NAME + 4:
+            case TEXT_CHAR_NAME + 5:
+            case TEXT_CHAR_NAME + 6:
+            case TEXT_CHAR_NAME + 7:
+                msg_renderText_value(w, c - TEXT_CHAR_NAME, msg_emitCharName, end == p);
                 break;
-            case 0x18:
-            case 0x19:
-            case 0x1A:
-            case 0x1B:
+            case TEXT_PARTY_NAME + 0:
+            case TEXT_PARTY_NAME + 1:
+            case TEXT_PARTY_NAME + 2:
+            case TEXT_PARTY_NAME + 3:
                 last = end - p == 0;
-                msg_renderText_value(w, evt_getPartyChrIndex(c - 0x18), msg_emitCharName, last);
+                msg_renderText_value(w, evt_getPartyChrIndex(c - TEXT_PARTY_NAME), msg_emitCharName, last);
                 break;
-            case 0x80:
-            case 0x81:
-            case 0x82:
-            case 0x83:
-            case 0x84:
-            case 0x85:
-            case 0x86:
-            case 0x87:
-                msg_renderText_value(w, c - 0x80, msg_emitCharNameCaps, end == p);
+            case TEXT_CHAR_NAME_CAPS + 0:
+            case TEXT_CHAR_NAME_CAPS + 1:
+            case TEXT_CHAR_NAME_CAPS + 2:
+            case TEXT_CHAR_NAME_CAPS + 3:
+            case TEXT_CHAR_NAME_CAPS + 4:
+            case TEXT_CHAR_NAME_CAPS + 5:
+            case TEXT_CHAR_NAME_CAPS + 6:
+            case TEXT_CHAR_NAME_CAPS + 7:
+                msg_renderText_value(w, c - TEXT_CHAR_NAME_CAPS, msg_emitCharNameCaps, end == p);
                 break;
-            case 0x30:
-            case 0x31:
-            case 0x32:
-            case 0x33:
-            case 0x34:
-            case 0x35:
-            case 0x36:
-            case 0x37:
-            case 0x38:
-            case 0x39:
+            case TEXT_BTN_CIRCLE:
+            case TEXT_BTN_CROSS:
+            case TEXT_BTN_TRIANGLE:
+            case TEXT_BTN_SQUARE:
+            case TEXT_BTN_L1:
+            case TEXT_BTN_R1:
+            case TEXT_BTN_L2:
+            case TEXT_BTN_R2:
+            case TEXT_BTN_START:
+            case TEXT_BTN_SELECT:
                 pen_move(0, 1);
-                pen_drawSprite(g_msgIconSprites[c - 0x30]);
+                pen_drawSprite(g_msgIconSprites[c - TEXT_BTN_CIRCLE]);
                 pen_move(1, -1);
                 break;
-            case 0x60:
-            case 0x61:
-            case 0x62:
-            case 0x63:
-            case 0x64:
-            case 0x65:
-            case 0x66:
-            case 0x67:
+            case TEXT_PAD_BTN + 0:
+            case TEXT_PAD_BTN + 1:
+            case TEXT_PAD_BTN + 2:
+            case TEXT_PAD_BTN + 3:
+            case TEXT_PAD_BTN + 4:
+            case TEXT_PAD_BTN + 5:
+            case TEXT_PAD_BTN + 6:
+            case TEXT_PAD_BTN + 7:
                 pen_move(0, 1);
-                if (c < 0x62) {
+                if (c < TEXT_PAD_BTN + 2) {
                     c ^= 1;
                 }
                 c = (g_gameState->config >> CFG_BIT_CONTROLLER) & 1 ? (g_gameState->padMap >> (c * 4)) & 0xF : c & 0xF;
@@ -437,43 +437,43 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                 pen_drawSprite(g_msgIconSprites[c]);
                 pen_move(1, -1);
                 break;
-            case 0x3A:
+            case TEXT_DPAD_UP:
                 pen_move(4, 2);
                 pen_drawSprite(13);
                 pen_move(-8, -1);
                 pen_drawSprite(12);
                 pen_move(1, -1);
                 break;
-            case 0x3B:
+            case TEXT_DPAD_DOWN:
                 pen_move(4, 7);
                 pen_drawSprite(14);
                 pen_move(-8, -6);
                 pen_drawSprite(12);
                 pen_move(1, -1);
                 break;
-            case 0x3C:
+            case TEXT_DPAD_LEFT:
                 pen_move(1, 5);
                 pen_drawSprite(15);
                 pen_move(-5, -4);
                 pen_drawSprite(12);
                 pen_move(1, -1);
                 break;
-            case 0x3D:
+            case TEXT_DPAD_RIGHT:
                 pen_move(6, 5);
                 pen_drawSprite(16);
                 pen_move(-10, -4);
                 pen_drawSprite(12);
                 pen_move(1, -1);
                 break;
-            case 0x2F:
+            case TEXT_DPAD:
                 pen_move(0, 1);
                 pen_drawSprite(12);
                 pen_move(1, -1);
                 break;
-            case 0x4B:
+            case TEXT_SPRITE:
                 pen_drawSprite(*p++);
                 break;
-            case 0x70:
+            case TEXT_FLAG_ICON:
                 if ((u32)g_msgNumbers[0] & (1 << *p++)) {
                     pen_move(6, 3);
                     pen_drawSprite(0xB6);
@@ -484,20 +484,20 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                     pen_drawSprite(0xB5);
                 }
                 break;
-            case 0x2:
-            case 0xF:
-            case 0x41:
+            case TEXT_SPEED:
+            case TEXT_SYNC_TAG:
+            case TEXT_WAIT:
                 p++;
                 break;
             }
             break;
-        case 0xFE:
-        case 0xFF:
+        case TEXT_PAGE:
+        case TEXT_END:
             break;
-        case 0xFA:
-        case 0xFB:
-        case 0xFC:
-        case 0xFD:
+        case TEXT_WIDE_FIRST:
+        case TEXT_WIDE_FIRST + 1:
+        case TEXT_WIDE_FIRST + 2:
+        case TEXT_WIDE_LAST:
             pen_putGlyph(c);
             c = *p++;
         default:
@@ -520,41 +520,41 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
         start = p;
         c = *p++;
         switch (c) {
-        case 0xF9:
+        case TEXT_ESC:
             /* padding between the two jump tables in the original rodata */
             __asm__(".section .rodata\n\t.word 0\n\t.section .text");
             c = *p++;
             switch (c) {
-            case 0x48:
+            case TEXT_CENTER:
                 p += 2;
                 msg_measureLine(&p, &c);
                 break;
-            case 0x41:
+            case TEXT_WAIT:
                 if (!(w->flags & MSGW_SKIP)) {
                     w->waitFrames = *p++;
                 } else {
                     p++;
                 }
                 break;
-            case 0:
-            case 1:
+            case TEXT_WAIT_PAGE:
+            case TEXT_WAIT_CLOSE:
                 w->flags = (w->flags & ~MSGW_SKIP) | MSGW_NO_SKIP;
             set26:
                 w->waitFrames = *p++;
                 break;
-            case 2:
+            case TEXT_SPEED:
                 w->speed = *p++;
                 break;
-            case 0x42:
+            case TEXT_SPEED_DEFAULT:
                 w->speed = g_msgTextSpeeds[(g_gameState->config >> CFG_SHIFT_MSG_SPEED) & 7];
                 break;
-            case 0xC:
+            case TEXT_SKIP:
                 w->flags |= MSGW_SKIP;
                 break;
-            case 7:
+            case TEXT_CHOICES:
                 p += 2;
                 break;
-            case 8:
+            case TEXT_CHOICE_START:
                 tmp = g_msgChoiceAnalogThresholds;
                 n = g_msgLine;
                 pad_getAnalogThresholds(&g_msgSavedAnalogThresholds);
@@ -562,72 +562,72 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 g_msgChoiceLine = n;
                 w->flags |= MSGW_CHOICE;
                 break;
-            case 9:
+            case TEXT_HOLD:
                 w->waitFrames = MSGW_WAIT_INPUT;
-            case 0x45:
+            case TEXT_NO_INPUT:
                 w->flags |= MSGW_NO_INPUT;
                 break;
-            case 0xA:
+            case TEXT_NO_SKIP:
                 w->flags |= MSGW_NO_SKIP;
                 break;
-            case 0xF:
+            case TEXT_SYNC_TAG:
                 g_msgSyncTag = *p++;
                 break;
-            case 0x46:
+            case TEXT_SYNC_TAG_NEXT:
                 g_msgSyncTag++;
                 break;
-            case 6:
+            case TEXT_BANK_TEXT:
                 p++;
-            case 0xE:
-            case 0x40:
+            case TEXT_MSG_ITEM_NAME:
+            case TEXT_MSG_NUMBER:
                 p++;
-            case 0x10:
-            case 0x11:
-            case 0x12:
-            case 0x13:
-            case 0x14:
-            case 0x15:
-            case 0x16:
-            case 0x17:
-            case 0x18:
-            case 0x19:
-            case 0x1A:
-            case 0x1B:
-            case 0x80:
-            case 0x81:
-            case 0x82:
-            case 0x83:
-            case 0x84:
-            case 0x85:
-            case 0x86:
-            case 0x87:
+            case TEXT_CHAR_NAME + 0:
+            case TEXT_CHAR_NAME + 1:
+            case TEXT_CHAR_NAME + 2:
+            case TEXT_CHAR_NAME + 3:
+            case TEXT_CHAR_NAME + 4:
+            case TEXT_CHAR_NAME + 5:
+            case TEXT_CHAR_NAME + 6:
+            case TEXT_CHAR_NAME + 7:
+            case TEXT_PARTY_NAME + 0:
+            case TEXT_PARTY_NAME + 1:
+            case TEXT_PARTY_NAME + 2:
+            case TEXT_PARTY_NAME + 3:
+            case TEXT_CHAR_NAME_CAPS + 0:
+            case TEXT_CHAR_NAME_CAPS + 1:
+            case TEXT_CHAR_NAME_CAPS + 2:
+            case TEXT_CHAR_NAME_CAPS + 3:
+            case TEXT_CHAR_NAME_CAPS + 4:
+            case TEXT_CHAR_NAME_CAPS + 5:
+            case TEXT_CHAR_NAME_CAPS + 6:
+            case TEXT_CHAR_NAME_CAPS + 7:
                 if (!(w->flags & MSGW_SKIP)) {
                     w->pendingChars = 1;
                     w->typeAccum = 0;
                 }
                 break;
-            case 0x43:
-            case 0x44:
-            case 0x49:
-            case 0x4A:
-            case 0x4B:
-            case 0x70:
+            case TEXT_X_ADD:
+            case TEXT_X_SET:
+            case TEXT_Y_DOWN:
+            case TEXT_Y_UP:
+            case TEXT_SPRITE:
+            case TEXT_FLAG_ICON:
             skip1:
                 p++;
                 break;
             }
             break;
-        case 0xFE:
-        case 0xFF:
+        case TEXT_PAGE:
+        case TEXT_END:
             w->waitFrames = MSGW_WAIT_INPUT;
             break;
-        case 0xF7:
+        case TEXT_NEWLINE:
             g_msgLine++;
             break;
-        case 0xFA:
-        case 0xFB:
-        case 0xFC:
-        case 0xFD:
+        case TEXT_WIDE_FIRST:
+        case TEXT_WIDE_FIRST + 1:
+        case TEXT_WIDE_FIRST + 2:
+        case TEXT_WIDE_LAST:
             p++;
         default:
             if (!(w->flags & MSGW_SKIP)) {
@@ -649,25 +649,25 @@ void msg_stepControl(MsgWindow *w, u8 *e) {
 
     c = *p++;
     switch (c) {
-    case 0xF9:
+    case TEXT_ESC:
         c = *p++;
         switch (c) {
-        case 0x41:
+        case TEXT_WAIT:
             w->textPos = p + 1 - e;
             break;
-        case 1:
+        case TEXT_WAIT_CLOSE:
             msg_closeWindow_inline(w);
             break;
-        case 0:
+        case TEXT_WAIT_PAGE:
             w->pageStart = p + 1 - e;
             w->flags &= ~MSGW_NO_SKIP;
             break;
         }
         break;
-    case 0xFF:
+    case TEXT_END:
         msg_closeWindow_inline(w);
         break;
-    case 0xFE:
+    case TEXT_PAGE:
         w->pageStart = p - e;
         break;
     }
@@ -880,7 +880,7 @@ void msg_resetChoices(void) {
     g_msgChoiceLine = -1;
     for (i = 0; i < 4; i++) {
         e = msg_drawText_msg(i);
-        if (e == NULL || e[0] != 0xF9 || e[1] != 4) {
+        if (e == NULL || e[0] != TEXT_ESC || e[1] != TEXT_BANK) {
             break;
         }
         g_msgTextBanks[i] = e + 2;
@@ -919,22 +919,22 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
     if (p != NULL) {
         done = 0;
         g_msgLayoutAltOpen = 0;
-        g_msgLayout.anchor = 0;
+        g_msgLayout.anchor = WINLAYOUT_ANCHOR_NONE;
         g_msgLayout.flags = 0;
         *x = 0;
         *y = 0;
         *z = 0;
         while (!done) {
-            if (*p++ != 0xF9) {
+            if (*p++ != TEXT_ESC) {
                 break;
             }
             switch (*p++) {
-            case 0x7:
+            case TEXT_CHOICES:
                 g_msgChoiceEnabled = -1;
                 g_msgChoiceCount = *p++;
                 g_msgChoiceCancel = *p++ - 1;
                 break;
-            case 0x4F:
+            case TEXT_CHOICES_MASKED:
                 g_msgChoiceEnabled = g_msgChoiceMaskReq;
                 n = i = *p;
                 mask = g_msgChoiceMaskReq;
@@ -956,26 +956,26 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 }
                 g_msgChoiceCancel = n;
                 break;
-            case 0x3:
+            case TEXT_WIN_POS:
                 g_msgLayout.x = *p++;
                 g_msgLayout.x |= *p++ << 8;
                 g_msgLayout.y = *p++;
-                g_msgLayout.anchor = 0xFF;
+                g_msgLayout.anchor = WINLAYOUT_ANCHOR_POS;
                 break;
-            case 0x50:
-            case 0x51:
-            case 0x52:
-            case 0x53:
-            case 0x54:
-            case 0x55:
-            case 0x58:
-            case 0x59:
-            case 0x5A:
-            case 0x5B:
-            case 0x5C:
+            case TEXT_WIN_BOTTOM_RIGHT:
+            case TEXT_WIN_BOTTOM_LEFT:
+            case TEXT_WIN_TOP_RIGHT:
+            case TEXT_WIN_TOP_LEFT:
+            case TEXT_WIN_BOTTOM:
+            case TEXT_WIN_TOP:
+            case TEXT_WIN_FIXED_BOTTOM_RIGHT:
+            case TEXT_WIN_FIXED_BOTTOM_LEFT:
+            case TEXT_WIN_FIXED_TOP_RIGHT:
+            case TEXT_WIN_FIXED_TOP_LEFT:
+            case TEXT_WIN_CENTER:
                 g_msgLayout.anchor = p[-1];
                 break;
-            case 0x5F:
+            case TEXT_BALLOON_OFS:
                 *x = *p;
                 *x |= *(s8 *)++p << 8;
                 *y = *++p;
@@ -984,13 +984,13 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 *z |= *(s8 *)++p << 8;
                 p++;
                 break;
-            case 0xB:
+            case TEXT_NO_OPEN_ANIM:
                 g_msgLayoutAltOpen = 1;
                 break;
-            case 0x45:
+            case TEXT_NO_INPUT:
                 g_msgLayout.flags = WINLAYOUT_NO_FOCUS;
                 break;
-            case 0xD:
+            case TEXT_LINE_WIDTHS:
                 for (;;) {
                     v = *p++;
                     v |= *p++ << 8;
@@ -1003,7 +1003,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                             g_msgLayout.w = v;
                         }
                     } else {
-                        while (*p++ != 0xFF) {
+                        while (*p++ != TEXT_END) {
                         }
                     }
                 }
@@ -1301,11 +1301,11 @@ s32 msg_emitString(u8 *s, s32 max) {
     if (s != NULL) {
         p = s;
         c = *p++;
-        while (c != 0xF7) {
-            if (c == 0xFF) {
+        while (c != TEXT_NEWLINE) {
+            if (c == TEXT_END) {
                 break;
             }
-            if (c - 0xF9 < 5) {
+            if (c - TEXT_ESC < 5) { /* TEXT_ESC or a wide-glyph lead: one more byte */
                 p++;
                 n++;
             }
@@ -1339,10 +1339,10 @@ s32 msg_emitItemName(s32 id, s32 n) {
     }
     s = t;
     for (len = 0; len < 32; len++) {
-        if (!esc && s[len] == 0xFF) {
+        if (!esc && s[len] == TEXT_END) {
             break;
         }
-        esc = !esc && s[len] == 0xFA;
+        esc = !esc && s[len] == TEXT_WIDE_FIRST;
     }
     if (len < n) {
         n = len;
@@ -1359,7 +1359,7 @@ s32 msg_emitCharName(s32 arg0, s32 n) {
     s32 i;
 
     for (len = 0; len < 8; len++) {
-        if (name[len] == 0xFF) {
+        if (name[len] == TEXT_END) {
             break;
         }
     }
@@ -1393,7 +1393,7 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
     }
     buf = g_msgNameBuf;
     for (i = 0; i < 8; i++) {
-        if (buf[i] == 0xFF) {
+        if (buf[i] == TEXT_END) {
             break;
         }
     }

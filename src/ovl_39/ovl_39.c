@@ -1871,7 +1871,7 @@ void menuSave_buildHeader(SaveBuf *buf) {
             h->party[i].present = 0;
             h->party[i].portrait = PORTRAIT_NONE;
             h->party[i].level = 0;
-            memset(h->party[i].name, 0xFF, 10);
+            memset(h->party[i].name, TEXT_END, 10);
         }
     }
 }
