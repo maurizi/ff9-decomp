@@ -22,17 +22,17 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *emitter;
-    s32 *q;
+    s32 *timer;
     s32 frame;
-    s32 r;
+    s32 fade;
     s32 i;
 
     if (mode == 0) {
         *args = 0x28;
     } else if (mode == 1) {
         fx_130_env = env;
-        for (i = 7, q = &work->timer0[7]; i >= 0; i--) {
-            *q-- = 0;
+        for (i = 7, timer = &work->timer0[7]; i >= 0; i--) {
+            *timer-- = 0;
         }
         ex->btlfx_initEffModels(fx_130_effModels, 4);
         work->pos20.vx = env->targets->centerX;
@@ -97,13 +97,13 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         ex->btlfx_setUnitRot(i, &fx_130_units[i].rot8.vx);
                         if (fx_130_units[i].timer1C > 0x18) {
                             fx_130_units[i].scale40.vx = fx_130_units[i].scale40.vz = ex->btlfx_lerpRatio(0x1000, 0, fx_130_units[i].timer1C - 0x18, 8);
-                            r = -((fx_130_units[i].timer1C - 0x18) << 5);
-                            ex->Hi_ModifyEffModelRGB(fx_130_units[i].model24, r, r, r);
+                            fade = -((fx_130_units[i].timer1C - 0x18) << 5);
+                            ex->Hi_ModifyEffModelRGB(fx_130_units[i].model24, fade, fade, fade);
                         }
                         if (fx_130_units[i].timer1C < 8) {
                             fx_130_units[i].scale40.vx = fx_130_units[i].scale40.vz = ex->btlfx_lerpRatio(0, 0x1000, fx_130_units[i].timer1C, 8);
-                            r = -((8 - fx_130_units[i].timer1C) << 5);
-                            ex->Hi_ModifyEffModelRGB(fx_130_units[i].model24, r, r, r);
+                            fade = -((8 - fx_130_units[i].timer1C) << 5);
+                            ex->Hi_ModifyEffModelRGB(fx_130_units[i].model24, fade, fade, fade);
                         }
                     }
                 } else {

@@ -122,15 +122,15 @@ s32 fx_12a_op81(s32 mode, Fx12aWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 s32 fx_12a_op82(s32 mode, Fx12aWork82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 n;
+    s32 unit;
 
     if (mode == 0) {
         *args = 0x14;
     } else if (mode == 1) {
-        n = *args;
-        work->unit10 = n;
+        unit = *args;
+        work->unit10 = unit;
         fx_12a_env = env;
-        if (n >= env->targets->targetCount) {
+        if (unit >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }

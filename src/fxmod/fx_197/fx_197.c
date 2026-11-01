@@ -261,11 +261,11 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
     VECTOR pos;
     VECTOR scale;
     SVECTOR rot;
-    SVECTOR p;
+    SVECTOR pathPos;
     SVECTOR unused; /* allocated but never referenced in the original */
-    s32 m;
-    s32 m2;
-    s32 c;
+    s32 model;
+    s32 overlayModel;
+    s32 rgb;
     s32 t;
     s32 on;
     Pool6CEntry *emitter;
@@ -276,13 +276,13 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
     } else if (it->index2 < 6) {
         switch (it->state0) {
         case 0:
-            fxm_keyGetVec((Fx197Track *)ex->btlfx_getFileData(entry->file, fx_197_piecePathFileIds[it->index2]), frame, &p);
-            p.vx += work->pos8.vx;
-            p.vy += work->pos8.vy;
-            p.vz += work->pos8.vz;
-            pos.vx = p.vx;
-            pos.vy = p.vy;
-            pos.vz = p.vz;
+            fxm_keyGetVec((Fx197Track *)ex->btlfx_getFileData(entry->file, fx_197_piecePathFileIds[it->index2]), frame, &pathPos);
+            pathPos.vx += work->pos8.vx;
+            pathPos.vy += work->pos8.vy;
+            pathPos.vz += work->pos8.vz;
+            pos.vx = pathPos.vx;
+            pos.vy = pathPos.vy;
+            pos.vz = pathPos.vz;
             scale.vx = 0x2000;
             scale.vy = 0x2000;
             scale.vz = 0x3000;
@@ -311,18 +311,18 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
             return 0;
         case 1:
             if (frame + (it->index2 - 5) <= 0) {
-                m = work->model18[it->index2][0];
-                m2 = -1;
+                model = work->model18[it->index2][0];
+                overlayModel = -1;
             } else {
                 if (frame < 0x10) {
-                    m = work->model18[it->index2][fx_197_pieceModelFrames[frame]];
+                    model = work->model18[it->index2][fx_197_pieceModelFrames[frame]];
                 } else {
-                    m = work->model18[it->index2][2];
+                    model = work->model18[it->index2][2];
                 }
                 if (frame >= 0x10) {
-                    m2 = work->model6C[it->index2];
+                    overlayModel = work->model6C[it->index2];
                 } else {
-                    m2 = -1;
+                    overlayModel = -1;
                 }
             }
             pos.vx = work->pos8.vx;
@@ -334,10 +334,10 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            if (m2 >= 0 && fx_197_overlayOn != 0) {
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, m2);
+            if (overlayModel >= 0 && fx_197_overlayOn != 0) {
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, overlayModel);
             }
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, m);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, model);
             if (it->index2 < 5) {
                 on = fx_197_shatterFlag0;
             } else {
@@ -366,12 +366,12 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
             if (frame >= 0xE) {
                 t = 0x1000 - ((frame - 0xE) << 12) / 6;
                 ex->Hi_ModifyEffModelAbr(work->model18[it->index2][2], 1);
-                c = (t / 2 >> 5) - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->model18[it->index2][2], c, c, c);
+                rgb = (t / 2 >> 5) - 0x80;
+                ex->Hi_ModifyEffModelRGB(work->model18[it->index2][2], rgb, rgb, rgb);
             } else {
                 ex->Hi_ModifyEffModelAbr(work->model18[it->index2][2], 1);
-                c = -0x40;
-                ex->Hi_ModifyEffModelRGB(work->model18[it->index2][2], c, c, c);
+                rgb = -0x40;
+                ex->Hi_ModifyEffModelRGB(work->model18[it->index2][2], rgb, rgb, rgb);
             }
             fxm_shatterRelease(it->index2);
             fxm_shatterUpdate(it->index2);
@@ -396,9 +396,9 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model6C[6]);
             if (frame < 8) {
-                s32 c0 = ((frame << 12) >> 9) - 0x80;
+                s32 fadeIn = ((frame << 12) >> 9) - 0x80;
 
-                ex->Hi_ModifyEffModelRGB(work->model6C[6], c0, c0, c0);
+                ex->Hi_ModifyEffModelRGB(work->model6C[6], fadeIn, fadeIn, fadeIn);
             }
             if (fx_197_shatterFlag1 != 0) {
                 it->state0 = 1;
@@ -420,9 +420,9 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model6C[6]);
             if (frame >= 0x37) {
-                s32 c1 = ((0x1000 - (((frame - 0x37) << 12) >> 5)) >> 5) - 0x80;
+                s32 fadeOut = ((0x1000 - (((frame - 0x37) << 12) >> 5)) >> 5) - 0x80;
 
-                ex->Hi_ModifyEffModelRGB(work->model6C[6], c1, c1, c1);
+                ex->Hi_ModifyEffModelRGB(work->model6C[6], fadeOut, fadeOut, fadeOut);
             }
             fxm_shatterRelease(6);
             fxm_shatterUpdate(6);
@@ -437,14 +437,14 @@ static s32 fx_197_op81PoolTask(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk8
 
 s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Fx197Item81 *it;
-    Fx197Item81 *it2;
+    Fx197Item81 *piece;
+    Fx197Item81 *slab;
     Pool6CEntry *emitter;
     s32 frame;
     s32 state;
     s32 i;
     s32 j;
-    s32 c;
+    s32 tint;
 
     if (mode == 0) {
         init->workSize = 0x88;
@@ -478,21 +478,21 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (state) {
         case 0:
             if (frame < 10 && (frame & 1)) {
-                it = ex->btlfx_poolSpawn((s16 *)entry->pool);
-                if (it != NULL) {
-                    it->index2 = fx_197_spawnPieces[frame >> 1];
+                piece = ex->btlfx_poolSpawn((s16 *)entry->pool);
+                if (piece != NULL) {
+                    piece->index2 = fx_197_spawnPieces[frame >> 1];
                 }
             }
             if (frame == 5) {
-                it2 = ex->btlfx_poolSpawn((s16 *)entry->pool);
-                if (it2 != NULL) {
-                    it2->index2 = 6;
+                slab = ex->btlfx_poolSpawn((s16 *)entry->pool);
+                if (slab != NULL) {
+                    slab->index2 = 6;
                 }
             }
             if (frame == 4) {
-                it2 = ex->btlfx_poolSpawn((s16 *)entry->pool);
-                if (it2 != NULL) {
-                    it2->index2 = 5;
+                slab = ex->btlfx_poolSpawn((s16 *)entry->pool);
+                if (slab != NULL) {
+                    slab->index2 = 5;
                 }
             }
             if (frame >= 16) {
@@ -554,8 +554,8 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fx_197_overlayOn = 0;
             }
             if (frame >= 20 && frame < 36) {
-                c = 0x80 - (((frame - 20) << 7) >> 4);
-                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, c >> 2, c);
+                tint = 0x80 - (((frame - 20) << 7) >> 4);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, tint >> 2, tint);
             }
             ex->btlfx_drawScrollMove(frame * 2, 0x2C0, 0x180, 0x40, 0x80, 0x2C0, 0x100);
             if (frame >= 126) {

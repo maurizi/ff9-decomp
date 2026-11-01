@@ -1,188 +1,188 @@
 #include "fxmod/fx_12b.h"
 
-static s32 fx_12b_op80ParticleMotion0(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    s32 i = p->index1F - 1;
-    Fx12bShard *s = &fx_12b_op80Shards0[i];
-    Fx12bPath *path = &fx_12b_op80PosPaths0[i];
-    SVECTOR *ofs = &fx_12b_bonePoints0[i];
+static s32 fx_12b_op80ParticleMotion0(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    s32 slot = pt->index1F - 1;
+    Fx12bShard *shard = &fx_12b_op80Shards0[slot];
+    Fx12bPath *path = &fx_12b_op80PosPaths0[slot];
+    SVECTOR *ofs = &fx_12b_bonePoints0[slot];
 
-    if (s->frame20 >= 2 && s->frame20 < 7) {
-        return fx_12b_pathParticle(p, pos, s, path, ofs, frame, n);
+    if (shard->frame20 >= 2 && shard->frame20 < 7) {
+        return fx_12b_pathParticle(pt, pos, shard, path, ofs, frame, n);
     }
-    if ((u16)(s->frame20 - 7) < 0xE) {
-        return fx_12b_arcParticle0(p, pos, s, frame, n);
-    }
-    return 0;
-}
-
-static s32 fx_12b_op80ParticleMotion1(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    s32 i = p->index1F - 1;
-    Fx12bShard *s = &fx_12b_op80Shards1[i];
-    Fx12bPath *path = &fx_12b_op80PosPaths1[i];
-    SVECTOR *ofs = &fx_12b_bonePoints1[i];
-
-    if (s->frame20 >= 2 && s->frame20 < 7) {
-        return fx_12b_pathParticle(p, pos, s, path, ofs, frame, n);
-    }
-    if ((u16)(s->frame20 - 7) < 0xE) {
-        return fx_12b_arcParticle1(p, pos, s, frame, n);
+    if ((u16)(shard->frame20 - 7) < 0xE) {
+        return fx_12b_arcParticle0(pt, pos, shard, frame, n);
     }
     return 0;
 }
 
-static s32 fx_12b_op81ParticleMotion0(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    s32 i = p->index1F - 1;
-    Fx12bShard *s = &fx_12b_op81Shards0[i];
+static s32 fx_12b_op80ParticleMotion1(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    s32 slot = pt->index1F - 1;
+    Fx12bShard *shard = &fx_12b_op80Shards1[slot];
+    Fx12bPath *path = &fx_12b_op80PosPaths1[slot];
+    SVECTOR *ofs = &fx_12b_bonePoints1[slot];
+
+    if (shard->frame20 >= 2 && shard->frame20 < 7) {
+        return fx_12b_pathParticle(pt, pos, shard, path, ofs, frame, n);
+    }
+    if ((u16)(shard->frame20 - 7) < 0xE) {
+        return fx_12b_arcParticle1(pt, pos, shard, frame, n);
+    }
+    return 0;
+}
+
+static s32 fx_12b_op81ParticleMotion0(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    s32 slot = pt->index1F - 1;
+    Fx12bShard *shard = &fx_12b_op81Shards0[slot];
     Fx12bPath *path = &fx_12b_op81PosPath0;
-    SVECTOR *ofs = &fx_12b_bonePoints0[i];
+    SVECTOR *ofs = &fx_12b_bonePoints0[slot];
 
-    if (s->frame20 >= 2 && s->frame20 < 7) {
-        return fx_12b_pathParticle(p, pos, s, path, ofs, frame, n);
+    if (shard->frame20 >= 2 && shard->frame20 < 7) {
+        return fx_12b_pathParticle(pt, pos, shard, path, ofs, frame, n);
     }
-    return fx_12b_arcParticle0(p, pos, s, frame, n);
+    return fx_12b_arcParticle0(pt, pos, shard, frame, n);
 }
 
-static s32 fx_12b_op81ParticleMotion1(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    s32 i = p->index1F - 1;
-    Fx12bShard *s = &fx_12b_op81Shards1[i];
+static s32 fx_12b_op81ParticleMotion1(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    s32 slot = pt->index1F - 1;
+    Fx12bShard *shard = &fx_12b_op81Shards1[slot];
     Fx12bPath *path = &fx_12b_op81PosPath1;
-    SVECTOR *ofs = &fx_12b_bonePoints1[i];
+    SVECTOR *ofs = &fx_12b_bonePoints1[slot];
 
-    if (s->frame20 >= 2 && s->frame20 < 7) {
-        return fx_12b_pathParticle(p, pos, s, path, ofs, frame, n);
+    if (shard->frame20 >= 2 && shard->frame20 < 7) {
+        return fx_12b_pathParticle(pt, pos, shard, path, ofs, frame, n);
     }
-    return fx_12b_arcParticle1(p, pos, s, frame, n);
+    return fx_12b_arcParticle1(pt, pos, shard, frame, n);
 }
 
-s32 fx_12b_pathParticle(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, Fx12bPath *path, SVECTOR *ofs, s32 frame, s32 n) {
+s32 fx_12b_pathParticle(Fx12bParticle *pt, SVECTOR *pos, Fx12bShard *shard, Fx12bPath *path, SVECTOR *ofs, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_12b_env);
-    SVECTOR v;
+    SVECTOR pathPos;
 
     if (frame == 0) {
         ex->btlfx_playFileSound(0x39, 0, -1);
         ex->btlfx_playFileSound(0x3A, 0, -1);
     }
-    fxm_posPathGet(path, s->frame20 - 2, &v);
-    v.vx += ofs->vx;
-    v.vy += ofs->vy;
-    v.vz += ofs->vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    s->pos8.vx = v.vx;
-    s->pos8.vy = v.vy;
-    s->pos8.vz = v.vz;
-    p->pos0.vx = pos->vx << 12;
-    p->pos0.vy = pos->vy << 12;
-    p->pos0.vz = pos->vz << 12;
+    fxm_posPathGet(path, shard->frame20 - 2, &pathPos);
+    pathPos.vx += ofs->vx;
+    pathPos.vy += ofs->vy;
+    pathPos.vz += ofs->vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
+    shard->pos8.vx = pathPos.vx;
+    shard->pos8.vy = pathPos.vy;
+    shard->pos8.vz = pathPos.vz;
+    pt->pos0.vx = pos->vx << 12;
+    pt->pos0.vy = pos->vy << 12;
+    pt->pos0.vz = pos->vz << 12;
     if (frame >= n) {
         return -1;
     }
     return 0;
 }
 
-s32 fx_12b_arcParticle0(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, s32 frame, s32 n) {
+s32 fx_12b_arcParticle0(Fx12bParticle *pt, SVECTOR *pos, Fx12bShard *shard, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_12b_env);
-    SVECTOR v;
-    s32 t = ((s->frame20 - 6) << 12) / 14;
+    SVECTOR arcPos;
+    s32 t = ((shard->frame20 - 6) << 12) / 14;
 
     if (t > 0x1000) {
         t = 0x1000;
     }
-    ex->btlfx_lerpVec((s16 *)&s->pos8, (s16 *)&s->pos0, t, (s16 *)&v);
+    ex->btlfx_lerpVec((s16 *)&shard->pos8, (s16 *)&shard->pos0, t, (s16 *)&arcPos);
     t /= 2;
-    v.vx += s->width10 * ex->math_sin(t) / 4096;
-    v.vy -= s->height12 * ex->math_sin(t) / 4096;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    p->pos0.vx = pos->vx << 12;
-    p->pos0.vy = pos->vy << 12;
-    p->pos0.vz = pos->vz << 12;
+    arcPos.vx += shard->width10 * ex->math_sin(t) / 4096;
+    arcPos.vy -= shard->height12 * ex->math_sin(t) / 4096;
+    pos->vx = arcPos.vx;
+    pos->vy = arcPos.vy;
+    pos->vz = arcPos.vz;
+    pt->pos0.vx = pos->vx << 12;
+    pt->pos0.vy = pos->vy << 12;
+    pt->pos0.vz = pos->vz << 12;
     if (frame >= n) {
         return -1;
     }
     return 0;
 }
 
-s32 fx_12b_arcParticle1(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, s32 frame, s32 n) {
+s32 fx_12b_arcParticle1(Fx12bParticle *pt, SVECTOR *pos, Fx12bShard *shard, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_12b_env);
-    SVECTOR v;
-    s32 t = ((s->frame20 - 6) << 12) / 14;
+    SVECTOR arcPos;
+    s32 t = ((shard->frame20 - 6) << 12) / 14;
 
     if (t > 0x1000) {
         t = 0x1000;
     }
-    ex->btlfx_lerpVec((s16 *)&s->pos8, (s16 *)&s->pos0, t, (s16 *)&v);
+    ex->btlfx_lerpVec((s16 *)&shard->pos8, (s16 *)&shard->pos0, t, (s16 *)&arcPos);
     t /= 2;
-    v.vx -= s->width10 * ex->math_sin(t) / 4096;
-    v.vy -= s->height12 * ex->math_sin(t) / 4096;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    p->pos0.vx = pos->vx << 12;
-    p->pos0.vy = pos->vy << 12;
-    p->pos0.vz = pos->vz << 12;
+    arcPos.vx -= shard->width10 * ex->math_sin(t) / 4096;
+    arcPos.vy -= shard->height12 * ex->math_sin(t) / 4096;
+    pos->vx = arcPos.vx;
+    pos->vy = arcPos.vy;
+    pos->vz = arcPos.vz;
+    pt->pos0.vx = pos->vx << 12;
+    pt->pos0.vy = pos->vy << 12;
+    pt->pos0.vz = pos->vz << 12;
     if (frame >= n) {
         return -1;
     }
     return 0;
 }
 
-static s32 fx_12b_op80ParticleMotion2(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    SVECTOR v;
-    SVECTOR *o = (SVECTOR *)((u8 *)fx_12b_bonePoints0 + (p->index1F - 1) * 8);
+static s32 fx_12b_op80ParticleMotion2(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR target;
+    SVECTOR *bonePoint = (SVECTOR *)((u8 *)fx_12b_bonePoints0 + (pt->index1F - 1) * 8);
 
     do {
     } while (0); /* scheduling barrier: a statement boundary in the original */
 
-    v.vx = o->vx;
-    v.vy = o->vy;
-    v.vz = o->vz;
-    v.vx += 0xC8;
-    return fxm_pinParticle(p, pos, &v, frame, n);
+    target.vx = bonePoint->vx;
+    target.vy = bonePoint->vy;
+    target.vz = bonePoint->vz;
+    target.vx += 0xC8;
+    return fxm_pinParticle(pt, pos, &target, frame, n);
 }
 
-static s32 fx_12b_op80ParticleMotion3(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    SVECTOR v;
-    SVECTOR *o = (SVECTOR *)((u8 *)fx_12b_bonePoints1 + (p->index1F - 1) * 8);
+static s32 fx_12b_op80ParticleMotion3(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR target;
+    SVECTOR *bonePoint = (SVECTOR *)((u8 *)fx_12b_bonePoints1 + (pt->index1F - 1) * 8);
 
     do {
     } while (0); /* scheduling barrier: a statement boundary in the original */
 
-    v.vx = o->vx;
-    v.vy = o->vy;
-    v.vz = o->vz;
-    v.vx -= 0xC8;
-    return fxm_pinParticle(p, pos, &v, frame, n);
+    target.vx = bonePoint->vx;
+    target.vy = bonePoint->vy;
+    target.vz = bonePoint->vz;
+    target.vx -= 0xC8;
+    return fxm_pinParticle(pt, pos, &target, frame, n);
 }
 
-static s32 fx_12b_op81ParticleMotion2(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    SVECTOR v;
-    SVECTOR *o = (SVECTOR *)((u8 *)fx_12b_bonePoints0 + (p->index1F - 1) * 8);
+static s32 fx_12b_op81ParticleMotion2(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR target;
+    SVECTOR *bonePoint = (SVECTOR *)((u8 *)fx_12b_bonePoints0 + (pt->index1F - 1) * 8);
 
     do {
     } while (0); /* scheduling barrier: a statement boundary in the original */
 
-    v.vx = o->vx;
-    v.vy = o->vy;
-    v.vz = o->vz;
-    v.vx += 0xC8;
-    return fxm_pinParticle(p, pos, &v, frame, n);
+    target.vx = bonePoint->vx;
+    target.vy = bonePoint->vy;
+    target.vz = bonePoint->vz;
+    target.vx += 0xC8;
+    return fxm_pinParticle(pt, pos, &target, frame, n);
 }
 
-static s32 fx_12b_op81ParticleMotion3(Fx12bParticle *p, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
-    SVECTOR v;
-    SVECTOR *o = (SVECTOR *)((u8 *)fx_12b_bonePoints1 + (p->index1F - 1) * 8);
+static s32 fx_12b_op81ParticleMotion3(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR target;
+    SVECTOR *bonePoint = (SVECTOR *)((u8 *)fx_12b_bonePoints1 + (pt->index1F - 1) * 8);
 
     do {
     } while (0); /* scheduling barrier: a statement boundary in the original */
 
-    v.vx = o->vx;
-    v.vy = o->vy;
-    v.vz = o->vz;
-    v.vx -= 0xC8;
-    return fxm_pinParticle(p, pos, &v, frame, n);
+    target.vx = bonePoint->vx;
+    target.vy = bonePoint->vy;
+    target.vz = bonePoint->vz;
+    target.vx -= 0xC8;
+    return fxm_pinParticle(pt, pos, &target, frame, n);
 }
 
 static s32 fxm_pinParticle(Fx12bParticle *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n) {
@@ -200,12 +200,12 @@ static s32 fxm_pinParticle(Fx12bParticle *pt, SVECTOR *pos, SVECTOR *src, s32 fr
 
 s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    MATRIX m1;
-    MATRIX m2;
-    Fx12bShard *a;
-    Fx12bShard *q;
-    Fx12bShard *b;
-    Fx12bShard *r;
+    MATRIX boneMat0;
+    MATRIX boneMat1;
+    Fx12bShard *shard0Alias;
+    Fx12bShard *shard0;
+    Fx12bShard *shard1Alias;
+    Fx12bShard *shard1;
     Pool6CEntry *emitter;
     s32 frame;
     s32 i;
@@ -217,53 +217,53 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_12b_env = env;
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
         ex->btlfx_getUnitBodyPos(0, 0, &work->pos10.vx);
-        for (i = 0, a = fx_12b_op80Shards0, b = fx_12b_op80Shards1, q = fx_12b_op80Shards0, r = fx_12b_op80Shards1; i < 6; i++, a++, b++, q++, r++) {
-            q->frame18 = i * 4;
-            r->frame18 = i * 4 + 1;
+        for (i = 0, shard0Alias = fx_12b_op80Shards0, shard1Alias = fx_12b_op80Shards1, shard0 = fx_12b_op80Shards0, shard1 = fx_12b_op80Shards1; i < 6; i++, shard0Alias++, shard1Alias++, shard0++, shard1++) {
+            shard0->frame18 = i * 4;
+            shard1->frame18 = i * 4 + 1;
             fxm_posPathInit(&fx_12b_op80PosPaths0[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_12b_pathFileIds0[i]));
             fxm_posPathInit(&fx_12b_op80PosPaths1[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_12b_pathFileIds1[i]));
-            a->pos0.vx = work->pos10.vx;
-            q->pos0.vy = work->pos10.vy;
-            q->pos0.vz = work->pos10.vz;
-            b->pos0.vx = work->pos10.vx;
-            r->pos0.vy = work->pos10.vy;
-            r->pos0.vz = work->pos10.vz;
+            shard0Alias->pos0.vx = work->pos10.vx;
+            shard0->pos0.vy = work->pos10.vy;
+            shard0->pos0.vz = work->pos10.vz;
+            shard1Alias->pos0.vx = work->pos10.vx;
+            shard1->pos0.vy = work->pos10.vy;
+            shard1->pos0.vz = work->pos10.vz;
             if (ex->btlfx_rand() & 1) {
-                a->pos0.vx += ex->btlfx_rand() % 200;
+                shard0Alias->pos0.vx += ex->btlfx_rand() % 200;
             } else {
-                a->pos0.vx -= ex->btlfx_rand() % 200;
+                shard0Alias->pos0.vx -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                q->pos0.vy += ex->btlfx_rand() % 200;
+                shard0->pos0.vy += ex->btlfx_rand() % 200;
             } else {
-                q->pos0.vy -= ex->btlfx_rand() % 200;
+                shard0->pos0.vy -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                q->pos0.vz += ex->btlfx_rand() % 200;
+                shard0->pos0.vz += ex->btlfx_rand() % 200;
             } else {
-                q->pos0.vz -= ex->btlfx_rand() % 200;
+                shard0->pos0.vz -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                a->pos0.vx += ex->btlfx_rand() % 200;
+                shard0Alias->pos0.vx += ex->btlfx_rand() % 200;
             } else {
-                a->pos0.vx -= ex->btlfx_rand() % 200;
+                shard0Alias->pos0.vx -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                r->pos0.vy += ex->btlfx_rand() % 200;
+                shard1->pos0.vy += ex->btlfx_rand() % 200;
             } else {
-                r->pos0.vy -= ex->btlfx_rand() % 200;
+                shard1->pos0.vy -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                r->pos0.vz += ex->btlfx_rand() % 200;
+                shard1->pos0.vz += ex->btlfx_rand() % 200;
             } else {
-                r->pos0.vz -= ex->btlfx_rand() % 200;
+                shard1->pos0.vz -= ex->btlfx_rand() % 200;
             }
-            q->width10 = ex->btlfx_rand() % 1500 + 200;
-            q->height12 = ex->btlfx_rand() % 800 + 400;
-            q->unk14 = 0;
-            r->width10 = ex->btlfx_rand() % 1500 + 200;
-            q->height12 = ex->btlfx_rand() % 800 + 400; /* q, not r: as in the original */
-            r->unk14 = 0;
+            shard0->width10 = ex->btlfx_rand() % 1500 + 200;
+            shard0->height12 = ex->btlfx_rand() % 800 + 400;
+            shard0->unk14 = 0;
+            shard1->width10 = ex->btlfx_rand() % 1500 + 200;
+            shard0->height12 = ex->btlfx_rand() % 800 + 400; /* shard0, not shard1: as in the original */
+            shard1->unk14 = 0;
         }
         return 0;
     } else {
@@ -300,30 +300,30 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        for (q = fx_12b_op80Shards0, r = fx_12b_op80Shards1, j = 0; j < 6; j++, q++, r++) {
-            if (frame == q->frame18) {
-                ex->btlfx_getUnitBoneMatrix(0x10, q->bone1A, (BtlBone *)&m1);
-                ex->btlfx_matrixPointAhead(&m1, q->dist1C, (s32)&fx_12b_bonePoints0[j]);
+        for (shard0 = fx_12b_op80Shards0, shard1 = fx_12b_op80Shards1, j = 0; j < 6; j++, shard0++, shard1++) {
+            if (frame == shard0->frame18) {
+                ex->btlfx_getUnitBoneMatrix(0x10, shard0->bone1A, (BtlBone *)&boneMat0);
+                ex->btlfx_matrixPointAhead(&boneMat0, shard0->dist1C, (s32)&fx_12b_bonePoints0[j]);
             }
-            if (frame == r->frame18) {
-                ex->btlfx_getUnitBoneMatrix(0x10, r->bone1A, (BtlBone *)&m2);
-                ex->btlfx_matrixPointAhead(&m2, r->dist1C, (s32)&fx_12b_bonePoints1[j]);
+            if (frame == shard1->frame18) {
+                ex->btlfx_getUnitBoneMatrix(0x10, shard1->bone1A, (BtlBone *)&boneMat1);
+                ex->btlfx_matrixPointAhead(&boneMat1, shard1->dist1C, (s32)&fx_12b_bonePoints1[j]);
             }
-            if (frame >= q->frame18) {
-                if (++q->frame20 == 0x13) {
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)q);
+            if (frame >= shard0->frame18) {
+                if (++shard0->frame20 == 0x13) {
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)shard0);
                     if (emitter != NULL) {
                         emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
                 }
             }
-            if (frame >= r->frame18) {
-                if (++r->frame20 == 0x13) {
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)r);
+            if (frame >= shard1->frame18) {
+                if (++shard1->frame20 == 0x13) {
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)shard1);
                     if (emitter != NULL) {
                         emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
-                    /* the do-while(0) adds a loop-depth-weighted ref to j, which puts it ahead of q and r in
+                    /* the do-while(0) adds a loop-depth-weighted ref to j, which puts it ahead of shard0 and shard1 in
                      * global-alloc (j in s4) */
                     do {
                         if (j == 5) {
@@ -340,12 +340,12 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    MATRIX m1;
-    MATRIX m2;
-    Fx12bShard *a;
-    Fx12bShard *q;
-    Fx12bShard *b;
-    Fx12bShard *r;
+    MATRIX boneMat0;
+    MATRIX boneMat1;
+    Fx12bShard *shard0Alias;
+    Fx12bShard *shard0;
+    Fx12bShard *shard1Alias;
+    Fx12bShard *shard1;
     s32 frame;
     s32 i;
     s32 j;
@@ -357,49 +357,49 @@ s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, &work->pos10.vx);
         fxm_posPathInit(&fx_12b_op81PosPath0, (u16 *)ex->btlfx_getFileData(entry->file, 0x22));
         fxm_posPathInit(&fx_12b_op81PosPath1, (u16 *)ex->btlfx_getFileData(entry->file, 0x21));
-        for (i = 0, a = fx_12b_op81Shards0, b = fx_12b_op81Shards1, q = fx_12b_op81Shards0, r = fx_12b_op81Shards1; i < 5; i++, a++, b++, q++, r++) {
-            a->pos0.vx = work->pos10.vx;
-            q->pos0.vy = work->pos10.vy;
-            q->pos0.vz = work->pos10.vz;
-            b->pos0.vx = work->pos10.vx;
-            r->pos0.vy = work->pos10.vy;
-            r->pos0.vz = work->pos10.vz;
+        for (i = 0, shard0Alias = fx_12b_op81Shards0, shard1Alias = fx_12b_op81Shards1, shard0 = fx_12b_op81Shards0, shard1 = fx_12b_op81Shards1; i < 5; i++, shard0Alias++, shard1Alias++, shard0++, shard1++) {
+            shard0Alias->pos0.vx = work->pos10.vx;
+            shard0->pos0.vy = work->pos10.vy;
+            shard0->pos0.vz = work->pos10.vz;
+            shard1Alias->pos0.vx = work->pos10.vx;
+            shard1->pos0.vy = work->pos10.vy;
+            shard1->pos0.vz = work->pos10.vz;
             if (ex->btlfx_rand() & 1) {
-                a->pos0.vx += ex->btlfx_rand() % 200;
+                shard0Alias->pos0.vx += ex->btlfx_rand() % 200;
             } else {
-                a->pos0.vx -= ex->btlfx_rand() % 200;
+                shard0Alias->pos0.vx -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                q->pos0.vy += ex->btlfx_rand() % 200;
+                shard0->pos0.vy += ex->btlfx_rand() % 200;
             } else {
-                q->pos0.vy -= ex->btlfx_rand() % 200;
+                shard0->pos0.vy -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                q->pos0.vz += ex->btlfx_rand() % 200;
+                shard0->pos0.vz += ex->btlfx_rand() % 200;
             } else {
-                q->pos0.vz -= ex->btlfx_rand() % 200;
+                shard0->pos0.vz -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                a->pos0.vx += ex->btlfx_rand() % 200;
+                shard0Alias->pos0.vx += ex->btlfx_rand() % 200;
             } else {
-                a->pos0.vx -= ex->btlfx_rand() % 200;
+                shard0Alias->pos0.vx -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                r->pos0.vy += ex->btlfx_rand() % 200;
+                shard1->pos0.vy += ex->btlfx_rand() % 200;
             } else {
-                r->pos0.vy -= ex->btlfx_rand() % 200;
+                shard1->pos0.vy -= ex->btlfx_rand() % 200;
             }
             if (ex->btlfx_rand() & 1) {
-                r->pos0.vz += ex->btlfx_rand() % 200;
+                shard1->pos0.vz += ex->btlfx_rand() % 200;
             } else {
-                r->pos0.vz -= ex->btlfx_rand() % 200;
+                shard1->pos0.vz -= ex->btlfx_rand() % 200;
             }
-            q->width10 = ex->btlfx_rand() % 1500 + 200;
-            q->height12 = ex->btlfx_rand() % 800 + 400;
-            q->unk14 = 0;
-            r->width10 = ex->btlfx_rand() % 1500 + 200;
-            r->height12 = ex->btlfx_rand() % 800 + 400;
-            r->unk14 = 0;
+            shard0->width10 = ex->btlfx_rand() % 1500 + 200;
+            shard0->height12 = ex->btlfx_rand() % 800 + 400;
+            shard0->unk14 = 0;
+            shard1->width10 = ex->btlfx_rand() % 1500 + 200;
+            shard1->height12 = ex->btlfx_rand() % 800 + 400;
+            shard1->unk14 = 0;
         }
         return 0;
     } else {
@@ -432,20 +432,20 @@ s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ((s32 *)work->emit0[3]->file)[2] = (s32)fx_12b_op81ParticleMotion3;
             }
         }
-        for (j = 0, r = fx_12b_op81Shards1, q = fx_12b_op81Shards0; j < 5; j++, q++, r++) {
-            if (frame == q->frame18) {
-                ex->btlfx_getUnitBoneMatrix(0x10, q->bone1A, (BtlBone *)&m1);
-                ex->btlfx_matrixPointAhead(&m1, q->dist1C, (s32)&fx_12b_bonePoints0[j]);
+        for (j = 0, shard1 = fx_12b_op81Shards1, shard0 = fx_12b_op81Shards0; j < 5; j++, shard0++, shard1++) {
+            if (frame == shard0->frame18) {
+                ex->btlfx_getUnitBoneMatrix(0x10, shard0->bone1A, (BtlBone *)&boneMat0);
+                ex->btlfx_matrixPointAhead(&boneMat0, shard0->dist1C, (s32)&fx_12b_bonePoints0[j]);
             }
-            if (frame == r->frame18) {
-                ex->btlfx_getUnitBoneMatrix(0x10, r->bone1A, (BtlBone *)&m2);
-                ex->btlfx_matrixPointAhead(&m2, r->dist1C, (s32)&fx_12b_bonePoints1[j]);
+            if (frame == shard1->frame18) {
+                ex->btlfx_getUnitBoneMatrix(0x10, shard1->bone1A, (BtlBone *)&boneMat1);
+                ex->btlfx_matrixPointAhead(&boneMat1, shard1->dist1C, (s32)&fx_12b_bonePoints1[j]);
             }
-            if (frame >= q->frame18) {
-                q->frame20++;
+            if (frame >= shard0->frame18) {
+                shard0->frame20++;
             }
-            if (frame >= r->frame18) {
-                r->frame20++;
+            if (frame >= shard1->frame18) {
+                shard1->frame20++;
             }
         }
         return frame >= 0x3C;

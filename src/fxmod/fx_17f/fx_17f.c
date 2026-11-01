@@ -17,7 +17,7 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR ang;
     s32 frame;
     s32 i;
-    s32 c;
+    s32 fade;
 
     if (mode == 0) {
         *args = 0x28;
@@ -49,11 +49,11 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         ex->btl_forEachModelVertex(work->model1C, fx_17f_op80MeltVertex);
         if (frame >= 0x37) {
-            c = 0x80 - (frame - 0x37) * 8;
-            if (c < 0x10) {
-                c = 0x10;
+            fade = 0x80 - (frame - 0x37) * 8;
+            if (fade < 0x10) {
+                fade = 0x10;
             }
-            ex->btlfx_fadeUnitById(0x11, c);
+            ex->btlfx_fadeUnitById(0x11, fade);
         }
         if (frame == 3) {
             emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos20);

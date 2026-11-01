@@ -51,6 +51,6 @@ extern u16 fx_186_modelFileIds0[10]; /* rock model files */
 extern u16 fx_186_modelFileIds1[10]; /* rock model files (alternate) */
 extern u32 fx_186_bgOt[];
 extern BtlModelBuf fx_186_effModels[];
-static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 entry, s32 frame);
+static s32 fx_186_op80PoolTask(s32 mode, Fx186Rock *rock, Unk800F78A4 *env, s32 entry, s32 frame);
 
 #endif

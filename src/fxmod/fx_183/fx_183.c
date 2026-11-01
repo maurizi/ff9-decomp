@@ -47,7 +47,7 @@ s32 fx_183_op80(s32 mode, Fx183Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR dropPos;
     s32 frame;
 
     if (mode == 0) {
@@ -79,10 +79,10 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame < 5) {
-            ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos10, frame << 10, (s16 *)&v);
-            work->pos28.vx = v.vx;
-            work->pos28.vy = v.vy;
-            work->pos28.vz = v.vz;
+            ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos10, frame << 10, (s16 *)&dropPos);
+            work->pos28.vx = dropPos.vx;
+            work->pos28.vy = dropPos.vy;
+            work->pos28.vz = dropPos.vz;
             ex->Hi_SetEffModelSlice(work->model48, work->pos28.vy);
             ex->Hi_DrawSliceEffModel(&work->rot20, &work->pos28, (s32)&work->scale38, work->model48);
         }
@@ -94,11 +94,11 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR sc;
-    SVECTOR v;
+    SVECTOR pathPos;
     s32 frame;
     s32 i;
     s32 j;
-    s32 t;
+    s32 pathFrame;
 
     if (mode == 0) {
         *args = 0x5C;
@@ -142,7 +142,7 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0 && frame < 0x1A) {
-            t = frame;
+            pathFrame = frame;
             if (work->timer48 >= 0 || work->timer4C >= 0) {
                 if (work->timer48 >= 0) {
                     work->fade3C = fxm_lerpRatio(-0x80, 0, 4 - work->timer48, 4);
@@ -154,10 +154,10 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             for (i = 0; i < 6; i++) {
-                fxm_rotPosPathGet(&fx_183_rotPosPath[i], t, &work->rot4, &v);
-                work->posC.vx = v.vx;
-                work->posC.vy = v.vy;
-                work->posC.vz = v.vz;
+                fxm_rotPosPathGet(&fx_183_rotPosPath[i], pathFrame, &work->rot4, &pathPos);
+                work->posC.vx = pathPos.vx;
+                work->posC.vy = pathPos.vy;
+                work->posC.vz = pathPos.vz;
                 work->posC.vx += work->pos40.vx;
                 work->posC.vy += work->pos40.vy;
                 work->posC.vz += work->pos40.vz;

@@ -2,19 +2,19 @@
 
 s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR spearPos;
     s32 frame;
 
     if (mode == 0) {
         *args = 0x40;
     } else if (mode == 1) {
-        s32 n = *args;
+        s32 spear = *args;
         fx_185_env = env;
-        work->index38 = n;
-        if (n >= FX_185_SPEARS) {
+        work->index38 = spear;
+        if (spear >= FX_185_SPEARS) {
             return 1;
         }
-        if (n == 0) {
+        if (spear == 0) {
             ex->btlfx_initEffModels(fx_185_effModels, 0x10);
         }
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
@@ -39,10 +39,10 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame < 6) {
-            ex->btlfx_lerpVec((s16 *)&work->pos0, (s16 *)&work->pos8, frame << 10, (s16 *)&v);
-            work->pos18.vx = v.vx;
-            work->pos18.vy = v.vy;
-            work->pos18.vz = v.vz;
+            ex->btlfx_lerpVec((s16 *)&work->pos0, (s16 *)&work->pos8, frame << 10, (s16 *)&spearPos);
+            work->pos18.vx = spearPos.vx;
+            work->pos18.vy = spearPos.vy;
+            work->pos18.vz = spearPos.vz;
         }
         ex->Hi_SetEffModelSlice(work->model3C, work->pos18.vy);
         ex->Hi_DrawSliceEffModel(&work->rot10, &work->pos18, (s32)&work->scale28, work->model3C);
