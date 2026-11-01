@@ -226,8 +226,8 @@ void fx_0e1_0_drawWaveQuadGrid(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32
     CVECTOR col;
     s32 u1;
     s32 v1;
-    s32 k;
-    s32 p;
+    s32 tile;
+    s32 phase;
 
     yo = 0;
     j = 0;
@@ -239,36 +239,36 @@ void fx_0e1_0_drawWaveQuadGrid(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32
     col.r = col.g = col.b = c;
     for (; j < ny; j++, yo -= dy) {
         px = x;
-        p = ph + j * dphy;
-        for (i = 0; i < nx; i++, p += dphx, px += dx) {
-            k = i & 3;
-            u0 = u + ((k * w) >> 2);
+        phase = ph + j * dphy;
+        for (i = 0; i < nx; i++, phase += dphx, px += dx) {
+            tile = i & 3;
+            u0 = u + ((tile * w) >> 2);
             u1 = u0 + (w >> 2);
-            if (k == 3) {
+            if (tile == 3) {
                 u1--;
             }
-            k = j & 3;
-            v0 = v + ((k * h) >> 2);
+            tile = j & 3;
+            v0 = v + ((tile * h) >> 2);
             v1 = v0 + (h >> 2);
-            if (k == 3) {
+            if (tile == 3) {
                 v1--;
             }
             if (j < ny - 1) {
-                ft4->x0 = px + ((ex->math_sin(p) * amp) >> 12);
-                ft4->x2 = px + ((ex->math_sin(p + dphy) * amp) >> 12);
-                ft4->x1 = (px + dx) + ((ex->math_sin(p + dphx) * amp) >> 12);
-                ft4->x3 = (px + dx) + ((ex->math_sin(p + dphy + dphx) * amp) >> 12);
+                ft4->x0 = px + ((ex->math_sin(phase) * amp) >> 12);
+                ft4->x2 = px + ((ex->math_sin(phase + dphy) * amp) >> 12);
+                ft4->x1 = (px + dx) + ((ex->math_sin(phase + dphx) * amp) >> 12);
+                ft4->x3 = (px + dx) + ((ex->math_sin(phase + dphy + dphx) * amp) >> 12);
                 if (j == 0) {
                     ft4->y1 = y;
                     ft4->y0 = y;
                 } else {
-                    ft4->y0 = y + (((yo + ((ex->math_sin(p) * amp) >> 12)) * sy) >> 12);
-                    ft4->y1 = y + (((yo + ((ex->math_sin(p + dphx) * amp) >> 12)) * sy) >> 12);
+                    ft4->y0 = y + (((yo + ((ex->math_sin(phase) * amp) >> 12)) * sy) >> 12);
+                    ft4->y1 = y + (((yo + ((ex->math_sin(phase + dphx) * amp) >> 12)) * sy) >> 12);
                 }
-                p += dphy;
-                ft4->y2 = y + ((((yo - dy) + ((ex->math_sin(p) * amp) >> 12)) * sy) >> 12);
-                ft4->y3 = y + ((((yo - dy) + ((ex->math_sin(p + dphx) * amp) >> 12)) * sy) >> 12);
-                p -= dphy;
+                phase += dphy;
+                ft4->y2 = y + ((((yo - dy) + ((ex->math_sin(phase) * amp) >> 12)) * sy) >> 12);
+                ft4->y3 = y + ((((yo - dy) + ((ex->math_sin(phase + dphx) * amp) >> 12)) * sy) >> 12);
+                phase -= dphy;
                 ft4->tpage = tpage;
                 ft4->clut = clut;
                 ft4->u0 = ft4->u2 = u0;
@@ -280,21 +280,21 @@ void fx_0e1_0_drawWaveQuadGrid(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32
                 ex->btlfx_addPrim(0x09000000, ot, ft4);
                 ft4++;
             } else {
-                gt4->x0 = px + ((ex->math_sin(p) * amp) >> 12);
-                gt4->x2 = px + ((ex->math_sin(p + dphy) * amp) >> 12);
-                gt4->x1 = (px + dx) + ((ex->math_sin(p + dphx) * amp) >> 12);
-                gt4->x3 = (px + dx) + ((ex->math_sin(p + dphy + dphx) * amp) >> 12);
+                gt4->x0 = px + ((ex->math_sin(phase) * amp) >> 12);
+                gt4->x2 = px + ((ex->math_sin(phase + dphy) * amp) >> 12);
+                gt4->x1 = (px + dx) + ((ex->math_sin(phase + dphx) * amp) >> 12);
+                gt4->x3 = (px + dx) + ((ex->math_sin(phase + dphy + dphx) * amp) >> 12);
                 if (j == 0) {
                     gt4->y1 = y;
                     gt4->y0 = y;
                 } else {
-                    gt4->y0 = y + (((yo + ((ex->math_sin(p) * amp) >> 12)) * sy) >> 12);
-                    gt4->y1 = y + (((yo + ((ex->math_sin(p + dphx) * amp) >> 12)) * sy) >> 12);
+                    gt4->y0 = y + (((yo + ((ex->math_sin(phase) * amp) >> 12)) * sy) >> 12);
+                    gt4->y1 = y + (((yo + ((ex->math_sin(phase + dphx) * amp) >> 12)) * sy) >> 12);
                 }
-                p += dphy;
-                gt4->y2 = y + ((((yo - dy) + ((ex->math_sin(p) * amp) >> 12)) * sy) >> 12);
-                gt4->y3 = y + ((((yo - dy) + ((ex->math_sin(p + dphx) * amp) >> 12)) * sy) >> 12);
-                p -= dphy;
+                phase += dphy;
+                gt4->y2 = y + ((((yo - dy) + ((ex->math_sin(phase) * amp) >> 12)) * sy) >> 12);
+                gt4->y3 = y + ((((yo - dy) + ((ex->math_sin(phase + dphx) * amp) >> 12)) * sy) >> 12);
+                phase -= dphy;
                 gt4->tpage = tpage;
                 gt4->clut = clut;
                 gt4->u0 = gt4->u2 = u0;
@@ -314,16 +314,16 @@ void fx_0e1_0_drawWaveQuadGrid(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32
 static s32 fx_0e1_0_op80SpawnPoint(SVECTOR *out) {
     Unk800F78A4 *env = fx_0e1_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 n;
+    s32 boneIdx;
 
     if (fx_0e1_0_boneSpawnOn != 0) {
         out->pad = 1;
-        n = fx_0e1_0_spawnIndex;
-        ex->Hi_GetSummonBonePos(((Fx0e10EnvB *)env->loader)->summonModel60, fx_0e1_0_spawnBones[n++], (u16 *)out);
-        if (n >= 5) {
-            n = 0;
+        boneIdx = fx_0e1_0_spawnIndex;
+        ex->Hi_GetSummonBonePos(((Fx0e10EnvB *)env->loader)->summonModel60, fx_0e1_0_spawnBones[boneIdx++], (u16 *)out);
+        if (boneIdx >= 5) {
+            boneIdx = 0;
         }
-        fx_0e1_0_spawnIndex = n;
+        fx_0e1_0_spawnIndex = boneIdx;
     } else {
         out->vx = 10000;
         out->vy = 10000;
@@ -347,14 +347,14 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     VECTOR sc;
     VECTOR pos;
     VECTOR sc2;
-    SVECTOR b;
+    SVECTOR boneB;
     CVECTOR col2;
     SVECTOR rot2;
     VECTOR sc3;
     Pool6CEntry *emitter;
     s32 frame;
-    s32 k;
-    s32 r;
+    s32 bright;
+    s32 radius;
     s32 i;
     s32 glow;
     s32 rib;
@@ -415,31 +415,31 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->ribbonReset4C = mode;
     } else {
         glow = 0;
-        k = 0;
+        bright = 0;
         rib = 0;
         wave = 0;
         frame = entry->frame;
         wave2 = 0;
         switch (work->state0) {
         case 0:
-            k = 0x1000;
+            bright = 0x1000;
             if (frame < 0x10) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xFF - ((frame * 0xFF) >> 4),
                                          0xFF - ((frame * 0xFF) >> 4), 0xFF - ((frame * 0xFF) >> 4));
             }
             if (frame < 0x2E) {
-                work->morphScale78.vx = work->morphScale78.vy = work->morphScale78.vz = k;
-                r = ex->math_cos((frame << 10) / 46);
-                work->morphPos6C.vx = fx_0e1_0_origin.vx + ((ex->math_cos(work->frame4 << 8) * r) >> 17);
-                work->morphPos6C.vy = fx_0e1_0_origin.vx + ((ex->math_sin(work->frame4 << 8) * r) >> 17);
+                work->morphScale78.vx = work->morphScale78.vy = work->morphScale78.vz = bright;
+                radius = ex->math_cos((frame << 10) / 46);
+                work->morphPos6C.vx = fx_0e1_0_origin.vx + ((ex->math_cos(work->frame4 << 8) * radius) >> 17);
+                work->morphPos6C.vy = fx_0e1_0_origin.vx + ((ex->math_sin(work->frame4 << 8) * radius) >> 17);
                 /* i doubles as the morph blend: r must stay single-set (sched1 then births its copy from v0 after
                    the second math_cos pointer load, as in the original) */
                 i = 0x2000;
             } else {
-                s32 v = ex->math_cos(((frame - 0x2E) << 10) / 18);
+                s32 ease = ex->math_cos(((frame - 0x2E) << 10) / 18);
 
-                i = v * 2;
-                work->morphScale78.vx = work->morphScale78.vy = work->morphScale78.vz = k - (((k - v) * 0xF00) >> 12);
+                i = ease * 2;
+                work->morphScale78.vx = work->morphScale78.vy = work->morphScale78.vz = bright - (((bright - ease) * 0xF00) >> 12);
             }
             if (i > 0x1000) {
                 ex->Hi_DrawMorphEffModel(&work->rot64, (VECTOR *)&work->morphPos6C, (s32)&work->morphScale78, work->model50, work->model54,
@@ -487,7 +487,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         case 1:
             t = frame << 7;
-            k = 0x1000;
+            bright = 0x1000;
             glow = 0x1000;
             ex->Hi_DrawEffModel(&work->rot64, (VECTOR *)&work->morphPos6C, (s32)&work->morphScale78, work->model58);
             ex->Hi_ModifyEffModelAbr(work->model58, 1);
@@ -511,7 +511,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 0x10) {
                 work->summonPos10.vy -= 0x80;
             }
-            k = 0x1000;
+            bright = 0x1000;
             if (frame == 0x50) {
                 ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->summonModel60, 0x5A);
                 fx_0e1_0_boneSpawnOn = 1;
@@ -530,12 +530,12 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 fx_0e1_0_boneSpawnOn = 0;
             }
             if (fx_0e1_0_boneSpawnOn != 0) {
-                s32 d = ((ex->math_sin((frame << 11) / 159) * 3) >> 2) + 0x400;
+                s32 ringAlpha = ((ex->math_sin((frame << 11) / 159) * 3) >> 2) + 0x400;
 
                 env->otZ = 0xF5;
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, 0, (u16 *)&work->pos34);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos34, NULL, 0x1000, 0, 1,
-                                  d);
+                                  ringAlpha);
                 env->otZ = 0;
             }
             if (frame == 0) {
@@ -554,17 +554,17 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if ((u32)(frame - 0x7F) <= 0x10) {
-                s32 d = (frame - 0x7F) << 12;
-                s32 e = d >> 4;
+                s32 fadeT = (frame - 0x7F) << 12;
+                s32 fadeAlpha = fadeT >> 4;
 
                 if (work->emit44 != NULL) {
-                    work->emit44->alpha = 0x1000 - e;
+                    work->emit44->alpha = 0x1000 - fadeAlpha;
                     if (work->emit44 != NULL) {
-                        work->emit44->scale = 0x1000 - (d >> 5);
+                        work->emit44->scale = 0x1000 - (fadeT >> 5);
                     }
                 }
                 if (work->emit48 != NULL) {
-                    work->emit48->alpha = 0x1000 - e;
+                    work->emit48->alpha = 0x1000 - fadeAlpha;
                 }
                 if (frame - 0x7F == 0x10) {
                     ex->btlfx_stopEmitter(work->emit44);
@@ -574,14 +574,14 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 0x87) {
                 glow = 0x1000;
             } else {
-                s32 d = frame - 0x87;
+                s32 fadeT = frame - 0x87;
 
-                d = (d << 12) / 24;
+                fadeT = (fadeT << 12) / 24;
 
-                k = 0x1000 - d;
-                wave2 = d;
+                bright = 0x1000 - fadeT;
+                wave2 = fadeT;
                 wave = wave2;
-                glow = k;
+                glow = bright;
             }
             if (frame >= 0x9F) {
                 work->state0 = 3;
@@ -640,11 +640,11 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                           wave2 >> 7, 0x16, work->frame4 << 6, 0x200, 0x302);
             ex->btlfx_drawScrollMove(10000 - work->frame4 * 4, 0x2F0, 0x100, 0x10, 0x80, 0x2E0, 0x100);
         }
-        if (k != 0) {
+        if (bright != 0) {
             ex->btlfx_sampleGradient(fx_0e1_0_gradient, &col, work->frame4 & 0x1F);
-            col.r = ((k * col.r) >> 11) / 3;
-            col.g = ((k * col.g) >> 11) / 3;
-            col.b = ((k * col.b) >> 11) / 3;
+            col.r = ((bright * col.r) >> 11) / 3;
+            col.g = ((bright * col.g) >> 11) / 3;
+            col.b = ((bright * col.b) >> 11) / 3;
             ex->Hi_DrawEffModel(&work->rot9C, (VECTOR *)&work->pos84, (s32)&work->scale90, work->model60);
             ex->Hi_ModifyEffModelRGB(work->model60, col.r - 0x80, col.g - 0x80, col.b - 0x80);
             work->rot9C.vy += 0x10;
@@ -684,14 +684,14 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->ribbonReset4C = 0;
                 for (i = 0; i < 4; i++) {
                     ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneA0, (u16 *)&sc);
-                    ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneB4, (u16 *)&b);
-                    fxm_drawTexRibbonTrail((SVECTOR *)&sc, &b, 0x3FC, 0, 0, 0, 0, 0, 0, 0, fx_0e1_0_ribbons[i], 1, 0);
+                    ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneB4, (u16 *)&boneB);
+                    fxm_drawTexRibbonTrail((SVECTOR *)&sc, &boneB, 0x3FC, 0, 0, 0, 0, 0, 0, 0, fx_0e1_0_ribbons[i], 1, 0);
                 }
             }
             for (i = 0; i < 4; i++) {
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneA0, (u16 *)&sc);
-                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneB4, (u16 *)&b);
-                fxm_drawTexRibbonTrail((SVECTOR *)&sc, &b, 0x14, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80, ((rib >> 5) * 2) / 3, fx_0e1_0_ribbons[i], 1,
+                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, fx_0e1_0_ribbonBones[i].boneB4, (u16 *)&boneB);
+                fxm_drawTexRibbonTrail((SVECTOR *)&sc, &boneB, 0x14, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80, ((rib >> 5) * 2) / 3, fx_0e1_0_ribbons[i], 1,
                               10000 - work->frame4);
             }
             env->otZ = 0;
