@@ -301,27 +301,7 @@ s32 party_getNextMember(s32 i) {
 }
 
 void chr_updateStats(Character *c) {
-    EquipStatsIn in;
-    EquipStatsOut out;
-
-    in.base = *(Bytes8 *)&c->baseMaxHp;
-    in.hp = c->hp;
-    in.mp = c->mp;
-    in.support = *(Words2 *)c->supportAbilities;
-    in.equip = *(Bytes5 *)c->equip;
-    chr_calcEquipStats(&in, &out);
-    c->speed = out.stats[0];
-    c->strength = out.stats[1];
-    c->magic = out.stats[2];
-    c->spirit = out.stats[3];
-    c->defense = out.defs[1];
-    c->evade = out.defs[2];
-    c->magicDef = out.defs[3];
-    c->magicEva = out.defs[4];
-    c->hp = out.hp;
-    c->mp = out.mp;
-    c->maxHp = out.maxHp;
-    c->maxMp = out.maxMp;
+    chr_updateStats_inline(c);
 }
 
 s32 chr_getClass(u32 x) {
@@ -678,8 +658,7 @@ u8 chr_hasSupportAbility(s32 ch, s32 id) {
 }
 
 u8 chr_testSupportBit(u32 *bits, s32 ability) {
-    ability -= 0xC0;
-    return (bits[ability >> 5] & (1 << (ability & 0x1F))) != 0;
+    return chr_testSupportBit_inline(bits, ability);
 }
 
 u8 chr_canLearnAbilities(Character *c) {

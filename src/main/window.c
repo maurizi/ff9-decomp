@@ -356,12 +356,7 @@ Window *win_open(RECT *r, s32 otz, s32 style, u32 slot) {
 }
 
 void win_close(Window *w) {
-    if (w != NULL && w->state != WIN_STATE_CLOSED && w->state != WIN_STATE_CLOSING) {
-        w->state = WIN_STATE_CLOSING;
-        if (g_drawBufs.uiMode != 2) {
-            win_setCloseAnim(w, w->animMode);
-        }
-    }
+    win_close_inline(w);
 }
 
 void win_closeAll(void) {

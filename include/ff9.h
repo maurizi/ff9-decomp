@@ -2778,19 +2778,6 @@ extern CdRequest g_cdRetryRequest;
 extern CdRequest g_cdRestartRequest;
 extern EvtObject *g_evtActor;
 
-/* Same as evt_getArg8_inline, but written as `>>= (g_evtArgRead = 1)` (srav). */
-static inline s32 evt_getArg8_inline2(void) {
-    s32 r;
-    if (g_evtArgFlags & 1) {
-        evt_evalExpr();
-        r = evt_popResult();
-    } else {
-        r = *g_evtCurObj->ip++;
-    }
-    g_evtArgFlags >>= (g_evtArgRead = 1);
-    return r;
-}
-
 /* Inlined copy of evt_resolveObjectId (resolve a script object reference). */
 static inline EvtObject *evt_resolveObjectId_inline(s32 id) {
     if (id == 0xFF) {
@@ -3226,9 +3213,9 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, 
     DrTpageWords *t;
     setlen(s, 4);
     if (flag) {
-        s->rgbc = 0x66606060;
+        s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     } else {
-        s->rgbc = 0x64808080;
+        s->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
     }
     s->xy = (x & 0xFFFF) | (y << 16);
     s->uvclut = d->uvclut;
@@ -3237,7 +3224,7 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, 
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = (d->tpage & 0x9FF) | 0xE1000600;
+    t->code = get_mode(1, 1, d->tpage);
     addPrim(ot, t);
     *outWidth = d->w;
     s = (SprtWords *)(t + 1);

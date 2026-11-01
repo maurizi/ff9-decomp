@@ -840,24 +840,7 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *outWidth, void *p
 }
 
 u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *outWidth, SprtWords *s) {
-    DrTpageWords *t;
-    setlen(s, 4);
-    if (flag) {
-        s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
-    } else {
-        s->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
-    }
-    s->xy = (x & 0xFFFF) | (y << 16);
-    s->uvclut = d->uvclut;
-    s->wh = d->w | (d->h << 16);
-    addPrim(ot, s);
-    s++;
-    t = (DrTpageWords *)s;
-    setlen(t, 1);
-    t->code = get_mode(1, 1, d->tpage);
-    addPrim(ot, t);
-    *outWidth = d->w;
-    return (u8 *)(t + 1);
+    return ui_buildSpriteDef_inline(x, y, ot, d, flag, outWidth, s);
 }
 
 void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {

@@ -518,7 +518,7 @@ void menuChocograph_drawIcon(s32 x, s32 y, s32 z, s32 icon, u8 flag) {
 }
 
 s32 menuChocograph_getRequiredAbility(s32 id) {
-    return s_menuChocographRequiredAbility[id];
+    return menuChocograph_getRequiredAbility_inline(id);
 }
 
 void menuChocograph_scrollTo(s32 idx) {

@@ -786,21 +786,7 @@ CardSlot *menuCard_findCachedImage(s32 id) {
 }
 
 void menuCard_showCachedImage(CardSlot *s) {
-    RECT a, b;
-    u32 n = s->vram;
-
-    a.x = 0;
-    a.w = 0x100;
-    a.h = 1;
-    b.w = 0x13;
-    b.h = 0x2F;
-    a.y = n + 0x1F4;
-    b.x = (u8)(n % 3) * 0x13;
-    b.y = (u8)(n / 3) * 0x2F + 0x100;
-    MoveImage(&a, 0, 0x1F2);
-    MoveImage(&b, 0x3C0, 0x1B0);
-    DrawSync(0);
-    s_menuCard.cache.shown = s->id;
+    menuCard_showCachedImage_inline(s);
 }
 
 void menuCard_loadImages(void) {

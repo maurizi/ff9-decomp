@@ -127,7 +127,7 @@ s32 evt_getSysVar(s32 op) {
 }
 
 EvtObject *evt_getObjectArg(void) {
-    return evt_resolveObjectId_inline(evt_getArg8_inline2());
+    return evt_resolveObjectId_inline(evt_getArg8_inline());
 }
 
 /* Find the entry point for `key` in script `idx`. */
@@ -3645,47 +3645,15 @@ EvtListNode *evt_getBattleObjects(void) {
 }
 
 s32 evt_getArg8(void) {
-    s32 r;
-    if (g_evtArgFlags & 1) {
-        evt_evalExpr();
-        r = evt_popResult();
-    } else {
-        r = *g_evtCurObj->ip++;
-    }
-    g_evtArgFlags >>= 1;
-    g_evtArgRead = 1;
-    return r;
+    return evt_getArg8_inline();
 }
 
 s32 evt_getArg16(void) {
-    s32 r;
-    if (g_evtArgFlags & 1) {
-        evt_evalExpr();
-        r = evt_popResult();
-    } else {
-        EvtObject *pp = g_evtCurObj;
-        r = *pp->ip++;
-        r |= *pp->ip++ << 8;
-        r = (s16)r;
-    }
-    g_evtArgFlags >>= 1;
-    g_evtArgRead = 1;
-    return r;
+    return evt_getArg16_inline();
 }
 
 s32 evt_getObjectModelData(EvtObject *p) {
-    s32 *q;
-
-    if (p != NULL) {
-        if (p->modelId == EVT_MODEL_NONE) {
-            return 0;
-        }
-        q = (s32 *)game_getModel(p->modelSlot);
-        if (q != NULL) {
-            return q[2];
-        }
-    }
-    return 0;
+    return (s32)evt_getObjectModelData_inline(p);
 }
 
 EvtObject *evt_getObject(s32 id) {
@@ -3772,9 +3740,7 @@ void evt_initObjectList(void) {
 }
 
 void evt_createRegion(s32 scriptIdx, s32 id) {
-    EvtObject *obj = evt_createObject(scriptIdx, id, 0x38, 0x10);
-    obj->kind = EVT_KIND_REGION;
-    obj->flags = EVT_OBJ_ENABLED;
+    evt_createRegion_inline(scriptIdx, id);
 }
 
 u16 evt_getBattleVar(s32 var) {
@@ -3895,20 +3861,7 @@ s32 evt_isInParty(s32 slot) {
 }
 
 s32 evt_getArg24(void) {
-    s32 v;
-    EvtObject *pp;
-
-    if (g_evtArgFlags & 1) {
-        evt_evalExpr();
-        v = evt_popResult();
-    } else {
-        pp = g_evtCurObj;
-        v = *pp->ip++;
-        v |= *pp->ip++ << 8;
-        v |= *pp->ip++ << 16;
-    }
-    g_evtArgFlags >>= (g_evtArgRead = 1);
-    return v;
+    return evt_getArg24_inline();
 }
 
 void evt_finishTurn(EvtObject *p) {
