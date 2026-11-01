@@ -114,7 +114,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 t;
     s32 ratio;
     s32 fadeAng;
-    s32 k;
+    s32 unused;
     s32 i;
     Pool6CEntry *emitter;
     SVECTOR *ribbonA;

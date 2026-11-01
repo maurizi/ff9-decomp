@@ -43,7 +43,7 @@ s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, 
 s32 fx_040_flyToTarget(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_040_env);
     s32 span;
-    s32 r;
+    s32 unused;
 
     if (ex->btlfx_rand() & 1) {
         target->vx += ex->btlfx_rand() % 300;

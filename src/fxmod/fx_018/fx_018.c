@@ -17,8 +17,8 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 glow;
     s32 sparkAlpha;
     s32 frame;
-    s32 c;
-    s32 a;
+    s32 unused0;
+    s32 unused1;
     s32 radius;
     s32 i;
     s32 animFrame;

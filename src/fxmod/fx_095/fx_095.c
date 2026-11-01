@@ -10,7 +10,7 @@ static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk8
     s32 glowFrame;
     s32 abr;
     s32 t;
-    s32 r;
+    s32 unused;
     s32 x;
     s32 y;
 
@@ -226,7 +226,7 @@ void fx_095_drawTexDisc(s32 ot, s32 x, s32 y, s32 outerR, s32 bright, RECT *rect
     CVECTOR col;
     CVECTOR col2;
     s32 ang;
-    s32 c2;
+    s32 unused;
     s32 cu;
     s32 cv;
 

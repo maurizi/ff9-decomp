@@ -104,7 +104,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 spriteOfs;
     s32 camZ;
     s32 camY;
-    s32 d;
+    s32 unused;
     s32 camShift;
     s32 shake;
     s32 bright;

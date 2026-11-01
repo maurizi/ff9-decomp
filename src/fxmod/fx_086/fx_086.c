@@ -270,8 +270,8 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             SVECTOR streakDir;
             CVECTOR col;
             s32 travel;
-            s32 c;
-            s32 a;
+            s32 unused0;
+            s32 unused1;
             s32 fadeIn;
             s32 jitter;
             s32 otz;
