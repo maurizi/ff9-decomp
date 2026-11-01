@@ -561,16 +561,17 @@ u32 wm_loadActorModel(s32 modelId, EvtObject *actor) {
     WmObjSlot *objSlot;
     u32 id;
     WmAnimHdr *h;
-    s32 tmp;
+    s32 chrIdx;
+    s32 rotKeysOfs;
     WmModel *mdl;
     WmModelGroup *grp;
     u32 i;
     s32 primSize;
 
-    tmp = evt_getObjectChrIndex(actor);
-    if ((u32)tmp < 9) {
-        id = tmp;
-        objSlot = (WmObjSlot *)game_getModel(tmp);
+    chrIdx = evt_getObjectChrIndex(actor);
+    if ((u32)chrIdx < 9) {
+        id = chrIdx;
+        objSlot = (WmObjSlot *)game_getModel(chrIdx);
     } else {
         id = g_gameState->gameData->npcModelSlots + 9;
         objSlot = (WmObjSlot *)game_getModel(id);
@@ -581,10 +582,10 @@ u32 wm_loadActorModel(s32 modelId, EvtObject *actor) {
     if ((objSlot->model->anim = db_lookupRegistered(DB_GET_ADDR, wm_findDefaultAnim(objSlot->modelId), 0)) != NULL) {
         h = objSlot->model->anim;
         if (IS_OFFSET(h->rotKeys)) {
-            tmp = h->rotKeysLo;
+            rotKeysOfs = h->rotKeysLo;
             h->rotKeys = (s32)h + h->rotKeys;
-            if (tmp != 0) {
-                h->rotKeysLo = (s32)objSlot->model->anim + tmp;
+            if (rotKeysOfs != 0) {
+                h->rotKeysLo = (s32)objSlot->model->anim + rotKeysOfs;
             }
         }
     }
@@ -794,7 +795,8 @@ s32 wm_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     s32 kind;
     s32 id;
     s32 h;
-    s32 tmp;
+    s32 link;
+    s32 readLen;
     s32 seqBytes;
     s32 sz;
     s32 seqOffset;
@@ -845,8 +847,8 @@ s32 wm_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                 g_gameState->gameData->flags |= (GD_MUSIC2_LOADED | GD_MUSIC2_PLAYING);
                 goto done;
             }
-            tmp = wm_depGetLink(id);
-            if (g_gameState->gameData->musicId[0] != soundId || g_gameState->gameData->musicBank[0] != (u16)tmp || (g_gameState->gameData->flags & GD_MUSIC2_PLAYING)) {
+            link = wm_depGetLink(id);
+            if (g_gameState->gameData->musicId[0] != soundId || g_gameState->gameData->musicBank[0] != (u16)link || (g_gameState->gameData->flags & GD_MUSIC2_PLAYING)) {
                 if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                     g_gameState->gameData->flags |= GD_MUSIC_STOP_PENDING;
                 }
@@ -857,7 +859,7 @@ s32 wm_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                     g_gameState->gameData->flags &= ~GD_MUSIC_LOADED;
                 }
                 g_gameState->gameData->flags &= ~(GD_MUSIC_PLAYING | GD_MUSIC2_PLAYING);
-                g_gameState->gameData->musicBank[0] = tmp;
+                g_gameState->gameData->musicBank[0] = link;
                 g_gameState->gameData->musicId[0] = soundId;
                 if (!(g_gameState->gameData->flags & GD_MUSIC_LOADED)) {
                     g_worldMusicReqId = id;
@@ -1091,11 +1093,11 @@ state:
         if (seqBytes > 0) {
             memcpy(g_gameState->gameData->musicSeq, (u8 *)g_gameState->gameData->soundLoadDest + (g_gameState->gameData->soundBankSize - g_gameState->gameData->cdRead[0].offset), seqBytes);
         }
-        tmp = 0x6800 - seqBytes;
+        readLen = 0x6800 - seqBytes;
         g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + seqBytes);
-        tmp = tmp / 2048 * 2048;
+        readLen = readLen / 2048 * 2048;
         cdRead_init(g_gameState->gameData->cdRead, g_worldMusicSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
-                      g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, tmp, NULL);
+                      g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, readLen, NULL);
         g_gameState->gameData->soundLoadState = SND_LOAD_SEQ;
         break;
     case SND_LOAD_SEQ:

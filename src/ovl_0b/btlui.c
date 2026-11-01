@@ -340,22 +340,23 @@ void btlui_initPartyEntries(void) {
     BtlUnit *unit = g_gameState->gameData->ctx.battle->unitList;
     Unk80104F88Entry *entry = g_btlUi->entries;
     s8 count = 0;
-    s8 val;
+    s8 slot;
+    s8 port;
     while (unit != NULL && (unit->flags & BTL_UNIT_PARTY)) {
         unit->menu = entry;
         unit->inMenuQueue = 0;
-        val = (u8)unit->flags >> BTL_UNIT_SLOT_SHIFT;
+        slot = (u8)unit->flags >> BTL_UNIT_SLOT_SHIFT;
         entry->unit = unit;
-        entry->slot = val;
+        entry->slot = slot;
         entry->chr = &g_gameState->gameData->characters[BTL_UNIT_INDEX(unit->flags)];
         entry->learns = chr_canLearnAbilities(entry->chr);
         entry->defaultSet = chr_getAppearanceType(entry->chr->info.b.id, (entry->chr->classFlags >> 4) & 1);
         if ((g_gameState->config >> CFG_BIT_BTL_CONTROL) & 1) {
-            val = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> entry->defaultSet) & 1;
+            port = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> entry->defaultSet) & 1;
         } else {
-            val = 0;
+            port = 0;
         }
-        entry->port = val;
+        entry->port = port;
         btlui_buildAbilityList(entry);
         btlui_clearCursor(&entry->cursor);
         count++;

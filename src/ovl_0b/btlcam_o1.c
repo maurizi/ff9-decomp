@@ -82,8 +82,10 @@ void btlcam_loadScript(s32 arg) {
     u16 *sel;
     u8 *data;
     s32 i;
-    s32 tmp;
-    s32 val;
+    s32 threshold;
+    s32 ambush;
+    s32 radius;
+    s32 val; /* random rolls, target model height and the active party count in turn (separate locals don't match) */
     BtlUnit *unit;
     BtlUnit *target;
     BtlModelHeader *hdr;
@@ -129,10 +131,10 @@ void btlcam_loadScript(s32 arg) {
                     g_btlCamera.variant = 1;
                 }
             } else {
-                tmp = ((*sel >> 10) & 3) + 3;
-                if (val < tmp) {
+                threshold = ((*sel >> 10) & 3) + 3;
+                if (val < threshold) {
                     g_btlCamera.variant = 0;
-                } else if (val < tmp + 3) {
+                } else if (val < threshold + 3) {
                     g_btlCamera.variant = 1;
                 } else {
                     g_btlCamera.variant = 2;
@@ -142,9 +144,9 @@ void btlcam_loadScript(s32 arg) {
         case 2:
             switch ((*sel >> 12) & 3) {
             case 0:
-                tmp = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
-                if (tmp == BTL_AMBUSH_NORMAL) {
-                    g_btlCamera.variant = tmp;
+                ambush = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
+                if (ambush == BTL_AMBUSH_NORMAL) {
+                    g_btlCamera.variant = ambush;
                 } else {
                     g_btlCamera.variant = btlfx_randRange(0, 1);
                 }
@@ -155,16 +157,16 @@ void btlcam_loadScript(s32 arg) {
                 break;
             case 2:
                 target = g_btlCamTargets.target;
-                tmp = 0;
-                val = tmp;
+                radius = 0;
+                val = radius;
                 if (target != NULL) {
                     hdr = target->model->header;
                     val = hdr->height;
-                    tmp = hdr->radius;
+                    radius = hdr->radius;
                 }
-                if (tmp == 0x4D7 || tmp >= 0xBB8) {
+                if (radius == 0x4D7 || radius >= 0xBB8) {
                     g_btlCamera.variant = 2;
-                } else if (tmp < 0x65) {
+                } else if (radius < 0x65) {
                     g_btlCamera.variant = 0;
                 } else {
                     g_btlCamera.variant = 1;
@@ -182,9 +184,9 @@ void btlcam_loadScript(s32 arg) {
                 } else if ((g_btlCamera.focusUnit->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) || !((g_btlRewards.expMask >> ((u8)g_btlCamera.focusUnit->flags >> BTL_UNIT_SLOT_SHIFT)) & 1)) {
                     g_btlCamera.variant = 0;
                 } else {
-                    tmp = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
-                    if (tmp == BTL_AMBUSH_NORMAL) {
-                        g_btlCamera.variant = tmp;
+                    ambush = g_gameState->gameData->ctx.battle->scene.flags & BTL_SCENE_AMBUSH;
+                    if (ambush == BTL_AMBUSH_NORMAL) {
+                        g_btlCamera.variant = ambush;
                     } else {
                         val = 0;
                         for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {

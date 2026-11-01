@@ -323,8 +323,10 @@ void btlfx_endCastIfNoBounce(void) {
 s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 *args) {
     s16 targetPos[4];
     s32 step;
-    s32 val;
-    s32 tmp;
+    s32 noCast;
+    s32 fade;
+    s32 motion;
+    s32 fadeStep;
     s32 *argp;
     s32 level;
     s32 enemy;
@@ -356,17 +358,17 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
         work->castMode = ((u32)g_btlfxState.flags & BTLFX_HDR_CAST_MODE) >> BTLFX_HDR_CAST_MODE_SHIFT;
         g_btlfxState.signals.b[2] = 0;
         g_btlfxState.signals.b[3] = 0;
-        val = env->targets->kind & BTL_FXK_NO_CAST;
+        noCast = env->targets->kind & BTL_FXK_NO_CAST;
         enemy = btlfx_isEnemyUnit(work->unit);
         work->loopFrames = 100;
         btlfx_setPartyTexAnim(work->unit, 1, 0);
-        if ((val != 0 || work->kind == 0xF) && enemy == 0) {
+        if ((noCast != 0 || work->kind == 0xF) && enemy == 0) {
             work->motionMode = 2;
             work->phase = 2;
         } else if (enemy != 0) {
             work->motionMode = 1;
             work->phase = 2;
-            if (val == 0 && work->kind != 0xF) {
+            if (noCast == 0 && work->kind != 0xF) {
                 btlfx_getUnitBodyPos(work->unit, 0, work->pos);
                 work->emitter = btlfx_startCastEmitter(work->unit, 4, work->pos, work->pos2);
             } else {
@@ -383,14 +385,14 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
     switch (work->phase) {
     case 0:
         if (btlfx_stepBack(work->unit, work->target, step) != 0) {
-            tmp = work->motionMode;
-            if (tmp != 3) {
+            motion = work->motionMode;
+            if (motion != 3) {
                 btlfx_playUnitMotion(work->unit, 0x1A);
                 work->phase = 1;
                 goto set_t;
             }
             btlfx_playUnitMotion(work->unit, 0x1F);
-            work->phase = tmp;
+            work->phase = motion;
             btlfx_showCasterCmdName();
             goto set_t;
         }
@@ -420,15 +422,15 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
                 btlfx_startFadeBackground(level, work->kind == 1 ? 0xC : 0x14);
             }
         }
-        tmp = step - 9;
+        fadeStep = step - 9;
         if (work->kind == 1) {
-            if (tmp >= 0) {
-                if (tmp < 16) {
-                    val = (tmp * 255) >> 4;
+            if (fadeStep >= 0) {
+                if (fadeStep < 16) {
+                    fade = (fadeStep * 255) >> 4;
                 } else {
-                    val = 255;
+                    fade = 255;
                 }
-                if (tmp == 0) {
+                if (fadeStep == 0) {
                     work->loopFrames = btlfx_getMotionLength(work->unit);
                     if (env->targets->kind & BTL_FXK_NO_CAST) {
                         btlfx_showCasterCmdName();
@@ -436,22 +438,22 @@ s32 btlfx_opCast(s32 mode, Unk800E4C88 *work, Unk800F78A4 *env, s32 *entry, s32 
                 }
                 switch (work->castMode) {
                 case 0:
-                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, val, val, val);
-                    if (tmp == 16) {
+                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, fade, fade, fade);
+                    if (fadeStep == 16) {
                         btlfx_fadeUnitGroup(2, 0);
                     }
                     break;
                 case 1:
-                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, val, val, val);
-                    if (tmp == 16) {
+                    btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, fade, fade, fade);
+                    if (fadeStep == 16) {
                         btlfx_fadeUnitGroup(2, 0);
                     }
                     break;
                 case 2:
-                    btlfx_fadeUnitGroup(2, 0x80 - (val >> 1));
+                    btlfx_fadeUnitGroup(2, 0x80 - (fade >> 1));
                     break;
                 case 3:
-                    btlfx_fadeUnitGroup(0, 0x80 - (val >> 1));
+                    btlfx_fadeUnitGroup(0, 0x80 - (fade >> 1));
                     break;
                 }
             }
@@ -968,7 +970,7 @@ void btlfx_sampleGradient(u8 *p, CVECTOR *out, s32 x) {
     Grad *grad = (Grad *)p;
     s32 cnt = grad->count;
     s32 i;
-    s32 val;
+    s32 val; /* key length, then the blend ratio (separate locals don't match) */
 
     p += 8;
     if (grad->total == 0) {

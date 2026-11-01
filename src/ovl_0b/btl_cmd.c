@@ -885,66 +885,68 @@ void btl_execCmd(BtlUnit *target) {
 
 void btl_finishCmd(Battle *battle) {
     BtlCmd *cmd = battle->curCmd;
-    BtlUnit *unit = cmd->caster;
+    BtlUnit *caster = cmd->caster;
+    BtlUnit *member;
+    BtlUnit *target;
     u32 tranceCost;
 
     if (cmd->cmdNo < BTL_CMD_TABLE_COUNT) {
-        if ((cmd == unit->cmd && cmd->cmdNo != BTL_CMD_JUMP && cmd->cmdNo != BTL_CMD_JUMP_TRANCE) ||
-            (cmd->cmdNo == BTL_CMD_DBL_WHT && BTL_UNIT_INDEX(unit->flags) == CHR_EIKO && cmd == unit->delayedCmd && !btl_isCmdPending(unit->cmd))) {
-            unit->atb = 0;
-            unit->cmdIssued = 0;
+        if ((cmd == caster->cmd && cmd->cmdNo != BTL_CMD_JUMP && cmd->cmdNo != BTL_CMD_JUMP_TRANCE) ||
+            (cmd->cmdNo == BTL_CMD_DBL_WHT && BTL_UNIT_INDEX(caster->flags) == CHR_EIKO && cmd == caster->delayedCmd && !btl_isCmdPending(caster->cmd))) {
+            caster->atb = 0;
+            caster->cmdIssued = 0;
         } else if (cmd->cmdNo == BTL_CMD_SPEAR) {
-            btl_removeStatus(unit, BTL_STATUS_JUMP);
+            btl_removeStatus(caster, BTL_STATUS_JUMP);
             g_gameState->gameData->ctx.battle->cmdFlags &= ~BTL_CMDF_SPEAR;
         } else if (cmd->cmdNo == BTL_CMD_SPEAR_TRANCE) {
-            btl_addStatus(unit, BTL_STATUS_JUMP);
-            unit->targetableReq = BTL_TGTREQ_SET_OFF;
-            unit->flags |= BTL_UNIT_HIDDEN;
+            btl_addStatus(caster, BTL_STATUS_JUMP);
+            caster->targetableReq = BTL_TGTREQ_SET_OFF;
+            caster->flags |= BTL_UNIT_HIDDEN;
             g_gameState->gameData->ctx.battle->cmdFlags &= ~BTL_CMDF_SPEAR;
         }
-        if ((unit->status & BTL_STATUS_TRANCE) && cmd->cmdNo != BTL_CMD_JUMP && cmd->cmdNo != BTL_CMD_JUMP_TRANCE) {
-            tranceCost = (0x12C - unit->level) / unit->spirit * 10;
+        if ((caster->status & BTL_STATUS_TRANCE) && cmd->cmdNo != BTL_CMD_JUMP && cmd->cmdNo != BTL_CMD_JUMP_TRANCE) {
+            tranceCost = (0x12C - caster->level) / caster->spirit * 10;
             if (cmd->cmdNo == BTL_CMD_DBL_WHT || cmd->cmdNo == BTL_CMD_DBL_BLK) {
                 tranceCost = (u8)tranceCost >> 1;
             }
-            if ((u8)tranceCost < unit->trance) {
-                unit->trance -= tranceCost;
+            if ((u8)tranceCost < caster->trance) {
+                caster->trance -= tranceCost;
             } else {
-                btl_removeStatus(unit, BTL_STATUS_TRANCE);
+                btl_removeStatus(caster, BTL_STATUS_TRANCE);
             }
             if (cmd->cmdNo == BTL_CMD_EIDOLON && battle->eidolonAbility != 0) {
                 battle->cmdFlags |= BTL_CMDF_EIDOLON_TIMER;
-                battle->eidolonTimer = (0x3C - unit->spirit) * 200;
+                battle->eidolonTimer = (0x3C - caster->spirit) * 200;
             }
         }
     } else if (cmd->cmdNo == BTL_CMD_TRANCE_EIDOLON) {
         battle->cmdFlags &= ~BTL_CMDF_EIDOLON_QUEUED;
-        battle->eidolonTimer = (0x3C - unit->spirit) * 200;
-    } else if (cmd->cmdNo < BTL_CMD_ENEMY_COUNTER && btl_isCmdPending(unit->cmd)) {
-        unit->flags |= BTL_UNIT_CMD_WAITING;
+        battle->eidolonTimer = (0x3C - caster->spirit) * 200;
+    } else if (cmd->cmdNo < BTL_CMD_ENEMY_COUNTER && btl_isCmdPending(caster->cmd)) {
+        caster->flags |= BTL_UNIT_CMD_WAITING;
     }
     if (cmd->info.b.covered) {
-        for (unit = g_gameState->gameData->ctx.battle->unitList; unit != NULL; unit = unit->next) {
-            if (unit->flags & BTL_UNIT_PARTY) {
-                unit->pos[0] = unit->home->pos[0];
-                unit->pos[1] = unit->home->pos[1];
-                unit->pos[2] = unit->home->pos[2];
-                if ((unit->flags >> BTL_UNIT_COVERING_BIT) & 1) {
-                    unit->flags &= ~BTL_UNIT_COVERING;
-                    btl_setIdleMotion(unit);
+        for (member = g_gameState->gameData->ctx.battle->unitList; member != NULL; member = member->next) {
+            if (member->flags & BTL_UNIT_PARTY) {
+                member->pos[0] = member->home->pos[0];
+                member->pos[1] = member->home->pos[1];
+                member->pos[2] = member->home->pos[2];
+                if ((member->flags >> BTL_UNIT_COVERING_BIT) & 1) {
+                    member->flags &= ~BTL_UNIT_COVERING;
+                    btl_setIdleMotion(member);
                 }
             }
         }
     }
     if (cmd->info.b.dodged) {
-        unit = btl_getUnitById(cmd->targets);
-        unit->flags &= ~BTL_UNIT_DODGED;
-        if (unit->flags & BTL_UNIT_PARTY) {
-            btl_setIdleMotion(unit);
-        } else if ((unit->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
-            unit = btl_findBodyUnit();
+        target = btl_getUnitById(cmd->targets);
+        target->flags &= ~BTL_UNIT_DODGED;
+        if (target->flags & BTL_UNIT_PARTY) {
+            btl_setIdleMotion(target);
+        } else if ((target->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
+            target = btl_findBodyUnit();
         }
-        unit->pos[2] = unit->home->pos[2];
+        target->pos[2] = target->home->pos[2];
     }
     btl_clearCmd_inline(cmd);
     battle->curCmd = NULL;

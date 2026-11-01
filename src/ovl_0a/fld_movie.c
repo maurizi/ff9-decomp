@@ -370,7 +370,7 @@ void fld_drawModels(void) {
     s32 j1;
     s32 cnt;
     s32 lim;
-    s32 bits;
+    s32 bits; /* the slot's FLD_OBJ_CLIP_Y flag, then the mesh group's bit (separate locals don't match) */
     ModelObj *mdl;
     EvtObject *actor;
     FieldObjSlot *slot;

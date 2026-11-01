@@ -703,7 +703,7 @@ void btlfx_drawAnimQuads(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fr
     SVECTOR zeroRot;
     MATRIX mat;
     Unk800D3ED4Ctx ctx;
-    s32 val;
+    s32 val; /* frame count, then the palette table offset, then the frame data offset (separate locals don't match) */
     u16 *palTab;
     u8 *prim;
     u8 *pal;
@@ -768,7 +768,7 @@ void btlfx_drawSprites(u8 *data, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 fram
     MATRIX mat;
     Unk800D3ED4Ctx ctx;
     s32 z;
-    s32 val;
+    s32 val; /* frame count, then the palette table offset, then the frame data offset (separate locals don't match) */
     u16 *palTab;
     s32 off;
     u8 *prim;
@@ -1138,7 +1138,7 @@ void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alp
     u32 *mode;
     u8 *ctab;
     Unk800D1D74Hdr *h = (Unk800D1D74Hdr *)data;
-    s32 val;
+    s32 val; /* frame count, then the palette table offset, then the frame data offset (separate locals don't match) */
     u16 *palTab;
     u16 *pal;
     s32 off;
@@ -1150,7 +1150,7 @@ void btlfx_drawBackdropSprite(u8 *data, s32 x, s32 y, s32 frame, s32 tp, s32 alp
     u8 *colEntry;
     s32 attr;
     s32 tpage;
-    s32 tmp;
+    s32 tmp; /* frame index, then the palette entry count, then the uv table offset (separate locals don't match) */
     s32 clut;
 
     val = h->frameCount & 0x7FFF;

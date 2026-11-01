@@ -256,7 +256,9 @@ void *evt_findNearestObject(EvtObject *obj, s32 flags, s32 *dist) {
     s32 dx, dz;
     s32 rr;
     s32 distSq;
-    s32 tmp;
+    s32 flagByte;
+    s32 cosA;
+    s32 angleDiff;
     u8 otherFlags;
     u8 objFlags;
     s32 key;
@@ -281,9 +283,9 @@ void *evt_findNearestObject(EvtObject *obj, s32 flags, s32 *dist) {
                 selfSkip = 1;
             }
         }
-        tmp = other->flags;
+        flagByte = other->flags;
         if (best) {
-            otherFlags = tmp;
+            otherFlags = flagByte;
         } else {
             otherFlags = other->flags;
         }
@@ -326,8 +328,8 @@ void *evt_findNearestObject(EvtObject *obj, s32 flags, s32 *dist) {
             }
         }
         if (cand->collisionEllipse != 0) {
-            tmp = math_cos(evt_angleToObject(cand, obj, cand->pos.rotY));
-            rr = (rr * math_isqrt(((tmp * tmp) >> 4) * cand->collisionEllipse + 0x1000000)) >> 12;
+            cosA = math_cos(evt_angleToObject(cand, obj, cand->pos.rotY));
+            rr = (rr * math_isqrt(((cosA * cosA) >> 4) * cand->collisionEllipse + 0x1000000)) >> 12;
         }
         rr += radius;
         if (flags & 6) {
@@ -335,13 +337,13 @@ void *evt_findNearestObject(EvtObject *obj, s32 flags, s32 *dist) {
         }
         distSq = math_distSq2(dx, dz, rr);
         if (back) {
-            tmp = evt_angleToObject(obj, cand, obj->pos.rotY);
-            if (tmp < 0) {
-                tmp = -tmp;
+            angleDiff = evt_angleToObject(obj, cand, obj->pos.rotY);
+            if (angleDiff < 0) {
+                angleDiff = -angleDiff;
             }
-            tmp -= 640;
-            distSq += tmp;
-            if (tmp >= 0) {
+            angleDiff -= 640;
+            distSq += angleDiff;
+            if (angleDiff >= 0) {
                 continue;
             }
         }
@@ -2620,7 +2622,8 @@ void evt_updateLookAt(EvtObject *obj) {
     EvtListNode *node;
     u8 lookMask;
     s32 bestd;
-    s32 val;
+    s32 score;
+    s32 relAngle;
     s32 angle;
     s32 ok;
 
@@ -2648,18 +2651,18 @@ void evt_updateLookAt(EvtObject *obj) {
                 other = node->obj;
                 if (other != obj && other->kind == EVT_KIND_ACTOR && (u32)(other->pos.vy - y + 399) < 799 && (other->moveFlags & EVT_MOVE_LOOK_TARGET) &&
                     (lookMask & other->lookParam0)) {
-                    val = math_distSq2(other->pos.vx - x, other->pos.vz - z, 0);
-                    if (val >= 1000) {
+                    score = math_distSq2(other->pos.vx - x, other->pos.vz - z, 0);
+                    if (score >= 1000) {
                         angle = evt_angleToObject(obj, other, obj->pos.rotY);
-                        val -= 4000000;
+                        score -= 4000000;
                         if (angle < 0) {
                             angle = -angle;
                         }
                         angle -= 640;
                         if (angle < 0) {
-                            val += angle;
-                            if (val < bestd) {
-                                bestd = val;
+                            score += angle;
+                            if (score < bestd) {
+                                bestd = score;
                                 best = other;
                             }
                         }
@@ -2684,16 +2687,16 @@ void evt_updateLookAt(EvtObject *obj) {
                     point.vy = tgt->pos.vy;
                     point.vz = tgt->pos.vz;
                     ang = math_atan2(point.vx - obj->pos.vx, point.vz - obj->pos.vz);
-                    val = (ang - obj->pos.rotY) & 0xFFF;
-                    if (val > 0x800) {
-                        val -= 0x1000;
+                    relAngle = (ang - obj->pos.rotY) & 0xFFF;
+                    if (relAngle > 0x800) {
+                        relAngle -= 0x1000;
                     }
-                    if ((u32)(val + 0x27F) < 0x4FF) {
+                    if ((u32)(relAngle + 0x27F) < 0x4FF) {
                         point.vy = (((obj->pos.vy << 6) + obj->height * (s8)obj->scale) * 3 + (point.vy << 6) +
                                 tgt->height * (s8)tgt->scale) >> 8;
                         evt_updateLookAt_approach(obj, mdl, &point);
                     } else if (evt_callTurnScript(obj, ang)) {
-                        angle = val > 0x280 ? 0x280 : -0x280;
+                        angle = relAngle > 0x280 ? 0x280 : -0x280;
                         evt_updateLookAt_ahead(obj, angle + obj->pos.rotY, &point);
                         evt_updateLookAt_approach(obj, mdl, &point);
                     }

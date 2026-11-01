@@ -476,8 +476,8 @@ u8 *fld_drawSprite3D(u8 *pkt, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 sc
     FieldSprArgs args;
     u16 *uvPtr;
     u8 *body;
-    s32 tmp;
-    s32 val;
+    s32 tmp; /* frame count, then the header size, then the frame data offset (separate locals don't match) */
+    s32 val; /* frame index, then the UV entry count (separate locals don't match) */
     u16 *frameOfs;
 
     if (rot == NULL) {

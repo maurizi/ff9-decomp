@@ -99,7 +99,7 @@ void cd_onSectorReady(void) {
 }
 
 s32 cd_init(void) {
-    s32 val = 1;
+    s32 val = 1; /* CdInit success flag, then the CdlSetmode mode (separate locals don't match) */
     s32 ok;
 
     while (CdInit() == 0) {

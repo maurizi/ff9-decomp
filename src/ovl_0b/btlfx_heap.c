@@ -27,7 +27,7 @@ s32 btlfx_getParticleTrail(Pool30Entry *particle, Pool6CEntry *emitter) {
 s32 btlfx_updateParticles(Pool30 *pool) {
     SVECTOR rel;
     SVECTOR pos;
-    SVECTOR vec;
+    SVECTOR vec; /* scratch: orbit, wobble, homing aim, field direction and element rotation in turn (one frame slot) */
     VECTOR delta;
     s32 alpha;
     s32 cnt;
@@ -620,7 +620,7 @@ s32 btlfx_updateEmitters(Pool30 *pool, Pool6C *list) {
     s16 *tbl;
     s32 frame;
     s32 t;
-    s32 val;
+    s32 val; /* spawn rate, then the lower blend weight index (separate locals don't match) */
     s32 y;
     s32 x;
     Pool6C *emitters = list;
@@ -827,7 +827,7 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
     SVECTOR ang;
     CVECTOR col;
     s32 k;
-    s32 val;
+    s32 val; /* random rolls, shape radii and the polar radius in turn (separate locals don't match) */
     s32 d58;
     Pool6C *pl;
     s32 i;
@@ -842,7 +842,7 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
     SVECTOR *base;
     s32 frame;
     s32 acc;
-    s32 aux;
+    s32 aux; /* cone length step count, then a random angle (separate locals don't match) */
 
     el = NULL;
     pl = list;
@@ -1174,7 +1174,7 @@ void btlfx_runSubEmitter(Pool30 *pool, Pool30Entry *parent, SVECTOR *pos, SVECTO
     s32 count;
     s32 frame;
     s32 t;
-    s32 val;
+    s32 val; /* spawn rate, weight sum, life, launch speed and drag in turn (separate locals don't match) */
     s32 i;
 
     owner = parent->owner;

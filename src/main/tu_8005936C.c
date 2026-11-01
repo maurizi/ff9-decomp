@@ -27,7 +27,7 @@ void akao_freeSubSeqVoices(void) {
     u32 found;
     u32 bit;
     u32 lim;
-    s32 val;
+    s32 val; /* voice mask, then the voice loop counter (separate locals don't match) */
     s32 remaining;
     AkaoChannel *ch;
 

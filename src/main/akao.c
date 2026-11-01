@@ -568,7 +568,7 @@ void akao_applyKeySplit(AkaoChannel *chan, u32 key) {
 }
 
 u16 akao_calcPitch(AkaoInstrument *instr, s32 note, u8 fine, s32 *out) {
-    s32 tmp = note - instr->baseNote;
+    s32 tmp = note - instr->baseNote; /* semitone in the octave, then the octave shift (separate locals don't match) */
     s32 freq;
     u32 fineVal;
 
@@ -994,21 +994,22 @@ void akao_opA3(AkaoChannel *chan) {
 }
 
 void akao_opFE12(AkaoChannel *ch) {
-    s32 val;
+    s32 slideLen;
+    s32 startVal;
     u8 *code;
     u16 base;
 
-    val = *ch->pc++;
-    ch->expressionSlideLen = val;
-    if (val == 0) {
+    slideLen = *ch->pc++;
+    ch->expressionSlideLen = slideLen;
+    if (slideLen == 0) {
         ch->expressionSlideLen = 0x100;
     }
     code = ch->pc;
     base = ch->expression & 0x7F00;
     ch->expressionStep = ((*code << 8) - base) / ch->expressionSlideLen;
     ch->pc = code + 1;
-    val = base;
-    ch->expression = val;
+    startVal = base;
+    ch->expression = startVal;
 }
 
 void akao_opA8(AkaoChannel *chan) {
@@ -1057,21 +1058,22 @@ void akao_opAA(AkaoChannel *ch) {
 }
 
 void akao_opAB(AkaoChannel *ch) {
-    s32 val;
+    s32 slideLen;
+    s32 startVal;
     u8 *code;
     u16 base;
 
-    val = *ch->pc++;
-    ch->panSlideLen = val;
-    if (val == 0) {
+    slideLen = *ch->pc++;
+    ch->panSlideLen = slideLen;
+    if (slideLen == 0) {
         ch->panSlideLen = 0x100;
     }
     code = ch->pc;
     base = ch->pan & 0xFF00;
     ch->panStep = ((((*code + 0x40) & 0xFF) << 8) - base) / ch->panSlideLen;
     ch->pc = code + 1;
-    val = base;
-    ch->pan = val;
+    startVal = base;
+    ch->pan = startVal;
 }
 
 void akao_opOctave(AkaoChannel *chan) {
@@ -1201,7 +1203,7 @@ void akao_opD9(AkaoChannel *chan) {
 }
 
 void akao_opB4(AkaoChannel *chan) {
-    u32 val;
+    u32 val; /* SE vibrato depth, then the LFO waveform index (separate locals don't match) */
     s16 depthParam;
     u32 amount;
     u32 vibDepth;
@@ -1282,7 +1284,7 @@ void akao_opB6(AkaoChannel *chan) {
 }
 
 void akao_opB8(AkaoChannel *chan) {
-    s32 val;
+    s32 val; /* tremolo delay (music) or depth (SE), then the LFO waveform index (separate locals don't match) */
     u32 rate;
 
     chan->flags |= AKAO_CH_TREMOLO;
@@ -2071,7 +2073,7 @@ void akao_streamPlayOneShot(s32 stream, s32 panArg, s32 addr, s32 loop) {
     AkaoStream *h = (AkaoStream *)stream;
     AkaoStreamState *streamState;
     s32 voiceIdx;
-    u32 val;
+    u32 val; /* previous stream voice mask, then the upload byte count (separate locals don't match) */
     u32 voiceBits;
 
     voiceIdx = akao_allocStreamVoices();

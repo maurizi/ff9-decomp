@@ -294,7 +294,7 @@ void btlfx_updateLoader(void) {
     s32 k;
     s32 imageCount;
     s32 ringOfs;
-    s32 tmp;
+    s32 tmp; /* heap block size, then the common-texture bit (separate locals don't match) */
     u8 *src;
     Unk80100DC054 *dataSummon;
     s32 i;

@@ -68,7 +68,7 @@ s32 bgi_closestPointOnSegment(SVECTOR *pt, SVECTOR *segA, SVECTOR *segB, SVECTOR
     SVECTOR closest;
     s32 ta;
     s32 tb;
-    s32 sum;
+    s32 sum; /* interpolation denominator, then the squared distance (separate locals don't match) */
     s32 dx;
     s32 dy;
     s32 dz;
@@ -173,7 +173,7 @@ s32 bgi_projectOnPlane(VECTOR *normal, SVECTOR *dir, s32 unused, VECTOR *outAxis
 /* push a position out of the walkmesh triangle edges (recurses into neighbours) */
 s32 bgi_pushOutOfEdges(BgiActor *actor, SVECTOR *pos, BgiTriangle *tri, s16 *outEdge) {
     BgiVertex *edgeVerts[2];
-    SVECTOR pt;
+    SVECTOR pt; /* floor origin offset, then the closest point on the current edge (separate locals don't match) */
     BgiVertex verts[3];
     VECTOR push;
     s16 on;

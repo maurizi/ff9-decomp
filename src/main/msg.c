@@ -911,7 +911,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
     s32 lineWidth;
     s32 done;
     s32 choiceNo;
-    s32 choiceVal, i;
+    s32 choiceVal, i; /* visible choice count, then the cancel choice index (separate locals don't match) */
     s32 choiceBits;
     s32 cnt;
 

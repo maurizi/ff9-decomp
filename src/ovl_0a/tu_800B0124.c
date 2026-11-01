@@ -5,7 +5,9 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     GameData *gd;
     s32 kind;
     s32 id;
-    s32 tmp;
+    s32 bankId;
+    s32 found;
+    s32 chunk;
     s32 h;
     s32 ok;
     s32 slot;
@@ -14,7 +16,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     s32 loadedBit;
     s32 sz;
     s32 seqBytes;
-    s32 val;
+    s32 val; /* bank chunk size, then the sequence read offset (separate locals don't match) */
     s32 room;
 
     kind = (cmd >> 8) & 0xF;
@@ -23,7 +25,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     }
     switch ((cmd >> 12) & 3) {
     case SND_TYPE_MUSIC:
-        tmp = -1;
+        bankId = -1;
         id = (soundId & 0xFFFF) | DB_MUSIC;
         switch (kind) {
         case SND_CMD_RESUME:
@@ -36,7 +38,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                 gd2->musicVolume[0] = gd2->savedMusicVolume;
                 soundId = gd2->savedMusicId;
                 id = gd2->savedMusicId | DB_MUSIC;
-                tmp = gd2->savedMusicBank | DB_SOUND_BANK;
+                bankId = gd2->savedMusicBank | DB_SOUND_BANK;
                 g_gameState->gameData->musicFileSector = g_gameState->gameData->savedMusicFileSector;
                 g_gameState->gameData->musicFileSectors = g_gameState->gameData->savedMusicFileSectors;
             }
@@ -58,15 +60,15 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                 g_fieldMusicRequest = kind;
             }
             if (g_fieldMusicRequest != SND_CMD_RESUME) {
-                tmp = fld_depGetLink(id);
+                bankId = fld_depGetLink(id);
             }
-            if (g_gameState->gameData->musicId[0] != soundId || g_gameState->gameData->musicBank[0] != (u16)tmp) {
+            if (g_gameState->gameData->musicId[0] != soundId || g_gameState->gameData->musicBank[0] != (u16)bankId) {
                 if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                     g_gameState->gameData->flags |= GD_MUSIC_STOP_PENDING;
                 }
                 g_gameState->gameData->flags &= ~(GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
                 SCENE->flags &= ~FLD_SCN_BANK_SLOT;
-                g_gameState->gameData->musicBank[0] = tmp;
+                g_gameState->gameData->musicBank[0] = bankId;
                 g_fieldSoundLoadId = id;
                 g_gameState->gameData->musicId[0] = soundId;
                 g_gameState->gameData->soundLoadState = SND_LOAD_WAIT_FADE;
@@ -236,15 +238,15 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
         }
         switch (kind) {
         case SND_CMD_RESUME:
-            tmp = 0;
+            found = 0;
             if (g_gameState->gameData->sfxSlotId[slot] != SE_NONE && g_gameState->gameData->sfxSlotSuspendField[slot] == (s16)g_gameState->gameData->fieldId) {
                 param1 = (0x100000 << slot) & 0x300000;
-                tmp = 1;
+                found = 1;
                 param2 = g_gameState->gameData->sfxSlotPan[slot];
                 param3 = g_gameState->gameData->sfxSlotVolume[slot];
             }
             g_gameState->gameData->sfxSlotSuspendField[slot] = 0xFFFF;
-            if (!tmp) {
+            if (!found) {
                 return 0;
             }
         case SND_CMD_PLAY:
@@ -491,11 +493,11 @@ state:
         if (seqBytes > 0) {
             memcpy(g_gameState->gameData->musicSeq, (u8 *)g_gameState->gameData->soundLoadDest + (g_gameState->gameData->soundBankSize - g_gameState->gameData->cdRead[0].offset), seqBytes);
         }
-        tmp = 0x6800 - seqBytes;
+        chunk = 0x6800 - seqBytes;
         g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + seqBytes);
-        tmp = tmp / 2048 * 2048;
+        chunk = chunk / 2048 * 2048;
         cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
-                      g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, tmp, NULL);
+                      g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, chunk, NULL);
         g_gameState->gameData->soundLoadState = SND_LOAD_SEQ;
         break;
     case SND_LOAD_SEQ:
@@ -808,7 +810,8 @@ s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2) { /* its caller passes t
     s32 foundSlot;
     s32 k;
     s32 done;
-    s32 tmp;
+    s32 cached;
+    s32 cachedSlot;
     s32 owner;
     s32 cacheIdx;
     s32 min;
@@ -873,19 +876,19 @@ s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2) { /* its caller passes t
         for (cacheIdx = 4; cacheIdx >= 0; cacheIdx--) {
             y = g_fieldSoundBankIds[cacheIdx];
             if (y != -1 && (y >> 24) == 4) {
-                tmp = -1;
+                cached = -1;
                 for (j = bankCount - 1; j >= 0; j--) {
                     if (id[j] == y) {
-                        tmp = cacheIdx;
+                        cached = cacheIdx;
                         break;
                     }
                 }
-                if (tmp == -1) {
+                if (cached == -1) {
                     owner = -1;
                     j = bankCount - 1;
-                    tmp = g_fieldSoundBankSlots[cacheIdx];
+                    cachedSlot = g_fieldSoundBankSlots[cacheIdx];
                     for (; j >= 0; j--) {
-                        if (slot[j] == tmp) {
+                        if (slot[j] == cachedSlot) {
                             owner = j;
                             break;
                         }
@@ -894,7 +897,7 @@ s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2) { /* its caller passes t
                         id[bankCount] = y;
                         sz[bankCount] = 0;
                         used[bankCount] = 1;
-                        slot[bankCount] = tmp;
+                        slot[bankCount] = cachedSlot;
                         bankCount++;
                         cnt++;
                         if (cnt >= 2) {

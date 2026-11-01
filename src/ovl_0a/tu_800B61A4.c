@@ -3176,8 +3176,8 @@ s32 fldbg_updateScroll(void) {
     s32 i;
     BgCamera *cam;
     s16 cnt;
-    s32 tmp;
-    s32 val;
+    s32 tmp; /* overlay scroll rate, then the current BgCamera address (separate locals don't match) */
+    s32 val; /* scaled overlay position, then half the screen width (separate locals don't match) */
     s32 geomY;
     s32 y;
     s32 mode;

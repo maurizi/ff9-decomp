@@ -47,7 +47,8 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
     u8 *out;
     BtlBgGroup *grp;
     BtlBgRec *rec;
-    s32 tmp;
+    s32 uvAddr;
+    s32 angle;
     s32 tilt;
     s32 i;
     s32 groupIdx;
@@ -74,15 +75,15 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
     TransMatrix(&skyMatrix, &trans);
     if (g_btlbgScrollPaused == 0) {
         for (i = 0; i < g_btlbgScrollCount; i++) {
-            tmp = bgData + g_btlbgScrolls[i].uvOfs;
-            ((u8 *)tmp)[0] += g_btlbgScrolls[i].du;
-            ((u8 *)tmp)[1] += g_btlbgScrolls[i].dv;
+            uvAddr = bgData + g_btlbgScrolls[i].uvOfs;
+            ((u8 *)uvAddr)[0] += g_btlbgScrolls[i].du;
+            ((u8 *)uvAddr)[1] += g_btlbgScrolls[i].dv;
             g_btlbgScrolls[i].step++;
             if (g_btlbgScrolls[i].step >= g_btlbgScrolls[i].period) {
                 switch (g_btlbgScrolls[i].mode) {
                 case 0:
-                    ((u8 *)tmp)[0] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].du;
-                    ((u8 *)tmp)[1] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].dv;
+                    ((u8 *)uvAddr)[0] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].du;
+                    ((u8 *)uvAddr)[1] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].dv;
                     break;
                 case 1:
                     g_btlbgScrolls[i].du = -g_btlbgScrolls[i].du;
@@ -152,52 +153,52 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
         flag = 0;
         switch (g_btlbgHeader->id) {
         case 0x44:
-            tmp = math_sin((VSync(-1) * 26) & 0xFFE);
+            angle = math_sin((VSync(-1) * 26) & 0xFFE);
             pivot.vx = 0x429;
             pivot.vy = -0x541;
             pivot.vz = 0xEA6;
-            tmp /= 5;
-            groupRot.vz = tmp;
+            angle /= 5;
+            groupRot.vz = angle;
             break;
         case 0x70:
             switch (groupIdx) {
             case 1:
-                tmp = (VSync(-1) * 5) & 0xFFF;
-                groupRot.vz = 0xFFF - tmp;
-                tmp = (VSync(-1) * 3) & 0xFFF;
-                groupRot.vy = 0xFFF - tmp;
-                tmp = math_sin(((VSync(-1) + 8) * 22) & 0xFFE);
+                angle = (VSync(-1) * 5) & 0xFFF;
+                groupRot.vz = 0xFFF - angle;
+                angle = (VSync(-1) * 3) & 0xFFF;
+                groupRot.vy = 0xFFF - angle;
+                angle = math_sin(((VSync(-1) + 8) * 22) & 0xFFE);
                 pivot.vx = -0x834;
                 pivot.vz = -0x352;
-                pivot.vy = tmp / 45 - 250;
+                pivot.vy = angle / 45 - 250;
                 break;
             case 2:
                 groupRot.vy = 0;
                 groupRot.vz = 0;
-                tmp = math_sin((VSync(-1) * 20) & 0xFFC);
+                angle = math_sin((VSync(-1) * 20) & 0xFFC);
                 pivot.vx = 0x6BD;
-                pivot.vy = tmp / 64 - 0x5DC;
+                pivot.vy = angle / 64 - 0x5DC;
                 pivot.vz = -0x4B;
                 break;
             case 3:
-                tmp = (VSync(-1) * 4) & 0xFFF;
-                groupRot.vz = tmp;
-                tmp = (VSync(-1) * 3) & 0xFFF;
-                groupRot.vy = tmp;
-                tmp = math_sin(((VSync(-1) + 16) * 21) & 0xFFF);
+                angle = (VSync(-1) * 4) & 0xFFF;
+                groupRot.vz = angle;
+                angle = (VSync(-1) * 3) & 0xFFF;
+                groupRot.vy = angle;
+                angle = math_sin(((VSync(-1) + 16) * 21) & 0xFFF);
                 pivot.vx = 0x6D6;
                 pivot.vz = 0x401;
-                pivot.vy = tmp / 50 - 0x307;
+                pivot.vy = angle / 50 - 0x307;
                 break;
             }
             break;
         case 0x6E:
-            tmp = math_sin((VSync(-1) * 12) & 0xFFC);
-            tmp /= 64;
+            angle = math_sin((VSync(-1) * 12) & 0xFFC);
+            angle /= 64;
             groupRot.vy = 0x200;
             pivot.vx = 0x5DC;
             pivot.vy = -0x1B58;
-            groupRot.vz = tmp;
+            groupRot.vz = angle;
             pivot.vz = 0xEA6;
             break;
         case 0xA8:
@@ -211,17 +212,17 @@ u8 *btlbg_draw(MATRIX *view, s32 bgData, s32 prim, u32 *ot, s32 bgOt) {
             break;
         case 0xAB:
             if (groupIdx == 1) {
-                tmp = -(VSync(-1) * 12) & 0xFFF;
+                angle = -(VSync(-1) * 12) & 0xFFF;
                 pivot.vy = -0x947;
-                groupRot.vz = tmp;
+                groupRot.vz = angle;
                 pivot.vx = 0;
                 pivot.vz = 0xEA6;
             } else {
-                tmp = -(VSync(-1) * 22) & 0xFFF;
+                angle = -(VSync(-1) * 22) & 0xFFF;
                 flag = 1;
                 groupRot.vz = 0xE00;
                 pivot.vy = -0x8CA;
-                groupRot.vy = tmp;
+                groupRot.vy = angle;
                 pivot.vx = 0;
                 pivot.vz = 0x1DC9;
             }

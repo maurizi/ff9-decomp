@@ -1298,8 +1298,8 @@ s32 wm_drawSprite3D(s32 pkt, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale,
     WmSprCtx ctx;
     u16 *palTab;
     u8 *palBase;
-    s32 val;
-    s32 tmp;
+    s32 val; /* frame count, then the palette table offset, then the frame data offset (separate locals don't match) */
+    s32 tmp; /* frame index, then the palette entry count (separate locals don't match) */
     u16 *frameOfs;
 
     if (rot == NULL) {

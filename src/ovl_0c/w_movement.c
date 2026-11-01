@@ -1390,7 +1390,8 @@ u8 wm_findGetoffPos(ActorPos *out) {
     s32 angOff;
     s32 i;
     s32 j;
-    s32 val;
+    s32 topo;
+    s32 dist;
     s32 k;
     s32 x;
     s32 z;
@@ -1415,8 +1416,8 @@ u8 wm_findGetoffPos(ActorPos *out) {
         if (!wm_tryStep((VECTOR *)&tryPos, 0, 0, 0, &cell, 0)) {
             return 0;
         }
-        val = (u8)cell >> 2;
-        if (val >= 0x2D && (val < 0x2F || val == WM_TOPO_NO_ENCOUNTER)) {
+        topo = (u8)cell >> 2;
+        if (topo >= 0x2D && (topo < 0x2F || topo == WM_TOPO_NO_ENCOUNTER)) {
             return 0;
         }
         break;
@@ -1447,9 +1448,9 @@ u8 wm_findGetoffPos(ActorPos *out) {
                 continue;
             }
             for (j = 1; j < 9; j++) {
-                val = g_worldMoveModeInfo->getoffDist * j / 8;
+                dist = g_worldMoveModeInfo->getoffDist * j / 8;
                 tryPos = g_worldPlayer->pos;
-                allOk &= wm_tryStep((VECTOR *)&tryPos, dirs[i], 0, val, &cell, 0);
+                allOk &= wm_tryStep((VECTOR *)&tryPos, dirs[i], 0, dist, &cell, 0);
             }
             ok = allOk;
             if (ok) {
@@ -1976,7 +1977,7 @@ void wm_cameraAutoTurnWalk(void) {
 }
 
 void wm_cameraAutoTurnVehicle(void) {
-    s32 yaw;
+    s32 yaw; /* camera yaw, then the heading minus yaw difference (separate locals don't match) */
     s32 step;
     s32 turnStep;
     s32 cur;

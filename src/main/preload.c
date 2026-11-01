@@ -5,7 +5,7 @@ void preload_clearEntry(PreloadEntry *entry) {
 }
 
 void preload_setEntry(PreloadEntry *entry, s32 kind, s32 fileId, s32 dest, s32 bufSize, s32 chunkSize, s32 sector, s32 readSize) {
-    s32 tmp;
+    s32 tmp; /* buffer size before rounding, then the sector (separate locals don't match) */
     entry->flags = 0;
     entry->kind = kind;
     entry->fileId = fileId;
@@ -77,7 +77,7 @@ s32 preload_isInVram(PreloadEntry *entry) {
 
 PreloadEntry *preload_makeChunk(PreloadEntry *dst, PreloadEntry *src) {
     s32 len;
-    s32 tmp;
+    s32 tmp; /* chunk destination address, then the chunk size (separate locals don't match) */
 
     if (preload_isLoaded(src)) {
         preload_clearEntry(dst);

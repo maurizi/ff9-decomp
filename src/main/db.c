@@ -38,7 +38,7 @@ s32 db_unregister(void *db) {
 
 void *db_lookupRegistered(s32 mode, s32 key, s32 subKey) {
     s32 i;
-    s32 val = -1;
+    s32 val = -1; /* db_lookup result, then the NULL-or-(-1) mode bit (separate locals don't match) */
     void *result;
 
     for (i = g_dbList.count - 1; i >= 0; i--) {
@@ -141,7 +141,7 @@ s32 db_getSize(s32 db) {
     u8 *blk;
     u32 *endEnt;
     s32 k;
-    s32 tmp;
+    s32 tmp; /* entry count, then the id table size (separate locals don't match) */
     s32 misalign;
 
     if (base == NULL || base[0] != 0xDB) {

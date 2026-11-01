@@ -400,7 +400,7 @@ void btl_updateUnitTint(BtlUnit *unit) {
     BtlBgHeader *bg;
     u8 *rgb;
     s32 floatY;
-    u32 tmp;
+    u32 tmp; /* battle tick, then the Float test (separate locals don't match) */
     u32 phase;
     u8 val;
     u32 w;

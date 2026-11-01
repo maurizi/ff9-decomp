@@ -1,7 +1,7 @@
 #include "ovl_0a.h"
 
 s32 bgi_pointInTriangle(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, s16 *pos) {
-    s8 tmp[2];
+    s8 tmp[2]; /* on-axis vertex counts, then the side flags of the crossing test (separate locals would change the frame) */
     s32 cross[2];
     BgiVertexArr *pv[2];
     s16 origin[3];
@@ -83,7 +83,7 @@ s32 bgi_pointInTriangle(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, s16 *
 
 s32 bgi_pointInTriangleXZ(BgiHeader *bgi, BgiFloor *floor, BgiTriangle *tri, SVECTOR *sv) {
     s16 *pos = (s16 *)sv;
-    s8 tmp[2];
+    s8 tmp[2]; /* on-axis vertex counts, then the side flags of the crossing test (separate locals would change the frame) */
     s32 cross[2];
     BgiVertexArr *pv[2];
     s16 origin[3];
