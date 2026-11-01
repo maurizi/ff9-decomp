@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
+s32 text_renderNameGlyph(s32 x, s32 hi, s32 ch) {
     u8 rowPixels[16];
     u8 w;
     u8 start;
@@ -10,39 +10,39 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
     s32 row;
     s32 i;
     s32 j;
-    u8 b;
-    u8 *p;
+    u8 bits;
+    u8 *pix;
     s32 px;
-    u8 v, o;
-    u8 t;
+    u8 pixVal, old;
+    u8 shifted;
 
     dst = (u8 *)g_nameImage;
-    w = g_nameGlyphSpans[c];
+    w = g_nameGlyphSpans[ch];
     start = w >> 4;
     width = (w & 0xF) + 1;
-    src = (u8 *)g_nameGlyphs + (c << 6);
+    src = (u8 *)g_nameGlyphs + (ch << 6);
     memset(rowPixels, 0, 0x10);
     for (row = 0; row < 12; row++) {
         for (i = 0; i < 4; i++) {
-            b = src[row * 4 + i];
+            bits = src[row * 4 + i];
             for (j = 0; j < 4; j++) {
-                rowPixels[i * 4 + j] = b & 3;
-                b >>= 2;
+                rowPixels[i * 4 + j] = bits & 3;
+                bits >>= 2;
             }
         }
         for (i = 0; i < width; i++) {
             px = x + i;
             if (!(px & 1)) {
-                p = dst + (px >> 1);
-                v = rowPixels[start + i];
-                o = *p;
-                if (hi) { *p = o | (v << 2); } else { *p = o | v; }
+                pix = dst + (px >> 1);
+                pixVal = rowPixels[start + i];
+                old = *pix;
+                if (hi) { *pix = old | (pixVal << 2); } else { *pix = old | pixVal; }
             } else {
-                v = rowPixels[start + i];
+                pixVal = rowPixels[start + i];
                 px >>= 1;
-                p = dst + px;
-                o = *p;
-                t = v << 4; if (hi) { *p = o | (v << 6); } else { *p = o | t; }
+                pix = dst + px;
+                old = *pix;
+                shifted = pixVal << 4; if (hi) { *pix = old | (pixVal << 6); } else { *pix = old | shifted; }
             }
         }
         dst += 0x54;
@@ -50,181 +50,181 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
     return width + x;
 }
 
-s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
+s32 text_drawChar(s32 x, s32 y, s32 otz, u8 ch, s32 mode) {
     u32 *tbl = g_gameState->gameData->font->glyphs;
-    u32 g;
+    u32 glyph;
     s32 w;
-    SprtWords *p;
+    SprtWords *sprt;
 
-    if (c == 0xFF) {
+    if (ch == 0xFF) {
         return 0;
     }
-    g = tbl[c];
+    glyph = tbl[ch];
     setlen(g_primPtr, 4);
-    w = (g >> 16) & 0xF;
-    p = (SprtWords *)g_primPtr;
-    p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
-    p->xy = (x + ((10 - w) >> 1)) | (y << 16);
-    p->uvclut = (g & 0x40FFFF) | (g_textPalettes[mode] << 16);
-    p->wh = w | 0xD0000;
-    addPrim(&g_ot[otz], p);
-    g_primPtr = (u8 *)(p + 1);
-    return g >> 28;
+    w = (glyph >> 16) & 0xF;
+    sprt = (SprtWords *)g_primPtr;
+    sprt->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
+    sprt->xy = (x + ((10 - w) >> 1)) | (y << 16);
+    sprt->uvclut = (glyph & 0x40FFFF) | (g_textPalettes[mode] << 16);
+    sprt->wh = w | 0xD0000;
+    addPrim(&g_ot[otz], sprt);
+    g_primPtr = (u8 *)(sprt + 1);
+    return glyph >> 28;
 }
 
-void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
-    Font *f = g_gameState->gameData->font;
-    s32 th = f->extCode >> 8;
-    SprtWords *p = (SprtWords *)g_primPtr;
+void text_draw(s32 x, s32 y, s32 otz, u8 *str, s32 pal) {
+    Font *font = g_gameState->gameData->font;
+    s32 th = font->extCode >> 8;
+    SprtWords *sprt = (SprtWords *)g_primPtr;
     u32 *ot = &g_ot[otz];
     s32 spacing;
-    s32 c;
-    u32 g;
+    s32 ch;
+    u32 glyph;
     u32 w;
     s32 gx;
     s32 k;
 
-    while ((c = *s) != TEXT_END) {
-        if (c >= th) {
-            c = (c << 8) + s[1] - f->extCode + f->extBase;
-            s++;
+    while ((ch = *str) != TEXT_END) {
+        if (ch >= th) {
+            ch = (ch << 8) + str[1] - font->extCode + font->extBase;
+            str++;
         }
-        g = *(f->glyphs + c);
-        setlen(p, 4);
-        k = (g >> 20) & 3;
-        p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
-        w = g >> 28;
+        glyph = *(font->glyphs + ch);
+        setlen(sprt, 4);
+        k = (glyph >> 20) & 3;
+        sprt->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
+        w = glyph >> 28;
         spacing = 1;
         gx = x + k;
         x = x + spacing + w;
-        p->xy = (gx & 0xFFFF) | (y << 16);
-        p->uvclut = (g & 0x40FFFF) + (g_textPalettes[pal] << 16);
-        p->wh = ((g >> 16) & 0xF) | 0xD0000;
-        addPrim(ot, p);
-        p++;
-        s++;
+        sprt->xy = (gx & 0xFFFF) | (y << 16);
+        sprt->uvclut = (glyph & 0x40FFFF) + (g_textPalettes[pal] << 16);
+        sprt->wh = ((glyph >> 16) & 0xF) | 0xD0000;
+        addPrim(ot, sprt);
+        sprt++;
+        str++;
     }
-    setlen(p, 1);
-    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1E);
-    addPrim(ot, p);
-    g_primPtr = (u8 *)p + 8;
+    setlen(sprt, 1);
+    ((DrTpageWords *)sprt)->code = get_mode(1, 1, 0x1E);
+    addPrim(ot, sprt);
+    g_primPtr = (u8 *)sprt + 8;
 }
 
-u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
+u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *str, s32 mode, u8 *pkt) {
     s32 w;
     s32 x0;
     u8 th;
     Font *font;
-    s32 c;
+    s32 ch;
     s32 k;
 
     font = g_gameState->gameData->font;
     g_textColor = mode;
     x0 = x;
     th = font->extCode >> 8;
-    while ((c = *s) != TEXT_END) {
-        if (c == TEXT_ESC) {
-            s++;
-            if (*s == TEXT_X_ADD) {
-                s++;
-                x += (s8)*s;
-            } else if (*s == TEXT_X_SET) {
-                s++;
-                x = x0 + *s;
-            } else if (*s == TEXT_Y_DOWN) {
-                s++;
-                y += *s;
-            } else if (*s == TEXT_Y_UP) {
-                s++;
-                y -= *s;
-            } else if (*s == TEXT_MSG_NUMBER) {
-                s++;
-                text_formatInt(g_msgNumbers[*s & 7], g_textNumberBuf, TEXT_NUM_CODES);
+    while ((ch = *str) != TEXT_END) {
+        if (ch == TEXT_ESC) {
+            str++;
+            if (*str == TEXT_X_ADD) {
+                str++;
+                x += (s8)*str;
+            } else if (*str == TEXT_X_SET) {
+                str++;
+                x = x0 + *str;
+            } else if (*str == TEXT_Y_DOWN) {
+                str++;
+                y += *str;
+            } else if (*str == TEXT_Y_UP) {
+                str++;
+                y -= *str;
+            } else if (*str == TEXT_MSG_NUMBER) {
+                str++;
+                text_formatInt(g_msgNumbers[*str & 7], g_textNumberBuf, TEXT_NUM_CODES);
                 pkt = text_buildPlain(x, y, ot, (Character *)g_textNumberBuf, &w, pkt);
                 x += w;
-            } else if (*s == TEXT_ARG_NUMBER) {
-                s++;
-                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, TEXT_NUM_CODES);
+            } else if (*str == TEXT_ARG_NUMBER) {
+                str++;
+                text_formatInt(g_textNumberArgs[*str], g_textNumberBuf, TEXT_NUM_CODES);
                 pkt = text_buildPlain(x, y, ot, (Character *)g_textNumberBuf, &w, pkt);
                 x += w;
-            } else if (*s == TEXT_ARG_STRING) {
-                s++;
-                pkt = text_buildPlain(x, y, ot, (Character *)g_textStringArgs[*s], &w, pkt);
+            } else if (*str == TEXT_ARG_STRING) {
+                str++;
+                pkt = text_buildPlain(x, y, ot, (Character *)g_textStringArgs[*str], &w, pkt);
                 x += w;
-            } else if (*s == TEXT_ARG_NUMBER_SMALL) {
-                s++;
-                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, TEXT_NUM_ASCII);
+            } else if (*str == TEXT_ARG_NUMBER_SMALL) {
+                str++;
+                text_formatInt(g_textNumberArgs[*str], g_textNumberBuf, TEXT_NUM_ASCII);
                 pkt = text_buildSmall(x, y, ot, g_textNumberBuf, g_textColor, pkt);
                 x += text_measureSmall(g_textNumberBuf);
-            } else if (*s == TEXT_ARG_STRING_SMALL) {
-                s++;
-                g_textArgPtr = g_textStringArgs[*s];
+            } else if (*str == TEXT_ARG_STRING_SMALL) {
+                str++;
+                g_textArgPtr = g_textStringArgs[*str];
                 pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                 pkt = text_buildSmall(x, y, ot, g_textArgPtr, g_textColor, pkt);
                 x += text_measureSmall(g_textArgPtr);
-            } else if (*s == TEXT_ARG_NUMBER_LABEL) {
-                s++;
-                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, TEXT_NUM_ASCII);
+            } else if (*str == TEXT_ARG_NUMBER_LABEL) {
+                str++;
+                text_formatInt(g_textNumberArgs[*str], g_textNumberBuf, TEXT_NUM_ASCII);
                 pkt = ui_buildLabel(x, y, ot, (s32)g_textNumberBuf, g_textColor, pkt);
                 x += ui_measureLabel(g_textNumberBuf);
-            } else if (*s == TEXT_ARG_STRING_LABEL) {
-                s++;
-                g_textArgPtr = g_textStringArgs[*s];
+            } else if (*str == TEXT_ARG_STRING_LABEL) {
+                str++;
+                g_textArgPtr = g_textStringArgs[*str];
                 pkt = ui_buildLabel(x, y, ot, (s32)g_textArgPtr, g_textColor, pkt);
                 x += ui_measureLabel(g_textArgPtr);
-            } else if (*s == TEXT_ARG_NUMBER_DIGITS) {
-                s++;
-                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, TEXT_NUM_ASCII);
+            } else if (*str == TEXT_ARG_NUMBER_DIGITS) {
+                str++;
+                text_formatInt(g_textNumberArgs[*str], g_textNumberBuf, TEXT_NUM_ASCII);
                 pkt = text_buildDigits(x, y, ot, g_textNumberBuf, g_textColor, pkt);
                 x += text_measureDigits(g_textNumberBuf);
-            } else if (*s == TEXT_ARG_STRING_DIGITS) {
-                s++;
-                g_textArgPtr = g_textStringArgs[*s];
+            } else if (*str == TEXT_ARG_STRING_DIGITS) {
+                str++;
+                g_textArgPtr = g_textStringArgs[*str];
                 pkt = text_buildDigits(x, y, ot, g_textArgPtr, g_textColor, pkt);
                 x += text_measureDigits(g_textArgPtr);
-            } else if (*s == TEXT_SPRITE) {
+            } else if (*str == TEXT_SPRITE) {
                 pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
-                pkt = ui_buildSprite(x, y, ot, *++s, 0, &w, pkt);
+                pkt = ui_buildSprite(x, y, ot, *++str, 0, &w, pkt);
                 x += w;
-            } else if (*s == TEXT_ITEM_ICON) {
-                s++;
-                k = *s;
+            } else if (*str == TEXT_ITEM_ICON) {
+                str++;
+                k = *str;
                 if (k != 0xFF) {
                     pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                     pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
                     x += g_uiSprites[g_itemTable[k].icon + 0x5C].w;
                 }
-            } else if (*s == TEXT_ARG_SPRITE) {
+            } else if (*str == TEXT_ARG_SPRITE) {
                 pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
-                pkt = ui_buildSprite(x, y, ot, g_textIconArgs[*++s], 0, &w, pkt);
+                pkt = ui_buildSprite(x, y, ot, g_textIconArgs[*++str], 0, &w, pkt);
                 x += w;
-            } else if (*s == TEXT_ARG_ITEM_ICON) {
-                s++;
-                k = g_textIconArgs[*s];
+            } else if (*str == TEXT_ARG_ITEM_ICON) {
+                str++;
+                k = g_textIconArgs[*str];
                 if (k != 0xFF) {
                     pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                     pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
                     x += g_uiSprites[g_itemTable[k].icon + 0x5C].w;
                 }
             } else {
-                pkt = text_buildCode(x, y, ot, *s, &w, pkt);
+                pkt = text_buildCode(x, y, ot, *str, &w, pkt);
                 x += w;
             }
-        } else if (c == TEXT_NEWLINE) {
+        } else if (ch == TEXT_NEWLINE) {
             x = x0;
             y += 15;
         } else {
-            if (c >= th) {
-                c = (c << 8) + s[1] - font->extCode + font->extBase;
-                s++;
-                pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &w, (SprtWords *)pkt);
+            if (ch >= th) {
+                ch = (ch << 8) + str[1] - font->extCode + font->extBase;
+                str++;
+                pkt = text_buildGlyph(x, y, ot, *(font->glyphs + ch), g_textColor, &w, (SprtWords *)pkt);
                 x += w;
             } else {
-                pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &w, (SprtWords *)pkt);
+                pkt = text_buildGlyph(x, y, ot, *(font->glyphs + ch), g_textColor, &w, (SprtWords *)pkt);
                 x += w;
             }
         }
-        s++;
+        str++;
     }
     setlen(pkt, 1);
     ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
@@ -240,12 +240,12 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     Font *font;
     Font *kanji;
     s32 th2;
-    u8 *s;
-    s32 c;
+    u8 *str;
+    s32 charCode;
     s32 code;
 
     font = g_gameState->gameData->font;
-    s = ch->name;
+    str = ch->name;
     x0 = x;
     th = font->extCode >> 8;
     kanji = g_gameState->gameData->kanjiFont;
@@ -253,24 +253,24 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     if (kanji != NULL) {
         th2 = kanji->codeBase >> 8;
     }
-    while ((c = *s) != TEXT_END) {
-        if (kanji != NULL && c >= th2) {
-            code = (c << 8) + s[1];
-            s++;
-            c = code - kanji->codeBase;
-            pkt = text_buildGlyph(x, y, ot, *(kanji->glyphs + c), g_textColor, &adv, (SprtWords *)pkt);
+    while ((charCode = *str) != TEXT_END) {
+        if (kanji != NULL && charCode >= th2) {
+            code = (charCode << 8) + str[1];
+            str++;
+            charCode = code - kanji->codeBase;
+            pkt = text_buildGlyph(x, y, ot, *(kanji->glyphs + charCode), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
-        } else if (c >= th) {
-            code = (c << 8) + s[1];
-            s++;
-            c = code - font->extCode + font->extBase;
-            pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &adv, (SprtWords *)pkt);
+        } else if (charCode >= th) {
+            code = (charCode << 8) + str[1];
+            str++;
+            charCode = code - font->extCode + font->extBase;
+            pkt = text_buildGlyph(x, y, ot, *(font->glyphs + charCode), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         } else {
-            pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &adv, (SprtWords *)pkt);
+            pkt = text_buildGlyph(x, y, ot, *(font->glyphs + charCode), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         }
-        s++;
+        str++;
     }
     setlen(pkt, 1);
     ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
@@ -280,13 +280,13 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
 }
 
 u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
-    u8 *s = (u8 *)str;
-    SprtWords *p = (SprtWords *)pkt;
-    SpriteDesc16 *g = NULL;
+    u8 *cur = (u8 *)str;
+    SprtWords *sprt = (SprtWords *)pkt;
+    SpriteDesc16 *glyph = NULL;
     SpriteDesc16 *tbl;
     u32 rgbc;
     u16 clut;
-    s32 c;
+    s32 ch;
     s32 w;
 
     rgbc = GPU_RGBC(GPU_SPRT, 0x404040);
@@ -299,83 +299,83 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
         clut += 0x40;
         rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
     }
-    if (s == NULL) {
-        return (u8 *)p;
+    if (cur == NULL) {
+        return (u8 *)sprt;
     }
-    while ((c = *s) != 0) {
-        if ((u32)(c - 'A') < 26) {
-            g = &((SpriteDesc16 *)g_uiSprites)[*s - 8];
-        } else if ((u32)(c - 'a') < 26) {
-            g = &((SpriteDesc16 *)g_uiSprites)[*s - 0x28];
-        } else if ((u32)(c - '0') < 10) {
-            g = &((SpriteDesc16 *)g_uiSprites)[*s - 2];
-        } else if ((u8)c == '&') {
-            g = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_AMPERSAND];
-        } else if ((u8)c == '.') {
-            g = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_PERIOD];
-        } else if ((u8)c == '_') {
-            g = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_UNDERSCORE];
+    while ((ch = *cur) != 0) {
+        if ((u32)(ch - 'A') < 26) {
+            glyph = &((SpriteDesc16 *)g_uiSprites)[*cur - 8];
+        } else if ((u32)(ch - 'a') < 26) {
+            glyph = &((SpriteDesc16 *)g_uiSprites)[*cur - 0x28];
+        } else if ((u32)(ch - '0') < 10) {
+            glyph = &((SpriteDesc16 *)g_uiSprites)[*cur - 2];
+        } else if ((u8)ch == '&') {
+            glyph = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_AMPERSAND];
+        } else if ((u8)ch == '.') {
+            glyph = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_PERIOD];
+        } else if ((u8)ch == '_') {
+            glyph = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_UNDERSCORE];
         }
-        if (*s != ' ') {
-            setlen(p, 4);
-            p->rgbc = rgbc;
-            p->xy = (x & 0xFFFF) | (y << 16);
-            w = g->w;
-            p->uvclut = g->uv | (clut << 16);
-            p->wh = g->w | (g->h << 16);
-            addPrim(ot, p);
-            p++;
+        if (*cur != ' ') {
+            setlen(sprt, 4);
+            sprt->rgbc = rgbc;
+            sprt->xy = (x & 0xFFFF) | (y << 16);
+            w = glyph->w;
+            sprt->uvclut = glyph->uv | (clut << 16);
+            sprt->wh = glyph->w | (glyph->h << 16);
+            addPrim(ot, sprt);
+            sprt++;
         } else {
             w = 5;
         }
-        s++;
+        cur++;
         x += w - 1;
     }
-    setlen(p, 1);
-    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
-    addPrim(ot, p);
-    return (u8 *)p + 8;
+    setlen(sprt, 1);
+    ((DrTpageWords *)sprt)->code = get_mode(1, 1, 0x1F);
+    addPrim(ot, sprt);
+    return (u8 *)sprt + 8;
 }
 
-u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
-    Sprt8Fields *p = (Sprt8Fields *)pkt;
+u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *str, s32 pal, u8 *pkt) {
+    Sprt8Fields *sprt = (Sprt8Fields *)pkt;
     u8 kana = 0;
     s32 hi = 0;
-    s32 c;
+    s32 ch;
     s32 code;
     s32 row;
     s32 u;
     s32 v;
     s32 k;
-    Sprt8Fields *q;
+    Sprt8Fields *sprtAlias;
 
-    if (*s == 0x40) {
+    if (*str == 0x40) {
         kana = 1;
-        s++;
+        str++;
     }
-    while ((c = *s) != 0) {
-        if ((u8)c == 0x40) {
+    while ((ch = *str) != 0) {
+        if ((u8)ch == 0x40) {
             kana ^= 1;
-            s++;
-        } else if ((u8)c == 0x20) {
+            str++;
+        } else if ((u8)ch == 0x20) {
             x += 7;
-            s++;
+            str++;
         } else {
-            if ((u32)(c - 0x21) < 0x3F) {
-                code = *s - 0x20;
-                if (*s == 0x5C) {
-                    code = *s - 0x4D;
+            if ((u32)(ch - 0x21) < 0x3F) {
+                code = *str - 0x20;
+                if (*str == 0x5C) {
+                    code = *str - 0x4D;
                 }
                 goto calc;
-            } else if ((u32)(c - 0x61) < 0x1A) {
-                code = *s - 0x40;
+            } else if ((u32)(ch - 0x61) < 0x1A) {
+                code = *str - 0x40;
             calc:
                 row = code >> 5;
                 hi = (row >= 3) << 6;
                 u = (code & 0x1F) * 8;
                 v = (row % 3) * 8;
-            } else if ((u8)c >= 0xA0) {
-                code = *s - 0xA0;
+            } else if ((u8)ch >= 0xA0) {
+                code = *str - 0xA0;
                 k = (code >> 5) + 2;
                 if (!kana) {
                     k = (code >> 5) + 4;
@@ -387,30 +387,30 @@ u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
                 v = 0;
                 u = 0;
             }
-            setlen(p, 3);
-            p->rgbc = GPU_RGBC(GPU_SPRT_8, 0x808080);
-            q = p;
-            if ((u8)(*s + 0x22) < 2) {
-                p->x = x - 7;
-                p->y = y - 7;
+            setlen(sprt, 3);
+            sprt->rgbc = GPU_RGBC(GPU_SPRT_8, 0x808080);
+            sprtAlias = sprt;
+            if ((u8)(*str + 0x22) < 2) {
+                sprt->x = x - 7;
+                sprt->y = y - 7;
             } else {
-                p->x = x;
+                sprt->x = x;
                 x += 7;
-                p->y = y;
+                sprt->y = y;
             }
-            q->u = u;
-            q->v = v - 0x80;
-            q->clut = g_textPalettes[pal] | hi;
-            addPrim(ot, p);
-            p++;
-            s++;
+            sprtAlias->u = u;
+            sprtAlias->v = v - 0x80;
+            sprtAlias->clut = g_textPalettes[pal] | hi;
+            addPrim(ot, sprt);
+            sprt++;
+            str++;
         }
     }
-    setlen(p, 1);
-    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
+    setlen(sprt, 1);
+    ((DrTpageWords *)sprt)->code = get_mode(1, 1, 0x1F);
     hi = getaddr(ot); /* reuses hi as the tag temp */
-    setaddr(p, hi), setaddr(ot, p);
-    return (u8 *)p + 8;
+    setaddr(sprt, hi), setaddr(ot, sprt);
+    return (u8 *)sprt + 8;
 }
 
 u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
@@ -576,63 +576,63 @@ u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
     return pkt;
 }
 
-s32 text_getCodeWidth(s32 c) {
-    s32 r = 0;
+s32 text_getCodeWidth(s32 code) {
+    s32 width = 0;
 
-    switch (c & 0xFF) {
+    switch (code & 0xFF) {
     case TEXT_BTN_CIRCLE:
-        r = g_uiSprites[UI_SPRITE_CIRCLE].w;
+        width = g_uiSprites[UI_SPRITE_CIRCLE].w;
         break;
     case TEXT_BTN_CROSS:
-        r = g_uiSprites[UI_SPRITE_CROSS].w;
+        width = g_uiSprites[UI_SPRITE_CROSS].w;
         break;
     case TEXT_BTN_TRIANGLE:
-        r = g_uiSprites[UI_SPRITE_TRIANGLE].w;
+        width = g_uiSprites[UI_SPRITE_TRIANGLE].w;
         break;
     case TEXT_BTN_SQUARE:
-        r = g_uiSprites[UI_SPRITE_SQUARE].w;
+        width = g_uiSprites[UI_SPRITE_SQUARE].w;
         break;
     case TEXT_BTN_L1:
-        r = g_uiSprites[UI_SPRITE_L1].w;
+        width = g_uiSprites[UI_SPRITE_L1].w;
         break;
     case TEXT_BTN_R1:
-        r = g_uiSprites[UI_SPRITE_R1].w;
+        width = g_uiSprites[UI_SPRITE_R1].w;
         break;
     case TEXT_BTN_L2:
-        r = g_uiSprites[UI_SPRITE_L2].w;
+        width = g_uiSprites[UI_SPRITE_L2].w;
         break;
     case TEXT_BTN_R2:
-        r = g_uiSprites[UI_SPRITE_R2].w;
+        width = g_uiSprites[UI_SPRITE_R2].w;
         break;
     case TEXT_PAD_BTN + 0:
-        r = g_uiSprites[text_getButtonSprite(0)].w;
+        width = g_uiSprites[text_getButtonSprite(0)].w;
         break;
     case TEXT_PAD_BTN + 1:
-        r = g_uiSprites[text_getButtonSprite(1)].w;
+        width = g_uiSprites[text_getButtonSprite(1)].w;
         break;
     case TEXT_PAD_BTN + 2:
-        r = g_uiSprites[text_getButtonSprite(2)].w;
+        width = g_uiSprites[text_getButtonSprite(2)].w;
         break;
     case TEXT_PAD_BTN + 3:
-        r = g_uiSprites[text_getButtonSprite(3)].w;
+        width = g_uiSprites[text_getButtonSprite(3)].w;
         break;
     case TEXT_PAD_BTN + 4:
-        r = g_uiSprites[text_getButtonSprite(4)].w;
+        width = g_uiSprites[text_getButtonSprite(4)].w;
         break;
     case TEXT_PAD_BTN + 5:
-        r = g_uiSprites[text_getButtonSprite(5)].w;
+        width = g_uiSprites[text_getButtonSprite(5)].w;
         break;
     case TEXT_PAD_BTN + 6:
-        r = g_uiSprites[text_getButtonSprite(6)].w;
+        width = g_uiSprites[text_getButtonSprite(6)].w;
         break;
     case TEXT_PAD_BTN + 7:
-        r = g_uiSprites[text_getButtonSprite(7)].w;
+        width = g_uiSprites[text_getButtonSprite(7)].w;
         break;
     case TEXT_BTN_START:
-        r = g_uiSprites[UI_SPRITE_START].w;
+        width = g_uiSprites[UI_SPRITE_START].w;
         break;
     case TEXT_BTN_SELECT:
-        r = g_uiSprites[UI_SPRITE_SELECT].w;
+        width = g_uiSprites[UI_SPRITE_SELECT].w;
         break;
     case TEXT_DPAD_UP:
     case TEXT_DPAD_DOWN:
@@ -640,66 +640,66 @@ s32 text_getCodeWidth(s32 c) {
     case TEXT_DPAD_RIGHT:
     case TEXT_DPAD_UP_DOWN:
     case TEXT_DPAD_LEFT_RIGHT:
-        r = g_uiSprites[UI_SPRITE_DPAD].w;
+        width = g_uiSprites[UI_SPRITE_DPAD].w;
         break;
     case TEXT_CHAR_NAME + 0:
-        r = text_measureWidth((s32)&g_gameState->gameData->characters[0]);
+        width = text_measureWidth((s32)&g_gameState->gameData->characters[0]);
         break;
     case TEXT_CHAR_NAME + 1:
-        r = text_measureWidth((s32)&g_gameState->gameData->characters[1]);
+        width = text_measureWidth((s32)&g_gameState->gameData->characters[1]);
         break;
     case TEXT_CHAR_NAME + 2:
-        r = text_measureWidth((s32)&g_gameState->gameData->characters[2]);
+        width = text_measureWidth((s32)&g_gameState->gameData->characters[2]);
         break;
     case TEXT_CHAR_NAME + 3:
-        r = text_measureWidth((s32)&g_gameState->gameData->characters[3]);
+        width = text_measureWidth((s32)&g_gameState->gameData->characters[3]);
         break;
     case TEXT_CHAR_NAME + 4:
-        r = text_measureWidth((s32)&g_gameState->gameData->characters[4]);
+        width = text_measureWidth((s32)&g_gameState->gameData->characters[4]);
         break;
     case TEXT_CHAR_NAME + 5:
-        r = text_measureWidth((s32)&g_gameState->gameData->characters[5]);
+        width = text_measureWidth((s32)&g_gameState->gameData->characters[5]);
         break;
     case TEXT_CHAR_NAME + 6:
-        r = text_measureWidth((s32)&g_gameState->gameData->characters[6]);
+        width = text_measureWidth((s32)&g_gameState->gameData->characters[6]);
         break;
     case TEXT_CHAR_NAME + 7:
-        r = text_measureWidth((s32)&g_gameState->gameData->characters[7]);
+        width = text_measureWidth((s32)&g_gameState->gameData->characters[7]);
         break;
     case TEXT_PARTY_NAME + 0:
         if (g_gameState->gameData->party[0] != NULL) {
-            r = text_measureWidth((s32)g_gameState->gameData->party[0]);
+            width = text_measureWidth((s32)g_gameState->gameData->party[0]);
         } else {
-            r = 0;
+            width = 0;
         }
         break;
     case TEXT_PARTY_NAME + 1:
         if (g_gameState->gameData->party[1] != NULL) {
-            r = text_measureWidth((s32)g_gameState->gameData->party[1]);
+            width = text_measureWidth((s32)g_gameState->gameData->party[1]);
         } else {
-            r = 0;
+            width = 0;
         }
         break;
     case TEXT_PARTY_NAME + 2:
         if (g_gameState->gameData->party[2] != NULL) {
-            r = text_measureWidth((s32)g_gameState->gameData->party[2]);
+            width = text_measureWidth((s32)g_gameState->gameData->party[2]);
         } else {
-            r = 0;
+            width = 0;
         }
         break;
     case TEXT_PARTY_NAME + 3:
         if (g_gameState->gameData->party[3] != NULL) {
-            r = text_measureWidth((s32)g_gameState->gameData->party[3]);
+            width = text_measureWidth((s32)g_gameState->gameData->party[3]);
         } else {
-            r = 0;
+            width = 0;
         }
         break;
     }
-    return r;
+    return width;
 }
 
 s32 text_formatTime(s32 frames, u8 *out, s32 blink) {
-    s32 r = 0;
+    s32 hundredsGlyph = 0;
     s32 sec;
     s32 min;
     s32 hr;
@@ -716,7 +716,7 @@ s32 text_formatTime(s32 frames, u8 *out, s32 blink) {
         min = 59;
     }
     if (hr >= 100) {
-        r = g_hourHundredsGlyphs[hr / 100];
+        hundredsGlyph = g_hourHundredsGlyphs[hr / 100];
         hr %= 100;
     }
     if ((u8)blink) {
@@ -743,34 +743,34 @@ s32 text_formatTime(s32 frames, u8 *out, s32 blink) {
     if (hr < 10) {
         out[0] = '0';
     }
-    return r;
+    return hundredsGlyph;
 }
 
 u8 *text_append(u8 *dst, u8 *src) {
-    s32 c;
+    s32 ch;
     u8 th;
     u8 *p;
     u8 *start;
-    u8 *s;
+    u8 *scanStart;
     s32 c2;
     u8 th2;
 
     start = dst;
-    s = start;
-    p = s;
+    scanStart = start;
+    p = scanStart;
     th = g_gameState->gameData->font->extCode >> 8;
-    while ((c = *p) != TEXT_END) {
+    while ((ch = *p) != TEXT_END) {
         p++;
-        if (c == TEXT_ESC) {
+        if (ch == TEXT_ESC) {
             p++;
             if ((u32)(p[-2] - TEXT_X_ADD) < 2) {
                 p++;
             }
-        } else if (c >= th) {
+        } else if (ch >= th) {
             p++;
         }
     }
-    dst += p - s;
+    dst += p - scanStart;
     th2 = g_gameState->gameData->font->extCode >> 8;
     while ((c2 = *src) != TEXT_END) {
         *dst++ = *src++;
@@ -787,45 +787,45 @@ u8 *text_append(u8 *dst, u8 *src) {
     return start;
 }
 
-s32 ui_measureLabel(u8 *s) {
+s32 ui_measureLabel(u8 *str) {
     s32 w;
-    Glyph8 *g;
-    u8 c;
+    Glyph8 *glyph;
+    u8 ch;
     s32 adv;
 
     w = 0;
-    g = NULL;
-    while ((c = *s) != 0) {
-        if (c >= 'A' && c <= 'Z') {
-            g = (Glyph8 *)&g_uiSprites[*s - 8];
-        } else if (c >= 'a' && c <= 'z') {
-            g = (Glyph8 *)&g_uiSprites[*s - 0x28];
-        } else if (c >= '0' && c <= '9') {
-            g = (Glyph8 *)&g_uiSprites[*s - 2];
-        } else if (c == '&') {
-            g = (Glyph8 *)&g_uiSprites[UI_SPRITE_AMPERSAND];
-        } else if (c == '.') {
-            g = (Glyph8 *)&g_uiSprites[UI_SPRITE_PERIOD];
-        } else if (c == '_') {
-            g = (Glyph8 *)&g_uiSprites[UI_SPRITE_UNDERSCORE];
+    glyph = NULL;
+    while ((ch = *str) != 0) {
+        if (ch >= 'A' && ch <= 'Z') {
+            glyph = (Glyph8 *)&g_uiSprites[*str - 8];
+        } else if (ch >= 'a' && ch <= 'z') {
+            glyph = (Glyph8 *)&g_uiSprites[*str - 0x28];
+        } else if (ch >= '0' && ch <= '9') {
+            glyph = (Glyph8 *)&g_uiSprites[*str - 2];
+        } else if (ch == '&') {
+            glyph = (Glyph8 *)&g_uiSprites[UI_SPRITE_AMPERSAND];
+        } else if (ch == '.') {
+            glyph = (Glyph8 *)&g_uiSprites[UI_SPRITE_PERIOD];
+        } else if (ch == '_') {
+            glyph = (Glyph8 *)&g_uiSprites[UI_SPRITE_UNDERSCORE];
         }
-        if (*s == ' ') {
+        if (*str == ' ') {
             adv = 5;
         } else {
-            adv = g->advance;
+            adv = glyph->advance;
         }
-        s++;
+        str++;
         w += adv - 1;
     }
     return w;
 }
 
-TextSize text_measure(u8 *s) {
-    TextSize r;
+TextSize text_measure(u8 *str) {
+    TextSize size;
     s32 w;
     s32 maxw;
     s32 h;
-    s32 c;
+    s32 ch;
     s32 code;
     Font *font;
     Font *kanji;
@@ -834,105 +834,105 @@ TextSize text_measure(u8 *s) {
     s32 idx;
     Font *tbl;
 
-    memset(&r, 0, 4);
+    memset(&size, 0, 4);
     w = 0;
     maxw = 0;
     font = g_gameState->gameData->font;
     kanji = g_gameState->gameData->kanjiFont;
     h = 15;
     th2 = 0;
-    if (s == NULL) {
-        return r;
+    if (str == NULL) {
+        return size;
     }
     th = font->extCode >> 8;
     if (kanji != NULL) {
         th2 = kanji->codeBase >> 8;
     }
-    while ((c = *s) != TEXT_END) {
-        if (c == TEXT_ESC) {
-            s++;
-            if (*s == TEXT_X_ADD) {
-                s++;
-                w += (s8)*s;
-            } else if (*s == TEXT_X_SET) {
-                s++;
-                w = *s;
-            } else if (*s == TEXT_MSG_NUMBER) {
-                s++;
-                w += text_measureNumber(g_msgNumbers[*s], 0);
-            } else if (*s == TEXT_ARG_NUMBER) {
-                s++;
-                w += text_measureNumber(g_textNumberArgs[*s], 0);
-            } else if (*s == TEXT_ARG_STRING) {
-                s++;
-                w += g_textMeasureFuncs[0](g_textStringArgs[*s]);
-            } else if (*s == TEXT_ARG_NUMBER_SMALL) {
-                s++;
-                w += text_measureNumber(g_textNumberArgs[*s], 1);
-            } else if (*s == TEXT_ARG_STRING_SMALL) {
-                s++;
-                w += g_textMeasureFuncs[1](g_textStringArgs[*s]);
-            } else if (*s == TEXT_ARG_NUMBER_LABEL) {
-                s++;
-                w += text_measureNumber(g_textNumberArgs[*s], 2);
-            } else if (*s == TEXT_ARG_STRING_LABEL) {
-                s++;
-                w += g_textMeasureFuncs[2](g_textStringArgs[*s]);
-            } else if (*s == TEXT_ARG_NUMBER_DIGITS) {
-                s++;
-                w += text_measureNumber(g_textNumberArgs[*s], 3);
-            } else if (*s == TEXT_ARG_STRING_DIGITS) {
-                s++;
-                w += g_textMeasureFuncs[3](g_textStringArgs[*s]);
-            } else if (*s == TEXT_SPRITE) {
-                s++;
-                w += g_uiSprites[*s].w;
-            } else if (*s == TEXT_ITEM_ICON) {
-                s++;
-                if (*s == 0xFF) {
+    while ((ch = *str) != TEXT_END) {
+        if (ch == TEXT_ESC) {
+            str++;
+            if (*str == TEXT_X_ADD) {
+                str++;
+                w += (s8)*str;
+            } else if (*str == TEXT_X_SET) {
+                str++;
+                w = *str;
+            } else if (*str == TEXT_MSG_NUMBER) {
+                str++;
+                w += text_measureNumber(g_msgNumbers[*str], 0);
+            } else if (*str == TEXT_ARG_NUMBER) {
+                str++;
+                w += text_measureNumber(g_textNumberArgs[*str], 0);
+            } else if (*str == TEXT_ARG_STRING) {
+                str++;
+                w += g_textMeasureFuncs[0](g_textStringArgs[*str]);
+            } else if (*str == TEXT_ARG_NUMBER_SMALL) {
+                str++;
+                w += text_measureNumber(g_textNumberArgs[*str], 1);
+            } else if (*str == TEXT_ARG_STRING_SMALL) {
+                str++;
+                w += g_textMeasureFuncs[1](g_textStringArgs[*str]);
+            } else if (*str == TEXT_ARG_NUMBER_LABEL) {
+                str++;
+                w += text_measureNumber(g_textNumberArgs[*str], 2);
+            } else if (*str == TEXT_ARG_STRING_LABEL) {
+                str++;
+                w += g_textMeasureFuncs[2](g_textStringArgs[*str]);
+            } else if (*str == TEXT_ARG_NUMBER_DIGITS) {
+                str++;
+                w += text_measureNumber(g_textNumberArgs[*str], 3);
+            } else if (*str == TEXT_ARG_STRING_DIGITS) {
+                str++;
+                w += g_textMeasureFuncs[3](g_textStringArgs[*str]);
+            } else if (*str == TEXT_SPRITE) {
+                str++;
+                w += g_uiSprites[*str].w;
+            } else if (*str == TEXT_ITEM_ICON) {
+                str++;
+                if (*str == 0xFF) {
                     w += g_uiSprites[g_itemTable[0xFF].icon + 0x5C].w;
                 }
-            } else if (*s == TEXT_ARG_SPRITE) {
-                s++;
-                w += g_uiSprites[g_textIconArgs[*s]].w;
-            } else if (*s == TEXT_ARG_ITEM_ICON) {
-                s++;
-                if (g_textIconArgs[*s] == 0xFF) {
+            } else if (*str == TEXT_ARG_SPRITE) {
+                str++;
+                w += g_uiSprites[g_textIconArgs[*str]].w;
+            } else if (*str == TEXT_ARG_ITEM_ICON) {
+                str++;
+                if (g_textIconArgs[*str] == 0xFF) {
                     w += g_uiSprites[g_itemTable[0xFF].icon + 0x5C].w;
                 }
-            } else if (*s == TEXT_Y_DOWN) {
-                s++;
-                h += *s;
-            } else if (*s == TEXT_Y_UP) {
-                s++;
-                h -= *s;
+            } else if (*str == TEXT_Y_DOWN) {
+                str++;
+                h += *str;
+            } else if (*str == TEXT_Y_UP) {
+                str++;
+                h -= *str;
             } else {
-                w += text_getCodeWidth(*s);
+                w += text_getCodeWidth(*str);
             }
-        } else if (c == TEXT_NEWLINE) {
+        } else if (ch == TEXT_NEWLINE) {
             h += 15;
             if (maxw < w) {
                 maxw = w;
             }
             w = 0;
-        } else if (kanji != NULL && c >= th2) {
-            code = (c << 8) + s[1];
-            c = code - kanji->codeBase;
-            s++;
-            w += 1 + (*(kanji->glyphs + c) >> 28);
-        } else if (c < th) {
-            w += 1 + (*(font->glyphs + c) >> 28);
+        } else if (kanji != NULL && ch >= th2) {
+            code = (ch << 8) + str[1];
+            ch = code - kanji->codeBase;
+            str++;
+            w += 1 + (*(kanji->glyphs + ch) >> 28);
+        } else if (ch < th) {
+            w += 1 + (*(font->glyphs + ch) >> 28);
         } else {
-            code = (c << 8) + s[1];
-            c = code - font->extCode + font->extBase;
-            s++;
-            w += 1 + (*(font->glyphs + c) >> 28);
+            code = (ch << 8) + str[1];
+            ch = code - font->extCode + font->extBase;
+            str++;
+            w += 1 + (*(font->glyphs + ch) >> 28);
         }
-        s++;
+        str++;
     }
-    r.w = maxw > w ? maxw : w;
-    r.h = h;
-    return r;
+    size.w = maxw > w ? maxw : w;
+    size.h = h;
+    return size;
 }
 
 s32 text_initNameImage(s32 work) {
@@ -960,73 +960,73 @@ void ui_drawLabel(s32 x, s32 y, s32 otz, s32 str, s32 mode) {
     g_primPtr = ui_buildLabel(x, y, &g_ot[otz], str, mode, g_primPtr);
 }
 
-void ui_drawSmallDigits(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
-    g_primPtr = text_buildSmall(x, y, &g_ot[otz], s, pal, g_primPtr);
+void ui_drawSmallDigits(s32 x, s32 y, s32 otz, u8 *str, s32 pal) {
+    g_primPtr = text_buildSmall(x, y, &g_ot[otz], str, pal, g_primPtr);
 }
 
-void ui_drawDigits(s32 x, s32 y, s32 otz, u8 *s, s32 style) {
-    g_primPtr = text_buildDigits(x, y, &g_ot[otz], s, style, g_primPtr);
+void ui_drawDigits(s32 x, s32 y, s32 otz, u8 *str, s32 style) {
+    g_primPtr = text_buildDigits(x, y, &g_ot[otz], str, style, g_primPtr);
 }
 
-void text_drawBlock(s32 x, s32 y, s32 otz, u8 *s, s32 mode) {
-    g_primPtr = text_buildBlock(x, y, &g_ot[otz], s, mode, g_primPtr);
+void text_drawBlock(s32 x, s32 y, s32 otz, u8 *str, s32 mode) {
+    g_primPtr = text_buildBlock(x, y, &g_ot[otz], str, mode, g_primPtr);
 }
 
-u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
-    SprtWords *p = pkt;
-    DrTpageWords *t;
+u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *str, s32 style, void *pkt) {
+    SprtWords *sprt = pkt;
+    DrTpageWords *tpage;
     u32 rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
-    s32 c;
+    s32 ch;
     s32 u;
 
     if (style == DIGITS_DIM) {
         rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     }
-    while ((c = *s) != 0) {
-        if ((u8)c != ' ') {
+    while ((ch = *str) != 0) {
+        if ((u8)ch != ' ') {
             do { } while (0);
-            if ((u8)c != '/') {
+            if ((u8)ch != '/') {
                 u = 0x1E8;
-                u = c * 8 - u;
+                u = ch * 8 - u;
             } else {
                 u = 0xE8;
             }
-            setlen(p, 4);
-            p->rgbc = rgbc;
-            p->xy = (x & 0xFFFF) | (y << 16);
-            p->wh = 0xA0008;
-            p->uvclut = ((u & 0xFF) | 0x4000) | ((g_numberClutRows[style] + 0x3EE4) << 16);
-            addPrim(ot, p);
-            p++;
+            setlen(sprt, 4);
+            sprt->rgbc = rgbc;
+            sprt->xy = (x & 0xFFFF) | (y << 16);
+            sprt->wh = 0xA0008;
+            sprt->uvclut = ((u & 0xFF) | 0x4000) | ((g_numberClutRows[style] + 0x3EE4) << 16);
+            addPrim(ot, sprt);
+            sprt++;
         }
-        s++;
+        str++;
         x += 7;
     }
-    t = (DrTpageWords *)p;
-    setlen(t, 1);
-    t->code = get_mode(1, 1, 0x1F);
-    addPrim(ot, t);
-    return (u8 *)(t + 1);
+    tpage = (DrTpageWords *)sprt;
+    setlen(tpage, 1);
+    tpage->code = get_mode(1, 1, 0x1F);
+    addPrim(ot, tpage);
+    return (u8 *)(tpage + 1);
 }
 
-u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 mode, s32 *out, SprtWords *p) {
+u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 mode, s32 *out, SprtWords *sprt) {
     u32 rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
     s32 dx = (glyph >> 20) & 3;
     s32 h = (glyph >> 16) & 0xF;
-    s32 n = glyph >> 28;
+    s32 advance = glyph >> 28;
     if (mode != TEXT_PAL_PLAIN) {
         rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
-    setlen(p, 4);
-    p->xy = ((x + dx) & 0xFFFF) | (y << 16);
-    p->rgbc = rgbc;
-    p->uvclut = (glyph & 0x40FFFF) + (g_textPalettes[mode] << 16);
-    p->wh = h | 0xD0000;
-    addPrim(ot, p);
+    setlen(sprt, 4);
+    sprt->xy = ((x + dx) & 0xFFFF) | (y << 16);
+    sprt->rgbc = rgbc;
+    sprt->uvclut = (glyph & 0x40FFFF) + (g_textPalettes[mode] << 16);
+    sprt->wh = h | 0xD0000;
+    addPrim(ot, sprt);
     if (out != NULL) {
-        *out = n + 1;
+        *out = advance + 1;
     }
-    return (u8 *)(p + 1);
+    return (u8 *)(sprt + 1);
 }
 
 u8 *text_buildDpad(s32 x, s32 y, u32 *ot, u32 dirMask, u8 flag, s32 *outWidth, u8 *pkt) {
@@ -1040,53 +1040,53 @@ u8 *text_buildDpad(s32 x, s32 y, u32 *ot, u32 dirMask, u8 flag, s32 *outWidth, u
     return ui_buildSprite(x, y, ot, UI_SPRITE_DPAD, flag, outWidth, pkt);
 }
 
-s32 text_measureStyle(u8 *s, s32 idx) {
-    return g_textMeasureFuncs[idx](s);
+s32 text_measureStyle(u8 *str, s32 idx) {
+    return g_textMeasureFuncs[idx](str);
 }
 
-s32 text_measureSmall(u8 *s) {
+s32 text_measureSmall(u8 *str) {
     s32 w = 0;
-    u8 c;
+    u8 ch;
 
-    while ((c = *s) != 0) {
-        if (c != 0x40 && c != 0xDE && c != 0xDF) {
+    while ((ch = *str) != 0) {
+        if (ch != 0x40 && ch != 0xDE && ch != 0xDF) {
             w += 7;
         }
-        s++;
+        str++;
     }
     return w;
 }
 
-s32 text_measureDigits(u8 *s) {
+s32 text_measureDigits(u8 *str) {
     s32 w = 0;
-    u8 c;
+    u8 ch;
 
-    while ((c = *s) != 0) {
-        if (c != 0x40 && c != 0xDE && c != 0xDF) {
+    while ((ch = *str) != 0) {
+        if (ch != 0x40 && ch != 0xDE && ch != 0xDF) {
             w += 7;
         }
-        s++;
+        str++;
     }
     return w;
 }
 
-s32 text_measureWidth(s32 s) {
-    return text_measure((u8 *)s).w;
+s32 text_measureWidth(s32 str) {
+    return text_measure((u8 *)str).w;
 }
 
-u8 *text_buildFontTpage(u32 *ot, DrTpageWords *p) {
-    setlen(p, 1);
-    p->code = get_mode(1, 1, 0x1E);
-    addPrim(ot, p);
-    return (u8 *)(p + 1);
+u8 *text_buildFontTpage(u32 *ot, DrTpageWords *tpage) {
+    setlen(tpage, 1);
+    tpage->code = get_mode(1, 1, 0x1E);
+    addPrim(ot, tpage);
+    return (u8 *)(tpage + 1);
 }
 
-void text_formatNumber(s32 n, u8 *out, s32 width, u8 ascii) {
+void text_formatNumber(s32 value, u8 *out, s32 width, u8 ascii) {
     s32 base = 0;
     s32 fill;
     s32 i;
-    s32 q;
-    s32 d;
+    s32 quot;
+    s32 digit;
     u8 *end;
 
     if (ascii) {
@@ -1097,18 +1097,18 @@ void text_formatNumber(s32 n, u8 *out, s32 width, u8 ascii) {
         fill = 0xF;
     }
     if (width < 0) {
-        text_formatInt(n, out, ascii);
+        text_formatInt(value, out, ascii);
         return;
     }
     memset(out, fill, width);
     for (i = 0; i < width; i++) {
-        d = n % 10;
-        q = n / 10;
-        out[width - i - 1] = d + base;
-        if (q == 0) {
+        digit = value % 10;
+        quot = value / 10;
+        out[width - i - 1] = digit + base;
+        if (quot == 0) {
             break;
         }
-        n = q;
+        value = quot;
     }
     end = out + width;
     if (!ascii) {
@@ -1118,9 +1118,9 @@ void text_formatNumber(s32 n, u8 *out, s32 width, u8 ascii) {
     }
 }
 
-void text_formatInt(s32 v, u8 *out, s32 ascii) {
+void text_formatInt(s32 value, u8 *out, s32 ascii) {
     u8 digits[16];
-    s32 n = 0;
+    s32 digitCount = 0;
     s32 i;
     s32 base;
     s32 minus;
@@ -1134,56 +1134,56 @@ void text_formatInt(s32 v, u8 *out, s32 ascii) {
         minus = '-';
         term = 0;
     }
-    if (v == 0) {
+    if (value == 0) {
         *out++ = base;
     } else {
-        if (v < 0) {
+        if (value < 0) {
             *out++ = minus;
-            v = -v;
+            value = -value;
         }
-        while (v != 0) {
-            digits[n++] = base + v % 10;
-            v /= 10;
+        while (value != 0) {
+            digits[digitCount++] = base + value % 10;
+            value /= 10;
         }
-        for (i = 0; i < n;) {
-            *out++ = digits[n - ++i];
+        for (i = 0; i < digitCount;) {
+            *out++ = digits[digitCount - ++i];
         }
     }
     *out = term;
 }
 
-s32 text_getLength(u8 *s) {
-    u8 *start = s;
+s32 text_getLength(u8 *str) {
+    u8 *start = str;
     u8 lim = g_gameState->gameData->font->extCode >> 8;
-    s32 c;
+    s32 ch;
 
-    while ((c = *s) != TEXT_END) {
-        s++;
-        if (c == TEXT_ESC) {
-            s++;
-            if ((u32)(s[-2] - TEXT_X_ADD) < 2) {
-                s++;
+    while ((ch = *str) != TEXT_END) {
+        str++;
+        if (ch == TEXT_ESC) {
+            str++;
+            if ((u32)(str[-2] - TEXT_X_ADD) < 2) {
+                str++;
             }
-        } else if (c >= lim) {
-            s++;
+        } else if (ch >= lim) {
+            str++;
         }
     }
-    return s - start;
+    return str - start;
 }
 
 u8 *text_copy(u8 *dst, u8 *src) {
     u8 *start = dst;
     u8 lim = g_gameState->gameData->font->extCode >> 8;
-    s32 c;
+    s32 ch;
 
-    while ((c = *src) != TEXT_END) {
+    while ((ch = *src) != TEXT_END) {
         *dst++ = *src++;
-        if (c == TEXT_ESC) {
+        if (ch == TEXT_ESC) {
             *dst++ = *src++;
             if ((u32)(src[-2] - TEXT_X_ADD) < 2) {
                 *dst++ = *src++;
             }
-        } else if (c >= lim) {
+        } else if (ch >= lim) {
             *dst++ = *src++;
         }
     }
@@ -1195,35 +1195,35 @@ s32 text_getButtonSprite(s32 button) {
     return g_buttonSprites[config_remapButton(button)];
 }
 
-void text_setStringArg(s32 i, u8 *v) {
-    g_textStringArgs[i] = v;
+void text_setStringArg(s32 i, u8 *str) {
+    g_textStringArgs[i] = str;
 }
 
-void text_setNumberArg(s32 i, s32 v) {
-    g_textNumberArgs[i] = v;
+void text_setNumberArg(s32 i, s32 value) {
+    g_textNumberArgs[i] = value;
 }
 
-void text_setIconArg(s32 i, s32 v) {
-    g_textIconArgs[i] = v;
+void text_setIconArg(s32 i, s32 icon) {
+    g_textIconArgs[i] = icon;
 }
 
 s32 text_getColor(void) {
     return g_textColor;
 }
 
-void text_setColor(s32 v) {
-    g_textColor = v;
+void text_setColor(s32 color) {
+    g_textColor = color;
 }
 
-s32 text_measureNumber(s32 n, s32 idx) {
-    s32 r = 0;
+s32 text_measureNumber(s32 value, s32 idx) {
+    s32 width = 0;
     s32 step = g_numberDigitWidths[idx];
 
-    while (n != 0) {
-        n /= 10;
-        r += step;
+    while (value != 0) {
+        value /= 10;
+        width += step;
     }
-    return r - 1;
+    return width - 1;
 }
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/text", g_nameGlyphSpans);

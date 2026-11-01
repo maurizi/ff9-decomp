@@ -1,67 +1,67 @@
 #include "ff9.h"
 
 u8 item_useOnMember(Character *caster, Character *target, MainCalcCmd *cmd, u8 kind, s32 all) {
-    MainCalc c;
+    MainCalc calc;
 
-    c.caster = caster;
-    c.target = target;
-    c.cmd = cmd;
-    c.all = all;
-    c.flags = 0;
-    c.mpChange = 0;
-    c.hpChange = 0;
+    calc.caster = caster;
+    calc.target = target;
+    calc.cmd = cmd;
+    calc.all = all;
+    calc.flags = 0;
+    calc.mpChange = 0;
+    calc.hpChange = 0;
     switch (kind) {
     case BTL_FORMULA_MAGIC_HEAL:
-        if (fieldCalc_checkAlive(&c)) {
+        if (fieldCalc_checkAlive(&calc)) {
             if (target->hp == target->maxHp) {
                 goto full;
             }
-            fieldCalc_setMagicHeal(&c);
-            fieldCalc_supportBoost(&c);
-            fieldCalc_casterStatusHalf(&c);
-            fieldCalc_multiTargetHalf(&c);
-            fieldCalc_calcHpGain(&c);
+            fieldCalc_setMagicHeal(&calc);
+            fieldCalc_supportBoost(&calc);
+            fieldCalc_casterStatusHalf(&calc);
+            fieldCalc_multiTargetHalf(&calc);
+            fieldCalc_calcHpGain(&calc);
         }
         break;
     case BTL_FORMULA_CURE_STATUS:
-        fieldCalc_cureStatusType(&c);
+        fieldCalc_cureStatusType(&calc);
         break;
     case BTL_FORMULA_REVIVE:
-        if (fieldCalc_checkDead(&c)) {
-            fieldCalc_calcReviveHp(&c);
+        if (fieldCalc_checkDead(&calc)) {
+            fieldCalc_calcReviveHp(&calc);
         }
         break;
     case BTL_FORMULA_ITEM_HEAL:
-        if (fieldCalc_checkAlive(&c)) {
+        if (fieldCalc_checkAlive(&calc)) {
             if (target->hp == target->maxHp) {
                 goto full;
             }
-            fieldCalc_setItemHeal(&c);
-            fieldCalc_calcHpGain(&c);
+            fieldCalc_setItemHeal(&calc);
+            fieldCalc_calcHpGain(&calc);
         }
         break;
     case BTL_FORMULA_ITEM_MP_HEAL:
-        if (fieldCalc_checkAlive(&c)) {
+        if (fieldCalc_checkAlive(&calc)) {
             if (target->mp == target->maxMp) {
                 goto full;
             }
-            fieldCalc_setItemHeal(&c);
-            fieldCalc_calcMpGain(&c);
+            fieldCalc_setItemHeal(&calc);
+            fieldCalc_calcMpGain(&calc);
         }
         break;
     case BTL_FORMULA_ELIXIR:
-        if (fieldCalc_checkAlive(&c)) {
+        if (fieldCalc_checkAlive(&calc)) {
             if (*(u32 *)&target->hp == *(u32 *)&target->maxHp) { /* hp and mp both full */
             full:
-                c.flags |= MAINCALC_MISS;
+                calc.flags |= MAINCALC_MISS;
                 break;
             }
-            fieldCalc_restoreAll(&c);
+            fieldCalc_restoreAll(&calc);
         }
         break;
     case BTL_FORMULA_PHOENIX_DOWN:
-        if (fieldCalc_checkDead(&c)) {
-            fieldCalc_reviveRandom(&c);
+        if (fieldCalc_checkDead(&calc)) {
+            fieldCalc_reviveRandom(&calc);
         }
         break;
     case BTL_FORMULA_SOFT:
@@ -69,58 +69,58 @@ u8 item_useOnMember(Character *caster, Character *target, MainCalcCmd *cmd, u8 k
         if (((cmd->info >> 8) & 0x1FF) == 0x121) {
             return menuItem_callChocobo();
         }
-        fieldCalc_cureStatus(&c);
+        fieldCalc_cureStatus(&calc);
         break;
     case BTL_FORMULA_TENT:
-        if (fieldCalc_checkAlive(&c)) {
-            fieldCalc_restoreHalf(&c);
+        if (fieldCalc_checkAlive(&calc)) {
+            fieldCalc_restoreHalf(&calc);
         }
         break;
     }
-    return fieldCalc_apply(&c);
+    return fieldCalc_apply(&calc);
 }
 
-s32 chr_payMp(Unk8006573C *c, s16 cost) {
-    if (c->mp < cost) {
+s32 chr_payMp(Unk8006573C *chr, s16 cost) {
+    if (chr->mp < cost) {
         return 0;
     }
-    c->mp -= cost;
+    chr->mp -= cost;
     return 1;
 }
 
-u8 fieldCalc_apply(MainCalc *c) {
-    if (c->flags & MAINCALC_MISS) {
-        c->result |= MAINCALC_RESULT_MISS;
+u8 fieldCalc_apply(MainCalc *calc) {
+    if (calc->flags & MAINCALC_MISS) {
+        calc->result |= MAINCALC_RESULT_MISS;
         return 0;
     }
-    if (c->hpChange > 0) {
-        chr_addHp(c->target, c->hpChange);
+    if (calc->hpChange > 0) {
+        chr_addHp(calc->target, calc->hpChange);
     }
-    if (c->mpChange > 0) {
-        chr_addMp(c->target, c->mpChange);
-    }
-    return 1;
-}
-
-u8 fieldCalc_checkAlive(MainCalc *c) {
-    if (chr_hasStatus(c->target, CHR_STATUS_PETRIFY | CHR_STATUS_ZOMBIE) || c->target->hp == 0) {
-        c->flags |= MAINCALC_MISS;
-        return 0;
+    if (calc->mpChange > 0) {
+        chr_addMp(calc->target, calc->mpChange);
     }
     return 1;
 }
 
-u8 fieldCalc_checkDead(MainCalc *c) {
-    if (chr_hasStatus(c->target, CHR_STATUS_PETRIFY) || c->target->hp != 0 ||
-        (chr_hasStatus(c->target, CHR_STATUS_ZOMBIE) && c->target->hp == 0)) {
-        c->flags |= MAINCALC_MISS;
+u8 fieldCalc_checkAlive(MainCalc *calc) {
+    if (chr_hasStatus(calc->target, CHR_STATUS_PETRIFY | CHR_STATUS_ZOMBIE) || calc->target->hp == 0) {
+        calc->flags |= MAINCALC_MISS;
         return 0;
     }
     return 1;
 }
 
-void fieldCalc_setMagicHeal(MainCalc *c) {
-    Character *a;
+u8 fieldCalc_checkDead(MainCalc *calc) {
+    if (chr_hasStatus(calc->target, CHR_STATUS_PETRIFY) || calc->target->hp != 0 ||
+        (chr_hasStatus(calc->target, CHR_STATUS_ZOMBIE) && calc->target->hp == 0)) {
+        calc->flags |= MAINCALC_MISS;
+        return 0;
+    }
+    return 1;
+}
+
+void fieldCalc_setMagicHeal(MainCalc *calc) {
+    Character *caster;
     s32 lv;
 
     if (g_randPtr >= g_randTableEnd) {
@@ -129,23 +129,23 @@ void fieldCalc_setMagicHeal(MainCalc *c) {
     if (g_randPtr >= g_randTableEnd) {
         rand_refill();
     }
-    a = c->caster;
-    lv = a->magic;
-    c->multiplier = lv + ((*g_randPtr << 8) | *g_randPtr) % (((a->level + lv) >> 3) + 1);
+    caster = calc->caster;
+    lv = caster->magic;
+    calc->multiplier = lv + ((*g_randPtr << 8) | *g_randPtr) % (((caster->level + lv) >> 3) + 1);
     g_randPtr++;
-    c->power = c->cmd->power;
-    c->defense = c->target->magicDef;
+    calc->power = calc->cmd->power;
+    calc->defense = calc->target->magicDef;
 }
 
-void fieldCalc_setItemHeal(MainCalc *c) {
-    c->multiplier = 10;
-    c->power = c->cmd->power;
-    c->defense = 0;
+void fieldCalc_setItemHeal(MainCalc *calc) {
+    calc->multiplier = 10;
+    calc->power = calc->cmd->power;
+    calc->defense = 0;
 }
 
-void fieldCalc_casterStatusHalf(MainCalc *c) {
-    if (chr_hasStatus(c->caster, 0)) {
-        c->multiplier /= 2;
+void fieldCalc_casterStatusHalf(MainCalc *calc) {
+    if (chr_hasStatus(calc->caster, 0)) {
+        calc->multiplier /= 2;
     }
 }
 
@@ -155,92 +155,92 @@ void fieldCalc_supportBoost(MainCalc *calc) {
     }
 }
 
-void fieldCalc_multiTargetHalf(MainCalc *c) {
-    if (c->all == 1 && (u32)((c->cmd->info & 0xF) - BTL_TGT_MULTI_ANY) < 3) {
-        c->multiplier /= 2;
+void fieldCalc_multiTargetHalf(MainCalc *calc) {
+    if (calc->all == 1 && (u32)((calc->cmd->info & 0xF) - BTL_TGT_MULTI_ANY) < 3) {
+        calc->multiplier /= 2;
     }
 }
 
 void fieldCalc_calcHpGain(MainCalc *calc) {
-    u16 v = calc->power * calc->multiplier;
-    if ((s16)v >= 10000) {
-        v = 9999;
+    u16 gain = calc->power * calc->multiplier;
+    if ((s16)gain >= 10000) {
+        gain = 9999;
     }
-    calc->hpChange = v;
+    calc->hpChange = gain;
 }
 
-void fieldCalc_calcReviveHp(MainCalc *c) {
-    Character *t = c->target;
-    s32 v = t->maxHp * (t->spirit + c->cmd->power);
+void fieldCalc_calcReviveHp(MainCalc *calc) {
+    Character *target = calc->target;
+    s32 heal = target->maxHp * (target->spirit + calc->cmd->power);
 
-    if (c->caster->supportAbilities[1] & SA_BIT(SA_CONCENTRATE)) {
-        v /= 50;
+    if (calc->caster->supportAbilities[1] & SA_BIT(SA_CONCENTRATE)) {
+        heal /= 50;
     } else {
-        v /= 100;
+        heal /= 100;
     }
-    if (v >= 10000) {
-        v = 9999;
+    if (heal >= 10000) {
+        heal = 9999;
     }
-    c->hpChange = v;
+    calc->hpChange = heal;
 }
 
 void fieldCalc_calcMpGain(MainCalc *calc) {
-    u16 v = calc->power * calc->multiplier;
-    if ((s16)v >= 10000) {
-        v = 9999;
+    u16 gain = calc->power * calc->multiplier;
+    if ((s16)gain >= 10000) {
+        gain = 9999;
     }
-    calc->mpChange = v;
+    calc->mpChange = gain;
 }
 
-void fieldCalc_restoreAll(MainCalc *c) {
-    c->target->hp = c->target->maxHp;
-    c->target->mp = c->target->maxMp;
+void fieldCalc_restoreAll(MainCalc *calc) {
+    calc->target->hp = calc->target->maxHp;
+    calc->target->mp = calc->target->maxMp;
 }
 
-void fieldCalc_reviveRandom(MainCalc *c) {
-    Character *t = c->target;
-    s32 r;
+void fieldCalc_reviveRandom(MainCalc *calc) {
+    Character *target = calc->target;
+    s32 roll;
 
     if (g_randPtr >= g_randTableEnd) {
         rand_refill();
     }
-    r = *g_randPtr++;
-    t->hp = r % 10 + 1;
+    roll = *g_randPtr++;
+    target->hp = roll % 10 + 1;
 }
 
-void fieldCalc_restoreHalf(MainCalc *c) {
-    c->hpChange = c->target->maxHp >> 1;
-    c->mpChange = c->target->maxMp >> 1;
+void fieldCalc_restoreHalf(MainCalc *calc) {
+    calc->hpChange = calc->target->maxHp >> 1;
+    calc->mpChange = calc->target->maxMp >> 1;
 }
 
-void fieldCalc_cureStatusType(MainCalc *c) {
+void fieldCalc_cureStatusType(MainCalc *calc) {
     u8 masks[6] = { 0, 0, 0, 2, 1, 24 };
 
-    if (chr_cureStatusMask(c->target, masks[c->cmd->statusSet]) != 2) {
-        c->flags |= MAINCALC_MISS;
+    if (chr_cureStatusMask(calc->target, masks[calc->cmd->statusSet]) != 2) {
+        calc->flags |= MAINCALC_MISS;
     }
 }
 
-void fieldCalc_cureStatus(MainCalc *c) {
-    if (chr_cureStatusMask(c->target, c->cmd->statusMask) != 2) {
-        c->flags |= MAINCALC_MISS;
+void fieldCalc_cureStatus(MainCalc *calc) {
+    if (chr_cureStatusMask(calc->target, calc->cmd->statusMask) != 2) {
+        calc->flags |= MAINCALC_MISS;
     }
 }
 
-void chr_addHp(Character *c, s32 amount) {
-    if (!chr_hasStatus(c, CHR_STATUS_PETRIFY)) {
-        c->hp += amount;
-        if (c->hp > c->maxHp) {
-            c->hp = c->maxHp;
+void chr_addHp(Character *chr, s32 amount) {
+    if (!chr_hasStatus(chr, CHR_STATUS_PETRIFY)) {
+        chr->hp += amount;
+        if (chr->hp > chr->maxHp) {
+            chr->hp = chr->maxHp;
         }
     }
 }
 
-void chr_addMp(Character *c, s32 amount) {
-    if (!chr_hasStatus(c, CHR_STATUS_PETRIFY)) {
-        c->mp += amount;
-        if (c->mp > c->maxMp) {
-            c->mp = c->maxMp;
+void chr_addMp(Character *chr, s32 amount) {
+    if (!chr_hasStatus(chr, CHR_STATUS_PETRIFY)) {
+        chr->mp += amount;
+        if (chr->mp > chr->maxMp) {
+            chr->mp = chr->maxMp;
         }
     }
 }
