@@ -65,13 +65,13 @@ void opening_loadOnClose(void) {
 
 void opening_loadDone(void) {
     s32 mode;
-    s32 r;
+    s32 disc;
 
     if (menuSave_isLoaded()) {
         opening_resetGameData();
-        r = scene_checkDisc();
-        if (r != DISC_NONE) {
-            menu_open(MENU_DISC, ((r & 3) << 14) | 0x3A98);
+        disc = scene_checkDisc();
+        if (disc != DISC_NONE) {
+            menu_open(MENU_DISC, ((disc & 3) << 14) | 0x3A98);
             mode = SCENE_DISC;
         } else {
             menu_setFadeInOnClose(0);

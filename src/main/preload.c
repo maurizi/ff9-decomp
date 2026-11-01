@@ -1,20 +1,20 @@
 #include "ff9.h"
 
-void preload_clearEntry(PreloadEntry *e) {
-    preload_setEntry(e, 0, -1, 0, 0, 0, -1, -1);
+void preload_clearEntry(PreloadEntry *entry) {
+    preload_setEntry(entry, 0, -1, 0, 0, 0, -1, -1);
 }
 
 void preload_setEntry(PreloadEntry *entry, s32 kind, s32 fileId, s32 dest, s32 bufSize, s32 chunkSize, s32 sector, s32 readSize) {
-    s32 t;
+    s32 tmp;
     entry->flags = 0;
     entry->kind = kind;
     entry->fileId = fileId;
     entry->dest = dest;
     entry->loaded = 0;
-    t = bufSize;
-    entry->bufSize = t / 2048 * 2048;
+    tmp = bufSize;
+    entry->bufSize = tmp / 2048 * 2048;
     entry->chunkSize = chunkSize;
-    entry->sector = t = sector;
+    entry->sector = tmp = sector;
     entry->readSize = readSize;
     entry->vramX = 0;
     entry->vramY = 0;
@@ -42,33 +42,33 @@ s32 preload_isBusy(PreloadEntry *entry) {
     return entry->flags & PRELOAD_BUSY;
 }
 
-s32 preload_isDone(PreloadEntry *p) {
-    u16 f;
-    if (p->kind == PRELOAD_KIND_READ) {
-        return preload_isLoaded(p);
+s32 preload_isDone(PreloadEntry *entry) {
+    u16 flags;
+    if (entry->kind == PRELOAD_KIND_READ) {
+        return preload_isLoaded(entry);
     }
-    if (p->kind != PRELOAD_KIND_SEEK) {
+    if (entry->kind != PRELOAD_KIND_SEEK) {
         return 0;
     }
-    f = p->flags;
-    if ((f & (PRELOAD_READ_OK | PRELOAD_READ_FAILED)) && !(f & PRELOAD_BUSY)) {
+    flags = entry->flags;
+    if ((flags & (PRELOAD_READ_OK | PRELOAD_READ_FAILED)) && !(flags & PRELOAD_BUSY)) {
         return 1;
     }
     return 0;
 }
 
-s32 preload_isLoaded(PreloadEntry *p) {
-    u16 f = p->flags;
-    if ((f & (PRELOAD_READ_OK | PRELOAD_READ_FAILED)) && !(f & PRELOAD_BUSY) && p->kind == PRELOAD_KIND_READ && !(f & PRELOAD_IN_VRAM) && p->dest != 0) {
+s32 preload_isLoaded(PreloadEntry *entry) {
+    u16 flags = entry->flags;
+    if ((flags & (PRELOAD_READ_OK | PRELOAD_READ_FAILED)) && !(flags & PRELOAD_BUSY) && entry->kind == PRELOAD_KIND_READ && !(flags & PRELOAD_IN_VRAM) && entry->dest != 0) {
         return 1;
     }
     return 0;
 }
 
-s32 preload_isInVram(PreloadEntry *p) {
-    u16 f = p->flags;
-    if ((f & (PRELOAD_READ_OK | PRELOAD_READ_FAILED)) && !(f & PRELOAD_BUSY)) {
-        if ((f & PRELOAD_IN_VRAM) && p->vramW != 0 && p->vramH != 0) {
+s32 preload_isInVram(PreloadEntry *entry) {
+    u16 flags = entry->flags;
+    if ((flags & (PRELOAD_READ_OK | PRELOAD_READ_FAILED)) && !(flags & PRELOAD_BUSY)) {
+        if ((flags & PRELOAD_IN_VRAM) && entry->vramW != 0 && entry->vramH != 0) {
             return 1;
         }
     }
@@ -77,7 +77,7 @@ s32 preload_isInVram(PreloadEntry *p) {
 
 PreloadEntry *preload_makeChunk(PreloadEntry *dst, PreloadEntry *src) {
     s32 len;
-    s32 t;
+    s32 tmp;
 
     if (preload_isLoaded(src)) {
         preload_clearEntry(dst);
@@ -85,48 +85,48 @@ PreloadEntry *preload_makeChunk(PreloadEntry *dst, PreloadEntry *src) {
         preload_clearEntry(dst);
         dst->kind = src->kind;
         dst->fileId = src->fileId;
-        t = src->dest;
-        t += src->loaded;
-        dst->dest = t;
-        len = src->dest + src->bufSize - t;
+        tmp = src->dest;
+        tmp += src->loaded;
+        dst->dest = tmp;
+        len = src->dest + src->bufSize - tmp;
         dst->bufSize = len;
-        t = src->chunkSize;
-        if (len < t) {
-            t = len;
+        tmp = src->chunkSize;
+        if (len < tmp) {
+            tmp = len;
         }
-        dst->chunkSize = t;
-        dst->chunkSize = t / 2048 * 2048;
-        t = dst->chunkSize;
+        dst->chunkSize = tmp;
+        dst->chunkSize = tmp / 2048 * 2048;
+        tmp = dst->chunkSize;
         dst->sector = src->sector + (src->loaded >> 11);
         dst->readSize = dst->chunkSize;
     }
     return dst;
 }
 
-s32 preload_wait(PreloadEntry *e) {
-    s32 r = 0;
-    if (e->flags & PRELOAD_BUSY) {
+s32 preload_wait(PreloadEntry *entry) {
+    s32 waited = 0;
+    if (entry->flags & PRELOAD_BUSY) {
         while (cd_syncAsync(NULL) == 0) {
         }
-        r = 1;
+        waited = 1;
     }
-    return r;
+    return waited;
 }
 
 void preload_init() {
     s32 i;
-    PreloadQueue *p;
+    PreloadQueue *queue;
 
-    p = g_gameState->gameData->preloadQueue;
-    p->state = PRELOAD_Q_NEXT_ENTRY;
-    p->unk0 = 0;
-    p->count = 0;
-    p->cur = -1;
+    queue = g_gameState->gameData->preloadQueue;
+    queue->state = PRELOAD_Q_NEXT_ENTRY;
+    queue->unk0 = 0;
+    queue->count = 0;
+    queue->cur = -1;
     for (i = 5; i >= 0; i--) {
-        preload_clearEntry(&p->entries[i]);
+        preload_clearEntry(&queue->entries[i]);
     }
-    preload_clearEntry(&p->entries[6]);
-    p->hook = 0;
+    preload_clearEntry(&queue->entries[6]);
+    queue->hook = 0;
 }
 
 void preload_setHook(s32 hook) {
@@ -134,95 +134,95 @@ void preload_setHook(s32 hook) {
 }
 
 PreloadEntry *preload_add(void) {
-    PreloadQueue *t = g_gameState->gameData->preloadQueue;
-    PreloadEntry *e = NULL;
-    if (t->count < 6) {
-        e = &t->entries[t->count];
-        preload_clearEntry(e);
-        t->count++;
+    PreloadQueue *queue = g_gameState->gameData->preloadQueue;
+    PreloadEntry *entry = NULL;
+    if (queue->count < 6) {
+        entry = &queue->entries[queue->count];
+        preload_clearEntry(entry);
+        queue->count++;
     }
-    return e;
+    return entry;
 }
 
 PreloadEntry *preload_next(void) {
-    PreloadQueue *p = g_gameState->gameData->preloadQueue;
-    PreloadEntry *e;
+    PreloadQueue *queue = g_gameState->gameData->preloadQueue;
+    PreloadEntry *entry;
 
-    while (p->cur < p->count - 1) {
-        p->cur++;
-        e = &p->entries[p->cur];
-        if (e->fileId != -1) {
-            e->flags |= PRELOAD_STARTED;
-            return e;
+    while (queue->cur < queue->count - 1) {
+        queue->cur++;
+        entry = &queue->entries[queue->cur];
+        if (entry->fileId != -1) {
+            entry->flags |= PRELOAD_STARTED;
+            return entry;
         }
     }
     return NULL;
 }
 
 PreloadEntry *preload_getCurrent(void) {
-    PreloadQueue *p = g_gameState->gameData->preloadQueue;
-    return &p->entries[p->cur];
+    PreloadQueue *queue = g_gameState->gameData->preloadQueue;
+    return &queue->entries[queue->cur];
 }
 
 PreloadEntry *preload_find(s32 id) {
-    PreloadQueue *t = g_gameState->gameData->preloadQueue;
+    PreloadQueue *queue = g_gameState->gameData->preloadQueue;
     s32 i;
     id &= 0xFFFFFF;
-    for (i = t->count - 1; i >= 0; i--) {
-        PreloadEntry *e = &t->entries[i];
-        if ((e->fileId & 0xFFFFFF) == id) {
-            return e;
+    for (i = queue->count - 1; i >= 0; i--) {
+        PreloadEntry *entry = &queue->entries[i];
+        if ((entry->fileId & 0xFFFFFF) == id) {
+            return entry;
         }
     }
     return NULL;
 }
 
 s32 preload_startRead(void) {
-    PreloadEntry *e = &g_gameState->gameData->preloadQueue->entries[6];
-    PreloadEntry *p = preload_getCurrent();
-    u8 r;
+    PreloadEntry *chunk = &g_gameState->gameData->preloadQueue->entries[6];
+    PreloadEntry *entry = preload_getCurrent();
+    u8 ok;
     s32 started;
 
-    if (p == NULL) {
+    if (entry == NULL) {
         return 0;
     }
     do {
-        if (!preload_isUsed(p)) {
+        if (!preload_isUsed(entry)) {
             return -1;
         }
-        if (p->kind == PRELOAD_KIND_READ) {
-            r = cd_readAsync(g_gameState->imgSector + e->sector, e->readSize, (void *)e->dest, preload_onReadDone);
-        } else if (p->kind == PRELOAD_KIND_SEEK) {
-            r = cd_seekAsync(g_gameState->imgSector + e->sector, preload_onReadDone);
+        if (entry->kind == PRELOAD_KIND_READ) {
+            ok = cd_readAsync(g_gameState->imgSector + chunk->sector, chunk->readSize, (void *)chunk->dest, preload_onReadDone);
+        } else if (entry->kind == PRELOAD_KIND_SEEK) {
+            ok = cd_seekAsync(g_gameState->imgSector + chunk->sector, preload_onReadDone);
         } else {
             goto done;
         }
-        if (r == 0) {
+        if (ok == 0) {
             return -1;
         }
     done:
-        p->flags |= PRELOAD_BUSY;
+        entry->flags |= PRELOAD_BUSY;
         started = 0;
     } while (0);
     return started;
 }
 
 s32 preload_poll(void) {
-    PreloadEntry *p = preload_getCurrent();
-    s32 t;
+    PreloadEntry *entry = preload_getCurrent();
+    s32 readOk;
 
-    if (p == NULL) {
+    if (entry == NULL) {
         return 0;
     }
-    if (preload_isUsed(p) == 0) {
+    if (preload_isUsed(entry) == 0) {
         return -1;
     }
-    if (p->flags & PRELOAD_BUSY) {
-        if (p->flags & PRELOAD_READ_FAILED) {
+    if (entry->flags & PRELOAD_BUSY) {
+        if (entry->flags & PRELOAD_READ_FAILED) {
             return -1;
         }
-        t = p->flags & PRELOAD_READ_OK;
-        return t == 0;
+        readOk = entry->flags & PRELOAD_READ_OK;
+        return readOk == 0;
     }
     return 0;
 }
@@ -234,64 +234,64 @@ void preload_finishRead(void) {
 }
 
 void preload_clearBusy(void) {
-    PreloadEntry *e = preload_getCurrent();
-    if (e != NULL) {
-        e->flags &= (u16)~(PRELOAD_BUSY | PRELOAD_READ_FAILED);
+    PreloadEntry *entry = preload_getCurrent();
+    if (entry != NULL) {
+        entry->flags &= (u16)~(PRELOAD_BUSY | PRELOAD_READ_FAILED);
     }
 }
 
 PreloadEntry *preload_waitCurrent(void) {
-    PreloadEntry *p = preload_getCurrent();
-    if (preload_isUsed(p) == 0) {
+    PreloadEntry *entry = preload_getCurrent();
+    if (preload_isUsed(entry) == 0) {
         return NULL;
     }
-    if (preload_isBusy(p) != 0) {
-        preload_wait(p);
+    if (preload_isBusy(entry) != 0) {
+        preload_wait(entry);
     }
     while (preload_poll() > 0) {
     }
-    return p;
+    return entry;
 }
 
 s32 preload_isReady(s32 id) {
-    s32 r = 0;
-    PreloadEntry *p = preload_find(id);
+    s32 ready = 0;
+    PreloadEntry *entry = preload_find(id);
 
-    if (p != NULL) {
-        if (preload_isBusy(p)) {
+    if (entry != NULL) {
+        if (preload_isBusy(entry)) {
             preload_finishRead();
         }
-        if (preload_isInVram(p) || preload_isLoaded(p)) {
-            r = 1;
+        if (preload_isInVram(entry) || preload_isLoaded(entry)) {
+            ready = 1;
         }
     } else {
-        p = preload_getCurrent();
-        if (p != NULL && preload_isUsed(p)) {
-            if (((p->fileId >> 16) & 0xFF) == ((id >> 16) & 0xFF) && (p->fileId & 0xFFFF) != (id & 0xFFFF)) {
-                preload_wait(p);
+        entry = preload_getCurrent();
+        if (entry != NULL && preload_isUsed(entry)) {
+            if (((entry->fileId >> 16) & 0xFF) == ((id >> 16) & 0xFF) && (entry->fileId & 0xFFFF) != (id & 0xFFFF)) {
+                preload_wait(entry);
             }
         }
     }
-    return r;
+    return ready;
 }
 
 s32 preload_overlaps(u32 addr, s32 size) {
-    PreloadQueue *c = g_gameState->gameData->preloadQueue;
+    PreloadQueue *queue = g_gameState->gameData->preloadQueue;
     s32 i;
-    PreloadEntry *e;
+    PreloadEntry *entry;
     u32 end;
-    s32 n;
+    s32 len;
 
     end = addr + size;
-    for (i = c->count - 1; i >= 0; i--) {
-        e = &c->entries[i];
-        if (e->fileId != -1 && e->kind == PRELOAD_KIND_READ) {
-            if (e->readSize < e->bufSize) {
-                n = e->readSize;
+    for (i = queue->count - 1; i >= 0; i--) {
+        entry = &queue->entries[i];
+        if (entry->fileId != -1 && entry->kind == PRELOAD_KIND_READ) {
+            if (entry->readSize < entry->bufSize) {
+                len = entry->readSize;
             } else {
-                n = e->bufSize;
+                len = entry->bufSize;
             }
-            if (e->dest < end && addr < e->dest + n) {
+            if (entry->dest < end && addr < entry->dest + len) {
                 return 1;
             }
         }
@@ -300,90 +300,90 @@ s32 preload_overlaps(u32 addr, s32 size) {
 }
 
 s32 preload_discardRange(u32 addr, s32 size) {
-    PreloadQueue *q = g_gameState->gameData->preloadQueue;
-    PreloadEntry *e;
+    PreloadQueue *queue = g_gameState->gameData->preloadQueue;
+    PreloadEntry *entry;
     s32 discarded = 0;
     s32 i;
     u32 end = addr + size;
 
-    for (i = q->count - 1; i >= 0; i--) {
-        e = &q->entries[i];
-        if (e->fileId != -1 && (*(u32 *)&e->flags & (PRELOAD_IN_VRAM | PRELOAD_STARTED)) == PRELOAD_STARTED && e->dest != 0 && e->loaded != 0 &&
-            e->dest < end && addr < e->dest + e->loaded) {
-            if (preload_wait(e)) {
+    for (i = queue->count - 1; i >= 0; i--) {
+        entry = &queue->entries[i];
+        if (entry->fileId != -1 && (*(u32 *)&entry->flags & (PRELOAD_IN_VRAM | PRELOAD_STARTED)) == PRELOAD_STARTED && entry->dest != 0 && entry->loaded != 0 &&
+            entry->dest < end && addr < entry->dest + entry->loaded) {
+            if (preload_wait(entry)) {
                 discarded = 1;
             }
-            preload_clearEntry(e);
+            preload_clearEntry(entry);
         }
     }
     return discarded;
 }
 
 void preload_remove(s32 id) {
-    PreloadEntry *e = preload_find(id);
-    if (e != NULL) {
-        preload_wait(e);
-        preload_clearEntry(e);
+    PreloadEntry *entry = preload_find(id);
+    if (entry != NULL) {
+        preload_wait(entry);
+        preload_clearEntry(entry);
     }
 }
 
 void preload_reset(void) {
-    PreloadQueue *p = g_gameState->gameData->preloadQueue;
+    PreloadQueue *queue = g_gameState->gameData->preloadQueue;
     s32 i;
 
-    for (i = p->count - 1; i >= 0; i--) {
-        preload_wait(&p->entries[i]);
-        preload_clearEntry(&p->entries[i]);
+    for (i = queue->count - 1; i >= 0; i--) {
+        preload_wait(&queue->entries[i]);
+        preload_clearEntry(&queue->entries[i]);
     }
-    p->state = PRELOAD_Q_NEXT_ENTRY;
-    p->count = 0;
-    p->cur = -1;
+    queue->state = PRELOAD_Q_NEXT_ENTRY;
+    queue->count = 0;
+    queue->cur = -1;
 }
 
 s32 preload_update(void) {
-    PreloadQueue *t = g_gameState->gameData->preloadQueue;
-    PreloadEntry *e;
+    PreloadQueue *queue = g_gameState->gameData->preloadQueue;
+    PreloadEntry *entry;
 
-    if (t->hook != NULL && t->hook(t) != 0) {
+    if (queue->hook != NULL && queue->hook(queue) != 0) {
         return 1;
     }
     for (;;) {
-        switch (t->state) {
+        switch (queue->state) {
         case PRELOAD_Q_NEXT_ENTRY:
             if (preload_next() != NULL) {
-                t->state = PRELOAD_Q_NEXT_CHUNK;
+                queue->state = PRELOAD_Q_NEXT_CHUNK;
             } else {
-                t->state = PRELOAD_Q_IDLE;
+                queue->state = PRELOAD_Q_IDLE;
             }
             break;
         case PRELOAD_Q_NEXT_CHUNK:
-            e = preload_getCurrent();
-            if (preload_isUsed(e) == 0 || preload_isDone(e) != 0) {
-                t->state = PRELOAD_Q_NEXT_ENTRY;
+            entry = preload_getCurrent();
+            if (preload_isUsed(entry) == 0 || preload_isDone(entry) != 0) {
+                queue->state = PRELOAD_Q_NEXT_ENTRY;
                 break;
             }
-            preload_makeChunk(&t->entries[6], e);
-            t->state = PRELOAD_Q_WAIT_CD;
+            preload_makeChunk(&queue->entries[6], entry);
+            queue->state = PRELOAD_Q_WAIT_CD;
             break;
         case PRELOAD_Q_WAIT_CD:
             if (cd_getState() != 0) {
                 return 0;
             }
-            t->state = PRELOAD_Q_START_READ;
+            queue->state = PRELOAD_Q_START_READ;
             return 0;
         case PRELOAD_Q_START_READ:
             if (preload_startRead() == -1) {
-                t->state = PRELOAD_Q_NEXT_CHUNK;
+                queue->state = PRELOAD_Q_NEXT_CHUNK;
                 return 0;
             }
-            t->state = PRELOAD_Q_READING;
+            queue->state = PRELOAD_Q_READING;
             return 0;
         case PRELOAD_Q_READING:
             if (preload_poll() > 0) {
                 return 0;
             }
             preload_clearBusy();
-            t->state = PRELOAD_Q_NEXT_CHUNK;
+            queue->state = PRELOAD_Q_NEXT_CHUNK;
             return 0;
         case PRELOAD_Q_IDLE:
         default:
@@ -393,20 +393,20 @@ s32 preload_update(void) {
 }
 
 void preload_onReadDone(u8 *result) {
-    PreloadQueue *p = g_gameState->gameData->preloadQueue;
-    PreloadEntry *e;
+    PreloadQueue *queue = g_gameState->gameData->preloadQueue;
+    PreloadEntry *entry;
 
-    if (p != NULL) {
-        e = preload_getCurrent();
-        if (e != NULL) {
-            if (preload_isUsed(e) && *result == 0) {
-                PreloadEntry *x = &p->entries[6];
-                if (e->kind == PRELOAD_KIND_READ) {
-                    e->loaded += x->readSize;
+    if (queue != NULL) {
+        entry = preload_getCurrent();
+        if (entry != NULL) {
+            if (preload_isUsed(entry) && *result == 0) {
+                PreloadEntry *x = &queue->entries[6];
+                if (entry->kind == PRELOAD_KIND_READ) {
+                    entry->loaded += x->readSize;
                 }
-                e->flags |= PRELOAD_READ_OK;
+                entry->flags |= PRELOAD_READ_OK;
             } else {
-                e->flags |= PRELOAD_READ_FAILED;
+                entry->flags |= PRELOAD_READ_FAILED;
             }
         }
     }

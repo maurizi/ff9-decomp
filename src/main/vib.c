@@ -1,27 +1,27 @@
 #include "ff9.h"
 
-s32 vib_init(VibData *t) {
+s32 vib_init(VibData *data) {
     u32 max;
     u32 *pm = &max;
-    u16 *r;
+    u16 *track;
     s32 i;
     s32 j;
-    VibData *c;
+    VibData *curData;
 
     g_vib.flags = VIB_INIT;
     g_vib.rate = 0x100;
     g_vib.pos = 0;
-    g_vib.data = t;
+    g_vib.data = data;
     g_vib.start = 0;
     *pm = 0;
-    r = (u16 *)((u8 *)t + t->tracksOfs);
-    for (i = 0; i < t->trackCount; r += 6, i++) {
-        vib_init_max(pm, r[2]);
-        vib_init_max(pm, r[3]);
+    track = (u16 *)((u8 *)data + data->tracksOfs);
+    for (i = 0; i < data->trackCount; track += 6, i++) {
+        vib_init_max(pm, track[2]);
+        vib_init_max(pm, track[3]);
     }
     g_vib.end = max - 1;
-    c = g_vib.data;
-    for (j = 0; j < c->trackCount; j++) {
+    curData = g_vib.data;
+    for (j = 0; j < curData->trackCount; j++) {
         vib_selectTrack(j, 0, 0);
         vib_selectTrack(j, 1, 0);
     }
@@ -35,13 +35,13 @@ s32 vib_init(VibData *t) {
 }
 
 s32 vib_update(void) {
-    VibData *t;
-    u16 *r;
+    VibData *data;
+    u16 *track;
     s32 pos;
     s32 i;
-    s32 a;
-    s32 b;
-    u16 f;
+    s32 large;
+    s32 small;
+    u16 flags;
 
     if (!(g_vib.flags & VIB_INIT)) {
         return 3;
@@ -49,35 +49,35 @@ s32 vib_update(void) {
     if (g_vib.data == NULL) {
         return 1;
     }
-    t = g_vib.data;
+    data = g_vib.data;
     if (!(g_vib.flags & VIB_PLAYING) || !(g_vib.flags & (VIB_RUNNING | VIB_LOOP))) {
         return 0;
     }
-    b = 0;
+    small = 0;
     i = 0;
-    a = 0;
-    r = (u16 *)((u8 *)t + t->tracksOfs);
+    large = 0;
+    track = (u16 *)((u8 *)data + data->tracksOfs);
     pos = g_vib.pos >> 8;
-    for (; i < t->trackCount; r += 6, i++) {
-        if ((r[0] & 1) && r[2] >= pos) {
-            a += *((u8 *)t + r[4] + pos);
+    for (; i < data->trackCount; track += 6, i++) {
+        if ((track[0] & 1) && track[2] >= pos) {
+            large += *((u8 *)data + track[4] + pos);
         }
-        if ((r[1] & 1) && r[3] >= pos) {
-            b += *((u8 *)t + r[5] + pos);
+        if ((track[1] & 1) && track[3] >= pos) {
+            small += *((u8 *)data + track[5] + pos);
         }
     }
-    if (a >= 0x100) {
-        a = 0xFF;
+    if (large >= 0x100) {
+        large = 0xFF;
     }
-    if (b >= 0x80) {
-        b = 1;
+    if (small >= 0x80) {
+        small = 1;
     }
     if (!((g_gameState->config & 0xFF) >> CFG_BIT_VIBRATION) || g_gameState->mode == 5) {
-        g_padActuator[0].smallMotor = b;
-        g_padActuator[0].largeMotor = a;
+        g_padActuator[0].smallMotor = small;
+        g_padActuator[0].largeMotor = large;
         if (g_gameState->mode == GS_MODE_BATTLE && btlui_isSecondPortUsed()) {
-            g_padActuator[1].smallMotor = b;
-            g_padActuator[1].largeMotor = a;
+            g_padActuator[1].smallMotor = small;
+            g_padActuator[1].largeMotor = large;
         }
     }
     g_vib.pos += g_vib.rate;
@@ -88,14 +88,14 @@ s32 vib_update(void) {
         } else {
             g_vib.pos = g_vib.start << 8;
         }
-        f = g_vib.flags;
-        g_vib.flags = f & ~VIB_RUNNING;
-        if (!(f & VIB_LOOP)) {
+        flags = g_vib.flags;
+        g_vib.flags = flags & ~VIB_RUNNING;
+        if (!(flags & VIB_LOOP)) {
             g_padActuator[0].smallMotor = 0;
             g_padActuator[0].largeMotor = 0;
             g_padActuator[1].smallMotor = 0;
             g_padActuator[1].largeMotor = 0;
-            g_vib.flags = f & ~(VIB_PLAYING | VIB_RUNNING);
+            g_vib.flags = flags & ~(VIB_PLAYING | VIB_RUNNING);
         }
     }
     if ((g_vib.pos >> 8) < g_vib.start) {
@@ -105,30 +105,30 @@ s32 vib_update(void) {
         } else {
             g_vib.pos = g_vib.end << 8;
         }
-        f = g_vib.flags;
-        g_vib.flags = f & ~VIB_RUNNING;
-        if (!(f & VIB_LOOP)) {
+        flags = g_vib.flags;
+        g_vib.flags = flags & ~VIB_RUNNING;
+        if (!(flags & VIB_LOOP)) {
             g_padActuator[0].smallMotor = 0;
             g_padActuator[0].largeMotor = 0;
             g_padActuator[1].smallMotor = 0;
             g_padActuator[1].largeMotor = 0;
-            g_vib.flags = f & ~(VIB_PLAYING | VIB_RUNNING);
+            g_vib.flags = flags & ~(VIB_PLAYING | VIB_RUNNING);
         }
     }
     return 0;
 }
 
 s32 vib_selectTrack(s32 row, s32 col, s32 sel) {
-    VibTrack *r;
+    VibTrack *track;
     s32 i;
 
-    r = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs);
-    for (i = 0; i < g_vib.data->trackCount; r++, i++) {
-        r->flags[col] &= ~1;
+    track = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs);
+    for (i = 0; i < g_vib.data->trackCount; track++, i++) {
+        track->flags[col] &= ~1;
     }
-    r = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs) + row;
+    track = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs) + row;
     if (sel) {
-        r->flags[col] |= 1;
+        track->flags[col] |= 1;
         g_padActuator[0].smallMotor = 0;
         g_padActuator[0].largeMotor = 0;
         g_padActuator[1].smallMotor = 0;
@@ -136,7 +136,7 @@ s32 vib_selectTrack(s32 row, s32 col, s32 sel) {
         g_vib.flags &= ~(VIB_PLAYING | VIB_RUNNING);
         g_vib.pos = g_vib.start << 8;
     } else {
-        r->flags[col] &= ~1;
+        track->flags[col] &= ~1;
     }
     return 0;
 }
@@ -161,11 +161,11 @@ s32 vib_play(s32 frame) {
 }
 
 s32 vib_setPlaying(s32 on) {
-    s32 v;
+    s32 frame;
     if (on) {
         g_vib.flags |= VIB_PLAYING | VIB_RUNNING;
-        v = g_vib.pos >> 8;
-        if (v < g_vib.start || g_vib.end < v) {
+        frame = g_vib.pos >> 8;
+        if (frame < g_vib.start || g_vib.end < frame) {
             g_vib.pos = g_vib.start << 8;
         }
     } else {
@@ -179,13 +179,13 @@ s32 vib_setPlaying(s32 on) {
 }
 
 s32 vib_setTrackEnabled(s32 track, s32 motor, s32 on) {
-    VibTrack *e;
+    VibTrack *entry;
 
-    e = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs) + track;
+    entry = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs) + track;
     if (on) {
-        e->flags[motor] |= 1;
+        entry->flags[motor] |= 1;
     } else {
-        e->flags[motor] &= ~1;
+        entry->flags[motor] &= ~1;
     }
     return 0;
 }
@@ -217,8 +217,8 @@ s32 vib_getFlags(s32 *outFlags) {
 
 s32 vib_isTrackEnabled(s32 track, s32 motor, s32 *out) {
     VibData *h = g_vib.data;
-    u16 *p = (u16 *)((u8 *)h + h->tracksOfs) + track * 6 + motor;
-    if (*p & 1) {
+    u16 *trackFlags = (u16 *)((u8 *)h + h->tracksOfs) + track * 6 + motor;
+    if (*trackFlags & 1) {
         *out = 1;
     } else {
         *out = 0;
