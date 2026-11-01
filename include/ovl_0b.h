@@ -1282,6 +1282,114 @@ typedef struct BtlCmd8 {
     u16 nameOfs; /* name text offset (runtime: Fire 161, Fira 166, Firaga 171, Sleep 178 - steps = name lengths + 1) */
 } BtlCmd8;
 
+/* BtlCmd8.formula / Unk8006B1F4.formula / weapon record +4: btl_calcCmd's damage/effect formula. Evidence: [code]
+ * (each name says what btl_calcCmd's case computes); the users in parentheses are the ability (ovl_33 action table
+ * +4), usable item (g_usableItemTable +4) and weapon (g_weaponTable +4) records carrying it, decoded with
+ * tools/ff9text.py. Formulas no player record uses (0x08, 0x58-0x6B) are enemy abilities'. Weapon formulas 1-7 are
+ * also btl_setPhysParams' multiplier kind. 0x2F, 0x40, 0x4E-0x52 have no case (no effect). */
+#define BTL_FORMULA_WEAPON_STR         0x01 /* weapon attack, multiplier strength + rand (swords, daggers, spears, claws, rods, flutes, staffs) */
+#define BTL_FORMULA_WEAPON_STR_SPR     0x02 /* multiplier (strength + spirit) / 2 (Zidane's thief swords and Steiner's later swords) */
+#define BTL_FORMULA_WEAPON_STR_SPD     0x03 /* multiplier (strength + speed) / 2 (rackets) */
+#define BTL_FORMULA_WEAPON_STR_MAG     0x04 /* multiplier (strength + magic) / 2 (no weapon) */
+#define BTL_FORMULA_WEAPON_RANDOM      0x05 /* multiplier rand % strength + rand (Quina's forks) */
+#define BTL_FORMULA_WEAPON_DRAIN       0x06 /* weapon damage the caster drains (Blood Sword) */
+#define BTL_FORMULA_WEAPON_STR_LEVEL   0x07 /* as WEAPON_STR, power + caster level (Save the Queen) */
+#define BTL_FORMULA_PHYSICAL           0x08 /* ability power vs defense, multiplier strength + rand (level + str) / 4, ability element/status */
+#define BTL_FORMULA_MAGIC              0x09 /* ability power vs magic defense, multiplier magic (Fire, Holy, Doomsday, Diamond Dust) */
+#define BTL_FORMULA_MAGIC_HEAL         0x0A /* healing magic (btl_calcHeal: Cure, Cura, Curaga) */
+#define BTL_FORMULA_ADD_STATUS         0x0B /* status roll, halved by Shell and spread (Silence, Sleep, Stop, Doom, Bad Breath) */
+#define BTL_FORMULA_CURE_STATUS        0x0C /* removes the ability's statuses (Panacea, Stona, Esuna, Dispel) */
+#define BTL_FORMULA_REVIVE             0x0D /* revives a party member with maxHp * (spirit + power) / 100; kills undead (Life, Full-Life, Revive, Rebirth Flame) */
+#define BTL_FORMULA_DEATH              0x0E /* status roll; undead are fully healed (Death) */
+#define BTL_FORMULA_OSMOSE             0x0F /* MP drain, damage / 4 (Osmose) */
+#define BTL_FORMULA_DRAIN              0x10 /* HP drain magic (Drain) */
+#define BTL_FORMULA_PERCENT_MAX_HP     0x11 /* power % of max HP after a status roll (Demi, Aqua Breath, Thunder Slash, Worm Hole) */
+#define BTL_FORMULA_RANDOM_MAGIC       0x12 /* multiplier rand % (magic + level), no defense; effect 0x38 misses 1/3 (Comet, Meteor, Twister) */
+#define BTL_FORMULA_WEAPON_SKILL       0x13 /* weapon attack * power / 10 vs defense, weapon element (Free Energy, Shock, Stock Break, No Mercy) */
+#define BTL_FORMULA_WEAPON_SKILL_MDEF  0x14 /* weapon attack * power / 10 vs magic defense (Cherry Blossom, Climhazzard) */
+#define BTL_FORMULA_GOBLIN_PUNCH       0x15 /* magic damage, + level and no defense when the levels are equal (Goblin Punch) */
+#define BTL_FORMULA_LEVEL_SET_HP       0x16 /* target level a multiple of rate: btl_setTargetHp (LV5 Death) */
+#define BTL_FORMULA_LEVEL_MAGIC        0x17 /* target level a multiple of rate: magic damage (LV4 Holy) */
+#define BTL_FORMULA_LEVEL_DEFLESS      0x18 /* target level a multiple of rate: defense and magic defense to rand % themselves (LV3 Def-less) */
+#define BTL_FORMULA_SET_HP             0x19 /* btl_setTargetHp, no roll (Roulette) */
+#define BTL_FORMULA_FIXED_DAMAGE       0x1A /* power * 100 + rate damage (1,000 Needles; Pyro, Medeo, Poly) */
+#define BTL_FORMULA_SET_HP_ROLL        0x1B /* btl_setTargetHp after a status roll (Matra Magic) */
+#define BTL_FORMULA_FIXED_DAMAGE_1HP   0x1C /* FIXED_DAMAGE only while the caster has 1 HP (Limit Glove) */
+#define BTL_FORMULA_HP_LOST            0x1D /* damage = caster maxHp - hp (Pumpkin Head, Minus Strike) */
+#define BTL_FORMULA_THIRD_MAX_HP_HEAL  0x1E /* heals caster maxHp / 3 (White Wind) */
+#define BTL_FORMULA_MP_DAMAGE_RANDOM   0x1F /* MP damage rand % target mp (Magic Hammer) */
+#define BTL_FORMULA_DARKSIDE           0x20 /* weapon skill damage, caster loses maxHp / 8 (Darkside) */
+#define BTL_FORMULA_ARMOR_BREAK        0x21 /* status roll: defense / 2 (Armor Break) */
+#define BTL_FORMULA_POWER_BREAK        0x22 /* status roll: strength * 3 / 4 (Power Break) */
+#define BTL_FORMULA_MENTAL_BREAK       0x23 /* status roll: magic defense / 2 (Mental Break) */
+#define BTL_FORMULA_MAGIC_BREAK        0x24 /* status roll: magic * 3 / 4 (Magic Break) */
+#define BTL_FORMULA_PERCENT_HEAL       0x25 /* heals power % of max HP and MP, x2 with Power Up (Chakra) */
+#define BTL_FORMULA_SPARE_CHANGE       0x26 /* damage from power * level and gil, split by Elan (Spare Change) */
+#define BTL_FORMULA_LANCER             0x27 /* weapon skill damage to HP and / 16 to MP (Lancer) */
+#define BTL_FORMULA_DRAGON_BREATH      0x28 /* the target's lost HP as damage to every enemy (Dragon Breath) */
+#define BTL_FORMULA_WHITE_DRAW         0x29 /* rand % (2 * target level) MP to every party member (White Draw) */
+#define BTL_FORMULA_THROW              0x2A /* thrown weapon's attack * 2, x1.5 with Power Throw and on aerial enemies (Throw) */
+#define BTL_FORMULA_STRENGTH_UP        0x2B /* strength += strength / power (Might) */
+#define BTL_FORMULA_MAGIC_UP           0x2C /* magic += magic / power (Focus) */
+#define BTL_FORMULA_SACRIFICE          0x2D /* fully heals the target, the caster dies (Sacrifice) */
+#define BTL_FORMULA_SOUL_BLADE         0x2E /* adds the status set of the equipped thief sword (items 7-15, else miss) (Soul Blade) */
+#define BTL_FORMULA_SPEAR              0x30 /* jump attack, multiplier x1.5 (x2 with High Jump) (Spear) */
+#define BTL_FORMULA_PHOENIX            0x31 /* Rebirth Flame (REVIVE) on party targets, Phoenix (MAGIC) on enemies (Phoenix) */
+#define BTL_FORMULA_SIX_DRAGONS        0x32 /* random: full HP/MP, HP or MP to 1 (Six Dragons) */
+#define BTL_FORMULA_CURSE              0x33 /* makes the target weak to the ability's element (Curse) */
+#define BTL_FORMULA_USE_ITEM           0x34 /* uses item `power` with its own formula (Angel's Snack) */
+#define BTL_FORMULA_LUCKY_SEVEN        0x35 /* 7/77/777/7777 when caster hp ends in 7, else 1 (Lucky Seven) */
+#define BTL_FORMULA_WHATS_THAT         0x36 /* turns the target round (What's That!?) */
+#define BTL_FORMULA_CHANGE_ROW         0x37 /* btl_toggleRow (Change) */
+#define BTL_FORMULA_FLEE               0x38 /* escape roll (Flee command; btl_tryEscape) */
+#define BTL_FORMULA_FLEE_SKILL         0x39 /* sure escape: queues BTL_CMD_ESCAPE (Flee skill) */
+#define BTL_FORMULA_STEAL              0x3A /* (Steal, Mug) */
+#define BTL_FORMULA_SCAN               0x3B /* (Scan) */
+#define BTL_FORMULA_DETECT             0x3C /* (Detect) */
+#define BTL_FORMULA_CHARGE             0x3D /* every low-HP party member attacks (Charge!) */
+#define BTL_FORMULA_SOFT               0x3E /* kills stone enemies, else cures the item's statuses (Soft) */
+#define BTL_FORMULA_SWORD_MAGIC        0x3F /* weapon attack + power vs defense, ability element (Steiner's Sword Magic) */
+#define BTL_FORMULA_EAT                0x41 /* kills a weakened enemy, learns its eat ability (Eat, Cook) */
+#define BTL_FORMULA_FROG_DROP          0x42 /* frogCount * level (Frog Drop) */
+#define BTL_FORMULA_THIEVERY           0x43 /* stealCount * speed / 2 (Thievery) */
+#define BTL_FORMULA_DRAGONS_CREST      0x44 /* dragonKills squared (Dragon's Crest) */
+#define BTL_FORMULA_ITEM_HEAL          0x45 /* item power * 15 (30 with Chemist) HP (Potion, Hi-Potion) */
+#define BTL_FORMULA_ITEM_MP_HEAL       0x46 /* the same for MP (Ether) */
+#define BTL_FORMULA_ELIXIR             0x47 /* full HP and MP; kills undead (Elixir) */
+#define BTL_FORMULA_PHOENIX_DOWN       0x48 /* revives with 1-10 HP; undead to 0-9 HP (Phoenix Down, Phoenix Pinion) */
+#define BTL_FORMULA_ITEM_CURE_STATUS   0x49 /* removes the item's statuses (Antidote, Remedy, Echo Screen, ...) */
+#define BTL_FORMULA_ITEM_COUNT_HEAL    0x4A /* heals item power * (count + 1) (the gems, Ore) */
+#define BTL_FORMULA_ITEM_COUNT_DAMAGE  0x4B /* damages item power * (count + 1) (Dead Pepper) */
+#define BTL_FORMULA_TENT               0x4C /* half max HP/MP heal, may add the item's statuses (Tent) */
+#define BTL_FORMULA_9999_DAMAGE        0x4D /* 9999 damage (Dark Matter) */
+#define BTL_FORMULA_SPEAR_TRANCE       0x53 /* SPEAR with the WEAPON_RANDOM multiplier, damage split by the active units (Spear in trance) */
+#define BTL_FORMULA_JEWEL              0x54 /* status roll: adds an Ore (Jewel) */
+#define BTL_FORMULA_SUMMON             0x55 /* magic damage + the summon's gem count, Madeen + level (Shiva, Ifrit, Bahamut, Ark, Terra Homing) */
+#define BTL_FORMULA_ATOMOS             0x56 /* PERCENT_MAX_HP + Amethyst count (Atomos) */
+#define BTL_FORMULA_ODIN               0x57 /* death roll + Ore count / 2; Odin's Sword turns a miss into damage (Odin) */
+#define BTL_FORMULA_SELF_DESTRUCT      0x58 /* the caster dies, its HP as damage */
+#define BTL_FORMULA_SWAP_HP            0x59 /* swaps caster and target HP (each capped at its max) */
+#define BTL_FORMULA_HALVE_DEFENSES     0x5A /* defense and magic defense / 2 */
+#define BTL_FORMULA_PERCENT_CUR_HP     0x5B /* as PERCENT_MAX_HP on current HP */
+#define BTL_FORMULA_ADD_ITEM           0x5C /* adds item `power` */
+#define BTL_FORMULA_LOW_HP_STATUS      0x5D /* hp to 1-9 and the ability's status set */
+#define BTL_FORMULA_ABSORB_MAGIC       0x5E /* target magic / 2, caster magic x2 */
+#define BTL_FORMULA_ABSORB_STRENGTH    0x5F /* target strength / 2, caster strength x2 */
+#define BTL_FORMULA_ADD_TRANCE         0x60 /* fills the trance gauge, adds Trance */
+#define BTL_FORMULA_STATUS_NOT_FEMALE  0x61 /* adds the statuses unless CHR_CLASS_FEMALE */
+#define BTL_FORMULA_PHYSICAL_CLASS8    0x62 /* PHYSICAL power, magic finish; misses class flag 0x8 */
+#define BTL_FORMULA_LEVEL_DAMAGE       0x63 /* status roll: target level * power damage */
+#define BTL_FORMULA_ENEMY_ATTACK       0x64 /* enemy physical attack (Frozen shatters) */
+#define BTL_FORMULA_ENEMY_STEAL        0x65 /* hit roll: steals item `rate` */
+#define BTL_FORMULA_ENEMY_ATTACK_STEAL 0x66 /* enemy physical attack, then steals item `rate` */
+#define BTL_FORMULA_ADD_STATUS_SURE    0x67 /* adds the statuses, no roll (Protect, Shell, Haste, Regen, Carbuncle, Defend) */
+#define BTL_FORMULA_EVT_POWER_DAMAGE   0x68 /* 1 << (event global byte 0xC0 - 1) damage, 9999 from 14 */
+#define BTL_FORMULA_RANDOM_STATUS      0x69 /* each status bit at 1/8 */
+#define BTL_FORMULA_REMOVE_UNIT        0x6A /* the party member leaves the battle (no exp, saved, unlinked) */
+#define BTL_FORMULA_ENEMY_ATTACK_ROW   0x6B /* ENEMY_ATTACK without the shatter check; toggles the row of a target whose BTL_UNIT_ROW is set */
+#define BTL_FORMULA_ADD_STATUS_GUARD   0x6C /* ADD_STATUS, death immunity guards (Iai Strike) */
+#define BTL_FORMULA_MINI               0x6D /* ADD_STATUS, no roll when the target is already Mini (Mini) */
+
 /* BtlCmd8.flags (ability flags). Evidence: [code] */
 #define BTL_ABIL_REFLECTABLE    0x01 /* Reflect bounces it (btl_applyReflect) */
 #define BTL_ABIL_VOICE          0x02 /* needs a voice: Silence blocks it */
@@ -1949,7 +2057,7 @@ extern Unk8010141C g_btlfxSummonModels[1];
 
 
 extern s32 g_btlfxDrawSyncState;
-extern u16 g_btlfxKindTimings[][19];
+extern u16 g_btlfxKindTimings[][CHR_KIND_COUNT]; /* [timing][btlfx_getUnitKind] */
 extern u8 g_btlMessages[];
 extern char s_hiraishiErrorFmt[];
 extern char s_hiFreeEffModelErr[];

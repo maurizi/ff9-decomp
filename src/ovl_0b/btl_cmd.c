@@ -669,9 +669,9 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     case BTL_CMD_TRANCE:
         if (u->status & BTL_STATUS_TRANCE) {
             btl_showMessage(BTL_MSG_TRANCE);
-            u->modelId = g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind + 0x13 : 0x26];
+            u->modelId = g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind + CHR_KIND_TRANCE : CHR_KIND_NONE + CHR_KIND_TRANCE];
         } else {
-            u->modelId = g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F : 0x13];
+            u->modelId = g_btlCharModelIds[(u->flags & BTL_UNIT_PARTY) ? (g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.w >> CHR_INFO_KIND_SHIFT) & 0x1F : CHR_KIND_NONE];
         }
         break;
     case BTL_CMD_KO:
@@ -1407,12 +1407,12 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     c.casterResult = c.targetResult = 0;
     c.casterHpChange = c.targetHpChange = c.casterMpChange = c.targetMpChange = 0;
     switch ((u8)type) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 7:
+    case BTL_FORMULA_WEAPON_STR:
+    case BTL_FORMULA_WEAPON_STR_SPR:
+    case BTL_FORMULA_WEAPON_STR_SPD:
+    case BTL_FORMULA_WEAPON_STR_MAG:
+    case BTL_FORMULA_WEAPON_RANDOM:
+    case BTL_FORMULA_WEAPON_STR_LEVEL:
         if (btl_checkFrozenShatter(&c)) {
             btl_initHitRates(&c);
             if (btl_hasSureHit(&c) || btl_rollHit(&c)) {
@@ -1443,14 +1443,14 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 6:
+    case BTL_FORMULA_WEAPON_DRAIN:
         {
             s32 v;
             s32 d;
             if (btl_checkNotSelf(&c) && btl_checkTargetAlive(&c) && btl_checkFrozenShatter(&c)) {
                 btl_initHitRates(&c);
                 if (btl_hasSureHit(&c) || btl_rollHit(&c)) {
-                    btl_setPhysParams(&c, 1);
+                    btl_setPhysParams(&c, BTL_FORMULA_WEAPON_STR);
                     btl_applyKillerBonus(&c);
                     btl_applyCasterStatusMod(&c);
                     btl_randomizeDefense(&c);
@@ -1477,7 +1477,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 8:
+    case BTL_FORMULA_PHYSICAL:
         if (btl_checkFrozenShatter(&c)) {
             btl_initHitRates(&c);
             if (btl_rollHit(&c)) {
@@ -1496,7 +1496,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 9:
+    case BTL_FORMULA_MAGIC:
         btl_setMagicParams(&c);
         btl_applyCasterMiniMagic(&c);
         btl_applyTargetShell(&c);
@@ -1507,14 +1507,14 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_rollAbilityStatus(&c);
         }
         break;
-    case 10:
+    case BTL_FORMULA_MAGIC_HEAL:
         btl_setMagicParams(&c);
         btl_applyHealBoost(&c);
         btl_applyCasterMiniMagic(&c);
         btl_halveForSpread(&c);
         btl_calcHeal(&c);
         break;
-    case 0x6C:
+    case BTL_FORMULA_ADD_STATUS_GUARD:
         if (btl_guardIfDeathImmune(&c)) {
             btl_initStatusHitRate(&c);
             btl_halveHitForShell(&c);
@@ -1524,10 +1524,10 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 0xC:
+    case BTL_FORMULA_CURE_STATUS:
         btl_cureAbilityStatus(&c);
         break;
-    case 0xD:
+    case BTL_FORMULA_REVIVE:
         {
             s32 v;
             if (btl_checkRevivable(&c) && (btl_initUndeadHitRate(&c) || btl_rollStatusHit(&c))) {
@@ -1552,7 +1552,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0xE:
+    case BTL_FORMULA_DEATH:
         if (btl_guardIfDeathImmune(&c)) {
             if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) != 0) {
                 if (btl_checkTargetAlive(&c)) {
@@ -1566,7 +1566,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 0xF:
+    case BTL_FORMULA_OSMOSE:
         {
             s32 v;
             s32 d;
@@ -1603,7 +1603,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x10:
+    case BTL_FORMULA_DRAIN:
         {
             s32 v;
             s32 d;
@@ -1627,8 +1627,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x11:
-    case 0x5B:
+    case BTL_FORMULA_PERCENT_MAX_HP:
+    case BTL_FORMULA_PERCENT_CUR_HP:
         {
             s32 v;
             if (btl_missIfDeathImmune(&c)) {
@@ -1639,7 +1639,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                     btl_setMultiplierFromPower(&c);
                     btl_applyAbilityElementBoost(&c);
                     if (btl_applyAbilityElement(&c) && btl_missIfAirborne(&c)) {
-                        if ((u8)type == 0x11) {
+                        if ((u8)type == BTL_FORMULA_PERCENT_MAX_HP) {
                             btl_calcPercentDamage(&c);
                         } else {
                             if (c.multiplier > 100) {
@@ -1660,7 +1660,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x12:
+    case BTL_FORMULA_RANDOM_MAGIC:
         if ((cmd->ability->effect != 0x38 || RAND8() < 0xAB) && (cmd->subNo != ABIL_METEOR || !cmd->info.b.magicFailed)) {
             RAND_REFILL2();
             c.multiplier = RAND16() % (caster->magic + caster->level);
@@ -1678,7 +1678,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             c.flags |= BTL_CALC_MISS;
         }
         break;
-    case 0x13:
+    case BTL_FORMULA_WEAPON_SKILL:
         btl_setWeaponAbilityParams(&c);
         btl_applyCasterStatusMod(&c);
         btl_applyTargetStatusMod(&c);
@@ -1688,7 +1688,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_rollAbilityStatus(&c);
         }
         break;
-    case 0x14:
+    case BTL_FORMULA_WEAPON_SKILL_MDEF:
         {
             s32 i;
             RAND_REFILL2();
@@ -1705,7 +1705,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x15:
+    case BTL_FORMULA_GOBLIN_PUNCH:
         btl_setMagicParams(&c);
         if (target->level == caster->level) {
             c.multiplier += caster->level;
@@ -1715,12 +1715,12 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         btl_applyTargetShell(&c);
         btl_finishMagicDamage(&c);
         break;
-    case 0x16:
+    case BTL_FORMULA_LEVEL_SET_HP:
         if (btl_checkLevelMultiple(&c) && btl_checkTargetAlive(&c)) {
             btl_setTargetHp(&c);
         }
         break;
-    case 0x17:
+    case BTL_FORMULA_LEVEL_MAGIC:
         if (btl_checkLevelMultiple(&c) && btl_checkTargetAlive(&c)) {
             btl_setMagicParams(&c);
             btl_applyCasterMiniMagic(&c);
@@ -1731,7 +1731,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 0x18:
+    case BTL_FORMULA_LEVEL_DEFLESS:
         if (btl_checkLevelMultiple(&c) && btl_checkTargetAlive(&c)) {
             if (target->defense != 0) {
                 RAND_REFILL2();
@@ -1743,12 +1743,12 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 0x19:
+    case BTL_FORMULA_SET_HP:
         if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c)) {
             btl_setTargetHp(&c);
         }
         break;
-    case 0x1B:
+    case BTL_FORMULA_SET_HP_ROLL:
         if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c)) {
             btl_initStatusHitRate(&c);
             btl_halveHitForShell(&c);
@@ -1757,7 +1757,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 0x1C:
+    case BTL_FORMULA_FIXED_DAMAGE_1HP:
         if (caster->hp == 1) {
             c.targetResult |= BTL_POPUP_HP;
             c.targetHpChange = cmd->ability->rate + cmd->ability->power * 100;
@@ -1765,22 +1765,22 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             c.flags |= BTL_CALC_MISS;
         }
         break;
-    case 0x1A:
+    case BTL_FORMULA_FIXED_DAMAGE:
         c.targetResult |= BTL_POPUP_HP;
         c.targetHpChange = cmd->ability->rate + cmd->ability->power * 100;
         break;
-    case 0x1D:
+    case BTL_FORMULA_HP_LOST:
         c.targetResult |= BTL_POPUP_HP;
         c.targetHpChange = caster->max->maxHp - caster->hp;
         break;
-    case 0x1E:
+    case BTL_FORMULA_THIRD_MAX_HP_HEAL:
         c.targetResult |= BTL_POPUP_HP;
         if (!(target->status & BTL_STATUS_ZOMBIE)) {
             c.targetResult |= BTL_POPUP_HEAL;
         }
         c.targetHpChange = caster->max->maxHp / 3;
         break;
-    case 0x1F:
+    case BTL_FORMULA_MP_DAMAGE_RANDOM:
         c.targetResult |= BTL_POPUP_MP;
         if (target->mp != 0) {
             RAND_REFILL2();
@@ -1790,7 +1790,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 0x20:
+    case BTL_FORMULA_DARKSIDE:
         {
             s32 v;
             s32 d;
@@ -1817,25 +1817,25 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x21:
-    case 0x22:
-    case 0x23:
-    case 0x24:
+    case BTL_FORMULA_ARMOR_BREAK:
+    case BTL_FORMULA_POWER_BREAK:
+    case BTL_FORMULA_MENTAL_BREAK:
+    case BTL_FORMULA_MAGIC_BREAK:
         btl_initStatusHitRate(&c);
         btl_halveHitForShell(&c);
         if (btl_rollStatusHit(&c)) {
-            if ((u8)type == 0x21) {
+            if ((u8)type == BTL_FORMULA_ARMOR_BREAK) {
                 target->defense >>= 1;
-            } else if ((u8)type == 0x22) {
+            } else if ((u8)type == BTL_FORMULA_POWER_BREAK) {
                 target->strength = target->strength * 3 / 4;
-            } else if ((u8)type == 0x23) {
+            } else if ((u8)type == BTL_FORMULA_MENTAL_BREAK) {
                 target->magicDef >>= 1;
-            } else if ((u8)type == 0x24) {
+            } else if ((u8)type == BTL_FORMULA_MAGIC_BREAK) {
                 target->magic = target->magic * 3 / 4;
             }
         }
         break;
-    case 0x25:
+    case BTL_FORMULA_PERCENT_HEAL:
         c.targetResult |= (BTL_POPUP_HP | BTL_POPUP_HEAL | BTL_POPUP_MP | BTL_POPUP_MP_HEAL);
         if (caster->support[0] & SA_BIT(SA_POWER_UP)) {
             c.targetHpChange = target->max->maxHp * cmd->ability->power / 50;
@@ -1845,7 +1845,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             c.targetMpChange = target->max->maxMp * cmd->ability->power / 100;
         }
         break;
-    case 0x26:
+    case BTL_FORMULA_SPARE_CHANGE:
         {
             u32 v;
             u32 d;
@@ -1864,7 +1864,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x27:
+    case BTL_FORMULA_LANCER:
         {
             s32 v;
             s32 d;
@@ -1886,7 +1886,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x28:
+    case BTL_FORMULA_DRAGON_BREATH:
         {
             s32 v;
             BtlUnit *u;
@@ -1905,7 +1905,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             return;
         }
-    case 0x29:
+    case BTL_FORMULA_WHITE_DRAW:
         {
             BtlUnit *u;
             if (!(target->status & BTL_STATUS_KO)) {
@@ -1924,7 +1924,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             c.flags |= BTL_CALC_MISS;
             break;
         }
-    case 0x2A:
+    case BTL_FORMULA_THROW:
         {
             s32 i;
             if (btl_checkFrozenShatter(&c)) {
@@ -1945,19 +1945,19 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x2B:
+    case BTL_FORMULA_STRENGTH_UP:
         target->strength += target->strength / cmd->ability->power;
         if (target->strength >= 100) {
             target->strength = 99;
         }
         break;
-    case 0x2C:
+    case BTL_FORMULA_MAGIC_UP:
         target->magic += target->magic / cmd->ability->power;
         if (target->magic >= 100) {
             target->magic = 99;
         }
         break;
-    case 0x2D:
+    case BTL_FORMULA_SACRIFICE:
         if (!(target->status & BTL_STATUS_KO) && !(caster->status & (BTL_STATUS_PETRIFY | BTL_STATUS_KO))) {
             target->hp = target->max->maxHp;
             target->mp = target->max->maxMp;
@@ -1967,13 +1967,13 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             c.flags |= BTL_CALC_MISS;
         }
         break;
-    case 0x2E:
+    case BTL_FORMULA_SOUL_BLADE:
         {
             s32 v;
             s32 d;
             if ((u32)(g_gameState->gameData->characters[BTL_UNIT_INDEX(caster->flags)].equip[0] - 7) < 9) {
                 v = g_gameState->gameData->ctx.battle->statusSets[caster->weapon[1]];
-                if (!(v & 0x100) || btl_guardIfDeathImmune(&c)) {
+                if (!(v & BTL_STATUS_KO) || btl_guardIfDeathImmune(&c)) {
                     d = btl_addStatuses(target, v);
                     if (d == 0) {
                         c.flags |= BTL_CALC_GUARD;
@@ -1986,12 +1986,12 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x30:
-    case 0x53:
+    case BTL_FORMULA_SPEAR:
+    case BTL_FORMULA_SPEAR_TRANCE:
         {
             s32 v;
             s32 d;
-            btl_setPhysParams(&c, (u8)type == 0x30 ? 1 : 5);
+            btl_setPhysParams(&c, (u8)type == BTL_FORMULA_SPEAR ? BTL_FORMULA_WEAPON_STR : BTL_FORMULA_WEAPON_RANDOM);
             if (caster->support[0] & SA_BIT(SA_HIGH_JUMP)) {
                 c.multiplier *= 2;
             } else {
@@ -1999,7 +1999,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             btl_applyCasterMiniMagic(&c);
             btl_applyTargetStatusMod(&c);
-            if ((u8)type == 0x30) {
+            if ((u8)type == BTL_FORMULA_SPEAR) {
                 btl_finishPhysDamage(&c);
             } else {
                 d = c.power - c.defense;
@@ -2018,7 +2018,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x31:
+    case BTL_FORMULA_PHOENIX:
         {
             s32 i;
             btl_clearCmd(&sub);
@@ -2026,16 +2026,16 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             sub.info.b.shortSummon = cmd->info.b.shortSummon;
             if (target->flags & BTL_UNIT_PARTY) {
                 sub.subNo = ABIL_REBIRTH_FLAME;
-                i = 13;
+                i = BTL_FORMULA_REVIVE;
             } else {
                 sub.subNo = ABIL_PHOENIX;
-                i = 9;
+                i = BTL_FORMULA_MAGIC;
             }
             sub.ability = (BtlCmd8 *)&g_gameState->gameData->ctx.battle->abilities[sub.subNo];
             btl_calcCmd(caster, target, &sub, i);
             return;
         }
-    case 0x32:
+    case BTL_FORMULA_SIX_DRAGONS:
         {
             s8 v;
             if (btl_checkTargetAlive(&c)) {
@@ -2059,14 +2059,14 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x33:
+    case BTL_FORMULA_CURSE:
         target->elemWeak |= cmd->ability->element;
         target->elemGuard &= ~cmd->ability->element;
         target->elemAbsorb &= ~cmd->ability->element;
         target->elemHalf &= ~cmd->ability->element;
         btl_showMessage(BTL_MSG_WEAK_AGAINST, btl_getElementName(cmd->ability->element));
         break;
-    case 0x34:
+    case BTL_FORMULA_USE_ITEM:
         if (item_getCount(cmd->ability->power) != 0) {
             btl_clearCmd(&sub2);
             sub2.cmdNo = BTL_CMD_ITEM;
@@ -2078,7 +2078,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         }
         c.flags |= BTL_CALC_MISS;
         break;
-    case 0x35:
+    case BTL_FORMULA_LUCKY_SEVEN:
         {
             s32 v;
             c.targetResult |= BTL_POPUP_HP;
@@ -2103,7 +2103,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x36:
+    case BTL_FORMULA_WHATS_THAT:
         {
             s32 v;
             if ((target->flags & BTL_UNIT_PARTY) || !((g_gameState->gameData->ctx.battle->scene.flags >> BTL_SCENE_SCRIPT_START_BIT) & 1)) {
@@ -2118,21 +2118,21 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x37:
+    case BTL_FORMULA_CHANGE_ROW:
         btl_toggleRow(target);
         break;
-    case 0x38:
+    case BTL_FORMULA_FLEE:
         if (btl_canFlee(&c)) {
             btl_rollFlee(&c);
         }
         break;
-    case 0x39:
+    case BTL_FORMULA_FLEE_SKILL:
         btl_tryEscape(0);
         if (btl_canFlee(&c)) {
             btl_setCmd(&g_gameState->gameData->ctx.battle->escapeCmd, BTL_CMD_ESCAPE, 0, 0xF, 1);
         }
         break;
-    case 0x3A:
+    case BTL_FORMULA_STEAL:
         {
             s32 v;
             s16 d;
@@ -2184,15 +2184,15 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x3B:
+    case BTL_FORMULA_SCAN:
         if (btl_missIfDeathImmune(&c)) {
             btl_startScan((s32)target);
         }
         break;
-    case 0x3C:
+    case BTL_FORMULA_DETECT:
         btl_startDetect(target);
         break;
-    case 0x3D:
+    case BTL_FORMULA_CHARGE:
         {
             u16 v;
             u16 d;
@@ -2218,7 +2218,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             return;
         }
-    case 0x3E:
+    case BTL_FORMULA_SOFT:
         if (btl_hasEnemyFlag(target, BTL_ENEMY_STONE) != 0) {
             if (btl_checkTargetAlive(&c)) {
                 btl_killUnit(target);
@@ -2228,7 +2228,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_cureItemStatus(&c);
         }
         break;
-    case 0x3F:
+    case BTL_FORMULA_SWORD_MAGIC:
         {
             s32 i;
             RAND_REFILL2();
@@ -2242,7 +2242,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x41:
+    case BTL_FORMULA_EAT:
         {
             u8 i;
             if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c) && btl_hasEnemyFlag(target, BTL_ENEMY_HUMANOID) == 0) {
@@ -2263,7 +2263,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x42:
+    case BTL_FORMULA_FROG_DROP:
         {
             s32 v;
             c.targetResult |= BTL_POPUP_HP;
@@ -2280,7 +2280,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x43:
+    case BTL_FORMULA_THIEVERY:
         {
             s32 v;
             c.targetResult |= BTL_POPUP_HP;
@@ -2292,7 +2292,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x44:
+    case BTL_FORMULA_DRAGONS_CREST:
         {
             c.targetResult |= BTL_POPUP_HP;
             if (g_gameState->gameData->dragonKills * g_gameState->gameData->dragonKills < 10000) {
@@ -2302,8 +2302,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x45:
-    case 0x46:
+    case BTL_FORMULA_ITEM_HEAL:
+    case BTL_FORMULA_ITEM_MP_HEAL:
         {
             s32 v;
             c.multiplier = 15;
@@ -2312,7 +2312,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             if (caster->support[0] & SA_BIT(SA_CHEMIST)) {
                 c.multiplier = 30;
             }
-            if ((u8)type == 0x45) {
+            if ((u8)type == BTL_FORMULA_ITEM_HEAL) {
                 btl_calcHeal(&c);
             } else {
                 v = c.power * c.multiplier;
@@ -2327,7 +2327,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x47:
+    case BTL_FORMULA_ELIXIR:
         if (btl_checkTargetAlive(&c)) {
             if (!(target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) == 0) {
                 target->hp = target->max->maxHp;
@@ -2338,7 +2338,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 0x48:
+    case BTL_FORMULA_PHOENIX_DOWN:
         if (btl_checkRevivable(&c)) {
             if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) != 0) {
                 target->hp = RAND8() % 10;
@@ -2353,18 +2353,18 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 0x49:
+    case BTL_FORMULA_ITEM_CURE_STATUS:
         btl_cureItemStatus(&c);
         break;
-    case 0x4A:
+    case BTL_FORMULA_ITEM_COUNT_HEAL:
         c.targetResult |= (BTL_POPUP_HP | BTL_POPUP_HEAL);
         c.targetHpChange = g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].power * (item_getCount(cmd->subNo) + 1);
         break;
-    case 0x4B:
+    case BTL_FORMULA_ITEM_COUNT_DAMAGE:
         c.targetResult |= BTL_POPUP_HP;
         c.targetHpChange = g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].power * (item_getCount(cmd->subNo) + 1);
         break;
-    case 0x4C:
+    case BTL_FORMULA_TENT:
         c.targetResult |= (BTL_POPUP_HP | BTL_POPUP_HEAL | BTL_POPUP_MP | BTL_POPUP_MP_HEAL);
         c.targetHpChange = target->max->maxHp >> 1;
         c.targetMpChange = target->max->maxMp >> 1;
@@ -2374,20 +2374,20 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_addStatuses(target, g_usableItemTable[cmd->subNo - ITEM_FIRST_USABLE].statuses);
         }
         break;
-    case 0x4D:
+    case BTL_FORMULA_9999_DAMAGE:
         if (btl_checkTargetAlive(&c)) {
             c.targetHpChange = 9999;
             c.targetResult |= BTL_POPUP_HP;
         }
         break;
-    case 0x54:
+    case BTL_FORMULA_JEWEL:
         btl_initStatusHitRate(&c);
         btl_halveHitForShell(&c);
         if (btl_rollStatusHit(&c)) {
             btl_addItem(ITEM_ORE);
         }
         break;
-    case 0x55:
+    case BTL_FORMULA_SUMMON:
         btl_setMagicParams(&c);
         btl_applyCasterMiniMagic(&c);
         btl_applyTargetShell(&c);
@@ -2426,7 +2426,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_rollAbilityStatus(&c);
         }
         break;
-    case 0x56:
+    case BTL_FORMULA_ATOMOS:
         if (btl_missIfDeathImmune(&c)) {
             btl_setMultiplierFromPower(&c);
             btl_applyAbilityElementBoost(&c);
@@ -2436,7 +2436,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
         }
         break;
-    case 0x57:
+    case BTL_FORMULA_ODIN:
         {
             s32 i;
             if (btl_guardIfDeathImmune(&c)) {
@@ -2457,7 +2457,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x58:
+    case BTL_FORMULA_SELF_DESTRUCT:
         c.targetResult |= BTL_POPUP_HP;
         if (caster->hp != 0) {
             caster->hpChange = caster->hp;
@@ -2468,7 +2468,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             c.targetHpChange = 9999;
         }
         break;
-    case 0x59:
+    case BTL_FORMULA_SWAP_HP:
         {
             u32 v;
             if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c)) {
@@ -2484,21 +2484,21 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x5A:
+    case BTL_FORMULA_HALVE_DEFENSES:
         target->defense >>= 1;
         target->magicDef >>= 1;
         break;
-    case 0x5C:
+    case BTL_FORMULA_ADD_ITEM:
         btl_addItem(c.cmd->ability->power);
         break;
-    case 0x5D:
+    case BTL_FORMULA_LOW_HP_STATUS:
         if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c)) {
             c.flags |= BTL_CALC_NO_DAMAGE;
             target->hp = RAND8() % 9 + 1;
             btl_addStatuses(target, g_gameState->gameData->ctx.battle->statusSets[cmd->ability->statusSet]);
         }
         break;
-    case 0x5E:
+    case BTL_FORMULA_ABSORB_MAGIC:
         {
             target->magic >>= 1;
             if (caster->magic * 2 >= 0x100) {
@@ -2508,7 +2508,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x5F:
+    case BTL_FORMULA_ABSORB_STRENGTH:
         {
             target->strength >>= 1;
             if (caster->strength * 2 >= 0x100) {
@@ -2518,18 +2518,18 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x60:
+    case BTL_FORMULA_ADD_TRANCE:
         target->trance = 0xFF;
         btl_addStatus(target, BTL_STATUS_TRANCE);
         break;
-    case 0x61:
+    case BTL_FORMULA_STATUS_NOT_FEMALE:
         if ((&g_gameState->gameData->characters[BTL_UNIT_INDEX(target->flags)])->classFlags & CHR_CLASS_FEMALE) {
             c.flags |= BTL_CALC_MISS;
         } else {
             btl_applyAbilityStatus(&c);
         }
         break;
-    case 0x62:
+    case BTL_FORMULA_PHYSICAL_CLASS8:
         if ((&g_gameState->gameData->characters[BTL_UNIT_INDEX(target->flags)])->classFlags & 8) {
             c.flags |= BTL_CALC_MISS;
         } else {
@@ -2537,7 +2537,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_finishMagicDamage(&c);
         }
         break;
-    case 0x63:
+    case BTL_FORMULA_LEVEL_DAMAGE:
         btl_initStatusHitRate(&c);
         btl_halveHitForShell(&c);
         btl_halveHitForSpread(&c);
@@ -2546,11 +2546,11 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             c.targetHpChange = target->level * cmd->ability->power;
         }
         break;
-    case 0x64:
+    case BTL_FORMULA_ENEMY_ATTACK:
         if (!btl_checkFrozenShatter(&c)) {
             break;
         }
-    case 0x6B:
+    case BTL_FORMULA_ENEMY_ATTACK_ROW:
         btl_setEnemyAttackParams(&c);
         btl_applyCasterStatusMod(&c);
         btl_randomizeDefense(&c);
@@ -2559,13 +2559,13 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         btl_applyAbilityElementBoost(&c);
         if (btl_applyAbilityElement(&c)) {
             btl_finishMagicDamage(&c);
-            if ((u8)type == 0x6B && BTL_UNIT_ROW(target->flags)) {
+            if ((u8)type == BTL_FORMULA_ENEMY_ATTACK_ROW && BTL_UNIT_ROW(target->flags)) {
                 btl_toggleRow(target);
             }
             btl_rollAbilityStatus(&c);
         }
         break;
-    case 0x65:
+    case BTL_FORMULA_ENEMY_STEAL:
         btl_initHitRates(&c);
         if (btl_rollHit(&c)) {
             btl_calcEnemySteal(&c);
@@ -2573,7 +2573,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_showMessage(BTL_MSG_STEAL_FAILED);
         }
         break;
-    case 0x66:
+    case BTL_FORMULA_ENEMY_ATTACK_STEAL:
         btl_setEnemyAttackParams(&c);
         btl_applyCasterStatusMod(&c);
         btl_randomizeDefense(&c);
@@ -2582,7 +2582,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         btl_finishMagicDamage(&c);
         btl_calcEnemySteal(&c);
         break;
-    case 0x68:
+    case BTL_FORMULA_EVT_POWER_DAMAGE:
         c.targetResult |= BTL_POPUP_HP;
         if (g_evtGlobalVars.b[0xC0] >= 14) {
             c.targetHpChange = 9999;
@@ -2590,16 +2590,16 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             c.targetHpChange = 1 << (g_evtGlobalVars.b[0xC0] - 1);
         }
         break;
-    case 0x69:
+    case BTL_FORMULA_RANDOM_STATUS:
         {
             s32 i;
             s32 bit;
             if (btl_checkTargetAlive(&c)) {
                 for (bit = 1, i = 0; i < 32; i++, bit <<= 1) {
                     if ((RAND8() >> 5) == 0) {
-                        if (bit & 0x1B031D79) {
+                        if (bit & (BTL_STATUS_PETRIFY | BTL_STATUS_SILENCE | BTL_STATUS_BLIND | BTL_STATUS_TROUBLE | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_POISON | BTL_STATUS_SLEEP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_DOOM | BTL_STATUS_MINI)) {
                             btl_addStatus(target, bit);
-                        } else if ((bit & 0x200) && !(target->status & BTL_STATUS_KO)) {
+                        } else if ((bit & BTL_STATUS_LOW_HP) && !(target->status & BTL_STATUS_KO)) {
                             c.flags |= BTL_CALC_NO_DAMAGE;
                             target->hp = RAND8() % 9 + 1;
                         }
@@ -2608,14 +2608,14 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             }
             break;
         }
-    case 0x6A:
+    case BTL_FORMULA_REMOVE_UNIT:
         g_btlRewards.expMask &= ~(1 << ((u8)target->flags >> BTL_UNIT_SLOT_SHIFT));
         btl_cancelTranceEidolon(target);
         btl_removeUnitCmds(target);
         btl_saveCharacter(target, 1);
         btl_unlinkUnit(target);
         break;
-    case 0x6D:
+    case BTL_FORMULA_MINI:
         if (!(target->status & BTL_STATUS_MINI)) {
             btl_initStatusHitRate(&c);
             btl_halveHitForShell(&c);
@@ -2627,7 +2627,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_applyAbilityStatus(&c);
         }
         break;
-    case 0xB:
+    case BTL_FORMULA_ADD_STATUS:
         btl_initStatusHitRate(&c);
         btl_halveHitForShell(&c);
         btl_halveHitForSpread(&c);
@@ -2635,7 +2635,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             btl_applyAbilityStatus(&c);
         }
         break;
-    case 0x67:
+    case BTL_FORMULA_ADD_STATUS_SURE:
         btl_applyAbilityStatus(&c);
         break;
     }
@@ -2924,21 +2924,21 @@ void btl_setPhysParams(BtlCalc *arg0, u8 arg1) {
     arg0->power = arg0->caster->weapon[5];
     arg0->defense = arg0->target->defense;
     switch (arg1) {
-    case 7:
+    case BTL_FORMULA_WEAPON_STR_LEVEL:
         arg0->power += arg0->caster->level;
-    case 1:
+    case BTL_FORMULA_WEAPON_STR:
         arg0->multiplier = arg0->caster->strength + r;
         break;
-    case 2:
+    case BTL_FORMULA_WEAPON_STR_SPR:
         arg0->multiplier = ((arg0->caster->strength + arg0->caster->spirit) >> 1) + r;
         break;
-    case 3:
+    case BTL_FORMULA_WEAPON_STR_SPD:
         arg0->multiplier = ((arg0->caster->strength + arg0->caster->speed) >> 1) + r;
         break;
-    case 4:
+    case BTL_FORMULA_WEAPON_STR_MAG:
         arg0->multiplier = ((arg0->caster->strength + arg0->caster->magic) >> 1) + r;
         break;
-    case 5:
+    case BTL_FORMULA_WEAPON_RANDOM:
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
             if (g_randPtr >= g_randTableEnd) {
@@ -3190,7 +3190,7 @@ s32 btl_checkSwdMagUsable(BtlUnit *arg0, s16 arg1) {
     if (arg0->mp >= arg1) {
         for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
             f = u->flags;
-            if ((f & BTL_UNIT_PARTY) && g_gameState->gameData->characters[BTL_UNIT_INDEX(f)].info.b.kind == 2) {
+            if ((f & BTL_UNIT_PARTY) && g_gameState->gameData->characters[BTL_UNIT_INDEX(f)].info.b.kind == CHR_KIND_VIVI) {
                 if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_SILENCE | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_MINI)) && !(arg0->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_SILENCE | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_MINI))) {
                     return 1;
                 }

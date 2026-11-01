@@ -596,9 +596,9 @@ s32 btl_getBattleVar(s32 arg0) {
             if (u->flags & BTL_UNIT_PARTY) {
                 k = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind;
             } else {
-                k = 0x13;
+                k = CHR_KIND_NONE;
             }
-            if ((u32)(k - 0xA) < 2) {
+            if ((u32)(k - CHR_KIND_EIKO) < 2) {
                 r = btl_isCmdQueued(u, BTL_CMD_REBIRTH_FLAME);
                 break;
             }

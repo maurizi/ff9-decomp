@@ -82,7 +82,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         if (u->unitBit & mask) {
             l->bounced[l->bounceCount++] = u;
         }
-        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->flags & BTL_UNIT_PARTY) && g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind == 2) {
+        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->flags & BTL_UNIT_PARTY) && g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind == CHR_KIND_VIVI) {
             l->partner = u;
         }
     }
@@ -115,19 +115,19 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         if (u->flags & BTL_UNIT_PARTY) {
             k = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind;
         } else {
-            k = 0x13;
+            k = CHR_KIND_NONE;
         }
         switch (k) {
-        case 0:
+        case CHR_KIND_ZIDANE_DAGGER:
             btl_playCmdEffect(cmd, 0xC8, 0);
             break;
-        case 1:
+        case CHR_KIND_ZIDANE:
             btl_playCmdEffect(cmd, 0x111, 0);
             break;
-        case 0xE:
+        case CHR_KIND_CINNA:
             btl_playCmdEffect(cmd, 0x13, 0);
             break;
-        case 0xF:
+        case CHR_KIND_MARCUS:
             btl_playCmdEffect(cmd, 0x77, 0);
             break;
         default:
@@ -153,34 +153,34 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         /* padded: the first jump table is 8-aligned in its object */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         switch (g_itemTable[cmd->subNo].icon) {
-        case 1:
+        case ITEM_ICON_DAGGER:
             btl_playCmdEffect(cmd, 0x110, 0);
             break;
-        case 2:
+        case ITEM_ICON_THIEF_SWORD:
             btl_playCmdEffect(cmd, 0x10A, 0);
             break;
-        case 3:
-        case 4:
+        case ITEM_ICON_SWORD:
+        case ITEM_ICON_KNIGHT_SWORD:
             btl_playCmdEffect(cmd, 0x10B, 0);
             break;
-        case 5:
+        case ITEM_ICON_SPEAR:
             btl_playCmdEffect(cmd, 0x10C, 0);
             break;
-        case 6:
+        case ITEM_ICON_CLAW:
             btl_playCmdEffect(cmd, 0x10D, 0);
             break;
-        case 7:
+        case ITEM_ICON_RACKET:
             btl_playCmdEffect(cmd, 0x109, 0);
             break;
-        case 8:
-        case 9:
-        case 10:
+        case ITEM_ICON_ROD:
+        case ITEM_ICON_FLUTE:
+        case ITEM_ICON_STAFF:
             btl_playCmdEffect(cmd, 0x10E, 0);
             break;
-        case 11:
+        case ITEM_ICON_FORK:
             btl_playCmdEffect(cmd, 0x10F, 0);
             break;
-        case 12:
+        case ITEM_ICON_THROWING:
             btl_playCmdEffect(cmd, 0x115, 0);
             break;
         }

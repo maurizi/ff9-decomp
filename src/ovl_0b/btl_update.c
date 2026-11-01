@@ -381,9 +381,9 @@ void btl_initBattleState(void) {
     s32 v;
     g_gameState->gameData->battleFlags = 0;
     gd = g_gameState->gameData;
-    v = 7;
+    v = CHR_KIND_STEINER;
     if (gd->darkBattle != 0) {
-        v = 8;
+        v = CHR_KIND_STEINER_DARK;
     }
     gd->characters[CHR_STEINER].info.w = (gd->characters[CHR_STEINER].info.w & ~CHR_INFO_KIND) | (v << CHR_INFO_KIND_SHIFT);
     g_gameState->gameData->battleResult = 0;

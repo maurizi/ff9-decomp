@@ -1,0 +1,12 @@
+R36 ovl_0b constants (named constants; evidence [code] unless stated)
+
+BTL_FORMULA_* (include/ovl_0b.h, next to BtlCmd8): btl_calcCmd's (u8)type, BtlCmd8.formula, Unk8006B1F4.formula,
+  weapon record +4; also btl_setPhysParams' multiplier kind (weapon formulas 1-7), btl_tryEscape's Flee call,
+  Phoenix's sub-calculations (REVIVE / MAGIC). 103 macros, 0x01-0x6D. Users cross-checked by dumping the ovl_33
+  action ability table, g_usableItemTable and g_weaponTable +4 against tools/ff9text.py names.
+CHR_KIND_* (include/ff9_ids.h): Character.info.b.kind 0-18, CHR_KIND_COUNT 19, CHR_KIND_NONE (= COUNT, the kind
+  ovl_0b gives a non-party unit), CHR_KIND_TRANCE 0x13 (g_btlCharModelIds offset). Used in main chr_calcAppearance,
+  chr_join; ovl_0b btl_initWeapon, btl_initBattleState, btl_startCmdEffect (Steal), btl_getPartyModelId,
+  btl_checkCmdUsable, btlfx_isUnitKind, the Eiko kind tests, g_btlfxKindTimings, btlcam party presets.
+ITEM_ICON_* (include/ff9_ids.h): ItemInfo.icon weapon kinds 0-12, named from the items carrying them; used in
+  chr_calcAppearance and btl_startCmdEffect (Throw).

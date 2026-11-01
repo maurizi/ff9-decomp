@@ -299,45 +299,45 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
     btl_applyBgLight(arg1->weaponModel);
     arg1->weaponModel->motion = 0;
     switch (arg0->info.b.kind) {
-    case 0:
+    case CHR_KIND_ZIDANE_DAGGER:
         arg0->weaponBone = 0xD;
         break;
-    case 1:
+    case CHR_KIND_ZIDANE:
         arg0->weaponBone = 0xD;
         break;
-    case 3:
-    case 5:
+    case CHR_KIND_GARNET_LONG:
+    case CHR_KIND_GARNET_SHORT:
         arg0->weaponBone = 0xF;
         break;
-    case 4:
-    case 6:
+    case CHR_KIND_GARNET_LONG_RACKET:
+    case CHR_KIND_GARNET_SHORT_RACKET:
         arg0->weaponBone = 0xF;
         break;
-    case 9:
+    case CHR_KIND_QUINA:
         arg0->weaponBone = 0xE;
         break;
-    case 10:
-    case 11:
+    case CHR_KIND_EIKO:
+    case CHR_KIND_EIKO_RACKET:
         arg0->weaponBone = 0xF;
         break;
-    case 12:
+    case CHR_KIND_FREYA:
         arg0->weaponBone = 6;
         break;
-    case 14:
+    case CHR_KIND_CINNA:
         arg0->weaponBone = 0x19;
         break;
-    case 15:
+    case CHR_KIND_MARCUS:
         arg0->weaponBone = 6;
         break;
-    case 16:
-    case 17:
+    case CHR_KIND_BLANK:
+    case CHR_KIND_BLANK_ALT:
         arg0->weaponBone = 0xE;
         break;
-    case 2:
-    case 7:
-    case 8:
-    case 13:
-    case 18:
+    case CHR_KIND_VIVI:
+    case CHR_KIND_STEINER:
+    case CHR_KIND_STEINER_DARK:
+    case CHR_KIND_AMARANT:
+    case CHR_KIND_BEATRIX:
         arg0->weaponBone = 0x10;
         break;
     }

@@ -802,9 +802,9 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
             if (f & BTL_UNIT_PARTY) {
                 k = g_gameState->gameData->characters[BTL_UNIT_INDEX(f)].info.b.kind;
             } else {
-                k = 0x13;
+                k = CHR_KIND_NONE;
             }
-            if ((u32)(k - 10) < 2) {
+            if ((u32)(k - CHR_KIND_EIKO) < 2) {
                 if (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_STOP)) {
                     break;
                 }
@@ -1048,7 +1048,7 @@ void btl_tryEscape(u8 arg0) {
         if ((u8)b->scene.flags >> BTL_SCENE_CAN_ESCAPE_BIT == 0) {
             btl_showMessage(BTL_MSG_CANT_ESCAPE);
         } else if (arg0 && (btl_isAtbRunning() & 0xFF)) {
-            btl_calcCmd(0, 0, 0, 0x38);
+            btl_calcCmd(0, 0, 0, BTL_FORMULA_FLEE);
         }
     }
 }

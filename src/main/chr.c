@@ -156,48 +156,48 @@ s32 chr_calcAppearance(s32 kind, s32 flag, u8 *item) {
 
     switch (t) {
     case 0:
-        return k != 1;
+        return k != ITEM_ICON_DAGGER; /* CHR_KIND_ZIDANE : CHR_KIND_ZIDANE_DAGGER */
     case 1:
-        return 2;
+        return CHR_KIND_VIVI;
     case 2:
         if ((u16)g_evtGlobalVars.h[0] >= 10300) {
-            r = 5;
-            if (k == 7) {
-                r = 6;
+            r = CHR_KIND_GARNET_SHORT;
+            if (k == ITEM_ICON_RACKET) {
+                r = CHR_KIND_GARNET_SHORT_RACKET;
             }
             return r;
         }
-        r = 3;
-        if (k == 7) {
-            r = 4;
+        r = CHR_KIND_GARNET_LONG;
+        if (k == ITEM_ICON_RACKET) {
+            r = CHR_KIND_GARNET_LONG_RACKET;
         }
         return r;
     case 3:
-        return 7;
+        return CHR_KIND_STEINER;
     case 4:
-        return 12;
+        return CHR_KIND_FREYA;
     case 5:
-        return 9;
+        return CHR_KIND_QUINA;
     case 6:
-        r = 10;
-        if (k == 7) {
-            r = 11;
+        r = CHR_KIND_EIKO;
+        if (k == ITEM_ICON_RACKET) {
+            r = CHR_KIND_EIKO_RACKET;
         }
         return r;
     case 7:
-        return 13;
+        return CHR_KIND_AMARANT;
     case 8:
-        return 14;
+        return CHR_KIND_CINNA;
     case 9:
-        return 15;
+        return CHR_KIND_MARCUS;
     case 10:
-        r = 16;
+        r = CHR_KIND_BLANK;
         if ((u16)(g_evtGlobalVars.h[0] - 1500) < 100) {
-            r = 17;
+            r = CHR_KIND_BLANK_ALT;
         }
         return r;
     case 11:
-        return 18;
+        return CHR_KIND_BEATRIX;
     }
     return -1;
 }
@@ -238,7 +238,7 @@ void chr_join(s32 ch, u8 avg, s32 eq) {
     } else {
         lv = 1;
     }
-    if ((u32)(c->info.b.kind - 10) >= 2) {
+    if ((u32)(c->info.b.kind - CHR_KIND_EIKO) >= 2) {
         if (lv < c->level) {
             lv = c->level;
         }

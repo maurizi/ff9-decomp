@@ -1735,7 +1735,7 @@ s32 btlfx_resetIdleMotion(s32 arg0, s32 arg1) {
 s32 btlfx_isUnitKind(s32 arg0, s32 arg1) {
     u32 f = btl_getUnit(arg0)->flags;
     u8 k = g_btlfxUnitKinds[arg1];
-    return ((f & BTL_UNIT_PARTY) ? g_gameState->gameData->characters[BTL_UNIT_INDEX(f)].info.b.kind : 0x13) == k;
+    return ((f & BTL_UNIT_PARTY) ? g_gameState->gameData->characters[BTL_UNIT_INDEX(f)].info.b.kind : CHR_KIND_NONE) == k;
 }
 
 void btlfx_copyWords(s32 *arg0, s32 *arg1, u32 arg2) {

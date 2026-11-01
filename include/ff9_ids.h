@@ -20,10 +20,51 @@
 #define CHR_BEATRIX 8
 #define CHR_COUNT   9 /* GameData.characters entries (party_initNewGame, chr_setRecruited) */
 
+/* ---- appearance kinds: Character.info.b.kind, the index of ovl_0b g_btlCharModelIds / g_btlPartyMotionIds and the
+ * battle weapon bone (btl_initWeapon). [code] chr_calcAppearance (main) picks them from g_chrAppearanceTypes, the
+ * weapon's ITEM_ICON_* and the story counter (docs/r32/3ds-requests-5-models.md section 3.1 has the models). */
+#define CHR_KIND_ZIDANE_DAGGER        0  /* Zidane with ITEM_ICON_DAGGER */
+#define CHR_KIND_ZIDANE               1  /* Zidane with other weapons (thief swords) */
+#define CHR_KIND_VIVI                 2
+#define CHR_KIND_GARNET_LONG          3  /* story < 10300 */
+#define CHR_KIND_GARNET_LONG_RACKET   4  /* story < 10300, ITEM_ICON_RACKET */
+#define CHR_KIND_GARNET_SHORT         5  /* story >= 10300 */
+#define CHR_KIND_GARNET_SHORT_RACKET  6  /* story >= 10300, ITEM_ICON_RACKET */
+#define CHR_KIND_STEINER              7
+#define CHR_KIND_STEINER_DARK         8  /* btl_initBattleState: Steiner in GameData.darkBattle battles (model 286) */
+#define CHR_KIND_QUINA                9
+#define CHR_KIND_EIKO                 10
+#define CHR_KIND_EIKO_RACKET          11 /* ITEM_ICON_RACKET */
+#define CHR_KIND_FREYA                12
+#define CHR_KIND_AMARANT              13
+#define CHR_KIND_CINNA                14 /* guest in slot 5 */
+#define CHR_KIND_MARCUS               15 /* guest in slot 6 */
+#define CHR_KIND_BLANK                16 /* guest in slot 7 */
+#define CHR_KIND_BLANK_ALT            17 /* guest in slot 7, story 1500-1599 */
+#define CHR_KIND_BEATRIX              18
+#define CHR_KIND_COUNT                19
+#define CHR_KIND_NONE                 CHR_KIND_COUNT /* the kind ovl_0b gives a non-party unit (`party ? kind : 0x13`) */
+#define CHR_KIND_TRANCE               0x13 /* g_btlCharModelIds[kind + this]: the trance model */
+
 /* ---- items: GameData.items ids, Character.equip, BtlCmd.subNo of Item commands. [text items] */
 #define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
 #define ITEM_NONE       0xFF  /* empty item id / equipment slot */
 #define ITEM_FIRST_USABLE 0xE0 /* items from here have a use entry in g_usableItemTable (index id - this) */
+/* ItemInfo.icon (g_itemTable +8): the item kind, drawn as sprite 0x5C + it (text_buildBlock); weapon kinds are tested
+ * by chr_calcAppearance and Throw (btl_startCmdEffect). Names from the items carrying them ([text items]). */
+#define ITEM_ICON_HAMMER       0  /* Hammer */
+#define ITEM_ICON_DAGGER       1  /* Dagger .. Orichalcon */
+#define ITEM_ICON_THIEF_SWORD  2  /* Butterfly Sword .. Ultima Weapon */
+#define ITEM_ICON_SWORD        3  /* Broadsword .. Defender */
+#define ITEM_ICON_KNIGHT_SWORD 4  /* Save the Queen, Ultima Sword, Excalibur, Ragnarok, Excalibur II */
+#define ITEM_ICON_SPEAR        5  /* Javelin .. Dragon's Hair */
+#define ITEM_ICON_CLAW         6  /* Cat's Claws .. Rune Claws */
+#define ITEM_ICON_RACKET       7  /* Air Racket .. Tiger Racket */
+#define ITEM_ICON_ROD          8  /* Rod .. Whale Whisker */
+#define ITEM_ICON_FLUTE        9  /* Golem's Flute .. Angel Flute */
+#define ITEM_ICON_STAFF        10 /* Mage Staff .. Mace of Zeus */
+#define ITEM_ICON_FORK         11 /* Fork .. Gastro Fork */
+#define ITEM_ICON_THROWING     12 /* Pinwheel, Rising Sun, Wing Edge */
 #define ITEM_HEALING_ROD    0x3C /* [text items] "Healing Rod" */
 #define ITEM_MAIDEN_PRAYER  0xDE /* [text items] "Maiden Prayer" */
 #define ITEM_GARNET         0xE0 /* [text items] "Garnet" */
