@@ -13,7 +13,7 @@ argument could read through a call (anything but a plain local); or two argument
 consume a stream or advance state (names matching rand/evt_get/Arg/_pop/_read/_next). --all lists every
 call with two or more arguments that have side effects of any kind (the DS port's rule; mostly harmless
 lookups). Calls inside macros aren't seen. Check each report in the asm before changing it.
-Within one expression (not arguments), modern gcc's -Wsequence-point finds the rest, e.g. RAND16 in ovl_0b.h.
+Within one expression (not arguments), modern gcc's -Wsequence-point finds the rest, e.g. RAND16 in ff9.h.
 """
 import argparse
 import glob
