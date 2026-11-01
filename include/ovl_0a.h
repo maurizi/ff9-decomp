@@ -1575,7 +1575,7 @@ extern s8 g_fieldMusicRequest;
 extern s32 g_fieldSoundLoadId;
 extern u8 g_fieldSoundLoadKind;
 extern s32 g_fieldSoundLoadSector;
-s32 fld_soundBankReadCallback(CdReadCtx *arg0);
+s32 fld_soundBankReadCallback(CdReadCtx *ctx);
 /* main exe: candidates for ff9.h */
 s32 akao_playMusic(void *);
 void akao_stopMusic(s32);
@@ -1636,8 +1636,8 @@ u8 *evt_loadScripts(u8 *p); /* main */
 Unk4 fade_getColor(void); /* main */
 s32 fade_getType(void); /* main */
 void fade_getWipeColors(void *a); /* main */
-s32 *fld_addPreloadExclude(s32 arg0);
-s32 *fld_addPreloadRequest(s32 arg0);
+s32 *fld_addPreloadExclude(s32 fileId);
+s32 *fld_addPreloadRequest(s32 fileId);
 void fld_allocMap(void);
 void fld_allocScene(void);
 void fld_beginFrame(void);
@@ -1649,8 +1649,8 @@ s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2);
 s32 fld_depFindBattle(); /* (u16, s32 *, s32 *); unprototyped: callers pass the argument unconverted */
 s32 fld_depFindByLink(s32 arg0);
 s32 fld_depFindField(); /* (u16, s32 *, s32 *); unprototyped: callers pass the argument unconverted */
-s32 fld_depGetFileSector(s32 arg0, s32 *arg1);
-s32 fld_depGetLink(s32 arg0);
+s32 fld_depGetFileSector(s32 fileId, s32 *outSize);
+s32 fld_depGetLink(s32 fileId);
 void fld_drawModels(void);
 void fld_drawSprites(void);
 void fld_endFrame(void);
@@ -1691,14 +1691,14 @@ s32 fld_removeAnimSfx(); /* (FieldObjSlot *, u16, s16); unprototyped: callers pa
 void fld_resetSprite(FieldSprite *arg0);
 void fld_resumeResidentSfx(void);
 void fld_runDiscChange(void);
-void fld_setMusicVolumeFade(s32 arg0, s32 arg1);
+void fld_setMusicVolumeFade(s32 volume, s32 frames);
 s32 fld_setupBackground(FieldScene *arg0, s32 arg1);
 void fld_showSplashImage(void);
 void fld_startAudio(void);
 void fld_startEncounter(void);
 void fld_togglePause(void);
 void fld_trimModelCache(void);
-s32 fld_unpackMusicSeq(s32 arg0);
+s32 fld_unpackMusicSeq(s32 db);
 void fld_updateEncounter(void);
 s32 fldbg_draw(void);
 BgSprt *fldbg_init(void);

@@ -4353,7 +4353,7 @@ typedef struct {
 void btl_entry(void);
 void battleEnd_main(void);
 void fld_spriteCommand(s32, s32, s32, s32, s32);
-void fld_getSoundPanVolume(s16, s16, s16, u8 *arg4, u8 *arg5);
+void fld_getSoundPanVolume(s16, s16, s16, u8 *outPan, u8 *outVolume);
 s32 fld_setObjectColor(s32, s32, s32, s32);
 void fld_requestDiscChange(s32, s16);
 void w_frameSetParameter(u32, s32); /* ovl_0c */

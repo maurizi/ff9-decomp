@@ -10,8 +10,8 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
     s32 ok;
     s32 slot;
     s32 fp;
-    s32 mask;
-    s32 mask2;
+    s32 playingBit;
+    s32 loadedBit;
     s32 sz;
     s32 n;
     s32 m;
@@ -197,7 +197,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         fp = 0;
         slot = 0;
-        mask = 0;
+        playingBit = 0;
         h = 0;
         id = (soundId & 0xFFFF) | DB_SE;
         if (kind != SND_CMD_SET_ALL && kind != SND_CMD_FADE_ALL) {
@@ -216,18 +216,18 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                     }
                 }
                 param1 = (0x100000 << slot) & 0x300000;
-                mask = GD_SFX0_PLAYING << (slot * 2);
-                mask2 = mask >> 1;
+                playingBit = GD_SFX0_PLAYING << (slot * 2);
+                loadedBit = playingBit >> 1;
                 if (kind == SND_CMD_PLAY && g_gameState->gameData->sfxSlotId[slot] != soundId) {
-                    if (g_gameState->gameData->flags & mask) {
+                    if (g_gameState->gameData->flags & playingBit) {
                         akao_stopSe(SFXH(slot), param1);
-                        g_gameState->gameData->flags ^= mask | mask2;
+                        g_gameState->gameData->flags ^= playingBit | loadedBit;
                     }
                     memcpy((void *)SFXH(slot), db_lookupRegistered(DB_GET_ADDR, id, 0), (s32)db_lookupRegistered(DB_GET_SIZE, id, 0));
                     g_gameState->gameData->sfxSlotId[slot] = soundId;
                     g_gameState->gameData->sfxSlotVolume[slot] = 0x7F;
                     g_gameState->gameData->sfxSlotPan[slot] = 0x80;
-                    g_gameState->gameData->flags |= mask2;
+                    g_gameState->gameData->flags |= loadedBit;
                 }
                 h = SFXH(slot);
             } else {
@@ -248,17 +248,17 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                 return 0;
             }
         case SND_CMD_PLAY:
-            if (!fp || !(g_gameState->gameData->flags & mask)) {
+            if (!fp || !(g_gameState->gameData->flags & playingBit)) {
                 akao_playSe(h, param1, param2, param3);
             }
             if (fp) {
                 g_gameState->gameData->sfxSlotPan[slot] = param2;
                 g_gameState->gameData->sfxSlotVolume[slot] = param3;
-                g_gameState->gameData->flags |= mask;
+                g_gameState->gameData->flags |= playingBit;
             }
             return 0;
         case SND_CMD_SUSPEND:
-            if (!(g_gameState->gameData->flags & mask)) {
+            if (!(g_gameState->gameData->flags & playingBit)) {
                 return 0;
             }
             g_gameState->gameData->sfxSlotSuspendField[slot] = g_gameState->gameData->fieldId;
@@ -274,7 +274,7 @@ s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
             } else {
                 akao_stopSe(h, param1);
                 if (fp) {
-                    g_gameState->gameData->flags &= ~mask;
+                    g_gameState->gameData->flags &= ~playingBit;
                 }
             }
             return 0;
@@ -519,7 +519,7 @@ state:
     return g_gameState->gameData->soundLoadState;
 }
 
-void fld_getSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, u8 *arg4, u8 *arg5) {
+void fld_getSoundPanVolume(s16 posX, s16 posY, s16 posZ, u8 *outPan, u8 *outVolume) {
     SVECTOR v;
     DVECTOR sxy;
     s32 z;
@@ -527,9 +527,9 @@ void fld_getSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, u8 *arg4, u8 *arg5) {
     s32 pan;
     s32 b;
 
-    v.vx = arg0;
-    v.vy = arg1;
-    v.vz = arg2;
+    v.vx = posX;
+    v.vy = posY;
+    v.vz = posZ;
     gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
     gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     gte_ldv0(&v);
@@ -561,8 +561,8 @@ void fld_getSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, u8 *arg4, u8 *arg5) {
         pan += 255;
         pan -= a;
     }
-    *arg4 = pan;
-    *arg5 = (0x1000 - z) * 127 / 4096;
+    *outPan = pan;
+    *outVolume = (0x1000 - z) * 127 / 4096;
 }
 
 void fld_suspendResidentSfx(void) {
@@ -601,11 +601,11 @@ void fld_clearSoundBankCache(void) {
 }
 
 /* drop the queued entries except categories 1 and 4 */
-void fld_dropSoundBankCache(s32 arg0) {
+void fld_dropSoundBankCache(s32 size) {
     s32 i;
     u8 t;
 
-    if (arg0 >= 0x40000) {
+    if (size >= 0x40000) {
         for (i = 4; i >= 0; i--) {
             t = (u32)g_fieldSoundBankIds[i] >> 24;
             if (t != 4 && t != 1) {
@@ -616,8 +616,8 @@ void fld_dropSoundBankCache(s32 arg0) {
     }
 }
 
-void fld_stopSceneSfx(FieldScene *arg0, s16 arg1) {
-    s32 t = (s32)arg0->fieldFile;
+void fld_stopSceneSfx(FieldScene *scene, s16 unused) {
+    s32 t = (s32)scene->fieldFile;
     s32 i;
 
     for (i = db_lookup(t, DB_GET_COUNT, DB_SE, 0) - 1; i >= 0; i--) {
@@ -626,7 +626,7 @@ void fld_stopSceneSfx(FieldScene *arg0, s16 arg1) {
     akao_sendCmdE2();
 }
 
-void fld_playAnimSfx(FieldObjSlot **arg0, s32 arg1) {
+void fld_playAnimSfx(FieldObjSlot **slots, s32 count) {
     s16 a;
     s16 b;
     u16 c;
@@ -645,8 +645,8 @@ void fld_playAnimSfx(FieldObjSlot **arg0, s32 arg1) {
 
     base = g_gameState->gameData->ctx.field->area->scene->animSfx;
     n = g_gameState->gameData->ctx.field->area->scene->animSfxCount;
-    for (i = arg1 - 1; i >= 0; i--) {
-        ctx = arg0[i];
+    for (i = count - 1; i >= 0; i--) {
+        ctx = slots[i];
         if (ctx == NULL || (ctx->flags & FLD_OBJ_NO_ANIM_SFX)) {
             continue;
         }
@@ -685,17 +685,17 @@ void fld_playAnimSfx(FieldObjSlot **arg0, s32 arg1) {
 }
 
 /* find the trigger matching the object, id and value (searching backwards) */
-FieldAnimSfx *fld_findAnimSfx(arg0, arg1, arg2)
-    FieldObjSlot *arg0;
-    u16 arg1;
-    s16 arg2;
+FieldAnimSfx *fld_findAnimSfx(obj, anim, frame)
+    FieldObjSlot *obj;
+    u16 anim;
+    s16 frame;
 {
     FieldScene *sc = g_gameState->gameData->ctx.field->area->scene;
     FieldAnimSfx *base = sc->animSfx;
     FieldAnimSfx *e = &base[sc->animSfxCount] - 1;
 
     do {
-        if (e->modelSlot == arg0->actor->modelSlot && e->anim == arg1 && e->frame == arg2) {
+        if (e->modelSlot == obj->actor->modelSlot && e->anim == anim && e->frame == frame) {
             return e;
         }
         e--;
@@ -703,7 +703,7 @@ FieldAnimSfx *fld_findAnimSfx(arg0, arg1, arg2)
     return NULL;
 }
 
-FieldAnimSfx *fld_addAnimSfx(FieldObjSlot *arg0, s32 arg1, s32 arg2) {
+FieldAnimSfx *fld_addAnimSfx(FieldObjSlot *obj, s32 anim, s32 frame) {
     FieldScene *sc = g_gameState->gameData->ctx.field->area->scene;
     u8 i = sc->animSfxCount;
     FieldAnimSfx *e;
@@ -713,20 +713,20 @@ FieldAnimSfx *fld_addAnimSfx(FieldObjSlot *arg0, s32 arg1, s32 arg2) {
     n = i + 1;
     sc->animSfxCount = n;
     e = &sc->animSfx[i];
-    e->modelSlot = arg0->actor->modelSlot;
-    id = arg0->actor->modelId;
-    e->anim = arg1;
+    e->modelSlot = obj->actor->modelSlot;
+    id = obj->actor->modelId;
+    e->anim = anim;
     do {
-        e->frame = arg2;
+        e->frame = frame;
     } while (0);
     e->modelId = id;
     return e;
 }
 
-s32 fld_removeAnimSfx(arg0, arg1, arg2)
-    FieldObjSlot *arg0;
-    u16 arg1;
-    s16 arg2;
+s32 fld_removeAnimSfx(obj, anim, frame)
+    FieldObjSlot *obj;
+    u16 anim;
+    s16 frame;
 {
     FieldAnimSfx *base;
     FieldAnimSfx *last;
@@ -736,7 +736,7 @@ s32 fld_removeAnimSfx(arg0, arg1, arg2)
     e = &base[g_gameState->gameData->ctx.field->area->scene->animSfxCount] - 1;
     last = e;
     do {
-        if (e->modelSlot == arg0->actor->modelSlot && e->anim == arg1 && e->frame == arg2) {
+        if (e->modelSlot == obj->actor->modelSlot && e->anim == anim && e->frame == frame) {
             if (e != last) {
                 *e = *last;
             }
@@ -747,13 +747,13 @@ s32 fld_removeAnimSfx(arg0, arg1, arg2)
     return -1;
 }
 
-s32 fld_depGetLink(s32 arg0) {
+s32 fld_depGetLink(s32 fileId) {
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
     FileEntry *e = t->entries;
 
     for (i = t->count - 1; i >= 0; i--) {
-        if (e[i].id == arg0) {
+        if (e[i].id == fileId) {
             return e[i].link;
         }
     }
@@ -931,16 +931,16 @@ s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2) { /* its caller passes t
     return 0;
 }
 
-s32 fld_depGetFileSector(s32 arg0, s32 *arg1) {
-    FileEntry *e = dep_find(g_gameState->gameData->depTable, arg0);
+s32 fld_depGetFileSector(s32 fileId, s32 *outSize) {
+    FileEntry *e = dep_find(g_gameState->gameData->depTable, fileId);
 
-    if (arg1 != NULL) {
-        *arg1 = e->sectors << 11;
+    if (outSize != NULL) {
+        *outSize = e->sectors << 11;
     }
     return e->sector;
 }
 
-s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
+s32 fld_soundBankReadCallback(CdReadCtx *ctx) {
     s32 a;
     s32 id;
     s32 t;
@@ -951,9 +951,9 @@ s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
     FieldScene *sc;
 
     r = 0;
-    a = (s32)arg0->dest;
+    a = (s32)ctx->dest;
     id = g_gameState->gameData->soundLoadBank | DB_SOUND_BANK;
-    if (arg0->offset == 0) {
+    if (ctx->offset == 0) {
         b = a;
         t = db_lookup(a, DB_GET_AT, DB_PACK, 0);
         if (t == -1) {
@@ -962,15 +962,15 @@ s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
         } else {
             a = db_lookup(t, DB_GET_ADDR, id, 0);
             g_gameState->gameData->soundBankSize = db_lookup(b, DB_GET_AT, (DB_PACK | 1), 0) - g_gameState->gameData->soundLoadDest;
-            fld_dropSoundBankCache(g_gameState->gameData->soundBankSize - arg0->offset);
+            fld_dropSoundBankCache(g_gameState->gameData->soundBankSize - ctx->offset);
         }
     }
     gd = g_gameState->gameData;
-    n = gd->soundBankSize - arg0->offset;
-    if (arg0->chunk < n) {
-        n = arg0->chunk;
+    n = gd->soundBankSize - ctx->offset;
+    if (ctx->chunk < n) {
+        n = ctx->chunk;
     }
-    n = (s32)arg0->dest + n - a;
+    n = (s32)ctx->dest + n - a;
     if ((id & 0xFFFF) != 0x84) {
         sc = gd->ctx.field->area->scene;
         if (sc->flags & FLD_SCN_BANK_SLOT) {
@@ -979,23 +979,23 @@ s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
             r = akao_uploadBank(a, n, 0);
         }
     }
-    arg0->dest = (u8 *)a;
+    ctx->dest = (u8 *)a;
     return r;
 }
 
-s32 fld_unpackMusicSeq(s32 arg0) {
-    s32 t = db_lookup(arg0, DB_GET_KEY_AT, DB_MUSIC, 0);
+s32 fld_unpackMusicSeq(s32 db) {
+    s32 t = db_lookup(db, DB_GET_KEY_AT, DB_MUSIC, 0);
 
-    memcpy((u8 *)arg0, (u8 *)db_lookup(arg0, DB_GET_ADDR, t, 0), db_lookup(arg0, DB_GET_SIZE, t, 0));
+    memcpy((u8 *)db, (u8 *)db_lookup(db, DB_GET_ADDR, t, 0), db_lookup(db, DB_GET_SIZE, t, 0));
     return 0;
 }
 
-void fld_setMusicVolumeFade(s32 arg0, s32 arg1) {
+void fld_setMusicVolumeFade(s32 volume, s32 frames) {
     GameData *gd = g_gameState->gameData;
 
-    gd->musicVolume[0] = arg0;
-    if (arg0 == 0) {
-        gd->musicFadeFrames = arg1;
+    gd->musicVolume[0] = volume;
+    if (volume == 0) {
+        gd->musicFadeFrames = frames;
         gd->musicFadeStart = VSync(-1);
     }
 }
@@ -1006,12 +1006,12 @@ s32 fld_isMusicFading(void) {
     return (u32)(VSync(-1) - gd->musicFadeStart) < gd->musicFadeFrames;
 }
 
-s32 fld_setObjectColor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    return fld_setSlotColor((FieldObjSlot *)game_getModel(arg0), arg1, arg2, arg3);
+s32 fld_setObjectColor(s32 objId, s32 r, s32 g, s32 b) {
+    return fld_setSlotColor((FieldObjSlot *)game_getModel(objId), r, g, b);
 }
 
 /* apply the field lights to the object colours */
-void fld_applyLights(FieldObjSlot **arg0, s32 arg1) {
+void fld_applyLights(FieldObjSlot **slots, s32 count) {
     FieldScene *sc;
     FieldLightSet *lt;
     FieldLight *amb;
@@ -1045,8 +1045,8 @@ void fld_applyLights(FieldObjSlot **arg0, s32 arg1) {
     infos = sc->actorInfo;
     def = (FieldModelLight *)fld_findLightColor(lt, -1);
     fld_findGlobalLights(lt, &amb, &dir);
-    for (i = arg1 - 1; i >= 0; i--) {
-        c = arg0[i];
+    for (i = count - 1; i >= 0; i--) {
+        c = slots[i];
         chg = 0;
         if (c == NULL) {
             continue;
@@ -1101,8 +1101,8 @@ void fld_applyLights(FieldObjSlot **arg0, s32 arg1) {
         info->litFloor = floor;
         info->flags = (info->flags & ~FLD_INFO_DIR_LIGHT) | shade;
     }
-    for (i = arg1 - 1; i >= 0; i--) {
-        c = arg0[i];
+    for (i = count - 1; i >= 0; i--) {
+        c = slots[i];
         if (c == NULL) {
             continue;
         }
@@ -1119,45 +1119,45 @@ void fld_applyLights(FieldObjSlot **arg0, s32 arg1) {
 }
 
 /* set the object's light colour */
-s32 fld_setSlotColor(FieldObjSlot *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    u32 f = arg0->flags;
-    FieldActorInfo *info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[arg0->actor->modelSlot];
+s32 fld_setSlotColor(FieldObjSlot *obj, s32 r, s32 g, s32 b) {
+    u32 f = obj->flags;
+    FieldActorInfo *info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[obj->actor->modelSlot];
     u32 col;
 
     if (!(f & FLD_OBJ_COLOR_WAIT)) {
-        col = (arg1 & 0xFF) | ((arg2 << 8) & 0xFF00) | ((arg3 << 16) & 0xFF0000) | 0x01000000;
+        col = (r & 0xFF) | ((g << 8) & 0xFF00) | ((b << 16) & 0xFF0000) | 0x01000000;
         info->nextColor.w = col;
         info->color.w = col;
-        arg0->flags |= FLD_OBJ_COLOR_SET | FLD_OBJ_COLOR_WAIT;
+        obj->flags |= FLD_OBJ_COLOR_SET | FLD_OBJ_COLOR_WAIT;
         return 1;
     }
-    arg0->flags = f & ~FLD_OBJ_COLOR_WAIT;
+    obj->flags = f & ~FLD_OBJ_COLOR_WAIT;
     return 0;
 }
 
-FieldLight *fld_getLightColorTable(FieldLightSet *arg0) {
-    if (arg0 != NULL && arg0->colorCount != 0) {
-        return &arg0->lights[arg0->colorOffset];
+FieldLight *fld_getLightColorTable(FieldLightSet *set) {
+    if (set != NULL && set->colorCount != 0) {
+        return &set->lights[set->colorOffset];
     }
     return NULL;
 }
 
-FieldModelLight *fld_findLightColor(arg0, arg1)
-    FieldLightSet *arg0;
-    u16 arg1;
+FieldModelLight *fld_findLightColor(set, modelId)
+    FieldLightSet *set;
+    u16 modelId;
 {
     FieldModelLight *base;
     FieldModelLight *p;
     s32 id;
     u32 v;
 
-    v = arg1;
-    if (arg0->colorCount == 0) {
+    v = modelId;
+    if (set->colorCount == 0) {
         return NULL;
     }
     id = v & 0xFFFF;
-    base = (FieldModelLight *)&arg0->lights[arg0->colorOffset];
-    p = &base[arg0->colorCount] - 1;
+    base = (FieldModelLight *)&set->lights[set->colorOffset];
+    p = &base[set->colorCount] - 1;
     do {
         if (p->modelId == id) {
             return p;
@@ -1167,22 +1167,22 @@ FieldModelLight *fld_findLightColor(arg0, arg1)
     return NULL;
 }
 
-FieldLight *fld_findGlobalLights(FieldLightSet *arg0, FieldLight **arg1, FieldLight **arg2) {
+FieldLight *fld_findGlobalLights(FieldLightSet *set, FieldLight **outDefault, FieldLight **outDir) {
     FieldLight *base;
     FieldLight *p;
 
-    *arg1 = NULL;
-    *arg2 = NULL;
-    base = arg0->lights;
-    if (arg0->lightCount == 0) {
+    *outDefault = NULL;
+    *outDir = NULL;
+    base = set->lights;
+    if (set->lightCount == 0) {
         return NULL;
     }
-    p = &arg0->lights[arg0->lightCount - 1];
+    p = &set->lights[set->lightCount - 1];
     do {
         if (p->type == FLD_LIGHT_DEFAULT) {
-            *arg1 = p;
+            *outDefault = p;
         } else if (p->type == FLD_LIGHT_DIR) {
-            *arg2 = p;
+            *outDir = p;
         }
         p--;
     } while (p >= base);
@@ -1190,41 +1190,41 @@ FieldLight *fld_findGlobalLights(FieldLightSet *arg0, FieldLight **arg1, FieldLi
 }
 
 /* find the floor light covering the object's current floor */
-FieldLight *fld_findFloorLight(FieldLightSet *arg0, FieldObjSlot *arg1, s16 *arg2) {
+FieldLight *fld_findFloorLight(FieldLightSet *set, FieldObjSlot *obj, s16 *outFloor) {
     u16 tri;
     FieldLight *p;
     s32 n;
     s32 v;
 
-    bgi_getActorTriangle(arg1->actor->modelSlot, &tri, (u16 *)arg2);
-    if (arg0->lightCount != 0) {
-        if ((u8)*arg2 == 0xFF) {
+    bgi_getActorTriangle(obj->actor->modelSlot, &tri, (u16 *)outFloor);
+    if (set->lightCount != 0) {
+        if ((u8)*outFloor == 0xFF) {
             return NULL;
         }
-        p = &arg0->lights[arg0->lightCount - 1];
+        p = &set->lights[set->lightCount - 1];
         do {
             if (p->type == FLD_LIGHT_FLOOR) {
                 v = p->floors;
                 for (n = 3; n >= 0; n--) {
-                    if ((v & 0xFF) == *arg2) {
+                    if ((v & 0xFF) == *outFloor) {
                         return p;
                     }
                     v >>= 8;
                 }
             }
             p--;
-        } while (p >= arg0->lights);
+        } while (p >= set->lights);
     }
     return NULL;
 }
 
-s32 fld_enableRain(s32 arg0, s32 arg1, s32 arg2) {
+s32 fld_enableRain(s32 arg0, s32 arg1, s32 enable) {
     s32 start;
     s32 size;
     s32 end;
 
     if (arg0 == 0 && arg1 == 0) {
-        if (arg2 != 0) {
+        if (enable != 0) {
             if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_RAIN_ALLOC)) {
                 start = g_gameState->gameData->ctx.field->area->scene->heapTop;
                 if (start == 0) {
@@ -1263,7 +1263,7 @@ void fld_drawRain(void) {
     }
 }
 
-s32 fld_preloadRequest(s32 arg0, s32 arg1) {
+s32 fld_preloadRequest(s32 typeArg, s32 fileId) {
     s32 flag;
     s32 id;
     s32 k;
@@ -1274,7 +1274,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
     PreloadEntry *q;
     FileEntry *f;
 
-    type = arg0;
+    type = typeArg;
     flag = 0;
     if ((s8)type < 0) {
         type -= 0x80;
@@ -1311,8 +1311,8 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
         }
         goto clear;
     case 5:
-        id = (u16)arg1 | DB_FIELD;
-        if ((u16)arg1 >= 9000) {
+        id = (u16)fileId | DB_FIELD;
+        if ((u16)fileId >= 9000) {
             return -1;
         }
         f = dep_find(g_gameState->gameData->depTable, id);
@@ -1384,9 +1384,9 @@ void fld_clearPreloadLists(void) {
     }
 }
 
-void fld_setPreloadCursor(s32 arg0) {
-    if (arg0 != 0) {
-        g_fieldPreloadCursor = arg0;
+void fld_setPreloadCursor(s32 cursor) {
+    if (cursor != 0) {
+        g_fieldPreloadCursor = cursor;
     }
 }
 
@@ -1410,22 +1410,22 @@ s32 fld_hasFieldPreloadRequest(void) {
     return 0;
 }
 
-s32 *fld_findPreloadRequest(s32 arg0) {
+s32 *fld_findPreloadRequest(s32 fileId) {
     s32 i;
 
     for (i = g_fieldPreloadRequestCount - 1; i >= 0; i--) {
-        if (g_fieldPreloadRequests[i] == arg0) {
+        if (g_fieldPreloadRequests[i] == fileId) {
             return &g_fieldPreloadRequests[i];
         }
     }
     return NULL;
 }
 
-void fld_removePreloadRequest(s32 arg0) {
+void fld_removePreloadRequest(s32 fileId) {
     s32 i;
 
     for (i = g_fieldPreloadRequestCount - 1; i >= 0; i--) {
-        if (g_fieldPreloadRequests[i] == arg0) {
+        if (g_fieldPreloadRequests[i] == fileId) {
             if (i < g_fieldPreloadRequestCount - 1) {
                 g_fieldPreloadRequests[i] = g_fieldPreloadRequests[g_fieldPreloadRequestCount - 1];
             }
@@ -1435,8 +1435,8 @@ void fld_removePreloadRequest(s32 arg0) {
     }
 }
 
-s32 *fld_addPreloadRequest(s32 arg0) {
-    s32 *p = fld_findPreloadRequest(arg0);
+s32 *fld_addPreloadRequest(s32 fileId) {
+    s32 *p = fld_findPreloadRequest(fileId);
 
     if (p != NULL) {
         return p;
@@ -1444,28 +1444,28 @@ s32 *fld_addPreloadRequest(s32 arg0) {
     if (g_fieldPreloadRequestCount < 8) {
         p = &g_fieldPreloadRequests[g_fieldPreloadRequestCount];
         g_fieldPreloadRequestCount++;
-        *p = arg0;
+        *p = fileId;
         return p;
     }
     return NULL;
 }
 
-s32 *fld_findPreloadExclude(s32 arg0) {
+s32 *fld_findPreloadExclude(s32 fileId) {
     s32 i;
 
     for (i = g_fieldPreloadExcludeCount - 1; i >= 0; i--) {
-        if (g_fieldPreloadExcludes[i] == arg0) {
+        if (g_fieldPreloadExcludes[i] == fileId) {
             return &g_fieldPreloadExcludes[i];
         }
     }
     return NULL;
 }
 
-void fld_removePreloadExclude(s32 arg0) {
+void fld_removePreloadExclude(s32 fileId) {
     s32 i;
 
     for (i = g_fieldPreloadExcludeCount - 1; i >= 0; i--) {
-        if (g_fieldPreloadExcludes[i] == arg0) {
+        if (g_fieldPreloadExcludes[i] == fileId) {
             if (i < g_fieldPreloadExcludeCount - 1) {
                 g_fieldPreloadExcludes[i] = g_fieldPreloadExcludes[g_fieldPreloadExcludeCount - 1];
             }
@@ -1475,8 +1475,8 @@ void fld_removePreloadExclude(s32 arg0) {
     }
 }
 
-s32 *fld_addPreloadExclude(s32 arg0) {
-    s32 *p = fld_findPreloadExclude(arg0);
+s32 *fld_addPreloadExclude(s32 fileId) {
+    s32 *p = fld_findPreloadExclude(fileId);
 
     if (p != NULL) {
         return p;
@@ -1484,22 +1484,22 @@ s32 *fld_addPreloadExclude(s32 arg0) {
     if (g_fieldPreloadExcludeCount < 8) {
         p = &g_fieldPreloadExcludes[g_fieldPreloadExcludeCount];
         g_fieldPreloadExcludeCount++;
-        *p = arg0;
+        *p = fileId;
         return p;
     }
     return NULL;
 }
 
 /* start streaming a file into the free area */
-s32 fld_preloadFile(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+s32 fld_preloadFile(s32 fileId, s32 kind, s32 sector, s32 chunkSize) {
     u32 top;
     s32 size;
     PreloadEntry *p;
 
-    if (arg0 == -1 || arg2 == 0) {
+    if (fileId == -1 || sector == 0) {
         return 0;
     }
-    if (arg1 == 0 && arg3 == 0) {
+    if (kind == 0 && chunkSize == 0) {
         return 0;
     }
     top = fld_getModelCacheBottom(NULL);
@@ -1508,15 +1508,15 @@ s32 fld_preloadFile(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
     size = top - g_fieldPreloadCursor;
     size = size / 2048 * 2048;
-    if (arg1 == 0 && size < 0x8000) {
+    if (kind == 0 && size < 0x8000) {
         return 0;
     }
     p = preload_add();
     if (p == NULL) {
         return 0;
     }
-    preload_setEntry(p, arg1, arg0, arg1 == 0 ? g_fieldPreloadCursor : 0, size, arg3, arg2, arg3);
-    g_fieldPreloadCursor += arg3;
+    preload_setEntry(p, kind, fileId, kind == 0 ? g_fieldPreloadCursor : 0, size, chunkSize, sector, chunkSize);
+    g_fieldPreloadCursor += chunkSize;
     return (s32)p;
 }
 

@@ -1,16 +1,16 @@
 #include "ovl_0c.h"
 
-void wm_relocatePack(WmPack *arg0) {
+void wm_relocatePack(WmPack *pack) {
     s32 i;
     WmPackEntry *e;
 
     i = 0;
-    arg0->unk4 += (s32)arg0;
-    for (; i < arg0->count; i++) {
-        e = (WmPackEntry *)((s32)arg0->entries[i] + (s32)arg0);
-        arg0->entries[i] = e;
-        e->verts += (s32)arg0;
-        e->polys += (s32)arg0;
+    pack->unk4 += (s32)pack;
+    for (; i < pack->count; i++) {
+        e = (WmPackEntry *)((s32)pack->entries[i] + (s32)pack);
+        pack->entries[i] = e;
+        e->verts += (s32)pack;
+        e->polys += (s32)pack;
     }
 }
 
@@ -133,16 +133,16 @@ void wm_applyEncounterEvents(void) {
     s32 i;
     s32 j;
     u16 (*row)[12];
-    s32 mask;
+    s32 enabledBits;
     WmEncounter *tbl;
     u16 v;
 
     i = 0;
     tbl = g_worldEncounterTable;
     row = g_worldEncounterEventRows;
-    mask = g_evtGlobalVars.b[0xC2] | (g_evtGlobalVars.b[0xC6] << 8);
+    enabledBits = g_evtGlobalVars.b[0xC2] | (g_evtGlobalVars.b[0xC6] << 8);
     do {
-        if ((mask >> i) & 1) {
+        if ((enabledBits >> i) & 1) {
             j = 0;
             do {
                 v = (*row)[j];
@@ -436,13 +436,13 @@ WmEncounter *wm_getEncounterEntry(void) {
     return &g_worldEncounterTable[i + add - 1];
 }
 
-s32 wm_worldToView(VECTOR *arg0, VECTOR *arg1, VECTOR *arg2, s32 *arg3) {
+s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale) {
     VECTOR v;
     s32 s;
 
-    v.vx = arg0->vx - g_worldCameraEye[0];
-    v.vy = arg0->vy - g_worldCameraEye[1];
-    v.vz = arg0->vz - g_worldCameraEye[2];
+    v.vx = pos->vx - g_worldCameraEye[0];
+    v.vy = pos->vy - g_worldCameraEye[1];
+    v.vz = pos->vz - g_worldCameraEye[2];
     if (v.vx > g_worldWidth - 0x8000) {
         v.vx -= g_worldWidth;
     }
@@ -455,29 +455,29 @@ s32 wm_worldToView(VECTOR *arg0, VECTOR *arg1, VECTOR *arg2, s32 *arg3) {
     if (v.vz < 0x8000 - g_worldDepth) {
         v.vz = g_worldDepth + v.vz;
     }
-    ApplyMatrixLV(g_worldViewMatrix, &v, arg2);
-    s = 0x1000 - ((arg2->vz >> 4) + (arg2->vz >> 6));
-    v.vy = ((arg0->vy * s) >> 12) - g_worldCameraEye[1];
-    ApplyMatrixLV(g_worldViewMatrix, &v, arg2);
-    arg1->vx = arg0->vx - g_worldCameraTarget[0];
-    arg1->vy = ((arg0->vy * s) >> 12) - g_worldCameraTarget[1];
-    arg1->vz = arg0->vz - g_worldCameraTarget[2];
-    if (arg1->vx > 0xFFFF) {
-        arg1->vx -= 0x60000;
+    ApplyMatrixLV(g_worldViewMatrix, &v, outView);
+    s = 0x1000 - ((outView->vz >> 4) + (outView->vz >> 6));
+    v.vy = ((pos->vy * s) >> 12) - g_worldCameraEye[1];
+    ApplyMatrixLV(g_worldViewMatrix, &v, outView);
+    outRel->vx = pos->vx - g_worldCameraTarget[0];
+    outRel->vy = ((pos->vy * s) >> 12) - g_worldCameraTarget[1];
+    outRel->vz = pos->vz - g_worldCameraTarget[2];
+    if (outRel->vx > 0xFFFF) {
+        outRel->vx -= 0x60000;
     }
-    if (arg1->vz > 0xFFFF) {
-        arg1->vz -= 0x50000;
+    if (outRel->vz > 0xFFFF) {
+        outRel->vz -= 0x50000;
     }
-    if (arg1->vx < -0xFFFF) {
-        arg1->vx += 0x60000;
+    if (outRel->vx < -0xFFFF) {
+        outRel->vx += 0x60000;
     }
-    if (arg1->vz < -0xFFFF) {
-        arg1->vz += 0x50000;
+    if (outRel->vz < -0xFFFF) {
+        outRel->vz += 0x50000;
     }
-    if (arg3 != NULL) {
-        *arg3 = s;
+    if (outScale != NULL) {
+        *outScale = s;
     }
-    if (arg1->vx < -0x8000 || arg1->vx > 0x7FFF || arg1->vz > 0x7FFF || arg1->vz < -0x8000) {
+    if (outRel->vx < -0x8000 || outRel->vx > 0x7FFF || outRel->vz > 0x7FFF || outRel->vz < -0x8000) {
         return 0;
     }
     return 1;
@@ -489,77 +489,77 @@ void wm_mapTerm(void) {
 void wm_mapSystemTerm(void) {
 }
 
-void wm_wrapPos(s32 *arg0, s32 *arg1) {
-    if (*arg0 < 0) {
-        *arg0 += g_worldWidth;
+void wm_wrapPos(s32 *x, s32 *z) {
+    if (*x < 0) {
+        *x += g_worldWidth;
     }
-    if (*arg0 >= g_worldWidth) {
-        *arg0 -= g_worldWidth;
+    if (*x >= g_worldWidth) {
+        *x -= g_worldWidth;
     }
-    if (*arg1 > 0) {
-        *arg1 -= g_worldDepth;
+    if (*z > 0) {
+        *z -= g_worldDepth;
     }
-    if (*arg1 <= -g_worldDepth) {
-        *arg1 += g_worldDepth;
+    if (*z <= -g_worldDepth) {
+        *z += g_worldDepth;
     }
 }
 
-void wm_posToCell(s32 arg0, s32 arg1, s32 *arg2) {
+void wm_posToCell(s32 posX, s32 posZ, s32 *outCell) {
     s32 x;
     s32 z;
 
-    wm_wrapPos_inline(&arg0, &arg1);
-    x = arg0 / 0x2000;
-    z = arg1 / 0x2000;
-    *arg2 = -z * g_worldCellsW + x;
+    wm_wrapPos_inline(&posX, &posZ);
+    x = posX / 0x2000;
+    z = posZ / 0x2000;
+    *outCell = -z * g_worldCellsW + x;
 }
 
-void wm_posToChunk(s32 arg0, s32 arg1, s32 *arg2) {
+void wm_posToChunk(s32 posX, s32 posZ, s32 *outChunk) {
     s32 x;
     s32 z;
 
-    wm_wrapPos_inline(&arg0, &arg1);
-    x = arg0 / 0x4000;
-    z = arg1 / 0x4000;
-    *arg2 = -z * g_worldChunksW + x;
+    wm_wrapPos_inline(&posX, &posZ);
+    x = posX / 0x4000;
+    z = posZ / 0x4000;
+    *outChunk = -z * g_worldChunksW + x;
 }
 
-void wm_cellToPos(s32 arg0, s32 *arg1, s32 *arg2) {
-    *arg1 = (arg0 % g_worldCellsW) << 13;
-    *arg2 = -((arg0 / g_worldCellsW) << 13);
+void wm_cellToPos(s32 cell, s32 *outX, s32 *outZ) {
+    *outX = (cell % g_worldCellsW) << 13;
+    *outZ = -((cell / g_worldCellsW) << 13);
 }
 
-void wm_cellToChunk(s32 arg0, s32 *arg1) {
-    *arg1 = arg0 / g_worldCellsW / 2 * g_worldChunksW + arg0 % g_worldCellsW / 2;
+void wm_cellToChunk(s32 cell, s32 *outChunk) {
+    *outChunk = cell / g_worldCellsW / 2 * g_worldChunksW + cell % g_worldCellsW / 2;
 }
 
-void wm_chunkToPos(s32 arg0, s32 *arg1, s32 *arg2) {
-    *arg1 = (arg0 % g_worldChunksW) << 14;
-    *arg2 = -((arg0 / g_worldChunksW) << 14);
+void wm_chunkToPos(s32 chunk, s32 *outX, s32 *outZ) {
+    *outX = (chunk % g_worldChunksW) << 14;
+    *outZ = -((chunk / g_worldChunksW) << 14);
 }
 
-void wm_getChunkEntry(s32 arg0, s32 arg1, WmChunkEntry *arg2) {
+void wm_getChunkEntry(s32 chunk, s32 variant, WmChunkEntry *out) {
     WmChunkEntry *cells;
 
     cells = g_worldChunkTable->entries;
-    arg2->sector = cells[arg0 * 2 + arg1].sector;
-    arg2->packSectors = cells[arg0 * 2 + arg1].packSectors;
-    arg2->texSectors = cells[arg0 * 2 + arg1].texSectors;
+    out->sector = cells[chunk * 2 + variant].sector;
+    out->packSectors = cells[chunk * 2 + variant].packSectors;
+    out->texSectors = cells[chunk * 2 + variant].texSectors;
 }
 
-void wm_getChunkEntryT(s32 arg0, s32 arg1, WmChunkEntry *arg2) {
+void wm_getChunkEntryT(s32 chunk, s32 variant, WmChunkEntry *out) {
     s32 k;
     WmChunkEntry *cells;
 
-    k = arg0 % g_worldChunksW * g_worldChunksH + arg0 / g_worldChunksW;
+    k = chunk % g_worldChunksW * g_worldChunksH + chunk / g_worldChunksW;
     cells = g_worldChunkTableT->entries;
-    arg2->sector = cells[k * 2 + arg1].sector;
-    arg2->packSectors = cells[k * 2 + arg1].packSectors;
-    arg2->texSectors = cells[k * 2 + arg1].texSectors;
+    out->sector = cells[k * 2 + variant].sector;
+    out->packSectors = cells[k * 2 + variant].packSectors;
+    out->texSectors = cells[k * 2 + variant].texSectors;
 }
 
-s32 wm_getAreaZone(s32 arg0) {
-    return g_worldAreaZone[arg0];
+s32 wm_getAreaZone(s32 area) {
+    return g_worldAreaZone[area];
 }
 
 /* initialise the texture pack list */
@@ -637,7 +637,7 @@ void wm_updateChunks(void) {
     g_worldChunkCenter = b;
 }
 
-void wm_requestChunks(s32 arg0) {
+void wm_requestChunks(s32 chunk) {
     s32 missing[16];
     s32 x;
     s32 z;
@@ -652,7 +652,7 @@ void wm_requestChunks(s32 arg0) {
 
     n = 0;
     h = &g_worldChunkHead;
-    wm_chunkToPos(arg0, &x, &z);
+    wm_chunkToPos(chunk, &x, &z);
     for (j = 0; j < 4; j++) {
         for (i = 0; i < 4; i++) {
             wm_posToChunk(x + (i << 14), z - (j << 14), &id);
@@ -694,8 +694,8 @@ void wm_requestChunks(s32 arg0) {
     g_worldChunkGeneration %= 4;
 }
 
-/* request texture pack arg0: reuse a free or matching slot and move it behind the loaded ones */
-s32 wm_chunkRequest(s16 arg0) {
+/* request texture pack chunkId: reuse a free or matching slot and move it behind the loaded ones */
+s32 wm_chunkRequest(s16 chunkId) {
     WmChunkSlot *prev;
     WmChunkSlot *p;
     u32 n;
@@ -703,7 +703,7 @@ s32 wm_chunkRequest(s16 arg0) {
     n = 0;
     prev = &g_worldChunkHead;
     while (prev->next->state == WM_CHUNK_READING) {
-        if (prev->next->chunkId == arg0) {
+        if (prev->next->chunkId == chunkId) {
             return 0;
         }
         prev = prev->next;
@@ -713,7 +713,7 @@ s32 wm_chunkRequest(s16 arg0) {
     do {
         if (p->chunkId == -1) {
             if (n >= 16) {
-                p->chunkId = arg0;
+                p->chunkId = chunkId;
                 p->prev->next = p->next;
                 p->next->prev = p->prev;
                 p->next = prev->next;
@@ -722,12 +722,12 @@ s32 wm_chunkRequest(s16 arg0) {
                 prev->next->prev = p;
                 prev->next = p;
             } else {
-                p->chunkId = arg0;
+                p->chunkId = chunkId;
                 p->state = WM_CHUNK_WANTED;
             }
             break;
         }
-        if (p->chunkId == arg0) {
+        if (p->chunkId == chunkId) {
             p->prev->next = p->next;
             p->next->prev = p->prev;
             p->next = prev->next;
@@ -1093,7 +1093,7 @@ void wm_updateVisibleBlocks(void) {
     s16 sy[20];
     s32 z[20];
     VECTOR d;
-    WmNearCell tmp;
+    WmNearCell swap;
     MATRIX m;
     SVECTOR sv;
     VECTOR out;
@@ -1200,9 +1200,9 @@ void wm_updateVisibleBlocks(void) {
         for (i = n - 1; j < i; i = t) {
             t = i - 1;
             if (g_worldNearCells[t].dist > g_worldNearCells[i].dist) {
-                tmp = g_worldNearCells[i];
+                swap = g_worldNearCells[i];
                 g_worldNearCells[i] = g_worldNearCells[t];
-                g_worldNearCells[t] = tmp;
+                g_worldNearCells[t] = swap;
             }
         }
     }
@@ -1250,14 +1250,14 @@ void wm_updateVisibleBlocks(void) {
     }
 }
 
-s32 wm_blockListRequest(s16 arg0) {
+s32 wm_blockListRequest(s16 cell) {
     WmBlockNode *n = g_worldBlockHead.next;
     u32 i = 0;
 
     do {
         if (n->cell == -1) {
             if (i >= 20) {
-                n->cell = arg0;
+                n->cell = cell;
                 n->prev->next = n->next;
                 n->next->prev = n->prev;
                 n->next = g_worldBlockHead.next;
@@ -1266,12 +1266,12 @@ s32 wm_blockListRequest(s16 arg0) {
                 g_worldBlockHead.next->prev = n;
                 g_worldBlockHead.next = n;
             } else {
-                n->cell = arg0;
+                n->cell = cell;
                 n->state = WM_BLOCK_NONE;
             }
             break;
         }
-        if (n->cell == arg0) {
+        if (n->cell == cell) {
             n->prev->next = n->next;
             n->next->prev = n->prev;
             n->next = g_worldBlockHead.next;
@@ -1332,7 +1332,7 @@ void wm_blockListResolve(void) {
     }
 }
 
-s32 wm_getCellBlock(s16 arg0, u8 *arg1) {
+s32 wm_getCellBlock(s16 cell, u8 *outMissing) {
     s32 id;
     s32 i;
     WmChunkSlot *p;
@@ -1340,25 +1340,25 @@ s32 wm_getCellBlock(s16 arg0, u8 *arg1) {
     s32 k;
 
     p = g_worldChunkHead.next;
-    wm_cellToChunk(arg0, &id);
+    wm_cellToChunk(cell, &id);
     for (i = 0; i < 16; i++, p = p->next) {
         if (id == p->chunkId && p->state == WM_CHUNK_READY) {
-            if (arg1 != NULL) {
-                *arg1 = 0;
+            if (outMissing != NULL) {
+                *outMissing = 0;
             }
-            m = arg0 % 2;
-            k = m + (arg0 / g_worldCellsW) % 2 * 2;
+            m = cell % 2;
+            k = m + (cell / g_worldCellsW) % 2 * 2;
             if (p->hasData != 0) {
                 return (s32)p->pack->blocks[k];
             }
             return (s32)g_worldDefaultBlocks->blocks[k];
         }
     }
-    if (arg1 != NULL) {
-        *arg1 = 1;
+    if (outMissing != NULL) {
+        *outMissing = 1;
     }
-    m = arg0 % 2;
-    k = m + (arg0 / g_worldCellsW) % 2 * 2;
+    m = cell % 2;
+    k = m + (cell / g_worldCellsW) % 2 * 2;
     return (s32)g_worldDefaultBlocks->blocks[k];
 }
 
@@ -1404,7 +1404,7 @@ void wm_blockListCompact(void) {
     }
 }
 
-s32 wm_getGroundHeight(VECTOR *arg0, u32 *arg1, s32 *arg2, WmPolyCache *arg3, u16 *arg4) {
+s32 wm_getGroundHeight(VECTOR *inPos, u32 *outAttr, s32 *outIdx, WmPolyCache *cache, u16 *outHeight) {
     VECTOR pos;
     VECTOR rel;
     VECTOR o;
@@ -1412,7 +1412,7 @@ s32 wm_getGroundHeight(VECTOR *arg0, u32 *arg1, s32 *arg2, WmPolyCache *arg3, u1
     u8 flag;
     s32 r;
 
-    pos = *arg0;
+    pos = *inPos;
     wm_wrapPos(&pos.vx, &pos.vz);
     wm_posToCell(pos.vx, pos.vz, &cell);
     r = wm_getCellBlock(cell, &flag);
@@ -1422,15 +1422,15 @@ s32 wm_getGroundHeight(VECTOR *arg0, u32 *arg1, s32 *arg2, WmPolyCache *arg3, u1
         rel.vy = pos.vy;
         rel.vz = pos.vz - o.vz;
         /* callers pass a 16-bit variable but a word is stored */
-        *(s32 *)arg4 = wm_getBlockHeight(cell, (WmBlock *)r, &rel, arg1, arg2, arg3);
+        *(s32 *)outHeight = wm_getBlockHeight(cell, (WmBlock *)r, &rel, outAttr, outIdx, cache);
         if ((u32)((u8)g_worldMoveMode - WM_MOVE_CHOCOBO_REEF) < 2) {
-            if (*arg1 - 0x38 < 2) {
-                *arg1 = 0x36;
+            if (*outAttr - 0x38 < 2) {
+                *outAttr = 0x36;
             }
         }
         return 1;
     }
-    *(s32 *)arg4 = pos.vy;
+    *(s32 *)outHeight = pos.vy;
     return 0;
 }
 
@@ -1668,22 +1668,22 @@ void wm_naviUpdate(void) {
     g_worldNaviPrevMode = g_worldNaviMode;
 }
 
-void wm_naviDrawMarker(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVECTOR arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9) {
+void wm_naviDrawMarker(s32 x, s32 y, s32 halfW, s32 halfH, CVECTOR color0, CVECTOR color1, s32 pulseSpeed, s32 offsetX, s32 offsetY, s32 textured) {
     CVECTOR c;
     u32 *ot;
 
     ot = (u32 *)g_worldOt[*g_worldBufIndex];
-    c.r = wm_lerp(arg4.r, arg5.r, math_cos((g_worldFrameCount * arg6) & 0xFFF));
-    c.g = wm_lerp(arg4.g, arg5.g, math_cos((g_worldFrameCount * arg6) & 0xFFF));
-    c.b = wm_lerp(arg4.b, arg5.b, math_cos((g_worldFrameCount * arg6) & 0xFFF));
-    if (arg9 == 0) {
-        setXYWH((POLY_F4 *)g_worldPrimPtr, arg0 - arg2 + arg7, arg1 - arg3 + arg8, arg2 * 2 + 1, arg3 * 2 + 1);
+    c.r = wm_lerp(color0.r, color1.r, math_cos((g_worldFrameCount * pulseSpeed) & 0xFFF));
+    c.g = wm_lerp(color0.g, color1.g, math_cos((g_worldFrameCount * pulseSpeed) & 0xFFF));
+    c.b = wm_lerp(color0.b, color1.b, math_cos((g_worldFrameCount * pulseSpeed) & 0xFFF));
+    if (textured == 0) {
+        setXYWH((POLY_F4 *)g_worldPrimPtr, x - halfW + offsetX, y - halfH + offsetY, halfW * 2 + 1, halfH * 2 + 1);
         setRGB0((POLY_F4 *)g_worldPrimPtr, c.r, c.g, c.b);
         setPolyF4((POLY_F4 *)g_worldPrimPtr);
         addPrim(&ot[10], (POLY_F4 *)g_worldPrimPtr);
         g_worldPrimPtr += sizeof(POLY_F4);
     } else {
-        setXYWH((POLY_FT4 *)g_worldPrimPtr, arg0 + arg7 - 1, arg1 + arg8 - 1, 4, 4);
+        setXYWH((POLY_FT4 *)g_worldPrimPtr, x + offsetX - 1, y + offsetY - 1, 4, 4);
         setUV4((POLY_FT4 *)g_worldPrimPtr, 0, 0xFA, 4, 0xFA, 0, 0xFE, 4, 0xFE);
         setRGB0((POLY_FT4 *)g_worldPrimPtr, c.r, c.g, c.b);
         setPolyFT4((POLY_FT4 *)g_worldPrimPtr);
@@ -1692,7 +1692,7 @@ void wm_naviDrawMarker(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVE
         setSemiTrans((POLY_FT4 *)g_worldPrimPtr, 1);
         addPrim(&ot[10], (POLY_FT4 *)g_worldPrimPtr);
         g_worldPrimPtr += sizeof(POLY_FT4);
-        setXYWH((POLY_FT4 *)g_worldPrimPtr, arg0 + arg7 - 1, arg1 + arg8 - 1, 4, 4);
+        setXYWH((POLY_FT4 *)g_worldPrimPtr, x + offsetX - 1, y + offsetY - 1, 4, 4);
         setUV4((POLY_FT4 *)g_worldPrimPtr, 0, 0xFA, 4, 0xFA, 0, 0xFE, 4, 0xFE);
         setRGB0((POLY_FT4 *)g_worldPrimPtr, 0x60, 0x60, 0x60);
         setPolyFT4((POLY_FT4 *)g_worldPrimPtr);
@@ -2058,30 +2058,30 @@ void wm_naviDrawPlaces(void) {
     }
 }
 
-s32 wm_naviIsPlaceKnown(u32 arg0) {
+s32 wm_naviIsPlaceKnown(u32 place) {
     u32 bit = 0;
-    u16 mask = 0;
+    u16 knownBits = 0;
 
-    if (arg0 < 0x10) {
-        mask = g_evtGlobalVars.h[0x2E];
-        bit = arg0;
+    if (place < 0x10) {
+        knownBits = g_evtGlobalVars.h[0x2E];
+        bit = place;
     }
-    if (arg0 - 0x10 < 0x10) {
-        mask = g_evtGlobalVars.h[0x2F];
-        bit = arg0 - 0x10;
+    if (place - 0x10 < 0x10) {
+        knownBits = g_evtGlobalVars.h[0x2F];
+        bit = place - 0x10;
     }
-    if (arg0 - 0x20 < 0x10) {
-        mask = g_evtGlobalVars.h[0x30];
-        bit = arg0 - 0x20;
+    if (place - 0x20 < 0x10) {
+        knownBits = g_evtGlobalVars.h[0x30];
+        bit = place - 0x20;
     }
-    if (arg0 - 0x30 < 0x10) {
-        mask = g_evtGlobalVars.h[0x31];
-        bit = arg0 - 0x30;
+    if (place - 0x30 < 0x10) {
+        knownBits = g_evtGlobalVars.h[0x31];
+        bit = place - 0x30;
     }
-    if ((g_worldNaviPlaces[g_worldNaviPage][arg0].mapX | g_worldNaviPlaces[g_worldNaviPage][arg0].mapY) == 0) {
+    if ((g_worldNaviPlaces[g_worldNaviPage][place].mapX | g_worldNaviPlaces[g_worldNaviPage][place].mapY) == 0) {
         return 0;
     }
-    return (mask >> bit) & 1;
+    return (knownBits >> bit) & 1;
 }
 
 void wm_naviDrawChocograph(void) {
@@ -2115,8 +2115,8 @@ void wm_naviDrawChocograph(void) {
     wm_naviDrawFrame(0xF5, 0x5C, 9, 0);
 }
 
-/* draw the four compass frame pieces at (arg0, arg1) */
-void wm_naviDrawFrame(s32 arg0, s32 arg1) {
+/* draw the four compass frame pieces at (x, y) */
+void wm_naviDrawFrame(s32 x, s32 y) {
     POLY_FT4 *p;
     s16 clut;
     u32 *ot;
@@ -2128,15 +2128,15 @@ void wm_naviDrawFrame(s32 arg0, s32 arg1) {
     for (i = 0; i < 4; i++) {
         SetPolyFT4(p);
         if (i < 2) {
-            setXYWH(p, g_worldNaviFrameParts[i].x + arg0, g_worldNaviFrameParts[i].y + arg1, g_worldNaviFrameParts[i].w,
+            setXYWH(p, g_worldNaviFrameParts[i].x + x, g_worldNaviFrameParts[i].y + y, g_worldNaviFrameParts[i].w,
                     g_worldNaviFrameParts[i].h);
         } else {
             /* rotated a quarter turn */
-            setXY4(p, g_worldNaviFrameParts[i].x + arg0, g_worldNaviFrameParts[i].y + arg1 + g_worldNaviFrameParts[i].w,
-                   g_worldNaviFrameParts[i].x + arg0, arg1 + g_worldNaviFrameParts[i].y - (i != 2),
-                   g_worldNaviFrameParts[i].x + arg0 + g_worldNaviFrameParts[i].h,
-                   g_worldNaviFrameParts[i].y + arg1 + g_worldNaviFrameParts[i].w,
-                   g_worldNaviFrameParts[i].x + arg0 + g_worldNaviFrameParts[i].h, arg1 + g_worldNaviFrameParts[i].y - (i != 2));
+            setXY4(p, g_worldNaviFrameParts[i].x + x, g_worldNaviFrameParts[i].y + y + g_worldNaviFrameParts[i].w,
+                   g_worldNaviFrameParts[i].x + x, y + g_worldNaviFrameParts[i].y - (i != 2),
+                   g_worldNaviFrameParts[i].x + x + g_worldNaviFrameParts[i].h,
+                   g_worldNaviFrameParts[i].y + y + g_worldNaviFrameParts[i].w,
+                   g_worldNaviFrameParts[i].x + x + g_worldNaviFrameParts[i].h, y + g_worldNaviFrameParts[i].y - (i != 2));
         }
         setUVWH(p, g_worldNaviFrameParts[i].u, g_worldNaviFrameParts[i].v, g_worldNaviFrameParts[i].w, g_worldNaviFrameParts[i].h);
         setRGB0(p, 0x80, 0x80, 0x80);
@@ -2148,23 +2148,23 @@ void wm_naviDrawFrame(s32 arg0, s32 arg1) {
     g_worldPrimPtr = (s32)p;
 }
 
-void wm_naviWorldToMap(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3, u8 arg4) {
-    switch (arg4) {
+void wm_naviWorldToMap(s32 worldX, s32 worldZ, s32 *outX, s32 *outY, u8 mapMode) {
+    switch (mapMode) {
     case 0:
-        *arg2 = ((arg0 - 0x30000) * 14 / 16 >> 11) + 15;
-        *arg3 = ((-0x22000 - arg1) * 14 / 16 >> 11) + 6;
+        *outX = ((worldX - 0x30000) * 14 / 16 >> 11) + 15;
+        *outY = ((-0x22000 - worldZ) * 14 / 16 >> 11) + 6;
         break;
     case 1:
-        *arg2 = (arg0 - 0x30000) / 819 * 14 / 16 + 31;
-        *arg3 = (-0x22000 - arg1) / 819 * 14 / 16 + 12;
+        *outX = (worldX - 0x30000) / 819 * 14 / 16 + 31;
+        *outY = (-0x22000 - worldZ) / 819 * 14 / 16 + 12;
         break;
     case 2:
-        *arg2 = arg0 >> 12;
-        *arg3 = -arg1 >> 12;
+        *outX = worldX >> 12;
+        *outY = -worldZ >> 12;
         break;
     case 3:
-        *arg2 = arg0 / 1638;
-        *arg3 = -arg1 / 1638;
+        *outX = worldX / 1638;
+        *outY = -worldZ / 1638;
         break;
     }
 }

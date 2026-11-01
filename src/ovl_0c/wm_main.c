@@ -8,8 +8,8 @@ void wm_entry(void) {
     wm_shutdown();
 }
 
-void wm_main(s32 arg0) {
-    wm_load(arg0);
+void wm_main(s32 worldId) {
+    wm_load(worldId);
     SetDispMask(1);
     do {
         wm_clearOT();
@@ -167,28 +167,28 @@ s32 wm_loadShadowTexture(void) {
 s32 wm_loadWorldData(void) {
     s32 id;
     FileEntry *f;
-    u8 *buf;
+    u8 *worldData;
     PreloadEntry *e;
 
     id = wm_getWorldDataFileId();
     f = file_find(DIR_COMMON, id);
-    buf = g_loadAreaEnd + 0x34000;
+    worldData = g_loadAreaEnd + 0x34000;
     if (preload_isReady(id) != 0) {
         e = preload_find(id);
-        file_copyViaVram((s32)buf, e->dest, e->loaded, 0);
+        file_copyViaVram((s32)worldData, e->dest, e->loaded, 0);
         DrawSync(0);
         if (e->loaded < e->readSize) {
-            cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, buf + e->loaded, e->loaded, -1, 0);
+            cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, worldData + e->loaded, e->loaded, -1, 0);
             while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
             }
         }
         preload_remove(id);
     } else {
-        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, buf, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->link - f->sector) << 11, worldData, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
-    g_gameState->gameData->ctx.world->worldData = buf;
+    g_gameState->gameData->ctx.world->worldData = worldData;
     db_register((s32)g_gameState->gameData->ctx.world->worldData, 0);
     return 0;
 }
@@ -227,7 +227,7 @@ s32 wm_getWorldDataFileId(void) {
     return v;
 }
 
-void wm_load(s32 arg0) {
+void wm_load(s32 worldId) {
     WorldMapObj *obj;
     s32 i;
 
@@ -237,11 +237,11 @@ void wm_load(s32 arg0) {
     wm_resetMapObj();
     g_gameState->flags &= ~(GS_RESET | GS_WM_LEAVE | GS_WM_NEW_MAP);
     g_gameState->gameData->ctx.world->flags |= WM_MAP_NO_TRANSITION;
-    g_gameState->gameData->worldId = arg0;
-    obj->sceneId = arg0;
+    g_gameState->gameData->worldId = worldId;
+    obj->sceneId = worldId;
     wm_fetchParkedSound();
-    wm_loadFile(obj, arg0);
-    wm_findMapScript(obj, arg0);
+    wm_loadFile(obj, worldId);
+    wm_findMapScript(obj, worldId);
     wm_findAreaData(obj, (s16)g_gameState->gameData->worldAreaId);
     wm_uploadParkedSound();
     wm_soundCommand(SND_MUSIC_RESUME, 0, 0, 0, 0);
@@ -371,19 +371,19 @@ void wm_resetMapObj(void) {
     }
 }
 
-s32 wm_findAreaData(arg0, arg1)
-    WorldMapObj *arg0;
-    u16 arg1;
+s32 wm_findAreaData(obj, areaId)
+    WorldMapObj *obj;
+    u16 areaId;
 {
-    arg0->areaData = db_lookupRegistered(DB_GET_ADDR, arg1 | DB_AREA, 0);
+    obj->areaData = db_lookupRegistered(DB_GET_ADDR, areaId | DB_AREA, 0);
     return 0;
 }
 
-s32 wm_findMapScript(arg0, arg1)
-    WorldMapObj *arg0;
-    u16 arg1;
+s32 wm_findMapScript(obj, scriptId)
+    WorldMapObj *obj;
+    u16 scriptId;
 {
-    arg0->mapScript = db_lookupRegistered(DB_GET_ADDR, arg1 | DB_FIELD, 0);
+    obj->mapScript = db_lookupRegistered(DB_GET_ADDR, scriptId | DB_FIELD, 0);
     return 0;
 }
 
@@ -419,9 +419,9 @@ void wm_uploadParkedSound(void) {
     }
 }
 
-s32 wm_loadFile(WorldMapObj *arg0, s32 unused) { /* its caller passes this, unused */
+s32 wm_loadFile(WorldMapObj *obj, s32 unused) { /* its caller passes this, unused */
     GameData *gd;
-    u8 *buf;
+    u8 *file;
     s32 a;
     s32 b;
     s32 i;
@@ -430,13 +430,13 @@ s32 wm_loadFile(WorldMapObj *arg0, s32 unused) { /* its caller passes this, unus
     s32 c;
 
     gd = g_gameState->gameData;
-    cdRead_init(gd->cdRead, gd->sceneSector[1], gd->sceneSectors[1] << 11, arg0->loadPtr, 0, -1, 0);
+    cdRead_init(gd->cdRead, gd->sceneSector[1], gd->sceneSectors[1] << 11, obj->loadPtr, 0, -1, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
-    buf = arg0->loadPtr;
-    a = db_lookup((s32)buf, DB_GET_ADDR, DB_PACK, 0);
-    b = db_lookup((s32)buf, DB_GET_ADDR, (DB_PACK | 1), 0);
-    g_gameState->gameData->depTable = (struct FileTable *)db_lookup((s32)buf, DB_GET_ADDR, DB_DEP_TABLE, 0);
+    file = obj->loadPtr;
+    a = db_lookup((s32)file, DB_GET_ADDR, DB_PACK, 0);
+    b = db_lookup((s32)file, DB_GET_ADDR, (DB_PACK | 1), 0);
+    g_gameState->gameData->depTable = (struct FileTable *)db_lookup((s32)file, DB_GET_ADDR, DB_DEP_TABLE, 0);
     for (i = db_lookup(a, DB_GET_COUNT, DB_TIM, 0) - 1; i >= 0; i--) {
         p = db_lookup(a, DB_GET_AT, (i & 0xFFFF) | DB_TIM, 0);
         if (p != -1) {
@@ -447,37 +447,37 @@ s32 wm_loadFile(WorldMapObj *arg0, s32 unused) { /* its caller passes this, unus
     wm_copyViaVram(a, b, db_getSize(b));
     DrawSync(0);
     b = a;
-    arg0->files[1] = (void *)b;
+    obj->files[1] = (void *)b;
     db_register(b, 0);
     q = (u8 *)db_lookup(b, DB_GET_ADDR, 0x1D0000, 0);
-    arg0->palAnimCount = *q;
+    obj->palAnimCount = *q;
     q += 4;
-    arg0->palAnims = (WmPalAnim *)q;
-    arg0->loadPtr = (u8 *)arg0->files[1] + db_getSize((s32)arg0->files[1]);
+    obj->palAnims = (WmPalAnim *)q;
+    obj->loadPtr = (u8 *)obj->files[1] + db_getSize((s32)obj->files[1]);
     return 0;
 }
 
-s32 wm_freeFile(WorldMapObj *arg0, s16 arg1) {
-    if (arg0->files[1] != NULL) {
-        db_unregister(arg0->files[1]);
-        arg0->files[1] = NULL;
+s32 wm_freeFile(WorldMapObj *obj, s16 unused) {
+    if (obj->files[1] != NULL) {
+        db_unregister(obj->files[1]);
+        obj->files[1] = NULL;
     }
     return 0;
 }
 
-s32 wm_depFindBattle(s16 arg0, s32 *arg1, s32 *arg2) {
+s32 wm_depFindBattle(s16 battleId, s32 *outSector, s32 *outSectors) {
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
-    s32 id = (u16)arg0 | DB_BATTLE;
+    s32 id = (u16)battleId | DB_BATTLE;
     FileEntry *e = t->entries;
 
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
         if (e[i].id == id) {
-            if (arg1 != NULL) {
-                *arg1 = e[i].sector;
+            if (outSector != NULL) {
+                *outSector = e[i].sector;
             }
-            if (arg2 != NULL) {
-                *arg2 = e[i].sectors;
+            if (outSectors != NULL) {
+                *outSectors = e[i].sectors;
             }
             break;
         }
@@ -485,25 +485,25 @@ s32 wm_depFindBattle(s16 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
+s32 wm_depFindBackground(s32 fileId, s32 *outSector, s32 *outSectors) {
     s32 id = -1;
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
     FileEntry *e = t->entries;
 
     for (i = 0; i < t->count; i++) {
-        if (e[i].id == arg0) {
+        if (e[i].id == fileId) {
             id = e[i].link;
             break;
         }
     }
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
         if (e[i].id == id) {
-            if (arg1 != NULL) {
-                *arg1 = e[i].sector;
+            if (outSector != NULL) {
+                *outSector = e[i].sector;
             }
-            if (arg2 != NULL) {
-                *arg2 = e[i].sectors;
+            if (outSectors != NULL) {
+                *outSectors = e[i].sectors;
             }
             break;
         }
@@ -511,19 +511,19 @@ s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-s32 wm_depFindField(s16 arg0, s32 *arg1, s32 *arg2) {
+s32 wm_depFindField(s16 fieldId, s32 *outSector, s32 *outSectors) {
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
-    s32 id = (u16)arg0 | DB_FIELD;
+    s32 id = (u16)fieldId | DB_FIELD;
     FileEntry *e = t->entries;
 
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
         if (e[i].id == id) {
-            if (arg1 != NULL) {
-                *arg1 = e[i].sector;
+            if (outSector != NULL) {
+                *outSector = e[i].sector;
             }
-            if (arg2 != NULL) {
-                *arg2 = e[i].sectors;
+            if (outSectors != NULL) {
+                *outSectors = e[i].sectors;
             }
             break;
         }
@@ -531,25 +531,25 @@ s32 wm_depFindField(s16 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
+s32 wm_depFindArea(s32 fileId, s32 *outSector, s32 *outSectors) {
     s32 id = -1;
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
     FileEntry *e = t->entries;
 
     for (i = 0; i < t->count; i++) {
-        if (e[i].id == arg0) {
+        if (e[i].id == fileId) {
             id = e[i].link;
             break;
         }
     }
     for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
         if (e[i].id == id) {
-            if (arg1 != NULL) {
-                *arg1 = e[i].sector;
+            if (outSector != NULL) {
+                *outSector = e[i].sector;
             }
-            if (arg2 != NULL) {
-                *arg2 = e[i].sectors;
+            if (outSectors != NULL) {
+                *outSectors = e[i].sectors;
             }
             break;
         }
@@ -557,7 +557,7 @@ s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
+u32 wm_loadActorModel(s32 modelId, EvtObject *actor) {
     WmObjSlot *o;
     u32 id;
     WmAnimHdr *h;
@@ -567,7 +567,7 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
     u32 i;
     s32 n;
 
-    t = evt_getObjectChrIndex(arg1);
+    t = evt_getObjectChrIndex(actor);
     if ((u32)t < 9) {
         id = t;
         o = (WmObjSlot *)game_getModel(t);
@@ -576,8 +576,8 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
         o = (WmObjSlot *)game_getModel(id);
         g_gameState->gameData->npcModelSlots++;
     }
-    o->modelId = arg0;
-    o->model->model = db_lookupRegistered(DB_GET_ADDR, arg0, 0);
+    o->modelId = modelId;
+    o->model->model = db_lookupRegistered(DB_GET_ADDR, modelId, 0);
     if ((o->model->anim = db_lookupRegistered(DB_GET_ADDR, wm_findDefaultAnim(o->modelId), 0)) != NULL) {
         h = o->model->anim;
         if (IS_OFFSET(h->rotKeys)) {
@@ -588,7 +588,7 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
             }
         }
     }
-    o->actor = arg1;
+    o->actor = actor;
     m = o->model->model;
     g = m->groups;
     n = 0;
@@ -607,21 +607,21 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
     return id;
 }
 
-s32 wm_findDefaultAnim(s32 arg0) {
-    WmAnimTable *t = db_lookupRegistered(DB_GET_AT_IN, arg0, DB_MODEL_INFO);
+s32 wm_findDefaultAnim(s32 modelId) {
+    WmAnimTable *t = db_lookupRegistered(DB_GET_AT_IN, modelId, DB_MODEL_INFO);
     s32 i;
     WmAnimTableEntry *e;
 
     e = t->entries;
     for (i = 0; i < t->count; i++) {
-        if (e->modelId == (u16)arg0) {
+        if (e->modelId == (u16)modelId) {
             return e->animId | DB_ANIM;
         }
     }
     return -1;
 }
 
-void wm_drawShadow(WmObjEnt *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void wm_drawShadow(WmObjEnt *shadows, s32 slot, s32 groundY, s32 jointIdx) {
     MATRIX m;
     POLY_FT4 *p[4];
     SVECTOR v;
@@ -631,12 +631,12 @@ void wm_drawShadow(WmObjEnt *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 i;
     s32 k;
 
-    e = &arg0[arg1];
-    s = (WmObjSlot *)game_getModel(arg1);
+    e = &shadows[slot];
+    s = (WmObjSlot *)game_getModel(slot);
     if (s->flags & WM_SLOT_NO_SHADOW) {
         return;
     }
-    wm_calcShadowMatrix(e, s, &m, arg2, arg3);
+    wm_calcShadowMatrix(e, s, &m, groundY, jointIdx);
     for (i = 0; i < 4; i++) {
         p[i] = e->prims[g_gameState->gameData->drawBuf][i];
         setRGB0(p[i], e->shade, e->shade, e->shade);
@@ -726,12 +726,12 @@ void wm_drawShadow(WmObjEnt *arg0, s32 arg1, s32 arg2, s32 arg3) {
     SHADOW_ADD(k, 3);
 }
 
-s32 wm_initShadowPrims(s32 arg0, s32 arg1) {
-    return shadow_initSlots(arg0, 0x280, 0xDE, 0x330, 0xB0, arg1, 1);
+s32 wm_initShadowPrims(s32 heap, s32 count) {
+    return shadow_initSlots(heap, 0x280, 0xDE, 0x330, 0xB0, count, 1);
 }
 
 /* object matrix facing the joint's direction (in the xz plane) */
-void wm_calcShadowMatrix(WmObjEnt *arg0, WmObjSlot *arg1, MATRIX *arg2, s32 arg3, s32 arg4) {
+void wm_calcShadowMatrix(WmObjEnt *shadow, WmObjSlot *obj, MATRIX *out, s32 groundY, s32 jointIdx) {
     MATRIX m;
     s32 *d;
     s32 *s;
@@ -743,7 +743,7 @@ void wm_calcShadowMatrix(WmObjEnt *arg0, WmObjSlot *arg1, MATRIX *arg2, s32 arg3
 
     /* word-wise copy of the joint matrix */
     d = (s32 *)&m;
-    s = (s32 *)&((MATRIX *)arg1->model->boneMatrices)[arg4];
+    s = (s32 *)&((MATRIX *)obj->model->boneMatrices)[jointIdx];
     d[0] = s[0];
     d[1] = s[1];
     d[2] = s[2];
@@ -775,18 +775,18 @@ void wm_calcShadowMatrix(WmObjEnt *arg0, WmObjSlot *arg1, MATRIX *arg2, s32 arg3
     gte_ldopv2(&fwd);
     gte_op12();
     gte_stlvnl(&side);
-    arg2->m[0][0] = side.vx * arg0->scaleX >> 12;
-    arg2->m[1][0] = side.vy * arg0->scaleX >> 12;
-    arg2->m[2][0] = side.vz * arg0->scaleX >> 12;
-    arg2->m[0][1] = up.vx;
-    arg2->m[1][1] = up.vy;
-    arg2->m[2][1] = up.vz;
-    arg2->m[0][2] = fwd.vx * arg0->scaleZ >> 12;
-    arg2->m[1][2] = fwd.vy * arg0->scaleZ >> 12;
-    arg2->m[2][2] = fwd.vz * arg0->scaleZ >> 12;
-    arg2->t[0] = ((side.vx * arg0->offsetX + fwd.vx * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->model->boneMatrices)[arg4].t[0];
-    arg2->t[1] = ((side.vy * arg0->offsetX + fwd.vy * arg0->offsetZ) >> 12) + arg3;
-    arg2->t[2] = ((side.vz * arg0->offsetX + fwd.vz * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->model->boneMatrices)[arg4].t[2];
+    out->m[0][0] = side.vx * shadow->scaleX >> 12;
+    out->m[1][0] = side.vy * shadow->scaleX >> 12;
+    out->m[2][0] = side.vz * shadow->scaleX >> 12;
+    out->m[0][1] = up.vx;
+    out->m[1][1] = up.vy;
+    out->m[2][1] = up.vz;
+    out->m[0][2] = fwd.vx * shadow->scaleZ >> 12;
+    out->m[1][2] = fwd.vy * shadow->scaleZ >> 12;
+    out->m[2][2] = fwd.vz * shadow->scaleZ >> 12;
+    out->t[0] = ((side.vx * shadow->offsetX + fwd.vx * shadow->offsetZ) >> 12) + ((MATRIX *)obj->model->boneMatrices)[jointIdx].t[0];
+    out->t[1] = ((side.vy * shadow->offsetX + fwd.vy * shadow->offsetZ) >> 12) + groundY;
+    out->t[2] = ((side.vz * shadow->offsetX + fwd.vz * shadow->offsetZ) >> 12) + ((MATRIX *)obj->model->boneMatrices)[jointIdx].t[2];
 }
 
 /* world map music/sound request handler (GameData.unk83C); unk851 drives the streamed music load */
@@ -1119,7 +1119,7 @@ state:
     return g_gameState->gameData->soundLoadState;
 }
 
-void wm_calcSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, s32 arg3, u8 *arg4, u8 *arg5) {
+void wm_calcSoundPanVolume(s16 posX, s16 posY, s16 posZ, s32 unused, u8 *outPan, u8 *outVolume) {
     SVECTOR v;
     DVECTOR sxy;
     s32 z;
@@ -1127,9 +1127,9 @@ void wm_calcSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, s32 arg3, u8 *arg4, u8 
     s32 pan;
     s32 b;
 
-    v.vx = arg0;
-    v.vy = arg1;
-    v.vz = arg2;
+    v.vx = posX;
+    v.vy = posY;
+    v.vz = posZ;
     gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
     gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     gte_ldv0(&v);
@@ -1159,16 +1159,16 @@ void wm_calcSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, s32 arg3, u8 *arg4, u8 
         pan = (sxy.vx - 320) * a / 320;
         pan += 255 - a;
     }
-    *arg4 = pan;
-    *arg5 = (0x1000 - z) * 127 / 4096;
+    *outPan = pan;
+    *outVolume = (0x1000 - z) * 127 / 4096;
 }
 
-void wm_setMusicVolumeFade(s32 arg0, s32 arg1) {
+void wm_setMusicVolumeFade(s32 volume, s32 frames) {
     GameData *gd = g_gameState->gameData;
 
-    gd->musicVolume[0] = arg0;
-    if (arg0 == 0) {
-        gd->musicFadeFrames = arg1;
+    gd->musicVolume[0] = volume;
+    if (volume == 0) {
+        gd->musicFadeFrames = frames;
         gd->musicFadeStart = VSync(-1);
     }
 }
@@ -1180,58 +1180,58 @@ s32 wm_isMusicFadingOut(void) {
 }
 
 /* old-style definition: wm_updateBattleTransition passes a third (unused) argument */
-s32 wm_findSoundFile(arg0, arg1)
-s32 arg0;
-s32 *arg1;
+s32 wm_findSoundFile(fileId, outSize)
+s32 fileId;
+s32 *outSize;
 {
     FileEntry *e;
     FileEntry *f;
 
-    if (((arg0 >> 16) & 0xFF) == (DB_MUSIC >> 16)) {
-        e = dep_find(g_gameState->gameData->depTable, arg0);
-        if (arg1 != NULL) {
-            *arg1 = e->sectors << 11;
+    if (((fileId >> 16) & 0xFF) == (DB_MUSIC >> 16)) {
+        e = dep_find(g_gameState->gameData->depTable, fileId);
+        if (outSize != NULL) {
+            *outSize = e->sectors << 11;
         }
         return e->sector;
     } else {
-        f = file_find(DIR_SOUND_BANKS, arg0);
-        if (arg1 != NULL) {
-            *arg1 = (f->link - f->sector) << 11;
+        f = file_find(DIR_SOUND_BANKS, fileId);
+        if (outSize != NULL) {
+            *outSize = (f->link - f->sector) << 11;
         }
         return f->sector;
     }
 }
 
-s32 wm_depGetLink(s32 arg0) {
+s32 wm_depGetLink(s32 fileId) {
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
     FileEntry *e = t->entries;
 
     for (i = 0; i < t->count; i++) {
-        if (e[i].id == arg0) {
+        if (e[i].id == fileId) {
             return e[i].link;
         }
     }
     return -1;
 }
 
-s32 wm_unpackMusic(s32 arg0) {
-    s32 t = db_lookup(arg0, DB_GET_KEY_AT, DB_MUSIC, 0);
+s32 wm_unpackMusic(s32 db) {
+    s32 t = db_lookup(db, DB_GET_KEY_AT, DB_MUSIC, 0);
 
-    memcpy((u8 *)arg0, (u8 *)db_lookup(arg0, DB_GET_ADDR, t, 0), db_lookup(arg0, DB_GET_SIZE, t, 0));
+    memcpy((u8 *)db, (u8 *)db_lookup(db, DB_GET_ADDR, t, 0), db_lookup(db, DB_GET_SIZE, t, 0));
     return 0;
 }
 
-void wm_streamSoundChunk(WmStreamReq *arg0) {
+void wm_streamSoundChunk(WmStreamReq *req) {
     s32 a;
     s32 id;
     s32 t;
     s32 n;
     s32 b;
 
-    a = arg0->addr;
+    a = req->addr;
     id = g_gameState->gameData->soundLoadBank | DB_SOUND_BANK;
-    if (arg0->offset == 0) {
+    if (req->offset == 0) {
         b = a;
         t = db_lookup(a, DB_GET_AT, DB_PACK, 0);
         if (t == -1) {
@@ -1242,12 +1242,12 @@ void wm_streamSoundChunk(WmStreamReq *arg0) {
             g_gameState->gameData->soundBankSize = db_lookup(b, DB_GET_AT, (DB_PACK | 1), 0) - g_gameState->gameData->soundLoadDest;
         }
     }
-    n = g_gameState->gameData->soundBankSize - arg0->offset;
-    if (arg0->size < n) {
-        n = arg0->size;
+    n = g_gameState->gameData->soundBankSize - req->offset;
+    if (req->size < n) {
+        n = req->size;
     }
-    akao_uploadBank(a, arg0->addr + n - a, 0);
-    arg0->addr = a;
+    akao_uploadBank(a, req->addr + n - a, 0);
+    req->addr = a;
 }
 
 void wm_clearOT(void) {
@@ -1405,7 +1405,7 @@ void wm_findBattleMusic(void) {
 }
 
 void wm_togglePause(void) {
-    u8 buf[8];
+    u8 spriteW[8];
     s32 i;
     u32 a;
 
@@ -1418,7 +1418,7 @@ void wm_togglePause(void) {
             g_padActuator[i].smallMotor = 0;
         }
         ClearOTag(&g_worldPauseOT, 1);
-        ui_buildSprite((320 - g_uiSprites[235].w) / 2, (218 - g_uiSprites[235].h) / 2, &g_worldPauseOT, 0xEB, 0, buf, g_worldPauseSprite);
+        ui_buildSprite((320 - g_uiSprites[235].w) / 2, (218 - g_uiSprites[235].h) / 2, &g_worldPauseOT, 0xEB, 0, spriteW, g_worldPauseSprite);
         setlen(&g_worldPauseTile, 3);
         g_worldPauseTile.code = GPU_TILE | GPU_ABE;
         setRGB0(&g_worldPauseTile, 0x60, 0x60, 0x60);
@@ -1442,7 +1442,7 @@ s32 wm_preloadRequest(void) {
     return 0;
 }
 
-void wm_copyViaVram(s32 arg0, s32 arg1, s32 arg2) {
+void wm_copyViaVram(s32 dst, s32 src, s32 size) {
     RECT r;
     RECT *rp = NULL;
 
@@ -1453,7 +1453,7 @@ void wm_copyViaVram(s32 arg0, s32 arg1, s32 arg2) {
         r.y = 0;
         r.h = 0xDA;
     }
-    file_copyViaVram(arg0, arg1, arg2, rp);
+    file_copyViaVram(dst, src, size, rp);
 }
 
 void wm_saveDepTable(void) {

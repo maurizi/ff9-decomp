@@ -4,30 +4,30 @@ void preload_clearEntry(PreloadEntry *e) {
     preload_setEntry(e, 0, -1, 0, 0, 0, -1, -1);
 }
 
-void preload_setEntry(PreloadEntry *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) {
+void preload_setEntry(PreloadEntry *entry, s32 kind, s32 fileId, s32 dest, s32 bufSize, s32 chunkSize, s32 sector, s32 readSize) {
     s32 t;
-    p->flags = 0;
-    p->kind = a;
-    p->fileId = b;
-    p->dest = c;
-    p->loaded = 0;
-    t = d;
-    p->bufSize = t / 2048 * 2048;
-    p->chunkSize = e;
-    p->sector = t = f;
-    p->readSize = g;
-    p->vramX = 0;
-    p->vramY = 0;
-    p->vramW = 0;
-    p->vramH = 0;
+    entry->flags = 0;
+    entry->kind = kind;
+    entry->fileId = fileId;
+    entry->dest = dest;
+    entry->loaded = 0;
+    t = bufSize;
+    entry->bufSize = t / 2048 * 2048;
+    entry->chunkSize = chunkSize;
+    entry->sector = t = sector;
+    entry->readSize = readSize;
+    entry->vramX = 0;
+    entry->vramY = 0;
+    entry->vramW = 0;
+    entry->vramH = 0;
 }
 
-void preload_setVramRect(PreloadEntry *a, s16 b, s16 c, s16 d, s16 e) {
-    a->vramX = b;
-    a->vramY = c;
-    a->vramW = d;
-    a->flags |= PRELOAD_IN_VRAM;
-    a->vramH = e;
+void preload_setVramRect(PreloadEntry *entry, s16 x, s16 y, s16 w, s16 h) {
+    entry->vramX = x;
+    entry->vramY = y;
+    entry->vramW = w;
+    entry->flags |= PRELOAD_IN_VRAM;
+    entry->vramH = h;
 }
 
 s32 preload_isUsed(PreloadEntry *a) {

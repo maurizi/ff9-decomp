@@ -1616,9 +1616,9 @@ extern s8 g_worldMusicReqKind;  /* request kind, -1 = none */
 extern s32 g_worldMusicSector; /* CD sector of the music file */
 s32 wm_isMusicFadingOut(void);
 s32 wm_findSoundFile(); /* old-style: one caller passes a third argument */
-s32 wm_depGetLink(s32 arg0);
-s32 wm_unpackMusic(s32 arg0);
-void wm_streamSoundChunk(WmStreamReq *arg0);
+s32 wm_depGetLink(s32 fileId);
+s32 wm_unpackMusic(s32 db);
+void wm_streamSoundChunk(WmStreamReq *req);
 s32 wm_getModelCacheBottom(void);
 
 /* main exe: candidates for ff9.h (sound) */
@@ -1682,10 +1682,10 @@ void wm_drawTitle(void);
 void wm_fetchParkedSound(void);
 s32 wm_findAreaData(); /* (WorldMapObj *, u16); unprototyped: callers pass the argument unconverted */
 void wm_findBattleMusic(void);
-s32 wm_findDefaultAnim(s32 arg0);
+s32 wm_findDefaultAnim(s32 modelId);
 s32 wm_findMapScript(); /* (WorldMapObj *, u16); unprototyped: callers pass the argument unconverted */
 void wm_finishLoad(void);
-s32 wm_getAreaZone(s32 arg0);
+s32 wm_getAreaZone(s32 area);
 s32 wm_getChunkBuffer(void);
 s32 wm_getWorldDataFileId(void);
 void wm_heapInit(void);
@@ -1699,7 +1699,7 @@ void wm_initMovement(void);
 s32 wm_isMapSongPlaying(void);
 s32 wm_lerp(s32 arg0, s32 arg1, s32 arg2);
 s32 wm_lerpShift(s32 arg0, s16 arg1, s32 arg2, s32 arg3);
-s32 wm_loadFile(WorldMapObj *arg0, s32 unused);
+s32 wm_loadFile(WorldMapObj *obj, s32 unused);
 void wm_loadTimPack(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void wm_lookAt(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2, VECTOR *arg3);
 void wm_movePlayer(WmActorType *cc);
@@ -1712,12 +1712,12 @@ void wm_naviInit(void);
 void wm_postDraw(void);
 void wm_readChunks(void);
 void wm_readtxCompact(void);
-void wm_requestChunks(s32 arg0);
+void wm_requestChunks(s32 chunk);
 void wm_resetMapObj(void);
 void wm_runEvents(void);
 void wm_saveDepTable(void);
 void wm_setActorFog(EvtObject *arg0, s32 arg1);
-void wm_setMusicVolumeFade(s32 arg0, s32 arg1);
+void wm_setMusicVolumeFade(s32 volume, s32 frames);
 void wm_setupMapObj(void);
 void wm_setupWorldData(void);
 void wm_updateCamera(void);
@@ -1733,6 +1733,6 @@ void wm_updateVramAnims(void);
 void wm_uploadParkedSound(void);
 void wm_weatherInit(void);
 void wm_weatherUpdate(void);
-s32 wm_worldToView(VECTOR *arg0, VECTOR *arg1, VECTOR *arg2, s32 *arg3);
+s32 wm_worldToView(VECTOR *pos, VECTOR *outRel, VECTOR *outView, s32 *outScale);
 
 #endif
