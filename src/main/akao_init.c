@@ -142,7 +142,7 @@ void akao_initState(void) {
     g_akaoVoiceModeMasks[2] = 0;
     g_akaoVoiceModeMasks[1] = 0;
     g_akaoVoiceModeMasks[0] = 0;
-    g_akaoUnusedWord = 0;
+    g_akaoCrossfade.fadeLen = 0;
     /* The nested do-while(0)s emit no code. flow weights references inside loop notes by depth, so they
      * raise cnt's reference count until local-alloc ranks it above &g_akaoChannels and gives it a2. The
      * notes are also scheduling barriers, which is why the loop below is a goto loop with an explicit

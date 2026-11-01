@@ -3510,7 +3510,7 @@ BgSprt *fldbg_init(void) {
     g_fieldBgState.flags = FLDBG_FOLLOW | FLDBG_SCROLL_LIMITS;
     g_fieldBgState.unk74 = 0x40;
     g_fieldBgState.followHeight = 0x144;
-    g_fieldBgState.unusedDistSq = 0xE10;
+    g_fieldBgState.radiusSq = 0xE10;
     *(s32 *)&g_fieldBgState.scroll = 0;
     *(s32 *)&g_fieldBgState.cameraScroll = 0;
     *(s32 *)&g_fieldBgState.geomOffsetX = 0;
@@ -3901,7 +3901,7 @@ s32 fldbg_setCamera(s32 arg0) {
     return 1;
 }
 
-void fldbg_unusedStub(void) {
+void fldbg_nop(void) {
 }
 
 void fldbg_setRenderContext(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
@@ -4010,11 +4010,11 @@ s32 fldbg_resetGeomOffset(void) {
     return 1;
 }
 
-s32 fldbg_setUnusedDistSq(s32 arg0) {
+s32 fldbg_setRadius(s32 arg0) {
     if (arg0 == -1) {
-        g_fieldBgState.unusedDistSq = 3600;
+        g_fieldBgState.radiusSq = 3600;
     } else {
-        g_fieldBgState.unusedDistSq = arg0 * arg0;
+        g_fieldBgState.radiusSq = arg0 * arg0;
     }
     return 1;
 }
@@ -4447,7 +4447,7 @@ s32 fldbg_scanEntries(void) {
     return ret;
 }
 
-s32 fldbg_okStub1(void) {
+s32 fldbg_nopOk1(void) {
     return 1;
 }
 
@@ -4464,14 +4464,14 @@ s32 fldbg_setOverlaySpriteColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     return 1;
 }
 
-s32 fldbg_okStub2(void) {
+s32 fldbg_nopOk2(void) {
     return 1;
 }
 
-s32 fldbg_okStub3(void) {
+s32 fldbg_nopOk3(void) {
     return 1;
 }
 
-s32 fldbg_okStub4(void) {
+s32 fldbg_nopOk4(void) {
     return 1;
 }

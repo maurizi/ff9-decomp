@@ -241,7 +241,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->camera->points[3].vx = work->pos20.vx;
         env->camera->points[3].vy = work->pos20.vy;
         env->camera->points[3].vz = work->pos20.vz;
-        fx_17d_4_unused = 0;
+        fx_17d_4_buf400 = 0;
     } else {
         frame = entry->frame;
         switch (work->state0) {

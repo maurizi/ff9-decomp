@@ -260,7 +260,7 @@ extern u16 g_movieFlags; /* flags */
 extern s32 g_movieFrame; /* frame counter */
 extern u16 g_movieFlagQueue[2][4]; /* queued flag sets / clears */
 extern s32 g_bjBankroll; /* bankroll */
-extern s16 g_theEndUnused; /* cleared by ending_theEndInit, never read */
+extern s16 g_theEndInitWord; /* cleared by ending_theEndInit, never read */
 extern u16 g_endingImage;
 extern u8 g_bjCanDouble; /* double allowed */
 extern s32 g_bjWager; /* bet */
@@ -274,7 +274,7 @@ s32 ending_theEndInit(void);
 s32 ending_theEndExit(void);
 void ending_theEndClearOt(void);
 void ending_theEndSwap(void);
-extern s16 g_messagesUnused; /* cleared by ending_messagesInit and ending_messagesSwap, never read */
+extern s16 g_messagesFrameWord; /* cleared by ending_messagesInit and ending_messagesSwap, never read */
 extern s32 g_messagesFrame;
 extern u8 *g_messagesPrim; /* next free primitive */
 extern u32 g_movieState; /* FMV state */
@@ -314,8 +314,8 @@ void scene_exit(void);
 s32 ending_messages(void);
 void bj_actionDraw(void);
 void bj_actionTick(void);
-void bj_actionDrawStub1(void);
-void bj_actionDrawStub2(void);
+void bj_actionDrawBackground(void);
+void bj_actionDrawChoices(void);
 void bj_actionDrawCursor(void);
 void bj_actionDecide(void);
 void bj_wagerDecide(void);
@@ -331,16 +331,16 @@ u8 scene_getFadeScreen(void);
 void bj_wagerInput(void);
 void bj_wagerDraw(void);
 void bj_wagerTick(void);
-void bj_wagerDrawStub1(void);
-void bj_wagerDrawStub2(void);
+void bj_wagerDrawBackground(void);
+void bj_wagerDrawChoices(void);
 void bj_wagerDrawCursor(void);
 void bj_wagerStepFadeIn(void);
 void ending_menuInput(void);
 void ending_menuDraw(void);
 void ending_menuTick(void);
-void ending_menuDrawStub1(void);
-void ending_menuDrawStub2(void);
-void ending_menuDrawStub3(void);
+void ending_menuOnDraw(void);
+void ending_menuDrawBackground(void);
+void ending_menuDrawChoices(void);
 void ending_menuDrawCursor(void);
 void ending_menuStepFadeIn(void);
 void ending_menuOnFadeOut(void);

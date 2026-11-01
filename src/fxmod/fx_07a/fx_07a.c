@@ -104,7 +104,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_07a_discRadius = 0;
         fx_07a_uvRadiusOut = 0;
         fx_07a_uvRadiusIn = 0;
-        fx_07a_unusedRadius = 0;
+        fx_07a_discRadiusIn = 0;
         fx_07a_ringTwist[4] = 0;
         fx_07a_ringTwist[3] = 0;
         fx_07a_ringTwist[2] = 0;

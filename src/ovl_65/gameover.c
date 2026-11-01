@@ -123,7 +123,7 @@ s32 battleEnd_update(void) {
             if (g->battleResult == 2) {
                 g->battleResult = BATTLE_END_VICTORY;
             }
-            btl_bannerExitStub();
+            btl_termBanner();
             rewards_exit();
             return 1;
         }
@@ -133,7 +133,7 @@ s32 battleEnd_update(void) {
         if (timer_isEnabled()) {
             timer_enable(0);
         }
-        btl_bannerExitStub();
+        btl_termBanner();
         gameover_main((s32)g_gameState->gameData->ctx.ovl65->work->bgData);
         return 2;
     }

@@ -359,7 +359,7 @@ void menuStatus_draw(void) {
     menuStatus_drawExp();
     menuStatus_drawEquipment();
     menuStatus_drawAbilityPages();
-    menuStatus_drawStub();
+    menuStatus_pollFade();
 }
 
 void menuStatus_updateAnims(void) {
@@ -395,7 +395,7 @@ void menuStatus_drawFrame(void) {
     win_drawShadow(r, 0x1E, WIN_STYLE_BEVEL);
 }
 
-void menuStatus_drawStub(void) {
+void menuStatus_pollFade(void) {
     fade_isBusy();
 }
 

@@ -91,7 +91,7 @@ typedef struct {
 extern Unk8006B1F4 g_usableItemTable[];
 u8 item_useOnMember(Character *, Character *, Unk8006B1F4 *, s32, s32);
 extern s32 g_labelArrange;
-void menuItem_initStub(void);
+void menuItem_onInit(void);
 void menuItem_collectKeyItems(void);
 void menuItem_loadImages(void);
 void menuItem_drawScrollRows(void);
@@ -152,7 +152,7 @@ void menuItem_drawTargetWindow(void);
 void menuItem_drawRow(s32, s32, s32, MenuView *);
 void menuItem_drawKeyRow(s32, s32, s32, MenuView *);
 void menuItem_stepKweh(void);
-void menuItem_exitStub(void);
+void menuItem_onExit(void);
 void menuItem_showKeyItem(s32);
 void menuItem_hideKeyItem(void);
 

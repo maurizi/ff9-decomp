@@ -32,7 +32,7 @@ void menu_doOpen(s32 a, s32 b) {
         g_menu.open = 1;
         g_menu.type = a;
         g_menu.arg = b;
-        g_menu.unk1C = 0;
+        g_menu.result = 0;
         g_menu.reading = 0;
         g_menu.fadingOut = 0;
         g_menu.drawBackground = 1;
@@ -127,7 +127,7 @@ void menu_initForMode(void) {
 void menu_reset(void) {
     g_menu.state = MENU_STATE_CLOSED;
     g_menu.open = 0;
-    g_menu.unk1C = 0;
+    g_menu.result = 0;
     g_menu.onClose = 0;
     g_menu.unk4 = 0;
     g_menu.unk3 = 0;
@@ -262,8 +262,8 @@ void menu_onPortraitsRead(u8 *a) {
     }
 }
 
-s32 menu_getUnusedWord1C(void) {
-    return g_menu.unk1C;
+s32 menu_getResult(void) {
+    return g_menu.result;
 }
 
 void menu_start(void) {

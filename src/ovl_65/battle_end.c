@@ -407,7 +407,7 @@ void rewards_stateGil(void) {
 
     if (s_rewards.gilSkipped == 0) {
         rewards_stepGil();
-        rewards_stepGilStub();
+        rewards_onStepGil();
         if (!fade_isBusy() && (g_padRepeat & BTN_CROSS)) {
             rewards_finishGil();
         }
@@ -1411,7 +1411,7 @@ void rewards_resetFullWarning(void) {
     s_rewardsFullShown = 0;
 }
 
-void rewards_stepGilStub(void) {
+void rewards_onStepGil(void) {
 }
 
 u8 rewards_tryAddItems(void) {

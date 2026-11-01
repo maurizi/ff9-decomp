@@ -47,9 +47,9 @@ void ending_menuInput(void) {
 }
 
 void ending_menuDraw(void) {
-    ending_menuDrawStub1();
-    ending_menuDrawStub2();
-    ending_menuDrawStub3();
+    ending_menuOnDraw();
+    ending_menuDrawBackground();
+    ending_menuDrawChoices();
     ending_menuDrawCursor();
 }
 
@@ -63,13 +63,13 @@ void ending_menuDecide(void) {
     fade_setOnDone(ending_menuOnFadeOut);
 }
 
-void ending_menuDrawStub1(void) {
+void ending_menuOnDraw(void) {
 }
 
-void ending_menuDrawStub2(void) {
+void ending_menuDrawBackground(void) {
 }
 
-void ending_menuDrawStub3(void) {
+void ending_menuDrawChoices(void) {
 }
 
 void ending_menuDrawCursor(void) {

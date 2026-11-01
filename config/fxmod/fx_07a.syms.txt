@@ -16,4 +16,4 @@ fx_07a_bonePos = 0x801E9B8C; // [code] btlfx_getUnitBonePos(0x10, 0x17) each fra
 fx_07a_centerPos = 0x801E9B94; // [code] targets center (y -0x500), emitter position and fx_07a_drawTwistDisc centre
 fx_07a_strips = 0x801E9BA4; // [code] 5 btlfx_drawTrail strips (Fx07aStrip) from fx_07a_bonePos to the models
 fx_07a_drawTwistDisc = 0x801E8A88; // type:func [code] disc of POLY_FT4 rings (angle offset per ring from fx_07a_ringTwist) plus two POLY_G4 bands, at pos
-fx_07a_unusedRadius = 0x801E9504; // [runtime] never read during Demi Shock (round 33)
+fx_07a_discRadiusIn = 0x801E9504; // [code] cleared with fx_07a_discRadius, fx_07a_uvRadiusOut and fx_07a_uvRadiusIn - the disc's inner radius next to the texture's inner radius, fx_07a_drawTwistDisc starts the disc at the centre and never reads it (runtime round 33)

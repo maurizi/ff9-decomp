@@ -109,7 +109,7 @@ static inline s32 menuChocograph_getRequiredAbility_inline(s32 id) {
     return s_menuChocographRequiredAbility[id];
 }
 void menuChocograph_scrollTo(s32);
-void menuChocograph_loadImagesStub(void);
+void menuChocograph_onLoadImages(void);
 void menuChocograph_getPictureRects(s32, RECT *, RECT *);
 
 extern const u8 g_chocographText[]; /* text bank for this menu */

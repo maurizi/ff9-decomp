@@ -40,4 +40,4 @@ s_menuStatusCmdTable = 0x801EDF04; // [code] battle command table (name offset f
 s_menuStatusCmdNames = 0x801EE144; // [code] battle command names ("Attack", "Steal", "Jump"...) indexed by s_menuStatusCmdTable
 s_menuStatusHelpArgs = 0x801F11CC; // [code] string and value arguments of help text 0 (func_8002BE44 / func_8002BE74), set by menuStatus_updateHelp
 s_menuStatusHelpArg7 = 0x801F1204; // [code] string argument 7 of help text 0
-menuStatus_drawStub = 0x801EF9B4; // type:func [code] calls fade_isBusy and drops the result, last call of menuStatus_draw
+menuStatus_pollFade = 0x801EF9B4; // type:func [code] calls fade_isBusy and drops the result, last call of menuStatus_draw

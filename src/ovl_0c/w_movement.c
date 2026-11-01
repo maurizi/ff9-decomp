@@ -13,7 +13,7 @@ void wm_initCamera(void) {
     g_worldCameraHold = 1;
     g_worldCameraLookupFix = 0;
     g_worldCameraRoll = 0;
-    g_worldCameraUnusedFlag = 0;
+    g_worldCameraInitFlag = 0;
     if (g_gameState->prevMode == GS_MODE_FIELD && g_gameState->gameData->worldCamKeep == 0) {
         g_worldCamera->viewBlend = 0;
         g_worldCamera->viewBlendSpeed = 0;
@@ -568,7 +568,7 @@ void wm_initMovement(void) {
     g_worldSpeedSmooth = 0;
     g_worldClimbSmooth = 0;
     g_worldPlayerHeading = 0;
-    g_worldMoveUnusedWord = 0;
+    g_worldMoveInitWord = 0;
     g_worldCameraTurnGain = 0x1000;
     g_worldCeilingGap = 0;
     g_worldDrawActors = 1;
@@ -2275,5 +2275,5 @@ void wm_controlPlayer(void) {
     }
 }
 
-void wm_movementUnusedStub(void) {
+void wm_movementNop(void) {
 }

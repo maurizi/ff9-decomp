@@ -11378,3 +11378,82 @@ fx_138: D_801E8408 -> fx_138_reels; fx_1bf_0: D_801EA1FC -> fx_1bf_0_unusedBuf; 
 fx_1be: D_801E95D0 -> fx_1be_unusedScroll; fx_130: D_801E812C -> fx_130_unit0Rot; fx_0fb_0: D_801EB35C -> fx_0fb_0_ribbonRgb1
 (reasons in the syms files). Removed the unused externs fx_130_unit0Rot, fx_0fb_0_ribbonRgb1 and fx_0fb_1 D_801F0D3C (no
 label or user anywhere). fx_0d3 comment: fx_0e1_0 func_801E7CB4 -> fxm_drawTexRibbonTrail.
+
+# ===== weak-name redo =====
+# Replaces the R38 Unused/Stub placeholders. *Nop* = empty (or constant-return) body with no callers and no
+# pointer in any binary (all 20 binaries and 380 effect modules scanned for the address word), purpose unknown.
+# on<Phase> = an empty call slot whose body was compiled out, named by when it runs.
+pad_repeatStub pad_onStartPressed  # [code] empty in the release build, its only call is ovl_3c shopBuy_update while g_padRepeat has PAD_START (0x8, raw Start) - a Start-button hook (debug) whose body was compiled out
+fade_fieldInitStub fade_initField  # [code] empty, the fade module's per-field init - last call of ovl_0a fld_init, defined right before fade_init
+chr_newGameStub chr_initNew  # [code] empty, the character step of game_newGame between item_initNew and party_initNewGame (same naming as item_initNew), body compiled out
+help_drawStub help_onDraw  # [code] empty, called by help_draw between the cursor icon and the help text, body compiled out
+game_resetStub game_onReset  # [code] empty, called by game_reset between evt_initSystem and menu_init, first function of the gamedata_resetEventFlags file
+msg_endTextStub msg_onTextEnd  # [code] empty, called by the evt_expr_asm text emitter func_80051B58 once the string's 0 byte is reached, after pen_endBuffered
+menu_getUnusedWord1C menu_getResult  # [code] returns g_menu.result (MenuState +0x1C), cleared by menu_doOpen and menu_reset like a menu return value - nothing writes another value and nothing calls it, docs/runtime-findings.md R30
+g_msgFontUnusedParam g_msgFontGlyphCount  # [code] msg_init copies Font.glyphCount (0xB2, the number of Font.glyphs entries, tools/ff9text.py) here, nothing reads it (docs/runtime-findings.md R30)
+g_akaoUnusedWord g_akaoCrossfadeFadeLen  # [code] g_akaoCrossfade.fadeLen (+8) under its own symbol, akao_init clears it through this address
+tim_unusedStub pen_nop  # [code] empty, no callers or pointers in any binary, first function of the pen wrapper file (before pen_beginOt), purpose unknown
+gfx_unusedStub gfx_nop  # [code] empty, no callers or pointers in any binary, between win_runFrame and gfx_setUiMode, purpose unknown
+fade_unusedStub1 fade_nop1  # [code] empty, no callers or pointers in any binary, after fade_ease, purpose unknown
+fade_unusedStub2 fade_nop2  # [code] empty, no callers or pointers in any binary, before fade_reverseNoCallback, purpose unknown
+help_unusedStub help_nop  # [code] empty, no callers or pointers in any binary, between help_update and help_setCallback, purpose unknown
+fldbg_unusedStub fldbg_nop  # [code] empty, no callers or pointers in any binary, after fldbg_setCamera, purpose unknown
+fldbg_setUnusedDistSq fldbg_setRadius  # [code] stores radius squared (60 * 60 for -1, also the fldbg init default) into g_fieldBgState.radiusSq and returns 1, sits with the follow-camera setters (fldbg_isFollowing, fldbg_setFollowHeight), no callers, nothing reads radiusSq
+fldbg_okStub1 fldbg_nopOk1  # [code] returns 1 (the fldbg API success value) and does nothing, no callers, between fldbg_scanEntries and fldbg_setOverlaySpriteColor, purpose unknown
+fldbg_okStub2 fldbg_nopOk2  # [code] returns 1 and does nothing, no callers, after fldbg_setOverlaySpriteColor, purpose unknown
+fldbg_okStub3 fldbg_nopOk3  # [code] returns 1 and does nothing, no callers, purpose unknown
+fldbg_okStub4 fldbg_nopOk4  # [code] returns 1 and does nothing, no callers, purpose unknown
+bgi_okStub bgi_nopOk  # [code] returns 1 (bgi API success value) and does nothing, no callers, after bgi_clear, purpose unknown
+bgi_setOneStub bgi_getOne  # [code] getter that stores the constant 1 through its pointer (shape of bgi_getMaskFilter), no callers, purpose unknown
+btl_initModeStub btl_onInitMode  # [code] returns 0 and does nothing, called by btl_initMode between btl_loadCommonData and btl_loadResidentMusic
+btlfx_exportStub090 btlfx_motionNopZero  # [code] returns 0, effect-module export 0x090 between btlfx_getUnitMotion and btlfx_setMotionFrame (the unit-motion exports), no module calls it
+btlfx_exportStub094 btlfx_motionNopNeg  # [code] returns -1, effect-module export 0x094 in the unit-motion exports, no module calls it
+btlfx_exportStub0A4 btlfx_motionNop  # [code] empty, effect-module export 0x0A4 between btlfx_playUnitMotion and btlfx_resetUnitMotion, no module calls it
+btlfx_exportStub29C btlfx_imageNop  # [code] empty, effect-module export 0x29C after the ClearImage and MoveImage exports, no module calls it
+btlfx_exportStub300 btlfx_vertexNopZero1  # [code] returns 0, effect-module export 0x300 between Hi_GetSplitMdlVertex and Hi_SplitMdlVertex (hi_vertex), no module calls it
+btlfx_exportStub308 btlfx_vertexNop  # [code] empty, effect-module export 0x308 after Hi_SplitMdlVertex (hi_vertex), no module calls it
+btlfx_exportStub30C btlfx_vertexNopZero2  # [code] returns 0, effect-module export 0x30C before Hi_GetMdlVertexPtr (hi_vertex), no module calls it
+btlfx_poolUnusedStub btlfx_poolNopZero  # [code] returns 0 and does nothing, no callers or pointers, first function of btlfx_pool before btlfx_poolSize, purpose unknown
+btlfx_modelUnusedStub1 btlfx_modelNopZero  # [code] returns 0 and does nothing, no callers or pointers, between Hi_RegisterTexPtrModel and Hi_RegisterSummonModel, purpose unknown
+btlfx_modelUnusedStub2 btlfx_freeEffModel  # [code] empty, no callers, the first of two empty functions after btlfx_allocEffModel and btlfx_allocSummonModel - the matching free (slots are freed by clearing BtlObjSlot.used in btlfx_clearEffModels)
+btlfx_modelUnusedStub3 btlfx_freeSummonModel  # [code] empty, no callers, second empty function after the two allocators, the summon-model counterpart of btlfx_freeEffModel
+btlui_latchUnusedValue btlui_latchFirstValue  # [code] stores its argument in g_btluiState.firstValue on the first call only (firstValueSet), no callers or pointers in any binary, docs/runtime-findings.md R33
+btlui_vsyncStub btlui_onVsync  # [code] empty, called by btlui_vsync after btlui_putDispEnvIfReady, before btlui_readPad
+btlui_vsyncMarkStub btlui_perfMark  # [code] empty, btlui_vsync calls it with 0xBA before and 0xBB after the frame's UI work (btlui_beginFrame..btlui_submitOt) - a profiling mark pair compiled out of the release build
+btlui_unusedStub btlui_termHeap  # [code] empty, no callers, between btlui_initHeap and btlui_alloc - the bump allocator's counterpart of btlui_initHeap (nothing to free)
+btlui_resetStub btlui_onReset  # [code] empty, called by btlui_reset between btlui_initHeap and btlui_initDrawBufs
+btlui_frameUnusedStub btlui_frameNop  # [code] empty, no callers or pointers, between btlui_clearOtLinked and btl_initBanner, purpose unknown
+btl_bannerExitStub btl_termBanner  # [code] empty, defined right after btl_initBanner, ovl_65 calls it when the battle result screen ends (rewards done or game over)
+g_worldCameraUnusedFlag g_worldCameraInitFlag  # [code] byte wm_initCamera clears with g_worldCameraHold/LookupFix/Roll, nothing else reads or writes it in C or asm, docs/runtime-findings.md R30
+g_worldMoveUnusedWord g_worldMoveInitWord  # [code] word wm_initMovement clears with the player speed state (g_worldPlayerHeading, g_worldSpeedSmooth), nothing else reads or writes it, docs/runtime-findings.md R30
+g_worldUnusedBuffer g_worldLowBuffer  # [code] wm_initBuffers points it at 0x80100800, the lowest of its buffers (chunk buffer 0x80138800 above it), nothing reads the pointer, docs/runtime-findings.md R30
+g_worldSysUnusedFlag g_worldSysInitFlag  # [code] byte wm_systemInit clears with g_worldVehiclesFound/g_worldOtBias, nothing else reads or writes it, docs/runtime-findings.md R30
+wm_movementUnusedStub wm_movementNop  # [code] empty, no callers or pointers, last function of w_movement after wm_controlPlayer, purpose unknown
+wm_memUnusedStub wm_termMapState  # [code] empty, no callers, defined right after wm_initMapState (w_memoryman) - its counterpart, like the empty wm_mapTerm and wm_frameTerm
+wm_chunkUnusedStub wm_chunkNop  # [code] empty, no callers or pointers, between wm_chunkListCompact and wm_blockListInit, purpose unknown
+opening_titleDrawStub opening_titleOnDraw  # [code] empty, first step of opening_titleDraw before opening_titleDrawBackground, opening_titleDrawChoices and opening_titleDrawCursor
+ending_menuDrawStub1 ending_menuOnDraw  # [code] empty, first of ending_menuDraw's steps, the slot of opening_titleOnDraw in the same menu template
+ending_menuDrawStub2 ending_menuDrawBackground  # [code] empty, second ending_menuDraw step, the slot of opening_titleDrawBackground in the same menu template
+ending_menuDrawStub3 ending_menuDrawChoices  # [code] empty, third ending_menuDraw step, the slot of opening_titleDrawChoices in the same menu template
+bj_wagerDrawStub1 bj_wagerDrawBackground  # [code] empty, first of bj_wagerDraw's two empty steps before bj_wagerDrawCursor (the template's background slot, as in opening_titleDraw)
+bj_wagerDrawStub2 bj_wagerDrawChoices  # [code] empty, second empty step before bj_wagerDrawCursor (the template's choices slot)
+bj_actionDrawStub1 bj_actionDrawBackground  # [code] empty, first of bj_actionDraw's two empty steps before bj_actionDrawCursor (the template's background slot)
+bj_actionDrawStub2 bj_actionDrawChoices  # [code] empty, second empty step before bj_actionDrawCursor (the template's choices slot)
+g_messagesUnused g_messagesFrameWord  # [code] s16 ending_messagesInit and every ending_messagesSwap set to 0 (per-frame reset next to g_messagesFrame++), nothing reads it
+g_theEndUnused g_theEndInitWord  # [code] s16 ending_theEndInit clears with g_theEndState, nothing reads it (the g_messagesFrameWord slot of the same template)
+menuChocograph_loadImagesStub menuChocograph_onLoadImages  # [code] empty, first call of menuChocograph_loadImages before the LoadImages
+menuAbility_initStub menuAbility_onInit  # [code] empty, called by menuAbility_init right after text_setBank
+menuItem_exitStub menuItem_onExit  # [code] empty, last call of menuItem_exit and of the menuItem_stepKweh exit path before menuScreen_close
+menuItem_initStub menuItem_onInit  # [code] empty, called by menuItem_init before menuItem_collectKeyItems
+menuStatus_drawStub menuStatus_pollFade  # [code] calls fade_isBusy and drops the result, last call of menuStatus_draw
+menuSave_initStub menuSave_onInit  # [code] empty, called by menuSave_init after menuSave_openCardEvents
+shop_updateStub shop_onUpdate  # [code] empty, last call of shop_update when no shop mode is open
+rewards_stepGilStub rewards_onStepGil  # [code] empty, called by rewards_stateGil after rewards_stepGil each frame of the gil count-up
+fx_07a_unusedRadius fx_07a_discRadiusIn  # [code] cleared with fx_07a_discRadius, fx_07a_uvRadiusOut and fx_07a_uvRadiusIn - the disc's inner radius next to the texture's inner radius, fx_07a_drawTwistDisc starts the disc at the centre and never reads it (runtime round 33)
+fx_0b8_unusedScroll fx_0b8_scrollInitWord  # [code] set to 2 by fx_0b8_op80 mode 1 with the scroll setup (scroll1E4, scrollSpeed1E8 = 8), never read
+fx_1be_unusedScroll fx_1be_scrollInitWord  # [code] set to 2 by fx_1be_op80 mode 1 with fx_1be_scrollPos and fx_1be_scrollSpeed (= 8, the next two words), never read
+fx_17d_4_unused fx_17d_4_buf400  # [code] 0x400 zero bytes before fx_17d_4_effModels, fx_17d_4_op80 mode 1 sets byte 0 to 0 (same layout as fx_1bf_0_buf400), no other access (runtime round 33)
+fx_1bf_0_unusedBuf fx_1bf_0_buf400  # [code] 0x400 zero bytes before fx_1bf_0_effModels, fx_1bf_0_op80 mode 1 sets byte 0 to 0 and nothing reads them
+# FIELDS: Font.unk8=glyphCount (0xB2), MenuState.unk1C=result, ovl_0a FieldBgState.unusedDistSq=radiusSq,
+#   ovl_0b BtluiState.unusedLatched=firstValueSet, unusedValue=firstValue; btlfx_mod.h export members follow their functions
+# akao_init now clears g_akaoCrossfade.fadeLen (extern g_akaoCrossfadeFadeLen dropped, the symbol stays for the split)

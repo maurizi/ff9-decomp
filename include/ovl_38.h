@@ -119,7 +119,7 @@ void menuStatus_draw(void);
 void menuStatus_updateAnims(void);
 void menuStatus_inputAbilities(void);
 void menuStatus_drawFrame(void);
-void menuStatus_drawStub(void);
+void menuStatus_pollFade(void);
 void menuStatus_closeAbilityPages(void);
 void menuStatus_onMemberSwitched(void);
 void menuStatus_updateHelp(void);
