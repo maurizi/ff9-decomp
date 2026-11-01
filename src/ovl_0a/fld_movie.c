@@ -1483,6 +1483,8 @@ void fld_updateEncounter(void) {
                 DrawSync(0);
                 preload_setVramRect(e, r.x, r.y, r.w, r.h);
             } else {
+                /* preload_waitCurrent returns NULL when no preload is in flight (seen in d4_f2928), so the PS1 reads fileId from low
+                 * RAM here. Harmless on the PS1; a native port must check for NULL (ff9-ds F37). */
                 preload_remove(preload_waitCurrent()->fileId);
             }
             preload_discardRange((s32)g_loadAreaEnd, 0x156F00);

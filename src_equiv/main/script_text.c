@@ -710,6 +710,8 @@ s32 evt_popValue(void) {
         if (tag & 1) {
             return evt_getBattleVar(t & 0xFF);
         }
+        /* evt_resolveObjectId returns NULL for an id that names no object (world 9008 script, reached from d4_f2954/2955),
+         * and evt_getObjectProp then reads low RAM on the PS1. A native port must check for NULL (ff9-ds F37). */
         return evt_getObjectProp(evt_resolveObjectId((t >> 8) & 0xFF), t & 0xFF);
     }
     if (tag & 2) {
