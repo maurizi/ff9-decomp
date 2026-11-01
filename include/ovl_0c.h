@@ -1265,7 +1265,7 @@ void game_resumeClock(s32);
 void akao_pause(s32);
 void akao_resume(s32);
 extern s32 g_worldFrameCount;
-extern u8 g_worldMogChoice;
+extern u8 g_worldMogChoice; /* a world-script choice window is open (WM_REQ_MOG_CHOICE): moogle, chocobo menu, airship Go to, navigation method */
 extern s16 g_worldOtBias;
 extern u8 g_worldSysInitFlag;
 extern u8 g_worldSuspended;

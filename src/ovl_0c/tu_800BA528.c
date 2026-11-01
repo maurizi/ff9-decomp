@@ -260,7 +260,7 @@ void wm_updateMap(void) {
             g_worldPlayer->prevPos.vx++;
         }
     }
-    if (g_evtGlobalVars.b[0x66] == 8 || g_evtGlobalVars.b[0x66] == 0) {
+    if (g_evtGlobalVars.b[EVT_GB_WM_FILE] == 8 || g_evtGlobalVars.b[EVT_GB_WM_FILE] == 0) {
         dx = (g_worldPlayer->pos.vx >> 3) - 0x790A;
         dz = (g_worldPlayer->pos.vz >> 3) + 0x5ACB;
         v = SquareRoot0(dx * dx + ((g_worldPlayer->pos.vy >> 3) + 0x66) * ((g_worldPlayer->pos.vy >> 3) + 0x66) * 8 + dz * dz);
