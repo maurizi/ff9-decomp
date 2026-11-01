@@ -2,7 +2,7 @@
 
 s32 evt_getSysVar(s32 op) {
     s32 r;
-    u8 buf[8];
+    u8 camera[8];
     EvtObject *o;
     s32 id;
 
@@ -14,8 +14,8 @@ s32 evt_getSysVar(s32 op) {
         r = *g_randPtr++;
         break;
     case EVT_SYSVAR_CAMERA:
-        fldbg_getCamera(buf);
-        r = buf[0];
+        fldbg_getCamera(camera);
+        r = camera[0];
         break;
     case EVT_SYSVAR_CONTROL_ENABLED:
         r = g_evtState->controlEnabled;
@@ -2616,7 +2616,7 @@ void evt_updateLookAt(EvtObject *o) {
     EvtObject *best;
     EvtObject *q;
     EvtListNode *n;
-    u8 mask;
+    u8 lookMask;
     s32 bestd;
     s32 d;
     s32 a;
@@ -2640,12 +2640,12 @@ void evt_updateLookAt(EvtObject *o) {
             x = o->pos.vx;
             y = o->pos.vy;
             z = o->pos.vz;
-            mask = o->lookParam1;
+            lookMask = o->lookParam1;
             bestd = 0;
             for (n = g_evtState->objects; n != NULL; n = n->next) {
                 q = n->obj;
                 if (q != o && q->kind == EVT_KIND_ACTOR && (u32)(q->pos.vy - y + 399) < 799 && (q->moveFlags & EVT_MOVE_LOOK_TARGET) &&
-                    (mask & q->lookParam0)) {
+                    (lookMask & q->lookParam0)) {
                     d = math_distSq2(q->pos.vx - x, q->pos.vz - z, 0);
                     if (d >= 1000) {
                         a = evt_angleToObject(o, q, o->pos.rotY);
@@ -3272,7 +3272,7 @@ void evt_stepAnim(EvtObject *p) {
 }
 
 u8 *evt_loadScripts(u8 *p) {
-    s32 mask = 0;
+    s32 charMask = 0;
     s32 i = 0;
     s32 c;
     s32 n;
@@ -3285,7 +3285,7 @@ u8 *evt_loadScripts(u8 *p) {
     for (; i < 4; i++) {
         c = msg_getPartyMemberId(i);
         if (c >= 0) {
-            mask |= 1 << c;
+            charMask |= 1 << c;
         }
     }
     n = p[3];
@@ -3299,9 +3299,9 @@ u8 *evt_loadScripts(u8 *p) {
     bit = 1;
     for (e = &((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9]; e < &((ScriptEntry *)g_evtScripts)[g_evtScriptCount]; e++) {
         if (!(e->flags & 1)) {
-            mask |= bit;
+            charMask |= bit;
         }
-        if (mask & bit) {
+        if (charMask & bit) {
             if (e->offset != 0) {
                 src = g_evtScripts + e->offset;
                 if (src != dst && e->size != 0) {
@@ -3313,7 +3313,7 @@ u8 *evt_loadScripts(u8 *p) {
         }
         bit <<= 1;
     }
-    g_evtCharScriptMask = mask;
+    g_evtCharScriptMask = charMask;
     return dst;
 }
 
@@ -3711,11 +3711,11 @@ s32 evt_getModelSlot(s32 id) {
 s32 evt_getPartyChrIndex(s32 i) {
     s32 t = g_evtState->partyUids[i] + 9;
     u32 r = t - g_evtScriptCount;
-    s32 ret = 0;
+    s32 idx = 0;
     if (r < 9) {
-        ret = r;
+        idx = r;
     }
-    return ret;
+    return idx;
 }
 
 void evt_callWorldCellTrigger(s32 a, s32 b, s32 c) {
@@ -3777,8 +3777,8 @@ void evt_createRegion(s32 a, s32 b) {
     p->flags = EVT_OBJ_ENABLED;
 }
 
-u16 evt_getBattleVar(s32 arg0) {
-    return evt_getBattleVar_inline(arg0);
+u16 evt_getBattleVar(s32 var) {
+    return evt_getBattleVar_inline(var);
 }
 
 void evt_setBattleVar(s32 i, s16 v) {
@@ -3800,14 +3800,14 @@ s32 evt_popBitCount(void) {
 }
 
 s32 evt_popRandomBit(void) {
-    u8 buf[8];
+    u8 setBitIdx[8];
     s32 bits = evt_popResult();
     s32 n = 0;
     s32 i;
 
     for (i = 0; i < 8; i++) {
         if (bits & 1) {
-            buf[n++] = i;
+            setBitIdx[n++] = i;
         }
         bits >>= 1;
     }
@@ -3815,7 +3815,7 @@ s32 evt_popRandomBit(void) {
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
-        return 1 << buf[(n * *g_randPtr++) >> 8];
+        return 1 << setBitIdx[(n * *g_randPtr++) >> 8];
     }
     return 0;
 }
@@ -3860,31 +3860,31 @@ s32 evt_getObjectProp(EvtObject *o, s32 prop) {
     return r;
 }
 
-void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2) {
+void evt_setObjectProp(EvtObject *obj, s32 prop, s32 value) {
     s32 i;
     struct BtlUnit *(*fn)(u16);
     struct BtlUnit *r;
 
-    if (arg0 != NULL) {
+    if (obj != NULL) {
         i = 0;
-        if (arg1 == EVT_SETPROP_ROT) {
-            arg0->pos.rotY = arg2 * 16;
+        if (prop == EVT_SETPROP_ROT) {
+            obj->pos.rotY = value * 16;
             return;
         }
         for (; i < 8; i++) {
-            if (g_evtUnitObjects[i] == arg0) {
+            if (g_evtUnitObjects[i] == obj) {
                 break;
             }
         }
         if (i < 8) {
-            if (arg1 == EVT_SETPROP_INSERT) {
+            if (prop == EVT_SETPROP_INSERT) {
                 fn = btl_findUnitByBit;
             } else {
                 fn = btl_getUnitById;
             }
             r = fn(1 << i);
             if (r != NULL) {
-                btl_setUnitAttr(r, arg1, arg2);
+                btl_setUnitAttr(r, prop, value);
             }
         }
     }

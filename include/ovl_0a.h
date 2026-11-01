@@ -1665,7 +1665,7 @@ s32 fld_getBgKey(); /* (FieldScene *); unprototyped: some callers pass a second 
 s32 fld_getModelAnimId(s32 modelId);
 s32 fld_getModelTables(s32 modelId, s32 **outTex, s32 **outUv, s32 **outSpr);
 s32 fld_getShadowTexPos(u16 *outX, u16 *outY);
-s32 fld_getSpriteFrameCount(u16 *arg0);
+s32 fld_getSpriteFrameCount(u16 *spr);
 void fld_initMap(void);
 void fld_initPreload(void);
 void fld_initScene(void);
@@ -1676,7 +1676,7 @@ s32 fld_isMusicFading(void);
 void fld_load(s32 fieldId);
 s32 fld_loadCommon(void);
 s32 fld_loadFile(FieldScene *sc, s32 fieldId);
-void fld_loadImagePack(s32 *arg0);
+void fld_loadImagePack(s32 *pack);
 s32 fld_loadModelBundle(s32 modelId);
 s32 fld_loadModelBundlesInCdOrder(void);
 s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2);

@@ -258,54 +258,54 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFrameMapDestructor);
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFrameSystemDestructor);
 
 /* script request (w_frameSetParameter) */
-void w_frameSetParameter(u32 arg0, s32 arg1) {
-    switch (arg0) {
+void w_frameSetParameter(u32 param, s32 value) {
+    switch (param) {
     case WM_REQ_ACTOR:
         w_movementChange();
         break;
     case WM_REQ_WEATHER:
-        if (arg1 == WM_WEATHER_AUTO) {
+        if (value == WM_WEATHER_AUTO) {
             g_worldWeatherAuto = 1;
             g_worldWeatherAutoMode = -1;
         } else {
             g_worldWeatherAuto = 0;
-            wm_setWeather(arg1, WM_FOG_KEEP, g_worldReqParams[0]);
+            wm_setWeather(value, WM_FOG_KEEP, g_worldReqParams[0]);
         }
         break;
     case WM_REQ_NAVI_MODE:
-        g_worldNaviMode = arg1;
+        g_worldNaviMode = value;
         break;
     case WM_REQ_NAVI_ACTIVE:
-        g_worldNaviActive = arg1;
+        g_worldNaviActive = value;
         break;
     case WM_REQ_CAMERA_LOOKUP_FIX:
-        g_worldCameraLookupFix = arg1;
+        g_worldCameraLookupFix = value;
         break;
     case WM_REQ_SPAWN_EFFECT:
-        wm_spawnEffect(g_worldReqParams[0], g_worldReqParams[1], g_worldReqParams[2], arg1, g_worldReqParams[3]);
+        wm_spawnEffect(g_worldReqParams[0], g_worldReqParams[1], g_worldReqParams[2], value, g_worldReqParams[3]);
         break;
     case WM_REQ_TITLE_DRAW_TIME:
-        g_worldTitleDelay = arg1;
+        g_worldTitleDelay = value;
         break;
     case WM_REQ_WEATHER_AUTO:
-        g_worldWeatherAuto = arg1;
+        g_worldWeatherAuto = value;
         break;
     case WM_REQ_PARAM0:
     case WM_REQ_WEATHER_SPEED:
     case WM_REQ_SE_PARAM0:
-        g_worldReqParams[0] = arg1;
+        g_worldReqParams[0] = value;
         break;
     case WM_REQ_PARAM1:
     case WM_REQ_SE_PARAM1:
-        g_worldReqParams[1] = arg1;
+        g_worldReqParams[1] = value;
         break;
     case WM_REQ_PARAM2:
     case WM_REQ_SE_PARAM2:
-        g_worldReqParams[2] = arg1;
+        g_worldReqParams[2] = value;
         break;
     case WM_REQ_PARAM3:
     case WM_REQ_SE_PARAM3:
-        g_worldReqParams[3] = arg1;
+        g_worldReqParams[3] = value;
         break;
     case WM_REQ_SE_PLAY:
         wm_sePlay(g_worldReqParams[0], g_worldReqParams[1]);
@@ -326,10 +326,10 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
         wm_cameraSmooth();
         break;
     case WM_REQ_EVENT_BATTLE_PROB:
-        g_worldEventBattleRate = arg1;
+        g_worldEventBattleRate = value;
         break;
     case WM_REQ_NAVI_CURSOR:
-        g_worldNaviCursorOn = arg1;
+        g_worldNaviCursorOn = value;
         break;
     case WM_REQ_GET_GETOFF_POS:
         if (!wm_findGetoffPos((ActorPos *)g_worldReqParams)) {
@@ -348,19 +348,19 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
         w_movementChangeSP2();
         break;
     case WM_REQ_MUSIC_FADE:
-        wm_musicFade(arg1);
+        wm_musicFade(value);
         break;
     case WM_REQ_MUSIC_FADE_FORCE:
-        wm_soundCommand(SND_MUSIC_VOL_INTPL, 0, arg1, 0, 0);
+        wm_soundCommand(SND_MUSIC_VOL_INTPL, 0, value, 0, 0);
         break;
     case WM_REQ_AUTO_PILOT_ON:
         wm_autoPilotOn();
         break;
     case WM_REQ_MOG_CHOICE:
-        g_worldMogChoice = arg1;
+        g_worldMogChoice = value;
         break;
     case WM_REQ_CURSOR_DRAW:
-        g_worldNaviCursorDraw = arg1;
+        g_worldNaviCursorDraw = value;
         break;
     case WM_REQ_ALPHA0:
         g_worldClimbSmooth = 0;
@@ -380,42 +380,42 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
         break;
     }
     if (g_worldMapDebugFlags & WM_DEBUG_REQUEST) {
-        switch (arg0) {
+        switch (param) {
         case WM_REQ_WEATHER:
-            printf("*[ Request from script:Weather:%d ]\n", arg1);
+            printf("*[ Request from script:Weather:%d ]\n", value);
             break;
         case WM_REQ_NAVI_ACTIVE:
-            printf("*[ Request from script:Navi Active:%d ]\n", arg1);
+            printf("*[ Request from script:Navi Active:%d ]\n", value);
             break;
         case WM_REQ_ACTOR:
-            printf("*[ Request from script:Actor:%d ]\n", arg1);
+            printf("*[ Request from script:Actor:%d ]\n", value);
             break;
         case WM_REQ_NAVI_MODE:
-            printf("*[ Request from script:Navi mode:%d ]\n", arg1);
+            printf("*[ Request from script:Navi mode:%d ]\n", value);
             break;
         case WM_REQ_CAMERA_LOOKUP_FIX:
-            printf("*[ Request from script:Camera Lookup Fix mode:%d ]\n", arg1);
+            printf("*[ Request from script:Camera Lookup Fix mode:%d ]\n", value);
             break;
         case WM_REQ_TITLE_DRAW_TIME:
-            printf("*[ Request from script:Title Draw Time:%d ]\n", arg1);
+            printf("*[ Request from script:Title Draw Time:%d ]\n", value);
             break;
         case WM_REQ_WEATHER_SPEED:
-            printf("*[ Request from script:Whather Speed:%d ]\n", arg1);
+            printf("*[ Request from script:Whather Speed:%d ]\n", value);
             break;
         case WM_REQ_WEATHER_AUTO:
-            printf("*[ Request from script:Whather Auto:%d ]\n", arg1);
+            printf("*[ Request from script:Whather Auto:%d ]\n", value);
             break;
         case WM_REQ_SE_PARAM0:
-            printf("*[ Request from script:SE Param0:%d ]\n", arg1);
+            printf("*[ Request from script:SE Param0:%d ]\n", value);
             break;
         case WM_REQ_SE_PARAM1:
-            printf("*[ Request from script:SE Param1:%d ]\n", arg1);
+            printf("*[ Request from script:SE Param1:%d ]\n", value);
             break;
         case WM_REQ_SE_PARAM2:
-            printf("*[ Request from script:SE Param2:%d ]\n", arg1);
+            printf("*[ Request from script:SE Param2:%d ]\n", value);
             break;
         case WM_REQ_SE_PARAM3:
-            printf("*[ Request from script:SE Param3:%d ]\n", arg1);
+            printf("*[ Request from script:SE Param3:%d ]\n", value);
             break;
         case WM_REQ_SE_PLAY:
             printf("*[ Request from script:SE Play ]\n");
@@ -437,7 +437,7 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
             printf("*[ Request from script:Camera Smooth ]\n");
             break;
         case WM_REQ_EVENT_BATTLE_PROB:
-            printf("*[ Request from script:EventBattleProbability %d]\n", arg1);
+            printf("*[ Request from script:EventBattleProbability %d]\n", value);
             break;
         case WM_REQ_NAVI_CURSOR:
             printf("*[ Request from script:Navi Cursol\n");
@@ -467,13 +467,13 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
             printf("*[ Request from script:Auto Pilot ON]\n");
             break;
         case WM_REQ_MOG_CHOICE:
-            printf("*[ Request from script:Mog choice %d]\n", arg1);
+            printf("*[ Request from script:Mog choice %d]\n", value);
             break;
         case WM_REQ_CURSOR_DRAW:
-            printf("*[ Request from script:Cursol Draw %d]\n", arg1);
+            printf("*[ Request from script:Cursol Draw %d]\n", value);
             break;
         case WM_REQ_ALPHA0:
-            printf("*[ Request from script:Alpha 0%d]\n", arg1);
+            printf("*[ Request from script:Alpha 0%d]\n", value);
             break;
         case WM_REQ_AUTO_PILOT_OFF:
             printf("*[ Request from script:Auto Pilot OFF]\n");
@@ -495,25 +495,25 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
         case WM_REQ_SPAWN_EFFECT:
             break;
         default:
-            printf("w_frameSetParameter: illigal function #%d\n", arg0);
+            printf("w_frameSetParameter: illigal function #%d\n", param);
             break;
         }
     }
 }
 
-s32 w_frameGetParameter(s32 arg0) {
+s32 w_frameGetParameter(s32 param) {
     u32 v;
     s32 hi;
     s32 lo;
     s32 r;
-    u8 ret;
+    u8 result;
     s32 k;
 
     v = g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr;
-    if ((g_worldMapDebugFlags & WM_DEBUG_REQUEST) && arg0 == WM_PARAM_CD_BUSY) {
+    if ((g_worldMapDebugFlags & WM_DEBUG_REQUEST) && param == WM_PARAM_CD_BUSY) {
         printf("Event:CDAccessWait\n");
     }
-    switch (arg0) {
+    switch (param) {
     case WM_PARAM_AREA:
         return WM_ATTR_AREA(v);
     case WM_PARAM_TOPOGRAPHY:
@@ -553,16 +553,16 @@ s32 w_frameGetParameter(s32 arg0) {
         }
         lo = *g_randPtr++;
         r = ((hi << 8) | lo) % (g_worldEventBattleRate + 1);
-        ret = 0;
+        result = 0;
         if (g_worldPlayerStepped != 0 && g_worldPlayerPosChanged != 0) {
             k = (s32)(v & 0xFC) >> 2;
             if (k >= 0x24) {
                 if (k < 0x27 && g_worldFrameCount > 400) {
-                    ret = r == 1;
+                    result = r == 1;
                 }
             }
         }
-        return ret;
+        return result;
     case WM_PARAM_PLAYER_DIR:
         return ((u16)g_worldPlayer->pos.rotY & 0xFFF) >> 4;
     case WM_PARAM_ZONE:
@@ -576,7 +576,7 @@ s32 w_frameGetParameter(s32 arg0) {
     case WM_PARAM_NAVI_VISIBLE:
         return (u8)g_worldNaviVisible;
     default:
-        printf("w_frameGetParameter: illigal function #%d\n", arg0);
+        printf("w_frameGetParameter: illigal function #%d\n", param);
         return -1;
     }
 }
@@ -701,47 +701,47 @@ void wm_callChocobo(void) {
     wm_snapActorsToFloor();
 }
 
-s32 wm_lerp(s32 arg0, s32 arg1, s32 arg2) {
-    return ((arg0 * (0x1000 - arg2)) >> 0xC) + ((arg1 * arg2) >> 0xC);
+s32 wm_lerp(s32 from, s32 to, s32 t) {
+    return ((from * (0x1000 - t)) >> 0xC) + ((to * t) >> 0xC);
 }
 
-s32 wm_lerpS8(s8 arg0, s8 arg1, s32 arg2) {
-    return ((((arg0 << 0xA) * (0x1000 - arg2)) >> 0xC) + (((arg1 << 0xA) * arg2) >> 0xC)) >> 0xA;
+s32 wm_lerpS8(s8 from, s8 to, s32 t) {
+    return ((((from << 0xA) * (0x1000 - t)) >> 0xC) + (((to << 0xA) * t) >> 0xC)) >> 0xA;
 }
 
-/* fixed-point lerp of two values with arg3 bits of headroom */
-s32 wm_lerpShift(s32 arg0, s16 arg1, s32 arg2, s32 arg3) {
-    s32 s = 16 - arg3;
+/* fixed-point lerp of two values with headroom bits of headroom */
+s32 wm_lerpShift(s32 from, s16 to, s32 t, s32 headroom) {
+    s32 s = 16 - headroom;
 
-    arg0 = (((arg0 << 16) >> 16 << s) * (0x400 - arg2 / 4)) >> 10;
-    arg0 += ((arg1 << s) * (arg2 / 4)) >> 10;
-    return arg0 >> s;
+    from = (((from << 16) >> 16 << s) * (0x400 - t / 4)) >> 10;
+    from += ((to << s) * (t / 4)) >> 10;
+    return from >> s;
 }
 
-s32 w_frameExtruct(s32 *arg0) {
+s32 w_frameExtruct(s32 *pack) {
     u32 i;
 
-    if (!(*arg0 & 0x80000000)) {
+    if (!(*pack & 0x80000000)) {
         if (g_worldMapDebugFlags & WM_DEBUG_PACK) {
-            printf(s_wmStrFrameExtructExtract, arg0, *arg0 & 0x7FFFFFFF);
+            printf(s_wmStrFrameExtructExtract, pack, *pack & 0x7FFFFFFF);
         }
-        *arg0 |= 0x80000000;
-        for (i = 0; i < (*arg0 & 0x7FFFFFFF); i++) {
-            arg0[i + 1] += (s32)arg0;
+        *pack |= 0x80000000;
+        for (i = 0; i < (*pack & 0x7FFFFFFF); i++) {
+            pack[i + 1] += (s32)pack;
         }
     } else if (g_worldMapDebugFlags & WM_DEBUG_PACK) {
-        printf(s_wmStrFrameExtructAlready, arg0);
+        printf(s_wmStrFrameExtructAlready, pack);
     }
-    return *arg0 & 0x7FFFFFFF;
+    return *pack & 0x7FFFFFFF;
 }
 
-void *w_framePackGetPtr(void **arg0, s32 arg1) {
-    s32 n = (s32)arg0[0] & 0x7FFFFFFF;
+void *w_framePackGetPtr(void **pack, s32 idx) {
+    s32 n = (s32)pack[0] & 0x7FFFFFFF;
 
-    if ((g_worldMapDebugFlags & WM_DEBUG_PACK) && n < arg1) {
-        printf(s_wmStrFramePackGetPtrRange, arg1, n);
+    if ((g_worldMapDebugFlags & WM_DEBUG_PACK) && n < idx) {
+        printf(s_wmStrFramePackGetPtrRange, idx, n);
     }
-    return arg0[arg1 + 1];
+    return pack[idx + 1];
 }
 
 void wm_runEvents(void) {

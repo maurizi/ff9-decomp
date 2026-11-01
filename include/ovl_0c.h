@@ -1659,7 +1659,7 @@ void game_updateWindows(void); /* main */
 void menu_update(void); /* main */
 void msg_setOtz(s32 a); /* main */
 s32 swirl_update(s16 arg0, s16 arg1); /* main */
-void *w_framePackGetPtr(void **arg0, s32 arg1);
+void *w_framePackGetPtr(void **pack, s32 idx);
 void w_movementChangeSP1(void);
 void w_movementChangeSP2(void);
 s32 w_readtxRequest(); /* (s16); unprototyped: callers pass the argument unconverted */
@@ -1675,7 +1675,7 @@ void wm_chunkListCompact(void);
 s32 wm_drawActorModel(EvtObject *act, SVECTOR *pos, s32 unused);
 void wm_drawActorShadow(EvtObject *act, SVECTOR *pos, s32 depth);
 void wm_drawBlock(u8 *block, s32 parity, s32 far);
-void wm_drawBlockFx(u8 arg0);
+void wm_drawBlockFx(u8 fxId);
 void wm_drawBlocks(void);
 void wm_drawModel(s32 model, s32 otz, u32 mode);
 void wm_drawTitle(void);
@@ -1697,8 +1697,8 @@ void wm_initMapState(void);
 void wm_initModel(ModelObj *mdl, u8 *work);
 void wm_initMovement(void);
 s32 wm_isMapSongPlaying(void);
-s32 wm_lerp(s32 arg0, s32 arg1, s32 arg2);
-s32 wm_lerpShift(s32 arg0, s16 arg1, s32 arg2, s32 arg3);
+s32 wm_lerp(s32 from, s32 to, s32 t);
+s32 wm_lerpShift(s32 from, s16 to, s32 t, s32 headroom);
 s32 wm_loadFile(WorldMapObj *obj, s32 unused);
 void wm_loadTimPack(s32 *pack, s32 imgDx, s32 imgDy, s32 clutDx, s32 clutDy);
 void wm_lookAt(MATRIX *out, SVECTOR *eye, SVECTOR *target, VECTOR *up);

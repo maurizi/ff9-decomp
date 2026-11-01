@@ -33,12 +33,12 @@ void w_musicUpdate(void) {
     }
 }
 
-/* sound effect ids of world-map sound arg0 */
-s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
+/* sound effect ids of world-map sound sound */
+s32 w_musicGetID(s32 sound, WmSeIds *out) {
     WmSeIds s;
 
     s.seIds[0] = -1;
-    switch (arg0) {
+    switch (sound) {
     case 0:
         s.seIds[0] = 0x68;
         break;
@@ -64,10 +64,10 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
     if (s.seIds[0] != -1) {
         s.channelMask = 0x800000;
         s.count = 1;
-        *arg1 = s;
+        *out = s;
         return 1;
     } else {
-        switch (arg0) {
+        switch (sound) {
         case 30:
             s.seIds[0] = 0x44B;
             break;
@@ -105,10 +105,10 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
         if (s.seIds[0] != -1) {
             s.channelMask = 0;
             s.count = 1;
-            *arg1 = s;
+            *out = s;
             return 1;
         } else {
-            switch (arg0) {
+            switch (sound) {
             case 6:
                 s.seIds[0] = 0x552;
                 break;
@@ -119,12 +119,12 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
             if (s.seIds[0] != -1) {
                 s.channelMask = 0x8000;
                 s.count = 1;
-                *arg1 = s;
+                *out = s;
                 return 1;
             } else {
                 /* the original third jump table is 8-aligned */
                 __asm__(".rdata\n\t.word 0\n\t.text");
-                switch (arg0) {
+                switch (sound) {
                 case 33:
                     s.seIds[0] = 0x37A;
                     s.channelMask = 0;
@@ -168,10 +168,10 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
                 }
                 if (s.seIds[0] != -1) {
                     s.count = 2;
-                    *arg1 = s;
+                    *out = s;
                     return 1;
                 }
-                printf("w_musicGetID : Illigal SE Number #%d\n", arg0);
+                printf("w_musicGetID : Illigal SE Number #%d\n", sound);
                 return 0;
                 printf(""); /* unreachable; its empty string is in .rodata */
             }
@@ -191,10 +191,10 @@ const char s_wmStrMusicDenied[] = "(Denied / same request)\n";
 /* padded: the jump table that follows is 8-aligned in its object */
 const char s_wmStrMusicNotReady[0x38] = "w_musicRequestSend : music status is not ready now\n";
 
-void w_musicRequestSend(u32 arg0) {
+void w_musicRequestSend(u32 request) {
     if (g_worldMusicState == WM_MUSIC_READY) {
         if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
-            switch (arg0) {
+            switch (request) {
             case WM_SONG_NORMAL:
                 printf(s_wmStrMusicNormalSong);
                 break;
@@ -218,9 +218,9 @@ void w_musicRequestSend(u32 arg0) {
                 break;
             }
         }
-        if (g_worldMusicRequest != arg0) {
+        if (g_worldMusicRequest != request) {
             g_worldMusicState = WM_MUSIC_REQUESTED;
-            g_worldMusicRequest = arg0;
+            g_worldMusicRequest = request;
             if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
                 printf(s_wmStrMusicAccepted);
             }
@@ -301,10 +301,10 @@ void wm_musicSetup(void) {
 void wm_musicTerm(void) {
 }
 
-void wm_musicPlay(u16 arg0) {
+void wm_musicPlay(u16 song) {
     u8 v = g_evtGlobalVars.b[0x68];
 
-    g_worldMusicId = wm_getSongMusicId(arg0);
+    g_worldMusicId = wm_getSongMusicId(song);
     g_worldMusicStarted = 1;
     wm_soundCommand(SND_MUSIC_PLAY, g_worldMusicId, 0, 0, 0);
     if (v == 0) {
@@ -313,61 +313,61 @@ void wm_musicPlay(u16 arg0) {
     wm_soundCommand(SND_MUSIC_VOL_INTPL, 0, 0x3C, v, 0);
 }
 
-void wm_musicStop(u16 arg0) {
-    wm_soundCommand(SND_MUSIC_STOP, wm_getSongMusicId(arg0), 0, 0, 0);
+void wm_musicStop(u16 song) {
+    wm_soundCommand(SND_MUSIC_STOP, wm_getSongMusicId(song), 0, 0, 0);
 }
 
 void wm_musicFade(void) {
 }
 
-void wm_sePlay(s32 arg0, u8 arg1) {
+void wm_sePlay(s32 sound, u8 volume) {
     WmSeIds s;
     s32 i;
     s32 v;
 
-    if (w_musicGetID(arg0, &s) & 0xFF) {
+    if (w_musicGetID(sound, &s) & 0xFF) {
         v = s.channelMask;
         for (i = 0; i < s.count; i++) {
-            wm_soundCommand(SND_SE_PLAY, s.seIds[i], v, 0x7F, arg1);
+            wm_soundCommand(SND_SE_PLAY, s.seIds[i], v, 0x7F, volume);
             v >>= 1;
         }
     }
 }
 
-void wm_seSetVolume(s32 arg0, u8 arg1) {
+void wm_seSetVolume(s32 sound, u8 volume) {
     WmSeIds s;
     s32 i;
     s32 v;
 
-    if (g_worldMusicState == WM_MUSIC_READY && (w_musicGetID(arg0, &s) & 0xFF)) {
+    if (g_worldMusicState == WM_MUSIC_READY && (w_musicGetID(sound, &s) & 0xFF)) {
         v = s.channelMask;
         for (i = 0; i < s.count; i++) {
-            wm_soundCommand(SND_SE_VOL, s.seIds[i], v, arg1, 0);
+            wm_soundCommand(SND_SE_VOL, s.seIds[i], v, volume, 0);
             v >>= 1;
         }
     }
 }
 
-void wm_seFadeVolume(s32 arg0, u16 arg1, u8 arg2) {
+void wm_seFadeVolume(s32 sound, u16 frames, u8 volume) {
     WmSeIds s;
     s32 i;
     s32 v;
 
-    if (w_musicGetID(arg0, &s) & 0xFF) {
+    if (w_musicGetID(sound, &s) & 0xFF) {
         v = s.channelMask;
         for (i = 0; i < s.count; i++) {
-            wm_soundCommand(SND_SE_VOL_INTPL, s.seIds[i], v, arg1, arg2);
+            wm_soundCommand(SND_SE_VOL_INTPL, s.seIds[i], v, frames, volume);
             v >>= 1;
         }
     }
 }
 
-void wm_seStop(s32 arg0) {
+void wm_seStop(s32 sound) {
     WmSeIds s;
     s32 i;
     s32 v;
 
-    if (w_musicGetID(arg0, &s) & 0xFF) {
+    if (w_musicGetID(sound, &s) & 0xFF) {
         v = s.channelMask;
         for (i = 0; i < s.count; i++) {
             wm_soundCommand(SND_SE_STOP, s.seIds[i], v, 0, 0);
@@ -376,22 +376,22 @@ void wm_seStop(s32 arg0) {
     }
 }
 
-s32 wm_getSongMusicId(u16 arg0) {
+s32 wm_getSongMusicId(u16 song) {
     u16 sc;
 
-    if (arg0 == WM_SONG_NORMAL) {
+    if (song == WM_SONG_NORMAL) {
         sc = *g_worldStoryCounterPtr;
         if (sc - 0x2580U < 0x122) {
-            arg0 = WM_SONG_FIELD1;
+            song = WM_SONG_FIELD1;
         }
         if (sc - 0x26A2U < 0x14) {
-            arg0 = WM_SONG_FIELD2;
+            song = WM_SONG_FIELD2;
         }
         if (g_worldDataSet == WM_DATASET_DISC4) {
-            arg0 = WM_SONG_DISC4;
+            song = WM_SONG_DISC4;
         }
     }
-    return g_worldSongMusicIds[arg0];
+    return g_worldSongMusicIds[song];
 }
 
 s32 wm_isMapSongPlaying(void) {

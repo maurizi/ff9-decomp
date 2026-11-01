@@ -231,7 +231,7 @@ void wm_updateEffects(void) {
     }
 }
 
-void wm_drawBlockFx(u8 arg0) {
+void wm_drawBlockFx(u8 fxId) {
     VECTOR v;
     MATRIX m;
     s32 i;
@@ -241,7 +241,7 @@ void wm_drawBlockFx(u8 arg0) {
     SetColorMatrix(&g_worldBlockFxColorMatrix);
     SetBackColor((u8)((u16)g_worldWeatherData.work[0].fxBackColor[0] >> 5), (u8)((u16)g_worldWeatherData.work[0].fxBackColor[1] >> 5),
                  (u8)((u16)g_worldWeatherData.work[0].fxBackColor[2] >> 5));
-    switch (arg0) {
+    switch (fxId) {
     case 4:
         if (g_worldFormFlags[WM_FORM_CLAY] == 0 && g_worldDataSet == WM_DATASET_DISC1) {
             VECTOR scale;
@@ -409,7 +409,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", g_worldBlockFx4Scale);
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", g_worldBlockFx6RingScale);
 
-void wm_updateBlockFx(s32 arg0) {
+void wm_updateBlockFx(s32 fxId) {
     WmEmitter *e;
     u8 on;
     s32 i;
@@ -421,7 +421,7 @@ void wm_updateBlockFx(s32 arg0) {
     u16 t;
 
     on = 0;
-    switch ((u8)arg0) {
+    switch ((u8)fxId) {
     case 2:
         g_worldClutAnimFx2 = 1;
         on = 1;
@@ -467,7 +467,7 @@ void wm_updateBlockFx(s32 arg0) {
         break;
     }
     if (on) {
-        e = w_framePackGetPtr(g_worldDataPack, (u8)arg0 + 0x28);
+        e = w_framePackGetPtr(g_worldDataPack, (u8)fxId + 0x28);
         for (; e->effect != -1; e++) {
             if (rand() % 4096 < e->chance) {
                 x = e->x - e->rangeX / 2;
@@ -512,7 +512,7 @@ void wm_updateBlockFx(s32 arg0) {
 void wm_termEffects(void) {
 }
 
-void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+void wm_spawnEffect(s32 x, s32 y, s32 z, s32 type, s32 scale) {
     WmEffect *p;
     s32 v;
     u8 k;
@@ -520,7 +520,7 @@ void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 
     p = g_worldEffectFree.next;
     h = &g_worldEffectActive;
-    switch (arg3) {
+    switch (type) {
     case 2:
     case 3:
         k = 2;
@@ -560,7 +560,7 @@ void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         break;
     }
     if (p->next != 0) {
-        v = (s32)w_framePackGetPtr(g_worldDataPack, arg3 + 7);
+        v = (s32)w_framePackGetPtr(g_worldDataPack, type + 7);
         p->prev->next = p->next;
         p->next->prev = p->prev;
         p->prev = h;
@@ -569,27 +569,27 @@ void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         h->next = p;
         p->abr = k;
         p->frame = 0;
-        p->x = arg0;
-        p->y = arg1;
-        p->z = arg2;
+        p->x = x;
+        p->y = y;
+        p->z = z;
         p->sprite = v;
-        p->scale = arg4;
-        p->type = arg3;
+        p->scale = scale;
+        p->type = type;
         p->phase = 0;
         p->unk24 = 0;
-        if (arg3 == 0x17) {
+        if (type == 0x17) {
             p->phase = rand() & 0xFFF;
         }
     }
 }
 
-void wm_freeEffect(WmEffect *arg0) {
-    arg0->prev->next = arg0->next;
-    arg0->next->prev = arg0->prev;
-    arg0->prev = &g_worldEffectFree;
-    arg0->next = g_worldEffectFree.next;
-    g_worldEffectFree.next->prev = arg0;
-    g_worldEffectFree.next = arg0;
+void wm_freeEffect(WmEffect *fx) {
+    fx->prev->next = fx->next;
+    fx->next->prev = fx->prev;
+    fx->prev = &g_worldEffectFree;
+    fx->next = g_worldEffectFree.next;
+    g_worldEffectFree.next->prev = fx;
+    g_worldEffectFree.next = fx;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", s_menuMainEquipLabelStrs);

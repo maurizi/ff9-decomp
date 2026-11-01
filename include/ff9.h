@@ -3305,8 +3305,8 @@ extern s32 *g_evtExprSp; /* script value stack pointer */
 extern void *g_evtExprObj; /* script current object */
 
 /* Inlined copy of evt_getBattleVar (read script variable, refreshing 2-4). */
-static inline u16 evt_getBattleVar_inline(s32 arg0) {
-    s32 i = arg0 & 7;
+static inline u16 evt_getBattleVar_inline(s32 var) {
+    s32 i = var & 7;
 
     switch (i) {
     case 2:

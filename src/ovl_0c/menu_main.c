@@ -112,12 +112,12 @@ void menuMain_inputOrder(void) {
     }
 }
 
-void menuMain_reorder(s32 arg0, s32 arg1) {
+void menuMain_reorder(s32 from, s32 to) {
     Character *c;
     Character *t;
 
-    if (arg0 == arg1) {
-        c = g_gameState->gameData->party[arg1];
+    if (from == to) {
+        c = g_gameState->gameData->party[to];
         if (c != NULL) {
             c->info.b.battleRow ^= 1;
         }
@@ -125,14 +125,14 @@ void menuMain_reorder(s32 arg0, s32 arg1) {
         t = g_gameState->gameData->party[s_menuMain.orderCursor];
         g_gameState->gameData->party[s_menuMain.orderCursor] = g_gameState->gameData->party[s_menuMain.orderTarget];
         g_gameState->gameData->party[s_menuMain.orderTarget] = t;
-        menuMain_swapPortraits(arg0, arg1);
+        menuMain_swapPortraits(from, to);
         if (g_gameState->gameData->party[g_menuScreen.member] == NULL) {
             g_menuScreen.member = party_getFirstMember();
         }
     }
 }
 
-void menuMain_swapPortraits(s32 arg0, s32 arg1) {
+void menuMain_swapPortraits(s32 slotA, s32 slotB) {
     RECT a0;
     RECT a1;
     RECT a2;
@@ -140,8 +140,8 @@ void menuMain_swapPortraits(s32 arg0, s32 arg1) {
     RECT b1;
     RECT b2;
 
-    ui_getPartyPortraitRects(arg0, &a0, &a1, &a2);
-    ui_getPartyPortraitRects(arg1, &b0, &b1, &b2);
+    ui_getPartyPortraitRects(slotA, &a0, &a1, &a2);
+    ui_getPartyPortraitRects(slotB, &b0, &b1, &b2);
     StoreImage(&a0, g_portraitSavedVram);
     DrawSync(0);
     MoveImage(&a1, 0x3C0, 0x1B0);
@@ -166,43 +166,43 @@ void menuMain_swapPortraits(s32 arg0, s32 arg1) {
     DrawSync(0);
 }
 
-void menuMain_drawMember(s32 arg0) {
-    u8 buf[16];
+void menuMain_drawMember(s32 slot) {
+    u8 numText[16];
     RECT *r;
     Character *c;
     s32 x;
     s32 color;
     s16 maxmp;
 
-    c = g_gameState->gameData->party[arg0];
-    r = &s_menuMain.panels[arg0].rect;
+    c = g_gameState->gameData->party[slot];
+    r = &s_menuMain.panels[slot].rect;
     x = r->x + 8;
     if (!c->info.b.battleRow) {
         x = r->x + 0x16;
     }
-    ui_drawPortrait(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
+    ui_drawPortrait(x, r->y + 1, 0x14, slot, 0x2D, c->hp == 0);
     text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->name, TEXT_PAL_WHITE);
     ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->status, 0);
-    text_formatNumber(c->level, buf, 2, TEXT_NUM_ASCII);
+    text_formatNumber(c->level, numText, 2, TEXT_NUM_ASCII);
     ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
-    ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, buf, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, numText, TEXT_PAL_WHITE);
     ui_drawSprite(r->x + 0x3C, r->y + 0x1B, 0x14, 0xAF, 0);
-    text_formatNumber(c->hp, buf, 4, TEXT_NUM_ASCII);
-    buf[4] = 0x2F;
+    text_formatNumber(c->hp, numText, 4, TEXT_NUM_ASCII);
+    numText[4] = 0x2F;
     if (c->hp != 0) {
         color = ((u16)(c->maxHp / 6) >= c->hp) * TEXT_PAL_YELLOW;
     } else {
         color = TEXT_PAL_RED;
     }
-    text_formatNumber(c->maxHp, &buf[5], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x52, r->y + 0x1B, 0x14, buf, color);
+    text_formatNumber(c->maxHp, &numText[5], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x52, r->y + 0x1B, 0x14, numText, color);
     ui_drawSprite(r->x + 0x3C, r->y + 0x24, 0x14, 0xB0, 0);
-    text_formatNumber(c->mp, buf, 3, TEXT_NUM_ASCII);
-    buf[3] = 0x2F;
+    text_formatNumber(c->mp, numText, 3, TEXT_NUM_ASCII);
+    numText[3] = 0x2F;
     maxmp = c->maxMp;
     color = ((s16)(maxmp / 6) >= c->mp) * TEXT_PAL_YELLOW;
-    text_formatNumber(maxmp, &buf[4], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x59, r->y + 0x24, 0x14, buf, color);
+    text_formatNumber(maxmp, &numText[4], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
+    ui_drawSmallDigits(r->x + 0x59, r->y + 0x24, 0x14, numText, color);
     ui_drawStones(r->x + 0x9B, r->y + 0x14, 0x14, c->stones, c->maxStones);
 }
 
@@ -222,16 +222,16 @@ void menuMain_drawPortraitShade(RECT *r, s32 otz) {
 }
 
 void menuMain_drawTimeGil(void) {
-    u8 buf[16];
+    u8 numText[16];
     s32 v;
 
     v = game_getPlayTime();
     ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 8, 0x13, 0xB1, 0);
     ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 0x15, 0x13, 0xB2, 0);
-    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 9, 0x13, buf, text_formatTime(v, buf, 1));
-    text_formatNumber(g_gameState->gameData->gil, buf, 7, TEXT_NUM_ASCII);
-    strcat(buf, s_menuMainGilSuffix);
-    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 0x16, 0x13, buf, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 9, 0x13, numText, text_formatTime(v, numText, 1));
+    text_formatNumber(g_gameState->gameData->gil, numText, 7, TEXT_NUM_ASCII);
+    strcat(numText, s_menuMainGilSuffix);
+    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 0x16, 0x13, numText, TEXT_PAL_WHITE);
     ui_drawLabel(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y - 3, 0x13, g_labelTimeAndGil, UI_LABEL_NORMAL);
     win_drawBox(s_menuMainTimeGilRect, 0x14, WIN_STYLE_BEVEL);
 }
@@ -307,7 +307,7 @@ void menuMain_updateHelp(void) {
     }
 }
 
-void menuMain_setExpHelp(s32 arg0) {
+void menuMain_setExpHelp(s32 unused) {
     Character *c;
     u32 next;
 
@@ -350,7 +350,7 @@ void menuMain_onSlideInDone(void) {
     g_menuScreen.slideIn = 0;
 }
 
-void menuMain_setEquipHelp(u8 arg0) {
+void menuMain_setEquipHelp(u8 unused) {
     s32 i;
     s32 j;
     Character *c;
@@ -408,8 +408,8 @@ void menuMain_exit(void) {
     help_setCallback(0);
 }
 
-void menuMain_setCursor(u8 arg0) {
-    s_menuMain.cursor = arg0;
+void menuMain_setCursor(u8 cursor) {
+    s_menuMain.cursor = cursor;
 }
 
 void menuMain_input(void) {

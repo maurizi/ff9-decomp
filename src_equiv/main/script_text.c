@@ -45,9 +45,9 @@ extern u16 D_8006EAD0[];         /* atan table, 0x401 entries, 0 .. 0x200 (45 de
 
 /* ---- callees without prototypes in the headers ---- */
 s32 evt_getObjectProp(EvtObject *o, s32 prop);
-u16 evt_getBattleVar(s32 arg0);
+u16 evt_getBattleVar(s32 var);
 EvtObject *evt_resolveObjectId(s32 id);
-void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2);
+void evt_setObjectProp(EvtObject *obj, s32 prop, s32 value);
 void evt_setBattleVar(s32 i, s16 v);
 s32 evt_exprSpecial(s32 op);
 u32 msg_getPadPressed(void);
