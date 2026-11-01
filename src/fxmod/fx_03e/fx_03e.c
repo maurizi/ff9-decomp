@@ -3,7 +3,7 @@
 s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 s;
+    s32 morph;
     s32 t;
     Pool6CEntry *emitter;
     VECTOR pos;
@@ -115,17 +115,17 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vy = work->pos14.vy;
             pos.vz = work->pos14.vz;
             if (frame < 2) {
-                s = 0x2000 - (frame << 11);
+                morph = 0x2000 - (frame << 11);
             } else {
-                s = 0x1000 - ((frame - 2) << 12) / 14;
+                morph = 0x1000 - ((frame - 2) << 12) / 14;
             }
-            if (s > 0x1000) {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model8, work->modelC, s - 0x1000);
+            if (morph > 0x1000) {
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model8, work->modelC, morph - 0x1000);
                 ex->Hi_ModifyEffModelRGB(work->model8, -0x40, -0x40, -0x40);
             } else {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->modelC, work->model10, s);
-                ex->Hi_ModifyEffModelRGB(work->modelC, ((s - 0x800) >> 5) - 0x80, ((s - 0x800) >> 5) - 0x80,
-                                         ((s - 0x800) >> 5) - 0x80);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->modelC, work->model10, morph);
+                ex->Hi_ModifyEffModelRGB(work->modelC, ((morph - 0x800) >> 5) - 0x80, ((morph - 0x800) >> 5) - 0x80,
+                                         ((morph - 0x800) >> 5) - 0x80);
             }
             if (frame == 1) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos1C);

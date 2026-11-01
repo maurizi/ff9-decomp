@@ -5,12 +5,12 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
     s32 i;
     s32 t;
-    s32 y;
+    s32 height;
     Pool6CEntry *emitter;
     CVECTOR col;
     SVECTOR rot;
     VECTOR scale;
-    s32 c;
+    s32 bright;
 
     if (mode == 0) {
         *args = 0x30;
@@ -73,9 +73,9 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             for (i = 0; i < 9; i++) {
                 t = ++fx_03a_models[i].time30;
                 if (t >= 0) {
-                    y = fx_03a_models[i].speed2C * t - ((t * (t << 8)) >> 1);
-                    if (y < 0) {
-                        y = 0;
+                    height = fx_03a_models[i].speed2C * t - ((t * (t << 8)) >> 1);
+                    if (height < 0) {
+                        height = 0;
                         fx_03a_models[i].speed2C = ex->btlfx_rand() % (fx_03a_bouncePower + 1);
                         if (work->bounce0 < 8) {
                             fx_03a_models[i].time30 = -100;
@@ -83,7 +83,7 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             fx_03a_models[i].time30 = 0;
                         }
                     }
-                    fx_03a_models[i].scale4.vy = y;
+                    fx_03a_models[i].scale4.vy = height;
                     ex->Hi_DrawEffModel(&fx_03a_models[i].rot24, &fx_03a_models[i].pos14, (s32)&fx_03a_models[i].scale4,
                                         fx_03a_models[i].model0);
                 }
@@ -97,12 +97,12 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            c = fx_03a_bouncePower / 15;
-            col.b = c;
-            col.g = c;
-            col.r = c;
+            bright = fx_03a_bouncePower / 15;
+            col.b = bright;
+            col.g = bright;
+            col.r = bright;
             ex->btlfx_drawScreenGrid(5, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, NULL);
-            ex->btlfx_drawScreenTint((u32 *)(env->ot + 4), 2, c, c, c);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 4), 2, bright, bright, bright);
         }
         return frame >= 0x58;
     }

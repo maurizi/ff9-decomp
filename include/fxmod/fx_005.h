@@ -67,6 +67,6 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx005Strip *strip, s32
 static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx005Strip *strip, Fx005Strip *out, s32 *tbl, s32 i, s32 fade, s32 lineWidth,
                    s32 kind);
 static s32 fx_005_op83PoolTask(s32 mode, Fx005Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
-static void fx_005_op83ElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *col, s32 blend, s32 t, s32 n);
+static void fx_005_op83ElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *alpha, s32 blend, s32 frame, s32 n);
 
 #endif

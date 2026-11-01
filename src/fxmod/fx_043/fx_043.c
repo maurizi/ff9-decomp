@@ -1,17 +1,17 @@
 #include "fxmod/fx_043.h"
 
-static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
+static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_043_env);
-    s32 r = t << 10;
+    s32 ratio = frame << 10;
 
-    if (r > 0x1000) {
-        r = 0x1000;
+    if (ratio > 0x1000) {
+        ratio = 0x1000;
     }
-    ex->btlfx_lerpVec((s16 *)&fx_043_particleFrom, (s16 *)&fx_043_particleTo, r, (s16 *)pos);
+    ex->btlfx_lerpVec((s16 *)&fx_043_particleFrom, (s16 *)&fx_043_particleTo, ratio, (s16 *)pos);
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
-    if (t >= n) {
+    if (frame >= n) {
         return -1;
     }
     return 0;

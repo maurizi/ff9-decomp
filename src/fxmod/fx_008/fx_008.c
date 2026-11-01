@@ -3,8 +3,8 @@
 s32 fx_008_op80(s32 mode, Fx008Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 t;
-    u16 n;
+    s32 elapsed;
+    u16 animFrame;
 
     if (mode == 0) {
         *args = 0x18;
@@ -22,18 +22,18 @@ s32 fx_008_op80(s32 mode, Fx008Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->posC);
     } else {
         frame = entry->frame;
-        t = frame - 0x18;
-        if (t >= 0 && t < 0x10) {
+        elapsed = frame - 0x18;
+        if (elapsed >= 0 && elapsed < 0x10) {
             ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->posC, work->frame14, work->alpha16);
-            if (t >= 4) {
+            if (elapsed >= 4) {
                 work->alpha16 -= 0x155;
             }
-            n = work->frame14 + 1;
-            work->frame14 = n;
-            if (n >= 6) {
-                n = 5;
+            animFrame = work->frame14 + 1;
+            work->frame14 = animFrame;
+            if (animFrame >= 6) {
+                animFrame = 5;
             }
-            work->frame14 = n;
+            work->frame14 = animFrame;
         }
         return frame >= 0x3C;
     }

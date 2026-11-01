@@ -1,48 +1,48 @@
 #include "fxmod/fx_040.h"
 
-s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
-    SVECTOR v;
+s32 fx_040_op80ParticleMotion0(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR dest;
 
-    v.vx = fx_040_aboveTarget.vx;
-    v.vy = fx_040_aboveTarget.vy;
-    v.vz = fx_040_aboveTarget.vz;
-    v.vx -= 0x190;
-    return fx_040_flyToTarget(out, pos, &v, t, n);
+    dest.vx = fx_040_aboveTarget.vx;
+    dest.vy = fx_040_aboveTarget.vy;
+    dest.vz = fx_040_aboveTarget.vz;
+    dest.vx -= 0x190;
+    return fx_040_flyToTarget(out, pos, &dest, frame, n);
 }
 
-s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
-    SVECTOR v;
+s32 fx_040_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR dest;
 
-    v.vx = fx_040_aboveTarget.vx;
-    v.vy = fx_040_aboveTarget.vy;
-    v.vz = fx_040_aboveTarget.vz;
-    v.vx -= 0xC8;
-    return fx_040_flyToTarget(out, pos, &v, t, n);
+    dest.vx = fx_040_aboveTarget.vx;
+    dest.vy = fx_040_aboveTarget.vy;
+    dest.vz = fx_040_aboveTarget.vz;
+    dest.vx -= 0xC8;
+    return fx_040_flyToTarget(out, pos, &dest, frame, n);
 }
 
-s32 fx_040_op80ParticleMotion2(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
-    SVECTOR v;
+s32 fx_040_op80ParticleMotion2(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR dest;
 
-    v.vx = fx_040_aboveTarget.vx;
-    v.vy = fx_040_aboveTarget.vy;
-    v.vz = fx_040_aboveTarget.vz;
-    v.vx += 0xC8;
-    return fx_040_flyToTarget(out, pos, &v, t, n);
+    dest.vx = fx_040_aboveTarget.vx;
+    dest.vy = fx_040_aboveTarget.vy;
+    dest.vz = fx_040_aboveTarget.vz;
+    dest.vx += 0xC8;
+    return fx_040_flyToTarget(out, pos, &dest, frame, n);
 }
 
-s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 t, s32 n) {
-    SVECTOR v;
+s32 fx_040_op80ParticleMotion3(VECTOR *out, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
+    SVECTOR dest;
 
-    v.vx = fx_040_aboveTarget.vx;
-    v.vy = fx_040_aboveTarget.vy;
-    v.vz = fx_040_aboveTarget.vz;
-    v.vx += 0x190;
-    return fx_040_flyToTarget(out, pos, &v, t, n);
+    dest.vx = fx_040_aboveTarget.vx;
+    dest.vy = fx_040_aboveTarget.vy;
+    dest.vz = fx_040_aboveTarget.vz;
+    dest.vx += 0x190;
+    return fx_040_flyToTarget(out, pos, &dest, frame, n);
 }
 
-s32 fx_040_flyToTarget(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 t, s32 n) {
+s32 fx_040_flyToTarget(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_040_env);
-    s32 k;
+    s32 span;
     s32 r;
 
     if (ex->btlfx_rand() & 1) {
@@ -56,12 +56,12 @@ s32 fx_040_flyToTarget(VECTOR *out, SVECTOR *pos, SVECTOR *target, s32 t, s32 n)
     } else {
         target->vz -= ex->btlfx_rand() % 200;
     }
-    k = ex->btlfx_rand() % 2 + 0x18;
-    ex->btlfx_lerpVec((s16 *)&fx_040_origin, (s16 *)target, ((t * t / k) << 12) / k, (s16 *)pos);
+    span = ex->btlfx_rand() % 2 + 0x18;
+    ex->btlfx_lerpVec((s16 *)&fx_040_origin, (s16 *)target, ((frame * frame / span) << 12) / span, (s16 *)pos);
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
-    if (t >= n) {
+    if (frame >= n) {
         return -1;
     }
     return 0;

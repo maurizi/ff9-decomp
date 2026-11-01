@@ -6,9 +6,9 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
     SVECTOR rot;
     VECTOR scale;
-    s32 a;
-    s32 s;
-    s32 c;
+    s32 ang;
+    s32 scaleXZ;
+    s32 bright;
 
     if (mode == 0) {
         *args = 0x28;
@@ -33,22 +33,22 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (work->stop0 == 0) {
-            a = (frame << 7) >> 1;
+            ang = (frame << 7) >> 1;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            c = ex->math_sin(a);
-            s = (a * 2 + 0x1800) * 7 / 4;
-            scale.vx = s;
+            bright = ex->math_sin(ang);
+            scaleXZ = (ang * 2 + 0x1800) * 7 / 4;
+            scale.vx = scaleXZ;
             scale.vy = (frame << 8) + 0x1000;
-            scale.vz = s;
+            scale.vz = scaleXZ;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)work->pos18, (s32)&scale, work->model24);
             ex->Hi_ModifyEffModelAbr(work->model24, 1);
-            ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model24, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
             scale.vy >>= 1;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)work->pos18, (s32)&scale, work->model24);
             ex->Hi_ModifyEffModelAbr(work->model24, 1);
-            ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model24, (bright >> 5) - 0x80, (bright >> 5) - 0x80, (bright >> 5) - 0x80);
             if (frame >= 0x20) {
                 ex->btlfx_clearEffModels();
                 return 1;
