@@ -4023,17 +4023,6 @@ s32 btlfx_poolUpdate(Unk800DA1B8 *);
 void btlui_targetDefault(u8, u8);
 BtlUnit *btlui_findKoUnit(u8);
 
-/* first unit flagged as the current target (bits 28 and 29 of BtlUnit.flags) */
-static inline BtlUnit *find_target(void) {
-    BtlUnit *u;
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-            return u;
-        }
-    }
-    return NULL;
-}
-
 extern u8 g_btluiDefaultTargets[][2];
 void btlui_closeTargetWindow(s32);
 s32 clut_getY(s16);
@@ -4155,7 +4144,8 @@ void text_draw(s32, s32, s32, u8 *, s32);
 void win_closeAll(void);
 s32 chr_getDefaultSet(Character *);
 
-/* battle menu: unit under the target cursor (inlined by its callers) */
+/* battle menu: unit under the target cursor, the first one flagged both TARGETABLE and TARGETED (inlined by its
+ * callers) */
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
     for (p = g_gameState->gameData->ctx.battle->unitList; p != NULL; p = p->next) {

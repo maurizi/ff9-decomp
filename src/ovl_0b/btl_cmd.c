@@ -1188,20 +1188,7 @@ void btl_onCmdEffectDone(void) {
 }
 
 void btl_clearCmd(BtlCmd *cmd) {
-    cmd->next = 0;
-    cmd->ability = 0;
-    cmd->targets = 0;
-    cmd->cmdNo = 0;
-    cmd->subNo = 0;
-    cmd->info.b.targeting = 0;
-    cmd->info.b.unk0_2 = 0;
-    cmd->info.b.automatic = 0;
-    cmd->info.b.covered = 0;
-    cmd->info.b.dodged = 0;
-    cmd->info.b.reflect = 0;
-    cmd->info.b.magicFailed = 0;
-    cmd->info.b.shortSummon = 0;
-    cmd->info.b.enemyBounce = 0;
+    btl_clearCmd_inline(cmd);
 }
 
 void btl_queueAutoCmd(BtlUnit *unit, s32 cmdNo, s32 subNo, s32 targets) {

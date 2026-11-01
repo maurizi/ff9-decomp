@@ -503,7 +503,6 @@ void btlui_checkSwdMagPartner(void) {
 
 BtlUnit *btlui_popMenuUnit(void) {
     BtlUnit *u;
-    u8 ok;
     for (;;) {
         if (g_btlUi->queueCount == 0 || g_btlUi->menuState != BTLUI_MENU_NONE) {
             return NULL;
@@ -511,12 +510,7 @@ BtlUnit *btlui_popMenuUnit(void) {
         u = g_btlUi->queue[g_btlUi->queueHead];
         g_btlUi->queueCount--;
         g_btlUi->queueHead = (g_btlUi->queueHead + 1) & 3;
-        if (u == NULL || u->hp == 0 || (btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) & 0xFF) || !((g_btlRewards.expMask >> ((u8)u->flags >> BTL_UNIT_SLOT_SHIFT)) & 1)) {
-            ok = 0;
-        } else {
-            ok = 1;
-        }
-        if (ok) {
+        if (BtlUnitCanAct(u)) {
             return u;
         }
         u->inMenuQueue = 0;
@@ -788,6 +782,8 @@ void btlui_addEquipAbilities(Unk80104F88Entry *entry) {
     }
 }
 
+/* Same logic as BtlUnitCanAct (ovl_0b.h). Written out because a call of the inline schedules the prologue
+   differently. */
 s32 btlui_canOpenMenu(BtlUnit *unit) {
     if (unit == NULL) {
         return 0;
@@ -2248,7 +2244,6 @@ s32 btlui_cycleTarget(s32 forward) {
 
 s32 btlui_switchTargetSide(u8 newSide) {
     BtlUnit *cur;
-    BtlUnit *u;
     BtlUnit *t;
     BtlUnit *list[4];
     s32 n;
@@ -2256,14 +2251,7 @@ s32 btlui_switchTargetSide(u8 newSide) {
     u8 side;
     s32 k;
 
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-            cur = u;
-            goto found;
-        }
-    }
-    cur = NULL;
-found:
+    cur = BtlFindTargetCursor();
     /* cur stays NULL when no unit is both targetable and targeted (seen in d3_f1759's battle); the PS1 then reads
      * cur->flags, and clears BTL_UNIT_TARGETED in it below, through low RAM. Harmless on the PS1; a native port must
      * check for NULL (ff9-ds F38). */
@@ -2429,25 +2417,13 @@ void btlui_confirmTarget(void) {
 }
 
 s32 btlui_confirmDoubleCast(s32 targets) {
-    BtlUnit *u;
-    s32 n;
     s8 targeting;
     s32 r = 0;
     if (g_btlTarget.doubleCast == 0) {
         g_btlTarget.firstTargets = targets;
         g_btlTarget.firstCmdNo = g_btlTarget.cmdNo;
         g_btlTarget.firstSubNo = g_btlTarget.subNo;
-        if ((u32)(g_btlTarget.targetType - 9) < 3) {
-            targeting = 2;
-        } else {
-            n = 0;
-            for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-                if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-                    n++;
-                }
-            }
-            targeting = n >= 2;
-        }
+        targeting = btlui_getTargeting_inline();
         g_btlTarget.firstTargeting = targeting;
         btlui_cancelTarget();
         btlui_nextDoubleCast();
@@ -2455,17 +2431,7 @@ s32 btlui_confirmDoubleCast(s32 targets) {
         g_btlTarget.unit->inMenuQueue = 0;
         g_btlTarget.unit->cmdIssued = 1;
         btl_setCmd((s32)g_btlTarget.unit->delayedCmd, g_btlTarget.firstCmdNo, g_btlTarget.firstSubNo, (u16)g_btlTarget.firstTargets, g_btlTarget.firstTargeting);
-        if ((u32)(g_btlTarget.targetType - 9) < 3) {
-            targeting = 2;
-        } else {
-            n = 0;
-            for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-                if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-                    n++;
-                }
-            }
-            targeting = n >= 2;
-        }
+        targeting = btlui_getTargeting_inline();
         btl_setCmd((s32)g_btlTarget.unit->cmd, g_btlTarget.cmdNo, g_btlTarget.subNo, targets & 0xFFFF, targeting);
         r = 1;
     }
@@ -2633,7 +2599,7 @@ void *btlui_getTargetHelpText(void) {
     s32 k;
 
     if (g_btlTarget.targetType < BTL_TGT_MULTI_ANY) {
-        t = find_target();
+        t = BtlFindTargetCursor();
         if (t == NULL) {
             return NULL;
         }
@@ -2648,7 +2614,7 @@ void *btlui_getTargetHelpText(void) {
             }
         }
         if (n < 2) {
-            t = find_target();
+            t = BtlFindTargetCursor();
             if (t == NULL) {
                 return NULL;
             }
@@ -2929,18 +2895,7 @@ void btlui_onTargetWindowClosed(Window *win) {
 }
 
 s32 btlui_getTargeting(void) {
-    BtlUnit *u;
-    s32 n;
-    if (g_btlTarget.targetType >= 9 && g_btlTarget.targetType <= 11) {
-        return 2;
-    }
-    n = 0;
-    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
-        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
-            n++;
-        }
-    }
-    return n >= 2;
+    return btlui_getTargeting_inline();
 }
 
 void btlui_drawListCursors(Window *win) {
