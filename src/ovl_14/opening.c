@@ -110,12 +110,12 @@ void opening_findSceneSectors(void) {
     s32 key;
     s32 id;
 
-    if (mode == 1 || mode == 3) {
+    if (mode == GS_MODE_FIELD || mode == GS_MODE_WORLD) {
         id = -1;
         f = gs->dirs;
         base = f[0].tableSector;
         area = g_loadAreaEnd + ((base << 11) + 0x14C700);
-        if (mode == 1) {
+        if (mode == GS_MODE_FIELD) {
             key = (s16)ctx->fieldId;
             start = area + ((f[4].tableSector - base) << 11);
             e = (SceneDirEntry *)start + f[4].count - 1;
@@ -149,7 +149,7 @@ void opening_findSceneSectors(void) {
                 break;
             }
         }
-        if (mode == 1) {
+        if (mode == GS_MODE_FIELD) {
             ctx->fieldAreaId = id;
         } else {
             ctx->worldAreaId = id;

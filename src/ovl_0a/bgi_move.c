@@ -44,7 +44,7 @@ BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2
         mode = g_gameState->mode;
         if (mode == 5) {
             a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
-        } else if (mode == 1) {
+        } else if (mode == GS_MODE_FIELD) {
             a = evt_getPlayer();
         } else {
             a = NULL;
@@ -658,7 +658,7 @@ BgiActor *bgi_findPlayerActor(s32 *arg0) {
     mode = g_gameState->mode;
     if (mode == 5) {
         a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
-    } else if (mode == 1) {
+    } else if (mode == GS_MODE_FIELD) {
         a = evt_getPlayer();
     } else {
         a = NULL;

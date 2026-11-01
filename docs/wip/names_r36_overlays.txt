@@ -20,3 +20,10 @@ WM_PARAM_RIDE_Y 0xC2, WM_PARAM_CHOCOGRAPH 0xC6 [code] w_frameGetParameter
 WM_FX_BOAT_WAKE 15, WM_FX_AIRSHIP_SPRAY 18, WM_FX_WATER_RIPPLE 22 [code] spawn sites + wm_drawEffects
 WM_SE_AIRSHIP_WATER 38 [code] w_movementChange, wm_controlFly, wm_updateLogic
 used existing: WM_STATE_*, WM_MUSIC_*, WM_MOVE_*, WM_ACTOR_CHOCOBO4
+
+## ovl_0a.h
+FLD_MDLCMD_SEMITRANS 0, _CLIP_Y 4, _MIRROR 8, _MIRROR_POINT 9, _MIRROR_NORMAL 10, _MIRROR_TINT 11, _ANIM_SE 16,
+_ANIM_SE_ALT 17, _ANIM_SE_RANDOM_PITCH 18, _ANIM_SE_REMOVE 19 [code] fld_modelCommand cases, fld_playAnimSfx
+FLD_SPRCMD_SET 0x82, _FLAGS 0x83, _POS 0x87, _ROT 0x8C, _SCALE 0x91, _PARENT 0x96, _BRIGHTNESS 0x9B, _ABR 0x9C,
+_SPEED 0xA0, _FRAME 0xA1, _OFFSET 0xA5, _OT_OFFSET 0xAA [code] fld_spriteCommand
+used existing: GS_MODE_FIELD / GS_MODE_WORLD (ovl_0a bgi_move, tu_800B61A4; ovl_14 opening; ovl_64 mbg)
