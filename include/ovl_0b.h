@@ -2669,6 +2669,13 @@ BtlUnit *btlfx_getFirstTarget(void);
 extern u8 g_btlfxBounceCameraParty;
 extern u8 g_btlfxBounceCameraEnemy;
 extern char g_battleText[];
+/* g_battleText entries (text_get; decoded with tools/ff9text.py text_table) */
+#define BTL_TEXT_ESCAPE      4    /* "Escape": help text while escape is held */
+#define BTL_TEXT_TARGET      5    /* + targetType: "Single\n" .. "Self\n" */
+#define BTL_TEXT_TARGET_SM   0x13 /* + k: single/multi switch lines, S highlighted (0x16 + k: M highlighted) */
+#define BTL_TEXT_TARGET_MS   0x16
+#define BTL_TEXT_HELP_CMD    0x19 /* command menu keys: Change, Defend, Skip */
+#define BTL_TEXT_HELP_TARGET 0x1A /* "Target Window" key line */
 
 extern u8 g_btlAbilityNames[];
 extern void (*g_btluiMenuUpdate[])(void);

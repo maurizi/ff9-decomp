@@ -942,7 +942,7 @@ void btlui_updateHelpText(void) {
     s32 (*fn)(void);
     g_btluiHelp.text = 0;
     if (g_gameState->gameData->ctx.battle->escapeHeld != 0) {
-        g_btluiHelp.text = (s32)text_get(4);
+        g_btluiHelp.text = (s32)text_get(BTL_TEXT_ESCAPE);
     } else {
         fn = g_btluiMenuHelp[g_btlUi->menuState];
         if (fn != NULL) {
@@ -1529,7 +1529,7 @@ void *btlui_getCmdHelpText(void) {
     }
     cmd = &g_btlCmdTable[i];
     text_copy(g_btluiHelpText, cmd->helpOfs + g_btlCmdHelp);
-    text_append(g_btluiHelpText, text_get(0x19));
+    text_append(g_btluiHelpText, text_get(BTL_TEXT_HELP_CMD));
     return g_btluiHelpText;
 }
 
@@ -2637,7 +2637,7 @@ void *btlui_getTargetHelpText(void) {
         if (target == NULL) {
             return NULL;
         }
-        text_copy(g_btluiHelpText, text_get(g_btlTarget.targetType + 5));
+        text_copy(g_btluiHelpText, text_get(g_btlTarget.targetType + BTL_TEXT_TARGET));
         text_append(g_btluiHelpText, btl_getUnitName(target));
     } else if ((u8)(g_btlTarget.targetType - BTL_TGT_MULTI_ANY) < 3) {
         count = 0;
@@ -2652,15 +2652,15 @@ void *btlui_getTargetHelpText(void) {
             if (target == NULL) {
                 return NULL;
             }
-            text_copy(g_btluiHelpText, text_get(k + 0x13));
+            text_copy(g_btluiHelpText, text_get(k + BTL_TEXT_TARGET_SM));
             text_append(g_btluiHelpText, btl_getUnitName(target));
         } else {
-            text_copy(g_btluiHelpText, text_get(k + 0x16));
+            text_copy(g_btluiHelpText, text_get(k + BTL_TEXT_TARGET_MS));
         }
     } else {
-        text_copy(g_btluiHelpText, text_get(g_btlTarget.targetType + 5));
+        text_copy(g_btluiHelpText, text_get(g_btlTarget.targetType + BTL_TEXT_TARGET));
     }
-    text_append(g_btluiHelpText, text_get(0x1A));
+    text_append(g_btluiHelpText, text_get(BTL_TEXT_HELP_TARGET));
     return g_btluiHelpText;
 }
 
