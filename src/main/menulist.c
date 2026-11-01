@@ -76,7 +76,7 @@ MenuView *menuList_getView(MenuList *m, MenuView *v) {
     return v;
 }
 
-void menuList_init(MenuList *m, s32 count, s32 rows, s32 cols, s32 e) {
+void menuList_init(MenuList *m, s32 count, s32 rows, s32 cols, s32 height) {
     m->count = count;
     if (cols != 0) {
         m->rows = (count + cols - 1) / cols;
@@ -96,15 +96,15 @@ void menuList_init(MenuList *m, s32 count, s32 rows, s32 cols, s32 e) {
     m->col = 0;
     m->cursor = 0;
     m->top = 0;
-    m->height = e;
+    m->height = height;
 }
 
-void menuList_input(MenuList *m, s32 b) {
+void menuList_input(MenuList *m, s32 pad) {
     if (m->scroll == 0) {
-        menuList_up(m, b);
-        menuList_down(m, b);
-        menuList_pageUp(m, b);
-        menuList_pageDown(m, b);
+        menuList_up(m, pad);
+        menuList_down(m, pad);
+        menuList_pageUp(m, pad);
+        menuList_pageDown(m, pad);
     }
 }
 
@@ -252,20 +252,20 @@ void menuList_getRowsRect(MenuList *m, RECT *src, RECT *dst) {
     }
 }
 
-void snd_playSe(s32 a) {
-    g_gameState->gameData->soundHook(SND_SE_PLAY, a, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
+void snd_playSe(s32 se) {
+    g_gameState->gameData->soundHook(SND_SE_PLAY, se, 0x800000, SND_PAN_CENTER, SND_VOL_MAX);
 }
 
-void snd_stopPlayedSe(s32 a) {
-    g_gameState->gameData->soundHook(SND_SE_STOP, a, 0x800000, 0, 0);
+void snd_stopPlayedSe(s32 se) {
+    g_gameState->gameData->soundHook(SND_SE_STOP, se, 0x800000, 0, 0);
 }
 
-void snd_startSe(s32 a) {
-    g_gameState->gameData->soundHook(SND_SE_PLAY, a, 0, SND_PAN_CENTER, SND_VOL_MAX);
+void snd_startSe(s32 se) {
+    g_gameState->gameData->soundHook(SND_SE_PLAY, se, 0, SND_PAN_CENTER, SND_VOL_MAX);
 }
 
-void snd_stopSe(s32 a) {
-    g_gameState->gameData->soundHook(SND_SE_STOP, a, 0, 0, 0);
+void snd_stopSe(s32 se) {
+    g_gameState->gameData->soundHook(SND_SE_STOP, se, 0, 0, 0);
 }
 
 s32 fade_reverse(void (*fn)(void)) {

@@ -13,8 +13,8 @@ void akao_relocInstruments(s32 *src, AkaoInstrument *dst, u32 base, s32 n) {
     } while (--n != 0);
 }
 
-s32 akao_checkHeader(s32 *a) {
-    return *a - AKAO_MAGIC;
+s32 akao_checkHeader(s32 *data) {
+    return *data - AKAO_MAGIC;
 }
 
 void akao_onSpuTransferDone(void) {
@@ -27,15 +27,15 @@ void akao_beginSpuTransfer(void) {
     SpuSetTransferCallback(akao_onSpuTransferDone);
 }
 
-void akao_spuWrite(void *a, s32 b) {
+void akao_spuWrite(void *data, s32 size) {
     g_akaoSpuBusy = 1;
     SpuSetTransferCallback(akao_onSpuTransferDone);
-    SpuWrite(a, b);
+    SpuWrite(data, size);
 }
 
-s32 akao_spuRead(s32 a, s32 b) {
+s32 akao_spuRead(s32 data, s32 size) {
     akao_beginSpuTransfer();
-    return SpuRead(a, b);
+    return SpuRead(data, size);
 }
 
 void akao_waitSpuTransfer(void) {

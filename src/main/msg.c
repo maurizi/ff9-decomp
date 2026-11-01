@@ -1017,9 +1017,9 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
     return &g_msgLayout;
 }
 
-void msg_setOtz(s32 a) {
+void msg_setOtz(s32 otz) {
     GameData *d = g_gameState->gameData;
-    g_penOt = d->ot[d->drawBuf] + a;
+    g_penOt = d->ot[d->drawBuf] + otz;
 }
 
 s32 msg_getPartyMemberId(s32 i) {
@@ -1100,8 +1100,8 @@ void msg_closeAll(void) {
     }
 }
 
-void msg_setFocus(MsgWindow *a) {
-    g_msgFocus = a;
+void msg_setFocus(MsgWindow *win) {
+    g_msgFocus = win;
 }
 
 MsgWindow *msg_getFocus(void) {
@@ -1159,21 +1159,21 @@ s32 msg_getChoiceIndex(void) {
     return i;
 }
 
-void msg_setChoiceMask(s32 a, s32 b) {
-    s32 r;
-    g_msgChoiceMaskReq = a;
-    r = -1;
-    for (; b >= 0; b--) {
-        if (a == 0) {
+void msg_setChoiceMask(s32 choiceMask, s32 defaultIdx) {
+    s32 choice;
+    g_msgChoiceMaskReq = choiceMask;
+    choice = -1;
+    for (; defaultIdx >= 0; defaultIdx--) {
+        if (choiceMask == 0) {
             break;
         }
-        r += a & 1;
-        a >>= 1;
+        choice += choiceMask & 1;
+        choiceMask >>= 1;
     }
-    if (r < 0) {
-        r = 0;
+    if (choice < 0) {
+        choice = 0;
     }
-    g_msgChoiceDefault = r;
+    g_msgChoiceDefault = choice;
 }
 
 void msg_clearWindowOtz(void) {
@@ -1194,10 +1194,10 @@ Window *msg_getWindow(s32 i) {
     return r;
 }
 
-MsgWindow *msg_allocWindow(WinLayout *r, MsgWindow *a, s32 idx, s32 flag) {
+MsgWindow *msg_allocWindow(WinLayout *r, MsgWindow *parent, s32 idx, s32 flag) {
     MsgWindow *e = &g_msgWindows[idx];
     e->open = 1;
-    e->parent = a;
+    e->parent = parent;
     e->onInput = 0;
     e->unk10 = 0;
     e->y = 0;
@@ -1651,14 +1651,14 @@ void msg_resetPlayerBubble(void) {
     g_bubbleRequest = 0;
 }
 
-void msg_showPlayerBubble(s32 a) {
+void msg_showPlayerBubble(s32 variant) {
     g_bubbleRequest = 1;
-    g_bubbleVariant = a;
+    g_bubbleVariant = variant;
 }
 
-void msg_setAtePrompt(s32 a) {
-    if (g_atePromptMode != a) {
-        g_atePromptMode = a;
+void msg_setAtePrompt(s32 mode) {
+    if (g_atePromptMode != mode) {
+        g_atePromptMode = mode;
         g_atePromptTimer = 0x2C;
     }
 }
@@ -1862,16 +1862,16 @@ u8 *rain_init(RainNode *nodes) {
     return (u8 *)p + 0x4560;
 }
 
-void rain_set(s32 a, u32 b) {
-    if (a != 0 && b != 0) {
+void rain_set(s32 count, u32 speed) {
+    if (count != 0 && speed != 0) {
         RainState *p = &g_fieldRain;
 
-        if (a < 0x83) {
-            p->count = a;
+        if (count < 0x83) {
+            p->count = count;
         } else {
             p->count = 0x82;
         }
     }
-    g_fieldRain.speed = b * 16;
-    g_fieldRain.stopping = a == 0 && b != 0;
+    g_fieldRain.speed = speed * 16;
+    g_fieldRain.stopping = count == 0 && speed != 0;
 }

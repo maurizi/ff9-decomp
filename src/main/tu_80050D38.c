@@ -39,16 +39,16 @@ u8 *wrain_init(RainNode *buf) {
     return (u8 *)p;
 }
 
-void wrain_set(s32 a, u32 b) {
-    if (a != 0 && b != 0) {
+void wrain_set(s32 count, u32 speed) {
+    if (count != 0 && speed != 0) {
         RainState *p = &g_worldRain;
 
-        if (a < 0x83) {
-            p->count = a;
+        if (count < 0x83) {
+            p->count = count;
         } else {
             p->count = 0x82;
         }
     }
-    g_worldRain.speed = b * 16;
-    g_worldRain.stopping = a == 0 && b != 0;
+    g_worldRain.speed = speed * 16;
+    g_worldRain.stopping = count == 0 && speed != 0;
 }

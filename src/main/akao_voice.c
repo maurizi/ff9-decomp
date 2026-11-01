@@ -127,9 +127,9 @@ s32 akao_lfoTriangleScaled(u32 x) {
     return akao_lfoSquareScaled_curve(v, x);
 }
 
-s32 akao_lfoSquare(s32 a) {
+s32 akao_lfoSquare(s32 phase) {
     s32 r = 0x10000;
-    if (a & 0x100) {
+    if (phase & 0x100) {
         r = 0xFFFF0000;
     }
     return r;
@@ -214,55 +214,55 @@ void akao_setPitchModVoices(u32 x) {
     SPU_REG16(SPU_PITCH_MOD_HI) = x >> 16;
 }
 
-void akao_setVoiceVolume(s32 v, u32 l, u32 r, s32 vol) {
+void akao_setVoiceVolume(s32 v, u32 volL, u32 volR, s32 vol) {
     if (vol != 0) {
-        l *= vol;
-        r *= vol;
-        l >>= 7;
-        r >>= 7;
+        volL *= vol;
+        volR *= vol;
+        volL >>= 7;
+        volR >>= 7;
     }
-    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volL = l & 0x7FFF;
-    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volR = r & 0x7FFF;
+    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volL = volL & 0x7FFF;
+    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volR = volR & 0x7FFF;
 }
 
-void akao_setVoicePitch(s32 v, s32 x) {
-    SPU_VOICE_REG(v, SPU_VOICE_PITCH) = x;
+void akao_setVoicePitch(s32 v, s32 pitch) {
+    SPU_VOICE_REG(v, SPU_VOICE_PITCH) = pitch;
 }
 
-void akao_setVoiceStartAddr(s32 v, s32 x) {
-    SPU_VOICE_REG(v, SPU_VOICE_START_ADDR) = (u32)x >> 3;
+void akao_setVoiceStartAddr(s32 v, s32 addr) {
+    SPU_VOICE_REG(v, SPU_VOICE_START_ADDR) = (u32)addr >> 3;
 }
 
-void akao_setVoiceLoopAddr(s32 v, s32 x) {
-    SPU_VOICE_REG(v, SPU_VOICE_LOOP_ADDR) = (u32)x >> 3;
+void akao_setVoiceLoopAddr(s32 v, s32 addr) {
+    SPU_VOICE_REG(v, SPU_VOICE_LOOP_ADDR) = (u32)addr >> 3;
 }
 
-void akao_setVoiceAdsr1(s32 v, u16 x) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = x;
+void akao_setVoiceAdsr1(s32 v, u16 adsr1) {
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = adsr1;
 }
 
-void akao_setVoiceAdsr2(s32 v, u16 x) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = x;
+void akao_setVoiceAdsr2(s32 v, u16 adsr2) {
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = adsr2;
 }
 
-void akao_setVoiceAttack(s32 v, s32 a, s32 b) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = SPU_VOICE_REG8(v, SPU_VOICE_ADSR1) | ((((u32)b >> 2) << 15) | (a << 8));
+void akao_setVoiceAttack(s32 v, s32 rate, s32 mode) {
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = SPU_VOICE_REG8(v, SPU_VOICE_ADSR1) | ((((u32)mode >> 2) << 15) | (rate << 8));
 }
 
-void akao_setVoiceDecay(s32 v, s32 x) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR1) & ~SPU_ADSR1_DECAY_RATE) | (x << 4);
+void akao_setVoiceDecay(s32 v, s32 rate) {
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR1) & ~SPU_ADSR1_DECAY_RATE) | (rate << 4);
 }
 
-void akao_setVoiceSustainLevel(s32 v, s32 x) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR1) & ~SPU_ADSR1_SUSTAIN_LEVEL) | x;
+void akao_setVoiceSustainLevel(s32 v, s32 level) {
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR1) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR1) & ~SPU_ADSR1_SUSTAIN_LEVEL) | level;
 }
 
-void akao_setVoiceSustain(s32 v, s32 a, s32 b) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR2) & (SPU_ADSR2_RELEASE_EXP | SPU_ADSR2_RELEASE_RATE)) | ((((u32)b >> 1) << 14) | (a << 6));
+void akao_setVoiceSustain(s32 v, s32 rate, s32 mode) {
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR2) & (SPU_ADSR2_RELEASE_EXP | SPU_ADSR2_RELEASE_RATE)) | ((((u32)mode >> 1) << 14) | (rate << 6));
 }
 
-void akao_setVoiceRelease(s32 v, s32 a, s32 b) {
-    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR2) & ~(SPU_ADSR2_RELEASE_EXP | SPU_ADSR2_RELEASE_RATE)) | ((((u32)b >> 2) << 5) | a);
+void akao_setVoiceRelease(s32 v, s32 rate, s32 mode) {
+    SPU_VOICE_REG(v, SPU_VOICE_ADSR2) = (SPU_VOICE_REG(v, SPU_VOICE_ADSR2) & ~(SPU_ADSR2_RELEASE_EXP | SPU_ADSR2_RELEASE_RATE)) | ((((u32)mode >> 2) << 5) | rate);
 }
 
 void akao_writeVoice(s32 v, AkaoVoiceRegs *p, s32 vol) {
@@ -635,20 +635,20 @@ s32 akao_stealVoice(s32 allVoices) {
     return best;
 }
 
-s32 akao_findFreeVoice(s32 a) {
+s32 akao_findFreeVoice(s32 allVoices) {
     AkaoVoiceEnv *p;
-    if (a != 0) {
-        a = 0;
+    if (allVoices != 0) {
+        allVoices = 0;
     } else {
-        a = g_akaoSeq->firstVoice;
+        allVoices = g_akaoSeq->firstVoice;
     }
-    while ((p = &g_akaoVoiceEnv[a])->envelope != 0) {
-        a++;
-        if (a >= 0x18) {
+    while ((p = &g_akaoVoiceEnv[allVoices])->envelope != 0) {
+        allVoices++;
+        if (allVoices >= 0x18) {
             break;
         }
     }
-    return a;
+    return allVoices;
 }
 
 void akao_assignVoices(AkaoChannel *ch, u32 chMask, u32 keep, u32 *used) {

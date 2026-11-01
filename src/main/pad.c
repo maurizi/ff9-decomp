@@ -43,11 +43,11 @@ u16 pad_getFlags(void) {
     return g_padFlags;
 }
 
-void pad_setFlags(u16 a, s32 b) {
-    if (b) {
-        g_padFlags |= a;
+void pad_setFlags(u16 flags, s32 set) {
+    if (set) {
+        g_padFlags |= flags;
     } else {
-        g_padFlags &= ~a;
+        g_padFlags &= ~flags;
     }
 }
 
@@ -144,20 +144,20 @@ void pad_update(void) {
     }
 }
 
-void pad_setMapping(s32 a, u32 b, s32 c) {
+void pad_setMapping(s32 port, u32 button, s32 mapped) {
     s32 n = 31;
-    gte_ldlzc(b);
-    if (b != 0x80000000) {
-        gte_stlzc(&b);
-        n -= b;
+    gte_ldlzc(button);
+    if (button != 0x80000000) {
+        gte_stlzc(&button);
+        n -= button;
     }
-    g_padMapping[a][n] = c;
+    g_padMapping[port][n] = mapped;
 }
 
-void pad_getAnalogThresholds(Unk4 *a) {
-    *a = g_padAnalogThresholds;
+void pad_getAnalogThresholds(Unk4 *out) {
+    *out = g_padAnalogThresholds;
 }
 
-void pad_setAnalogThresholds(Unk4 *a) {
-    g_padAnalogThresholds = *a;
+void pad_setAnalogThresholds(Unk4 *thresholds) {
+    g_padAnalogThresholds = *thresholds;
 }

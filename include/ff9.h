@@ -5019,8 +5019,8 @@ void fld_entry(void); /* ovl_0a */
 s32 fld_soundCommand(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3); /* ovl_0a */
 s32 fldbg_scrollToPlayer(s32 frames, s32 scrollMode); /* ovl_0a */
 void help_onDraw(void);
-void rain_set(s32 a, u32 b);
-void wrain_set(s32 a, u32 b);
+void rain_set(s32 count, u32 speed);
+void wrain_set(s32 count, u32 speed);
 void game_initData(void);
 void game_initLibraries(void);
 void game_initState(void);

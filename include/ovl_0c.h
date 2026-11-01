@@ -1657,7 +1657,7 @@ s32 wm_isDarkWeather(void);
 void wm_naviDrawChocograph(void);
 void game_updateWindows(void); /* main */
 void menu_update(void); /* main */
-void msg_setOtz(s32 a); /* main */
+void msg_setOtz(s32 otz); /* main */
 s32 swirl_update(s16 startX, s16 startY); /* main */
 void *w_framePackGetPtr(void **pack, s32 idx);
 void w_movementChangeSP1(void);

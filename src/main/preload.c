@@ -30,16 +30,16 @@ void preload_setVramRect(PreloadEntry *entry, s16 x, s16 y, s16 w, s16 h) {
     entry->vramH = h;
 }
 
-s32 preload_isUsed(PreloadEntry *a) {
-    s32 r = 0;
-    if (a != NULL) {
-        r = a->fileId != -1;
+s32 preload_isUsed(PreloadEntry *entry) {
+    s32 used = 0;
+    if (entry != NULL) {
+        used = entry->fileId != -1;
     }
-    return r;
+    return used;
 }
 
-s32 preload_isBusy(PreloadEntry *a) {
-    return a->flags & PRELOAD_BUSY;
+s32 preload_isBusy(PreloadEntry *entry) {
+    return entry->flags & PRELOAD_BUSY;
 }
 
 s32 preload_isDone(PreloadEntry *p) {
@@ -129,8 +129,8 @@ void preload_init() {
     p->hook = 0;
 }
 
-void preload_setHook(s32 a) {
-    g_gameState->gameData->preloadQueue->hook = a;
+void preload_setHook(s32 hook) {
+    g_gameState->gameData->preloadQueue->hook = hook;
 }
 
 PreloadEntry *preload_add(void) {

@@ -150,24 +150,24 @@ u8 help_isLocked(void) {
     return g_menuHelp.locked;
 }
 
-void help_setLocked(u8 a) {
-    g_menuHelp.locked = a;
+void help_setLocked(u8 locked) {
+    g_menuHelp.locked = locked;
 }
 
 u8 help_getFollow(void) {
     return g_menuHelp.follow;
 }
 
-void help_setFollow(u8 a) {
-    g_menuHelp.follow = a;
+void help_setFollow(u8 follow) {
+    g_menuHelp.follow = follow;
 }
 
 u8 help_getCursorOnTop(void) {
     return g_menuHelp.cursorOnTop;
 }
 
-void help_setCursorOnTop(u8 a) {
-    g_menuHelp.cursorOnTop = a;
+void help_setCursorOnTop(u8 onTop) {
+    g_menuHelp.cursorOnTop = onTop;
 }
 
 void help_toggle(void) {

@@ -131,10 +131,10 @@ void menuScreen_open(s32 screen) {
     }
 }
 
-void menuScreen_switch(u8 a) {
+void menuScreen_switch(u8 screen) {
     g_menuScreenSwitch.busy = 1;
     g_menuScreenSwitch.switching = 1;
-    g_menuScreenSwitch.target = a;
+    g_menuScreenSwitch.target = screen;
     menuScreen_startTitleAnim();
     fade_out(0xC);
     fade_setOnDone(menuScreen_onSwitchFaded);
@@ -154,8 +154,8 @@ u8 menuScreen_needsMember(s32 i) {
     return g_menuScreenSwitch.screens[i].needsMember;
 }
 
-s32 menuScreen_getCommandHelp(s32 a) {
-    return text_getFrom(g_menuScreenStrings, a + 9);
+s32 menuScreen_getCommandHelp(s32 cmd) {
+    return text_getFrom(g_menuScreenStrings, cmd + 9);
 }
 
 void menuScreen_stepTitleResize(void) {
@@ -238,8 +238,8 @@ void menuScreen_onSwitchFaded(void) {
     fade_setOnDone(NULL);
 }
 
-void menuScreen_onOverlayRead(u8 *a) {
-    if (*a == 0) {
+void menuScreen_onOverlayRead(u8 *result) {
+    if (*result == 0) {
         g_menuScreenSwitch.overlayLoading = 0;
     }
 }
