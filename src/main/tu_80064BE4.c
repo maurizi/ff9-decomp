@@ -3,9 +3,9 @@
 void pen_nop(void) {
 }
 
-void pen_beginOt(s32 a, u32 *b) {
+void pen_beginOt(s32 unused, u32 *ot) {
     msg_beginDraw();
-    g_penOt = b;
+    g_penOt = ot;
     pen_setColor(0x808080);
 }
 
@@ -15,10 +15,10 @@ void pen_setColorRGB(u8 r, u8 g, u8 b) {
     pen_setColor(r | (g << 8) | (b << 16));
 }
 
-void pen_locate(u16 a, u16 b) {
+void pen_locate(u16 x, u16 y) {
     pen_begin();
-    pen_setPos(a, b);
-    g_penLineStart = a;
+    pen_setPos(x, y);
+    g_penLineStart = x;
     pen_end();
 }
 

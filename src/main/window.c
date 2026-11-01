@@ -396,8 +396,8 @@ void win_closeAllNow(void) {
     }
 }
 
-void win_drawBox(RECT *a, s32 b, s32 c) {
-    win_drawBoxEx(a, b, c, CONFIG_WINDOW_COLOR());
+void win_drawBox(RECT *rect, s32 otz, s32 style) {
+    win_drawBoxEx(rect, otz, style, CONFIG_WINDOW_COLOR());
 }
 
 void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
@@ -534,8 +534,8 @@ void win_setTitleAt(Window *win, s32 title, s16 x, s8 y) {
     win->titleY = y;
 }
 
-void win_drawFillPal(RECT *a, s32 b) {
-    win_drawFill(a, b, 0, 0, CONFIG_WINDOW_COLOR());
+void win_drawFillPal(RECT *rect, s32 otz) {
+    win_drawFill(rect, otz, 0, 0, CONFIG_WINDOW_COLOR());
 }
 
 Window *win_get(s32 i) {

@@ -1,11 +1,11 @@
 #include "ff9.h"
 
-void math_rotMatrixXYZ(void *a, void *b) {
-    math_buildRotMatrixXYZ(a, b, 0);
+void math_rotMatrixXYZ(void *rot, void *out) {
+    math_buildRotMatrixXYZ(rot, out, 0);
 }
 
-void math_rotMatrixXYZ_gte(void *a, void *b) {
-    math_buildRotMatrixXYZ(a, b, 1);
+void math_rotMatrixXYZ_gte(void *rot, void *out) {
+    math_buildRotMatrixXYZ(rot, out, 1);
 }
 
 MATRIX *math_buildRotMatrixXYZ(SVECTOR *r, MATRIX *m, s32 mode) {
@@ -58,12 +58,12 @@ MATRIX *math_buildRotMatrixXYZ(SVECTOR *r, MATRIX *m, s32 mode) {
     return m;
 }
 
-void math_rotMatrixZXY(void *a, void *b) {
-    math_buildRotMatrixZXY(a, b, 0);
+void math_rotMatrixZXY(void *rot, void *out) {
+    math_buildRotMatrixZXY(rot, out, 0);
 }
 
-void math_rotMatrixZXY_gte(void *a, void *b) {
-    math_buildRotMatrixZXY(a, b, 1);
+void math_rotMatrixZXY_gte(void *rot, void *out) {
+    math_buildRotMatrixZXY(rot, out, 1);
 }
 
 MATRIX *math_buildRotMatrixZXY(SVECTOR *r, MATRIX *m, s32 mode) {
@@ -116,12 +116,12 @@ MATRIX *math_buildRotMatrixZXY(SVECTOR *r, MATRIX *m, s32 mode) {
     return m;
 }
 
-void math_rotMatrixZYX(void *a, void *b) {
-    math_buildRotMatrixZYX(a, b, 0);
+void math_rotMatrixZYX(void *rot, void *out) {
+    math_buildRotMatrixZYX(rot, out, 0);
 }
 
-void math_rotMatrixZYX_gte(void *a, void *b) {
-    math_buildRotMatrixZYX(a, b, 1);
+void math_rotMatrixZYX_gte(void *rot, void *out) {
+    math_buildRotMatrixZYX(rot, out, 1);
 }
 
 MATRIX *math_buildRotMatrixZYX(SVECTOR *r, MATRIX *m, s32 mode) {
@@ -207,12 +207,12 @@ MATRIX *math_buildRotMatrixZYX(SVECTOR *r, MATRIX *m, s32 mode) {
     return m;
 }
 
-void math_rotMatrixYXZ(void *a, void *b) {
-    math_buildRotMatrixYXZ(a, b, 0);
+void math_rotMatrixYXZ(void *rot, void *out) {
+    math_buildRotMatrixYXZ(rot, out, 0);
 }
 
-void math_rotMatrixYXZ_gte(void *a, void *b) {
-    math_buildRotMatrixYXZ(a, b, 1);
+void math_rotMatrixYXZ_gte(void *rot, void *out) {
+    math_buildRotMatrixYXZ(rot, out, 1);
 }
 
 MATRIX *math_buildRotMatrixYXZ(SVECTOR *r, MATRIX *m, s32 mode) {

@@ -536,15 +536,15 @@ void menuChocograph_scrollTo(s32 idx) {
 void menuChocograph_onLoadImages(void) {
 }
 
-void menuChocograph_getPictureRects(s32 i, RECT *a, RECT *b) {
-    a->x = 0;
-    a->y = i + 0x1E8;
-    a->w = 0x40;
-    a->h = 1;
-    b->x = (i % 3) * 0x15;
-    b->y = (i / 3) * 0x1C + 0x100;
-    b->w = 0x15;
-    b->h = 0x1C;
+void menuChocograph_getPictureRects(s32 i, RECT *clut, RECT *img) {
+    clut->x = 0;
+    clut->y = i + 0x1E8;
+    clut->w = 0x40;
+    clut->h = 1;
+    img->x = (i % 3) * 0x15;
+    img->y = (i / 3) * 0x1C + 0x100;
+    img->w = 0x15;
+    img->h = 0x1C;
 }
 
 INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", s_menuChocographPictures);

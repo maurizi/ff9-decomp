@@ -1009,18 +1009,18 @@ u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
     return (u8 *)(t + 1);
 }
 
-u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords *p) {
+u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 glyph, s32 mode, s32 *out, SprtWords *p) {
     u32 rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
-    s32 dx = (a >> 20) & 3;
-    s32 h = (a >> 16) & 0xF;
-    s32 n = a >> 28;
+    s32 dx = (glyph >> 20) & 3;
+    s32 h = (glyph >> 16) & 0xF;
+    s32 n = glyph >> 28;
     if (mode != TEXT_PAL_PLAIN) {
         rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     setlen(p, 4);
     p->xy = ((x + dx) & 0xFFFF) | (y << 16);
     p->rgbc = rgbc;
-    p->uvclut = (a & 0x40FFFF) + (g_textPalettes[mode] << 16);
+    p->uvclut = (glyph & 0x40FFFF) + (g_textPalettes[mode] << 16);
     p->wh = h | 0xD0000;
     addPrim(ot, p);
     if (out != NULL) {

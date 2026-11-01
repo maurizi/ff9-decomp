@@ -2094,13 +2094,13 @@ void w_movementChangeSP2(void) {
     }
 }
 
-u8 wm_testCellType(u32 *a, u32 c) {
-    c = WM_ATTR_TOPOGRAPHY(c);
-    if (c >= 32) {
-        if ((a[0] >> (c - 32)) & 1) {
+u8 wm_testCellType(u32 *allowed, u32 cellAttr) {
+    cellAttr = WM_ATTR_TOPOGRAPHY(cellAttr);
+    if (cellAttr >= 32) {
+        if ((allowed[0] >> (cellAttr - 32)) & 1) {
             return 1;
         }
-    } else if ((a[1] >> c) & 1) {
+    } else if ((allowed[1] >> cellAttr) & 1) {
         return 1;
     }
     return 0;

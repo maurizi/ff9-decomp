@@ -526,34 +526,34 @@ s32 bj_handInit(BjHand *hand, s16 x, s16 y) {
     return 0;
 }
 
-s32 bj_splitHand(BjHand *a, BjHand *b) {
+s32 bj_splitHand(BjHand *hand, BjHand *split) {
     s32 r;
     u16 v;
 
-    a->count = 1;
-    a->x = BJ_HAND_X;
-    a->y = BJ_SPLIT1_Y;
-    bj_handInit(b, BJ_HAND_X, BJ_SPLIT2_Y);
-    b->count = 1;
-    b->cards[0] = a->cards[1];
-    r = (u32)a->cards[1] >> 2;
+    hand->count = 1;
+    hand->x = BJ_HAND_X;
+    hand->y = BJ_SPLIT1_Y;
+    bj_handInit(split, BJ_HAND_X, BJ_SPLIT2_Y);
+    split->count = 1;
+    split->cards[0] = hand->cards[1];
+    r = (u32)hand->cards[1] >> 2;
     if (r < BJ_RANK_JACK) {
         v = r + 2;
     } else if (r == BJ_RANK_ACE) {
-        a->value = BJ_ACE_VALUE;
-        a->hardValue = BJ_ACE_LOW;
-        a->flags |= BJ_HAND_SPLIT_ACES | BJ_HAND_SOFT;
-        b->value = BJ_ACE_VALUE;
-        b->hardValue = BJ_ACE_LOW;
-        b->flags |= BJ_HAND_SPLIT_ACES | BJ_HAND_SOFT;
+        hand->value = BJ_ACE_VALUE;
+        hand->hardValue = BJ_ACE_LOW;
+        hand->flags |= BJ_HAND_SPLIT_ACES | BJ_HAND_SOFT;
+        split->value = BJ_ACE_VALUE;
+        split->hardValue = BJ_ACE_LOW;
+        split->flags |= BJ_HAND_SPLIT_ACES | BJ_HAND_SOFT;
         goto end;
     } else {
         v = BJ_TEN_VALUE;
     }
-    a->value = v;
-    a->hardValue = v;
-    b->value = v;
-    b->hardValue = v;
+    hand->value = v;
+    hand->hardValue = v;
+    split->value = v;
+    split->hardValue = v;
 end:
     return 0;
 }

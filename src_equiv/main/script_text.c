@@ -62,7 +62,7 @@ s32 evt_popBitCount(void);
 s32 evt_exprUnitFirst(void);
 s16 msg_isOpen(s32 i);
 void evt_setCurUnit(void *p);
-void math_rotMatrixZYX(void *a, void *b);
+void math_rotMatrixZYX(void *rot, void *out);
 void msg_onTextEnd(void);
 s32 evt_execInstr(void);
 

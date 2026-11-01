@@ -23,18 +23,18 @@ u16 *db_findModelInfo(s32 id) {
     return NULL;
 }
 
-u8 *db_getModelTexPages(s32 a) {
-    u16 *p = db_findModelInfo(a);
+u8 *db_getModelTexPages(s32 modelId) {
+    u16 *p = db_findModelInfo(modelId);
     return (u8 *)p + (((u32 *)p)[1] & 0xFFFFFF);
 }
 
-u8 *db_getModelUvOffsets(s32 a) {
-    u8 *p = (u8 *)db_findModelInfo(a);
+u8 *db_getModelUvOffsets(s32 modelId) {
+    u8 *p = (u8 *)db_findModelInfo(modelId);
     return p + (((u32 *)p)[1] & 0xFFFFFF) + p[7] * 4;
 }
 
-u8 *db_getModelTexPos(s32 a) {
-    DbEntry12 *p = (DbEntry12 *)db_findModelInfo(a);
+u8 *db_getModelTexPos(s32 modelId) {
+    DbEntry12 *p = (DbEntry12 *)db_findModelInfo(modelId);
     s32 n = p->texCount;
     u8 *q = (u8 *)p + p->dataOfs;
     return (long long)n * 8 + q;

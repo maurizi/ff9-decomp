@@ -4996,7 +4996,7 @@ void akao_swap(u32 *a, u32 *b, u32 n);
 s32 cd_findFile(char *name);
 void config_apply(void);
 void ending_main(void); /* ovl_15 */
-s32 evt_createModel(EvtObject *a);
+s32 evt_createModel(EvtObject *obj);
 s32 evt_getArg16(void);
 s32 evt_getArg8(void);
 s32 evt_isControlEnabled(void);

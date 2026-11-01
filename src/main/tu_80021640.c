@@ -1,11 +1,11 @@
 #include "ff9.h"
 
-void evt_setNextLocation(s32 a) {
-    game_setNextScene(a);
+void evt_setNextLocation(s32 sceneId) {
+    game_setNextScene(sceneId);
 }
 
-void evt_setNextBattle(u16 a) {
-    game_setNextScene(a);
+void evt_setNextBattle(u16 sceneId) {
+    game_setNextScene(sceneId);
 }
 
 void evt_setCardOpponent(a)
@@ -14,8 +14,8 @@ void evt_setCardOpponent(a)
     g_gameState->gameData->cardOpponent = a;
 }
 
-s32 evt_createModel(EvtObject *a) {
-    return g_gameState->gameData->modelHook(a->modelId | DB_MODEL, a);
+s32 evt_createModel(EvtObject *obj) {
+    return g_gameState->gameData->modelHook(obj->modelId | DB_MODEL, obj);
 }
 
 s32 evt_getAnimFrameCount(a, b)
@@ -98,8 +98,8 @@ s32 cdRead_update(void *ctx) {
     return 0;
 }
 
-s32 cdRead_getBytesRead(CdReadCtx *a) {
-    if (a->state >= CDREAD_READING) {
+s32 cdRead_getBytesRead(CdReadCtx *ctx) {
+    if (ctx->state >= CDREAD_READING) {
         return g_cdLoad.bytesRead;
     }
     return 0;

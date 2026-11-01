@@ -14,30 +14,30 @@ void gamedata_resetEventFlags(void) {
     d->darkBattle = 0;
 }
 
-s32 chr_cureStatusBit(Unk800539FC *a, s32 b) {
-    if (a->status & b) {
-        a->status &= ~b;
+s32 chr_cureStatusBit(Unk800539FC *c, s32 bit) {
+    if (c->status & bit) {
+        c->status &= ~bit;
         return 2;
     }
     return 1;
 }
 
-static inline s32 chr_cureStatusBit_inline(Unk800539FC *a, s32 b) {
-    if (a->status & b) {
-        a->status &= ~b;
+static inline s32 chr_cureStatusBit_inline(Unk800539FC *c, s32 bit) {
+    if (c->status & bit) {
+        c->status &= ~bit;
         return 2;
     }
     return 1;
 }
 
-s32 chr_cureStatusMask(Character *a, s32 mask) {
+s32 chr_cureStatusMask(Character *c, s32 mask) {
     s32 r = 1;
     u32 i;
 
     for (i = 0; i < 8; i++) {
         u8 m = mask & (1 << i);
         if (m) {
-            if (chr_cureStatusBit_inline(a, 1 << i) == 2) {
+            if (chr_cureStatusBit_inline(c, 1 << i) == 2) {
                 r = 2;
             }
         }
@@ -45,8 +45,8 @@ s32 chr_cureStatusMask(Character *a, s32 mask) {
     return r;
 }
 
-u8 chr_hasStatus(Character *a, s32 b) {
-    return (a->status & b) != 0;
+u8 chr_hasStatus(Character *c, s32 bits) {
+    return (c->status & bits) != 0;
 }
 
 s32 swirl_update(s16 startX, s16 startY) {
