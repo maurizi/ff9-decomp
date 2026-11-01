@@ -166,12 +166,13 @@ typedef struct {
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
 /* Character.classFlags (chr_getClassFlags: g_chrClassFlags, main data 0x8006CACC = 09 05 06 05 06 05 06 05 15 15 15 16 by
- * ability row; bits 0x4/0x8 left unnamed: 0x8 only for row 0, ability formula 0x62 misses it, 0x4 on every other row;
+ * stat class (CHR_STATS_*, from the ability row); bits 0x4/0x8 left unnamed: 0x8 only for class 0,
+ * ability formula 0x62 misses it, 0x4 on every other class;
  * formula 0x62 is in no ability or enemy record, so neither was observed) */
-#define CHR_CLASS_MALE 0x1 /* data only, medium: set on every row without CHR_CLASS_FEMALE (Quina included); no code
+#define CHR_CLASS_MALE 0x1 /* data only, medium: set on every class without CHR_CLASS_FEMALE (Quina included); no code
                             * tests it (battle AI scripts can read classFlags through btl_attr 0x43) */
-#define CHR_CLASS_FEMALE 0x2 /* Protect Girls covers it (btl_findCover); ability 0x61 misses it; rows 2, 4, 6 */
-#define CHR_CLASS_GUEST 0x10 /* rows 8 and up: no ability learning (chr_canLearnAbilities), no trance (btl_initPartyUnit),
+#define CHR_CLASS_FEMALE 0x2 /* Protect Girls covers it (btl_findCover); ability 0x61 misses it; classes 2, 4, 6 and 11 (Beatrix) */
+#define CHR_CLASS_GUEST 0x10 /* classes 8 and up (CHR_STATS_*): no ability learning (chr_canLearnAbilities), no trance (btl_initPartyUnit),
                              * the alternate default set and appearance (chr_getDefaultSet, chr_calcAppearance) */
 
 /* GameData.npcModels entry */
@@ -189,6 +190,7 @@ typedef struct ModelSlot {
  * WM_SLOT_LOADED / WM_SLOT_NO_SHADOW are defined as these. */
 #define MODEL_SLOT_LOADED    0x1  /* the slot has a model (set when it is built, cleared by fld_exit / btl_cleanup / wm exit) */
 #define MODEL_SLOT_NO_SHADOW 0x10 /* no shadow drawn (EVT_OP_JUMP sets it for the jump) */
+#define MODEL_SLOT_SHADOW_FIXED 0x20 /* the shadow uses the fixed placement (EVT_OP_SHADOW_FIXED / EVT_OP_SHADOW_UNFIX; ovl_0a FLD_OBJ_SHADOW_FIXED) */
 
 /* main's and ovl_65's view of ovl_0b BtlFiles (Battle.files) */
 typedef struct {
@@ -226,9 +228,9 @@ typedef struct Unk11C0Slot {
     u32 unk0_0 : 8;
     u32 sizeX : 12; /* EVT_OP_SHADOW_SIZE x * 14 (0xE0 from shadow_initSlots) */
     u32 sizeZ : 12; /* EVT_OP_SHADOW_SIZE z * 12 (0xC0) */
-    u32 fixedAngle : 12; /* EVT_OP_SHADOW_FIXED angle * 16, used with model flag 0x20 */
-    u32 ofsX : 10; /* event op 0x82 x offset */
-    u32 ofsZ : 10; /* event op 0x82 z offset */
+    u32 fixedAngle : 12; /* EVT_OP_SHADOW_FIXED angle * 16, used with MODEL_SLOT_SHADOW_FIXED */
+    u32 ofsX : 10; /* EVT_OP_SHADOW_OFFSET x */
+    u32 ofsZ : 10; /* EVT_OP_SHADOW_OFFSET z */
     POLY_FT4 *prims[2][4]; /* shadow quads per draw buffer, filled by shadow_initSlots (ovl_0c WmObjEnt.prims) */
 } Unk11C0Slot;
 
@@ -787,22 +789,71 @@ s32 config_remapButton(); /* (s32 index); unprototyped, as the original's caller
 void win_drawAll(void);
 void win_updateAll(void);
 
-/* Text encoding (font codes, 0xFF-terminated). Control codes as text_buildBlock/text_measure handle them;
- * 0xF9 is followed by one escape byte (TEXT_X_ADD/TEXT_X_SET/TEXT_Y_* and the argument codes take one more). */
-#define TEXT_END 0xFF
-#define TEXT_NEWLINE 0xF7 /* x back to the start, y += 15 */
+/* Text encoding (font codes, 0xFF-terminated), shared by the menu text (text_buildBlock / text_measure) and the
+ * message windows (msg_renderText / msg_advanceText / msg_getLayout). docs/text-codes.md lists every code.
+ * Plain bytes from 0xF7 up are control codes; TEXT_ESC is followed by one escape byte (below), some of which
+ * take arguments. Escape bytes the menu renderer doesn't handle go to text_buildCode / text_getCodeWidth. */
+#define TEXT_NEWLINE 0xF7 /* x back to the start, y += 15 (message windows: += 14, the next line) */
+#define TEXT_SPACE_1PX 0xF8 /* message windows: x += 1 */
 #define TEXT_ESC 0xF9
-/* escape bytes after TEXT_ESC */
+#define TEXT_WIDE_FIRST 0xFA /* message windows: 0xFA-0xFD lead a two-byte glyph */
+#define TEXT_WIDE_LAST 0xFD
+#define TEXT_PAGE 0xFE /* message windows: wait for Cross, then a new page */
+#define TEXT_END 0xFF /* message windows: wait for Cross, then close */
+/* escape bytes after TEXT_ESC. Message timing and flow (msg_advanceText, msg_stepControl): */
+#define TEXT_WAIT_PAGE 0x00 /* + frames: pause (Cross can't skip, MSGW_NO_SKIP), then a new page */
+#define TEXT_WAIT_CLOSE 0x01 /* + frames: the same, then close the window */
+#define TEXT_SPEED 0x02 /* + typing speed (MsgWindow.speed) */
+#define TEXT_CHOICE_START 0x08 /* the choice lines start at the next line (MSGW_CHOICE) */
+#define TEXT_HOLD 0x09 /* wait with Cross ignored (MSGW_WAIT_INPUT, MSGW_NO_INPUT): the script closes the window */
+#define TEXT_NO_SKIP 0x0A /* Cross doesn't skip the rest of the page (MSGW_NO_SKIP) */
+#define TEXT_SKIP 0x0C /* the rest of the page shows at once (MSGW_SKIP) */
+#define TEXT_SYNC_TAG 0x0F /* + tag: g_msgSyncTag (EVT_SYSVAR_MSG_SYNC_TAG) */
+#define TEXT_WAIT 0x41 /* + frames: pause (skipped while MSGW_SKIP), then go on */
+#define TEXT_SPEED_DEFAULT 0x42 /* typing speed back to the config's (g_msgTextSpeeds) */
+#define TEXT_NO_INPUT 0x45 /* Cross is ignored (MSGW_NO_INPUT); in the layout header: WINLAYOUT_NO_FOCUS */
+#define TEXT_SYNC_TAG_NEXT 0x46 /* g_msgSyncTag++ */
+/* message header codes, read by msg_getLayout from the start of the message (msg_advanceText skips them) */
+#define TEXT_WIN_POS 0x03 /* + u16 x, u8 y: window position (anchor WINLAYOUT_ANCHOR_POS) */
+#define TEXT_BANK 0x04 /* the message is a text bank (g_msgTextBanks, msg_resetChoices), not shown */
+#define TEXT_CHOICES 0x07 /* + count, cancel choice + 1 (0: none): the message ends in choices */
+#define TEXT_NO_OPEN_ANIM 0x0B /* the window opens without its animation (g_msgLayoutAltOpen, WIN_ANIM_NONE) */
+#define TEXT_LINE_WIDTHS 0x0D /* {u16 choice << 12 | width, text up to TEXT_END}..., 0xFFFF: the window width is the
+                               * widest line, counting only enabled choices (msg_measureLine adds the embedded values) */
+#define TEXT_CHOICES_MASKED 0x4F /* + lines, cancel line: choices, some hidden by g_msgChoiceMaskReq (EVT_OP_MSG_CHOICE_MASK) */
+#define TEXT_BALLOON_OFS 0x5F /* + 3 x s16: g_evtBalloonOfsX/Y/Z, the speaker point the balloon points at */
+/* window anchors (WinLayout.anchor, evt_getMsgLayout). As a balloon the low 2 bits are its side of the speaker
+ * (MSG_TAIL_DIR inverted: 0 = below right); without one, the fixed screen position given */
+#define TEXT_WIN_BOTTOM_RIGHT 0x50
+#define TEXT_WIN_BOTTOM_LEFT 0x51
+#define TEXT_WIN_TOP_RIGHT 0x52
+#define TEXT_WIN_TOP_LEFT 0x53
+#define TEXT_WIN_BOTTOM 0x54 /* centred; a balloon is placed automatically */
+#define TEXT_WIN_TOP 0x55 /* centred; a balloon is placed automatically */
+#define TEXT_WIN_FIXED_BOTTOM_RIGHT 0x58 /* balloon only: that side even near the screen edge (evt_placeBalloon fixed) */
+#define TEXT_WIN_FIXED_BOTTOM_LEFT 0x59
+#define TEXT_WIN_FIXED_TOP_RIGHT 0x5A
+#define TEXT_WIN_FIXED_TOP_LEFT 0x5B
+#define TEXT_WIN_CENTER 0x5C /* x centred, y centred on 74 (no anchor: on 110); a balloon is placed automatically */
+/* embedded values */
+#define TEXT_BANK_TEXT 0x06 /* + bank, number slot: text g_msgNumbers[slot] of text bank g_msgTextBanks[bank] */
+#define TEXT_MSG_ITEM_NAME 0x0E /* + number slot: name of item / key item / card g_msgNumbers[slot], in yellow */
 #define TEXT_CHAR_NAME 0x10 /* + character 0-7 */
 #define TEXT_PARTY_NAME 0x18 /* + party slot 0-3 */
-#define TEXT_COLOR 0x20 /* + palette 0-9 (g_textColor) */
+#define TEXT_COLOR 0x20 /* + palette 0-9 (g_textColor; message windows: 0-8, pen_setPalette) */
 #define TEXT_MSG_NUMBER 0x40 /* + index: number from the message system (g_msgNumbers) */
+#define TEXT_CHAR_NAME_CAPS 0x80 /* + character 0-7: the name in capitals (msg_emitCharNameCaps) */
+/* layout */
 #define TEXT_X_ADD 0x43 /* + s8 */
 #define TEXT_X_SET 0x44 /* + x from the line start */
+#define TEXT_CENTER 0x48 /* + u16 width, codes up to TEXT_END whose values add to it (msg_measureLine): message
+                         * windows: the line is centred */
 #define TEXT_Y_DOWN 0x49 /* + pixels */
 #define TEXT_Y_UP 0x4A /* + pixels */
+#define TEXT_TAB 0x71 /* message windows: x += 18 */
 #define TEXT_SPRITE 0x4B /* + sprite id */
 /* button glyph escape bytes (text_buildCode / text_getCodeWidth draw these UI sprites; runtime pass) */
+#define TEXT_DPAD 0x2F /* UI_SPRITE_DPAD (message windows only) */
 #define TEXT_BTN_CIRCLE   0x30 /* UI_SPRITE_CIRCLE */
 #define TEXT_BTN_CROSS    0x31 /* UI_SPRITE_CROSS */
 #define TEXT_BTN_TRIANGLE 0x32 /* UI_SPRITE_TRIANGLE */
@@ -813,6 +864,16 @@ void win_updateAll(void);
 #define TEXT_BTN_R2       0x37 /* UI_SPRITE_R2 */
 #define TEXT_BTN_START    0x38 /* UI_SPRITE_START */
 #define TEXT_BTN_SELECT   0x39 /* UI_SPRITE_SELECT */
+/* the d-pad with arrows (text_buildDpad mask, g_dpadArrowSprites order: up, down, left, right) */
+#define TEXT_DPAD_UP 0x3A
+#define TEXT_DPAD_DOWN 0x3B
+#define TEXT_DPAD_LEFT 0x3C
+#define TEXT_DPAD_RIGHT 0x3D
+#define TEXT_DPAD_UP_DOWN 0x3E /* menu text only */
+#define TEXT_DPAD_LEFT_RIGHT 0x3F /* menu text only */
+#define TEXT_PAD_BTN 0x60 /* + 0-7 in TEXT_BTN_* order (circle .. R2): that button as remapped by the controller
+                           * config (text_getButtonSprite / GameState.padMap) */
+#define TEXT_FLAG_ICON 0x70 /* + bit: message windows: a blinking two-sprite icon (0xB5, 0xB6) when g_msgNumbers[0] has the bit */
 #define TEXT_ITEM_ICON 0x4C /* + item id */
 #define TEXT_ARG_SPRITE 0x4D /* + arg index (g_textIconArgs) */
 #define TEXT_ARG_ITEM_ICON 0x4E /* + arg index (g_textIconArgs) */
@@ -1763,19 +1824,26 @@ typedef struct MsgWindow {
     u8 tailMode; /* from the layout, passed to win_setTail */
 } MsgWindow;
 /* MsgWindow / WinLayout tailMode: bits 0-1 are win_setTail's mode (evt_placeBalloon: below << 1 | right),
- * 0x10/0x20 come from the message flags (evt_getMsgLayout); 0x20 has no reader in main */
+ * MSG_FLAG_FRAMELESS / MSG_FLAG_NO_FOLLOW come from the message flags (evt_getMsgLayout); 0x20 has no reader there */
 #define MSG_TAIL_RIGHT 0x1
 #define MSG_TAIL_BELOW 0x2
 #define MSG_TAIL_DIR (MSG_TAIL_RIGHT | MSG_TAIL_BELOW) /* passed to win_setTail */
 #define MSG_TAIL_FRAMELESS 0x10 /* msg_open opens the window WIN_STYLE_FRAMELESS (no balloon or bevel) */
+/* message flags: the flags argument of EVT_OP_MSG* (evt_getMsgLayout, msg_open, evt_execInstr_window) */
+#define MSG_FLAG_NO_TAIL 0x04 /* balloon frame without its tail (also without a tail position), at least 0x1D wide */
+#define MSG_FLAG_MOGNET 0x08 /* the Mognet title (g_msgMognetTitle) */
+#define MSG_FLAG_FRAMELESS 0x10 /* copied into tailMode: MSG_TAIL_FRAMELESS */
+#define MSG_FLAG_NO_FOLLOW 0x20 /* copied into tailMode; a balloon isn't attached to the actor (EvtObject.balloonWindow) */
+#define MSG_FLAG_ATE 0x40 /* the ATE title (g_msgAteTitle), at least 0x72 wide */
+#define MSG_FLAG_BALLOON 0x80 /* a speech balloon placed at the actor (evt_placeBalloon), at least 0x1D wide */
 extern MsgWindow g_msgWindows[];
 /* MsgWindow.flags */
-#define MSGW_WAIT_INPUT 0xFF /* MsgWindow.waitFrames: waiting for Cross (msg_input); text codes FE/FF/F9 09 */
-#define MSGW_CHOICE 0x02 /* has a choice (text code F9 08, or msg_allocWindow's flag); msg_getLastModal finds it */
-#define MSGW_SKIP 0x04 /* Cross pressed: the rest of the page shows at once (text code F9 0C sets it too); cleared at the next wait for Cross */
-#define MSGW_NO_SKIP 0x08 /* Cross doesn't skip the text (text codes F9 00/01/0A); cleared at the next page */
+#define MSGW_WAIT_INPUT 0xFF /* MsgWindow.waitFrames: waiting for Cross (msg_input); TEXT_PAGE / TEXT_END / TEXT_HOLD */
+#define MSGW_CHOICE 0x02 /* has a choice (TEXT_CHOICE_START, or msg_allocWindow's flag); msg_getLastModal finds it */
+#define MSGW_SKIP 0x04 /* Cross pressed: the rest of the page shows at once (TEXT_SKIP sets it too); cleared at the next wait for Cross */
+#define MSGW_NO_SKIP 0x08 /* Cross doesn't skip the text (TEXT_WAIT_PAGE / TEXT_WAIT_CLOSE / TEXT_NO_SKIP); cleared at the next page */
 #define MSGW_MESSAGE 0x10 /* opened by msg_open */
-#define MSGW_NO_INPUT 0x40 /* Cross is ignored (text codes F9 09/45) */
+#define MSGW_NO_INPUT 0x40 /* Cross is ignored (TEXT_HOLD / TEXT_NO_INPUT) */
 
 
 void menuScreen_loadOverlay(void);
@@ -2942,6 +3010,11 @@ extern s32 g_padPortState[];
 u8 *ui_buildSprite(s32, s32, u32 *, s32, u8, s32 *, void *);
 u8 *text_buildPlain(s32, s32, u32 *, Character *, s32 *, u8 *);
 u8 *text_buildDpad(s32, s32, u32 *, u32, u8, s32 *, u8 *);
+/* text_buildDpad mask: the arrows drawn (bit i = g_dpadArrowSprites[i]) */
+#define DPAD_ARROW_UP 0x1
+#define DPAD_ARROW_DOWN 0x2
+#define DPAD_ARROW_LEFT 0x4
+#define DPAD_ARROW_RIGHT 0x8
 u8 *text_buildCode(s32, s32, u32 *, s32, s32 *, u8 *); /* draw a text control icon */
 #if !defined(OVL_3A_H)
 u8 *text_buildFontTpage(u32 *, DrTpageWords *);
@@ -3811,7 +3884,10 @@ typedef struct {
     u8 anchor; /* anchor: evt_getMsgLayout placement, & 3 = balloon side */
     u8 flags; /* WINLAYOUT_* */
 } WinLayout;
-#define WINLAYOUT_NO_FOCUS 0x1 /* msg_open doesn't make the window g_msgFocus (text code F9 45 in the layout) */
+#define WINLAYOUT_NO_FOCUS 0x1 /* msg_open doesn't make the window g_msgFocus (TEXT_NO_INPUT in the message header) */
+/* WinLayout.anchor: TEXT_WIN_* or */
+#define WINLAYOUT_ANCHOR_NONE 0x00 /* no header code: centred on the screen, or a balloon placed automatically */
+#define WINLAYOUT_ANCHOR_POS 0xFF /* TEXT_WIN_POS */
 s32 msg_overlapsRect(WinLayout *r);
 extern s32 g_msgLayoutAltOpen;
 s32 msg_input(MsgWindow *, s32);
@@ -3941,7 +4017,8 @@ typedef struct {
 #define EVT_OP_SHADOW_ON 0x7F /* clears MODEL_SLOT_NO_SHADOW (evt_modelOp*) */
 #define EVT_OP_SHADOW_OFF 0x80 /* sets MODEL_SLOT_NO_SHADOW */
 #define EVT_OP_SHADOW_SIZE 0x81 /* u8, u8: evt_modelOpField */
-#define EVT_OP_SHADOW_FIXED 0x83 /* u8: flag 0x20 + placement */
+#define EVT_OP_SHADOW_FIXED 0x83 /* u8: MODEL_SLOT_SHADOW_FIXED + placement */
+#define EVT_OP_SHADOW_OFFSET 0x82 /* s16 x, s16 z: the shadow offset (Unk11C0Slot.ofsX/ofsZ) */
 #define EVT_OP_SHADOW_UNFIX 0x84
 #define EVT_OP_SET_IDLE_SPEEDS 0x86 /* 4 x u8: actor.idleAnimSpeeds */
 #define EVT_OP_SET_DIR_OBJ 0x87 /* obj, dir: 0x36 on another object */
@@ -4062,7 +4139,49 @@ typedef struct {
 #define EVT_OP_VIB_LOOP_MODE 0xFB /* u8: vib_setLoopMode (VIB_LOOP_MODE bits) */
 #define EVT_OP_VIB_RANGE 0xFC /* u8 start, u8 end: vib_setRange */
 #define EVT_OP_PRELOAD 0xFD /* u8, u16: GameData.preloadRequest */
+#define EVT_OP_NOP_46 0x46 /* no arguments, does nothing (as 0x79, 0xD2, 0xD3) */
+#define EVT_OP_NOP_79 0x79
+#define EVT_OP_NOP_D2 0xD2
+#define EVT_OP_NOP_D3 0xD3
+#define EVT_OP_NOP_A3 0xA3 /* 4 x u8, read and ignored */
+#define EVT_OP_NOP_STRING 0x4E /* NUL-terminated string + variable reference, skipped */
+#define EVT_OP_END_FRAME 0x4F /* u8 ignored: returns 6, which ends this frame's evt_runScripts pass (resumed from g_evtResumeNode) */
+#define EVT_OP_BTL_ENEMY_CMD 0x38 /* u8: btl_setEnemyCmd for the battle vars' unit, by the function level: 0 BTL_CMD_ENEMY_DEATH,
+                                   * 1 BTL_CMD_ENEMY_COUNTER, 3 BTL_CMD_ENEMY_TURN */
+#define EVT_OP_SET_ROW 0x62 /* u8 character, u8: CHR_INFO_BATTLE_ROW */
+#define EVT_OP_PLAYER_TO_LINE_POINT 0x9E /* the player runs D_8006E658 (EVT_OP_MOVE_RESET, EVT_OP_MOVE_TO_LINE_POINT, EVT_OP_RETURN)
+                                          * as a pushed call; control off, every object's collisions off */
+#define EVT_OP_MOVE_TO_LINE_POINT 0xA0 /* evt_moveObjectTo(g_evtLinePointX, 0, g_evtLinePointZ), repeats until there */
+#define EVT_OP_LINE_POINT 0xA4 /* g_evtLinePointX/Z = the point of the region's line pts[0]-pts[1] nearest the player */
+#define EVT_OP_PARTY_MENU 0xB2 /* u8 size, u16 fixed-character mask: the party menu (menu_open(MENU_PARTY, &g_evtPartyRequest)) */
+#define EVT_OP_TURN_OBJ 0xBB /* obj, dir, speed: EVT_OP_TURN on another object */
+#define EVT_OP_WAIT_TURN_OBJ 0xBC /* obj: EVT_OP_WAIT_TURN on another object */
+#define EVT_OP_SPRITE_CMD_U8 0xDA /* u8, u8, u8, u16, u16: fld_spriteCommand (EVT_OP_SPRITE_CMD with a u8 third argument) */
+#define EVT_OP_SET_VICTORY_POSE 0xDB /* u8 character, u8: CHR_INFO_VICTORY_POSE */
+#define EVT_OP_MOVE_XYZ_NOTURN 0xE8 /* x, y, z: evt_moveObjectTo EVT_MOVETO_NO_TURN | EVT_MOVETO_3D */
+#define EVT_OP_PARTY_UPDATE_UIDS 0xE9 /* EvtState.partyUids rebuilt from the party (evt_execInstr_party) */
+#define EVT_OP_EXT 0xFF /* u8 op: the 0xFFxx opcodes below */
 #define EVT_OP_BGI_FLOOR_MOVE_START 0xFF00 /* u8, u8: bgi_startFloorMove */
+#define EVT_OP_BGI_FLOOR_MOVE_STOP 0xFF01 /* u8, u8: bgi_stopFloorMove */
+#define EVT_OP_BGI_FLOOR_MOVE_PLAYING 0xFF02 /* u8, u8: bgi_setFloorMovePlaying */
+#define EVT_OP_BGI_FLOOR_MOVE_MODE 0xFF03 /* u8, u8: bgi_setFloorMoveMode */
+#define EVT_OP_BGI_FLOOR_MOVE_FLOOR 0xFF04 /* u8, u8: bgi_setFloorMoveFloor */
+#define EVT_OP_BGI_FLOOR_MOVE_SPEED 0xFF05 /* u8, u16: bgi_setFloorMoveSpeed */
+#define EVT_OP_BGI_FLOOR_MOVE_CURVE 0xFF06 /* u8, u8: bgi_setFloorMoveCurve */
+#define EVT_OP_BGI_FLOOR_MOVE_RANGE 0xFF07 /* u8, u16, u16: bgi_setFloorMoveRange */
+#define EVT_OP_BGI_FLOOR_MOVE_AXIS 0xFF08 /* u8, u8: bgi_setFloorMoveAxis */
+#define EVT_OP_BGI_ANIM_FRAME 0xFF09 /* u8, u8: bgi_setAnimFrame */
+#define EVT_OP_BGI_ANIM_SHOW_FRAME 0xFF0A /* u8, u8: bgi_showAnimFrame */
+#define EVT_OP_BGI_ANIM_PLAYING 0xFF0B /* u8, u8: bgi_setAnimPlaying */
+#define EVT_OP_BGI_ANIM_MODE 0xFF0C /* u8, u8: bgi_setAnimMode */
+#define EVT_OP_BGI_ANIM_RATE 0xFF0D /* u8, u16: bgi_setAnimRate */
+#define EVT_OP_BGI_ANIM_FRAME_VALUES 0xFF0E /* u8, u8: bgi_setAnimFrameValues */
+#define EVT_OP_BGI_ANIM_FRAME_VALUE 0xFF0F /* u8, u8, u8: bgi_setAnimFrameValue */
+#define EVT_OP_BGI_ANIM_RANGE 0xFF10 /* u8, u8, u8: bgi_playAnimRange */
+#define EVT_OP_BGI_ANIM_RESET 0xFF11 /* u8, u8: bgi_resetAnim */
+/* evt_moveObjectTo flags (a negative value is instead an object to stop at) */
+#define EVT_MOVETO_NO_TURN 0x1 /* keep the facing */
+#define EVT_MOVETO_3D 0x2 /* move in y too (pitch) */
 /* function tags in a script entry's {u16 tag, u16 ofs} table (evt_callObjectFunc key) */
 #define EVT_FUNC_INIT 0   /* runs when the object is created */
 #define EVT_FUNC_LOOP 1   /* main loop, started when init returns */
@@ -4079,6 +4198,54 @@ typedef struct {
 #define EVT_EXPR_OBJ_VAR_REF 0x78  /* u8 uid, u8 index: another object's variable */
 #define EVT_EXPR_SYSVAR_REF 0x79   /* u8: system variable reference */
 #define EVT_EXPR_SYSVAR 0x7A       /* u8: evt_getSysVar value */
+/* Expression ops evt_runExpr passes to evt_exprSpecial (its jump table 0x8006E718). The EVT_EXPR_UNIT_* ops work on
+ * every battle unit in the mask below the operands (g_evtUnitObjects); ops not listed here give 0. The plain
+ * versions are handled in evt_runExpr itself: ++/-- 0x04-0x07, = 0x2C, *= .. >>= 0x2F-0x35, &= ^= |= 0x3D-0x3F,
+ * < > <= >= 0x18-0x1B, == != 0x20/0x21. */
+#define EVT_EXPR_UNIT_POST_INC 0x08 /* var++ per unit */
+#define EVT_EXPR_UNIT_POST_DEC 0x09
+#define EVT_EXPR_UNIT_PRE_INC 0x0A
+#define EVT_EXPR_UNIT_PRE_DEC 0x0B
+#define EVT_EXPR_UNIT_NOT 0x0F /* mask of the units whose value is 0 */
+#define EVT_EXPR_UNIT_LT 0x1C /* mask of the units whose value < operand */
+#define EVT_EXPR_UNIT_GT 0x1D
+#define EVT_EXPR_UNIT_LE 0x1E
+#define EVT_EXPR_UNIT_GE 0x1F
+#define EVT_EXPR_UNIT_EQ 0x22
+#define EVT_EXPR_UNIT_NE 0x23
+#define EVT_EXPR_UNIT_ANY_BITS 0x54 /* (value & operand) != 0 */
+#define EVT_EXPR_UNIT_NO_BITS 0x55 /* (value & operand) == 0 */
+#define EVT_EXPR_UNIT_XOR_NZ 0x56 /* (value ^ operand) != 0 */
+#define EVT_EXPR_UNIT_OR_NZ 0x57 /* (value | operand) != 0 */
+#define EVT_EXPR_UNIT_ASSIGN 0x2D /* value = operand per unit (evt_exprUnitAssign) */
+#define EVT_EXPR_UNIT_MUL_ASSIGN 0x36 /* *= */
+#define EVT_EXPR_UNIT_DIV_ASSIGN 0x37 /* /= (not by 0) */
+#define EVT_EXPR_UNIT_MOD_ASSIGN 0x38 /* %= (not by 0) */
+#define EVT_EXPR_UNIT_ADD_ASSIGN 0x39 /* += */
+#define EVT_EXPR_UNIT_SUB_ASSIGN 0x3A /* -= */
+#define EVT_EXPR_UNIT_SHL_ASSIGN 0x3B /* <<= */
+#define EVT_EXPR_UNIT_SHR_ASSIGN 0x3C /* >>= */
+#define EVT_EXPR_UNIT_AND_ASSIGN 0x40 /* &= */
+#define EVT_EXPR_UNIT_XOR_ASSIGN 0x41 /* ^= */
+#define EVT_EXPR_UNIT_OR_ASSIGN 0x42 /* |= */
+#define EVT_EXPR_UNIT_MASK 0x2E /* the mask of the units whose value is non-zero, assigned (evt_exprUnitLogic) */
+#define EVT_EXPR_UNIT_MASK_AND 0x43 /* the same mask & the next operand */
+#define EVT_EXPR_UNIT_MASK_XOR 0x44
+#define EVT_EXPR_UNIT_MASK_OR 0x45
+#define EVT_EXPR_UNIT_MAX 0x4B /* bit of the unit with the largest value */
+#define EVT_EXPR_UNIT_MIN 0x4C /* bit of the unit with the smallest value */
+#define EVT_EXPR_CHR_HP 0x52 /* character (evt_exprSpecial_chr): Character.hp */
+#define EVT_EXPR_CHR_MAX_HP 0x53
+#define EVT_EXPR_CHR_MP 0x6E
+#define EVT_EXPR_CHR_MAX_MP 0x6F
+#define EVT_EXPR_UNUSED_5A 0x5A /* pops one operand, gives 0 (as 0x5B, 0x5C) */
+#define EVT_EXPR_UNUSED_5B 0x5B
+#define EVT_EXPR_UNUSED_5C 0x5C
+#define EVT_EXPR_ITEM_COUNT 0x64 /* item id: item_getCount / keyItem_has / card_countOf */
+#define EVT_EXPR_BGI_ANIM_FRAME 0x65 /* bgi anim: bgi_getAnimFrame */
+#define EVT_EXPR_UNUSED_6C 0x6C /* pops two operands, gives 0 */
+#define EVT_EXPR_ACTOR_TRIANGLE 0x70 /* object: its walkmesh triangle (bgi_getActorTriangle), -1 unless an actor */
+#define EVT_EXPR_ACTOR_FLOOR 0x71 /* object: its walkmesh floor */
 /* evt_getSysVar ids (operand of EVT_EXPR_SYSVAR), named from what each case returns. Evidence: [code] main
  * evt_getSysVar; ids 32-0xBF go to ovl_0b btl_getBattleVar (BTL_GETVAR_*), ids >= 0xC0 to ovl_0c
  * w_frameGetParameter (WM_PARAM_*) */
@@ -4411,10 +4578,10 @@ extern u8 g_evtLocationNameBuf[];
 extern u8 *g_evtLocationName;
 
 typedef struct {
-    s32 size; /* members to pick (op 0xB2; = ovl_3b PartyRequest.size) */
+    s32 size; /* members to pick (EVT_OP_PARTY_MENU; = ovl_3b PartyRequest.size) */
     u8 party[4]; /* party character ids */
     u8 reserve[8]; /* recruited characters not in the party, 0xFF-terminated */
-    u8 fixed[9]; /* per character: can't leave the party (op 0xB2 bit mask) */
+    u8 fixed[9]; /* per character: can't leave the party (EVT_OP_PARTY_MENU bit mask) */
 } Unk8007AE70;
 extern Unk8007AE70 g_evtPartyRequest;
 
@@ -4488,7 +4655,7 @@ static inline void evt_execInstr_window(EvtObject *obj, s32 b, s32 c) {
     EvtListNode *n;
     EvtObject *o;
 
-    if ((b & 0xA0) == 0x80 && obj->kind == EVT_KIND_ACTOR) {
+    if ((b & (MSG_FLAG_BALLOON | MSG_FLAG_NO_FOLLOW)) == MSG_FLAG_BALLOON && obj->kind == EVT_KIND_ACTOR) {
         for (n = g_evtState->objects; n != NULL; n = n->next) {
             o = n->obj;
             if (o->kind == EVT_KIND_ACTOR && o->balloonWindow == c) {

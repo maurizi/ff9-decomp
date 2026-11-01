@@ -480,28 +480,28 @@ u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
     case TEXT_BTN_R2:
         pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_R2, 0, w, pkt);
         break;
-    case 0x60:
+    case TEXT_PAD_BTN + 0:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(1), 0, w, pkt);
         break;
-    case 0x61:
+    case TEXT_PAD_BTN + 1:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(0), 0, w, pkt);
         break;
-    case 0x62:
+    case TEXT_PAD_BTN + 2:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(2), 0, w, pkt);
         break;
-    case 0x63:
+    case TEXT_PAD_BTN + 3:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(3), 0, w, pkt);
         break;
-    case 0x64:
+    case TEXT_PAD_BTN + 4:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(4), 0, w, pkt);
         break;
-    case 0x65:
+    case TEXT_PAD_BTN + 5:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(5), 0, w, pkt);
         break;
-    case 0x66:
+    case TEXT_PAD_BTN + 6:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(6), 0, w, pkt);
         break;
-    case 0x67:
+    case TEXT_PAD_BTN + 7:
         pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(7), 0, w, pkt);
         break;
     case TEXT_BTN_START:
@@ -510,23 +510,23 @@ u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
     case TEXT_BTN_SELECT:
         pkt = ui_buildSprite(x, y + 2, ot, UI_SPRITE_SELECT, 0, w, pkt);
         break;
-    case 0x3A:
-        pkt = text_buildDpad(x, y + 2, ot, 1, 0, w, pkt);
+    case TEXT_DPAD_UP:
+        pkt = text_buildDpad(x, y + 2, ot, DPAD_ARROW_UP, 0, w, pkt);
         break;
-    case 0x3B:
-        pkt = text_buildDpad(x, y + 2, ot, 2, 0, w, pkt);
+    case TEXT_DPAD_DOWN:
+        pkt = text_buildDpad(x, y + 2, ot, DPAD_ARROW_DOWN, 0, w, pkt);
         break;
-    case 0x3C:
-        pkt = text_buildDpad(x, y + 2, ot, 4, 0, w, pkt);
+    case TEXT_DPAD_LEFT:
+        pkt = text_buildDpad(x, y + 2, ot, DPAD_ARROW_LEFT, 0, w, pkt);
         break;
-    case 0x3D:
-        pkt = text_buildDpad(x, y + 2, ot, 8, 0, w, pkt);
+    case TEXT_DPAD_RIGHT:
+        pkt = text_buildDpad(x, y + 2, ot, DPAD_ARROW_RIGHT, 0, w, pkt);
         break;
-    case 0x3E:
-        pkt = text_buildDpad(x, y + 2, ot, 3, 0, w, pkt);
+    case TEXT_DPAD_UP_DOWN:
+        pkt = text_buildDpad(x, y + 2, ot, DPAD_ARROW_UP | DPAD_ARROW_DOWN, 0, w, pkt);
         break;
-    case 0x3F:
-        pkt = text_buildDpad(x, y + 2, ot, 12, 0, w, pkt);
+    case TEXT_DPAD_LEFT_RIGHT:
+        pkt = text_buildDpad(x, y + 2, ot, DPAD_ARROW_LEFT | DPAD_ARROW_RIGHT, 0, w, pkt);
         break;
     case TEXT_CHAR_NAME + 0:
         pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[0], w, pkt);
@@ -604,28 +604,28 @@ s32 text_getCodeWidth(s32 c) {
     case TEXT_BTN_R2:
         r = g_uiSprites[UI_SPRITE_R2].w;
         break;
-    case 0x60:
+    case TEXT_PAD_BTN + 0:
         r = g_uiSprites[text_getButtonSprite(0)].w;
         break;
-    case 0x61:
+    case TEXT_PAD_BTN + 1:
         r = g_uiSprites[text_getButtonSprite(1)].w;
         break;
-    case 0x62:
+    case TEXT_PAD_BTN + 2:
         r = g_uiSprites[text_getButtonSprite(2)].w;
         break;
-    case 0x63:
+    case TEXT_PAD_BTN + 3:
         r = g_uiSprites[text_getButtonSprite(3)].w;
         break;
-    case 0x64:
+    case TEXT_PAD_BTN + 4:
         r = g_uiSprites[text_getButtonSprite(4)].w;
         break;
-    case 0x65:
+    case TEXT_PAD_BTN + 5:
         r = g_uiSprites[text_getButtonSprite(5)].w;
         break;
-    case 0x66:
+    case TEXT_PAD_BTN + 6:
         r = g_uiSprites[text_getButtonSprite(6)].w;
         break;
-    case 0x67:
+    case TEXT_PAD_BTN + 7:
         r = g_uiSprites[text_getButtonSprite(7)].w;
         break;
     case TEXT_BTN_START:
@@ -634,12 +634,12 @@ s32 text_getCodeWidth(s32 c) {
     case TEXT_BTN_SELECT:
         r = g_uiSprites[UI_SPRITE_SELECT].w;
         break;
-    case 0x3A:
-    case 0x3B:
-    case 0x3C:
-    case 0x3D:
-    case 0x3E:
-    case 0x3F:
+    case TEXT_DPAD_UP:
+    case TEXT_DPAD_DOWN:
+    case TEXT_DPAD_LEFT:
+    case TEXT_DPAD_RIGHT:
+    case TEXT_DPAD_UP_DOWN:
+    case TEXT_DPAD_LEFT_RIGHT:
         r = g_uiSprites[UI_SPRITE_DPAD].w;
         break;
     case TEXT_CHAR_NAME + 0:
@@ -759,11 +759,11 @@ u8 *text_append(u8 *dst, u8 *src) {
     s = ret;
     p = s;
     th = g_gameState->gameData->font->extCode >> 8;
-    while ((c = *p) != 0xFF) {
+    while ((c = *p) != TEXT_END) {
         p++;
-        if (c == 0xF9) {
+        if (c == TEXT_ESC) {
             p++;
-            if ((u32)(p[-2] - 0x43) < 2) {
+            if ((u32)(p[-2] - TEXT_X_ADD) < 2) {
                 p++;
             }
         } else if (c >= th) {
@@ -772,18 +772,18 @@ u8 *text_append(u8 *dst, u8 *src) {
     }
     dst += p - s;
     th2 = g_gameState->gameData->font->extCode >> 8;
-    while ((c2 = *src) != 0xFF) {
+    while ((c2 = *src) != TEXT_END) {
         *dst++ = *src++;
-        if (c2 == 0xF9) {
+        if (c2 == TEXT_ESC) {
             *dst++ = *src++;
-            if ((u32)(src[-2] - 0x43) < 2) {
+            if ((u32)(src[-2] - TEXT_X_ADD) < 2) {
                 *dst++ = *src++;
             }
         } else if (c2 >= th2) {
             *dst++ = *src++;
         }
     }
-    *dst = 0xFF;
+    *dst = TEXT_END;
     return ret;
 }
 

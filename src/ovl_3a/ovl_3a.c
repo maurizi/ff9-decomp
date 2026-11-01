@@ -18,7 +18,7 @@ void menuName_init(void) {
         s_menuName.gridSize[i] = s_menuNameGridSize[i];
     }
     chr_setDefaultName(s_menuName.defaultName, s_menuName.nameId);
-    memset(s_menuName.name, 0xFF, 10);
+    memset(s_menuName.name, TEXT_END, 10);
     if (s_menuName.startDefault) {
         chr_setDefaultName(s_menuName.name, s_menuName.nameId);
     } else {
@@ -99,7 +99,7 @@ void menuName_inputGrid(void) {
         snd_playSe(SE_CANCEL);
         if (s_menuName.len != 0) {
             s_menuName.len--;
-            s_menuName.name[s_menuName.len] = 0xFF;
+            s_menuName.name[s_menuName.len] = TEXT_END;
         }
     }
 }
@@ -117,7 +117,7 @@ void menuName_confirm(void) {
             snd_playSe(SE_CANCEL);
             if (s_menuName.len != 0) {
                 s_menuName.len--;
-                s_menuName.name[s_menuName.len] = 0xFF;
+                s_menuName.name[s_menuName.len] = TEXT_END;
             }
             break;
         case NAME_MENU_CONFIRM:
@@ -132,7 +132,7 @@ void menuName_confirm(void) {
         case NAME_MENU_DEFAULT:
             snd_playSe(SE_CURSOR);
             s_menuName.len = text_getLength(s_menuName.defaultName);
-            memset((s32)s_menuName.name, 0xFF, NAME_MAX_LEN);
+            memset((s32)s_menuName.name, TEXT_END, NAME_MAX_LEN);
             memcpy(s_menuName.name, s_menuName.defaultName, s_menuName.len);
             break;
         }

@@ -19,6 +19,24 @@
 #define CHR_AMARANT 7
 #define CHR_BEATRIX 8
 #define CHR_COUNT   9 /* GameData.characters entries (party_initNewGame, chr_setRecruited) */
+/* stat class (chr_getClass: g_charClassStats; chr_getClassFlags: g_chrClassFlags). 0-7 are the CHR_* above; the guests
+ * follow g_chrDefaultNames' order ([text chrnames] 8-11), which g_chrInitInfo confirms: slots 5-8 start on ability
+ * rows 8, 10, 12, 14 with default sets 8-11 */
+#define CHR_STATS_CINNA   8
+#define CHR_STATS_MARCUS  9
+#define CHR_STATS_BLANK   10
+#define CHR_STATS_BEATRIX 11 /* the female guest class (g_chrClassFlags 0x16); rows 14/15 hold Beatrix's abilities */
+/* ability row (Character.info.b.row: g_abilityRows, g_btlCharCmds). Rows 0-7 are the CHR_* above; each guest has two
+ * (the second's use not known; g_chrInitInfo starts the guests on the first) */
+#define CHR_ROW_CINNA     8
+#define CHR_ROW_CINNA_2   9
+#define CHR_ROW_MARCUS    10
+#define CHR_ROW_MARCUS_2  11
+#define CHR_ROW_BLANK     12
+#define CHR_ROW_BLANK_2   13
+#define CHR_ROW_BEATRIX   14
+#define CHR_ROW_BEATRIX_2 15
+#define CHR_ROW_EXTRA     16 /* 16-19: past the 16 g_abilityRows rows; classes Zidane, Cinna, Marcus, Blank */
 
 /* ---- appearance kinds: Character.info.b.kind, the index of ovl_0b g_btlCharModelIds / g_btlPartyMotionIds and the
  * battle weapon bone (btl_initWeapon). [code] chr_calcAppearance (main) picks them from g_chrAppearanceTypes, the
