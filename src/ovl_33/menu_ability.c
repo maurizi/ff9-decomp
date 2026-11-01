@@ -434,7 +434,7 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
         m->state = ABILITY_STATE_SWITCH;
     }
     m->slot = slot;
-    if (c->info.b.row < 16) {
+    if (c->info.b.row < CHR_ROW_EXTRA) {
         m2 = m;
         slot = 0;
         a = g_abilityRows[c->info.b.row];

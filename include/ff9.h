@@ -166,12 +166,13 @@ typedef struct {
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
 /* Character.classFlags (chr_getClassFlags: g_chrClassFlags, main data 0x8006CACC = 09 05 06 05 06 05 06 05 15 15 15 16 by
- * ability row; bits 0x4/0x8 left unnamed: 0x8 only for row 0, ability formula 0x62 misses it, 0x4 on every other row;
+ * stat class (CHR_STATS_*, from the ability row); bits 0x4/0x8 left unnamed: 0x8 only for class 0,
+ * ability formula 0x62 misses it, 0x4 on every other class;
  * formula 0x62 is in no ability or enemy record, so neither was observed) */
-#define CHR_CLASS_MALE 0x1 /* data only, medium: set on every row without CHR_CLASS_FEMALE (Quina included); no code
+#define CHR_CLASS_MALE 0x1 /* data only, medium: set on every class without CHR_CLASS_FEMALE (Quina included); no code
                             * tests it (battle AI scripts can read classFlags through btl_attr 0x43) */
-#define CHR_CLASS_FEMALE 0x2 /* Protect Girls covers it (btl_findCover); ability 0x61 misses it; rows 2, 4, 6 */
-#define CHR_CLASS_GUEST 0x10 /* rows 8 and up: no ability learning (chr_canLearnAbilities), no trance (btl_initPartyUnit),
+#define CHR_CLASS_FEMALE 0x2 /* Protect Girls covers it (btl_findCover); ability 0x61 misses it; classes 2, 4, 6 and 11 (Beatrix) */
+#define CHR_CLASS_GUEST 0x10 /* classes 8 and up (CHR_STATS_*): no ability learning (chr_canLearnAbilities), no trance (btl_initPartyUnit),
                              * the alternate default set and appearance (chr_getDefaultSet, chr_calcAppearance) */
 
 /* GameData.npcModels entry */

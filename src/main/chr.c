@@ -326,38 +326,38 @@ void chr_updateStats(Character *c) {
 
 s32 chr_getClass(u32 x) {
     switch (x) {
-    case 0:
-    case 16:
-        return 0;
-    case 1:
-        return 1;
-    case 2:
-        return 2;
-    case 3:
-        return 3;
-    case 4:
-        return 4;
-    case 5:
-        return 5;
-    case 6:
-        return 6;
-    case 7:
-        return 7;
-    case 8:
-    case 9:
-    case 17:
-        return 8;
-    case 10:
-    case 11:
-    case 18:
-        return 9;
-    case 12:
-    case 13:
-    case 19:
-        return 10;
-    case 14:
-    case 15:
-        return 11;
+    case CHR_ZIDANE:
+    case CHR_ROW_EXTRA:
+        return CHR_ZIDANE;
+    case CHR_VIVI:
+        return CHR_VIVI;
+    case CHR_DAGGER:
+        return CHR_DAGGER;
+    case CHR_STEINER:
+        return CHR_STEINER;
+    case CHR_FREYA:
+        return CHR_FREYA;
+    case CHR_QUINA:
+        return CHR_QUINA;
+    case CHR_EIKO:
+        return CHR_EIKO;
+    case CHR_AMARANT:
+        return CHR_AMARANT;
+    case CHR_ROW_CINNA:
+    case CHR_ROW_CINNA_2:
+    case CHR_ROW_EXTRA + 1:
+        return CHR_STATS_CINNA;
+    case CHR_ROW_MARCUS:
+    case CHR_ROW_MARCUS_2:
+    case CHR_ROW_EXTRA + 2:
+        return CHR_STATS_MARCUS;
+    case CHR_ROW_BLANK:
+    case CHR_ROW_BLANK_2:
+    case CHR_ROW_EXTRA + 3:
+        return CHR_STATS_BLANK;
+    case CHR_ROW_BEATRIX:
+    case CHR_ROW_BEATRIX_2:
+        return CHR_STATS_BEATRIX;
     }
     return -1;
 }
@@ -374,49 +374,49 @@ u8 chr_getClassFlags(u32 x) {
     u8 *tbl = g_chrClassFlags;
     s32 i;
     switch (x) {
-    case 0:
-    case 16:
-        i = 0;
+    case CHR_ZIDANE:
+    case CHR_ROW_EXTRA:
+        i = CHR_ZIDANE;
         break;
-    case 1:
-        i = 1;
+    case CHR_VIVI:
+        i = CHR_VIVI;
         break;
-    case 2:
-        i = 2;
+    case CHR_DAGGER:
+        i = CHR_DAGGER;
         break;
-    case 3:
-        i = 3;
+    case CHR_STEINER:
+        i = CHR_STEINER;
         break;
-    case 4:
-        i = 4;
+    case CHR_FREYA:
+        i = CHR_FREYA;
         break;
-    case 5:
-        i = 5;
+    case CHR_QUINA:
+        i = CHR_QUINA;
         break;
-    case 6:
-        i = 6;
+    case CHR_EIKO:
+        i = CHR_EIKO;
         break;
-    case 7:
-        i = 7;
+    case CHR_AMARANT:
+        i = CHR_AMARANT;
         break;
-    case 8:
-    case 9:
-    case 17:
-        i = 8;
+    case CHR_ROW_CINNA:
+    case CHR_ROW_CINNA_2:
+    case CHR_ROW_EXTRA + 1:
+        i = CHR_STATS_CINNA;
         break;
-    case 10:
-    case 11:
-    case 18:
-        i = 9;
+    case CHR_ROW_MARCUS:
+    case CHR_ROW_MARCUS_2:
+    case CHR_ROW_EXTRA + 2:
+        i = CHR_STATS_MARCUS;
         break;
-    case 12:
-    case 13:
-    case 19:
-        i = 10;
+    case CHR_ROW_BLANK:
+    case CHR_ROW_BLANK_2:
+    case CHR_ROW_EXTRA + 3:
+        i = CHR_STATS_BLANK;
         break;
-    case 14:
-    case 15:
-        i = 11;
+    case CHR_ROW_BEATRIX:
+    case CHR_ROW_BEATRIX_2:
+        i = CHR_STATS_BEATRIX;
         break;
     default:
         i = -1;
@@ -686,7 +686,7 @@ u8 chr_canLearnAbilities(Character *a) {
     if (a->classFlags & CHR_CLASS_GUEST) {
         return 0;
     }
-    return (s32)a->info.b.row < 8;
+    return (s32)a->info.b.row < CHR_ROW_CINNA; /* not a guest row */
 }
 
 s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
