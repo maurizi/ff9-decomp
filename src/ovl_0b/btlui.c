@@ -2264,6 +2264,9 @@ s32 btlui_switchTargetSide(u8 arg0) {
     }
     cur = NULL;
 found:
+    /* cur stays NULL when no unit is both targetable and targeted (seen in d3_f1759's battle); the PS1 then reads
+     * cur->flags, and clears BTL_UNIT_TARGETED in it below, through low RAM. Harmless on the PS1; a native port must
+     * check for NULL (ff9-ds F38). */
     if (g_btlTarget.canSwitchSide != 0) {
         if (arg0 == (k = cur->flags & BTL_UNIT_PARTY)) {
             return 0;
