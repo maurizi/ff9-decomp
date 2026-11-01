@@ -11205,3 +11205,10 @@ SND_LOAD_IDLE/WAIT_FADE/START/BANK/SEQ_START/SEQ 0-5 (ff9.h): GameData.soundLoad
 BTLFX_FIELD_* 0-9, BTLFX_FALLOFF_* 0-5, BTLFX_LAUNCH_* 0-5 (ovl_0b.h): btlfx_updateParticles fieldMode/fieldCurve,
   btlfx_runEmitters rot.pad and btlfx_runSubEmitter rotMode.
 BTLFX_DRAWON_PARTICLES/QUADS/EMITTER/RINGS 0-3 (ovl_0b.h): btlfx_opDrawOnUnit kind, btlfx_spawnDrawOnUnit.
+R37 world map (ovl_0c.h; evidence R37 in docs/runtime-findings.md): WM_WEATHER_CLEAR/SUNSET/DARK/DARK_PURPLE 0-3
+  (wm_setWeather, wm_getWeatherByPos, wm_isDarkWeather); WM_TOPO_BEACH 0x22, FOREST/_2/_3 0x24-0x26, SAND 0x29,
+  MOUNTAIN 0x31, NO_ENCOUNTER 0x34, SHALLOWS 0x35 (wm_getTerrainHeightOffset, wm_findGetoffPos, wm_controlWalk/Fly,
+  wm_tryStep, wm_movePlayer, wm_cameraFollow, wm_frameMain); WM_FX_CHOCOBO_SPRAY 6, BEACH_SPLASH 7, BOAT_SIDE_WAKE 10,
+  CHOCOBO_SAND 14, FOREST_LEAVES 16, AIRSHIP_SAND 19, WATERFALL_MIST 20, SAND_DUST 27 (wm_spawnEffect,
+  wm_drawEffects, wm_updateEffects and the spawn sites); WM_BLOCKFX_WATERFALLS 5, WATER_SHRINE 10 (wm_updateBlockFx);
+  WM_CAM_HOLD/LOWER/RAISE 0-2 (wm_cameraFollow dir). WM_EVT_BATTLE/FIELD/WORLD now alias EVT_UPD_*.

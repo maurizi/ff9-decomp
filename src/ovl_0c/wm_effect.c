@@ -103,7 +103,7 @@ void wm_drawEffects(void) {
                                                g_worldEffectSpeed, tex, 0, 0);
                     break;
                 }
-                case 16: {
+                case WM_FX_FOREST_LEAVES: {
                     SVECTOR r = g_worldEffectFlatRot;
                     pos.vy -= 400;
                     o->scale = (8 - o->frame) * 4000;
@@ -114,9 +114,9 @@ void wm_drawEffects(void) {
                     g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, 0, 2, -1, tex, 0, 0);
                     break;
                 }
-                case 14:
+                case WM_FX_CHOCOBO_SAND:
                 case WM_FX_AIRSHIP_SPRAY:
-                case 19:
+                case WM_FX_AIRSHIP_SAND:
                     if (g_worldSprayTarget >= 0x1000) {
                         g_worldSprayTarget = 0xFFF;
                     }
@@ -211,7 +211,7 @@ void wm_updateEffects(void) {
                 wm_freeEffect(cur);
             }
             break;
-        case 16:
+        case WM_FX_FOREST_LEAVES:
         case 17:
             if (cur->frame >= 9) {
                 wm_freeEffect(cur);
@@ -426,10 +426,10 @@ void wm_updateBlockFx(s32 arg0) {
         g_worldClutAnimFx2 = 1;
         on = 1;
         break;
-    case 5:
+    case WM_BLOCKFX_WATERFALLS:
         on = 1;
         break;
-    case 10:
+    case WM_BLOCKFX_WATER_SHRINE:
         if (g_worldFormFlags[WM_FORM_HOKORA_MIZU] != 0) {
             on = 1;
         }
@@ -525,32 +525,32 @@ void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     case 3:
         k = 2;
         break;
-    case 16:
+    case WM_FX_FOREST_LEAVES:
         k = 0xFF;
         break;
     case 4:
     case 5:
-    case 6:
-    case 7:
+    case WM_FX_CHOCOBO_SPRAY:
+    case WM_FX_BEACH_SPLASH:
     case 8:
     case 9:
-    case 10:
+    case WM_FX_BOAT_SIDE_WAKE:
     case 11:
     case 12:
     case 13:
-    case 14:
+    case WM_FX_CHOCOBO_SAND:
     case WM_FX_BOAT_WAKE:
     case 17:
     case WM_FX_AIRSHIP_SPRAY:
-    case 19:
-    case 20:
+    case WM_FX_AIRSHIP_SAND:
+    case WM_FX_WATERFALL_MIST:
     case 21:
     case WM_FX_WATER_RIPPLE:
     case 23:
     case 24:
     case 25:
     case 26:
-    case 27:
+    case WM_FX_SAND_DUST:
     case 28:
     case 29:
         k = 1;

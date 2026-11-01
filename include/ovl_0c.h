@@ -76,6 +76,19 @@
 #define WM_ATTR_TRIGGER_MASK 0xC000 /* cell event trigger kind (evt_callWorldCellTrigger's third argument), 0 none */
 #define WM_ATTR_TRIGGER(a) (((a) & WM_ATTR_TRIGGER_MASK) >> 14)
 #define WM_ATTR_TOPOGRAPHY(a) (((a) & 0xFC) >> 2)
+/* topography values (WM_ATTR_TOPOGRAPHY) the code tests by number. Which move modes may enter a topography is data
+ * (WmMoveMode.allowedCells: the Reef chocobo adds 0x33 0x35-0x37 0x3D, Mountain 0x31 0x32, Ocean 0x30 0x38 0x39, the
+ * flying ones 0x3A-0x3C 0x3E; the boat only 0x35 0x36 0x39). Evidence: R37 in docs/runtime-findings.md. The chocobo
+ * call cells (wm_canCallChocobo: 3, 0x12, 0x15, 0x16, 0x1C), 0x17 (pushes the player near ambient sound source 1),
+ * 0x1E/0x23 (beach splash like WM_TOPO_BEACH), 0x2D/0x2E (no airship landing) and the water depths stay numbers. */
+#define WM_TOPO_BEACH        0x22 /* runtime: sand at the water's edge; walking spawns WM_FX_BEACH_SPLASH */
+#define WM_TOPO_FOREST       0x24 /* runtime: the walker sinks into the trees (wm_getTerrainHeightOffset class 0), */
+#define WM_TOPO_FOREST_2     0x25 /* walking spawns WM_FX_FOREST_LEAVES; 0x24-0x26 are always handled together and */
+#define WM_TOPO_FOREST_3     0x26 /* raise WM_PARAM_EVENT_BATTLE */
+#define WM_TOPO_SAND         0x29 /* runtime: sandy plain; WM_FX_SAND_DUST walking, WM_FX_AIRSHIP_SAND / WM_FX_CHOCOBO_SAND flying low */
+#define WM_TOPO_MOUNTAIN     0x31 /* runtime (airship climbs over it) and data (Mountain chocobo); the camera eye rises faster */
+#define WM_TOPO_NO_ENCOUNTER 0x34 /* code: script battles are dropped while the player stands on it, no getting off onto it */
+#define WM_TOPO_SHALLOWS     0x35 /* data: Reef chocobo and boat water, shallowest sinking; the boat can only be left here */
 
 /* g_worldMapDebugFlags bits: each gates one group of debug prints */
 #define WM_DEBUG_MUSIC 0x4 /* w_music */
@@ -117,6 +130,11 @@
 #define WM_FOG_ON 1
 #define WM_FOG_KEEP 2
 /* wm_setWeather mode */
+/* runtime (R37, forced through wm_setWeather at the Hadris basin): the sky/light/fog preset pairs */
+#define WM_WEATHER_CLEAR 0
+#define WM_WEATHER_SUNSET 1      /* orange sky and light; wm_getWeatherByPos: around two points */
+#define WM_WEATHER_DARK 2        /* dark blue, night-like; inside the first point's circle; wm_isDarkWeather */
+#define WM_WEATHER_DARK_PURPLE 3 /* purple light, dark sea; one point, world data set 4 only; wm_isDarkWeather */
 #define WM_WEATHER_AUTO 4 /* WM_REQ_WEATHER: turn auto weather on */
 #define WM_WEATHER_KEEP 5
 
@@ -227,10 +245,26 @@ typedef struct WmEffect {
     s32 phase;
     s32 unk24; /* write-only (cleared) */
 } WmEffect; /* 0x28 */
-/* WmEffect.type, wm_spawnEffect's fourth argument (sprite = data pack entry type + 7). Only kinds whose use the code shows. */
+/* WmEffect.type, wm_spawnEffect's fourth argument (sprite = data pack entry type + 7). Only kinds whose use the code or
+ * a runtime check shows (R37 in docs/runtime-findings.md). */
 #define WM_FX_BOAT_WAKE 15 /* wm_controlSteer: behind the boat at the water surface while it moves fast; flat, drawn with g_worldEffectSpeed */
 #define WM_FX_AIRSHIP_SPRAY 18 /* airship low over water cells, drawn at g_worldSprayLevel (14 and 19 are drawn the same way) */
 #define WM_FX_WATER_RIPPLE 22 /* under the moving player on a water cell, at the surface; flat, drawn with g_worldEffectSpeed */
+#define WM_FX_CHOCOBO_SPRAY 6 /* code: the flying gold chocobo low over water cells (as WM_FX_AIRSHIP_SPRAY) */
+#define WM_FX_BEACH_SPLASH 7 /* runtime: small light-blue specks at the feet, walking on WM_TOPO_BEACH (and 0x1E, 0x23) */
+#define WM_FX_BOAT_SIDE_WAKE 10 /* code: spawned in pairs beside WM_FX_BOAT_WAKE on odd frames */
+#define WM_FX_CHOCOBO_SAND 14 /* code: the flying gold chocobo low over WM_TOPO_SAND; drawn like WM_FX_AIRSHIP_SPRAY */
+#define WM_FX_FOREST_LEAVES 16 /* runtime: green leaves around the walker in a forest, two every other frame */
+#define WM_FX_AIRSHIP_SAND 19 /* code: an airship low over WM_TOPO_SAND; drawn like WM_FX_AIRSHIP_SPRAY */
+#define WM_FX_WATERFALL_MIST 20 /* runtime: white spray at the foot of the waterfalls (WM_BLOCKFX_WATERFALLS) */
+#define WM_FX_SAND_DUST 27 /* runtime: faint pale puff behind the walker on WM_TOPO_SAND */
+/* wm_updateBlockFx / wm_drawBlockFx block ids (the emitter table is data pack entry id + 0x28) */
+#define WM_BLOCKFX_WATERFALLS 5 /* runtime: always on, emits WM_FX_WATERFALL_MIST at three waterfalls */
+#define WM_BLOCKFX_WATER_SHRINE 10 /* code: on while WM_FORM_HOKORA_MIZU ("HOKORA(MIZU)") is set */
+/* wm_cameraFollow: which way the camera target / eye height has to move (y grows downward) */
+#define WM_CAM_HOLD 0
+#define WM_CAM_LOWER 1 /* the wanted height is more than the dead zone below the current one */
+#define WM_CAM_RAISE 2 /* ... above it */
 /* world-map sound numbers (w_musicGetID) */
 #define WM_SE_AIRSHIP_WATER 38 /* the airships' loop over water: started with the Hilda Garde / Invincible move modes, volume follows speed and height over water (w_movementChange, wm_controlFly) */
 

@@ -3357,3 +3357,63 @@ says "code" or "static" and gives the evidence.
   FieldLightSet, FieldModelLight, one WeaponEntry) and EVT_SYSVAR_* are applied in the R35 commits.
 - confidence: high for 1, 3, 5, 6 and the long/short split of 2; medium for "10300 = the haircut" (bracketed by
   saves at 6960 and 10980 only); high for Zidane in 4 (other characters' default animIds not checked).
+
+## R37 world map constants (2026-11-01)  (status: **applied** in the R37 commit, ovl_0c.h WM_WEATHER_*, WM_TOPO_*, WM_FX_*, WM_BLOCKFX_*, WM_CAM_*)
+Method: Redux disc 3, states `cpass_wm_hadris` (walker, story 0x28A0, world data set 1) and `cpass_wm_airship9` (Hilda
+Garde 3 in flight). Scratch scripts in `build/r37/` (worktree agent-a812c85200c396bb2): `wmlib.py` (player = `*0x800CE3DC`,
+actorType = obj+17, topography/area from `g_worldActorTypeInfo[type].cellAttr`, active effect list from
+`g_worldEffectActive`, teleport = write obj+20/+28, `noenc()` = EvtState+0x16EF encounterRate and g_evtEncounterChance
+to 0 before every step), `tp.py`/`walk.py` (teleport, walk, sample, screenshot), `ablate_fx.py` (same input twice from a
+state, the second time with wm_drawEffects patched to `jr ra`; image diff = what the effects draw), `force_weather`
+(break at wm_setWeather after `g_worldWeatherAutoMode = -1`, set a0 = mode, a2 = 0x1000), `rectopo.lua` + `sweep.py`
+(per-vsync topography log while the airship flies; 287 changes recorded in `build/r37/topo.csv`; a second sweep hung
+Redux with "Unknown error in event listener", killed). New states: `r37_wm_sand`, `r37_wm_shore`, `r37_wm_air_sand`,
+`r37_wm_waterfall`, `r37_wm_gulug`, `r37_wm_gulug2` (disc 3).
+
+- **wm_setWeather mode 0-3 → WM_WEATHER_CLEAR / SUNSET / DARK / DARK_PURPLE. CONFIRMED.** Forced each mode at the
+  Hadris basin start (`cpass_wm_hadris`, `wx.py`): 0 normal daylight, 1 orange sky and orange-lit ground (sunset),
+  2 dark blue night-like light, 3 purple-lit ground and dark blue sea. `wm_getWeatherByPos` gives 1 within 0x56 of
+  (0x508, -0x3AD) << 8 and within 0xB4 of (0x1F4, -0x316) << 8, 2 within 0x3B of (0x50B, -0x3A0) << 8 (inside the first
+  circle), 3 within 0x65 of (0x2FE, -0x140) << 8 only with data set 4; teleporting to (0x1F400, -0x31600) gave auto mode
+  1, to (0x50B00, -0x3A000) mode 2, 0x4C00 further out mode 1. wm_isDarkWeather (darkBattle) = modes 2 and 3. high.
+- **Topography 0x24 (and 0x25, 0x26) → WM_TOPO_FOREST(_2/_3). CONFIRMED for 0x24.** Teleported the walker to
+  (309727, -161838): topography 0x24, Zidane sinks to his shoulders among dark-green trees, effect type 16 spawns two
+  every other frame (`t24c.png`: green leaves around him). 0x25/0x26 not stood on; the code treats 0x24-0x26 alike
+  everywhere (wm_getTerrainHeightOffset class 0 = 400 for the walker class, wm_findGetoffPos, the effect, the event
+  battle parameter). high (0x24), medium (0x25/0x26 by code).
+- **Effect type 16 → WM_FX_FOREST_LEAVES. CONFIRMED** (above). high.
+- **Topography 0x22 → WM_TOPO_BEACH, effect 7 → WM_FX_BEACH_SPLASH. CONFIRMED (medium).** (331345, -82379): grey sand at
+  the water's edge, y about 0 (sea level); walking spawns type 7 every 4 frames, seen as a few light-blue specks at the
+  feet while in the surf (`t22c.png`); in `r37_wm_shore` the ablation diff is a 4x4 speck. 0x1E (also y 0, next to the
+  sea) and 0x23 spawn the same effect but were not looked at, so they stay numbers. 0x20 is also grey beach sand next
+  to water (`t26b.png`) but no code tests it. medium.
+- **Topography 0x29 → WM_TOPO_SAND, effect 27 → WM_FX_SAND_DUST. CONFIRMED (medium).** (301500, -58000) area 39: light
+  tan sandy plain; walking spawns type 27 every 4 frames; ablation in `r37_wm_sand` shows a faint pale puff behind the
+  walker (diff bbox 11x11). The airship forced to y -1500 over it spawns type 19 (code: also the flying gold chocobo
+  spawns 14 there); 14/18/19 share one draw case, so 19 = WM_FX_AIRSHIP_SAND and 14 = WM_FX_CHOCOBO_SAND by spawn
+  site; they were alive but behind the camera, not seen. 6 = WM_FX_CHOCOBO_SPRAY by the same rule as
+  WM_FX_AIRSHIP_SPRAY (code). medium.
+- **Topography 0x31 → WM_TOPO_MOUNTAIN. CONFIRMED.** Airship over (231369, -78456): a large brown mountain, the airship
+  climbs from -2700 to -3682 over it; data: the Mountain chocobo (WM_MOVE_CHOCOBO_MOUNTAIN) adds 0x31 and 0x32 to the
+  allowed cells. In the sweep 0x31 is the commonest land value next to 0x3A (fly-only peaks). high.
+- **Topography 0x34 → WM_TOPO_NO_ENCOUNTER (code).** wm_movePlayer counts no step on it (no encounter roll), wm_frameMain
+  drops a script battle while the player stands on it, wm_findGetoffPos refuses it, the ground lookup skips the poly
+  cache. Not stood on. medium (code).
+- **Topography 0x35 → WM_TOPO_SHALLOWS (code + data).** wm_findGetoffPos lets the boat be left only from 0x35; it is
+  boat water and Reef-chocobo water; the smallest water sink offset (150). In the sweep it is the commonest
+  value of area 0 next to the coasts. medium.
+- **Effect type 20 → WM_FX_WATERFALL_MIST, wm_updateBlockFx 5 → WM_BLOCKFX_WATERFALLS. CONFIRMED.** Block 5's emitter
+  table (data pack entry 0x2D, `blockfx.py`) emits type 20 at six points around (321000, -950, -184000), always on.
+  `r37_wm_waterfall` (player at (322000, -192000)): two waterfalls ahead; with effects drawn there is white spray at the
+  foot of each fall, with wm_drawEffects patched out none (`wf_on_c.png` / `wf_off_c.png`). high.
+- **wm_updateBlockFx 10 → WM_BLOCKFX_WATER_SHRINE (string/code).** On only while g_worldFormFlags[WM_FORM_HOKORA_MIZU]
+  ("HOKORA(MIZU)", water shrine) is set; its table emits type 29 around (57000, 1150, -155500). Not seen.
+- **Effect 10 → WM_FX_BOAT_SIDE_WAKE (code).** wm_controlSteer spawns two beside WM_FX_BOAT_WAKE on odd frames. No boat
+  state. medium.
+- **wm_cameraFollow dir → WM_CAM_HOLD / LOWER / RAISE (code).** 1 when the wanted height is more than the dead zone
+  larger (y grows downward: airship heights are negative, its spray needs y >= -0x800), 2 when smaller. high.
+- Not named: effect types 2/3 (block 2 at Mount Gulug's summit (129057, -2400, -29156) with type 3, rising, growing,
+  subtractive blend: probably smoke, never on screen in `r37_wm_gulug*`), 4, 8, 17, 23-26, 29, 32; block fx 2, 3, 4,
+  6, 7; topographies 3/0x12/0x15/0x16/0x1C (chocobo call cells, wm_canCallChocobo; no chocobo track visited), 0x17,
+  0x1E, 0x23, 0x2D/0x2E and the water depths 0x30/0x33/0x36-0x39/0x3D (depth order from g_worldTerrainHeightOffsets
+  only). Snow: Mount Gulug's slopes are topography 0x1B/0x07/0x21 (`fx3.png`, `fx3b.png`), untested by code.

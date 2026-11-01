@@ -200,16 +200,16 @@ s32 wm_getWeatherByPos(void) {
 
     dx = (g_worldPlayer->pos.vx >> 8) - 0x508;
     dz = (g_worldPlayer->pos.vz >> 8) + 0x3AD;
-    r = SquareRoot0(dx * dx + dz * dz) < 0x56;
+    r = SquareRoot0(dx * dx + dz * dz) < 0x56; /* WM_WEATHER_SUNSET or WM_WEATHER_CLEAR */
     dx = (g_worldPlayer->pos.vx >> 8) - 0x50B;
     dz = (g_worldPlayer->pos.vz >> 8) + 0x3A0;
     if (SquareRoot0(dx * dx + dz * dz) < 0x3B) {
-        r = 2;
+        r = WM_WEATHER_DARK;
     }
     dx = (g_worldPlayer->pos.vx >> 8) - 0x1F4;
     dz = (g_worldPlayer->pos.vz >> 8) + 0x316;
     if (SquareRoot0(dx * dx + dz * dz) < 0xB4) {
-        r = 1;
+        r = WM_WEATHER_SUNSET;
     }
     if (g_worldDataSet == WM_DATASET_DISC4) {
         dx = (g_worldPlayer->pos.vx >> 8) - 0x2FE;
@@ -217,7 +217,7 @@ s32 wm_getWeatherByPos(void) {
         d = SquareRoot0(dx * dx + dz * dz);
         g_worldWeatherPointDist = d;
         if (d < 0x65) {
-            r = 3;
+            r = WM_WEATHER_DARK_PURPLE;
         }
     }
     return r;
@@ -238,38 +238,38 @@ void wm_setWeather(s32 mode, s32 flag, s32 arg2) {
     g_worldWeatherData.work[5] = g_worldWeatherData.work[2];
     if (g_worldFog != 0) {
         switch (mode) {
-        case 0:
+        case WM_WEATHER_CLEAR:
             g_worldWeatherData.work[4] = g_worldWeatherData.presets[3];
             g_worldWeatherData.work[6] = g_worldWeatherData.presets[2];
             return;
-        case 1:
+        case WM_WEATHER_SUNSET:
             g_worldWeatherData.work[4] = g_worldWeatherData.presets[7];
             g_worldWeatherData.work[6] = g_worldWeatherData.presets[6];
             return;
-        case 2:
+        case WM_WEATHER_DARK:
             g_worldWeatherData.work[4] = g_worldWeatherData.presets[11];
             g_worldWeatherData.work[6] = g_worldWeatherData.presets[10];
             return;
-        case 3:
+        case WM_WEATHER_DARK_PURPLE:
             g_worldWeatherData.work[4] = g_worldWeatherData.presets[15];
             g_worldWeatherData.work[6] = g_worldWeatherData.presets[14];
             return;
         }
     } else {
         switch (mode) {
-        case 0:
+        case WM_WEATHER_CLEAR:
             g_worldWeatherData.work[4] = g_worldWeatherData.presets[1];
             g_worldWeatherData.work[6] = g_worldWeatherData.presets[0];
             return;
-        case 1:
+        case WM_WEATHER_SUNSET:
             g_worldWeatherData.work[4] = g_worldWeatherData.presets[5];
             g_worldWeatherData.work[6] = g_worldWeatherData.presets[4];
             return;
-        case 2:
+        case WM_WEATHER_DARK:
             g_worldWeatherData.work[4] = g_worldWeatherData.presets[9];
             g_worldWeatherData.work[6] = g_worldWeatherData.presets[8];
             return;
-        case 3:
+        case WM_WEATHER_DARK_PURPLE:
             g_worldWeatherData.work[4] = g_worldWeatherData.presets[13];
             g_worldWeatherData.work[6] = g_worldWeatherData.presets[12];
             return;

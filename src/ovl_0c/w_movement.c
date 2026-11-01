@@ -163,7 +163,7 @@ void wm_cameraFollow(void) {
             d = y - g_worldCameraTarget[1];
             dir = d > 0x80;
             if (d < -0x80) {
-                dir = 2;
+                dir = WM_CAM_RAISE;
             }
             g_worldCameraEaseDiv = (d >= 0 ? d : -d) >> 5;
             if (g_worldCameraEaseDiv < 0x20) {
@@ -172,15 +172,15 @@ void wm_cameraFollow(void) {
             if (g_worldCameraEaseDiv > 0x100) {
                 g_worldCameraEaseDiv = 0x100;
             }
-            if (dir != 0) {
+            if (dir != WM_CAM_HOLD) {
                 switch (g_worldMoveModeInfo->controlType) {
                 case WM_CTRL_FLY:
                 case WM_CTRL_STEER:
                     switch (dir) {
-                    case 2:
+                    case WM_CAM_RAISE:
                         step = (d + 0x80) / 8;
                         break;
-                    case 1:
+                    case WM_CAM_LOWER:
                         step = (d - 0x80) / 2;
                         break;
                     }
@@ -188,10 +188,10 @@ void wm_cameraFollow(void) {
                 case WM_CTRL_WALK:
                 case WM_CTRL_WALK_FAST:
                     switch (dir) {
-                    case 2:
+                    case WM_CAM_RAISE:
                         step = ((d + 0x80) << 8) / (g_worldCameraEaseDiv << 5);
                         break;
-                    case 1:
+                    case WM_CAM_LOWER:
                         step = ((d - 0x80) << 8) / (g_worldCameraEaseDiv << 5);
                         break;
                     }
@@ -257,7 +257,7 @@ void wm_cameraFollow(void) {
             h = -0x251C;
         }
         if (g_worldCameraParams.groundClearance + h < y2) {
-            k = ((u8)cell >> 2 == 0x31) * 2;
+            k = ((u8)cell >> 2 == WM_TOPO_MOUNTAIN) * 2;
             if (g_worldCameraFastRise != 0) {
                 k = 2;
             }
@@ -276,7 +276,7 @@ void wm_cameraFollow(void) {
         dir = d > 0x100;
         step = 0;
         if (d < -0x100) {
-            dir = 2;
+            dir = WM_CAM_RAISE;
         }
         g_worldCameraEaseDiv = (d >= 0 ? d : -d) >> g_worldCameraEaseShift;
         if (g_worldCameraEaseDiv < g_worldCameraEaseDivMin) {
@@ -285,15 +285,15 @@ void wm_cameraFollow(void) {
         if (g_worldCameraEaseDiv > g_worldCameraEaseDivMax) {
             g_worldCameraEaseDiv = g_worldCameraEaseDivMax;
         }
-        if (dir != 0) {
+        if (dir != WM_CAM_HOLD) {
             switch (g_worldMoveModeInfo->controlType) {
             case WM_CTRL_FLY:
             case WM_CTRL_STEER:
                 switch (dir) {
-                case 2:
+                case WM_CAM_RAISE:
                     step = (d + 0x100) / 4;
                     break;
-                case 1:
+                case WM_CAM_LOWER:
                     step = (d - 0x100) / 32;
                     break;
                 }
@@ -301,10 +301,10 @@ void wm_cameraFollow(void) {
             case WM_CTRL_WALK:
             case WM_CTRL_WALK_FAST:
                 switch (dir) {
-                case 2:
+                case WM_CAM_RAISE:
                     step = ((d + 0x100) << 8) / (((g_worldCameraEaseScale - 2) * g_worldCameraEaseDiv * 7) >> k);
                     break;
-                case 1:
+                case WM_CAM_LOWER:
                     step = ((d - 0x100) << 8) / (g_worldCameraEaseScale * g_worldCameraEaseDiv * 3);
                     break;
                 }
@@ -1163,7 +1163,7 @@ void wm_movePlayer(WmActorType *cc) {
     s32 m;
     s32 off, lim, y, zz, wz, r1, r2;
 
-    if (g_worldMoveModeInfo->countsSteps != 0 && g_worldPlayerPosChanged != 0 && w_frameGetParameter(0xC1) != 0x34 && g_worldTitleId == -1) {
+    if (g_worldMoveModeInfo->countsSteps != 0 && g_worldPlayerPosChanged != 0 && w_frameGetParameter(WM_PARAM_TOPOGRAPHY) != WM_TOPO_NO_ENCOUNTER && g_worldTitleId == -1) {
         g_worldPlayerStepped = D_800CCE55;
     }
     if (D_800CCE4A == 0 && g_worldNaviMode != WM_NAVI_FULL && g_worldMusicState == WM_MUSIC_READY && g_worldMapLoaded != 0 && g_worldCameraSmoothing == 0) {
@@ -1343,7 +1343,7 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
     c = &g_worldPolyCache[k];
     v.vx += math_sin(g_worldPlayerHeading + (ang = arg1 + 0x800)) * arg3 >> 12;
     v.vz += math_cos(g_worldPlayerHeading + ang) * arg3 >> 12;
-    if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == 0x34 && g_worldMoveModeInfo->controlType != WM_CTRL_FLY) {
+    if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == WM_TOPO_NO_ENCOUNTER && g_worldMoveModeInfo->controlType != WM_CTRL_FLY) {
         wm_getGroundHeight(&v, &cell, &h, NULL, (u16 *)&v.vy);
     } else {
         wm_getGroundHeight(&v, &cell, &h, c, (u16 *)&v.vy);
@@ -1416,7 +1416,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
             return 0;
         }
         t = (u8)cell >> 2;
-        if (t >= 0x2D && (t < 0x2F || t == 0x34)) {
+        if (t >= 0x2D && (t < 0x2F || t == WM_TOPO_NO_ENCOUNTER)) {
             return 0;
         }
         break;
@@ -1424,7 +1424,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
         if (!wm_tryStep((VECTOR *)&v, 0, 10, 0, &cell, 0)) {
             return 0;
         }
-        if (((u8)cell >> 2) != 0x35) {
+        if (((u8)cell >> 2) != WM_TOPO_SHALLOWS) {
             return 0;
         }
         break;
@@ -1432,7 +1432,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
         if (!wm_tryStep((VECTOR *)&v, 0, 0, 0, &cell, 0)) {
             return 0;
         }
-        if (((u8)cell >> 2) == 0x34) {
+        if (((u8)cell >> 2) == WM_TOPO_NO_ENCOUNTER) {
             return 0;
         }
         break;
@@ -1476,12 +1476,12 @@ u8 wm_findGetoffPos(ActorPos *out) {
         if (ok) {
             k = (u8)cell >> 2;
             switch (k) {
-            case 0x24:
-            case 0x25:
-            case 0x26:
+            case WM_TOPO_FOREST:
+            case WM_TOPO_FOREST_2:
+            case WM_TOPO_FOREST_3:
                 k = 0;
                 break;
-            case 0x35:
+            case WM_TOPO_SHALLOWS:
                 k = 1;
                 break;
             case 0x36:
@@ -1629,14 +1629,14 @@ void wm_controlWalk(void) {
         }
         if (!(g_worldFrameCount & 3)) {
             k = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
-            if (k == 0x1E || k == 0x22 || k == 0x23) {
-                wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, 7, 0x900);
+            if (k == 0x1E || k == WM_TOPO_BEACH || k == 0x23) {
+                wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, WM_FX_BEACH_SPLASH, 0x900);
             }
-            if (((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == 0x29) {
-                wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, 27, 0x2000);
+            if (((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == WM_TOPO_SAND) {
+                wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, WM_FX_SAND_DUST, 0x2000);
             }
         }
-        if (!(g_worldFrameCount & 1) && (u32)(((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) - 0x24) < 3) {
+        if (!(g_worldFrameCount & 1) && (u32)(((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) - WM_TOPO_FOREST) < 3) {
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
@@ -1645,7 +1645,7 @@ void wm_controlWalk(void) {
                 rand_refill();
             }
             lo = *g_randPtr++;
-            wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, 16, 0x6D80);
+            wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, WM_FX_FOREST_LEAVES, 0x6D80);
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
@@ -1654,7 +1654,7 @@ void wm_controlWalk(void) {
                 rand_refill();
             }
             lo = *g_randPtr++;
-            wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, 16, 0x6D80);
+            wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, WM_FX_FOREST_LEAVES, 0x6D80);
         }
     }
 }
@@ -1716,10 +1716,10 @@ void wm_controlSteer(void) {
         if (g_worldFrameCount & 1) {
             dx = math_sin(ang + g_worldPlayer->pos.rotY + 0x80) >> 3;
             dz = math_cos(ang + g_worldPlayer->pos.rotY + 0x80) >> 3;
-            wm_spawnEffect(g_worldPlayer->pos.vx + dx, -100, g_worldPlayer->pos.vz + dz, 10, 15000);
+            wm_spawnEffect(g_worldPlayer->pos.vx + dx, -100, g_worldPlayer->pos.vz + dz, WM_FX_BOAT_SIDE_WAKE, 15000);
             dx = math_sin(ang + g_worldPlayer->pos.rotY - 0x80) >> 3;
             dz = math_cos(ang + g_worldPlayer->pos.rotY - 0x80) >> 3;
-            wm_spawnEffect(g_worldPlayer->pos.vx + dx, -100, g_worldPlayer->pos.vz + dz, 10, 15000);
+            wm_spawnEffect(g_worldPlayer->pos.vx + dx, -100, g_worldPlayer->pos.vz + dz, WM_FX_BOAT_SIDE_WAKE, 15000);
         }
     }
 }
@@ -1913,19 +1913,19 @@ void wm_controlFly(void) {
             } else {
                 wm_seFadeVolume(WM_SE_AIRSHIP_WATER, 30, 0);
             }
-            if (t == 0x29 && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
+            if (t == WM_TOPO_SAND && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
                 g_worldSprayTarget = 0x1000 - (g_worldPlayer->pos.vy - 0x514) * 2;
-                wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy + 100, g_worldPlayer->pos.vz, 19, 32000);
+                wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy + 100, g_worldPlayer->pos.vz, WM_FX_AIRSHIP_SAND, 32000);
             }
             break;
         case WM_ACTOR_CHOCOBO4:
             if (f && abs(g_worldPlayerSpeed) > 30 && g_worldPlayer->pos.vy >= -100) {
                 g_worldSprayTarget = 0x1000 - abs(g_worldPlayer->pos.vy + 100) * 2;
-                wm_spawnEffect(g_worldPlayer->pos.vx, -200, g_worldPlayer->pos.vz, 6, 19200);
+                wm_spawnEffect(g_worldPlayer->pos.vx, -200, g_worldPlayer->pos.vz, WM_FX_CHOCOBO_SPRAY, 19200);
             }
-            if (t == 0x29 && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
+            if (t == WM_TOPO_SAND && g_worldPlayerSpeed != 0 && g_worldPlayer->pos.vy >= -0x708) {
                 g_worldSprayTarget = 0x1000 - abs(g_worldPlayer->pos.vy + 0x708) * 2;
-                wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy + 100, g_worldPlayer->pos.vz, 14, 25600);
+                wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy + 100, g_worldPlayer->pos.vz, WM_FX_CHOCOBO_SAND, 25600);
             }
             break;
         }
@@ -2219,12 +2219,12 @@ void wm_mountPalettePre(void) {
 s32 wm_getTerrainHeightOffset(s32 arg0, u32 arg1, u8 *arg2) {
     s32 i;
     switch ((s32)(arg1 & 0xFC) >> 2) {
-    case 0x24:
-    case 0x25:
-    case 0x26:
+    case WM_TOPO_FOREST:
+    case WM_TOPO_FOREST_2:
+    case WM_TOPO_FOREST_3:
         i = 0;
         break;
-    case 0x35:
+    case WM_TOPO_SHALLOWS:
         i = 1;
         break;
     case 0x36:

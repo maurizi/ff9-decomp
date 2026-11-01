@@ -142,7 +142,7 @@ s32 wm_frameMain(void) {
     pad_setFlags(0x8000, busy);
     switch (g_worldEventResult) {
     case WM_EVT_BATTLE:
-        if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == 0x34) {
+        if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == WM_TOPO_NO_ENCOUNTER) {
             g_worldEventResult = 0;
         }
         g_gameState->gameData->darkBattle = wm_isDarkWeather();
@@ -782,7 +782,7 @@ void wm_runSetupStep(void) {
 }
 
 s32 wm_isDarkWeather(void) {
-    return (u32)(g_worldWeatherMode - 2) < 2U;
+    return (u32)(g_worldWeatherMode - WM_WEATHER_DARK) < 2U; /* WM_WEATHER_DARK or WM_WEATHER_DARK_PURPLE */
 }
 
 void wm_postDraw(void) {
