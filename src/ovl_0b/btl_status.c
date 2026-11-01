@@ -108,6 +108,10 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         if (g_gameState->gameData->ctx.battle->phase >= BTL_PHASE_ENTRANCE) {
             btl_checkSideDefeated(u);
         }
+        /* Falls through into Sleep's motion switch, as in the original. At battle start (btl_initPartyUnit ->
+         * btl_addStatuses, a party member carrying Venom over from the last battle) u->model and curCmd are still
+         * NULL, so the PS1 reads (and may write) low RAM through them here. Harmless on the PS1; a native port must
+         * guard both pointers (ff9-ds F36: battles d2_b0779, d4_b0280/0779/0828/0940). */
     case BTL_STATUS_SLEEP_BIT:
         if ((u->flags & BTL_UNIT_PARTY) && (s32)u->model->motion != u->motions[1] &&
             g_gameState->gameData->ctx.battle->curCmd->caster != u) {
