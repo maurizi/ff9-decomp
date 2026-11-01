@@ -3,7 +3,7 @@
 s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 t;
+    s32 elapsed;
 
     if (mode == 0) {
         *args = 0x58;
@@ -52,9 +52,9 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        t = frame - 0x37;
-        if (t >= 0 && t < 0x79) {
-            if (t >= 0x23) {
+        elapsed = frame - 0x37;
+        if (elapsed >= 0 && elapsed < 0x79) {
+            if (elapsed >= 0x23) {
                 if (work->scale2C.vx > 0x400) {
                     work->scale2C.vx -= 0x100;
                     work->scale2C.vy -= 0x100;

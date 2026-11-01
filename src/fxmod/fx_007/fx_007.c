@@ -234,7 +234,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 VECTOR segScale;
                 SVECTOR sparkPos;
                 s32 spin;
-                s32 flag;
+                s32 pillarOn;
                 s32 fade;
                 s32 flash;
                 s32 i;
@@ -254,8 +254,8 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vy = 0;
                 rot.pad = 1;
                 rot.vz = spin;
-                flag = frame < 0x1D;
-                if (flag) {
+                pillarOn = frame < 0x1D;
+                if (pillarOn) {
                     s32 ringT;
                     s32 ringAng;
                     u8 *data;
@@ -279,7 +279,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawRings(data, &work->pos8, NULL, glowScale, 0, 1, ex->math_cos(t >> 2));
                 }
                 env->otZ = 0;
-                if (flag) {
+                if (pillarOn) {
                     s32 pillarAng;
 
                     ex->btlfx_drawScrollMove(spin, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);

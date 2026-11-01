@@ -104,20 +104,20 @@ static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *ou
 s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR pos;
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR c;
+    SVECTOR bonePt0;
+    SVECTOR bonePt1;
+    SVECTOR bonePt2;
     u8 *file;
     s32 state;
     s32 frame;
     s32 amp;
     s32 t;
-    s32 t0;
-    s32 t3;
+    s32 ratio;
+    s32 fadeAng;
     s32 k;
     s32 i;
     Pool6CEntry *emitter;
-    SVECTOR *sv;
+    SVECTOR *ribbonA;
 
     if (mode == 0) {
         *args = 0x40;
@@ -172,7 +172,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         amp = 0;
         switch (state) {
         case 0:
-            t0 = (frame << 12) / 24;
+            ratio = (frame << 12) / 24;
             if (frame == 0) {
                 emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos18);
                 if (emitter != NULL) {
@@ -187,17 +187,17 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame > 0) {
-                s32 h;
+                s32 slice;
 
                 pos.vx = work->pos18.vx;
                 pos.vy = work->pos18.vy;
                 pos.vz = work->pos18.vz;
-                h = ((0x1000 - ex->math_sin(t0 >> 2)) * 0x514) >> 12;
-                pos.vy += h;
-                ex->Hi_SetEffModelSlice(work->model28, h);
+                slice = ((0x1000 - ex->math_sin(ratio >> 2)) * 0x514) >> 12;
+                pos.vy += slice;
+                ex->Hi_SetEffModelSlice(work->model28, slice);
                 ex->Hi_DrawSliceEffModel(&work->rot2C, &pos, (s32)work->scale34, work->model28);
-                ex->Hi_ModifyEffModelRGB(work->model28, (((t0 >> 1) + 0x800) >> 5) - 0x80, (((t0 >> 1) + 0x800) >> 5) - 0x80,
-                                         (((t0 >> 1) + 0x800) >> 5) - 0x80);
+                ex->Hi_ModifyEffModelRGB(work->model28, (((ratio >> 1) + 0x800) >> 5) - 0x80, (((ratio >> 1) + 0x800) >> 5) - 0x80,
+                                         (((ratio >> 1) + 0x800) >> 5) - 0x80);
             }
             if (frame >= 0x18) {
                 work->state0 = 1;
@@ -208,8 +208,8 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vx = work->pos18.vx;
             pos.vy = work->pos18.vy;
             pos.vz = work->pos18.vz;
-            t0 = ((Fx05eSummon *)env->loader)->model60;
-            ex->Hi_SetSummonMotFrame(t0, 0);
+            ratio = ((Fx05eSummon *)env->loader)->model60;
+            ex->Hi_SetSummonMotFrame(ratio, 0);
             ex->Hi_DrawSummonModel(&work->rot2C, &pos, (s32)work->scale34, ((Fx05eSummon *)env->loader)->model60, 1);
             if (frame >= 8) {
                 work->state0 = 2;
@@ -274,15 +274,15 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 3:
-            t0 = frame << 9;
-            t3 = t0 >> 2;
-            work->scale34[0] = work->scale34[2] = ((0x1000 - ex->math_sin(t3)) * 0x1000) >> 12;
+            ratio = frame << 9;
+            fadeAng = ratio >> 2;
+            work->scale34[0] = work->scale34[2] = ((0x1000 - ex->math_sin(fadeAng)) * 0x1000) >> 12;
             pos.vx = work->pos18.vx;
             pos.vy = work->pos18.vy;
             pos.vz = work->pos18.vz;
             ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->loader)->model60, 0x29 - frame);
             ex->Hi_DrawSummonModel(&work->rot2C, &pos, (s32)work->scale34, ((Fx05eSummon *)env->loader)->model60, 1);
-            amp = ex->math_cos(t3);
+            amp = ex->math_cos(fadeAng);
             ex->Hi_ModifySummonModelRGB(((Fx05eSummon *)env->loader)->model60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
                                         (amp >> 5) - 0x80);
             if (frame >= 8) {
@@ -293,32 +293,32 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (amp != 0) {
-            fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt0, &a);
-            fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt1, &b);
-            fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt2, &c);
+            fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt0, &bonePt0);
+            fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt1, &bonePt1);
+            fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->model60, 9, &fx_05e_bonePt2, &bonePt2);
             if (amp < 0) {
-                fxm_drawRibbonTrail(&a, &b, 0x3F8, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, 0, fx_05e_ribbonA, 1);
-                fxm_drawRibbonTrail(&b, &c, 0x3F8, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, 0, fx_05e_ribbonB, 1);
+                fxm_drawRibbonTrail(&bonePt0, &bonePt1, 0x3F8, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, 0, fx_05e_ribbonA, 1);
+                fxm_drawRibbonTrail(&bonePt1, &bonePt2, 0x3F8, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, 0, fx_05e_ribbonB, 1);
             } else {
-                fxm_drawRibbonTrail(&a, &b, 0x10, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, amp, fx_05e_ribbonA, 1);
-                fxm_drawRibbonTrail(&b, &c, 0x10, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, amp, fx_05e_ribbonB, 1);
-                BTLFX_COPY_SVEC(&work->pos20, &a);
+                fxm_drawRibbonTrail(&bonePt0, &bonePt1, 0x10, (CVECTOR *)&fx_05e_ribbonRgb0, (CVECTOR *)&fx_05e_ribbonRgb1, amp, fx_05e_ribbonA, 1);
+                fxm_drawRibbonTrail(&bonePt1, &bonePt2, 0x10, (CVECTOR *)&fx_05e_ribbonRgb1, (CVECTOR *)&fx_05e_ribbonRgb2, amp, fx_05e_ribbonB, 1);
+                BTLFX_COPY_SVEC(&work->pos20, &bonePt0);
                 {
-                    s32 o;
-                    s32 p2;
-                    SVECTOR *sv2;
+                    s32 offA;
+                    s32 offB;
+                    SVECTOR *ribbonB;
 
-                    sv = (SVECTOR *)fx_05e_ribbonA;
-                    for (i = 0, o = 8; i < 17; o += 16, i++) {
-                        sv[i * 2].vy -= sv[i * 2].vy >> 6;
-                        ((SVECTOR *)(o + (s32)sv))->vy -= ((SVECTOR *)(o + (s32)sv))->vy >> 4;
+                    ribbonA = (SVECTOR *)fx_05e_ribbonA;
+                    for (i = 0, offA = 8; i < 17; offA += 16, i++) {
+                        ribbonA[i * 2].vy -= ribbonA[i * 2].vy >> 6;
+                        ((SVECTOR *)(offA + (s32)ribbonA))->vy -= ((SVECTOR *)(offA + (s32)ribbonA))->vy >> 4;
                     }
-                    sv2 = (SVECTOR *)fx_05e_ribbonB;
+                    ribbonB = (SVECTOR *)fx_05e_ribbonB;
                     i = 0;
-                    p2 = 8;
-                    for (; i < 17; p2 += 16, i++) {
-                        sv2[i * 2].vy -= sv2[i * 2].vy >> 4;
-                        ((SVECTOR *)(p2 + (s32)sv2))->vy -= ((SVECTOR *)(p2 + (s32)sv2))->vy >> 3;
+                    offB = 8;
+                    for (; i < 17; offB += 16, i++) {
+                        ribbonB[i * 2].vy -= ribbonB[i * 2].vy >> 4;
+                        ((SVECTOR *)(offB + (s32)ribbonB))->vy -= ((SVECTOR *)(offB + (s32)ribbonB))->vy >> 3;
                     }
                 }
             }

@@ -79,11 +79,11 @@ s32 fx_053_op82(s32 mode, Fx053Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = 0x1C;
     } else if (mode == 1) {
-        s32 n = *args;
+        s32 target = *args;
 
-        work->target18 = n;
+        work->target18 = target;
         fx_053_env = env;
-        if (n >= env->targets->targetCount) {
+        if (target >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }

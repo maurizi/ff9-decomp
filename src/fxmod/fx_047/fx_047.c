@@ -4,7 +4,7 @@ s32 fx_047_op80(s32 mode, Fx047Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *emitter;
     s32 frame;
-    s32 t;
+    s32 zWord;
 
     if (mode == 0) {
         *args = 0x18;
@@ -12,9 +12,9 @@ s32 fx_047_op80(s32 mode, Fx047Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->stop0 = 0;
         fx_047_env = env;
         ((s32 *)&work->posC)[0] = ((s32 *)&env->targets->centerX)[0];
-        t = ((s32 *)&env->targets->centerX)[1];
+        zWord = ((s32 *)&env->targets->centerX)[1];
         work->posC.vy = 0;
-        ((s32 *)&work->posC)[1] = t;
+        ((s32 *)&work->posC)[1] = zWord;
         ((s32 *)&work->pos4)[0] = ((s32 *)&work->posC)[0];
         ((s32 *)&work->pos4)[1] = ((s32 *)&work->posC)[1];
         work->pos4.vy -= 0x12C;

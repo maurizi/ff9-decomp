@@ -47,16 +47,16 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     VECTOR cur;
     VECTOR step;
     Fx07aStrip *tr;
-    Fx07aStrip *q;
+    Fx07aStrip *strip;
     Fx07aPt *pt;
     s32 frame;
     s32 i;
     s32 j;
     s32 n = 11;
-    s32 w;
-    s32 r;
-    s32 a;
-    s32 b;
+    s32 spread;
+    s32 rise;
+    s32 pitch;
+    s32 yaw;
     Pool6CEntry *emitter;
 
     if (mode == 0) {
@@ -253,7 +253,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     step.vx = ((work->pos94.vx + tr->endX5C - fx_07a_bonePos.vx) << 12) / n;
                     step.vy = ((work->pos94.vy + tr->endY60 - fx_07a_bonePos.vy) << 12) / n;
                     step.vz = ((work->pos94.vz + tr->endZ64 - fx_07a_bonePos.vz) << 12) / n;
-                    q = tr;
+                    strip = tr;
                     for (j = 0, pt = tr->pts4; j < n; pt++, j++) {
                         pt->vx = cur.vx >> 12;
                         pt->vz = cur.vz >> 12;
@@ -266,28 +266,28 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                     if (tr->timer10C < 4) {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xC), 0, NULL, frame, 0x1000,
-                                            tr->timer10C << 10, 1, (u8 *)q, 0);
+                                            tr->timer10C << 10, 1, (u8 *)strip, 0);
                     } else {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xC), 0, NULL, frame, 0x1000,
-                                            0x1000, 1, (u8 *)q, 0);
+                                            0x1000, 1, (u8 *)strip, 0);
                     }
                 } else if (tr->timer10C < 0) {
                     tr->timer10C++;
                 } else if (work->timers0[0] >= 5) {
                     tr->timer10C = ex->btlfx_randRange(4, 8);
                     j = 1;
-                    a = ex->btlfx_rand() & 0xFFF;
-                    b = ex->btlfx_rand() & 0xFFF;
-                    r = (ex->math_cos(a) * (work->models40[0].scaleC.vx + 0x80)) >> 12;
-                    tr->endY60 = r;
-                    tr->endX5C = (ex->math_sin(b) * abs(r)) >> 12;
-                    tr->endZ64 = (ex->math_cos(b) * abs(r)) >> 12;
+                    pitch = ex->btlfx_rand() & 0xFFF;
+                    yaw = ex->btlfx_rand() & 0xFFF;
+                    rise = (ex->math_cos(pitch) * (work->models40[0].scaleC.vx + 0x80)) >> 12;
+                    tr->endY60 = rise;
+                    tr->endX5C = (ex->math_sin(yaw) * abs(rise)) >> 12;
+                    tr->endZ64 = (ex->math_cos(yaw) * abs(rise)) >> 12;
                     tr->speedYBC[0] = 0;
                     tr->offsetY6C[0] = 0;
                     for (; j < n - 1; j++) {
-                        w = j * 8 + 0x10;
-                        tr->offsetY6C[j] = ex->btlfx_randRange(-w * 2, w * 2);
-                        tr->speedYBC[j] = ex->btlfx_randRange(-w, w);
+                        spread = j * 8 + 0x10;
+                        tr->offsetY6C[j] = ex->btlfx_randRange(-spread * 2, spread * 2);
+                        tr->speedYBC[j] = ex->btlfx_randRange(-spread, spread);
                     }
                     tr->speedYBC[j] = 0;
                     tr->offsetY6C[j] = 0;
@@ -307,23 +307,23 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
     Unk800F78A4 *env = fx_07a_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     u8 uv[4][8];
-    SVECTOR p[4];
+    SVECTOR quad[4];
     SVECTOR rot;
     MATRIX m;
-    s32 dr;
-    s32 dk;
+    s32 radiusStep;
+    s32 uvStep;
     POLY_FT4 *ft4;
     POLY_G4 *poly;
-    s32 a;
+    s32 ang;
     s32 j;
-    s32 r;
-    s32 k;
-    s32 b;
+    s32 radius;
+    s32 uvRadius;
+    s32 twistAng;
 
-    p[3].vy = 0;
-    p[2].vy = 0;
-    p[1].vy = 0;
-    p[0].vy = 0;
+    quad[3].vy = 0;
+    quad[2].vy = 0;
+    quad[1].vy = 0;
+    quad[0].vy = 0;
     rot.vz = 0;
     rot.vy = 0;
     rot.vx = 0;
@@ -340,36 +340,36 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
     ex->MulRotMatrix(&m);
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    a = 0;
-    dr = fx_07a_discRadius >> 2;
-    dk = (fx_07a_uvRadiusOut - fx_07a_uvRadiusIn) >> 2;
-    for (; a < 0x1000; a += 0x100) {
-        r = 0;
-        k = 0;
+    ang = 0;
+    radiusStep = fx_07a_discRadius >> 2;
+    uvStep = (fx_07a_uvRadiusOut - fx_07a_uvRadiusIn) >> 2;
+    for (; ang < 0x1000; ang += 0x100) {
+        radius = 0;
+        uvRadius = 0;
         for (j = 0; j < 4; j++) {
-            b = a + fx_07a_ringTwist[j];
-            uv[0][0] = ((ex->math_cos(a) * (fx_07a_uvRadiusIn + k)) >> 16) + 0x38;
-            uv[0][1] = ((ex->math_sin(a) * (fx_07a_uvRadiusIn + k)) >> 16) - 0x48;
-            uv[1][0] = ((ex->math_cos(a + 0x100) * (fx_07a_uvRadiusIn + k)) >> 16) + 0x38;
-            uv[1][1] = ((ex->math_sin(a + 0x100) * (fx_07a_uvRadiusIn + k)) >> 16) - 0x48;
-            p[0].vx = (ex->math_cos(b) * r) >> 16;
-            p[0].vz = -((ex->math_sin(b) * r) >> 16) - 0x20;
-            b += 0x100;
-            p[1].vx = (ex->math_cos(b) * r) >> 16;
-            p[1].vz = -((ex->math_sin(b) * r) >> 16) - 0x20;
-            b = a + fx_07a_ringTwist[j + 1];
-            k += dk;
-            uv[2][0] = ((ex->math_cos(a) * (fx_07a_uvRadiusIn + k)) >> 16) + 0x38;
-            uv[2][1] = ((ex->math_sin(a) * (fx_07a_uvRadiusIn + k)) >> 16) - 0x48;
-            uv[3][0] = ((ex->math_cos(a + 0x100) * (fx_07a_uvRadiusIn + k)) >> 16) + 0x38;
-            r += dr;
-            uv[3][1] = ((ex->math_sin(a + 0x100) * (fx_07a_uvRadiusIn + k)) >> 16) - 0x48;
-            p[2].vx = (ex->math_cos(b) * r) >> 16;
-            p[2].vz = -((ex->math_sin(b) * r) >> 16) - 0x20;
-            b += 0x100;
-            p[3].vx = (ex->math_cos(b) * r) >> 16;
-            p[3].vz = -((ex->math_sin(b) * r) >> 16) - 0x20;
-            gte_ldv3c(p);
+            twistAng = ang + fx_07a_ringTwist[j];
+            uv[0][0] = ((ex->math_cos(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + 0x38;
+            uv[0][1] = ((ex->math_sin(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) - 0x48;
+            uv[1][0] = ((ex->math_cos(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + 0x38;
+            uv[1][1] = ((ex->math_sin(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) - 0x48;
+            quad[0].vx = (ex->math_cos(twistAng) * radius) >> 16;
+            quad[0].vz = -((ex->math_sin(twistAng) * radius) >> 16) - 0x20;
+            twistAng += 0x100;
+            quad[1].vx = (ex->math_cos(twistAng) * radius) >> 16;
+            quad[1].vz = -((ex->math_sin(twistAng) * radius) >> 16) - 0x20;
+            twistAng = ang + fx_07a_ringTwist[j + 1];
+            uvRadius += uvStep;
+            uv[2][0] = ((ex->math_cos(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + 0x38;
+            uv[2][1] = ((ex->math_sin(ang) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) - 0x48;
+            uv[3][0] = ((ex->math_cos(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) + 0x38;
+            radius += radiusStep;
+            uv[3][1] = ((ex->math_sin(ang + 0x100) * (fx_07a_uvRadiusIn + uvRadius)) >> 16) - 0x48;
+            quad[2].vx = (ex->math_cos(twistAng) * radius) >> 16;
+            quad[2].vz = -((ex->math_sin(twistAng) * radius) >> 16) - 0x20;
+            twistAng += 0x100;
+            quad[3].vx = (ex->math_cos(twistAng) * radius) >> 16;
+            quad[3].vz = -((ex->math_sin(twistAng) * radius) >> 16) - 0x20;
+            gte_ldv3c(quad);
             gte_rtpt();
             ft4->b0 = 0x40;
             ft4->g0 = 0x40;
@@ -380,7 +380,7 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
             *(u16 *)&ft4->u2 = *(u16 *)uv[2];
             *(u16 *)&ft4->u3 = *(u16 *)uv[3];
             gte_stsxy3(&ft4->x0, &ft4->x1, &ft4->x2);
-            gte_ldv0(&p[3]);
+            gte_ldv0(&quad[3]);
             gte_rtps();
             ft4->clut = clut;
             ft4->tpage = tpage;
@@ -390,14 +390,14 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
         }
         for (j = 0; j < 2; j++) {
             if (j != 0) {
-                p[2].vx = (ex->math_cos(a) * fx_07a_outerBandRadius) >> 16;
-                p[2].vz = -((ex->math_sin(a) * fx_07a_outerBandRadius) >> 16) - 0x20;
-                p[3].vx = (ex->math_cos(a + 0x100) * fx_07a_outerBandRadius) >> 16;
-                p[3].vz = -((ex->math_sin(a + 0x100) * fx_07a_outerBandRadius) >> 16) - 0x20;
-                p[0].vx = (ex->math_cos(a) * fx_07a_discRadius) >> 16;
-                p[0].vz = -((ex->math_sin(a) * fx_07a_discRadius) >> 16) - 0x20;
-                p[1].vx = (ex->math_cos(a + 0x100) * fx_07a_discRadius) >> 16;
-                p[1].vz = -((ex->math_sin(a + 0x100) * fx_07a_discRadius) >> 16) - 0x20;
+                quad[2].vx = (ex->math_cos(ang) * fx_07a_outerBandRadius) >> 16;
+                quad[2].vz = -((ex->math_sin(ang) * fx_07a_outerBandRadius) >> 16) - 0x20;
+                quad[3].vx = (ex->math_cos(ang + 0x100) * fx_07a_outerBandRadius) >> 16;
+                quad[3].vz = -((ex->math_sin(ang + 0x100) * fx_07a_outerBandRadius) >> 16) - 0x20;
+                quad[0].vx = (ex->math_cos(ang) * fx_07a_discRadius) >> 16;
+                quad[0].vz = -((ex->math_sin(ang) * fx_07a_discRadius) >> 16) - 0x20;
+                quad[1].vx = (ex->math_cos(ang + 0x100) * fx_07a_discRadius) >> 16;
+                quad[1].vz = -((ex->math_sin(ang + 0x100) * fx_07a_discRadius) >> 16) - 0x20;
                 poly->b1 = 0x80;
                 poly->g1 = 0x80;
                 poly->r1 = 0x80;
@@ -411,14 +411,14 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
                 poly->g2 = 0;
                 poly->r2 = 0;
             } else {
-                p[2].vx = (ex->math_cos(a) * fx_07a_discRadius) >> 16;
-                p[2].vz = -((ex->math_sin(a) * fx_07a_discRadius) >> 16) - 0x20;
-                p[3].vx = (ex->math_cos(a + 0x100) * fx_07a_discRadius) >> 16;
-                p[3].vz = -((ex->math_sin(a + 0x100) * fx_07a_discRadius) >> 16) - 0x20;
-                p[0].vx = (ex->math_cos(a) * fx_07a_innerBandRadius) >> 12;
-                p[0].vz = -((ex->math_sin(a) * fx_07a_innerBandRadius) >> 12) - 0x20;
-                p[1].vx = (ex->math_cos(a + 0x100) * fx_07a_innerBandRadius) >> 12;
-                p[1].vz = -((ex->math_sin(a + 0x100) * fx_07a_innerBandRadius) >> 12) - 0x20;
+                quad[2].vx = (ex->math_cos(ang) * fx_07a_discRadius) >> 16;
+                quad[2].vz = -((ex->math_sin(ang) * fx_07a_discRadius) >> 16) - 0x20;
+                quad[3].vx = (ex->math_cos(ang + 0x100) * fx_07a_discRadius) >> 16;
+                quad[3].vz = -((ex->math_sin(ang + 0x100) * fx_07a_discRadius) >> 16) - 0x20;
+                quad[0].vx = (ex->math_cos(ang) * fx_07a_innerBandRadius) >> 12;
+                quad[0].vz = -((ex->math_sin(ang) * fx_07a_innerBandRadius) >> 12) - 0x20;
+                quad[1].vx = (ex->math_cos(ang + 0x100) * fx_07a_innerBandRadius) >> 12;
+                quad[1].vz = -((ex->math_sin(ang + 0x100) * fx_07a_innerBandRadius) >> 12) - 0x20;
                 poly->b1 = 0;
                 poly->g1 = 0;
                 poly->r1 = 0;
@@ -432,11 +432,11 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
                 poly->g2 = 0xFF;
                 poly->r2 = 0xFF;
             }
-            gte_ldv3c(p);
+            gte_ldv3c(quad);
             gte_rtpt();
             poly->code = GPU_POLY_G4 | GPU_ABE;
             gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
-            gte_ldv0(&p[3]);
+            gte_ldv0(&quad[3]);
             gte_rtps();
             gte_stsxy(&poly->x3);
             ex->btlfx_addPrim(0x08000000, ot * 4 - 4, poly);

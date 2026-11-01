@@ -71,14 +71,14 @@ s32 fx_04b_op81(s32 mode, Fx04bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = 0x18;
     } else if (mode == 1) {
-        s32 n = *args;
+        s32 target = *args;
 
-        work->target14 = n;
+        work->target14 = target;
         fx_04b_env = env;
-        if (n >= env->targets->targetCount) {
+        if (target >= env->targets->targetCount) {
             return 1;
         }
-        ex->btlfx_getUnitPos(n, (s16 *)&work->pos4);
+        ex->btlfx_getUnitPos(target, (s16 *)&work->pos4);
         work->pos4.vy -= 0xC8;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
         if (work->emit0 != NULL) {

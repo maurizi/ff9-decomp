@@ -3,9 +3,9 @@
 s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 k;
+    s32 modelIdx;
     s32 i;
-    SVECTOR p;
+    SVECTOR trackPos;
 
     if (mode == 0) {
         *args = 0x60;
@@ -55,17 +55,17 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (frame >= 0 && frame < 0x2D) {
-            fxm_rotPosTrackGet(&fx_078_rotPosKeys, frame, &work->rot18, &p);
-            work->pos20.vx = p.vx;
-            work->pos20.vy = p.vy;
-            work->pos20.vz = p.vz;
+            fxm_rotPosTrackGet(&fx_078_rotPosKeys, frame, &work->rot18, &trackPos);
+            work->pos20.vx = trackPos.vx;
+            work->pos20.vy = trackPos.vy;
+            work->pos20.vz = trackPos.vz;
             work->pos20.vx += work->pos10.vx;
             work->pos20.vy += work->pos10.vy;
             work->pos20.vz += work->pos10.vz;
             fxm_vecTrackGet(&fx_078_scaleKeys, frame, &work->scale30);
-            k = frame % 10;
-            ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model4C[k]);
-            ex->Hi_ModifyEffModelAbr(work->model4C[k], 1);
+            modelIdx = frame % 10;
+            ex->Hi_DrawEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model4C[modelIdx]);
+            ex->Hi_ModifyEffModelAbr(work->model4C[modelIdx], 1);
         }
         fxm_posTrackGet(&fx_078_emitPosKeys, frame, &work->emitPos44);
         work->emitPos44.vx += work->pos10.vx;
