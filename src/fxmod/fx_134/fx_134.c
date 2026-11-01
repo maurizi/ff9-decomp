@@ -344,7 +344,7 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
     Pool6CEntry *emitter;
     s32 trailAlpha;
     s32 phase;
-    s32 c;
+    s32 unused;
     s32 i;
     s32 sh;
 
@@ -510,9 +510,9 @@ static s32 fx_134_op80PoolTask(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk8010
 /* padded: a zero word follows fx_134_op80PoolTask's jump table (op80's table is 8-aligned in the original object) */
 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
-/* Matching notes (same family as fx_0e0 op80): scalar temporaries are separate variables per case (_cN) and per
- * re-assignment (_pN/_wN, or a short name), since a variable reused across cases or phases spans blocks and changes
- * the allocation. Case 3's first angle a3x = t >> 2 (t = (frame << 12) / 24) is block-local: with it the case-3
+/* Matching notes (same family as fx_0e0 op80): scalar temporaries are separate variables per case (a role name with
+ * the state number when a role recurs) and per re-assignment, since a variable reused across cases or phases spans
+ * blocks and changes the allocation. Case 3's first angle swayAng = t >> 2 (t = (frame << 12) / 24) is block-local: with it the case-3
  * block has eight call-crossing locals, its 0x1000 constant lands in s7 and is kicked out by work (work's
  * REG_LIVE_LENGTH is doubled for its REG_EQUIV, so ex is allocated first and gets fp, work then takes s7). The
  * outer switch sits in its own block so case 3/4's stack locals are freed before the tail's (which reuse 0x38).

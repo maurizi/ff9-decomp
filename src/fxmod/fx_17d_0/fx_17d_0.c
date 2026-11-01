@@ -413,9 +413,9 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->rot38.vy += 6;
             fx_17d_0_drawPieces(entry, &work->pos10, frame, (s32)work->model5C, work->model86, 0x1000);
             if (frame >= 0x79) {
-                s32 a;
-                s32 b;
-                s32 m;
+                s32 unused;
+                s32 unused2;
+                s32 unused3;
 
                 track = (s16 *)ex->btlfx_getFileData(entry->file, 0x1E);
                 key = frame;

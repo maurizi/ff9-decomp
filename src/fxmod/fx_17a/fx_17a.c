@@ -127,10 +127,11 @@ static s32 fx_17a_op80PoolTask(s32 mode, Fx17aPart *p, Unk800F78A4 *env, Unk8010
 
 INCLUDE_RODATA("asm/us/fx_17a/nonmatchings/fx_17a", fx_17a_headerPtr);
 
-/* Matching notes: the variable split is what global-alloc needs. The spawn loop's e/d are fresh block locals (d is set
- * once, so sched1 launches its +0x180 next to the call; both are local-alloc'd), the spawn counter s, the trail ring
- * counter m and case 3's ph are their own variables, the case 3 model loop subtracts b * 0x30 (a loop giv, not a
- * counter variable), and the tint values reuse c1 (a global pseudo, so the 0xFF constant isn't tied to the result). */
+/* Matching notes: the variable split is what global-alloc needs. The spawn loop's sparkAng/dist are fresh block locals
+ * (dist is set once, so sched1 launches its +0x180 next to the call; both are local-alloc'd), the spawn counter
+ * spawn, the trail ring counter trail and case 3's phase are their own variables, the case 3 model loop subtracts
+ * ringScale * 0x30 (a loop giv, not a counter variable), and the tint values reuse tint (a global pseudo, so the 0xFF
+ * constant isn't tied to the result). */
 s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Pool6CEntry *emitter;

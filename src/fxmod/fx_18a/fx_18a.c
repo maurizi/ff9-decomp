@@ -21,7 +21,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 flashAng;
     s32 tintBase;
     s32 shrinkAng;
-    s32 g;
+    s32 unused;
     s32 ringGrow;
     Pool6CEntry *emitter;
 

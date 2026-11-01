@@ -318,9 +318,9 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             s32 shakeT;
             s32 burstT;
             s32 burstBright;
-            s32 a;
+            s32 unused;
             s32 i;
-            s32 i_1;
+            s32 unused2;
             s32 ang;
             s32 amp;
 

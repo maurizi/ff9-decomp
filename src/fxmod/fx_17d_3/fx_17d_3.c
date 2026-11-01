@@ -11,7 +11,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 frame;
     s32 t;
     s32 morph;
-    s32 c;
+    s32 unused;
 
     if (mode == 0) {
         *args = 0x80;

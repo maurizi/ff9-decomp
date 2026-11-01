@@ -151,13 +151,14 @@ void fxm_drawOffsetParticles3(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
 
 INCLUDE_RODATA("asm/us/fx_17d_4/nonmatchings/fx_17d_4", fx_17d_4_headerPtr);
 
-/* Matching notes: scalar temporaries are split per case and per use (names are role-search leftovers: _cN = case,
- * the rest found by build/s/roles.py), since sharing a variable across cases makes it a call-crossing global and
- * changes the allocation; which roles share a variable was searched. Case 6: fxm_drawPatternParticles's third argument (f3)
- * is its own variable, o = 0x20 is set inside the frame < 0x1E branch, x and f3 are set first in their branches
- * and x is declared before flag/f3 (spill slot order 0x78/0x7C/0x80). Case 4's
- * f-update reuses one variable for 0x1000 - cos and f >> 12; case 5's offsets go through k5z/n5z and are copied
- * a -> b; mode 1's copy order and other statement orders were searched (build/s/permhc.py, bperm.py, winperm.py). */
+/* Matching notes: scalar temporaries are split per case and per use (found by build/s/roles.py), since sharing a
+ * variable across cases makes it a call-crossing global and changes the allocation; which roles share a variable was
+ * searched. Case 6: fxm_drawPatternParticles's third argument (patternFrame) is its own variable, strandWidth = 0x20
+ * is set inside the frame < 0x1E branch, strandFrame and patternFrame are set first in their branches and
+ * strandFrame is declared before flag/patternFrame (spill slot order 0x78/0x7C/0x80). Case 4's drift update reuses
+ * one variable (ease) for 0x1000 - cos and drift >> 12; case 5's offsets go through orbitX/orbitZ and are copied
+ * ringPos -> lineTop; mode 1's copy order and other statement orders were searched (build/s/permhc.py, bperm.py,
+ * winperm.py). */
 s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     s32 ringBright;
     s32 orbitRadius;

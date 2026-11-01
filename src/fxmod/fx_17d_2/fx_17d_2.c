@@ -40,8 +40,8 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
     Fx17d2Elem *elem;
     s32 frame;
     s32 t;
-    s32 d;
-    s32 c;
+    s32 unused;
+    s32 unused2;
     s32 i;
     s32 drop;
 

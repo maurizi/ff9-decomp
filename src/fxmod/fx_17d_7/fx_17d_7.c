@@ -122,8 +122,8 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s16 *rockX;
     s32 shake;
     s32 rumble;
-    s32 y2;
-    s32 x2;
+    s32 unused;
+    s32 unused2;
     Fx17d7Rock *boulder;
     Fx17d7Rock *rubble;
 

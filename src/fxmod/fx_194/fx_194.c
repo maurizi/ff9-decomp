@@ -36,10 +36,10 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR camPos;
     Pool6CEntry *emitter;
     s32 frame;
-    s32 c;
+    s32 unused;
     s32 t;
     s32 state;
-    s32 i;
+    s32 unused2;
 
     if (mode == 0) {
         *args = 0x1C;

@@ -82,7 +82,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
     s32 j;
     s32 pathFrame;
-    SVECTOR *p;
+    SVECTOR *unused;
 
     if (mode == 0) {
         *args = 0xB0;
