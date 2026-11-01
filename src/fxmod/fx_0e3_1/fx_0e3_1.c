@@ -319,7 +319,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     SVECTOR b2;
     SVECTOR r3;
     VECTOR s3;
-    CVECTOR c3;
+    CVECTOR col;
     SVECTOR r4;
     VECTOR s4;
     SVECTOR a4;
@@ -828,14 +828,14 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos30);
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos30);
             }
-            c3.r = c3.g = c3.b = 0x37;
+            col.r = col.g = col.b = 0x37;
             s4.vx = 0x1400;
             s4.vy = 0x1400;
             s4.vz = 0x1000;
             r4.vx = 0;
             r4.vy = 0;
             r4.vz = 0;
-            ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r4, &s4, &c3, 1, NULL);
+            ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r4, &s4, &col, 1, NULL);
             BTLFX_COPY_SVEC(&a4, &work->pos30);
             ex->btlfx_pointAhead(&a4.vx, &work->rotBC.vx, t - 0x2800, &b4.vx);
             w2 = (t >> 2) + 0x400;

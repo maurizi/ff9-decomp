@@ -298,7 +298,7 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
         SVECTOR d;
         SVECTOR *tab;
         Fx1ccObj *ch;
-        Pool6CEntry *e;
+        Pool6CEntry *emitter;
         u8 *f;
         s32 n;
         s32 i;
@@ -312,10 +312,10 @@ static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100
         switch (o->state0) {
         case 0:
             if (o->frame8 == 0) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&o->velX18);
-                o->emit34 = e;
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&o->velX18);
+                o->emit34 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             sc.vx = 0;

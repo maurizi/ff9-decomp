@@ -1,41 +1,41 @@
 #include "fxmod/fx_17d_0.h"
 
 void fx_17d_0_drawCenterBandY(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b) {
-    POLY_G4 *p;
+    POLY_G4 *poly;
     BtlfxExports *ex;
     s32 i;
     s32 x;
 
     h >>= 1;
-    p = (POLY_G4 *)fx_17d_0_env->prim;
+    poly = (POLY_G4 *)fx_17d_0_env->prim;
     ex = BTLFX_EXPORTS(fx_17d_0_env);
-    fx_17d_0_env->prim = (u8 *)(p + 4);
-    for (i = 0; i < 4; i++, p++) {
-        setlen(p, 8);
-        setcode(p, GPU_POLY_G4 | GPU_ABE);
+    fx_17d_0_env->prim = (u8 *)(poly + 4);
+    for (i = 0; i < 4; i++, poly++) {
+        setlen(poly, 8);
+        setcode(poly, GPU_POLY_G4 | GPU_ABE);
         if (!(i & 1)) {
-            p->r0 = p->r1 = 0;
-            p->g0 = p->g1 = 0;
-            p->b0 = p->b1 = b;
-            p->r2 = p->r3 = r;
-            p->g2 = p->g3 = g;
-            p->b2 = p->b3 = b;
-            p->y0 = p->y1 = 0x70 - h;
-            p->y2 = p->y3 = 0x70;
+            poly->r0 = poly->r1 = 0;
+            poly->g0 = poly->g1 = 0;
+            poly->b0 = poly->b1 = b;
+            poly->r2 = poly->r3 = r;
+            poly->g2 = poly->g3 = g;
+            poly->b2 = poly->b3 = b;
+            poly->y0 = poly->y1 = 0x70 - h;
+            poly->y2 = poly->y3 = 0x70;
         } else {
-            p->r2 = p->r3 = 0;
-            p->g2 = p->g3 = 0;
-            p->b2 = p->b3 = b;
-            p->r0 = p->r1 = r;
-            p->g0 = p->g1 = g;
-            p->b0 = p->b1 = b;
-            p->y0 = p->y1 = 0x70;
-            p->y2 = p->y3 = 0x70 + h;
+            poly->r2 = poly->r3 = 0;
+            poly->g2 = poly->g3 = 0;
+            poly->b2 = poly->b3 = b;
+            poly->r0 = poly->r1 = r;
+            poly->g0 = poly->g1 = g;
+            poly->b0 = poly->b1 = b;
+            poly->y0 = poly->y1 = 0x70;
+            poly->y2 = poly->y3 = 0x70 + h;
         }
         x = (i >> 1) * 160;
-        p->x0 = p->x2 = x;
-        p->x1 = p->x3 = x + 160;
-        ex->btlfx_linkPrimAbr(0x08000000, ot, p, abr);
+        poly->x0 = poly->x2 = x;
+        poly->x1 = poly->x3 = x + 160;
+        ex->btlfx_linkPrimAbr(0x08000000, ot, poly, abr);
     }
 }
 
@@ -61,7 +61,7 @@ static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVE
     Unk800F78A4 *env = fx_17d_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     LINE_G2 *prim;
-    CVECTOR c;
+    CVECTOR col;
     MATRIX m;
     s32 oldh;
     u32 z;
@@ -78,12 +78,12 @@ static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVE
     prim = (LINE_G2 *)env->prim;
     env->prim = (u8 *)(prim + n);
     if (rgb == NULL) {
-        c.b = 0;
-        c.g = 0;
-        c.r = 0;
+        col.b = 0;
+        col.g = 0;
+        col.r = 0;
     } else {
         gte_DpqColorFar_nst(rgb, p);
-        gte_strgb(&c);
+        gte_strgb(&col);
     }
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
@@ -111,7 +111,7 @@ static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVE
             gte_stsxy(&pp->x0);
             gte_stszotz(&z);
             if (z < 0x80 && flag) {
-                gte_DpqColorFar_nst(&c, ((0x80 - z) << 12) >> 7);
+                gte_DpqColorFar_nst(&col, ((0x80 - z) << 12) >> 7);
                 gte_strgb(&prim->r0);
                 *(s32 *)&pp->x1 = *last;
                 *(s32 *)&pp->r1 = 0;

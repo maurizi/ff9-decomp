@@ -29,7 +29,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     CVECTOR col;
     SVECTOR ang2;
     VECTOR scale;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     Fx0b8Bolt *b;
     Fx0b8Unit *u;
     Fx0b8Band *bd;
@@ -238,11 +238,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->posC4);
             break;
         case 0x20:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos1DC);
-            if (p != NULL) {
-                p->trails = (s32)fx_0b8_trails;
-                p->trailSlots = 0x28;
-                p->trailStride = 0x5C;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos1DC);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_0b8_trails;
+                emitter->trailSlots = 0x28;
+                emitter->trailStride = 0x5C;
             }
             break;
         case 0x28:
@@ -250,13 +250,13 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->flags0[0xB] = 8;
             break;
         case 0x34:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos1CC);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos1CC);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos1D4);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos1D4);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
             work->emit1B8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos1BC);
             break;
@@ -332,9 +332,9 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->flags0[0x1B] = 0x30;
             break;
         case 0xBC:
-            work->emit1B0 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos1A8);
-            if (p != NULL) {
-                p->file->m.module.update = fx_0b8_op80ParticleMotion;
+            work->emit1B0 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos1A8);
+            if (emitter != NULL) {
+                emitter->file->m.module.update = fx_0b8_op80ParticleMotion;
             }
             work->flags0[0x21] = 0x10;
             break;
@@ -358,20 +358,20 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos164.vx = 0;
             work->pos164.vy = -0x800;
             work->pos164.vz = 0x418;
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos164);
-            if (p != NULL) {
-                p->otZ = 0x400;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos164);
+            if (emitter != NULL) {
+                emitter->otZ = 0x400;
             }
             break;
         case 0xF2:
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos164);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->pos164);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->pos164);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&work->pos164);
-            if (p != NULL) {
-                p->otZ = 0x100;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&work->pos164);
+            if (emitter != NULL) {
+                emitter->otZ = 0x100;
             }
             break;
         case 0xF6:
@@ -661,9 +661,9 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_setUnitPos(i, &fx_0b8_units[i].pos14.vx);
                 if (work->flags0[0x20] == 0) {
                     fx_0b8_units[i].pos14.vy = 0;
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&fx_0b8_units[i].pos14);
-                    if (p != NULL) {
-                        p->otZ = -0x100;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&fx_0b8_units[i].pos14);
+                    if (emitter != NULL) {
+                        emitter->otZ = -0x100;
                     }
                 }
             }
@@ -746,7 +746,7 @@ void fx_0b8_drawGradientPlane(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 
     CVECTOR c1;
     Unk800F78A4 *env;
     BtlfxExports *ex;
-    POLY_GT4 *p;
+    POLY_GT4 *poly;
     s32 i;
     s32 j;
     s32 k0;
@@ -763,8 +763,8 @@ void fx_0b8_drawGradientPlane(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
     tpage |= (abr & 3) << 5;
-    p = (POLY_GT4 *)env->prim;
-    env->prim = (u8 *)(p + 32);
+    poly = (POLY_GT4 *)env->prim;
+    env->prim = (u8 *)(poly + 32);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     gte_stlvnl(m.t);
@@ -796,25 +796,25 @@ void fx_0b8_drawGradientPlane(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 
             v[1].vx = v[3].vx = i * 0x1400 - 0x1400;
             gte_ldv3c(v);
             gte_rtpt();
-            p->code = (abr != 0xFF) ? 0x3E : 0x3C;
-            p->r0 = p->r1 = c0.r;
-            p->g0 = p->g1 = c0.g;
-            p->b0 = p->b1 = c0.b;
-            p->r2 = p->r3 = c1.r;
-            p->g2 = p->g3 = c1.g;
-            p->b2 = p->b3 = c1.b;
-            gte_stsxy3(&p->x0, &p->x1, &p->x2);
+            poly->code = (abr != 0xFF) ? 0x3E : 0x3C;
+            poly->r0 = poly->r1 = c0.r;
+            poly->g0 = poly->g1 = c0.g;
+            poly->b0 = poly->b1 = c0.b;
+            poly->r2 = poly->r3 = c1.r;
+            poly->g2 = poly->g3 = c1.g;
+            poly->b2 = poly->b3 = c1.b;
+            gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
             gte_ldv0(&v[3]);
             gte_rtps();
-            *(u16 *)&p->u0 = *(u16 *)&uv0;
-            *(u16 *)&p->u1 = *(u16 *)&uv1;
-            *(u16 *)&p->u2 = *(u16 *)&uv2;
-            *(u16 *)&p->u3 = *(u16 *)&uv3;
-            p->clut = clut;
-            p->tpage = tpage;
-            gte_stsxy(&p->x3);
-            ex->btlfx_addPrim(0x0C000000, 0, p);
-            p++;
+            *(u16 *)&poly->u0 = *(u16 *)&uv0;
+            *(u16 *)&poly->u1 = *(u16 *)&uv1;
+            *(u16 *)&poly->u2 = *(u16 *)&uv2;
+            *(u16 *)&poly->u3 = *(u16 *)&uv3;
+            poly->clut = clut;
+            poly->tpage = tpage;
+            gte_stsxy(&poly->x3);
+            ex->btlfx_addPrim(0x0C000000, 0, poly);
+            poly++;
         }
     }
 }
@@ -827,7 +827,7 @@ void fx_0b8_drawScreenBand(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpag
     BtlfxExports *ex;
     Unk800F78A4 *env;
     POLY_GT4 *gt4;
-    POLY_F4 *f4;
+    POLY_F4 *poly;
     s32 i;
 
     env = fx_0b8_env;
@@ -838,48 +838,48 @@ void fx_0b8_drawScreenBand(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpag
     uv2.v = uv3.v = 0xFF;
     tpage |= (abr & 3) << 5;
     gt4 = (POLY_GT4 *)env->prim;
-    f4 = (POLY_F4 *)(gt4 + 3);
-    env->prim = (u8 *)(f4 + 3);
-    for (i = 0; i < 3; gt4++, i++, f4++) {
+    poly = (POLY_F4 *)(gt4 + 3);
+    env->prim = (u8 *)(poly + 3);
+    for (i = 0; i < 3; gt4++, i++, poly++) {
         gt4->clut = clut;
         gt4->tpage = tpage;
         gt4->code = (abr != 0xFF) ? 0x3E : 0x3C;
-        f4->code = (abr != 0xFF) ? 0x2A : 0x28;
+        poly->code = (abr != 0xFF) ? 0x2A : 0x28;
         gt4->r0 = gt4->r1 = gt4->g0 = gt4->g1 = gt4->b0 = gt4->b1 = c0;
-        f4->r0 = f4->g0 = f4->b0 = gt4->r2 = gt4->r3 = gt4->g2 = gt4->g3 = gt4->b2 = gt4->b3 = c1;
+        poly->r0 = poly->g0 = poly->b0 = gt4->r2 = gt4->r3 = gt4->g2 = gt4->g3 = gt4->b2 = gt4->b3 = c1;
         *(u16 *)&gt4->u0 = *(u16 *)&uv0;
         *(u16 *)&gt4->u1 = *(u16 *)&uv1;
         *(u16 *)&gt4->u2 = *(u16 *)&uv2;
         *(u16 *)&gt4->u3 = *(u16 *)&uv3;
-        f4->x0 = f4->x2 = gt4->x0 = gt4->x2 = (x | ~0xFF) + i * 0x100;
-        f4->x1 = f4->x3 = gt4->x1 = gt4->x3 = gt4->x0 + 0x100;
+        poly->x0 = poly->x2 = gt4->x0 = gt4->x2 = (x | ~0xFF) + i * 0x100;
+        poly->x1 = poly->x3 = gt4->x1 = gt4->x3 = gt4->x0 + 0x100;
         gt4->y0 = gt4->y1 = y;
-        f4->y0 = f4->y1 = gt4->y2 = gt4->y3 = y + h;
-        f4->y2 = f4->y3 = gt4->y2 + 0x130;
+        poly->y0 = poly->y1 = gt4->y2 = gt4->y3 = y + h;
+        poly->y2 = poly->y3 = gt4->y2 + 0x130;
         ex->btlfx_addPrim(0x0C000000, ot * 4, gt4);
-        ex->btlfx_addPrim(0x05000000, ot * 4, f4);
+        ex->btlfx_addPrim(0x05000000, ot * 4, poly);
     }
 }
 
 void fx_0b8_drawScreenGradient(s32 ot) {
     Unk800F78A4 *env = fx_0b8_env;
-    POLY_G4 *p = (POLY_G4 *)env->prim;
+    POLY_G4 *poly = (POLY_G4 *)env->prim;
     BtlfxExports *ex;
 
-    env->prim = (u8 *)(p + 1);
+    env->prim = (u8 *)(poly + 1);
     ex = BTLFX_EXPORTS(env);
-    p->code = GPU_POLY_G4;
-    p->r0 = p->r1 = 0xE6;
-    p->g0 = p->g1 = 0xCD;
-    p->b0 = p->b1 = 0x96;
-    p->r2 = p->r3 = 0xB4;
-    p->g2 = p->g3 = 0xA0;
-    p->b2 = p->b3 = 0x78;
-    p->x1 = p->x3 = 320;
-    p->x0 = p->x2 = 0;
-    p->y0 = p->y1 = 0;
-    p->y2 = p->y3 = 240;
-    ex->btlfx_addPrim(0x08000000, ot * 4, p);
+    poly->code = GPU_POLY_G4;
+    poly->r0 = poly->r1 = 0xE6;
+    poly->g0 = poly->g1 = 0xCD;
+    poly->b0 = poly->b1 = 0x96;
+    poly->r2 = poly->r3 = 0xB4;
+    poly->g2 = poly->g3 = 0xA0;
+    poly->b2 = poly->b3 = 0x78;
+    poly->x1 = poly->x3 = 320;
+    poly->x0 = poly->x2 = 0;
+    poly->y0 = poly->y1 = 0;
+    poly->y2 = poly->y3 = 240;
+    ex->btlfx_addPrim(0x08000000, ot * 4, poly);
 }
 
 static void fxm_tintScreenLerp(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 ot) {

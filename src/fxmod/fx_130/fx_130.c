@@ -21,7 +21,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 
 s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 *q;
     s32 frame;
     s32 r;
@@ -58,13 +58,13 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos20);
-            if (p != NULL) {
-                p->otZ = -0x100;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos20);
+            if (emitter != NULL) {
+                emitter->otZ = -0x100;
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos20);
-            if (p != NULL) {
-                p->otZ = -0x100;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos20);
+            if (emitter != NULL) {
+                emitter->otZ = -0x100;
             }
             break;
         case 8:
@@ -72,9 +72,9 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer0[1] = 0x20;
             break;
         case 0x2A:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
-            if (p != NULL) {
-                p->otZ = -0x100;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
+            if (emitter != NULL) {
+                emitter->otZ = -0x100;
             }
             break;
         }

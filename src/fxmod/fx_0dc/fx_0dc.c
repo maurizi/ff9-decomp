@@ -8,7 +8,7 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
                   Fx0dcWork *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR *p;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     Fx0dcItem *q;
     s32 t;
     s32 c;
@@ -32,10 +32,10 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
         switch (it->state0) {
         case 0:
             if (it->frame8 == 0) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&it->pos18);
-                it->emit34 = e;
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&it->pos18);
+                it->emit34 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             scale.vx = 0;
@@ -184,7 +184,7 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     SVECTOR rot2;
     Fx0dcItem *it;
     Fx0dcItem *q; /* separate from it: one shard pointer per state (register allocation) */
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     SVECTOR *p;
     s32 frame;
     s32 k;
@@ -234,17 +234,17 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->pos70.vy -= 0x80;
         BTLFX_COPY_SVEC(&w->pos68, &w->pos58);
         w->pos68.vy -= 0x5C6;
-        e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&w->pos58);
-        if (e != NULL) {
-            e->otZ = 0x80;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&w->pos58);
+        if (emitter != NULL) {
+            emitter->otZ = 0x80;
         }
-        e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x27), (s32)&w->pos68);
-        if (e != NULL) {
-            e->otZ = 0x80;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x27), (s32)&w->pos68);
+        if (emitter != NULL) {
+            emitter->otZ = 0x80;
         }
-        e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&w->pos58);
-        if (e != NULL) {
-            e->otZ = 0x80;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&w->pos58);
+        if (emitter != NULL) {
+            emitter->otZ = 0x80;
         }
         ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
         ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0x80);
@@ -320,9 +320,9 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             if (w->spawnCount7A >= 6) {
                 w->state0 = 4;
                 entry->frame = -1;
-                w->emit84 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&w->pos58);
-                if (e != NULL) {
-                    e->otZ = 0x5C;
+                w->emit84 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&w->pos58);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x5C;
                 }
             }
             break;
@@ -354,26 +354,26 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
                 ex->btlfx_stopEmitter(w->emit84);
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x20), (s32)&w->pos58);
-                if (e != NULL) {
-                    e->otZ = 0x60;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x20), (s32)&w->pos58);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x60;
                 }
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1F), (s32)&w->pos58);
-                if (e != NULL) {
-                    e->otZ = 0x60;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1F), (s32)&w->pos58);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x60;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&w->pos60);
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&w->pos60);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&w->pos60);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&w->pos60);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&w->pos60);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2B), (s32)&w->pos60);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2B), (s32)&w->pos60);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
                 rot.vx = -0x400;
                 rot.vy = 0;
@@ -408,9 +408,9 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 k = ex->math_cos((frame << 10) / 18);
             }
             if (frame == 8) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&w->pos60);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&w->pos60);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame < 8) {

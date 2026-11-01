@@ -83,7 +83,7 @@ void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
     ang = 0;
-    /* row * arg10, (row + 1) * arg10, row + 1 and the two heights are loop-reduced into five stack temporaries;
+    /* row * drift, (row + 1) * drift, row + 1 and the two heights are loop-reduced into five stack temporaries;
      * h0/h1 are set here (not at their use) so their lifetime makes them worth reducing. */
     for (row = 0; row < 7; row++) {
         h1 = row * 0x90;

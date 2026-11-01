@@ -67,7 +67,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     BtlBone m;
     Fx123Bone *b;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
 
@@ -86,17 +86,17 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     switch (frame) {
     case 0:
         for (i = 0; i < 6; i++) {
-            work->emit0[i] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_123_emitPos0[i]);
-            if (p != NULL) {
-                p->otZ = 0x20;
+            work->emit0[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_123_emitPos0[i]);
+            if (emitter != NULL) {
+                emitter->otZ = 0x20;
             }
         }
         break;
     case 20:
         for (i = 0; i < 6; i++) {
-            work->emit18[i] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_123_emitPos0[i]);
-            if (p != NULL) {
-                p->otZ = 0x20;
+            work->emit18[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_123_emitPos0[i]);
+            if (emitter != NULL) {
+                emitter->otZ = 0x20;
             }
         }
         break;
@@ -156,7 +156,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     VECTOR pos;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     Fx123Shot *s;
     s32 j;
@@ -188,9 +188,9 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos140.vx = work->pos64.vx;
             work->pos140.vy = work->pos64.vy - 0x1013;
             work->pos140.vz = work->pos64.vz - 0x5F5;
-            work->emit60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos140);
-            if (p != NULL) {
-                p->otZ = 0x80;
+            work->emit60 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos140);
+            if (emitter != NULL) {
+                emitter->otZ = 0x80;
             }
             break;
         case 11:
@@ -255,9 +255,9 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                             continue;
                         }
                         if (s->frame1A == t) {
-                            work->emit30[i] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_123_emitFileIds[i]), (s32)&fx_123_emitPos3[i]);
-                            if (p != NULL) {
-                                p->otZ = 0x80;
+                            work->emit30[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_123_emitFileIds[i]), (s32)&fx_123_emitPos3[i]);
+                            if (emitter != NULL) {
+                                emitter->otZ = 0x80;
                                 if (work->emit30[i] != NULL) {
                                     work->emit30[i]->trails = (s32)fx_123_op81Trails[i];
                                     work->emit30[i]->trailSlots = 2;
@@ -276,9 +276,9 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     if (k == s->frame1A + 17) {
                         copyVector(&work->pos110[i], &work->pos148[i]);
                         work->pos110[i].vy += 0x154;
-                        work->emit48[i] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos110[i]);
-                        if (p != NULL) {
-                            p->otZ = 0x80;
+                        work->emit48[i] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos110[i]);
+                        if (emitter != NULL) {
+                            emitter->otZ = 0x80;
                         }
                     }
                     copyVector(&fx_123_pinPos0[i], &work->pos9C[i]);

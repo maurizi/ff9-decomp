@@ -51,7 +51,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 k;
     s32 k_2;
     s32 k_1;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s16 *keys;
     s32 frame;
     s32 state;
@@ -182,13 +182,13 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     fx_0ba_orbPos.vx = work->pos10.vx;
                     fx_0ba_orbPos.vy = work->pos10.vy;
                     fx_0ba_orbPos.vz = work->pos10.vz;
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x86), (s32)&work->pos10);
-                    if (p != NULL) {
-                        p->otZ = 0x37;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x86), (s32)&work->pos10);
+                    if (emitter != NULL) {
+                        emitter->otZ = 0x37;
                     }
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x84), (s32)&work->pos10);
-                    if (p != NULL) {
-                        p->otZ = 0x37;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x84), (s32)&work->pos10);
+                    if (emitter != NULL) {
+                        emitter->otZ = 0x37;
                     }
                     fx_0ba_preOrb = 0;
                 }
@@ -349,7 +349,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
     Fx0baPKey12 *key;
     Fx0baPTrail13 *tc;
     Fx0baPKeys *keys;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     SVECTOR *pt;
     s32 frame;
     s32 k;
@@ -589,17 +589,17 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                                   ex->math_sin(c7 >> 1));
             }
             if (frame == 20) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos10);
-                work->emit6C = p;
-                if (p != NULL) {
-                    p->otZ = 0x96;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos10);
+                work->emit6C = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x96;
                 }
             }
             if (frame == 14) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos8);
-                work->emit68 = p;
-                if (p != NULL) {
-                    p->otZ = -0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos8);
+                work->emit68 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = -0x20;
                 }
             }
             if (frame < 8) {
@@ -681,9 +681,9 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2C), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x96;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2C), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x96;
                 }
             }
             break;

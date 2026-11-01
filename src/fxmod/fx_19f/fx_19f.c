@@ -98,7 +98,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx19fKey12 *key;
     Fx19fTrail13 *tc;
     Fx19fKeys *keys;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     SVECTOR *pt;
     s32 frame;
     s32 k;
@@ -338,17 +338,17 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                   ex->math_sin(c7 >> 1));
             }
             if (frame == 20) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
-                work->emit6C = p;
-                if (p != NULL) {
-                    p->otZ = 0x96;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
+                work->emit6C = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x96;
                 }
             }
             if (frame == 14) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos8);
-                work->emit68 = p;
-                if (p != NULL) {
-                    p->otZ = -0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos8);
+                work->emit68 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = -0x20;
                 }
             }
             if (frame < 8) {
@@ -430,9 +430,9 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x96;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x96;
                 }
             }
             break;

@@ -29,7 +29,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     VECTOR d;
     Fx079Strip *tr;
     Fx079Pt *pt;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 i;
     s32 frame;
     s32 j;
@@ -109,9 +109,9 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timers0[7] = 0x10;
             break;
         case 40:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_079_bodyPos);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_079_bodyPos);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 44:

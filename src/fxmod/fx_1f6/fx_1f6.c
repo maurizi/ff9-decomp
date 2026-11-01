@@ -2,7 +2,7 @@
 
 s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 c;
@@ -51,32 +51,32 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0x0:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
-            if (p != NULL) {
-                p->trails = (s32)fx_1f6_op80Trails0;
-                p->trailSlots = 0x26;
-                p->trailStride = 0x7C;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_1f6_op80Trails0;
+                emitter->trailSlots = 0x26;
+                emitter->trailStride = 0x7C;
             }
             break;
         case 0x8:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
-            if (p != NULL) {
-                p->trails = (s32)fx_1f6_op80Trails1;
-                p->trailSlots = 0x26;
-                p->trailStride = 0x7C;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posA4);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_1f6_op80Trails1;
+                emitter->trailSlots = 0x26;
+                emitter->trailStride = 0x7C;
             }
             break;
         case 0x10:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posA4);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posA4);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
             }
             work->timer0[0] = 0x20;
             break;
         case 0x28:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->posA4);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->posA4);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, -0x200);
             }
             work->timer0[1] = 0x30;
             break;

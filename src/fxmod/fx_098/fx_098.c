@@ -283,7 +283,7 @@ static s32 fx_098_op80PoolTask(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk801
                   Fx098Work *work) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR *p;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     Fx098Item *q;
     s32 t;
     s32 c;
@@ -307,10 +307,10 @@ static s32 fx_098_op80PoolTask(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk801
         switch (it->state0) {
         case 0:
             if (it->frame8 == 0) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&it->pos18);
-                it->emit34 = e;
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&it->pos18);
+                it->emit34 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             scale.vx = 0;

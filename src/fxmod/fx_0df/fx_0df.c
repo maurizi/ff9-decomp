@@ -252,7 +252,7 @@ static s32 fx_0df_op80PoolTask(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk8010
 
 s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     Fx0dfPart *part;
     s32 frame;
     s32 t;
@@ -335,13 +335,13 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->state0 = 2;
                     entry->frame = -1;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0x80, 0x80);
-                    work->emit3C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posC);
-                    if (p != NULL) {
-                        p->otZ = work->otZ8 + 0x46;
+                    work->emit3C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->posC);
+                    if (emitter != NULL) {
+                        emitter->otZ = work->otZ8 + 0x46;
                     }
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->posC);
-                    if (p != NULL) {
-                        p->otZ = work->otZ8 + 0x46;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->posC);
+                    if (emitter != NULL) {
+                        emitter->otZ = work->otZ8 + 0x46;
                     }
                     work->yaw38 = (ex->btlfx_rand() % 3 - 1) * 0x9B;
                 }
@@ -440,13 +440,13 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     entry->frame = -1;
                     ex->btlfx_stopEmitter(work->emit3C);
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xAA, 0xAA, 0xAA);
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->posC);
-                    if (p != NULL) {
-                        p->otZ = work->otZ8 + 0x46;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->posC);
+                    if (emitter != NULL) {
+                        emitter->otZ = work->otZ8 + 0x46;
                     }
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->posC);
-                    if (p != NULL) {
-                        p->otZ = work->otZ8 + 0x46;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->posC);
+                    if (emitter != NULL) {
+                        emitter->otZ = work->otZ8 + 0x46;
                     }
                 }
                 break;

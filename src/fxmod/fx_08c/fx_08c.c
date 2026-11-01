@@ -4,7 +4,7 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR rot;
     VECTOR scale;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 a;
     s32 c;
@@ -26,13 +26,13 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_08c_env = env;
         ex->btlfx_initEffModels(fx_08c_effModels, 2);
         work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = 0x80;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = 0x80;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = 0x80;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = 0x80;
         }
     } else {
         frame = entry->frame;

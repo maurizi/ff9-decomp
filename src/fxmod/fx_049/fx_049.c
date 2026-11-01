@@ -107,7 +107,7 @@ static s32 fx_049_op83PoolTask(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk801
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx049Strip *strip;
     Fx049Strip *br;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 c;
     s32 t;
     s32 w;
@@ -138,9 +138,9 @@ static s32 fx_049_op83PoolTask(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk801
                 }
                 if ((it->strip10 & 1) && it->width15 != FX_049_WIDTH_DEFAULT) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0xC, 0x46);
-                    p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&it->pos0);
-                    if (p != NULL) {
-                        p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
+                    emitter = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&it->pos0);
+                    if (emitter != NULL) {
+                        emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                     }
                 }
             }

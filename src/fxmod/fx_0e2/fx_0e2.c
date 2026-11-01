@@ -311,7 +311,7 @@ void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale,
 
 void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
     Fx0e2Edge *e = fx_0e2_edges;
-    POLY_GT4 *p;
+    POLY_GT4 *poly;
     BtlfxExports *ex;
     u16 tp;
     u16 cl;
@@ -324,31 +324,31 @@ void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
     s32 z;
 
     tp = tpage | 0x20;
-    p = (POLY_GT4 *)fx_0e2_env->prim;
-    fx_0e2_env->prim = (u8 *)(p + n);
+    poly = (POLY_GT4 *)fx_0e2_env->prim;
+    fx_0e2_env->prim = (u8 *)(poly + n);
     cl = clut;
     ex = BTLFX_EXPORTS(fx_0e2_env);
-    for (i = 0; i < n - 1; i++, p++, e++) {
-        p->tpage = tp;
-        p->clut = cl;
-        p->code = GPU_POLY_GT4 | GPU_ABE;
-        p->x0 = e[0].xy0.vx;
-        p->y0 = e[0].xy0.vy;
-        p->x1 = e[0].xy4.vx;
-        p->y1 = e[0].xy4.vy;
-        p->x2 = e[1].xy0.vx;
-        p->y2 = e[1].xy0.vy;
-        p->x3 = e[1].xy4.vx;
-        p->y3 = e[1].xy4.vy;
-        p->v0 = p->v2 = v0;
-        p->v1 = p->v3 = v1;
+    for (i = 0; i < n - 1; i++, poly++, e++) {
+        poly->tpage = tp;
+        poly->clut = cl;
+        poly->code = GPU_POLY_GT4 | GPU_ABE;
+        poly->x0 = e[0].xy0.vx;
+        poly->y0 = e[0].xy0.vy;
+        poly->x1 = e[0].xy4.vx;
+        poly->y1 = e[0].xy4.vy;
+        poly->x2 = e[1].xy0.vx;
+        poly->y2 = e[1].xy0.vy;
+        poly->x3 = e[1].xy4.vx;
+        poly->y3 = e[1].xy4.vy;
+        poly->v0 = poly->v2 = v0;
+        poly->v1 = poly->v3 = v1;
         k = i % 8;
         ua = k << 5;
         ub = (k + 1) << 5;
         if (ua == 0x100) ua = 0xFF;
         if (ub == 0x100) ub = 0xFF;
-        p->u2 = p->u3 = ub;
-        p->u0 = p->u1 = ua;
+        poly->u2 = poly->u3 = ub;
+        poly->u0 = poly->u1 = ua;
         if (i < 8) {
             ca = i * 16;
             cb = (i + 1) * 16;
@@ -358,10 +358,10 @@ void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
             if (c < cb) {
                 cb = c;
             }
-            setRGB0(p, ca, ca, ca);
-            setRGB1(p, ca, ca, ca);
-            setRGB2(p, cb, cb, cb);
-            setRGB3(p, cb, cb, cb);
+            setRGB0(poly, ca, ca, ca);
+            setRGB1(poly, ca, ca, ca);
+            setRGB2(poly, cb, cb, cb);
+            setRGB3(poly, cb, cb, cb);
         } else if (i >= 0x35) {
             cb = 0x80 - (i - 0x34) * 16;
             ca = 0x80 - (i - 0x33) * 16;
@@ -371,20 +371,20 @@ void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
             if (c < ca) {
                 ca = c;
             }
-            setRGB0(p, cb, cb, cb);
-            setRGB1(p, cb, cb, cb);
-            setRGB2(p, ca, ca, ca);
-            setRGB3(p, ca, ca, ca);
+            setRGB0(poly, cb, cb, cb);
+            setRGB1(poly, cb, cb, cb);
+            setRGB2(poly, ca, ca, ca);
+            setRGB3(poly, ca, ca, ca);
         } else {
-            setRGB0(p, c, c, c);
-            setRGB1(p, c, c, c);
-            setRGB2(p, c, c, c);
-            setRGB3(p, c, c, c);
+            setRGB0(poly, c, c, c);
+            setRGB1(poly, c, c, c);
+            setRGB2(poly, c, c, c);
+            setRGB3(poly, c, c, c);
         }
         if (e[0].xy0.vx < e[1].xy0.vx) {
-            ex->btlfx_addPrim(0x0C000000, 0, p);
+            ex->btlfx_addPrim(0x0C000000, 0, poly);
         } else {
-            ex->btlfx_addPrim(0x0C000000, (e[0].otz8 + e[1].otz8) >> 1, p);
+            ex->btlfx_addPrim(0x0C000000, (e[0].otz8 + e[1].otz8) >> 1, poly);
         }
     }
 }
@@ -940,7 +940,7 @@ INCLUDE_RODATA("asm/us/fx_0e2/nonmatchings/fx_0e2", fx_0e2_headerPtr);
 
 s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     Pool6CEntry **pp;
     SVECTOR v;
     s32 frame;
@@ -997,42 +997,42 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emitPos104[0].vx = work->pos44.vx;
             work->emitPos104[0].vy = work->pos44.vy;
             work->emitPos104[0].vz = work->pos44.vz;
-            work->emit0[0] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[0]);
-            if (p != NULL) {
-                p->otZ = 0x100;
+            work->emit0[0] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[0]);
+            if (emitter != NULL) {
+                emitter->otZ = 0x100;
             }
             break;
         case 16:
-            work->emit0[1] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[0]);
-            if (p != NULL) {
-                p->otZ = 0x100;
+            work->emit0[1] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[0]);
+            if (emitter != NULL) {
+                emitter->otZ = 0x100;
             }
             break;
         case 30:
             work->emitPos104[1].vx = 0x20C;
             work->emitPos104[1].vy = 0;
             work->emitPos104[1].vz = -0x3B6;
-            work->emit0[2] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[1]);
-            if (p != NULL) {
-                p->otZ = 0x100;
+            work->emit0[2] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[1]);
+            if (emitter != NULL) {
+                emitter->otZ = 0x100;
             }
             break;
         case 35:
             work->emitPos104[2].vx = -0x205;
             work->emitPos104[2].vy = 0;
             work->emitPos104[2].vz = -0x5D9;
-            work->emit0[3] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[2]);
-            if (p != NULL) {
-                p->otZ = 0x100;
+            work->emit0[3] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[2]);
+            if (emitter != NULL) {
+                emitter->otZ = 0x100;
             }
             break;
         case 38:
             work->emitPos104[3].vx = 0x110;
             work->emitPos104[3].vy = 0;
             work->emitPos104[3].vz = -0x703;
-            work->emit0[4] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[3]);
-            if (p != NULL) {
-                p->otZ = 0x100;
+            work->emit0[4] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[3]);
+            if (emitter != NULL) {
+                emitter->otZ = 0x100;
             }
             break;
         case 46:

@@ -146,7 +146,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     u16 n;
@@ -175,9 +175,9 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                 }
             }
-            work->emit18 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos20);
-            if (p != NULL) {
-                p->trails = (s32)fx_138_op81Trails;
+            work->emit18 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos20);
+            if (emitter != NULL) {
+                emitter->trails = (s32)fx_138_op81Trails;
                 work->emit18->trailSlots = 0x18;
                 work->emit18->trailStride = 0x40;
                 if (work->emit18 != NULL) {

@@ -34,7 +34,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR rot;
     VECTOR scale;
     SVECTOR v;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 c;
     s32 t;
@@ -48,14 +48,14 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_194_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
-        if (p != NULL) {
-            p->otZ = 0x200;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        if (emitter != NULL) {
+            emitter->otZ = 0x200;
         }
         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->posC);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
-        if (p != NULL) {
-            p->otZ = 0x200;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
+        if (emitter != NULL) {
+            emitter->otZ = 0x200;
         }
         work->camPos14.vx = work->pos4.vx;
         work->camPos14.vy = work->pos4.vy;
@@ -113,7 +113,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
 s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
         *args = 0xC;
@@ -121,9 +121,9 @@ s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_194_env = env;
         work->state0 = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
-        if (p != NULL) {
-            p->otZ = 0x200;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
+        if (emitter != NULL) {
+            emitter->otZ = 0x200;
         }
         env->camera->points[3].vx = work->pos4.vx;
         env->camera->points[3].vy = work->pos4.vy;

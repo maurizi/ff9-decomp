@@ -108,7 +108,7 @@ static s32 fx_0d8_op83PoolTask(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk8
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx0d8Strip *strip;
     Fx0d8Strip *br;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 c;
     s32 t;
 
@@ -134,9 +134,9 @@ static s32 fx_0d8_op83PoolTask(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk8
                 }
                 if (part->strip10 & 1) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0xC, 0x46);
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&part->pos0);
-                    if (p != NULL) {
-                        p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&part->pos0);
+                    if (emitter != NULL) {
+                        emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                     }
                 }
             }
@@ -179,7 +179,7 @@ s32 fx_0d8_op83(s32 mode, Fx0d8Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR a;
     SVECTOR b;
     Fx0d8Part *it;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 *q;
     s32 frame;
     s32 kind;
@@ -269,9 +269,9 @@ s32 fx_0d8_op83(s32 mode, Fx0d8Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         it->width15 = 0x80;
                     }
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos8);
             }
@@ -284,14 +284,14 @@ s32 fx_0d8_op83(s32 mode, Fx0d8Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c >> 1, c >> 1, c);
         }
         if (frame == 20) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos8);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos8);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
             }
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos0);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
-                p->elems->draw = (void (*)())fx_0d8_op83ElemDraw;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos0);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
+                emitter->elems->draw = (void (*)())fx_0d8_op83ElemDraw;
             }
         }
         if (frame >= 0x30) {

@@ -2,7 +2,7 @@
 
 s32 fx_131_op80(s32 mode, Fx131Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
 
     if (mode == 0) {
@@ -23,9 +23,9 @@ s32 fx_131_op80(s32 mode, Fx131Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_moveEmitterTo((s32)work->emit18, (s32)&work->pos10);
         if (frame == 8) {
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos0);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
         }
         return frame >= 0x58;

@@ -342,7 +342,7 @@ s32 fx_1ef_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 
 s32 fx_1ef_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
 
@@ -354,12 +354,12 @@ s32 fx_1ef_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_1ef_env = env;
         for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_1ef_op81TargetPos[i]);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_1ef_op81TargetPos[i]);
-            if (p != NULL) {
-                p->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
-                p->trailSlots = 0x1E;
-                p->trails = (s32)fx_1ef_op81Trails0[i];
-                p->trailStride = 0x9C;
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_1ef_op81TargetPos[i]);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
+                emitter->trailSlots = 0x1E;
+                emitter->trails = (s32)fx_1ef_op81Trails0[i];
+                emitter->trailStride = 0x9C;
             }
         }
     } else {
@@ -367,16 +367,16 @@ s32 fx_1ef_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         switch (frame) {
         case 16:
             for (i = 0; i < env->targets->targetCount; i++) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&fx_1ef_op81TargetPos[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
-                    p->trailSlots = 0x1E;
-                    p->trails = (s32)fx_1ef_op81Trails1[i];
-                    p->trailStride = 0x9C;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&fx_1ef_op81TargetPos[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
+                    emitter->trailSlots = 0x1E;
+                    emitter->trails = (s32)fx_1ef_op81Trails1[i];
+                    emitter->trailStride = 0x9C;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&fx_1ef_op81TargetPos[i]);
-                if (p != NULL) {
-                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&fx_1ef_op81TargetPos[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
                 }
             }
             break;

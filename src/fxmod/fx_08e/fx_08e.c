@@ -4,7 +4,7 @@ INCLUDE_RODATA("asm/us/fx_08e/nonmatchings/fx_08e", fx_08e_headerPtr);
 
 s32 fx_08e_op80(s32 mode, Fx08eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    RECT r;
+    RECT rect;
     s32 frame;
 
     if (mode == 0) {
@@ -81,11 +81,11 @@ s32 fx_08e_op80(s32 mode, Fx08eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x16) {
             s16 *p = fx_08e_texAnimSrc[frame % 15];
-            r.x = p[0];
-            r.y = p[1];
-            r.w = 0x20;
-            r.h = 0x80;
-            ex->MoveImage(&r, 0x2C0, 0x100);
+            rect.x = p[0];
+            rect.y = p[1];
+            rect.w = 0x20;
+            rect.h = 0x80;
+            ex->MoveImage(&rect, 0x2C0, 0x100);
         }
         if (frame >= 0x46) {
             ex->btlfx_clearEffModels();

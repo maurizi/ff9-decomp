@@ -95,7 +95,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR rot3;
     VECTOR scale2;
     SVECTOR v;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
     s32 t2;
@@ -201,10 +201,10 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, y0, &rot2, fx_08f_streakPts, &c,
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);
-                work->emit44 = p;
-                if (p != NULL) {
-                    p->otZ = 0x5C;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);
+                work->emit44 = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x5C;
                 }
             }
             if (frame >= 0x19) {
@@ -255,9 +255,9 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vz = pos.vz;
             }
             if (frame == 7) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = 0x5C;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x5C;
                 }
             }
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);

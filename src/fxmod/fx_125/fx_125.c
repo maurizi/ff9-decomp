@@ -5,7 +5,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR rot;
     VECTOR scale;
     VECTOR pos;
-    Pool6CEntry *q;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 x;
     s32 x2;
@@ -43,9 +43,9 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                                          0xFFFF, 0, 0);
         work->model28[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xE), tp2,
                                                          0xFFFF, 0, 0);
-        q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos4);
-        if (q != NULL) {
-            q->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos4);
+        if (emitter != NULL) {
+            emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;

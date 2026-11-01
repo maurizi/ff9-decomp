@@ -224,7 +224,7 @@ void fx_0fb_0_drawWaveCurtain(SVECTOR *pos, s32 dy, s32 c, s32 tpage, s32 clut, 
     s32 x;
     s32 t;
     s32 code;
-    POLY_GT4 *p;
+    POLY_GT4 *poly;
     s32 i;
     s32 c0;
     s32 c1;
@@ -236,9 +236,9 @@ void fx_0fb_0_drawWaveCurtain(SVECTOR *pos, s32 dy, s32 c, s32 tpage, s32 clut, 
     c1 = 0;
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    p = (POLY_GT4 *)env->prim;
+    poly = (POLY_GT4 *)env->prim;
     code = 0x3C;
-    env->prim = (u8 *)(p + 44);
+    env->prim = (u8 *)(poly + 44);
     if (abr != 0xFF) {
         code = 0x3E;
     }
@@ -277,28 +277,28 @@ void fx_0fb_0_drawWaveCurtain(SVECTOR *pos, s32 dy, s32 c, s32 tpage, s32 clut, 
         }
         v1 = v + 0x6F;
         gte_nclip();
-        p->r1 = p->g1 = p->b1 = c0;
-        p->r0 = p->g0 = p->b0 = c0;
-        p->r2 = p->g2 = p->b2 = c1;
+        poly->r1 = poly->g1 = poly->b1 = c0;
+        poly->r0 = poly->g0 = poly->b0 = c0;
+        poly->r2 = poly->g2 = poly->b2 = c1;
         c1 = ex->math_cos(t >> 2) >> 5;
-        p->r3 = p->g3 = p->b3 = c1;
-        p->code = code;
+        poly->r3 = poly->g3 = poly->b3 = c1;
+        poly->code = code;
         gte_stopz(&otz);
         if (otz != 0) {
-            p->u0 = p->u2 = u0;
-            p->u1 = p->u3 = u1;
-            p->v0 = p->v1 = v;
-            p->v2 = p->v3 = v1;
-            p->tpage = tpage;
-            p->clut = clut;
-            gte_stsxy3(&p->x0, &p->x1, &p->x2);
+            poly->u0 = poly->u2 = u0;
+            poly->u1 = poly->u3 = u1;
+            poly->v0 = poly->v1 = v;
+            poly->v2 = poly->v3 = v1;
+            poly->tpage = tpage;
+            poly->clut = clut;
+            gte_stsxy3(&poly->x0, &poly->x1, &poly->x2);
             gte_avsz3();
             gte_stszotz(&otz);
             gte_ldv0(&vs[3]);
             gte_rtps();
-            ex->btlfx_addPrim(0x0C000000, otz, p);
-            gte_stsxy(&p->x3);
-            p++;
+            ex->btlfx_addPrim(0x0C000000, otz, poly);
+            gte_stsxy(&poly->x3);
+            poly++;
         }
         ph = nph;
         x += 0x464;
@@ -369,7 +369,7 @@ INCLUDE_RODATA("asm/us/fx_0fb_0/nonmatchings/fx_0fb_0", fx_0fb_0_headerPtr);
 s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx0fb0Rock *r;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s16 *s;
     s16 *s_0;
     s16 *s_1;
@@ -477,9 +477,9 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos24.vy = fx_0fb_0_origin.vy;
                 work->pos24.vz = fx_0fb_0_origin.vz;
                 work->pos24.vy += 0x640;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos24);
-                if (p != NULL) {
-                    p->otZ = 0x20;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos24);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x20;
                 }
             }
             if (frame >= 0x1E) {
@@ -494,17 +494,17 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->model11C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x87), 0x9A, 0x3E00, 0, 0);
                 work->model120 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x84), 0x7C, 0x3D02, 0, 0);
                 work->model124 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x94), 0xBD, 0x3E40, 0, 0);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos1C);
-                if (p != NULL) {
-                    p->otZ = 0x180;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos1C);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x180;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = 0x200;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x200;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos1C);
-                if (p != NULL) {
-                    p->otZ = 0x100;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos1C);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x100;
                 }
                 frame = 0;
             }
@@ -585,9 +585,9 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->pos14.vx = work->basePosC.vx;
                 work->pos14.vz = work->basePosC.vz;
                 work->pos14.vy = work->basePosC.vy - 0x2800;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
                 work->scale104.vx = 0x2000;
                 work->scale104.vy = 0x555;
@@ -680,9 +680,9 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 3) {
                 ex->Hi_GetSummonBonePos(SUMMON0FB(env)->summonModel60, 0x5B, (u16 *)&work->pos1C);
                 work->pos1C.vy += 0x10;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos1C);
-                if (p != NULL) {
-                    p->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos1C);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
             }
             if (frame >= 0x19) {
@@ -831,23 +831,23 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x14), &work->pos1C, NULL, (t >> 1) + 0xAAA, 0, 1,
                               t >> 1);
             if (frame == 4) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos1C);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos1C);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame == 7) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos14);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos14);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos1C);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos1C);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame >= 0x15) {
@@ -959,9 +959,9 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame == 4) {
                 for (i3 = 0; i3 < 2; i3++) {
-                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&fx_0fb_0_bonePts1[i3 * 5]);
-                    if (p != NULL) {
-                        p->otZ = 0x100;
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&fx_0fb_0_bonePts1[i3 * 5]);
+                    if (emitter != NULL) {
+                        emitter->otZ = 0x100;
                     }
                 }
             }

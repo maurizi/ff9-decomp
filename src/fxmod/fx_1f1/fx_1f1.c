@@ -22,7 +22,7 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx1f1Unit *u;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     SVECTOR v;
     s32 frame;
     s32 i;
@@ -72,9 +72,9 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                             ex->btlfx_getUnitPos(i, (s16 *)&fx_1f1_units[i].posC);
                             u->height8 = u->posC.vy;
                             u->posC.vy = 0;
-                            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1f1_units[i].posC);
-                            if (p != NULL) {
-                                p->otZ = ex->btlfx_addRadiusSixth(i, 0x100);
+                            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1f1_units[i].posC);
+                            if (emitter != NULL) {
+                                emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x100);
                             }
                             ex->btlfx_playFileSound(6, entry->file, -1);
                             ex->btlfx_playFileSound(7, entry->file, -1);

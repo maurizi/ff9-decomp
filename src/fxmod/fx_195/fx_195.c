@@ -260,7 +260,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
     s32 tint1;
     s32 tint2;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
         *args = 0x98;
@@ -429,17 +429,17 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_stopEmitter(work->emit54);
                 ex->btlfx_stopEmitter(work->emit58);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x300;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x300;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x300;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x300;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x400;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x400;
                 }
                 work->sound30 = ex->btlfx_playFileSound(0x22, entry->file, -1);
                 work->sound32 = ex->btlfx_playFileSound(0x23, entry->file, -1);
@@ -681,9 +681,9 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x31) {
                 BTLFX_COPY_SVEC(&work->pos18, &work->pos10);
                 work->pos18.vy -= 0x400;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos18);
-                if (p != NULL) {
-                    p->otZ = 0x180;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos18);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x180;
                 }
             }
             env->otZ = 0x300;

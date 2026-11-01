@@ -2,7 +2,7 @@
 
 s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
 
@@ -15,13 +15,13 @@ s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         t = ((s32 *)&env->targets->centerX)[1];
         work->pos4.vy = 0;
         ((s32 *)&work->pos4)[1] = t;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
-        if (p != NULL) {
-            p->otZ = -0x12C;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos4);
+        if (emitter != NULL) {
+            emitter->otZ = -0x12C;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
-        if (p != NULL) {
-            p->otZ = -0x258;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        if (emitter != NULL) {
+            emitter->otZ = -0x258;
         }
     } else {
         frame = entry->frame;

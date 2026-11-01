@@ -312,14 +312,14 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 2: {
             s32 c;
-            Pool6CEntry *p;
+            Pool6CEntry *emitter;
 
             t = (frame << 12) / 40;
             tint = 0x89;
             if (frame == 1) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos8);
-                if (p != NULL) {
-                    p->otZ = 0x100;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos8);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x100;
                 }
             }
             env->camera->points[3].vx = work->pos8.vx;

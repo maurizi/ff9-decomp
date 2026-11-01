@@ -216,7 +216,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx0b3Vec3 scale;
     Fx0b3Vec3 pos;
     SVECTOR sc;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 n;
@@ -335,18 +335,18 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos28.vx = 0xD5C;
                 work->pos28.vy = 0;
                 work->pos28.vz = 0x3797;
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
             if (frame == 0x26) {
                 work->pos30.vy = -0x3000;
                 work->pos30.vx = 0;
                 work->pos30.vz = 0x483;
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos30);
-                if (e != NULL) {
-                    e->otZ = 0x200;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos30);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x200;
                 }
             }
             fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x2E), frame, &work->pos38);
@@ -380,7 +380,7 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx0b3Vec3 scale2;
     SVECTOR rot2;
     SVECTOR b;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 c;
     s32 w;
@@ -493,35 +493,35 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos18.vx = 0;
                 work->pos18.vy = -0x1DB;
                 work->pos18.vz = 0;
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos18);
-                if (e != NULL) {
-                    e->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos18);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
-                if (e != NULL) {
-                    e->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
             }
             if (frame == 0x19) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
-                if (e != NULL) {
-                    e->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
             }
             if (frame == 0x2C) {
                 work->pos20.vx = 0;
                 work->pos20.vy = -0x258;
                 work->pos20.vz = 0;
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2F), (s32)&work->pos20);
-                if (e != NULL) {
-                    e->trails = (s32)fx_0b3_trails;
-                    e->trailSlots = 0xF0;
-                    e->trailStride = 0x1C;
-                    e->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2F), (s32)&work->pos20);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_0b3_trails;
+                    emitter->trailSlots = 0xF0;
+                    emitter->trailStride = 0x1C;
+                    emitter->otZ = 0x40;
                 }
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x30), (s32)&work->pos18);
-                if (e != NULL) {
-                    e->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x30), (s32)&work->pos18);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
             }
             ex->btlfx_drawScrollMove(frame * 8, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
@@ -552,7 +552,7 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
     s32 otz;
     POLY_FT4 *ft4;
     POLY_GT4 *gt4;
-    POLY_G4 *g4;
+    POLY_G4 *poly;
     s32 i;
     s32 zz;
     s32 j;
@@ -576,8 +576,8 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
     *(s32 *)&col4 = 0;
     gt4 = (POLY_GT4 *)(ft4 + 100);
     tpage |= 0x20;
-    g4 = (POLY_G4 *)(gt4 + 20);
-    env->prim = (u8 *)(g4 + 20);
+    poly = (POLY_G4 *)(gt4 + 20);
+    env->prim = (u8 *)(poly + 20);
     col0.cd = 0x2C;
     col2.cd = 0x3E;
     col1.cd = 0x3E;
@@ -649,9 +649,9 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
                 if (i >= 5) {
                     *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&col1;
                     *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&col2;
-                    *(s32 *)&g4->r0 = *(s32 *)&g4->r1 = *(s32 *)&col3;
+                    *(s32 *)&poly->r0 = *(s32 *)&poly->r1 = *(s32 *)&col3;
                     ft = 0;
-                    *(s32 *)&g4->r2 = *(s32 *)&g4->r3 = *(s32 *)&col4;
+                    *(s32 *)&poly->r2 = *(s32 *)&poly->r3 = *(s32 *)&col4;
                     gte_SetRotMatrix(&m2);
                     gte_SetTransMatrix(&m2);
                     gte_ldv0(&p[2]);
@@ -681,9 +681,9 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
                     gt4->tpage = tpage;
                     gt4->clut = clut;
                     gte_stsxy3(&gt4->x0, &gt4->x1, &gt4->x2);
-                    *(s32 *)&g4->x0 = *(s32 *)&gt4->x0;
-                    *(s32 *)&g4->x1 = *(s32 *)&gt4->x1;
-                    *(s32 *)&g4->x2 = *(s32 *)&gt4->x2;
+                    *(s32 *)&poly->x0 = *(s32 *)&gt4->x0;
+                    *(s32 *)&poly->x1 = *(s32 *)&gt4->x1;
+                    *(s32 *)&poly->x2 = *(s32 *)&gt4->x2;
                 }
                 gte_ldv0(&p[3]);
                 gte_rtps();
@@ -693,11 +693,11 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
                     ft4++;
                 } else {
                     ex->btlfx_addPrim(0x0C000000, otz, gt4);
-                    ex->btlfx_addPrimAbr(0x08000000, otz, g4, 2);
+                    ex->btlfx_addPrimAbr(0x08000000, otz, poly, 2);
                     gte_stsxy(&gt4->x3);
-                    *(s32 *)&g4->x3 = *(s32 *)&gt4->x3;
+                    *(s32 *)&poly->x3 = *(s32 *)&gt4->x3;
                     gt4++;
-                    g4++;
+                    poly++;
                 }
             }
         }
@@ -715,7 +715,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx0b3Vec3 pos2;
     SVECTOR rot3;
     Fx0b3Vec3 scale3;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
     s32 c;
@@ -832,16 +832,16 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_keyGetVec((u8 *)ex->btlfx_getFileData(entry->file, 0x27), frame, &work->pos28);
             work->pos28.vy = -0x100;
             if (frame == 0) {
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&work->pos28);
-                if (e != NULL) {
-                    e->otZ = 0x100;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&work->pos28);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x100;
                 }
-                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x31), (s32)&work->pos30);
-                if (e != NULL) {
-                    e->trails = (s32)fx_0b3_trails2;
-                    e->trailSlots = 0x30;
-                    e->trailStride = 0x1C;
-                    e->otZ = 0x100;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x31), (s32)&work->pos30);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_0b3_trails2;
+                    emitter->trailSlots = 0x30;
+                    emitter->trailStride = 0x1C;
+                    emitter->otZ = 0x100;
                 }
             }
             ex->btlfx_drawScrollMove(frame * 16, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
@@ -1090,7 +1090,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR p1;
     SVECTOR p2;
     VECTOR scale;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     SVECTOR a2;
     SVECTOR b2;
     VECTOR c2;
@@ -1229,9 +1229,9 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos10.vx = (p1.vx + p2.vx) / 2;
                 work->pos10.vy = (p1.vy + p2.vy) / 2;
                 work->pos10.vz = (p1.vz + p2.vz) / 2;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1F), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1F), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
             }
             if (frame >= 0x2B) {
@@ -1307,7 +1307,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 s32 fx_0b3_op86(s32 mode, Fx0b3Work86 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 i;
 
     if (mode == 0) {
@@ -1320,9 +1320,9 @@ s32 fx_0b3_op86(s32 mode, Fx0b3Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->emitPos0[i]);
                 work->emitPos0[i].vz -= ex->btlfx_getUnitRadius(i);
                 work->emitPos0[i].vy -= 0x200;
-                e = ex->btlfx_startEmitter((s32)ex->btlfx_getFileData(entry->file, 0x23), (s32)&work->emitPos0[i]);
-                if (e != NULL) {
-                    e->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
+                emitter = ex->btlfx_startEmitter((s32)ex->btlfx_getFileData(entry->file, 0x23), (s32)&work->emitPos0[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
                 }
             }
         }

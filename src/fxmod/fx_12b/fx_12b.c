@@ -206,7 +206,7 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx12bShard *q;
     Fx12bShard *b;
     Fx12bShard *r;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 j;
@@ -311,17 +311,17 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= q->frame18) {
                 if (++q->frame20 == 0x13) {
-                    e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)q);
-                    if (e != NULL) {
-                        e->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)q);
+                    if (emitter != NULL) {
+                        emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
                 }
             }
             if (frame >= r->frame18) {
                 if (++r->frame20 == 0x13) {
-                    e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)r);
-                    if (e != NULL) {
-                        e->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)r);
+                    if (emitter != NULL) {
+                        emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
                     /* the do-while(0) adds a loop-depth-weighted ref to j, which puts it ahead of q and r in
                      * global-alloc (j in s4) */

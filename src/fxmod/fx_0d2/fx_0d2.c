@@ -230,7 +230,7 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 m;
     s32 k;
     u8 *buf;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
         *args = sizeof(Fx0d2Work81);
@@ -697,7 +697,7 @@ s32 fx_0d2_op84(s32 mode, Fx0d2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
     s32 i;
     s32 j;
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
 
     if (mode == 0) {
         *args = sizeof(Fx0d2Work84);
@@ -719,10 +719,10 @@ s32 fx_0d2_op84(s32 mode, Fx0d2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 /* PsyQ copyVector() */
                 (&work->emitPos60[i])->vx = (&work->pos20[i])->vx, (&work->emitPos60[i])->vy = (&work->pos20[i])->vy,
                 (&work->emitPos60[i])->vz = (&work->pos20[i])->vz;
-                e = ex->btlfx_startEmitter((s32)ex->btlfx_getFileData(entry->file, 2), (s32)&work->emitPos60[i]);
-                work->emit0[i] = e;
-                if (e != NULL) {
-                    e->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter((s32)ex->btlfx_getFileData(entry->file, 2), (s32)&work->emitPos60[i]);
+                work->emit0[i] = emitter;
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
             }
         }

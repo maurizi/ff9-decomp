@@ -7,7 +7,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     VECTOR sc;
     VECTOR pos;
     SVECTOR rot;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
     s32 s;
@@ -67,12 +67,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&work->pos10, &work->pos20);
             work->pos10.vy += 0x300;
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->trails = (s32)fx_17d_3_op80Trails0;
-                    p->trailSlots = 0x10;
-                    p->trailStride = 0xCC;
-                    p->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_17d_3_op80Trails0;
+                    emitter->trailSlots = 0x10;
+                    emitter->trailStride = 0xCC;
+                    emitter->otZ = 0x40;
                 }
             }
             sc.vx = sc.vz = 0x555;
@@ -139,12 +139,12 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&work->pos10, &work->pos20);
             work->pos10.vy += 0x300;
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->trails = (s32)fx_17d_3_op80Trails0;
-                    p->trailSlots = 0x10;
-                    p->trailStride = 0xCC;
-                    p->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->trails = (s32)fx_17d_3_op80Trails0;
+                    emitter->trailSlots = 0x10;
+                    emitter->trailStride = 0xCC;
+                    emitter->otZ = 0x40;
                 }
             }
             sc.vx = sc.vz = 0x555;

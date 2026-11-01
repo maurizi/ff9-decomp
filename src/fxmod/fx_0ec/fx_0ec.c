@@ -347,7 +347,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     MATRIX m;
     VECTOR out;
     SVECTOR c[2]; /* [1] unused: the original's frame has 8 more bytes of locals */
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 t;
     s32 h;
@@ -432,13 +432,13 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             k = 0x1755;
         }
         work->scale5C = k;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos18);
-        if (p != NULL) {
-            p->otZ = -0x40;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos18);
+        if (emitter != NULL) {
+            emitter->otZ = -0x40;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos20);
-        if (p != NULL) {
-            p->otZ = 0x80;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos20);
+        if (emitter != NULL) {
+            emitter->otZ = 0x80;
         }
         work->state0 = 0;
         work->frame4 = 0;
@@ -461,11 +461,11 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos20.vy = work->pos18.vy;
         work->pos20.vz = work->pos18.vz;
         work->pos20.vy -= (t * 0x140) >> 12;
-        p = (Pool6CEntry *)ex->btlfx_getFileData(entry->file, 9);
+        emitter = (Pool6CEntry *)ex->btlfx_getFileData(entry->file, 9);
         sv.vx = pos.vx;
         sv.vy = pos.vy;
         sv.vz = pos.vz;
-        sv.vy -= (((SVECTOR *)p)->pad * sc.vy) >> 12;
+        sv.vy -= (((SVECTOR *)emitter)->pad * sc.vy) >> 12;
         env->camera->points[0].vx = sv.vx;
         env->camera->points[0].vy = sv.vy;
         env->camera->points[0].vz = sv.vz;
@@ -569,9 +569,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 gte_rtv0tr();
                 gte_stlvnl(&out);
                 setVector(&work->emitPos28[i], out.vx, out.vy, out.vz);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->emitPos28[i]);
-                if (p != NULL) {
-                    p->otZ = 0x40;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->emitPos28[i]);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x40;
                 }
             }
         }
@@ -598,11 +598,11 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos20.vy = work->pos18.vy;
                 work->pos20.vz = work->pos18.vz;
                 work->pos20.vy -= (work->scale5C << 10) >> 12;
-                work->emit60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos18);
-                if (p == NULL) {
+                work->emit60 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos18);
+                if (emitter == NULL) {
                     goto skip; /* the original's NULL branch skips the unk60 check (unk60 is NULL then) */
                 }
-                p->target = (s32)&work->pos20;
+                emitter->target = (s32)&work->pos20;
             }
             if (work->emit60 != NULL && work->emit60->state == BTLFX_EMIT_DONE) {
                 work->emit60 = NULL;

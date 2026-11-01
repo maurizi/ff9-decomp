@@ -3,7 +3,7 @@
 s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     VECTOR scale;
-    Pool6CEntry *p;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 s;
     s32 t;
@@ -26,13 +26,13 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->state0 = 0;
         work->bgFrame4 = 0;
         work->pos10.vy -= 0x180;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = 0x20;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = 0x20;
         }
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
-        if (p != NULL) {
-            p->otZ = -0x20;
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
+        if (emitter != NULL) {
+            emitter->otZ = -0x20;
         }
         ex->btlfx_initEffModels(fx_07f_effModels, 2);
         work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0xB7, 0x3D40, 0, 0);
@@ -65,9 +65,9 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelAbr(work->model30, 1);
             ex->Hi_ModifyEffModelRGB(work->model30, c, c, c);
             if (frame == 0xC) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x46;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x46;
                 }
             }
             if (frame >= 0x29) {

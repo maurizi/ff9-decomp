@@ -5,7 +5,7 @@ INCLUDE_RODATA("asm/us/fx_083/nonmatchings/fx_083", fx_083_headerPtr);
 s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s16 tex[8];
-    Pool6CEntry *e;
+    Pool6CEntry *emitter;
     s32 frame;
     s32 i;
     s32 r;
@@ -90,17 +90,17 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timers0[8] = 0x30;
             break;
         case 0x30:
-            e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos160);
-            if (e != NULL) {
-                e->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos160);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
-            e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos160);
-            if (e != NULL) {
-                e->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos160);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
-            e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos160);
-            if (e != NULL) {
-                e->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos160);
+            if (emitter != NULL) {
+                emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
             break;
         case 0x34:
