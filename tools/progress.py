@@ -23,6 +23,8 @@ import glob
 import os
 import re
 import subprocess
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 ASM_GLOB = "asm/us/*/nonmatchings/*/*.s"
 SRC_GLOB = "src/**/*.c"
@@ -269,6 +271,12 @@ def main():
     print("-" * 70)
     print(f"{'total':10}: {t[0]:5d}/{t[1]:5d} ({pct(t[0], t[1]):5.2f}%)  {t[2]:5d}/{t[3]:5d} ({pct(t[2], t[3]):5.2f}%)")
     print(f"struct fields: {nf} named, {uf} still unkXX")
+    import literal_survey
+    rows = literal_survey.survey(None)
+    act = ("compare", "mask", "case", "arg", "assign")
+    lg = sum(1 for r in rows if r[0] != "fxmod" and r[1] in act)
+    lf = sum(1 for r in rows if r[0] == "fxmod" and r[1] in act)
+    print(f"literals     : {lg} in game code, {lf} in effect modules (compare/mask/case/arg/assign; tools/literal_survey.py --top N)")
 
     if a.csv:
         commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True,
