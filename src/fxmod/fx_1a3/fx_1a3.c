@@ -1,6 +1,6 @@
 #include "fxmod/fx_1a3.h"
 
-static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 frames) {
+static s32 fx_1a3_op80ParticleMotion(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos, s32 trail, s32 frame, s32 n) {
     s32 t = (frame - 4) << 9;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a3_env);
 
@@ -9,10 +9,10 @@ static s32 fx_1a3_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
     }
     ex->btlfx_lerpVec((s16 *)&fx_1a3_motionFrom, (s16 *)&fx_1a3_motionTo, t, (s16 *)pos);
     pos->vy += ex->math_sin(t >> 1) * 0;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
-    if (frame >= frames) {
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
+    if (frame >= n) {
         return -1;
     }
     return 0;

@@ -36,10 +36,10 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *args = 0x4C;
     } else if (mode == 1) {
-        s32 n = *args;
+        s32 shot = *args;
         fx_1a6_env = env;
-        work->index48 = n;
-        if (n >= FX_1A6_SHOTS) {
+        work->index48 = shot;
+        if (shot >= FX_1A6_SHOTS) {
             return 1;
         }
         ex->btlfx_playFileSound(2, entry->file, -1);

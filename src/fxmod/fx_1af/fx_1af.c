@@ -2,25 +2,25 @@
 
 s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR unitPos;
     VECTOR pos;
     Pool6CEntry *emitter;
     s32 frame;
     s32 state;
     s32 t;
-    s32 s;
+    s32 ang;
     s32 i;
     s32 j;
-    s32 y;
+    s32 sliceY;
 
     if (mode == 0) {
         *args = 0x54;
     } else if (mode == 1) {
         fx_1af_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&v);
-        work->pos8[0] = v.vx;
-        work->pos8[1] = v.vy;
-        work->pos8[2] = v.vz;
+        ex->btlfx_getUnitPos(0x10, (s16 *)&unitPos);
+        work->pos8[0] = unitPos.vx;
+        work->pos8[1] = unitPos.vy;
+        work->pos8[2] = unitPos.vz;
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
         ex->btlfx_getUnitScale(0x10, (VECTOR *)work->scale1C);
         fx_1af_task = entry;
@@ -65,7 +65,7 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x2A, 0x2A, 0x38);
             }
             if (frame >= 0) {
-                y = t;
+                sliceY = t;
                 if (frame < 4) {
                     work->rot14.vz += 0xC;
                     work->pos38.vx += 0xE;
@@ -78,16 +78,16 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 pos.vx = work->pos8[0];
                 pos.vy = work->pos8[1];
                 pos.vz = work->pos8[2];
-                s = t >> 2;
-                pos.vy = y;
-                pos.vx += ex->btlfx_randCentered(ex->math_sin(s) >> 6);
-                pos.vz += ex->btlfx_randCentered(ex->math_sin(s) >> 6);
+                ang = t >> 2;
+                pos.vy = sliceY;
+                pos.vx += ex->btlfx_randCentered(ex->math_sin(ang) >> 6);
+                pos.vz += ex->btlfx_randCentered(ex->math_sin(ang) >> 6);
                 work->pos30.vx = pos.vx;
                 work->pos30.vy = pos.vy;
                 work->pos30.vz = pos.vz;
                 work->pos30.vx += t >> 4;
                 for (j = 0; j < 5; j++) {
-                    ex->Hi_SetEffModelSlice(work->model40[j], y);
+                    ex->Hi_SetEffModelSlice(work->model40[j], sliceY);
                     ex->Hi_DrawSliceEffModel(&work->rot14, &pos, (s32)work->scale1C, work->model40[j]);
                 }
             }
@@ -169,16 +169,16 @@ s32 fx_1af_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 
 s32 fx_1af_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
+    SVECTOR unitPos;
 
     if (mode == 0) {
         *args = 4;
     } else if (mode == 1) {
         fx_1af_env = env;
-        ex->btlfx_getUnitPos(0x10, (s16 *)&v);
-        env->camera->points[3].vx = v.vx;
-        env->camera->points[3].vy = v.vy;
-        env->camera->points[3].vz = v.vz;
+        ex->btlfx_getUnitPos(0x10, (s16 *)&unitPos);
+        env->camera->points[3].vx = unitPos.vx;
+        env->camera->points[3].vy = unitPos.vy;
+        env->camera->points[3].vz = unitPos.vz;
         return 1;
     } else {
         return 0;

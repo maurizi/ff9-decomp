@@ -104,10 +104,10 @@ static s32 fxm_lineOrbitParticle1(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 r
 
 s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    MATRIX m;
-    MATRIX m2;
+    MATRIX boneMtx;
+    MATRIX launchMtx;
     s32 frame;
-    s32 t;
+    s32 elapsed;
     s32 i;
 
     if (mode == 0) {
@@ -130,17 +130,17 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&m);
-        ex->btlfx_matrixPointAhead(&m, 0x190, (s32)&work->pos34);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&boneMtx);
+        ex->btlfx_matrixPointAhead(&boneMtx, 0x190, (s32)&work->pos34);
         if (frame == 0x32) {
-            ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&m2);
-            ex->btlfx_matrixPointAhead(&m2, 0xC8, (s32)&fx_1a7_op80MotionFrom);
+            ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&launchMtx);
+            ex->btlfx_matrixPointAhead(&launchMtx, 0xC8, (s32)&fx_1a7_op80MotionFrom);
             fx_1a7_op80MotionFrom.vy -= 0xC8;
         }
         if (frame >= 0x32) {
-            t = frame - 0x32;
+            elapsed = frame - 0x32;
             for (i = 0; i < 9; i++) {
-                if (t == fx_1a7_op80StartFrames[i]) {
+                if (elapsed == fx_1a7_op80StartFrames[i]) {
                     work->emit8[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1a7_op80EmitFileIds[i]), (s32)&fx_1a7_emitPos);
                     if (work->emit8[i] != NULL) {
                         work->emit8[i]->trails = (s32)fx_1a7_op80Trails1[i];
@@ -152,7 +152,7 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                     fx_1a7_op80Angles[i] = i * 0x155 + ex->btlfx_rand() % 4096;
                     fx_1a7_op80Radii[i] = i * 10;
-                } else if (t >= fx_1a7_op80StartFrames[i]) {
+                } else if (elapsed >= fx_1a7_op80StartFrames[i]) {
                     fx_1a7_op80Angles[i] += 0x200;
                     fx_1a7_op80Radii[i] += (i / 2 + 1) * 8;
                 }
@@ -176,9 +176,9 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 frame;
-    s32 t;
+    s32 elapsed;
     s32 i;
-    s32 k;
+    s32 radiusJitter;
 
     if (mode == 0) {
         *args = 0x64;
@@ -212,9 +212,9 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame >= 0x14) {
-            t = frame - 0x14;
+            elapsed = frame - 0x14;
             for (i = 0; i < 9; i++) {
-                if (t == fx_1a7_op81StartFrames[i]) {
+                if (elapsed == fx_1a7_op81StartFrames[i]) {
                     work->emit8[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1a7_op81EmitFileIds[i]), (s32)&fx_1a7_emitPos);
                     if (work->emit8[i] != NULL) {
                         work->emit8[i]->trails = (s32)fx_1a7_op81Trails1[i];
@@ -226,16 +226,16 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                     fx_1a7_op81Angles[i] = i * 0x155 + ex->btlfx_rand() % 4096;
                     fx_1a7_op81Radii[i] = ex->btlfx_rand() % 200 + 0x64;
-                } else if (t >= fx_1a7_op81StartFrames[i]) {
+                } else if (elapsed >= fx_1a7_op81StartFrames[i]) {
                     fx_1a7_op81Angles[i] += 0x80;
-                    k = 0x78;
-                    if (t - fx_1a7_op81StartFrames[i] >= 5) {
-                        k = 0x28;
+                    radiusJitter = 0x78;
+                    if (elapsed - fx_1a7_op81StartFrames[i] >= 5) {
+                        radiusJitter = 0x28;
                     }
                     if (ex->btlfx_rand() & 1) {
-                        fx_1a7_op81Radii[i] += ex->btlfx_rand() % k;
+                        fx_1a7_op81Radii[i] += ex->btlfx_rand() % radiusJitter;
                     } else {
-                        fx_1a7_op81Radii[i] -= ex->btlfx_rand() % k;
+                        fx_1a7_op81Radii[i] -= ex->btlfx_rand() % radiusJitter;
                     }
                 }
             }

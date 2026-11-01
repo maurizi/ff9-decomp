@@ -1,52 +1,52 @@
 #include "fxmod/fx_1a8.h"
 
-static void fx_1a8_op80ElemDraw0(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 alpha, s32 blend, s32 t, s32 n) {
-    s32 r = (t << 12) / n;
+static void fx_1a8_op80ElemDraw0(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 alpha, s32 blend, s32 frame, s32 n) {
+    s32 life = (frame << 12) / n;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a8_env);
-    VECTOR p;
-    VECTOR s;
-    s32 a;
-    s32 c;
+    VECTOR drawPos;
+    VECTOR modelScale;
+    s32 fade;
+    s32 bright;
 
-    s.vx = s.vy = s.vz = *scale >> 3;
-    if (r >= 0xC00) {
-        a = 0x1000 - (r - 0xC00) * 4;
+    modelScale.vx = modelScale.vy = modelScale.vz = *scale >> 3;
+    if (life >= 0xC00) {
+        fade = 0x1000 - (life - 0xC00) * 4;
     } else {
-        a = 0x1000;
+        fade = 0x1000;
     }
-    p.vx = pos->vx;
-    p.vy = pos->vy;
-    p.vz = pos->vz;
-    ex->Hi_DrawEffModel(rot, &p, (s32)&s, fx_1a8_elemModels[0]);
-    if (a < 0x1000) {
+    drawPos.vx = pos->vx;
+    drawPos.vy = pos->vy;
+    drawPos.vz = pos->vz;
+    ex->Hi_DrawEffModel(rot, &drawPos, (s32)&modelScale, fx_1a8_elemModels[0]);
+    if (fade < 0x1000) {
         ex->Hi_ModifyEffModelAbr(fx_1a8_elemModels[0], 1);
-        c = (a >> 5) - 0x80;
-        ex->Hi_ModifyEffModelRGB(fx_1a8_elemModels[0], c, c, c);
+        bright = (fade >> 5) - 0x80;
+        ex->Hi_ModifyEffModelRGB(fx_1a8_elemModels[0], bright, bright, bright);
     }
 }
 
-static void fx_1a8_op80ElemDraw1(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 alpha, s32 blend, s32 t, s32 n) {
-    s32 r = (t << 12) / n;
+static void fx_1a8_op80ElemDraw1(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 alpha, s32 blend, s32 frame, s32 n) {
+    s32 life = (frame << 12) / n;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a8_env);
-    VECTOR p;
-    VECTOR s;
-    s32 a;
-    s32 c;
+    VECTOR drawPos;
+    VECTOR modelScale;
+    s32 fade;
+    s32 bright;
 
-    s.vx = s.vy = s.vz = *scale >> 3;
-    if (r >= 0xC00) {
-        a = 0x1000 - (r - 0xC00) * 4;
+    modelScale.vx = modelScale.vy = modelScale.vz = *scale >> 3;
+    if (life >= 0xC00) {
+        fade = 0x1000 - (life - 0xC00) * 4;
     } else {
-        a = 0x1000;
+        fade = 0x1000;
     }
-    p.vx = pos->vx;
-    p.vy = pos->vy;
-    p.vz = pos->vz;
-    ex->Hi_DrawEffModel(rot, &p, (s32)&s, fx_1a8_elemModels[1]);
-    if (a < 0x1000) {
+    drawPos.vx = pos->vx;
+    drawPos.vy = pos->vy;
+    drawPos.vz = pos->vz;
+    ex->Hi_DrawEffModel(rot, &drawPos, (s32)&modelScale, fx_1a8_elemModels[1]);
+    if (fade < 0x1000) {
         ex->Hi_ModifyEffModelAbr(fx_1a8_elemModels[1], 1);
-        c = (a >> 5) - 0x80;
-        ex->Hi_ModifyEffModelRGB(fx_1a8_elemModels[1], c, c, c);
+        bright = (fade >> 5) - 0x80;
+        ex->Hi_ModifyEffModelRGB(fx_1a8_elemModels[1], bright, bright, bright);
     }
 }
 
@@ -261,7 +261,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 1: {
-            SVECTOR v;
+            SVECTOR startPos;
 
             size = work->scale34.vx;
             work->pos40.vx = fx_1a8_targetPos.vx;
@@ -276,10 +276,10 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos20.vy = work->pos40.vy;
             work->pos20.vz = work->pos40.vz;
             if (frame == 0) {
-                v.vx = work->pos40.vx;
-                v.vy = work->pos40.vy;
-                v.vz = work->pos40.vz;
-                ex->btlfx_aimAngles((s16 *)&v, (s16 *)&fx_1a8_targetPos, (s16 *)&work->rot2C);
+                startPos.vx = work->pos40.vx;
+                startPos.vy = work->pos40.vy;
+                startPos.vz = work->pos40.vz;
+                ex->btlfx_aimAngles((s16 *)&startPos, (s16 *)&fx_1a8_targetPos, (s16 *)&work->rot2C);
                 work->scale34.vx = work->scale34.vy = work->scale34.vz = 0x5000;
                 work->rot2C.vx += 0x800;
                 env->camera->points[3].vx = fx_1a8_targetPos.vx;
@@ -292,67 +292,67 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rot2C, (VECTOR *)&work->pos40, (s32)&work->scale34, work->model60);
             work->scale34.vx = work->scale34.vy = work->scale34.vz = work->scale34.vx * 2;
             if (frame >= 4) {
-                Pool6CEntry *p;
+                Pool6CEntry *emitter;
 
                 work->state0 = 2;
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 2, 0x46, 0x46, 0x46);
                 BTLFX_COPY_SVEC(&work->pos10, &fx_1a8_targetPos);
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos10);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x200;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x200;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x80;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x80;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->elems[0].draw = (void (*)())fx_1a8_op80ElemDraw0;
-                    p->elems[1].draw = (void (*)())fx_1a8_op80ElemDraw1;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->elems[0].draw = (void (*)())fx_1a8_op80ElemDraw0;
+                    emitter->elems[1].draw = (void (*)())fx_1a8_op80ElemDraw1;
                 }
             }
             break;
         }
         case 2: {
-            SVECTOR r1;
-            VECTOR s1;
-            SVECTOR r2;
-            VECTOR s2;
-            SVECTOR r3;
-            VECTOR s3;
-            SVECTOR r4;
-            VECTOR s4;
-            SVECTOR r5;
-            s32 d;
+            SVECTOR pillarRot;
+            VECTOR pillarScale;
+            SVECTOR domeRot;
+            VECTOR domeScale;
+            SVECTOR swirlRot;
+            VECTOR swirlScale;
+            SVECTOR groundRot;
+            VECTOR groundScale;
+            SVECTOR ringRot;
+            s32 shake;
             s32 i;
             s32 at;
-            s32 q1;
-            s32 a1;
-            s32 q2;
-            s32 c2;
-            s32 a2;
-            s32 q3;
-            s32 a3;
-            s32 y3;
-            s32 p3;
+            s32 pillarT;
+            s32 pillarBright;
+            s32 domeT;
+            s32 domeCos;
+            s32 domeBright;
+            s32 swirlT;
+            s32 swirlBright;
+            s32 swirlRise;
+            s32 swirlAng;
             s32 sv;
-            s32 a4;
-            s32 x4;
+            s32 groundBright;
+            s32 groundFade;
 
             t = frame << 7;
             if (frame < 8) {
                 env->camera->points[3].vx = fx_1a8_targetPos.vx;
-                d = ((frame & 1) * 2 - 1) * (0x20 - frame * 4);
+                shake = ((frame & 1) * 2 - 1) * (0x20 - frame * 4);
                 env->camera->points[3].vy = fx_1a8_targetPos.vy;
                 env->camera->points[3].vz = fx_1a8_targetPos.vz;
-                env->camera->points[3].vy = env->camera->points[3].vy - (0x140 + d);
-                env->camera->points[3].vx += d;
+                env->camera->points[3].vy = env->camera->points[3].vy - (0x140 + shake);
+                env->camera->points[3].vx += shake;
             }
             work->pos40.vx = fx_1a8_targetPos.vx;
             work->pos40.vy = fx_1a8_targetPos.vy;
@@ -362,11 +362,11 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->Hi_DrawEffModel(&work->rot2C, (VECTOR *)&work->pos40, (s32)&work->scale34, work->model28);
             if (t > 0xC00) {
-                s32 k;
+                s32 modelBright;
 
                 ex->Hi_ModifyEffModelAbr(work->model28, 1);
-                k = ((0x1000 - (t - 0xC00) * 4) >> 5) - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->model28, k, k, k);
+                modelBright = ((0x1000 - (t - 0xC00) * 4) >> 5) - 0x80;
+                ex->Hi_ModifyEffModelRGB(work->model28, modelBright, modelBright, modelBright);
             }
             if (frame < 0x10) {
                 alpha = 0x1000 - (frame << 8);
@@ -383,16 +383,16 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos40.vx = fx_1a8_targetPos.vx;
                 work->pos40.vy = fx_1a8_targetPos.vy;
                 work->pos40.vz = fx_1a8_targetPos.vz;
-                s1.vx = s1.vz = 0x1800;
-                r1.vx = 0;
-                r1.vy = 0;
-                r1.vz = 0;
-                q1 = (frame << 12) / 12;
-                s1.vy = q1 + 0x2000;
-                a1 = (ex->math_cos(q1 >> 2) >> 5) - 0x80;
+                pillarScale.vx = pillarScale.vz = 0x1800;
+                pillarRot.vx = 0;
+                pillarRot.vy = 0;
+                pillarRot.vz = 0;
+                pillarT = (frame << 12) / 12;
+                pillarScale.vy = pillarT + 0x2000;
+                pillarBright = (ex->math_cos(pillarT >> 2) >> 5) - 0x80;
                 for (i = 0; i < 4; i++) {
-                    ex->Hi_DrawEffModel(&r1, (VECTOR *)&work->pos40, (s32)&s1, work->model4C[i]);
-                    ex->Hi_ModifyEffModelRGB(work->model4C[i], a1, a1, a1);
+                    ex->Hi_DrawEffModel(&pillarRot, (VECTOR *)&work->pos40, (s32)&pillarScale, work->model4C[i]);
+                    ex->Hi_ModifyEffModelRGB(work->model4C[i], pillarBright, pillarBright, pillarBright);
                 }
                 ex->btlfx_drawScrollMove(work->frame4 << 4, 0x1C0, 0x100, 0x38, 0x70, 0x1C0, 0x170);
             }
@@ -400,73 +400,73 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->pos40.vx = fx_1a8_targetPos.vx;
                 work->pos40.vy = fx_1a8_targetPos.vy;
                 work->pos40.vz = fx_1a8_targetPos.vz;
-                q2 = (frame << 12) / 12;
-                s2.vx = s2.vz = q2 / 8 + 0x555;
-                s2.vy = ex->math_sin(q2 >> 2);
-                r2.vx = 0;
-                r2.vy = 0;
-                r2.vz = 0;
-                c2 = ex->math_cos(q2 >> 2);
-                ex->Hi_DrawEffModel(&r2, (VECTOR *)&work->pos40, (s32)&s2, work->model64);
-                a2 = (c2 >> 5) - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->model64, a2, a2, a2);
-                s2.vy >>= 1;
-                s2.vx = s2.vz = (s2.vx * 4) / 3;
-                ex->Hi_DrawEffModel(&r2, (VECTOR *)&work->pos40, (s32)&s2, work->model64);
-                ex->Hi_ModifyEffModelRGB(work->model64, a2, a2, a2);
+                domeT = (frame << 12) / 12;
+                domeScale.vx = domeScale.vz = domeT / 8 + 0x555;
+                domeScale.vy = ex->math_sin(domeT >> 2);
+                domeRot.vx = 0;
+                domeRot.vy = 0;
+                domeRot.vz = 0;
+                domeCos = ex->math_cos(domeT >> 2);
+                ex->Hi_DrawEffModel(&domeRot, (VECTOR *)&work->pos40, (s32)&domeScale, work->model64);
+                domeBright = (domeCos >> 5) - 0x80;
+                ex->Hi_ModifyEffModelRGB(work->model64, domeBright, domeBright, domeBright);
+                domeScale.vy >>= 1;
+                domeScale.vx = domeScale.vz = (domeScale.vx * 4) / 3;
+                ex->Hi_DrawEffModel(&domeRot, (VECTOR *)&work->pos40, (s32)&domeScale, work->model64);
+                ex->Hi_ModifyEffModelRGB(work->model64, domeBright, domeBright, domeBright);
             }
             if (frame < 0x14) {
                 work->pos40.vx = fx_1a8_targetPos.vx;
                 work->pos40.vy = fx_1a8_targetPos.vy;
                 work->pos40.vz = fx_1a8_targetPos.vz;
-                q3 = (frame << 12) / 20;
-                p3 = q3 >> 2;
-                s3.vx = s3.vz = ex->math_sin(p3) / 2;
-                a3 = ((0x1000 - q3) >> 5) - 0x80;
-                s3.vy = 0x800 - p3;
-                r3.vx = 0;
-                r3.vy = frame * 0x18;
-                r3.vz = 0;
-                y3 = frame * 0x18;
-                work->pos40.vy -= y3;
+                swirlT = (frame << 12) / 20;
+                swirlAng = swirlT >> 2;
+                swirlScale.vx = swirlScale.vz = ex->math_sin(swirlAng) / 2;
+                swirlBright = ((0x1000 - swirlT) >> 5) - 0x80;
+                swirlScale.vy = 0x800 - swirlAng;
+                swirlRot.vx = 0;
+                swirlRot.vy = frame * 0x18;
+                swirlRot.vz = 0;
+                swirlRise = frame * 0x18;
+                work->pos40.vy -= swirlRise;
                 for (i = 0; i < 4; i++) {
-                    ex->Hi_DrawEffModel(&r3, (VECTOR *)&work->pos40, (s32)&s3, work->model5C);
-                    ex->Hi_ModifyEffModelRGB(work->model5C, a3, a3, a3);
-                    s3.vx = s3.vz = (s3.vx * 5) >> 2;
-                    s3.vy = (s3.vy * 3) >> 2;
-                    work->pos40.vy -= y3;
-                    r3.vy = (r3.vy * 9) >> 3;
+                    ex->Hi_DrawEffModel(&swirlRot, (VECTOR *)&work->pos40, (s32)&swirlScale, work->model5C);
+                    ex->Hi_ModifyEffModelRGB(work->model5C, swirlBright, swirlBright, swirlBright);
+                    swirlScale.vx = swirlScale.vz = (swirlScale.vx * 5) >> 2;
+                    swirlScale.vy = (swirlScale.vy * 3) >> 2;
+                    work->pos40.vy -= swirlRise;
+                    swirlRot.vy = (swirlRot.vy * 9) >> 3;
                 }
             }
             work->pos40.vx = fx_1a8_targetPos.vx;
             work->pos40.vy = fx_1a8_targetPos.vy;
             work->pos40.vz = fx_1a8_targetPos.vz;
-            s4.vx = s4.vz = ex->math_sin(t >> 2) / 2 + 0x1800;
-            s4.vy = 0x1000;
-            r4.vx = 0;
-            r4.vy = frame * 0x18;
-            r4.vz = 0;
-            x4 = 0x1000 - t;
+            groundScale.vx = groundScale.vz = ex->math_sin(t >> 2) / 2 + 0x1800;
+            groundScale.vy = 0x1000;
+            groundRot.vx = 0;
+            groundRot.vy = frame * 0x18;
+            groundRot.vz = 0;
+            groundFade = 0x1000 - t;
             ex->btlfx_drawScrollMove(10000 - (work->frame4 << 3), 0x240, 0x140, 0x20, 0x80, 0x260, 0x140);
-            ex->Hi_DrawEffModel(&r4, (VECTOR *)&work->pos40, (s32)&s4, work->model68);
-            a4 = (x4 >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->model68, a4, a4, a4);
+            ex->Hi_DrawEffModel(&groundRot, (VECTOR *)&work->pos40, (s32)&groundScale, work->model68);
+            groundBright = (groundFade >> 5) - 0x80;
+            ex->Hi_ModifyEffModelRGB(work->model68, groundBright, groundBright, groundBright);
             if (frame < 0x10) {
-                r5.vx = 0;
-                r5.vy = 0;
-                r5.vz = 0;
-                r5.pad = 0;
+                ringRot.vx = 0;
+                ringRot.vy = 0;
+                ringRot.vz = 0;
+                ringRot.pad = 0;
                 env->otZ = 0x200;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->pos10, &r5,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->pos10, &ringRot,
                                   ex->math_sin((frame << 8) >> 2), 0, 1, ex->math_cos((frame << 8) >> 2));
                 env->otZ = 0;
             }
             if (frame == 0xC) {
-                Pool6CEntry *p;
+                Pool6CEntry *emitter;
 
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos10);
-                if (p != NULL) {
-                    p->otZ = 0x190;
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos10);
+                if (emitter != NULL) {
+                    emitter->otZ = 0x190;
                 }
             }
             if (frame >= 0x20) {
@@ -478,17 +478,17 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (alpha != 0) {
             VECTOR sc;
-            s32 c;
+            s32 cylAlpha;
 
             sc.vx = sc.vy = sc.vz = size;
-            c = alpha >> 5;
-            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, c, 0x19, 0x3D02, 0, 0,
+            cylAlpha = alpha >> 5;
+            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, cylAlpha, 0x19, 0x3D02, 0, 0,
                           work->frame4 << 8, 0xC00, 1, 1);
-            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, c, 0x19, 0x3D02, 0, 0,
+            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, cylAlpha, 0x19, 0x3D02, 0, 0,
                           (work->frame4 << 8) + 0x800, 0xC00, 1, 1);
-            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, c, 0x19, 0x3D02, 0, 0,
+            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, cylAlpha, 0x19, 0x3D02, 0, 0,
                           -work->frame4 << 8, 0xC00, 1, -1);
-            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, c, 0x19, 0x3D02, 0, 0,
+            fxm_drawTexCylinder(&work->pos20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, cylAlpha, 0x19, 0x3D02, 0, 0,
                           (-work->frame4 << 8) - 0x800, 0xC00, 1, -1);
             ex->btlfx_drawScrollMove(10000 - (work->frame4 << 4), 0x240, 0x100, 0x20, 0x40, 0x260, 0x100);
         }

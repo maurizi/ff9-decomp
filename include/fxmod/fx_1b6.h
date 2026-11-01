@@ -31,7 +31,7 @@ extern Fx1b6Split *fx_1b6_split;
 extern Fx1b6Piece *fx_1b6_pieces;
 extern s32 fx_1b6_sweepLine;
 
-void fx_1b6_initSplit(Fx1b6Split *s, SVECTOR (*faces)[3]);
+void fx_1b6_initSplit(Fx1b6Split *split, SVECTOR (*faces)[3]);
 static s32 fxm_splitModelAdd(s32 model);
 Fx1b6Piece *fx_1b6_findFreePiece(void);
 void fx_1b6_launchPieces(void);
