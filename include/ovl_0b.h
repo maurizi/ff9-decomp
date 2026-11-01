@@ -4005,7 +4005,7 @@ typedef struct {
 
 void btl_allocBattle(void);
 void btl_clearBattle(void);
-s32 btl_onInitMode(void);
+s32 btl_loadKanjiFont(void);
 s32 btl_loadResidentMusic(void);
 s32 btl_loadSoundBanks(void);
 s32 btl_loadShadowTexture(void);
