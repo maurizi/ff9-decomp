@@ -86,8 +86,8 @@ static s32 wm_backdropVerts_depth(s32 sz, s32 ofs) {
  * goes into g_worldVtxFogColors. Vertices with y >= 0 get lit colour 0 and the plain fog colour instead.
  * Then y is scaled by (4096 - SZ/16)/4096 (the world's curvature), and RTPT writes screen xy to the
  * scratchpad (3 words per triangle) and SZ/16 to g_worldVtxDepth. */
-void wm_backdropVerts(s32 arg0) {
-    u8 *o = (u8 *)arg0;
+void wm_backdropVerts(s32 model) {
+    u8 *o = (u8 *)model;
     s32 n = *(u32 *)o & 0xFF;
     SVECTOR *v = *(SVECTOR **)(o + 4);
     u32 *fog = g_worldVtxFogColors;

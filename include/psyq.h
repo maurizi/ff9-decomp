@@ -695,7 +695,7 @@ long NormalClip(long sxy0, long sxy1, long sxy2);
         gte_stclmv((s16 *)(r3) + 2); \
     }
 /* GTE sequences hand-written by Square (field fldmdl_projectMeshClipY, world map wm_projectMeshClipY) */
-/* store the transformed vertex: x, y clamped to arg2 (flagging the depth) and z */
+/* store the transformed vertex: x, y clamped to r2 (flagging the depth) and z */
 #define gte_stsvclamp(r0, r1, r2) __asm__ volatile( \
     "mfc2\t$12, $9;" \
     "mfc2\t$13, $10;" \

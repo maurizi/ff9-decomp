@@ -3,18 +3,18 @@
 /* Resource and graphics constants: database kinds/ids (db_lookup*), FF9.IMG directories and file ids (file_find),
  * VRAM layout (tpage/clut coordinates), OT sizes, screen geometry. Included by ff9.h. docs/resource-ids.md */
 
-/* db_lookup(db, mode, key, arg3) / db_lookupRegistered(mode, key, arg3) modes (main db.c). A failed lookup in
+/* db_lookup(db, mode, key, subKey) / db_lookupRegistered(mode, key, subKey) modes (main db.c). A failed lookup in
  * db_lookupRegistered returns -1 for the odd modes and NULL for the even ones. The *_IN modes find the container
- * holding `key` and then run the plain mode on arg3 in that container. */
+ * holding `key` and then run the plain mode on subKey in that container. */
 #define DB_GET_BLOCK 0 /* the block of kind key >> 16 */
 #define DB_GET_COUNT 1 /* items in that block */
 #define DB_GET_AT 2 /* address of item number key & 0xFFFF */
 #define DB_GET_KEY_AT 3 /* key of item number key & 0xFFFF */
 #define DB_GET_ADDR 4 /* address of the item with this key */
 #define DB_GET_SIZE 5 /* size of the item with this key */
-#define DB_GET_AT_IN 8 /* DB_GET_AT of arg3 */
-#define DB_GET_KEY_AT_IN 9 /* DB_GET_KEY_AT of arg3 */
-#define DB_GET_COUNT_IN 11 /* DB_GET_COUNT of arg3 */
+#define DB_GET_AT_IN 8 /* DB_GET_AT of subKey */
+#define DB_GET_KEY_AT_IN 9 /* DB_GET_KEY_AT of subKey */
+#define DB_GET_COUNT_IN 11 /* DB_GET_COUNT of subKey */
 
 /* db keys: kind << 16 | id (db_lookup, docs/encounters.md). Preload entries and dependency tables use the same
  * keys. */

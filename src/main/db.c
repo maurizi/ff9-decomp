@@ -36,13 +36,13 @@ s32 db_unregister(void *db) {
     return -1;
 }
 
-void *db_lookupRegistered(s32 mode, s32 a1, s32 a2) {
+void *db_lookupRegistered(s32 mode, s32 key, s32 subKey) {
     s32 i;
     s32 r = -1;
     void *result;
 
     for (i = g_dbList.count - 1; i >= 0; i--) {
-        r = db_lookup((s32)g_dbList.dbs[i], mode, a1, a2);
+        r = db_lookup((s32)g_dbList.dbs[i], mode, key, subKey);
         if (r != -1) {
             return (void *)r;
         }

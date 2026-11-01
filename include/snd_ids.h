@@ -156,8 +156,8 @@
 #define SND_CMD_PLAY          0x0 /* akao_playMusic / akao_playSe / akao_sendCmdE0 */
 #define SND_CMD_STOP          0x1 /* akao_stopMusic / akao_stopSe / akao_sendCmdE2 */
 #define SND_CMD_SET           0x2 /* set a property at once (akao_setMusicVolume, akao_setSeVolume, ...) */
-#define SND_CMD_FADE          0x3 /* fade a property to arg3 over arg2 frames (akao_fadeMusicVolume, ...) */
-#define SND_CMD_FADE_FROM     0x4 /* fade from arg3 to arg4 over arg2 frames (akao_fadeMusicVolumeFrom, ...) */
+#define SND_CMD_FADE          0x3 /* fade a property to param2 over param1 frames (akao_fadeMusicVolume, ...) */
+#define SND_CMD_FADE_FROM     0x4 /* fade from param2 to param3 over param1 frames (akao_fadeMusicVolumeFrom, ...) */
 #define SND_CMD_SET_ALL       0x5 /* SE: every SE (akao_setAllSeVolume ...); no id lookup */
 #define SND_CMD_FADE_ALL      0x6 /* SE: every SE (akao_fadeAllSeVolume ...); music: handle 0, the main song whatever its id */
 #define SND_CMD_LOAD          0x7 /* music: load without starting; bank: load the bank */
@@ -173,7 +173,7 @@
 #define SND_PARAM_TEMPO_PITCH 4 /* music: akao_setTempoPitchScale ... (field only) */
 #define SND_PARAM_PAN         5 /* SE: akao_sendCmdA2/A3/AA/AB (AKAO_CMD_*_SE_PAN); stream: akao_sendCmdE6 */
 #define SND_PARAM_CONDITION   6 /* SND_CMD_SET_CONDITION */
-#define SND_PARAM_PLAY_COUNT  7 /* music SND_CMD_SET: akao_playMusicCount(seq, arg2) (field only) */
+#define SND_PARAM_PLAY_COUNT  7 /* music SND_CMD_SET: akao_playMusicCount(seq, param1) (field only) */
 #define SND_PARAM_ALL_SLOTS   9 /* SE SND_CMD_STOP with SND_RESIDENT: stop both resident SE slots (field only) */
 #define SND_PARAM_MOVIE_VOLUME 10 /* stream SND_CMD_SET: the stream volume used while a field movie plays */
 #define SND_SLOT1 0x40 /* with SND_RESIDENT on PLAY / SUSPEND / RESUME: resident SE slot 1 instead of 0 (field) */

@@ -2990,7 +2990,7 @@ extern GaugeColors g_gaugeColors[];
     (o).g = (f)->g + ((t)->g - (f)->g) * (n) / (d);         \
     (o).b = (f)->b + ((t)->b - (f)->b) * (n) / (d)
 void ui_drawMemberHeader(s32, s32, s32, MemberSwitch *);
-void ui_drawStatusIcons(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
+void ui_drawStatusIcons(s32, s32, s32, u8, s32); /* the last argument is unused, callers pass 0 */
 void ui_drawStones(s32, s32, s32, s32, s32);
 void chr_setDefaultName(u8 *, s32); /* default name by id */
 s32 text_getLength(u8 *); /* strlen */

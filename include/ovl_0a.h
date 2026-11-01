@@ -42,18 +42,18 @@ typedef struct {
 } FieldSprite; /* 0x24 */
 /* FieldSprite.flags */
 #define FLD_SPR_VISIBLE 0x1 /* fld_drawSprites draws the entry; fld_resetSprite sets it */
-/* fld_spriteCommand's command (arg1; EVT_OP_SPRITE_CMD's second operand); arg0 is the FieldSprite index */
-#define FLD_SPRCMD_SET 0x82 /* arg2 = DB_SPRITE id (resets the entry), -1 = none */
-#define FLD_SPRCMD_FLAGS 0x83 /* set (arg3 != 0) or clear the FLD_SPR_* bits arg2 */
-#define FLD_SPRCMD_POS 0x87 /* pos = arg2-4 */
-#define FLD_SPRCMD_ROT 0x8C /* rot = arg2-4 */
+/* fld_spriteCommand's command (cmd; EVT_OP_SPRITE_CMD's second operand); spriteIdx is the FieldSprite index */
+#define FLD_SPRCMD_SET 0x82 /* param1 = DB_SPRITE id (resets the entry), -1 = none */
+#define FLD_SPRCMD_FLAGS 0x83 /* set (param2 != 0) or clear the FLD_SPR_* bits param1 */
+#define FLD_SPRCMD_POS 0x87 /* pos = param1-4 */
+#define FLD_SPRCMD_ROT 0x8C /* rot = param1-4 */
 #define FLD_SPRCMD_SCALE 0x91
-#define FLD_SPRCMD_PARENT 0x96 /* parent = evt_getModelSlot(arg2), bone = arg3 */
+#define FLD_SPRCMD_PARENT 0x96 /* parent = evt_getModelSlot(param1), bone = param2 */
 #define FLD_SPRCMD_BRIGHTNESS 0x9B
 #define FLD_SPRCMD_ABR 0x9C
 #define FLD_SPRCMD_SPEED 0xA0
-#define FLD_SPRCMD_FRAME 0xA1 /* frame = arg2 * 16 */
-#define FLD_SPRCMD_OFFSET 0xA5 /* offset = arg2-4 */
+#define FLD_SPRCMD_FRAME 0xA1 /* frame = param1 * 16 */
+#define FLD_SPRCMD_OFFSET 0xA5 /* offset = param1-4 */
 #define FLD_SPRCMD_OT_OFFSET 0xAA
 
 /* initialised by fld_initSprites */
@@ -120,16 +120,16 @@ typedef struct {
 #define FLD_OBJ_ABR_CHANGED 0x40000 /* fld_modelCommand 0 got a new abr; fld_applyModelCommands reapplies it and clears this */
 #define FLD_OBJ_CLIP_Y 0x100000 /* fld_modelCommand 4: fld_drawModels uses the ClipY mesh functions */
 
-/* fld_modelCommand's command (arg1; EVT_OP_MODEL_CMD's first operand) */
-#define FLD_MDLCMD_SEMITRANS 0 /* arg2 = abr, 0xFF = opaque (FLD_OBJ_SEMITRANS, applied by fld_applyModelCommands) */
-#define FLD_MDLCMD_CLIP_Y 4 /* arg2 on/off, arg3 = ModelObj.clipY (FLD_OBJ_CLIP_Y) */
-#define FLD_MDLCMD_MIRROR 8 /* 8-11 build the mirrored copy (FieldActorExt) first; arg2 on/off (FLD_EXT_MIRROR) */
-#define FLD_MDLCMD_MIRROR_POINT 9 /* FieldActorExt.mirrorPoint = arg2-4 */
-#define FLD_MDLCMD_MIRROR_NORMAL 10 /* FieldActorExt.mirrorNormal = arg2-4 */
-#define FLD_MDLCMD_MIRROR_TINT 11 /* FieldActorExt.tint = arg2-4 */
-#define FLD_MDLCMD_ANIM_SE 16 /* 16-19: the FieldAnimSfx for animation arg2, frame arg3; sound[0] = arg4 */
-#define FLD_MDLCMD_ANIM_SE_ALT 17 /* sound[1] = arg4: fld_playAnimSfx plays it instead on walkmesh triangles with flag bit 12 */
-#define FLD_MDLCMD_ANIM_SE_RANDOM_PITCH 18 /* randomPitch = arg4 != 0 */
+/* fld_modelCommand's command (cmd; EVT_OP_MODEL_CMD's first operand) */
+#define FLD_MDLCMD_SEMITRANS 0 /* param1 = abr, 0xFF = opaque (FLD_OBJ_SEMITRANS, applied by fld_applyModelCommands) */
+#define FLD_MDLCMD_CLIP_Y 4 /* param1 on/off, param2 = ModelObj.clipY (FLD_OBJ_CLIP_Y) */
+#define FLD_MDLCMD_MIRROR 8 /* 8-11 build the mirrored copy (FieldActorExt) first; param1 on/off (FLD_EXT_MIRROR) */
+#define FLD_MDLCMD_MIRROR_POINT 9 /* FieldActorExt.mirrorPoint = param1-4 */
+#define FLD_MDLCMD_MIRROR_NORMAL 10 /* FieldActorExt.mirrorNormal = param1-4 */
+#define FLD_MDLCMD_MIRROR_TINT 11 /* FieldActorExt.tint = param1-4 */
+#define FLD_MDLCMD_ANIM_SE 16 /* 16-19: the FieldAnimSfx for animation param1, frame param2; sound[0] = param3 */
+#define FLD_MDLCMD_ANIM_SE_ALT 17 /* sound[1] = param3: fld_playAnimSfx plays it instead on walkmesh triangles with flag bit 12 */
+#define FLD_MDLCMD_ANIM_SE_RANDOM_PITCH 18 /* randomPitch = param3 != 0 */
 #define FLD_MDLCMD_ANIM_SE_REMOVE 19 /* fld_removeAnimSfx */
 
 /* 0x330-byte block, FieldMapObj.unk14 (allocated by fld_allocScene) */

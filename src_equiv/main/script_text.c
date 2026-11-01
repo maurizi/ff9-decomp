@@ -441,7 +441,7 @@ void pen_endBuffered(void) {
  * 2 = unsigned. Digits above 9 are 'A'.. (uppercase). */
 void func_800516A0(s32 v, s32 width, s32 base, s32 flags) {
     void (*out)(s32) = D_8007BD00;
-    u8 buf[0x24];
+    u8 digits[0x24];
     u32 u = (u32)v;
     s32 neg = 0;
     s32 n = 0;
@@ -455,7 +455,7 @@ void func_800516A0(s32 v, s32 width, s32 base, s32 flags) {
     do {
         d = u % (u32)base;
         u /= (u32)base;
-        buf[++n] = d > 9 ? d + '0' + 7 : d + '0';
+        digits[++n] = d > 9 ? d + '0' + 7 : d + '0';
     } while (u != 0);
     pad = width - neg - n;
     if (pad > 0) {
@@ -477,7 +477,7 @@ void func_800516A0(s32 v, s32 width, s32 base, s32 flags) {
         out('-');
     }
     while (n > 0) {
-        out(buf[n--]);
+        out(digits[n--]);
     }
 }
 
@@ -1110,7 +1110,7 @@ s32 evt_runScripts(EvtListNode *n) {
     s32 v;
     s32 k;
     u8 *e;
-    s32 ret = 0;
+    s32 result = 0;
 
     while (n != NULL) {
         o = n->obj;
@@ -1258,12 +1258,12 @@ s32 evt_runScripts(EvtListNode *n) {
         o->ip = r_ip;
     status:
         if (st == 4 || st == 5 || st == 3 || st == 7 || st == 8) {
-            ret = st;
+            result = st;
             goto out;
         }
         if (st == 6) {
             g_evtResumeNode = (s32)n;
-            ret = 6;
+            result = 6;
             goto out;
         }
         if (st == 2) {
@@ -1276,7 +1276,7 @@ out:
     r_args = save_args;
     r_ip = save_ip;
     r_sp = save_sp;
-    return ret;
+    return result;
 }
 
 /* ============================================================ C entry points into the evaluator */
@@ -1651,14 +1651,14 @@ void wrain_stepDrop(Streak *s, s32 dy, s32 still) {
  * Streaks whose word at +6 (the y half of xy) has become positive go back to the free list. The chain is
  * closed with the pool's draw-mode word for buffer `buf` and linked into *ot. Returns the next free
  * primitive. */
-static u8 *streak_draw(RainState *pool, Streak *s, s32 buf, u32 *ot, u8 *pkt) {
+static u8 *streak_draw(RainState *pool, Streak *s, s32 bufIdx, u32 *ot, u8 *pkt) {
     Streak *prev = NULL;
     Streak *freel = (Streak *)pool->freeList;
     Streak *live = (Streak *)pool->active;
     s32 dy = pool->speed;
     s32 still = pool->stopping;
     u32 link = *ot;
-    u32 *mode = (u32 *)((u8 *)pool + buf * 8 + 0x10);
+    u32 *mode = (u32 *)((u8 *)pool + bufIdx * 8 + 0x10);
     u32 *p;
     u32 sxy1;
     s32 sz3;
@@ -1724,12 +1724,12 @@ static u8 *streak_draw(RainState *pool, Streak *s, s32 buf, u32 *ot, u8 *pkt) {
 }
 
 /* Prototype as in ff9.h: (list, buffer, ot, packet) with pointers passed as s32. */
-s32 rain_drawDrops(s32 s, u8 buf, u32 *ot, s32 pkt) {
-    return (s32)streak_draw(&g_fieldRain, (Streak *)s, buf, ot, (u8 *)pkt);
+s32 rain_drawDrops(s32 s, u8 bufIdx, u32 *ot, s32 pkt) {
+    return (s32)streak_draw(&g_fieldRain, (Streak *)s, bufIdx, ot, (u8 *)pkt);
 }
 
-s32 wrain_drawDrops(s32 s, u8 buf, u32 *ot, s32 pkt) {
-    return (s32)streak_draw(&g_worldRain, (Streak *)s, buf, ot, (u8 *)pkt);
+s32 wrain_drawDrops(s32 s, u8 bufIdx, u32 *ot, s32 pkt) {
+    return (s32)streak_draw(&g_worldRain, (Streak *)s, bufIdx, ot, (u8 *)pkt);
 }
 
 /* ============================================================ pen_setColorPreset (main, outside the module) */
