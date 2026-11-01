@@ -89,18 +89,36 @@
 
 /* AKAO sequence opcodes (akao_execChannel, akao_peekNextNote). Bytes from AKAO_OP_FIRST_CMD up are commands run
  * through g_akaoOps[op - 0xA0] (lengths g_akaoOpLengths); AKAO_OP_EXT takes a second byte that indexes
- * g_akaoOpsFE. Only opcodes whose handler is named have a macro. */
+ * g_akaoOpsFE. Opcodes are named from their handlers (named, or what the akao_opXX placeholder does). */
 #define AKAO_OP_FIRST_CMD 0xA0
 #define AKAO_OP_END       0xA0 /* akao_opEnd; akao_peekNextNote's "no further note" result */
 #define AKAO_OP_PROGRAM   0xA1 /* akao_opProgram */
 #define AKAO_OP_OCTAVE    0xA5 /* akao_opOctave */
 #define AKAO_OP_OCTAVE_UP 0xA6 /* akao_opOctaveUp */
 #define AKAO_OP_OCTAVE_DOWN 0xA7 /* akao_opOctaveDown */
+/* note bytes below AKAO_OP_FIRST_CMD: note / AKAO_NOTE_LENGTHS is the pitch (or tie / rest), note % AKAO_NOTE_LENGTHS
+ * indexes g_akaoNoteLengths (akao_execChannel) */
+#define AKAO_NOTE_LENGTHS 11
+#define AKAO_NOTE_TIE  0x84 /* 0x84-0x8E: tie, the note goes on (no key-on) */
+#define AKAO_NOTE_REST 0x8F /* 0x8F-0x99: rest (key-off) */
+#define AKAO_NOTE_END  0x9A /* 0x9A-0x9F aren't notes (akao_peekNextNote: AKAO_OP_END) */
+#define AKAO_OP_LOOP_START   0xC8 /* akao_opC8: push a loop (depth 4) at the next byte */
+#define AKAO_OP_LOOP_END     0xC9 /* + count (0: 256): akao_opC9, back to the loop start until the count is reached */
+#define AKAO_OP_LOOP_FOREVER 0xCA /* akao_opCA: back to the loop start (ends the channel once AKAO_CH_STOP_REQUESTED) */
+#define AKAO_OP_EFFECTS_OFF  0xCB /* akao_opCB: vibrato, tremolo, pan LFO, noise, pitch mod and reverb off, legato off */
+#define AKAO_OP_NOP_CD       0xCD /* akao_opCD: empty; akao_peekNextNote treats it as ending a legato */
+#define AKAO_OP_NOP_D1       0xD1 /* akao_opD1: empty, the same */
+#define AKAO_OP_PORTAMENTO_OFF 0xDB /* akao_opDB: portamentoLen = 0 */
+#define AKAO_OP_NOTE_LEN 0xF0 /* 0xF0-0xFB: note (pitch op - 0xF0) + u8 length in ticks; not in g_akaoOps */
+#define AKAO_OP_TIE_LEN  0xFC /* + u8 length: tie */
+#define AKAO_OP_REST_LEN 0xFD /* + u8 length: rest */
 #define AKAO_OP_EXT       0xFE /* prefix of the g_akaoOpsFE opcodes */
 #define AKAO_OPFE_TEMPO       0x00 /* akao_opFETempo */
 #define AKAO_OPFE_TEMPO_SLIDE 0x01 /* akao_opFETempoSlide */
 #define AKAO_OPFE_JUMP        0x06 /* akao_opFEJump */
 #define AKAO_OPFE_JUMP_IF_GE  0x07 /* akao_opFEJumpIfGe (AKAO_CMD_SET_CONDITION's value) */
+#define AKAO_OPFE_LOOP_PASS_JUMP 0x08 /* + pass (0: 256), s16: akao_opFE08, jump on that pass of the loop (1-based) */
+#define AKAO_OPFE_LOOP_PASS_EXIT 0x09 /* + pass, s16: akao_opFE09, the same and leave the loop */
 #define AKAO_OPFE_CALL        0x0E /* akao_opFECall */
 #define AKAO_OPFE_RETURN      0x0F /* akao_opFEReturn */
 

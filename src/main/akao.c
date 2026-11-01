@@ -398,8 +398,8 @@ s32 akao_peekNextNote(AkaoChannel *c) {
     p = c->pc;
     n = c->loopDepth;
     for (;;) {
-        if (*p < 0x9A) {
-            if (*p >= 0x8F) {
+        if (*p < AKAO_NOTE_END) {
+            if (*p >= AKAO_NOTE_REST) {
                 c->legato = (u16)c->legato & ~(AKAO_LEGATO | AKAO_LEGATO_SE);
             }
             return *p;
@@ -414,23 +414,23 @@ s32 akao_peekNextNote(AkaoChannel *c) {
             continue;
         }
         switch (op) {
-        case 0xF0:
-        case 0xF1:
-        case 0xF2:
-        case 0xF3:
-        case 0xF4:
-        case 0xF5:
-        case 0xF6:
-        case 0xF7:
-        case 0xF8:
-        case 0xF9:
-        case 0xFA:
-        case 0xFB:
-            return 0x83;
-        case 0xFC:
-            return 0x84;
-        case 0xFD:
-            return 0x8F;
+        case AKAO_OP_NOTE_LEN:
+        case AKAO_OP_NOTE_LEN + 1:
+        case AKAO_OP_NOTE_LEN + 2:
+        case AKAO_OP_NOTE_LEN + 3:
+        case AKAO_OP_NOTE_LEN + 4:
+        case AKAO_OP_NOTE_LEN + 5:
+        case AKAO_OP_NOTE_LEN + 6:
+        case AKAO_OP_NOTE_LEN + 7:
+        case AKAO_OP_NOTE_LEN + 8:
+        case AKAO_OP_NOTE_LEN + 9:
+        case AKAO_OP_NOTE_LEN + 10:
+        case AKAO_OP_NOTE_LEN + 11:
+            return 0x83; /* a note */
+        case AKAO_OP_TIE_LEN:
+            return AKAO_NOTE_TIE;
+        case AKAO_OP_REST_LEN:
+            return AKAO_NOTE_REST;
         case AKAO_OP_EXT:
             p++;
             op = *p;
@@ -440,8 +440,8 @@ s32 akao_peekNextNote(AkaoChannel *c) {
                 continue;
             }
             switch (op) {
-            case 0x8:
-            case 0x9:
+            case AKAO_OPFE_LOOP_PASS_JUMP:
+            case AKAO_OPFE_LOOP_PASS_EXIT:
                 p++;
                 if (*p == c->loopCount[n] + 1) {
                     p++;
@@ -473,7 +473,7 @@ s32 akao_peekNextNote(AkaoChannel *c) {
                 continue;
             }
             continue;
-        case 0xC9:
+        case AKAO_OP_LOOP_END:
             p++;
             if (*p == c->loopCount[n] + 1) {
                 p++;
@@ -483,14 +483,14 @@ s32 akao_peekNextNote(AkaoChannel *c) {
             }
             p = c->loopStart[n];
             continue;
-        case 0xCB:
-        case 0xCD:
-        case 0xD1:
-        case 0xDB:
+        case AKAO_OP_EFFECTS_OFF:
+        case AKAO_OP_NOP_CD:
+        case AKAO_OP_NOP_D1:
+        case AKAO_OP_PORTAMENTO_OFF:
             c->legato = (u16)c->legato & ~(AKAO_LEGATO | AKAO_LEGATO_SE);
             p++;
             continue;
-        case 0xCA:
+        case AKAO_OP_LOOP_FOREVER:
             if (c->flags & AKAO_CH_STOP_REQUESTED) {
                 goto end;
             }
@@ -686,13 +686,13 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
                  * through whatever word follows the table; on the PS1 that is data (an address error there).
                  * A port may send indices >= 0x20 to akao_opInvalid. */
                 g_akaoOpsFE[vel](c, mask);
-            } else if (op - 0xF0 < 14) {
-                op = (op - 0xF0) * 11;
+            } else if (op - AKAO_OP_NOTE_LEN < 14) {
+                op = (op - AKAO_OP_NOTE_LEN) * AKAO_NOTE_LENGTHS;
                 c->noteTicks = *c->pc++;
             } else {
                 if (op == 0xFF) {
                     op = AKAO_OP_END;
-                } else if (op == 0xCA && (c->flags & AKAO_CH_STOP_REQUESTED)) {
+                } else if (op == AKAO_OP_LOOP_FOREVER && (c->flags & AKAO_CH_STOP_REQUESTED)) {
                     op = AKAO_OP_END;
                     g_akaoSeState.keyOffMask |= mask;
                 }
@@ -712,13 +712,13 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         c->noteTicks = c->gateTicks = c->fixedLen;
     }
     if (c->noteTicks != 0) {
-        if (vel >= 0x8F || (vel < 0x84 && !(c->legato & (AKAO_LEGATO | AKAO_LEGATO_SE)))) {
+        if (vel >= AKAO_NOTE_REST || (vel < AKAO_NOTE_TIE && !(c->legato & (AKAO_LEGATO | AKAO_LEGATO_SE)))) {
             c->gateTicks -= 2;
         }
     } else {
-        c->noteTicks = g_akaoNoteLengths[op % 11];
+        c->noteTicks = g_akaoNoteLengths[op % AKAO_NOTE_LENGTHS];
         len = c->noteTicks;
-        if ((vel < 0x84 || vel >= 0x8F) && !(c->legato & (AKAO_LEGATO | AKAO_LEGATO_SE))) {
+        if ((vel < AKAO_NOTE_TIE || vel >= AKAO_NOTE_REST) && !(c->legato & (AKAO_LEGATO | AKAO_LEGATO_SE))) {
             len -= 2;
         }
         c->gateTicks = len;
@@ -728,7 +728,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
     }
     c->noteLen = c->noteTicks;
     c->voiceDirty |= AKAO_VD_RELEASE_RATE;
-    if (op >= 0x8F) {
+    if (op >= AKAO_NOTE_REST) {
         if (c->isSe == 0) {
             g_akaoSeq->playingMask &= ~mask;
             if (c->voice < 0x18) {
@@ -741,8 +741,8 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         c->legato &= ~AKAO_LEGATO_TIED;
         return;
     }
-    if (op < 0x84) {
-        op /= 11;
+    if (op < AKAO_NOTE_TIE) {
+        op /= AKAO_NOTE_LENGTHS;
         op += c->octave * 12;
         f = c->flags;
         if (f & AKAO_CH_DRUM_KIT) {
