@@ -3417,3 +3417,22 @@ Redux with "Unknown error in event listener", killed). New states: `r37_wm_sand`
   6, 7; topographies 3/0x12/0x15/0x16/0x1C (chocobo call cells, wm_canCallChocobo; no chocobo track visited), 0x17,
   0x1E, 0x23, 0x2D/0x2E and the water depths 0x30/0x33/0x36-0x39/0x3D (depth order from g_worldTerrainHeightOffsets
   only). Snow: Mount Gulug's slopes are topography 0x1B/0x07/0x21 (`fx3.png`, `fx3b.png`), untested by code.
+
+## R36: ATE fixture and end-of-disc-1 disc change  (status: reference; details in docs/r32/3ds-requests-6.md)
+- binary: main / ovl_0a / ovl_3e; no new symbols (all functions on both paths already named).
+- ATE: `tools/rt/enter_field.py 552 --base-state field_dali_inn --frames 900 --poke 0x8007AEF0=260c
+  --poke 0x8007AEF2=0000 --poke 0x8007AFDC=0100` (story 3110, b[2..3] = 0, u16 b[0xEC] = 1) → "ACTIVE TIME EVENT"
+  prompt; `press select` → ATE window "Small-Town Knight in a Big City / Cancel"; Cross, Cross → field 555 (Steiner).
+  The standard init block tests only u16 b[0xEC] != 0 and s16 b[2] not 1/2, and starts the Select-handler object
+  inside that branch, so b[0xEC] has to be set before the field init. high.
+- Disc change: field 70 with s16 b[2] = 1 (story 3900) plays movie 0x11C and runs `AC 0x4320`. Hit
+  `fld_requestDiscChange(1, 0x320)` from `evt_execInstr+0xA598` ~3800 frames in, then "DISC CHANGE / save?" prompt,
+  then ovl_3e "Change to DISC 2". With disc 1 the check gives DISC_CHECK_WRONG_DISC (6), "INSERT CORRECT DISC" for 180
+  frames, then the picture again. The same state under `--disc 2` reaches field 800 (Alexandria gate). high.
+- Direct `menu_open(8, 0x4320)` from the field loop (disc 2, field 800): after a successful check
+  `GameState.flags` stays `GS_RELOAD_FILE_TABLES` (0x100000), and `fld_exit` runs every ~140 frames (black screen). The
+  field loop ends whenever the flag is set (fld_main.c:68), and in field mode only `fld_discChangeLeave` →
+  `file_loadDirTables` clears it. high.
+- States: disc 1 `r36_lindblum_552_ate`, `r36_lindblum_552_ate_window`, `r36_disc1_end_fmv`, `r36_disc1_discchange_op`,
+  `r36_disc1_discchange_prompt`, `r36_disc1_change_to_disc2`; disc 2 `r36_x_change_to_disc2` (the disc-1 state, for
+  the swap), `r36_disc2_field800_start`, `r36_x_direct_open_disc2`.
