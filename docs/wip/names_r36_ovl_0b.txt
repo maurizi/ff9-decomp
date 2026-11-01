@@ -24,3 +24,5 @@ GPU_POLY_* / TPAGE_ABR_MASK (psyq.h, existing) in btl_setModelAbr, btl_setModelR
   >> 16 in btl_findNearestFile (dir 9 -> DB_MUSIC stays a literal: no DIR_ macro).
 BTL_TGT_SINGLE/MULTI/ALL_ANY/PARTY/ENEMY 0-8 (ovl_0b.h, from g_btluiDefaultTargets/g_btluiTargetAllByType); 9-11 left
   literal (6-8 with targeting 2, no name evidence).
+btl_soundCmd: SND_TYPE_* / SND_CMD_* / SND_PARAM_* (snd_ids.h, from the overlays agent) for its type/command/parameter
+  switches and g_btlSoundLoadKind tests; DB_MUSIC >> 16 for the load key kind.

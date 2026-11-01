@@ -1732,15 +1732,15 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 m2;
 
     kind = (arg0 >> 8) & 0xF;
-    if (kind == 12 && g_gameState->gameData->soundLoadState != 0) {
+    if (kind == SND_CMD_GET_STATE && g_gameState->gameData->soundLoadState != 0) {
         goto stream;
     }
     switch ((arg0 >> 12) & 3) {
-    case 0:
+    case SND_TYPE_MUSIC:
         id = (arg1 & 0xFFFF) | DB_MUSIC;
         switch (kind) {
-        case 0:
-        case 7:
+        case SND_CMD_PLAY:
+        case SND_CMD_LOAD:
             if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
@@ -1770,7 +1770,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->gameData->flags |= GD_MUSIC_LOADED;
             }
         finish:
-            if (g_btlSoundLoadKind != 7) {
+            if (g_btlSoundLoadKind != SND_CMD_LOAD) {
                 g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
                 gb = g_gameState->gameData;
                 if (!(gb->flags & GD_MUSIC_PLAYING)) {
@@ -1780,110 +1780,110 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             g_btlSoundLoadKind = -1;
             return 0;
-        case 1:
+        case SND_CMD_STOP:
             akao_stopMusic(g_gameState->gameData->musicHandle[0]);
             g_gameState->gameData->musicVolume[0] = 0x7F;
             g_gameState->gameData->flags &= ~GD_MUSIC_PLAYING;
             return 0;
-        case 2:
-            if ((arg0 & 0x3F) != 1) {
+        case SND_CMD_SET:
+            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_setMusicVolume(g_gameState->gameData->musicHandle[0], arg2);
             g_gameState->gameData->musicVolume[0] = arg2;
             return 0;
-        case 3:
-            if ((arg0 & 0x3F) != 1) {
+        case SND_CMD_FADE:
+            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], arg2, arg3);
             btl_setMusicVolumeFade(arg3, arg2);
             return 0;
-        case 4:
-            if ((arg0 & 0x3F) != 1) {
+        case SND_CMD_FADE_FROM:
+            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], arg2, arg3, arg4);
             btl_setMusicVolumeFade(arg4, arg2);
             return 0;
-        case 6:
-            if ((arg0 & 0x3F) != 1) {
+        case SND_CMD_FADE_ALL:
+            if ((arg0 & 0x3F) != SND_PARAM_VOLUME) {
                 break;
             }
             akao_fadeMusicVolume(0, arg2, arg3);
             btl_setMusicVolumeFade(arg3, arg2);
             return 0;
-        case 10:
-            if ((arg0 & 0x3F) != 6) {
+        case SND_CMD_SET_CONDITION:
+            if ((arg0 & 0x3F) != SND_PARAM_CONDITION) {
                 break;
             }
             akao_setCondition(arg1);
             return 0;
-        case 12:
+        case SND_CMD_GET_STATE:
             goto stream;
         }
         return -1;
-    case 1:
+    case SND_TYPE_SE:
         id = (arg1 & 0xFFFF) | DB_SE;
         h = 0;
-        if (kind != 5 && kind != 6) {
+        if (kind != SND_CMD_SET_ALL && kind != SND_CMD_FADE_ALL) {
             h = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
         }
         /* padded: a zero word follows the first jump table */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         switch (kind) {
-        case 0:
+        case SND_CMD_PLAY:
             akao_playSe(h, arg2, arg3, arg4);
             return 0;
-        case 1:
+        case SND_CMD_STOP:
             akao_stopSe(h, arg2);
             return 0;
-        case 2:
+        case SND_CMD_SET:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_setSeVolume(h, arg2, arg3);
                 return 0;
-            case 5:
+            case SND_PARAM_PAN:
                 akao_sendCmdA2(h, arg2, arg3);
                 return 0;
             }
             return -1;
-        case 3:
+        case SND_CMD_FADE:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_fadeSeVolume(h, arg2, arg3, arg4);
                 return 0;
-            case 5:
+            case SND_PARAM_PAN:
                 akao_sendCmdA3(h, arg2, arg3, arg4);
                 return 0;
             }
             return -1;
-        case 5:
+        case SND_CMD_SET_ALL:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_setAllSeVolume(arg2);
                 return 0;
-            case 5:
+            case SND_PARAM_PAN:
                 akao_sendCmdAA(arg2);
                 return 0;
             }
             return -1;
-        case 6:
+        case SND_CMD_FADE_ALL:
             switch (arg0 & 0x3F) {
-            case 1:
+            case SND_PARAM_VOLUME:
                 akao_fadeAllSeVolume(arg2, arg3);
                 return -1;
-            case 5:
+            case SND_PARAM_PAN:
                 akao_sendCmdAB(arg2, arg3);
                 return -1;
             }
             return -1;
         }
         return -1;
-    case 3:
+    case SND_TYPE_BANK:
         id = (arg1 & 0xFFFF) | DB_SOUND_BANK;
         switch (kind) {
-        case 7:
+        case SND_CMD_LOAD:
             if (arg2 >= 4) {
                 gc = g_gameState->gameData;
                 e = gc->ctx.battle->partyBufEnds[arg2 % 4];
@@ -1904,7 +1904,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_gameState->gameData->soundBankSize = 0;
             g_gameState->gameData->soundLoadState = 2;
             return g_gameState->gameData->soundLoadState;
-        case 12:
+        case SND_CMD_GET_STATE:
             goto stream;
         }
         return -1;
@@ -1915,7 +1915,7 @@ stream:
     gd = g_gameState->gameData;
     switch (gd->soundLoadState) {
     case 2:
-        if (((g_btlSoundLoadId >> 16) & 0xFF) == 7) {
+        if (((g_btlSoundLoadId >> 16) & 0xFF) == DB_MUSIC >> 16) {
             gd->soundLoadBank = gd->musicBank[0];
         } else {
             gd->soundLoadBank = g_btlSoundLoadId;
@@ -1939,7 +1939,7 @@ stream:
                 cdRead_init(gg->cdRead, g_btlSoundLoadSector, gg->cdRead[0].size, (void *)gg->soundLoadDest,
                               gg->cdRead[0].offset + gg->cdRead[0].chunk, m, btl_onSoundRead);
             } else if (g_btlSoundLoadType == 7) {
-                if (g_btlSoundLoadKind != 9) {
+                if (g_btlSoundLoadKind != SND_CMD_RESUME) {
                     gf->musicVolume[0] = 0x7F;
                 }
                 g_gameState->gameData->soundLoadState = 4;
@@ -1975,7 +1975,7 @@ stream:
                 btl_unpackMusic((s32)gi->musicSeq);
                 g_gameState->gameData->flags |= GD_MUSIC_LOADED;
                 g_gameState->gameData->soundLoadState = 0;
-                if (g_btlSoundLoadKind == 0) {
+                if (g_btlSoundLoadKind == SND_CMD_PLAY) {
                     goto finish;
                 }
                 g_btlSoundLoadKind = -1;
