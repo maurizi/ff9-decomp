@@ -208,9 +208,9 @@ u32 *btl_initEnemyState(Battle *battle, u32 *prim) {
                     }
                 }
                 prim = (u32 *)btl_calcBoneMatrices(unit->model, 0, (u8 *)prim);
-                unit->home->pos[0] = unit->model->bones[unit->baseBone].tx << 16;
+                unit->home->pos[0] = PSX_NULLABLE(unit->model->bones)[unit->baseBone].tx << 16;
                 unit->home->pos[1] = 0;
-                unit->home->pos[2] = unit->model->bones[unit->baseBone].tz << 16;
+                unit->home->pos[2] = PSX_NULLABLE(unit->model->bones)[unit->baseBone].tz << 16;
             } else {
                 unit->home->pos[0] = unit->obj->x;
                 unit->home->pos[1] = unit->obj->y;
@@ -262,9 +262,9 @@ void btl_resetUnit(BtlUnit *unit, ModelSlot *modelSlot) {
     } else {
         unit->model = modelSlot->model;
         unit->obj = modelSlot->actor;
-        unit->model->texAnims[2].flags |= BTL_TEXANIM_PLAY;
-        unit->model->texAnims[2].pos = 0;
-        unit->model->texAnims[2].lastFrame = 0x1000;
+        PSX_NULLABLE(unit->model->texAnims)[2].flags |= BTL_TEXANIM_PLAY;
+        PSX_NULLABLE(unit->model->texAnims)[2].pos = 0;
+        PSX_NULLABLE(unit->model->texAnims)[2].lastFrame = 0x1000;
         for (i = 0; i < unit->model->header->meshCount; i++) {
             btl_setMeshRgb(unit->model, i, 0, 0, 0);
         }

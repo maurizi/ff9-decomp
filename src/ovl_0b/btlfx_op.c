@@ -1293,7 +1293,7 @@ s32 btlfx_getUnitHeight(s32 unitId) {
 }
 
 void btl_getBaseBonePos(BtlUnit *unit, u16 *out) {
-    BtlBone *bone = &unit->model->bones[unit->baseBone];
+    BtlBone *bone = &PSX_NULLABLE(unit->model->bones)[unit->baseBone];
     out[0] = bone->tx;
     out[1] = bone->ty;
     out[2] = bone->tz;
@@ -1346,7 +1346,7 @@ void btl_getUnitBodyPos(BtlUnit *unit, s32 part, s16 *out) {
     } else {
         btl_getBaseBonePos(unit, (u16 *)out);
         if (part == 1) {
-            out[1] = unit->model->bones[g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->bones[2]].ty;
+            out[1] = PSX_NULLABLE(unit->model->bones)[g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->bones[2]].ty;
         }
     }
 }
@@ -1835,17 +1835,17 @@ void btlfx_setUnitTexAnim(s32 unitId, s32 mode, s32 second) {
 
     switch (mode) {
     case 0:
-        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[second ? 1 : 0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
-        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[second ? 1 : 0].pos = 0;
-        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[second ? 1 : 0].lastFrame = 0x1000;
+        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[second ? 1 : 0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[second ? 1 : 0].pos = 0;
+        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[second ? 1 : 0].lastFrame = 0x1000;
         break;
     case 1:
-        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         break;
     case 2:
-        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[2].flags |= BTL_TEXANIM_PLAY;
-        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[2].pos = 0;
-        ((BtlUnit9C50Arr *)unit->model->texAnims)->e[2].lastFrame = 0x1000;
+        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[2].flags |= BTL_TEXANIM_PLAY;
+        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[2].pos = 0;
+        ((BtlUnit9C50Arr *)PSX_NULLABLE(unit->model->texAnims))->e[2].lastFrame = 0x1000;
         break;
     }
 }

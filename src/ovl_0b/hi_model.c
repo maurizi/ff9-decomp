@@ -578,18 +578,18 @@ void Hi_StartSummonTexAnim(s32 summonId, s32 anim, u8 once) {
     if (once) {
         off = anim * 4;
         off = (off + anim) * 4; /* anim * sizeof(BtlUnit9C50) */
-        ((BtlUnit9C50 *)((u8 *)slot->model->texAnims + off))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(slot->model->texAnims) + off))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
     } else {
         off = anim * 4;
         off = (off + anim) * 4;
-        ((BtlUnit9C50 *)((u8 *)slot->model->texAnims + off))->flags |= BTL_TEXANIM_PLAY;
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(slot->model->texAnims) + off))->flags |= BTL_TEXANIM_PLAY;
     }
-    ((BtlUnit9C50 *)((u8 *)slot->model->texAnims + off))->pos = 0;
-    ((BtlUnit9C50 *)((u8 *)slot->model->texAnims + off))->lastFrame = 0x1000;
+    ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(slot->model->texAnims) + off))->pos = 0;
+    ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(slot->model->texAnims) + off))->lastFrame = 0x1000;
 }
 
 void Hi_StopSummonTexAnim(s32 summonId, s32 anim) {
-    BtlUnit9C50 *texAnim = &btlfx_getSummonModel(summonId, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->model->texAnims[anim];
+    BtlUnit9C50 *texAnim = &PSX_NULLABLE(btlfx_getSummonModel(summonId, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->model->texAnims)[anim];
     texAnim->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
 }
 

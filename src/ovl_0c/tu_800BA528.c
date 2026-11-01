@@ -1230,7 +1230,7 @@ void wm_updateVisibleBlocks(void) {
     g_worldClutAnimFx2 = 0;
     while (nd->cell != -1) {
         {
-            u8 fx = nd->block->fxId;
+            u8 fx = PSX_NULLABLE(nd->block)->fxId;
             if (fx != 0) {
                 wm_updateBlockFx(fx);
             }

@@ -922,7 +922,7 @@ void btlcam_getUnitAnchors(BtlUnit *unit, s16 *anchors) {
         anchors[2] = y - (h - (h >> 2));
     } else {
         for (i = 0; i < 3; i++) {
-            anchors[i] = unit->model->bones[g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->bones[i]].ty;
+            anchors[i] = PSX_NULLABLE(unit->model->bones)[g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(unit->flags)].type->bones[i]].ty;
         }
     }
     anchors[3] = unit->pos[0] >> 16;

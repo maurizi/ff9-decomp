@@ -243,57 +243,57 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             case BTLFX_FIELD_REPEL:
                 /* padded: a zero word follows the first jump table */
                 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
-                cnt = btlfx_distance(&pos, owner->fieldPos);
+                cnt = btlfx_distance(&pos, PSX_NULLABLE(owner->fieldPos));
                 if (cnt <= range) {
-                    delta.vx = pos.vx - owner->fieldPos->vx;
-                    delta.vy = pos.vy - owner->fieldPos->vy;
-                    delta.vz = pos.vz - owner->fieldPos->vz;
+                    delta.vx = pos.vx - PSX_NULLABLE(owner->fieldPos)->vx;
+                    delta.vy = pos.vy - PSX_NULLABLE(owner->fieldPos)->vy;
+                    delta.vz = pos.vz - PSX_NULLABLE(owner->fieldPos)->vz;
                     VectorNormalS(&delta, &vec);
                 }
                 break;
             case BTLFX_FIELD_ATTRACT:
-                cnt = btlfx_distance(&pos, owner->fieldPos);
+                cnt = btlfx_distance(&pos, PSX_NULLABLE(owner->fieldPos));
                 if (cnt <= range) {
-                    delta.vx = owner->fieldPos->vx - pos.vx;
-                    delta.vy = owner->fieldPos->vy - pos.vy;
-                    delta.vz = owner->fieldPos->vz - pos.vz;
+                    delta.vx = PSX_NULLABLE(owner->fieldPos)->vx - pos.vx;
+                    delta.vy = PSX_NULLABLE(owner->fieldPos)->vy - pos.vy;
+                    delta.vz = PSX_NULLABLE(owner->fieldPos)->vz - pos.vz;
                     VectorNormalS(&delta, &vec);
                 }
                 break;
             case BTLFX_FIELD_UP:
             case BTLFX_FIELD_UP_2:
                 *(s32 *)&vec.vx = *(s32 *)&pos.vx;
-                vec.vy = owner->fieldPos->vy;
+                vec.vy = PSX_NULLABLE(owner->fieldPos)->vy;
                 *(s32 *)&vec.vz = *(s32 *)&pos.vz;
-                cnt = btlfx_distance(&vec, owner->fieldPos);
+                cnt = btlfx_distance(&vec, PSX_NULLABLE(owner->fieldPos));
                 ((s32 *)&vec)[0] = 0;
                 vec.vy = -0x1000;
                 break;
             case BTLFX_FIELD_ALONG_AXIS:
-                btlfx_toLocalPolar(&pos, owner->fieldPos, owner->fieldRot, (s32)&alpha, (s32)&cnt, &scale);
+                btlfx_toLocalPolar(&pos, PSX_NULLABLE(owner->fieldPos), PSX_NULLABLE(owner->fieldRot), (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
-                    btlfx_rotateOffset(owner->fieldRot, 0x1000, (s32)&vec);
+                    btlfx_rotateOffset(PSX_NULLABLE(owner->fieldRot), 0x1000, (s32)&vec);
                 }
                 break;
             case BTLFX_FIELD_AROUND_AXIS:
-                btlfx_toLocalPolar(&pos, owner->fieldPos, owner->fieldRot, (s32)&alpha, (s32)&cnt, &scale);
+                btlfx_toLocalPolar(&pos, PSX_NULLABLE(owner->fieldPos), PSX_NULLABLE(owner->fieldRot), (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
                     ((s32 *)&vec)[1] = 0;
                     ((s32 *)&vec)[0] = 0;
-                    btlfx_offsetPoint(&vec, (s32)&vec, 0, (XY32 *)owner->fieldRot, 0x1000, scale);
+                    btlfx_offsetPoint(&vec, (s32)&vec, 0, (XY32 *)PSX_NULLABLE(owner->fieldRot), 0x1000, scale);
                 }
                 break;
             case BTLFX_FIELD_FADE:
-                cnt = btlfx_distance(&pos, owner->fieldPos);
+                cnt = btlfx_distance(&pos, PSX_NULLABLE(owner->fieldPos));
                 break;
             case BTLFX_FIELD_FADE_FLAT:
                 *(s32 *)&vec.vx = *(s32 *)&pos.vx;
-                vec.vy = owner->fieldPos->vy;
+                vec.vy = PSX_NULLABLE(owner->fieldPos)->vy;
                 *(s32 *)&vec.vz = *(s32 *)&pos.vz;
-                cnt = btlfx_distance(&vec, owner->fieldPos);
+                cnt = btlfx_distance(&vec, PSX_NULLABLE(owner->fieldPos));
                 break;
             case BTLFX_FIELD_FADE_POLAR:
-                btlfx_toLocalPolar(&pos, owner->fieldPos, owner->fieldRot, (s32)&alpha, (s32)&cnt, &scale);
+                btlfx_toLocalPolar(&pos, PSX_NULLABLE(owner->fieldPos), PSX_NULLABLE(owner->fieldRot), (s32)&alpha, (s32)&cnt, &scale);
                 break;
             }
             if (cnt <= range) {

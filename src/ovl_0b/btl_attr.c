@@ -37,10 +37,10 @@ void btl_showWeapon(BtlUnit *unit) {
 
 s32 btl_setKoMotion(BtlUnit *unit) {
     unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_KO];
-    unit->model->texAnims[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
-    unit->model->texAnims[0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
-    unit->model->texAnims[0].pos = 0;
-    unit->model->texAnims[0].lastFrame = 0x1000;
+    PSX_NULLABLE(unit->model->texAnims)[2].flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+    PSX_NULLABLE(unit->model->texAnims)[0].flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+    PSX_NULLABLE(unit->model->texAnims)[0].pos = 0;
+    PSX_NULLABLE(unit->model->texAnims)[0].lastFrame = 0x1000;
     unit->obj->frame = 0;
     if (unit->status & BTL_STATUS_AUTO_LIFE) {
         unit->koState = BTL_KO_REVIVING;
@@ -447,19 +447,19 @@ void btl_setUnitAttr(BtlUnit *unit, s32 attr, u32 value) {
         break;
     case BTL_ATTR_TEXANIM_PLAY:
         playOfs = value * 20;
-        ((BtlUnit9C50 *)((u8 *)unit->model->texAnims + playOfs))->flags |= BTL_TEXANIM_PLAY;
-        ((BtlUnit9C50 *)((u8 *)unit->model->texAnims + playOfs))->pos = 0;
-        ((BtlUnit9C50 *)((u8 *)unit->model->texAnims + playOfs))->lastFrame = 0x1000;
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + playOfs))->flags |= BTL_TEXANIM_PLAY;
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + playOfs))->pos = 0;
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + playOfs))->lastFrame = 0x1000;
         break;
     case BTL_ATTR_TEXANIM_STOP:
         stopOfs = value * 20;
-        ((BtlUnit9C50 *)((u8 *)unit->model->texAnims + stopOfs))->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + stopOfs))->flags &= ~(BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
         break;
     case BTL_ATTR_TEXANIM_ONCE:
         onceOfs = value * 20;
-        ((BtlUnit9C50 *)((u8 *)unit->model->texAnims + onceOfs))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
-        ((BtlUnit9C50 *)((u8 *)unit->model->texAnims + onceOfs))->pos = 0;
-        ((BtlUnit9C50 *)((u8 *)unit->model->texAnims + onceOfs))->lastFrame = 0x1000;
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + onceOfs))->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + onceOfs))->pos = 0;
+        ((BtlUnit9C50 *)((u8 *)PSX_NULLABLE(unit->model->texAnims) + onceOfs))->lastFrame = 0x1000;
         break;
     case BTL_ATTR_WEAK_STANCE:
         unit->flags = (unit->flags & ~BTL_UNIT_WEAK_STANCE) | ((value & 1) << BTL_UNIT_WEAK_STANCE_BIT);

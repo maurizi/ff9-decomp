@@ -605,11 +605,11 @@ s32 btlseq_stepScale(BtlScript *script, BtlUnit *unit) {
 
 s32 btlseq_opPlayTexAnim(BtlScript *script, BtlUnit *unit) {
     BtlUnit9C50 *texAnim2;
-    BtlUnit9C50 *texAnim = &unit->model->texAnims[script->pc[1]];
+    BtlUnit9C50 *texAnim = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
     texAnim->flags |= BTL_TEXANIM_PLAY;
-    texAnim2 = &unit->model->texAnims[script->pc[1]];
+    texAnim2 = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
     texAnim2->pos = 0;
-    texAnim = &unit->model->texAnims[script->pc[1]];
+    texAnim = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
     texAnim->lastFrame = 0x1000;
     script->pc += 2;
     return 1;
@@ -617,11 +617,11 @@ s32 btlseq_opPlayTexAnim(BtlScript *script, BtlUnit *unit) {
 
 s32 btlseq_opLoopTexAnim(BtlScript *script, BtlUnit *unit) {
     BtlUnit9C50 *texAnim2;
-    BtlUnit9C50 *texAnim = &unit->model->texAnims[script->pc[1]];
+    BtlUnit9C50 *texAnim = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
     texAnim->flags |= (BTL_TEXANIM_PLAY | BTL_TEXANIM_ONCE);
-    texAnim2 = &unit->model->texAnims[script->pc[1]];
+    texAnim2 = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
     texAnim2->pos = 0;
-    texAnim = &unit->model->texAnims[script->pc[1]];
+    texAnim = &PSX_NULLABLE(unit->model->texAnims)[script->pc[1]];
     texAnim->lastFrame = 0x1000;
     script->pc += 2;
     return 1;
@@ -631,7 +631,7 @@ s32 btlseq_opStopTexAnim(BtlScript *script, BtlUnit *unit) {
     u8 i = script->pc[1];
     BtlModel *model = unit->model;
     BtlUnit9C50 *texAnim;
-    (*(texAnim = model->texAnims + i)).flags &= 0xFC;
+    (*(texAnim = PSX_NULLABLE(model->texAnims) + i)).flags &= 0xFC;
     script->pc += 2;
     return 1;
 }

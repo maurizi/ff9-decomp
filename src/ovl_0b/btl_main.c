@@ -1285,7 +1285,7 @@ u32 btl_registerModel(s32 modelId, s32 obj) {
     modelSlot->obj = obj;
     modelSlot->model->header = (BtlModelHeader *)db_lookupRegistered(DB_GET_ADDR, modelSlot->modelId, 0);
     modelSlot->model->motion = (BtlMotion *)db_lookupRegistered(DB_GET_ADDR, btl_getAnimFileId(modelSlot->modelId), 0);
-    motion = modelSlot->model->motion;
+    motion = PSX_NULLABLE(modelSlot->model->motion);
     if (IS_OFFSET(motion->rotKeys)) {
         motion->rotKeys = (s32)motion + motion->rotKeys;
         if (motion->rotKeysLo != 0) {

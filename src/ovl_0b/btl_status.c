@@ -110,12 +110,12 @@ u32 btl_addStatus(BtlUnit *unit, u32 mask) {
         }
         /* Falls through into Sleep's motion switch, as in the original. At battle start (btl_initPartyUnit ->
          * btl_addStatuses, a party member carrying Venom over from the last battle) unit->model and curCmd are still
-         * NULL, so the PS1 reads (and may write) low RAM through them here. Harmless on the PS1; a native port must
-         * guard both pointers (ff9-ds F36: battles d2_b0779, d4_b0280/0779/0828/0940). */
+         * NULL, so the PS1 reads (and may write) low RAM through them here; a port guards both via PSX_NULLABLE
+         * (ff9-ds F36: battles d2_b0779, d4_b0280/0779/0828/0940). */
     case BTL_STATUS_SLEEP_BIT:
-        if ((unit->flags & BTL_UNIT_PARTY) && (s32)unit->model->motion != unit->motions[BTL_MOTION_IDLE_WEAK] &&
-            g_gameState->gameData->ctx.battle->curCmd->caster != unit) {
-            unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_IDLE_WEAK];
+        if ((unit->flags & BTL_UNIT_PARTY) && (s32)PSX_NULLABLE(unit->model)->motion != unit->motions[BTL_MOTION_IDLE_WEAK] &&
+            PSX_NULLABLE(g_gameState->gameData->ctx.battle->curCmd)->caster != unit) {
+            PSX_NULLABLE(unit->model)->motion = (BtlMotion *)unit->motions[BTL_MOTION_IDLE_WEAK];
             unit->obj->frame = 0;
         }
         break;
@@ -249,9 +249,9 @@ s32 btl_removeStatus(BtlUnit *unit, u32 mask) {
         unit->flags &= ~BTL_UNIT_KILLED;
         unit->flags &= ~BTL_UNIT_MOTION_HELD;
         if ((s32)model->motion == a4[BTL_MOTION_KO] || (s32)model->motion == a4[8]) {
-            model->texAnims[2].flags |= BTL_TEXANIM_PLAY;
-            unit->model->texAnims[2].pos = 0;
-            unit->model->texAnims[2].lastFrame = 0x1000;
+            PSX_NULLABLE(model->texAnims)[2].flags |= BTL_TEXANIM_PLAY;
+            PSX_NULLABLE(unit->model->texAnims)[2].pos = 0;
+            PSX_NULLABLE(unit->model->texAnims)[2].lastFrame = 0x1000;
             unit->model->motion = (BtlMotion *)unit->motions[BTL_MOTION_GET_UP];
             unit->obj->frame = 0;
         }
@@ -388,7 +388,7 @@ void btl_updateUnitStatus(BtlUnit *unit) {
             }
         }
     }
-    if ((unit->status & BTL_STATUS_CONFUSE) && unit != g_gameState->gameData->ctx.battle->curCmd->caster) {
+    if ((unit->status & BTL_STATUS_CONFUSE) && unit != PSX_NULLABLE(g_gameState->gameData->ctx.battle->curCmd)->caster) {
         if (unit->model->motion == (BtlMotion *)unit->motions[BTL_MOTION_IDLE] || unit->model->motion == (BtlMotion *)unit->motions[BTL_MOTION_IDLE_WEAK] ||
             ((unit->flags & BTL_UNIT_PARTY) && unit->model->motion == (BtlMotion *)unit->motions[BTL_MOTION_READY])) {
             unit->rot[1] += 0x80;
