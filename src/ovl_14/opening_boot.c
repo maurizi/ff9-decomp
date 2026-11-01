@@ -26,9 +26,9 @@ void opening_bootScreen(void) {
         g_bootScreenSprite[g_gameState->gameData->drawBuf].v0 = 0;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].w = imgRect->w;
         g_bootScreenSprite[g_gameState->gameData->drawBuf].h = imgRect->h;
-        g_bootScreenSprite[g_gameState->gameData->drawBuf].clut = 0x3800;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].clut = getClut(VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y);
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_bootScreenSprite[g_gameState->gameData->drawBuf]);
-        setDrawTPage(&g_bootScreenTpage[g_gameState->gameData->drawBuf], 1, 1, 0xA);
+        setDrawTPage(&g_bootScreenTpage[g_gameState->gameData->drawBuf], 1, 1, getTPage(0, 0, VRAM_IMAGE_X, VRAM_IMAGE_Y));
         addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_bootScreenTpage[g_gameState->gameData->drawBuf]);
         framesLeft--;
         game_updateFade();

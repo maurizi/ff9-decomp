@@ -44,9 +44,9 @@ s32 opening_attract(s32 idx) {
                     g_attractSprites[g_gameState->gameData->drawBuf][0].v0 = 0;
                     g_attractSprites[g_gameState->gameData->drawBuf][0].w = 0xC0;
                     g_attractSprites[g_gameState->gameData->drawBuf][0].h = 0xE0;
-                    g_attractSprites[g_gameState->gameData->drawBuf][0].clut = 0x3800;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].clut = getClut(VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y);
                     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_attractSprites[g_gameState->gameData->drawBuf][0]);
-                    setDrawTPage(&g_attractTpages[g_gameState->gameData->drawBuf][0], 1, 1, 0x10A);
+                    setDrawTPage(&g_attractTpages[g_gameState->gameData->drawBuf][0], 1, 1, getTPage(2, 0, VRAM_IMAGE_X, VRAM_IMAGE_Y));
                     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_attractTpages[g_gameState->gameData->drawBuf][0]);
                     setlen((g_attractSprites[g_gameState->gameData->drawBuf] + 1), PRIM_LEN(SPRT));
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->code = GPU_SPRT;
@@ -59,9 +59,9 @@ s32 opening_attract(s32 idx) {
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->v0 = 0;
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->w = 0x80;
                     (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->h = 0xE0;
-                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->clut = 0x3800;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->clut = getClut(VRAM_IMAGE_CLUT_X, VRAM_IMAGE_CLUT_Y);
                     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_attractSprites[g_gameState->gameData->drawBuf] + 1));
-                    setDrawTPage(g_attractTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, 0x10D);
+                    setDrawTPage(g_attractTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, getTPage(2, 0, VRAM_IMAGE_X + 0xC0, VRAM_IMAGE_Y));
                     addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_attractTpages[g_gameState->gameData->drawBuf] + 1));
                     pad &= PAD_CROSS | PAD_START;
                     btn = pad;
