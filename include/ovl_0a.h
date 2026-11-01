@@ -1255,6 +1255,9 @@ void menuMain_setEquipHelp(u8);
 
 /* ---- overlay data ---- */
 extern u8 g_fieldDiscChangeText[]; /* text */
+#define FLD_DISC_TEXT_PROMPT 0 /* "Do you want to\nsave your game?" */
+#define FLD_DISC_TEXT_YES 1
+#define FLD_DISC_TEXT_NO 2
 extern s32 g_fieldPreloadCursor;
 extern FieldDiscMode g_fieldDiscChangeModes[];
 extern FieldBgCtx g_fieldBgCtx;
@@ -1306,6 +1309,11 @@ extern u8 s_menuMainGilSuffix[];
 extern RECT *s_menuMainLocationRect;
 extern u8 *s_menuMainEquipLabels[5];
 extern u8 s_menuMainText[]; /* text */
+/* s_menuMainText entries (text_get; decoded with tools/ff9text.py text_table) */
+#define MENU_MAIN_TEXT_NO_LOCATION 1 /* "Honolulu conversion code": a leftover placeholder, shown when GameData.locationName is empty */
+#define MENU_MAIN_TEXT_EQUIP_HELP 4 /* "Select character." + the five equipment lines (string args 0-9) */
+#define MENU_MAIN_TEXT_STATUS_HELP 5 /* "Select character." + Exp / Next lines (string args 2-7) */
+#define MENU_MAIN_TEXT_EMPTY 0xD /* "": an empty equipment slot */
 extern RECT g_fieldDiscChangeRect;
 
 extern RECT s_menuMainPanelRects[6];

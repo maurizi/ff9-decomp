@@ -944,6 +944,11 @@ extern MATRIX g_worldBackdropLightMatrix;
 extern MATRIX g_worldMapLightMatrix;
 extern u8 g_worldMapLoaded;
 extern u8 s_menuMainText[]; /* text */
+/* s_menuMainText entries (text_get; decoded with tools/ff9text.py text_table) */
+#define MENU_MAIN_TEXT_NO_LOCATION 1 /* "Honolulu conversion code": a leftover placeholder, shown when GameData.locationName is empty */
+#define MENU_MAIN_TEXT_EQUIP_HELP 4 /* "Select character." + the five equipment lines (string args 0-9) */
+#define MENU_MAIN_TEXT_STATUS_HELP 5 /* "Select character." + Exp / Next lines (string args 2-7) */
+#define MENU_MAIN_TEXT_EMPTY 0xD /* "": an empty equipment slot */
 extern WmActorType g_worldActorTypeInfo[];
 extern EvtObject *g_worldPlayer; /* player actor */
 extern WmMoveMode *g_worldMoveModeInfo;

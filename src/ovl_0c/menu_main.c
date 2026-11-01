@@ -10,7 +10,7 @@ void menuMain_initPanels(void) {
     if (locName != NULL && *locName != 0xFF) {
         name = locName;
     } else {
-        name = text_get(1);
+        name = text_get(MENU_MAIN_TEXT_NO_LOCATION);
     }
     w = text_measureStyle(name, 0) + 0x10;
     if (w < 0x44) {
@@ -246,7 +246,7 @@ void menuMain_drawLocation(void) {
     if (gd->locationName != NULL && *gd->locationName != TEXT_END) {
         text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, gd->locationName, TEXT_PAL_WHITE);
     } else {
-        text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, text_get(1), TEXT_PAL_WHITE);
+        text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, text_get(MENU_MAIN_TEXT_NO_LOCATION), TEXT_PAL_WHITE);
     }
 }
 
@@ -328,7 +328,7 @@ void menuMain_setExpHelp(s32 unused) {
         text_setStringArg(5, s_menuMainNextText);
         text_setStringArg(6, s_menuMainStatusLabel);
         text_setStringArg(7, chr->status != 0 ? s_menuMainStatusAbnormal : s_menuMainStatusNormal);
-        g_menuHelpText = text_get(5);
+        g_menuHelpText = text_get(MENU_MAIN_TEXT_STATUS_HELP);
     }
 }
 
@@ -362,16 +362,16 @@ void menuMain_setEquipHelp(u8 unused) {
     do {
         text_setStringArg(i, s_menuMainEquipLabels[i]);
         id = chr->equip[i];
-        if (id != 0xFF) {
+        if (id != ITEM_NONE) {
             text_setStringArg(j, g_itemNames + g_itemTable[id].name);
         } else {
-            text_setStringArg(j, text_get(0xD));
+            text_setStringArg(j, text_get(MENU_MAIN_TEXT_EMPTY));
         }
         j++;
         text_setIconArg(i, id);
         i++;
-    } while (i < 5);
-    g_menuHelp.text = text_get(4);
+    } while (i < EQUIP_SLOT_COUNT);
+    g_menuHelp.text = text_get(MENU_MAIN_TEXT_EQUIP_HELP);
 }
 
 void menuMain_init(void) {
