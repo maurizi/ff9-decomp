@@ -5,7 +5,7 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Pool6CEntry *emitter;
     s32 frame;
     s32 i;
-    s32 c;
+    s32 shade;
 
     if (mode == 0) {
         *args = 0xB4;
@@ -99,12 +99,12 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->models20[2].rot4, &work->models20[2].posC, (s32)&work->models20[2].scale1C,
                                 work->models20[2].model0);
             if (work->timer0[0] >= 0x19) {
-                c = -((work->timer0[0] - 0x18) << 5);
-                ex->Hi_ModifyEffModelRGB(work->models20[2].model0, c, c, c);
+                shade = -((work->timer0[0] - 0x18) << 5);
+                ex->Hi_ModifyEffModelRGB(work->models20[2].model0, shade, shade, shade);
             }
             if (work->timer0[0] < 8) {
-                c = (work->timer0[0] << 5) - 0x100;
-                ex->Hi_ModifyEffModelRGB(work->models20[2].model0, c, c, c);
+                shade = (work->timer0[0] << 5) - 0x100;
+                ex->Hi_ModifyEffModelRGB(work->models20[2].model0, shade, shade, shade);
             }
         }
         if (work->timer0[1] != 0) {
@@ -114,12 +114,12 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->models20[0].rot4, &work->models20[0].posC, (s32)&work->models20[0].scale1C,
                                 work->models20[0].model0);
             if (work->timer0[1] >= 0x29) {
-                c = -((work->timer0[1] - 0x28) << 5);
-                ex->Hi_ModifyEffModelRGB(work->models20[0].model0, c, c, c);
+                shade = -((work->timer0[1] - 0x28) << 5);
+                ex->Hi_ModifyEffModelRGB(work->models20[0].model0, shade, shade, shade);
             }
             if (work->timer0[1] < 8) {
-                c = work->timer0[1] * 0x10 - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->models20[0].model0, c, c, c);
+                shade = work->timer0[1] * 0x10 - 0x80;
+                ex->Hi_ModifyEffModelRGB(work->models20[0].model0, shade, shade, shade);
             }
         }
         if (work->timer0[2] != 0) {
@@ -128,14 +128,14 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->models20[1].scale1C.vx = work->models20[1].scale1C.vz = ex->btlfx_lerpRatio(0x4000, 0, work->timer0[2], 0x18);
             ex->Hi_DrawEffModel(&work->models20[1].rot4, &work->models20[1].posC, (s32)&work->models20[1].scale1C,
                                 work->models20[1].model0);
-            c = -0x40;
+            shade = -0x40;
             if (work->timer0[2] >= 0x11) {
-                c = -((work->timer0[2] - 0x10) * 8) - 0x40;
+                shade = -((work->timer0[2] - 0x10) * 8) - 0x40;
             }
             if (work->timer0[2] < 8) {
-                c = work->timer0[2] * 8 - 0x80;
+                shade = work->timer0[2] * 8 - 0x80;
             }
-            ex->Hi_ModifyEffModelRGB(work->models20[1].model0, c, c, c);
+            ex->Hi_ModifyEffModelRGB(work->models20[1].model0, shade, shade, shade);
         }
         return frame >= 0x80;
     }

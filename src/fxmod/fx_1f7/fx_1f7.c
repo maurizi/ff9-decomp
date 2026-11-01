@@ -2,22 +2,22 @@
 
 s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR a;
-    SVECTOR b;
+    SVECTOR from;
+    SVECTOR to;
     MATRIX m;
     Pool6CEntry *emitter;
     Fx1f7Trail *tr;
     Fx1f7Spark *sp;
     s32 frame;
     s32 i;
-    s32 k;
+    s32 link;
     s32 j;
-    s32 al;
+    s32 alpha;
     s32 n;
-    SVECTOR *d;
+    SVECTOR *dst;
     s32 jj;
     SVECTOR *bp;
-    s32 k2;
+    s32 sparkLink;
     s32 pc;
     Fx1f7Trail *tc;
 
@@ -65,37 +65,37 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 tr = &fx_1f7_trails[i];
                 if (tr->count10C != 0) {
                     if (--tr->delay114 < 0) {
-                        for (k = 0; k < 16; k++) {
-                            if (k != 0) {
-                                ex->btlfx_getUnitBonePos(0x10, fx_1f7_trailBones[i][k], (u16 *)&a);
+                        for (link = 0; link < 16; link++) {
+                            if (link != 0) {
+                                ex->btlfx_getUnitBonePos(0x10, fx_1f7_trailBones[i][link], (u16 *)&from);
                             } else {
                                 ex->btlfx_getUnitBoneMatrix(0x10, fx_1f7_trailBones[i][0], (BtlBone *)&m);
-                                ex->btlfx_matrixPointAhead(&m, 0x400, (s32)&a);
+                                ex->btlfx_matrixPointAhead(&m, 0x400, (s32)&from);
                             }
-                            ex->btlfx_getUnitBonePos(0x10, fx_1f7_trailBones[i][k + 1], (u16 *)&b);
+                            ex->btlfx_getUnitBonePos(0x10, fx_1f7_trailBones[i][link + 1], (u16 *)&to);
                             for (j = 0; j < 4; j++) {
-                                ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, j << 10, (s16 *)&fx_1f7_trailPoints[k * 4 + j]);
+                                ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, j << 10, (s16 *)&fx_1f7_trailPoints[link * 4 + j]);
                             }
                         }
-                        d = tr->points4;
-                        al = 0x1000;
+                        dst = tr->points4;
+                        alpha = 0x1000;
                         n = 0x21;
                         tr->lastSlot0 = tr->count2 = n - 1;
                         tr->head1 = 0;
                         if (tr->index110 < 0x10) {
-                            al = tr->index110 << 8;
+                            alpha = tr->index110 << 8;
                         }
                         /* Own counter, base pointer and trail copy (the original's a0, t0 and a2); pad after vz so
-                         * loop.c combines the vy/vz/pad address givs into &d->pad. */
+                         * loop.c combines the vy/vz/pad address givs into &dst->pad. */
                         jj = 0;
                         bp = fx_1f7_trailPoints;
                         tc = tr;
-                        for (; jj < n; jj++, d++) {
-                            d->vx = bp[tc->index110 + jj].vx;
-                            d->vy = bp[tc->index110 + jj].vy;
-                            d->vz = bp[tc->index110 + jj].vz;
+                        for (; jj < n; jj++, dst++) {
+                            dst->vx = bp[tc->index110 + jj].vx;
+                            dst->vy = bp[tc->index110 + jj].vy;
+                            dst->vz = bp[tc->index110 + jj].vz;
                             pc = 0x80;
-                            d->pad = pc;
+                            dst->pad = pc;
                             /* Dead store, deleted by flow after loop.c: pc is set twice in the loop, so the 0x80
                              * is not hoisted out of it. */
                             pc = 0;
@@ -103,7 +103,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         env->otZ = 0x200;
                         /* &fx_1f7_trails[i] rather than tr: cse shares the address, so its base is worth hoisting and
                          * tr becomes a giv that loop.c reduces (the original's s1). */
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), 0, NULL, frame, 0x1000, al, 1,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), 0, NULL, frame, 0x1000, alpha, 1,
                                             (u8 *)&fx_1f7_trails[i], 0);
                         env->otZ = 0;
                         tr->index110 -= 4;
@@ -117,12 +117,12 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->active4 != 0) {
             for (i = 0; i < 2; i++) {
-                for (k2 = 0; k2 < 6; k2++) {
-                    ex->btlfx_getUnitBonePos(0x10, fx_1f7_sparkBones[i][k2], (u16 *)&m);
-                    ex->btlfx_getUnitBonePos(0x10, fx_1f7_sparkBones[i][k2 + 1], (u16 *)&((SVECTOR *)&m)[1]);
+                for (sparkLink = 0; sparkLink < 6; sparkLink++) {
+                    ex->btlfx_getUnitBonePos(0x10, fx_1f7_sparkBones[i][sparkLink], (u16 *)&m);
+                    ex->btlfx_getUnitBonePos(0x10, fx_1f7_sparkBones[i][sparkLink + 1], (u16 *)&((SVECTOR *)&m)[1]);
                     for (j = 0; j < 4; j++) {
                         ex->btlfx_lerpVec((s16 *)&m, (s16 *)&((SVECTOR *)&m)[1], j << 10,
-                                          (s16 *)&fx_1f7_sparkPoints[i * 24 + k2 * 4 + j]);
+                                          (s16 *)&fx_1f7_sparkPoints[i * 24 + sparkLink * 4 + j]);
                     }
                 }
             }

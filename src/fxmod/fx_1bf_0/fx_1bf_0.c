@@ -237,9 +237,9 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             rot.vy = 0;
             rot.pad = 1;
             if (frame < 0x10) {
-                s32 x = (frame << 12) >> 6;
-                s32 ringSize = ex->math_sin(x) * 5;
-                s32 ringAlpha = ex->math_cos(x);
+                s32 ang = (frame << 12) >> 6;
+                s32 ringSize = ex->math_sin(ang) * 5;
+                s32 ringAlpha = ex->math_cos(ang);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &centerPos, &rot, ringSize, 0, 1, ringAlpha);
             }
             if (frame >= 0x1E) {
@@ -261,13 +261,13 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                     patternAlpha = fade;
                     offsetAlpha = fade;
                 } else {
-                    s32 x = frame - 0x1E;
-                    prog = x << 9;
+                    s32 elapsed = frame - 0x1E;
+                    prog = elapsed << 9;
                     reach = 0x1D;
                     lineWidth = 0x27;
                     alpha = 0x1000;
                     fade = 0;
-                    shown = x * 3;
+                    shown = elapsed * 3;
                     patternAlpha = alpha;
                     if (prog >= 0x800) {
                         offsetAlpha = (prog - 0x800) * 2;
