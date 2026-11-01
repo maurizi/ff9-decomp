@@ -12,7 +12,7 @@ s32 fx_1a6_op80ParticleMotion2(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 tra
     return fxm_lerpParticle(pt, pos, &fx_1a6_motionFrom[2], &fx_1a6_motionTo[2], frame, n);
 }
 
-static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames) {
+static s32 fxm_lerpParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a6_env);
     s32 t = frame << 9;
 
@@ -20,9 +20,9 @@ static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR
         t = 0x1000;
     }
     ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)pos);
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -169,14 +169,14 @@ static void fxm_startUnitMotion(s32 unit, s32 motion) {
 static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a6_env);
 
-    s32 r;
+    s32 done;
 
     if (ex->btlfx_isUnitActive(unit)) {
-        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+        done = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    return r;
+    return done;
 }
 
 static void fxm_startHitMotionIfActive(s32 unit) {

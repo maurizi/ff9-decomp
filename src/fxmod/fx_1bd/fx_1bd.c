@@ -1,37 +1,37 @@
 #include "fxmod/fx_1bd.h"
 
 static void fxm_buildPathTrail(Fx1bdPath *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip) {
-    SVECTOR v;
-    SVECTOR *p;
-    s32 cnt;
+    SVECTOR pos;
+    SVECTOR *pt;
+    s32 count;
     s32 i;
-    s32 j;
-    s32 k;
+    s32 keyIdx;
+    s32 next;
 
-    cnt = (size - 4) / 8;
-    p = (SVECTOR *)(buf + 4);
-    buf[0] = buf[2] = cnt - 1;
+    count = (size - 4) / 8;
+    pt = (SVECTOR *)(buf + 4);
+    buf[0] = buf[2] = count - 1;
     buf[1] = 0;
-    if (n < cnt) {
-        for (i = 0; i < cnt - n; i++) {
-            p->pad = 0;
-            p++;
+    if (n < count) {
+        for (i = 0; i < count - n; i++) {
+            pt->pad = 0;
+            pt++;
         }
     } else {
-        n = cnt;
+        n = count;
     }
     for (i = 0; i < n; i++) {
-        k = i + 1;
-        j = n - k + start;
-        if (clip != 0 && j >= keys->count2) {
+        next = i + 1;
+        keyIdx = n - next + start;
+        if (clip != 0 && keyIdx >= keys->count2) {
             break;
         }
-        fxm_posPathGet(keys, j, &v);
-        p->vx = v.vx;
-        p->vy = v.vy;
-        p->vz = v.vz;
-        p->pad = from + (to - from) / keys->count2 * (n - i);
-        p++;
+        fxm_posPathGet(keys, keyIdx, &pos);
+        pt->vx = pos.vx;
+        pt->vy = pos.vy;
+        pt->vz = pos.vz;
+        pt->pad = from + (to - from) / keys->count2 * (n - i);
+        pt++;
     }
 }
 
@@ -469,8 +469,8 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_1bd_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_1bd_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -485,17 +485,17 @@ static void fxm_posTrackInit(Fx1bdTrack12 *track, u16 *data) {
 static s32 fxm_posTrackGet(Fx1bdTrack6 *track, s32 t, SVECTOR *out) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx1bdKey6 *k;
+    Fx1bdKey6 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
-    out->vx = -k->x;
-    out->vy = k->y;
-    out->vz = -k->z;
+    key = &track->keys4[t];
+    out->vx = -key->x;
+    out->vy = key->y;
+    out->vz = -key->z;
     return done;
 }
 
@@ -508,17 +508,17 @@ static void fxm_posPathInit(Fx1bdPath *path, u16 *data) {
 static s32 fxm_posPathGet(Fx1bdPath *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx1bdPoint *p;
+    Fx1bdPoint *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
@@ -530,23 +530,23 @@ static void fxm_rotPosTrackInit(Fx1bdTrack12 *track, u16 *data) {
 static s32 fxm_rotPosTrackGet(Fx1bdTrack12 *track, s32 t, SVECTOR *rot, SVECTOR *pos) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx1bdKey12 *k;
+    Fx1bdKey12 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
+    key = &track->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6;
-        rot->vy = k->rot8;
-        rot->vz = k->rotA;
+        rot->vx = key->rot6;
+        rot->vy = key->rot8;
+        rot->vz = key->rotA;
     }
     if (pos != NULL) {
-        pos->vx = -k->pos0;
-        pos->vy = k->pos2;
-        pos->vz = -k->pos4;
+        pos->vx = -key->pos0;
+        pos->vy = key->pos2;
+        pos->vz = -key->pos4;
     }
     return done;
 }
@@ -559,36 +559,36 @@ static void fxm_vecTrackInit(Fx1bdTrack12 *track, u16 *data) {
 static s32 fxm_vecTrackGet(Fx1bdTrack6 *track, s32 t, VECTOR *out) {
     s32 last = track->count0 - 1;
     s32 done = 1;
-    Fx1bdKey6 *k;
+    Fx1bdKey6 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
-    out->vx = k->x;
-    out->vy = k->y;
-    out->vz = k->z;
+    key = &track->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
-static u16 *fxm_offsetTableEntry(u16 *base, u16 i) {
-    return (u16 *)((s32)base + ((s32 *)base)[(u16)i + 1]);
+static u16 *fxm_offsetTableEntry(u16 *base, u16 idx) {
+    return (u16 *)((s32)base + ((s32 *)base)[(u16)idx + 1]);
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_1bd_env)->btlfx_drawScreenTint((u32 *)(fx_1bd_env->ot + ot), abr, c, c, c);
+    BTLFX_EXPORTS(fx_1bd_env)->btlfx_drawScreenTint((u32 *)(fx_1bd_env->ot + ot), abr, bright, bright, bright);
 }
 
 static void fxm_camChanReset(void) {
     s32 i;
-    s32 m = FX_1BD_KEY_FREE;
+    s32 freeMark = FX_1BD_KEY_FREE;
 
     for (i = 63; i >= 0; i--) {
-        fx_1bd_camKeys[i].timer6 = m;
+        fx_1bd_camKeys[i].timer6 = freeMark;
     }
     for (i = 3; i >= 0; i--) {
         fx_1bd_camChanFrames[i] = 0;
@@ -597,10 +597,10 @@ static void fxm_camChanReset(void) {
 
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     s32 i;
-    s32 c;
+    s32 count;
 
     data++;
-    c = *data;
+    count = *data;
     for (i = 0; i < 64; i++) {
         if (fx_1bd_camKeys[i].timer6 == FX_1BD_KEY_FREE) {
             fx_1bd_camKeys[i].timer6 = 0;
@@ -608,7 +608,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
             fx_1bd_camKeys[i].frame4 = start;
             fx_1bd_camKeys[i].dstA = dst;
             fx_1bd_camKeys[i].indexC = 0;
-            fx_1bd_camKeys[i].countE = c;
+            fx_1bd_camKeys[i].countE = count;
             fx_1bd_camKeys[i].chan8 = ch;
             return;
         }
@@ -619,7 +619,7 @@ static void fxm_camChanUpdate(s32 ch) {
     Unk800F78A4 *env = fx_1bd_env;
     s32 i;
     s32 k;
-    s32 d;
+    s32 dstSlot;
 
     for (i = 0; i < 64; i++) {
         if (fx_1bd_camKeys[i].chan8 == ch) {
@@ -630,11 +630,11 @@ static void fxm_camChanUpdate(s32 ch) {
             if (fx_1bd_camKeys[i].timer6 > 0) {
                 fx_1bd_camKeys[i].timer6--;
                 for (k = 0; k < 3; k++) {
-                    d = ((fx_1bd_camKeys[i].dstA >> (k * 4)) & 0xF) - 1;
-                    if (d >= 0) {
-                        ((SVECTOR *)env->camera)[d].vx = fx_1bd_camKeys[i].keys0[0];
-                        ((SVECTOR *)env->camera)[d].vy = fx_1bd_camKeys[i].keys0[1];
-                        ((SVECTOR *)env->camera)[d].vz = fx_1bd_camKeys[i].keys0[2];
+                    dstSlot = ((fx_1bd_camKeys[i].dstA >> (k * 4)) & 0xF) - 1;
+                    if (dstSlot >= 0) {
+                        ((SVECTOR *)env->camera)[dstSlot].vx = fx_1bd_camKeys[i].keys0[0];
+                        ((SVECTOR *)env->camera)[dstSlot].vy = fx_1bd_camKeys[i].keys0[1];
+                        ((SVECTOR *)env->camera)[dstSlot].vz = fx_1bd_camKeys[i].keys0[2];
                         if (fx_1bd_camKeys[i].indexC < fx_1bd_camKeys[i].countE) {
                             fx_1bd_camKeys[i].keys0 += 3;
                             fx_1bd_camKeys[i].indexC++;
@@ -653,27 +653,27 @@ static void fxm_drawTexelQuadsB(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y
     RECT rect;
     VECTOR sv;
     SVECTOR zero;
-    SVECTOR v[4];
-    CVECTOR c1;
-    CVECTOR c3;
-    CVECTOR c0;
-    CVECTOR c2;
+    SVECTOR quad[4];
+    CVECTOR colTR;
+    CVECTOR colBR;
+    CVECTOR colTL;
+    CVECTOR colBL;
     MATRIX m;
-    s32 z;
-    s32 flag;
+    s32 otz;
+    s32 nclip;
     DR_TPAGE *tpage;
     s32 code;
     BtlfxExports *ex;
     POLY_G4 *prim;
     u16 *row;
-    u16 *p;
+    u16 *src;
     s32 i;
     s32 j;
     s32 px;
     s32 py;
-    s32 hh;
-    s32 x0;
-    s32 col;
+    s32 rows;
+    s32 left;
+    s32 texel;
 
     *(s32 *)&zero.vx = 0;
     *(s32 *)&zero.vz = 0;
@@ -681,9 +681,9 @@ static void fxm_drawTexelQuadsB(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y
     if (skip == 0) {
         /* The nesting only weights w's references for global-alloc (w gets s4 ahead of py and prim). */
         do { do { do { w++; } while (0); } while (0); } while (0);
-        hh = h + 1;
+        rows = h + 1;
         prim = (POLY_G4 *)env->prim;
-        env->prim = (u8 *)(prim + w * hh);
+        env->prim = (u8 *)(prim + w * rows);
         tpage = ex->btlfx_allocDrMode(0, abr);
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
@@ -703,75 +703,75 @@ static void fxm_drawTexelQuadsB(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y
         if (abr != 0xFF) {
             code = 0x3A;
         }
-        gte_stszotz(&z);
+        gte_stszotz(&otz);
         if (rot->pad != 0) {
             ex->MulRotMatrix(&m);
         }
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);
-        x0 = -(w * size) >> 1;
-        h = hh;
+        left = -(w * size) >> 1;
+        h = rows;
         py = -(h * size) >> 1;
         row = colors - (u32)(w - 1);
         bright <<= 2;
         gte_ldVZ012_0();
         for (j = 0; j < h; j++, py += size, row += (u32)(w - 1)) {
-            px = x0;
-            p = row;
-            *(s32 *)&c0 = 0;
-            *(s32 *)&c2 = 0;
-            for (i = 0; i < w; i++, prim++, px += size, p++) {
-                v[0].vx = v[2].vx = px;
-                v[0].vy = v[1].vy = py;
-                v[1].vx = v[3].vx = px + size;
-                v[2].vy = v[3].vy = py + size;
+            px = left;
+            src = row;
+            *(s32 *)&colTL = 0;
+            *(s32 *)&colBL = 0;
+            for (i = 0; i < w; i++, prim++, px += size, src++) {
+                quad[0].vx = quad[2].vx = px;
+                quad[0].vy = quad[1].vy = py;
+                quad[1].vx = quad[3].vx = px + size;
+                quad[2].vy = quad[3].vy = py + size;
                 if (i >= w - 1) {
-                    *(s32 *)&c1 = 0;
-                    *(s32 *)&c3 = 0;
+                    *(s32 *)&colTR = 0;
+                    *(s32 *)&colBR = 0;
                 } else {
                     if (j == 0) {
-                        *(s32 *)&c1 = 0;
+                        *(s32 *)&colTR = 0;
                     } else {
-                        col = p[0];
-                        c1.r = ((col & 0x1F) * (bright << 2)) >> 12;
-                        c1.g = (((col >> 5) & 0x1F) * (bright << 2)) >> 12;
-                        c1.b = (((col >> 10) & 0x1F) * (bright << 2)) >> 12;
+                        texel = src[0];
+                        colTR.r = ((texel & 0x1F) * (bright << 2)) >> 12;
+                        colTR.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        colTR.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
                     }
                     if (j >= h - 1) {
-                        *(s32 *)&c3 = 0;
+                        *(s32 *)&colBR = 0;
                     } else {
-                        col = p[w - 1];
-                        c3.r = ((col & 0x1F) * (bright << 2)) >> 12;
-                        c3.g = (((col >> 5) & 0x1F) * (bright << 2)) >> 12;
-                        c3.b = (((col >> 10) & 0x1F) * (bright << 2)) >> 12;
+                        texel = src[w - 1];
+                        colBR.r = ((texel & 0x1F) * (bright << 2)) >> 12;
+                        colBR.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        colBR.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
                     }
                 }
-                gte_ldv3xy(&v[0], &v[1], &v[2]);
-                c0.cd = code;
-                *(s32 *)&prim->r0 = *(s32 *)&c0;
+                gte_ldv3xy(&quad[0], &quad[1], &quad[2]);
+                colTL.cd = code;
+                *(s32 *)&prim->r0 = *(s32 *)&colTL;
                 gte_rtpt_b();
-                *(s32 *)&prim->r1 = *(s32 *)&c1;
-                *(s32 *)&prim->r2 = *(s32 *)&c2;
+                *(s32 *)&prim->r1 = *(s32 *)&colTR;
+                *(s32 *)&prim->r2 = *(s32 *)&colBL;
                 gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
-                gte_stopz(&flag);
-                gte_ldv0xy(&v[3]);
-                *(s32 *)&prim->r3 = *(s32 *)&c3;
+                gte_stopz(&nclip);
+                gte_ldv0xy(&quad[3]);
+                *(s32 *)&prim->r3 = *(s32 *)&colBR;
                 gte_rtps_bm();
-                *(s32 *)&c0 = *(s32 *)&c1;
-                *(s32 *)&c2 = *(s32 *)&c3;
+                *(s32 *)&colTL = *(s32 *)&colTR;
+                *(s32 *)&colBL = *(s32 *)&colBR;
                 gte_stsxy(&prim->x3);
-                if (flag != 0) {
-                    ex->btlfx_addPrim(0x8000000, z, prim);
+                if (nclip != 0) {
+                    ex->btlfx_addPrim(0x8000000, otz, prim);
                 }
             }
         }
-        ex->btlfx_addPrim(0x1000000, z, tpage);
+        ex->btlfx_addPrim(0x1000000, otz, tpage);
     }
     w--;
     h--;
-    x0 = (tp & 0xF) * 64 + x + (idx % div) * w;
+    left = (tp & 0xF) * 64 + x + (idx % div) * w;
     py = (tp & 0x10) * 16 + y + (idx / div) * h;
-    rect.x = x0;
+    rect.x = left;
     rect.y = py;
     rect.w = w;
     rect.h = h;
@@ -779,31 +779,31 @@ static void fxm_drawTexelQuadsB(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y
 }
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
-    s32 m = x % w;
+    s32 wrapW = x % w;
     Unk800F78A4 *env = fx_1bd_env;
-    u32 *p = (u32 *)env->prim;
+    u32 *move = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 n;
-    RECT r2;
-    RECT r;
+    s32 restW;
+    RECT rectRest;
+    RECT rectWrap;
 
-    env->prim = (u8 *)(p + 12);
-    n = w - m;
-    if (m != 0) {
-        r.x = sx;
-        r.y = sy;
-        r.w = m;
-        r.h = h;
-        ex->SetDrawMove(p, &r, dx + n, dy);
-        addPrim(env->ot + OT_LAST, p);
+    env->prim = (u8 *)(move + 12);
+    restW = w - wrapW;
+    if (wrapW != 0) {
+        rectWrap.x = sx;
+        rectWrap.y = sy;
+        rectWrap.w = wrapW;
+        rectWrap.h = h;
+        ex->SetDrawMove(move, &rectWrap, dx + restW, dy);
+        addPrim(env->ot + OT_LAST, move);
     }
-    p += 6;
-    if (n != 0) {
-        r2.x = sx + m;
-        r2.y = sy;
-        r2.w = n;
-        r2.h = h;
-        ex->SetDrawMove(p, &r2, dx, dy);
-        addPrim(env->ot + OT_LAST, p);
+    move += 6;
+    if (restW != 0) {
+        rectRest.x = sx + wrapW;
+        rectRest.y = sy;
+        rectRest.w = restW;
+        rectRest.h = h;
+        ex->SetDrawMove(move, &rectRest, dx, dy);
+        addPrim(env->ot + OT_LAST, move);
     }
 }

@@ -40,7 +40,7 @@ typedef struct {
     SVECTOR a0;
     SVECTOR b8;
 } Fx0fb0Seg; /* 0x10 */
-static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx0fb0Seg *buf, s32 abr);
+static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *colorA, CVECTOR *colorB, s32 fade, Fx0fb0Seg *buf, s32 abr);
 
 typedef struct {
     s32 vx, vy, vz;

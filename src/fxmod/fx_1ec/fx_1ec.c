@@ -362,12 +362,12 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static u16 *fxm_offsetTableEntry(u8 *base, u16 i) {
-    return (u16 *)((s32)base + ((s32 *)base)[(u16)i + 1]);
+static u16 *fxm_offsetTableEntry(u8 *base, u16 idx) {
+    return (u16 *)((s32)base + ((s32 *)base)[(u16)idx + 1]);
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_1ec_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_1ec_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -375,9 +375,9 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_1ec_env)->btlfx_drawScreenTint((u32 *)(fx_1ec_env->ot + ot), abr, c, c, c);
+    BTLFX_EXPORTS(fx_1ec_env)->btlfx_drawScreenTint((u32 *)(fx_1ec_env->ot + ot), abr, bright, bright, bright);
 }
 
 static void fxm_posPathInit(Fx1ecPath *path, u16 *data) {
@@ -389,17 +389,17 @@ static void fxm_posPathInit(Fx1ecPath *path, u16 *data) {
 static s32 fxm_posPathGet(Fx1ecPath *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx1ecPoint *p;
+    Fx1ecPoint *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
@@ -413,14 +413,14 @@ static void fxm_startUnitMotion(s32 unit, s32 motion) {
 static s32 fxm_isMotionDone(s32 unit) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1ec_env);
 
-    s32 r;
+    s32 done;
 
     if (ex->btlfx_isUnitActive(unit)) {
-        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+        done = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    return r;
+    return done;
 }
 
 static void fxm_startHitMotionIfActive(s32 unit) {

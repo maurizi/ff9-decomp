@@ -77,12 +77,12 @@ static s32 fx_12b_op80ParticleMotion3(Fx12bParticle *pt, s32 owner, SVECTOR *pos
 static s32 fx_12b_op81ParticleMotion2(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 static s32 fx_12b_op81ParticleMotion3(Fx12bParticle *pt, s32 owner, SVECTOR *pos, s32 trail, s32 frame, s32 n);
 static s32 fxm_posPathGet(Fx12bPath *path, s32 i, SVECTOR *out);
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 static void fxm_posPathInit(Fx12bPath *path, u16 *data);
 s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
-static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
+static void fxm_setSignal(Unk800F78A4 *env, s32 signal, s32 value);
 
 /* propagated */
 static s32 fxm_pinParticle(Fx12bParticle *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);

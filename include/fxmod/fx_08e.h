@@ -33,7 +33,7 @@ extern s16 fx_08e_texAnimSrc[][2];
 extern BtlModelBuf fx_08e_effModels[];
 extern s32 fx_08e_trails[];
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 #endif

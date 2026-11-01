@@ -36,19 +36,19 @@ s32 fx_1a0_op81ParticleMotion5(Pool30Entry *pt, Pool6CEntry *owner, SVECTOR *pos
     return fxm_followPathParticle(pt, pos, &fx_1a0_posPaths[5], pathTime, frame, n);
 }
 
-static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1a0Path *path, s32 t, s32 frame, s32 frames) {
-    SVECTOR v;
+static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx1a0Path *path, s32 t, s32 frame, s32 frames) {
+    SVECTOR pathPos;
 
-    fxm_posPathGet(path, t, &v);
-    v.vx += fx_1a0_pathOrigin.vx;
-    v.vy += fx_1a0_pathOrigin.vy;
-    v.vz += fx_1a0_pathOrigin.vz;
-    pos->vx = v.vx;
-    pos->vy = v.vy;
-    pos->vz = v.vz;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    fxm_posPathGet(path, t, &pathPos);
+    pathPos.vx += fx_1a0_pathOrigin.vx;
+    pathPos.vy += fx_1a0_pathOrigin.vy;
+    pathPos.vz += fx_1a0_pathOrigin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -167,17 +167,17 @@ static void fxm_posPathInit(Fx1a0Path *path, u16 *data) {
 static s32 fxm_posPathGet(Fx1a0Path *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx1a0Point *p;
+    Fx1a0Point *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 

@@ -26,20 +26,20 @@ s32 fx_0b4_op80ParticleMotion5(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 tra
 
 static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx0b4Timer *timer, Fx0b4Path *path, s32 frame, s32 n) {
     SVECTOR rot;
-    SVECTOR p;
+    SVECTOR pathPos;
 
-    fxm_rotPosPathGet(path, frame, &rot, &p);
-    p.vx /= 2;
-    p.vz /= 2;
-    p.vx = p.vx * 12 / 10;
-    p.vy = p.vy * 12 / 10;
-    p.vz = p.vz * 12 / 10;
-    p.vx += fx_0b4_pathOrigin.vx;
-    p.vy += fx_0b4_pathOrigin.vy;
-    p.vz += fx_0b4_pathOrigin.vz;
-    pos->vx = p.vx;
-    pos->vy = p.vy;
-    pos->vz = p.vz;
+    fxm_rotPosPathGet(path, frame, &rot, &pathPos);
+    pathPos.vx /= 2;
+    pathPos.vz /= 2;
+    pathPos.vx = pathPos.vx * 12 / 10;
+    pathPos.vy = pathPos.vy * 12 / 10;
+    pathPos.vz = pathPos.vz * 12 / 10;
+    pathPos.vx += fx_0b4_pathOrigin.vx;
+    pathPos.vy += fx_0b4_pathOrigin.vy;
+    pathPos.vz += fx_0b4_pathOrigin.vz;
+    pos->vx = pathPos.vx;
+    pos->vy = pathPos.vy;
+    pos->vz = pathPos.vz;
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -179,25 +179,25 @@ static void fxm_rotPosPathInit(Fx0b4Path *path, u16 *data) {
     path->keys4 = (Fx0b4Point *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx0b4Path *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx0b4Key *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx0b4Path *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx0b4Key *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }

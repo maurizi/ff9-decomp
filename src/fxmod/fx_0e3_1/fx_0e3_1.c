@@ -3,12 +3,12 @@
 static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
@@ -18,11 +18,11 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     for (i = 0; i < 13; i++) {
         t = 0x1000 - (i << 12) / 12;
         t += ex->btlfx_randCentered(0x180);
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = ex->btlfx_randCentered(0x80);
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = ex->btlfx_randCentered(0x80);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = 0x1C;
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
@@ -33,12 +33,12 @@ static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
                    s32 frame, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
@@ -48,11 +48,11 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     for (i = 0; i < 5; i++) {
         t = 0x1000 - (i << 10);
         t += ex->btlfx_randCentered(0x80);
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = ex->btlfx_randCentered(0x20);
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += (ex->math_sin(t >> 1) * amp) >> 12;
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = ex->btlfx_randCentered(0x20);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += (ex->math_sin(t >> 1) * amp) >> 12;
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = 0x1A;
         ang += dang + ex->btlfx_randCentered(0xC0);
         pt++;
@@ -63,12 +63,12 @@ static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
@@ -78,11 +78,11 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     for (i = 0; i < 56 + 1; i++) {
         t = 0x1000 - (i << 12) / 56;
         t += ex->btlfx_randCentered(0x100);
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = ex->btlfx_randCentered(0xA0);
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = ex->btlfx_randCentered(0xA0);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
@@ -92,24 +92,24 @@ static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
 
 void fxm_drawOffsetBranch(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 fade) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
-    SVECTOR *a = src->pts4;
+    SVECTOR mid;
+    SVECTOR *base = src->pts4;
 
-    a += ex->btlfx_rand() % 56;
+    base += ex->btlfx_rand() % 56;
 
-    ex->btlfx_lerpVec((s16 *)a, (s16 *)(a + 1), 0x4000, (s16 *)&p);
-    fxm_drawOffsetTrail1(entry, dst, a, &p, 0x80, ex->btlfx_rand(), 0x37, 0, fade);
+    ex->btlfx_lerpVec((s16 *)base, (s16 *)(base + 1), 0x4000, (s16 *)&mid);
+    fxm_drawOffsetTrail1(entry, dst, base, &mid, 0x80, ex->btlfx_rand(), 0x37, 0, fade);
 }
 
 static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    SVECTOR p;
+    SVECTOR pos;
     SVECTOR rot;
     SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 a;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     pt = bolt->pts4;
@@ -119,11 +119,11 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     for (i = 0; i < 12 + 1; i++) {
         t = 0x1000 - (i << 12) / 12;
         t += ex->btlfx_randCentered(0x100);
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&p);
-        a = ex->btlfx_randCentered(0xA0);
-        a = (ex->math_sin(t >> 1) * a) >> 12;
-        a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = ex->btlfx_randCentered(0xA0);
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
@@ -131,52 +131,52 @@ static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVEC
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x23), 0, 0, frame, 0x1000, fade, 1, (u8 *)bolt, 0);
 }
 
-static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 bright, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
-    Fx0e31Rgbc c0;
-    Fx0e31Rgbc c1;
-    Fx0e31Rgbc c2;
+    Fx0e31Rgbc colFlat;
+    Fx0e31Rgbc colLit;
+    Fx0e31Rgbc colDark;
     MATRIX m;
-    SVECTOR vv[4];
-    s32 z;
+    SVECTOR quad[4];
+    s32 otz;
     POLY_GT4 *gt4;
     POLY_FT4 *ft4;
-    s32 k;
+    s32 seg;
     s32 j;
     s32 row;
-    s32 h;
-    s32 d;
+    s32 rowY;
+    s32 span;
     s32 y0;
     s32 y1;
-    s32 s0;
-    s32 s1;
-    s32 ra;
-    s32 rb;
-    s32 a;
+    s32 bulge0;
+    s32 bulge1;
+    s32 rad0;
+    s32 rad1;
+    s32 ang1;
     s32 ft;
-    s32 t;
+    s32 tile;
     s32 u0;
     s32 u1;
     s32 v0;
     s32 v1;
-    s32 jn;
-    s32 hd;
-    s32 q;
+    s32 nextJ;
+    s32 ratio1;
+    s32 ratio0;
 
     gte_SetRotMatrix(fx_0e3_1_env->viewMatrix);
     gte_SetTransMatrix(fx_0e3_1_env->viewMatrix);
     gte_ldv0(pos);
     gt4 = (POLY_GT4 *)fx_0e3_1_env->prim;
-    *(s32 *)&c2 = 0;
+    *(s32 *)&colDark = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
     fx_0e3_1_env->prim = (u8 *)(ft4 + 46);
-    c0.r = c0.g = c0.b = c;
-    c1.r = c1.g = c1.b = c;
-    c0.code = abr != 0xFF ? 0x2E : 0x2C;
-    c2.code = abr != 0xFF ? 0x3E : 0x3C;
+    colFlat.r = colFlat.g = colFlat.b = bright;
+    colLit.r = colLit.g = colLit.b = bright;
+    colFlat.code = abr != 0xFF ? 0x2E : 0x2C;
+    colDark.code = abr != 0xFF ? 0x3E : 0x3C;
     tpage |= (abr & 3) << 5;
-    c1.code = c2.code;
+    colLit.code = colDark.code;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
@@ -184,58 +184,58 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     ex->MulRotMatrix(&m);
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    k = 0;
-    h = 0;
+    seg = 0;
+    rowY = 0;
     w0 >>= 1;
     w1 >>= 1;
-    d = dy * 3;
-    for (row = 0; row < 3; row++, h += dy) {
-        for (j = 0; j < 16; j++, k++, ang += dang << 8) {
-            jn = (j + 1) << 8;
-            y0 = h + (((j << 8) * dy) >> 12);
-            y1 = h + ((jn * dy) >> 12);
-            /* one variable for d / 2 and the second quotient: the original recomputes d >> 1 every iteration */
-            hd = d >> 1;
-            q = ((y0 + hd) << 12) / d;
-            hd = ((y1 + hd) << 12) / d;
-            s0 = ex->math_sin(q >> 1);
-            s1 = ex->math_sin(hd >> 1);
-            ra = ex->btlfx_lerp(r0, r1, s0);
-            rb = ex->btlfx_lerp(r0, r1, s1);
-            vv[0].vx = vv[1].vx = (ex->math_cos(ang) * ra) >> 12;
-            vv[0].vy = vv[1].vy = (ex->math_sin(ang) * ra) >> 12;
-            vv[0].vz = y0 - ex->btlfx_lerp(w0, w1, s0);
-            vv[1].vz = y0 + ex->btlfx_lerp(w0, w1, s1);
-            a = ang + (dang << 8);
-            vv[2].vx = vv[3].vx = (ex->math_cos(a) * rb) >> 12;
-            vv[2].vy = vv[3].vy = (ex->math_sin(a) * rb) >> 12;
-            vv[2].vz = y1 - ex->btlfx_lerp(w0, w1, s0);
-            vv[3].vz = y1 + ex->btlfx_lerp(w0, w1, s1);
-            gte_ldv3c(vv);
+    span = dy * 3;
+    for (row = 0; row < 3; row++, rowY += dy) {
+        for (j = 0; j < 16; j++, seg++, ang += dang << 8) {
+            nextJ = (j + 1) << 8;
+            y0 = rowY + (((j << 8) * dy) >> 12);
+            y1 = rowY + ((nextJ * dy) >> 12);
+            /* one variable for span / 2 and the second ratio: the original recomputes span >> 1 every iteration */
+            ratio1 = span >> 1;
+            ratio0 = ((y0 + ratio1) << 12) / span;
+            ratio1 = ((y1 + ratio1) << 12) / span;
+            bulge0 = ex->math_sin(ratio0 >> 1);
+            bulge1 = ex->math_sin(ratio1 >> 1);
+            rad0 = ex->btlfx_lerp(r0, r1, bulge0);
+            rad1 = ex->btlfx_lerp(r0, r1, bulge1);
+            quad[0].vx = quad[1].vx = (ex->math_cos(ang) * rad0) >> 12;
+            quad[0].vy = quad[1].vy = (ex->math_sin(ang) * rad0) >> 12;
+            quad[0].vz = y0 - ex->btlfx_lerp(w0, w1, bulge0);
+            quad[1].vz = y0 + ex->btlfx_lerp(w0, w1, bulge1);
+            ang1 = ang + (dang << 8);
+            quad[2].vx = quad[3].vx = (ex->math_cos(ang1) * rad1) >> 12;
+            quad[2].vy = quad[3].vy = (ex->math_sin(ang1) * rad1) >> 12;
+            quad[2].vz = y1 - ex->btlfx_lerp(w0, w1, bulge0);
+            quad[3].vz = y1 + ex->btlfx_lerp(w0, w1, bulge1);
+            gte_ldv3c(quad);
             gte_rtpt();
-            t = k & 7;
-            u0 = u + (t << 4);
+            tile = seg & 7;
+            u0 = u + (tile << 4);
             u1 = u0 + 0x10;
-            if (t == 7) {
+            if (tile == 7) {
                 u1 = u0 + 0xF;
             }
             v0 = v;
             v1 = v0 + 0x3F;
             gte_nclip();
-            if (k == 0) {
+            if (seg == 0) {
                 ft = 0;
-                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&c2;
-                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&c1;
-            } else if (k >= 47) {
+                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colDark;
+                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colLit;
+            } else if (seg >= 47) {
                 ft = 0;
-                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&c2;
-                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&c1;
+                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colDark;
+                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colLit;
             } else {
                 ft = 1;
-                *(s32 *)&ft4->r0 = *(s32 *)&c0;
+                *(s32 *)&ft4->r0 = *(s32 *)&colFlat;
             }
-            gte_stopz(&z);
-            if (z != 0) {
+            gte_stopz(&otz);
+            if (otz != 0) {
                 if (ft) {
                     ft4->u0 = ft4->u1 = u0;
                     ft4->u2 = ft4->u3 = u1;
@@ -254,15 +254,15 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                     gte_stsxy3(&gt4->x0, &gt4->x1, &gt4->x2);
                 }
                 gte_avsz3();
-                gte_stszotz(&z);
-                gte_ldv0(&vv[3]);
+                gte_stszotz(&otz);
+                gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
-                    ex->btlfx_addPrim(0x09000000, z, ft4);
+                    ex->btlfx_addPrim(0x09000000, otz, ft4);
                     gte_stsxy(&ft4->x3);
                     ft4++;
                 } else {
-                    ex->btlfx_addPrim(0x0C000000, z, gt4);
+                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
                     gte_stsxy(&gt4->x3);
                     gt4++;
                 }
@@ -274,15 +274,15 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
 void fxm_rollTowardEye(VECTOR *pos, SVECTOR *rot) {
     Unk800F78A4 *env = fx_0e3_1_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    SVECTOR v;
-    s32 tmp;
-    s32 a;
+    SVECTOR pt;
+    s32 ignored;
+    s32 roll;
 
-    v.vx = pos->vx;
-    v.vy = pos->vy;
-    v.vz = pos->vz;
-    ex->btlfx_toLocalPolar(&env->camera->eye, &v, rot, (s32)&tmp, (s32)&tmp, &a);
-    rot->vz = -a + 0x400;
+    pt.vx = pos->vx;
+    pt.vy = pos->vy;
+    pt.vz = pos->vz;
+    ex->btlfx_toLocalPolar(&env->camera->eye, &pt, rot, (s32)&ignored, (s32)&ignored, &roll);
+    rot->vz = -roll + 0x400;
 }
 
 INCLUDE_RODATA("asm/us/fx_0e3_1/nonmatchings/fx_0e3_1", fx_0e3_1_headerPtr);

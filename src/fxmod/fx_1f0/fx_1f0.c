@@ -1,60 +1,60 @@
 #include "fxmod/fx_1f0.h"
 
 static void fxm_easeBlend4(s32 mode, s32 len, s32 t, SVECTOR *ctrl, SVECTOR *out) {
-    s32 w[4];
-    s32 k;
-    s32 s;
-    s32 r;
+    s32 weights[4];
+    s32 invSq;
+    s32 ratio;
+    s32 inv;
     s32 i;
-    s32 *wp;
+    s32 *weight;
 
-    k = 0x2000000 / (len * len);
-    s = 0;
+    invSq = 0x2000000 / (len * len);
+    ratio = 0;
     switch (mode) {
     case 0:
-        s = ((0x1000000 / len) * t) >> 16;
+        ratio = ((0x1000000 / len) * t) >> 16;
         break;
     case 1:
-        s = 0x100 - ((k * (len - t) * (len - t)) >> 17);
+        ratio = 0x100 - ((invSq * (len - t) * (len - t)) >> 17);
         break;
     case 2:
-        s = (k * t * t) >> 17;
+        ratio = (invSq * t * t) >> 17;
         break;
     }
-    r = 0x100 - s;
-    w[0] = (s * s * s) >> 12;
-    w[1] = (r * s * s * 6) >> 12;
-    w[2] = (r * r * s * 6) >> 12;
-    w[3] = (r * r * r) >> 12;
+    inv = 0x100 - ratio;
+    weights[0] = (ratio * ratio * ratio) >> 12;
+    weights[1] = (inv * ratio * ratio * 6) >> 12;
+    weights[2] = (inv * inv * ratio * 6) >> 12;
+    weights[3] = (inv * inv * inv) >> 12;
     out->vx = 0;
     out->vy = 0;
     out->vz = 0;
-    wp = w;
+    weight = weights;
     for (i = 0; i < 4; i++) {
-        out->vx += (ctrl[i].vx * *wp) >> 12;
-        out->vy += (ctrl[i].vy * *wp) >> 12;
-        out->vz += (ctrl[i].vz * *wp) >> 12;
-        wp++;
+        out->vx += (ctrl[i].vx * *weight) >> 12;
+        out->vy += (ctrl[i].vy * *weight) >> 12;
+        out->vz += (ctrl[i].vz * *weight) >> 12;
+        weight++;
     }
 }
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1f0_env);
-    s32 k = 0x20000000 / (n * n);
-    s32 r = 0;
+    s32 invSq = 0x20000000 / (n * n);
+    s32 ratio = 0;
 
     switch (curve) {
     case 0:
-        r = 0x1000 - (((0x10000000 / n) * t) >> 16);
+        ratio = 0x1000 - (((0x10000000 / n) * t) >> 16);
         break;
     case 1:
-        r = (k * (n - t) * (n - t)) >> 17;
+        ratio = (invSq * (n - t) * (n - t)) >> 17;
         break;
     case 2:
-        r = 0x1000 - ((k * t * t) >> 17);
+        ratio = 0x1000 - ((invSq * t * t) >> 17);
         break;
     }
-    return ex->btlfx_lerp(from, to, r);
+    return ex->btlfx_lerp(from, to, ratio);
 }
 
 s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {

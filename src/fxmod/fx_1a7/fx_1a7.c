@@ -36,15 +36,15 @@ s32 fx_1a7_op80ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
     return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[8], fx_1a7_op80Radii[8], frame, frames);
 }
 
-static s32 fxm_lineOrbitParticle0(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
+static s32 fxm_lineOrbitParticle0(Pool30Entry *pt, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a7_env);
 
     ex->btlfx_lerpVec((s16 *)&fx_1a7_op80MotionFrom, (s16 *)&fx_1a7_op80MotionTo, (frame << 12) / 12, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
     pos->vy += radius * ex->math_cos(angle) / 4096;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -87,15 +87,15 @@ s32 fx_1a7_op81ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
     return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[8], fx_1a7_op81Radii[8], frame, frames);
 }
 
-static s32 fxm_lineOrbitParticle1(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
+static s32 fxm_lineOrbitParticle1(Pool30Entry *pt, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a7_env);
 
     ex->btlfx_lerpVec((s16 *)&fx_1a7_op81MotionFrom, (s16 *)&fx_1a7_op81MotionTo, (frame << 12) / 12, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
     pos->vy += radius * ex->math_cos(angle) / 4096;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }

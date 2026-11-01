@@ -31,7 +31,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 extern Unk800F78A4 *fx_1fe_env;
 extern s32 fx_1fe_waveAmp;
 extern s32 fx_1fe_wavePhase;
-static void fxm_waveVertexX(s16 *v);
+static void fxm_waveVertexX(s16 *vert);
 s32 fx_1fe_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
 
 /* PsyQ gte_stszotz: SZ3 / 4 */

@@ -1,23 +1,23 @@
 #include "fxmod/fx_0f5.h"
 
-static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 c, s32 tpage, s32 clut, s32 u, s32 v,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 bright, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 dr, s32 ang, s32 dang, s32 dseg, s32 abr, s32 flicker) {
     Unk800F78A4 *env = fx_0f5_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    CVECTOR col0;
-    CVECTOR col1;
-    CVECTOR col2;
+    CVECTOR colFlat;
+    CVECTOR colLit;
+    CVECTOR colDark;
     MATRIX m;
-    SVECTOR p[4];
+    SVECTOR quad[4];
     s32 otz;
     POLY_GT4 *gt4;
     POLY_FT4 *ft4;
-    s32 ra;
-    s32 rb;
+    s32 rad0;
+    s32 rad1;
     s32 j;
-    s32 ang2;
+    s32 ang1;
     s32 rin;
-    s32 i1;
+    s32 iNext;
     s32 z1;
     s32 z0;
     s32 i;
@@ -25,14 +25,14 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     s32 rout;
     s32 cx;
     s32 cy;
-    s32 k;
-    s32 kj;
+    s32 tileV;
+    s32 tileU;
     s32 u0;
     s32 u1;
     s32 v0;
     s32 v1;
     s32 ft;
-    s32 sn;
+    s32 sinv;
 
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
@@ -41,25 +41,25 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     ft4 = (POLY_FT4 *)(gt4 + 32);
     env->prim = (u8 *)(ft4 + 96);
     if (flicker == 0) {
-        col0.r = col0.g = col0.b = c;
-        col1.r = col1.g = col1.b = c;
+        colFlat.r = colFlat.g = colFlat.b = bright;
+        colLit.r = colLit.g = colLit.b = bright;
     } else {
         fx_0f5_flickerPhase &= 0x1F;
-        ex->btlfx_sampleGradient(fx_0f5_flickerGradient, &col0, fx_0f5_flickerPhase);
-        col0.r = (col0.r * c) >> 7;
-        col0.g = (col0.g * c) >> 7;
-        col0.b = (col0.b * c) >> 7;
-        ex->btlfx_sampleGradient(fx_0f5_flickerGradient, &col1, fx_0f5_flickerPhase);
+        ex->btlfx_sampleGradient(fx_0f5_flickerGradient, &colFlat, fx_0f5_flickerPhase);
+        colFlat.r = (colFlat.r * bright) >> 7;
+        colFlat.g = (colFlat.g * bright) >> 7;
+        colFlat.b = (colFlat.b * bright) >> 7;
+        ex->btlfx_sampleGradient(fx_0f5_flickerGradient, &colLit, fx_0f5_flickerPhase);
         fx_0f5_flickerPhase++;
-        col1.r = (col1.r * c) >> 7;
-        col1.g = (col1.g * c) >> 7;
-        col1.b = (col1.b * c) >> 7;
+        colLit.r = (colLit.r * bright) >> 7;
+        colLit.g = (colLit.g * bright) >> 7;
+        colLit.b = (colLit.b * bright) >> 7;
     }
-    *(s32 *)&col2 = 0;
-    col0.cd = abr != 0xFF ? 0x2E : 0x2C;
-    col2.cd = abr != 0xFF ? 0x3E : 0x3C;
+    *(s32 *)&colDark = 0;
+    colFlat.cd = abr != 0xFF ? 0x2E : 0x2C;
+    colDark.cd = abr != 0xFF ? 0x3E : 0x3C;
     tpage |= (abr & 3) << 5;
-    col1.cd = col2.cd;
+    colLit.cd = colDark.cd;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
@@ -71,67 +71,67 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     i = 0;
     rout = dr;
     rin = 0;
-    i1 = 1;
+    iNext = 1;
     z1 = 0x90;
     z0 = 0;
-    for (; i < 8; i++, rin += dr, rout += dr, i1++, z1 += 0x90, z0 += 0x90) {
+    for (; i < 8; i++, rin += dr, rout += dr, iNext++, z1 += 0x90, z0 += 0x90) {
         seg += dseg;
         ang += dang;
-        ra = ex->btlfx_lerp(r0, r1, i << 9);
-        rb = ex->btlfx_lerp(r0, r1, i1 << 9);
-        ang2 = ang + dang;
+        rad0 = ex->btlfx_lerp(r0, r1, i << 9);
+        rad1 = ex->btlfx_lerp(r0, r1, iNext << 9);
+        ang1 = ang + dang;
         for (j = 0; j < 16; j++) {
             seg += dseg;
-            cx = (ex->math_cos(ang2) * (rout / 8)) >> 12;
-            sn = ex->math_sin(ang2);
+            cx = (ex->math_cos(ang1) * (rout / 8)) >> 12;
+            sinv = ex->math_sin(ang1);
             /* The loop notes stop cse1 from reusing the division above; cse2 merges the second one later, which
              * leaves the original's dead reload of rin in the inner ring below. */
             do {
             } while (0);
-            cy = (sn * (rout / 8)) >> 12;
-            p[0].vx = cx + ((ex->math_cos(seg) * rb) >> 12);
-            p[0].vy = cy + ((ex->math_sin(seg) * rb) >> 12);
-            p[1].vx = cx + ((ex->math_cos(seg + 0x100) * rb) >> 12);
-            p[1].vy = cy + ((ex->math_sin(seg + 0x100) * rb) >> 12);
-            p[0].vz = p[1].vz = z1;
+            cy = (sinv * (rout / 8)) >> 12;
+            quad[0].vx = cx + ((ex->math_cos(seg) * rad1) >> 12);
+            quad[0].vy = cy + ((ex->math_sin(seg) * rad1) >> 12);
+            quad[1].vx = cx + ((ex->math_cos(seg + 0x100) * rad1) >> 12);
+            quad[1].vy = cy + ((ex->math_sin(seg + 0x100) * rad1) >> 12);
+            quad[0].vz = quad[1].vz = z1;
             seg -= dseg;
             cx = (ex->math_cos(ang) * (rin / 8)) >> 12;
-            sn = ex->math_sin(ang);
+            sinv = ex->math_sin(ang);
             do {
             } while (0);
-            cy = (sn * (rin / 8)) >> 12;
-            p[2].vx = cx + ((ex->math_cos(seg) * ra) >> 12);
-            p[2].vy = cy + ((ex->math_sin(seg) * ra) >> 12);
-            p[3].vx = cx + ((ex->math_cos(seg + 0x100) * ra) >> 12);
-            p[3].vy = cy + ((ex->math_sin(seg + 0x100) * ra) >> 12);
-            p[2].vz = p[3].vz = z0;
-            gte_ldv3c(p);
+            cy = (sinv * (rin / 8)) >> 12;
+            quad[2].vx = cx + ((ex->math_cos(seg) * rad0) >> 12);
+            quad[2].vy = cy + ((ex->math_sin(seg) * rad0) >> 12);
+            quad[3].vx = cx + ((ex->math_cos(seg + 0x100) * rad0) >> 12);
+            quad[3].vy = cy + ((ex->math_sin(seg + 0x100) * rad0) >> 12);
+            quad[2].vz = quad[3].vz = z0;
+            gte_ldv3c(quad);
             gte_rtpt();
-            k = i & 3;
-            kj = j & 3;
-            u0 = u + (kj << 5);
-            v0 = v + (k << 5);
+            tileV = i & 3;
+            tileU = j & 3;
+            u0 = u + (tileU << 5);
+            v0 = v + (tileV << 5);
             u1 = u0 + 0x20;
-            if (kj == 3) {
+            if (tileU == 3) {
                 u1 = u0 + 0x1F;
             }
             v1 = v0 + 0x20;
-            if (k == 3) {
+            if (tileV == 3) {
                 v1 = v0 + 0x1F;
             }
             gte_nclip();
             if (i == 0) {
-                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&col1;
+                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colLit;
                 ft = 0;
-                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&col2;
+                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colDark;
             } else {
                 ft = 1;
                 if (i >= 7) {
-                    *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&col1;
+                    *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colLit;
                     ft = 0;
-                    *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&col2;
+                    *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colDark;
                 } else {
-                    *(s32 *)&ft4->r0 = *(s32 *)&col0;
+                    *(s32 *)&ft4->r0 = *(s32 *)&colFlat;
                 }
             }
             gte_stopz(&otz);
@@ -155,7 +155,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 }
                 gte_avsz3();
                 gte_stszotz(&otz);
-                gte_ldv0(&p[3]);
+                gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
                     ex->btlfx_addPrim(0x09000000, otz, ft4);
@@ -173,7 +173,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     /* Dead test, removed after reload: one more reference ranks rout between i and rin in global-alloc (rout
      * gets $fp, rin is spilled). */
     if (rout != 0) {
-        k = 0;
+        tileV = 0;
     }
 }
 

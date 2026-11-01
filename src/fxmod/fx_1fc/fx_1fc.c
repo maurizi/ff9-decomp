@@ -302,12 +302,12 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static s32 fxm_offsetTableEntry(u8 *base, u16 i) {
-    return (s32)base + ((s32 *)base)[(u16)i + 1];
+static s32 fxm_offsetTableEntry(u8 *base, u16 idx) {
+    return (s32)base + ((s32 *)base)[(u16)idx + 1];
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_1fc_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_1fc_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -323,17 +323,17 @@ static void fxm_posPathInit(Fx1fcPath *path, u16 *data) {
 static s32 fxm_posPathGet(Fx1fcPath *path, s32 t, SVECTOR *out) {
     s32 last = path->count2 - 1;
     s32 done = 1;
-    Fx1fcPoint *p;
+    Fx1fcPoint *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    p = &path->keys4[t];
-    out->vx = p->x;
-    out->vy = p->y;
-    out->vz = p->z;
+    key = &path->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
@@ -343,27 +343,27 @@ static void fxm_rotPosPathInit(Fx1fcPath *path, u16 *data) {
     path->keys4 = (Fx1fcPoint *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx1fcPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx1fcKey *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx1fcPath_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx1fcKey *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }
 
 static void fxm_valuePathInit(Fx1fcPath *path, u16 *data) {
@@ -372,16 +372,16 @@ static void fxm_valuePathInit(Fx1fcPath *path, u16 *data) {
     path->keys4 = (Fx1fcPoint *)data;
 }
 
-static s32 fxm_valuePathGet(Fx1fcKeys *keys, s32 i, s32 *out) {
-    s32 r = 1;
+static s32 fxm_valuePathGet(Fx1fcKeys *keys, s32 t, s32 *out) {
+    s32 done = 1;
 
-    if (i > keys->count2 - 1) {
-        i = keys->count2 - 1;
+    if (t > keys->count2 - 1) {
+        t = keys->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    *out = *(s16 *)((u8 *)keys->keys4 + (i << 1));
-    return r;
+    *out = *(s16 *)((u8 *)keys->keys4 + (t << 1));
+    return done;
 }
 
 static void fxm_vecPathInit(Fx1fcPath *path, u16 *data) {
@@ -393,43 +393,43 @@ static void fxm_vecPathInit(Fx1fcPath *path, u16 *data) {
 static s32 fxm_vecPathGet(Fx1fcTrack6 *track, s32 t, VECTOR *out) {
     s32 last = track->count2 - 1;
     s32 done = 1;
-    Fx1fcKey6 *k;
+    Fx1fcKey6 *key;
 
     if (last < t) {
         t = last;
     } else {
         done = 0;
     }
-    k = &track->keys4[t];
-    out->vx = k->x;
-    out->vy = k->y;
-    out->vz = k->z;
+    key = &track->keys4[t];
+    out->vx = key->x;
+    out->vy = key->y;
+    out->vz = key->z;
     return done;
 }
 
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot) {
-    s32 c = (from * (n - t) + to * t) / n;
+    s32 bright = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(fx_1fc_env)->btlfx_drawScreenTint((u32 *)(fx_1fc_env->ot + ot), abr, c, c, c);
+    BTLFX_EXPORTS(fx_1fc_env)->btlfx_drawScreenTint((u32 *)(fx_1fc_env->ot + ot), abr, bright, bright, bright);
 }
 
-static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b) {
+static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1fc_env);
-    SVECTOR a;
+    SVECTOR home;
     SVECTOR out;
 
-    ex->btlfx_getUnitHomePos(a0, (s16 *)&a);
-    fxm_lerpSvec(b, &a, (t << 12) / n, &out);
-    ex->btlfx_setUnitPos(a0, (s16 *)&out);
+    ex->btlfx_getUnitHomePos(unit, (s16 *)&home);
+    fxm_lerpSvec(start, &home, (t << 12) / n, &out);
+    ex->btlfx_setUnitPos(unit, (s16 *)&out);
     return t >= n;
 }
 
 static void fxm_camChanReset(void) {
     s32 i;
-    s32 m = FX_1FC_KEY_FREE;
+    s32 freeMark = FX_1FC_KEY_FREE;
 
     for (i = 63; i >= 0; i--) {
-        fx_1fc_camKeys[i].timer6 = m;
+        fx_1fc_camKeys[i].timer6 = freeMark;
     }
     for (i = 3; i >= 0; i--) {
         fx_1fc_camChanFrames[i] = 0;
@@ -438,10 +438,10 @@ static void fxm_camChanReset(void) {
 
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     s32 i;
-    s32 c;
+    s32 count;
 
     data++;
-    c = *data;
+    count = *data;
     for (i = 0; i < 64; i++) {
         if (fx_1fc_camKeys[i].timer6 == FX_1FC_KEY_FREE) {
             fx_1fc_camKeys[i].timer6 = 0;
@@ -449,7 +449,7 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
             fx_1fc_camKeys[i].startFrame4 = start;
             fx_1fc_camKeys[i].slotsA = dst;
             fx_1fc_camKeys[i].indexC = 0;
-            fx_1fc_camKeys[i].countE = c;
+            fx_1fc_camKeys[i].countE = count;
             fx_1fc_camKeys[i].channel8 = ch;
             return;
         }
@@ -460,7 +460,7 @@ static void fxm_camChanUpdate(s32 ch) {
     Unk800F78A4 *env = fx_1fc_env;
     s32 i;
     s32 k;
-    s32 d;
+    s32 dstSlot;
 
     for (i = 0; i < 64; i++) {
         if (fx_1fc_camKeys[i].channel8 == ch) {
@@ -471,11 +471,11 @@ static void fxm_camChanUpdate(s32 ch) {
             if (fx_1fc_camKeys[i].timer6 > 0) {
                 fx_1fc_camKeys[i].timer6--;
                 for (k = 0; k < 3; k++) {
-                    d = ((fx_1fc_camKeys[i].slotsA >> (k * 4)) & 0xF) - 1;
-                    if (d >= 0) {
-                        ((SVECTOR *)env->camera)[d].vx = fx_1fc_camKeys[i].keys0[0];
-                        ((SVECTOR *)env->camera)[d].vy = fx_1fc_camKeys[i].keys0[1];
-                        ((SVECTOR *)env->camera)[d].vz = fx_1fc_camKeys[i].keys0[2];
+                    dstSlot = ((fx_1fc_camKeys[i].slotsA >> (k * 4)) & 0xF) - 1;
+                    if (dstSlot >= 0) {
+                        ((SVECTOR *)env->camera)[dstSlot].vx = fx_1fc_camKeys[i].keys0[0];
+                        ((SVECTOR *)env->camera)[dstSlot].vy = fx_1fc_camKeys[i].keys0[1];
+                        ((SVECTOR *)env->camera)[dstSlot].vz = fx_1fc_camKeys[i].keys0[2];
                         if (fx_1fc_camKeys[i].indexC < fx_1fc_camKeys[i].countE) {
                             fx_1fc_camKeys[i].keys0 += 3;
                             fx_1fc_camKeys[i].indexC++;

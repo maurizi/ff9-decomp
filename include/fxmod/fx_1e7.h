@@ -48,7 +48,7 @@ extern SVECTOR fx_1e7_op80PathRot; /* angles */
 extern SVECTOR fx_1e7_emitPos0;
 extern SVECTOR fx_1e7_emitPos1[5];
 
-static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames);
+static s32 fxm_followPathParticle(Pool30Entry *pt, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames);
 void fx_1e7_getSpawnPos(SVECTOR *out, Fx1e7Path *path, s32 t);
 static void fxm_posPathInit(Fx1e7Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx1e7Path *path, s32 t, SVECTOR *out);

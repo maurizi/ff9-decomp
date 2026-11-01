@@ -1,49 +1,49 @@
 #include "fxmod/fx_07d.h"
 
-static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *)) {
     DVECTOR pts[2][18];
-    DVECTOR a;
-    DVECTOR b;
-    DVECTOR c;
-    DVECTOR d;
-    DVECTOR e;
-    DVECTOR f;
-    DVECTOR g;
-    DVECTOR h;
-    CVECTOR c0;
-    CVECTOR c1;
+    DVECTOR inPos;
+    DVECTOR outPos;
+    DVECTOR inPrev;
+    DVECTOR outPrev;
+    DVECTOR inUv;
+    DVECTOR outUv;
+    DVECTOR inUvPrev;
+    DVECTOR outUvPrev;
+    CVECTOR colIn;
+    CVECTOR colOut;
     Unk800F78A4 *env = fx_07d_env;
     u32 *move = NULL;
     s32 step;
     s32 cx;
     s32 cy;
-    s32 tp0;
-    s32 tp1;
-    s32 flag = 0;
+    s32 tpLo;
+    s32 tpHi;
+    s32 hiPage = 0;
     BtlfxExports *ex;
     POLY_GT4 *prim;
-    s32 t;
+    s32 level;
     s32 ang;
-    s32 k;
-    DVECTOR *p;
-    s32 r;
+    s32 vyOff;
+    DVECTOR *uvRing;
+    s32 radius;
     s32 i;
     s32 j;
     s32 sx;
     s32 sy;
 
     prim = (POLY_GT4 *)env->prim;
-    env->prim = (u8 *)(prim + n * m);
-    t = 0xFF;
+    env->prim = (u8 *)(prim + segs * rings);
+    level = 0xFF;
     ex = BTLFX_EXPORTS(env);
     if (src == NULL) {
-        t = 1;
+        level = 1;
     }
-    c0.cd = t != 0xFF ? 0x3E : 0x3C;
+    colIn.cd = level != 0xFF ? 0x3E : 0x3C;
     if (src != NULL) {
-        tp0 = getTPage(2, 0, src->x, src->y);
-        tp1 = getTPage(2, 0, src->x + 0x80, src->y);
+        tpLo = getTPage(2, 0, src->x, src->y);
+        tpHi = getTPage(2, 0, src->x + 0x80, src->y);
         sx = src->x;
         sy = src->y;
         src->x = env->drawEnv->clip.x + (x - (src->w >> 1));
@@ -56,102 +56,102 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     } else {
         cx = x;
         cy = y;
-        tp0 = getTPage(2, 1, env->dispEnv->disp.x, env->dispEnv->disp.y);
-        tp1 = getTPage(2, 1, env->dispEnv->disp.x + 0x80, env->dispEnv->disp.y);
+        tpLo = getTPage(2, 1, env->dispEnv->disp.x, env->dispEnv->disp.y);
+        tpHi = getTPage(2, 1, env->dispEnv->disp.x + 0x80, env->dispEnv->disp.y);
     }
-    p = pts[1];
-    tp0 <<= 16;
-    tp1 <<= 16;
+    uvRing = pts[1];
+    tpLo <<= 16;
+    tpHi <<= 16;
     for (i = 0; i < 17; i++) {
         *(s32 *)&pts[0][i] = 0;
-        p[i].vx = cx;
-        k = i * 4 + 2;
-        *(s16 *)((u8 *)p + k) = cy;
+        uvRing[i].vx = cx;
+        vyOff = i * 4 + 2;
+        *(s16 *)((u8 *)uvRing + vyOff) = cy;
     }
-    step = 0x1000 / n;
-    r = 0;
-    for (j = 1; j <= m; j++) {
-        t = ex->btlfx_lerpRatio(from, to, j - 1, m);
+    step = 0x1000 / segs;
+    radius = 0;
+    for (j = 1; j <= rings; j++) {
+        level = ex->btlfx_lerpRatio(from, to, j - 1, rings);
         i = 0;
         ang = 0;
-        c0.r = c0.g = c0.b = t;
-        t = ex->btlfx_lerpRatio(from, to, j, m);
-        c1.r = c1.g = c1.b = t;
-        r += dr;
-        for (; i <= n; i++, ang += step) {
-            *(s32 *)&a = *(s32 *)&pts[0][i];
-            *(s32 *)&e = *(s32 *)&pts[1][i];
-            if (i < n) {
-                b.vx = (ex->math_cos(ang) * r) >> 12;
-                b.vy = (ex->math_sin(ang) * r) >> 12;
-                f.vx = b.vx + cx;
-                f.vy = b.vy + cy;
+        colIn.r = colIn.g = colIn.b = level;
+        level = ex->btlfx_lerpRatio(from, to, j, rings);
+        colOut.r = colOut.g = colOut.b = level;
+        radius += dr;
+        for (; i <= segs; i++, ang += step) {
+            *(s32 *)&inPos = *(s32 *)&pts[0][i];
+            *(s32 *)&inUv = *(s32 *)&pts[1][i];
+            if (i < segs) {
+                outPos.vx = (ex->math_cos(ang) * radius) >> 12;
+                outPos.vy = (ex->math_sin(ang) * radius) >> 12;
+                outUv.vx = outPos.vx + cx;
+                outUv.vy = outPos.vy + cy;
             } else {
-                *(s32 *)&b = *(s32 *)&pts[0][0];
-                *(s32 *)&f = *(s32 *)&pts[1][0];
+                *(s32 *)&outPos = *(s32 *)&pts[0][0];
+                *(s32 *)&outUv = *(s32 *)&pts[1][0];
             }
-            if (f.vx < 0) {
-                f.vx = 0;
+            if (outUv.vx < 0) {
+                outUv.vx = 0;
             }
-            if (f.vx >= 0x140) {
-                f.vx = 0x13F;
+            if (outUv.vx >= 0x140) {
+                outUv.vx = 0x13F;
             }
-            if (f.vy < 0) {
-                f.vy = 0;
+            if (outUv.vy < 0) {
+                outUv.vy = 0;
             }
-            if (f.vy >= 0xF0) {
-                f.vy = 0xEF;
+            if (outUv.vy >= 0xF0) {
+                outUv.vy = 0xEF;
             }
-            *(s32 *)&pts[1][i] = *(s32 *)&f;
+            *(s32 *)&pts[1][i] = *(s32 *)&outUv;
             if (i != 0) {
-                if (e.vx < 0x100 && f.vx < 0x100 && g.vx < 0x100 && h.vx < 0x100) {
-                    t = tp0;
-                    flag = 0;
+                if (inUv.vx < 0x100 && outUv.vx < 0x100 && inUvPrev.vx < 0x100 && outUvPrev.vx < 0x100) {
+                    level = tpLo;
+                    hiPage = 0;
                 } else {
-                    t = tp1;
-                    flag = 1;
-                    e.vx -= 0x80;
-                    f.vx -= 0x80;
-                    g.vx -= 0x80;
-                    h.vx -= 0x80;
+                    level = tpHi;
+                    hiPage = 1;
+                    inUv.vx -= 0x80;
+                    outUv.vx -= 0x80;
+                    inUvPrev.vx -= 0x80;
+                    outUvPrev.vx -= 0x80;
                 }
             }
-            if (i < n && fn != NULL) {
-                fn(r, j, ang, i, &b);
+            if (i < segs && fn != NULL) {
+                fn(radius, j, ang, i, &outPos);
             }
-            *(s32 *)&pts[0][i] = *(s32 *)&b;
-            a.vx += x;
-            a.vy += y;
-            b.vx += x;
-            b.vy += y;
+            *(s32 *)&pts[0][i] = *(s32 *)&outPos;
+            inPos.vx += x;
+            inPos.vy += y;
+            outPos.vx += x;
+            outPos.vy += y;
             if (i != 0) {
-                *(s32 *)&prim->u0 = e.vx | (e.vy << 8);
-                *(s32 *)&prim->u1 = f.vx | (f.vy << 8) | t;
-                *(s32 *)&prim->u2 = g.vx | (g.vy << 8);
-                *(s32 *)&prim->u3 = h.vx | (h.vy << 8);
-                *(s32 *)&prim->r2 = *(s32 *)&c0;
-                *(s32 *)&prim->r0 = *(s32 *)&c0;
-                *(s32 *)&prim->r3 = *(s32 *)&c1;
-                *(s32 *)&prim->r1 = *(s32 *)&c1;
-                *(s32 *)&prim->x0 = *(s32 *)&a;
-                *(s32 *)&prim->x1 = *(s32 *)&b;
-                *(s32 *)&prim->x2 = *(s32 *)&c;
-                *(s32 *)&prim->x3 = *(s32 *)&d;
+                *(s32 *)&prim->u0 = inUv.vx | (inUv.vy << 8);
+                *(s32 *)&prim->u1 = outUv.vx | (outUv.vy << 8) | level;
+                *(s32 *)&prim->u2 = inUvPrev.vx | (inUvPrev.vy << 8);
+                *(s32 *)&prim->u3 = outUvPrev.vx | (outUvPrev.vy << 8);
+                *(s32 *)&prim->r2 = *(s32 *)&colIn;
+                *(s32 *)&prim->r0 = *(s32 *)&colIn;
+                *(s32 *)&prim->r3 = *(s32 *)&colOut;
+                *(s32 *)&prim->r1 = *(s32 *)&colOut;
+                *(s32 *)&prim->x0 = *(s32 *)&inPos;
+                *(s32 *)&prim->x1 = *(s32 *)&outPos;
+                *(s32 *)&prim->x2 = *(s32 *)&inPrev;
+                *(s32 *)&prim->x3 = *(s32 *)&outPrev;
                 if (ot < 0x1000) {
                     addPrimLenIn(&env->ot[ot], prim, 0xC000000);
                 }
                 prim++;
             }
-            if (flag) {
-                e.vx += 0x80;
-                f.vx += 0x80;
-                g.vx += 0x80;
-                h.vx += 0x80;
+            if (hiPage) {
+                inUv.vx += 0x80;
+                outUv.vx += 0x80;
+                inUvPrev.vx += 0x80;
+                outUvPrev.vx += 0x80;
             }
-            *(s32 *)&c = *(s32 *)&a;
-            *(s32 *)&d = *(s32 *)&b;
-            *(s32 *)&g = *(s32 *)&e;
-            *(s32 *)&h = *(s32 *)&f;
+            *(s32 *)&inPrev = *(s32 *)&inPos;
+            *(s32 *)&outPrev = *(s32 *)&outPos;
+            *(s32 *)&inUvPrev = *(s32 *)&inUv;
+            *(s32 *)&outUvPrev = *(s32 *)&outUv;
         }
     }
     if (src != NULL && ot < 0x1000) {
@@ -168,26 +168,26 @@ static void fx_07d_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s
     fx_07d_sparkPosIdx = (fx_07d_sparkPosIdx + 1) % 24;
 }
 
-static void fxm_twistVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
+static void fxm_twistVertex(s32 radius, s32 unused1, s32 ang, s32 unused2, s16 *out) {
     BtlfxExports *ex;
     s32 t;
     s32 x;
     s32 y;
 
-    t = ((0x6C - r) << 12) / 108;
+    t = ((0x6C - radius) << 12) / 108;
     t = (t * fx_07d_twist) >> 12;
-    r = (r * 9) >> 3;
+    radius = (radius * 9) >> 3;
     ex = BTLFX_EXPORTS(fx_07d_env);
-    a += 0x9B;
-    a += t;
-    x = (ex->math_cos(a) * r) >> 12;
-    y = (ex->math_sin(a) * r) >> 12;
+    ang += 0x9B;
+    ang += t;
+    x = (ex->math_cos(ang) * radius) >> 12;
+    y = (ex->math_sin(ang) * radius) >> 12;
     out[0] = x;
     out[1] = y;
 }
 
-static void fxm_anglesFromEye(s16 *a, s16 *b) {
-    BTLFX_EXPORTS(fx_07d_env)->btlfx_aimAngles((s16 *)&fx_07d_env->camera->eye, a, b);
+static void fxm_anglesFromEye(s16 *target, s16 *outAng) {
+    BTLFX_EXPORTS(fx_07d_env)->btlfx_aimAngles((s16 *)&fx_07d_env->camera->eye, target, outAng);
 }
 
 static s32 fx_07d_op80PoolTask(s32 mode, Fx07dOrb *orb, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 pool, Fx07dWork80 *work) {
@@ -603,35 +603,35 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx07dStrip *buf, s32 *tab, SVECTOR *from, SVECTOR *to, s32 r0, s32 r1, s32 s,
-                   s32 step, s32 a9, s32 a10, s32 pad) {
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx07dStrip *trail, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+                   s32 dang, s32 frame, s32 fade, s32 lineWidth) {
     Unk800F78A4 *env = fx_07d_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
-    SVECTOR ang;
+    SVECTOR rot;
     s32 i;
     s32 t;
-    s32 h;
-    SVECTOR *v;
+    s32 offset;
+    SVECTOR *pt;
 
-    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    v = buf->pts4;
-    buf->lastSlot0 = buf->count2 = 14;
-    buf->head1 = 0;
+    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
+    pt = trail->pts4;
+    trail->lastSlot0 = trail->count2 = 14;
+    trail->head1 = 0;
     for (i = 0; i < 15; i++) {
         t = 0x1000 - (i << 12) / 14;
-        t += *tab++;
+        t += *jitter++;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
-        h = *tab++;
-        h = (ex->math_sin(t >> 1) * h) >> 12;
-        h += ex->btlfx_lerp(r0, r1, t);
-        ex->btlfx_offsetPoint(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
-        v->pad = pad;
-        s += step + *tab++;
-        v++;
+        offset = *jitter++;
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
+        pt->pad = lineWidth;
+        ang += dang + *jitter++;
+        pt++;
     }
     env->otZ = 0x200;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, NULL, a9, 0x1000, a10 * 2 / 3, 2, (u8 *)buf, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, NULL, frame, 0x1000, fade * 2 / 3, 2, (u8 *)trail, 0);
     env->otZ = 0;
 }
 

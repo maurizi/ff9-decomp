@@ -1,31 +1,31 @@
 #include "fxmod/fx_0d8.h"
 
-static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
+static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0d8_env);
-    SVECTOR v;
-    SVECTOR ang;
-    SVECTOR *p;
+    SVECTOR pos;
+    SVECTOR rot;
+    SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 s;
+    s32 offset;
 
-    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    p = strip->pts4;
+    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
+    pt = strip->pts4;
     strip->count2 = 0xF;
     strip->lastSlot0 = 0xF;
     strip->head1 = 0;
     for (i = 0; i < 16; i++) {
         t = 0x1000 - (i << 12) / 15;
         t += *tbl++;
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&v);
-        s = *tbl++;
-        s = (ex->math_sin(t >> 1) * s) >> 12;
-        s += ex->btlfx_lerp(from1, to1, t);
-        ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
-        p->pad = lineWidth;
-        width += dwidth + *tbl++;
-        p++;
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = *tbl++;
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
+        pt->pad = lineWidth;
+        ang += dang + *tbl++;
+        pt++;
     }
     if (kind < FX_0D8_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d8_strip16Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
@@ -37,32 +37,32 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d8Strip *strip, s3
 }
 
 static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
-                   s32 width, s32 dwidth, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
+                   s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0d8_env);
-    SVECTOR v;
-    SVECTOR ang;
-    SVECTOR *p;
+    SVECTOR pos;
+    SVECTOR rot;
+    SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 s;
+    s32 offset;
 
-    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
-    p = strip->pts4;
+    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
+    pt = strip->pts4;
     strip->count2 = 3;
     strip->lastSlot0 = 3;
     strip->head1 = 0;
     for (i = 0; i < 4; i++) {
         t = 0x1000 - (i << 12) / 3;
         t += *tbl++ / 2;
-        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&v);
-        s = *tbl++ / 2;
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        offset = *tbl++ / 2;
         t >>= 1;
-        s = (ex->math_sin(t) * s) >> 12;
-        s += (ex->math_sin(t) * amp) >> 12;
-        ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
-        p->pad = lineWidth;
-        width += dwidth + *tbl++ / 2;
-        p++;
+        offset = (ex->math_sin(t) * offset) >> 12;
+        offset += (ex->math_sin(t) * amp) >> 12;
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
+        pt->pad = lineWidth;
+        ang += dang + *tbl++ / 2;
+        pt++;
     }
     if (kind < FX_0D8_STRIP_FLAT) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_0d8_strip4Blocks[kind]), 0, NULL, frame, 0x1000, fade, 1,
@@ -73,16 +73,16 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32
     }
 }
 
-static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, s32 *tbl, s32 i, s32 fade, s32 lineWidth,
+static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, s32 *tbl, s32 branchAt, s32 fade, s32 lineWidth,
                    s32 kind) {
     BtlfxExports *ex;
-    SVECTOR *p = strip->pts4;
-    SVECTOR v;
+    SVECTOR *base = strip->pts4;
+    SVECTOR mid;
 
-    p += i;
+    base += branchAt;
     ex = BTLFX_EXPORTS(fx_0d8_env);
-    ex->btlfx_lerpVec((s16 *)p, (s16 *)(p + 1), 0x4000, (s16 *)&v);
-    fxm_drawJaggedStrip4(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x37, 0, fade, lineWidth, kind);
+    ex->btlfx_lerpVec((s16 *)base, (s16 *)(base + 1), 0x4000, (s16 *)&mid);
+    fxm_drawJaggedStrip4(entry, out, tbl, base, &mid, 0x80, ex->btlfx_rand(), 0x37, 0, fade, lineWidth, kind);
 }
 
 static void fx_0d8_op83ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *alpha, s32 blend,

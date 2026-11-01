@@ -8,7 +8,7 @@ static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTO
     return fxm_wobbleParticle(e, pos, &fx_193_op80From1, &fx_193_op80To1, 0x320, frame, frames);
 }
 
-static s32 fxm_wobbleParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 amp, s32 frame, s32 frames) {
+static s32 fxm_wobbleParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 amp, s32 frame, s32 frames) {
     s32 t = (frame << 12) / 7;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_193_env);
 
@@ -20,9 +20,9 @@ static s32 fxm_wobbleParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECT
         amp /= 2;
     }
     pos->vx += amp * ex->math_sin(t) / 4096;
-    e->pos.vx = pos->vx << 12;
-    e->pos.vy = pos->vy << 12;
-    e->pos.vz = pos->vz << 12;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }

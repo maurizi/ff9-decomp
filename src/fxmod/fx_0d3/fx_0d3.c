@@ -6,27 +6,27 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     RECT rect;
     VECTOR sv;
     SVECTOR zero;
-    SVECTOR v[4];
-    CVECTOR c1;
-    CVECTOR c3;
-    CVECTOR c0;
-    CVECTOR c2;
+    SVECTOR quad[4];
+    CVECTOR colTR;
+    CVECTOR colBR;
+    CVECTOR colTL;
+    CVECTOR colBL;
     MATRIX m;
-    s32 z;
-    s32 flag;
+    s32 otz;
+    s32 nclip;
     DR_TPAGE *tpage;
     s32 code;
     BtlfxExports *ex;
     POLY_G4 *prim;
     u16 *row;
-    u16 *p;
+    u16 *src;
     s32 i;
     s32 j;
     s32 px;
     s32 py;
-    s32 hh;
-    s32 x0;
-    s32 col;
+    s32 rows;
+    s32 left;
+    s32 texel;
 
     *(s32 *)&zero.vx = 0;
     *(s32 *)&zero.vz = 0;
@@ -34,9 +34,9 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     if (skip == 0) {
         /* The nesting only weights w's references for global-alloc (w gets s4 ahead of py and prim). */
         do { do { do { w++; } while (0); } while (0); } while (0);
-        hh = h + 1;
+        rows = h + 1;
         prim = (POLY_G4 *)env->prim;
-        env->prim = (u8 *)(prim + w * hh);
+        env->prim = (u8 *)(prim + w * rows);
         tpage = ex->btlfx_allocDrMode(0, abr);
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
@@ -56,125 +56,125 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
         if (abr != 0xFF) {
             code = 0x3A;
         }
-        gte_stszotz(&z);
+        gte_stszotz(&otz);
         if (rot->pad != 0) {
             ex->MulRotMatrix(&m);
         }
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);
-        x0 = -(w * size) >> 1;
-        h = hh;
+        left = -(w * size) >> 1;
+        h = rows;
         py = -(h * size) >> 1;
         row = colors - (u32)(w - 1);
         bright <<= 2;
         gte_ldVZ012_0();
         for (j = 0; j < h; j++, py += size, row += (u32)(w - 1)) {
-            px = x0;
-            p = row;
-            *(s32 *)&c0 = 0;
-            *(s32 *)&c2 = 0;
-            for (i = 0; i < w; i++, prim++, px += size, p++) {
-                v[0].vx = v[2].vx = px;
-                v[0].vy = v[1].vy = py;
-                v[1].vx = v[3].vx = px + size;
-                v[2].vy = v[3].vy = py + size;
+            px = left;
+            src = row;
+            *(s32 *)&colTL = 0;
+            *(s32 *)&colBL = 0;
+            for (i = 0; i < w; i++, prim++, px += size, src++) {
+                quad[0].vx = quad[2].vx = px;
+                quad[0].vy = quad[1].vy = py;
+                quad[1].vx = quad[3].vx = px + size;
+                quad[2].vy = quad[3].vy = py + size;
                 if (i >= w - 1) {
-                    *(s32 *)&c1 = 0;
-                    *(s32 *)&c3 = 0;
+                    *(s32 *)&colTR = 0;
+                    *(s32 *)&colBR = 0;
                 } else {
                     if (j == 0) {
-                        *(s32 *)&c1 = 0;
+                        *(s32 *)&colTR = 0;
                     } else {
-                        col = p[0];
-                        c1.r = ((col & 0x1F) * (bright << 2)) >> 12;
-                        c1.g = (((col >> 5) & 0x1F) * (bright << 2)) >> 12;
-                        c1.b = (((col >> 10) & 0x1F) * (bright << 2)) >> 12;
+                        texel = src[0];
+                        colTR.r = ((texel & 0x1F) * (bright << 2)) >> 12;
+                        colTR.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        colTR.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
                     }
                     if (j >= h - 1) {
-                        *(s32 *)&c3 = 0;
+                        *(s32 *)&colBR = 0;
                     } else {
-                        col = p[w - 1];
-                        c3.r = ((col & 0x1F) * (bright << 2)) >> 12;
-                        c3.g = (((col >> 5) & 0x1F) * (bright << 2)) >> 12;
-                        c3.b = (((col >> 10) & 0x1F) * (bright << 2)) >> 12;
+                        texel = src[w - 1];
+                        colBR.r = ((texel & 0x1F) * (bright << 2)) >> 12;
+                        colBR.g = (((texel >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        colBR.b = (((texel >> 10) & 0x1F) * (bright << 2)) >> 12;
                     }
                 }
-                gte_ldv3xy(&v[0], &v[1], &v[2]);
-                c0.cd = code;
-                *(s32 *)&prim->r0 = *(s32 *)&c0;
+                gte_ldv3xy(&quad[0], &quad[1], &quad[2]);
+                colTL.cd = code;
+                *(s32 *)&prim->r0 = *(s32 *)&colTL;
                 gte_rtpt_b();
-                *(s32 *)&prim->r1 = *(s32 *)&c1;
-                *(s32 *)&prim->r2 = *(s32 *)&c2;
+                *(s32 *)&prim->r1 = *(s32 *)&colTR;
+                *(s32 *)&prim->r2 = *(s32 *)&colBL;
                 gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
-                gte_stopz(&flag);
-                gte_ldv0xy(&v[3]);
-                *(s32 *)&prim->r3 = *(s32 *)&c3;
+                gte_stopz(&nclip);
+                gte_ldv0xy(&quad[3]);
+                *(s32 *)&prim->r3 = *(s32 *)&colBR;
                 gte_rtps_b();
-                *(s32 *)&c2 = *(s32 *)&c3;
-                *(s32 *)&c0 = *(s32 *)&c1;
+                *(s32 *)&colBL = *(s32 *)&colBR;
+                *(s32 *)&colTL = *(s32 *)&colTR;
                 gte_stsxy(&prim->x3);
-                if (flag != 0) {
-                    ex->btlfx_addPrim(0x8000000, z, prim);
+                if (nclip != 0) {
+                    ex->btlfx_addPrim(0x8000000, otz, prim);
                 }
             }
         }
-        ex->btlfx_addPrim(0x1000000, z, tpage);
+        ex->btlfx_addPrim(0x1000000, otz, tpage);
     }
     w--;
     h--;
-    x0 = (tp & 0xF) * 64 + x + (idx % div) * w;
+    left = (tp & 0xF) * 64 + x + (idx % div) * w;
     py = (tp & 0x10) * 16 + y + (idx / div) * h;
-    rect.x = x0;
+    rect.x = left;
     rect.y = py;
     rect.w = w;
     rect.h = h;
     ex->StoreImage(&rect, (u32 *)colors);
 }
 
-static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *)) {
     DVECTOR pts[2][18];
-    DVECTOR a;
-    DVECTOR b;
-    DVECTOR c;
-    DVECTOR d;
-    DVECTOR e;
-    DVECTOR f;
-    DVECTOR g;
-    DVECTOR h;
-    CVECTOR c0;
-    CVECTOR c1;
+    DVECTOR inPos;
+    DVECTOR outPos;
+    DVECTOR inPrev;
+    DVECTOR outPrev;
+    DVECTOR inUv;
+    DVECTOR outUv;
+    DVECTOR inUvPrev;
+    DVECTOR outUvPrev;
+    CVECTOR colIn;
+    CVECTOR colOut;
     Unk800F78A4 *env = fx_0d3_env;
     u32 *move = NULL;
     s32 step;
     s32 cx;
     s32 cy;
-    s32 tp0;
-    s32 tp1;
-    s32 flag = 0;
+    s32 tpLo;
+    s32 tpHi;
+    s32 hiPage = 0;
     BtlfxExports *ex;
     POLY_GT4 *prim;
-    s32 t;
+    s32 level;
     s32 ang;
-    s32 k;
-    DVECTOR *p;
-    s32 r;
+    s32 vyOff;
+    DVECTOR *uvRing;
+    s32 radius;
     s32 i;
     s32 j;
     s32 sx;
     s32 sy;
 
     prim = (POLY_GT4 *)env->prim;
-    env->prim = (u8 *)(prim + n * m);
-    t = 0xFF;
+    env->prim = (u8 *)(prim + segs * rings);
+    level = 0xFF;
     ex = BTLFX_EXPORTS(env);
     if (src == NULL) {
-        t = 1;
+        level = 1;
     }
-    c0.cd = t != 0xFF ? 0x3E : 0x3C;
+    colIn.cd = level != 0xFF ? 0x3E : 0x3C;
     if (src != NULL) {
-        tp0 = getTPage(2, 0, src->x, src->y);
-        tp1 = getTPage(2, 0, src->x + 0x80, src->y);
+        tpLo = getTPage(2, 0, src->x, src->y);
+        tpHi = getTPage(2, 0, src->x + 0x80, src->y);
         sx = src->x;
         sy = src->y;
         src->x = env->drawEnv->clip.x + (x - (src->w >> 1));
@@ -187,102 +187,102 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
     } else {
         cx = x;
         cy = y;
-        tp0 = getTPage(2, 1, env->dispEnv->disp.x, env->dispEnv->disp.y);
-        tp1 = getTPage(2, 1, env->dispEnv->disp.x + 0x80, env->dispEnv->disp.y);
+        tpLo = getTPage(2, 1, env->dispEnv->disp.x, env->dispEnv->disp.y);
+        tpHi = getTPage(2, 1, env->dispEnv->disp.x + 0x80, env->dispEnv->disp.y);
     }
-    p = pts[1];
-    tp0 <<= 16;
-    tp1 <<= 16;
+    uvRing = pts[1];
+    tpLo <<= 16;
+    tpHi <<= 16;
     for (i = 0; i < 17; i++) {
         *(s32 *)&pts[0][i] = 0;
-        p[i].vx = cx;
-        k = i * 4 + 2;
-        *(s16 *)((u8 *)p + k) = cy;
+        uvRing[i].vx = cx;
+        vyOff = i * 4 + 2;
+        *(s16 *)((u8 *)uvRing + vyOff) = cy;
     }
-    step = 0x1000 / n;
-    r = 0;
-    for (j = 1; j <= m; j++) {
-        t = ex->btlfx_lerpRatio(from, to, j - 1, m);
+    step = 0x1000 / segs;
+    radius = 0;
+    for (j = 1; j <= rings; j++) {
+        level = ex->btlfx_lerpRatio(from, to, j - 1, rings);
         i = 0;
         ang = 0;
-        c0.r = c0.g = c0.b = t;
-        t = ex->btlfx_lerpRatio(from, to, j, m);
-        c1.r = c1.g = c1.b = t;
-        r += dr;
-        for (; i <= n; i++, ang += step) {
-            *(s32 *)&a = *(s32 *)&pts[0][i];
-            *(s32 *)&e = *(s32 *)&pts[1][i];
-            if (i < n) {
-                b.vx = (ex->math_cos(ang) * r) >> 12;
-                b.vy = (ex->math_sin(ang) * r) >> 12;
-                f.vx = b.vx + cx;
-                f.vy = b.vy + cy;
+        colIn.r = colIn.g = colIn.b = level;
+        level = ex->btlfx_lerpRatio(from, to, j, rings);
+        colOut.r = colOut.g = colOut.b = level;
+        radius += dr;
+        for (; i <= segs; i++, ang += step) {
+            *(s32 *)&inPos = *(s32 *)&pts[0][i];
+            *(s32 *)&inUv = *(s32 *)&pts[1][i];
+            if (i < segs) {
+                outPos.vx = (ex->math_cos(ang) * radius) >> 12;
+                outPos.vy = (ex->math_sin(ang) * radius) >> 12;
+                outUv.vx = outPos.vx + cx;
+                outUv.vy = outPos.vy + cy;
             } else {
-                *(s32 *)&b = *(s32 *)&pts[0][0];
-                *(s32 *)&f = *(s32 *)&pts[1][0];
+                *(s32 *)&outPos = *(s32 *)&pts[0][0];
+                *(s32 *)&outUv = *(s32 *)&pts[1][0];
             }
-            if (f.vx < 0) {
-                f.vx = 0;
+            if (outUv.vx < 0) {
+                outUv.vx = 0;
             }
-            if (f.vx >= 0x140) {
-                f.vx = 0x13F;
+            if (outUv.vx >= 0x140) {
+                outUv.vx = 0x13F;
             }
-            if (f.vy < 0) {
-                f.vy = 0;
+            if (outUv.vy < 0) {
+                outUv.vy = 0;
             }
-            if (f.vy >= 0xF0) {
-                f.vy = 0xEF;
+            if (outUv.vy >= 0xF0) {
+                outUv.vy = 0xEF;
             }
-            *(s32 *)&pts[1][i] = *(s32 *)&f;
+            *(s32 *)&pts[1][i] = *(s32 *)&outUv;
             if (i != 0) {
-                if (e.vx < 0x100 && f.vx < 0x100 && g.vx < 0x100 && h.vx < 0x100) {
-                    t = tp0;
-                    flag = 0;
+                if (inUv.vx < 0x100 && outUv.vx < 0x100 && inUvPrev.vx < 0x100 && outUvPrev.vx < 0x100) {
+                    level = tpLo;
+                    hiPage = 0;
                 } else {
-                    t = tp1;
-                    flag = 1;
-                    e.vx -= 0x80;
-                    f.vx -= 0x80;
-                    g.vx -= 0x80;
-                    h.vx -= 0x80;
+                    level = tpHi;
+                    hiPage = 1;
+                    inUv.vx -= 0x80;
+                    outUv.vx -= 0x80;
+                    inUvPrev.vx -= 0x80;
+                    outUvPrev.vx -= 0x80;
                 }
             }
-            if (i < n && fn != NULL) {
-                fn(r, j, ang, i, &b);
+            if (i < segs && fn != NULL) {
+                fn(radius, j, ang, i, &outPos);
             }
-            *(s32 *)&pts[0][i] = *(s32 *)&b;
-            a.vx += x;
-            a.vy += y;
-            b.vx += x;
-            b.vy += y;
+            *(s32 *)&pts[0][i] = *(s32 *)&outPos;
+            inPos.vx += x;
+            inPos.vy += y;
+            outPos.vx += x;
+            outPos.vy += y;
             if (i != 0) {
-                *(s32 *)&prim->u0 = e.vx | (e.vy << 8);
-                *(s32 *)&prim->u1 = f.vx | (f.vy << 8) | t;
-                *(s32 *)&prim->u2 = g.vx | (g.vy << 8);
-                *(s32 *)&prim->u3 = h.vx | (h.vy << 8);
-                *(s32 *)&prim->r2 = *(s32 *)&c0;
-                *(s32 *)&prim->r0 = *(s32 *)&c0;
-                *(s32 *)&prim->r3 = *(s32 *)&c1;
-                *(s32 *)&prim->r1 = *(s32 *)&c1;
-                *(s32 *)&prim->x0 = *(s32 *)&a;
-                *(s32 *)&prim->x1 = *(s32 *)&b;
-                *(s32 *)&prim->x2 = *(s32 *)&c;
-                *(s32 *)&prim->x3 = *(s32 *)&d;
+                *(s32 *)&prim->u0 = inUv.vx | (inUv.vy << 8);
+                *(s32 *)&prim->u1 = outUv.vx | (outUv.vy << 8) | level;
+                *(s32 *)&prim->u2 = inUvPrev.vx | (inUvPrev.vy << 8);
+                *(s32 *)&prim->u3 = outUvPrev.vx | (outUvPrev.vy << 8);
+                *(s32 *)&prim->r2 = *(s32 *)&colIn;
+                *(s32 *)&prim->r0 = *(s32 *)&colIn;
+                *(s32 *)&prim->r3 = *(s32 *)&colOut;
+                *(s32 *)&prim->r1 = *(s32 *)&colOut;
+                *(s32 *)&prim->x0 = *(s32 *)&inPos;
+                *(s32 *)&prim->x1 = *(s32 *)&outPos;
+                *(s32 *)&prim->x2 = *(s32 *)&inPrev;
+                *(s32 *)&prim->x3 = *(s32 *)&outPrev;
                 if (ot < 0x1000) {
                     addPrimLenIn(&env->ot[ot], prim, 0xC000000);
                 }
                 prim++;
             }
-            if (flag) {
-                e.vx += 0x80;
-                f.vx += 0x80;
-                g.vx += 0x80;
-                h.vx += 0x80;
+            if (hiPage) {
+                inUv.vx += 0x80;
+                outUv.vx += 0x80;
+                inUvPrev.vx += 0x80;
+                outUvPrev.vx += 0x80;
             }
-            *(s32 *)&c = *(s32 *)&a;
-            *(s32 *)&d = *(s32 *)&b;
-            *(s32 *)&g = *(s32 *)&e;
-            *(s32 *)&h = *(s32 *)&f;
+            *(s32 *)&inPrev = *(s32 *)&inPos;
+            *(s32 *)&outPrev = *(s32 *)&outPos;
+            *(s32 *)&inUvPrev = *(s32 *)&inUv;
+            *(s32 *)&outUvPrev = *(s32 *)&outUv;
         }
     }
     if (src != NULL && ot < 0x1000) {
@@ -300,46 +300,46 @@ static void fxm_keyGetVec(Fx0d3Track *track, s32 t, SVECTOR *out) {
     out->vz = ((s16 *)track)[2];
 }
 
-static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
-    s16 *k;
+static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 6];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 6];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
 }
 
-static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
-    s16 *k;
+static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1, SVECTOR *out2) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 9];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 9];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
-    if (c != NULL) {
-        c->vx = k[6];
-        c->vy = k[7];
-        c->vz = k[8];
+    if (out2 != NULL) {
+        out2->vx = key[6];
+        out2->vy = key[7];
+        out2->vz = key[8];
     }
 }
 
@@ -350,21 +350,21 @@ static s32 fxm_keyGetValue(Fx0d3Track *track, s32 t) {
     return (track->keys4 + t)[0];
 }
 
-static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
+static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 bright,
                    Fx0d3Seg *buf, s32 abr, s32 phase) {
     Unk800F78A4 *env = fx_0d3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     s32 otz;
     POLY_GT4 *prim;
-    Fx0d3Seg *s;
+    Fx0d3Seg *seg;
     s32 i;
     s32 t;
-    s32 k;
-    s32 j;
+    s32 tileV;
+    s32 next;
 
-    if (p < 0) {
-        p = 0x1000;
+    if (bright < 0) {
+        bright = 0x1000;
     }
     if (n > 1000) {
         n -= 999;
@@ -373,21 +373,21 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
         }
         return;
     }
-    s = &buf[(u32)(n - 1)];
+    seg = &buf[(u32)(n - 1)];
     for (i = 0; i < n; i++) {
-        BTLFX_COPY_SVEC(&s[1].edgeA0, &s[0].edgeA0);
-        BTLFX_COPY_SVEC(&s[1].edgeB8, &s[0].edgeB8);
-        s--;
+        BTLFX_COPY_SVEC(&seg[1].edgeA0, &seg[0].edgeA0);
+        BTLFX_COPY_SVEC(&seg[1].edgeB8, &seg[0].edgeB8);
+        seg--;
     }
-    s = buf;
-    for (i = 0; i < n; i++, s++) {
-        if (!(s[0].edgeA0.pad & s[1].edgeA0.pad)) {
+    seg = buf;
+    for (i = 0; i < n; i++, seg++) {
+        if (!(seg[0].edgeA0.pad & seg[1].edgeA0.pad)) {
             break;
         }
     }
-    BTLFX_COPY_SVEC(&buf->edgeA0, a);
+    BTLFX_COPY_SVEC(&buf->edgeA0, posA);
     buf->edgeA0.pad = 1;
-    BTLFX_COPY_SVEC(&buf->edgeB8, b);
+    BTLFX_COPY_SVEC(&buf->edgeB8, posB);
     n = i;
     prim = (POLY_GT4 *)env->prim;
     env->prim = (u8 *)(prim + n);
@@ -397,18 +397,18 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
     tpage |= (abr & 3) << 5;
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    /* the twin of fx_0e1_0 fxm_drawTexRibbonTrail: i = j in the increment, and the last uv store (u1) is the giv base */
-    for (i = 0; i < n; i = j, buf++, prim++, phase++) {
+    /* the twin of fx_0e1_0 fxm_drawTexRibbonTrail: i = next in the increment, and the last uv store (u1) is the giv base */
+    for (i = 0; i < n; i = next, buf++, prim++, phase++) {
         gte_ldv3c(buf);
         t = (i << 12) / n;
-        col.r = col.g = col.b = p;
+        col.r = col.g = col.b = bright;
         gte_rtpt_b();
-        t = ((0x1000 - t) * p) >> 12;
+        t = ((0x1000 - t) * bright) >> 12;
         col.r = col.g = col.b = t;
         *(s32 *)&prim->r0 = *(s32 *)&prim->r1 = *(s32 *)&col;
         col.r = col.g = col.b = t;
         *(s32 *)&prim->r2 = *(s32 *)&prim->r3 = *(s32 *)&col;
-        j = i + 1;
+        next = i + 1;
         gte_stopz(&otz);
         if (otz != 0) {
             gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
@@ -420,10 +420,10 @@ static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32
             gte_stsxy(&prim->x3);
             prim->clut = clut;
             prim->tpage = tpage;
-            k = phase & 1;
-            prim->v2 = prim->v3 = v + ((h << k) >> 1);
+            tileV = phase & 1;
+            prim->v2 = prim->v3 = v + ((h << tileV) >> 1);
             prim->u0 = prim->u2 = u;
-            prim->v0 = prim->v1 = v + ((k * h) >> 1);
+            prim->v0 = prim->v1 = v + ((tileV * h) >> 1);
             prim->u1 = prim->u3 = u + w;
         }
     }
@@ -575,11 +575,11 @@ static s32 fx_0d3_op81SpawnPoint(SVECTOR *v) {
     return 0;
 }
 
-static void fxm_waveVertexX(s16 *v) {
-    s32 t = (BTLFX_EXPORTS(fx_0d3_env)->math_sin(fx_0d3_wavePhase + (v[1] << 8)) * fx_0d3_waveAmp) >> 12;
-    s32 x = v[0];
+static void fxm_waveVertexX(s16 *vert) {
+    s32 wave = (BTLFX_EXPORTS(fx_0d3_env)->math_sin(fx_0d3_wavePhase + (vert[1] << 8)) * fx_0d3_waveAmp) >> 12;
+    s32 x = vert[0];
 
-    v[0] = x + t;
+    vert[0] = x + wave;
 }
 
 INCLUDE_RODATA("asm/us/fx_0d3/nonmatchings/fx_0d3", fx_0d3_headerPtr);

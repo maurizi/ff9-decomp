@@ -29,21 +29,21 @@ void fx_0a0_drawGouraudLine(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s3
     ex->btlfx_addPrimAbr(0x4000000, otz, prim, abr);
 }
 
-static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
+static void fxm_drawTrailLine(u8 *file, SVECTOR *from, SVECTOR *to, s32 frame, s32 fade, s32 abr, s32 lineWidth) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0a0_env);
-    SVECTOR *v;
+    SVECTOR *pts;
 
     fx_0a0_line.lastSlot0 = fx_0a0_line.count2 = 1;
     fx_0a0_line.head1 = 0;
-    v = fx_0a0_line.pts4;
-    v[0].vx = a->vx;
-    v[0].vy = a->vy;
-    v[0].vz = a->vz;
-    v[0].pad = lineWidth;
-    v[1].vx = b->vx;
-    v[1].vy = b->vy;
-    v[1].vz = b->vz;
-    v[1].pad = lineWidth;
+    pts = fx_0a0_line.pts4;
+    pts[0].vx = from->vx;
+    pts[0].vy = from->vy;
+    pts[0].vz = from->vz;
+    pts[0].pad = lineWidth;
+    pts[1].vx = to->vx;
+    pts[1].vy = to->vy;
+    pts[1].vz = to->vz;
+    pts[1].pad = lineWidth;
     ex->btlfx_drawTrail(file, 0, NULL, frame, 0x1000, fade, abr, (u8 *)&fx_0a0_line, 0);
 }
 

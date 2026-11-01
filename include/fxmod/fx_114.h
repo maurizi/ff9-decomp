@@ -103,7 +103,7 @@ static void fxm_vecTrackInit(Fx114Track6 *track, u16 *data);
 static s32 fxm_vecTrackGet(Fx114Track6 *track, s32 t, VECTOR *out);
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 abr, s32 ot);
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 /* propagated */
@@ -115,7 +115,7 @@ static s32 fxm_pinParticle3(Pool30Entry *pt, s32 owner, SVECTOR *pos, s32 trail,
 static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 
 static void fxm_buildPathTrail(Fx114Path *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
-static s32 fxm_offsetTableEntry(s32 base, s32 i);
+static s32 fxm_offsetTableEntry(s32 base, s32 idx);
 
 typedef struct {
     s16 *keys0;

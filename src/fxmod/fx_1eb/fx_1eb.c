@@ -188,8 +188,8 @@ s32 fx_1eb_op83(s32 mode, Fx1ebWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
-    BTLFX_EXPORTS(fx_1eb_env)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(fx_1eb_env)->LoadAverageShort12(from, to, 0x1000 - t, t, out);
 }
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
@@ -202,27 +202,27 @@ static void fxm_rotPosPathInit(Fx1ebKeyPath *path, u16 *data) {
     path->keys4 = (Fx1ebKey *)data;
 }
 
-static s32 fxm_rotPosPathGet(Fx1ebKeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
-    Fx1ebKey *k;
-    s32 r = 1;
+static s32 fxm_rotPosPathGet(Fx1ebKeyPath *path, s32 t, SVECTOR *rot, SVECTOR *pos) {
+    Fx1ebKey *key;
+    s32 done = 1;
 
-    if (i > path->count2 - 1) {
-        i = path->count2 - 1;
+    if (t > path->count2 - 1) {
+        t = path->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    k = &path->keys4[i];
+    key = &path->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->rot6[0];
-        rot->vy = k->rot6[1];
-        rot->vz = k->rot6[2];
+        rot->vx = key->rot6[0];
+        rot->vy = key->rot6[1];
+        rot->vz = key->rot6[2];
     }
     if (pos != NULL) {
-        pos->vx = k->pos0[0];
-        pos->vy = k->pos0[1];
-        pos->vz = k->pos0[2];
+        pos->vx = key->pos0[0];
+        pos->vy = key->pos0[1];
+        pos->vz = key->pos0[2];
     }
-    return r;
+    return done;
 }
 
 static void fxm_valuePathInit(Fx1ebPath *path, u16 *data) {
@@ -231,14 +231,14 @@ static void fxm_valuePathInit(Fx1ebPath *path, u16 *data) {
     path->keys4 = (Fx1ebPoint *)data;
 }
 
-static s32 fxm_valuePathGet(Fx1ebPath *keys, s32 i, s32 *out) {
-    s32 r = 1;
+static s32 fxm_valuePathGet(Fx1ebPath *keys, s32 t, s32 *out) {
+    s32 done = 1;
 
-    if (i > keys->count2 - 1) {
-        i = keys->count2 - 1;
+    if (t > keys->count2 - 1) {
+        t = keys->count2 - 1;
     } else {
-        r = 0;
+        done = 0;
     }
-    *out = *(s16 *)((u8 *)keys->keys4 + (i << 1));
-    return r;
+    *out = *(s16 *)((u8 *)keys->keys4 + (t << 1));
+    return done;
 }

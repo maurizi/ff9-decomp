@@ -15,15 +15,15 @@ extern s32 fx_0d3_wavePhase;
 
 static void fx_0d3_op80GridVertex(s32 a0, s32 frame, s32 a2, s32 a3, s16 *v);
 static s32 fx_0d3_op81SpawnPoint(SVECTOR *v);
-static void fxm_waveVertexX(s16 *v);
+static void fxm_waveVertexX(s16 *vert);
 typedef struct {
     s16 unk0; /* not read by the module */
     s16 count2; /* count */
     s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx0d3Track;
 static void fxm_keyGetVec(Fx0d3Track *track, s32 t, SVECTOR *out);
-static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b);
-static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
+static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1);
+static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1, SVECTOR *out2);
 static s32 fxm_keyGetValue(Fx0d3Track *track, s32 t);
 /* ribbon history: two edge points per step, edgeA0.pad = live */
 typedef struct {
@@ -38,7 +38,7 @@ typedef struct {
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
 
-static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
+static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 bright,
                    Fx0d3Seg *buf, s32 abr, s32 k);
 typedef struct {
     s32 vx;
@@ -141,7 +141,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     : : "r"(r0))
 static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
-static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 segs, s32 rings, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));
 
 #endif

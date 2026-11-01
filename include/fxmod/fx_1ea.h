@@ -57,7 +57,7 @@ typedef struct {
     u16 count2; /* keys */
     Fx1eaKey *keys4;
 } Fx1eaPath_0b4;
-static s32 fxm_rotPosPathGet(Fx1eaPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx1eaPath_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 
 typedef struct {
     s32 vx;

@@ -1,14 +1,14 @@
 #include "fxmod/fx_17d_7.h"
 
-static s32 fxm_randRingPoint(SVECTOR *v, SVECTOR *rot) {
+static s32 fxm_randRingPoint(SVECTOR *out, SVECTOR *rot) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_7_env);
-    s32 a = ex->btlfx_rand();
+    s32 ang = ex->btlfx_rand();
 
-    v->pad = 0;
-    v->vy = 0;
-    v->vx = (ex->math_cos(a) * fx_17d_7_ringRadius) >> 12;
-    v->vz = (ex->math_sin(a) * fx_17d_7_ringRadius) >> 12;
-    rot->vy = a;
+    out->pad = 0;
+    out->vy = 0;
+    out->vx = (ex->math_cos(ang) * fx_17d_7_ringRadius) >> 12;
+    out->vz = (ex->math_sin(ang) * fx_17d_7_ringRadius) >> 12;
+    rot->vy = ang;
     return 0;
 }
 
@@ -581,54 +581,54 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     return 0;
 }
 
-static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *trail, s32 n, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip) {
+static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx17d7Trail *trail, s32 size, s32 *noise, SVECTOR *from,
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip) {
     Unk800F78A4 *env = fx_17d_7_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     SVECTOR rot;
     s32 i;
-    s32 cnt;
+    s32 count;
     s32 t;
-    s32 h;
+    s32 offset;
     SVECTOR *pt;
-    s32 a;
+    s32 numPts;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    cnt = (n - 4) / 8;
-    a = cnt;
-    trail->lastSlot0 = trail->count2 = a - 1;
+    count = (size - 4) / 8;
+    numPts = count;
+    trail->lastSlot0 = trail->count2 = numPts - 1;
     trail->head1 = 0;
     pt = trail->points4;
-    for (i = 0; i < a; i++, pt++) {
-        t = 0x1000 - (i << 12) / (a - 1);
+    for (i = 0; i < numPts; i++, pt++) {
+        t = 0x1000 - (i << 12) / (numPts - 1);
         t += *noise++ / 2;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
-        h = *noise++ / 3;
-        h = (ex->math_sin((t >> 1) >> 1) * h) >> 12;
+        offset = *noise++ / 3;
+        offset = (ex->math_sin((t >> 1) >> 1) * offset) >> 12;
         t >>= 1;
-        h += ex->btlfx_lerp(h0, h1, ex->math_sin(t));
-        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
+        offset += ex->btlfx_lerp(amp0, amp1, ex->math_sin(t));
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         if (dip != 0) {
             pt->vy -= (ex->math_sin(t) * dip) >> 12;
         }
-        pt->pad = pad;
+        pt->pad = lineWidth;
         ang += dang + *noise++;
     }
     env->otZ = 0x80;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, type, 0x1000, alpha, 1, (u8 *)trail, ot);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, mode);
     env->otZ = 0;
 }
 
-static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *path, Fx17d7Trail *trail, s32 n, s32 *noise,
-                   s32 i, s32 type, s32 alpha, s32 pad) {
+static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 mode, Fx17d7Trail *path, Fx17d7Trail *trail, s32 size, s32 *noise,
+                   s32 branchAt, s32 frame, s32 fade, s32 lineWidth) {
     SVECTOR *pt = path->points4;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_7_env);
     SVECTOR mid;
 
-    pt += i;
+    pt += branchAt;
     ex->btlfx_lerpVec((s16 *)(pt + 1), (s16 *)pt, 0x4000, (s16 *)&mid);
-    fxm_drawArcTrail(entry, file, ot, trail, n, noise, pt, &mid, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
+    fxm_drawArcTrail(entry, file, mode, trail, size, noise, pt, &mid, 0, 0x20, ex->btlfx_rand(), 0x33, frame, fade, lineWidth, 0);
 }
 
 static s32 fx_17d_7_op83PoolTask(s32 mode, Fx17d7Bolt *bolt, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {

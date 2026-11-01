@@ -19,25 +19,25 @@ void fx_1b0_initSplit(Fx1b0Split *split, SVECTOR (*faces)[3]) {
 
 static s32 fxm_splitModelAdd(s32 model) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1b0_env);
-    Fx1b0Split *s = fx_1b0_split;
-    SVECTOR (*f)[3] = s->nextFace28;
+    Fx1b0Split *split = fx_1b0_split;
+    SVECTOR (*face)[3] = split->nextFace28;
     s32 n;
     s32 i;
-    s32 k;
+    s32 slot;
 
     n = (u32)ex->Hi_GetSplitMdlVertex(model, -1) / 24;
-    ex->Hi_SplitMdlVertex(model, -1, (s32)f);
-    k = s->count0;
-    s->modelFaces2C[k] = f;
-    s->counts4[k] = n;
-    s->nextFace28 = f + n;
-    s->count2 += n;
-    s->count0++;
+    ex->Hi_SplitMdlVertex(model, -1, (s32)face);
+    slot = split->count0;
+    split->modelFaces2C[slot] = face;
+    split->counts4[slot] = n;
+    split->nextFace28 = face + n;
+    split->count2 += n;
+    split->count0++;
     for (i = 0; i < n; i++) {
-        (*f)[0].pad = 0;
-        f++;
+        (*face)[0].pad = 0;
+        face++;
     }
-    return s->count2;
+    return split->count2;
 }
 
 Fx1b0Piece *fx_1b0_findFreePiece(void) {

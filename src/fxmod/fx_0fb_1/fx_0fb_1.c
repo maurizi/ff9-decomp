@@ -1,22 +1,22 @@
 #include "fxmod/fx_0fb_1.h"
 
-static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r, s32 p, CVECTOR *rgb, s32 tpage, s32 clut, s32 u,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius, s32 bright, CVECTOR *rgb, s32 tpage, s32 clut, s32 u,
                    s32 v, s32 dang, s32 abr) {
     Unk800F78A4 *env = fx_0fb_1_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     CVECTOR col;
     MATRIX m;
-    SVECTOR q[4];
-    s32 z;
+    SVECTOR quad[4];
+    s32 otz;
     POLY_FT4 *prim;
     s32 ang;
-    s32 a;
+    s32 ang1;
     s32 z0;
     s32 z1;
     s32 row;
-    s32 rv;
+    s32 tileV;
     s32 j;
-    s32 ju;
+    s32 tileU;
     s32 u0;
     s32 v0;
     s32 u1;
@@ -28,9 +28,9 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     prim = (POLY_FT4 *)env->prim;
     env->prim = (u8 *)(prim + 320);
     col.cd = abr == 0xFF ? 0x2C : 0x2E;
-    col.r = (rgb->r * p) >> 12;
-    col.g = (rgb->g * p) >> 12;
-    col.b = (rgb->b * p) >> 12;
+    col.r = (rgb->r * bright) >> 12;
+    col.g = (rgb->g * bright) >> 12;
+    col.b = (rgb->b * bright) >> 12;
     tpage |= (abr & 3) << 5;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
@@ -44,42 +44,42 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     z0 = 0;
     for (row = 0; row < 20; row++) {
         ang += dang;
-        rv = row & 0xF;
+        tileV = row & 0xF;
         for (j = 0; j < 16; j++) {
-            q[0].vx = (ex->math_cos(ang) * r) >> 12;
-            q[0].vy = (ex->math_sin(ang) * r) >> 12;
-            a = ang + 0x100;
-            q[1].vx = (ex->math_cos(a) * r) >> 12;
-            q[1].vy = (ex->math_sin(a) * r) >> 12;
-            q[0].vz = q[1].vz = z0;
+            quad[0].vx = (ex->math_cos(ang) * radius) >> 12;
+            quad[0].vy = (ex->math_sin(ang) * radius) >> 12;
+            ang1 = ang + 0x100;
+            quad[1].vx = (ex->math_cos(ang1) * radius) >> 12;
+            quad[1].vy = (ex->math_sin(ang1) * radius) >> 12;
+            quad[0].vz = quad[1].vz = z0;
             ang += dang;
-            q[2].vx = (ex->math_cos(ang) * r) >> 12;
-            q[2].vy = (ex->math_sin(ang) * r) >> 12;
-            a = ang + 0x100;
-            q[3].vx = (ex->math_cos(a) * r) >> 12;
-            q[3].vy = (ex->math_sin(a) * r) >> 12;
-            q[2].vz = q[3].vz = z1;
+            quad[2].vx = (ex->math_cos(ang) * radius) >> 12;
+            quad[2].vy = (ex->math_sin(ang) * radius) >> 12;
+            ang1 = ang + 0x100;
+            quad[3].vx = (ex->math_cos(ang1) * radius) >> 12;
+            quad[3].vy = (ex->math_sin(ang1) * radius) >> 12;
+            quad[2].vz = quad[3].vz = z1;
             ang -= dang;
-            gte_ldv3c(q);
+            gte_ldv3c(quad);
             gte_rtpt();
-            ju = j & 3;
+            tileU = j & 3;
             /* two statements each: a twice-set u0/v0 is not loop-invariant, so v + rv * 8 stays in the loop */
             u0 = u;
-            u0 += ju * 32;
+            u0 += tileU * 32;
             v0 = v;
-            v0 += rv * 8;
+            v0 += tileV * 8;
             u1 = u0 + 0x20;
-            if (ju == 3) {
+            if (tileU == 3) {
                 u1 = u0 + 0x1F;
             }
             v1 = v0 + 8;
-            if (rv == 0xF) {
+            if (tileV == 0xF) {
                 v1 = v0 + 7;
             }
             gte_nclip();
             *(s32 *)&prim->r0 = *(s32 *)&col;
-            gte_stopz(&z);
-            if (z >= 0) {
+            gte_stopz(&otz);
+            if (otz >= 0) {
                 prim->u0 = prim->u2 = u0;
                 prim->u1 = prim->u3 = u1;
                 prim->v0 = prim->v1 = v0;
@@ -88,11 +88,11 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
                 prim->clut = clut;
                 gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
                 gte_avsz3();
-                gte_stszotz(&z);
-                z = 0xFFF;
-                gte_ldv0(&q[3]);
+                gte_stszotz(&otz);
+                otz = 0xFFF;
+                gte_ldv0(&quad[3]);
                 gte_rtps();
-                ex->btlfx_addPrim(0x09000000, z, prim);
+                ex->btlfx_addPrim(0x09000000, otz, prim);
                 gte_stsxy(&prim->x3);
                 prim++;
             }

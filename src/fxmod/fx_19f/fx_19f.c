@@ -1,12 +1,12 @@
 #include "fxmod/fx_19f.h"
 
-static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
+static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 width, s32 r, s32 g, s32 b) {
     Unk800F78A4 *env = fx_19f_env;
     POLY_G4 *prim;
     BtlfxExports *ex;
     s32 i;
 
-    w >>= 1;
+    width >>= 1;
     prim = (POLY_G4 *)env->prim;
     ex = BTLFX_EXPORTS(env);
     env->prim = (u8 *)(prim + 4);
@@ -20,7 +20,7 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
             prim->r1 = prim->r3 = r;
             prim->g1 = prim->g3 = g;
             prim->b1 = prim->b3 = b;
-            prim->x0 = prim->x2 = 0xA0 - w;
+            prim->x0 = prim->x2 = 0xA0 - width;
             prim->x1 = prim->x3 = 0xA0;
         } else {
             prim->r1 = prim->r3 = 0;
@@ -30,7 +30,7 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
             prim->g0 = prim->g2 = g;
             prim->b0 = prim->b2 = b;
             prim->x0 = prim->x2 = 0xA0;
-            prim->x1 = prim->x3 = w + 0xA0;
+            prim->x1 = prim->x3 = width + 0xA0;
         }
         prim->y0 = prim->y1 = (i >> 1) * 0x78;
         prim->y2 = prim->y3 = prim->y0 + 0x78;
@@ -43,30 +43,30 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVEC
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
     SVECTOR pos;
     SVECTOR rot;
-    SVECTOR *p;
+    SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 h;
-    s32 a;
+    s32 offset;
+    s32 halfT;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     i = 0;
-    p = trail->points4;
+    pt = trail->points4;
     trail->lastSlot0 = trail->count2 = 0x18;
     trail->head1 = 0;
     do {
         t = 0x1000 - (i << 12) / 24;
         t += ex->btlfx_randCentered(0x140);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
-        h = ex->btlfx_randCentered(0x80);
-        a = t >> 1;
-        h = (ex->math_sin(a) * h) >> 12;
+        offset = ex->btlfx_randCentered(0x80);
+        halfT = t >> 1;
+        offset = (ex->math_sin(halfT) * offset) >> 12;
         i++;
-        h += 0x20 + ((ex->math_sin(a) * amp) >> 12);
-        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, ang);
-        p->pad = lineWidth;
+        offset += 0x20 + ((ex->math_sin(halfT) * amp) >> 12);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
+        pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x100);
-        p++;
+        pt++;
     } while (i < 25);
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x20), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
@@ -659,53 +659,53 @@ s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     return 0;
 }
 
-static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *trail, s32 n, s32 *noise, SVECTOR *from,
-                   SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip) {
+static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 mode, Fx19fTrail *trail, s32 size, s32 *noise, SVECTOR *from,
+                   SVECTOR *to, s32 amp0, s32 amp1, s32 ang, s32 dang, s32 frame, s32 fade, s32 lineWidth, s32 dip) {
     Unk800F78A4 *env = fx_19f_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
     SVECTOR rot;
     s32 i;
-    s32 cnt;
+    s32 count;
     s32 t;
-    s32 h;
+    s32 offset;
     SVECTOR *pt;
-    s32 a;
+    s32 halfT;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
-    cnt = (n - 4) / 8;
-    trail->lastSlot0 = trail->count2 = cnt - 1;
+    count = (size - 4) / 8;
+    trail->lastSlot0 = trail->count2 = count - 1;
     trail->head1 = 0;
     pt = trail->points4;
-    for (i = 0; i < cnt; i++, pt++) {
-        t = 0x1000 - (i << 12) / (cnt - 1);
+    for (i = 0; i < count; i++, pt++) {
+        t = 0x1000 - (i << 12) / (count - 1);
         t += *noise++ * 2 / 3;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
-        h = *noise++;
-        a = t >> 1;
-        h = (ex->math_sin(a) * h) >> 12;
-        h += ex->btlfx_lerp(h0, h1, t);
-        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
+        offset = *noise++;
+        halfT = t >> 1;
+        offset = (ex->math_sin(halfT) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
         if (dip != 0) {
-            pt->vy -= (ex->math_sin(a) * dip) >> 12;
+            pt->vy -= (ex->math_sin(halfT) * dip) >> 12;
         }
-        pt->pad = pad;
+        pt->pad = lineWidth;
         ang += dang + *noise++;
     }
     env->otZ = 0x80;
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, type, 0x1000, alpha, 1, (u8 *)trail, ot);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, mode);
     env->otZ = 0;
 }
 
-static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *path, Fx19fTrail *trail, s32 n, s32 *noise,
-                   s32 i, s32 type, s32 alpha, s32 pad) {
+static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 mode, Fx19fTrail *path, Fx19fTrail *trail, s32 size, s32 *noise,
+                   s32 branchAt, s32 frame, s32 fade, s32 lineWidth) {
     SVECTOR *pt = path->points4;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
     SVECTOR mid;
 
-    pt += i;
+    pt += branchAt;
     ex->btlfx_lerpVec((s16 *)(pt + 1), (s16 *)pt, 0x4000, (s16 *)&mid);
-    fxm_drawJaggedTrail(entry, file, ot, trail, n, noise, pt, &mid, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
+    fxm_drawJaggedTrail(entry, file, mode, trail, size, noise, pt, &mid, 0, 0x20, ex->btlfx_rand(), 0x33, frame, fade, lineWidth, 0);
 }
 
 static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *bolt, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
@@ -760,13 +760,13 @@ static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *bolt, Unk800F78A4 *env, Unk8
 
 static s32 fxm_randStripPoint32(SVECTOR *out, SVECTOR *dir, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
-    SVECTOR *p = fx_19f_boltTrailPoints[ex->btlfx_rand() % 32].points0;
+    SVECTOR *src = fx_19f_boltTrailPoints[ex->btlfx_rand() % 32].points0;
 
-    p += ex->btlfx_rand() % 17;
+    src += ex->btlfx_rand() % 17;
 
-    out->vx = p->vx;
-    out->vy = p->vy;
-    out->vz = p->vz;
+    out->vx = src->vx;
+    out->vy = src->vy;
+    out->vz = src->vz;
     out->pad = 1;
     return 0;
 }

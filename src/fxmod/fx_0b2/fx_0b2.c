@@ -5,28 +5,28 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVEC
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0b2_env);
     SVECTOR pos;
     SVECTOR rot;
-    SVECTOR *p;
+    SVECTOR *pt;
     s32 i;
     s32 t;
-    s32 h;
+    s32 offset;
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     i = 0;
-    p = trail->pts4;
+    pt = trail->pts4;
     trail->lastSlot0 = trail->count2 = 0x18;
     trail->head1 = 0;
     do {
         t = 0x1000 - (i << 12) / 24;
         t += ex->btlfx_randCentered(0x100);
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
-        h = ex->btlfx_randCentered(0xA0);
+        offset = ex->btlfx_randCentered(0xA0);
         i++;
-        h = (ex->math_sin(t >> 1) * h) >> 12;
-        h += ex->btlfx_lerp(amp0, amp1, t);
-        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, ang);
-        p->pad = lineWidth;
+        offset = (ex->math_sin(t >> 1) * offset) >> 12;
+        offset += ex->btlfx_lerp(amp0, amp1, t);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, offset, ang);
+        pt->pad = lineWidth;
         ang += dang + ex->btlfx_randCentered(0x80);
-        p++;
+        pt++;
     } while (i < 25);
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }

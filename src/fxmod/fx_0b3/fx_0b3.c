@@ -10,46 +10,46 @@ static void fxm_keyGetVec(Fx0b3Track *track, s32 t, SVECTOR *out) {
     out->vz = ((s16 *)track)[2];
 }
 
-static void fxm_keyGetVec2(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
-    s16 *k;
+static void fxm_keyGetVec2(Fx0b3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 6];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 6];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
 }
 
-static void fxm_keyGetVec3(Fx0b3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
-    s16 *k;
+static void fxm_keyGetVec3(Fx0b3Track *track, s32 t, SVECTOR *out0, SVECTOR *out1, SVECTOR *out2) {
+    s16 *key;
 
     if (t >= track->count2) {
         t = track->count2 - 1;
     }
-    k = &track->keys4[t * 9];
-    if (a != NULL) {
-        a->vx = k[0];
-        a->vy = k[1];
-        a->vz = k[2];
+    key = &track->keys4[t * 9];
+    if (out0 != NULL) {
+        out0->vx = key[0];
+        out0->vy = key[1];
+        out0->vz = key[2];
     }
-    if (b != NULL) {
-        b->vx = k[3];
-        b->vy = k[4];
-        b->vz = k[5];
+    if (out1 != NULL) {
+        out1->vx = key[3];
+        out1->vy = key[4];
+        out1->vz = key[5];
     }
-    if (c != NULL) {
-        c->vx = k[6];
-        c->vy = k[7];
-        c->vz = k[8];
+    if (out2 != NULL) {
+        out2->vx = key[6];
+        out2->vy = key[7];
+        out2->vz = key[8];
     }
 }
 
@@ -61,32 +61,32 @@ static s32 fxm_keyGetValue(Fx0b3Track *track, s32 t) {
 }
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
-    s32 m = x % w;
+    s32 wrapW = x % w;
     Unk800F78A4 *env = fx_0b3_env;
-    u32 *p = (u32 *)env->prim;
+    u32 *move = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    s32 n;
-    RECT r2;
-    RECT r;
+    s32 restW;
+    RECT rectRest;
+    RECT rectWrap;
 
-    env->prim = (u8 *)(p + 12);
-    n = w - m;
-    if (m != 0) {
-        r.x = sx;
-        r.y = sy;
-        r.w = m;
-        r.h = h;
-        ex->SetDrawMove(p, &r, dx + n, dy);
-        addPrim(env->ot + OT_LAST, p);
+    env->prim = (u8 *)(move + 12);
+    restW = w - wrapW;
+    if (wrapW != 0) {
+        rectWrap.x = sx;
+        rectWrap.y = sy;
+        rectWrap.w = wrapW;
+        rectWrap.h = h;
+        ex->SetDrawMove(move, &rectWrap, dx + restW, dy);
+        addPrim(env->ot + OT_LAST, move);
     }
-    p += 6;
-    if (n != 0) {
-        r2.x = sx + m;
-        r2.y = sy;
-        r2.w = n;
-        r2.h = h;
-        ex->SetDrawMove(p, &r2, dx, dy);
-        addPrim(env->ot + OT_LAST, p);
+    move += 6;
+    if (restW != 0) {
+        rectRest.x = sx + wrapW;
+        rectRest.y = sy;
+        rectRest.w = restW;
+        rectRest.h = h;
+        ex->SetDrawMove(move, &rectRest, dx, dy);
+        addPrim(env->ot + OT_LAST, move);
     }
 }
 
@@ -536,18 +536,18 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 az,
+static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 bright, s32 tpage, s32 clut, s32 u, s32 v, s32 az,
                    s32 ay, s32 ph, s32 dph, s32 ax, s32 phx, s32 dphx) {
     Unk800F78A4 *env = fx_0b3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    CVECTOR col0;
-    CVECTOR col1;
-    CVECTOR col2;
-    CVECTOR col3;
-    CVECTOR col4;
+    CVECTOR colFlat;
+    CVECTOR colLit;
+    CVECTOR colDark;
+    CVECTOR colFoam;
+    CVECTOR colFoamDark;
     MATRIX m;
-    MATRIX m2;
-    SVECTOR p[4];
+    MATRIX worldMat;
+    SVECTOR quad[4];
     VECTOR lv;
     s32 otz;
     POLY_FT4 *ft4;
@@ -557,42 +557,42 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
     s32 zz;
     s32 j;
     s32 y;
-    s32 k;
+    s32 tileU;
     s32 u0;
     s32 u1;
     s32 v0;
     s32 v1;
     s32 ft;
-    s32 k2;
-    s32 x0;
+    s32 tileV;
+    s32 startX;
 
-    /* x0 is a variable: reload rematerializes the constant into a register for x0 + zz */
-    x0 = -10000;
+    /* startX is a variable: reload rematerializes the constant into a register for startX + zz */
+    startX = -10000;
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
     ft4 = (POLY_FT4 *)env->prim;
-    *(s32 *)&col2 = 0;
-    *(s32 *)&col4 = 0;
+    *(s32 *)&colDark = 0;
+    *(s32 *)&colFoamDark = 0;
     gt4 = (POLY_GT4 *)(ft4 + 100);
     tpage |= 0x20;
     poly = (POLY_G4 *)(gt4 + 20);
     env->prim = (u8 *)(poly + 20);
-    col0.cd = 0x2C;
-    col2.cd = 0x3E;
-    col1.cd = 0x3E;
-    col3.r = col3.g = col3.b = 0xFF;
-    col0.r = col0.g = col0.b = c;
-    col1.r = col1.g = col1.b = c;
-    col4.cd = 0x3A;
-    col3.cd = 0x3A;
+    colFlat.cd = 0x2C;
+    colDark.cd = 0x3E;
+    colLit.cd = 0x3E;
+    colFoam.r = colFoam.g = colFoam.b = 0xFF;
+    colFlat.r = colFlat.g = colFlat.b = bright;
+    colLit.r = colLit.g = colLit.b = bright;
+    colFoamDark.cd = 0x3A;
+    colFoam.cd = 0x3A;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, (VECTOR *)scale);
-    m2 = m;
-    m2.t[0] = pos->vx;
-    m2.t[1] = pos->vy;
-    m2.t[2] = pos->vz;
+    worldMat = m;
+    worldMat.t[0] = pos->vx;
+    worldMat.t[1] = pos->vy;
+    worldMat.t[2] = pos->vz;
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);
     gte_SetRotMatrix(&m);
@@ -602,43 +602,43 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
         y = 0;
         ph += dph;
         for (i = 0; i < 6; i++, y -= 1000) {
-            p[0].vx = (x0 + zz) + ((ex->math_sin(phx + i * dphx) * ax) >> 12);
-            p[1].vx = p[0].vx + 1000;
-            p[2].vx = (x0 + zz) + ((ex->math_sin(phx + (i + 1) * dphx) * ax) >> 12);
-            p[3].vx = p[2].vx + 1000;
+            quad[0].vx = (startX + zz) + ((ex->math_sin(phx + i * dphx) * ax) >> 12);
+            quad[1].vx = quad[0].vx + 1000;
+            quad[2].vx = (startX + zz) + ((ex->math_sin(phx + (i + 1) * dphx) * ax) >> 12);
+            quad[3].vx = quad[2].vx + 1000;
             if (i != 0) {
-                p[0].vy = y + ((ex->math_sin(ph) * ay) >> 12);
-                p[2].vy = p[0].vy - 1000;
-                p[1].vy = y + ((ex->math_sin(ph + dph) * ay) >> 12);
-                p[3].vy = p[1].vy - 1000;
+                quad[0].vy = y + ((ex->math_sin(ph) * ay) >> 12);
+                quad[2].vy = quad[0].vy - 1000;
+                quad[1].vy = y + ((ex->math_sin(ph + dph) * ay) >> 12);
+                quad[3].vy = quad[1].vy - 1000;
             } else {
-                /* d gives (sin * ay >> 12) - 1000 its own register, so it is added last */
-                p[0].vy = y;
+                /* drop gives (sin * ay >> 12) - 1000 its own register, so it is added last */
+                quad[0].vy = y;
                 {
-                    s32 d = ((ex->math_sin(ph) * ay) >> 12) - 1000;
-                    p[2].vy = p[0].vy + d;
+                    s32 drop = ((ex->math_sin(ph) * ay) >> 12) - 1000;
+                    quad[2].vy = quad[0].vy + drop;
                 }
-                p[1].vy = y;
+                quad[1].vy = y;
                 {
-                    s32 d = ((ex->math_sin(ph + dph) * ay) >> 12) - 1000;
-                    p[3].vy = p[1].vy + d;
+                    s32 drop = ((ex->math_sin(ph + dph) * ay) >> 12) - 1000;
+                    quad[3].vy = quad[1].vy + drop;
                 }
             }
-            p[0].vz = p[1].vz = (ex->math_sin((i << 11) / 6) * az) >> 12;
-            p[2].vz = p[3].vz = (ex->math_sin(((i + 1) << 11) / 6) * az) >> 12;
-            gte_ldv3c(p);
+            quad[0].vz = quad[1].vz = (ex->math_sin((i << 11) / 6) * az) >> 12;
+            quad[2].vz = quad[3].vz = (ex->math_sin(((i + 1) << 11) / 6) * az) >> 12;
+            gte_ldv3c(quad);
             gte_rtpt();
-            k = j & 1;
-            u0 = u + (k << 6);
+            tileU = j & 1;
+            u0 = u + (tileU << 6);
             u1 = u0 + 0x40;
-            if (k != 0) {
+            if (tileU != 0) {
                 u1 = u0 + 0x3F;
             }
-            /* k2 is local to this block (k lives in several), so local-alloc gives it $v0 */
-            k2 = i & 3;
-            v0 = v + (k2 << 5);
+            /* tileV is local to this block (tileU lives in several), so local-alloc gives it $v0 */
+            tileV = i & 3;
+            v0 = v + (tileV << 5);
             v1 = v0 + 0x20;
-            if (k2 == 3) {
+            if (tileV == 3) {
                 v1 = v0 + 0x1F;
             }
             gte_stopz(&otz);
@@ -647,14 +647,14 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
                 gte_stszotz(&otz);
                 ft = 1;
                 if (i >= 5) {
-                    *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&col1;
-                    *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&col2;
-                    *(s32 *)&poly->r0 = *(s32 *)&poly->r1 = *(s32 *)&col3;
+                    *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&colLit;
+                    *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&colDark;
+                    *(s32 *)&poly->r0 = *(s32 *)&poly->r1 = *(s32 *)&colFoam;
                     ft = 0;
-                    *(s32 *)&poly->r2 = *(s32 *)&poly->r3 = *(s32 *)&col4;
-                    gte_SetRotMatrix(&m2);
-                    gte_SetTransMatrix(&m2);
-                    gte_ldv0(&p[2]);
+                    *(s32 *)&poly->r2 = *(s32 *)&poly->r3 = *(s32 *)&colFoamDark;
+                    gte_SetRotMatrix(&worldMat);
+                    gte_SetTransMatrix(&worldMat);
+                    gte_ldv0(&quad[2]);
                     gte_rtv0tr();
                     gte_stlvnl(&lv);
                     fx_0b3_crestPts[j].vx = lv.vx;
@@ -663,7 +663,7 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
                     gte_SetRotMatrix(&m);
                     gte_SetTransMatrix(&m);
                 } else {
-                    *(s32 *)&ft4->r0 = *(s32 *)&col0;
+                    *(s32 *)&ft4->r0 = *(s32 *)&colFlat;
                 }
                 if (ft) {
                     ft4->u0 = ft4->u2 = u0;
@@ -685,7 +685,7 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c
                     *(s32 *)&poly->x1 = *(s32 *)&gt4->x1;
                     *(s32 *)&poly->x2 = *(s32 *)&gt4->x2;
                 }
-                gte_ldv0(&p[3]);
+                gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
                     ex->btlfx_addPrim(0x09000000, otz, ft4);
@@ -857,28 +857,28 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-static s32 fxm_sinHalfNeg(s32 a) {
-    s32 v = BTLFX_EXPORTS(fx_0b3_env)->math_sin(a);
+static s32 fxm_sinHalfNeg(s32 ang) {
+    s32 sinv = BTLFX_EXPORTS(fx_0b3_env)->math_sin(ang);
 
-    if (v < 0) {
-        v >>= 1;
+    if (sinv < 0) {
+        sinv >>= 1;
     }
-    return v;
+    return sinv;
 }
 
-static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32 tpage, s32 clut, s32 u, s32 v,
+static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 bright, s32 brightShade, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 ay, s32 ph, s32 dph, s32 az, s32 phz, s32 dphz) {
     Unk800F78A4 *env = fx_0b3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    CVECTOR col0;
-    CVECTOR col1;
-    CVECTOR col2;
-    CVECTOR col3;
-    CVECTOR col4;
-    CVECTOR col5;
+    CVECTOR colFlat;
+    CVECTOR colLit;
+    CVECTOR colDark;
+    CVECTOR colShadeFlat;
+    CVECTOR colShadeLit;
+    CVECTOR colShadeDark;
     MATRIX m;
-    MATRIX m2;
-    SVECTOR p[4];
+    MATRIX worldMat;
+    SVECTOR quad[4];
     VECTOR lv;
     DVECTOR sxy;
     s32 opz;
@@ -894,82 +894,82 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c,
     POLY_GT4 *gt4;
     s32 i;
     s32 x;
-    s32 k;
-    s32 k2;
+    s32 tileU;
+    s32 tileV;
     s32 u0;
     s32 u1;
     s32 v0;
     s32 v1;
     s32 ft;
     s32 abr;
-    s32 x0;
-    s32 z0;
+    s32 startX;
+    s32 startY;
 
     abr = 1;
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
     gt4 = (POLY_GT4 *)env->prim;
-    *(s32 *)&col2 = 0;
-    *(s32 *)&col5 = 0;
+    *(s32 *)&colDark = 0;
+    *(s32 *)&colShadeDark = 0;
     ft4 = (POLY_FT4 *)(gt4 + 18);
     g4 = (POLY_G4 *)(ft4 + 324);
     f4 = (POLY_F4 *)(g4 + 18);
     env->prim = (u8 *)(f4 + 324);
-    col0.r = col0.g = col0.b = c;
-    col1.r = col1.g = col1.b = c;
-    col3.r = col3.g = col3.b = c2;
-    col4.r = col4.g = col4.b = c2;
-    col0.cd = abr != 0xFF ? 0x2E : 0x2C;
-    col2.cd = abr != 0xFF ? 0x3E : 0x3C;
-    col1.cd = col2.cd;
-    col3.cd = abr != 0xFF ? 0x2A : 0x28;
-    col5.cd = abr != 0xFF ? 0x3A : 0x38;
+    colFlat.r = colFlat.g = colFlat.b = bright;
+    colLit.r = colLit.g = colLit.b = bright;
+    colShadeFlat.r = colShadeFlat.g = colShadeFlat.b = brightShade;
+    colShadeLit.r = colShadeLit.g = colShadeLit.b = brightShade;
+    colFlat.cd = abr != 0xFF ? 0x2E : 0x2C;
+    colDark.cd = abr != 0xFF ? 0x3E : 0x3C;
+    colLit.cd = colDark.cd;
+    colShadeFlat.cd = abr != 0xFF ? 0x2A : 0x28;
+    colShadeDark.cd = abr != 0xFF ? 0x3A : 0x38;
     tpage |= (abr & 3) << 5;
-    col4.cd = col5.cd;
+    colShadeLit.cd = colShadeDark.cd;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
-    m2 = m;
-    m2.t[0] = pos->vx;
-    m2.t[1] = pos->vy;
-    m2.t[2] = pos->vz;
+    worldMat = m;
+    worldMat.t[0] = pos->vx;
+    worldMat.t[1] = pos->vy;
+    worldMat.t[2] = pos->vz;
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    x0 = -0x24EA;
-    z0 = -0x17CD;
+    startX = -0x24EA;
+    startY = -0x17CD;
     zz = 0;
     for (j = 0; j < 18; j++, zz += 0x2A5) {
         i = 0;
         ph += dph;
-        y0 = z0 + zz;
+        y0 = startY + zz;
         y1 = y0 + 0x2A5;
         for (xx = 0; i < 19; i++, xx += 0x41A) {
-            x = x0 + xx;
-            p[0].vx = x + ((ex->math_sin(ph) * ay) >> 12);
-            p[1].vx = p[0].vx + 0x41A;
+            x = startX + xx;
+            quad[0].vx = x + ((ex->math_sin(ph) * ay) >> 12);
+            quad[1].vx = quad[0].vx + 0x41A;
             x += (ex->math_sin(ph + dph) * ay) >> 12;
-            p[0].vy = p[1].vy = y0;
-            p[2].vy = p[3].vy = y1;
-            p[2].vx = x;
+            quad[0].vy = quad[1].vy = y0;
+            quad[2].vy = quad[3].vy = y1;
+            quad[2].vx = x;
             x += 0x41A;
-            p[3].vx = x;
-            p[0].vz = p[2].vz = (fxm_sinHalfNeg(phz + i * dphz) * az) >> 12;
-            p[1].vz = p[3].vz = (fxm_sinHalfNeg(phz + (i + 1) * dphz) * az) >> 12;
-            gte_ldv3c(p);
+            quad[3].vx = x;
+            quad[0].vz = quad[2].vz = (fxm_sinHalfNeg(phz + i * dphz) * az) >> 12;
+            quad[1].vz = quad[3].vz = (fxm_sinHalfNeg(phz + (i + 1) * dphz) * az) >> 12;
+            gte_ldv3c(quad);
             gte_rtpt();
-            k = i & 1;
-            u0 = u + (k << 6);
+            tileU = i & 1;
+            u0 = u + (tileU << 6);
             u1 = u0 + 0x40;
-            if (k != 0) {
+            if (tileU != 0) {
                 u1 = u0 + 0x3F;
             }
-            k2 = j & 1;
-            v0 = v + (k2 << 6);
+            tileV = j & 1;
+            v0 = v + (tileV << 6);
             v1 = v0 + 0x40;
-            if (k2 != 0) {
+            if (tileV != 0) {
                 v1 = v0 + 0x3F;
             }
             gte_nclip();
@@ -979,14 +979,14 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c,
                 gte_stszotz(&otz);
                 ft = 1;
                 if (i == 0) {
-                    *(s32 *)&gt4->r0 = *(s32 *)&gt4->r2 = *(s32 *)&col2;
-                    *(s32 *)&gt4->r1 = *(s32 *)&gt4->r3 = *(s32 *)&col1;
-                    *(s32 *)&g4->r0 = *(s32 *)&g4->r2 = *(s32 *)&col5;
+                    *(s32 *)&gt4->r0 = *(s32 *)&gt4->r2 = *(s32 *)&colDark;
+                    *(s32 *)&gt4->r1 = *(s32 *)&gt4->r3 = *(s32 *)&colLit;
+                    *(s32 *)&g4->r0 = *(s32 *)&g4->r2 = *(s32 *)&colShadeDark;
                     ft = 0;
-                    *(s32 *)&g4->r1 = *(s32 *)&g4->r3 = *(s32 *)&col4;
+                    *(s32 *)&g4->r1 = *(s32 *)&g4->r3 = *(s32 *)&colShadeLit;
                 } else {
-                    *(s32 *)&ft4->r0 = *(s32 *)&col0;
-                    *(s32 *)&f4->r0 = *(s32 *)&col3;
+                    *(s32 *)&ft4->r0 = *(s32 *)&colFlat;
+                    *(s32 *)&f4->r0 = *(s32 *)&colShadeFlat;
                 }
                 if (opz > 0) {
                     if (ft) {
@@ -1025,9 +1025,9 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c,
                     *(s32 *)&g4->x0 = *(s32 *)&gt4->x0;
                     *(s32 *)&g4->x1 = *(s32 *)&gt4->x1;
                     *(s32 *)&g4->x2 = *(s32 *)&gt4->x2;
-                    gte_SetRotMatrix(&m2);
-                    gte_SetTransMatrix(&m2);
-                    gte_ldv0(&p[0]);
+                    gte_SetRotMatrix(&worldMat);
+                    gte_SetTransMatrix(&worldMat);
+                    gte_ldv0(&quad[0]);
                     gte_rtv0tr();
                     gte_stlvnl(&lv);
                     fx_0b3_edgePts[j].vx = lv.vx;
@@ -1035,7 +1035,7 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c,
                     fx_0b3_edgePts[j].vz = lv.vz;
                     gte_SetRotMatrix(&m);
                     gte_SetTransMatrix(&m);
-                    gte_ldv0(&p[0]);
+                    gte_ldv0(&quad[0]);
                     gte_rtps();
                     gte_stsxy(&sxy);
                     if ((u16)(sxy.vx + 0x20) > 0x180 || sxy.vy < -0x20 || sxy.vy > 0x110) {
@@ -1044,7 +1044,7 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c,
                         fx_0b3_edgePts[j].pad = 1;
                     }
                 }
-                gte_ldv0(&p[3]);
+                gte_ldv0(&quad[3]);
                 gte_rtps();
                 if (ft) {
                     ex->btlfx_addPrim(0x09000000, otz, ft4);
@@ -1066,18 +1066,18 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c,
     }
 }
 
-static s32 fxm_nextRingPoint(SVECTOR *v) {
-    s32 i = fx_0b3_edgePtIdx;
+static s32 fxm_nextRingPoint(SVECTOR *out) {
+    s32 slot = fx_0b3_edgePtIdx;
 
-    v->pad = 1;
-    v->vx = fx_0b3_edgePts[i].vx;
-    v->vy = fx_0b3_edgePts[i].vy;
-    v->vz = fx_0b3_edgePts[i].vz;
-    i++;
-    if (i >= 16) {
-        i = 0;
+    out->pad = 1;
+    out->vx = fx_0b3_edgePts[slot].vx;
+    out->vy = fx_0b3_edgePts[slot].vy;
+    out->vz = fx_0b3_edgePts[slot].vz;
+    slot++;
+    if (slot >= 16) {
+        slot = 0;
     }
-    fx_0b3_edgePtIdx = i;
+    fx_0b3_edgePtIdx = slot;
     return 0;
 }
 

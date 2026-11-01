@@ -99,6 +99,6 @@ extern Unk800F78A4 *fx_180_env;
 
 /* propagated */
 static s32 fxm_moveUnitArc(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start);
-static u16 *fxm_offsetTableEntry(u8 *base, u16 i);
+static u16 *fxm_offsetTableEntry(u8 *base, u16 idx);
 
 #endif

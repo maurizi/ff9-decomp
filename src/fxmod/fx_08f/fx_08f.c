@@ -1,87 +1,87 @@
 #include "fxmod/fx_08f.h"
 
-static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
-    SVECTOR *p;
-    s32 *prev;
+static void fxm_randDiscPoints(s32 n, s32 radius, SVECTOR *pts) {
+    SVECTOR *pt;
+    s32 *last;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_08f_env);
     s32 i;
     s32 rad;
-    s32 a;
+    s32 ang;
 
-    p = pts;
-    prev = (s32 *)&p[n];
-    for (i = 0; i < n; i++, prev++, p++) {
-        *prev = 0x7F7F7F7F;
-        rad = ex->btlfx_randRange(r >> 2, r >> 1);
-        a = ex->btlfx_rand() & 0xFFF;
-        p->vx = (ex->math_cos(a) * rad) >> 12;
-        p->vy = (ex->math_sin(a) * rad) >> 12;
-        p->vz = ex->btlfx_rand() % 1280 - 0x100;
+    pt = pts;
+    last = (s32 *)&pt[n];
+    for (i = 0; i < n; i++, last++, pt++) {
+        *last = 0x7F7F7F7F;
+        rad = ex->btlfx_randRange(radius >> 2, radius >> 1);
+        ang = ex->btlfx_rand() & 0xFFF;
+        pt->vx = (ex->math_cos(ang) * rad) >> 12;
+        pt->vy = (ex->math_sin(ang) * rad) >> 12;
+        pt->vz = ex->btlfx_rand() % 1280 - 0x100;
     }
 }
 
-static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pt, CVECTOR *col, s32 p, s32 abr) {
+static void fxm_drawStreakField(u32 *ot, s32 n, s32 projH, s32 dz, void *rot, SVECTOR *pts, CVECTOR *rgb, s32 fade, s32 abr) {
     Unk800F78A4 *env = fx_08f_env;
-    CVECTOR c;
+    CVECTOR col;
     MATRIX m;
-    s32 hsave;
+    s32 oldH;
     u32 otz;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     LINE_G2 *prim;
-    s32 *prev;
-    SVECTOR *pts;
+    s32 *last;
+    SVECTOR *cur;
     s32 live;
     s32 i;
 
-    if (p < 0) {
-        p = 0x1000;
+    if (fade < 0) {
+        fade = 0x1000;
     }
     prim = (LINE_G2 *)env->prim;
     env->prim = (u8 *)(prim + n);
-    if (col == NULL) {
-        c.r = c.g = c.b = 0;
+    if (rgb == NULL) {
+        col.r = col.g = col.b = 0;
     } else {
-        gte_DpqColorFar_nst(col, p);
-        gte_strgb(&c);
+        gte_DpqColorFar_nst(rgb, fade);
+        gte_strgb(&col);
     }
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    gte_ReadGeomScreen(&hsave);
-    gte_SetGeomScreen(h);
-    ex->math_rotMatrixYXZ(src, &m);
+    gte_ReadGeomScreen(&oldH);
+    gte_SetGeomScreen(projH);
+    ex->math_rotMatrixYXZ(rot, &m);
     m.t[1] = 0;
     m.t[0] = 0;
-    m.t[2] = h;
+    m.t[2] = projH;
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    pts = pt;
-    prev = (s32 *)&pts[n];
-    for (i = 0; i < n; i++, prev++, pts++, prim++) {
-        live = *prev != 0x7F7F7F7F;
-        gte_ldv0(pts);
+    cur = pts;
+    last = (s32 *)&cur[n];
+    for (i = 0; i < n; i++, last++, cur++, prim++) {
+        live = *last != 0x7F7F7F7F;
+        gte_ldv0(cur);
         gte_rtps();
-        pts->vz -= dz;
-        if (dz > 0 && pts->vz < -0x100) {
-            pts->vz = 0x400;
-            *prev = 0x7F7F7F7F;
-        } else if (dz < 0 && pts->vz > 0x300) {
-            pts->vz = -0x200;
-            *prev = 0x7F7F7F7F;
+        cur->vz -= dz;
+        if (dz > 0 && cur->vz < -0x100) {
+            cur->vz = 0x400;
+            *last = 0x7F7F7F7F;
+        } else if (dz < 0 && cur->vz > 0x300) {
+            cur->vz = -0x200;
+            *last = 0x7F7F7F7F;
         } else {
             gte_stsxy(&prim->x0);
             gte_stszotz(&otz);
             if (otz < 0x200 && live) {
-                gte_DpqColorFar_nst(&c, ((0x200 - otz) << 12) >> 9);
+                gte_DpqColorFar_nst(&col, ((0x200 - otz) << 12) >> 9);
                 gte_strgb(&prim->r0);
-                *(s32 *)&prim->x1 = *prev;
+                *(s32 *)&prim->x1 = *last;
                 *(s32 *)&prim->r1 = 0;
                 prim->code = abr != 0xFF ? 0x52 : 0x50;
                 ex->btlfx_linkPrimAbr(0x4000000, ot, prim, abr);
             }
-            *prev = *(s32 *)&prim->x0;
+            *last = *(s32 *)&prim->x0;
         }
     }
-    gte_SetGeomScreen(hsave);
+    gte_SetGeomScreen(oldH);
 }
 
 s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {

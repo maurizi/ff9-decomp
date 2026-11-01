@@ -71,11 +71,11 @@ extern Fx0d2Track fx_0d2_camChans[64];
 extern s32 fx_0d2_camChanFrame[4];
 
 static void fxm_buildPathTrail(Fx0d2Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
-static s32 fxm_offsetTableEntry(u8 *base, u16 i);
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static s32 fxm_offsetTableEntry(u8 *base, u16 idx);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
-static s32 fxm_valuePathGet(Fx0d2Keys *keys, s32 i, s32 *out);
-static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b);
+static s32 fxm_valuePathGet(Fx0d2Keys *keys, s32 t, s32 *out);
+static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start);
 static void fxm_camChanReset(void);
 static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data);
 static void fxm_camChanUpdate(s32 ch);
@@ -106,7 +106,7 @@ typedef struct {
 static void fxm_posPathInit(Fx0d2Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx0d2Path *path, s32 t, SVECTOR *out);
 static void fxm_rotPosPathInit(Fx0d2Path *path, u16 *data);
-static s32 fxm_rotPosPathGet(Fx0d2KeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx0d2KeyPath *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 static void fxm_valuePathInit(Fx0d2Path *path, u16 *data);
 static void fxm_vecPathInit(Fx0d2Path *path, u16 *data);
 static s32 fxm_vecPathGet(Fx0d2Path *track, s32 t, VECTOR *out);

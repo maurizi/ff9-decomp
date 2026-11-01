@@ -61,9 +61,9 @@ typedef struct {
     u16 count2; /* keys */
     Fx1fdKey *keys4;
 } Fx1fdPath_0b4;
-static s32 fxm_rotPosPathGet(Fx1fdPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
-static u16 *fxm_offsetTableEntry(u8 *base, u16 i);
-static s32 fxm_moveUnitHome(s32 a0, s32 t, s32 n, SVECTOR *b);
+static s32 fxm_rotPosPathGet(Fx1fdPath_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
+static u16 *fxm_offsetTableEntry(u8 *base, u16 idx);
+static s32 fxm_moveUnitHome(s32 unit, s32 t, s32 n, SVECTOR *start);
 
 typedef struct {
     s16 *keys0;
@@ -87,11 +87,11 @@ typedef struct {
     s32 otz8; /* ot z */
 } Fx1fdEdge;
 extern Fx1fdEdge fx_1fd_ribbonEdges[];
-void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale, s32 w, s32 rotY);
+void fxm_projectEdges(void *track, s32 unused, s32 unusedLength, SVECTOR *scale, s32 width, s32 rotY);
 extern Fx1fdOrbit fx_1fd_unitOrbits[];
 s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args);
-void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLength, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist);
-void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1);
+void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 unused, s32 unusedLength, SVECTOR *scale, s32 width, s32 t, s32 rotY, s32 twist);
+void fxm_drawEdgeQuads(s32 n, s32 bright, s32 tpage, s32 clut, u16 v0, u16 v1);
 
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);

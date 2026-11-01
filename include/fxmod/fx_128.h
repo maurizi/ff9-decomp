@@ -41,7 +41,7 @@ static void fxm_posPathInit(Fx128Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx128Path *path, s32 t, SVECTOR *out);
 static void fxm_valuePathInit(Fx128Path *path, u16 *data);
 
-static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
+static void fxm_lerpSvec(SVECTOR *from, SVECTOR *to, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 
 /* propagated */
@@ -56,14 +56,14 @@ typedef struct {
     u16 count2; /* keys */
     Fx128Key *keys4;
 } Fx128Path_0b4;
-static s32 fxm_rotPosPathGet(Fx128Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+static s32 fxm_rotPosPathGet(Fx128Path_0b4 *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 
 typedef struct {
     u16 unk0; /* not read by the module */
     u16 count2; /* count */
     s16 *values4;
 } Fx128Keys;
-static s32 fxm_valuePathGet(Fx128Keys *keys, s32 i, s32 *out);
+static s32 fxm_valuePathGet(Fx128Keys *keys, s32 t, s32 *out);
 
 typedef struct {
     s32 vx;

@@ -16,17 +16,17 @@ static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 owner, SVECTOR *pos, s32 
 
 static s32 fxm_boneLerpParticle(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_11d_env);
-    SVECTOR a;
-    SVECTOR b;
-    SVECTOR c;
+    SVECTOR boneA;
+    SVECTOR boneB;
+    SVECTOR mid;
 
-    ex->btlfx_getUnitBonePos(0x10, key->bone0, (u16 *)&a);
-    ex->btlfx_getUnitBonePos(0x10, key->bone2, (u16 *)&b);
-    ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, key->blend4, (s16 *)&c);
-    c.vz -= 0x32;
-    pos->vx = c.vx;
-    pos->vy = c.vy;
-    pos->vz = c.vz;
+    ex->btlfx_getUnitBonePos(0x10, key->bone0, (u16 *)&boneA);
+    ex->btlfx_getUnitBonePos(0x10, key->bone2, (u16 *)&boneB);
+    ex->btlfx_lerpVec((s16 *)&boneA, (s16 *)&boneB, key->blend4, (s16 *)&mid);
+    mid.vz -= 0x32;
+    pos->vx = mid.vx;
+    pos->vy = mid.vy;
+    pos->vz = mid.vz;
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;

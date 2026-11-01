@@ -38,7 +38,7 @@ typedef struct {
     SVECTOR pos0;
     SVECTOR pos8;
 } Fx105Seg; /* 0x10 */
-static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx105Seg *buf, s32 abr);
+static void fxm_drawRibbonTrail(SVECTOR *posA, SVECTOR *posB, u32 n, CVECTOR *colorA, CVECTOR *colorB, s32 fade, Fx105Seg *buf, s32 abr);
 
 typedef struct {
     u8 pad0[0x54];

@@ -83,6 +83,6 @@ static void fxm_startUnitMotion(s32 unit, s32 motion);
 /* end copied */
 
 /* propagated */
-static u16 *fxm_offsetTableEntry(u8 *base, u16 i);
+static u16 *fxm_offsetTableEntry(u8 *base, u16 idx);
 
 #endif
