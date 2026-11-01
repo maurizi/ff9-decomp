@@ -3962,6 +3962,15 @@ extern s32 g_btlfxSavedSp;
 /* main exe: candidates for ff9.h */
 s32 vib_update(void);
 extern u8 g_btlScanTexts[];
+/* g_btlScanTexts entries (tools/ff9text.py text_table): 0-7 the enemy categories "Humanoid".."Aerial" (bit k of
+ * BtlEnemyType.category), then */
+#define BTL_SCAN_TEXT_CARRIES 8 /* "Carries " (Detect) */
+#define BTL_SCAN_TEXT_NOTHING 9 /* "Isn't carrying anything." */
+#define BTL_SCAN_TEXT_LV      10 /* TEXT_X_ADD, then "LV: " */
+#define BTL_SCAN_TEXT_HP      11 /* "HP: " */
+#define BTL_SCAN_TEXT_MP      12 /* TEXT_X_ADD, then "MP: " */
+#define BTL_SCAN_TEXT_SLASH   13 /* "/" */
+#define BTL_SCAN_TEXT_WEAK    14 /* + element bit: "Weak against Fire." .. "Weak against Shadow." */
 extern u8 s_btlDetectItemSuffix[]; /* "/\xFF" suffix string */
 void btl_setBanner(s32, s32);
 void btl_setBannerAt(s32, s32);
