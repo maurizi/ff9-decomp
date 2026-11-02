@@ -1809,6 +1809,7 @@ extern u8 g_evtGeneralFlags; /* g_evtGlobalVars.b[EVT_GB_GENERAL_FLAGS] under it
 #define EVT_GB_ENV_SOUND1_ID 0x0B     /* s16: slot 1 */
 #define EVT_GB_ENV_SOUND0_STATE 0x0D  /* u8: 0 none, 1 start, 2 playing, 9 error: the init shows area message 0x44 */
 #define EVT_GB_ENV_SOUND1_STATE 0x0E  /* u8: slot 1, same values */
+#define EVT_GB_CHR_JOINED 0x13       /* u16: bit k = character record k initialised by its first PARTY_JOIN (medium-high, R40) */
 #define EVT_GB_STELLAZZIO_GIVEN 0x163 /* u16: bit k = Stellazzio coin item 304 + k given to Queen Stella */
 #define EVT_GB_FROG_UNLOCK 0x18F      /* frog catching available (medium) */
 #define EVT_GB_FROG_LEFT 0x1A2        /* frogs left (medium) */
