@@ -3660,3 +3660,27 @@ Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
 - proposed: `EVT_GB_ENV_SOUND0_STATE 0x0D` / `EVT_GB_ENV_SOUND1_STATE 0x0E` / `_ID 0x09` / `0x0B` (high), plus the
   minigame bytes listed at the end of docs/r32/3ds-requests-8.md.
 - confidence: high for the recipes marked verified; Hot and Cold points window and the frog Keep prompt unverified.
+
+## R40: auction bid variables, direct minigame entry, Quina's record  (status: reference; details in docs/r32/3ds-requests-10.md)
+- binary: field scripts (FF9.IMG dir 4) + main event system; no code symbols renamed.
+- evidence (PCSX-Redux; scratch `build/3ds10/inject.py` stops at evt_update's `jal evt_updateObjects` 0x8004BC64 and
+  ORs a mask into g_msgPadPressed or redirects into `evt_callObjectFunc(obj, lv, tag, 0)` with ra = the jal):
+  - Field 909 bid window = entry 10 tag 31: bid / 100 in the entry-10 object's local s16 +4 (0x80077F1C), digit
+    0..2 in s8 +1 (0x80077F19), repeat counter s8 +0. From `r38_auction_bid`: poke 50 + Cross → price fieldVars +0x1B =
+    5000, top bidder +0x39 = 0, balloon "5000 Gil!"; poke 5 → msg 0xCF; Circle → local = -1, no bid; poke 2000 →
+    accepted with 127,972 Gil (the confirm has no funds check). Up with digit 0/2 → +1/+100.
+  - Direct entry by the talk function: field 1850 `evt_callObjectFunc(uid 7, 1, 3, 0)` → Hippolady's dialog and the
+    race (GO reached); field 909 `evt_callObjectFunc(region uid 16, 1, 3, 0)` once fieldVars +0x39 is 1..5 → bid
+    windows from the default arrival point; field 103 `evt_callObjectFunc(uid 8, 1, 3, 0)` → "You wanna try?", but
+    the player's scripted walk sticks at (-2054, 409) unless the player is first placed at (-2349, 59) the way op
+    0x1D does it (ovl_0a bgi_setActorActive(slot, 0), pos/prevPos, bgi_setActorActive(slot, 1)); then "0 times".
+    A raw x/z write without the bgi pair stops the actor (R38); with it the player walks normally.
+  - Frog prompt (field 657) needs `evt_isInParty(5)`: a party member with info.id 5 and info.kind < 14. With
+    `field_dali_inn`'s record 5 (Cinna: classFlags 0x15, kind 14) in party 0,1,2,5 → no prompt; classFlags 5, row 5,
+    then `chr_join(5, 1, 5)` (= PARTY_JOIN 05 01 05 05 05) → kind 9, prompt, "Frogs Captured: 0" with Quina (model 273)
+    as the player. b[0x13..0x14] bit k = record k initialised by its first PARTY_JOIN (fields 618/657/661 entry 0 tag 1).
+- states: disc 1 `r40_f103_fresh`, `r40_jumprope_direct_ready`, `r40_frog_quina_ask`, `r40_frog_quina_running`;
+  disc 2 `r40_auction_fresh_bidup`; disc 3 `r40_hippaul_fresh`, `r40_hippaul_howto_direct`.
+- proposed: `EVT_GB_CHR_JOINED 0x13` (u16 bits, medium-high), `EVT_GB_SAVED_POS 0xF3` (x/y/z s16 + dir u8, read by
+  field 1850 arrival 831; low).
+- confidence: high (every recipe above verified from a fresh field entry, screenshots in build/3ds10/).
