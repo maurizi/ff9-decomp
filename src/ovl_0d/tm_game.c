@@ -1,6 +1,10 @@
 #include "ovl_0d.h"
 
 void tm_mainLoop(void) {
+    /* tm.animFrame is never initialised: on the PS1 it starts as stack residue, the first row of ovl_0a
+     * fld_drawShadow's MATRIX local from the last character shadow the field drew (e.g. 0x0000FFD6 from Dali 354's
+     * shopkeeper, 0x00450042 in the enter_tm fixtures), and only picks the hand cursor's animation frame.
+     * timer, turn and comboDirs also start as residue but nothing reads them before they are set (F42). */
     TmState tm;
     GameData *ctx;
     void *prim;
@@ -9,6 +13,7 @@ void tm_mainLoop(void) {
     tm.unk5C8.y = 0x1E;
     tm.unk5C8.w = 0xC8;
     tm.unk5C8.h = 0x64;
+    PSX_STACK_RESIDUE(tm.animFrame);
     tm_setup(&tm);
     SetDispMask(1);
     SetDispMask(1);

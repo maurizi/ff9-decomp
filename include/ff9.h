@@ -36,6 +36,13 @@
 #define PSX_NULLABLE(p) (p)
 #endif
 
+/* A local the original code reads before ever writing it, so on the PS1 it starts with whatever an earlier function
+ * left on the stack. Empty here (the build stays byte-identical); a port defines it to give the variable a
+ * deterministic start value, e.g. `#define PSX_STACK_RESIDUE(lv) ((lv) = 0)` (ff9-ds F42). */
+#ifndef PSX_STACK_RESIDUE
+#define PSX_STACK_RESIDUE(lv)
+#endif
+
 /* Is this offset-or-pointer field still a file offset, i.e. not yet relocated in place? Relocated values are
  * KSEG0 pointers (0x80xxxxxx, negative as s32). A port whose pointers are positive defines its own. */
 #ifndef IS_OFFSET

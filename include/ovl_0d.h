@@ -297,7 +297,7 @@ typedef struct {
     s32 stockCol; /* stock grid cursor, card id = col * 10 + row */
     s32 stockRow;
     s32 handCount; /* cards picked from the stock into the hand */
-    s32 animFrame; /* cursor animation frame */
+    s32 animFrame; /* cursor animation frame; never initialised (stack residue, F42) */
     Window *quitWin;
     s32 savedFrame; /* animFrame of the hand cursor kept while placing */
     TmCard *targets[8]; /* cards the placed card can battle (BATTLE SELECT) */
