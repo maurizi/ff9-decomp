@@ -3729,7 +3729,7 @@ Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
 - state: disc 1 `f41_tm_midmatch` (1,500 frames after `3ds4_tm_turn2`, mid-match, battle on screen).
 - confidence: high for the PS1 side (about 25,000 watched frames over the match phases the port's repro runs).
 
-## F42: TmState fields read before Tetra Master initialises them (stack residue)  (status: proposed, ff9-ds F42)
+## F42: TmState fields read before Tetra Master initialises them (stack residue)  (status: applied 6efe5833; ff9-ds 7522c90 defines it as 0)
 - binary: ovl_0d. Owner of the 0x5D0-byte local at 0x801FF9E0: **tm_mainLoop** (`addiu sp,-0x5F0`, `TmState tm` at
   sp+0x10; tm_main only has a 0x18 frame). No symbols renamed.
 - question: which TmState fields does ovl_0d read before anything writes them, what does the PS1 hold there on
