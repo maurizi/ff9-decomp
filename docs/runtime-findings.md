@@ -3728,3 +3728,92 @@ Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
 - proposed decomp change: none (no PSX_RAM / PSX_NULLABLE-style hook; there is no read site to wrap).
 - state: disc 1 `f41_tm_midmatch` (1,500 frames after `3ds4_tm_turn2`, mid-match, battle on screen).
 - confidence: high for the PS1 side (about 25,000 watched frames over the match phases the port's repro runs).
+
+## F42: TmState fields read before Tetra Master initialises them (stack residue)  (status: proposed, ff9-ds F42)
+- binary: ovl_0d. Owner of the 0x5D0-byte local at 0x801FF9E0: **tm_mainLoop** (`addiu sp,-0x5F0`, `TmState tm` at
+  sp+0x10; tm_main only has a 0x18 frame). No symbols renamed.
+- question: which TmState fields does ovl_0d read before anything writes them, what does the PS1 hold there on
+  different entry paths, and where does that residue come from?
+- answer (static walk of tm_mainLoop → tm_setup → tm_taskInit → CHOICE ... plus a runtime check, below). Four fields, and only
+  **animFrame** reaches anything observable:
+  - `animFrame` (+0x480): **never assigned a start value** anywhere (only `tm.animFrame++` in tm_mainLoop and the
+    `savedFrame = animFrame` / `animFrame = savedFrame` pair in PLAYER_SELECT/PLAYER_SET), so it runs on from
+    the residue for the whole session, rematches included. Its only reader is tm_drawCursor: `u = ((animFrame / 6) & 7) * 24`
+    (and the same with savedFrame), i.e. which of the 8 frames of the hand cursor's animation is drawn. It does not
+    feed rand(), task logic, AI or the primitive count; on the PS1 it changes only the cursor sprite's U.
+  - `timer` (+0x2E8): incremented from residue every frame, but no code reads it before some `timer = 0`
+    (tm_taskChoice2 Yes → FIELD_FADE, tm_startEndFade, tm_taskTurn, ...): its CHOICE-phase readers (tm_drawStock's
+    `timer & 0x20` blink, tm_taskCardAway2) are only reached after a trade, and tm_drawBackground/tm_drawBoard read
+    it only in FIELD_FADE. Not observable.
+  - `turn` (+0x434): read every frame by tm_mainLoop's two `tm_debugPrint` checks from the first frame until
+    tm_taskEnemyAppear sets it (coin toss). tm_debugPrint is empty, so not observable.
+  - `comboDirs` (+0x50C, u8): tm_drawArrows loads it for every visible card each frame, but uses the bits only when
+    `blink` is set, i.e. in FLASH_ARROW for comboCard, a task that only tm_setFlips enters, and tm_setFlips writes
+    comboDirs and comboCard first. Not observable.
+  - Partially initialised but never read early: `cards[]` (tm_initHands leaves small/fromX/fromY/toX/toY unset, but
+    visible = 0, and drawCards skips invisible cards), `board[][].card` (guarded by state), `targets[]` (numTargets),
+    `lostCard` (hasLostCard), `flips[]` (tm_clearFlips), `landed[]`, `comboCard`, `pad*`.
+- runtime: `build/f42/shadow.lua` (scratch) puts one Write and one Read breakpoint over 0x801FF9E0+0x5D0. Before
+  tm_mainLoop's first instruction (exec bp 0x800A7E10, checked against the opcode 0x27BDFA10 and sp == 0x801FFFC0, since
+  ovl_0a also runs code at that address) it records the last writer (pc, ra) of every byte. From then on it marks
+  bytes as written and logs every read of a byte that hasn't been written (the `++` load/store pair 0x800A8A34-0x800A8A4C
+  doesn't count as an initialising write). `build/f42/run.py` loads, optionally forces TM like enter_tm.py, picks 5
+  cards (stockRow/stockCol pokes + Cross) and plays random presses (`jit.off()`, interpreter). Runs:
+  1. `field_dali_inn` + forced opponent 12 (enter_tm path), 200 + 5 picks + 400 presses (one won game, rematch, second
+     game into BATTLE_SELECT): uninitialised reads only at +0x434 (pc 0x800A8974, 243x), +0x480 (pc 0x800B1730 =
+     tm_drawCursor, value 0x0045018F at the first draw), +0x50C (pc 0x800B1538 = tm_drawArrows, 2320x). Nothing else.
+  2. **Real NPC path**: `3ds3_f354_counter` (Dali 354, at Shopkeeper Eve's counter), Square → "You want to play a card
+     game?" Yes (state `f42_dali354_card_prompt` is that prompt), Cross through her lines → field exit → ovl_0d (opponent 12, AE 00 0C 00).
+     Same three offsets, nothing else; one lost game, rematch, back to Card Selection.
+  3. Second real entry in the same session: quit from Card Selection (Square, Up, Cross; state `f42_dali354_after_quit`
+     back in the field), talk again, Yes.
+- values at tm_mainLoop entry (s32, little-endian residue):
+
+  | path | animFrame +0x480 | last writer | timer +0x2E8 | turn +0x434 | comboDirs +0x50C |
+  |---|---|---|---|---|---|
+  | enter_tm 12 from `field_dali_inn` | 0x00450042 | none since the state was made (the inn draws no shadows at this depth) | 0x7FE4DAA1 | 2 | 0x5C |
+  | NPC (Dali 354 Eve), 1st | 0x0000FFD6 | ovl_0a fld_drawShadow 0x800ACC14 / 0x800ACC54 | 0xFFC300B6 | 2 | 0x5C |
+  | NPC, 2nd entry after quitting | 0x0000001D | same | 0x00000020 | 2 | 0x5C |
+
+  The `3ds4_tm_*` states (enter_tm from `field_dali_inn`) all inherit 0x00450042 (`3ds4_tm_card_select` holds
+  0x00450091, `3ds4_tm_rematch` 0x00450605, i.e. +frames). Reading 0x801FFE60 in ~100 disc 1 states gave values
+  across the whole range (0, 2, 0xFF, 0xFFxx, 0x0044001D, 0x8001F33C, 0xFFFFE86F, ...), so **it is not constant**.
+- stack history: the field main loop runs at the same depth (game_main's dispatcher calls the mode's main from a fixed sp),
+  and TmState+0x480..+0x487 is ovl_0a `fld_drawShadow`'s local `MATRIX mtx`, first row: the `sh` stores at 0x800ACC14
+  (+0x480 = m[0][0]), 0x800ACC54 (+0x482 = m[0][1]), 0x800ACC94 (+0x484), 0x800ACC18 (+0x486 = m[1][0]) are
+  gte_MulMatrix0(viewMatrix, shadowMtx) writing its result. So animFrame starts as `(u16)m[0][0] | m[0][1] << 16` of the
+  **last character shadow the field drew before it exited** (m[0][1] was 0 both times): it depends on the camera and the
+  last shadowed actor's rotation and changes from frame to frame (0xFFD6 at the first entry, 0xFFD7 one dialogue later
+  from the same state). If the field draws no shadows (Dali inn), the value is older. Nothing between the field exit
+  and tm_mainLoop (field cleanup, overlay load, tm_init's CD/SPU work) writes +0x480 or +0x2E8. `turn` = 2 and
+  `comboDirs` = 0x5C are rewritten on every entry by tm_init's own work: libetc VSync's local (pc 0x80015C70, called from
+  CD_sync) and the low byte of a pointer saved by libspu `_spu_t` (0x800174A4, ra in `_spu_Fw`). So those two are
+  effectively constant.
+- for the port: animFrame's PS1 start value isn't a constant. A real game gives the cursor a random-looking phase (a GTE
+  shadow-matrix element). For a bit-exact replay of a PS1 session, take it from the PS1 state (0x801FFE60, or the
+  table above for the enter_tm/3ds4 fixtures: 0x00450042). Since only the cursor sprite's U depends on it, a match that
+  diverges when animFrame changes means the port feeds rendering back into game logic (frame pacing / VBlank count per
+  frame from draw cost or hashes, or input timing). That is the same coupling F41 suspected. On the PS1 the RNG
+  (rand() once per frame + the game's own calls) and every task decision are independent of it.
+- proposed decomp change (not applied; src/ untouched):
+  - `include/ff9.h`, next to PSX_NULLABLE:
+    ```c
+    /* A local the original code reads before writing it, so on the PS1 it starts with stack residue (the value is
+     * documented at the use). Empty here; a port defines it to give the variable a deterministic start value. */
+    #ifndef PSX_STACK_RESIDUE
+    #define PSX_STACK_RESIDUE(lv)
+    #endif
+    ```
+  - `src/ovl_0d/tm_game.c` tm_mainLoop, after the four `tm.unk5C8` stores and before `tm_setup(&tm)`:
+    `PSX_STACK_RESIDUE(tm.animFrame);` with a comment at `TmState tm;`: "Never fully initialised: animFrame (only
+    tm_drawCursor's frame) starts as stack residue, on the PS1 the first row of ovl_0a fld_drawShadow's `mtx` from the
+    last shadow the field drew (varies, e.g. 0x0000FFD6 / 0x0000001D at Dali 354, 0x00450042 in the enter_tm fixtures);
+    timer, turn and comboDirs also start as residue but are not observable (F42)." The ovl_0d.h field comment for
+    animFrame could say "never initialised (stack residue, F42)".
+  - Byte-identical: `build/f42/probe.c` (tm_mainLoop with the macro line, macro empty) scores `tm_mainLoop:860/860*`
+    with `ccprobe --bin ovl_0d`. Only animFrame needs the hook. timer/turn/comboDirs can be left alone, or wrapped the
+    same way if the port wants a clean-memory build.
+- states (disc 1): `f42_dali354_card_prompt` (Eve's "You want to play a card game?" prompt, Yes highlighted),
+  `f42_dali354_after_quit` (back in Dali 354 after quitting a real match).
+- confidence: high for the field list and the no-effect claims (decompiled ovl_0d, no INCLUDE_ASM left, plus the tracker
+  over ~12,000 frames on 3 entries); high for the residue source (byte-level last-writer log).
