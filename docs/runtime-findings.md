@@ -3684,3 +3684,47 @@ Traces of fld_soundCommand, wm_soundCommand, btl_soundCmd and the akao_* calls:
 - proposed: `EVT_GB_CHR_JOINED 0x13` (u16 bits, medium-high), `EVT_GB_SAVED_POS 0xF3` (x/y/z s16 + dir u8, read by
   field 1850 arrival 831; low).
 - confidence: high (every recipe above verified from a fresh field entry, screenshots in build/3ds10/).
+
+## F41: does Tetra Master read main's code range (0x800127A0-0x800665E0)?  (status: reference, ff9-ds docs/decomp-requests.md F41)
+- binary: ovl_0d (Tetra Master) + main; no symbols renamed.
+- question: the port keeps buffers in main's MIPS text range (psx_spare_alloc) and its host TM match diverges from frame
+  ~5,190 when a 1 KB table shifts the buffer at 0x80013400 up. Does the PS1 read code bytes there (libgpu MoveImage ..
+  PutDrawEnv, 0x80013410-0x800138A0) as data?
+- answer: **no**. On the PS1 no game or library code makes a CPU data access (read or write) anywhere in
+  0x800127A0-0x800665E0 during Tetra Master, and the GPU DMA sources (OT chains, DrawPrim and LoadImage pointers) never
+  point into it. The only reads in the range come from the BIOS interrupt handler: at 0x00000CCC (`lw v0,0(v1)`, v1 = EPC)
+  it fetches the interrupted instruction to check for a GTE command (bits 25-31 == 0x4A, then EPC += 4). Those reads land
+  wherever VBlank interrupts the CPU (libgpu/libetc wait loops at 0x800135xx-0x800137xx), so they have nothing to do with
+  game state, and the port doesn't run them. The F41 divergence is port-side: something in the port reaches the spare
+  buffers through a pointer, an overrun of the neighbouring spare buffer, or render-dependent frame pacing that shifts
+  which game frame the random presses land on. ovl_0d and main need no hook.
+- evidence (PCSX-Redux disc 1, interpreter + debugger, `jit.off()`; scratch `build/f41/`):
+  - `rd.lua`: one `PCSX.addBreakpoint(0x800127A0, 'Read', 0x53E40)` whose callback skips PCs below 0x10000 (BIOS) and
+    logs every other PC once. `chunks.py STATE SEED N 100 read` loads a state, plays 100 random presses (U/D/L/R/X x3,
+    hold 2, wait 13 = 1500 frames) per chunk, saves, and restarts Redux (long runs hung it once with the known "Unknown
+    error in event listener").
+    - `3ds4_tm_turn2`, seed 22, 5 chunks (7,500 frames: placements, enemy turns/AI, card battles with the digit rolls,
+      match end, rematch, a second full match, back to Card Selection showing W/L/D 1/2/2): 0 game-code hits, ~6,800
+      BIOS EPC hits per chunk.
+    - `3ds4_tm_confirm`, seed 24, 3 chunks (deck confirm, coin toss, first turns): 0. `3ds4_tm_card_select` seeds 7/3
+      (500 presses each, mostly Card Selection) and `field_dali_inn` + `tools/rt/enter_tm.py 12 300` (match setup from a
+      field, deck build) seed 11: 0. Seed 3 also watched 0x000127A0 and 0xA00127A0; Redux matches breakpoints by physical
+      address (the three ranges tripled the BIOS count), so KUSEG/KSEG1 mirror reads are covered.
+    - Same watch with 'Write' (`3ds4_tm_card_select`, seed 5): 0 hits, BIOS included.
+    - Positive control: the same callback on the TmState (0x801FF9E0, width 0x40), 10 presses -> dozens of ovl_0d PCs
+      (0x800A8A58, 0x800B0344, 0x800AD6D8 byte reads, ...), so the filter does catch game reads of every width.
+    - First break with the bridge (`addBp(0x80013400,'Read',0x400,'break')`): pc 0x00000CCC, ra 0x00000CC0, v1 =
+      0x80013708 (= EPC, inside DrawOTag), stack frame of tm_mainLoop. BIOS 0xC90-0xCF8: k0 = TCB, save at/v0/v1/ra,
+      `jal 0xEA0` (cause/EPC), `andi v0,0x3C; bnez` (exceptions skip), `lw v0,0(v1)`, `srl 24; andi 0xFE; li at,0x4A`.
+  - `dma.lua` (exec breakpoints on LoadImage 0x80013350, DrawPrim 0x8001363C, DrawOTag 0x80013698; DrawOTag's callback
+    walks the chain from a0 to the 0xFFFFFF terminator): `3ds4_tm_turn2` seed 23, 4 chunks = 6,000 DrawOTag calls,
+    27.4 M OT nodes, no node and no source pointer in 0x800127A0-0x800665E0 (no LoadImage/DrawPrim calls during play).
+- for the port: the PS1 bytes there never reach game logic, so serving the original code bytes would change nothing.
+  Suggested port checks: which buffer sat at 0x80013400 (a table of 0x8000xxxx words), and whether the buffer below it
+  writes past its end or a native reader indexes past it; whether the port's VBlanks per drawn frame (OT repeat/partial
+  redraw from ot_bands hashes, ui_diff) depend on spare contents, which would move the random presses to other game frames
+  (compare TmState.timer, 0x801FF9E0 + timer offset, at each press under both layouts); or poison the old location after
+  the move (or mprotect it on the host) to catch the stale reader.
+- proposed decomp change: none (no PSX_RAM / PSX_NULLABLE-style hook; there is no read site to wrap).
+- state: disc 1 `f41_tm_midmatch` (1,500 frames after `3ds4_tm_turn2`, mid-match, battle on screen).
+- confidence: high for the PS1 side (about 25,000 watched frames over the match phases the port's repro runs).
