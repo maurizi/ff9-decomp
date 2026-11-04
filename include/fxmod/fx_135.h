@@ -5,6 +5,11 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_135 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BAD_BREATH_GAS_CLOUD 0x7 /* emitter: cone of olive and purple gas blobs with green and pink glows */
+#define FX_BAD_BREATH_GAS_BURST 0x8 /* emitter: olive and purple gas blobs, glows and a yellow-green flash at the target */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -5,6 +5,27 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_17a effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MADEEN_BLUE_RING     0x1 /* rings: black-to-blue gouraud rings */
+#define FX_MADEEN_BLUE_GLOW     0x2 /* particles: blue glow (pool task) */
+#define FX_MADEEN_WHITE_RING    0x3 /* rings: white-blue gouraud rings */
+#define FX_MADEEN_VIOLET_RING   0x4 /* rings: white-cyan-violet gouraud rings, four segments */
+#define FX_MADEEN_TEXTURED_RING 0x5 /* rings: ring with a pink-green noise texture */
+#define FX_MADEEN_TEAL_RING     0x6 /* rings: black-blue-teal gouraud rings */
+#define FX_MADEEN_RAINBOW_ARCH  0x7 /* model: arch with a rainbow aura texture */
+#define FX_MADEEN_WINGS         0x8 /* model: three-armed wing shape with a grey feather texture */
+#define FX_MADEEN_INFINITY_LOOP 0x9 /* model: figure-eight band (15-bit texture page 0x138, not resolved) (look pending) */
+#define FX_MADEEN_RAINBOW_DOME  0xA /* model: banded dome with a rainbow strip texture */
+#define FX_MADEEN_GLOW_LINE     0xB /* sprite line: green, red, orange and blue ring glows */
+#define FX_MADEEN_GLOW_LINE_2   0xC /* sprite line: green, red, orange and blue ring glows */
+#define FX_MADEEN_FAN_EMITTER   0xD /* emitter: three fan elements (not rendered) (look pending) */
+#define FX_MADEEN_WHITE_GLOW    0xE /* particles: white-blue glow */
+#define FX_MADEEN_BLUE_SPARKLES 0xF /* emitter: blue square sparkles and gold sprites */
+#define FX_MADEEN_TRAIL         0x11 /* trail: strip texture not in the file (look pending) */
+#define FX_MADEEN_BACKDROP      0x12 /* table: background layers for btlfx_drawBackdrop */
+#define FX_MADEEN_BLUE_STREAKS  0x13 /* emitter: orbiting blue light streaks */
+
 typedef struct {
     s16 state0; /* state */
     s16 unk2; /* write-only (cleared at spawn) */

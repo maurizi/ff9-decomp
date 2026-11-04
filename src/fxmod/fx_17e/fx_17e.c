@@ -22,7 +22,7 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale8.vx = 0x1000;
         work->scale8.vy = 0x1000;
         work->scale8.vz = 0x1000;
-        work->model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
+        work->model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_CHESTNUT_CHESTNUT_MODEL), 0xFF);
         work->fade4 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos38);
     } else {
@@ -41,7 +41,7 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timer40[2] = 3;
             break;
         case 26:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos38);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CHESTNUT_IMPACT_RINGS), (s32)&work->pos38);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

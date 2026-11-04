@@ -61,7 +61,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->camera->points[3].vz = work->pos20.vz;
         work->pos58.vx += 0x19F;
         work->pos58.vy -= 0x200;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_GOLD_SPARKLES), (s32)&work->pos10);
         work->emit78 = emitter;
         if (emitter != NULL) {
             emitter->otZ = 0x200;
@@ -106,7 +106,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&fx_17d_6_boltTo, &work->pos28);
             BTLFX_COPY_SVEC(&fx_17d_6_boltFrom, &work->pos30);
             env->otZ = 0x80;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->pos30, NULL, ex->math_sin(t >> 2) >> 3,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_RING), &work->pos30, NULL, ex->math_sin(t >> 2) >> 3,
                               0, 1, ex->math_sin(t >> 2));
             env->otZ = 0;
             gridBright = (((0x1000 - t) << 5) >> 12) + 0x89;
@@ -132,7 +132,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[2].vx = work->pos18.vx;
                 env->camera->points[2].vy = work->pos18.vy;
                 env->camera->points[2].vz = work->pos18.vz;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_FLAME_BURST), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -148,11 +148,11 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_lerpVec((s16 *)&work->pos28, (s16 *)&work->pos30, frame < 0x20 ? ex->math_sin(frame << 5) : 0x1000,
                               (s16 *)&work->pos8);
             env->otZ = 0x80;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->pos30, NULL,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_RING), &work->pos30, NULL,
                               (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0xAAA);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->pos30, NULL,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_RING), &work->pos30, NULL,
                               (ex->math_sin(t >> 2) >> 2) + 0x80, 0, 1, 0x1000);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->pos30, NULL,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_RED_RING), &work->pos30, NULL,
                               ex->math_cos(t >> 2) / 3 + 0x5DC, 0, 1, t);
             env->otZ = 0;
             BTLFX_COPY_SVEC(&work->pos18, &work->pos8);
@@ -160,13 +160,13 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vy = work->pos18.vy;
             env->camera->points[2].vz = work->pos18.vz;
             if (frame == 0x18) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_FAN_EMITTER), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
             if (frame == 0x20) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_CLOUD_TRAIL), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_17d_6_op80Trails;
                     emitter->trailSlots = 0x28;
@@ -175,7 +175,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame == 0x32) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos30);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_GREY_RING), (s32)&work->pos30);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -222,10 +222,10 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             env->otZ = 0x9B;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->pos10, NULL, ex->math_sin(t >> 2) * 4,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_PEACH_RING), &work->pos10, NULL, ex->math_sin(t >> 2) * 4,
                               0, 1, ex->math_sin(t >> 2));
             env->otZ = 0;
-            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->pos10, (t >> 6) + 8, t / 2);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_SPRITE_LINE), &work->pos10, (t >> 6) + 8, t / 2);
             ex->btlfx_drawScrollMove(0x3E8 - frame * 6, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
             col.r = col.g = col.b = ((t * 0x58) >> 12) + 0x84U;
             gridScale.vy = gridScale.vx = 0x1080;
@@ -254,13 +254,13 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[1], (u16 *)&work->pos28);
             BTLFX_COPY_SVEC(&fx_17d_6_boltFrom, &work->pos28);
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_FAN_EMITTER_2), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
             }
             env->otZ = 0x80;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->pos28, NULL,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_PEACH_RING), &work->pos28, NULL,
                               ex->math_sin(t >> 2) + 0x555, 0, 1, ex->math_sin(t >> 2) / 2 + 0x800);
             env->otZ = 0;
             col.r = col.g = col.b = ((t << 7) >> 12) + 0x20;

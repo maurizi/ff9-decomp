@@ -5,6 +5,18 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_183 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_CHERRY_BLOSSOM_PETAL        0xD /* emitter: spiralling pink petal */
+#define FX_CHERRY_BLOSSOM_WHITE_RING   0xE /* emitter: yellow-white gouraud rings + sprites (texture not in the file) */
+#define FX_CHERRY_BLOSSOM_PETAL_STORM  0xF /* emitter: drifting pink petals and a large petal */
+#define FX_CHERRY_BLOSSOM_PETAL_TRAIL  0x10 /* emitter: orbiting screen trail of petals */
+#define FX_CHERRY_BLOSSOM_PINK_RING    0x11 /* emitter: pink and white-red gouraud rings */
+#define FX_CHERRY_BLOSSOM_FAN_EMITTER  0x17 /* emitter: spiral fan element (not rendered) (look pending) */
+#define FX_CHERRY_BLOSSOM_SPARKLES     0x18 /* emitter: gold and cyan glints */
+#define FX_CHERRY_BLOSSOM_SO_MODEL     0x1D /* 'so' model (not drawn by the tool), same size as the Spear model but other bytes (look pending) */
+#define FX_CHERRY_BLOSSOM_PETAL_VORTEX 0x1E /* emitter: pink swirl vortex + sprites (texture not in the file) */
+
 typedef struct {
     s16 pos0[3]; /* position */
     s16 rot6[3]; /* rotation */

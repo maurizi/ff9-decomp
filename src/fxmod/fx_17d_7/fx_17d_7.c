@@ -245,7 +245,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawEffModel(&work->rot5C, (VECTOR *)work->pos50, (s32)&beamScale, work->model78);
             ex->Hi_ModifyEffModelRGB(work->model78, (beamLevel >> 5) - 0x80, (beamLevel >> 5) - 0x80, (beamLevel >> 5) - 0x80);
             if (frame == 6) {
-                work->emit64 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos8);
+                work->emit64 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_PALE_RING), (s32)&work->pos8);
                 if (work->emit64 != NULL) {
                     work->emit64->otZ = 0x80;
                 }
@@ -260,7 +260,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 entry->frame = -1;
                 BTLFX_COPY_SVEC(&work->pos10, &work->pos8);
                 work->pos10.vy -= 0x800;
-                work->emit68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
+                work->emit68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_VIOLET_RING), (s32)&work->pos10);
                 if (work->emit68 != NULL) {
                     work->emit68->otZ = 0x80;
                 }
@@ -324,17 +324,17 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
                 if (frame == 5) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0x80);
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_ROCK_DEBRIS_2), (s32)&work->pos8);
                     if (emitter != NULL) {
                         emitter->otZ = 0x100;
                     }
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_FAN_EMITTER), (s32)&work->pos8);
                     if (emitter != NULL) {
                         emitter->otZ = 0x100;
                     }
                     BTLFX_COPY_SVEC(&work->pos10, &work->pos8);
                     work->pos10.vy -= 0x400;
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos10);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_GOLD_GLOW), (s32)&work->pos10);
                     if (emitter != NULL) {
                         emitter->tail->shape = -1;
                         *(s32 *)&emitter->tail->s.module.spawnFn = (s32)fxm_randRingPoint;
@@ -415,7 +415,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 256), 1, whiteoutTint, whiteoutTint, whiteoutTint * 2 / 3);
             }
             if (frame == 41) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_ROCK_DEBRIS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
@@ -443,7 +443,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 BTLFX_COPY_SVEC(&work->pos10, &work->pos8);
                 work->pos10.vz -= 0x5DC;
                 work->pos10.vy -= 0x1AE;
-                work->emit6C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos10);
+                work->emit6C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_ORANGE_RING), (s32)&work->pos10);
                 if (work->emit6C != NULL) {
                     work->emit6C->otZ = 0x200;
                 }

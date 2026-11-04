@@ -5,6 +5,21 @@
  * Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_17d_0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_CAMERA_KEYS_2    0x19 /* table: per-frame position keys for camera point 1 (op 0x82) */
+#define FX_ARK_CAMERA_KEYS      0x1A /* table: per-frame position keys for camera point 0 (op 0x82) */
+#define FX_ARK_MORPH_KEYS       0x1B /* table: per-frame morph weights, first morph pair */
+#define FX_ARK_SO_MODEL         0x1C /* 'so' model (not drawn by the tool), registered at the start of op 0x80 (look pending) */
+#define FX_ARK_RED_ROCK_LAYER   0x1D /* sprite: red-brown rock / cloud texture drawn on screen */
+#define FX_ARK_MORPH_PATH       0x1E /* table: per-frame position + rotation keys for the first morph models */
+#define FX_ARK_MORPH_PATH_2     0x1F /* table: per-frame position + rotation keys for the second morph models */
+#define FX_ARK_MORPH_KEYS_2     0x20 /* table: per-frame morph weights, second morph pair */
+#define FX_ARK_MORPH_KEYS_3     0x21 /* table: per-frame morph weights for the second morph models */
+#define FX_ARK_GREY_TRAIL       0x22 /* trail: grey noise strip (pool task) */
+#define FX_ARK_VIOLET_RING      0x23 /* emitter: white-violet-blue and white-cream-purple gouraud rings */
+#define FX_ARK_CAMERA_ROLL_KEYS 0x25 /* table: per-frame keys whose third value is camera point 0 roll (op 0x82) */
+
 typedef struct {
     s16 unk0; /* write-only (cleared at spawn) */
     s16 speed2;

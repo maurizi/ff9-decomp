@@ -5,6 +5,11 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_185 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SPEAR_WHITE_RING 0x1 /* emitter: white-lilac gouraud ring + sprites that render transparent, fan */
+#define FX_SPEAR_SPEAR      0xB /* 'so' model: the thrown spear (registered after btlfx_setWeaponVisible(caster, 0)) (byte-identical to fx_184 entry 0x2) */
+
 typedef struct {
     SVECTOR pos0; /* from */
     SVECTOR pos8; /* to */

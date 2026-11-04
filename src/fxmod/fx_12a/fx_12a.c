@@ -29,10 +29,10 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos40.vx = work->pos20.vx;
         work->pos48.vx = work->pos28.vx;
         work->pos40.vy -= 0x190;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
-        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos28);
-        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos28);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_RED_GLOW), (s32)&work->pos20);
+        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_WHITE_RING), (s32)&work->pos20);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_RED_GLOW), (s32)&work->pos28);
+        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_WHITE_RING), (s32)&work->pos28);
         if (work->emit8 != NULL) {
             work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
@@ -44,10 +44,10 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 6) {
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos30);
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos20);
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos38);
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos28);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_JET_STREAM), (s32)&work->pos30);
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_CYAN_WISP_RING), (s32)&work->pos20);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_JET_STREAM), (s32)&work->pos38);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_CYAN_WISP_RING), (s32)&work->pos28);
             if (work->emit18 != NULL) {
                 work->emit18->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
@@ -112,7 +112,7 @@ s32 fx_12a_op81(s32 mode, Fx12aWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos4.vy = env->targets->centerY;
         work->pos4.vz = env->targets->centerZ;
         fx_12a_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_PALE_WISP_RING), (s32)&work->pos4);
     } else {
         return entry->frame >= 0x28;
     }
@@ -136,7 +136,7 @@ s32 fx_12a_op82(s32 mode, Fx12aWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
         ex->btlfx_getUnitPos(work->unit10, (s16 *)&work->pos8);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_JET_FIRE_WIND_GUST), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unit10, 0x80);
         }

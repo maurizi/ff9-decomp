@@ -5,6 +5,18 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_179 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MEDEO_WHITE_RING    0x1 /* emitter: white and lilac gouraud rings */
+#define FX_MEDEO_METEOR        0x2 /* model: rock (128 polys, red-brown rock texture) */
+#define FX_MEDEO_COLOR_SMOKE   0x4 /* emitter: spiral of yellow, purple, cyan and green smoke puffs */
+#define FX_MEDEO_GLOW_TRAIL    0x5 /* emitter: blue and green glow screen trails */
+#define FX_MEDEO_SPARKLES      0x7 /* emitter: small green and blue spark sprites */
+#define FX_MEDEO_STAR_FLASH    0x8 /* emitter: blue and green star flashes */
+#define FX_MEDEO_FAN_EMITTER   0x9 /* emitter: three fan elements (not rendered) + sprites that render transparent (look pending) */
+#define FX_MEDEO_COLOR_SMOKE_2 0xA /* emitter: spiral of yellow, purple, cyan and green smoke puffs */
+#define FX_MEDEO_SPRITE_BURST  0xB /* emitter: two sprite elements, render all transparent (look pending) */
+
 typedef struct {
     SVECTOR verts0[3];
 } Fx179Tri; /* model triangle */

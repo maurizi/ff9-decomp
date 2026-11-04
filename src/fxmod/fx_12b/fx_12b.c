@@ -270,8 +270,8 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x24), (s32)&fx_12b_emitPos0);
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x37), (s32)&fx_12b_emitPos2);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_LIGHT_TRAIL), (s32)&fx_12b_emitPos0);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_STAR_FLASH), (s32)&fx_12b_emitPos2);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->trails = (s32)fx_12b_op80Trails0;
                 work->emit0[0]->trailSlots = 6;
@@ -285,8 +285,8 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 1:
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&fx_12b_emitPos1);
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x38), (s32)&fx_12b_emitPos2);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_LIGHT_TRAIL_2), (s32)&fx_12b_emitPos1);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_STAR_FLASH_2), (s32)&fx_12b_emitPos2);
             if (work->emit0[1] != NULL) {
                 work->emit0[1]->trails = (s32)fx_12b_op80Trails1;
                 work->emit0[1]->trailSlots = 6;
@@ -311,7 +311,7 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= shard0->frame18) {
                 if (++shard0->frame20 == 0x13) {
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)shard0);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_SMOKE_PUFF), (s32)shard0);
                     if (emitter != NULL) {
                         emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
@@ -319,7 +319,7 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= shard1->frame18) {
                 if (++shard1->frame20 == 0x13) {
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)shard1);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_SMOKE_PUFF), (s32)shard1);
                     if (emitter != NULL) {
                         emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
@@ -355,8 +355,8 @@ s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_12b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, &work->pos10.vx);
-        fxm_posPathInit(&fx_12b_op81PosPath0, (u16 *)ex->btlfx_getFileData(entry->file, 0x22));
-        fxm_posPathInit(&fx_12b_op81PosPath1, (u16 *)ex->btlfx_getFileData(entry->file, 0x21));
+        fxm_posPathInit(&fx_12b_op81PosPath0, (u16 *)ex->btlfx_getFileData(entry->file, FX_PHOTON_PATH_KEYS));
+        fxm_posPathInit(&fx_12b_op81PosPath1, (u16 *)ex->btlfx_getFileData(entry->file, FX_PHOTON_PATH_KEYS_2));
         for (i = 0, shard0Alias = fx_12b_op81Shards0, shard1Alias = fx_12b_op81Shards1, shard0 = fx_12b_op81Shards0, shard1 = fx_12b_op81Shards1; i < 5; i++, shard0Alias++, shard1Alias++, shard0++, shard1++) {
             shard0Alias->pos0.vx = work->pos10.vx;
             shard0->pos0.vy = work->pos10.vy;
@@ -405,10 +405,10 @@ s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 0) {
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&fx_12b_emitPos0);
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x27), (s32)&fx_12b_emitPos1);
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x28), (s32)&fx_12b_emitPos2);
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x29), (s32)&fx_12b_emitPos2);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_LIGHT_TRAIL_3), (s32)&fx_12b_emitPos0);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_LIGHT_TRAIL_4), (s32)&fx_12b_emitPos1);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_STAR_FLASH_3), (s32)&fx_12b_emitPos2);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_STAR_FLASH_4), (s32)&fx_12b_emitPos2);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->trails = (s32)fx_12b_op81Trails0;
                 work->emit0[0]->trailSlots = 6;
@@ -462,11 +462,11 @@ s32 fx_12b_op82(s32 mode, Fx12bWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_12b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos1C);
-        work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos14);
-        work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos14);
-        work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);
-        work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos14);
-        work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x23), (s32)&work->pos14);
+        work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_FAN_EMITTER), (s32)&work->pos14);
+        work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_ENERGY_ORB), (s32)&work->pos14);
+        work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_YELLOW_RING), (s32)&work->pos14);
+        work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_GOLD_RING), (s32)&work->pos14);
+        work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOTON_SPARKS), (s32)&work->pos14);
         if (work->emit0[0] != NULL) {
             work->emit0[0]->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

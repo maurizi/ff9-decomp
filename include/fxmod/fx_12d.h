@@ -5,6 +5,15 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_12d effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEATH_SAND_RING       0x1 /* emitter: ring with a sand texture */
+#define FX_DEATH_SAND_DUST       0x2 /* emitter: pale sand-dust sprites */
+#define FX_DEATH_SAND_CLOUD      0x3 /* emitter: spiralling pale dust clouds */
+#define FX_DEATH_SAND_SWIRL      0x4 /* emitter: spiralling 3D trail with a grey sand texture */
+#define FX_DEATH_PINK_GLOW_TRAIL 0xB /* emitter: spiralling 3D trail of pink glows */
+#define FX_DEATH_ANTLION         0xE /* model: the Antlion (1142 polys), drawn with the caster's texture pages while the unit is hidden */
+
 typedef struct {
     s32 unk0; /* unused */
     Pool6CEntry *emit4;

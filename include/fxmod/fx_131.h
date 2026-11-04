@@ -5,6 +5,11 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_131 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_GOLEM_REVIVAL_PINK_GLOW  0x1 /* emitter: pink glow with a green ring, fan */
+#define FX_GOLEM_REVIVAL_SAND_CLOUD 0x2 /* emitter: orbiting pale sand clouds */
+
 typedef struct {
     SVECTOR pos0;
     SVECTOR pos8;

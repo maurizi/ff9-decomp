@@ -35,7 +35,7 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos18.vx = work->pos0.vx;
         work->pos18.vy = work->pos0.vy;
         work->pos18.vz = work->pos0.vz;
-        work->model3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
+        work->model3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SPEAR_SPEAR), 1);
     } else {
         frame = entry->frame;
         if (frame < 6) {
@@ -66,7 +66,7 @@ s32 fx_185_op81(s32 mode, Fx185Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos4.vy = fx_185_targetPos.vy;
         work->pos4.vz = fx_185_targetPos.vz;
         fx_185_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPEAR_WHITE_RING), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

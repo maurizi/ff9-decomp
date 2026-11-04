@@ -22,7 +22,7 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale30.vy = 0x1000;
         work->scale30.vz = 0x1000;
         ex->btlfx_setWeaponVisible(0x10, 0);
-        work->model40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+        work->model40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_SPEAR_SPEAR), 1);
     } else {
         frame = entry->frame;
         if (frame < 6) {
@@ -50,7 +50,7 @@ s32 fx_184_op81(s32 mode, Fx184Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_184_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         work->pos4.vy = 0;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPEAR_WHITE_RING), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

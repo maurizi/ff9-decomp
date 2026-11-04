@@ -67,7 +67,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&work->pos10, &work->pos20);
             work->pos10.vy += 0x300;
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_CLOUD_TRAIL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_17d_3_op80Trails0;
                     emitter->trailSlots = 0x10;
@@ -139,7 +139,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&work->pos10, &work->pos20);
             work->pos10.vy += 0x300;
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_CLOUD_TRAIL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_17d_3_op80Trails0;
                     emitter->trailSlots = 0x10;
@@ -226,7 +226,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
             if (frame == 0xC) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
                     work->emit78->trailSlots = 0x32;
@@ -235,7 +235,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x20;
                 }
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
                     work->emit7C->trailSlots = 0x32;
@@ -310,7 +310,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             haloScale.vy = work->scale3C[1] / 2;
             ex->Hi_DrawEffModel(&work->rot34, (VECTOR *)work->pos28, (s32)&haloScale, work->model6C);
             if (frame == 0xC) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
                     work->emit78->trailSlots = 0x32;
@@ -319,7 +319,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x20;
                 }
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
                     work->emit7C->trailSlots = 0x32;
@@ -386,7 +386,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_3_bones2[0], (u16 *)&work->pos10);
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_3_bones2[1], (u16 *)&work->pos18);
             if (frame == 6) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
                     work->emit78->trailSlots = 0x32;
@@ -395,7 +395,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x20;
                 }
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
                     work->emit7C->trailSlots = 0x32;
@@ -466,7 +466,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->pos18.vy -= 0x46;
             work->pos18.vz -= 0x80;
             if (frame == 0xB) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_2), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
                     work->emit78->trailSlots = 0x32;
@@ -475,7 +475,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_FAN_EMITTER), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
                 }
@@ -494,7 +494,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame == 0) {
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
                     work->emit7C->trailSlots = 0x32;
@@ -559,7 +559,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->pos18.vy -= 0x46;
             work->pos18.vz -= 0x80;
             if (frame == 0xB) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_2), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->trails = (s32)fx_17d_3_op80Trails1;
                     work->emit78->trailSlots = 0x32;
@@ -568,7 +568,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_FAN_EMITTER), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = -0x80;
                 }
@@ -587,7 +587,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame == 0) {
-                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
+                work->emit7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_SMOKE_TRAIL_3), (s32)&work->pos18);
                 if (work->emit7C != NULL) {
                     work->emit7C->trails = (s32)fx_17d_3_op80Trails2;
                     work->emit7C->trailSlots = 0x32;
@@ -655,7 +655,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 4, (u16 *)&work->pos10);
             work->pos10.vz += 0x226;
             if (frame == 0xA) {
-                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos10);
+                work->emit78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ARK_DUST_CLOUD), (s32)&work->pos10);
                 if (work->emit78 != NULL) {
                     work->emit78->otZ = 0x80;
                 }

@@ -4,6 +4,19 @@
 /* Effect module fx_17d_5 (dir 13 file 0x17d): Ark, full summon (load group 5). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_17d_5 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_BACKDROP         0x1 /* table: background layers for btlfx_drawBackdrop */
+#define FX_ARK_CREAM_RING       0x2 /* emitter: cream-white and white-grey-violet gouraud rings */
+#define FX_ARK_LILAC_RING       0x3 /* emitter: dark noise particle + lilac-white gouraud ring */
+#define FX_ARK_ORANGE_RING      0x4 /* rings: white-orange-brown gouraud rings (pool task) */
+#define FX_ARK_TRAIL            0x5 /* trail: strip texture not resolved (noise and green) (look pending) */
+#define FX_ARK_PLANET           0x8 /* particles: green-tinted planet with cloud swirls, fading */
+#define FX_ARK_TRAIL_2          0x9 /* trail: strip texture not resolved (noise and green) (look pending) */
+#define FX_ARK_PLANET_FRAGMENTS 0xA /* emitter: sprites of planet-surface fragments */
+#define FX_ARK_RED_FLASH_RING   0xB /* rings: red-white flat flash ring */
+#define FX_ARK_SPRITE_LINE      0xD /* sprite line: textures partly not resolved (look pending) */
+
 typedef struct {
     s32 vx, vy, vz;
 } Fx17d5Vec3;

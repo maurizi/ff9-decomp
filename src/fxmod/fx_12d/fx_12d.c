@@ -12,11 +12,11 @@ s32 fx_12d_op80(s32 mode, Fx12dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_12d_casterPos.vx = work->posC.vx;
         fx_12d_casterPos.vy = work->posC.vy;
         fx_12d_casterPos.vz = work->posC.vz;
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SAND_RING), (s32)&work->posC);
     } else {
         frame = entry->frame;
         if (frame == 4) {
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SAND_DUST), (s32)&work->posC);
         }
         return frame >= 0x28;
     }
@@ -32,7 +32,7 @@ s32 fx_12d_op81(s32 mode, Fx12dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_12d_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
-        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos10);
+        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_PINK_GLOW_TRAIL), (s32)&work->pos10);
         if (work->emitC != NULL) {
             work->emitC->trails = (s32)fx_12d_op81Trails1;
             work->emitC->trailSlots = 8;
@@ -42,8 +42,8 @@ s32 fx_12d_op81(s32 mode, Fx12dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 8) {
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SAND_CLOUD), (s32)&work->pos10);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SAND_SWIRL), (s32)&work->pos10);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_12d_op81Trails0;
                 work->emit8->trailSlots = 0xC;
@@ -86,7 +86,7 @@ s32 fx_12d_op82(s32 mode, Fx12dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_12d_texPos[5 - i][1] = fx_12d_casterUvOffsets.pages[i][1];
         }
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
-        work->model34 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 0xE),
+        work->model34 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, FX_DEATH_ANTLION),
                                                                fx_12d_texInfo, fx_12d_texPos);
         ex->btlfx_setUnitVisible(0x10, 0);
         return 0;

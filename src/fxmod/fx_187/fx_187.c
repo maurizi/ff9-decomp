@@ -30,11 +30,11 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos24);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_FLAME_BURST), (s32)&work->pos24);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos2C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_FLAME_BURST_2), (s32)&work->pos2C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -42,25 +42,25 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame >= 0x10) {
                 work->state0 = 1;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos24);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_FIRE_BLADE_2), (s32)&work->pos24);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_187_op80Trails0;
                     emitter->trailSlots = 0x12;
                     emitter->trailStride = 0x14;
                     emitter->otZ = 0x46;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos24);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_SPARKS_2), (s32)&work->pos24);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos2C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_FIRE_BLADE), (s32)&work->pos2C);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_187_op80Trails1;
                     emitter->trailSlots = 0x12;
                     emitter->trailStride = 0x14;
                     emitter->otZ = 0x46;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos2C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_SPARKS), (s32)&work->pos2C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
@@ -76,7 +76,7 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_lerpVec((s16 *)&work->pos2C, (s16 *)&work->pos3C, t, (s16 *)&handPos1);
             if (frame == 0) {
                 BTLFX_COPY_SVEC(&work->pos44, &handPos0);
-                work->emit4[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos44);
+                work->emit4[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_FIRE_BLADE_3), (s32)&work->pos44);
                 if (work->emit4[0] != NULL) {
                     work->emit4[0]->trails = (s32)fx_187_op80Trails2;
                     work->emit4[0]->trailSlots = 0x20;
@@ -86,12 +86,12 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit4[0]->otZ = 0x18;
                 }
                 BTLFX_COPY_SVEC(&work->pos4C, &handPos0);
-                work->emit4[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos4C);
+                work->emit4[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_SPARKS_3), (s32)&work->pos4C);
                 if (work->emit4[1] != NULL) {
                     work->emit4[1]->otZ = 0x18;
                 }
                 BTLFX_COPY_SVEC(&work->pos54, &handPos1);
-                work->emitC[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos54);
+                work->emitC[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_FIRE_BLADE_4), (s32)&work->pos54);
                 if (work->emitC[0] != NULL) {
                     work->emitC[0]->trails = (s32)fx_187_op80Trails3;
                     work->emitC[0]->trailSlots = 0x20;
@@ -101,7 +101,7 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emitC[0]->otZ = 0x18;
                 }
                 BTLFX_COPY_SVEC(&work->pos5C, &handPos1);
-                work->emitC[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos5C);
+                work->emitC[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_SPARKS_4), (s32)&work->pos5C);
                 if (work->emitC[1] != NULL) {
                     work->emitC[1]->otZ = 0x18;
                 }
@@ -118,12 +118,12 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 0xE) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_FLAME_BURST_3), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos1C);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos14);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_RED_RING), (s32)&work->pos1C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRE_BLADES_FLAME_TRAIL), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_187_op80Trails4;
                     emitter->trailSlots = 7;

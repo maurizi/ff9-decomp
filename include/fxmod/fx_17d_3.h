@@ -4,6 +4,15 @@
 /* Effect module fx_17d_3 (dir 13 file 0x17d): Ark, full summon (load group 3). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_17d_3 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ARK_SMOKE_TRAIL   0x1 /* emitter: spiralling screen trail with a blue-grey smoke texture, orange embers */
+#define FX_ARK_CLOUD_TRAIL   0x2 /* emitter: two spiralling screen trails with a grey cloud texture */
+#define FX_ARK_SMOKE_TRAIL_2 0x4 /* emitter: spiralling screen trail with a blue-grey smoke texture, orange embers */
+#define FX_ARK_SMOKE_TRAIL_3 0x6 /* emitter: spiralling screen trail with a blue-grey smoke texture, orange embers */
+#define FX_ARK_DUST_CLOUD    0x9 /* emitter: grey dust clouds and grey sparks */
+#define FX_ARK_FAN_EMITTER   0xE /* emitter: two fan elements (not rendered) (look pending) */
+
 typedef struct {
     u8 pad0[0x54];
     struct {
