@@ -9,15 +9,15 @@
 /* fx_08f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_METEOR_FIRE_RING      0x1 /* rings: cream-red-blue-violet-orange gouraud rings */
-#define FX_METEOR_STREAK_SHELL   0x4 /* model: bullet-shaped shell; the UV box reads a placeholder page (hand-written Japanese text), filled at run time (byte-identical to fx_086 entry 0x4) (look pending) */
+#define FX_METEOR_RED_ROCK       0x4 /* model: the red pitted meteor rock (carried from fx_086 entry 0x4; not played) (byte-identical to fx_086 entry 0x4); runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_METEOR_BACKDROP       0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_086 entry 0x7) */
-#define FX_METEOR_CONE_SPRITES   0xB /* emitter: cone of sprites, still render all black (byte-identical to fx_086 entry 0xB) (look pending) */
+#define FX_METEOR_EMBERS         0xB /* emitter: small amber sparks (carried from fx_086 entry 0xB; Meteor (alt) not played) (byte-identical to fx_086 entry 0xB); runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_METEOR_DUST_RING      0xC /* model: ring band with a pink-brown rocky dust texture (byte-identical to fx_086 entry 0xC) */
 #define FX_METEOR_CLOUDS         0xE /* sprite: grey cloud strip */
 #define FX_METEOR_SKY_CYLINDER   0xF /* model: cylinder with a blue sky / cloud texture (byte-identical to fx_086 entry 0xF) */
 #define FX_METEOR_DARK_CLOUDS    0x10 /* sprite: dark cloud strip */
 #define FX_METEOR_ROCK           0x11 /* model: rock with a cratered texture (the meteor) (byte-identical to fx_086 entry 0x11) */
-#define FX_METEOR_DEBRIS_SPRITES 0x13 /* sprites: 44 frames, still render all black (byte-identical to fx_086 entry 0x13) (look pending) */
+#define FX_METEOR_EMBERS_2       0x13 /* sprites: amber spark sprites of the impact (carried from fx_086 entry 0x13; not played) (byte-identical to fx_086 entry 0x13); runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_METEOR_STREAK         0x17 /* model: long thin gouraud spike (byte-identical to fx_086 entry 0x18) */
 #define FX_METEOR_BOWL           0x18 /* model: gouraud hemisphere bowl (byte-identical to fx_086 entry 0x19) */
 #define FX_METEOR_RING_DISC      0x19 /* model: gouraud flat annulus (byte-identical to fx_086 entry 0x1a) */

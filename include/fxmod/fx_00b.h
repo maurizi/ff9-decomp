@@ -6,7 +6,7 @@
 
 /* fx_00b effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_ESUNA_BACKDROP     0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_ESUNA_ORB_TEXTURE  0x7 /* layer table: render-to-texture (btlfx_drawLayerTexture): 6 layers into VRAM (0x1C0,0x160) 32x32, a glossy green-to-pink orb sampled by the glow puffs round the target; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_ESUNA_LIGHT_SHOWER 0x8 /* emitter: rainbow halo + blue ripple, falling golden streaks with white glints, lens flare */
 
 typedef struct {

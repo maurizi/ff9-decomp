@@ -99,7 +99,7 @@ static void fx_005_op83ElemDraw(s32 pt, s32 owner, SVECTOR *pos, SVECTOR *rot, s
     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB_FADE), pos, &elemRot, *scale + 0x200, frame, 1, fade, 2, 2);
     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_LENS_FLARES), pos, &elemRot, *scale * 5 / 2, frame, 1, fade, 0, 0);
     spriteScale = (frame << 12) / n + 0x1800;
-    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB_SPARKS), pos, &elemRot, spriteScale, frame, 1, *alpha);
+    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_STAR_GLINTS), pos, &elemRot, spriteScale, frame, 1, *alpha);
     ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_THUNDARA_ORB_DOTS), pos, &elemRot, spriteScale, frame, 1, *alpha);
 }
 

@@ -22,7 +22,7 @@
 #define FX_MADEEN_BACKDROP_3       0x11 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_MADEEN_WHITE_RINGS      0x12 /* rings: white to grey fading gouraud rings, 8 frames */
 #define FX_MADEEN_RAINBOW_ARCH     0x13 /* model: arch, rainbow-cloud texture */
-#define FX_MADEEN_TRAIL            0x14 /* trail: strip texture not in the file (magenta in the render) (look pending) */
+#define FX_MADEEN_TRAIL            0x14 /* trail: strip texture not in the file (magenta in the render); runtime (docs/runtime-findings.md effect-data pass): fetched as the blue-white blast starts; its strip reads only sparse dots in the run-time page (look pending) */
 #define FX_MADEEN_VIOLET_GLOW      0x15 /* emitter: three fans, a horizontal violet-white glow */
 #define FX_MADEEN_BLUE_RINGS_3     0x16 /* rings: white-blue gouraud rings, 16 frames */
 #define FX_MADEEN_LENS_FLARES_2    0x17 /* sprite line: green / red / orange lens-flare rings */

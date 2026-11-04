@@ -6,10 +6,10 @@
 
 /* fx_07e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_SLOW_GLINT      0x1 /* particles: white glint, the rest of the frame still outside the file and the common pages (look pending) */
+#define FX_SLOW_CLOCK_FACE 0x1 /* particles: pink clock dial with Roman numerals I-XII on the target; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_SLOW_GREEN_RING 0x2 /* rings: white-green gouraud rings */
 #define FX_SLOW_BLUE_WAVE  0x3 /* particles: blue chevron wave frames */
-#define FX_SLOW_PARTICLES  0x5 /* particles: 8 frames, still render all black (look pending) */
+#define FX_SLOW_BLUE_GLOWS 0x5 /* particles: soft blue round glows growing and fading around the clock; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_SLOW_BACKDROP   0xA /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_SLOW_CRESCENT   0xC /* model: one quad textured with a blue-white crescent */
 

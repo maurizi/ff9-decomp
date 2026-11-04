@@ -24,8 +24,8 @@
 #define FX_SWDMAG_FLARE_ARCH         0x12 /* model: grey arch, 15-bit texture page 0x139 (white in the render) */
 #define FX_SWDMAG_FLARE_WHITE_RINGS  0x13 /* rings: white-cream gouraud rings */
 #define FX_SWDMAG_FLARE_BACKDROP_3   0x18 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
-#define FX_SWDMAG_FLARE_TEX_RING     0x19 /* rings: textured ring; the render reads garbled multicolour texels (texture not in the file) (look pending) */
-#define FX_SWDMAG_FLARE_TEX_RING_2   0x1A /* rings: textured ring; the render reads garbled multicolour texels (texture not in the file) (look pending) */
+#define FX_SWDMAG_FLARE_TEX_RING     0x19 /* rings: textured ring; the render reads garbled multicolour texels (texture not in the file); runtime (docs/runtime-findings.md effect-data pass): the ring UV box reads noise in the run-time pages too (look pending) */
+#define FX_SWDMAG_FLARE_TEX_RING_2   0x1A /* rings: textured ring; the render reads garbled multicolour texels (texture not in the file); runtime (docs/runtime-findings.md effect-data pass): noise in the run-time page too (look pending) */
 #define FX_SWDMAG_FLARE_BLUE_LIGHTNING 0x1B /* trail: blue lightning strip (fxm_drawOffsetTrail) */
 #define FX_SWDMAG_FLARE_SWORD_GLINT  0x1E /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
 #define FX_SWDMAG_FLARE_SWORD_FLASH  0x1F /* rings: white 8-segment rings flashed rotating at the sword (op84) */

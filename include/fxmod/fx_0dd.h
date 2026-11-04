@@ -12,7 +12,7 @@
 #define FX_SWDMAG_BIO_SCALE_TRACK 0x2 /* table: scale keys of the morphing bubble (fxm_vecTrackInit) */
 #define FX_SWDMAG_BIO_SCALE_TRACK_2 0xF /* table: scale keys of the second bubble pass (fxm_vecTrackInit) */
 #define FX_SWDMAG_BIO_PATH_2 0x10 /* table: rotation/position keys of the second bubble pass */
-#define FX_SWDMAG_BIO_SCREEN_TRAIL   0x11 /* emitter: orbiting screen-space trail; the render is still black (texture not in the file) (look pending) */
+#define FX_SWDMAG_BIO_BUBBLE_TRAIL   0x11 /* emitter: Bio's screen trail of glowing green bubbles; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_SWDMAG_BIO_TEAL_RING 0x12 /* emitter: teal-green wisp rings */
 #define FX_SWDMAG_BIO_TOXIC_CLOUD 0x13 /* emitter: green gas cloud + grey haze */
 #define FX_SWDMAG_BIO_RED_ORB 0x14 /* emitter: red cell-mesh balls with a crimson glow */

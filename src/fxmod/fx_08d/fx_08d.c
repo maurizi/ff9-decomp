@@ -21,7 +21,7 @@ s32 fx_08d_op80(s32 mode, Fx08dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0x12) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURA_FAN_EMITTER), (s32)&work->pos14);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURA_CYAN_GLOW), (s32)&work->pos14);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }

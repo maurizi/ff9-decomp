@@ -6,7 +6,7 @@
 
 /* fx_05a effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_MIGHT_BACKDROP    0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_MIGHT_AURA_TEXTURE 0x7 /* layer table: render-to-texture (btlfx_drawLayerTexture): 6 layers into VRAM (0x1C0,0x1C0) 64x64, a blurred red-brown glow sampled by the light shafts of the Might pillar; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_MIGHT_LIGHT_TRAIL 0x8 /* emitter: screen trail with a pale crystal strip + sparks (texture not in the file) */
 #define FX_MIGHT_SWIRL       0x9 /* emitter: blue-white swirl particles + fan */
 #define FX_MIGHT_STAR        0xA /* model: four-pointed star, plain white texture */

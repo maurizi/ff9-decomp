@@ -29,11 +29,11 @@ s32 fx_04e_op80(s32 mode, Fx04eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 0x27:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEP_SPECK_RING), (s32)&work->posC);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEP_MOON), (s32)&work->posC);
             break;
         }
         if (frame >= 0x13) {
-            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SLEEP_BACKDROP), frame - 0x13);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SLEEP_MOON_TEXTURE), frame - 0x13);
         }
         return frame >= 0x50;
     }

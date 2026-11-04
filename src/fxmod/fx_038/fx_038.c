@@ -178,7 +178,7 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     it->rotC.vz = ex->btlfx_rand();
                 }
             }
-            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_COMET_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_COMET_HAZE_TEXTURE), frame);
             if (work->countC >= 3 && frame >= 0x3E) {
                 ex->btlfx_clearEffModels();
                 return 1;

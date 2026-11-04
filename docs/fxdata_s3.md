@@ -29,7 +29,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0xD | `FX_SWDMAG_THUNDAGA_DISC` | kind/usage (look pending) | model: flat octagon on 15-bit texture page 0x119, which the file does not fill (drawn at run time) (byte-identical to fx_018 entry 0x10) |
+| 0xD | `FX_SWDMAG_THUNDAGA_DISC` | kind/usage (look pending) | model: flat octagon on 15-bit texture page 0x119, which the file does not fill (drawn at run time) (byte-identical to fx_018 entry 0x10); runtime: as Thundaga's disc (fx_018 0x10) its page holds 4-bit lightning textures at run time, read as 15-bit noise |
 | 0xE | `FX_SWDMAG_THUNDAGA_GLOW_DOME` | render, byte-identical | model: hemisphere with an orange-to-white streak texture (byte-identical to fx_018 entry 0x11) |
 | 0x10 | `FX_SWDMAG_THUNDAGA_BLUE_RING` | render | rings: white-blue gouraud rings |
 | 0x12 | `FX_SWDMAG_THUNDAGA_WHITE_RING` | render | rings: white gouraud rings drawn flat |
@@ -40,7 +40,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x21 | `FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS` | render (fxdata d6121033) | emitter: four fans of cyan / blue zigzag lightning arcs (byte-identical to fx_018 entry 0x21) |
 | 0x22 | `FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS_2` | render (fxdata d6121033) | emitter: four fans of cyan / blue zigzag lightning arcs (byte-identical to fx_018 entry 0x22) |
 | 0x25 | `FX_SWDMAG_THUNDAGA_IMPACT_FLASH` | render, byte-identical | emitter: four-point star flash (byte-identical to fx_018 entry 0x25) |
-| 0x26 | `FX_SWDMAG_THUNDAGA_CONE_EMITTER` | kind/usage (look pending) | emitter: cone of sprites; the render is still all transparent (byte-identical to fx_018 entry 0x26) |
+| 0x26 | `FX_SWDMAG_THUNDAGA_SPARKLE_SWARM` | runtime | emitter: Thundaga's swarms of blue, lilac and teal twinkle dots (byte-identical to fx_018 entry 0x26) |
 | 0x27 | `FX_SWDMAG_THUNDAGA_SPARK_DOTS` | render (fxdata d6121033) | emitter: white and yellow dot sparks (byte-identical to fx_018 entry 0x27) |
 | 0x28 | `FX_SWDMAG_THUNDAGA_SWORD_GLINT` | render | rings: white 6-segment rings flashed at the sword (op84, first draw) |
 | 0x29 | `FX_SWDMAG_THUNDAGA_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (op84) |
@@ -117,7 +117,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x2 | `FX_SWDMAG_BIO_SCALE_TRACK` | usage | table: scale keys of the morphing bubble (fxm_vecTrackInit) |
 | 0xF | `FX_SWDMAG_BIO_SCALE_TRACK_2` | usage | table: scale keys of the second bubble pass (fxm_vecTrackInit) |
 | 0x10 | `FX_SWDMAG_BIO_PATH_2` | usage | table: rotation/position keys of the second bubble pass |
-| 0x11 | `FX_SWDMAG_BIO_SCREEN_TRAIL` | kind/usage (look pending) | emitter: orbiting screen-space trail; the render is still black (texture not in the file) |
+| 0x11 | `FX_SWDMAG_BIO_BUBBLE_TRAIL` | runtime | emitter: Bio's screen trail of glowing green bubbles |
 | 0x12 | `FX_SWDMAG_BIO_TEAL_RING` | render | emitter: teal-green wisp rings |
 | 0x13 | `FX_SWDMAG_BIO_TOXIC_CLOUD` | render | emitter: green gas cloud + grey haze |
 | 0x14 | `FX_SWDMAG_BIO_RED_ORB` | render | emitter: red cell-mesh balls with a crimson glow |
@@ -160,8 +160,8 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x12 | `FX_SWDMAG_FLARE_ARCH` | render (fxdata d6121033) | model: grey arch, 15-bit texture page 0x139 (white in the render) |
 | 0x13 | `FX_SWDMAG_FLARE_WHITE_RINGS` | render | rings: white-cream gouraud rings |
 | 0x18 | `FX_SWDMAG_FLARE_BACKDROP_3` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
-| 0x19 | `FX_SWDMAG_FLARE_TEX_RING` | kind/usage (look pending) | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
-| 0x1A | `FX_SWDMAG_FLARE_TEX_RING_2` | kind/usage (look pending) | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
+| 0x19 | `FX_SWDMAG_FLARE_TEX_RING` | kind/usage (look pending) | rings: textured ring; the render reads garbled multicolour texels (texture not in the file); runtime: the ring UV box reads noise in the run-time pages too |
+| 0x1A | `FX_SWDMAG_FLARE_TEX_RING_2` | kind/usage (look pending) | rings: textured ring; the render reads garbled multicolour texels (texture not in the file); runtime: noise in the run-time page too |
 | 0x1B | `FX_SWDMAG_FLARE_BLUE_LIGHTNING` | render | trail: blue lightning strip (fxm_drawOffsetTrail) |
 | 0x1E | `FX_SWDMAG_FLARE_SWORD_GLINT` | render | rings: white 6-segment rings flashed at the sword (op84, first draw) |
 | 0x1F | `FX_SWDMAG_FLARE_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (op84) |
@@ -204,16 +204,16 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0xA | `FX_REBIRTH_FLAME_WHITE_STREAK` | render (fxdata d6121033) | emitter: two fans, a long white-grey light streak |
 | 0xC | `FX_REBIRTH_FLAME_RED_SPARKS` | render | emitter: four elements of tiny red spark sprites |
 | 0xD | `FX_REBIRTH_FLAME_BLUE_ORBS_2` | render | emitter: faint blue orbs |
-| 0x80 | `FX_REBIRTH_FLAME_MORPH_2` | kind/usage (look pending) | summon data: 'so' model, morph end, then drawn fading; the render's UVs land on a mixed sprite sheet, so the look is not readable |
-| 0x81 | `FX_REBIRTH_FLAME_MORPH_1` | kind/usage (look pending) | summon data: 'so' model, morph middle; the render's UVs land on a mixed sprite sheet, so the look is not readable |
-| 0x82 | `FX_REBIRTH_FLAME_MORPH_0` | kind/usage (look pending) | summon data: 'so' model, morph start; the render's UVs land on a mixed sprite sheet, so the look is not readable |
+| 0x80 | `FX_REBIRTH_FLAME_SCREEN_SPHERE` | runtime | summon data, 'so' model, morph end, then drawn fading: the captured battle scene wrapped on a sphere, the morph target the flat capture bends into |
+| 0x81 | `FX_REBIRTH_FLAME_SCREEN_BULGE` | runtime (medium) | summon data, 'so' model, morph middle: the in-between morph shape with the same captured scene texture |
+| 0x82 | `FX_REBIRTH_FLAME_SCREEN_PLANE` | runtime | summon data, 'so' model, morph start: flat grid carrying the captured battle scene, the picture before it is bent |
 | 0x83 | `FX_REBIRTH_FLAME_GLOW_BAND` | render (fxdata d6121033) | summon data: 'so' model, ring band with a white cloud texture, drawn three times with a fading glow |
 
 ### fx_0e1_1: Rebirth Flame, group 1 (FX_REBIRTH_FLAME_)
 
 | index | name | evidence | what it is |
 |---|---|---|---|
-| 0x1 | `FX_REBIRTH_FLAME_TEX_EMITTER` | kind/usage (look pending) | emitter: textured elements + tan-white rings; the textured element still reads garbled texels (texture not in the file) |
+| 0x1 | `FX_REBIRTH_FLAME_TEX_EMITTER` | kind/usage (look pending) | emitter: textured elements + tan-white rings; the textured element still reads garbled texels (texture not in the file); runtime: fetched during the fire blast (orange-white flames on screen); its ring elements read noise in the run-time page |
 | 0x2 | `FX_REBIRTH_FLAME_RED_RINGS_2` | render, byte-identical | emitter: white-grey-violet-red gouraud rings (byte-identical to fx_0e1_0 entry 0x6) |
 | 0x3 | `FX_REBIRTH_FLAME_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x4 | `FX_REBIRTH_FLAME_RED_SPARKS` | render | emitter: spiral of tiny red spark sprites |
@@ -271,14 +271,14 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 |---|---|---|---|
 | 0x1 | `FX_BAHAMUT_WING_TRAIL` | render | trail: white streak strip drawn from Bahamut's bones |
 | 0x2 | `FX_BAHAMUT_PURPLE_BOLT` | render | trail: purple energy strip (fxm_drawOffsetTrail1) |
-| 0x3 | `FX_BAHAMUT_TEAL_PUFF` | kind/usage (look pending) | particles: teal puff (pool task); the render still reads garbled teal texels (texture partly outside the file) |
+| 0x3 | `FX_BAHAMUT_TEAL_PUFF` | runtime (confirmed) | particles: a dark teal cloud puff |
 | 0x5 | `FX_BAHAMUT_BLUE_RINGS` | render | emitter: dark-to-light blue gouraud rings |
-| 0x7 | `FX_BAHAMUT_CORE_GRID` | kind/usage (look pending) | 'so' model drawn with a fading core colour: a flat square grid, its texture reads as dark green noise |
-| 0x8 | `FX_BAHAMUT_WHITE_BOLT` | kind/usage (look pending) | trail: faint white strip (fxm_drawOffsetTrail0); the render is still almost empty |
+| 0x7 | `FX_BAHAMUT_TERRAIN` | runtime (medium) | 'so' model, flat square grid drawn with a fading core colour: grid textured with aerial green mountain terrain, the ground seen from above |
+| 0x8 | `FX_BAHAMUT_WHITE_BOLT` | runtime (confirmed) | trail: a thin white lightning bolt over a white cloud |
 | 0xA | `FX_BAHAMUT_FIRE_SPARKS` | render | emitter: orange flame glows + spark sprites |
-| 0xB | `FX_BAHAMUT_TILE_RING` | kind/usage (look pending) | 'so' model drawn with a fading colour: a flat ring of tiles, its texture reads as garbled teal texels |
+| 0xB | `FX_BAHAMUT_CLOUD_RING` | runtime | 'so' model, flat ring of tiles drawn with a fading colour: flat ring with a band of teal-blue cloud |
 | 0xC | `FX_BAHAMUT_WHITE_RINGS` | render | rings: grey-white gouraud rings |
-| 0x82 | `FX_BAHAMUT_PILLAR_STRIP` | kind/usage (look pending) | summon data: 'so' model, the pillar (pillarRgb): a long thin strip, its texture reads as dark green noise |
+| 0x82 | `FX_BAHAMUT_SMOKE_STRIP` | runtime (medium) | summon data, 'so' model, the pillar (pillarRgb): wavy strip of grey-white streaky smoke |
 | 0x83 | `FX_BAHAMUT_BLUE_SPARKS` | render | summon data: emitter, blue-white spark sprites |
 | 0x85 | `FX_BAHAMUT_CLOUD_SPHERE` | render (fxdata d6121033) | summon data: 'so' model, sphere with a blue-white cloud texture, drawn fading at the end |
 | 0x86 | `FX_BAHAMUT_SMOKE_ARC` | render (fxdata d6121033) | summon data: 'so' model, curved band with a grey smoke texture, stacked nine times as a cone |
@@ -291,7 +291,7 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x4 | `FX_BAHAMUT_EMBERS` | render | emitter: spiral of tiny orange sprites |
 | 0x5 | `FX_BAHAMUT_FIRE_BURST` | render | emitter: red-white fire flashes |
 | 0x6 | `FX_BAHAMUT_BLUE_SPARKS` | render | emitter: blue-white spark sprites falling |
-| 0x7 | `FX_BAHAMUT_FLARE_LINE` | kind/usage (look pending) | sprite line; the render still reads garbled green / orange rings (texture not in the file) |
+| 0x7 | `FX_BAHAMUT_LENS_FLARE` | runtime | sprite line: lens-flare set (rainbow halo, yellow-green disc, white glow, orange ring, blue disc) |
 | 0x8 | `FX_BAHAMUT_FIRE_RING` | render (fxdata d6121033) | 'so' model: ring band with a fire texture |
 | 0x9 | `FX_BAHAMUT_FIRE_SPARKS` | render | emitter: orange flame glows + spark sprites |
 | 0xA | `FX_BAHAMUT_PURPLE_BOLT` | render | trail: purple energy strip (fxm_drawOffsetTrail2) |
@@ -299,11 +299,11 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0xC | `FX_BAHAMUT_BLUE_SPARKS_2` | render | emitter: blue-white spark sprites falling |
 | 0xD | `FX_BAHAMUT_FLAME_STRIP` | render (fxdata d6121033) | 'so' model: flat gouraud strip, purple-red-yellow gradient, drawn with BLAST_MODEL |
 | 0xE | `FX_BAHAMUT_ORANGE_STREAKS` | render (fxdata d6121033) | emitter: two fans, thin orange-white rising streaks |
-| 0xF | `FX_BAHAMUT_BLAST_PLATE` | kind/usage (look pending) | 'so' model: curved plate on 15-bit texture page 0x119 (filled at run time; the render's grey smoke is the file's 4-bit page read as 15-bit) |
-| 0x11 | `FX_BAHAMUT_WHITE_BOLT_2` | kind/usage (look pending) | trail: faint white strip (fxm_drawOffsetTrail1); the render is still almost empty |
+| 0xF | `FX_BAHAMUT_SMOKE_SHELL` | runtime (medium) | 'so' model: half-cylinder shell on a page of grey cloudy smoke at run time |
+| 0x11 | `FX_BAHAMUT_WHITE_BOLT_2` | runtime (confirmed) | trail: the white lightning strip |
 | 0x12 | `FX_BAHAMUT_SPIN_RING` | render | rings: white-blue gouraud rings, spinning |
 | 0x14 | `FX_BAHAMUT_BLUE_RINGS` | render | rings: dark-to-light blue gouraud rings |
-| 0x15 | `FX_BAHAMUT_WHITE_BOLT` | kind/usage (look pending) | trail: faint white strip (fxm_drawOffsetTrail0; byte-identical to fx_0e3_0 entry 0x8); the render is still almost empty |
+| 0x15 | `FX_BAHAMUT_WHITE_BOLT` | runtime (confirmed) | trail: the white lightning strip (byte-identical to fx_0e3_0 entry 0x8) |
 | 0x16 | `FX_BAHAMUT_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | 0x17 | `FX_BAHAMUT_ENERGY_ORBS` | render | emitter: cyan-green orbs + violet lightning strip |
 | 0x18 | `FX_BAHAMUT_SPARKLE_RING` | render | sprites: ring of blue-white sparkles, 16 frames |
@@ -402,25 +402,25 @@ Names for the `btlfx_getFileData` literals of these modules, by the scheme and t
 | 0x1 | `FX_DOOM_GOLD_FRAME` | render | model: ornate gold frame, rises sliced |
 | 0x3 | `FX_DOOM_GOLD_PANEL` | render | model: carved gold panel, rises sliced |
 | 0x4 | `FX_DOOM_REAPER_PICTURE` | render | model: panel with the picture of Death |
-| 0x6 | `FX_DOOM_PARTICLES` | kind/usage (look pending) | particles; the render still reads garbled blue texels (texture not in the file) |
+| 0x6 | `FX_DOOM_VIOLET_HALO` | runtime | particles: violet ring halo |
 | 0x7 | `FX_DOOM_GOLD_LATTICE` | render | model: capsule with a gold lattice texture |
 | 0x8 | `FX_DOOM_PINK_RINGS` | render | emitter: pink-white rings (+ particles, texture not in the file) |
 | 0x9 | `FX_DOOM_CAMERA_POINT` | usage | table: SVECTOR whose pad sets the camera point height |
 | 0xB | `FX_DOOM_RED_RING` | render | emitter: glowing red ring sprite |
 | 0xC | `FX_DOOM_PINK_SMOKE` | render | emitter: pink-violet smoke |
-| 0xD | `FX_DOOM_GLOW_SHELL` | kind/usage (look pending) | model: capsule, additive, texture page computed by the C (not resolved by the tool), drawn twice |
+| 0xD | `FX_DOOM_GLOW_SHELL` | kind/usage (look pending) | model: capsule, additive, texture page computed by the C (not resolved by the tool), drawn twice; runtime: tpage computed by the C, not resolved |
 | 0xE | `FX_DOOM_CYAN_SPARKLES` | render | emitter: cyan sparkles in a tube |
 | 0xF | `FX_DOOM_REAPER_PICTURE_2` | render | model: second panel with the picture of Death |
-| 0x10 | `FX_DOOM_WHITE_SHELL` | kind/usage (look pending) | model: capsule on 15-bit texture page 0x119 (filled at run time; white in the render) |
+| 0x10 | `FX_DOOM_SWIRL_SHELL` | runtime (medium) | model: shell on a grey marbled swirl page at run time |
 | 0x11 | `FX_DOOM_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
-| 0x13 | `FX_DOOM_GOURAUD_SHELL` | kind/usage (look pending) | model: gouraud capsule; the render draws it black (colours set by the C at run time?) |
+| 0x13 | `FX_DOOM_GOURAUD_SHELL` | kind/usage (look pending) | model: gouraud capsule; the render draws it black (colours set by the C at run time?); runtime: still black with the run-time page |
 
 ### fx_0ed: Roulette (FX_ROULETTE_)
 
 | index | name | evidence | what it is |
 |---|---|---|---|
 | 0x2 | `FX_ROULETTE_MODEL_DATA` | usage | model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL |
-| 0x4 | `FX_ROULETTE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| 0x4 | `FX_ROULETTE_SMOKE_TEXTURE` | runtime (medium) | layer table: render-to-texture (btlfx_drawLayerTexture): 2 layers into VRAM (0x200,0x1A0) 64x64, rising purple smoke (byte-identical to fx_05e entry 0xB, played there) |
 | 0x6 | `FX_ROULETTE_TARGET_RING` | render | sprite: white ring outline on the chosen target |
 | 0x7 | `FX_ROULETTE_REAPER` | render (fxdata d6121033) | 'so' summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe (byte-identical to fx_05e entry 0x6, same render) |
 | 0x8 | `FX_ROULETTE_REAPER_2` | render (fxdata d6121033) | 'so' model: the robed skull reaper with the scythe in another pose (same textures, 354 polys; byte-identical to fx_05e entry 0x1C, same render) |
@@ -485,28 +485,28 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 
 | module | index | name | why the look is pending |
 |---|---|---|---|
-| fx_0d9 | 0xd | `FX_SWDMAG_THUNDAGA_DISC` | model: flat octagon on 15-bit texture page 0x119, which the file does not fill (drawn at run time) (byte-identical to fx_018 entry 0x10) |
-| fx_0d9 | 0x26 | `FX_SWDMAG_THUNDAGA_CONE_EMITTER` | emitter: cone of sprites; the render is still all transparent (byte-identical to fx_018 entry 0x26) |
-| fx_0dd | 0x11 | `FX_SWDMAG_BIO_SCREEN_TRAIL` | emitter: orbiting screen-space trail; the render is still black (texture not in the file) |
+| fx_0d9 | 0xd | `FX_SWDMAG_THUNDAGA_DISC` | model: flat octagon on 15-bit texture page 0x119, which the file does not fill (drawn at run time) (byte-identical to fx_018 entry 0x10); runtime: as Thundaga's disc (fx_018 0x10) its page holds 4-bit lightning textures at run time, read as 15-bit noise |
+| fx_0d9 | 0x26 | `FX_SWDMAG_THUNDAGA_SPARKLE_SWARM` | emitter: Thundaga's swarms of blue, lilac and teal twinkle dots (byte-identical to fx_018 entry 0x26) (runtime) |
+| fx_0dd | 0x11 | `FX_SWDMAG_BIO_BUBBLE_TRAIL` | emitter: Bio's screen trail of glowing green bubbles (runtime) |
 | fx_0df | 0x9 | `FX_SWDMAG_FLARE_GOLDEN_GLOWS` | emitter: two fans; the render shows only yellow glow dots on a dark strip (texture mostly outside the file) |
-| fx_0df | 0x19 | `FX_SWDMAG_FLARE_TEX_RING` | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
-| fx_0df | 0x1a | `FX_SWDMAG_FLARE_TEX_RING_2` | rings: textured ring; the render reads garbled multicolour texels (texture not in the file) |
-| fx_0e1_0 | 0x80 | `FX_REBIRTH_FLAME_MORPH_2` | summon data: 'so' model, morph end, then drawn fading; the render's UVs land on a mixed sprite sheet, so the look is not readable |
-| fx_0e1_0 | 0x81 | `FX_REBIRTH_FLAME_MORPH_1` | summon data: 'so' model, morph middle; the render's UVs land on a mixed sprite sheet, so the look is not readable |
-| fx_0e1_0 | 0x82 | `FX_REBIRTH_FLAME_MORPH_0` | summon data: 'so' model, morph start; the render's UVs land on a mixed sprite sheet, so the look is not readable |
-| fx_0e1_1 | 0x1 | `FX_REBIRTH_FLAME_TEX_EMITTER` | emitter: textured elements + tan-white rings; the textured element still reads garbled texels (texture not in the file) |
-| fx_0e3_0 | 0x3 | `FX_BAHAMUT_TEAL_PUFF` | particles: teal puff (pool task); the render still reads garbled teal texels (texture partly outside the file) |
-| fx_0e3_0 | 0x7 | `FX_BAHAMUT_CORE_GRID` | 'so' model drawn with a fading core colour: a flat square grid, its texture reads as dark green noise |
-| fx_0e3_0 | 0x8 | `FX_BAHAMUT_WHITE_BOLT` | trail: faint white strip (fxm_drawOffsetTrail0); the render is still almost empty |
-| fx_0e3_0 | 0xb | `FX_BAHAMUT_TILE_RING` | 'so' model drawn with a fading colour: a flat ring of tiles, its texture reads as garbled teal texels |
-| fx_0e3_0 | 0x82 | `FX_BAHAMUT_PILLAR_STRIP` | summon data: 'so' model, the pillar (pillarRgb): a long thin strip, its texture reads as dark green noise |
-| fx_0e3_1 | 0x7 | `FX_BAHAMUT_FLARE_LINE` | sprite line; the render still reads garbled green / orange rings (texture not in the file) |
-| fx_0e3_1 | 0xf | `FX_BAHAMUT_BLAST_PLATE` | 'so' model: curved plate on 15-bit texture page 0x119 (filled at run time; the render's grey smoke is the file's 4-bit page read as 15-bit) |
-| fx_0e3_1 | 0x11 | `FX_BAHAMUT_WHITE_BOLT_2` | trail: faint white strip (fxm_drawOffsetTrail1); the render is still almost empty |
-| fx_0e3_1 | 0x15 | `FX_BAHAMUT_WHITE_BOLT` | trail: faint white strip (fxm_drawOffsetTrail0; byte-identical to fx_0e3_0 entry 0x8); the render is still almost empty |
-| fx_0ec | 0x6 | `FX_DOOM_PARTICLES` | particles; the render still reads garbled blue texels (texture not in the file) |
-| fx_0ec | 0xd | `FX_DOOM_GLOW_SHELL` | model: capsule, additive, texture page computed by the C (not resolved by the tool), drawn twice |
-| fx_0ec | 0x10 | `FX_DOOM_WHITE_SHELL` | model: capsule on 15-bit texture page 0x119 (filled at run time; white in the render) |
-| fx_0ec | 0x13 | `FX_DOOM_GOURAUD_SHELL` | model: gouraud capsule; the render draws it black (colours set by the C at run time?) |
+| fx_0df | 0x19 | `FX_SWDMAG_FLARE_TEX_RING` | rings: textured ring; the render reads garbled multicolour texels (texture not in the file); runtime: the ring UV box reads noise in the run-time pages too |
+| fx_0df | 0x1a | `FX_SWDMAG_FLARE_TEX_RING_2` | rings: textured ring; the render reads garbled multicolour texels (texture not in the file); runtime: noise in the run-time page too |
+| fx_0e1_0 | 0x80 | `FX_REBIRTH_FLAME_SCREEN_SPHERE` | summon data, 'so' model, morph end, then drawn fading: the captured battle scene wrapped on a sphere, the morph target the flat capture bends into (runtime) |
+| fx_0e1_0 | 0x81 | `FX_REBIRTH_FLAME_SCREEN_BULGE` | summon data, 'so' model, morph middle: the in-between morph shape with the same captured scene texture (runtime (medium)) |
+| fx_0e1_0 | 0x82 | `FX_REBIRTH_FLAME_SCREEN_PLANE` | summon data, 'so' model, morph start: flat grid carrying the captured battle scene, the picture before it is bent (runtime) |
+| fx_0e1_1 | 0x1 | `FX_REBIRTH_FLAME_TEX_EMITTER` | emitter: textured elements + tan-white rings; the textured element still reads garbled texels (texture not in the file); runtime: fetched during the fire blast (orange-white flames on screen); its ring elements read noise in the run-time page |
+| fx_0e3_0 | 0x3 | `FX_BAHAMUT_TEAL_PUFF` | particles: a dark teal cloud puff (runtime (confirmed)) |
+| fx_0e3_0 | 0x7 | `FX_BAHAMUT_TERRAIN` | 'so' model, flat square grid drawn with a fading core colour: grid textured with aerial green mountain terrain, the ground seen from above (runtime (medium)) |
+| fx_0e3_0 | 0x8 | `FX_BAHAMUT_WHITE_BOLT` | trail: a thin white lightning bolt over a white cloud (runtime (confirmed)) |
+| fx_0e3_0 | 0xb | `FX_BAHAMUT_CLOUD_RING` | 'so' model, flat ring of tiles drawn with a fading colour: flat ring with a band of teal-blue cloud (runtime) |
+| fx_0e3_0 | 0x82 | `FX_BAHAMUT_SMOKE_STRIP` | summon data, 'so' model, the pillar (pillarRgb): wavy strip of grey-white streaky smoke (runtime (medium)) |
+| fx_0e3_1 | 0x7 | `FX_BAHAMUT_LENS_FLARE` | sprite line: lens-flare set (rainbow halo, yellow-green disc, white glow, orange ring, blue disc) (runtime) |
+| fx_0e3_1 | 0xf | `FX_BAHAMUT_SMOKE_SHELL` | 'so' model: half-cylinder shell on a page of grey cloudy smoke at run time (runtime (medium)) |
+| fx_0e3_1 | 0x11 | `FX_BAHAMUT_WHITE_BOLT_2` | trail: the white lightning strip (runtime (confirmed)) |
+| fx_0e3_1 | 0x15 | `FX_BAHAMUT_WHITE_BOLT` | trail: the white lightning strip (byte-identical to fx_0e3_0 entry 0x8) (runtime (confirmed)) |
+| fx_0ec | 0x6 | `FX_DOOM_VIOLET_HALO` | particles: violet ring halo (runtime) |
+| fx_0ec | 0xd | `FX_DOOM_GLOW_SHELL` | model: capsule, additive, texture page computed by the C (not resolved by the tool), drawn twice; runtime: tpage computed by the C, not resolved |
+| fx_0ec | 0x10 | `FX_DOOM_SWIRL_SHELL` | model: shell on a grey marbled swirl page at run time (runtime (medium)) |
+| fx_0ec | 0x13 | `FX_DOOM_GOURAUD_SHELL` | model: gouraud capsule; the render draws it black (colours set by the C at run time?); runtime: still black with the run-time page |
 | fx_0f0 | 0x1 | `FX_ZOMBIE_POWDER_ANIM_EMITTER` | emitter: animated quads; the render is still all black (texture not in the file) |
 | fx_0f2 | 0x2 | `FX_TIDAL_FLAME_DOME` | model: hemisphere, texture page 0x11A not in the file (magenta in the render) |

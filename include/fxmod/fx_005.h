@@ -16,7 +16,7 @@
 #define FX_THUNDARA_ORB_EMITTER  0x1A /* emitter: helix whose callback element draws the orb (0x16, 0x1C-0x1F) */
 #define FX_THUNDARA_ORB_FADE     0x1C /* particles: blue energy sphere fading to orange */
 #define FX_THUNDARA_ORB          0x1D /* particles: bright blue energy sphere */
-#define FX_THUNDARA_ORB_SPARKS   0x1E /* sprites: blank, samples page (0x1C0, 0x100) which the file leaves zero, filled at run time (look pending) */
+#define FX_THUNDARA_STAR_GLINTS  0x1E /* sprites: three 16x16 star-glint sprites in the run-time page (0x1C0,0x100), twinkling orange to blue around the orbs; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_THUNDARA_ORB_DOTS     0x1F /* sprites: white dots scattering around the orb */
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */

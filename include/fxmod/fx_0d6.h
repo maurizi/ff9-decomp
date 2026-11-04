@@ -20,7 +20,7 @@
 #define FX_SWDMAG_FIRAGA_GOLD_SPARKS_2 0x13 /* emitter: golden spark sprites + spark sub-particles (byte-identical to fx_007 entry 0x11) */
 #define FX_SWDMAG_FIRAGA_GOLD_SPARKS   0x14 /* emitter: golden spark sprites (byte-identical to fx_007 entry 0x10) */
 #define FX_SWDMAG_FIRAGA_SMOKE_BURST   0x15 /* emitter: dark teal-tinted burst (smoke after the blast) (byte-identical to fx_007 entry 0x13) */
-#define FX_SWDMAG_FIRAGA_CONE_GLOW     0x16 /* emitter: cone, one particle frame; the render is still a dark red smear (byte-identical to fx_007 entry 0x15) (look pending) */
+#define FX_SWDMAG_FIRAGA_RED_HAZE      0x16 /* emitter: soft dark-red additive blob, Firaga's red heat haze (byte-identical to fx_007 entry 0x15); runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_SWDMAG_FIRAGA_EMBER_CONE 0x17 /* emitter: cone of red and white ember dots (byte-identical to fx_007 entry 0x14) */
 #define FX_SWDMAG_FIRAGA_SWORD_GLINT   0x18 /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */
 #define FX_SWDMAG_FIRAGA_SWORD_FLASH 0x19 /* rings: white 8-segment rings flashed rotating at the sword (byte-identical to the SWORD_FLASH of every Sword Magic module) */

@@ -38,13 +38,13 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->state10) {
         case 0:
             if (frame == 0) {
-                work->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_CYL_EMITTER), (s32)&work->pos8);
+                work->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_VIOLET_GLOW), (s32)&work->pos8);
                 if (work->emit1C != NULL) {
                     work->emit1C->otZ = 0x46;
                 }
             }
             if (frame == 5) {
-                work->emit20 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_CYL_EMITTER_2), (s32)&work->pos8);
+                work->emit20 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_VIOLET_GLOW_2), (s32)&work->pos8);
                 if (work->emit20 != NULL) {
                     work->emit20->otZ = 0x46;
                 }
@@ -89,7 +89,7 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                work->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_CONE_EMITTER), (s32)&work->pos8);
+                work->emit1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_SPARKLE_SWARM), (s32)&work->pos8);
                 if (work->emit1C != NULL) {
                     work->emit1C->otZ = 0x80;
                 }

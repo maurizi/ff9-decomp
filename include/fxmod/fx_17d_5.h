@@ -10,12 +10,12 @@
 #define FX_ARK_CREAM_RING       0x2 /* emitter: cream-white and white-grey-violet gouraud rings */
 #define FX_ARK_LILAC_RING       0x3 /* emitter: dark noise particle + lilac-white gouraud ring */
 #define FX_ARK_ORANGE_RING      0x4 /* rings: white-orange-brown gouraud rings (pool task) */
-#define FX_ARK_TRAIL            0x5 /* trail: strip texture not resolved (noise and green in the render) (look pending) */
+#define FX_ARK_TRAIL            0x5 /* trail: strip texture not resolved (noise and green in the render); runtime (docs/runtime-findings.md effect-data pass): its strip reads noise in the run-time page (look pending) */
 #define FX_ARK_PLANET           0x8 /* particles: green-tinted planet with cloud swirls, fading */
-#define FX_ARK_TRAIL_2          0x9 /* trail: strip texture not resolved (noise and green in the render) (look pending) */
+#define FX_ARK_TRAIL_2          0x9 /* trail: strip texture not resolved (noise and green in the render); runtime (docs/runtime-findings.md effect-data pass): noise in the run-time page (yellow-white curling light trails on screen meanwhile) (look pending) */
 #define FX_ARK_PLANET_FRAGMENTS 0xA /* emitter: sprites of planet-surface fragments */
 #define FX_ARK_RED_FLASH_RING   0xB /* rings: red-white flat flash ring */
-#define FX_ARK_SPRITE_LINE      0xD /* sprite line: textures partly not resolved (almost empty in the render) (look pending) */
+#define FX_ARK_LENS_FLARE       0xD /* sprite line: lens-flare set during the white blast; runtime (docs/runtime-findings.md effect-data pass) */
 
 typedef struct {
     s32 vx, vy, vz;

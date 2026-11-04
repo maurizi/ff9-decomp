@@ -12,9 +12,9 @@
 #define FX_PHOENIX_FIRE_TRAILS      0x2 /* emitter: fire-textured trails and a swirling ember ring */
 #define FX_PHOENIX_GLOW_RINGS       0x3 /* emitter: pale yellow / grey gouraud rings (+ textured rings, texture not in the file) */
 #define FX_PHOENIX_PEACH_GLOW       0x4 /* emitter: two fans, a narrow peach half-disc glow */
-#define FX_PHOENIX_FAN_EMITTER_2    0x5 /* emitter: two fans; the render reads garbled multicolour texels (texture not resolved) (look pending) */
+#define FX_PHOENIX_RAINBOW_FAN      0x5 /* emitter: fan of a rainbow gradient strip, the prismatic light rays behind Phoenix; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_PHOENIX_FEATHERS         0x6 /* emitter: two fans, grey and tan feathers with light streaks */
-#define FX_PHOENIX_SPRITE_LINE      0x7 /* sprite line; the render is almost empty (a few garbled texels) (look pending) */
+#define FX_PHOENIX_LENS_FLARE       0x7 /* sprite line: lens-flare set (rainbow halo ring, yellow-green disc, white glow, red ring, blue disc) across Phoenix; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_PHOENIX_FIRE_TRAILS_2    0xB /* emitter: orbiting fire-textured trails */
 #define FX_PHOENIX_FIRE_DOME        0xC /* 'so' model: dome with a fire texture */
 #define FX_PHOENIX_FIRE_DISC        0xD /* 'so' model: flat disc with a fire texture */
@@ -24,7 +24,7 @@
 #define FX_PHOENIX_PINK_RINGS       0x11 /* emitter: white / pink / copper gouraud rings */
 #define FX_PHOENIX_GOLD_FEATHERS    0x12 /* emitter: golden feather quads */
 #define FX_PHOENIX_FEATHERS_2       0x13 /* emitter: two fans, grey and tan feathers with light streaks */
-#define FX_PHOENIX_FAN_EMITTER_5    0x14 /* emitter: two fans; the render reads garbled multicolour texels (texture not resolved) (look pending) */
+#define FX_PHOENIX_RAINBOW_FAN_2    0x14 /* emitter: the same rainbow gradient fan, later rays; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_PHOENIX_BACKDROP         0x15 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_PHOENIX_FLAME_SWIRL      0x16 /* 'so' model: cone of swirling brown-orange flame tongues (fx_0d3_sharedModel) */
 #define FX_PHOENIX_FLAME_FEATHERS   0x17 /* emitter: flame-feather quads */

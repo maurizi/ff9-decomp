@@ -209,7 +209,7 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelAbr(work->modelC, 0xFF);
             ex->Hi_ModifyEffModelRGB(work->modelC, (fx_057_fade >> 5) - 0x80, (fx_057_fade >> 5) - 0x80,
                                      (fx_057_fade >> 5) - 0x80);
-            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_BACKDROP), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_SWIRL_TEXTURE), work->frame4);
             env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_VIOLET_RINGS), &work->pos10, NULL, 0x1600, 0, 1, fx_057_fade);
             env->otZ = 0;
@@ -235,9 +235,9 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ang.vz = -work->frame4 * 0x10;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_TEXTURED_RING), &work->pos10, &ang, (swell * 16 + swell * 4) >> 1, 0, 1,
                               fx_057_fade);
-            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_BACKDROP_2), work->frame4);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_STARFIELD_TEXTURE), work->frame4);
         }
-        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_BACKDROP_3), work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_HOLY_SPARKLE_STREAK_TEXTURE), work->frame4);
         work->frame4++;
     }
     return 0;
@@ -293,7 +293,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_SKY_RINGS), &work->posC, NULL, (t >> 1) + 0x3000, 0, 1,
                           fade);
         env->otZ = 0;
-        ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_SPRITE_LINE), &work->posC, work->frame4, ex->math_sin(t >> 2));
+        ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_LENS_FLARE_LINE), &work->posC, work->frame4, ex->math_sin(t >> 2));
         if (frame >= 7) {
             work->state0 = 1;
             entry->frame = -1;
@@ -316,7 +316,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                           0x1000);
         env->otZ = 0;
         ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0x80);
-        ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_SPRITE_LINE), &work->posC, work->frame4, 0x1000);
+        ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_LENS_FLARE_LINE), &work->posC, work->frame4, 0x1000);
         if (frame >= 7) {
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
             work->state0 = 2;
@@ -393,7 +393,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             orbitAng = work->frame4 * 0x29 + (j << 7);
             for (i = 0; i < 0x10; i++, orbitAng += 0x100) {
                 ex->btlfx_offsetPoint(&work->posC, (s32)&out2, 0, (XY32 *)&spinRot, orbitRadius, orbitAng);
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_SPARK), &out2, NULL, 0x1800, frame & 0xF, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_HOLY_WHITE_GLOW), &out2, NULL, 0x1800, frame & 0xF, 1,
                                   bright, 0, 0);
             }
         }

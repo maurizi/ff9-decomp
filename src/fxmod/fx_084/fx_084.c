@@ -81,7 +81,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 6) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_SPRITES), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_PINK_SPECKS), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
                 }

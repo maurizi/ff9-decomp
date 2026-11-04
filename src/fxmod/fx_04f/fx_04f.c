@@ -162,8 +162,8 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->Hi_ModifyEffModelAbr(work->model10, 1);
         ex->Hi_ModifyEffModelRGB(work->model10, (glow * 2 / 3 >> 5) - 0x80, (glow * 2 / 3 >> 5) - 0x80, (glow * 2 / 3 >> 5) - 0x80);
         work->rot38.vz = 0;
-        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_REFLECT_BACKDROP), work->frame48);
-        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_REFLECT_BACKDROP_2), work->frame48);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_REFLECT_SPARKLE_TEXTURE), work->frame48);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_REFLECT_STREAK_TEXTURE), work->frame48);
         work->frame48++;
     }
     }

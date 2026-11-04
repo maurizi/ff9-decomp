@@ -370,9 +370,9 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->frame4 = 0;
         fx_0e1_0_env = env;
         ex->btlfx_initEffModels(fx_0e1_0_effModels, 5);
-        work->model50 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MORPH_0), 0);
-        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MORPH_1), 0);
-        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MORPH_2), 0);
+        work->model50 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SCREEN_PLANE), 0);
+        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SCREEN_BULGE), 0);
+        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SCREEN_SPHERE), 0);
         work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SWIRL_SPHERE), 0);
         work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_GLOW_BAND), 1);
         work->pos8.vx = fx_0e1_0_origin.vx;

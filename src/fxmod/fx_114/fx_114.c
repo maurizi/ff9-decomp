@@ -575,7 +575,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale1C.vy = 0x1000;
         work->scale1C.vz = 0x1000;
         fx_114_env = env;
-        work->model66 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_IFRIT_GRID_PLANE), 0x117, 0, 0, 0);
+        work->model66 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_IFRIT_WHITE_HAZE), 0x117, 0, 0, 0);
         ex->Hi_SetEffModelOffset(work->model66, 0x6E);
         work->unk2C.vx = 0;
         work->unk2C.vy = 0;
@@ -732,7 +732,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale88.vy = 0x1000;
         work->scale88.vz = 0x1000;
         fxm_vecTrackInit(&fx_114_vecTrack3, (u16 *)ex->btlfx_getFileData(entry->file, FX_IFRIT_VEC_TRACK));
-        work->model148 = REG_TEX_LIST(ex)((void *)ex->btlfx_getFileData(entry->file, FX_IFRIT_BOWL), fx_114_texInfo4, fx_114_texPos4);
+        work->model148 = REG_TEX_LIST(ex)((void *)ex->btlfx_getFileData(entry->file, FX_IFRIT_HEAT_DOME), fx_114_texInfo4, fx_114_texPos4);
         work->rot9C.vx = 0;
         work->rot9C.vy = 0;
         work->rot9C.vz = 0;

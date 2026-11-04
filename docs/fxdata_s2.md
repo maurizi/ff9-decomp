@@ -21,7 +21,7 @@ Notes:
 |---|---|---|---|---|
 | fx_0b1 | 0x1 | `FX_CARBUNCLE_RING_BURST_2` | render | emitter: cone of white-red, lilac, cyan and blue-grey gouraud rings, fan |
 | fx_0b1 | 0x9 | `FX_CARBUNCLE_LENS_FLARE` | render | emitter: orbiting white glow trail with a blue lens streak |
-| fx_0b1 | 0xA | `FX_CARBUNCLE_ORBIT_GLOW` | kind/usage (look pending) | emitter: orbiting particle + sprite, two copies; the render reads unrelated texels (noise), texture probably drawn at run time |
+| fx_0b1 | 0xA | `FX_CARBUNCLE_GREEN_MOTES` | runtime (medium) | emitter: faint pale round glow, the green motes drifting round the emerald crystal |
 | fx_0b1 | 0xC | `FX_CARBUNCLE_RED_RING` | render | emitter: white-red gouraud rings, fans |
 | fx_0b1 | 0xD | `FX_CARBUNCLE_WHITE_LIGHT_STREAK` | render (fxdata d6121033) | emitter: fan, a white horizontal light streak |
 | fx_0b1 | 0xE | `FX_CARBUNCLE_LENS_STREAK` | render | emitter: blue-white lens streak, white-red ring |
@@ -32,14 +32,14 @@ Notes:
 | fx_0b1 | 0x13 | `FX_CARBUNCLE_FLAME_GLINT` | render | emitter: orange-blue flame-shaped glints, red gouraud rings, fans |
 | fx_0b1 | 0x14 | `FX_CARBUNCLE_RING_BURST_3` | render | emitter: cone of white-red, lilac, cyan and blue-grey gouraud rings, fan |
 | fx_0b1 | 0x15 | `FX_CARBUNCLE_LENS_STREAK_2` | render | emitter: blue-white lens streak, white-red ring, orange sprites |
-| fx_0b1 | 0x16 | `FX_CARBUNCLE_ORBIT_GLOW_2` | kind/usage (look pending) | emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time |
+| fx_0b1 | 0x16 | `FX_CARBUNCLE_ORANGE_MOTES` | runtime | emitter: small orange glow, the orange motes swirling after the burst |
 | fx_0b1 | 0x17 | `FX_CARBUNCLE_CAMERA_KEYS_3` | usage | table: camera key path for fxm_camKeyAdd (target 3) |
 | fx_0b1 | 0x18 | `FX_CARBUNCLE_COLOR_RINGS` | render | emitter: pink / green / pink gouraud rings at each target body |
 | fx_0b1 | 0x19 | `FX_CARBUNCLE_CAMERA_KEYS_2` | usage | table: camera key path for fxm_camKeyAdd (target 2) |
 | fx_0b1 | 0x21 | `FX_CARBUNCLE_PINK_RING` | render | emitter: pink gouraud ring and swirl-ring particles at each target body |
 | fx_0b1 | 0x22 | `FX_CARBUNCLE_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0b1 | 0x23 | `FX_CARBUNCLE_STAR_CRYSTAL` | render | model: four-point star crystal (texture 0x177), one per target |
-| fx_0b1 | 0x24 | `FX_CARBUNCLE_ORBIT_GLOW_3` | kind/usage (look pending) | emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time |
+| fx_0b1 | 0x24 | `FX_CARBUNCLE_ORANGE_MOTES_2` | runtime | emitter: the same small orange glow motes |
 | fx_0b2 | 0x1 | `FX_TWISTER_VORTEX` | render | particles: tan swirling vortex, drawn directly |
 | fx_0b2 | 0x2 | `FX_TWISTER_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0b2 | 0x4 | `FX_TWISTER_WIND_STREAK` | render | trail: violet-white wind streak (fxm_drawOffsetTrail) |
@@ -93,13 +93,13 @@ Notes:
 | fx_0b6 | 0x7 | `FX_SCORCH_HEAT_RING` | render | emitter: white-pink gouraud rings |
 | fx_0b7 | 0x2 | `FX_HEAVY_RED_STREAKS` | render (fxdata d6121033) | emitter: two orbiting fans of small red streaks |
 | fx_0b7 | 0x6 | `FX_HEAVY_GREEN_SWIRL` | render | emitter: green swirl ring particle + pink-white gouraud rings |
-| fx_0b8 | 0x2 | `FX_ATOMOS_SPRITES` | kind/usage (look pending) | emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
+| fx_0b8 | 0x2 | `FX_ATOMOS_BLUE_SPECKS` | runtime (medium) | emitter: sparse tiny blue specks flying round the gate as it opens |
 | fx_0b8 | 0x3 | `FX_ATOMOS_VORTEX_STREAK` | render | trail: violet vortex streak |
 | fx_0b8 | 0x7 | `FX_ATOMOS_ORANGE_STREAKS` | render (fxdata d6121033) | emitter: two fans, thin orange light streaks |
-| fx_0b8 | 0x8 | `FX_ATOMOS_SPRITES_2` | kind/usage (look pending) | emitter: two spiralling sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
+| fx_0b8 | 0x8 | `FX_ATOMOS_BLUE_SPECKS_2` | runtime (medium) | emitter: the same tiny blue specks, during the vortex |
 | fx_0b8 | 0x9 | `FX_ATOMOS_VIOLET_RINGS` | render | emitter: violet streak and violet / dark blue gouraud rings |
 | fx_0b8 | 0xA | `FX_ATOMOS_PINK_CLOUD` | render | emitter: violet-blue and white-red rings, pink cloud particles |
-| fx_0b8 | 0xB | `FX_ATOMOS_FAINT_GLOW` | kind/usage (look pending) | emitter: spiralling glow particles; the render is almost black (a faint white glow) |
+| fx_0b8 | 0xB | `FX_ATOMOS_FAINT_GLOW` | kind/usage (look pending) | emitter: spiralling glow particles; the render is almost black (a faint white glow); runtime: with the run-time page its particle reads a grey zigzag band, nothing like the white mist on screen |
 | fx_0b8 | 0xC | `FX_ATOMOS_ROCK_DEBRIS` | render | emitter: grey-blue rock debris particles |
 | fx_0b8 | 0xD | `FX_ATOMOS_BLAST_RINGS` | render | emitter: white / yellow / orange / brown and purple gouraud rings |
 | fx_0b8 | 0xE | `FX_ATOMOS_VORTEX_SPARKLES` | render | emitter: orbiting violet vortex trails and gold sparkles |
@@ -111,7 +111,7 @@ Notes:
 | fx_0b8 | 0x1F | `FX_ATOMOS_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0b8 | 0x20 | `FX_ATOMOS_VIOLET_RING` | render | emitter: white-violet and white-blue gouraud rings |
 | fx_0b8 | 0x21 | `FX_ATOMOS_PURPLE_RINGS` | render | emitter: white / magenta / purple and pale yellow / grey gouraud rings |
-| fx_0b8 | 0x22 | `FX_ATOMOS_SPRITES_3` | kind/usage (look pending) | emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
+| fx_0b8 | 0x22 | `FX_ATOMOS_BLUE_SPECKS_3` | runtime (medium) | emitter: the same blue specks round the black hole |
 | fx_0b8 | 0x80 | `FX_ATOMOS_GREY_RING` | render (fxdata d6121033) | summon data entry 0: 'so' model, thin white-grey gouraud ring |
 | fx_0b8 | 0x81 | `FX_ATOMOS_CRATER_MOUND` | render (fxdata d6121033) | summon data entry 1: 'so' model, grey gouraud crater mound |
 | fx_0b8 | 0x82 | `FX_ATOMOS_WHITE_PILLAR` | render (fxdata d6121033) | summon data entry 2: 'so' model, white octagonal gouraud pillar |
@@ -152,7 +152,7 @@ Notes:
 | fx_0ba | 0x26 | `FX_RAMUH_GREEN_DOME` | render (fxdata d6121033) | 'so' model: teal-green gouraud hemisphere |
 | fx_0ba | 0x27 | `FX_RAMUH_WHITE_RING` | render | rings: white gouraud ring |
 | fx_0ba | 0x29 | `FX_RAMUH_SPARK_RING` | render | rings: pale cyan gouraud rings (pool items) |
-| fx_0ba | 0x2C | `FX_RAMUH_SPARK_PARTICLE` | kind/usage (look pending) | emitter: one particle; the render still reads garbled blue strips (texture not resolved) |
+| fx_0ba | 0x2C | `FX_RAMUH_SPARK_PARTICLE` | kind/usage (look pending) | emitter: one particle; the render still reads garbled blue strips (texture not resolved); runtime: not fetched in a full Ramuh: the module uses it in a branch that cast did not take |
 | fx_0ba | 0x2E | `FX_RAMUH_CAMERA_KEYS` | usage | table: per-frame camera point 0 (op82) |
 | fx_0ba | 0x2F | `FX_RAMUH_CAMERA_KEYS_2` | usage | table: per-frame camera point 1 (op82) |
 | fx_0ba | 0x32 | `FX_RAMUH_POOL_LIGHTNING` | render (fxdata d6121033) | trail: 8-frame blue-white lightning of the op85 pool items |
@@ -296,9 +296,9 @@ Notes:
 | fx_0d3 | 0x2 | `FX_PHOENIX_FIRE_TRAILS` | render | emitter: fire-textured trails and a swirling ember ring |
 | fx_0d3 | 0x3 | `FX_PHOENIX_GLOW_RINGS` | render | emitter: pale yellow / grey gouraud rings (+ textured rings, texture not in the file) |
 | fx_0d3 | 0x4 | `FX_PHOENIX_PEACH_GLOW` | render (fxdata d6121033) | emitter: two fans, a narrow peach half-disc glow |
-| fx_0d3 | 0x5 | `FX_PHOENIX_FAN_EMITTER_2` | kind/usage (look pending) | emitter: two fans; the render reads garbled multicolour texels (texture not resolved) |
+| fx_0d3 | 0x5 | `FX_PHOENIX_RAINBOW_FAN` | runtime | emitter: fan of a rainbow gradient strip, the prismatic light rays behind Phoenix |
 | fx_0d3 | 0x6 | `FX_PHOENIX_FEATHERS` | render (fxdata d6121033) | emitter: two fans, grey and tan feathers with light streaks |
-| fx_0d3 | 0x7 | `FX_PHOENIX_SPRITE_LINE` | kind/usage (look pending) | sprite line; the render is almost empty (a few garbled texels) |
+| fx_0d3 | 0x7 | `FX_PHOENIX_LENS_FLARE` | runtime | sprite line: lens-flare set (rainbow halo ring, yellow-green disc, white glow, red ring, blue disc) across Phoenix |
 | fx_0d3 | 0xB | `FX_PHOENIX_FIRE_TRAILS_2` | render | emitter: orbiting fire-textured trails |
 | fx_0d3 | 0xC | `FX_PHOENIX_FIRE_DOME` | render (fxdata d6121033) | 'so' model: dome with a fire texture |
 | fx_0d3 | 0xD | `FX_PHOENIX_FIRE_DISC` | render (fxdata d6121033) | 'so' model: flat disc with a fire texture |
@@ -308,7 +308,7 @@ Notes:
 | fx_0d3 | 0x11 | `FX_PHOENIX_PINK_RINGS` | render | emitter: white / pink / copper gouraud rings |
 | fx_0d3 | 0x12 | `FX_PHOENIX_GOLD_FEATHERS` | render | emitter: golden feather quads |
 | fx_0d3 | 0x13 | `FX_PHOENIX_FEATHERS_2` | render (fxdata d6121033) | emitter: two fans, grey and tan feathers with light streaks |
-| fx_0d3 | 0x14 | `FX_PHOENIX_FAN_EMITTER_5` | kind/usage (look pending) | emitter: two fans; the render reads garbled multicolour texels (texture not resolved) |
+| fx_0d3 | 0x14 | `FX_PHOENIX_RAINBOW_FAN_2` | runtime | emitter: the same rainbow gradient fan, later rays |
 | fx_0d3 | 0x15 | `FX_PHOENIX_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0d3 | 0x16 | `FX_PHOENIX_FLAME_SWIRL` | render (fxdata d6121033) | 'so' model: cone of swirling brown-orange flame tongues (fx_0d3_sharedModel) |
 | fx_0d3 | 0x17 | `FX_PHOENIX_FLAME_FEATHERS` | render | emitter: flame-feather quads |
@@ -345,7 +345,7 @@ Notes:
 | fx_0d6 | 0x13 | `FX_SWDMAG_FIRAGA_GOLD_SPARKS_2` | render | emitter: golden spark sprites + spark sub-particles (byte-identical to fx_007 entry 0x11) |
 | fx_0d6 | 0x14 | `FX_SWDMAG_FIRAGA_GOLD_SPARKS` | render | emitter: golden spark sprites (byte-identical to fx_007 entry 0x10) |
 | fx_0d6 | 0x15 | `FX_SWDMAG_FIRAGA_SMOKE_BURST` | render | emitter: dark teal-tinted burst (smoke after the blast) (byte-identical to fx_007 entry 0x13) |
-| fx_0d6 | 0x16 | `FX_SWDMAG_FIRAGA_CONE_GLOW` | kind/usage (look pending) | emitter: cone, one particle frame; the render is still a dark red smear (byte-identical to fx_007 entry 0x15) |
+| fx_0d6 | 0x16 | `FX_SWDMAG_FIRAGA_RED_HAZE` | runtime (medium) | emitter: soft dark-red additive blob, Firaga's red heat haze (byte-identical to fx_007 entry 0x15) |
 | fx_0d6 | 0x17 | `FX_SWDMAG_FIRAGA_EMBER_CONE` | render (fxdata d6121033) | emitter: cone of red and white ember dots (byte-identical to fx_007 entry 0x14) |
 | fx_0d6 | 0x18 | `FX_SWDMAG_FIRAGA_SWORD_GLINT` | render | rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat |
 | fx_0d6 | 0x19 | `FX_SWDMAG_FIRAGA_SWORD_FLASH` | render | rings: white 8-segment rings flashed rotating at the sword (byte-identical to the SWORD_FLASH of every Sword Magic module) |
@@ -364,7 +364,7 @@ Notes:
 | fx_0d8 | 0x18 | `FX_SWDMAG_THUNDARA_SPARK_DOTS` | render (fxdata d6121033) | emitter: white dot sparks (byte-identical to fx_005 entry 0x7) |
 | fx_0d8 | 0x19 | `FX_SWDMAG_THUNDARA_ORB_FADE` | render | particles: blue energy sphere fading to orange (FX_THUNDARA_ORB_FADE's draw slot in fx_005) |
 | fx_0d8 | 0x1A | `FX_SWDMAG_THUNDARA_ORB` | render | particles: bright blue energy sphere (byte-identical to fx_005 entry 0x1d) |
-| fx_0d8 | 0x1B | `FX_SWDMAG_THUNDARA_ORB_SPARKS` | kind/usage (look pending) | sprites: sparks around the orb; the render is still black (page (0x1C0, 0x100) blank in the file's upload, filled at run time) (byte-identical to fx_005 entry 0x1e) |
+| fx_0d8 | 0x1B | `FX_SWDMAG_THUNDARA_STAR_GLINTS` | runtime | sprites: Thundara's star-glint sprites (run-time page 0x1C0,0x100) (byte-identical to fx_005 entry 0x1e) |
 | fx_0d8 | 0x1C | `FX_SWDMAG_THUNDARA_ORB_DOTS` | render (fxdata d6121033) | sprites: white dot sparks around the orb (byte-identical to fx_005 entry 0x1f) |
 | fx_0d8 | 0x1D | `FX_SWDMAG_THUNDARA_LENS_FLARES` | render | particles: orange lens-flare dots around the orb (byte-identical to fx_005 entry 0x16) |
 | fx_0d8 | 0x1E | `FX_SWDMAG_THUNDARA_SWORD_GLINT` | render | rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat |
@@ -379,23 +379,23 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 
 | module | index | name | why the look is pending |
 |---|---|---|---|
-| fx_0b1 | 0xa | `FX_CARBUNCLE_ORBIT_GLOW` | emitter: orbiting particle + sprite, two copies; the render reads unrelated texels (noise), texture probably drawn at run time |
-| fx_0b1 | 0x16 | `FX_CARBUNCLE_ORBIT_GLOW_2` | emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time |
-| fx_0b1 | 0x24 | `FX_CARBUNCLE_ORBIT_GLOW_3` | emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time |
+| fx_0b1 | 0xa | `FX_CARBUNCLE_GREEN_MOTES` | emitter: faint pale round glow, the green motes drifting round the emerald crystal (runtime (medium)) |
+| fx_0b1 | 0x16 | `FX_CARBUNCLE_ORANGE_MOTES` | emitter: small orange glow, the orange motes swirling after the burst (runtime) |
+| fx_0b1 | 0x24 | `FX_CARBUNCLE_ORANGE_MOTES_2` | emitter: the same small orange glow motes (runtime) |
 | fx_0b4 | 0x11 | `FX_AERO_SPRITE_SWIRL` | emitter: spiralling sprites; the render is still all black (texels blank in the file's upload, filled at run time?) |
-| fx_0b8 | 0x2 | `FX_ATOMOS_SPRITES` | emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
-| fx_0b8 | 0x8 | `FX_ATOMOS_SPRITES_2` | emitter: two spiralling sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
-| fx_0b8 | 0xb | `FX_ATOMOS_FAINT_GLOW` | emitter: spiralling glow particles; the render is almost black (a faint white glow) |
-| fx_0b8 | 0x22 | `FX_ATOMOS_SPRITES_3` | emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) |
-| fx_0ba | 0x2c | `FX_RAMUH_SPARK_PARTICLE` | emitter: one particle; the render still reads garbled blue strips (texture not resolved) |
+| fx_0b8 | 0x2 | `FX_ATOMOS_BLUE_SPECKS` | emitter: sparse tiny blue specks flying round the gate as it opens (runtime (medium)) |
+| fx_0b8 | 0x8 | `FX_ATOMOS_BLUE_SPECKS_2` | emitter: the same tiny blue specks, during the vortex (runtime (medium)) |
+| fx_0b8 | 0xb | `FX_ATOMOS_FAINT_GLOW` | emitter: spiralling glow particles; the render is almost black (a faint white glow); runtime: with the run-time page its particle reads a grey zigzag band, nothing like the white mist on screen |
+| fx_0b8 | 0x22 | `FX_ATOMOS_BLUE_SPECKS_3` | emitter: the same blue specks round the black hole (runtime (medium)) |
+| fx_0ba | 0x2c | `FX_RAMUH_SPARK_PARTICLE` | emitter: one particle; the render still reads garbled blue strips (texture not resolved); runtime: not fetched in a full Ramuh: the module uses it in a branch that cast did not take |
 | fx_0cb | 0x11 | `FX_LIGHT_FLARE_TEXTURED_RING` | rings: textured ring drawn twice, tilted; the render reads unrelated texels (noise), texture not in the file |
 | fx_0cc | 0x9 | `FX_METEORITE_TRAIL_EMITTER` | emitter: sprites following the falling rock; the render is still black (texels blank in the file's upload) |
 | fx_0cd | 0x8 | `FX_AERA_WIND_STREAKS` | emitter: spiralling sprites + 3D trail; the render still reads garbled yellow texels (texture not resolved) |
 | fx_0cd | 0xc | `FX_AERA_SPRITE_BURST` | emitter: sprites; the render still reads garbled yellow texels (texture not resolved) |
 | fx_0ce | 0x1 | `FX_SCREECH_TRAIL` | emitter: 3D trail; the render still reads garbled pink stripes (texture not resolved) |
 | fx_0ce | 0xb | `FX_SCREECH_DARK_RINGS` | emitter: textured rings; the render is almost black (faint dark red) |
-| fx_0d3 | 0x5 | `FX_PHOENIX_FAN_EMITTER_2` | emitter: two fans; the render reads garbled multicolour texels (texture not resolved) |
-| fx_0d3 | 0x7 | `FX_PHOENIX_SPRITE_LINE` | sprite line; the render is almost empty (a few garbled texels) |
-| fx_0d3 | 0x14 | `FX_PHOENIX_FAN_EMITTER_5` | emitter: two fans; the render reads garbled multicolour texels (texture not resolved) |
-| fx_0d6 | 0x16 | `FX_SWDMAG_FIRAGA_CONE_GLOW` | emitter: cone, one particle frame; the render is still a dark red smear (byte-identical to fx_007 entry 0x15) |
-| fx_0d8 | 0x1b | `FX_SWDMAG_THUNDARA_ORB_SPARKS` | sprites: sparks around the orb; the render is still black (page (0x1C0, 0x100) blank in the file's upload, filled at run time) (byte-identical to fx_005 entry 0x1e) |
+| fx_0d3 | 0x5 | `FX_PHOENIX_RAINBOW_FAN` | emitter: fan of a rainbow gradient strip, the prismatic light rays behind Phoenix (runtime) |
+| fx_0d3 | 0x7 | `FX_PHOENIX_LENS_FLARE` | sprite line: lens-flare set (rainbow halo ring, yellow-green disc, white glow, red ring, blue disc) across Phoenix (runtime) |
+| fx_0d3 | 0x14 | `FX_PHOENIX_RAINBOW_FAN_2` | emitter: the same rainbow gradient fan, later rays (runtime) |
+| fx_0d6 | 0x16 | `FX_SWDMAG_FIRAGA_RED_HAZE` | emitter: soft dark-red additive blob, Firaga's red heat haze (byte-identical to fx_007 entry 0x15) (runtime (medium)) |
+| fx_0d8 | 0x1b | `FX_SWDMAG_THUNDARA_STAR_GLINTS` | sprites: Thundara's star-glint sprites (run-time page 0x1C0,0x100) (byte-identical to fx_005 entry 0x1e) (runtime) |

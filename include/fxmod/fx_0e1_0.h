@@ -20,9 +20,9 @@
 #define FX_REBIRTH_FLAME_WHITE_STREAK 0xA /* emitter: two fans, a long white-grey light streak */
 #define FX_REBIRTH_FLAME_RED_SPARKS  0xC /* emitter: four elements of tiny red spark sprites */
 #define FX_REBIRTH_FLAME_BLUE_ORBS_2 0xD /* emitter: faint blue orbs */
-#define FX_REBIRTH_FLAME_MORPH_2     0x80 /* summon data: 'so' model, morph end, then drawn fading; the render's UVs land on a mixed sprite sheet, so the look is not readable (look pending) */
-#define FX_REBIRTH_FLAME_MORPH_1     0x81 /* summon data: 'so' model, morph middle; the render's UVs land on a mixed sprite sheet, so the look is not readable (look pending) */
-#define FX_REBIRTH_FLAME_MORPH_0     0x82 /* summon data: 'so' model, morph start; the render's UVs land on a mixed sprite sheet, so the look is not readable (look pending) */
+#define FX_REBIRTH_FLAME_SCREEN_SPHERE 0x80 /* summon data, 'so' model, morph end, then drawn fading: the captured battle scene wrapped on a sphere, the morph target the flat capture bends into; runtime (docs/runtime-findings.md effect-data pass) */
+#define FX_REBIRTH_FLAME_SCREEN_BULGE 0x81 /* summon data, 'so' model, morph middle: the in-between morph shape with the same captured scene texture; runtime (docs/runtime-findings.md effect-data pass, medium) */
+#define FX_REBIRTH_FLAME_SCREEN_PLANE 0x82 /* summon data, 'so' model, morph start: flat grid carrying the captured battle scene, the picture before it is bent; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_REBIRTH_FLAME_GLOW_BAND   0x83 /* summon data: 'so' model, ring band with a white cloud texture, drawn three times with a fading glow */
 
 /* the effect environment block as these callbacks read it */

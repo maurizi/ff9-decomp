@@ -11,7 +11,7 @@
 #define FX_CURA_STAR_TRAIL     0x1 /* emitter: blue star-sparkle trail + sprites */
 #define FX_CURA_STAR_FLARES    0x7 /* sprite line: blue-white star flares */
 #define FX_CURA_CRESCENT_BURST 0x8 /* emitter: ring + yellow, white and green crescent sprites */
-#define FX_CURA_FAN_EMITTER    0xA /* emitter: fan; its rect reads cyan dithered vertical stripes (light rays or unrelated VRAM) (look pending) */
+#define FX_CURA_CYAN_GLOW      0xA /* emitter: fan of a round cyan-white glow, the cyan glow streaks round the target; runtime (docs/runtime-findings.md effect-data pass) */
 
 typedef struct {
     Pool6CEntry *emit0;

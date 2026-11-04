@@ -689,7 +689,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_2), (s32)&work->pos8);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_RAINBOW_FAN), (s32)&work->pos8);
             if (emitter != NULL) {
                 emitter->otZ = -0x80;
             }
@@ -738,7 +738,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             lineFrame = frame_119 - 0x18;
             lineT = (lineFrame << 12) / 42;
             env->otZ = 0x80;
-            data = (u8 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_SPRITE_LINE);
+            data = (u8 *)ex->btlfx_getFileData(entry->file, FX_PHOENIX_LENS_FLARE);
             ex->btlfx_drawSpriteLine(data, &work->pos8, lineFrame, ex->math_sin(lineT >> 2));
             env->otZ = 0;
         }
@@ -782,7 +782,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (trackedEmitter != NULL) {
                 trackedEmitter->otZ = 0x80;
             }
-            work->emit50 = trackedEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_FAN_EMITTER_5), (s32)&work->pos38);
+            work->emit50 = trackedEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PHOENIX_RAINBOW_FAN_2), (s32)&work->pos38);
             if (trackedEmitter != NULL) {
                 trackedEmitter->otZ = 0x80;
             }

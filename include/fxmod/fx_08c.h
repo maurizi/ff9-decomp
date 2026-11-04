@@ -8,7 +8,7 @@
 
 /* fx_08c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_BERSERK_BACKDROP   0x1 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
+#define FX_BERSERK_FLAME_TEXTURE 0x1 /* layer table: render-to-texture (btlfx_drawLayerTexture): 5 layers into VRAM (0x200,0x180) 64x128, rising flames (byte-identical to fx_00e entry 0x3, played there); runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_BERSERK_FUNNEL     0x3 /* model: open funnel, white texture */
 #define FX_BERSERK_FIRE_RING  0x8 /* emitter: red-orange-yellow gouraud rings */
 #define FX_BERSERK_STAR_FLASH 0xB /* emitter: white and red star flashes + violet ring */

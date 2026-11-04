@@ -54,7 +54,7 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 return 1;
             }
         }
-        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_BERSERK_BACKDROP), work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_BERSERK_FLAME_TEXTURE), work->frame4);
         work->frame4++;
     }
     return 0;

@@ -12,7 +12,7 @@ static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk8010
         rot.vy = 0;
         rot.vz = 0;
         rot.pad = 1;
-        data = (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOM_PARTICLES);
+        data = (u8 *)ex->btlfx_getFileData(entry->file, FX_DOOM_VIOLET_HALO);
         ex->btlfx_drawParticles(data, pos, &rot, (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0x1000 - t, 0, 0);
         if (frame >= 6) {
             return 1;
@@ -408,7 +408,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                                       0, 0x80);
         work->model50 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOLD_LATTICE), 0x39, 0x3D01,
                                                       0, 0);
-        work->model54 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_WHITE_SHELL), 0x119,
+        work->model54 = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_SWIRL_SHELL), 0x119,
                                                       0xFFFF, 0, 0x90);
         work->model58 = (s16)ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DOOM_GOURAUD_SHELL));
         dispX = env->dispEnv->disp.x;

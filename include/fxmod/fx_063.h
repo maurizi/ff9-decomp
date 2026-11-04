@@ -8,7 +8,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_DEMI_BACKDROP   0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_062 entry 0x7) */
 #define FX_DEMI_SPHERE     0x8 /* model: sphere, white texture (byte-identical to fx_062 entry 0x8) */
-#define FX_DEMI_CAP        0x9 /* model: shallow spherical cap, texture still outside the file and the common pages (magenta) (byte-identical to fx_062 entry 0xa) (look pending) */
+#define FX_DEMI_CAP        0x9 /* model: shallow spherical cap, texture still outside the file and the common pages (magenta) (byte-identical to fx_062 entry 0xa); runtime (docs/runtime-findings.md effect-data pass): not played; fx_062's same entry is not the black Demi sphere (ablation) (look pending) */
 #define FX_DEMI_BACKDROP_2 0xA /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_062 entry 0x9) */
 #define FX_DEMI_BOWL       0xB /* model: gouraud hemisphere bowl (byte-identical to fx_062 entry 0xB) */
 #define FX_DEMI_BOWL_2     0xC /* model: second gouraud hemisphere bowl (byte-identical to fx_062 entry 0xC) */

@@ -21,7 +21,7 @@
 #define FX_FIRAGA_EMBERS        0x12 /* emitter: dark red ember sprites */
 #define FX_FIRAGA_SMOKE_BURST   0x13 /* emitter: dark teal-tinted burst (smoke after the blast) */
 #define FX_FIRAGA_EMBER_CONE    0x14 /* emitter: cone of red and grey ember dots */
-#define FX_FIRAGA_CONE_GLOW     0x15 /* emitter: cone, one dim dark-red particle frame; the blend mode decides the look (look pending) */
+#define FX_FIRAGA_RED_HAZE      0x15 /* emitter: soft dark-red additive blob, the red heat haze filling the fire column; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_FIRAGA_FLAME_RIBBON_0 0x16 /* 'so' model: flat flame-textured ribbon piece, drawn coiled 18 times as the fire column */
 #define FX_FIRAGA_FLAME_RIBBON_1 0x17 /* 'so' model: flat flame-textured ribbon piece */
 #define FX_FIRAGA_FLAME_RIBBON_2 0x18 /* 'so' model: flat flame-textured ribbon piece */

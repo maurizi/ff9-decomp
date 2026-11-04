@@ -8,7 +8,7 @@
 
 /* fx_084 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_DRAIN_SPRITES  0x1 /* emitter: sprites, still render all black (look pending) */
+#define FX_DRAIN_PINK_SPECKS 0x1 /* emitter: small pink, violet and orange glowing specks drifting off the target; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_DRAIN_PINK_ORB 0x2 /* emitter: pink veined orb */
 #define FX_DRAIN_RED_RING 0x6 /* emitter: dark red textured ring */
 

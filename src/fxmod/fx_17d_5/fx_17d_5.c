@@ -287,7 +287,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             lineFrame = frame - 0x20;
             if ((u32)lineFrame < 0x10) {
-                lineData = (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_SPRITE_LINE);
+                lineData = (u8 *)ex->btlfx_getFileData(entry->file, FX_ARK_LENS_FLARE);
                 lineFrame <<= 12;
                 ex->btlfx_drawSpriteLine(lineData, &work->posC, lineFrame >> 12, ex->math_cos(lineFrame >> 6));
             }

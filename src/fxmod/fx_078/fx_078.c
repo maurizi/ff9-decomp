@@ -39,7 +39,7 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_GREEN_RING), (s32)&work->pos10);
             break;
         case 0x26:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_ORBIT_TRAIL), (s32)&work->pos10);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_BUBBLE_TRAIL), (s32)&work->pos10);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_GREEN_CLOUD), (s32)&work->pos10);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_078_trails;

@@ -14,7 +14,7 @@
 #define FX_BIO_ROT_POS_TRACK 0xD /* table: rotation + position track (fxm_rotPosTrackInit) */
 #define FX_BIO_RED_BUBBLES   0x14 /* emitter: red veined bubbles with a crimson glow */
 #define FX_BIO_POS_TRACK     0x15 /* table: position track (fxm_posTrackInit) */
-#define FX_BIO_ORBIT_TRAIL   0x16 /* emitter: orbiting screen trail, still renders black (look pending) */
+#define FX_BIO_BUBBLE_TRAIL  0x16 /* emitter: screen trail of glowing green bubbles around the burst; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_BIO_GREEN_CLOUD   0x17 /* emitter: murky green cloud + grey glow */
 
 /* keyframe tracks read from the effect file: count, then the keys (as in fx_05d) */

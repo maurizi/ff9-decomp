@@ -6,7 +6,7 @@
 
 /* fx_07f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_SILENCE_RING_DISC  0x1 /* model: flat annulus; the UV box reads a placeholder page (hand-written Japanese text), filled at run time (look pending) */
+#define FX_SILENCE_VIOLET_RING 0x1 /* model: disc on a blue-magenta haze page at run time (the file's scribble page is replaced): the glowing violet ring round each target; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_SILENCE_BACKDROP   0x2 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_SILENCE_KANJI      0x3 /* emitter: the kanji "silence" glyph, glowing orange to violet */
 #define FX_SILENCE_KANJI_DOME 0x5 /* model: dome textured with the "silence" glyph */

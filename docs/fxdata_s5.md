@@ -146,8 +146,8 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_137 | 0x5 | `FX_FLAME_FLAME_BURST` | render | emitter: flame explosion with a rising flame pillar, at each target |
 | fx_137 | 0x6 | `FX_FLAME_FIREBALL` | render | emitter: fireball explosion at the mouth |
 | fx_138 | 0x1 | `FX_LUCKY_SEVEN_FIRE_BURST` | render | emitter: white-blue gouraud rings, fire bursts and white / pink glows |
-| fx_138 | 0xE | `FX_LUCKY_SEVEN_SPRITE_LINE` | kind/usage (look pending) | sprite line: small coloured sprites, drawn frames 0-0xC; the render is almost empty |
-| fx_138 | 0x1B | `FX_LUCKY_SEVEN_SLOT_STRIPS` | kind/usage (look pending) | model: 15 polys (three slanted strips), tpage 0x9A not in the file (magenta in the render), drawn with the three reels |
+| fx_138 | 0xE | `FX_LUCKY_SEVEN_LENS_FLARE` | runtime | sprite line: lens-flare set (blue ring, dark red disc, orange rings, violet ring, rainbow halo) |
+| fx_138 | 0x1B | `FX_LUCKY_SEVEN_RAINBOW_STRIPS` | runtime (medium) | model: slanted strips on a rainbow gradient page at run time |
 | fx_138 | 0x2A | `FX_LUCKY_SEVEN_RAINBOW_TRAIL` | render | emitter: orbiting rainbow trail with glow sprites and rainbow rings |
 | fx_179 | 0x1 | `FX_MEDEO_WHITE_RING` | render | emitter: white and lilac gouraud rings |
 | fx_179 | 0x2 | `FX_MEDEO_METEOR` | render | model: rock (128 polys, red-brown rock texture) |
@@ -179,7 +179,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17d_0 | 0x19 | `FX_ARK_CAMERA_KEYS_2` | usage | table: per-frame position keys for camera point 1 (op 0x82) |
 | fx_17d_0 | 0x1A | `FX_ARK_CAMERA_KEYS` | usage | table: per-frame position keys for camera point 0 (op 0x82) |
 | fx_17d_0 | 0x1B | `FX_ARK_MORPH_KEYS` | usage | table: per-frame morph weights, first morph pair |
-| fx_17d_0 | 0x1C | `FX_ARK_NOISE_SPHERE` | kind/usage (look pending) | 'so' model registered at the start of op 0x80: a sphere, its texture reads as white noise in the render |
+| fx_17d_0 | 0x1C | `FX_ARK_STAR_SPHERE` | runtime (medium) | 'so' model registered at the start of op 0x80: sphere on a starfield page at run time (white stars on black), the starry sky dome of Ark's space scene |
 | fx_17d_0 | 0x1D | `FX_ARK_RED_ROCK_LAYER` | render | sprite: red-brown rock / cloud texture drawn on screen |
 | fx_17d_0 | 0x1E | `FX_ARK_MORPH_PATH` | usage | table: per-frame position + rotation keys for the first morph models |
 | fx_17d_0 | 0x1F | `FX_ARK_MORPH_PATH_2` | usage | table: per-frame position + rotation keys for the second morph models |
@@ -194,7 +194,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17d_1 | 0x9E | `FX_ARK_STREAK_SHELL` | render (fxdata d6121033) | summon data: 'so' model, barrel-shaped shell with a grey streak texture |
 | fx_17d_1 | 0x9F | `FX_ARK_ORANGE_SPARKLES_2` | render (fxdata d6121033) | summon data: emitter, orange square sparkles |
 | fx_17d_2 | 0x1 | `FX_ARK_FIRE_RING` | render (fxdata d6121033) | rings: white-yellow-red gouraud rings (as fx_17d_1's) |
-| fx_17d_2 | 0x2 | `FX_ARK_THIN_ARCH` | kind/usage (look pending) | 'so' model: thin arch, its texture reads as noise in the render |
+| fx_17d_2 | 0x2 | `FX_ARK_CLOUD_ARCH` | runtime (medium) | 'so' model: thin arch with a grey cloud wisp as Ark plunges through the clouds |
 | fx_17d_2 | 0x3 | `FX_ARK_ORANGE_SPARKLES` | render (fxdata d6121033) | emitter: spiral of orange square sparkles (as fx_17d_1's) |
 | fx_17d_3 | 0x1 | `FX_ARK_SMOKE_TRAIL` | render | emitter: spiralling screen trail with a blue-grey smoke texture, orange embers |
 | fx_17d_3 | 0x2 | `FX_ARK_CLOUD_TRAIL` | render | emitter: two spiralling screen trails with a grey cloud texture |
@@ -217,12 +217,12 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17d_5 | 0x2 | `FX_ARK_CREAM_RING` | render | emitter: cream-white and white-grey-violet gouraud rings |
 | fx_17d_5 | 0x3 | `FX_ARK_LILAC_RING` | render | emitter: dark noise particle + lilac-white gouraud ring |
 | fx_17d_5 | 0x4 | `FX_ARK_ORANGE_RING` | render | rings: white-orange-brown gouraud rings (pool task) |
-| fx_17d_5 | 0x5 | `FX_ARK_TRAIL` | kind/usage (look pending) | trail: strip texture not resolved (noise and green in the render) |
+| fx_17d_5 | 0x5 | `FX_ARK_TRAIL` | kind/usage (look pending) | trail: strip texture not resolved (noise and green in the render); runtime: its strip reads noise in the run-time page |
 | fx_17d_5 | 0x8 | `FX_ARK_PLANET` | render | particles: green-tinted planet with cloud swirls, fading |
-| fx_17d_5 | 0x9 | `FX_ARK_TRAIL_2` | kind/usage (look pending) | trail: strip texture not resolved (noise and green in the render) |
+| fx_17d_5 | 0x9 | `FX_ARK_TRAIL_2` | kind/usage (look pending) | trail: strip texture not resolved (noise and green in the render); runtime: noise in the run-time page (yellow-white curling light trails on screen meanwhile) |
 | fx_17d_5 | 0xA | `FX_ARK_PLANET_FRAGMENTS` | render | emitter: sprites of planet-surface fragments |
 | fx_17d_5 | 0xB | `FX_ARK_RED_FLASH_RING` | render | rings: red-white flat flash ring |
-| fx_17d_5 | 0xD | `FX_ARK_SPRITE_LINE` | kind/usage (look pending) | sprite line: textures partly not resolved (almost empty in the render) |
+| fx_17d_5 | 0xD | `FX_ARK_LENS_FLARE` | runtime | sprite line: lens-flare set during the white blast |
 | fx_17d_5 | 0x85 | `FX_ARK_RIBBED_SPHERE` | render (fxdata d6121033) | summon data: 'so' model, sphere with a dark ribbed texture |
 | fx_17d_5 | 0x87 | `FX_ARK_SCALE_BOWL` | render (fxdata d6121033) | summon data: 'so' model, bowl with a red-orange scale texture |
 | fx_17d_5 | 0x88 | `FX_ARK_SCALE_DOME` | render (fxdata d6121033) | summon data: 'so' model, hemisphere with a red-orange scale texture |
@@ -235,8 +235,8 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17d_6 | 0x6 | `FX_ARK_ORANGE_RING` | render | rings: white-orange-brown gouraud rings |
 | fx_17d_6 | 0xA | `FX_ARK_RED_RING` | render | rings: red to dark red gouraud rings |
 | fx_17d_6 | 0xB | `FX_ARK_PEACH_RING` | render | rings: white-peach-mauve gouraud rings |
-| fx_17d_6 | 0xC | `FX_ARK_FAN_EMITTER_2` | kind/usage (look pending) | emitter: two fans; the render shows small olive / orange garbled patches |
-| fx_17d_6 | 0xD | `FX_ARK_SPRITE_LINE` | kind/usage (look pending) | sprite line: green textures, partly not resolved (almost empty in the render) |
+| fx_17d_6 | 0xC | `FX_ARK_FAN_EMITTER_2` | kind/usage (look pending) | emitter: two fans; the render shows small olive / orange garbled patches; runtime: not fetched within 4600 frames of a full Ark |
+| fx_17d_6 | 0xD | `FX_ARK_SPRITE_LINE` | kind/usage (look pending) | sprite line: green textures, partly not resolved (almost empty in the render); runtime: not fetched within 4600 frames of a full Ark |
 | fx_17d_6 | 0xE | `FX_ARK_GREY_RING` | render | emitter: grey-white gouraud ring |
 | fx_17d_6 | 0x8B | `FX_ARK_ORANGE_DISC` | render (fxdata d6121033) | summon data: 'so' model, flat disc with an orange-brown speckle texture |
 | fx_17d_6 | 0x8D | `FX_ARK_GREY_SWIRL_DISC` | render (fxdata d6121033) | summon data: 'so' model, flat disc with a grey swirl texture |
@@ -265,7 +265,7 @@ Indices reached through module tables (`fx_17d_0_pieceFiles`, `fx_17d_0_texModel
 | fx_17d_8 | 0x3 | `FX_ARK_ORANGE_BEAM` | render (fxdata d6121033) | 'so' model: long orange gouraud beam (same size as fx_17d_7's), work model slot 3 |
 | fx_17d_8 | 0x4 | `FX_ARK_DARK_BLUE_RING` | render (fxdata d6121033) | 'so' model: flat ring with a dark blue texture, work model slot 5 |
 | fx_17d_8 | 0x5 | `FX_ARK_FIRE_RING` | render | rings: white-yellow-red gouraud rings |
-| fx_17d_8 | 0x6 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat panel on page 0x11B, which holds a handwritten placeholder in the file (filled at run time), work model slot 4 |
+| fx_17d_8 | 0x6 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat panel on page 0x11B, which holds a handwritten placeholder in the file (filled at run time), work model slot 4; runtime: group 8 never became resident within 4600 frames of a full Ark; the kana page stays open |
 | fx_17d_8 | 0x7 | `FX_ARK_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_17d_8 | 0x9 | `FX_ARK_GREY_STAR_DISC` | render (fxdata d6121033) | 'so' model: shallow disc with a grey radial texture, work model slot 2 |
 | fx_17d_8 | 0xB | `FX_ARK_GOLD_SPARKS` | render | emitter: tube of small gold spark sprites |
@@ -357,18 +357,18 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 
 | module | index | name | why the look is pending |
 |---|---|---|---|
-| fx_138 | 0xe | `FX_LUCKY_SEVEN_SPRITE_LINE` | sprite line: small coloured sprites, drawn frames 0-0xC; the render is almost empty |
-| fx_138 | 0x1b | `FX_LUCKY_SEVEN_SLOT_STRIPS` | model: 15 polys (three slanted strips), tpage 0x9A not in the file (magenta in the render), drawn with the three reels |
+| fx_138 | 0xe | `FX_LUCKY_SEVEN_LENS_FLARE` | sprite line: lens-flare set (blue ring, dark red disc, orange rings, violet ring, rainbow halo) (runtime) |
+| fx_138 | 0x1b | `FX_LUCKY_SEVEN_RAINBOW_STRIPS` | model: slanted strips on a rainbow gradient page at run time (runtime (medium)) |
 | fx_179 | 0xb | `FX_MEDEO_SPRITE_BURST` | emitter: two sprite elements; the render is still all transparent |
 | fx_17a | 0x11 | `FX_MADEEN_TRAIL` | trail: strip texture not in the file (magenta in the render) |
-| fx_17d_0 | 0x1c | `FX_ARK_NOISE_SPHERE` | 'so' model registered at the start of op 0x80: a sphere, its texture reads as white noise in the render |
-| fx_17d_2 | 0x2 | `FX_ARK_THIN_ARCH` | 'so' model: thin arch, its texture reads as noise in the render |
-| fx_17d_5 | 0x5 | `FX_ARK_TRAIL` | trail: strip texture not resolved (noise and green in the render) |
-| fx_17d_5 | 0x9 | `FX_ARK_TRAIL_2` | trail: strip texture not resolved (noise and green in the render) |
-| fx_17d_5 | 0xd | `FX_ARK_SPRITE_LINE` | sprite line: textures partly not resolved (almost empty in the render) |
-| fx_17d_6 | 0xc | `FX_ARK_FAN_EMITTER_2` | emitter: two fans; the render shows small olive / orange garbled patches |
-| fx_17d_6 | 0xd | `FX_ARK_SPRITE_LINE` | sprite line: green textures, partly not resolved (almost empty in the render) |
-| fx_17d_8 | 0x6 | `FX_ARK_FLAT_PANEL` | 'so' model: flat panel on page 0x11B, which holds a handwritten placeholder in the file (filled at run time), work model slot 4 |
+| fx_17d_0 | 0x1c | `FX_ARK_STAR_SPHERE` | 'so' model registered at the start of op 0x80: sphere on a starfield page at run time (white stars on black), the starry sky dome of Ark's space scene (runtime (medium)) |
+| fx_17d_2 | 0x2 | `FX_ARK_CLOUD_ARCH` | 'so' model: thin arch with a grey cloud wisp as Ark plunges through the clouds (runtime (medium)) |
+| fx_17d_5 | 0x5 | `FX_ARK_TRAIL` | trail: strip texture not resolved (noise and green in the render); runtime: its strip reads noise in the run-time page |
+| fx_17d_5 | 0x9 | `FX_ARK_TRAIL_2` | trail: strip texture not resolved (noise and green in the render); runtime: noise in the run-time page (yellow-white curling light trails on screen meanwhile) |
+| fx_17d_5 | 0xd | `FX_ARK_LENS_FLARE` | sprite line: lens-flare set during the white blast (runtime) |
+| fx_17d_6 | 0xc | `FX_ARK_FAN_EMITTER_2` | emitter: two fans; the render shows small olive / orange garbled patches; runtime: not fetched within 4600 frames of a full Ark |
+| fx_17d_6 | 0xd | `FX_ARK_SPRITE_LINE` | sprite line: green textures, partly not resolved (almost empty in the render); runtime: not fetched within 4600 frames of a full Ark |
+| fx_17d_8 | 0x6 | `FX_ARK_FLAT_PANEL` | 'so' model: flat panel on page 0x11B, which holds a handwritten placeholder in the file (filled at run time), work model slot 4; runtime: group 8 never became resident within 4600 frames of a full Ark; the kana page stays open |
 | fx_180 | 0x2 | `FX_ULTIMA_NOISE_RING` | emitter: ring whose texture still reads as noise, + pink gouraud ring |
 | fx_180 | 0xf | `FX_ULTIMA_NOISE_RING_2` | emitter: ring whose texture still reads as noise, + pink-lilac gouraud rings |
 | fx_180 | 0x1f | `FX_ULTIMA_NOISE_RING_3` | emitter: ring whose texture still reads as noise, + lilac gouraud ring |

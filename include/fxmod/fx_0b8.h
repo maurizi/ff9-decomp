@@ -8,13 +8,13 @@
 
 /* fx_0b8 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_ATOMOS_SPRITES         0x2 /* emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) (look pending) */
+#define FX_ATOMOS_BLUE_SPECKS     0x2 /* emitter: sparse tiny blue specks flying round the gate as it opens; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_ATOMOS_VORTEX_STREAK   0x3 /* trail: violet vortex streak */
 #define FX_ATOMOS_ORANGE_STREAKS  0x7 /* emitter: two fans, thin orange light streaks */
-#define FX_ATOMOS_SPRITES_2       0x8 /* emitter: two spiralling sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) (look pending) */
+#define FX_ATOMOS_BLUE_SPECKS_2   0x8 /* emitter: the same tiny blue specks, during the vortex; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_ATOMOS_VIOLET_RINGS    0x9 /* emitter: violet streak and violet / dark blue gouraud rings */
 #define FX_ATOMOS_PINK_CLOUD      0xA /* emitter: violet-blue and white-red rings, pink cloud particles */
-#define FX_ATOMOS_FAINT_GLOW      0xB /* emitter: spiralling glow particles; the render is almost black (a faint white glow) (look pending) */
+#define FX_ATOMOS_FAINT_GLOW      0xB /* emitter: spiralling glow particles; the render is almost black (a faint white glow); runtime (docs/runtime-findings.md effect-data pass): with the run-time page its particle reads a grey zigzag band, nothing like the white mist on screen (look pending) */
 #define FX_ATOMOS_ROCK_DEBRIS     0xC /* emitter: grey-blue rock debris particles */
 #define FX_ATOMOS_BLAST_RINGS     0xD /* emitter: white / yellow / orange / brown and purple gouraud rings */
 #define FX_ATOMOS_VORTEX_SPARKLES 0xE /* emitter: orbiting violet vortex trails and gold sparkles */
@@ -26,7 +26,7 @@
 #define FX_ATOMOS_BACKDROP        0x1F /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_ATOMOS_VIOLET_RING     0x20 /* emitter: white-violet and white-blue gouraud rings */
 #define FX_ATOMOS_PURPLE_RINGS    0x21 /* emitter: white / magenta / purple and pale yellow / grey gouraud rings */
-#define FX_ATOMOS_SPRITES_3       0x22 /* emitter: two sprite elements; the render is still black (texels blank in the file's upload, filled at run time?) (look pending) */
+#define FX_ATOMOS_BLUE_SPECKS_3   0x22 /* emitter: the same blue specks round the black hole; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_ATOMOS_GREY_RING       0x80 /* summon data entry 0: 'so' model, thin white-grey gouraud ring */
 #define FX_ATOMOS_CRATER_MOUND    0x81 /* summon data entry 1: 'so' model, grey gouraud crater mound */
 #define FX_ATOMOS_WHITE_PILLAR    0x82 /* summon data entry 2: 'so' model, white octagonal gouraud pillar */

@@ -10,7 +10,7 @@
 #define FX_BAHAMUT_EMBERS             0x4 /* emitter: spiral of tiny orange sprites */
 #define FX_BAHAMUT_FIRE_BURST         0x5 /* emitter: red-white fire flashes */
 #define FX_BAHAMUT_BLUE_SPARKS        0x6 /* emitter: blue-white spark sprites falling */
-#define FX_BAHAMUT_FLARE_LINE         0x7 /* sprite line; the render still reads garbled green / orange rings (texture not in the file) (look pending) */
+#define FX_BAHAMUT_LENS_FLARE         0x7 /* sprite line: lens-flare set (rainbow halo, yellow-green disc, white glow, orange ring, blue disc); runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_BAHAMUT_FIRE_RING          0x8 /* 'so' model: ring band with a fire texture */
 #define FX_BAHAMUT_FIRE_SPARKS        0x9 /* emitter: orange flame glows + spark sprites */
 #define FX_BAHAMUT_PURPLE_BOLT        0xA /* trail: purple energy strip (fxm_drawOffsetTrail2) */
@@ -18,11 +18,11 @@
 #define FX_BAHAMUT_BLUE_SPARKS_2      0xC /* emitter: blue-white spark sprites falling */
 #define FX_BAHAMUT_FLAME_STRIP        0xD /* 'so' model: flat gouraud strip, purple-red-yellow gradient, drawn with BLAST_MODEL */
 #define FX_BAHAMUT_ORANGE_STREAKS     0xE /* emitter: two fans, thin orange-white rising streaks */
-#define FX_BAHAMUT_BLAST_PLATE 0xF /* 'so' model: curved plate on 15-bit texture page 0x119 (filled at run time; the render's grey smoke is the file's 4-bit page read as 15-bit) (look pending) */
-#define FX_BAHAMUT_WHITE_BOLT_2       0x11 /* trail: faint white strip (fxm_drawOffsetTrail1); the render is still almost empty (look pending) */
+#define FX_BAHAMUT_SMOKE_SHELL 0xF /* 'so' model: half-cylinder shell on a page of grey cloudy smoke at run time; runtime (docs/runtime-findings.md effect-data pass, medium) */
+#define FX_BAHAMUT_WHITE_BOLT_2       0x11 /* trail: the white lightning strip; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_BAHAMUT_SPIN_RING          0x12 /* rings: white-blue gouraud rings, spinning */
 #define FX_BAHAMUT_BLUE_RINGS         0x14 /* rings: dark-to-light blue gouraud rings */
-#define FX_BAHAMUT_WHITE_BOLT         0x15 /* trail: faint white strip (fxm_drawOffsetTrail0; byte-identical to fx_0e3_0 entry 0x8); the render is still almost empty (look pending) */
+#define FX_BAHAMUT_WHITE_BOLT         0x15 /* trail: the white lightning strip (byte-identical to fx_0e3_0 entry 0x8); runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_BAHAMUT_BACKDROP           0x16 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_BAHAMUT_ENERGY_ORBS        0x17 /* emitter: cyan-green orbs + violet lightning strip */
 #define FX_BAHAMUT_SPARKLE_RING       0x18 /* sprites: ring of blue-white sparkles, 16 frames */

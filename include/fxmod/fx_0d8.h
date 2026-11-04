@@ -15,7 +15,7 @@
 #define FX_SWDMAG_THUNDARA_SPARK_DOTS 0x18 /* emitter: white dot sparks (byte-identical to fx_005 entry 0x7) */
 #define FX_SWDMAG_THUNDARA_ORB_FADE      0x19 /* particles: blue energy sphere fading to orange (FX_THUNDARA_ORB_FADE's draw slot in fx_005) */
 #define FX_SWDMAG_THUNDARA_ORB           0x1A /* particles: bright blue energy sphere (byte-identical to fx_005 entry 0x1d) */
-#define FX_SWDMAG_THUNDARA_ORB_SPARKS    0x1B /* sprites: sparks around the orb; the render is still black (page (0x1C0, 0x100) blank in the file's upload, filled at run time) (byte-identical to fx_005 entry 0x1e) (look pending) */
+#define FX_SWDMAG_THUNDARA_STAR_GLINTS   0x1B /* sprites: Thundara's star-glint sprites (run-time page 0x1C0,0x100) (byte-identical to fx_005 entry 0x1e); runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_SWDMAG_THUNDARA_ORB_DOTS 0x1C /* sprites: white dot sparks around the orb (byte-identical to fx_005 entry 0x1f) */
 #define FX_SWDMAG_THUNDARA_LENS_FLARES   0x1D /* particles: orange lens-flare dots around the orb (byte-identical to fx_005 entry 0x16) */
 #define FX_SWDMAG_THUNDARA_SWORD_GLINT   0x1E /* rings: white gouraud ring flash at the sword (btlfx_getWeaponPos), drawn flat */

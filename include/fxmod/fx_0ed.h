@@ -9,7 +9,7 @@
 /* fx_0ed effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ROULETTE_MODEL_DATA 0x2 /* model data passed to btlfx_registerSummonModel with ROULETTE_SUMMON_MODEL */
-#define FX_ROULETTE_BACKDROP          0x4 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
+#define FX_ROULETTE_SMOKE_TEXTURE     0x4 /* layer table: render-to-texture (btlfx_drawLayerTexture): 2 layers into VRAM (0x200,0x1A0) 64x64, rising purple smoke (byte-identical to fx_05e entry 0xB, played there); runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_ROULETTE_TARGET_RING       0x6 /* sprite: white ring outline on the chosen target */
 #define FX_ROULETTE_REAPER 0x7 /* 'so' summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe (byte-identical to fx_05e entry 0x6, same render) */
 #define FX_ROULETTE_REAPER_2 0x8 /* 'so' model: the robed skull reaper with the scythe in another pose (same textures, 354 polys; byte-identical to fx_05e entry 0x1C, same render) */

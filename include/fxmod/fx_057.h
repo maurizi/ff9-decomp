@@ -8,10 +8,10 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_HOLY_VIOLET_RINGS       0x1 /* rings: white-grey-violet-blue gouraud rings */
 #define FX_HOLY_LENS_FLARE         0x2 /* emitter: white lens-flare glints */
-#define FX_HOLY_BACKDROP_3         0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_HOLY_SPARKLE_STREAK_TEXTURE 0x3 /* layer table: render-to-texture (btlfx_drawLayerTexture): 4 layers into VRAM (0x240,0x1D0) 128x48, a blue streak full of white sparkles, sampled by the sweeping light bands; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_HOLY_BLUE_SPARKLES      0x4 /* emitter: callback element + blue sparkle sprites */
 #define FX_HOLY_VIOLET_RAYS        0x5 /* emitter: two fans drawn as narrow violet-white dithered rays */
-#define FX_HOLY_TRAIL              0x6 /* trail drawn by the emitter callback; the strip reads unrelated multicoloured VRAM, filled at run time (look pending) */
+#define FX_HOLY_TRAIL              0x6 /* trail drawn by the emitter callback; the strip reads unrelated multicoloured VRAM, filled at run time; runtime (docs/runtime-findings.md effect-data pass): its strip still reads noise with the run-time pages: the trail's tpage is not the one the tool resolves (look pending) */
 #define FX_HOLY_BLUE_SHIMMER       0x9 /* emitter: blue dot sprites + shimmering particles */
 #define FX_HOLY_LIGHT_ORB          0xB /* particles: white-blue glowing orb with a halo */
 #define FX_HOLY_BLUE_RINGS         0xF /* rings: blue gouraud rings */
@@ -19,13 +19,13 @@
 #define FX_HOLY_CYAN_RINGS         0x11 /* rings: white-cyan-blue gouraud rings */
 #define FX_HOLY_LIGHT_LINES        0x12 /* emitter: thin blue light lines */
 #define FX_HOLY_DARK_BLUE_RINGS    0x16 /* emitter: dark blue gouraud rings */
-#define FX_HOLY_SPRITE_LINE        0x17 /* sprite line; its frames read a page of unrelated sprites, filled at run time (look pending) */
-#define FX_HOLY_BACKDROP           0x18 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_HOLY_LENS_FLARE_LINE    0x17 /* sprite line: lens-flare set (white glow, orange ring, dark red disc, blue dot, small orange ring, olive disc) across the screen as the white blast builds; runtime (docs/runtime-findings.md effect-data pass) */
+#define FX_HOLY_SWIRL_TEXTURE      0x18 /* layer table: render-to-texture (btlfx_drawLayerTexture): 2 layers into VRAM (0x1C0,0x1C0) 64x64, a blue water-like swirl; skipping it changes nothing visible; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_HOLY_LIGHT_SPHERE       0x19 /* model: sphere, plain white texture */
 #define FX_HOLY_BLUE_SPARKLES_2    0x1A /* emitter: blue sparkle clusters */
-#define FX_HOLY_SPARK              0x1D /* particles: one sprite; reads grey stripes that look like unrelated VRAM (look pending) */
-#define FX_HOLY_TEXTURED_RING      0x1E /* rings: textured ring, drawn swelling three times; the UV box reads unrelated VRAM (look pending) */
-#define FX_HOLY_BACKDROP_2         0x1F /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_HOLY_WHITE_GLOW         0x1D /* particles: soft white round glow, the white light of the final blast; runtime (docs/runtime-findings.md effect-data pass, medium) */
+#define FX_HOLY_TEXTURED_RING      0x1E /* rings: textured ring, drawn swelling three times; the UV box reads unrelated VRAM; runtime (docs/runtime-findings.md effect-data pass): its UV box reads noise in the run-time pages too (look pending) */
+#define FX_HOLY_STARFIELD_TEXTURE  0x1F /* layer table: render-to-texture (btlfx_drawLayerTexture): 3 layers into VRAM (0x280,0x150) 64x128, blue sparkling stars on black, sampled by the starry vortex that fills the screen; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_HOLY_VIOLET_RAYS_2      0x21 /* emitter: two fans drawn as narrow violet-white dithered rays */
 #define FX_HOLY_SKY_RINGS          0x22 /* rings: white-cyan-blue gouraud rings */
 #define FX_HOLY_LILAC_RINGS        0x23 /* rings: white-lilac gouraud rings */

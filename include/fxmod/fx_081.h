@@ -13,12 +13,12 @@
 #define FX_LV4_HOLY_CYAN_RING       0x6 /* rings: white-cyan-blue gouraud rings, 8 segments */
 #define FX_LV4_HOLY_LILAC_RING      0x9 /* rings: white-lilac gouraud rings */
 #define FX_LV4_HOLY_RAINBOW_ARCH    0xA /* model: half-ring arch, rainbow cloud texture */
-#define FX_LV4_HOLY_SPRITE_LINE     0xB /* sprite line; its frames read a page of unrelated sprites, filled at run time (look pending) */
+#define FX_LV4_HOLY_LENS_FLARE_LINE 0xB /* sprite line: Holy's lens-flare set; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_LV4_HOLY_BLUE_SPARKLE_DOTS 0xC /* particles: blue sparkle frames */
 #define FX_LV4_HOLY_BLUE_STREAKS    0xF /* emitter: blue light streaks + sparkles */
-#define FX_LV4_HOLY_BACKDROP        0x10 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
+#define FX_LV4_HOLY_SPARKLE_STREAK_TEXTURE 0x10 /* layer table: render-to-texture (btlfx_drawLayerTexture): 4 layers into VRAM (0x240,0x1D0) 128x48, a blue streak full of white sparkles (byte-identical to fx_057 entry 0x3, played there); runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_LV4_HOLY_BLUE_SPARKLES 0x11 /* emitter: callback element + blue sparkle sprites (byte-identical to fx_057 entry 0x4) */
-#define FX_LV4_HOLY_TRAIL           0x12 /* trail: the strip reads unrelated multicoloured VRAM, filled at run time (look pending) */
+#define FX_LV4_HOLY_TRAIL           0x12 /* trail: the strip reads unrelated multicoloured VRAM, filled at run time; runtime (docs/runtime-findings.md effect-data pass): as Holy's trail (fx_057 0x6): noise with the run-time pages (look pending) */
 #define FX_LV4_HOLY_VIOLET_RAYS     0x13 /* emitter: two fans drawn as narrow violet-white dithered rays */
 #define FX_LV4_HOLY_VIOLET_RAYS_2   0x14 /* emitter: two fans drawn as narrow violet-white dithered rays */
 #define FX_LV4_HOLY_BLUE_SPARKLES_2 0x15 /* emitter: blue speck sprites */
@@ -32,9 +32,9 @@
 #define FX_LV4_HOLY_BACKDROP_2      0x20 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_LV4_HOLY_LIGHT_SPHERE 0x21 /* model: sphere, white texture */
 #define FX_LV4_HOLY_BACKDROP_3      0x22 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
-#define FX_LV4_HOLY_TEXTURED_RING 0x23 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time (look pending) */
+#define FX_LV4_HOLY_TEXTURED_RING 0x23 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time; runtime (docs/runtime-findings.md effect-data pass): as Holy's 0x1E: noise with the run-time pages (look pending) */
 #define FX_LV4_HOLY_WHITE_VIOLET_RINGS 0x24 /* rings: white-blue-violet gouraud rings, 4 segments */
-#define FX_LV4_HOLY_SPARK 0x25 /* particles: one small frame; reads grey stripes that look like unrelated VRAM (look pending) */
+#define FX_LV4_HOLY_WHITE_GLOW 0x25 /* particles: soft white round glow, as Holy's; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_LV4_HOLY_FLASH_RINGS     0x27 /* emitter: white-yellow and white-grey gouraud rings */
 
 extern Unk800F78A4 *fx_081_env;

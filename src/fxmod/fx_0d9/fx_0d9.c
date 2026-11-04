@@ -63,7 +63,7 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_CONE_EMITTER), (s32)&work->pos8);
+                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_THUNDAGA_SPARKLE_SWARM), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }

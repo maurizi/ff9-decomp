@@ -222,7 +222,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->frame4 = 0;
         fx_17d_0_env = env;
         ex->btlfx_initEffModels(fx_17d_0_effModels, 0x20);
-        work->modelBA = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_NOISE_SPHERE), 0);
+        work->modelBA = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ARK_STAR_SPHERE), 0);
         BTLFX_COPY_SVEC(&work->pos8, &fx_17d_0_basePos);
         work->pos18.vy = -0x1000;
         work->pos18.vx = 0;

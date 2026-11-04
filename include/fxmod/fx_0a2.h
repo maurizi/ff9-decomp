@@ -8,7 +8,7 @@
 
 /* fx_0a2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_CURA_SPARKLE_BURST 0x1 /* emitter: ring + sparkle sprites, still drawn as green / yellow / white squares (texture not resolved) (look pending) */
+#define FX_CURA_SPARKLE_BURST 0x1 /* emitter: green star twinkles; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_CURA_STAR_TRAIL    0x2 /* emitter: blue star-sparkle trail spiralling + sprites */
 
 typedef struct {

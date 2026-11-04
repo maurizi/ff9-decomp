@@ -8,7 +8,7 @@
 /* fx_1bf_2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s7.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_ARK_ORANGE_BEAM 0x1 /* 'so' model: glowing red-orange beam bar (byte-identical to fx_17d_8 entry 0x3) */
-#define FX_ARK_FLAT_PANEL 0x2 /* 'so' model: flat band on page 0x11B, whose texture in the file is a placeholder with the kana labels up / left / right / down (filled at run time) (byte-identical to fx_17d_8 entry 0x6) (look pending) */
+#define FX_ARK_FLAT_PANEL 0x2 /* 'so' model: flat band on page 0x11B, whose texture in the file is a placeholder with the kana labels up / left / right / down (filled at run time) (byte-identical to fx_17d_8 entry 0x6); runtime (docs/runtime-findings.md effect-data pass): fx_17d_8's same entry was not reached within 4600 frames of a full Ark (look pending) */
 #define FX_ARK_BACKDROP    0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_17d_8 entry 0x7) */
 #define FX_ARK_GREY_STAR_DISC 0x5 /* 'so' model: shallow dish with a grey radial cloud texture (byte-identical to fx_17d_8 entry 0x9) */
 #define FX_ARK_GOLD_SPARKS 0x7 /* emitter: tube of small gold spark sprites (byte-identical to fx_17d_8 entry 0xB) */

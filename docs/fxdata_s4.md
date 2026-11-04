@@ -42,13 +42,13 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_0f4 | 0xc | `FX_SHIFT_BREAK_CONE_RINGS` | emitter: textured rings in a cone; the render reads garbled multicolour texels (texture not resolved) |
 | fx_0f8 | 0xd | `FX_GRAND_LETHAL_SPRITE_RINGS` | emitter: white / cyan / blue / grey gouraud rings with a sprite that renders as a flat violet square (texture not in the file) |
 | fx_0f8 | 0xe | `FX_GRAND_LETHAL_SWIRL_RINGS` | emitter: white swirl sprite with textured rings; the rings still read garbled multicolour texels (texture not resolved) |
-| fx_0fb_1 | 0x14 | `FX_MADEEN_TRAIL` | trail: strip texture not in the file (magenta in the render) |
+| fx_0fb_1 | 0x14 | `FX_MADEEN_TRAIL` | trail: strip texture not in the file (magenta in the render); runtime: fetched as the blue-white blast starts; its strip reads only sparse dots in the run-time page |
 | fx_112 | 0x2 | `FX_EAT_ORBIT_TRAIL` | emitter: orbiting screen trail; the strip is still mostly dark in the render |
-| fx_114 | 0x12 | `FX_IFRIT_SPOKED_RING` | model: flat ring with spokes (registered through the texture list; the tool does not follow it, so the texture is not drawn) |
-| fx_114 | 0x1e | `FX_IFRIT_BOWL` | model: hemisphere bowl (registered through the texture list; the tool does not follow it, so the texture is not drawn) |
-| fx_114 | 0x2a | `FX_IFRIT_GRID_PLANE` | model: flat grid plane (tpage 0x117 reads a yellow placeholder page in the render) |
-| fx_114 | 0x81 | `FX_IFRIT_CANOPY` | summon data entry 1: textured model, canopy on legs (registered through the texture list; the tool does not follow it, so the texture is not drawn) |
-| fx_114 | 0x83 | `FX_IFRIT_CYLINDER` | summon data entry 3: textured model, cylinder on tpage 0x117 (a yellow placeholder page in the render) |
+| fx_114 | 0x12 | `FX_IFRIT_SPOKED_RING` | model: flat ring with spokes (registered through the texture list; the tool does not follow it, so the texture is not drawn); runtime: untextured; only ablated together with the bowl, the change is attributed to the dome |
+| fx_114 | 0x1e | `FX_IFRIT_HEAT_DOME` | model: hemisphere bowl, the large translucent wavy dome over the scene (ablated together with entry 0x12) (runtime (low, look pending)) |
+| fx_114 | 0x2a | `FX_IFRIT_WHITE_HAZE` | model: grid on a page of grey-white wavy streaks by the time it is fetched, the white haze under Ifrit's fist (runtime (medium)) |
+| fx_114 | 0x81 | `FX_IFRIT_CANOPY` | summon data entry 1: textured model, canopy on legs (registered through the texture list; the tool does not follow it, so the texture is not drawn); runtime: untextured model at run time; ablating it (with 0x83) leaves the screen pixel-identical |
+| fx_114 | 0x83 | `FX_IFRIT_CYLINDER` | summon data entry 3: textured model, cylinder on tpage 0x117 (a yellow placeholder page in the render); runtime: fetched while its page still holds the yellow dummy .TIM placeholder; ablating it leaves the screen pixel-identical |
 | fx_11d | 0x9 | `FX_ABSORB_TRAIL` | emitter: 3D trail; the render is still black (byte-identical to entry 0xA) |
 | fx_11d | 0xa | `FX_ABSORB_TRAIL_2` | emitter: 3D trail; the render is still black (byte-identical to entry 0x9) |
 | fx_123 | 0xc | `FX_RAINING_SWORDS_DARK_BURST` | emitter: rings and sprites that still render black, + cyan dot specks |
@@ -128,7 +128,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_0fb_1 | 0x11 | `FX_MADEEN_BACKDROP_3` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_0fb_1 | 0x12 | `FX_MADEEN_WHITE_RINGS` | render | rings: white to grey fading gouraud rings, 8 frames |
 | fx_0fb_1 | 0x13 | `FX_MADEEN_RAINBOW_ARCH` | render | model: arch, rainbow-cloud texture |
-| fx_0fb_1 | 0x14 | `FX_MADEEN_TRAIL` | kind/usage (look pending) | trail: strip texture not in the file (magenta in the render) |
+| fx_0fb_1 | 0x14 | `FX_MADEEN_TRAIL` | kind/usage (look pending) | trail: strip texture not in the file (magenta in the render); runtime: fetched as the blue-white blast starts; its strip reads only sparse dots in the run-time page |
 | fx_0fb_1 | 0x15 | `FX_MADEEN_VIOLET_GLOW` | render (fxdata d6121033) | emitter: three fans, a horizontal violet-white glow |
 | fx_0fb_1 | 0x16 | `FX_MADEEN_BLUE_RINGS_3` | render | rings: white-blue gouraud rings, 16 frames |
 | fx_0fb_1 | 0x17 | `FX_MADEEN_LENS_FLARES_2` | render | sprite line: green / red / orange lens-flare rings |
@@ -258,7 +258,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_114 | 0x8 | `FX_IFRIT_ROCK_RINGS` | render | emitter: rings textured with a golden rock pattern, 16 frames |
 | fx_114 | 0x9 | `FX_IFRIT_FLAME_LINE` | render (fxdata d6121033) | emitter: two orbiting fans, a thin horizontal orange flame line |
 | fx_114 | 0xB | `FX_IFRIT_ORANGE_RINGS` | render | emitter: orange gouraud rings, 16 frames |
-| fx_114 | 0x12 | `FX_IFRIT_SPOKED_RING` | kind/usage (look pending) | model: flat ring with spokes (registered through the texture list; the tool does not follow it, so the texture is not drawn) |
+| fx_114 | 0x12 | `FX_IFRIT_SPOKED_RING` | kind/usage (look pending) | model: flat ring with spokes (registered through the texture list; the tool does not follow it, so the texture is not drawn); runtime: untextured; only ablated together with the bowl, the change is attributed to the dome |
 | fx_114 | 0x15 | `FX_IFRIT_FIRE_TRAIL` | render | trail: orange strip, drawn along the paths of entry 0x17 |
 | fx_114 | 0x16 | `FX_IFRIT_ORANGE_RING_2` | render | emitter: orange to white gouraud ring |
 | fx_114 | 0x17 | `FX_IFRIT_TRAIL_PATHS` | kind/usage | table: offset table of position paths (fxm_offsetTableEntry + fxm_posPathInit) for the fire trails |
@@ -267,7 +267,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_114 | 0x1B | `FX_IFRIT_FLAME_SWIRL_3` | render | emitter: flat trail, flame swirl strip (byte-identical to entry 0x19) |
 | fx_114 | 0x1C | `FX_IFRIT_FLAME_SWIRL_4` | render | emitter: flat trail, flame swirl strip (byte-identical to entry 0x19) |
 | fx_114 | 0x1D | `FX_IFRIT_VEC_TRACK` | kind/usage | table: vector track (fxm_vecTrackInit) |
-| fx_114 | 0x1E | `FX_IFRIT_BOWL` | kind/usage (look pending) | model: hemisphere bowl (registered through the texture list; the tool does not follow it, so the texture is not drawn) |
+| fx_114 | 0x1E | `FX_IFRIT_HEAT_DOME` | runtime (low, look pending) | model: hemisphere bowl, the large translucent wavy dome over the scene (ablated together with entry 0x12) |
 | fx_114 | 0x20 | `FX_IFRIT_BLOCK_CLUSTER` | render | model: cluster of block chunks, orange streak texture |
 | fx_114 | 0x21 | `FX_IFRIT_FIRE_BURST` | render | emitter: ember specks + orange fire-burst clouds |
 | fx_114 | 0x22 | `FX_IFRIT_FLAME_RING` | render | model: flat ring, flame texture |
@@ -278,13 +278,13 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_114 | 0x27 | `FX_IFRIT_FLAME_DOME` | render | model: dome, flame texture |
 | fx_114 | 0x28 | `FX_IFRIT_PIECE_MODELS` | kind/usage | table: offset table of model data, one per piece (fxm_offsetTableEntry) |
 | fx_114 | 0x29 | `FX_IFRIT_PIECE_TRACKS` | kind/usage | table: offset table of tracks, one per piece (fxm_offsetTableEntry) |
-| fx_114 | 0x2A | `FX_IFRIT_GRID_PLANE` | kind/usage (look pending) | model: flat grid plane (tpage 0x117 reads a yellow placeholder page in the render) |
+| fx_114 | 0x2A | `FX_IFRIT_WHITE_HAZE` | runtime (medium) | model: grid on a page of grey-white wavy streaks by the time it is fetched, the white haze under Ifrit's fist |
 | fx_114 | 0x2B | `FX_IFRIT_POS_PATH` | kind/usage | table: position path (fxm_posPathInit) |
 | fx_114 | 0x2C | `FX_IFRIT_POS_PATH_2` | kind/usage | table: position path (fxm_posPathInit) |
 | fx_114 | 0x80 | `FX_IFRIT_FIREBALL` | render (fxdata d6121033) | summon data entry 0: 'so' model, ball with a fire texture and a flame crown |
-| fx_114 | 0x81 | `FX_IFRIT_CANOPY` | kind/usage (look pending) | summon data entry 1: textured model, canopy on legs (registered through the texture list; the tool does not follow it, so the texture is not drawn) |
+| fx_114 | 0x81 | `FX_IFRIT_CANOPY` | kind/usage (look pending) | summon data entry 1: textured model, canopy on legs (registered through the texture list; the tool does not follow it, so the texture is not drawn); runtime: untextured model at run time; ablating it (with 0x83) leaves the screen pixel-identical |
 | fx_114 | 0x82 | `FX_IFRIT_FIRE_COLUMN` | render (fxdata d6121033) | summon data entry 2: textured model, cylinder with a fire texture |
-| fx_114 | 0x83 | `FX_IFRIT_CYLINDER` | kind/usage (look pending) | summon data entry 3: textured model, cylinder on tpage 0x117 (a yellow placeholder page in the render) |
+| fx_114 | 0x83 | `FX_IFRIT_CYLINDER` | kind/usage (look pending) | summon data entry 3: textured model, cylinder on tpage 0x117 (a yellow placeholder page in the render); runtime: fetched while its page still holds the yellow dummy .TIM placeholder; ablating it leaves the screen pixel-identical |
 | fx_114 | 0x84 | `FX_IFRIT_SUMMON_VEC_TRACK_4` | kind/usage | summon data entry 4: vector track (fxm_vecTrackInit) |
 | fx_114 | 0x85 | `FX_IFRIT_GOURAUD_BOWL` | render (fxdata d6121033) | summon data entry 5: gouraud model, grey-white gouraud bowl |
 | fx_114 | 0x86 | `FX_IFRIT_SUMMON_VEC_TRACK_6` | kind/usage | summon data entry 6: vector track (fxm_vecTrackInit) |

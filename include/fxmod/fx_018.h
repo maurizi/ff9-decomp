@@ -9,9 +9,9 @@
 
 /* fx_018 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_THUNDAGA_CYL_EMITTER    0x7 /* emitter: cylinder particles, still render all transparent with the summon/common pages (look pending) */
-#define FX_THUNDAGA_CYL_EMITTER_2  0xA /* emitter: cylinder particles, still render all transparent with the summon/common pages (look pending) */
-#define FX_THUNDAGA_DISC           0x10 /* model: flat octagon, 15-bit texture page 0x119 holds the file's 4-bit pages, so it samples something drawn there at run time (look pending) */
+#define FX_THUNDAGA_VIOLET_GLOW    0x7 /* emitter: soft violet-magenta glow puffs, the violet light around the thin bolts; runtime (docs/runtime-findings.md effect-data pass, medium) */
+#define FX_THUNDAGA_VIOLET_GLOW_2  0xA /* emitter: the same violet-magenta glow puffs, started later; runtime (docs/runtime-findings.md effect-data pass, medium) */
+#define FX_THUNDAGA_DISC           0x10 /* model: flat octagon, 15-bit texture page 0x119 holds the file's 4-bit pages, so it samples something drawn there at run time; runtime (docs/runtime-findings.md effect-data pass): its page (0x240,0x100) holds 4-bit lightning textures at run time, not a screen copy; ablating the model changes nothing visible (look pending) */
 #define FX_THUNDAGA_GLOW_DOME      0x11 /* model: hemisphere with an orange-to-white streak texture */
 #define FX_THUNDAGA_BLUE_RING      0x13 /* rings: white-blue gouraud rings */
 #define FX_THUNDAGA_WHITE_RING     0x15 /* rings: white gouraud rings drawn flat */
@@ -22,7 +22,7 @@
 #define FX_THUNDAGA_LIGHTNING_ARCS 0x21 /* emitter: four fans drawn as cyan and blue zig-zag lightning arcs */
 #define FX_THUNDAGA_LIGHTNING_ARCS_2 0x22 /* emitter: four fans drawn as cyan and blue zig-zag lightning arcs */
 #define FX_THUNDAGA_IMPACT_FLASH   0x25 /* emitter: four-point star flash */
-#define FX_THUNDAGA_CONE_EMITTER   0x26 /* emitter: cone of sprites, still render all transparent with the summon/common pages (look pending) */
+#define FX_THUNDAGA_SPARKLE_SWARM  0x26 /* emitter: swarms of blue, lilac and teal twinkle dots, the cyan sparkles around the strike; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_THUNDAGA_SPARK_DOTS     0x27 /* emitter: white spark dots (btlfx_emitDots) */
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */

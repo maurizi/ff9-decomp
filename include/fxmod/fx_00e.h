@@ -6,7 +6,7 @@
 
 /* fx_00e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_BERSERK_BACKDROP   0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_BERSERK_FLAME_TEXTURE 0x3 /* layer table: render-to-texture (btlfx_drawLayerTexture): 5 layers into VRAM (0x200,0x180) 64x128, rising flames sampled by the red fire round the target; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_BERSERK_CONE       0x4 /* model: open cone (frustum), plain white texture */
 #define FX_BERSERK_FIRE_RINGS 0xA /* emitter: dark red-orange-yellow gouraud rings */
 #define FX_BERSERK_RED_FLASH  0xB /* emitter: white star flash, red star flash, violet circle */

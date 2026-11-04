@@ -255,7 +255,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8[5] = 0x78;
         ex->btlfx_initEffModels(fx_086_effModels, 8);
         work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_ROCK), 0x9A, 0x3E00, 0, 0);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_STREAK_SHELL), 0x139, 0xFFFF, 0, 0x80);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_RED_ROCK), 0x139, 0xFFFF, 0, 0x80);
         work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_FIRE_DOME), 0xB9, 0x3D40, 0, 0);
         work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_DUST_RING), 0x3C, 0x3D04, 0, 0x80);
         work->model34 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_STREAK));
@@ -331,7 +331,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, otz, &streakDir, fx_086_streakPts, &col,
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
-                work->emit44 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_CONE_SPRITES), (s32)&work->pos14);
+                work->emit44 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_EMBERS), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x5C;
                 }
@@ -501,7 +501,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 20) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_SPRITES), (s32)&work->pos1C);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_GLOWING_EMBERS), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
@@ -543,7 +543,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     fx_086_spritePos[i * 3].pad++;
                     BTLFX_COPY_SVEC(&spritePos, &fx_086_spritePos[i * 3]);
                     spritePos.pad = 0;
-                    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_DEBRIS_SPRITES), &spritePos, NULL, 0x3000,
+                    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_EMBERS_2), &spritePos, NULL, 0x3000,
                                           fx_086_spritePos[i * 3].pad, 1, spriteAlpha);
                 }
             }

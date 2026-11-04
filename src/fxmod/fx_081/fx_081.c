@@ -244,7 +244,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                               fx_081_glow);
             ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BACKDROP_3), work->frame4);
         }
-        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BACKDROP), work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_SPARKLE_STREAK_TEXTURE), work->frame4);
         work->frame4++;
     }
     return 0;
@@ -301,7 +301,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_BLUE_RING), &work->posC, NULL, (t >> 1) + 0x3000, 0, 1,
                               fade);
             env->otZ = 0;
-            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_SPRITE_LINE), &work->posC, work->frame4,
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LENS_FLARE_LINE), &work->posC, work->frame4,
                               ex->math_sin(t >> 2));
             if (frame >= 7) {
                 work->state0 = 1;
@@ -326,7 +326,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                               0x1000);
             env->otZ = 0;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0x80);
-            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_SPRITE_LINE), &work->posC, work->frame4, 0x1000);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_LENS_FLARE_LINE), &work->posC, work->frame4, 0x1000);
             if (frame >= 7) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
                 work->state0 = 2;
@@ -401,7 +401,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ang.vy = (orbitAng = (i << 12) / fx_081_ringCounts[ring] - (work->frame4 << 5)) + twist16;
                     ang.vx = vx;
                     ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&ang, orbitRadius, (s16 *)pp2);
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_SPARK), pp2, NULL, bright + 0x800, 0, 1, bright, 0,
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV4_HOLY_WHITE_GLOW), pp2, NULL, bright + 0x800, 0, 1, bright, 0,
                                       0);
                 }
             }

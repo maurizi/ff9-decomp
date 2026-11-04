@@ -42,13 +42,13 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->state10) {
         case 0:
             if (frame == 0) {
-                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_CYL_EMITTER), (s32)&work->pos8);
+                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_VIOLET_GLOW), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x46;
                 }
             }
             if (frame == 5) {
-                work->emit20 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_CYL_EMITTER_2), (s32)&work->pos8);
+                work->emit20 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_VIOLET_GLOW_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x46;
                 }
@@ -93,7 +93,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_CONE_EMITTER), (s32)&work->pos8);
+                work->emit1C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_THUNDAGA_SPARKLE_SWARM), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }

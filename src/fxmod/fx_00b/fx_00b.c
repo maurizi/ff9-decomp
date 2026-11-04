@@ -19,7 +19,7 @@ s32 fx_00b_op80(s32 mode, Fx00bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (work->hold0 == 0) {
-            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ESUNA_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ESUNA_ORB_TEXTURE), frame);
             if (frame >= 0x28) {
                 return 1;
             }

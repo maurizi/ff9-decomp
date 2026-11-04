@@ -265,7 +265,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ROULETTE_SMOKE), (s32)&work->pos18);
             }
-            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_BACKDROP), frame);
+            ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ROULETTE_SMOKE_TEXTURE), frame);
             if (frame >= 0x29) {
                 work->state0 = 3;
                 entry->frame = -1;

@@ -10,14 +10,14 @@
 /* fx_090 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_CURAGA_STAR_FLARES 0x2 /* emitter: white star glints + faint coloured arcs */
-#define FX_CURAGA_SPARKLES 0x3 /* emitter: ring + white / green sparkle dots, its last element still drawn as squares (texture not resolved) (look pending) */
+#define FX_CURAGA_SPARKLES 0x3 /* emitter: green and gold twinkling glints spreading out; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_CURAGA_BLUE_SWIRL 0x5 /* emitter: blue starry trail + sparkles */
 #define FX_CURAGA_LIGHT_FOUNTAIN 0xB /* model: tall funnel with a cyan light-fountain texture */
 #define FX_CURAGA_WHITE_RINGS    0xC /* emitter: white gouraud rings */
 #define FX_CURAGA_LIGHT_RING     0xD /* model: ring with a cyan light-fountain texture */
 #define FX_CURAGA_TEAL_RING      0xE /* emitter: white-teal gouraud rings */
-#define FX_CURAGA_SPARKLE_BURST 0xF /* emitter: sparkle sprites, still drawn as white / green squares (look pending) */
-#define FX_CURAGA_SPARKLE_SHOWER 0x10 /* emitter: spiralling sparkle sprites, still drawn as pale yellow-green squares (look pending) */
+#define FX_CURAGA_SPARKLE_BURST 0xF /* emitter: gold-white four-point star sparkles in a rising column; runtime (docs/runtime-findings.md effect-data pass) */
+#define FX_CURAGA_SPARKLE_SHOWER 0x10 /* emitter: green four-point star twinkles; runtime (docs/runtime-findings.md effect-data pass) */
 
 typedef struct {
     Pool6CEntry *emit0;

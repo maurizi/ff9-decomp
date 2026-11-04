@@ -30,7 +30,7 @@ s32 fx_02a_op80(s32 mode, Fx02aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame >= 8) {
-                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SILENCE_BACKDROP), frame);
+                ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SILENCE_NEBULA_TEXTURE), frame);
             }
             if (frame >= 0x28) {
                 return 1;

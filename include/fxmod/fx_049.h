@@ -15,7 +15,7 @@
 #define FX_THUNDARA_SPARK_DOTS   0x18 /* emitter: white spark dots (btlfx_emitDots) */
 #define FX_THUNDARA_ORB_FADE     0x19 /* particles: blue energy sphere fading to orange */
 #define FX_THUNDARA_ORB          0x1A /* particles: bright blue energy sphere */
-#define FX_THUNDARA_ORB_SPARKS   0x1B /* sprites: blank, samples page (0x1C0, 0x100) which the file leaves zero, filled at run time (look pending) */
+#define FX_THUNDARA_STAR_GLINTS  0x1B /* sprites: three 16x16 star-glint sprites in the run-time page (0x1C0,0x100), twinkling orange to blue around the orbs; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_THUNDARA_ORB_DOTS     0x1C /* sprites: white dots scattering around the orb */
 #define FX_THUNDARA_LENS_FLARES  0x1F /* particles: orange lens-flare dots around the orb */
 

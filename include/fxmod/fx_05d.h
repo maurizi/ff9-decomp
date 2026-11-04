@@ -10,7 +10,7 @@
 #define FX_BIO_SCALE_TRACK   0x2 /* track: vector keys (fxm_vecTrackInit), paired with FX_BIO_PATH */
 #define FX_BIO_SCALE_TRACK_2 0xF /* track: vector keys (fxm_vecTrackInit), paired with FX_BIO_PATH_2 */
 #define FX_BIO_PATH_2        0x10 /* track: rotation / position keys (fxm_rotPosTrackInit) */
-#define FX_BIO_SCREEN_TRAIL  0x11 /* emitter: orbiting screen trail, still renders all black (look pending) */
+#define FX_BIO_BUBBLE_TRAIL  0x11 /* emitter: screen trail of glowing green bubbles streaming around the spikes; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_BIO_TEAL_RING     0x12 /* emitter: ring with a teal glow texture */
 #define FX_BIO_TOXIC_CLOUD   0x13 /* emitter: green toxic cloud + grey glow */
 #define FX_BIO_RED_ORB       0x14 /* emitter: red-veined orbs + crimson glow */

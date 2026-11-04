@@ -436,7 +436,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->modelCC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SMOKE_RING), 1);
         work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_CLOUD_SPHERE), 0);
         work->modelA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLUE_SLIVER), 0);
-        work->modelD0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_BLAST_PLATE), 1);
+        work->modelD0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SMOKE_SHELL), 1);
         work->modelD4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FLAME_STRIP), 0);
         work->modelD8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_RED_STRIP), 0);
         work->modelDC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FIRE_RING), 1);
@@ -549,7 +549,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 tB = (((frame - 0x2B) << 12) / 5) >> 2;
                 flashRingScale = ex->math_sin(tB) / 3;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_WHITE_FLASH_RING), &work->pos30, NULL, flashRingScale, 0, 1, 0x1000);
-                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FLARE_LINE), &work->pos30, 0xB, ex->math_sin(tB));
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_LENS_FLARE), &work->pos30, 0xB, ex->math_sin(tB));
             }
             if (frame >= 0x10) {
                 sparkRing = ex->math_sin(((frame - 0x10) << 7) >> 2);
@@ -686,7 +686,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                   frame, 1, flareFade);
                 ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_SPARKLE_RING), &work->pos30, &work->rotBC, 0x2000,
                                       frame, 1, flareFade);
-                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_FLARE_LINE), &work->pos30, frame - 1, flareFade);
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_BAHAMUT_LENS_FLARE), &work->pos30, frame - 1, flareFade);
             }
             if (frame < 0x11) {
                 haloScale = (ex->math_cos(t >> 2) >> 2) + 0x800;

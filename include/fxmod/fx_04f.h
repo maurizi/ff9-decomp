@@ -8,10 +8,10 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_REFLECT_HALO_RINGS 0x4 /* emitter: white-pink gouraud rings, golden glow strip, leaf-shaped halo, white-green / white-pink rings */
 #define FX_REFLECT_STAR       0x6 /* model: four-pointed star, sketch texture */
-#define FX_REFLECT_BACKDROP   0xA /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_REFLECT_SPARKLE_TEXTURE 0xA /* layer table: render-to-texture (btlfx_drawLayerTexture): 6 layers into VRAM (0x1C0,0x1C0) 64x64, red light with gold sparkles on the four-point Reflect star; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_REFLECT_GLOW_BAND  0xB /* gouraud model: wide ring band */
 #define FX_REFLECT_PANELS     0xC /* model: three curved panels, black / white texture */
-#define FX_REFLECT_BACKDROP_2 0xD /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_REFLECT_STREAK_TEXTURE 0xD /* layer table: render-to-texture (btlfx_drawLayerTexture): 3 layers into VRAM (0x1C0,0x120) 128x32, a red comet-like streak; skipping it changes nothing visible; runtime (docs/runtime-findings.md effect-data pass, medium) */
 
 typedef struct {
     s32 state0; /* state */

@@ -8,8 +8,8 @@
 /* fx_138 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_LUCKY_SEVEN_FIRE_BURST    0x1 /* emitter: white-blue gouraud rings, fire bursts and white / pink glows */
-#define FX_LUCKY_SEVEN_SPRITE_LINE   0xE /* sprite line: small coloured sprites, drawn frames 0-0xC; the render is almost empty (look pending) */
-#define FX_LUCKY_SEVEN_SLOT_STRIPS 0x1B /* model: 15 polys (three slanted strips), tpage 0x9A not in the file (magenta in the render), drawn with the three reels (look pending) */
+#define FX_LUCKY_SEVEN_LENS_FLARE    0xE /* sprite line: lens-flare set (blue ring, dark red disc, orange rings, violet ring, rainbow halo); runtime (docs/runtime-findings.md effect-data pass) */
+#define FX_LUCKY_SEVEN_RAINBOW_STRIPS 0x1B /* model: slanted strips on a rainbow gradient page at run time; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_LUCKY_SEVEN_RAINBOW_TRAIL 0x2A /* emitter: orbiting rainbow trail with glow sprites and rainbow rings */
 
 typedef struct {

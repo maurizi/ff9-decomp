@@ -366,7 +366,7 @@ All still-pending names of all slices, grouped by battle setup with what to capt
 | fx_1bf_1 | 0x93 | `FX_ARK_ROCK_3` | render | summon data: 'so' model, rock chunk |
 | fx_1bf_1 | 0x94 | `FX_ARK_FIRE_ARC` | render | summon data: 'so' model, curved band with an orange flame texture |
 | fx_1bf_2 | 0x1 | `FX_ARK_ORANGE_BEAM` | render | 'so' model: glowing red-orange beam bar (byte-identical to fx_17d_8 entry 0x3) |
-| fx_1bf_2 | 0x2 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat band on page 0x11B, whose texture in the file is a placeholder with the kana labels up / left / right / down (filled at run time) (byte-identical to fx_17d_8 entry 0x6) |
+| fx_1bf_2 | 0x2 | `FX_ARK_FLAT_PANEL` | kind/usage (look pending) | 'so' model: flat band on page 0x11B, whose texture in the file is a placeholder with the kana labels up / left / right / down (filled at run time) (byte-identical to fx_17d_8 entry 0x6); runtime: fx_17d_8's same entry was not reached within 4600 frames of a full Ark |
 | fx_1bf_2 | 0x3 | `FX_ARK_BACKDROP` | usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_17d_8 entry 0x7) |
 | fx_1bf_2 | 0x5 | `FX_ARK_GREY_STAR_DISC` | render | 'so' model: shallow dish with a grey radial cloud texture (byte-identical to fx_17d_8 entry 0x9) |
 | fx_1bf_2 | 0x7 | `FX_ARK_GOLD_SPARKS` | render | emitter: tube of small gold spark sprites (byte-identical to fx_17d_8 entry 0xB) |

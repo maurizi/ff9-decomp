@@ -9,7 +9,7 @@
 
 /* fx_0e1_1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_REBIRTH_FLAME_TEX_EMITTER 0x1 /* emitter: textured elements + tan-white rings; the textured element still reads garbled texels (texture not in the file) (look pending) */
+#define FX_REBIRTH_FLAME_TEX_EMITTER 0x1 /* emitter: textured elements + tan-white rings; the textured element still reads garbled texels (texture not in the file); runtime (docs/runtime-findings.md effect-data pass): fetched during the fire blast (orange-white flames on screen); its ring elements read noise in the run-time page (look pending) */
 #define FX_REBIRTH_FLAME_RED_RINGS_2 0x2 /* emitter: white-grey-violet-red gouraud rings (byte-identical to fx_0e1_0 entry 0x6) */
 #define FX_REBIRTH_FLAME_BACKDROP    0x3 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_REBIRTH_FLAME_RED_SPARKS  0x4 /* emitter: spiral of tiny red spark sprites */

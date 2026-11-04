@@ -29,43 +29,45 @@ the hammer, ice crystal, reaper and lava-ball models, spark dots). Still pending
 frame the C starts the entry would settle each:
 
 - Callback-only emitters (nothing drawable in the data): `FX_FLARE_CALLBACK_EMITTER`, `FX_WEB_CALLBACK_EMITTER`.
-- Still black: `FX_BIO_ORBIT_TRAIL`, `FX_SLOW_PARTICLES`, `FX_DRAIN_SPRITES`, `FX_METEOR_SPRITES`,
-  `FX_METEOR_CONE_SPRITES`, `FX_METEOR_DEBRIS_SPRITES`, `FX_ELECTROCUTE_BOLT_TRAIL(_2)` (sprites),
+- Still black: `FX_BIO_BUBBLE_TRAIL`, `FX_SLOW_BLUE_GLOWS`, `FX_DRAIN_PINK_SPECKS`, `FX_METEOR_GLOWING_EMBERS`,
+  `FX_METEOR_EMBERS`, `FX_METEOR_EMBERS_2`, `FX_ELECTROCUTE_BOLT_TRAIL(_2)` (sprites),
   `FX_BUZZ_SPRITE`, `FX_SPORE_TRAIL`, `FX_WEB_STRAND_TRAIL`, `FX_LEAF_SWIRL_LEAF_TRAIL(_2,_3,_4)` (dark strip
   with a leaf tip), `FX_LIGHTNING_TRAIL_2` (not rendered).
 - Sparkles still drawn as flat squares (sprite texture not resolved): fx_090's `FX_CURAGA_SPARKLES`,
   `FX_CURAGA_SPARKLE_BURST`, `FX_CURAGA_SPARKLE_SHOWER`, `FX_CURA_SPARKLE_BURST` (fx_08e's are byte-identical to
   fx_001's sparkle emitters and render the same, so the consistency pass gave them fx_001's names and settled them).
 - Texture outside the file and the common / summon pages (magenta): `FX_DEMI_CAP`, `FX_DEMI_SHOCK_SPHERE`,
-  `FX_DEMI_SHOCK_TRAIL`, `FX_SLOW_GLINT` (partly).
+  `FX_DEMI_SHOCK_TRAIL`, `FX_SLOW_CLOCK_FACE` (partly).
 - Reads unrelated VRAM, probably filled at run time: `FX_FLARE_TEX_RING(_2)`, `FX_LV4_HOLY_TEXTURED_RING`,
-  `FX_LV4_HOLY_TRAIL`, `FX_LV4_HOLY_SPRITE_LINE`, `FX_LV4_HOLY_SPARK` (byte-identical to fx_057's `FX_HOLY_SPARK`),
-  `FX_FROST_ICE_GLINTS`, `FX_BLASTER_TRAIL(_2)`, `FX_CURA_FAN_EMITTER` (cyan stripes: light rays or junk).
-- Placeholder-page UVs (shape known, look not): `FX_SILENCE_RING_DISC`, `FX_METEOR_STREAK_SHELL`,
-  `FX_CONFUSE_WAVE_TRAILS`, `FX_CONFUSE_ORBIT_TRAILS` (the strip page shows music staves, notes and smoke
+  `FX_LV4_HOLY_TRAIL`, `FX_LV4_HOLY_LENS_FLARE_LINE`, `FX_LV4_HOLY_WHITE_GLOW` (byte-identical to fx_057's `FX_HOLY_WHITE_GLOW`),
+  `FX_FROST_ICE_GLINTS`, `FX_BLASTER_TRAIL(_2)`, `FX_CURA_CYAN_GLOW` (cyan stripes: light rays or junk).
+- Placeholder-page UVs (shape known, look not): `FX_SILENCE_VIOLET_RING`, `FX_METEOR_RED_ROCK`,
+  `FX_CONFUSE_STAFF_WAVES`, `FX_CONFUSE_STAFF_SWIRL` (the strip page shows music staves, notes and smoke
   swirls: the real Confuse texture or a placeholder).
+
+Names above are updated to the effect-data runtime pass (docs/runtime-findings.md), which settled all of these entries but the callback emitters, `FX_FLARE_TEX_RING(_2)`, `FX_LV4_HOLY_TEXTURED_RING`, `FX_LV4_HOLY_TRAIL`, `FX_DEMI_CAP` and the ones not played (the enemy and short-summon entries); the table gives each verdict.
 
 ## Table
 
 | module | index | name | evidence | what it is |
 |---|---|---|---|---|
-| fx_060 | 0x1 | `FX_CONFUSE_WAVE_TRAILS` | kind/usage (look pending) | emitter: two wobbling flat trails; the strip page shows music staves with notes and a hazy wave band, real texture or placeholder page |
+| fx_060 | 0x1 | `FX_CONFUSE_STAFF_WAVES` | runtime | emitter: flat trails of the music-staff strips (the page's staves are the real texture) and a smoke wisp |
 | fx_060 | 0x2 | `FX_CONFUSE_SWIRLS` | render | emitter: teal and pink spiral swirl particles |
-| fx_060 | 0x9 | `FX_CONFUSE_ORBIT_TRAILS` | kind/usage (look pending) | emitter: orbiting 3D + screen trails; the strip page shows music notes, a smoke swirl and a wavy smoke band, real texture or placeholder page |
+| fx_060 | 0x9 | `FX_CONFUSE_STAFF_SWIRL` | runtime | emitter: 3D and screen trails of treble / bass staves with notes, smoke swirl and haze band, orbiting the target |
 | fx_061 | 0x1 | `FX_CONFUSE_SWIRLS` | render | emitter: teal and pink spiral swirl particles |
-| fx_061 | 0x2 | `FX_CONFUSE_ORBIT_TRAILS` | kind/usage (look pending) | emitter: orbiting 3D + screen trails; the strip page shows music notes, a smoke swirl and a wavy smoke band, real texture or placeholder page |
+| fx_061 | 0x2 | `FX_CONFUSE_STAFF_SWIRL` | runtime | emitter: 3D and screen trails of treble / bass staves with notes, smoke swirl and haze band, orbiting the target |
 | fx_061 | 0x3 | `FX_CONFUSE_SWIRLS_2` | render | emitter: teal and pink spiral swirl particles, rising in a cylinder |
-| fx_061 | 0x7 | `FX_CONFUSE_WAVE_TRAILS` | kind/usage (look pending) | emitter: two wobbling flat trails; the strip page shows music staves with notes and a hazy wave band, real texture or placeholder page |
+| fx_061 | 0x7 | `FX_CONFUSE_STAFF_WAVES` | runtime | emitter: flat trails of the music-staff strips (the page's staves are the real texture) and a smoke wisp |
 | fx_062 | 0x7 | `FX_DEMI_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_062 | 0x8 | `FX_DEMI_SPHERE` | render | model: sphere, white texture |
 | fx_062 | 0x9 | `FX_DEMI_BACKDROP_2` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
-| fx_062 | 0xA | `FX_DEMI_CAP` | kind/usage (look pending) | model: shallow spherical cap, texture still outside the file and the common pages (magenta) |
+| fx_062 | 0xA | `FX_DEMI_CAP` | kind/usage (look pending) | model: shallow spherical cap, texture still outside the file and the common pages (magenta); runtime: the dome reads white with magenta noise with the run-time page; ablating it leaves the black Demi sphere unchanged, so it is not the sphere |
 | fx_062 | 0xB | `FX_DEMI_BOWL` | render | model: gouraud hemisphere bowl |
 | fx_062 | 0xC | `FX_DEMI_BOWL_2` | render | model: second gouraud hemisphere bowl |
 | fx_062 | 0xD | `FX_DEMI_GLOW_TRAIL` | render | trail: white radial glow strip |
 | fx_063 | 0x7 | `FX_DEMI_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_062 entry 0x7) |
 | fx_063 | 0x8 | `FX_DEMI_SPHERE` | render | model: sphere, white texture (byte-identical to fx_062 entry 0x8) |
-| fx_063 | 0x9 | `FX_DEMI_CAP` | kind/usage (look pending) | model: shallow spherical cap, texture still outside the file and the common pages (magenta) (byte-identical to fx_062 entry 0xa) |
+| fx_063 | 0x9 | `FX_DEMI_CAP` | kind/usage (look pending) | model: shallow spherical cap, texture still outside the file and the common pages (magenta) (byte-identical to fx_062 entry 0xa); runtime: not played; fx_062's same entry is not the black Demi sphere (ablation) |
 | fx_063 | 0xA | `FX_DEMI_BACKDROP_2` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_062 entry 0x9) |
 | fx_063 | 0xB | `FX_DEMI_BOWL` | render | model: gouraud hemisphere bowl (byte-identical to fx_062 entry 0xb) |
 | fx_063 | 0xC | `FX_DEMI_BOWL_2` | render | model: second gouraud hemisphere bowl (byte-identical to fx_062 entry 0xc) |
@@ -75,7 +77,7 @@ frame the C starts the entry would settle each:
 | fx_078 | 0xD | `FX_BIO_ROT_POS_TRACK` | kind/usage | table: rotation + position track (fxm_rotPosTrackInit) |
 | fx_078 | 0x14 | `FX_BIO_RED_BUBBLES` | render | emitter: red veined bubbles with a crimson glow |
 | fx_078 | 0x15 | `FX_BIO_POS_TRACK` | kind/usage | table: position track (fxm_posTrackInit) |
-| fx_078 | 0x16 | `FX_BIO_ORBIT_TRAIL` | kind/usage (look pending) | emitter: orbiting screen trail, still renders black |
+| fx_078 | 0x16 | `FX_BIO_BUBBLE_TRAIL` | runtime (medium) | emitter: screen trail of glowing green bubbles around the burst |
 | fx_078 | 0x17 | `FX_BIO_GREEN_CLOUD` | render | emitter: murky green cloud + grey glow |
 | fx_079 | 0x1 | `FX_DEMI_SHOCK_WISP_BURST` | render | emitter: white gouraud rings + pink-violet smoke wisps |
 | fx_079 | 0x2 | `FX_DEMI_SHOCK_FLASH_RING` | render | emitter: white gouraud ring |
@@ -102,24 +104,24 @@ frame the C starts the entry would settle each:
 | fx_07d | 0xB | `FX_FLARE_RED_SPARKS` | render | emitter: red spark sprites + white-red rings |
 | fx_07d | 0xF | `FX_FLARE_RED_HALO` | render | model: flat red-orange gouraud halo ring (byte-identical to fx_0df entry 0xD) |
 | fx_07d | 0x11 | `FX_FLARE_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
-| fx_07d | 0x12 | `FX_FLARE_CALLBACK_EMITTER` | kind/usage (look pending) | emitter: orbit, one callback element, nothing drawable in the data |
+| fx_07d | 0x12 | `FX_FLARE_CALLBACK_EMITTER` | kind/usage (look pending) | emitter: orbit, one callback element, nothing drawable in the data; runtime: started as the orange light rays radiate; drawn by the module callback, not ablated |
 | fx_07d | 0x13 | `FX_FLARE_FIRE_RING` | render | rings: white-cyan-orange-red gouraud rings |
 | fx_07d | 0x14 | `FX_FLARE_WHITE_FLASH` | render (fxdata d6121033) | emitter: two fans drawn as solid white flash quads |
 | fx_07d | 0x15 | `FX_FLARE_BACKDROP_2` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_07d | 0x16 | `FX_FLARE_FIRE_DOME` | render | model: dome with a fiery orange texture |
 | fx_07d | 0x17 | `FX_FLARE_BACKDROP_3` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
-| fx_07d | 0x18 | `FX_FLARE_TEX_RING` | kind/usage (look pending) | rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time |
-| fx_07d | 0x19 | `FX_FLARE_TEX_RING_2` | kind/usage (look pending) | rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time |
+| fx_07d | 0x18 | `FX_FLARE_TEX_RING` | kind/usage (look pending) | rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time; runtime: its UV box reads noise in the run-time page too (the tpage the tool resolves is not the one used); orange flame bands sweep the screen meanwhile |
+| fx_07d | 0x19 | `FX_FLARE_TEX_RING_2` | kind/usage (look pending) | rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time; runtime: its UV box reads noise in the run-time page too |
 | fx_07d | 0x1A | `FX_FLARE_SPARK_GLOW` | render | emitter: red spark sprites + fading orange glow |
 | fx_07d | 0x1B | `FX_FLARE_GOLDEN_GLOWS` | render (fxdata d6121033) | emitter: two fans drawn as small golden glow spots |
 | fx_07d | 0x1E | `FX_FLARE_CLOUD_SPHERE` | render (fxdata d6121033) | model: sphere with a grey cloudy texture |
-| fx_07e | 0x1 | `FX_SLOW_GLINT` | kind/usage (look pending) | particles: white glint, the rest of the frame still outside the file and the common pages |
+| fx_07e | 0x1 | `FX_SLOW_CLOCK_FACE` | runtime | particles: pink clock dial with Roman numerals I-XII on the target |
 | fx_07e | 0x2 | `FX_SLOW_GREEN_RING` | render | rings: white-green gouraud rings |
 | fx_07e | 0x3 | `FX_SLOW_BLUE_WAVE` | render | particles: blue chevron wave frames |
-| fx_07e | 0x5 | `FX_SLOW_PARTICLES` | kind/usage (look pending) | particles: 8 frames, still render all black |
+| fx_07e | 0x5 | `FX_SLOW_BLUE_GLOWS` | runtime | particles: soft blue round glows growing and fading around the clock |
 | fx_07e | 0xA | `FX_SLOW_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_07e | 0xC | `FX_SLOW_CRESCENT` | render | model: one quad textured with a blue-white crescent |
-| fx_07f | 0x1 | `FX_SILENCE_RING_DISC` | kind/usage (look pending) | model: flat annulus; the UV box reads a placeholder page (hand-written Japanese text), filled at run time |
+| fx_07f | 0x1 | `FX_SILENCE_VIOLET_RING` | runtime | model: disc on a blue-magenta haze page at run time (the file's scribble page is replaced): the glowing violet ring round each target |
 | fx_07f | 0x2 | `FX_SILENCE_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_07f | 0x3 | `FX_SILENCE_KANJI` | render | emitter: the kanji "silence" glyph, glowing orange to violet |
 | fx_07f | 0x5 | `FX_SILENCE_KANJI_DOME` | render | model: dome textured with the "silence" glyph |
@@ -134,12 +136,12 @@ frame the C starts the entry would settle each:
 | fx_081 | 0x6 | `FX_LV4_HOLY_CYAN_RING` | render | rings: white-cyan-blue gouraud rings, 8 segments |
 | fx_081 | 0x9 | `FX_LV4_HOLY_LILAC_RING` | render | rings: white-lilac gouraud rings |
 | fx_081 | 0xA | `FX_LV4_HOLY_RAINBOW_ARCH` | render | model: half-ring arch, rainbow cloud texture |
-| fx_081 | 0xB | `FX_LV4_HOLY_SPRITE_LINE` | kind/usage (look pending) | sprite line; its frames read a page of unrelated sprites, filled at run time |
+| fx_081 | 0xB | `FX_LV4_HOLY_LENS_FLARE_LINE` | runtime | sprite line: Holy's lens-flare set |
 | fx_081 | 0xC | `FX_LV4_HOLY_BLUE_SPARKLE_DOTS` | render | particles: blue sparkle frames |
 | fx_081 | 0xF | `FX_LV4_HOLY_BLUE_STREAKS` | render | emitter: blue light streaks + sparkles |
-| fx_081 | 0x10 | `FX_LV4_HOLY_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| fx_081 | 0x10 | `FX_LV4_HOLY_SPARKLE_STREAK_TEXTURE` | runtime | layer table: render-to-texture (btlfx_drawLayerTexture): 4 layers into VRAM (0x240,0x1D0) 128x48, a blue streak full of white sparkles (byte-identical to fx_057 entry 0x3, played there) |
 | fx_081 | 0x11 | `FX_LV4_HOLY_BLUE_SPARKLES` | render | emitter: callback element + blue sparkle sprites (byte-identical to fx_057 entry 0x4) |
-| fx_081 | 0x12 | `FX_LV4_HOLY_TRAIL` | kind/usage (look pending) | trail: the strip reads unrelated multicoloured VRAM, filled at run time |
+| fx_081 | 0x12 | `FX_LV4_HOLY_TRAIL` | kind/usage (look pending) | trail: the strip reads unrelated multicoloured VRAM, filled at run time; runtime: as Holy's trail (fx_057 0x6): noise with the run-time pages |
 | fx_081 | 0x13 | `FX_LV4_HOLY_VIOLET_RAYS` | render (fxdata d6121033) | emitter: two fans drawn as narrow violet-white dithered rays |
 | fx_081 | 0x14 | `FX_LV4_HOLY_VIOLET_RAYS_2` | render (fxdata d6121033) | emitter: two fans drawn as narrow violet-white dithered rays |
 | fx_081 | 0x15 | `FX_LV4_HOLY_BLUE_SPARKLES_2` | render | emitter: blue speck sprites |
@@ -153,9 +155,9 @@ frame the C starts the entry would settle each:
 | fx_081 | 0x20 | `FX_LV4_HOLY_BACKDROP_2` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_081 | 0x21 | `FX_LV4_HOLY_LIGHT_SPHERE` | render | model: sphere, white texture |
 | fx_081 | 0x22 | `FX_LV4_HOLY_BACKDROP_3` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
-| fx_081 | 0x23 | `FX_LV4_HOLY_TEXTURED_RING` | kind/usage (look pending) | rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time |
+| fx_081 | 0x23 | `FX_LV4_HOLY_TEXTURED_RING` | kind/usage (look pending) | rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time; runtime: as Holy's 0x1E: noise with the run-time pages |
 | fx_081 | 0x24 | `FX_LV4_HOLY_WHITE_VIOLET_RINGS` | render | rings: white-blue-violet gouraud rings, 4 segments |
-| fx_081 | 0x25 | `FX_LV4_HOLY_SPARK` | kind/usage (look pending) | particles: one small frame; reads grey stripes that look like unrelated VRAM |
+| fx_081 | 0x25 | `FX_LV4_HOLY_WHITE_GLOW` | runtime (medium) | particles: soft white round glow, as Holy's |
 | fx_081 | 0x27 | `FX_LV4_HOLY_FLASH_RINGS` | render | emitter: white-yellow and white-grey gouraud rings |
 | fx_082 | 0x1 | `FX_MAGIC_HAMMER_SMOKE` | render | emitter: grey smoke puffs |
 | fx_082 | 0x2 | `FX_MAGIC_HAMMER_RAINBOW_STREAK` | render (fxdata d6121033) | emitter: fan drawn as a horizontal streak cycling blue, green, yellow, orange, red, pink |
@@ -170,21 +172,21 @@ frame the C starts the entry would settle each:
 | fx_083 | 0x7 | `FX_SCAN_GLYPH_TEXT_2` | render | emitter: scrolling coloured glyph text, orbiting |
 | fx_083 | 0xB | `FX_SCAN_ORB_TILES` | render | emitter: orange / blue orbs + yellow and blue tiles |
 | fx_083 | 0xC | `FX_SCAN_YELLOW_RING` | render | emitter: dark yellow gouraud rings |
-| fx_084 | 0x1 | `FX_DRAIN_SPRITES` | kind/usage (look pending) | emitter: sprites, still render all black |
+| fx_084 | 0x1 | `FX_DRAIN_PINK_SPECKS` | runtime | emitter: small pink, violet and orange glowing specks drifting off the target |
 | fx_084 | 0x2 | `FX_DRAIN_PINK_ORB` | render | emitter: pink veined orb |
 | fx_084 | 0x6 | `FX_DRAIN_RED_RING` | render | emitter: dark red textured ring |
-| fx_086 | 0x4 | `FX_METEOR_STREAK_SHELL` | kind/usage (look pending) | model: bullet-shaped shell; the UV box reads a placeholder page (hand-written Japanese text), filled at run time |
-| fx_086 | 0x6 | `FX_METEOR_SPRITES` | kind/usage (look pending) | emitter: sprites, still render all black |
+| fx_086 | 0x4 | `FX_METEOR_RED_ROCK` | runtime (medium) | model: bullet-shaped shell on a red, dark-pitted rock page at run time: the huge red meteor |
+| fx_086 | 0x6 | `FX_METEOR_GLOWING_EMBERS` | runtime (medium) | emitter: larger orange glowing embers in the explosion |
 | fx_086 | 0x7 | `FX_METEOR_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_086 | 0x9 | `FX_METEOR_EXPLOSION` | render | emitter: green and orange explosion frames |
-| fx_086 | 0xB | `FX_METEOR_CONE_SPRITES` | kind/usage (look pending) | emitter: cone of sprites, still render all black |
+| fx_086 | 0xB | `FX_METEOR_EMBERS` | runtime (medium) | emitter: small amber sparks spreading out round the falling meteor |
 | fx_086 | 0xC | `FX_METEOR_DUST_RING` | render (fxdata d6121033) | model: ring band with a pink-brown rocky dust texture |
 | fx_086 | 0xE | `FX_METEOR_CLOUDS` | render | sprite: grey cloud strip |
 | fx_086 | 0xF | `FX_METEOR_SKY_CYLINDER` | render | model: cylinder with a blue sky / cloud texture |
 | fx_086 | 0x10 | `FX_METEOR_DARK_CLOUDS` | render | sprite: dark cloud strip |
 | fx_086 | 0x11 | `FX_METEOR_ROCK` | render | model: rock with a cratered texture (the meteor) |
 | fx_086 | 0x12 | `FX_METEOR_ORANGE_RING` | render | rings: white-orange gouraud rings |
-| fx_086 | 0x13 | `FX_METEOR_DEBRIS_SPRITES` | kind/usage (look pending) | sprites: 44 frames, still render all black |
+| fx_086 | 0x13 | `FX_METEOR_EMBERS_2` | runtime (medium) | sprites: the same amber spark sprites during the impact |
 | fx_086 | 0x18 | `FX_METEOR_STREAK` | render | model: long thin gouraud spike |
 | fx_086 | 0x19 | `FX_METEOR_BOWL` | render | model: gouraud hemisphere bowl |
 | fx_086 | 0x1A | `FX_METEOR_RING_DISC` | render | model: gouraud flat annulus |
@@ -203,14 +205,14 @@ frame the C starts the entry would settle each:
 | fx_08b | 0x8 | `FX_AERIAL_SLASH_BLUE_GUST` | render (fxdata d6121033) | emitter: fan drawn as a blue crescent gust + blue specks |
 | fx_08b | 0xE | `FX_AERIAL_SLASH_WIND_RINGS` | render | emitter: violet sparkle curtain ring + violet-white rings |
 | fx_08b | 0xF | `FX_AERIAL_SLASH_DUST_RING` | render | emitter: ring textured with grey smoke |
-| fx_08c | 0x1 | `FX_BERSERK_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| fx_08c | 0x1 | `FX_BERSERK_FLAME_TEXTURE` | runtime | layer table: render-to-texture (btlfx_drawLayerTexture): 5 layers into VRAM (0x200,0x180) 64x128, rising flames (byte-identical to fx_00e entry 0x3, played there) |
 | fx_08c | 0x3 | `FX_BERSERK_FUNNEL` | render | model: open funnel, white texture |
 | fx_08c | 0x8 | `FX_BERSERK_FIRE_RING` | render | emitter: red-orange-yellow gouraud rings |
 | fx_08c | 0xB | `FX_BERSERK_STAR_FLASH` | render | emitter: white and red star flashes + violet ring |
 | fx_08d | 0x1 | `FX_CURA_STAR_TRAIL` | render | emitter: blue star-sparkle trail + sprites |
 | fx_08d | 0x7 | `FX_CURA_STAR_FLARES` | render | sprite line: blue-white star flares |
 | fx_08d | 0x8 | `FX_CURA_CRESCENT_BURST` | render | emitter: ring + yellow, white and green crescent sprites |
-| fx_08d | 0xA | `FX_CURA_FAN_EMITTER` | kind/usage (look pending) | emitter: fan; its rect reads cyan dithered vertical stripes (light rays or unrelated VRAM) |
+| fx_08d | 0xA | `FX_CURA_CYAN_GLOW` | runtime | emitter: fan of a round cyan-white glow, the cyan glow streaks round the target |
 | fx_08e | 0x1 | `FX_CURAGA_SPARKLES` | render (byte-identical twin, consistency pass) | emitter: tiny rings + white/green sparkle sprites (byte-identical to fx_001 entry 0x1, same render) |
 | fx_08e | 0x3 | `FX_CURAGA_WHITE_RINGS` | render | emitter: white gouraud rings |
 | fx_08e | 0x5 | `FX_CURAGA_GOLD_RING` | render | emitter: white-gold gouraud rings |
@@ -221,15 +223,15 @@ frame the C starts the entry would settle each:
 | fx_08e | 0xF | `FX_CURAGA_LIGHT_RING` | render | model: ring with a green light-fountain texture |
 | fx_08e | 0x10 | `FX_CURAGA_SPARKLE_BURST` | render (byte-identical twin, consistency pass) | emitter: white/yellow/green sparkle sprites (byte-identical to fx_001 entry 0x10, same render) |
 | fx_08f | 0x1 | `FX_METEOR_FIRE_RING` | render | rings: cream-red-blue-violet-orange gouraud rings |
-| fx_08f | 0x4 | `FX_METEOR_STREAK_SHELL` | kind/usage (look pending) | model: bullet-shaped shell; the UV box reads a placeholder page (hand-written Japanese text), filled at run time (byte-identical to fx_086 entry 0x4) |
+| fx_08f | 0x4 | `FX_METEOR_RED_ROCK` | runtime (medium) | model: the red pitted meteor rock (carried from fx_086 entry 0x4; not played) (byte-identical to fx_086 entry 0x4) |
 | fx_08f | 0x7 | `FX_METEOR_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) (byte-identical to fx_086 entry 0x7) |
-| fx_08f | 0xB | `FX_METEOR_CONE_SPRITES` | kind/usage (look pending) | emitter: cone of sprites, still render all black (byte-identical to fx_086 entry 0xB) |
+| fx_08f | 0xB | `FX_METEOR_EMBERS` | runtime (medium) | emitter: small amber sparks (carried from fx_086 entry 0xB; Meteor (alt) not played) (byte-identical to fx_086 entry 0xB) |
 | fx_08f | 0xC | `FX_METEOR_DUST_RING` | render (fxdata d6121033) | model: ring band with a pink-brown rocky dust texture (byte-identical to fx_086 entry 0xC) |
 | fx_08f | 0xE | `FX_METEOR_CLOUDS` | render | sprite: grey cloud strip |
 | fx_08f | 0xF | `FX_METEOR_SKY_CYLINDER` | render | model: cylinder with a blue sky / cloud texture (byte-identical to fx_086 entry 0xf) |
 | fx_08f | 0x10 | `FX_METEOR_DARK_CLOUDS` | render | sprite: dark cloud strip |
 | fx_08f | 0x11 | `FX_METEOR_ROCK` | render | model: rock with a cratered texture (the meteor) (byte-identical to fx_086 entry 0x11) |
-| fx_08f | 0x13 | `FX_METEOR_DEBRIS_SPRITES` | kind/usage (look pending) | sprites: 44 frames, still render all black (byte-identical to fx_086 entry 0x13) |
+| fx_08f | 0x13 | `FX_METEOR_EMBERS_2` | runtime (medium) | sprites: amber spark sprites of the impact (carried from fx_086 entry 0x13; not played) (byte-identical to fx_086 entry 0x13) |
 | fx_08f | 0x17 | `FX_METEOR_STREAK` | render | model: long thin gouraud spike (byte-identical to fx_086 entry 0x18) |
 | fx_08f | 0x18 | `FX_METEOR_BOWL` | render | model: gouraud hemisphere bowl (byte-identical to fx_086 entry 0x19) |
 | fx_08f | 0x19 | `FX_METEOR_RING_DISC` | render | model: gouraud flat annulus (byte-identical to fx_086 entry 0x1a) |
@@ -237,14 +239,14 @@ frame the C starts the entry would settle each:
 | fx_08f | 0x1B | `FX_METEOR_EXPLOSION` | render | emitter: green and orange explosion frames |
 | fx_08f | 0x1C | `FX_METEOR_SMOKE_TRAIL` | render | trail: grey smoke strip |
 | fx_090 | 0x2 | `FX_CURAGA_STAR_FLARES` | render | emitter: white star glints + faint coloured arcs |
-| fx_090 | 0x3 | `FX_CURAGA_SPARKLES` | kind/usage (look pending) | emitter: ring + white / green sparkle dots, its last element still drawn as squares (texture not resolved) |
+| fx_090 | 0x3 | `FX_CURAGA_SPARKLES` | runtime (confirmed) | emitter: green and gold twinkling glints spreading out |
 | fx_090 | 0x5 | `FX_CURAGA_BLUE_SWIRL` | render | emitter: blue starry trail + sparkles |
 | fx_090 | 0xB | `FX_CURAGA_LIGHT_FOUNTAIN` | render | model: tall funnel with a cyan light-fountain texture |
 | fx_090 | 0xC | `FX_CURAGA_WHITE_RINGS` | render | emitter: white gouraud rings |
 | fx_090 | 0xD | `FX_CURAGA_LIGHT_RING` | render | model: ring with a cyan light-fountain texture |
 | fx_090 | 0xE | `FX_CURAGA_TEAL_RING` | render | emitter: white-teal gouraud rings |
-| fx_090 | 0xF | `FX_CURAGA_SPARKLE_BURST` | kind/usage (look pending) | emitter: sparkle sprites, still drawn as white / green squares |
-| fx_090 | 0x10 | `FX_CURAGA_SPARKLE_SHOWER` | kind/usage (look pending) | emitter: spiralling sparkle sprites, still drawn as pale yellow-green squares |
+| fx_090 | 0xF | `FX_CURAGA_SPARKLE_BURST` | runtime (confirmed) | emitter: gold-white four-point star sparkles in a rising column |
+| fx_090 | 0x10 | `FX_CURAGA_SPARKLE_SHOWER` | runtime (confirmed) | emitter: green four-point star twinkles |
 | fx_091 | 0x1 | `FX_ENTICE_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
 | fx_091 | 0x2 | `FX_ENTICE_VIOLET_HALO` | render | emitter: violet glow ring + sprites |
 | fx_092 | 0x1 | `FX_HYPNOTIZE_MAGENTA_RINGS` | render | emitter: violet-cream and magenta gouraud rings |
@@ -262,7 +264,7 @@ frame the C starts the entry would settle each:
 | fx_094 | 0x5 | `FX_DELTA_ATTACK_RAINBOW_STREAK` | render (fxdata d6121033) | emitter: fan drawn as a thin rainbow-coloured horizontal streak |
 | fx_095 | 0x20 | `FX_STOP_CLOCK_RING` | render | sprite: silver clock ring with spikes |
 | fx_095 | 0x2C | `FX_STOP_FLARE` | render | sprite: blue-red flare, 6 frames |
-| fx_096 | 0x1 | `FX_FROST_ICE_GLINTS` | kind/usage (look pending) | emitter: blue particles + sprites; the frames read blue dithered blocks that look like unrelated VRAM |
+| fx_096 | 0x1 | `FX_FROST_ICE_GLINTS` | runtime (confirmed) | emitter: small blue four-point star glints |
 | fx_096 | 0x6 | `FX_FROST_SNOW_BURST` | render | emitter: ring of ice-flake sprites + white-cyan rings |
 | fx_096 | 0xA | `FX_FROST_ICE_CRYSTAL` | render (fxdata d6121033) | 'so' model: faceted ice crystal (pale blue cracked-ice texture) |
 | fx_096 | 0xB | `FX_FROST_ICE_SHARD` | render (fxdata d6121033) | 'so' model: flat jagged ice shard (same cracked-ice texture) |
@@ -273,7 +275,7 @@ frame the C starts the entry would settle each:
 | fx_099 | 0x4 | `FX_BREAK_ROCK_RING` | render | emitter: ring of white rock chunks |
 | fx_09a | 0x1 | `FX_LV5_DEATH_GREEN_ORB` | render | emitter: fan + green glow sprites, orange / violet rings |
 | fx_09a | 0x2 | `FX_LV5_DEATH_MODEL_DATA` | kind/usage | table: data block passed with the model to btlfx_registerSummonModel |
-| fx_09a | 0x3 | `FX_LV5_DEATH_BACKDROP` | kind/usage | layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) |
+| fx_09a | 0x3 | `FX_LV5_DEATH_SMOKE_TEXTURE` | runtime (medium) | layer table: render-to-texture (btlfx_drawLayerTexture): 2 layers into VRAM (0x200,0x1A0) 64x64, rising purple smoke (byte-identical to fx_05e entry 0xB, played there) |
 | fx_09a | 0x7 | `FX_LV5_DEATH_BLUE_TRAIL` | render | emitter: blue spiralling trail |
 | fx_09a | 0x8 | `FX_LV5_DEATH_REAPER` | render (fxdata d6121033) | 'so' model (btlfx_registerSummonModel): the robed skull reaper holding a scythe |
 | fx_09a | 0x9 | `FX_LV5_DEATH_RED_RINGS` | render | emitter: pink-red sprites + white-red rings |
@@ -309,7 +311,7 @@ frame the C starts the entry would settle each:
 | fx_0a1 | 0x8 | `FX_BLASTER_GREY_RING` | render | emitter: lilac-grey gouraud rings |
 | fx_0a1 | 0xF | `FX_BLASTER_VIOLET_RING` | render | emitter: white-violet gouraud rings |
 | fx_0a1 | 0x10 | `FX_BLASTER_TRAIL_2` | kind/usage (look pending) | trail: small strip, mostly black with magenta texels |
-| fx_0a2 | 0x1 | `FX_CURA_SPARKLE_BURST` | kind/usage (look pending) | emitter: ring + sparkle sprites, still drawn as green / yellow / white squares (texture not resolved) |
+| fx_0a2 | 0x1 | `FX_CURA_SPARKLE_BURST` | runtime (confirmed) | emitter: green star twinkles |
 | fx_0a2 | 0x2 | `FX_CURA_STAR_TRAIL` | render | emitter: blue star-sparkle trail spiralling + sprites |
 | fx_0a3 | 0x1 | `FX_ELECTROCUTE_BOLT_TRAIL` | kind/usage (look pending) | emitter: small blue bolt trail + sprites that render black or as faint dots |
 | fx_0a3 | 0x2 | `FX_ELECTROCUTE_BOLT_TRAIL_2` | kind/usage (look pending) | emitter: small blue bolt trail + sprites that render black, spiralling |

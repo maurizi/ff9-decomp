@@ -318,7 +318,7 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 3) {
-                emitter = work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRAGA_CONE_GLOW), (s32)&work->pos8);
+                emitter = work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FIRAGA_RED_HAZE), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }

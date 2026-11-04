@@ -8,7 +8,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_SILENCE_GLYPH      0x1 /* emitter: kana glyph sprite + dotted mouth shape (one element's texture not in the file) */
 #define FX_SILENCE_GLYPH_GLOW 0x3 /* emitter: blurred kana glyph + specks */
-#define FX_SILENCE_BACKDROP   0x4 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_SILENCE_NEBULA_TEXTURE 0x4 /* layer table: render-to-texture (btlfx_drawLayerTexture): 4 layers into VRAM (0x240,0x190) 112x112, a blue-violet starry nebula sampled by the glowing ball on the target; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_SILENCE_RUNE_SEAL  0xA /* emitter: grey stone ring carved with runes */
 
 typedef struct {

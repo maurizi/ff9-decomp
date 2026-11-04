@@ -18,14 +18,14 @@
 #define FX_FLARE_RED_SPARKS       0xB /* emitter: red spark sprites + white-red rings */
 #define FX_FLARE_RED_HALO 0xF /* model: flat red-orange gouraud halo ring (byte-identical to fx_0df entry 0xD) */
 #define FX_FLARE_BACKDROP         0x11 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
-#define FX_FLARE_CALLBACK_EMITTER 0x12 /* emitter: orbit, one callback element, nothing drawable in the data (look pending) */
+#define FX_FLARE_CALLBACK_EMITTER 0x12 /* emitter: orbit, one callback element, nothing drawable in the data; runtime (docs/runtime-findings.md effect-data pass): started as the orange light rays radiate; drawn by the module callback, not ablated (look pending) */
 #define FX_FLARE_FIRE_RING        0x13 /* rings: white-cyan-orange-red gouraud rings */
 #define FX_FLARE_WHITE_FLASH      0x14 /* emitter: two fans drawn as solid white flash quads */
 #define FX_FLARE_BACKDROP_2       0x15 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_FLARE_FIRE_DOME        0x16 /* model: dome with a fiery orange texture */
 #define FX_FLARE_BACKDROP_3       0x17 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
-#define FX_FLARE_TEX_RING         0x18 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time (look pending) */
-#define FX_FLARE_TEX_RING_2       0x19 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time (look pending) */
+#define FX_FLARE_TEX_RING         0x18 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time; runtime (docs/runtime-findings.md effect-data pass): its UV box reads noise in the run-time page too (the tpage the tool resolves is not the one used); orange flame bands sweep the screen meanwhile (look pending) */
+#define FX_FLARE_TEX_RING_2       0x19 /* rings: textured rings; the UV box reads unrelated multicoloured VRAM, filled at run time; runtime (docs/runtime-findings.md effect-data pass): its UV box reads noise in the run-time page too (look pending) */
 #define FX_FLARE_SPARK_GLOW       0x1A /* emitter: red spark sprites + fading orange glow */
 #define FX_FLARE_GOLDEN_GLOWS     0x1B /* emitter: two fans drawn as small golden glow spots */
 #define FX_FLARE_CLOUD_SPHERE     0x1E /* model: sphere with a grey cloudy texture */

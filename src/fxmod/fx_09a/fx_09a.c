@@ -310,7 +310,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_BACKDROP), work->frame4);
+        ex->btlfx_drawLayerTexture((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV5_DEATH_SMOKE_TEXTURE), work->frame4);
         work->frame4++;
     }
     return 0;

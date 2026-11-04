@@ -15,7 +15,7 @@
 #define FX_IFRIT_ROCK_RINGS          0x8 /* emitter: rings textured with a golden rock pattern, 16 frames */
 #define FX_IFRIT_FLAME_LINE          0x9 /* emitter: two orbiting fans, a thin horizontal orange flame line */
 #define FX_IFRIT_ORANGE_RINGS        0xB /* emitter: orange gouraud rings, 16 frames */
-#define FX_IFRIT_SPOKED_RING         0x12 /* model: flat ring with spokes (registered through the texture list; the tool does not follow it, so the texture is not drawn) (look pending) */
+#define FX_IFRIT_SPOKED_RING         0x12 /* model: flat ring with spokes (registered through the texture list; the tool does not follow it, so the texture is not drawn); runtime (docs/runtime-findings.md effect-data pass): untextured; only ablated together with the bowl, the change is attributed to the dome (look pending) */
 #define FX_IFRIT_FIRE_TRAIL          0x15 /* trail: orange strip, drawn along the paths of entry 0x17 */
 #define FX_IFRIT_ORANGE_RING_2       0x16 /* emitter: orange to white gouraud ring */
 #define FX_IFRIT_TRAIL_PATHS         0x17 /* table: offset table of position paths (fxm_offsetTableEntry + fxm_posPathInit) for the fire trails */
@@ -24,7 +24,7 @@
 #define FX_IFRIT_FLAME_SWIRL_3       0x1B /* emitter: flat trail, flame swirl strip (byte-identical to entry 0x19) */
 #define FX_IFRIT_FLAME_SWIRL_4       0x1C /* emitter: flat trail, flame swirl strip (byte-identical to entry 0x19) */
 #define FX_IFRIT_VEC_TRACK           0x1D /* table: vector track (fxm_vecTrackInit) */
-#define FX_IFRIT_BOWL                0x1E /* model: hemisphere bowl (registered through the texture list; the tool does not follow it, so the texture is not drawn) (look pending) */
+#define FX_IFRIT_HEAT_DOME           0x1E /* model: hemisphere bowl, the large translucent wavy dome over the scene (ablated together with entry 0x12); runtime (docs/runtime-findings.md effect-data pass, low) (look pending: low) */
 #define FX_IFRIT_BLOCK_CLUSTER       0x20 /* model: cluster of block chunks, orange streak texture */
 #define FX_IFRIT_FIRE_BURST          0x21 /* emitter: ember specks + orange fire-burst clouds */
 #define FX_IFRIT_FLAME_RING          0x22 /* model: flat ring, flame texture */
@@ -35,13 +35,13 @@
 #define FX_IFRIT_FLAME_DOME          0x27 /* model: dome, flame texture */
 #define FX_IFRIT_PIECE_MODELS        0x28 /* table: offset table of model data, one per piece (fxm_offsetTableEntry) */
 #define FX_IFRIT_PIECE_TRACKS        0x29 /* table: offset table of tracks, one per piece (fxm_offsetTableEntry) */
-#define FX_IFRIT_GRID_PLANE          0x2A /* model: flat grid plane (tpage 0x117 reads a yellow placeholder page in the render) (look pending) */
+#define FX_IFRIT_WHITE_HAZE          0x2A /* model: grid on a page of grey-white wavy streaks by the time it is fetched, the white haze under Ifrit's fist; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_IFRIT_POS_PATH            0x2B /* table: position path (fxm_posPathInit) */
 #define FX_IFRIT_POS_PATH_2          0x2C /* table: position path (fxm_posPathInit) */
 #define FX_IFRIT_FIREBALL            0x80 /* summon data entry 0: 'so' model, ball with a fire texture and a flame crown */
-#define FX_IFRIT_CANOPY              0x81 /* summon data entry 1: textured model, canopy on legs (registered through the texture list; the tool does not follow it, so the texture is not drawn) (look pending) */
+#define FX_IFRIT_CANOPY              0x81 /* summon data entry 1: textured model, canopy on legs (registered through the texture list; the tool does not follow it, so the texture is not drawn); runtime (docs/runtime-findings.md effect-data pass): untextured model at run time; ablating it (with 0x83) leaves the screen pixel-identical (look pending) */
 #define FX_IFRIT_FIRE_COLUMN         0x82 /* summon data entry 2: textured model, cylinder with a fire texture */
-#define FX_IFRIT_CYLINDER            0x83 /* summon data entry 3: textured model, cylinder on tpage 0x117 (a yellow placeholder page in the render) (look pending) */
+#define FX_IFRIT_CYLINDER            0x83 /* summon data entry 3: textured model, cylinder on tpage 0x117 (a yellow placeholder page in the render); runtime (docs/runtime-findings.md effect-data pass): fetched while its page still holds the yellow dummy .TIM placeholder; ablating it leaves the screen pixel-identical (look pending) */
 #define FX_IFRIT_SUMMON_VEC_TRACK_4  0x84 /* summon data entry 4: vector track (fxm_vecTrackInit) */
 #define FX_IFRIT_GOURAUD_BOWL        0x85 /* summon data entry 5: gouraud model, grey-white gouraud bowl */
 #define FX_IFRIT_SUMMON_VEC_TRACK_6  0x86 /* summon data entry 6: vector track (fxm_vecTrackInit) */

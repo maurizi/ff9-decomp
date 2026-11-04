@@ -258,7 +258,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            work->emit1B8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_SPRITES), (s32)&work->pos1BC);
+            work->emit1B8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_BLUE_SPECKS), (s32)&work->pos1BC);
             break;
         case 0x3F:
             fx_0b8_gridShift = 4;
@@ -304,7 +304,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->flags0[0xA] = 1;
             work->flags0[0x22] = 1;
             work->flags0[0x23] = 0x30;
-            work->emit19C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_SPRITES_2), (s32)&work->pos1A0);
+            work->emit19C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_BLUE_SPECKS_2), (s32)&work->pos1A0);
             break;
         case 0x90:
             work->flags0[0x1C] = 0x20;
@@ -369,7 +369,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_SPRITES_3), (s32)&work->pos164);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_BLUE_SPECKS_3), (s32)&work->pos164);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }

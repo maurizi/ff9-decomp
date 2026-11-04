@@ -24,7 +24,7 @@
 #define FX_FIRAGA_GOLD_SPARKS_2 0x15 /* emitter: golden spark sprites + spark sub-particles (byte-identical to fx_007 entry 0x11) */
 #define FX_FIRAGA_GOLD_SPARKS   0x16 /* emitter: golden spark sprites (byte-identical to fx_007 entry 0x10) */
 #define FX_FIRAGA_SMOKE_BURST   0x17 /* emitter: dark teal-tinted burst (smoke after the blast) (byte-identical to fx_007 entry 0x13) */
-#define FX_FIRAGA_CONE_GLOW     0x18 /* emitter: cone, one dim dark-red particle frame; the blend mode decides the look (same call site as fx_007 entry 0x15) (look pending) */
+#define FX_FIRAGA_RED_HAZE      0x18 /* emitter: soft dark-red additive blob, the red heat haze filling the fire column (same call site as fx_007 entry 0x15); runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_FIRAGA_EMBER_CONE    0x19 /* emitter: cone of red and grey ember dots (byte-identical to fx_007 entry 0x14) */
 
 typedef struct {

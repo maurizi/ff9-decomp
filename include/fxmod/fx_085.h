@@ -12,15 +12,15 @@
 #define FX_THUNDAGA_IMPACT_FLASH   0x1 /* emitter: four-point star flash (byte-identical to fx_018 entry 0x25) */
 #define FX_THUNDAGA_VIOLET_RING    0x2 /* rings: white-violet gouraud rings (same call site as fx_018 entry 0x1e) */
 #define FX_THUNDAGA_GLOW_DOME      0x6 /* model: hemisphere with an orange-to-white streak texture (byte-identical to fx_018 entry 0x11) */
-#define FX_THUNDAGA_CONE_EMITTER   0x8 /* emitter: cone of sprites, still render all transparent with the summon/common pages (byte-identical to fx_018 entry 0x26) (look pending) */
+#define FX_THUNDAGA_SPARKLE_SWARM  0x8 /* emitter: swarms of blue, lilac and teal twinkle dots, the cyan sparkles around the strike (byte-identical to fx_018 entry 0x26); runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_THUNDAGA_SPARK_DOTS     0xE /* emitter: white spark dots (btlfx_emitDots) (byte-identical to fx_018 entry 0x27) */
-#define FX_THUNDAGA_DISC           0xF /* model: flat octagon, 15-bit texture page 0x119 holds the file's 4-bit pages, so it samples something drawn there at run time (byte-identical to fx_018 entry 0x10) (look pending) */
+#define FX_THUNDAGA_DISC           0xF /* model: flat octagon, 15-bit texture page 0x119 holds the file's 4-bit pages, so it samples something drawn there at run time (byte-identical to fx_018 entry 0x10); runtime (docs/runtime-findings.md effect-data pass): same entry as fx_018 0x10, whose page holds 4-bit lightning textures at run time; ablating it there changes nothing visible (look pending) */
 #define FX_THUNDAGA_LIGHTNING_BOLT 0x10 /* particles: wide blue-white lightning bolt (byte-identical to fx_018 entry 0x17) */
 #define FX_THUNDAGA_THIN_BOLT      0x11 /* particles: thin cyan lightning bolt (byte-identical to fx_018 entry 0x20) */
 #define FX_THUNDAGA_LIGHTNING_ARCS 0x15 /* emitter: four fans drawn as cyan and blue zig-zag lightning arcs (byte-identical to fx_018 entry 0x21) */
 #define FX_THUNDAGA_SPARK_BALL     0x18 /* particles: golden plasma ball, 8 frames (byte-identical to fx_018 entry 0x1b) */
-#define FX_THUNDAGA_CYL_EMITTER    0x1B /* emitter: cylinder particles, still render all transparent with the summon/common pages (byte-identical to fx_018 entry 0x7) (look pending) */
-#define FX_THUNDAGA_CYL_EMITTER_2  0x1C /* emitter: cylinder particles, still render all transparent with the summon/common pages (byte-identical to fx_018 entry 0xa) (look pending) */
+#define FX_THUNDAGA_VIOLET_GLOW    0x1B /* emitter: soft violet-magenta glow puffs, the violet light around the thin bolts (byte-identical to fx_018 entry 0x7); runtime (docs/runtime-findings.md effect-data pass, medium) */
+#define FX_THUNDAGA_VIOLET_GLOW_2  0x1C /* emitter: the same violet-magenta glow puffs, started later (byte-identical to fx_018 entry 0xa); runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_THUNDAGA_LIGHTNING_ARCS_2 0x22 /* emitter: four fans drawn as cyan and blue zig-zag lightning arcs (byte-identical to fx_018 entry 0x22) */
 #define FX_THUNDAGA_BLUE_RING      0x25 /* rings: white-blue gouraud rings (same call site as fx_018 entry 0x13) */
 #define FX_THUNDAGA_WHITE_RING     0x26 /* rings: white gouraud rings drawn flat (same call site as fx_018 entry 0x15) */

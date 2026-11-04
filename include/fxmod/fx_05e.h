@@ -13,7 +13,7 @@
 #define FX_DEATH_RED_RINGS       0x5 /* emitter: pink spark sprites + white-red gouraud rings */
 #define FX_DEATH_REAPER          0x6 /* summon model (btlfx_registerSummonModel): the robed skull reaper holding a scythe */
 #define FX_DEATH_SOUL_ORBS       0x9 /* emitter: blue glowing orb quads */
-#define FX_DEATH_BACKDROP        0xB /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_DEATH_SMOKE_TEXTURE   0xB /* layer table: render-to-texture (btlfx_drawLayerTexture): 2 layers into VRAM (0x200,0x1A0) 64x64, rising purple smoke; runtime (docs/runtime-findings.md effect-data pass, medium) */
 #define FX_DEATH_BLUE_TRAIL      0xC /* emitter: spiralling trail with a blue flame strip */
 #define FX_DEATH_SMOKE           0x10 /* emitter: grey smoke puffs */
 #define FX_DEATH_BLUE_TRAIL_2    0x1B /* emitter: spiralling trail with a blue flame strip */

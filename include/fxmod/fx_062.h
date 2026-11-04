@@ -9,7 +9,7 @@
 #define FX_DEMI_BACKDROP   0x7 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
 #define FX_DEMI_SPHERE     0x8 /* model: sphere, white texture */
 #define FX_DEMI_BACKDROP_2 0x9 /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture) */
-#define FX_DEMI_CAP        0xA /* model: shallow spherical cap, texture still outside the file and the common pages (magenta) (look pending) */
+#define FX_DEMI_CAP        0xA /* model: shallow spherical cap, texture still outside the file and the common pages (magenta); runtime (docs/runtime-findings.md effect-data pass): the dome reads white with magenta noise with the run-time page; ablating it leaves the black Demi sphere unchanged, so it is not the sphere (look pending) */
 #define FX_DEMI_BOWL       0xB /* model: gouraud hemisphere bowl */
 #define FX_DEMI_BOWL_2     0xC /* model: second gouraud hemisphere bowl */
 #define FX_DEMI_GLOW_TRAIL 0xD /* trail: white radial glow strip */

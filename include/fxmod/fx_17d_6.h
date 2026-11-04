@@ -13,8 +13,8 @@
 #define FX_ARK_ORANGE_RING   0x6 /* rings: white-orange-brown gouraud rings */
 #define FX_ARK_RED_RING      0xA /* rings: red to dark red gouraud rings */
 #define FX_ARK_PEACH_RING    0xB /* rings: white-peach-mauve gouraud rings */
-#define FX_ARK_FAN_EMITTER_2 0xC /* emitter: two fans; the render shows small olive / orange garbled patches (look pending) */
-#define FX_ARK_SPRITE_LINE   0xD /* sprite line: green textures, partly not resolved (almost empty in the render) (look pending) */
+#define FX_ARK_FAN_EMITTER_2 0xC /* emitter: two fans; the render shows small olive / orange garbled patches; runtime (docs/runtime-findings.md effect-data pass): not fetched within 4600 frames of a full Ark (look pending) */
+#define FX_ARK_SPRITE_LINE   0xD /* sprite line: green textures, partly not resolved (almost empty in the render); runtime (docs/runtime-findings.md effect-data pass): not fetched within 4600 frames of a full Ark (look pending) */
 #define FX_ARK_GREY_RING     0xE /* emitter: grey-white gouraud ring */
 #define FX_ARK_ORANGE_DISC 0x8B /* summon data: 'so' model, flat disc with an orange-brown speckle texture */
 #define FX_ARK_GREY_SWIRL_DISC 0x8D /* summon data: 'so' model, flat disc with a grey swirl texture */

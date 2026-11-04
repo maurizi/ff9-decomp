@@ -6,12 +6,12 @@
 
 /* fx_052 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_LIMIT_GLOVE_SPHERE 0x7 /* 'so' model: sphere, texture still outside the file and the common pages (magenta), registered in op80 (look pending) */
+#define FX_LIMIT_GLOVE_PINK_ORB 0x7 /* 'so' model: magenta fiery energy sphere with white bands; runtime (docs/runtime-findings.md effect-data pass) */
 #define FX_LIMIT_GLOVE_GOLD_SPARKLES 0x8 /* emitter: rings of golden sparkles */
 #define FX_LIMIT_GLOVE_GOLD_GLOW     0x9 /* emitter: golden glow, red streak trail, pink dots */
 #define FX_LIMIT_GLOVE_GOLD_GLOW_2   0xA /* emitter: golden glow, red streak trail, pink dots */
 #define FX_LIMIT_GLOVE_GRID_SPHERE   0xB /* 'so' model: sphere textured with glowing blue grid lines, registered in op80 */
-#define FX_LIMIT_GLOVE_BACKDROP      0xC /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool) (look pending) */
+#define FX_LIMIT_GLOVE_BACKDROP      0xC /* layer table: layers rendered into an off-screen VRAM texture the effect samples (btlfx_drawLayerTexture; not drawn by the tool); runtime (docs/runtime-findings.md effect-data pass): render-to-texture layer table (btlfx_drawLayerTexture, 4 layers into VRAM (0x280,0x180) 128x128), drawn but its texture not checked (look pending) */
 #define FX_LIMIT_GLOVE_LIGHT_BEAM    0xD /* emitter: blue glow + pink-white light beam */
 #define FX_LIMIT_GLOVE_GLOW_DOME     0xE /* gouraud model: shallow dome */
 #define FX_LIMIT_GLOVE_BLUE_RINGS    0xF /* emitter: white-cyan / white-blue / grey gouraud rings */

@@ -174,10 +174,10 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         case 9:
             ex->Hi_SetSummonMotion(SUMMON0B1(env)->summon54->motion180, SUMMON0B1(env)->model60);
             fx_0b1_timers[0] = 1;
-            fx_0b1_emitter0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORBIT_GLOW), (s32)&fx_0b1_emitPos0);
+            fx_0b1_emitter0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_GREEN_MOTES), (s32)&fx_0b1_emitPos0);
             break;
         case 0x18:
-            fx_0b1_emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORBIT_GLOW), (s32)&fx_0b1_emitPos1);
+            fx_0b1_emitter1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_GREEN_MOTES), (s32)&fx_0b1_emitPos1);
             break;
         case 0x40:
             ex->Hi_GetSummonBonePos(SUMMON0B1(env)->model60, 0x11, (u16 *)&fx_0b1_emitPos2);
@@ -240,10 +240,10 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             fx_0b1_emitter8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_LENS_STREAK_2), (s32)&fx_0b1_emitPos8);
             break;
         case 0x9F:
-            fx_0b1_emitter10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORBIT_GLOW_3), (s32)&fx_0b1_emitPos10);
+            fx_0b1_emitter10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORANGE_MOTES_2), (s32)&fx_0b1_emitPos10);
             break;
         case 0xAE:
-            fx_0b1_emitter9 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORBIT_GLOW_2), (s32)&fx_0b1_emitPos9);
+            fx_0b1_emitter9 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CARBUNCLE_ORANGE_MOTES), (s32)&fx_0b1_emitPos9);
             break;
         case 0xCA:
             ex->btlfx_stopEmitter(fx_0b1_emitter10);

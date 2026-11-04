@@ -48,7 +48,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos4C.vx += work->pos10.vx;
             work->pos4C.vy += work->pos10.vy;
             work->pos4C.vz += work->pos10.vz;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_SCREEN_TRAIL), (s32)&work->pos4C);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_BUBBLE_TRAIL), (s32)&work->pos4C);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_TOXIC_CLOUD), (s32)&work->pos4C);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_05d_trails;

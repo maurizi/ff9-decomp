@@ -25,7 +25,7 @@
 #define FX_RAMUH_DOME_COLUMN        0x22 /* 'so' model: dome-capped column (its texture pages hold a 'dummy' placeholder) (look pending) */
 #define FX_RAMUH_GREY_RING          0x23 /* rings: grey gouraud ring */
 #define FX_RAMUH_GREEN_DOME 0x27 /* 'so' model: teal-green gouraud hemisphere (byte-identical to fx_0ba entry 0x26) */
-#define FX_RAMUH_SPARK_PARTICLE     0x2A /* emitter: one particle (texture garbled in the render; byte-identical to fx_0ba entry 0x2C) (look pending) */
+#define FX_RAMUH_SPARK_PARTICLE     0x2A /* emitter: one particle (texture garbled in the render; byte-identical to fx_0ba entry 0x2C); runtime (docs/runtime-findings.md effect-data pass): fx_0ba's same entry was not fetched in a full Ramuh (a branch that cast did not take) (look pending) */
 #define FX_RAMUH_CAMERA_KEYS        0x2B /* table: per-frame camera point 0 (op82; byte-identical to fx_0ba entry 0x2E) */
 #define FX_RAMUH_CAMERA_KEYS_2      0x2C /* table: per-frame camera point 1 (op82; byte-identical to fx_0ba entry 0x2F) */
 
