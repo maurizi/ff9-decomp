@@ -11,7 +11,7 @@ s32 fx_0f9_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         work->vy = 0;
         work->vz = env->targets->centerZ;
         fx_0f9_env = env;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)work);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLEE_SPARKLE_BURST), (s32)work);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }

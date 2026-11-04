@@ -12,7 +12,7 @@ s32 fx_0f8_op80(s32 mode, Fx0f8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->centerC.vx = env->targets->centerX;
         work->centerC.vy = env->targets->centerY;
         work->centerC.vz = env->targets->centerZ;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_PINK_FLARES), (s32)&work->pos4);
         ex->btlfx_aimAngles((s16 *)&work->pos4, (s16 *)&work->centerC, (s16 *)&work->aimRot14);
         work->aimRot14.vy -= 0x400;
     } else {
@@ -61,17 +61,17 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 0xF) {
-            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos28);
-            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos28);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_SWIRL_RINGS), (s32)&work->pos28);
+            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_SPRITE_RINGS), (s32)&work->pos28);
         }
         for (spawn = fx_0f8_spawns, j = 0; j < 4; j++, spawn++) {
             if (frame == spawn->frame2) {
                 work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, spawn->block0), (s32)&work->emitPos30[j]);
-                work->emit10[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->emitPos30[j]);
+                work->emit10[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_SPRITE_RINGS), (s32)&work->emitPos30[j]);
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), frame);
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 2), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_BACKDROP), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_GRAND_LETHAL_BACKDROP_2), frame);
         return frame >= 0x2D;
     }
     return 0;

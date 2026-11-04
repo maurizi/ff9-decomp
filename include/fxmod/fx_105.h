@@ -5,6 +5,52 @@
  * btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_105 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ODIN_SHOT2_CAMERA_KEYS_3 0x1 /* table: camera key path (fxm_camKeyAdd from frame 0xFB into env->camera[2]) */
+#define FX_ODIN_SHOT0_CAMERA_KEYS_1 0x2 /* table: camera key path (fxm_camKeyAdd from frame 0x0 into env->camera[0]) */
+#define FX_ODIN_SPECK_SPIRAL        0x3 /* emitter: speck sprites rising in a spiral (texture not in the file) (look pending) */
+#define FX_ODIN_PALE_CLOUD          0x4 /* emitter: pale blue cloud puffs spiralling along an axis (later frames: texture not in the file) */
+#define FX_ODIN_SHOT0_CAMERA_KEYS_3 0x5 /* table: camera key path (fxm_camKeyAdd from frame 0x0 into env->camera[2]) */
+#define FX_ODIN_SHOT0_CAMERA_KEYS_4 0x6 /* table: camera key path (fxm_camKeyAdd from frame 0x0 into env->camera[3]) */
+#define FX_ODIN_SHOT0_CAMERA_KEYS_9 0x7 /* table: camera key path (fxm_camKeyAdd from frame 0x0 into env->camera[8]) */
+#define FX_ODIN_SHOT0_CAMERA_KEYS_2 0x8 /* table: camera key path (fxm_camKeyAdd from frame 0x0 into env->camera[1]) */
+#define FX_ODIN_SHOT1_CAMERA_KEYS_1 0x9 /* table: camera key path (fxm_camKeyAdd from frame 0xA7 into env->camera[0]) */
+#define FX_ODIN_SHOT1_CAMERA_KEYS_3 0xA /* table: camera key path (fxm_camKeyAdd from frame 0xA7 into env->camera[2]) */
+#define FX_ODIN_PALE_CLOUD_2        0xB /* emitter: pale blue cloud puffs spiralling (later frames: texture not in the file) */
+#define FX_ODIN_MODEL               0xD /* 'so' model (btlfx_registerEffectModel, model138[0]) (look pending) */
+#define FX_ODIN_WHITE_DEBRIS        0xE /* emitter: white crumbling debris + specks */
+#define FX_ODIN_STAR                0x10 /* sprite: small dark-grey speck, drawn as the star field (fx_105_stars) (look pending) */
+#define FX_ODIN_MOON                0x11 /* emitter: pale blue full moon sprite (+ light beam) */
+#define FX_ODIN_RIBBON_PATH_4       0x14 /* table: world-space ribbon path (fx_105_drawWorldRibbon) */
+#define FX_ODIN_MODEL_2             0x15 /* 'so' model (btlfx_registerEffectModel, model138[1]) (look pending) */
+#define FX_ODIN_SHOT1_CAMERA_KEYS_2 0x16 /* table: camera key path (fxm_camKeyAdd from frame 0xA7 into env->camera[1]) */
+#define FX_ODIN_SHOT2_CAMERA_KEYS_1 0x17 /* table: camera key path (fxm_camKeyAdd from frame 0xFB into env->camera[0]) */
+#define FX_ODIN_CAM_RIBBON_PATH     0x18 /* table: camera-space ribbon path (fx_105_drawCamRibbon) */
+#define FX_ODIN_SHOT2_CAMERA_KEYS_2 0x19 /* table: camera key path (fxm_camKeyAdd from frame 0xFB into env->camera[1]) */
+#define FX_ODIN_SHOT3_CAMERA_KEYS_1 0x1A /* table: camera key path (fxm_camKeyAdd from frame 0x137 into env->camera[0]) */
+#define FX_ODIN_SHOT3_CAMERA_KEYS_3 0x1B /* table: camera key path (fxm_camKeyAdd from frame 0x137 into env->camera[2]) */
+#define FX_ODIN_SHOT3_CAMERA_KEYS_2 0x1C /* table: camera key path (fxm_camKeyAdd from frame 0x137 into env->camera[1]) */
+#define FX_ODIN_DEBRIS_RINGS        0x1D /* emitter: grey-green gouraud rings + pale debris chips + specks */
+#define FX_ODIN_DEBRIS_CONE         0x1E /* emitter: pale debris chips in a cone + specks */
+#define FX_ODIN_DEBRIS_SPIRAL       0x1F /* emitter: white crumbling debris in a spiral + specks */
+#define FX_ODIN_RIBBON_PATH         0x20 /* table: world-space ribbon path (fx_105_drawWorldRibbon) */
+#define FX_ODIN_RIBBON_PATH_2       0x22 /* table: world-space ribbon path (fx_105_drawWorldRibbon) */
+#define FX_ODIN_RIBBON_PATH_3       0x23 /* table: world-space ribbon path (fx_105_drawWorldRibbon) */
+#define FX_ODIN_RIBBON_PATH_5       0x25 /* table: world-space ribbon path (fx_105_drawWorldRibbon) */
+#define FX_ODIN_DEBRIS_BURST        0x28 /* emitter: pale debris burst + specks */
+#define FX_ODIN_MODEL_3             0x29 /* 'so' model (btlfx_registerEffectModel, model138[2]) (look pending) */
+#define FX_ODIN_MODEL_4             0x2A /* 'so' model (btlfx_registerEffectModel, model138[3]) (look pending) */
+#define FX_ODIN_MODEL_5             0x2B /* 'so' model (btlfx_registerEffectModel, model138[4]) (look pending) */
+#define FX_ODIN_MODEL_6             0x2C /* 'so' model (btlfx_registerEffectModel, model138[5]) (look pending) */
+#define FX_ODIN_MODEL_7             0x2D /* 'so' model (btlfx_registerEffectModel, model138[6]) (look pending) */
+#define FX_ODIN_MODEL_8             0x2E /* 'so' model (btlfx_registerEffectModel, model138[7]) (look pending) */
+#define FX_ODIN_SMOKE_SPIRAL        0x3B /* emitter: grey smoke wisps in a spiral + specks */
+#define FX_ODIN_SUMMON_MODEL_0      0x80 /* summon data entry 0: model (btlfx_registerEffectModel) (look pending) */
+#define FX_ODIN_SUMMON_MODEL_1      0x81 /* summon data entry 1: model (btlfx_registerEffectModel) (look pending) */
+#define FX_ODIN_SUMMON_MODEL_2      0x82 /* summon data entry 2: model (btlfx_registerEffectModel) (look pending) */
+#define FX_ODIN_SUMMON_MODEL_3      0x83 /* summon data entry 3: model (btlfx_registerEffectModel) (look pending) */
+
 extern Unk800F78A4 *fx_105_env;
 typedef struct {
     s16 vx, vy, vz;

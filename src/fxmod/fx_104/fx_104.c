@@ -13,7 +13,7 @@ s32 fx_104_op80(s32 mode, Fx104Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_matrixPointAhead(&nearMat, 0xC8, (s32)&work->pos8);
         ex->btlfx_getUnitBoneMatrix(0x10, 0x12, (BtlBone *)&farMat);
         ex->btlfx_matrixPointAhead(&farMat, 0x320, (s32)&work->pos10);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EVERYONES_GRUDGE_PINK_RINGS), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
@@ -33,9 +33,9 @@ s32 fx_104_op81(s32 mode, Fx104Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->posC.vy = env->targets->centerY;
         work->posC.vz = env->targets->centerZ;
         fx_104_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->posC);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posC);
-        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posC);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EVERYONES_GRUDGE_SWIRL_TRAIL), (s32)&work->posC);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EVERYONES_GRUDGE_SMOKE), (s32)&work->posC);
+        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EVERYONES_GRUDGE_MAGIC_CIRCLE), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_104_op81Trails;
             work->emit0->trailSlots = 0x10;

@@ -45,18 +45,18 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             BTLFX_COPY_SVEC(&work->headPos10, &headPos);
             if (frame == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), (s32)&work->headPos10, 0, -1, 0, 0, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_PINK_TRAIL), (s32)&work->headPos10, 0, -1, 0, 0, 1,
                                   fx_0f3_strips[work->variant4], 0);
             }
             env->otZ = 0x40;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), (s32)&work->headPos10, 0, 0, 0x5000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_PINK_TRAIL), (s32)&work->headPos10, 0, 0, 0x5000, 0x1000, 1,
                               fx_0f3_strips[work->variant4], 0);
             env->otZ = 0;
             if (frame == 0) {
                 work->pos18.vx = work->headPos10.vx;
                 work->pos18.vy = work->headPos10.vy;
                 work->pos18.vz = work->headPos10.vz;
-                work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos18);
+                work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_SCREEN_TRAIL), (s32)&work->pos18);
                 if (work->emit24 != NULL) {
                     work->emit24->trails = (s32)fx_0f3_op80Trails[work->variant4];
                     work->emit24->trailSlots = 4;
@@ -74,7 +74,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 2, 0x40, 0x40, 0x40);
             }
             if (frame == 7) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_BLUE_RINGS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
@@ -89,7 +89,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 1:
             t = (frame << 12) / 29;
             env->otZ = 0x40;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), (s32)&work->headPos10, 0, 0, 0x5000,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_SCOOP_ART_PINK_TRAIL), (s32)&work->headPos10, 0, 0, 0x5000,
                               ex->math_cos(t >> 2), 1, fx_0f3_strips[work->variant4], 0);
             env->otZ = 0;
             if (frame < 0x1D) {

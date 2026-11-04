@@ -30,20 +30,20 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rot40.vy = 0x200;
         work->pos1C.vx = work->pos58.vx;
         work->pos1C.vz = work->pos58.vz;
-        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA), 0x11A, 0, 0, 0x80);
-        work->model6E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x11A, 0, 0, 0x80);
+        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_DOME), 0x11A, 0, 0, 0x80);
+        work->model6E = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_DOME_2), 0x11A, 0, 0, 0x80);
         work->startPos60.vx = work->pos1C.vx;
         work->startPos60.vy = work->pos1C.vy;
         work->startPos60.vz = work->pos1C.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos58);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos58);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_WHITE_RINGS), (s32)&work->pos58);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_RAINBOW_HALO), (s32)&work->pos58);
         work->fadeInTimer68 = -1;
         work->fadeOutTimer6A = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0xF:
-            emitter = work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos58);
+            emitter = work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_VIOLET_HALO), (s32)&work->pos58);
             if (emitter != NULL) {
                 emitter->otZ = -0x100;
             }
@@ -51,8 +51,8 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x32:
             break;
         case 0x36:
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos58);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos58);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_LIGHTNING), (s32)&work->pos58);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_CONE_RINGS), (s32)&work->pos58);
             if (work->emitC != NULL) {
                 work->emitC->otZ = 0x80;
             }
@@ -110,9 +110,9 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->scale48.vz = work->scale48.vz > 0x666 ? 0x666 : work->scale48.vz;
         }
         if (frame >= 0x32) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 8), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_BACKDROP), frame);
         } else {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xE), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SHIFT_BREAK_BACKDROP_2), frame);
         }
         if (frame >= 0x78) {
             ex->btlfx_clearEffModels();

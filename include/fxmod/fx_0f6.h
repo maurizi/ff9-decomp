@@ -6,6 +6,11 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0f6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MEO_TWISTER_WIND_RINGS 0xD /* emitter: white / pale-cyan gouraud rings in a cone + a fan element */
+#define FX_MEO_TWISTER_FIRE_ORBS  0xE /* emitter: red / yellow / green gouraud rings + fiery orb particles */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

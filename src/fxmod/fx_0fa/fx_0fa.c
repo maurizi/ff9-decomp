@@ -54,7 +54,7 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 9, timer = &work->timers0[9]; i >= 0; i--) {
             *timer-- = 0;
         }
-        work->model38 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0xFA, 0x3DC0, 0x80, 0x80);
+        work->model38 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DETECT_SPHERE), 0xFA, 0x3DC0, 0x80, 0x80);
         work->scale5C.vx = 0x333;
         work->scale5C.vy = 0x333;
         work->scale5C.vz = 0x333;
@@ -81,10 +81,10 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x14:
             work->timers0[4] = 8;
             work->timers0[6] = 1;
-            work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos44);
+            work->emit74 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DETECT_FAN_EMITTER), (s32)&work->pos44);
             break;
         case 0x20:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos30);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DETECT_GLYPH_TEXT), (s32)&work->pos30);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

@@ -6,6 +6,14 @@
  * id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0f8 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_GRAND_LETHAL_BACKDROP     0x1 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_GRAND_LETHAL_BACKDROP_2   0x2 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_GRAND_LETHAL_PINK_FLARES  0x3 /* emitter: pink lens-flare glows and streaks */
+#define FX_GRAND_LETHAL_SPRITE_RINGS 0xD /* emitter: sprite (texture not in the file) + white-blue gouraud rings (look pending) */
+#define FX_GRAND_LETHAL_SWIRL_RINGS  0xE /* emitter: textured rings (texture not resolved) + white swirl sprite (look pending) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;

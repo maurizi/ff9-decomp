@@ -5,6 +5,17 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_100 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s4.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SOLUTION_DUST_PUFF    0x1 /* emitter: olive-tan dust puff particles */
+#define FX_SOLUTION_SPIRAL_TRAIL 0x2 /* emitter: 3D trail spiralling in a tube, grey jagged strip */
+#define FX_SOLUTION_OLIVE_RINGS  0x3 /* emitter: olive-grey gouraud rings, 8 frames */
+#define FX_SOLUTION_DUST_WISPS   0x4 /* emitter: brown dust wisps in a cone */
+#define FX_SOLUTION_SPECK_ORBIT  0x5 /* emitter: fan element + orbiting speck sprites (texture not in the file) (look pending) */
+#define FX_SOLUTION_SPECK_TRAIL  0x6 /* emitter: 3D trail (white blob strip) + speck sprites (texture not in the file) (look pending) */
+#define FX_SOLUTION_VIOLET_SMOKE 0x7 /* emitter: violet smoke clouds */
+#define FX_SOLUTION_VIOLET_RINGS 0x8 /* emitter: violet gouraud rings, 24 frames */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
