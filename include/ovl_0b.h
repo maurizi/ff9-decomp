@@ -1439,7 +1439,7 @@ typedef struct BtlCmd8 {
     u8 flags; /* BTL_ABIL_* */
     u8 statusSet; /* index into Battle.statusSets */
     u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
-    u8 flags2; /* BTL_ABIL2_*; 0x81 together: party targets play hit motion 3 instead of 2 (btl_startHitMotion) */
+    u8 flags2; /* BTL_ABIL2_* */
     u16 altEffect; /* effect played for short summons, Seiken and single-target casts (btl_startCmdEffect) */
     u16 nameOfs; /* name text offset (runtime: Fire 161, Fira 166, Firaga 171, Sleep 178 - steps = name lengths + 1) */
 } BtlCmd8;
@@ -1454,6 +1454,7 @@ typedef struct BtlCmd8 {
 
 /* BtlCmd8.flags2. Evidence: [code] */
 #define BTL_ABIL2_SUMMON 0x04 /* costs 4x MP while EVT_GB_SUMMON_MP_X4 is set (btl_payMpCost, btl_getMpCost) */
+#define BTL_ABIL2_HEAVY_HIT 0x81 /* both bits set: party targets play BTL_MOTION_HIT_HEAVY (btl_startHitMotion); the bits alone are not tested */
 
 
 typedef struct BtlCmd {
@@ -1990,11 +1991,13 @@ typedef struct {
 
 
 typedef struct {
-    u8 flags; /* weapon table flags: 8 = the reach is along x (btl_getWeaponOffset) */
+    u8 flags; /* weapon table flags: BTL_WEAPON_REACH_X */
     u8 pad1[7];
     u16 reach; /* tip offset along y (or x) in the weapon bone's space */
     u16 offsetZ; /* tip offset along z */
 } Unk800BC1E0;
+/* Unk800BC1E0.flags. Evidence: [code] */
+#define BTL_WEAPON_REACH_X 0x08 /* the reach is along the weapon bone's x (else y) (btl_getWeaponOffset) */
 
 typedef struct {
     u8 pad0[0x33];

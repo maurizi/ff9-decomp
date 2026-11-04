@@ -665,7 +665,7 @@ void btlfx_getCasterTexInfo(BtlTexInfo *texPages, BtlTexInfo *uvOffsets, s32 tex
     index = BTL_UNIT_INDEX(btl_getUnit(BTLFX_UNIT_CASTER)->flags);
     npc = &g_gameState->gameData->npcModels[index];
     key = texId & 0xFFFF;
-    key |= 0x20000;
+    key |= DB_MODEL;
     key |= npc->actor->modelSlot << 24;
     pages = (BtlTexInfo *)db_getModelTexPages(key);
     uvs = (BtlTexInfo *)db_getModelUvOffsets(key);
