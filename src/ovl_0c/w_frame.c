@@ -687,11 +687,11 @@ s32 wm_canCallChocobo(void) {
     s32 type = g_worldPlayer->actorType;
     if (type < WM_ACTOR_CHOCOBO0 && type != WM_ACTOR_NONE) {
         switch ((u8)g_worldActorTypeInfo[type].cellAttr >> 2) {
-        case 3:
-        case 18:
-        case 21:
-        case 22:
-        case 28:
+        case WM_TOPO_CHOCOBO_CALL_A:
+        case WM_TOPO_CHOCOBO_CALL_B:
+        case WM_TOPO_CHOCOBO_CALL_C:
+        case WM_TOPO_CHOCOBO_CALL_D:
+        case WM_TOPO_CHOCOBO_CALL_E:
             return 1;
         }
     }

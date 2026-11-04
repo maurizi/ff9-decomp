@@ -119,7 +119,7 @@ void wm_resetContext(void) {
 
 /* load the world map background image and the sound bank */
 s32 wm_loadSoundBanks(void) {
-    u16 ids[2] = { 0x17B, 0x139 };
+    u16 ids[2] = { WM_SOUND_BANK_PARKED, WM_SOUND_BANK };
     s32 i;
     s32 id;
     u32 *addr;
@@ -130,7 +130,7 @@ s32 wm_loadSoundBanks(void) {
         id = ids[i] | DB_SOUND_BANK;
         addr = db_lookupRegistered(DB_GET_ADDR, id, 0);
         size = (u32)db_lookupRegistered(DB_GET_SIZE, id, 0);
-        if (ids[i] == 0x17B) {
+        if (ids[i] == WM_SOUND_BANK_PARKED) {
             rect = &g_worldParkedSoundRects[g_worldParkedSoundRectIdx];
             rect->x = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.x;
             rect->y = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.y;
@@ -148,9 +148,9 @@ s32 wm_loadSoundBanks(void) {
 }
 
 s32 wm_loadResidentMusic(void) {
-    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, 0x70064, 0);
+    s32 addr = (s32)db_lookupRegistered(DB_GET_ADDR, DB_MUSIC | WM_MUSIC_RESIDENT, 0);
 
-    wm_copyViaVram(g_gameState->gameData->musicSeq2, addr, (s32)db_lookupRegistered(DB_GET_SIZE, 0x70064, 0));
+    wm_copyViaVram(g_gameState->gameData->musicSeq2, addr, (s32)db_lookupRegistered(DB_GET_SIZE, DB_MUSIC | WM_MUSIC_RESIDENT, 0));
     DrawSync(0);
     return 0;
 }
@@ -449,7 +449,7 @@ s32 wm_loadFile(WorldMapObj *obj, s32 unused) { /* its caller passes this, unuse
     pack1 = pack0;
     obj->files[1] = (void *)pack1;
     db_register(pack1, 0);
-    palData = (u8 *)db_lookup(pack1, DB_GET_ADDR, 0x1D0000, 0);
+    palData = (u8 *)db_lookup(pack1, DB_GET_ADDR, DB_PAL_ANIM, 0);
     obj->palAnimCount = *palData;
     palData += 4;
     obj->palAnims = (WmPalAnim *)palData;
