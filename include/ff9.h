@@ -1989,7 +1989,7 @@ typedef struct {
 extern DbList g_dbList;
 
 typedef struct {
-    u32 hdr; /* first word of the PadBuf: status, id byte (controller type << 4 | size), so (hdr >> 12) & 0xF = PAD_ID_* */
+    u32 hdr; /* first word of the PadBuf: status, id byte (controller type << 4 | size), so PAD_TYPE(hdr) = PAD_ID_* */
     u8 pad4[0x24 - 4];
 } Unk80073940; /* 0x24-byte entries */
 extern Unk80073940 g_padBuf[];
@@ -2075,6 +2075,9 @@ typedef struct {
     MenuScreenDef *screens; /* g_menuScreensField / g_menuScreensWorld */
     void (*onFaded)(void); /* previous screen's exit, called when the fade-out ends */
 } MenuScreenSwitch;
+/* *(u32 *)&g_menuScreenSwitch: titleResizing and titleScrolling (bytes 1-2), the title box is still moving.
+ * Evidence: [code] menuScreen_drawCommands, menuScreen_updateOpen */
+#define MENU_SWITCH_TITLE_MOVING 0xFFFF00
 extern MenuScreenSwitch g_menuScreenSwitch;
 
 extern s16 g_akaoCdVolumeFadeTicks;
@@ -2244,7 +2247,8 @@ extern s32 g_padPortMask[];
 #define BTN_START    0x4000000  /* raw Start (pad_setMapping in config_applyPadMapping) */
 #define BTN_SELECT   0x8000000  /* raw Select; toggles the help window (help_update) */
 #define PAD_SOFT_RESET (PAD_SELECT | PAD_START | PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1) /* 0xF09: fld/wm_endFrame set GS_RESET when all are held */
-#define PAD_ID_DIGITAL 4 /* controller-type nibble ((PadBuf.unk0 >> 12) & 0xF) pad_update accepts */
+#define PAD_TYPE(hdr) (((hdr) >> 12) & 0xF) /* PadBuf hdr: the controller type (PAD_ID_*) */
+#define PAD_ID_DIGITAL 4 /* a PAD_TYPE pad_update accepts */
 #define PAD_ID_ANALOG 7 /* pad_update reads the stick bytes only for this type */
 
 /* GameState.flags. Each mode loop runs until its exit bits are set. */
@@ -3465,10 +3469,14 @@ typedef struct {
     u8 v; /* v */
     u8 x; /* x + 0x80 */
     u8 y; /* y + 0x80 */
-    u32 clutTpage; /* clut | tpage bits << 16; bit 26 = scaled (sprAnim_draw) */
+    u32 clutTpage; /* clut | tpage bits << 16 (SPRCELL_TPAGE); bit 26 = scaled (SPRCELL_SCALED) */
     u16 w; /* w */
     u16 h; /* h */
 } SprCell;
+/* SprCell.clutTpage: bits 0-15 the CLUT, 16-20 the tpage's x/y bits, 21-22 abr, 23-24 colour mode, 26 the cell is
+ * drawn scaled. Evidence: [code] sprAnim_drawCell, sprAnim_drawScaledCell, sprAnim_draw */
+#define SPRCELL_TPAGE(ct) ((((ct) >> 16) & 0x1F) | ((((ct) >> 21) & 3) << 5) | ((((ct) >> 23) & 3) << 7))
+#define SPRCELL_SCALED(ct) (((ct) >> 26) & 1) /* drawn as a POLY_FT4 with AnimCell.scaleX/Y (sprAnim_drawScaledCell) */
 /* debug/system text output (hand-written asm, 0x80051xxx) */
 void pen_begin(void);
 void pen_setPos(s32, s32);
@@ -3630,6 +3638,11 @@ typedef struct {
     u8 lines; /* text lines: window height = lines * 14 + 6 (msg_getEntry) */
     u8 unk7; /* not read by C */
 } MsgEntry8;
+/* message table entry word (8-byte entries: the first word; EVT_MODE_BATTLE_END's 4-byte entries: all of it).
+ * Evidence: [code] msg_getEntry */
+#define MSG_ENTRY_OFS(e) ((e) & 0xFFFF) /* text offset from the table */
+#define MSG_ENTRY_W(e) (((e) >> 16) & 0xFFF) /* text width; the window is 9 wider */
+#define MSG_ENTRY_LINES(e) ((u32)(e) >> 28) /* 4-byte entries: text lines (8-byte ones: MsgEntry8.lines) */
 
 /* SPU hardware voice registers (0x1F801C00 + voice * 16) */
 typedef struct {

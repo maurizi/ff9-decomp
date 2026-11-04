@@ -88,6 +88,9 @@
 #define SND_SE_GROUP_SLOTS (SND_SE_GROUP_SLOT(0) | SND_SE_GROUP_SLOT(1))
 /* bit of SE channel i (g_akaoSeChannels[i]) in g_akaoSeState.activeMask / pausedMask / playingMask / keyOnMask */
 #define AKAO_SE_CH_BIT(i) (0x100 << (i))
+/* resident SE number (AKAO_CMD_PLAY_SE_DEFAULT's arg0, akao_getSeData): two track offsets each in g_akaoSeTrackOfs.
+ * Evidence: [code] akao_playSeDefault and akao_getSeData both mask with it */
+#define AKAO_SE_ID_MASK 0x3FF
 /* akao_stopSeChannels' seFilter. Evidence: [code] akao_stopSeChannels and its callers */
 #define AKAO_SE_STOP_GROUPS 0x0FFFFFFF /* any of these bits: stop every SE channel whose seMask shares one */
 #define AKAO_SE_STOP_OLDEST 0x40000000 /* stop the oldest channel without a seMask (frees a channel for a new SE) */

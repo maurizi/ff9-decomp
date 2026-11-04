@@ -68,7 +68,7 @@ void akao_startSeq(s32 addr, s32 channelMask) {
     } else {
         bit = 0;
     }
-    x = 0xFFFFFF;
+    x = SPU_VOICE_ALL;
     g_akaoSeState.keyOffMask |= ~bit & (~(g_akaoSeState.activeMask | g_akaoStreamVoices) & x);
     g_akaoSeq->keyOffMask = 0;
     if (g_akaoPauseFlags & AKAO_PAUSED_MUSIC) {
@@ -413,7 +413,7 @@ static inline u8 *akao_getSeData_get(s32 i) {
 }
 
 void akao_getSeData(u8 **outTrack0, u8 **outTrack1, s32 idx) {
-    idx &= 0x3FF;
+    idx &= AKAO_SE_ID_MASK;
     idx *= 2;
     *outTrack0 = akao_getSeData_get(idx);
     idx++;
@@ -521,7 +521,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
         active = 0;
     }
     g_akaoSeq->keyOffMask = 0;
-    x = 0xFFFFFF;
+    x = SPU_VOICE_ALL;
     g_akaoSavedSeq.musicId = 0;
     g_akaoSeState.keyOffMask |= ~active & (~(g_akaoSeState.activeMask | g_akaoStream.voiceMask) & x);
     g_akaoFlags.dirty |= AKAO_DIRTY_VOICE_MODES;

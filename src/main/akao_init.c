@@ -230,6 +230,6 @@ void akao_quit(void) {
     }
     while (CloseEvent(g_akaoTickEvent) == 0) {
     }
-    akao_keyOff(0xFFFFFF);
+    akao_keyOff(SPU_VOICE_ALL);
     SpuQuit();
 }

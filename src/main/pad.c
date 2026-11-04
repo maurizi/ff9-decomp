@@ -65,7 +65,7 @@ void pad_update(void) {
         } else if (state == PadStateFindPad) {
             g_padFlags |= PAD_FLAG_PORT(i, PAD_FLAG_ACT_PENDING);
         }
-        if (PADBUF(i)->status == 0 && (((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_ANALOG || ((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_DIGITAL)) {
+        if (PADBUF(i)->status == 0 && (PAD_TYPE(g_padBuf[i].hdr) == PAD_ID_ANALOG || PAD_TYPE(g_padBuf[i].hdr) == PAD_ID_DIGITAL)) {
             if ((g_padFlags >> (i * 4)) & PAD_FLAG_SETUP) {
                 if (g_padPortState[i] == PadStateFindCTP1) {
                     g_padFlags &= ~PAD_FLAG_PORT(i, PAD_FLAG_SETUP);
@@ -107,7 +107,7 @@ void pad_update(void) {
                     g_padHoldFrames[i][j] = 0;
                 }
             }
-            if ((g_padFlags & PAD_FLAG_STICK_DPAD) && ((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
+            if ((g_padFlags & PAD_FLAG_STICK_DPAD) && PAD_TYPE(g_padBuf[i].hdr) == PAD_ID_ANALOG) {
                 if (g_padAnalog[i].b[2] < g_padAnalogThresholds.b[2]) {
                     g_padPortHeld[i] |= PAD_LEFT;
                 }

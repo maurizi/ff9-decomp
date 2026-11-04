@@ -19,6 +19,12 @@
 /* db keys: kind << 16 | id (db_lookup, docs/encounters.md). Preload entries and dependency tables use the same
  * keys. */
 #define DB_KEY_MASK 0xFFFFFF /* kind and id of a key; dependency and preload entries keep flags in the top byte */
+/* db container (db_lookup, db_getSize): byte 0 DB_MAGIC, byte 1 the block count, then a u32 entry per block; a block
+ * holds byte 1 the item count, u16 ids, then (word-aligned) a u32 entry per item and one past the end. Entries keep
+ * the offset from the entry itself in the low 24 bits. Evidence: [code] db_lookup, db_getSize */
+#define DB_MAGIC 0xDB
+#define DB_ENTRY_OFS 0xFFFFFF
+#define DB_ENTRY_KIND(e) (((e) >> 24) & 0x7F) /* block entries: the kind (key >> 16) the block holds */
 #define DB_OVERLAY 0x10000 /* code overlay, id = its FF9.IMG dir 0 file id (game_loadModeOverlay, preloads) */
 #define DB_MODEL 0x20000 /* evt_createModel: an object's model id */
 #define DB_ANIM 0x30000 /* model animation (evt_getAnimFrameCount) */

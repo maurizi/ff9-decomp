@@ -2358,7 +2358,7 @@ void evt_movePlayer(EvtObject *obj) {
     analog = 0;
     memset(&step, 0, 8);
     pad = msg_getPadHeld();
-    if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
+    if (PAD_TYPE(g_padBuf[0].hdr) == PAD_ID_ANALOG) {
         x = g_padAnalog[0].b[2];
         y = g_padAnalog[0].b[3];
         pad_getAnalogThresholds((Unk4 *)dz);

@@ -898,10 +898,10 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
         msgText = (u8 *)g_msgTable->offsets;
         packed = ((u32 *)msgText)[g_evtMode == EVT_MODE_BATTLE_END ? i : i * 2];
         if (out != NULL) {
-            out->w = ((packed >> 16) & 0xFFF) + 9;
-            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? (u32)packed >> 28 : ((MsgEntry8 *)msgText)[i].lines) * 14 + 6;
+            out->w = MSG_ENTRY_W(packed) + 9;
+            out->h = (g_evtMode == EVT_MODE_BATTLE_END ? MSG_ENTRY_LINES(packed) : ((MsgEntry8 *)msgText)[i].lines) * 14 + 6;
         }
-        msgText += packed & 0xFFFF;
+        msgText += MSG_ENTRY_OFS(packed);
     }
     return msgText;
 }
