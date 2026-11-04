@@ -382,7 +382,7 @@ void fx_1be_drawGradientGrid(SVECTOR *pos, SVECTOR *rot, s32 bright, s32 tpage, 
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
     poly = (POLY_GT4 *)env->prim;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     env->prim = (u8 *)(poly + 32);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);

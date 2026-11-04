@@ -148,7 +148,7 @@ void fxm_drawEdgeQuads(s32 n, s32 bright, s32 tpage, s32 clut, u16 v0, u16 v1) {
     s32 cb;
     s32 unused;
 
-    tp = tpage | 0x20;
+    tp = tpage | TPAGE_ABR_ADD;
     poly = (POLY_GT4 *)fx_1fd_env->prim;
     fx_1fd_env->prim = (u8 *)(poly + n);
     cl = clut;
@@ -765,7 +765,7 @@ static void fxm_camChanUpdate(s32 ch) {
             if (fx_1fd_camKeys[i].timer6 > 0) {
                 fx_1fd_camKeys[i].timer6--;
                 for (k = 0; k < 3; k++) {
-                    dstSlot = ((fx_1fd_camKeys[i].slotsA >> (k * 4)) & 0xF) - 1;
+                    dstSlot = BTLFX_CAM_SLOT(fx_1fd_camKeys[i].slotsA, k);
                     if (dstSlot >= 0) {
                         ((SVECTOR *)env->camera)[dstSlot].vx = fx_1fd_camKeys[i].keys0[0];
                         ((SVECTOR *)env->camera)[dstSlot].vy = fx_1fd_camKeys[i].keys0[1];

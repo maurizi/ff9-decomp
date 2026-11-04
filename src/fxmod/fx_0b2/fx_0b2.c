@@ -73,7 +73,7 @@ void fx_0b2_drawFunnel(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 radius0, s
     edgeCol.r = edgeCol.g = edgeCol.b = bright;
     flatCol.code = abr != 0xFF ? 0x2E : 0x2C;
     darkCol.code = abr != 0xFF ? 0x3E : 0x3C;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     edgeCol.code = darkCol.code;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);

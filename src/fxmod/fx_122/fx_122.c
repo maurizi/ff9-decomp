@@ -28,7 +28,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ofs = fx_122_offsets;
             for (i = 0; i < 0x11; i++, ofs++) {
                 if (ofs->height0 == height && ofs->radius2 == radius) {
-                    if (ofs->offset4 & 0x8000) {
+                    if (ofs->offset4 & FX122_OFS_FORWARD) {
                         goto forward;
                     }
                     work->posC.vx = work->pos30.vx;
@@ -48,7 +48,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->posC.vx = work->pos30.vx;
             work->posC.vy = work->pos30.vy;
             work->posC.vz = work->pos30.vz;
-            work->posC.vz -= ofs->offset4 ^ 0x8000;
+            work->posC.vz -= ofs->offset4 ^ FX122_OFS_FORWARD;
             goto found;
         }
     unit:

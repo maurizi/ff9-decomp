@@ -122,8 +122,8 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     }
     w--;
     h--;
-    left = (tp & 0xF) * 64 + x + (idx % div) * w;
-    py = (tp & 0x10) * 16 + y + (idx / div) * h;
+    left = (tp & TPAGE_X_MASK) * 64 + x + (idx % div) * w;
+    py = (tp & TPAGE_Y_BIT) * 16 + y + (idx / div) * h;
     rect.x = left;
     rect.y = py;
     rect.w = w;
@@ -394,7 +394,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpag
     col.cd = abr == 0xFF ? 0x3C : 0x3E;
     w--;
     h--;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
     /* the twin of fx_0e1_0 fxm_drawTexRibbonTrail: i = next in the increment, and the last uv store (u1) is the giv base */

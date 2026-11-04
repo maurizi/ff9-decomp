@@ -58,7 +58,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     *(s32 *)&colDark = 0;
     colFlat.cd = abr != 0xFF ? 0x2E : 0x2C;
     colDark.cd = abr != 0xFF ? 0x3E : 0x3C;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     colLit.cd = colDark.cd;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);

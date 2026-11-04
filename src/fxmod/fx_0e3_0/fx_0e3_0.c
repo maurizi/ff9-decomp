@@ -43,7 +43,7 @@ static void fxm_drawTexRibbonTrail(SVECTOR *posA, SVECTOR *posB, s32 n, s32 tpag
     col.cd = abr == 0xFF ? 0x3C : 0x3E;
     w--;
     h--;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
     /* the last uv store (u1) is the address giv loop.c bases the others on, as in the original's s0 = &prim->u1 */

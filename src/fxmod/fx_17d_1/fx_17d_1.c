@@ -29,7 +29,7 @@ void fx_17d_1_drawTexGrid(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, 
     s32 nu;
 
     left = x - (w >> 1) * 3 / 2;
-    abrBits = (abr & 3) << 5;
+    abrBits = TPAGE_ABR(abr);
     m = w >> 2;
     ex = BTLFX_EXPORTS(fx_17d_1_env);
     poly = (POLY_FT4 *)fx_17d_1_env->prim;

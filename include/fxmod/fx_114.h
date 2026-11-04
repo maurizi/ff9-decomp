@@ -229,6 +229,12 @@ typedef struct {
     Fx114Vec3 pos18; /* position */
     s32 pad24;
 } Fx114Rock; /* 0x28 */
+/* Fx114Rock.flags1: picked when the piece launches (op 0x83), from its heading angle8.vy < 0x800; while it flies it spins
+ * +0x40 a frame about x / z with SPIN_X_POS / SPIN_Z_POS, else -0x40. Evidence: [code] */
+#define FX114_ROCK_SPIN_X_POS 0x1
+#define FX114_ROCK_SPIN_X_NEG 0x2 /* set instead of SPIN_X_POS, never tested */
+#define FX114_ROCK_SPIN_Z_POS 0x4
+#define FX114_ROCK_SPIN_Z_NEG 0x8 /* set instead of SPIN_Z_POS, never tested */
 
 extern Fx114Rock fx_114_op83Pieces[];
 extern u8 fx_114_op83TexSelect[];

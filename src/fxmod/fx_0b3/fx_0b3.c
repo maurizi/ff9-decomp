@@ -575,7 +575,7 @@ static void fxm_drawWaveWall(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 b
     *(s32 *)&colDark = 0;
     *(s32 *)&colFoamDark = 0;
     gt4 = (POLY_GT4 *)(ft4 + 100);
-    tpage |= 0x20;
+    tpage |= TPAGE_ABR_ADD;
     poly = (POLY_G4 *)(gt4 + 20);
     env->prim = (u8 *)(poly + 20);
     colFlat.cd = 0x2C;
@@ -925,7 +925,7 @@ static void fxm_drawWaterSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 br
     colLit.cd = colDark.cd;
     colShadeFlat.cd = abr != 0xFF ? 0x2A : 0x28;
     colShadeDark.cd = abr != 0xFF ? 0x3A : 0x38;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     colShadeLit.cd = colShadeDark.cd;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);

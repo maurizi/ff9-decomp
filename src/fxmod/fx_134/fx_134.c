@@ -15,7 +15,7 @@ static void fxm_drawMirrorSprite(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 bright,
     } else {
         col[3] = 0x2C;
     }
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     v1 = v + h - 1;
     poly->u0 = poly->u2 = u;
     poly->u1 = poly->u3 = u1 = u + w - 1;
@@ -70,7 +70,7 @@ static void fxm_drawTiledStrip(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 bright, s
     } else {
         col[3] = 0x2C;
     }
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     dx = -0x140;
     if (flip != 0) {
         dx = 0xA0;
@@ -127,7 +127,7 @@ static void fxm_drawSprite3D(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 bright, 
     fx_134_env->prim = (u8 *)(poly + 1);
     col[0] = col[1] = col[2] = bright >> 5;
     col[3] = (abr != 0xFF) ? 0x2E : 0x2C;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     sc.vx = sc.vy = sc.vz = scale;
@@ -203,7 +203,7 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 brigh
     if (abr != 0xFF) {
         code = 0x3E;
     }
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     sc.vx = sc.vy = sc.vz = scale;

@@ -331,7 +331,7 @@ void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
     ft4 = (POLY_FT4 *)env->prim;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     poly = (POLY_G4 *)(ft4 + 64);
     env->prim = (u8 *)(poly + 32);
     gte_rtv0tr_b();

@@ -762,7 +762,7 @@ void fx_0b8_drawGradientPlane(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     poly = (POLY_GT4 *)env->prim;
     env->prim = (u8 *)(poly + 32);
     gte_rtv0tr_b();
@@ -836,7 +836,7 @@ void fx_0b8_drawScreenBand(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpag
     uv1.u = uv3.u = 0xFF;
     uv0.v = uv1.v = 0x80;
     uv2.v = uv3.v = 0xFF;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     gt4 = (POLY_GT4 *)env->prim;
     poly = (POLY_F4 *)(gt4 + 3);
     env->prim = (u8 *)(poly + 3);

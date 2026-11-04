@@ -126,7 +126,7 @@ void fx_0fb_0_drawWaveSheet(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, 
         midCol.cd = 0x2C;
     }
     rimCol.cd = abr != 0xFF ? 0x3E : 0x3C;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     edgeCol.cd = rimCol.cd;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
@@ -242,7 +242,7 @@ void fx_0fb_0_drawWaveCurtain(SVECTOR *pos, s32 dy, s32 c, s32 tpage, s32 clut, 
     if (abr != 0xFF) {
         code = 0x3E;
     }
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     x = -0x6098;
     topBright = c >> 3;
     for (i = 0; i < 44; i++) {

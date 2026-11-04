@@ -157,7 +157,7 @@ void fx_196_drawWaveMesh(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32
     texEdgeCol.cd = texFadeCol.cd;
     shadeCol.cd = abr != 0xFF ? 0x2A : 0x28;
     shadeFadeCol.cd = abr != 0xFF ? 0x3A : 0x38;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     shadeEdgeCol.cd = shadeFadeCol.cd;
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &screenMat);

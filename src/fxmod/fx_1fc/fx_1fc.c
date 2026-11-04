@@ -471,7 +471,7 @@ static void fxm_camChanUpdate(s32 ch) {
             if (fx_1fc_camKeys[i].timer6 > 0) {
                 fx_1fc_camKeys[i].timer6--;
                 for (k = 0; k < 3; k++) {
-                    dstSlot = ((fx_1fc_camKeys[i].slotsA >> (k * 4)) & 0xF) - 1;
+                    dstSlot = BTLFX_CAM_SLOT(fx_1fc_camKeys[i].slotsA, k);
                     if (dstSlot >= 0) {
                         ((SVECTOR *)env->camera)[dstSlot].vx = fx_1fc_camKeys[i].keys0[0];
                         ((SVECTOR *)env->camera)[dstSlot].vy = fx_1fc_camKeys[i].keys0[1];

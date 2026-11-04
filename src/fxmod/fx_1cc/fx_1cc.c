@@ -122,8 +122,8 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     }
     w--;
     h--;
-    left = (tp & 0xF) * 64 + x + (idx % div) * w;
-    py = (tp & 0x10) * 16 + y + (idx / div) * h;
+    left = (tp & TPAGE_X_MASK) * 64 + x + (idx % div) * w;
+    py = (tp & TPAGE_Y_BIT) * 16 + y + (idx / div) * h;
     rect.x = left;
     rect.y = py;
     rect.w = w;
@@ -166,7 +166,7 @@ static void fxm_drawBulgeGrid14(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 brigh
     if (abr != 0xFF) {
         code = 0x3E;
     }
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     sc.vx = sc.vy = sc.vz = scale;

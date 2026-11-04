@@ -31,7 +31,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     col.r = (rgb->r * bright) >> 12;
     col.g = (rgb->g * bright) >> 12;
     col.b = (rgb->b * bright) >> 12;
-    tpage |= (abr & 3) << 5;
+    tpage |= TPAGE_ABR(abr);
     gte_rtv0tr_b();
     ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);

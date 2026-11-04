@@ -25,6 +25,8 @@ typedef struct {
     s16 radius2; /* unit radius */
     u16 offset4; /* height offset; bit 15: forward offset instead */
 } Fx122Offset;
+/* Fx122Offset.offset4 bit 15: the remaining bits move the point back along z instead of up (fx_122 op). Evidence: [code] */
+#define FX122_OFS_FORWARD 0x8000
 
 extern Fx122Offset fx_122_offsets[0x11];
 extern Unk800F78A4 *fx_122_env;

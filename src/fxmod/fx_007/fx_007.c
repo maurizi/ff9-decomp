@@ -122,8 +122,8 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     }
     w--;
     h--;
-    left = (tp & 0xF) * 64 + x + (idx % div) * w;
-    py = (tp & 0x10) * 16 + y + (idx / div) * h;
+    left = (tp & TPAGE_X_MASK) * 64 + x + (idx % div) * w;
+    py = (tp & TPAGE_Y_BIT) * 16 + y + (idx / div) * h;
     rect.x = left;
     rect.y = py;
     rect.w = w;

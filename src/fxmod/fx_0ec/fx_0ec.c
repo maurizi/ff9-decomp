@@ -419,9 +419,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         tp0 = getTPage(2, 0, dispX, env->dispEnv->disp.y);
         tp1 = getTPage(2, 0, otherX, env->dispEnv->disp.y);
-        work->model40[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp0 | 0x20,
+        work->model40[1] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp0 | TPAGE_ABR_ADD,
                                                          0xFFFF, 0x40, 0);
-        work->model40[2] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp1 | 0x20,
+        work->model40[2] = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), tp1 | TPAGE_ABR_ADD,
                                                          0xFFFF, 0x40, 0);
         fx_0ec_task = (Fx0ecWork *)entry; /* the shard callbacks spawn into entry->pool */
         unitScale = (ex->btlfx_getUnitRadius(0) << 12) / 390;

@@ -203,7 +203,7 @@ void fx_095_greyScreenCopy(s32 step, s32 x, s32 y, u16 *buf, RECT *area) {
             if (grey == 0) {
                 grey = 1;
             }
-            grey = grey | 0x8000 | (grey << 5) | (grey << 10);
+            grey = grey | RGB15_STP | (grey << 5) | (grey << 10);
             *pix = grey;
         }
         ex->LoadImage(&loadRect, (u32 *)buf);

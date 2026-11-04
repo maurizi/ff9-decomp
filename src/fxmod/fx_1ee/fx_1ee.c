@@ -45,8 +45,8 @@ static void fxm_camKeyUpdate(void) {
         if (fx_1ee_camKeys[i].timer4 > 0) {
             fx_1ee_camKeys[i].timer4--;
             for (k = 0; k < 3; k++) {
-                dstSlot = ((fx_1ee_camKeys[i].slot8 >> (k * 4)) & 0xF) - 1;
-                srcSlot = ((fx_1ee_camKeys[i].slotC >> (k * 4)) & 0xF) - 1;
+                dstSlot = BTLFX_CAM_SLOT(fx_1ee_camKeys[i].slot8, k);
+                srcSlot = BTLFX_CAM_SLOT(fx_1ee_camKeys[i].slotC, k);
                 if (dstSlot >= 0) {
                     x = *fx_1ee_camKeys[i].keys10;
                     fx_1ee_camKeys[i].keys10++;

@@ -351,14 +351,14 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rock->angle8.vz &= 0xFFF;
                     rock->speed4 /= 2;
                     if (rock->angle8.vy < 0x800) {
-                        rock->flag1 |= 1;
+                        rock->flag1 |= FX1BD_ROCK_SPIN_X_POS;
                     } else {
-                        rock->flag1 |= 2;
+                        rock->flag1 |= FX1BD_ROCK_SPIN_X_NEG;
                     }
                     if (rock->angle8.vy < 0x800) {
-                        rock->flag1 |= 4;
+                        rock->flag1 |= FX1BD_ROCK_SPIN_Z_POS;
                     } else {
-                        rock->flag1 |= 8;
+                        rock->flag1 |= FX1BD_ROCK_SPIN_Z_NEG;
                     }
                 }
                 if (trackFrame >= rock->frame0) {
@@ -371,12 +371,12 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rock->pos18.vz = rockPos.vz;
                     rock->pos18.vy -= rock->vel6;
                     if (trackFrame < rock->frame0 + 2) {
-                        if (rock->flag1 & 1) {
+                        if (rock->flag1 & FX1BD_ROCK_SPIN_X_POS) {
                             rock->rot10.vx += 0x40;
                         } else {
                             rock->rot10.vx -= 0x40;
                         }
-                        if (rock->flag1 & 4) {
+                        if (rock->flag1 & FX1BD_ROCK_SPIN_Z_POS) {
                             rock->rot10.vz += 0x40;
                         } else {
                             rock->rot10.vz -= 0x40;
@@ -630,7 +630,7 @@ static void fxm_camChanUpdate(s32 ch) {
             if (fx_1bd_camKeys[i].timer6 > 0) {
                 fx_1bd_camKeys[i].timer6--;
                 for (k = 0; k < 3; k++) {
-                    dstSlot = ((fx_1bd_camKeys[i].dstA >> (k * 4)) & 0xF) - 1;
+                    dstSlot = BTLFX_CAM_SLOT(fx_1bd_camKeys[i].dstA, k);
                     if (dstSlot >= 0) {
                         ((SVECTOR *)env->camera)[dstSlot].vx = fx_1bd_camKeys[i].keys0[0];
                         ((SVECTOR *)env->camera)[dstSlot].vy = fx_1bd_camKeys[i].keys0[1];
@@ -769,8 +769,8 @@ static void fxm_drawTexelQuadsB(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y
     }
     w--;
     h--;
-    left = (tp & 0xF) * 64 + x + (idx % div) * w;
-    py = (tp & 0x10) * 16 + y + (idx / div) * h;
+    left = (tp & TPAGE_X_MASK) * 64 + x + (idx % div) * w;
+    py = (tp & TPAGE_Y_BIT) * 16 + y + (idx / div) * h;
     rect.x = left;
     rect.y = py;
     rect.w = w;
