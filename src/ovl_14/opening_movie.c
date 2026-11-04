@@ -48,7 +48,7 @@ s32 opening_movieThenTitle(void) {
             g_movieState = MOVIE_ST_PLAY;
             break;
         case MOVIE_ST_PLAY:
-            if ((g_movieFlags & MOVIE_PLAYING) && (mbg_getStatus() & MBG_STATUS_FRAMES)) {
+            if ((g_movieFlags & MOVIE_PLAYING) && (mbg_getStatus() & MBG_STATUS_PLAYING)) {
                 mbgStatus = mbg_update(0);
                 end = mbg_getLastFrame();
                 if (mbgStatus != 0) {
@@ -184,7 +184,7 @@ void opening_movieSwap(void) {
     GameData *gd;
 
     DrawSync(0);
-    if (mbg_getStatus() & MBG_STATUS_FRAMES) {
+    if (mbg_getStatus() & MBG_STATUS_PLAYING) {
         if (g_mbgFrame != 0 && g_mbgFrame == g_mbgFrame / 50 * 50) {
             g_gameState->vsyncMode = 3;
         } else {

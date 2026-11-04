@@ -3998,14 +3998,14 @@ s32 fldbg_applyGeomOffset(void) {
     BgCamera *cam = fldbg_cameraPtr(0);
 
     cam += g_fieldBgState.cameraId;
-    if (!(mbg_getStatus() & MBG_STATUS_FRAMES) || g_mbgFrame < 2) {
+    if (!(mbg_getStatus() & MBG_STATUS_PLAYING) || g_mbgFrame < 2) {
         gte_SetGeomOffset((s16)cam->centerX + g_fieldBgState.geomOffsetX, (s16)cam->centerY + g_fieldBgState.geomOffsetY);
     }
     return 1;
 }
 
 s32 fldbg_resetGeomOffset(void) {
-    if (!(mbg_getStatus() & MBG_STATUS_FRAMES)) {
+    if (!(mbg_getStatus() & MBG_STATUS_PLAYING)) {
         gte_SetGeomOffset(0xA0, 0x70);
     }
     return 1;

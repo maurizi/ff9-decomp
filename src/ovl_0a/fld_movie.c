@@ -1234,7 +1234,7 @@ void fld_movieUpdate(void) {
         if (g_fieldMovieFlags & FLD_MVF_CAMERA) {
             mbg_getStartCamera((void *)&g_gameState->gameData->viewMatrix, &g_gameState->gameData->projDist);
         }
-        if ((g_fieldMovieFlags & FLD_MVF_RUNNING) && (mbg_getStatus() & MBG_STATUS_FRAMES)) {
+        if ((g_fieldMovieFlags & FLD_MVF_RUNNING) && (mbg_getStatus() & MBG_STATUS_PLAYING)) {
             done = mbg_update(0);
             lastFrame = mbg_getLastFrame();
             if (!(g_fieldMovieFlags & FLD_MVF_END_FADE) && (u32)lastFrame < 99999) {
@@ -1307,7 +1307,7 @@ void fld_movieFinish(void) {
 
 s32 fld_isMoviePlaying(void) {
     if ((u32)(g_gameState->gameData->ctx.field->area->scene->movieState - FLD_MOVIE_PLAYING) < 2 && (g_fieldMovieFlags & FLD_MVF_RUNNING)
-        && (mbg_getStatus() & MBG_STATUS_FRAMES)) {
+        && (mbg_getStatus() & MBG_STATUS_PLAYING)) {
         return 1;
     }
     return 0;
@@ -1348,7 +1348,7 @@ void fld_endFrame(void) {
         g_gameState->flags |= GS_RESET;
     }
     DrawSync(0);
-    if (!(mbg_getStatus() & MBG_STATUS_FRAMES)) {
+    if (!(mbg_getStatus() & MBG_STATUS_PLAYING)) {
         if ((g_gameState->gameData->flags & GD_HIDE_ALL) == GD_HIDE_ALL && (g_gameState->gameData->ctx.field->flags & FLD_MAP_ACTIVE)) {
             g_gameState->vsyncMode = 0;
         } else {

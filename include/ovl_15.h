@@ -388,10 +388,4 @@ s32 bj_drawShoe(s32, s32);
 s32 bj_actionGetCursor(void);
 s32 scene_get(void);
 
-/* mbg_getStatus (main) result bits, main exe candidates for ff9.h: 1 a movie is loaded or playing, 2 its frames are
- * running (g_mbgFrame > 0), 4 g_mbgRgb24, 8 g_mbgIsBackground, 0x10 g_mbgPaused. Evidence: [code] */
-#ifndef MBG_STATUS_FRAMES
-#define MBG_STATUS_FRAMES 0x2
-#endif
-
 #endif

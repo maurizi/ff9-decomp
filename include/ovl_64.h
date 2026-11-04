@@ -368,10 +368,4 @@ static inline void mbg_streamReadyCallback_retry(void) {
 s32 fldbg_setCamera(s32 cameraId); /* ovl_0a */
 s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **outCamera, Ovl64Pair **outMask, MbgRumble **outRumble);
 
-/* mbg_getStatus (main) result bits, main exe candidates for ff9.h: 1 a movie is loaded or playing, 2 its frames are
- * running (g_mbgFrame > 0), 4 g_mbgRgb24, 8 g_mbgIsBackground, 0x10 g_mbgPaused. Evidence: [code] */
-#ifndef MBG_STATUS_FRAMES
-#define MBG_STATUS_FRAMES 0x2
-#endif
-
 #endif
