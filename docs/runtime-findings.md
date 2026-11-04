@@ -4220,3 +4220,165 @@ string 2n). New states: disc 4 `r41b_wm_disc4_memoria_orb`, `r41b_wm_disc4_windm
   128 instruments; at runtime (battle traces above) the menu cursor SE keys instrument 133 and battle/spell SE use
   128-175, all inside this bank. So the field never re-uploads it because it is always resident. Not seen requested by
   a field in this pass. high (identity), medium (field use).
+
+## Effect-data runtime pass (fxdata_runtime.md)  (status: proposed)
+
+Checklist `docs/wip/fxdata_runtime.md`, groups P1, P2, P4, P6, P3 done (P7, P5 and the E groups not started). All runs
+from disc 3 `disc3_malboro_lv99_calm` (Zidane / Vivi / Dagger / Eiko Lv 99, enemies calmed by walking Battle.unitList:
+HP 9999, ATB speed 0), first Attack rewritten with R3.patch (cmd, ability, targets). Frame numbers below are relative to
+the state load (the effect starts at f48). Tools (scratch, `build/fxrt/`): `cap.py` (logs every btlfx_getFileData call
+from module code with frame / ra, btlfx_start, screenshots every 4 or 8 frames, VRAM dumps every 40 / 60 frames, names
+the resident module(s) by comparing 0x801E7700 / 0x801EC700 with `disks/us/fxmod/*.bin`; `--tg 1` writes btl_setCmd's
+targeting argument for multi-target casts, `--bp 0x800B989C=SKIP` skips btl_rollShortSummon so summons play in full,
+`--ablate IDX:model|skip` blanks one entry: `model` zeroes the mesh counts at the fetch, `skip` returns at once from the
+draw export when its a0 is that entry), `rtrender.py MODULE VRAM.bin OUT` (tools/fxdata.py --render with every
+texture read from the runtime VRAM dump), `an.py RUN MODULE` (first use per pending define, filtered by the module's
+load address, render with the dump after it), `abcmp.py BASE ABL` (pixel diff of ablated vs base shots; runs from a
+state are deterministic: unablated frames are pixel-identical), `crop.py` (15-bit VRAM crop), `page.py`.
+
+Findings that change the picture:
+- **"Backdrop" entries are render-to-texture layer tables, not screen backdrops.** btlfx_drawBackdrop draws the
+  layers (BtlBgLayers: count, w, h, x, y) into a VRAM rect, and the effect's sprites / models sample that rect.
+  Skipping the call turns the textured parts into white or garbage quads (Esuna, Berserk, Float, Silence, Reflect,
+  Holy, Might) or changes nothing on screen when the texture is sampled later (Sleep, Death, Comet). Proposed names
+  say what the generated texture shows (`*_TEXTURE`); `btlfx_drawBackdrop` itself may deserve a rename
+  (e.g. btlfx_drawLayerTexture) after a code check.
+- Large-target remap: on the Malboro, one-target spells load the all-targets file (fx_049 for Thundara);
+  one-target modules were played on a party member (target 0x01 / 0x02), all-target ones on the Malboro or on the
+  party with targeting = 1.
+- Run-time pages replace the file's placeholders: the Silence-all scribble page (fx_07f) is a blue-magenta haze at
+  run time, Meteor's (fx_086) a red pitted rock texture. **Confuse's music staves are the real texture** (yellow-green
+  staves and notes swirl round the target on screen, fx_060 f292-340). Ifrit's yellow "dummy .TIM" page is still in
+  VRAM when FX_IFRIT_CYLINDER is fetched (f380), but ablating the cylinder changes nothing on screen (f376-456).
+  **Ark kana page: not answered** (group 8 not reached within 4600 frames of a full Ark).
+- Hazards met: Lua code containing `%` sent through `tools/emu.py lua` crashed Redux (split URL escapes?), and a
+  4-frame run timed out once during Bahamut (raise the run timeout). The btlfx_getFileData return bp (0x800DA478,
+  `jr ra`) sees the load-delayed value: the result is v1 + mem[v0], not v1 + v0.
+- No new save states (all from `disc3_malboro_lv99_calm`).
+
+| group | module | define | verdict | proposed name | evidence |
+|---|---|---|---|---|---|
+| P1 | fx_005 | `FX_THUNDARA_ORB_SPARKS` | new name | `FX_THUNDARA_STAR_GLINTS` | run-time page (0x1C0,0x100) holds three 16x16 star-glint sprites; render with the dump = twinkling star glints fading orange to blue around the orbs; screen f360-376. build/fxrt/rr_p1_fx005_360/005/1e_sprites.png, build/fxrt/p1_fx005/sheet_352_400.png |
+| P1 | fx_007 | `FX_FIRAGA_CONE_GLOW` | new name | `FX_FIRAGA_RED_HAZE` | started f417 as the full-screen flash ends; the particle is a soft dark-red radial blob, drawn additive: the red heat haze that fills the fire column at f428-452. build/fxrt/rr_p1_fx007_440/007/15_e0_particles.png, build/fxrt/p1_fx007/sheet_412_452.png (medium: no ablation) |
+| P1 | fx_018 | `FX_THUNDAGA_CONE_EMITTER` | new name | `FX_THUNDAGA_SPARKLE_SWARM` | started f396; run-time page: swarms of blue, lilac and teal twinkle dots, the cyan sparkles around the strike f412-436. build/fxrt/s018.png, build/fxrt/p1_fx018/ab.png |
+| P1 | fx_018 | `FX_THUNDAGA_CYL_EMITTER` | new name | `FX_THUNDAGA_VIOLET_GLOW` | started f269 in the dark phase; run-time page: soft violet-magenta glow puffs (the violet light around the thin bolts f280-312). build/fxrt/s018.png (medium) |
+| P1 | fx_018 | `FX_THUNDAGA_CYL_EMITTER_2` | new name | `FX_THUNDAGA_VIOLET_GLOW_2` | started f289; same violet glow puffs. build/fxrt/s018.png (medium) |
+| P1 | fx_018 | `FX_THUNDAGA_DISC` | still unknown | - | registered f269; its page (0x240,0x100) holds 4-bit lightning/zigzag textures at run time (f240-320), not a screen copy, so the 15-bit read is noise; ablating the model (mesh counts zeroed at fetch) changes nothing visible in f276-296. build/fxrt/p1_fx018/pg119.png, build/fxrt/s_ab1.png (top two rows) |
+| P1 | fx_01a | `FX_SLEEP_BACKDROP` | new name | `FX_SLEEP_MOON_TEXTURE` | not a screen backdrop: btlfx_drawBackdrop renders its 4 layers into VRAM (0x200,0x180) 128x128 from f345, and the result is a cloud-veiled moon, the texture FX_SLEEP_SPECK_RING then samples; skipping the call changes nothing on screen in f344-408 (the texture is only sampled later). build/fxrt/bd_01a.png, build/fxrt/s_bd3.png |
+| P1 | fx_01a | `FX_SLEEP_SPECK_RING` | new name | `FX_SLEEP_MOON` | started f425; its quads sample the moon texture the layer table draws, seen as the pale moon/mist disc at the target f488-552. build/fxrt/s_p1b.png, build/fxrt/p1_fx01a/sheet_472_596.png (medium) |
+| P1 | fx_038 | `FX_COMET_BACKDROP` | new name | `FX_COMET_HAZE_TEXTURE` | render-to-VRAM layer table: 3 layers into (0x200,0x180) 64x64 from f248, a dim violet haze band; skipping it leaves f256-288 pixel-identical (the black sky is not this entry). build/fxrt/bd_038.png, build/fxrt/ab_comet/ (low) |
+| P1 | fx_048 | `FX_FIRAGA_CONE_GLOW` | new name | `FX_FIRAGA_RED_HAZE` | same soft dark-red additive blob as fx_007 0x15 (render with the run-time page), started f396 when the fire column rises. build/fxrt/rr_p1_fx048_400/048/18_e0_particles.png (medium) |
+| P1 | fx_049 | `FX_THUNDARA_ORB_SPARKS` | new name | `FX_THUNDARA_STAR_GLINTS` | same sprites as fx_005 0x1e (Thundara on the Malboro loads fx_049). build/fxrt/rr/049/1b_sprites.png |
+| P1 | fx_04e | `FX_SLEEP_BACKDROP` | new name | `FX_SLEEP_MOON_TEXTURE` | same render-to-VRAM layer table as fx_01a 0x1 (f325, (0x200,0x180) 128x128): the moon texture. build/fxrt/bd_04e.png |
+| P1 | fx_04e | `FX_SLEEP_SPECK_RING` | new name | `FX_SLEEP_MOON` | same as fx_01a 0x3 (f405). build/fxrt/rr_p1_fx04e_440/04e/07_e0_particles.png (medium) |
+| P1 | fx_05d | `FX_BIO_SCREEN_TRAIL` | new name | `FX_BIO_BUBBLE_TRAIL` | started f409; with the run-time page its strip texture is a glowing green bubble; on screen green bubbles stream around the green spikes f440-464. build/fxrt/rr_p1_fx05d_440/05d/11_e0_trailscreen.png, build/fxrt/s_p1c.png (bottom) (medium) |
+| P1 | fx_05e | `FX_DEATH_BACKDROP` | new name | `FX_DEATH_SMOKE_TEXTURE` | render-to-VRAM layer table: 2 layers into (0x200,0x1A0) 64x64 from f401, a rising purple smoke; skipping it changes nothing on screen in f400-444. build/fxrt/bd_05e.png (medium) |
+| P1 | fx_062 | `FX_DEMI_CAP` | still unknown | - | registered f268; the dome model with the run-time page reads white with magenta noise; ablating it leaves the black Demi sphere (f288-316) unchanged, so it is not the sphere. build/fxrt/s_ab1.png (bottom), build/fxrt/rr_p1_fx062_280/062/0a_model.png |
+| P1 | fx_063 | `FX_DEMI_CAP` | still unknown | - | not played (the multi-target Demi run was lost to an emulator crash); same entry as fx_062 0xa, which ablation shows is not the black Demi sphere |
+| P1 | fx_078 | `FX_BIO_ORBIT_TRAIL` | new name | `FX_BIO_BUBBLE_TRAIL` | same green bubble strip as fx_05d 0x11 (run-time page), started f401, bubbles around the burst f436-460. build/fxrt/rr_p1_fx078_440/078/16_e0_trailscreen.png, build/fxrt/s_p1c.png (medium) |
+| P1 | fx_07d | `FX_FLARE_CALLBACK_EMITTER` | still unknown | - | started f321 as the orange light rays radiate (f316-356); drawn by the module callback, not ablated (skipping btlfx_startEmitter would hand the module a NULL task). build/fxrt/s_flare.png |
+| P1 | fx_07d | `FX_FLARE_TEX_RING` | still unknown | - | drawn from f497 (24 calls); its UV box reads noise in the run-time page (f520), so the tpage the tool resolves is not the one used; the screen then shows orange flame bands sweeping across (f504-528). build/fxrt/s_flare.png |
+| P1 | fx_07d | `FX_FLARE_TEX_RING_2` | still unknown | - | drawn from f586 (102 calls); noise in the run-time page (f600). build/fxrt/s_flare.png |
+| P1 | fx_07e | `FX_SLOW_GLINT` | new name | `FX_SLOW_CLOCK_FACE` | drawn from f285 (43 frames); with the run-time page it is a pink clock dial with Roman numerals I-XII, seen on the target at f316-340. build/fxrt/rr_p1_fx07e_320/07e/01_particles.png, build/fxrt/s_slow.png |
+| P1 | fx_07e | `FX_SLOW_PARTICLES` | new name | `FX_SLOW_BLUE_GLOWS` | drawn from f285 (198 calls); run-time page: soft blue round glows growing and fading, the blue lights around the clock at f304-340. build/fxrt/rr_p1_fx07e_320/07e/05_particles.png, build/fxrt/s_slow.png |
+| P1 | fx_084 | `FX_DRAIN_SPRITES` | new name | `FX_DRAIN_PINK_SPECKS` | started f348; run-time page: small pink, violet and orange glowing specks, the pink specks drifting off the target f344-392. build/fxrt/s_drain.png |
+| P1 | fx_085 | `FX_THUNDAGA_CONE_EMITTER` | new name | `FX_THUNDAGA_SPARKLE_SWARM` | same as fx_018 0x26 (f376). build/fxrt/rr_p1_fx085_280/085/08_e0_sprites.png |
+| P1 | fx_085 | `FX_THUNDAGA_CYL_EMITTER` | new name | `FX_THUNDAGA_VIOLET_GLOW` | same as fx_018 0x7 (started f248). build/fxrt/rr_p1_fx085_280/085/1b_e0_particles.png |
+| P1 | fx_085 | `FX_THUNDAGA_CYL_EMITTER_2` | new name | `FX_THUNDAGA_VIOLET_GLOW_2` | same as fx_018 0xa (f269). build/fxrt/rr_p1_fx085_280/085/1c_e0_particles.png |
+| P1 | fx_085 | `FX_THUNDAGA_DISC` | still unknown | - | same entry as fx_018 0x10 (registered f248) build/fxrt/rr_p1_fx085_280/085/0f_model.png |
+| P1 | fx_086 | `FX_METEOR_CONE_SPRITES` | new name | `FX_METEOR_EMBERS` | started f258; run-time page: small amber sparks spreading out (embers around the falling meteor). build/fxrt/s_met.png (medium) |
+| P1 | fx_086 | `FX_METEOR_DEBRIS_SPRITES` | new name | `FX_METEOR_EMBERS_2` | drawn from f457 (260 calls) during the impact; same amber spark sprites as 0xb. build/fxrt/rr_p1_fx086_480/086/13_sprites.png (medium) |
+| P1 | fx_086 | `FX_METEOR_SPRITES` | new name | `FX_METEOR_GLOWING_EMBERS` | started f536 in the explosion; run-time page: larger orange glowing embers. build/fxrt/rr_p1_fx086_560/086/06_e0_sprites.png, build/fxrt/s_met2.png (medium) |
+| P1 | fx_086 | `FX_METEOR_STREAK_SHELL` | new name | `FX_METEOR_ROCK` | registered f253; at run time the page holds a red, dark-pitted rock texture (not the scribble page), and the bullet-shaped shell is the huge red meteor filling the screen f264-300. build/fxrt/rr_p1_fx086_280/086/04_model.png, build/fxrt/s_met2.png (medium) |
+| P1 | fx_08f | `FX_METEOR_CONE_SPRITES` | new name (carried) | `FX_METEOR_EMBERS` | not played; same entry as fx_086 0xb - |
+| P1 | fx_08f | `FX_METEOR_DEBRIS_SPRITES` | new name (carried) | `FX_METEOR_EMBERS_2` | not played; same entry as fx_086 0x13 - |
+| P1 | fx_08f | `FX_METEOR_STREAK_SHELL` | new name (carried) | `FX_METEOR_ROCK` | not played (Meteor (alt) trigger unknown); same entry as fx_086 0x4 - |
+| P2 | fx_00b | `FX_ESUNA_BACKDROP` | new name | `FX_ESUNA_ORB_TEXTURE` | render-to-VRAM layer table: 6 layers into (0x1C0,0x160) 32x32 from f268, a glossy green-to-pink orb; skipping it turns the violet glow puffs around the target into white squares (f284-312). build/fxrt/bd_00b.png, build/fxrt/s_bd2.png |
+| P2 | fx_00e | `FX_BERSERK_BACKDROP` | new name | `FX_BERSERK_FLAME_TEXTURE` | render-to-VRAM layer table: 5 layers into (0x200,0x180) 64x128 from f273, rising flames; skipping it turns the red fire around the target into a white dome (f284-308). build/fxrt/bd_00e.png, build/fxrt/s_bd2.png |
+| P2 | fx_01b | `FX_FLOAT_BACKDROP` | new name | `FX_FLOAT_CLOUD_TEXTURE` | render-to-VRAM layer table: 3 layers into (0x200,0x180) 128x128 from f284, a white cloud; skipping it turns the cloud burst into garbage quads (f296-348). build/fxrt/bd_01b.png, build/fxrt/s_bd2.png |
+| P2 | fx_01b | `FX_FLOAT_GLOW` | new name | `FX_FLOAT_CLOUD_2` | started f284; same cloud texture (second cloud emitter). build/fxrt/rr_p2_fx01b_320/01b/03_e0_particles.png |
+| P2 | fx_01b | `FX_FLOAT_SPECK_RING` | new name | `FX_FLOAT_CLOUD` | started f284; the page it samples holds a white puffy cloud at run time; white cloud puffs burst under the target f320-336. build/fxrt/rr_p2_fx01b_320/01b/01_e0_particles.png, build/fxrt/s_p2b.png (top) |
+| P2 | fx_02a | `FX_SILENCE_BACKDROP` | new name | `FX_SILENCE_NEBULA_TEXTURE` | render-to-VRAM layer table: 4 layers into (0x240,0x190) 112x112 from f301, a blue-violet starry nebula; skipping it turns the glowing ball on the target into white blotches (f320-336). build/fxrt/bd_02a.png, build/fxrt/s_bd2.png |
+| P2 | fx_04c | `FX_FLOAT_BACKDROP` | new name | `FX_FLOAT_CLOUD_TEXTURE` | same as fx_01b 0x4 (f285); skipping it breaks the cloud burst (f296-348, up to 27950 px changed). build/fxrt/bd_04c.png, build/fxrt/ab_fx04c_5/cmp.png |
+| P2 | fx_04c | `FX_FLOAT_GLOW` | new name | `FX_FLOAT_CLOUD_2` | started f285; same cloud texture. build/fxrt/rr_p2_fx04c_320/04c/02_e0_particles.png |
+| P2 | fx_04c | `FX_FLOAT_GLOW_2` | new name | `FX_FLOAT_CLOUD` | started f285; same cloud texture as fx_01b 0x1. build/fxrt/rr_p2_fx04c_320/04c/01_e0_particles.png |
+| P2 | fx_04f | `FX_REFLECT_BACKDROP` | new name | `FX_REFLECT_SPARKLE_TEXTURE` | render-to-VRAM layer table: 6 layers into (0x1C0,0x1C0) 64x64 from f269, red light with gold sparkles; skipping it leaves the four-point Reflect star plain red instead of sparkling (f288-312). build/fxrt/bd_04fa.png, build/fxrt/s_04f.png |
+| P2 | fx_04f | `FX_REFLECT_BACKDROP_2` | new name | `FX_REFLECT_STREAK_TEXTURE` | render-to-VRAM layer table: 3 layers into (0x1C0,0x120) 128x32 from f269, a red comet-like streak; skipping it changes nothing on screen in f268-312 (sampled later or not at all). build/fxrt/bd_04fd.png (medium) |
+| P2 | fx_057 | `FX_HOLY_BACKDROP` | new name | `FX_HOLY_SWIRL_TEXTURE` | render-to-VRAM layer table: 2 layers into (0x1C0,0x1C0) 64x64 from f339, a blue water-like swirl; skipping it changes nothing on screen in f336-384. build/fxrt/bd_057_18.png (medium) |
+| P2 | fx_057 | `FX_HOLY_BACKDROP_2` | new name | `FX_HOLY_STARFIELD_TEXTURE` | render-to-VRAM layer table: 3 layers into (0x280,0x150) 64x128 from f339, blue sparkling stars on black; skipping it turns the blue starry vortex filling the screen grey/white (f352-384, ~45000 px). build/fxrt/bd_057_1f.png, build/fxrt/s_bd4.png |
+| P2 | fx_057 | `FX_HOLY_BACKDROP_3` | new name | `FX_HOLY_SPARKLE_STREAK_TEXTURE` | render-to-VRAM layer table: 4 layers into (0x240,0x1D0) 128x48 from f269, a blue streak full of white sparkles; skipping it turns the sweeping light bands into flat white (f280-336). build/fxrt/bd_057_3.png, build/fxrt/s_bd4.png |
+| P2 | fx_057 | `FX_HOLY_SPARK` | new name | `FX_HOLY_WHITE_GLOW` | drawn from f509 (1031 calls); run-time texture: a soft white round glow, the white light of the final blast f496-528. build/fxrt/rr_p2_fx057_520/057/1d_particles.png (medium) |
+| P2 | fx_057 | `FX_HOLY_SPRITE_LINE` | new name | `FX_HOLY_LENS_FLARE` | drawn from f459 (16 calls); with the run-time page the line's sprites are a lens-flare set (white glow, orange ring, dark red disc, blue dot, small orange ring, olive disc), the flare across the screen as the white blast builds f464-528. build/fxrt/s_holy.png, build/fxrt/p2_fx057/a.png |
+| P2 | fx_057 | `FX_HOLY_TEXTURED_RING` | still unknown | - | drawn f339 on (126 calls); its UV box reads noise in the run-time pages too. build/fxrt/s_holy.png |
+| P2 | fx_057 | `FX_HOLY_TRAIL` | still unknown | - | drawn from f270 (880 calls); its strip still reads noise with the run-time pages (f280, f520): the tpage the trail uses is not the one the tool resolves. build/fxrt/s_holy.png |
+| P2 | fx_05a | `FX_MIGHT_BACKDROP` | new name | `FX_MIGHT_AURA_TEXTURE` | render-to-VRAM layer table: 6 layers into (0x1C0,0x1C0) 64x64 from f369, a blurred red-brown glow; skipping it turns the pinkish light shafts of the Might pillar white (f384-408). build/fxrt/bd_05a.png, build/fxrt/s_bd4.png (medium) |
+| P2 | fx_060 | `FX_CONFUSE_ORBIT_TRAILS` | new name | `FX_CONFUSE_STAFF_SWIRL` | started f268; 3D + screen trails of treble/bass staves with notes, smoke swirl and haze band, orbiting the target f292-340. build/fxrt/rr_p2_fx060_280/060/09_e0_trail3d.png, build/fxrt/p2_fx060/a.png |
+| P2 | fx_060 | `FX_CONFUSE_WAVE_TRAILS` | new name | `FX_CONFUSE_STAFF_WAVES` | started f268; the page at run time still holds the music staves with notes (the real texture: yellow-green staves and notes swirl round the target f292-340); this emitter's flat trails draw the staff strips and a smoke wisp. build/fxrt/rr_p2_fx060_280/060/01_e0_trailflat.png, build/fxrt/p2_fx060/a.png |
+| P2 | fx_061 | `FX_CONFUSE_ORBIT_TRAILS` | new name | `FX_CONFUSE_STAFF_SWIRL` | same as fx_060 0x9 (all targets, f268). build/fxrt/rr_p2_fx061_280/061/02_e0_trail3d.png |
+| P2 | fx_061 | `FX_CONFUSE_WAVE_TRAILS` | new name | `FX_CONFUSE_STAFF_WAVES` | same as fx_060 0x1 (f268). build/fxrt/rr_p2_fx061_280/061/07_e0_trailflat.png |
+| P2 | fx_07f | `FX_SILENCE_RING_DISC` | new name | `FX_SILENCE_VIOLET_RING` | registered f268; at run time its page holds a blue-magenta haze (the developer-scribble page of the file is replaced), drawn as the glowing violet ring around each target f288-320. build/fxrt/rr_p2_fx07f_280/07f/01_model.png, build/fxrt/s_p2b.png (middle) |
+| P2 | fx_08d | `FX_CURA_FAN_EMITTER` | new name | `FX_CURA_CYAN_GLOW` | started f341; the fan's texture at run time is a round cyan-white glow; cyan glow streaks around the target f344-392. build/fxrt/rr_p2_fx08d_360/08d/0a_e0_fan.png, build/fxrt/s_p2b.png (bottom) |
+| P2 | fx_090 | `FX_CURAGA_SPARKLES` | name confirmed | `FX_CURAGA_SPARKLES` | started f357; run-time sprites: green and gold twinkling glints spreading out. build/fxrt/s_p2c.png |
+| P2 | fx_090 | `FX_CURAGA_SPARKLE_BURST` | name confirmed | `FX_CURAGA_SPARKLE_BURST` | started f341; gold-white four-point star sparkles in a rising column. build/fxrt/rr_p2_fx090_360/090/0f_e0_sprites.png |
+| P2 | fx_090 | `FX_CURAGA_SPARKLE_SHOWER` | name confirmed | `FX_CURAGA_SPARKLE_SHOWER` | started f425; green four-point star twinkles. build/fxrt/rr_p2_fx090_360/090/10_e0_sprites.png |
+| P2 | fx_0a2 | `FX_CURA_SPARKLE_BURST` | name confirmed | `FX_CURA_SPARKLE_BURST` | started f349; green star twinkles (rings + sprite elements). build/fxrt/rr_p2_fx0a2_360/0a2/01_e1_sprites.png |
+| P4 | fx_0d6 | `FX_SWDMAG_FIRAGA_CONE_GLOW` | new name | `FX_SWDMAG_FIRAGA_RED_HAZE` | (Swd Mag 0x36 on the Malboro) started f360; same soft dark-red additive blob as Firaga's (fx_007 0x15). build/fxrt/rr_p4_fx0d6_400/0d6/16_e0_particles.png, build/fxrt/s_p4.png (medium) |
+| P4 | fx_0d8 | `FX_SWDMAG_THUNDARA_ORB_SPARKS` | new name | `FX_SWDMAG_THUNDARA_STAR_GLINTS` | drawn from f397; run-time page (0x1C0,0x100): the same star-glint sprites as Thundara (fx_005 0x1e). build/fxrt/rr_p4_fx0d8_440/0d8/1b_sprites.png |
+| P4 | fx_0d9 | `FX_SWDMAG_THUNDAGA_CONE_EMITTER` | new name | `FX_SWDMAG_THUNDAGA_SPARKLE_SWARM` | started f320; same twinkle-dot swarms as fx_018 0x26. build/fxrt/rr_p4_fx0d9_320/0d9/26_e0_sprites.png |
+| P4 | fx_0d9 | `FX_SWDMAG_THUNDAGA_DISC` | still unknown | - | registered f313; as Thundaga's disc (fx_018 0x10) its page holds 4-bit lightning textures at run time, read as 15-bit noise. build/fxrt/rr_p4_fx0d9_320/0d9/0d_model.png |
+| P4 | fx_0dd | `FX_SWDMAG_BIO_SCREEN_TRAIL` | new name | `FX_SWDMAG_BIO_BUBBLE_TRAIL` | started f454; run-time page gives the same glowing green bubble strip as Bio (fx_05d 0x11). build/fxrt/rr_p4_fx0dd_480/0dd/11_e0_trailscreen.png |
+| P4 | fx_0df | `FX_SWDMAG_FLARE_TEX_RING` | still unknown | - | drawn from f362; the ring UV box reads noise in the run-time pages too (f400). build/fxrt/s_p4.png |
+| P4 | fx_0df | `FX_SWDMAG_FLARE_TEX_RING_2` | still unknown | - | drawn from f445; noise in the run-time page (f480). build/fxrt/s_p4.png |
+| P6 | fx_0b1 | `FX_CARBUNCLE_ORBIT_GLOW` | new name | `FX_CARBUNCLE_GREEN_MOTES` | (Summon 0x44, btl_rollShortSummon skipped for the full animation) started f368; run-time texture: a faint pale round glow; the faint green motes drifting round the emerald crystal f400-432. build/fxrt/s_carb2.png (medium) |
+| P6 | fx_0b1 | `FX_CARBUNCLE_ORBIT_GLOW_2` | new name | `FX_CARBUNCLE_ORANGE_MOTES` | started f1029; run-time texture: a small orange glow; the orange motes swirling after the burst f992-1040. build/fxrt/s_carb2.png |
+| P6 | fx_0b1 | `FX_CARBUNCLE_ORBIT_GLOW_3` | new name | `FX_CARBUNCLE_ORANGE_MOTES_2` | started f967; the same orange glow, f992-1040. build/fxrt/s_carb2.png |
+| P6 | fx_0b8 | `FX_ATOMOS_FAINT_GLOW` | still unknown | - | started f415; with the run-time page its particle reads a grey zigzag band, nothing that matches the white mist on screen f416-448. build/fxrt/s_atom2.png |
+| P6 | fx_0b8 | `FX_ATOMOS_SPRITES` | new name | `FX_ATOMOS_BLUE_SPECKS` | (Summon 0x37) started f607; run-time page: sparse tiny blue specks, flying round the gate as it opens f608-640. build/fxrt/s_atom2.png (medium) |
+| P6 | fx_0b8 | `FX_ATOMOS_SPRITES_2` | new name | `FX_ATOMOS_BLUE_SPECKS_2` | started f959; the same tiny blue specks (during the vortex f960-992). build/fxrt/s_atom2.png (medium) |
+| P6 | fx_0b8 | `FX_ATOMOS_SPRITES_3` | new name | `FX_ATOMOS_BLUE_SPECKS_3` | started f1367; the same blue specks round the black hole f1368-1400. build/fxrt/s_atom2.png (medium) |
+| P6 | fx_0ba | `FX_RAMUH_SPARK_PARTICLE` | still unknown | - | not fetched in a full Ramuh (Summon 0x35, f0-2200): the module uses it in a branch this cast did not take (Ramuh's animation varies) build/fxrt/p6_fx0ba/log.json |
+| P6 | fx_0d3 | `FX_PHOENIX_FAN_EMITTER_2` | new name | `FX_PHOENIX_RAINBOW_FAN` | (Summon 0x48) started f580; the fan's run-time texture is a rainbow gradient strip; prismatic light rays fan out behind Phoenix f584-616. build/fxrt/s_phx2.png |
+| P6 | fx_0d3 | `FX_PHOENIX_FAN_EMITTER_5` | new name | `FX_PHOENIX_RAINBOW_FAN_2` | started f848; the same rainbow gradient fan (rays at f848). build/fxrt/s_phx2.png |
+| P6 | fx_0d3 | `FX_PHOENIX_SPRITE_LINE` | new name | `FX_PHOENIX_LENS_FLARE` | drawn from f676 (43 calls); run-time sprites: a lens-flare set (rainbow halo ring, yellow-green disc, white glow, red ring, blue disc, small discs), the flare across Phoenix f680-712. build/fxrt/s_phx2.png |
+| P6 | fx_0e1_0 | `FX_REBIRTH_FLAME_MORPH_0` | new name | `FX_REBIRTH_FLAME_SCREEN_PLANE` | fetched f363; a flat grid carrying the captured scene: the screen picture before it is bent. build/fxrt/s_rf.png |
+| P6 | fx_0e1_0 | `FX_REBIRTH_FLAME_MORPH_1` | new name | `FX_REBIRTH_FLAME_SCREEN_BULGE` | fetched f363; the in-between morph shape with the same captured scene texture. build/fxrt/rr_p6_fx0e1_380/0e1/81_somodel.png (medium) |
+| P6 | fx_0e1_0 | `FX_REBIRTH_FLAME_MORPH_2` | new name | `FX_REBIRTH_FLAME_SCREEN_SPHERE` | (Summon 0x49) fetched f363; at run time its page holds a capture of the battle scene (party members under a cloudy vortex), mapped on a sphere: the scene image wrapped into a ball, the morph target the flat capture bends into (screen f440). build/fxrt/s_rf.png |
+| P6 | fx_0e1_1 | `FX_REBIRTH_FLAME_TEX_EMITTER` | still unknown | - | group 1 (0x801EC700) fetches it at f1587 during the fire blast (screen f1592-1608, orange-white flames); its ring elements read noise in the run-time page (f1640). build/fxrt/s_mad.png (bottom) |
+| P6 | fx_0e3_0 | `FX_BAHAMUT_CORE_GRID` | new name | `FX_BAHAMUT_TERRAIN` | fetched f319; at run time the grid's texture is aerial green mountain terrain: the ground seen from above. build/fxrt/s_bah.png (medium) |
+| P6 | fx_0e3_0 | `FX_BAHAMUT_PILLAR_STRIP` | new name | `FX_BAHAMUT_SMOKE_STRIP` | fetched f696; run-time texture: grey-white streaky smoke on the wavy strip. build/fxrt/s_bah.png (medium) |
+| P6 | fx_0e3_0 | `FX_BAHAMUT_TEAL_PUFF` | name confirmed | `FX_BAHAMUT_TEAL_PUFF` | (Summon 0x3E, full) drawn from f323 (614 calls); with the run-time page a dark teal cloud puff. build/fxrt/s_bah.png |
+| P6 | fx_0e3_0 | `FX_BAHAMUT_TILE_RING` | new name | `FX_BAHAMUT_CLOUD_RING` | fetched f319; run-time texture: a band of teal-blue cloud on the flat ring. build/fxrt/s_bah.png |
+| P6 | fx_0e3_0 | `FX_BAHAMUT_WHITE_BOLT` | name confirmed | `FX_BAHAMUT_WHITE_BOLT` | drawn from f416 (652 calls); its strip at run time is a thin white lightning bolt over a white cloud. build/fxrt/rr_p6_fx0e3_440/0e3/08_trail.png |
+| P6 | fx_0e3_1 | `FX_BAHAMUT_BLAST_PLATE` | new name | `FX_BAHAMUT_SMOKE_SHELL` | group 1 fetches it at f1205; its page at run time (f1220) holds grey cloudy smoke (no screen copy), on a half-cylinder shell. build/fxrt/s_bah.png (medium) |
+| P6 | fx_0e3_1 | `FX_BAHAMUT_FLARE_LINE` | new name | `FX_BAHAMUT_LENS_FLARE` | group 1 draws it from f1522 (21 calls); run-time sprites: the lens-flare set (rainbow halo, yellow-green disc, white glow, orange ring, blue disc...). build/fxrt/rr_p6_fx0e3_1580/0e3_1/07_spriteline.png |
+| P6 | fx_0e3_1 | `FX_BAHAMUT_WHITE_BOLT` | name confirmed | `FX_BAHAMUT_WHITE_BOLT` | drawn from f1208 (193 calls); the same white lightning strip. build/fxrt/rr_p6_fx0e3_1220/0e3_1/15_trail.png |
+| P6 | fx_0e3_1 | `FX_BAHAMUT_WHITE_BOLT_2` | name confirmed | `FX_BAHAMUT_WHITE_BOLT_2` | drawn from f1546 (384 calls); the same white lightning strip. build/fxrt/rr_p6_fx0e3_1580/0e3_1/11_trail.png |
+| P6 | fx_0fb_1 | `FX_MADEEN_TRAIL` | still unknown | - | (Summon 0x4A) group 1 fetches it from f1691 (22 calls) as the blue-white blast starts (f1712); its strip reads only sparse dots in the run-time page (f1700). build/fxrt/s_mad.png (top) |
+| P6 | fx_114 | `FX_IFRIT_BOWL` | new name | `FX_IFRIT_HEAT_DOME` | fetched f1096; the hemisphere: ablating 0x1e+0x12 removes the large translucent wavy dome over the scene at f1128-1136 (the bowl is the only hemisphere of the two). build/fxrt/ab_ifr_a/cmp_s.png (low: joint ablation) |
+| P6 | fx_114 | `FX_IFRIT_CANOPY` | still unknown | - | summon data entry fetched f379; untextured model; ablating it (with 0x83) leaves f376-456 pixel-identical. build/fxrt/ab_ifr_b/ |
+| P6 | fx_114 | `FX_IFRIT_CYLINDER` | still unknown | - | fetched f380 while its page still holds the yellow "dummy .TIM" placeholder (run-time VRAM f380); ablating it leaves f376-456 pixel-identical, so the placeholder is not visible there (white flash fading to grey). build/fxrt/s_ifr.png, build/fxrt/ab_ifr_b/ |
+| P6 | fx_114 | `FX_IFRIT_GRID_PLANE` | new name | `FX_IFRIT_WHITE_HAZE` | (Summon 0x33, full) fetched f1027; by then its page (tpage 0x117) holds grey-white wavy streaks (the yellow placeholder is gone); ablating it (with 0x12/0x1e, which are fetched only at f1092+) removes the white haze under Ifrit's fist at f1040-1104. build/fxrt/rr_p6_fx114_1100/114/2a_model.png, build/fxrt/ifr_1048.png (medium) |
+| P6 | fx_114 | `FX_IFRIT_SPOKED_RING` | still unknown | - | fetched f1092; untextured, only ablated together with the bowl (f1128-1136 change attributed to the dome). build/fxrt/ab_ifr_a/cmp_s.png |
+| P6 | fx_17d_0 | `FX_ARK_NOISE_SPHERE` | new name | `FX_ARK_STAR_SPHERE` | (Summon 0x40, full) registered f272; at run time its texture page holds a starfield (white stars on black), mapped on the sphere: the starry sky dome of Ark's space scene. build/fxrt/s_ark.png (medium: not yet seen on screen in the captured window) |
+| P6 | fx_17d_2 | `FX_ARK_THIN_ARCH` | new name | `FX_ARK_CLOUD_ARCH` | group 2 (resident f1580-1940) fetches it at f1759; run-time texture: a grey cloud wisp along the thin arch, as Ark plunges through the clouds (f1760-1792). build/fxrt/s_ark2s.png (medium) |
+| P6 | fx_17d_5 | `FX_ARK_SPRITE_LINE` | new name | `FX_ARK_LENS_FLARE` | group 5 (0x801EC700, resident f3440-4580) draws it from f3723 (16 calls); run-time sprites: the lens-flare set, during the white blast f3728-3760. build/fxrt/s_ark2s.png |
+| P6 | fx_17d_5 | `FX_ARK_TRAIL` | still unknown | - | group 5 draws it from f3727 (3539 calls); its strip reads noise in the run-time page (f3740) build/fxrt/rr_p6_ark_3740/17d_5/05_trail.png |
+| P6 | fx_17d_5 | `FX_ARK_TRAIL_2` | still unknown | - | group 5 draws it from f4059 (544 calls; yellow-white curling light trails on screen f4064); noise in the run-time page (f4100) build/fxrt/s_ark2s.png |
+| P6 | fx_17d_6 | `FX_ARK_FAN_EMITTER_2` | still unknown | - | not fetched by f4600 (group 6 resident from f3680, the run ended first) build/fxrt/p6_ark/log.json |
+| P6 | fx_17d_6 | `FX_ARK_SPRITE_LINE` | still unknown | - | not fetched by f4600 build/fxrt/p6_ark/log.json |
+| P6 | fx_17d_8 | `FX_ARK_FLAT_PANEL` | still unknown | - | group 8 never became resident by f4600; the kana up/left/right/down page question stays open build/fxrt/p6_ark/log.json |
+| P3 | fx_052 | `FX_LIMIT_GLOVE_BACKDROP` | still unknown | - | drawn f297 on (76 calls); a render-to-VRAM layer table like the other backdrops, its target rect not checked in this pass build/fxrt/p3_fx052/ |
+| P3 | fx_052 | `FX_LIMIT_GLOVE_SPHERE` | new name | `FX_LIMIT_GLOVE_PINK_ORB` | (Blu Mag 0x57 on the Malboro) fetched f297; with the run-time page a magenta fiery energy sphere with white bands. build/fxrt/s_p3s.png |
+| P3 | fx_081 | `FX_LV4_HOLY_SPARK` | new name | `FX_LV4_HOLY_WHITE_GLOW` | drawn from f509 as Holy's 0x1d: soft white glow build/fxrt/p3_fx081/log.json (medium) |
+| P3 | fx_081 | `FX_LV4_HOLY_SPRITE_LINE` | new name | `FX_LV4_HOLY_LENS_FLARE` | drawn from f459 exactly as Holy's (fx_057 0x17): the lens-flare set build/fxrt/p3_fx081/log.json |
+| P3 | fx_081 | `FX_LV4_HOLY_TEXTURED_RING` | still unknown | - | as Holy's 0x1e: noise with the run-time pages - |
+| P3 | fx_081 | `FX_LV4_HOLY_TRAIL` | still unknown | - | as Holy's trail (fx_057 0x6): noise with the run-time pages - |
+| P3 | fx_096 | `FX_FROST_ICE_GLINTS` | name confirmed | `FX_FROST_ICE_GLINTS` | started f248; run-time texture: small blue four-point star glints. build/fxrt/s_p3s.png |
+| P3 | fx_0ec | `FX_DOOM_GLOW_SHELL` | still unknown | - | fetched f249; tpage computed by the C, not resolved - |
+| P3 | fx_0ec | `FX_DOOM_GOURAUD_SHELL` | still unknown | - | fetched f249; still black with the run-time page build/fxrt/rr_p3_fx0ec_280/0ec/13_model.png |
+| P3 | fx_0ec | `FX_DOOM_PARTICLES` | new name | `FX_DOOM_VIOLET_HALO` | drawn from f605 (1133 calls); run-time texture: a violet ring halo. build/fxrt/rr_p3_fx0ec_640/0ec/06_particles.png |
+| P3 | fx_0ec | `FX_DOOM_WHITE_SHELL` | new name | `FX_DOOM_SWIRL_SHELL` | fetched f249; page (0x240,0x100) holds a grey marbled swirl at run time (f280), not a screen copy. build/fxrt/rr_p3_fx0ec_280/0ec/10_model.png (medium) |
+| P3 | fx_138 | `FX_LUCKY_SEVEN_SLOT_STRIPS` | new name | `FX_LUCKY_SEVEN_RAINBOW_STRIPS` | fetched f248; page 0x9A (0x280,0x100) holds a rainbow gradient at run time, on slanted strips. build/fxrt/rr_p3_fx138_280/138/1b_model.png (medium) |
+| P3 | fx_138 | `FX_LUCKY_SEVEN_SPRITE_LINE` | new name | `FX_LUCKY_SEVEN_LENS_FLARE` | drawn from f249 (13 calls); run-time sprites: lens-flare set (blue ring, dark red disc, orange rings, violet ring, rainbow halo). build/fxrt/s_p3s.png |
+| P3 | fx_188 | `FX_LV3_DEF_LESS_PARTICLE` | still unknown | - | drawn from f253 (720 calls); still black with the run-time page build/fxrt/rr_p3_fx188_280/188/03_particles.png |
+| P3 | fx_188 | `FX_LV3_DEF_LESS_RING` | still unknown | - | drawn from f501; noise with the run-time page (f520) build/fxrt/rr_p3_fx188_520/188/14_rings.png |
