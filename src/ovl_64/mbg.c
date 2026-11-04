@@ -16,8 +16,8 @@ u8 *mbg_readFrame(Ovl64Dec *out) {
     maskData = NULL;
     rumble = NULL;
     status = mbg_streamGetFrame(&data, &hdr, &info, &maskData, &rumble);
-    while (status != 0) {
-        if (status == 5) {
+    while (status != MBG_FRAME_OK) {
+        if (status == MBG_FRAME_END) {
             g_mbgPlayer.ended = 1;
             return NULL;
         }

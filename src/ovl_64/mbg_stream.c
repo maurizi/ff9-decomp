@@ -242,9 +242,9 @@ s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **outCamera
 
     if (!(h->status & MBG_RING_READY)) {
         if (g_mbgStream.endState == MBG_END_NONE) {
-            return 3;
+            return MBG_FRAME_WAIT;
         }
-        return 5;
+        return MBG_FRAME_END;
     }
     *hdr = h;
     *data = g_mbgStream.ringData + (h->firstSector + g_mbgStream.readSlot * g_mbgStream.slotSectors) * 0x8F4;
@@ -260,7 +260,7 @@ s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **outCamera
         g_mbgStream.readSlot = g_mbgStream.slotCount;
     }
     g_mbgStream.readSlot--;
-    return 0;
+    return MBG_FRAME_OK;
 }
 
 void mbg_streamReadyCallback(u8 status, u8 *result) {
@@ -275,7 +275,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
     if (g_mbgStreamBusy != 0) {
         return;
     }
-    if (status == 5 || status == 0) {
+    if (status == CdlDiskError || status == CdlNoIntr) {
         mbg_streamReadyCallback_retry();
         return;
     }

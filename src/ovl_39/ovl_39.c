@@ -1968,15 +1968,14 @@ void menuSave_packData(SaveData *saveData) {
     menuSave_packCards(saveData->cards);
 }
 
-/* Story counter thresholds: g_evtGlobalVars.h[0] below 0xF3C is disc 1, and so on. */
 s32 menuSave_getDiscBit(void) {
-    if ((u16)g_evtGlobalVars.h[0] < 0xF3C) {
+    if ((u16)g_evtGlobalVars.h[0] < STORY_DISC2) {
         return 1 << 0;
     }
-    if ((u16)g_evtGlobalVars.h[0] < 0x1B4E) {
+    if ((u16)g_evtGlobalVars.h[0] < STORY_DISC3) {
         return 1 << 1;
     }
-    if ((u16)g_evtGlobalVars.h[0] < 0x2AF3) {
+    if ((u16)g_evtGlobalVars.h[0] < STORY_DISC4) {
         return 1 << 2;
     }
     return 1 << 3;

@@ -151,7 +151,7 @@
 #define WM_STORY_FIELD_SONG2_END 0x26B6
 #define WM_STORY_BLOCKFX3_ON 0x24EA /* WM_BLOCKFX_STORY emits in [0x24EA, 0x26A3) */
 #define WM_STORY_BLOCKFX3_OFF 0x26A3
-#define WM_STORY_BLOCKFX7_STOP 0x1B4E /* WM_BLOCKFX_SPINNER stops turning in [0x1B4E, WM_STORY_LATE_DATA) */
+#define WM_STORY_DISC3 0x1B4E /* = ovl_39 STORY_DISC3 (disc 3 starts); WM_BLOCKFX_SPINNER stops turning in [it, WM_STORY_LATE_DATA) */
 
 /* g_worldFog / wm_setWeather fog argument */
 #define WM_FOG_OFF 0
@@ -301,7 +301,7 @@ typedef struct WmEffect {
                           /* ambient sound 0 (WM_SE_VORTEX_LOOP) sits there too */
 #define WM_BLOCKFX_DISC4_CORE 6 /* data set 4 only: a sprite, a core model, two counter-rotating shells, 10 random */
                                 /* flashes and 10 expanding rings at (196602, -10882, -82002) */
-#define WM_BLOCKFX_SPINNER 7 /* one model at (280140, -7784, -206465), turning except in [WM_STORY_BLOCKFX7_STOP, */
+#define WM_BLOCKFX_SPINNER 7 /* one model at (280140, -7784, -206465), turning except in [WM_STORY_DISC3, */
                              /* WM_STORY_LATE_DATA) */
 /* wm_cameraFollow: which way the camera target / eye height has to move (y grows downward) */
 #define WM_CAM_HOLD 0
