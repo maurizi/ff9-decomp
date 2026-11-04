@@ -4,6 +4,12 @@
 /* Effect module fx_017 (dir 13 file 0x17). */
 #include "btlfx_mod.h"
 
+/* fx_017 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEVILS_CANDLE_BLUE_STARBURST 0x1 /* emitter: grey flower flash, blue starburst, blue-violet streak sprites */
+#define FX_DEVILS_CANDLE_FLAME          0x2 /* emitter: smoky yellow-grey flame quads */
+#define FX_DEVILS_CANDLE_FLAME_2        0x7 /* emitter: smoky yellow-grey flame quads */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

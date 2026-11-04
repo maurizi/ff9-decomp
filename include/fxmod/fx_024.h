@@ -4,6 +4,16 @@
 /* Effect module fx_024 (dir 13 file 0x024). */
 #include "btlfx_mod.h"
 
+/* fx_024 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_AERIAL_SLASH_DUST_CLOUD    0x7 /* emitter: lilac dust clouds + green glint (byte-identical to fx_01d entry 0x3) */
+#define FX_AERIAL_SLASH_STAR_FLASH    0xB /* emitter: white star flash with a blue halo */
+#define FX_AERIAL_SLASH_FAN_EMITTER_3 0xC /* emitter: fan + small blue spark quads (fan not rendered) (same call site as fx_01d entry 0x5) (look pending) */
+#define FX_AERIAL_SLASH_FAN_EMITTER   0xD /* emitter: fan + faint green spark quads (fan not rendered) (same call site as fx_01d entry 0x2) (look pending) */
+#define FX_AERIAL_SLASH_FAN_EMITTER_2 0xE /* emitter: fan + faint green spark quads (fan not rendered) (same call site as fx_01d entry 0x1) (look pending) */
+#define FX_AERIAL_SLASH_WIND_RINGS    0xF /* emitter: ring with a violet sparkle-curtain texture + pink-white gouraud rings (same look as fx_01d entry 0xb) */
+#define FX_AERIAL_SLASH_DUST_RING     0x10 /* emitter: ring with a grey dust texture (same look as fx_01d entry 0xc) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

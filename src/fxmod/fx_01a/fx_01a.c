@@ -9,7 +9,7 @@ s32 fx_01a_op80(s32 mode, Fx01aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_01a_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->posC);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEP_LIGHT_SPIRAL), (s32)&work->posC);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_01a_trails;
             work->emit0->trailSlots = 0xE;
@@ -19,7 +19,7 @@ s32 fx_01a_op80(s32 mode, Fx01aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         switch (frame) {
         case 0x13:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->posC);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEP_LIGHT_SPIRAL_2), (s32)&work->posC);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_01a_trails2;
                 work->emit4->trailSlots = 0x1E;
@@ -27,11 +27,11 @@ s32 fx_01a_op80(s32 mode, Fx01aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 0x27:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->posC);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEP_SPECK_RING), (s32)&work->posC);
             break;
         }
         if (frame >= 0x13) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), frame - 0x13);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SLEEP_BACKDROP), frame - 0x13);
         }
         return frame >= 0x50;
     }

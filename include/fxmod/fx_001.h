@@ -4,6 +4,18 @@
 /* Effect module fx_001 (dir 13 file 0x01). */
 #include "btlfx_mod.h"
 
+/* fx_001 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DAGGERS_MAGIC_SPARKLES       0x1 /* emitter: tiny rings + white/green sparkle sprites (at pos54) */
+#define FX_DAGGERS_MAGIC_WHITE_RINGS    0x3 /* emitter: white gouraud rings */
+#define FX_DAGGERS_MAGIC_GOLD_RINGS     0x5 /* emitter: white-gold gouraud rings */
+#define FX_DAGGERS_MAGIC_STAR_FLARES    0x6 /* emitter: yellow-green and violet star flares, faint glow */
+#define FX_DAGGERS_MAGIC_BLUE_SWIRL     0x7 /* emitter: blue swirl-textured trail + green/yellow/white sparkle sprites */
+#define FX_DAGGERS_MAGIC_SPARKLE_SHOWER 0xD /* emitter: green/yellow/white sparkle sprites (at pos4C) */
+#define FX_DAGGERS_MAGIC_LIGHT_SPIRES   0xE /* model: spiky spire shapes, green light-arc texture */
+#define FX_DAGGERS_MAGIC_LIGHT_RING     0xF /* model: ring, green light-arc texture */
+#define FX_DAGGERS_MAGIC_SPARKLE_BURST  0x10 /* emitter: white/yellow/green sparkle sprites */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

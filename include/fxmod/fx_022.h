@@ -4,6 +4,10 @@
 /* Effect module fx_022 (dir 13 file 0x22). */
 #include "btlfx_mod.h"
 
+/* fx_022 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_TENTACLE_GONE_BUBBLES 0x1 /* emitter: iridescent soap bubbles */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4;
