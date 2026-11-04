@@ -5,6 +5,15 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_193 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_COUNTER_HORN_RED_TRAIL     0x1 /* emitter: 3D trail, red-white flame streak (byte-identical to entry 0xF) */
+#define FX_COUNTER_HORN_FLAME_RINGS   0x2 /* emitter: rings textured with red-pink flame streaks */
+#define FX_COUNTER_HORN_FLAME_RINGS_2 0x3 /* emitter: rings textured with red-pink flame streaks */
+#define FX_COUNTER_HORN_DUST_CLOUD    0x4 /* emitter: peach dust cloud bursting and fading, 12 frames */
+#define FX_COUNTER_HORN_DARK_RING     0xE /* emitter: dark red textured ring */
+#define FX_COUNTER_HORN_RED_TRAIL_2   0xF /* emitter: 3D trail, red-white flame streak (byte-identical to entry 0x1) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

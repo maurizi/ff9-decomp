@@ -7,7 +7,7 @@ static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *it, Unk800F78A4 *env, Unk801
 
     if (mode == 1) {
         it->state0 = 0;
-        it->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&it->posC);
+        it->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_VIOLET_ORBS), (s32)&it->posC);
         if (it->emit1C != NULL) {
             it->emit1C->otZ = 0;
         }
@@ -30,8 +30,8 @@ static s32 fx_188_op80PoolTask(s32 mode, Fx188Elem *it, Unk800F78A4 *env, Unk801
         ex->btlfx_aimAngles((s16 *)&it->posC, (s16 *)&it->target20, (s16 *)&ang);
         ex->btlfx_turnToward((s16 *)&ang, (s16 *)&it->rot14, it->turn8);
         ex->btlfx_pointAhead((s16 *)&it->posC, (s16 *)&it->rot14, it->speed4, (s16 *)&it->posC);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xE), &it->posC, 0, size + 0x800, frame, 1, -1, 0, 0);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 3), &it->posC, 0, size + 0x800, frame, 2, -1, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_VIOLET_ORB), &it->posC, 0, size + 0x800, frame, 1, -1, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_PARTICLE), &it->posC, 0, size + 0x800, frame, 2, -1, 0, 0);
         if (it->emit1C != NULL && it->emit1C->state == BTLFX_EMIT_DONE) {
             it->emit1C = NULL;
         }
@@ -113,32 +113,32 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ringRot.vy = 0;
             ringRot.pad = 1;
             env->otZ = 0x20;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x14), &work->pos4, &ringRot, ringScale, 0, 1, ringAlpha);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_RING), &work->pos4, &ringRot, ringScale, 0, 1, ringAlpha);
             env->otZ = 0;
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_BACKDROP), frame);
             if (frame >= 0x10) {
                 work->state0 = 2;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_SMOKE_RINGS), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_SMOKE_RINGS_2), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_BLUE_RINGS), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_ORANGE_TRAILS), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_188_op80Trails;
                     emitter->trailSlots = 0x19;
                     emitter->otZ = 0x20;
                     emitter->trailStride = 0x54;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LV3_DEF_LESS_CRYSTAL_SHARDS), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }

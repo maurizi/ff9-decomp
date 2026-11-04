@@ -22,8 +22,8 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos54.vy = work->pos18.vy;
         work->pos54.vz = work->pos18.vz;
         fx_1b2_env = env;
-        fxm_vecPathInit(&fx_1b2_vecPath, (u8 *)ex->btlfx_getFileData(entry->file, 1));
-        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 2), 0x117, 0, 0, 0);
+        fxm_vecPathInit(&fx_1b2_vecPath, (u8 *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_PATH));
+        work->model6C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_CURL), 0x117, 0, 0, 0);
         work->rot3C.vx = -0x200;
         work->rot3C.vy = 0;
         work->rot3C.vz = 0;
@@ -37,8 +37,8 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         if (!(frame & 0xF)) {
             work->timer5C = 0xB;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos54);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos54);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_ORBS), (s32)&work->pos54);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_PALE_RINGS), (s32)&work->pos54);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = 0x200;
             }
@@ -54,8 +54,8 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (!(frame & 0xF)) {
                 ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->pos44);
                 ex->btlfx_getUnitBonePos(0x10, 0x29, (u16 *)&work->pos4C);
-                work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos44);
-                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos4C);
+                work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_TRAIL), (s32)&work->pos44);
+                work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_WATER_TRAIL), (s32)&work->pos4C);
                 if (work->emit4 != NULL) {
                     work->emit4->trails = (s32)fx_1b2_op80Trails0[work->index68];
                     work->emit4->trailSlots = 0x3C;
@@ -84,7 +84,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->timer60 >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->model6C, work->fade38, work->fade38, work->fade38);
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), pathFrame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_BACKDROP), pathFrame);
             for (i = 0; i < env->targets->targetCount; i++) {
                 if (fxm_isMotionDone(i) != 0) {
                     fxm_startUnitMotion(i, 0);
@@ -131,13 +131,13 @@ s32 fx_1b2_op81(s32 mode, Fx1b2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 6:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->posC);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_FOAM), (s32)&work->posC);
             break;
         case 9:
             ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->pos14);
             ex->btlfx_getUnitBonePos(0x10, 0x29, (u16 *)&work->pos1C);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos14);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos1C);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_RED_TRAIL), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_RED_TRAIL), (s32)&work->pos1C);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_1b2_op81Trails0;
                 work->emit4->trailSlots = 0xA;
@@ -173,7 +173,7 @@ s32 fx_1b2_op82(s32 mode, Fx1b2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale18.vy = 0x1000;
         work->scale18.vz = 0x1000;
         fx_1b2_env = env;
-        work->model34 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xC), 0x119, 0, 0, 0);
+        work->model34 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_TIDAL_WAVE_DISC), 0x119, 0, 0, 0);
         work->timer2C = -1;
         work->timer30 = -1;
     } else {

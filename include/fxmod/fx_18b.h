@@ -6,6 +6,10 @@
  * play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_18b effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SILENT_VOICE_SWIRLS 0x1 /* emitter: violet and blue spiral swirl particles + white-blue-violet gouraud rings */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* counter */

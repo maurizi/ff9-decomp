@@ -5,6 +5,19 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1a4 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEATH0_ROCK_DEBRIS    0x1 /* emitter: brown rock chips + orange spark dots */
+#define FX_DEATH0_PINK_RINGS     0x2 /* emitter: spiral of white-pink-magenta gouraud rings + tan dust cloud */
+#define FX_DEATH0_DUST_BURST     0x3 /* emitter: tan dust clouds + grey smoke */
+#define FX_DEATH0_FIRE_DEBRIS    0x4 /* emitter: brown rock chips + spark dots + red fire flames */
+#define FX_DEATH0_COLOUR_STREAKS 0x5 /* emitter: fans of thin blue / orange / green streaks with violet and teal smoke + pale-blue rings */
+#define FX_DEATH0_FLAME_COLUMN   0x7 /* 'so' model: tall cylinder, flame texture */
+#define FX_DEATH0_DUST_SPIRAL    0xC /* emitter: spiral of tan dust clouds + grey smoke */
+#define FX_DEATH0_DUST_SPIRAL_2  0xD /* emitter: spiral of tan dust clouds + grey smoke */
+#define FX_DEATH0_FLAME_COIL     0xE /* 'so' model: helix coil, flame texture */
+#define FX_DEATH0_FLAME_COIL_2   0xF /* 'so' model: helix coil, flame texture */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

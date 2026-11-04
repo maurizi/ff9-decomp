@@ -5,6 +5,18 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1b2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_TIDAL_WAVE_PATH        0x1 /* table: vector path (fxm_vecPathInit) */
+#define FX_TIDAL_WAVE_CURL        0x2 /* model: curved sheet like a breaking wave (texture page 0x117 renders plain white) (look pending) */
+#define FX_TIDAL_WAVE_BACKDROP    0x3 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_TIDAL_WAVE_WATER_ORBS  0x7 /* emitter: orbiting blue water-caustic orbs + grey-blue shard sprites */
+#define FX_TIDAL_WAVE_RED_TRAIL   0x8 /* emitter: helix flat trail, red caustic strip */
+#define FX_TIDAL_WAVE_WATER_TRAIL 0x9 /* emitter: spiralling screen trail, grey-blue water streak strip */
+#define FX_TIDAL_WAVE_PALE_RINGS  0xB /* emitter: white / cream / olive gouraud rings */
+#define FX_TIDAL_WAVE_DISC        0xC /* model: flat soft-edged disc (texture page 0x119 renders plain white) (look pending) */
+#define FX_TIDAL_WAVE_FOAM        0xD /* emitter: orbiting grey-white foam cloud quads, 17 frames */
+
 typedef struct {
     s16 x, y, z;
 } Fx1b2Key6;

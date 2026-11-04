@@ -5,6 +5,23 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1b4 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FLARE_STAR_PINK_SPARKS    0xA /* emitter: pink / orange glyph-like spark sprites + pink and lilac gouraud rings */
+#define FX_FLARE_STAR_FAN_EMITTER    0xB /* emitter: two fan elements, nearly invisible in the render (look pending) */
+#define FX_FLARE_STAR_FLAME_TRAIL    0xC /* emitter: white fan bars + screen trail with a red flame strip */
+#define FX_FLARE_STAR_YELLOW_RINGS   0xD /* emitter: pale-yellow / tan gouraud rings */
+#define FX_FLARE_STAR_YELLOW_RINGS_2 0xE /* emitter: pale-yellow / pink gouraud rings */
+#define FX_FLARE_STAR_PINK_RINGS     0xF /* emitter: thin pink streak fan + white-pink gouraud rings */
+#define FX_FLARE_STAR_PINK_SPARKS_2  0x10 /* emitter: pink glyph-like spark sprites, 33 frames */
+#define FX_FLARE_STAR_RED_RINGS      0x11 /* emitter: golden sparkle ring + lilac and crimson gouraud rings */
+#define FX_FLARE_STAR_SMOKE_TRAIL    0x12 /* emitter: spiralling 3D trail, grey smoke strip */
+#define FX_FLARE_STAR_RED_ORB        0x13 /* emitter: red glowing orb particles + violet-pink rings + red streak trail */
+#define FX_FLARE_STAR_BACKDROP       0x1C /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_FLARE_STAR_PINK_RINGS_2   0x29 /* emitter: white-pink-magenta and yellow-olive gouraud rings */
+#define FX_FLARE_STAR_ORANGE_GLOW    0x2A /* emitter: fading orange glow + red flare streaks */
+#define FX_FLARE_STAR_RED_SHARDS     0x2B /* emitter: red shard sprites, 31 frames */
+
 typedef struct {
     s16 x, y, z;
 } Fx1b4Point;

@@ -118,13 +118,13 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1a7_op80MotionTo.vx = work->pos2C.vx;
         fx_1a7_op80MotionTo.vy = work->pos2C.vy;
         fx_1a7_op80MotionTo.vz = work->pos2C.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1a7_emitPos);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_WAVE_TRAIL), (s32)&fx_1a7_emitPos);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_1a7_op80Trails0;
             work->emit0->trailSlots = 0x10;
             work->emit0->trailStride = 0x60;
         }
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1a7_emitPos);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_GREEN_RINGS), (s32)&fx_1a7_emitPos);
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
@@ -197,13 +197,13 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos54.vy = work->pos3C.vy;
         work->pos54.vz = work->pos3C.vz;
         work->pos54.vy -= 0xC8;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos54);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_WAVE_TRAIL_2), (s32)&work->pos54);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_1a7_op81Trails0;
             work->emit0->trailSlots = 0x16;
             work->emit0->trailStride = 0x38;
         }
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos44);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_TEAL_RINGS), (s32)&work->pos44);
         ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos34, (s16 *)&work->angle4C);
         ex->btlfx_pointAhead((s16 *)&work->pos34, (s16 *)&work->angle4C, -0x190, (s16 *)&work->pos5C);
         fx_1a7_op81MotionTo.vx = work->pos5C.vx;
@@ -241,13 +241,13 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame == 0x1C) {
-            work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos34);
+            work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_WAVE_TRAIL_3), (s32)&work->pos34);
             if (work->emit2C != NULL) {
                 work->emit2C->trails = (s32)fx_1a7_op81Trails2;
                 work->emit2C->trailSlots = 0xD;
                 work->emit2C->trailStride = 0xB0;
             }
-            work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->pos5C);
+            work->emit30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MIND_BLAST_VIOLET_ORB), (s32)&work->pos5C);
         }
         return frame >= 0x28;
     }

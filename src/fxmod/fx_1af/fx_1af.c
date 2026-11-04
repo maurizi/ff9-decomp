@@ -92,49 +92,49 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 0xA) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SPECKS), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_ASH_COLUMN), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_ASH_COLUMN_2), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos38);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SMOKE), (s32)&work->pos38);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
             }
             if (frame == 0x1E) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_ASH_COLUMN_3), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_ASH_COLUMN_4), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
             }
             if (frame == 0x45) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_DARK_SMOKE), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_SPECKS_2), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_OLIVE_RINGS), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->otZ = 0x140;
                 }
             }
             if (frame == 0x4B) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos28);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEATH_PINK_RINGS), (s32)&work->pos28);
                 if (emitter != NULL) {
                     emitter->trails = (s32)fx_1af_op80Trails;
                     emitter->trailSlots = 0x2C;

@@ -68,7 +68,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVEC
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     } while (i < 25);
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x20), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_ORANGE_TRAIL), 0, NULL, frame, 0x1000, fade, 1, (u8 *)trail, 0);
 }
 
 s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *args) {
@@ -148,11 +148,11 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->frame4 = 0;
         fx_19f_env = env;
         ex->btlfx_initEffModels(fx_19f_effModels, 5);
-        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 1);
-        work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x27), 0);
-        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1A), 0);
-        work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
-        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x22), 1);
+        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_3), 1);
+        work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_5), 0);
+        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL_2), 0);
+        work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MODEL), 0);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_DOME_COLUMN), 1);
         work->pos8.vx = 0;
         work->pos8.vy = 0;
         work->pos8.vz = 0;
@@ -175,7 +175,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         arcAmp = 0;
         switch (work->state0) {
         case 0: {
-            key = (Fx19fKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, 0x1C) + (frame * 12 + 4));
+            key = (Fx19fKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MOTION_KEYS) + (frame * 12 + 4));
             work->pos48[0] = key->x + work->pos8.vx;
             work->pos48[1] = key->y + work->pos8.vy;
             work->pos48[2] = key->z + work->pos8.vz;
@@ -194,7 +194,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vy = 0;
                 rot.vz = frame * 0x18;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->pos8, &rot,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_GREY_RING), &work->pos8, &rot,
                                   ex->math_sin(introT >> 2), 0, 1, ex->math_cos(introT >> 2));
                 env->otZ = 0;
                 glowBright = ex->math_cos(introT >> 2) >> 1;
@@ -296,7 +296,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame > 0) {
                 SVECTOR rot;
 
-                keys = (Fx19fKeys *)ex->btlfx_getFileData(entry->file, 8);
+                keys = (Fx19fKeys *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LENS_FLASH_KEYS);
                 keyFrame = frame + 9;
                 if (keyFrame >= 36) {
                     burstSize = *(s16 *)((u8 *)keys + (36 * 6 + 4)) * 2 / 3 + ((frame - 27) << 6);
@@ -322,30 +322,30 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 env->otZ = 0x140;
                 if (frame >= 15) {
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x17), &work->pos10, NULL, burstSize * 5 / 2,
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LENS_FLASH), &work->pos10, NULL, burstSize * 5 / 2,
                                             frame & 1, 1, ex->math_cos(t >> 2), 0, 0);
                 }
                 rot.vx = rot.vy = 0x200;
                 rot.vz = frame * 0x2C;
                 rot.pad = 0;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->pos10, &rot,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CYAN_RING), &work->pos10, &rot,
                                   ex->btlfx_randCentered(0x1000) + 0x4000, 0, 1, 0x1000);
                 env->otZ = 0;
             }
             if (frame >= 20) {
                 ringT = ((frame - 20) << 12) / 23;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1D), &work->pos10, NULL, (ringT >> 2) + 0x2800, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_RING), &work->pos10, NULL, (ringT >> 2) + 0x2800, 0, 1,
                                   ex->math_sin(ringT >> 1));
             }
             if (frame == 20) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_BLUE_GLOW_RINGS), (s32)&work->pos10);
                 work->emit6C = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x96;
                 }
             }
             if (frame == 14) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SPARK_BURST), (s32)&work->pos8);
                 work->emit68 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = -0x20;
@@ -430,7 +430,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_RAMUH_SPARK_PARTICLE), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x96;
                 }
@@ -484,7 +484,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = rot.vy = rot.vx = 0;
                 ex->btlfx_drawScreenGrid(2, 0xA0, 0x78, 0x50, 0x3C, 4, 4, 2, 2, &rot, &sc, &col, 0, 0);
             }
-            key = (Fx19fKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, 0x1B) + (frame * 12 + 4));
+            key = (Fx19fKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_MOTION_KEYS_2) + (frame * 12 + 4));
             work->pos48[0] = key->x + work->pos8.vx;
             work->pos48[1] = key->y + work->pos8.vy - 0x2EE;
             work->pos48[2] = key->z + work->pos8.vz;
@@ -578,9 +578,9 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     pt->pad = pad;
                     pt++;
                 }
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), 0, NULL, (work->frame4 + k) & 7, stripScale, alpha,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LIGHTNING_RIBBON), 0, NULL, (work->frame4 + k) & 7, stripScale, alpha,
                                     1, (u8 *)stripA, 2);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xF), 0, NULL, (work->frame4 + k) & 7, stripScale,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LIGHTNING_RIBBON_2), 0, NULL, (work->frame4 + k) & 7, stripScale,
                                     alpha, 1, (u8 *)stripB, 2);
             }
         }
@@ -605,7 +605,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     wavePt->pad = 0xC8;
                     wavePt++;
                 }
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x18), 0, (s32 *)&work->pos8,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_RAMUH_LIGHTNING_BOLT), 0, (s32 *)&work->pos8,
                                     (work->frame4 + wave) & 7, waveScale[wave], waveAlpha[wave], 1, (u8 *)waveTrail, 1);
             }
         }
@@ -628,7 +628,7 @@ s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         fx_19f_env = env;
     } else {
         frame = entry->frame;
-        keys = (Fx19fKeys *)ex->btlfx_getFileData(entry->file, 0x2B);
+        keys = (Fx19fKeys *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CAMERA_KEYS);
         key = frame;
         if (key >= keys->unk2) {
             key = keys->unk2 - 1;
@@ -640,7 +640,7 @@ s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         env->camera->points[0].vx = camPt.vx;
         env->camera->points[0].vy = camPt.vy;
         env->camera->points[0].vz = camPt.vz;
-        keys = (Fx19fKeys *)ex->btlfx_getFileData(entry->file, 0x2C);
+        keys = (Fx19fKeys *)ex->btlfx_getFileData(entry->file, FX_RAMUH_CAMERA_KEYS_2);
         key = frame;
         if (key >= keys->unk2) {
             key = keys->unk2 - 1;

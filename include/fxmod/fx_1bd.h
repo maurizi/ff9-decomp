@@ -6,6 +6,29 @@
  * (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_1bd effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_IFRIT_VEC_TRACK           0x6 /* table: vector track (fxm_vecTrackInit; byte-identical to fx_114 entry 0x1D) */
+#define FX_IFRIT_VEC_TRACK_3         0x7 /* table: vector track (fxm_vecTrackInit; byte-identical to fx_114 entry 0x25) */
+#define FX_IFRIT_POS_TRACK           0x8 /* table: position track (fxm_posTrackInit; byte-identical to fx_114 entry 0x23) */
+#define FX_IFRIT_VEC_TRACK_2         0x9 /* table: vector track (fxm_vecTrackInit; byte-identical to fx_114 entry 0x24) */
+#define FX_IFRIT_ORANGE_RINGS        0xA /* emitter: orange gouraud rings, 16 frames (byte-identical to fx_114 entry 0xB) */
+#define FX_IFRIT_FLAME_RING          0xB /* model: flat ring, flame texture (byte-identical to fx_114 entry 0x22) */
+#define FX_IFRIT_GRID_PLANE          0xD /* model: flat grid plane (tpage 0x117 reads a placeholder page in the render; byte-identical to fx_114 entry 0x2A) (look pending) */
+#define FX_IFRIT_FLAME_DOME          0xE /* model: dome, flame texture (byte-identical to fx_114 entry 0x27) */
+#define FX_IFRIT_FAN_EMITTER_2       0x12 /* emitter: one orbiting fan element (not rendered; byte-identical to fx_114 entry 0x26) (look pending) */
+#define FX_IFRIT_BOWL                0x13 /* model: hemisphere bowl (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x1E) (look pending) */
+#define FX_IFRIT_SHOT0_CAMERA_KEYS_2 0x14 /* table: camera key channel (fxm_camChanAdd from frame 0 into env->camera[1]) */
+#define FX_IFRIT_SHOT0_CAMERA_KEYS_1 0x15 /* table: camera key channel (fxm_camChanAdd from frame 0 into env->camera[0]) */
+#define FX_IFRIT_TRAIL_PATHS         0x16 /* table: offset table of position paths (fxm_offsetTableEntry + fxm_posPathInit) for the fire trails (byte-identical to fx_114 entry 0x17) */
+#define FX_IFRIT_FIRE_TRAIL          0x17 /* trail: orange strip, drawn along the paths of FX_IFRIT_TRAIL_PATHS (byte-identical to fx_114 entry 0x15) */
+#define FX_IFRIT_ORANGE_RING_2       0x18 /* emitter: orange to white gouraud ring (byte-identical to fx_114 entry 0x16) */
+#define FX_IFRIT_FIRE_BURST          0x26 /* emitter: ember specks + orange fire-burst clouds (byte-identical to fx_114 entry 0x21) */
+#define FX_IFRIT_PIECE_TRACKS        0x28 /* table: offset table of tracks, one per piece (fxm_offsetTableEntry; byte-identical to fx_114 entry 0x29) */
+#define FX_IFRIT_PIECE_MODELS        0x29 /* table: offset table of model data, one per piece (fxm_offsetTableEntry; byte-identical to fx_114 entry 0x28) */
+#define FX_IFRIT_BLOCK_CLUSTER       0x2B /* model: cluster of block chunks, orange streak texture (byte-identical to fx_114 entry 0x20) */
+#define FX_IFRIT_SPOKED_RING         0x2C /* model: flat ring with spokes (registered through the texture list, texture not drawn; byte-identical to fx_114 entry 0x12) (look pending) */
+
 typedef struct {
     s16 x, y, z;
 } Fx1bdPoint;

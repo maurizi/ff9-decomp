@@ -97,7 +97,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->unkCC.vx = 0;
         w->unkCC.vy = -0x2000;
         w->unkCC.vz = 0x418;
-        w->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xC), 0xFF);
+        w->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_SPHERE), 0xFF);
         w->scale74.vx = 0x1800;
         w->scale74.vy = 0x1800;
         w->scale74.vz = 0x1800;
@@ -113,10 +113,10 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->scaleAC.vx = 0x1A80;
         w->scaleAC.vy = 0x1A80;
         w->scaleAC.vz = 0x1A80;
-        w->modelA8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
-        w->model98 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 1);
-        w->model94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
-        w->modelA4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
+        w->modelA8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_VORTEX_DOME), 1);
+        w->model98 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_RING_FUNNEL), 1);
+        w->model94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_VORTEX_TORUS), 1);
+        w->modelA4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_ORANGE_RING), 1);
     } else {
         frame = entry->frame;
         env->camera->points[1].vx = 0;
@@ -134,8 +134,8 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->counters0[4] = 0x10;
             break;
         case 0x18:
-            w->emit20[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&w->posBC);
-            w->emit20[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&w->posC4);
+            w->emit20[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_FAN_EMITTER), (s32)&w->posBC);
+            w->emit20[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_VIOLET_RING), (s32)&w->posC4);
             if (w->emit20[0] != NULL) {
                 w->emit20[0]->otZ = 0x200;
             }
@@ -147,7 +147,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->counters0[5] = 1;
             w->counters0[0x14] = 1;
             w->counters0[0xC] = 0x30;
-            emitter = w->emit20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->posD4);
+            emitter = w->emit20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_ROCK_DEBRIS), (s32)&w->posD4);
             if (emitter != NULL) {
                 emitter->file->m.module.update = fx_1be_op80ParticleMotion;
             }
@@ -170,18 +170,18 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->pos8C.vx = 0;
             w->pos8C.vy = -0x800;
             w->pos8C.vz = 0x418;
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&w->pos8C);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_NAVY_RINGS), (s32)&w->pos8C);
             if (emitter != NULL) {
                 emitter->otZ = 0x400;
             }
             break;
         case 0x50:
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&w->pos8C);
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&w->pos8C);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_FIRE_RINGS), (s32)&w->pos8C);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_PURPLE_RINGS), (s32)&w->pos8C);
             if (emitter != NULL) {
                 emitter->otZ = 0x80;
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&w->pos8C);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_BLUE_SPECKS), (s32)&w->pos8C);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
@@ -222,7 +222,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->scale74.vx = w->scale74.vz = w->scale74.vy = fxm_easeLerp(1, 8, w->counters0[3], 0x555, 0);
         }
         if (w->counters0[0] != 0) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ATOMOS_BACKDROP), frame);
             ex->Hi_DrawEffModel(&w->rot84, &w->pos64, (s32)&w->scale74, w->model60);
         }
         if (w->counters0[0xD] != 0) {
@@ -319,7 +319,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 ex->btlfx_setUnitPos(i, (s16 *)&fx_1be_units[i].pos18);
                 if (w->counters0[0x10] == 0) {
                     fx_1be_units[i].pos18.vy = 0;
-                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1be_units[i].pos18);
+                    emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ATOMOS_GREY_RINGS), (s32)&fx_1be_units[i].pos18);
                     if (emitter != NULL) {
                         emitter->otZ = -0x100;
                     }

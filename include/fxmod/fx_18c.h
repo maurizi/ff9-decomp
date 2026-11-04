@@ -5,6 +5,11 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_18c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_LIGHT_PARTICLES  0x1 /* emitter: one particle element, renders as a thin black strip (look pending) */
+#define FX_LIGHT_GREEN_HALO 0x2 /* emitter: yellow-green crescent halo particles + violet-white gouraud rings */
+
 typedef struct {
     SVECTOR pos0; /* home position */
     SVECTOR pos8; /* unk8.vy: height */

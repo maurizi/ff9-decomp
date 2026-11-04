@@ -35,8 +35,8 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x12:
         case 0x24:
         case 0x36:
-            work->emit54[work->count0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos44);
-            work->emit64[work->count0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4C);
+            work->emit54[work->count0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRAL_SMOKE_GREEN_PUFFS), (s32)&work->pos44);
+            work->emit64[work->count0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRAL_SMOKE_BROWN_PUFFS), (s32)&work->pos4C);
             work->rot14[work->count0].vy += work->rotC.vy;
             work->rot14[work->count0].vx += work->rotC.vx;
             work->rot14[work->count0].vz += work->rotC.vz;
@@ -44,7 +44,7 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (frame == 0xF) {
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos3C);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRAL_SMOKE_PUFF_HELIX), (s32)&work->pos3C);
         }
         for (i = 0; i < work->count0; i++) {
             if (work->emit54[i] != NULL && work->emit54[i]->state == BTLFX_EMIT_DONE) {

@@ -26,7 +26,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_198_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
         ex->btlfx_initEffModels(fx_198_effModels, 5);
-        key = (Fx198Key *)ex->btlfx_getFileData(entry->file, 0x15);
+        key = (Fx198Key *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_BOWL);
         work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlModelHeader *)key, 0x137, 0xFFFF, 0, 0x80);
         work->unk14 = 0;
         work->unk16 = 0;
@@ -37,7 +37,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             if (frame < 0x1E) {
-                key = (Fx198Key *)(ex->btlfx_getFileData(entry->file, 0x16) + 4);
+                key = (Fx198Key *)(ex->btlfx_getFileData(entry->file, FX_TSUNAMI_BOWL_KEYS) + 4);
                 key += frame;
                 pos.vx = work->posC.vx;
                 pos.vy = work->posC.vy;
@@ -77,7 +77,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     quadPos.vx = work->posC.vx + ((quadKey->x0 * work->scale8) >> 12);
                     quadPos.vy = work->posC.vy + ((quadKey->y2 * work->scale8) >> 12);
                     quadPos.vz = work->posC.vz + ((quadKey->z4 * work->scale8) >> 12);
-                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &quadPos, NULL, 0x2000, work->frame4 + j * 4 + j, 1, quadAlpha);
+                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_WATER_SPLASH), &quadPos, NULL, 0x2000, work->frame4 + j * 4 + j, 1, quadAlpha);
                     quadRot.vz += 0x40;
                 }
                 if (frame < 0x14) {
@@ -89,7 +89,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         quadPos.vx = work->posC.vx + ((quadKey->x0 * work->scale8) >> 12);
                         quadPos.vy = work->posC.vy + ((quadKey->y2 * work->scale8) >> 12);
                         quadPos.vz = work->posC.vz + ((quadKey->z4 * work->scale8) >> 12);
-                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &quadPos, NULL, 0x1800, work->frame4 + j * 4 + j, 1, quadAlpha);
+                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_WATER_SPLASH), &quadPos, NULL, 0x1800, work->frame4 + j * 4 + j, 1, quadAlpha);
                         quadRot.vz += 0x40;
                     }
                 }
@@ -103,7 +103,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 quadRot.pad = 0;
                 env->otZ = 0x180;
                 t = ((frame - 0x14) << 12) / 20;
-                rowKey = (Fx198Key *)(ex->btlfx_getFileData(entry->file, 0x18) + 4);
+                rowKey = (Fx198Key *)(ex->btlfx_getFileData(entry->file, FX_TSUNAMI_SPLASH_ROW_KEYS) + 4);
                 rowKey += frame;
                 quadPos.vy = rowKey->y2;
                 quadPos.vz = rowKey->z4;
@@ -111,7 +111,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 for (; i < 0xA; i++) {
                     ex->btlfx_getFileData(entry->file, fx_198_quadPathFileIds[i]);
                     quadPos.vx = i * 0x100 - 0x500;
-                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &quadPos, NULL, 0x1800, work->frame4 + i * 4 + i, 1, ex->math_cos(t >> 2));
+                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_WATER_SPLASH), &quadPos, NULL, 0x1800, work->frame4 + i * 4 + i, 1, ex->math_cos(t >> 2));
                     quadRot.vz += 0x40;
                 }
                 env->otZ = 0;
@@ -128,7 +128,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        rowKey = (Fx198Key *)ex->btlfx_getFileData(entry->file, 0x17);
+        rowKey = (Fx198Key *)ex->btlfx_getFileData(entry->file, FX_TSUNAMI_BACKDROP);
         ex->btlfx_drawBackdrop((BtlBgLayers *)rowKey, work->frame4);
         work->frame4++;
     }

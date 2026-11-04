@@ -5,6 +5,13 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_194 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SHOCKWAVE_DUST_WAVE         0x1 /* emitter: rings textured with grey dust streaks + white glow flash; sub: white rock-debris ring */
+#define FX_SHOCKWAVE_VIOLET_STREAKS    0x2 /* emitter: violet vertical streak sprite (three more sprites render black) */
+#define FX_SHOCKWAVE_GREY_STREAK_RINGS 0x3 /* emitter: rings textured with grey vertical streaks */
+#define FX_SHOCKWAVE_WHITE_GLOW        0x6 /* emitter: white glow particles fading in, 21 frames */
+
 typedef struct {
     s32 state0; /* state */
     SVECTOR pos4; /* caster body position */

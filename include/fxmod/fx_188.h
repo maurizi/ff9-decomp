@@ -5,6 +5,19 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_188 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_LV3_DEF_LESS_PARTICLE       0x3 /* particles: one frame, renders black (drawn per pool item) (look pending) */
+#define FX_LV3_DEF_LESS_VIOLET_ORBS    0x4 /* emitter: violet glowing orb sprites, 12 frames (per pool item) */
+#define FX_LV3_DEF_LESS_VIOLET_ORB     0xE /* particles: violet glowing orb (per pool item) */
+#define FX_LV3_DEF_LESS_BACKDROP       0xF /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_LV3_DEF_LESS_SMOKE_RINGS    0x10 /* emitter: rings textured with orange smoke */
+#define FX_LV3_DEF_LESS_SMOKE_RINGS_2  0x11 /* emitter: rings textured with orange smoke */
+#define FX_LV3_DEF_LESS_BLUE_RINGS     0x12 /* emitter: white-blue and white-green gouraud rings */
+#define FX_LV3_DEF_LESS_ORANGE_TRAILS  0x13 /* emitter: orbiting 3D trails, orange glowing streak */
+#define FX_LV3_DEF_LESS_RING           0x14 /* rings: one textured ring (texture not resolved) (look pending) */
+#define FX_LV3_DEF_LESS_CRYSTAL_SHARDS 0x15 /* emitter: orbiting pink / blue / orange crystal shards, 16 frames */
+
 typedef struct {
     s32 state0; /* state */
     s32 speed4; /* speed */

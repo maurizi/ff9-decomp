@@ -103,7 +103,7 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x25:
-            work->emit40 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x29), (s32)&work->pos8C);
+            work->emit40 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_PINK_RINGS_2), (s32)&work->pos8C);
             break;
         }
         return frame >= 0x3C;
@@ -136,8 +136,8 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos10);
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos10);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_PINK_SPARKS), (s32)&work->pos10);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_FAN_EMITTER), (s32)&work->pos10);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->otZ = 0x100;
             }
@@ -146,8 +146,8 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x1C:
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos10);
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos10);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_FLAME_TRAIL), (s32)&work->pos10);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_YELLOW_RINGS), (s32)&work->pos10);
             if (work->emit0[2] != NULL) {
                 work->emit0[2]->trails = (s32)fx_1b4_op81Trails;
                 work->emit0[2]->trailSlots = 0xC0;
@@ -195,7 +195,7 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot2.vz = 0;
             ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot2, &scale2, &col2, 1, 0);
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x1C), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_BACKDROP), frame);
         return frame >= 0x8C;
     }
     return 0;
@@ -217,18 +217,18 @@ s32 fx_1b4_op82(s32 mode, Fx1b4Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos1C);
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos1C);
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos1C);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_YELLOW_RINGS_2), (s32)&work->pos1C);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_PINK_RINGS), (s32)&work->pos1C);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_PINK_SPARKS_2), (s32)&work->pos1C);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->otZ = 0x100;
             }
             break;
         case 20:
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos1C);
-            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos1C);
-            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos1C);
-            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos1C);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_RED_RINGS), (s32)&work->pos1C);
+            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_SMOKE_TRAIL), (s32)&work->pos1C);
+            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_RED_ORB), (s32)&work->pos1C);
+            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_ORANGE_GLOW), (s32)&work->pos1C);
             if (work->emit0[4] != NULL) {
                 work->emit0[4]->trails = (s32)fx_1b4_op82Trails0;
                 work->emit0[4]->trailSlots = 0x21;
@@ -264,7 +264,7 @@ s32 fx_1b4_op83(s32 mode, Fx1b4Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 0) {
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2B), (s32)&work->pos4);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FLARE_STAR_RED_SHARDS), (s32)&work->pos4);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = 0x100;
             }

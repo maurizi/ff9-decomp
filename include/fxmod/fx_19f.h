@@ -5,6 +5,30 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_19f effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_RAMUH_MODEL              0x5 /* 'so' model (byte-identical to fx_0ba entry 0x4) (look pending) */
+#define FX_RAMUH_LIGHTNING_RIBBON   0x6 /* trail: ribbon drawn between key points (texture garbled in the render; byte-identical to fx_0ba entry 0x5) (look pending) */
+#define FX_RAMUH_LENS_FLASH_KEYS    0x8 /* table: per-frame size keys of the lens flash (FX_RAMUH_LENS_FLASH; byte-identical to fx_0ba entry 0x7) */
+#define FX_RAMUH_BLUE_GLOW_RINGS    0xC /* emitter: blue glow quad and fading light-blue gouraud rings (byte-identical to fx_0ba entry 0xA) */
+#define FX_RAMUH_LIGHTNING_RIBBON_2 0xF /* trail: second ribbon drawn between key points (texture garbled in the render; byte-identical to fx_0ba entry 0xD) (look pending) */
+#define FX_RAMUH_SPARK_BURST        0x16 /* emitter: white gouraud rings + sprites (texture garbled in the render; byte-identical to fx_0ba entry 0x14) (look pending) */
+#define FX_RAMUH_LENS_FLASH         0x17 /* particles: white-violet lens flash (byte-identical to fx_0ba entry 0x15) */
+#define FX_RAMUH_LIGHTNING_BOLT     0x18 /* trail: 8-frame trail (texture garbled in the render; byte-identical to fx_0ba entry 0x16) (look pending) */
+#define FX_RAMUH_MODEL_2            0x1A /* 'so' model (byte-identical to fx_0ba entry 0x18) (look pending) */
+#define FX_RAMUH_MOTION_KEYS_2      0x1B /* table: per-frame position / rotation keys (op81, second phase; byte-identical to fx_0ba entry 0x19) */
+#define FX_RAMUH_MOTION_KEYS        0x1C /* table: per-frame position / rotation keys (op81, first phase; byte-identical to fx_0ba entry 0x1A) */
+#define FX_RAMUH_BLUE_RING          0x1D /* rings: blue gouraud rings (byte-identical to fx_0ba entry 0x1B) */
+#define FX_RAMUH_CYAN_RING          0x1F /* rings: white / cyan / blue gouraud rings (byte-identical to fx_0ba entry 0x1D) */
+#define FX_RAMUH_ORANGE_TRAIL       0x20 /* trail: 8-frame offset trail (texture garbled in the render, orange; byte-identical to fx_0ba entry 0x1E) (look pending) */
+#define FX_RAMUH_MODEL_3            0x21 /* 'so' model (byte-identical to fx_0ba entry 0x1F) (look pending) */
+#define FX_RAMUH_DOME_COLUMN        0x22 /* 'so' model: dome-capped column (its texture pages hold a 'dummy' placeholder) (look pending) */
+#define FX_RAMUH_GREY_RING          0x23 /* rings: grey gouraud ring */
+#define FX_RAMUH_MODEL_5            0x27 /* 'so' model (byte-identical to fx_0ba entry 0x26) (look pending) */
+#define FX_RAMUH_SPARK_PARTICLE     0x2A /* emitter: one particle (texture garbled in the render; byte-identical to fx_0ba entry 0x2C) (look pending) */
+#define FX_RAMUH_CAMERA_KEYS        0x2B /* table: per-frame camera point 0 (op82; byte-identical to fx_0ba entry 0x2E) */
+#define FX_RAMUH_CAMERA_KEYS_2      0x2C /* table: per-frame camera point 1 (op82; byte-identical to fx_0ba entry 0x2F) */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */

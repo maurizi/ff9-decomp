@@ -5,6 +5,15 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1b6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEATH_SPIRAL_TRAIL  0x2 /* emitter: spiralling 3D trail, strip mostly black with a faint white streak (look pending) */
+#define FX_DEATH_YELLOW_RINGS  0x3 /* emitter: cream and yellow gouraud rings */
+#define FX_DEATH_RED_LIGHTNING 0x4 /* emitter: orbiting red lightning fan + yellow-to-brown gouraud rings */
+#define FX_DEATH_BUBBLE_RINGS  0x5 /* emitter: rings textured with white bubble spots + pale-yellow gouraud rings */
+#define FX_DEATH_STAR_SPECKS   0x7 /* emitter: cone of faint teal glows + white star dots, 40 frames */
+#define FX_DEATH_CYAN_RINGS    0x8 /* emitter: cyan gouraud rings */
+
 typedef struct {
     s32 posX0; /* position, 20.12 */
     s32 posY4;

@@ -5,6 +5,12 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_190 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_VIRAL_SMOKE_BROWN_PUFFS 0x1 /* emitter: orange-brown smoke puffs, 24 frames */
+#define FX_VIRAL_SMOKE_GREEN_PUFFS 0x2 /* emitter: green smoke puffs, 24 frames */
+#define FX_VIRAL_SMOKE_PUFF_HELIX  0x4 /* emitter: helix of green and orange-brown smoke puffs */
+
 typedef struct {
     s32 count0; /* count */
     SVECTOR rot4; /* angles */

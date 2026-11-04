@@ -45,8 +45,8 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_193_op80To1.vz = work->pos8.vz;
         ex->btlfx_getUnitBonePos(0x10, 0xE, (u16 *)&fx_193_op80From0);
         ex->btlfx_getUnitBonePos(0x10, 0x10, (u16 *)&fx_193_op80From1);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_193_emitPos);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&fx_193_emitPos);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_RED_TRAIL), (s32)&fx_193_emitPos);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_RED_TRAIL_2), (s32)&fx_193_emitPos);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_193_op80Trails0;
             work->emit0->trailSlots = 4;
@@ -79,13 +79,13 @@ s32 fx_193_op81(s32 mode, Fx193Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_193_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
-        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos18);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_FLAME_RINGS), (s32)&work->pos10);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_FLAME_RINGS_2), (s32)&work->pos10);
+        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_DARK_RING), (s32)&work->pos18);
     } else {
         frame = entry->frame;
         if (frame == 4) {
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_COUNTER_HORN_DUST_CLOUD), (s32)&work->pos18);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }

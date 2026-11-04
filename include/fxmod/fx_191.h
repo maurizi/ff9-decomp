@@ -5,6 +5,17 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_191 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_LANCER_GOLD_TRAIL   0x2 /* emitter: screen trail, orange-gold streak strip (byte-identical to entry 0x9) */
+#define FX_LANCER_PATH         0x4 /* table: position path (fxm_posPathInit) */
+#define FX_LANCER_PATH_2       0x5 /* table: position path (fxm_posPathInit) */
+#define FX_LANCER_GOLD_TRAIL_2 0x9 /* emitter: screen trail, orange-gold streak strip (byte-identical to entry 0x2) */
+#define FX_LANCER_RED_SPARKS   0xF /* emitter: white / pink gouraud rings + red spark dots */
+#define FX_LANCER_ORANGE_RINGS 0x10 /* emitter: orange gouraud rings, 18 frames */
+#define FX_LANCER_GREEN_RINGS  0x11 /* emitter: mint-green gouraud rings, 18 frames */
+#define FX_LANCER_CYAN_SPARKS  0x12 /* emitter: white / pale-green gouraud rings + cyan spark dots */
+
 typedef struct {
     s16 x, y, z;
 } Fx191Point;

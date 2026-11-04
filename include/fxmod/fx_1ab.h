@@ -5,6 +5,17 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1ab effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_WATERGA_WATER_RING     0x1 /* 'so' model: flared ring, blue water texture */
+#define FX_WATERGA_WATER_SPHERE   0x2 /* 'so' model: sphere, blue water-caustic texture */
+#define FX_WATERGA_WATER_SPLASH   0x3 /* emitter: cone of dark-blue water splash sprites, 24 frames */
+#define FX_WATERGA_RINGS          0x4 /* emitter: cone of textured rings (texture not resolved) (look pending) */
+#define FX_WATERGA_BACKDROP       0x5 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_WATERGA_BACKDROP_2     0x6 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_WATERGA_BACKDROP_3     0x7 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_WATERGA_WATER_SPLASH_2 0x8 /* emitter: sphere of dark-blue water splash sprites, 24 frames */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -5,6 +5,19 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_1b0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEATH_ROCKS           0x2 /* emitter: spiralling 3D trail + grey rock boulders */
+#define FX_DEATH_LIGHTNING_TRAIL 0x3 /* emitter: 3D trail, blue streak strip and blue lightning */
+#define FX_DEATH_FIRE_RINGS      0x4 /* emitter: white-yellow-orange-red gouraud rings */
+#define FX_DEATH_DUST_RINGS      0x5 /* emitter: rings textured with tan dust, 24 frames */
+#define FX_DEATH_COLOUR_RINGS    0x6 /* emitter: pale-yellow / cyan / orange / magenta gouraud rings */
+#define FX_DEATH_BLUE_FLARE      0x9 /* emitter: blue cone-beam fan + blue lens-flare streak + yellow-red and pink gouraud rings */
+#define FX_DEATH_ROCK_TRAIL      0xC /* emitter: orbiting screen trail, grey rock strip */
+#define FX_DEATH_SPECKS          0xD /* emitter: spiral of faint white speck sprites, 39 frames */
+#define FX_DEATH_DUST_RINGS_2    0xE /* emitter: pale-yellow / cyan / magenta gouraud rings + rings textured with tan dust */
+#define FX_DEATH_PINK_RINGS      0x11 /* rings: pale-pink to crimson gouraud rings, 24 frames */
+
 typedef struct {
     s32 posX0; /* position, 20.12 */
     s32 posY4;

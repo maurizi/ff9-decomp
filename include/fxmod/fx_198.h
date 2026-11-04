@@ -5,6 +5,14 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_198 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_TSUNAMI_WATER_SPLASH    0x6 /* anim quads: blue-white water bubbles and foam, 30 frames */
+#define FX_TSUNAMI_BOWL            0x15 /* model: hemisphere bowl, plain white texture */
+#define FX_TSUNAMI_BOWL_KEYS       0x16 /* table: per-frame rotation keys of the bowl model */
+#define FX_TSUNAMI_BACKDROP        0x17 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_TSUNAMI_SPLASH_ROW_KEYS 0x18 /* table: per-frame position keys of the row of water splashes */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame counter */

@@ -9,7 +9,7 @@ s32 fx_1a9_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else if (mode == 1) {
         fx_1a9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&fx_1a9_emitPos0);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_1a9_emitPos0);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_VIRUS_POWDER_PUFFS), (s32)&fx_1a9_emitPos0);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

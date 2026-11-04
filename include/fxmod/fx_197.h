@@ -4,6 +4,18 @@
 /* Effect module fx_197 (dir 13 file 0x197): Shiva, short summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_197 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s6.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SHIVA_STAR_GLINTS   0x4 /* emitter: blue glows, white / green star glints, blue glow domes (byte-identical to fx_026 entry 0x7) */
+#define FX_SHIVA_SHATTER_RINGS 0xB /* emitter: blue gouraud rings + ice chunk sprites, sparks (pool item per piece; byte-identical to fx_026 entry 0x1A) */
+#define FX_SHIVA_ICE_DEBRIS_2  0xC /* emitter: small ice chunk sprites (byte-identical to fx_026 entry 0x21) */
+#define FX_SHIVA_BLUE_TRAIL    0xD /* emitter: spiralling trail, blue strip texture (byte-identical to fx_026 entry 0x1F) */
+#define FX_SHIVA_ICE_DEBRIS    0xE /* emitter: small ice chunk sprites (byte-identical to fx_026 entry 0x20) */
+#define FX_SHIVA_CYAN_RING     0xF /* emitter: cyan-white gouraud ring (byte-identical to fx_026 entry 0x22) */
+#define FX_SHIVA_ICE_CHUNKS    0x1A /* emitter: falling ice chunk sprites, faint sparkles (byte-identical to fx_026 entry 0x6) */
+#define FX_SHIVA_ICE_SHARD     0xD8 /* 'so' model: long ice shard, pale cracked-ice texture (0xC0+ = battle load buffer, entry 0x18) */
+#define FX_SHIVA_ICE_SHARD_2   0xD9 /* 'so' model: long ice shard, dark cracked-ice texture (0xC0+ = battle load buffer, entry 0x19) */
+
 typedef struct {
     SVECTOR vert0; /* pad: already split off */
     SVECTOR vert8;
