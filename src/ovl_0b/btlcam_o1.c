@@ -164,17 +164,17 @@ void btlcam_loadScript(s32 arg) {
                     val = hdr->height;
                     radius = hdr->radius;
                 }
-                if (radius == 0x4D7 || radius >= 0xBB8) {
-                    g_btlCamera.variant = 2;
-                } else if (radius < 0x65) {
-                    g_btlCamera.variant = 0;
+                if (radius == BTLCAM_RADIUS_FORCE_LARGE || radius >= BTLCAM_RADIUS_LARGE) {
+                    g_btlCamera.variant = BTLCAM_SIZE_LARGE;
+                } else if (radius < BTLCAM_RADIUS_SMALL) {
+                    g_btlCamera.variant = BTLCAM_SIZE_SMALL;
                 } else {
-                    g_btlCamera.variant = 1;
-                    if (val < 0x159) {
-                        g_btlCamera.variant = 0;
+                    g_btlCamera.variant = BTLCAM_SIZE_MEDIUM;
+                    if (val < BTLCAM_HEIGHT_SMALL) {
+                        g_btlCamera.variant = BTLCAM_SIZE_SMALL;
                     }
-                    if (val >= 0x3E9) {
-                        g_btlCamera.variant = 2;
+                    if (val >= BTLCAM_HEIGHT_LARGE) {
+                        g_btlCamera.variant = BTLCAM_SIZE_LARGE;
                     }
                 }
                 break;

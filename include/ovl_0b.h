@@ -1260,6 +1260,13 @@ u8 *btlbg_drawRecord(BtlBgRec *, u8 *, u32 *, BtlBgGroup *);
 void btlbg_projectVertices(BtlBgRec *, u8 *, u32 *, s32);
 extern s32 g_btlbgTexAnimCount;
 extern s32 g_btlbgScrollCount;
+/* Kind-0 db items of FILE_BTL_COMMON (btl_loadCommonData db_register's it; its kind-0 block holds exactly these 5
+ * keys, and its DB_MUSIC block MUSIC_VICTORY). Evidence: [code] the lookups, [data] the file's db header. */
+#define BTL_COMMON_NAME_GLYPHS 0x14  /* text_uploadPartyNames work (glyph sheet, name image at +0x4000; btlui_uploadPartyNames) */
+#define BTL_COMMON_PORTRAITS   0x1E  /* party portraits, 0x6C0 bytes each (btlui_loadPortraits); g_modeHeap starts here afterwards */
+#define BTL_COMMON_STATUS_INFO 0x1F4 /* copied to Battle.statusInfo (0x180 bytes) */
+#define BTL_COMMON_ABILITIES   0x1F5 /* copied to Battle.abilities (0xC00 bytes) */
+#define BTL_COMMON_STATUS_SETS 0x1F6 /* copied to Battle.statusSets (0x100 bytes) */
 extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
 /* btlfx_getCommonData entries (g_btlfxCommonData, 32 entries). Evidence: [code] the callers below, and the static
  * table in ovl_0b's data: 0-1, 3-5 are emitter definitions (0x13C / 0x17C bytes), 2, 6, 7, 8, 0x14 particle
@@ -1955,6 +1962,15 @@ typedef struct Unk800FE3B8 {
 #define BTLCAM_SELCTX_CAMERA_NO 1      /* Battle.cameraNo */
 #define BTLCAM_SELCTX_TARGET_SIZE 2    /* the target's radius/height: 0 small, 1 medium, 2 large */
 #define BTLCAM_SELCTX_FOCUS     3      /* 0 when focusUnit can't act, else by the ambush and the party's live count */
+/* BTLCAM_SELCTX_TARGET_SIZE: the target model header's radius and height (btlcam_loadScript). Evidence: [code] */
+#define BTLCAM_SIZE_SMALL  0 /* radius below BTLCAM_RADIUS_SMALL, or medium radius and height below BTLCAM_HEIGHT_SMALL */
+#define BTLCAM_SIZE_MEDIUM 1
+#define BTLCAM_SIZE_LARGE  2 /* radius BTLCAM_RADIUS_LARGE and up or BTLCAM_RADIUS_FORCE_LARGE, or height BTLCAM_HEIGHT_LARGE and up */
+#define BTLCAM_RADIUS_SMALL       101
+#define BTLCAM_RADIUS_LARGE       3000
+#define BTLCAM_RADIUS_FORCE_LARGE 1239 /* one exact radius counted as large (runtime: pending R41, which model) */
+#define BTLCAM_HEIGHT_SMALL       345
+#define BTLCAM_HEIGHT_LARGE       1001
 
 /* bob byte (g_btlCamScript.bob, g_btlCamera.idleBob; btlcam_applyBob). Evidence: [code], runtime (docs/runtime-findings.md BTLCAM_OP runtime check) */
 #define BTLCAM_BOB_AMP         0xF0   /* amplitude (scaled by the eye-target distance) */

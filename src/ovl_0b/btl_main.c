@@ -198,8 +198,8 @@ s32 btl_loadKanjiFont(void) {
 }
 
 s32 btl_loadResidentMusic(void) {
-    s32 seqAddr = (s32)db_lookupRegistered(DB_GET_ADDR, 0x70005, 0);
-    file_copyViaVram(g_gameState->gameData->musicSeq2, seqAddr, (s32)db_lookupRegistered(DB_GET_SIZE, 0x70005, 0), NULL);
+    s32 seqAddr = (s32)db_lookupRegistered(DB_GET_ADDR, DB_MUSIC | MUSIC_VICTORY, 0);
+    file_copyViaVram(g_gameState->gameData->musicSeq2, seqAddr, (s32)db_lookupRegistered(DB_GET_SIZE, DB_MUSIC | MUSIC_VICTORY, 0), NULL);
     DrawSync(0);
     return 0;
 }
@@ -240,11 +240,11 @@ s32 btl_loadCommonData(void) {
     }
     battle->files->data[0] = (void *)buf;
     db_register(buf, 0);
-    file_copyViaVram((s32)battle->statusInfo, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F4, 0), 0x180, NULL);
-    file_copyViaVram((s32)battle->abilities, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F5, 0), 0xC00, NULL);
-    file_copyViaVram((s32)battle->statusSets, (s32)db_lookupRegistered(DB_GET_ADDR, 0x1F6, 0), 0x100, NULL);
+    file_copyViaVram((s32)battle->statusInfo, (s32)db_lookupRegistered(DB_GET_ADDR, BTL_COMMON_STATUS_INFO, 0), 0x180, NULL);
+    file_copyViaVram((s32)battle->abilities, (s32)db_lookupRegistered(DB_GET_ADDR, BTL_COMMON_ABILITIES, 0), 0xC00, NULL);
+    file_copyViaVram((s32)battle->statusSets, (s32)db_lookupRegistered(DB_GET_ADDR, BTL_COMMON_STATUS_SETS, 0), 0x100, NULL);
     DrawSync(0);
-    g_modeHeap = db_lookup(buf, DB_GET_ADDR, 0x1E, 0);
+    g_modeHeap = db_lookup(buf, DB_GET_ADDR, BTL_COMMON_PORTRAITS, 0);
     return 0;
 }
 
@@ -1758,7 +1758,7 @@ s32 btl_soundCmd(s32 cmd, s32 soundId, s32 param1, s32 param2, s32 param3) {
                 g_gameState->gameData->flags &= ~(GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
                 g_gameState->gameData->musicBank[0] = bank;
                 g_gameState->gameData->musicId[0] = soundId;
-                if ((id & 0xFFFF) != 5) {
+                if ((id & 0xFFFF) != MUSIC_VICTORY) { /* resident: btl_loadResidentMusic copied it to musicSeq2 */
                     g_gameState->gameData->soundLoadDest = (s32)(g_loadAreaEnd + 0x140700);
                     g_btlSoundLoadSlot = -1;
                     g_gameState->gameData->soundLoadChunk = 0x16800;

@@ -65,14 +65,14 @@ void btlui_init(void) {
 }
 
 void btlui_uploadPartyNames(void) {
-    void *names = db_lookupRegistered(DB_GET_ADDR, 0x14, 0);
+    void *names = db_lookupRegistered(DB_GET_ADDR, BTL_COMMON_NAME_GLYPHS, 0);
     if (names != NULL) {
         text_uploadPartyNames((s32)names);
     }
 }
 
 void btlui_loadPortraits(void) {
-    void *portraits = db_lookupRegistered(DB_GET_ADDR, 0x1E, 0);
+    void *portraits = db_lookupRegistered(DB_GET_ADDR, BTL_COMMON_PORTRAITS, 0);
     if (portraits != NULL) {
         ui_loadPartyPortraits(portraits);
         party_setChanged(0);
