@@ -370,11 +370,11 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->frame4 = 0;
         fx_0e1_0_env = env;
         ex->btlfx_initEffModels(fx_0e1_0_effModels, 5);
-        work->model50 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x82), 0);
-        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x81), 0);
-        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x80), 0);
-        work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 0);
-        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x83), 1);
+        work->model50 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MORPH_0), 0);
+        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MORPH_1), 0);
+        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MORPH_2), 0);
+        work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SO_MODEL), 0);
+        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_GLOW_MODEL), 1);
         work->pos8.vx = fx_0e1_0_origin.vx;
         work->pos8.vy = fx_0e1_0_origin.vy;
         work->pos8.vz = fx_0e1_0_origin.vz;
@@ -457,24 +457,24 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x40) {
                 work->state0 = 1;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BLUE_RING), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BLUE_BURST), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BLUE_ORBS_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0xC;
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xFF, 0x80, 0);
-                work->emit44 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+                work->emit44 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BLUE_ORBS), (s32)&work->pos8);
                 if (work->emit44 != NULL) {
                     work->emit44->otZ = 0xC;
                 }
-                work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+                work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MIST_TRAIL), (s32)&work->pos8);
                 if (work->emit48 != NULL) {
                     work->emit48->trails = (s32)fx_0e1_0_op80Trails0;
                     work->emit48->trailSlots = 0xC;
@@ -499,7 +499,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_SetSummonMotion(((Fx0e10Summon *)env->loader)->summon54->motion180,
                                        ((Fx0e10Summon *)env->loader)->summonModel60);
                 ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->summonModel60, 0);
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_RED_SPARKS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->tail->shape = -1;
                     *(s32 *)&emitter->tail->s.module.spawnFn = (s32)fx_0e1_0_op80SpawnPoint;
@@ -534,16 +534,16 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
                 env->otZ = 0xF5;
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->summonModel60, 0, (u16 *)&work->pos34);
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos34, NULL, 0x1000, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_RED_RINGS), &work->pos34, NULL, 0x1000, 0, 1,
                                   ringAlpha);
                 env->otZ = 0;
             }
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BLUE_ORBS_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0xC;
                 }
-                work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+                work->emit48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MIST_TRAIL), (s32)&work->pos8);
                 if (work->emit48 != NULL) {
                     work->emit48->trails = (s32)fx_0e1_0_op80Trails1;
                     work->emit48->trailSlots = 0xC;
@@ -586,11 +586,11 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x9F) {
                 work->state0 = 3;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_FAN_EMITTER), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_RED_RINGS_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x12C;
                 }
@@ -603,7 +603,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawSummonModel(&work->rot28, (VECTOR *)&work->summonPos10, (s32)&work->summonScale1C, ((Fx0e10Summon *)env->loader)->summonModel60,
                                    1);
             if (frame == 0xF) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_STAR_FLARES), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }

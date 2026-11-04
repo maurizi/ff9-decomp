@@ -4,6 +4,44 @@
 /* Effect module fx_0e3_1 (dir 13 file 0x0E3): Bahamut, full summon (load group 1). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_0e3_1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BAHAMUT_COLUMN_MODEL       0x1 /* 'so' model, the column (look pending) */
+#define FX_BAHAMUT_EMBERS             0x4 /* emitter: spiral of tiny orange sprites */
+#define FX_BAHAMUT_FIRE_BURST         0x5 /* emitter: red-white fire flashes */
+#define FX_BAHAMUT_BLUE_SPARKS        0x6 /* emitter: blue-white spark sprites falling */
+#define FX_BAHAMUT_FLARE_LINE         0x7 /* sprite line (texture not in the file) (look pending) */
+#define FX_BAHAMUT_FLARE_PILLAR_MODEL 0x8 /* 'so' model, the pillar (look pending) */
+#define FX_BAHAMUT_FIRE_SPARKS        0x9 /* emitter: orange flame glows + spark sprites */
+#define FX_BAHAMUT_PURPLE_BOLT        0xA /* trail: purple energy strip (fxm_drawOffsetTrail2) */
+#define FX_BAHAMUT_CHARGE_RINGS       0xB /* rings: white-orange-blue gouraud rings while charging */
+#define FX_BAHAMUT_BLUE_SPARKS_2      0xC /* emitter: blue-white spark sprites falling */
+#define FX_BAHAMUT_BLAST_MODEL_2      0xD /* 'so' model drawn with BLAST_MODEL (look pending) */
+#define FX_BAHAMUT_FAN_EMITTER        0xE /* emitter: fan elements (not rendered) (look pending) */
+#define FX_BAHAMUT_BLAST_MODEL        0xF /* 'so' model (look pending) */
+#define FX_BAHAMUT_WHITE_BOLT_2       0x11 /* trail: faint white strip (fxm_drawOffsetTrail1) (look pending) */
+#define FX_BAHAMUT_SPIN_RING          0x12 /* rings: white-blue gouraud rings, spinning */
+#define FX_BAHAMUT_BLUE_RINGS         0x14 /* rings: dark-to-light blue gouraud rings */
+#define FX_BAHAMUT_WHITE_BOLT         0x15 /* trail: faint white strip (fxm_drawOffsetTrail0; byte-identical to fx_0e3_0 entry 0x8) (look pending) */
+#define FX_BAHAMUT_BACKDROP           0x16 /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_BAHAMUT_ENERGY_ORBS        0x17 /* emitter: cyan-green orbs + violet lightning strip */
+#define FX_BAHAMUT_SPARKLE_RING       0x18 /* sprites: ring of blue-white sparkles, 16 frames */
+#define FX_BAHAMUT_FIRE_RING_BURST    0x19 /* emitter: red-white fire flashes + crimson rings */
+#define FX_BAHAMUT_VIOLET_RINGS       0x1A /* rings: white-cyan-violet gouraud rings */
+#define FX_BAHAMUT_PINK_FLAT_RING     0x1B /* rings: white-salmon gouraud rings drawn flat */
+#define FX_BAHAMUT_HALO_RINGS         0x1C /* rings: white-crimson-blue gouraud rings */
+#define FX_BAHAMUT_FAN_EMITTER_2      0x1D /* emitter: fan element (not rendered) (look pending) */
+#define FX_BAHAMUT_WHITE_FLASH_RING   0x1F /* rings: white gouraud rings, the flash */
+#define FX_BAHAMUT_EMBERS_2           0x20 /* emitter: spiral of tiny orange sprites */
+#define FX_BAHAMUT_ORB_MODEL          0x21 /* 'so' model drawn at the blast centre (look pending) */
+#define FX_BAHAMUT_LIGHTNING_BOLT     0x23 /* trail: violet lightning strip (fxm_drawOffsetTrail3) */
+#define FX_BAHAMUT_BURST_MODEL        0x25 /* 'so' model drawn for the burst and the flash (look pending) */
+#define FX_BAHAMUT_BLAST_MODEL_3      0x26 /* 'so' model (look pending) */
+#define FX_BAHAMUT_FAN_EMITTER_3      0x29 /* emitter: fan element (not rendered) (look pending) */
+#define FX_BAHAMUT_ORB_SHELL_MODEL    0x81 /* summon data: 'so' model drawn around the orb (look pending) */
+#define FX_BAHAMUT_DISC_MODEL         0x84 /* summon data: 'so' model, disc (look pending) */
+#define FX_BAHAMUT_FADE_MODEL         0x85 /* summon data: 'so' model drawn fading at the end (same entry as fx_0e3_0's) (look pending) */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */

@@ -19,15 +19,15 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
         work->pos8.vy = fx_0e1_1_origin.vy;
         work->pos8.vz = fx_0e1_1_origin.vz;
         fx_0e1_1_env = env;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_FAN_EMITTER), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = 0x20;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_TEX_EMITTER), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = 0x100;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_RED_RINGS_2), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = 0x12C;
         }
@@ -43,10 +43,10 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
             if (frame < 0x14) {
                 alpha = ex->math_cos((frame << 10) / 20);
                 env->otZ = 0x80;
-                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->pos8, frame, alpha);
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_LENS_FLARES), &work->pos8, frame, alpha);
                 env->otZ = 0;
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_BACKDROP), frame);
             if (frame >= 0x34) {
                 ex->btlfx_initParticleSystem();
                 camPos.vx = fx_0e1_1_camPos.vx;
@@ -58,11 +58,11 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 env->camera->points[2].vx = camPos.vx;
                 env->camera->points[2].vy = camPos.vy;
                 env->camera->points[2].vz = camPos.vz;
-                work->emit30 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos14);
+                work->emit30 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_RED_SPARKS), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }
-                work->emit2C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos1C);
+                work->emit2C = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_STAR_FLARES), (s32)&work->pos1C);
                 if (emitter != NULL) {
                     emitter->otZ = 0x80;
                 }

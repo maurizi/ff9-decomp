@@ -7,6 +7,16 @@
  * id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0e1_1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_REBIRTH_FLAME_TEX_EMITTER 0x1 /* emitter: textured elements (texture not in the file) + tan-white rings (look pending) */
+#define FX_REBIRTH_FLAME_RED_RINGS_2 0x2 /* emitter: white-grey-violet-red gouraud rings (byte-identical to fx_0e1_0 entry 0x6) */
+#define FX_REBIRTH_FLAME_BACKDROP    0x3 /* backdrop layers (btlfx_drawBackdrop, not rendered) (look pending) */
+#define FX_REBIRTH_FLAME_RED_SPARKS  0x4 /* emitter: spiral of tiny red spark sprites */
+#define FX_REBIRTH_FLAME_LENS_FLARES 0x5 /* sprite line: lens-flare rings and glows */
+#define FX_REBIRTH_FLAME_STAR_FLARES 0x6 /* emitter: orange star flares + glowing dots */
+#define FX_REBIRTH_FLAME_FAN_EMITTER 0x7 /* emitter: fan elements (not rendered) (look pending) */
+
 typedef struct {
     s32 state0; /* state */
     s32 frame4; /* frame */

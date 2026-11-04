@@ -436,10 +436,10 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale64.vz = 0x800;
         work->unk130 = 0;
         work->unk134 = 0;
-        work->model150[0] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x84), fx_0e2_texPages, fx_0e2_texPos);
-        work->model150[1] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x85), fx_0e2_texPages, fx_0e2_texPos);
-        work->model150[2] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x83), fx_0e2_texPages, fx_0e2_texPos);
-        work->model150[3] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x82), fx_0e2_texPages, fx_0e2_texPos);
+        work->model150[0] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_BEAST), fx_0e2_texPages, fx_0e2_texPos);
+        work->model150[1] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_SPINDLE), fx_0e2_texPages, fx_0e2_texPos);
+        work->model150[2] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_SERPENT), fx_0e2_texPages, fx_0e2_texPos);
+        work->model150[3] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_STREAK), fx_0e2_texPages, fx_0e2_texPos);
         work->morphStep138 = 0;
         work->morphStep13C = 0;
         work->fadeTimer140 = -1;
@@ -457,10 +457,10 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkA4.vx = 0x1000;
         work->unkA4.vy = 0x1000;
         work->unkA4.vz = 0x1000;
-        work->model150[4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x95), 1);
-        work->model150[5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x94), 1);
-        work->model150[6] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 1);
-        work->model150[7] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1F), 1);
+        work->model150[4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_MORPH_MODEL_0), 1);
+        work->model150[5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_MORPH_MODEL_1), 1);
+        work->model150[6] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SHELL_MODEL), 1);
+        work->model150[7] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SHELL_MODEL_2), 1);
         fx_0e2_stripBlend.unk10 = 0;
         fx_0e2_stripBlend.fade12 = 0x1000;
         fx_0e2_stripBlend.scale14 = 0x1000;
@@ -484,9 +484,9 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scaleD0.vx = 0x800;
         work->scaleD0.vy = 0x800;
         work->scaleD0.vz = 0x800;
-        work->model150[8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x81), 1);
-        work->model150[9] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x87), 1);
-        work->model150[10] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x93), 1);
+        work->model150[8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CLUSTER_MODEL_0), 1);
+        work->model150[9] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CLUSTER_MODEL_1), 1);
+        work->model150[10] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CLUSTER_MODEL_2), 1);
         work->rotE0.vx = 0;
         work->rotE0.vy = 0;
         work->rotE0.vz = 0;
@@ -505,34 +505,34 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scrollStep14C = 0;
         work->scrollSpeed14E = 4;
         fxm_camChanReset();
-        fxm_camChanAdd(0, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 0));
-        fxm_camChanAdd(0, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xB), 0));
-        fxm_camChanAdd(0, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9B), 0));
-        fxm_camChanAdd(0, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9B), 1));
-        fxm_camChanAdd(0, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9B), 2));
-        fxm_camChanAdd(0, 0xA, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9B), 3));
-        fxm_camChanAdd(0x2D, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 1));
-        fxm_camChanAdd(0x2D, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xB), 1));
-        fxm_camChanAdd(0x2D, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9F), 1));
-        fxm_camChanAdd(0x2D, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x96), 1));
-        fxm_camChanAdd(0x2D, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x92), 1));
-        fxm_camChanAdd(0x41, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 2));
-        fxm_camChanAdd(0x41, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xB), 2));
-        fxm_camChanAdd(0x41, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9F), 2));
-        fxm_camChanAdd(0x41, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x96), 2));
-        fxm_camChanAdd(0x41, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x92), 2));
-        fxm_camChanAdd(0x96, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 4));
-        fxm_camChanAdd(0x96, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xB), 4));
-        fxm_camChanAdd(0x96, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9F), 4));
-        fxm_camChanAdd(0x96, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x96), 4));
-        fxm_camChanAdd(0x96, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x92), 4));
-        fxm_camChanAdd(0xEF, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 5));
-        fxm_camChanAdd(0xEF, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xB), 5));
-        fxm_camChanAdd(0xEF, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9F), 5));
-        fxm_camChanAdd(0xEF, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x96), 5));
-        fxm_camChanAdd(0xEF, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x92), 5));
-        fxm_camChanAdd(0x10E, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xA), 6));
-        fxm_camChanAdd(0x10E, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xB), 6));
+        fxm_camChanAdd(0, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_1), 0));
+        fxm_camChanAdd(0, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_2), 0));
+        fxm_camChanAdd(0, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_START), 0));
+        fxm_camChanAdd(0, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_START), 1));
+        fxm_camChanAdd(0, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_START), 2));
+        fxm_camChanAdd(0, 0xA, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_START), 3));
+        fxm_camChanAdd(0x2D, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_1), 1));
+        fxm_camChanAdd(0x2D, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_2), 1));
+        fxm_camChanAdd(0x2D, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_3), 1));
+        fxm_camChanAdd(0x2D, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_4), 1));
+        fxm_camChanAdd(0x2D, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_9), 1));
+        fxm_camChanAdd(0x41, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_1), 2));
+        fxm_camChanAdd(0x41, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_2), 2));
+        fxm_camChanAdd(0x41, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_3), 2));
+        fxm_camChanAdd(0x41, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_4), 2));
+        fxm_camChanAdd(0x41, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_9), 2));
+        fxm_camChanAdd(0x96, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_1), 4));
+        fxm_camChanAdd(0x96, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_2), 4));
+        fxm_camChanAdd(0x96, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_3), 4));
+        fxm_camChanAdd(0x96, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_4), 4));
+        fxm_camChanAdd(0x96, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_9), 4));
+        fxm_camChanAdd(0xEF, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_1), 5));
+        fxm_camChanAdd(0xEF, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_2), 5));
+        fxm_camChanAdd(0xEF, 3, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_3), 5));
+        fxm_camChanAdd(0xEF, 4, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_4), 5));
+        fxm_camChanAdd(0xEF, 9, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_9), 5));
+        fxm_camChanAdd(0x10E, 1, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_1), 6));
+        fxm_camChanAdd(0x10E, 2, 0, (s16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_CAM_TRACK_2), 6));
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -550,13 +550,13 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         switch (frame) {
         case 0x2E:
-            work->emit0 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA6), (s32)&fx_0e2_emitPos0);
+            work->emit0 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_RED_MOON_GLOW), (s32)&fx_0e2_emitPos0);
             if (emitter != NULL) {
                 emitter->otZ = -0x100;
             }
             break;
         case 0x41:
-            work->emit4 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA5), (s32)&fx_0e2_emitPos0);
+            work->emit4 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_RED_MOON), (s32)&fx_0e2_emitPos0);
             if (emitter != NULL) {
                 emitter->otZ = -0x100;
             }
@@ -568,7 +568,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit4);
             break;
         case 0xA3:
-            work->emit1C = trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA4), (s32)&fx_0e2_emitPos2);
+            work->emit1C = trailEmitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_WIND_TRAIL_EMITTER), (s32)&fx_0e2_emitPos2);
             if (trailEmitter != NULL) {
                 trailEmitter->trails = (s32)fx_0e2_op80Trails1;
                 work->emit1C->trailSlots = 0xC;
@@ -579,8 +579,8 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0xB3:
-            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA3), (s32)&fx_0e2_emitPos1);
-            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA2), (s32)&fx_0e2_emitPos1);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_GREEN_RING_BURST_2), (s32)&fx_0e2_emitPos1);
+            work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_GREEN_RING_BURST), (s32)&fx_0e2_emitPos1);
             break;
         case 0xB5:
             for (slot = 0; slot < 5; slot++) {
@@ -732,7 +732,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_rotPosPathInit(&fx_0e2_stripBlendPathB,
                               (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, fx_0e2_stripTrackBlocks[keyB]), (u16)blendStrip));
                 fx_0e2_stripFromTrackBlend(&fx_0e2_stripBlend.pathA0, &fx_0e2_stripBlendPathB, blend, (Fx0e2Trail *)&fx_0e2_strips[blendStrip], 0x98, fx_0e2_stripBlend.width16);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x17), 0, NULL, 0, fx_0e2_stripBlend.scale14,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_GREEN_WIND_STRIP), 0, NULL, 0, fx_0e2_stripBlend.scale14,
                                     fx_0e2_stripBlend.fade12, 1, (u8 *)&fx_0e2_strips[blendStrip], 0);
                 fx_0e2_headRot.vx = 0x113;
                 fx_0e2_headRot.vy = 0x800;
@@ -771,7 +771,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_0e2_stripPath0.base8 = k;
             fx_0e2_stripPath0.base8 = fx_0e2_stripPath0.base8 >= 0x23 ? 0x22 : fx_0e2_stripPath0.base8;
             for (holdStrip = 0; holdStrip < 5; holdStrip++) {
-                fxm_posPathInit(&fx_0e2_stripPath0.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9E), (u16)holdStrip));
+                fxm_posPathInit(&fx_0e2_stripPath0.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_STRIP_PATHS), (u16)holdStrip));
                 fxm_posPathGet(&fx_0e2_stripPath0.path0, k + 0x37, &fx_0e2_headPos);
                 fx_0e2_headRot.vx = 0x113;
                 fx_0e2_headRot.vy = 0x800;
@@ -800,7 +800,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fx_0e2_stripPath1.countA = 0x11;
             }
             for (pathStrip = 0; pathStrip < 5; pathStrip++) {
-                fxm_posPathInit(&fx_0e2_stripPath1.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x9D), (u16)pathStrip));
+                fxm_posPathInit(&fx_0e2_stripPath1.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_STRIP_PATHS_2), (u16)pathStrip));
                 fx_0e2_stripFromPosPath(&fx_0e2_stripPath1.path0, (Fx0e2Trail *)&fx_0e2_strips[pathStrip], 0x98, fx_0e2_stripPath1.base8, fx_0e2_stripPath1.countA,
                               fx_0e2_stripPath1.width10);
                 fx_0e2_headRot.vx = 0x113;
@@ -977,14 +977,14 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale54.vy = 0x1000;
         work->scale54.vz = 0x1000;
         for (i = 0; i < 5; i++) {
-            fxm_rotPosPathInit(&fx_0e2_pieceTracks[i], (u16 *)fxm_offsetTableEntry(ex->btlfx_getFileData(entry->file, 0x9C), (u16)i));
+            fxm_rotPosPathInit(&fx_0e2_pieceTracks[i], (u16 *)fxm_offsetTableEntry(ex->btlfx_getFileData(entry->file, FX_FENRIR_PIECE_TRACKS), (u16)i));
             work->model124[i + 3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_0e2_pieceBlocks[i]), 1);
         }
         for (i = 0; i < 4; i++) {
             setVector(&work->blockRot64[i], 0, 0, 0);
             setVector(&work->blockPos84[i], 0, 0, 0);
             setVector(&work->blockScaleC4[i], 0x1000, 0x1000, 0x1000);
-            work->model124[i + 8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x80), 1);
+            work->model124[i + 8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_BLOCK_MODEL), 1);
         }
         return 0;
     } else {
@@ -997,13 +997,13 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emitPos104[0].vx = work->pos44.vx;
             work->emitPos104[0].vy = work->pos44.vy;
             work->emitPos104[0].vz = work->pos44.vz;
-            work->emit0[0] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[0]);
+            work->emit0[0] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SMOKE), (s32)&work->emitPos104[0]);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
             break;
         case 16:
-            work->emit0[1] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[0]);
+            work->emit0[1] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SMOKE), (s32)&work->emitPos104[0]);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
@@ -1012,7 +1012,7 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emitPos104[1].vx = 0x20C;
             work->emitPos104[1].vy = 0;
             work->emitPos104[1].vz = -0x3B6;
-            work->emit0[2] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[1]);
+            work->emit0[2] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SMOKE), (s32)&work->emitPos104[1]);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
@@ -1021,7 +1021,7 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emitPos104[2].vx = -0x205;
             work->emitPos104[2].vy = 0;
             work->emitPos104[2].vz = -0x5D9;
-            work->emit0[3] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[2]);
+            work->emit0[3] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SMOKE), (s32)&work->emitPos104[2]);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
@@ -1030,7 +1030,7 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emitPos104[3].vx = 0x110;
             work->emitPos104[3].vy = 0;
             work->emitPos104[3].vz = -0x703;
-            work->emit0[4] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA0), (s32)&work->emitPos104[3]);
+            work->emit0[4] = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SMOKE), (s32)&work->emitPos104[3]);
             if (emitter != NULL) {
                 emitter->otZ = 0x100;
             }
@@ -1137,8 +1137,8 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         setVector(&work->rot14, 0, 0, 0);
         setVector(&work->pos1C, 0, 0, 0x4B0);
         setVector(&work->scale2C, 0x1CCC, 0x1000, 0x1CCC);
-        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x11), mode);
-        work->model6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1D), mode);
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_EFFECT_MODEL), mode);
+        work->model6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_EFFECT_MODEL_2), mode);
         work->fadeTimer58 = -1;
         work->fadeTimer5C = -1;
         work->fadeTimer60 = mode;
@@ -1151,17 +1151,17 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos40.vx = 0;
             work->pos40.vy = 0;
             work->pos40.vz = 0x4B0;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos40);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_GREEN_RINGS_2), (s32)&work->pos40);
             break;
         case 1:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos40);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SPARKS), (s32)&work->pos40);
             break;
         case 6:
             work->pos48.vx = work->pos40.vx;
             work->pos48.vy = work->pos40.vy;
             work->pos48.vz = work->pos40.vz;
             work->pos48.vy -= 0xC80;
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos48);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_GREEN_RINGS), (s32)&work->pos48);
             break;
         case 0x1C:
             work->fadeTimer58 = 0x20;
@@ -1212,8 +1212,8 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->fadeTimer58--;
             }
             for (i = 0; i < 6; i++) {
-                fxm_posPathInit(&fx_0e2_ribbon0.pathA0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 9), keyA0 + i));
-                fxm_posPathInit(&fx_0e2_ribbon0.pathB8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 9), keyB0 + i));
+                fxm_posPathInit(&fx_0e2_ribbon0.pathA0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_A), keyA0 + i));
+                fxm_posPathInit(&fx_0e2_ribbon0.pathB8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_A), keyB0 + i));
                 fxm_projectEdgesBlend(&fx_0e2_ribbon0.pathA0, &fx_0e2_ribbon0.pathB8, fx_0e2_ribbon0.unk18, fx_0e2_ribbon0.length1A, &fx_0e2_ribbon0.scale10,
                               fx_0e2_ribbon0.width1E, fx_0e2_ribbon0.blend20, fx_0e2_ribbon0.rotY22, 1);
                 fxm_drawEdgeQuads(fx_0e2_ribbon0.length1A, fx_0e2_ribbon0.bright1C, 0x97, 0x3D80, 0x80, 0xC0);
@@ -1256,8 +1256,8 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 keyB1 = 0;
             }
             for (i = 0; i < 3; i++) {
-                fxm_posPathInit(&fx_0e2_ribbon1.pathA0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xC), keyA1 + i));
-                fxm_posPathInit(&fx_0e2_ribbon1.pathB8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xC), keyB1 + i));
+                fxm_posPathInit(&fx_0e2_ribbon1.pathA0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_B), keyA1 + i));
+                fxm_posPathInit(&fx_0e2_ribbon1.pathB8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_B), keyB1 + i));
                 fxm_projectEdgesBlend(&fx_0e2_ribbon1.pathA0, &fx_0e2_ribbon1.pathB8, fx_0e2_ribbon1.unk18, fx_0e2_ribbon1.length1A, &fx_0e2_ribbon1.scale10,
                               fx_0e2_ribbon1.width1E, fx_0e2_ribbon1.blend20, fx_0e2_ribbon1.rotY22, 1);
                 fxm_drawEdgeQuads(fx_0e2_ribbon1.length1A, fx_0e2_ribbon1.bright1C, 0x9C, 0x3D40, 0x80, 0xBF);
@@ -1272,9 +1272,9 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fx_0e2_ribbon3.length12 = len;
             for (i = 0; i < 5; i++) {
                 if (i & 1) {
-                    fxm_posPathInit(&fx_0e2_ribbon3.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 1), 0));
+                    fxm_posPathInit(&fx_0e2_ribbon3.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_C), 0));
                 } else {
-                    fxm_posPathInit(&fx_0e2_ribbon3.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xF), 0));
+                    fxm_posPathInit(&fx_0e2_ribbon3.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_D), 0));
                 }
                 fx_0e2_ribbon3.rotY18 = i * 0x333;
                 fxm_projectEdges(&fx_0e2_ribbon3.path0, fx_0e2_ribbon3.unk10, fx_0e2_ribbon3.length12, &fx_0e2_ribbon3.scale8, fx_0e2_ribbon3.width16,
@@ -1311,11 +1311,11 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             for (j = 0; j < 5; j++) {
                 if (j & 1) {
-                    fxm_posPathInit(&fx_0e2_ribbon2.pathA0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 1), keyA2));
-                    fxm_posPathInit(&fx_0e2_ribbon2.pathB8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 1), keyB2));
+                    fxm_posPathInit(&fx_0e2_ribbon2.pathA0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_C), keyA2));
+                    fxm_posPathInit(&fx_0e2_ribbon2.pathB8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_C), keyB2));
                 } else {
-                    fxm_posPathInit(&fx_0e2_ribbon2.pathA0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xF), keyA2));
-                    fxm_posPathInit(&fx_0e2_ribbon2.pathB8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0xF), keyB2));
+                    fxm_posPathInit(&fx_0e2_ribbon2.pathA0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_D), keyA2));
+                    fxm_posPathInit(&fx_0e2_ribbon2.pathB8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_RIBBON_PATHS_D), keyB2));
                 }
                 fx_0e2_ribbon2.rotY22 = j * 0x333;
                 fxm_projectEdgesBlend(&fx_0e2_ribbon2.pathA0, &fx_0e2_ribbon2.pathB8, fx_0e2_ribbon2.unk18, fx_0e2_ribbon2.length1A, &fx_0e2_ribbon2.scale10,
@@ -1421,8 +1421,8 @@ s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emitPos80[j].vx = work->unitPos40[j].vx;
                 (work->emitPos80 + j)->vy = (work->unitPos40 + j)->vy;
                 (work->emitPos80 + j)->vz = (work->unitPos40 + j)->vz;
-                work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->emitPos80[j]);
-                work->emit20[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->emitPos80[j]);
+                work->emit0[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_GREEN_WIND_TRAIL), (s32)&work->emitPos80[j]);
+                work->emit20[j] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SAND_RINGS), (s32)&work->emitPos80[j]);
                 if (work->emit0[j] != NULL) {
                     work->emit0[j]->trails = (s32)fx_0e2_op84Trails[j];
                     work->emit0[j]->trailSlots = 0xC;

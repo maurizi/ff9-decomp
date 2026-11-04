@@ -4,6 +4,22 @@
 /* Effect module fx_0e3_0 (dir 13 file 0x0E3): Bahamut, full summon (load group 0). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
+/* fx_0e3_0 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BAHAMUT_WING_TRAIL      0x1 /* trail: white streak strip drawn from Bahamut's bones */
+#define FX_BAHAMUT_PURPLE_BOLT     0x2 /* trail: purple energy strip (fxm_drawOffsetTrail1) */
+#define FX_BAHAMUT_TEAL_PUFF       0x3 /* particles: teal puff (pool task; texture partly outside the file) (look pending) */
+#define FX_BAHAMUT_BLUE_RINGS      0x5 /* emitter: dark-to-light blue gouraud rings */
+#define FX_BAHAMUT_CORE_MODEL      0x7 /* 'so' model drawn with a fading core colour (look pending) */
+#define FX_BAHAMUT_WHITE_BOLT      0x8 /* trail: faint white strip (fxm_drawOffsetTrail0) (look pending) */
+#define FX_BAHAMUT_FIRE_SPARKS     0xA /* emitter: orange flame glows + spark sprites */
+#define FX_BAHAMUT_GLOW_MODEL      0xB /* 'so' model drawn with a fading colour (look pending) */
+#define FX_BAHAMUT_WHITE_RINGS     0xC /* rings: grey-white gouraud rings */
+#define FX_BAHAMUT_PILLAR_MODEL    0x82 /* summon data: 'so' model, the pillar (pillarRgb) (look pending) */
+#define FX_BAHAMUT_BLUE_SPARKS     0x83 /* summon data: emitter, blue-white spark sprites */
+#define FX_BAHAMUT_FADE_MODEL      0x85 /* summon data: 'so' model drawn fading at the end (look pending) */
+#define FX_BAHAMUT_CONE_RING_MODEL 0x86 /* summon data: 'so' model stacked nine times as a cone (look pending) */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
