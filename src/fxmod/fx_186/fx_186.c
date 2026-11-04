@@ -99,8 +99,8 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos8.vx = 0;
         work->pos8.vy = 0;
         work->pos8.vz = 0;
-        work->model44 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
-        work->model48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1B), 1);
+        work->model44 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_SO_MODEL), 1);
+        work->model48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_SO_MODEL_2), 1);
         env->camera->points[3].vx = work->pos8.vx;
         env->camera->points[3].vy = work->pos8.vy;
         env->camera->points[3].vz = work->pos8.vz;
@@ -199,10 +199,10 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot2.vz = 0;
                     rot2.pad = 1;
                     ang = (frame - 8) << 9;
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), &work->pos8, &rot2,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_LILAC_RING), &work->pos8, &rot2,
                                       ex->math_sin(ang >> 2), 0,
                                       1, ex->math_sin(ang >> 2));
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->pos8, &rot2,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_CYAN_RING), &work->pos8, &rot2,
                                       ex->math_sin(ang >> 2) >> 1, 0, 1, ex->math_sin(ang >> 2));
                 }
                 if (frame >= 0x10) {
@@ -249,7 +249,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (frame == 0) {
                     BTLFX_COPY_SVEC(&work->pos10, &work->pos8);
                     work->pos10.vy -= 0x180;
-                    work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->pos10);
+                    work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_ROCK_DEBRIS), (s32)&work->pos10);
                     if (work->emit18 != NULL) {
                         work->emit18->otZ = 0x100;
                     }
@@ -297,7 +297,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot2.vy = 0;
                     rot2.vz = 0;
                     env->otZ = 0x100;
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->pos8, &rot2,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_CYAN_RING), &work->pos8, &rot2,
                                       (ex->math_sin((frame << 8) >> 2) >> 1) + 0x800, 0, 1,
                                       ex->math_cos((frame << 8) >> 2));
                     env->otZ = 0;
@@ -317,7 +317,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 40;
             tint = 0x89;
             if (frame == 1) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_ROCK_DEBRIS_2), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x100;
                 }
@@ -447,7 +447,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.pad = 1;
             t = (frame << 12) / 7;
             for (i = 0; i < work->count104; i++) {
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->pos4[i], &rot, 0x1000, frame, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_EARTH_SHAKE_GREY_RING), &work->pos4[i], &rot, 0x1000, frame, 1,
                                   ex->math_cos(t >> 2));
             }
             if (frame >= 7) {

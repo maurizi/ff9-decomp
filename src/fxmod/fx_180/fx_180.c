@@ -60,7 +60,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_180_op80PathOrigin.vz = work->pos24.vz;
         work->pos44.vy = 0;
         for (i = 0; i < 0x12; i++) {
-            fxm_posPathInit(&fx_180_posPath0[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x22), i));
+            fxm_posPathInit(&fx_180_posPath0[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_ULTIMA_PATH_SET), i));
         }
         work->camPos54.vx = work->pos34.vx;
         work->camPos54.vy = work->pos34.vy;
@@ -100,8 +100,8 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_matrixPointAhead(&m, 0, (s32)&work->pos3C);
             work->pos3C.vy += 0x64;
             work->pos3C.vz -= 0xC8;
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->pos3C);
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos24);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_RED_FLARE_2), (s32)&work->pos3C);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_GREY_TRAIL), (s32)&work->pos24);
             if (work->emit0[3] != NULL) {
                 work->emit0[3]->trails = (s32)fx_180_op80Trails0;
                 work->emit0[3]->trailSlots = 0x14;
@@ -112,14 +112,14 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x12:
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos24);
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos44);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_NOISE_RING), (s32)&work->pos24);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_ROCK_DEBRIS), (s32)&work->pos44);
             break;
         case 0x30:
-            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos24);
-            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos24);
-            work->emit0[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos44);
-            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&fx_180_emitPos0);
+            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_RED_LENS_FLARE), (s32)&work->pos24);
+            work->emit0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_PINK_RING), (s32)&work->pos24);
+            work->emit0[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_ROCK_DEBRIS_2), (s32)&work->pos44);
+            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_ROCK_TRAIL), (s32)&fx_180_emitPos0);
             if (work->emit0[7] != NULL) {
                 work->emit0[7]->trails = (s32)fx_180_op80Trails1;
                 work->emit0[7]->trailSlots = 0x12;
@@ -142,7 +142,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
             break;
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x19), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ULTIMA_BACKDROP), frame);
         return frame >= 0x64;
     }
     return 0;
@@ -174,13 +174,13 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_180_op81PathOrigin.vy = work->pos3C.vy;
         fx_180_op81PathOrigin.vz = work->pos3C.vz;
         for (i = 0; i < 0x1E; i++) {
-            fxm_posPathInit(&fx_180_posPath1[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), i));
+            fxm_posPathInit(&fx_180_posPath1[i], fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, FX_ULTIMA_PATH_SET_2), i));
         }
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0x0:
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos34);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_WHITE_BEAM), (s32)&work->pos34);
             if (work->emit0[0] != NULL) {
                 work->emit0[0]->trails = (s32)fx_180_op81Trails0;
                 work->emit0[0]->trailSlots = 0x17;
@@ -188,10 +188,10 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x14:
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos3C);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_BLAST_RINGS), (s32)&work->pos3C);
             break;
         case 0x18:
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos3C);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_GREY_TRAIL_2), (s32)&work->pos3C);
             if (work->emit0[2] != NULL) {
                 work->emit0[2]->trails = (s32)fx_180_op81Trails2;
                 work->emit0[2]->trailSlots = 0x20;
@@ -199,19 +199,19 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x1C:
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos3C);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_COLOR_RING), (s32)&work->pos3C);
             break;
         case 0x30:
-            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos3C);
-            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos3C);
-            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos3C);
-            work->emit0[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos3C);
+            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_PINK_SPARKS), (s32)&work->pos3C);
+            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_NOISE_RING_2), (s32)&work->pos3C);
+            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_RED_FLARE), (s32)&work->pos3C);
+            work->emit0[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_FAN_EMITTER), (s32)&work->pos3C);
             break;
         case 0x33:
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
             break;
         case 0x38:
-            work->emit0[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&fx_180_emitPos1);
+            work->emit0[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_PINK_TRAIL), (s32)&fx_180_emitPos1);
             if (work->emit0[9] != NULL) {
                 work->emit0[9]->trails = (s32)fx_180_op81Trails3;
                 work->emit0[9]->trailSlots = 0x2A;
@@ -226,7 +226,7 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos4C.vy = work->pos44.vy;
             work->pos4C.vz = work->pos44.vz;
             work->pos4C.vy = -0xFA0;
-            work->emit0[10] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4C);
+            work->emit0[10] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_PINK_TRAIL_2), (s32)&work->pos4C);
             if (work->emit0[10] != NULL) {
                 work->emit0[10]->trails = (s32)fx_180_op81Trails1;
                 work->emit0[10]->trailSlots = 0x16;
@@ -237,7 +237,7 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit0[9]);
             break;
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x19), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ULTIMA_BACKDROP), frame);
         return frame >= 0x64;
     }
     return 0;
@@ -267,8 +267,8 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale38.vx = 0x4000;
         work->scale38.vy = 0x4000;
         work->scale38.vz = 0x4000;
-        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x17), 1);
-        work->model6A = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1));
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_ULTIMA_SO_MODEL), 1);
+        work->model6A = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_ULTIMA_GLOW_DOME));
         work->timer64 = -1;
     } else {
         frame = entry->frame;
@@ -278,23 +278,23 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos54.vy = work->pos4C.vy;
             work->pos54.vz = work->pos4C.vz;
             work->pos54.vy = -0x157C;
-            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos54);
+            work->emit0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_PINK_SPIKES), (s32)&work->pos54);
             break;
         case 4:
-            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos4C);
+            work->emit0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_PINK_ORB_BURST), (s32)&work->pos4C);
             break;
         case 16:
             work->pos5C.vx = work->pos4C.vx;
             work->pos5C.vy = work->pos4C.vy;
             work->pos5C.vz = work->pos4C.vz;
             work->pos5C.vy = -0x1F40;
-            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->pos5C);
-            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->pos4C);
+            work->emit0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_PINK_SPIKES_2), (s32)&work->pos5C);
+            work->emit0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_PURPLE_HAZE), (s32)&work->pos4C);
             break;
         case 30:
-            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->pos4C);
-            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x20), (s32)&work->pos4C);
-            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1F), (s32)&work->pos4C);
+            work->emit0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_ROCK_SWIRL), (s32)&work->pos4C);
+            work->emit0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_ROCK_TRAIL_2), (s32)&work->pos4C);
+            work->emit0[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_NOISE_RING_3), (s32)&work->pos4C);
             if (work->emit0[4] != NULL) {
                 work->emit0[4]->trails = (s32)fx_180_op82Trails0;
                 work->emit0[4]->trailSlots = 0x26;
@@ -367,7 +367,7 @@ s32 fx_180_op83(s32 mode, Fx180Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 3:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&work->pos30);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ULTIMA_ROCK_SWIRL_2), (s32)&work->pos30);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_180_op83Trails;
                 work->emit0->trailSlots = 0x10;

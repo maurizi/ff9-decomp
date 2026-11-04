@@ -150,6 +150,76 @@ Notes:
 | fx_17f | 0x3 | `FX_MELT_GOO_BLOB_2` | render | emitter: small dark purple goo blobs |
 | fx_17f | 0x4 | `FX_MELT_GOO_RIPPLE` | render | emitter: pink ripple disc |
 | fx_17f | 0xB | `FX_MELT_GOO_SPLASH` | render | emitter: glossy purple goo splash |
+| fx_180 | 0x1 | `FX_ULTIMA_GLOW_DOME` | render | model: gouraud octagonal dome (20 polys) |
+| fx_180 | 0x2 | `FX_ULTIMA_NOISE_RING` | kind/usage (look pending) | emitter: ring with a texture not resolved (noise) + pink gouraud ring |
+| fx_180 | 0x3 | `FX_ULTIMA_ROCK_DEBRIS` | render | emitter: grey rock chunks |
+| fx_180 | 0x4 | `FX_ULTIMA_GREY_TRAIL` | render | emitter: wobbling 3D trail with a grey streak texture |
+| fx_180 | 0x6 | `FX_ULTIMA_RED_LENS_FLARE` | render | emitter: red lens streak, white-pink rings, red sparks |
+| fx_180 | 0x7 | `FX_ULTIMA_COLOR_RING` | render | emitter: yellow, lilac, violet and magenta gouraud rings |
+| fx_180 | 0x8 | `FX_ULTIMA_ROCK_DEBRIS_2` | render | emitter: spiral of grey rock chunks |
+| fx_180 | 0x9 | `FX_ULTIMA_PINK_RING` | render | emitter: pink gouraud rings + fan |
+| fx_180 | 0xA | `FX_ULTIMA_ROCK_TRAIL` | render | emitter: screen trail of rock pieces |
+| fx_180 | 0xB | `FX_ULTIMA_GREY_TRAIL_2` | render | emitter: wobbling screen trail with a grey streak texture |
+| fx_180 | 0xC | `FX_ULTIMA_BLAST_RINGS` | render | emitter: white-pink, lilac and yellow-red gouraud rings, pink glows |
+| fx_180 | 0xD | `FX_ULTIMA_WHITE_BEAM` | render | emitter: spiralling white beam screen trail, pink sparks |
+| fx_180 | 0xE | `FX_ULTIMA_PINK_SPARKS` | render | emitter: sparse pink spark sprites |
+| fx_180 | 0xF | `FX_ULTIMA_NOISE_RING_2` | kind/usage (look pending) | emitter: ring with a texture not resolved (noise) + pink-lilac gouraud rings |
+| fx_180 | 0x10 | `FX_ULTIMA_RED_FLARE` | render | emitter: red lens streak and white-red gouraud rings |
+| fx_180 | 0x11 | `FX_ULTIMA_FAN_EMITTER` | kind/usage (look pending) | emitter: orbiting fan element (not rendered) |
+| fx_180 | 0x12 | `FX_ULTIMA_PINK_TRAIL` | render | emitter: pink screen trail |
+| fx_180 | 0x13 | `FX_ULTIMA_PINK_TRAIL_2` | render | emitter: orbiting pink screen trail |
+| fx_180 | 0x14 | `FX_ULTIMA_PINK_SPIKES` | render | emitter: pink spike particles + spark sprites |
+| fx_180 | 0x15 | `FX_ULTIMA_PINK_SPIKES_2` | render | emitter: pink spike particles + spark sprites |
+| fx_180 | 0x16 | `FX_ULTIMA_PINK_ORB_BURST` | render | emitter: pink orb and blade particles, sparks, white-yellow-red gouraud rings |
+| fx_180 | 0x17 | `FX_ULTIMA_SO_MODEL` | kind/usage (look pending) | 'so' model (not drawn by the tool), drawn with FX_ULTIMA_GLOW_DOME |
+| fx_180 | 0x18 | `FX_ULTIMA_RED_FLARE_2` | render | emitter: red lens streak and white-red gouraud rings |
+| fx_180 | 0x19 | `FX_ULTIMA_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_180 | 0x1A | `FX_ULTIMA_PATH_SET_2` | usage | table: 30 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x81 |
+| fx_180 | 0x1D | `FX_ULTIMA_ROCK_SWIRL` | render | emitter: spiralling 3D trail of rock pieces, pink glows |
+| fx_180 | 0x1E | `FX_ULTIMA_ROCK_SWIRL_2` | render | emitter: spiralling 3D trail of rock pieces, pink glows |
+| fx_180 | 0x1F | `FX_ULTIMA_NOISE_RING_3` | kind/usage (look pending) | emitter: ring with a texture not resolved (noise) + lilac gouraud ring |
+| fx_180 | 0x20 | `FX_ULTIMA_ROCK_TRAIL_2` | render | emitter: spiralling screen trail of rock pieces |
+| fx_180 | 0x21 | `FX_ULTIMA_PURPLE_HAZE` | kind/usage (look pending) | emitter: particles with a purple noise texture (not resolved) |
+| fx_180 | 0x22 | `FX_ULTIMA_PATH_SET` | usage | table: 18 position paths (fxm_offsetTableEntry, fxm_posPathInit), op 0x80 |
+| fx_181 | 0x1 | `FX_COUNTDOWN_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop |
+| fx_181 | 0x2 | `FX_COUNTDOWN_GOLD_SHARDS` | render | emitter: golden shard flashes, a dark teal sprite and white-blue gouraud rings |
+| fx_181 | 0x3 | `FX_COUNTDOWN_LENS_FLASH` | render | emitter: pink lens streak, golden shard flashes, rings (ring texture not resolved) |
+| fx_182 | 0x1 | `FX_COUNTDOWN_BACKDROP` | usage | table: background layers for btlfx_drawBackdrop (byte-identical to fx_181 entry 0x1) |
+| fx_182 | 0x3 | `FX_COUNTDOWN_GOLD_SHARDS` | render | emitter: golden shard flashes, a dark teal sprite and white-blue gouraud rings (renders as fx_181 entry 0x2) |
+| fx_182 | 0x6 | `FX_COUNTDOWN_LENS_FLASH` | render | emitter: pink lens streak, golden shard flashes, rings (ring texture not resolved; renders as fx_181 entry 0x3) |
+| fx_183 | 0xD | `FX_CHERRY_BLOSSOM_PETAL` | render | emitter: spiralling pink petal |
+| fx_183 | 0xE | `FX_CHERRY_BLOSSOM_WHITE_RING` | render | emitter: yellow-white gouraud rings + sprites (texture not in the file) |
+| fx_183 | 0xF | `FX_CHERRY_BLOSSOM_PETAL_STORM` | render | emitter: drifting pink petals and a large petal |
+| fx_183 | 0x10 | `FX_CHERRY_BLOSSOM_PETAL_TRAIL` | render | emitter: orbiting screen trail of petals |
+| fx_183 | 0x11 | `FX_CHERRY_BLOSSOM_PINK_RING` | render | emitter: pink and white-red gouraud rings |
+| fx_183 | 0x17 | `FX_CHERRY_BLOSSOM_FAN_EMITTER` | kind/usage (look pending) | emitter: spiral fan element (not rendered) |
+| fx_183 | 0x18 | `FX_CHERRY_BLOSSOM_SPARKLES` | render | emitter: gold and cyan glints |
+| fx_183 | 0x1D | `FX_CHERRY_BLOSSOM_SO_MODEL` | kind/usage (look pending) | 'so' model (not drawn by the tool), same size as the Spear model but other bytes |
+| fx_183 | 0x1E | `FX_CHERRY_BLOSSOM_PETAL_VORTEX` | render | emitter: pink swirl vortex + sprites (texture not in the file) |
+| fx_184 | 0x1 | `FX_SPEAR_WHITE_RING` | render | emitter: white-lilac gouraud ring + sprites that render transparent, fan |
+| fx_184 | 0x2 | `FX_SPEAR_SPEAR` | usage | 'so' model: the thrown spear (registered after btlfx_setWeaponVisible(caster, 0)) |
+| fx_185 | 0x1 | `FX_SPEAR_WHITE_RING` | render | emitter: white-lilac gouraud ring + sprites that render transparent, fan |
+| fx_185 | 0xB | `FX_SPEAR_SPEAR` | usage | 'so' model: the thrown spear (registered after btlfx_setWeaponVisible(caster, 0)) (byte-identical to fx_184 entry 0x2) |
+| fx_186 | 0xB | `FX_EARTH_SHAKE_SO_MODEL` | kind/usage (look pending) | 'so' model (not drawn by the tool), registered at the start |
+| fx_186 | 0xF | `FX_EARTH_SHAKE_GREY_RING` | render | rings: white-to-grey gouraud rings at each target |
+| fx_186 | 0x1A | `FX_EARTH_SHAKE_ROCK_DEBRIS` | render | emitter: small rock debris frames |
+| fx_186 | 0x1B | `FX_EARTH_SHAKE_SO_MODEL_2` | kind/usage (look pending) | 'so' model (not drawn by the tool), registered at the start |
+| fx_186 | 0x1D | `FX_EARTH_SHAKE_ROCK_DEBRIS_2` | render | emitter: small rock debris frames, brighter |
+| fx_186 | 0x1E | `FX_EARTH_SHAKE_LILAC_RING` | render | rings: white-lilac gouraud rings |
+| fx_186 | 0x1F | `FX_EARTH_SHAKE_CYAN_RING` | render | rings: white-cyan gouraud rings |
+| fx_187 | 0x1 | `FX_FIRE_BLADES_FLAME_BURST` | render | emitter: flame burst + sprites (texture not in the file) |
+| fx_187 | 0x2 | `FX_FIRE_BLADES_FLAME_BURST_2` | render | emitter: flame burst + sprites (texture not in the file) |
+| fx_187 | 0x3 | `FX_FIRE_BLADES_FIRE_BLADE` | render | emitter: spiralling yellow blade screen trail with red flame particles |
+| fx_187 | 0x4 | `FX_FIRE_BLADES_FIRE_BLADE_2` | render | emitter: spiralling yellow blade screen trail with red flame particles |
+| fx_187 | 0x5 | `FX_FIRE_BLADES_SPARKS` | kind/usage (look pending) | emitter: sprites (texture not in the file) |
+| fx_187 | 0x6 | `FX_FIRE_BLADES_SPARKS_2` | kind/usage (look pending) | emitter: sprites (texture not in the file) |
+| fx_187 | 0x7 | `FX_FIRE_BLADES_FIRE_BLADE_3` | render | emitter: helix of yellow blade screen trail with red flame particles |
+| fx_187 | 0x8 | `FX_FIRE_BLADES_FIRE_BLADE_4` | render | emitter: helix of yellow blade screen trail with red flame particles |
+| fx_187 | 0x9 | `FX_FIRE_BLADES_SPARKS_3` | kind/usage (look pending) | emitter: helix of sprites (texture not in the file) |
+| fx_187 | 0xA | `FX_FIRE_BLADES_SPARKS_4` | kind/usage (look pending) | emitter: helix of sprites (texture not in the file) |
+| fx_187 | 0xB | `FX_FIRE_BLADES_FLAME_BURST_3` | render | emitter: orbiting flame burst + sprites (texture not in the file) |
+| fx_187 | 0xC | `FX_FIRE_BLADES_RED_RING` | render | emitter: dark red gouraud rings |
+| fx_187 | 0x13 | `FX_FIRE_BLADES_FLAME_TRAIL` | render | emitter: spiralling 3D trail with an orange flame texture |
 
 ## Open questions (emulator)
 
@@ -180,3 +250,17 @@ Each wants one screenshot of the effect at the frame the C starts the entry (bat
 | fx_17a | 0xD | `FX_MADEEN_FAN_EMITTER` | emitter: three fan elements (not rendered) |
 | fx_17a | 0x11 | `FX_MADEEN_TRAIL` | trail: strip texture not in the file |
 | fx_17e | 0x9 | `FX_CHESTNUT_CHESTNUT_MODEL` | 'so' model (not drawn by the tool), probably the thrown chestnut |
+| fx_180 | 0x2 | `FX_ULTIMA_NOISE_RING` | emitter: ring with a texture not resolved (noise) + pink gouraud ring |
+| fx_180 | 0xF | `FX_ULTIMA_NOISE_RING_2` | emitter: ring with a texture not resolved (noise) + pink-lilac gouraud rings |
+| fx_180 | 0x11 | `FX_ULTIMA_FAN_EMITTER` | emitter: orbiting fan element (not rendered) |
+| fx_180 | 0x17 | `FX_ULTIMA_SO_MODEL` | 'so' model (not drawn by the tool), drawn with FX_ULTIMA_GLOW_DOME |
+| fx_180 | 0x1F | `FX_ULTIMA_NOISE_RING_3` | emitter: ring with a texture not resolved (noise) + lilac gouraud ring |
+| fx_180 | 0x21 | `FX_ULTIMA_PURPLE_HAZE` | emitter: particles with a purple noise texture (not resolved) |
+| fx_183 | 0x17 | `FX_CHERRY_BLOSSOM_FAN_EMITTER` | emitter: spiral fan element (not rendered) |
+| fx_183 | 0x1D | `FX_CHERRY_BLOSSOM_SO_MODEL` | 'so' model (not drawn by the tool), same size as the Spear model but other bytes |
+| fx_186 | 0xB | `FX_EARTH_SHAKE_SO_MODEL` | 'so' model (not drawn by the tool), registered at the start |
+| fx_186 | 0x1B | `FX_EARTH_SHAKE_SO_MODEL_2` | 'so' model (not drawn by the tool), registered at the start |
+| fx_187 | 0x5 | `FX_FIRE_BLADES_SPARKS` | emitter: sprites (texture not in the file) |
+| fx_187 | 0x6 | `FX_FIRE_BLADES_SPARKS_2` | emitter: sprites (texture not in the file) |
+| fx_187 | 0x9 | `FX_FIRE_BLADES_SPARKS_3` | emitter: helix of sprites (texture not in the file) |
+| fx_187 | 0xA | `FX_FIRE_BLADES_SPARKS_4` | emitter: helix of sprites (texture not in the file) |

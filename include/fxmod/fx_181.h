@@ -5,6 +5,12 @@
  * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
+/* fx_181 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_COUNTDOWN_BACKDROP    0x1 /* table: background layers for btlfx_drawBackdrop */
+#define FX_COUNTDOWN_GOLD_SHARDS 0x2 /* emitter: golden shard flashes, a dark teal sprite and white-blue gouraud rings */
+#define FX_COUNTDOWN_LENS_FLASH  0x3 /* emitter: pink lens streak, golden shard flashes, rings (ring texture not resolved) */
+
 extern Unk800F78A4 *fx_181_env;
 
 #endif
