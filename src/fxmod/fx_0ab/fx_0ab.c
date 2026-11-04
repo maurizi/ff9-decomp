@@ -17,20 +17,20 @@ s32 fx_0ab_op80(s32 mode, Fx0abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vz = work->pos10.vz;
         work->pos18.vy -= 0xC8;
         work->pos20.vy -= 0x190;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAELSTROM_WIND_TRAIL), (s32)&work->pos10);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_0ab_trails;
             work->emit0->trailSlots = 0x11;
             work->emit0->trailStride = 0x60;
         }
-        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
+        work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAELSTROM_SWIRL), (s32)&work->pos10);
     } else {
         frame = entry->frame;
         if (frame == 0xC) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAELSTROM_RED_STREAKS), (s32)&work->pos18);
         }
         if (frame == 0x10) {
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAELSTROM_RED_PUFFS), (s32)&work->pos20);
         }
         return frame >= 0x28;
     }

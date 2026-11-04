@@ -11,11 +11,11 @@ s32 fx_08a_op80(s32 mode, Fx08aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_08a_env = env;
         work->state0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AUTO_LIFE_FLASH_RINGS), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AUTO_LIFE_SPIRAL_TRAILS), (s32)&work->pos4);
         if (emitter != NULL) {
             emitter->otZ = 0x20;
             emitter->trails = (s32)fx_08a_trails;
@@ -27,11 +27,11 @@ s32 fx_08a_op80(s32 mode, Fx08aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             if (frame == 6) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AUTO_LIFE_GOLD_WINGS_2), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos4);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AUTO_LIFE_GOLD_WINGS), (s32)&work->pos4);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }

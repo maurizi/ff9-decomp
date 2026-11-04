@@ -6,6 +6,11 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_091 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ENTICE_BACKDROP    0x1 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_ENTICE_VIOLET_HALO 0x2 /* emitter: violet glow ring + sprites */
+
 typedef struct {
     s32 bgFrame0; /* frame for btlfx_drawBackdrop */
     Pool6CEntry *emit4;

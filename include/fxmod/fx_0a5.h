@@ -6,6 +6,11 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0a5 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SPORE_TRAIL  0x7 /* emitter: orbiting trail + sprite, render black (look pending) */
+#define FX_SPORE_SPORES 0x8 /* emitter: brown spore sprites */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

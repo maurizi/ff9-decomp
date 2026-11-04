@@ -6,6 +6,13 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_092 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_HYPNOTIZE_MAGENTA_RINGS 0x1 /* emitter: violet-cream and magenta gouraud rings */
+#define FX_HYPNOTIZE_HALO_RINGS    0x2 /* emitter: glowing circle particles, violet to orange */
+#define FX_HYPNOTIZE_VIOLET_RING   0x3 /* emitter: violet-tan gouraud rings */
+#define FX_HYPNOTIZE_SPARKLES      0x4 /* emitter: sparkle sprites (texture not in the file) (look pending) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

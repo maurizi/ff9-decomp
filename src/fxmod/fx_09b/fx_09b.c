@@ -80,8 +80,8 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale2C.vx = 0x1000;
         work->scale2C.vy = 0x1000;
         work->scale2C.vz = 0x1000;
-        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos3C);
+        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_LAVA_GUN_MODEL), 1);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LAVA_GUN_FIRE_FLASH), (s32)&work->pos3C);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_09b_shotBlocks[work->instance6C]),
                                        (s32)&fx_09b_emitStartPos[work->instance6C]);
         if (work->emit4 != NULL) {
@@ -101,7 +101,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 2:
             ex->btlfx_aimAngles((s16 *)&work->pos3C, (s16 *)&work->pos64, (s16 *)&ang);
             ex->btlfx_pointAhead((s16 *)&work->pos64, (s16 *)&ang, -0xC8, (s16 *)&work->pos44);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos44);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LAVA_GUN_FIRE_RING), (s32)&work->pos44);
             if (work->emitC != NULL) {
                 work->emitC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -111,8 +111,8 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos4C.vy = work->pos64.vy;
             work->pos4C.vz = work->pos64.vz;
             work->pos4C.vy = 0;
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos64);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos4C);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LAVA_GUN_EXPLOSION), (s32)&work->pos64);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_LAVA_GUN_RED_RING), (s32)&work->pos4C);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

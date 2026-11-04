@@ -32,8 +32,8 @@ s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_matrixPointAhead((MATRIX *)&bone2, 0x190, (s32)&work->pos30);
         work->pos28.vy += 0x32;
         work->pos30.vy += 0x32;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos28);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos30);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_FAN_EMITTER), (s32)&work->pos28);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_FAN_EMITTER_2), (s32)&work->pos30);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x100);
         }
@@ -53,9 +53,9 @@ s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 10:
             work->tint58 = 0x80;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->tint58, work->tint58, 0x80);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos38);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos38);
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos38);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_SPARKLE_CURTAIN), (s32)&work->pos38);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_SMOKE_RING), (s32)&work->pos38);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_FAN_EMITTER_3), (s32)&work->pos38);
             break;
         }
         if (frame >= 0xD) {
@@ -110,7 +110,7 @@ s32 fx_08b_op81(s32 mode, Fx08bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
         ex->btlfx_getUnitPos(work->unitC, (s16 *)&work->pos4);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERIAL_SLASH_VIOLET_PUFFS), (s32)&work->pos4);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unitC, 0x20);
         }

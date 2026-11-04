@@ -25,12 +25,12 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->modelPos18[2] = work->pos8.vz;
         fx_08c_env = env;
         ex->btlfx_initEffModels(fx_08c_effModels, 2);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_BERSERK_FUNNEL), 0x138, 0xFFFF, 0, 0x80);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BERSERK_FIRE_RING), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = 0x80;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos8);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BERSERK_STAR_FLASH), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = 0x80;
         }
@@ -59,7 +59,7 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->bgFrame4);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_BERSERK_BACKDROP), work->bgFrame4);
         work->bgFrame4++;
     }
     return 0;

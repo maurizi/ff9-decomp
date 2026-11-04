@@ -32,10 +32,10 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame == 4) {
             ex->btlfx_getUnitBonePos(0x10, 0x12, (u16 *)&work->pos10);
             ex->btlfx_getUnitBonePos(0x10, 0x2B, (u16 *)&work->pos18);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_0aa_emitStartPos0);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&fx_0aa_emitStartPos1);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_BURST), (s32)&work->pos10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_BURST_2), (s32)&work->pos18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_STREAM), (s32)&fx_0aa_emitStartPos0);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_STREAM_2), (s32)&fx_0aa_emitStartPos1);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_0aa_trails;
                 work->emit8->trailSlots = 0xC;
@@ -87,11 +87,11 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_FROST_RINGS), (s32)&work->pos14);
             break;
         case 4:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos14);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_MIST), (s32)&work->pos14);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_SNOW_TRAIL), (s32)&work->pos14);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_0aa_trails3;
                 work->emit0->trailSlots = 8;
@@ -99,8 +99,8 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 6:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos14);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_ICE_FLAKES), (s32)&work->pos14);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SNOWSTORM_FLAKES), (s32)&work->pos14);
             break;
         }
         return frame >= 0x28;

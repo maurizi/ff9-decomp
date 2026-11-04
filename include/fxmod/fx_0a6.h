@@ -6,6 +6,14 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0a6 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SWEEP_DUST_RINGS 0x1 /* emitter: gold-brown gouraud rings + dust */
+#define FX_SWEEP_WIND_TRAIL 0x2 /* emitter: grey wind streak trail */
+#define FX_SWEEP_DUST_PUFF  0x3 /* emitter: yellow-brown dust puff */
+#define FX_SWEEP_TAN_RING   0x4 /* emitter: tan-white gouraud rings */
+#define FX_SWEEP_DUST_CLOUD 0x5 /* emitter: dust cloud puffs */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

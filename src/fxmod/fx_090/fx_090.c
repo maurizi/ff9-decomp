@@ -20,8 +20,8 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos58.vy -= 0x320;
         work->pos60.vy -= 0x4B0;
         fx_090_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos50);
-        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos50);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURAGA_STAR_TRAIL), (s32)&work->pos50);
+        work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURAGA_TEAL_RING), (s32)&work->pos50);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_090_trails;
             work->emit0->trailSlots = 0xC;
@@ -40,26 +40,26 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale3C.vy = 0x1000;
         work->scale3C.vz = 0x1000;
         ex->btlfx_initEffModels(fx_090_effModels, 2);
-        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x1B, 0x3D09, 0, 0);
-        work->model72 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xD), 0x1B, 0x3D09, 0, 0);
+        work->model70 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_CURAGA_LIGHT_FOUNTAIN), 0x1B, 0x3D09, 0, 0);
+        work->model72 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_CURAGA_LIGHT_RING), 0x1B, 0x3D09, 0, 0);
         work->fadeOut6C = work->fadeIn68 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 18:
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos50);
-            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->pos50);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURAGA_WHITE_RINGS), (s32)&work->pos50);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURAGA_SPARKLES), (s32)&work->pos50);
             if (work->emit10 != NULL) {
                 work->emit10->otZ = 0x180;
             }
             work->fadeIn68 = 0x12;
             break;
         case 22:
-            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos58);
-            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos58);
+            work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURAGA_SPARKLE_BURST), (s32)&work->pos58);
+            work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURAGA_STAR_GLINTS), (s32)&work->pos58);
             break;
         case 39:
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos58);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CURAGA_SPARKLE_SPIRAL), (s32)&work->pos58);
             break;
         case 28:
             work->fadeOut6C = 0x1A;

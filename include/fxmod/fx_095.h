@@ -4,6 +4,11 @@
 /* Effect module fx_095 (dir 13 file 0x95): Stop. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
+/* fx_095 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_STOP_CLOCK_RING 0x20 /* sprite: silver clock ring with spikes */
+#define FX_STOP_FLARE      0x2C /* sprite: blue-red flare, 6 frames */
+
 typedef struct {
     s32 state0; /* state */
     s32 spawnCount4; /* spawned */

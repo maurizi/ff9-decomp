@@ -6,6 +6,11 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0a4 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BUZZ_SPRITE     0x1 /* emitter: one sprite, renders black (look pending) */
+#define FX_BUZZ_SOUND_WAVE 0x6 /* emitter: ring textured with a yellow sine wave */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

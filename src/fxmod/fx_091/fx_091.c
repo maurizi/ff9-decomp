@@ -11,7 +11,7 @@ s32 fx_091_op80(s32 mode, Fx091Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_091_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_ENTICE_VIOLET_HALO), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0xC8);
         }
@@ -28,7 +28,7 @@ s32 fx_091_op80(s32 mode, Fx091Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4->rot.vz = work->aim18.vz;
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->bgFrame0);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_ENTICE_BACKDROP), work->bgFrame0);
         work->bgFrame0++;
         return frame >= 0x42;
     }

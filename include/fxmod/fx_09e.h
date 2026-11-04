@@ -6,6 +6,11 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_09e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BLIND_VORTEX   0x6 /* emitter: silver-blue swirling vortex ring */
+#define FX_BLIND_VORTEX_2 0x8 /* emitter: silver-blue swirling vortex ring + fans */
+
 typedef struct {
     SVECTOR pos0; /* caster body position */
 } Fx09eWork;

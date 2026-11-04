@@ -24,7 +24,7 @@ s32 fx_092_op80(s32 mode, Fx092Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vx = work->pos28.vx;
         env->camera->points[0].vy = work->pos28.vy;
         env->camera->points[0].vz = work->pos28.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos28);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HYPNOTIZE_MAGENTA_RINGS), (s32)&work->pos28);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
@@ -42,9 +42,9 @@ s32 fx_092_op80(s32 mode, Fx092Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 0xA) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos30);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos20);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos38);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HYPNOTIZE_HALO_RINGS), (s32)&work->pos30);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HYPNOTIZE_VIOLET_RING), (s32)&work->pos20);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_HYPNOTIZE_SPARKLES), (s32)&work->pos38);
         }
         return frame >= 0x32;
     }

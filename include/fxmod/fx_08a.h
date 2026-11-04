@@ -6,6 +6,13 @@
  * runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_08a effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_AUTO_LIFE_SPIRAL_TRAILS 0x6 /* emitter: white trails spiralling, red specks, pink wing */
+#define FX_AUTO_LIFE_FLASH_RINGS   0x7 /* emitter: white-pink and white-blue gouraud rings */
+#define FX_AUTO_LIFE_GOLD_WINGS    0x9 /* emitter: golden wing sprites */
+#define FX_AUTO_LIFE_GOLD_WINGS_2  0xA /* emitter: golden wing sprites */
+
 typedef struct {
     s32 state0; /* state */
     SVECTOR pos4; /* caster body position */

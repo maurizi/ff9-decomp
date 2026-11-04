@@ -6,6 +6,13 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0ab effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MAELSTROM_RED_PUFFS   0x1 /* emitter: red puffs + sprites */
+#define FX_MAELSTROM_RED_STREAKS 0x2 /* emitter: red wisps and streaks */
+#define FX_MAELSTROM_SWIRL       0x3 /* emitter: dark red spiral swirl */
+#define FX_MAELSTROM_WIND_TRAIL  0x4 /* emitter: grey smoke trail spiralling */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

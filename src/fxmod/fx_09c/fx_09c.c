@@ -25,7 +25,7 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 4) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GNOLL_ATTACK_IMPACT_RINGS), (s32)&work->pos10);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -40,11 +40,11 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos2C.vx = tip.vx - ((ex->math_sin(work->aim34.vy) * 0x1E0) >> 12);
             work->pos2C.vz = tip.vz - ((ex->math_cos(work->aim34.vy) * 0x1E0) >> 12);
             work->pos2C.vy = tip.vy - ((ex->math_sin(work->aim34.vx) * 0x1E0) >> 12);
-            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos2C);
-            work->emit3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos2C);
+            work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GNOLL_ATTACK_SPARKLE_RINGS), (s32)&work->pos2C);
+            work->emit3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GNOLL_ATTACK_GREY_RING), (s32)&work->pos2C);
         }
         if (frame == 0x12) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_GNOLL_ATTACK_IMPACT_RINGS_2), (s32)&work->pos18);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

@@ -18,7 +18,7 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitArgBoneMatrix(0x10, 0, &bone);
             ex->btlfx_matrixPointAhead((MATRIX *)&bone, -0x32, (s32)&work->pos20);
             work->pos20.vy -= 0x96;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEPING_JUICE_SPLASH_TRAILS), (s32)&work->pos20);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_0ac_trails;
                 work->emit0->trailSlots = 0x3B;
@@ -27,9 +27,9 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->pos10, (s16 *)&work->aim28);
             break;
         case 8:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos18);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos18);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEPING_JUICE_BUBBLES), (s32)&work->pos18);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEPING_JUICE_GLOW), (s32)&work->pos18);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SLEEPING_JUICE_RIPPLE), (s32)&work->pos18);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }

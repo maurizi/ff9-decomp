@@ -6,6 +6,16 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_07a effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEMI_SHOCK_FLASH_RING 0x6 /* emitter: white gouraud ring (same call site as fx_079 entry 0x2) */
+#define FX_DEMI_SHOCK_BACKDROP   0x8 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_DEMI_SHOCK_WISP_BURST 0x9 /* emitter: white gouraud rings + blue and violet smoke wisps */
+#define FX_DEMI_SHOCK_SPHERE     0xB /* model: sphere (texture not in the file) (byte-identical to fx_079 entry 0xB) (look pending) */
+#define FX_DEMI_SHOCK_TRAIL      0xC /* trail: strip texture not in the file (byte-identical to fx_079 entry 0x9) (look pending) */
+#define FX_DEMI_SHOCK_BOWL       0xD /* model: gouraud hemisphere bowl (byte-identical to fx_079 entry 0xa) */
+#define FX_DEMI_SHOCK_BOWL_2     0xE /* model: second gouraud hemisphere bowl (byte-identical to fx_079 entry 0x6) */
+
 extern Unk800F78A4 *fx_07a_env;
 extern s32 fx_07a_discRadius;
 extern s32 fx_07a_uvRadiusIn;

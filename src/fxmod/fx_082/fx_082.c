@@ -25,8 +25,8 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos18.vy -= 0x145;
         BTLFX_COPY_SVEC(&work->rot28, &work->rot20);
         ex->btlfx_initEffModels(fx_082_effModels, 2);
-        work->model30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
-        work->model34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
+        work->model30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_MODEL), 0);
+        work->model34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_MODEL), 0);
         env->camera->points[0].vx = work->pos18.vx;
         env->camera->points[0].vy = work->pos18.vy;
         env->camera->points[0].vz = work->pos18.vz;
@@ -46,7 +46,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     work->pos10.vz += 0x40;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_SMOKE), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
@@ -65,7 +65,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc = 0xC00;
             bright = 0x1000;
             if (frame == 3) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_PASTEL_RINGS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
@@ -73,11 +73,11 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 4) {
                 work->state0 = 2;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_VIOLET_RING), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_CYAN_RING), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
@@ -90,11 +90,11 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 6;
             work->rot28.vx = 0x400 - ((frame & 1) * 2 - 1) * (ex->math_cos(t >> 2) >> 7);
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_FAN_EMITTER), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MAGIC_HAMMER_STARS), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }

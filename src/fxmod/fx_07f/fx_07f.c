@@ -26,17 +26,17 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->state0 = 0;
         work->bgFrame4 = 0;
         work->pos10.vy -= 0x180;
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos8);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SILENCE_PINK_PUFF), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = 0x20;
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SILENCE_PINK_RING), (s32)&work->pos8);
         if (emitter != NULL) {
             emitter->otZ = -0x20;
         }
         ex->btlfx_initEffModels(fx_07f_effModels, 2);
-        work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0xB7, 0x3D40, 0, 0);
-        work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0x139, 0xFFFF, 0x40, 0x80);
+        work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SILENCE_KANJI_DOME), 0xB7, 0x3D40, 0, 0);
+        work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SILENCE_RING_DISC), 0x139, 0xFFFF, 0x40, 0x80);
     } else {
         frame = entry->frame;
         switch (work->state0) {
@@ -65,7 +65,7 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelAbr(work->model30, 1);
             ex->Hi_ModifyEffModelRGB(work->model30, tint, tint, tint);
             if (frame == 0xC) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SILENCE_KANJI), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = 0x46;
                 }
@@ -76,7 +76,7 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 2), work->bgFrame4);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SILENCE_BACKDROP), work->bgFrame4);
         work->bgFrame4++;
     }
     return 0;

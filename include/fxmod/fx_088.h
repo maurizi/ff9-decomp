@@ -6,6 +6,11 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_088 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SPARE_CHANGE_STREAKS 0x7 /* emitter: violet-white light streak trails (same call site as fx_087 entry 0x6) */
+#define FX_SPARE_CHANGE_COINS   0x8 /* emitter: bronze coin sprites + white flashes (same call site as fx_087 entry 0x8) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

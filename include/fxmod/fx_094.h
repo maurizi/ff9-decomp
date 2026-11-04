@@ -6,6 +6,14 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_094 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DELTA_ATTACK_WHITE_RING   0x1 /* emitter: white gouraud rings */
+#define FX_DELTA_ATTACK_VIOLET_RING  0x2 /* emitter: homing violet gouraud rings */
+#define FX_DELTA_ATTACK_WHITE_RING_2 0x3 /* emitter: white gouraud rings */
+#define FX_DELTA_ATTACK_COLOR_RINGS  0x4 /* emitter: yellow / blue / red / gold gouraud rings */
+#define FX_DELTA_ATTACK_FAN_EMITTER  0x5 /* emitter: fan element (not rendered) (look pending) */
+
 typedef struct {
     SVECTOR pos0; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR pos8; /* caster body position */

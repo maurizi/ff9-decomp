@@ -4,6 +4,16 @@
 /* Effect module fx_063 (dir 13 file 0x63). */
 #include "btlfx_mod.h"
 
+/* fx_063 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DEMI_BACKDROP   0x7 /* table: backdrop layers (btlfx_drawBackdrop) (byte-identical to fx_062 entry 0x7) */
+#define FX_DEMI_SPHERE     0x8 /* model: sphere, white texture (byte-identical to fx_062 entry 0x8) */
+#define FX_DEMI_CAP        0x9 /* model: shallow spherical cap (texture not in the file) (byte-identical to fx_062 entry 0xa) (look pending) */
+#define FX_DEMI_BACKDROP_2 0xA /* table: backdrop layers (btlfx_drawBackdrop) (byte-identical to fx_062 entry 0x9) */
+#define FX_DEMI_BOWL       0xB /* model: gouraud hemisphere bowl (byte-identical to fx_062 entry 0xB) */
+#define FX_DEMI_BOWL_2     0xC /* model: second gouraud hemisphere bowl (byte-identical to fx_062 entry 0xC) */
+#define FX_DEMI_GLOW_TRAIL 0xD /* trail: white radial glow strip (byte-identical to fx_062 entry 0xD) */
+
 typedef struct {
     s16 vx;
     s16 vy;

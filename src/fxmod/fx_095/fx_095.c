@@ -83,7 +83,7 @@ static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk8
     }
     if (glow != 0) {
         ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, fx_095_glowBlocks[part->index8]), x, y, 0, 1, glow);
-        ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0x2C), x, y, glowFrame, 1, 0x1000);
+        ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, FX_STOP_FLARE), x, y, glowFrame, 1, 0x1000);
     }
     return 0;
 }
@@ -373,7 +373,7 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x80, 0xFF);
             }
             fx_095_drawTexDisc(8, xy.vx, xy.vy, 0x60, 0x80, &rect);
-            ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, 0x20), xy.vx, xy.vy, 0, 1, 0x1000);
+            ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, FX_STOP_CLOCK_RING), xy.vx, xy.vy, 0, 1, 0x1000);
             if (frame >= 16) {
                 work->state0 = 2;
                 entry->frame = -1;
@@ -382,7 +382,7 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 2:
             fade = 0x1000 - (frame << 9);
             fx_095_drawTexDisc(8, xy.vx, xy.vy, 0x60, fade >> 5, &rect);
-            ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, 0x20), xy.vx, xy.vy, 0, 1, fade);
+            ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, FX_STOP_CLOCK_RING), xy.vx, xy.vy, 0, 1, fade);
             if (frame >= 8) {
                 return 1;
             }

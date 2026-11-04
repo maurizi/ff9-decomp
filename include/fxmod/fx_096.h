@@ -7,6 +7,14 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_096 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FROST_ICE_GLINTS  0x1 /* emitter: blue particles + sprites (look unclear) (look pending) */
+#define FX_FROST_SNOW_BURST  0x6 /* emitter: ring of ice-flake sprites + white-cyan rings */
+#define FX_FROST_ICE_MODEL   0xA /* 'so' model (not drawn by the tool) (look pending) */
+#define FX_FROST_ICE_MODEL_2 0xB /* 'so' model (not drawn by the tool) (look pending) */
+#define FX_FROST_BACKDROP    0xC /* table: backdrop layers (btlfx_drawBackdrop) */
+
 typedef struct {
     Pool6CEntry *emit0;
     s32 unk4; /* unused */

@@ -6,6 +6,13 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_09c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_GNOLL_ATTACK_IMPACT_RINGS   0x1 /* emitter: cream-orange and white gouraud rings + sparkles */
+#define FX_GNOLL_ATTACK_IMPACT_RINGS_2 0x2 /* emitter: cream-orange, magenta and white gouraud rings + sparkles */
+#define FX_GNOLL_ATTACK_SPARKLE_RINGS  0x7 /* emitter: fans + white-cream-red rings and sparkles */
+#define FX_GNOLL_ATTACK_GREY_RING      0x8 /* emitter: grey gouraud rings */
+
 typedef struct {
     SVECTOR unk0; /* write-only: pos10 + random */
     SVECTOR unk8; /* write-only: pos10 + random */

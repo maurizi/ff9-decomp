@@ -10,14 +10,14 @@ s32 fx_09e_op80(s32 mode, Fx09eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_09e_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos0);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIND_VORTEX_2), (s32)&work->pos0);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
         frame = entry->frame;
         if (frame == 0x18) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos0);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BLIND_VORTEX), (s32)&work->pos0);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }

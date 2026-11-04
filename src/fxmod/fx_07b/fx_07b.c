@@ -9,7 +9,7 @@ s32 fx_07b_op80(s32 mode, Fx07bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_07b_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PROTECT_BLUE_HELIX), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->trails = (s32)fx_07b_trails;
             work->emit0->trailSlots = 6;
@@ -22,7 +22,7 @@ s32 fx_07b_op80(s32 mode, Fx07bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0xE) {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos8);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_PROTECT_GOLD_RING), (s32)&work->pos8);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }

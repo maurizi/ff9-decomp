@@ -200,8 +200,8 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
         ex->Hi_ModifyEffModelAbr(work->model28, 1);
         ex->Hi_ModifyEffModelRGB(work->model28, (tmp >> 5) - 0x80, (tmp >> 5) - 0x80, (tmp >> 5) - 0x80);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 5), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
-        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 3), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_PARTICLES), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_BLUE_WAVE), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
         if (frame >= 8) {
             part->state4 = 1;
             ((s16 *)part)[-1] = -1;
@@ -263,7 +263,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } while (0);
         work->ringRot14.vz = 0;
         ex->btlfx_initEffModels(fx_07e_effModels, 1);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xC), 0xBB, 0x3E40, 0,
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SLOW_CRESCENT), 0xBB, 0x3E40, 0,
                                                  0x80);
     } else {
         frame = entry->frame;
@@ -353,8 +353,8 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 12;
             env->otZ = work->otZ8;
             alpha = ex->math_sin(t >> 2);
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), pos, NULL, 0x2000, 0, 1, alpha, 0, 0);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), pos, NULL, 0x2000, 0, 2, alpha);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GLINT), pos, NULL, 0x2000, 0, 1, alpha, 0, 0);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, 0x2000, 0, 2, alpha);
             env->otZ = 0;
             if (frame >= 12) {
                 work->state0 = 1;
@@ -370,8 +370,8 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_drawRadialScreenGrid(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &grabRect, fx_07e_op81GridVertex);
             fx_07e_twist = ex->math_sin(t >> 2) >> 1;
             env->otZ = work->otZ8;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), pos, NULL, 0x2000, 0, 1, 0x1000, 0, 0);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), pos, NULL, 0x2000, 0, 2, 0x1000);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GLINT), pos, NULL, 0x2000, 0, 1, 0x1000, 0, 0);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, 0x2000, 0, 2, 0x1000);
             env->otZ = 0;
             if (frame >= 16) {
                 work->state0 = 2;
@@ -390,15 +390,15 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->otZ = work->otZ8;
             size = 0x1000 - ex->math_sin(ang);
             alpha = ex->math_cos(ang);
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), pos, NULL, size * 2, 0, 1, alpha, 0, 0);
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), pos, NULL, size * 2, 0, 2, alpha);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GLINT), pos, NULL, size * 2, 0, 1, alpha, 0, 0);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_SLOW_GREEN_RING), pos, NULL, size * 2, 0, 2, alpha);
             env->otZ = 0;
             if (frame >= 12) {
                 return 1;
             }
             break;
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xA), work->frame4);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_SLOW_BACKDROP), work->frame4);
         work->frame4++;
     }
     return 0;

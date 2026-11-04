@@ -6,6 +6,15 @@
  * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_083 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SCAN_RED_BAND     0x1 /* model: ring band, red texture */
+#define FX_SCAN_GLYPH_TEXT   0x2 /* emitter: scrolling coloured glyph text */
+#define FX_SCAN_METAL_SPHERE 0x5 /* model: sphere with a riveted metal texture */
+#define FX_SCAN_GLYPH_TEXT_2 0x7 /* emitter: scrolling coloured glyph text, orbiting */
+#define FX_SCAN_ORB_TILES    0xB /* emitter: orange / blue orbs + yellow and blue tiles */
+#define FX_SCAN_YELLOW_RING  0xC /* emitter: dark yellow gouraud rings */
+
 typedef struct {
     s32 vx;
     s32 vy;

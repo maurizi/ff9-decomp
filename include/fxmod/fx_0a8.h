@@ -6,6 +6,17 @@
  * runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0a8 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_REIS_WIND_SPARKLES        0x1 /* emitter: violet, gold, teal and white sparkles */
+#define FX_REIS_WIND_FAN_EMITTER     0x3 /* emitter: fan element (not rendered) (look pending) */
+#define FX_REIS_WIND_SPARKLES_2      0x5 /* emitter: gold and teal sparkles */
+#define FX_REIS_WIND_VIOLET_SPARKLES 0x6 /* emitter: violet sparkles */
+#define FX_REIS_WIND_WIND_TRAIL      0x7 /* emitter: green wind trail + green specks */
+#define FX_REIS_WIND_GREEN_RINGS     0xC /* emitter: green gouraud rings */
+#define FX_REIS_WIND_GREEN_WISP      0xF /* emitter: green wisp puffs */
+#define FX_REIS_WIND_GREEN_CRESCENT  0x10 /* emitter: green crescents */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

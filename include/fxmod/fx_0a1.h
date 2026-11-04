@@ -6,6 +6,19 @@
  * that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0a1 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BLASTER_TEX_RING       0x1 /* emitter: textured green-grey ring band */
+#define FX_BLASTER_PINK_HALO      0x2 /* emitter: green ring band + pink halo rings */
+#define FX_BLASTER_PINK_HALO_2    0x3 /* emitter: pink halo rings */
+#define FX_BLASTER_FAN_EMITTER    0x4 /* emitter: fan element (not rendered) (look pending) */
+#define FX_BLASTER_PINK_STARBURST 0x5 /* emitter: pink starburst + violet petals */
+#define FX_BLASTER_VIOLET_PETALS  0x6 /* emitter: violet petal sprites */
+#define FX_BLASTER_TRAIL          0x7 /* emitter: flat orbiting trail, grey strip (look pending) */
+#define FX_BLASTER_GREY_RING      0x8 /* emitter: lilac-grey gouraud rings */
+#define FX_BLASTER_VIOLET_RING    0xF /* emitter: white-violet gouraud rings */
+#define FX_BLASTER_TRAIL_2        0x10 /* trail: small strip (look unclear) (look pending) */
+
 typedef struct {
     s32 state0; /* state */
     s32 unk4; /* write-only (cleared at init) */

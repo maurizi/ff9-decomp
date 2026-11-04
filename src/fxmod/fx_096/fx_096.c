@@ -130,7 +130,7 @@ s32 fx_096_op80(s32 mode, Fx096Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_096_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FROST_ICE_GLINTS), (s32)&work->pos8);
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
@@ -172,14 +172,14 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos24.vy = work->pos58.vy;
         work->pos24.vz = work->pos58.vz;
         work->pos14.vy = -0x258;
-        work->model62 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
-        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
+        work->model62 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FROST_ICE_MODEL), 1);
+        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FROST_ICE_MODEL_2), 1);
         work->fade60 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 7:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos58);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FROST_SNOW_BURST), (s32)&work->pos58);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -219,7 +219,7 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->model64, work->bright54, work->bright54, work->bright54);
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_FROST_BACKDROP), frame);
         if (frame >= 0x5A) {
             ex->btlfx_clearEffModels();
             return 1;

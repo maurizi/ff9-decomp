@@ -10,7 +10,7 @@ s32 fx_07c_op80(s32 mode, Fx07cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos4.vy = env->targets->centerY;
         work->pos4.vz = env->targets->centerZ;
         fx_07c_env = env;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_MINI_FAN_EMITTER), (s32)&work->pos4);
     } else {
         return entry->frame >= 0x28;
     }

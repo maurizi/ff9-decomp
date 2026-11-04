@@ -7,6 +7,29 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_07d effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_FLARE_RED_VIOLET_RINGS 0x1 /* emitter: white-red and white-blue-violet gouraud rings */
+#define FX_FLARE_ARCH             0x2 /* model: half-ring arch, white texture */
+#define FX_FLARE_ORANGE_GLOW      0x3 /* particles: orange glow with a white core */
+#define FX_FLARE_PINK_RING        0x5 /* rings: white-pink-red gouraud rings */
+#define FX_FLARE_BLUE_LIGHTNING   0x8 /* trail: blue lightning strip */
+#define FX_FLARE_WHITE_RING       0x9 /* rings: white-cream gouraud rings */
+#define FX_FLARE_RED_SPARKS       0xB /* emitter: red spark sprites + white-red rings */
+#define FX_FLARE_RING_DISC        0xF /* model: gouraud flat annulus */
+#define FX_FLARE_BACKDROP         0x11 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_FLARE_CALLBACK_EMITTER 0x12 /* emitter: orbit, one callback element (look pending) */
+#define FX_FLARE_FIRE_RING        0x13 /* rings: white-cyan-orange-red gouraud rings */
+#define FX_FLARE_FAN_EMITTER      0x14 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_FLARE_BACKDROP_2       0x15 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_FLARE_FIRE_DOME        0x16 /* model: dome with a fiery orange texture */
+#define FX_FLARE_BACKDROP_3       0x17 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_FLARE_TEX_RING         0x18 /* rings: textured rings (texture not resolved) (look pending) */
+#define FX_FLARE_TEX_RING_2       0x19 /* rings: textured rings (texture not resolved) (look pending) */
+#define FX_FLARE_SPARK_GLOW       0x1A /* emitter: red spark sprites + fading orange glow */
+#define FX_FLARE_FAN_EMITTER_2    0x1B /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_FLARE_SPHERE           0x1E /* model: sphere (texture not resolved) (look pending) */
+
 typedef struct {
     SVECTOR from0; /* from */
     SVECTOR to8; /* to */

@@ -18,10 +18,10 @@ s32 fx_0a6_op80(s32 mode, Fx0a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (frame == 0) {
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos14);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos14);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos1C);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWEEP_DUST_RINGS), (s32)&work->pos14);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWEEP_WIND_TRAIL), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWEEP_DUST_PUFF), (s32)&work->pos14);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWEEP_TAN_RING), (s32)&work->pos1C);
             if (work->emit4 != NULL) {
                 work->emit4->trails = (s32)fx_0a6_trails;
                 work->emit4->trailSlots = 0x12;
@@ -29,7 +29,7 @@ s32 fx_0a6_op80(s32 mode, Fx0a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 6) {
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWEEP_DUST_CLOUD), (s32)&work->pos14);
         }
         return frame >= 0x28;
     }

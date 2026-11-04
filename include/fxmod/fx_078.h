@@ -7,6 +7,16 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_078 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BIO_GREEN_RING    0x2 /* emitter: rings textured with teal-green swirls */
+#define FX_BIO_VEC_TRACK     0xC /* table: vector track (fxm_vecTrackInit) */
+#define FX_BIO_ROT_POS_TRACK 0xD /* table: rotation + position track (fxm_rotPosTrackInit) */
+#define FX_BIO_RED_BUBBLES   0x14 /* emitter: red veined bubbles with a crimson glow */
+#define FX_BIO_POS_TRACK     0x15 /* table: position track (fxm_posTrackInit) */
+#define FX_BIO_ORBIT_TRAIL   0x16 /* emitter: orbiting screen trail, renders black (look pending) */
+#define FX_BIO_GREEN_CLOUD   0x17 /* emitter: murky green cloud + grey glow */
+
 /* keyframe tracks read from the effect file: count, then the keys (as in fx_05d) */
 typedef struct {
     s16 posX0, posY2, posZ4; /* position */

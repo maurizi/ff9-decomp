@@ -19,12 +19,12 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vz = env->targets->centerZ;
         work->pos18.vx = 0x5DC;
         work->pos20.vx = -0x5DC;
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPORE_SPORES), (s32)&work->pos8);
         ex->btlfx_aimAngles((s16 *)&work->pos8, &env->targets->centerX, (s16 *)&work->aim10);
     } else {
         frame = entry->frame;
         if (frame == 0x19) {
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos18);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPORE_TRAIL), (s32)&work->pos18);
             if (work->emit0 != NULL) {
                 work->emit0->trails = (s32)fx_0a5_trails;
                 work->emit0->trailSlots = 0x80;

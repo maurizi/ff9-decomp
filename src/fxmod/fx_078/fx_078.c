@@ -28,19 +28,19 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->model4C[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, fx_078_modelBlocks[i]),
                                                         0x97, 0x3D40, 0, 0);
         }
-        fxm_rotPosTrackInit(&fx_078_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, 0xD));
-        fxm_vecTrackInit(&fx_078_scaleKeys, (u16 *)ex->btlfx_getFileData(entry->file, 0xC));
-        fxm_posTrackInit(&fx_078_emitPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, 0x15));
+        fxm_rotPosTrackInit(&fx_078_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_ROT_POS_TRACK));
+        fxm_vecTrackInit(&fx_078_scaleKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_VEC_TRACK));
+        fxm_posTrackInit(&fx_078_emitPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, FX_BIO_POS_TRACK));
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_078_emitStartPos);
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_RED_BUBBLES), (s32)&fx_078_emitStartPos);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_GREEN_RING), (s32)&work->pos10);
             break;
         case 0x26:
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->pos10);
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->pos10);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_ORBIT_TRAIL), (s32)&work->pos10);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BIO_GREEN_CLOUD), (s32)&work->pos10);
             if (work->emit8 != NULL) {
                 work->emit8->trails = (s32)fx_078_trails;
                 work->emit8->trailSlots = 0x3C;

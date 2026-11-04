@@ -57,15 +57,15 @@ static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s
 
     trail = ex->btlfx_getParticleTrail(pt, p);
     if (frame == 0) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)trail, 2);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRAND_TRAIL), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)trail, 2);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, (s32 *)p->origin, frame, *scale, fx_0a0_trailAlpha, 1,
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRAND_TRAIL), (s32)pos, (s32 *)p->origin, frame, *scale, fx_0a0_trailAlpha, 1,
                       (u8 *)trail, 2);
     if (frame < 0x28) {
         fade = ex->math_cos((frame << 10) / 40);
         col0.r = col0.g = col0.b = 0x80;
         col1.r = col1.g = col1.b = 0x31;
-        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 6), pos, &fx_0a0_bonePos, 0, fade, 1, 0x40);
+        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, FX_WEB_STRAND_LINE), pos, &fx_0a0_bonePos, 0, fade, 1, 0x40);
     }
 }
 
@@ -85,7 +85,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&fx_0a0_bonePos, &work->pos4);
         BTLFX_COPY_SVEC(&work->posC, &work->pos4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
-        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
+        work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WEB_CALLBACK_EMITTER), (s32)&work->pos14);
         if (work->emit1C != NULL) {
             work->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
         }
@@ -95,7 +95,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit1C->trailStride = 0xAC;
         }
         work->emit1C->elems->draw = fx_0a0_op80ElemDraw;
-        work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->posC);
+        work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_WEB_WHITE_PUFFS), (s32)&work->posC);
         if (work->emit20 != NULL) {
             work->emit20->otZ = 0x20;
         }

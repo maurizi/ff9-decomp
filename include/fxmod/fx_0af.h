@@ -6,6 +6,12 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0af effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_ZOMBIE_BREATH_BREATH_TRAILS   0x5 /* emitter: white ghostly puff trails */
+#define FX_ZOMBIE_BREATH_GREEN_GLOW      0x7 /* emitter: white puffs + pale green glow */
+#define FX_ZOMBIE_BREATH_BREATH_TRAILS_2 0x8 /* emitter: white ghostly puff trails + one more trail */
+
 typedef struct {
     s32 state0; /* state */
     Pool6CEntry *emit4;

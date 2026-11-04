@@ -6,6 +6,18 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0aa effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SNOWSTORM_SNOW_BURST    0x1 /* emitter: snow-textured ring + snowflake sprites */
+#define FX_SNOWSTORM_SNOW_BURST_2  0x2 /* emitter: snow-textured ring + snowflake sprites */
+#define FX_SNOWSTORM_SNOW_STREAM   0x3 /* emitter: snow streak trail + snowflakes */
+#define FX_SNOWSTORM_SNOW_STREAM_2 0x4 /* emitter: snow streak trail + snowflakes */
+#define FX_SNOWSTORM_ICE_FLAKES    0x5 /* emitter: icy cyan flakes */
+#define FX_SNOWSTORM_MIST          0x6 /* emitter: grey-teal mist wisps */
+#define FX_SNOWSTORM_FROST_RINGS   0x7 /* emitter: teal gouraud rings + snow-textured rings */
+#define FX_SNOWSTORM_FLAKES        0x8 /* emitter: snowflake sprites */
+#define FX_SNOWSTORM_SNOW_TRAIL    0x9 /* emitter: snow streak trail spiralling */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

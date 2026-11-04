@@ -6,6 +6,11 @@
  * runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_089 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_REVIVE_LIGHT_SWIRL 0x4 /* emitter: blue-white light swirl + flare */
+#define FX_REVIVE_FEATHERS    0x5 /* emitter: white wing / feather sprites + flare */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

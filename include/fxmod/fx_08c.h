@@ -6,6 +6,13 @@
  * play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_08c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_BERSERK_BACKDROP   0x1 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_BERSERK_FUNNEL     0x3 /* model: open funnel, white texture */
+#define FX_BERSERK_FIRE_RING  0x8 /* emitter: red-orange-yellow gouraud rings */
+#define FX_BERSERK_STAR_FLASH 0xB /* emitter: white and red star flashes + violet ring */
+
 typedef struct {
     s32 state0; /* state */
     s32 bgFrame4; /* frame for btlfx_drawBackdrop */

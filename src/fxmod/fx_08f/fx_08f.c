@@ -132,14 +132,14 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8[4] = 0xC8;
         work->unk8[5] = 0x78;
         ex->btlfx_initEffModels(fx_08f_effModels, 8);
-        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x11), 0x9A, 0x3E00, 0, 0);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 4), 0x139, 0xFFFF, 0, 0x80);
-        work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x1A), 0xB9, 0x3D40, 0, 0);
-        work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xC), 0x3C, 0x3D04, 0, 0x80);
-        work->model34 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x17));
-        work->model38 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x18));
-        work->model3C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0x19));
-        work->model40 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xF), 0x97, 0x3D80, 0, 0);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_ROCK), 0x9A, 0x3E00, 0, 0);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_STREAK_SHELL), 0x139, 0xFFFF, 0, 0x80);
+        work->model2C = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_FIRE_DOME), 0xB9, 0x3D40, 0, 0);
+        work->model30 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_RING_BAND), 0x3C, 0x3D04, 0, 0x80);
+        work->model34 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_STREAK));
+        work->model38 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_BOWL));
+        work->model3C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_RING_DISC));
+        work->model40 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_METEOR_SKY_CYLINDER), 0x97, 0x3D80, 0, 0);
     } else {
         frame = entry->frame;
         switch (work->state0) {
@@ -186,7 +186,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
                 ex->Hi_ModifyEffModelAbr(work->model28, 1);
                 ex->Hi_ModifyEffModelRGB(work->model28, (glowT >> 5) - 0x80, (glowT >> 5) - 0x80, (glowT >> 5) - 0x80);
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->frame4);
+                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_METEOR_BACKDROP), work->frame4);
             }
             otz = -0x64;
             streakCol.r = 0x20;
@@ -201,7 +201,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, otz, &rot2, fx_08f_streakPts, &streakCol,
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_CONE_SPRITES), (s32)&work->pos14);
                 work->emit44 = emitter;
                 if (emitter != NULL) {
                     emitter->otZ = 0x5C;
@@ -213,11 +213,11 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             spriteOfs = (frame & 7) * 0x3C;
             spriteX = 0x1B8 - spriteOfs;
             spriteY = 0x140 - spriteOfs;
-            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), spriteX + 0x64, spriteY + 0x78, 0, 1, fadeIn);
+            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_DARK_CLOUDS), spriteX + 0x64, spriteY + 0x78, 0, 1, fadeIn);
             spriteOfs = ((frame + 5) % 10) * 0x3C;
             spriteX = 0x1B8 - spriteOfs;
             spriteY = 0x140 - spriteOfs;
-            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0xE), spriteX - 0x40, spriteY + 0x78, 0, 1, fadeIn);
+            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_CLOUDS), spriteX - 0x40, spriteY + 0x78, 0, 1, fadeIn);
             if (frame >= 0x31) {
                 ex->btlfx_stopEmitter(work->emit44);
                 work->camPos1C.vx = 0;
@@ -255,7 +255,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vz = pos.vz;
             }
             if (frame == 7) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->pos14);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_METEOR_EXPLOSION), (s32)&work->pos14);
                 if (emitter != NULL) {
                     emitter->otZ = 0x5C;
                 }
@@ -263,7 +263,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
             env->otZ = 0x200;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->pos14, NULL, level >> 1, 0, 1, 0x1000);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_FIRE_RING), &work->pos14, NULL, level >> 1, 0, 1, 0x1000);
             env->otZ = 0;
             if (frame >= 13) {
                 bright = ((ex->math_sin((((frame - 12) << 12) / 12) >> 2) << 6) >> 12) + 0x20;
@@ -279,25 +279,25 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenGrid(1, 0xA0, 0x78, 0x46, 0x38, 4, 4, 2, 2, &rot3, &scale2, &gridCol, 1, NULL);
             }
             if (frame == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), 0, NULL, -1, 0x3000, 0, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_SMOKE_TRAIL), 0, NULL, -1, 0x3000, 0, 1,
                                     fx_08f_trail, 0);
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->pos14, NULL, 0,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_SMOKE_TRAIL), (s32)&work->pos14, NULL, 0,
                                 ex->math_cos(approach >> 2) * 2 + 0x1000, ex->math_cos(approach >> 2) / 2 + 0x800, 1, fx_08f_trail, 0);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->frame4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_METEOR_BACKDROP), work->frame4);
             if (frame >= 9) {
                 spriteRot.vx = 0;
                 spriteRot.vy = 0;
                 spriteRot.vz = (frame << 5) + 0x7E8;
                 spriteRot.pad = 0;
                 spinAlpha = ex->math_cos((frame - 8) << 6);
-                ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &work->pos14, &spriteRot, 0x3000,
+                ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_DEBRIS_SPRITES), &work->pos14, &spriteRot, 0x3000,
                                       frame - 12, 1, spinAlpha);
             }
             if (frame >= 13) {
                 spriteFrame = frame - 12;
                 spriteAlpha = ex->math_cos((spriteFrame << 10) / 12);
-                ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &work->pos14, NULL, 0x3000, spriteFrame,
+                ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_DEBRIS_SPRITES), &work->pos14, NULL, 0x3000, spriteFrame,
                                       1, spriteAlpha);
             }
             if (frame >= 0x18) {
@@ -309,7 +309,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 6;
             work->pos14.vz -= 0x40;
             work->pos14.vy += 0x40;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->pos14, NULL, 0,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_METEOR_SMOKE_TRAIL), (s32)&work->pos14, NULL, 0,
                                 ex->math_cos(t >> 2), (0x1000 - t) / 2, 1, fx_08f_trail, 0);
             if (frame >= 6) {
                 ex->btlfx_clearEffModels();

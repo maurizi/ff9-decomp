@@ -11,7 +11,7 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos1C);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos1C);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPARE_CHANGE_STREAKS), (s32)&work->pos1C);
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_087_trails;
             work->emit4->trailSlots = 0x19;
@@ -31,7 +31,7 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 8) {
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos14);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SPARE_CHANGE_COINS), (s32)&work->pos14);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }

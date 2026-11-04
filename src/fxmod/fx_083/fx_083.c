@@ -28,7 +28,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         tex[5] = 0x80;
         tex[7] = 0;
         for (i = 0; i < 4; i++) {
-            work->model28[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 5), 0xFA, 0x3DC0,
+            work->model28[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SCAN_METAL_SPHERE), 0xFA, 0x3DC0,
                                                         0x80, 0x80);
             work->ringRot38[i].vy = i << 10;
             work->ringRot38[i].vx = 0x100;
@@ -39,7 +39,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->ringScale98.vy = 0x333;
         work->ringScale98.vz = 0x333;
         for (i = 0; i < 5; i++) {
-            work->modelB0[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 1), 0xB8, 0x3D40,
+            work->modelB0[i] = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SCAN_RED_BAND), 0xB8, 0x3D40,
                                                         0xC0, 0);
             work->pillarOnC4[i] = 0;
             work->pillarFadeD8[i] = -1;
@@ -83,22 +83,22 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x14:
             work->timers0[3] = 0x20;
             work->timers0[7] = 0x20;
-            work->emit170[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->emitStartPos180[0]);
-            work->emit170[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->emitStartPos180[1]);
-            work->emit170[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->emitStartPos180[2]);
-            work->emit170[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->emitStartPos180[3]);
+            work->emit170[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_GLYPH_TEXT), (s32)&work->emitStartPos180[0]);
+            work->emit170[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_GLYPH_TEXT), (s32)&work->emitStartPos180[1]);
+            work->emit170[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_GLYPH_TEXT), (s32)&work->emitStartPos180[2]);
+            work->emit170[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_GLYPH_TEXT), (s32)&work->emitStartPos180[3]);
             work->timers0[8] = 0x30;
             break;
         case 0x30:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos160);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_ORB_TILES), (s32)&work->pos160);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos160);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_YELLOW_RING), (s32)&work->pos160);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos160);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCAN_GLYPH_TEXT_2), (s32)&work->pos160);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }

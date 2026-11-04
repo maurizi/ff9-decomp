@@ -52,10 +52,10 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         for (i = 0; i < 5; i++) {
             fx_079_strips[i].timer11C = -i;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_TRAIL), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&fx_079_strips[i], 0);
         }
-        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xB), 0x137,
+        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_SPHERE), 0x137,
                                                          0xFFFF, 0, 0);
         work->models40[0].rot4.vx = 0x800;
         work->models40[0].rot4.vy = 0;
@@ -63,14 +63,14 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->models40[0].scaleC.vx = 0x5C;
         work->models40[0].scaleC.vy = 0x5C;
         work->models40[0].scaleC.vz = 0x5C;
-        work->models40[1].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 0xA));
+        work->models40[1].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_BOWL));
         work->models40[1].rot4.vx = 0;
         work->models40[1].rot4.vy = 0;
         work->models40[1].rot4.vz = 0;
         work->models40[1].scaleC.vx = 0x50;
         work->models40[1].scaleC.vy = 0x50;
         work->models40[1].scaleC.vz = 0x50;
-        work->models40[2].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, 6));
+        work->models40[2].model0 = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_BOWL_2));
         work->models40[2].rot4.vx = 0;
         work->models40[2].rot4.vy = 0;
         work->models40[2].rot4.vz = 0;
@@ -99,7 +99,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timers0[6] = 0x10;
             break;
         case 16:
-            fx_079_emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_079_emitStartPos);
+            fx_079_emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_FLASH_RING), (s32)&fx_079_emitStartPos);
             break;
         case 24:
             work->timers0[8] = 4;
@@ -109,7 +109,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->timers0[7] = 0x10;
             break;
         case 40:
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_079_bodyPos);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_WISP_BURST), (s32)&fx_079_bodyPos);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
@@ -228,10 +228,10 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         tr->offsetY6C[j] += tr->speedYC4[j];
                     }
                     if (tr->timer11C < 4) {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), 0, NULL, frame, 0x1000,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_TRAIL), 0, NULL, frame, 0x1000,
                                             tr->timer11C << 10, 1, strip, 0);
                     } else {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), 0, NULL, frame, 0x1000,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_TRAIL), 0, NULL, frame, 0x1000,
                                             0x1000, 1, strip, 0);
                     }
                 } else if (tr->timer11C < 0) {
@@ -259,7 +259,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (work->timers0[9] != 0) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), work->timers0[9]);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, FX_DEMI_SHOCK_BACKDROP), work->timers0[9]);
             work->timers0[9]++;
         }
         return frame >= 0x5A;

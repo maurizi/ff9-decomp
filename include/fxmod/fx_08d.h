@@ -6,6 +6,13 @@
  * play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_08d effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_CURA_STAR_TRAIL     0x1 /* emitter: blue star-sparkle trail + sprites */
+#define FX_CURA_STAR_FLARES    0x7 /* sprite line: blue-white star flares */
+#define FX_CURA_CRESCENT_BURST 0x8 /* emitter: ring + yellow, white and green crescent sprites */
+#define FX_CURA_FAN_EMITTER    0xA /* emitter: fan element (not rendered) (look pending) */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

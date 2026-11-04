@@ -6,6 +6,15 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_08b effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_AERIAL_SLASH_FAN_EMITTER     0x1 /* emitter: fan element (not rendered) + dim green specks (look pending) */
+#define FX_AERIAL_SLASH_FAN_EMITTER_2   0x2 /* emitter: fan element (not rendered) + dim green specks (look pending) */
+#define FX_AERIAL_SLASH_VIOLET_PUFFS    0x6 /* emitter: violet cloud puffs + green glint */
+#define FX_AERIAL_SLASH_FAN_EMITTER_3   0x8 /* emitter: fan element (not rendered) + blue specks (look pending) */
+#define FX_AERIAL_SLASH_SPARKLE_CURTAIN 0xE /* emitter: violet sparkle curtain ring + violet-white rings */
+#define FX_AERIAL_SLASH_SMOKE_RING      0xF /* emitter: ring textured with grey smoke */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

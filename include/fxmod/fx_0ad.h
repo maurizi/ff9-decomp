@@ -6,6 +6,11 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0ad effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_AERO_BREATH_SWIRL       0x1 /* emitter: green wind swirl */
+#define FX_AERO_BREATH_WIND_TRAILS 0x6 /* emitter: green wind trails spiralling */
+
 typedef struct {
     s32 state0; /* state */
     Pool6CEntry *emit4;

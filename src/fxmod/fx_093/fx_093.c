@@ -16,11 +16,11 @@ s32 fx_093_op80(s32 mode, Fx093Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
         ex->btlfx_aimAngles((s16 *)&work->pos0, (s16 *)&work->pos8, (s16 *)&work->aim20);
-        work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos0);
+        work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CANNON_SMOKE), (s32)&work->pos0);
         if (work->emit28 != NULL) {
             work->emit28->otZ = ex->btlfx_addRadiusSixth(0x10, 0x40);
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos0);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CANNON_BLAST_RING), (s32)&work->pos0);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x40);
         }
@@ -37,11 +37,11 @@ s32 fx_093_op80(s32 mode, Fx093Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 8) {
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CANNON_EXPLOSION), (s32)&work->pos10);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
             }
-            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos18);
+            emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_CANNON_DUST_RING), (s32)&work->pos18);
             if (emitter != NULL) {
                 emitter->otZ = ex->btlfx_addRadiusSixth(0, -0x40);
             }

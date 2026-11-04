@@ -13,7 +13,7 @@ s32 fx_0ad_op80(s32 mode, Fx0adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
         ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos10, (s16 *)&work->aim18);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos8);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_BREATH_WIND_TRAILS), (s32)&work->pos8);
         if (work->emit4 != NULL) {
             work->emit4->trails = (s32)fx_0ad_trails;
             work->emit4->trailSlots = 0x24;
@@ -32,7 +32,7 @@ s32 fx_0ad_op80(s32 mode, Fx0adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4->rot.vz = work->aim18.vz;
             }
             if (frame == 0x16) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_AERO_BREATH_SWIRL), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
                 }

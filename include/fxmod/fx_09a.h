@@ -6,6 +6,16 @@
  * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_09a effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_LV5_DEATH_GREEN_GLOW 0x1 /* emitter: fan + green glow sprites, orange / violet rings */
+#define FX_LV5_DEATH_MODEL_DATA 0x2 /* table: data block passed with the model to btlfx_registerSummonModel */
+#define FX_LV5_DEATH_BACKDROP   0x3 /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_LV5_DEATH_BLUE_TRAIL 0x7 /* emitter: blue spiralling trail */
+#define FX_LV5_DEATH_MODEL      0x8 /* 'so' model (btlfx_registerSummonModel, not drawn by the tool) (look pending) */
+#define FX_LV5_DEATH_RED_BURST  0x9 /* emitter: pink-red sprites + white-red rings */
+#define FX_LV5_DEATH_GREY_SMOKE 0xE /* emitter: grey smoke blobs */
+
 typedef struct {
     SVECTOR a0;
     SVECTOR b8;

@@ -6,6 +6,13 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_093 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_CANNON_SMOKE      0x2 /* emitter: grey smoke puffs */
+#define FX_CANNON_EXPLOSION  0x4 /* emitter: explosion burst + sparks */
+#define FX_CANNON_BLAST_RING 0x8 /* emitter: cream-orange gouraud rings */
+#define FX_CANNON_DUST_RING  0xC /* emitter: grey dust ring */
+
 typedef struct {
     SVECTOR pos0; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR pos8; /* unit 0x10 bone position */

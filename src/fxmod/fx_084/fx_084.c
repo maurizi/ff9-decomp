@@ -50,7 +50,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             work->state0 = 1;
             entry->frame = -1;
-            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_084_pathFrom);
+            work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_PINK_ORB), (s32)&fx_084_pathFrom);
             if (work->emit1C != NULL) {
                 work->emit1C->otZ = 0x10;
             }
@@ -62,7 +62,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame >= 0x10) {
                 work->state0 = 2;
                 entry->frame = -1;
-                work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->posC);
+                work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_RED_RING), (s32)&work->posC);
                 if (work->emit20 != NULL) {
                     work->emit20->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
                 }
@@ -81,7 +81,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 6) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_DRAIN_SPRITES), (s32)&work->posC);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0x10, 0x18);
                 }

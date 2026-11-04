@@ -6,6 +6,12 @@
  * this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_084 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_DRAIN_SPRITES  0x1 /* emitter: sprites, render all black (look pending) */
+#define FX_DRAIN_PINK_ORB 0x2 /* emitter: pink veined orb */
+#define FX_DRAIN_RED_RING 0x6 /* emitter: dark red textured ring */
+
 typedef struct {
     s32 state0; /* state */
     SVECTOR pos4; /* caster body position */

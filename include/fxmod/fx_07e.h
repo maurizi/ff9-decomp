@@ -4,6 +4,15 @@
 /* Effect module fx_07e (dir 13 file 0x7E): Slow. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
+/* fx_07e effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SLOW_GLINT      0x1 /* particles: white glint (texture partly outside the file) (look pending) */
+#define FX_SLOW_GREEN_RING 0x2 /* rings: white-green gouraud rings */
+#define FX_SLOW_BLUE_WAVE  0x3 /* particles: blue chevron wave frames */
+#define FX_SLOW_PARTICLES  0x5 /* particles: 8 frames, render all black (look pending) */
+#define FX_SLOW_BACKDROP   0xA /* table: backdrop layers (btlfx_drawBackdrop) */
+#define FX_SLOW_CRESCENT   0xC /* model: one quad textured with a blue-white crescent */
+
 typedef struct {
     s32 state0; /* state */
     s32 spawnCount4; /* spawned */

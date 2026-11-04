@@ -6,6 +6,11 @@
  * runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_087 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SPARE_CHANGE_STREAKS 0x6 /* emitter: violet-white light streak trails */
+#define FX_SPARE_CHANGE_COINS   0x8 /* emitter: bronze coin sprites + white flashes */
+
 typedef struct {
     s32 unk0; /* unused */
     Pool6CEntry *emit4;

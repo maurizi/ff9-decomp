@@ -4,6 +4,10 @@
 /* Effect module fx_07c (dir 13 file 0x7C): Mini. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
+/* fx_07c effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_MINI_FAN_EMITTER 0x6 /* emitter: fan element + small blue rings (fan not rendered) (look pending) */
+
 typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* position: env->targets->centerX..Z */

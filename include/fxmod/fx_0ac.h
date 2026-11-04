@@ -6,6 +6,13 @@
  * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0ac effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_SLEEPING_JUICE_SPLASH_TRAILS 0x1 /* emitter: yellow liquid trails */
+#define FX_SLEEPING_JUICE_RIPPLE        0x2 /* emitter: yellow arc particles */
+#define FX_SLEEPING_JUICE_BUBBLES       0x3 /* emitter: yellow bubble cloud */
+#define FX_SLEEPING_JUICE_GLOW          0x4 /* emitter: yellow glow burst */
+
 typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;

@@ -20,7 +20,7 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos8.vy = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
         ex->btlfx_initEffModels(fx_099_effModels, 1);
-        work->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 0);
+        work->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_BREAK_MODEL), 0);
         scale = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (scale < 0x800) {
             scale = 0x800;
@@ -43,7 +43,7 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->state0) {
         case 0:
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BREAK_ROCK_RING), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x20;
                 }
@@ -89,13 +89,13 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 0) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BREAK_CYAN_RINGS), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
             if (frame == 8) {
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_BREAK_DUST_CLOUD), (s32)&work->pos10);
                 if (emitter != NULL) {
                     emitter->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }

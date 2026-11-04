@@ -6,6 +6,13 @@
  * this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
+/* fx_0a9 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
+ * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
+#define FX_LIGHTNING_BOLT_PILLAR   0x1 /* trail: violet lightning pillar strip */
+#define FX_LIGHTNING_ELECTRIC_ARCS 0x3 /* emitter: blue / green electric arcs + embers */
+#define FX_LIGHTNING_TRAIL_2       0x4 /* trail: one frame (not rendered) (look pending) */
+#define FX_LIGHTNING_BLUE_RING     0x6 /* rings: white-blue-violet gouraud rings */
+
 typedef struct {
     u8 lastSlot0; /* ring: highest slot index (lastSlot0 + 1 slots) */
     u8 head1; /* slot of the newest point (btlfx_pushTrailPoint) */
