@@ -1094,7 +1094,7 @@ void text_formatNumber(s32 value, u8 *out, s32 width, u8 ascii) {
     }
     fill = ' ';
     if (!ascii) {
-        fill = 0xF;
+        fill = TEXT_CODE_SPACE;
     }
     if (width < 0) {
         text_formatInt(value, out, ascii);
@@ -1112,7 +1112,7 @@ void text_formatNumber(s32 value, u8 *out, s32 width, u8 ascii) {
     }
     end = out + width;
     if (!ascii) {
-        *end = 0xFF;
+        *end = TEXT_END;
     } else {
         *end = 0;
     }
@@ -1127,8 +1127,8 @@ void text_formatInt(s32 value, u8 *out, s32 ascii) {
     s32 term;
     if (ascii == 0) {
         base = 0;
-        minus = 0xB;
-        term = 0xFF;
+        minus = TEXT_CODE_MINUS;
+        term = TEXT_END;
     } else {
         base = '0';
         minus = '-';

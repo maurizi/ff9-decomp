@@ -3678,7 +3678,7 @@ s32 evt_getPartyChrIndex(s32 i) {
     s32 biased = g_evtState->partyUids[i] + 9;
     u32 chrIdx = biased - g_evtScriptCount;
     s32 idx = 0;
-    if (chrIdx < 9) {
+    if (chrIdx < CHR_COUNT) {
         idx = chrIdx;
     }
     return idx;
@@ -3813,7 +3813,7 @@ s32 evt_getObjectProp(EvtObject *obj, s32 prop) {
             break;
         }
     }
-    if (i < 8) {
+    if (i < EVT_UNIT_COUNT) {
         unit = btl_getUnitById(1 << i);
         if (unit != NULL) {
             result = btl_getUnitAttr(unit, prop);
@@ -3838,7 +3838,7 @@ void evt_setObjectProp(EvtObject *obj, s32 prop, s32 value) {
                 break;
             }
         }
-        if (i < 8) {
+        if (i < EVT_UNIT_COUNT) {
             if (prop == EVT_SETPROP_INSERT) {
                 fn = btl_findUnitByBit;
             } else {
@@ -3894,7 +3894,7 @@ void evt_setCurUnit(void *obj) {
             break;
         }
     }
-    if (i < 8) {
+    if (i < EVT_UNIT_COUNT) {
         bit = 1 << i;
         g_evtCurUnitMask = bit;
     }

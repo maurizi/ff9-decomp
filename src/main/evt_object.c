@@ -494,13 +494,13 @@ s32 evt_joinParty(s32 slot) {
         result = 1;
     } else {
         slot = evt_isInParty_key(slot);
-        if (slot >= 0 && slot < 9) {
+        if (slot >= 0 && slot < CHR_COUNT) {
             for (i = 0; i < PARTY_SIZE; i++) {
                 if (g_gameState->gameData->party[i] == NULL) {
                     break;
                 }
             }
-            result = i >= 4;
+            result = i >= PARTY_SIZE;
             if (result == 0) {
                 party_setMember(i, slot);
                 evt_execInstr_party();

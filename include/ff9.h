@@ -748,7 +748,8 @@ extern s32 g_buttonSprites[]; /* [PAD_SLOT_*]: UI sprite of each button */
 /* Button slots: g_buttonSprites index, GameState.padMap nibble (config_remapButton) and text_getButtonSprite's
  * argument. Order: g_buttonSprites' data (UI_SPRITE_CROSS, CIRCLE, TRIANGLE, SQUARE, L1, R1, L2, R2), the same as
  * ovl_34 s_menuConfigPadBits. TEXT_PAD_BTN + n counts circle first, so text_buildCode and msg_renderText swap 0/1 */
-enum { PAD_SLOT_CROSS, PAD_SLOT_CIRCLE, PAD_SLOT_TRIANGLE, PAD_SLOT_SQUARE, PAD_SLOT_L1, PAD_SLOT_R1, PAD_SLOT_L2, PAD_SLOT_R2 };
+enum { PAD_SLOT_CROSS, PAD_SLOT_CIRCLE, PAD_SLOT_TRIANGLE, PAD_SLOT_SQUARE, PAD_SLOT_L1, PAD_SLOT_R1, PAD_SLOT_L2, PAD_SLOT_R2,
+       PAD_SLOT_COUNT /* config_reset, config_applyPadMapping */ };
 extern u8 g_textNumberBuf[];
 extern u8 *g_textArgPtr;
 extern s32 g_textColor;
@@ -838,6 +839,8 @@ void win_updateAll(void);
 #define TEXT_CODE_LOWER_A 0x30 /* 'a'-'z': 0x30-0x49 */
 #define TEXT_CODE_ACCENT_UPPER 0x50 /* 20 accented capitals, A-grave .. U-diaeresis */
 #define TEXT_CODE_ACCENT_LOWER 0x64 /* the same 20 in lower case */
+#define TEXT_CODE_MINUS 0x0B /* '-' (text_formatInt) */
+#define TEXT_CODE_SPACE 0x0F /* blank digit-width glyph: text_formatNumber's fill, msg_emitNumber's padding */
 #define TEXT_CODE_LETTERS 26 /* A-Z / a-z */
 #define TEXT_CODE_ACCENTS 20 /* accented letters per case */
 #define TEXT_CODE_C_CEDILLA 0x78 /* C-cedilla, N-tilde, then their lower case at 0x7A, 0x7B */
@@ -1745,8 +1748,14 @@ extern MenuScreen g_menuScreen;
 extern u8 g_menuScreenMember;
 extern s32 g_evtLastEncounter;
 extern u8 g_evtModelsPending;
-extern s32 g_msgNumbers[8];
+#define MSG_NUMBERS 8 /* g_msgNumbers slots (msg_setNumber) */
+extern s32 g_msgNumbers[MSG_NUMBERS];
 extern u8 *g_bubbleScript; /* help-arrow animation script */
+/* g_bubbleScript entries, 4 bytes each (msg_updatePlayerBubble) [code]: {colour, half width, height, lift} for one
+ * frame, or one of these in the first byte */
+#define MSG_BUBBLE_END 0xFD /* stop */
+#define MSG_BUBBLE_WAIT 0xFE /* , frames: hold the current frame */
+#define MSG_BUBBLE_LOOP 0xFF /* , n: back n entries */
 extern s32 g_bubbleWait;
 extern s32 g_bubbleRequestPrev;
 extern volatile s32 g_akaoSpuBusy;
@@ -2963,6 +2972,7 @@ typedef struct Unk8007B954 {
     u16 offsets[1]; /* per message, from &offsets (msg_getText) */
 } Unk8007B954;
 extern Unk8007B954 *g_msgTable;
+#define MSG_TEXT_BANKS 4 /* g_msgTextBanks (TEXT_BANK messages, msg_resetChoices) */
 extern u8 *g_msgTextBanks[];
 
 typedef struct {

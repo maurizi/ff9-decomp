@@ -203,7 +203,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 bank = (code >> 4) & 3;
                 i = code & 7;
                 bankText = NULL;
-                if (bank < 4 && i < 8 && (tbl = g_msgTextBanks[bank]) != NULL) {
+                if (bank < MSG_TEXT_BANKS && i < MSG_NUMBERS && (tbl = g_msgTextBanks[bank]) != NULL) {
                     k = g_msgNumbers[i];
                     if (k < *tbl) {
                         tbl++;
@@ -271,7 +271,7 @@ static inline u8 *msg_renderText_text(u32 bank, u32 slot) {
     u8 *ofsEntry;
     s32 k;
 
-    if (bank < 4 && slot < 8 && (tbl = g_msgTextBanks[bank]) != NULL) {
+    if (bank < MSG_TEXT_BANKS && slot < MSG_NUMBERS && (tbl = g_msgTextBanks[bank]) != NULL) {
         k = g_msgNumbers[slot];
         if (k < *tbl) {
             tbl++;
@@ -878,7 +878,7 @@ void msg_resetChoices(void) {
     g_msgChoice = 0;
     g_msgChoiceMaskReq = -1;
     g_msgChoiceLine = -1;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < MSG_TEXT_BANKS; i++) {
         msgText = msg_drawText_msg(i);
         if (msgText == NULL || msgText[0] != TEXT_ESC || msgText[1] != TEXT_BANK) {
             break;
@@ -1135,7 +1135,7 @@ s32 msg_overlapsRect(WinLayout *layout) {
 }
 
 void msg_setNumber(u32 i, s32 value) {
-    if (i < 8) {
+    if (i < MSG_NUMBERS) {
         g_msgNumbers[i] = value;
     }
 }
@@ -1272,7 +1272,7 @@ s32 msg_emitNumber(s32 value, s32 maxChars) {
         if (place < 2 || quot != 0) {
             ch = quot % 10;
         } else {
-            ch = 0xF;
+            ch = TEXT_CODE_SPACE;
         }
         pen_putGlyph(ch);
     }
@@ -1545,14 +1545,14 @@ void msg_updatePlayerBubble(void) {
         g_bubbleWait--;
     } else {
         switch (*g_bubbleScript) {
-        case 0xFD:
+        case MSG_BUBBLE_END:
             g_bubbleScript = NULL;
             return;
-        case 0xFE:
+        case MSG_BUBBLE_WAIT:
             g_bubbleWait = g_bubbleScript[1];
             g_bubbleScript += 4;
             goto draw;
-        case 0xFF:
+        case MSG_BUBBLE_LOOP:
             g_bubbleScript -= g_bubbleScript[1] * 4;
             break;
         }
