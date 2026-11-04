@@ -8,15 +8,15 @@
 
 /* fx_0cd effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_AERA_MODEL_3      0x1 /* 'so' model (look pending) */
-#define FX_AERA_MODEL_2      0x3 /* 'so' model (look pending) */
+#define FX_AERA_GREEN_WIND_RING 0x1 /* 'so' model: ring of green wind streaks (grass-fringe cylinder) */
+#define FX_AERA_GREY_ARC     0x3 /* 'so' model: open grey arc band */
 #define FX_AERA_GREEN_RING   0x4 /* emitter: green gouraud rings */
 #define FX_AERA_WIND_RING    0x5 /* emitter: orbiting white wind-ring particle */
 #define FX_AERA_GREEN_BURST  0x7 /* emitter: green gust puffs */
-#define FX_AERA_WIND_STREAKS 0x8 /* emitter: spiralling sprites + 3D trail (sprite texture garbled in the render) (look pending) */
+#define FX_AERA_WIND_STREAKS 0x8 /* emitter: spiralling sprites + 3D trail; the render still reads garbled yellow texels (texture not resolved) (look pending) */
 #define FX_AERA_GUST_RINGS   0xA /* emitter: cyan-green gouraud rings */
-#define FX_AERA_SPRITE_BURST 0xC /* emitter: sprites (texture garbled in the render) (look pending) */
-#define FX_AERA_MODEL        0xD /* 'so' model (look pending) */
+#define FX_AERA_SPRITE_BURST 0xC /* emitter: sprites; the render still reads garbled yellow texels (texture not resolved) (look pending) */
+#define FX_AERA_GREEN_TORNADO 0xD /* 'so' model: twisted green column with a smoke texture (tornado) */
 
 typedef struct {
     s32 model0; /* model */

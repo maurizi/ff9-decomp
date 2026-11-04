@@ -19,23 +19,23 @@
 #define FX_FENRIR_GREEN_WIND_TRAIL   0xE /* emitter: spiralling green wind-streak trail + grey smoke */
 #define FX_FENRIR_RIBBON_PATHS_D     0xF /* table: position paths of ribbons 2/3 (other branch) */
 #define FX_FENRIR_GREEN_RINGS_2      0x10 /* emitter: white-green / pale green gouraud rings */
-#define FX_FENRIR_EFFECT_MODEL       0x11 /* 'so' model (op84, not rendered) (look pending) */
-#define FX_FENRIR_SPARKS             0x12 /* emitter: spiral of spark sprites (texture not in the file) (look pending) */
+#define FX_FENRIR_WIND_RING          0x11 /* 'so' model: flat ring with a green wind texture */
+#define FX_FENRIR_SPARKS             0x12 /* emitter: spiral of white dot sparks */
 #define FX_FENRIR_GREEN_WIND_STRIP   0x17 /* trail: green wind-streak strip texture */
-#define FX_FENRIR_EFFECT_MODEL_2     0x1D /* 'so' model (op84, not rendered) (look pending) */
-#define FX_FENRIR_SHELL_MODEL_2      0x1F /* 'so' model drawn with SHELL_MODEL (not rendered) (look pending) */
-#define FX_FENRIR_SHELL_MODEL        0x21 /* 'so' model (not rendered) (look pending) */
-#define FX_FENRIR_BLOCK_MODEL        0x80 /* summon data: 'so' model drawn sliced as falling blocks (Hi_DrawSliceEffModel) (look pending) */
-#define FX_FENRIR_CLUSTER_MODEL_0    0x81 /* summon data: 'so' model, drawn with CLUSTER_MODEL_1/2 (look pending) */
+#define FX_FENRIR_WIND_RING_2        0x1D /* 'so' model: flat ring with a green wind texture (same shape as WIND_RING) */
+#define FX_FENRIR_WIND_VORTEX        0x1F /* 'so' model: swirl of green wind blades (vortex), drawn with WIND_SHELL */
+#define FX_FENRIR_WIND_SHELL         0x21 /* 'so' model: cone-shaped shell with a green wind texture */
+#define FX_FENRIR_ROCK_SPIKE         0x80 /* summon data: 'so' model, rock spike with a rock texture, drawn sliced as falling blocks (Hi_DrawSliceEffModel) */
+#define FX_FENRIR_ROCK_SHARD         0x81 /* summon data: 'so' model, small rock shard, drawn with ROCK_SPIKES / ROCK_SHARD_2 */
 #define FX_FENRIR_WIND_STREAK        0x82 /* summon data: model, long teardrop streak (Hi_RegisterTexListModel; shape only) */
 #define FX_FENRIR_WIND_SERPENT       0x83 /* summon data: model, serpent-like streak with a head (shape only) */
 #define FX_FENRIR_WIND_BEAST         0x84 /* summon data: model, spiky beast-shaped mass (shape only) */
 #define FX_FENRIR_WIND_SPINDLE       0x85 /* summon data: model, spindle with a round end (shape only) */
-#define FX_FENRIR_CLUSTER_MODEL_1    0x87 /* summon data: 'so' model (look pending) */
+#define FX_FENRIR_ROCK_SPIKES        0x87 /* summon data: 'so' model, row of rock spikes */
 #define FX_FENRIR_CAM_TRACK_9        0x92 /* summon data: camera key tracks, channel 9 */
-#define FX_FENRIR_CLUSTER_MODEL_2    0x93 /* summon data: 'so' model (look pending) */
-#define FX_FENRIR_MORPH_MODEL_1      0x94 /* summon data: 'so' model, morph target (look pending) */
-#define FX_FENRIR_MORPH_MODEL_0      0x95 /* summon data: 'so' model, morph source (look pending) */
+#define FX_FENRIR_ROCK_SHARD_2       0x93 /* summon data: 'so' model, small rock shard */
+#define FX_FENRIR_SPIKE_BURST        0x94 /* summon data: 'so' model, morph target, grey gouraud burst of spikes */
+#define FX_FENRIR_WIND_BALL          0x95 /* summon data: 'so' model, morph source, ball with a green wind texture */
 #define FX_FENRIR_CAM_TRACK_4        0x96 /* summon data: camera key tracks, channel 4 */
 #define FX_FENRIR_CAM_TRACK_START    0x9B /* summon data: camera key tracks of channels 3, 4, 9, 10 at the start */
 #define FX_FENRIR_PIECE_TRACKS       0x9C /* summon data: rotation/position paths of the pieces (fxm_rotPosPathInit) */
@@ -45,7 +45,7 @@
 #define FX_FENRIR_SMOKE              0xA0 /* summon data: emitter, grey smoke puffs */
 #define FX_FENRIR_GREEN_RING_BURST   0xA2 /* summon data: emitter, cream-white / green gouraud rings */
 #define FX_FENRIR_GREEN_RING_BURST_2 0xA3 /* summon data: emitter, olive-cream / green gouraud rings */
-#define FX_FENRIR_WIND_TRAIL_EMITTER 0xA4 /* summon data: emitter, screen trail + sprites (texture not in the file) (look pending) */
+#define FX_FENRIR_WIND_TRAIL         0xA4 /* summon data: emitter, green screen-space trail and white dot sparks */
 #define FX_FENRIR_RED_MOON           0xA5 /* summon data: emitter, one big red moon sprite */
 #define FX_FENRIR_RED_MOON_GLOW      0xA6 /* summon data: emitter, red moon particle */
 

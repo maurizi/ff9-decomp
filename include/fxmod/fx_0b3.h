@@ -11,17 +11,17 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_LEVIATHAN_WATER_SPLASH       0x2 /* emitter: blue water-splash sprites and droplets */
 #define FX_LEVIATHAN_SUMMON_KEYS        0x3 /* table: key track (position, rotation, scale) of the summoned body (fxm_keyGetVec3) */
-#define FX_LEVIATHAN_FAN_EMITTER        0x4 /* emitter: orbiting fan element (not rendered) (look pending) */
+#define FX_LEVIATHAN_WATER_WISP         0x4 /* emitter: orbiting fan, a twisting light-blue water wisp */
 #define FX_LEVIATHAN_WATER_DROPS        0x5 /* emitter: water droplet sprites */
-#define FX_LEVIATHAN_WATER_GLINT        0x6 /* emitter: particles, the render shows the whole water texture page (look pending) */
+#define FX_LEVIATHAN_BUBBLES            0x6 /* emitter: dark blue bubbles and rainbow-rimmed bubble rings */
 #define FX_LEVIATHAN_BLUE_RING          0x7 /* emitter: blue gouraud ring + water-page particle */
-#define FX_LEVIATHAN_SO_MODEL           0x8 /* 'so' model registered by op80 (look pending) */
+#define FX_LEVIATHAN_WATER_SURFACE      0x8 /* 'so' model registered by op80: flat square plane with the water texture */
 #define FX_LEVIATHAN_MORPH_POS_KEYS     0xB /* table: key track, position of the morph models (op80) */
 #define FX_LEVIATHAN_MODEL_SCALE_KEYS_3 0xC /* table: key track, scale of an effect model (op84) */
 #define FX_LEVIATHAN_SUMMON_POS_KEYS    0x13 /* table: key track, position of the summon model (op83) */
 #define FX_LEVIATHAN_SUMMON_POS_KEYS_2  0x15 /* table: key track, position of the summon model (op84) */
 #define FX_LEVIATHAN_SUMMON_POS_KEYS_3  0x16 /* table: key track, position of the summon model (op85) */
-#define FX_LEVIATHAN_ORBIT_PARTICLE     0x1E /* emitter: orbiting particle, the render shows the whole water texture page (look pending) */
+#define FX_LEVIATHAN_WATER_GLINT        0x1E /* emitter: orbiting particle, a blue diagonal water glint */
 #define FX_LEVIATHAN_WATER_SPLASH_2     0x1F /* emitter: blue water-splash sprites and droplets */
 #define FX_LEVIATHAN_MORPH_KEYS         0x20 /* table: key track, position and scale of the morph models (op81) */
 #define FX_LEVIATHAN_SPRAY              0x23 /* emitter: blue water spray clouds */
@@ -35,16 +35,16 @@
 #define FX_LEVIATHAN_RAINBOW_RING       0x30 /* emitter: blue / green / yellow / red gouraud ring */
 #define FX_LEVIATHAN_WATER_STREAK_2     0x31 /* emitter: blue water streak (3D trail) and spray */
 #define FX_LEVIATHAN_MODEL_SCALE_KEYS_2 0x3F /* table: key track, scale of an effect model (op84) */
-#define FX_LEVIATHAN_SUMMON_MODEL_6     0x86 /* summon data entry 6: 'so' model (look pending) */
-#define FX_LEVIATHAN_SUMMON_MODEL_7     0x87 /* summon data entry 7: 'so' model (look pending) */
-#define FX_LEVIATHAN_SUMMON_MODEL_8     0x88 /* summon data entry 8: 'so' model (look pending) */
-#define FX_LEVIATHAN_SUMMON_MODEL_9     0x89 /* summon data entry 9: 'so' model drawn as the sea (fx_0b3_seaModel) (look pending) */
-#define FX_LEVIATHAN_SUMMON_MODEL_10    0x8A /* summon data entry 10: 'so' model (look pending) */
-#define FX_LEVIATHAN_SUMMON_MODEL_11    0x8B /* summon data entry 11: 'so' model (look pending) */
-#define FX_LEVIATHAN_SUMMON_MODEL_12    0x8C /* summon data entry 12: 'so' model (look pending) */
-#define FX_LEVIATHAN_SUMMON_MODEL_13    0x8D /* summon data entry 13: 'so' model (look pending) */
-#define FX_LEVIATHAN_SUMMON_MODEL_14    0x8E /* summon data entry 14: 'so' model (look pending) */
-#define FX_LEVIATHAN_SUMMON_MODEL_15    0x8F /* summon data entry 15: 'so' model (look pending) */
+#define FX_LEVIATHAN_SPLASH_CROWN       0x86 /* summon data entry 6: 'so' model, crown of light-blue water spikes */
+#define FX_LEVIATHAN_WATER_COLUMN       0x87 /* summon data entry 7: 'so' model, cylinder with the water texture */
+#define FX_LEVIATHAN_SPLASH_RING        0x88 /* summon data entry 8: 'so' model, low ring of water spikes */
+#define FX_LEVIATHAN_SEA                0x89 /* summon data entry 9: 'so' model, the sea (wide water disc with a rim and sky texture), drawn as fx_0b3_seaModel */
+#define FX_LEVIATHAN_WAVE_SPIRAL        0x8A /* summon data entry 10: 'so' model, flat spiral of wave ribbons */
+#define FX_LEVIATHAN_WAVE_COIL          0x8B /* summon data entry 11: 'so' model, stacked wave rings (coil) */
+#define FX_LEVIATHAN_WHIRLPOOL          0x8C /* summon data entry 12: 'so' model, cone-shaped wave spiral (whirlpool) */
+#define FX_LEVIATHAN_WATER_SPOUT        0x8D /* summon data entry 13: 'so' model, funnel-shaped water spout */
+#define FX_LEVIATHAN_FOAM_STRIP         0x8E /* summon data entry 14: 'so' model, long strip with a white foam texture */
+#define FX_LEVIATHAN_BLUE_FLASH         0x8F /* summon data entry 15: 'so' model, small quad with a blue light flash */
 
 typedef struct {
     SVECTOR emitPos0[8]; /* enemy positions */

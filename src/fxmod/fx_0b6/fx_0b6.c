@@ -13,7 +13,7 @@ s32 fx_0b6_op80(s32 mode, Fx0b6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0xC8);
         }
-        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCORCH_FAN_EMITTER), (s32)&work->pos0);
+        emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SCORCH_FLAME_STREAKS), (s32)&work->pos0);
         if (emitter != NULL) {
             emitter->otZ = ex->btlfx_addRadiusSixth(0, 0xC8);
         }

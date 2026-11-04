@@ -8,9 +8,9 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_CARBUNCLE_RING_BURST_2     0x1 /* emitter: cone of white-red, lilac, cyan and blue-grey gouraud rings, fan */
 #define FX_CARBUNCLE_LENS_FLARE       0x9 /* emitter: orbiting white glow trail with a blue lens streak */
-#define FX_CARBUNCLE_ORBIT_GLOW       0xA /* emitter: orbiting particle + sprite (texture not resolved), two copies (look pending) */
+#define FX_CARBUNCLE_ORBIT_GLOW       0xA /* emitter: orbiting particle + sprite, two copies; the render reads unrelated texels (noise), texture probably drawn at run time (look pending) */
 #define FX_CARBUNCLE_RED_RING         0xC /* emitter: white-red gouraud rings, fans */
-#define FX_CARBUNCLE_FAN_EMITTER      0xD /* emitter: one fan element (not rendered) (look pending) */
+#define FX_CARBUNCLE_WHITE_LIGHT_STREAK 0xD /* emitter: fan, a white horizontal light streak */
 #define FX_CARBUNCLE_LENS_STREAK      0xE /* emitter: blue-white lens streak, white-red ring */
 #define FX_CARBUNCLE_CAMERA_KEYS      0xF /* table: camera key path for fxm_camKeyAdd (target 1) */
 #define FX_CARBUNCLE_LIGHT_BEAM       0x10 /* trail: blue-white light beam, drawn twice (fx_0b1_beams) */
@@ -19,14 +19,14 @@
 #define FX_CARBUNCLE_FLAME_GLINT      0x13 /* emitter: orange-blue flame-shaped glints, red gouraud rings, fans */
 #define FX_CARBUNCLE_RING_BURST_3     0x14 /* emitter: cone of white-red, lilac, cyan and blue-grey gouraud rings, fan */
 #define FX_CARBUNCLE_LENS_STREAK_2    0x15 /* emitter: blue-white lens streak, white-red ring, orange sprites */
-#define FX_CARBUNCLE_ORBIT_GLOW_2     0x16 /* emitter: orbiting particle + sprite (texture not resolved) (look pending) */
+#define FX_CARBUNCLE_ORBIT_GLOW_2     0x16 /* emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time (look pending) */
 #define FX_CARBUNCLE_CAMERA_KEYS_3    0x17 /* table: camera key path for fxm_camKeyAdd (target 3) */
 #define FX_CARBUNCLE_COLOR_RINGS      0x18 /* emitter: pink / green / pink gouraud rings at each target body */
 #define FX_CARBUNCLE_CAMERA_KEYS_2    0x19 /* table: camera key path for fxm_camKeyAdd (target 2) */
 #define FX_CARBUNCLE_PINK_RING        0x21 /* emitter: pink gouraud ring and swirl-ring particles at each target body */
 #define FX_CARBUNCLE_BACKDROP         0x22 /* table: background layers for btlfx_drawBackdrop */
 #define FX_CARBUNCLE_STAR_CRYSTAL     0x23 /* model: four-point star crystal (texture 0x177), one per target */
-#define FX_CARBUNCLE_ORBIT_GLOW_3     0x24 /* emitter: orbiting particle + sprite (texture not resolved) (look pending) */
+#define FX_CARBUNCLE_ORBIT_GLOW_3     0x24 /* emitter: orbiting particle + sprite; the render reads unrelated texels (noise), texture probably drawn at run time (look pending) */
 
 typedef struct {
     s32 start0; /* start frame */

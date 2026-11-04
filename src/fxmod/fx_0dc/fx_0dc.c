@@ -320,7 +320,7 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             if (w->spawnCount7A >= 6) {
                 w->state0 = 4;
                 entry->frame = -1;
-                w->emit84 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_FAN_EMITTER), (s32)&w->pos58);
+                w->emit84 = emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_SWDMAG_BLIZZAGA_ICE_SPIKES), (s32)&w->pos58);
                 if (emitter != NULL) {
                     emitter->otZ = 0x5C;
                 }

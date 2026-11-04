@@ -11,22 +11,22 @@
 #define FX_PHOENIX_RED_RINGS        0x1 /* emitter: grey and white-red gouraud rings */
 #define FX_PHOENIX_FIRE_TRAILS      0x2 /* emitter: fire-textured trails and a swirling ember ring */
 #define FX_PHOENIX_GLOW_RINGS       0x3 /* emitter: pale yellow / grey gouraud rings (+ textured rings, texture not in the file) */
-#define FX_PHOENIX_FAN_EMITTER      0x4 /* emitter: two fan elements (not rendered) (look pending) */
-#define FX_PHOENIX_FAN_EMITTER_2    0x5 /* emitter: two fan elements (not rendered) (look pending) */
-#define FX_PHOENIX_FAN_EMITTER_3    0x6 /* emitter: two fan elements (not rendered) (look pending) */
-#define FX_PHOENIX_SPRITE_LINE      0x7 /* sprite line (render almost empty) (look pending) */
+#define FX_PHOENIX_PEACH_GLOW       0x4 /* emitter: two fans, a narrow peach half-disc glow */
+#define FX_PHOENIX_FAN_EMITTER_2    0x5 /* emitter: two fans; the render reads garbled multicolour texels (texture not resolved) (look pending) */
+#define FX_PHOENIX_FEATHERS         0x6 /* emitter: two fans, grey and tan feathers with light streaks */
+#define FX_PHOENIX_SPRITE_LINE      0x7 /* sprite line; the render is almost empty (a few garbled texels) (look pending) */
 #define FX_PHOENIX_FIRE_TRAILS_2    0xB /* emitter: orbiting fire-textured trails */
-#define FX_PHOENIX_MODEL_3          0xC /* 'so' model (look pending) */
-#define FX_PHOENIX_MODEL_2          0xD /* 'so' model (look pending) */
-#define FX_PHOENIX_MODEL_4          0xE /* 'so' model (look pending) */
+#define FX_PHOENIX_FIRE_DOME        0xC /* 'so' model: dome with a fire texture */
+#define FX_PHOENIX_FIRE_DISC        0xD /* 'so' model: flat disc with a fire texture */
+#define FX_PHOENIX_SMOKE_ARC        0xE /* 'so' model: thin arc with a grey smoke texture */
 #define FX_PHOENIX_EMBERS           0xF /* emitter: glowing ember sprites */
 #define FX_PHOENIX_FIRE_FEATHERS    0x10 /* emitter: orbiting fire trails and flame-feather quads */
 #define FX_PHOENIX_PINK_RINGS       0x11 /* emitter: white / pink / copper gouraud rings */
 #define FX_PHOENIX_GOLD_FEATHERS    0x12 /* emitter: golden feather quads */
-#define FX_PHOENIX_FAN_EMITTER_4    0x13 /* emitter: two fan elements (not rendered) (look pending) */
-#define FX_PHOENIX_FAN_EMITTER_5    0x14 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_PHOENIX_FEATHERS_2       0x13 /* emitter: two fans, grey and tan feathers with light streaks */
+#define FX_PHOENIX_FAN_EMITTER_5    0x14 /* emitter: two fans; the render reads garbled multicolour texels (texture not resolved) (look pending) */
 #define FX_PHOENIX_BACKDROP         0x15 /* table: background layers for btlfx_drawBackdrop */
-#define FX_PHOENIX_MODEL            0x16 /* 'so' model (fx_0d3_sharedModel) (look pending) */
+#define FX_PHOENIX_FLAME_SWIRL      0x16 /* 'so' model: cone of swirling brown-orange flame tongues (fx_0d3_sharedModel) */
 #define FX_PHOENIX_FLAME_FEATHERS   0x17 /* emitter: flame-feather quads */
 #define FX_PHOENIX_FLAME_FEATHERS_2 0x18 /* emitter: flame-feather quads (cylinder) */
 #define FX_PHOENIX_GOLD_FEATHERS_2  0x19 /* emitter: golden feather sprites */
@@ -34,7 +34,7 @@
 #define FX_PHOENIX_COPPER_RINGS     0x1B /* emitter: orbiting copper / brown gouraud rings */
 #define FX_PHOENIX_EMBERS_3         0x1C /* emitter: glowing ember sprites and red sparks */
 #define FX_PHOENIX_FLAME_FEATHERS_3 0x1D /* emitter: flame-feather quads */
-#define FX_PHOENIX_MODEL_5          0x26 /* 'so' model (look pending) */
+#define FX_PHOENIX_FLAME_SWIRL_2    0x26 /* 'so' model: cone of swirling brown-orange flame tongues (other texture page) */
 
 extern Unk800F78A4 *fx_0d3_env;
 extern s32 fx_0d3_spawnBones[5];

@@ -8,7 +8,7 @@
 
 /* fx_0d2 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_FENRIR_FAN_EMITTER           0x1 /* emitter: orbiting fan element (not rendered) (look pending) */
+#define FX_FENRIR_ORANGE_LIGHT_LINE     0x1 /* emitter: orbiting fan, a thin horizontal orange-pink light line */
 #define FX_FENRIR_DUST_CLOUD            0x2 /* emitter: tan dust clouds and an orange gouraud ring */
 #define FX_FENRIR_BLUE_RINGS            0x3 /* emitter: white-blue gouraud rings */
 #define FX_FENRIR_ORANGE_RING           0x4 /* emitter: orange gouraud ring */
@@ -30,12 +30,12 @@
 #define FX_FENRIR_SUMMON_STREAK_PATHS_0 0x80 /* summon data entry 0: offset table of the rock-streak position paths */
 #define FX_FENRIR_SUMMON_STREAK_PATHS_1 0x81 /* summon data entry 1: offset table of the rock-streak position paths */
 #define FX_FENRIR_SUMMON_EMIT_PATH_2    0x82 /* summon data entry 2: position path of the emitters (fx_0d2_emitPath) */
-#define FX_FENRIR_SUMMON_EMITTER_3      0x83 /* summon data entry 3: emitter (look pending) */
+#define FX_FENRIR_COLOR_RINGS           0x83 /* summon data entry 3: emitter, white-teal and white-blue gouraud rings */
 #define FX_FENRIR_SUMMON_RING_PATH_4    0x84 /* summon data entry 4: rotation / position path (fx_0d2_ringPath) */
-#define FX_FENRIR_SUMMON_MODEL_5        0x85 /* summon data entry 5: 'so' model (look pending) */
-#define FX_FENRIR_SUMMON_MODEL_6        0x86 /* summon data entry 6: 'so' model (look pending) */
-#define FX_FENRIR_SUMMON_MODEL_13       0x8D /* summon data entry 13: 'so' model (look pending) */
-#define FX_FENRIR_SUMMON_MODEL_14       0x8E /* summon data entry 14: 'so' model (look pending) */
+#define FX_FENRIR_WINGED_CREATURE       0x85 /* summon data entry 5: 'so' model, brown furred creature with spread wings and a green eye */
+#define FX_FENRIR_ROCK_TERRACE          0x86 /* summon data entry 6: 'so' model, stepped ground terrace with a sand-rock texture */
+#define FX_FENRIR_ROCK_TERRACE_2        0x8D /* summon data entry 13: 'so' model, stepped ground terrace with a sand-rock texture (same size as entry 6) */
+#define FX_FENRIR_ROCK_CRAG             0x8E /* summon data entry 14: 'so' model, rough brown rock crag */
 #define FX_FENRIR_SUMMON_MORPH_CURVE_15 0x8F /* summon data entry 15: value path (fx_0d2_morphCurve) */
 #define FX_FENRIR_SUMMON_SLICE_PATHS_16 0x90 /* summon data entry 16: offset table of six rotation / position paths (fx_0d2_slicePaths) */
 #define FX_FENRIR_SUMMON_SLICE_PATHS_17 0x91 /* summon data entry 17: offset table of six rotation / position paths (fx_0d2_slicePaths) */
@@ -51,15 +51,15 @@
 #define FX_FENRIR_SUMMON_CAMERA_KEYS_27 0x9B /* summon data entry 27: camera channel keys (fxm_camChanAdd, op80) */
 #define FX_FENRIR_SUMMON_CAMERA_KEYS_28 0x9C /* summon data entry 28: camera channel keys (fxm_camChanAdd, op80) */
 #define FX_FENRIR_SUMMON_CAMERA_KEYS_29 0x9D /* summon data entry 29: camera channel keys (fxm_camChanAdd, op80) */
-#define FX_FENRIR_SUMMON_MODEL_30       0x9E /* summon data entry 30: 'so' model (look pending) */
+#define FX_FENRIR_GOLD_HORN             0x9E /* summon data entry 30: 'so' model, gold gouraud bent sheet (horn-shaped) */
 #define FX_FENRIR_SUMMON_PATH_31        0x9F /* summon data entry 31: position path of the summon (fx_0d2_summonPath) */
 #define FX_FENRIR_SUMMON_CAMERA_KEYS_32 0xA0 /* summon data entry 32: camera channel keys (fxm_camChanAdd, op80) */
 #define FX_FENRIR_SUMMON_CAMERA_KEYS_33 0xA1 /* summon data entry 33: camera channel keys (fxm_camChanAdd, op80) */
 #define FX_FENRIR_SUMMON_CAMERA_KEYS_34 0xA2 /* summon data entry 34: camera channel keys (fxm_camChanAdd, op80) */
 #define FX_FENRIR_SUMMON_CAMERA_KEYS_35 0xA3 /* summon data entry 35: camera channel keys (fxm_camChanAdd, op80) */
-#define FX_FENRIR_SUMMON_EMITTER_36     0xA4 /* summon data entry 36: emitter (look pending) */
-#define FX_FENRIR_SUMMON_EMITTER_37     0xA5 /* summon data entry 37: emitter (look pending) */
-#define FX_FENRIR_SUMMON_EMITTER_38     0xA6 /* summon data entry 38: emitter (look pending) */
+#define FX_FENRIR_MOON                  0xA4 /* summon data entry 36: emitter, a pink-orange full-moon sprite */
+#define FX_FENRIR_STAR_FLARE            0xA5 /* summon data entry 37: emitter, a cyan-white star flare particle */
+#define FX_FENRIR_DUST_CLOUDS           0xA6 /* summon data entry 38: emitter, orbiting dust clouds and gold debris specks */
 #define FX_FENRIR_SUMMON_SLICE_PATH_39  0xA7 /* summon data entry 39: rotation / position path (fx_0d2_slicePath) */
 
 typedef struct {

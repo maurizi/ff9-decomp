@@ -285,9 +285,9 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model20 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_ARCH), 0x139, 0xFFFF,
                                                  0, 0x80);
         work->model24 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_FIRE_DOME), 0x38, 0x3E83, 0, 0);
-        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SPHERE), 0x13C, 0xFFFF,
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_SMOKE_SPHERE), 0x13C, 0xFFFF,
                                                  0x10, 0x80);
-        work->model2C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_GOURAUD_RING));
+        work->model2C = ex->Hi_RegisterGouEffModel((BtlModelHeader *)ex->btlfx_getFileData(entry->file, FX_SWDMAG_FLARE_RED_HALO));
     } else {
         frame = entry->frame;
         switch (work->state0) {

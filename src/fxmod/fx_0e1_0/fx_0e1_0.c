@@ -373,8 +373,8 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->model50 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MORPH_0), 0);
         work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MORPH_1), 0);
         work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_MORPH_2), 0);
-        work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SO_MODEL), 0);
-        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_GLOW_MODEL), 1);
+        work->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_SWIRL_SPHERE), 0);
+        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_GLOW_BAND), 1);
         work->pos8.vx = fx_0e1_0_origin.vx;
         work->pos8.vy = fx_0e1_0_origin.vy;
         work->pos8.vz = fx_0e1_0_origin.vz;
@@ -586,7 +586,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x9F) {
                 work->state0 = 3;
                 entry->frame = -1;
-                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_FAN_EMITTER), (s32)&work->pos8);
+                emitter = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_REBIRTH_FLAME_WHITE_STREAK), (s32)&work->pos8);
                 if (emitter != NULL) {
                     emitter->otZ = 0x40;
                 }

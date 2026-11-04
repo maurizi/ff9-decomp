@@ -9,7 +9,7 @@
  * entries (docs/fxdata.md; "(look pending)" = by kind, appearance not settled). */
 #define FX_JEWEL_GEM          0x1 /* model: faceted gem (polyhedron, white texture) */
 #define FX_JEWEL_GEM_SPARKLES 0x2 /* emitter: stone / crystal glint particles and star sparkles (+ sprites, texture not in the file) */
-#define FX_JEWEL_FAN_EMITTER  0x3 /* emitter: two fan elements (not rendered) (look pending) */
+#define FX_JEWEL_COMET_STREAKS 0x3 /* emitter: two fans, white-violet comet streaks */
 #define FX_JEWEL_LIGHT_BURST  0x4 /* emitter: white / lilac / cyan rings and violet light streaks */
 #define FX_JEWEL_ORE_GLINT    0x5 /* emitter: green ore glint, lilac / cyan ring, star sparkles */
 #define FX_JEWEL_BACKDROP     0x6 /* table: background layers for btlfx_drawBackdrop */

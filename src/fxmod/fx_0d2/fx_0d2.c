@@ -65,7 +65,7 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale54.vx = 0x1000;
         work->scale54.vy = 0x1000;
         work->scale54.vz = 0x1000;
-        work->modelA4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_MODEL_5), 1);
+        work->modelA4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_WINGED_CREATURE), 1);
         fxm_camChanReset();
         fxm_camChanAdd(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_CAMERA_KEYS_26));
         fxm_camChanAdd(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_CAMERA_KEYS_22));
@@ -122,7 +122,7 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         switch (frame) {
         case 1:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_EMITTER_36), (s32)&fx_0d2_emitPos);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_MOON), (s32)&fx_0d2_emitPos);
             break;
         case 0x52:
             work->pos74.vx = 0x88;
@@ -131,8 +131,8 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos7C.vx = -0x88;
             work->pos7C.vy = -0x366;
             work->pos7C.vz = -0x41F;
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_EMITTER_37), (s32)&work->pos74);
-            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_EMITTER_37), (s32)&work->pos7C);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_STAR_FLARE), (s32)&work->pos74);
+            work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_STAR_FLARE), (s32)&work->pos7C);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = 0x80;
             }
@@ -145,8 +145,8 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit4);
             ex->btlfx_stopEmitter(work->emit8);
             fxm_posPathInit((Fx0d2Path *)&fx_0d2_emitPath, (u16 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_EMIT_PATH_2));
-            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_EMITTER_3), (s32)&fx_0d2_emitPos2[0]);
-            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_EMITTER_3), (s32)&fx_0d2_emitPos2[1]);
+            work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_COLOR_RINGS), (s32)&fx_0d2_emitPos2[0]);
+            work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_COLOR_RINGS), (s32)&fx_0d2_emitPos2[1]);
             if (work->emitC != NULL) {
                 work->emitC->otZ = 0x100;
             }
@@ -269,7 +269,7 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos34.vx = 0;
             work->pos34.vy = 0;
             work->pos34.vz = -0x7D4;
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_EMITTER_38), (s32)&work->pos34);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_DUST_CLOUDS), (s32)&work->pos34);
             if (work->emit0 != NULL) {
                 work->emit0->otZ = 0x100;
             }
@@ -278,7 +278,7 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->pos3C.vx = 0;
             work->pos3C.vy = 0;
             work->pos3C.vz = 0x435;
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_FAN_EMITTER), (s32)&work->pos3C);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_ORANGE_LIGHT_LINE), (s32)&work->pos3C);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, FX_FENRIR_ORANGE_RING), (s32)&work->pos3C);
             if (work->emit4 != NULL) {
                 work->emit4->otZ = 0x100;
@@ -375,7 +375,7 @@ s32 fx_0d2_op82(s32 mode, Fx0d2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->xform1C[0].scale18.vz = 0x1C00;
         fx_0d2_env = env;
         fxm_rotPosPathInit(&fx_0d2_ringPath, (u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_RING_PATH_4));
-        work->modelF4[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_MODEL_14), 1);
+        work->modelF4[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_ROCK_CRAG), 1);
         work->xform1C[1].rot0.vx = 0;
         work->xform1C[1].rot0.vy = 0;
         work->xform1C[1].rot0.vz = 0;
@@ -386,8 +386,8 @@ s32 fx_0d2_op82(s32 mode, Fx0d2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->xform1C[1].scale18.vy = 0x1000;
         work->xform1C[1].scale18.vz = 0x1000;
         fxm_valuePathInit(&fx_0d2_morphCurve, (u8 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_MORPH_CURVE_15));
-        work->modelF4[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_MODEL_6), 1);
-        work->modelF4[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_MODEL_13), 1);
+        work->modelF4[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_ROCK_TERRACE), 1);
+        work->modelF4[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_ROCK_TERRACE_2), 1);
         ex->Hi_SetEffModelOffset(work->modelF4[1], 0x32);
         work->xform1C[2].rot0.vx = 0;
         work->xform1C[2].rot0.vy = 0;
@@ -411,7 +411,7 @@ s32 fx_0d2_op82(s32 mode, Fx0d2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->xform1C[3].scale18.vx = 0x1000;
         work->xform1C[3].scale18.vy = 0x1000;
         work->xform1C[3].scale18.vz = 0x1000;
-        work->modelF4[9] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_SUMMON_MODEL_30), 1);
+        work->modelF4[9] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, FX_FENRIR_GOLD_HORN), 1);
     } else {
         frame = entry->frame;
         if (frame == 0x29) {

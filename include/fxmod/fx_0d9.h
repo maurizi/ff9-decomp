@@ -9,7 +9,7 @@
 
 /* fx_0d9 effect data (btlfx_getFileData indices), named from tools/fxdata.py renders of the file's
  * entries (docs/fxdata_s3.md; "(look pending)" = by kind, appearance not settled). */
-#define FX_SWDMAG_THUNDAGA_DISC           0xD /* model: flat octagon, 15-bit texture page 0x119 (byte-identical to fx_018 entry 0x10) (look pending) */
+#define FX_SWDMAG_THUNDAGA_DISC           0xD /* model: flat octagon on 15-bit texture page 0x119, which the file does not fill (drawn at run time) (byte-identical to fx_018 entry 0x10) (look pending) */
 #define FX_SWDMAG_THUNDAGA_GLOW_DOME      0xE /* model: hemisphere with an orange-to-white streak texture (byte-identical to fx_018 entry 0x11) */
 #define FX_SWDMAG_THUNDAGA_BLUE_RING      0x10 /* rings: white-blue gouraud rings */
 #define FX_SWDMAG_THUNDAGA_WHITE_RING     0x12 /* rings: white gouraud rings drawn flat */
@@ -17,11 +17,11 @@
 #define FX_SWDMAG_THUNDAGA_SPARK_BALL     0x18 /* particles: golden plasma ball, 8 frames (byte-identical to fx_018 entry 0x1B) */
 #define FX_SWDMAG_THUNDAGA_VIOLET_RING    0x1E /* rings: white-violet gouraud rings */
 #define FX_SWDMAG_THUNDAGA_THIN_BOLT      0x20 /* particles: thin cyan lightning bolt (byte-identical to fx_018 entry 0x20) */
-#define FX_SWDMAG_THUNDAGA_FAN_EMITTER    0x21 /* emitter: four fan elements (not rendered) (byte-identical to fx_018 entry 0x21) (look pending) */
-#define FX_SWDMAG_THUNDAGA_FAN_EMITTER_2  0x22 /* emitter: four fan elements (not rendered) (byte-identical to fx_018 entry 0x22) (look pending) */
+#define FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS 0x21 /* emitter: four fans of cyan / blue zigzag lightning arcs (byte-identical to fx_018 entry 0x21) */
+#define FX_SWDMAG_THUNDAGA_LIGHTNING_ARCS_2 0x22 /* emitter: four fans of cyan / blue zigzag lightning arcs (byte-identical to fx_018 entry 0x22) */
 #define FX_SWDMAG_THUNDAGA_IMPACT_FLASH   0x25 /* emitter: four-point star flash (byte-identical to fx_018 entry 0x25) */
-#define FX_SWDMAG_THUNDAGA_CONE_EMITTER   0x26 /* emitter: cone of sprites, render all transparent (byte-identical to fx_018 entry 0x26) (look pending) */
-#define FX_SWDMAG_THUNDAGA_SPARKS         0x27 /* emitter: spark sprites (texture not in the file) (byte-identical to fx_018 entry 0x27) (look pending) */
+#define FX_SWDMAG_THUNDAGA_CONE_EMITTER   0x26 /* emitter: cone of sprites; the render is still all transparent (byte-identical to fx_018 entry 0x26) (look pending) */
+#define FX_SWDMAG_THUNDAGA_SPARKS         0x27 /* emitter: white and yellow dot sparks (byte-identical to fx_018 entry 0x27) */
 #define FX_SWDMAG_THUNDAGA_SWORD_GLINT    0x28 /* rings: white 6-segment rings flashed at the sword (op84, first draw) */
 #define FX_SWDMAG_THUNDAGA_SWORD_FLASH    0x29 /* rings: white 8-segment rings flashed rotating at the sword (op84) */
 
